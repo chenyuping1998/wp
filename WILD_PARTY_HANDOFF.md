@@ -1,6 +1,6 @@
 # Wild Party — 專案交接文件
 
-> 最後更新：2026-07-01（載入頁優化 + 背景動效 + PressToContinue 位置調整 + BET 起轉延遲縮短）  
+> 最後更新：2026-07-02（中獎動畫加大 1.4s + FreeGame 觸發鈴聲/停頓 3s + scatter 抖動三輪 + 聽牌滾輪音效 + big win 爆分音效；開發環境遷至 wp-workspace repo，見 §4.19）  
 > 涵蓋範圍：math-sdk 數學後端 + `WildParty_Front` 前端 + Stake 上架素材  
 > **Skill 路由：** `@wild-party-skill-guide`｜**交接：** `@WILD_PARTY_HANDOFF.md`
 
@@ -549,6 +549,55 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
   - `src/game/bookEventHandlerMap.ts`：`freeSpinRetrigger` 時加入與進入 freegame 類似的提示流程（顯示新增 spins）
   - `src/components/FreeSpinIntro.svelte`：`freeSpinIntroUpdate` 支援 `extraSpins` 欄位，優先顯示 retrigger 增加次數
 - [x] 前端重建並同步 `WildParty_Front/build/`
+
+### 4.19 第十波更新（2026-07-02）— 中獎動畫加大、觸發鈴聲流程、聽牌滾輪音效（wp-workspace repo）
+
+> ⚠️ **版控環境變更：** 本波起開發改在新 PC 的 **wp-workspace** monorepo（https://github.com/chenyuping1998/wp ，app 路徑 `apps/WildParty/`）。此 repo 的 `.gitignore` 含 `**/build/`，**build 產物不進版控** —— 上傳 Stake 前必須本機 `pnpm build`（於 `apps/WildParty/`）。舊 math-sdk repo 的 §4.11／§5.6／§5.8 build 同步規則不適用於此 repo。
+
+#### 中獎符號 win 動畫加大（連線得分的放大抖動）
+
+- [x] `static/assets/spines/wildPartySymbols/*.json` 全部 10 檔的 `animations.win` 重寫：
+  - 放大峰值 **1.18 → 1.5**，帶 squash-and-stretch 回彈（1.5 → 壓縮 0.9 → 1.38 → 1.28 → 收斂）
+  - 旋轉抖動 **±2° → ±8°**（維持原版節奏）；上下跳動 **8px → 18px**；金色閃爍加亮（`ffdd88`）
+  - 動畫總長 **1s → 1.4s**（原節奏形狀等比拉伸，峰值仍落在約 30% 處）
+- 調整入口：直接改 spine json 的 `animations.win`（scale/rotate/translate/color 四軌）
+
+#### 預告與聽牌
+
+- [x] **PreFreeGameHint（H1 右到左飛越預告）改 40% 機率播放**
+  - `src/game/constants.ts`：`PRE_FREEGAME_HINT_CHANCE = 0.4`
+  - `src/game/actor.ts`：`onPlayGame` 擲骰決定是否播 `preFreeGameHintShow`
+  - 聽牌輪框特效（reveal `anticipation`）**維持 100%** 不變
+- [x] **聽牌滾輪音效**：`static/assets/audio/reel_tension.wav`（程式合成，2 秒無縫循環：每秒約 12 下機械輪格滴答 + 低音顫音鋪底）
+  - `Anticipations.svelte`：亮框出現開始循環播放、停輪立即停止；與範本 `sfx_anticipation` 疊加；音量 = 玩家音效音量 × 0.8
+
+#### FreeGame 觸發鈴聲流程（trigger / retrigger 相同）
+
+- [x] `freeSpinTrigger` / `freeSpinRetrigger`（`bookEventHandlerMap.ts`）：
+  1. 停掉目前音效（base：`bgm_main`；freegame：`bgm_freespin`；含 `sfx_anticipation`）
+  2. 播放鈴聲 `FeatureTrigger.mp3`（使用者提供、已去人聲，1.56s）
+  3. 畫面停 **3 秒**（歷次調整 2s → 2.5s → 3s）
+  4. scatter 中獎音 + **scatter 抖動連播三輪**（1.4s × 3）
+  5. retrigger 於停頓後恢復 `bgm_freespin`，再接原本 intro／counter 流程
+
+#### 特殊報獎（big / super / mega / epic / max）
+
+- [x] **爆分音效**：`static/assets/audio/bigwin_blast.wav`（程式合成：低頻轟鳴 + 噪音爆裂 + 金屬撞擊，1.8s），於 `winLevelSoundsPlay` 中 `type === 'big'` 時播放（`setWin` 與 freegame outro 共用）
+- [x] **停留 +1 秒**：`Win.svelte` big win 滾分結束後停留 300ms → **1300ms**（玩家仍可點擊跳過）
+
+#### 自訂音效播放系統（Sound.svelte）
+
+- [x] `WP_SFX_FILES` 對照表 + 獨立 HTML5 Audio 播放（同 `background.mp3` 模式，不走 sprite 系統）：
+  - `freegame_bell` → `FeatureTrigger.mp3`、`bigwin_blast` → `bigwin_blast.wav`、`reel_tension` → `reel_tension.wav`
+  - **onMount 全部預載**（避免第一次播放因載檔延遲，音畫不同步）
+  - Emitter 事件：`soundFreeGameBell`、`soundBigWinBlast`、`soundReelTensionStart` / `soundReelTensionStop`
+- 換音效：同檔名覆蓋 `static/assets/audio/` 內的檔案再重 build 即可，不用改程式
+
+#### 已評估後移除／撤回
+
+- 連線得分的金幣碰撞聲（`coin_win.wav`）：加入後依需求移除
+- FeatureTrigger 音量增益＋長度加倍版：做過一版（tanh 軟限幅 +6dB、接兩次 3.12s），依需求還原為原始 mp3
+- reveal 階段的聽牌 40% 擲骰：誤解需求做過一版，已還原（聽牌 100%，40% 的是 PreFreeGameHint）
 
 ---
 

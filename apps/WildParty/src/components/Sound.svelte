@@ -7,6 +7,10 @@
 		| { type: 'soundLoop'; name: SoundEffectName }
 		| { type: 'soundStop'; name: SoundName }
 		| { type: 'soundFade'; name: SoundName; from: number; to: number; duration: number }
+		| { type: 'soundFreeGameBell' }
+		| { type: 'soundBigWinBlast' }
+		| { type: 'soundReelTensionStart' }
+		| { type: 'soundReelTensionStop' }
 		| { type: 'soundScatterCounterIncrease' }
 		| { type: 'soundScatterCounterClear' };
 </script>
@@ -26,6 +30,33 @@
 	// ─── Wild Party custom BGM player (standalone HTML5 Audio) ───
 	let bgmAudio: HTMLAudioElement | null = null;
 	let currentBgm: 'base' | 'freespin' | null = null;
+
+	// Wild Party custom one-shot sfx (standalone HTML5 Audio, like background.mp3).
+	// volumeScale lets quieter accents (coin clatter) sit under the main mix.
+	type WpSfxName = 'freegame_bell' | 'bigwin_blast' | 'reel_tension';
+	const WP_SFX_FILES: Record<WpSfxName, string> = {
+		freegame_bell: 'FeatureTrigger.mp3',
+		bigwin_blast: 'bigwin_blast.wav',
+		reel_tension: 'reel_tension.wav',
+	};
+	const wpSfxAudio: Partial<Record<WpSfxName, HTMLAudioElement>> = {};
+
+	function getWpSfx(name: WpSfxName) {
+		let audio = wpSfxAudio[name];
+		if (!audio) {
+			audio = new Audio(`${base}/assets/audio/${WP_SFX_FILES[name]}`);
+			audio.preload = 'auto';
+			wpSfxAudio[name] = audio;
+		}
+		return audio;
+	}
+
+	function playWpSfx(name: WpSfxName, volumeScale = 1) {
+		const audio = getWpSfx(name);
+		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+		audio.currentTime = 0;
+		audio.play().catch(() => {});
+	}
 
 	function playBgm(type: 'base' | 'freespin') {
 		if (type === 'base') {
@@ -97,6 +128,22 @@
 		},
 		soundLoop: ({ name }) => sound.players.loop.play({ name }),
 		soundOnce: ({ name, forcePlay }) => sound.players.once.play({ name, forcePlay }),
+		soundFreeGameBell: () => playWpSfx('freegame_bell'),
+		soundBigWinBlast: () => playWpSfx('bigwin_blast'),
+		soundReelTensionStart: () => {
+			const audio = getWpSfx('reel_tension');
+			audio.loop = true;
+			audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * 0.8);
+			audio.currentTime = 0;
+			audio.play().catch(() => {});
+		},
+		soundReelTensionStop: () => {
+			const audio = wpSfxAudio['reel_tension'];
+			if (audio) {
+				audio.pause();
+				audio.currentTime = 0;
+			}
+		},
 		soundStop: ({ name }) => {
 			if (name === 'bgm_main') {
 				stopBgm();
@@ -108,6 +155,10 @@
 	});
 
 	onMount(() => {
+		// Fetch custom one-shot sfx up front so the first play is in sync
+		// (an Audio element created lazily would stall on its first fetch).
+		(Object.keys(WP_SFX_FILES) as WpSfxName[]).forEach(getWpSfx);
+
 		if (stateBet.activeBetModeKey === 'SUPERSPIN') {
 			playBgm('freespin');
 		} else {
@@ -119,6 +170,14 @@
 				bgmAudio.pause();
 				bgmAudio.src = '';
 				bgmAudio = null;
+			}
+			for (const name of Object.keys(wpSfxAudio) as WpSfxName[]) {
+				const audio = wpSfxAudio[name];
+				if (audio) {
+					audio.pause();
+					audio.src = '';
+					delete wpSfxAudio[name];
+				}
 			}
 		};
 	});

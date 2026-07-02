@@ -22,9 +22,12 @@
 				to: 1,
 				duration: SECOND,
 			});
+			// Mechanical reel-ticking loop — keeps the player locked on the glowing reel
+			context.eventEmitter.broadcast({ type: 'soundReelTensionStart' });
 
 			return () => {
 				context.eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
+				context.eventEmitter.broadcast({ type: 'soundReelTensionStop' });
 			};
 		}}
 	/>

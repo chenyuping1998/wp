@@ -21,6 +21,8 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 		eventEmitter.broadcast({ type: 'soundMusic', name: winLevelData.sound.bgm });
 	}
 	if (winLevelData?.type === 'big') {
+		// Blast accent as the big/super/mega/epic win presentation slams in
+		eventEmitter.broadcast({ type: 'soundBigWinBlast' });
 		eventEmitter.broadcast({ type: 'soundLoop', name: 'sfx_bigwin_coinloop' });
 	}
 };
@@ -101,7 +103,16 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateBet.winBookEventAmount = bookEvent.amount;
 	},
 	freeSpinTrigger: async (bookEvent: BookEventOfType<'freeSpinTrigger'>) => {
+		// Scatters landed on reels 3/4/5 — silence everything and ring the classic
+		// free-game trigger bell, holding the moment for ~2s before the payoff.
+		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_main' });
+		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
+		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
+		await waitForTimeout(3000);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
+		// Three passes of the scatter shake — extended trigger celebration
+		await animateSymbols({ positions: bookEvent.positions });
+		await animateSymbols({ positions: bookEvent.positions });
 		await animateSymbols({ positions: bookEvent.positions });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
@@ -168,7 +179,17 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		}
 	},
 	freeSpinRetrigger: async (bookEvent: BookEventOfType<'freeSpinRetrigger'>) => {
+		// Same bell moment as the initial trigger: silence the free-game bgm,
+		// ring the bell and hold ~2s, then bring the music back.
+		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_freespin' });
+		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
+		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
+		await waitForTimeout(3000);
+		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
+		// Three passes of the scatter shake — extended trigger celebration
+		await animateSymbols({ positions: bookEvent.positions });
+		await animateSymbols({ positions: bookEvent.positions });
 		await animateSymbols({ positions: bookEvent.positions });
 		const extraSpins = Math.max(0, bookEvent.totalFs - stateUi.freeSpinCounterTotal);
 		if (extraSpins > 0) {

@@ -9,18 +9,32 @@
     "images": "./"
   },
   "bones": [
-    { "name": "root" },
-    { "name": "symbol", "parent": "root" }
+    {
+      "name": "root"
+    },
+    {
+      "name": "symbol",
+      "parent": "root"
+    }
   ],
   "slots": [
-    { "name": "symbol", "bone": "symbol", "attachment": "l1" }
+    {
+      "name": "symbol",
+      "bone": "symbol",
+      "attachment": "l1"
+    }
   ],
   "skins": [
     {
       "name": "default",
       "attachments": {
         "symbol": {
-          "l1": { "x": 0, "y": 0, "width": 256, "height": 256 }
+          "l1": {
+            "x": 0,
+            "y": 0,
+            "width": 256,
+            "height": 256
+          }
         }
       }
     }
@@ -30,11 +44,31 @@
       "bones": {
         "symbol": {
           "scale": [
-            { "time": 0, "x": 1, "y": 1 },
-            { "time": 0.25, "x": 1.04, "y": 1.04 },
-            { "time": 0.5, "x": 1, "y": 1 },
-            { "time": 0.75, "x": 0.98, "y": 0.98 },
-            { "time": 1, "x": 1, "y": 1 }
+            {
+              "time": 0,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "time": 0.25,
+              "x": 1.04,
+              "y": 1.04
+            },
+            {
+              "time": 0.5,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "time": 0.75,
+              "x": 0.98,
+              "y": 0.98
+            },
+            {
+              "time": 1,
+              "x": 1,
+              "y": 1
+            }
           ]
         }
       }
@@ -43,39 +77,120 @@
       "bones": {
         "symbol": {
           "scale": [
-            { "time": 0, "x": 1, "y": 1 },
-            { "time": 0.15, "x": 1.12, "y": 1.12 },
-            { "time": 0.3, "x": 1.18, "y": 1.18 },
-            { "time": 0.45, "x": 1.08, "y": 1.08 },
-            { "time": 0.6, "x": 1.14, "y": 1.14 },
-            { "time": 0.8, "x": 1, "y": 1 },
-            { "time": 1, "x": 1, "y": 1 }
+            {
+              "time": 0,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "time": 0.21,
+              "x": 1.35,
+              "y": 1.35
+            },
+            {
+              "time": 0.42,
+              "x": 1.5,
+              "y": 1.5
+            },
+            {
+              "time": 0.63,
+              "x": 1.22,
+              "y": 1.22
+            },
+            {
+              "time": 0.84,
+              "x": 1.4,
+              "y": 1.4
+            },
+            {
+              "time": 1.12,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "time": 1.4,
+              "x": 1,
+              "y": 1
+            }
           ],
           "rotate": [
-            { "time": 0, "value": 0 },
-            { "time": 0.2, "value": -2 },
-            { "time": 0.4, "value": 2 },
-            { "time": 0.6, "value": -1 },
-            { "time": 0.8, "value": 1 },
-            { "time": 1, "value": 0 }
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.28,
+              "value": -8
+            },
+            {
+              "time": 0.56,
+              "value": 8
+            },
+            {
+              "time": 0.84,
+              "value": -4
+            },
+            {
+              "time": 1.12,
+              "value": 4
+            },
+            {
+              "time": 1.4,
+              "value": 0
+            }
           ],
           "translate": [
-            { "time": 0, "x": 0, "y": 0 },
-            { "time": 0.25, "x": 0, "y": 8 },
-            { "time": 0.5, "x": 0, "y": 0 },
-            { "time": 0.75, "x": 0, "y": 4 },
-            { "time": 1, "x": 0, "y": 0 }
+            {
+              "time": 0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 0.35,
+              "x": 0,
+              "y": 18
+            },
+            {
+              "time": 0.7,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 1.05,
+              "x": 0,
+              "y": 9
+            },
+            {
+              "time": 1.4,
+              "x": 0,
+              "y": 0
+            }
           ]
         }
       },
       "slots": {
         "symbol": {
           "color": [
-            { "time": 0, "color": "ffffffff" },
-            { "time": 0.2, "color": "ffe7b8ff" },
-            { "time": 0.4, "color": "ffffffff" },
-            { "time": 0.6, "color": "ffe7b8ff" },
-            { "time": 1, "color": "ffffffff" }
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.28,
+              "color": "ffdd88ff"
+            },
+            {
+              "time": 0.56,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.84,
+              "color": "ffdd88ff"
+            },
+            {
+              "time": 1.4,
+              "color": "ffffffff"
+            }
           ]
         }
       }

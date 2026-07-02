@@ -10,6 +10,7 @@ import { playBet, convertTorResumableBet } from './utils';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import { eventEmitter } from './eventEmitter';
 import config from './config';
+import { PRE_FREEGAME_HINT_CHANCE } from './constants';
 
 const primaryMachines = createPrimaryMachines<Bet>({
 	onResumeGameActive: (betToResume) => convertTorResumableBet(betToResume),
@@ -39,7 +40,7 @@ const primaryMachines = createPrimaryMachines<Bet>({
 	onPlayGame: async (bet) => {
 		if (stateGame.gameType === 'basegame') {
 			const hasFreeSpinTrigger = bet.state.some((bookEvent) => bookEvent.type === 'freeSpinTrigger');
-			if (hasFreeSpinTrigger) {
+			if (hasFreeSpinTrigger && Math.random() < PRE_FREEGAME_HINT_CHANCE) {
 				await eventEmitter.broadcastAsync({ type: 'preFreeGameHintShow' });
 			}
 		}

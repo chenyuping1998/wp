@@ -63,7 +63,8 @@
 				<OnMount
 					onmount={async () => {
 						await startCountUp();
-						await waitForTimeout(300);
+						// Big-win presentations linger an extra second after the count-up
+						await waitForTimeout(isBigWin ? 1300 : 300);
 						oncomplete();
 					}}
 				/>
