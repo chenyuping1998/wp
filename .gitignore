@@ -1,0 +1,12 @@
+node_modules/
+.pnpm-store/
+
+.turbo/
+**/.svelte-kit/
+**/build/
+**/storybook-static/
+**/.cache/
+
+*.log
+.DS_Store
+Thumbs.db
