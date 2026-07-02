@@ -96,6 +96,26 @@
 />
 
 <Story
+	name="newExpandingWilds"
+	args={templateArgs({
+		skipLoadingScreen: true,
+		data: events.newExpandingWilds,
+		action: async (data) => await playBookEvent(data, { bookEvents: [] }),
+	})}
+	{template}
+/>
+
+<Story
+	name="updateExpandingWilds"
+	args={templateArgs({
+		skipLoadingScreen: true,
+		data: events.updateExpandingWilds,
+		action: async (data) => await playBookEvent(data, { bookEvents: [] }),
+	})}
+	{template}
+/>
+
+<Story
 	name="freeSpinEnd"
 	args={templateArgs({
 		skipLoadingScreen: true,

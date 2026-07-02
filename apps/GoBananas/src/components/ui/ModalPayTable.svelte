@@ -9,33 +9,35 @@
 	type PayRow = { name: string; img: string; label: string; pays: { count: number; value: number }[] };
 
 	const SYMBOL_ASSET: Record<string, keyof typeof assets> = {
-		H1: 'wpH1',
-		H2: 'wpH2',
-		H3: 'wpH3',
-		H4: 'wpH4',
-		L1: 'wpL1',
-		L2: 'wpL2',
-		L3: 'wpL3',
-		L4: 'wpL4',
-		W: 'wpW',
-		S: 'wpS',
+		H1: 'gbH1',
+		H2: 'gbH2',
+		H3: 'gbH3',
+		H4: 'gbH4',
+		L1: 'gbL1',
+		L2: 'gbL2',
+		L3: 'gbL3',
+		L4: 'gbL4',
+		L5: 'gbL5',
+		W: 'gbW',
+		S: 'gbS',
 	};
 
 	const SYMBOL_LABEL: Record<string, string> = {
-		H1: 'Disco Ball',
-		H2: 'Champagne',
-		H3: 'Cocktail',
-		H4: 'Gift',
+		H1: '金元寶 Gold Ingot',
+		H2: '紅燈籠 Lantern',
+		H3: '蟠桃 Peach',
+		H4: '鞭炮 Firecrackers',
 		L1: 'A',
 		L2: 'K',
 		L3: 'Q',
 		L4: 'J',
-		W: 'Wild',
-		S: 'Scatter',
+		L5: '10',
+		W: '百搭 Wild',
+		S: '金蟠桃 Scatter',
 	};
 
 	// keep high -> low ordering for readability
-	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'S'];
+	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'S'];
 
 	const maxWin = config.betModes?.base?.max_win ?? 5000;
 

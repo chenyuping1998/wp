@@ -11,8 +11,8 @@
 
 	const context = getContext();
 	const SPINE_SCALE = { width: 0.62, height: 0.66 };
-	const SPRITE_SCALE = { width: 1.25, height: 0.72 };
-	const POSITION_ADJUSTMENT = 1.01;
+	// frame art is 1280×1280 with the board occupying the centered 1000×1000
+	const FRAME_SCALE = 1280 / 1000;
 
 	type AnimationName = 'reelhouse_glow_start' | 'reelhouse_glow_idle' | 'reelhouse_glow_exit';
 
@@ -34,8 +34,8 @@
 	<SpineProvider
 		zIndex={-1}
 		key="reelhouse"
-		x={context.stateGameDerived.boardLayout().x * POSITION_ADJUSTMENT}
-		y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT}
+		x={context.stateGameDerived.boardLayout().x}
+		y={context.stateGameDerived.boardLayout().y}
 		width={context.stateGameDerived.boardLayout().width * SPINE_SCALE.width}
 		height={context.stateGameDerived.boardLayout().height * SPINE_SCALE.height}
 	>
@@ -63,19 +63,19 @@
 {/if}
 
 <Sprite
-	key="frame_bg.png"
+	key="gbFrameBg"
 	anchor={0.5}
-	x={context.stateGameDerived.boardLayout().x * POSITION_ADJUSTMENT}
-	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT}
-	width={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.width}
-	height={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.height}
+	x={context.stateGameDerived.boardLayout().x}
+	y={context.stateGameDerived.boardLayout().y}
+	width={context.stateGameDerived.boardLayout().width * FRAME_SCALE}
+	height={context.stateGameDerived.boardLayout().height * FRAME_SCALE}
 />
 
 <Sprite
-	key="frame_edge.png"
+	key="gbFrameEdge"
 	anchor={0.5}
-	x={context.stateGameDerived.boardLayout().x * POSITION_ADJUSTMENT}
-	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT}
-	width={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.width}
-	height={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.height}
+	x={context.stateGameDerived.boardLayout().x}
+	y={context.stateGameDerived.boardLayout().y}
+	width={context.stateGameDerived.boardLayout().width * FRAME_SCALE}
+	height={context.stateGameDerived.boardLayout().height * FRAME_SCALE}
 />

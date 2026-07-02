@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 
 	type Props = {
-		symbolKey: 'wpSpH1' | 'wpSpH2' | 'wpSpH3' | 'wpSpH4';
+		symbolKey: 'gbSpH1' | 'gbSpH2' | 'gbSpH3' | 'gbSpH4';
 	};
 
 	const props: Props = $props();

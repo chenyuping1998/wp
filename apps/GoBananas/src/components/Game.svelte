@@ -20,6 +20,7 @@
 	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './BoardFrame.svelte';
 	import Board from './Board.svelte';
+	import ExpandingWilds from './ExpandingWilds.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import GlobalMultiplier from './GlobalMultiplier.svelte';
 	import WinLines from './WinLines.svelte';
@@ -67,6 +68,7 @@
 
 		<MainContainer>
 			<Board />
+			<ExpandingWilds />
 			<Anticipations />
 			<GlobalMultiplier />
 			<WinLines />
@@ -74,12 +76,12 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name="WILD PARTY" />
+				<UiGameName name="GO BANANAS 金猴鬧春" />
 			{/snippet}
 			{#snippet logo()}
 				<Text
 					anchor={{ x: 1, y: 0 }}
-					text="WILD PARTY"
+					text="GO BANANAS 金猴鬧春"
 					style={{
 						fontFamily: 'proxima-nova',
 						fontSize: REM * 1.5,

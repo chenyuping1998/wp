@@ -9,6 +9,7 @@ import type { EmitterEventSound } from '../components/Sound.svelte';
 import type { EmitterEventTransition } from '../components/Transition.svelte';
 import type { EmitterEventGlobalMultiplier } from '../components/GlobalMultiplier.svelte';
 import type { EmitterEventPreFreeGameHint } from '../components/PreFreeGameHint.svelte';
+import type { EmitterEventExpandingWilds } from '../components/ExpandingWilds.svelte';
 
 export type EmitterEventGame =
 	| EmitterEventBoard
@@ -21,4 +22,5 @@ export type EmitterEventGame =
 	| EmitterEventSound
 	| EmitterEventTransition
 	| EmitterEventGlobalMultiplier
-	| EmitterEventPreFreeGameHint;
+	| EmitterEventPreFreeGameHint
+	| EmitterEventExpandingWilds;

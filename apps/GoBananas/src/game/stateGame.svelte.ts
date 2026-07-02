@@ -21,7 +21,7 @@ import {
 	SCATTER_LAND_SOUND_MAP,
 } from './constants';
 
-const onSymbolLand = ({ rawSymbol }: { rawSymbol: RawSymbol }) => {
+const onSymbolLand = ({ rawSymbol, reelIndex }: { rawSymbol: RawSymbol; reelIndex?: number }) => {
 	if (rawSymbol.name === 'S') {
 		eventEmitter.broadcast({ type: 'soundScatterCounterIncrease' });
 		eventEmitter.broadcast({
@@ -31,6 +31,9 @@ const onSymbolLand = ({ rawSymbol }: { rawSymbol: RawSymbol }) => {
 	}
 
 	if (rawSymbol.name === 'W') {
+		// Sticky expanded-wild reels are full of W symbols on every reveal —
+		// suppress their landing plucks so only fresh Wilds are heard.
+		if (reelIndex !== undefined && stateGame.stickyWildReels.includes(reelIndex)) return;
 		eventEmitter.broadcast({
 			type: 'soundOnce',
 			name: 'sfx_multiplier_landing',
@@ -51,7 +54,7 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 				forcePlay: !stateBet.isTurbo,
 			});
 		},
-		onSymbolLand,
+		onSymbolLand: ({ rawSymbol }) => onSymbolLand({ rawSymbol, reelIndex }),
 	});
 
 	reel.reelState.spinOptions = () => {
@@ -83,6 +86,8 @@ export const stateGame = $state({
 	scatterCounter: 0,
 	// WildParty free-game accumulating global multiplier (starts 1-3, +1 per Wild, cap 100)
 	globalMultiplier: 1,
+	// reels currently locked by sticky expanded wilds (free game only)
+	stickyWildReels: [] as number[],
 });
 
 const boardLayout = () => ({

@@ -79,7 +79,7 @@
 				}}
 			/>
 
-			<SpineProvider key="wpSpH1" width={260}>
+			<SpineProvider key="gbSpS" width={260}>
 				<SpineTrack trackIndex={0} animationName="win" loop />
 			</SpineProvider>
 		</Container>

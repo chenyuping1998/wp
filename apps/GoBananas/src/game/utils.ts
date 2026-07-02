@@ -24,6 +24,8 @@ const BOOK_EVENT_TYPES_TO_RESERVE_FOR_SNAPSHOT = [
 	'freeSpinTrigger',
 	'updateFreeSpin',
 	'setTotalWin',
+	'newExpandingWilds',
+	'updateExpandingWilds',
 ];
 
 export const convertTorResumableBet = (betToResume: Bet) => {

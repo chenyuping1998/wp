@@ -38,6 +38,19 @@ type BookEventUpdateFreeSpin = {
 	total: number;
 };
 
+type BookEventFreeSpinRetrigger = {
+	index: number;
+	type: 'freeSpinRetrigger';
+	totalFs: number;
+	positions: Position[];
+};
+
+type BookEventUpdateGlobalMult = {
+	index: number;
+	type: 'updateGlobalMult';
+	globalMult: number;
+};
+
 type BookEventSetWin = {
 	index: number;
 	type: 'setWin';
@@ -128,6 +141,8 @@ export type BookEvent =
 	| BookEventSetWin
 	| BookEventFreeSpinEnd
 	// customised
+	| BookEventNewExpandingWilds
+	| BookEventUpdateExpandingWilds
 	| BookEventCreateBonusSnapshot;
 
 export type Bet = BetType<BookEvent>;

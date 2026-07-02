@@ -16,51 +16,42 @@
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-rules">
-			<h2>WILD PARTY — GAME RULES</h2>
+			<h2>GO BANANAS 金猴鬧春 — GAME RULES</h2>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>How to play</h3>
 				<p>
-					Wild Party is a {reelCount}&times;{rowCount} video slot with {lineCount} fixed paylines.
-					Winning combinations pay left to right, starting from the leftmost reel on
+					Go Bananas 金猴鬧春 is a {reelCount}&times;{rowCount} video slot with {lineCount} fixed
+					paylines. Winning combinations pay left to right, starting from the leftmost reel on
 					adjacent reels. Only the highest win is paid per line, and all line wins are added
 					together. The theoretical return to player (RTP) is {rtpPct}.
 				</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Wild</h3>
+				<h3><span class="wp-accent-bar"></span>百搭 Wild</h3>
 				<p>
-					The Wild symbol substitutes for every symbol except the Scatter, helping to
-					complete winning paylines. Wilds also drive the Global Multiplier during Free Spins.
+					The Monkey King Wild substitutes for every symbol except the Scatter, helping to
+					complete winning paylines.
 				</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Scatter</h3>
+				<h3><span class="wp-accent-bar"></span>金蟠桃 Scatter</h3>
 				<p>
-					The Scatter symbol appears only on reels 3, 4 and 5. Scatters pay anywhere on the
-					reels and do not need to be on a payline. Landing 3 Scatters in a single spin
+					The Golden Peach Scatter appears only on reels 2, 3 and 4. Scatters pay anywhere on
+					the reels and do not need to be on a payline. Landing 3 Scatters in a single spin
 					triggers the Free Spins feature.
 				</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Free Spins</h3>
+				<h3><span class="wp-accent-bar"></span>Free Spins &amp; Expanding Wilds</h3>
 				<p>
-					3 Scatters award 5 Free Spins. Landing another 3 Scatters during the feature
-					retriggers and adds +5 Free Spins. The feature is played on a dedicated reel set
-					with more Wilds.
-				</p>
-			</section>
-
-			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Global Multiplier</h3>
-				<p>
-					Free Spins use a single accumulating Global Multiplier applied to every line win.
-					It starts between 1&times; and 3&times; (based on the lines the triggering Scatters
-					land on) and increases by +1 for every Wild that appears during Free Spins, up to a
-					maximum of 100&times;. The multiplier stays active for the whole feature.
+					3 Scatters award Free Spins. During Free Spins, every Monkey King Wild that lands
+					twirls his golden cudgel (金箍棒) and expands to cover the entire reel. Expanded
+					Wilds are sticky — they stay for the rest of the feature — and each one carries a
+					win multiplier that is re-rolled on every spin.
 				</p>
 			</section>
 

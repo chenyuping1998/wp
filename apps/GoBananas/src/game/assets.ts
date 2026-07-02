@@ -121,6 +121,17 @@ export default {
 		type: 'sprites',
 		src: new URL('../../assets/sprites/reelsFrame/reels_frame.json', import.meta.url).href,
 	},
+	// 中國風 red-lacquer & gold reel frame (SVG-generated — see design/generate_art.mjs)
+	gbFrameBg: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFrame/frame_bg.png', import.meta.url).href,
+		preload: true,
+	},
+	gbFrameEdge: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFrame/frame_edge.png', import.meta.url).href,
+		preload: true,
+	},
 	payFrame: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/payFrame/payFrame.png', import.meta.url).href,

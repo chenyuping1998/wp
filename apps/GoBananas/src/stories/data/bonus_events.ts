@@ -246,6 +246,36 @@ export default {
 			}
 		]
 	},
+	"newExpandingWilds": {
+		"type": "newExpandingWilds",
+		"newWilds": [
+			{
+				"reel": 1,
+				"row": 3,
+				"mult": 3
+			},
+			{
+				"reel": 3,
+				"row": 2,
+				"mult": 2
+			}
+		]
+	},
+	"updateExpandingWilds": {
+		"type": "updateExpandingWilds",
+		"existingWilds": [
+			{
+				"reel": 1,
+				"row": 1,
+				"mult": 5
+			},
+			{
+				"reel": 3,
+				"row": 1,
+				"mult": 4
+			}
+		]
+	},
 	"freeSpinEnd": {
 		"type": "freeSpinEnd",
 		"amount": 1410,

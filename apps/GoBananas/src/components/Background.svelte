@@ -3,15 +3,17 @@
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { FadeContainer } from 'components-pixi';
 	import { SECOND } from 'constants-shared/time';
+	import { stateBet } from 'state-shared';
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
 
 	const context = getContext();
-	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame');
-	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame');
+	const isSuperspin = $derived(stateBet.activeBetModeKey === 'SUPERSPIN');
+	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame' && !isSuperspin);
+	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame' && !isSuperspin);
 
-	let rotation = $state(0);
+	let sway = $state(0);
 	let beamPhase = $state(0);
 
 	const drawSoftBeams = (g: PixiGraphics, phaseShift = 0) => {
@@ -22,7 +24,7 @@
 		g.clear();
 
 		// Keep beams very subtle and in the upper area so they don't distract from reels.
-		g.beginFill(0xfff0b8, 0.04);
+		g.beginFill(0xfff0b8, 0.05);
 		g.drawPolygon([
 			centerX - width * 0.018,
 			0,
@@ -35,7 +37,7 @@
 		]);
 		g.endFill();
 
-		g.beginFill(0xff8bd8, 0.03);
+		g.beginFill(0xffd43b, 0.035);
 		g.drawPolygon([
 			centerX + width * 0.11,
 			0,
@@ -51,43 +53,49 @@
 
 	onMount(() => {
 		const id = setInterval(() => {
-			rotation += 0.012;
+			sway += 0.016;
 			beamPhase += 0.004;
 		}, 16);
 		return () => clearInterval(id);
 	});
 </script>
 
-<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x120016} zIndex={-3} />
+<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x160505} zIndex={-3} />
 
-<!-- Wild Party base-game background (placeholder art) -->
+<!-- 青綠山水 base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
-	<Sprite key="wildPartyBgBase" {...context.stateLayoutDerived.canvasSizes()} />
+	<Sprite key="gbBgBase" {...context.stateLayoutDerived.canvasSizes()} />
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
+	<!-- swaying red lantern -->
 	<Sprite
-		key="wpH1"
-		anchor={0.5}
+		key="gbH2"
+		anchor={{ x: 0.5, y: 0.08 }}
 		x={context.stateLayoutDerived.canvasSizes().width * 0.5}
-		y={110}
-		width={150}
-		height={150}
-		alpha={0.8}
-		rotation={rotation}
+		y={40}
+		width={130}
+		height={130}
+		alpha={0.85}
+		rotation={Math.sin(sway) * 0.09}
 	/>
 </FadeContainer>
 
-<!-- Wild Party free-game background (placeholder art) -->
+<!-- 紅金慶典 free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
-	<Sprite key="wildPartyBgFeature" {...context.stateLayoutDerived.canvasSizes()} />
+	<Sprite key="gbBgFeature" {...context.stateLayoutDerived.canvasSizes()} />
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
 	<Sprite
-		key="wpH1"
-		anchor={0.5}
+		key="gbH2"
+		anchor={{ x: 0.5, y: 0.08 }}
 		x={120}
-		y={110}
-		width={130}
-		height={130}
-		alpha={0.82}
-		rotation={rotation}
+		y={36}
+		width={120}
+		height={120}
+		alpha={0.85}
+		rotation={Math.sin(sway + 0.8) * 0.11}
 	/>
+</FadeContainer>
+
+<!-- 月夜 superspin background -->
+<FadeContainer show={isSuperspin} duration={SECOND} zIndex={-1}>
+	<Sprite key="gbBgSuperspin" {...context.stateLayoutDerived.canvasSizes()} />
 </FadeContainer>

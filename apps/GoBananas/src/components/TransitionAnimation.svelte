@@ -73,7 +73,7 @@
 	y={context.stateLayoutDerived.canvasSizes().height * 0.5}
 >
 	<Sprite
-		key="wpH1"
+		key="gbS"
 		anchor={0.5}
 		width={context.stateLayoutDerived.canvasSizes().height * 0.42}
 		height={context.stateLayoutDerived.canvasSizes().height * 0.42}

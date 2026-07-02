@@ -40,12 +40,12 @@
 	});
 </script>
 
-<!-- Wild Party branded loading screen -->
+<!-- Go Bananas 中國風 branded loading screen -->
 <FadeContainer show={loadingType === 'start'}>
 	<MainContainer>
-		<!-- Background image (party theme) -->
+		<!-- Background image (山水 theme) -->
 		<Sprite
-			key="wildPartyBgBase"
+			key="gbBgBase"
 			anchor={0.5}
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.5}
@@ -59,12 +59,12 @@
 				const w = context.stateLayoutDerived.mainLayout().width;
 				const h = context.stateLayoutDerived.mainLayout().height;
 				g.clear();
-				g.beginFill(0x050010, 0.68);
+				g.beginFill(0x1a0505, 0.68);
 				g.drawRect(0, 0, w, h);
 				g.endFill();
 
 				// subtle vignette / top glow so the screen looks less flat
-				g.beginFill(0xff95dc, 0.04);
+				g.beginFill(0xffd43b, 0.04);
 				g.drawEllipse(w * 0.5, h * 0.28, w * 0.22, h * 0.11);
 				g.endFill();
 
@@ -94,18 +94,18 @@
 			<!-- Game title -->
 			<Text
 				anchor={0.5}
-				text="WILD PARTY"
+				text="GO BANANAS 金猴鬧春"
 				style={{
 					fontFamily: 'proxima-nova, Arial, sans-serif',
-					fontSize: 56,
+					fontSize: 52,
 					fontWeight: '900',
-					fill: 0xfff4cf,
-					letterSpacing: 8,
+					fill: 0xffd43b,
+					letterSpacing: 6,
 					dropShadow: true,
-					dropShadowColor: 0xff9edf,
+					dropShadowColor: 0xe03131,
 					dropShadowBlur: 18,
 					dropShadowDistance: 0,
-					stroke: 0xffffff,
+					stroke: 0xfff4cf,
 					strokeThickness: 1,
 				}}
 			/>
@@ -114,12 +114,12 @@
 			<Text
 				anchor={0.5}
 				y={65}
-				text="3X5, 35 LINES MAX WIN 5,000X"
+				text="5X5, 15 LINES MAX WIN 5,000X"
 				style={{
 					fontFamily: 'proxima-nova, Arial, sans-serif',
 					fontSize: 14,
 					fontWeight: '600',
-					fill: 0xd9d8e8,
+					fill: 0xf5e3c3,
 					letterSpacing: 3,
 				}}
 			/>
@@ -137,13 +137,13 @@
 					const barHeight = 4;
 					g.clear();
 					// Background track
-					g.beginFill(0x2a2338, 0.82);
+					g.beginFill(0x38221c, 0.82);
 					g.drawRoundedRect(-barWidth / 2, -barHeight / 2, barWidth, barHeight, 2);
 					g.endFill();
 					// Progress fill
 					const fillWidth = (barWidth * animatedProgress) / 100;
 					if (fillWidth > 0) {
-						g.beginFill(0xff8ede, 0.94);
+						g.beginFill(0xffd43b, 0.94);
 						g.drawRoundedRect(-barWidth / 2, -barHeight / 2, fillWidth, barHeight, 2);
 						g.endFill();
 					}
@@ -161,7 +161,7 @@
 					fontFamily: 'proxima-nova, Arial, sans-serif',
 					fontSize: 12,
 					fontWeight: '500',
-					fill: 0xb6a8c9,
+					fill: 0xd9bfa0,
 					letterSpacing: 2,
 				}}
 			/>

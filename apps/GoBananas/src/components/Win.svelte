@@ -31,12 +31,12 @@
 	let onCountUpComplete = $state(() => {});
 
 	const WIN_LEVEL_SYMBOL_MAP: Partial<
-		Record<WinLevelData['alias'], 'wpSpH1' | 'wpSpH2' | 'wpSpH3' | 'wpSpH4'>
+		Record<WinLevelData['alias'], 'gbSpH1' | 'gbSpH2' | 'gbSpH3' | 'gbSpH4'>
 	> = {
-		big: 'wpSpH4',
-		superwin: 'wpSpH3',
-		mega: 'wpSpH2',
-		epic: 'wpSpH1',
+		big: 'gbSpH4',
+		superwin: 'gbSpH3',
+		mega: 'gbSpH2',
+		epic: 'gbSpH1',
 	};
 
 	context.eventEmitter.subscribeOnMount({

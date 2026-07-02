@@ -10,6 +10,7 @@ import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
 import type { Position } from './types';
+import { BOARD_DIMENSIONS } from './constants';
 import config from './config';
 
 const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) => {
@@ -38,9 +39,9 @@ const winLevelSoundsStop = () => {
 };
 
 const animateSymbols = async ({ positions }: { positions: Position[] }) => {
-	// Only animate symbols in visible rows (1, 2, 3) — padding rows (0, 4) have no
-	// oncomplete callback and would cause the game to freeze waiting forever.
-	const visiblePositions = positions.filter((p) => p.row >= 1 && p.row <= 3);
+	// Only animate symbols in visible rows (1..numRows) — padding rows (0 and
+	// numRows+1) have no oncomplete callback and would freeze the game forever.
+	const visiblePositions = positions.filter((p) => p.row >= 1 && p.row <= BOARD_DIMENSIONS.y);
 	if (visiblePositions.length === 0) return;
 	eventEmitter.broadcast({ type: 'boardShow' });
 	await eventEmitter.broadcastAsync({
@@ -125,6 +126,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			totalFreeSpins: bookEvent.totalFs,
 		});
 		stateGame.gameType = 'freegame';
+		stateGame.stickyWildReels = [];
+		eventEmitter.broadcast({ type: 'expandingWildsClear' });
 		eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
@@ -138,6 +141,35 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerButtonShow' });
 		eventEmitter.broadcast({ type: 'drawerFold' });
+	},
+	// GoBananas free game: a Wild landed and expands to fill its reel — 悟空
+	// twirls the 金箍棒 while growing, then sticks for the rest of the feature.
+	newExpandingWilds: async (bookEvent: BookEventOfType<'newExpandingWilds'>) => {
+		if (bookEvent.newWilds.length === 0) return;
+		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
+		await Promise.all(
+			bookEvent.newWilds.map((wild) =>
+				eventEmitter.broadcastAsync({
+					type: 'expandingWildNew',
+					reel: wild.reel,
+					row: wild.row,
+					mult: wild.mult,
+				}),
+			),
+		);
+		stateGame.stickyWildReels = _.uniq([
+			...stateGame.stickyWildReels,
+			...bookEvent.newWilds.map((wild) => wild.reel),
+		]);
+	},
+	// Sticky expanded wilds re-roll their multiplier on each reveal.
+	updateExpandingWilds: async (bookEvent: BookEventOfType<'updateExpandingWilds'>) => {
+		if (bookEvent.existingWilds.length === 0) return;
+		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
+		await eventEmitter.broadcastAsync({
+			type: 'expandingWildsUpdate',
+			wilds: bookEvent.existingWilds,
+		});
 	},
 	updateFreeSpin: async (bookEvent: BookEventOfType<'updateFreeSpin'>) => {
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
@@ -216,6 +248,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		stateGame.gameType = 'basegame';
+		stateGame.stickyWildReels = [];
+		eventEmitter.broadcast({ type: 'expandingWildsClear' });
 		stateGame.globalMultiplier = 1;
 		await eventEmitter.broadcastAsync({ type: 'globalMultiplierUpdate', multiplier: 1 });
 		eventEmitter.broadcast({ type: 'globalMultiplierHide' });
@@ -275,5 +309,25 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		if (lastUpdateFreeSpinEvent) playBookEvent(lastUpdateFreeSpinEvent, { bookEvents });
 		if (lastSetTotalWinEvent) playBookEvent(lastSetTotalWinEvent, { bookEvents });
 		if (lastUpdateGlobalMultEvent) playBookEvent(lastUpdateGlobalMultEvent, { bookEvents });
+
+		// Rebuild sticky expanded wilds: every newExpandingWilds adds a reel; the
+		// last updateExpandingWilds re-rolled the mults of the older ones.
+		const multByReel = new Map<number, number>();
+		for (const event of bookEvents) {
+			if (event.type === 'newExpandingWilds') {
+				for (const wild of event.newWilds) multByReel.set(wild.reel, wild.mult);
+			}
+		}
+		const lastUpdateExpandingWildsEvent = findLastBookEvent('updateExpandingWilds' as const);
+		for (const wild of lastUpdateExpandingWildsEvent?.existingWilds ?? []) {
+			multByReel.set(wild.reel, wild.mult);
+		}
+		if (multByReel.size > 0) {
+			stateGame.stickyWildReels = [...multByReel.keys()];
+			eventEmitter.broadcast({
+				type: 'expandingWildsRestore',
+				wilds: [...multByReel.entries()].map(([reel, mult]) => ({ reel, mult })),
+			});
+		}
 	},
 };
