@@ -1,0 +1,199 @@
+{
+  "skeleton": {
+    "hash": "gb-h2-auto",
+    "spine": "4.1.20",
+    "x": -128,
+    "y": -128,
+    "width": 256,
+    "height": 256,
+    "images": "./"
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "symbol",
+      "parent": "root"
+    }
+  ],
+  "slots": [
+    {
+      "name": "symbol",
+      "bone": "symbol",
+      "attachment": "h2"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "symbol": {
+          "h2": {
+            "x": 0,
+            "y": 0,
+            "width": 256,
+            "height": 256
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "idle": {
+      "bones": {
+        "symbol": {
+          "scale": [
+            {
+              "time": 0,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "time": 0.3,
+              "x": 1.03,
+              "y": 0.97
+            },
+            {
+              "time": 0.6,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "time": 0.9,
+              "x": 0.98,
+              "y": 1.02
+            },
+            {
+              "time": 1.2,
+              "x": 1,
+              "y": 1
+            }
+          ]
+        }
+      }
+    },
+    "win": {
+      "bones": {
+        "symbol": {
+          "scale": [
+            {
+              "time": 0,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "time": 0.21,
+              "x": 1.35,
+              "y": 1.35
+            },
+            {
+              "time": 0.42,
+              "x": 1.5,
+              "y": 1.5
+            },
+            {
+              "time": 0.63,
+              "x": 1.22,
+              "y": 1.22
+            },
+            {
+              "time": 0.84,
+              "x": 1.4,
+              "y": 1.4
+            },
+            {
+              "time": 1.12,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "time": 1.4,
+              "x": 1,
+              "y": 1
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.28,
+              "value": -8
+            },
+            {
+              "time": 0.56,
+              "value": 8
+            },
+            {
+              "time": 0.84,
+              "value": -4
+            },
+            {
+              "time": 1.12,
+              "value": 4
+            },
+            {
+              "time": 1.4,
+              "value": 0
+            }
+          ],
+          "translate": [
+            {
+              "time": 0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 0.35,
+              "x": 0,
+              "y": 18
+            },
+            {
+              "time": 0.7,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 1.05,
+              "x": 0,
+              "y": 9
+            },
+            {
+              "time": 1.4,
+              "x": 0,
+              "y": 0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "symbol": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.28,
+              "color": "ffe9a8ff"
+            },
+            {
+              "time": 0.56,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.84,
+              "color": "ffe9a8ff"
+            },
+            {
+              "time": 1.4,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

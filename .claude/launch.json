@@ -1,0 +1,21 @@
+{
+	"version": "0.0.1",
+	"configurations": [
+		{
+			"name": "wildparty-dev",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": ["--dir", "apps/WildParty", "dev"],
+			"port": 3001
+		},
+		{
+			"name": "wildparty-storybook",
+			"runtimeExecutable": "powershell",
+			"runtimeArgs": [
+				"-NoProfile",
+				"-Command",
+				"$env:PUBLIC_CHROMATIC='true'; pnpm --dir apps/WildParty exec storybook dev -p 6001 --ci"
+			],
+			"port": 6001
+		}
+	]
+}
