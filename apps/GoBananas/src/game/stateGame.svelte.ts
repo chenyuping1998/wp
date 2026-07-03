@@ -88,6 +88,9 @@ export const stateGame = $state({
 	globalMultiplier: 1,
 	// reels currently locked by sticky expanded wilds (free game only)
 	stickyWildReels: [] as number[],
+	// superspin: coins stuck to the board, evaluated at the end of the round
+	// (row includes the padding offset, prize is in book cents)
+	stickyPrizes: [] as { reel: number; row: number; prize: number }[],
 });
 
 const boardLayout = () => ({

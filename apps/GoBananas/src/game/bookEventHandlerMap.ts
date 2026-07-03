@@ -171,6 +171,30 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			wilds: bookEvent.existingWilds,
 		});
 	},
+	// GoBananas superspin: new prize coins stick to the board — every new coin
+	// also resets the remaining spins (the following updateFreeSpin reflects it).
+	newStickySymbols: async (bookEvent: BookEventOfType<'newStickySymbols'>) => {
+		if (bookEvent.newPrizes.length === 0) return;
+		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
+		stateGame.stickyPrizes = [
+			...stateGame.stickyPrizes.filter(
+				(sticky) =>
+					!bookEvent.newPrizes.some((p) => p.reel === sticky.reel && p.row === sticky.row),
+			),
+			...bookEvent.newPrizes,
+		];
+		await eventEmitter.broadcastAsync({ type: 'stickyPrizesNew', prizes: bookEvent.newPrizes });
+	},
+	// GoBananas superspin: no spins left — tally every coin stuck to the board.
+	prizeWinInfo: async (bookEvent: BookEventOfType<'prizeWinInfo'>) => {
+		if (bookEvent.wins.length > 0) {
+			eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
+			await eventEmitter.broadcastAsync({ type: 'stickyPrizesCelebrate', wins: bookEvent.wins });
+		}
+		stateBet.winBookEventAmount = bookEvent.totalWin;
+		eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
+		stateUi.freeSpinCounterShow = false;
+	},
 	updateFreeSpin: async (bookEvent: BookEventOfType<'updateFreeSpin'>) => {
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
 		stateUi.freeSpinCounterShow = true;
@@ -328,6 +352,20 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 				type: 'expandingWildsRestore',
 				wilds: [...multByReel.entries()].map(([reel, mult]) => ({ reel, mult })),
 			});
+		}
+
+		// Rebuild superspin sticky prize coins (every newStickySymbols accumulates).
+		const stickyPrizeMap = new Map<string, { reel: number; row: number; prize: number }>();
+		for (const event of bookEvents) {
+			if (event.type === 'newStickySymbols') {
+				for (const prize of event.newPrizes) {
+					stickyPrizeMap.set(`${prize.reel},${prize.row}`, prize);
+				}
+			}
+		}
+		if (stickyPrizeMap.size > 0) {
+			stateGame.stickyPrizes = [...stickyPrizeMap.values()];
+			eventEmitter.broadcast({ type: 'stickyPrizesRestore', prizes: [...stickyPrizeMap.values()] });
 		}
 	},
 };

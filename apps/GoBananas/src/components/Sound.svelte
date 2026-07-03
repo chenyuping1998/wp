@@ -27,7 +27,7 @@
 
 	const context = getContext();
 
-	// ─── 中國風 sound set (synthesized — see design/generate_audio.mjs) ───
+	// ─── jungle-commando sound set (synthesized — see design/generate_audio_jungle.mjs) ───
 	// Standalone HTML5 Audio; the howler sprite (sounds.json) stays as a
 	// fallback for anything not mapped here (e.g. win-level bgm stingers).
 	type CnSfxName =
@@ -51,24 +51,24 @@
 		| 'mult_update';
 
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
-		gong_feature: 'cn/gong_feature.wav',
-		bigwin_blast: 'cn/bigwin_blast.wav',
-		reel_tension: 'cn/reel_tension.wav',
-		reel_stop: 'cn/reel_stop.wav',
-		btn: 'cn/btn.wav',
-		spin: 'cn/spin.wav',
-		scatter_1: 'cn/scatter_1.wav',
-		scatter_2: 'cn/scatter_2.wav',
-		scatter_3: 'cn/scatter_3.wav',
-		scatter_4: 'cn/scatter_4.wav',
-		scatter_5: 'cn/scatter_5.wav',
-		pluck_low: 'cn/pluck_low.wav',
-		win_gliss: 'cn/win_gliss.wav',
-		win_gliss_big: 'cn/win_gliss_big.wav',
-		fs_intro: 'cn/fs_intro.wav',
-		coin_shimmer: 'cn/coin_shimmer.wav',
-		wild_expand: 'cn/wild_expand.wav',
-		mult_update: 'cn/mult_update.wav',
+		gong_feature: 'jungle/gong_feature.wav',
+		bigwin_blast: 'jungle/bigwin_blast.wav',
+		reel_tension: 'jungle/reel_tension.wav',
+		reel_stop: 'jungle/reel_stop.wav',
+		btn: 'jungle/btn.wav',
+		spin: 'jungle/spin.wav',
+		scatter_1: 'jungle/scatter_1.wav',
+		scatter_2: 'jungle/scatter_2.wav',
+		scatter_3: 'jungle/scatter_3.wav',
+		scatter_4: 'jungle/scatter_4.wav',
+		scatter_5: 'jungle/scatter_5.wav',
+		pluck_low: 'jungle/pluck_low.wav',
+		win_gliss: 'jungle/win_gliss.wav',
+		win_gliss_big: 'jungle/win_gliss_big.wav',
+		fs_intro: 'jungle/fs_intro.wav',
+		coin_shimmer: 'jungle/coin_shimmer.wav',
+		wild_expand: 'jungle/wild_expand.wav',
+		mult_update: 'jungle/mult_update.wav',
 	};
 
 	// Sprite sound names re-routed to the Chinese set.
@@ -138,8 +138,8 @@
 	let bgmAudio: HTMLAudioElement | null = null;
 	let currentBgm: 'base' | 'freespin' | null = null;
 	const BGM_FILES = {
-		base: 'cn/bgm_main.wav',
-		freespin: 'cn/bgm_freespin.wav',
+		base: 'jungle/bgm_main.wav',
+		freespin: 'jungle/bgm_freespin.wav',
 	} as const;
 
 	function playBgm(type: 'base' | 'freespin') {

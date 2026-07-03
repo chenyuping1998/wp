@@ -40,7 +40,7 @@
 	});
 </script>
 
-<!-- Go Bananas 中國風 branded loading screen -->
+<!-- Go Bananas jungle-commando branded loading screen -->
 <FadeContainer show={loadingType === 'start'}>
 	<MainContainer>
 		<!-- Background image (山水 theme) -->
@@ -94,7 +94,7 @@
 			<!-- Game title -->
 			<Text
 				anchor={0.5}
-				text="GO BANANAS 金猴鬧春"
+				text="GO BANANAS 香蕉突擊隊"
 				style={{
 					fontFamily: 'proxima-nova, Arial, sans-serif',
 					fontSize: 52,

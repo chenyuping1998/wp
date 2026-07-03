@@ -23,17 +23,17 @@
 	};
 
 	const SYMBOL_LABEL: Record<string, string> = {
-		H1: '金元寶 Gold Ingot',
-		H2: '紅燈籠 Lantern',
-		H3: '蟠桃 Peach',
-		H4: '鞭炮 Firecrackers',
+		H1: '軍盔 Helmet',
+		H2: '火焰果 Flame Fruit',
+		H3: '鳳梨手榴彈 Pineapple Grenade',
+		H4: '葡萄炸彈 Grape TNT',
 		L1: 'A',
 		L2: 'K',
 		L3: 'Q',
 		L4: 'J',
 		L5: '10',
-		W: '百搭 Wild',
-		S: '金蟠桃 Scatter',
+		W: '突擊隊猴 Wild',
+		S: '金香蕉 Scatter',
 	};
 
 	// keep high -> low ordering for readability

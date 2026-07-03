@@ -34,7 +34,7 @@
 	let wilds = $state<WildEntry[]>([]);
 
 	context.eventEmitter.subscribeOnMount({
-		// A Wild landed in the free game: 悟空 twirls the 金箍棒 and expands to
+		// A Wild landed in the free game: the monkey twirls a giant banana and expands to
 		// fill the reel. Resolves when the grow spine animation completes.
 		expandingWildNew: async ({ reel, row, mult }) => {
 			const entry: WildEntry = {

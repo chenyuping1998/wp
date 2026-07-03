@@ -24,6 +24,11 @@ const primaryMachines = createPrimaryMachines<Bet>({
 	},
 	onNewGameStart: async () => {
 		stateBet.winBookEventAmount = 0;
+		// superspin sticky coins live for exactly one bought round
+		if (stateGame.stickyPrizes.length > 0) {
+			stateGame.stickyPrizes = [];
+			eventEmitter.broadcast({ type: 'stickyPrizesClear' });
+		}
 		if (stateBet.isSpaceHold) return;
 
 		const skipPreSpinInTurboAutoBet =

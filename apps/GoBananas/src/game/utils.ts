@@ -26,6 +26,7 @@ const BOOK_EVENT_TYPES_TO_RESERVE_FOR_SNAPSHOT = [
 	'setTotalWin',
 	'newExpandingWilds',
 	'updateExpandingWilds',
+	'newStickySymbols',
 ];
 
 export const convertTorResumableBet = (betToResume: Bet) => {

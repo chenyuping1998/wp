@@ -77,35 +77,45 @@ const WIN_ANIMS = {
 		},
 		slots: flashSlot(),
 	},
-	// 紅燈籠 — pendulum swing from the hanger with a warm glow
+	// 火焰果 — flame flicker: quick shivers with hot pulsing flashes
 	h2: {
 		bones: {
 			symbol: {
 				rotate: [
 					{ time: 0, value: 0 },
-					{ time: 0.18, value: -16 },
-					{ time: 0.46, value: 16 },
-					{ time: 0.74, value: -11 },
-					{ time: 1.02, value: 7 },
-					{ time: 1.25, value: -3 },
+					{ time: 0.12, value: -6 },
+					{ time: 0.24, value: 6 },
+					{ time: 0.36, value: -5 },
+					{ time: 0.48, value: 5 },
+					{ time: 0.62, value: -4 },
+					{ time: 0.76, value: 4 },
+					{ time: 0.95, value: -2 },
+					{ time: 1.2, value: 1 },
 					{ time: 1.4, value: 0 },
-				],
-				translate: [
-					{ time: 0, x: 0, y: 0 },
-					{ time: 0.32, x: 10, y: 12 },
-					{ time: 0.6, x: -10, y: 12 },
-					{ time: 0.88, x: 7, y: 8 },
-					{ time: 1.4, x: 0, y: 0 },
 				],
 				scale: [
 					{ time: 0, x: 1, y: 1 },
-					{ time: 0.4, x: 1.32, y: 1.32 },
-					{ time: 1.0, x: 1.36, y: 1.36 },
+					{ time: 0.2, x: 1.3, y: 1.42 },
+					{ time: 0.45, x: 1.4, y: 1.3 },
+					{ time: 0.7, x: 1.32, y: 1.44 },
+					{ time: 1.0, x: 1.38, y: 1.34 },
 					{ time: 1.4, x: 1, y: 1 },
 				],
 			},
 		},
-		slots: flashSlot('ffd0a0ff'),
+		slots: {
+			symbol: {
+				color: [
+					{ time: 0, color: 'ffffffff' },
+					{ time: 0.18, color: 'ffd699ff' },
+					{ time: 0.36, color: 'ffffffff' },
+					{ time: 0.54, color: 'ffb08aff' },
+					{ time: 0.72, color: 'ffffffff' },
+					{ time: 0.95, color: 'ffd699ff' },
+					{ time: 1.4, color: 'ffffffff' },
+				],
+			},
+		},
 	},
 	// 蟠桃 — juicy squash & stretch hop
 	h3: {
