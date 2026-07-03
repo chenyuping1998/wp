@@ -626,6 +626,14 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - [x] 新元件 `SymbolLandAnim.svelte`：符號落地擠壓回彈（240ms squash→stretch→settle，底邊貼地下壓），`Symbol.svelte` 於 sprite land 狀態套用——不影響遊戲流程節奏（land→static 本來就是裝飾性狀態）
 - [x] 聽牌強化：`Anticipation.svelte` 亮框內加 10 顆相位錯開的上升光粒（金/粉交錯、正弦淡入淡出、左右微飄），與原有脈動亮框疊加
 
+#### ③ 背景動態化
+
+- [x] `Background.svelte` 全面加環境動態層（deterministic 種子佈局、`tick` 驅動重繪）：
+  - **漂浮 bokeh ×24**（base + feature 共用）：兩種景深——大顆低透明度慢速 + 小顆亮色快速，上飄帶正弦橫飄，頂/底 90px 邊緣淡出
+  - **光束**：原兩道加強微調 + 新增一道反向掃動的青色光束（增加層次）
+  - **彩帶 ×26**（feature 限定）：五色紙片下落，帶旋轉 + 橫飄 + 「翻面」寬度閃爍（模擬空中翻轉）
+- 調整入口：`BOKEH`/`CONFETTI` 陣列的數量與參數範圍、`BOKEH_COLORS`/`CONFETTI_COLORS`
+
 ---
 
 ## 5. 常用指令
