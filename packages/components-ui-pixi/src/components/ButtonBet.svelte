@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { Container, Text } from 'pixi-svelte';
+	import { Container } from 'pixi-svelte';
 	import { Button, type ButtonProps } from 'components-pixi';
 	import { OnHotkey } from 'components-shared';
 	import { stateBetDerived } from 'state-shared';
 
 	import UiSprite from './UiSprite.svelte';
 	import ButtonBetProvider from './ButtonBetProvider.svelte';
-	import { i18nDerived } from '../i18n/i18nDerived';
-	import { UI_BASE_FONT_SIZE, UI_BASE_SIZE } from '../constants';
+	import ButtonBetSpinIcon from './ButtonBetSpinIcon.svelte';
+	import { UI_BASE_SIZE } from '../constants';
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const disabled = $derived(!stateBetDerived.isBetCostAvailable());
@@ -18,7 +18,7 @@
 	{#snippet children({ key, onpress })}
 		<OnHotkey hotkey="Space" {disabled} {onpress} />
 		<Button {...props} {sizes} {onpress} {disabled}>
-			{#snippet children({ center, hovered })}
+			{#snippet children({ center })}
 				<Container {...center}>
 					<UiSprite
 						key="bet"
@@ -33,41 +33,12 @@
 						borderRadius={sizes.width * 0.5}
 						alpha={0.92}
 					/>
-					{#if ['spin_default', 'spin_disabled'].includes(key)}
-						<Text
-							anchor={0.5}
-							text={i18nDerived.bet()}
-							style={{
-								fontFamily: 'proxima-nova',
-								fontWeight: '700',
-								fontSize: UI_BASE_FONT_SIZE * 0.9,
-								fill: 0xffffff,
-								stroke: 0x000000,
-								strokeThickness: 3,
-								dropShadow: true,
-								dropShadowColor: 0x000000,
-								dropShadowBlur: 2,
-								dropShadowDistance: 2,
-							}}
-						/>
-					{:else}
-						<Text
-							anchor={0.5}
-							text={i18nDerived.stop()}
-							style={{
-								fontFamily: 'proxima-nova',
-								fontWeight: '700',
-								fontSize: UI_BASE_FONT_SIZE * 0.9,
-								fill: 0xffffff,
-								stroke: 0x000000,
-								strokeThickness: 3,
-								dropShadow: true,
-								dropShadowColor: 0x000000,
-								dropShadowBlur: 2,
-								dropShadowDistance: 2,
-							}}
-						/>
-					{/if}
+					<!-- circular double-arrow: static when idle, spins while the reels
+					     run, then finishes its turn and rests when they stop -->
+					<ButtonBetSpinIcon
+						spinning={['stop_default', 'stop_disabled'].includes(key)}
+						radius={sizes.width * 0.22}
+					/>
 				</Container>
 			{/snippet}
 		</Button>

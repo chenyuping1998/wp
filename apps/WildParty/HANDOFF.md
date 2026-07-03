@@ -1,6 +1,6 @@
 # Wild Party — 專案交接文件
 
-> 最後更新：2026-07-02（中獎動畫加大 1.4s + FreeGame 觸發鈴聲/停頓 3s + scatter 抖動三輪 + 聽牌滾輪音效 + big win 爆分音效；開發環境遷至 wp-workspace repo，見 §4.19）  
+> 最後更新：2026-07-03（BET 按鈕改雙箭頭圓圈旋轉樣式，見 §4.20）  
 > 涵蓋範圍：math-sdk 數學後端 + `WildParty_Front` 前端 + Stake 上架素材  
 > **Skill 路由：** `@wild-party-skill-guide`｜**交接：** `@WILD_PARTY_HANDOFF.md`
 
@@ -598,6 +598,16 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - 連線得分的金幣碰撞聲（`coin_win.wav`）：加入後依需求移除
 - FeatureTrigger 音量增益＋長度加倍版：做過一版（tanh 軟限幅 +6dB、接兩次 3.12s），依需求還原為原始 mp3
 - reveal 階段的聽牌 40% 擲骰：誤解需求做過一版，已還原（聽牌 100%，40% 的是 PreFreeGameHint）
+
+### 4.20 第十一波更新（2026-07-03）— BET 按鈕改雙箭頭圓圈旋轉樣式
+
+- [x] 押注按鈕拿掉 BET / STOP 文字，改成經典 🔄 樣式 icon：一個粗圓環（中間挖空為正圓）分成兩段 140° 弧，各接一個箭頭
+  - 新元件 `packages/components-ui-pixi/src/components/ButtonBetSpinIcon.svelte`（Pixi Graphics 實心填色繪製：環形扇形 polygon + 箭頭三角形）
+  - `ButtonBet.svelte` 換用 icon；深色圓底 + 白邊背景不變，餘額不足仍變灰
+- [x] 行為：靜止時 icon 直立不動；按下（狀態機離開 idle）開始旋轉，約 **0.7 圈/秒**（歷次調整：1.6 圈/秒 → 放慢）；**停輪立即靜止**回直立角度（歷次調整：滑完當前一圈再停 → 立即停）
+  - 轉動判斷：`ButtonBetProvider` 的 key 為 `stop_default` / `stop_disabled` 時視為轉輪中
+- ⚠️ 此按鈕在共用包 `components-ui-pixi`，**GoBananas 也套用同一顆**
+- 樣式調整入口：`ButtonBetSpinIcon.svelte` 的 `drawIcon`（環厚 outerR/innerR、弧長 segments、箭頭 headExt/headSweep）與 `MAX_SPEED`
 
 ---
 
