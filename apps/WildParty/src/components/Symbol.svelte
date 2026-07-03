@@ -2,6 +2,7 @@
 	import SymbolSpine from './SymbolSpine.svelte';
 	import SymbolSprite from './SymbolSprite.svelte';
 	import SymbolWinAnim from './SymbolWinAnim.svelte';
+	import FxBurst from './FxBurst.svelte';
 	import { getSymbolInfo } from '../game/utils';
 	import type { SymbolState, RawSymbol } from '../game/types';
 	import { getContext } from '../game/context';
@@ -22,6 +23,11 @@
 	const isSprite = $derived(symbolInfo.type === 'sprite');
 	const isWin = $derived(props.state === 'win');
 </script>
+
+{#if isWin}
+	<!-- star burst + shock rings fire behind the winning symbol -->
+	<FxBurst x={props.x} y={props.y} />
+{/if}
 
 {#if isSprite && isWin}
 	<!-- Win state for sprite symbols: programmatic scale+glow animation -->

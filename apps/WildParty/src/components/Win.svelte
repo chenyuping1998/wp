@@ -18,6 +18,7 @@
 	import WinCoins from './WinCoins.svelte';
 	import WinAnimation from './WinAnimation.svelte';
 	import WinLevelSymbolIntro from './WinLevelSymbolIntro.svelte';
+	import BigWinFx from './BigWinFx.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
@@ -29,6 +30,22 @@
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
 	let onCountUpComplete = $state(() => {});
+
+	// camera shake as the big-win presentation slams in
+	let shake = $state({ x: 0, y: 0 });
+	const startShake = () => {
+		const start = Date.now();
+		const id = setInterval(() => {
+			const p = (Date.now() - start) / 700;
+			if (p >= 1) {
+				shake = { x: 0, y: 0 };
+				clearInterval(id);
+				return;
+			}
+			const amp = 11 * (1 - p) ** 2;
+			shake = { x: (Math.random() - 0.5) * 2 * amp, y: (Math.random() - 0.5) * 2 * amp };
+		}, 16);
+	};
 
 	const WIN_LEVEL_SYMBOL_MAP: Partial<
 		Record<WinLevelData['alias'], 'wpSpH1' | 'wpSpH2' | 'wpSpH3' | 'wpSpH4'>
@@ -45,6 +62,7 @@
 		winUpdate: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
+			if (emitterEvent.winLevelData.type === 'big') startShake();
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
 	});
@@ -69,10 +87,19 @@
 					}}
 				/>
 
+				{#if isBigWin}
+					<MainContainer>
+						<BigWinFx
+							x={context.stateGameDerived.boardLayout().x + shake.x * 0.4}
+							y={context.stateGameDerived.boardLayout().y + shake.y * 0.4}
+						/>
+					</MainContainer>
+				{/if}
+
 				<MainContainer>
 					<Container
-						x={context.stateGameDerived.boardLayout().x}
-						y={context.stateGameDerived.boardLayout().y}
+						x={context.stateGameDerived.boardLayout().x + shake.x}
+						y={context.stateGameDerived.boardLayout().y + shake.y}
 					>
 						{@const winLevelSymbolKey = WIN_LEVEL_SYMBOL_MAP[winLevelData.alias]}
 						{#if winLevelData?.animation}

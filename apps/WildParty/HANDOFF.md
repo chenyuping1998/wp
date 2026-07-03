@@ -1,6 +1,6 @@
 # Wild Party — 專案交接文件
 
-> 最後更新：2026-07-03（BET 按鈕改雙箭頭圓圈旋轉樣式，見 §4.20）  
+> 最後更新：2026-07-03（評審回饋改善第一波：粒子/FX 基礎 + 中獎鏈重做，見 §4.21）  
 > 涵蓋範圍：math-sdk 數學後端 + `WildParty_Front` 前端 + Stake 上架素材  
 > **Skill 路由：** `@wild-party-skill-guide`｜**交接：** `@WILD_PARTY_HANDOFF.md`
 
@@ -608,6 +608,18 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
   - 轉動判斷：`ButtonBetProvider` 的 key 為 `stop_default` / `stop_disabled` 時視為轉輪中
 - ⚠️ 此按鈕在共用包 `components-ui-pixi`，**GoBananas 也套用同一顆**
 - 樣式調整入口：`ButtonBetSpinIcon.svelte` 的 `drawIcon`（環厚 outerR/innerR、弧長 segments、箭頭 headExt/headSweep）與 `MAX_SPEED`
+
+### 4.21 第十二波更新（2026-07-03）— 評審回饋改善（low quality asset / poor animations）
+
+> 評審回饋：low quality asset、poor animations。改善計畫四波：①粒子/FX+中獎鏈 ②停輪手感 ③背景動態化 ④模板資產替換（符號美術重繪需外部資源，另案處理）。
+
+#### ① 粒子/FX 基礎 + 中獎鏈重做
+
+- [x] 新元件 `FxBurst.svelte`：通用一次性爆點（中央閃光 + 雙擴散光環 + 12 顆菱形星火帶重力飛散，派對四色，rAF 驅動 0.85s）
+- [x] 符號中獎：`Symbol.svelte` 於 win 狀態在符號後方疊 `FxBurst`——取代「只有放大搖晃」的廉價感
+- [x] 新元件 `BigWinFx.svelte`：12 道金色放射光楔（緩慢旋轉 + 亮度脈動 + 暖色核心光暈），期間每 0.62s 在報獎數字周圍隨機煙火爆點
+- [x] Big win 進場鏡頭震動：`Win.svelte` `startShake()`，700ms 二次方衰減 ±11px，光芒層 0.4 倍跟隨
+- 調整入口：爆點顏色/數量在 `FxBurst.svelte`（`PARTY_COLORS`、sparks 長度）；光芒尺寸 `BigWinFx` 的 `radius`（預設 520）
 
 ---
 
