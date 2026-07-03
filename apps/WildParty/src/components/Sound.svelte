@@ -35,10 +35,15 @@
 	// volumeScale lets quieter accents (coin clatter) sit under the main mix.
 	type WpSfxName = 'freegame_bell' | 'bigwin_blast' | 'reel_tension';
 	const WP_SFX_FILES: Record<WpSfxName, string> = {
-		freegame_bell: 'FeatureTrigger.mp3',
+		freegame_bell: 'fg_trigger.mp3',
 		bigwin_blast: 'bigwin_blast.wav',
 		reel_tension: 'reel_tension.wav',
 	};
+
+	// fg_trigger.mp3 runs 0.758s; the previous bell (FeatureTrigger.mp3) rang for
+	// 1.608s — ring it a second time at 850ms so the trigger moment lasts exactly
+	// as long as before (0.758s + 0.85s = 1.608s).
+	const BELL_SECOND_RING_MS = 850;
 	const wpSfxAudio: Partial<Record<WpSfxName, HTMLAudioElement>> = {};
 
 	function getWpSfx(name: WpSfxName) {
@@ -128,7 +133,10 @@
 		},
 		soundLoop: ({ name }) => sound.players.loop.play({ name }),
 		soundOnce: ({ name, forcePlay }) => sound.players.once.play({ name, forcePlay }),
-		soundFreeGameBell: () => playWpSfx('freegame_bell'),
+		soundFreeGameBell: () => {
+			playWpSfx('freegame_bell');
+			setTimeout(() => playWpSfx('freegame_bell'), BELL_SECOND_RING_MS);
+		},
 		soundBigWinBlast: () => playWpSfx('bigwin_blast'),
 		soundReelTensionStart: () => {
 			const audio = getWpSfx('reel_tension');

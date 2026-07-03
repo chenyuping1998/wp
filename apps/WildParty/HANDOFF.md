@@ -1,6 +1,6 @@
 # Wild Party — 專案交接文件
 
-> 最後更新：2026-07-03（評審回饋改善第一波：粒子/FX 基礎 + 中獎鏈重做，見 §4.21）  
+> 最後更新：2026-07-03（評審回饋改善四波 §4.21；FG 觸發音效換 fg_trigger.mp3 兩連響，見 §4.22）  
 > 涵蓋範圍：math-sdk 數學後端 + `WildParty_Front` 前端 + Stake 上架素材  
 > **Skill 路由：** `@wild-party-skill-guide`｜**交接：** `@WILD_PARTY_HANDOFF.md`
 
@@ -643,6 +643,13 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - [x] `assets.ts`：bigwin/fsIntro/fsIntroNumber/fsOutroNumber 指向新資產（scale 2→1）
 - ⚠️ SpineSlot 的顯示條件是 slot 有 attachment——所有 slot-object 佔位 slot 都掛 8×8 透明 `anchor.png`，勿移除
 - 未替換：`miningfont` 系列 bitmap 數字字體（風格中性、可沿用）、`freeSpins.json` 各語系 FREE SPINS 藝術字（多語系需整套重做，另案）
+
+### 4.22 FG 觸發音效更換（2026-07-03）
+
+- [x] `soundFreeGameBell` 改播使用者提供的 `static/assets/audio/fg_trigger.mp3`（0.758s）
+- [x] 播放總長維持與原 FeatureTrigger.mp3 相同（1.608s）：**兩連響**——第二響於 850ms 起播（0.758+0.85=1.608s），常數 `BELL_SECOND_RING_MS`
+- 觸發後的 3 秒停頓流程不變（`bookEventHandlerMap` 的 `waitForTimeout(3000)`）
+- 若只要單響：移除 `soundFreeGameBell` 裡的 `setTimeout` 那行即可
 
 ---
 
