@@ -646,10 +646,12 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 
 ### 4.22 FG 觸發音效更換（2026-07-03）
 
-- [x] `soundFreeGameBell` 改播使用者提供的 `static/assets/audio/fg_trigger.mp3`（0.758s）
-- [x] 播放總長維持與原 FeatureTrigger.mp3 相同（1.608s）：**兩連響**——第二響於 850ms 起播（0.758+0.85=1.608s），常數 `BELL_SECOND_RING_MS`
+- [x] `soundFreeGameBell` 改播使用者提供的 `static/assets/audio/fg_trigger.mp3`（0.758s），兩連響拉長觸發時刻
+- [x] **兩響無縫銜接**：改用 Web Audio（`AudioContext` + `decodeAudioData` + 兩個 BufferSource 取樣精度排程），第二響提前 15ms 微重疊蓋住接縫（`BELL_OVERLAP_S`）；總長 ≈1.50s
+  - `loadBell()` 於 Sound onMount 預載解碼（Sound 在使用者首次互動後才掛載，AudioContext 可直接啟動）；解碼失敗時退回 HTML5 Audio 兩連播
+  - 歷次調整：setTimeout 850ms 兩響（總長 1.608s 對齊舊鈴聲）→ 使用者反映兩響間有斷點 → 改 Web Audio 無縫
 - 觸發後的 3 秒停頓流程不變（`bookEventHandlerMap` 的 `waitForTimeout(3000)`）
-- 若只要單響：移除 `soundFreeGameBell` 裡的 `setTimeout` 那行即可
+- 若只要單響：`playFreeGameBell` 的 offsets 陣列改成 `[0]` 即可
 
 ---
 

@@ -41,9 +41,41 @@
 	};
 
 	// fg_trigger.mp3 runs 0.758s; the previous bell (FeatureTrigger.mp3) rang for
-	// 1.608s — ring it a second time at 850ms so the trigger moment lasts exactly
-	// as long as before (0.758s + 0.85s = 1.608s).
-	const BELL_SECOND_RING_MS = 850;
+	// 1.608s — chain two rings via Web Audio with sample-accurate scheduling so
+	// there is no audible gap (the second ring starts 15ms early to mask the seam).
+	const BELL_OVERLAP_S = 0.015;
+	let bellCtx: AudioContext | null = null;
+	let bellBuffer: AudioBuffer | null = null;
+
+	async function loadBell() {
+		try {
+			bellCtx = new AudioContext();
+			const res = await fetch(`${base}/assets/audio/${WP_SFX_FILES.freegame_bell}`);
+			bellBuffer = await bellCtx.decodeAudioData(await res.arrayBuffer());
+		} catch {
+			bellBuffer = null;
+		}
+	}
+
+	function playFreeGameBell() {
+		if (!bellCtx || !bellBuffer) {
+			// decode failed — fall back to two HTML5 plays (small gap possible)
+			playWpSfx('freegame_bell');
+			setTimeout(() => playWpSfx('freegame_bell'), 758);
+			return;
+		}
+		if (bellCtx.state === 'suspended') bellCtx.resume().catch(() => {});
+		const gain = bellCtx.createGain();
+		gain.gain.value = Math.min(1, stateSoundDerived.volumeSoundEffect());
+		gain.connect(bellCtx.destination);
+		const start = bellCtx.currentTime + 0.03;
+		for (const offset of [0, bellBuffer.duration - BELL_OVERLAP_S]) {
+			const source = bellCtx.createBufferSource();
+			source.buffer = bellBuffer;
+			source.connect(gain);
+			source.start(start + offset);
+		}
+	}
 	const wpSfxAudio: Partial<Record<WpSfxName, HTMLAudioElement>> = {};
 
 	function getWpSfx(name: WpSfxName) {
@@ -133,10 +165,7 @@
 		},
 		soundLoop: ({ name }) => sound.players.loop.play({ name }),
 		soundOnce: ({ name, forcePlay }) => sound.players.once.play({ name, forcePlay }),
-		soundFreeGameBell: () => {
-			playWpSfx('freegame_bell');
-			setTimeout(() => playWpSfx('freegame_bell'), BELL_SECOND_RING_MS);
-		},
+		soundFreeGameBell: () => playFreeGameBell(),
 		soundBigWinBlast: () => playWpSfx('bigwin_blast'),
 		soundReelTensionStart: () => {
 			const audio = getWpSfx('reel_tension');
@@ -166,6 +195,9 @@
 		// Fetch custom one-shot sfx up front so the first play is in sync
 		// (an Audio element created lazily would stall on its first fetch).
 		(Object.keys(WP_SFX_FILES) as WpSfxName[]).forEach(getWpSfx);
+		// Sound mounts after the first user interaction, so the AudioContext for
+		// the gapless double-ring bell is allowed to start here.
+		loadBell();
 
 		if (stateBet.activeBetModeKey === 'SUPERSPIN') {
 			playBgm('freespin');
@@ -187,6 +219,9 @@
 					delete wpSfxAudio[name];
 				}
 			}
+			bellCtx?.close().catch(() => {});
+			bellCtx = null;
+			bellBuffer = null;
 		};
 	});
 </script>
