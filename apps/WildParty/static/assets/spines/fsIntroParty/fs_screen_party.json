@@ -1,0 +1,302 @@
+{
+  "skeleton": {
+    "hash": "wp-fs-party",
+    "spine": "4.1.20",
+    "x": -927,
+    "y": -931,
+    "width": 1854,
+    "height": 1862,
+    "images": "./"
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "radialA",
+      "parent": "root"
+    },
+    {
+      "name": "radialB",
+      "parent": "root"
+    },
+    {
+      "name": "fs_popup",
+      "parent": "root",
+      "scaleX": 1.3,
+      "scaleY": 1.3
+    },
+    {
+      "name": "FS_Frame_A",
+      "parent": "fs_popup"
+    }
+  ],
+  "slots": [
+    {
+      "name": "radialA",
+      "bone": "radialA",
+      "attachment": "radial_pink",
+      "blend": "additive"
+    },
+    {
+      "name": "radialB",
+      "bone": "radialB",
+      "attachment": "radial_gold",
+      "blend": "additive"
+    },
+    {
+      "name": "panel",
+      "bone": "FS_Frame_A",
+      "attachment": "fs_panel"
+    },
+    {
+      "name": "slot_text_placeholder",
+      "bone": "FS_Frame_A",
+      "attachment": "anchor"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "radialA": {
+          "radial_pink": {
+            "scaleX": 1.8,
+            "scaleY": 1.8,
+            "width": 1024,
+            "height": 1024
+          }
+        },
+        "radialB": {
+          "radial_gold": {
+            "scaleX": 1.5,
+            "scaleY": 1.5,
+            "width": 1024,
+            "height": 1024
+          }
+        },
+        "panel": {
+          "fs_panel": {
+            "scaleX": 0.7,
+            "scaleY": 0.7,
+            "width": 920,
+            "height": 720
+          }
+        },
+        "slot_text_placeholder": {
+          "anchor": {
+            "x": 1.6,
+            "y": -1.9,
+            "width": 8,
+            "height": 8
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "intro": {
+      "slots": {
+        "radialA": {
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.6667,
+              "color": "ffffff96"
+            }
+          ]
+        },
+        "radialB": {
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.6667,
+              "color": "ffffff64"
+            }
+          ]
+        },
+        "panel": {
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2333,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "radialA": {
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.3,
+              "y": 0.3
+            },
+            {
+              "time": 0.6667,
+              "x": 1,
+              "y": 1
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0,
+              "value": -8
+            },
+            {
+              "time": 0.6667,
+              "value": 0
+            }
+          ]
+        },
+        "radialB": {
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.3,
+              "y": 0.3
+            },
+            {
+              "time": 0.6667,
+              "x": 1,
+              "y": 1
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0,
+              "value": 6
+            },
+            {
+              "time": 0.6667,
+              "value": 0
+            }
+          ]
+        },
+        "FS_Frame_A": {
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.03,
+              "y": 0.03
+            },
+            {
+              "time": 0.2667,
+              "x": 1.1,
+              "y": 1.1
+            },
+            {
+              "time": 0.5333,
+              "x": 0.96,
+              "y": 0.96
+            },
+            {
+              "time": 0.6667,
+              "x": 1,
+              "y": 1
+            }
+          ]
+        }
+      }
+    },
+    "idle": {
+      "slots": {
+        "radialA": {
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff96"
+            },
+            {
+              "time": 1.4,
+              "color": "ffffff50"
+            },
+            {
+              "time": 2.8,
+              "color": "ffffff96"
+            }
+          ]
+        },
+        "radialB": {
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff32"
+            },
+            {
+              "time": 1.4,
+              "color": "ffffff78"
+            },
+            {
+              "time": 2.8,
+              "color": "ffffff32"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "radialA": {
+          "rotate": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 1.4,
+              "value": 7
+            },
+            {
+              "time": 2.8,
+              "value": 0
+            }
+          ]
+        },
+        "radialB": {
+          "rotate": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 1.4,
+              "value": -5
+            },
+            {
+              "time": 2.8,
+              "value": 0
+            }
+          ]
+        },
+        "FS_Frame_A": {
+          "scale": [
+            {
+              "time": 0,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "time": 1.4,
+              "x": 1.02,
+              "y": 1.02
+            },
+            {
+              "time": 2.8,
+              "x": 1,
+              "y": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+}

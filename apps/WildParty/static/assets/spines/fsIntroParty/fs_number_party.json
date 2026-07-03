@@ -1,0 +1,194 @@
+{
+  "skeleton": {
+    "hash": "wp-fsnum-party",
+    "spine": "4.1.20",
+    "x": -130,
+    "y": -141,
+    "width": 260,
+    "height": 195,
+    "images": "./"
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "fs_popup",
+      "parent": "root",
+      "scaleX": 1.3,
+      "scaleY": 1.3
+    },
+    {
+      "name": "plaque",
+      "parent": "fs_popup",
+      "y": -33
+    },
+    {
+      "name": "bone_number",
+      "parent": "fs_popup",
+      "y": -30,
+      "scaleX": 2,
+      "scaleY": 2
+    }
+  ],
+  "slots": [
+    {
+      "name": "plaque",
+      "bone": "plaque",
+      "attachment": "number_ring"
+    },
+    {
+      "name": "slot_number",
+      "bone": "bone_number",
+      "attachment": "anchor"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "plaque": {
+          "number_ring": {
+            "scaleX": 0.5,
+            "scaleY": 0.5,
+            "width": 520,
+            "height": 390
+          }
+        },
+        "slot_number": {
+          "anchor": {
+            "width": 8,
+            "height": 8
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "intro": {
+      "slots": {
+        "plaque": {
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2333,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "bone_number": {
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.01,
+              "y": 0.01
+            },
+            {
+              "time": 0.3333,
+              "x": 3,
+              "y": 3
+            },
+            {
+              "time": 0.5333,
+              "x": 2.4,
+              "y": 2.4
+            },
+            {
+              "time": 0.6667,
+              "x": 2,
+              "y": 2
+            }
+          ]
+        },
+        "plaque": {
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.03,
+              "y": 0.03
+            },
+            {
+              "time": 0.2667,
+              "x": 1.1,
+              "y": 1.1
+            },
+            {
+              "time": 0.5333,
+              "x": 0.96,
+              "y": 0.96
+            },
+            {
+              "time": 0.6667,
+              "x": 1,
+              "y": 1
+            }
+          ]
+        }
+      }
+    },
+    "idle": {
+      "bones": {
+        "bone_number": {
+          "translate": [
+            {
+              "time": 0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 1.4667,
+              "x": 0,
+              "y": 4.5
+            },
+            {
+              "time": 2.8,
+              "x": 0,
+              "y": 0
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 2,
+              "y": 2
+            },
+            {
+              "time": 1.4667,
+              "x": 2.4,
+              "y": 2.4
+            },
+            {
+              "time": 2.8,
+              "x": 2,
+              "y": 2
+            }
+          ]
+        },
+        "plaque": {
+          "scale": [
+            {
+              "time": 0,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "time": 1.4,
+              "x": 1.03,
+              "y": 1.03
+            },
+            {
+              "time": 2.8,
+              "x": 1,
+              "y": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+}

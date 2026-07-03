@@ -634,6 +634,16 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
   - **彩帶 ×26**（feature 限定）：五色紙片下落，帶旋轉 + 橫飄 + 「翻面」寬度閃爍（模擬空中翻轉）
 - 調整入口：`BOKEH`/`CONFETTI` 陣列的數量與參數範圍、`BOKEH_COLORS`/`CONFETTI_COLORS`
 
+#### ④ 模板資產替換（Money Mine → 派對主題）
+
+- [x] 新生成器 `design/generate_presentation.mjs`（用法同 generate_art：`node design/generate_presentation.mjs <含 resvg 的 node_modules 目錄>`）
+- [x] **Big win banner**（取代 `mm_bigwin`）：五級派對緞帶藝術字 banner（BIG=金/粉、SUPER=金橙/紫紅、MEGA=粉紫、EPIC=青藍、MAX=白金/暗底，星光數逐級遞增）+ 生成 spine `bigwinParty/bigwin_party.json`——**動畫/slot 介面與模板完全相同**（`{big,super,mega,epic,max}_win_{intro,idle,exit}` + `slot_win_count`），intro 彈入+扭擺、idle 漂浮呼吸、exit 放大淡出
+- [x] **FS 畫面**（取代 `fs_screen`）：派對面板（金邊深紫舞台 + 彩旗 + 雙迪斯可球）+ 雙層 additive 放射光（粉紫/金青反向旋轉）；`fs_screen_party.json` 保持 `intro`/`idle` + `slot_text_placeholder` 介面與模板骨架尺寸（1854×1862、fs_popup 1.3 縮放），FreeSpinIntro/Outro 元件零改動
+- [x] **FS 數字牌**（取代 `Frame_FSCounter`）：金邊紫底獎章 `fs_number_party.json`；outro 純數字版 `fs_total_party.json`（沿用模板 bone_number y-30 scale 2 транform，字號不變）
+- [x] `assets.ts`：bigwin/fsIntro/fsIntroNumber/fsOutroNumber 指向新資產（scale 2→1）
+- ⚠️ SpineSlot 的顯示條件是 slot 有 attachment——所有 slot-object 佔位 slot 都掛 8×8 透明 `anchor.png`，勿移除
+- 未替換：`miningfont` 系列 bitmap 數字字體（風格中性、可沿用）、`freeSpins.json` 各語系 FREE SPINS 藝術字（多語系需整套重做，另案）
+
 ---
 
 ## 5. 常用指令

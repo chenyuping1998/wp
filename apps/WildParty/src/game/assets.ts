@@ -293,12 +293,13 @@ export default {
 		type: 'font',
 		src: new URL('../../assets/fonts/purpleFont/mm_purple.xml', import.meta.url).href,
 	},
+	// party-themed big win banners (SVG-generated — see design/generate_presentation.mjs)
 	bigwin: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/bigwin/big_wins.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/bigwin/mm_bigwin.json', import.meta.url).href,
-			scale: 2,
+			atlas: new URL('../../assets/spines/bigwinParty/bigwin_party.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/bigwinParty/bigwin_party.json', import.meta.url).href,
+			scale: 1,
 		},
 	},
 	globalMultiplier: {
@@ -309,28 +310,29 @@ export default {
 			scale: 2,
 		},
 	},
+	// party-themed free-spin screens (SVG-generated — see design/generate_presentation.mjs)
 	fsIntro: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/fsIntro/fs_screen.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/fsIntro/fs_screen.json', import.meta.url).href,
-			scale: 2,
+			atlas: new URL('../../assets/spines/fsIntroParty/fs_party.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/fsIntroParty/fs_screen_party.json', import.meta.url).href,
+			scale: 1,
 		},
 	},
 	fsIntroNumber: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/fsIntro/fs_screen.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/fsIntro/fs_screen_number.json', import.meta.url).href,
-			scale: 2,
+			atlas: new URL('../../assets/spines/fsIntroParty/fs_party.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/fsIntroParty/fs_number_party.json', import.meta.url).href,
+			scale: 1,
 		},
 	},
 	fsOutroNumber: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/fsIntro/fs_screen.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/fsIntro/fs_total_number.json', import.meta.url).href,
-			scale: 2,
+			atlas: new URL('../../assets/spines/fsIntroParty/fs_party.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/fsIntroParty/fs_total_party.json', import.meta.url).href,
+			scale: 1,
 		},
 	},
 	foregroundAnimation: {
