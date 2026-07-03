@@ -621,6 +621,11 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - [x] Big win 進場鏡頭震動：`Win.svelte` `startShake()`，700ms 二次方衰減 ±11px，光芒層 0.4 倍跟隨
 - 調整入口：爆點顏色/數量在 `FxBurst.svelte`（`PARTY_COLORS`、sparks 長度）；光芒尺寸 `BigWinFx` 的 `radius`（預設 520）
 
+#### ② 停輪手感
+
+- [x] 新元件 `SymbolLandAnim.svelte`：符號落地擠壓回彈（240ms squash→stretch→settle，底邊貼地下壓），`Symbol.svelte` 於 sprite land 狀態套用——不影響遊戲流程節奏（land→static 本來就是裝飾性狀態）
+- [x] 聽牌強化：`Anticipation.svelte` 亮框內加 10 顆相位錯開的上升光粒（金/粉交錯、正弦淡入淡出、左右微飄），與原有脈動亮框疊加
+
 ---
 
 ## 5. 常用指令

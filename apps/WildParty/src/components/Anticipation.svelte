@@ -26,6 +26,14 @@
 		return () => clearInterval(id);
 	});
 
+	// sparks drifting up the anticipated reel, phase-offset so they loop seamlessly
+	const SPARKS = Array.from({ length: 10 }, (_, i) => ({
+		offset: i / 10 + ((i * 0.37) % 0.1),
+		xRatio: (i % 5) / 4 - 0.5,
+		speed: 2400 + (i % 3) * 600,
+		size: 2 + (i % 3),
+	}));
+
 	$effect(() => {
 		// Stop immediately when reel stops to avoid the heavy "falling/landing" outro feel.
 		if (!finished && props.reel.reelState.motion === 'stopped') {
@@ -56,6 +64,20 @@
 			g.drawRoundedRect(-SYMBOL_SIZE * 0.2, -SYMBOL_SIZE * 0.68, SYMBOL_SIZE * 0.4, SYMBOL_SIZE * 1.36, 20);
 			g.lineStyle(1.6, 0xffffff, 0.25 + 0.35 * pulse);
 			g.drawRoundedRect(-SYMBOL_SIZE * 0.17, -SYMBOL_SIZE * 0.63, SYMBOL_SIZE * 0.34, SYMBOL_SIZE * 1.26, 18);
+			g.lineStyle(0);
+
+			// rising sparks
+			const now = Date.now();
+			for (const spark of SPARKS) {
+				const p = (now / spark.speed + spark.offset) % 1;
+				const sy = SYMBOL_SIZE * 0.72 - p * SYMBOL_SIZE * 1.44;
+				const sx =
+					spark.xRatio * SYMBOL_SIZE * 0.34 + Math.sin(now / 260 + spark.offset * 12) * 5;
+				const alpha = Math.sin(p * Math.PI) * (0.45 + 0.35 * pulse);
+				g.beginFill(spark.size % 2 ? 0xfff07a : 0xff8ede, alpha);
+				g.drawCircle(sx, sy, spark.size);
+				g.endFill();
+			}
 		}}
 	/>
 	<SpineTrack

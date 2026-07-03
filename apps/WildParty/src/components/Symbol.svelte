@@ -2,6 +2,7 @@
 	import SymbolSpine from './SymbolSpine.svelte';
 	import SymbolSprite from './SymbolSprite.svelte';
 	import SymbolWinAnim from './SymbolWinAnim.svelte';
+	import SymbolLandAnim from './SymbolLandAnim.svelte';
 	import FxBurst from './FxBurst.svelte';
 	import { getSymbolInfo } from '../game/utils';
 	import type { SymbolState, RawSymbol } from '../game/types';
@@ -32,6 +33,9 @@
 {#if isSprite && isWin}
 	<!-- Win state for sprite symbols: programmatic scale+glow animation -->
 	<SymbolWinAnim {symbolInfo} x={props.x} y={props.y} oncomplete={props.oncomplete} />
+{:else if isSprite && props.state === 'land'}
+	<!-- landing squash & stretch so reel stops feel weighty -->
+	<SymbolLandAnim {symbolInfo} x={props.x} y={props.y} oncomplete={props.oncomplete} />
 {:else if isSprite}
 	<SymbolSprite {symbolInfo} x={props.x} y={props.y} oncomplete={props.oncomplete} />
 {:else}
