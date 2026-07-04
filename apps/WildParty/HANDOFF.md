@@ -1,6 +1,6 @@
 # Wild Party — 專案交接文件
 
-> 最後更新：2026-07-03（評審回饋改善四波 §4.21；FG 觸發音效換 fg_trigger.mp3 兩連響，見 §4.22）  
+> 最後更新：2026-07-03（UI 按鈕改「spin pod」排版：大 BET 置中、−/＋貼身、turbo/autospin 外圈，見 §4.24）  
 > 涵蓋範圍：math-sdk 數學後端 + `WildParty_Front` 前端 + Stake 上架素材  
 > **Skill 路由：** `@wild-party-skill-guide`｜**交接：** `@WILD_PARTY_HANDOFF.md`
 
@@ -669,6 +669,20 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
   - 圖示 Container y -330→**-640**（slot 座標 ×0.5 → 實際上移 320px，圖示中心約 -250，與 banner 間隔 ~70px）；`WinLevelSymbolIntro` 基準 scale 1→1.35 補償縮放
   - 滾分數字 fontSize 2.6→2.0×SYMBOL_SIZE、y 270（banner 下方）
   - PressToContinue `betweenBoardAndBottom` 下移 55px
+
+### 4.24 UI 按鈕 spin pod 排版（2026-07-03）
+
+改動位置：`packages/components-ui-pixi/src/components/Layout{Desktop,Tablet,Landscape,Portrait}.svelte`（**共用包，GoBananas 同步生效**）。
+
+- [x] 佈局 A：`[AUTOSPIN] [−] [BET] [＋] [TURBO]` 五鍵艙，全部與 BET 圓心同高
+- [x] **BET ×2**（desktop 0.8→1.6、tablet/portrait 1→2），**−/＋ ×0.5**、**turbo/autospin −30%**（0.8→0.56 / 1→0.7）
+- [x] −/＋ 與 BET **不相交**：BET 半徑 134（UI_BASE_SIZE 150×1.12×1.6/2），−/＋半徑 30 → 中心距 178 留 ~14px 間隙（tablet/portrait 等比 220）
+- [x] 各版型排法：
+  - **Desktop**：pod 中心 x=910、y=0（放大後貼底條下緣），autospin/turbo ±270；金額列上移 y-160→-240 避開大 BET；menu/buy 原位
+  - **Tablet**：pod x=890、y=-5，−/＋ ±220、auto/turbo ±325；移除右側舊 −/＋
+  - **Landscape**：右側直排 pod（auto 上、turbo 下 ±196），BET 左移 135 讓 ＋（+178）不出界；底條舊 −/＋ 移除
+  - **Portrait**：pod 於 H-400 一排（±215/±315），menu/buy 外推 ±470；balance 上移與 win 併排（H-670、±270）避開大 BET；底部舊 −/＋ 移除
+- 調整入口：各 Layout 檔的 pod x 偏移常數（178/270 等）與 scale 值
 
 ---
 
