@@ -684,6 +684,7 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
   - **Portrait**：pod 於 H-400 一排（±215/±315），menu/buy 外推 ±470；balance 上移與 win 併排（H-670、±270）避開大 BET；底部舊 −/＋ 移除
 - 調整入口：各 Layout 檔的 pod x 偏移常數與 scale 值
 - **二修（使用者回饋 BET 太大 + 金額列擋盤面）**：BET 再縮 30%（desktop/landscape 1.6→1.12、tablet/portrait 2→1.4），−/＋間距同步收攏（desktop ±138、tablet/portrait ±170）、auto/turbo 收攏（±230/±275/±285、landscape ±160）；desktop 金額列降回 y-185（僅比原位高 25px）、portrait balance 移回 BET 下方（H-240）、win 回中央 H-670、menu/buy 回 ±470→±470 不變、pod y 下修貼齊底條（desktop 40、tablet 15）
+- **三修**：BET 再縮 5%（desktop/landscape 1.12→1.064、tablet/portrait 1.4→1.33）；balance/win/bet 金額列縮 10%（desktop/landscape 0.8→0.72、tablet/portrait 1→0.9）
 
 ---
 
