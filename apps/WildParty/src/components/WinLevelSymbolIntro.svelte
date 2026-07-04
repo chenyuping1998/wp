@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { Container, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import { Container, Graphics } from 'pixi-svelte';
 	import { onMount } from 'svelte';
+
+	import WinSymbolScene from './WinSymbolScene.svelte';
 
 	type Props = {
 		symbolKey: 'wpSpH1' | 'wpSpH2' | 'wpSpH3' | 'wpSpH4';
@@ -20,13 +22,13 @@
 		};
 	});
 
-	const shakeX = $derived(Math.sin(tick / 1.7) * 6);
-	const shakeY = $derived(Math.sin(tick / 2.3) * 4);
-	const scale = $derived(1 + 0.06 * Math.sin(tick / 3.3));
+	// gentle breathing instead of the old jitter — the themed scene supplies
+	// the motion now (lid opening, cork popping, glass swaying, rays turning)
+	const scale = $derived(1 + 0.03 * Math.sin(tick / 14));
 	const flashAlpha = $derived(0.35 + 0.45 * (0.5 + 0.5 * Math.sin(tick / 1.4)));
 </script>
 
-<Container x={shakeX} y={shakeY} scale={scale}>
+<Container {scale}>
 	<Graphics
 		draw={(g) => {
 			g.clear();
@@ -41,7 +43,5 @@
 		}}
 	/>
 
-	<SpineProvider key={props.symbolKey} width={290}>
-		<SpineTrack trackIndex={0} animationName="win" loop />
-	</SpineProvider>
+	<WinSymbolScene symbolKey={props.symbolKey} />
 </Container>

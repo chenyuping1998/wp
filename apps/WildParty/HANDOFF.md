@@ -657,7 +657,13 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 
 - [x] Big win 報獎排版：圖示上移（Container y -250→-330）並縮小（SpineProvider width 360→290），滾分數字下移（y 180→235）縮小（fontSize 3.6→2.6×SYMBOL_SIZE）——修「禮物擋住 BIG WIN 字樣」
 - [x] 一般得分（type ≠ big）不再跳報獎彈窗：`bookEventHandlerMap.setWin` 開頭直接 return，金額只在下方 win 欄顯示（`setTotalWin` 已更新 `winBookEventAmount`）
-- [ ] **待辦（下次）**：報獎圖示主題動畫——H4 禮物開蓋、H3 香檳噴瓶塞、H2 雞尾酒晃動、H1 disco 球放光。需先把單張 PNG 拆件（蓋子/瓶塞/液面獨立圖層）再做多部位 spine，屬美術拆件工作
+- [x] **報獎圖示主題動畫**（原待辦，已完成）：新元件 `WinSymbolScene.svelte`——不需新美術，用 **Graphics 遮罩切片原 PNG** 做拆件動畫：
+  - **H1 disco 球**：背後 10 道金/粉旋轉光芒 + 5 顆沿球面繞行的閃爍星芒 + 微脈動
+  - **H2 香檳**（注意：H2 才是香檳、H3 是雞尾酒，與使用者訊息中的編號對調）：軟木塞切片（256 空間 x172-240, y4-76）週期 2.4s 飛出——旋轉+重力拋物線+淡出，瓶身遮罩挖掉塞子區並做後座力踢擺（-0.09rad + squash），瓶口金色噴泉粒子
+  - **H3 雞尾酒**：整杯以杯底為軸 ±7° 搖晃（2.6rad/s），杯緣兩側交替甩出粉色液滴（拋物線+淡出），液滴起點跟隨搖晃角度旋轉換算
+  - **H4 禮物**：蓋子切片（y=132 線以上含蝴蝶結）以左緣為鉸鏈週期 3.4s 開蓋 -0.62rad（帶 overshoot + 懸停微晃 + 回蓋），開口溢出金色光暈 + 6 顆旋轉星星上升
+  - `WinLevelSymbolIntro.svelte` 改掛 `WinSymbolScene`（拿掉舊 jitter 抖動，保留光暈圈+呼吸縮放）
+  - 調整入口：切片線/鉸鏈點在 `WinSymbolScene` 的 `CORK`/`LID_LINE`/`HINGE`（以 256 原圖座標經 `px()` 換算）；各動畫週期 `POP_PERIOD`/`GIFT_PERIOD`
 
 ---
 
