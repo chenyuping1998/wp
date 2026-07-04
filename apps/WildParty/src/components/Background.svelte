@@ -121,71 +121,64 @@
 		g.endFill();
 	};
 
-	// glossy metallic party balloons (matching the bg art's rendered look)
-	const BALLOON_COLORS = [0xffb833, 0xe0218a, 0x8a2be2, 0xff4fc3, 0xd4a017, 0xb04ef0];
+	// ambient balloons — the SAME glossy cast as the bg art edges (gold /
+	// magenta / purple latex, leopard print, foil star), rendered as sprites
+	// from design/generate_balloons.mjs
+	const BALLOON_LOOKS = [
+		{ assetKey: 'wpBalloonGold', glow: 0xffb833 },
+		{ assetKey: 'wpBalloonMagenta', glow: 0xe0218a },
+		{ assetKey: 'wpBalloonPurple', glow: 0x8a2be2 },
+		{ assetKey: 'wpBalloonLeopard', glow: 0xe8a33d },
+		{ assetKey: 'wpBalloonStar', glow: 0xff4fc3 },
+		{ assetKey: 'wpBalloonMagenta', glow: 0xe0218a },
+	];
 	const BALLOONS = Array.from({ length: 6 }, (_, i) => ({
+		...BALLOON_LOOKS[i],
 		x: 0.06 + rand() * 0.88,
 		phase: rand(),
 		rise: 9 + rand() * 9,
-		size: 24 + rand() * 12,
+		size: 26 + rand() * 12,
 		swayAmp: 20 + rand() * 22,
 		swayFreq: 0.45 + rand() * 0.5,
-		color: BALLOON_COLORS[i % BALLOON_COLORS.length],
 	}));
 
-	const drawBalloons = (g: PixiGraphics) => {
+	// balloon sprite art is 256×330 with the body center at (128, 140)
+	const BALLOON_RATIO = 330 / 256;
+	const BALLOON_ANCHOR_Y = 140 / 330;
+
+	const balloonState = (balloon: (typeof BALLOONS)[number]) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		const seconds = tick / 62.5;
+		const travel = height + balloon.size * 6;
+		const y =
+			height + balloon.size * 3 - ((seconds * balloon.rise + balloon.phase * travel) % travel);
+		const swayPhase = seconds * balloon.swayFreq + balloon.phase * 8;
+		const x = balloon.x * width + Math.sin(swayPhase) * balloon.swayAmp;
+		const edge = Math.max(0, Math.min(1, (height - y) / 110, (y + balloon.size * 3) / 110));
+		return { x, y, edge, tilt: Math.sin(swayPhase) * 0.09, swayPhase };
+	};
+
+	// glow halos + strings behind the balloon sprites
+	const drawBalloonGlow = (g: PixiGraphics) => {
 		g.clear();
 		for (const balloon of BALLOONS) {
-			const travel = height + balloon.size * 6;
-			const y =
-				height + balloon.size * 3 -
-				((seconds * balloon.rise + balloon.phase * travel) % travel);
-			const swayPhase = seconds * balloon.swayFreq + balloon.phase * 8;
-			const x = balloon.x * width + Math.sin(swayPhase) * balloon.swayAmp;
-			const edge = Math.min(1, (height - y) / 110, (y + balloon.size * 3) / 110);
-			if (edge <= 0) continue;
-			const alpha = 0.9 * edge;
-			const rx = balloon.size * 0.82;
-			const ry = balloon.size;
-
-			// bloom halo so it sits in the same glowing atmosphere as the bg art
-			g.beginFill(balloon.color, alpha * 0.1);
-			g.drawEllipse(x, y, rx * 2.1, ry * 2.0);
+			const state = balloonState(balloon);
+			if (state.edge <= 0) continue;
+			const rx = balloon.size;
+			const ry = balloon.size * 1.2;
+			g.beginFill(balloon.glow, state.edge * 0.1);
+			g.drawEllipse(state.x, state.y, rx * 2.1, ry * 1.9);
 			g.endFill();
-			g.beginFill(balloon.color, alpha * 0.14);
-			g.drawEllipse(x, y, rx * 1.5, ry * 1.45);
+			g.beginFill(balloon.glow, state.edge * 0.13);
+			g.drawEllipse(state.x, state.y, rx * 1.5, ry * 1.4);
 			g.endFill();
 
 			// wavy string, bending opposite to the sway direction
-			const lean = Math.cos(swayPhase) * balloon.swayAmp * 0.35;
-			g.lineStyle(1.5, 0xd9b878, alpha * 0.45);
-			g.moveTo(x, y + ry + 6);
-			g.quadraticCurveTo(x - lean, y + ry + 34, x - lean * 0.4, y + ry + 62);
+			const lean = Math.cos(state.swayPhase) * balloon.swayAmp * 0.35;
+			g.lineStyle(1.5, 0xd9b878, state.edge * 0.45);
+			g.moveTo(state.x, state.y + ry + 8);
+			g.quadraticCurveTo(state.x - lean, state.y + ry + 40, state.x - lean * 0.4, state.y + ry + 74);
 			g.lineStyle(0);
-
-			// body: dark base → mid tone offset to the light → glossy highlights
-			g.beginFill(shade(balloon.color, 0.45), alpha);
-			g.drawEllipse(x, y, rx, ry);
-			g.drawPolygon([x - 5, y + ry + 7, x + 5, y + ry + 7, x, y + ry - 2]);
-			g.endFill();
-			g.beginFill(balloon.color, alpha);
-			g.drawEllipse(x - rx * 0.1, y - ry * 0.12, rx * 0.86, ry * 0.85);
-			g.endFill();
-			g.beginFill(shade(balloon.color, 1.45), alpha * 0.75);
-			g.drawEllipse(x - rx * 0.26, y - ry * 0.32, rx * 0.42, ry * 0.4);
-			g.endFill();
-			// sharp specular + bottom bounce light (metallic sheen)
-			g.beginFill(0xffffff, alpha * 0.9);
-			g.drawEllipse(x - rx * 0.34, y - ry * 0.42, rx * 0.14, ry * 0.16);
-			g.endFill();
-			g.beginFill(0xffffff, alpha * 0.35);
-			g.drawEllipse(x - rx * 0.16, y - ry * 0.52, rx * 0.3, ry * 0.1);
-			g.endFill();
-			g.beginFill(shade(balloon.color, 1.6), alpha * 0.3);
-			g.drawEllipse(x + rx * 0.12, y + ry * 0.62, rx * 0.5, ry * 0.16);
-			g.endFill();
 		}
 	};
 
@@ -270,12 +263,31 @@
 
 <Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x120016} zIndex={-3} />
 
+{#snippet balloons()}
+	<Graphics draw={drawBalloonGlow} />
+	{#each BALLOONS as balloon, index (index)}
+		{@const state = balloonState(balloon)}
+		{#if state.edge > 0}
+			<Sprite
+				key={balloon.assetKey}
+				anchor={{ x: 0.5, y: BALLOON_ANCHOR_Y }}
+				x={state.x}
+				y={state.y}
+				rotation={state.tilt}
+				width={balloon.size * 2}
+				height={balloon.size * 2 * BALLOON_RATIO}
+				alpha={0.95 * state.edge}
+			/>
+		{/if}
+	{/each}
+{/snippet}
+
 <!-- Wild Party base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="wildPartyBgBase" {...context.stateLayoutDerived.canvasSizes()} />
 	<Graphics draw={drawBokeh} />
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
-	<Graphics draw={drawBalloons} />
+	{@render balloons()}
 	<Graphics draw={drawConfetti} />
 </FadeContainer>
 
@@ -284,6 +296,6 @@
 	<Sprite key="wildPartyBgFeature" {...context.stateLayoutDerived.canvasSizes()} />
 	<Graphics draw={drawBokeh} />
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
-	<Graphics draw={drawBalloons} />
+	{@render balloons()}
 	<Graphics draw={drawConfetti} />
 </FadeContainer>

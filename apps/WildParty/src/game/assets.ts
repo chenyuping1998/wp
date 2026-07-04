@@ -269,6 +269,32 @@ export default {
 		src: new URL('../../assets/sprites/wildPartyBackground/bg_feature.png', import.meta.url).href,
 		preload: true,
 	},
+	// glossy ambient balloons matching the bg art (see design/generate_balloons.mjs)
+	wpBalloonGold: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/wildPartyBalloons/balloon_gold.png', import.meta.url).href,
+		preload: true,
+	},
+	wpBalloonMagenta: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/wildPartyBalloons/balloon_magenta.png', import.meta.url).href,
+		preload: true,
+	},
+	wpBalloonPurple: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/wildPartyBalloons/balloon_purple.png', import.meta.url).href,
+		preload: true,
+	},
+	wpBalloonLeopard: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/wildPartyBalloons/balloon_leopard.png', import.meta.url).href,
+		preload: true,
+	},
+	wpBalloonStar: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/wildPartyBalloons/balloon_star.png', import.meta.url).href,
+		preload: true,
+	},
 	anticipation: {
 		type: 'spine',
 		src: {

@@ -696,6 +696,7 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - [x] **氣球 ×6**：新 `drawBalloons` 層——派對六色氣球緩慢上飄 + 正弦左右晃動、繩子反向彎曲擺動、頂/底邊緣淡出
 - [x] **彩帶下飄**：原本只有 feature 有彩帶，base 背景也加上（26 片翻轉彩帶通用兩景）
 - [x] **材質對齊二修**（使用者回饋平面色塊與背景違和）：氣球改金屬光澤多層著色（暗底→主色→亮部→白色鏡面點+頂部弧光+底部反光）+ 雙層 bloom 光暈，色盤改背景同款金/洋紅/紫；彩帶每片加 bloom 光暈 + 翻面明暗（面光亮/側面暗）+ 亮邊 glint；`shade()` helper 做色階
+- [x] **材質對齊三修（sprite 氣球）**：參考背景左右兩側的氣球陣容，新生成器 `design/generate_balloons.mjs`（SVG 徑向漸層→PNG）產出五款同風格氣球——光澤金、洋紅、紫、**豹紋**、**鋁箔星星**（`sprites/wildPartyBalloons/`，assets key `wpBalloon*`）；Background 氣球層改 Sprite 渲染（anchor 對準球體中心 140/330），Graphics 只留光暈+擺動繩子
 
 ---
 
