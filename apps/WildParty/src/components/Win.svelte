@@ -47,6 +47,24 @@
 		}, 16);
 	};
 
+	// hit-stop impact frame: white flash + scale punch on the slam-in
+	let flash = $state(0);
+	let punch = $state(1);
+	const startImpact = () => {
+		const start = Date.now();
+		const id = setInterval(() => {
+			const p = (Date.now() - start) / 280;
+			if (p >= 1) {
+				flash = 0;
+				punch = 1;
+				clearInterval(id);
+				return;
+			}
+			flash = Math.max(0, 0.8 * (1 - p * 1.4));
+			punch = 1 + 0.14 * (1 - p) ** 2;
+		}, 16);
+	};
+
 	const WIN_LEVEL_SYMBOL_MAP: Partial<
 		Record<WinLevelData['alias'], 'wpSpH1' | 'wpSpH2' | 'wpSpH3' | 'wpSpH4'>
 	> = {
@@ -62,7 +80,10 @@
 		winUpdate: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
-			if (emitterEvent.winLevelData.type === 'big') startShake();
+			if (emitterEvent.winLevelData.type === 'big') {
+				startShake();
+				startImpact();
+			}
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
 	});
@@ -80,6 +101,9 @@
 
 				<OnMount
 					onmount={async () => {
+						// impact hold: freeze a few frames under the white flash before
+						// the numbers start rolling
+						if (isBigWin) await waitForTimeout(90);
 						await startCountUp();
 						// Big-win presentations linger an extra second after the count-up
 						await waitForTimeout(isBigWin ? 1300 : 300);
@@ -100,6 +124,7 @@
 					<Container
 						x={context.stateGameDerived.boardLayout().x + shake.x}
 						y={context.stateGameDerived.boardLayout().y + shake.y}
+						scale={punch}
 					>
 						{@const winLevelSymbolKey = WIN_LEVEL_SYMBOL_MAP[winLevelData.alias]}
 						{#if winLevelData?.animation}
@@ -144,6 +169,10 @@
 				</MainContainer>
 
 				<WinCoins emit={!countUpCompleted} levelAlias={winLevelData?.alias} />
+
+				{#if flash > 0}
+					<CanvasSizeRectangle backgroundColor={0xffffff} backgroundAlpha={flash} />
+				{/if}
 
 				<PressToContinue
 					position="betweenBoardAndBottom"
