@@ -34,7 +34,8 @@
 		color: BOKEH_COLORS[i % BOKEH_COLORS.length],
 	}));
 
-	const CONFETTI_COLORS = [0xffd75e, 0xff8ede, 0x9ef3ff, 0xc59bff, 0x9effb0];
+	// bg-art palette: gold / magenta / violet / hot pink (matches the club scene)
+	const CONFETTI_COLORS = [0xffb833, 0xff2fa0, 0x4fc3ff, 0xb04ef0, 0xffe066];
 	const CONFETTI = Array.from({ length: 26 }, (_, i) => ({
 		x: rand(),
 		phase: rand(),
@@ -45,6 +46,15 @@
 		rotSpeed: (rand() - 0.5) * 6,
 		color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
 	}));
+
+	// lighten/darken a hex color so flat Graphics shapes can fake the bg's
+	// glossy rendered shading
+	const shade = (color: number, factor: number) => {
+		const r = Math.min(255, Math.round(((color >> 16) & 255) * factor));
+		const g = Math.min(255, Math.round(((color >> 8) & 255) * factor));
+		const b = Math.min(255, Math.round((color & 255) * factor));
+		return (r << 16) | (g << 8) | b;
+	};
 
 	const drawSoftBeams = (g: PixiGraphics, phaseShift = 0) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
@@ -111,8 +121,8 @@
 		g.endFill();
 	};
 
-	// party balloons swaying as they drift slowly upward
-	const BALLOON_COLORS = [0xff6b9d, 0xffd75e, 0x9ef3ff, 0xc59bff, 0x9effb0, 0xff9d6b];
+	// glossy metallic party balloons (matching the bg art's rendered look)
+	const BALLOON_COLORS = [0xffb833, 0xe0218a, 0x8a2be2, 0xff4fc3, 0xd4a017, 0xb04ef0];
 	const BALLOONS = Array.from({ length: 6 }, (_, i) => ({
 		x: 0.06 + rand() * 0.88,
 		phase: rand(),
@@ -136,24 +146,45 @@
 			const x = balloon.x * width + Math.sin(swayPhase) * balloon.swayAmp;
 			const edge = Math.min(1, (height - y) / 110, (y + balloon.size * 3) / 110);
 			if (edge <= 0) continue;
-			const alpha = 0.82 * edge;
+			const alpha = 0.9 * edge;
 			const rx = balloon.size * 0.82;
 			const ry = balloon.size;
 
+			// bloom halo so it sits in the same glowing atmosphere as the bg art
+			g.beginFill(balloon.color, alpha * 0.1);
+			g.drawEllipse(x, y, rx * 2.1, ry * 2.0);
+			g.endFill();
+			g.beginFill(balloon.color, alpha * 0.14);
+			g.drawEllipse(x, y, rx * 1.5, ry * 1.45);
+			g.endFill();
+
 			// wavy string, bending opposite to the sway direction
 			const lean = Math.cos(swayPhase) * balloon.swayAmp * 0.35;
-			g.lineStyle(1.6, 0xffffff, alpha * 0.5);
+			g.lineStyle(1.5, 0xd9b878, alpha * 0.45);
 			g.moveTo(x, y + ry + 6);
 			g.quadraticCurveTo(x - lean, y + ry + 34, x - lean * 0.4, y + ry + 62);
 			g.lineStyle(0);
 
-			// body + knot + highlight
-			g.beginFill(balloon.color, alpha);
+			// body: dark base → mid tone offset to the light → glossy highlights
+			g.beginFill(shade(balloon.color, 0.45), alpha);
 			g.drawEllipse(x, y, rx, ry);
 			g.drawPolygon([x - 5, y + ry + 7, x + 5, y + ry + 7, x, y + ry - 2]);
 			g.endFill();
-			g.beginFill(0xffffff, alpha * 0.4);
-			g.drawEllipse(x - rx * 0.35, y - ry * 0.38, rx * 0.26, ry * 0.32);
+			g.beginFill(balloon.color, alpha);
+			g.drawEllipse(x - rx * 0.1, y - ry * 0.12, rx * 0.86, ry * 0.85);
+			g.endFill();
+			g.beginFill(shade(balloon.color, 1.45), alpha * 0.75);
+			g.drawEllipse(x - rx * 0.26, y - ry * 0.32, rx * 0.42, ry * 0.4);
+			g.endFill();
+			// sharp specular + bottom bounce light (metallic sheen)
+			g.beginFill(0xffffff, alpha * 0.9);
+			g.drawEllipse(x - rx * 0.34, y - ry * 0.42, rx * 0.14, ry * 0.16);
+			g.endFill();
+			g.beginFill(0xffffff, alpha * 0.35);
+			g.drawEllipse(x - rx * 0.16, y - ry * 0.52, rx * 0.3, ry * 0.1);
+			g.endFill();
+			g.beginFill(shade(balloon.color, 1.6), alpha * 0.3);
+			g.drawEllipse(x + rx * 0.12, y + ry * 0.62, rx * 0.5, ry * 0.16);
 			g.endFill();
 		}
 	};
@@ -177,7 +208,7 @@
 		}
 	};
 
-	// feature only: confetti raining down over the party
+	// confetti raining down, each piece glowing like the bloom-lit bits in the bg art
 	const drawConfetti = (g: PixiGraphics) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		const seconds = tick / 62.5;
@@ -191,18 +222,38 @@
 			const cos = Math.cos(rot);
 			const sin = Math.sin(rot);
 			// flutter: the strip narrows as it "turns" in the air
-			const w = piece.size * (0.35 + 0.65 * Math.abs(Math.sin(seconds * 2 + piece.phase * 11)));
+			const flip = Math.sin(seconds * 2 + piece.phase * 11);
+			const w = piece.size * (0.35 + 0.65 * Math.abs(flip));
 			const h = piece.size * 0.55;
-			g.beginFill(piece.color, 0.75);
+			const quad = (scale: number): number[] => [
+				x + (cos * w - sin * h) * scale,
+				y + (sin * w + cos * h) * scale,
+				x + (-cos * w - sin * h) * scale,
+				y + (-sin * w + cos * h) * scale,
+				x + (-cos * w + sin * h) * scale,
+				y + (-sin * w - cos * h) * scale,
+				x + (cos * w + sin * h) * scale,
+				y + (sin * w - cos * h) * scale,
+			];
+
+			// soft bloom halo
+			g.beginFill(piece.color, 0.14);
+			g.drawPolygon(quad(2.1));
+			g.endFill();
+			// core: bright when facing the light, darker mid-flip
+			const facing = 0.55 + 0.45 * Math.abs(flip);
+			g.beginFill(shade(piece.color, 0.7 + 0.7 * facing), 0.92);
+			g.drawPolygon(quad(1));
+			g.endFill();
+			// glint edge on the lit side
+			g.beginFill(0xffffff, 0.4 * facing);
 			g.drawPolygon([
-				x + cos * w - sin * h,
-				y + sin * w + cos * h,
-				x - cos * w - sin * h,
-				y - sin * w + cos * h,
-				x - cos * w + sin * h,
-				y - sin * w - cos * h,
-				x + cos * w + sin * h,
-				y + sin * w - cos * h,
+				x + cos * w,
+				y + sin * w,
+				x + cos * w - sin * h * 0.8,
+				y + sin * w + cos * h * 0.8,
+				x + cos * w * 0.4 - sin * h * 0.8,
+				y + sin * w * 0.4 + cos * h * 0.8,
 			]);
 			g.endFill();
 		}
