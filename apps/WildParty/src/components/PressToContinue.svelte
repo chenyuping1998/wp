@@ -20,7 +20,8 @@
 		}
 		const board = context.stateGameDerived.boardLayout();
 		const main = context.stateLayoutDerived.mainLayout();
-		return (board.y + board.height * 0.5 + main.height) * 0.5;
+		// nudged lower so it clears the win count-up above it
+		return (board.y + board.height * 0.5 + main.height) * 0.5 + 55;
 	});
 	</script>
 

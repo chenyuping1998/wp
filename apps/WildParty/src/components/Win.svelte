@@ -105,19 +105,20 @@
 						{#if winLevelData?.animation}
 							<WinAnimation animationMap={winLevelData.animation}>
 								{#if winLevelSymbolKey}
-									<!-- lifted above the banner so it never covers the win text -->
-									<Container y={-330}>
+									<!-- slot children are provider-scaled ×0.5, so -640 puts the icon
+									     ~250px above board center — clear of the banner at center -->
+									<Container y={-640}>
 										<WinLevelSymbolIntro symbolKey={winLevelSymbolKey} />
 									</Container>
 								{/if}
 								<ResponsiveBitmapText
 									anchor={0.5}
-									y={winLevelSymbolKey ? 235 : 0}
+									y={winLevelSymbolKey ? 270 : 0}
 									maxWidth={2130}
 									text={bookEventAmountToCurrencyString(countUpAmount)}
 									style={{
 										fontFamily: 'gold',
-										fontSize: SYMBOL_SIZE * 2.6,
+										fontSize: SYMBOL_SIZE * 2.0,
 										align: 'center',
 										fontWeight: 'bold',
 										letterSpacing: 0,

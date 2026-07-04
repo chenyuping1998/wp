@@ -664,6 +664,11 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
   - **H4 禮物**：蓋子切片（y=132 線以上含蝴蝶結）以左緣為鉸鏈週期 3.4s 開蓋 -0.62rad（帶 overshoot + 懸停微晃 + 回蓋），開口溢出金色光暈 + 6 顆旋轉星星上升
   - `WinLevelSymbolIntro.svelte` 改掛 `WinSymbolScene`（拿掉舊 jitter 抖動，保留光暈圈+呼吸縮放）
   - 調整入口：切片線/鉸鏈點在 `WinSymbolScene` 的 `CORK`/`LID_LINE`/`HINGE`（以 256 原圖座標經 `px()` 換算）；各動畫週期 `POP_PERIOD`/`GIFT_PERIOD`
+- [x] **報獎版面二修**（圖示仍與 BIG WIN 字樣重疊的根因：`slot_win_count` 子內容被 spine provider ×0.5 縮放，位移只生效一半）：
+  - banner 骨骼 y 170→0（banner 移到畫面中央，佔 -75..+75）
+  - 圖示 Container y -330→**-640**（slot 座標 ×0.5 → 實際上移 320px，圖示中心約 -250，與 banner 間隔 ~70px）；`WinLevelSymbolIntro` 基準 scale 1→1.35 補償縮放
+  - 滾分數字 fontSize 2.6→2.0×SYMBOL_SIZE、y 270（banner 下方）
+  - PressToContinue `betweenBoardAndBottom` 下移 55px
 
 ---
 

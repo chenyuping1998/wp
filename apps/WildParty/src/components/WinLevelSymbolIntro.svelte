@@ -23,8 +23,9 @@
 	});
 
 	// gentle breathing instead of the old jitter — the themed scene supplies
-	// the motion now (lid opening, cork popping, glass swaying, rays turning)
-	const scale = $derived(1 + 0.03 * Math.sin(tick / 14));
+	// the motion now (lid opening, cork popping, glass swaying, rays turning).
+	// Base 1.35 compensates for the ×0.5 slot scaling in the big-win spine.
+	const scale = $derived(1.35 + 0.04 * Math.sin(tick / 14));
 	const flashAlpha = $derived(0.35 + 0.45 * (0.5 + 0.5 * Math.sin(tick / 1.4)));
 </script>
 

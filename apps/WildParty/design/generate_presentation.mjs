@@ -313,7 +313,9 @@ const bigwinSpine = {
 	skeleton: { hash: 'wp-bigwin-party', spine: '4.1.20', x: -600, y: -400, width: 1200, height: 800, images: './' },
 	bones: [
 		{ name: 'root' },
-		{ name: 'banner', parent: 'root', y: 170 },
+		// banner sits at screen center; the symbol scene floats well above it and
+		// the count-up lands below (slot_win_count children are provider-scaled 0.5)
+		{ name: 'banner', parent: 'root', y: 0 },
 		{ name: 'slot_win_count', parent: 'root', y: -140 },
 	],
 	slots: [

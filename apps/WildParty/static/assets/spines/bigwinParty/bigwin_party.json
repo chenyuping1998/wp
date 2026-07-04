@@ -15,7 +15,7 @@
     {
       "name": "banner",
       "parent": "root",
-      "y": 170
+      "y": 0
     },
     {
       "name": "slot_win_count",
