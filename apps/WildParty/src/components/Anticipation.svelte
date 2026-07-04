@@ -17,10 +17,13 @@
 
 	let pulse = $state(0);
 	let finished = $state(false);
+	// dim fade-in for the non-anticipated reels
+	let dimFade = $state(0);
 
 	onMount(() => {
 		const id = setInterval(() => {
 			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 145);
+			dimFade = Math.min(1, dimFade + 0.045);
 		}, 32);
 
 		return () => clearInterval(id);
@@ -54,6 +57,25 @@
 		}
 	});
 </script>
+
+<!-- focus dim: darken every reel except the anticipated one -->
+<Graphics
+	draw={(g) => {
+		const board = context.stateGameDerived.boardLayout();
+		const left = board.x - board.width * 0.5;
+		const top = board.y - board.height * 0.5;
+		const colLeft = left + props.reel.reelIndex * SYMBOL_SIZE;
+		const alpha = 0.42 * dimFade;
+		g.clear();
+		g.beginFill(0x0d0212, alpha);
+		if (colLeft > left) g.drawRect(left, top, colLeft - left, board.height);
+		const colRight = colLeft + SYMBOL_SIZE;
+		if (colRight < left + board.width) {
+			g.drawRect(colRight, top, left + board.width - colRight, board.height);
+		}
+		g.endFill();
+	}}
+/>
 
 <SpineProvider
 	key="anticipation"

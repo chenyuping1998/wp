@@ -1,6 +1,6 @@
 # Wild Party — 專案交接文件
 
-> 最後更新：2026-07-03（UI 按鈕改「spin pod」排版：大 BET 置中、−/＋貼身、turbo/autospin 外圈，見 §4.24）  
+> 最後更新：2026-07-04（動畫手感四連修：粒子紋理化/win 曲線化/hit-stop/聽牌壓暗，見 §4.26）  
 > 涵蓋範圍：math-sdk 數學後端 + `WildParty_Front` 前端 + Stake 上架素材  
 > **Skill 路由：** `@wild-party-skill-guide`｜**交接：** `@WILD_PARTY_HANDOFF.md`
 
@@ -698,6 +698,16 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - [x] **材質對齊二修**（使用者回饋平面色塊與背景違和）：氣球改金屬光澤多層著色（暗底→主色→亮部→白色鏡面點+頂部弧光+底部反光）+ 雙層 bloom 光暈，色盤改背景同款金/洋紅/紫；彩帶每片加 bloom 光暈 + 翻面明暗（面光亮/側面暗）+ 亮邊 glint；`shade()` helper 做色階
 - [x] **材質對齊三修（sprite 氣球）**：參考背景左右兩側的氣球陣容，新生成器 `design/generate_balloons.mjs`（SVG 徑向漸層→PNG）產出五款同風格氣球——光澤金、洋紅、紫、**豹紋**、**鋁箔星星**（`sprites/wildPartyBalloons/`）
 - [x] **四修：漂浮氣球整層移除**（使用者決定只留彩帶）——Background 的氣球 Sprite/光暈/繩子與 assets 註冊全部拿掉；背景動態現為 bokeh + 鎂光燈 + 彩帶三層。氣球 PNG 素材與生成器保留在 repo（`wildPartyBalloons/`），日後要用改 assets.ts 註冊即可
+
+### 4.26 動畫手感四連修（2026-07-04）— 消除「程式生成感」
+
+> 目標：朝美術設計師水準靠攏。攻擊三個「AI 感」指紋：線性節奏、硬邊幾何粒子、全體同步動作。
+
+- [x] **A1 粒子紋理化**：新生成器 `design/generate_fx_textures.mjs` 產出柔光紋理（`fx_glow/fx_star/fx_streak.png`，assets key `fxGlow/fxStar/fxStreak`）；FxBurst 星火、聽牌上升光粒、背景 bokeh 全面改 Sprite + **additive blend**，取代硬邊向量形狀；FxBurst 星火加隨機發射延遲（0-90ms stagger）
+- [x] **A2 符號 win 動畫曲線化**：新生成器 `design/generate_symbol_wins.mjs` 重寫全部 10 支 wildPartySymbols spine 的 win/idle——貝茲曲線取代線性插值，節奏改「預備下蹲(0.1s)→爆發彈出(ease-out 至 1.52)→過衝回彈→衰減微晃→緩收」，每符號 ±5% 時間差與交替傾斜方向（多符號同時中獎不再機械同步）；注意 spine json 帶 BOM，生成器已處理
+- [x] **C8 hit-stop 撞擊幀**：big win 進場白閃（0.8→0 淡出 280ms）+ 90ms 凍結後才開始滾分 + 全場景縮放 punch（1.14→1）
+- [x] **D11 聽牌壓暗**：`Anticipation.svelte` 加聚焦暗罩——聽牌時其他轉輪蓋 42% 深紫黑遮罩（~250ms 淡入），視線集中在聽牌輪
+- 後續清單（優先序）：符號拆件下放盤面（W/S）、banner 切字入場+掃光、金幣兩段式景深、停輪減速曲線、轉場重做、win line 流光——見對話 2026-07-04 動畫優化清單
 
 ---
 
