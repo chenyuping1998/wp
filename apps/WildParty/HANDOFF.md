@@ -708,6 +708,8 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - [x] **C8 hit-stop 撞擊幀**：big win 進場白閃（0.8→0 淡出 280ms）+ 90ms 凍結後才開始滾分 + 全場景縮放 punch（1.14→1）
 - [x] **D11 聽牌壓暗**：`Anticipation.svelte` 加聚焦暗罩——聽牌時其他轉輪蓋 42% 深紫黑遮罩（~250ms 淡入），視線集中在聽牌輪
 - 後續清單（優先序）：符號拆件下放盤面（W/S）、banner 切字入場+掃光、金幣兩段式景深、停輪減速曲線、轉場重做、win line 流光——見對話 2026-07-04 動畫優化清單
+- [x] **PreFreeGameHint 重做（B 懸停預告 + A 拖尾）**：直線飄過 700ms → 三拍演出 1.7s——右側 ease-out 彈入（弧線）→ 中央懸停 0.65s（全畫面壓暗 34% 聚光、光暈膨脹、脈動、`sfx_anticipation_start`）→ ease-in 加速衝出左側（速度拉伸 + `sfx_wild_explode` + FxBurst 爆點）；全程 12 顆星塵拖尾（位置環形緩衝取樣延遲 + 抖動 + additive）
+- [x] big win 報獎圖示的光暈圈圈移除（`WinLevelSymbolIntro` 只留主題場景+呼吸縮放）
 
 ---
 
