@@ -11,7 +11,6 @@
 	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame');
 	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame');
 
-	let rotation = $state(0);
 	let beamPhase = $state(0);
 	let tick = $state(0);
 
@@ -49,52 +48,114 @@
 
 	const drawSoftBeams = (g: PixiGraphics, phaseShift = 0) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
-		const beamReachY = Math.min(height * 0.42, 340);
+		const beamReachY = Math.min(height * 0.58, 480);
 		const centerX = width * 0.5 + Math.sin(beamPhase + phaseShift) * width * 0.15;
 		const counterX = width * 0.5 - Math.sin(beamPhase * 0.8 + phaseShift + 1.1) * width * 0.19;
+		// concert-style flicker so the spotlights feel alive
+		const flicker = 1 + 0.3 * Math.sin(beamPhase * 7 + phaseShift * 3);
 
 		g.clear();
 
-		// Keep beams subtle and in the upper area so they don't distract from reels.
-		g.beginFill(0xfff0b8, 0.05);
+		g.beginFill(0xfff0b8, 0.13 * flicker);
 		g.drawPolygon([
-			centerX - width * 0.018,
+			centerX - width * 0.02,
 			0,
-			centerX + width * 0.018,
+			centerX + width * 0.02,
 			0,
-			centerX + width * 0.22,
+			centerX + width * 0.24,
 			beamReachY,
-			centerX - width * 0.22,
+			centerX - width * 0.24,
 			beamReachY,
 		]);
 		g.endFill();
 
-		g.beginFill(0xff8bd8, 0.035);
+		g.beginFill(0xff8bd8, 0.1 * flicker);
 		g.drawPolygon([
 			centerX + width * 0.11,
 			0,
-			centerX + width * 0.135,
+			centerX + width * 0.14,
 			0,
-			centerX + width * 0.32,
+			centerX + width * 0.34,
 			beamReachY * 0.9,
-			centerX + width * 0.26,
+			centerX + width * 0.27,
 			beamReachY * 0.9,
 		]);
 		g.endFill();
 
 		// counter-sweeping cyan beam for depth
-		g.beginFill(0x9ef3ff, 0.03);
+		g.beginFill(0x9ef3ff, 0.09 * flicker);
 		g.drawPolygon([
-			counterX - width * 0.014,
+			counterX - width * 0.016,
 			0,
-			counterX + width * 0.014,
+			counterX + width * 0.016,
 			0,
-			counterX - width * 0.24,
+			counterX - width * 0.26,
 			beamReachY * 0.95,
-			counterX - width * 0.3,
+			counterX - width * 0.32,
 			beamReachY * 0.95,
 		]);
 		g.endFill();
+
+		// hot cores inside the main beams
+		g.beginFill(0xffffff, 0.07 * flicker);
+		g.drawPolygon([
+			centerX - width * 0.008,
+			0,
+			centerX + width * 0.008,
+			0,
+			centerX + width * 0.09,
+			beamReachY * 0.85,
+			centerX - width * 0.09,
+			beamReachY * 0.85,
+		]);
+		g.endFill();
+	};
+
+	// party balloons swaying as they drift slowly upward
+	const BALLOON_COLORS = [0xff6b9d, 0xffd75e, 0x9ef3ff, 0xc59bff, 0x9effb0, 0xff9d6b];
+	const BALLOONS = Array.from({ length: 6 }, (_, i) => ({
+		x: 0.06 + rand() * 0.88,
+		phase: rand(),
+		rise: 9 + rand() * 9,
+		size: 24 + rand() * 12,
+		swayAmp: 20 + rand() * 22,
+		swayFreq: 0.45 + rand() * 0.5,
+		color: BALLOON_COLORS[i % BALLOON_COLORS.length],
+	}));
+
+	const drawBalloons = (g: PixiGraphics) => {
+		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		const seconds = tick / 62.5;
+		g.clear();
+		for (const balloon of BALLOONS) {
+			const travel = height + balloon.size * 6;
+			const y =
+				height + balloon.size * 3 -
+				((seconds * balloon.rise + balloon.phase * travel) % travel);
+			const swayPhase = seconds * balloon.swayFreq + balloon.phase * 8;
+			const x = balloon.x * width + Math.sin(swayPhase) * balloon.swayAmp;
+			const edge = Math.min(1, (height - y) / 110, (y + balloon.size * 3) / 110);
+			if (edge <= 0) continue;
+			const alpha = 0.82 * edge;
+			const rx = balloon.size * 0.82;
+			const ry = balloon.size;
+
+			// wavy string, bending opposite to the sway direction
+			const lean = Math.cos(swayPhase) * balloon.swayAmp * 0.35;
+			g.lineStyle(1.6, 0xffffff, alpha * 0.5);
+			g.moveTo(x, y + ry + 6);
+			g.quadraticCurveTo(x - lean, y + ry + 34, x - lean * 0.4, y + ry + 62);
+			g.lineStyle(0);
+
+			// body + knot + highlight
+			g.beginFill(balloon.color, alpha);
+			g.drawEllipse(x, y, rx, ry);
+			g.drawPolygon([x - 5, y + ry + 7, x + 5, y + ry + 7, x, y + ry - 2]);
+			g.endFill();
+			g.beginFill(0xffffff, alpha * 0.4);
+			g.drawEllipse(x - rx * 0.35, y - ry * 0.38, rx * 0.26, ry * 0.32);
+			g.endFill();
+		}
 	};
 
 	// floating party bokeh, drifting up with a gentle sway
@@ -149,7 +210,6 @@
 
 	onMount(() => {
 		const id = setInterval(() => {
-			rotation += 0.012;
 			beamPhase += 0.004;
 			tick += 1;
 		}, 16);
@@ -164,16 +224,8 @@
 	<Sprite key="wildPartyBgBase" {...context.stateLayoutDerived.canvasSizes()} />
 	<Graphics draw={drawBokeh} />
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
-	<Sprite
-		key="wpH1"
-		anchor={0.5}
-		x={context.stateLayoutDerived.canvasSizes().width * 0.5}
-		y={110}
-		width={150}
-		height={150}
-		alpha={0.8}
-		rotation={rotation}
-	/>
+	<Graphics draw={drawBalloons} />
+	<Graphics draw={drawConfetti} />
 </FadeContainer>
 
 <!-- Wild Party free-game background -->
@@ -181,15 +233,6 @@
 	<Sprite key="wildPartyBgFeature" {...context.stateLayoutDerived.canvasSizes()} />
 	<Graphics draw={drawBokeh} />
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
+	<Graphics draw={drawBalloons} />
 	<Graphics draw={drawConfetti} />
-	<Sprite
-		key="wpH1"
-		anchor={0.5}
-		x={120}
-		y={110}
-		width={130}
-		height={130}
-		alpha={0.82}
-		rotation={rotation}
-	/>
 </FadeContainer>

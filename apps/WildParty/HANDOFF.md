@@ -685,6 +685,16 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - 調整入口：各 Layout 檔的 pod x 偏移常數與 scale 值
 - **二修（使用者回饋 BET 太大 + 金額列擋盤面）**：BET 再縮 30%（desktop/landscape 1.6→1.12、tablet/portrait 2→1.4），−/＋間距同步收攏（desktop ±138、tablet/portrait ±170）、auto/turbo 收攏（±230/±275/±285、landscape ±160）；desktop 金額列降回 y-185（僅比原位高 25px）、portrait balance 移回 BET 下方（H-240）、win 回中央 H-670、menu/buy 回 ±470→±470 不變、pod y 下修貼齊底條（desktop 40、tablet 15）
 - **三修**：BET 再縮 5%（desktop/landscape 1.12→1.064、tablet/portrait 1.4→1.33）；balance/win/bet 金額列縮 10%（desktop/landscape 0.8→0.72、tablet/portrait 1→0.9）
+- **四修**：BET 再縮 10%（desktop/landscape 0.96、tablet/portrait 1.2）；金額列再縮 10%（0.65 / 0.81）並上移 10px（desktop y-195）——與 BET 頂部保持 ~21px 不相交
+
+### 4.25 背景層改版（2026-07-03）
+
+改動位置：`apps/WildParty/src/components/Background.svelte`。
+
+- [x] **移除頂部旋轉 disco ball**（base 置中、feature 左上的 wpH1 sprite 連同 rotation state 一併移除）
+- [x] **鎂光燈增強**：三道光束 alpha 0.05/0.035/0.03 → 0.13/0.1/0.09、照射距離 0.42→0.58 畫面高，新增主光束內的白色熱核，並加演唱會式閃爍脈動（`flicker = 1+0.3sin(beamPhase*7)`）
+- [x] **氣球 ×6**：新 `drawBalloons` 層——派對六色氣球緩慢上飄 + 正弦左右晃動、繩子反向彎曲擺動、頂/底邊緣淡出
+- [x] **彩帶下飄**：原本只有 feature 有彩帶，base 背景也加上（26 片翻轉彩帶通用兩景）
 
 ---
 
