@@ -712,6 +712,7 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - [x] big win 報獎圖示的光暈圈圈移除（`WinLevelSymbolIntro` 只留主題場景+呼吸縮放）
 - [x] **FG 轉場重做（T2 彩帶簾幕 wipe）**：取代 disco 球拉近——110 片彩帶從左右上三邊湧入蓋滿畫面（0.62s，深紫底閃保證全遮）→ **蓋滿即 resolve**（場景在簾幕後切換；`Transition.svelte` 改 `oncovered`/`oncomplete` 雙回呼）→ 彩帶重力散落 0.9s 揭示新場景。調整入口：`TransitionAnimation` 的 `T_COVERED`/`T_TOTAL`/`PIECES` 數量
 - [x] **開遊戲進場（E3 波浪點亮）**：新元件 `EntryReveal.svelte`（載入畫面關閉後執行一次，總長 1s）——白閃 0.16s + 盤面中央 FxBurst + 五輪暗罩由左至右每 80ms 依序淡出（波浪亮起）
+- [x] **FG 結束還原觸發盤面**（bug 修正：原本回主遊戲顯示 FG 最後一轉的盤面）：`bookEventHandlerMap` 在 basegame reveal 時記住 `lastBaseGameBoard`，freeSpinEnd 的轉場簾幕蓋滿後 `boardSettle` 還原——玩家回來看到的是觸發 FG 的那一盤 scatter
 
 ---
 
