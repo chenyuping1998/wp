@@ -710,6 +710,8 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - 後續清單（優先序）：符號拆件下放盤面（W/S）、banner 切字入場+掃光、金幣兩段式景深、停輪減速曲線、轉場重做、win line 流光——見對話 2026-07-04 動畫優化清單
 - [x] **PreFreeGameHint 重做（B 懸停預告 + A 拖尾）**：直線飄過 700ms → 三拍演出 1.7s——右側 ease-out 彈入（弧線）→ 中央懸停 0.65s（全畫面壓暗 34% 聚光、光暈膨脹、脈動、`sfx_anticipation_start`）→ ease-in 加速衝出左側（速度拉伸 + `sfx_wild_explode` + FxBurst 爆點）；全程 12 顆星塵拖尾（位置環形緩衝取樣延遲 + 抖動 + additive）
 - [x] big win 報獎圖示的光暈圈圈移除（`WinLevelSymbolIntro` 只留主題場景+呼吸縮放）
+- [x] **FG 轉場重做（T2 彩帶簾幕 wipe）**：取代 disco 球拉近——110 片彩帶從左右上三邊湧入蓋滿畫面（0.62s，深紫底閃保證全遮）→ **蓋滿即 resolve**（場景在簾幕後切換；`Transition.svelte` 改 `oncovered`/`oncomplete` 雙回呼）→ 彩帶重力散落 0.9s 揭示新場景。調整入口：`TransitionAnimation` 的 `T_COVERED`/`T_TOTAL`/`PIECES` 數量
+- [x] **開遊戲進場（E3 波浪點亮）**：新元件 `EntryReveal.svelte`（載入畫面關閉後執行一次，總長 1s）——白閃 0.16s + 盤面中央 FxBurst + 五輪暗罩由左至右每 80ms 依序淡出（波浪亮起）
 
 ---
 

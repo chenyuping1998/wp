@@ -28,6 +28,7 @@
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
 	import FreeSpinOutro from './FreeSpinOutro.svelte';
 	import Transition from './Transition.svelte';
+	import EntryReveal from './EntryReveal.svelte';
 	import I18nTest from './I18nTest.svelte';
 	import PreFreeGameHint from './PreFreeGameHint.svelte';
 
@@ -71,6 +72,8 @@
 			<GlobalMultiplier />
 			<WinLines />
 		</MainContainer>
+
+		<EntryReveal />
 
 		<UI>
 			{#snippet gameName()}

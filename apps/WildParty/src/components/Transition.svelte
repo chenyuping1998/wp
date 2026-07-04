@@ -11,20 +11,22 @@
 	const context = getContext();
 
 	let transitioning = $state(false);
-	let oncomplete = $state(() => {});
+	let oncovered = $state(() => {});
 
 	context.eventEmitter.subscribeOnMount({
+		// resolves as soon as the curtain fully covers the screen, so the scene
+		// swaps behind it; the curtain then rains away on top of the new scene
 		transition: async () => {
 			transitioning = true;
-			await waitForResolve((resolve) => (oncomplete = resolve));
+			await waitForResolve((resolve) => (oncovered = resolve));
 		},
 	});
 </script>
 
 {#if transitioning}
 	<TransitionAnimation
+		oncovered={() => oncovered()}
 		oncomplete={() => {
-			oncomplete();
 			transitioning = false;
 		}}
 	/>
