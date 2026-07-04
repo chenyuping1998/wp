@@ -122,23 +122,16 @@
 	};
 
 
-	// floating party bokeh, drifting up with a gentle sway
-	const drawBokeh = (g: PixiGraphics) => {
+	// floating party bokeh, drifting up with a gentle sway — soft textured
+	// motes (fxGlow) instead of hard vector circles
+	const bokehState = (orb: (typeof BOKEH)[number]) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		const seconds = tick / 62.5;
-		g.clear();
-		for (const orb of BOKEH) {
-			const travel = height + orb.size * 4;
-			const y = height + orb.size * 2 - ((seconds * orb.rise + orb.phase * travel) % travel);
-			const x =
-				orb.x * width + Math.sin(seconds * orb.swayFreq + orb.phase * 9) * orb.swayAmp;
-			// fade near top and bottom edges
-			const edge = Math.min(1, (height - y) / 90, (y + orb.size * 2) / 90);
-			if (edge <= 0) continue;
-			g.beginFill(orb.color, orb.alpha * edge);
-			g.drawCircle(x, y, orb.size);
-			g.endFill();
-		}
+		const travel = height + orb.size * 4;
+		const y = height + orb.size * 2 - ((seconds * orb.rise + orb.phase * travel) % travel);
+		const x = orb.x * width + Math.sin(seconds * orb.swayFreq + orb.phase * 9) * orb.swayAmp;
+		const edge = Math.max(0, Math.min(1, (height - y) / 90, (y + orb.size * 2) / 90));
+		return { x, y, alpha: orb.alpha * edge * 2.2 };
 	};
 
 	// confetti raining down, each piece glowing like the bloom-lit bits in the bg art
@@ -203,10 +196,29 @@
 
 <Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x120016} zIndex={-3} />
 
+{#snippet bokeh()}
+	{#each BOKEH as orb, index (index)}
+		{@const state = bokehState(orb)}
+		{#if state.alpha > 0.01}
+			<Sprite
+				key="fxGlow"
+				anchor={0.5}
+				x={state.x}
+				y={state.y}
+				tint={orb.color}
+				blendMode="add"
+				width={orb.size * 5}
+				height={orb.size * 5}
+				alpha={state.alpha}
+			/>
+		{/if}
+	{/each}
+{/snippet}
+
 <!-- Wild Party base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="wildPartyBgBase" {...context.stateLayoutDerived.canvasSizes()} />
-	<Graphics draw={drawBokeh} />
+	{@render bokeh()}
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
 	<Graphics draw={drawConfetti} />
 </FadeContainer>
@@ -214,7 +226,7 @@
 <!-- Wild Party free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="wildPartyBgFeature" {...context.stateLayoutDerived.canvasSizes()} />
-	<Graphics draw={drawBokeh} />
+	{@render bokeh()}
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
 	<Graphics draw={drawConfetti} />
 </FadeContainer>

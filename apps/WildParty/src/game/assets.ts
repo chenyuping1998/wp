@@ -269,6 +269,22 @@ export default {
 		src: new URL('../../assets/sprites/wildPartyBackground/bg_feature.png', import.meta.url).href,
 		preload: true,
 	},
+	// soft-falloff FX textures (see design/generate_fx_textures.mjs)
+	fxGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/wildPartyFx/fx_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	fxStar: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/wildPartyFx/fx_star.png', import.meta.url).href,
+		preload: true,
+	},
+	fxStreak: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/wildPartyFx/fx_streak.png', import.meta.url).href,
+		preload: true,
+	},
 	anticipation: {
 		type: 'spine',
 		src: {

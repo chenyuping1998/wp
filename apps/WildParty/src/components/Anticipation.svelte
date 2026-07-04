@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { SpineProvider, SpineTrack, Graphics } from 'pixi-svelte';
+	import { SpineProvider, SpineTrack, Graphics, Sprite } from 'pixi-svelte';
 	import { stateBetDerived } from 'state-shared';
 	import { onMount } from 'svelte';
 
@@ -31,8 +31,20 @@
 		offset: i / 10 + ((i * 0.37) % 0.1),
 		xRatio: (i % 5) / 4 - 0.5,
 		speed: 2400 + (i % 3) * 600,
-		size: 2 + (i % 3),
+		size: 14 + (i % 3) * 8,
+		color: i % 2 ? 0xfff07a : 0xff8ede,
 	}));
+
+	// textured soft motes instead of hard vector dots (pulse drives re-eval)
+	const sparkState = (spark: (typeof SPARKS)[number], _pulse: number) => {
+		const now = Date.now();
+		const p = (now / spark.speed + spark.offset) % 1;
+		return {
+			x: spark.xRatio * SYMBOL_SIZE * 0.34 + Math.sin(now / 260 + spark.offset * 12) * 5,
+			y: SYMBOL_SIZE * 0.72 - p * SYMBOL_SIZE * 1.44,
+			alpha: Math.sin(p * Math.PI) * (0.5 + 0.4 * pulse),
+		};
+	};
 
 	$effect(() => {
 		// Stop immediately when reel stops to avoid the heavy "falling/landing" outro feel.
@@ -65,21 +77,22 @@
 			g.lineStyle(1.6, 0xffffff, 0.25 + 0.35 * pulse);
 			g.drawRoundedRect(-SYMBOL_SIZE * 0.17, -SYMBOL_SIZE * 0.63, SYMBOL_SIZE * 0.34, SYMBOL_SIZE * 1.26, 18);
 			g.lineStyle(0);
-
-			// rising sparks
-			const now = Date.now();
-			for (const spark of SPARKS) {
-				const p = (now / spark.speed + spark.offset) % 1;
-				const sy = SYMBOL_SIZE * 0.72 - p * SYMBOL_SIZE * 1.44;
-				const sx =
-					spark.xRatio * SYMBOL_SIZE * 0.34 + Math.sin(now / 260 + spark.offset * 12) * 5;
-				const alpha = Math.sin(p * Math.PI) * (0.45 + 0.35 * pulse);
-				g.beginFill(spark.size % 2 ? 0xfff07a : 0xff8ede, alpha);
-				g.drawCircle(sx, sy, spark.size);
-				g.endFill();
-			}
 		}}
 	/>
+	{#each SPARKS as spark, index (index)}
+		{@const state = sparkState(spark, pulse)}
+		<Sprite
+			key="fxGlow"
+			anchor={0.5}
+			x={state.x}
+			y={state.y}
+			tint={spark.color}
+			blendMode="add"
+			width={spark.size}
+			height={spark.size}
+			alpha={state.alpha}
+		/>
+	{/each}
 	<SpineTrack
 		trackIndex={0}
 		animationName="anticipation_loop"

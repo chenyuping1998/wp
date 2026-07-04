@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Container, Graphics } from 'pixi-svelte';
+	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	type Props = {
@@ -25,16 +25,19 @@
 		life: number;
 		color: number;
 		spin: number;
+		// per-spark launch stagger breaks the mechanical all-at-once look
+		delay: number;
 	};
 
 	// one-shot spark field, randomized per mount
 	const sparks: Spark[] = Array.from({ length: 12 }, (_, i) => ({
 		angle: (i / 12) * Math.PI * 2 + (Math.random() - 0.5) * 0.5,
 		speed: 150 + Math.random() * 130,
-		size: 4.5 + Math.random() * 4.5,
-		life: 0.6 + Math.random() * 0.25,
+		size: 26 + Math.random() * 26,
+		life: 0.55 + Math.random() * 0.3,
 		color: PARTY_COLORS[i % PARTY_COLORS.length],
-		spin: (Math.random() - 0.5) * 8,
+		spin: (Math.random() - 0.5) * 6,
+		delay: Math.random() * 0.09,
 	}));
 
 	let t = $state(-1); // -1 = not started yet
@@ -58,61 +61,68 @@
 
 	const easeOut = (p: number) => 1 - (1 - p) ** 3;
 
-	const draw = (g: PixiGraphics) => {
+	const sparkState = (spark: Spark, time: number) => {
+		const s = props.scale ?? 1;
+		const seconds = Math.max(0, (time * DURATION) / 1000 - spark.delay);
+		const p = seconds / spark.life;
+		if (p <= 0 || p >= 1) return null;
+		const dist = spark.speed * seconds * s;
+		return {
+			x: Math.cos(spark.angle) * dist,
+			y: Math.sin(spark.angle) * dist + 130 * seconds * seconds * s,
+			size: spark.size * s * (1 - p * 0.6),
+			rot: spark.angle + spark.spin * seconds,
+			alpha: p < 0.12 ? p / 0.12 : 1 - (p - 0.12) / 0.88,
+		};
+	};
+
+	// expanding shock rings stay vector — thin strokes read fine
+	const drawRings = (g: PixiGraphics) => {
 		g.clear();
 		if (t < 0 || t >= 1) return;
 		const s = props.scale ?? 1;
-		const seconds = (t * DURATION) / 1000;
-
-		// central flash
-		const flashAlpha = (1 - t) ** 1.6 * 0.5;
-		if (flashAlpha > 0.02) {
-			g.beginFill(0xfff2c0, flashAlpha);
-			g.drawCircle(0, 0, 58 * s * easeOut(Math.min(1, t * 3)));
-			g.endFill();
-		}
-
-		// two expanding rings, the second slightly delayed
 		for (const [delayP, width] of [
-			[0, 6],
-			[0.14, 4],
+			[0, 5],
+			[0.14, 3.5],
 		] as const) {
 			const p = (t - delayP) / (1 - delayP);
 			if (p <= 0 || p >= 1) continue;
-			g.lineStyle(width * s * (1 - p), 0xffe08a, (1 - p) * 0.85);
+			g.lineStyle(width * s * (1 - p), 0xffe08a, (1 - p) * 0.7);
 			g.drawCircle(0, 0, (18 + 68 * easeOut(p)) * s);
 		}
 		g.lineStyle(0);
-
-		// diamond sparks flying outward with a little gravity
-		for (const spark of sparks) {
-			const p = seconds / spark.life;
-			if (p >= 1) continue;
-			const dist = spark.speed * seconds * s;
-			const px = Math.cos(spark.angle) * dist;
-			const py = Math.sin(spark.angle) * dist + 130 * seconds * seconds * s;
-			const size = spark.size * s * (1 - p * 0.75);
-			const rot = spark.angle + spark.spin * seconds;
-			const cos = Math.cos(rot);
-			const sin = Math.sin(rot);
-			const long = size * 1.6;
-			const short = size * 0.55;
-			g.beginFill(spark.color, (1 - p) * 0.95);
-			g.drawPolygon([
-				px + cos * long,
-				py + sin * long,
-				px - sin * short,
-				py + cos * short,
-				px - cos * long,
-				py - sin * long,
-				px + sin * short,
-				py - cos * short,
-			]);
-			g.endFill();
-		}
 	};
 </script>
 
 <Container x={props.x ?? 0} y={props.y ?? 0}>
-	<Graphics {draw} />
+	{#if t >= 0 && t < 1}
+		<!-- soft central flash (textured, additive — no hard vector edge) -->
+		<Sprite
+			key="fxGlow"
+			anchor={0.5}
+			tint={0xffe9a8}
+			blendMode="add"
+			width={150 * (props.scale ?? 1) * easeOut(Math.min(1, t * 3))}
+			height={150 * (props.scale ?? 1) * easeOut(Math.min(1, t * 3))}
+			alpha={(1 - t) ** 1.6}
+		/>
+		<Graphics draw={drawRings} />
+		{#each sparks as spark, index (index)}
+			{@const state = sparkState(spark, t)}
+			{#if state}
+				<Sprite
+					key="fxStar"
+					anchor={0.5}
+					x={state.x}
+					y={state.y}
+					rotation={state.rot}
+					tint={spark.color}
+					blendMode="add"
+					width={state.size}
+					height={state.size}
+					alpha={state.alpha}
+				/>
+			{/if}
+		{/each}
+	{/if}
 </Container>
