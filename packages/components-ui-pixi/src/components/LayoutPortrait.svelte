@@ -95,7 +95,7 @@
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
-			scale={1.4}
+			scale={1.33}
 		>
 			{@render props.buttonBet({ anchor: 0.5 })}
 		</Container>
@@ -135,6 +135,7 @@
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 240}
+			scale={0.9}
 		>
 			{@render props.amountBalance({ stacked: true })}
 		</Container>
@@ -144,6 +145,7 @@
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 670}
+			scale={0.9}
 		>
 			{@render props.amountWin({ stacked: true })}
 		</Container>
@@ -162,6 +164,7 @@
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 130}
+			scale={0.9}
 		>
 			{@render props.amountBet({ stacked: true })}
 		</Container>

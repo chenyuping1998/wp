@@ -33,15 +33,15 @@
 			},
 		})}
 	>
-		<Container y={DESKTOP_BASE_SIZE * 0.5 - 220} x={880 - 640}>
+		<Container y={DESKTOP_BASE_SIZE * 0.5 - 220} x={880 - 640} scale={0.9}>
 			{@render props.amountBalance({ stacked: true })}
 		</Container>
 
-		<Container y={DESKTOP_BASE_SIZE * 0.5 - 220} x={880}>
+		<Container y={DESKTOP_BASE_SIZE * 0.5 - 220} x={880} scale={0.9}>
 			{@render props.amountWin({ stacked: true })}
 		</Container>
 
-		<Container y={DESKTOP_BASE_SIZE * 0.5 - 220} x={880 + 640}>
+		<Container y={DESKTOP_BASE_SIZE * 0.5 - 220} x={880 + 640} scale={0.9}>
 			{@render props.amountBet({ stacked: true })}
 		</Container>
 
@@ -62,7 +62,7 @@
 			{@render props.buttonDecrease({ anchor: 0.5 })}
 		</Container>
 
-		<Container y={15} x={890} scale={1.4}>
+		<Container y={15} x={890} scale={1.33}>
 			{@render props.buttonBet({ anchor: 0.5 })}
 		</Container>
 
