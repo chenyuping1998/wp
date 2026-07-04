@@ -40,15 +40,15 @@
 			{@render props.buttonBuyBonus({ anchor: 0.5 })}
 		</Container>
 
-		<Container y={LANDSCAPE_BASE_SIZE * 0.5} x={420} scale={0.72}>
+		<Container y={LANDSCAPE_BASE_SIZE * 0.5} x={420} scale={0.65}>
 			{@render props.amountBalance({ stacked: true })}
 		</Container>
 
-		<Container y={LANDSCAPE_BASE_SIZE * 0.5} x={910} scale={0.72}>
+		<Container y={LANDSCAPE_BASE_SIZE * 0.5} x={910} scale={0.65}>
 			{@render props.amountWin({ stacked: true })}
 		</Container>
 
-		<Container y={LANDSCAPE_BASE_SIZE * 0.5} x={1400} scale={0.72}>
+		<Container y={LANDSCAPE_BASE_SIZE * 0.5} x={1400} scale={0.65}>
 			{@render props.amountBet({ stacked: true })}
 		</Container>
 
@@ -75,7 +75,7 @@
 			{@render props.buttonDecrease({ anchor: 0.5 })}
 		</Container>
 
-		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 90} y={LANDSCAPE_BASE_SIZE * 0.5} scale={1.064}>
+		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 90} y={LANDSCAPE_BASE_SIZE * 0.5} scale={0.96}>
 			{@render props.buttonBet({ anchor: 0.5 })}
 		</Container>
 
