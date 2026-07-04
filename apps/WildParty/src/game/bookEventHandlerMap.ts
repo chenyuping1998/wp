@@ -9,8 +9,12 @@ import { playBookEvent } from './utils';
 import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
-import type { Position } from './types';
+import type { Position, RawSymbol } from './types';
 import config from './config';
+
+// the last base-game reveal (i.e. the board that triggered free spins) —
+// restored when the feature ends so the player returns to the trigger board
+let lastBaseGameBoard: RawSymbol[][] | null = null;
 
 const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) => {
 	if (winLevelData?.alias === 'max') eventEmitter.broadcastAsync({ type: 'uiHide' });
@@ -56,6 +60,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			eventEmitter.broadcast({ type: 'stopButtonEnable' });
 			recordBookEvent({ bookEvent });
 		}
+
+		// remember the triggering base board so it can be restored after free spins
+		if (bookEvent.gameType === 'basegame') lastBaseGameBoard = bookEvent.board;
 
 		stateGame.gameType = bookEvent.gameType;
 		await stateGameDerived.enhancedBoard.spin({
@@ -232,7 +239,12 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
 		stateUi.freeSpinCounterShow = false;
+		// transition resolves once the curtain fully covers the screen — swap the
+		// board back to the base spin that triggered the feature behind it
 		await eventEmitter.broadcastAsync({ type: 'transition' });
+		if (lastBaseGameBoard) {
+			eventEmitter.broadcast({ type: 'boardSettle', board: lastBaseGameBoard });
+		}
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });
