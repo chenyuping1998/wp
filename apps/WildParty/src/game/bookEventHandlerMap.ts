@@ -240,6 +240,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	setWin: async (bookEvent: BookEventOfType<'setWin'>) => {
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
 
+		// Regular wins just tick up in the bottom win label — only big-tier
+		// wins (big/super/mega/epic/max) get the full pop-up presentation.
+		if (winLevelData?.type !== 'big') return;
+
 		eventEmitter.broadcast({ type: 'winShow' });
 		winLevelSoundsPlay({ winLevelData });
 		await eventEmitter.broadcastAsync({

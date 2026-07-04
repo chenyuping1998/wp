@@ -41,7 +41,7 @@
 		}}
 	/>
 
-	<SpineProvider key={props.symbolKey} width={360}>
+	<SpineProvider key={props.symbolKey} width={290}>
 		<SpineTrack trackIndex={0} animationName="win" loop />
 	</SpineProvider>
 </Container>

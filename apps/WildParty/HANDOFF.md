@@ -653,6 +653,12 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - 觸發後的 3 秒停頓流程不變（`bookEventHandlerMap` 的 `waitForTimeout(3000)`）
 - 若只要單響：`playFreeGameBell` 的 offsets 陣列改成 `[0]` 即可
 
+### 4.23 報獎排版與一般得分簡化（2026-07-03）
+
+- [x] Big win 報獎排版：圖示上移（Container y -250→-330）並縮小（SpineProvider width 360→290），滾分數字下移（y 180→235）縮小（fontSize 3.6→2.6×SYMBOL_SIZE）——修「禮物擋住 BIG WIN 字樣」
+- [x] 一般得分（type ≠ big）不再跳報獎彈窗：`bookEventHandlerMap.setWin` 開頭直接 return，金額只在下方 win 欄顯示（`setTotalWin` 已更新 `winBookEventAmount`）
+- [ ] **待辦（下次）**：報獎圖示主題動畫——H4 禮物開蓋、H3 香檳噴瓶塞、H2 雞尾酒晃動、H1 disco 球放光。需先把單張 PNG 拆件（蓋子/瓶塞/液面獨立圖層）再做多部位 spine，屬美術拆件工作
+
 ---
 
 ## 5. 常用指令
