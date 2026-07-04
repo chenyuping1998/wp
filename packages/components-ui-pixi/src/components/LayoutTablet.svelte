@@ -54,23 +54,23 @@
 		</Container>
 
 		<!-- spin pod: [autospin][−][BET][+][turbo] centered on the big bet button -->
-		<Container y={-5} x={890 - 325} scale={0.7}>
+		<Container y={15} x={890 - 275} scale={0.7}>
 			{@render props.buttonAutoSpin({ anchor: 0.5 })}
 		</Container>
 
-		<Container y={-5} x={890 - 220} scale={0.5}>
+		<Container y={15} x={890 - 170} scale={0.5}>
 			{@render props.buttonDecrease({ anchor: 0.5 })}
 		</Container>
 
-		<Container y={-5} x={890} scale={2}>
+		<Container y={15} x={890} scale={1.4}>
 			{@render props.buttonBet({ anchor: 0.5 })}
 		</Container>
 
-		<Container y={-5} x={890 + 220} scale={0.5}>
+		<Container y={15} x={890 + 170} scale={0.5}>
 			{@render props.buttonIncrease({ anchor: 0.5 })}
 		</Container>
 
-		<Container y={-5} x={890 + 325} scale={0.7}>
+		<Container y={15} x={890 + 275} scale={0.7}>
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
 

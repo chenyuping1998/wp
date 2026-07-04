@@ -32,15 +32,15 @@
 			},
 		})}
 	>
-		<Container y={DESKTOP_BASE_SIZE * 0.5 - 240} x={900 - 500} scale={0.8}>
+		<Container y={DESKTOP_BASE_SIZE * 0.5 - 185} x={900 - 500} scale={0.8}>
 			{@render props.amountBalance({ stacked: true })}
 		</Container>
 
-		<Container y={DESKTOP_BASE_SIZE * 0.5 - 240} x={900} scale={0.8}>
+		<Container y={DESKTOP_BASE_SIZE * 0.5 - 185} x={900} scale={0.8}>
 			{@render props.amountWin({ stacked: true })}
 		</Container>
 
-		<Container y={DESKTOP_BASE_SIZE * 0.5 - 240} x={900 + 500} scale={0.8}>
+		<Container y={DESKTOP_BASE_SIZE * 0.5 - 185} x={900 + 500} scale={0.8}>
 			{@render props.amountBet({ stacked: true })}
 		</Container>
 
@@ -53,24 +53,24 @@
 		</Container>
 
 		<!-- spin pod: [autospin][−][BET][+][turbo], all centered on the big bet
-		     button (y=0 keeps the enlarged bet inside the bottom strip) -->
-		<Container y={0} x={910 - 270} scale={0.56}>
+		     button (y=40 keeps the enlarged bet inside the bottom strip) -->
+		<Container y={40} x={910 - 230} scale={0.56}>
 			{@render props.buttonAutoSpin({ anchor: 0.5 })}
 		</Container>
 
-		<Container y={0} x={910 - 178} scale={0.4}>
+		<Container y={40} x={910 - 138} scale={0.4}>
 			{@render props.buttonDecrease({ anchor: 0.5 })}
 		</Container>
 
-		<Container y={0} x={910} scale={1.6}>
+		<Container y={40} x={910} scale={1.12}>
 			{@render props.buttonBet({ anchor: 0.5 })}
 		</Container>
 
-		<Container y={0} x={910 + 178} scale={0.4}>
+		<Container y={40} x={910 + 138} scale={0.4}>
 			{@render props.buttonIncrease({ anchor: 0.5 })}
 		</Container>
 
-		<Container y={0} x={910 + 270} scale={0.56}>
+		<Container y={40} x={910 + 230} scale={0.56}>
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
 	</Container>

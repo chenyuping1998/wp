@@ -95,13 +95,13 @@
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
-			scale={2}
+			scale={1.4}
 		>
 			{@render props.buttonBet({ anchor: 0.5 })}
 		</Container>
 
 		<Container
-			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - 215}
+			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - 170}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
 			scale={0.5}
 		>
@@ -109,7 +109,7 @@
 		</Container>
 
 		<Container
-			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + 215}
+			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + 170}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
 			scale={0.5}
 		>
@@ -117,7 +117,7 @@
 		</Container>
 
 		<Container
-			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - 315}
+			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - 285}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
 			scale={0.7}
 		>
@@ -125,24 +125,24 @@
 		</Container>
 
 		<Container
-			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + 315}
+			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + 285}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
 			scale={0.7}
 		>
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
+
+		<Container
+			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
+			y={context.stateLayoutDerived.mainLayoutStandard().height - 240}
+		>
+			{@render props.amountBalance({ stacked: true })}
+		</Container>
 	</Container>
 
 	<Container y={Math.min(drawerTween.current, 350)}>
 		<Container
-			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - 270}
-			y={context.stateLayoutDerived.mainLayoutStandard().height - 670}
-		>
-			{@render props.amountBalance({ stacked: true })}
-		</Container>
-
-		<Container
-			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + 270}
+			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 670}
 		>
 			{@render props.amountWin({ stacked: true })}

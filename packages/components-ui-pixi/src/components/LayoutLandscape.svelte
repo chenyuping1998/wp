@@ -67,23 +67,23 @@
 	>
 		<!-- spin pod: autospin above, turbo below, −/+ hugging the big bet button;
 		     bet shifted left so the + button stays on screen -->
-		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 135} y={LANDSCAPE_BASE_SIZE * 0.5 - 196} scale={0.56}>
+		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 90} y={LANDSCAPE_BASE_SIZE * 0.5 - 160} scale={0.56}>
 			{@render props.buttonAutoSpin({ anchor: 0.5 })}
 		</Container>
 
-		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 135 - 178} y={LANDSCAPE_BASE_SIZE * 0.5} scale={0.4}>
+		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 90 - 138} y={LANDSCAPE_BASE_SIZE * 0.5} scale={0.4}>
 			{@render props.buttonDecrease({ anchor: 0.5 })}
 		</Container>
 
-		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 135} y={LANDSCAPE_BASE_SIZE * 0.5} scale={1.6}>
+		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 90} y={LANDSCAPE_BASE_SIZE * 0.5} scale={1.12}>
 			{@render props.buttonBet({ anchor: 0.5 })}
 		</Container>
 
-		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 135 + 178} y={LANDSCAPE_BASE_SIZE * 0.5} scale={0.4}>
+		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 90 + 138} y={LANDSCAPE_BASE_SIZE * 0.5} scale={0.4}>
 			{@render props.buttonIncrease({ anchor: 0.5 })}
 		</Container>
 
-		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 135} y={LANDSCAPE_BASE_SIZE * 0.5 + 196} scale={0.56}>
+		<Container x={LANDSCAPE_BASE_SIZE * 0.5 - 90} y={LANDSCAPE_BASE_SIZE * 0.5 + 160} scale={0.56}>
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
 	</Container>
