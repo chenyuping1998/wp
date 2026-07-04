@@ -121,66 +121,6 @@
 		g.endFill();
 	};
 
-	// ambient balloons — the SAME glossy cast as the bg art edges (gold /
-	// magenta / purple latex, leopard print, foil star), rendered as sprites
-	// from design/generate_balloons.mjs
-	const BALLOON_LOOKS = [
-		{ assetKey: 'wpBalloonGold', glow: 0xffb833 },
-		{ assetKey: 'wpBalloonMagenta', glow: 0xe0218a },
-		{ assetKey: 'wpBalloonPurple', glow: 0x8a2be2 },
-		{ assetKey: 'wpBalloonLeopard', glow: 0xe8a33d },
-		{ assetKey: 'wpBalloonStar', glow: 0xff4fc3 },
-		{ assetKey: 'wpBalloonMagenta', glow: 0xe0218a },
-	];
-	const BALLOONS = Array.from({ length: 6 }, (_, i) => ({
-		...BALLOON_LOOKS[i],
-		x: 0.06 + rand() * 0.88,
-		phase: rand(),
-		rise: 9 + rand() * 9,
-		size: 26 + rand() * 12,
-		swayAmp: 20 + rand() * 22,
-		swayFreq: 0.45 + rand() * 0.5,
-	}));
-
-	// balloon sprite art is 256×330 with the body center at (128, 140)
-	const BALLOON_RATIO = 330 / 256;
-	const BALLOON_ANCHOR_Y = 140 / 330;
-
-	const balloonState = (balloon: (typeof BALLOONS)[number]) => {
-		const { width, height } = context.stateLayoutDerived.canvasSizes();
-		const seconds = tick / 62.5;
-		const travel = height + balloon.size * 6;
-		const y =
-			height + balloon.size * 3 - ((seconds * balloon.rise + balloon.phase * travel) % travel);
-		const swayPhase = seconds * balloon.swayFreq + balloon.phase * 8;
-		const x = balloon.x * width + Math.sin(swayPhase) * balloon.swayAmp;
-		const edge = Math.max(0, Math.min(1, (height - y) / 110, (y + balloon.size * 3) / 110));
-		return { x, y, edge, tilt: Math.sin(swayPhase) * 0.09, swayPhase };
-	};
-
-	// glow halos + strings behind the balloon sprites
-	const drawBalloonGlow = (g: PixiGraphics) => {
-		g.clear();
-		for (const balloon of BALLOONS) {
-			const state = balloonState(balloon);
-			if (state.edge <= 0) continue;
-			const rx = balloon.size;
-			const ry = balloon.size * 1.2;
-			g.beginFill(balloon.glow, state.edge * 0.1);
-			g.drawEllipse(state.x, state.y, rx * 2.1, ry * 1.9);
-			g.endFill();
-			g.beginFill(balloon.glow, state.edge * 0.13);
-			g.drawEllipse(state.x, state.y, rx * 1.5, ry * 1.4);
-			g.endFill();
-
-			// wavy string, bending opposite to the sway direction
-			const lean = Math.cos(state.swayPhase) * balloon.swayAmp * 0.35;
-			g.lineStyle(1.5, 0xd9b878, state.edge * 0.45);
-			g.moveTo(state.x, state.y + ry + 8);
-			g.quadraticCurveTo(state.x - lean, state.y + ry + 40, state.x - lean * 0.4, state.y + ry + 74);
-			g.lineStyle(0);
-		}
-	};
 
 	// floating party bokeh, drifting up with a gentle sway
 	const drawBokeh = (g: PixiGraphics) => {
@@ -263,31 +203,11 @@
 
 <Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x120016} zIndex={-3} />
 
-{#snippet balloons()}
-	<Graphics draw={drawBalloonGlow} />
-	{#each BALLOONS as balloon, index (index)}
-		{@const state = balloonState(balloon)}
-		{#if state.edge > 0}
-			<Sprite
-				key={balloon.assetKey}
-				anchor={{ x: 0.5, y: BALLOON_ANCHOR_Y }}
-				x={state.x}
-				y={state.y}
-				rotation={state.tilt}
-				width={balloon.size * 2}
-				height={balloon.size * 2 * BALLOON_RATIO}
-				alpha={0.95 * state.edge}
-			/>
-		{/if}
-	{/each}
-{/snippet}
-
 <!-- Wild Party base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="wildPartyBgBase" {...context.stateLayoutDerived.canvasSizes()} />
 	<Graphics draw={drawBokeh} />
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
-	{@render balloons()}
 	<Graphics draw={drawConfetti} />
 </FadeContainer>
 
@@ -296,6 +216,5 @@
 	<Sprite key="wildPartyBgFeature" {...context.stateLayoutDerived.canvasSizes()} />
 	<Graphics draw={drawBokeh} />
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
-	{@render balloons()}
 	<Graphics draw={drawConfetti} />
 </FadeContainer>
