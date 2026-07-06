@@ -57,12 +57,15 @@
 					}}
 				/>
 				<SpineSlot slotName="slot_number">
+					<!-- fontSize is compounded by bone_number's own 2x scale (see
+					     fs_number_party.json), so this ends up ~2x on screen — sized
+					     to sit inside the number_ring plaque's inner box, not spill past it -->
 					<BitmapText
 						anchor={{ x: 0.5, y: 0.5 }}
 						text={freeSpinsFromEvent}
 						style={{
 							fontFamily: 'gold',
-							fontSize: sizes.width * 0.1,
+							fontSize: sizes.width * 0.05,
 							fontWeight: 'bold',
 						}}
 					/>

@@ -164,13 +164,37 @@ const fsPanel = svgWrap(
 	</radialGradient>`,
 );
 
-// number plaque (520×390) — gold-trimmed badge behind the free-spin counter
+// number plaque (520×390) — gold-trimmed badge behind the free-spin counter.
+// Carries the same bunting-string motif as fsPanel (scaled down) so the two
+// layers read as one matched set instead of two different production passes.
 const numberRing = svgWrap(
 	520,
 	390,
 	`
 	<rect x="30" y="40" width="460" height="310" rx="60" fill="url(#plaqBg)" stroke="#2a0a20" stroke-width="12"/>
 	<rect x="48" y="58" width="424" height="274" rx="48" fill="none" stroke="url(#plaqGold)" stroke-width="10"/>
+	<rect x="62" y="72" width="396" height="246" rx="38" fill="none" stroke="#ff8ede" stroke-width="2.5" opacity="0.5"/>
+	<!-- bunting across the top, same palette/hand as fsPanel -->
+	<path d="M 70 62 Q 260 100 450 62" stroke="#2a0a20" stroke-width="4" fill="none"/>
+	${[0, 1, 2, 3, 4]
+		.map((i) => {
+			const t = i / 4;
+			const x = 90 + t * 340;
+			const y = 66 + Math.sin(Math.PI * t) * 32;
+			const colors = ['#ffd75e', '#ff8ede', '#9ef3ff', '#c59bff', '#9effb0'];
+			return `<path d="M ${x - 15} ${y} L ${x + 15} ${y} L ${x} ${y + 26} Z" fill="${colors[i]}" stroke="#2a0a20" stroke-width="3.5" stroke-linejoin="round"/>`;
+		})
+		.join('')}
+	<!-- mini disco ball charms bottom corners, echoing fsPanel's hanging balls -->
+	${[80, 440]
+		.map(
+			(x) => `
+		<circle cx="${x}" cy="336" r="16" fill="url(#ball)" stroke="#2a0a20" stroke-width="3.5"/>
+		<path d="M ${x - 16} 330 Q ${x} 324 ${x + 16} 330 M ${x - 5} 320 L ${x - 5} 352 M ${x + 5} 320 L ${x + 5} 352"
+			stroke="#7a7f9e" stroke-width="1.6" fill="none" opacity="0.8"/>
+		<ellipse cx="${x - 6}" cy="328" rx="5" ry="3" fill="#ffffff" opacity="0.75"/>`,
+		)
+		.join('')}
 	${sparkle(70, 70, 1.3)}
 	${sparkle(452, 320, 1.3)}
 	${sparkle(452, 72, 1, '#ff8ede')}
@@ -180,7 +204,10 @@ const numberRing = svgWrap(
 	</linearGradient>
 	<linearGradient id="plaqGold" x1="0" y1="0" x2="0" y2="1">
 		<stop offset="0" stop-color="#ffe98a"/><stop offset="0.5" stop-color="#e8a33d"/><stop offset="1" stop-color="#b8791a"/>
-	</linearGradient>`,
+	</linearGradient>
+	<radialGradient id="ball" cx="0.38" cy="0.32" r="1">
+		<stop offset="0" stop-color="#f4f6ff"/><stop offset="0.6" stop-color="#c3c9e8"/><stop offset="1" stop-color="#8b91b5"/>
+	</radialGradient>`,
 );
 
 // 8×8 fully transparent anchor for slot-object placeholders

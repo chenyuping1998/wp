@@ -3,7 +3,7 @@
   <info face="gold" size="105" bold="0" italic="0" charset="" unicode="" stretchH="105" smooth="1" aa="1" padding="0,0,0,0" spacing="1,0" outline="0"/>
   <common lineHeight="105" base="105" scaleW="1482" scaleH="214" pages="1" packed="0"/>
   <pages>
-    <page id="0" file="mm_gold.webp"/>
+    <page id="0" file="mm_gold.png"/>
   </pages>
   <chars>
     <char id="32" x="0" y="0" width="39.5" height="1" xoffset="0" yoffset="0" xadvance="39.5" yadvance="1"/>
@@ -24,7 +24,7 @@
     <char id="57" x="1" y="108" width="53" height="105" xoffset="0" yoffset="0" xadvance="53" yadvance="105"/>
     <char id="59" x="1404" y="108" width="25" height="105" xoffset="0" yoffset="0" xadvance="25" yadvance="105"/>
     <char id="61" x="853" y="1" width="54" height="105" xoffset="0" yoffset="0" xadvance="54" yadvance="105"/>
-    <char id="?.png" x="1052" y="108" width="43" height="105" xoffset="0" yoffset="0" xadvance="43" yadvance="105"/>
+    <char id="63" x="1052" y="108" width="43" height="105" xoffset="0" yoffset="0" xadvance="43" yadvance="105"/>
     <char id="65" x="271" y="108" width="50" height="105" xoffset="0" yoffset="0" xadvance="50" yadvance="105"/>
     <char id="66" x="426" y="108" width="48" height="105" xoffset="0" yoffset="0" xadvance="48" yadvance="105"/>
     <char id="67" x="868" y="108" width="44" height="105" xoffset="0" yoffset="0" xadvance="44" yadvance="105"/>

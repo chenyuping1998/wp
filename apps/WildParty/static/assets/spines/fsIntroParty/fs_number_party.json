@@ -26,7 +26,7 @@
     {
       "name": "bone_number",
       "parent": "fs_popup",
-      "y": -30,
+      "y": -22,
       "scaleX": 2,
       "scaleY": 2
     }

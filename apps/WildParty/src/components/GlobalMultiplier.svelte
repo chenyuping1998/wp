@@ -94,7 +94,7 @@
 							text={`${Math.round(previousMultiplier.current)}×`}
 							style={{
 								fontFamily: 'gold',
-								fontSize: SYMBOL_SIZE * 5.2,
+								fontSize: SYMBOL_SIZE * 4.3,
 							}}
 						/>
 					</SpineSlot>
@@ -104,7 +104,7 @@
 							text={`${multiplier}×`}
 							style={{
 								fontFamily: 'gold',
-								fontSize: SYMBOL_SIZE * 5.2,
+								fontSize: SYMBOL_SIZE * 4.3,
 							}}
 						/>
 					</SpineSlot>
