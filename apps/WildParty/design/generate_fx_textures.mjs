@@ -68,7 +68,21 @@ const streak = svgWrap(
 	</radialGradient>`,
 );
 
+// dark-edge / transparent-center vignette — deepens the big-win dim overlay
+// beyond a flat black rect without hiding the center content
+const vignette = svgWrap(
+	256,
+	`<rect width="256" height="256" fill="url(#v)"/>`,
+	`<radialGradient id="v" cx="0.5" cy="0.5" r="0.5">
+		<stop offset="0" stop-color="#000000" stop-opacity="0"/>
+		<stop offset="0.5" stop-color="#000000" stop-opacity="0"/>
+		<stop offset="0.8" stop-color="#1a0a26" stop-opacity="0.55"/>
+		<stop offset="1" stop-color="#0d0515" stop-opacity="0.88"/>
+	</radialGradient>`,
+);
+
 render(glow, 'fx_glow.png', 128);
 render(star, 'fx_star.png', 128);
 render(streak, 'fx_streak.png', 128);
+render(vignette, 'fx_vignette.png', 256);
 console.log('fx textures written to', OUT);

@@ -34,8 +34,9 @@ const sparkle = (x, y, s, color = '#fff8d0') =>
 	`<path d="M ${x} ${y - 8 * s} Q ${x + 2 * s} ${y - 2 * s} ${x + 8 * s} ${y} Q ${x + 2 * s} ${y + 2 * s} ${x} ${y + 8 * s} Q ${x - 2 * s} ${y + 2 * s} ${x - 8 * s} ${y} Q ${x - 2 * s} ${y - 2 * s} ${x} ${y - 8 * s} Z" fill="${color}" opacity="0.95"/>`;
 
 // ─── big win banners (1080×300) ─────────────────────────────────────────────
-const banner = ({ label, rib0, rib1, text0, text1, sparkles }) =>
-	svgWrap(
+const banner = ({ label, rib0, rib1, text0, text1, sparkles }) => {
+	const clipId = `capclip_${text0.replace('#', '')}`;
+	return svgWrap(
 		1080,
 		300,
 		`
@@ -48,13 +49,22 @@ const banner = ({ label, rib0, rib1, text0, text1, sparkles }) =>
 	<path d="M 100 98 Q 540 62 980 98" stroke="#ffffff" stroke-width="6" fill="none" opacity="0.35" stroke-linecap="round"/>
 	<path d="M 96 92 Q 540 52 984 92 L 984 104 Q 540 64 96 104 Z" fill="url(#trimTop)" opacity="0.9"/>
 	<path d="M 96 196 Q 540 236 984 196 L 984 208 Q 540 248 96 208 Z" fill="url(#trimTop)" opacity="0.9"/>
+	<!-- deep drop shadow, offset further for more lift off the ribbon -->
+	<text x="540" y="201" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="118"
+		text-anchor="middle" letter-spacing="4" fill="#150510" opacity="0.5">${label}</text>
+	<!-- wide dark halo sitting behind the glyph, reads as embossed thickness -->
+	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="118"
+		text-anchor="middle" letter-spacing="4" fill="none" stroke="#180614" stroke-width="17" stroke-linejoin="round" opacity="0.9">${label}</text>
 	<!-- art text -->
 	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="118"
-		text-anchor="middle" letter-spacing="4" fill="#2a0a20" opacity="0.55" transform="translate(0 8)">${label}</text>
-	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="118"
-		text-anchor="middle" letter-spacing="4" fill="url(#txt)" stroke="#2a0a20" stroke-width="10" paint-order="stroke">${label}</text>
+		text-anchor="middle" letter-spacing="4" fill="url(#txt)" stroke="#2a0a20" stroke-width="9" paint-order="stroke">${label}</text>
 	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="118"
 		text-anchor="middle" letter-spacing="4" fill="url(#txtShine)">${label}</text>
+	<!-- crisp catch-light band clipped to the glyphs' cap-height, for a pillowy emboss -->
+	<g clip-path="url(#${clipId})">
+		<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="118"
+			text-anchor="middle" letter-spacing="4" fill="#ffffff" opacity="0.5">${label}</text>
+	</g>
 	${sparkles}
 	`,
 		`<linearGradient id="rib" x1="0" y1="0" x2="0" y2="1">
@@ -70,8 +80,85 @@ const banner = ({ label, rib0, rib1, text0, text1, sparkles }) =>
 			<stop offset="0" stop-color="#ffffff" stop-opacity="0.7"/>
 			<stop offset="0.4" stop-color="#ffffff" stop-opacity="0"/>
 			<stop offset="1" stop-color="#000000" stop-opacity="0.15"/>
-		</linearGradient>`,
+		</linearGradient>
+		<clipPath id="${clipId}">
+			<rect x="0" y="96" width="1080" height="44"/>
+		</clipPath>`,
 	);
+};
+
+// ─── shared win-amount readout plaque (940×210) — sits behind the count-up ──
+const countPlaque = svgWrap(
+	940,
+	210,
+	`
+	<rect x="20" y="20" width="900" height="170" rx="85" fill="url(#plaqBg2)" stroke="#2a0a20" stroke-width="9"/>
+	<rect x="34" y="34" width="872" height="142" rx="71" fill="none" stroke="url(#plaqGold2)" stroke-width="8"/>
+	<rect x="46" y="45" width="848" height="120" rx="60" fill="none" stroke="#ff8ede" stroke-width="2" opacity="0.4"/>
+	<path d="M 46 50 Q 470 20 894 50" stroke="#ffffff" stroke-width="4" fill="none" opacity="0.25" stroke-linecap="round"/>
+	${sparkle(70, 105, 1.1)}
+	${sparkle(870, 105, 1.1, '#ff8ede')}
+	`,
+	`<linearGradient id="plaqBg2" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#3d1245"/><stop offset="1" stop-color="#1d0b30"/>
+	</linearGradient>
+	<linearGradient id="plaqGold2" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#ffe98a"/><stop offset="0.5" stop-color="#e8a33d"/><stop offset="1" stop-color="#b8791a"/>
+	</linearGradient>`,
+);
+
+// ─── shared "opulence" pile (1200×420) — gifts/confetti/balloons peeking out
+// from behind the banner, standing in for the reference jackpot art's coin pile
+const pileDecoration = svgWrap(
+	1200,
+	420,
+	`
+	<path d="M 40 340 Q 140 200 60 80" stroke="#ffd75e" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.85"/>
+	<path d="M 1160 340 Q 1060 200 1140 80" stroke="#ff8ede" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.85"/>
+	<g>
+		<ellipse cx="120" cy="150" rx="46" ry="58" fill="url(#balloonA)" stroke="#2a0a20" stroke-width="6"/>
+		<path d="M 120 208 L 120 250" stroke="#2a0a20" stroke-width="4"/>
+		<ellipse cx="104" cy="128" rx="12" ry="18" fill="#ffffff" opacity="0.35" transform="rotate(-20 104 128)"/>
+	</g>
+	<g>
+		<ellipse cx="1080" cy="150" rx="46" ry="58" fill="url(#balloonB)" stroke="#2a0a20" stroke-width="6"/>
+		<path d="M 1080 208 L 1080 250" stroke="#2a0a20" stroke-width="4"/>
+		<ellipse cx="1064" cy="128" rx="12" ry="18" fill="#ffffff" opacity="0.35" transform="rotate(-20 1064 128)"/>
+	</g>
+	<g>
+		<rect x="430" y="280" width="150" height="130" rx="10" fill="url(#giftA)" stroke="#2a0a20" stroke-width="7"/>
+		<rect x="430" y="330" width="150" height="26" fill="#fff7d1" opacity="0.9"/>
+		<rect x="493" y="280" width="24" height="130" fill="#fff7d1" opacity="0.9"/>
+		<path d="M 505 280 Q 480 240 505 220 Q 530 240 505 280 Z" fill="#fff7d1" stroke="#2a0a20" stroke-width="4"/>
+	</g>
+	<g>
+		<rect x="600" y="250" width="180" height="160" rx="10" fill="url(#giftB)" stroke="#2a0a20" stroke-width="7"/>
+		<rect x="600" y="310" width="180" height="30" fill="#ffe98a" opacity="0.9"/>
+		<rect x="678" y="250" width="24" height="160" fill="#ffe98a" opacity="0.9"/>
+		<path d="M 690 250 Q 662 206 690 184 Q 718 206 690 250 Z" fill="#ffe98a" stroke="#2a0a20" stroke-width="4"/>
+	</g>
+	<g>
+		<rect x="770" y="300" width="130" height="110" rx="10" fill="url(#giftC)" stroke="#2a0a20" stroke-width="7"/>
+		<rect x="770" y="342" width="130" height="24" fill="#ffffff" opacity="0.85"/>
+		<rect x="826" y="300" width="20" height="110" fill="#ffffff" opacity="0.85"/>
+	</g>
+	${[
+		[220, 300, '#9ef3ff'],
+		[960, 320, '#ffd75e'],
+		[300, 120, '#ff8ede'],
+		[900, 140, '#c59bff'],
+		[520, 90, '#9effb0'],
+		[700, 110, '#ffb64d'],
+	]
+		.map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="9" fill="${c}" stroke="#2a0a20" stroke-width="2.5"/>`)
+		.join('')}
+	`,
+	`<linearGradient id="balloonA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9ede"/><stop offset="1" stop-color="#d02f8f"/></linearGradient>
+	<linearGradient id="balloonB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9ef3ff"/><stop offset="1" stop-color="#2f7bd0"/></linearGradient>
+	<linearGradient id="giftA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2679b"/><stop offset="1" stop-color="#8f2555"/></linearGradient>
+	<linearGradient id="giftB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a4fe0"/><stop offset="1" stop-color="#3c1a8f"/></linearGradient>
+	<linearGradient id="giftC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f64e0"/><stop offset="1" stop-color="#1a2a8f"/></linearGradient>`,
+);
 
 const sparklesFor = (n, seedInit) => {
 	let seed = seedInit;
@@ -216,6 +303,8 @@ const anchor = svgWrap(8, 8, '<rect width="8" height="8" fill="#000000" fill-opa
 // ─── render art ─────────────────────────────────────────────────────────────
 for (const [name, svg] of Object.entries(BANNERS)) render(svg, path.join(BIGWIN_DIR, `${name}.png`), 1080);
 render(anchor, path.join(BIGWIN_DIR, 'anchor.png'), 8);
+render(countPlaque, path.join(BIGWIN_DIR, 'count_plaque.png'), 940);
+render(pileDecoration, path.join(BIGWIN_DIR, 'pile.png'), 1200);
 render(radialBurst('#ff5ec4', '#8f3ce0'), path.join(FS_DIR, 'radial_pink.png'), 1024);
 render(radialBurst('#ffd75e', '#4fd0e0'), path.join(FS_DIR, 'radial_gold.png'), 1024);
 render(fsPanel, path.join(FS_DIR, 'fs_panel.png'), 920);
@@ -249,6 +338,20 @@ for (const alias of ALIASES) {
 					{ time: 0.12, color: 'ffffffff' },
 				],
 			},
+			pile: {
+				attachment: [{ time: 0, name: 'pile' }],
+				rgba: [
+					{ time: 0, color: 'ffffff00' },
+					{ time: 0.16, color: 'ffffffff' },
+				],
+			},
+			count_plaque: {
+				attachment: [{ time: 0, name: 'count_plaque' }],
+				rgba: [
+					{ time: 0, color: 'ffffff00' },
+					{ time: 0.2, color: 'ffffffff' },
+				],
+			},
 		},
 		bones: {
 			banner: {
@@ -276,7 +379,11 @@ for (const alias of ALIASES) {
 		},
 	};
 	bigwinAnimations[`${alias}_win_idle`] = {
-		slots: { banner: { attachment: [{ time: 0, name: att }] } },
+		slots: {
+			banner: { attachment: [{ time: 0, name: att }] },
+			pile: { attachment: [{ time: 0, name: 'pile' }] },
+			count_plaque: { attachment: [{ time: 0, name: 'count_plaque' }] },
+		},
 		bones: {
 			banner: {
 				translate: [
@@ -313,6 +420,20 @@ for (const alias of ALIASES) {
 					{ time: 0.35, color: 'ffffff00' },
 				],
 			},
+			pile: {
+				attachment: [{ time: 0, name: 'pile' }],
+				rgba: [
+					{ time: 0, color: 'ffffffff' },
+					{ time: 0.35, color: 'ffffff00' },
+				],
+			},
+			count_plaque: {
+				attachment: [{ time: 0, name: 'count_plaque' }],
+				rgba: [
+					{ time: 0, color: 'ffffffff' },
+					{ time: 0.35, color: 'ffffff00' },
+				],
+			},
 		},
 		bones: {
 			banner: {
@@ -343,17 +464,27 @@ const bigwinSpine = {
 		// banner sits at screen center; the symbol scene floats well above it and
 		// the count-up lands below (slot_win_count children are provider-scaled 0.5)
 		{ name: 'banner', parent: 'root', y: 0 },
+		// opulence pile shares the banner's center so its taller/wider art peeks
+		// out from behind the banner's edges instead of needing separate tuning
+		{ name: 'pile', parent: 'root', y: 0 },
 		{ name: 'slot_win_count', parent: 'root', y: -140 },
+		// zero-offset child of slot_win_count so the readout plaque always tracks
+		// the count-up exactly, regardless of that bone's own animated position
+		{ name: 'count_plaque', parent: 'slot_win_count', x: 0, y: 0 },
 	],
 	slots: [
+		{ name: 'pile', bone: 'pile' },
 		{ name: 'banner', bone: 'banner' },
+		{ name: 'count_plaque', bone: 'count_plaque' },
 		{ name: 'slot_win_count', bone: 'slot_win_count', attachment: 'anchor' },
 	],
 	skins: [
 		{
 			name: 'default',
 			attachments: {
+				pile: { pile: { x: 0, y: 0, width: 1200, height: 420 } },
 				banner: bannerSkin,
+				count_plaque: { count_plaque: { x: 0, y: 0, width: 940, height: 210 } },
 				slot_win_count: { anchor: { x: 0, y: 0, width: 8, height: 8 } },
 			},
 		},
@@ -363,6 +494,8 @@ const bigwinSpine = {
 
 let bigwinAtlas = '';
 for (const alias of ALIASES) bigwinAtlas += atlasPage(`banner_${alias}.png`, 1080, 300, `banner_${alias}`) + '\n';
+bigwinAtlas += atlasPage('count_plaque.png', 940, 210, 'count_plaque') + '\n';
+bigwinAtlas += atlasPage('pile.png', 1200, 420, 'pile') + '\n';
 bigwinAtlas += atlasPage('anchor.png', 8, 8, 'anchor');
 fs.writeFileSync(path.join(BIGWIN_DIR, 'bigwin_party.atlas'), bigwinAtlas);
 fs.writeFileSync(path.join(BIGWIN_DIR, 'bigwin_party.json'), JSON.stringify(bigwinSpine, null, 2) + '\n');
@@ -517,7 +650,9 @@ const fsNumberSpine = {
 		{ name: 'root' },
 		{ name: 'fs_popup', parent: 'root', scaleX: 1.3, scaleY: 1.3 },
 		{ name: 'plaque', parent: 'fs_popup', y: -33 },
-		{ name: 'bone_number', parent: 'fs_popup', y: -30, scaleX: 2, scaleY: 2 },
+		// y nudged from the original -30 so the number clears the plaque's
+		// bunting decoration (see FreeSpinIntro.svelte fontSize comment)
+		{ name: 'bone_number', parent: 'fs_popup', y: -22, scaleX: 2, scaleY: 2 },
 	],
 	slots: [
 		{ name: 'plaque', bone: 'plaque', attachment: 'number_ring' },

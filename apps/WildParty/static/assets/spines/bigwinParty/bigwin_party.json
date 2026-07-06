@@ -18,15 +18,34 @@
       "y": 0
     },
     {
+      "name": "pile",
+      "parent": "root",
+      "y": 0
+    },
+    {
       "name": "slot_win_count",
       "parent": "root",
       "y": -140
+    },
+    {
+      "name": "count_plaque",
+      "parent": "slot_win_count",
+      "x": 0,
+      "y": 0
     }
   ],
   "slots": [
     {
+      "name": "pile",
+      "bone": "pile"
+    },
+    {
       "name": "banner",
       "bone": "banner"
+    },
+    {
+      "name": "count_plaque",
+      "bone": "count_plaque"
     },
     {
       "name": "slot_win_count",
@@ -38,6 +57,14 @@
     {
       "name": "default",
       "attachments": {
+        "pile": {
+          "pile": {
+            "x": 0,
+            "y": 0,
+            "width": 1200,
+            "height": 420
+          }
+        },
         "banner": {
           "banner_big": {
             "x": 0,
@@ -70,6 +97,14 @@
             "height": 300
           }
         },
+        "count_plaque": {
+          "count_plaque": {
+            "x": 0,
+            "y": 0,
+            "width": 940,
+            "height": 210
+          }
+        },
         "slot_win_count": {
           "anchor": {
             "x": 0,
@@ -98,6 +133,42 @@
             },
             {
               "time": 0.12,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2,
               "color": "ffffffff"
             }
           ]
@@ -180,6 +251,22 @@
             {
               "time": 0,
               "name": "banner_big"
+            }
+          ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
             }
           ]
         }
@@ -275,6 +362,42 @@
               "color": "ffffff00"
             }
           ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            }
+          ]
         }
       },
       "bones": {
@@ -324,6 +447,42 @@
             },
             {
               "time": 0.12,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2,
               "color": "ffffffff"
             }
           ]
@@ -406,6 +565,22 @@
             {
               "time": 0,
               "name": "banner_super"
+            }
+          ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
             }
           ]
         }
@@ -501,6 +676,42 @@
               "color": "ffffff00"
             }
           ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            }
+          ]
         }
       },
       "bones": {
@@ -550,6 +761,42 @@
             },
             {
               "time": 0.12,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2,
               "color": "ffffffff"
             }
           ]
@@ -632,6 +879,22 @@
             {
               "time": 0,
               "name": "banner_mega"
+            }
+          ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
             }
           ]
         }
@@ -727,6 +990,42 @@
               "color": "ffffff00"
             }
           ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            }
+          ]
         }
       },
       "bones": {
@@ -776,6 +1075,42 @@
             },
             {
               "time": 0.12,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2,
               "color": "ffffffff"
             }
           ]
@@ -858,6 +1193,22 @@
             {
               "time": 0,
               "name": "banner_epic"
+            }
+          ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
             }
           ]
         }
@@ -953,6 +1304,42 @@
               "color": "ffffff00"
             }
           ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            }
+          ]
         }
       },
       "bones": {
@@ -1002,6 +1389,42 @@
             },
             {
               "time": 0.12,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2,
               "color": "ffffffff"
             }
           ]
@@ -1086,6 +1509,22 @@
               "name": "banner_max"
             }
           ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
+            }
+          ]
         }
       },
       "bones": {
@@ -1167,6 +1606,42 @@
             {
               "time": 0,
               "name": "banner_max"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "pile": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "pile"
+            }
+          ],
+          "rgba": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "count_plaque": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "count_plaque"
             }
           ],
           "rgba": [

@@ -285,6 +285,11 @@ export default {
 		src: new URL('../../assets/sprites/wildPartyFx/fx_streak.png', import.meta.url).href,
 		preload: true,
 	},
+	fxVignette: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/wildPartyFx/fx_vignette.png', import.meta.url).href,
+		preload: true,
+	},
 	anticipation: {
 		type: 'spine',
 		src: {

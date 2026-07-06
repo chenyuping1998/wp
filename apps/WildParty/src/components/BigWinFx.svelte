@@ -17,13 +17,27 @@
 
 	let rotation = $state(0);
 	let pulse = $state(0);
+	let moteDrift = $state(0);
 	// periodic celebration bursts at random spots around the win amount
 	let bursts = $state<{ id: number; x: number; y: number; scale: number }[]>([]);
 	let nextBurstId = 0;
 
+	// ambient bokeh dust — soft, slow-drifting color motes for background depth,
+	// reuses the existing fxGlow texture (no new asset needed) tinted per-mote
+	const BOKEH_COLORS = [0xffd75e, 0xff8ede, 0xc59bff, 0x9ef3ff];
+	const motes = Array.from({ length: 14 }, (_, i) => ({
+		x: (Math.random() - 0.5) * radius * 2.3,
+		y: (Math.random() - 0.6) * radius * 1.7,
+		size: 46 + Math.random() * 110,
+		color: BOKEH_COLORS[i % BOKEH_COLORS.length],
+		phase: Math.random() * Math.PI * 2,
+		speed: 0.6 + Math.random() * 0.5,
+	}));
+
 	onMount(() => {
 		const spinId = setInterval(() => {
 			rotation += 0.0045;
+			moteDrift += 0.0016;
 			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 420);
 		}, 16);
 		const burstId = setInterval(() => {
@@ -72,6 +86,24 @@
 </script>
 
 <Container x={props.x ?? 0} y={props.y ?? 0}>
+	<!-- vignette first: deepens the edges so the rays/count-up read with more depth -->
+	<Sprite key="fxVignette" anchor={0.5} width={radius * 3.4} height={radius * 3.4} alpha={0.85} />
+	<!-- ambient bokeh dust, drifting slowly behind the rays -->
+	<Container rotation={moteDrift}>
+		{#each motes as mote, index (index)}
+			<Sprite
+				key="fxGlow"
+				anchor={0.5}
+				x={mote.x}
+				y={mote.y}
+				tint={mote.color}
+				blendMode="add"
+				width={mote.size}
+				height={mote.size}
+				alpha={0.14 + 0.1 * Math.sin(pulse * 6 * mote.speed + mote.phase)}
+			/>
+		{/each}
+	</Container>
 	<Container {rotation}>
 		<Graphics draw={drawRays} />
 	</Container>
