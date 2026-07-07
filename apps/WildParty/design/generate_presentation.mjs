@@ -125,23 +125,6 @@ const pileDecoration = svgWrap(
 		<path d="M 1080 208 L 1080 250" stroke="#2a0a20" stroke-width="4"/>
 		<ellipse cx="1064" cy="128" rx="12" ry="18" fill="#ffffff" opacity="0.35" transform="rotate(-20 1064 128)"/>
 	</g>
-	<g>
-		<rect x="430" y="280" width="150" height="130" rx="10" fill="url(#giftA)" stroke="#2a0a20" stroke-width="7"/>
-		<rect x="430" y="330" width="150" height="26" fill="#fff7d1" opacity="0.9"/>
-		<rect x="493" y="280" width="24" height="130" fill="#fff7d1" opacity="0.9"/>
-		<path d="M 505 280 Q 480 240 505 220 Q 530 240 505 280 Z" fill="#fff7d1" stroke="#2a0a20" stroke-width="4"/>
-	</g>
-	<g>
-		<rect x="600" y="250" width="180" height="160" rx="10" fill="url(#giftB)" stroke="#2a0a20" stroke-width="7"/>
-		<rect x="600" y="310" width="180" height="30" fill="#ffe98a" opacity="0.9"/>
-		<rect x="678" y="250" width="24" height="160" fill="#ffe98a" opacity="0.9"/>
-		<path d="M 690 250 Q 662 206 690 184 Q 718 206 690 250 Z" fill="#ffe98a" stroke="#2a0a20" stroke-width="4"/>
-	</g>
-	<g>
-		<rect x="770" y="300" width="130" height="110" rx="10" fill="url(#giftC)" stroke="#2a0a20" stroke-width="7"/>
-		<rect x="770" y="342" width="130" height="24" fill="#ffffff" opacity="0.85"/>
-		<rect x="826" y="300" width="20" height="110" fill="#ffffff" opacity="0.85"/>
-	</g>
 	<!-- confetti dots kept in the top margin strip (pile-y < ~95), well clear
 	     of the ribbon's silhouette (which reaches up to pile-y 104 at center)
 	     so nothing floats over the "WIN" label -->
@@ -158,9 +141,7 @@ const pileDecoration = svgWrap(
 	`,
 	`<linearGradient id="balloonA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9ede"/><stop offset="1" stop-color="#d02f8f"/></linearGradient>
 	<linearGradient id="balloonB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9ef3ff"/><stop offset="1" stop-color="#2f7bd0"/></linearGradient>
-	<linearGradient id="giftA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2679b"/><stop offset="1" stop-color="#8f2555"/></linearGradient>
-	<linearGradient id="giftB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a4fe0"/><stop offset="1" stop-color="#3c1a8f"/></linearGradient>
-	<linearGradient id="giftC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f64e0"/><stop offset="1" stop-color="#1a2a8f"/></linearGradient>`,
+	`,
 );
 
 const sparklesFor = (n, seedInit) => {

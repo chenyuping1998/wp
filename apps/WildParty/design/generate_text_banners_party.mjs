@@ -69,8 +69,11 @@ const gradientMap = (lum) => {
 
 // MM_pressanywhere.png is a FLAT WHITE silhouette (alpha carries 100% of the
 // shape/AA, RGB is always 255,255,255) — a luminance gradient-map can't do
-// anything with that. Instead: paint a gold fill and synthesize a dark-plum
-// outline by detecting pixels near the alpha edge (radius check).
+// anything with that. Instead: paint a solid cream fill + thin white edge
+// stroke + a soft pink rim, matching the LoadingScreen's "WILD PARTY" title
+// treatment (fill 0xfff4cf, white 1px stroke, pink drop-shadow glow) rather
+// than the heavier gold-gradient/thick-dark-outline "banner" look used
+// elsewhere — this is a standalone bottom-of-screen prompt, not a banner.
 {
 	const file = path.join(appRoot, 'static/assets/sprites/pressToContinueText/MM_pressanywhere.png');
 	const png = PNG.sync.read(fs.readFileSync(file));
@@ -79,6 +82,10 @@ const gradientMap = (lum) => {
 		if (x < 0 || y < 0 || x >= width || y >= height) return 0;
 		return data[(y * width + x) * 4 + 3];
 	};
+	// R=1 only — a wider second ring (tried RIM=3 for a pink rim-light) swallowed
+	// almost the entire glyph for thin-stroke scripts (CJK/Arabic/Hindi), same
+	// failure mode as the original R=3 outline attempt. Keep it to a single
+	// thin white edge + flat cream fill, which is safe across all 16 scripts.
 	const R = 1;
 	const out = Buffer.from(data);
 	for (let y = 0; y < height; y++) {
@@ -96,16 +103,15 @@ const gradientMap = (lum) => {
 				}
 			}
 			if (nearEdge) {
-				out[o] = 0x2a;
-				out[o + 1] = 0x0a;
-				out[o + 2] = 0x20;
+				// thin white stroke, like the loading-screen title's strokeThickness:1
+				out[o] = 0xff;
+				out[o + 1] = 0xff;
+				out[o + 2] = 0xff;
 			} else {
-				// gentle top-to-bottom shine within the whole canvas
-				const t = y / height;
-				const [nr, ng, nb] = gradientMap(255 - t * 90);
-				out[o] = nr;
-				out[o + 1] = ng;
-				out[o + 2] = nb;
+				// flat cream fill, matching the loading-screen title's solid 0xfff4cf
+				out[o] = 0xff;
+				out[o + 1] = 0xf4;
+				out[o + 2] = 0xcf;
 			}
 		}
 	}

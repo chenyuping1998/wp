@@ -143,8 +143,8 @@
 									<Sprite
 										key="countPlaque"
 										anchor={0.5}
-										width={SYMBOL_SIZE * 8.4}
-										height={SYMBOL_SIZE * 1.9}
+										width={SYMBOL_SIZE * 9.4}
+										height={SYMBOL_SIZE * 2.4}
 									/>
 									<ResponsiveBitmapText
 										anchor={0.5}
