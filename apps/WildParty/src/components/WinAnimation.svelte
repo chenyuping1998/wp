@@ -19,6 +19,9 @@
 			outro: 'big_win_exit' | 'epic_win_exit' | 'max_win_exit' | 'mega_win_exit' | 'super_win_exit';
 		};
 		children: Snippet;
+		// tracks the 'banner' bone exactly (zero-offset child), for tier-specific
+		// FX like the epic/max marquee lights that must move with the banner
+		bannerFx?: Snippet;
 	};
 
 	const props: Props = $props();
@@ -40,6 +43,11 @@
 			},
 		}}
 	/>
+	{#if props.bannerFx}
+		<SpineSlot slotName="banner_fx">
+			{@render props.bannerFx()}
+		</SpineSlot>
+	{/if}
 	<SpineSlot slotName="slot_win_count">
 		{@render props.children()}
 	</SpineSlot>

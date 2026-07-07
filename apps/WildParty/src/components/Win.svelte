@@ -19,6 +19,7 @@
 	import WinAnimation from './WinAnimation.svelte';
 	import WinLevelSymbolIntro from './WinLevelSymbolIntro.svelte';
 	import BigWinFx from './BigWinFx.svelte';
+	import BannerMarquee from './BannerMarquee.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
@@ -31,9 +32,20 @@
 	let oncomplete = $state(() => {});
 	let onCountUpComplete = $state(() => {});
 
+	// escalating "how big does this FEEL" multiplier — same shake/flash/BigWinFx
+	// logic for every big-win tier, just scaled up as the tier climbs
+	const TIER_INTENSITY: Partial<Record<WinLevelData['alias'], number>> = {
+		big: 1,
+		superwin: 1.15,
+		mega: 1.3,
+		epic: 1.5,
+		max: 1.7,
+	};
+	const MARQUEE_TIERS: Partial<Record<WinLevelData['alias'], true>> = { epic: true, max: true };
+
 	// camera shake as the big-win presentation slams in
 	let shake = $state({ x: 0, y: 0 });
-	const startShake = () => {
+	const startShake = (intensity: number) => {
 		const start = Date.now();
 		const id = setInterval(() => {
 			const p = (Date.now() - start) / 700;
@@ -42,7 +54,7 @@
 				clearInterval(id);
 				return;
 			}
-			const amp = 11 * (1 - p) ** 2;
+			const amp = 11 * intensity * (1 - p) ** 2;
 			shake = { x: (Math.random() - 0.5) * 2 * amp, y: (Math.random() - 0.5) * 2 * amp };
 		}, 16);
 	};
@@ -50,7 +62,7 @@
 	// hit-stop impact frame: white flash + scale punch on the slam-in
 	let flash = $state(0);
 	let punch = $state(1);
-	const startImpact = () => {
+	const startImpact = (intensity: number) => {
 		const start = Date.now();
 		const id = setInterval(() => {
 			const p = (Date.now() - start) / 280;
@@ -60,8 +72,8 @@
 				clearInterval(id);
 				return;
 			}
-			flash = Math.max(0, 0.8 * (1 - p * 1.4));
-			punch = 1 + 0.14 * (1 - p) ** 2;
+			flash = Math.max(0, 0.8 * intensity * (1 - p * 1.4));
+			punch = 1 + 0.14 * intensity * (1 - p) ** 2;
 		}, 16);
 	};
 
@@ -81,8 +93,9 @@
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
 			if (emitterEvent.winLevelData.type === 'big') {
-				startShake();
-				startImpact();
+				const intensity = TIER_INTENSITY[emitterEvent.winLevelData.alias] ?? 1;
+				startShake(intensity);
+				startImpact(intensity);
 			}
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
@@ -112,10 +125,12 @@
 				/>
 
 				{#if isBigWin}
+					{@const intensity = TIER_INTENSITY[winLevelData.alias] ?? 1}
 					<MainContainer>
 						<BigWinFx
 							x={context.stateGameDerived.boardLayout().x + shake.x * 0.4}
 							y={context.stateGameDerived.boardLayout().y + shake.y * 0.4}
+							{intensity}
 						/>
 					</MainContainer>
 				{/if}
@@ -127,8 +142,14 @@
 						scale={punch}
 					>
 						{@const winLevelSymbolKey = WIN_LEVEL_SYMBOL_MAP[winLevelData.alias]}
+						{#snippet bannerFxSnippet()}
+							<BannerMarquee />
+						{/snippet}
 						{#if winLevelData?.animation}
-							<WinAnimation animationMap={winLevelData.animation}>
+							<WinAnimation
+								animationMap={winLevelData.animation}
+								bannerFx={MARQUEE_TIERS[winLevelData.alias] ? bannerFxSnippet : undefined}
+							>
 								{#if winLevelSymbolKey}
 									<!-- slot children are provider-scaled ×0.5, so -640 puts the icon
 									     ~250px above board center — clear of the banner at center -->
@@ -148,11 +169,11 @@
 									/>
 									<ResponsiveBitmapText
 										anchor={0.5}
-										maxWidth={2130}
+										maxWidth={SYMBOL_SIZE * 8.4}
 										text={bookEventAmountToCurrencyString(countUpAmount)}
 										style={{
 											fontFamily: 'gold',
-											fontSize: SYMBOL_SIZE * 2.0,
+											fontSize: SYMBOL_SIZE * 1.6,
 											align: 'center',
 											fontWeight: 'bold',
 											letterSpacing: 0,

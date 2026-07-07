@@ -50,9 +50,20 @@ const HEX_PTS = [
 const hexPath = (scale) =>
 	`M ${HEX_PTS.map(([x, y]) => `${HEX_CENTER[0] + (x - HEX_CENTER[0]) * scale} ${HEX_CENTER[1] + (y - HEX_CENTER[1]) * scale}`).join(' L ')} Z`;
 
-const banner = ({ label, gemGradient, darkEdge, text0, text1, sparkles }) => {
+const banner = ({ label, gemGradient, darkEdge, text0, text1, sparkles, crown = false }) => {
 	const clipId = `capclip_${text0.replace('#', '')}`;
 	const gemClipId = `gemclip_${text0.replace('#', '')}`;
+	// epic/max get extra gold "crown" spikes along the top/bottom edges — the
+	// frame silhouette itself escalates with tier, not just its color
+	const crownSpikes = !crown
+		? ''
+		: [320, 540, 760]
+				.map(
+					(x) => `
+		<path d="M ${x - 18} 58 L ${x} 16 L ${x + 18} 58 Z" fill="url(#goldRim)" stroke="#0a0410" stroke-width="3" stroke-linejoin="round"/>
+		<path d="M ${x - 18} 242 L ${x} 284 L ${x + 18} 242 Z" fill="url(#goldRim)" stroke="#0a0410" stroke-width="3" stroke-linejoin="round"/>`,
+				)
+				.join('');
 	return svgWrap(
 		1080,
 		300,
@@ -69,6 +80,7 @@ const banner = ({ label, gemGradient, darkEdge, text0, text1, sparkles }) => {
 		<path d="M 140 250 L 380 65 L 480 65 L 220 250 Z" fill="#ffffff" opacity="0.22"/>
 		<path d="M 500 250 L 620 65 L 660 65 L 540 250 Z" fill="#ffffff" opacity="0.12"/>
 	</g>
+	${crownSpikes}
 	<!-- coin medallions at the tips -->
 	${[HEX_PTS[0], HEX_PTS[3]]
 		.map(
@@ -227,6 +239,7 @@ const BANNERS = {
 		text0: '#f0e0ff',
 		text1: '#a95af0',
 		sparkles: sparklesFor(7, 51),
+		crown: true,
 	}),
 	banner_max: banner({
 		label: 'MAX WIN',
@@ -235,6 +248,7 @@ const BANNERS = {
 		text0: '#fff7d1',
 		text1: '#f0a90c',
 		sparkles: sparklesFor(9, 67),
+		crown: true,
 	}),
 };
 
@@ -382,6 +396,12 @@ index:-1
 
 // ─── bigwin spine (animation/slot interface matches mm_bigwin) ──────────────
 const ALIASES = ['big', 'super', 'mega', 'epic', 'max'];
+// banner (and the pile behind it) render 35% bigger than the original 1080×300
+// art — the H1-H4 icon (Win.svelte, y=-640) and the plaque/count-up (bone
+// slot_win_count, y=-140, independently sized in Win.svelte) are on separate
+// bones so this only grows the banner/pile, nothing else shifts.
+const BASE_SCALE = 1.35;
+const bs = (v) => v * BASE_SCALE;
 
 const bigwinAnimations = {};
 for (const alias of ALIASES) {
@@ -392,38 +412,43 @@ for (const alias of ALIASES) {
 				attachment: [{ time: 0, name: att }],
 				rgba: [
 					{ time: 0, color: 'ffffff00' },
-					{ time: 0.12, color: 'ffffffff' },
+					{ time: 0.14, color: 'ffffff40' },
+					{ time: 0.2, color: 'ffffffff' },
 				],
 			},
 			pile: {
 				attachment: [{ time: 0, name: 'pile' }],
 				rgba: [
 					{ time: 0, color: 'ffffff00' },
-					{ time: 0.16, color: 'ffffffff' },
+					{ time: 0.24, color: 'ffffffff' },
 				],
 			},
 		},
 		bones: {
+			// charge (0 -> 0.14s): held small while BigWinFx's charge-flash builds,
+			// then burst (0.14 -> 0.32s): fast overshoot release, then settle
 			banner: {
 				scale: [
-					{ time: 0, x: 0.01, y: 0.01 },
-					{ time: 0.24, x: 1.16, y: 1.16 },
-					{ time: 0.4, x: 0.94, y: 0.94 },
-					{ time: 0.52, x: 1.04, y: 1.04 },
-					{ time: 0.6667, x: 1, y: 1 },
+					{ time: 0, x: 0.04, y: 0.04 },
+					{ time: 0.14, x: 0.07, y: 0.07 },
+					{ time: 0.32, x: bs(1.22), y: bs(1.22) },
+					{ time: 0.46, x: bs(0.92), y: bs(0.92) },
+					{ time: 0.58, x: bs(1.05), y: bs(1.05) },
+					{ time: 0.7, x: bs(1), y: bs(1) },
 				],
 				rotate: [
-					{ time: 0, value: -6 },
-					{ time: 0.3, value: 3 },
-					{ time: 0.6667, value: 0 },
+					{ time: 0, value: -7 },
+					{ time: 0.14, value: -7 },
+					{ time: 0.44, value: 3 },
+					{ time: 0.7, value: 0 },
 				],
 			},
 			slot_win_count: {
 				scale: [
 					{ time: 0, x: 0.01, y: 0.01 },
-					{ time: 0.3, x: 0.01, y: 0.01 },
-					{ time: 0.5, x: 1.12, y: 1.12 },
-					{ time: 0.6667, x: 1, y: 1 },
+					{ time: 0.32, x: 0.01, y: 0.01 },
+					{ time: 0.52, x: 1.12, y: 1.12 },
+					{ time: 0.7, x: 1, y: 1 },
 				],
 			},
 		},
@@ -446,9 +471,9 @@ for (const alias of ALIASES) {
 					{ time: 2.6, value: -1.4 },
 				],
 				scale: [
-					{ time: 0, x: 1, y: 1 },
-					{ time: 1.3, x: 1.025, y: 1.025 },
-					{ time: 2.6, x: 1, y: 1 },
+					{ time: 0, x: bs(1), y: bs(1) },
+					{ time: 1.3, x: bs(1.025), y: bs(1.025) },
+					{ time: 2.6, x: bs(1), y: bs(1) },
 				],
 			},
 			slot_win_count: {
@@ -480,8 +505,8 @@ for (const alias of ALIASES) {
 		bones: {
 			banner: {
 				scale: [
-					{ time: 0, x: 1, y: 1 },
-					{ time: 0.35, x: 1.3, y: 1.3 },
+					{ time: 0, x: bs(1), y: bs(1) },
+					{ time: 0.35, x: bs(1.3), y: bs(1.3) },
 				],
 			},
 			slot_win_count: {
@@ -506,14 +531,18 @@ const bigwinSpine = {
 		// banner sits at screen center; the symbol scene floats well above it and
 		// the count-up lands below (slot_win_count children are provider-scaled 0.5)
 		{ name: 'banner', parent: 'root', y: 0 },
-		// opulence pile shares the banner's center so its taller/wider art peeks
-		// out from behind the banner's edges instead of needing separate tuning
-		{ name: 'pile', parent: 'root', y: 0 },
+		// opulence pile shares the banner's center, statically matching its 1.35x
+		// scale so the two stay proportional (pile only fades, doesn't animate)
+		{ name: 'pile', parent: 'root', y: 0, scaleX: BASE_SCALE, scaleY: BASE_SCALE },
 		{ name: 'slot_win_count', parent: 'root', y: -140 },
+		// zero-offset child of banner so injected Svelte content (marquee lights,
+		// etc.) tracks the banner's exact position/scale/rotation automatically
+		{ name: 'banner_fx', parent: 'banner', x: 0, y: 0 },
 	],
 	slots: [
 		{ name: 'pile', bone: 'pile' },
 		{ name: 'banner', bone: 'banner' },
+		{ name: 'banner_fx', bone: 'banner_fx', attachment: 'anchor' },
 		{ name: 'slot_win_count', bone: 'slot_win_count', attachment: 'anchor' },
 	],
 	skins: [
@@ -522,6 +551,7 @@ const bigwinSpine = {
 			attachments: {
 				pile: { pile: { x: 0, y: 0, width: 1200, height: 420 } },
 				banner: bannerSkin,
+				banner_fx: { anchor: { x: 0, y: 0, width: 8, height: 8 } },
 				slot_win_count: { anchor: { x: 0, y: 0, width: 8, height: 8 } },
 			},
 		},
