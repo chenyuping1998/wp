@@ -24,8 +24,9 @@
 
 	// gentle breathing — the themed scene supplies the motion (lid opening,
 	// cork popping, glass swaying, rays turning).
-	// Base 1.35 compensates for the ×0.5 slot scaling in the big-win spine.
-	const scale = $derived(1.35 + 0.04 * Math.sin(tick / 14));
+	// Base 1.75 compensates for the ×0.5 slot scaling in the big-win spine
+	// (bumped from 1.35 so the icon reads clearly next to the bigger banner text).
+	const scale = $derived(1.75 + 0.05 * Math.sin(tick / 14));
 </script>
 
 <Container {scale}>

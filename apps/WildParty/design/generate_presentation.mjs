@@ -50,20 +50,20 @@ const banner = ({ label, rib0, rib1, text0, text1, sparkles }) => {
 	<path d="M 96 92 Q 540 52 984 92 L 984 104 Q 540 64 96 104 Z" fill="url(#trimTop)" opacity="0.9"/>
 	<path d="M 96 196 Q 540 236 984 196 L 984 208 Q 540 248 96 208 Z" fill="url(#trimTop)" opacity="0.9"/>
 	<!-- deep drop shadow, offset further for more lift off the ribbon -->
-	<text x="540" y="201" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="118"
-		text-anchor="middle" letter-spacing="4" fill="#150510" opacity="0.5">${label}</text>
+	<text x="540" y="203" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="132"
+		text-anchor="middle" letter-spacing="1" fill="#150510" opacity="0.5">${label}</text>
 	<!-- wide dark halo sitting behind the glyph, reads as embossed thickness -->
-	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="118"
-		text-anchor="middle" letter-spacing="4" fill="none" stroke="#180614" stroke-width="17" stroke-linejoin="round" opacity="0.9">${label}</text>
+	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="132"
+		text-anchor="middle" letter-spacing="1" fill="none" stroke="#180614" stroke-width="17" stroke-linejoin="round" opacity="0.9">${label}</text>
 	<!-- art text -->
-	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="118"
-		text-anchor="middle" letter-spacing="4" fill="url(#txt)" stroke="#2a0a20" stroke-width="9" paint-order="stroke">${label}</text>
-	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="118"
-		text-anchor="middle" letter-spacing="4" fill="url(#txtShine)">${label}</text>
+	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="132"
+		text-anchor="middle" letter-spacing="1" fill="url(#txt)" stroke="#2a0a20" stroke-width="9" paint-order="stroke">${label}</text>
+	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="132"
+		text-anchor="middle" letter-spacing="1" fill="url(#txtShine)">${label}</text>
 	<!-- crisp catch-light band clipped to the glyphs' cap-height, for a pillowy emboss -->
 	<g clip-path="url(#${clipId})">
-		<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="118"
-			text-anchor="middle" letter-spacing="4" fill="#ffffff" opacity="0.5">${label}</text>
+		<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="132"
+			text-anchor="middle" letter-spacing="1" fill="#ffffff" opacity="0.5">${label}</text>
 	</g>
 	${sparkles}
 	`,
@@ -82,7 +82,7 @@ const banner = ({ label, rib0, rib1, text0, text1, sparkles }) => {
 			<stop offset="1" stop-color="#000000" stop-opacity="0.15"/>
 		</linearGradient>
 		<clipPath id="${clipId}">
-			<rect x="0" y="96" width="1080" height="44"/>
+			<rect x="0" y="90" width="1080" height="48"/>
 		</clipPath>`,
 	);
 };
@@ -142,13 +142,16 @@ const pileDecoration = svgWrap(
 		<rect x="770" y="342" width="130" height="24" fill="#ffffff" opacity="0.85"/>
 		<rect x="826" y="300" width="20" height="110" fill="#ffffff" opacity="0.85"/>
 	</g>
+	<!-- confetti dots kept in the top margin strip (pile-y < ~95), well clear
+	     of the ribbon's silhouette (which reaches up to pile-y 104 at center)
+	     so nothing floats over the "WIN" label -->
 	${[
-		[220, 300, '#9ef3ff'],
-		[960, 320, '#ffd75e'],
-		[300, 120, '#ff8ede'],
-		[900, 140, '#c59bff'],
-		[520, 90, '#9effb0'],
-		[700, 110, '#ffb64d'],
+		[180, 45, '#9ef3ff'],
+		[1020, 40, '#ffd75e'],
+		[420, 55, '#ff8ede'],
+		[780, 42, '#c59bff'],
+		[600, 30, '#9effb0'],
+		[300, 50, '#ffb64d'],
 	]
 		.map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="9" fill="${c}" stroke="#2a0a20" stroke-width="2.5"/>`)
 		.join('')}
@@ -345,13 +348,6 @@ for (const alias of ALIASES) {
 					{ time: 0.16, color: 'ffffffff' },
 				],
 			},
-			count_plaque: {
-				attachment: [{ time: 0, name: 'count_plaque' }],
-				rgba: [
-					{ time: 0, color: 'ffffff00' },
-					{ time: 0.2, color: 'ffffffff' },
-				],
-			},
 		},
 		bones: {
 			banner: {
@@ -382,7 +378,6 @@ for (const alias of ALIASES) {
 		slots: {
 			banner: { attachment: [{ time: 0, name: att }] },
 			pile: { attachment: [{ time: 0, name: 'pile' }] },
-			count_plaque: { attachment: [{ time: 0, name: 'count_plaque' }] },
 		},
 		bones: {
 			banner: {
@@ -427,13 +422,6 @@ for (const alias of ALIASES) {
 					{ time: 0.35, color: 'ffffff00' },
 				],
 			},
-			count_plaque: {
-				attachment: [{ time: 0, name: 'count_plaque' }],
-				rgba: [
-					{ time: 0, color: 'ffffffff' },
-					{ time: 0.35, color: 'ffffff00' },
-				],
-			},
 		},
 		bones: {
 			banner: {
@@ -468,14 +456,10 @@ const bigwinSpine = {
 		// out from behind the banner's edges instead of needing separate tuning
 		{ name: 'pile', parent: 'root', y: 0 },
 		{ name: 'slot_win_count', parent: 'root', y: -140 },
-		// zero-offset child of slot_win_count so the readout plaque always tracks
-		// the count-up exactly, regardless of that bone's own animated position
-		{ name: 'count_plaque', parent: 'slot_win_count', x: 0, y: 0 },
 	],
 	slots: [
 		{ name: 'pile', bone: 'pile' },
 		{ name: 'banner', bone: 'banner' },
-		{ name: 'count_plaque', bone: 'count_plaque' },
 		{ name: 'slot_win_count', bone: 'slot_win_count', attachment: 'anchor' },
 	],
 	skins: [
@@ -484,7 +468,6 @@ const bigwinSpine = {
 			attachments: {
 				pile: { pile: { x: 0, y: 0, width: 1200, height: 420 } },
 				banner: bannerSkin,
-				count_plaque: { count_plaque: { x: 0, y: 0, width: 940, height: 210 } },
 				slot_win_count: { anchor: { x: 0, y: 0, width: 8, height: 8 } },
 			},
 		},
@@ -494,7 +477,6 @@ const bigwinSpine = {
 
 let bigwinAtlas = '';
 for (const alias of ALIASES) bigwinAtlas += atlasPage(`banner_${alias}.png`, 1080, 300, `banner_${alias}`) + '\n';
-bigwinAtlas += atlasPage('count_plaque.png', 940, 210, 'count_plaque') + '\n';
 bigwinAtlas += atlasPage('pile.png', 1200, 420, 'pile') + '\n';
 bigwinAtlas += atlasPage('anchor.png', 8, 8, 'anchor');
 fs.writeFileSync(path.join(BIGWIN_DIR, 'bigwin_party.atlas'), bigwinAtlas);

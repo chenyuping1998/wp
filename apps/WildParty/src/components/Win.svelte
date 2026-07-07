@@ -8,7 +8,7 @@
 </script>
 
 <script lang="ts">
-	import { Container } from 'pixi-svelte';
+	import { Container, Sprite } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider, ResponsiveBitmapText } from 'components-pixi';
 	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
@@ -136,19 +136,29 @@
 										<WinLevelSymbolIntro symbolKey={winLevelSymbolKey} />
 									</Container>
 								{/if}
-								<ResponsiveBitmapText
-									anchor={0.5}
-									y={winLevelSymbolKey ? 270 : 0}
-									maxWidth={2130}
-									text={bookEventAmountToCurrencyString(countUpAmount)}
-									style={{
-										fontFamily: 'gold',
-										fontSize: SYMBOL_SIZE * 2.0,
-										align: 'center',
-										fontWeight: 'bold',
-										letterSpacing: 0,
-									}}
-								/>
+								<!-- plaque + text share this container so they always move together,
+								     instead of the plaque tracking a spine slot that doesn't know
+								     about the conditional 270 offset below -->
+								<Container y={winLevelSymbolKey ? 270 : 0}>
+									<Sprite
+										key="countPlaque"
+										anchor={0.5}
+										width={SYMBOL_SIZE * 8.4}
+										height={SYMBOL_SIZE * 1.9}
+									/>
+									<ResponsiveBitmapText
+										anchor={0.5}
+										maxWidth={2130}
+										text={bookEventAmountToCurrencyString(countUpAmount)}
+										style={{
+											fontFamily: 'gold',
+											fontSize: SYMBOL_SIZE * 2.0,
+											align: 'center',
+											fontWeight: 'bold',
+											letterSpacing: 0,
+										}}
+									/>
+								</Container>
 							</WinAnimation>
 						{:else}
 							<ResponsiveBitmapText

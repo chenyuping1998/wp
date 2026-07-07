@@ -48,16 +48,6 @@ bounds:0,0,1080,300
 offsets:0,0,1080,300
 index:-1
 
-count_plaque.png
-size:940,210
-format:RGBA8888
-filter:Linear,Linear
-repeat:none
-count_plaque
-bounds:0,0,940,210
-offsets:0,0,940,210
-index:-1
-
 pile.png
 size:1200,420
 format:RGBA8888

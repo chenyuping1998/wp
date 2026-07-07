@@ -26,12 +26,6 @@
       "name": "slot_win_count",
       "parent": "root",
       "y": -140
-    },
-    {
-      "name": "count_plaque",
-      "parent": "slot_win_count",
-      "x": 0,
-      "y": 0
     }
   ],
   "slots": [
@@ -42,10 +36,6 @@
     {
       "name": "banner",
       "bone": "banner"
-    },
-    {
-      "name": "count_plaque",
-      "bone": "count_plaque"
     },
     {
       "name": "slot_win_count",
@@ -97,14 +87,6 @@
             "height": 300
           }
         },
-        "count_plaque": {
-          "count_plaque": {
-            "x": 0,
-            "y": 0,
-            "width": 940,
-            "height": 210
-          }
-        },
         "slot_win_count": {
           "anchor": {
             "x": 0,
@@ -151,24 +133,6 @@
             },
             {
               "time": 0.16,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
-            }
-          ],
-          "rgba": [
-            {
-              "time": 0,
-              "color": "ffffff00"
-            },
-            {
-              "time": 0.2,
               "color": "ffffffff"
             }
           ]
@@ -259,14 +223,6 @@
             {
               "time": 0,
               "name": "pile"
-            }
-          ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
             }
           ]
         }
@@ -380,24 +336,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
-            }
-          ],
-          "rgba": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.35,
-              "color": "ffffff00"
-            }
-          ]
         }
       },
       "bones": {
@@ -465,24 +403,6 @@
             },
             {
               "time": 0.16,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
-            }
-          ],
-          "rgba": [
-            {
-              "time": 0,
-              "color": "ffffff00"
-            },
-            {
-              "time": 0.2,
               "color": "ffffffff"
             }
           ]
@@ -573,14 +493,6 @@
             {
               "time": 0,
               "name": "pile"
-            }
-          ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
             }
           ]
         }
@@ -694,24 +606,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
-            }
-          ],
-          "rgba": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.35,
-              "color": "ffffff00"
-            }
-          ]
         }
       },
       "bones": {
@@ -779,24 +673,6 @@
             },
             {
               "time": 0.16,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
-            }
-          ],
-          "rgba": [
-            {
-              "time": 0,
-              "color": "ffffff00"
-            },
-            {
-              "time": 0.2,
               "color": "ffffffff"
             }
           ]
@@ -887,14 +763,6 @@
             {
               "time": 0,
               "name": "pile"
-            }
-          ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
             }
           ]
         }
@@ -1008,24 +876,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
-            }
-          ],
-          "rgba": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.35,
-              "color": "ffffff00"
-            }
-          ]
         }
       },
       "bones": {
@@ -1093,24 +943,6 @@
             },
             {
               "time": 0.16,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
-            }
-          ],
-          "rgba": [
-            {
-              "time": 0,
-              "color": "ffffff00"
-            },
-            {
-              "time": 0.2,
               "color": "ffffffff"
             }
           ]
@@ -1201,14 +1033,6 @@
             {
               "time": 0,
               "name": "pile"
-            }
-          ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
             }
           ]
         }
@@ -1322,24 +1146,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
-            }
-          ],
-          "rgba": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.35,
-              "color": "ffffff00"
-            }
-          ]
         }
       },
       "bones": {
@@ -1407,24 +1213,6 @@
             },
             {
               "time": 0.16,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
-            }
-          ],
-          "rgba": [
-            {
-              "time": 0,
-              "color": "ffffff00"
-            },
-            {
-              "time": 0.2,
               "color": "ffffffff"
             }
           ]
@@ -1515,14 +1303,6 @@
             {
               "time": 0,
               "name": "pile"
-            }
-          ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
             }
           ]
         }
@@ -1624,24 +1404,6 @@
             {
               "time": 0,
               "name": "pile"
-            }
-          ],
-          "rgba": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.35,
-              "color": "ffffff00"
-            }
-          ]
-        },
-        "count_plaque": {
-          "attachment": [
-            {
-              "time": 0,
-              "name": "count_plaque"
             }
           ],
           "rgba": [

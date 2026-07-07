@@ -323,6 +323,14 @@ export default {
 			scale: 1,
 		},
 	},
+	// win-amount readout plaque — plain sprite (not part of the bigwin spine atlas)
+	// so it can be positioned in the exact same conditionally-offset container as
+	// the count-up text in Win.svelte, guaranteeing alignment
+	countPlaque: {
+		type: 'sprite',
+		src: new URL('../../assets/spines/bigwinParty/count_plaque.png', import.meta.url).href,
+		preload: true,
+	},
 	globalMultiplier: {
 		type: 'spine',
 		src: {
