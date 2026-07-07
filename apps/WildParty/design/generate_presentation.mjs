@@ -33,23 +33,52 @@ const render = (svg, outPath, width) => {
 const sparkle = (x, y, s, color = '#fff8d0') =>
 	`<path d="M ${x} ${y - 8 * s} Q ${x + 2 * s} ${y - 2 * s} ${x + 8 * s} ${y} Q ${x + 2 * s} ${y + 2 * s} ${x} ${y + 8 * s} Q ${x - 2 * s} ${y + 2 * s} ${x - 8 * s} ${y} Q ${x - 2 * s} ${y - 2 * s} ${x} ${y - 8 * s} Z" fill="${color}" opacity="0.95"/>`;
 
-// ─── big win banners (1080×300) ─────────────────────────────────────────────
-const banner = ({ label, rib0, rib1, text0, text1, sparkles }) => {
+// ─── big win banners (1080×300) — glossy gem-cut style ─────────────────────
+// Elongated hexagon "gem" silhouette (pointed tips like the original ribbon
+// tails) with a layered bevel: dark outer edge -> gold metal rim -> tier-
+// colored gem face, plus a diagonal glass specular streak and coin-medallion
+// accents at the tips. Referenced from a jackpot-style banner the user shared.
+const HEX_CENTER = [540, 150];
+const HEX_PTS = [
+	[20, 150],
+	[170, 55],
+	[910, 55],
+	[1060, 150],
+	[910, 245],
+	[170, 245],
+];
+const hexPath = (scale) =>
+	`M ${HEX_PTS.map(([x, y]) => `${HEX_CENTER[0] + (x - HEX_CENTER[0]) * scale} ${HEX_CENTER[1] + (y - HEX_CENTER[1]) * scale}`).join(' L ')} Z`;
+
+const banner = ({ label, gemGradient, darkEdge, text0, text1, sparkles }) => {
 	const clipId = `capclip_${text0.replace('#', '')}`;
+	const gemClipId = `gemclip_${text0.replace('#', '')}`;
 	return svgWrap(
 		1080,
 		300,
 		`
-	<!-- ribbon tails -->
-	<path d="M 60 92 L 6 150 L 60 208 L 96 208 L 96 92 Z" fill="${rib1}" stroke="#2a0a20" stroke-width="8" stroke-linejoin="round"/>
-	<path d="M 1020 92 L 1074 150 L 1020 208 L 984 208 L 984 92 Z" fill="${rib1}" stroke="#2a0a20" stroke-width="8" stroke-linejoin="round"/>
-	<!-- ribbon body with a gentle arc -->
-	<path d="M 84 84 Q 540 44 996 84 L 996 216 Q 540 256 84 216 Z"
-		fill="url(#rib)" stroke="#2a0a20" stroke-width="10" stroke-linejoin="round"/>
-	<path d="M 100 98 Q 540 62 980 98" stroke="#ffffff" stroke-width="6" fill="none" opacity="0.35" stroke-linecap="round"/>
-	<path d="M 96 92 Q 540 52 984 92 L 984 104 Q 540 64 96 104 Z" fill="url(#trimTop)" opacity="0.9"/>
-	<path d="M 96 196 Q 540 236 984 196 L 984 208 Q 540 248 96 208 Z" fill="url(#trimTop)" opacity="0.9"/>
-	<!-- deep drop shadow, offset further for more lift off the ribbon -->
+	<!-- outer dark bevel edge (full silhouette) -->
+	<path d="${hexPath(1)}" fill="${darkEdge}" stroke="#0a0410" stroke-width="6" stroke-linejoin="round"/>
+	<!-- gold metal rim band -->
+	<path d="${hexPath(0.94)}" fill="url(#goldRim)"/>
+	<!-- tier-colored gem face -->
+	<path d="${hexPath(0.84)}" fill="url(#gem)" stroke="#0a0410" stroke-width="4"/>
+	<clipPath id="${gemClipId}"><path d="${hexPath(0.84)}"/></clipPath>
+	<g clip-path="url(#${gemClipId})">
+		<!-- diagonal glass specular streak -->
+		<path d="M 140 250 L 380 65 L 480 65 L 220 250 Z" fill="#ffffff" opacity="0.22"/>
+		<path d="M 500 250 L 620 65 L 660 65 L 540 250 Z" fill="#ffffff" opacity="0.12"/>
+	</g>
+	<!-- coin medallions at the tips -->
+	${[HEX_PTS[0], HEX_PTS[3]]
+		.map(
+			([x, y]) => `
+		<circle cx="${x}" cy="${y}" r="26" fill="url(#goldRim)" stroke="#0a0410" stroke-width="4"/>
+		<circle cx="${x}" cy="${y}" r="17" fill="none" stroke="#fff3c4" stroke-width="2" opacity="0.7"/>
+		${sparkle(x, y, 1.1, '#fff3c4')}`,
+		)
+		.join('')}
+	<!-- deep drop shadow, offset further for more lift off the gem -->
 	<text x="540" y="203" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="132"
 		text-anchor="middle" letter-spacing="1" fill="#150510" opacity="0.5">${label}</text>
 	<!-- wide dark halo sitting behind the glyph, reads as embossed thickness -->
@@ -57,7 +86,7 @@ const banner = ({ label, rib0, rib1, text0, text1, sparkles }) => {
 		text-anchor="middle" letter-spacing="1" fill="none" stroke="#180614" stroke-width="17" stroke-linejoin="round" opacity="0.9">${label}</text>
 	<!-- art text -->
 	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="132"
-		text-anchor="middle" letter-spacing="1" fill="url(#txt)" stroke="#2a0a20" stroke-width="9" paint-order="stroke">${label}</text>
+		text-anchor="middle" letter-spacing="1" fill="url(#txt)" stroke="#e8b23d" stroke-width="9" paint-order="stroke">${label}</text>
 	<text x="540" y="196" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="132"
 		text-anchor="middle" letter-spacing="1" fill="url(#txtShine)">${label}</text>
 	<!-- crisp catch-light band clipped to the glyphs' cap-height, for a pillowy emboss -->
@@ -67,12 +96,10 @@ const banner = ({ label, rib0, rib1, text0, text1, sparkles }) => {
 	</g>
 	${sparkles}
 	`,
-		`<linearGradient id="rib" x1="0" y1="0" x2="0" y2="1">
-			<stop offset="0" stop-color="${rib0}"/><stop offset="1" stop-color="${rib1}"/>
+		`<linearGradient id="goldRim" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" stop-color="#fff3c4"/><stop offset="0.5" stop-color="#e8a33d"/><stop offset="1" stop-color="#a8691a"/>
 		</linearGradient>
-		<linearGradient id="trimTop" x1="0" y1="0" x2="0" y2="1">
-			<stop offset="0" stop-color="#ffe98a"/><stop offset="1" stop-color="#d99b23"/>
-		</linearGradient>
+		${gemGradient}
 		<linearGradient id="txt" x1="0" y1="0" x2="0" y2="1">
 			<stop offset="0" stop-color="${text0}"/><stop offset="1" stop-color="${text1}"/>
 		</linearGradient>
@@ -86,6 +113,17 @@ const banner = ({ label, rib0, rib1, text0, text1, sparkles }) => {
 		</clipPath>`,
 	);
 };
+
+// per-tier gem face gradient — vertical light-to-dark like a cut stone facet,
+// except max which gets a horizontal rainbow sweep for the top-tier moment
+const gemVertical = (top, bottom) =>
+	`<linearGradient id="gem" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="1" stop-color="${bottom}"/></linearGradient>`;
+const gemRainbow = () =>
+	`<linearGradient id="gem" x1="0" y1="0" x2="1" y2="0">
+		<stop offset="0" stop-color="#ff8ede"/><stop offset="0.25" stop-color="#ffd75e"/>
+		<stop offset="0.5" stop-color="#9effb0"/><stop offset="0.75" stop-color="#9ef3ff"/>
+		<stop offset="1" stop-color="#c59bff"/>
+	</linearGradient>`;
 
 // ─── shared win-amount readout plaque (940×210) — sits behind the count-up ──
 const countPlaque = svgWrap(
@@ -158,11 +196,46 @@ const sparklesFor = (n, seedInit) => {
 };
 
 const BANNERS = {
-	banner_big: banner({ label: 'BIG WIN', rib0: '#e2679b', rib1: '#8f2555', text0: '#ffe066', text1: '#e8930c', sparkles: sparklesFor(4, 11) }),
-	banner_super: banner({ label: 'SUPER WIN', rib0: '#d84fd4', rib1: '#6d1a8f', text0: '#ffd43b', text1: '#f0640c', sparkles: sparklesFor(5, 23) }),
-	banner_mega: banner({ label: 'MEGA WIN', rib0: '#9a4fe0', rib1: '#3c1a8f', text0: '#ff9ede', text1: '#d02f8f', sparkles: sparklesFor(6, 37) }),
-	banner_epic: banner({ label: 'EPIC WIN!', rib0: '#4f64e0', rib1: '#1a2a8f', text0: '#9ef3ff', text1: '#2f7bd0', sparkles: sparklesFor(7, 51) }),
-	banner_max: banner({ label: 'MAX WIN', rib0: '#3a2a52', rib1: '#160a28', text0: '#fff7d1', text1: '#f0a90c', sparkles: sparklesFor(9, 67) }),
+	banner_big: banner({
+		label: 'BIG WIN',
+		gemGradient: gemVertical('#4fce74', '#166b32'),
+		darkEdge: '#0a2e16',
+		text0: '#d8ffe4',
+		text1: '#4fce74',
+		sparkles: sparklesFor(4, 11),
+	}),
+	banner_super: banner({
+		label: 'SUPER WIN',
+		gemGradient: gemVertical('#4f9ee8', '#154a8f'),
+		darkEdge: '#0a1f3d',
+		text0: '#dcefff',
+		text1: '#4f9ee8',
+		sparkles: sparklesFor(5, 23),
+	}),
+	banner_mega: banner({
+		label: 'MEGA WIN',
+		gemGradient: gemVertical('#e85a4f', '#8f1e15'),
+		darkEdge: '#3d0f0a',
+		text0: '#ffe0dc',
+		text1: '#e85a4f',
+		sparkles: sparklesFor(6, 37),
+	}),
+	banner_epic: banner({
+		label: 'EPIC WIN!',
+		gemGradient: gemVertical('#a95af0', '#4a1a8f'),
+		darkEdge: '#26103d',
+		text0: '#f0e0ff',
+		text1: '#a95af0',
+		sparkles: sparklesFor(7, 51),
+	}),
+	banner_max: banner({
+		label: 'MAX WIN',
+		gemGradient: gemRainbow(),
+		darkEdge: '#2a0a20',
+		text0: '#fff7d1',
+		text1: '#f0a90c',
+		sparkles: sparklesFor(9, 67),
+	}),
 };
 
 // ─── fs intro art ───────────────────────────────────────────────────────────
