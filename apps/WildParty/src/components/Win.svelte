@@ -23,6 +23,7 @@
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
+	import { WIN_TIER_INTENSITY, WIN_TIER_MARQUEE, WIN_TIER_LINGER_MS } from '../game/winPresentationTiers';
 
 	const context = getContext();
 
@@ -31,34 +32,6 @@
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
 	let onCountUpComplete = $state(() => {});
-
-	// escalating "how big does this FEEL" multiplier — same shake/flash/BigWinFx
-	// logic for every big-win tier, just scaled up as the tier climbs. Widened
-	// range (0.8 -> 1.9) plus toning big DOWN below the old baseline of 1, so
-	// the low and high ends read as clearly different, not just +70%.
-	const TIER_INTENSITY: Partial<Record<WinLevelData['alias'], number>> = {
-		big: 0.8,
-		superwin: 1.0,
-		mega: 1.3,
-		epic: 1.6,
-		max: 2.0,
-	};
-	// marquee now starts at mega (not just epic/max) so there's a 3-step ramp
-	// (sparse/slow -> denser/faster) instead of a hard on/off split
-	const MARQUEE_TIERS: Partial<Record<WinLevelData['alias'], { count: number; speed: number }>> = {
-		mega: { count: 14, speed: 0.7 },
-		epic: { count: 20, speed: 1 },
-		max: { count: 26, speed: 1.3 },
-	};
-	// higher tiers linger noticeably longer on screen — an easy-to-perceive
-	// difference that doesn't rely on subtle particle/shake magnitude changes
-	const LINGER_MS: Partial<Record<WinLevelData['alias'], number>> = {
-		big: 1000,
-		superwin: 1200,
-		mega: 1500,
-		epic: 1850,
-		max: 2200,
-	};
 
 	// camera shake as the big-win presentation slams in
 	let shake = $state({ x: 0, y: 0 });
@@ -127,7 +100,7 @@
 			winLevelData = emitterEvent.winLevelData;
 			if (emitterEvent.winLevelData.type === 'big') {
 				const alias = emitterEvent.winLevelData.alias;
-				const intensity = TIER_INTENSITY[alias] ?? 1;
+				const intensity = WIN_TIER_INTENSITY[alias] ?? 1;
 				startShake(intensity);
 				startImpact(intensity, alias === 'epic' || alias === 'max');
 			}
@@ -154,13 +127,13 @@
 						await startCountUp();
 						// higher tiers linger longer after the count-up finishes — an
 						// easy-to-perceive escalation on top of the shake/flash/fx scaling
-						await waitForTimeout(isBigWin ? (LINGER_MS[winLevelData.alias] ?? 1300) : 300);
+						await waitForTimeout(isBigWin ? (WIN_TIER_LINGER_MS[winLevelData.alias] ?? 1300) : 300);
 						oncomplete();
 					}}
 				/>
 
 				{#if isBigWin}
-					{@const intensity = TIER_INTENSITY[winLevelData.alias] ?? 1}
+					{@const intensity = WIN_TIER_INTENSITY[winLevelData.alias] ?? 1}
 					<MainContainer>
 						<BigWinFx
 							x={context.stateGameDerived.boardLayout().x + shake.x * 0.4}
@@ -177,7 +150,7 @@
 						scale={punch}
 					>
 						{@const winLevelSymbolKey = WIN_LEVEL_SYMBOL_MAP[winLevelData.alias]}
-						{@const marquee = MARQUEE_TIERS[winLevelData.alias]}
+						{@const marquee = WIN_TIER_MARQUEE[winLevelData.alias]}
 						{#snippet bannerFxSnippet()}
 							{#if marquee}
 								<BannerMarquee dotCount={marquee.count} speed={marquee.speed} />
