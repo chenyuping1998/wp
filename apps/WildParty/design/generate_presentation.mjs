@@ -50,20 +50,19 @@ const HEX_PTS = [
 const hexPath = (scale) =>
 	`M ${HEX_PTS.map(([x, y]) => `${HEX_CENTER[0] + (x - HEX_CENTER[0]) * scale} ${HEX_CENTER[1] + (y - HEX_CENTER[1]) * scale}`).join(' L ')} Z`;
 
-const banner = ({ label, gemGradient, darkEdge, text0, text1, sparkles, crown = false }) => {
+const banner = ({ label, gemGradient, darkEdge, text0, text1, sparkles, crownCount = 0 }) => {
 	const clipId = `capclip_${text0.replace('#', '')}`;
 	const gemClipId = `gemclip_${text0.replace('#', '')}`;
-	// epic/max get extra gold "crown" spikes along the top/bottom edges — the
-	// frame silhouette itself escalates with tier, not just its color
-	const crownSpikes = !crown
-		? ''
-		: [320, 540, 760]
-				.map(
-					(x) => `
+	// crown spike count escalates 0/0/1/2/3 across big/super/mega/epic/max —
+	// the frame silhouette itself gets progressively more ornate with tier,
+	// not just a two-tier "epic+max get crowns, everyone else doesn't" split
+	const crownSpikes = Array.from({ length: crownCount }, (_, i) => 170 + ((910 - 170) * (i + 1)) / (crownCount + 1))
+		.map(
+			(x) => `
 		<path d="M ${x - 18} 58 L ${x} 16 L ${x + 18} 58 Z" fill="url(#goldRim)" stroke="#0a0410" stroke-width="3" stroke-linejoin="round"/>
 		<path d="M ${x - 18} 242 L ${x} 284 L ${x + 18} 242 Z" fill="url(#goldRim)" stroke="#0a0410" stroke-width="3" stroke-linejoin="round"/>`,
-				)
-				.join('');
+		)
+		.join('');
 	return svgWrap(
 		1080,
 		300,
@@ -231,6 +230,7 @@ const BANNERS = {
 		text0: '#ffe0dc',
 		text1: '#e85a4f',
 		sparkles: sparklesFor(6, 37),
+		crownCount: 1,
 	}),
 	banner_epic: banner({
 		label: 'EPIC WIN!',
@@ -239,7 +239,7 @@ const BANNERS = {
 		text0: '#f0e0ff',
 		text1: '#a95af0',
 		sparkles: sparklesFor(7, 51),
-		crown: true,
+		crownCount: 2,
 	}),
 	banner_max: banner({
 		label: 'MAX WIN',
@@ -248,7 +248,7 @@ const BANNERS = {
 		text0: '#fff7d1',
 		text1: '#f0a90c',
 		sparkles: sparklesFor(9, 67),
-		crown: true,
+		crownCount: 3,
 	}),
 };
 
@@ -400,7 +400,7 @@ const ALIASES = ['big', 'super', 'mega', 'epic', 'max'];
 // art — the H1-H4 icon (Win.svelte, y=-640) and the plaque/count-up (bone
 // slot_win_count, y=-140, independently sized in Win.svelte) are on separate
 // bones so this only grows the banner/pile, nothing else shifts.
-const BASE_SCALE = 1.35;
+const BASE_SCALE = 1.45;
 const bs = (v) => v * BASE_SCALE;
 
 const bigwinAnimations = {};

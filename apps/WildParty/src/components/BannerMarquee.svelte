@@ -2,12 +2,14 @@
 	import { onMount } from 'svelte';
 	import { Container, Sprite } from 'pixi-svelte';
 
-	type Props = { scale?: number };
+	type Props = { scale?: number; dotCount?: number; speed?: number };
 	const props: Props = $props();
 	// 2x compensates the ~0.5x scale that content injected via SpineSlot
 	// (addSlotObject) renders at compared to the skeleton's own attachments —
 	// same empirical pattern as WinLevelSymbolIntro.svelte's base scale.
 	const s = $derived(props.scale ?? 2.0);
+	const dotCount = $derived(props.dotCount ?? 20);
+	const speed = $derived(props.speed ?? 1);
 
 	// outer gem hex offsets from center, matching HEX_PTS in
 	// design/generate_presentation.mjs banner()
@@ -20,7 +22,6 @@
 		[-370, 95],
 	];
 
-	const DOT_COUNT = 20;
 	const points = $derived.by(() => {
 		const edges = HEX.map((p, i) => {
 			const next = HEX[(i + 1) % HEX.length];
@@ -28,8 +29,8 @@
 		});
 		const total = edges.reduce((sum, e) => sum + e.len, 0);
 		const pts: { x: number; y: number }[] = [];
-		for (let i = 0; i < DOT_COUNT; i++) {
-			let d = (i / DOT_COUNT) * total;
+		for (let i = 0; i < dotCount; i++) {
+			let d = (i / dotCount) * total;
 			for (const e of edges) {
 				if (d <= e.len) {
 					const t = e.len === 0 ? 0 : d / e.len;
@@ -48,7 +49,7 @@
 	let phase = $state(0);
 	onMount(() => {
 		const id = setInterval(() => {
-			phase += 0.045;
+			phase += 0.045 * speed;
 		}, 16);
 		return () => clearInterval(id);
 	});

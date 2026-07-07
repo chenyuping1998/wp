@@ -33,15 +33,32 @@
 	let onCountUpComplete = $state(() => {});
 
 	// escalating "how big does this FEEL" multiplier — same shake/flash/BigWinFx
-	// logic for every big-win tier, just scaled up as the tier climbs
+	// logic for every big-win tier, just scaled up as the tier climbs. Widened
+	// range (0.8 -> 1.9) plus toning big DOWN below the old baseline of 1, so
+	// the low and high ends read as clearly different, not just +70%.
 	const TIER_INTENSITY: Partial<Record<WinLevelData['alias'], number>> = {
-		big: 1,
-		superwin: 1.15,
+		big: 0.8,
+		superwin: 1.0,
 		mega: 1.3,
-		epic: 1.5,
-		max: 1.7,
+		epic: 1.6,
+		max: 2.0,
 	};
-	const MARQUEE_TIERS: Partial<Record<WinLevelData['alias'], true>> = { epic: true, max: true };
+	// marquee now starts at mega (not just epic/max) so there's a 3-step ramp
+	// (sparse/slow -> denser/faster) instead of a hard on/off split
+	const MARQUEE_TIERS: Partial<Record<WinLevelData['alias'], { count: number; speed: number }>> = {
+		mega: { count: 14, speed: 0.7 },
+		epic: { count: 20, speed: 1 },
+		max: { count: 26, speed: 1.3 },
+	};
+	// higher tiers linger noticeably longer on screen — an easy-to-perceive
+	// difference that doesn't rely on subtle particle/shake magnitude changes
+	const LINGER_MS: Partial<Record<WinLevelData['alias'], number>> = {
+		big: 1000,
+		superwin: 1200,
+		mega: 1500,
+		epic: 1850,
+		max: 2200,
+	};
 
 	// camera shake as the big-win presentation slams in
 	let shake = $state({ x: 0, y: 0 });
@@ -62,7 +79,7 @@
 	// hit-stop impact frame: white flash + scale punch on the slam-in
 	let flash = $state(0);
 	let punch = $state(1);
-	const startImpact = (intensity: number) => {
+	const startImpact = (intensity: number, echo: boolean) => {
 		const start = Date.now();
 		const id = setInterval(() => {
 			const p = (Date.now() - start) / 280;
@@ -70,10 +87,26 @@
 				flash = 0;
 				punch = 1;
 				clearInterval(id);
+				// epic/max get a second, smaller flash beat ~90ms later — a
+				// distinct "double impact" feel, not just a bigger single flash
+				if (echo) setTimeout(() => startEchoFlash(intensity), 90);
 				return;
 			}
 			flash = Math.max(0, 0.8 * intensity * (1 - p * 1.4));
 			punch = 1 + 0.14 * intensity * (1 - p) ** 2;
+		}, 16);
+	};
+
+	const startEchoFlash = (intensity: number) => {
+		const start = Date.now();
+		const id = setInterval(() => {
+			const p = (Date.now() - start) / 180;
+			if (p >= 1) {
+				flash = 0;
+				clearInterval(id);
+				return;
+			}
+			flash = Math.max(0, 0.5 * intensity * (1 - p * 1.6));
 		}, 16);
 	};
 
@@ -93,9 +126,10 @@
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
 			if (emitterEvent.winLevelData.type === 'big') {
-				const intensity = TIER_INTENSITY[emitterEvent.winLevelData.alias] ?? 1;
+				const alias = emitterEvent.winLevelData.alias;
+				const intensity = TIER_INTENSITY[alias] ?? 1;
 				startShake(intensity);
-				startImpact(intensity);
+				startImpact(intensity, alias === 'epic' || alias === 'max');
 			}
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
@@ -118,8 +152,9 @@
 						// the numbers start rolling
 						if (isBigWin) await waitForTimeout(90);
 						await startCountUp();
-						// Big-win presentations linger an extra second after the count-up
-						await waitForTimeout(isBigWin ? 1300 : 300);
+						// higher tiers linger longer after the count-up finishes — an
+						// easy-to-perceive escalation on top of the shake/flash/fx scaling
+						await waitForTimeout(isBigWin ? (LINGER_MS[winLevelData.alias] ?? 1300) : 300);
 						oncomplete();
 					}}
 				/>
@@ -142,13 +177,16 @@
 						scale={punch}
 					>
 						{@const winLevelSymbolKey = WIN_LEVEL_SYMBOL_MAP[winLevelData.alias]}
+						{@const marquee = MARQUEE_TIERS[winLevelData.alias]}
 						{#snippet bannerFxSnippet()}
-							<BannerMarquee />
+							{#if marquee}
+								<BannerMarquee dotCount={marquee.count} speed={marquee.speed} />
+							{/if}
 						{/snippet}
 						{#if winLevelData?.animation}
 							<WinAnimation
 								animationMap={winLevelData.animation}
-								bannerFx={MARQUEE_TIERS[winLevelData.alias] ? bannerFxSnippet : undefined}
+								bannerFx={marquee ? bannerFxSnippet : undefined}
 							>
 								{#if winLevelSymbolKey}
 									<!-- slot children are provider-scaled ×0.5, so -640 puts the icon
