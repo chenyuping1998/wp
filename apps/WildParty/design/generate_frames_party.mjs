@@ -239,4 +239,26 @@ blit(multiPng, render(frameGlowSvg, FG_W), 215, 3);
 fs.writeFileSync(multiPath, PNG.sync.write(multiPng));
 console.log('patched multiframe.png (Frame_Multiplier + Frame_Multiplier_glow only, sparkles untouched)');
 
+// ─── multiplier_label.png — standalone "header cap" plaque ──────────────────
+// The Frame_Multiplier region above is already packed edge-to-edge in its
+// 454x139 atlas page (no spare rows to grow into without repacking/risking the
+// untouched sparkle regions), so a "MULTIPLIER" label can't be baked into that
+// same texture. Instead this is a separate small plaque, same gold/panelBg
+// language, meant to sit mostly BEHIND Frame_Multiplier so only its top ~55%
+// peeks out above the frame — reads as one continuous panel despite being two
+// sprites. See GlobalMultiplier.svelte for the overlap positioning.
+const LABEL_W = 211, LABEL_H = 90;
+const multiLabelSvg = svgWrap(
+	LABEL_W, LABEL_H,
+	`
+	<rect x="4" y="4" width="${LABEL_W - 8}" height="${LABEL_H - 4}" rx="18" fill="url(#gold)" stroke="${INK}" stroke-width="6"/>
+	<rect x="11" y="10" width="${LABEL_W - 22}" height="${LABEL_H - 20}" rx="12" fill="url(#panelBg)" stroke="${INK}" stroke-width="3"/>
+	${sparkle(20, 24, 0.6)}
+	${sparkle(LABEL_W - 20, 24, 0.6, '#ff8ede')}
+	`,
+	defs,
+);
+fs.writeFileSync(path.join(MULTI_DIR, 'multiplier_label.png'), render(multiLabelSvg, LABEL_W));
+console.log('wrote multiplier_label.png');
+
 console.log('done');
