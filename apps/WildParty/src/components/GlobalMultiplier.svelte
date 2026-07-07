@@ -16,7 +16,7 @@
 		SpineSlot,
 		SpineTrack,
 	} from 'pixi-svelte';
-	import { FadeContainer } from 'components-pixi';
+	import { FadeContainer, ResponsiveBitmapText } from 'components-pixi';
 	import { stateBetDerived } from 'state-shared';
 	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
 
@@ -76,6 +76,22 @@
 <FadeContainer {show}>
 	<BoardContainer>
 		<Container {...position} {scale}>
+			<!-- label sits just above the frame's top edge (SpineProvider has no
+			     anchor set, so its origin is the top-left of the rendered panel) -->
+			<ResponsiveBitmapText
+				anchor={{ x: 0.5, y: 1 }}
+				x={PANEL_WIDTH * 0.5}
+				y={-SYMBOL_SIZE * 0.1}
+				maxWidth={PANEL_WIDTH * 1.9}
+				text="MULTIPLIER"
+				style={{
+					fontFamily: 'gold',
+					fontSize: SYMBOL_SIZE * 0.55,
+					align: 'center',
+					fontWeight: 'bold',
+					letterSpacing: 0,
+				}}
+			/>
 			<SpineProvider key="globalMultiplier" width={PANEL_WIDTH}>
 				<SpineTrack
 					trackIndex={0}
