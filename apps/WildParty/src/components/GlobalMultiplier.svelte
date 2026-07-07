@@ -11,7 +11,6 @@
 	import {
 		BitmapText,
 		Container,
-		Sprite,
 		SpineEventEmitterProvider,
 		SpineProvider,
 		SpineSlot,
@@ -77,31 +76,17 @@
 <FadeContainer {show}>
 	<BoardContainer>
 		<Container {...position} {scale}>
-			<!-- "MULTIPLIER" header-cap: Frame_Multiplier's own atlas region has no
-			     spare vertical space to grow into (packed edge-to-edge, see
-			     design/generate_frames_party.mjs), so this is a separate plaque
-			     mostly overlapped BEHIND the frame — only its top ~55% peeks out
-			     above the frame's top edge, reading as one continuous panel.
-			     SpineProvider has no anchor set, so the frame's own origin (0,0)
-			     is its top-left corner. Overlap fraction is an estimate — check
-			     on-engine and nudge PANEL_WIDTH multipliers below if it's off. -->
-			<Sprite
-				key="multiplierLabel"
-				anchor={0.5}
-				x={PANEL_WIDTH * 0.5}
-				y={-PANEL_WIDTH * 0.02}
-				width={PANEL_WIDTH}
-				height={PANEL_WIDTH * 0.4265}
-			/>
+			<!-- label sits just above the frame's top edge (SpineProvider has no
+			     anchor set, so its origin is the top-left of the rendered panel) -->
 			<ResponsiveBitmapText
-				anchor={0.5}
+				anchor={{ x: 0.5, y: 1 }}
 				x={PANEL_WIDTH * 0.5}
-				y={-PANEL_WIDTH * 0.11}
-				maxWidth={PANEL_WIDTH * 0.85}
+				y={-SYMBOL_SIZE * 0.1}
+				maxWidth={PANEL_WIDTH * 1.9}
 				text="MULTIPLIER"
 				style={{
 					fontFamily: 'gold',
-					fontSize: SYMBOL_SIZE * 0.4,
+					fontSize: SYMBOL_SIZE * 0.55,
 					align: 'center',
 					fontWeight: 'bold',
 					letterSpacing: 0,

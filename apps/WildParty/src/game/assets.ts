@@ -339,13 +339,6 @@ export default {
 			scale: 2,
 		},
 	},
-	// standalone "MULTIPLIER" header-cap plaque (see design/generate_frames_party.mjs)
-	// — sits mostly behind Frame_Multiplier so only its top peeks out above it
-	multiplierLabel: {
-		type: 'sprite',
-		src: new URL('../../assets/spines/globalMultiplier/multiplier_label.png', import.meta.url).href,
-		preload: true,
-	},
 	// party-themed free-spin screens (SVG-generated — see design/generate_presentation.mjs)
 	fsIntro: {
 		type: 'spine',
