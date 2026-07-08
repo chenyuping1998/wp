@@ -252,9 +252,22 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	setWin: async (bookEvent: BookEventOfType<'setWin'>) => {
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
 
+		if (!winLevelData) {
+			// winLevelMap only defines levels 1-10 — if the backend ever sends a
+			// winLevel outside that range this silently fell through to "not a
+			// big win, skip the popup" with zero visible symptom. Surfacing it
+			// so a reported "the win popup didn't show" is diagnosable instead
+			// of invisible.
+			console.error(
+				`[setWin] bookEvent.winLevel=${bookEvent.winLevel} has no entry in winLevelMap — skipping win presentation`,
+				bookEvent,
+			);
+			return;
+		}
+
 		// Regular wins just tick up in the bottom win label — only big-tier
 		// wins (big/super/mega/epic/max) get the full pop-up presentation.
-		if (winLevelData?.type !== 'big') return;
+		if (winLevelData.type !== 'big') return;
 
 		eventEmitter.broadcast({ type: 'winShow' });
 		winLevelSoundsPlay({ winLevelData });
