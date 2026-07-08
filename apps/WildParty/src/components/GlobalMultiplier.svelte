@@ -88,13 +88,17 @@
 					}}
 				/>
 				<SpineEventEmitterProvider>
+					<!-- 4.3 -> 4.2: compensates the gold font's thicker embossed halo
+					     (see design/generate_party_font.mjs) so the number keeps the
+					     same total ink footprint inside Frame_Multiplier's hollow
+					     window as before that change -->
 					<SpineSlot slotName="slot_multi">
 						<BitmapText
 							anchor={0.5}
 							text={`${Math.round(previousMultiplier.current)}×`}
 							style={{
 								fontFamily: 'gold',
-								fontSize: SYMBOL_SIZE * 4.3,
+								fontSize: SYMBOL_SIZE * 4.2,
 							}}
 						/>
 					</SpineSlot>
@@ -104,7 +108,7 @@
 							text={`${multiplier}×`}
 							style={{
 								fontFamily: 'gold',
-								fontSize: SYMBOL_SIZE * 4.3,
+								fontSize: SYMBOL_SIZE * 4.2,
 							}}
 						/>
 					</SpineSlot>

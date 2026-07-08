@@ -59,13 +59,17 @@
 				<SpineSlot slotName="slot_number">
 					<!-- fontSize is compounded by bone_number's own 2x scale (see
 					     fs_number_party.json), so this ends up ~2x on screen — sized
-					     to sit inside the number_ring plaque's inner box, not spill past it -->
+					     to sit inside the number_ring plaque's inner box, not spill past it.
+					     0.05 -> 0.049: the gold font's thicker embossed halo (see
+					     design/generate_party_font.mjs) adds a bit more ink around each
+					     glyph than the old font; this nudge keeps the same total visual
+					     footprint as before that change. -->
 					<BitmapText
 						anchor={{ x: 0.5, y: 0.5 }}
 						text={freeSpinsFromEvent}
 						style={{
 							fontFamily: 'gold',
-							fontSize: sizes.width * 0.05,
+							fontSize: sizes.width * 0.049,
 							fontWeight: 'bold',
 						}}
 					/>
