@@ -8,6 +8,7 @@
 	import { Sprite, SpineProvider, SpineTrack } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
+	import FrameShine from './FrameShine.svelte';
 
 	const context = getContext();
 	const SPINE_SCALE = { width: 0.62, height: 0.66 };
@@ -76,6 +77,15 @@
 <Sprite
 	key="frame_edge.png"
 	anchor={0.5}
+	x={context.stateGameDerived.boardLayout().x * POSITION_ADJUSTMENT}
+	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT}
+	width={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.width}
+	height={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.height}
+/>
+
+<!-- traveling glint sliding around the gold ring's midline, on top of the
+     metal so it reads as a moving light reflection, not a separate layer -->
+<FrameShine
 	x={context.stateGameDerived.boardLayout().x * POSITION_ADJUSTMENT}
 	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT}
 	width={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.width}

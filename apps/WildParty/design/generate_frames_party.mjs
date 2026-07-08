@@ -59,7 +59,21 @@ const defs = `
 	</linearGradient>
 	<radialGradient id="ball" cx="0.38" cy="0.32" r="1">
 		<stop offset="0" stop-color="#f4f6ff"/><stop offset="0.6" stop-color="#c3c9e8"/><stop offset="1" stop-color="#8b91b5"/>
-	</radialGradient>`;
+	</radialGradient>
+	<!-- richer banded gradient for the board's outer frame_edge only — several
+	     light/dark alternations read as brushed/polished metal reflecting
+	     multiple light sources, vs. the plain 3-stop "gold" used elsewhere -->
+	<linearGradient id="goldMetal" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#fff6d0"/>
+		<stop offset="0.12" stop-color="#ffe98a"/>
+		<stop offset="0.24" stop-color="#c98a2e"/>
+		<stop offset="0.36" stop-color="#ffe98a"/>
+		<stop offset="0.5" stop-color="#e8a33d"/>
+		<stop offset="0.64" stop-color="#fff3c4"/>
+		<stop offset="0.76" stop-color="#b8791a"/>
+		<stop offset="0.88" stop-color="#e8a33d"/>
+		<stop offset="1" stop-color="#8a5812"/>
+	</linearGradient>`;
 
 const render = (svg, width) => new Resvg(svg, { fitTo: { mode: 'width', value: width }, font: { loadSystemFonts: true } }).render().asPng();
 
@@ -78,8 +92,12 @@ const frameEdgeSvg = svgWrap(
 	<defs><mask id="hollow"><rect width="${FRAME_EDGE_W}" height="${FRAME_EDGE_H}" fill="#fff"/>
 		<rect x="86" y="86" width="${FRAME_EDGE_W - 172}" height="${FRAME_EDGE_H - 172}" rx="34" fill="#000"/></mask></defs>
 	<g mask="url(#hollow)">
-		<rect x="24" y="24" width="${FRAME_EDGE_W - 48}" height="${FRAME_EDGE_H - 48}" rx="56" fill="url(#gold)" stroke="${INK}" stroke-width="14"/>
+		<rect x="24" y="24" width="${FRAME_EDGE_W - 48}" height="${FRAME_EDGE_H - 48}" rx="56" fill="url(#goldMetal)" stroke="${INK}" stroke-width="14"/>
 	</g>
+	<!-- outer bevel highlight rim, just inside the outer dark edge -->
+	<rect x="30" y="30" width="${FRAME_EDGE_W - 60}" height="${FRAME_EDGE_H - 60}" rx="50" fill="none" stroke="#fff8d8" stroke-width="3" opacity="0.5"/>
+	<!-- inner bevel highlight rim, right at the hollow cutout's lip -->
+	<rect x="82" y="82" width="${FRAME_EDGE_W - 164}" height="${FRAME_EDGE_H - 164}" rx="36" fill="none" stroke="#fff8d8" stroke-width="3" opacity="0.6"/>
 	<rect x="86" y="86" width="${FRAME_EDGE_W - 172}" height="${FRAME_EDGE_H - 172}" rx="34" fill="none" stroke="${INK}" stroke-width="6" opacity="0.85"/>
 	<rect x="98" y="98" width="${FRAME_EDGE_W - 196}" height="${FRAME_EDGE_H - 196}" rx="28" fill="none" stroke="#ff8ede" stroke-width="3" opacity="0.5"/>
 	<!-- bunting across the top -->
