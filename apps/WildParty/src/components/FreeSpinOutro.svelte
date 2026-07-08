@@ -120,7 +120,13 @@
 					onmount={async () => {
 						if (isBigWin) await waitForTimeout(90);
 						await startCountUp();
-						await waitForTimeout(isBigWin ? (WIN_TIER_LINGER_MS[winLevelData.alias] ?? 1300) : 300);
+						// unlike Win.svelte's non-big branch (dead code — setWin gates
+						// popups to big-tier only at the source), freeSpinEnd ALWAYS shows
+						// this popup regardless of tier, so a non-big FS-round total is a
+						// real, common case here. 300ms was too short to register as
+						// "the number settled" before auto-advancing — a click landing
+						// anywhere near that window looked like it skipped straight through.
+						await waitForTimeout(isBigWin ? (WIN_TIER_LINGER_MS[winLevelData.alias] ?? 1300) : 1400);
 						oncomplete();
 					}}
 				/>
