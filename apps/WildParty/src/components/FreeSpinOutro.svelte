@@ -36,6 +36,7 @@
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
 	let onCountUpComplete = $state(() => {});
+	let onHideComplete = $state(() => {});
 
 	// same big-win shake/flash treatment as Win.svelte, so the free-spins
 	// round total reads as the same tier of celebration as an in-spin win
@@ -87,7 +88,14 @@
 
 	context.eventEmitter.subscribeOnMount({
 		freeSpinOutroShow: () => (show = true),
-		freeSpinOutroHide: async () => (show = false),
+		// wait for the fade-out to actually finish before resolving — freeSpinEnd's
+		// handler awaits this via broadcastAsync so a following presentation can't
+		// start while this one is still visibly on screen fading out
+		freeSpinOutroHide: () =>
+			waitForResolve((resolve) => {
+				onHideComplete = resolve;
+				show = false;
+			}),
 		freeSpinOutroCountUp: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
@@ -102,7 +110,7 @@
 	});
 </script>
 
-<FadeContainer {show}>
+<FadeContainer {show} oncomplete={() => !show && onHideComplete()}>
 	{#if winLevelData}
 		{@const duration = winLevelData.presentDuration}
 		{@const isBigWin = winLevelData.type === 'big'}

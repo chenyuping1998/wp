@@ -236,7 +236,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			winLevelData,
 		});
 		winLevelSoundsStop();
-		eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
+		// awaited so the popup is genuinely gone (not still mid fade-out) before
+		// the curtain transition / next presentation starts
+		await eventEmitter.broadcastAsync({ type: 'freeSpinOutroHide' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
 		stateUi.freeSpinCounterShow = false;
 		// transition resolves once the curtain fully covers the screen — swap the
@@ -277,7 +279,11 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			winLevelData,
 		});
 		winLevelSoundsStop();
-		eventEmitter.broadcast({ type: 'winHide' });
+		// awaited so the popup is genuinely gone (not still mid fade-out) before
+		// the next book event (e.g. a following spin's win, or freeSpinEnd's
+		// total-win popup) can start — otherwise the two can briefly overlap
+		// on screen, which reads as "the big win banner showing twice"
+		await eventEmitter.broadcastAsync({ type: 'winHide' });
 	},
 	finalWin: async () => {
 		// Do nothing

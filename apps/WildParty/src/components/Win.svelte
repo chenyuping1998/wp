@@ -32,6 +32,7 @@
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
 	let onCountUpComplete = $state(() => {});
+	let onHideComplete = $state(() => {});
 
 	// camera shake as the big-win presentation slams in
 	let shake = $state({ x: 0, y: 0 });
@@ -94,7 +95,15 @@
 
 	context.eventEmitter.subscribeOnMount({
 		winShow: () => (show = true),
-		winHide: () => (show = false),
+		// wait for the fade-out to actually finish before resolving — setWin's
+		// handler awaits this via broadcastAsync so the NEXT presentation (e.g.
+		// freeSpinEnd's total-win popup) can't start while this one is still
+		// visibly on screen fading out
+		winHide: () =>
+			waitForResolve((resolve) => {
+				onHideComplete = resolve;
+				show = false;
+			}),
 		winUpdate: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
@@ -109,7 +118,7 @@
 	});
 </script>
 
-<FadeContainer {show}>
+<FadeContainer {show} oncomplete={() => !show && onHideComplete()}>
 	{#if winLevelData}
 		{@const isBigWin = winLevelData.type === 'big'}
 		{@const duration = winLevelData.presentDuration}
