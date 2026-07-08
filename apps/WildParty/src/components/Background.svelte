@@ -45,6 +45,9 @@
 		swayFreq: 0.5 + rand() * 0.9,
 		rotSpeed: (rand() - 0.5) * 6,
 		color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+		// a third of the pieces occasionally twinkle, echoing the symbols'
+		// sparkle accents without putting one on every single piece
+		sparkle: i % 3 === 0,
 	}));
 
 	// lighten/darken a hex color so flat Graphics shapes can fake the bg's
@@ -134,53 +137,55 @@
 		return { x, y, alpha: orb.alpha * edge * 2.2 };
 	};
 
-	// confetti raining down, each piece glowing like the bloom-lit bits in the bg art
-	const drawConfetti = (g: PixiGraphics) => {
+	// shared per-piece motion state — consumed by the soft glow (Sprite,
+	// behind), the crisp gradient-faked core (Graphics, on top), and the
+	// occasional sparkle (Sprite, on top of that) so all three layers stay
+	// perfectly in sync for a given piece
+	const confettiState = (piece: (typeof CONFETTI)[number]) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		const seconds = tick / 62.5;
+		const travel = height + 60;
+		const y = ((seconds * piece.fall + piece.phase * travel) % travel) - 30;
+		const x = piece.x * width + Math.sin(seconds * piece.swayFreq + piece.phase * 7) * piece.swayAmp;
+		const rot = seconds * piece.rotSpeed + piece.phase * 6;
+		// flutter: the strip narrows as it "turns" in the air
+		const flip = Math.sin(seconds * 2 + piece.phase * 11);
+		const facing = 0.55 + 0.45 * Math.abs(flip);
+		const w = piece.size * (0.35 + 0.65 * Math.abs(flip));
+		const h = piece.size * 0.55;
+		return { x, y, rot, facing, w, h };
+	};
+
+	// crisp core with a faked two-tone gradient (base + inset lifted highlight,
+	// offset toward the "lit" corner) instead of a single flat multiply-shade —
+	// closer to the symbols' faceted-gem look, but still soft-edged/glossy
+	// rather than ink-outlined so it doesn't read as a flat sticker pasted onto
+	// the photoreal bg art
+	const drawConfetti = (g: PixiGraphics) => {
 		g.clear();
 		for (const piece of CONFETTI) {
-			const travel = height + 60;
-			const y = ((seconds * piece.fall + piece.phase * travel) % travel) - 30;
-			const x =
-				piece.x * width + Math.sin(seconds * piece.swayFreq + piece.phase * 7) * piece.swayAmp;
-			const rot = seconds * piece.rotSpeed + piece.phase * 6;
-			const cos = Math.cos(rot);
-			const sin = Math.sin(rot);
-			// flutter: the strip narrows as it "turns" in the air
-			const flip = Math.sin(seconds * 2 + piece.phase * 11);
-			const w = piece.size * (0.35 + 0.65 * Math.abs(flip));
-			const h = piece.size * 0.55;
-			const quad = (scale: number): number[] => [
-				x + (cos * w - sin * h) * scale,
-				y + (sin * w + cos * h) * scale,
-				x + (-cos * w - sin * h) * scale,
-				y + (-sin * w + cos * h) * scale,
-				x + (-cos * w + sin * h) * scale,
-				y + (-sin * w - cos * h) * scale,
-				x + (cos * w + sin * h) * scale,
-				y + (sin * w - cos * h) * scale,
+			const s = confettiState(piece);
+			const cos = Math.cos(s.rot);
+			const sin = Math.sin(s.rot);
+			const quad = (scale: number, liftX = 0, liftY = 0): number[] => [
+				s.x + (cos * s.w - sin * s.h) * scale + liftX,
+				s.y + (sin * s.w + cos * s.h) * scale + liftY,
+				s.x + (-cos * s.w - sin * s.h) * scale + liftX,
+				s.y + (-sin * s.w + cos * s.h) * scale + liftY,
+				s.x + (-cos * s.w + sin * s.h) * scale + liftX,
+				s.y + (-sin * s.w - cos * s.h) * scale + liftY,
+				s.x + (cos * s.w + sin * s.h) * scale + liftX,
+				s.y + (sin * s.w - cos * s.h) * scale + liftY,
 			];
 
-			// soft bloom halo
-			g.beginFill(piece.color, 0.14);
-			g.drawPolygon(quad(2.1));
-			g.endFill();
-			// core: bright when facing the light, darker mid-flip
-			const facing = 0.55 + 0.45 * Math.abs(flip);
-			g.beginFill(shade(piece.color, 0.7 + 0.7 * facing), 0.92);
+			// shadow-side base tone
+			g.beginFill(shade(piece.color, 0.55 + 0.35 * s.facing), 0.92);
 			g.drawPolygon(quad(1));
 			g.endFill();
-			// glint edge on the lit side
-			g.beginFill(0xffffff, 0.4 * facing);
-			g.drawPolygon([
-				x + cos * w,
-				y + sin * w,
-				x + cos * w - sin * h * 0.8,
-				y + sin * w + cos * h * 0.8,
-				x + cos * w * 0.4 - sin * h * 0.8,
-				y + sin * w * 0.4 + cos * h * 0.8,
-			]);
+			// lifted highlight tone, inset and offset toward the lit corner —
+			// fakes a gradient sheen without a real gradient-fill API
+			g.beginFill(shade(piece.color, 1.15 + 0.35 * s.facing), 0.85 * s.facing);
+			g.drawPolygon(quad(0.55, cos * s.w * 0.32, sin * s.w * 0.32));
 			g.endFill();
 		}
 	};
@@ -215,12 +220,55 @@
 	{/each}
 {/snippet}
 
+{#snippet confettiGlow()}
+	<!-- soft blurred aura behind each piece — reads as the same depth-of-field
+	     glow the bg art's own confetti/streamers have, instead of a hard
+	     vector edge sitting flatly on top of a glossy photoreal scene -->
+	{#each CONFETTI as piece, index (index)}
+		{@const s = confettiState(piece)}
+		<Sprite
+			key="fxGlow"
+			anchor={0.5}
+			x={s.x}
+			y={s.y}
+			tint={piece.color}
+			blendMode="add"
+			width={piece.size * 5}
+			height={piece.size * 5}
+			alpha={0.16 * s.facing}
+		/>
+	{/each}
+{/snippet}
+
+{#snippet confettiSparkle()}
+	<!-- occasional twinkle on a third of the pieces, echoing the symbols'
+	     sparkle accents -->
+	{#each CONFETTI as piece, index (index)}
+		{#if piece.sparkle}
+			{@const s = confettiState(piece)}
+			{@const twinkle = 0.5 + 0.5 * Math.sin(tick / 20 + piece.phase * 13)}
+			<Sprite
+				key="fxStar"
+				anchor={0.5}
+				x={s.x}
+				y={s.y}
+				blendMode="add"
+				width={piece.size * 1.6 * twinkle}
+				height={piece.size * 1.6 * twinkle}
+				alpha={0.5 * twinkle}
+			/>
+		{/if}
+	{/each}
+{/snippet}
+
 <!-- Wild Party base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="wildPartyBgBase" {...context.stateLayoutDerived.canvasSizes()} />
 	{@render bokeh()}
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
+	{@render confettiGlow()}
 	<Graphics draw={drawConfetti} />
+	{@render confettiSparkle()}
 </FadeContainer>
 
 <!-- Wild Party free-game background -->
@@ -228,5 +276,7 @@
 	<Sprite key="wildPartyBgFeature" {...context.stateLayoutDerived.canvasSizes()} />
 	{@render bokeh()}
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
+	{@render confettiGlow()}
 	<Graphics draw={drawConfetti} />
+	{@render confettiSparkle()}
 </FadeContainer>
