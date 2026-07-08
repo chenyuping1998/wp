@@ -97,9 +97,6 @@ const frameEdgeSvg = svgWrap(
 	<rect x="82" y="82" width="${FRAME_EDGE_W - 164}" height="${FRAME_EDGE_H - 164}" rx="36" fill="none" stroke="#fff8d8" stroke-width="3" opacity="0.6"/>
 	<rect x="86" y="86" width="${FRAME_EDGE_W - 172}" height="${FRAME_EDGE_H - 172}" rx="34" fill="none" stroke="${INK}" stroke-width="6" opacity="0.85"/>
 	<rect x="98" y="98" width="${FRAME_EDGE_W - 196}" height="${FRAME_EDGE_H - 196}" rx="28" fill="none" stroke="#ff8ede" stroke-width="3" opacity="0.5"/>
-	<!-- disco ball charms in the top corners -->
-	${discoBallCharm(70, 60, 34)}
-	${discoBallCharm(FRAME_EDGE_W - 70, 60, 34)}
 	${sparkle(56, FRAME_EDGE_H - 56, 1.3)}
 	${sparkle(FRAME_EDGE_W - 56, FRAME_EDGE_H - 56, 1.3)}
 	`,
