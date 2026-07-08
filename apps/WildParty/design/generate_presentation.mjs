@@ -137,22 +137,40 @@ const gemRainbow = () =>
 	</linearGradient>`;
 
 // ─── shared win-amount readout plaque (940×210) — sits behind the count-up ──
+// Same layered-bevel language as the gem banner: dark outer edge -> gold metal
+// rim -> dark gem face -> diagonal glass streak -> gem-stud accents at each
+// end, instead of the old flat pill (single fill + thin outline).
 const countPlaque = svgWrap(
 	940,
 	210,
 	`
-	<rect x="20" y="20" width="900" height="170" rx="85" fill="url(#plaqBg2)" stroke="#2a0a20" stroke-width="9"/>
-	<rect x="34" y="34" width="872" height="142" rx="71" fill="none" stroke="url(#plaqGold2)" stroke-width="8"/>
-	<rect x="46" y="45" width="848" height="120" rx="60" fill="none" stroke="#ff8ede" stroke-width="2" opacity="0.4"/>
-	<path d="M 46 50 Q 470 20 894 50" stroke="#ffffff" stroke-width="4" fill="none" opacity="0.25" stroke-linecap="round"/>
-	${sparkle(70, 105, 1.1)}
-	${sparkle(870, 105, 1.1, '#ff8ede')}
+	<!-- outer dark bevel edge -->
+	<rect x="6" y="6" width="928" height="198" rx="99" fill="#150510" stroke="#0a0410" stroke-width="4"/>
+	<!-- gold metal rim -->
+	<rect x="14" y="14" width="912" height="182" rx="91" fill="url(#plaqGoldRim)"/>
+	<!-- dark gem face -->
+	<rect x="26" y="24" width="888" height="162" rx="81" fill="url(#plaqGemFace)" stroke="#0a0410" stroke-width="3"/>
+	<clipPath id="plaqGemClip"><rect x="26" y="24" width="888" height="162" rx="81"/></clipPath>
+	<g clip-path="url(#plaqGemClip)">
+		<!-- diagonal glass specular streaks -->
+		<path d="M 60 190 L 260 20 L 340 20 L 140 190 Z" fill="#ffffff" opacity="0.16"/>
+		<path d="M 420 190 L 540 20 L 580 20 L 460 190 Z" fill="#ffffff" opacity="0.1"/>
+	</g>
+	<!-- crisp top highlight line, reads as a glossy concave surface -->
+	<path d="M 60 34 Q 470 14 880 34" stroke="#ffffff" stroke-width="5" fill="none" opacity="0.35" stroke-linecap="round"/>
+	<!-- gem studs at each end, echoing the banner's coin medallions -->
+	<circle cx="66" cy="105" r="20" fill="url(#plaqGoldRim)" stroke="#0a0410" stroke-width="3"/>
+	<circle cx="66" cy="105" r="12" fill="none" stroke="#fff3c4" stroke-width="1.5" opacity="0.7"/>
+	<circle cx="874" cy="105" r="20" fill="url(#plaqGoldRim)" stroke="#0a0410" stroke-width="3"/>
+	<circle cx="874" cy="105" r="12" fill="none" stroke="#fff3c4" stroke-width="1.5" opacity="0.7"/>
+	${sparkle(66, 105, 0.9, '#fff3c4')}
+	${sparkle(874, 105, 0.9, '#ff8ede')}
 	`,
-	`<linearGradient id="plaqBg2" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#3d1245"/><stop offset="1" stop-color="#1d0b30"/>
+	`<linearGradient id="plaqGoldRim" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#fff3c4"/><stop offset="0.5" stop-color="#e8a33d"/><stop offset="1" stop-color="#a8691a"/>
 	</linearGradient>
-	<linearGradient id="plaqGold2" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#ffe98a"/><stop offset="0.5" stop-color="#e8a33d"/><stop offset="1" stop-color="#b8791a"/>
+	<linearGradient id="plaqGemFace" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#4a1a52"/><stop offset="0.5" stop-color="#2d1035"/><stop offset="1" stop-color="#160820"/>
 	</linearGradient>`,
 );
 

@@ -95,20 +95,35 @@ const FONT_STACK = "'Arial Black', Arial, 'Segoe UI', sans-serif";
 
 // One glyph per <text>, fit into its box with textLength (width) and a
 // baseline pinned to the box bottom (matches yoffset=0 for all chars).
+// Layered bevel matches the big-win banner text (generate_presentation.mjs
+// banner()): deep drop shadow -> wide dark halo (embossed thickness) -> main
+// gradient fill -> shine overlay -> clipped top-band catch-light. This font
+// is shared by every numeric display in the game (win amount, multiplier,
+// FS counter), so the change applies everywhere at once.
 let glyphMarkup = '';
+let clipDefs = '';
 for (const c of CHARS) {
 	if (!c.glyph) continue; // space — leave transparent
 	const cx = c.x + c.w / 2;
 	const baseline = c.y + c.h * 0.93;
+	const clipId = `cap${c.id}`;
+	clipDefs += `<clipPath id="${clipId}"><rect x="${c.x}" y="${c.y}" width="${c.w}" height="${c.h * 0.42}"/></clipPath>`;
 	glyphMarkup += `
+	<text x="${cx}" y="${baseline + 2}" text-anchor="middle" textLength="${c.w * 0.92}" lengthAdjust="spacingAndGlyphs"
+		font-family="${FONT_STACK}" font-weight="900" font-size="${c.h}"
+		fill="#150510" opacity="0.5" transform="translate(1.5 3)">${c.glyph}</text>
 	<text x="${cx}" y="${baseline}" text-anchor="middle" textLength="${c.w * 0.92}" lengthAdjust="spacingAndGlyphs"
 		font-family="${FONT_STACK}" font-weight="900" font-size="${c.h}"
-		fill="#2a0a20" opacity="0.55" transform="translate(1.5 3)">${c.glyph}</text>
+		fill="none" stroke="#180614" stroke-width="${c.h * 0.13}" stroke-linejoin="round" opacity="0.9">${c.glyph}</text>
 	<text x="${cx}" y="${baseline}" text-anchor="middle" textLength="${c.w * 0.92}" lengthAdjust="spacingAndGlyphs"
 		font-family="${FONT_STACK}" font-weight="900" font-size="${c.h}"
-		fill="url(#txt)" stroke="${OUTLINE}" stroke-width="${c.h * 0.085}" paint-order="stroke">${c.glyph}</text>
+		fill="url(#txt)" stroke="${OUTLINE}" stroke-width="${c.h * 0.07}" paint-order="stroke">${c.glyph}</text>
 	<text x="${cx}" y="${baseline}" text-anchor="middle" textLength="${c.w * 0.92}" lengthAdjust="spacingAndGlyphs"
-		font-family="${FONT_STACK}" font-weight="900" font-size="${c.h}" fill="url(#shine)">${c.glyph}</text>`;
+		font-family="${FONT_STACK}" font-weight="900" font-size="${c.h}" fill="url(#shine)">${c.glyph}</text>
+	<g clip-path="url(#${clipId})">
+		<text x="${cx}" y="${baseline}" text-anchor="middle" textLength="${c.w * 0.92}" lengthAdjust="spacingAndGlyphs"
+			font-family="${FONT_STACK}" font-weight="900" font-size="${c.h}" fill="#ffffff" opacity="0.45">${c.glyph}</text>
+	</g>`;
 }
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SCALE_W}" height="${SCALE_H}" viewBox="0 0 ${SCALE_W} ${SCALE_H}">
@@ -121,6 +136,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SCALE_W}" height="
 			<stop offset="0.4" stop-color="#ffffff" stop-opacity="0"/>
 			<stop offset="1" stop-color="#000000" stop-opacity="0.15"/>
 		</linearGradient>
+		${clipDefs}
 	</defs>
 	${glyphMarkup}
 </svg>`;
