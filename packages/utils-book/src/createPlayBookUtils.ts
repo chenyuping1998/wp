@@ -19,7 +19,16 @@ export function createPlayBookUtils<TBookEventHandlerMap extends BookEventHandle
 		const bookEventHandler = bookEventHandlerMap?.[bookEvent.type];
 		if (bookEventHandler) {
 			if (debug) console.log(bookEvent);
-			await bookEventHandler(bookEvent, bookEventContext);
+			try {
+				await bookEventHandler(bookEvent, bookEventContext);
+			} catch (error) {
+				// still rethrown below (the xstate 'play'/'ending' states now have
+				// an onError transition to recover from this instead of getting
+				// stuck) — logged here first so the failing event type is visible
+				// instead of just a bare stack trace
+				console.error(`[playBookEvent] handler for "${bookEvent.type}" threw`, error, bookEvent);
+				throw error;
+			}
 		} else {
 			console.error('Missing bookEventHandler in "bookEventHandlerMap" for: ', bookEvent);
 		}

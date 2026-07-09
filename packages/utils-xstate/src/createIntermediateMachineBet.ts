@@ -73,6 +73,16 @@ export const createIntermediateMachineBet = ({
 								target: 'ending',
 							},
 						],
+						// without this, an exception anywhere in the book-event/
+						// presentation chain (e.g. a win-level popup component
+						// throwing) leaves the machine stuck in 'play' forever —
+						// the bet cycle can never finish and the player is stuck.
+						// Same gap `fetching`/`checkSpaceHold` already guard against.
+						onError: [
+							{
+								target: 'end',
+							},
+						],
 					},
 				},
 				ending: {
@@ -86,6 +96,11 @@ export const createIntermediateMachineBet = ({
 						onDone: [
 							{
 								target: 'checkSpaceHold',
+							},
+						],
+						onError: [
+							{
+								target: 'end',
 							},
 						],
 					},
