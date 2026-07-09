@@ -31,7 +31,18 @@
 			});
 		}
 
-		spine.addSlotObject(props.slotName, slotContainer);
+		try {
+			spine.addSlotObject(props.slotName, slotContainer);
+		} catch (error) {
+			// addSlotObject throws if the skeleton has no slot named
+			// props.slotName (e.g. a stale/mismatched spine asset missing a
+			// slot the calling code expects). Left uncaught, this exception
+			// propagates out of onMount with nothing downstream to catch it,
+			// which can leave the whole game stuck rather than just skipping
+			// this one visual. Log it and let the rest of the scene keep
+			// running instead.
+			console.error(`[SpineSlot] addSlotObject("${props.slotName}") failed`, error);
+		}
 	});
 
 	createContextParent(slotContainer);
