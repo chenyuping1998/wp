@@ -581,8 +581,12 @@ let bigwinAtlas = '';
 for (const alias of ALIASES) bigwinAtlas += atlasPage(`banner_${alias}.png`, 1080, 300, `banner_${alias}`) + '\n';
 bigwinAtlas += atlasPage('pile.png', 1200, 420, 'pile') + '\n';
 bigwinAtlas += atlasPage('anchor.png', 8, 8, 'anchor');
-fs.writeFileSync(path.join(BIGWIN_DIR, 'bigwin_party.atlas'), bigwinAtlas);
-fs.writeFileSync(path.join(BIGWIN_DIR, 'bigwin_party.json'), JSON.stringify(bigwinSpine, null, 2) + '\n');
+// _v2 suffix: cache-buster — the un-versioned name shipped without the
+// banner_fx slot, and CDN/browser caches keep serving that stale copy under
+// the same URL, crashing the mega/epic marquee (bump the suffix if the
+// skeleton's slot/animation structure ever changes again)
+fs.writeFileSync(path.join(BIGWIN_DIR, 'bigwin_party_v2.atlas'), bigwinAtlas);
+fs.writeFileSync(path.join(BIGWIN_DIR, 'bigwin_party_v2.json'), JSON.stringify(bigwinSpine, null, 2) + '\n');
 
 // ─── fs_screen spine (interface: intro/idle + slot_text_placeholder) ────────
 const fsScreenSpine = {

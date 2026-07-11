@@ -1,6 +1,6 @@
 # Wild Party — 專案交接文件
 
-> 最後更新：2026-07-04（動畫手感四連修：粒子紋理化/win 曲線化/hit-stop/聽牌壓暗，見 §4.26）  
+> 最後更新：2026-07-11（mega/epic 報獎卡死修復：spine 素材 cache-bust 改名 v2，見 §4.27）  
 > 涵蓋範圍：math-sdk 數學後端 + `WildParty_Front` 前端 + Stake 上架素材  
 > **Skill 路由：** `@wild-party-skill-guide`｜**交接：** `@WILD_PARTY_HANDOFF.md`
 
@@ -713,6 +713,15 @@ pnpm dev              # localhost:3001 開任一 modal 驗收新樣式
 - [x] **FG 轉場重做（T2 彩帶簾幕 wipe）**：取代 disco 球拉近——110 片彩帶從左右上三邊湧入蓋滿畫面（0.62s，深紫底閃保證全遮）→ **蓋滿即 resolve**（場景在簾幕後切換；`Transition.svelte` 改 `oncovered`/`oncomplete` 雙回呼）→ 彩帶重力散落 0.9s 揭示新場景。調整入口：`TransitionAnimation` 的 `T_COVERED`/`T_TOTAL`/`PIECES` 數量
 - [x] **開遊戲進場（E3 波浪點亮）**：新元件 `EntryReveal.svelte`（載入畫面關閉後執行一次，總長 1s）——白閃 0.16s + 盤面中央 FxBurst + 五輪暗罩由左至右每 80ms 依序淡出（波浪亮起）
 - [x] **FG 結束還原觸發盤面**（bug 修正：原本回主遊戲顯示 FG 最後一轉的盤面）：`bookEventHandlerMap` 在 basegame reveal 時記住 `lastBaseGameBoard`，freeSpinEnd 的轉場簾幕蓋滿後 `boardSettle` 還原——玩家回來看到的是觸發 FG 的那一盤 scatter
+
+### 4.27 mega/epic 報獎卡死修復（2026-07-11）— spine 素材快取版本錯配
+
+- **症狀**：部署到 stake 後 mega/epic win 有音效但 banner 不出現、點擊無法跳過、整局卡死；big/super 正常；本地 Storybook 完全重現不了（console 乾淨）
+- **根因（時間線比對 git 歷史確認）**：`1e9d972` 同一個 commit 才把 `banner_fx` slot 加進 `bigwin_party.json` 並讓 mega/epic/max 掛 `SpineSlot slotName="banner_fx"`（跑馬燈）。JS bundle 檔名帶 content-hash 必定更新，但 spine JSON **檔名不變**——瀏覽器/CDN 快取繼續供應舊版 JSON → `spine.addSlotObject('banner_fx')` 拋 `No slot found` → 例外炸穿 xstate `play` 狀態（當時無 onError）→ 卡死。只有掛跑馬燈的 mega/epic/max 中招，big/super 不碰該 slot 所以正常
+- **修復（雙管齊下）**：
+  1. 防禦層（另機已完成，commit `40456d4`）：`SpineSlot` 的 addSlotObject 加 try/catch；`playBookEvent` 加 log+rethrow；xstate `play`/`ending` 補 `onError→end`——任何呈現層例外只結束該局不再卡死
+  2. 根治層（本 commit）：`bigwin_party.{json,atlas}` 改名 `bigwin_party_v2.*` 強制 cache-bust，`assets.ts` 與 `generate_presentation.mjs` 同步更新——skeleton 結構日後再變時記得再升版本尾碼
+- **除錯備忘**：本地重現方式＝把 `src/stories/data/base_events.ts` 的 setWin `winLevel` 改 8（mega）/9（epic），開 Storybook `MODE_BASE/bookEvent → setWin` 按 Action。另注意：Storybook dev server 沒關乾淨會鎖住 `.svelte-kit`，讓後續 `pnpm build` 無輸出無限卡住——清掉殘留 node 程序即可
 
 ---
 

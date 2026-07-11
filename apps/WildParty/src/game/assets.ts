@@ -315,11 +315,14 @@ export default {
 		src: new URL('../../assets/fonts/purpleFont/mm_purple.xml', import.meta.url).href,
 	},
 	// party-themed big win banners (SVG-generated — see design/generate_presentation.mjs)
+	// _v2 filenames: cache-buster — the old un-versioned skeleton (cached by
+	// CDN/browser under the same URL) predates the banner_fx slot and crashed
+	// the mega/epic marquee mount
 	bigwin: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/bigwinParty/bigwin_party.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/bigwinParty/bigwin_party.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/bigwinParty/bigwin_party_v2.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/bigwinParty/bigwin_party_v2.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
