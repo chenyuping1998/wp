@@ -146,13 +146,15 @@
 										width={SYMBOL_SIZE * 9.4}
 										height={SYMBOL_SIZE * 2.4}
 									/>
+									<!-- maxWidth/fontSize must stay inside the countPlaque above
+									     (SYMBOL_SIZE*9.4 wide, *2.4 tall) with breathing room -->
 									<ResponsiveBitmapText
 										anchor={0.5}
-										maxWidth={2130}
+										maxWidth={SYMBOL_SIZE * 8.2}
 										text={bookEventAmountToCurrencyString(countUpAmount)}
 										style={{
 											fontFamily: 'gold',
-											fontSize: SYMBOL_SIZE * 2.0,
+											fontSize: SYMBOL_SIZE * 1.4,
 											align: 'center',
 											fontWeight: 'bold',
 											letterSpacing: 0,

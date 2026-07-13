@@ -81,14 +81,16 @@
 								}}
 							/>
 							<SpineSlot slotName="slot_number">
+								<!-- amount must stay inside the fsOutroNumber plate
+								     (provider width is sizes.width*0.4) -->
 								<ResponsiveBitmapText
 									anchor={0.5}
 									style={{
 										fontFamily: 'gold',
-										fontSize: sizes.width * 0.08,
+										fontSize: sizes.width * 0.06,
 									}}
 									text={bookEventAmountToCurrencyString(countUpAmount)}
-									maxWidth={sizes.width}
+									maxWidth={sizes.width * 0.6}
 								/>
 							</SpineSlot>
 						</SpineProvider>
