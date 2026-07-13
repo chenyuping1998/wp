@@ -75,6 +75,17 @@
 
 		<EntryReveal />
 
+		<Win />
+		<FreeSpinIntro />
+		{#if ['desktop', 'landscape'].includes(context.stateLayoutDerived.layoutType())}
+			<FreeSpinCounter />
+		{/if}
+		<FreeSpinOutro />
+		<PreFreeGameHint />
+		<!-- UI renders above the FG/win overlays so the opened menu (and its dim
+		     layer) stays on top during free games; the game still hides the UI
+		     via uiHide events whenever it should be out of the way. Transition
+		     stays last: the curtain must cover everything during scene switches. -->
 		<UI>
 			{#snippet gameName()}
 				<UiGameName name="WILD PARTY" />
@@ -93,13 +104,6 @@
 				/>
 			{/snippet}
 		</UI>
-		<Win />
-		<FreeSpinIntro />
-		{#if ['desktop', 'landscape'].includes(context.stateLayoutDerived.layoutType())}
-			<FreeSpinCounter />
-		{/if}
-		<FreeSpinOutro />
-		<PreFreeGameHint />
 		<Transition />
 
 		<I18nTest />

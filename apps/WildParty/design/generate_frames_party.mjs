@@ -41,9 +41,6 @@ const svgWrap = (w, h, body, defs = '') =>
 const sparkle = (x, y, s, color = '#fff8d0') =>
 	`<path d="M ${x} ${y - 8 * s} Q ${x + 2 * s} ${y - 2 * s} ${x + 8 * s} ${y} Q ${x + 2 * s} ${y + 2 * s} ${x} ${y + 8 * s} Q ${x - 2 * s} ${y + 2 * s} ${x - 8 * s} ${y} Q ${x - 2 * s} ${y - 2 * s} ${x} ${y - 8 * s} Z" fill="${color}" opacity="0.95"/>`;
 
-const buntingFlag = (x, y, color) =>
-	`<path d="M ${x - 15} ${y} L ${x + 15} ${y} L ${x} ${y + 26} Z" fill="${color}" stroke="${INK}" stroke-width="3.5" stroke-linejoin="round"/>`;
-
 const discoBallCharm = (x, y, r) => `
 	<circle cx="${x}" cy="${y}" r="${r}" fill="url(#ball)" stroke="${INK}" stroke-width="${r * 0.22}"/>
 	<path d="M ${x - r} ${y - r * 0.35} Q ${x} ${y - r * 0.6} ${x + r} ${y - r * 0.35} M ${x - r * 0.3} ${y - r * 1.15} L ${x - r * 0.3} ${y + r * 1.15} M ${x + r * 0.3} ${y - r * 1.15} L ${x + r * 0.3} ${y + r * 1.15}"
@@ -82,20 +79,6 @@ const frameEdgeSvg = svgWrap(
 	</g>
 	<rect x="86" y="86" width="${FRAME_EDGE_W - 172}" height="${FRAME_EDGE_H - 172}" rx="34" fill="none" stroke="${INK}" stroke-width="6" opacity="0.85"/>
 	<rect x="98" y="98" width="${FRAME_EDGE_W - 196}" height="${FRAME_EDGE_H - 196}" rx="28" fill="none" stroke="#ff8ede" stroke-width="3" opacity="0.5"/>
-	<!-- bunting across the top -->
-	<path d="M 130 30 Q ${FRAME_EDGE_W / 2} 90 ${FRAME_EDGE_W - 130} 30" stroke="${INK}" stroke-width="5" fill="none"/>
-	${[0, 1, 2, 3, 4, 5, 6]
-		.map((i) => {
-			const t = i / 6;
-			const x = 160 + t * (FRAME_EDGE_W - 320);
-			const y = 34 + Math.sin(Math.PI * t) * 50;
-			const colors = ['#ffd75e', '#ff8ede', '#9ef3ff', '#c59bff', '#9effb0', '#ffb64d', '#ff7a7a'];
-			return buntingFlag(x, y, colors[i]);
-		})
-		.join('')}
-	<!-- disco ball charms in the top corners -->
-	${discoBallCharm(70, 60, 34)}
-	${discoBallCharm(FRAME_EDGE_W - 70, 60, 34)}
 	${sparkle(56, FRAME_EDGE_H - 56, 1.3)}
 	${sparkle(FRAME_EDGE_W - 56, FRAME_EDGE_H - 56, 1.3)}
 	`,
