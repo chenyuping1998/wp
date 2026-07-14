@@ -17,17 +17,18 @@
 		const board = context.stateGameDerived.boardLayout();
 		const main = context.stateLayoutDerived.mainLayout();
 		const canvas = context.stateLayoutDerived.canvasSizes();
-		// feet on the visible canvas bottom edge, head level with the board's
-		// top edge (Made Men-style full-height figure)
-		const feetY = main.height * 0.5 + (canvas.height * 0.5) / main.scale;
-		const boardTop = board.y - board.height * 0.5;
-		const height = feetY - boardTop;
+		// feet on the visible canvas bottom edge, head near the canvas top —
+		// the figure fills the whole right side (full body always visible
+		// because the height is derived from the visible canvas itself)
+		const visibleHeight = canvas.height / main.scale;
+		const feetY = main.height * 0.5 + visibleHeight * 0.5;
+		const height = visibleHeight * 0.94;
 		const width = height * ASPECT;
 		return {
 			width,
 			height,
 			// just clear of the reel frame's right edge
-			x: board.x + board.width * 0.5 + SYMBOL_SIZE * 0.9 + width * 0.4,
+			x: board.x + board.width * 0.5 + SYMBOL_SIZE * 0.9 + width * 0.45,
 			y: feetY,
 		};
 	});
