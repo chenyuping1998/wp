@@ -19,7 +19,6 @@
 	import Background from './Background.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './BoardFrame.svelte';
-	import WildPartySign from './WildPartySign.svelte';
 	import Board from './Board.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import GlobalMultiplier from './GlobalMultiplier.svelte';
@@ -66,8 +65,6 @@
 		<MainContainer>
 			<BoardFrame />
 		</MainContainer>
-
-		<WildPartySign />
 
 		<MainContainer>
 			<Board />

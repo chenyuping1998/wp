@@ -5,6 +5,7 @@
 		| { type: 'boardSettle'; board: RawSymbol[][] }
 		| { type: 'boardShow' }
 		| { type: 'boardHide' }
+		| { type: 'reelImpact'; reelIndex: number }
 		| {
 				type: 'boardWithAnimateSymbols';
 				symbolPositions: Position[];
@@ -16,19 +17,27 @@
 	import { BoardContext } from 'components-shared';
 
 	import { getContext } from '../game/context';
+	import { SYMBOL_SIZE, BOARD_SIZES } from '../game/constants';
 	import BoardContainer from './BoardContainer.svelte';
 	import BoardMask from './BoardMask.svelte';
 	import BoardBase from './BoardBase.svelte';
+	import ImpactDust from './ImpactDust.svelte';
 
 	const context = getContext();
 
 	let show = $state(true);
+	// short-lived dust bursts at the floor of each stopping reel
+	let impacts = $state<{ id: number; reelIndex: number }[]>([]);
+	let nextImpactId = 0;
 
 	context.eventEmitter.subscribeOnMount({
 		stopButtonClick: () => context.stateGameDerived.enhancedBoard.stop(),
 		boardSettle: ({ board }) => context.stateGameDerived.enhancedBoard.settle(board),
 		boardShow: () => (show = true),
 		boardHide: () => (show = false),
+		reelImpact: ({ reelIndex }) => {
+			impacts = [...impacts, { id: nextImpactId++, reelIndex }];
+		},
 		boardWithAnimateSymbols: async ({ symbolPositions }) => {
 			const getPromises = () =>
 				symbolPositions.map(async (position) => {
@@ -62,6 +71,13 @@
 	<BoardContext animate={true}>
 		<BoardContainer>
 			<BoardBase />
+			{#each impacts as impact (impact.id)}
+				<ImpactDust
+					x={(impact.reelIndex + 0.5) * SYMBOL_SIZE}
+					y={BOARD_SIZES.height}
+					oncomplete={() => (impacts = impacts.filter(({ id }) => id !== impact.id))}
+				/>
+			{/each}
 		</BoardContainer>
 	</BoardContext>
 {/if}

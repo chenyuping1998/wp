@@ -33,18 +33,19 @@
 		return () => cancelAnimationFrame(raf);
 	});
 
-	// squash on impact → stretch rebound → settle
+	// squash on impact → stretch rebound → settle (amplified for a heavier
+	// thud: deeper flatten, taller overshoot)
 	const squash = $derived.by(() => {
 		if (t < 0.35) {
 			const p = t / 0.35;
-			return { x: 1 + 0.1 * p, y: 1 - 0.16 * p };
+			return { x: 1 + 0.16 * p, y: 1 - 0.26 * p };
 		}
 		if (t < 0.7) {
 			const p = (t - 0.35) / 0.35;
-			return { x: 1.1 - 0.16 * p, y: 0.84 + 0.22 * p };
+			return { x: 1.16 - 0.25 * p, y: 0.74 + 0.36 * p };
 		}
 		const p = (t - 0.7) / 0.3;
-		return { x: 0.94 + 0.06 * p, y: 1.06 - 0.06 * p };
+		return { x: 0.91 + 0.09 * p, y: 1.1 - 0.1 * p };
 	});
 </script>
 

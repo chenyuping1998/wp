@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Text } from 'pixi-svelte';
+	import { Graphics, Text } from 'pixi-svelte';
 	import { Button, type ButtonProps } from 'components-pixi';
 
 	import UiSprite from './UiSprite.svelte';
@@ -31,7 +31,7 @@
 	const backgroundColor = $derived.by(() => {
 		if (buttonProps.disabled) return 0x5a5a5a;
 		if (variant === 'light') return 0x8fe6ff;
-		if (icon === 'turbo') return active ? 0xff7a00 : 0x2f2f2f;
+		if (icon === 'turbo') return 0x2f2f2f;
 		return 0x131313;
 	});
 
@@ -47,6 +47,12 @@
 		soundOn: '🔊',
 		soundOff: '🔇',
 		autoSpin: '▶',
+	};
+
+	// optical centering: a right-pointing triangle's visual mass sits left of
+	// its glyph-box center, so nudge it right a touch inside the circle
+	const iconOffsetXMap: Partial<Record<ButtonIcon, number>> = {
+		autoSpin: 0.045,
 	};
 
 	const iconTextOverrideMap: Partial<Record<ButtonIcon, string>> = {};
@@ -67,14 +73,10 @@
 		if (textMode === 'text') return i18nDerived[icon]();
 		return iconTextOverrideMap[icon] ?? iconSymbolMap[icon] ?? i18nDerived[icon]();
 	});
-	const iconFill = $derived.by(() => {
-		if (icon === 'turbo') {
-			if (buttonProps.disabled) return 0xbdbdbd;
-			return active ? 0xffffff : 0xbdbdbd;
-		}
-		return 0xffffff;
-	});
-	const iconStroke = $derived(icon === 'turbo' && active ? 0x5a2a00 : 0x000000);
+	const iconFill = 0xffffff;
+	const iconStroke = 0x000000;
+	// turbo bolt: white outline when idle, filled orange when active
+	const boltColor = $derived(buttonProps.disabled ? 0xbdbdbd : 0xffffff);
 </script>
 
 <Button {...buttonProps}>
@@ -95,26 +97,42 @@
 				: {}}
 		/>
 
-		<Text
-			{...center}
-			anchor={0.5}
-			text={iconText}
-			style={{
-				align: 'center',
-				wordWrap: true,
-				wordWrapWidth: buttonProps.sizes.width * (isTextMode ? 0.68 : 0.85),
-				fontFamily: 'proxima-nova',
-				fontWeight: '600',
-				fontSize: iconFontSize,
-				fill: iconFill,
-				stroke: iconStroke,
-				strokeThickness: 3,
-				dropShadow: true,
-				dropShadowColor: 0x000000,
-				dropShadowBlur: 2,
-				dropShadowDistance: 2,
-			}}
-		/>
+		{#if icon === 'turbo'}
+			<!-- vector bolt instead of the ⚡ glyph: emoji glyphs ignore canvas
+			     fill, so white/orange styling only works with a drawn shape -->
+			<Graphics
+				x={center.x}
+				y={center.y}
+				draw={(g) => {
+					const s = (buttonProps.sizes.width * 0.55) / 96;
+					g.poly([10 * s, -48 * s, -22 * s, 6 * s, -2 * s, 6 * s, -12 * s, 48 * s, 24 * s, -10 * s, 2 * s, -10 * s]);
+					if (active) g.fill(0xff7a00);
+					g.stroke({ width: buttonProps.sizes.width * 0.035, color: boltColor, join: 'round' });
+				}}
+			/>
+		{:else}
+			<Text
+				{...center}
+				x={center.x + buttonProps.sizes.width * (iconOffsetXMap[icon] ?? 0)}
+				anchor={0.5}
+				text={iconText}
+				style={{
+					align: 'center',
+					wordWrap: true,
+					wordWrapWidth: buttonProps.sizes.width * (isTextMode ? 0.68 : 0.85),
+					fontFamily: 'proxima-nova',
+					fontWeight: '600',
+					fontSize: iconFontSize,
+					fill: iconFill,
+					stroke: iconStroke,
+					strokeThickness: 3,
+					dropShadow: true,
+					dropShadowColor: 0x000000,
+					dropShadowBlur: 2,
+					dropShadowDistance: 2,
+				}}
+			/>
+		{/if}
 
 		{@render childrenFromParent?.()}
 	{/snippet}

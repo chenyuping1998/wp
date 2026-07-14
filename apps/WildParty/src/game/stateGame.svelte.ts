@@ -50,6 +50,8 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 				name: 'sfx_reel_stop_1',
 				forcePlay: !stateBet.isTurbo,
 			});
+			// per-reel thud: board jolt (BoardContainer) + dust burst (Board)
+			eventEmitter.broadcast({ type: 'reelImpact', reelIndex });
 		},
 		onSymbolLand,
 	});
