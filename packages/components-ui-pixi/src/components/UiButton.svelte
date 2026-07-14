@@ -106,8 +106,8 @@
 				draw={(g) => {
 					const s = (buttonProps.sizes.width * 0.55) / 96;
 					g.poly([10 * s, -48 * s, -22 * s, 6 * s, -2 * s, 6 * s, -12 * s, 48 * s, 24 * s, -10 * s, 2 * s, -10 * s]);
-					if (active) g.fill(0xff7a00);
-					g.stroke({ width: buttonProps.sizes.width * 0.035, color: boltColor, join: 'round' });
+					if (active) g.fill(0xffd75e);
+					g.stroke({ width: buttonProps.sizes.width * 0.055, color: boltColor, join: 'round' });
 				}}
 			/>
 		{:else}
