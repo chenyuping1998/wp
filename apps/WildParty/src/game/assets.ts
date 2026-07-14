@@ -331,6 +331,13 @@ export default {
 		src: new URL('../../assets/spines/bigwinParty/count_plaque.png', import.meta.url).href,
 		preload: true,
 	},
+	// "WILD PARTY" plaque left of the reels — plate only (design/generate_side_sign.mjs);
+	// lettering is runtime gold BitmapText in WildPartySign.svelte
+	wpSideSign: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/wpSign/wp_side_sign.png', import.meta.url).href,
+		preload: true,
+	},
 	globalMultiplier: {
 		type: 'spine',
 		src: {

@@ -46,14 +46,13 @@
 		settings: '⚙',
 		soundOn: '🔊',
 		soundOff: '🔇',
+		autoSpin: '▶',
 	};
 
-	const iconTextOverrideMap: Partial<Record<ButtonIcon, string>> = {
-		autoSpin: 'AUTOSPIN',
-	};
+	const iconTextOverrideMap: Partial<Record<ButtonIcon, string>> = {};
 
 	const iconFontSizeMultiplierMap: Partial<Record<ButtonIcon, number>> = {
-		autoSpin: 0.56,
+		autoSpin: 1.3,
 		turbo: 1.45,
 		menu: 1.4,
 	};
