@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	import { BlurFilter } from 'pixi.js';
 	import { EnablePixiExtension } from 'components-pixi';
 	import { EnableHotkey } from 'components-shared';
-	import { MainContainer } from 'components-layout';
-	import { App, Text, REM } from 'pixi-svelte';
+	import { MainContainer, CanvasSizeRectangle } from 'components-layout';
+	import { App, Container, Text, REM } from 'pixi-svelte';
 	import { stateModal } from 'state-shared';
 
 	import { UI, UiGameName } from 'components-ui-pixi';
@@ -35,6 +36,9 @@
 
 	const context = getContext();
 
+	// soft depth-of-field on the background scene so the reels + hostess pop
+	const backgroundBlur = [new BlurFilter({ strength: 5, quality: 3 })];
+
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
 
 	context.eventEmitter.subscribeOnMount({
@@ -50,7 +54,11 @@
 	<EnableGameActor />
 	<EnablePixiExtension />
 
-	<Background />
+	<Container filters={backgroundBlur}>
+		<Background />
+	</Container>
+	<!-- faint plum haze pushes the blurred scene further back -->
+	<CanvasSizeRectangle backgroundColor={0x180a28} backgroundAlpha={0.16} />
 
 	{#if context.stateLayout.showLoadingScreen}
 		<LoadingScreen onloaded={() => (context.stateLayout.showLoadingScreen = false)} />

@@ -33,8 +33,6 @@
 	});
 
 	let now = $state(0);
-	let bounceStart = -1;
-	let bounceHops = 1;
 	let sparkles = $state<{ id: number; born: number; dx: number; dy: number }[]>([]);
 	let nextSparkleAt = 0;
 	let nextSparkleId = 0;
@@ -65,42 +63,14 @@
 		return () => cancelAnimationFrame(raf);
 	});
 
-	const startBounce = (hops: number) => {
-		bounceStart = now;
-		bounceHops = hops;
-	};
-
-	context.eventEmitter.subscribeOnMount({
-		winShow: () => startBounce(1),
-		freeSpinIntroShow: () => startBounce(2),
-		freeSpinOutroShow: () => startBounce(2),
-	});
-
 	// idle: slow breathing + a gentle weight sway around the feet
 	const pose = $derived.by(() => {
 		const breath = Math.sin((now / 3100) * Math.PI * 2);
 		const sway = Math.sin((now / 5400) * Math.PI * 2);
-
-		// celebration hop(s): lift + squashy scale punch, decaying
-		let hopLift = 0;
-		let hopPunch = 0;
-		if (bounceStart >= 0) {
-			const HOP_MS = 420;
-			const p = (now - bounceStart) / (HOP_MS * bounceHops);
-			if (p < 1) {
-				const hop = Math.abs(Math.sin(p * Math.PI * bounceHops));
-				const decay = 1 - p * 0.45;
-				// lift as a fraction of figure height so it scales with layout
-				hopLift = 0.02 * hop * decay;
-				hopPunch = 0.05 * hop * decay;
-			}
-		}
-
 		return {
-			scaleX: 1 - 0.004 * breath - hopPunch * 0.6,
-			scaleY: 1 + 0.007 * breath + hopPunch,
+			scaleX: 1 - 0.004 * breath,
+			scaleY: 1 + 0.007 * breath,
 			rotation: 0.008 * sway,
-			lift: hopLift,
 		};
 	});
 
@@ -116,7 +86,7 @@
 
 {#if ['desktop', 'landscape'].includes(context.stateLayoutDerived.layoutType())}
 	<MainContainer>
-		<Container x={layout.x} y={layout.y - pose.lift * layout.height}>
+		<Container x={layout.x} y={layout.y}>
 			<Sprite
 				key="partyHostess"
 				anchor={{ x: 0.5, y: 1 }}
