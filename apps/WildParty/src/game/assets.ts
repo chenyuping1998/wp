@@ -331,11 +331,12 @@ export default {
 		src: new URL('../../assets/spines/bigwinParty/count_plaque.png', import.meta.url).href,
 		preload: true,
 	},
-	// party hostess character right of the reels — Role.png de-checkerboarded
-	// by design/process_role.mjs (source kept in design/source/)
+	// party hostess character right of the reels — role3.png de-checkerboarded
+	// + legs stretched by design/process_role.mjs (sources in design/source/);
+	// bump the filename suffix if the art changes again (cache-bust, §4.27)
 	partyHostess: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/character/party_hostess.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/character/party_hostess_v2.png', import.meta.url).href,
 		preload: true,
 	},
 	globalMultiplier: {

@@ -8,22 +8,27 @@
 
 	const context = getContext();
 
-	// party_hostess.png source proportions
-	const ASPECT = 545 / 818;
+	// party_hostess_v2.png source proportions (role3, legs stretched)
+	const ASPECT = 284 / 884;
 	// approximate champagne-glass mouth in sprite space (from bottom-center anchor)
-	const GLASS_OFFSET = { x: -0.36, y: -0.78 };
+	const GLASS_OFFSET = { x: -0.38, y: -0.85 };
 
 	const layout = $derived.by(() => {
 		const board = context.stateGameDerived.boardLayout();
-		const height = board.height * 0.9;
+		const main = context.stateLayoutDerived.mainLayout();
+		const canvas = context.stateLayoutDerived.canvasSizes();
+		// feet on the visible canvas bottom edge, head level with the board's
+		// top edge (Made Men-style full-height figure)
+		const feetY = main.height * 0.5 + (canvas.height * 0.5) / main.scale;
+		const boardTop = board.y - board.height * 0.5;
+		const height = feetY - boardTop;
 		const width = height * ASPECT;
 		return {
 			width,
 			height,
-			// mirror of the FreeSpinCounter column: just right of the reel frame
-			x: board.x + board.width * 0.5 + SYMBOL_SIZE * 0.7 + width * 0.5,
-			// feet planted on the board's bottom edge
-			y: board.y + board.height * 0.5,
+			// just clear of the reel frame's right edge
+			x: board.x + board.width * 0.5 + SYMBOL_SIZE * 0.9 + width * 0.4,
+			y: feetY,
 		};
 	});
 
@@ -85,7 +90,8 @@
 			if (p < 1) {
 				const hop = Math.abs(Math.sin(p * Math.PI * bounceHops));
 				const decay = 1 - p * 0.45;
-				hopLift = 14 * hop * decay;
+				// lift as a fraction of figure height so it scales with layout
+				hopLift = 0.02 * hop * decay;
 				hopPunch = 0.05 * hop * decay;
 			}
 		}
@@ -110,7 +116,7 @@
 
 {#if ['desktop', 'landscape'].includes(context.stateLayoutDerived.layoutType())}
 	<MainContainer>
-		<Container x={layout.x} y={layout.y - pose.lift}>
+		<Container x={layout.x} y={layout.y - pose.lift * layout.height}>
 			<Sprite
 				key="partyHostess"
 				anchor={{ x: 0.5, y: 1 }}
