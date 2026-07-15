@@ -1,4 +1,4 @@
-export default {
+﻿export default {
 	loader: {
 		type: 'spine',
 		src: {
@@ -121,7 +121,7 @@ export default {
 		type: 'sprites',
 		src: new URL('../../assets/sprites/reelsFrame/reels_frame.json', import.meta.url).href,
 	},
-	// jungle-military riveted reel frame (SVG-generated — see design/generate_theme_jungle.mjs)
+	// jungle-military riveted reel frame (SVG-generated ??see design/generate_theme_jungle.mjs)
 	gbFrameBg: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasFrame/frame_bg.png', import.meta.url).href,
@@ -136,173 +136,173 @@ export default {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/payFrame/payFrame.png', import.meta.url).href,
 	},
-	// Go Bananas symbol art (SVG-generated PNGs — see design/generate_art.mjs)
+	// Go Bananas symbol art (SVG-generated PNGs ??see design/generate_art.mjs)
 	gbH1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/h1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/h1.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/h2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/h2.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/h3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/h3.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/h4.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/h4.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/l1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/l1.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/l2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/l2.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/l3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/l3.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/l4.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/l4.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL5: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/l5.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/l5.png', import.meta.url).href,
 		preload: true,
 	},
 	gbW: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/w.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/w.png', import.meta.url).href,
 		preload: true,
 	},
 	gbS: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/s.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/s.png', import.meta.url).href,
 		preload: true,
 	},
 	gbX: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/x.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/x.png', import.meta.url).href,
 		preload: true,
 	},
 	gbP: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbols/p.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV2/p.png', import.meta.url).href,
 		preload: true,
 	},
 	gbSpH1: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/h1.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/h1.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/h1.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/h1.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpH2: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/h2.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/h2.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/h2.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/h2.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpH3: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/h3.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/h3.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/h3.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/h3.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpH4: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/h4.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/h4.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/h4.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/h4.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpL1: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/l1.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/l1.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/l1.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/l1.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpL2: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/l2.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/l2.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/l2.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/l2.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpL3: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/l3.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/l3.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/l3.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/l3.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpL4: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/l4.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/l4.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/l4.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/l4.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpL5: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/l5.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/l5.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/l5.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/l5.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpW: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/w.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/w.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/w.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/w.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpS: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/s.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/s.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/s.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/s.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpX: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/x.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/x.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/x.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/x.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
 	gbSpP: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/p.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/p.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/p.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/p.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
@@ -310,12 +310,12 @@ export default {
 	gbSpWx: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbols/wx.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbols/wx.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananasSymbolsV2/wx.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasSymbolsV2/wx.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
-	// Go Bananas jungle backgrounds (SVG-generated — see design/generate_art.mjs)
+	// Go Bananas jungle backgrounds (SVG-generated ??see design/generate_art.mjs)
 	gbBgBase: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasBackground/bg_base.png', import.meta.url).href,

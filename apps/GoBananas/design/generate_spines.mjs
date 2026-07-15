@@ -10,8 +10,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SRC = path.join(appRoot, 'static/assets/sprites/goBananasSymbols');
-const OUT = path.join(appRoot, 'static/assets/spines/goBananasSymbols');
+// V2: realistic military-jungle set (generate_symbols_realistic.mjs); new
+// folder names double as a CDN cache-bust
+const SRC = path.join(appRoot, 'static/assets/sprites/goBananasSymbolsV2');
+const OUT = path.join(appRoot, 'static/assets/spines/goBananasSymbolsV2');
 fs.mkdirSync(OUT, { recursive: true });
 
 const atlasPage = (png, w, h, region) => `${png}
