@@ -92,25 +92,31 @@
 		// extra quick bob layered on during free games (amps scale with excite
 		// rather than changing base periods, so the mode switch never pops)
 		const bob = excite * 0.004 * Math.sin((now / 1400) * Math.PI * 2);
-		// head follows the body sway late (follow-through) + its own slow nod
-		const headRot =
-			(0.02 * Math.sin((now / 5400) * Math.PI * 2 - 0.9) +
-				0.008 * Math.sin((now / 2300) * Math.PI * 2)) *
-			(1 + 0.4 * excite);
 
-		let glassRot = 0.014 * (1 + 1.1 * excite) * Math.sin((now / 3900) * Math.PI * 2 + 0.6);
+		// toast envelope shared by the glass lift and the head lean
+		let toast = 0;
 		if (toastStart >= 0) {
 			const t = (now - toastStart) / 1000;
-			const LIFT = 0.13;
-			if (t < 0.35) glassRot += LIFT * easeOutCubic(t / 0.35);
-			else if (t < 0.8) glassRot += LIFT;
-			else if (t < 1.4) glassRot += LIFT * (1 - smooth((t - 0.8) / 0.6));
+			if (t < 0.3) toast = easeOutCubic(t / 0.3);
+			else if (t < 1.3) toast = 1;
+			else if (t < 2.0) toast = 1 - smooth((t - 1.3) / 0.7);
 		}
+
+		// head follows the body sway late (follow-through) + its own slow nod;
+		// leans toward the glass during the toast
+		const headRot =
+			(0.032 * Math.sin((now / 5400) * Math.PI * 2 - 0.9) +
+				0.012 * Math.sin((now / 2300) * Math.PI * 2)) *
+				(1 + 0.4 * excite) -
+			0.06 * toast;
+
+		const glassRot =
+			0.03 * (1 + 1.1 * excite) * Math.sin((now / 3900) * Math.PI * 2 + 0.6) + 0.24 * toast;
 
 		return {
 			scaleX: 1 - 0.004 * breath,
 			scaleY: 1 + 0.007 * (1 + 0.4 * excite) * breath + bob,
-			rotation: 0.008 * (1 + 0.6 * excite) * sway,
+			rotation: 0.014 * (1 + 0.6 * excite) * sway,
 			headRot,
 			glassRot,
 			rimAlpha: 0.5 + 0.24 * excite,
