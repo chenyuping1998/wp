@@ -330,10 +330,14 @@ fs.writeFileSync(path.join(OUT_DIR, 'x.png'), render(deadSvg, 256));
 console.log('tiled x.png');
 
 // ── part D: wx — full-reel WILD panel (256x1280) ────────────────────────────
-const monkeyB64 = fs.readFileSync(path.join(OUT_DIR, 'w.png')).toString('base64');
+// top half: the w_expand full-scene painting (sergeant monkey devouring a
+// banana, jungle sunset) framed like a poster; bottom: stacked WILD letters
+const sceneB64 = fs
+	.readFileSync(path.join(SRC_DIR, 'w_expand.png'))
+	.toString('base64');
 const wildLetters = ['W', 'I', 'L', 'D']
 	.map((ch, i) => {
-		const y = 560 + i * 178;
+		const y = 700 + i * 150;
 		return `${[7, 6, 5, 4]
 			.map((o) => `<text x="${128 + o}" y="${y + o}" font-family="Arial Black, Arial" font-size="150" font-weight="900" text-anchor="middle" fill="#6d4408">${ch}</text>`)
 			.join('')}
@@ -358,16 +362,17 @@ const wxSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="1280"
 		<stop offset="0.5" stop-color="#f7b93a"/>
 		<stop offset="1" stop-color="#c9821a"/>
 	</linearGradient>
-	<radialGradient id="halo" cx="0.5" cy="0.22" r="0.5">
-		<stop offset="0" stop-color="#ffd75e" stop-opacity="0.5"/>
-		<stop offset="1" stop-color="#ffd75e" stop-opacity="0"/>
-	</radialGradient>
+	<linearGradient id="sceneFade" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#0f3318" stop-opacity="0"/>
+		<stop offset="1" stop-color="#0f3318" stop-opacity="1"/>
+	</linearGradient>
+	<clipPath id="artClip"><rect x="14" y="14" width="228" height="560" rx="20"/></clipPath>
 </defs>
 <rect x="6" y="6" width="244" height="1268" rx="26" fill="url(#panel)" stroke="#0a1508" stroke-width="6"/>
+<image href="data:image/png;base64,${sceneB64}" x="14" y="14" width="228" height="560" preserveAspectRatio="xMidYMid slice" clip-path="url(#artClip)"/>
+<rect x="14" y="440" width="228" height="140" fill="url(#sceneFade)"/>
 <rect x="14" y="14" width="228" height="1252" rx="20" fill="none" stroke="url(#gold)" stroke-width="8"/>
 <rect x="26" y="26" width="204" height="1228" rx="14" fill="none" stroke="#ffdf7e" stroke-width="2" opacity="0.4"/>
-<rect x="6" y="6" width="244" height="620" rx="26" fill="url(#halo)"/>
-<image href="data:image/png;base64,${monkeyB64}" x="8" y="120" width="240" height="240"/>
 ${wildLetters}
 </svg>`;
 fs.writeFileSync(path.join(OUT_DIR, 'wx.png'), render(wxSvg, 256));
