@@ -42,6 +42,11 @@ const winLevelSoundsStop = () => {
 	eventEmitter.broadcastAsync({ type: 'uiShow' });
 };
 
+// which wild fires the next multiplier comet. The math emits ONE
+// updateGlobalMult book event PER WILD (+1 each), so this counter must
+// survive across events within a spin — it resets on every reveal
+let spinCometIndex = 0;
+
 const animateSymbols = async ({ positions }: { positions: Position[] }) => {
 	// Only animate symbols in visible rows (1, 2, 3) — padding rows (0, 4) have no
 	// oncomplete callback and would cause the game to freeze waiting forever.
@@ -64,6 +69,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 
 		// remember the triggering base board so it can be restored after free spins
 		if (bookEvent.gameType === 'basegame') lastBaseGameBoard = bookEvent.board;
+		spinCometIndex = 0;
 
 		stateGame.gameType = bookEvent.gameType;
 		await stateGameDerived.enhancedBoard.spin({
@@ -181,10 +187,11 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			});
 			wilds.sort((a, b) => a.x - b.x || a.y - b.y);
 
-			// Animate one-by-one: each Wild adds +1, show each increment clearly but quickly
-			let cometIndex = 0;
+			// Animate one-by-one: each Wild adds +1, show each increment clearly
+			// but quickly. spinCometIndex persists across the per-wild events of
+			// the same spin so stacked wilds each launch from their own cell
 			for (let mult = currentMult + 1; mult <= targetMult; mult++) {
-				const from = wilds[cometIndex++];
+				const from = wilds[spinCometIndex++];
 				if (from) {
 					await eventEmitter.broadcastAsync({
 						type: 'multiplierComet',
