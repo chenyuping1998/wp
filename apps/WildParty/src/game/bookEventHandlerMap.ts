@@ -41,6 +41,11 @@ const winLevelSoundsStop = () => {
 	eventEmitter.broadcastAsync({ type: 'uiShow' });
 };
 
+// wild cells that already launched a multiplier comet (cleared on reset) —
+// lets repeated updateGlobalMult events fire from the NEW wilds, not the
+// oldest one on the board every time
+const firedWildKeys = new Set<string>();
+
 const animateSymbols = async ({ positions }: { positions: Position[] }) => {
 	// Only animate symbols in visible rows (1, 2, 3) — padding rows (0, 4) have no
 	// oncomplete callback and would cause the game to freeze waiting forever.
@@ -164,22 +169,29 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'globalMultiplierShow' });
 
 		if (targetMult > currentMult) {
-			// one comet per +1, launched from the visible Wilds left-to-right —
-			// makes the "Wild raises the multiplier" causality visible
-			const wildPositions: { reel: number; row: number }[] = [];
+			// one comet per +1, launched from the Wilds that actually caused the
+			// increments: diff the board's wilds against the ones we've already
+			// fired from, so repeated updates don't keep launching from the
+			// same (oldest) wild
+			const allWilds: { reel: number; row: number }[] = [];
 			stateGame.board.forEach((reel, reelIndex) => {
 				reel.reelState.symbols.forEach((reelSymbol, row) => {
 					if (row >= 1 && row <= 3 && reelSymbol.rawSymbol.name === 'W') {
-						wildPositions.push({ reel: reelIndex, row });
+						allWilds.push({ reel: reelIndex, row });
 					}
 				});
 			});
+			const newWilds = allWilds.filter(
+				({ reel, row }) => !firedWildKeys.has(`${reel}:${row}`),
+			);
+			const launchList = newWilds.length > 0 ? newWilds : allWilds;
 
 			// Animate one-by-one: each Wild adds +1, show each increment clearly but quickly
 			let cometIndex = 0;
 			for (let mult = currentMult + 1; mult <= targetMult; mult++) {
-				const from = wildPositions[cometIndex++];
+				const from = launchList.length > 0 ? launchList[cometIndex++ % launchList.length] : undefined;
 				if (from) {
+					firedWildKeys.add(`${from.reel}:${from.row}`);
 					await eventEmitter.broadcastAsync({
 						type: 'multiplierComet',
 						reel: from.reel,
@@ -196,6 +208,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 				}
 			}
 		} else {
+			firedWildKeys.clear();
 			// Reset or same — just update directly
 			stateGame.globalMultiplier = targetMult;
 			await eventEmitter.broadcastAsync({

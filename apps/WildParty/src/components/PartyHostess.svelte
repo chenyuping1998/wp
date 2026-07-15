@@ -161,19 +161,24 @@
 				height={layout.width * 0.28}
 				alpha={0.38}
 			/>
-			<!-- magenta rim light: additive full-silhouette copy peeking out on
-			     the lit side, ties her into the club spotlights behind -->
-			<Sprite
-				key="partyHostess"
-				anchor={{ x: 0.5, y: 1 }}
-				x={-layout.width * 0.022}
-				y={-layout.height * 0.006}
-				width={layout.width}
-				height={layout.height}
-				tint={0xb04ef0}
-				blendMode="add"
-				alpha={pose.rimAlpha}
-			/>
+			<!-- magenta rim light: additive copies peeking out on the lit side.
+			     Each rig part gets its own rim that follows its rotation — a
+			     single full-figure rim would show through the body's part
+			     holes as a ghost copy -->
+			{#each [{ key: 'partyHostessBody', rotation: 0, placement: null }, { key: 'partyHostessGlass', rotation: pose.glassRot, placement: rig.parts.glass }, { key: 'partyHostessHead', rotation: pose.headRot, placement: rig.parts.head }] as rim (rim.key)}
+				<Sprite
+					key={rim.key}
+					{...(rim.placement
+						? partPlacement(rim.placement, s)
+						: { anchor: { x: 0.5, y: 1 }, width: layout.width, height: layout.height })}
+					x={(rim.placement ? (rim.placement.pivotX - IMG_W / 2) * s : 0) - layout.width * 0.022}
+					y={(rim.placement ? (rim.placement.pivotY - IMG_H) * s : 0) - layout.height * 0.006}
+					rotation={rim.rotation}
+					tint={0xb04ef0}
+					blendMode="add"
+					alpha={pose.rimAlpha}
+				/>
+			{/each}
 			<!-- 2.5D rig: body base + glass (wrist pivot) + head (neck pivot) -->
 			<Sprite
 				key="partyHostessBody"
