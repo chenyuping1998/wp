@@ -5,7 +5,7 @@
 <script lang="ts">
 	import { Container, Sprite, SpineProvider, SpineTrack } from 'pixi-svelte';
 	import { waitForResolve } from 'utils-shared/wait';
-	import { CanvasSizeRectangle, MainContainer } from 'components-layout';
+	import { MainContainer } from 'components-layout';
 	import { onDestroy } from 'svelte';
 
 	import { getContext } from '../game/context';
@@ -109,7 +109,9 @@
 	});
 
 	const ball = $derived(ballPos(Math.min(t, T_EXIT_END)));
-	// spotlight dim: in during hover, out during exit
+	// hover envelope (0→1 during the center hover) — drives the glow swell
+	// only; the old full-screen 34% dim stacked with the ambient haze/vignette
+	// and read as a dark flicker, so the spotlight is carried by the glow now
 	const dim = $derived.by(() => {
 		if (t < T_ENTER) return 0;
 		if (t < T_ENTER + 0.25) return (t - T_ENTER) / 0.25;
@@ -135,10 +137,6 @@
 
 {#if show}
 	<MainContainer>
-		{#if dim > 0}
-			<CanvasSizeRectangle backgroundColor={0x0d0212} backgroundAlpha={0.34 * dim} />
-		{/if}
-
 		<!-- star-dust trail lagging the ball -->
 		{#each TRAIL_JITTER as jitter, index (index)}
 			{@const past = history[(index + 1) * 3]}
