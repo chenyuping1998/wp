@@ -60,7 +60,7 @@
 			/>
 			<Text
 				anchor={0.5}
-				y={-208}
+				y={-165}
 				text={context.i18nDerived.youWon()}
 				style={{
 					fontFamily: 'proxima-nova, Arial, sans-serif',

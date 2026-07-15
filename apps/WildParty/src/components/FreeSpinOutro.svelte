@@ -44,7 +44,11 @@
 
 <FadeContainer {show}>
 	{#if winLevelData}
-		{@const duration = winLevelData.presentDuration}
+		<!-- non-big FS totals only get presentDuration 1s — the count-up ends
+		     before the player can react, so their tap always lands in the
+		     "already completed" state and exits in one press. Slow the roll to
+		     a real moment so tap-1 = finish count, tap-2 = leave. -->
+		{@const duration = Math.max(winLevelData.presentDuration, 2600)}
 		{@const isBigWin = winLevelData.type === 'big'}
 		<WinCountUpProvider {amount} {duration} oncomplete={() => onCountUpComplete()}>
 			{#snippet children({ countUpAmount, startCountUp, finishCountUp, countUpCompleted })}
@@ -75,7 +79,7 @@
 						/>
 						<Text
 							anchor={0.5}
-							y={-208}
+							y={-165}
 							text={context.i18nDerived.youWon()}
 							style={{
 								fontFamily: 'proxima-nova, Arial, sans-serif',
