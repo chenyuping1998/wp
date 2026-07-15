@@ -1,8 +1,9 @@
 <script lang="ts" module>
 	export type EmitterEventMultiplierComet = {
 		type: 'multiplierComet';
-		reel: number;
-		row: number;
+		// launch point in board space — the wild symbol's live render coords
+		x: number;
+		y: number;
 	};
 </script>
 
@@ -42,11 +43,10 @@
 	const smooth = (p: number) => p * p * (3 - 2 * p);
 
 	context.eventEmitter.subscribeOnMount({
-		multiplierComet: ({ reel, row }) =>
+		multiplierComet: ({ x, y }) =>
 			new Promise<void>((resolve) => {
 				const id = nextId++;
-				// visible rows are 1..3 of the padded reel state
-				const from = { x: (reel + 0.5) * SYMBOL_SIZE, y: (row - 1 + 0.5) * SYMBOL_SIZE };
+				const from = { x, y };
 				comets = [...comets, { id, t: 0, from }];
 				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_combine_a' });
 				const duration = 450 / stateBetDerived.timeScale();

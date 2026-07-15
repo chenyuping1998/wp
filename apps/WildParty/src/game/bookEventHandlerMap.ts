@@ -5,7 +5,8 @@ import { stateBet, stateUi } from 'state-shared';
 import { waitForTimeout } from 'utils-shared/wait';
 
 import { eventEmitter } from './eventEmitter';
-import { playBookEvent } from './utils';
+import { playBookEvent, getSymbolX } from './utils';
+import { BOARD_SIZES } from './constants';
 import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
@@ -41,11 +42,6 @@ const winLevelSoundsStop = () => {
 	eventEmitter.broadcastAsync({ type: 'uiShow' });
 };
 
-// the settled board of the current spin (from the reveal book event) — the
-// authoritative source for wild positions; reelState rows have a known
-// mapping offset quirk (HANDOFF §9) so we never scan them for positions
-let lastRevealBoard: BookEventOfType<'reveal'>['board'] = [];
-
 const animateSymbols = async ({ positions }: { positions: Position[] }) => {
 	// Only animate symbols in visible rows (1, 2, 3) — padding rows (0, 4) have no
 	// oncomplete callback and would cause the game to freeze waiting forever.
@@ -68,7 +64,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 
 		// remember the triggering base board so it can be restored after free spins
 		if (bookEvent.gameType === 'basegame') lastBaseGameBoard = bookEvent.board;
-		lastRevealBoard = bookEvent.board;
 
 		stateGame.gameType = bookEvent.gameType;
 		await stateGameDerived.enhancedBoard.spin({
@@ -170,17 +165,21 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'globalMultiplierShow' });
 
 		if (targetMult > currentMult) {
-			// one comet per +1, launched from this spin's Wilds in reel-then-row
-			// order — the event's delta always equals the spin's wild count, so
-			// a plain 1:1 pairing is exact (top wild first on stacked reels)
-			const wilds: { reel: number; row: number }[] = [];
-			lastRevealBoard.forEach((reelSymbols, reelIndex) => {
-				reelSymbols.forEach((rawSymbol, row) => {
-					if (row >= 1 && row <= 3 && rawSymbol.name === 'W') {
-						wilds.push({ reel: reelIndex, row });
+			// one comet per +1, launched from this spin's Wilds. Positions come
+			// from each symbol's LIVE render coordinates (getSymbolX/symbolY —
+			// the exact values the board draws with), not from index math, so
+			// stacked same-reel wilds each fire from their own cell. Only
+			// symbols whose center currently sits inside the mask window count.
+			const wilds: { x: number; y: number }[] = [];
+			stateGame.board.forEach((reel, reelIndex) => {
+				reel.reelState.symbols.forEach((reelSymbol) => {
+					const y = reelSymbol.symbolY();
+					if (reelSymbol.rawSymbol.name === 'W' && y > 0 && y < BOARD_SIZES.height) {
+						wilds.push({ x: getSymbolX(reelIndex), y });
 					}
 				});
 			});
+			wilds.sort((a, b) => a.x - b.x || a.y - b.y);
 
 			// Animate one-by-one: each Wild adds +1, show each increment clearly but quickly
 			let cometIndex = 0;
@@ -189,8 +188,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 				if (from) {
 					await eventEmitter.broadcastAsync({
 						type: 'multiplierComet',
-						reel: from.reel,
-						row: from.row,
+						x: from.x,
+						y: from.y,
 					});
 				}
 				stateGame.globalMultiplier = mult;
