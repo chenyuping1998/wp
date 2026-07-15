@@ -69,8 +69,11 @@
 		return () => cancelAnimationFrame(raf);
 	});
 
-	// raise-the-glass toast on wins (subtle — a swirl from the wrist)
+	// raise-the-glass toast on wins (subtle — a swirl from the wrist).
+	// boardWithAnimateSymbols fires on EVERY win presentation; winShow only
+	// on big-tier pop-ups (kept so the toast also restarts under the banner)
 	context.eventEmitter.subscribeOnMount({
+		boardWithAnimateSymbols: () => (toastStart = now),
 		winShow: () => (toastStart = now),
 	});
 
