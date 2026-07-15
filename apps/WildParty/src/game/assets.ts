@@ -372,24 +372,6 @@ export default {
 			scale: 1,
 		},
 	},
-	foregroundAnimation: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/foregroundAnimation/mm_bg.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/foregroundAnimation/mm_bg.json', import.meta.url).href,
-			scale: 2,
-		},
-		preload: true,
-	},
-	foregroundFeatureAnimation: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/foregroundFeatureAnimation/mm_bg_feature.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/foregroundFeatureAnimation/mm_bg_feature.json', import.meta.url).href,
-			scale: 2,
-		},
-		preload: true,
-	},
 	tumble_multiplier: {
 		type: 'spine',
 		src: {

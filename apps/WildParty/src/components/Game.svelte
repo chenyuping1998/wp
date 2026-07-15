@@ -31,7 +31,6 @@
 	import FreeSpinOutro from './FreeSpinOutro.svelte';
 	import Transition from './Transition.svelte';
 	import EntryReveal from './EntryReveal.svelte';
-	import I18nTest from './I18nTest.svelte';
 	import PreFreeGameHint from './PreFreeGameHint.svelte';
 
 	const context = getContext();
@@ -116,8 +115,6 @@
 			{/snippet}
 		</UI>
 		<Transition />
-
-		<I18nTest />
 	{/if}
 </App>
 
