@@ -31,7 +31,6 @@
 	const backgroundColor = $derived.by(() => {
 		if (buttonProps.disabled) return 0x5a5a5a;
 		if (variant === 'light') return 0x8fe6ff;
-		if (icon === 'turbo') return 0x2f2f2f;
 		return 0x131313;
 	});
 
