@@ -9,6 +9,8 @@ export const neonNumberStyle = (fontSize: number) => {
 	fill.addColorStop(0.4, 0xffd1f1);
 	fill.addColorStop(0.75, 0xff8ede);
 	fill.addColorStop(1, 0xe45cb4);
+	// no drop-shadow glow: the pink halo muddied the digits — the gradient
+	// fill + dark stroke carry the neon look on their own
 	return {
 		fontFamily: 'proxima-nova, Arial, sans-serif',
 		fontWeight: '900' as const,
@@ -16,10 +18,6 @@ export const neonNumberStyle = (fontSize: number) => {
 		fill,
 		stroke: 0x2a0a20,
 		strokeThickness: fontSize * 0.06,
-		dropShadow: true,
-		dropShadowColor: 0xff8ede,
-		dropShadowBlur: 22,
-		dropShadowDistance: 0,
 		letterSpacing: 2,
 	};
 };
