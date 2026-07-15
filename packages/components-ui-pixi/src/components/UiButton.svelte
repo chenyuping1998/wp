@@ -105,10 +105,12 @@
 				y={center.y}
 				draw={(g) => {
 					// 0.72: bolt body fills most of the circle so the hollow
-					// interior reads clearly at UI size
+					// interior reads clearly at UI size; x widened 1.4x so the
+					// interior area reads bigger left-right
 					const s = (buttonProps.sizes.width * 0.72) / 96;
-					g.poly([10 * s, -48 * s, -22 * s, 6 * s, -2 * s, 6 * s, -12 * s, 48 * s, 24 * s, -10 * s, 2 * s, -10 * s]);
-					if (active) g.fill(0xffd75e);
+					const sx = s * 1.4;
+					g.poly([10 * sx, -48 * s, -22 * sx, 6 * s, -2 * sx, 6 * s, -12 * sx, 48 * s, 24 * sx, -10 * s, 2 * sx, -10 * s]);
+					if (active) g.fill(0xffffff);
 					g.stroke({ width: buttonProps.sizes.width * 0.04, color: boltColor, join: 'round' });
 				}}
 			/>
