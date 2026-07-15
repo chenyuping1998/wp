@@ -164,16 +164,35 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'globalMultiplierShow' });
 
 		if (targetMult > currentMult) {
+			// one comet per +1, launched from the visible Wilds left-to-right —
+			// makes the "Wild raises the multiplier" causality visible
+			const wildPositions: { reel: number; row: number }[] = [];
+			stateGame.board.forEach((reel, reelIndex) => {
+				reel.reelState.symbols.forEach((reelSymbol, row) => {
+					if (row >= 1 && row <= 3 && reelSymbol.rawSymbol.name === 'W') {
+						wildPositions.push({ reel: reelIndex, row });
+					}
+				});
+			});
+
 			// Animate one-by-one: each Wild adds +1, show each increment clearly but quickly
+			let cometIndex = 0;
 			for (let mult = currentMult + 1; mult <= targetMult; mult++) {
+				const from = wildPositions[cometIndex++];
+				if (from) {
+					await eventEmitter.broadcastAsync({
+						type: 'multiplierComet',
+						reel: from.reel,
+						row: from.row,
+					});
+				}
 				stateGame.globalMultiplier = mult;
 				await eventEmitter.broadcastAsync({
 					type: 'globalMultiplierUpdate',
 					multiplier: mult,
 				});
-				// 350ms between each — fast enough for turbo but visible enough to follow
 				if (mult < targetMult) {
-					await waitForTimeout(350);
+					await waitForTimeout(150);
 				}
 			}
 		} else {

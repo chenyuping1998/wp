@@ -8,6 +8,7 @@ import type { EmitterEventWinLines } from '../components/WinLines.svelte';
 import type { EmitterEventSound } from '../components/Sound.svelte';
 import type { EmitterEventTransition } from '../components/Transition.svelte';
 import type { EmitterEventGlobalMultiplier } from '../components/GlobalMultiplier.svelte';
+import type { EmitterEventMultiplierComet } from '../components/MultiplierComet.svelte';
 import type { EmitterEventPreFreeGameHint } from '../components/PreFreeGameHint.svelte';
 
 export type EmitterEventGame =
@@ -21,4 +22,5 @@ export type EmitterEventGame =
 	| EmitterEventSound
 	| EmitterEventTransition
 	| EmitterEventGlobalMultiplier
+	| EmitterEventMultiplierComet
 	| EmitterEventPreFreeGameHint;

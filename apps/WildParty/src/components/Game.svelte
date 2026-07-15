@@ -24,6 +24,7 @@
 	import Board from './Board.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import GlobalMultiplier from './GlobalMultiplier.svelte';
+	import MultiplierComet from './MultiplierComet.svelte';
 	import WinLines from './WinLines.svelte';
 	import Win from './Win.svelte';
 	import FreeSpinIntro from './FreeSpinIntro.svelte';
@@ -86,6 +87,7 @@
 			<Anticipations />
 			<GlobalMultiplier />
 			<WinLines />
+			<MultiplierComet />
 		</MainContainer>
 
 		<EntryReveal />

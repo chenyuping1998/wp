@@ -39,6 +39,8 @@
 
 	let now = $state(0);
 	let toastStart = -1;
+	// eased 0→1 excitement while in free games: livelier idle, brighter rim
+	let excite = $state(0);
 	let sparkles = $state<{ id: number; born: number; dx: number; dy: number }[]>([]);
 	let nextSparkleAt = 0;
 	let nextSparkleId = 0;
@@ -47,6 +49,8 @@
 		let raf = 0;
 		const tick = (t: number) => {
 			now = t;
+			const exciteTarget = context.stateGame.gameType === 'freegame' ? 1 : 0;
+			excite += (exciteTarget - excite) * 0.03;
 			if (t >= nextSparkleAt) {
 				// occasional champagne-bubble glint at the glass
 				sparkles = [
@@ -58,7 +62,7 @@
 						dy: (Math.random() - 0.5) * 0.04,
 					},
 				];
-				nextSparkleAt = t + 2400 + Math.random() * 1800;
+				nextSparkleAt = t + 2400 - 1300 * excite + Math.random() * 1800;
 			} else {
 				const alive = sparkles.filter(({ born }) => t - born < 700);
 				if (alive.length !== sparkles.length) sparkles = alive;
@@ -85,12 +89,16 @@
 	const pose = $derived.by(() => {
 		const breath = Math.sin((now / 3100) * Math.PI * 2);
 		const sway = Math.sin((now / 5400) * Math.PI * 2);
+		// extra quick bob layered on during free games (amps scale with excite
+		// rather than changing base periods, so the mode switch never pops)
+		const bob = excite * 0.004 * Math.sin((now / 1400) * Math.PI * 2);
 		// head follows the body sway late (follow-through) + its own slow nod
 		const headRot =
-			0.02 * Math.sin((now / 5400) * Math.PI * 2 - 0.9) +
-			0.008 * Math.sin((now / 2300) * Math.PI * 2);
+			(0.02 * Math.sin((now / 5400) * Math.PI * 2 - 0.9) +
+				0.008 * Math.sin((now / 2300) * Math.PI * 2)) *
+			(1 + 0.4 * excite);
 
-		let glassRot = 0.014 * Math.sin((now / 3900) * Math.PI * 2 + 0.6);
+		let glassRot = 0.014 * (1 + 1.1 * excite) * Math.sin((now / 3900) * Math.PI * 2 + 0.6);
 		if (toastStart >= 0) {
 			const t = (now - toastStart) / 1000;
 			const LIFT = 0.13;
@@ -101,10 +109,11 @@
 
 		return {
 			scaleX: 1 - 0.004 * breath,
-			scaleY: 1 + 0.007 * breath,
-			rotation: 0.008 * sway,
+			scaleY: 1 + 0.007 * (1 + 0.4 * excite) * breath + bob,
+			rotation: 0.008 * (1 + 0.6 * excite) * sway,
 			headRot,
 			glassRot,
+			rimAlpha: 0.5 + 0.24 * excite,
 		};
 	});
 
@@ -157,7 +166,7 @@
 				height={layout.height}
 				tint={0xb04ef0}
 				blendMode="add"
-				alpha={0.5}
+				alpha={pose.rimAlpha}
 			/>
 			<!-- 2.5D rig: body base + glass (wrist pivot) + head (neck pivot) -->
 			<Sprite
