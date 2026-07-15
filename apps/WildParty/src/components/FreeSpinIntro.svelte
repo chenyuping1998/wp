@@ -43,7 +43,7 @@
 			<Text
 				anchor={0.5}
 				y={-300}
-				text="CONGRATULATIONS!"
+				text={context.i18nDerived.congratulations()}
 				style={{
 					fontFamily: 'proxima-nova, Arial, sans-serif',
 					fontSize: 96,
@@ -61,7 +61,7 @@
 			<Text
 				anchor={0.5}
 				y={-208}
-				text="YOU WON"
+				text={context.i18nDerived.youWon()}
 				style={{
 					fontFamily: 'proxima-nova, Arial, sans-serif',
 					fontSize: 58,
@@ -103,7 +103,7 @@
 			<Text
 				anchor={0.5}
 				y={320}
-				text="FREE SPINS"
+				text={context.i18nDerived.freeSpins()}
 				style={{
 					fontFamily: 'proxima-nova, Arial, sans-serif',
 					fontSize: 58,

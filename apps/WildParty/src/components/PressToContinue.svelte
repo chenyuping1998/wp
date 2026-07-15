@@ -27,7 +27,7 @@
 	<MainContainer alignVertical="bottom">
 	<!-- same type treatment as the WILD PARTY loading-screen title -->
 	<Text
-		text="PRESS ANYWHERE TO CONTINUE"
+		text={context.i18nDerived.pressAnywhereToContinue()}
 		anchor={{ x: 0.5, y: 1 }}
 		x={context.stateLayoutDerived.mainLayout().width * 0.5}
 		y={yPosition}
