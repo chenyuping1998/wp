@@ -7,33 +7,22 @@
 
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import { FillGradient } from 'pixi.js';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { waitForResolve } from 'utils-shared/wait';
-	import { Container, SpineProvider, SpineSlot, SpineTrack, Sprite, Text } from 'pixi-svelte';
+	import { Container, Sprite, Text } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
+	import { neonNumberStyle } from '../game/textStyles';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
 	import FxBurst from './FxBurst.svelte';
 
-	type AnimationName = 'intro' | 'idle';
-
 	const context = getContext();
 
 	let show = $state(false);
-	let animationName = $state<AnimationName>('intro');
 	let freeSpinsFromEvent = $state(0);
 	let oncomplete = $state(() => {});
-
-	// neon gradient for the FS-count number: white-hot top → deep pink base,
-	// deliberately distinct from the gold bitmap font everywhere else
-	const numberFill = new FillGradient(0, 0, 0, 1);
-	numberFill.addColorStop(0, 0xffffff);
-	numberFill.addColorStop(0.4, 0xffd1f1);
-	numberFill.addColorStop(0.75, 0xff8ede);
-	numberFill.addColorStop(1, 0xe45cb4);
 
 	// slam-down entrance + idle sway/pulse for the number
 	const SLAM_S = 0.3;
@@ -135,51 +124,26 @@
 				}}
 			/>
 
-			<SpineProvider key="fsIntroNumber" width={sizes.width * 0.3}>
-				<SpineTrack
-					trackIndex={0}
-					{animationName}
-					loop={animationName === 'idle'}
-					listener={{
-						complete: () => (animationName = 'idle'),
-					}}
+			<!-- the number stands alone (old number_ring spine plaque removed) -->
+			<Container y={60} scale={numberPose.scale} rotation={numberPose.rotation}>
+				<Sprite
+					key="fxGlow"
+					anchor={0.5}
+					tint={0xff8ede}
+					blendMode="add"
+					width={sizes.width * 0.5}
+					height={sizes.width * 0.5}
+					alpha={numberPose.glow}
 				/>
-				<SpineSlot slotName="slot_number">
-					<!-- fontSize is compounded by bone_number's own 2x scale (see
-					     fs_number_party.json), so this ends up ~2x on screen — sized
-					     to sit inside the number_ring plaque's inner box, not spill past it -->
-					<Container scale={numberPose.scale} rotation={numberPose.rotation}>
-						<Sprite
-							key="fxGlow"
-							anchor={0.5}
-							tint={0xff8ede}
-							blendMode="add"
-							width={sizes.width * 0.22}
-							height={sizes.width * 0.22}
-							alpha={numberPose.glow}
-						/>
-						<Text
-							anchor={0.5}
-							text={`${freeSpinsFromEvent}`}
-							style={{
-								fontFamily: 'proxima-nova, Arial, sans-serif',
-								fontSize: sizes.width * 0.055,
-								fontWeight: '900',
-								fill: numberFill,
-								stroke: 0x2a0a20,
-								strokeThickness: sizes.width * 0.006,
-								dropShadow: true,
-								dropShadowColor: 0xff8ede,
-								dropShadowBlur: 22,
-								dropShadowDistance: 0,
-							}}
-						/>
-					</Container>
-					{#if burstShown}
-						<FxBurst scale={1.3} oncomplete={() => (burstShown = false)} />
-					{/if}
-				</SpineSlot>
-			</SpineProvider>
+				<Text
+					anchor={0.5}
+					text={`${freeSpinsFromEvent}`}
+					style={neonNumberStyle(sizes.width * 0.18)}
+				/>
+			</Container>
+			{#if burstShown}
+				<FxBurst y={60} scale={1.3} oncomplete={() => (burstShown = false)} />
+			{/if}
 
 			<Text
 				anchor={0.5}

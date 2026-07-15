@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	import { Container, Sprite } from 'pixi-svelte';
-	import { FadeContainer, WinCountUpProvider, ResponsiveBitmapText } from 'components-pixi';
+	import { FadeContainer, WinCountUpProvider, ResponsiveText } from 'components-pixi';
 	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { CanvasSizeRectangle, MainContainer } from 'components-layout';
@@ -22,6 +22,7 @@
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
+	import { neonNumberStyle } from '../game/textStyles';
 
 	const context = getContext();
 
@@ -148,33 +149,21 @@
 									/>
 									<!-- maxWidth/fontSize must stay inside the countPlaque above
 									     (SYMBOL_SIZE*9.4 wide, *2.4 tall) with breathing room -->
-									<ResponsiveBitmapText
+									<ResponsiveText
 										anchor={0.5}
 										maxWidth={SYMBOL_SIZE * 8.2}
 										text={bookEventAmountToCurrencyString(countUpAmount)}
-										style={{
-											fontFamily: 'gold',
-											fontSize: SYMBOL_SIZE * 1.4,
-											align: 'center',
-											fontWeight: 'bold',
-											letterSpacing: 0,
-										}}
+										style={neonNumberStyle(SYMBOL_SIZE * 1.4)}
 									/>
 								</Container>
 							</WinAnimation>
 						{:else}
-							<ResponsiveBitmapText
+							<ResponsiveText
 								anchor={0.5}
 								maxWidth={context.stateLayoutDerived.canvasSizes().width /
 									context.stateLayoutDerived.mainLayout().scale}
 								text={bookEventAmountToCurrencyString(countUpAmount)}
-								style={{
-									fontFamily: 'gold',
-									fontSize: SYMBOL_SIZE,
-									align: 'center',
-									fontWeight: 'bold',
-									letterSpacing: 0,
-								}}
+								style={neonNumberStyle(SYMBOL_SIZE)}
 							/>
 						{/if}
 					</Container>

@@ -9,13 +9,14 @@
 
 <script lang="ts">
 	import { Text, SpineProvider, SpineTrack, SpineSlot } from 'pixi-svelte';
-	import { FadeContainer, WinCountUpProvider, ResponsiveBitmapText } from 'components-pixi';
+	import { FadeContainer, WinCountUpProvider, ResponsiveText } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { OnMount } from 'components-shared';
 
 	import { getContext } from '../game/context';
+	import { neonNumberStyle } from '../game/textStyles';
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import WinCoins from './WinCoins.svelte';
@@ -106,12 +107,9 @@
 							<SpineSlot slotName="slot_number">
 								<!-- amount must stay inside the fsOutroNumber plate
 								     (provider width is sizes.width*0.4) -->
-								<ResponsiveBitmapText
+								<ResponsiveText
 									anchor={0.5}
-									style={{
-										fontFamily: 'gold',
-										fontSize: sizes.width * 0.06,
-									}}
+									style={neonNumberStyle(sizes.width * 0.06)}
 									text={bookEventAmountToCurrencyString(countUpAmount)}
 									maxWidth={sizes.width * 0.6}
 								/>

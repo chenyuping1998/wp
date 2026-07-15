@@ -357,14 +357,6 @@ export default {
 			scale: 1,
 		},
 	},
-	fsIntroNumber: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/fsIntroParty/fs_party.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/fsIntroParty/fs_number_party.json', import.meta.url).href,
-			scale: 1,
-		},
-	},
 	fsOutroNumber: {
 		type: 'spine',
 		src: {
