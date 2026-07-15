@@ -11,7 +11,7 @@
 
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE } from '../game/constants';
-	import { anchorToPivot, BitmapText, Container, Sprite, type Sizes } from 'pixi-svelte';
+	import { anchorToPivot, Container, Sprite, Text, type Sizes } from 'pixi-svelte';
 
 	const context = getContext();
 	const PANEL_KEY_DESKTOP = 'Frame_FSCounter.png';
@@ -69,22 +69,36 @@
 				anchor: { x: 0.5, y: 0.5 },
 			})}
 		>
-			<BitmapText
+			<!-- same type treatment as the WILD PARTY title -->
+			<Text
 				text={'FREE SPIN'}
 				style={{
-					fontFamily: 'gold',
+					fontFamily: 'proxima-nova, Arial, sans-serif',
 					fontSize,
-					wordWrap: false,
+					fontWeight: '900',
+					fill: 0xfff4cf,
+					letterSpacing: 2,
+					dropShadow: true,
+					dropShadowColor: 0xff9edf,
+					dropShadowBlur: 8,
+					dropShadowDistance: 0,
 				}}
 				onresize={(sizes) => (titleSizes = sizes)}
 			/>
-			<BitmapText
+			<Text
 				text={`${current} OF ${total}`}
 				{...counterPosition}
 				anchor={{ x: 0.5, y: 0 }}
 				style={{
-					fontFamily: 'gold',
+					fontFamily: 'proxima-nova, Arial, sans-serif',
 					fontSize,
+					fontWeight: '900',
+					fill: 0xfff4cf,
+					letterSpacing: 2,
+					dropShadow: true,
+					dropShadowColor: 0xff9edf,
+					dropShadowBlur: 8,
+					dropShadowDistance: 0,
 				}}
 				onresize={(sizes) => (counterSizes = sizes)}
 			/>
