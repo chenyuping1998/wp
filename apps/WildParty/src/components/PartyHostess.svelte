@@ -75,10 +75,15 @@
 
 	// raise-the-glass toast on wins (subtle — a swirl from the wrist).
 	// boardWithAnimateSymbols fires on EVERY win presentation; winShow only
-	// on big-tier pop-ups (kept so the toast also restarts under the banner)
+	// on big-tier pop-ups. Debounced: the FG trigger celebration replays the
+	// scatter shake three times — she should toast once, not three times.
+	const startToast = () => {
+		if (toastStart >= 0 && now - toastStart < 3500) return;
+		toastStart = now;
+	};
 	context.eventEmitter.subscribeOnMount({
-		boardWithAnimateSymbols: () => (toastStart = now),
-		winShow: () => (toastStart = now),
+		boardWithAnimateSymbols: () => startToast(),
+		winShow: () => startToast(),
 	});
 
 	const easeOutCubic = (p: number) => 1 - (1 - p) ** 3;
@@ -162,10 +167,11 @@
 				alpha={0.38}
 			/>
 			<!-- magenta rim light: additive copies peeking out on the lit side.
-			     Each rig part gets its own rim that follows its rotation — a
+			     Body and head each get their own rim that follows the part — a
 			     single full-figure rim would show through the body's part
-			     holes as a ghost copy -->
-			{#each [{ key: 'partyHostessBody', rotation: 0, placement: null }, { key: 'partyHostessGlass', rotation: pose.glassRot, placement: rig.parts.glass }, { key: 'partyHostessHead', rotation: pose.headRot, placement: rig.parts.head }] as rim (rim.key)}
+			     holes as a ghost copy. The glass gets NO rim: an offset copy
+			     of a translucent flute reads as a double image -->
+			{#each [{ key: 'partyHostessBody', rotation: 0, placement: null }, { key: 'partyHostessHead', rotation: pose.headRot, placement: rig.parts.head }] as rim (rim.key)}
 				<Sprite
 					key={rim.key}
 					{...(rim.placement

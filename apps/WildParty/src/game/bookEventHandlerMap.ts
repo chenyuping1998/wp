@@ -41,10 +41,10 @@ const winLevelSoundsStop = () => {
 	eventEmitter.broadcastAsync({ type: 'uiShow' });
 };
 
-// wild cells that already launched a multiplier comet (cleared on reset) —
-// lets repeated updateGlobalMult events fire from the NEW wilds, not the
-// oldest one on the board every time
-const firedWildKeys = new Set<string>();
+// the settled board of the current spin (from the reveal book event) — the
+// authoritative source for wild positions; reelState rows have a known
+// mapping offset quirk (HANDOFF §9) so we never scan them for positions
+let lastRevealBoard: BookEventOfType<'reveal'>['board'] = [];
 
 const animateSymbols = async ({ positions }: { positions: Position[] }) => {
 	// Only animate symbols in visible rows (1, 2, 3) — padding rows (0, 4) have no
@@ -68,6 +68,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 
 		// remember the triggering base board so it can be restored after free spins
 		if (bookEvent.gameType === 'basegame') lastBaseGameBoard = bookEvent.board;
+		lastRevealBoard = bookEvent.board;
 
 		stateGame.gameType = bookEvent.gameType;
 		await stateGameDerived.enhancedBoard.spin({
@@ -169,29 +170,23 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'globalMultiplierShow' });
 
 		if (targetMult > currentMult) {
-			// one comet per +1, launched from the Wilds that actually caused the
-			// increments: diff the board's wilds against the ones we've already
-			// fired from, so repeated updates don't keep launching from the
-			// same (oldest) wild
-			const allWilds: { reel: number; row: number }[] = [];
-			stateGame.board.forEach((reel, reelIndex) => {
-				reel.reelState.symbols.forEach((reelSymbol, row) => {
-					if (row >= 1 && row <= 3 && reelSymbol.rawSymbol.name === 'W') {
-						allWilds.push({ reel: reelIndex, row });
+			// one comet per +1, launched from this spin's Wilds in reel-then-row
+			// order — the event's delta always equals the spin's wild count, so
+			// a plain 1:1 pairing is exact (top wild first on stacked reels)
+			const wilds: { reel: number; row: number }[] = [];
+			lastRevealBoard.forEach((reelSymbols, reelIndex) => {
+				reelSymbols.forEach((rawSymbol, row) => {
+					if (row >= 1 && row <= 3 && rawSymbol.name === 'W') {
+						wilds.push({ reel: reelIndex, row });
 					}
 				});
 			});
-			const newWilds = allWilds.filter(
-				({ reel, row }) => !firedWildKeys.has(`${reel}:${row}`),
-			);
-			const launchList = newWilds.length > 0 ? newWilds : allWilds;
 
 			// Animate one-by-one: each Wild adds +1, show each increment clearly but quickly
 			let cometIndex = 0;
 			for (let mult = currentMult + 1; mult <= targetMult; mult++) {
-				const from = launchList.length > 0 ? launchList[cometIndex++ % launchList.length] : undefined;
+				const from = wilds[cometIndex++];
 				if (from) {
-					firedWildKeys.add(`${from.reel}:${from.row}`);
 					await eventEmitter.broadcastAsync({
 						type: 'multiplierComet',
 						reel: from.reel,
@@ -208,7 +203,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 				}
 			}
 		} else {
-			firedWildKeys.clear();
 			// Reset or same — just update directly
 			stateGame.globalMultiplier = targetMult;
 			await eventEmitter.broadcastAsync({
