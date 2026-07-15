@@ -109,9 +109,9 @@
 								     (provider width is sizes.width*0.4) -->
 								<ResponsiveText
 									anchor={0.5}
-									style={neonNumberStyle(sizes.width * 0.06)}
+									style={neonNumberStyle(sizes.width * 0.045)}
 									text={bookEventAmountToCurrencyString(countUpAmount)}
-									maxWidth={sizes.width * 0.6}
+									maxWidth={sizes.width * 0.34}
 								/>
 							</SpineSlot>
 						</SpineProvider>

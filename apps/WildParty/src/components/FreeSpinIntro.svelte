@@ -124,25 +124,26 @@
 				}}
 			/>
 
-			<!-- the number stands alone (old number_ring spine plaque removed) -->
-			<Container y={60} scale={numberPose.scale} rotation={numberPose.rotation}>
+			<!-- the number stands alone (old number_ring spine plaque removed);
+			     sized to fill ~65% of the plaque's inner height -->
+			<Container y={50} scale={numberPose.scale} rotation={numberPose.rotation}>
 				<Sprite
 					key="fxGlow"
 					anchor={0.5}
 					tint={0xff8ede}
 					blendMode="add"
-					width={sizes.width * 0.5}
-					height={sizes.width * 0.5}
+					width={sizes.width * 0.72}
+					height={sizes.width * 0.72}
 					alpha={numberPose.glow}
 				/>
 				<Text
 					anchor={0.5}
 					text={`${freeSpinsFromEvent}`}
-					style={neonNumberStyle(sizes.width * 0.18)}
+					style={neonNumberStyle(sizes.width * 0.32)}
 				/>
 			</Container>
 			{#if burstShown}
-				<FxBurst y={60} scale={1.3} oncomplete={() => (burstShown = false)} />
+				<FxBurst y={50} scale={1.3} oncomplete={() => (burstShown = false)} />
 			{/if}
 
 			<Text

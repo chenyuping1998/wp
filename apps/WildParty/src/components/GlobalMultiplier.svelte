@@ -10,7 +10,6 @@
 	import { cubicOut } from 'svelte/easing';
 
 	import {
-		BitmapText,
 		Container,
 		Graphics,
 		Sprite,
@@ -18,6 +17,7 @@
 		SpineProvider,
 		SpineSlot,
 		SpineTrack,
+		Text,
 	} from 'pixi-svelte';
 	import { FadeContainer } from 'components-pixi';
 	import { stateBetDerived } from 'state-shared';
@@ -26,6 +26,7 @@
 	import BoardContainer from './BoardContainer.svelte';
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE } from '../game/constants';
+	import { neonNumberStyle } from '../game/textStyles';
 
 	type AnimationName = 'static' | 'win' | 'reset' | 'increment';
 
@@ -196,14 +197,11 @@
 							{#each Array.from({ length: rowCount }) as _, i (i)}
 								{@const y = (i - rollPos) * ROW_H}
 								{#if Math.abs(y) < ROW_H * 1.5}
-									<BitmapText
+									<Text
 										anchor={0.5}
 										{y}
 										text={`${base + i}×`}
-										style={{
-											fontFamily: 'gold',
-											fontSize: FONT_SIZE,
-										}}
+										style={neonNumberStyle(FONT_SIZE)}
 									/>
 								{/if}
 							{/each}
