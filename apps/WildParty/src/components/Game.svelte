@@ -5,7 +5,7 @@
 	import { EnablePixiExtension } from 'components-pixi';
 	import { EnableHotkey } from 'components-shared';
 	import { MainContainer, CanvasSizeRectangle } from 'components-layout';
-	import { App, Container, Text, REM } from 'pixi-svelte';
+	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
 	import { stateModal } from 'state-shared';
 
 	import { UI, UiGameName } from 'components-ui-pixi';
@@ -56,8 +56,13 @@
 	<Container filters={backgroundBlur}>
 		<Background />
 	</Container>
-	<!-- faint plum haze pushes the blurred scene further back -->
+	<!-- faint plum haze + corner vignette push the blurred scene further back -->
 	<CanvasSizeRectangle backgroundColor={0x180a28} backgroundAlpha={0.16} />
+	<Sprite
+		key="vignette"
+		width={context.stateLayoutDerived.canvasSizes().width}
+		height={context.stateLayoutDerived.canvasSizes().height}
+	/>
 
 	{#if context.stateLayout.showLoadingScreen}
 		<LoadingScreen onloaded={() => (context.stateLayout.showLoadingScreen = false)} />

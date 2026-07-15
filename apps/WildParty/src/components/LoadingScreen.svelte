@@ -18,6 +18,24 @@
 	let loadingType = $state<'start' | 'transition'>('start');
 	let pulseTick = $state(0);
 
+	// gameplay tips rotate under the progress bar while assets download
+	const TIPS = [
+		'3 SCATTERS TRIGGER FREE SPINS',
+		'WILDS ADD +1 TO THE GLOBAL MULTIPLIER IN FREE SPINS',
+		'THE GLOBAL MULTIPLIER CLIMBS UP TO 100×',
+		'MAX WIN 5,000× YOUR BET',
+	];
+	const TIP_MS = 3400;
+	// pulseTick advances every 32ms — reuse it as the tip clock
+	const tipElapsed = $derived(pulseTick * 32);
+	const tipIndex = $derived(Math.floor(tipElapsed / TIP_MS) % TIPS.length);
+	const tipAlpha = $derived.by(() => {
+		const p = (tipElapsed % TIP_MS) / TIP_MS;
+		if (p < 0.12) return p / 0.12;
+		if (p > 0.88) return (1 - p) / 0.12;
+		return 1;
+	});
+
 	// Animate progress bar smoothly
 	let animatedProgress = $state(0);
 	$effect(() => {
@@ -163,6 +181,21 @@
 					fontWeight: '500',
 					fill: 0xb6a8c9,
 					letterSpacing: 2,
+				}}
+			/>
+
+			<!-- rotating gameplay tip -->
+			<Text
+				anchor={0.5}
+				y={58}
+				alpha={tipAlpha}
+				text={TIPS[tipIndex]}
+				style={{
+					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontSize: 13,
+					fontWeight: '600',
+					fill: 0xffd8f1,
+					letterSpacing: 2.5,
 				}}
 			/>
 		</Container>

@@ -64,7 +64,7 @@
 	"meta": {
 		"app": "design/generate_frames_party.mjs",
 		"version": "1.0",
-		"image": "reels_frame.png",
+		"image": "reels_frame_v2.png",
 		"format": "RGBA8888",
 		"size": {
 			"w": 2642,

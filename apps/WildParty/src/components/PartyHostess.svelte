@@ -88,12 +88,38 @@
 {#if ['desktop', 'landscape'].includes(context.stateLayoutDerived.layoutType())}
 	<MainContainer>
 		<Container x={layout.x} y={layout.y}>
+			<!-- soft ground-contact shadow so she doesn't float on the scene -->
+			<Sprite
+				key="fxGlow"
+				anchor={0.5}
+				y={-layout.width * 0.02}
+				tint={0x000000}
+				width={layout.width * 1.15}
+				height={layout.width * 0.28}
+				alpha={0.38}
+			/>
+			<!-- magenta rim light: additive copy peeking out on the lit side,
+			     ties her into the club spotlights behind -->
+			<Sprite
+				key="partyHostess"
+				anchor={{ x: 0.5, y: 1 }}
+				x={-layout.width * 0.022}
+				y={-layout.height * 0.006}
+				width={layout.width * pose.scaleX}
+				height={layout.height * pose.scaleY}
+				rotation={pose.rotation}
+				tint={0xb04ef0}
+				blendMode="add"
+				alpha={0.5}
+			/>
+			<!-- slight lavender grade pulls the artwork toward the scene palette -->
 			<Sprite
 				key="partyHostess"
 				anchor={{ x: 0.5, y: 1 }}
 				width={layout.width * pose.scaleX}
 				height={layout.height * pose.scaleY}
 				rotation={pose.rotation}
+				tint={0xf2e9fb}
 			/>
 			{#each sparkles as sparkle (sparkle.id)}
 				{@const state = sparkleState(sparkle.born)}

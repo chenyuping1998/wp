@@ -119,7 +119,13 @@ export default {
 	},
 	reelsFrame: {
 		type: 'sprites',
-		src: new URL('../../assets/sprites/reelsFrame/reels_frame.json', import.meta.url).href,
+		src: new URL('../../assets/sprites/reelsFrame/reels_frame_v2.json', import.meta.url).href,
+	},
+	// soft corner-darkening overlay stretched over the whole canvas
+	vignette: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/misc/vignette.png', import.meta.url).href,
+		preload: true,
 	},
 	payFrame: {
 		type: 'sprite',

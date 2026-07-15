@@ -60,11 +60,37 @@ const defs = `
 
 const render = (svg, width) => new Resvg(svg, { fitTo: { mode: 'width', value: width }, font: { loadSystemFonts: true } }).render().asPng();
 
-// ─── reels_frame.png (fresh 3-sprite atlas: frame_bg, frame_edge, Frame_FSCounter) ─
+// ─── reels_frame_v2.png (fresh 3-sprite atlas: frame_bg, frame_edge, Frame_FSCounter) ─
 const FRAME_BG_W = 1080, FRAME_BG_H = 900;
+// deterministic dot scatter for the low-contrast disco-light texture
+let bgSeed = 24601;
+const bgRand = () => {
+	bgSeed = (bgSeed * 1103515245 + 12345) & 0x7fffffff;
+	return bgSeed / 0x7fffffff;
+};
+const bgDots = Array.from({ length: 42 }, () => {
+	const x = 60 + bgRand() * (FRAME_BG_W - 120);
+	const y = 60 + bgRand() * (FRAME_BG_H - 120);
+	const r = 3 + bgRand() * 7;
+	return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#ffffff" opacity="${(0.02 + bgRand() * 0.025).toFixed(3)}"/>`;
+}).join('');
 const frameBgSvg = svgWrap(
 	FRAME_BG_W, FRAME_BG_H,
-	`<rect x="24" y="24" width="${FRAME_BG_W - 48}" height="${FRAME_BG_H - 48}" rx="56" fill="url(#panelBg)"/>`,
+	`
+	<defs>
+		<pattern id="pinstripe" width="46" height="46" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+			<line x1="0" y1="0" x2="0" y2="46" stroke="#ff8ede" stroke-width="9" opacity="0.045"/>
+		</pattern>
+		<clipPath id="bgClip">
+			<rect x="24" y="24" width="${FRAME_BG_W - 48}" height="${FRAME_BG_H - 48}" rx="56"/>
+		</clipPath>
+	</defs>
+	<rect x="24" y="24" width="${FRAME_BG_W - 48}" height="${FRAME_BG_H - 48}" rx="56" fill="url(#panelBg)"/>
+	<g clip-path="url(#bgClip)">
+		<rect x="24" y="24" width="${FRAME_BG_W - 48}" height="${FRAME_BG_H - 48}" fill="url(#pinstripe)"/>
+		${bgDots}
+		<ellipse cx="${FRAME_BG_W / 2}" cy="120" rx="${FRAME_BG_W * 0.42}" ry="150" fill="#ff8ede" opacity="0.05"/>
+	</g>`,
 	defs,
 );
 
@@ -128,8 +154,9 @@ const sheetSvg = svgWrap(
 	<image href="data:image/png;base64,${fsB64}" x="${fsX}" y="${PAD}" width="${FS_W}" height="${FS_H}"/>
 	`,
 );
-fs.writeFileSync(path.join(REELS_DIR, 'reels_frame.png'), render(sheetSvg, sheetW));
-console.log('rendered reels_frame.png', sheetW, 'x', sheetH);
+// v2 filename: cache-bust after the frame_bg texture change (§4.27 lesson)
+fs.writeFileSync(path.join(REELS_DIR, 'reels_frame_v2.png'), render(sheetSvg, sheetW));
+console.log('rendered reels_frame_v2.png', sheetW, 'x', sheetH);
 
 const frameJson = {
 	frames: {
@@ -158,14 +185,31 @@ const frameJson = {
 	meta: {
 		app: 'design/generate_frames_party.mjs',
 		version: '1.0',
-		image: 'reels_frame.png',
+		image: 'reels_frame_v2.png',
 		format: 'RGBA8888',
 		size: { w: sheetW, h: sheetH },
 		scale: '1',
 	},
 };
-fs.writeFileSync(path.join(REELS_DIR, 'reels_frame.json'), JSON.stringify(frameJson, null, '\t') + '\n');
-console.log('wrote reels_frame.json (frame_bg, frame_edge, Frame_FSCounter only)');
+fs.writeFileSync(path.join(REELS_DIR, 'reels_frame_v2.json'), JSON.stringify(frameJson, null, '\t') + '\n');
+console.log('wrote reels_frame_v2.json (frame_bg, frame_edge, Frame_FSCounter only)');
+
+// ─── vignette.png — soft corner-darkening overlay stretched over the canvas ─
+const VIG_W = 640, VIG_H = 360;
+const vignetteSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${VIG_W}" height="${VIG_H}" viewBox="0 0 ${VIG_W} ${VIG_H}">
+<defs>
+	<radialGradient id="vig" cx="0.5" cy="0.5" r="0.72">
+		<stop offset="0" stop-color="#0a0212" stop-opacity="0"/>
+		<stop offset="0.6" stop-color="#0a0212" stop-opacity="0"/>
+		<stop offset="1" stop-color="#0a0212" stop-opacity="0.5"/>
+	</radialGradient>
+</defs>
+<rect width="${VIG_W}" height="${VIG_H}" fill="url(#vig)"/>
+</svg>`;
+const MISC_DIR = path.join(appRoot, 'static/assets/sprites/misc');
+fs.mkdirSync(MISC_DIR, { recursive: true });
+fs.writeFileSync(path.join(MISC_DIR, 'vignette.png'), render(vignetteSvg, VIG_W));
+console.log('rendered vignette.png', VIG_W, 'x', VIG_H);
 
 // ─── multiframe.png — surgical patch of Frame_Multiplier / Frame_Multiplier_glow ─
 const multiPath = path.join(MULTI_DIR, 'multiframe.png');
