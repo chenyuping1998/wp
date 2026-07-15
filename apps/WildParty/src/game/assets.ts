@@ -334,10 +334,27 @@ export default {
 	},
 	// party hostess character right of the reels — role3.png de-checkerboarded
 	// + legs stretched by design/process_role.mjs (sources in design/source/);
-	// bump the filename suffix if the art changes again (cache-bust, §4.27)
+	// bump the filename suffix if the art changes again (cache-bust, §4.27).
+	// Full image (rim-light silhouette) + 2.5D rig parts cut by
+	// design/slice_role_parts.mjs (geometry in src/game/hostessParts.json)
 	partyHostess: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/character/party_hostess_v2.png', import.meta.url).href,
+		preload: true,
+	},
+	partyHostessBody: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/character/party_hostess_body.png', import.meta.url).href,
+		preload: true,
+	},
+	partyHostessHead: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/character/party_hostess_head.png', import.meta.url).href,
+		preload: true,
+	},
+	partyHostessGlass: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/character/party_hostess_glass.png', import.meta.url).href,
 		preload: true,
 	},
 	globalMultiplier: {

@@ -5,11 +5,15 @@
 
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
+	import rig from '../game/hostessParts.json';
 
 	const context = getContext();
 
-	// party_hostess_v2.png source proportions (role3, legs stretched)
-	const ASPECT = 284 / 884;
+	const IMG_W = rig.imageWidth;
+	const IMG_H = rig.imageHeight;
+	const ASPECT = IMG_W / IMG_H;
+	// lavender grade pulling the artwork toward the scene palette
+	const GRADE = 0xf2e9fb;
 	// approximate champagne-glass mouth in sprite space (from bottom-center anchor)
 	const GLASS_OFFSET = { x: -0.38, y: -0.85 };
 
@@ -34,6 +38,7 @@
 	});
 
 	let now = $state(0);
+	let toastStart = -1;
 	let sparkles = $state<{ id: number; born: number; dx: number; dy: number }[]>([]);
 	let nextSparkleAt = 0;
 	let nextSparkleId = 0;
@@ -64,14 +69,39 @@
 		return () => cancelAnimationFrame(raf);
 	});
 
-	// idle: slow breathing + a gentle weight sway around the feet
+	// raise-the-glass toast on wins (subtle — a swirl from the wrist)
+	context.eventEmitter.subscribeOnMount({
+		winShow: () => (toastStart = now),
+	});
+
+	const easeOutCubic = (p: number) => 1 - (1 - p) ** 3;
+	const smooth = (p: number) => p * p * (3 - 2 * p);
+
+	// idle: breathing + weight sway (whole figure), lagged head tilt, glass
+	// micro-swirl; all amplitudes kept small so the cut seams stay hidden
 	const pose = $derived.by(() => {
 		const breath = Math.sin((now / 3100) * Math.PI * 2);
 		const sway = Math.sin((now / 5400) * Math.PI * 2);
+		// head follows the body sway late (follow-through) + its own slow nod
+		const headRot =
+			0.02 * Math.sin((now / 5400) * Math.PI * 2 - 0.9) +
+			0.008 * Math.sin((now / 2300) * Math.PI * 2);
+
+		let glassRot = 0.014 * Math.sin((now / 3900) * Math.PI * 2 + 0.6);
+		if (toastStart >= 0) {
+			const t = (now - toastStart) / 1000;
+			const LIFT = 0.13;
+			if (t < 0.35) glassRot += LIFT * easeOutCubic(t / 0.35);
+			else if (t < 0.8) glassRot += LIFT;
+			else if (t < 1.4) glassRot += LIFT * (1 - smooth((t - 0.8) / 0.6));
+		}
+
 		return {
 			scaleX: 1 - 0.004 * breath,
 			scaleY: 1 + 0.007 * breath,
 			rotation: 0.008 * sway,
+			headRot,
+			glassRot,
 		};
 	});
 
@@ -83,11 +113,26 @@
 			rot: p * 1.8,
 		};
 	};
+
+	// image-pixel → figure-local placement for a rig part, pivot at its joint
+	const partPlacement = (part: { x: number; y: number; w: number; h: number; pivotX: number; pivotY: number }, s: number) => ({
+		anchor: { x: (part.pivotX - part.x) / part.w, y: (part.pivotY - part.y) / part.h },
+		x: (part.pivotX - IMG_W / 2) * s,
+		y: (part.pivotY - IMG_H) * s,
+		width: part.w * s,
+		height: part.h * s,
+	});
 </script>
 
 {#if ['desktop', 'landscape'].includes(context.stateLayoutDerived.layoutType())}
 	<MainContainer>
-		<Container x={layout.x} y={layout.y}>
+		<Container
+			x={layout.x}
+			y={layout.y}
+			scale={{ x: pose.scaleX, y: pose.scaleY }}
+			rotation={pose.rotation}
+		>
+			{@const s = layout.height / IMG_H}
 			<!-- soft ground-contact shadow so she doesn't float on the scene -->
 			<Sprite
 				key="fxGlow"
@@ -98,28 +143,38 @@
 				height={layout.width * 0.28}
 				alpha={0.38}
 			/>
-			<!-- magenta rim light: additive copy peeking out on the lit side,
-			     ties her into the club spotlights behind -->
+			<!-- magenta rim light: additive full-silhouette copy peeking out on
+			     the lit side, ties her into the club spotlights behind -->
 			<Sprite
 				key="partyHostess"
 				anchor={{ x: 0.5, y: 1 }}
 				x={-layout.width * 0.022}
 				y={-layout.height * 0.006}
-				width={layout.width * pose.scaleX}
-				height={layout.height * pose.scaleY}
-				rotation={pose.rotation}
+				width={layout.width}
+				height={layout.height}
 				tint={0xb04ef0}
 				blendMode="add"
 				alpha={0.5}
 			/>
-			<!-- slight lavender grade pulls the artwork toward the scene palette -->
+			<!-- 2.5D rig: body base + glass (wrist pivot) + head (neck pivot) -->
 			<Sprite
-				key="partyHostess"
+				key="partyHostessBody"
 				anchor={{ x: 0.5, y: 1 }}
-				width={layout.width * pose.scaleX}
-				height={layout.height * pose.scaleY}
-				rotation={pose.rotation}
-				tint={0xf2e9fb}
+				width={layout.width}
+				height={layout.height}
+				tint={GRADE}
+			/>
+			<Sprite
+				key="partyHostessGlass"
+				{...partPlacement(rig.parts.glass, s)}
+				rotation={pose.glassRot}
+				tint={GRADE}
+			/>
+			<Sprite
+				key="partyHostessHead"
+				{...partPlacement(rig.parts.head, s)}
+				rotation={pose.headRot}
+				tint={GRADE}
 			/>
 			{#each sparkles as sparkle (sparkle.id)}
 				{@const state = sparkleState(sparkle.born)}
