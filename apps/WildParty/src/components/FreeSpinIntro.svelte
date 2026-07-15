@@ -7,10 +7,9 @@
 
 <script lang="ts">
 	import { CanvasSizeRectangle } from 'components-layout';
-	import { stateUrlDerived } from 'state-shared';
 	import { FadeContainer } from 'components-pixi';
 	import { waitForResolve } from 'utils-shared/wait';
-	import { BitmapText, SpineProvider, SpineSlot, SpineTrack, Sprite } from 'pixi-svelte';
+	import { BitmapText, SpineProvider, SpineSlot, SpineTrack, Text } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
 	import PressToContinue from './PressToContinue.svelte';
@@ -40,11 +39,40 @@
 
 	<FreeSpinAnimation>
 		{#snippet children({ sizes })}
-			<Sprite
-				anchor={{ x: 0.5, y: 1.2 }}
-				width={500 * 2.2}
-				height={156 * 2.2}
-				key="freespins_{stateUrlDerived.lang()}.png"
+			<!-- headline: same type treatment as the WILD PARTY title -->
+			<Text
+				anchor={0.5}
+				y={-300}
+				text="CONGRATULATIONS!"
+				style={{
+					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontSize: 96,
+					fontWeight: '900',
+					fill: 0xfff4cf,
+					letterSpacing: 8,
+					dropShadow: true,
+					dropShadowColor: 0xff9edf,
+					dropShadowBlur: 18,
+					dropShadowDistance: 0,
+					stroke: 0xffffff,
+					strokeThickness: 1,
+				}}
+			/>
+			<Text
+				anchor={0.5}
+				y={-208}
+				text="YOU WON"
+				style={{
+					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontSize: 58,
+					fontWeight: '900',
+					fill: 0xfff4cf,
+					letterSpacing: 6,
+					dropShadow: true,
+					dropShadowColor: 0xff9edf,
+					dropShadowBlur: 14,
+					dropShadowDistance: 0,
+				}}
 			/>
 
 			<SpineProvider key="fsIntroNumber" width={sizes.width * 0.3}>
@@ -72,9 +100,26 @@
 				</SpineSlot>
 			</SpineProvider>
 
-			<Sprite anchor={{ x: 0.5, y: -3 }} width={183 * 2.2} height={42 * 2.2} key="freespins.png" />
+			<Text
+				anchor={0.5}
+				y={320}
+				text="FREE SPINS"
+				style={{
+					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontSize: 58,
+					fontWeight: '900',
+					fill: 0xfff4cf,
+					letterSpacing: 6,
+					dropShadow: true,
+					dropShadowColor: 0xff9edf,
+					dropShadowBlur: 14,
+					dropShadowDistance: 0,
+				}}
+			/>
 		{/snippet}
 	</FreeSpinAnimation>
 
-	<PressToContinue onpress={() => oncomplete()} />
+	<!-- betweenBoardAndBottom: the plain bottom position sat too low on the
+	     FG intro screen -->
+	<PressToContinue position="betweenBoardAndBottom" onpress={() => oncomplete()} />
 </FadeContainer>

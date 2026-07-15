@@ -8,13 +8,12 @@
 </script>
 
 <script lang="ts">
-	import { Sprite, SpineProvider, SpineTrack, SpineSlot } from 'pixi-svelte';
+	import { Text, SpineProvider, SpineTrack, SpineSlot } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider, ResponsiveBitmapText } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { OnMount } from 'components-shared';
-	import { stateUrlDerived } from 'state-shared';
 
 	import { getContext } from '../game/context';
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
@@ -55,21 +54,41 @@
 
 				<FreeSpinAnimation>
 					{#snippet children({ sizes })}
-						{#if isBigWin}
-							<Sprite
-								anchor={{ x: 0.5, y: 1.2 }}
-								width={500 * 2.2}
-								height={156 * 2.2}
-								key="freespins_{stateUrlDerived.lang()}.png"
-							/>
-						{:else}
-							<Sprite
-								anchor={{ x: 0.5, y: 1.2 }}
-								width={500 * 4.5}
-								height={80 * 4.5}
-								key="winsmall_{stateUrlDerived.lang()}.png"
-							/>
-						{/if}
+						<!-- headline: same type treatment as the WILD PARTY title -->
+						<Text
+							anchor={0.5}
+							y={-300}
+							text="CONGRATULATIONS!"
+							style={{
+								fontFamily: 'proxima-nova, Arial, sans-serif',
+								fontSize: 96,
+								fontWeight: '900',
+								fill: 0xfff4cf,
+								letterSpacing: 8,
+								dropShadow: true,
+								dropShadowColor: 0xff9edf,
+								dropShadowBlur: 18,
+								dropShadowDistance: 0,
+								stroke: 0xffffff,
+								strokeThickness: 1,
+							}}
+						/>
+						<Text
+							anchor={0.5}
+							y={-208}
+							text="YOU WON"
+							style={{
+								fontFamily: 'proxima-nova, Arial, sans-serif',
+								fontSize: 58,
+								fontWeight: '900',
+								fill: 0xfff4cf,
+								letterSpacing: 6,
+								dropShadow: true,
+								dropShadowColor: 0xff9edf,
+								dropShadowBlur: 14,
+								dropShadowDistance: 0,
+							}}
+						/>
 
 						<SpineProvider key="fsOutroNumber" width={sizes.width * 0.4}>
 							<SpineTrack
@@ -95,11 +114,21 @@
 							</SpineSlot>
 						</SpineProvider>
 
-						<Sprite
-							anchor={{ x: 0.5, y: isBigWin ? -3.2 : -2 }}
-							width={177 * (isBigWin ? 2.2 : 3)}
-							height={42 * (isBigWin ? 2.2 : 3)}
-							key="totalwin.png"
+						<Text
+							anchor={0.5}
+							y={325}
+							text="TOTAL WIN"
+							style={{
+								fontFamily: 'proxima-nova, Arial, sans-serif',
+								fontSize: 58,
+								fontWeight: '900',
+								fill: 0xfff4cf,
+								letterSpacing: 6,
+								dropShadow: true,
+								dropShadowColor: 0xff9edf,
+								dropShadowBlur: 14,
+								dropShadowDistance: 0,
+							}}
 						/>
 					{/snippet}
 				</FreeSpinAnimation>
