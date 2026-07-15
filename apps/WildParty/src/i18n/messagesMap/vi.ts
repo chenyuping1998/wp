@@ -1,0 +1,8 @@
+export default {
+	HOME: 'TRANG CHỦ',
+	'CONGRATULATIONS!': 'CHÚC MỪNG!',
+	'YOU WON': 'BẠN THẮNG',
+	'FREE SPINS': 'VÒNG QUAY MIỄN PHÍ',
+	'TOTAL WIN': 'TỔNG THẮNG',
+	'PRESS ANYWHERE TO CONTINUE': 'CHẠM VÀO BẤT KỲ ĐÂU ĐỂ TIẾP TỤC',
+};
