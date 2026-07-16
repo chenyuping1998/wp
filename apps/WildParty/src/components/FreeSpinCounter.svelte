@@ -34,7 +34,7 @@
 			context.stateGameDerived.boardLayout().height * 0.5,
 	});
 
-	const fontSize = SYMBOL_SIZE * 0.275;
+	const fontSize = SYMBOL_SIZE * 0.22;
 
 	let show = $state(false);
 	let current = $state(0);

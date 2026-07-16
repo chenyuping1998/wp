@@ -67,13 +67,17 @@ for (const [name, r] of Object.entries(PARTS)) {
 	console.log(`wrote party_hostess_${name}.png ${r.w}x${r.h}`);
 }
 
-// body: erase the part regions, inset by MARGIN so pieces overlap the hole
+// body: erase the part regions.
+// - head: inset by MARGIN + feather — the overlap ring hides the neck seam
+//   during its small rotations.
+// - glass: FULL erase (its surroundings are transparent background, and the
+//   toast swings it far enough that any retained ring reads as a ghost);
+//   only the bottom edge ramps out so the wrist junction keeps continuity
+//   with the feathered piece on top.
 const body = new PNG({ width: W, height: H });
 src.data.copy(body.data);
-for (const r of Object.values(PARTS)) {
-	const eroded = { x: r.x + MARGIN, y: Math.max(0, r.y + (r.y > 0 ? MARGIN : 0)), w: 0, h: 0 };
-	eroded.w = r.w - MARGIN - (r.x + r.w < W ? MARGIN : 0) - (r.x > 0 ? 0 : MARGIN) + (r.x > 0 ? -0 : 0);
-	// simpler: shrink every non-border edge by MARGIN
+{
+	const r = PARTS.head;
 	const ex = r.x > 0 ? r.x + MARGIN : 0;
 	const ey = r.y > 0 ? r.y + MARGIN : 0;
 	const ex2 = r.x + r.w < W ? r.x + r.w - MARGIN : W;
@@ -83,6 +87,19 @@ for (const r of Object.values(PARTS)) {
 		for (let x = er.x; x < er.x + er.w; x++) {
 			const o = at(x, y);
 			body.data[o + 3] = Math.round(body.data[o + 3] * (1 - insideWeight(x, y, er, FEATHER)));
+		}
+	}
+}
+{
+	const r = PARTS.glass;
+	const RAMP = 12;
+	for (let y = r.y; y < r.y + r.h; y++) {
+		for (let x = r.x; x < r.x + r.w; x++) {
+			const o = at(x, y);
+			// 1 deep inside → 0 at the bottom (wrist) edge; all other edges full
+			const fromBottom = r.y + r.h - 1 - y;
+			const w = Math.min(1, fromBottom / RAMP);
+			body.data[o + 3] = Math.round(body.data[o + 3] * (1 - w));
 		}
 	}
 }
