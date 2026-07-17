@@ -26,11 +26,19 @@
 			multiView: false,
 			antialias: true,
 			clearBeforeRender: true,
-			preference: 'webgpu',
+			// localStorage override: WebGPU frame buffers can't be captured by
+			// screenshot/recording tools — set pixiPreference=webgl to debug
+			preference:
+				(typeof localStorage !== 'undefined' &&
+					(localStorage.getItem('pixiPreference') as 'webgl' | 'webgpu' | null)) ||
+				'webgpu',
 			powerPreference: 'high-performance',
 			resolution: devicePixelRatio.current,
 			resizeTo: window,
 		});
+
+		// expose for pixi devtools + headless capture (manual render when rAF is throttled)
+		(globalThis as unknown as { __PIXI_APP__: unknown }).__PIXI_APP__ = context.stateApp.pixiApplication;
 
 		wrap.appendChild(context.stateApp.pixiApplication.canvas);
 
