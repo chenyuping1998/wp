@@ -1,0 +1,22 @@
+{
+	"big": {
+		"width": 1161,
+		"height": 906
+	},
+	"superwin": {
+		"width": 1119,
+		"height": 874
+	},
+	"mega": {
+		"width": 1106,
+		"height": 900
+	},
+	"epic": {
+		"width": 1081,
+		"height": 855
+	},
+	"max": {
+		"width": 1158,
+		"height": 856
+	}
+}

@@ -324,12 +324,31 @@ export default {
 			scale: 1,
 		},
 	},
-	// win-amount readout plaque — plain sprite (not part of the bigwin spine atlas)
-	// so it can be positioned in the exact same conditionally-offset container as
-	// the count-up text in Win.svelte, guaranteeing alignment
-	countPlaque: {
+	// AI-painted win-tier banner plaques (design/process_win_banners.mjs) —
+	// the amount counts up inside each plaque's velvet center
+	winBannerBig: {
 		type: 'sprite',
-		src: new URL('../../assets/spines/bigwinParty/count_plaque.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/winBanners/big.png', import.meta.url).href,
+		preload: true,
+	},
+	winBannerSuperwin: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/winBanners/superwin.png', import.meta.url).href,
+		preload: true,
+	},
+	winBannerMega: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/winBanners/mega.png', import.meta.url).href,
+		preload: true,
+	},
+	winBannerEpic: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/winBanners/epic.png', import.meta.url).href,
+		preload: true,
+	},
+	winBannerMax: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/winBanners/max.png', import.meta.url).href,
 		preload: true,
 	},
 	// party hostess character right of the reels — role3.png de-checkerboarded

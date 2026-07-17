@@ -8,6 +8,7 @@
 </script>
 
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import { Container, Sprite } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider, ResponsiveText } from 'components-pixi';
 	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
@@ -16,15 +17,40 @@
 	import { OnMount } from 'components-shared';
 
 	import WinCoins from './WinCoins.svelte';
-	import WinAnimation from './WinAnimation.svelte';
-	import WinLevelSymbolIntro from './WinLevelSymbolIntro.svelte';
 	import BigWinFx from './BigWinFx.svelte';
+	import FxBurst from './FxBurst.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
 	import { neonNumberStyle } from '../game/textStyles';
+	import winBanners from '../game/winBanners.json';
 
 	const context = getContext();
+
+	// AI-painted plaques (design/process_win_banners.mjs); amount rolls inside
+	// each plaque's velvet center — vertical center offset tuned per artwork
+	const BANNER_KEY: Record<string, string> = {
+		big: 'winBannerBig',
+		superwin: 'winBannerSuperwin',
+		mega: 'winBannerMega',
+		epic: 'winBannerEpic',
+		max: 'winBannerMax',
+	};
+	const AMOUNT_Y_FRAC: Record<string, number> = {
+		big: 0.1,
+		superwin: 0.1,
+		mega: 0.16,
+		epic: 0.12,
+		max: 0.3,
+	};
+	// presentation intensity scales with the tier
+	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
+		big: { mult: 1, glowTint: 0xffd75e },
+		superwin: { mult: 1.15, glowTint: 0xff8ede },
+		mega: { mult: 1.3, glowTint: 0xb44dff },
+		epic: { mult: 1.5, glowTint: 0xff5a3c },
+		max: { mult: 1.8, glowTint: 0x7df0ff },
+	};
 
 	let show = $state(false);
 	let amount = $state(0);
@@ -66,24 +92,86 @@
 		}, 16);
 	};
 
-	const WIN_LEVEL_SYMBOL_MAP: Partial<
-		Record<WinLevelData['alias'], 'wpSpH1' | 'wpSpH2' | 'wpSpH3' | 'wpSpH4'>
-	> = {
-		big: 'wpSpH4',
-		superwin: 'wpSpH3',
-		mega: 'wpSpH2',
-		epic: 'wpSpH1',
+	// ── banner FX clock: entrance overshoot, glow breathing, periodic blink
+	// flash, gem twinkles, repeating bursts on the top tiers ─────────────────
+	let fxNow = $state(-1);
+	let fxRaf = 0;
+	let twinkles = $state<{ id: number; born: number; angle: number }[]>([]);
+	let nextTwinkleAt = 0;
+	let nextTwinkleId = 0;
+	let burstShown = $state(false);
+	let nextBurstAt = 0;
+
+	const startBannerFx = () => {
+		cancelAnimationFrame(fxRaf);
+		twinkles = [];
+		nextTwinkleAt = 0;
+		nextBurstAt = 0;
+		burstShown = true;
+		const start = performance.now();
+		const tick = (now: number) => {
+			fxNow = (now - start) / 1000;
+			const mult = winLevelData ? TIER_FX[winLevelData.alias]?.mult ?? 1 : 1;
+			if (fxNow >= nextTwinkleAt) {
+				twinkles = [
+					...twinkles.filter(({ born }) => fxNow - born < 0.7),
+					{ id: nextTwinkleId++, born: fxNow, angle: Math.random() * Math.PI * 2 },
+				];
+				nextTwinkleAt = fxNow + (0.34 - 0.1 * mult) + Math.random() * 0.2;
+			} else {
+				const alive = twinkles.filter(({ born }) => fxNow - born < 0.7);
+				if (alive.length !== twinkles.length) twinkles = alive;
+			}
+			// epic/max keep erupting while the presentation holds
+			if (mult >= 1.5 && fxNow >= nextBurstAt) {
+				burstShown = true;
+				nextBurstAt = fxNow + 1.6;
+			}
+			fxRaf = requestAnimationFrame(tick);
+		};
+		fxRaf = requestAnimationFrame(tick);
 	};
+	const stopBannerFx = () => {
+		cancelAnimationFrame(fxRaf);
+		fxNow = -1;
+		twinkles = [];
+	};
+	onDestroy(stopBannerFx);
+
+	const bannerPose = $derived.by(() => {
+		if (fxNow < 0) return { scale: 1, glow: 0.4, blink: 0 };
+		const t = fxNow;
+		// entrance: overshoot slam matching the existing hit-stop flash
+		const scale =
+			t < 0.34
+				? 0.42 + 0.78 * (1 - (1 - t / 0.34) ** 3)
+				: 1.2 - 0.2 * Math.min(1, (t - 0.34) / 0.22) + 0.015 * Math.sin(t * 3.2);
+		// periodic blink: a bright additive pulse every ~2.3s + entrance flare
+		const phase = (t + 1.9) % 2.3;
+		const blink = Math.max(
+			t < 0.3 ? 0.55 * (1 - t / 0.3) : 0,
+			phase < 0.32 ? 0.34 * (1 - phase / 0.32) : 0,
+		);
+		return {
+			scale,
+			glow: 0.42 + 0.24 * (0.5 + 0.5 * Math.sin(t * 2.6)),
+			blink,
+		};
+	});
 
 	context.eventEmitter.subscribeOnMount({
 		winShow: () => (show = true),
-		winHide: () => (show = false),
+		winHide: () => {
+			show = false;
+			stopBannerFx();
+		},
 		winUpdate: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
 			if (emitterEvent.winLevelData.type === 'big') {
 				startShake();
 				startImpact();
+				startBannerFx();
 			}
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
@@ -127,36 +215,63 @@
 						y={context.stateGameDerived.boardLayout().y + shake.y}
 						scale={punch}
 					>
-						{@const winLevelSymbolKey = WIN_LEVEL_SYMBOL_MAP[winLevelData.alias]}
-						{#if winLevelData?.animation}
-							<WinAnimation animationMap={winLevelData.animation}>
-								{#if winLevelSymbolKey}
-									<!-- slot children are provider-scaled ×0.5, so -640 puts the icon
-									     ~250px above board center — clear of the banner at center -->
-									<Container y={-640}>
-										<WinLevelSymbolIntro symbolKey={winLevelSymbolKey} />
-									</Container>
-								{/if}
-								<!-- plaque + text share this container so they always move together,
-								     instead of the plaque tracking a spine slot that doesn't know
-								     about the conditional 270 offset below -->
-								<Container y={winLevelSymbolKey ? 270 : 0}>
+						{#if isBigWin}
+							{@const alias = winLevelData.alias}
+							{@const dims = winBanners[alias as keyof typeof winBanners]}
+							{@const fx = TIER_FX[alias]}
+							{@const bw = SYMBOL_SIZE * 9.6}
+							{@const bh = (bw * dims.height) / dims.width}
+							<Container scale={bannerPose.scale}>
+								<!-- breathing glow bed behind the plaque -->
+								<Sprite
+									key="fxGlow"
+									anchor={0.5}
+									tint={fx.glowTint}
+									blendMode="add"
+									width={bw * 1.45}
+									height={bh * 1.5}
+									alpha={bannerPose.glow}
+								/>
+								<Sprite key={BANNER_KEY[alias]} anchor={0.5} width={bw} height={bh} />
+								<!-- additive self-copy = the whole plaque blinks/flares -->
+								{#if bannerPose.blink > 0}
 									<Sprite
-										key="countPlaque"
+										key={BANNER_KEY[alias]}
 										anchor={0.5}
-										width={SYMBOL_SIZE * 9.4}
-										height={SYMBOL_SIZE * 2.4}
+										width={bw}
+										height={bh}
+										blendMode="add"
+										alpha={bannerPose.blink}
 									/>
-									<!-- maxWidth/fontSize must stay inside the countPlaque above
-									     (SYMBOL_SIZE*9.4 wide, *2.4 tall) with breathing room -->
-									<ResponsiveText
+								{/if}
+								<!-- gem twinkles on the jeweled border -->
+								{#each twinkles as tw (tw.id)}
+									{@const p = Math.min(1, (fxNow - tw.born) / 0.7)}
+									<Sprite
+										key="fxStar"
 										anchor={0.5}
-										maxWidth={SYMBOL_SIZE * 8.2}
-										text={bookEventAmountToCurrencyString(countUpAmount)}
-										style={neonNumberStyle(SYMBOL_SIZE * 1.4)}
+										x={Math.cos(tw.angle) * bw * 0.46}
+										y={Math.sin(tw.angle) * bh * 0.44}
+										rotation={p * 2}
+										tint={0xffffff}
+										blendMode="add"
+										width={SYMBOL_SIZE * 0.5 * Math.sin(p * Math.PI)}
+										height={SYMBOL_SIZE * 0.5 * Math.sin(p * Math.PI)}
+										alpha={Math.sin(p * Math.PI)}
 									/>
-								</Container>
-							</WinAnimation>
+								{/each}
+								<!-- amount rolls inside the plaque's velvet center -->
+								<ResponsiveText
+									anchor={0.5}
+									y={bh * (AMOUNT_Y_FRAC[alias] ?? 0.12)}
+									maxWidth={bw * 0.5}
+									text={bookEventAmountToCurrencyString(countUpAmount)}
+									style={neonNumberStyle(bh * 0.17)}
+								/>
+							</Container>
+							{#if burstShown}
+								<FxBurst scale={2.4} oncomplete={() => (burstShown = false)} />
+							{/if}
 						{:else}
 							<ResponsiveText
 								anchor={0.5}
