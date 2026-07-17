@@ -23,17 +23,17 @@
 	};
 
 	const SYMBOL_LABEL: Record<string, string> = {
-		H1: '軍盔 Helmet',
-		H2: '火焰果 Flame Fruit',
-		H3: '鳳梨手榴彈 Pineapple Grenade',
-		H4: '葡萄炸彈 Grape TNT',
+		H1: 'Combat Helmet',
+		H2: 'Pineapple Grenade',
+		H3: 'Banana Ammo Crate',
+		H4: 'Golden Compass',
 		L1: 'A',
 		L2: 'K',
 		L3: 'Q',
 		L4: 'J',
 		L5: '10',
-		W: '突擊隊猴 Wild',
-		S: '金香蕉 Scatter',
+		W: 'Wild',
+		S: 'Golden Bananas — Scatter',
 	};
 
 	// keep high -> low ordering for readability

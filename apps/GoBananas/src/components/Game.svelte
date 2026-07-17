@@ -83,12 +83,12 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name="GO BANANAS 香蕉突擊隊" />
+				<UiGameName name="GO BANANAS" />
 			{/snippet}
 			{#snippet logo()}
 				<Text
 					anchor={{ x: 1, y: 0 }}
-					text="GO BANANAS 香蕉突擊隊"
+					text="GO BANANAS"
 					style={{
 						fontFamily: 'proxima-nova',
 						fontSize: REM * 1.5,

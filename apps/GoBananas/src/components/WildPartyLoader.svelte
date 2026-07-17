@@ -22,38 +22,40 @@
 </script>
 
 {#if show}
-	<div class="gb-loader" transition:fade={{ duration: 400 }}>
-		<div class="gb-loader-inner">
-			<div class="gb-emblem" aria-label="Go Bananas emblem">
-				<svg class="gb-svg" viewBox="0 0 100 100" role="img">
-					<!-- golden banana trio, matching the sign emblem -->
-					<g stroke="#6d4a08" stroke-width="3" stroke-linejoin="round">
-						<path d="M 18 62 Q 30 36 58 28 Q 64 32 61 40 Q 45 58 24 66 Q 18 68 18 62 Z" fill="#ffd75e" />
-						<path d="M 26 72 Q 38 46 66 38 Q 72 42 69 50 Q 53 68 32 76 Q 26 78 26 72 Z" fill="#f2b32e" />
-						<path d="M 36 82 Q 48 56 76 48 Q 82 52 79 60 Q 63 78 42 86 Q 36 88 36 82 Z" fill="#e8a625" />
-					</g>
+	<div class="wp-loader" transition:fade={{ duration: 400 }}>
+		<div class="wp-loader-inner">
+			<div class="wp-star-wrap" aria-label="Silverstars 777 star">
+				<svg class="wp-star" viewBox="0 0 100 100" role="img">
+					<polygon
+						points="50,7 61,38 94,38 67,57 77,89 50,70 23,89 33,57 6,38 39,38"
+						fill="none"
+						stroke="#ffffff"
+						stroke-width="5.5"
+						stroke-linejoin="round"
+					/>
+					<text x="50" y="56" text-anchor="middle" dominant-baseline="middle">777</text>
 				</svg>
 			</div>
-			<div class="gb-title">
-				<div>GO BANANAS</div>
-				<div class="gb-subtitle">香蕉突擊隊</div>
+			<div class="wp-title">
+				<div>SILVERSTARS</div>
+				<div>STUDIO</div>
 			</div>
 		</div>
 	</div>
 {/if}
 
 <style>
-	.gb-loader {
+	.wp-loader {
 		position: absolute;
 		inset: 0;
 		z-index: 999;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: #0d0f05;
+		background: #000;
 	}
 
-	.gb-loader-inner {
+	.wp-loader-inner {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -61,48 +63,37 @@
 		font-family: 'proxima-nova', Arial, sans-serif;
 	}
 
-	.gb-emblem {
-		width: clamp(120px, 18vw, 210px);
+	.wp-star-wrap {
+		width: clamp(140px, 20vw, 240px);
 		aspect-ratio: 1 / 1;
-		animation: gb-bob 1.6s ease-in-out infinite;
 	}
 
-	@keyframes gb-bob {
-		0%,
-		100% {
-			transform: translateY(0) rotate(-3deg);
-		}
-		50% {
-			transform: translateY(-8px) rotate(3deg);
-		}
-	}
-
-	.gb-svg {
+	.wp-star {
 		width: 100%;
 		height: 100%;
 		display: block;
-		filter: drop-shadow(0 0 14px rgba(255, 215, 94, 0.35));
+		filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.25));
 	}
 
-	.gb-title {
+	.wp-star text {
+		fill: #fff;
+		font-size: 18px;
+		font-weight: 900;
+		letter-spacing: 0;
+		font-family: 'proxima-nova', Arial, sans-serif;
+	}
+
+	.wp-title {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 0.3rem;
-		font-size: clamp(1.8rem, 3.8vw, 3.4rem);
+		gap: 0.25rem;
+		font-size: clamp(2rem, 4.2vw, 4rem);
 		font-weight: 900;
 		letter-spacing: 0.12em;
-		color: #ffd75e;
+		color: #fff;
 		text-align: center;
 		line-height: 1;
-		text-shadow:
-			0 2px 0 #54330a,
-			0 0 18px rgba(255, 215, 94, 0.3);
-	}
-
-	.gb-subtitle {
-		font-size: 0.42em;
-		letter-spacing: 0.5em;
-		color: #f5e3c3;
+		text-shadow: 0 0 16px rgba(255, 255, 255, 0.28);
 	}
 </style>

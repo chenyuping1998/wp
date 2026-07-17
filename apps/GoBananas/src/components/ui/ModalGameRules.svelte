@@ -16,12 +16,12 @@
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-rules">
-			<h2>GO BANANAS 金猴鬧春 — GAME RULES</h2>
+			<h2>GO BANANAS — GAME RULES</h2>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>How to play</h3>
 				<p>
-					Go Bananas 金猴鬧春 is a {reelCount}&times;{rowCount} video slot with {lineCount} fixed
+					Go Bananas is a {reelCount}&times;{rowCount} video slot with {lineCount} fixed
 					paylines. Winning combinations pay left to right, starting from the leftmost reel on
 					adjacent reels. Only the highest win is paid per line, and all line wins are added
 					together. The theoretical return to player (RTP) is {rtpPct}.
@@ -29,29 +29,40 @@
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>百搭 Wild</h3>
+				<h3><span class="wp-accent-bar"></span>Wild</h3>
 				<p>
-					The Monkey King Wild substitutes for every symbol except the Scatter, helping to
-					complete winning paylines.
+					The Sergeant Wild substitutes for every symbol except the Scatter, and also pays as
+					its own symbol on 3, 4 or 5 of a kind.
 				</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>金蟠桃 Scatter</h3>
+				<h3><span class="wp-accent-bar"></span>Scatter</h3>
 				<p>
-					The Golden Peach Scatter appears only on reels 2, 3 and 4. Scatters pay anywhere on
-					the reels and do not need to be on a payline. Landing 3 Scatters in a single spin
-					triggers the Free Spins feature.
+					The Golden Bananas Scatter pays anywhere on the reels and does not need to land on a
+					payline. Landing 3, 4 or 5 Scatters in a single spin awards 8, 12 or 15 Free Spins.
 				</p>
 			</section>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Free Spins &amp; Expanding Wilds</h3>
 				<p>
-					3 Scatters award Free Spins. During Free Spins, every Monkey King Wild that lands
-					twirls his golden cudgel (金箍棒) and expands to cover the entire reel. Expanded
-					Wilds are sticky — they stay for the rest of the feature — and each one carries a
-					win multiplier that is re-rolled on every spin.
+					During Free Spins, every Wild that lands devours his golden banana and expands to
+					cover the entire reel. Expanded Wilds are sticky — they stay for the rest of the
+					feature — and each one carries a 2&times;&ndash;50&times; win multiplier that is
+					re-rolled on every spin. Multipliers of all expanded Wilds on a winning payline are
+					added together. There are no retriggers during Free Spins.
+				</p>
+			</section>
+
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>Super Spin</h3>
+				<p>
+					A hold-and-spin style bonus bought from the bet menu for {config.betModes?.superspin
+						?.cost}&times; your total bet. You start with 3 respins. Every Coin that lands
+					sticks to the board and resets the respins back to 3. When no respins remain, all
+					stuck Coin values are added up and paid out. Maximum win:
+					{config.betModes?.superspin?.max_win?.toLocaleString()}&times; the total bet.
 				</p>
 			</section>
 

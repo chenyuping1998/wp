@@ -94,7 +94,7 @@
 			<!-- Game title -->
 			<Text
 				anchor={0.5}
-				text="GO BANANAS 香蕉突擊隊"
+				text="GO BANANAS"
 				style={{
 					fontFamily: 'proxima-nova, Arial, sans-serif',
 					fontSize: 52,
@@ -114,7 +114,7 @@
 			<Text
 				anchor={0.5}
 				y={65}
-				text="5X5, 15 LINES MAX WIN 5,000X"
+				text="5X5, 15 LINES — MAX WIN 10,000X"
 				style={{
 					fontFamily: 'proxima-nova, Arial, sans-serif',
 					fontSize: 14,
