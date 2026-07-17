@@ -20,9 +20,11 @@
 	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './BoardFrame.svelte';
 	import Board from './Board.svelte';
+	import ReelDust from './ReelDust.svelte';
+	import EntranceFx from './EntranceFx.svelte';
+	import ScatterBurst from './ScatterBurst.svelte';
 	import ExpandingWilds from './ExpandingWilds.svelte';
 	import Anticipations from './Anticipations.svelte';
-	import GlobalMultiplier from './GlobalMultiplier.svelte';
 	import WinLines from './WinLines.svelte';
 	import Win from './Win.svelte';
 	import FreeSpinIntro from './FreeSpinIntro.svelte';
@@ -63,15 +65,20 @@
 		<Sound />
 
 		<MainContainer>
-			<BoardFrame />
+			<EntranceFx dy={-24}>
+				<BoardFrame />
+			</EntranceFx>
 		</MainContainer>
 
 		<MainContainer>
-			<Board />
-			<ExpandingWilds />
-			<Anticipations />
-			<GlobalMultiplier />
-			<WinLines />
+			<EntranceFx delay={140} dy={-36}>
+				<Board />
+				<ReelDust />
+				<ExpandingWilds />
+				<Anticipations />
+				<ScatterBurst />
+				<WinLines />
+			</EntranceFx>
 		</MainContainer>
 
 		<UI>

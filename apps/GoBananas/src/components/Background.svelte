@@ -13,7 +13,6 @@
 	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame' && !isSuperspin);
 	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame' && !isSuperspin);
 
-	let sway = $state(0);
 	let beamPhase = $state(0);
 
 	const drawSoftBeams = (g: PixiGraphics, phaseShift = 0) => {
@@ -53,49 +52,27 @@
 
 	onMount(() => {
 		const id = setInterval(() => {
-			sway += 0.016;
 			beamPhase += 0.004;
 		}, 16);
 		return () => clearInterval(id);
 	});
 </script>
 
-<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x160505} zIndex={-3} />
+<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x0d0f05} zIndex={-3} />
 
-<!-- 青綠山水 base-game background -->
+<!-- 金色日出叢林 base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="gbBgBase" {...context.stateLayoutDerived.canvasSizes()} />
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
-	<!-- swaying red lantern -->
-	<Sprite
-		key="gbH2"
-		anchor={{ x: 0.5, y: 0.08 }}
-		x={context.stateLayoutDerived.canvasSizes().width * 0.5}
-		y={40}
-		width={130}
-		height={130}
-		alpha={0.85}
-		rotation={Math.sin(sway) * 0.09}
-	/>
 </FadeContainer>
 
-<!-- 紅金慶典 free-game background -->
+<!-- 烈日突擊 free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgFeature" {...context.stateLayoutDerived.canvasSizes()} />
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
-	<Sprite
-		key="gbH2"
-		anchor={{ x: 0.5, y: 0.08 }}
-		x={120}
-		y={36}
-		width={120}
-		height={120}
-		alpha={0.85}
-		rotation={Math.sin(sway + 0.8) * 0.11}
-	/>
 </FadeContainer>
 
-<!-- 月夜 superspin background -->
+<!-- 夜襲 superspin background -->
 <FadeContainer show={isSuperspin} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgSuperspin" {...context.stateLayoutDerived.canvasSizes()} />
 </FadeContainer>

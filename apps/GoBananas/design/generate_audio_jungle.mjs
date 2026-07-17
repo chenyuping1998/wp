@@ -353,16 +353,38 @@ writeWav('btn.wav', normalize(bongo(SR_SFX, { from: 640, to: 520, dur: 0.08 }), 
 	writeWav('reel_tension.wav', normalize(buf, 0.6), SR_SFX);
 }
 
-// expanding wild — banana twirl: accelerating whooshes, boing up, horn hit
-// (timed to the spine grow animation: twirl 0.35–1.45s, flash at 1.45s)
+// banana bite crunch — crispy noise snap over a fruity thump; weight scales
+// the thump pitch down so each successive bite sounds bigger
+const crunch = (sr, weight = 1) => {
+	const dur = 0.18;
+	const out = buffer(dur, sr);
+	let lp = 0;
+	for (let i = 0; i < out.length; i++) {
+		const t = i / sr;
+		const n = rand2();
+		lp += 0.55 * (n - lp);
+		// two-stage decay: snappy transient, short fibrous tail
+		const env = Math.exp(-46 * t) + 0.35 * Math.exp(-16 * t);
+		out[i] = (n * 0.55 + (n - lp) * 0.7) * env;
+	}
+	addAt(out, bongo(sr, { from: 300 / weight, to: 130 / weight, dur: 0.12, punch: 1 }), 0.004, 0.85, sr);
+	return fadeEnds(out, sr, 3);
+};
+
+// expanding wild — the sergeant EATS the banana (timed to the spine grow
+// animation: banana to mouth 0.04–0.3, chomps at 0.52/0.84/1.16, gulp 1.44,
+// burst into the full-reel wx at 1.5)
 {
 	const buf = buffer(2.6, SR_SFX);
-	addAt(buf, whoosh(1.7, SR_SFX, [0.45, 0.8, 1.1, 1.32], 0.075), 0, 1.4, SR_SFX);
-	addAt(buf, bongo(SR_SFX), 0.02, 0.5, SR_SFX);
-	addAt(buf, boing(SR_SFX, { from: 160, to: 700, dur: 0.7 }), 0.75, 0.55, SR_SFX);
-	addAt(buf, horn(P.C5, 0.9, SR_SFX, 0.18), 1.42, 0.85, SR_SFX);
-	addAt(buf, cymbal(0.8, SR_SFX), 1.42, 0.3, SR_SFX);
-	addAt(buf, hoot(SR_SFX, { from: 640, to: 1000, dur: 0.22 }), 1.62, 0.26, SR_SFX);
+	addAt(buf, bongo(SR_SFX), 0.02, 0.45, SR_SFX); // banana pops out of the paw
+	addAt(buf, whoosh(0.4, SR_SFX, [0.18], 0.07), 0, 0.9, SR_SFX); // …and flies to the mouth
+	addAt(buf, crunch(SR_SFX, 1), 0.52, 0.8, SR_SFX);
+	addAt(buf, crunch(SR_SFX, 1.25), 0.84, 0.92, SR_SFX);
+	addAt(buf, crunch(SR_SFX, 1.55), 1.16, 1.05, SR_SFX);
+	addAt(buf, boing(SR_SFX, { from: 620, to: 150, dur: 0.28 }), 1.38, 0.5, SR_SFX); // gulp down
+	addAt(buf, horn(P.C5, 0.9, SR_SFX, 0.18), 1.48, 0.85, SR_SFX); // burst!
+	addAt(buf, cymbal(0.8, SR_SFX), 1.48, 0.3, SR_SFX);
+	addAt(buf, hoot(SR_SFX, { from: 640, to: 1000, dur: 0.22 }), 1.68, 0.26, SR_SFX); // satisfied sergeant
 	writeWav('wild_expand.wav', normalize(buf, 0.85), SR_SFX);
 }
 

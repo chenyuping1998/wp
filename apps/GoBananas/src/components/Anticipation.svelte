@@ -46,16 +46,29 @@
 >
 	<Graphics
 		draw={(g) => {
-			const glowAlpha = 0.14 + 0.24 * pulse;
+			// jungle-gold spotlight column: wide amber wash, hot core, white rim
+			const glowAlpha = 0.12 + 0.2 * pulse;
 			const coreAlpha = 0.16 + 0.32 * pulse;
 			g.clear();
-			g.beginFill(0xff66cc, glowAlpha);
+			g.beginFill(0xff9c2e, glowAlpha * 0.6);
+			g.drawRoundedRect(-SYMBOL_SIZE * 0.3, -SYMBOL_SIZE * 0.78, SYMBOL_SIZE * 0.6, SYMBOL_SIZE * 1.56, 26);
+			g.endFill();
+			g.beginFill(0xffd75e, glowAlpha);
 			g.drawRoundedRect(-SYMBOL_SIZE * 0.22, -SYMBOL_SIZE * 0.72, SYMBOL_SIZE * 0.44, SYMBOL_SIZE * 1.44, 22);
 			g.endFill();
-			g.lineStyle(3, 0xfff07a, coreAlpha);
+			g.lineStyle(3, 0xffe98a, coreAlpha);
 			g.drawRoundedRect(-SYMBOL_SIZE * 0.2, -SYMBOL_SIZE * 0.68, SYMBOL_SIZE * 0.4, SYMBOL_SIZE * 1.36, 20);
 			g.lineStyle(1.6, 0xffffff, 0.25 + 0.35 * pulse);
 			g.drawRoundedRect(-SYMBOL_SIZE * 0.17, -SYMBOL_SIZE * 0.63, SYMBOL_SIZE * 0.34, SYMBOL_SIZE * 1.26, 18);
+			// converging chevrons above and below the column, ticking with the pulse
+			const chevY = SYMBOL_SIZE * (0.78 + 0.05 * pulse);
+			g.lineStyle(4, 0xffd75e, 0.5 + 0.4 * pulse);
+			g.moveTo(-SYMBOL_SIZE * 0.12, -chevY - SYMBOL_SIZE * 0.08);
+			g.lineTo(0, -chevY);
+			g.lineTo(SYMBOL_SIZE * 0.12, -chevY - SYMBOL_SIZE * 0.08);
+			g.moveTo(-SYMBOL_SIZE * 0.12, chevY + SYMBOL_SIZE * 0.08);
+			g.lineTo(0, chevY);
+			g.lineTo(SYMBOL_SIZE * 0.12, chevY + SYMBOL_SIZE * 0.08);
 		}}
 	/>
 	<SpineTrack

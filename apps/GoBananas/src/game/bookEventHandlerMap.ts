@@ -109,9 +109,12 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_main' });
 		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
 		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
+		// gold rings + sparks burst out of the scatters while the bell rings
+		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
 		await waitForTimeout(3000);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
 		// Three passes of the scatter shake — extended trigger celebration
+		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
 		await animateSymbols({ positions: bookEvent.positions });
 		await animateSymbols({ positions: bookEvent.positions });
 		await animateSymbols({ positions: bookEvent.positions });
@@ -273,7 +276,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		stateGame.gameType = 'basegame';
 		stateGame.stickyWildReels = [];
-		eventEmitter.broadcast({ type: 'expandingWildsClear' });
+		// NOTE: expandingWildsClear deliberately does NOT fire here — the sticky
+		// overlays must keep covering the reveal-board W stacks through the outro
+		// and the idle board; the next spin clears them (actor onNewGameStart).
 		stateGame.globalMultiplier = 1;
 		await eventEmitter.broadcastAsync({ type: 'globalMultiplierUpdate', multiplier: 1 });
 		eventEmitter.broadcast({ type: 'globalMultiplierHide' });

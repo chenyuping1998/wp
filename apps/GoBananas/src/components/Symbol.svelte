@@ -28,7 +28,14 @@
 	<!-- Win state for sprite symbols: programmatic scale+glow animation -->
 	<SymbolWinAnim {symbolInfo} x={props.x} y={props.y} oncomplete={props.oncomplete} />
 {:else if isSprite}
-	<SymbolSprite {symbolInfo} x={props.x} y={props.y} oncomplete={props.oncomplete} />
+	<SymbolSprite
+		{symbolInfo}
+		x={props.x}
+		y={props.y}
+		spinning={props.state === 'spin'}
+		landing={props.state === 'land'}
+		oncomplete={props.oncomplete}
+	/>
 {:else}
 	<SymbolSpine
 		loop={props.loop}
@@ -47,18 +54,10 @@
 	/>
 {/if}
 
-{#if props.rawSymbol.multiplier}
-	<BitmapText
-		anchor={0.5}
-		x={props.x}
-		y={props.y}
-		text={`${props.rawSymbol.multiplier}X`}
-		style={{
-			fontFamily: 'gold',
-			fontSize: 50,
-		}}
-	/>
-{/if}
+<!-- NOTE: W symbols carry a `multiplier` attribute from the math (always 1 in
+     the base game; 2x-50x in the free game). It is deliberately NOT drawn on
+     the symbol — the free-game value is already presented by the expanded
+     reel's multiplier badge in ExpandingWilds.svelte. -->
 
 {#if props.rawSymbol.prize}
 	<!-- superspin coin: show its cash value on the symbol -->

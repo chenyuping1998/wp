@@ -343,25 +343,19 @@ for (const name of REGULAR) {
 	fs.writeFileSync(path.join(OUT, `${name}.json`), JSON.stringify(symbolSpine(name), null, 2) + '\n');
 }
 
-// ── expanding wild: 悟空 spins the 金箍棒 and grows to fill the reel ──────────
+// ── expanding wild: the sergeant EATS the banana and grows into the reel ────
 // Skeleton space: 256 wide × 1280 tall (5 rows of 256), origin at reel center.
-// The small monkey (w.png) lands, whips out the cudgel (cudgel.png, child bone
-// so it grows with him) and twirls it 3 full turns while growing; on the last
-// turn the slot swaps to the full-body wx pose with a golden flash.
-
-// cudgel twirl: keyframes every 120° so pixi-spine interpolates forward
-// (rotate diffs are wrapped to ±180°, so steps must stay below that)
-const SPIN_TURNS = 3;
-const SPIN_START = 0.35;
-const SPIN_END = 1.45;
-const cudgelRotate = [];
-{
-	const steps = SPIN_TURNS * 3; // 120° per step
-	for (let i = 0; i <= steps; i++) {
-		const t = SPIN_START + ((SPIN_END - SPIN_START) * i) / steps;
-		cudgelRotate.push({ time: Number(t.toFixed(3)), value: (i * 120) % 360 });
-	}
-}
+// Choreography (2.0s, per the user brief "W 吃香蕉長大變成 WX"):
+//   0.00–0.30  landed W hops; the golden banana (cudgel.png) pops out of the
+//              paw and arcs up to the mouth (shrinking — first bite mid-air)
+//   0.30       swap to the w_fg close-up card (mouth wide open, banana in)
+//   0.30–1.36  three CHOMPS — each bite squashes the card and steps the scale
+//              up a rung (1.0 → 1.3 → 1.66 → 2.06) with a warm blip
+//   1.44       big gulp (vertical stretch)…
+//   1.50       …then the burst: white-gold flash, swap to the full-reel wx
+//   1.50–2.00  settle bounce into the locked pose
+const BITE1 = 0.52, BITE2 = 0.84, BITE3 = 1.16;
+const GULP = 1.44, BURST = 1.5;
 
 const wxSpine = {
 	skeleton: { hash: 'gb-wx-auto', spine: '4.1.20', x: -128, y: -640, width: 256, height: 1280, images: './' },
@@ -381,10 +375,11 @@ const wxSpine = {
 			attachments: {
 				monkey: {
 					w: { x: 0, y: 0, width: 256, height: 256 },
+					w_fg: { x: 0, y: 0, width: 256, height: 256 },
 					wx: { x: 0, y: 0, width: 256, height: 1280 },
 				},
 				// cudgel.png is drawn diagonally at 45°; rotate the attachment so it
-				// starts flat in the paw and the bone rotation reads as a clean twirl
+				// starts flat in the paw and bone rotation reads cleanly
 				cudgel: { cudgel: { x: 0, y: 0, rotation: 45, width: 256, height: 256 } },
 			},
 		},
@@ -407,40 +402,77 @@ const wxSpine = {
 				cudgel: { attachment: [{ time: 0, name: null }] },
 			},
 		},
-		// Starts at exactly one symbol size on top of the landed W (the small
-		// monkey covers it 1:1), hops, twirls the cudgel while growing, then
-		// snaps into the full-reel wx pose under a golden flash.
 		grow: {
 			bones: {
 				monkey: {
 					scale: [
+						// anticipation hop while the banana flies up
 						{ time: 0, x: 1, y: 1 },
-						{ time: 0.15, x: 1.1, y: 0.9 },
-						{ time: 0.28, x: 0.95, y: 1.07 },
-						{ time: SPIN_START, x: 1, y: 1 },
-						{ time: 0.9, x: 1.6, y: 1.6 },
-						{ time: SPIN_END, x: 2.4, y: 2.4 },
-						{ time: SPIN_END + 0.02, x: 1.06, y: 1.06 },
-						{ time: 1.62, x: 0.96, y: 0.96 },
-						{ time: 1.8, x: 1.03, y: 1.03 },
+						{ time: 0.1, x: 1.06, y: 0.92 },
+						{ time: 0.22, x: 0.96, y: 1.05 },
+						{ time: 0.3, x: 1, y: 1 },
+						// chomp 1 — bite squash, then settle one size up
+						{ time: BITE1 - 0.06, x: 1.05, y: 1.05 },
+						{ time: BITE1, x: 1.3, y: 1.18 },
+						{ time: BITE1 + 0.08, x: 1.22, y: 1.3 },
+						{ time: 0.72, x: 1.3, y: 1.3 },
+						// chomp 2
+						{ time: BITE2 - 0.06, x: 1.36, y: 1.36 },
+						{ time: BITE2, x: 1.66, y: 1.5 },
+						{ time: BITE2 + 0.08, x: 1.56, y: 1.66 },
+						{ time: 1.04, x: 1.66, y: 1.66 },
+						// chomp 3
+						{ time: BITE3 - 0.06, x: 1.74, y: 1.74 },
+						{ time: BITE3, x: 2.06, y: 1.88 },
+						{ time: BITE3 + 0.08, x: 1.94, y: 2.06 },
+						{ time: 1.36, x: 2.06, y: 2.06 },
+						// gulp… and burst into the full-reel pose
+						{ time: GULP, x: 1.88, y: 2.26 },
+						{ time: BURST, x: 2.55, y: 2.55 },
+						{ time: BURST + 0.02, x: 1.06, y: 1.06 },
+						{ time: 1.66, x: 0.97, y: 0.97 },
+						{ time: 1.82, x: 1.025, y: 1.025 },
 						{ time: 2.0, x: 1, y: 1 },
 					],
 					rotate: [
-						{ time: SPIN_START, value: 0 },
-						{ time: 0.62, value: -6 },
-						{ time: 0.9, value: 6 },
-						{ time: 1.18, value: -4 },
-						{ time: SPIN_END, value: 0 },
+						{ time: 0.3, value: 0 },
+						{ time: BITE1, value: -5 },
+						{ time: BITE1 + 0.08, value: 3 },
+						{ time: 0.72, value: 0 },
+						{ time: BITE2, value: 5 },
+						{ time: BITE2 + 0.08, value: -3 },
+						{ time: 1.04, value: 0 },
+						{ time: BITE3, value: -5 },
+						{ time: BITE3 + 0.08, value: 3 },
+						{ time: 1.36, value: 0 },
+						{ time: BURST, value: 0 },
+					],
+					// each bite knocks him upward a touch (chewing with gusto)
+					translate: [
+						{ time: 0.3, x: 0, y: 0 },
+						{ time: BITE1, x: 0, y: 8 },
+						{ time: 0.66, x: 0, y: 0 },
+						{ time: BITE2, x: 0, y: 10 },
+						{ time: 0.98, x: 0, y: 0 },
+						{ time: BITE3, x: 0, y: 12 },
+						{ time: 1.32, x: 0, y: 0 },
 					],
 				},
 				cudgel: {
-					rotate: cudgelRotate,
-					// cudgel pops out of the paw, twirls wide, then merges into the pose
+					// banana pops out of the paw and arcs up into the mouth,
+					// shrinking as the first bite disappears mid-flight
+					translate: [
+						{ time: 0.04, x: 0, y: 0 },
+						{ time: 0.28, x: 8, y: 84 },
+					],
+					rotate: [
+						{ time: 0.04, value: 0 },
+						{ time: 0.28, value: -70 },
+					],
 					scale: [
-						{ time: SPIN_START, x: 0, y: 0 },
-						{ time: 0.55, x: 0.95, y: 0.95 },
-						{ time: 1.2, x: 1.05, y: 1.05 },
-						{ time: SPIN_END, x: 0.3, y: 0.3 },
+						{ time: 0.04, x: 0.001, y: 0.001 },
+						{ time: 0.1, x: 0.85, y: 0.85 },
+						{ time: 0.28, x: 0.5, y: 0.5 },
 					],
 				},
 			},
@@ -448,19 +480,29 @@ const wxSpine = {
 				monkey: {
 					attachment: [
 						{ time: 0, name: 'w' },
-						{ time: SPIN_END + 0.02, name: 'wx' },
+						{ time: 0.3, name: 'w_fg' },
+						{ time: BURST + 0.02, name: 'wx' },
 					],
 					color: [
-						{ time: 1.3, color: 'ffffffff' },
-						{ time: SPIN_END, color: 'fff2b0ff' },
-						{ time: 1.78, color: 'ffffffff' },
+						// warm blip on every bite, white-gold flash on the burst
+						{ time: 0.3, color: 'ffffffff' },
+						{ time: BITE1, color: 'ffe9c4ff' },
+						{ time: BITE1 + 0.12, color: 'ffffffff' },
+						{ time: BITE2, color: 'ffe9c4ff' },
+						{ time: BITE2 + 0.12, color: 'ffffffff' },
+						{ time: BITE3, color: 'ffe9c4ff' },
+						{ time: BITE3 + 0.12, color: 'ffffffff' },
+						{ time: GULP, color: 'fff2b0ff' },
+						{ time: BURST, color: 'fffdf0ff' },
+						{ time: BURST + 0.02, color: 'fff2b0ff' },
+						{ time: 1.8, color: 'ffffffff' },
 					],
 				},
 				cudgel: {
 					attachment: [
 						{ time: 0, name: null },
-						{ time: SPIN_START, name: 'cudgel' },
-						{ time: SPIN_END, name: null },
+						{ time: 0.04, name: 'cudgel' },
+						{ time: 0.3, name: null },
 					],
 				},
 			},
@@ -468,15 +510,18 @@ const wxSpine = {
 	},
 };
 
-// multi-page atlas: w + cudgel + wx regions
+// multi-page atlas: w + cudgel + w_fg + wx regions
 const wxAtlas =
 	atlasPage('w.png', 256, 256, 'w') +
 	'\n' +
 	atlasPage('cudgel.png', 256, 256, 'cudgel') +
 	'\n' +
+	atlasPage('w_fg.png', 256, 256, 'w_fg') +
+	'\n' +
 	atlasPage('wx.png', 256, 1280, 'wx');
 fs.copyFileSync(path.join(SRC, 'wx.png'), path.join(OUT, 'wx.png'));
 fs.copyFileSync(path.join(SRC, 'cudgel.png'), path.join(OUT, 'cudgel.png'));
+fs.copyFileSync(path.join(SRC, 'w_fg.png'), path.join(OUT, 'w_fg.png'));
 fs.writeFileSync(path.join(OUT, 'wx.atlas'), wxAtlas);
 fs.writeFileSync(path.join(OUT, 'wx.json'), JSON.stringify(wxSpine, null, 2) + '\n');
 

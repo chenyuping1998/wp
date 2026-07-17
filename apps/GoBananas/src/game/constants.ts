@@ -2,7 +2,8 @@ import _ from 'lodash';
 
 import type { RawSymbol, SymbolState } from './types';
 
-export const SYMBOL_SIZE = 100;
+// 90 (not 100): with 5 rows the framed board must clear the bottom UI bar
+export const SYMBOL_SIZE = 90;
 
 export const REEL_PADDING = 0.53;
 

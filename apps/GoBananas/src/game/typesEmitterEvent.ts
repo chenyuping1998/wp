@@ -11,6 +11,7 @@ import type { EmitterEventGlobalMultiplier } from '../components/GlobalMultiplie
 import type { EmitterEventPreFreeGameHint } from '../components/PreFreeGameHint.svelte';
 import type { EmitterEventExpandingWilds } from '../components/ExpandingWilds.svelte';
 import type { EmitterEventStickyPrizes } from '../components/StickyPrizes.svelte';
+import type { EmitterEventScatterBurst } from '../components/ScatterBurst.svelte';
 
 export type EmitterEventGame =
 	| EmitterEventBoard
@@ -25,4 +26,5 @@ export type EmitterEventGame =
 	| EmitterEventGlobalMultiplier
 	| EmitterEventPreFreeGameHint
 	| EmitterEventExpandingWilds
-	| EmitterEventStickyPrizes;
+	| EmitterEventStickyPrizes
+	| EmitterEventScatterBurst;

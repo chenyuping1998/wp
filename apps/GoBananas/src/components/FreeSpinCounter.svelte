@@ -11,10 +11,11 @@
 
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE } from '../game/constants';
-	import { anchorToPivot, BitmapText, Container, Sprite, type Sizes } from 'pixi-svelte';
+	import { gameText } from '../game/i18nText';
+	import { anchorToPivot, BitmapText, Container, Sprite, Text, type Sizes } from 'pixi-svelte';
 
 	const context = getContext();
-	const PANEL_KEY_DESKTOP = 'Frame_FSCounter.png';
+	const PANEL_KEY_DESKTOP = 'gbFsPanel';
 	const PANEL_RATIO_DESKTOP = 824 / 622;
 	const panelKey = PANEL_KEY_DESKTOP;
 	const panelWidth = $derived(SYMBOL_SIZE * 2);
@@ -69,17 +70,26 @@
 				anchor: { x: 0.5, y: 0.5 },
 			})}
 		>
-			<BitmapText
-				text={'FREE SPIN'}
+			<!-- localized title must be a Text — the gold bitmap font only has latin
+			     glyphs; the counter stays BitmapText ("X / Y" is language-neutral) -->
+			<Text
+				text={gameText('freeSpins')}
 				style={{
-					fontFamily: 'gold',
-					fontSize,
+					fontFamily: 'proxima-nova, Arial, sans-serif',
+					// shrink for long locales (fi 'ILMAISKIERROKSET', ru …) so the
+					// title stays inside the plaque
+					fontSize: Math.min(fontSize * 0.8, (panelSizes.width * 1.35) / gameText('freeSpins').length),
+					fontWeight: '900',
+					letterSpacing: 2,
+					fill: [0xfff3bd, 0xffd75e, 0xc9821a],
+					stroke: 0x54330a,
+					strokeThickness: 3,
 					wordWrap: false,
 				}}
 				onresize={(sizes) => (titleSizes = sizes)}
 			/>
 			<BitmapText
-				text={`${current} OF ${total}`}
+				text={`${current} / ${total}`}
 				{...counterPosition}
 				anchor={{ x: 0.5, y: 0 }}
 				style={{

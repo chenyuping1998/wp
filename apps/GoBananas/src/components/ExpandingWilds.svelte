@@ -9,7 +9,8 @@
 <script lang="ts">
 	import { Tween } from 'svelte/motion';
 	import { cubicOut, backOut } from 'svelte/easing';
-	import { BitmapText, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import { BitmapText, Container, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
 
 	import { getContext } from '../game/context';
@@ -34,8 +35,9 @@
 	let wilds = $state<WildEntry[]>([]);
 
 	context.eventEmitter.subscribeOnMount({
-		// A Wild landed in the free game: the monkey twirls a giant banana and expands to
-		// fill the reel. Resolves when the grow spine animation completes.
+		// A Wild landed in the free game: the monkey wolfs down his golden banana,
+		// growing a size with every chomp until he bursts into the full-reel wx
+		// pose. Resolves when the grow spine animation completes.
 		expandingWildNew: async ({ reel, row, mult }) => {
 			const entry: WildEntry = {
 				reel,
@@ -45,8 +47,9 @@
 				badgeScale: new Tween(0),
 			};
 			wilds = [...wilds.filter((wild) => wild.reel !== reel), entry];
-			// drift from the landing row to the reel center while the twirl grows him
-			entry.y.set(REEL_CENTER_Y, { duration: 1150, delay: 320, easing: cubicOut });
+			// drift from the landing row to the reel center across the three chomps
+			// (spine grow: bites 0.52/0.84/1.16, burst into wx at 1.5)
+			entry.y.set(REEL_CENTER_Y, { duration: 1200, delay: 300, easing: cubicOut });
 			await waitForResolve((resolve) => (entry.oncomplete = resolve));
 			entry.phase = 'idle';
 			entry.badgeScale.set(1, { duration: 320, easing: backOut });
@@ -133,14 +136,28 @@
 			/>
 		</SpineProvider>
 		{#if wild.phase === 'idle'}
-			<BitmapText
-				anchor={0.5}
+			<!-- multiplier badge: brass plaque so the value reads clearly on top of
+			     the wx art (this is THE display of the expanding wild multiplier) -->
+			<Container
 				x={getSymbolX(wild.reel)}
-				y={BOARD_SIZES.height - SYMBOL_SIZE * 0.42}
+				y={BOARD_SIZES.height - SYMBOL_SIZE * 0.46}
 				scale={wild.badgeScale.current}
-				text={`${wild.mult}X`}
-				style={{ fontFamily: 'gold', fontSize: 52 }}
-			/>
+			>
+				<Graphics
+					draw={(g: PixiGraphics) => {
+						const r = SYMBOL_SIZE * 0.36;
+						g.clear();
+						g.beginFill(0x11200a, 0.94);
+						g.drawCircle(0, 0, r);
+						g.endFill();
+						g.lineStyle(5, 0xd8a334, 1);
+						g.drawCircle(0, 0, r);
+						g.lineStyle(2, 0xfff3bd, 0.85);
+						g.drawCircle(0, 0, r - 6);
+					}}
+				/>
+				<BitmapText anchor={0.5} text={`${wild.mult}X`} style={{ fontFamily: 'gold', fontSize: 44 }} />
+			</Container>
 		{/if}
 	{/each}
 </BoardContainer>

@@ -44,7 +44,7 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 		text: {
 			title: 'BUY FREE SPINS',
 			dialog:
-				'Purchase instant access to FREE SPINS for 200× your bet. Wilds expand to cover the whole reel, stick for every remaining spin, and re-roll a 2×–50× multiplier on each spin. Maximum win: 5,000× your bet.',
+				'Purchase instant access to FREE SPINS for 200× your bet. Wilds expand to cover the whole reel, stick for every remaining spin, and re-roll a 2×–50× multiplier on each spin. Maximum win: 10,000× your bet.',
 			description: '200× BET → FREE SPINS with sticky expanding Wilds (2×–50× multipliers)',
 			button: 'BUY 200×',
 			tickerIdle: 'PLACE YOUR BET',

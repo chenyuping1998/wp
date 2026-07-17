@@ -7,23 +7,23 @@
 
 <script lang="ts">
 	import { CanvasSizeRectangle } from 'components-layout';
-	import { stateUrlDerived } from 'state-shared';
 	import { FadeContainer } from 'components-pixi';
 	import { waitForResolve } from 'utils-shared/wait';
-	import { BitmapText, SpineProvider, SpineSlot, SpineTrack, Sprite } from 'pixi-svelte';
+	import { BitmapText, Text } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
+	import { gameText } from '../game/i18nText';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
-
-	type AnimationName = 'intro' | 'idle';
 
 	const context = getContext();
 
 	let show = $state(false);
-	let animationName = $state<AnimationName>('intro');
 	let freeSpinsFromEvent = $state(0);
 	let oncomplete = $state(() => {});
+
+	const title = gameText('freeSpins');
+	const subtitle = gameText('spinsAwarded');
 
 	context.eventEmitter.subscribeOnMount({
 		freeSpinIntroShow: () => (show = true),
@@ -40,36 +40,48 @@
 
 	<FreeSpinAnimation>
 		{#snippet children({ sizes })}
-			<Sprite
-				anchor={{ x: 0.5, y: 1.2 }}
-				width={500 * 2.2}
-				height={156 * 2.2}
-				key="freespins_{stateUrlDerived.lang()}.png"
+			<Text
+				anchor={0.5}
+				y={-sizes.height * 0.26}
+				text={title}
+				style={{
+					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontSize: Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length),
+					fontWeight: '900',
+					letterSpacing: 6,
+					fill: [0xfff3bd, 0xffd75e, 0xc9821a],
+					stroke: 0x54330a,
+					strokeThickness: 6,
+					dropShadow: true,
+					dropShadowColor: 0x000000,
+					dropShadowBlur: 10,
+					dropShadowDistance: 3,
+				}}
 			/>
-
-			<SpineProvider key="fsIntroNumber" width={sizes.width * 0.3}>
-				<SpineTrack
-					trackIndex={0}
-					{animationName}
-					loop={animationName === 'idle'}
-					listener={{
-						complete: () => (animationName = 'idle'),
-					}}
-				/>
-				<SpineSlot slotName="slot_number">
-					<BitmapText
-						anchor={{ x: 0.5, y: 0.5 }}
-						text={freeSpinsFromEvent}
-						style={{
-							fontFamily: 'gold',
-							fontSize: sizes.width * 0.1,
-							fontWeight: 'bold',
-						}}
-					/>
-				</SpineSlot>
-			</SpineProvider>
-
-			<Sprite anchor={{ x: 0.5, y: -3 }} width={183 * 2.2} height={42 * 2.2} key="freespins.png" />
+			<BitmapText
+				anchor={0.5}
+				y={sizes.height * 0.08}
+				text={freeSpinsFromEvent}
+				style={{
+					fontFamily: 'gold',
+					fontSize: sizes.width * 0.24,
+					fontWeight: 'bold',
+				}}
+			/>
+			<Text
+				anchor={0.5}
+				y={sizes.height * 0.32}
+				text={subtitle}
+				style={{
+					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontSize: Math.min(sizes.width * 0.05, (sizes.width * 1.1) / subtitle.length),
+					fontWeight: '700',
+					letterSpacing: 4,
+					fill: 0xf5e3c3,
+					stroke: 0x2c1c08,
+					strokeThickness: 3,
+				}}
+			/>
 		{/snippet}
 	</FreeSpinAnimation>
 
