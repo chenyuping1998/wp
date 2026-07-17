@@ -1,0 +1,75 @@
+{
+	"frames": {
+		"frame_bg.png": {
+			"frame": {
+				"x": 8,
+				"y": 8,
+				"w": 1080,
+				"h": 900
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 1080,
+				"h": 900
+			},
+			"sourceSize": {
+				"w": 1080,
+				"h": 900
+			}
+		},
+		"frame_edge.png": {
+			"frame": {
+				"x": 1096,
+				"y": 8,
+				"w": 1620,
+				"h": 960
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 1620,
+				"h": 960
+			},
+			"sourceSize": {
+				"w": 1620,
+				"h": 960
+			}
+		},
+		"Frame_FSCounter.png": {
+			"frame": {
+				"x": 2724,
+				"y": 8,
+				"w": 450,
+				"h": 338
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 450,
+				"h": 338
+			},
+			"sourceSize": {
+				"w": 450,
+				"h": 338
+			}
+		}
+	},
+	"meta": {
+		"app": "design/generate_frames_v3.mjs",
+		"version": "1.0",
+		"image": "reels_frame_v3.png",
+		"format": "RGBA8888",
+		"size": {
+			"w": 3182,
+			"h": 976
+		},
+		"scale": "1"
+	}
+}

@@ -114,7 +114,7 @@ export default {
 	},
 	reelsFrame: {
 		type: 'sprites',
-		src: new URL('../../assets/sprites/reelsFrame/reels_frame_v2.json', import.meta.url).href,
+		src: new URL('../../assets/sprites/reelsFrame/reels_frame_v3.json', import.meta.url).href,
 	},
 	// soft corner-darkening overlay stretched over the whole canvas
 	vignette: {
@@ -379,7 +379,8 @@ export default {
 	globalMultiplier: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/globalMultiplier/multiframe.atlas', import.meta.url).href,
+			// v2 atlas/png: Frame_Multiplier repainted by generate_frames_v3.mjs
+			atlas: new URL('../../assets/spines/globalMultiplier/multiframe_v2.atlas', import.meta.url).href,
 			skeleton: new URL('../../assets/spines/globalMultiplier/multiframe.json', import.meta.url).href,
 			scale: 2,
 		},

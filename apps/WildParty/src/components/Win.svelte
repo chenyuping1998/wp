@@ -219,7 +219,7 @@
 							{@const alias = winLevelData.alias}
 							{@const dims = winBanners[alias as keyof typeof winBanners]}
 							{@const fx = TIER_FX[alias]}
-							{@const bw = SYMBOL_SIZE * 9.6}
+							{@const bw = SYMBOL_SIZE * 6.2}
 							{@const bh = (bw * dims.height) / dims.width}
 							<Container scale={bannerPose.scale}>
 								<!-- breathing glow bed behind the plaque -->
@@ -270,7 +270,7 @@
 								/>
 							</Container>
 							{#if burstShown}
-								<FxBurst scale={2.4} oncomplete={() => (burstShown = false)} />
+								<FxBurst scale={1.7} oncomplete={() => (burstShown = false)} />
 							{/if}
 						{:else}
 							<ResponsiveText

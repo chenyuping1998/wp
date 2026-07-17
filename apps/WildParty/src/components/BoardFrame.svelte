@@ -11,9 +11,12 @@
 
 	const context = getContext();
 	const SPINE_SCALE = { width: 0.62, height: 0.66 };
-	// enlarged from 1.25/0.72 so the frame's inner window clears the board
-	// with a visible gap instead of the reel edges touching the gold trim
-	const SPRITE_SCALE = { width: 1.35, height: 0.8 };
+	// v3 ornate art frame (generate_frames_v3.mjs): window measures 83% x 61.5%
+	// of the art, so these draw scales put the inner window at the board size
+	// plus a 4% breathing gap
+	const SPRITE_SCALE = { width: 1.253, height: 1.015 };
+	// the art's window center sits 25px (art) below its canvas center
+	const Y_OFFSET = -16;
 	const POSITION_ADJUSTMENT = 1.01;
 
 	type AnimationName = 'reelhouse_glow_start' | 'reelhouse_glow_idle' | 'reelhouse_glow_exit';
@@ -68,7 +71,7 @@
 	key="frame_bg.png"
 	anchor={0.5}
 	x={context.stateGameDerived.boardLayout().x * POSITION_ADJUSTMENT}
-	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT}
+	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT + Y_OFFSET}
 	width={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.width}
 	height={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.height}
 />
@@ -77,7 +80,7 @@
 	key="frame_edge.png"
 	anchor={0.5}
 	x={context.stateGameDerived.boardLayout().x * POSITION_ADJUSTMENT}
-	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT}
+	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT + Y_OFFSET}
 	width={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.width}
 	height={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.height}
 />
