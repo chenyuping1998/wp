@@ -8,46 +8,56 @@
 <script lang="ts">
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
+	import { Graphics, Sprite, Text } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { stateBet } from 'state-shared';
 
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { gameText } from '../game/i18nText';
-	import { anchorToPivot, BitmapText, Container, Sprite, Text, type Sizes } from 'pixi-svelte';
+	import GoldText from './GoldText.svelte';
 
 	const context = getContext();
-	const PANEL_KEY_DESKTOP = 'gbFsPanel';
-	const PANEL_RATIO_DESKTOP = 824 / 622;
-	const panelKey = PANEL_KEY_DESKTOP;
-	const panelWidth = $derived(SYMBOL_SIZE * 2);
-	const panelSizes = $derived({
-		width: panelWidth,
-		height: panelWidth / PANEL_RATIO_DESKTOP,
-	});
-	const scale = 1;
-	const position = $derived({
-		x:
-			context.stateGameDerived.boardLayout().x -
-			context.stateGameDerived.boardLayout().width * 0.5 -
-			panelSizes.width -
-			SYMBOL_SIZE * 0.7,
-		y:
-			context.stateGameDerived.boardLayout().y -
-			context.stateGameDerived.boardLayout().height * 0.5,
-	});
 
-	const fontSize = SYMBOL_SIZE * 0.275;
+	// brass plaque left of the board (fs_counter_panel.png, 824×622)
+	const PANEL_RATIO = 824 / 622;
+	const panelWidth = $derived(SYMBOL_SIZE * 2.1);
+	const panelSizes = $derived({ width: panelWidth, height: panelWidth / PANEL_RATIO });
+	const isPortrait = $derived(context.stateLayoutDerived.layoutType() === 'portrait');
+	const position = $derived(
+		isPortrait
+			? {
+					// portrait: centered above the board (no room at the side)
+					x: context.stateGameDerived.boardLayout().x - panelSizes.width * 0.5,
+					y:
+						context.stateGameDerived.boardLayout().y -
+						context.stateGameDerived.boardLayout().height * 0.5 -
+						panelSizes.height * 1.28 -
+						SYMBOL_SIZE * 0.3,
+				}
+			: {
+					x:
+						context.stateGameDerived.boardLayout().x -
+						context.stateGameDerived.boardLayout().width * 0.5 -
+						panelSizes.width -
+						SYMBOL_SIZE * 0.6,
+					y:
+						context.stateGameDerived.boardLayout().y -
+						context.stateGameDerived.boardLayout().height * 0.5 +
+						SYMBOL_SIZE * 0.2,
+				},
+	);
 
 	let show = $state(false);
-	let current = $state(0);
+	// `current` = spins USED + 1 (set by the updateFreeSpin handler); `total` = window size
+	let current = $state(1);
 	let total = $state(0);
-	let titleSizes: Sizes = $state({ width: 0, height: 0 });
-	let counterSizes: Sizes = $state({ width: 0, height: 0 });
 
-	const textContainerSizes = $derived({
-		width: titleSizes.width,
-		height: titleSizes.height + counterSizes.height,
-	});
-	const counterPosition = $derived({ x: titleSizes.width / 2, y: titleSizes.height });
+	const isSuperspin = $derived(stateBet.activeBetModeKey === 'SUPERSPIN');
+	// superspin is hold'n'spin: what matters is how many respins REMAIN
+	// (3 → 2 → 1, snapping back to 3 whenever a coin lands)
+	const remaining = $derived(Math.max(0, total - (current - 1)));
+	const title = $derived(isSuperspin ? gameText('respins') : gameText('freeSpins'));
 
 	context.eventEmitter.subscribeOnMount({
 		freeSpinCounterShow: () => (show = true),
@@ -57,47 +67,64 @@
 			if (emitterEvent.total !== undefined) total = emitterEvent.total;
 		},
 	});
+
+	// superspin pips: one slot per respin in the window, lit while still available
+	const drawPips = (g: PixiGraphics) => {
+		g.clear();
+		if (!isSuperspin || total <= 0) return;
+		const gap = panelSizes.width * 0.14;
+		const startX = panelSizes.width * 0.5 - ((total - 1) * gap) / 2;
+		const y = panelSizes.height * 0.78;
+		for (let i = 0; i < total; i++) {
+			const lit = i < remaining;
+			g.lineStyle(2, 0x54330a, 1);
+			g.beginFill(lit ? 0xffd75e : 0x1c260c, lit ? 1 : 0.85);
+			g.drawCircle(startX + i * gap, y, panelSizes.width * 0.035);
+			g.endFill();
+		}
+	};
 </script>
 
 <MainContainer>
-	<FadeContainer {show} {...position} {scale}>
-		<Sprite key={panelKey} {...panelSizes} />
-		<Container
+	<FadeContainer {show} {...position}>
+		<Sprite key="gbFsPanel" {...panelSizes} />
+
+		<!-- title on the upper plank area, auto-shrunk for long locales -->
+		<Text
+			anchor={0.5}
 			x={panelSizes.width * 0.5}
-			y={panelSizes.height * 0.48}
-			pivot={anchorToPivot({
-				sizes: textContainerSizes,
-				anchor: { x: 0.5, y: 0.5 },
-			})}
-		>
-			<!-- localized title must be a Text — the gold bitmap font only has latin
-			     glyphs; the counter stays BitmapText ("X / Y" is language-neutral) -->
-			<Text
-				text={gameText('freeSpins')}
-				style={{
-					fontFamily: 'proxima-nova, Arial, sans-serif',
-					// shrink for long locales (fi 'ILMAISKIERROKSET', ru …) so the
-					// title stays inside the plaque
-					fontSize: Math.min(fontSize * 0.8, (panelSizes.width * 1.35) / gameText('freeSpins').length),
-					fontWeight: '900',
-					letterSpacing: 2,
-					fill: [0xfff3bd, 0xffd75e, 0xc9821a],
-					stroke: 0x54330a,
-					strokeThickness: 3,
-					wordWrap: false,
-				}}
-				onresize={(sizes) => (titleSizes = sizes)}
+			y={panelSizes.height * 0.33}
+			text={title}
+			style={{
+				fontFamily: 'proxima-nova, Arial, sans-serif',
+				fontSize: Math.min(panelSizes.width * 0.115, (panelSizes.width * 1.35) / Math.max(1, title.length)),
+				fontWeight: '900',
+				letterSpacing: 2,
+				fill: [0xfff3bd, 0xffd75e, 0xc9821a],
+				stroke: 0x54330a,
+				strokeThickness: 4,
+				wordWrap: false,
+			}}
+		/>
+
+		{#if isSuperspin}
+			<!-- big remaining-respins number (the hold'n'spin heartbeat) -->
+			<GoldText
+				x={panelSizes.width * 0.5}
+				y={panelSizes.height * 0.55}
+				text={remaining}
+				fontSize={panelSizes.width * 0.3}
 			/>
-			<BitmapText
-				text={`${current} / ${total}`}
-				{...counterPosition}
-				anchor={{ x: 0.5, y: 0 }}
-				style={{
-					fontFamily: 'gold',
-					fontSize,
-				}}
-				onresize={(sizes) => (counterSizes = sizes)}
+			<Graphics draw={drawPips} />
+		{:else}
+			<!-- free game: current spin of total -->
+			<GoldText
+				x={panelSizes.width * 0.5}
+				y={panelSizes.height * 0.58}
+				text={`${Math.min(current, total)} / ${total}`}
+				fontSize={panelSizes.width * 0.19}
+				maxWidth={panelSizes.width * 0.72}
 			/>
-		</Container>
+		{/if}
 	</FadeContainer>
 </MainContainer>

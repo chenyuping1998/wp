@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	import { Text } from 'pixi-svelte';
-	import { FadeContainer, WinCountUpProvider, ResponsiveBitmapText } from 'components-pixi';
+	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
 	import { CanvasSizeRectangle } from 'components-layout';
@@ -20,6 +20,7 @@
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import WinCoins from './WinCoins.svelte';
+	import GoldText from './GoldText.svelte';
 
 	const context = getContext();
 
@@ -71,13 +72,9 @@
 								dropShadowDistance: 3,
 							}}
 						/>
-						<ResponsiveBitmapText
-							anchor={0.5}
+						<GoldText
 							y={sizes.height * 0.12}
-							style={{
-								fontFamily: 'gold',
-								fontSize: sizes.width * 0.15,
-							}}
+							fontSize={sizes.width * 0.15}
 							text={bookEventAmountToCurrencyString(countUpAmount)}
 							maxWidth={sizes.width * 0.9}
 						/>

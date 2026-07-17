@@ -5,8 +5,9 @@
 	import { getSymbolInfo } from '../game/utils';
 	import type { SymbolState, RawSymbol } from '../game/types';
 	import { getContext } from '../game/context';
-	import { BitmapText } from 'pixi-svelte';
+	import { SYMBOL_SIZE } from '../game/constants';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
+	import GoldText from './GoldText.svelte';
 
 	type Props = {
 		x?: number;
@@ -61,14 +62,11 @@
 
 {#if props.rawSymbol.prize}
 	<!-- superspin coin: show its cash value on the symbol -->
-	<BitmapText
-		anchor={0.5}
-		x={props.x}
+	<GoldText
+		x={props.x ?? 0}
 		y={(props.y ?? 0) + 8}
 		text={bookEventAmountToCurrencyString(props.rawSymbol.prize)}
-		style={{
-			fontFamily: 'gold',
-			fontSize: 30,
-		}}
+		fontSize={28}
+		maxWidth={SYMBOL_SIZE * 0.86}
 	/>
 {/if}

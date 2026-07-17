@@ -9,7 +9,7 @@
 <script lang="ts">
 	import { Tween } from 'svelte/motion';
 	import { cubicOut, backOut } from 'svelte/easing';
-	import { BitmapText, Graphics, Sprite } from 'pixi-svelte';
+	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import { waitForTimeout } from 'utils-shared/wait';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 
@@ -17,6 +17,7 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
+	import GoldText from './GoldText.svelte';
 
 	type PrizeEntry = {
 		reel: number;
@@ -94,13 +95,8 @@
 			width={SYMBOL_SIZE * entry.scale.current}
 			height={SYMBOL_SIZE * entry.scale.current}
 		/>
-		<BitmapText
-			anchor={0.5}
-			{x}
-			y={y + SYMBOL_SIZE * 0.08}
-			scale={entry.scale.current}
-			text={bookEventAmountToCurrencyString(entry.prize)}
-			style={{ fontFamily: 'gold', fontSize: 30 }}
-		/>
+		<Container {x} y={y + SYMBOL_SIZE * 0.08} scale={entry.scale.current}>
+			<GoldText text={bookEventAmountToCurrencyString(entry.prize)} fontSize={28} maxWidth={SYMBOL_SIZE * 0.86} />
+		</Container>
 	{/each}
 </BoardContainer>

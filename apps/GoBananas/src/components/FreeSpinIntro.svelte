@@ -9,12 +9,13 @@
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { waitForResolve } from 'utils-shared/wait';
-	import { BitmapText, Text } from 'pixi-svelte';
+	import { Text } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
 	import { gameText } from '../game/i18nText';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
+	import GoldText from './GoldText.svelte';
 
 	const context = getContext();
 
@@ -58,16 +59,7 @@
 					dropShadowDistance: 3,
 				}}
 			/>
-			<BitmapText
-				anchor={0.5}
-				y={sizes.height * 0.08}
-				text={freeSpinsFromEvent}
-				style={{
-					fontFamily: 'gold',
-					fontSize: sizes.width * 0.24,
-					fontWeight: 'bold',
-				}}
-			/>
+			<GoldText y={sizes.height * 0.08} text={freeSpinsFromEvent} fontSize={sizes.width * 0.24} />
 			<Text
 				anchor={0.5}
 				y={sizes.height * 0.32}

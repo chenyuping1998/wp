@@ -4,9 +4,9 @@
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getContext } from '../game/context';
 
-	// Jungle-commando transition: the sergeant pops up, lobs his pineapple
-	// grenade into the middle of the screen — two red ticks — BOOM. The cut to
-	// the next scene lands on the white-hot peak of the blast.
+	// Jungle-commando transition: a pineapple grenade drops into the middle of
+	// the screen — two red ticks — BOOM. The cut to the next scene lands on the
+	// white-hot peak of the blast.
 	type Props = {
 		oncomplete: () => void;
 	};
@@ -14,12 +14,11 @@
 	const props: Props = $props();
 	const context = getContext();
 
-	const POP_MS = 320; // monkey pops up
-	const THROW_MS = 480; // grenade arc to screen center
-	const TICK_MS = 320; // armed: two red blinks
+	const THROW_MS = 460; // grenade drops in from the top, spinning
+	const TICK_MS = 340; // armed: two red blinks
 	const BOOM_MS = 300; // shockwave + flash ramp
-	const TOTAL_MS = POP_MS + THROW_MS + TICK_MS + BOOM_MS;
-	const BOOM_AT = POP_MS + THROW_MS + TICK_MS;
+	const TOTAL_MS = THROW_MS + TICK_MS + BOOM_MS;
+	const BOOM_AT = THROW_MS + TICK_MS;
 
 	type Frag = { a: number; speed: number; r: number; spin: number };
 	const frags: Frag[] = Array.from({ length: 16 }, (_, i) => ({
@@ -34,8 +33,6 @@
 	let completed = false;
 	let boomFired = false;
 
-	let monkeyY = $state(1);
-	let monkeyRot = $state(0);
 	let grenadeVisible = $state(false);
 	let grenadeX = $state(0);
 	let grenadeY = $state(0);
@@ -56,30 +53,19 @@
 			elapsed += dt;
 
 			const h = context.stateLayoutDerived.canvasSizes().height;
-			const w = context.stateLayoutDerived.canvasSizes().width;
-			const startX = -w * 0.24;
-			const startY = h * 0.24;
 
-			if (elapsed < POP_MS) {
-				// monkey pops up from the bottom-left with a cheeky wobble
-				const p = easeOutCubic(elapsed / POP_MS);
-				monkeyY = 1 - p;
-				monkeyRot = Math.sin(p * Math.PI * 2.2) * 0.1;
-				grenadeVisible = false;
-			} else if (elapsed < POP_MS + THROW_MS) {
-				// grenade arcs from the paw to dead center, spinning
-				const p = (elapsed - POP_MS) / THROW_MS;
-				monkeyY = 0;
-				monkeyRot = -0.14 * (1 - p); // follow-through of the throw
+			if (elapsed < THROW_MS) {
+				// grenade drops in from above, spinning, and brakes to a stop
+				const p = easeOutCubic(elapsed / THROW_MS);
 				grenadeVisible = true;
-				grenadeX = startX + (0 - startX) * p;
-				grenadeY = startY + (0 - startY) * p - Math.sin(p * Math.PI) * h * 0.28;
-				grenadeRot = p * Math.PI * 4;
+				grenadeX = 0;
+				grenadeY = -h * 0.72 * (1 - p);
+				grenadeRot = p * Math.PI * 3;
 				grenadeScale = 0.7 + p * 0.5;
 				grenadeTint = 0xffffff;
 			} else if (elapsed < BOOM_AT) {
 				// armed on the spot: two hot red blinks
-				const p = (elapsed - POP_MS - THROW_MS) / TICK_MS;
+				const p = (elapsed - THROW_MS) / TICK_MS;
 				grenadeVisible = true;
 				grenadeX = 0;
 				grenadeY = 0;
@@ -93,7 +79,6 @@
 					context.eventEmitter.broadcast({ type: 'soundBigWinBlast' });
 				}
 				grenadeVisible = false;
-				monkeyY = easeOutCubic((elapsed - BOOM_AT) / BOOM_MS); // monkey ducks
 				boomT = (elapsed - BOOM_AT) / BOOM_MS;
 				flashAlpha = Math.min(1, boomT * 1.6) * 0.95;
 			}
@@ -162,17 +147,6 @@
 	x={context.stateLayoutDerived.canvasSizes().width * 0.5}
 	y={context.stateLayoutDerived.canvasSizes().height * 0.5}
 >
-	<!-- the thrower: sergeant bust rising from the bottom-left corner -->
-	<Sprite
-		key="gbW"
-		anchor={{ x: 0.5, y: 0 }}
-		x={-context.stateLayoutDerived.canvasSizes().width * 0.3}
-		y={context.stateLayoutDerived.canvasSizes().height * (0.12 + monkeyY * 0.42)}
-		width={context.stateLayoutDerived.canvasSizes().height * 0.34}
-		height={context.stateLayoutDerived.canvasSizes().height * 0.34}
-		rotation={monkeyRot}
-	/>
-
 	{#if grenadeVisible}
 		<Sprite
 			key="gbH2"
