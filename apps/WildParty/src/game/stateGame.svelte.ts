@@ -89,7 +89,8 @@ export const stateGame = $state({
 
 const boardLayout = () => ({
 	x: stateLayoutDerived.mainLayout().width * 0.5,
-	y: stateLayoutDerived.mainLayout().height * 0.5,
+	// lifted 40px so the ornate frame's bottom ornament clears the bet UI bar
+	y: stateLayoutDerived.mainLayout().height * 0.5 - 40,
 	anchor: { x: 0.5, y: 0.5 },
 	pivot: { x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 },
 	...BOARD_SIZES,
