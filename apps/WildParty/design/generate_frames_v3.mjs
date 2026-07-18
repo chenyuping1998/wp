@@ -307,13 +307,13 @@ const v3Json = {
 fs.writeFileSync(path.join(REELS_DIR, 'reels_frame_v3.json'), JSON.stringify(v3Json, null, '\t') + '\n');
 console.log('wrote reels_frame_v3 sheet', sheetW, 'x', sheetH);
 
-// ── multiframe_v2: repaint Frame_Multiplier with the filled frame ───────────
+// ── multiframe_v2: blank Frame_Multiplier — the medallion sprite drawn by
+// GlobalMultiplier.svelte replaces the plank entirely (spine reset/win anims
+// still play against the now-invisible slot, keeping their oncomplete flow) ─
 const multiPng = PNG.sync.read(fs.readFileSync(path.join(MULTI_DIR, 'multiframe.png')));
-// flatten the plank onto an opaque copy of the region (spine slot expects art
-// there; transparent edges of the slice stay transparent like the old art)
 for (let y = 0; y < FM_H; y++) for (let x = 0; x < FM_W; x++) {
-	const so = (y * FM_W + x) * 4, doff = ((3 + y) * multiPng.width + (2 + x)) * 4;
-	for (let c = 0; c < 4; c++) multiPng.data[doff + c] = multPlank.data[so + c];
+	const doff = ((3 + y) * multiPng.width + (2 + x)) * 4;
+	for (let c = 0; c < 4; c++) multiPng.data[doff + c] = 0;
 }
 fs.writeFileSync(path.join(MULTI_DIR, 'multiframe_v2.png'), PNG.sync.write(multiPng));
 const atlasText = fs.readFileSync(path.join(MULTI_DIR, 'multiframe.atlas'), 'utf8');

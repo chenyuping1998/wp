@@ -376,6 +376,12 @@ export default {
 		src: new URL('../../assets/sprites/character/party_hostess_glass.png', import.meta.url).href,
 		preload: true,
 	},
+	// round ornate medallion backing the FG multiplier (design/process_medallion.mjs)
+	multMedallion: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/multMedallion/medallion.png', import.meta.url).href,
+		preload: true,
+	},
 	globalMultiplier: {
 		type: 'spine',
 		src: {
