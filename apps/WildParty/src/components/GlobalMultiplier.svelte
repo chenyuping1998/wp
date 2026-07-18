@@ -177,15 +177,6 @@
 							y={jolt.current}
 							scale={{ x: 1 + (1 - sq.current) * 0.5, y: sq.current }}
 						>
-						<!-- round ornate medallion — the ONLY circular element on
-						     screen, so the FG multiplier reads instantly. The old
-						     spine plank is blanked (generate_frames_v3.mjs) -->
-						<Sprite
-							key="multMedallion"
-							anchor={0.5}
-							width={FONT_SIZE * 2.9}
-							height={FONT_SIZE * 2.9 * 1.052}
-						/>
 						<!-- charge/flash glow sits outside the wheel mask -->
 						<Sprite
 							key="fxGlow"
@@ -193,14 +184,14 @@
 							tint={0xffe9a8}
 							blendMode="add"
 							width={ROW_H * 2.6}
-							height={ROW_H * 2.2}
+							height={ROW_H * 1.8}
 							alpha={glow.current}
 						/>
 						<Container>
 							<Graphics
 								isMask
 								draw={(g) => {
-									g.rect(-ROW_H * 0.76, -ROW_H * 0.5, ROW_H * 1.52, ROW_H * 1.0).fill(0xffffff);
+									g.rect(-ROW_H * 1.6, -ROW_H * 0.62, ROW_H * 3.2, ROW_H * 1.24).fill(0xffffff);
 								}}
 							/>
 							{#each Array.from({ length: rowCount }) as _, i (i)}
@@ -210,7 +201,7 @@
 										anchor={0.5}
 										{y}
 										text={`${base + i}×`}
-										style={neonNumberStyle(FONT_SIZE * 0.8)}
+										style={neonNumberStyle(FONT_SIZE)}
 									/>
 								{/if}
 							{/each}

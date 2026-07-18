@@ -315,16 +315,38 @@ const v3Json = {
 fs.writeFileSync(path.join(REELS_DIR, 'reels_frame_v3.json'), JSON.stringify(v3Json, null, '\t') + '\n');
 console.log('wrote reels_frame_v3 sheet', sheetW, 'x', sheetH);
 
-// ── multiframe_v2: blank Frame_Multiplier — the medallion sprite drawn by
-// GlobalMultiplier.svelte replaces the plank entirely (spine reset/win anims
-// still play against the now-invisible slot, keeping their oncomplete flow) ─
+// ── multiframe_v2: repaint Frame_Multiplier as a gem-less gold plank that
+// echoes the ornate board frame's gold (no diamonds, no neon) ──────────────
+const goldPlankSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${FM_W}" height="${FM_H}" viewBox="0 0 ${FM_W} ${FM_H}">
+<defs>
+	<linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#ffe9a0"/>
+		<stop offset="0.45" stop-color="#d8a84e"/>
+		<stop offset="1" stop-color="#8a5a1a"/>
+	</linearGradient>
+	<linearGradient id="win" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#33123f"/>
+		<stop offset="1" stop-color="#170a20"/>
+	</linearGradient>
+</defs>
+<rect x="3" y="3" width="${FM_W - 6}" height="${FM_H - 6}" rx="20" fill="url(#g)" stroke="#3a2408" stroke-width="4"/>
+<rect x="6" y="6" width="${FM_W - 12}" height="${FM_H - 12}" rx="17" fill="none" stroke="#fff3c4" stroke-width="1.6" opacity="0.75"/>
+<rect x="15" y="14" width="${FM_W - 30}" height="${FM_H - 28}" rx="12" fill="url(#win)" stroke="#552d0a" stroke-width="3"/>
+<path d="M 22 10 Q ${FM_W / 2} 2 ${FM_W - 22} 10" fill="none" stroke="#a97a2c" stroke-width="2.4" opacity="0.8"/>
+<path d="M 22 ${FM_H - 10} Q ${FM_W / 2} ${FM_H - 2} ${FM_W - 22} ${FM_H - 10}" fill="none" stroke="#a97a2c" stroke-width="2.4" opacity="0.8"/>
+</svg>`;
+const plankPng = PNG.sync.read(
+	new Resvg(goldPlankSvg, { fitTo: { mode: 'width', value: FM_W } }).render().asPng(),
+);
 const multiPng = PNG.sync.read(fs.readFileSync(path.join(MULTI_DIR, 'multiframe.png')));
-// region bounds 2,2,211,135 + 1px pad on every side that doesn't touch the
-// glow region at x=215 (a stray un-blanked row bleeds through the spine
-// attachment's linear sampling as a colored line)
+// clear region (1px pad) then blit the plank at its 2,2 bounds
 for (let y = 1; y <= 137; y++) for (let x = 1; x <= 213; x++) {
 	const doff = (y * multiPng.width + x) * 4;
 	for (let c = 0; c < 4; c++) multiPng.data[doff + c] = 0;
+}
+for (let y = 0; y < FM_H; y++) for (let x = 0; x < FM_W; x++) {
+	const so = (y * FM_W + x) * 4, doff = ((2 + y) * multiPng.width + (2 + x)) * 4;
+	for (let c = 0; c < 4; c++) multiPng.data[doff + c] = plankPng.data[so + c];
 }
 fs.writeFileSync(path.join(MULTI_DIR, 'multiframe_v2.png'), PNG.sync.write(multiPng));
 const atlasText = fs.readFileSync(path.join(MULTI_DIR, 'multiframe.atlas'), 'utf8');

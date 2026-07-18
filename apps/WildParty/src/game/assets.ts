@@ -382,12 +382,6 @@ export default {
 		src: new URL('../../assets/sprites/fsOrnate/fs_ornate_panel.png', import.meta.url).href,
 		preload: true,
 	},
-	// round ornate medallion backing the FG multiplier (design/process_medallion.mjs)
-	multMedallion: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/multMedallion/medallion.png', import.meta.url).href,
-		preload: true,
-	},
 	globalMultiplier: {
 		type: 'spine',
 		src: {
