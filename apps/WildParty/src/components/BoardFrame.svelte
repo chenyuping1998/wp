@@ -67,13 +67,15 @@
 	</SpineProvider>
 {/if}
 
+<!-- interior backdrop: sized to just cover the window so it never peeks out
+     from behind the ornate frame (art fill spans 1032x852 of its 1080x900) -->
 <Sprite
 	key="frame_bg.png"
 	anchor={0.5}
 	x={context.stateGameDerived.boardLayout().x * POSITION_ADJUSTMENT}
-	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT + Y_OFFSET}
-	width={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.width}
-	height={context.stateGameDerived.boardLayout().width * SPRITE_SCALE.height}
+	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT}
+	width={context.stateGameDerived.boardLayout().width * 1.08}
+	height={context.stateGameDerived.boardLayout().width * 0.67}
 />
 
 <Sprite
