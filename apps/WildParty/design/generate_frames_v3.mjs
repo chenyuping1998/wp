@@ -251,6 +251,14 @@ const sliceTo = (srcPng, targetW, targetH, ornamentScale) => {
 
 const FRAME_EDGE_W = 1620, FRAME_EDGE_H = 960;
 const frameEdge = sliceTo(hollow, FRAME_EDGE_W, FRAME_EDGE_H, (FRAME_EDGE_H / CH) * 0.9);
+
+// FG intro/outro backdrop panel (filled variant, 1.4:1) — replaces the old
+// bunting/disco-ball fsPanel spine
+const FS_ORNATE_DIR = path.join(appRoot, 'static/assets/sprites/fsOrnate');
+fs.mkdirSync(FS_ORNATE_DIR, { recursive: true });
+const fsOrnate = sliceTo(art, 1400, 1000, (1000 / CH) * 0.9);
+fs.writeFileSync(path.join(FS_ORNATE_DIR, 'fs_ornate_panel.png'), PNG.sync.write(fsOrnate));
+console.log('wrote fs_ornate_panel.png 1400x1000');
 const FS_W = 450, FS_H = 338;
 const fsPanel = sliceTo(art, FS_W, FS_H, (FS_H / CH) * 0.9);
 const FM_W = 211, FM_H = 135;
@@ -311,8 +319,11 @@ console.log('wrote reels_frame_v3 sheet', sheetW, 'x', sheetH);
 // GlobalMultiplier.svelte replaces the plank entirely (spine reset/win anims
 // still play against the now-invisible slot, keeping their oncomplete flow) ─
 const multiPng = PNG.sync.read(fs.readFileSync(path.join(MULTI_DIR, 'multiframe.png')));
-for (let y = 0; y < FM_H; y++) for (let x = 0; x < FM_W; x++) {
-	const doff = ((3 + y) * multiPng.width + (2 + x)) * 4;
+// region bounds 2,2,211,135 + 1px pad on every side that doesn't touch the
+// glow region at x=215 (a stray un-blanked row bleeds through the spine
+// attachment's linear sampling as a colored line)
+for (let y = 1; y <= 137; y++) for (let x = 1; x <= 213; x++) {
+	const doff = (y * multiPng.width + x) * 4;
 	for (let c = 0; c < 4; c++) multiPng.data[doff + c] = 0;
 }
 fs.writeFileSync(path.join(MULTI_DIR, 'multiframe_v2.png'), PNG.sync.write(multiPng));

@@ -1,14 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	import {
-		anchorToPivot,
-		Container,
-		SpineProvider,
-		SpineSlot,
-		SpineTrack,
-		type Sizes,
-	} from 'pixi-svelte';
+	import { anchorToPivot, Container, Sprite, type Sizes } from 'pixi-svelte';
 	import { MainContainer } from 'components-layout';
 
 	import { getContext } from '../game/context';
@@ -19,8 +12,6 @@
 	};
 
 	const props: Props = $props();
-
-	type AnimationName = 'intro' | 'idle';
 
 	const context = getContext();
 	const BACKGROUND_RATIO = 920 / 720;
@@ -34,7 +25,15 @@
 		height: SYMBOL_SIZE * BOARD_DIMENSIONS.x,
 	};
 
-	let animationName = $state<AnimationName>('intro');
+	// the old fsPanel spine's text slot carried a ~0.7 bone scale; keep it so
+	// the intro/outro text layout is unchanged after swapping the spine for
+	// the ornate sliced panel
+	const CONTENT_SCALE = 0.7;
+	// ornate backdrop plate (fs_ornate_panel.png, 1.4:1) — sized/positioned to
+	// hug the YOU WON + number block
+	const PANEL_W = 700;
+	const PANEL_H = 500;
+	const PANEL_Y = 40;
 </script>
 
 <MainContainer>
@@ -43,23 +42,13 @@
 		y={context.stateGameDerived.boardLayout().y}
 		pivot={anchorToPivot({ anchor: 0.5, sizes: BACKGROUND_SIZES })}
 	>
-		<SpineProvider
-			key="fsIntro"
-			width={PANEL_SIZES.width}
+		<Container
 			x={PANEL_SIZES.width * 0.5}
 			y={PANEL_SIZES.height * 0.4}
+			scale={CONTENT_SCALE}
 		>
-			<SpineTrack
-				trackIndex={0}
-				{animationName}
-				loop={animationName === 'idle'}
-				listener={{
-					complete: () => (animationName = 'idle'),
-				}}
-			/>
-			<SpineSlot slotName="slot_text_placeholder">
-				{@render props.children({ sizes: BACKGROUND_SIZES })}
-			</SpineSlot>
-		</SpineProvider>
+			<Sprite key="fsOrnatePanel" anchor={0.5} y={PANEL_Y} width={PANEL_W} height={PANEL_H} />
+			{@render props.children({ sizes: BACKGROUND_SIZES })}
+		</Container>
 	</Container>
 </MainContainer>

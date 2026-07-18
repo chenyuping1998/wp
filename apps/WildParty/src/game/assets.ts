@@ -376,6 +376,12 @@ export default {
 		src: new URL('../../assets/sprites/character/party_hostess_glass.png', import.meta.url).href,
 		preload: true,
 	},
+	// ornate FG intro/outro backdrop panel (generate_frames_v3.mjs 9-slice)
+	fsOrnatePanel: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/fsOrnate/fs_ornate_panel.png', import.meta.url).href,
+		preload: true,
+	},
 	// round ornate medallion backing the FG multiplier (design/process_medallion.mjs)
 	multMedallion: {
 		type: 'sprite',
@@ -389,15 +395,6 @@ export default {
 			atlas: new URL('../../assets/spines/globalMultiplier/multiframe_v2.atlas', import.meta.url).href,
 			skeleton: new URL('../../assets/spines/globalMultiplier/multiframe.json', import.meta.url).href,
 			scale: 2,
-		},
-	},
-	// party-themed free-spin screens (SVG-generated — see design/generate_presentation.mjs)
-	fsIntro: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/fsIntroParty/fs_party.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/fsIntroParty/fs_screen_party.json', import.meta.url).href,
-			scale: 1,
 		},
 	},
 	fsOutroNumber: {
