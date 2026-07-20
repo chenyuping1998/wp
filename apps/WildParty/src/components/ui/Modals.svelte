@@ -59,24 +59,24 @@
 			rgba(15, 2, 30, 0.98) 40%,
 			rgba(25, 5, 45, 0.95) 100%
 		) !important;
-		border: 1px solid rgba(200, 100, 255, 0.35) !important;
+		border: 1px solid rgba(216, 168, 78, 0.55) !important;
 		border-radius: 10px !important;
 		box-shadow:
-			0 2px 10px rgba(180, 50, 255, 0.15),
-			inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+			0 2px 10px rgba(216, 168, 78, 0.18),
+			inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 		transition: all 0.2s ease !important;
 	}
 
 	/* Button wrapper hover/active states */
 	:global(.button:hover .rectangle) {
-		border-color: rgba(220, 120, 255, 0.6) !important;
+		border-color: rgba(255, 211, 77, 0.85) !important;
 		box-shadow:
-			0 4px 18px rgba(200, 80, 255, 0.25),
-			inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+			0 4px 18px rgba(255, 211, 77, 0.3),
+			inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 	}
 
 	:global(.button:active .rectangle) {
-		border-color: rgba(255, 150, 255, 0.7) !important;
+		border-color: rgba(255, 230, 140, 0.9) !important;
 		box-shadow:
 			0 1px 6px rgba(200, 80, 255, 0.3),
 			inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
@@ -85,13 +85,26 @@
 
 	/* Close button (×) */
 	:global(.close-button) {
-		color: rgba(200, 150, 255, 0.8) !important;
+		color: rgba(242, 201, 106, 0.85) !important;
 		transition: color 0.2s ease, text-shadow 0.2s ease !important;
 	}
 
 	:global(.close-button:hover) {
 		color: #fff !important;
-		text-shadow: 0 0 12px rgba(255, 100, 255, 0.8) !important;
+		text-shadow: 0 0 12px rgba(255, 211, 77, 0.9) !important;
+	}
+
+	/* headings + button labels take the display font; body copy stays sans */
+	:global(.pop-up-wrap h1),
+	:global(.pop-up-wrap h2),
+	:global(.pop-up-wrap h3),
+	:global(.pop-up-wrap .button) {
+		font-family: 'Cinzel', Georgia, serif !important;
+		letter-spacing: 0.08em;
+	}
+	:global(.pop-up-wrap h1),
+	:global(.pop-up-wrap h2) {
+		color: #ffd34d !important;
 	}
 
 	/* Modal backdrop blur layer */
@@ -106,12 +119,12 @@
 			rgba(18, 4, 35, 0.96) 0%,
 			rgba(10, 2, 22, 0.98) 100%
 		) !important;
-		border: 1px solid rgba(180, 80, 255, 0.2) !important;
+		border: 1px solid rgba(216, 168, 78, 0.45) !important;
 		border-radius: 14px !important;
 		padding: 1.5rem !important;
 		box-shadow:
 			0 12px 40px rgba(0, 0, 0, 0.7),
-			0 0 80px rgba(150, 50, 255, 0.06) !important;
+			0 0 80px rgba(216, 168, 78, 0.08) !important;
 	}
 
 	/* Scrollbar premium styling */

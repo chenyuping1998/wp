@@ -12,7 +12,7 @@ export const neonNumberStyle = (fontSize: number) => {
 	// no drop-shadow glow: the pink halo muddied the digits — the gradient
 	// fill + dark stroke carry the neon look on their own
 	return {
-		fontFamily: 'proxima-nova, Arial, sans-serif',
+		fontFamily: 'Cinzel, Georgia, serif',
 		fontWeight: '900' as const,
 		fontSize,
 		fill,

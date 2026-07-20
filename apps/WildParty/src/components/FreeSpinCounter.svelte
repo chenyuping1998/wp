@@ -73,7 +73,7 @@
 			<Text
 				text={'FREE SPIN'}
 				style={{
-					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontFamily: 'Cinzel, Georgia, serif',
 					fontSize,
 					fontWeight: '900',
 					fill: 0xfff4cf,
@@ -90,7 +90,7 @@
 				{...counterPosition}
 				anchor={{ x: 0.5, y: 0 }}
 				style={{
-					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontFamily: 'Cinzel, Georgia, serif',
 					fontSize,
 					fontWeight: '900',
 					fill: 0xfff4cf,

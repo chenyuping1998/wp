@@ -94,7 +94,7 @@
 				y={-300}
 				text={context.i18nDerived.congratulations()}
 				style={{
-					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontFamily: 'Cinzel, Georgia, serif',
 					fontSize: 96,
 					fontWeight: '900',
 					fill: 0xfff4cf,
@@ -112,7 +112,7 @@
 				y={-165}
 				text={context.i18nDerived.youWon()}
 				style={{
-					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontFamily: 'Cinzel, Georgia, serif',
 					fontSize: 58,
 					fontWeight: '900',
 					fill: 0xfff4cf,
@@ -151,7 +151,7 @@
 				y={320}
 				text={context.i18nDerived.freeSpins()}
 				style={{
-					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontFamily: 'Cinzel, Georgia, serif',
 					fontSize: 58,
 					fontWeight: '900',
 					fill: 0xfff4cf,

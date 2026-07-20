@@ -219,7 +219,7 @@
 							{@const alias = winLevelData.alias}
 							{@const dims = winBanners[alias as keyof typeof winBanners]}
 							{@const fx = TIER_FX[alias]}
-							{@const bw = SYMBOL_SIZE * 6.2}
+							{@const bw = SYMBOL_SIZE * 4.65}
 							{@const bh = (bw * dims.height) / dims.width}
 							<Container scale={bannerPose.scale}>
 								<!-- breathing glow bed behind the plaque -->

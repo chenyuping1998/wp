@@ -112,7 +112,7 @@
 					anchor={{ x: 1, y: 0 }}
 					text="WILD PARTY"
 					style={{
-						fontFamily: 'proxima-nova',
+						fontFamily: 'Cinzel, Georgia, serif',
 						fontSize: REM * 1.5,
 						fontWeight: '600',
 						lineHeight: REM * 2,

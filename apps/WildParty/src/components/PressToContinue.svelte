@@ -32,7 +32,7 @@
 		x={context.stateLayoutDerived.mainLayout().width * 0.5}
 		y={yPosition}
 		style={{
-			fontFamily: 'proxima-nova, Arial, sans-serif',
+			fontFamily: 'Cinzel, Georgia, serif',
 			fontSize: 34,
 			fontWeight: '900',
 			fill: 0xfff4cf,

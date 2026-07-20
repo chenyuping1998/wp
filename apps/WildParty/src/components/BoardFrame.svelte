@@ -16,7 +16,8 @@
 	// plus a 4% breathing gap
 	const SPRITE_SCALE = { width: 1.253, height: 1.015 };
 	// the art's window center sits 25px (art) below its canvas center
-	const Y_OFFSET = -16;
+	// (scales with the board: -16 at board width 600)
+	const Y_OFFSET = -21;
 	const POSITION_ADJUSTMENT = 1.01;
 
 	type AnimationName = 'reelhouse_glow_start' | 'reelhouse_glow_idle' | 'reelhouse_glow_exit';

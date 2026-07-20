@@ -81,9 +81,17 @@
 		if (toastStart >= 0 && now - toastStart < 3500) return;
 		toastStart = now;
 	};
+	// full celebration: double hop + high toast (big-win pop-ups, FG moments)
+	let cheerStart = -1;
+	const startCheer = () => {
+		cheerStart = now;
+		toastStart = now;
+	};
 	context.eventEmitter.subscribeOnMount({
 		boardWithAnimateSymbols: () => startToast(),
-		winShow: () => startToast(),
+		winShow: () => startCheer(),
+		freeSpinIntroShow: () => startCheer(),
+		freeSpinOutroShow: () => startCheer(),
 	});
 
 	const easeOutCubic = (p: number) => 1 - (1 - p) ** 3;
@@ -107,24 +115,47 @@
 			else if (t < 2.0) toast = 1 - smooth((t - 1.3) / 0.7);
 		}
 
+		// cheer: two springy hops with a decaying squash, glass held high
+		let hopLift = 0;
+		let hopPunch = 0;
+		let cheer = 0;
+		if (cheerStart >= 0) {
+			const t = (now - cheerStart) / 1000;
+			if (t < 1.1) {
+				cheer = 1 - t / 1.1;
+				const hop = Math.abs(Math.sin((t / 1.1) * Math.PI * 2));
+				hopLift = 0.028 * hop * (1 - t * 0.5);
+				hopPunch = 0.06 * hop * (1 - t * 0.5);
+				toast = Math.max(toast, Math.min(1, t / 0.25));
+			}
+		}
+
+		// idle variety: every ~9s a brief weight-shift burst so she never
+		// looks looped ("just wobbling")
+		const shiftPhase = (now / 1000) % 9.2;
+		const shiftEnv = shiftPhase < 2.4 ? Math.sin((shiftPhase / 2.4) * Math.PI) : 0;
+
 		// head follows the body sway late (follow-through) + its own slow nod;
-		// leans toward the glass during the toast
+		// leans toward the glass during the toast, tips back during a cheer
 		const headRot =
 			(0.032 * Math.sin((now / 5400) * Math.PI * 2 - 0.9) +
 				0.012 * Math.sin((now / 2300) * Math.PI * 2)) *
-				(1 + 0.4 * excite) -
-			0.06 * toast;
+				(1 + 0.4 * excite + 0.7 * shiftEnv) -
+			0.06 * toast +
+			0.05 * cheer;
 
 		const glassRot =
-			0.03 * (1 + 1.1 * excite) * Math.sin((now / 3900) * Math.PI * 2 + 0.6) + 0.24 * toast;
+			0.03 * (1 + 1.1 * excite) * Math.sin((now / 3900) * Math.PI * 2 + 0.6) +
+			(0.24 + 0.1 * cheer) * toast;
 
 		return {
-			scaleX: 1 - 0.004 * breath,
-			scaleY: 1 + 0.007 * (1 + 0.4 * excite) * breath + bob,
-			rotation: 0.014 * (1 + 0.6 * excite) * sway,
+			scaleX: 1 - 0.004 * breath - hopPunch * 0.55,
+			scaleY: 1 + 0.007 * (1 + 0.4 * excite) * breath + bob + hopPunch,
+			rotation: 0.014 * (1 + 0.6 * excite + 0.6 * shiftEnv) * sway,
 			headRot,
 			glassRot,
-			rimAlpha: 0.5 + 0.24 * excite,
+			lift: hopLift,
+			rimAlpha: 0.5 + 0.24 * excite + 0.2 * cheer,
 		};
 	});
 
@@ -151,7 +182,7 @@
 	<MainContainer>
 		<Container
 			x={layout.x}
-			y={layout.y}
+			y={layout.y - pose.lift * layout.height}
 			scale={{ x: pose.scaleX, y: pose.scaleY }}
 			rotation={pose.rotation}
 		>

@@ -18,8 +18,9 @@
 
 	// confetti-curtain wipe: pieces flood in from the edges until the screen is
 	// covered, the scene swaps behind a solid flash, then everything rains away
-	const T_COVERED = 0.62;
-	const T_TOTAL = 1.55;
+	// tightened from 0.62/1.55 — reviewers called the transitions sluggish
+	const T_COVERED = 0.5;
+	const T_TOTAL = 1.25;
 
 	const COLORS = [0xffb833, 0xff2fa0, 0xb04ef0, 0xffe066, 0x4fc3ff, 0xff8ede];
 
@@ -60,11 +61,13 @@
 	onMount(() => {
 		let raf = 0;
 		let start = 0;
+		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_anticipation_start' });
 		const tick = (now: number) => {
 			if (!start) start = now;
 			t = (now - start) / 1000;
 			if (!coveredFired && t >= T_COVERED) {
 				coveredFired = true;
+				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
 				props.oncovered?.();
 			}
 			if (t >= T_TOTAL) {
@@ -88,11 +91,18 @@
 
 	// solid backing so the swap moment is fully hidden even between pieces
 	const coverAlpha = $derived.by(() => {
-		if (t < 0.34) return 0;
-		if (t < 0.58) return (t - 0.34) / 0.24;
-		if (t < 0.78) return 1;
-		if (t < 1.1) return 1 - (t - 0.78) / 0.32;
+		if (t < 0.26) return 0;
+		if (t < 0.46) return (t - 0.26) / 0.2;
+		if (t < 0.64) return 1;
+		if (t < 0.92) return 1 - (t - 0.64) / 0.28;
 		return 0;
+	});
+
+	// white flash punch right at the covered/swap beat
+	const flashAlpha = $derived.by(() => {
+		if (t < T_COVERED - 0.06 || t > T_COVERED + 0.24) return 0;
+		const p = (t - (T_COVERED - 0.06)) / 0.3;
+		return p < 0.25 ? (p / 0.25) * 0.55 : 0.55 * (1 - (p - 0.25) / 0.75);
 	});
 
 	const drawPieces = (g: PixiGraphics) => {
@@ -147,3 +157,6 @@
 	<CanvasSizeRectangle backgroundColor={0x1c0a22} backgroundAlpha={coverAlpha} />
 {/if}
 <Graphics draw={drawPieces} />
+{#if flashAlpha > 0}
+	<CanvasSizeRectangle backgroundColor={0xffffff} backgroundAlpha={flashAlpha} />
+{/if}

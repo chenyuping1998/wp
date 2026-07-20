@@ -15,7 +15,7 @@
 	const props: Props = $props();
 
 	const labelStyle = {
-		fontFamily: 'proxima-nova',
+		fontFamily: 'Cinzel, Georgia, serif',
 		fontSize: UI_BASE_FONT_SIZE,
 		fill: 0xfff08c,
 		stroke: 0x7133a4,
@@ -23,7 +23,7 @@
 	} as const;
 
 	const valueStyle = {
-		fontFamily: 'proxima-nova',
+		fontFamily: 'Cinzel, Georgia, serif',
 		fontSize: UI_BASE_FONT_SIZE,
 		fill: WHITE,
 		stroke: 0x7133a4,
@@ -44,8 +44,8 @@
 			width={UI_BASE_FONT_SIZE * 3 * (326 / 73)}
 			height={UI_BASE_FONT_SIZE * 3}
 			borderRadius={24}
-			backgroundColor={0x000000}
-			borderColor={0xffcf66}
+			backgroundColor={0x1d0b28}
+			borderColor={0xd8a84e}
 			borderWidth={5}
 		/>
 	{/if}
@@ -60,8 +60,8 @@
 			width={UI_BASE_FONT_SIZE * 3 * (326 / 73)}
 			height={UI_BASE_FONT_SIZE * 3}
 			borderRadius={24}
-			backgroundColor={0x000000}
-			borderColor={0xffcf66}
+			backgroundColor={0x1d0b28}
+			borderColor={0xd8a84e}
 			borderWidth={5}
 		/>
 	{/if}

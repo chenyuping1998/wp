@@ -2,7 +2,9 @@ import _ from 'lodash';
 
 import type { RawSymbol, SymbolState } from './types';
 
-export const SYMBOL_SIZE = 120;
+// 160 (was 120): reviewers flagged the reels as too small — the whole board
+// coordinate system keys off this, so frame/symbols/fx scale together
+export const SYMBOL_SIZE = 160;
 
 export const REEL_PADDING = 0.53;
 

@@ -88,6 +88,50 @@
 			</div>
 
 			<p class="wp-note">Wild substitutes for all symbols except Scatter. Max win is capped at {maxWin.toLocaleString()}&times; total bet.</p>
+
+			<h3 class="wp-section">PAYLINES</h3>
+			<p class="wp-note">All {Object.keys(config.paylines).length} lines are always active. Wins pay on matching symbols from the leftmost reel.</p>
+			<div class="wp-lines">
+				{#each Object.entries(config.paylines) as [lineNo, rowsOfLine] (lineNo)}
+					<div class="wp-line">
+						<svg viewBox="0 0 60 38" aria-label={`Payline ${lineNo}`}>
+							{#each [0, 1, 2] as r (r)}
+								{#each [0, 1, 2, 3, 4] as c (c)}
+									<circle cx={8 + c * 11} cy={7 + r * 12} r="2.1" fill="#4a3260" />
+								{/each}
+							{/each}
+							<polyline
+								points={(rowsOfLine as number[]).map((r, c) => `${8 + c * 11},${7 + r * 12}`).join(' ')}
+								fill="none"
+								stroke="#ffd34d"
+								stroke-width="2.4"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+							{#each rowsOfLine as number[] as r, c (c)}
+								<circle cx={8 + c * 11} cy={7 + r * 12} r="2.6" fill="#ff8ede" />
+							{/each}
+						</svg>
+						<span>{lineNo}</span>
+					</div>
+				{/each}
+			</div>
+
+			<h3 class="wp-section">FEATURES</h3>
+			<div class="wp-features">
+				<div class="wp-feature">
+					<b>FREE SPINS</b>
+					<p>3 Scatters on reels 3, 4 and 5 award 5 Free Spins. Free Spins can be retriggered.</p>
+				</div>
+				<div class="wp-feature">
+					<b>GLOBAL MULTIPLIER</b>
+					<p>During Free Spins every Wild that lands adds +1 to the Global Multiplier (up to 100&times;). The multiplier applies to all wins and never resets during the feature.</p>
+				</div>
+				<div class="wp-feature">
+					<b>BUY BONUS</b>
+					<p>Buy the Free Spins feature directly for 100&times; total bet.</p>
+				</div>
+			</div>
 		</div>
 	</Popup>
 {/if}
@@ -151,6 +195,68 @@
 		&::-webkit-scrollbar-thumb {
 			background: linear-gradient(180deg, #ff7ad9 0%, #ffd34d 100%);
 			border-radius: 4px;
+		}
+
+		.wp-section {
+			margin: 0.9rem 0 0.1rem;
+			font-size: 1.15rem;
+			font-weight: 800;
+			letter-spacing: 0.12em;
+			color: #ffd34d;
+		}
+
+		.wp-lines {
+			display: grid;
+			grid-template-columns: repeat(5, 1fr);
+			gap: 0.45rem;
+
+			.wp-line {
+				position: relative;
+				background: rgba(255, 255, 255, 0.05);
+				border: 1px solid rgba(216, 168, 78, 0.45);
+				border-radius: 8px;
+				padding: 0.25rem 0.25rem 0.1rem;
+
+				svg {
+					width: 100%;
+					display: block;
+				}
+
+				span {
+					position: absolute;
+					top: 2px;
+					left: 5px;
+					font-size: 0.6rem;
+					color: #d9b8ff;
+				}
+			}
+		}
+
+		.wp-features {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+			text-align: left;
+
+			.wp-feature {
+				background: rgba(255, 255, 255, 0.05);
+				border: 1px solid rgba(216, 168, 78, 0.45);
+				border-radius: 10px;
+				padding: 0.6rem 0.85rem;
+
+				b {
+					color: #ffd34d;
+					letter-spacing: 0.08em;
+					font-size: 0.85rem;
+				}
+
+				p {
+					margin: 0.25rem 0 0;
+					font-size: 0.8rem;
+					line-height: 1.45;
+					color: #e8ddf5;
+				}
+			}
 		}
 
 		h2 {

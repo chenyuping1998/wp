@@ -31,7 +31,7 @@
 	const backgroundColor = $derived.by(() => {
 		if (buttonProps.disabled) return 0x5a5a5a;
 		if (variant === 'light') return 0x8fe6ff;
-		return 0x131313;
+		return 0x1d0b28;
 	});
 
 	const iconSymbolMap: Partial<Record<ButtonIcon, string>> = {
@@ -86,7 +86,7 @@
 			width={buttonProps.sizes.width}
 			height={buttonProps.sizes.height}
 			backgroundColor={backgroundColor}
-			borderColor={0xffffff}
+			borderColor={0xd8a84e}
 			borderWidth={active ? 10 : 6}
 			borderRadius={buttonProps.sizes.width * 0.5}
 			{...active
@@ -123,7 +123,7 @@
 					align: 'center',
 					wordWrap: true,
 					wordWrapWidth: buttonProps.sizes.width * (isTextMode ? 0.68 : 0.85),
-					fontFamily: 'proxima-nova',
+					fontFamily: 'Cinzel, Georgia, serif',
 					fontWeight: '600',
 					fontSize: iconFontSize,
 					fill: iconFill,
