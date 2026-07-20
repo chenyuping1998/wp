@@ -4,7 +4,7 @@ import type { RawSymbol, SymbolState } from './types';
 
 // 160 (was 120): reviewers flagged the reels as too small — the whole board
 // coordinate system keys off this, so frame/symbols/fx scale together
-export const SYMBOL_SIZE = 160;
+export const SYMBOL_SIZE = 144;
 
 export const REEL_PADDING = 0.53;
 

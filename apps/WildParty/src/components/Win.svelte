@@ -273,12 +273,13 @@
 								<FxBurst scale={1.7} oncomplete={() => (burstShown = false)} />
 							{/if}
 						{:else}
+							<!-- FG-total readout over the outro panel — sized to sit inside
+							     the ornate plate, not dominate the screen -->
 							<ResponsiveText
 								anchor={0.5}
-								maxWidth={context.stateLayoutDerived.canvasSizes().width /
-									context.stateLayoutDerived.mainLayout().scale}
+								maxWidth={SYMBOL_SIZE * 2.6}
 								text={bookEventAmountToCurrencyString(countUpAmount)}
-								style={neonNumberStyle(SYMBOL_SIZE)}
+								style={neonNumberStyle(SYMBOL_SIZE * 0.52)}
 							/>
 						{/if}
 					</Container>
