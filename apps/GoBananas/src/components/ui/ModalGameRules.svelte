@@ -7,7 +7,7 @@
 
 	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
 	const lineCount = Object.keys(config.paylines).length;
-	const maxWin = config.betModes?.base?.max_win ?? 5000;
+	const maxWin = config.betModes?.base?.max_win ?? 10000;
 	const buyCost = config.betModes?.bonus?.cost;
 	const reelCount = config.numReels;
 	const rowCount = config.numRows?.[0] ?? 3;
@@ -32,15 +32,17 @@
 				<h3><span class="wp-accent-bar"></span>Wild</h3>
 				<p>
 					The Sergeant Wild substitutes for every symbol except the Scatter, and also pays as
-					its own symbol on 3, 4 or 5 of a kind.
+					its own symbol on 3, 4 or 5 of a kind. In the base game Wilds stay a single symbol
+					&mdash; only in Free Spins do they expand.
 				</p>
 			</section>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Scatter</h3>
 				<p>
-					The Golden Bananas Scatter pays anywhere on the reels and does not need to land on a
-					payline. Landing 3, 4 or 5 Scatters in a single spin awards 8, 12 or 15 Free Spins.
+					The Golden Bananas Scatter appears on all five reels. It does not pay on its own and
+					does not need to land on a payline &mdash; its only job is to open the feature.
+					Landing 4 or 5 Scatters in a single spin awards 12 or 15 Free Spins.
 				</p>
 			</section>
 
@@ -123,8 +125,8 @@
 	}
 
 	@keyframes accentPulse {
-		0%, 100% { opacity: 0.7; box-shadow: 0 0 6px rgba(255, 122, 217, 0.3); }
-		50% { opacity: 1; box-shadow: 0 0 12px rgba(255, 122, 217, 0.6); }
+		0%, 100% { opacity: 0.7; box-shadow: 0 0 6px rgba(255, 215, 94, 0.3); }
+		50% { opacity: 1; box-shadow: 0 0 12px rgba(255, 215, 94, 0.55); }
 	}
 
 	.wp-rules {
@@ -155,7 +157,7 @@
 			border-radius: 4px;
 		}
 		&::-webkit-scrollbar-thumb {
-			background: linear-gradient(180deg, #ff7ad9 0%, #ffd34d 100%);
+			background: linear-gradient(180deg, #ffd75e 0%, #ffe98a 100%);
 			border-radius: 4px;
 		}
 
@@ -165,13 +167,13 @@
 			font-size: 1.65rem;
 			font-weight: 800;
 			letter-spacing: 0.08em;
-			background: linear-gradient(135deg, #ffd34d 0%, #ff7ad9 50%, #a855f7 100%);
+			background: linear-gradient(135deg, #ffe98a 0%, #ffd75e 50%, #9ec44a 100%);
 			background-size: 200% auto;
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
 			background-clip: text;
 			animation: shimmer 4s linear infinite;
-			filter: drop-shadow(0 0 18px rgba(255, 122, 217, 0.5));
+			filter: drop-shadow(0 0 18px rgba(255, 215, 94, 0.4));
 		}
 	}
 
@@ -195,9 +197,9 @@
 		&:nth-child(9) { animation-delay: 0.4s; }
 
 		&:hover {
-			background: rgba(255, 122, 217, 0.05);
-			border-color: rgba(255, 122, 217, 0.15);
-			box-shadow: 0 0 16px rgba(255, 122, 217, 0.08);
+			background: rgba(255, 215, 94, 0.06);
+			border-color: rgba(255, 215, 94, 0.18);
+			box-shadow: 0 0 16px rgba(255, 215, 94, 0.1);
 		}
 
 		h3 {
@@ -207,7 +209,7 @@
 			margin: 0 0 0.35rem;
 			font-size: 1.05rem;
 			font-weight: 700;
-			color: #ff7ad9;
+			color: #ffd75e;
 		}
 
 		p {
@@ -224,7 +226,7 @@
 		width: 3px;
 		height: 1.1em;
 		border-radius: 2px;
-		background: linear-gradient(180deg, #ff7ad9, #a855f7);
+		background: linear-gradient(180deg, #ffd75e, #9ec44a);
 		flex-shrink: 0;
 		animation: accentPulse 3s ease-in-out infinite;
 	}
@@ -233,7 +235,7 @@
 		width: 60%;
 		height: 1px;
 		margin: 0.25rem auto;
-		background: linear-gradient(90deg, transparent, rgba(255, 122, 217, 0.3), rgba(255, 211, 77, 0.2), transparent);
+		background: linear-gradient(90deg, transparent, rgba(255, 215, 94, 0.3), rgba(255, 233, 138, 0.2), transparent);
 	}
 
 	.wp-foot {

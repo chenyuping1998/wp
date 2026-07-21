@@ -208,6 +208,22 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 - **三個讀數的配色收進 theme**：`LabelWin`/`LabelBet` 原本硬編 WildParty 的綠與紫，改讀 `uiTheme.winAccent`/`betAccent`；GoBananas 設 win＝叢林綠、bet＝冷黃銅，balance＝暖金，三者可辨但同調
 - ⚠️ 貼圖路徑會忽略 `backgroundColor`/`borderColor`，所以 buyBonus 的 disabled／active 狀態改用 `tint` 表達（灰化／提亮），否則按下與停用就看不出來
 
+## 5.17 INFO / PayTable / Buy Bonus 全面核對（2026-07-17 第七輪）
+
+拿 `game_config.py` 與實際 books 當真值逐條核對前端說明，**修掉三個錯誤**：
+
+1. **「Scatter pays anywhere on the reels」→ 錯**。paytable 根本沒有 `S` 條目，10,000 局 books 裡 scatter 中獎 0 筆。改為「不單獨賠付，唯一作用是開啟功能」
+2. **「3, 4 or 5 Scatters award 8, 12 or 15 Free Spins」→ 誤導**。`freespin_triggers` 雖宣告 `{3:8, 4:12, 5:15}`，但所有 freegame 分佈的 `scatter_triggers` 都是 `{4:1, 5:2}`，books 實測 totalFs 只有 12(346局)/15(664局)，**3 scatter 永不觸發**。改為「4 或 5 個 → 12 或 15」
+3. **PayTable 的「3 Scatters (reels 3-5) trigger 5 Free Spins」→ 三處全錯**：S 在五輪都有（BR0 每輪 S 數 8/1/8/1/8）、不是 3 個、更沒有 5 次這個獎項
+
+補充說明（原本沒寫清楚的）：Wild 只在免費遊戲擴展（主遊戲維持單格）、每線只取最高獎（`lines.py` 的 `wild_win > base_win`）、Wild 也以自身賠付。
+
+核對通過的：賠付表 11 個符號全部與數學一致、15 條賠付線、RTP 0.965、三模式 cost/max_win（1×/200×/50×，10000/10000/2000）、乘倍 2×–50×（實際離散值 2,3,4,5,10,20,50）、乘倍同線相加、無 retrigger。
+
+順手處理：兩個 modal 仍是 WildParty 粉紫配色（介面最後的範本殘留），換成黃銅／叢林綠；superspin 用詞統一為 respins；`max_win` 過期 fallback 5000→10000。
+
+> ⚠️ **待決策**：數學宣告 3 scatter → 8 次免費遊戲，但分佈設定讓它永不發生。目前 INFO 照實際行為寫（4/5 才觸發）。若希望 3 scatter 也能觸發（較符合玩家預期），要改 `game_config.py` 各 freegame 分佈的 `scatter_triggers` 加入 `3`，並重跑數學。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

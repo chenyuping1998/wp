@@ -44,7 +44,7 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 		text: {
 			title: 'BUY FREE SPINS',
 			dialog:
-				'Purchase instant access to FREE SPINS for 200× your bet. Wilds expand to cover the whole reel, stick for every remaining spin, and re-roll a 2×–50× multiplier on each spin. Maximum win: 10,000× your bet.',
+				'Buy direct entry into FREE SPINS for 200× your bet, at the same 96.5% RTP as base play. Every Wild that lands expands to cover its whole reel, sticks for the rest of the feature, and re-rolls a 2×–50× multiplier on each spin. Maximum win: 10,000× your bet.',
 			description: '200× BET → FREE SPINS with sticky expanding Wilds (2×–50× multipliers)',
 			button: 'BUY 200×',
 			tickerIdle: 'PLACE YOUR BET',
@@ -63,8 +63,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 		text: {
 			title: 'SUPER SPIN',
 			dialog:
-				'A hold-em style round for 50× your bet. You start with 3 spins — every coin that lands sticks to the board and resets your spins back to 3. When no spins remain, all stuck coins are paid out. Maximum win: 2,000× your bet.',
-			description: '50× BET → 3 respins, coins stick and reset the count (max 2,000×)',
+				'A hold-and-spin round for 50× your bet. You start with 3 respins — every Coin that lands sticks to the board and resets the respins back to 3. When no respins remain, all stuck Coin values are added up and paid out. Maximum win: 2,000× your bet.',
+			description: '50× BET → 3 respins, Coins stick and reset the count (max 2,000×)',
 			button: 'BUY 50×',
 			tickerIdle: 'PLACE YOUR BET',
 			tickerSpin: 'SUPER SPIN ACTIVATED',

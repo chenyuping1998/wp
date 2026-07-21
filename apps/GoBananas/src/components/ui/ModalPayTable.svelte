@@ -39,7 +39,7 @@
 	// keep high -> low ordering for readability
 	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'S'];
 
-	const maxWin = config.betModes?.base?.max_win ?? 5000;
+	const maxWin = config.betModes?.base?.max_win ?? 10000;
 
 	const imgSrc = (name: string) => {
 		const key = SYMBOL_ASSET[name];
@@ -78,7 +78,9 @@
 						</div>
 						<div class="wp-pays">
 							{#if row.name === 'S'}
-								<span class="wp-special">3 Scatters (reels 3-5) trigger 5 Free Spins</span>
+								<span class="wp-special"
+									>Does not pay &mdash; 4 or 5 Scatters award 12 or 15 Free Spins</span
+								>
 							{:else if row.pays.length}
 								{#each row.pays as pay (pay.count)}
 									<span class="wp-pay-chip"><b>{pay.count}</b> &times; <em>{pay.value}</em></span>
@@ -89,7 +91,11 @@
 				{/each}
 			</div>
 
-			<p class="wp-note">Wild substitutes for all symbols except Scatter. Max win is capped at {maxWin.toLocaleString()}&times; total bet.</p>
+			<p class="wp-note">
+				Wild substitutes for all symbols except Scatter and pays as its own symbol. Only the
+				highest win is paid per line. Max win is capped at {maxWin.toLocaleString()}&times; total
+				bet.
+			</p>
 		</div>
 	</Popup>
 {/if}
@@ -151,7 +157,7 @@
 			border-radius: 4px;
 		}
 		&::-webkit-scrollbar-thumb {
-			background: linear-gradient(180deg, #ff7ad9 0%, #ffd34d 100%);
+			background: linear-gradient(180deg, #ffd75e 0%, #ffe98a 100%);
 			border-radius: 4px;
 		}
 
@@ -160,13 +166,13 @@
 			font-size: 1.75rem;
 			font-weight: 800;
 			letter-spacing: 0.1em;
-			background: linear-gradient(135deg, #ffd34d 0%, #ff7ad9 50%, #a855f7 100%);
+			background: linear-gradient(135deg, #ffe98a 0%, #ffd75e 50%, #9ec44a 100%);
 			background-size: 200% auto;
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
 			background-clip: text;
 			animation: shimmer 4s linear infinite;
-			filter: drop-shadow(0 0 18px rgba(255, 122, 217, 0.5));
+			filter: drop-shadow(0 0 18px rgba(255, 215, 94, 0.4));
 		}
 	}
 
@@ -199,10 +205,10 @@
 		animation: rowSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 
 		&:hover {
-			background: rgba(255, 122, 217, 0.08);
-			border-color: rgba(255, 122, 217, 0.2);
-			box-shadow: 0 0 20px rgba(255, 122, 217, 0.12),
-			            inset 0 0 20px rgba(255, 122, 217, 0.04);
+			background: rgba(255, 215, 94, 0.1);
+			border-color: rgba(255, 215, 94, 0.22);
+			box-shadow: 0 0 20px rgba(255, 215, 94, 0.14),
+			            inset 0 0 20px rgba(255, 215, 94, 0.05);
 			transform: translateX(4px);
 		}
 	}
@@ -238,7 +244,7 @@
 			position: absolute;
 			inset: -3px;
 			border-radius: 50%;
-			background: radial-gradient(circle, rgba(255, 122, 217, 0.3) 0%, transparent 70%);
+			background: radial-gradient(circle, rgba(255, 215, 94, 0.3) 0%, transparent 70%);
 			opacity: 0;
 			transition: opacity 0.3s ease;
 		}
@@ -247,7 +253,7 @@
 	.wp-row:hover .wp-symbol-glow {
 		img {
 			transform: scale(1.12);
-			filter: drop-shadow(0 0 8px rgba(255, 211, 77, 0.6));
+			filter: drop-shadow(0 0 8px rgba(255, 233, 138, 0.6));
 		}
 		&::after {
 			opacity: 1;
@@ -275,19 +281,19 @@
 		gap: 0.2rem;
 		padding: 0.2rem 0.55rem;
 		border-radius: 0.5rem;
-		background: rgba(255, 211, 77, 0.06);
-		border: 1px solid rgba(255, 211, 77, 0.1);
+		background: rgba(255, 233, 138, 0.07);
+		border: 1px solid rgba(255, 233, 138, 0.12);
 		transition: all 0.25s ease;
 
 		b {
-			color: #ffd34d;
+			color: #ffe98a;
 			font-weight: 800;
 		}
 
 		em {
 			font-style: normal;
 			font-weight: 600;
-			background: linear-gradient(135deg, #ffd34d, #ffaa00);
+			background: linear-gradient(135deg, #ffe98a, #d8a334);
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
 			background-clip: text;
@@ -295,13 +301,13 @@
 	}
 
 	.wp-row:hover .wp-pay-chip {
-		background: rgba(255, 211, 77, 0.1);
-		border-color: rgba(255, 211, 77, 0.2);
-		box-shadow: 0 0 8px rgba(255, 211, 77, 0.1);
+		background: rgba(255, 233, 138, 0.12);
+		border-color: rgba(255, 233, 138, 0.2);
+		box-shadow: 0 0 8px rgba(255, 233, 138, 0.12);
 	}
 
 	.wp-special {
-		color: #ff7ad9;
+		color: #ffd75e;
 		font-weight: 700;
 		text-shadow: 0 0 12px rgba(255, 122, 217, 0.4);
 	}
