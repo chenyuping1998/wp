@@ -79,10 +79,13 @@
 			style={{
 				align: 'center',
 				wordWrap: true,
-				wordWrapWidth: 200,
+				// keep the wrap box inside the 150px button (minus the 7px border)
+				// so the two lines never kiss the gold frame
+				wordWrapWidth: 116,
+				lineHeight: UI_BASE_FONT_SIZE * 0.72,
 				fontFamily: 'Cinzel, Georgia, serif',
 				fontWeight: '600',
-				fontSize: UI_BASE_FONT_SIZE * 0.9,
+				fontSize: UI_BASE_FONT_SIZE * 0.68,
 				fill: 0xffffff,
 			}}
 		/>

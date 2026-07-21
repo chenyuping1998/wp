@@ -13,6 +13,58 @@
 
 	let beamPhase = $state(0);
 	let tick = $state(0);
+	// win reactivity: kicked up on a win, eased back to 0 — brightens/quickens
+	// the beams and thumps the dance-floor pulse so the scene answers the play.
+	// Tiered: a regular win gives a gentle bump; big-tier wins hit far harder and
+	// scale up through the tiers (big < super < mega < epic < max).
+	let winBoost = $state(0);
+
+	// big(6) → 1.2 … max(10) → 2.2
+	const bigBoost = (level: number) => 1.2 + (Math.max(6, Math.min(10, level)) - 6) * 0.25;
+
+	context.eventEmitter.subscribeOnMount({
+		// fires on every win presentation (small + big); the gentle baseline
+		boardWithAnimateSymbols: () => (winBoost = Math.max(winBoost, 0.5)),
+		// only big-tier wins carry winLevelData — override with the strong, tiered hit
+		winUpdate: ({ winLevelData }) => {
+			if (winLevelData?.type === 'big') winBoost = Math.max(winBoost, bigBoost(winLevelData.level));
+		},
+	});
+
+	// slow ken-burns parallax over a small overscan so the still art drifts and
+	// breathes with depth instead of sitting dead still
+	const OVERSCAN = 1.07;
+	const parallax = $derived.by(() => {
+		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		const t = tick / 62.5;
+		const zoom = OVERSCAN + 0.02 * Math.sin(t * 0.05);
+		const panX = Math.sin(t * 0.043) * width * 0.018;
+		const panY = Math.cos(t * 0.035) * height * 0.013;
+		return {
+			width: width * zoom,
+			height: height * zoom,
+			x: -(width * (zoom - 1)) / 2 + panX,
+			y: -(height * (zoom - 1)) / 2 + panY,
+		};
+	});
+
+	// ambient club-light wash: a very low-alpha colour that slowly cross-fades
+	// between club hues (≈9s each) with a slow breath. Deliberately NOT beat-
+	// synced — no strobing/flashing. A win adds a smooth swell (winBoost eases
+	// in and out), so it brightens and settles gently rather than flashing.
+	const FLOOR_HUES = [0xff2fa0, 0x9a4dff, 0x2fb6ff, 0xffb833];
+	const FLOOR_CYCLE = 9;
+	const floorWash = $derived.by(() => {
+		const t = tick / 62.5;
+		const i = Math.floor(t / FLOOR_CYCLE) % FLOOR_HUES.length;
+		const j = (i + 1) % FLOOR_HUES.length;
+		const f = (t % FLOOR_CYCLE) / FLOOR_CYCLE;
+		const smooth = f * f * (3 - 2 * f);
+		const color = lerpHex(FLOOR_HUES[i], FLOOR_HUES[j], smooth);
+		const breathe = 0.5 + 0.5 * Math.sin(t * 0.28);
+		const alpha = 0.02 + 0.028 * breathe + 0.03 * winBoost;
+		return { color, alpha };
+	});
 
 	// deterministic pseudo-random layout so the ambient layers are stable
 	let seed = 1337;
@@ -47,6 +99,17 @@
 		color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
 	}));
 
+	const lerpHex = (a: number, b: number, t: number) => {
+		const ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
+		const br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
+		return (
+			((Math.round(ar + (br - ar) * t) << 16) |
+				(Math.round(ag + (bg - ag) * t) << 8) |
+				Math.round(ab + (bb - ab) * t)) >>>
+			0
+		);
+	};
+
 	// lighten/darken a hex color so flat Graphics shapes can fake the bg's
 	// glossy rendered shading
 	const shade = (color: number, factor: number) => {
@@ -61,8 +124,9 @@
 		const beamReachY = Math.min(height * 0.58, 480);
 		const centerX = width * 0.5 + Math.sin(beamPhase + phaseShift) * width * 0.15;
 		const counterX = width * 0.5 - Math.sin(beamPhase * 0.8 + phaseShift + 1.1) * width * 0.19;
-		// concert-style flicker so the spotlights feel alive
-		const flicker = 1 + 0.3 * Math.sin(beamPhase * 7 + phaseShift * 3);
+		// concert-style flicker so the spotlights feel alive; a win warms them up
+		// (gentle, smooth swell — not a bright strobe)
+		const flicker = (1 + 0.3 * Math.sin(beamPhase * 7 + phaseShift * 3)) * (1 + 0.32 * winBoost);
 
 		g.clear();
 
@@ -187,8 +251,11 @@
 
 	onMount(() => {
 		const id = setInterval(() => {
-			beamPhase += 0.004;
+			// beams sweep a touch quicker while a win boost is active (kept mild so
+			// the flicker never speeds up into a strobe)
+			beamPhase += 0.004 * (1 + 0.4 * winBoost);
 			tick += 1;
+			winBoost += (0 - winBoost) * 0.02; // ease the boost back to rest
 		}, 16);
 		return () => clearInterval(id);
 	});
@@ -215,9 +282,19 @@
 	{/each}
 {/snippet}
 
+{#snippet floor()}
+	<Rectangle
+		{...context.stateLayoutDerived.canvasSizes()}
+		backgroundColor={floorWash.color}
+		alpha={floorWash.alpha}
+		blendMode="add"
+	/>
+{/snippet}
+
 <!-- Wild Party base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
-	<Sprite key="wildPartyBgBase" {...context.stateLayoutDerived.canvasSizes()} />
+	<Sprite key="wildPartyBgBase" {...parallax} />
+	{@render floor()}
 	{@render bokeh()}
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
 	<Graphics draw={drawConfetti} />
@@ -225,7 +302,8 @@
 
 <!-- Wild Party free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
-	<Sprite key="wildPartyBgFeature" {...context.stateLayoutDerived.canvasSizes()} />
+	<Sprite key="wildPartyBgFeature" {...parallax} />
+	{@render floor()}
 	{@render bokeh()}
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
 	<Graphics draw={drawConfetti} />

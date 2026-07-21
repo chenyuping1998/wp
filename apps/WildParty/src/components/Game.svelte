@@ -20,7 +20,6 @@
 	import Background from './Background.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './BoardFrame.svelte';
-	import PartyHostess from './PartyHostess.svelte';
 	import Board from './Board.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import GlobalMultiplier from './GlobalMultiplier.svelte';
@@ -36,7 +35,7 @@
 
 	const context = getContext();
 
-	// soft depth-of-field on the background scene so the reels + hostess pop
+	// soft depth-of-field on the background scene so the reels pop
 	const backgroundBlur = [new BlurFilter({ strength: 5, quality: 3 })];
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
@@ -79,8 +78,6 @@
 		<MainContainer>
 			<BoardFrame />
 		</MainContainer>
-
-		<PartyHostess />
 
 		<MainContainer>
 			<Board />

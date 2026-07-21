@@ -8,7 +8,7 @@
 </script>
 
 <script lang="ts">
-	import { Text, SpineProvider, SpineTrack, SpineSlot } from 'pixi-svelte';
+	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider, ResponsiveText } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
@@ -21,12 +21,9 @@
 	import PressToContinue from './PressToContinue.svelte';
 	import WinCoins from './WinCoins.svelte';
 
-	type AnimationName = 'intro' | 'idle';
-
 	const context = getContext();
 
 	let show = $state(true);
-	let animationName = $state<AnimationName>('intro');
 	let amount = $state(0);
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
@@ -95,26 +92,22 @@
 							}}
 						/>
 
-						<SpineProvider key="fsOutroNumber" width={sizes.width * 0.4}>
-							<SpineTrack
-								trackIndex={0}
-								{animationName}
-								loop={animationName === 'idle'}
-								listener={{
-									complete: () => (animationName = 'idle'),
-								}}
-							/>
-							<SpineSlot slotName="slot_number">
-								<!-- amount must stay inside the fsOutroNumber plate
-								     (provider width is sizes.width*0.4) -->
-								<ResponsiveText
-									anchor={0.5}
-									style={neonNumberStyle(sizes.width * 0.045)}
-									text={bookEventAmountToCurrencyString(countUpAmount)}
-									maxWidth={sizes.width * 0.34}
-								/>
-							</SpineSlot>
-						</SpineProvider>
+						<!-- FG total, rendered directly at display size. Previously it
+						     sat in the fsOutroNumber spine, whose bone_number 2.6× scale
+						     upsampled the small text into a blur. Drawing it at its real
+						     size keeps the digits crisp (any fit-to-width shrink only
+						     downscales, which stays sharp), and sized to sit inside the
+						     ornate panel's inner frame. -->
+						<ResponsiveText
+							anchor={0.5}
+							y={45}
+							style={{
+								...neonNumberStyle(sizes.width * 0.115),
+								strokeThickness: sizes.width * 0.115 * 0.07,
+							}}
+							text={bookEventAmountToCurrencyString(countUpAmount)}
+							maxWidth={sizes.width * 0.46}
+						/>
 
 						<Text
 							anchor={0.5}

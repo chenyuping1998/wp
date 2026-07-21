@@ -10,18 +10,25 @@
 		value: string;
 		tiled?: boolean;
 		stacked?: boolean;
+		// per-metric accent (border + label colour). The value digits deliberately
+		// stay uniform across every panel so the numbers read as one consistent set.
+		accent?: { border: number; label: number };
 	};
 
 	const props: Props = $props();
 
-	const labelStyle = {
+	const DEFAULT_ACCENT = { border: 0xd8a84e, label: 0xfff08c };
+	const accent = $derived(props.accent ?? DEFAULT_ACCENT);
+
+	const labelStyle = $derived({
 		fontFamily: 'Cinzel, Georgia, serif',
 		fontSize: UI_BASE_FONT_SIZE,
-		fill: 0xfff08c,
+		fill: accent.label,
 		stroke: 0x7133a4,
 		strokeThickness: 3,
-	} as const;
+	});
 
+	// uniform across Balance / Win / Bet — never tinted by accent
 	const valueStyle = {
 		fontFamily: 'Cinzel, Georgia, serif',
 		fontSize: UI_BASE_FONT_SIZE,
@@ -45,7 +52,7 @@
 			height={UI_BASE_FONT_SIZE * 3}
 			borderRadius={24}
 			backgroundColor={0x1d0b28}
-			borderColor={0xd8a84e}
+			borderColor={accent.border}
 			borderWidth={5}
 		/>
 	{/if}
@@ -61,7 +68,7 @@
 			height={UI_BASE_FONT_SIZE * 3}
 			borderRadius={24}
 			backgroundColor={0x1d0b28}
-			borderColor={0xd8a84e}
+			borderColor={accent.border}
 			borderWidth={5}
 		/>
 	{/if}

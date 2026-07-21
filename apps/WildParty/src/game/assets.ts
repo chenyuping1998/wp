@@ -351,31 +351,6 @@ export default {
 		src: new URL('../../assets/sprites/winBanners/max.png', import.meta.url).href,
 		preload: true,
 	},
-	// party hostess character right of the reels — role3.png de-checkerboarded
-	// + legs stretched by design/process_role.mjs (sources in design/source/);
-	// bump the filename suffix if the art changes again (cache-bust, §4.27).
-	// Full image (rim-light silhouette) + 2.5D rig parts cut by
-	// design/slice_role_parts.mjs (geometry in src/game/hostessParts.json)
-	partyHostess: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/character/party_hostess_v2.png', import.meta.url).href,
-		preload: true,
-	},
-	partyHostessBody: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/character/party_hostess_body.png', import.meta.url).href,
-		preload: true,
-	},
-	partyHostessHead: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/character/party_hostess_head.png', import.meta.url).href,
-		preload: true,
-	},
-	partyHostessGlass: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/character/party_hostess_glass.png', import.meta.url).href,
-		preload: true,
-	},
 	// ornate FG intro/outro backdrop panel (generate_frames_v3.mjs 9-slice)
 	fsOrnatePanel: {
 		type: 'sprite',
@@ -389,14 +364,6 @@ export default {
 			atlas: new URL('../../assets/spines/globalMultiplier/multiframe_v2.atlas', import.meta.url).href,
 			skeleton: new URL('../../assets/spines/globalMultiplier/multiframe.json', import.meta.url).href,
 			scale: 2,
-		},
-	},
-	fsOutroNumber: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/fsIntroParty/fs_party.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/fsIntroParty/fs_total_party.json', import.meta.url).href,
-			scale: 1,
 		},
 	},
 	tumble_multiplier: {

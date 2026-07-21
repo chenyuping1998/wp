@@ -21,4 +21,4 @@
 	});
 </script>
 
-<UiLabel tiled {label} {value} stacked={props.stacked} />
+<UiLabel tiled {label} {value} stacked={props.stacked} accent={{ border: 0xd8a84e, label: 0xffd77a }} />
