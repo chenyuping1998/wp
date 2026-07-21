@@ -12,7 +12,8 @@
 </script>
 
 <script lang="ts">
-	import { Graphics, Container } from 'pixi-svelte';
+	import { onDestroy } from 'svelte';
+	import { Graphics, Container, Sprite } from 'pixi-svelte';
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import BoardContainer from './BoardContainer.svelte';
@@ -57,6 +58,46 @@
 		return -SYMBOL_SIZE + (paylineRow + 1 + 0.5) * SYMBOL_SIZE;
 	}
 
+	// walk the payline polyline up to `p` (0..1 of total length) and return the
+	// points that make up the drawn portion, with the partial last segment
+	const pathAt = (points: { x: number; y: number }[], p: number) => {
+		if (p >= 1) return points;
+		const segLengths = points.slice(1).map((pt, i) => Math.hypot(pt.x - points[i].x, pt.y - points[i].y));
+		const total = segLengths.reduce((sum, l) => sum + l, 0);
+		let want = total * Math.max(0, p);
+		const out = [points[0]];
+		for (let i = 0; i < segLengths.length; i++) {
+			if (want >= segLengths[i]) {
+				out.push(points[i + 1]);
+				want -= segLengths[i];
+				continue;
+			}
+			const f = segLengths[i] === 0 ? 0 : want / segLengths[i];
+			out.push({
+				x: points[i].x + (points[i + 1].x - points[i].x) * f,
+				y: points[i].y + (points[i + 1].y - points[i].y) * f,
+			});
+			break;
+		}
+		return out;
+	};
+
+	// 0 → 1 while the current line draws itself on
+	let drawProgress = $state(1);
+	let drawRaf = 0;
+	const runDrawOn = (durationMs: number) => {
+		cancelAnimationFrame(drawRaf);
+		const start = performance.now();
+		const step = (now: number) => {
+			const p = (now - start) / durationMs;
+			drawProgress = Math.min(1, p);
+			if (p < 1) drawRaf = requestAnimationFrame(step);
+		};
+		drawProgress = 0;
+		drawRaf = requestAnimationFrame(step);
+	};
+	onDestroy(() => cancelAnimationFrame(drawRaf));
+
 	context.eventEmitter.subscribeOnMount({
 		winLinesShow: async ({ wins, fast }) => {
 			drawnLines = [];
@@ -83,16 +124,13 @@
 				allLines.push({ lineIndex: lineIdx, color, points });
 			}
 
-			if (fast) {
-				for (let i = 0; i < allLines.length; i++) {
-					drawnLines = [allLines[i]];
-					await waitForTimeout(WIN_LINE_STEP_DELAY_FAST);
-				}
-			} else {
-				for (let i = 0; i < allLines.length; i++) {
-					drawnLines = [allLines[i]];
-					await waitForTimeout(WIN_LINE_STEP_DELAY_NORMAL);
-				}
+			const stepDelay = fast ? WIN_LINE_STEP_DELAY_FAST : WIN_LINE_STEP_DELAY_NORMAL;
+			for (let i = 0; i < allLines.length; i++) {
+				drawnLines = [allLines[i]];
+				// spend the first ~60% of the slot racing the stroke across, then
+				// let it sit so the eye can read the shape
+				runDrawOn(stepDelay * 0.6);
+				await waitForTimeout(stepDelay);
 			}
 			await waitForTimeout(WIN_LINE_END_DELAY);
 		},
@@ -114,17 +152,36 @@
 					draw={(g) => {
 						if (!line.points || line.points.length < 2) return;
 						g.clear();
-						g.lineStyle(7, line.color, 0.22);
-						g.moveTo(line.points[0].x, line.points[0].y);
-						for (let i = 1; i < line.points.length; i++) g.lineTo(line.points[i].x, line.points[i].y);
-						g.lineStyle(3, line.color, 0.95);
-						g.moveTo(line.points[0].x, line.points[0].y);
-						for (let i = 1; i < line.points.length; i++) g.lineTo(line.points[i].x, line.points[i].y);
-						g.lineStyle(1.2, 0xffffff, 0.5);
-						g.moveTo(line.points[0].x, line.points[0].y);
-						for (let i = 1; i < line.points.length; i++) g.lineTo(line.points[i].x, line.points[i].y);
+						// draw-on: the line races left→right across the reels instead of
+						// blinking in whole, and a bright head leads the stroke
+						const drawn = pathAt(line.points, drawProgress);
+						if (drawn.length < 2) return;
+						const stroke = (width: number, color: number, alpha: number) => {
+							g.lineStyle(width, color, alpha);
+							g.moveTo(drawn[0].x, drawn[0].y);
+							for (let i = 1; i < drawn.length; i++) g.lineTo(drawn[i].x, drawn[i].y);
+						};
+						stroke(7, line.color, 0.22);
+						stroke(3, line.color, 0.95);
+						stroke(1.2, 0xffffff, 0.5);
 					}}
 				/>
+				{#if drawProgress < 1}
+					{@const head = pathAt(line.points, drawProgress).at(-1)}
+					{#if head}
+						<Sprite
+							key="fxGlow"
+							anchor={0.5}
+							x={head.x}
+							y={head.y}
+							tint={line.color}
+							blendMode="add"
+							width={46}
+							height={46}
+							alpha={0.9}
+						/>
+					{/if}
+				{/if}
 			{/each}
 		</Container>
 	</BoardContainer>

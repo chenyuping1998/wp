@@ -192,6 +192,15 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 
 **常備掃描腳本**（HANDOFF 附錄，每次改完可跑）：檢查 ①所有 `key=` 都對應 assets.ts ②無孤兒元件 ③無未使用 assets ④**無「廣播但無人監聽」的事件**（第 4 項就是抓到 StickyPrizes 的那一條）。
 
+## 5.15 演繹流暢度打磨（2026-07-17 第五輪）
+
+- **擴展百搭改「跟著長大」**：原本蓋板第一幀就整輪全高彈出（最不自然的一點）。改成 `cover` tween，蓋板從落地格向上下擴張，階梯對齊 spine 的三次咬合放大（0.16→0.3→0.46→1），所以底下的 W 全程被蓋住、但視覺上是「長出來」而非「幕落下」
+- **撞框衝擊**：`BoardFrame` 新增可複用的 `boardFrameImpact` 事件——框體衰減抖動（正弦×指數包絡 420ms）＋ 黃銅邊加法自疊閃白。擴展百搭 slam 時同步：`cover` 用 backOut 過衝進框、上下軌噴出橫向碎屑與塵、軌縫白熱條（fxStreak 加法）、框體吃一記衝擊
+- **中獎線改 draw-on**：原本整條瞬間出現，改成沿賠付線由左至右畫出（前 60% 時間畫、後 40% 停留可讀），線頭帶一顆加法光點
+- **聽牌壓暗改淡入**：原本瞬間變暗像閃爍，改 260ms cubicOut 進出
+- **爆炸過場**：衝擊波經過時同步敲一記 `boardFrameImpact`（strength 1.4）
+- **順手修掉隱患**：斷線續玩路徑仍在 `findLastBookEvent('updateGlobalMult')` 並重播，但該 handler 已於 §5.14 移除 → 真的取到會查不到 handler；已從 resume 路徑與 snapshot 保留清單移除（GoBananas 數學本就不產這事件）
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

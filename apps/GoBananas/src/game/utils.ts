@@ -19,8 +19,9 @@ export const playBet = async (bet: Bet) => {
 };
 
 // resume bet
+// NOTE: no 'updateGlobalMult' — GoBananas' math never emits it and the handler
+// was removed, so replaying one on resume would hit an undefined handler
 const BOOK_EVENT_TYPES_TO_RESERVE_FOR_SNAPSHOT = [
-	'updateGlobalMult',
 	'freeSpinTrigger',
 	'updateFreeSpin',
 	'setTotalWin',

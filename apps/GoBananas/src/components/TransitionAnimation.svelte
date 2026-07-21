@@ -77,6 +77,8 @@
 				if (!boomFired) {
 					boomFired = true;
 					context.eventEmitter.broadcast({ type: 'soundBigWinBlast' });
+					// the shockwave rattles the reel housing as it passes
+					context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.4 });
 				}
 				grenadeVisible = false;
 				boomT = (elapsed - BOOM_AT) / BOOM_MS;

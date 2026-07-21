@@ -1,7 +1,9 @@
 <script lang="ts" module>
 	export type EmitterEventBoardFrame =
 		| { type: 'boardFrameGlowShow' }
-		| { type: 'boardFrameGlowHide' };
+		| { type: 'boardFrameGlowHide' }
+		// something slammed into the frame — kick it and flash the brass
+		| { type: 'boardFrameImpact'; strength?: number };
 </script>
 
 <script lang="ts">
@@ -29,8 +31,39 @@
 		const id = setInterval(() => {
 			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 620);
 		}, 33);
-		return () => clearInterval(id);
+		return () => {
+			clearInterval(id);
+			cancelAnimationFrame(impactRaf);
+		};
 	});
+
+	// ── frame impact: a short recoil plus a hot flash along the brass, so a
+	// wild slamming into the housing is felt and not just seen ────────────────
+	let impact = $state({ x: 0, y: 0, flash: 0 });
+	let impactRaf = 0;
+	const IMPACT_MS = 420;
+
+	const runImpact = (strength: number) => {
+		cancelAnimationFrame(impactRaf);
+		const start = performance.now();
+		const step = (now: number) => {
+			const p = (now - start) / IMPACT_MS;
+			if (p >= 1) {
+				impact = { x: 0, y: 0, flash: 0 };
+				return;
+			}
+			// decaying rattle: fast wobble under an exponential envelope
+			const decay = (1 - p) ** 2.2;
+			const amp = 9 * strength * decay;
+			impact = {
+				x: Math.sin(p * 46) * amp * 0.45,
+				y: Math.sin(p * 38 + 1.1) * amp,
+				flash: 0.55 * strength * (1 - p) ** 3,
+			};
+			impactRaf = requestAnimationFrame(step);
+		};
+		impactRaf = requestAnimationFrame(step);
+	};
 
 	const drawAmbience = (g: PixiGraphics) => {
 		g.clear();
@@ -64,6 +97,7 @@
 		boardFrameGlowHide: () => {
 			if (animationName) animationName = 'reelhouse_glow_exit';
 		},
+		boardFrameImpact: ({ strength }) => runImpact(strength ?? 1),
 	});
 </script>
 
@@ -104,8 +138,8 @@
 <Sprite
 	key="gbFrameBg"
 	anchor={0.5}
-	x={context.stateGameDerived.boardLayout().x}
-	y={context.stateGameDerived.boardLayout().y}
+	x={context.stateGameDerived.boardLayout().x + impact.x}
+	y={context.stateGameDerived.boardLayout().y + impact.y}
 	width={context.stateGameDerived.boardLayout().width * FRAME_SCALE}
 	height={context.stateGameDerived.boardLayout().height * FRAME_SCALE}
 />
@@ -113,8 +147,22 @@
 <Sprite
 	key="gbFrameEdge"
 	anchor={0.5}
-	x={context.stateGameDerived.boardLayout().x}
-	y={context.stateGameDerived.boardLayout().y}
+	x={context.stateGameDerived.boardLayout().x + impact.x}
+	y={context.stateGameDerived.boardLayout().y + impact.y}
 	width={context.stateGameDerived.boardLayout().width * FRAME_SCALE}
 	height={context.stateGameDerived.boardLayout().height * FRAME_SCALE}
 />
+
+{#if impact.flash > 0}
+	<!-- additive copy of the brass edge = the whole housing rings white-hot -->
+	<Sprite
+		key="gbFrameEdge"
+		anchor={0.5}
+		x={context.stateGameDerived.boardLayout().x + impact.x}
+		y={context.stateGameDerived.boardLayout().y + impact.y}
+		width={context.stateGameDerived.boardLayout().width * FRAME_SCALE}
+		height={context.stateGameDerived.boardLayout().height * FRAME_SCALE}
+		blendMode="add"
+		alpha={impact.flash}
+	/>
+{/if}

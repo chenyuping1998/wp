@@ -301,12 +301,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		const lastFreeSpinTriggerEvent = findLastBookEvent('freeSpinTrigger' as const);
 		const lastUpdateFreeSpinEvent = findLastBookEvent('updateFreeSpin' as const);
 		const lastSetTotalWinEvent = findLastBookEvent('setTotalWin' as const);
-		const lastUpdateGlobalMultEvent = findLastBookEvent('updateGlobalMult' as const);
 
 		if (lastFreeSpinTriggerEvent) await playBookEvent(lastFreeSpinTriggerEvent, { bookEvents });
 		if (lastUpdateFreeSpinEvent) playBookEvent(lastUpdateFreeSpinEvent, { bookEvents });
 		if (lastSetTotalWinEvent) playBookEvent(lastSetTotalWinEvent, { bookEvents });
-		if (lastUpdateGlobalMultEvent) playBookEvent(lastUpdateGlobalMultEvent, { bookEvents });
 
 		// Rebuild sticky expanded wilds: every newExpandingWilds adds a reel; the
 		// last updateExpandingWilds re-rolled the mults of the older ones.

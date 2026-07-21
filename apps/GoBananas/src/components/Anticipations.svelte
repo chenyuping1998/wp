@@ -3,6 +3,8 @@
 	import { SECOND } from 'constants-shared/time';
 	import { Graphics } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { Tween } from 'svelte/motion';
+	import { cubicOut } from 'svelte/easing';
 
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_SIZES } from '../game/constants';
@@ -15,13 +17,21 @@
 		context.stateGame.board.some((reel) => reel.reelState.anticipating),
 	);
 
+	// the focus dim ramps in and back out — snapping it on made the tease read
+	// as a glitch rather than the lights going down
+	const dim = new Tween(0, { duration: 260, easing: cubicOut });
+	$effect(() => {
+		dim.set(hasAnticipation ? 1 : 0);
+	});
+
 	// spotlight focus: while a reel is teasing, dim the reels that have already
 	// stopped so all eyes land on the glowing column
 	const drawDim = (g: PixiGraphics) => {
 		g.clear();
+		if (dim.current <= 0.01) return;
 		context.stateGame.board.forEach((reel, i) => {
 			if (reel.reelState.anticipating || reel.reelState.motion !== 'stopped') return;
-			g.beginFill(0x000000, 0.3);
+			g.beginFill(0x000000, 0.3 * dim.current);
 			g.drawRoundedRect(
 				getSymbolX(i) - SYMBOL_SIZE / 2 + 4,
 				4,
@@ -56,7 +66,7 @@
 	/>
 {/if}
 
-{#if hasAnticipation}
+{#if dim.current > 0.01}
 	<BoardContainer>
 		<Graphics draw={drawDim} />
 	</BoardContainer>

@@ -26,7 +26,13 @@
 		mult: number;
 		phase: 'grow' | 'idle';
 		y: Tween<number>;
+		// 0 = one cell tall (just the landed W), 1 = the full reel. The takeover
+		// plate tracks this, so the reel is covered exactly as far as the monkey
+		// has actually grown — no full-height plate popping in on frame 1.
+		cover: Tween<number>;
 		badgeScale: Tween<number>;
+		// white-hot line along the top/bottom frame edge right after the slam
+		edgeFlash: Tween<number>;
 		oncomplete?: () => void;
 	};
 
@@ -38,6 +44,10 @@
 	// spine grow timeline marks (see design/generate_spines.mjs)
 	const BITE_TIMES_MS = [520, 840, 1160];
 	const BURST_TIME_MS = 1500;
+	// the spine scales the monkey up in steps at each bite (1 → 1.3 → 1.66 →
+	// 2.06) and then bursts to full reel height; the plate follows the same
+	// staircase so art and cover grow together
+	const COVER_STEPS = [0.16, 0.3, 0.46] as const;
 
 	let wilds = $state<WildEntry[]>([]);
 
@@ -107,6 +117,52 @@
 		bursts = [...bursts, { id: nextId++, x }];
 	};
 
+	// The moment the panel reaches the housing: dust and shards squirt sideways
+	// along the top and bottom rails, the way something heavy hitting a stop
+	// throws material out of the seam.
+	const spawnEdgeImpact = (x: number, wild: WildEntry) => {
+		const now = performance.now();
+		const rails = [
+			{ y: 2, dir: 1 },
+			{ y: BOARD_SIZES.height - 2, dir: -1 },
+		];
+		crumbs = [
+			...crumbs,
+			...rails.flatMap((rail) =>
+				Array.from({ length: 7 }, (_, i) => {
+					const side = i % 2 === 0 ? 1 : -1;
+					// hug the rail: mostly horizontal, kicked slightly inward
+					const speed = 110 + Math.random() * 150;
+					return {
+						id: nextId++,
+						x: x + side * SYMBOL_SIZE * 0.1,
+						y: rail.y,
+						vx: side * speed,
+						vy: rail.dir * (20 + Math.random() * 70),
+						born: now,
+						life: 340 + Math.random() * 200,
+						size: 12 + Math.random() * 18,
+						leaf: i % 3 === 0,
+					};
+				}),
+			),
+		];
+		startCrumbLoop();
+		void wild;
+	};
+
+	// The plate spans from one symbol cell (centred on the monkey) out to the
+	// whole reel as `cover` goes 0 → 1. Clamped to the board so it never draws
+	// past the housing.
+	const plateRect = (wild: WildEntry) => {
+		const t = wild.cover.current;
+		const half = (SYMBOL_SIZE + (BOARD_SIZES.height - SYMBOL_SIZE) * t) / 2;
+		const centre = wild.y.current;
+		const top = Math.max(0, centre - half);
+		const bottom = Math.min(BOARD_SIZES.height, centre + half);
+		return { top, height: Math.max(0, bottom - top) };
+	};
+
 	onMount(() => {
 		const id = setInterval(() => {
 			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 540);
@@ -127,21 +183,40 @@
 				mult,
 				phase: 'grow',
 				y: new Tween(rowCenterY(row)),
+				cover: new Tween(0),
 				badgeScale: new Tween(0),
+				edgeFlash: new Tween(0),
 			};
 			wilds = [...wilds.filter((wild) => wild.reel !== reel), entry];
-			// drift from the landing row to the reel center across the three chomps
+			// drift from the landing row to the reel centre across the three chomps
 			entry.y.set(REEL_CENTER_Y, { duration: 1200, delay: 300, easing: cubicOut });
-			// crumb sprays timed to the spine bites; golden shockwave on the wx slam
+
 			const x = getSymbolX(reel);
-			for (const t of BITE_TIMES_MS) {
+			// each chomp: crumbs spray and the cover steps up with him, so the
+			// takeover reads as growth rather than a curtain dropping
+			BITE_TIMES_MS.forEach((t, index) => {
 				waitForTimeout(t).then(() => {
-					if (entry.phase === 'grow') spawnCrumbs(x, entry.y.current);
+					if (entry.phase !== 'grow') return;
+					spawnCrumbs(x, entry.y.current);
+					entry.cover.set(COVER_STEPS[index], { duration: 260, easing: cubicOut });
 				});
-			}
-			waitForTimeout(BURST_TIME_MS).then(() => spawnLockBurst(x));
+			});
+
+			// the slam: the panel shoots to full height, overshoots into the
+			// housing, and the frame takes the hit
+			waitForTimeout(BURST_TIME_MS).then(() => {
+				spawnLockBurst(x);
+				spawnEdgeImpact(x, entry);
+				context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1 });
+				entry.cover.set(1, { duration: 190, easing: backOut });
+				entry.edgeFlash.set(1, { duration: 60, easing: cubicOut }).then(() => {
+					entry.edgeFlash.set(0, { duration: 420, easing: cubicOut });
+				});
+			});
+
 			await waitForResolve((resolve) => (entry.oncomplete = resolve));
 			entry.phase = 'idle';
+			entry.cover.set(1, { duration: 120, easing: cubicOut });
 			entry.badgeScale.set(1, { duration: 320, easing: backOut });
 		},
 		// Sticky wilds get a fresh multiplier on each reveal — pulse the badge.
@@ -166,7 +241,9 @@
 				mult: wild.mult,
 				phase: 'idle' as const,
 				y: new Tween(REEL_CENTER_Y),
+				cover: new Tween(1),
 				badgeScale: new Tween(1),
+				edgeFlash: new Tween(0),
 			}));
 		},
 		expandingWildsClear: () => {
@@ -189,23 +266,45 @@
 
 <BoardContainer>
 	{#each wilds as wild (wild.reel)}
-		<!-- opaque reel-takeover plate: drawn from the very start of the eat
-		     animation so the W stack underneath is NEVER visible (jungle-green
-		     to match the wx panel art) -->
+		<!-- reel-takeover plate: grows out of the landed W cell with the monkey,
+		     so it always hides the W underneath without ever popping in at full
+		     height (jungle-green to match the wx panel art) -->
 		<Graphics
 			draw={(g) => {
 				const x = getSymbolX(wild.reel);
+				const { top, height } = plateRect(wild);
 				g.clear();
+				if (height <= 0) return;
 				g.beginFill(0x0a1508, 0.97);
-				g.drawRoundedRect(x - SYMBOL_SIZE / 2, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
+				g.drawRoundedRect(x - SYMBOL_SIZE / 2, top, SYMBOL_SIZE, height, 14);
 				g.endFill();
-				g.beginFill(0x14301a, 0.92);
-				g.drawRoundedRect(x - SYMBOL_SIZE / 2 + 6, 6, SYMBOL_SIZE - 12, BOARD_SIZES.height - 12, 10);
-				g.endFill();
+				if (height > 16) {
+					g.beginFill(0x14301a, 0.92);
+					g.drawRoundedRect(x - SYMBOL_SIZE / 2 + 6, top + 6, SYMBOL_SIZE - 12, height - 12, 10);
+					g.endFill();
+				}
 				g.lineStyle(3, 0xffd43b, 0.75);
-				g.drawRoundedRect(x - SYMBOL_SIZE / 2 + 3, 3, SYMBOL_SIZE - 6, BOARD_SIZES.height - 6, 12);
+				g.drawRoundedRect(x - SYMBOL_SIZE / 2 + 3, top + 3, SYMBOL_SIZE - 6, Math.max(0, height - 6), 12);
 			}}
 		/>
+
+		{#if wild.edgeFlash.current > 0}
+			<!-- white-hot seam where the panel is jammed against the housing -->
+			{@const x = getSymbolX(wild.reel)}
+			{#each [0, BOARD_SIZES.height] as railY (railY)}
+				<Sprite
+					key="fxStreak"
+					anchor={0.5}
+					x={x}
+					y={railY}
+					width={SYMBOL_SIZE * 1.5}
+					height={SYMBOL_SIZE * 0.34}
+					tint={0xfff3bd}
+					blendMode="add"
+					alpha={wild.edgeFlash.current}
+				/>
+			{/each}
+		{/if}
 		{#if wild.phase === 'idle'}
 			<!-- breathing golden aura so the locked WILD reel keeps reading alive -->
 			<Graphics
