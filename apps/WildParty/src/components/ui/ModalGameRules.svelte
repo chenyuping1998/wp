@@ -9,6 +9,8 @@
 	const lineCount = Object.keys(config.paylines).length;
 	const maxWin = config.betModes?.base?.max_win ?? 5000;
 	const buyCost = config.betModes?.bonus?.cost;
+	const buyQuickCost = config.betModes?.bonus_quick?.cost;
+	const buySuperCost = config.betModes?.bonus_super?.cost;
 	const reelCount = config.numReels;
 	const rowCount = config.numRows?.[0] ?? 3;
 </script>
@@ -69,7 +71,9 @@
 					<h3><span class="wp-accent-bar"></span>Buy Bonus</h3>
 					<p>
 						Instead of waiting for Scatters, you can buy direct entry into the Free Spins
-						feature for {buyCost}&times; your total bet. The Buy Bonus plays at the same {rtpPct} RTP.
+						feature at three tiers: Quick ({buyQuickCost}&times;), Bonus ({buyCost}&times;) and
+						Super ({buySuperCost}&times;) your total bet. Higher tiers begin with a stronger
+						Global Multiplier and higher volatility. Every tier plays at the same {rtpPct} RTP.
 					</p>
 				</section>
 			{/if}

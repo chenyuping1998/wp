@@ -2,11 +2,11 @@ import type { BetModeData } from 'state-shared';
 
 import config from './config';
 
-// Wild Party only ships two math modes: base play and the 100x bonus buy.
-// The shared library ships a template default (ANTE / SUPER ANTE / SUPER SPIN /
-// SUPER BONUS) that has no backing math here, so those buy-bonus options fail to
-// play. We override the shared meta so the buy-bonus screen exposes only the
-// 100x BONUS buy that the math actually supports.
+// Wild Party ships four bet modes: base play plus three Free-Spins buy tiers —
+// Quick (50x), Bonus (100x) and Super (200x), each defined in config.betModes.
+// We override the shared library's template meta (ANTE / SUPER ANTE / …), which
+// has no backing math here, with WildParty-specific copy for the tiers we ship.
+// Keep this list in sync with config.betModes and the Game Info paytable/rules.
 const emptyAssets = {
 	icon: '',
 	volatility: '',

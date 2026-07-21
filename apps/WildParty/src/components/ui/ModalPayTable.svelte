@@ -90,26 +90,25 @@
 			<p class="wp-note">Wild substitutes for all symbols except Scatter. Max win is capped at {maxWin.toLocaleString()}&times; total bet.</p>
 
 			<h3 class="wp-section">PAYLINES</h3>
-			<p class="wp-note">All {Object.keys(config.paylines).length} lines are always active. Wins pay on matching symbols from the leftmost reel.</p>
+			<p class="wp-note">All {Object.keys(config.paylines).length} lines are always active. Highlighted cells show each line's shape across the {config.numReels} reels; wins pay from the leftmost reel.</p>
 			<div class="wp-lines">
 				{#each Object.entries(config.paylines) as [lineNo, rowsOfLine] (lineNo)}
 					<div class="wp-line">
-						<svg viewBox="0 0 60 38" aria-label={`Payline ${lineNo}`}>
+						<svg viewBox="0 0 62 38" aria-label={`Payline ${lineNo}`}>
 							{#each [0, 1, 2] as r (r)}
 								{#each [0, 1, 2, 3, 4] as c (c)}
-									<circle cx={8 + c * 11} cy={7 + r * 12} r="2.1" fill="#4a3260" />
+									{@const active = (rowsOfLine as number[])[c] === r}
+									<rect
+										x={2 + c * 12}
+										y={2 + r * 12}
+										width="10"
+										height="10"
+										rx="2.2"
+										fill={active ? '#ffd34d' : 'rgba(255,255,255,0.06)'}
+										stroke={active ? '#ffe9a0' : 'rgba(216,168,78,0.22)'}
+										stroke-width={active ? 0.8 : 0.5}
+									/>
 								{/each}
-							{/each}
-							<polyline
-								points={(rowsOfLine as number[]).map((r, c) => `${8 + c * 11},${7 + r * 12}`).join(' ')}
-								fill="none"
-								stroke="#ffd34d"
-								stroke-width="2.4"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							/>
-							{#each rowsOfLine as number[] as r, c (c)}
-								<circle cx={8 + c * 11} cy={7 + r * 12} r="2.6" fill="#ff8ede" />
 							{/each}
 						</svg>
 						<span>{lineNo}</span>
@@ -125,11 +124,11 @@
 				</div>
 				<div class="wp-feature">
 					<b>GLOBAL MULTIPLIER</b>
-					<p>During Free Spins every Wild that lands adds +1 to the Global Multiplier (up to 100&times;). The multiplier applies to all wins and never resets during the feature.</p>
+					<p>During Free Spins a single Global Multiplier applies to every line win. It starts between 1&times; and 3&times; and adds +1 for every Wild that lands (up to 100&times;), and never resets during the feature.</p>
 				</div>
 				<div class="wp-feature">
 					<b>BUY BONUS</b>
-					<p>Buy the Free Spins feature directly for 100&times; total bet.</p>
+					<p>Buy direct entry into Free Spins at three tiers: Quick 50&times;, Bonus 100&times;, or Super 200&times; total bet. Higher tiers start with a stronger Global Multiplier. All tiers play at the same {(config.rtp * 100).toFixed(2)}% RTP.</p>
 				</div>
 			</div>
 		</div>
