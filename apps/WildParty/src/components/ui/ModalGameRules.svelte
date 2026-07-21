@@ -60,9 +60,10 @@
 				<h3><span class="wp-accent-bar"></span>Global Multiplier</h3>
 				<p>
 					Free Spins use a single accumulating Global Multiplier applied to every line win.
-					It starts between 1&times; and 3&times; (based on the lines the triggering Scatters
-					land on) and increases by +1 for every Wild that appears during Free Spins, up to a
-					maximum of 100&times;. The multiplier stays active for the whole feature.
+					It starts between 1&times; and 3&times; &mdash; one for each payline the triggering
+					Scatters complete &mdash; and increases by +1 for every Wild that appears during
+					Free Spins, up to a maximum of 100&times;. The multiplier stays active for the whole
+					feature.
 				</p>
 			</section>
 
@@ -71,9 +72,10 @@
 					<h3><span class="wp-accent-bar"></span>Buy Bonus</h3>
 					<p>
 						Instead of waiting for Scatters, you can buy direct entry into the Free Spins
-						feature at three tiers: Quick ({buyQuickCost}&times;), Bonus ({buyCost}&times;) and
-						Super ({buySuperCost}&times;) your total bet. Higher tiers begin with a stronger
-						Global Multiplier and higher volatility. Every tier plays at the same {rtpPct} RTP.
+						feature at three tiers: Quick ({buyQuickCost}&times;) starts the Global Multiplier
+						at 1&times;; Bonus ({buyCost}&times;) starts at a random 1&times;&ndash;3&times;, exactly
+						like a natural Scatter trigger; and Super ({buySuperCost}&times;) starts elevated
+						with the highest volatility. Every tier plays at the same {rtpPct} RTP.
 					</p>
 				</section>
 			{/if}

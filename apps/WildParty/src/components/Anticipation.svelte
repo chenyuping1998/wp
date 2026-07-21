@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { SpineProvider, SpineTrack, Graphics, Sprite } from 'pixi-svelte';
+	import { SpineProvider, SpineTrack, Graphics, Sprite, Container } from 'pixi-svelte';
 	import { stateBetDerived } from 'state-shared';
 	import { onMount } from 'svelte';
 
@@ -49,6 +49,14 @@
 		};
 	};
 
+	// where the anticipated reel's column sits on the board
+	const anchorX = $derived(
+		context.stateGameDerived.boardLayout().x -
+			context.stateGameDerived.boardLayout().width * 0.5 +
+			(props.reel.reelIndex + REEL_PADDING) * SYMBOL_SIZE,
+	);
+	const anchorY = $derived(context.stateGameDerived.boardLayout().y - SYMBOL_SIZE * 0.06);
+
 	$effect(() => {
 		// Stop immediately when reel stops to avoid the heavy "falling/landing" outro feel.
 		if (!finished && props.reel.reelState.motion === 'stopped') {
@@ -81,11 +89,22 @@
 	key="anticipation"
 	width={SYMBOL_SIZE * 0.56}
 	height={SYMBOL_SIZE * 1.6}
-	x={context.stateGameDerived.boardLayout().x -
-		context.stateGameDerived.boardLayout().width * 0.5 +
-		(props.reel.reelIndex + REEL_PADDING) * SYMBOL_SIZE}
-	y={context.stateGameDerived.boardLayout().y - SYMBOL_SIZE * 0.06}
+	x={anchorX}
+	y={anchorY}
 >
+	<SpineTrack
+		trackIndex={0}
+		animationName="anticipation_loop"
+		loop
+		timeScale={stateBetDerived.timeScale()}
+	/>
+</SpineProvider>
+
+<!-- glow + sparks live in their own positioned Container rather than as direct
+     SpineProvider children: parented to the spine they inherit whatever
+     transform it resolves to, which left them stranded at the canvas origin as
+     a bright block in the top-left while the reel was anticipating. -->
+<Container x={anchorX} y={anchorY}>
 	<Graphics
 		draw={(g) => {
 			const glowAlpha = 0.14 + 0.24 * pulse;
@@ -115,10 +134,4 @@
 			alpha={state.alpha}
 		/>
 	{/each}
-	<SpineTrack
-		trackIndex={0}
-		animationName="anticipation_loop"
-		loop
-		timeScale={stateBetDerived.timeScale()}
-	/>
-</SpineProvider>
+</Container>

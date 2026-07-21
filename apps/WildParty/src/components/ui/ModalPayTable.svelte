@@ -94,6 +94,7 @@
 			<div class="wp-lines">
 				{#each Object.entries(config.paylines) as [lineNo, rowsOfLine] (lineNo)}
 					<div class="wp-line">
+						<span>{lineNo}</span>
 						<svg viewBox="0 0 62 38" aria-label={`Payline ${lineNo}`}>
 							{#each [0, 1, 2] as r (r)}
 								{#each [0, 1, 2, 3, 4] as c (c)}
@@ -111,7 +112,6 @@
 								{/each}
 							{/each}
 						</svg>
-						<span>{lineNo}</span>
 					</div>
 				{/each}
 			</div>
@@ -124,11 +124,11 @@
 				</div>
 				<div class="wp-feature">
 					<b>GLOBAL MULTIPLIER</b>
-					<p>During Free Spins a single Global Multiplier applies to every line win. It starts between 1&times; and 3&times; and adds +1 for every Wild that lands (up to 100&times;), and never resets during the feature.</p>
+					<p>During Free Spins a single Global Multiplier applies to every line win. It starts at 1&times;&ndash;3&times; &mdash; one for each payline the triggering Scatters complete &mdash; then adds +1 for every Wild that lands (up to 100&times;), and never resets during the feature.</p>
 				</div>
 				<div class="wp-feature">
 					<b>BUY BONUS</b>
-					<p>Buy direct entry into Free Spins at three tiers: Quick 50&times;, Bonus 100&times;, or Super 200&times; total bet. Higher tiers start with a stronger Global Multiplier. All tiers play at the same {(config.rtp * 100).toFixed(2)}% RTP.</p>
+					<p>Buy direct entry into Free Spins at three tiers: Quick 50&times; (starts 1&times;), Bonus 100&times; (starts 1&times;&ndash;3&times;, same as a natural trigger) or Super 200&times; (elevated start, higher volatility). All tiers play at the same {(config.rtp * 100).toFixed(2)}% RTP.</p>
 				</div>
 			</div>
 		</div>
@@ -210,23 +210,25 @@
 			gap: 0.45rem;
 
 			.wp-line {
-				position: relative;
+				display: flex;
+				flex-direction: column;
+				gap: 3px;
 				background: rgba(255, 255, 255, 0.05);
 				border: 1px solid rgba(216, 168, 78, 0.45);
 				border-radius: 8px;
-				padding: 0.25rem 0.25rem 0.1rem;
+				padding: 0.3rem 0.3rem 0.28rem;
+
+				span {
+					font-size: 0.62rem;
+					font-weight: 700;
+					line-height: 1;
+					text-align: center;
+					color: #ffd34d;
+				}
 
 				svg {
 					width: 100%;
 					display: block;
-				}
-
-				span {
-					position: absolute;
-					top: 2px;
-					left: 5px;
-					font-size: 0.6rem;
-					color: #d9b8ff;
 				}
 			}
 		}
@@ -364,19 +366,27 @@
 		color: rgba(255, 255, 255, 0.92);
 	}
 
+	/* every symbol pays on exactly 3/4/5 of a kind — lock the chips into three
+	   equal columns so the numbers line up across every row instead of
+	   wrapping raggedly at their natural widths */
 	.wp-pays {
-		display: flex;
-		gap: 0.5rem;
-		flex-wrap: wrap;
-		justify-content: flex-end;
+		display: grid;
+		grid-template-columns: repeat(3, 4.7rem);
+		gap: 0.4rem;
+		justify-content: end;
 		font-size: 0.92rem;
+		font-variant-numeric: tabular-nums;
 	}
 
 	.wp-pay-chip {
-		display: inline-flex;
+		display: flex;
 		align-items: center;
+		justify-content: center;
 		gap: 0.2rem;
-		padding: 0.2rem 0.55rem;
+		/* symmetric padding + a locked line-height so the glyphs sit optically
+		   centred — without it the text rode low in the pill */
+		padding: 0.34rem 0.35rem;
+		line-height: 1;
 		border-radius: 0.5rem;
 		background: rgba(255, 211, 77, 0.06);
 		border: 1px solid rgba(255, 211, 77, 0.1);
@@ -385,12 +395,16 @@
 		b {
 			color: #ffd34d;
 			font-weight: 800;
+			line-height: 1;
 		}
 
 		em {
 			font-style: normal;
-			font-weight: 600;
-			background: linear-gradient(135deg, #ffd34d, #ffaa00);
+			font-weight: 700;
+			line-height: 1;
+			/* brighter stops than the old #ffd34d→#ffaa00: the dark orange end
+			   made the values read dim at this size */
+			background: linear-gradient(135deg, #ffe9a8, #ffc24d);
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
 			background-clip: text;
@@ -404,6 +418,9 @@
 	}
 
 	.wp-special {
+		/* Scatter has no 3/4/5 table — let its note span the whole chip grid */
+		grid-column: 1 / -1;
+		text-align: right;
 		color: #ff7ad9;
 		font-weight: 700;
 		text-shadow: 0 0 12px rgba(255, 122, 217, 0.4);

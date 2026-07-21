@@ -18,6 +18,9 @@
 	// Tiered: a regular win gives a gentle bump; big-tier wins hit far harder and
 	// scale up through the tiers (big < super < mega < epic < max).
 	let winBoost = $state(0);
+	// eased 0→1 as the free game takes over; drives how tall the side spectrum
+	// runs, so the feature reads as a much louder room than base play
+	let featureLevel = $state(0);
 
 	// big(6) → 1.2 … max(10) → 2.2
 	const bigBoost = (level: number) => 1.2 + (Math.max(6, Math.min(10, level)) - 6) * 0.25;
@@ -85,6 +88,20 @@
 		alpha: i < 10 ? 0.05 + rand() * 0.05 : 0.1 + rand() * 0.14,
 		color: BOKEH_COLORS[i % BOKEH_COLORS.length],
 	}));
+
+	// side spectrum columns: slim light bars framing the scene, bass on the
+	// outside (tall, slow) climbing to treble inboard (short, quick). Drawn as
+	// low-alpha additive light rather than solid blocks so they read as club
+	// lighting, and they surge with the tiered win boost.
+	const EQ_PER_SIDE = 13;
+	const EQ = Array.from({ length: EQ_PER_SIDE * 2 }, (_, i) => {
+		const k = i % EQ_PER_SIDE;
+		return {
+			freq: 0.55 + k * 0.26,
+			phase: rand() * Math.PI * 2,
+			weight: 1 - (k / EQ_PER_SIDE) * 0.55,
+		};
+	});
 
 	// bg-art palette: gold / magenta / violet / hot pink (matches the club scene)
 	const CONFETTI_COLORS = [0xffb833, 0xff2fa0, 0x4fc3ff, 0xb04ef0, 0xffe066];
@@ -186,6 +203,64 @@
 	};
 
 
+	// side spectrum columns (B5). Bars rise from the bottom of each edge;
+	// champagne gold at the base blending to pink up top with a lit cap.
+	const drawEq = (g: PixiGraphics) => {
+		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		const seconds = tick / 62.5;
+		// always alive at idle, surging as the tiered win boost climbs
+		// Height ceiling steps up hard for the feature: base play tops out around
+		// 28% of the screen, free games around 50% — the room visibly gets louder.
+		const ceiling = 0.28 + 0.22 * featureLevel;
+		// on top of that, each win tier surges the columns higher
+		// (regular ≈1.3× · big ≈1.7× · max ≈2.2×)
+		const surge = 1 + 0.55 * winBoost;
+		// wider, taller and brighter than a subtle ambient touch — the whole
+		// background sits behind a BlurFilter, so faint bars smear into nothing
+		const clusterW = width * 0.105;
+		const pitch = clusterW / EQ_PER_SIDE;
+		const barW = pitch * 0.64;
+		const radius = barW * 0.45;
+
+		g.clear();
+		for (let side = 0; side < 2; side++) {
+			for (let k = 0; k < EQ_PER_SIDE; k++) {
+				const bar = EQ[side * EQ_PER_SIDE + k];
+				// two-rate blend fakes a spectrum: quick jitter under a slow swell
+				const quick = 0.5 + 0.5 * Math.sin(seconds * bar.freq * 2.1 + bar.phase);
+				const swell = 0.6 + 0.4 * Math.sin(seconds * 0.5 + bar.phase * 1.7);
+				// capped so a max-win surge still stops short of the top edge
+				const h = Math.min(
+					height * 0.8,
+					height * (0.05 + ceiling * quick * swell * surge * bar.weight),
+				);
+				// bass sits on the outside edge, treble climbs inboard
+				const x =
+					side === 0
+						? width * 0.012 + k * pitch
+						: width - width * 0.012 - (k + 1) * pitch + (pitch - barW);
+				const yTop = height - h;
+
+				// soft halo so the column still reads once the blur smears it
+				g.beginFill(0xff8ede, 0.14);
+				g.drawRoundedRect(x - barW * 0.45, yTop - barW * 0.4, barW * 1.9, h + barW * 0.8, radius * 2);
+				g.endFill();
+				// lower body — champagne gold
+				g.beginFill(0xffc65a, 0.62);
+				g.drawRoundedRect(x, yTop + h * 0.4, barW, h * 0.6, radius);
+				g.endFill();
+				// upper body — pink
+				g.beginFill(0xff8ede, 0.55);
+				g.drawRoundedRect(x, yTop, barW, h * 0.55, radius);
+				g.endFill();
+				// lit cap
+				g.beginFill(0xfff6dd, 0.95);
+				g.drawRoundedRect(x, yTop, barW, Math.max(3, barW * 0.55), radius);
+				g.endFill();
+			}
+		}
+	};
+
 	// floating party bokeh, drifting up with a gentle sway — soft textured
 	// motes (fxGlow) instead of hard vector circles
 	const bokehState = (orb: (typeof BOKEH)[number]) => {
@@ -256,6 +331,7 @@
 			beamPhase += 0.004 * (1 + 0.4 * winBoost);
 			tick += 1;
 			winBoost += (0 - winBoost) * 0.02; // ease the boost back to rest
+			featureLevel += ((showFeatureBackground ? 1 : 0) - featureLevel) * 0.03;
 		}, 16);
 		return () => clearInterval(id);
 	});
@@ -296,6 +372,7 @@
 	<Sprite key="wildPartyBgBase" {...parallax} />
 	{@render floor()}
 	{@render bokeh()}
+	<Graphics draw={drawEq} blendMode="add" />
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
 	<Graphics draw={drawConfetti} />
 </FadeContainer>
@@ -305,6 +382,7 @@
 	<Sprite key="wildPartyBgFeature" {...parallax} />
 	{@render floor()}
 	{@render bokeh()}
+	<Graphics draw={drawEq} blendMode="add" />
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
 	<Graphics draw={drawConfetti} />
 </FadeContainer>

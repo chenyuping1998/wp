@@ -58,12 +58,19 @@
 
 <Button {...props} {sizes} {onpress} {disabled} alpha={disabled ? 0.5 : 1}>
 	{#snippet children({ center })}
+		<!-- without explicit colours this fell back to UiSprite's magenta default
+		     (0xd64dff), which showed up as a bright block in the corner once the
+		     drawer button was revealed on free-spin entry. Match the rest of the UI. -->
 		<UiSprite
 			key="base_mobile_drawer"
 			{...center}
 			anchor={0.5}
 			width={sizes.width}
 			height={sizes.height}
+			backgroundColor={0x1d0b28}
+			borderColor={0xd8a84e}
+			borderWidth={6}
+			borderRadius={sizes.width * 0.5}
 		/>
 		<Text
 			{...center}

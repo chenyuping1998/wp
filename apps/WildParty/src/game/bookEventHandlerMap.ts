@@ -117,6 +117,22 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateBet.winBookEventAmount = bookEvent.amount;
 	},
 	freeSpinTrigger: async (bookEvent: BookEventOfType<'freeSpinTrigger'>) => {
+		// Starting multiplier = how many paylines the three triggering Scatters
+		// complete (1-3). The math never sends this as its own event: the first
+		// updateGlobalMult is already start+1, i.e. the first Wild's increment.
+		// (Verified across every bonus book — firstUpdateGlobalMult minus this
+		// payline count is always exactly 1.) So derive it here, otherwise the
+		// plaque both opens on the wrong number and swallows that first Wild.
+		// positions carry board-array rows; row 0 is the top padding row.
+		const scatterRows = new Map<number, number>();
+		bookEvent.positions.forEach((position) => scatterRows.set(position.reel, position.row - 1));
+		const startingMult = Math.max(
+			1,
+			Object.values(config.paylines).filter((line) =>
+				[...scatterRows].every(([reel, row]) => (line as number[])[reel] === row),
+			).length,
+		);
+
 		// Scatters landed on reels 3/4/5 — silence everything and ring the classic
 		// free-game trigger bell, holding the moment for ~2s before the payoff.
 		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_main' });
@@ -130,7 +146,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await animateSymbols({ positions: bookEvent.positions });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
-		await eventEmitter.broadcastAsync({ type: 'transition' });
+		// stepping into the Free Spins room — the grand ornate-door transition
+		await eventEmitter.broadcastAsync({ type: 'transition', variant: 'enter' });
 		eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'jng_intro_fs' });
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
@@ -141,6 +158,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateGame.gameType = 'freegame';
 		eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
+		// seed the plaque with the trigger's starting multiplier before play begins,
+		// so every later updateGlobalMult still lands as a real +1 per Wild
+		stateGame.globalMultiplier = startingMult;
+		eventEmitter.broadcast({ type: 'globalMultiplierShow' });
+		await eventEmitter.broadcastAsync({
+			type: 'globalMultiplierUpdate',
+			multiplier: startingMult,
+		});
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
 		stateUi.freeSpinCounterShow = true;
 		eventEmitter.broadcast({
@@ -272,8 +297,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
 		stateUi.freeSpinCounterShow = false;
 		// transition resolves once the curtain fully covers the screen — swap the
-		// board back to the base spin that triggered the feature behind it
-		await eventEmitter.broadcastAsync({ type: 'transition' });
+		// board back to the base spin that triggered the feature behind it.
+		// Returning to base play gets the quick neon wipe, not the grand doors.
+		await eventEmitter.broadcastAsync({ type: 'transition', variant: 'exit' });
 		if (lastBaseGameBoard) {
 			eventEmitter.broadcast({ type: 'boardSettle', board: lastBaseGameBoard });
 		}

@@ -1,5 +1,7 @@
 <script lang="ts" module>
-	export type EmitterEventTransition = { type: 'transition' };
+	// 'enter' = into the Free Spins room (grand ornate doors),
+	// 'exit'  = back to base play (quick neon wipe). Defaults to 'exit'.
+	export type EmitterEventTransition = { type: 'transition'; variant?: 'enter' | 'exit' };
 </script>
 
 <script lang="ts">
@@ -11,12 +13,14 @@
 	const context = getContext();
 
 	let transitioning = $state(false);
+	let variant = $state<'enter' | 'exit'>('exit');
 	let oncovered = $state(() => {});
 
 	context.eventEmitter.subscribeOnMount({
 		// resolves as soon as the curtain fully covers the screen, so the scene
-		// swaps behind it; the curtain then rains away on top of the new scene
-		transition: async () => {
+		// swaps behind it; the curtain then clears on top of the new scene
+		transition: async (emitterEvent) => {
+			variant = emitterEvent.variant ?? 'exit';
 			transitioning = true;
 			await waitForResolve((resolve) => (oncovered = resolve));
 		},
@@ -25,6 +29,7 @@
 
 {#if transitioning}
 	<TransitionAnimation
+		{variant}
 		oncovered={() => oncovered()}
 		oncomplete={() => {
 			transitioning = false;

@@ -23,15 +23,19 @@
 		height: panelWidth / PANEL_RATIO_DESKTOP,
 	});
 	const scale = 1;
-	const position = $derived({
-		x:
-			context.stateGameDerived.boardLayout().x -
-			context.stateGameDerived.boardLayout().width * 0.5 -
-			panelSizes.width -
-			SYMBOL_SIZE * 0.7,
-		y:
-			context.stateGameDerived.boardLayout().y -
-			context.stateGameDerived.boardLayout().height * 0.5,
+	// The old offset (board left − panel − SYMBOL_SIZE*0.7) put the panel's left
+	// edge at roughly −38px, so the ornate frame was sliced by the canvas edge and
+	// read as a bright sliver in the top-left corner. Clamp it to a margin so the
+	// whole panel always stays on-canvas.
+	const position = $derived.by(() => {
+		const board = context.stateGameDerived.boardLayout();
+		const boardLeft = board.x - board.width * 0.5;
+		const MARGIN = SYMBOL_SIZE * 0.2;
+		const GAP = SYMBOL_SIZE * 0.22;
+		return {
+			x: Math.max(MARGIN, boardLeft - panelSizes.width - GAP),
+			y: board.y - board.height * 0.5,
+		};
 	});
 
 	const fontSize = SYMBOL_SIZE * 0.22;
