@@ -3,6 +3,7 @@
 
 	import { Text, REM } from 'pixi-svelte';
 	import { WHITE } from 'constants-shared/colors';
+	import { uiTheme } from '../theme.svelte';
 
 	type Props = {
 		name: string;
@@ -19,7 +20,7 @@
 	);
 	const textProps = {
 		style: {
-			fontFamily: 'Cinzel, Georgia, serif',
+			fontFamily: uiTheme.fontFamily,
 			fontSize: REM * 1.5,
 			fontWeight: '600',
 			lineHeight: REM * 2,

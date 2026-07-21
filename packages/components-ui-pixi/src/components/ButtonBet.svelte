@@ -8,6 +8,7 @@
 	import ButtonBetProvider from './ButtonBetProvider.svelte';
 	import ButtonBetSpinIcon from './ButtonBetSpinIcon.svelte';
 	import { UI_BASE_SIZE } from '../constants';
+	import { uiTheme } from '../theme.svelte';
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const disabled = $derived(!stateBetDerived.isBetCostAvailable());
@@ -26,9 +27,9 @@
 						height={sizes.height}
 						anchor={0.5}
 						backgroundColor={disabled || ['spin_disabled', 'stop_disabled'].includes(key)
-							? 0x5a5a5a
-							: 0x131313}
-						borderColor={0xffffff}
+							? uiTheme.buttonFillDisabled
+							: uiTheme.betFill}
+						borderColor={uiTheme.betBorder}
 						borderWidth={7}
 						borderRadius={sizes.width * 0.5}
 						alpha={0.92}

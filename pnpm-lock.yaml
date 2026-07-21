@@ -49,6 +49,9 @@ importers:
       pixi-svelte:
         specifier: workspace:*
         version: link:../../packages/pixi-svelte
+      pixi.js:
+        specifier: 8.8.1
+        version: 8.8.1
       rgs-requests:
         specifier: workspace:*
         version: link:../../packages/rgs-requests

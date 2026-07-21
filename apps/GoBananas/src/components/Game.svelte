@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	import { BlurFilter } from 'pixi.js';
 	import { EnablePixiExtension } from 'components-pixi';
 	import { EnableHotkey } from 'components-shared';
 	import { MainContainer } from 'components-layout';
-	import { App, Text, REM } from 'pixi-svelte';
+	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
 	import { stateModal } from 'state-shared';
 
 	import { UI, UiGameName } from 'components-ui-pixi';
@@ -12,6 +13,8 @@
 	import Modals from './ui/Modals.svelte';
 
 	import { getContext } from '../game/context';
+	// side-effect import: paints the shared bet bar in the jungle palette
+	import '../game/uiTheme';
 	import EnableSound from './EnableSound.svelte';
 	import EnableGameActor from './EnableGameActor.svelte';
 	import ResumeBet from './ResumeBet.svelte';
@@ -21,9 +24,10 @@
 	import BoardFrame from './BoardFrame.svelte';
 	import Board from './Board.svelte';
 	import ReelDust from './ReelDust.svelte';
-	import EntranceFx from './EntranceFx.svelte';
+	import EntryReveal from './EntryReveal.svelte';
 	import ScatterBurst from './ScatterBurst.svelte';
 	import ExpandingWilds from './ExpandingWilds.svelte';
+	import StickyPrizes from './StickyPrizes.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import WinLines from './WinLines.svelte';
 	import Win from './Win.svelte';
@@ -51,7 +55,16 @@
 	<EnableGameActor />
 	<EnablePixiExtension />
 
-	<Background />
+	<Container filters={backgroundBlur}>
+		<Background />
+	</Container>
+	<!-- corner vignette seats the blurred scene behind the board -->
+	<Sprite
+		key="fxVignette"
+		width={context.stateLayoutDerived.canvasSizes().width}
+		height={context.stateLayoutDerived.canvasSizes().height}
+		alpha={0.9}
+	/>
 
 	{#if context.stateLayout.showLoadingScreen}
 		<LoadingScreen onloaded={() => (context.stateLayout.showLoadingScreen = false)} />
@@ -65,21 +78,20 @@
 		<Sound />
 
 		<MainContainer>
-			<EntranceFx dy={-24}>
-				<BoardFrame />
-			</EntranceFx>
+			<BoardFrame />
 		</MainContainer>
 
 		<MainContainer>
-			<EntranceFx delay={140} dy={-36}>
-				<Board />
-				<ReelDust />
-				<ExpandingWilds />
-				<Anticipations />
-				<ScatterBurst />
-				<WinLines />
-			</EntranceFx>
+			<Board />
+			<ReelDust />
+			<ExpandingWilds />
+			<StickyPrizes />
+			<Anticipations />
+			<ScatterBurst />
+			<WinLines />
 		</MainContainer>
+
+		<EntryReveal />
 
 		<UI>
 			{#snippet gameName()}

@@ -84,8 +84,6 @@ export const stateGame = $state({
 	gameType: 'basegame' as GameType,
 	multiplierBoard: [] as (MultiplierSymbol | undefined)[][],
 	scatterCounter: 0,
-	// WildParty free-game accumulating global multiplier (starts 1-3, +1 per Wild, cap 100)
-	globalMultiplier: 1,
 	// reels currently locked by sticky expanded wilds (free game only)
 	stickyWildReels: [] as number[],
 	// superspin: coins stuck to the board, evaluated at the end of the round

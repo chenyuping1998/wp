@@ -18,6 +18,54 @@
 		src: new URL('../../assets/sprites/goBananasFrame/frame_edge.png', import.meta.url).href,
 		preload: true,
 	},
+	// soft-falloff FX textures (design/generate_fx_textures.mjs) — every particle
+	// in the game is one of these, tinted and drawn additively
+	fxGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFx/fx_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	fxStar: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFx/fx_star.png', import.meta.url).href,
+		preload: true,
+	},
+	fxStreak: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFx/fx_streak.png', import.meta.url).href,
+		preload: true,
+	},
+	fxLeaf: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFx/fx_leaf.png', import.meta.url).href,
+		preload: true,
+	},
+	fxVignette: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFx/fx_vignette.png', import.meta.url).href,
+		preload: true,
+	},
+	// brass win-tier plaques (design/generate_win_banners.mjs)
+	gbWinBannerBig: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/big.png', import.meta.url).href,
+	},
+	gbWinBannerSuperwin: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/superwin.png', import.meta.url).href,
+	},
+	gbWinBannerMega: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/mega.png', import.meta.url).href,
+	},
+	gbWinBannerEpic: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/epic.png', import.meta.url).href,
+	},
+	gbWinBannerMax: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/max.png', import.meta.url).href,
+	},
 	// jungle-military plank sign for the free-spin intro/outro boards and the
 	// counter plaque (text is drawn by the frontend — language-neutral art)
 	gbFsSign: {

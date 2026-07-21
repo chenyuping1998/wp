@@ -7,6 +7,7 @@
 	import type { Snippet } from 'svelte';
 	import { i18nDerived } from '../i18n/i18nDerived';
 	import { UI_BASE_FONT_SIZE } from '../constants';
+	import { uiTheme } from '../theme.svelte';
 
 	type Props = Omit<ButtonProps, 'children'> & {
 		icon: ButtonIcon;
@@ -29,9 +30,9 @@
 	}: Props = $props();
 
 	const backgroundColor = $derived.by(() => {
-		if (buttonProps.disabled) return 0x5a5a5a;
-		if (variant === 'light') return 0x8fe6ff;
-		return 0x1d0b28;
+		if (buttonProps.disabled) return uiTheme.buttonFillDisabled;
+		if (variant === 'light') return uiTheme.buttonFillLight;
+		return uiTheme.buttonFill;
 	});
 
 	const iconSymbolMap: Partial<Record<ButtonIcon, string>> = {
@@ -72,10 +73,10 @@
 		if (textMode === 'text') return i18nDerived[icon]();
 		return iconTextOverrideMap[icon] ?? iconSymbolMap[icon] ?? i18nDerived[icon]();
 	});
-	const iconFill = 0xffffff;
-	const iconStroke = 0x000000;
-	// turbo bolt: white outline when idle, filled orange when active
-	const boltColor = $derived(buttonProps.disabled ? 0xbdbdbd : 0xffffff);
+	const iconFill = $derived(uiTheme.buttonIconFill);
+	const iconStroke = $derived(uiTheme.buttonIconStroke);
+	// turbo bolt: outlined when idle, filled when active
+	const boltColor = $derived(buttonProps.disabled ? 0xbdbdbd : uiTheme.buttonIconFill);
 </script>
 
 <Button {...buttonProps}>
@@ -86,7 +87,7 @@
 			width={buttonProps.sizes.width}
 			height={buttonProps.sizes.height}
 			backgroundColor={backgroundColor}
-			borderColor={0xd8a84e}
+			borderColor={uiTheme.buttonBorder}
 			borderWidth={active ? 10 : 6}
 			borderRadius={buttonProps.sizes.width * 0.5}
 			{...active
@@ -123,8 +124,8 @@
 					align: 'center',
 					wordWrap: true,
 					wordWrapWidth: buttonProps.sizes.width * (isTextMode ? 0.68 : 0.85),
-					fontFamily: 'Cinzel, Georgia, serif',
-					fontWeight: '600',
+					fontFamily: uiTheme.fontFamily,
+					fontWeight: uiTheme.fontWeight,
 					fontSize: iconFontSize,
 					fill: iconFill,
 					stroke: iconStroke,

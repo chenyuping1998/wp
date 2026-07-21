@@ -173,6 +173,25 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 - **INFO 內容同步修正**（原本還是舊主題）：paytable 名稱對齊現行美術（Combat Helmet／Pineapple Grenade／Banana Ammo Crate／Golden Compass／Golden Bananas）；規則改「Sergeant Wild devours banana」機制、3/4/5 S → 8/12/15 FG、乘倍 2×–50× 線上加總、無 retrigger；新增 Super Spin 章節；載入頁副標 Max Win 10,000×
 - `i18n/messagesMap/zh.ts` 與 `i18nText.ts` 的 zh 條目**保留**——那是 lang=zh 的正規語系，非硬編中文
 
+## 5.14 演繹方式全面對齊 WildParty（2026-07-17 第四輪）
+
+參考的是 WildParty 的**演繹手法**（非美術風格）：貼圖化加法混色粒子、rAF 單一 `t` 進度驅動、震屏＋定格閃白、FX 時鐘、分層景深。分四階段做，每階段結束自行掃 bug。
+
+**Phase 1 — bet bar 主題化**：`components-ui-pixi` 原本硬編 WildParty 紫金/Cinzel，GoBananas 直接繼承。新增 `src/theme.svelte.ts`（`uiTheme` + `setUiTheme`，預設＝原值故 WildParty 不受影響），UiButton/UiLabel/ButtonBet/ButtonDrawer/ButtonBuyBonus/UiGameName/LabelBalance 全改讀 theme；GoBananas 於 `game/uiTheme.ts` 設叢林軍事色（橄欖底/黃銅邊/sans）。**兩個 app 都重建驗證。**
+
+**Phase 2 — FX 貼圖管線**：`design/generate_fx_textures.mjs` 產 `fx_glow/fx_star/fx_streak/fx_leaf/fx_vignette`（純白，執行期 tint）。新增 `FxBurst`（中心閃光＋雙震波環＋12 火花，`flavour="jungle"` 混入葉片碎屑）與 `ImpactDust`（貼地扇形塵）。ReelDust/ScatterBurst/ExpandingWilds 的自製向量粒子**全面改成加法貼圖 sprite**。
+
+**Phase 3 — 進場與景深**：`EntryReveal`（閃白＋爆發＋五輪由左至右揭幕波）取代原 EntranceFx 下落；`Background` 加 ken-burns 視差（1.08 overscan）＋22 顆飄浮 bokeh（superspin 換冷色）；`Game.svelte` 背景包 `BlurFilter` 景深＋ `fxVignette` 四角壓暗。⚠️ 此階段需為 GoBananas 補 `pixi.js` 直接依賴（型別 import 會被抹除所以先前沒事，`BlurFilter` 是執行期值）。
+
+**Phase 4 — 中獎演繹**：`design/generate_win_banners.mjs` 產五張黃銅獎牌（BIG/SUPER/MEGA/EPIC/MAX WIN，1000×560，中央暗槽給金額）。`Win.svelte` 重寫：震屏 700ms、hit-stop 閃白＋scale punch、獎牌 FX 時鐘（入場過衝→呼吸光→每 2.3s 加法自疊眨眼→鉚釘星芒→epic/max 連發爆點）、tier 強度分級。新增 `BigWinFx`（12 道旋轉金芒＋漂移 bokeh＋週期爆點＋vignette）。舊 `WinAnimation`/`WinLevelSymbolIntro` 移除。
+
+**掃描抓到的真 bug（已修）**：
+1. **`StickyPrizes` 從未掛載**——superspin 黏性金幣覆蓋層不在 `Game.svelte` 裡，`stickyPrizesNew`/`stickyPrizesClear` 事件一直廣播給空氣。這是 superspin 演繹缺失的根因之一，已掛載
+2. `GlobalMultiplier` 死碼——元件孤兒＋`key="globalMultiplier"` 資源已刪，連帶清掉 emitter 型別、`updateGlobalMult` handler、`stateGame.globalMultiplier`
+3. 缺 `pixi.js` 依賴（見 Phase 3）
+
+**常備掃描腳本**（HANDOFF 附錄，每次改完可跑）：檢查 ①所有 `key=` 都對應 assets.ts ②無孤兒元件 ③無未使用 assets ④**無「廣播但無人監聽」的事件**（第 4 項就是抓到 StickyPrizes 的那一條）。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

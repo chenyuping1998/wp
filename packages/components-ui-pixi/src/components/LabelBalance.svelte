@@ -6,6 +6,7 @@
 
 	import UiLabel from './UiLabel.svelte';
 	import { i18nDerived } from '../i18n/i18nDerived';
+	import { uiTheme } from '../theme.svelte';
 
 	type Props = {
 		stacked?: boolean;
@@ -21,4 +22,4 @@
 	});
 </script>
 
-<UiLabel tiled {label} {value} stacked={props.stacked} accent={{ border: 0xd8a84e, label: 0xffd77a }} />
+<UiLabel tiled {label} {value} stacked={props.stacked} accent={{ border: uiTheme.panelBorder, label: uiTheme.balanceLabelFill }} />

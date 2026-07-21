@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Text } from 'pixi-svelte';
-	import { WHITE } from 'constants-shared/colors';
 
 	import UiSprite from './UiSprite.svelte';
 	import { UI_BASE_FONT_SIZE } from '../constants';
+	import { uiTheme } from '../theme.svelte';
 
 	type Props = {
 		label: string;
@@ -17,29 +17,28 @@
 
 	const props: Props = $props();
 
-	const DEFAULT_ACCENT = { border: 0xd8a84e, label: 0xfff08c };
-	const accent = $derived(props.accent ?? DEFAULT_ACCENT);
+	const accent = $derived(props.accent ?? { border: uiTheme.panelBorder, label: uiTheme.labelFill });
 
 	const labelStyle = $derived({
-		fontFamily: 'Cinzel, Georgia, serif',
+		fontFamily: uiTheme.fontFamily,
 		fontSize: UI_BASE_FONT_SIZE,
 		fill: accent.label,
-		stroke: 0x7133a4,
+		stroke: uiTheme.valueStroke,
 		strokeThickness: 3,
 	});
 
 	// uniform across Balance / Win / Bet — never tinted by accent
-	const valueStyle = {
-		fontFamily: 'Cinzel, Georgia, serif',
+	const valueStyle = $derived({
+		fontFamily: uiTheme.fontFamily,
 		fontSize: UI_BASE_FONT_SIZE,
-		fill: WHITE,
-		stroke: 0x7133a4,
+		fill: uiTheme.valueFill,
+		stroke: uiTheme.valueStroke,
 		strokeThickness: 3,
 		dropShadow: true,
-		dropShadowColor: 0x5a1977,
+		dropShadowColor: uiTheme.valueShadow,
 		dropShadowBlur: 2,
 		dropShadowDistance: 1,
-	} as const;
+	});
 </script>
 
 {#if props.stacked}
@@ -51,7 +50,7 @@
 			width={UI_BASE_FONT_SIZE * 3 * (326 / 73)}
 			height={UI_BASE_FONT_SIZE * 3}
 			borderRadius={24}
-			backgroundColor={0x1d0b28}
+			backgroundColor={uiTheme.panelFill}
 			borderColor={accent.border}
 			borderWidth={5}
 		/>
@@ -67,7 +66,7 @@
 			width={UI_BASE_FONT_SIZE * 3 * (326 / 73)}
 			height={UI_BASE_FONT_SIZE * 3}
 			borderRadius={24}
-			backgroundColor={0x1d0b28}
+			backgroundColor={uiTheme.panelFill}
 			borderColor={accent.border}
 			borderWidth={5}
 		/>

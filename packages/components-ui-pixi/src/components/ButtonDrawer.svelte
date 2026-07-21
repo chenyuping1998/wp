@@ -9,6 +9,7 @@
 	import { UI_BASE_FONT_SIZE, UI_BASE_SIZE } from '../constants';
 	import { getContext } from '../context';
 	import { Tween } from 'svelte/motion';
+	import { uiTheme } from '../theme.svelte';
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const context = getContext();
@@ -67,8 +68,8 @@
 			anchor={0.5}
 			width={sizes.width}
 			height={sizes.height}
-			backgroundColor={0x1d0b28}
-			borderColor={0xd8a84e}
+			backgroundColor={uiTheme.buttonFill}
+			borderColor={uiTheme.buttonBorder}
 			borderWidth={6}
 			borderRadius={sizes.width * 0.5}
 		/>
@@ -80,7 +81,7 @@
 				align: 'center',
 				wordWrap: true,
 				wordWrapWidth: 200,
-				fontFamily: 'Cinzel, Georgia, serif',
+				fontFamily: uiTheme.fontFamily,
 				fontWeight: '600',
 				fontSize: UI_BASE_FONT_SIZE * 0.9,
 				fill: 0xffffff,

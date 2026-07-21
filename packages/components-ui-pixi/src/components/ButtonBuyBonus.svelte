@@ -7,6 +7,7 @@
 	import { UI_BASE_FONT_SIZE, UI_BASE_SIZE } from '../constants';
 	import { getContext } from '../context';
 	import { i18nDerived } from '../i18n/i18nDerived';
+	import { uiTheme } from '../theme.svelte';
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const { stateXstateDerived, eventEmitter } = getContext();
@@ -83,7 +84,7 @@
 				// so the two lines never kiss the gold frame
 				wordWrapWidth: 116,
 				lineHeight: UI_BASE_FONT_SIZE * 0.72,
-				fontFamily: 'Cinzel, Georgia, serif',
+				fontFamily: uiTheme.fontFamily,
 				fontWeight: '600',
 				fontSize: UI_BASE_FONT_SIZE * 0.68,
 				fill: 0xffffff,

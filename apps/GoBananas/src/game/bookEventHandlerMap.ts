@@ -209,34 +209,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateUi.freeSpinCounterCurrent = bookEvent.amount + 1;
 		stateUi.freeSpinCounterTotal = bookEvent.total;
 	},
-	updateGlobalMult: async (bookEvent: BookEventOfType<'updateGlobalMult'>) => {
-		const targetMult = bookEvent.globalMult;
-		const currentMult = stateGame.globalMultiplier;
-
-		eventEmitter.broadcast({ type: 'globalMultiplierShow' });
-
-		if (targetMult > currentMult) {
-			// Animate one-by-one: each Wild adds +1, show each increment clearly but quickly
-			for (let mult = currentMult + 1; mult <= targetMult; mult++) {
-				stateGame.globalMultiplier = mult;
-				await eventEmitter.broadcastAsync({
-					type: 'globalMultiplierUpdate',
-					multiplier: mult,
-				});
-				// 350ms between each — fast enough for turbo but visible enough to follow
-				if (mult < targetMult) {
-					await waitForTimeout(350);
-				}
-			}
-		} else {
-			// Reset or same — just update directly
-			stateGame.globalMultiplier = targetMult;
-			await eventEmitter.broadcastAsync({
-				type: 'globalMultiplierUpdate',
-				multiplier: targetMult,
-			});
-		}
-	},
 	freeSpinRetrigger: async (bookEvent: BookEventOfType<'freeSpinRetrigger'>) => {
 		// Same bell moment as the initial trigger: silence the free-game bgm,
 		// ring the bell and hold ~2s, then bring the music back.
@@ -279,9 +251,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// NOTE: expandingWildsClear deliberately does NOT fire here — the sticky
 		// overlays must keep covering the reveal-board W stacks through the outro
 		// and the idle board; the next spin clears them (actor onNewGameStart).
-		stateGame.globalMultiplier = 1;
-		await eventEmitter.broadcastAsync({ type: 'globalMultiplierUpdate', multiplier: 1 });
-		eventEmitter.broadcast({ type: 'globalMultiplierHide' });
 		eventEmitter.broadcast({ type: 'boardFrameGlowHide' });
 		eventEmitter.broadcast({ type: 'freeSpinOutroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_youwon_panel' });
