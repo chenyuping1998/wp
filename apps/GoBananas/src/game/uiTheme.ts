@@ -22,7 +22,18 @@ setUiTheme({
 	panelBorder: 0xd8a334,
 	labelFill: 0xffd75e,
 	balanceLabelFill: 0xffe98a,
+	// win reads in jungle green, bet in a cooler brass so the three readouts
+	// stay tellable apart without leaving the palette
+	winAccent: { border: 0x9ec44a, label: 0xd4f07a },
+	betAccent: { border: 0xc08a20, label: 0xffd0a0 },
 	valueFill: 0xfff7d6,
 	valueStroke: 0x1a2208,
 	valueShadow: 0x0a1004,
+
+	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
+	// keep the themed rounded rect, which suits the round buttons)
+	sprites: {
+		base_ticker: 'gbUiTicker',
+		buyBonus: 'gbUiBuyBonus',
+	},
 });

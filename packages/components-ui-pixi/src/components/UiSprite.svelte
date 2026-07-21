@@ -1,42 +1,50 @@
 <script lang="ts" module>
 	import { Rectangle, type RectangleProps } from 'pixi-svelte';
 
-	export type Props = RectangleProps;
-</script>
-
-<script lang="ts">
-	const props: Props = $props();
-	const width = $derived(props.width ?? 120);
-	const height = $derived(props.height ?? 120);
-	const borderRadius = $derived(props.borderRadius ?? 34);
-	const backgroundColor = $derived(props.backgroundColor ?? 0xd64dff);
-	const borderColor = $derived(props.borderColor ?? 0xffbf4a);
-	const borderWidth = $derived(props.borderWidth ?? 6);
-</script>
-
-<Rectangle
-	{...props}
-	{width}
-	{height}
-	{borderRadius}
-	{backgroundColor}
-	{borderColor}
-	{borderWidth}
-/>
-
-<!-- ADD YOUR DESIGN -->
-
-<!-- <script lang="ts" module>
-	import { Sprite, type SpriteProps } from 'pixi-svelte';
-	import type { sharedAssetsPixi } from 'constants-shared/assets';
-
-	export type Props = SpriteProps & {
-		key: keyof typeof sharedAssetsPixi;
+	export type Props = RectangleProps & {
+		// slot name — a game can map this to plate artwork via uiTheme.sprites
+		key?: string;
 	};
 </script>
 
 <script lang="ts">
+	import { Sprite } from 'pixi-svelte';
+
+	import { uiTheme } from '../theme.svelte';
+
 	const props: Props = $props();
+	const width = $derived(props.width ?? 120);
+	const height = $derived(props.height ?? 120);
+	const borderRadius = $derived(props.borderRadius ?? 34);
+	const backgroundColor = $derived(props.backgroundColor ?? uiTheme.buttonFill);
+	const borderColor = $derived(props.borderColor ?? uiTheme.buttonBorder);
+	const borderWidth = $derived(props.borderWidth ?? 6);
+
+	// themed plate art for this slot, if the game supplied one
+	const spriteKey = $derived(
+		props.key ? uiTheme.sprites[props.key as keyof typeof uiTheme.sprites] : undefined,
+	);
 </script>
 
-<Sprite {...props} /> -->
+{#if spriteKey}
+	<Sprite
+		key={spriteKey}
+		x={props.x}
+		y={props.y}
+		anchor={props.anchor}
+		{width}
+		{height}
+		alpha={props.alpha}
+		tint={props.tint}
+	/>
+{:else}
+	<Rectangle
+		{...props}
+		{width}
+		{height}
+		{borderRadius}
+		{backgroundColor}
+		{borderColor}
+		{borderWidth}
+	/>
+{/if}

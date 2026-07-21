@@ -24,9 +24,17 @@ export const uiTheme = $state({
 	panelBorder: 0xd8a84e,
 	labelFill: 0xfff08c,
 	balanceLabelFill: 0xffd77a,
+	// per-metric accents: win flashes toward white on a change, bet sits apart
+	winAccent: { border: 0x5dd67e, label: 0x8effad },
+	betAccent: { border: 0xa879ff, label: 0xc9a8ff },
 	valueFill: 0xffffff,
 	valueStroke: 0x7133a4,
 	valueShadow: 0x5a1977,
+
+	// Optional plate artwork per UiSprite slot. A game supplies asset keys here
+	// to swap the flat rounded-rect placeholders for real framed art; slots left
+	// undefined keep drawing the themed rectangle.
+	sprites: {} as Partial<Record<'base_ticker' | 'buyBonus' | 'bet' | 'base_mobile_drawer', string>>,
 });
 
 export type UiTheme = typeof uiTheme;

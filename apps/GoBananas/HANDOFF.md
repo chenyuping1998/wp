@@ -201,6 +201,13 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 - **爆炸過場**：衝擊波經過時同步敲一記 `boardFrameImpact`（strength 1.4）
 - **順手修掉隱患**：斷線續玩路徑仍在 `findLastBookEvent('updateGlobalMult')` 並重播，但該 handler 已於 §5.14 移除 → 真的取到會查不到 handler；已從 resume 路徑與 snapshot 保留清單移除（GoBananas 數學本就不產這事件）
 
+## 5.16 bet bar 面板美術（2026-07-17 第六輪）
+
+- `design/generate_ui_plates.mjs` 產兩張板：`ticker_plate.png`（652×146，比例對齊 UI 的 326:73）與 `buybonus_plate.png`（300²）。用的是與轉輪框／告示牌同一套語彙：橄欖帆布底＋顆粒＋黃銅框＋內凹讀數槽＋四角鉚釘；buyBonus 額外加暖色頂光讓它從 bar 裡浮起來當 CTA
+- **共用 `UiSprite` 支援每遊戲掛貼圖**：`uiTheme.sprites` 可為 `base_ticker`/`buyBonus`/`bet`/`base_mobile_drawer` 指定 asset key，有掛就畫貼圖、沒掛維持原本主題化圓角矩形（WildParty 未設定 → 完全不受影響）
+- **三個讀數的配色收進 theme**：`LabelWin`/`LabelBet` 原本硬編 WildParty 的綠與紫，改讀 `uiTheme.winAccent`/`betAccent`；GoBananas 設 win＝叢林綠、bet＝冷黃銅，balance＝暖金，三者可辨但同調
+- ⚠️ 貼圖路徑會忽略 `backgroundColor`/`borderColor`，所以 buyBonus 的 disabled／active 狀態改用 `tint` 表達（灰化／提亮），否則按下與停用就看不出來
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

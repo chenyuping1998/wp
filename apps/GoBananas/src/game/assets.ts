@@ -45,6 +45,18 @@
 		src: new URL('../../assets/sprites/goBananasFx/fx_vignette.png', import.meta.url).href,
 		preload: true,
 	},
+	// bet-bar plates (design/generate_ui_plates.mjs) — brass-framed olive canvas
+	// matching the reel housing
+	gbUiTicker: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/ticker_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonus: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_plate.png', import.meta.url).href,
+		preload: true,
+	},
 	// brass win-tier plaques (design/generate_win_banners.mjs)
 	gbWinBannerBig: {
 		type: 'sprite',

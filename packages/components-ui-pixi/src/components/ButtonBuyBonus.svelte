@@ -63,12 +63,15 @@
 			{...disabled
 				? {
 						backgroundColor: 0xaaaaaa,
+						// plate art ignores fills, so grey it down with tint instead
+						tint: 0x8a8a8a,
 					}
 				: {}}
 			{...active
 				? {
 						borderWidth: 10,
 						borderColor: 0xffffff,
+						tint: 0xfff2c0,
 					}
 				: {}}
 		/>

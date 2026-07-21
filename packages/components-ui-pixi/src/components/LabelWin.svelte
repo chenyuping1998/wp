@@ -7,6 +7,7 @@
 
 	import UiLabel from './UiLabel.svelte';
 	import { i18nDerived } from '../i18n/i18nDerived';
+	import { uiTheme } from '../theme.svelte';
 
 	type Props = {
 		stacked?: boolean;
@@ -23,7 +24,7 @@
 
 	// win reaction: flash the panel green→bright the moment a new win lands, then
 	// ease back — a position-safe colour pulse so the bar answers a hit
-	const WIN_BASE = { border: 0x5dd67e, label: 0x8effad };
+	const WIN_BASE = $derived(uiTheme.winAccent);
 	let flash = $state(0);
 	let prevWin = 0;
 	$effect(() => {

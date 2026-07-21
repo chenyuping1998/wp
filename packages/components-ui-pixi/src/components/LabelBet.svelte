@@ -6,6 +6,7 @@
 	import UiLabel from './UiLabel.svelte';
 	import { getContext } from '../context';
 	import { i18nDerived } from '../i18n/i18nDerived';
+	import { uiTheme } from '../theme.svelte';
 
 	type Props = {
 		stacked?: boolean;
@@ -25,5 +26,5 @@
 </script>
 
 <Container eventMode="static" cursor={disabled ? 'not-allowed' : 'pointer'} onpointerup={onpress}>
-	<UiLabel tiled {label} {value} stacked={props.stacked} accent={{ border: 0xa879ff, label: 0xc9a8ff }} />
+	<UiLabel tiled {label} {value} stacked={props.stacked} accent={uiTheme.betAccent} />
 </Container>
