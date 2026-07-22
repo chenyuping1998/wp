@@ -40,7 +40,15 @@ export const uiTheme = $state({
 	// bar stays flush with the canvas floor and only its height above that edge
 	// changes. Below 1 gives the board more room — useful for games whose reel
 	// housing has a wide structural margin. 1 keeps the original layout.
+	// Ignored when betBarLayout is 'sideRail'.
 	betBarScale: 1,
+
+	// 'bottom'   — the original single bar across the foot of the screen
+	// 'sideRail' — controls split into two vertical rails (menu + Buy Bonus left,
+	//              readouts + spin pod right), handing the whole middle of the
+	//              screen to the board. Wide layouts only; portrait has no
+	//              horizontal room for rails and always uses the bottom bar.
+	betBarLayout: 'bottom' as 'bottom' | 'sideRail',
 });
 
 export type UiTheme = typeof uiTheme;

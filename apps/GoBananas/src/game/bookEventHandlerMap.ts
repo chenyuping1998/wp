@@ -26,6 +26,21 @@ const ANTICIPATION_MIN_SCATTERS = 3;
 const gateAnticipation = (anticipation: number[]) =>
 	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
 
+// A plain base-game board, sampled from the base padding strips. Used to put the
+// reels back after a superspin: that mode's board is full of P (coin) and X
+// (empty crate) symbols which exist nowhere else, so leaving it up made the
+// round look like it had not finished.
+const baseIdleBoard = () =>
+	(config.paddingReels.basegame as { name: string }[][]).map((strip) => {
+		const start = Math.floor(Math.random() * strip.length);
+		// same shape as a math reveal board: BOARD_DIMENSIONS.y visible rows plus
+		// one padding row top and bottom
+		return Array.from(
+			{ length: BOARD_DIMENSIONS.y + 2 },
+			(_, i) => strip[(start + i) % strip.length],
+		);
+	});
+
 // The winLevel of the setWin the math emitted this round, or null if it emitted
 // none. finalWin reuses it so the superspin total-win plaque is graded by the
 // math's own classification instead of a locally invented one.
@@ -328,6 +343,16 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			});
 			winLevelSoundsStop();
 			eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
+
+			// Back to the base game. Without this the hold-and-spin board stayed on
+			// screen after the plaque was dismissed — stuck coins still overlaid,
+			// reels still showing superspin-only symbols. Mirrors freeSpinEnd: swap
+			// the state, then let the transition wipe cover the change.
+			stateGame.stickyPrizes = [];
+			eventEmitter.broadcast({ type: 'stickyPrizesClear' });
+			stateGame.gameType = 'basegame';
+			stateGameDerived.enhancedBoard.settle(baseIdleBoard());
+			await eventEmitter.broadcastAsync({ type: 'transition' });
 			await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		}
 		lastWinLevel = null;

@@ -8,7 +8,7 @@ import type { RawSymbol, SymbolState } from './types';
 // whole board coherently. The bet bar's layout lives in components-ui-pixi and
 // is shared with other games, so the board grows into the empty space above it
 // rather than the bar being shrunk.
-export const SYMBOL_SIZE = 96;
+export const SYMBOL_SIZE = 118;
 
 export const REEL_PADDING = 0.53;
 

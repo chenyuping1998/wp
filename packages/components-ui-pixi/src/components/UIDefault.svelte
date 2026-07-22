@@ -9,6 +9,8 @@
 	import LayoutPortrait from './LayoutPortrait.svelte';
 	import LayoutLandscape from './LayoutLandscape.svelte';
 	import LayoutTablet from './LayoutTablet.svelte';
+	import LayoutSideRail from './LayoutSideRail.svelte';
+	import { uiTheme } from '../theme.svelte';
 	import LabelBalance from './LabelBalance.svelte';
 	import LabelWin from './LabelWin.svelte';
 	import LabelBet from './LabelBet.svelte';
@@ -41,7 +43,13 @@
 		tablet: LayoutTablet,
 	};
 
-	const LayoutComponent = $derived(LAYOUT_COMPONENT_MAP[stateLayoutDerived.layoutType()]);
+	// Portrait keeps the bottom bar whatever the theme asks for — there is no
+	// horizontal room for rails on a 1080x1920 box.
+	const LayoutComponent = $derived(
+		uiTheme.betBarLayout === 'sideRail' && stateLayoutDerived.layoutType() !== 'portrait'
+			? LayoutSideRail
+			: LAYOUT_COMPONENT_MAP[stateLayoutDerived.layoutType()],
+	);
 </script>
 
 <EnableSpaceHold />

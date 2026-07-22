@@ -31,11 +31,12 @@ setUiTheme({
 	valueStroke: 0x1a2208,
 	valueShadow: 0x0a1004,
 
-	// The reel housing art carries a wide structural margin (FRAME_SCALE 1.28 in
-	// BoardFrame), so the board's real footprint is ~1.3x the playfield. At the
-	// stock bar height there was no room left to grow it. Pulling the bar in
-	// frees the vertical space the bigger board needs.
-	betBarScale: 0.84,
+	// Controls split into two vertical rails instead of a bottom bar: menu and the
+	// Buy Bonus CTA on the left, readouts and the spin pod on the right. That
+	// frees the entire middle of the screen for the board, which matters here
+	// because the reel housing art carries a wide structural margin (FRAME_SCALE
+	// 1.28 in BoardFrame) — its real footprint is ~1.3x the playfield.
+	betBarLayout: 'sideRail',
 
 	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
 	// keep the themed rounded rect, which suits the round buttons)

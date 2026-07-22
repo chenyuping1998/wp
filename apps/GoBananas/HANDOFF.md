@@ -471,6 +471,40 @@ font-family: 'Cinzel, Georgia, serif', Arial, sans-serif;
 | 一般中獎（8990 本） | `setWin` 獎級面板 → 收重轉牌 → TOTAL WIN N× (該局 level) → 等玩家按 |
 | 封頂 2000×（10 本） | MAX 大獎演出 → 收重轉牌 → TOTAL WIN 2000× (level 10) → 等玩家按 |
 
+## 5.29 Superspin 收尾回主盤面 + UI 改側邊欄、盤面放大（2026-07-22 第十九輪）
+
+### 1. Superspin 結束後回到主遊戲盤面
+
+總得分牌被點掉之後，畫面仍停在 hold-and-spin 的盤面：黏住的金幣還蓋著，轉輪上還是 P（金幣）和 X（空箱）—— 這兩個符號**只有 superspin 才有**，留著就像回合沒結束。
+
+`finalWin` 的 superspin 分支在收牌後補上：清黏性金幣 → `gameType` 轉回 `basegame` → `settle()` 換上一副 base 盤面 → `transition` 手榴彈過場蓋掉切換 → `uiShow`。與 `freeSpinEnd` 同樣的做法。
+
+新的 `baseIdleBoard()` 從 `config.paddingReels.basegame` 的 80 格輪帶隨機取窗，形狀與數學的 reveal board 相同（5 可見列 + 上下各一 padding），所以每次結束看到的盤面都不一樣，不是固定畫面。
+
+### 2. UI 改側邊欄 + 盤面放大
+
+共用套件新增 `LayoutSideRail.svelte`，由主題的 `betBarLayout` 選用（**預設 `'bottom'`，WildParty 完全不受影響**；已重新 build WildParty 確認）。直向版面永遠用底部橫欄 —— 1080×1920 沒有橫向空間放側欄。
+
+- **左欄**：選單（上方）、Buy Bonus（**垂直置中、scale 2.4，即原本 0.8 的 3 倍**）
+- **右欄**：balance / win / bet 三個讀數，下方 spin pod（−、BET、+，再下面 autospin、turbo）
+- 選單展開時往下長，留在左欄內
+- 位置全部按 `mainLayoutStandard()` 的比例計算，所以 desktop / landscape / tablet 三種標準框共用同一個元件
+
+盤面：`SYMBOL_SIZE` 96 → **118**，`boardLayout.y` 由 0.385 改 **0.5**（沒有底部橫欄要閃避了，直接置中）。
+
+**實測驗證（1280×720）**：
+
+| 項目 | 結果 |
+|------|------|
+| 外框 | x 300–980、y 20–700，正中央，**佔畫面高 94%** |
+| UI 與外框重疊 | **無**（程式化交集檢查，逐一比對所有 UI 矩形） |
+| 超出畫面 | **無** |
+| 左側間隙 | Buy Bonus 右緣 253 → 外框 300，47px |
+| 右側間隙 | 外框 980 → 右欄最左元件 1057，77px |
+| Buy Bonus | 240×240，中心 y=360 正好垂直置中 |
+
+playfield 由 428 → **526px**（+23% 線性、**+51% 面積**）。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`
