@@ -478,9 +478,10 @@ frames.fs_sign = svgWrap(
 	920,
 	720,
 	`
-	<!-- rope hangers -->
-	<path d="M 190 96 L 250 12 M 730 96 L 670 12" stroke="#8a6b3a" stroke-width="12" stroke-linecap="round"/>
-	<path d="M 190 96 L 250 12 M 730 96 L 670 12" stroke="#5c451f" stroke-width="12" stroke-linecap="round" stroke-dasharray="7 8"/>
+	<!-- No rope hangers. They used to run (190,96)->(250,12) and (730,96)->(670,12):
+	     the lower ends stopped 34px short of the plank and the upper ends attached
+	     to nothing at all, so the sign read as hanging from two loose offcuts.
+	     The brass corners and frame carry it on their own. -->
 	<!-- plank panel -->
 	<rect x="100" y="130" width="720" height="540" rx="26" fill="url(#plankSign)" stroke="#17120a" stroke-width="8"/>
 	<rect x="100" y="300" width="720" height="10" fill="#17120a" opacity="0.5"/>
@@ -498,8 +499,9 @@ frames.fs_sign = svgWrap(
 	</g>`,
 		)
 		.join('')}
-	<!-- banana emblem on the top plank -->
-	${bananaEmblem(460, 205, 1.15)}
+	<!-- Banana emblem removed too: at (460,205) it sat directly behind the title
+	     the frontend draws at ~y=260, so its three overlapping banana shapes poked
+	     out between "FREE" and "SPINS" as a pair of disconnected gold slivers. -->
 	<!-- inner soft vignette so text pops -->
 	<rect x="130" y="160" width="660" height="480" rx="14" fill="url(#signVign)"/>`,
 	`

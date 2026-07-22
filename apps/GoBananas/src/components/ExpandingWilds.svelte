@@ -421,30 +421,31 @@
 			/>
 		{/if}
 
-		<!-- multiplier plaque: full-width brass banner on the bottom rail, opaque
-		     so it reads over the artwork behind it -->
+		<!--
+			Multiplier. Deliberately NOT a filled plate any more: the opaque banner
+			was as wide as the reel and tall enough to sit on the housing's gold
+			frame. It is now a compact ring — brass outline, no fill — pulled up off
+			the bottom rail, and the WILD lettering behind it was shrunk (see
+			design/generate_symbols_realistic.mjs) to leave it clear space.
+		-->
 		{#if wild.badgeScale.current > 0}
-			{@const plaqueH = SYMBOL_SIZE * 0.52}
-			<Container {x} y={BOARD_SIZES.height - plaqueH * 0.5 - 4} scale={wild.badgeScale.current}>
+			{@const r = SYMBOL_SIZE * 0.26}
+			<Container {x} y={BOARD_SIZES.height - SYMBOL_SIZE * 0.44} scale={wild.badgeScale.current}>
 				<Graphics
 					draw={(g: PixiGraphics) => {
-						const w = SYMBOL_SIZE - 8;
-						const h = plaqueH;
 						const glow = auraPulse(wild.reel);
 						g.clear();
-						g.lineStyle(7, 0xffd75e, 0.18 + 0.16 * glow);
-						g.drawRoundedRect(-w / 2 - 3, -h / 2 - 3, w + 6, h + 6, 12);
-						g.lineStyle(0);
-						g.beginFill(0x0d1806, 1);
-						g.drawRoundedRect(-w / 2, -h / 2, w, h, 10);
-						g.endFill();
+						// soft halo only — enough to lift the number off the art behind
+						// it without boxing it in
+						g.lineStyle(10, 0xffd75e, 0.1 + 0.1 * glow);
+						g.drawCircle(0, 0, r);
 						g.lineStyle(3.5, 0xd8a334, 1);
-						g.drawRoundedRect(-w / 2, -h / 2, w, h, 10);
-						g.lineStyle(1.5, 0xfff3bd, 0.75);
-						g.drawRoundedRect(-w / 2 + 4, -h / 2 + 4, w - 8, h - 8, 7);
+						g.drawCircle(0, 0, r);
+						g.lineStyle(1.5, 0xfff3bd, 0.7);
+						g.drawCircle(0, 0, r - 5);
 					}}
 				/>
-				<GoldText text={`${wild.mult}X`} fontSize={SYMBOL_SIZE * 0.4} maxWidth={SYMBOL_SIZE - 22} />
+				<GoldText text={`${wild.mult}X`} fontSize={SYMBOL_SIZE * 0.27} maxWidth={r * 1.7} />
 			</Container>
 		{/if}
 	{/each}

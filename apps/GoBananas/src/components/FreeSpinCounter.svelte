@@ -42,10 +42,11 @@
 						context.stateGameDerived.boardLayout().width * 0.5 -
 						panelSizes.width -
 						SYMBOL_SIZE * 0.6,
-					y:
-						context.stateGameDerived.boardLayout().y -
-						context.stateGameDerived.boardLayout().height * 0.5 +
-						SYMBOL_SIZE * 0.2,
+					// Pinned near the top of the screen rather than to the board's top
+					// edge. With the side-rail UI the Buy Bonus button is centred in
+					// the left rail, and the board now fills 94% of the height — the
+					// old board-relative position put this plaque straight through it.
+					y: context.stateLayoutDerived.mainLayout().height * 0.05,
 				},
 	);
 

@@ -642,14 +642,19 @@ console.log('crated x.png');
 const sceneB64 = fs
 	.readFileSync(path.join(SRC_DIR, 'w_expand.png'))
 	.toString('base64');
+// Letters are smaller and sit higher than they used to (was size 150 at
+// y = 700 + i*150). The last one's baseline landed at 1150, leaving only 130px
+// of panel below it — exactly where ExpandingWilds puts the multiplier plaque,
+// so the plaque covered the gold frame. 140/130 clears ~200px for it.
+const WILD_LETTER_SIZE = 130;
 const wildLetters = ['W', 'I', 'L', 'D']
 	.map((ch, i) => {
-		const y = 700 + i * 150;
+		const y = 640 + i * 140;
 		return `${[7, 6, 5, 4]
-			.map((o) => `<text x="${128 + o}" y="${y + o}" font-family="Arial Black, Arial" font-size="150" font-weight="900" text-anchor="middle" fill="#6d4408">${ch}</text>`)
+			.map((o) => `<text x="${128 + o}" y="${y + o}" font-family="Arial Black, Arial" font-size="${WILD_LETTER_SIZE}" font-weight="900" text-anchor="middle" fill="#6d4408">${ch}</text>`)
 			.join('')}
-		<text x="128" y="${y}" font-family="Arial Black, Arial" font-size="150" font-weight="900" text-anchor="middle" fill="url(#wface)" stroke="#54330a" stroke-width="3">${ch}</text>
-		<text x="127" y="${y - 1}" font-family="Arial Black, Arial" font-size="150" font-weight="900" text-anchor="middle" fill="none" stroke="#fff3bd" stroke-width="1.5" opacity="0.9">${ch}</text>`;
+		<text x="128" y="${y}" font-family="Arial Black, Arial" font-size="${WILD_LETTER_SIZE}" font-weight="900" text-anchor="middle" fill="url(#wface)" stroke="#54330a" stroke-width="3">${ch}</text>
+		<text x="127" y="${y - 1}" font-family="Arial Black, Arial" font-size="${WILD_LETTER_SIZE}" font-weight="900" text-anchor="middle" fill="none" stroke="#fff3bd" stroke-width="1.5" opacity="0.9">${ch}</text>`;
 	})
 	.join('');
 const wxSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="1280" viewBox="0 0 256 1280">
