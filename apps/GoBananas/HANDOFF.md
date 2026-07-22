@@ -451,6 +451,26 @@ font-family: 'Cinzel, Georgia, serif', Arial, sans-serif;
 
 `gbSpWx` spine 因此不再有任何使用者（**尚未移除** assets.ts 的條目，仍會被預載）—— 要清掉可省下 `w_fg.png`(151KB) + `cudgel.png`(44KB) + atlas 的下載；`wx.png` 本身仍由 `gbWxPanel` 使用，不能刪。
 
+## 5.28 Superspin 一律以 TOTAL WIN 牌收尾（2026-07-22 第十八輪）
+
+先前只有「零分」與「封頂」兩種例外情況會補演出，一般中獎則是走 `setWin` 的獎級面板。使用者要求**不管得分多少，結束時都要有一塊總得分牌子，跟 FG 一樣**。
+
+`finalWin` 改成：superspin 一律走與 `freeSpinEnd` **完全相同**的收尾序列 —— 收重轉牌 → `uiHide` → `freeSpinOutroShow` → 音效 → `freeSpinOutroCountUp` → `freeSpinOutroHide` → `uiShow`。
+
+兩個實作重點：
+
+1. **牌子的獎級沿用數學自己的分級**。旗標由布林 `winPresented` 改成 `lastWinLevel: WinLevel | null`（`setWin` 時記錄），牌子直接用它，不必在前端另外發明一套門檻。封頂回合沒有 `setWin`，會先補一段 `winLevelMap[10]` 的 MAX 大獎演出再進牌子（並把 level 記為 10）；零分則落到 `winLevelMap[1]`。
+
+2. **不需要任何人工 hold**。`freeSpinOutroCountUp` 是等玩家 `PressToContinue` 才 resolve，**不是**等跑分結束 —— 所以即使是 `presentDuration = 0` 的零分牌也會停在畫面上直到玩家按下去。§5.24 為零分加的那段 `waitForTimeout(1.4s)` 其實是在玩家按完之後又多等 1.4 秒，屬於誤加，已移除。
+
+三種結局的最終流程：
+
+| 結局 | 流程 |
+|------|------|
+| 零分（1000 本） | 收重轉牌 → TOTAL WIN 0× (level 1) → 等玩家按 |
+| 一般中獎（8990 本） | `setWin` 獎級面板 → 收重轉牌 → TOTAL WIN N× (該局 level) → 等玩家按 |
+| 封頂 2000×（10 本） | MAX 大獎演出 → 收重轉牌 → TOTAL WIN 2000× (level 10) → 等玩家按 |
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

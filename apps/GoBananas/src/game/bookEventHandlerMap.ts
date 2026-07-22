@@ -26,8 +26,10 @@ const ANTICIPATION_MIN_SCATTERS = 3;
 const gateAnticipation = (anticipation: number[]) =>
 	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
 
-// Set by setWin, read by finalWin: did this round actually present a win?
-let winPresented = false;
+// The winLevel of the setWin the math emitted this round, or null if it emitted
+// none. finalWin reuses it so the superspin total-win plaque is graded by the
+// math's own classification instead of a locally invented one.
+let lastWinLevel: WinLevel | null = null;
 
 const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) => {
 	if (winLevelData?.alias === 'max') eventEmitter.broadcastAsync({ type: 'uiHide' });
@@ -271,7 +273,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	},
 	setWin: async (bookEvent: BookEventOfType<'setWin'>) => {
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
-		winPresented = true;
+		lastWinLevel = bookEvent.winLevel as WinLevel;
 
 		eventEmitter.broadcast({ type: 'winShow' });
 		winLevelSoundsPlay({ winLevelData });
@@ -284,51 +286,51 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'winHide' });
 	},
 	finalWin: async (bookEvent: BookEventOfType<'finalWin'>) => {
-		// Superspin has no standard round-end event: base and bonus close on
-		// freeSpinEnd, superspin closes on whatever prizeWinInfo/setWin happen to
-		// be there. So any superspin outcome the math does NOT emit setWin for
-		// reaches this point having presented nothing at all. Two such outcomes
-		// exist, verified against books_superspin.jsonl.zst (10000 books):
-		//
-		//   · 1000 books pay 0 — no prizeWinInfo, no setWin
-		//   ·   10 books hit the 2000x cap — prizeWinInfo, wincap, but no setWin,
-		//       so the single best result in the mode had the weakest possible
-		//       presentation (a coin pulse and one sound effect)
-		//
-		// Testing the flag rather than the amount covers both, and keeps working
-		// if the math's event mix changes.
-		const isSuperspin = stateBet.activeBetModeKey === 'SUPERSPIN';
-		if (isSuperspin && !winPresented) {
-			if (bookEvent.amount > 0) {
-				// capped: give it the full max-win treatment it never got
-				const winLevelData = winLevelMap[10 as WinLevel]; // 'max'
+		// Every superspin round ends on the same TOTAL WIN plaque the free game
+		// ends on, whatever it paid — including nothing. Superspin has no
+		// round-end event of its own (base and bonus close on freeSpinEnd), so
+		// this is the only place that can guarantee it.
+		if (stateBet.activeBetModeKey === 'SUPERSPIN') {
+			// A capped round never emits setWin at all, so the single best result
+			// in the mode would otherwise reach the plaque with no celebration in
+			// front of it. Verified against books_superspin.jsonl.zst: exactly the
+			// 10 wincap books lack setWin, alongside the 1000 that pay zero.
+			if (lastWinLevel === null && bookEvent.amount > 0) {
+				const maxLevelData = winLevelMap[10 as WinLevel]; // 'max'
 				eventEmitter.broadcast({ type: 'winShow' });
-				winLevelSoundsPlay({ winLevelData });
+				winLevelSoundsPlay({ winLevelData: maxLevelData });
 				await eventEmitter.broadcastAsync({
 					type: 'winUpdate',
 					amount: bookEvent.amount,
-					winLevelData,
+					winLevelData: maxLevelData,
 				});
 				winLevelSoundsStop();
 				eventEmitter.broadcast({ type: 'winHide' });
-			} else {
-				const winLevelData = winLevelMap[1 as WinLevel]; // 'zero'
-				eventEmitter.broadcast({ type: 'freeSpinOutroShow' });
-				eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_youwon_panel' });
-				await eventEmitter.broadcastAsync({
-					type: 'freeSpinOutroCountUp',
-					amount: 0,
-					winLevelData,
-				});
-				// the 'zero' level presents for 0ms, so hold the plaque ourselves —
-				// otherwise it would flash by faster than the player can read it
-				await waitForTimeout(1.4 * SECOND);
-				eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
+				lastWinLevel = 10;
 			}
+
+			// Same sequence as freeSpinEnd, so the two features close identically.
+			// No artificial hold: freeSpinOutroCountUp resolves on the player's
+			// press, not on the count-up finishing, so even the zero-win plaque
+			// (presentDuration 0) stays up until it is acknowledged.
+			const winLevelData = winLevelMap[lastWinLevel ?? (1 as WinLevel)];
+			// clear the respin plaque first so the result has the screen to itself
+			eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
+			stateUi.freeSpinCounterShow = false;
+			await eventEmitter.broadcastAsync({ type: 'uiHide' });
+			eventEmitter.broadcast({ type: 'freeSpinOutroShow' });
+			eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_youwon_panel' });
+			winLevelSoundsPlay({ winLevelData });
+			await eventEmitter.broadcastAsync({
+				type: 'freeSpinOutroCountUp',
+				amount: bookEvent.amount,
+				winLevelData,
+			});
+			winLevelSoundsStop();
+			eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
+			await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		}
-		// finalWin ends every book, so this is the safe place to arm the flag for
-		// the next round.
-		winPresented = false;
+		lastWinLevel = null;
 
 		// Superspin teardown safety net.
 		//
