@@ -22,8 +22,12 @@
 		// The visual animation continues looping until the component is destroyed.
 		props.oncomplete?.();
 
+		// own phase and a slightly different rate per symbol — pulsing every
+		// winning symbol in sync reads as one object breathing, not five
+		const phase = Math.random() * Math.PI * 2;
+		const rate = 225 * (0.9 + Math.random() * 0.2);
 		const id = setInterval(() => {
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 225);
+			pulse = 0.5 + 0.5 * Math.sin(Date.now() / rate + phase);
 		}, 32);
 
 		return () => clearInterval(id);

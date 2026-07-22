@@ -238,6 +238,17 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 
 檔案：新增 `GrenadeRunner.svelte`；`WinLines.svelte` 改為一次全部線；`bookEventHandlerMap.ts` 的 `winInfo` 移除原本的批次 `animateSymbols`（改由 WinLines 負責）。素材沿用 `gbH2`／`fxGlow`，無新美術。
 
+## 5.19 動畫「機械感」稽核（2026-07-17 第九輪）
+
+針對「看起來像機器排的」逐項稽核自己寫的動畫曲線，抓到並修掉四處：
+
+1. **手榴彈等速直進**：`travelAt` 原本是純線性 `(ms - entry) / travel`，等於瞬間全速起步、瞬間停死。改成**梯形速度曲線**（加速 18% → 巡航 → 減速 26%，減速段刻意較長讓它「有重量地抵達」）。這也順帶修好一個接縫：入場是 easeOut 減速到靜止，接著若是線性就會有速度不連續的頓挫；梯形從零加速正好接上
+2. **齊射時每顆手榴彈參數完全相同**：以 `lineIndex` 決定性播種，給每條線 ±8% 速度差與 ±35% 起跑抖動——同一條線每次表現一致（不會閃爍），但同場不會有兩顆同速同步
+3. **多實例共用同一相位呼吸**（最明顯的一項）：`Math.sin(Date.now() / X)` 讓所有實例**完全同步**。修 3 處：得分符號（每顆隨機相位＋±10% 速率）、擴展百搭光暈（每輪依 reel 算相位與速率）、聽牌聚光（每輪相位偏移，多輪同時聽牌時是沿盤面流動而非整塊閃）
+4. 順帶：擴展百搭光暈取樣 40ms→24ms（慢速輝光在 25fps 下看得出階梯）
+
+稽核通過的：背景光點（相位/速度/擺幅皆隨機）、FxBurst 火花（均勻角度＋jitter）、ImpactDust（扇形＋隨機）、擴展百搭碎屑（全隨機）。轉輪停止間隔固定 145ms 屬拉霸機本來的機械節奏，**刻意不改**。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

@@ -35,6 +35,14 @@
 		0x44ffbb, 0xffbb44, 0x7744ff, 0x44ff44, 0xff4477,
 	];
 
+	// deterministic per-line jitter: same line always moves the same way, but no
+	// two lines in a volley share an exact speed or start — identical timings
+	// across every runner is the giveaway that a machine laid them out
+	const jitter = (lineIndex: number, spread: number) => {
+		const h = Math.sin(lineIndex * 12.9898) * 43758.5453;
+		return 1 + (h - Math.floor(h) - 0.5) * 2 * spread;
+	};
+
 	type Point = { x: number; y: number };
 	type ActiveLine = {
 		lineIndex: number;
@@ -42,6 +50,7 @@
 		points: Point[];
 		positions: { reel: number; row: number }[];
 		delay: number;
+		travelMs: number;
 		done: boolean;
 	};
 
@@ -121,7 +130,9 @@
 						y: symbolCenterYFromPayline(row),
 					})),
 					positions: win.positions,
-					delay: index * timing.stagger,
+					// stagger drifts a little and each grenade rolls at its own pace
+					delay: index * timing.stagger * jitter(win.lineIndex, 0.35),
+					travelMs: timing.travel * jitter(win.lineIndex + 7, 0.08),
 					done: false,
 				});
 			});
@@ -132,8 +143,9 @@
 			context.eventEmitter.broadcast({ type: 'boardShow' });
 			startTicker();
 
-			const volleyMs =
-				timing.entry + timing.travel + timing.settle + (built.length - 1) * timing.stagger;
+			const volleyMs = Math.max(
+				...built.map((line) => line.delay + timing.entry + line.travelMs + timing.settle),
+			);
 			await waitForTimeout(volleyMs + HOLD_AFTER_MS);
 
 			// safety net: anything the runners missed (padding rows are skipped by
@@ -210,7 +222,7 @@
 					delay={line.delay}
 					scale={lineScale}
 					entryMs={timing.entry}
-					travelMs={timing.travel}
+					travelMs={line.travelMs}
 					settleMs={timing.settle}
 					onreel={(reelIndex) => onGrenadeReel(line, reelIndex)}
 					oncomplete={() => {

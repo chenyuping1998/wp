@@ -117,6 +117,12 @@
 		bursts = [...bursts, { id: nextId++, x }];
 	};
 
+	// Each locked reel breathes on its own phase and a slightly different rate.
+	// Sharing one pulse made three locked reels flare in perfect lockstep, which
+	// reads as one object rather than three.
+	const auraPulse = (reel: number) =>
+		0.5 + 0.5 * Math.sin(pulse / (540 + reel * 47) + reel * 1.7);
+
 	// The moment the panel reaches the housing: dust and shards squirt sideways
 	// along the top and bottom rails, the way something heavy hitting a stop
 	// throws material out of the seam.
@@ -165,8 +171,9 @@
 
 	onMount(() => {
 		const id = setInterval(() => {
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 540);
-		}, 40);
+			// just advances the clock — each reel derives its own phase from it
+			pulse = Date.now();
+		}, 24);
 		return () => {
 			clearInterval(id);
 			cancelAnimationFrame(rafId);
@@ -311,9 +318,10 @@
 				draw={(g) => {
 					const x = getSymbolX(wild.reel);
 					g.clear();
-					g.lineStyle(9, 0xffd75e, 0.08 + 0.1 * pulse);
+					const glow = auraPulse(wild.reel);
+					g.lineStyle(9, 0xffd75e, 0.08 + 0.1 * glow);
 					g.drawRoundedRect(x - SYMBOL_SIZE / 2 - 3, -3, SYMBOL_SIZE + 6, BOARD_SIZES.height + 6, 16);
-					g.lineStyle(4, 0xffe98a, 0.16 + 0.18 * pulse);
+					g.lineStyle(4, 0xffe98a, 0.16 + 0.18 * glow);
 					g.drawRoundedRect(x - SYMBOL_SIZE / 2, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
 				}}
 			/>

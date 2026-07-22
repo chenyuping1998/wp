@@ -19,8 +19,12 @@
 	let finished = $state(false);
 
 	onMount(() => {
+		// offset per reel: when several reels tease at once, a shared phase makes
+		// them strobe as one block instead of shimmering along the board
+		const phase = props.reel.reelIndex * 0.9;
+		const rate = 145 + props.reel.reelIndex * 11;
 		const id = setInterval(() => {
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 145);
+			pulse = 0.5 + 0.5 * Math.sin(Date.now() / rate + phase);
 		}, 32);
 
 		return () => clearInterval(id);

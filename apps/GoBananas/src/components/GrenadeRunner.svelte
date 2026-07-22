@@ -72,11 +72,25 @@
 		return { lengths, total };
 	});
 
-	// 0 → 1 along the whole path
+	// 0 → 1 along the whole path, on a trapezoid velocity profile: the grenade
+	// picks up speed after the toss, rolls at pace, then leans into a stop at
+	// the last reel. Constant speed with hard ends is what makes this kind of
+	// motion read as machine-driven.
+	const ACC = 0.18; // fraction of the run spent accelerating
+	const DEC = 0.26; // ...and decelerating (longer, so it arrives with weight)
+	const AREA = 1 - ACC / 2 - DEC / 2;
+	const distanceAt = (p: number) => {
+		if (p <= 0) return 0;
+		if (p >= 1) return 1;
+		if (p < ACC) return p * p / (2 * ACC) / AREA;
+		if (p <= 1 - DEC) return (ACC / 2 + (p - ACC)) / AREA;
+		const q = p - (1 - DEC);
+		return (ACC / 2 + (1 - DEC - ACC) + q - (q * q) / (2 * DEC)) / AREA;
+	};
 	const travelAt = (ms: number) => {
 		if (ms < entryMs) return 0;
 		if (ms >= entryMs + travelMs) return 1;
-		return (ms - entryMs) / travelMs;
+		return distanceAt((ms - entryMs) / travelMs);
 	};
 	const travel = $derived(t < 0 ? 0 : travelAt(t));
 
