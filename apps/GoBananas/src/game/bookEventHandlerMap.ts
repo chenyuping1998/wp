@@ -26,6 +26,9 @@ const ANTICIPATION_MIN_SCATTERS = 3;
 const gateAnticipation = (anticipation: number[]) =>
 	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
 
+// Set by setWin, read by finalWin: did this round actually present a win?
+let winPresented = false;
+
 const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) => {
 	if (winLevelData?.alias === 'max') eventEmitter.broadcastAsync({ type: 'uiHide' });
 	if (winLevelData?.sound?.sfx) {
@@ -268,6 +271,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	},
 	setWin: async (bookEvent: BookEventOfType<'setWin'>) => {
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
+		winPresented = true;
 
 		eventEmitter.broadcast({ type: 'winShow' });
 		winLevelSoundsPlay({ winLevelData });
@@ -280,25 +284,51 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'winHide' });
 	},
 	finalWin: async (bookEvent: BookEventOfType<'finalWin'>) => {
-		// A superspin round that collected nothing still has to tell the player it
-		// is over. Verified against books_superspin.jsonl.zst (10000 books):
-		// payout 0 and "no prizeWinInfo event" are exactly the same 1000 books —
-		// no book falls in either edge bucket — so amount === 0 is a safe test for
-		// "the tally presentation never ran".
-		if (stateBet.activeBetModeKey === 'SUPERSPIN' && bookEvent.amount === 0) {
-			const winLevelData = winLevelMap[1 as WinLevel]; // 'zero'
-			eventEmitter.broadcast({ type: 'freeSpinOutroShow' });
-			eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_youwon_panel' });
-			await eventEmitter.broadcastAsync({
-				type: 'freeSpinOutroCountUp',
-				amount: 0,
-				winLevelData,
-			});
-			// the 'zero' level presents for 0ms, so hold the plaque ourselves —
-			// otherwise it would flash by faster than the player can read it
-			await waitForTimeout(1.4 * SECOND);
-			eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
+		// Superspin has no standard round-end event: base and bonus close on
+		// freeSpinEnd, superspin closes on whatever prizeWinInfo/setWin happen to
+		// be there. So any superspin outcome the math does NOT emit setWin for
+		// reaches this point having presented nothing at all. Two such outcomes
+		// exist, verified against books_superspin.jsonl.zst (10000 books):
+		//
+		//   · 1000 books pay 0 — no prizeWinInfo, no setWin
+		//   ·   10 books hit the 2000x cap — prizeWinInfo, wincap, but no setWin,
+		//       so the single best result in the mode had the weakest possible
+		//       presentation (a coin pulse and one sound effect)
+		//
+		// Testing the flag rather than the amount covers both, and keeps working
+		// if the math's event mix changes.
+		const isSuperspin = stateBet.activeBetModeKey === 'SUPERSPIN';
+		if (isSuperspin && !winPresented) {
+			if (bookEvent.amount > 0) {
+				// capped: give it the full max-win treatment it never got
+				const winLevelData = winLevelMap[10 as WinLevel]; // 'max'
+				eventEmitter.broadcast({ type: 'winShow' });
+				winLevelSoundsPlay({ winLevelData });
+				await eventEmitter.broadcastAsync({
+					type: 'winUpdate',
+					amount: bookEvent.amount,
+					winLevelData,
+				});
+				winLevelSoundsStop();
+				eventEmitter.broadcast({ type: 'winHide' });
+			} else {
+				const winLevelData = winLevelMap[1 as WinLevel]; // 'zero'
+				eventEmitter.broadcast({ type: 'freeSpinOutroShow' });
+				eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_youwon_panel' });
+				await eventEmitter.broadcastAsync({
+					type: 'freeSpinOutroCountUp',
+					amount: 0,
+					winLevelData,
+				});
+				// the 'zero' level presents for 0ms, so hold the plaque ourselves —
+				// otherwise it would flash by faster than the player can read it
+				await waitForTimeout(1.4 * SECOND);
+				eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
+			}
 		}
+		// finalWin ends every book, so this is the safe place to arm the flag for
+		// the next round.
+		winPresented = false;
 
 		// Superspin teardown safety net.
 		//

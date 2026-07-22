@@ -376,6 +376,53 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 
 曲線指數是**對著實際時間軸算出來的**，不是憑感覺：`u^0.6 * (1-u)^1.5` 讓撐力在 120ms 抗力階段穩定累積（峰值的 0.59 → 0.86），在鬆脫那一刻達到最大後崩落。試過的其他值：`u^0.35` 一幀內就衝到 83%（會彈出來）；`u^0.9` 峰值落在 160ms，也就是捲軸都飛開了他還在使勁 —— **因果反了**。
 
+## 5.26 低分符號統一配色 + 全機制稽核（2026-07-22 第十六輪）
+
+### 低分符號 A/K/Q/J/10 統一成一色
+
+原本五個 royals 各有一色（岩漿紅 A、冰藍 K、紫晶 Q、翠玉 J、銀鑽 10），低分層跟高分層一樣吵。統一成**風化槍鐵藍灰**：
+
+- 高分符號全是暖色（黃銅羅盤、橄欖頭盔、橘紅手榴彈、香蕉箱，加金色 W/S/P），所以 royals 走冷色低飽和，對比最大又不搶戲
+- `silverize()` 一般化為 `unifyRoyal()`，走**亮度**重上色，厚塗的刻面／斜角／高光全部保留，只換色相
+- 曲線刻意壓在中間調而非壓暗（陰影 59、中間調 138、高光衝到 255），在深橄欖盤面上不會糊掉
+- `hueRotate` 不再用於 royals
+
+量測結果：五個 royals 平均 RGB 幾乎相同（~115,123,138）、飽和度全部 0.17；高分符號飽和度 0.64–0.65（**近 4 倍**）且明顯偏暖。亮度範圍 40–235。
+
+順帶一提，賠付表本來就顯示 **L2=L3（0.3/0.7/3）、L4=L5（0.2/0.5/2）賠率完全相同** —— 用五種顏色暗示五種價值本來就是誤導，統一成一色反而更誠實；字母之間仍靠**形狀**辨識，那才是玩家實際在讀的。
+
+### 全機制稽核（對照 30000 個 book 與查找表）
+
+**全部正確：**
+
+| 項目 | 驗證結果 |
+|------|---------|
+| RTP | 三個模式**精準 0.965**（base 0.965；bonus 193.0÷200；superspin 48.25÷50） |
+| Max win | base/bonus 10000×、superspin 2000×，與 `config` 及 INFO 一致 |
+| 成本 | 1× / 200× / 50×，前端 `config.betModes` 與數學一致 |
+| 事件覆蓋 | 數學發出的 13 種事件**全部有 handler**，無遺漏 |
+| 觸發 | 4 scatter → 12 轉、5 scatter → 15 轉；**無 3 scatter 觸發** |
+| 再觸發 | 0 次 —— 規則文案「There are no retriggers」**正確** |
+| Scatter 分布 | 五輪都會出現 —— 文案「appears on all five reels」**正確** |
+| 倍率算法 | 多百搭同線是**相加**（[3,2] → `meta.multiplier=5` 而非 6）—— 文案 "added together" **正確** |
+| 基礎遊戲百搭 | base 盤面 W 的 multiplier 一律為 1；所有擴展事件的 `gameType` 皆為 `freegame` —— 文案**正確** |
+| 金幣獎值 | 1×–10000×，`prizeWinInfo.totalWin` 等於所有金幣加總（8990/9000 完全吻合） |
+
+**找到並修掉一個：superspin 封頂沒有任何演出**
+
+superspin 沒有標準的回合結束事件（base/bonus 收在 `freeSpinEnd`，superspin 收在剛好存在的 `prizeWinInfo`/`setWin`）。所以數學**不發 `setWin`** 的 superspin 結果，跑到最後什麼都沒演。這種結果有兩種：
+
+- 1000 個 book 賠 0（§5.23 已處理）
+- **10 個 book 打到 2000× 上限** —— 有 `prizeWinInfo`、有 `wincap`，但**沒有 `setWin`**，所以該模式最好的結果反而演出最弱（只有金幣脈衝加一個音效）
+
+對照組：base/bonus 的封頂 book 是 `freeSpinEnd` 帶 winLevel **10 = 'max'**，MAX WIN 大獎牌正常演出。
+
+修法：`finalWin` 改成用 `winPresented` 旗標（`setWin` 時設定）而非判斷金額，一個分支同時涵蓋兩種；封頂走 `winLevelMap[10]` 的完整 MAX 演出，零分走 TOTAL WIN 銅牌。判旗標比判金額穩健，數學的事件組合日後改變也不會失效。
+
+另註：那 10 個封頂 book 板上金幣加總超過 10000×，實際只賠 2000×（封頂本來就這樣，數學正確），現在至少會有 MAX WIN 演出說明這是滿獎。
+
+**待決：** `freeSpinRetrigger` handler 是死碼 —— 三個模式 30000 個 book 從未發出，規則文案也明說沒有再觸發。**未移除**（日後數學若加入再觸發即可直接用），但目前不可達。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

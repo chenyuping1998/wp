@@ -308,8 +308,10 @@ for (const name of ['l1', 'l2', 'l3', 'l4']) {
 }
 
 // ── royals post-pass: distinct colours + a painted-style "10" ───────────────
-// palette after this pass: A molten red-orange / K ICE BLUE / Q amethyst /
-// J jade green / 10 diamond silver — five clearly distinct hues.
+// palette after this pass: A/K/Q/J/10 all share one muted gunmetal blue-grey.
+// They are the low-pay tier, so they are deliberately a single quiet class that
+// the warm high symbols read against; the letters themselves stay distinct by
+// SHAPE, which is what a player actually reads them by.
 
 const readOut = (name) => PNG.sync.read(fs.readFileSync(path.join(OUT_DIR, `${name}.png`)));
 const writeOut = (name, png) => fs.writeFileSync(path.join(OUT_DIR, `${name}.png`), PNG.sync.write(png));
@@ -394,18 +396,30 @@ const eraseEllipse = (png, cx, cy, rx, ry) => {
 };
 
 // silver-diamond conversion: desaturate, cool tint, extra contrast
-const silverize = (png) => {
+// All five royals share ONE muted colour so they read as a single low-pay class
+// and never compete with the high symbols. Everything valuable in this game is
+// warm — brass compass, olive helmet, orange grenade, banana crate, gold W/S/P
+// — so the royals go cool and desaturated: weathered gunmetal with a blue-grey
+// cast. Maximum separation from the warm tier without shouting.
+//
+// Driven off luminance so the painted facets, bevels and highlights all survive
+// intact; only the hue is replaced. The curve is deliberately mid-toned rather
+// than dark: shadows land near 59, midtones 138, highlights clip at 255, so the
+// glyphs stay clearly legible against the dark olive board instead of sinking
+// into it.
+const unifyRoyal = (png) => {
 	const d = png.data;
 	for (let i = 0; i < d.length; i += 4) {
 		if (d[i + 3] === 0) continue;
 		let lum = 0.3 * d[i] + 0.55 * d[i + 1] + 0.15 * d[i + 2];
-		lum = 150 + (lum - 105) * 1.3;
-		d[i] = Math.max(0, Math.min(255, Math.round(lum * 0.97)));
-		d[i + 1] = Math.max(0, Math.min(255, Math.round(lum * 1.0)));
-		d[i + 2] = Math.max(0, Math.min(255, Math.round(lum * 1.09)));
+		lum = 138 + (lum - 105) * 1.22;
+		d[i] = Math.max(0, Math.min(255, Math.round(lum * 0.88)));
+		d[i + 1] = Math.max(0, Math.min(255, Math.round(lum * 0.94)));
+		d[i + 2] = Math.max(0, Math.min(255, Math.round(lum * 1.06)));
 	}
 	return png;
 };
+const silverize = unifyRoyal;
 
 // bilinear-draw png's glyph (alpha bbox) into dst at a target box
 const drawGlyphInto = (dst, srcPng, cx, targetH, canvasH = CANVAS) => {
@@ -439,13 +453,18 @@ const drawGlyphInto = (dst, srcPng, cx, targetH, canvasH = CANVAS) => {
 	}
 };
 
-// K piece is taken BEFORE the hue shift; both pieces end up silver anyway
+// Source glyphs for the composed "10" are taken before the unify pass; they get
+// the same treatment below, so all five royals end up identical in colour.
 const kForPieces = readOut('l2');
 const qForPieces = readOut('l3');
 
-// K: icy cyan-green reads too close to the jade J — rotate to clear ice blue
-writeOut('l2', hueRotate(readOut('l2'), 42));
-console.log('recoloured l2.png (K → ice blue)');
+// One muted gunmetal for A/K/Q/J — the painted sources arrive in five different
+// hues (molten red, icy cyan, amethyst, jade), which made the low tier as loud
+// as the high one. hueRotate is no longer used on them.
+for (const name of ['l1', 'l2', 'l3', 'l4']) {
+	writeOut(name, unifyRoyal(readOut(name)));
+}
+console.log('unified l1-l4.png (royals → muted gunmetal)');
 
 // "1": the K stem (left third of the glyph); "0": the Q bowl minus its tail
 const one = keepWindow(kForPieces, 0.02, 0.27, 0, 1);
