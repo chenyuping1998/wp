@@ -87,9 +87,6 @@ export const SPIN_OPTIONS_FAST_FREEGAME = {
 
 export const MOTION_BLUR_VELOCITY = 31;
 
-// Chance to play the pre-free-game hint (H1 flying across the board) before a
-// spin that will trigger free spins — the other 60% the spin starts unannounced.
-export const PRE_FREEGAME_HINT_CHANCE = 0.4;
 
 export const zIndexes = {
 	background: {

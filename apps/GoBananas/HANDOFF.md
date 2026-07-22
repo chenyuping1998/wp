@@ -555,6 +555,22 @@ playfield 由 428 → **526px**（+23% 線性、**+51% 面積**）。
 
 驗證：重新產生的 `wx.png` 在 y≥1080 之後**完全沒有字母筆畫**，替倍率環清出 200px。
 
+## 5.32 移除 FG 預告的香蕉飛越動畫（2026-07-22 第二十二輪）
+
+`PreFreeGameHint.svelte`：金香蕉串（scatter spine `gbSpS`）從 `board.x + width*0.78` 飛到 `board.x - width*0.78` —— 即畫面右到左橫越盤面，由 `actor.ts` 的 `onPlayGame` 在**即將觸發免費遊戲的那一轉之前**以 40% 機率播放。**已整組移除**。
+
+順帶一提，這個提示只在該轉「確定會觸發」時才出現，等於在轉輪停下前就先洩漏了結果 —— 移掉它同時消除了這個提前告知。
+
+清理範圍（**無任何殘留**，已 grep 確認）：
+
+- `src/components/PreFreeGameHint.svelte` 檔案刪除
+- `Game.svelte` 的 import 與掛載
+- `actor.ts` 的 `onPlayGame` 觸發區塊，以及隨之失效的 `PRE_FREEGAME_HINT_CHANCE` import
+- `constants.ts` 的 `PRE_FREEGAME_HINT_CHANCE`
+- `typesEmitterEvent.ts` 的 `EmitterEventPreFreeGameHint` import 與聯集成員
+
+`onPlayGame` 簡化為只剩 `await playBet(bet)`。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

@@ -7,7 +7,6 @@ import type { EmitterEventWin } from '../components/Win.svelte';
 import type { EmitterEventWinLines } from '../components/WinLines.svelte';
 import type { EmitterEventSound } from '../components/Sound.svelte';
 import type { EmitterEventTransition } from '../components/Transition.svelte';
-import type { EmitterEventPreFreeGameHint } from '../components/PreFreeGameHint.svelte';
 import type { EmitterEventExpandingWilds } from '../components/ExpandingWilds.svelte';
 import type { EmitterEventStickyPrizes } from '../components/StickyPrizes.svelte';
 import type { EmitterEventScatterBurst } from '../components/ScatterBurst.svelte';
@@ -22,7 +21,6 @@ export type EmitterEventGame =
 	| EmitterEventFreeSpinOutro
 	| EmitterEventSound
 	| EmitterEventTransition
-	| EmitterEventPreFreeGameHint
 	| EmitterEventExpandingWilds
 	| EmitterEventStickyPrizes
 	| EmitterEventScatterBurst;
