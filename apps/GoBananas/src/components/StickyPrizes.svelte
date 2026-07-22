@@ -10,12 +10,12 @@
 	import { Tween } from 'svelte/motion';
 	import { cubicOut, backOut } from 'svelte/easing';
 	import { onDestroy } from 'svelte';
-	import { Container, Sprite } from 'pixi-svelte';
+	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import { waitForTimeout } from 'utils-shared/wait';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE } from '../game/constants';
+	import { SYMBOL_SIZE, SUPERSPIN_CELL_SPIN, BOARD_CELL_COLOR } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
@@ -126,11 +126,36 @@
 		{@const x = getSymbolX(entry.reel)}
 		{@const y = rowCenterY(entry.row)}
 		<!--
-			No cell plate. The red backing existed only to hide the reel sweeping
-			behind a held coin; superspin now spins each cell individually and held
-			cells are never animated (see SuperspinCells), so there is nothing to
-			hide and the plate just read as an odd red box.
+			Occluder for the held cell. Its only job is to hide the reel sweeping
+			behind the coin, so it is painted in the board's own olive rather than
+			the old red — the cell then reads as an ordinary empty slot with a coin
+			held on it, instead of a coloured plate laid over the reel. A thin brass
+			edge still marks it as held.
+
+			Skipped entirely when SUPERSPIN_CELL_SPIN is on: in that mode held cells
+			are never animated and nothing passes behind them, so there is nothing
+			left to occlude.
 		-->
+		{#if !SUPERSPIN_CELL_SPIN}
+			<Graphics
+				draw={(g) => {
+					g.clear();
+					// square and full-bleed: a rounded fill alone leaves the cell
+					// corners open and the sweep shows through them
+					g.beginFill(BOARD_CELL_COLOR, 1);
+					g.drawRect(x - SYMBOL_SIZE / 2, y - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE);
+					g.endFill();
+					g.lineStyle(2.5, 0xffd43b, 0.45);
+					g.drawRoundedRect(
+						x - SYMBOL_SIZE / 2 + 3,
+						y - SYMBOL_SIZE / 2 + 3,
+						SYMBOL_SIZE - 6,
+						SYMBOL_SIZE - 6,
+						10,
+					);
+				}}
+			/>
+		{/if}
 		{@const shake = shakeOffset(entry)}
 		<Sprite
 			key="gbP"

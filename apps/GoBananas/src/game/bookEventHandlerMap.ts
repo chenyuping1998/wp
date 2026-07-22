@@ -11,7 +11,7 @@ import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
 import type { Position } from './types';
-import { BOARD_DIMENSIONS } from './constants';
+import { BOARD_DIMENSIONS, SUPERSPIN_CELL_SPIN } from './constants';
 import config from './config';
 
 // The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
@@ -93,7 +93,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 
 		stateGame.gameType = bookEvent.gameType;
 
-		if (bookEvent.gameType === 'superspin') {
+		if (SUPERSPIN_CELL_SPIN && bookEvent.gameType === 'superspin') {
 			// Hold and spin: cells spin individually, not as columns. A column
 			// sweep would drag the whole strip past the coins that are supposed to
 			// be held still, which reads as the hold not holding. Settle the board

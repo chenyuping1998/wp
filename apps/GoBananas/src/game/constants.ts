@@ -87,6 +87,21 @@ export const SPIN_OPTIONS_FAST_FREEGAME = {
 
 export const MOTION_BLUR_VELOCITY = 31;
 
+// Superspin presentation. false (default) keeps the shared reel machinery — the
+// column still sweeps, and held cells are covered by an occluder painted in the
+// board's own olive so nothing of the sweep shows through and there is no red
+// box. true switches to SuperspinCells, where each unheld cell spins in place
+// and held cells need no occluder at all because nothing passes behind them.
+// Kept as a switch because the two read quite differently and the choice is a
+// judgement call, not a correctness one.
+export const SUPERSPIN_CELL_SPIN = false;
+
+// The board's own cell colour, sampled from frame_bg.png (#1c270d at centre).
+// Held superspin cells are filled with this so they read as an ordinary empty
+// cell rather than a coloured plate laid over the reel.
+export const BOARD_CELL_COLOR = 0x1e290e;
+
+
 
 export const zIndexes = {
 	background: {
