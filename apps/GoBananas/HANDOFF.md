@@ -423,6 +423,34 @@ superspin 沒有標準的回合結束事件（base/bonus 收在 `freeSpinEnd`，
 
 **待決：** `freeSpinRetrigger` handler 是死碼 —— 三個模式 30000 個 book 從未發出，規則文案也明說沒有再觸發。**未移除**（日後數學若加入再觸發即可直接用），但目前不可達。
 
+## 5.27 供應商 logo 對齊 WildParty + 擴展百搭改「感染→合體」（2026-07-22 第十七輪）
+
+### 先修一個 §5.24 造成的回歸
+
+使用者截圖顯示擴展輪變成**空白暗欄只剩一隻小猴子**。成因是 §5.24 的交接：我把 spine `grow` 尾端的 `wx` 換圖拿掉，改由元件用遮罩捲開，但捲軸複本在 `unroll` 到 1 就停止繪製，而 spine 要 `phase` 翻到 `idle` 才顯示成品。兩者之間只要有時序落差，就會出現**沒有任何東西在畫**的空窗，底下又壓著不透明蓋板 —— 就是那個空白暗欄。這次改版把整個交接拿掉（見下）。
+
+### 供應商 logo
+
+`WildPartyLoader.svelte` 兩個專案 diff 後**只差字體宣告**（星星、777、SILVERSTARS STUDIO 皆已相同）。WildParty 寫的是：
+
+```css
+font-family: 'Cinzel, Georgia, serif', Arial, sans-serif;
+```
+
+整串 `Cinzel, Georgia, serif` 被引號包成**一個**字體名，匹配不到任何字體；而且 Cinzel **整個 workspace 都沒有載入**（WildParty 只拉 Typekit 的 proxima-nova kit）。所以它實際渲染成 **Arial**。GoBananas 這邊改成 `Arial, Helvetica, sans-serif` —— 語法正確、渲染結果與 WildParty 一致，並在檔案裡註明原因，避免日後有人「順手」把它改成遊戲字體。
+
+### 擴展百搭改成「感染 → 合體」
+
+依使用者指定的演法重寫，三個節拍：
+
+1. **INFECT（840ms）** 百搭落地後，同輪其他圖案**逐格轉變成百搭** —— 依與落點的距離由近而遠擴散，每格一次閃光 + backOut 彈入 + 火花。不透明蓋板**只覆蓋已轉變的格子**，所以原符號是被「取代」而不是被「蓋住」
+2. **MERGE（460ms）** 五個百搭被往輪中心拉（`cubicIn` 加速，是被吸進去不是飄過去），邊縮小邊淡出，兩道加法混色光條向中心收束
+3. **LOCK（260ms）** 撞擊：爆裂 + 外框震動 + 音效，整輪 WILD 橫幅被撞開，倍率銅牌彈出
+
+**整段由元件單一擁有，沒有任何交接**，所以不可能再出現前述的空窗。已用數值模擬驗證：落點在 row 1/3/5 三種情況下，結束時五格進度都是 1.00（不會有格子沒轉完）；總時長 1548ms，撞擊在 1289ms。
+
+`gbSpWx` spine 因此不再有任何使用者（**尚未移除** assets.ts 的條目，仍會被預載）—— 要清掉可省下 `w_fg.png`(151KB) + `cudgel.png`(44KB) + atlas 的下載；`wx.png` 本身仍由 `gbWxPanel` 使用，不能刪。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

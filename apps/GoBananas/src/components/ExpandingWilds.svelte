@@ -9,302 +9,236 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Tween } from 'svelte/motion';
-	import { cubicOut, backOut } from 'svelte/easing';
-	import { Container, Graphics, Sprite, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import { cubicOut, cubicIn, backOut } from 'svelte/easing';
+	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
-	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
+	import { waitForTimeout } from 'utils-shared/wait';
 
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE, BOARD_SIZES } from '../game/constants';
+	import { SYMBOL_SIZE, BOARD_SIZES, BOARD_DIMENSIONS } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
 	import FxBurst from './FxBurst.svelte';
 
+	// ── the takeover, in three readable beats ────────────────────────────────
+	//
+	//   1. INFECT  a Wild lands, and the rest of the reel turns Wild — the
+	//              change spreads outward from the landed cell, one cell at a
+	//              time, each with a flash and a pop.
+	//   2. MERGE   the five Wilds are pulled into the middle of the reel and
+	//              collapse into one another.
+	//   3. LOCK    the impact throws the full-reel WILD banner open, multiplier
+	//              plaque included, and the reel stays locked.
+	//
+	// Everything here is drawn by this component. The previous version handed the
+	// finished art off to a spine `idle` animation partway through, and when that
+	// handoff slipped there was a window with nothing drawn at all — the reel went
+	// blank behind the opaque backing. One owner, no handoff, no window.
+
+	const ROWS = BOARD_DIMENSIONS.y;
+	const INFECT_MS = 840;
+	const MERGE_MS = 460;
+	const BANNER_MS = 260;
+	// fraction of the infect phase each cell takes to pop in
+	const CELL_POP = 0.26;
+
+	type Phase = 'infect' | 'merge' | 'idle';
 	type WildEntry = {
 		reel: number;
+		row: number;
 		mult: number;
-		phase: 'grow' | 'idle';
-		y: Tween<number>;
-		// 0 = one cell tall (just the landed W), 1 = the full reel. The takeover
-		// plate tracks this, so the reel is covered exactly as far as the monkey
-		// has actually grown — no full-height plate popping in on frame 1.
-		cover: Tween<number>;
+		phase: Phase;
+		infect: Tween<number>;
+		merge: Tween<number>;
+		banner: Tween<number>;
 		badgeScale: Tween<number>;
-		// horizontal squash/stretch: <1 pinches the plate in, >1 flares it out.
-		// Volume-preserving motion is what stops the growth reading as a resize.
-		squeeze: Tween<number>;
-		// vertical speed streaks during the burst
-		streak: Tween<number>;
-		// 0 = banner not started, 1 = fully unrolled down the reel. The spine no
-		// longer swaps to the finished wx art (that hard cut is what made the
-		// takeover read as a jump between two pictures) — this drives a masked
-		// copy of the same panel so the banner visibly unrolls instead.
-		unroll: Tween<number>;
-		// whole-panel win reaction, now that the symbols underneath no longer
-		// animate individually — this is what makes the locked reel read as the
-		// thing that won
 		winFlash: Tween<number>;
-		// white-hot line along the top/bottom frame edge right after the slam
-		edgeFlash: Tween<number>;
-		oncomplete?: () => void;
 	};
 
 	const context = getContext();
 	const REEL_CENTER_Y = BOARD_SIZES.height / 2;
-	// visible padded row r sits at reelY(-SYMBOL_SIZE) + (r + 0.5) * SYMBOL_SIZE
+	// padded row r (1..ROWS) is centred at r*SYMBOL_SIZE - SYMBOL_SIZE/2
 	const rowCenterY = (row: number) => row * SYMBOL_SIZE - SYMBOL_SIZE / 2;
-
-	// spine grow timeline marks (see design/generate_spines.mjs)
-	const BITE_TIMES_MS = [520, 840, 1160];
-	const BURST_TIME_MS = 1500;
-	// The plate used to jump between four fixed sizes, one per bite, which is
-	// exactly what made the takeover read as "a picture being resized". It now
-	// creeps continuously between the bites and each chomp adds a short surge on
-	// top, so there is never a frame where nothing is moving.
-	const COVER_STEPS = [0.16, 0.3, 0.46] as const;
-	const CREEP_AHEAD = 0.075;
+	const visibleRows = Array.from({ length: ROWS }, (_, i) => i + 1);
 
 	let wilds = $state<WildEntry[]>([]);
-
-	// ── chomp crumbs (additive sprites) + lock-in burst ───────────────────────
-	type Crumb = { id: number; x: number; y: number; vx: number; vy: number; born: number; life: number; size: number; leaf: boolean };
-	let crumbs = $state<Crumb[]>([]);
 	let bursts = $state<{ id: number; x: number }[]>([]);
+	let sparks = $state<Spark[]>([]);
 	let nextId = 0;
 	let clock = $state(0);
-	let rafId = 0;
-	let crumbsRunning = false;
 	let pulse = $state(0);
+	let rafId = 0;
+	let sparksRunning = false;
 
-	const startCrumbLoop = () => {
-		if (crumbsRunning) return;
-		crumbsRunning = true;
+	// ── conversion sparks (additive, texture-based) ──────────────────────────
+	type Spark = {
+		id: number;
+		x: number;
+		y: number;
+		vx: number;
+		vy: number;
+		born: number;
+		life: number;
+		size: number;
+		star: boolean;
+	};
+
+	const startSparkLoop = () => {
+		if (sparksRunning) return;
+		sparksRunning = true;
 		const step = (now: number) => {
 			clock = now;
-			crumbs = crumbs.filter((c) => now - c.born < c.life);
-			if (crumbs.length > 0) {
-				rafId = requestAnimationFrame(step);
-			} else {
-				crumbsRunning = false;
-			}
+			sparks = sparks.filter((s) => now - s.born < s.life);
+			if (sparks.length > 0) rafId = requestAnimationFrame(step);
+			else sparksRunning = false;
 		};
 		rafId = requestAnimationFrame(step);
 	};
 
-	// banana crumbs sprayed out of the chomping mouth
-	const spawnCrumbs = (x: number, y: number) => {
+	const spawnSparks = (x: number, y: number, count = 8) => {
 		const now = performance.now();
-		crumbs = [
-			...crumbs,
-			...Array.from({ length: 9 }, (_, i) => {
-				const a = -Math.PI / 2 + (Math.random() - 0.5) * 2.2;
-				const speed = 60 + Math.random() * 130;
+		sparks = [
+			...sparks,
+			...Array.from({ length: count }, (_, i) => {
+				const a = (i / count) * Math.PI * 2 + Math.random() * 0.5;
+				const speed = 70 + Math.random() * 120;
 				return {
 					id: nextId++,
-					x: x + (Math.random() - 0.5) * SYMBOL_SIZE * 0.4,
-					y: y + (Math.random() - 0.5) * SYMBOL_SIZE * 0.3,
+					x,
+					y,
 					vx: Math.cos(a) * speed,
-					vy: Math.sin(a) * speed - 40,
+					vy: Math.sin(a) * speed,
 					born: now,
-					life: 420 + Math.random() * 260,
-					size: 14 + Math.random() * 16,
-					leaf: i % 4 === 0,
+					life: 300 + Math.random() * 220,
+					size: 12 + Math.random() * 16,
+					star: i % 3 === 0,
 				};
 			}),
 		];
-		startCrumbLoop();
+		startSparkLoop();
 	};
 
-	const crumbState = (crumb: Crumb) => {
-		const seconds = Math.max(0, (clock - crumb.born) / 1000);
-		const p = Math.min(1, (clock - crumb.born) / crumb.life);
+	const sparkState = (s: Spark) => {
+		const t = Math.max(0, (clock - s.born) / 1000);
+		const p = Math.min(1, (clock - s.born) / s.life);
 		return {
-			x: crumb.x + crumb.vx * seconds,
-			y: crumb.y + crumb.vy * seconds + 420 * seconds * seconds,
-			size: crumb.size * (1 - p * 0.45),
-			rot: seconds * 6,
-			alpha: (1 - p) ** 1.3,
+			x: s.x + s.vx * t,
+			y: s.y + s.vy * t + 260 * t * t,
+			size: s.size * (1 - p * 0.5),
+			alpha: (1 - p) ** 1.4,
 		};
 	};
 
-	// golden shockwave when the wx panel slams in
-	const spawnLockBurst = (x: number) => {
-		bursts = [...bursts, { id: nextId++, x }];
+	// Each locked reel breathes on its own phase and rate — sharing one made
+	// several locked reels flare in lockstep, which reads as a single object.
+	const auraPulse = (reel: number) => 0.5 + 0.5 * Math.sin(pulse / (540 + reel * 47) + reel * 1.7);
+
+	// ── beat 1: which cells have turned, and how far ─────────────────────────
+	// Cells convert in order of distance from the landed one, so the change
+	// visibly spreads out of it rather than appearing all at once.
+	const cellOrder = (wild: WildEntry) =>
+		visibleRows
+			.filter((r) => r !== wild.row)
+			.sort((a, b) => Math.abs(a - wild.row) - Math.abs(b - wild.row));
+
+	const cellProgress = (wild: WildEntry, row: number) => {
+		if (row === wild.row) return 1;
+		const rank = cellOrder(wild).indexOf(row);
+		if (rank < 0) return 0;
+		const start = (rank / ROWS) * (1 - CELL_POP);
+		return Math.min(1, Math.max(0, (wild.infect.current - start) / CELL_POP));
 	};
 
-	// Each locked reel breathes on its own phase and a slightly different rate.
-	// Sharing one pulse made three locked reels flare in perfect lockstep, which
-	// reads as one object rather than three.
-	const auraPulse = (reel: number) =>
-		0.5 + 0.5 * Math.sin(pulse / (540 + reel * 47) + reel * 1.7);
-
-	// The moment the panel reaches the housing: dust and shards squirt sideways
-	// along the top and bottom rails, the way something heavy hitting a stop
-	// throws material out of the seam.
-	const spawnEdgeImpact = (x: number, wild: WildEntry) => {
-		const now = performance.now();
-		const rails = [
-			{ y: 2, dir: 1 },
-			{ y: BOARD_SIZES.height - 2, dir: -1 },
-		];
-		crumbs = [
-			...crumbs,
-			...rails.flatMap((rail) =>
-				Array.from({ length: 7 }, (_, i) => {
-					const side = i % 2 === 0 ? 1 : -1;
-					// hug the rail: mostly horizontal, kicked slightly inward
-					const speed = 110 + Math.random() * 150;
-					return {
-						id: nextId++,
-						x: x + side * SYMBOL_SIZE * 0.1,
-						y: rail.y,
-						vx: side * speed,
-						vy: rail.dir * (20 + Math.random() * 70),
-						born: now,
-						life: 340 + Math.random() * 200,
-						size: 12 + Math.random() * 18,
-						leaf: i % 3 === 0,
-					};
-				}),
-			),
-		];
-		startCrumbLoop();
-		void wild;
+	// opaque backing spans only the cells that have actually turned, so the
+	// original symbols are hidden exactly as fast as they are replaced
+	const backingRect = (wild: WildEntry) => {
+		const turned = visibleRows.filter((r) => cellProgress(wild, r) > 0.35);
+		if (turned.length === 0) return null;
+		const top = rowCenterY(Math.min(...turned)) - SYMBOL_SIZE / 2;
+		const bottom = rowCenterY(Math.max(...turned)) + SYMBOL_SIZE / 2;
+		return { top: Math.max(0, top), bottom: Math.min(BOARD_SIZES.height, bottom) };
 	};
 
-	// How far the scroll's opening edge bows outward at a given unroll progress —
-	// and, scaled, how much the monkey bulks up. One curve drives both so the
-	// strain and the give read as a single motion.
-	//
-	// The exponents matter and were picked against the actual timeline rather
-	// than by eye: 0.6/1.5 ramps the strain steadily across the 120ms resist
-	// phase (0.59 -> 0.86 of peak) and tops out exactly as the scroll gives way,
-	// then collapses. A lower first exponent (0.35) hit 83% of the bulge within
-	// one frame, which pops; a higher one (0.9) put the peak at 160ms, i.e. still
-	// straining after the scroll had already flown open — the causality inverted.
-	// 0.2846 is the raw shape's own peak, so MAX_BOW is the real peak.
-	const MAX_BOW = SYMBOL_SIZE * 0.3;
-	const bowAt = (u: number) => {
-		if (u <= 0 || u >= 1) return 0;
-		return (MAX_BOW * (u ** 0.6 * (1 - u) ** 1.5)) / 0.2846;
-	};
-
-	// The plate spans from one symbol cell (centred on the monkey) out to the
-	// whole reel as `cover` goes 0 → 1. Clamped to the board so it never draws
-	// past the housing.
-	const plateRect = (wild: WildEntry) => {
-		const t = wild.cover.current;
-		const half = (SYMBOL_SIZE + (BOARD_SIZES.height - SYMBOL_SIZE) * t) / 2;
-		const centre = wild.y.current;
-		const top = Math.max(0, centre - half);
-		const bottom = Math.min(BOARD_SIZES.height, centre + half);
-		// squeeze pinches the plate horizontally; it is inverted so a wind-up
-		// (squeeze < 1) narrows the plate and the burst (> 1) flares it wide
-		const width = SYMBOL_SIZE * (2 - wild.squeeze.current);
-		return { top, height: Math.max(0, bottom - top), width };
+	// ── beat 2: the five Wilds collapse toward the middle ────────────────────
+	const mergedCell = (wild: WildEntry, row: number) => {
+		const m = wild.merge.current;
+		const from = rowCenterY(row);
+		// The tween itself carries the acceleration (cubicIn below), so the
+		// mapping stays linear — easing it twice cancelled out into a drift.
+		const t = m;
+		return {
+			y: from + (REEL_CENTER_Y - from) * t,
+			scale: 1 - 0.62 * t,
+			alpha: 1 - Math.max(0, (m - 0.78) / 0.22),
+		};
 	};
 
 	onMount(() => {
-		const id = setInterval(() => {
-			// just advances the clock — each reel derives its own phase from it
-			pulse = Date.now();
-		}, 24);
+		const id = setInterval(() => (pulse = Date.now()), 24);
 		return () => {
 			clearInterval(id);
 			cancelAnimationFrame(rafId);
 		};
 	});
 
+	const runTakeover = async (entry: WildEntry) => {
+		const x = getSymbolX(entry.reel);
+
+		// beat 1 — the reel turns Wild, cell by cell, out of the landed one
+		spawnSparks(x, rowCenterY(entry.row), 10);
+		const order = cellOrder(entry);
+		order.forEach((row, rank) => {
+			waitForTimeout(((rank + 0.6) / ROWS) * INFECT_MS).then(() => {
+				if (entry.phase !== 'infect') return;
+				spawnSparks(x, rowCenterY(row), 7);
+				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
+			});
+		});
+		entry.infect.set(1, { duration: INFECT_MS });
+		await waitForTimeout(INFECT_MS + 90);
+
+		// beat 2 — pull them together
+		entry.phase = 'merge';
+		// accelerate inward: they are being pulled, not drifting
+		entry.merge.set(1, { duration: MERGE_MS, easing: cubicIn });
+		await waitForTimeout(MERGE_MS * 0.78);
+
+		// beat 3 — impact, and the banner is thrown open by it
+		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
+		context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1 });
+		bursts = [...bursts, { id: nextId++, x }];
+		spawnSparks(x, REEL_CENTER_Y, 16);
+		entry.banner.set(1, { duration: BANNER_MS, easing: backOut });
+		await waitForTimeout(BANNER_MS);
+
+		entry.phase = 'idle';
+		entry.badgeScale.set(1, { duration: 300, easing: backOut });
+	};
+
 	context.eventEmitter.subscribeOnMount({
-		// A Wild landed in the free game: the monkey wolfs down his golden banana,
-		// growing a size with every chomp until he bursts into the full-reel wx
-		// pose. Resolves when the grow spine animation completes.
 		expandingWildNew: async ({ reel, row, mult }) => {
 			const entry: WildEntry = {
 				reel,
+				// a Wild can land on a padding row; clamp so the spread has a real origin
+				row: Math.min(ROWS, Math.max(1, row)),
 				mult,
-				phase: 'grow',
-				y: new Tween(rowCenterY(row)),
-				cover: new Tween(0),
+				phase: 'infect',
+				infect: new Tween(0),
+				merge: new Tween(0),
+				banner: new Tween(0),
 				badgeScale: new Tween(0),
-				squeeze: new Tween(1),
-				streak: new Tween(0),
-				unroll: new Tween(0),
 				winFlash: new Tween(0),
-				edgeFlash: new Tween(0),
 			};
-			wilds = [...wilds.filter((wild) => wild.reel !== reel), entry];
-			// drift from the landing row to the reel centre across the three chomps
-			entry.y.set(REEL_CENTER_Y, { duration: 1200, delay: 300, easing: cubicOut });
-
-			const x = getSymbolX(reel);
-			// each chomp: crumbs spray, the plate surges, and it keeps creeping
-			// between bites so the takeover reads as continuous growth
-			BITE_TIMES_MS.forEach((t, index) => {
-				waitForTimeout(t).then(() => {
-					if (entry.phase !== 'grow') return;
-					spawnCrumbs(x, entry.y.current);
-					// squash on the bite, then stretch past the target and settle —
-					// the plate behaves like something being forced open, not resized
-					entry.squeeze.set(0.94, { duration: 90, easing: cubicOut }).then(() => {
-						entry.squeeze.set(1, { duration: 320, easing: backOut });
-					});
-					entry.cover.set(COVER_STEPS[index], { duration: 190, easing: backOut }).then(() => {
-						if (entry.phase !== 'grow') return;
-						// keep inching toward the next bite so nothing ever sits still
-						const nextAt = BITE_TIMES_MS[index + 1] ?? BURST_TIME_MS;
-						entry.cover.set(COVER_STEPS[index] + CREEP_AHEAD, {
-							duration: Math.max(120, nextAt - t - 190),
-						});
-					});
-				});
-			});
-
-			// the slam: the panel shoots to full height, overshoots into the
-			// housing, and the frame takes the hit
-			waitForTimeout(BURST_TIME_MS - 110).then(() => {
-				// wind-up: it pulls in on itself a beat before letting go, which is
-				// what sells the burst as an effort rather than a cut
-				if (entry.phase !== 'grow') return;
-				entry.squeeze.set(0.86, { duration: 110, easing: cubicOut });
-			});
-
-			waitForTimeout(BURST_TIME_MS).then(() => {
-				spawnLockBurst(x);
-				spawnEdgeImpact(x, entry);
-				context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1 });
-				entry.cover.set(1, { duration: 210, easing: backOut });
-				// stretch thin as it shoots up, then snap back to full width
-				entry.squeeze.set(1.1, { duration: 130, easing: cubicOut }).then(() => {
-					entry.squeeze.set(1, { duration: 260, easing: backOut });
-				});
-				entry.streak.set(1, { duration: 70, easing: cubicOut }).then(() => {
-					entry.streak.set(0, { duration: 300, easing: cubicOut });
-				});
-				// The scroll does not simply open — it resists, then gives way.
-				// Phase 1 barely moves while the edges bow out under the strain;
-				// phase 2 is the release. Total 300ms so it lands exactly on the
-				// spine's grow end (1500 + 300 = 1800ms), which is when the spine
-				// takes over with the finished panel — no gap, no double image.
-				entry.unroll.set(0.14, { duration: 120, easing: cubicOut }).then(() => {
-					entry.unroll.set(1, { duration: 180, easing: cubicOut });
-				});
-				entry.edgeFlash.set(1, { duration: 60, easing: cubicOut }).then(() => {
-					entry.edgeFlash.set(0, { duration: 420, easing: cubicOut });
-				});
-			});
-
-			await waitForResolve((resolve) => (entry.oncomplete = resolve));
-			entry.phase = 'idle';
-			entry.cover.set(1, { duration: 120, easing: cubicOut });
-			entry.badgeScale.set(1, { duration: 320, easing: backOut });
+			wilds = [...wilds.filter((w) => w.reel !== reel), entry];
+			await runTakeover(entry);
 		},
-		// Sticky wilds get a fresh multiplier on each reveal — pulse the badge.
+
+		// Sticky wilds get a fresh multiplier on each reveal — pulse the plaque.
 		expandingWildsUpdate: async ({ wilds: updated }) => {
 			let touched = false;
 			for (const update of updated) {
-				const entry = wilds.find((wild) => wild.reel === update.reel);
+				const entry = wilds.find((w) => w.reel === update.reel);
 				if (!entry) continue;
 				entry.mult = update.mult;
 				entry.badgeScale.set(1.7, { duration: 220, easing: cubicOut });
@@ -315,27 +249,29 @@
 			for (const entry of wilds) entry.badgeScale.set(1, { duration: 220, easing: cubicOut });
 			await waitForTimeout(240);
 		},
-		// Bet resume: rebuild sticky wilds instantly, no animation.
+
+		// Bet resume: rebuild locked reels instantly, no animation.
 		expandingWildsRestore: ({ wilds: restored }) => {
 			wilds = restored.map((wild) => ({
 				reel: wild.reel,
+				row: Math.ceil(ROWS / 2),
 				mult: wild.mult,
 				phase: 'idle' as const,
-				y: new Tween(REEL_CENTER_Y),
-				cover: new Tween(1),
+				infect: new Tween(1),
+				merge: new Tween(1),
+				banner: new Tween(1),
 				badgeScale: new Tween(1),
-				squeeze: new Tween(1),
-				streak: new Tween(0),
-				unroll: new Tween(1),
 				winFlash: new Tween(0),
-				edgeFlash: new Tween(0),
 			}));
 		},
+
 		expandingWildsClear: () => {
 			wilds = [];
 		},
-		// A win line crossing a sticky reel: pulse that wild so the locked reel
-		// still reads as participating in the win.
+
+		// A win line crossing a locked reel. The individual W symbols underneath
+		// deliberately do not animate (see WinLines.animatePositions), so the
+		// panel itself has to carry the win.
 		winLinesShow: ({ wins }) => {
 			if (wilds.length === 0) return;
 			const winningReels = new Set(wins.flatMap((win) => win.positions.map((p) => p.reel)));
@@ -344,8 +280,6 @@
 				entry.badgeScale.set(1.45, { duration: 200, easing: cubicOut }).then(() => {
 					entry.badgeScale.set(1, { duration: 260, easing: cubicOut });
 				});
-				// the panel itself lights up, twice, so the whole reel reads as the
-				// winning element rather than the cells behind it
 				entry.winFlash.set(1, { duration: 160, easing: cubicOut }).then(() => {
 					entry.winFlash.set(0.25, { duration: 220, easing: cubicOut }).then(() => {
 						entry.winFlash.set(0.85, { duration: 180, easing: cubicOut }).then(() => {
@@ -360,84 +294,101 @@
 
 <BoardContainer>
 	{#each wilds as wild (wild.reel)}
-		<!-- reel-takeover plate: grows out of the landed W cell with the monkey,
-		     so it always hides the W underneath without ever popping in at full
-		     height (jungle-green to match the wx panel art) -->
-		<Graphics
-			draw={(g) => {
-				const x = getSymbolX(wild.reel);
-				const { top, height, width } = plateRect(wild);
-				const left = x - width / 2;
-				g.clear();
-				if (height <= 0) return;
-				// Once the reel is fully taken over, lay a square full-bleed base
-				// first. The rounded plate alone left the reel corners uncovered and
-				// sat at 0.97 alpha, so symbols still travelling behind it showed
-				// through — the reel read as two layers instead of one panel.
-				if (wild.cover.current > 0.99) {
-					g.beginFill(0x0a1508, 1);
-					g.drawRect(x - SYMBOL_SIZE / 2, 0, SYMBOL_SIZE, BOARD_SIZES.height);
-					g.endFill();
-				}
-				g.beginFill(0x0a1508, 1);
-				g.drawRoundedRect(left, top, width, height, 14);
-				g.endFill();
-				if (height > 16 && width > 12) {
-					g.beginFill(0x14301a, 0.92);
-					g.drawRoundedRect(left + 6, top + 6, width - 12, height - 12, 10);
-					g.endFill();
-				}
-				g.lineStyle(3, 0xffd43b, 0.75);
-				g.drawRoundedRect(left + 3, top + 3, Math.max(0, width - 6), Math.max(0, height - 6), 12);
-			}}
-		/>
+		{@const x = getSymbolX(wild.reel)}
 
-		{#if wild.streak.current > 0}
-			<!-- Vertical speed streaks: the eye needs motion smear to accept that the
-			     panel travelled the reel rather than being swapped in. fxStreak is a
-			     horizontal smear, so width is its long axis and the quarter turn
-			     stands it upright along the reel. -->
-			{@const sx = getSymbolX(wild.reel)}
-			{#each [-0.26, 0, 0.26] as offset (offset)}
+		<!-- opaque backing: covers the original symbols exactly as far as the
+		     conversion has actually reached -->
+		{#if wild.phase !== 'idle'}
+			{@const rect = backingRect(wild)}
+			{#if rect}
+				<Graphics
+					draw={(g: PixiGraphics) => {
+						const h = rect.bottom - rect.top;
+						g.clear();
+						if (h <= 0) return;
+						g.beginFill(0x0a1508, 1);
+						g.drawRect(x - SYMBOL_SIZE / 2, rect.top, SYMBOL_SIZE, h);
+						g.endFill();
+						g.lineStyle(3, 0xffd43b, 0.7);
+						g.drawRoundedRect(x - SYMBOL_SIZE / 2 + 3, rect.top + 3, SYMBOL_SIZE - 6, h - 6, 10);
+					}}
+				/>
+			{/if}
+		{/if}
+
+		<!-- beat 1 + 2: the individual Wilds -->
+		{#if wild.phase !== 'idle'}
+			{#each visibleRows as row (row)}
+				{@const p = cellProgress(wild, row)}
+				{#if p > 0}
+					{@const m = mergedCell(wild, row)}
+					{@const pop = wild.phase === 'merge' ? 1 : backOut(p)}
+					<Sprite
+						key="gbW"
+						anchor={0.5}
+						{x}
+						y={wild.phase === 'merge' ? m.y : rowCenterY(row)}
+						width={SYMBOL_SIZE * pop * (wild.phase === 'merge' ? m.scale : 1)}
+						height={SYMBOL_SIZE * pop * (wild.phase === 'merge' ? m.scale : 1)}
+						alpha={wild.phase === 'merge' ? m.alpha : 1}
+					/>
+					<!-- conversion flash: brightest at the instant the cell turns -->
+					{#if wild.phase === 'infect' && p < 1}
+						<Sprite
+							key="fxGlow"
+							anchor={0.5}
+							{x}
+							y={rowCenterY(row)}
+							width={SYMBOL_SIZE * 1.5}
+							height={SYMBOL_SIZE * 1.5}
+							tint={0xfff3bd}
+							blendMode="add"
+							alpha={0.85 * (1 - p)}
+						/>
+					{/if}
+				{/if}
+			{/each}
+		{/if}
+
+		<!-- beat 2: streaks converging on the middle as they are pulled in -->
+		{#if wild.phase === 'merge'}
+			{@const mp = wild.merge.current}
+			{#each [-1, 1] as dir (dir)}
 				<Sprite
 					key="fxStreak"
 					anchor={0.5}
-					x={sx + offset * SYMBOL_SIZE}
-					y={REEL_CENTER_Y}
-					width={BOARD_SIZES.height * (0.55 + 0.45 * wild.streak.current)}
-					height={SYMBOL_SIZE * 0.3}
+					{x}
+					y={REEL_CENTER_Y + dir * BOARD_SIZES.height * 0.26 * (1 - mp)}
+					width={BOARD_SIZES.height * 0.42 * (1 - mp)}
+					height={SYMBOL_SIZE * 0.24}
 					rotation={Math.PI / 2}
 					tint={0xffe98a}
 					blendMode="add"
-					alpha={0.5 * wild.streak.current}
+					alpha={0.6 * mp}
 				/>
 			{/each}
 		{/if}
 
-		{#if wild.edgeFlash.current > 0}
-			<!-- white-hot seam where the panel is jammed against the housing -->
-			{@const x = getSymbolX(wild.reel)}
-			{#each [0, BOARD_SIZES.height] as railY (railY)}
-				<Sprite
-					key="fxStreak"
-					anchor={0.5}
-					x={x}
-					y={railY}
-					width={SYMBOL_SIZE * 1.5}
-					height={SYMBOL_SIZE * 0.34}
-					tint={0xfff3bd}
-					blendMode="add"
-					alpha={wild.edgeFlash.current}
-				/>
-			{/each}
+		<!-- beat 3: the locked banner. Height is driven by `banner`, so it is
+		     thrown open by the impact rather than fading in. -->
+		{#if wild.banner.current > 0}
+			{@const b = Math.min(1, wild.banner.current)}
+			<Sprite
+				key="gbWxPanel"
+				anchor={0.5}
+				{x}
+				y={REEL_CENTER_Y}
+				width={SYMBOL_SIZE}
+				height={BOARD_SIZES.height * b}
+			/>
 		{/if}
+
 		{#if wild.phase === 'idle'}
-			<!-- breathing golden aura so the locked WILD reel keeps reading alive -->
+			<!-- breathing aura so the locked reel keeps reading alive -->
 			<Graphics
-				draw={(g) => {
-					const x = getSymbolX(wild.reel);
-					g.clear();
+				draw={(g: PixiGraphics) => {
 					const glow = auraPulse(wild.reel);
+					g.clear();
 					g.lineStyle(9, 0xffd75e, 0.08 + 0.1 * glow);
 					g.drawRoundedRect(x - SYMBOL_SIZE / 2 - 3, -3, SYMBOL_SIZE + 6, BOARD_SIZES.height + 6, 16);
 					g.lineStyle(4, 0xffe98a, 0.16 + 0.18 * glow);
@@ -445,108 +396,22 @@
 				}}
 			/>
 		{/if}
-		{#if wild.unroll.current > 0 && wild.unroll.current < 1}
-			<!--
-				The WILD banner unrolling. The spine no longer swaps to the finished
-				wx art at the end of `grow` — that hard cut between two pictures was
-				the whole reason the takeover looked like a still being resized.
-				Instead the same panel art is drawn here behind a mask that opens out
-				of the monkey's row, so the banner visibly unrolls up and down the
-				reel. Once `grow` finishes, the spine's idle animation shows the
-				finished panel and this copy stops drawing.
-			-->
-			{@const ux = getSymbolX(wild.reel)}
-			{@const uy = wild.y.current}
-			{@const u = wild.unroll.current}
-			{@const half = (BOARD_SIZES.height * u) / 2}
-			{@const bow = bowAt(u)}
-			<Container>
-				<Graphics
-					isMask
-					draw={(g) => {
-						const left = ux - SYMBOL_SIZE / 2;
-						const right = ux + SYMBOL_SIZE / 2;
-						const top = uy - half;
-						const bottom = uy + half;
-						g.clear();
-						g.beginFill(0xffffff, 1);
-						// The opening edges bow OUTWARD, deepest while the scroll is
-						// still fighting back and flattening as it gives way. A flat
-						// edge reads as a wipe; a curved one reads as something round
-						// being forced through.
-						g.moveTo(left, top);
-						g.quadraticCurveTo(ux, top - bow, right, top);
-						g.lineTo(right, bottom);
-						g.quadraticCurveTo(ux, bottom + bow, left, bottom);
-						g.closePath();
-						g.endFill();
-					}}
-				/>
-				<Sprite
-					key="gbWxPanel"
-					anchor={0.5}
-					x={ux}
-					y={REEL_CENTER_Y}
-					width={SYMBOL_SIZE}
-					height={BOARD_SIZES.height}
-				/>
-			</Container>
-			<!-- hot seam riding the leading edges of the unroll -->
-			{#each [-1, 1] as dir (dir)}
-				<Sprite
-					key="fxStreak"
-					anchor={0.5}
-					x={ux}
-					y={uy + dir * (half + bow)}
-					width={SYMBOL_SIZE * 1.3}
-					height={SYMBOL_SIZE * 0.26}
-					tint={0xfff3bd}
-					blendMode="add"
-					alpha={0.85 * (1 - wild.unroll.current)}
-				/>
-			{/each}
-		{/if}
 
-		<!--
-			The monkey swells on exactly the same curve that bows the scroll open
-			(bowAt), so his effort and the scroll's give are visibly one motion
-			rather than two things happening near each other: he bulks up as it
-			resists, and settles back as it releases.
-		-->
-		{@const push = 1 + 0.18 * (bowAt(wild.unroll.current) / MAX_BOW)}
-		<Container x={getSymbolX(wild.reel)} y={wild.y.current} scale={push}>
-			<SpineProvider key="gbSpWx" x={0} y={0} width={SYMBOL_SIZE} height={BOARD_SIZES.height}>
-			<SpineTrack
-				trackIndex={0}
-				animationName={wild.phase === 'grow' ? 'grow' : 'idle'}
-				loop={wild.phase === 'idle'}
-				listener={{
-					complete: (entry) => {
-						if (entry.animation?.name === 'grow') wild.oncomplete?.();
-					},
-				}}
-			/>
-			</SpineProvider>
-		</Container>
 		{#if wild.winFlash.current > 0}
-			<!-- Whole-reel win reaction. The W symbols under the plate deliberately
-			     no longer animate (see WinLines.animatePositions), so the panel has
-			     to carry the win itself: a hot rim plus an additive wash. -->
 			{@const fx = wild.winFlash.current}
-			{@const wx = getSymbolX(wild.reel)}
 			<Graphics
-				draw={(g) => {
+				draw={(g: PixiGraphics) => {
 					g.clear();
 					g.lineStyle(6, 0xfff3bd, 0.9 * fx);
-					g.drawRoundedRect(wx - SYMBOL_SIZE / 2 + 3, 3, SYMBOL_SIZE - 6, BOARD_SIZES.height - 6, 12);
+					g.drawRoundedRect(x - SYMBOL_SIZE / 2 + 3, 3, SYMBOL_SIZE - 6, BOARD_SIZES.height - 6, 12);
 					g.lineStyle(14, 0xffd43b, 0.35 * fx);
-					g.drawRoundedRect(wx - SYMBOL_SIZE / 2 - 2, -2, SYMBOL_SIZE + 4, BOARD_SIZES.height + 4, 15);
+					g.drawRoundedRect(x - SYMBOL_SIZE / 2 - 2, -2, SYMBOL_SIZE + 4, BOARD_SIZES.height + 4, 15);
 				}}
 			/>
 			<Sprite
 				key="fxGlow"
 				anchor={0.5}
-				x={wx}
+				{x}
 				y={REEL_CENTER_Y}
 				width={SYMBOL_SIZE * 1.25}
 				height={BOARD_SIZES.height}
@@ -556,26 +421,17 @@
 			/>
 		{/if}
 
-		{#if wild.phase === 'idle'}
-			<!--
-				Multiplier plaque — THE display of the wild multiplier, so it has to
-				survive being read at a glance. It used to be a small circle sitting
-				right on top of the busy hands artwork at the foot of the wx panel,
-				which made it easy to miss entirely. It is now a solid full-width
-				banner clamped to the bottom rail (below the "D"), with an opaque
-				backing so it reads over whatever art is behind it.
-			-->
+		<!-- multiplier plaque: full-width brass banner on the bottom rail, opaque
+		     so it reads over the artwork behind it -->
+		{#if wild.badgeScale.current > 0}
 			{@const plaqueH = SYMBOL_SIZE * 0.52}
-			{@const plaqueY = BOARD_SIZES.height - plaqueH * 0.5 - 4}
-			<Container x={getSymbolX(wild.reel)} y={plaqueY} scale={wild.badgeScale.current}>
+			<Container {x} y={BOARD_SIZES.height - plaqueH * 0.5 - 4} scale={wild.badgeScale.current}>
 				<Graphics
 					draw={(g: PixiGraphics) => {
 						const w = SYMBOL_SIZE - 8;
 						const h = plaqueH;
-						// a touch of the idle breathing so the plaque reads as live
 						const glow = auraPulse(wild.reel);
 						g.clear();
-						// outer halo first, so the plaque separates from the art behind
 						g.lineStyle(7, 0xffd75e, 0.18 + 0.16 * glow);
 						g.drawRoundedRect(-w / 2 - 3, -h / 2 - 3, w + 6, h + 6, 12);
 						g.lineStyle(0);
@@ -588,28 +444,23 @@
 						g.drawRoundedRect(-w / 2 + 4, -h / 2 + 4, w - 8, h - 8, 7);
 					}}
 				/>
-				<GoldText
-					text={`${wild.mult}X`}
-					fontSize={SYMBOL_SIZE * 0.4}
-					maxWidth={SYMBOL_SIZE - 22}
-				/>
+				<GoldText text={`${wild.mult}X`} fontSize={SYMBOL_SIZE * 0.4} maxWidth={SYMBOL_SIZE - 22} />
 			</Container>
 		{/if}
 	{/each}
 
-	{#each crumbs as crumb (crumb.id)}
-		{@const state = crumbState(crumb)}
+	{#each sparks as spark (spark.id)}
+		{@const s = sparkState(spark)}
 		<Sprite
-			key={crumb.leaf ? 'fxLeaf' : 'fxGlow'}
+			key={spark.star ? 'fxStar' : 'fxGlow'}
 			anchor={0.5}
-			x={state.x}
-			y={state.y}
-			rotation={state.rot}
-			tint={crumb.leaf ? 0xffe98a : 0xfff2b0}
-			blendMode={crumb.leaf ? 'normal' : 'add'}
-			width={state.size}
-			height={state.size}
-			alpha={state.alpha}
+			x={s.x}
+			y={s.y}
+			width={s.size}
+			height={s.size}
+			tint={0xfff2b0}
+			blendMode="add"
+			alpha={s.alpha}
 		/>
 	{/each}
 

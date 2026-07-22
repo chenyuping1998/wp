@@ -45,6 +45,13 @@
 {/if}
 
 <style>
+	/* Vendor logo must render identically to the WildParty build. WildParty
+	   declares  font-family: 'Cinzel, Georgia, serif', Arial, sans-serif;  where
+	   the whole first entry is quoted as ONE family name, so it matches nothing —
+	   and Cinzel is not loaded anywhere in the workspace (WildParty only pulls the
+	   Typekit proxima-nova kit). It therefore renders in Arial. This states that
+	   outcome directly rather than copying the broken declaration.
+	   Do not swap this for the game font: it is the vendor's mark. */
 	.wp-loader {
 		position: absolute;
 		inset: 0;
@@ -60,7 +67,7 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 0.85rem;
-		font-family: "Trebuchet MS", "Segoe UI", Tahoma, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 
 	.wp-star-wrap {
@@ -80,7 +87,7 @@
 		font-size: 18px;
 		font-weight: 900;
 		letter-spacing: 0;
-		font-family: "Trebuchet MS", "Segoe UI", Tahoma, Arial, sans-serif;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 
 	.wp-title {
