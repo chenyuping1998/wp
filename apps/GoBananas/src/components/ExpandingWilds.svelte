@@ -173,6 +173,23 @@
 		void wild;
 	};
 
+	// How far the scroll's opening edge bows outward at a given unroll progress —
+	// and, scaled, how much the monkey bulks up. One curve drives both so the
+	// strain and the give read as a single motion.
+	//
+	// The exponents matter and were picked against the actual timeline rather
+	// than by eye: 0.6/1.5 ramps the strain steadily across the 120ms resist
+	// phase (0.59 -> 0.86 of peak) and tops out exactly as the scroll gives way,
+	// then collapses. A lower first exponent (0.35) hit 83% of the bulge within
+	// one frame, which pops; a higher one (0.9) put the peak at 160ms, i.e. still
+	// straining after the scroll had already flown open — the causality inverted.
+	// 0.2846 is the raw shape's own peak, so MAX_BOW is the real peak.
+	const MAX_BOW = SYMBOL_SIZE * 0.3;
+	const bowAt = (u: number) => {
+		if (u <= 0 || u >= 1) return 0;
+		return (MAX_BOW * (u ** 0.6 * (1 - u) ** 1.5)) / 0.2846;
+	};
+
 	// The plate spans from one symbol cell (centred on the monkey) out to the
 	// whole reel as `cover` goes 0 → 1. Clamped to the board so it never draws
 	// past the housing.
@@ -265,8 +282,14 @@
 				entry.streak.set(1, { duration: 70, easing: cubicOut }).then(() => {
 					entry.streak.set(0, { duration: 300, easing: cubicOut });
 				});
-				// the banner unrolls out of the monkey's row to fill the reel
-				entry.unroll.set(1, { duration: 340, easing: cubicOut });
+				// The scroll does not simply open — it resists, then gives way.
+				// Phase 1 barely moves while the edges bow out under the strain;
+				// phase 2 is the release. Total 300ms so it lands exactly on the
+				// spine's grow end (1500 + 300 = 1800ms), which is when the spine
+				// takes over with the finished panel — no gap, no double image.
+				entry.unroll.set(0.14, { duration: 120, easing: cubicOut }).then(() => {
+					entry.unroll.set(1, { duration: 180, easing: cubicOut });
+				});
 				entry.edgeFlash.set(1, { duration: 60, easing: cubicOut }).then(() => {
 					entry.edgeFlash.set(0, { duration: 420, easing: cubicOut });
 				});
@@ -422,24 +445,6 @@
 				}}
 			/>
 		{/if}
-		<SpineProvider
-			key="gbSpWx"
-			x={getSymbolX(wild.reel)}
-			y={wild.y.current}
-			width={SYMBOL_SIZE}
-			height={BOARD_SIZES.height}
-		>
-			<SpineTrack
-				trackIndex={0}
-				animationName={wild.phase === 'grow' ? 'grow' : 'idle'}
-				loop={wild.phase === 'idle'}
-				listener={{
-					complete: (entry) => {
-						if (entry.animation?.name === 'grow') wild.oncomplete?.();
-					},
-				}}
-			/>
-		</SpineProvider>
 		{#if wild.unroll.current > 0 && wild.unroll.current < 1}
 			<!--
 				The WILD banner unrolling. The spine no longer swaps to the finished
@@ -452,19 +457,28 @@
 			-->
 			{@const ux = getSymbolX(wild.reel)}
 			{@const uy = wild.y.current}
-			{@const half = (BOARD_SIZES.height * wild.unroll.current) / 2}
+			{@const u = wild.unroll.current}
+			{@const half = (BOARD_SIZES.height * u) / 2}
+			{@const bow = bowAt(u)}
 			<Container>
 				<Graphics
 					isMask
 					draw={(g) => {
+						const left = ux - SYMBOL_SIZE / 2;
+						const right = ux + SYMBOL_SIZE / 2;
+						const top = uy - half;
+						const bottom = uy + half;
 						g.clear();
 						g.beginFill(0xffffff, 1);
-						g.drawRect(
-							ux - SYMBOL_SIZE / 2,
-							Math.max(0, uy - half),
-							SYMBOL_SIZE,
-							Math.min(BOARD_SIZES.height, uy + half) - Math.max(0, uy - half),
-						);
+						// The opening edges bow OUTWARD, deepest while the scroll is
+						// still fighting back and flattening as it gives way. A flat
+						// edge reads as a wipe; a curved one reads as something round
+						// being forced through.
+						g.moveTo(left, top);
+						g.quadraticCurveTo(ux, top - bow, right, top);
+						g.lineTo(right, bottom);
+						g.quadraticCurveTo(ux, bottom + bow, left, bottom);
+						g.closePath();
 						g.endFill();
 					}}
 				/>
@@ -483,7 +497,7 @@
 					key="fxStreak"
 					anchor={0.5}
 					x={ux}
-					y={uy + dir * half}
+					y={uy + dir * (half + bow)}
 					width={SYMBOL_SIZE * 1.3}
 					height={SYMBOL_SIZE * 0.26}
 					tint={0xfff3bd}
@@ -493,6 +507,27 @@
 			{/each}
 		{/if}
 
+		<!--
+			The monkey swells on exactly the same curve that bows the scroll open
+			(bowAt), so his effort and the scroll's give are visibly one motion
+			rather than two things happening near each other: he bulks up as it
+			resists, and settles back as it releases.
+		-->
+		{@const push = 1 + 0.18 * (bowAt(wild.unroll.current) / MAX_BOW)}
+		<Container x={getSymbolX(wild.reel)} y={wild.y.current} scale={push}>
+			<SpineProvider key="gbSpWx" x={0} y={0} width={SYMBOL_SIZE} height={BOARD_SIZES.height}>
+			<SpineTrack
+				trackIndex={0}
+				animationName={wild.phase === 'grow' ? 'grow' : 'idle'}
+				loop={wild.phase === 'idle'}
+				listener={{
+					complete: (entry) => {
+						if (entry.animation?.name === 'grow') wild.oncomplete?.();
+					},
+				}}
+			/>
+			</SpineProvider>
+		</Container>
 		{#if wild.winFlash.current > 0}
 			<!-- Whole-reel win reaction. The W symbols under the plate deliberately
 			     no longer animate (see WinLines.animatePositions), so the panel has
