@@ -11,8 +11,8 @@
 	// bar, which hands the whole middle of the screen to the board. Opted into per
 	// game via uiTheme.betBarLayout — every other game keeps the bottom bar.
 	//
-	//   LEFT   menu (top), Buy Bonus (centred, deliberately oversized — it is the
-	//          feature CTA and has a rail to itself)
+	//   LEFT   Buy Bonus (centred, deliberately oversized — it is the feature CTA
+	//          and has a rail to itself), menu at the foot, opening upward
 	//   RIGHT  balance / win / bet readouts, then the spin pod
 	//
 	// Positions are proportional to the standard layout box so the same component
@@ -25,6 +25,13 @@
 	const RAIL = 400;
 	const leftX = $derived(RAIL * 0.5);
 	const rightX = $derived(box.width - RAIL * 0.5);
+
+	// Menu sits at the foot of the left rail and opens upward.
+	const MENU_Y = $derived(box.height * 0.88);
+	// The menu buttons are UI_BASE_SIZE * 1.3 = 195 wide, so at scale 0.8 each
+	// circle is 156 across. Anything under that and the gold outlines cut into
+	// each other — spacing is the diameter plus a deliberate 20px of air.
+	const MENU_STEP = 176;
 </script>
 
 <Container x={20}>
@@ -37,7 +44,7 @@
 
 <MainContainer standard>
 	<!-- ── left rail ─────────────────────────────────────────────────────── -->
-	<Container x={leftX} y={box.height * 0.11} scale={0.85}>
+	<Container x={leftX} y={MENU_Y} scale={0.85}>
 		{@render props.buttonMenu({ anchor: 0.5 })}
 	</Container>
 
@@ -95,11 +102,12 @@
 		onpointerup={() => (stateUi.menuOpen = false)}
 	/>
 
-	<!-- menu opens downward from the menu button, staying inside the left rail -->
+	<!-- Opens upward out of the menu button at the foot of the rail: close on the
+	     button's own spot, options stacked above it. -->
 	<MainContainer standard>
-		<Container x={leftX} y={box.height * 0.11}>
+		<Container x={leftX} y={MENU_Y}>
 			{#each [1, 2, 3, 4] as slot (slot)}
-				<Container scale={0.8} y={slot * 132}>
+				<Container scale={0.8} y={-slot * MENU_STEP}>
 					{#if slot === 1}
 						{@render props.buttonPayTable({ anchor: 0.5 })}
 					{:else if slot === 2}
