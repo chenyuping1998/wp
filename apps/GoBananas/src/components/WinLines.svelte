@@ -12,13 +12,15 @@
 </script>
 
 <script lang="ts">
-	import { onDestroy } from 'svelte';
-	import { Graphics, Container, Sprite } from 'pixi-svelte';
+	import { Graphics, Container } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { stateBet } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import BoardContainer from './BoardContainer.svelte';
+	import GrenadeRunner from './GrenadeRunner.svelte';
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE, REEL_PADDING } from '../game/constants';
+	import { SYMBOL_SIZE, REEL_PADDING, BOARD_DIMENSIONS } from '../game/constants';
 	import config from '../game/config';
 
 	const context = getContext();
@@ -33,46 +35,137 @@
 		0x44ffbb, 0xffbb44, 0x7744ff, 0x44ff44, 0xff4477,
 	];
 
-	type DrawnLine = {
+	type Point = { x: number; y: number };
+	type ActiveLine = {
 		lineIndex: number;
 		color: number;
-		points: { x: number; y: number }[];
+		points: Point[];
+		positions: { reel: number; row: number }[];
+		delay: number;
+		done: boolean;
 	};
 
-	const WIN_LINE_STEP_DELAY_FAST = 70;
-	const WIN_LINE_STEP_DELAY_NORMAL = 140;
-	const WIN_LINE_END_DELAY = 80;
+	// volley timings — every winning line runs at once, staggered just enough
+	// that the eye can separate them
+	const NORMAL = { entry: 80, travel: 540, settle: 140, stagger: 28 };
+	const FAST = { entry: 30, travel: 210, settle: 60, stagger: 12 };
+	const HOLD_AFTER_MS = 220;
 
-	let drawnLines = $state<DrawnLine[]>([]);
+	let lines = $state<ActiveLine[]>([]);
 	let show = $state(false);
+	let timing = $state(NORMAL);
+	// tick forces the trail Graphics to redraw while the runners move
+	let tick = $state(0);
+	let tickRaf = 0;
+	// crossing progress per line, 0..1, mirrors each grenade's travel
+	let crossed = $state<Record<number, number>>({});
 
-	// Symbol center X: same formula as getSymbolX in utils.ts
-	function symbolCenterX(reel: number) {
-		return SYMBOL_SIZE * (reel + REEL_PADDING);
-	}
+	const lineScale = $derived(lines.length >= 6 ? 0.7 : 1);
 
-	// Symbol center Y accounts for the reel default offset (-SYMBOL_SIZE)
-	// Actual render: reelY(-120) + (arrayIndex + 0.5) * 120
-	// Payline rows (0,1,2) map to padded array indices (1,2,3)
-	function symbolCenterYFromPayline(paylineRow: number) {
-		return -SYMBOL_SIZE + (paylineRow + 1 + 0.5) * SYMBOL_SIZE;
-	}
+	// Symbol centre X: same formula as getSymbolX in utils.ts
+	const symbolCenterX = (reel: number) => SYMBOL_SIZE * (reel + REEL_PADDING);
+	// Payline rows (0..4) map to padded array indices (1..5)
+	const symbolCenterYFromPayline = (paylineRow: number) =>
+		-SYMBOL_SIZE + (paylineRow + 1 + 0.5) * SYMBOL_SIZE;
 
-	// walk the payline polyline up to `p` (0..1 of total length) and return the
-	// points that make up the drawn portion, with the partial last segment
-	const pathAt = (points: { x: number; y: number }[], p: number) => {
+	// ── symbols light up in the grenade's wake ────────────────────────────────
+	// A position may sit on several winning lines; animating the same one twice
+	// re-assigns symbolState='win' without retriggering the effect and the game
+	// would hang waiting for a completion that never fires. Dedupe per volley.
+	let animatedKeys = new Set<string>();
+	const posKey = (p: { reel: number; row: number }) => `${p.reel},${p.row}`;
+
+	const animatePositions = (positions: { reel: number; row: number }[]) => {
+		const fresh = positions.filter(
+			(p) => p.row >= 1 && p.row <= BOARD_DIMENSIONS.y && !animatedKeys.has(posKey(p)),
+		);
+		if (fresh.length === 0) return;
+		for (const p of fresh) animatedKeys.add(posKey(p));
+		context.eventEmitter.broadcast({ type: 'boardWithAnimateSymbols', symbolPositions: fresh });
+	};
+
+	const onGrenadeReel = (line: ActiveLine, reelIndex: number) => {
+		crossed[line.lineIndex] = Math.max(
+			crossed[line.lineIndex] ?? 0,
+			reelIndex / Math.max(1, line.points.length - 1),
+		);
+		animatePositions(line.positions.filter((p) => p.reel === reelIndex));
+	};
+
+	const startTicker = () => {
+		cancelAnimationFrame(tickRaf);
+		const step = () => {
+			tick++;
+			if (show) tickRaf = requestAnimationFrame(step);
+		};
+		tickRaf = requestAnimationFrame(step);
+	};
+
+	context.eventEmitter.subscribeOnMount({
+		winLinesShow: async ({ wins, fast }) => {
+			animatedKeys = new Set();
+			crossed = {};
+			timing = fast || stateBet.isTurbo ? FAST : NORMAL;
+
+			const built: ActiveLine[] = [];
+			wins.forEach((win, index) => {
+				const paylineRows: number[] = (config.paylines as Record<string, number[]>)[
+					String(win.lineIndex)
+				];
+				if (!paylineRows) return;
+				built.push({
+					lineIndex: win.lineIndex,
+					color: LINE_COLORS[(win.lineIndex - 1) % LINE_COLORS.length],
+					points: paylineRows.map((row, reel) => ({
+						x: symbolCenterX(reel),
+						y: symbolCenterYFromPayline(row),
+					})),
+					positions: win.positions,
+					delay: index * timing.stagger,
+					done: false,
+				});
+			});
+			if (built.length === 0) return;
+
+			lines = built;
+			show = true;
+			context.eventEmitter.broadcast({ type: 'boardShow' });
+			startTicker();
+
+			const volleyMs =
+				timing.entry + timing.travel + timing.settle + (built.length - 1) * timing.stagger;
+			await waitForTimeout(volleyMs + HOLD_AFTER_MS);
+
+			// safety net: anything the runners missed (padding rows are skipped by
+			// design) still gets its win animation before the round moves on
+			animatePositions(wins.flatMap((win) => win.positions));
+		},
+		winLinesHide: () => {
+			show = false;
+			lines = [];
+			crossed = {};
+			cancelAnimationFrame(tickRaf);
+		},
+		winLinesClear: () => {
+			lines = [];
+			crossed = {};
+		},
+	});
+
+	// walk the polyline up to `p` of total length and return the drawn portion
+	const pathAt = (points: Point[], p: number) => {
 		if (p >= 1) return points;
-		const segLengths = points.slice(1).map((pt, i) => Math.hypot(pt.x - points[i].x, pt.y - points[i].y));
-		const total = segLengths.reduce((sum, l) => sum + l, 0);
+		const lengths = points.slice(1).map((pt, i) => Math.hypot(pt.x - points[i].x, pt.y - points[i].y));
+		const total = lengths.reduce((sum, l) => sum + l, 0);
 		let want = total * Math.max(0, p);
 		const out = [points[0]];
-		for (let i = 0; i < segLengths.length; i++) {
-			if (want >= segLengths[i]) {
+		for (let i = 0; i < lengths.length; i++) {
+			if (want >= lengths[i]) {
 				out.push(points[i + 1]);
-				want -= segLengths[i];
+				want -= lengths[i];
 				continue;
 			}
-			const f = segLengths[i] === 0 ? 0 : want / segLengths[i];
+			const f = lengths[i] === 0 ? 0 : want / lengths[i];
 			out.push({
 				x: points[i].x + (points[i + 1].x - points[i].x) * f,
 				y: points[i].y + (points[i + 1].y - points[i].y) * f,
@@ -82,106 +175,49 @@
 		return out;
 	};
 
-	// 0 → 1 while the current line draws itself on
-	let drawProgress = $state(1);
-	let drawRaf = 0;
-	const runDrawOn = (durationMs: number) => {
-		cancelAnimationFrame(drawRaf);
-		const start = performance.now();
-		const step = (now: number) => {
-			const p = (now - start) / durationMs;
-			drawProgress = Math.min(1, p);
-			if (p < 1) drawRaf = requestAnimationFrame(step);
-		};
-		drawProgress = 0;
-		drawRaf = requestAnimationFrame(step);
+	const drawTrails = (g: PixiGraphics) => {
+		tick; // redraw every frame while the volley runs
+		g.clear();
+		const width = lines.length >= 6 ? 0.72 : 1;
+		for (const line of lines) {
+			const p = line.done ? 1 : (crossed[line.lineIndex] ?? 0);
+			if (p <= 0) continue;
+			const drawn = pathAt(line.points, p);
+			if (drawn.length < 2) continue;
+			const stroke = (w: number, color: number, alpha: number) => {
+				g.lineStyle(w * width, color, alpha);
+				g.moveTo(drawn[0].x, drawn[0].y);
+				for (let i = 1; i < drawn.length; i++) g.lineTo(drawn[i].x, drawn[i].y);
+			};
+			// scorch underlay: reads as a burn mark where the line crosses the
+			// gold expanding-wild panel, and all but disappears over the dark board
+			stroke(11, 0x1a1206, 0.5);
+			stroke(7, line.color, 0.22);
+			stroke(3, line.color, 0.95);
+			stroke(1.2, 0xffffff, 0.5);
+		}
 	};
-	onDestroy(() => cancelAnimationFrame(drawRaf));
-
-	context.eventEmitter.subscribeOnMount({
-		winLinesShow: async ({ wins, fast }) => {
-			drawnLines = [];
-			show = true;
-
-			const allLines: DrawnLine[] = [];
-
-			for (const win of wins) {
-				const lineIdx = win.lineIndex;
-				const color = LINE_COLORS[(lineIdx - 1) % LINE_COLORS.length];
-
-				// Full payline path
-				const paylineRows: number[] =
-					(config.paylines as Record<string, number[]>)[String(lineIdx)];
-				if (!paylineRows) continue;
-
-				const points: { x: number; y: number }[] = [];
-				for (let reel = 0; reel < paylineRows.length; reel++) {
-					points.push({
-						x: symbolCenterX(reel),
-						y: symbolCenterYFromPayline(paylineRows[reel]),
-					});
-				}
-				allLines.push({ lineIndex: lineIdx, color, points });
-			}
-
-			const stepDelay = fast ? WIN_LINE_STEP_DELAY_FAST : WIN_LINE_STEP_DELAY_NORMAL;
-			for (let i = 0; i < allLines.length; i++) {
-				drawnLines = [allLines[i]];
-				// spend the first ~60% of the slot racing the stroke across, then
-				// let it sit so the eye can read the shape
-				runDrawOn(stepDelay * 0.6);
-				await waitForTimeout(stepDelay);
-			}
-			await waitForTimeout(WIN_LINE_END_DELAY);
-		},
-		winLinesHide: () => {
-			show = false;
-			drawnLines = [];
-		},
-		winLinesClear: () => {
-			drawnLines = [];
-		},
-	});
 </script>
 
-{#if show && drawnLines.length > 0}
+{#if show && lines.length > 0}
 	<BoardContainer>
 		<Container zIndex={10}>
-			{#each drawnLines as line (line.lineIndex)}
-				<Graphics
-					draw={(g) => {
-						if (!line.points || line.points.length < 2) return;
-						g.clear();
-						// draw-on: the line races left→right across the reels instead of
-						// blinking in whole, and a bright head leads the stroke
-						const drawn = pathAt(line.points, drawProgress);
-						if (drawn.length < 2) return;
-						const stroke = (width: number, color: number, alpha: number) => {
-							g.lineStyle(width, color, alpha);
-							g.moveTo(drawn[0].x, drawn[0].y);
-							for (let i = 1; i < drawn.length; i++) g.lineTo(drawn[i].x, drawn[i].y);
-						};
-						stroke(7, line.color, 0.22);
-						stroke(3, line.color, 0.95);
-						stroke(1.2, 0xffffff, 0.5);
+			<Graphics draw={drawTrails} />
+			{#each lines as line (line.lineIndex)}
+				<GrenadeRunner
+					points={line.points}
+					color={line.color}
+					delay={line.delay}
+					scale={lineScale}
+					entryMs={timing.entry}
+					travelMs={timing.travel}
+					settleMs={timing.settle}
+					onreel={(reelIndex) => onGrenadeReel(line, reelIndex)}
+					oncomplete={() => {
+						line.done = true;
+						crossed[line.lineIndex] = 1;
 					}}
 				/>
-				{#if drawProgress < 1}
-					{@const head = pathAt(line.points, drawProgress).at(-1)}
-					{#if head}
-						<Sprite
-							key="fxGlow"
-							anchor={0.5}
-							x={head.x}
-							y={head.y}
-							tint={line.color}
-							blendMode="add"
-							width={46}
-							height={46}
-							alpha={0.9}
-						/>
-					{/if}
-				{/if}
 			{/each}
 		</Container>
 	</BoardContainer>

@@ -224,6 +224,20 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 
 > ⚠️ **待決策**：數學宣告 3 scatter → 8 次免費遊戲，但分佈設定讓它永不發生。目前 INFO 照實際行為寫（4/5 才觸發）。若希望 3 scatter 也能觸發（較符合玩家預期），要改 `game_config.py` 各 freegame 分佈的 `scatter_triggers` 加入 `3`，並重跑數學。
 
+## 5.18 中獎線改「手榴彈拉線」（2026-07-17 第八輪）
+
+**演出**：每條中獎線一顆鳳梨手榴彈，從第 1 輪左側彈入 → 沿賠付線折線滾行到第 5 輪（滾動角度依行進距離，不會像在平移）→ 抵達後淡出、線定色留著閱讀。**刻意不爆炸**——爆點會蓋掉線本身，這裡的目的是讓玩家看清哪條線得分。
+
+**同時多線＝齊射**：全部線同時起跑，每條差 28ms（turbo/FG 12ms），讀起來是一起發射但眼睛能分辨路徑；總時長不隨線數增加。books 實測一次最多 15 條同時中，故 `≥6 條` 時手榴彈縮 0.7 倍、軌跡變細。
+
+**符號經過即亮**：`WinLines` 接管符號得分動畫，手榴彈跨過每一輪就點亮該輪的符號（原本是全部跑完才一次點亮）。兩個必要防護：
+- **跨輪偵測放在 rAF 迴圈內並回補**（不是 `$effect`）：掉幀時手榴彈可能一幀跨兩輪，回補確保不會有某輪符號永遠不亮；`oncomplete` 再強制回報最後一輪
+- **全域去重**：同一格可能同時位於多條線上，重複指派 `symbolState='win'` 不會再觸發 effect，遊戲會卡在等一個永不到來的完成回呼。以 volley 為單位用 Set 去重，結束再補掃一次漏網位置
+
+**焦痕**：軌跡最底層多畫一道深色粗線——壓在擴展百搭的金色面板上時讀作燒焦痕跡，在深色盤面上幾乎看不見，一筆兩用。
+
+檔案：新增 `GrenadeRunner.svelte`；`WinLines.svelte` 改為一次全部線；`bookEventHandlerMap.ts` 的 `winInfo` 移除原本的批次 `animateSymbols`（改由 WinLines 負責）。素材沿用 `gbH2`／`fxGlow`，無新美術。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

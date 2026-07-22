@@ -75,29 +75,13 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			symbolCount: win.positions.length,
 		}));
 
-		// In free game: show all lines instantly; in base: stagger
+		// Every winning line runs its grenade at once; free game and turbo use the
+		// short timing. WinLines owns the symbol win animations too — it fires them
+		// reel by reel in each grenade's wake (and dedupes positions shared between
+		// lines, which would otherwise hang waiting for a second completion).
 		const isFreeGame = stateGame.gameType === 'freegame';
 		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins: winLineData, fast: isFreeGame });
 
-		// Collect ALL unique winning positions (deduplicate — same symbol can appear in
-		// multiple wins due to Wilds). Animating the same position twice would freeze
-		// because the second symbolState='win' assignment doesn't trigger $effect again.
-		const seenKey = new Set<string>();
-		const uniquePositions: Position[] = [];
-		for (const win of bookEvent.wins) {
-			for (const pos of win.positions) {
-				const key = `${pos.reel},${pos.row}`;
-				if (!seenKey.has(key)) {
-					seenKey.add(key);
-					uniquePositions.push(pos);
-				}
-			}
-		}
-
-		// Animate all unique winning symbols in one batch
-		await animateSymbols({ positions: uniquePositions });
-
-		// Clear lines
 		eventEmitter.broadcast({ type: 'winLinesHide' });
 	},
 	setTotalWin: async (bookEvent: BookEventOfType<'setTotalWin'>) => {
