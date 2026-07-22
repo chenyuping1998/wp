@@ -341,6 +341,27 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 
 **未能確認的部分**：程式碼上找不到硬性當機的路徑 —— `playBet` 會 `await playBookEvents()` 後必定廣播 `stopButtonEnable`，而無金幣路徑的四個事件（`updateFreeSpin`/`reveal`/`setTotalWin`/`finalWin`）都沒有會拋錯或永不 resolve 的地方；`freeSpinCounterShow` 也只用於 portrait/tablet 版面渲染，不參與下注按鈕的啟用判斷。因此目前的理解是：**回合實際上有結束，但因為零贏分沒有任何結算演出、加上重轉牌子凍在畫面上（並延續到後續回合），看起來就像卡住**。若實際上 spin 按鈕真的按不下去，那是另一個尚未定位的問題。
 
+## 5.24 零分牌子 / FG 文案 / 倍率標示 / 擴展改真動畫（2026-07-22 第十四輪）
+
+1. **Superspin 零分也要有結算牌子**
+   接續 §5.23：零分回合確實沒有任何演出。在 `finalWin` 補上 —— superspin 且 `amount === 0` 時，用 free-spin outro 那塊「TOTAL WIN」銅牌顯示 0，並自行 hold 1.4 秒（`winLevelMap[1]` 的 `presentDuration` 是 0，不 hold 會一閃而過）。
+   判斷條件已對資料驗證：`books_superspin.jsonl.zst` 10000 筆中，「payout 0」與「沒有 prizeWinInfo 事件」**是完全相同的那 1000 筆**，兩個邊界桶都是 0，所以 `amount === 0` 是安全的判斷。
+
+2. **FG 牌子文案冗贅**
+   原本是「FREE SPINS / 12 / **SPINS** AWARDED」，`SPINS` 出現兩次。`spinsAwarded` 16 個語系全部改為單純的「已獲得」語意（en 由 `SPINS AWARDED` → `AWARDED`），面板變成「FREE SPINS / 12 / AWARDED」。
+
+3. **擴展百搭倍率要醒目**
+   倍率徽章其實一直都在，但它是個小圓形、位置剛好壓在 wx 面板底部那塊繁雜的手部美術上，實務上看不見。改成**整輪寬的實心銅牌**貼齊底軌（即使用者說的「D 下面」），加不透明底色（壓得住背後任何美術）、外圈呼吸光暈、字級 0.34→0.4。
+
+4. **擴展轉場改成真動畫**（前兩輪都沒解到的核心）
+   追進 spine 才找到根因：`grow` 全長 1.52 秒，但**美術只在最後一刻換一次** —— `w_fg` 從 t=0.3 一路撐到 t=1.52，然後**硬切**成完全不同的 `wx` 全輪面板。所以玩家看到的就是「一張圖被放大 1.2 秒，然後跳接成另一張圖」。前兩輪我調的都是外框蓋板（`cover`/`squeeze`/`streak`），動不到這個核心。
+   - `generate_spines.mjs`：**移除 `grow` 尾端的 `wx` 硬切**，grow 結束在 `w_fg`
+   - `ExpandingWilds`：新增 `unroll` Tween，爆發瞬間用 `Graphics isMask`（pixi-svelte 支援）遮住同一張面板圖，讓 banner **從猴子所在那一格往上下捲開**填滿整輪（340ms），兩道前緣還帶加法混色的熱縫；捲完後交給 spine 的 `idle` 顯示成品，這份複本停止繪製
+   - 面板圖以 `gbWxPanel` 掛成一般精靈，指向**同一個** `spines/goBananasSymbolsV2/wx.png`，不增加下載量
+   - `expandingWildsRestore`（斷線重連）的 `unroll` 初始值為 1，直接呈現已展開狀態
+
+   註：順帶查清先前 HANDOFF 記為「未識別」的那個 404 —— 是瀏覽器自動探測 `/favicon.ico`（app.html 指的是 `favicon.svg`），無害。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

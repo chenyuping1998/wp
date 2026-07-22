@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import { recordBookEvent, checkIsMultipleRevealEvents, type BookEventHandlerMap } from 'utils-book';
 import { stateBet, stateUi } from 'state-shared';
+import { SECOND } from 'constants-shared/time';
 import { waitForTimeout } from 'utils-shared/wait';
 
 import { eventEmitter } from './eventEmitter';
@@ -278,7 +279,27 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		winLevelSoundsStop();
 		eventEmitter.broadcast({ type: 'winHide' });
 	},
-	finalWin: async () => {
+	finalWin: async (bookEvent: BookEventOfType<'finalWin'>) => {
+		// A superspin round that collected nothing still has to tell the player it
+		// is over. Verified against books_superspin.jsonl.zst (10000 books):
+		// payout 0 and "no prizeWinInfo event" are exactly the same 1000 books —
+		// no book falls in either edge bucket — so amount === 0 is a safe test for
+		// "the tally presentation never ran".
+		if (stateBet.activeBetModeKey === 'SUPERSPIN' && bookEvent.amount === 0) {
+			const winLevelData = winLevelMap[1 as WinLevel]; // 'zero'
+			eventEmitter.broadcast({ type: 'freeSpinOutroShow' });
+			eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_youwon_panel' });
+			await eventEmitter.broadcastAsync({
+				type: 'freeSpinOutroCountUp',
+				amount: 0,
+				winLevelData,
+			});
+			// the 'zero' level presents for 0ms, so hold the plaque ourselves —
+			// otherwise it would flash by faster than the player can read it
+			await waitForTimeout(1.4 * SECOND);
+			eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
+		}
+
 		// Superspin teardown safety net.
 		//
 		// The whole superspin presentation used to be closed inside prizeWinInfo,

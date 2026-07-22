@@ -373,10 +373,6 @@
             {
               "time": 0.3,
               "name": "w_fg"
-            },
-            {
-              "time": 1.52,
-              "name": "wx"
             }
           ],
           "color": [

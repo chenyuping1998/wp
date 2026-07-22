@@ -485,7 +485,12 @@ const wxSpine = {
 					attachment: [
 						{ time: 0, name: 'w' },
 						{ time: 0.3, name: 'w_fg' },
-						{ time: BURST + 0.02, name: 'wx' },
+						// Deliberately NO swap to 'wx' here. This used to hard-cut from
+						// the bite close-up straight to the finished full-reel panel,
+						// which is what made the whole takeover read as "one picture
+						// scaling, then a jump cut". ExpandingWilds now unrolls the
+						// banner itself (masked gbWxPanel sprite) over this moment and
+						// the spine's own idle animation takes over the finished art.
 					],
 					color: [
 						// warm blip on every bite, white-gold flash on the burst

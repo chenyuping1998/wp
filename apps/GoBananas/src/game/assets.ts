@@ -139,6 +139,14 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV2/w.png', import.meta.url).href,
 		preload: true,
 	},
+	// The full-reel WILD banner as a plain sprite. Same file the wx spine uses,
+	// so it costs no extra download — ExpandingWilds draws it behind a growing
+	// mask to unroll the banner down the reel instead of hard-cutting to it.
+	gbWxPanel: {
+		type: 'sprite',
+		src: new URL('../../assets/spines/goBananasSymbolsV2/wx.png', import.meta.url).href,
+		preload: true,
+	},
 	gbS: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV2/s.png', import.meta.url).href,

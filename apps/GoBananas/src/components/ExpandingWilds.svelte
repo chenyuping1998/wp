@@ -36,6 +36,11 @@
 		squeeze: Tween<number>;
 		// vertical speed streaks during the burst
 		streak: Tween<number>;
+		// 0 = banner not started, 1 = fully unrolled down the reel. The spine no
+		// longer swaps to the finished wx art (that hard cut is what made the
+		// takeover read as a jump between two pictures) — this drives a masked
+		// copy of the same panel so the banner visibly unrolls instead.
+		unroll: Tween<number>;
 		// whole-panel win reaction, now that the symbols underneath no longer
 		// animate individually — this is what makes the locked reel read as the
 		// thing that won
@@ -208,6 +213,7 @@
 				badgeScale: new Tween(0),
 				squeeze: new Tween(1),
 				streak: new Tween(0),
+				unroll: new Tween(0),
 				winFlash: new Tween(0),
 				edgeFlash: new Tween(0),
 			};
@@ -259,6 +265,8 @@
 				entry.streak.set(1, { duration: 70, easing: cubicOut }).then(() => {
 					entry.streak.set(0, { duration: 300, easing: cubicOut });
 				});
+				// the banner unrolls out of the monkey's row to fill the reel
+				entry.unroll.set(1, { duration: 340, easing: cubicOut });
 				entry.edgeFlash.set(1, { duration: 60, easing: cubicOut }).then(() => {
 					entry.edgeFlash.set(0, { duration: 420, easing: cubicOut });
 				});
@@ -295,6 +303,7 @@
 				badgeScale: new Tween(1),
 				squeeze: new Tween(1),
 				streak: new Tween(0),
+				unroll: new Tween(1),
 				winFlash: new Tween(0),
 				edgeFlash: new Tween(0),
 			}));
@@ -431,6 +440,59 @@
 				}}
 			/>
 		</SpineProvider>
+		{#if wild.unroll.current > 0 && wild.unroll.current < 1}
+			<!--
+				The WILD banner unrolling. The spine no longer swaps to the finished
+				wx art at the end of `grow` — that hard cut between two pictures was
+				the whole reason the takeover looked like a still being resized.
+				Instead the same panel art is drawn here behind a mask that opens out
+				of the monkey's row, so the banner visibly unrolls up and down the
+				reel. Once `grow` finishes, the spine's idle animation shows the
+				finished panel and this copy stops drawing.
+			-->
+			{@const ux = getSymbolX(wild.reel)}
+			{@const uy = wild.y.current}
+			{@const half = (BOARD_SIZES.height * wild.unroll.current) / 2}
+			<Container>
+				<Graphics
+					isMask
+					draw={(g) => {
+						g.clear();
+						g.beginFill(0xffffff, 1);
+						g.drawRect(
+							ux - SYMBOL_SIZE / 2,
+							Math.max(0, uy - half),
+							SYMBOL_SIZE,
+							Math.min(BOARD_SIZES.height, uy + half) - Math.max(0, uy - half),
+						);
+						g.endFill();
+					}}
+				/>
+				<Sprite
+					key="gbWxPanel"
+					anchor={0.5}
+					x={ux}
+					y={REEL_CENTER_Y}
+					width={SYMBOL_SIZE}
+					height={BOARD_SIZES.height}
+				/>
+			</Container>
+			<!-- hot seam riding the leading edges of the unroll -->
+			{#each [-1, 1] as dir (dir)}
+				<Sprite
+					key="fxStreak"
+					anchor={0.5}
+					x={ux}
+					y={uy + dir * half}
+					width={SYMBOL_SIZE * 1.3}
+					height={SYMBOL_SIZE * 0.26}
+					tint={0xfff3bd}
+					blendMode="add"
+					alpha={0.85 * (1 - wild.unroll.current)}
+				/>
+			{/each}
+		{/if}
+
 		{#if wild.winFlash.current > 0}
 			<!-- Whole-reel win reaction. The W symbols under the plate deliberately
 			     no longer animate (see WinLines.animatePositions), so the panel has
@@ -460,26 +522,42 @@
 		{/if}
 
 		{#if wild.phase === 'idle'}
-			<!-- multiplier badge: brass plaque — THE display of the wild multiplier -->
-			<Container
-				x={getSymbolX(wild.reel)}
-				y={BOARD_SIZES.height - SYMBOL_SIZE * 0.46}
-				scale={wild.badgeScale.current}
-			>
+			<!--
+				Multiplier plaque — THE display of the wild multiplier, so it has to
+				survive being read at a glance. It used to be a small circle sitting
+				right on top of the busy hands artwork at the foot of the wx panel,
+				which made it easy to miss entirely. It is now a solid full-width
+				banner clamped to the bottom rail (below the "D"), with an opaque
+				backing so it reads over whatever art is behind it.
+			-->
+			{@const plaqueH = SYMBOL_SIZE * 0.52}
+			{@const plaqueY = BOARD_SIZES.height - plaqueH * 0.5 - 4}
+			<Container x={getSymbolX(wild.reel)} y={plaqueY} scale={wild.badgeScale.current}>
 				<Graphics
 					draw={(g: PixiGraphics) => {
-						const r = SYMBOL_SIZE * 0.36;
+						const w = SYMBOL_SIZE - 8;
+						const h = plaqueH;
+						// a touch of the idle breathing so the plaque reads as live
+						const glow = auraPulse(wild.reel);
 						g.clear();
-						g.beginFill(0x11200a, 0.94);
-						g.drawCircle(0, 0, r);
+						// outer halo first, so the plaque separates from the art behind
+						g.lineStyle(7, 0xffd75e, 0.18 + 0.16 * glow);
+						g.drawRoundedRect(-w / 2 - 3, -h / 2 - 3, w + 6, h + 6, 12);
+						g.lineStyle(0);
+						g.beginFill(0x0d1806, 1);
+						g.drawRoundedRect(-w / 2, -h / 2, w, h, 10);
 						g.endFill();
-						g.lineStyle(5, 0xd8a334, 1);
-						g.drawCircle(0, 0, r);
-						g.lineStyle(2, 0xfff3bd, 0.85);
-						g.drawCircle(0, 0, r - 6);
+						g.lineStyle(3.5, 0xd8a334, 1);
+						g.drawRoundedRect(-w / 2, -h / 2, w, h, 10);
+						g.lineStyle(1.5, 0xfff3bd, 0.75);
+						g.drawRoundedRect(-w / 2 + 4, -h / 2 + 4, w - 8, h - 8, 7);
 					}}
 				/>
-				<GoldText text={`${wild.mult}X`} fontSize={SYMBOL_SIZE * 0.34} maxWidth={SYMBOL_SIZE * 0.58} />
+				<GoldText
+					text={`${wild.mult}X`}
+					fontSize={SYMBOL_SIZE * 0.4}
+					maxWidth={SYMBOL_SIZE - 22}
+				/>
 			</Container>
 		{/if}
 	{/each}
