@@ -6,6 +6,7 @@
 </script>
 
 <script lang="ts">
+	import { GAME_FONT } from '../game/fonts';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { waitForResolve } from 'utils-shared/wait';
@@ -46,7 +47,7 @@
 				y={-sizes.height * 0.26}
 				text={title}
 				style={{
-					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontFamily: GAME_FONT,
 					fontSize: Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length),
 					fontWeight: '900',
 					letterSpacing: 6,
@@ -65,7 +66,7 @@
 				y={sizes.height * 0.32}
 				text={subtitle}
 				style={{
-					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontFamily: GAME_FONT,
 					fontSize: Math.min(sizes.width * 0.05, (sizes.width * 1.1) / subtitle.length),
 					fontWeight: '700',
 					letterSpacing: 4,

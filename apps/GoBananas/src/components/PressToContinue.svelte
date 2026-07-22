@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { GAME_FONT } from '../game/fonts';
 	import { onMount } from 'svelte';
 	import { MainContainer, OnPressFullScreen } from 'components-layout';
 	import { OnHotkey } from 'components-shared';
@@ -44,7 +45,7 @@
 		y={yPosition}
 		alpha={pulse}
 		style={{
-			fontFamily: 'proxima-nova, Arial, sans-serif',
+			fontFamily: GAME_FONT,
 			fontSize: 28,
 			fontWeight: '700',
 			letterSpacing: 4,

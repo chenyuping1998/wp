@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { GAME_FONT } from '../game/fonts';
 	import { onMount } from 'svelte';
 
 	import { BlurFilter } from 'pixi.js';
@@ -35,10 +36,12 @@
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
 	import FreeSpinOutro from './FreeSpinOutro.svelte';
 	import Transition from './Transition.svelte';
-	import I18nTest from './I18nTest.svelte';
 	import PreFreeGameHint from './PreFreeGameHint.svelte';
 
 	const context = getContext();
+
+	// soft depth-of-field on the jungle scene so the reels read as the subject
+	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
 
@@ -102,7 +105,7 @@
 					anchor={{ x: 1, y: 0 }}
 					text="GO BANANAS"
 					style={{
-						fontFamily: 'proxima-nova',
+						fontFamily: GAME_FONT,
 						fontSize: REM * 1.5,
 						fontWeight: '600',
 						lineHeight: REM * 2,
@@ -117,8 +120,6 @@
 		<FreeSpinOutro />
 		<PreFreeGameHint />
 		<Transition />
-
-		<I18nTest />
 	{/if}
 </App>
 

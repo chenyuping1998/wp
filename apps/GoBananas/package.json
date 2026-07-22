@@ -8,7 +8,8 @@
 		"lint": "eslint \"src\"",
 		"storybook": "PUBLIC_CHROMATIC=true storybook dev -p 6002 public",
 		"dev": "vite dev --host --port 3002",
-		"build": "vite build",
+		"check:refs": "node design/check_undefined_refs.mjs",
+		"build": "node design/check_undefined_refs.mjs && vite build",
 		"preview": "vite preview"
 	},
 	"type": "module",

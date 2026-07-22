@@ -21,6 +21,7 @@ export declare const anchorToPivot: ({ anchor, sizes }: {
  *										1 for enabled
  */
 export declare function detectWebGL(): 1 | 0 | -1;
+export declare const setFontKit: (id: string | null) => void;
 export declare const preloadFont: () => Promise<void>;
 export declare function propsSyncEffect<TProps extends object, TTarget>({ props, target, ignore, }: {
     props: TProps;

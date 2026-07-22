@@ -3,7 +3,12 @@
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
-		<link rel="stylesheet" href="https://use.typekit.net/aba0ebl.css" />
+		<!--
+			The template's Adobe Typekit stylesheet (proxima-nova) used to be loaded
+			here. It is domain-locked to the template's account, so off that origin it
+			404s and the browser reports "Web font load inactive". GoBananas uses the
+			system stack in src/game/fonts.ts instead — no network request, no 404.
+		-->
 		<meta name="viewport" content="width=device-width" />
 		%sveltekit.head%
 	</head>

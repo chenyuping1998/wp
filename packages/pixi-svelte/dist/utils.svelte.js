@@ -42,11 +42,22 @@ export function detectWebGL() {
     // WebGL not supported.
     return -1;
 }
+// Adobe Typekit kit to preload before the first frame. The template's kit is
+// the default so existing games keep working, but it is domain-locked to the
+// template's account — off that origin it 404s and logs "Web font load
+// inactive". A game that ships its own fonts (or uses system fonts) should call
+// setFontKit(null) at module scope to skip the request entirely.
+let fontKitId = 'aba0ebl';
+export const setFontKit = (id) => {
+    fontKitId = id;
+};
 export const preloadFont = () => new Promise((resolve) => {
+    if (!fontKitId)
+        return resolve();
     try {
         WebFont.load({
             typekit: {
-                id: 'aba0ebl',
+                id: fontKitId,
             },
             active: () => {
                 resolve();

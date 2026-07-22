@@ -6,6 +6,7 @@
 </script>
 
 <script lang="ts">
+	import { GAME_FONT } from '../game/fonts';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { Graphics, Sprite, Text } from 'pixi-svelte';
@@ -96,7 +97,7 @@
 			y={panelSizes.height * 0.33}
 			text={title}
 			style={{
-				fontFamily: 'proxima-nova, Arial, sans-serif',
+				fontFamily: GAME_FONT,
 				fontSize: Math.min(panelSizes.width * 0.115, (panelSizes.width * 1.35) / Math.max(1, title.length)),
 				fontWeight: '900',
 				letterSpacing: 2,

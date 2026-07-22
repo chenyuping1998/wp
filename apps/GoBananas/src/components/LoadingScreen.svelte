@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { GAME_FONT } from '../game/fonts';
 	import { Container, Graphics, Text, Sprite } from 'pixi-svelte';
 	import { FadeContainer } from 'components-pixi';
 	import { MainContainer } from 'components-layout';
@@ -96,7 +97,7 @@
 				anchor={0.5}
 				text="GO BANANAS"
 				style={{
-					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontFamily: GAME_FONT,
 					fontSize: 52,
 					fontWeight: '900',
 					fill: 0xffd43b,
@@ -116,7 +117,7 @@
 				y={65}
 				text="5X5, 15 LINES — MAX WIN 10,000X"
 				style={{
-					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontFamily: GAME_FONT,
 					fontSize: 14,
 					fontWeight: '600',
 					fill: 0xf5e3c3,
@@ -158,7 +159,7 @@
 					? 'TAP TO CONTINUE'
 					: `LOADING ${Math.round(animatedProgress)}%`}
 				style={{
-					fontFamily: 'proxima-nova, Arial, sans-serif',
+					fontFamily: GAME_FONT,
 					fontSize: 12,
 					fontWeight: '500',
 					fill: 0xd9bfa0,

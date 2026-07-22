@@ -8,6 +8,7 @@
 </script>
 
 <script lang="ts">
+	import { GAME_FONT } from '../game/fonts';
 	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
@@ -59,7 +60,7 @@
 							y={-sizes.height * 0.26}
 							text={title}
 							style={{
-								fontFamily: 'proxima-nova, Arial, sans-serif',
+								fontFamily: GAME_FONT,
 								fontSize: Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
 								fontWeight: '900',
 								letterSpacing: 6,

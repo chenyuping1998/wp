@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { GAME_FONT } from '../game/fonts';
 	import { Container, Text } from 'pixi-svelte';
 
 	// House gold numerals/labels (replaces the MM template 'gold' bitmap font):
@@ -31,7 +32,7 @@
 		text={String(props.text)}
 		onresize={(sizes) => (measuredWidth = sizes.width)}
 		style={{
-			fontFamily: 'proxima-nova, Arial, sans-serif',
+			fontFamily: GAME_FONT,
 			fontSize: props.fontSize,
 			fontWeight: '900',
 			letterSpacing: props.letterSpacing ?? 1,
