@@ -15,7 +15,15 @@
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE, SUPERSPIN_CELL_SPIN, BOARD_CELL_COLOR } from '../game/constants';
+	import {
+		SYMBOL_SIZE,
+		SUPERSPIN_CELL_SPIN,
+		BOARD_CELL_COLOR,
+		isBigPrize,
+		BIG_PRIZE_FROM,
+		BIG_PRIZE_FILL,
+		BIG_PRIZE_STROKE,
+	} from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
@@ -33,11 +41,9 @@
 	const rowCenterY = (row: number) => row * SYMBOL_SIZE - SYMBOL_SIZE / 2;
 	const keyOf = (p: { reel: number; row: number }) => `${p.reel},${p.row}`;
 
-	// Prizes are in book units where 100 = 1x total bet, and the strip pays
-	// 1/2/3/5/10/25/50/100/500/1000/10000x. Anything from 10x up is a genuinely
-	// notable hit, so it lands hard and reads in a hotter colour.
-	const BIG_FROM = 10 * 100;
-	const isBig = (prize: number) => prize >= BIG_FROM;
+	// threshold and palette live in constants so the reel-side copy of the same
+	// coin (Symbol.svelte) grades identically
+	const isBig = isBigPrize;
 
 	// Landing shake, scaled by how big the prize is: 10x barely twitches, the
 	// top prizes really slam. log10 keeps the range usable — the values span
@@ -46,7 +52,7 @@
 	const SHAKE_MS = 420;
 	const shakeAmplitude = (prize: number) => {
 		if (!isBig(prize)) return 0;
-		const decades = Math.log10(prize / BIG_FROM); // 10x -> 0, 10000x -> 3
+		const decades = Math.log10(prize / BIG_PRIZE_FROM); // 10x -> 0, 10000x -> 3
 		return SYMBOL_SIZE * (0.05 + 0.055 * decades);
 	};
 
@@ -184,8 +190,8 @@
 				text={bookEventAmountToCurrencyString(entry.prize)}
 				fontSize={28}
 				maxWidth={SYMBOL_SIZE * 0.86}
-				fill={isBig(entry.prize) ? [0xfff0c0, 0xffa93a, 0xd44a12] : undefined}
-				stroke={isBig(entry.prize) ? 0x5a1f06 : undefined}
+				fill={isBig(entry.prize) ? BIG_PRIZE_FILL : undefined}
+				stroke={isBig(entry.prize) ? BIG_PRIZE_STROKE : undefined}
 			/>
 		</Container>
 	{/each}

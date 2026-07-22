@@ -96,6 +96,16 @@ export const MOTION_BLUR_VELOCITY = 31;
 // judgement call, not a correctness one.
 export const SUPERSPIN_CELL_SPIN = false;
 
+// Superspin coin grading. Prizes are in book units where 100 = 1x total bet and
+// the strip pays 1/2/3/5/10/25/50/100/500/1000/10000x, so 10x up is the point
+// where a hit is worth calling out. Shared by both places a coin value is drawn
+// — Symbol.svelte on the reel and StickyPrizes.svelte once held — so a coin
+// cannot change colour at the moment it sticks.
+export const BIG_PRIZE_FROM = 10 * 100;
+export const isBigPrize = (prize: number) => prize >= BIG_PRIZE_FROM;
+export const BIG_PRIZE_FILL = [0xfff0c0, 0xffa93a, 0xd44a12];
+export const BIG_PRIZE_STROKE = 0x5a1f06;
+
 // The board's own cell colour, sampled from frame_bg.png (#1c270d at centre).
 // Held superspin cells are filled with this so they read as an ordinary empty
 // cell rather than a coloured plate laid over the reel.

@@ -5,7 +5,7 @@
 	import { getSymbolInfo } from '../game/utils';
 	import type { SymbolState, RawSymbol } from '../game/types';
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE } from '../game/constants';
+	import { SYMBOL_SIZE, isBigPrize, BIG_PRIZE_FILL, BIG_PRIZE_STROKE } from '../game/constants';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import GoldText from './GoldText.svelte';
 
@@ -61,12 +61,20 @@
      reel's multiplier badge in ExpandingWilds.svelte. -->
 
 {#if props.rawSymbol.prize}
-	<!-- superspin coin: show its cash value on the symbol -->
+	<!--
+		Superspin coin value. This is the copy drawn on the reel as a coin lands;
+		StickyPrizes draws the held ones. Both have to grade identically or a coin
+		would change colour the instant it sticks — the previous pass only updated
+		StickyPrizes, so high-value coins landed in plain gold and only turned
+		amber a beat later.
+	-->
 	<GoldText
 		x={props.x ?? 0}
-		y={(props.y ?? 0) + 8}
+		y={props.y ?? 0}
 		text={bookEventAmountToCurrencyString(props.rawSymbol.prize)}
 		fontSize={28}
 		maxWidth={SYMBOL_SIZE * 0.86}
+		fill={isBigPrize(props.rawSymbol.prize) ? BIG_PRIZE_FILL : undefined}
+		stroke={isBigPrize(props.rawSymbol.prize) ? BIG_PRIZE_STROKE : undefined}
 	/>
 {/if}
