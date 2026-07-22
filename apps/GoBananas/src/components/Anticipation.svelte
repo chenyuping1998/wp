@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { SpineProvider, SpineTrack, Graphics } from 'pixi-svelte';
-	import { stateBetDerived } from 'state-shared';
+	import { Graphics, Sprite } from 'pixi-svelte';
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
 	import type { Reel } from '../game/stateGame.svelte';
-	import { REEL_PADDING, SYMBOL_SIZE } from '../game/constants';
+	import { SYMBOL_SIZE, BOARD_SIZES } from '../game/constants';
+	import { getSymbolX } from '../game/utils';
+	import BoardContainer from './BoardContainer.svelte';
 
 	type Props = {
 		reel: Reel;
@@ -18,6 +19,13 @@
 	let pulse = $state(0);
 	let finished = $state(false);
 
+	// Drawn entirely here rather than through the old `anticipation` spine: that
+	// asset is template art from a mining game (rocks, dust, sparks) whose
+	// artwork sat off-centre — it was the bright block that showed up at the top
+	// left — and it was only ~1.6 cells tall, so it never framed the reel.
+	const x = $derived(getSymbolX(props.reel.reelIndex));
+	const LEFT = $derived(x - SYMBOL_SIZE / 2);
+
 	onMount(() => {
 		// offset per reel: when several reels tease at once, a shared phase makes
 		// them strobe as one block instead of shimmering along the board
@@ -25,7 +33,7 @@
 		const rate = 145 + props.reel.reelIndex * 11;
 		const id = setInterval(() => {
 			pulse = 0.5 + 0.5 * Math.sin(Date.now() / rate + phase);
-		}, 32);
+		}, 24);
 
 		return () => clearInterval(id);
 	});
@@ -39,46 +47,56 @@
 	});
 </script>
 
-<SpineProvider
-	key="anticipation"
-	width={SYMBOL_SIZE * 0.56}
-	height={SYMBOL_SIZE * 1.6}
-	x={context.stateGameDerived.boardLayout().x -
-		context.stateGameDerived.boardLayout().width * 0.5 +
-		(props.reel.reelIndex + REEL_PADDING) * SYMBOL_SIZE}
-	y={context.stateGameDerived.boardLayout().y - SYMBOL_SIZE * 0.06}
->
+<BoardContainer>
+	<!-- amber wash over the whole teasing column, brightest at the rails -->
 	<Graphics
 		draw={(g) => {
-			// jungle-gold spotlight column: wide amber wash, hot core, white rim
-			const glowAlpha = 0.12 + 0.2 * pulse;
-			const coreAlpha = 0.16 + 0.32 * pulse;
+			const h = BOARD_SIZES.height;
 			g.clear();
-			g.beginFill(0xff9c2e, glowAlpha * 0.6);
-			g.drawRoundedRect(-SYMBOL_SIZE * 0.3, -SYMBOL_SIZE * 0.78, SYMBOL_SIZE * 0.6, SYMBOL_SIZE * 1.56, 26);
+			g.beginFill(0xff9c2e, 0.1 + 0.12 * pulse);
+			g.drawRoundedRect(LEFT + 3, 3, SYMBOL_SIZE - 6, h - 6, 12);
 			g.endFill();
-			g.beginFill(0xffd75e, glowAlpha);
-			g.drawRoundedRect(-SYMBOL_SIZE * 0.22, -SYMBOL_SIZE * 0.72, SYMBOL_SIZE * 0.44, SYMBOL_SIZE * 1.44, 22);
-			g.endFill();
-			g.lineStyle(3, 0xffe98a, coreAlpha);
-			g.drawRoundedRect(-SYMBOL_SIZE * 0.2, -SYMBOL_SIZE * 0.68, SYMBOL_SIZE * 0.4, SYMBOL_SIZE * 1.36, 20);
-			g.lineStyle(1.6, 0xffffff, 0.25 + 0.35 * pulse);
-			g.drawRoundedRect(-SYMBOL_SIZE * 0.17, -SYMBOL_SIZE * 0.63, SYMBOL_SIZE * 0.34, SYMBOL_SIZE * 1.26, 18);
-			// converging chevrons above and below the column, ticking with the pulse
-			const chevY = SYMBOL_SIZE * (0.78 + 0.05 * pulse);
+
+			// full-height frame: three nested strokes so the edge reads as lit metal
+			g.lineStyle(7, 0xffd75e, 0.3 + 0.34 * pulse);
+			g.drawRoundedRect(LEFT + 2, 2, SYMBOL_SIZE - 4, h - 4, 13);
+			g.lineStyle(3, 0xffe98a, 0.45 + 0.4 * pulse);
+			g.drawRoundedRect(LEFT + 6, 6, SYMBOL_SIZE - 12, h - 12, 10);
+			g.lineStyle(1.4, 0xffffff, 0.25 + 0.4 * pulse);
+			g.drawRoundedRect(LEFT + 10, 10, SYMBOL_SIZE - 20, h - 20, 8);
+
+			// cell ticks down the column so the frame reads as five slots, not a tube
+			g.lineStyle(1.5, 0xffe98a, 0.16 + 0.2 * pulse);
+			for (let row = 1; row < BOARD_SIZES.height / SYMBOL_SIZE; row++) {
+				const y = row * SYMBOL_SIZE;
+				g.moveTo(LEFT + 14, y);
+				g.lineTo(LEFT + SYMBOL_SIZE - 14, y);
+			}
+
+			// chevrons converging on the column from above and below
+			const chev = 14 + 6 * pulse;
 			g.lineStyle(4, 0xffd75e, 0.5 + 0.4 * pulse);
-			g.moveTo(-SYMBOL_SIZE * 0.12, -chevY - SYMBOL_SIZE * 0.08);
-			g.lineTo(0, -chevY);
-			g.lineTo(SYMBOL_SIZE * 0.12, -chevY - SYMBOL_SIZE * 0.08);
-			g.moveTo(-SYMBOL_SIZE * 0.12, chevY + SYMBOL_SIZE * 0.08);
-			g.lineTo(0, chevY);
-			g.lineTo(SYMBOL_SIZE * 0.12, chevY + SYMBOL_SIZE * 0.08);
+			g.moveTo(x - SYMBOL_SIZE * 0.12, -chev - 10);
+			g.lineTo(x, -chev);
+			g.lineTo(x + SYMBOL_SIZE * 0.12, -chev - 10);
+			g.moveTo(x - SYMBOL_SIZE * 0.12, h + chev + 10);
+			g.lineTo(x, h + chev);
+			g.lineTo(x + SYMBOL_SIZE * 0.12, h + chev + 10);
 		}}
 	/>
-	<SpineTrack
-		trackIndex={0}
-		animationName="anticipation_loop"
-		loop
-		timeScale={stateBetDerived.timeScale()}
-	/>
-</SpineProvider>
+
+	<!-- additive glow hugging each rail, so the tease has depth over the art -->
+	{#each [0, BOARD_SIZES.height] as railY (railY)}
+		<Sprite
+			key="fxGlow"
+			anchor={0.5}
+			{x}
+			y={railY}
+			width={SYMBOL_SIZE * 1.35}
+			height={SYMBOL_SIZE * 0.7}
+			tint={0xffc65e}
+			blendMode="add"
+			alpha={0.22 + 0.3 * pulse}
+		/>
+	{/each}
+</BoardContainer>

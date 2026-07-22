@@ -47,6 +47,17 @@
 		return asset?.src ?? '';
 	};
 
+	// 15 fixed paylines, each an array of 5 row indices (0 = top row). Rendered
+	// below as mini 5x5 boards with the line's cells lit, so a player can see the
+	// actual shapes instead of being told a number.
+	const REELS = 5;
+	const ROWS = 5;
+	const paylines = Object.entries(config.paylines as Record<string, number[]>)
+		.map(([id, cells]) => ({ id: Number(id), cells }))
+		.sort((a, b) => a.id - b.id);
+
+	const isLit = (cells: number[], reel: number, row: number) => cells[reel] === row;
+
 	const rows: PayRow[] = ORDER.filter((name) => name in config.symbols).map((name) => {
 		const symbol = (config.symbols as Record<string, { paytable?: { [k: string]: number }[] | null }>)[
 			name
@@ -87,6 +98,26 @@
 								{/each}
 							{/if}
 						</div>
+					</div>
+				{/each}
+			</div>
+
+			<h3 class="wp-lines-title">{paylines.length} PAYLINES</h3>
+			<p class="wp-note">
+				All {paylines.length} lines are always active. Wins pay left to right from reel 1.
+			</p>
+
+			<div class="wp-lines">
+				{#each paylines as line (line.id)}
+					<div class="wp-line">
+						<div class="wp-line-grid">
+							{#each Array(ROWS) as _, row (row)}
+								{#each Array(REELS) as _, reel (reel)}
+									<span class="wp-cell" class:lit={isLit(line.cells, reel, row)}></span>
+								{/each}
+							{/each}
+						</div>
+						<span class="wp-line-id">{line.id}</span>
 					</div>
 				{/each}
 			</div>
@@ -188,6 +219,66 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.35rem;
+	}
+
+	/* ─── payline diagrams: 15 mini 5x5 boards, lit cells in reel gold ─── */
+	.wp-lines-title {
+		margin: 0.5rem 0 0;
+		font-size: 1.05rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		color: #ffd75e;
+	}
+
+	.wp-lines {
+		display: grid;
+		/* auto-fit keeps the sheet readable from phone to desktop without
+		   hard-coding a column count */
+		grid-template-columns: repeat(auto-fit, minmax(4.6rem, 1fr));
+		gap: 0.55rem;
+	}
+
+	.wp-line {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.28rem;
+		padding: 0.45rem 0.3rem 0.35rem;
+		border-radius: 0.6rem;
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+
+		&:hover {
+			background: rgba(255, 215, 94, 0.1);
+			border-color: rgba(255, 215, 94, 0.24);
+		}
+	}
+
+	.wp-line-grid {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		gap: 2px;
+		width: 100%;
+		max-width: 4.2rem;
+	}
+
+	.wp-cell {
+		aspect-ratio: 1;
+		border-radius: 2px;
+		background: rgba(255, 255, 255, 0.07);
+
+		&.lit {
+			background: linear-gradient(160deg, #ffe98a, #ffc93c);
+			box-shadow: 0 0 6px rgba(255, 215, 94, 0.65);
+		}
+	}
+
+	.wp-line-id {
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		color: rgba(255, 215, 94, 0.85);
 	}
 
 	.wp-row {

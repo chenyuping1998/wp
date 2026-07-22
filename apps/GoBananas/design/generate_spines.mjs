@@ -322,7 +322,11 @@ const genericWin = (small = false) => ({
 			],
 		},
 	},
-	slots: flashSlot(),
+	// deliberately NO slot colour keys: a spine slot tint can only multiply, so
+	// any "flash" actually subtracts channels — on the cool royals (K ice blue,
+	// 10 silver) an amber peak reads as the symbol changing colour rather than
+	// lighting up. The scale/rotate/translate punch plus the payframe carry the
+	// win on their own. The warm h1–h4/p/w/s keep their bespoke flashes.
 });
 
 const symbolSpine = (name) => ({

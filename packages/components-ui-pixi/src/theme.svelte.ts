@@ -35,6 +35,12 @@ export const uiTheme = $state({
 	// to swap the flat rounded-rect placeholders for real framed art; slots left
 	// undefined keep drawing the themed rectangle.
 	sprites: {} as Partial<Record<'base_ticker' | 'buyBonus' | 'bet' | 'base_mobile_drawer', string>>,
+
+	// Uniform scale on the bottom bet bar, applied about its bottom edge so the
+	// bar stays flush with the canvas floor and only its height above that edge
+	// changes. Below 1 gives the board more room — useful for games whose reel
+	// housing has a wide structural margin. 1 keeps the original layout.
+	betBarScale: 1,
 });
 
 export type UiTheme = typeof uiTheme;

@@ -13,6 +13,18 @@ import type { Position } from './types';
 import { BOARD_DIMENSIONS } from './constants';
 import config from './config';
 
+// The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
+// a value of 1 means the tease starts on the *second* scatter. Free spins need
+// four, so teasing that early fires on most spins and stops meaning anything.
+// Require three scatters already on the board (value >= 2) before any reel
+// teases. Filtering the array here — rather than in utils-slots — keeps the
+// slow reel stop and the on-screen tease gated by the same condition, and
+// leaves the shared package (and WildParty) untouched.
+const ANTICIPATION_MIN_SCATTERS = 3;
+
+const gateAnticipation = (anticipation: number[]) =>
+	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
+
 const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) => {
 	if (winLevelData?.alias === 'max') eventEmitter.broadcastAsync({ type: 'uiHide' });
 	if (winLevelData?.sound?.sfx) {
@@ -60,7 +72,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 
 		stateGame.gameType = bookEvent.gameType;
 		await stateGameDerived.enhancedBoard.spin({
-			revealEvent: bookEvent,
+			revealEvent: { ...bookEvent, anticipation: gateAnticipation(bookEvent.anticipation) },
 			paddingBoard: config.paddingReels[bookEvent.gameType],
 		});
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });

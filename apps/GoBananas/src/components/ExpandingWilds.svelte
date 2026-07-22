@@ -31,6 +31,11 @@
 		// has actually grown — no full-height plate popping in on frame 1.
 		cover: Tween<number>;
 		badgeScale: Tween<number>;
+		// horizontal squash/stretch: <1 pinches the plate in, >1 flares it out.
+		// Volume-preserving motion is what stops the growth reading as a resize.
+		squeeze: Tween<number>;
+		// vertical speed streaks during the burst
+		streak: Tween<number>;
 		// white-hot line along the top/bottom frame edge right after the slam
 		edgeFlash: Tween<number>;
 		oncomplete?: () => void;
@@ -44,10 +49,12 @@
 	// spine grow timeline marks (see design/generate_spines.mjs)
 	const BITE_TIMES_MS = [520, 840, 1160];
 	const BURST_TIME_MS = 1500;
-	// the spine scales the monkey up in steps at each bite (1 → 1.3 → 1.66 →
-	// 2.06) and then bursts to full reel height; the plate follows the same
-	// staircase so art and cover grow together
+	// The plate used to jump between four fixed sizes, one per bite, which is
+	// exactly what made the takeover read as "a picture being resized". It now
+	// creeps continuously between the bites and each chomp adds a short surge on
+	// top, so there is never a frame where nothing is moving.
 	const COVER_STEPS = [0.16, 0.3, 0.46] as const;
+	const CREEP_AHEAD = 0.075;
 
 	let wilds = $state<WildEntry[]>([]);
 
@@ -166,7 +173,10 @@
 		const centre = wild.y.current;
 		const top = Math.max(0, centre - half);
 		const bottom = Math.min(BOARD_SIZES.height, centre + half);
-		return { top, height: Math.max(0, bottom - top) };
+		// squeeze pinches the plate horizontally; it is inverted so a wind-up
+		// (squeeze < 1) narrows the plate and the burst (> 1) flares it wide
+		const width = SYMBOL_SIZE * (2 - wild.squeeze.current);
+		return { top, height: Math.max(0, bottom - top), width };
 	};
 
 	onMount(() => {
@@ -192,6 +202,8 @@
 				y: new Tween(rowCenterY(row)),
 				cover: new Tween(0),
 				badgeScale: new Tween(0),
+				squeeze: new Tween(1),
+				streak: new Tween(0),
 				edgeFlash: new Tween(0),
 			};
 			wilds = [...wilds.filter((wild) => wild.reel !== reel), entry];
@@ -199,23 +211,49 @@
 			entry.y.set(REEL_CENTER_Y, { duration: 1200, delay: 300, easing: cubicOut });
 
 			const x = getSymbolX(reel);
-			// each chomp: crumbs spray and the cover steps up with him, so the
-			// takeover reads as growth rather than a curtain dropping
+			// each chomp: crumbs spray, the plate surges, and it keeps creeping
+			// between bites so the takeover reads as continuous growth
 			BITE_TIMES_MS.forEach((t, index) => {
 				waitForTimeout(t).then(() => {
 					if (entry.phase !== 'grow') return;
 					spawnCrumbs(x, entry.y.current);
-					entry.cover.set(COVER_STEPS[index], { duration: 260, easing: cubicOut });
+					// squash on the bite, then stretch past the target and settle —
+					// the plate behaves like something being forced open, not resized
+					entry.squeeze.set(0.94, { duration: 90, easing: cubicOut }).then(() => {
+						entry.squeeze.set(1, { duration: 320, easing: backOut });
+					});
+					entry.cover.set(COVER_STEPS[index], { duration: 190, easing: backOut }).then(() => {
+						if (entry.phase !== 'grow') return;
+						// keep inching toward the next bite so nothing ever sits still
+						const nextAt = BITE_TIMES_MS[index + 1] ?? BURST_TIME_MS;
+						entry.cover.set(COVER_STEPS[index] + CREEP_AHEAD, {
+							duration: Math.max(120, nextAt - t - 190),
+						});
+					});
 				});
 			});
 
 			// the slam: the panel shoots to full height, overshoots into the
 			// housing, and the frame takes the hit
+			waitForTimeout(BURST_TIME_MS - 110).then(() => {
+				// wind-up: it pulls in on itself a beat before letting go, which is
+				// what sells the burst as an effort rather than a cut
+				if (entry.phase !== 'grow') return;
+				entry.squeeze.set(0.86, { duration: 110, easing: cubicOut });
+			});
+
 			waitForTimeout(BURST_TIME_MS).then(() => {
 				spawnLockBurst(x);
 				spawnEdgeImpact(x, entry);
 				context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1 });
-				entry.cover.set(1, { duration: 190, easing: backOut });
+				entry.cover.set(1, { duration: 210, easing: backOut });
+				// stretch thin as it shoots up, then snap back to full width
+				entry.squeeze.set(1.1, { duration: 130, easing: cubicOut }).then(() => {
+					entry.squeeze.set(1, { duration: 260, easing: backOut });
+				});
+				entry.streak.set(1, { duration: 70, easing: cubicOut }).then(() => {
+					entry.streak.set(0, { duration: 300, easing: cubicOut });
+				});
 				entry.edgeFlash.set(1, { duration: 60, easing: cubicOut }).then(() => {
 					entry.edgeFlash.set(0, { duration: 420, easing: cubicOut });
 				});
@@ -250,6 +288,8 @@
 				y: new Tween(REEL_CENTER_Y),
 				cover: new Tween(1),
 				badgeScale: new Tween(1),
+				squeeze: new Tween(1),
+				streak: new Tween(0),
 				edgeFlash: new Tween(0),
 			}));
 		},
@@ -279,21 +319,44 @@
 		<Graphics
 			draw={(g) => {
 				const x = getSymbolX(wild.reel);
-				const { top, height } = plateRect(wild);
+				const { top, height, width } = plateRect(wild);
+				const left = x - width / 2;
 				g.clear();
 				if (height <= 0) return;
 				g.beginFill(0x0a1508, 0.97);
-				g.drawRoundedRect(x - SYMBOL_SIZE / 2, top, SYMBOL_SIZE, height, 14);
+				g.drawRoundedRect(left, top, width, height, 14);
 				g.endFill();
-				if (height > 16) {
+				if (height > 16 && width > 12) {
 					g.beginFill(0x14301a, 0.92);
-					g.drawRoundedRect(x - SYMBOL_SIZE / 2 + 6, top + 6, SYMBOL_SIZE - 12, height - 12, 10);
+					g.drawRoundedRect(left + 6, top + 6, width - 12, height - 12, 10);
 					g.endFill();
 				}
 				g.lineStyle(3, 0xffd43b, 0.75);
-				g.drawRoundedRect(x - SYMBOL_SIZE / 2 + 3, top + 3, SYMBOL_SIZE - 6, Math.max(0, height - 6), 12);
+				g.drawRoundedRect(left + 3, top + 3, Math.max(0, width - 6), Math.max(0, height - 6), 12);
 			}}
 		/>
+
+		{#if wild.streak.current > 0}
+			<!-- Vertical speed streaks: the eye needs motion smear to accept that the
+			     panel travelled the reel rather than being swapped in. fxStreak is a
+			     horizontal smear, so width is its long axis and the quarter turn
+			     stands it upright along the reel. -->
+			{@const sx = getSymbolX(wild.reel)}
+			{#each [-0.26, 0, 0.26] as offset (offset)}
+				<Sprite
+					key="fxStreak"
+					anchor={0.5}
+					x={sx + offset * SYMBOL_SIZE}
+					y={REEL_CENTER_Y}
+					width={BOARD_SIZES.height * (0.55 + 0.45 * wild.streak.current)}
+					height={SYMBOL_SIZE * 0.3}
+					rotation={Math.PI / 2}
+					tint={0xffe98a}
+					blendMode="add"
+					alpha={0.5 * wild.streak.current}
+				/>
+			{/each}
+		{/if}
 
 		{#if wild.edgeFlash.current > 0}
 			<!-- white-hot seam where the panel is jammed against the housing -->

@@ -167,32 +167,6 @@
             }
           ]
         }
-      },
-      "slots": {
-        "symbol": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.28,
-              "color": "ffe9a8ff"
-            },
-            {
-              "time": 0.56,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.84,
-              "color": "ffe9a8ff"
-            },
-            {
-              "time": 1.4,
-              "color": "ffffffff"
-            }
-          ]
-        }
       }
     }
   }

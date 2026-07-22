@@ -42,99 +42,141 @@
 		}
 	}
 
-	/* ═══════════════════════════════════════════════════════
-	   Wild Party — Premium Button & Modal Styling
-	   Targets the actual shared component class names:
+	/* ══════════════════════════════════════════════════════
+	   GoBananas — jungle-commando modal skin.
+	   Deep olive canvas, brass trim, banana-gold highlights: the same palette as
+	   the reel housing (BoardFrame), the free-spin plaques and the bet bar
+	   (game/uiTheme.ts), so Buy Bonus and every other modal read as one game.
+	   Targets the shared component class names:
 	   - .button (components-shared/Button.svelte)
 	   - .rectangle (components-ui-html/BaseIcon.svelte)
 	   - .pop-up-wrap (components-shared/Popup.svelte)
 	   - .close-button (components-shared/Popup.svelte)
-	   ═══════════════════════════════════════════════════════ */
+	   ═════════════════════════════════════════════════════ */
 
-	/* Button icon background (the black rounded rectangle inside buttons) */
+	/* Button icon background (the rounded rectangle inside buttons) */
 	:global(.rectangle) {
 		background: linear-gradient(
 			160deg,
-			rgba(30, 5, 50, 0.95) 0%,
-			rgba(15, 2, 30, 0.98) 40%,
-			rgba(25, 5, 45, 0.95) 100%
+			rgba(38, 52, 18, 0.95) 0%,
+			rgba(18, 26, 8, 0.98) 45%,
+			rgba(30, 42, 14, 0.95) 100%
 		) !important;
-		border: 1px solid rgba(200, 100, 255, 0.35) !important;
+		border: 1px solid rgba(216, 163, 52, 0.4) !important;
 		border-radius: 10px !important;
 		box-shadow:
-			0 2px 10px rgba(180, 50, 255, 0.15),
-			inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+			0 2px 10px rgba(0, 0, 0, 0.45),
+			inset 0 1px 0 rgba(255, 243, 189, 0.07) !important;
 		transition: all 0.2s ease !important;
 	}
 
-	/* Button wrapper hover/active states */
 	:global(.button:hover .rectangle) {
-		border-color: rgba(220, 120, 255, 0.6) !important;
+		border-color: rgba(255, 215, 94, 0.7) !important;
 		box-shadow:
-			0 4px 18px rgba(200, 80, 255, 0.25),
-			inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+			0 4px 18px rgba(216, 163, 52, 0.28),
+			inset 0 1px 0 rgba(255, 243, 189, 0.12) !important;
 	}
 
 	:global(.button:active .rectangle) {
-		border-color: rgba(255, 150, 255, 0.7) !important;
+		border-color: rgba(255, 233, 138, 0.85) !important;
 		box-shadow:
-			0 1px 6px rgba(200, 80, 255, 0.3),
-			inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+			0 1px 6px rgba(216, 163, 52, 0.35),
+			inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
 		transform: scale(0.97);
 	}
 
 	/* Close button (×) */
 	:global(.close-button) {
-		color: rgba(200, 150, 255, 0.8) !important;
+		color: rgba(255, 215, 94, 0.85) !important;
 		transition: color 0.2s ease, text-shadow 0.2s ease !important;
 	}
 
 	:global(.close-button:hover) {
 		color: #fff !important;
-		text-shadow: 0 0 12px rgba(255, 100, 255, 0.8) !important;
+		text-shadow: 0 0 12px rgba(255, 215, 94, 0.85) !important;
 	}
 
-	/* Modal backdrop blur layer */
+	/* Modal backdrop — deep jungle shade rather than the template's violet */
 	:global(.blur-layer) {
-		background-color: rgba(5, 0, 15, 0.7) !important;
+		background-color: rgba(4, 12, 6, 0.72) !important;
 	}
 
-	/* Content wrapper in modals */
+	/* Content wrapper in modals (Buy Bonus, Bet Menu, Auto Spin, Settings…) */
 	:global(.ui-popup-standard-content-wrap) {
 		background: linear-gradient(
 			180deg,
-			rgba(18, 4, 35, 0.96) 0%,
-			rgba(10, 2, 22, 0.98) 100%
+			rgba(26, 36, 12, 0.97) 0%,
+			rgba(10, 18, 6, 0.98) 100%
 		) !important;
-		border: 1px solid rgba(180, 80, 255, 0.2) !important;
+		border: 1px solid rgba(216, 163, 52, 0.3) !important;
 		border-radius: 14px !important;
 		padding: 1.5rem !important;
 		box-shadow:
-			0 12px 40px rgba(0, 0, 0, 0.7),
-			0 0 80px rgba(150, 50, 255, 0.06) !important;
+			0 12px 40px rgba(0, 0, 0, 0.75),
+			0 0 70px rgba(158, 196, 74, 0.07),
+			inset 0 1px 0 rgba(255, 243, 189, 0.06) !important;
 	}
 
-	/* Scrollbar premium styling */
+	/* Buy Bonus cards (components-ui-html/BonusCard.svelte → .bonus-card-wrap):
+	   the shared component paints a flat black panel, which read as unfinished
+	   next to the rest of the game. Brass-edged olive plate instead. */
+	:global(.bonus-card-wrap) {
+		background: linear-gradient(
+			165deg,
+			rgba(34, 46, 16, 0.95) 0%,
+			rgba(16, 24, 8, 0.97) 100%
+		) !important;
+		border: 1px solid rgba(216, 163, 52, 0.32) !important;
+		border-radius: 12px !important;
+		box-shadow:
+			0 6px 18px rgba(0, 0, 0, 0.5),
+			inset 0 1px 0 rgba(255, 243, 189, 0.06) !important;
+		transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+	}
+
+	:global(.bonus-card-wrap:hover) {
+		border-color: rgba(255, 215, 94, 0.65) !important;
+		box-shadow: 0 0 22px rgba(255, 215, 94, 0.18) !important;
+	}
+
+	/* card copy: title in banana gold, price in the brass used on the bet bar */
+	:global(.bonus-card-wrap .title) {
+		color: #ffd75e !important;
+		font-weight: 800 !important;
+		letter-spacing: 0.04em !important;
+	}
+
+	:global(.bonus-card-wrap .price) {
+		color: #fff7d6 !important;
+		font-weight: 800 !important;
+		text-shadow: 0 0 10px rgba(216, 163, 52, 0.45) !important;
+	}
+
+	:global(.bonus-card-wrap .description) {
+		color: rgba(255, 247, 214, 0.72) !important;
+	}
+
+	/* Scrollbars */
 	:global(::-webkit-scrollbar) {
 		width: 5px;
 	}
 	:global(::-webkit-scrollbar-track) {
-		background: rgba(10, 0, 20, 0.4);
+		background: rgba(8, 16, 4, 0.45);
 		border-radius: 3px;
 	}
 	:global(::-webkit-scrollbar-thumb) {
-		background: linear-gradient(180deg, rgba(180, 80, 255, 0.4), rgba(100, 30, 180, 0.4));
+		background: linear-gradient(180deg, rgba(216, 163, 52, 0.55), rgba(120, 88, 24, 0.5));
 		border-radius: 3px;
 	}
 	:global(::-webkit-scrollbar-thumb:hover) {
-		background: linear-gradient(180deg, rgba(200, 100, 255, 0.6), rgba(120, 50, 200, 0.6));
+		background: linear-gradient(180deg, rgba(255, 215, 94, 0.75), rgba(158, 196, 74, 0.6));
 	}
 
-	/* Toggle / checkbox inputs in modals */
+	/* Toggle / checkbox / select inputs in modals */
 	:global(.pop-up-wrap input),
 	:global(.pop-up-wrap select) {
-		background: rgba(20, 5, 40, 0.8) !important;
-		border: 1px solid rgba(180, 80, 255, 0.25) !important;
+		background: rgba(24, 34, 10, 0.85) !important;
+		border: 1px solid rgba(216, 163, 52, 0.3) !important;
 		border-radius: 6px !important;
 		color: #fff !important;
 		transition: border-color 0.2s ease !important;
@@ -142,8 +184,8 @@
 
 	:global(.pop-up-wrap input:focus),
 	:global(.pop-up-wrap select:focus) {
-		border-color: rgba(200, 100, 255, 0.5) !important;
+		border-color: rgba(255, 215, 94, 0.6) !important;
 		outline: none !important;
-		box-shadow: 0 0 8px rgba(180, 80, 255, 0.2) !important;
+		box-shadow: 0 0 8px rgba(216, 163, 52, 0.28) !important;
 	}
 </style>

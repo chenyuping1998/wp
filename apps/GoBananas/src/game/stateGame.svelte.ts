@@ -93,8 +93,10 @@ export const stateGame = $state({
 
 const boardLayout = () => ({
 	x: stateLayoutDerived.mainLayout().width * 0.5,
-	// lifted above center so the framed board clears the bottom UI bar
-	y: stateLayoutDerived.mainLayout().height * 0.42,
+	// lifted above center so the framed board clears the bottom UI bar. Raised
+	// again when SYMBOL_SIZE went 90 -> 102: the extra height is taken out of the
+	// dead space above the board, keeping the bottom edge where it already was.
+	y: stateLayoutDerived.mainLayout().height * 0.385,
 	anchor: { x: 0.5, y: 0.5 },
 	pivot: { x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 },
 	...BOARD_SIZES,

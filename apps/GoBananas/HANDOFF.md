@@ -249,6 +249,66 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 
 稽核通過的：背景光點（相位/速度/擺幅皆隨機）、FxBurst 火花（均勻角度＋jitter）、ImpactDust（扇形＋隨機）、擴展百搭碎屑（全隨機）。轉輪停止間隔固定 145ms 屬拉霸機本來的機械節奏，**刻意不改**。
 
+## 5.20 讀取卡死修復 + 出貨前守門（2026-07-22 第十輪）
+
+使用者回報「這一版讀取不出來，只到供應商 logo 那邊就卡住」。主控台顯示三個問題，逐一查到底：
+
+### 1. `Uncaught ReferenceError: backgroundBlur is not defined`（致命，就是卡住主因）
+
+`Game.svelte` 樣板寫了 `<Container filters={backgroundBlur}>`，但**常數宣告從來沒被插入**——先前用腳本 `src.replace()` 打補丁時錨點字串沒對上，`replace` 靜默回傳原字串，補丁等於沒套用。`vite build` 不做型別檢查，所以 build 一路綠燈，錯誤只在執行期炸開，Pixi 場景整個掛掉，只剩 HTML loader 蓋在最上層 → 看起來就是「卡在供應商 logo」。
+
+補回 `const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];`。
+
+**教訓已固化成工具**：`design/check_undefined_refs.mjs`（見下）＋ 之後所有腳本補丁一律加「替換必須命中」的斷言（這次就靠斷言抓到 `LoadingScreen.svelte` 是 CRLF 行尾、原本的 `<script lang="ts">\n` 錨點對不上）。
+
+### 2. 主控台 404 + `Web font load inactive` ← 範本字體
+
+兩個來源，都是 Stake 範本殘留的 Adobe Typekit：
+
+- `src/app.html` 的 `<link rel="stylesheet" href="https://use.typekit.net/aba0ebl.css">`
+- `packages/pixi-svelte/src/lib/utils.svelte.ts` 的 `preloadFont()`，用 webfontloader 抓 `typekit: { id: 'aba0ebl' }`
+
+該 kit 綁定範本自己的帳號網域，換到別的來源就 404，字體實際上**從來沒生效過**（一直在吃 Arial fallback）。
+
+- 共用套件加 `setFontKit(id | null)`，**預設值維持 `'aba0ebl'` 所以 WildParty 完全不受影響**；GoBananas 在 `src/game/fonts.ts` 呼叫 `setFontKit(null)` 直接跳過請求
+- 新增 `src/game/fonts.ts` 的 `GAME_FONT`＝`"Trebuchet MS", "Segoe UI", Tahoma, Arial, sans-serif`（純系統字體，零網路請求、無授權問題），全專案 13 處 `proxima-nova` 一次換掉
+- ⚠️ `pixi-svelte` 是**以 dist 被消費**的，改完必須 `pnpm --filter pixi-svelte build`（svelte-package）才會生效
+
+### 3. `I18nTest` 除錯覆蓋層會直接出貨（實際跑起來才抓到）
+
+`Game.svelte` 無條件掛著範本的 `<I18nTest />`，在畫面 x=300 疊一塊半透明黑底，印 `TRANSLATIONS TEST` / `HOME (from game)` / `SETTINGS (from ui-pixi)` / `NOT TRANSLATED`。沒有任何 dev 判斷，正式版玩家看得到。元件與掛載點皆已刪除。
+
+### 出貨前守門（兩支，已接進 `pnpm build`）
+
+`vite build` 不做型別檢查，svelte-check 實測**抓不到**樣板未定義變數，`npm run lint` 的 ESLint 又是舊設定格式跑不起來——三者都攔不住 §5.20-1 那種 bug，所以自己寫：
+
+- `design/check_undefined_refs.mjs`：拆 script/markup，收集所有宣告（含 import、解構、`{#each as}`、`{#snippet}`、`{@const}`、內聯箭頭函式參數），比對樣板 `{...}` 內的識別字。會剝除字串與註解、保留模板字串的 `${}` 內容、以括號配對掃描任意巢狀深度。全專案零誤判；故意拿掉 `backgroundBlur` 可穩定重現攔截
+- `design/check_assets.mjs`：驗 `assets.ts` 全部 68 條路徑。注意 `new URL('../../assets/…', import.meta.url)` 是**執行期**相對 bundle URL 解析（落在 `static/`），不是建置期 import——所以打錯字只會變成靜默 404，不會 build 失敗
+
+`package.json` 的 `build` 已改成 `node design/check_undefined_refs.mjs && vite build`。
+
+### 實機驗證方式（不用 Storybook）
+
+`vite preview` 沒有 RGS 後端會停在錯誤彈窗，所以做了一個一次性測試殼（在 scratchpad，不進 repo）：複製 `build/`，於 `index.html` 最前面注入攔截 `window.fetch` 的 stub，用 `src/stories/data/` 裡的**真實數學 books** 回應 `/wallet/authenticate`、`/wallet/play`、`/bet/event`、`/wallet/end-round`。
+
+已驗證：**零 JS 錯誤**、載入畫面走到 `TAP TO CONTINUE`（＝68 個資產全部預載成功，讀取卡死確定解決）、點擊後主畫面正常掛載（BALANCE / WIN / BET / BUY BONUS / 標題全英文）、除錯覆蓋層已消失。
+
+未驗證：**實際旋轉與中獎演繹**。自動化瀏覽器分頁是 `visibilityState: hidden`，`document.timeline.currentTime` 恆為 0、rAF 完全不觸發，Pixi ticker 與 Svelte transition 都停擺，再測下去只會測到測試環境本身而非遊戲。這部分仍須真機確認。
+
+## 5.21 使用者回饋修正（2026-07-22 第十一輪，八項）
+
+1. **PayTable 補上 15 條賠付線圖**：`ModalPayTable.svelte` 直接讀 `config.paylines`，每條渲染一張 5×5 迷你盤，命中格用金色漸層。資料已驗：15 條全部 5 格且 row 皆在 0–4，形狀為 5 直線 + 4 上折 + 4 下折 + 2 對角
+2. **過場手榴彈不再旋轉**：移除 `grenadeRot`（連同已成死碼的 `rotation` prop），落下全程正面。爆炸放大：半徑改用 `max(width,height)*0.95`（原本只有 `height*0.7`）、震波環 2→3 圈、火球核心 0.16→0.34 並加一層橙色外核、破片 16→30 且更大、`BOOM_MS` 300→420 讓大爆炸有時間讀完
+3. **盤面放大 + bet bar 縮小**：先試過只放大盤面，實測發現**做不到**——`BoardFrame` 的 `FRAME_SCALE = 1.28` 是實體外殼不是光暈，盤面實際佔位是playfield 的 1.29 倍，在原 bar 高度下 `SYMBOL_SIZE` 連 92 都塞不下（外框上緣會被切、下緣壓到數值列）。所以照原要求縮 bar：共用主題新增 `betBarScale`（**預設 1，WildParty 不受影響**），在 Desktop/Landscape/Tablet 三個 layout 以「底邊對齊」方式縮放（`y` 加上 `BASE_SIZE * (1 - scale)` 補償，bar 只往上收、底邊不動）。GoBananas 設 0.84，`SYMBOL_SIZE` 90 → 96。
+   實測（canvas 1280×720）：外框 y 1→554 完整在畫面內、數值列自 566 起、中間留 12px；playfield 401 → 428px（面積 +14%）
+4. **擴展百搭流暢化**：原本 `cover` 只在三次咬食各跳一次固定值（0.16/0.3/0.46）再跳到 1，四段之間完全靜止——這正是「只是圖片在移動」的來源。改成每次咬食 `backOut` 衝一段後**繼續朝下一次咬食緩慢爬升**（`CREEP_AHEAD`），全程沒有靜止幀；另加 `squeeze`（咬食時橫向壓縮 0.94、爆發前預備收到 0.86、衝出時拉長到 1.1 再回彈）與 `streak`（爆發瞬間三道加法混色垂直速度線）。盤面撞擊與碎屑維持原有
+5. **Buy Bonus 改叢林風**：發現 `ui/Modals.svelte` 整份還是 WildParty 的紫/洋紅（檔頭註解就寫著 "Wild Party — Premium Modal Styling"），**所有彈窗都吃這套**。全部改成深橄欖底 + 黃銅邊 + 香蕉金，對齊 `BoardFrame` 與 `game/uiTheme.ts`。Buy Bonus 卡片的實際 class 是 `.bonus-card-wrap`（不是 `.bonus-card`，已查原始碼確認），並補上 `.title`/`.price`/`.description` 的配色
+6. **聽牌**：
+   - **觸發改成 3 個 scatter 之後**。數學給的 `anticipation[reel] = (該輪之前已落的 scatter 數) - 1`，也就是**第 2 個** scatter 就開始聽牌；但 FG 要 4 個才觸發，聽太早等於每局都聽、失去意義。在 `bookEventHandlerMap.ts` 傳進 `spin()` 前過濾（`>= 2` 才保留），這樣**慢停與視覺由同一條件 gate**，且不動共用套件
+   - **改成框住整輪 5 格**：原本用 `key="anticipation"` 那支 spine，它是**採礦題材的範本素材**（`MiningMayhem_by_KICK`，slot 裡是 rocks/dust/sparks），美術偏移在左上角 → 就是那塊亮色區塊；而且只有 1.6 格高，根本框不住整輪。整支改自繪：滿高外框（三層描邊）+ 五格分隔刻度 + 上下收斂箭頭 + 貼齊上下軌的加法光暈。`anticipation` 資產仍保留給 `SymbolSpine` 的 `payframe` 使用
+7. **Superspin 黏性金幣不再露出底下轉動的符號**：`StickyPrizes` 的格子底板是 0.96 半透明**圓角**矩形，四角沒蓋到、整體又會透——所以後方轉輪的金幣看起來像從底下滑過去。改成先鋪一層完全不透明的**滿格直角**底，再疊圓角裝飾板
+8. **符號 10 中獎不再變色**：`design/generate_spines.mjs` 的 `genericWin()` 尾端掛了 `flashSlot()`，peak 是琥珀色 `ffe9a8`。spine 的 slot color 是**相乘**，所以所謂「閃光」實際是在扣減色版——套在冷色調的 royals（K 冰藍、10 銀鑽）上就是明顯變色。移除 `genericWin` 的 slot 染色（影響 l1–l5 與 x），改由縮放/旋轉/位移加 payframe 表現；h1–h4/p/w/s 本來就是暖色系，保留各自的客製閃光。已重跑 `generate_spines.mjs` 並驗證 `l5.json` 的 win 只剩 `bones`、`h1.json` 仍有 `slots`
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`
@@ -258,3 +318,5 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 - [x] superspin 模式前端呈現（2026-07-03，見 §5.5）
 - [x] 背景/轉輪框/音效叢林軍事化（2026-07-16，見 §2.5）
 - [ ] Stake 上架素材（Thumbnail/Foreground）尚未做
+- [ ] 真機確認旋轉／中獎／FG 演繹（測試殼因分頁 hidden、動畫時鐘凍結而無法驗，見 §5.20）
+- [ ] Pixi v8 棄用 API：Graphics 仍在用 `beginFill`/`endFill`/`lineStyle`/`drawRect`/`drawRoundedRect`/`drawEllipse`/`drawPolygon`，主控台每幀噴 deprecation warning。目前可運作，但 v9 會移除

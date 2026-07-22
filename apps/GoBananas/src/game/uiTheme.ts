@@ -1,3 +1,4 @@
+import { GAME_FONT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
 
 // Jungle-commando bet bar: deep olive-canvas buttons with the same brass trim
@@ -5,7 +6,7 @@ import { setUiTheme } from 'components-ui-pixi';
 // Applied once at module load (imported by Game.svelte) — the shared UI package
 // otherwise keeps its plum/gold defaults for other games in the workspace.
 setUiTheme({
-	fontFamily: 'proxima-nova, Arial, sans-serif',
+	fontFamily: GAME_FONT,
 	fontWeight: '700',
 
 	buttonFill: 0x1e2a0e,
@@ -29,6 +30,12 @@ setUiTheme({
 	valueFill: 0xfff7d6,
 	valueStroke: 0x1a2208,
 	valueShadow: 0x0a1004,
+
+	// The reel housing art carries a wide structural margin (FRAME_SCALE 1.28 in
+	// BoardFrame), so the board's real footprint is ~1.3x the playfield. At the
+	// stock bar height there was no room left to grow it. Pulling the bar in
+	// frees the vertical space the bigger board needs.
+	betBarScale: 0.84,
 
 	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
 	// keep the themed rounded rect, which suits the round buttons)

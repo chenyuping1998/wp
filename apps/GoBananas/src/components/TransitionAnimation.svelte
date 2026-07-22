@@ -14,17 +14,18 @@
 	const props: Props = $props();
 	const context = getContext();
 
-	const THROW_MS = 460; // grenade drops in from the top, spinning
+	const THROW_MS = 460; // grenade drops in from the top, always face-on
 	const TICK_MS = 340; // armed: two red blinks
-	const BOOM_MS = 300; // shockwave + flash ramp
+	const BOOM_MS = 420; // shockwave + flash ramp (longer so the bigger blast reads)
 	const TOTAL_MS = THROW_MS + TICK_MS + BOOM_MS;
 	const BOOM_AT = THROW_MS + TICK_MS;
 
+	const FRAG_COUNT = 30;
 	type Frag = { a: number; speed: number; r: number; spin: number };
-	const frags: Frag[] = Array.from({ length: 16 }, (_, i) => ({
-		a: (i / 16) * Math.PI * 2 + Math.random() * 0.4,
-		speed: 0.55 + Math.random() * 0.75,
-		r: 7 + Math.random() * 12,
+	const frags: Frag[] = Array.from({ length: FRAG_COUNT }, (_, i) => ({
+		a: (i / FRAG_COUNT) * Math.PI * 2 + Math.random() * 0.4,
+		speed: 0.5 + Math.random() * 0.85,
+		r: 9 + Math.random() * 17,
 		spin: Math.random() * Math.PI,
 	}));
 
@@ -36,7 +37,6 @@
 	let grenadeVisible = $state(false);
 	let grenadeX = $state(0);
 	let grenadeY = $state(0);
-	let grenadeRot = $state(0);
 	let grenadeScale = $state(1);
 	let grenadeTint = $state(0xffffff);
 	let boomT = $state(-1);
@@ -55,12 +55,12 @@
 			const h = context.stateLayoutDerived.canvasSizes().height;
 
 			if (elapsed < THROW_MS) {
-				// grenade drops in from above, spinning, and brakes to a stop
+				// drops in from above and brakes to a stop — deliberately NOT spinning,
+				// so the grenade reads face-on the whole way down
 				const p = easeOutCubic(elapsed / THROW_MS);
 				grenadeVisible = true;
 				grenadeX = 0;
 				grenadeY = -h * 0.72 * (1 - p);
-				grenadeRot = p * Math.PI * 3;
 				grenadeScale = 0.7 + p * 0.5;
 				grenadeTint = 0xffffff;
 			} else if (elapsed < BOOM_AT) {
@@ -69,7 +69,6 @@
 				grenadeVisible = true;
 				grenadeX = 0;
 				grenadeY = 0;
-				grenadeRot = 0;
 				grenadeScale = 1.2 + Math.sin(p * Math.PI * 2) * 0.06;
 				grenadeTint = Math.sin(p * Math.PI * 4) > 0 ? 0xff5a3a : 0xffffff;
 			} else {
@@ -103,26 +102,31 @@
 	const drawBoom = (g: PixiGraphics) => {
 		g.clear();
 		if (boomT < 0) return;
-		const { height } = context.stateLayoutDerived.canvasSizes();
-		const maxR = height * 0.7;
-		// shockwave rings
-		for (const [delay, color] of [
-			[0, 0xfff2c0],
-			[0.18, 0xff9c3a],
-		] as [number, number][]) {
+		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		// reach past the long edge so the blast genuinely engulfs the screen
+		const maxR = Math.max(width, height) * 0.95;
+		// shockwave rings — a third, slowest ring gives the blast visible depth
+		for (const [delay, color, weight] of [
+			[0, 0xfff7d6, 30],
+			[0.14, 0xfff2c0, 24],
+			[0.3, 0xff9c3a, 18],
+		] as [number, number, number][]) {
 			const t = (boomT - delay) / (1 - delay);
 			if (t < 0 || t > 1) continue;
-			g.lineStyle(16 * (1 - t) + 2, color, 0.85 * (1 - t));
+			g.lineStyle(weight * (1 - t) + 3, color, 0.85 * (1 - t));
 			g.drawCircle(0, 0, maxR * easeOutCubic(t));
 		}
-		// hot core
+		// hot core — expands most of the way across the screen before fading
 		g.lineStyle(0);
 		g.beginFill(0xfff7d6, 0.9 * (1 - boomT));
-		g.drawCircle(0, 0, height * 0.16 * (0.4 + boomT));
+		g.drawCircle(0, 0, height * 0.34 * (0.4 + boomT * 1.5));
 		g.endFill();
-		// leaf/shrapnel fragments
+		g.beginFill(0xffb347, 0.55 * (1 - boomT));
+		g.drawCircle(0, 0, height * 0.5 * (0.35 + boomT * 1.7));
+		g.endFill();
+		// leaf/shrapnel fragments — thrown the full blast radius
 		for (const f of frags) {
-			const d = f.speed * easeOutCubic(boomT) * maxR;
+			const d = f.speed * easeOutCubic(boomT) * maxR * 1.1;
 			const x = Math.cos(f.a) * d;
 			const y = Math.sin(f.a) * d;
 			g.beginFill(f.r > 13 ? 0x35521a : 0xffd75e, 0.9 * (1 - boomT));
@@ -157,7 +161,6 @@
 			y={grenadeY}
 			width={context.stateLayoutDerived.canvasSizes().height * 0.2 * grenadeScale}
 			height={context.stateLayoutDerived.canvasSizes().height * 0.2 * grenadeScale}
-			rotation={grenadeRot}
 			tint={grenadeTint}
 		/>
 	{/if}

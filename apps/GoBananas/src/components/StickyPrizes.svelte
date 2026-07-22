@@ -74,7 +74,14 @@
 		<Graphics
 			draw={(g) => {
 				g.clear();
-				g.beginFill(0x43101c, 0.96);
+				// Fully opaque, square, full-bleed backing FIRST. The rounded plate
+				// alone left the cell corners uncovered and sat at 0.96 alpha, so a
+				// coin travelling on the spinning reel behind was visible sliding
+				// under the held one — it read as the hold not actually holding.
+				g.beginFill(0x1c0710, 1);
+				g.drawRect(x - SYMBOL_SIZE / 2, y - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE);
+				g.endFill();
+				g.beginFill(0x43101c, 1);
 				g.drawRoundedRect(x - SYMBOL_SIZE / 2, y - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE, 12);
 				g.endFill();
 				g.lineStyle(3, 0xffd43b, 0.75);

@@ -7,6 +7,7 @@
 	import { LANDSCAPE_BASE_SIZE, LANDSCAPE_BACKGROUND_WIDTH_LIST } from '../constants';
 	import type { LayoutUiProps } from '../types';
 	import { getContext } from '../context';
+	import { uiTheme } from '../theme.svelte';
 
 	const props: LayoutUiProps = $props();
 	const context = getContext();
@@ -21,9 +22,15 @@
 </Container>
 
 <MainContainer standard alignVertical="bottom">
+	<!-- betBarScale shrinks the bar about its bottom edge: the compensating
+	     offset keeps that edge flush where it already sat, so only the height
+	     above it changes and the board gains the difference. -->
 	<Container
 		x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
-		y={context.stateLayoutDerived.mainLayoutStandard().height - LANDSCAPE_BASE_SIZE - 40}
+		scale={uiTheme.betBarScale}
+		y={context.stateLayoutDerived.mainLayoutStandard().height -
+			LANDSCAPE_BASE_SIZE - 40 +
+			LANDSCAPE_BASE_SIZE * (1 - uiTheme.betBarScale)}
 		pivot={anchorToPivot({
 			anchor: { x: 0.5, y: 0 },
 			sizes: {
