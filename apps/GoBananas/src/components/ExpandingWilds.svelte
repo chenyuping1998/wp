@@ -36,6 +36,10 @@
 		squeeze: Tween<number>;
 		// vertical speed streaks during the burst
 		streak: Tween<number>;
+		// whole-panel win reaction, now that the symbols underneath no longer
+		// animate individually — this is what makes the locked reel read as the
+		// thing that won
+		winFlash: Tween<number>;
 		// white-hot line along the top/bottom frame edge right after the slam
 		edgeFlash: Tween<number>;
 		oncomplete?: () => void;
@@ -204,6 +208,7 @@
 				badgeScale: new Tween(0),
 				squeeze: new Tween(1),
 				streak: new Tween(0),
+				winFlash: new Tween(0),
 				edgeFlash: new Tween(0),
 			};
 			wilds = [...wilds.filter((wild) => wild.reel !== reel), entry];
@@ -290,6 +295,7 @@
 				badgeScale: new Tween(1),
 				squeeze: new Tween(1),
 				streak: new Tween(0),
+				winFlash: new Tween(0),
 				edgeFlash: new Tween(0),
 			}));
 		},
@@ -305,6 +311,15 @@
 				if (entry.phase !== 'idle' || !winningReels.has(entry.reel)) continue;
 				entry.badgeScale.set(1.45, { duration: 200, easing: cubicOut }).then(() => {
 					entry.badgeScale.set(1, { duration: 260, easing: cubicOut });
+				});
+				// the panel itself lights up, twice, so the whole reel reads as the
+				// winning element rather than the cells behind it
+				entry.winFlash.set(1, { duration: 160, easing: cubicOut }).then(() => {
+					entry.winFlash.set(0.25, { duration: 220, easing: cubicOut }).then(() => {
+						entry.winFlash.set(0.85, { duration: 180, easing: cubicOut }).then(() => {
+							entry.winFlash.set(0, { duration: 420, easing: cubicOut });
+						});
+					});
 				});
 			}
 		},
@@ -323,7 +338,16 @@
 				const left = x - width / 2;
 				g.clear();
 				if (height <= 0) return;
-				g.beginFill(0x0a1508, 0.97);
+				// Once the reel is fully taken over, lay a square full-bleed base
+				// first. The rounded plate alone left the reel corners uncovered and
+				// sat at 0.97 alpha, so symbols still travelling behind it showed
+				// through — the reel read as two layers instead of one panel.
+				if (wild.cover.current > 0.99) {
+					g.beginFill(0x0a1508, 1);
+					g.drawRect(x - SYMBOL_SIZE / 2, 0, SYMBOL_SIZE, BOARD_SIZES.height);
+					g.endFill();
+				}
+				g.beginFill(0x0a1508, 1);
 				g.drawRoundedRect(left, top, width, height, 14);
 				g.endFill();
 				if (height > 16 && width > 12) {
@@ -407,6 +431,34 @@
 				}}
 			/>
 		</SpineProvider>
+		{#if wild.winFlash.current > 0}
+			<!-- Whole-reel win reaction. The W symbols under the plate deliberately
+			     no longer animate (see WinLines.animatePositions), so the panel has
+			     to carry the win itself: a hot rim plus an additive wash. -->
+			{@const fx = wild.winFlash.current}
+			{@const wx = getSymbolX(wild.reel)}
+			<Graphics
+				draw={(g) => {
+					g.clear();
+					g.lineStyle(6, 0xfff3bd, 0.9 * fx);
+					g.drawRoundedRect(wx - SYMBOL_SIZE / 2 + 3, 3, SYMBOL_SIZE - 6, BOARD_SIZES.height - 6, 12);
+					g.lineStyle(14, 0xffd43b, 0.35 * fx);
+					g.drawRoundedRect(wx - SYMBOL_SIZE / 2 - 2, -2, SYMBOL_SIZE + 4, BOARD_SIZES.height + 4, 15);
+				}}
+			/>
+			<Sprite
+				key="fxGlow"
+				anchor={0.5}
+				x={wx}
+				y={REEL_CENTER_Y}
+				width={SYMBOL_SIZE * 1.25}
+				height={BOARD_SIZES.height}
+				tint={0xffe98a}
+				blendMode="add"
+				alpha={0.3 * fx}
+			/>
+		{/if}
+
 		{#if wild.phase === 'idle'}
 			<!-- multiplier badge: brass plaque — THE display of the wild multiplier -->
 			<Container

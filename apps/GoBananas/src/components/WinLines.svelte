@@ -86,7 +86,17 @@
 
 	const animatePositions = (positions: { reel: number; row: number }[]) => {
 		const fresh = positions.filter(
-			(p) => p.row >= 1 && p.row <= BOARD_DIMENSIONS.y && !animatedKeys.has(posKey(p)),
+			(p) =>
+				p.row >= 1 &&
+				p.row <= BOARD_DIMENSIONS.y &&
+				!animatedKeys.has(posKey(p)) &&
+				// A reel taken over by an expanded wild is presented as ONE panel.
+				// Animating the individual W symbols hidden underneath made them
+				// scale up out from behind the takeover plate, so the reel read as
+				// two stacked layers and the win looked like it came from the
+				// symbols below rather than the wild itself. ExpandingWilds reacts
+				// to winLinesShow for these reels instead.
+				!context.stateGame.stickyWildReels.includes(p.reel),
 		);
 		if (fresh.length === 0) return;
 		for (const p of fresh) animatedKeys.add(posKey(p));

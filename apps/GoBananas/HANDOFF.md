@@ -309,6 +309,20 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 7. **Superspin 黏性金幣不再露出底下轉動的符號**：`StickyPrizes` 的格子底板是 0.96 半透明**圓角**矩形，四角沒蓋到、整體又會透——所以後方轉輪的金幣看起來像從底下滑過去。改成先鋪一層完全不透明的**滿格直角**底，再疊圓角裝飾板
 8. **符號 10 中獎不再變色**：`design/generate_spines.mjs` 的 `genericWin()` 尾端掛了 `flashSlot()`，peak 是琥珀色 `ffe9a8`。spine 的 slot color 是**相乘**，所以所謂「閃光」實際是在扣減色版——套在冷色調的 royals（K 冰藍、10 銀鑽）上就是明顯變色。移除 `genericWin` 的 slot 染色（影響 l1–l5 與 x），改由縮放/旋轉/位移加 payframe 表現；h1–h4/p/w/s 本來就是暖色系，保留各自的客製閃光。已重跑 `generate_spines.mjs` 並驗證 `l5.json` 的 win 只剩 `bones`、`h1.json` 仍有 `slots`
 
+## 5.22 擴展百搭中獎時的「上下層」問題（2026-07-22 第十二輪）
+
+使用者回報：擴展完成後連線時看得出上下兩層，底下還有圖案跑出來，而且連線感覺是從底下的符號而不是上層的擴展百搭發出的。
+
+成因有兩個，都會讓底層曝光：
+
+1. **底下的個別 W 仍在播中獎動畫**。`WinLines.animatePositions` 把中獎位置**全部**送去 `boardWithAnimateSymbols`，包含被擴展百搭接管的那一輪。那些 W 是 spine 符號，win 動畫會放大到 1.45 倍 —— 蓋板只有 `SYMBOL_SIZE` 寬，1.45 倍的符號**兩側各突出約 22%**，所以會從蓋板後面長出來。這同時解釋了「連線像是從底下的圖案發出」。
+   修法：`animatePositions` 過濾掉 `stateGame.stickyWildReels` 內的輪。該欄位本來就有在維護（原本只用於消音）。
+2. **蓋板本身會透光**。跟 §5.21-7 的黏性金幣同一類問題：`0x0a1508` 只有 0.97 不透明度且是**圓角**矩形，四角沒蓋到。改成 `cover > 0.99`（完全接管後）先鋪一層滿格直角的全不透明底，再疊圓角板。
+
+底層不再動之後，那一輪需要自己表現中獎，否則會變成完全沒反應：新增 `winFlash` Tween，中獎時面板打兩次光（熱白內緣 + 金色外緣 + 加法光暈），並刻意插在 wx spine **之後**、倍率徽章之前，讓光洗過猴子美術但不蓋住倍率數字。
+
+註：`bookEventHandlerMap` 另外兩處 `animateSymbols` 是 **scatter** 觸發用的（FG 觸發／再觸發），擴展輪上不會有 scatter，不受影響，維持原狀。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`
