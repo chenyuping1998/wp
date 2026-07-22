@@ -279,7 +279,33 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'winHide' });
 	},
 	finalWin: async () => {
-		// Do nothing
+		// Superspin teardown safety net.
+		//
+		// The whole superspin presentation used to be closed inside prizeWinInfo,
+		// but the math only emits prizeWinInfo (and setWin) when something was
+		// actually won. ~10% of superspin books land no coin at all across all
+		// three respins, and those books end:
+		//     updateFreeSpin -> reveal -> setTotalWin -> finalWin
+		// with no prizeWinInfo anywhere. The respin plaque was therefore never
+		// hidden: it froze on screen, the round showed no result, and the stale
+		// panel stayed up over the following base spins.
+		//
+		// finalWin is the last event of every book in every mode, so close the
+		// counter here if something left it open. In the free game freeSpinEnd
+		// already hides it earlier in the sequence, and this is idempotent.
+		if (stateUi.freeSpinCounterShow) {
+			eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
+			stateUi.freeSpinCounterShow = false;
+		}
+
+		// Same root cause, separate leak: gameType is only reset to 'basegame' by
+		// freeSpinEnd, which superspin books never contain. It therefore stayed
+		// 'superspin' after the round, and the next base spin's preSpin looked up
+		// config.paddingReels['superspin'] — a key that does not exist — so it
+		// padded with undefined. Reset it here too.
+		if (stateGame.gameType !== 'basegame') {
+			stateGame.gameType = 'basegame';
+		}
 	},
 	wincap: async (bookEvent: BookEventOfType<'wincap'>) => {
 		stateBet.winBookEventAmount = bookEvent.amount;

@@ -323,6 +323,24 @@ MM 範本視覺全數替換為 GoBananas 風（`generate_theme_jungle.mjs` 新�
 
 註：`bookEventHandlerMap` 另外兩處 `animateSymbols` 是 **scatter** 觸發用的（FG 觸發／再觸發），擴展輪上不會有 scatter，不受影響，維持原狀。
 
+## 5.23 Superspin 零金幣回合收尾（2026-07-22 第十三輪）
+
+回報：superspin 若前三轉都沒轉出金幣就會卡住沒結算，之後按 bet，左方的重轉牌子還留在畫面上。
+
+**根因**：整個 superspin 的收尾只寫在 `prizeWinInfo` 這一個 handler 裡，而數學**只有在真的贏到東西時才會發這個事件**。對照兩種 book 的尾巴：
+
+- 有金幣：`… prizeWinInfo → setWin → setTotalWin → finalWin`
+- 無金幣：`… setTotalWin → finalWin`（**沒有** `prizeWinInfo`，也沒有 `setWin`）
+
+實測 `books_superspin.jsonl.zst` 10000 筆中有 **1000 筆（10%）** 三轉全空。這些回合因此從未收牌子，且完全沒有任何結算演出。
+
+**修法**：`finalWin` 是所有模式每個 book 都保證會跑到的最後一個事件，把收尾補在那裡（冪等；free game 的 `freeSpinEnd` 早一步已收，不衝突）：
+
+1. 若 `stateUi.freeSpinCounterShow` 還是 true 就收掉牌子
+2. `gameType` 重設回 `basegame` — 這是同根因的另一個洩漏：`gameType` 只在 `freeSpinEnd`（第 245 行）被重設，而 superspin 的 book **從來不含該事件**，所以跑完 superspin 後會一直卡在 `'superspin'`，下一次一般轉的 `preSpin` 會拿到 superspin 的 padding 輪帶。（曾誤判為 `undefined` 會導致當機——實際 `config.paddingReels` 三個 key 都存在，只是輪帶不對，屬視覺不一致而非當機。）
+
+**未能確認的部分**：程式碼上找不到硬性當機的路徑 —— `playBet` 會 `await playBookEvents()` 後必定廣播 `stopButtonEnable`，而無金幣路徑的四個事件（`updateFreeSpin`/`reveal`/`setTotalWin`/`finalWin`）都沒有會拋錯或永不 resolve 的地方；`freeSpinCounterShow` 也只用於 portrait/tablet 版面渲染，不參與下注按鈕的啟用判斷。因此目前的理解是：**回合實際上有結束，但因為零贏分沒有任何結算演出、加上重轉牌子凍在畫面上（並延續到後續回合），看起來就像卡住**。若實際上 spin 按鈕真的按不下去，那是另一個尚未定位的問題。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`
