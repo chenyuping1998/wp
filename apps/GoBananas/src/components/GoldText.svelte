@@ -16,6 +16,10 @@
 		maxWidth?: number;
 		letterSpacing?: number;
 		alpha?: number;
+		// override the gold gradient — used to grade high-value superspin coins
+		// into a hotter amber so they read apart from the common ones
+		fill?: number | number[];
+		stroke?: number;
 	};
 
 	const props: Props = $props();
@@ -36,8 +40,8 @@
 			fontSize: props.fontSize,
 			fontWeight: '900',
 			letterSpacing: props.letterSpacing ?? 1,
-			fill: [0xfff3bd, 0xffd75e, 0xc9821a],
-			stroke: 0x54330a,
+			fill: props.fill ?? [0xfff3bd, 0xffd75e, 0xc9821a],
+			stroke: props.stroke ?? 0x54330a,
 			strokeThickness: Math.max(2, props.fontSize * 0.1),
 			dropShadow: true,
 			dropShadowColor: 0x000000,

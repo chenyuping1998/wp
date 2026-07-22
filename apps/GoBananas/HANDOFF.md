@@ -571,6 +571,43 @@ playfield 由 428 → **526px**（+23% 線性、**+51% 面積**）。
 
 `onPlayGame` 簡化為只剩 `await playBet(bet)`。
 
+## 5.33 Buy Bonus 放大 + Superspin 改逐格自轉（2026-07-22 第二十三輪）
+
+### 1. Buy Bonus 卡片 +60%
+
+卡片的 `.title` / `.description` / `.price` **本身都沒有 font-size**（繼承而來），所以只要在 `.bonus-card-wrap` 上設一次字級，三者就會等比放大、原本的比例完全保留。尺寸與間距同步 ×1.6；按鈕高度走 CSS 變數（`--height-value`）、標籤帶 inline font-size，兩個都要另外指名覆寫。
+
+### 2. Superspin 改為逐格自轉
+
+**可行，而且正好解掉紅底**。共用的轉輪機制是整欄垂直捲動 —— 對 hold-and-spin 來說是錯的：被押住的金幣必須完全靜止，但整欄捲動會把整條輪帶從它後面拖過去。那塊紅色底板存在的唯一理由，就是遮住這個掃過的畫面。
+
+新做法（`SuperspinCells.svelte`）：
+
+- `bookEventHandlerMap.reveal` 遇到 `gameType === 'superspin'` 時**完全跳過轉輪捲動**，直接 `settle()` 上最終盤面
+- 覆蓋層只針對**未押住**的格子，每格各自在原地循環 X / P 兩種符號（superspin 輪帶實際只有這兩種，X 383 : P 17）
+- 每格有自己的相位，五格不會同步；每輪比左邊晚 90ms 停，盤面仍是由左至右定案
+- 押住的格子**根本不產生覆蓋層**，所以後面沒有任何東西經過 —— **紅底因此移除**
+
+### 3. 金幣數字置中
+
+原本 `StickyPrizes` 是 `y + SYMBOL_SIZE * 0.08`、`Symbol.svelte` 是 `y + 8`，都刻意往下偏。已改為正中。
+
+### 4. 10× 以上的金幣：落地震動 + 換色
+
+- **門檻**：`BIG_FROM = 10 * 100`（book 單位 100 = 1× 總注）
+- **震動**：以 `log10(prize / BIG_FROM)` 決定振幅 —— 獎值跨三個數量級，線性映射在 10× 會看不見、在 10000× 會誇張到荒謬。x/y 用不同週期抖動，二次式衰減，420ms
+
+| 獎值 | 振幅（格子 118px） |
+|------|------|
+| 10× | 5.9px |
+| 100× | 12.4px |
+| 1000× | 18.9px |
+| 10000× | 25.4px |
+
+- **顏色**：`GoldText` 新增 `fill` / `stroke` 覆寫（預設維持原金色漸層，其他用途不受影響），大獎改成較燙的琥珀橘 `[fff0c0, ffa93a, d44a12]`，並加一圈加法混色橘光
+
+**⚠️ 未能實機驗證**：逐格自轉需要真的跑一局 superspin 且動畫時鐘要在跑，測試環境兩者都做不到。build、兩支檢查腳本、載入與 console 皆正常，但**演出本身完全沒被目視過**，屬本輪最高風險項。已加卸載保險（`pendingResolve`），避免元件在轉動中卸載導致 book 播放永久等待。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

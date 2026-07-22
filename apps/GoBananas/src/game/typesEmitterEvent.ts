@@ -9,6 +9,7 @@ import type { EmitterEventSound } from '../components/Sound.svelte';
 import type { EmitterEventTransition } from '../components/Transition.svelte';
 import type { EmitterEventExpandingWilds } from '../components/ExpandingWilds.svelte';
 import type { EmitterEventStickyPrizes } from '../components/StickyPrizes.svelte';
+import type { EmitterEventSuperspinCells } from '../components/SuperspinCells.svelte';
 import type { EmitterEventScatterBurst } from '../components/ScatterBurst.svelte';
 
 export type EmitterEventGame =
@@ -23,4 +24,5 @@ export type EmitterEventGame =
 	| EmitterEventTransition
 	| EmitterEventExpandingWilds
 	| EmitterEventStickyPrizes
+	| EmitterEventSuperspinCells
 	| EmitterEventScatterBurst;

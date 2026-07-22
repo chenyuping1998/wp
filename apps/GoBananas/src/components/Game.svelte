@@ -29,6 +29,7 @@
 	import ScatterBurst from './ScatterBurst.svelte';
 	import ExpandingWilds from './ExpandingWilds.svelte';
 	import StickyPrizes from './StickyPrizes.svelte';
+	import SuperspinCells from './SuperspinCells.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import WinLines from './WinLines.svelte';
 	import Win from './Win.svelte';
@@ -88,6 +89,7 @@
 			<ReelDust />
 			<ExpandingWilds />
 			<StickyPrizes />
+			<SuperspinCells />
 			<Anticipations />
 			<ScatterBurst />
 			<WinLines />

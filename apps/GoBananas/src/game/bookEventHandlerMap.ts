@@ -92,6 +92,23 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		}
 
 		stateGame.gameType = bookEvent.gameType;
+
+		if (bookEvent.gameType === 'superspin') {
+			// Hold and spin: cells spin individually, not as columns. A column
+			// sweep would drag the whole strip past the coins that are supposed to
+			// be held still, which reads as the hold not holding. Settle the board
+			// straight away and let SuperspinCells cover and animate each unheld
+			// cell instead — held cells simply get no overlay, so nothing moves
+			// behind them.
+			stateGameDerived.enhancedBoard.settle(bookEvent.board);
+			await eventEmitter.broadcastAsync({
+				type: 'superspinCellsSpin',
+				lockedKeys: stateGame.stickyPrizes.map((p) => `${p.reel},${p.row}`),
+			});
+			eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
+			return;
+		}
+
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: { ...bookEvent, anticipation: gateAnticipation(bookEvent.anticipation) },
 			paddingBoard: config.paddingReels[bookEvent.gameType],

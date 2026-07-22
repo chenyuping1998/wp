@@ -139,6 +139,33 @@
 		box-shadow: 0 0 22px rgba(255, 215, 94, 0.18) !important;
 	}
 
+	/* Buy Bonus cards enlarged 60%. The card's children (.title/.description/
+	   .price) carry no font-size of their own, so setting one on the wrap scales
+	   all of them by exactly the same factor and the original proportions are
+	   preserved. Dimensions and spacing are multiplied to match; the button's
+	   height rides a CSS variable and its label has an inline font-size, so both
+	   need naming explicitly. */
+	:global(.bonus-card-wrap) {
+		min-width: 248px !important;   /* 155 x 1.6 */
+		max-width: 288px !important;   /* 180 x 1.6 */
+		padding: 0.8rem !important;
+		gap: 0.8rem !important;
+		border-radius: 16px !important;
+		font-size: 1.6rem !important;
+	}
+
+	:global(.bonus-card-wrap .info) {
+		gap: 0.8em !important;
+	}
+
+	:global(.bonus-card-wrap .rectangle) {
+		--height-value: 3.2rem !important;
+	}
+
+	:global(.bonus-card-wrap span) {
+		font-size: 1.6rem !important;
+	}
+
 	/* card copy: title in banana gold, price in the brass used on the bet bar */
 	:global(.bonus-card-wrap .title) {
 		color: #ffd75e !important;
