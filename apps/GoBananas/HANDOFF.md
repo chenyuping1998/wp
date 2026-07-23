@@ -672,6 +672,16 @@ playfield 由 428 → **526px**（+23% 線性、**+51% 面積**）。
 - B2 生成器加質感層（框/背景/牌）—— 對「low quality」最治本，惠及所有面板
 - B3/B4 符號打磨
 
+## 5.37 圖示微調：autoSpin/±放大、turbo 回復簍空（2026-07-22 第二十七輪）
+
+延續 §5.36 的按鈕圖示，三項調整（皆在共用 `UiButton`，用 per-icon 對照表，WildParty 不受影響）：
+
+1. **autoSpin 圖示放大** — sprite 尺寸原本全部固定 `width * 0.62`，新增 `iconSpriteScaleMap`，autoSpin 設 0.82（播放三角形需要更多存在感），其餘維持 0.62
+2. **`−`/`+` 放大** — 這兩個是排版字元不是 emoji（刻意保留），`iconFontSizeMultiplierMap` 由預設 1.1 提到 **1.7**
+3. **turbo 回復簍空** — §5.36 把 `gbIconTurbo` 加進主題後，sprite 分支蓋掉了原本的向量分支，變成靜態填滿的圖示。從主題 `icons` 移除 turbo → 回到 `UiButton` 的向量分支：**關閉時只描邊（簍空）、開啟（active）時 `g.fill` 填色**。連帶清掉 `assets.ts` 的 `gbIconTurbo`、生成器的 turbo 形狀、`turbo.png`（資產 78→77）
+
+驗證：check_undefined_refs / check_assets 全過、build 通過、實跑載入正常零 console 錯誤。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

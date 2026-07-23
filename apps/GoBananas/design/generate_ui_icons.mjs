@@ -96,8 +96,6 @@ const shapes = {
 	// circular arrow with a play triangle (autoplay)
 	autoSpin: `<path d="M 196 128 A 68 68 0 1 1 158 66" fill="none" stroke-width="26"/><path d="M 150 42 L 196 66 L 150 92 Z"/><path d="M 108 100 L 152 128 L 108 156 Z"/>`,
 
-	// lightning bolt
-	turbo: `<path d="M 150 40 L 78 140 L 118 140 L 100 216 L 178 108 L 134 108 Z"/>`,
 };
 
 for (const [name, shape] of Object.entries(shapes)) {

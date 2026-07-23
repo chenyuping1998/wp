@@ -182,11 +182,6 @@
 		src: new URL('../../assets/sprites/goBananasUiIcons/autoSpin.png', import.meta.url).href,
 		preload: true,
 	},
-	gbIconTurbo: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasUiIcons/turbo.png', import.meta.url).href,
-		preload: true,
-	},
 
 	// The full-reel WILD banner as a plain sprite. Same file the wx spine uses,
 	// so it costs no extra download — ExpandingWilds draws it behind a growing

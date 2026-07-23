@@ -61,6 +61,17 @@
 		autoSpin: 1.3,
 		turbo: 1.45,
 		menu: 1.4,
+		// the −/+ bet steppers are typographic glyphs, not emoji, so they stay as
+		// text — bumped up so they read at a glance next to the big bet button
+		decrease: 1.7,
+		increase: 1.7,
+	};
+
+	// Per-icon scale for the drawn sprite icons (fraction of button width).
+	// Default keeps a comfortable margin; autoSpin's play triangle needs more
+	// presence so it is enlarged.
+	const iconSpriteScaleMap: Partial<Record<ButtonIcon, number>> = {
+		autoSpin: 0.82,
 	};
 
 	const isTextMode = $derived(textMode === 'text');
@@ -101,12 +112,13 @@
 			<!-- drawn icon art (brass, with depth) replacing the text/emoji glyph;
 			     opted into per game via uiTheme.icons, so games without it keep the
 			     glyphs. Sized to sit inside the button with a small margin. -->
+			{@const iconScale = iconSpriteScaleMap[icon] ?? 0.62}
 			<Sprite
 				{...center}
 				anchor={0.5}
 				key={uiTheme.icons[icon]}
-				width={buttonProps.sizes.width * 0.62}
-				height={buttonProps.sizes.width * 0.62}
+				width={buttonProps.sizes.width * iconScale}
+				height={buttonProps.sizes.width * iconScale}
 			/>
 		{:else if icon === 'turbo'}
 			<!-- vector bolt instead of the ⚡ glyph: emoji glyphs ignore canvas

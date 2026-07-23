@@ -55,6 +55,7 @@ setUiTheme({
 		soundOn: 'gbIconSoundOn',
 		soundOff: 'gbIconSoundOff',
 		autoSpin: 'gbIconAutoSpin',
-		turbo: 'gbIconTurbo',
+		// turbo deliberately omitted: UiButton draws it as a vector bolt so it can
+		// be hollow when off and fill in when active — a static sprite can't toggle
 	},
 });
