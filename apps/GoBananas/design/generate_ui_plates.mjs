@@ -80,7 +80,7 @@ ${tickerRivets}
 </svg>`;
 
 // ── buy-bonus plate: square, hotter brass so the CTA pops out of the bar ────
-const BS = 300;
+const BS = 640;
 const buyRivets = [
 	[36, 36],
 	[BS - 36, 36],

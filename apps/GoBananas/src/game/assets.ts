@@ -139,6 +139,55 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV2/w.png', import.meta.url).href,
 		preload: true,
 	},
+
+	// bet-bar button icons (design/generate_ui_icons.mjs) — brass drawn icons
+	// replacing the template's text/emoji glyphs
+	gbIconMenu: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIcons/menu.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMenuExit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIcons/menuExit.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconSettings: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIcons/settings.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconInfo: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIcons/info.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconPayTable: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIcons/payTable.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconSoundOn: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIcons/soundOn.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconSoundOff: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIcons/soundOff.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconAutoSpin: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIcons/autoSpin.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconTurbo: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIcons/turbo.png', import.meta.url).href,
+		preload: true,
+	},
+
 	// The full-reel WILD banner as a plain sprite. Same file the wx spine uses,
 	// so it costs no extra download — ExpandingWilds draws it behind a growing
 	// mask to unroll the banner down the reel instead of hard-cutting to it.

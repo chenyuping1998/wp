@@ -36,6 +36,12 @@ export const uiTheme = $state({
 	// undefined keep drawing the themed rectangle.
 	sprites: {} as Partial<Record<'base_ticker' | 'buyBonus' | 'bet' | 'base_mobile_drawer', string>>,
 
+	// Optional drawn icon art per button, keyed by the button's ButtonIcon name
+	// (menu, settings, soundOn, …). When a key is present UiButton draws that
+	// sprite instead of the text/emoji glyph. Empty by default, so games that
+	// don't supply icons keep the glyphs unchanged.
+	icons: {} as Partial<Record<string, string>>,
+
 	// Uniform scale on the bottom bet bar, applied about its bottom edge so the
 	// bar stays flush with the canvas floor and only its height above that edge
 	// changes. Below 1 gives the board more room — useful for games whose reel

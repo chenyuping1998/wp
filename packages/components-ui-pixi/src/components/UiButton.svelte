@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Graphics, Text } from 'pixi-svelte';
+	import { Graphics, Sprite, Text } from 'pixi-svelte';
 	import { Button, type ButtonProps } from 'components-pixi';
 
 	import UiSprite from './UiSprite.svelte';
@@ -97,7 +97,18 @@
 				: {}}
 		/>
 
-		{#if icon === 'turbo'}
+		{#if uiTheme.icons[icon]}
+			<!-- drawn icon art (brass, with depth) replacing the text/emoji glyph;
+			     opted into per game via uiTheme.icons, so games without it keep the
+			     glyphs. Sized to sit inside the button with a small margin. -->
+			<Sprite
+				{...center}
+				anchor={0.5}
+				key={uiTheme.icons[icon]}
+				width={buttonProps.sizes.width * 0.62}
+				height={buttonProps.sizes.width * 0.62}
+			/>
+		{:else if icon === 'turbo'}
 			<!-- vector bolt instead of the ⚡ glyph: emoji glyphs ignore canvas
 			     fill, so white/orange styling only works with a drawn shape -->
 			<Graphics

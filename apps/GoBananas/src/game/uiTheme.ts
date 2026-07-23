@@ -44,4 +44,17 @@ setUiTheme({
 		base_ticker: 'gbUiTicker',
 		buyBonus: 'gbUiBuyBonus',
 	},
+
+	// drawn brass icons in place of the template's text/emoji button glyphs
+	icons: {
+		menu: 'gbIconMenu',
+		menuExit: 'gbIconMenuExit',
+		settings: 'gbIconSettings',
+		info: 'gbIconInfo',
+		payTable: 'gbIconPayTable',
+		soundOn: 'gbIconSoundOn',
+		soundOff: 'gbIconSoundOff',
+		autoSpin: 'gbIconAutoSpin',
+		turbo: 'gbIconTurbo',
+	},
 });

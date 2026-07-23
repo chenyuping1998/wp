@@ -647,6 +647,31 @@ playfield 由 428 → **526px**（+23% 線性、**+51% 面積**）。
 - **轉動中不隱藏** —— 該狀態下 index 是跟著捲動的符號跑的，隱藏會變成一個往下移動的破洞
 - **`win` 狀態不隱藏** —— 它的 `oncomplete` 是中獎動畫的 resolve 來源，卸載掉會永遠等不到（這個專案先前吃過同類的虧）
 
+## 5.36 送審意見改進 — 第一階段：按鈕圖示 + Buy Bonus 解析度（2026-07-22 第二十六輪）
+
+送審被指出 **poor bet ui bar** 與 **low quality asset**。查了實際成因後列出完整清單（見對話），共同根源是整套 UI/美術為程式化 SVG→PNG 平面向量風，加上按鈕圖示直接用文字/emoji 字元。路線定為「程式化生成 + 加質感」，本階段先做投報率最高的兩項：
+
+### A1. 按鈕圖示：文字/emoji → 手繪黃銅貼圖
+
+`UiButton` 原本用 `iconSymbolMap` 的字元當圖示：`≡ ✕ ⚙ 🔊 🔇 ▤ i ▶ ⚡ − +`。emoji 尤其糟 —— 各平台長相不一、且忽略 canvas 上色，無法主題化，是審核紅旗。
+
+- 新增 `design/generate_ui_icons.mjs`：9 個圖示（menu / menuExit / settings / info / payTable / soundOn / soundOff / autoSpin / turbo），黃銅金屬漸層 + 深色描邊 + 頂部高光 + 柔和投影，256px 透明底，對齊盤面外框語彙
+- 共用套件 `theme.svelte.ts` 新增 `icons` 欄位（**預設空 → WildParty 不受影響**，仍走 glyph）
+- `UiButton`：`uiTheme.icons[icon]` 存在時畫 `<Sprite>`，否則退回原本的字元
+- `−`/`+` 刻意保留為字元（乾淨的排版符號，非 emoji）
+- 已驗：9 個圖示 PNG 全部預載（伺服器日誌 9 筆、零 404）、舊 glyph 從畫面消失、零 console 錯誤、WildParty 重新 build 通過
+
+### B1. Buy Bonus 底盤解析度
+
+`buybonus_plate.png` 原生只有 **300×300**，但側欄用 scale 2.4 顯示到 ~360px+ → 糊。它是現在左欄最大最顯眼的 UI 元素。重出 **640×640**（`generate_ui_plates.mjs` 的 `BS` 300→640）。
+（過程一度誤把 ticker 的 `TW` 也一起加大，導致版面被橫向拉扁 4.47→7.01，已還原 —— ticker 652 寬在側欄縮 0.62 顯示本就足夠。）
+
+### 尚未做（清單其餘項，依序進行）
+
+- A2 按鈕立體底盤、A3 主旋轉鈕、A4 讀數牌加厚
+- B2 生成器加質感層（框/背景/牌）—— 對「low quality」最治本，惠及所有面板
+- B3/B4 符號打磨
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`
