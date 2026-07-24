@@ -737,6 +737,26 @@ playfield 由 428 → **526px**（+23% 線性、**+51% 面積**）。
 | ± 外緣 → 畫布右緣(1280) | 5.3px | ✓ 未被裁切 |
 | 上方 BET 讀數 / 下方 autoSpin | 156 / 57px（標準框） | ✓ |
 
+## 5.40 測試殼的已知限制：鍵盤事件會給假陰性（2026-07-24）
+
+送審意見提到「Space bar should be bound to the bet button」。用測試殼驗證時，攔截 `/wallet/play` 後送出合成的 `KeyboardEvent`，得到「滑鼠點擊 1 次下注、空白鍵 0 次」的對照結果，據此判定空白鍵沒有作用 —— **這個結論是錯的**。使用者在真機測試確認空白鍵可以正常下注。
+
+程式碼本來就是接好的，可作為佐證：
+
+- `Game.svelte` 掛載 `EnableHotkey`（全域 keydown/keyup → 廣播 `hotKey` 事件）
+- `ButtonBet.svelte` 有 `<OnHotkey hotkey="Space" {disabled} {onpress} />`
+- `EnableSpaceHold`（UIDefault）另外處理「長按空白鍵」＝ 連續快轉
+- `disabled` 條件是 `betCost > 0 && betCost <= balance`，一般情況不成立
+
+**教訓（供日後測試參考）**：測試殼可以可靠驗證載入、資產、版面座標、DOM/PIXI 節點結構，但**不能**用來判定輸入行為是否正常。已知兩個假陰性來源：
+
+1. **合成事件與真實輸入不等價** —— 即使 `EnableHotkey` 確實收到並廣播了（用 `defaultPrevented` 驗證過），下游仍可能不作動
+2. **動畫時鐘凍結** —— 分頁是 `visibilityState: hidden`，`document.timeline.currentTime` 恆為 0。一旦開始旋轉就永遠不會結束，後續按鍵會被當成「停止」而非新下注，計數因此失真
+
+過程中還踩到第三個坑：在送出事件後**同步**讀取計數器。下注請求是非同步的，當下必為 0。要分成不同的指令讀取，讓真實時間經過。
+
+**結論：輸入相關（鍵盤、點擊、手勢）一律以真機測試為準，測試殼的結果不足以推翻。**
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`
