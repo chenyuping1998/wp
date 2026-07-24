@@ -757,6 +757,25 @@ playfield 由 428 → **526px**（+23% 線性、**+51% 面積**）。
 
 **結論：輸入相關（鍵盤、點擊、手勢）一律以真機測試為準，測試殼的結果不足以推翻。**
 
+## 5.41 移除漢堡選單層（2026-07-24）
+
+§5.38 把 PAYTABLE / INFO 提到外層之後，漢堡選單只剩 SETTINGS 與 SOUND 兩項 —— 使用者反映「怪怪的」。查證後確認問題比「項目太少」更根本：
+
+- `ModalSettings` 內容**只有三個音量滑桿**（主音量／音樂／音效）
+- `ButtonSoundSwitch` 直接把 `stateSound.volumeValueMaster` 在 0 / 50 之間切換，**與 SETTINGS 的「主音量」是同一個值**
+
+也就是說，整層選單只裝了「聲音」相關的兩個彼此重疊的控制項。**一個藏著兩個重疊音訊控制的選單層，比沒有選單更糟**，所以整層移除：
+
+- 左欄改為：PAYTABLE(0.13) → INFO(0.25) → Buy Bonus(0.5) → **SOUND(0.76)** → **SETTINGS(0.90)**
+- `buttonMenu` / `buttonMenuClose` / `stateUi.menuOpen` 覆蓋層在此版型中全部移除（底部橫欄版型仍照舊使用它們）
+- 連帶清掉失效的 import：`stateUi`、`BLACK`、`Rectangle`
+
+間距（1920×1080 標準框）：Buy Bonus 下緣 720 → SOUND 776–866（標籤到 891）→ SETTINGS 927–1017（標籤到 1042），三段淨空 56 / 37 / 38px，距畫布底 38px。
+
+實跑確認畫面文字：`PAYTABLE / INFO / BUY BONUS / SOUND ON / SETTINGS / BALANCE / WIN / BET / − / + / AUTO SPIN / TURBO` —— 所有控制項同一層可見，零 console 錯誤。
+
+**現在整個 UI 沒有任何隱藏層級**，這同時改善了先前稽核的 U5（賠付表易取得）與 U6（無標籤圖示）。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`
