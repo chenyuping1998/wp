@@ -3,6 +3,8 @@
 	import { Container, Graphics } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
+	import { uiTheme } from '../theme.svelte';
+
 	type Props = {
 		// true while the reels are running — the icon spins and, once this flips
 		// back to false, finishes the current turn and rests upright.
@@ -20,8 +22,21 @@
 	let rotation = $state(0);
 	let speed = 0;
 
+	// Soft halo behind the mark. The rotation alone reads as a single flat loop;
+	// a slow breath underneath gives the button some life while it sits idle and
+	// lifts as the reels run. Deliberately NOT inside the rotating container —
+	// a spinning glow reads as clutter rather than light.
+	let pulse = $state(0);
+	let phase = 0;
+
 	onMount(() => {
 		const id = setInterval(() => {
+			// idle breathes slowly and shallowly; spinning runs faster and brighter
+			phase += props.spinning ? 0.075 : 0.032;
+			const base = props.spinning ? 0.5 : 0.24;
+			const amp = props.spinning ? 0.32 : 0.16;
+			pulse = base + amp * Math.sin(phase);
+
 			if (props.spinning) {
 				// ramp up on press
 				speed = Math.min(MAX_SPEED, speed + 0.008);
@@ -86,6 +101,25 @@
 		g.endFill();
 	};
 </script>
+
+{#if uiTheme.spinButtonGlow}
+	<Graphics
+		draw={(g: PixiGraphics) => {
+			const r = props.radius;
+			g.clear();
+			// stacked low-alpha rings stand in for a blur — widest and faintest
+			// first, so the falloff reads as light rather than as outlines
+			for (const [mult, width, alpha] of [
+				[2.0, r * 0.5, 0.1],
+				[1.62, r * 0.42, 0.16],
+				[1.3, r * 0.3, 0.22],
+			] as [number, number, number][]) {
+				g.circle(0, 0, r * mult);
+				g.stroke({ width, color, alpha: alpha * pulse });
+			}
+		}}
+	/>
+{/if}
 
 <Container {rotation}>
 	<Graphics draw={drawIcon} />

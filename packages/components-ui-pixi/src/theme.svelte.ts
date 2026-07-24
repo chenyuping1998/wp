@@ -51,6 +51,14 @@ export const uiTheme = $state({
 	// Balance/Win panels, so nothing indicates it can be pressed.
 	labelAffordance: false,
 
+	// Brighten a control while the cursor is over it. Off by default so games
+	// that never had hover feedback keep their existing look.
+	hoverHighlight: false,
+
+	// Breathing halo behind the spin button's rotating mark — idle invitation,
+	// brighter while the reels run. Off by default.
+	spinButtonGlow: false,
+
 	// Uniform scale on the bottom bet bar, applied about its bottom edge so the
 	// bar stays flush with the canvas floor and only its height above that edge
 	// changes. Below 1 gives the board more room — useful for games whose reel

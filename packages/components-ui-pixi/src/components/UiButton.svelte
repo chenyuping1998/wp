@@ -16,6 +16,7 @@
 		children?: Snippet;
 		variant?: 'dark' | 'light';
 		textMode?: 'icon' | 'text';
+		noHover?: boolean;
 		text?: string;
 	};
 
@@ -25,6 +26,9 @@
 		variant = 'dark',
 		textMode = 'icon',
 		text,
+		// opt out of the hover highlight for controls where it would be noise —
+		// the bet steppers fire repeatedly and do not need to light up each time
+		noHover = false,
 		children: childrenFromParent,
 		...buttonProps
 	}: Props = $props();
@@ -110,6 +114,22 @@
 					}
 				: {}}
 		/>
+
+		{#if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover}
+			<!-- subtle lift while the cursor is over the control. A white overlay
+			     rather than a tint: tint multiplies, so it can only darken. -->
+			<Graphics
+				x={center.x}
+				y={center.y}
+				draw={(g) => {
+					const w = buttonProps.sizes.width;
+					const h = buttonProps.sizes.height;
+					g.clear();
+					g.roundRect(-w / 2, -h / 2, w, h, w * 0.5);
+					g.fill({ color: 0xffffff, alpha: 0.16 });
+				}}
+			/>
+		{/if}
 
 		{#if uiTheme.icons[icon]}
 			<!-- drawn icon art (brass, with depth) replacing the text/emoji glyph;

@@ -17,6 +17,7 @@
 	const label = $derived(stateBetDerived.activeBetMode()?.text.betAmountLabel || i18nDerived.bet());
 	const value = $derived(numberToCurrencyString(stateBetDerived.betCost()));
 	const disabled = $derived(!context.stateXstateDerived.isIdle());
+	let hovered = $state(false);
 
 	const onpress = () => {
 		if (disabled) return;
@@ -25,6 +26,20 @@
 	};
 </script>
 
-<Container eventMode="static" cursor={disabled ? 'not-allowed' : 'pointer'} onpointerup={onpress}>
-	<UiLabel tiled interactive {label} {value} stacked={props.stacked} accent={uiTheme.betAccent} />
+<Container
+	eventMode="static"
+	cursor={disabled ? 'not-allowed' : 'pointer'}
+	onpointerup={onpress}
+	onpointerover={() => (hovered = true)}
+	onpointerout={() => (hovered = false)}
+>
+	<UiLabel
+		tiled
+		interactive
+		hovered={hovered && !disabled}
+		{label}
+		{value}
+		stacked={props.stacked}
+		accent={uiTheme.betAccent}
+	/>
 </Container>

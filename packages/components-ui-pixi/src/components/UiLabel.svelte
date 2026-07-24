@@ -13,6 +13,8 @@
 		// this panel opens something when tapped — draw a chevron so that is
 		// discoverable (Balance/Win are static and look otherwise identical)
 		interactive?: boolean;
+		// cursor is currently over this panel
+		hovered?: boolean;
 		// per-metric accent (border + label colour). The value digits deliberately
 		// stay uniform across every panel so the numbers read as one consistent set.
 		accent?: { border: number; label: number };
@@ -60,6 +62,21 @@
 	{/if}
 	<Text anchor={{ x: 0.5, y: 0 }} text={props.label} style={labelStyle} />
 	<Text anchor={{ x: 0.5, y: 0 }} text={props.value} style={valueStyle} y={UI_BASE_FONT_SIZE} />
+	{#if props.hovered && uiTheme.hoverHighlight}
+		<!-- matches the button hover lift so every interactive control behaves
+		     the same way; sized to the ticker plate this label sits on -->
+		<Graphics
+			y={-20}
+			draw={(g) => {
+				const w = UI_BASE_FONT_SIZE * 3 * (326 / 73);
+				const h = UI_BASE_FONT_SIZE * 3;
+				g.clear();
+				g.roundRect(-w / 2, 0, w, h, 24);
+				g.fill({ color: 0xffffff, alpha: 0.12 });
+			}}
+		/>
+	{/if}
+
 	{#if props.interactive && uiTheme.labelAffordance}
 		<!-- chevron marking this panel as tappable -->
 		<Graphics

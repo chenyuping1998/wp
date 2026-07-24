@@ -45,6 +45,12 @@ setUiTheme({
 	// tell it apart from the static Balance/Win panels
 	labelAffordance: true,
 
+	// cursor-over feedback on the rail controls
+	hoverHighlight: true,
+
+	// 旋轉鍵的呼吸光暈
+	spinButtonGlow: true,
+
 	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
 	// keep the themed rounded rect, which suits the round buttons)
 	sprites: {

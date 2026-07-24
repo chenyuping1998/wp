@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Text } from 'pixi-svelte';
+	import { Graphics, Text } from 'pixi-svelte';
 	import { Button, type ButtonProps } from 'components-pixi';
 	import { stateModal, stateBet, stateBetDerived } from 'state-shared';
 
@@ -75,6 +75,19 @@
 					}
 				: {}}
 		/>
+
+		{#if uiTheme.hoverHighlight && hovered && !disabled}
+			<!-- same subtle lift as the rail buttons; this one is assembled by hand
+			     rather than through UiButton, so it needs its own overlay -->
+			<Graphics
+				{...center}
+				draw={(g) => {
+					g.clear();
+					g.roundRect(-sizes.width / 2, -sizes.height / 2, sizes.width, sizes.height, 36);
+					g.fill({ color: 0xffffff, alpha: 0.16 });
+				}}
+			/>
+		{/if}
 
 		<Text
 			{...center}

@@ -776,6 +776,41 @@ playfield 由 428 → **526px**（+23% 線性、**+51% 面積**）。
 
 **現在整個 UI 沒有任何隱藏層級**，這同時改善了先前稽核的 U5（賠付表易取得）與 U6（無標籤圖示）。
 
+## 5.42 游標微亮回饋 + 旋轉鍵呼吸光暈（2026-07-24）
+
+兩項都由主題開關控制（**預設 false → WildParty 不受影響**，已重新 build 確認）。
+
+### 1. hover 微亮（`uiTheme.hoverHighlight`）
+
+游標移到控制項上時疊一層淡白（alpha 0.16）。**用疊加而非 tint**：`tint` 是相乘的，只能讓東西變暗，做不出「變亮」。
+
+套用範圍依指定：
+
+| 有 hover | 無 hover |
+|---------|---------|
+| 左欄全部（PAYTABLE / INFO / BUY BONUS / SOUND / SETTINGS） | 大旋轉鍵 |
+| 右欄 AUTO SPIN / TURBO | `−` / `+` 步進鍵 |
+| BET 讀數牌（可點開注額選單） | |
+
+- `UiButton` 新增 `noHover` prop，`ButtonDecrease` / `ButtonIncrease` 帶上它
+- `ButtonBuyBonus` 不走 `UiButton`（自己組的），另外加了同樣的疊層
+- `LabelBet` 不是按鈕（只是帶 `onpointerup` 的 Container），自行加 `onpointerover` / `onpointerout` 偵測，`UiLabel` 收 `hovered` prop
+
+### 2. 旋轉鍵呼吸光暈（`uiTheme.spinButtonGlow`）
+
+原本旋轉鍵只有雙箭頭環在轉，沒有其他變化。在圖示後方加三層低透明度同心環當作光暈（無法用 Graphics 做模糊，靠疊層近似），並隨呼吸相位起伏：
+
+| 狀態 | pulse 範圍 | 最內環 alpha | 呼吸週期 |
+|------|-----------|-------------|---------|
+| 閒置 | 0.08–0.40 | 0.018–0.088 | 3.14s |
+| 旋轉中 | 0.18–0.82 | 0.040–0.180 | 1.34s |
+
+刻意**放在旋轉容器之外** —— 會跟著轉的光暈讀起來是雜訊而不是光。光暈最大半徑 83 對按鈕半徑 84，剛好收在按鈕內不外溢。
+
+### 驗證方式的註記
+
+hover 的實測一度得到「無高光」的**假陰性** —— 在觸發 `onpointerover` 的同一個呼叫裡同步數節點，Svelte 還沒重繪。改成分兩次呼叫後確認 `167 → 168`（+1 節點）生效。這與 §5.40 記錄的是同一類陷阱。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`
