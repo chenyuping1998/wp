@@ -3,19 +3,63 @@ import { stateBet } from 'state-shared';
 import { createPlayBookUtils } from 'utils-book';
 import { createGetEmptyPaddedBoard } from 'utils-slots';
 
+import { waitForTimeout } from 'utils-shared/wait';
+
 import { SYMBOL_SIZE, REEL_PADDING, SYMBOL_INFO_MAP, BOARD_DIMENSIONS } from './constants';
 import { eventEmitter } from './eventEmitter';
 import type { Bet, BookEventOfType } from './typesBookEvent';
-import { bookEventHandlerMap } from './bookEventHandlerMap';
+import { bookEventHandlerMap, getLastWinLines, clearLastWinLines } from './bookEventHandlerMap';
 import type { RawSymbol, SymbolState } from './types';
 
 // general utils
 export const { getEmptyBoard } = createGetEmptyPaddedBoard({ reelsDimensions: BOARD_DIMENSIONS });
 export const { playBookEvent, playBookEvents } = createPlayBookUtils({ bookEventHandlerMap });
+
+// ── idle win-line replay ────────────────────────────────────────────────────
+// Once the round is over the board sits still until the player spins again, and
+// the win lines have long since been cleared. Anyone who glanced away during the
+// volley has no way to see what paid. While idle the round's lines are drawn
+// again on a loop, with a real gap between passes so it reads as a repeat rather
+// than a stutter.
+//
+// This drives the existing winLinesShow/Hide events rather than a private replay
+// path, so everything that already reacts to them — the symbol win animations,
+// the locked-reel highlight in ExpandingWilds — comes along for free. The round's
+// sounds are fired by the winInfo handler, not by winLinesShow, so replaying does
+// not re-trigger them.
+const REPLAY_GAP_MS = 1600;
+
+// Incremented to cancel: a loop only continues while it still holds the current
+// token, so starting a spin invalidates any pass already in flight.
+let replayToken = 0;
+
+const stopWinLineReplay = () => {
+	replayToken += 1;
+	eventEmitter.broadcast({ type: 'winLinesHide' });
+};
+
+const runWinLineReplay = async () => {
+	const wins = getLastWinLines();
+	if (wins.length === 0) return;
+	const token = replayToken;
+	// eslint-disable-next-line no-constant-condition
+	while (true) {
+		await waitForTimeout(REPLAY_GAP_MS);
+		if (token !== replayToken) return;
+		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins, fast: true });
+		if (token !== replayToken) return;
+		eventEmitter.broadcast({ type: 'winLinesHide' });
+	}
+};
+
 export const playBet = async (bet: Bet) => {
+	stopWinLineReplay();
+	clearLastWinLines();
 	stateBet.winBookEventAmount = 0;
 	await playBookEvents(bet.state);
 	eventEmitter.broadcast({ type: 'stopButtonEnable' });
+	// detached: the spin button must become live now, not after the first pass
+	void runWinLineReplay();
 };
 
 // resume bet

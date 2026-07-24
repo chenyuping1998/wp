@@ -863,6 +863,119 @@ hover 的實測一度得到「無高光」的**假陰性** —— 在觸發 `onp
 - **A 組字體** —— 使用者決定暫緩。這是四條指控中最直接、最好修的一條
 - **C 組 AI 美術** —— 需要外部美術重繪或加工
 
+## 5.44 導入自有字體 Titan One（2026-07-24）
+
+5.43 稽核出「標準字體」是四條指控中唯一完全命中且最好修的一條 —— 專案內**零個字型檔**，全部跑 `Trebuchet MS / Segoe UI / Tahoma / Arial`。這批把它補上。
+
+### 選型過程
+
+下載 10 支 OFL 候選，產兩張對照圖（都留在 `design/`）：
+
+- `font_candidates.png` —— 10 支 + Trebuchet 基準線，用遊戲實際會畫的字串
+- `font_incontext.png` —— 最強三支套進真實的 `ticker_plate` / `buybonus_plate` / `big.png`
+
+渲染前先擋掉兩個會讓對照圖說謊的地方：
+
+1. **家族名從 TTF 的 `name` 表讀出來**，不用猜。名字對不上 resvg 會靜默 fallback，整張圖就是假的
+2. **字級依各字型 `OS/2` 表的 cap height 正規化**。display 字體在同一 font-size 下實際大小差很多，直接並排等於偏袒某幾支
+
+另外逐支掃 `cmap` 驗字符覆蓋率。這抓到 **Staatliches 出局**：它的數字 `1` 與小寫 `l` 幾乎同形，`$1,284.50` 會讀成 `$l,284.50`。只有把真實金額字串排出來才看得到。
+
+`design/` 沒有留選型腳本 —— 一次性的決策工具，留著只會變成沒人維護的死碼。
+
+> 使用者選定 **Titan One**。
+
+### 執行期接線
+
+- `static/fonts/TitanOne.ttf` + `TitanOne-OFL.txt`（授權必須隨檔散布）
+- `app.html` 加 `@font-face` 與 `<link rel=preload>`，**自架**不走第三方（模板的 Typekit 就是因為網域鎖死才 404）
+- `pixi-svelte` 新增 `setLocalFonts()`，`preloadFont()` 一併 await。**這步不能省**：Pixi 建 `Text` 當下就量字寬，字型晚到的話第一幀用 fallback 的度量排版，而且事後不會重量。預設空陣列，WildParty 不受影響
+
+### 字重：單一字重字型的連鎖修正
+
+Titan One 只有一個字重，要求 700/900 只會拿到瀏覽器合成的假粗體，在本來就很重的字面上會把字腔糊掉。
+
+- 新增 `GAME_FONT_WEIGHT = '400'`，GoBananas 端 10 處合成字重全部改讀它
+- `theme.svelte.ts` 的 `fontWeight: '600' as const` 改成 union 型別。`as const` 把欄位型別釘死在字面量 `'600'`，等於**每個遊戲的覆寫都是型別錯誤** —— 現有的 `'700'` 一直沒被抓到，因為 vite build 不做型別檢查
+- 共用套件另有 4 處寫死字重沒讀主題（時鐘、遊戲名、BUY BONUS、autospin 計數），改為 `uiTheme.fontWeight`
+
+⚠️ **WildParty 有一處實際變動**：autospin 計數牌原本寫死 `'bold'`(700)，現在跟主題走 `'600'`。其餘三處預設值就是 `'600'`，零差異。這是刻意的取捨 —— 不改的話 GoBananas 會留一個合成粗體。要還原就是把 `ButtonBetAutoSpinsCounter.svelte` 那行改回 `'bold'`。
+
+### 烤進圖裡的字
+
+`generate_win_banners.mjs`（BIG WIN / SUPER WIN…）與 `generate_symbols_realistic.mjs`（wx 卡的 WILD 直排字母）都烤 Arial Black。兩支都改用 Titan One 並加 `fontDirs`。
+
+兩個「先量再改」的判斷：
+
+- banner 字級**維持 128 不動**。我原本以為 Titan One 較寬會撐出黃銅框，寫了註解說要降到 108 —— 實測最長的 SUPER WIN 只有 727px，框內淨寬 876px，根本沒問題。假設是錯的，註解已改成量測值
+- `x.png` 的 **✕ 維持原字型**。Titan One 沒有 U+2715（有 U+00D7 但那是不同字元），換過去會變空白。這是查 `cmap` 查出來的，看圖看不出來
+
+符號重生成有風險：`generate_symbols_realistic.mjs` 也會寫 h1/h2/s（策展美術，不得覆蓋）。做法是**跑前記全部 16 個檔的 md5、跑後比對** —— 結果只有 `wx.png` 變動，h1/h2/s 位元完全相同。
+
+### DOM 彈窗：雙字體
+
+規則/賠付表彈窗是 DOM 不是 Pixi。共用元件寫死 `'proxima-nova'`（那支永遠載不到的 Typekit 字），所以一直落在瀏覽器預設字。
+
+改成標題 `h1`–`h4` 走 display 字、`p`/`li`/`td` 走可讀 sans。**內文刻意不用 Titan One** —— 這幾頁有整段散文（功能說明、RTP 警語），粗圓體排小字散文會明顯難讀。字型堆疊由 `fonts.ts` 寫進 CSS 變數，避免在 SCSS 再抄一份。
+
+### 驗證
+
+不是看圖看起來對，是量的：
+
+- `document.fonts.check` 為 true；canvas `measureText('BALANCE 5,000.00')` 在 Titan One 是 469.3px、假字型 fallback 406.7px、Trebuchet 393.9px —— 三者互異，證明**沒有靜默 fallback**
+- 實跑 harness 走訪 Pixi 場景圖：169 節點、18 個文字節點**全部** `Titan One`，字重只剩 400 / normal，合成粗體歸零
+- 彈窗 `getComputedStyle`：`h2`/`h3` = Titan One 400，`p` = Trebuchet MS ✔
+- 兩支檢查腳本全過、GoBananas 與 WildParty 皆 build 通過、零 console 錯誤
+
+### 仍未處理
+
+**C 組 AI 美術** —— `design/source/realistic_symbols/` 的 h1–h4 / l1–l4 / s 仍是 AI 畫的，需要外部美術重繪或加工。這是四條指控裡唯一還沒動的。
+
+## 5.45 選單收納、擴展百搭中獎高亮、閒置重播連線（2026-07-24）
+
+### 1. 左側四個按鈕收回選單
+
+PAYTABLE / INFO / SOUND / SETTINGS 從側欄收回選單，只留 BUY BONUS 與 MENU。
+
+先前把它們全攤在外面是為了「一鍵可達」，但代價是側欄變成五個同尺寸圓鈕的直排，功能 CTA 被埋在其中。收起來之後，左欄只剩一個東西在跟 BUY BONUS 搶注意力。
+
+選單放在側欄下方**往上彈出**，項目由下而上是 SOUND → SETTINGS → INFO → PAYTABLE：最常反覆切換的緊鄰剛按下的按鈕，兩個查閱型面板放最遠。順序與底部欄版面由上而下讀是一致的。關閉鈕落在選單鈕原位，游標不用移動。
+
+間距 130（版面單位）對上直徑約 90 的按鈕 —— 實測畫布座標下按鈕直徑 46px、相鄰間距 86–87px，**外框完全不相交**（這是上一版看起來壞掉的原因）。
+
+### 2. 擴展百搭中獎時整輪框亮起
+
+原本鎖定轉輪在連線時只有 `winFlash` —— 一次性閃爍，160→220→180→420ms 後歸零。但一般中獎符號走 `SymbolWinAnim`，是**持續呼吸**直到演繹結束。結果就是：造成這次中獎的那一輪，反而是全盤唯一沒亮著的東西。
+
+新增 `winHold`，`winLinesShow` 時設起、`winLinesHide`/`winLinesClear` 時清掉，期間畫一個持續呼吸的整輪外框。刻意用與 `SymbolWinAnim` 相同的零件組成（柔光底 + 亮環 + 白色內線，同步呼吸），只是改成矩形包住整輪 —— 因為這裡「贏的單位」是整條轉輪。一次性閃爍保留，當作命中的瞬間重音。
+
+### 3. 得分後閒置時重播連線
+
+回合結束後盤面靜止等玩家再轉，而連線早就清掉了。中間看漏的人沒有任何方法知道剛才是哪幾條線贏。
+
+`playBet` 在所有 book event 跑完後啟動重播迴圈：間隔 1600ms、快速演繹、無限循環，直到下一次 `playBet` 取消。
+
+刻意**驅動既有的 `winLinesShow`/`Hide` 事件**而不是另開一條重播路徑 —— 這樣所有已經在監聽這兩個事件的東西（符號中獎動畫、上面第 2 點的鎖定轉輪高亮）全部自動跟上。回合音效是 `winInfo` 發的、不是 `winLinesShow`，所以重播不會每輪重轟一次。
+
+取消用遞增 token：迴圈只在仍持有當前 token 時繼續。
+
+### 順帶修掉的真缺陷
+
+`winLinesShow` 會 await 整段演繹後才跑收尾的「安全網」`animatePositions`。沒有防護的話，**那個收尾呼叫在演繹被取消後仍會執行** —— 而重播隨時可能被玩家按下一手打斷，於是中獎動畫會灑在已經重新轉動的盤面上。加了 generation 計數器擋掉，非重播路徑也一併受惠。
+
+### 驗證
+
+| 項目 | 結果 |
+|------|------|
+| 選單 | 四項齊全，按鈕直徑 46px、間距 86–87px，不相交 ✔ |
+| 閒置重播 | 連線層以 **2.1 秒**穩定週期反覆出現（1.6s 間隔 + ~0.5s 演繹），連續 11 循環 ✔ |
+| 重播取消 | 演繹進行中按下一手，連線 ~450ms 內清空，整段轉動期間為 0 ✔ |
+| **擴展百搭高亮** | **未能實機驗證** ⚠ |
+
+第 2 點沒能驗到：harness 裡買入按鈕吃不到合成 pointer 事件（§5.40 記過的限制），改用 stub 的 `__FORCE_MODE` 強制發 BONUS book 後確實進得了免費遊戲，但整段取樣沒能捕捉到「連線正穿過擴展百搭」的瞬間。它依賴的接線（`winLinesShow`/`Hide` 確實觸發、以及與既有 `phase` 相同的 `$state` 變更模式）是驗過的，但**亮起來的框本身沒有目視確認**。
+
+過程中還有一次自我糾錯值得記著：第一版 glow 探針用 `texture.label.includes('fxGlow')` 比對，但實際 label 是完整 URL，永遠不成立 —— 量出來的「glow 全程為 0」是假陰性。修正成比對 `fx_glow.png` 後才發現探針本來就是壞的。**探針要先自我驗證能抓到目標，再拿它的零值當結論。**
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

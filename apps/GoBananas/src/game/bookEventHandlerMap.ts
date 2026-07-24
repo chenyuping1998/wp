@@ -46,6 +46,21 @@ const baseIdleBoard = () =>
 // math's own classification instead of a locally invented one.
 let lastWinLevel: WinLevel | null = null;
 
+// The win lines of the round's last winInfo, kept so the board can keep showing
+// them while it sits idle waiting for the next spin — otherwise the lines vanish
+// a moment after they are drawn and a player who looked away has no way to see
+// what actually paid. playBet owns the replay loop and its cancellation.
+export type WinLineDatum = {
+	lineIndex: number;
+	positions: { reel: number; row: number }[];
+	symbolCount: number;
+};
+let lastWinLines: WinLineDatum[] = [];
+export const getLastWinLines = () => lastWinLines;
+export const clearLastWinLines = () => {
+	lastWinLines = [];
+};
+
 const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) => {
 	if (winLevelData?.alias === 'max') eventEmitter.broadcastAsync({ type: 'uiHide' });
 	if (winLevelData?.sound?.sfx) {
@@ -133,6 +148,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins: winLineData, fast: isFreeGame });
 
 		eventEmitter.broadcast({ type: 'winLinesHide' });
+
+		// remembered for the idle replay once every event in the round has run
+		lastWinLines = winLineData;
 	},
 	setTotalWin: async (bookEvent: BookEventOfType<'setTotalWin'>) => {
 		stateBet.winBookEventAmount = bookEvent.amount;

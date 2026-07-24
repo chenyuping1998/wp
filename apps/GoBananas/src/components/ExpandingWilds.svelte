@@ -54,6 +54,13 @@
 		banner: Tween<number>;
 		badgeScale: Tween<number>;
 		winFlash: Tween<number>;
+		// Held for as long as the win lines are on screen. winFlash is a one-shot
+		// accent that decays in under a second, so on its own the locked reel went
+		// dark while the ordinary winning symbols carried on pulsing — the reel that
+		// caused the win was the only thing on the board not lit up. This keeps the
+		// full-reel frame breathing for the whole presentation, matching what
+		// SymbolWinAnim does for a normal symbol.
+		winHold: boolean;
 	};
 
 	const context = getContext();
@@ -229,6 +236,7 @@
 				banner: new Tween(0),
 				badgeScale: new Tween(0),
 				winFlash: new Tween(0),
+				winHold: false,
 			};
 			wilds = [...wilds.filter((w) => w.reel !== reel), entry];
 			await runTakeover(entry);
@@ -262,6 +270,7 @@
 				banner: new Tween(1),
 				badgeScale: new Tween(1),
 				winFlash: new Tween(0),
+				winHold: false,
 			}));
 		},
 
@@ -277,9 +286,12 @@
 			const winningReels = new Set(wins.flatMap((win) => win.positions.map((p) => p.reel)));
 			for (const entry of wilds) {
 				if (entry.phase !== 'idle' || !winningReels.has(entry.reel)) continue;
+				// sustained: the reel stays lit for as long as the lines are up
+				entry.winHold = true;
 				entry.badgeScale.set(1.45, { duration: 200, easing: cubicOut }).then(() => {
 					entry.badgeScale.set(1, { duration: 260, easing: cubicOut });
 				});
+				// one-shot on top, as the impact accent
 				entry.winFlash.set(1, { duration: 160, easing: cubicOut }).then(() => {
 					entry.winFlash.set(0.25, { duration: 220, easing: cubicOut }).then(() => {
 						entry.winFlash.set(0.85, { duration: 180, easing: cubicOut }).then(() => {
@@ -288,6 +300,14 @@
 					});
 				});
 			}
+		},
+
+		winLinesHide: () => {
+			for (const entry of wilds) entry.winHold = false;
+		},
+
+		winLinesClear: () => {
+			for (const entry of wilds) entry.winHold = false;
 		},
 	});
 </script>
@@ -394,6 +414,43 @@
 					g.lineStyle(4, 0xffe98a, 0.16 + 0.18 * glow);
 					g.drawRoundedRect(x - SYMBOL_SIZE / 2, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
 				}}
+			/>
+		{/if}
+
+		<!--
+			Sustained win frame. Deliberately built from the same parts as
+			SymbolWinAnim (a soft wash, a bright ring, a thin white inner line, all
+			breathing together) so a locked reel and an ordinary winning symbol read
+			as the same event. Rectangular rather than circular because here the unit
+			that won is the whole reel, which is what the frame has to enclose.
+		-->
+		{#if wild.winHold}
+			{@const p = auraPulse(wild.reel)}
+			{@const left = x - SYMBOL_SIZE / 2}
+			<Graphics
+				draw={(g: PixiGraphics) => {
+					g.clear();
+					g.beginFill(0xffe050, 0.05 + 0.07 * p);
+					g.drawRoundedRect(left, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
+					g.endFill();
+					g.lineStyle(11, 0xffe050, 0.1 + 0.16 * p);
+					g.drawRoundedRect(left - 5, -5, SYMBOL_SIZE + 10, BOARD_SIZES.height + 10, 18);
+					g.lineStyle(5, 0xffe050, 0.35 + 0.45 * p);
+					g.drawRoundedRect(left, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
+					g.lineStyle(2, 0xffffff, 0.2 + 0.3 * p);
+					g.drawRoundedRect(left + 6, 6, SYMBOL_SIZE - 12, BOARD_SIZES.height - 12, 10);
+				}}
+			/>
+			<Sprite
+				key="fxGlow"
+				anchor={0.5}
+				{x}
+				y={REEL_CENTER_Y}
+				width={SYMBOL_SIZE * 1.3}
+				height={BOARD_SIZES.height}
+				tint={0xffe98a}
+				blendMode="add"
+				alpha={0.1 + 0.12 * p}
 			/>
 		{/if}
 

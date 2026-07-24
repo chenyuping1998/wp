@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { stateSound } from 'state-shared';
+	import { stateSound, stateUi } from 'state-shared';
+	import { BLACK } from 'constants-shared/colors';
 	import { MainContainer } from 'components-layout';
-	import { Container, Text } from 'pixi-svelte';
+	import { Container, Rectangle, Text } from 'pixi-svelte';
 
 	import { getContext } from '../context';
 	import { uiTheme } from '../theme.svelte';
@@ -13,14 +14,15 @@
 	// bar, which hands the whole middle of the screen to the board. Opted into per
 	// game via uiTheme.betBarLayout — every other game keeps the bottom bar.
 	//
-	//   LEFT   pay table, rules, the oversized Buy Bonus CTA, then sound + audio
-	//          settings — every control is on the rail itself, nothing is nested
+	//   LEFT   the oversized Buy Bonus CTA, and a menu holding pay table, rules,
+	//          sound and audio settings
 	//   RIGHT  balance / win / bet readouts, then the spin pod
 	//
-	// There is deliberately no hamburger. It ended up holding only the sound
-	// toggle and the settings panel, and that panel contains nothing but volume
-	// sliders — the same master volume the toggle flips. A menu layer that hides
-	// two overlapping audio controls is worse than no menu at all.
+	// The four secondary controls are nested rather than on the rail. An earlier
+	// pass put them all out in the open, which made every one reachable in a
+	// single press but left the rail a column of five same-sized circles with the
+	// feature CTA buried among them. Collapsing the reference and audio controls
+	// leaves exactly one thing competing with Buy Bonus for attention.
 	//
 	// Positions are proportional to the standard layout box so the same component
 	// serves desktop (1920x1080), landscape and the squarer tablet box.
@@ -34,15 +36,9 @@
 	const leftX = $derived(uiTheme.railWidth * 0.5);
 	const rightX = $derived(box.width - uiTheme.railWidth * 0.5);
 
-	// Audio controls sit below the Buy Bonus CTA. Positions measured against a
-	// 1920x1080 standard box: Buy Bonus ends at 720, sound spans 776–866 (caption
-	// to 891), settings 927–1017 (caption to 1042) — 56 / 37 / 38px of air.
-	const SOUND_Y = $derived(box.height * 0.76);
-	const SETTINGS_Y = $derived(box.height * 0.9);
-
-	// Icon-only buttons give a player nothing to read. Every control that lives
-	// directly on a rail gets a caption underneath, so the bar can be understood
-	// without pressing anything to find out what it does.
+	// Icon-only buttons give a player nothing to read. Every control gets a caption
+	// underneath, so the bar can be understood without pressing anything to find
+	// out what it does.
 	const captionStyle = $derived({
 		fontFamily: uiTheme.fontFamily,
 		fontWeight: uiTheme.fontWeight,
@@ -52,11 +48,13 @@
 		strokeThickness: 3,
 	});
 
-	// Pay table and game rules are pulled out of the hamburger and onto the rail:
-	// a player should not have to open a menu to find the paytable, and reviewers
-	// expect both to be reachable in one press.
-	const PAYTABLE_Y = $derived(box.height * 0.13);
-	const RULES_Y = $derived(box.height * 0.25);
+	// The menu sits low on the rail and opens upward, so the items land in free
+	// space rather than off the top of a tall screen. At scale 0.46 a button is
+	// ~90px across, so 130px of pitch keeps the circles clear of each other — the
+	// items must not intersect, which is what made the first version look broken.
+	const MENU_Y = $derived(box.height * 0.88);
+	const MENU_PITCH = 130;
+	const menuItemY = (i: number) => MENU_Y - MENU_PITCH * (i + 1);
 </script>
 
 <Container x={20}>
@@ -69,54 +67,23 @@
 
 <MainContainer standard>
 	<!-- ── left rail ─────────────────────────────────────────────────────── -->
-	<Container x={leftX} y={PAYTABLE_Y} scale={0.46}>
-		{@render props.buttonPayTable({ anchor: 0.5 })}
-	</Container>
-	<Text
-		anchor={{ x: 0.5, y: 0 }}
-		x={leftX}
-		y={PAYTABLE_Y + 52}
-		text={i18nDerived.payTable()}
-		style={captionStyle}
-	/>
-
-	<Container x={leftX} y={RULES_Y} scale={0.46}>
-		{@render props.buttonGameRules({ anchor: 0.5 })}
-	</Container>
-	<Text
-		anchor={{ x: 0.5, y: 0 }}
-		x={leftX}
-		y={RULES_Y + 52}
-		text={i18nDerived.info()}
-		style={captionStyle}
-	/>
-
 	<!-- oversized feature CTA; themeable via uiTheme.buyBonusRailScale -->
 	<Container x={leftX} y={box.height * 0.5} scale={uiTheme.buyBonusRailScale}>
 		{@render props.buttonBuyBonus({ anchor: 0.5 })}
 	</Container>
 
-	<Container x={leftX} y={SOUND_Y} scale={0.46}>
-		{@render props.buttonSoundSwitch({ anchor: 0.5 })}
-	</Container>
-	<Text
-		anchor={{ x: 0.5, y: 0 }}
-		x={leftX}
-		y={SOUND_Y + 52}
-		text={stateSound.volumeValueMaster === 0 ? i18nDerived.soundOff() : i18nDerived.soundOn()}
-		style={captionStyle}
-	/>
-
-	<Container x={leftX} y={SETTINGS_Y} scale={0.46}>
-		{@render props.buttonSettings({ anchor: 0.5 })}
-	</Container>
-	<Text
-		anchor={{ x: 0.5, y: 0 }}
-		x={leftX}
-		y={SETTINGS_Y + 52}
-		text={i18nDerived.settings()}
-		style={captionStyle}
-	/>
+	{#if !stateUi.menuOpen}
+		<Container x={leftX} y={MENU_Y} scale={0.46}>
+			{@render props.buttonMenu({ anchor: 0.5 })}
+		</Container>
+		<Text
+			anchor={{ x: 0.5, y: 0 }}
+			x={leftX}
+			y={MENU_Y + 52}
+			text={i18nDerived.menu()}
+			style={captionStyle}
+		/>
+	{/if}
 
 	<!-- ── right rail ────────────────────────────────────────────────────── -->
 	<Container x={rightX} y={box.height * 0.13} scale={uiTheme.railPanelScale}>
@@ -176,3 +143,84 @@
 		style={captionStyle}
 	/>
 </MainContainer>
+
+<!--
+	Menu, opening upward out of the rail. Order runs bottom-to-top sound → audio
+	settings → rules → pay table, which puts the one control a player toggles
+	repeatedly nearest the button they just pressed and leaves the two reference
+	panels furthest away. Same order as the bottom-bar layouts read top-down, so
+	the two arrangements stay learnable as one.
+-->
+{#if stateUi.menuOpen}
+	<Rectangle
+		eventMode="static"
+		cursor="pointer"
+		alpha={0.5}
+		anchor={0.5}
+		backgroundColor={BLACK}
+		width={context.stateLayoutDerived.canvasSizes().width}
+		height={context.stateLayoutDerived.canvasSizes().height}
+		x={context.stateLayoutDerived.canvasSizes().width * 0.5}
+		y={context.stateLayoutDerived.canvasSizes().height * 0.5}
+		onpointerup={() => (stateUi.menuOpen = false)}
+	/>
+
+	<MainContainer standard>
+		<Container x={leftX} y={menuItemY(0)} scale={0.46}>
+			{@render props.buttonSoundSwitch({ anchor: 0.5 })}
+		</Container>
+		<Text
+			anchor={{ x: 0.5, y: 0 }}
+			x={leftX}
+			y={menuItemY(0) + 52}
+			text={stateSound.volumeValueMaster === 0 ? i18nDerived.soundOff() : i18nDerived.soundOn()}
+			style={captionStyle}
+		/>
+
+		<Container x={leftX} y={menuItemY(1)} scale={0.46}>
+			{@render props.buttonSettings({ anchor: 0.5 })}
+		</Container>
+		<Text
+			anchor={{ x: 0.5, y: 0 }}
+			x={leftX}
+			y={menuItemY(1) + 52}
+			text={i18nDerived.settings()}
+			style={captionStyle}
+		/>
+
+		<Container x={leftX} y={menuItemY(2)} scale={0.46}>
+			{@render props.buttonGameRules({ anchor: 0.5 })}
+		</Container>
+		<Text
+			anchor={{ x: 0.5, y: 0 }}
+			x={leftX}
+			y={menuItemY(2) + 52}
+			text={i18nDerived.info()}
+			style={captionStyle}
+		/>
+
+		<Container x={leftX} y={menuItemY(3)} scale={0.46}>
+			{@render props.buttonPayTable({ anchor: 0.5 })}
+		</Container>
+		<Text
+			anchor={{ x: 0.5, y: 0 }}
+			x={leftX}
+			y={menuItemY(3) + 52}
+			text={i18nDerived.payTable()}
+			style={captionStyle}
+		/>
+
+		<!-- close sits exactly where the menu button was, so the control the
+		     player just pressed does not move under their cursor -->
+		<Container x={leftX} y={MENU_Y} scale={0.46}>
+			{@render props.buttonMenuClose({ anchor: 0.5 })}
+		</Container>
+		<Text
+			anchor={{ x: 0.5, y: 0 }}
+			x={leftX}
+			y={MENU_Y + 52}
+			text={i18nDerived.menuExit()}
+			style={captionStyle}
+		/>
+	</MainContainer>
+{/if}

@@ -84,6 +84,13 @@
 	let animatedKeys = new Set<string>();
 	const posKey = (p: { reel: number; row: number }) => `${p.reel},${p.row}`;
 
+	// Bumped by every show, hide and clear. winLinesShow awaits the whole volley
+	// before running its safety-net animation, so without this that trailing call
+	// still fires after the volley has been cancelled — and since the idle replay
+	// can be interrupted mid-volley by the player spinning, it would scatter win
+	// animations across a board that is already spinning again.
+	let showGeneration = 0;
+
 	const animatePositions = (positions: { reel: number; row: number }[]) => {
 		const fresh = positions.filter(
 			(p) =>
@@ -122,6 +129,7 @@
 
 	context.eventEmitter.subscribeOnMount({
 		winLinesShow: async ({ wins, fast }) => {
+			const generation = ++showGeneration;
 			animatedKeys = new Set();
 			crossed = {};
 			timing = fast || stateBet.isTurbo ? FAST : NORMAL;
@@ -157,18 +165,22 @@
 				...built.map((line) => line.delay + timing.entry + line.travelMs + timing.settle),
 			);
 			await waitForTimeout(volleyMs + HOLD_AFTER_MS);
+			// cancelled while the volley ran — do not touch the board
+			if (generation !== showGeneration) return;
 
 			// safety net: anything the runners missed (padding rows are skipped by
 			// design) still gets its win animation before the round moves on
 			animatePositions(wins.flatMap((win) => win.positions));
 		},
 		winLinesHide: () => {
+			showGeneration += 1;
 			show = false;
 			lines = [];
 			crossed = {};
 			cancelAnimationFrame(tickRaf);
 		},
 		winLinesClear: () => {
+			showGeneration += 1;
 			lines = [];
 			crossed = {};
 		},
