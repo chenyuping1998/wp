@@ -5,6 +5,7 @@
 	import { Container, Rectangle } from 'pixi-svelte';
 
 	import { getContext } from '../context';
+	import { uiTheme } from '../theme.svelte';
 	import type { LayoutUiProps } from '../types';
 
 	// Side-rail layout: controls live in two vertical rails instead of one bottom
@@ -22,9 +23,10 @@
 	const context = getContext();
 
 	const box = $derived(context.stateLayoutDerived.mainLayoutStandard());
-	const RAIL = 400;
-	const leftX = $derived(RAIL * 0.5);
-	const rightX = $derived(box.width - RAIL * 0.5);
+	// rail width is themeable: games with a wide reel housing pull the rails
+	// further out toward the canvas edges (uiTheme.railWidth)
+	const leftX = $derived(uiTheme.railWidth * 0.5);
+	const rightX = $derived(box.width - uiTheme.railWidth * 0.5);
 
 	// Menu sits at the foot of the left rail and opens upward.
 	const MENU_Y = $derived(box.height * 0.88);
@@ -48,34 +50,39 @@
 		{@render props.buttonMenu({ anchor: 0.5 })}
 	</Container>
 
-	<!-- 3x the size it had in the bottom bar (0.8 -> 2.4) -->
-	<Container x={leftX} y={box.height * 0.5} scale={2.4}>
+	<!-- oversized feature CTA; themeable via uiTheme.buyBonusRailScale -->
+	<Container x={leftX} y={box.height * 0.5} scale={uiTheme.buyBonusRailScale}>
 		{@render props.buttonBuyBonus({ anchor: 0.5 })}
 	</Container>
 
 	<!-- ── right rail ────────────────────────────────────────────────────── -->
-	<Container x={rightX} y={box.height * 0.13} scale={0.62}>
+	<Container x={rightX} y={box.height * 0.13} scale={uiTheme.railPanelScale}>
 		{@render props.amountBalance({ stacked: true })}
 	</Container>
 
-	<Container x={rightX} y={box.height * 0.27} scale={0.62}>
+	<Container x={rightX} y={box.height * 0.27} scale={uiTheme.railPanelScale}>
 		{@render props.amountWin({ stacked: true })}
 	</Container>
 
-	<Container x={rightX} y={box.height * 0.41} scale={0.62}>
+	<Container x={rightX} y={box.height * 0.41} scale={uiTheme.railPanelScale}>
 		{@render props.amountBet({ stacked: true })}
 	</Container>
 
-	<!-- spin pod: BET in the middle, -/+ flanking, autospin/turbo below -->
-	<Container x={rightX} y={box.height * 0.64} scale={1.05}>
+	<!-- Spin pod: BET in the middle, -/+ flanking, autospin/turbo below.
+	     ButtonBet is UI_BASE_SIZE * 1.12 internally, so at the old 1.05 layout
+	     scale it measured 176px across and its gold trim ran into the -/+ pair
+	     at ±118. Trimmed to 0.92 (155px) and spread back to ±128, which leaves
+	     ~14px of air on each side while the outer buttons still clear the canvas
+	     edge and the reel frame. -->
+	<Container x={rightX} y={box.height * 0.64} scale={0.92}>
 		{@render props.buttonBet({ anchor: 0.5 })}
 	</Container>
 
-	<Container x={rightX - 128} y={box.height * 0.64} scale={0.42}>
+	<Container x={rightX - 128} y={box.height * 0.64} scale={0.4}>
 		{@render props.buttonDecrease({ anchor: 0.5 })}
 	</Container>
 
-	<Container x={rightX + 128} y={box.height * 0.64} scale={0.42}>
+	<Container x={rightX + 128} y={box.height * 0.64} scale={0.4}>
 		{@render props.buttonIncrease({ anchor: 0.5 })}
 	</Container>
 

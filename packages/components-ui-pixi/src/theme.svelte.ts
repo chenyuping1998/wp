@@ -55,6 +55,16 @@ export const uiTheme = $state({
 	//              screen to the board. Wide layouts only; portrait has no
 	//              horizontal room for rails and always uses the bottom bar.
 	betBarLayout: 'bottom' as 'bottom' | 'sideRail',
+
+	// Width of one side rail — its centre line sits at railWidth / 2 in from the
+	// canvas edge. Raise it to pull both rails further out toward the edges when
+	// a game's reel housing is wide. sideRail only.
+	railWidth: 400,
+
+	// Scale of the readout panels and of the Buy Bonus CTA on the side rail.
+	// sideRail only.
+	railPanelScale: 0.62,
+	buyBonusRailScale: 2.4,
 });
 
 export type UiTheme = typeof uiTheme;

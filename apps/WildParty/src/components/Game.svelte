@@ -19,6 +19,8 @@
 	import Sound from './Sound.svelte';
 	import Background from './Background.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
+	// side-effect import: switches the shared bet bar to the side-rail layout
+	import '../game/uiTheme';
 	import BoardFrame from './BoardFrame.svelte';
 	import Board from './Board.svelte';
 	import Anticipations from './Anticipations.svelte';

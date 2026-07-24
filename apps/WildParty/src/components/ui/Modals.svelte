@@ -164,8 +164,6 @@
 	:global(.bonus-card-wrap) {
 		background: linear-gradient(180deg, rgba(42, 14, 54, 0.96), rgba(20, 7, 32, 0.98)) !important;
 		border: 2px solid rgba(216, 168, 78, 0.55) !important;
-		border-radius: 14px !important;
-		padding: 0.85rem 0.75rem !important;
 		box-shadow:
 			0 6px 22px rgba(0, 0, 0, 0.5),
 			inset 0 1px 0 rgba(255, 236, 180, 0.12) !important;
@@ -177,6 +175,33 @@
 			0 0 18px rgba(255, 211, 77, 0.35),
 			inset 0 1px 0 rgba(255, 236, 180, 0.2) !important;
 	}
+	/* Buy Bonus cards enlarged 60%. The card's children (.title/.description/
+	   .price) carry no font-size of their own, so setting one on the wrap scales
+	   all of them by exactly the same factor and the original proportions are
+	   preserved. Dimensions and spacing are multiplied to match; the button's
+	   height rides a CSS variable and its label has an inline font-size, so both
+	   need naming explicitly. */
+	:global(.bonus-card-wrap) {
+		min-width: 248px !important; /* 155 x 1.6 */
+		max-width: 288px !important; /* 180 x 1.6 */
+		padding: 1.36rem 1.2rem !important;
+		gap: 0.8rem !important;
+		border-radius: 18px !important;
+		font-size: 1.6rem !important;
+	}
+
+	:global(.bonus-card-wrap .info) {
+		gap: 0.8em !important;
+	}
+
+	:global(.bonus-card-wrap .rectangle) {
+		--height-value: 3.2rem !important;
+	}
+
+	:global(.bonus-card-wrap span) {
+		font-size: 1.6rem !important;
+	}
+
 	:global(.bonus-card-wrap .title) {
 		font-family: 'Cinzel', Georgia, serif !important;
 		color: #ffd77a !important;
