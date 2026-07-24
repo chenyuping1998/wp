@@ -15,6 +15,8 @@ if (!resvgDir) {
 const require = createRequire(path.join(resvgDir, 'noop.js'));
 const { Resvg } = require('@resvg/resvg-js');
 
+import { surfaceDefs, finishRect, CANVAS_FINISH, BRASS_FINISH } from './surface.mjs';
+
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(appRoot, 'static/assets/sprites/goBananasUi');
 fs.mkdirSync(OUT, { recursive: true });
@@ -26,7 +28,7 @@ const render = (svg, name, width) => {
 };
 
 // shared palette — same brass and canvas as the reel frame / free-spin plaques
-const DEFS = `
+const DEFS = surfaceDefs('sf') + `
 	<linearGradient id="canvas" x1="0" y1="0" x2="0" y2="1">
 		<stop offset="0" stop-color="#2c3812"/>
 		<stop offset="0.55" stop-color="#1c2609"/>
@@ -70,7 +72,7 @@ const tickerRivets = [
 const ticker = `<svg xmlns="http://www.w3.org/2000/svg" width="${TW}" height="${TH}" viewBox="0 0 ${TW} ${TH}">
 <defs>${DEFS}</defs>
 <rect x="6" y="6" width="${TW - 12}" height="${TH - 12}" rx="30" fill="url(#canvas)" stroke="#0c1206" stroke-width="5"/>
-<rect x="6" y="6" width="${TW - 12}" height="${TH - 12}" rx="30" filter="url(#grain)" opacity="0.55"/>
+${finishRect(6, 6, TW - 12, TH - 12, 30, 'sf', CANVAS_FINISH)}
 <!-- recessed reading well so the digits sit in shadow -->
 <rect x="20" y="20" width="${TW - 40}" height="${TH - 40}" rx="22" fill="url(#inner)"/>
 <!-- brass frame + hairline highlight -->
@@ -107,7 +109,7 @@ const buyBonus = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="
 	</radialGradient>
 </defs>
 <rect x="10" y="10" width="${BS - 20}" height="${BS - 20}" rx="66" fill="url(#cta)" stroke="#0c1206" stroke-width="7"/>
-<rect x="10" y="10" width="${BS - 20}" height="${BS - 20}" rx="66" filter="url(#grain)" opacity="0.5"/>
+${finishRect(10, 10, BS - 20, BS - 20, 66, 'sf', CANVAS_FINISH)}
 <!-- warm top-light so the button reads as raised, not a flat tile -->
 <rect x="10" y="10" width="${BS - 20}" height="${BS - 20}" rx="66" fill="url(#ctaGlow)"/>
 <rect x="20" y="20" width="${BS - 40}" height="${BS - 40}" rx="56" fill="none" stroke="url(#brass)" stroke-width="11"/>

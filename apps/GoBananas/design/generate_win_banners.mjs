@@ -16,6 +16,8 @@ if (!resvgDir) {
 const require = createRequire(path.join(resvgDir, 'noop.js'));
 const { Resvg } = require('@resvg/resvg-js');
 
+import { surfaceDefs, finishRect, CANVAS_FINISH } from './surface.mjs';
+
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(appRoot, 'static/assets/sprites/goBananasWinBanners');
 fs.mkdirSync(OUT, { recursive: true });
@@ -50,6 +52,7 @@ const rivets = () => {
 
 const banner = ({ text, a, b, rim }) => `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
 <defs>
+${surfaceDefs('sf')}
 	<linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
 		<stop offset="0" stop-color="${a}"/>
 		<stop offset="1" stop-color="${b}"/>
@@ -80,7 +83,7 @@ const banner = ({ text, a, b, rim }) => `<svg xmlns="http://www.w3.org/2000/svg"
 </defs>
 <!-- plate -->
 <rect x="34" y="34" width="${W - 68}" height="${H - 68}" rx="46" fill="url(#plate)" stroke="#17120a" stroke-width="8"/>
-<rect x="34" y="34" width="${W - 68}" height="${H - 68}" rx="46" filter="url(#grain)" opacity="0.6"/>
+${finishRect(34, 34, W - 68, H - 68, 46, 'sf', CANVAS_FINISH)}
 <!-- brass frame -->
 <rect x="48" y="48" width="${W - 96}" height="${H - 96}" rx="36" fill="none" stroke="url(#brass)" stroke-width="14"/>
 <rect x="64" y="64" width="${W - 128}" height="${H - 128}" rx="26" fill="none" stroke="${rim}" stroke-width="3" opacity="0.8"/>

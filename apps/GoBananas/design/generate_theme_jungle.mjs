@@ -21,14 +21,19 @@ if (!resvgDir) {
 const require = createRequire(path.join(resvgDir, 'noop.js'));
 const { Resvg } = require('@resvg/resvg-js');
 
+import { surfaceDefs, finishRect, CANVAS_FINISH, BACKDROP_FINISH, STEEL_FINISH, BRASS_FINISH } from './surface.mjs';
+
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BG_DIR = path.join(appRoot, 'static/assets/sprites/goBananasBackground');
 const FRAME_DIR = path.join(appRoot, 'static/assets/sprites/goBananasFrame');
 fs.mkdirSync(BG_DIR, { recursive: true });
 fs.mkdirSync(FRAME_DIR, { recursive: true });
 
+// surfaceDefs is injected into every document so the shared finish filters
+// (grain / brushed / scratch / mottle / specular / edge / AO) are always
+// available without each caller remembering to include them.
 const svgWrap = (w, h, body, defs = '') =>
-	`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs>${defs}</defs>${body}</svg>`;
+	`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs>${surfaceDefs('sf')}${defs}</defs>${body}</svg>`;
 
 // deterministic PRNG
 let seed = 77;
@@ -366,7 +371,7 @@ frames.frame_bg = svgWrap(
 	1280,
 	`
 	<rect x="128" y="128" width="1024" height="1024" rx="30" fill="url(#plate)"/>
-	<rect x="128" y="128" width="1024" height="1024" rx="30" filter="url(#canvasGrain)" opacity="0.7"/>
+	${finishRect(128, 128, 1024, 1024, 30, 'sf', BACKDROP_FINISH)}
 	<!-- reel separators -->
 	${[1, 2, 3, 4]
 		.map(
@@ -408,9 +413,12 @@ frames.frame_edge = svgWrap(
 	`
 	<!-- olive steel band with brass faces -->
 	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke="url(#bandOuter)" stroke-width="60"/>
-	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke-width="60" filter="url(#bandGrain)" stroke="#000000" opacity="0.35"/>
+	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke-width="60" filter="url(#sfBrushed)" stroke="#000000" opacity="0.5"/>
+	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke-width="60" filter="url(#sfScratch)" stroke="#000000" opacity="0.4"/>
+	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke-width="60" filter="url(#sfMottle)" stroke="#000000" opacity="0.45"/>
 	<rect x="24" y="24" width="1232" height="1232" rx="64" fill="none" stroke="#0c1206" stroke-width="9"/>
 	<rect x="86" y="86" width="1108" height="1108" rx="38" fill="none" stroke="url(#brass)" stroke-width="12"/>
+	<rect x="86" y="86" width="1108" height="1108" rx="38" fill="none" stroke="#000000" stroke-width="12" filter="url(#sfBrushed)" opacity="0.45"/>
 	<rect x="97" y="97" width="1086" height="1086" rx="32" fill="none" stroke="#7a5a14" stroke-width="4"/>
 	<rect x="79" y="79" width="1122" height="1122" rx="42" fill="none" stroke="#ffe98a" stroke-width="2.5" opacity="0.75"/>
 	<!-- top bevel light / bottom shade on the band -->

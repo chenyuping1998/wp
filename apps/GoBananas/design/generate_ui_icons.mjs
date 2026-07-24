@@ -22,6 +22,8 @@ if (!resvgDir) {
 const require = createRequire(path.join(resvgDir, 'noop.js'));
 const { Resvg } = require('@resvg/resvg-js');
 
+import { surfaceDefs } from './surface.mjs';
+
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(appRoot, 'static/assets/sprites/goBananasUiIcons');
 fs.mkdirSync(OUT, { recursive: true });
@@ -29,7 +31,7 @@ fs.mkdirSync(OUT, { recursive: true });
 const SIZE = 256;
 
 // shared brass look + depth, applied to every icon shape
-const DEFS = `
+const DEFS = surfaceDefs('sf') + `
 	<linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
 		<stop offset="0" stop-color="#fff3bd"/>
 		<stop offset="0.45" stop-color="#ffd75e"/>
@@ -52,7 +54,7 @@ const icon = (shape, { sheen = true } = {}) => `
 	<defs>${DEFS}</defs>
 	<g filter="url(#drop)">
 		<g stroke="#3a2508" stroke-width="26" stroke-linejoin="round" stroke-linecap="round" fill="#3a2508">${shape}</g>
-		<g fill="url(#brass)" stroke="#7a5214" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">${shape}</g>
+		<g fill="url(#brass)" stroke="#7a5214" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" filter="url(#sfEmboss)">${shape}</g>
 		${sheen ? `<g fill="url(#sheen)" opacity="0.55">${shape}</g>` : ''}
 	</g>
 </svg>`;
