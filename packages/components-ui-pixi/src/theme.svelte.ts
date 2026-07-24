@@ -3,9 +3,29 @@
 // button. Defaults are the plum/gold party palette (Wild Party); a game opts
 // into its own look by calling setUiTheme() once at startup — see
 // apps/GoBananas/src/game/uiTheme.ts.
+// Pixi's TextStyle weight union, declared here so the theme needs no direct
+// pixi.js dependency. It matters that this is a union and not `as const`: the
+// default was written `'600' as const`, which pinned the field's type to the
+// literal '600' and quietly made every game's override a type error — invisible
+// because the vite build does no typechecking.
+type FontWeight =
+	| 'normal'
+	| 'bold'
+	| 'bolder'
+	| 'lighter'
+	| '100'
+	| '200'
+	| '300'
+	| '400'
+	| '500'
+	| '600'
+	| '700'
+	| '800'
+	| '900';
+
 export const uiTheme = $state({
 	fontFamily: 'Cinzel, Georgia, serif',
-	fontWeight: '600' as const,
+	fontWeight: '600' as FontWeight,
 
 	// buttons
 	buttonFill: 0x1d0b28,

@@ -1,4 +1,4 @@
-import { GAME_FONT } from './fonts';
+import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
 
 // Jungle-commando bet bar: deep olive-canvas buttons with the same brass trim
@@ -7,7 +7,8 @@ import { setUiTheme } from 'components-ui-pixi';
 // otherwise keeps its plum/gold defaults for other games in the workspace.
 setUiTheme({
 	fontFamily: GAME_FONT,
-	fontWeight: '700',
+	// Titan One is single-weight; 700 would only get a synthesised bold
+	fontWeight: GAME_FONT_WEIGHT,
 
 	buttonFill: 0x1e2a0e,
 	buttonFillLight: 0xffd75e,

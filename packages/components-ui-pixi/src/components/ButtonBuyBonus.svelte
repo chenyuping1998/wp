@@ -101,7 +101,7 @@
 				wordWrapWidth: 116,
 				lineHeight: UI_BASE_FONT_SIZE * 0.72,
 				fontFamily: uiTheme.fontFamily,
-				fontWeight: '600',
+				fontWeight: uiTheme.fontWeight,
 				fontSize: UI_BASE_FONT_SIZE * 0.68,
 				fill: 0xffffff,
 			}}

@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT } from '../game/fonts';
+	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { Graphics, Sprite, Text } from 'pixi-svelte';
@@ -100,7 +100,7 @@
 			style={{
 				fontFamily: GAME_FONT,
 				fontSize: Math.min(panelSizes.width * 0.115, (panelSizes.width * 1.35) / Math.max(1, title.length)),
-				fontWeight: '900',
+				fontWeight: GAME_FONT_WEIGHT,
 				letterSpacing: 2,
 				fill: [0xfff3bd, 0xffd75e, 0xc9821a],
 				stroke: 0x54330a,

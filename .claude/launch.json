@@ -2,6 +2,12 @@
 	"version": "0.0.1",
 	"configurations": [
 		{
+			"name": "gobananas-dev",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": ["--dir", "apps/GoBananas", "dev"],
+			"port": 3002
+		},
+		{
 			"name": "wildparty-dev",
 			"runtimeExecutable": "pnpm",
 			"runtimeArgs": ["--dir", "apps/WildParty", "dev"],

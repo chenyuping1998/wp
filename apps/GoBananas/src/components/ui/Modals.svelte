@@ -54,6 +54,32 @@
 	   - .close-button (components-shared/Popup.svelte)
 	   ═════════════════════════════════════════════════════ */
 
+	/* ── typography ────────────────────────────────────────────────────────
+	   Two faces with separated jobs. Headings take the game's display face so a
+	   modal reads as part of the game; body copy does not, because these panels
+	   carry real paragraphs — the feature descriptions, the RTP disclaimer — and
+	   a heavy rounded face is measurably harder to read at paragraph length.
+	   Stacks come from game/fonts.ts via custom properties, so there is one
+	   source of truth. Overrides are needed because the shared components hard-
+	   code the template's 'proxima-nova', a Typekit face that never loads. */
+	:global(.pop-up-wrap),
+	:global(.pop-up-wrap p),
+	:global(.pop-up-wrap li),
+	:global(.pop-up-wrap td),
+	:global(.pop-up-wrap th) {
+		font-family: var(--gb-body-font) !important;
+	}
+
+	:global(.pop-up-wrap h1),
+	:global(.pop-up-wrap h2),
+	:global(.pop-up-wrap h3),
+	:global(.pop-up-wrap h4) {
+		font-family: var(--gb-display-font) !important;
+		/* Titan One is single-weight — a requested bold would only be synthesised */
+		font-weight: 400 !important;
+		letter-spacing: 0.02em;
+	}
+
 	/* Button icon background (the rounded rectangle inside buttons) */
 	:global(.rectangle) {
 		background: linear-gradient(

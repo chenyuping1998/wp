@@ -20,6 +20,16 @@ import { surfaceDefs, finishRect, CANVAS_FINISH } from './surface.mjs';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(appRoot, 'static/assets/sprites/goBananasWinBanners');
+
+// The game's display face, self-hosted alongside the runtime copy the bet bar
+// uses (game/fonts.ts). Baked headline art and live Text have to be the same
+// typeface or the banner reads as a different game to the amount inside it.
+const FONT_DIR = path.join(appRoot, 'static/fonts');
+const BANNER_FONT = 'Titan One';
+// Measured rather than assumed: the widest tier name (SUPER WIN) inks 727px at
+// this size against 876px of clear space inside the brass frame, so 128 carries
+// over from the previous face unchanged.
+const TIER_SIZE = 128;
 fs.mkdirSync(OUT, { recursive: true });
 
 const W = 1000;
@@ -91,13 +101,19 @@ ${rivets()}
 <!-- dark centre well where the amount rolls -->
 <rect x="120" y="286" width="${W - 240}" height="170" rx="26" fill="url(#inner)"/>
 <rect x="120" y="286" width="${W - 240}" height="170" rx="26" fill="none" stroke="${rim}" stroke-width="3" opacity="0.55"/>
-<!-- tier name -->
-<text x="${W / 2 + 5}" y="235" font-family="Arial Black, Arial" font-size="128" font-weight="900" text-anchor="middle" fill="#3a2408" opacity="0.55">${text}</text>
-<text x="${W / 2}" y="230" font-family="Arial Black, Arial" font-size="128" font-weight="900" text-anchor="middle" fill="url(#tierFace)" stroke="#54330a" stroke-width="7" paint-order="stroke">${text}</text>
+<!-- Tier name in the game's display face, matching the live Text on the bet bar
+     and the amount that rolls in the well below. Titan One is single-weight, so
+     no font-weight is requested — asking for 900 risks resvg failing the match
+     and silently substituting a system face. -->
+<text x="${W / 2 + 5}" y="235" font-family="${BANNER_FONT}" font-size="${TIER_SIZE}" text-anchor="middle" fill="#3a2408" opacity="0.55">${text}</text>
+<text x="${W / 2}" y="230" font-family="${BANNER_FONT}" font-size="${TIER_SIZE}" text-anchor="middle" fill="url(#tierFace)" stroke="#54330a" stroke-width="7" paint-order="stroke">${text}</text>
 </svg>`;
 
 for (const [alias, tier] of Object.entries(TIERS)) {
-	const resvg = new Resvg(banner(tier), { fitTo: { mode: 'width', value: W }, font: { loadSystemFonts: true } });
+	const resvg = new Resvg(banner(tier), {
+		fitTo: { mode: 'width', value: W },
+		font: { fontDirs: [FONT_DIR], loadSystemFonts: true, defaultFontFamily: 'Titan One' },
+	});
 	fs.writeFileSync(path.join(OUT, `${alias}.png`), resvg.render().asPng());
 	console.log('rendered', `${alias}.png`);
 }

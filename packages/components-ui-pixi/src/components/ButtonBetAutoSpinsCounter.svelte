@@ -30,7 +30,7 @@
 		style={{
 			fontFamily: uiTheme.fontFamily,
 			fill: WHITE,
-			fontWeight: 'bold',
+			fontWeight: uiTheme.fontWeight,
 			fontSize: fontSizeMultiplier * UI_BASE_SIZE * 0.2,
 			stroke: 0x6d2692,
 			strokeThickness: 4,

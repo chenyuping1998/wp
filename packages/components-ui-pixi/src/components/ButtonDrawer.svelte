@@ -82,7 +82,7 @@
 				wordWrap: true,
 				wordWrapWidth: 200,
 				fontFamily: uiTheme.fontFamily,
-				fontWeight: '600',
+				fontWeight: uiTheme.fontWeight,
 				fontSize: UI_BASE_FONT_SIZE * 0.9,
 				fill: 0xffffff,
 			}}

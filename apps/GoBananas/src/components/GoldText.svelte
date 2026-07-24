@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GAME_FONT } from '../game/fonts';
+	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { Container, Text } from 'pixi-svelte';
 
 	// House gold numerals/labels (replaces the MM template 'gold' bitmap font):
@@ -48,7 +48,7 @@
 	{@const base = {
 		fontFamily: GAME_FONT,
 		fontSize: props.fontSize,
-		fontWeight: '900' as const,
+		fontWeight: GAME_FONT_WEIGHT,
 		letterSpacing: props.letterSpacing ?? 1,
 	}}
 

@@ -69,7 +69,19 @@ export const setFontKit = (id: string | null) => {
 	fontKitId = id;
 };
 
-export const preloadFont = () =>
+// CSS font shorthands for faces the game self-hosts through @font-face, e.g.
+// '400 16px "Titan One"'. Pixi measures glyph advances the moment it builds a
+// Text, so a face still in flight at that point gets the first frame laid out on
+// the fallback's metrics — and nothing re-measures it afterwards. Blocking
+// startup on document.fonts is the only reliable fix. Empty by default, so games
+// that ship no custom faces behave exactly as before.
+let localFontSpecs: string[] = [];
+
+export const setLocalFonts = (specs: string[]) => {
+	localFontSpecs = specs;
+};
+
+const loadTypekit = () =>
 	new Promise<void>((resolve) => {
 		if (!fontKitId) return resolve();
 		try {
@@ -90,6 +102,23 @@ export const preloadFont = () =>
 			resolve();
 		}
 	});
+
+const loadLocalFonts = async () => {
+	if (!localFontSpecs.length || typeof document === 'undefined' || !document.fonts) return;
+	try {
+		// load() resolves per face; fonts.ready then waits for the whole set to
+		// settle, including any still being parsed
+		await Promise.all(localFontSpecs.map((spec) => document.fonts.load(spec)));
+		await document.fonts.ready;
+	} catch (error) {
+		// a missing face must not deadlock startup — fall back and carry on
+		console.error('Local font load failed', error);
+	}
+};
+
+export const preloadFont = async () => {
+	await Promise.all([loadTypekit(), loadLocalFonts()]);
+};
 
 export function propsSyncEffect<TProps extends object, TTarget>({
 	props,

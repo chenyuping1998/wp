@@ -22,7 +22,7 @@
 		style: {
 			fontFamily: uiTheme.fontFamily,
 			fontSize: REM * 1.5,
-			fontWeight: '600',
+			fontWeight: uiTheme.fontWeight,
 			lineHeight: REM * 2,
 			fill: WHITE,
 		},

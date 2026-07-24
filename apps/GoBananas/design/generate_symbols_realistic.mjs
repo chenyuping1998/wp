@@ -295,8 +295,16 @@ for (const name of ['h1', 'h2', 's']) {
 }
 
 // ── part B: royals — painted sources for l1-l4, matching painted-look 10 ────
+// static/fonts holds the game's display face; symbols that carry lettering have
+// to use the same one as the live UI or the wild card reads as a different game
+const FONT_DIR = path.join(appRoot, 'static/fonts');
 const render = (svg, w) =>
-	new Resvg(svg, { fitTo: { mode: 'width', value: w }, font: { loadSystemFonts: true } }).render().asPng();
+	new Resvg(svg, {
+		fitTo: { mode: 'width', value: w },
+		font: { fontDirs: [FONT_DIR], loadSystemFonts: true },
+	})
+		.render()
+		.asPng();
 
 // l1-l4 (A 岩漿 / K 冰晶 / Q 紫晶 / J 翠玉) are AI-painted at ~110px on a pale
 // ground — key them like the big paintings and let the sharpen pass recover
@@ -647,14 +655,19 @@ const sceneB64 = fs
 // of panel below it — exactly where ExpandingWilds puts the multiplier plaque,
 // so the plaque covered the gold frame. 140/130 clears ~200px for it.
 const WILD_LETTER_SIZE = 130;
+// Same display face as the bet bar and the win banners. Titan One is
+// single-weight, so no font-weight is requested — asking for 900 risks resvg
+// failing the match and silently substituting a system font. Size stays at 130:
+// the widest letter (W) inks 129px against 204px of clear card width.
+const WILD_FONT = 'Titan One';
 const wildLetters = ['W', 'I', 'L', 'D']
 	.map((ch, i) => {
 		const y = 640 + i * 140;
 		return `${[7, 6, 5, 4]
-			.map((o) => `<text x="${128 + o}" y="${y + o}" font-family="Arial Black, Arial" font-size="${WILD_LETTER_SIZE}" font-weight="900" text-anchor="middle" fill="#6d4408">${ch}</text>`)
+			.map((o) => `<text x="${128 + o}" y="${y + o}" font-family="${WILD_FONT}" font-size="${WILD_LETTER_SIZE}" text-anchor="middle" fill="#6d4408">${ch}</text>`)
 			.join('')}
-		<text x="128" y="${y}" font-family="Arial Black, Arial" font-size="${WILD_LETTER_SIZE}" font-weight="900" text-anchor="middle" fill="url(#wface)" stroke="#54330a" stroke-width="3">${ch}</text>
-		<text x="127" y="${y - 1}" font-family="Arial Black, Arial" font-size="${WILD_LETTER_SIZE}" font-weight="900" text-anchor="middle" fill="none" stroke="#fff3bd" stroke-width="1.5" opacity="0.9">${ch}</text>`;
+		<text x="128" y="${y}" font-family="${WILD_FONT}" font-size="${WILD_LETTER_SIZE}" text-anchor="middle" fill="url(#wface)" stroke="#54330a" stroke-width="3">${ch}</text>
+		<text x="127" y="${y - 1}" font-family="${WILD_FONT}" font-size="${WILD_LETTER_SIZE}" text-anchor="middle" fill="none" stroke="#fff3bd" stroke-width="1.5" opacity="0.9">${ch}</text>`;
 	})
 	.join('');
 const wxSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="1280" viewBox="0 0 256 1280">

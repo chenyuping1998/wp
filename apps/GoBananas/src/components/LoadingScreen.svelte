@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GAME_FONT } from '../game/fonts';
+	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { Container, Graphics, Text, Sprite } from 'pixi-svelte';
 	import { FadeContainer } from 'components-pixi';
 	import { MainContainer } from 'components-layout';
@@ -99,7 +99,7 @@
 				style={{
 					fontFamily: GAME_FONT,
 					fontSize: 52,
-					fontWeight: '900',
+					fontWeight: GAME_FONT_WEIGHT,
 					fill: 0xffd43b,
 					letterSpacing: 6,
 					dropShadow: true,
@@ -119,7 +119,7 @@
 				style={{
 					fontFamily: GAME_FONT,
 					fontSize: 14,
-					fontWeight: '600',
+					fontWeight: GAME_FONT_WEIGHT,
 					fill: 0xf5e3c3,
 					letterSpacing: 3,
 				}}
@@ -161,7 +161,7 @@
 				style={{
 					fontFamily: GAME_FONT,
 					fontSize: 12,
-					fontWeight: '500',
+					fontWeight: GAME_FONT_WEIGHT,
 					fill: 0xd9bfa0,
 					letterSpacing: 2,
 				}}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GAME_FONT } from '../game/fonts';
+	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 
 	import { BlurFilter } from 'pixi.js';
@@ -108,7 +108,7 @@
 					style={{
 						fontFamily: GAME_FONT,
 						fontSize: REM * 1.5,
-						fontWeight: '600',
+						fontWeight: GAME_FONT_WEIGHT,
 						lineHeight: REM * 2,
 						fill: 0xffffff,
 					}}

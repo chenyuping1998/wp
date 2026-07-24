@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GAME_FONT } from '../game/fonts';
+	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 	import { MainContainer, OnPressFullScreen } from 'components-layout';
 	import { OnHotkey } from 'components-shared';
@@ -47,7 +47,7 @@
 		style={{
 			fontFamily: GAME_FONT,
 			fontSize: 28,
-			fontWeight: '700',
+			fontWeight: GAME_FONT_WEIGHT,
 			letterSpacing: 4,
 			fill: 0xf5e3c3,
 			stroke: 0x2c1c08,
