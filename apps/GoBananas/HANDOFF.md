@@ -702,10 +702,18 @@ playfield 由 428 → **526px**（+23% 線性、**+51% 面積**）。
 - **U7 turbo/autoplay 開關狀態不明顯** —— `backgroundColor` 原本完全沒考慮 `active`，開啟時只有描邊 6→10 變粗。主題新增 `buttonFillActive`（**預設 null → 維持原行為**），GoBananas 設深琥珀 `0x6b4a10`，開啟時整顆按鈕換底色
 - **U8 `−`/`+` 過小** —— 60 單位，比 autoSpin(90) 還小卻是最高頻操作。放大 0.4 → 0.5（60→75，連帶放大點擊區），與 spin 仍有約 13px 間隙
 
+### 第二批（U5 / U6）
+
+- **U5 賠付表與規則提到外層** —— 原本 PAYTABLE / INFO / SETTINGS / SOUND 全藏在漢堡選單，要兩層才點得到；審核通常要求賠付表容易取得。把 **PAYTABLE 與 INFO 直接放上左欄**（利用 Buy Bonus 上方 0–360 的空檔，scale 0.46），漢堡選單精簡為 SETTINGS + SOUND
+- **U6 圖示加文字標籤** —— 所有直接位於欄上的純圖示按鈕都補上說明文字：PAYTABLE / INFO / MENU / AUTO SPIN / TURBO，選單內的 SETTINGS / SOUND ON·OFF 也有。字級 `UI_BASE_FONT_SIZE * 0.55`，用主題的 `labelFill`
+- 音效標籤依 `stateSound.volumeValueMaster` 顯示 SOUND ON / SOUND OFF
+
+> ⚠️ 過程中一度寫成 `i18nDerived.sound()`（該方法不存在，只有 `soundOn`/`soundOff`）。因為 python 腳本的 `cd` 失敗而沒實際寫入，build 照樣通過 —— **這類「方法不存在」是執行期才炸的錯，`check_undefined_refs` 抓不到**。已改用狀態判斷並實跑確認。
+
+`LayoutSideRail` 只在 `betBarLayout === 'sideRail'` 時使用，而只有 GoBananas 設定它，所以這批改動天然不影響 WildParty（仍另行 build 確認）。
+
 ### 尚未處理
 
-- U5 賠付表/規則/設定/音效全藏在漢堡選單裡（審核常要求賠付表易取得）
-- U6 圖示無文字標籤
 - U9 停用狀態僅靠 tint、U10 側欄在接近正方形視窗會被壓縮
 
 ## 6. 待辦

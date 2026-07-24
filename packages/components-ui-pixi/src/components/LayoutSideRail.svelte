@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { stateUi } from 'state-shared';
+	import { stateSound, stateUi } from 'state-shared';
 	import { BLACK } from 'constants-shared/colors';
 	import { MainContainer } from 'components-layout';
-	import { Container, Rectangle } from 'pixi-svelte';
+	import { Container, Rectangle, Text } from 'pixi-svelte';
 
 	import { getContext } from '../context';
 	import { uiTheme } from '../theme.svelte';
+	import { UI_BASE_FONT_SIZE } from '../constants';
+	import { i18nDerived } from '../i18n/i18nDerived';
 	import type { LayoutUiProps } from '../types';
 
 	// Side-rail layout: controls live in two vertical rails instead of one bottom
@@ -34,6 +36,24 @@
 	// circle is 156 across. Anything under that and the gold outlines cut into
 	// each other — spacing is the diameter plus a deliberate 20px of air.
 	const MENU_STEP = 176;
+
+	// Icon-only buttons give a player nothing to read. Every control that lives
+	// directly on a rail gets a caption underneath, so the bar can be understood
+	// without pressing anything to find out what it does.
+	const captionStyle = $derived({
+		fontFamily: uiTheme.fontFamily,
+		fontWeight: uiTheme.fontWeight,
+		fontSize: UI_BASE_FONT_SIZE * 0.55,
+		fill: uiTheme.labelFill,
+		stroke: uiTheme.valueStroke,
+		strokeThickness: 3,
+	});
+
+	// Pay table and game rules are pulled out of the hamburger and onto the rail:
+	// a player should not have to open a menu to find the paytable, and reviewers
+	// expect both to be reachable in one press.
+	const PAYTABLE_Y = $derived(box.height * 0.13);
+	const RULES_Y = $derived(box.height * 0.25);
 </script>
 
 <Container x={20}>
@@ -46,9 +66,38 @@
 
 <MainContainer standard>
 	<!-- ── left rail ─────────────────────────────────────────────────────── -->
+	<Container x={leftX} y={PAYTABLE_Y} scale={0.46}>
+		{@render props.buttonPayTable({ anchor: 0.5 })}
+	</Container>
+	<Text
+		anchor={{ x: 0.5, y: 0 }}
+		x={leftX}
+		y={PAYTABLE_Y + 52}
+		text={i18nDerived.payTable()}
+		style={captionStyle}
+	/>
+
+	<Container x={leftX} y={RULES_Y} scale={0.46}>
+		{@render props.buttonGameRules({ anchor: 0.5 })}
+	</Container>
+	<Text
+		anchor={{ x: 0.5, y: 0 }}
+		x={leftX}
+		y={RULES_Y + 52}
+		text={i18nDerived.info()}
+		style={captionStyle}
+	/>
+
 	<Container x={leftX} y={MENU_Y} scale={0.85}>
 		{@render props.buttonMenu({ anchor: 0.5 })}
 	</Container>
+	<Text
+		anchor={{ x: 0.5, y: 0 }}
+		x={leftX}
+		y={MENU_Y + 72}
+		text={i18nDerived.menu()}
+		style={captionStyle}
+	/>
 
 	<!-- oversized feature CTA; themeable via uiTheme.buyBonusRailScale -->
 	<Container x={leftX} y={box.height * 0.5} scale={uiTheme.buyBonusRailScale}>
@@ -92,10 +141,24 @@
 	<Container x={rightX - 96} y={box.height * 0.82} scale={0.6}>
 		{@render props.buttonAutoSpin({ anchor: 0.5 })}
 	</Container>
+	<Text
+		anchor={{ x: 0.5, y: 0 }}
+		x={rightX - 96}
+		y={box.height * 0.82 + 52}
+		text={i18nDerived.autoSpin()}
+		style={captionStyle}
+	/>
 
 	<Container x={rightX + 96} y={box.height * 0.82} scale={0.6}>
 		{@render props.buttonTurbo({ anchor: 0.5 })}
 	</Container>
+	<Text
+		anchor={{ x: 0.5, y: 0 }}
+		x={rightX + 96}
+		y={box.height * 0.82 + 52}
+		text={i18nDerived.turbo()}
+		style={captionStyle}
+	/>
 </MainContainer>
 
 {#if stateUi.menuOpen}
@@ -115,20 +178,28 @@
 	<!-- Opens upward out of the menu button at the foot of the rail: close on the
 	     button's own spot, options stacked above it. -->
 	<MainContainer standard>
+		<!-- Pay table and rules now sit on the rail itself, so the menu is down to
+		     the two secondary controls — a shorter, clearer list. -->
 		<Container x={leftX} y={MENU_Y}>
-			{#each [1, 2, 3, 4] as slot (slot)}
-				<Container scale={0.8} y={-slot * MENU_STEP}>
-					{#if slot === 1}
-						{@render props.buttonPayTable({ anchor: 0.5 })}
-					{:else if slot === 2}
-						{@render props.buttonGameRules({ anchor: 0.5 })}
-					{:else if slot === 3}
-						{@render props.buttonSettings({ anchor: 0.5 })}
-					{:else}
-						{@render props.buttonSoundSwitch({ anchor: 0.5 })}
-					{/if}
-				</Container>
-			{/each}
+			<Container scale={0.8} y={-1 * MENU_STEP}>
+				{@render props.buttonSettings({ anchor: 0.5 })}
+			</Container>
+			<Text
+				anchor={{ x: 0.5, y: 0 }}
+				y={-1 * MENU_STEP + 68}
+				text={i18nDerived.settings()}
+				style={captionStyle}
+			/>
+
+			<Container scale={0.8} y={-2 * MENU_STEP}>
+				{@render props.buttonSoundSwitch({ anchor: 0.5 })}
+			</Container>
+			<Text
+				anchor={{ x: 0.5, y: 0 }}
+				y={-2 * MENU_STEP + 68}
+				text={stateSound.volumeValueMaster === 0 ? i18nDerived.soundOff() : i18nDerived.soundOn()}
+				style={captionStyle}
+			/>
 
 			<Container scale={0.85}>
 				{@render props.buttonMenuClose({ anchor: 0.5 })}
