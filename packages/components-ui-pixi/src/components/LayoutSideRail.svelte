@@ -78,11 +78,14 @@
 		{@render props.buttonBet({ anchor: 0.5 })}
 	</Container>
 
-	<Container x={rightX - 128} y={box.height * 0.64} scale={0.4}>
+	<!-- steppers enlarged 0.4 -> 0.5 (60 -> 75 across): they were the smallest
+	     controls on screen despite being the most frequently pressed, and the
+	     scale also grows the hit area. Still clears the bet button by ~13px. -->
+	<Container x={rightX - 128} y={box.height * 0.64} scale={0.5}>
 		{@render props.buttonDecrease({ anchor: 0.5 })}
 	</Container>
 
-	<Container x={rightX + 128} y={box.height * 0.64} scale={0.4}>
+	<Container x={rightX + 128} y={box.height * 0.64} scale={0.5}>
 		{@render props.buttonIncrease({ anchor: 0.5 })}
 	</Container>
 

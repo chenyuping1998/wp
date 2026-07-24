@@ -12,6 +12,9 @@ setUiTheme({
 	buttonFill: 0x1e2a0e,
 	buttonFillLight: 0xffd75e,
 	buttonFillDisabled: 0x3a3a30,
+	// deep amber so an ON toggle (turbo / autoplay) reads as ON at a glance,
+	// while still keeping enough contrast under the cream icon art
+	buttonFillActive: 0x6b4a10,
 	buttonBorder: 0xd8a334,
 	buttonIconFill: 0xfff3bd,
 	buttonIconStroke: 0x1a2208,
@@ -37,6 +40,10 @@ setUiTheme({
 	// because the reel housing art carries a wide structural margin (FRAME_SCALE
 	// 1.28 in BoardFrame) — its real footprint is ~1.3x the playfield.
 	betBarLayout: 'sideRail',
+
+	// the Bet panel opens the stake menu when tapped — mark it so players can
+	// tell it apart from the static Balance/Win panels
+	labelAffordance: true,
 
 	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
 	// keep the themed rounded rect, which suits the round buttons)

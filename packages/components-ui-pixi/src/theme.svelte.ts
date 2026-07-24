@@ -11,6 +11,10 @@ export const uiTheme = $state({
 	buttonFill: 0x1d0b28,
 	buttonFillLight: 0x8fe6ff,
 	buttonFillDisabled: 0x5a5a5a,
+	// Fill for a toggle button that is currently ON (turbo, autoplay). null keeps
+	// the previous behaviour, where an active button was signalled only by a
+	// thicker border — too subtle to read as a state.
+	buttonFillActive: null as number | null,
 	buttonBorder: 0xd8a84e,
 	buttonIconFill: 0xffffff,
 	buttonIconStroke: 0x000000,
@@ -41,6 +45,11 @@ export const uiTheme = $state({
 	// sprite instead of the text/emoji glyph. Empty by default, so games that
 	// don't supply icons keep the glyphs unchanged.
 	icons: {} as Partial<Record<string, string>>,
+
+	// Show a small chevron on readout panels that open something when tapped.
+	// Only the Bet panel is interactive, and it is otherwise identical to the
+	// Balance/Win panels, so nothing indicates it can be pressed.
+	labelAffordance: false,
 
 	// Uniform scale on the bottom bet bar, applied about its bottom edge so the
 	// bar stays flush with the canvas floor and only its height above that edge

@@ -26,5 +26,5 @@
 </script>
 
 <Container eventMode="static" cursor={disabled ? 'not-allowed' : 'pointer'} onpointerup={onpress}>
-	<UiLabel tiled {label} {value} stacked={props.stacked} accent={uiTheme.betAccent} />
+	<UiLabel tiled interactive {label} {value} stacked={props.stacked} accent={uiTheme.betAccent} />
 </Container>

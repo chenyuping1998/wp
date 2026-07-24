@@ -31,6 +31,9 @@
 
 	const backgroundColor = $derived.by(() => {
 		if (buttonProps.disabled) return uiTheme.buttonFillDisabled;
+		// an ON toggle (turbo, autoplay) needs to read as ON at a glance; a thicker
+		// border alone was too subtle to register as state
+		if (active && uiTheme.buttonFillActive !== null) return uiTheme.buttonFillActive;
 		if (variant === 'light') return uiTheme.buttonFillLight;
 		return uiTheme.buttonFill;
 	});

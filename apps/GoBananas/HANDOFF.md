@@ -682,6 +682,32 @@ playfield 由 428 → **526px**（+23% 線性、**+51% 面積**）。
 
 驗證：check_undefined_refs / check_assets 全過、build 通過、實跑載入正常零 console 錯誤。
 
+## 5.38 送審意見「bet control bar 不清楚/難用/不符 UX 慣例」— 稽核與第一批修正（2026-07-22 第二十八輪）
+
+這條與先前的「poor bet ui bar / low quality asset」不同：前者講**美術品質**，這條講**可用性與慣例符合度**。逐一查程式碼後的稽核結果：
+
+### 高風險（最可能被扣分，**尚未處理**，等使用者決定）
+
+| # | 問題 | 證據 |
+|---|------|------|
+| U1 | **側欄佈局本身不符慣例** | 業界幾乎一律用底部橫向控制列。側欄是本專案自行改的，而這條意見出現在改動之後，時間點吻合。`betBarLayout: 'bottom'` 一行即可切回，`LayoutDesktop` 程式碼完整保留 |
+| U2 | **主次關係顛倒** | 量測：BUY BONUS **360**、SPIN **155** —— 主要動作只有付費購買鍵的 **43%**。責任博弈角度亦不利 |
+| U3 | **下注控制被拆散** | `−/BET/+`、Spin 在右欄，Buy Bonus 在左欄，相關動作橫跨整個畫面 |
+
+> 使用者決定：**佈局先不動**，先修其餘項目。
+
+### 本輪已修
+
+- **U4 BET 面板可點但看不出來** —— `LabelBet` 有 `onpress` 開 `betAmountMenu`（可正常運作，一度誤判為無入口），但 BALANCE / WIN / BET 三塊外觀完全相同、只有 BET 可點且無任何提示。`UiLabel` 新增 `interactive` prop，開啟時畫一個 chevron；由主題 `labelAffordance` 控制（**預設 false → WildParty 不受影響**）
+- **U7 turbo/autoplay 開關狀態不明顯** —— `backgroundColor` 原本完全沒考慮 `active`，開啟時只有描邊 6→10 變粗。主題新增 `buttonFillActive`（**預設 null → 維持原行為**），GoBananas 設深琥珀 `0x6b4a10`，開啟時整顆按鈕換底色
+- **U8 `−`/`+` 過小** —— 60 單位，比 autoSpin(90) 還小卻是最高頻操作。放大 0.4 → 0.5（60→75，連帶放大點擊區），與 spin 仍有約 13px 間隙
+
+### 尚未處理
+
+- U5 賠付表/規則/設定/音效全藏在漢堡選單裡（審核常要求賠付表易取得）
+- U6 圖示無文字標籤
+- U9 停用狀態僅靠 tint、U10 側欄在接近正方形視窗會被壓縮
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`
