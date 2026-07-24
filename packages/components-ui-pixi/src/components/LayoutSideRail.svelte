@@ -118,23 +118,25 @@
 	</Container>
 
 	<!-- Spin pod: BET in the middle, -/+ flanking, autospin/turbo below.
-	     ButtonBet is UI_BASE_SIZE * 1.12 internally, so at the old 1.05 layout
-	     scale it measured 176px across and its gold trim ran into the -/+ pair
-	     at ±118. Trimmed to 0.92 (155px) and spread back to ±128, which leaves
-	     ~14px of air on each side while the outer buttons still clear the canvas
-	     edge and the reel frame. -->
-	<Container x={rightX} y={box.height * 0.64} scale={0.92}>
+	     Enlarged so the primary action carries the weight it should: bet 185px
+	     across (ButtonBet is UI_BASE_SIZE * 1.12 internally, x1.1 here) and the
+	     steppers 87px, spread to ±148. Every clearance was measured against the
+	     things it could collide with, on a 1920x1080 standard box:
+	       · bet ↔ stepper       12px
+	       · outer edge → canvas  9px
+	       · inner edge → reel frame right edge (1468) 61px
+	       · above → BET readout 156px, below → autoSpin 57px
+	     Going further (1.15 / ±155) puts the outer stepper exactly on the canvas
+	     edge, so this is one step inside the limit. -->
+	<Container x={rightX} y={box.height * 0.64} scale={1.1}>
 		{@render props.buttonBet({ anchor: 0.5 })}
 	</Container>
 
-	<!-- steppers enlarged 0.4 -> 0.5 (60 -> 75 across): they were the smallest
-	     controls on screen despite being the most frequently pressed, and the
-	     scale also grows the hit area. Still clears the bet button by ~13px. -->
-	<Container x={rightX - 128} y={box.height * 0.64} scale={0.5}>
+	<Container x={rightX - 148} y={box.height * 0.64} scale={0.58}>
 		{@render props.buttonDecrease({ anchor: 0.5 })}
 	</Container>
 
-	<Container x={rightX + 128} y={box.height * 0.64} scale={0.5}>
+	<Container x={rightX + 148} y={box.height * 0.64} scale={0.58}>
 		{@render props.buttonIncrease({ anchor: 0.5 })}
 	</Container>
 
