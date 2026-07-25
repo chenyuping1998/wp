@@ -1152,6 +1152,47 @@ PAYTABLE / INFO / SOUND / SETTINGS 從側欄收回選單，只留 BUY BONUS 與 
 
 驗證缺口:實機未截圖(面板隱藏)。book 資料交集邏輯已靜態確認、反應性改用 Tween 消除疑慮、build 通過。若仍不亮,下一個假設是 winLinesShow 未達 ExpandingWilds 或 phase 非 idle,但反應性是最高機率的原因。
 
+## 5.53 巡查：修 phase 反應性真 bug + pulse 計時器優化 + 更正錯誤歸因（2026-07-24）
+
+一輪主動巡查,鎖定我已證實會造成實際畫面錯誤的兩類問題(Pixi v7/v8 混用、Svelte 5 陣列元素反應性)。
+
+### 真 bug:runTakeover 寫在原始物件上,phase 不發信號
+
+`expandingWildNew` 建的是普通物件字面值,推進 `wilds` 後把**原始參照**傳給 `runTakeover`。Svelte 把陣列 proxy 化了,但該參照仍指向 proxy 底下的原始物件 —— 寫 `entry.phase = 'idle'` 繞過 set trap,**不觸發重繪**。
+
+`phase` 正是這兩個區塊的開關:不透明蓋板(line 321)、底下個別 W 符號(line 340)。所以它們停在舊狀態直到陣列下次被整體重建(例如又有新百搭出現)。
+
+**這解釋了先前回報過的症狀** —— 「下層還是有圖案轉出,看起來會很不自然」、任務 #17「結束不露底下個別 W」。當時是用蓋板繞過,沒有根治。
+
+修法:`const entry = wilds.find((w) => w.reel === created.reel) ?? created` —— 從 state 陣列取回 proxy 再改。對照組佐證診斷:`expandingWildsUpdate` 本來就用 `wilds.find()`(proxy),它的倍率更新從來沒出過問題。
+
+### 更正 5.52 的錯誤歸因
+
+5.52 我把中獎框不亮歸因於「`for...of` 迴圈對元素賦值沒有反應性」—— **這個說法是錯的**。`for (const entry of wilds)` 迭代的是 proxy,元素也是 proxy,寫入會正常發信號。
+
+真正讓框不亮的原因較可能是**時序**(`winLinesHide` 在約 0.5s 的快速演繹結束就清掉)或**測試的那幾手百搭剛好沒參與連線**。改成 Tween 驅動確實修掉時序那條,但成因歸因講錯了,在此更正,避免錯的解釋留在紀錄裡。
+
+### 效能:pulse 計時器改為按需運轉
+
+`ExpandingWilds` 的 pulse 計時器從掛載起一直跑,每秒約 42 次更新 `$state`。但 `pulse` 只被 `auraPulse`/`winPulse` 使用,而兩者只在 `{#each wilds}` 內呼叫 —— 基礎遊戲百搭數為 0,等於整場都在更新沒人讀的狀態。改用 `$effect` 綁 `wilds.length`,清理函式停表。
+
+### 過期註解(會誤導)
+
+- `railWidth` 標「sideRail only」,實際 compactBottom 也用它定位 Buy Bonus
+- `betBarScale` 只提「sideRail 時忽略」,漏了 compactBottom
+
+### 檢查通過、非缺陷
+
+- **Pixi v7 舊 API 103 處**,但逐個 `draw` 函式檢查過 —— **沒有任何單一函式混用 v7/v8**,只是 deprecated 能跑。技術債非缺陷。
+- 計時器/rAF 清理全部正常(`rAF=2/cancel=1` 是「起始+遞迴重掛+一個清理」的正常樣式)。
+- `StickyPrizes` 的 `landedAt` 也寫在原始物件上,但被每幀 rAF 輪詢讀取、不靠信號 —— 脆弱但目前正確,優先度低。
+- 兩支檢查腳本通過(77 資源路徑、無未定義引用)、無 TODO/FIXME、主題欄位無死碼。
+
+### 待決定(未動)
+
+1. **`LOADING xx%` 幾乎看不到**:`AssetsLoader` 是 `{#if preLoaded}` 才渲染子元件,讀取畫面出現時預載已完成,進度條動畫實為裝飾。要處理得動載入策略。
+2. **`pixi-svelte/dist` 進 git**(60 檔、無 gitignore)。因 `main` 指向 dist 且無 `prepare` 腳本,**現在必須 commit 否則新 clone 會壞**。乾淨解是加 `"prepare": "svelte-package"` 再 gitignore,但動到 repo 結構且 WildParty 也吃,未擅自改。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

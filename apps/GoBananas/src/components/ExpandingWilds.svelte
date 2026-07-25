@@ -185,15 +185,36 @@
 		};
 	};
 
-	onMount(() => {
+	onMount(() => () => cancelAnimationFrame(rafId));
+
+	// The pulse clock only feeds auraPulse/winPulse, and both are called only from
+	// inside the {#each wilds} block — so with no locked reels nothing reads it.
+	// It used to run unconditionally from mount, updating $state ~42x a second for
+	// the whole session even though base game never has an expanding wild. Tie it
+	// to the list instead: the effect re-runs when wilds becomes empty or non-empty
+	// and its cleanup stops the timer.
+	$effect(() => {
+		if (wilds.length === 0) return;
 		const id = setInterval(() => (pulse = Date.now()), 24);
-		return () => {
-			clearInterval(id);
-			cancelAnimationFrame(rafId);
-		};
+		return () => clearInterval(id);
 	});
 
-	const runTakeover = async (entry: WildEntry) => {
+	const runTakeover = async (created: WildEntry) => {
+		// Mutate through the $state proxy, not the object the handler built.
+		//
+		// expandingWildNew creates a plain object literal and pushes it with
+		// `wilds = [...]`. Svelte then proxies the array, but the caller's reference
+		// still points at the RAW object — so `created.phase = 'idle'` writes past
+		// the proxy's set trap and nothing is invalidated. The two blocks gated on
+		// `{#if wild.phase !== 'idle'}` (the opaque backing and the individual W
+		// sprites) therefore keep rendering with the stale phase until something
+		// else reassigns the array — which is why the old W layer stayed visible
+		// under the finished panel on later spins.
+		//
+		// Reading it back out of `wilds` yields the proxy, so every write below
+		// invalidates properly. (expandingWildsUpdate already does this via
+		// wilds.find, which is why its multiplier updates were never affected.)
+		const entry = wilds.find((w) => w.reel === created.reel) ?? created;
 		const x = getSymbolX(entry.reel);
 
 		// beat 1 — the reel turns Wild, cell by cell, out of the landed one

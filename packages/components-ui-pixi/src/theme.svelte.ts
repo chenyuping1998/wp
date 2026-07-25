@@ -88,7 +88,8 @@ export const uiTheme = $state({
 	// bar stays flush with the canvas floor and only its height above that edge
 	// changes. Below 1 gives the board more room — useful for games whose reel
 	// housing has a wide structural margin. 1 keeps the original layout.
-	// Ignored when betBarLayout is 'sideRail'.
+	// Ignored unless betBarLayout is 'bottom' — the sideRail and compactBottom
+	// layouts size their own controls.
 	betBarScale: 1,
 
 	// 'bottom'        — the original single bar across the foot of the screen
@@ -124,7 +125,9 @@ export const uiTheme = $state({
 
 	// Width of one side rail — its centre line sits at railWidth / 2 in from the
 	// canvas edge. Raise it to pull both rails further out toward the edges when
-	// a game's reel housing is wide. sideRail only.
+	// a game's reel housing is wide. Also used by compactBottom to place the
+	// off-strip Buy Bonus on that same centre line, so the CTA sits in the same
+	// spot whichever of the two layouts is active.
 	railWidth: 400,
 
 	// Scale of the readout panels and of the Buy Bonus CTA on the side rail.
