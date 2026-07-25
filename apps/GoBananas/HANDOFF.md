@@ -1138,6 +1138,20 @@ PAYTABLE / INFO / SOUND / SETTINGS 從側欄收回選單，只留 BUY BONUS 與 
 
 驗證缺口同前：實機未截圖（面板隱藏），幾何以源圖座標靜態核對命中金框，build 通過。
 
+## 5.52 修正：擴展百搭中獎框「亮不起來」的真因（反應性 + 時序）（2026-07-24）
+
+使用者回報卡片金框始終不亮。查了 book 資料與程式,找到兩個真因(都不是幾何):
+
+**資料面(排除誤解)**:解析實際 BONUS book,大多數中獎是 reels 0,1,2 的左置三連,而百搭常在 reel 4 —— 這種情況百搭「沒參與連線」,不亮是正確的。但百搭是黏性的,好的免費遊戲後期會累積到 3–4 輪(book 540 index 56:百搭在 0,1,3,4,連線跨 0,1,交集有值),那時就會參與。所以 `winningReels` 判斷本身沒錯。
+
+**程式 bug(真因)**:亮框原本用 `{#if wild.winHold}` 這個**純 boolean** 當條件,問題有二:
+1. `winHold` 在 `for (const entry of wilds)` 迴圈裡直接 `entry.winHold = true`。Svelte 5 對「陣列元素的純值屬性就地賦值」的反應性**不保證觸發** —— 同迴圈的 `badgeScale.set()`/`winFlash.set()` 能動純粹是因為 Tween 自帶反應性,不靠 entry 的 proxy。
+2. `winLinesHide` 在連線演繹一結束就把 `winHold` 設回 false,而免費遊戲走 FAST 時序(整段約 0.5s),亮框可能一閃就被清掉。
+
+**修法**:整個亮框改由 **`winFlash`(Tween)單一驅動**。Tween 的 `.current` 一定有反應性;包絡改成「瞬間全亮 → 持平 0.72 撐 520ms → 480ms 淡出」,約 1.1s 明確可見、不受 `winLinesHide` 影響。所有 alpha 乘上 `winGlow = winFlash.current`,峰值明確亮、結束確實歸零,`winPulse` 只負責疊在上面的微閃。`winHold` 欄位完全移除,idle 呼吸光改用 `winFlash.current <= 0.01` 當閘門。合併原本分開的「sustained 框 + tail」兩區塊為一。
+
+驗證缺口:實機未截圖(面板隱藏)。book 資料交集邏輯已靜態確認、反應性改用 Tween 消除疑慮、build 通過。若仍不亮,下一個假設是 winLinesShow 未達 ExpandingWilds 或 phase 非 idle,但反應性是最高機率的原因。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

@@ -53,14 +53,11 @@
 		merge: Tween<number>;
 		banner: Tween<number>;
 		badgeScale: Tween<number>;
+		// Drives the whole win light-up on the card's gold frame. A Tween, not a
+		// boolean, on purpose: a plain-boolean mutation on an array element is not
+		// reliably reactive in Svelte 5, and a Tween also runs a fixed envelope that
+		// stays visible even when the free-game volley hides the lines after ~0.5s.
 		winFlash: Tween<number>;
-		// Held for as long as the win lines are on screen. winFlash is a one-shot
-		// accent that decays in under a second, so on its own the locked reel went
-		// dark while the ordinary winning symbols carried on pulsing — the reel that
-		// caused the win was the only thing on the board not lit up. This keeps the
-		// full-reel frame breathing for the whole presentation, matching what
-		// SymbolWinAnim does for a normal symbol.
-		winHold: boolean;
 	};
 
 	const context = getContext();
@@ -243,7 +240,6 @@
 				banner: new Tween(0),
 				badgeScale: new Tween(0),
 				winFlash: new Tween(0),
-				winHold: false,
 			};
 			wilds = [...wilds.filter((w) => w.reel !== reel), entry];
 			await runTakeover(entry);
@@ -277,7 +273,6 @@
 				banner: new Tween(1),
 				badgeScale: new Tween(1),
 				winFlash: new Tween(0),
-				winHold: false,
 			}));
 		},
 
@@ -293,28 +288,26 @@
 			const winningReels = new Set(wins.flatMap((win) => win.positions.map((p) => p.reel)));
 			for (const entry of wilds) {
 				if (entry.phase !== 'idle' || !winningReels.has(entry.reel)) continue;
-				// sustained: the reel stays lit for as long as the lines are up
-				entry.winHold = true;
+				// The whole light-up is driven by this one Tween. It used to be gated
+				// by a separate winHold boolean, but (a) a plain-boolean mutation on an
+				// array element is not reliably reactive in Svelte 5 — the badge below
+				// animates only because a Tween carries its own reactivity — and (b)
+				// winLinesHide cleared the boolean the instant the volley ended, which
+				// in a fast free-game volley (~0.5s) killed the frame before it could
+				// register. A Tween is always reactive and runs its full envelope
+				// regardless of when the lines are hidden.
+				//
+				// Envelope: snap to full, hold bright, then a long fade — ~1.1s of
+				// clearly-lit frame, not a flash. winPulse adds the shimmer on top.
 				entry.badgeScale.set(1.45, { duration: 200, easing: cubicOut }).then(() => {
 					entry.badgeScale.set(1, { duration: 260, easing: cubicOut });
 				});
-				// one-shot on top, as the impact accent
-				entry.winFlash.set(1, { duration: 160, easing: cubicOut }).then(() => {
-					entry.winFlash.set(0.25, { duration: 220, easing: cubicOut }).then(() => {
-						entry.winFlash.set(0.85, { duration: 180, easing: cubicOut }).then(() => {
-							entry.winFlash.set(0, { duration: 420, easing: cubicOut });
-						});
+				entry.winFlash.set(1, { duration: 120, easing: cubicOut }).then(() => {
+					entry.winFlash.set(0.72, { duration: 520 }).then(() => {
+						entry.winFlash.set(0, { duration: 480, easing: cubicOut });
 					});
 				});
 			}
-		},
-
-		winLinesHide: () => {
-			for (const entry of wilds) entry.winHold = false;
-		},
-
-		winLinesClear: () => {
-			for (const entry of wilds) entry.winHold = false;
 		},
 	});
 </script>
@@ -410,10 +403,10 @@
 			/>
 		{/if}
 
-		{#if wild.phase === 'idle' && !wild.winHold}
+		{@const winGlow = wild.winFlash.current}
+		{#if wild.phase === 'idle' && winGlow <= 0.01}
 			<!-- breathing aura so the locked reel keeps reading alive. Suppressed
-			     while the reel is winning, so the brighter win frame stands alone and
-			     the tempo change is not muddied by the slow idle beat underneath. -->
+			     while the reel is winning, so the brighter win frame stands alone. -->
 			<Graphics
 				draw={(g: PixiGraphics) => {
 					const glow = auraPulse(wild.reel);
@@ -427,17 +420,20 @@
 		{/if}
 
 		<!--
-			Plan B win light-up — on the wild CARD's own gold frame, not a halo around
-			the reel. The wx card art (256x1280) draws its frame inset ~14px from the
-			edge; rendered at SYMBOL_SIZE x BOARD_SIZES.height the scale is 0.461, so
-			that inset is ~6.5px and the corner radius ~9px on screen. The highlight
-			traces exactly that line so it reads as the card's frame catching light,
-			pulsing on the faster winPulse beat with winFlash spiking it brightest as
-			the win lands. Nothing is drawn outside the card.
+			Win light-up — on the wild CARD's own gold frame, not a halo around the
+			reel. The wx card art (256x1280) draws its frame inset ~14px from the edge;
+			rendered at SYMBOL_SIZE x BOARD_SIZES.height (scale 0.461) that inset is
+			~6.5px and the corner radius ~9px on screen, so the highlight traces exactly
+			the gold frame line.
+
+			Driven entirely by winFlash (a Tween, so always reactive and running its
+			full ~1.1s envelope) — see the winLinesShow handler for why the old winHold
+			boolean was dropped. Every alpha is scaled by winGlow so the frame is
+			plainly lit at the peak and fully gone at the end; winPulse only shimmers on
+			top of it.
 		-->
-		{#if wild.winHold}
+		{#if winGlow > 0.01}
 			{@const p = winPulse(wild.reel)}
-			{@const fl = wild.winFlash.current}
 			{@const left = x - SYMBOL_SIZE / 2}
 			{@const inset = SYMBOL_SIZE * (14 / 256)}
 			{@const fx0 = left + inset}
@@ -450,39 +446,13 @@
 					g.clear();
 					// soft bloom hugging the frame, so the gold reads as glowing metal
 					g.roundRect(fx0, fy0, fw, fh, rad);
-					g.stroke({ width: 12, color: 0xffe050, alpha: 0.12 + 0.16 * p + 0.22 * fl });
+					g.stroke({ width: 13, color: 0xffe050, alpha: winGlow * (0.3 + 0.18 * p) });
 					// the frame line itself, bright — this is what "lights up"
 					g.roundRect(fx0, fy0, fw, fh, rad);
-					g.stroke({ width: 5, color: 0xfff3bd, alpha: 0.55 + 0.4 * p + 0.4 * fl });
+					g.stroke({ width: 5, color: 0xfff3bd, alpha: winGlow * (0.85 + 0.15 * p) });
 					// crisp white highlight riding on top of the frame line
 					g.roundRect(fx0, fy0, fw, fh, rad);
-					g.stroke({ width: 2, color: 0xffffff, alpha: 0.35 + 0.35 * p + 0.45 * fl });
-				}}
-			/>
-		{/if}
-
-		<!--
-			Flash tail. winFlash decays over ~1s and outlives winHold (winLinesHide
-			clears the hold, the tween keeps running), so this carries the fade-out
-			after the sustained frame is gone. While winHold is still on, fl is also
-			folded into the frame above — the two together give the border its
-			brightest spike right as the win lands. v8 API; the v7 stroke calls it
-			used before are deprecated and leak state on this shared Graphics.
-		-->
-		{#if wild.winFlash.current > 0 && !wild.winHold}
-			{@const fx = wild.winFlash.current}
-			{@const left = x - SYMBOL_SIZE / 2}
-			{@const inset = SYMBOL_SIZE * (14 / 256)}
-			{@const rad = SYMBOL_SIZE * (20 / 256)}
-			<Graphics
-				draw={(g: PixiGraphics) => {
-					g.clear();
-					// same card-frame line as the sustained highlight, so the fade-out
-					// happens on the frame the win lit up — not a stroke around the reel
-					g.roundRect(left + inset, inset, SYMBOL_SIZE - inset * 2, BOARD_SIZES.height - inset * 2, rad);
-					g.stroke({ width: 10, color: 0xffd43b, alpha: 0.3 * fx });
-					g.roundRect(left + inset, inset, SYMBOL_SIZE - inset * 2, BOARD_SIZES.height - inset * 2, rad);
-					g.stroke({ width: 4, color: 0xfff3bd, alpha: 0.85 * fx });
+					g.stroke({ width: 2, color: 0xffffff, alpha: winGlow * (0.65 + 0.35 * p) });
 				}}
 			/>
 		{/if}
