@@ -1128,6 +1128,16 @@ PAYTABLE / INFO / SOUND / SETTINGS 從側欄收回選單，只留 BUY BONUS 與 
 
 驗證缺口：中獎框實機外觀未截圖（面板隱藏跑不出 FG 中獎的瞬間）。接線與數值邏輯正確、build 通過。使用者改以上傳檢驗。
 
+## 5.51 修正：中獎亮框改描「卡片自己的金框」而非轉輪光暈（2026-07-24）
+
+5.50 的方案 B 我理解錯位置：畫成整條轉輪外圍的發光框。使用者要的是**擴展百搭卡片（wx 圖）自己那圈金框**在參與得分時亮 —— 「不然百搭有參與連線玩家會沒感覺」。
+
+核對卡片幾何：wx.png 256×1280，畫在盤面 SYMBOL_SIZE×BOARD_SIZES.height（118×590，等比 0.461）。源圖金框 `<rect x=14 y=14 w=228 h=1252 rx=20 stroke-width=8>`，換算到畫面：往內 inset `118×14/256 = 6.45px`、圓角 `118×20/256 = 9.2px`、金框線寬 `8×0.461 = 3.7px`。
+
+改法：把 winHold 的亮框從「轉輪框（含往外 +14 的 halo 與寬 fxGlow sprite）」改成**精確描在卡片金框線上**（inset 6.45、圓角 9.2）：外層柔光暈 12px + 金框亮線 5px（0xfff3bd）+ 白色高光 2px，全部疊在那條金邊。12px 柔光暈的外緣剛好到卡片邊、不溢出。節奏保留 5.50 的 winPulse 快脈衝 + winFlash flash-on。淡出尾巴同步改成描卡片金框、移除往轉輪外的光暈。**畫面上不再有任何東西超出卡片範圍。**
+
+驗證缺口同前：實機未截圖（面板隱藏），幾何以源圖座標靜態核對命中金框，build 通過。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

@@ -427,48 +427,37 @@
 		{/if}
 
 		<!--
-			Plan B win frame. A one-shot flash (winFlash, below) lands the impact;
-			this is the sustained state after it — a bright gold border pulsing on the
-			faster winPulse beat, clearly hotter and quicker than the idle aura it
-			replaces. Still just a frame (no fill over the symbols), rectangular
-			because the unit that won is the whole reel. winFlash is added on top of
-			the pulse so the border spikes brightest right as the win registers.
+			Plan B win light-up — on the wild CARD's own gold frame, not a halo around
+			the reel. The wx card art (256x1280) draws its frame inset ~14px from the
+			edge; rendered at SYMBOL_SIZE x BOARD_SIZES.height the scale is 0.461, so
+			that inset is ~6.5px and the corner radius ~9px on screen. The highlight
+			traces exactly that line so it reads as the card's frame catching light,
+			pulsing on the faster winPulse beat with winFlash spiking it brightest as
+			the win lands. Nothing is drawn outside the card.
 		-->
 		{#if wild.winHold}
 			{@const p = winPulse(wild.reel)}
 			{@const fl = wild.winFlash.current}
 			{@const left = x - SYMBOL_SIZE / 2}
+			{@const inset = SYMBOL_SIZE * (14 / 256)}
+			{@const fx0 = left + inset}
+			{@const fy0 = inset}
+			{@const fw = SYMBOL_SIZE - inset * 2}
+			{@const fh = BOARD_SIZES.height - inset * 2}
+			{@const rad = SYMBOL_SIZE * (20 / 256)}
 			<Graphics
 				draw={(g: PixiGraphics) => {
 					g.clear();
-					// Pixi v8 API (shape, then fill/stroke). The v7 beginFill/lineStyle
-					// calls used elsewhere in this file leak the last fill across the
-					// whole path — the bottom bar rendered solid brass that way, and
-					// here it would have flooded the reel instead of framing it.
-					// faint inner wash, brighter than idle so the reel reads as lit
-					g.roundRect(left, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
-					g.fill({ color: 0xffe050, alpha: 0.1 + 0.12 * p + 0.12 * fl });
-					// broad outer halo
-					g.roundRect(left - 7, -7, SYMBOL_SIZE + 14, BOARD_SIZES.height + 14, 20);
-					g.stroke({ width: 14, color: 0xffe050, alpha: 0.18 + 0.24 * p + 0.25 * fl });
-					// the main bright ring — this is the part that "lights up"
-					g.roundRect(left, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
-					g.stroke({ width: 6, color: 0xfff3bd, alpha: 0.55 + 0.4 * p + 0.4 * fl });
-					// crisp white inner line, so the edge reads sharp against the symbols
-					g.roundRect(left + 6, 6, SYMBOL_SIZE - 12, BOARD_SIZES.height - 12, 10);
-					g.stroke({ width: 2, color: 0xffffff, alpha: 0.3 + 0.35 * p + 0.4 * fl });
+					// soft bloom hugging the frame, so the gold reads as glowing metal
+					g.roundRect(fx0, fy0, fw, fh, rad);
+					g.stroke({ width: 12, color: 0xffe050, alpha: 0.12 + 0.16 * p + 0.22 * fl });
+					// the frame line itself, bright — this is what "lights up"
+					g.roundRect(fx0, fy0, fw, fh, rad);
+					g.stroke({ width: 5, color: 0xfff3bd, alpha: 0.55 + 0.4 * p + 0.4 * fl });
+					// crisp white highlight riding on top of the frame line
+					g.roundRect(fx0, fy0, fw, fh, rad);
+					g.stroke({ width: 2, color: 0xffffff, alpha: 0.35 + 0.35 * p + 0.45 * fl });
 				}}
-			/>
-			<Sprite
-				key="fxGlow"
-				anchor={0.5}
-				{x}
-				y={REEL_CENTER_Y}
-				width={SYMBOL_SIZE * 1.35}
-				height={BOARD_SIZES.height}
-				tint={0xffe98a}
-				blendMode="add"
-				alpha={0.16 + 0.16 * p + 0.2 * fl}
 			/>
 		{/if}
 
@@ -482,25 +471,19 @@
 		-->
 		{#if wild.winFlash.current > 0 && !wild.winHold}
 			{@const fx = wild.winFlash.current}
+			{@const left = x - SYMBOL_SIZE / 2}
+			{@const inset = SYMBOL_SIZE * (14 / 256)}
+			{@const rad = SYMBOL_SIZE * (20 / 256)}
 			<Graphics
 				draw={(g: PixiGraphics) => {
 					g.clear();
-					g.roundRect(x - SYMBOL_SIZE / 2 + 3, 3, SYMBOL_SIZE - 6, BOARD_SIZES.height - 6, 12);
-					g.stroke({ width: 6, color: 0xfff3bd, alpha: 0.9 * fx });
-					g.roundRect(x - SYMBOL_SIZE / 2 - 2, -2, SYMBOL_SIZE + 4, BOARD_SIZES.height + 4, 15);
-					g.stroke({ width: 14, color: 0xffd43b, alpha: 0.35 * fx });
+					// same card-frame line as the sustained highlight, so the fade-out
+					// happens on the frame the win lit up — not a stroke around the reel
+					g.roundRect(left + inset, inset, SYMBOL_SIZE - inset * 2, BOARD_SIZES.height - inset * 2, rad);
+					g.stroke({ width: 10, color: 0xffd43b, alpha: 0.3 * fx });
+					g.roundRect(left + inset, inset, SYMBOL_SIZE - inset * 2, BOARD_SIZES.height - inset * 2, rad);
+					g.stroke({ width: 4, color: 0xfff3bd, alpha: 0.85 * fx });
 				}}
-			/>
-			<Sprite
-				key="fxGlow"
-				anchor={0.5}
-				{x}
-				y={REEL_CENTER_Y}
-				width={SYMBOL_SIZE * 1.25}
-				height={BOARD_SIZES.height}
-				tint={0xffe98a}
-				blendMode="add"
-				alpha={0.3 * fx}
 			/>
 		{/if}
 
