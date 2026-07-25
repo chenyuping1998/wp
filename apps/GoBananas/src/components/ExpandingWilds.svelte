@@ -141,6 +141,13 @@
 	// several locked reels flare in lockstep, which reads as a single object.
 	const auraPulse = (reel: number) => 0.5 + 0.5 * Math.sin(pulse / (540 + reel * 47) + reel * 1.7);
 
+	// Plan B: a distinctly faster beat for a reel that is part of a win. The idle
+	// aura breathes on a ~3.4s period; this runs ~2.5x quicker (~1.3s) so the
+	// change from "locked" to "winning" reads as a shift in tempo, not just
+	// brightness. Per-reel phase, same as auraPulse, so several winning reels do
+	// not flare in lockstep.
+	const winPulse = (reel: number) => 0.5 + 0.5 * Math.sin(pulse / (205 + reel * 17) + reel * 1.7);
+
 	// ── beat 1: which cells have turned, and how far ─────────────────────────
 	// Cells convert in order of distance from the landed one, so the change
 	// visibly spreads out of it rather than appearing all at once.
@@ -403,8 +410,10 @@
 			/>
 		{/if}
 
-		{#if wild.phase === 'idle'}
-			<!-- breathing aura so the locked reel keeps reading alive -->
+		{#if wild.phase === 'idle' && !wild.winHold}
+			<!-- breathing aura so the locked reel keeps reading alive. Suppressed
+			     while the reel is winning, so the brighter win frame stands alone and
+			     the tempo change is not muddied by the slow idle beat underneath. -->
 			<Graphics
 				draw={(g: PixiGraphics) => {
 					const glow = auraPulse(wild.reel);
@@ -418,14 +427,16 @@
 		{/if}
 
 		<!--
-			Sustained win frame. Deliberately built from the same parts as
-			SymbolWinAnim (a soft wash, a bright ring, a thin white inner line, all
-			breathing together) so a locked reel and an ordinary winning symbol read
-			as the same event. Rectangular rather than circular because here the unit
-			that won is the whole reel, which is what the frame has to enclose.
+			Plan B win frame. A one-shot flash (winFlash, below) lands the impact;
+			this is the sustained state after it — a bright gold border pulsing on the
+			faster winPulse beat, clearly hotter and quicker than the idle aura it
+			replaces. Still just a frame (no fill over the symbols), rectangular
+			because the unit that won is the whole reel. winFlash is added on top of
+			the pulse so the border spikes brightest right as the win registers.
 		-->
 		{#if wild.winHold}
-			{@const p = auraPulse(wild.reel)}
+			{@const p = winPulse(wild.reel)}
+			{@const fl = wild.winFlash.current}
 			{@const left = x - SYMBOL_SIZE / 2}
 			<Graphics
 				draw={(g: PixiGraphics) => {
@@ -434,14 +445,18 @@
 					// calls used elsewhere in this file leak the last fill across the
 					// whole path — the bottom bar rendered solid brass that way, and
 					// here it would have flooded the reel instead of framing it.
+					// faint inner wash, brighter than idle so the reel reads as lit
 					g.roundRect(left, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
-					g.fill({ color: 0xffe050, alpha: 0.05 + 0.07 * p });
-					g.roundRect(left - 5, -5, SYMBOL_SIZE + 10, BOARD_SIZES.height + 10, 18);
-					g.stroke({ width: 11, color: 0xffe050, alpha: 0.1 + 0.16 * p });
+					g.fill({ color: 0xffe050, alpha: 0.1 + 0.12 * p + 0.12 * fl });
+					// broad outer halo
+					g.roundRect(left - 7, -7, SYMBOL_SIZE + 14, BOARD_SIZES.height + 14, 20);
+					g.stroke({ width: 14, color: 0xffe050, alpha: 0.18 + 0.24 * p + 0.25 * fl });
+					// the main bright ring — this is the part that "lights up"
 					g.roundRect(left, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
-					g.stroke({ width: 5, color: 0xffe050, alpha: 0.35 + 0.45 * p });
+					g.stroke({ width: 6, color: 0xfff3bd, alpha: 0.55 + 0.4 * p + 0.4 * fl });
+					// crisp white inner line, so the edge reads sharp against the symbols
 					g.roundRect(left + 6, 6, SYMBOL_SIZE - 12, BOARD_SIZES.height - 12, 10);
-					g.stroke({ width: 2, color: 0xffffff, alpha: 0.2 + 0.3 * p });
+					g.stroke({ width: 2, color: 0xffffff, alpha: 0.3 + 0.35 * p + 0.4 * fl });
 				}}
 			/>
 			<Sprite
@@ -449,23 +464,31 @@
 				anchor={0.5}
 				{x}
 				y={REEL_CENTER_Y}
-				width={SYMBOL_SIZE * 1.3}
+				width={SYMBOL_SIZE * 1.35}
 				height={BOARD_SIZES.height}
 				tint={0xffe98a}
 				blendMode="add"
-				alpha={0.1 + 0.12 * p}
+				alpha={0.16 + 0.16 * p + 0.2 * fl}
 			/>
 		{/if}
 
-		{#if wild.winFlash.current > 0}
+		<!--
+			Flash tail. winFlash decays over ~1s and outlives winHold (winLinesHide
+			clears the hold, the tween keeps running), so this carries the fade-out
+			after the sustained frame is gone. While winHold is still on, fl is also
+			folded into the frame above — the two together give the border its
+			brightest spike right as the win lands. v8 API; the v7 stroke calls it
+			used before are deprecated and leak state on this shared Graphics.
+		-->
+		{#if wild.winFlash.current > 0 && !wild.winHold}
 			{@const fx = wild.winFlash.current}
 			<Graphics
 				draw={(g: PixiGraphics) => {
 					g.clear();
-					g.lineStyle(6, 0xfff3bd, 0.9 * fx);
-					g.drawRoundedRect(x - SYMBOL_SIZE / 2 + 3, 3, SYMBOL_SIZE - 6, BOARD_SIZES.height - 6, 12);
-					g.lineStyle(14, 0xffd43b, 0.35 * fx);
-					g.drawRoundedRect(x - SYMBOL_SIZE / 2 - 2, -2, SYMBOL_SIZE + 4, BOARD_SIZES.height + 4, 15);
+					g.roundRect(x - SYMBOL_SIZE / 2 + 3, 3, SYMBOL_SIZE - 6, BOARD_SIZES.height - 6, 12);
+					g.stroke({ width: 6, color: 0xfff3bd, alpha: 0.9 * fx });
+					g.roundRect(x - SYMBOL_SIZE / 2 - 2, -2, SYMBOL_SIZE + 4, BOARD_SIZES.height + 4, 15);
+					g.stroke({ width: 14, color: 0xffd43b, alpha: 0.35 * fx });
 				}}
 			/>
 			<Sprite

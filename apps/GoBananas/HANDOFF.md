@@ -1113,6 +1113,21 @@ PAYTABLE / INFO / SOUND / SETTINGS 從側欄收回選單，只留 BUY BONUS 與 
 
 驗證缺口：這批的實機外觀（外框與盤面框的實際間距、hover 貼合、呼吸中線觀感）未能截圖 —— Browser 面板隱藏、動畫時鐘凍結跑不出主盤面。版面座標以靜態計算確認（群組左到右嚴格遞增、控制項不出畫布、盤面距框推算約 12px），兩個 app build 通過。使用者已知並改以上傳檢驗。
 
+## 5.50 讀數放大 + 擴展百搭中獎框「方案 B」（2026-07-24）
+
+**讀數放大**：底部條 BALANCE/WIN/BET 的 `READOUT_SCALE` 0.6→0.68（+13%）。不是憑感覺——用 resvg 量 Titan One 在各分割線圍出的格子裡的實際字寬：最寬的 `$1,000.00` 161、`$10,000.00` 大獎 177（WIN 格可用約 210）、`$100.00` 押注 130（清過向下箭頭），全部在格內。再高會讓最大獎碰到 WIN 分隔線。
+
+**擴展百搭中獎框方案 B**：5.45 的 winHold 用的是和 idle 相同的 `auraPulse`（週期約 3.4s），所以中獎時只是變亮、節奏沒變，落差不夠。方案 B 補上這個落差：
+
+- 新增 `winPulse`，週期約 1.3s（約 idle 的 2.5 倍快），中獎框改用它 —— idle→中獎 讀作「節奏變快」而非只是變亮。
+- 中獎時**關掉 idle 呼吸光**（`phase==='idle' && !winHold`），讓亮框獨佔、對比乾淨。
+- 把一次性 `winFlash` 的值疊進中獎框（fill/halo/ring/inner 四層都加 `fl` 項），邊框在中獎落定的瞬間衝到最亮 —— 這就是「啪一下亮起」的 flash-on。
+- 主亮環顏色由 `0xffe050` 提到 `0xfff3bd`（更白更烫），峰值 alpha 到 ~0.95。
+
+順帶修：獨立的 winFlash 淡出尾巴區塊原本用 Pixi v7 的 `lineStyle`/`drawRoundedRect`（在共用 Graphics 上會漏狀態），改成 v8 shape→stroke，並加 `&& !wild.winHold` 條件，讓它只在 winHold 清除後負責淡出，不和新框重複畫。
+
+驗證缺口：中獎框實機外觀未截圖（面板隱藏跑不出 FG 中獎的瞬間）。接線與數值邏輯正確、build 通過。使用者改以上傳檢驗。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

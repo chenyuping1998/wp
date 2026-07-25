@@ -47,7 +47,12 @@
 	// plates — a box per readout inside a box is what made the first version look
 	// cluttered, and the plates were wide enough that Balance and Win overlapped,
 	// with Win's plate drawn over Balance's text.
-	const READOUT_SCALE = 0.6;
+	// Enlarged from 0.6 to 0.68 (+13%). Measured against the divider-bounded cells
+	// with the widest realistic strings in Titan One: BALANCE label 143, a
+	// "$10,000.00" win 177 (Win cell usable ~210), a "$100.00" bet 130 clearing the
+	// chevron — all inside their cells. Going higher risks the largest wins
+	// touching the Win rule.
+	const READOUT_SCALE = 0.68;
 	// UiLabel stacks label at y=0 and value at y=UI_BASE_FONT_SIZE, so the block is
 	// two lines tall; lift it by half of that to sit centred on the bar.
 	const readoutTop = $derived(barMid - UI_BASE_FONT_SIZE * READOUT_SCALE);
