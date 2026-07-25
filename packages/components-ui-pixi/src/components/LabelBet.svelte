@@ -10,6 +10,10 @@
 
 	type Props = {
 		stacked?: boolean;
+		// Draw the framed plate behind the readout. On by default so every existing
+		// layout is unchanged; the compact bottom bar turns it off, because there the
+		// whole strip is one frame and a plate per readout is a box inside a box.
+		tiled?: boolean;
 	};
 
 	const props: Props = $props();
@@ -34,7 +38,7 @@
 	onpointerout={() => (hovered = false)}
 >
 	<UiLabel
-		tiled
+		tiled={props.tiled ?? true}
 		interactive
 		hovered={hovered && !disabled}
 		{label}

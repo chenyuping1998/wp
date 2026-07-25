@@ -69,8 +69,8 @@
 		g.clear();
 		if (ambienceColor === null) return;
 		const layout = context.stateGameDerived.boardLayout();
-		const w = layout.width * 1.06;
-		const h = layout.height * 1.06;
+		const w = layout.width * layout.scale * 1.06;
+		const h = layout.height * layout.scale * 1.06;
 		const x = layout.x - w / 2;
 		const y = layout.y - h / 2;
 		const layers: [number, number][] = [
@@ -109,8 +109,8 @@
 		key="reelhouse"
 		x={context.stateGameDerived.boardLayout().x}
 		y={context.stateGameDerived.boardLayout().y}
-		width={context.stateGameDerived.boardLayout().width * SPINE_SCALE.width}
-		height={context.stateGameDerived.boardLayout().height * SPINE_SCALE.height}
+		width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * SPINE_SCALE.width}
+		height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * SPINE_SCALE.height}
 	>
 		<SpineTrack
 			trackIndex={0}
@@ -140,8 +140,8 @@
 	anchor={0.5}
 	x={context.stateGameDerived.boardLayout().x + impact.x}
 	y={context.stateGameDerived.boardLayout().y + impact.y}
-	width={context.stateGameDerived.boardLayout().width * FRAME_SCALE}
-	height={context.stateGameDerived.boardLayout().height * FRAME_SCALE}
+	width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
+	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
 />
 
 <Sprite
@@ -149,8 +149,8 @@
 	anchor={0.5}
 	x={context.stateGameDerived.boardLayout().x + impact.x}
 	y={context.stateGameDerived.boardLayout().y + impact.y}
-	width={context.stateGameDerived.boardLayout().width * FRAME_SCALE}
-	height={context.stateGameDerived.boardLayout().height * FRAME_SCALE}
+	width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
+	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
 />
 
 {#if impact.flash > 0}
@@ -160,8 +160,8 @@
 		anchor={0.5}
 		x={context.stateGameDerived.boardLayout().x + impact.x}
 		y={context.stateGameDerived.boardLayout().y + impact.y}
-		width={context.stateGameDerived.boardLayout().width * FRAME_SCALE}
-		height={context.stateGameDerived.boardLayout().height * FRAME_SCALE}
+		width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
+		height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
 		blendMode="add"
 		alpha={impact.flash}
 	/>

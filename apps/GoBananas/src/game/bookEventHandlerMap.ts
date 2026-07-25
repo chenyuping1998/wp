@@ -149,13 +149,25 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 
 		eventEmitter.broadcast({ type: 'winLinesHide' });
 
-		// remembered for the idle replay once every event in the round has run
-		lastWinLines = winLineData;
+		// Remembered for the idle replay, but only for base-game wins. A free
+		// game or super spin tears the board down to base idle when it ends
+		// (finalWin), so replaying a feature spin's lines afterwards would draw
+		// them over symbols that are no longer there — the board the player is
+		// looking at is not the board those lines were won on.
+		if (stateGame.gameType === 'basegame') lastWinLines = winLineData;
+		else lastWinLines = [];
 	},
 	setTotalWin: async (bookEvent: BookEventOfType<'setTotalWin'>) => {
 		stateBet.winBookEventAmount = bookEvent.amount;
 	},
 	freeSpinTrigger: async (bookEvent: BookEventOfType<'freeSpinTrigger'>) => {
+		// The base spin that triggered this may itself have paid, recording its win
+		// lines for the idle replay. But the board is about to become a free game
+		// and then be torn down to base idle, so those lines must not survive to be
+		// replayed afterwards — clear them now, before any free spin that loses
+		// throughout would leave them as the last thing recorded.
+		lastWinLines = [];
+
 		// Scatters landed on reels 3/4/5 — silence everything and ring the classic
 		// free-game trigger bell, holding the moment for ~2s before the payoff.
 		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_main' });

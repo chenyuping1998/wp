@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
 	import { Container, Graphics, Text, Sprite } from 'pixi-svelte';
 	import { FadeContainer } from 'components-pixi';
 	import { MainContainer } from 'components-layout';
@@ -18,6 +18,32 @@
 
 	let loadingType = $state<'start' | 'transition'>('start');
 	let pulseTick = $state(0);
+
+	// Gameplay tips cycling under the progress bar, so the wait teaches the
+	// features instead of just counting. Every line is checked against the rules
+	// modal (components/ui/ModalGameRules) — note in particular that it takes 4 or
+	// 5 Scatters here, not 3, and that multipliers ADD rather than multiply.
+	const TIPS = [
+		'4 OR 5 SCATTERS AWARD 12 OR 15 FREE SPINS',
+		'IN FREE SPINS EVERY WILD EXPANDS TO FILL ITS REEL',
+		'EXPANDED WILDS STICK FOR THE REST OF THE FEATURE',
+		'EACH EXPANDED WILD CARRIES A 2×–50× MULTIPLIER',
+		'MULTIPLIERS ON A WINNING LINE ARE ADDED TOGETHER',
+		'SUPER SPIN: EVERY COIN RESETS THE RESPINS TO 3',
+	];
+	const TIP_MS = 3400;
+	// pulseTick already advances every 32ms for the title pulse — reuse it as the
+	// tip clock rather than starting a second timer
+	const tipElapsed = $derived(pulseTick * 32);
+	const tipIndex = $derived(Math.floor(tipElapsed / TIP_MS) % TIPS.length);
+	// fade in over the first 12% of a tip's turn and out over the last 12%, so
+	// lines cross-dissolve instead of snapping
+	const tipAlpha = $derived.by(() => {
+		const p = (tipElapsed % TIP_MS) / TIP_MS;
+		if (p < 0.12) return p / 0.12;
+		if (p > 0.88) return (1 - p) / 0.12;
+		return 1;
+	});
 
 	// Animate progress bar smoothly
 	let animatedProgress = $state(0);
@@ -111,17 +137,24 @@
 				}}
 			/>
 
-			<!-- Subtitle -->
+			<!--
+				Subtitle and the loading line below both sit at 12–15px, which is where
+				Titan One stops working: it is a heavy rounded display face, and at that
+				size its counters close up and "10,000X" turns to mush. They use the body
+				stack instead — the same split the rules and paytable modals already make
+				(see game/fonts.ts). The 52px title above keeps the display face, which is
+				what it is for.
+			-->
 			<Text
 				anchor={0.5}
 				y={65}
 				text="5X5, 15 LINES — MAX WIN 10,000X"
 				style={{
-					fontFamily: GAME_FONT,
-					fontSize: 14,
-					fontWeight: GAME_FONT_WEIGHT,
-					fill: 0xf5e3c3,
-					letterSpacing: 3,
+					fontFamily: BODY_FONT,
+					fontSize: 15,
+					fontWeight: '600',
+					fill: 0xf7ead6,
+					letterSpacing: 2.5,
 				}}
 			/>
 		</Container>
@@ -151,18 +184,43 @@
 				}}
 			/>
 
-			<!-- Loading text -->
+			<!--
+				Progress readout — percentage only. It used to switch to "TAP TO
+				CONTINUE" once loading finished, which put two versions of the same
+				instruction on screen at once: this one and the far larger "PRESS
+				ANYWHERE TO CONTINUE" across the foot (PressToContinue.svelte). The big
+				one wins, so this line simply retires and the tip moves up into the space
+				it leaves — the swap happens on the single frame the bar fills and the
+				bottom prompt appears, so nothing visibly jumps.
+			-->
+			{#if !context.stateApp.loaded}
+				<Text
+					anchor={0.5}
+					y={20}
+					text={`LOADING ${Math.round(animatedProgress)}%`}
+					style={{
+						fontFamily: BODY_FONT,
+						fontSize: 13,
+						fontWeight: '600',
+						// lifted off the previous muted tan, which was dim at 13px against
+						// the dark vignette
+						fill: 0xe8d3b6,
+						letterSpacing: 2,
+					}}
+				/>
+			{/if}
+
+			<!-- rotating gameplay tip -->
 			<Text
 				anchor={0.5}
-				y={20}
-				text={context.stateApp.loaded
-					? 'TAP TO CONTINUE'
-					: `LOADING ${Math.round(animatedProgress)}%`}
+				y={context.stateApp.loaded ? 20 : 48}
+				alpha={tipAlpha}
+				text={TIPS[tipIndex]}
 				style={{
-					fontFamily: GAME_FONT,
-					fontSize: 12,
-					fontWeight: GAME_FONT_WEIGHT,
-					fill: 0xd9bfa0,
+					fontFamily: BODY_FONT,
+					fontSize: 13,
+					fontWeight: '600',
+					fill: 0xffd75e,
 					letterSpacing: 2,
 				}}
 			/>

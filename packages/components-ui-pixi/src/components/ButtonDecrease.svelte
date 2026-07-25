@@ -25,4 +25,4 @@
 	};
 </script>
 
-<UiButton {...props} {sizes} {onpress} {disabled} icon="decrease" noHover />
+<UiButton {...props} {sizes} {onpress} {disabled} icon="decrease" />

@@ -103,7 +103,10 @@
 				fontFamily: uiTheme.fontFamily,
 				fontWeight: uiTheme.fontWeight,
 				fontSize: UI_BASE_FONT_SIZE * 0.68,
-				fill: 0xffffff,
+				// themed, not hardcoded white: on GoBananas' olive plate the white
+				// read as a different game's button sitting on the board. Defaults to
+				// white, so Wild Party is unchanged.
+				fill: uiTheme.buyBonusLabelFill,
 			}}
 		/>
 	{/snippet}

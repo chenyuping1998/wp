@@ -10,6 +10,7 @@
 	import LayoutLandscape from './LayoutLandscape.svelte';
 	import LayoutTablet from './LayoutTablet.svelte';
 	import LayoutSideRail from './LayoutSideRail.svelte';
+	import LayoutBottomBar from './LayoutBottomBar.svelte';
 	import { uiTheme } from '../theme.svelte';
 	import LabelBalance from './LabelBalance.svelte';
 	import LabelWin from './LabelWin.svelte';
@@ -43,11 +44,31 @@
 		tablet: LayoutTablet,
 	};
 
-	// Portrait keeps the bottom bar whatever the theme asks for — there is no
-	// horizontal room for rails on a 1080x1920 box.
+	const WIDE_LAYOUT_MAP = {
+		sideRail: LayoutSideRail,
+		compactBottom: LayoutBottomBar,
+	};
+
+	// Runtime override, so the arrangements can be compared on a build that is
+	// already deployed instead of rebuilding to switch:
+	//
+	//   localStorage.setItem('betBarLayout', 'sideRail')       previous layout
+	//   localStorage.setItem('betBarLayout', 'compactBottom')  the strip
+	//   localStorage.removeItem('betBarLayout')                back to the game's own
+	//
+	// Reading it once at module scope is deliberate — the layout is chosen when the
+	// UI mounts, and a value that changed mid-session would only confuse.
+	const override =
+		typeof localStorage !== 'undefined' ? localStorage.getItem('betBarLayout') : null;
+	const requested = $derived(
+		override && override in WIDE_LAYOUT_MAP ? override : uiTheme.betBarLayout,
+	);
+
+	// Portrait keeps the full bottom bar whatever the theme asks for — there is no
+	// horizontal room for rails or a compact strip on a 1080x1920 box.
 	const LayoutComponent = $derived(
-		uiTheme.betBarLayout === 'sideRail' && stateLayoutDerived.layoutType() !== 'portrait'
-			? LayoutSideRail
+		stateLayoutDerived.layoutType() !== 'portrait' && requested in WIDE_LAYOUT_MAP
+			? WIDE_LAYOUT_MAP[requested as keyof typeof WIDE_LAYOUT_MAP]
 			: LAYOUT_COMPONENT_MAP[stateLayoutDerived.layoutType()],
 	);
 </script>

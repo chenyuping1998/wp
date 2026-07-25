@@ -66,6 +66,11 @@ export const uiTheme = $state({
 	// don't supply icons keep the glyphs unchanged.
 	icons: {} as Partial<Record<string, string>>,
 
+	// Buy Bonus caption colour. Defaults to white, which is what the template
+	// hardcoded — a game with a warm plate overrides it so the CTA does not read
+	// as a different game's button dropped onto the board.
+	buyBonusLabelFill: 0xffffff,
+
 	// Show a small chevron on readout panels that open something when tapped.
 	// Only the Bet panel is interactive, and it is otherwise identical to the
 	// Balance/Win panels, so nothing indicates it can be pressed.
@@ -86,12 +91,36 @@ export const uiTheme = $state({
 	// Ignored when betBarLayout is 'sideRail'.
 	betBarScale: 1,
 
-	// 'bottom'   — the original single bar across the foot of the screen
-	// 'sideRail' — controls split into two vertical rails (menu + Buy Bonus left,
-	//              readouts + spin pod right), handing the whole middle of the
-	//              screen to the board. Wide layouts only; portrait has no
-	//              horizontal room for rails and always uses the bottom bar.
-	betBarLayout: 'bottom' as 'bottom' | 'sideRail',
+	// 'bottom'        — the original single bar across the foot of the screen
+	// 'sideRail'      — controls split into two vertical rails (menu + Buy Bonus
+	//                   left, readouts + spin pod right), handing the whole middle
+	//                   of the screen to the board
+	// 'compactBottom' — one slim strip along the foot: menu and readouts left,
+	//                   bet + stepper + spin + autospin/turbo right. The industry
+	//                   convention, and the arrangement players arrive already
+	//                   knowing. Buy Bonus is NOT in the strip — a game that wants
+	//                   it keeps it wherever its own layout puts it.
+	//
+	// Wide layouts only; portrait has no horizontal room for rails or a compact
+	// strip and always falls back to the full bottom bar.
+	betBarLayout: 'bottom' as 'bottom' | 'sideRail' | 'compactBottom',
+
+	// compactBottom only — height of the strip, in standard-layout units (the
+	// standard box is 1920x1080 on wide screens, so this is ~9% of the height).
+	// Games that clear the strip by shrinking their board derive the inset from
+	// this value, so changing it moves both together.
+	barHeight: 140,
+
+	// compactBottom only — draw the strip's own background. Off leaves the
+	// controls floating directly on the game art.
+	barFill: 0x0c1206,
+	barAlpha: 0.72,
+
+	// compactBottom only — keep the oversized Buy Bonus where the side-rail layout
+	// put it (left of the board, vertically centred) instead of dropping it into
+	// the strip. Buying the feature is a deliberate, occasional action; it does not
+	// belong next to the button players press every few seconds.
+	buyBonusOnRail: false,
 
 	// Width of one side rail — its centre line sits at railWidth / 2 in from the
 	// canvas edge. Raise it to pull both rails further out toward the edges when

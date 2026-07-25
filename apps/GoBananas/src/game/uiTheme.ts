@@ -35,12 +35,24 @@ setUiTheme({
 	valueStroke: 0x1a2208,
 	valueShadow: 0x0a1004,
 
-	// Controls split into two vertical rails instead of a bottom bar: menu and the
-	// Buy Bonus CTA on the left, readouts and the spin pod on the right. That
-	// frees the entire middle of the screen for the board, which matters here
-	// because the reel housing art carries a wide structural margin (FRAME_SCALE
-	// 1.28 in BoardFrame) — its real footprint is ~1.3x the playfield.
-	betBarLayout: 'sideRail',
+	// One slim strip along the foot, the arrangement players arrive already
+	// knowing. The side-rail version it replaces maximised board size — the rails
+	// ate horizontal space the board was not using — but that is exactly why it
+	// read as unfamiliar, which is what certification meant by "does not conform
+	// to expected UX standards".
+	//
+	// To go back: 'sideRail'. LayoutSideRail is untouched and still wired up, so
+	// this one word is the whole revert. It can also be overridden at run time
+	// without rebuilding — see the localStorage note in UIDefault.svelte.
+	betBarLayout: 'compactBottom',
+
+	// Buy Bonus stays left of the board at its old size rather than joining the
+	// strip: buying the feature is an occasional, expensive, deliberate action and
+	// does not belong beside the control pressed every few seconds.
+	buyBonusOnRail: false,
+
+	// gold on the olive plate, matching every other caption in the game
+	buyBonusLabelFill: 0xffd75e,
 
 	// the Bet panel opens the stake menu when tapped — mark it so players can
 	// tell it apart from the static Balance/Win panels

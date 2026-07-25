@@ -430,15 +430,18 @@
 			<Graphics
 				draw={(g: PixiGraphics) => {
 					g.clear();
-					g.beginFill(0xffe050, 0.05 + 0.07 * p);
-					g.drawRoundedRect(left, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
-					g.endFill();
-					g.lineStyle(11, 0xffe050, 0.1 + 0.16 * p);
-					g.drawRoundedRect(left - 5, -5, SYMBOL_SIZE + 10, BOARD_SIZES.height + 10, 18);
-					g.lineStyle(5, 0xffe050, 0.35 + 0.45 * p);
-					g.drawRoundedRect(left, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
-					g.lineStyle(2, 0xffffff, 0.2 + 0.3 * p);
-					g.drawRoundedRect(left + 6, 6, SYMBOL_SIZE - 12, BOARD_SIZES.height - 12, 10);
+					// Pixi v8 API (shape, then fill/stroke). The v7 beginFill/lineStyle
+					// calls used elsewhere in this file leak the last fill across the
+					// whole path — the bottom bar rendered solid brass that way, and
+					// here it would have flooded the reel instead of framing it.
+					g.roundRect(left, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
+					g.fill({ color: 0xffe050, alpha: 0.05 + 0.07 * p });
+					g.roundRect(left - 5, -5, SYMBOL_SIZE + 10, BOARD_SIZES.height + 10, 18);
+					g.stroke({ width: 11, color: 0xffe050, alpha: 0.1 + 0.16 * p });
+					g.roundRect(left, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
+					g.stroke({ width: 5, color: 0xffe050, alpha: 0.35 + 0.45 * p });
+					g.roundRect(left + 6, 6, SYMBOL_SIZE - 12, BOARD_SIZES.height - 12, 10);
+					g.stroke({ width: 2, color: 0xffffff, alpha: 0.2 + 0.3 * p });
 				}}
 			/>
 			<Sprite

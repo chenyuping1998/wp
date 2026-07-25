@@ -63,18 +63,36 @@
 	<Text anchor={{ x: 0.5, y: 0 }} text={props.label} style={labelStyle} />
 	<Text anchor={{ x: 0.5, y: 0 }} text={props.value} style={valueStyle} y={UI_BASE_FONT_SIZE} />
 	{#if props.hovered && uiTheme.hoverHighlight}
-		<!-- matches the button hover lift so every interactive control behaves
-		     the same way; sized to the ticker plate this label sits on -->
-		<Graphics
-			y={-20}
-			draw={(g) => {
-				const w = UI_BASE_FONT_SIZE * 3 * (326 / 73);
-				const h = UI_BASE_FONT_SIZE * 3;
-				g.clear();
-				g.roundRect(-w / 2, 0, w, h, 24);
-				g.fill({ color: 0xffffff, alpha: 0.12 });
-			}}
-		/>
+		<!--
+			Hover lift. When this readout sits on the ticker plate it fills the plate;
+			with no plate (the compact bottom bar passes tiled=false) it must instead
+			hug the two lines of text, or the highlight spills far past the cell the
+			divider rules define — which is exactly what it did over the Bet cell.
+		-->
+		{#if props.tiled}
+			<Graphics
+				y={-20}
+				draw={(g) => {
+					const w = UI_BASE_FONT_SIZE * 3 * (326 / 73);
+					const h = UI_BASE_FONT_SIZE * 3;
+					g.clear();
+					g.roundRect(-w / 2, 0, w, h, 24);
+					g.fill({ color: 0xffffff, alpha: 0.12 });
+				}}
+			/>
+		{:else}
+			<Graphics
+				draw={(g) => {
+					// label sits at y=0, value at y=UI_BASE_FONT_SIZE — box wraps both
+					// with a little air, sized to the widest value the readout shows
+					const w = UI_BASE_FONT_SIZE * 5.4;
+					const h = UI_BASE_FONT_SIZE * 2.5;
+					g.clear();
+					g.roundRect(-w / 2, -UI_BASE_FONT_SIZE * 0.4, w, h, 12);
+					g.fill({ color: 0xffffff, alpha: 0.1 });
+				}}
+			/>
+		{/if}
 	{/if}
 
 	{#if props.interactive && uiTheme.labelAffordance}
