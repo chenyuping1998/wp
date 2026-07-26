@@ -51,9 +51,18 @@ export const HIGH_SYMBOLS = ['H1', 'H2', 'H3', 'H4'];
 
 export const INITIAL_SYMBOL_STATE: SymbolState = 'static';
 
-const HIGH_SYMBOL_SIZE = 0.95;
-const LOW_SYMBOL_SIZE = 0.85;
-const SPECIAL_SYMBOL_SIZE = 1.05;
+// Size tiers, widened so rank is legible at a glance. They used to sit at
+// 0.95 / 0.85 / 1.05 — a 10% step between neighbouring tiers, which on a 118px
+// cell is about 12px and reads as "slightly different art" rather than as a
+// hierarchy. The gap that matters most is high-pay against the card royals,
+// which make up the bulk of any board, so that one is roughly doubled.
+//
+// SPECIAL (Wild, Scatter, superspin Coin) deliberately overflows its cell — at
+// 1.08 that is ~9px proud, up from ~6px — because those three are what the
+// player is hunting and they should sit visually on top of the grid.
+const HIGH_SYMBOL_SIZE = 0.97;
+const LOW_SYMBOL_SIZE = 0.8;
+const SPECIAL_SYMBOL_SIZE = 1.08;
 
 const SPIN_OPTIONS_SHARED = {
 	reelBounceBackSpeed: 0.15,

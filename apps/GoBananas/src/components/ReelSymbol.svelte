@@ -27,6 +27,33 @@
 	//     punch a hole travelling down the reel
 	//   · a symbol in the 'win' state must stay mounted — its oncomplete is what
 	//     resolves the win animation, and an unmounted symbol would never fire it
+	// Reel speed as a 0..1 blur amount. 'bouncing' is the overshoot-and-settle at
+	// the end of a stop: the strip is still moving but far slower, and carrying
+	// full-speed blur through it made the symbols snap from heavily smeared to
+	// perfectly sharp in a single frame.
+	const reelMotion = $derived(stateGame.board[props.reelIndex]?.reelState.motion);
+	const blur = $derived(reelMotion === 'spinning' ? 1 : reelMotion === 'bouncing' ? 0.3 : 0);
+
+	// Landing weight by tier. The Scatter and the Wild are the two symbols a
+	// player is looking for, so they hit hardest; the card royals make up most of
+	// every board and land lightest, which stops the whole grid bouncing as one.
+	const LANDING_IMPACT: Record<string, number> = {
+		S: 1.25,
+		W: 1.2,
+		M: 1.15,
+		X: 1.15,
+		H1: 1,
+		H2: 1,
+		H3: 0.95,
+		H4: 0.95,
+		L1: 0.7,
+		L2: 0.7,
+		L3: 0.7,
+		L4: 0.7,
+		L5: 0.7,
+	};
+	const landingImpact = $derived(LANDING_IMPACT[props.reelSymbol.rawSymbol.name] ?? 0.9);
+
 	const isHeldDuplicate = $derived(
 		props.reelSymbol.symbolState !== 'win' &&
 			stateGame.board[props.reelIndex]?.reelState.motion !== 'spinning' &&
@@ -46,6 +73,8 @@
 		<Symbol
 			state={props.reelSymbol.symbolState}
 			rawSymbol={props.reelSymbol.rawSymbol}
+			{blur}
+			impact={landingImpact}
 			oncomplete={() => {
 				if (props.reelSymbol.symbolState === 'win') props.reelSymbol.oncomplete();
 				if (props.reelSymbol.symbolState === 'land') props.reelSymbol.symbolState = 'static';

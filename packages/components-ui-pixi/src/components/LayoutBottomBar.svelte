@@ -86,7 +86,10 @@
 	// span in front of Bet. The empty cell is deliberate — it is what stops the
 	// readouts from crowding the spin pod, and giving it edges makes it read as
 	// designed space instead of a gap someone forgot to fill.
-	const MENU_X = 84;
+	// Centred in its own cell rather than eyeballed: the frame's inner lit line
+	// sits at FRAME_X + 9 = 33 and the first rule at DIV_1, so the cell centre is
+	// (33 + 150) / 2. At the old 84 the button sat visibly left of centre.
+	const MENU_X = 92;
 	const DIV_1 = 150;
 	const BALANCE_X = 286;
 	const DIV_2 = 424;

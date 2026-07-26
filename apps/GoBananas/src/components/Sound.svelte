@@ -9,6 +9,8 @@
 		| { type: 'soundFade'; name: SoundName; from: number; to: number; duration: number }
 		| { type: 'soundFreeGameBell' }
 		| { type: 'soundBigWinBlast' }
+		| { type: 'soundGrenadeBlast' }
+		| { type: 'soundMonkeyExpand' }
 		| { type: 'soundReelTensionStart' }
 		| { type: 'soundReelTensionStop' }
 		| { type: 'soundScatterCounterIncrease' }
@@ -48,7 +50,9 @@
 		| 'fs_intro'
 		| 'coin_shimmer'
 		| 'wild_expand'
-		| 'mult_update';
+		| 'mult_update'
+		| 'grenade_blast'
+		| 'monkey_expand';
 
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
 		gong_feature: 'jungle/gong_feature.wav',
@@ -69,17 +73,28 @@
 		coin_shimmer: 'jungle/coin_shimmer.wav',
 		wild_expand: 'jungle/wild_expand.wav',
 		mult_update: 'jungle/mult_update.wav',
+		grenade_blast: 'jungle/grenade_blast.wav',
+		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
+		monkey_expand: 'jungle/monkey_expand.mp3',
 	};
 
 	// Sprite sound names re-routed to the Chinese set.
-	const SPRITE_TO_CN: Partial<Record<SoundEffectName, { name: CnSfxName; volume?: number }>> = {
+	//
+	// `rate` sets playbackRate, which on a short percussive sample reads as pitch.
+	// The five reel stops share one file and used to be indistinguishable — worse,
+	// only _1 was ever played, so every reel landed on the identical click. They
+	// now rise reel by reel, which is what gives a spin its sense of building
+	// toward the last reel.
+	const SPRITE_TO_CN: Partial<
+		Record<SoundEffectName, { name: CnSfxName; volume?: number; rate?: number }>
+	> = {
 		sfx_btn_general: { name: 'btn', volume: 0.7 },
 		sfx_btn_spin: { name: 'spin', volume: 0.9 },
-		sfx_reel_stop_1: { name: 'reel_stop' },
-		sfx_reel_stop_2: { name: 'reel_stop' },
-		sfx_reel_stop_3: { name: 'reel_stop' },
-		sfx_reel_stop_4: { name: 'reel_stop' },
-		sfx_reel_stop_5: { name: 'reel_stop' },
+		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.92 },
+		sfx_reel_stop_2: { name: 'reel_stop', rate: 1.0 },
+		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.09 },
+		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.19 },
+		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.3 },
 		sfx_scatter_stop_1: { name: 'scatter_1' },
 		sfx_scatter_stop_2: { name: 'scatter_2' },
 		sfx_scatter_stop_3: { name: 'scatter_3' },
@@ -110,12 +125,49 @@
 		return audio;
 	}
 
-	function playCnSfx(name: CnSfxName, volumeScale = 1) {
+	function playCnSfx(name: CnSfxName, volumeScale = 1, rate = 1) {
 		const audio = getCnSfx(name);
 		audio.loop = false;
 		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+		// Always assign, never skip when rate is 1: getCnSfx caches one element per
+		// file, so a rate left over from the previous caller would carry into every
+		// later play of the same sample. reel_stop is shared with symbol/royal
+		// landings, which would otherwise inherit the fifth reel's pitch.
+		audio.playbackRate = rate;
 		audio.currentTime = 0;
 		audio.play().catch(() => {});
+	}
+
+	// The monkey hoot the player supplied is ~5s, but it needs to track the wild
+	// expansion — which lasts about 1.5s — and then get out of the way. Play it
+	// from the top, hold, then fade to silence so it covers the grow and settles
+	// as the panel locks, instead of hanging on under the next spin.
+	let monkeyFadeTimers: ReturnType<typeof setTimeout>[] = [];
+	function playMonkeyExpand() {
+		const audio = getCnSfx('monkey_expand');
+		monkeyFadeTimers.forEach(clearTimeout);
+		monkeyFadeTimers = [];
+		audio.loop = false;
+		const vol = Math.min(1, stateSoundDerived.volumeSoundEffect());
+		audio.volume = vol;
+		audio.playbackRate = 1;
+		audio.currentTime = 0;
+		audio.play().catch(() => {});
+		// hold at full to ~2s, fade over 600ms, stop by ~2.6s
+		const HOLD_MS = 2000;
+		const FADE_MS = 600;
+		const STEPS = 12;
+		for (let s = 1; s <= STEPS; s++) {
+			monkeyFadeTimers.push(
+				setTimeout(
+					() => {
+						audio.volume = Math.max(0, vol * (1 - s / STEPS));
+						if (s === STEPS) audio.pause();
+					},
+					HOLD_MS + (FADE_MS / STEPS) * s,
+				),
+			);
+		}
 	}
 
 	function playCnLoop(name: CnSfxName, volumeScale = 1) {
@@ -210,13 +262,15 @@
 		soundOnce: ({ name, forcePlay }) => {
 			const mapped = SPRITE_TO_CN[name];
 			if (mapped) {
-				playCnSfx(mapped.name, mapped.volume ?? 1);
+				playCnSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
 			} else {
 				sound.players.once.play({ name, forcePlay });
 			}
 		},
 		soundFreeGameBell: () => playCnSfx('gong_feature'),
 		soundBigWinBlast: () => playCnSfx('bigwin_blast'),
+		soundGrenadeBlast: () => playCnSfx('grenade_blast'),
+		soundMonkeyExpand: () => playMonkeyExpand(),
 		soundReelTensionStart: () => playCnLoop('reel_tension', 0.8),
 		soundReelTensionStop: () => stopCnSfx('reel_tension'),
 		soundStop: ({ name }) => {

@@ -13,6 +13,7 @@
 	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { waitForTimeout } from 'utils-shared/wait';
+	import { stateBet } from 'state-shared';
 
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_SIZES, BOARD_DIMENSIONS } from '../game/constants';
@@ -53,6 +54,14 @@
 		merge: Tween<number>;
 		banner: Tween<number>;
 		badgeScale: Tween<number>;
+		// What the badge actually prints. During a re-roll it cycles through random
+		// values while `mult` already holds the settled figure from the math, so the
+		// roll is pure presentation and can never show a number the book did not
+		// pay. They are equal at every other moment.
+		displayMult: number;
+		// Badge shake amplitude in px, spiked on landing and eased back to 0. The
+		// jitter itself is derived from the pulse clock at render time.
+		shake: Tween<number>;
 		// Drives the whole win light-up on the card's gold frame. A Tween, not a
 		// boolean, on purpose: a plain-boolean mutation on an array element is not
 		// reliably reactive in Svelte 5, and a Tween also runs a fixed envelope that
@@ -185,6 +194,59 @@
 		};
 	};
 
+	// ── multiplier re-roll (free game, once per spin per locked reel) ─────────
+	// Range comes from the rules panel: an expanded Wild carries 2x-50x. Only the
+	// values shown while spinning are invented — the figure it lands on is always
+	// the one the math sent.
+	const MULT_MIN = 2;
+	const MULT_MAX = 50;
+	// Budget matters more than it looks: this runs once per locked reel on every
+	// free spin, and by the end of a feature four reels are locked across 15
+	// spins. The roll below is ~420ms, so a four-reel group finishes in about a
+	// second — long enough to register, short enough not to add 20s to a feature.
+	const ROLL_STAGGER = 160;
+	const ROLL_STEPS = 7;
+
+	const rollMultiplier = async (entry: WildEntry, finalMult: number) => {
+		// Spin the digits, decelerating: step delay grows toward the landing so it
+		// reads as a wheel losing momentum rather than a flicker that stops dead.
+		for (let step = 0; step < ROLL_STEPS; step++) {
+			let next = MULT_MIN + Math.floor(Math.random() * (MULT_MAX - MULT_MIN + 1));
+			// never flash the real answer early — it would spoil the landing
+			if (next === finalMult) next = next === MULT_MAX ? MULT_MIN : next + 1;
+			entry.displayMult = next;
+			entry.badgeScale.set(1.16, { duration: 40 });
+			// Every third step only. The sound layer keeps one Audio element per
+			// file, so a tick on every step — times four overlapping reels — would
+			// retrigger the same element ~30 times a second and turn into a rattle.
+			if (step % 3 === 0) {
+				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
+			}
+			await waitForTimeout(24 + step * 12);
+		}
+
+		// land on the real value
+		entry.displayMult = finalMult;
+		entry.mult = finalMult;
+
+		// Force scales with the multiplier across its whole range, so the knock is
+		// information rather than decoration: 2x barely stirs, 50x slams.
+		const t = Math.min(1, Math.max(0, (finalMult - MULT_MIN) / (MULT_MAX - MULT_MIN)));
+		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
+		entry.badgeScale.set(1.5 + 0.55 * t, { duration: 130, easing: backOut }).then(() => {
+			entry.badgeScale.set(1, { duration: 260, easing: cubicOut });
+		});
+		entry.shake.set(2.5 + 13 * t, { duration: 60 }).then(() => {
+			entry.shake.set(0, { duration: 300 + 260 * t, easing: cubicOut });
+		});
+		spawnSparks(getSymbolX(entry.reel), BOARD_SIZES.height - SYMBOL_SIZE * 0.44, 4 + Math.round(10 * t));
+		// Every multiplier knocks the housing now, not only the big ones — a 2x
+		// gives it a barely-there nudge (0.07 ≈ 0.6px) and a 50x slams it (0.7 ≈
+		// 6px), so the force is a readout of the value across the whole range.
+		context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.07 + 0.63 * t });
+		await waitForTimeout(160);
+	};
+
 	onMount(() => () => cancelAnimationFrame(rafId));
 
 	// The pulse clock only feeds auraPulse/winPulse, and both are called only from
@@ -216,6 +278,12 @@
 		// wilds.find, which is why its multiplier updates were never affected.)
 		const entry = wilds.find((w) => w.reel === created.reel) ?? created;
 		const x = getSymbolX(entry.reel);
+
+		// The monkey hoots as he lands and eats his way across the reel. Fired here,
+		// at the very start of the takeover, and the sound fades itself out as the
+		// grow finishes (~1.5s of visual, the clip holds ~2s then fades) so it reads
+		// as one continuous beat rather than a bark that stops before the panel does.
+		context.eventEmitter.broadcast({ type: 'soundMonkeyExpand' });
 
 		// beat 1 — the reel turns Wild, cell by cell, out of the landed one
 		spawnSparks(x, rowCenterY(entry.row), 10);
@@ -255,6 +323,8 @@
 				// a Wild can land on a padding row; clamp so the spread has a real origin
 				row: Math.min(ROWS, Math.max(1, row)),
 				mult,
+				displayMult: mult,
+				shake: new Tween(0),
 				phase: 'infect',
 				infect: new Tween(0),
 				merge: new Tween(0),
@@ -266,20 +336,43 @@
 			await runTakeover(entry);
 		},
 
-		// Sticky wilds get a fresh multiplier on each reveal — pulse the plaque.
+		// Sticky wilds get a fresh multiplier on each reveal. Each one rolls its
+		// number before it settles, then lands with a knock whose force scales with
+		// the value — a 50x should feel like it hit the board harder than a 2x.
+		//
+		// Reels are STAGGERED, not run one after another. Fully sequential reads
+		// better in isolation but costs ~600ms per locked reel, and by the end of a
+		// feature four reels are locked — that is 2.4s added to every one of 15
+		// spins. Starting each roll ROLL_STAGGER after the last keeps the
+		// one-at-a-time reading while the whole group finishes in about a second.
 		expandingWildsUpdate: async ({ wilds: updated }) => {
-			let touched = false;
-			for (const update of updated) {
-				const entry = wilds.find((w) => w.reel === update.reel);
-				if (!entry) continue;
-				entry.mult = update.mult;
-				entry.badgeScale.set(1.7, { duration: 220, easing: cubicOut });
-				touched = true;
+			const targets = updated
+				.map((update) => ({ update, entry: wilds.find((w) => w.reel === update.reel) }))
+				.filter((t): t is { update: (typeof updated)[number]; entry: WildEntry } => !!t.entry);
+			if (targets.length === 0) return;
+
+			// Turbo skips the whole performance: the point of turbo is that the
+			// player has opted out of presentation, and five rolls a spin is the
+			// last thing they want.
+			if (stateBet.isTurbo) {
+				for (const { update, entry } of targets) {
+					entry.mult = update.mult;
+					entry.displayMult = update.mult;
+					entry.badgeScale.set(1.5, { duration: 120, easing: cubicOut }).then(() => {
+						entry.badgeScale.set(1, { duration: 160, easing: cubicOut });
+					});
+				}
+				await waitForTimeout(220);
+				return;
 			}
-			if (!touched) return;
-			await waitForTimeout(320);
-			for (const entry of wilds) entry.badgeScale.set(1, { duration: 220, easing: cubicOut });
-			await waitForTimeout(240);
+
+			await Promise.all(
+				targets.map(async ({ update, entry }, i) => {
+					await waitForTimeout(i * ROLL_STAGGER);
+					await rollMultiplier(entry, update.mult);
+				}),
+			);
+			await waitForTimeout(180);
 		},
 
 		// Bet resume: rebuild locked reels instantly, no animation.
@@ -288,6 +381,8 @@
 				reel: wild.reel,
 				row: Math.ceil(ROWS / 2),
 				mult: wild.mult,
+				displayMult: wild.mult,
+				shake: new Tween(0),
 				phase: 'idle' as const,
 				infect: new Tween(1),
 				merge: new Tween(1),
@@ -487,7 +582,16 @@
 		-->
 		{#if wild.badgeScale.current > 0}
 			{@const r = SYMBOL_SIZE * 0.26}
-			<Container {x} y={BOARD_SIZES.height - SYMBOL_SIZE * 0.44} scale={wild.badgeScale.current}>
+			{@const sh = wild.shake.current}
+			<!-- Shake jitter is read off the pulse clock rather than kept in state:
+			     that clock already ticks at 24ms whenever any wild exists, so the
+			     rattle costs nothing extra. Two different divisors keep x and y out
+			     of phase, otherwise the badge just slides on a diagonal. -->
+			<Container
+				x={x + (sh > 0.05 ? Math.sin(pulse / 7) * sh : 0)}
+				y={BOARD_SIZES.height - SYMBOL_SIZE * 0.44 + (sh > 0.05 ? Math.cos(pulse / 5.5) * sh : 0)}
+				scale={wild.badgeScale.current}
+			>
 				<Graphics
 					draw={(g: PixiGraphics) => {
 						const glow = auraPulse(wild.reel);
@@ -502,7 +606,7 @@
 						g.drawCircle(0, 0, r - 5);
 					}}
 				/>
-				<GoldText text={`${wild.mult}X`} fontSize={SYMBOL_SIZE * 0.27} maxWidth={r * 1.7} />
+				<GoldText text={`${wild.displayMult}X`} fontSize={SYMBOL_SIZE * 0.27} maxWidth={r * 1.7} />
 			</Container>
 		{/if}
 	{/each}

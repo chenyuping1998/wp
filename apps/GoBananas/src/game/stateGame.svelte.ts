@@ -43,6 +43,18 @@ const onSymbolLand = ({ rawSymbol, reelIndex }: { rawSymbol: RawSymbol; reelInde
 	}
 };
 
+// Listed rather than built with a template literal: `sfx_reel_stop_${n}` widens
+// to plain string, losing the SoundEffectName check, and would silently produce
+// a name that does not exist if the reel count ever changed. The index fallback
+// below covers that case too.
+const REEL_STOP_SOUNDS = [
+	'sfx_reel_stop_1',
+	'sfx_reel_stop_2',
+	'sfx_reel_stop_3',
+	'sfx_reel_stop_4',
+	'sfx_reel_stop_5',
+] as const;
+
 const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 	const reel = createReelForSpinning({
 		reelIndex,
@@ -50,11 +62,21 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 		initialSymbols: INITIAL_BOARD[reelIndex],
 		initialSymbolState: INITIAL_SYMBOL_STATE,
 		onReelStopping: () => {
+			// Each reel plays its own stop, pitched a step higher than the last
+			// (see SPRITE_TO_CN in Sound.svelte). This used to be hardcoded to _1,
+			// so all five reels landed on one identical click and _2.._5 were dead.
 			eventEmitter.broadcast({
 				type: 'soundOnce',
-				name: 'sfx_reel_stop_1',
+				name: REEL_STOP_SOUNDS[reelIndex] ?? 'sfx_reel_stop_1',
 				forcePlay: !stateBet.isTurbo,
 			});
+			// The housing takes the hit too — a much lighter version of the win
+			// recoil, so a symbol landing reads as weight arriving in the frame
+			// rather than a sprite appearing. Skipped in turbo, where five recoils
+			// inside half a second would just be noise.
+			if (!stateBet.isTurbo) {
+				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
+			}
 		},
 		onSymbolLand: ({ rawSymbol }) => onSymbolLand({ rawSymbol, reelIndex }),
 	});

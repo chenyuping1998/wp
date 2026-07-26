@@ -43,15 +43,27 @@
 	let impactRaf = 0;
 	const IMPACT_MS = 420;
 
+	// Energy still left in the impact currently playing, so a weaker one cannot
+	// cut it short. Reel stops now request a light 0.12 rattle on every reel; a
+	// wild explode (1) or a transition slam (1.4) can overlap one, and without
+	// this the small request would cancel the big recoil mid-swing.
+	let impactEnergy = 0;
+
 	const runImpact = (strength: number) => {
+		if (strength < impactEnergy) return;
 		cancelAnimationFrame(impactRaf);
+		impactEnergy = strength;
 		const start = performance.now();
 		const step = (now: number) => {
 			const p = (now - start) / IMPACT_MS;
 			if (p >= 1) {
 				impact = { x: 0, y: 0, flash: 0 };
+				impactEnergy = 0;
 				return;
 			}
+			// decay the gate alongside the motion, so a later hit of similar size
+			// can still take over once this one has mostly spent itself
+			impactEnergy = strength * (1 - p);
 			// decaying rattle: fast wobble under an exponential envelope
 			const decay = (1 - p) ** 2.2;
 			const amp = 9 * strength * decay;

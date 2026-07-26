@@ -75,7 +75,9 @@
 				// BOOM
 				if (!boomFired) {
 					boomFired = true;
-					context.eventEmitter.broadcast({ type: 'soundBigWinBlast' });
+					// A real explosion, not bigwin_blast (a musical flourish kept for
+					// max wins). This fires on every opening and free-game transition.
+					context.eventEmitter.broadcast({ type: 'soundGrenadeBlast' });
 					// the shockwave rattles the reel housing as it passes
 					context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.4 });
 				}

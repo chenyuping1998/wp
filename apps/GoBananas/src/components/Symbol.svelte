@@ -16,6 +16,10 @@
 		rawSymbol: RawSymbol;
 		oncomplete?: () => void;
 		loop?: boolean;
+		// forwarded to SymbolSprite: reel speed 0..1, and how hard this symbol
+		// lands (see ReelSymbol, which knows both the reel motion and the tier)
+		blur?: number;
+		impact?: number;
 	};
 
 	const props: Props = $props();
@@ -33,8 +37,9 @@
 		{symbolInfo}
 		x={props.x}
 		y={props.y}
-		spinning={props.state === 'spin'}
+		blur={props.state === 'spin' ? (props.blur ?? 1) : 0}
 		landing={props.state === 'land'}
+		impact={props.impact}
 		oncomplete={props.oncomplete}
 	/>
 {:else}

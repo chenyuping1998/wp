@@ -490,4 +490,36 @@ const grooveBar = (buf, t0, beat, sr, energy = 1) => {
 	writeWav('bgm_freespin.wav', normalize(buf, 0.58), SR_BGM);
 }
 
+// grenade blast — the transition explosion (opening + free-game entry). A
+// low-frequency body sweep for the thud you feel in the chest, a lowpassed noise
+// burst for the debris, and a short bright crack on the leading edge. This is NOT
+// bigwin_blast: that is a musical flourish reserved for real max wins, and using
+// it on every transition was why the grenade never sounded like an explosion.
+{
+	const dur = 0.72;
+	const buf = buffer(dur, SR_SFX);
+	const n = buf.length;
+	// body: 92Hz → ~28Hz sweep under a fast exponential decay — the "thud"
+	let ph = 0;
+	for (let i = 0; i < n; i++) {
+		const t = i / SR_SFX;
+		const f = 92 * Math.exp(-6 * t) + 28;
+		ph += (2 * Math.PI * f) / SR_SFX;
+		buf[i] += Math.sin(ph) * Math.exp(-7 * t) * 0.9;
+	}
+	// debris: white noise through a one-pole lowpass so it reads as a muffled
+	// roar rather than a hiss, medium decay
+	let lp = 0;
+	for (let i = 0; i < n; i++) {
+		const t = i / SR_SFX;
+		lp += (rand2() - lp) * 0.35;
+		buf[i] += lp * Math.exp(-9 * t) * 0.7;
+	}
+	// crack: a very short bright transient on the leading edge, for the snap
+	for (let i = 0; i < SR_SFX * 0.012; i++) {
+		buf[i] += rand2() * Math.exp((-260 * i) / SR_SFX) * 0.6;
+	}
+	writeWav('grenade_blast.wav', fadeEnds(normalize(buf, 0.95), SR_SFX, 4), SR_SFX);
+}
+
 console.log('done');
