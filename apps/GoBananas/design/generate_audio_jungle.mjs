@@ -453,9 +453,13 @@ const grooveBar = (buf, t0, beat, sr, energy = 1) => {
 	writeWav('bgm_main.wav', normalize(buf, 0.55), SR_BGM);
 }
 
-// free-spin BGM — action mode, 128 BPM, 16 bars (~30s), loopable
+// free-spin BGM — action mode, rebuilt more intense than the base groove: faster
+// tempo, a driving eighth-note bass under every bar, a heavier kick/perc bed,
+// horn stabs on the downbeats, a snare fill rolling into every fourth bar, and
+// louder in the mix — so the feature reads as a clear step up in energy the
+// moment it starts. 136 BPM, 16 bars (~28s), loopable.
 {
-	const BPM = 128;
+	const BPM = 136;
 	const beat = 60 / BPM;
 	const bars = 16;
 	const buf = buffer(bars * 4 * beat + 0.5, SR_BGM);
@@ -473,21 +477,38 @@ const grooveBar = (buf, t0, beat, sr, energy = 1) => {
 		[P.D5, 0.5], [P.E5, 0.5], [P.G5, 0.5], [P.E5, 0.5], [P.C5, 2],
 	];
 	let cursor = 0;
-	cursor = scheduleMelody(buf, phraseA, cursor, beat, SR_BGM, 0.55);
-	cursor = scheduleMelody(buf, phraseB, cursor, beat, SR_BGM, 0.58);
-	cursor = scheduleMelody(buf, phraseA, cursor, beat, SR_BGM, 0.55);
-	scheduleMelody(buf, phraseB, cursor, beat, SR_BGM, 0.58);
+	cursor = scheduleMelody(buf, phraseA, cursor, beat, SR_BGM, 0.62);
+	cursor = scheduleMelody(buf, phraseB, cursor, beat, SR_BGM, 0.66);
+	cursor = scheduleMelody(buf, phraseA, cursor, beat, SR_BGM, 0.62);
+	scheduleMelody(buf, phraseB, cursor, beat, SR_BGM, 0.66);
 
+	// driving eighth-note bass under the whole track — the root drops to the
+	// dominant on the fourth bar of each phrase. This pulse is what pushes it.
 	for (let bar = 0; bar < bars; bar++) {
-		grooveBar(buf, bar * 4, beat, SR_BGM, 1.15);
-		addAt(buf, tom(SR_BGM, 0.9), bar * 4 * beat, 0.5, SR_BGM);
 		const root = bar % 4 === 3 ? P.G3 : P.C3;
-		addAt(buf, marimba(root, 1.0, SR_BGM, 0.5), (bar * 4 + 2) * beat, 0.36, SR_BGM);
+		for (let e = 0; e < 8; e++) {
+			addAt(buf, marimba(root, 0.28, SR_BGM, 0.7), (bar * 4 + e * 0.5) * beat, 0.24, SR_BGM);
+		}
 	}
-	// horn accents at the two halves
-	addAt(buf, horn(P.C5, 0.8, SR_BGM), 0, 0.35, SR_BGM);
-	addAt(buf, horn(P.G4, 0.8, SR_BGM), 8 * 4 * beat, 0.3, SR_BGM);
-	writeWav('bgm_freespin.wav', normalize(buf, 0.58), SR_BGM);
+
+	// heavier bed: fuller groove, a kick on beats 1 and 3, and a snare fill
+	// rolling into every fourth bar
+	for (let bar = 0; bar < bars; bar++) {
+		grooveBar(buf, bar * 4, beat, SR_BGM, 1.35);
+		addAt(buf, tom(SR_BGM, 1.0), bar * 4 * beat, 0.6, SR_BGM);
+		addAt(buf, tom(SR_BGM, 0.75), (bar * 4 + 2) * beat, 0.4, SR_BGM);
+		if (bar % 4 === 3) {
+			for (let s = 0; s < 6; s++) {
+				addAt(buf, snare(SR_BGM, 0.55 + s * 0.07), (bar * 4 + 2 + s * 0.33) * beat, 0.28, SR_BGM);
+			}
+		}
+	}
+
+	// horn stabs on the downbeat of every other bar, alternating tonic / dominant
+	for (let bar = 0; bar < bars; bar += 2) {
+		addAt(buf, horn(bar % 8 < 4 ? P.C5 : P.G4, 0.5, SR_BGM), bar * 4 * beat, 0.32, SR_BGM);
+	}
+	writeWav('bgm_freespin.wav', normalize(buf, 0.68), SR_BGM);
 }
 
 // grenade blast — the transition explosion (opening + free-game entry). A
