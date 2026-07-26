@@ -62,6 +62,15 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 		initialSymbols: INITIAL_BOARD[reelIndex],
 		initialSymbolState: INITIAL_SYMBOL_STATE,
 		onReelStopping: () => {
+			// A reel locked by a sticky expanded wild is a solid wall of Wild that
+			// does not really "land" — it was already there. Firing the stop click
+			// and the housing knock on it made the lock sound like a fresh drop every
+			// spin, which reads wrong. Stay silent on those reels, same as the W
+			// landing pluck already does (onSymbolLand). A reel that is only NOW being
+			// taken over is not yet in stickyWildReels, so its genuine landing still
+			// sounds — the takeover's own impact follows.
+			if (stateGame.stickyWildReels.includes(reelIndex)) return;
+
 			// Each reel plays its own stop, pitched a step higher than the last
 			// (see SPRITE_TO_CN in Sound.svelte). This used to be hardcoded to _1,
 			// so all five reels landed on one identical click and _2.._5 were dead.
