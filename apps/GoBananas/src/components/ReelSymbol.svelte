@@ -64,6 +64,24 @@
 </script>
 
 {#if !isHeldDuplicate}
+	<!--
+		`forState` pins each completion callback to the state it was created for.
+
+		The old version read symbolState at call time, which let a completion from
+		one presentation resolve another's. Concretely: 'land' renders SymbolSprite
+		and runs a ~240ms squash whose promise chain calls oncomplete when it ends.
+		If a win volley set the symbol to 'win' while that squash was still in
+		flight, SymbolSprite unmounted but its chain still finished — and the
+		callback, reading the *current* state, saw 'win' and resolved the win
+		promise straight away. Board then moved the symbol to 'postWinStatic'
+		before the win spine had played, so it never lit up.
+
+		That is why it only showed in turbo, only sometimes, and almost always on
+		reel 1: the grenade reaches reel 1 first, a few frames into the volley,
+		which is the one moment still inside the 240ms squash window — and turbo's
+		slam stop starts every reel's squash at once.
+	-->
+	{@const forState = props.reelSymbol.symbolState}
 	<SymbolWrap
 		x={getSymbolX(props.reelIndex)}
 		y={props.reelSymbol.symbolY()}
@@ -76,8 +94,10 @@
 			{blur}
 			impact={landingImpact}
 			oncomplete={() => {
-				if (props.reelSymbol.symbolState === 'win') props.reelSymbol.oncomplete();
-				if (props.reelSymbol.symbolState === 'land') props.reelSymbol.symbolState = 'static';
+				// a completion from a presentation the symbol has already left
+				if (props.reelSymbol.symbolState !== forState) return;
+				if (forState === 'win') props.reelSymbol.oncomplete();
+				if (forState === 'land') props.reelSymbol.symbolState = 'static';
 			}}
 		/>
 	</SymbolWrap>

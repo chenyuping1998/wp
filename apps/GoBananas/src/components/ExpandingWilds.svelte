@@ -351,18 +351,29 @@
 				.filter((t): t is { update: (typeof updated)[number]; entry: WildEntry } => !!t.entry);
 			if (targets.length === 0) return;
 
-			// Turbo skips the whole performance: the point of turbo is that the
-			// player has opted out of presentation, and five rolls a spin is the
-			// last thing they want.
+			// Turbo keeps the roll, just compressed. The number still flickers a few
+			// times before it locks, so the multiplier reads as "selected" rather
+			// than appearing from nowhere — only much faster, and without the frame
+			// knock, sparks and sound the full presentation layers on. All reels roll
+			// together (no stagger) to stay inside turbo's tight budget: ~3 flickers
+			// then a settle, ~230ms total, matching the flat delay it replaces.
 			if (stateBet.isTurbo) {
-				for (const { update, entry } of targets) {
-					entry.mult = update.mult;
-					entry.displayMult = update.mult;
-					entry.badgeScale.set(1.5, { duration: 120, easing: cubicOut }).then(() => {
-						entry.badgeScale.set(1, { duration: 160, easing: cubicOut });
-					});
-				}
-				await waitForTimeout(220);
+				await Promise.all(
+					targets.map(async ({ update, entry }) => {
+						for (let s = 0; s < 3; s++) {
+							let next = MULT_MIN + Math.floor(Math.random() * (MULT_MAX - MULT_MIN + 1));
+							if (next === update.mult) next = next === MULT_MAX ? MULT_MIN : next + 1;
+							entry.displayMult = next;
+							entry.badgeScale.set(1.12, { duration: 24 });
+							await waitForTimeout(45);
+						}
+						entry.displayMult = update.mult;
+						entry.mult = update.mult;
+						entry.badgeScale.set(1.5, { duration: 90, easing: backOut }).then(() => {
+							entry.badgeScale.set(1, { duration: 150, easing: cubicOut });
+						});
+					}),
+				);
 				return;
 			}
 

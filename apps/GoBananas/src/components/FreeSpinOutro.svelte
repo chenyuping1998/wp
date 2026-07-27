@@ -29,7 +29,18 @@
 	let amount = $state(0);
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
-	let onCountUpComplete = $state(() => {});
+
+	// Silence the coin loop the moment the total stops counting.
+	//
+	// winLevelSoundsStop() — which is what normally stops it — only runs after
+	// freeSpinOutroCountUp resolves, and that resolves on the player's PRESS, not
+	// when the count-up finishes. A player who leaves this screen up (reading the
+	// total, taking a screenshot) therefore heard the 2.4s coin shimmer loop over
+	// and over with nothing else going on. The loop belongs to the count-up, so it
+	// ends with the count-up.
+	const onCountUpComplete = () => {
+		context.eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' });
+	};
 
 	const title = gameText('totalWin');
 
