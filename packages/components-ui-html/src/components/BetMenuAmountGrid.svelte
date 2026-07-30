@@ -1,20 +1,21 @@
 <script lang="ts">
 	import { OptionsGrid } from 'components-shared';
-	import { getContextLayout } from 'utils-layout';
 	import { stateBet, stateConfig } from 'state-shared';
 
 	import BaseIcon from './BaseIcon.svelte';
 	import BaseButtonContent from './BaseButtonContent.svelte';
 	import { i18nDerived } from '../i18n/i18nDerived';
 
-	const { stateLayoutDerived } = getContextLayout();
-	const count = $derived(stateLayoutDerived.layoutType() === 'landscape' ? 15 : 18);
+	// Every stake the server offers, de-duplicated.
+	//
+	// This used to keep only the first 14/17 entries plus the last one, which on a
+	// ladder longer than that silently dropped the middle of the range — a player
+	// could not select a stake the server had told us was available. The menu is
+	// the UI for the server's betting parameters, so it lists all of them and lets
+	// the grid wrap.
 	const options = $derived(
-		[
-			...stateConfig.betMenuOptions.slice(0, count - 1),
-			...stateConfig.betMenuOptions.slice(-1),
-		].filter((value, index, array) => array.indexOf(value) === index),
-	); //always includes last, and without duplicate
+		stateConfig.betMenuOptions.filter((value, index, array) => array.indexOf(value) === index),
+	);
 
 	const isMaxValue = (value: number) => value === options[options.length - 1];
 	const formatValue = (value: number) => {

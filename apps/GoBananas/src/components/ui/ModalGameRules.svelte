@@ -11,6 +11,28 @@
 	const buyCost = config.betModes?.bonus?.cost;
 	const reelCount = config.numReels;
 	const rowCount = config.numRows?.[0] ?? 3;
+
+	// Per-mode RTP and max win, read straight out of the maths config rather than
+	// written into the prose. Certification asks for both to be clearly stated for
+	// every mode available; spelling them out in one table is harder to miss than
+	// leaving them scattered through the sections, and taking the numbers from
+	// config means they cannot drift away from what the game actually pays.
+	type BetMode = { cost?: number; rtp?: number; max_win?: number };
+	const modeRows = (
+		[
+			['Base game', 'base', 'Every spin'],
+			['Free Spins', 'bonus', `Buy for ${config.betModes?.bonus?.cost}× bet`],
+			['Super Spin', 'superspin', `Buy for ${config.betModes?.superspin?.cost}× bet`],
+		] as const
+	).map(([label, key, entry]) => {
+		const mode = config.betModes?.[key] as BetMode | undefined;
+		return {
+			label,
+			entry,
+			rtp: mode?.rtp !== undefined ? `${(mode.rtp * 100).toFixed(2)}%` : rtpPct,
+			maxWin: `${(mode?.max_win ?? maxWin).toLocaleString()}×`,
+		};
+	});
 </script>
 
 {#if stateModal.modal?.name === 'gameRules'}
@@ -25,6 +47,34 @@
 					paylines. Winning combinations pay left to right, starting from the leftmost reel on
 					adjacent reels. Only the highest win is paid per line, and all line wins are added
 					together. The theoretical return to player (RTP) is {rtpPct}.
+				</p>
+			</section>
+
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>RTP &amp; Max Win by mode</h3>
+				<table class="wp-modes">
+					<thead>
+						<tr>
+							<th scope="col">Mode</th>
+							<th scope="col">How to enter</th>
+							<th scope="col">RTP</th>
+							<th scope="col">Max win</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each modeRows as row (row.label)}
+							<tr>
+								<th scope="row">{row.label}</th>
+								<td>{row.entry}</td>
+								<td>{row.rtp}</td>
+								<td>{row.maxWin} bet</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+				<p class="wp-modes-note">
+					Max win is a multiple of the total bet. When a round reaches the cap it ends
+					immediately and the capped amount is paid.
 				</p>
 			</section>
 
@@ -178,6 +228,58 @@
 			animation: shimmer 4s linear infinite;
 			filter: drop-shadow(0 0 18px rgba(255, 215, 94, 0.4));
 		}
+	}
+
+	/* Mode comparison table — RTP and max win per mode, as certification asks
+	   these be clearly stated for every mode. Values come from the maths config
+	   (see modeRows), so the table cannot drift from what the game pays. */
+	.wp-modes {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.82rem;
+		margin-top: 0.35rem;
+	}
+
+	.wp-modes th,
+	.wp-modes td {
+		padding: 0.42rem 0.5rem;
+		text-align: left;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+	}
+
+	.wp-modes thead th {
+		color: rgba(255, 215, 94, 0.9);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		font-size: 0.72rem;
+		border-bottom-color: rgba(255, 215, 94, 0.35);
+	}
+
+	.wp-modes tbody th {
+		color: #fff3bd;
+		font-weight: 700;
+		white-space: nowrap;
+	}
+
+	/* RTP and max win are the two numbers being certified — keep them legible
+	   rather than letting them sit in body-copy grey */
+	.wp-modes tbody td:nth-child(3),
+	.wp-modes tbody td:nth-child(4) {
+		color: #ffffff;
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	.wp-modes tbody tr:last-child th,
+	.wp-modes tbody tr:last-child td {
+		border-bottom: none;
+	}
+
+	.wp-modes-note {
+		margin-top: 0.5rem;
+		font-size: 0.76rem;
+		opacity: 0.75;
 	}
 
 	.wp-card {

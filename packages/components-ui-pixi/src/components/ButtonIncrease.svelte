@@ -10,16 +10,22 @@
 	const context = getContext();
 	const sizes = { width: UI_BASE_SIZE, height: UI_BASE_SIZE };
 	const biggest = $derived(stateConfig.betAmountOptions[stateConfig.betAmountOptions.length - 1]);
-	const disabled = $derived(!context.stateXstateDerived.isIdle() || stateBet.betAmount === biggest);
+	// see ButtonDecrease: options are empty until authenticate answers
+	const disabled = $derived(
+		!context.stateXstateDerived.isIdle() ||
+			stateConfig.betAmountOptions.length === 0 ||
+			stateBet.betAmount === biggest,
+	);
 
 	const onpress = () => {
+		if (stateConfig.betAmountOptions.length === 0) return;
 		context.eventEmitter.broadcast({ type: 'soundPressGeneral' });
 
 		const nextBigger = [...stateConfig.betAmountOptions]
 			.sort((a, b) => a - b)
 			.find((option) => option > stateBet.betAmount);
 
-		stateBetDerived.setBetAmount(nextBigger || biggest);
+		stateBetDerived.setBetAmount(nextBigger ?? biggest);
 	};
 </script>
 

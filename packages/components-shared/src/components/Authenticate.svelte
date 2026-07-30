@@ -3,7 +3,7 @@
 
 	import { requestAuthenticate, requestReplay } from 'rgs-requests';
 	import { stateUrlDerived, stateBet, stateConfig, stateModal, stateUi } from 'state-shared';
-	import { API_AMOUNT_MULTIPLIER, MOST_USED_BET_INDEXES } from 'constants-shared/bet';
+	import { API_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
 
 	type Props = { children: Snippet };
 
@@ -63,9 +63,15 @@
 				stateConfig.betAmountOptions = (authenticateData.config?.betLevels || []).map(
 					(level) => level / API_AMOUNT_MULTIPLIER,
 				);
-				stateConfig.betMenuOptions = stateConfig.betAmountOptions.filter((_, index) =>
-					MOST_USED_BET_INDEXES.includes(index),
-				);
+				// Every level the server sent, in the order it sent them.
+				//
+				// This used to be filtered through MOST_USED_BET_INDEXES — a hardcoded
+				// index whitelist [0,2,5,7,...,38] picked for a ~39-entry ladder. With a
+				// shorter ladder most of those indexes simply do not exist: a 23-level
+				// config matched only 9 of them, so the bet menu showed values that bore
+				// no relation to betLevels at all. The menu is meant to present the
+				// server's betting parameters, so it now presents all of them.
+				stateConfig.betMenuOptions = stateConfig.betAmountOptions;
 			}
 
 			// round

@@ -10,18 +10,23 @@
 	const context = getContext();
 	const sizes = { width: UI_BASE_SIZE, height: UI_BASE_SIZE };
 	const smallest = $derived(stateConfig.betAmountOptions[0]);
+	// betAmountOptions is empty until authenticate answers, and children render even
+	// when it fails — so guard rather than stepping to undefined.
 	const disabled = $derived(
-		!context.stateXstateDerived.isIdle() || stateBet.betAmount === smallest,
+		!context.stateXstateDerived.isIdle() ||
+			stateConfig.betAmountOptions.length === 0 ||
+			stateBet.betAmount === smallest,
 	);
 
 	const onpress = () => {
+		if (stateConfig.betAmountOptions.length === 0) return;
 		context.eventEmitter.broadcast({ type: 'soundPressGeneral' });
 
 		const nextSmaller = [...stateConfig.betAmountOptions]
 			.sort((a, b) => b - a)
 			.find((option) => option < stateBet.betAmount);
 
-		stateBetDerived.setBetAmount(nextSmaller || smallest);
+		stateBetDerived.setBetAmount(nextSmaller ?? smallest);
 	};
 </script>
 

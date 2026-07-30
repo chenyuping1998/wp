@@ -13,6 +13,11 @@ export const stateConfig = $state({
 		displaySessionTimer: false,
 		minimumRoundDuration: 0,
 	},
-	betAmountOptions: [1, 5, 25, 50, 75, 100, 200, 500, 800, 1000],
-	betMenuOptions: [1, 5, 25, 50, 75, 100, 200, 500, 800, 1000],
+	// Empty until authenticate answers. These used to hold a hardcoded ladder
+	// ([1, 5, 25, …]) which meant that if the config request failed, or ran late,
+	// the bet menu presented stakes the server had never offered — and a player
+	// could pick one. There is no correct fallback for this: the stakes are the
+	// server's to define, so until it has, there are none.
+	betAmountOptions: [] as number[],
+	betMenuOptions: [] as number[],
 });
