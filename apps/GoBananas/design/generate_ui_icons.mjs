@@ -99,7 +99,7 @@ const shapes = {
 	autoSpin: `<path d="M 196 128 A 68 68 0 1 1 158 66" fill="none" stroke-width="26"/><path d="M 150 42 L 196 66 L 150 92 Z"/><path d="M 108 100 L 152 128 L 108 156 Z"/>`,
 
 	// ── icons below exist only for the Controls guide in the rules panel ──────
-	// The bet bar draws these four as vectors inside UiButton rather than from a
+	// The bet bar draws these as vectors inside UiButton rather than from a
 	// sprite (turbo has to switch between hollow and filled, the steppers are
 	// glyphs), so there was no asset to illustrate them with. These match those
 	// shapes in the same brass language as the rest of the set.
@@ -115,8 +115,6 @@ const shapes = {
 
 	decrease: `<circle cx="128" cy="128" r="86" fill="none" stroke-width="22"/><rect x="76" y="112" width="104" height="32" rx="16"/>`,
 
-	// banana crate with a plus — buying the feature
-	buyBonus: `<path d="M 46 96 L 210 96 L 194 206 L 62 206 Z" fill="none" stroke-width="22"/><path d="M 74 96 L 90 206 M 182 96 L 166 206" stroke-width="16"/><path d="M 128 40 A 40 40 0 0 1 168 80" fill="none" stroke-width="20"/><rect x="114" y="122" width="28" height="60" rx="14"/><rect x="98" y="138" width="60" height="28" rx="14"/>`,
 
 };
 

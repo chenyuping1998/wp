@@ -27,44 +27,48 @@
 	// player matches what they read to what they see rather than decoding a name.
 	// Icons come from static/, not the pixi asset pipeline — this panel is DOM.
 	const ICONS = `${base}/assets/sprites/goBananasUiIcons`;
+	// `icons` is a list because a control can be a pair — the stepper is two keys,
+	// and showing only one of them would misrepresent it. Buy Bonus has none: on
+	// the bar it is a labelled plate rather than a glyph, so there is no icon that
+	// would actually match what the player sees.
 	const controls = [
 		{
-			icon: 'spin',
+			icons: ['spin'],
 			name: 'Spin',
 			text: `Starts a round for the current ${T.bet}. The space bar does the same thing. While the reels are turning it becomes Stop, which brings them to rest early.`,
 		},
 		{
-			icon: 'increase',
-			name: 'Increase / decrease',
+			icons: ['decrease', 'increase'],
+			name: 'Decrease / increase',
 			text: `Steps the ${T.bet} up or down through the available ${T.betLevels}.`,
 		},
 		{
-			icon: 'buyBonus',
+			icons: [],
 			name: 'Buy Bonus',
 			text: `Opens the feature menu, where Free Spins or Super Spin can be ${T.bought} outright for the stated multiple of your ${T.bet}. The cost is shown before you confirm.`,
 		},
 		{
-			icon: 'autoSpin',
+			icons: ['autoSpin'],
 			name: 'Auto Spin',
 			text: 'Plays a chosen number of rounds automatically. Open it to set the count and any stop conditions; press it again to stop early.',
 		},
 		{
-			icon: 'turbo',
+			icons: ['turbo'],
 			name: 'Turbo',
 			text: 'Shortens the spin and win presentations. Lit means turbo is on.',
 		},
 		{
-			icon: 'menu',
+			icons: ['menu'],
 			name: 'Menu',
 			text: 'Opens the pay table, these rules, and the sound and settings controls.',
 		},
 		{
-			icon: 'payTable',
+			icons: ['payTable'],
 			name: 'Pay table',
 			text: 'Lists every symbol and what it pays for 3, 4 and 5 of a kind, plus the paylines.',
 		},
 		{
-			icon: 'soundOn',
+			icons: ['soundOn'],
 			name: 'Sound',
 			text: 'Mutes and unmutes the game. Volume is adjusted under Settings.',
 		},
@@ -126,9 +130,15 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Controls</h3>
 				<ul class="wp-controls">
-					{#each controls as control (control.icon)}
-						<li>
-							<img src={`${ICONS}/${control.icon}.png`} alt="" aria-hidden="true" />
+					{#each controls as control (control.name)}
+						<li class:no-icon={control.icons.length === 0}>
+							{#if control.icons.length}
+								<span class="wp-control-icons">
+									{#each control.icons as name (name)}
+										<img src={`${ICONS}/${name}.png`} alt="" aria-hidden="true" />
+									{/each}
+								</span>
+							{/if}
 							<div>
 								<span class="wp-control-name">{control.name}</span>
 								<span class="wp-control-text">{control.text}</span>
@@ -349,9 +359,23 @@
 
 	.wp-controls li {
 		display: grid;
-		grid-template-columns: 2.1rem 1fr;
+		/* wide enough for the two-key stepper; a single icon sits left-aligned in
+		   the same column so every row's text starts on one line */
+		grid-template-columns: 4.6rem 1fr;
 		align-items: start;
 		gap: 0.7rem;
+	}
+
+	/* Buy Bonus is a labelled plate on the bar, not a glyph — with no icon to
+	   show, the text takes the whole row rather than leaving a gap. */
+	.wp-controls li.no-icon {
+		grid-template-columns: 1fr;
+	}
+
+	.wp-control-icons {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
 	}
 
 	.wp-controls img {
