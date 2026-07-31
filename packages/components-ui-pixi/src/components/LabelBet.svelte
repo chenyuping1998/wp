@@ -18,7 +18,9 @@
 
 	const props: Props = $props();
 	const context = getContext();
-	const label = $derived(stateBetDerived.activeBetMode()?.text.betAmountLabel || i18nDerived.bet());
+	const label = $derived(
+		stateBetDerived.activeBetMode()?.text.betAmountLabel || i18nDerived.betAmount(),
+	);
 	const value = $derived(numberToCurrencyString(stateBetDerived.betCost()));
 	const disabled = $derived(!context.stateXstateDerived.isIdle());
 	let hovered = $state(false);

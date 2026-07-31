@@ -1,14 +1,35 @@
 <script lang="ts">
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { stateModal } from 'state-shared';
+	import { stateModal, stateUrlDerived } from 'state-shared';
 
 	import config from '../../game/config';
 
+	// Social play forbids betting terminology in player-facing copy, and the rules
+	// page is the densest concentration of it in the game. Rather than maintaining
+	// two copies of the prose, the handful of nouns that differ are named once
+	// here and referenced throughout — so the two versions cannot drift apart.
+	const social = stateUrlDerived.social();
+	const T = {
+		bet: social ? 'amount' : 'bet',            // "your bet" / "your amount"
+		totalBet: social ? 'total amount' : 'total bet',
+		betLevel: social ? 'amount level' : 'bet level',
+		betLevels: social ? 'amount levels' : 'bet levels',
+		betMenu: social ? 'play menu' : 'bet menu',
+		betPanel: social ? 'Amount' : 'Bet',       // the readout's own label
+		buy: social ? 'play' : 'buy',
+		bought: social ? 'started' : 'bought',
+	};
+
+	const entryVerb = social ? 'Play' : 'Buy';
 	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
 	const lineCount = Object.keys(config.paylines).length;
 	const maxWin = config.betModes?.base?.max_win ?? 10000;
 	const buyCost = config.betModes?.bonus?.cost;
+	// One source for the awarded-spins figure so the Scatter and Retriggers
+	// sections cannot drift apart. 4 scatters award 12, 5 award 15 (see the
+	// maths: freeSpinTrigger totalFs).
+	const scatterSpins = '12 or 15';
 	const reelCount = config.numReels;
 	const rowCount = config.numRows?.[0] ?? 3;
 
@@ -21,8 +42,8 @@
 	const modeRows = (
 		[
 			['Base game', 'base', 'Every spin'],
-			['Free Spins', 'bonus', `Buy for ${config.betModes?.bonus?.cost}× bet`],
-			['Super Spin', 'superspin', `Buy for ${config.betModes?.superspin?.cost}× bet`],
+			['Free Spins', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}× ${T.bet}`],
+			['Super Spin', 'superspin', `${entryVerb} for ${config.betModes?.superspin?.cost}× ${T.bet}`],
 		] as const
 	).map(([label, key, entry]) => {
 		const mode = config.betModes?.[key] as BetMode | undefined;
@@ -50,6 +71,52 @@
 				</p>
 			</section>
 
+			<!-- Certification asked for a user interaction guide in the game
+			     information. Kept as a definition list of the actual on-screen
+			     controls, in the order they sit on the bar. -->
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>Controls</h3>
+				<dl class="wp-controls">
+					<dt>Spin</dt>
+					<dd>
+						Starts a round for the current {T.bet}. The space bar does the same thing. While the
+						reels are turning the button becomes Stop, which brings them to rest early.
+					</dd>
+
+					<dt>&minus; / &plus;</dt>
+					<dd>Steps the bet down or up through the available {T.betLevels}.</dd>
+
+					<dt>{T.betPanel}</dt>
+					<dd>
+						Tap the {T.betPanel} panel to open the {T.betMenu} and pick any available {T.betLevel}, then
+						confirm.
+					</dd>
+
+					<dt>Auto Spin</dt>
+					<dd>
+						Plays a chosen number of rounds automatically. Open it to set the count and any
+						stop conditions; press it again to stop early.
+					</dd>
+
+					<dt>Turbo</dt>
+					<dd>Shortens the spin and win presentations. Lit means turbo is on.</dd>
+
+					<dt>Buy Bonus</dt>
+					<dd>
+						Opens the feature menu, where Free Spins or Super Spin can be {T.bought} outright for
+						the stated multiple of your {T.bet}. The cost is shown before you confirm.
+					</dd>
+
+					<dt>Menu</dt>
+					<dd>
+						Opens the pay table, these rules, and the sound and settings controls.
+					</dd>
+				</dl>
+				<p class="wp-modes-note">
+					Where a win presentation is playing, tapping anywhere skips to the end of it.
+				</p>
+			</section>
+
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>RTP &amp; Max Win by mode</h3>
 				<table class="wp-modes">
@@ -67,13 +134,13 @@
 								<th scope="row">{row.label}</th>
 								<td>{row.entry}</td>
 								<td>{row.rtp}</td>
-								<td>{row.maxWin} bet</td>
+								<td>{row.maxWin} {T.bet}</td>
 							</tr>
 						{/each}
 					</tbody>
 				</table>
 				<p class="wp-modes-note">
-					Max win is a multiple of the total bet. When a round reaches the cap it ends
+					Max win is a multiple of the {T.totalBet}. When a round reaches the cap it ends
 					immediately and the capped amount is paid.
 				</p>
 			</section>
@@ -92,7 +159,7 @@
 				<p>
 					The Golden Bananas Scatter appears on all five reels. It does not pay on its own and
 					does not need to land on a payline &mdash; its only job is to open the feature.
-					Landing 4 or 5 Scatters in a single spin awards 12 or 15 Free Spins.
+					Landing 4 or 5 Scatters in a single spin awards {scatterSpins} Free Spins.
 				</p>
 			</section>
 
@@ -103,18 +170,33 @@
 					cover the entire reel. Expanded Wilds are sticky — they stay for the rest of the
 					feature — and each one carries a 2&times;&ndash;50&times; win multiplier that is
 					re-rolled on every spin. Multipliers of all expanded Wilds on a winning payline are
-					added together. There are no retriggers during Free Spins.
+					added together.
+				</p>
+			</section>
+
+			<!-- Own section rather than a closing sentence inside Free Spins: the
+			     statement was already there but buried at the end of a paragraph,
+			     and certification asked for it to be clarified. Reviewers scan
+			     headings. Verified against the maths — no book in any mode emits
+			     freeSpinRetrigger. -->
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>Retriggers</h3>
+				<p>
+					<strong>Free Spins cannot be retriggered.</strong> Landing further Scatters while the
+					feature is running does not award additional free spins, and the number of spins
+					granted when the feature starts ({scatterSpins}) is the number you play. This applies
+					to Free Spins entered by landing Scatters and to Free Spins {T.bought} from the {T.betMenu}.
 				</p>
 			</section>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Super Spin</h3>
 				<p>
-					A hold-and-spin style bonus bought from the bet menu for {config.betModes?.superspin
-						?.cost}&times; your total bet. You start with 3 respins. Every Coin that lands
+					A hold-and-spin style bonus {T.bought} from the {T.betMenu} for {config.betModes?.superspin
+						?.cost}&times; your {T.totalBet}. You start with 3 respins. Every Coin that lands
 					sticks to the board and resets the respins back to 3. When no respins remain, all
 					stuck Coin values are added up and paid out. Maximum win:
-					{config.betModes?.superspin?.max_win?.toLocaleString()}&times; the total bet.
+					{config.betModes?.superspin?.max_win?.toLocaleString()}&times; the {T.totalBet}.
 				</p>
 			</section>
 
@@ -122,8 +204,8 @@
 				<section class="wp-card">
 					<h3><span class="wp-accent-bar"></span>Buy Bonus</h3>
 					<p>
-						Instead of waiting for Scatters, you can buy direct entry into the Free Spins
-						feature for {buyCost}&times; your total bet. The Buy Bonus plays at the same {rtpPct} RTP.
+						Instead of waiting for Scatters, you can {T.buy} direct entry into the Free Spins
+						feature for {buyCost}&times; your {T.totalBet}. The Buy Bonus plays at the same {rtpPct} RTP.
 					</p>
 				</section>
 			{/if}
@@ -131,7 +213,7 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Max Win</h3>
 				<p>
-					The maximum payout is capped at {maxWin.toLocaleString()}&times; the total bet. Once
+					The maximum payout is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}. Once
 					the cap is reached the round ends immediately and the maximum win is awarded.
 				</p>
 			</section>
@@ -230,6 +312,39 @@
 		}
 	}
 
+	/* Controls guide — a definition list keeps each control paired with what it
+	   does, and reads correctly to a screen reader. */
+	.wp-controls {
+		margin: 0.35rem 0 0;
+		display: grid;
+		grid-template-columns: minmax(5.5rem, auto) 1fr;
+		gap: 0.35rem 0.85rem;
+		font-size: 0.82rem;
+	}
+
+	.wp-controls dt {
+		color: #fff3bd;
+		font-weight: 700;
+		white-space: nowrap;
+	}
+
+	.wp-controls dd {
+		margin: 0;
+		opacity: 0.9;
+	}
+
+	/* narrow screens: stack each control above its description rather than
+	   squeezing the two columns until neither is readable */
+	@media (max-width: 30rem) {
+		.wp-controls {
+			grid-template-columns: 1fr;
+			gap: 0.15rem;
+		}
+		.wp-controls dd {
+			margin-bottom: 0.4rem;
+		}
+	}
+
 	/* Mode comparison table — RTP and max win per mode, as certification asks
 	   these be clearly stated for every mode. Values come from the maths config
 	   (see modeRows), so the table cannot drift from what the game pays. */
@@ -300,6 +415,8 @@
 		&:nth-child(7) { animation-delay: 0.3s; }
 		&:nth-child(8) { animation-delay: 0.35s; }
 		&:nth-child(9) { animation-delay: 0.4s; }
+		&:nth-child(10) { animation-delay: 0.45s; }
+		&:nth-child(11) { animation-delay: 0.5s; }
 
 		&:hover {
 			background: rgba(255, 215, 94, 0.06);

@@ -24,11 +24,26 @@ export type Key =
 const getUrlSearchParam = (key: Key) => page.url.searchParams.get(key) as string;
 
 // params for play
-const lang = () =>
-	getUrlSearchParam('lang') === 'br' ? 'pt' : (getUrlSearchParam('lang') as Language) || 'en';
+const social = () => getUrlSearchParam('social') === 'true';
+
+const lang = (): Language => {
+	// Social play is English-only, whatever the host asks for.
+	if (social()) return 'en';
+
+	const raw = getUrlSearchParam('lang');
+	// 'br' is Stake's code for Brazilian Portuguese; lingui calls it 'pt'
+	const requested = raw === 'br' ? 'pt' : raw;
+
+	// Anything not in the catalogue falls back to English rather than being cast
+	// through. An unrecognised code used to be returned as-is, and everything
+	// downstream trusted it: messagesMap[code] is undefined, which lingui then
+	// activates as a locale with no messages, and any Intl call made with it can
+	// throw outright. A bad ?lang= is a typo, not a reason to break the game.
+	return (locales as readonly string[]).includes(requested) ? (requested as Language) : 'en';
+};
+
 const sessionID = () => getUrlSearchParam('sessionID') || '';
 const rgsUrl = () => getUrlSearchParam('rgs_url') || '';
-const social = () => getUrlSearchParam('social') === 'true';
 
 // params for replay
 const replay = () => getUrlSearchParam('replay') === 'true';

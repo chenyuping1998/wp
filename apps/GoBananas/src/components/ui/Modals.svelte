@@ -37,8 +37,20 @@
 <style lang="scss">
 	:global(html) {
 		font-size: 16px;
+		/*
+		 * Small screens used to drop the root to 50% — 8px — which halved every
+		 * rem-based size in the modals at once. The bonus-buy descriptions are
+		 * 0.75rem, so on a Mobile S screen they rendered at 6px: certification
+		 * reported them as unreadable, and it was the root size doing it rather
+		 * than the component.
+		 *
+		 * 75% (12px) still buys back the space the layout needs on a narrow
+		 * screen while leaving body text legible; the smallest text in the modals
+		 * then lands at 9px rather than 6px, and the cards below set their own
+		 * floor on top of that.
+		 */
 		@media screen and (max-width: 500px) {
-			font-size: 50%;
+			font-size: 75%;
 		}
 	}
 
@@ -78,6 +90,74 @@
 		/* Titan One is single-weight — a requested bold would only be synthesised */
 		font-weight: 400 !important;
 		letter-spacing: 0.02em;
+	}
+
+	/* ── Bonus buy menu sizing (GoBananas only) ──────────────────────────────
+	   Certification flagged the buy menu as unreadable on Mobile S and hard to
+	   read/trigger in Popout S. Two separate causes:
+
+	     · text scaled with the root font size, so a small screen shrank it past
+	       legibility (root floor raised above)
+	     · two fixed-width cards side by side leave each one too narrow to read on
+	       a phone, and too small to hit comfortably
+
+	   These overrides live here rather than in the shared BonusCards component so
+	   only this game is affected. Everything is scoped under .bonus-card-wrap,
+	   which is the card container — .title/.description/.price are generic class
+	   names used elsewhere and must not be restyled globally.
+
+	   clamp() sets an absolute floor in px: whatever the root size does, the text
+	   cannot go below a readable size, and it still scales up on a large screen. */
+	:global(.bonus-card-wrap) {
+		min-width: 0 !important;
+		max-width: none !important;
+		padding: 0.75rem !important;
+		gap: 0.6rem !important;
+	}
+
+	:global(.bonus-card-wrap .title) {
+		font-size: clamp(13px, 1.05rem, 20px) !important;
+		line-height: 1.25 !important;
+	}
+
+	:global(.bonus-card-wrap .description) {
+		font-size: clamp(11px, 0.8rem, 15px) !important;
+		line-height: 1.35 !important;
+		/* the fixed 4rem min-height wasted vertical space on short viewports and
+		   pushed the buy button out of reach in Popout S */
+		min-height: 0 !important;
+	}
+
+	:global(.bonus-card-wrap .price) {
+		font-size: clamp(14px, 1.05rem, 20px) !important;
+		font-weight: 700 !important;
+	}
+
+	/* Narrow screens: stack the cards instead of splitting the width between
+	   them. One full-width card per row is readable and gives a large tap target. */
+	@media screen and (max-width: 560px) {
+		:global(.ui-popup-standard-content-wrap .content.row) {
+			flex-direction: column !important;
+			align-items: stretch !important;
+			width: 100% !important;
+		}
+
+		:global(.bonus-card-wrap) {
+			width: 100% !important;
+		}
+	}
+
+	/* Short viewports (Popout S): trim the vertical padding so both cards and the
+	   bet stepper stay on screen together. */
+	@media screen and (max-height: 420px) {
+		:global(.bonus-card-wrap) {
+			padding: 0.5rem !important;
+			gap: 0.4rem !important;
+		}
+
+		:global(.bonus-card-wrap .description) {
+			font-size: clamp(10px, 0.72rem, 13px) !important;
+		}
 	}
 
 	/* Button icon background (the rounded rectangle inside buttons) */

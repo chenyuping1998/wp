@@ -4,7 +4,13 @@ export const i18nDerived = {
 	audio: () => stateI18nDerived.translate('AUDIO'),
 	balance: () => stateI18nDerived.translate('BALANCE'),
 	win: () => stateI18nDerived.translate('WIN'),
+	// The action button. Social play cannot call it a bet.
 	bet: () => stateUrlDerived.social() ? 'SPIN' : stateI18nDerived.translate('BET'),
+	// The stake readout, which is a different thing from the button and needs its
+	// own word: it used to reuse bet(), so in social play the amount panel was
+	// labelled "SPIN" — the button's verb sitting over a number. "AMOUNT" says
+	// what the figure is without using restricted terminology.
+	betAmount: () => stateUrlDerived.social() ? 'AMOUNT' : stateI18nDerived.translate('BET'),
 	stop: () => stateI18nDerived.translate('STOP'),
 	buyBonus: () => stateUrlDerived.social() ? 'PLAY BONUS' : stateI18nDerived.translate('BUY BONUS'),
 	disable: () => stateI18nDerived.translate('DISABLE'),

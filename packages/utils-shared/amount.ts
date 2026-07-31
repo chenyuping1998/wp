@@ -1,7 +1,9 @@
-import { stateI18n } from 'state-shared';
-
 import { BOOK_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
 import { stateBet } from 'state-shared';
+
+// Money is always formatted against this locale, never the interface language.
+// See numberToCurrencyString for why.
+const CURRENCY_LOCALE = 'en-US';
 
 const NO_LOCALISATION_CURRENCY_MAP: Record<string, string> = {
 	XGC: 'GC',
@@ -59,13 +61,21 @@ export const numberToCurrencyString = (value: number, maximumFractionDigits = 2)
 		return `${symbol} ${amount.toFixed(decimalsNeeded(amount, maximumFractionDigits))}`;
 	}
 
-	return stateI18n.i18n.number(value, {
+	// Formatted against a fixed locale, NOT the interface language.
+	//
+	// This used to go through the i18n instance, which formats with whatever
+	// locale is active — so switching the game to French turned "$1,000.00" into
+	// "1 000,00 $US". The amount is the same money either way; only its
+	// presentation moved, which makes the balance look like it changed and puts a
+	// currency suffix where the symbol belongs. A dollar is displayed as "$" in
+	// every language.
+	return new Intl.NumberFormat(CURRENCY_LOCALE, {
 		minimumFractionDigits: 2,
 		maximumFractionDigits,
 		style: 'currency',
 		currency: stateBet.currency,
-		// numberingSystem: 'latn',
-	});
+		currencyDisplay: 'narrowSymbol',
+	}).format(value);
 };
 
 // Book-event amounts are win figures — setTotalWin, prize values, the count-up on
