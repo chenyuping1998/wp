@@ -98,6 +98,26 @@ const shapes = {
 	// circular arrow with a play triangle (autoplay)
 	autoSpin: `<path d="M 196 128 A 68 68 0 1 1 158 66" fill="none" stroke-width="26"/><path d="M 150 42 L 196 66 L 150 92 Z"/><path d="M 108 100 L 152 128 L 108 156 Z"/>`,
 
+	// ── icons below exist only for the Controls guide in the rules panel ──────
+	// The bet bar draws these four as vectors inside UiButton rather than from a
+	// sprite (turbo has to switch between hollow and filled, the steppers are
+	// glyphs), so there was no asset to illustrate them with. These match those
+	// shapes in the same brass language as the rest of the set.
+
+	// two chasing arrows — the spin button's rotating mark
+	spin: `<path d="M 206 128 A 78 78 0 0 1 128 206" fill="none" stroke-width="28"/><path d="M 50 128 A 78 78 0 0 1 128 50" fill="none" stroke-width="28"/><path d="M 104 26 L 152 50 L 104 74 Z"/><path d="M 152 230 L 104 206 L 152 182 Z"/>`,
+
+	// lightning bolt (turbo)
+	turbo: `<path d="M 150 26 L 74 140 L 118 140 L 106 230 L 182 116 L 138 116 Z"/>`,
+
+	// plus / minus, drawn inside a ring so they read as the round stepper keys
+	increase: `<circle cx="128" cy="128" r="86" fill="none" stroke-width="22"/><rect x="112" y="76" width="32" height="104" rx="16"/><rect x="76" y="112" width="104" height="32" rx="16"/>`,
+
+	decrease: `<circle cx="128" cy="128" r="86" fill="none" stroke-width="22"/><rect x="76" y="112" width="104" height="32" rx="16"/>`,
+
+	// banana crate with a plus — buying the feature
+	buyBonus: `<path d="M 46 96 L 210 96 L 194 206 L 62 206 Z" fill="none" stroke-width="22"/><path d="M 74 96 L 90 206 M 182 96 L 166 206" stroke-width="16"/><path d="M 128 40 A 40 40 0 0 1 168 80" fill="none" stroke-width="20"/><rect x="114" y="122" width="28" height="60" rx="14"/><rect x="98" y="138" width="60" height="28" rx="14"/>`,
+
 };
 
 for (const [name, shape] of Object.entries(shapes)) {

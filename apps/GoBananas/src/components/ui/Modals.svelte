@@ -208,6 +208,19 @@
 	}
 
 	/* Content wrapper in modals (Buy Bonus, Bet Menu, Auto Spin, Settings…) */
+	/* The buy-bonus layouts position BOTH of their children out of flow
+	   (.bonuses-wrap is absolute, .badge-amount-wrap is fixed), so the content
+	   wrapper has nothing left in normal flow and collapses to just its own
+	   padding — which the panel styling below then painted as a small empty
+	   plate floating between the cards and the stepper. Nothing should be drawn
+	   for a container with no in-flow content. */
+	:global(.ui-popup-standard-content-wrap:has(.bonuses-wrap)) {
+		background: none !important;
+		border: none !important;
+		box-shadow: none !important;
+		padding: 0 !important;
+	}
+
 	:global(.ui-popup-standard-content-wrap) {
 		background: linear-gradient(
 			180deg,

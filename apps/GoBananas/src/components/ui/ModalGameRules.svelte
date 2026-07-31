@@ -3,6 +3,8 @@
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal, stateUrlDerived } from 'state-shared';
 
+	import { base } from '$app/paths';
+
 	import config from '../../game/config';
 
 	// Social play forbids betting terminology in player-facing copy, and the rules
@@ -20,6 +22,53 @@
 		buy: social ? 'play' : 'buy',
 		bought: social ? 'started' : 'bought',
 	};
+
+	// Controls guide. Each row shows the actual button art from the bet bar, so a
+	// player matches what they read to what they see rather than decoding a name.
+	// Icons come from static/, not the pixi asset pipeline — this panel is DOM.
+	const ICONS = `${base}/assets/sprites/goBananasUiIcons`;
+	const controls = [
+		{
+			icon: 'spin',
+			name: 'Spin',
+			text: `Starts a round for the current ${T.bet}. The space bar does the same thing. While the reels are turning it becomes Stop, which brings them to rest early.`,
+		},
+		{
+			icon: 'increase',
+			name: 'Increase / decrease',
+			text: `Steps the ${T.bet} up or down through the available ${T.betLevels}.`,
+		},
+		{
+			icon: 'buyBonus',
+			name: 'Buy Bonus',
+			text: `Opens the feature menu, where Free Spins or Super Spin can be ${T.bought} outright for the stated multiple of your ${T.bet}. The cost is shown before you confirm.`,
+		},
+		{
+			icon: 'autoSpin',
+			name: 'Auto Spin',
+			text: 'Plays a chosen number of rounds automatically. Open it to set the count and any stop conditions; press it again to stop early.',
+		},
+		{
+			icon: 'turbo',
+			name: 'Turbo',
+			text: 'Shortens the spin and win presentations. Lit means turbo is on.',
+		},
+		{
+			icon: 'menu',
+			name: 'Menu',
+			text: 'Opens the pay table, these rules, and the sound and settings controls.',
+		},
+		{
+			icon: 'payTable',
+			name: 'Pay table',
+			text: 'Lists every symbol and what it pays for 3, 4 and 5 of a kind, plus the paylines.',
+		},
+		{
+			icon: 'soundOn',
+			name: 'Sound',
+			text: 'Mutes and unmutes the game. Volume is adjusted under Settings.',
+		},
+	];
 
 	const entryVerb = social ? 'Play' : 'Buy';
 	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
@@ -76,42 +125,17 @@
 			     controls, in the order they sit on the bar. -->
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Controls</h3>
-				<dl class="wp-controls">
-					<dt>Spin</dt>
-					<dd>
-						Starts a round for the current {T.bet}. The space bar does the same thing. While the
-						reels are turning the button becomes Stop, which brings them to rest early.
-					</dd>
-
-					<dt>&minus; / &plus;</dt>
-					<dd>Steps the bet down or up through the available {T.betLevels}.</dd>
-
-					<dt>{T.betPanel}</dt>
-					<dd>
-						Tap the {T.betPanel} panel to open the {T.betMenu} and pick any available {T.betLevel}, then
-						confirm.
-					</dd>
-
-					<dt>Auto Spin</dt>
-					<dd>
-						Plays a chosen number of rounds automatically. Open it to set the count and any
-						stop conditions; press it again to stop early.
-					</dd>
-
-					<dt>Turbo</dt>
-					<dd>Shortens the spin and win presentations. Lit means turbo is on.</dd>
-
-					<dt>Buy Bonus</dt>
-					<dd>
-						Opens the feature menu, where Free Spins or Super Spin can be {T.bought} outright for
-						the stated multiple of your {T.bet}. The cost is shown before you confirm.
-					</dd>
-
-					<dt>Menu</dt>
-					<dd>
-						Opens the pay table, these rules, and the sound and settings controls.
-					</dd>
-				</dl>
+				<ul class="wp-controls">
+					{#each controls as control (control.icon)}
+						<li>
+							<img src={`${ICONS}/${control.icon}.png`} alt="" aria-hidden="true" />
+							<div>
+								<span class="wp-control-name">{control.name}</span>
+								<span class="wp-control-text">{control.text}</span>
+							</div>
+						</li>
+					{/each}
+				</ul>
 				<p class="wp-modes-note">
 					Where a win presentation is playing, tapping anywhere skips to the end of it.
 				</p>
@@ -312,37 +336,45 @@
 		}
 	}
 
-	/* Controls guide — a definition list keeps each control paired with what it
-	   does, and reads correctly to a screen reader. */
+	/* Controls guide — each row pairs the button's own art with what it does, so
+	   the guide can be matched against the bar by sight rather than by name. */
 	.wp-controls {
-		margin: 0.35rem 0 0;
-		display: grid;
-		grid-template-columns: minmax(5.5rem, auto) 1fr;
-		gap: 0.35rem 0.85rem;
-		font-size: 0.82rem;
+		list-style: none;
+		margin: 0.5rem 0 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.55rem;
 	}
 
-	.wp-controls dt {
+	.wp-controls li {
+		display: grid;
+		grid-template-columns: 2.1rem 1fr;
+		align-items: start;
+		gap: 0.7rem;
+	}
+
+	.wp-controls img {
+		width: 2.1rem;
+		height: 2.1rem;
+		object-fit: contain;
+		/* nudge down so the glyph optically centres on the first line of text */
+		margin-top: -0.15rem;
+	}
+
+	.wp-control-name {
+		display: block;
 		color: #fff3bd;
 		font-weight: 700;
-		white-space: nowrap;
+		font-size: 0.86rem;
+		line-height: 1.3;
 	}
 
-	.wp-controls dd {
-		margin: 0;
-		opacity: 0.9;
-	}
-
-	/* narrow screens: stack each control above its description rather than
-	   squeezing the two columns until neither is readable */
-	@media (max-width: 30rem) {
-		.wp-controls {
-			grid-template-columns: 1fr;
-			gap: 0.15rem;
-		}
-		.wp-controls dd {
-			margin-bottom: 0.4rem;
-		}
+	.wp-control-text {
+		display: block;
+		font-size: 0.8rem;
+		line-height: 1.35;
+		opacity: 0.88;
 	}
 
 	/* Mode comparison table — RTP and max win per mode, as certification asks

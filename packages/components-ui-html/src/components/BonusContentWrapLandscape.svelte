@@ -24,7 +24,16 @@
 	const horizontalScale = $derived(
 		(stateLayoutDerived.canvasSizes().width - 250) / (contentRect?.width || 0),
 	);
-	const scale = $derived(Math.min(verticalScale, horizontalScale));
+	// Floor on the shrink factor.
+	//
+	// This scale is a CSS transform, so it shrinks the rendered result regardless
+	// of any font-size the cards ask for — which is why per-element sizing could
+	// not fix the unreadable text certification reported on the small popout and
+	// mobile views. Below about 0.72 the descriptions stop being legible at all,
+	// and a card the player cannot read is worse than one that overflows: the
+	// wrapper scrolls, so overflow is recoverable.
+	const MIN_SCALE = 0.72;
+	const scale = $derived(Math.max(MIN_SCALE, Math.min(verticalScale, horizontalScale)));
 </script>
 
 <BaseContent maxWidth="100%">
