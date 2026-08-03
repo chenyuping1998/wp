@@ -31,6 +31,7 @@
 	import GridMultiplierBadges from './GridMultiplierBadges.svelte';
 	import TumbleLayer from './TumbleLayer.svelte';
 	import SpinLedger from './SpinLedger.svelte';
+	import QuenchFlash from './QuenchFlash.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import ClusterWins from './ClusterWins.svelte';
 	import Win from './Win.svelte';
@@ -102,6 +103,9 @@
 			<!-- over the symbols: the numbers must stay readable -->
 			<GridMultiplierBadges />
 		</MainContainer>
+
+		<!-- full-canvas, so it sits outside the board container -->
+		<QuenchFlash />
 
 		<EntryReveal />
 

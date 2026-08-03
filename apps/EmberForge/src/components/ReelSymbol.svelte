@@ -2,7 +2,7 @@
 	import Symbol from './Symbol.svelte';
 	import SymbolWrap from './SymbolWrap.svelte';
 	import { getSymbolX } from '../game/utils';
-	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
+	import { stateGame, stateGameDerived, type ReelSymbol } from '../game/stateGame.svelte';
 	import type { SymbolState } from '../game/types';
 
 	type Props = {
@@ -48,6 +48,17 @@
 		L4: 0.7,
 	};
 	const landingImpact = $derived(LANDING_IMPACT[props.reelSymbol.rawSymbol.name] ?? 0.9);
+
+	// symbolIndexOfBoard is slotIndex - 1, and at rest a slot index IS the padded
+	// board row the math uses — so this is the heat sitting under this very cell.
+	// Only meaningful while the board is settled, which is exactly when a symbol
+	// can be in the win state.
+	const cellMult = $derived(
+		stateGameDerived.gridMultiplierAt({
+			reel: props.reelIndex,
+			row: props.reelSymbol.symbolIndexOfBoard + 1,
+		}),
+	);
 </script>
 
 <!--
@@ -75,6 +86,7 @@
 			rawSymbol={props.reelSymbol.rawSymbol}
 			{blur}
 			impact={landingImpact}
+			{cellMult}
 			oncomplete={() => {
 				// a completion from a presentation the symbol has already left
 				if (props.reelSymbol.symbolState !== forState) return;

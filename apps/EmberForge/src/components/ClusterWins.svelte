@@ -13,7 +13,7 @@
 	import { Graphics } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
-	import { waitForTimeout } from 'utils-shared/wait';
+	import { waitForTimeout, waitForResolve } from 'utils-shared/wait';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 
 	import { getContext } from '../game/context';
@@ -27,10 +27,14 @@
 		CLUSTER_HOLD_MS,
 		CLUSTER_HOLD_MS_FREEGAME,
 		CLUSTER_HOLD_MS_FAST,
+		FLY_IN_FROM,
+		QUENCH_FROM,
+		QUENCH_HOLD_MS,
 	} from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
+	import MultiplierFlyIn from './MultiplierFlyIn.svelte';
 
 	/**
 	 * Outlines every paying cluster and puts its amount at the cluster's centre.
@@ -59,9 +63,15 @@
 	let wins = $state<ClusterWinDatum[]>([]);
 	let revealed = $state(0);
 	let visible = $state(false);
+	// Clusters currently assembling their multiplier. Keyed by index into wins.
+	let flying = $state<number[]>([]);
 
 	const slotY = (row: number) => (row - 1 + 0.5) * SYMBOL_SIZE;
 	const CELL = SYMBOL_SIZE;
+
+	// One resolver per in-flight cluster, so the sequence waits for the assembly
+	// to finish before the tumble takes the symbols away.
+	const flyResolvers: Record<number, () => void> = {};
 
 	const shownWins = $derived(wins.slice(0, revealed));
 
@@ -153,13 +163,23 @@
 
 	context.eventEmitter.subscribeOnMount({
 		clusterWinsHide: () => {
+			// Release anything still in flight FIRST. The volley awaits these
+			// resolvers, so hiding the layer without firing them would leave the
+			// winInfo handler waiting on a callback that can no longer arrive —
+			// the same hang that awaiting symbol completions used to cause.
+			// Nothing does this today (tumbleBoard hides only after winInfo has
+			// resolved), but the sequence should not depend on that ordering.
+			for (const resolve of Object.values(flyResolvers)) resolve();
+			for (const key of Object.keys(flyResolvers)) delete flyResolvers[Number(key)];
 			visible = false;
 			wins = [];
 			revealed = 0;
+			flying = [];
 		},
 		clusterWinsShow: async ({ wins: incoming, pace = 'normal' }) => {
 			wins = incoming;
 			revealed = 0;
+			flying = [];
 			visible = true;
 			if (incoming.length === 0) return;
 
@@ -190,6 +210,23 @@
 					revealed = Math.max(revealed, index + 1);
 					context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.08 });
 					await animateCluster(win.positions, seen, holdMs);
+
+					// ── the rarest tier: the board is quenched ──────────────────
+					// Held here rather than inside QuenchFlash because the pause has
+					// to stop the SEQUENCE, not just play an animation over it.
+					if (win.clusterMult >= QUENCH_FROM) {
+						context.eventEmitter.broadcast({ type: 'quenchFlash' });
+						context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
+						context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.1 });
+						await waitForTimeout(QUENCH_HOLD_MS);
+					}
+
+					// ── assemble the multiplier where the payout is read ────────
+					if (win.clusterMult >= FLY_IN_FROM) {
+						flying = [...flying, index];
+						await waitForResolve((resolve) => (flyResolvers[index] = resolve));
+						flying = flying.filter((i) => i !== index);
+					}
 				}),
 			);
 		},
@@ -199,6 +236,23 @@
 {#if visible}
 	<BoardContainer>
 		<Graphics draw={drawOutlines} />
+
+		<!--
+			Only the clusters big enough to earn it. Mounted here rather than as a
+			sibling so it shares the board coordinate space with the outlines it is
+			assembling into.
+		-->
+		{#each flying as index (index)}
+			{@const win = wins[index]}
+			{#if win}
+				<MultiplierFlyIn
+					positions={win.positions}
+					overlay={win.overlay}
+					clusterMult={win.clusterMult}
+					oncomplete={() => flyResolvers[index]?.()}
+				/>
+			{/if}
+		{/each}
 		{#each shownWins as win, index (index)}
 			<GoldText
 				text={bookEventAmountToCurrencyString(win.win)}

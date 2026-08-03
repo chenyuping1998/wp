@@ -11,6 +11,7 @@ import type { EmitterEventClusterWins } from '../components/ClusterWins.svelte';
 import type { EmitterEventTumble } from '../components/TumbleLayer.svelte';
 import type { EmitterEventGridMultipliers } from '../components/GridMultipliers.svelte';
 import type { EmitterEventSpinLedger } from '../components/SpinLedger.svelte';
+import type { EmitterEventQuenchFlash } from '../components/QuenchFlash.svelte';
 
 export type EmitterEventGame =
 	| EmitterEventBoard
@@ -25,4 +26,5 @@ export type EmitterEventGame =
 	| EmitterEventClusterWins
 	| EmitterEventTumble
 	| EmitterEventGridMultipliers
-	| EmitterEventSpinLedger;
+	| EmitterEventSpinLedger
+	| EmitterEventQuenchFlash;

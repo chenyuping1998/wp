@@ -152,6 +152,34 @@ export const CLUSTER_HOLD_MS_FREEGAME = 560;
 export const CLUSTER_HOLD_MS_FAST = 240;
 
 // ---------------------------------------------------------------------------
+// High-multiplier celebration
+//
+// Three tiers, and the thresholds come from the clusterMult distribution rather
+// than from round numbers. Measured over the bonus books (157,030 clusters):
+//
+//     clusterMult >= 10   26.8%     >= 30   3.9%     >= 80   0.68%
+//     highest ever seen: 265
+//
+// That 10+ figure is the important one: a quarter of ALL clusters clear a
+// combined 10x, so anything staged there is not a celebration, it is the normal
+// state of the feature. Only the free tier sits that low.
+// ---------------------------------------------------------------------------
+
+/** A: a cell at or above this heats past white and holds a beat before shattering. */
+export const CELL_WHITE_HOT_FROM = 10;
+
+/** B: the multipliers fly in and build the amount. 3.9% of clusters. */
+export const FLY_IN_FROM = 30;
+/** Beyond this many heated cells the tail is merged into one flyer. */
+export const FLY_IN_MAX = 6;
+export const FLY_IN_MS = 420;
+export const FLY_IN_STAGGER_MS = 70;
+
+/** C: hit-stop. 0.68% of clusters — rare enough that stopping the game is a reward. */
+export const QUENCH_FROM = 80;
+export const QUENCH_HOLD_MS = 130;
+
+// ---------------------------------------------------------------------------
 // Free-game grid multipliers
 //
 // Calibrated to what the math actually produces, not to maximum_board_mult (512,

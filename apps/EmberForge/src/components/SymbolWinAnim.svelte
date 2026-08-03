@@ -2,13 +2,15 @@
 	import { Container, Sprite } from 'pixi-svelte';
 	import { onMount } from 'svelte';
 
-	import { SYMBOL_SIZE } from '../game/constants';
+	import { SYMBOL_SIZE, CELL_WHITE_HOT_FROM } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
 
 	type Props = {
 		x?: number;
 		y?: number;
 		symbolInfo: ReturnType<typeof getSymbolInfo>;
+		/** Free-game heat under this cell. 0 outside the feature. */
+		cellMult?: number;
 		oncomplete?: () => void;
 	};
 
@@ -29,7 +31,12 @@
 	 * exactly — no mask, no per-symbol authoring, and it keeps working for whatever
 	 * art is dropped in next.
 	 */
-	const DURATION = 620;
+	// A cell that has been worked several times burns hotter and takes longer to
+	// give: it heats past white and holds a beat before the tumble takes it. The
+	// threshold is 10x, which is a quarter of all clusters — common enough that
+	// this is texture rather than a celebration, which is exactly what it is for.
+	const whiteHot = $derived((props.cellMult ?? 0) >= CELL_WHITE_HOT_FROM);
+	const DURATION = $derived(whiteHot ? 900 : 620);
 
 	let t = $state(0);
 
@@ -37,13 +44,13 @@
 	// identical curve is the thing that reads as machinery; a small spread in ember
 	// direction and timing is enough to break it.
 	const seed = Math.random();
-	const EMBERS = 5;
-	const embers = Array.from({ length: EMBERS }, (_, i) => ({
+	const EMBERS = $derived(whiteHot ? 9 : 5);
+	const embers = $derived(Array.from({ length: EMBERS }, (_, i) => ({
 		angle: -Math.PI / 2 + (i - (EMBERS - 1) / 2) * 0.42 + (seed - 0.5) * 0.5,
 		speed: 0.55 + ((i * 7 + seed * 13) % 10) / 22,
 		size: 0.1 + ((i * 5 + seed * 11) % 7) / 60,
 		delay: 0.06 * i + seed * 0.05,
-	}));
+	})));
 
 	onMount(() => {
 		// Resolve immediately: ClusterWins owns how long the board holds on a win,
@@ -85,11 +92,11 @@
 	<Sprite
 		key="fxGlow"
 		anchor={0.5}
-		width={SYMBOL_SIZE * (1.1 + heat * 0.7)}
-		height={SYMBOL_SIZE * (1.1 + heat * 0.7)}
-		tint={0xff9b32}
+		width={SYMBOL_SIZE * (1.1 + heat * (whiteHot ? 1.05 : 0.7))}
+		height={SYMBOL_SIZE * (1.1 + heat * (whiteHot ? 1.05 : 0.7))}
+		tint={whiteHot ? 0xfff0c8 : 0xff9b32}
 		blendMode="add"
-		alpha={0.5 * heat * burn}
+		alpha={(whiteHot ? 0.8 : 0.5) * heat * burn}
 	/>
 
 	<Container scale={{ x: scaleX, y: scaleY }}>
@@ -105,8 +112,8 @@
 			{width}
 			{height}
 			blendMode="add"
-			tint={0xffd9a0}
-			alpha={0.75 * heat * burn}
+			tint={whiteHot ? 0xfffdf4 : 0xffd9a0}
+			alpha={(whiteHot ? 1 : 0.75) * heat * burn}
 		/>
 	</Container>
 

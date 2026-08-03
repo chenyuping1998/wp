@@ -17,6 +17,8 @@
 		// lands (see ReelSymbol, which knows both the reel motion and the tier)
 		blur?: number;
 		impact?: number;
+		/** Free-game heat under this cell, forwarded to the win effect. */
+		cellMult?: number;
 	};
 
 	const props: Props = $props();
@@ -28,7 +30,13 @@
 
 {#if isSprite && isWin}
 	<!-- Win state for sprite symbols: programmatic scale+glow animation -->
-	<SymbolWinAnim {symbolInfo} x={props.x} y={props.y} oncomplete={props.oncomplete} />
+	<SymbolWinAnim
+		{symbolInfo}
+		x={props.x}
+		y={props.y}
+		cellMult={props.cellMult}
+		oncomplete={props.oncomplete}
+	/>
 {:else if isSprite}
 	<SymbolSprite
 		{symbolInfo}
