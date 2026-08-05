@@ -157,7 +157,7 @@
 			<Text
 				anchor={0.5}
 				y={65}
-				text="5X5, 15 LINES — MAX WIN 10,000X"
+				text="7X7 CLUSTER PAYS — MAX WIN 10,000X"
 				style={{
 					fontFamily: BODY_FONT,
 					fontSize: 15,

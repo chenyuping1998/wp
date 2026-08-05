@@ -29,6 +29,16 @@
 	const VEIL_FROM = 0.12;
 	const VEIL_TO = 0.58;
 
+	// The cue leads the picture rather than starting with it.
+	//
+	// Two reasons. A fire is heard drawing before it is seen, so a sound landing
+	// exactly on frame one reads as late even when it is not. And there is real
+	// latency here that no ordering fixes: `play()` on an <audio> element does not
+	// produce sound on the same tick. Sound.svelte now buffers the file at app
+	// boot, which removed the gross lag — the board was already up before anything
+	// was audible — and this covers the remainder.
+	const SOUND_LEAD_MS = 150;
+
 	let t = $state(0);
 
 	onMount(() => {
@@ -36,7 +46,7 @@
 		let raf = 0;
 		let start = 0;
 		const tick = (now: number) => {
-			if (!start) start = now;
+			if (!start) start = now + SOUND_LEAD_MS;
 			t = (now - start) / TOTAL_MS;
 			if (t >= 1) return;
 			raf = requestAnimationFrame(tick);
@@ -50,7 +60,10 @@
 		return c * c * (3 - 2 * c);
 	};
 
-	const fireT = $derived(Math.min(1, t / CLIMB));
+	// Clamped at both ends: t is NEGATIVE during the sound lead, and a flame front
+	// asked to draw at a negative progress is undefined shape rather than no shape.
+	// The veil is opaque through that window anyway, so this holds it at frame zero.
+	const fireT = $derived(Math.max(0, Math.min(1, t / CLIMB)));
 	// Fades as the front leaves the top of the screen.
 	const fireIntensity = $derived(t < 0.62 ? 1 : Math.max(0, 1 - (t - 0.62) / 0.38));
 	const veil = $derived(1 - smooth((t - VEIL_FROM) / (VEIL_TO - VEIL_FROM)));

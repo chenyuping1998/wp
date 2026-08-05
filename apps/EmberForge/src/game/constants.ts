@@ -79,35 +79,35 @@ const CASCADE_SHARED = {
 
 export const SPIN_OPTIONS_DEFAULT = {
 	...CASCADE_SHARED,
-	symbolFallInSpeed: 2.2,
-	symbolFallInInterval: 26,
-	symbolFallInBounceSpeed: 0.35,
-	symbolFallOutSpeed: 3,
-	symbolFallOutInterval: 20,
-	reelFallInDelay: 58,
-	reelFallOutDelay: 42,
+	symbolFallInSpeed: 1.65,
+	symbolFallInInterval: 34,
+	symbolFallInBounceSpeed: 0.27,
+	symbolFallOutSpeed: 2.25,
+	symbolFallOutInterval: 27,
+	reelFallInDelay: 76,
+	reelFallOutDelay: 55,
 };
 
 export const SPIN_OPTIONS_FAST = {
 	...CASCADE_SHARED,
-	symbolFallInSpeed: 4.4,
-	symbolFallInInterval: 10,
-	symbolFallInBounceSpeed: 0.8,
-	symbolFallOutSpeed: 6,
-	symbolFallOutInterval: 8,
-	reelFallInDelay: 18,
-	reelFallOutDelay: 12,
+	symbolFallInSpeed: 3.1,
+	symbolFallInInterval: 15,
+	symbolFallInBounceSpeed: 0.58,
+	symbolFallOutSpeed: 4.2,
+	symbolFallOutInterval: 13,
+	reelFallInDelay: 30,
+	reelFallOutDelay: 21,
 };
 
 export const SPIN_OPTIONS_FAST_FREEGAME = {
 	...CASCADE_SHARED,
-	symbolFallInSpeed: 3.4,
-	symbolFallInInterval: 16,
-	symbolFallInBounceSpeed: 0.6,
-	symbolFallOutSpeed: 4.6,
-	symbolFallOutInterval: 12,
-	reelFallInDelay: 30,
-	reelFallOutDelay: 22,
+	symbolFallInSpeed: 2.5,
+	symbolFallInInterval: 22,
+	symbolFallInBounceSpeed: 0.45,
+	symbolFallOutSpeed: 3.4,
+	symbolFallOutInterval: 17,
+	reelFallInDelay: 42,
+	reelFallOutDelay: 31,
 };
 
 export const MOTION_BLUR_VELOCITY = 31;
@@ -116,27 +116,33 @@ export const MOTION_BLUR_VELOCITY = 31;
 // Tumble timing
 //
 // Sized against the real books: a chain runs at most 8 links in the base game
-// and 11 in the bonus, and 79% of wins are a single link. Even the worst case
-// stays under ~5s at these numbers, so the common case can afford to breathe.
+// and 11 in the bonus, and 79% of wins are a single link — so the cost of a
+// slower link is paid once on almost every winning spin, not eight times.
+//
+// These were raised roughly 30% on a pacing pass: the burn and the drop were
+// quick enough that a cluster went from lit to gone before the eye could follow
+// which cells had been taken. The rare long chain is correspondingly longer, and
+// that is the right trade — a nine-link chain is a good thing happening and does
+// not need to be over quickly.
 // ---------------------------------------------------------------------------
 // Three tiers, mirroring SPIN_OPTIONS_*: the free game gets its own middle speed
 // rather than borrowing turbo's. A feature is 10-18 spins and every one of them
 // can tumble, so the base-game pace would make it drag — but turbo's pace throws
 // away the heat grid filling up, which is the whole point of the feature.
-export const TUMBLE_EXPLODE_MS = 260;
-export const TUMBLE_DROP_MS = 300;
-export const TUMBLE_EXPLODE_MS_FREEGAME = 230;
-export const TUMBLE_DROP_MS_FREEGAME = 275;
-export const TUMBLE_EXPLODE_MS_FAST = 120;
-export const TUMBLE_DROP_MS_FAST = 150;
+export const TUMBLE_EXPLODE_MS = 345;
+export const TUMBLE_DROP_MS = 395;
+export const TUMBLE_EXPLODE_MS_FREEGAME = 305;
+export const TUMBLE_DROP_MS_FREEGAME = 360;
+export const TUMBLE_EXPLODE_MS_FAST = 180;
+export const TUMBLE_DROP_MS_FAST = 220;
 
 // Clusters within one winInfo start this far apart so several at once read as a
 // volley rather than one flash. Books show up to 14 simultaneous clusters, so the
 // stagger is bounded by a total budget rather than applied blindly per cluster.
-export const CLUSTER_STAGGER_MS = 70;
-export const CLUSTER_STAGGER_MS_FREEGAME = 60;
-export const CLUSTER_STAGGER_MS_FAST = 26;
-export const CLUSTER_VOLLEY_MAX_MS = 620;
+export const CLUSTER_STAGGER_MS = 88;
+export const CLUSTER_STAGGER_MS_FREEGAME = 76;
+export const CLUSTER_STAGGER_MS_FAST = 38;
+export const CLUSTER_VOLLEY_MAX_MS = 780;
 
 // How long the winning symbols stay LIT before the tumble takes them. This is a
 // hold, not the length of the win animation: the generated win effect runs on its
@@ -147,9 +153,21 @@ export const CLUSTER_VOLLEY_MAX_MS = 620;
 // building, i.e. the thing worth watching — flash past faster than base play.
 // Highlight, hold, then burn: the pause is what lets a player see which cells are
 // about to go and what multiplier they were sitting on.
-export const CLUSTER_HOLD_MS = 420;
-export const CLUSTER_HOLD_MS_FREEGAME = 560;
-export const CLUSTER_HOLD_MS_FAST = 240;
+export const CLUSTER_HOLD_MS = 570;
+export const CLUSTER_HOLD_MS_FREEGAME = 720;
+export const CLUSTER_HOLD_MS_FAST = 355;
+
+// Beat between a chain ending and the board being spinnable again.
+//
+// A tumble round ends on a NON-event: the last refill simply fails to make a
+// cluster, so without a pause the board's final state is on screen for one frame
+// of thought before the next spin tears it down. This is the moment a player
+// reads what they finished with, and it is the only quiet in the round.
+//
+// Turbo keeps a shorter one rather than none — a player in turbo still needs to
+// see that the chain is over, they just do not need as long to see it.
+export const ROUND_END_HOLD_MS = 620;
+export const ROUND_END_HOLD_MS_FAST = 300;
 
 // ---------------------------------------------------------------------------
 // High-multiplier celebration

@@ -2,7 +2,16 @@ import { stateBet } from 'state-shared';
 import { createPlayBookUtils } from 'utils-book';
 import { createGetEmptyPaddedBoard } from 'utils-slots';
 
-import { SYMBOL_SIZE, REEL_PADDING, SYMBOL_INFO_MAP, BOARD_DIMENSIONS } from './constants';
+import { waitForTimeout } from 'utils-shared/wait';
+
+import {
+	SYMBOL_SIZE,
+	REEL_PADDING,
+	SYMBOL_INFO_MAP,
+	BOARD_DIMENSIONS,
+	ROUND_END_HOLD_MS,
+	ROUND_END_HOLD_MS_FAST,
+} from './constants';
 import { eventEmitter } from './eventEmitter';
 import type { Bet, BookEventOfType } from './typesBookEvent';
 import { bookEventHandlerMap } from './bookEventHandlerMap';
@@ -78,6 +87,10 @@ export const playBet = async (bet: Bet) => {
 		// anyway, so there is nothing left to protect by staying stuck.
 		console.error('[EmberForge] round aborted', error);
 	}
+	// Let the finished board sit before the spin button comes back. Enabling it on
+	// the same tick the last event resolves means an autoplay or a held spin can
+	// start tearing the board down while the player is still reading it.
+	await waitForTimeout(stateBet.isTurbo ? ROUND_END_HOLD_MS_FAST : ROUND_END_HOLD_MS);
 	eventEmitter.broadcast({ type: 'stopButtonEnable' });
 };
 

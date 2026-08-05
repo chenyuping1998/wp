@@ -1,4 +1,6 @@
 <script lang="ts" module>
+	import { base } from '$app/paths';
+
 	import { sound, type MusicName, type SoundEffectName, type SoundName } from '../game/sound';
 
 	export type EmitterEventSound =
@@ -16,23 +18,18 @@
 		| { type: 'soundReelTensionStop' }
 		| { type: 'soundScatterCounterIncrease' }
 		| { type: 'soundScatterCounterClear' };
-</script>
-
-<script lang="ts">
-	import { onMount } from 'svelte';
-
-	import { waitForTimeout } from 'utils-shared/wait';
-	import { SECOND } from 'constants-shared/time';
-	import { stateBet, stateSoundDerived } from 'state-shared';
-	import { base } from '$app/paths';
-
-	import { getContext } from '../game/context';
-
-	const context = getContext();
 
 	// ─── forge sound set (synthesized — see design/generate_audio_forge.mjs) ───
 	// Standalone HTML5 Audio; the howler sprite (sounds.json) stays as a
 	// fallback for anything not mapped here (e.g. win-level bgm stingers).
+	//
+	// The file map and the element cache live in the MODULE script, not the
+	// instance script, so the fetches start when this module is first imported —
+	// at app boot, while the loading screen is still up. They used to be created
+	// in onMount, which is the same tick <EntryReveal> mounts and fires the
+	// opening cue: the element existed but had no data yet, so the fire was
+	// audible only once the board was already on screen. Several seconds of
+	// loading screen is exactly the time to spend buffering these.
 	type CnSfxName =
 		| 'gong_feature'
 		| 'bigwin_blast'
@@ -78,6 +75,37 @@
 		fire_sweep: 'forge/fire_sweep.wav',
 	};
 
+	const cnSfxAudio: Partial<Record<CnSfxName, HTMLAudioElement>> = {};
+
+	function getCnSfx(name: CnSfxName) {
+		let audio = cnSfxAudio[name];
+		if (!audio) {
+			audio = new Audio(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
+			audio.preload = 'auto';
+			cnSfxAudio[name] = audio;
+		}
+		return audio;
+	}
+
+	// Start buffering everything now. Creating the elements is not playback, so
+	// this is unaffected by autoplay policy — by the time anything is played the
+	// player has already pressed through the loading screen.
+	if (typeof window !== 'undefined') {
+		(Object.keys(CN_SFX_FILES) as CnSfxName[]).forEach(getCnSfx);
+	}
+</script>
+
+<script lang="ts">
+	import { onMount } from 'svelte';
+
+	import { waitForTimeout } from 'utils-shared/wait';
+	import { SECOND } from 'constants-shared/time';
+	import { stateBet, stateSoundDerived } from 'state-shared';
+
+	import { getContext } from '../game/context';
+
+	const context = getContext();
+
 	// Sprite sound names re-routed to the Chinese set.
 	//
 	// `rate` sets playbackRate, which on a short percussive sample reads as pitch.
@@ -112,18 +140,6 @@
 		sfx_symbols_landing: { name: 'reel_stop', volume: 0.6 },
 		sfx_royals_landing: { name: 'reel_stop', volume: 0.6 },
 	};
-
-	const cnSfxAudio: Partial<Record<CnSfxName, HTMLAudioElement>> = {};
-
-	function getCnSfx(name: CnSfxName) {
-		let audio = cnSfxAudio[name];
-		if (!audio) {
-			audio = new Audio(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
-			audio.preload = 'auto';
-			cnSfxAudio[name] = audio;
-		}
-		return audio;
-	}
 
 	function playCnSfx(name: CnSfxName, volumeScale = 1, rate = 1) {
 		const audio = getCnSfx(name);
@@ -267,10 +283,8 @@
 	});
 
 	onMount(() => {
-		// Fetch the one-shot sfx up front so the first play is in sync
-		// (an Audio element created lazily would stall on its first fetch).
-		(Object.keys(CN_SFX_FILES) as CnSfxName[]).forEach(getCnSfx);
-
+		// The one-shot sfx are already buffering — the module script started that
+		// at app boot, which is a whole loading screen earlier than here.
 		playBgm('base');
 
 		return () => {

@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { type Snippet } from 'svelte';
-	import { base } from '$app/paths';
 	import { GlobalStyle } from 'components-ui-html';
-	import { Authenticate, LoaderStakeEngine, LoadI18n } from 'components-shared';
+	import { Authenticate, LoadI18n } from 'components-shared';
 	import Game from '../components/Game.svelte';
-	import WildPartyLoader from '../components/WildPartyLoader.svelte';
+	import StudioLoader from '../components/WildPartyLoader.svelte';
 	import { setContext } from '../game/context';
 
 	import messagesMap from '../i18n/messagesMap';
@@ -12,11 +11,6 @@
 	type Props = { children: Snippet };
 
 	const props: Props = $props();
-
-	let showYourLoader = $state(false);
-
-	// static/*.gif — must use kit base path (Stake hosts games under a subpath, not site root)
-	const loaderUrlStakeEngine = `${base}/stake-engine-loader.gif`;
 
 	setContext();
 </script>
@@ -29,10 +23,14 @@
 	</Authenticate>
 </GlobalStyle>
 
-<LoaderStakeEngine src={loaderUrlStakeEngine} oncomplete={() => (showYourLoader = true)} />
+<!--
+	The Stake Engine loader gif used to run here first, and the studio splash only
+	appeared once it finished. Removed: it is a second full-screen wait in front of
+	a game that already has its own loading screen, and it was pushing the studio
+	splash — and everything after it — roughly two seconds later.
 
-{#if showYourLoader}
-	<WildPartyLoader />
-{/if}
+	The splash now shows immediately instead of being gated on that gif.
+-->
+<StudioLoader />
 
 {@render props.children()}
