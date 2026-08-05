@@ -15,8 +15,35 @@
 
 	const context = getContext();
 	const SPINE_SCALE = { width: 0.62, height: 0.66 };
-	// frame art is 1280×1280 with the board occupying the centered 1000×1000
-	const FRAME_SCALE = 1280 / 1000;
+
+	// ── placing the painted scene ───────────────────────────────────────────
+	//
+	// bg_background.png is one picture holding BOTH the room and the reel frame,
+	// with a black opening the board shows through. That fuses two things this
+	// codebase had kept apart, and it has one hard consequence: the image cannot
+	// be positioned by the screen, it has to be positioned by the BOARD, so that
+	// its opening lands exactly on the playfield at every aspect ratio.
+	//
+	// Measured off the file rather than eyeballed:
+	const SCENE = { width: 1536, height: 1024 };
+	const OPENING = { x: 454, y: 241, width: 628, height: 586 };
+	// Offset of the opening's centre from the image's centre, in image pixels.
+	const OPENING_DX = OPENING.x + OPENING.width / 2 - SCENE.width / 2; // -0.5
+	const OPENING_DY = OPENING.y + OPENING.height / 2 - SCENE.height / 2; // +21.5
+
+	// Scale is taken from the opening's HEIGHT, never its width. The opening is
+	// 628x586 while the board is square, so matching width would leave the
+	// opening shorter than the board and the frame would sit over the top and
+	// bottom rows. Matching height leaves horizontal slack instead, which is
+	// harmless — it just shows a little more of the dark recess.
+	//
+	// The margin is what keeps the recoil from eating that slack: the scene
+	// shakes on impact and the board does not, so without a gap a hard slam would
+	// walk the frame across the playfield edge.
+	const OPENING_MARGIN = 1.06;
+	// ...and the scene only takes a fraction of the impact, so the movement stays
+	// well inside the margin even on a transition slam.
+	const SCENE_IMPACT = 0.45;
 
 	// mode ambience: the housing glows with the forge running in the free game;
 	// the base game stays cold
@@ -74,6 +101,21 @@
 		};
 		impactRaf = requestAnimationFrame(step);
 	};
+
+	// Declared after `impact` on purpose: this reads it, and a derived that
+	// closes over a `let` declared further down is a temporal-dead-zone trap
+	// waiting for someone to make it eager.
+	const scene = $derived.by(() => {
+		const layout = context.stateGameDerived.boardLayout();
+		const boardHeight = layout.height * layout.scale;
+		const s = (boardHeight * OPENING_MARGIN) / OPENING.height;
+		return {
+			x: layout.x - OPENING_DX * s + impact.x * SCENE_IMPACT,
+			y: layout.y - OPENING_DY * s + impact.y * SCENE_IMPACT,
+			width: SCENE.width * s,
+			height: SCENE.height * s,
+		};
+	});
 
 	const drawAmbience = (g: PixiGraphics) => {
 		g.clear();
@@ -145,34 +187,43 @@
 	</SpineProvider>
 {/if}
 
-<Sprite
-	key="efFrameBg"
-	anchor={0.5}
-	x={context.stateGameDerived.boardLayout().x + impact.x}
-	y={context.stateGameDerived.boardLayout().y + impact.y}
-	width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-/>
+<Sprite key="efScene" anchor={0.5} x={scene.x} y={scene.y} width={scene.width} height={scene.height} />
 
-<Sprite
-	key="efFrameEdge"
-	anchor={0.5}
-	x={context.stateGameDerived.boardLayout().x + impact.x}
-	y={context.stateGameDerived.boardLayout().y + impact.y}
-	width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-/>
+{#if context.stateGame.gameType === 'freegame'}
+	<!--
+		The painted scene is one image, so the free game cannot swap to a different
+		one the way the generated backdrop does. A warm additive pass over the same
+		art carries the mode instead: the forge is running hotter, not somewhere
+		else.
+	-->
+	<Sprite
+		key="efScene"
+		anchor={0.5}
+		x={scene.x}
+		y={scene.y}
+		width={scene.width}
+		height={scene.height}
+		blendMode="add"
+		tint={0xff8a3a}
+		alpha={0.12 + 0.05 * pulse}
+	/>
+{/if}
 
 {#if impact.flash > 0}
-	<!-- additive copy of the brass edge = the whole housing rings white-hot -->
+	<!--
+		Additive copy of the whole scene: a hard slam now rings the entire room
+		rather than just the housing, because the housing IS the room in this art.
+		Held well below the old value — the painted scene is already bright, and at
+		the frame's original flash strength it blew out to white.
+	-->
 	<Sprite
-		key="efFrameEdge"
+		key="efScene"
 		anchor={0.5}
-		x={context.stateGameDerived.boardLayout().x + impact.x}
-		y={context.stateGameDerived.boardLayout().y + impact.y}
-		width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-		height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
+		x={scene.x}
+		y={scene.y}
+		width={scene.width}
+		height={scene.height}
 		blendMode="add"
-		alpha={impact.flash}
+		alpha={impact.flash * 0.35}
 	/>
 {/if}

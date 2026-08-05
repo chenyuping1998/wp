@@ -7,17 +7,6 @@
 			scale: 2,
 		},
 	},
-	// riveted cast-iron reel housing (design/generate_theme_forge.mjs)
-	efFrameBg: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/emberForgeFrame/frame_bg.png', import.meta.url).href,
-		preload: true,
-	},
-	efFrameEdge: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/emberForgeFrame/frame_edge.png', import.meta.url).href,
-		preload: true,
-	},
 	// soft-falloff FX textures (design/generate_fx_textures.mjs) — every particle
 	// in the game is one of these, tinted and drawn additively
 	fxGlow: {
@@ -183,15 +172,17 @@
 		src: new URL('../../assets/sprites/emberForgeSymbols/s.png', import.meta.url).href,
 		preload: true,
 	},
-	// Ember Forge backgrounds (design/generate_theme_forge.mjs)
-	efBgBase: {
+	// Painted forge scene WITH the reel frame built into it — the board shows
+	// through the black opening. Supplied art, not generated, and now the ONLY
+	// room art in the game: it replaced the generated bg_base/bg_feature pair and
+	// the frame_bg/frame_edge housing, which design/generate_theme_forge.mjs can
+	// still re-emit if this ever needs to be rolled back.
+	efScene: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/emberForgeBackground/bg_base.png', import.meta.url).href,
-		preload: true,
-	},
-	efBgFeature: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/emberForgeBackground/bg_feature.png', import.meta.url).href,
+		src: new URL(
+			'../../assets/sprites/emberForgeBackground/bg_background.png',
+			import.meta.url,
+		).href,
 		preload: true,
 	},
 	anticipation: {

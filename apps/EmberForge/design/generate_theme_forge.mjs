@@ -186,6 +186,12 @@ const backgroundSvg = ({ feature }) => {
 </svg>`;
 };
 
+// NOTE: bg_base / bg_feature / frame_bg / frame_edge are no longer shipped —
+// the supplied painting bg_background.png carries both the room and the reel
+// housing now, and the game loads only that. These renders are kept so the
+// generated look can be restored (re-add the keys to assets.ts and point
+// Background/BoardFrame back at them). The PNGs are still in static/ but have
+// no assets.ts entry, so nothing loads them.
 render(backgroundSvg({ feature: false }), BG_OUT, 'bg_base', BG_W);
 render(backgroundSvg({ feature: true }), BG_OUT, 'bg_feature', BG_W);
 

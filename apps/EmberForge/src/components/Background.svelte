@@ -8,19 +8,34 @@
 	import { getContext } from '../game/context';
 
 	const context = getContext();
-	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame');
 	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame');
 
 	let beamPhase = $state(0);
 	let clock = $state(0);
 
-	// ── slow ken-burns drift over a small overscan, so the still forge art
-	// breathes instead of sitting dead behind the reels ────────────────────────
+	// ── the backdrop is the painted scene again ────────────────────────────────
+	//
+	// BoardFrame draws bg_background.png anchored to the BOARD, so its opening
+	// lands on the playfield. That copy covers the canvas at ordinary aspect
+	// ratios but cannot on a very tall phone, and whatever fills the remainder
+	// has to match it — a different picture behind the same art reads as a seam.
+	// So the filler is the same file, cover-fitted to the canvas and pushed well
+	// down in brightness. Where it shows it reads as a dark continuation of the
+	// room, not as a second reel frame sitting behind the real one.
+	const SCENE = { width: 1536, height: 1024 };
+	const BACKDROP_ALPHA = 0.55;
+
+	// Slow ken-burns drift over a small overscan, so the still art breathes
+	// instead of sitting dead behind the reels. Cover-fit, never stretched to the
+	// canvas aspect: this image now shares its geometry with the board-anchored
+	// copy, and distorting one of the two would be visible where they overlap.
 	const OVERSCAN = 1.08;
 	const parallax = $derived.by(() => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
-		const w = width * OVERSCAN;
-		const h = height * OVERSCAN;
+		const scale =
+			Math.max(width / SCENE.width, height / SCENE.height) * OVERSCAN;
+		const w = SCENE.width * scale;
+		const h = SCENE.height * scale;
 		const slackX = w - width;
 		const slackY = h - height;
 		return {
@@ -103,15 +118,19 @@
 
 <Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x0d0f05} zIndex={-3} />
 
-<!-- banked forge, base game -->
-<FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
-	<Sprite key="efBgBase" {...parallax} />
+<!-- the forge room, dimmed, filling whatever the board-anchored copy cannot reach -->
+<Container zIndex={-2}>
+	<Sprite key="efScene" {...parallax} alpha={BACKDROP_ALPHA} />
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
-</FadeContainer>
+</Container>
 
-<!-- 烈日突擊 free-game background -->
+<!--
+	The free game does not swap pictures any more — there is only one painting.
+	It brings the room up instead: a warm additive pass over the same art, so the
+	whole screen reads as the forge running hot rather than as a different place.
+-->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
-	<Sprite key="efBgFeature" {...parallax} />
+	<Sprite key="efScene" {...parallax} blendMode="add" tint={0xff8a3a} alpha={0.16} />
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
 </FadeContainer>
 

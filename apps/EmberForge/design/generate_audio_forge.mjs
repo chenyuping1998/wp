@@ -180,15 +180,25 @@ const bellows = (sr, { dur = 1.4, peak = 0.55 } = {}) => {
  *   · sparse high crackle transients riding on top
  * The crackle is what actually makes it read as FIRE rather than as wind.
  */
-const fireBurst = (sr, { dur = 1.6, intensity = 1 } = {}) => {
+const fireBurst = (sr, { dur = 1.6, intensity = 1, shape = 'burst' } = {}) => {
 	const buf = buffer(dur, sr);
+	const swell = shape === 'swell';
 
-	// body: low roar, fast attack and a long tail
+	// body: low roar.
+	//
+	// 'burst' hits at once and decays — the furnace door giving way. 'swell'
+	// builds and falls, which is what the opening needs: there the flame front
+	// climbs for two thirds of the shot, and a front-loaded blast peaks while the
+	// screen is still dark and is already dying when the fire fills it.
 	const body = buffer(dur, sr);
 	for (let i = 0; i < body.length; i++) {
 		const t = i / sr;
 		const p = t / dur;
-		body[i] = rand2() * Math.min(1, t / 0.05) * Math.exp(-p * 2.2);
+		body[i] =
+			rand2() *
+			(swell
+				? Math.sin(Math.PI * Math.pow(p, 0.8))
+				: Math.min(1, t / 0.05) * Math.exp(-p * 2.2));
 	}
 	lowpass(body, sr, 420);
 	addAt(buf, body, 0, 0.9 * intensity, sr);
@@ -204,9 +214,9 @@ const fireBurst = (sr, { dur = 1.6, intensity = 1 } = {}) => {
 	highpass(whoosh, sr, 300);
 	addAt(buf, whoosh, 0.02, 0.75 * intensity, sr);
 
-	// crackle: short bright ticks, denser at the peak
+	// crackle: short bright ticks, denser at the peak — which moves with the shape
 	for (let n = 0; n < Math.round(60 * intensity); n++) {
-		const at = Math.pow(rand(), 0.7) * dur * 0.8;
+		const at = swell ? dur * (0.12 + 0.76 * rand()) : Math.pow(rand(), 0.7) * dur * 0.8;
 		const len = Math.round(sr * (0.004 + rand() * 0.012));
 		const tick = new Float32Array(len);
 		for (let i = 0; i < len; i++) tick[i] = rand2() * Math.exp(-(i / len) * 6);
@@ -381,6 +391,24 @@ writeWav(
 	// the fire itself, arriving just after the impact
 	addAt(buf, fireBurst(SR_SFX, { dur: 1.9, intensity: 1 }), 0.1, 1, SR_SFX);
 	writeWav('grenade_blast.wav', fadeEnds(normalize(buf, 0.95), SR_SFX, 4), SR_SFX);
+}
+
+// fire_sweep — the opening.
+//
+// Separate from grenade_blast because the two shots are not the same event. The
+// transition is a door giving way and fire covering the screen; the opening has
+// no door at all any more, it is a flare that CLEARS to reveal the board. Firing
+// the transition's cue there put a 92Hz impact against nothing on screen and ran
+// 2.2s of tail past a 1.5s picture, which is the mismatch this fixes.
+//
+// Length is EntryReveal's TOTAL_MS exactly, and the swell peaks with the flame
+// front rather than ahead of it.
+{
+	const buf = buffer(1.5, SR_SFX);
+	// draught first: the fire is being drawn, not detonated
+	addAt(buf, bellows(SR_SFX, { dur: 0.45, peak: 0.7 }), 0, 0.45, SR_SFX);
+	addAt(buf, fireBurst(SR_SFX, { dur: 1.45, intensity: 0.85, shape: 'swell' }), 0.03, 1, SR_SFX);
+	writeWav('fire_sweep.wav', fadeEnds(normalize(buf, 0.82), SR_SFX, 8), SR_SFX);
 }
 
 // ─── music beds ─────────────────────────────────────────────────────────────

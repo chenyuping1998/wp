@@ -187,7 +187,11 @@
 						// the numbers start rolling
 						if (isBigWin) await waitForTimeout(90);
 						await startCountUp();
-						await waitForTimeout(isBigWin ? 1300 : 300);
+						// Hold on the final figure, then release. This was 1300ms, which is
+						// a round's-end pause; the plaque fires once per SPIN here, so it
+						// was being paid ten to eighteen times inside one feature on top of
+						// the count-up itself. See winLevelMap for the measurement.
+						await waitForTimeout(isBigWin ? 400 : 200);
 						oncomplete();
 					}}
 				/>

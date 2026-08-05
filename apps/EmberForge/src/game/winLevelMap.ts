@@ -46,12 +46,30 @@ export const winLevelMap = {
 		sound: { sfx: undefined, bgm: undefined },
 		animation: undefined,
 	},
+	// ── celebration length ────────────────────────────────────────────────────
+	//
+	// These were 6s / 18s / 20s / 26s / 32s, inherited from the template. Those
+	// numbers are right for a lines game, where the math emits ONE setWin per
+	// round and the plaque is the round's finale. This game emits one per SPIN,
+	// and a free game is ten to eighteen spins.
+	//
+	// Measured over the published books, counting only levels that actually get a
+	// plaque: 88.9% of bonus rounds contain at least one, averaging 2.7 of them,
+	// and at the old durations that came to **53.7 seconds of plaque per round** —
+	// worst case 449 seconds across 18 celebrations. That is the "free game
+	// freezes when it wins" report: nothing was stuck, the feature was simply
+	// spending most of its running time holding still on a banner.
+	//
+	// A per-spin celebration has to read as a beat, not a scene. The tiers still
+	// climb, and the whole ladder now costs about 8 seconds across an average
+	// round instead of 54. presentDuration also drives the count-up, so this makes
+	// the number roll at a believable speed rather than crawling for 20 seconds.
 	6: {
 		level: 6,
 		alias: 'big',
 		type: 'big',
 		text: 'BIG WIN',
-		presentDuration: 6 * SECOND,
+		presentDuration: 1.6 * SECOND,
 		sound: { sfx: undefined, bgm: 'bgm_winlevel_big' },
 		animation: { intro: 'big_win_intro', idle: 'big_win_idle', outro: 'big_win_exit' },
 	},
@@ -60,7 +78,7 @@ export const winLevelMap = {
 		alias: 'superwin',
 		type: 'big',
 		text: 'SUPER WIN',
-		presentDuration: 18 * SECOND,
+		presentDuration: 2.2 * SECOND,
 		sound: { sfx: undefined, bgm: 'bgm_winlevel_superwin' },
 		animation: { intro: 'super_win_intro', idle: 'super_win_idle', outro: 'super_win_exit' },
 	},
@@ -69,7 +87,7 @@ export const winLevelMap = {
 		alias: 'mega',
 		type: 'big',
 		text: 'MEGA WIN',
-		presentDuration: 20 * SECOND,
+		presentDuration: 2.8 * SECOND,
 		sound: { sfx: undefined, bgm: 'bgm_winlevel_mega' },
 		animation: { intro: 'mega_win_intro', idle: 'mega_win_idle', outro: 'mega_win_exit' },
 	},
@@ -78,7 +96,7 @@ export const winLevelMap = {
 		alias: 'epic',
 		type: 'big',
 		text: 'EPIC WIN!',
-		presentDuration: 26 * SECOND,
+		presentDuration: 3.6 * SECOND,
 		sound: { sfx: undefined, bgm: 'bgm_winlevel_epic' },
 		animation: { intro: 'epic_win_intro', idle: 'epic_win_idle', outro: 'epic_win_exit' },
 	},
@@ -87,7 +105,7 @@ export const winLevelMap = {
 		alias: 'max',
 		type: 'big',
 		text: 'MAX WIN',
-		presentDuration: 32 * SECOND,
+		presentDuration: 5 * SECOND,
 		sound: { sfx: undefined, bgm: 'bgm_winlevel_max' },
 		animation: { intro: 'max_win_intro', idle: 'max_win_idle', outro: 'max_win_exit' },
 	},

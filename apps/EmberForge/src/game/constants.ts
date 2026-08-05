@@ -174,6 +174,17 @@ export const FLY_IN_FROM = 30;
 export const FLY_IN_MAX = 6;
 export const FLY_IN_MS = 420;
 export const FLY_IN_STAGGER_MS = 70;
+// Hard ceiling on how long the volley will wait for a fly-in to report back.
+//
+// The longest legitimate assembly is FLY_IN_MS + FLY_IN_STAGGER_MS * (FLY_IN_MAX
+// - 1) + 160 = 930ms, so this is never reached in normal play. It exists because
+// the alternative to a deadline is a game that stops forever: that await is the
+// only one in a round with no bound on it, and anything that stops the component
+// from reporting — an unmount, a render that throws before onMount runs — takes
+// the whole round with it. ClusterWins already made this argument once, when it
+// stopped awaiting symbol completion callbacks; the fly-in reintroduced the
+// pattern that note was written about.
+export const FLY_IN_DEADLINE_MS = 1500;
 
 /** C: hit-stop. 0.68% of clusters — rare enough that stopping the game is a reward. */
 export const QUENCH_FROM = 80;

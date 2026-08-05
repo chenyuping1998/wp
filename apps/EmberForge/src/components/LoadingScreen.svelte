@@ -20,16 +20,25 @@
 	let pulseTick = $state(0);
 
 	// Gameplay tips cycling under the progress bar, so the wait teaches the
-	// features instead of just counting. Every line is checked against the rules
-	// modal (components/ui/ModalGameRules) — note in particular that it takes 4 or
-	// 5 Scatters here, not 3, and that multipliers ADD rather than multiply.
+	// features instead of just counting.
+	//
+	// Every line is taken from the rules modal (components/ui/ModalGameRules) and
+	// describes THIS game. The set that was here before described a different one
+	// entirely — expanding Wilds that stick and carry 2x-50x, lines, a Super Spin
+	// with respins — none of which exists in a cluster-pays tumble game. It came
+	// over with the template and every player saw it on every load.
+	//
+	// The two things worth getting right: it takes 4 Scatters, not 3, and heat
+	// ADDS across the positions a cluster covers rather than multiplying.
 	const TIPS = [
-		'4 OR 5 SCATTERS AWARD 12 OR 15 FREE SPINS',
-		'IN FREE SPINS EVERY WILD EXPANDS TO FILL ITS REEL',
-		'EXPANDED WILDS STICK FOR THE REST OF THE FEATURE',
-		'EACH EXPANDED WILD CARRIES A 2×–50× MULTIPLIER',
-		'MULTIPLIERS ON A WINNING LINE ARE ADDED TOGETHER',
-		'SUPER SPIN: EVERY COIN RESETS THE RESPINS TO 3',
+		'FIVE OR MORE TOUCHING SYMBOLS FORM A CLUSTER',
+		'CLUSTERS BURN AWAY AND NEW SYMBOLS DROP IN',
+		'THE CHAIN KEEPS PAYING UNTIL NO CLUSTER FORMS',
+		'THE FORGE HAMMER WILD JOINS ANY CLUSTER',
+		'4 TO 7 SCATTERS AWARD 10 TO 18 FREE SPINS',
+		'IN FREE SPINS EVERY PAYING POSITION STAYS HOT',
+		'A HEATED POSITION GAINS +1x EACH TIME IT PAYS',
+		'A CLUSTER IS PAID BY THE HEAT IT COVERS',
 	];
 	const TIP_MS = 3400;
 	// pulseTick already advances every 32ms for the title pulse — reuse it as the
@@ -70,9 +79,9 @@
 <!-- Ember Forge branded loading screen -->
 <FadeContainer show={loadingType === 'start'}>
 	<MainContainer>
-		<!-- Background image (山水 theme) -->
+		<!-- the painted forge room, same art the game itself sits in -->
 		<Sprite
-			key="efBgBase"
+			key="efScene"
 			anchor={0.5}
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.5}

@@ -11,6 +11,7 @@
 		| { type: 'soundBigWinBlast' }
 		| { type: 'soundTumbleHit'; chain: number }
 		| { type: 'soundTransitionBlast' }
+		| { type: 'soundEntryFire' }
 		| { type: 'soundReelTensionStart' }
 		| { type: 'soundReelTensionStop' }
 		| { type: 'soundScatterCounterIncrease' }
@@ -51,7 +52,8 @@
 		| 'coin_shimmer'
 		| 'wild_expand'
 		| 'mult_update'
-		| 'grenade_blast';
+		| 'grenade_blast'
+		| 'fire_sweep';
 
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
 		gong_feature: 'forge/gong_feature.wav',
@@ -73,6 +75,7 @@
 		wild_expand: 'forge/wild_expand.wav',
 		mult_update: 'forge/mult_update.wav',
 		grenade_blast: 'forge/grenade_blast.wav',
+		fire_sweep: 'forge/fire_sweep.wav',
 	};
 
 	// Sprite sound names re-routed to the Chinese set.
@@ -226,21 +229,25 @@
 		},
 		soundFreeGameBell: () => playCnSfx('gong_feature'),
 		soundBigWinBlast: () => playCnSfx('bigwin_blast'),
+		// The wipe between base game and feature.
+		soundTransitionBlast: () => playCnSfx('grenade_blast'),
+		// The opening flare. Its own cue, not the transition's: same fire, but
+		// swelling with the front instead of detonating ahead of it, and cut to the
+		// length of the shot so nothing rings on over a board that is already up.
+		soundEntryFire: () => playCnSfx('fire_sweep', 0.9),
 		// Each link of a tumble chain is the same strike pitched a semitone higher,
 		// so a long chain climbs. Capped at an octave: past that it stops reading as
 		// "higher" and just sounds thin.
-		// The wipe between base game and feature. Still routed to the template
-		// blast until the forge audio set replaces it.
-		soundTransitionBlast: () => playCnSfx('grenade_blast'),
+		//
 		// The free game hits harder and a touch brighter. Same sample, so the two
 		// modes stay recognisably one instrument — the feature should feel like the
 		// forge working faster, not like a different game.
 		soundTumbleHit: ({ chain }) => {
-			const feature = context.stateGame.gameType === freegame;
+			const feature = context.stateGame.gameType === 'freegame';
 			const rate = Math.pow(2, Math.min(chain - 1, 12) / 12) * (feature ? 1.06 : 1);
-			playCnSfx(scatter_1, feature ? 1 : 0.75, rate);
+			playCnSfx('scatter_1', feature ? 1 : 0.75, rate);
 			// a low thump under the strike, so a feature chain has weight as well as pitch
-			if (feature) playCnSfx(pluck_low, 0.5, 1.15);
+			if (feature) playCnSfx('pluck_low', 0.5, 1.15);
 		},
 		soundReelTensionStart: () => playCnLoop('reel_tension', 0.8),
 		soundReelTensionStop: () => stopCnSfx('reel_tension'),

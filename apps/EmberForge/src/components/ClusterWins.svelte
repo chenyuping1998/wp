@@ -28,6 +28,7 @@
 		CLUSTER_HOLD_MS_FREEGAME,
 		CLUSTER_HOLD_MS_FAST,
 		FLY_IN_FROM,
+		FLY_IN_DEADLINE_MS,
 		QUENCH_FROM,
 		QUENCH_HOLD_MS,
 	} from '../game/constants';
@@ -222,9 +223,20 @@
 					}
 
 					// ── assemble the multiplier where the payout is read ────────
+					// Raced against a deadline, never awaited bare. The callback comes
+					// from a mounted component, and a component can fail to report for
+					// reasons that have nothing to do with this sequence — it can be
+					// unmounted, or throw while rendering, in which case onMount never
+					// runs and no amount of correctness here brings the resolver back.
+					// Without the race that is a game frozen for good; with it the worst
+					// case is one cluster's assembly cut short.
 					if (win.clusterMult >= FLY_IN_FROM) {
 						flying = [...flying, index];
-						await waitForResolve((resolve) => (flyResolvers[index] = resolve));
+						await Promise.race([
+							waitForResolve((resolve) => (flyResolvers[index] = resolve)),
+							waitForTimeout(FLY_IN_DEADLINE_MS),
+						]);
+						delete flyResolvers[index];
 						flying = flying.filter((i) => i !== index);
 					}
 				}),

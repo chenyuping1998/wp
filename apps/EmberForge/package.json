@@ -11,7 +11,8 @@
 		"check:assets": "node design/check_assets.mjs",
 		"check:tumble": "node design/check_tumble_rule.mjs",
 		"check:font": "node design/check_font_coverage.mjs",
-		"build": "node design/check_undefined_refs.mjs && vite build",
+		"check:literals": "node design/check_string_literals.mjs",
+		"build": "node design/check_undefined_refs.mjs && node design/check_string_literals.mjs && vite build",
 		"preview": "vite preview"
 	},
 	"type": "module",

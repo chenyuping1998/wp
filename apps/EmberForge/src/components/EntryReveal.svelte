@@ -32,7 +32,7 @@
 	let t = $state(0);
 
 	onMount(() => {
-		context.eventEmitter.broadcast({ type: 'soundTransitionBlast' });
+		context.eventEmitter.broadcast({ type: 'soundEntryFire' });
 		let raf = 0;
 		let start = 0;
 		const tick = (now: number) => {
