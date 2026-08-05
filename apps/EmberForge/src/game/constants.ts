@@ -88,6 +88,27 @@ export const SPIN_OPTIONS_DEFAULT = {
 	reelFallOutDelay: 55,
 };
 
+// A teasing reel drops slower than a normal one, and slower than the reels that
+// have already stopped around it.
+//
+// The tease is the only moment in the base game where the outcome is still open
+// and the player knows it — three Scatters are down and the fourth opens the
+// feature. It used to fall at exactly the normal pace, so the anticipation frame
+// lit up and the answer arrived before it had finished lighting. The extra
+// padding (reelPaddingMultiplierAnticipated, 8x) already made the strip longer;
+// this makes it travel slower too, which is what turns length into suspense
+// rather than just more symbols going past at the same speed.
+export const SPIN_OPTIONS_ANTICIPATED = {
+	...CASCADE_SHARED,
+	symbolFallInSpeed: 0.95,
+	symbolFallInInterval: 44,
+	symbolFallInBounceSpeed: 0.2,
+	symbolFallOutSpeed: 2.25,
+	symbolFallOutInterval: 27,
+	reelFallInDelay: 110,
+	reelFallOutDelay: 55,
+};
+
 export const SPIN_OPTIONS_FAST = {
 	...CASCADE_SHARED,
 	symbolFallInSpeed: 3.1,

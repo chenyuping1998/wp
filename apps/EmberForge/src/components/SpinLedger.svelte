@@ -67,11 +67,51 @@
 	const UI_BASE_SIZE = 150;
 	const buyBonusSize = $derived(UI_BASE_SIZE * uiTheme.buyBonusRailScale);
 
-	const ROW_H = 26;
-	const PAD = 8;
-	const HEADER_H = 24;
-	const GAP_ABOVE_BUY_BONUS = 20;
+	// Raised from 26/8/24. The panel was legible but small — a symbol at 23px with
+	// a 12px count beside it is a label, not a readout, and this is the only
+	// record of what a spin paid once the tumble has taken the symbols away.
+	const ROW_H_BASE = 34;
+	const PAD_BASE = 10;
+	const HEADER_H_BASE = 30;
+	const GAP_ABOVE_BUY_BONUS_BASE = 20;
 	const MAX_PORTRAIT_CHIPS = 5;
+	// Below this many rows the vertical panel is not worth its own frame: three
+	// symbols plus a TOTAL is the least that reads as a ledger rather than as a
+	// cropped list. Under it, the compact band is used instead.
+	const MIN_VERTICAL_ROWS = 3;
+	/**
+	 * Scale compensation.
+	 *
+	 * `mainLayoutStandard` is a fixed 1920x1080 virtual box scaled to fit whatever
+	 * canvas it is given, so every metric above is in standard units and the REAL
+	 * size on screen is those units times the box scale. That is right for the
+	 * board, which should shrink with the window. It is wrong for a text readout,
+	 * which stops working below a physical size:
+	 *
+	 *     desktop 1280x720   scale 0.67   amount text 10.7px
+	 *     popout M  900x560  scale 0.47   amount text  7.5px
+	 *     popout S  660x400  scale 0.34   amount text  5.5px
+	 *
+	 * So the ledger grows in standard units as the box shrinks, holding its real
+	 * size roughly constant. Capped, because past that the panel would need more
+	 * than the rail it stands in — and when the cap is not enough the row count
+	 * falls under MIN_VERTICAL_ROWS and the compact band takes over, which is the
+	 * honest outcome for a viewport that small.
+	 */
+	const REFERENCE_SCALE = 0.667;
+	const MAX_UI_SCALE = 2.2;
+	const uiScale = $derived.by(() => {
+		const box = context.stateLayoutDerived.mainLayoutStandard();
+		return Math.min(MAX_UI_SCALE, Math.max(1, REFERENCE_SCALE / box.scale));
+	});
+
+	const rowH = $derived(ROW_H_BASE * uiScale);
+	const pad = $derived(PAD_BASE * uiScale);
+	const headerH = $derived(HEADER_H_BASE * uiScale);
+	const gapAboveBuyBonus = $derived(GAP_ABOVE_BUY_BONUS_BASE * uiScale);
+	/** Text is authored at reference scale and follows the panel. */
+	const fs = (size: number) => size * uiScale;
+
 
 	/**
 	 * How many rows fit between the top margin and the Buy Bonus button.
@@ -85,14 +125,26 @@
 	 * paying spins involve four or fewer — so the fold below is a rare case, not
 	 * the normal presentation.
 	 */
-	const capacity = $derived.by(() => {
-		if (isPortrait) return MAX_PORTRAIT_CHIPS;
+	const verticalCapacity = $derived.by(() => {
 		const box = context.stateLayoutDerived.mainLayoutStandard();
-		const bottomLimit = box.height * 0.46 - buyBonusSize * 0.5 - GAP_ABOVE_BUY_BONUS;
+		const bottomLimit = box.height * 0.46 - buyBonusSize * 0.5 - gapAboveBuyBonus;
 		const topLimit = box.height * 0.03;
-		const usable = bottomLimit - topLimit - HEADER_H - PAD * 2;
-		return Math.max(2, Math.floor(usable / ROW_H));
+		const usable = bottomLimit - topLimit - headerH - pad * 2;
+		return Math.floor(usable / rowH);
 	});
+
+	/**
+	 * Compact mode: one horizontal band instead of the standing panel.
+	 *
+	 * Portrait has always used it — there is no rail to stand a panel in. Short
+	 * landscape boxes now use it too. Popout S is the case that forced this: the
+	 * rail is there but there is barely any height in it, and the honest answer is
+	 * that a taller panel does not fit rather than to shrink the rows until they
+	 * are unreadable again. The band needs one row of height and gets the same
+	 * information, folded.
+	 */
+	const compact = $derived(isPortrait || verticalCapacity < MIN_VERTICAL_ROWS);
+	const capacity = $derived(compact ? MAX_PORTRAIT_CHIPS : verticalCapacity);
 
 	// Fold the tail into one OTHERS row when the list cannot fit. Nothing is lost:
 	// the folded rows still count towards TOTAL, which is the number that matters.
@@ -124,9 +176,9 @@
 	const panel = $derived.by(() => {
 		const box = context.stateLayoutDerived.mainLayoutStandard();
 
-		if (isPortrait) {
+		if (compact) {
 			const width = Math.min(box.width * 0.78, 820);
-			const height = HEADER_H + PAD * 2 + ROW_H;
+			const height = headerH + pad * 2 + rowH;
 			return {
 				width,
 				height,
@@ -138,9 +190,14 @@
 			};
 		}
 
-		const width = buyBonusSize * 0.72;
-		const height = HEADER_H + PAD * 2 + ROW_H * bodyRows;
-		const bottomLimit = box.height * 0.46 - buyBonusSize * 0.5 - GAP_ABOVE_BUY_BONUS;
+		// 0.72 -> 0.95 of the Buy Bonus button. The rail is that wide already, and
+		// the panel was leaving a quarter of it empty on both sides while the
+		// amounts inside were being scaled down to fit.
+		// Clamped to the rail: at the top of the compensation range the uncapped
+		// width is wider than the rail the panel stands in.
+		const width = Math.min(buyBonusSize * 0.95 * uiScale, uiTheme.railWidth * 0.9);
+		const height = headerH + pad * 2 + rowH * bodyRows;
+		const bottomLimit = box.height * 0.46 - buyBonusSize * 0.5 - gapAboveBuyBonus;
 		return {
 			width,
 			height,
@@ -160,14 +217,14 @@
 		graphics.roundRect(0, 0, width, height, 10).fill({ color: 0x14181d, alpha: 0.92 });
 		graphics.roundRect(0, 0, width, height, 10).stroke({ width: 2, color: 0xc9922f, alpha: 0.85 });
 		graphics
-			.moveTo(PAD, HEADER_H)
-			.lineTo(width - PAD, HEADER_H)
+			.moveTo(pad, headerH)
+			.lineTo(width - pad, headerH)
 			.stroke({ width: 1.5, color: 0xc9922f, alpha: 0.45 });
 		if (layout.showTotal) {
-			const y = HEADER_H + PAD + ROW_H * (bodyRows - 1);
+			const y = headerH + pad + rowH * (bodyRows - 1);
 			graphics
-				.moveTo(PAD, y)
-				.lineTo(width - PAD, y)
+				.moveTo(pad, y)
+				.lineTo(width - pad, y)
 				.stroke({ width: 1.5, color: 0xc9922f, alpha: 0.3 });
 		}
 	};
@@ -202,18 +259,18 @@
 		<Text
 			text={heading}
 			x={panel.width * 0.5}
-			y={HEADER_H * 0.5}
+			y={headerH * 0.5}
 			anchor={{ x: 0.5, y: 0.5 }}
-			style={{ ...labelStyle(chain > 1 ? 11 : 12, 0xe8c9a0), letterSpacing: 1 }}
+			style={{ ...labelStyle(chain > 1 ? fs(13) : fs(14), 0xe8c9a0), letterSpacing: 1 }}
 		/>
 
 		{#if allRows.length === 0}
 			<Text
 				text="—"
 				x={panel.width * 0.5}
-				y={HEADER_H + PAD + ROW_H * 0.5}
+				y={headerH + pad + rowH * 0.5}
 				anchor={{ x: 0.5, y: 0.5 }}
-				style={labelStyle(15, 0x6b6257)}
+				style={labelStyle(fs(19), 0x6b6257)}
 			/>
 		{:else if panel.horizontal}
 			<!-- portrait: chips reading left to right in a single band -->
@@ -224,48 +281,48 @@
 					key={symbolTexture(row.symbol)}
 					anchor={{ x: 0.5, y: 0.5 }}
 					x={cx - slot * 0.3}
-					y={HEADER_H + PAD + ROW_H * 0.5}
-					width={ROW_H * 0.9}
-					height={ROW_H * 0.9}
+					y={headerH + pad + rowH * 0.5}
+					width={rowH * 0.9}
+					height={rowH * 0.9}
 				/>
 				<Text
 					text={`x${row.count}`}
 					x={cx - slot * 0.02}
-					y={HEADER_H + PAD + ROW_H * 0.5}
+					y={headerH + pad + rowH * 0.5}
 					anchor={{ x: 0.5, y: 0.5 }}
-					style={labelStyle(13, 0xbfa588)}
+					style={labelStyle(fs(15), 0xbfa588)}
 				/>
 				<GoldText
 					text={bookEventAmountToCurrencyString(row.win)}
-					fontSize={14}
+					fontSize={fs(16)}
 					x={cx + slot * 0.28}
-					y={HEADER_H + PAD + ROW_H * 0.5}
+					y={headerH + pad + rowH * 0.5}
 					anchor={{ x: 0.5, y: 0.5 }}
 					maxWidth={slot * 0.42}
 				/>
 			{/each}
 		{:else}
 			{#each layout.rows as row, index (row.symbol)}
-				{@const rowY = HEADER_H + PAD + ROW_H * (index + 0.5)}
+				{@const rowY = headerH + pad + rowH * (index + 0.5)}
 				<Sprite
 					key={symbolTexture(row.symbol)}
 					anchor={{ x: 0.5, y: 0.5 }}
-					x={PAD + ROW_H * 0.42}
+					x={pad + rowH * 0.42}
 					y={rowY}
-					width={ROW_H * 0.88}
-					height={ROW_H * 0.88}
+					width={rowH * 0.88}
+					height={rowH * 0.88}
 				/>
 				<Text
 					text={`x${row.count}`}
-					x={PAD + ROW_H * 0.95}
+					x={pad + rowH * 0.95}
 					y={rowY}
 					anchor={{ x: 0, y: 0.5 }}
-					style={labelStyle(12, 0xbfa588)}
+					style={labelStyle(fs(15), 0xbfa588)}
 				/>
 				<GoldText
 					text={bookEventAmountToCurrencyString(row.win)}
-					fontSize={13}
-					x={panel.width - PAD}
+					fontSize={fs(16)}
+					x={panel.width - pad}
 					y={rowY}
 					anchor={{ x: 1, y: 0.5 }}
 					maxWidth={panel.width * 0.46}
@@ -273,18 +330,18 @@
 			{/each}
 
 			{#if layout.others}
-				{@const othersY = HEADER_H + PAD + ROW_H * (layout.rows.length + 0.5)}
+				{@const othersY = headerH + pad + rowH * (layout.rows.length + 0.5)}
 				<Text
 					text={`+${layout.others.symbols} MORE`}
-					x={PAD}
+					x={pad}
 					y={othersY}
 					anchor={{ x: 0, y: 0.5 }}
-					style={labelStyle(11, 0xbfa588)}
+					style={labelStyle(fs(13), 0xbfa588)}
 				/>
 				<GoldText
 					text={bookEventAmountToCurrencyString(layout.others.win)}
-					fontSize={13}
-					x={panel.width - PAD}
+					fontSize={fs(15)}
+					x={panel.width - pad}
 					y={othersY}
 					anchor={{ x: 1, y: 0.5 }}
 					maxWidth={panel.width * 0.46}
@@ -292,18 +349,18 @@
 			{/if}
 
 			{#if layout.showTotal}
-				{@const totalY = HEADER_H + PAD + ROW_H * (bodyRows - 0.5)}
+				{@const totalY = headerH + pad + rowH * (bodyRows - 0.5)}
 				<Text
 					text="TOTAL"
-					x={PAD}
+					x={pad}
 					y={totalY}
 					anchor={{ x: 0, y: 0.5 }}
-					style={{ ...labelStyle(11, 0xe8c9a0), letterSpacing: 1 }}
+					style={{ ...labelStyle(fs(13), 0xe8c9a0), letterSpacing: 1 }}
 				/>
 				<GoldText
 					text={bookEventAmountToCurrencyString(total)}
-					fontSize={15}
-					x={panel.width - PAD}
+					fontSize={fs(18)}
+					x={panel.width - pad}
 					y={totalY}
 					anchor={{ x: 1, y: 0.5 }}
 					maxWidth={panel.width * 0.54}

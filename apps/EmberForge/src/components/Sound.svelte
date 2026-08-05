@@ -50,7 +50,8 @@
 		| 'wild_expand'
 		| 'mult_update'
 		| 'grenade_blast'
-		| 'fire_sweep';
+		| 'fire_sweep'
+		| 'chain_hit';
 
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
 		gong_feature: 'forge/gong_feature.wav',
@@ -73,6 +74,7 @@
 		mult_update: 'forge/mult_update.wav',
 		grenade_blast: 'forge/grenade_blast.wav',
 		fire_sweep: 'forge/fire_sweep.wav',
+		chain_hit: 'forge/chain_hit.wav',
 	};
 
 	const cnSfxAudio: Partial<Record<CnSfxName, HTMLAudioElement>> = {};
@@ -261,7 +263,10 @@
 		soundTumbleHit: ({ chain }) => {
 			const feature = context.stateGame.gameType === 'freegame';
 			const rate = Math.pow(2, Math.min(chain - 1, 12) / 12) * (feature ? 1.06 : 1);
-			playCnSfx('scatter_1', feature ? 1 : 0.75, rate);
+			// Its own sample. This played scatter_1 until now, which made a cluster
+			// paying and a Scatter landing the same sound — the one symbol that has
+			// to stand out was indistinguishable from the most common event there is.
+			playCnSfx('chain_hit', feature ? 1 : 0.75, rate);
 			// a low thump under the strike, so a feature chain has weight as well as pitch
 			if (feature) playCnSfx('pluck_low', 0.5, 1.15);
 		},

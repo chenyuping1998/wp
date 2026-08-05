@@ -16,6 +16,7 @@ import {
 	INITIAL_BOARD,
 	BOARD_DIMENSIONS,
 	SPIN_OPTIONS_DEFAULT,
+	SPIN_OPTIONS_ANTICIPATED,
 	SPIN_OPTIONS_FAST,
 	SPIN_OPTIONS_FAST_FREEGAME,
 	INITIAL_SYMBOL_STATE,
@@ -72,6 +73,9 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 	});
 
 	reel.reelState.spinOptions = () => {
+		// Checked before the turbo branch on purpose: a tease is worth watching even
+		// in turbo, and it is the one thing in the game a player has asked to see.
+		if (reel.reelState.spinType === 'anticipated') return SPIN_OPTIONS_ANTICIPATED;
 		if (reel.reelState.spinType !== 'fast') return SPIN_OPTIONS_DEFAULT;
 		if (stateGame.gameType === 'freegame') return SPIN_OPTIONS_FAST_FREEGAME;
 		return SPIN_OPTIONS_FAST;

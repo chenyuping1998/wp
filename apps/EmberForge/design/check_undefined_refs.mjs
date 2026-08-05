@@ -115,11 +115,15 @@ for (const file of walk(SRC)) {
 
 	// names the markup itself introduces: {#each x as item}, {#snippet f(a)},
 	// {@const y = …}, {#if x}{:then v}, bind:this etc.
-	for (const m of markup.matchAll(/\{#each\s+[^}]*?\s+as\s+([A-Za-z_$][\w$]*)(?:\s*,\s*([A-Za-z_$][\w$]*))?/g)) {
+	// `[^\n]` rather than `[^}]`: the each EXPRESSION can contain braces of its
+	// own — an inline object literal, a nested call — and stopping at the first
+	// `}` never reached the `as`, so the binding looked undeclared. An each tag is
+	// written on one line, which is the bound that actually holds.
+	for (const m of markup.matchAll(/\{#each\b[^\n]*?\s+as\s+([A-Za-z_$][\w$]*)(?:\s*,\s*([A-Za-z_$][\w$]*))?/g)) {
 		declared.add(m[1]);
 		if (m[2]) declared.add(m[2]);
 	}
-	for (const m of markup.matchAll(/\{#each\s+[^}]*?\s+as\s+\{([^}]*)\}/g)) {
+	for (const m of markup.matchAll(/\{#each\b[^\n]*?\s+as\s+\{([^}]*)\}/g)) {
 		for (const part of m[1].split(',')) {
 			const name = part.split(':').pop()?.trim();
 			if (name) declared.add(name);

@@ -264,14 +264,41 @@ writeWav(
 // spin — the bellows drawing breath as a new board drops
 writeWav('spin.wav', fadeEnds(normalize(bellows(SR_SFX, { dur: 0.62 }), 0.7), SR_SFX), SR_SFX);
 
-// scatter_1..5 — the forge mark ringing, each one a step up the scale. Pitch
-// climbs so counting scatters is audible without looking.
+// scatter_1..5 — a heavy forge mark being set. Each one a step up the scale, so
+// counting scatters stays audible without looking.
+//
+// Deliberately LOW and dark. These used to ring at 300-566Hz with bright 0.85,
+// which is the same register as the tumble strike — and the tumble strike was
+// literally playing scatter_1.wav, so a scatter landing and a cluster paying
+// were the identical sound. A scatter is the rarest thing on the board and the
+// only symbol that opens the feature; it should land like something heavy being
+// dropped on the anvil, not like another win chiming.
+//
+// Base drops an octave to 150Hz, the partials are pulled well back (bright 0.3
+// leaves the fundamental dominant instead of the inharmonic shimmer), decay runs
+// longer so it tolls rather than clicks, and a sub thump sits underneath. The
+// quench hiss is cut right down — that was most of the brightness.
 [0, 2, 4, 7, 11].forEach((semitones, index) => {
-	const freq = 300 * Math.pow(2, semitones / 12);
-	const buf = strike(SR_SFX, { freq, dur: 1.5, bright: 0.85, decay: 1.15 });
-	addAt(buf, quench(SR_SFX, { dur: 0.3, cutoff: 7000 }), 0, 0.22, SR_SFX);
-	writeWav(`scatter_${index + 1}.wav`, fadeEnds(normalize(buf, 0.72), SR_SFX), SR_SFX);
+	const freq = 150 * Math.pow(2, semitones / 12);
+	const buf = strike(SR_SFX, { freq, dur: 1.9, bright: 0.3, decay: 1.6 });
+	// sub thump under the strike: the weight of the thing landing
+	addAt(buf, strike(SR_SFX, { freq: freq * 0.5, dur: 0.9, bright: 0.12, decay: 0.8 }), 0, 0.5, SR_SFX);
+	addAt(buf, quench(SR_SFX, { dur: 0.22, cutoff: 2600 }), 0, 0.1, SR_SFX);
+	lowpass(buf, SR_SFX, 3200);
+	writeWav(`scatter_${index + 1}.wav`, fadeEnds(normalize(buf, 0.78), SR_SFX), SR_SFX);
 });
+
+// chain_hit — one link of a tumble chain paying.
+//
+// Its own file now. It used to borrow scatter_1.wav, which is why the scatter
+// and the win sounded the same; Sound.svelte pitches this up a semitone per link
+// so a long chain climbs, and that ladder needs a short bright sample with no
+// tail to smear into the next link.
+{
+	const buf = strike(SR_SFX, { freq: 420, dur: 0.55, bright: 1, decay: 0.5 });
+	addAt(buf, quench(SR_SFX, { dur: 0.16, cutoff: 8000 }), 0, 0.28, SR_SFX);
+	writeWav('chain_hit.wav', fadeEnds(normalize(buf, 0.7), SR_SFX), SR_SFX);
+}
 
 // pluck_low — a dull thud on cold stock
 writeWav(
