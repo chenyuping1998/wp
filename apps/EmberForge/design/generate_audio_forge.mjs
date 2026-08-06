@@ -346,14 +346,76 @@ writeWav(
 	writeWav('win_gliss_big.wav', fadeEnds(normalize(buf, 0.82), SR_SFX), SR_SFX);
 }
 
-// gong_feature — the big anvil, struck once and left to ring. This is the free
-// game bell, and the handler holds three seconds on it.
+// gong_feature — the feature opening. The single biggest moment in the game.
+//
+// This was one anvil strike left to ring: the event fired, and then nothing
+// happened for the remaining three seconds the handler holds. Landing the
+// feature is the thing every spin is for, and it sounded like a doorbell.
+//
+// Built as an EVENT with three parts instead, over the 3s the handler holds:
+//   0.00-1.15  the forge winds up — hammer blows accelerating up the scale, a
+//              draught rising underneath. The accelerando is what makes it read
+//              as building rather than as a countdown.
+//   1.15       the hit: three detuned strikes an octave down from the old one,
+//              so it is felt rather than heard, plus the furnace letting go
+//   1.15-3.4   the ring, with the fire still roaring under it
 {
-	const buf = buffer(3.4, SR_SFX);
-	addAt(buf, strike(SR_SFX, { freq: 128, dur: 3.2, bright: 1, decay: 2.6 }), 0, 1, SR_SFX);
-	addAt(buf, strike(SR_SFX, { freq: 192, dur: 2.4, bright: 0.8, decay: 2 }), 0.012, 0.5, SR_SFX);
-	addAt(buf, quench(SR_SFX, { dur: 0.9, cutoff: 4200 }), 0.02, 0.3, SR_SFX);
-	writeWav('gong_feature.wav', fadeEnds(normalize(buf, 0.88), SR_SFX), SR_SFX);
+	const dur = 3.4;
+	const HIT = 1.15;
+	const buf = buffer(dur, SR_SFX);
+
+	// ── wind-up: blows accelerating and climbing ──
+	// Spacing shrinks geometrically toward the hit, which is what an accelerando
+	// is; spacing them evenly and just raising the pitch reads as a countdown,
+	// and a countdown tells the player how long they have to wait.
+	{
+		const blows = 11;
+		let at = 0.04;
+		let gap = 0.2;
+		for (let i = 0; i < blows; i++) {
+			const p = i / (blows - 1);
+			addAt(
+				buf,
+				strike(SR_SFX, {
+					freq: 300 * Math.pow(2, p * 0.9),
+					dur: 0.34,
+					bright: 0.5 + 0.4 * p,
+					decay: 0.3,
+				}),
+				at,
+				0.16 + 0.3 * p,
+				SR_SFX,
+			);
+			at += gap;
+			gap *= 0.82;
+		}
+	}
+	// draught pulling in behind the blows, peaking at the hit
+	addAt(buf, bellows(SR_SFX, { dur: HIT + 0.15, peak: 0.95 }), 0, 0.6, SR_SFX);
+
+	// ── the hit ──
+	// An octave below the old 128Hz. Three partials slightly detuned against each
+	// other so the strike beats rather than sitting on one dead pitch.
+	addAt(buf, strike(SR_SFX, { freq: 64, dur: 2.3, bright: 0.9, decay: 2.2 }), HIT, 1, SR_SFX);
+	addAt(buf, strike(SR_SFX, { freq: 96.6, dur: 2.1, bright: 1, decay: 2 }), HIT + 0.008, 0.75, SR_SFX);
+	addAt(buf, strike(SR_SFX, { freq: 129.4, dur: 1.8, bright: 0.85, decay: 1.7 }), HIT + 0.016, 0.5, SR_SFX);
+	// the furnace letting go at the same instant
+	addAt(buf, fireBurst(SR_SFX, { dur: 2.0, intensity: 1 }), HIT - 0.03, 0.85, SR_SFX);
+	addAt(buf, quench(SR_SFX, { dur: 1.1, cutoff: 5200 }), HIT + 0.02, 0.35, SR_SFX);
+
+	// ── aftermath: the room still roaring under the ring ──
+	{
+		const tail = buffer(dur - HIT, SR_SFX);
+		for (let i = 0; i < tail.length; i++) tail[i] = rand2();
+		lowpass(tail, SR_SFX, 340);
+		for (let i = 0; i < tail.length; i++) {
+			const t = i / SR_SFX;
+			tail[i] *= Math.exp(-t / 1.1);
+		}
+		addAt(buf, tail, HIT, 0.5, SR_SFX);
+	}
+
+	writeWav('gong_feature.wav', fadeEnds(normalize(buf, 0.95), SR_SFX), SR_SFX);
 }
 
 // fs_intro — furnace door opening: bellows swell into a struck chord

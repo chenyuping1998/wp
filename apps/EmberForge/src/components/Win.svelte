@@ -26,8 +26,9 @@
 
 	const context = getContext();
 
-	// brass tier plaques (design/generate_win_banners.mjs) — 1000×560, the
-	// amount rolls inside the dark centre well
+	// brass tier plaques (design/generate_win_banners.mjs) — a 1000×560 plate
+	// inside a 1280×840 canvas, the extra being margin for the flames around the
+	// frame. The amount rolls inside the plate's dark centre well.
 	const BANNER_KEY: Record<string, string> = {
 		big: 'efWinBannerBig',
 		superwin: 'efWinBannerSuperwin',
@@ -35,7 +36,15 @@
 		epic: 'efWinBannerEpic',
 		max: 'efWinBannerMax',
 	};
-	const BANNER_RATIO = 560 / 1000;
+	// The plaque art now has a margin around the plate for the flames to burn in,
+	// so the SPRITE is bigger than the plate it contains. Two sizes, deliberately:
+	// everything positioned against the plaque (the amount, the twinkles) is laid
+	// out against the PLATE, and only the sprite itself uses the canvas — which
+	// keeps every offset below meaning what it meant before the flames existed.
+	const BANNER_CANVAS = { width: 1280, height: 840 };
+	const BANNER_PLATE = { width: 1000, height: 560 };
+	const BANNER_RATIO = BANNER_CANVAS.height / BANNER_CANVAS.width;
+	const BANNER_MARGIN_SCALE = BANNER_CANVAS.width / BANNER_PLATE.width;
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
 		big: { mult: 1, glowTint: 0x9ec44a },
@@ -217,7 +226,9 @@
 							{@const alias = winLevelData.alias}
 							{@const fx = TIER_FX[alias] ?? TIER_FX.big}
 							{@const bannerKey = BANNER_KEY[alias] ?? BANNER_KEY.big}
-							{@const bw = SYMBOL_SIZE * 5.2}
+							{@const pw = SYMBOL_SIZE * 5.2}
+							{@const ph = pw * (BANNER_PLATE.height / BANNER_PLATE.width)}
+							{@const bw = pw * BANNER_MARGIN_SCALE}
 							{@const bh = bw * BANNER_RATIO}
 							<Container scale={bannerPose.scale}>
 								<!-- breathing glow bed behind the plaque -->
@@ -226,8 +237,8 @@
 									anchor={0.5}
 									tint={fx.glowTint}
 									blendMode="add"
-									width={bw * 1.45}
-									height={bh * 1.8}
+									width={pw * 1.45}
+									height={ph * 1.8}
 									alpha={bannerPose.glow}
 								/>
 								<Sprite key={bannerKey} anchor={0.5} width={bw} height={bh} />
@@ -248,8 +259,8 @@
 									<Sprite
 										key="fxStar"
 										anchor={0.5}
-										x={Math.cos(tw.angle) * bw * 0.46}
-										y={Math.sin(tw.angle) * bh * 0.44}
+										x={Math.cos(tw.angle) * pw * 0.46}
+										y={Math.sin(tw.angle) * ph * 0.44}
 										rotation={p * 2}
 										tint={0xffffff}
 										blendMode="add"
@@ -260,10 +271,10 @@
 								{/each}
 								<!-- amount rolls inside the plaque's dark centre well -->
 								<GoldText
-									y={bh * 0.16}
-									maxWidth={bw * 0.68}
+									y={ph * 0.16}
+									maxWidth={pw * 0.68}
 									text={bookEventAmountToCurrencyString(countUpAmount)}
-									fontSize={bh * 0.24}
+									fontSize={ph * 0.24}
 								/>
 							</Container>
 							{#if burstShown}
