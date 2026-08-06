@@ -236,11 +236,17 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
 		stateUi.freeSpinCounterShow = true;
+		// `current: 1`, not undefined. The first updateFreeSpin is still a moment
+		// away, and sending undefined left the counter showing whatever it held
+		// from the LAST feature — a second bonus in one session opened on the
+		// previous one's final spin number until the first update arrived. One is
+		// also simply the true reading: the feature is about to play spin one.
 		eventEmitter.broadcast({
 			type: 'freeSpinCounterUpdate',
-			current: undefined,
+			current: 1,
 			total: bookEvent.totalFs,
 		});
+		stateUi.freeSpinCounterCurrent = 1;
 		stateUi.freeSpinCounterTotal = bookEvent.totalFs;
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerButtonShow' });
