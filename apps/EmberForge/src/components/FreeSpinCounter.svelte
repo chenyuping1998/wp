@@ -49,7 +49,8 @@
 	);
 
 	let show = $state(false);
-	// `current` = spins USED + 1 (set by the updateFreeSpin handler); `total` = window size
+	// `current` = the spin being played, 1-based, straight from the math's
+	// updateFreeSpin.amount; `total` = window size
 	let current = $state(1);
 	let total = $state(0);
 

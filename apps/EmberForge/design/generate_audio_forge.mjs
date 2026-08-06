@@ -680,7 +680,7 @@ const scale = (root, degrees) => degrees.map((d) => root * Math.pow(2, d / 12));
 		near[i] = n;
 		far[i] = n;
 	}
-	lowpass(near, SR_BGM, 1500);
+	lowpass(near, SR_BGM, 1100);
 	highpass(near, SR_BGM, 260);
 	lowpass(far, SR_BGM, 620);
 	for (let i = 0; i < near.length; i++) {
@@ -692,19 +692,32 @@ const scale = (root, degrees) => degrees.map((d) => root * Math.pow(2, d / 12));
 	// ── crackle: what makes it fire and not wind ──
 	// Spread over the whole loop including the crossfade tail, so the density is
 	// even across the join.
-	for (let n = 0; n < 340; n++) {
+	//
+	// BANDED, not just high-passed. At 1800Hz high-pass with nothing above it
+	// taken off, 340 of these put a third of the bed's energy above 3kHz and the
+	// whole thing came out gritty — a bed is listened to for minutes at a time and
+	// anything sibilant in it becomes fatiguing long before it becomes noticeable.
+	// Fire crackle is a woody snap, not a hiss: the band it actually lives in is
+	// roughly 700Hz to 4kHz.
+	for (let n = 0; n < 200; n++) {
 		const at = rand() * total;
 		const len = Math.round(SR_BGM * (0.004 + rand() * 0.02));
 		const tick = new Float32Array(len);
 		for (let i = 0; i < len; i++) tick[i] = rand2() * Math.exp(-(i / len) * 5);
-		highpass(tick, SR_BGM, 1800);
-		addAt(buf, tick, at, 0.2 + rand() * 0.3, SR_BGM);
+		highpass(tick, SR_BGM, 700);
+		lowpass(tick, SR_BGM, 3800);
+		addAt(buf, tick, at, 0.14 + rand() * 0.22, SR_BGM);
 	}
 
 	// ── bellows: a long draught every few seconds, so the room is being worked ──
 	for (let n = 0; n < 5; n++) {
 		addAt(buf, bellows(SR_BGM, { dur: 3.2, peak: 0.5 }), (n * total) / 5 + rand() * 0.6, 0.3, SR_BGM);
 	}
+
+	// One last roll-off over everything. A furnace is heard through air and a
+	// room; there is nothing up there to reproduce, and leaving it in is what
+	// makes a long bed tiring.
+	lowpass(buf, SR_BGM, 4600);
 
 	// ── wrap the tail back over the head ──
 	const xfSamples = Math.round(XF * SR_BGM);

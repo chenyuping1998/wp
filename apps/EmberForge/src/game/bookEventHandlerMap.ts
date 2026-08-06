@@ -250,12 +250,21 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	updateFreeSpin: async (bookEvent: BookEventOfType<'updateFreeSpin'>) => {
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
 		stateUi.freeSpinCounterShow = true;
+		// `amount` is ALREADY the 1-based index of the spin about to be played, not a
+		// count of spins used. The math sends updateFreeSpin(amount=N) immediately
+		// before the Nth free-game reveal — verified against the books: the first is
+		// always amount=1, and the last is amount=total.
+		//
+		// The +1 that used to be here therefore opened the feature on "2 / 10" and
+		// ran to "11 / 10" — which nobody saw only because the component clamps with
+		// Math.min(current, total), so the counter skipped 1 and showed the last spin
+		// twice instead of visibly overflowing.
 		eventEmitter.broadcast({
 			type: 'freeSpinCounterUpdate',
-			current: bookEvent.amount + 1,
+			current: bookEvent.amount,
 			total: bookEvent.total,
 		});
-		stateUi.freeSpinCounterCurrent = bookEvent.amount + 1;
+		stateUi.freeSpinCounterCurrent = bookEvent.amount;
 		stateUi.freeSpinCounterTotal = bookEvent.total;
 	},
 
