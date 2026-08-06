@@ -48,6 +48,26 @@ const normalize = (buf, peak = 0.85) => {
 	return buf;
 };
 
+/**
+ * Normalise by LOUDNESS, not by peak.
+ *
+ * Peak normalisation is right for a one-shot, where the peak IS the event. It is
+ * wrong for a sustained bed with transients on top: the crackle sets the peak and
+ * the bed it is riding on ends up far below it. The fire bed came out at -27dB
+ * RMS with a 0.92 peak that way — thirteen decibels under the sfx that play over
+ * it, which is the same "where is the music" problem in a new costume.
+ *
+ * Soft-clips rather than hard-limits so the transients survive the gain.
+ */
+const rmsNormalize = (buf, target = 0.14) => {
+	let sum = 0;
+	for (const v of buf) sum += v * v;
+	const rms = Math.sqrt(sum / buf.length) || 1e-9;
+	const gain = target / rms;
+	for (let i = 0; i < buf.length; i++) buf[i] = Math.tanh(buf[i] * gain);
+	return buf;
+};
+
 const fadeEnds = (buf, sr, ms = 6) => {
 	const n = Math.min(buf.length >> 1, Math.round((ms / 1000) * sr));
 	for (let i = 0; i < n; i++) {
@@ -346,14 +366,76 @@ writeWav(
 	writeWav('fs_intro.wav', fadeEnds(normalize(buf, 0.84), SR_SFX), SR_SFX);
 }
 
-// bigwin_blast — the forge going up: draught, impact, ring
+// bigwin_blast — a flame jet opening up under the plaque.
+//
+// Was a hammer blow: draught, impact, ring, done in under a second of useful
+// sound. An impact is the wrong gesture for a plaque that SITS there — it fires
+// once at the top and leaves the rest of the presentation in silence.
+//
+// This is a jet instead, and its shape is the whole point: it starts as a thin
+// pilot hiss, the valve opens, and it arrives heavy. Three things move together
+// over the ramp, because opening a valve does all three at once:
+//   · level, on a curve rather than a line, so it reads as accelerating
+//   · brightness — the jet band widens as the flow rises
+//   · body, which only appears once there is enough flow to carry it
+//
+// 3.0s, with the heavy part landing at ~1.4s: inside even the shortest big-win
+// plaque (1.6s), so every tier gets the arrival and the longer ones get the
+// tail as well.
 {
-	const buf = buffer(2.2, SR_SFX);
-	addAt(buf, bellows(SR_SFX, { dur: 0.45, peak: 0.9 }), 0, 0.7, SR_SFX);
-	addAt(buf, strike(SR_SFX, { freq: 110, dur: 2, bright: 1, decay: 1.8 }), 0.36, 1, SR_SFX);
-	addAt(buf, strike(SR_SFX, { freq: 330, dur: 1.4, bright: 0.9, decay: 1.1 }), 0.38, 0.6, SR_SFX);
-	addAt(buf, quench(SR_SFX, { dur: 1.2, cutoff: 6000 }), 0.36, 0.4, SR_SFX);
-	writeWav('bigwin_blast.wav', fadeEnds(normalize(buf, 0.9), SR_SFX, 4), SR_SFX);
+	const dur = 3.0;
+	const PEAK = 1.4; // where the jet is fully open
+	const buf = buffer(dur, SR_SFX);
+
+	// ── the jet: two noise bands cross-faded as the valve opens ──
+	const thin = buffer(dur, SR_SFX);
+	const wide = buffer(dur, SR_SFX);
+	for (let i = 0; i < thin.length; i++) {
+		const n = rand2();
+		thin[i] = n;
+		wide[i] = n;
+	}
+	// thin = the pilot: narrow, hissy, no body
+	highpass(thin, SR_SFX, 2600);
+	// wide = full flow: everything from the low roar up
+	lowpass(wide, SR_SFX, 3200);
+	for (let i = 0; i < buf.length; i++) {
+		const t = i / SR_SFX;
+		// ramp accelerates into the peak, then holds and falls away
+		const ramp = t < PEAK ? Math.pow(t / PEAK, 1.8) : 1 - 0.55 * ((t - PEAK) / (dur - PEAK)) ** 1.4;
+		const open = Math.min(1, t / PEAK);
+		const level = 0.1 + 0.9 * ramp;
+		buf[i] += (thin[i] * (1 - open) + wide[i] * open) * level * 0.85;
+	}
+
+	// ── low body: only once there is flow behind it ──
+	const body = buffer(dur, SR_SFX);
+	for (let i = 0; i < body.length; i++) body[i] = rand2();
+	lowpass(body, SR_SFX, 260);
+	lowpass(body, SR_SFX, 180);
+	for (let i = 0; i < body.length; i++) {
+		const t = i / SR_SFX;
+		const arrive = Math.min(1, Math.max(0, (t - PEAK * 0.45) / (PEAK * 0.55)));
+		body[i] *= arrive * (t < PEAK ? 1 : 1 - 0.5 * ((t - PEAK) / (dur - PEAK)));
+	}
+	addAt(buf, body, 0, 0.9, SR_SFX);
+
+	// ── ignition at the moment it opens, and crackle that thickens with the flow ──
+	addAt(buf, fireBurst(SR_SFX, { dur: 1.6, intensity: 1 }), PEAK - 0.12, 0.7, SR_SFX);
+	for (let n = 0; n < 90; n++) {
+		// biased late: a bigger flame throws more sparks
+		const at = Math.pow(rand(), 0.55) * (dur - 0.2);
+		const len = Math.round(SR_SFX * (0.004 + rand() * 0.014));
+		const tick = new Float32Array(len);
+		for (let i = 0; i < len; i++) tick[i] = rand2() * Math.exp(-(i / len) * 6);
+		highpass(tick, SR_SFX, 2200);
+		addAt(buf, tick, at, 0.16 + 0.3 * Math.min(1, at / PEAK), SR_SFX);
+	}
+
+	// the anvil still rings underneath, so the flame belongs to THIS forge
+	addAt(buf, strike(SR_SFX, { freq: 110, dur: 1.8, bright: 0.7, decay: 1.6 }), PEAK - 0.06, 0.5, SR_SFX);
+
+	writeWav('bigwin_blast.wav', fadeEnds(normalize(buf, 0.94), SR_SFX, 6), SR_SFX);
 }
 
 // coin_shimmer — the big-win loop bed. Sparse high taps over a bellows hum, so
@@ -482,76 +564,98 @@ const scale = (root, degrees) => degrees.map((d) => root * Math.pow(2, d / 12));
 	writeWav('bgm_main.wav', fadeEnds(normalize(buf, 0.55), SR_BGM, 40), SR_BGM);
 }
 
-// bgm_freespin — 138 BPM. The forge at full tilt.
+// bgm_freespin — the furnace itself, running.
 //
-// Rebuilt harder and faster after play-testing: at 116, sharing the base game's
-// figure, it sat too close to bgm_main, and the feature is where the tension is
-// meant to be. Three things carry that, and none of them is just "louder":
-//   · double-time hammer with an accent every bar, so there is a pulse to ride
-//     rather than an even stream of hits
-//   · a low pedal on the downbeats — the part the chest feels
-//   · the melodic figure an octave up and pushed off the beat, so it drives
-//     ahead instead of sitting on it
+// This was a 138 BPM figure: hammer on every eighth, a low pedal, and an
+// eight-note melodic phrase repeated once per bar, eight bars to the loop. In
+// isolation it worked. Underneath the feature it did not, for two reasons that
+// compounded: the phrase repeats eight times inside a fourteen-second loop, and
+// the tumble sfx already put a hammer on every clear — so the whole thing read
+// as one short sample stuck on repeat.
+//
+// The feature does not need a second rhythm section. It needs a room tone: the
+// forge at full draught, continuous, going somewhere slowly. That is the same
+// material the entry flare and the transition are made of, which also means the
+// feature now sounds like the place those fires came from.
+//
+// ── seamless looping ──
+// A bed is looped by an <audio loop>, so the end must join the start with no
+// seam at all. Two things make that true here and neither is optional:
+//   · every slow modulation completes a WHOLE number of cycles over the loop,
+//     so the motion is continuous across the join rather than jumping phase
+//   · noise cannot be made periodic, so the buffer is generated longer than the
+//     loop and its tail is crossfaded back over its head
+// The old bed did neither, and additionally ran fadeEnds over it — a 40ms dip
+// to silence at both ends, i.e. an audible pump on every single wrap.
 {
-	const bpm = 138;
-	const beat = 60 / bpm;
-	const bars = 8;
-	const dur = beat * 4 * bars;
-	const buf = buffer(dur, SR_BGM);
+	const dur = 24;
+	const XF = 3; // wrap-around crossfade
+	const total = dur + XF;
+	const buf = buffer(total, SR_BGM);
 
-	addAt(buf, roar(SR_BGM, dur, 0.46), 0, 1, SR_BGM);
+	// cycles-per-loop as integers: continuous across the join by construction
+	const lfo = (t, cycles, phase = 0) => Math.sin(2 * Math.PI * (cycles * (t / dur) + phase));
 
-	// hammer: every eighth, accented on the bar
-	for (let b = 0; b < bars * 8; b++) {
-		const at = b * beat * 0.5;
-		const accent = b % 8 === 0;
-		const heavy = b % 4 === 0;
-		addAt(
-			buf,
-			strike(SR_BGM, {
-				freq: accent ? 190 : heavy ? 240 : 340,
-				dur: accent ? 0.6 : heavy ? 0.42 : 0.2,
-				bright: accent ? 0.65 : heavy ? 0.5 : 0.3,
-				decay: accent ? 0.5 : heavy ? 0.35 : 0.16,
-			}),
-			at,
-			accent ? 0.75 : heavy ? 0.5 : 0.26,
-			SR_BGM,
-		);
+	// ── low furnace body: the part felt rather than heard ──
+	const body = buffer(total, SR_BGM);
+	for (let i = 0; i < body.length; i++) body[i] = rand2();
+	lowpass(body, SR_BGM, 200);
+	lowpass(body, SR_BGM, 140);
+	for (let i = 0; i < body.length; i++) {
+		const t = i / SR_BGM;
+		// two slow breaths at incommensurate rates so the swell never settles
+		body[i] *= 0.62 * (0.72 + 0.18 * lfo(t, 3) + 0.12 * lfo(t, 7, 0.31));
+	}
+	addAt(buf, body, 0, 1, SR_BGM);
+
+	// ── mid draught: the flame itself, filter wandering ──
+	// One pass per band rather than a sweeping filter: the one-pole filters here
+	// are static, so the wander is made by cross-fading two fixed bands instead.
+	const near = buffer(total, SR_BGM);
+	const far = buffer(total, SR_BGM);
+	for (let i = 0; i < near.length; i++) {
+		const n = rand2();
+		near[i] = n;
+		far[i] = n;
+	}
+	lowpass(near, SR_BGM, 1500);
+	highpass(near, SR_BGM, 260);
+	lowpass(far, SR_BGM, 620);
+	for (let i = 0; i < near.length; i++) {
+		const t = i / SR_BGM;
+		const open = 0.5 + 0.5 * lfo(t, 5, 0.17);
+		buf[i] += (near[i] * open + far[i] * (1 - open)) * 0.34 * (0.8 + 0.2 * lfo(t, 2, 0.63));
 	}
 
-	// low pedal on the downbeats — the drive under everything else
-	for (let bar = 0; bar < bars; bar++) {
-		for (const off of [0, 2]) {
-			const pedal = buffer(beat * 1.6, SR_BGM);
-			for (let i = 0; i < pedal.length; i++) {
-				const t = i / SR_BGM;
-				pedal[i] = Math.sin(2 * Math.PI * 49 * t) * Math.exp(-t / (beat * 0.55));
-			}
-			addAt(buf, pedal, bar * beat * 4 + off * beat, 0.5, SR_BGM);
-		}
+	// ── crackle: what makes it fire and not wind ──
+	// Spread over the whole loop including the crossfade tail, so the density is
+	// even across the join.
+	for (let n = 0; n < 340; n++) {
+		const at = rand() * total;
+		const len = Math.round(SR_BGM * (0.004 + rand() * 0.02));
+		const tick = new Float32Array(len);
+		for (let i = 0; i < len; i++) tick[i] = rand2() * Math.exp(-(i / len) * 5);
+		highpass(tick, SR_BGM, 1800);
+		addAt(buf, tick, at, 0.2 + rand() * 0.3, SR_BGM);
 	}
 
-	// figure: minor, an octave above the base game, pushed off the beat
-	const notes = scale(392, [0, 3, 5, 7, 10, 12]);
-	const figure = [0, 3, 5, 4, 2, 5, 3, 1];
-	for (let bar = 0; bar < bars; bar++) {
-		for (let i = 0; i < figure.length; i++) {
-			// every other note lands a sixteenth late, which is what makes it push
-			const push = i % 2 === 1 ? beat * 0.25 : 0;
-			addAt(buf, barNote(SR_BGM, notes[figure[i]], 0.7), bar * beat * 4 + i * beat * 0.5 + push, 0.3, SR_BGM);
-		}
+	// ── bellows: a long draught every few seconds, so the room is being worked ──
+	for (let n = 0; n < 5; n++) {
+		addAt(buf, bellows(SR_BGM, { dur: 3.2, peak: 0.5 }), (n * total) / 5 + rand() * 0.6, 0.3, SR_BGM);
 	}
 
-	// a quench hit closing every other bar, as a turnaround
-	for (let bar = 1; bar < bars; bar += 2) {
-		addAt(buf, quench(SR_BGM, { dur: 0.5, cutoff: 5200 }), (bar + 1) * beat * 4 - beat, 0.45, SR_BGM);
+	// ── wrap the tail back over the head ──
+	const xfSamples = Math.round(XF * SR_BGM);
+	const loopSamples = Math.round(dur * SR_BGM);
+	for (let i = 0; i < xfSamples; i++) {
+		const t = i / xfSamples;
+		buf[i] = buf[i] * t + buf[loopSamples + i] * (1 - t);
 	}
+	const looped = buf.slice(0, loopSamples);
 
-		// Louder than the base bed. Measured against what plays over it: the feature
-	// fires a chain hit and a clear on EVERY tumble link, and at 0.72 the bed sat
-	// ~10dB under them — present in the file, inaudible in the game.
-	writeWav('bgm_freespin.wav', fadeEnds(normalize(buf, 0.92), SR_BGM, 40), SR_BGM);
+	// No fadeEnds: this file is looped, and fading its ends is exactly the pump
+	// the old bed had on every wrap.
+	writeWav('bgm_freespin.wav', rmsNormalize(looped, 0.15), SR_BGM);
 }
 
 console.log('\nforge audio written to', OUT);
