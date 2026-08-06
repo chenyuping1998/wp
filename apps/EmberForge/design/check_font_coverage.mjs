@@ -24,7 +24,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const TTF = path.join(appRoot, 'static/fonts/EmberRunic.ttf');
+// Both generated faces. They are cut from the same skeleton so their coverage
+// should be identical, and this is what proves it stays that way: the title face
+// falls back to the runic one, so a gap in EITHER produces the same defect this
+// check exists for — two typefaces inside one word.
+const TTFS = [
+	path.join(appRoot, 'static/fonts/EmberRunic.ttf'),
+	path.join(appRoot, 'static/fonts/EmberInscribed.ttf'),
+].filter((file) => fs.existsSync(file));
 
 // ── read the font's own cmap, rather than trusting the generator's intent ────
 const readCoverage = (file) => {
@@ -69,7 +76,16 @@ const readCoverage = (file) => {
 	return covered;
 };
 
-const covered = readCoverage(TTF);
+// A codepoint counts as covered only if EVERY shipped face has it.
+const perFace = TTFS.map((file) => ({ file, codes: readCoverage(file) }));
+const covered = perFace.reduce(
+	(acc, face, index) =>
+		index === 0 ? face.codes : new Set([...acc].filter((code) => face.codes.has(code))),
+	new Set(),
+);
+for (const face of perFace) {
+	console.log(`${path.basename(face.file).padEnd(22)} ${face.codes.size} codepoints`);
+}
 
 // ── collect every string the game renders in GAME_FONT ───────────────────────
 const strings = [];

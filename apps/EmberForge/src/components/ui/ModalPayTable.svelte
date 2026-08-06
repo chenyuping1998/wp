@@ -5,6 +5,11 @@
 
 	import config from '../../game/config';
 	import assets from '../../game/assets';
+	import { socialTerms } from '../../game/socialTerms';
+
+	// Social play forbids gambling terminology; the shared map lives in
+	// game/socialTerms so this page and the rules page cannot drift apart.
+	const T = socialTerms();
 
 	type PayTier = { label: string; value: number };
 	type PayRow = { name: string; img: string; label: string; tiers: PayTier[] };
@@ -100,9 +105,9 @@
 {#if stateModal.modal?.name === 'payTable'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-paytable">
-			<h2>PAY TABLE</h2>
+			<h2>{T.payTableTitle}</h2>
 			<p class="wp-note">
-				Pays shown as a multiple of total bet. A cluster is 5 or more matching symbols touching
+				Values shown as a multiple of the {T.totalBet}. A cluster is 5 or more matching symbols touching
 				horizontally or vertically, anywhere on the 7&times;7 board &mdash; position does not matter.
 			</p>
 
@@ -120,7 +125,7 @@
 						<div class="wp-pays">
 							{#if row.name === 'S'}
 								<span class="wp-special">
-									Does not pay &mdash; 4, 5, 6 or 7 Scatters award 10, 12, 15 or 18 Free Spins
+									Does not {T.pay} &mdash; 4, 5, 6 or 7 Scatters award 10, 12, 15 or 18 Free Spins
 								</span>
 							{:else if row.tiers.length}
 								{#each row.tiers as tier (tier.label)}
@@ -134,10 +139,10 @@
 				{/each}
 			</div>
 
-			<h3 class="wp-lines-title">HOW CLUSTERS PAY</h3>
+			<h3 class="wp-lines-title">{T.howClustersPay}</h3>
 			<p class="wp-note">
-				Any 5 or more matching symbols that touch each other pay as one cluster. Diagonal contact
-				does not count. The bigger the cluster, the higher the band it pays from.
+				Any 5 or more matching symbols that touch each other {T.pay} as one cluster. Diagonal contact
+				does not count. The bigger the cluster, the higher the band it {T.pays} from.
 			</p>
 
 			<div class="wp-lines">
@@ -159,8 +164,8 @@
 
 			<p class="wp-note">
 				Winning symbols are removed and the ones above fall down to replace them; any new cluster
-				pays again, and the chain continues until no cluster forms. Wild substitutes for all symbols
-				except Scatter. Max win is capped at {maxWin.toLocaleString()}&times; total bet.
+				{T.pays} again, and the chain continues until no cluster forms. Wild substitutes for all symbols
+				except Scatter. Max win is capped at {maxWin.toLocaleString()}&times; {T.totalBet}.
 			</p>
 		</div>
 	</Popup>

@@ -11,6 +11,9 @@
 	type Props = {
 		onpress: () => void;
 		position?: 'bottom' | 'betweenBoardAndBottom';
+		/** Override the face. The loading screen sets its own; everywhere else
+		 * this prompt appears mid-game, where the interface face is correct. */
+		fontFamily?: string;
 	};
 
 	const props: Props = $props();
@@ -45,7 +48,7 @@
 		y={yPosition}
 		alpha={pulse}
 		style={{
-			fontFamily: GAME_FONT,
+			fontFamily: props.fontFamily ?? GAME_FONT,
 			fontSize: 28,
 			fontWeight: GAME_FONT_WEIGHT,
 			letterSpacing: 4,

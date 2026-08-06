@@ -34,16 +34,20 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const resvgDir = process.argv[2];
+// Two faces come out of one skeleton. `--inscribed` adds serifs and nothing
+// else; see serifSegments for why that is the whole difference.
+const argv = process.argv.slice(2);
+const INSCRIBED = argv.includes('--inscribed');
+const resvgDir = argv.find((a) => !a.startsWith('--'));
 const require = createRequire(path.join(resvgDir ?? 'E:/stake/tools/gen', 'noop.js'));
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT_DIR = path.join(appRoot, 'static/fonts');
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
-const FAMILY = 'Ember Runic';
-const PS_NAME = 'EmberRunic-Regular';
-const OUT_TTF = path.join(OUT_DIR, 'EmberRunic.ttf');
+const FAMILY = INSCRIBED ? 'Ember Inscribed' : 'Ember Runic';
+const PS_NAME = INSCRIBED ? 'EmberInscribed-Regular' : 'EmberRunic-Regular';
+const OUT_TTF = path.join(OUT_DIR, INSCRIBED ? 'EmberInscribed.ttf' : 'EmberRunic.ttf');
 
 // ── metrics ─────────────────────────────────────────────────────────────────
 const UPM = 1000;
@@ -55,12 +59,17 @@ const DESC = -200;
 // 128 after comparing 104 / 128 / 148 on the specimen: 104 is too light to hold
 // up at bet-bar size, and by 148 the counters of O, B and 8 start closing —
 // overlapping stroke quads fill the gap they are supposed to leave.
-const SW = 128; // stroke weight
-const L = 70; // left edge of the letter box
+// The inscribed face needs room the runic one does not: a serif is a bar ACROSS
+// the stem, so a stem sitting where the runic box puts it would throw half that
+// bar into the next glyph. The letter box is narrowed and the advance widened to
+// pay for the overhang, and the stroke is lightened a little because the same
+// weight in a narrower box starts closing the counters of O, B and 8.
+const SW = INSCRIBED ? 112 : 128; // stroke weight
+const L = INSCRIBED ? 130 : 70; // left edge of the letter box
 const R = 490; // right edge
 const M = (L + R) / 2;
 const C = CAP / 2;
-const ADV = 560; // default advance
+const ADV = INSCRIBED ? 620 : 560; // default advance
 
 // ── glyph definitions ───────────────────────────────────────────────────────
 // Each entry is a list of [x1, y1, x2, y2] centre-line segments. Angular by
@@ -229,19 +238,19 @@ const PUNCT = {
  * stroke weight so that meeting strokes fill their corner instead of leaving a
  * notch — with non-zero winding the overlap simply unions.
  */
-const strokeToContour = ([x1, y1, x2, y2]) => {
+const strokeToContour = ([x1, y1, x2, y2], weight = SW) => {
 	const dx = x2 - x1;
 	const dy = y2 - y1;
 	const len = Math.hypot(dx, dy) || 1;
 	const ux = dx / len;
 	const uy = dy / len;
-	const ext = SW * 0.5;
+	const ext = weight * 0.5;
 	const ax = x1 - ux * ext;
 	const ay = y1 - uy * ext;
 	const bx = x2 + ux * ext;
 	const by = y2 + uy * ext;
-	const px = (uy * SW) / 2;
-	const py = (-ux * SW) / 2;
+	const px = (uy * weight) / 2;
+	const py = (-ux * weight) / 2;
 
 	const pts = [
 		[ax + px, ay + py],
@@ -259,10 +268,68 @@ const strokeToContour = ([x1, y1, x2, y2]) => {
 	return area < 0 ? pts.reverse() : pts;
 };
 
+// ── serifs (the inscribed face only) ────────────────────────────────────────
+/**
+ * Roman inscriptional capitals are this skeleton plus one thing: a bar across
+ * every FREE stroke end. That is what carved Latin actually looks like — the
+ * chisel cannot leave a clean stop, so the cutter widens the terminal — and it
+ * is the whole visual difference between the runic face and this one.
+ *
+ * Free is the operative word. An endpoint shared with another segment is a join,
+ * not a terminal: putting a bar across the apex of A or the middle of E would
+ * read as a mistake. Endpoints are therefore counted, and only the ones used
+ * once get a serif.
+ *
+ * Serifs are clamped inside the advance. A stem sits on the letter box edge, so
+ * an unclamped bar centred on it hangs half its width into the neighbouring
+ * glyph and the word closes up.
+ */
+const SERIF_LEN = 230; // across the stem
+const SERIF_W = 72; // its own thickness
+
+const serifSegments = (segments) => {
+	if (!INSCRIBED) return [];
+	const key = (x, y) => `${Math.round(x)},${Math.round(y)}`;
+	const uses = new Map();
+	for (const [x1, y1, x2, y2] of segments) {
+		for (const k of [key(x1, y1), key(x2, y2)]) uses.set(k, (uses.get(k) ?? 0) + 1);
+	}
+
+	const out = [];
+	const half = SERIF_LEN / 2;
+	for (const [x1, y1, x2, y2] of segments) {
+		// Axis-aligned, not perpendicular to the stroke. A cutter finishes a
+		// terminal square to the writing line, not square to the stroke — so the
+		// foot of A's diagonal gets a HORIZONTAL bar like every other foot. Taking
+		// the perpendicular instead put angled spikes on every diagonal, which is
+		// the one thing carved lettering never has.
+		const vertical = Math.abs(y2 - y1) >= Math.abs(x2 - x1);
+		for (const [ex, ey] of [
+			[x1, y1],
+			[x2, y2],
+		]) {
+			if ((uses.get(key(ex, ey)) ?? 0) > 1) continue;
+			if (vertical) out.push([ex - half, ey, ex + half, ey]);
+			else out.push([ex, ey - half, ex, ey + half]);
+		}
+	}
+	return out;
+};
+
 // ── glyph set ───────────────────────────────────────────────────────────────
 const glyphs = [{ name: '.notdef', adv: ADV, contours: [], codes: [] }];
-const addGlyph = (name, adv, segments, codes) => {
-	glyphs.push({ name, adv, contours: segments.map(strokeToContour), codes });
+// `serif: false` for punctuation. A serif is sized for a stem — putting a
+// 230-unit bar across a comma or a decimal point buries the mark under its own
+// terminals, which is what the first cut of this face did to every currency
+// amount in the game.
+const addGlyph = (name, adv, segments, codes, { serif = true } = {}) => {
+	const contours = [
+		...segments.map((segment) => strokeToContour(segment)),
+		...(serif ? serifSegments(segments) : []).map((segment) =>
+			strokeToContour(segment, SERIF_W),
+		),
+	];
+	glyphs.push({ name, adv, contours, codes });
 };
 
 addGlyph('space', 300, [], [0x20]);
@@ -284,10 +351,14 @@ for (const [ch, parts] of Object.entries(COMPOSED)) {
 }
 
 for (const [ch, def] of Object.entries(PUNCT)) {
-	addGlyph(`u${ch.charCodeAt(0)}`, def.adv ?? NARROW, def.s, [ch.charCodeAt(0)]);
+	addGlyph(`u${ch.charCodeAt(0)}`, def.adv ?? NARROW, def.s, [ch.charCodeAt(0)], {
+		serif: false,
+	});
 }
 // × as a separate codepoint, drawn like the multiplication sign players expect
-addGlyph('multiply', 460, [[90, C - 150, 370, C + 150], [370, C - 150, 90, C + 150]], [0x00d7]);
+addGlyph('multiply', 460, [[90, C - 150, 370, C + 150], [370, C - 150, 90, C + 150]], [0x00d7], {
+	serif: false,
+});
 
 // ── binary writers ──────────────────────────────────────────────────────────
 class Writer {

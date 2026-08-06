@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
+	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT, TITLE_FONT } from '../game/fonts';
 	import { Container, Graphics, Text, Sprite } from 'pixi-svelte';
 	import { FadeContainer } from 'components-pixi';
 	import { MainContainer } from 'components-layout';
@@ -132,7 +132,7 @@
 				anchor={0.5}
 				text="EMBER FORGE"
 				style={{
-					fontFamily: GAME_FONT,
+					fontFamily: TITLE_FONT,
 					fontSize: 52,
 					fontWeight: GAME_FONT_WEIGHT,
 					fill: 0xffd43b,
@@ -239,7 +239,7 @@
 
 <!-- press to continue -->
 <FadeContainer show={loadingType === 'start' && context.stateApp.loaded}>
-	<PressToContinue onpress={() => (loadingType = 'transition')} />
+	<PressToContinue fontFamily={TITLE_FONT} onpress={() => (loadingType = 'transition')} />
 </FadeContainer>
 
 <!-- transition between the loading screen and the game -->

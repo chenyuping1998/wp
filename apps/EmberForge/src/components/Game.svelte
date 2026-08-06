@@ -38,6 +38,7 @@
 	import FreeSpinIntro from './FreeSpinIntro.svelte';
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
 	import FreeSpinOutro from './FreeSpinOutro.svelte';
+	import ReplayIntro from './ReplayIntro.svelte';
 	import Transition from './Transition.svelte';
 
 	const context = getContext();
@@ -138,6 +139,12 @@
 		<FreeSpinIntro />
 		<FreeSpinCounter />
 		<FreeSpinOutro />
+
+		<!--
+			Last, so its dimming layer and its press target sit over everything the
+			round draws. Inert unless ?replay=true.
+		-->
+		<ReplayIntro />
 		<Transition />
 	{/if}
 </App>

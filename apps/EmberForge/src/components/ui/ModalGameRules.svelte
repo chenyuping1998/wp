@@ -1,27 +1,18 @@
 <script lang="ts">
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { stateModal, stateUrlDerived } from 'state-shared';
+	import { stateModal } from 'state-shared';
 
 	import { base } from '$app/paths';
 
 	import config from '../../game/config';
+	import { socialTerms } from '../../game/socialTerms';
 
-	// Social play forbids betting terminology in player-facing copy, and the rules
-	// page is the densest concentration of it in the game. Rather than maintaining
-	// two copies of the prose, the handful of nouns that differ are named once
-	// here and referenced throughout — so the two versions cannot drift apart.
-	const social = stateUrlDerived.social();
-	const T = {
-		bet: social ? 'amount' : 'bet',            // "your bet" / "your amount"
-		totalBet: social ? 'total amount' : 'total bet',
-		betLevel: social ? 'amount level' : 'bet level',
-		betLevels: social ? 'amount levels' : 'bet levels',
-		betMenu: social ? 'play menu' : 'bet menu',
-		betPanel: social ? 'Amount' : 'Bet',       // the readout's own label
-		buy: social ? 'play' : 'buy',
-		bought: social ? 'started' : 'bought',
-	};
+	// The vocabulary moved to game/socialTerms so the pay table can use the same
+	// map. It used to cover only the bet nouns; the pay verbs below were hardcoded
+	// and shipped as "pays" in the social build.
+	const T = socialTerms();
+	const social = T.social;
 
 	// Controls guide. Each row shows the actual button art from the bet bar, so a
 	// player matches what they read to what they see rather than decoding a name.
@@ -60,12 +51,12 @@
 		{
 			icons: ['menu'],
 			name: 'Menu',
-			text: 'Opens the pay table, these rules, and the sound and settings controls.',
+			text: `Opens the ${T.payTable}, these rules, and the sound and settings controls.`,
 		},
 		{
 			icons: ['payTable'],
-			name: 'Pay table',
-			text: 'Lists every symbol and what each cluster size pays, plus how clusters are formed.',
+			name: T.payTableLabel,
+			text: `Lists every symbol and what each cluster size ${T.pays}, plus how clusters are formed.`,
 		},
 		{
 			icons: ['soundOn'],
@@ -119,11 +110,11 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>How to play</h3>
 				<p>
-					Ember Forge is a {reelCount}&times;{rowCount} cluster-pays slot. There are no paylines:
+					Ember Forge is a {reelCount}&times;{rowCount} {T.clusterPays} slot. There are no {T.paylines}:
 					any 5 or more matching symbols that touch horizontally or vertically form a cluster and
-					pay, wherever they sit on the board. Winning symbols are then removed, the symbols above
+					{T.pay}, wherever they sit on the board. Winning symbols are then removed, the symbols above
 					them fall down and new ones drop in from the top &mdash; if that forms another cluster it
-					pays too, and the chain continues until no cluster forms. Every cluster in a chain is
+					{T.pays} too, and the chain continues until no cluster forms. Every cluster in a chain is
 					added together. The theoretical return to player (RTP) is {rtpPct}.
 				</p>
 			</section>
@@ -179,7 +170,7 @@
 				</table>
 				<p class="wp-modes-note">
 					Max win is a multiple of the {T.totalBet}. When a round reaches the cap it ends
-					immediately and the capped amount is paid.
+					immediately and the capped amount is {T.paid}.
 				</p>
 			</section>
 
@@ -187,14 +178,14 @@
 				<h3><span class="wp-accent-bar"></span>Wild</h3>
 				<p>
 					The Forge Hammer Wild substitutes for every symbol except the Scatter, letting it join clusters
-					of any symbol it touches. It has no pay value of its own.
+					of any symbol it touches. It has no {T.payValue} of its own.
 				</p>
 			</section>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Scatter</h3>
 				<p>
-					The Forge Scatter can land anywhere on the board. It does not pay on its own and
+					The Forge Scatter can land anywhere on the board. It does not {T.pay} on its own and
 					does not need to be part of a cluster &mdash; its only job is to open the feature. Landing
 					4, 5, 6 or 7 Scatters in a single spin awards {scatterSpins} Free Spins respectively.
 					Three Scatters is not enough to start the feature.
@@ -208,7 +199,7 @@
 					positions start cold and count as 1&times;. The first time a position is part of a winning
 					cluster it is heated to 1&times;, and every further win on that position raises it by
 					+1&times;. A cluster is paid by its symbol value multiplied by the total heat of every
-					position it covers, so clusters landing on well-worked areas of the board pay far more.
+					position it covers, so clusters landing on well-worked areas of the board {T.pay} far more.
 					The grid keeps its heat for the whole feature and is reset when the feature ends.
 				</p>
 			</section>
@@ -236,7 +227,7 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Max Win</h3>
 				<p>
-					The maximum payout is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}. Once
+					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}. Once
 					the cap is reached the round ends immediately and the maximum win is awarded.
 				</p>
 			</section>

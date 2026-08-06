@@ -174,6 +174,15 @@ export const installMockRgs = async () => {
 			});
 		}
 
+		// Replay links (?replay=true). Authenticate calls this INSTEAD of
+		// authenticate, so without it the replay path cannot be exercised at all
+		// and ReplayIntro has nothing to hold.
+		if (url.includes('/bet/replay/')) {
+			const book = sequence[0];
+			console.log(`[mockRgs] serving replay of book id=${book.id} (${book.payoutMultiplier}x)`);
+			return json({ state: book.state, payoutMultiplier: book.payoutMultiplier });
+		}
+
 		if (url.endsWith('/wallet/end-round')) return json({ balance: balanceBody() });
 		if (url.includes('/bet/event')) return json({ event: null });
 
