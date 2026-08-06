@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Container } from 'pixi-svelte';
-	import { stateBetDerived, stateModal } from 'state-shared';
+	import { stateBetDerived, stateModal, stateReplay } from 'state-shared';
 	import { numberToCurrencyString } from 'utils-shared/amount';
 
 	import UiLabel from './UiLabel.svelte';
@@ -22,7 +22,10 @@
 		stateBetDerived.activeBetMode()?.text.betAmountLabel || i18nDerived.betAmount(),
 	);
 	const value = $derived(numberToCurrencyString(stateBetDerived.betCost()));
-	const disabled = $derived(!context.stateXstateDerived.isIdle());
+	// A replay plays a recorded round at a recorded stake, so the bet menu has
+	// nothing to change — and in replay mode the server never sent any bet levels,
+	// so opening it would show an empty list.
+	const disabled = $derived(stateReplay.enabled || !context.stateXstateDerived.isIdle());
 	let hovered = $state(false);
 
 	const onpress = () => {
@@ -34,14 +37,14 @@
 
 <Container
 	eventMode="static"
-	cursor={disabled ? 'not-allowed' : 'pointer'}
+	cursor={stateReplay.enabled ? 'default' : disabled ? 'not-allowed' : 'pointer'}
 	onpointerup={onpress}
 	onpointerover={() => (hovered = true)}
 	onpointerout={() => (hovered = false)}
 >
 	<UiLabel
 		tiled={props.tiled ?? true}
-		interactive
+		interactive={!stateReplay.enabled}
 		hovered={hovered && !disabled}
 		{label}
 		{value}

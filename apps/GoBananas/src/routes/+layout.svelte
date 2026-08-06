@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { type Snippet } from 'svelte';
-	import { base } from '$app/paths';
 	import { GlobalStyle } from 'components-ui-html';
-	import { Authenticate, LoaderStakeEngine, LoadI18n } from 'components-shared';
+	import { Authenticate, LoadI18n } from 'components-shared';
 	import Game from '../components/Game.svelte';
 	import WildPartyLoader from '../components/WildPartyLoader.svelte';
 	import { setContext } from '../game/context';
@@ -12,11 +11,6 @@
 	type Props = { children: Snippet };
 
 	const props: Props = $props();
-
-	let showYourLoader = $state(false);
-
-	// static/*.gif — must use kit base path (Stake hosts games under a subpath, not site root)
-	const loaderUrlStakeEngine = `${base}/stake-engine-loader.gif`;
 
 	setContext();
 </script>
@@ -29,10 +23,10 @@
 	</Authenticate>
 </GlobalStyle>
 
-<LoaderStakeEngine src={loaderUrlStakeEngine} oncomplete={() => (showYourLoader = true)} />
-
-{#if showYourLoader}
-	<WildPartyLoader />
-{/if}
+<!--
+	The Stake Engine splash that used to gate this has been removed at
+	certification's request. The loader below is our own studio logo and stays.
+-->
+<WildPartyLoader />
 
 {@render props.children()}

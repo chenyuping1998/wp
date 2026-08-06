@@ -54,6 +54,9 @@
 		soundOn: '🔊',
 		soundOff: '🔇',
 		autoSpin: '▶',
+		// U+21BA, not an emoji — themes without a drawn replay icon still get a
+		// glyph that honours the canvas fill
+		replay: '↺',
 	};
 
 	// optical centering: a right-pointing triangle's visual mass sits left of
@@ -79,6 +82,9 @@
 	// presence so it is enlarged.
 	const iconSpriteScaleMap: Partial<Record<ButtonIcon, number>> = {
 		autoSpin: 0.82,
+		// same drawing size as autoSpin — the two share an arc of the same radius,
+		// so anything else would make them look like different-sized buttons
+		replay: 0.82,
 	};
 
 	const isTextMode = $derived(textMode === 'text');

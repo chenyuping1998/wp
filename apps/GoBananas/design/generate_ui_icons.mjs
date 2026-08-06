@@ -98,6 +98,12 @@ const shapes = {
 	// circular arrow with a play triangle (autoplay)
 	autoSpin: `<path d="M 196 128 A 68 68 0 1 1 158 66" fill="none" stroke-width="26"/><path d="M 150 42 L 196 66 L 150 92 Z"/><path d="M 108 100 L 152 128 L 108 156 Z"/>`,
 
+	// replay: autoSpin's arc mirrored (so it reads anticlockwise, "go back") and
+	// without the play triangle — the triangle is what makes autoSpin mean "keep
+	// going", and these two sit close enough together that they must not be
+	// mistaken for each other.
+	replay: `<path d="M 60 128 A 68 68 0 1 0 98 66" fill="none" stroke-width="26"/><path d="M 106 42 L 60 66 L 106 92 Z"/>`,
+
 	// ── icons below exist only for the Controls guide in the rules panel ──────
 	// The bet bar draws these as vectors inside UiButton rather than from a
 	// sprite (turbo has to switch between hollow and filled, the steppers are

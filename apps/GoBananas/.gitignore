@@ -1,1 +1,4 @@
 design/reference/
+# local replay test harness — a generated copy of build/ with a mock RGS worker
+# in it (design/make_replay_harness.mjs). Never ship this.
+build-replaytest/

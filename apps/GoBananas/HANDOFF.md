@@ -1193,6 +1193,121 @@ PAYTABLE / INFO / SOUND / SETTINGS 從側欄收回選單，只留 BUY BONUS 與 
 1. **`LOADING xx%` 幾乎看不到**:`AssetsLoader` 是 `{#if preLoaded}` 才渲染子元件,讀取畫面出現時預載已完成,進度條動畫實為裝飾。要處理得動載入策略。
 2. **`pixi-svelte/dist` 進 git**(60 檔、無 gitignore)。因 `main` 指向 dist 且無 `prepare` 腳本,**現在必須 commit 否則新 clone 會壞**。乾淨解是加 `"prepare": "svelte-package"` 再 gitignore,但動到 repo 結構且 WildParty 也吃,未擅自改。
 
+## 5.54 送審第四批：移除 Stake Engine loader、social 術語、XEC、重播模式（2026-08-04）
+
+四項審核意見，使用者一律選 A 案；另外指明「供應商標誌是我們自己的，要留著」。
+
+### ① 移除 Stake Engine 開場畫面
+
+`+layout.svelte` 拿掉 `LoaderStakeEngine`，刪 `static/stake-engine-loader.gif`。**`WildParty­Loader` 留著** —— 那是自家工作室標誌，跟 Stake Engine 的 splash 是兩回事，檔案裡留了註解說明，免得下次又被一起清掉。
+
+### ② social 模式的 pay 系列術語
+
+`ModalGameRules` 的 `T` 詞彙表補上 `payline / paylines / payTable / payTableCaps / pay / pays / paid / payout`，模板裡 16 處 pay 字全部改走詞彙表；`components-ui-pixi/src/i18n/i18nDerived.ts` 的 `payTable()` 加 social 分支（`PLAY TABLE`）。順手把先前 `T.pays.replace('s','')` 那個把戲換成正式的 `T.pay` 條目。
+
+### ③ XEC 顯示為 SC
+
+`utils-shared/amount.ts` 的 `NO_LOCALISATION_CURRENCY_MAP` 加 `XEC: 'SC'`。這張表同時是「不走 Intl、不加 `$`」的名單，所以 4 位小數的贏分規則自動一併適用，不需另外改。
+
+### ④ 重播模式（Replay Mode）
+
+四個要求各自對應一處改動：
+
+| 要求 | 改動 |
+|------|------|
+| 發起重播時帶語言參數 | `rgs-requests` 的 `requestReplay` 新增選填 `language`，接成 `?lang=`；`Authenticate` 傳 `stateUrlDerived.lang()` |
+| 序列結束後要有重播按鈕 | bet bar 上一顆**常駐** Replay 鍵（`ButtonReplay`），位於 BET 左側那格，播放中自動禁用 |
+| 開頭要顯示花費、倍率、最終金額 | `ReplayIntro.svelte`（DOM 卡片）：Mode / Base Bet / Cost Multiplier / Total Bet Cost / Payout Multiplier / Total Win |
+| Stake.us 術語與模式名稱 | social 時 `Base Play` / `Feature Multiplier` / `Final Multiplier`；模式名用 `Base Game` / `Free Spins` / `Super Spin` |
+
+**卡片只出現一次**（開播前）。第一版是播完再蓋一次、按鈕改成 Replay Again，但那張面板每次都擋住盤面，不利於重看，所以改成常駐按鈕。
+
+**為什麼 `stateReplay` 放在 `state-shared`**：xstate 的 `resumeGame` 一啟動就把 `stateBet.betToResume` 設成 `null`，重播第二次就沒資料了，所以另存一份 `stateReplay.round`，每次開播前塞回去。而按鈕本身住在共用套件的 `UIReplay` 裡，也得讀同一份狀態 —— 兩邊都要用，就不該只放在單一遊戲。`enabled` 是保險絲：沒有接管重播播放的遊戲永遠不會設它，WildParty 的重播畫面完全維持原樣。
+
+**閘門位置**：`ResumeBet.svelte`。原本一掛載就 broadcast `resumeBet`，現在只有非重播才這麼做；重播改成把資料存進 `stateReplay` 並亮出卡片。**真正的續玩（玩家中途離開的實際回合）維持自動續播** —— 那筆錢已經下注了，不該讓玩家決定要不要跑完。
+
+**播放中／結束的判定**：機器在整段演繹（中獎牌、免費遊戲結算牌）期間都停在 `resumeBet`，回到 `idle` 才是真的播完，所以用 `resumeBet → idle` 的轉換當訊號，不需要另外埋事件。`stateReplay.running` 就是這樣維護的，按鈕靠它禁用。
+
+**重播前要清場**：`resumeGame` 這條路徑不會經過 `onNewGameStart`（那是 `newGame` 專屬），而清黏性金幣與擴展百搭的邏輯正是寫在那裡。所以重播第二次以後，上一輪的黏性百搭會留在盤面上。`ResumeBet` 的啟動 effect 自己補了這段清理。
+
+**踩到的坑**：第一版「回到 idle 就當作播完」的偵測沒有限定重播模式。一般對局的 `ResumeBet` 也會 broadcast `resumeBet`，機器發現沒有可續玩的回合就立刻掉回 `idle` —— 於是每次正常開場都被判定成重播結束，卡片直接蓋住整個畫面。現在 `isReplay` 讀一次存起來，掛載分支和狀態偵測都吃它。
+
+**重播模式改用遊戲本體的 bar**：`stateUi.config.mode === 'replay'` 原本會切到範本的 `UIReplay`（置中的 WIN / BET 疊放，左欄 menu + turbo）。那個版面既不像實際遊戲，也沒有地方擺重播鍵。現在 `UI.svelte` 在 `stateReplay.enabled` 時改用 `UIDefault`，於是重播走的是 GoBananas 自己的 `LayoutBottomBar`（portrait 則是 `LayoutPortrait`）。
+
+**下注控制項在重播模式全部移除**：旋轉鍵、± 步進、AUTO SPIN、BUY BONUS。重播沒有 sessionID，按下旋轉只會拿到錯誤。TURBO 留著（可加速播放），並從最右端移到旋轉鍵的位置，否則右半邊會空一大段。`LabelBet` 也不再可點（重播的注額是錄好的，而且重播模式伺服器沒送 betLevels，選單會是空的）。
+
+**BALANCE 格改成 MULTIPLIER**：重播不 authenticate，餘額會是 $0.00，看起來像壞掉。改放該模式的 cost multiplier（`LabelReplayMultiplier`），與旁邊的 BET 合起來就是規範要的「bet cost and applied multiplier」，不必回頭開卡片。
+
+**Replay 鍵位置**：`LayoutBottomBar` 中 Win→Bet 之間那格刻意留白的空間（`GAP_CENTER`），也就是 BET 正左方。1920 標準框下該格 x 656→1182 寬 526，按鈕 0.66 倍（99px）落在 803.5–902.5、垂直 954.5–1053.5，框內緣是 940–1068。文字說明擺在圖示**右側**而非下方 —— 框高只有 128，放得下大按鈕就放不下一行字，但格子有 526 寬，橫向空間綽綽有餘。加說明的理由：重播模式下它是唯一能讓遊戲動起來的控制項，一顆沒標籤的環形箭頭擺在閃電旁邊很容易被讀成「重轉」。
+
+Portrait（Popout S 也可能落在這個版面）同樣處理：整組 spin pod 收成 `[REPLAY][turbo]`，BALANCE 換成 MULTIPLIER。
+
+圖示走既有的 `design/generate_ui_icons.mjs`（黃銅風格），新增 `replay`：把 `autoSpin` 的弧鏡射成逆時針、拿掉播放三角形 —— 三角形正是 `autoSpin`「繼續跑」的語意，兩者不能混淆。
+
+**順手補的洞**：`stateUrl` 的 `Key` 型別早就列了 `currency`，卻沒有對應的存取器。重播不會呼叫 authenticate，`stateBet.currency` 於是永遠停在預設的 `'USD'` —— 卡片上的金額會用錯幣別顯示。補了 `currency()` 並只在 `handleReplay` 裡套用，正常對局仍以 authenticate 回傳的為準。
+
+**另一個實測抓到的缺陷：重播請求失敗會整個白畫面**。`authenticate()` 有 try/catch，`handleReplay()` 沒有 —— 一 reject 就從 `onMount` 拋出去，`authenticated` 永遠停在 false，`{#if authenticated}` 底下什麼都不渲染。實測 `?replay=true` 配一個連不上的 `rgs_url`，pixi stage 的節點數是 **0**：沒有畫面、沒有錯誤訊息、當然也沒有重播按鈕。已補上 try/catch（連同 `data.error` 的檢查），失敗時照樣渲染遊戲並跳錯誤視窗。
+
+### 驗證方式（這批有實機跑過）
+
+前三次改動都只靠 build 通過就回報，結果連錯位置都沒發現。這次用 dev server 實測，方法記在這裡以便重用：
+
+Vite dev 會把工作區套件以 `/@fs/<絕對路徑>` 供應，app 自己的檔案則是 `/src/...`，**兩者是不同的 module id**。用對路徑就能在 console 裡 `await import(...)` 拿到**同一個** `$state` 實例並直接改它 —— 一開始我用 `/@fs/.../apps/GoBananas/src/game/stateApp.ts` 讀到的是複本，`loaded` 永遠是 false，差點誤判成資源載入壞掉。
+
+pixi 的部分：`globalThis.__PIXI_APP__` 由 `InitialiseApplication` 掛上。瀏覽器面板沒顯示時 ticker 不跑，`worldTransform` 會全是 0 —— 要先 `app.renderer.render(app.stage)` 再讀 `getBounds()`。另外 `renderer.resolution` 是 1.25，所以 **stage 座標是 CSS 的 1280×720，不是 backing store 的 1600×900**；派送 PointerEvent 時直接用 stage 座標當 clientX/Y，不要再乘 `rect.width / canvas.width`。
+
+實測結果（1280×720 stage 座標）：
+
+| 元素 | x 範圍 |
+|---|---|
+| MULTIPLIER / 200x | 128–254 |
+| WIN / $0.00 | 327–393 |
+| replay 圖示 | 542–596 |
+| REPLAY 字樣 | 610–685 |
+| BET / $1.00 | 837–887 |
+
+按鈕在 BET 左側，前後留白 149 / 152。點擊依序廣播 `soundPressGeneral` → `expandingWildsClear` → `resumeBet`。
+
+### 5.54.1 本機重播測試台（`design/make_replay_harness.mjs`）
+
+重播只能對著會服務 `/bet/replay/{game}/{version}/{mode}/{event}` 的 RGS 跑，而 Stake Engine 只對**真實存在的歷史投注**服務這個端點。等於整段重播演繹在本機無法測——而那正好就是連續改壞三次的地方。
+
+做法：把 `build/` 複製成 `build-replaytest/`，在複本裡塞一個 service worker，攔 `/bet/replay/` 的請求並用 repo 裡 `src/stories/data/` 的真實 book 回應。**要上傳的 `build/` 完全不動**，複本已進 `.gitignore`。
+
+用 service worker 而不是架 stub 伺服器，是因為 `rgs-fetcher` 把網址寫死成 `https://${rgsUrl}` —— 本機 stub 需要瀏覽器信任的憑證，而 worker 可以直接對跨來源請求回一個合成 response，只要 localhost 就夠。
+
+```bash
+pnpm --dir apps/GoBananas build && node apps/GoBananas/design/make_replay_harness.mjs
+```
+
+腳本會印出可直接開的網址（`gobananas-replaytest` 這個 launch 設定把複本服務在 4174）。目前有 base×5、bonus×3 共 8 個 book，含 x540 那手。`event` 參數是 book 陣列的索引，不是真實投注 id。
+
+**已驗**：worker 確實攔截並回傳正確 book（`https://mock.local/bet/replay/GoBananas/1/bonus/1?lang=en` → book 217、70x、57 個事件）。
+
+**未驗**：實際播放畫面。瀏覽器面板沒有顯示時貼圖載入不會前進（資源停在 17 atlas + 19 json，一張 PNG 都沒抓），所以在這個環境裡跑不完。**已排除是測試台的問題** —— 不含 worker 的純 `build/` 預覽卡在完全一樣的位置。要看播放效果得在真正顯示出來的瀏覽器裡開上面那些網址。
+
+## 5.55 修：social 詞彙表重構漏掉一個變數，整個遊戲開不起來（2026-08-06）
+
+症狀：供應商標誌畫面出現後就沒有畫面了。
+
+真因是 `ModalGameRules.svelte` 的一行漏改。把 `T` 詞彙表抽到 `socialTerms.ts` 時，元件裡的 `const social = stateUrlDerived.social()` 被移除，但下面這行還在用它：
+
+```js
+const entryVerb = social ? 'Play' : 'Buy';
+```
+
+production bundle 裡 `social` 是未定義識別字，元件初始化就丟 ReferenceError。**代價遠大於一個彈窗**：Svelte 5 的 effect flush 被例外中斷，整棵樹後續的初始化全部沒跑 —— 沒有 canvas、沒有資產載入，連 `WildPartyLoader` 自己那顆 1.6 秒的淡出計時器都沒觸發，所以標誌就永遠停在畫面上。修法是把 `entryVerb` 也收進詞彙表（`pick('Buy', 'Play')`）。
+
+### 為什麼 build 和守門腳本都沒攔到
+
+- `vite build` 不做型別檢查，未定義識別字對打包器來說是合法的自由變數。
+- `check_undefined_refs.mjs` **只掃模板引用**。而且它第 183 行有一條刻意的逃生門：「只要這個名字出現在 script 裡任何地方就放行」。這個 bug 正好在 script 裡，兩層都穿過去了。
+
+### 診斷過程值得記的兩點
+
+1. **「載入卡住」的假象**：一開始看到資源只抓了 40 個、一張 PNG 都沒有，我歸因成「瀏覽器面板沒合成所以貼圖載入不前進」。錯的 —— 真相是 `<Game>` 根本沒掛載。判斷關鍵是 `document.querySelector('canvas')` 為 null 而 WebGL2 明明可用。**先確認元件有沒有掛載，再談載入。**
+2. **二分法比推理快**：`git stash push -u -- apps/GoBananas packages` → build → 測 → `git stash pop`，一輪就確定「是我的改動」；再還原三個檔案一輪就鎖定到批次。前面花在推敲 `page.url`、循環相依、service worker 的時間全是白費。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

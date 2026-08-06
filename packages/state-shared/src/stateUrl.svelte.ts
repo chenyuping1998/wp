@@ -45,6 +45,11 @@ const lang = (): Language => {
 const sessionID = () => getUrlSearchParam('sessionID') || '';
 const rgsUrl = () => getUrlSearchParam('rgs_url') || '';
 
+// Only replay needs this. In normal play the currency comes back from
+// authenticate, which is authoritative; a replay never authenticates, so without
+// the URL value every amount on screen would be formatted as USD.
+const currency = () => getUrlSearchParam('currency') || '';
+
 // params for replay
 const replay = () => getUrlSearchParam('replay') === 'true';
 const amount = () => Number(getUrlSearchParam('amount')) || 0;
@@ -62,6 +67,7 @@ export const stateUrlDerived = {
 	// states for replay
 	replay,
 	amount,
+	currency,
 	game,
 	mode,
 	version,

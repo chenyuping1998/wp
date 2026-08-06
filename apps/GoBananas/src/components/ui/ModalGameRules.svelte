@@ -1,27 +1,16 @@
 <script lang="ts">
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { stateModal, stateUrlDerived } from 'state-shared';
+	import { stateModal } from 'state-shared';
 
 	import { base } from '$app/paths';
 
 	import config from '../../game/config';
+	import { getSocialTerms } from '../../game/socialTerms';
 
-	// Social play forbids betting terminology in player-facing copy, and the rules
-	// page is the densest concentration of it in the game. Rather than maintaining
-	// two copies of the prose, the handful of nouns that differ are named once
-	// here and referenced throughout — so the two versions cannot drift apart.
-	const social = stateUrlDerived.social();
-	const T = {
-		bet: social ? 'amount' : 'bet',            // "your bet" / "your amount"
-		totalBet: social ? 'total amount' : 'total bet',
-		betLevel: social ? 'amount level' : 'bet level',
-		betLevels: social ? 'amount levels' : 'bet levels',
-		betMenu: social ? 'play menu' : 'bet menu',
-		betPanel: social ? 'Amount' : 'Bet',       // the readout's own label
-		buy: social ? 'play' : 'buy',
-		bought: social ? 'started' : 'bought',
-	};
+	// Shared with the pay table — the two panels describe the same game and must
+	// use the same words for it. See socialTerms.ts.
+	const T = getSocialTerms();
 
 	// Controls guide. Each row shows the actual button art from the bet bar, so a
 	// player matches what they read to what they see rather than decoding a name.
@@ -60,12 +49,12 @@
 		{
 			icons: ['menu'],
 			name: 'Menu',
-			text: 'Opens the pay table, these rules, and the sound and settings controls.',
+			text: `Opens the ${T.payTable}, these rules, and the sound and settings controls.`,
 		},
 		{
 			icons: ['payTable'],
-			name: 'Pay table',
-			text: 'Lists every symbol and what it pays for 3, 4 and 5 of a kind, plus the paylines.',
+			get name() { return T.payTableCaps; },
+			text: `Lists every symbol and what it ${T.pays} for 3, 4 and 5 of a kind, plus the ${T.paylines}.`,
 		},
 		{
 			icons: ['soundOn'],
@@ -74,7 +63,7 @@
 		},
 	];
 
-	const entryVerb = social ? 'Play' : 'Buy';
+	const entryVerb = T.entryVerb;
 	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
 	const lineCount = Object.keys(config.paylines).length;
 	const maxWin = config.betModes?.base?.max_win ?? 10000;
@@ -118,9 +107,8 @@
 				<h3><span class="wp-accent-bar"></span>How to play</h3>
 				<p>
 					Go Bananas is a {reelCount}&times;{rowCount} video slot with {lineCount} fixed
-					paylines. Winning combinations pay left to right, starting from the leftmost reel on
-					adjacent reels. Only the highest win is paid per line, and all line wins are added
-					together. The theoretical return to player (RTP) is {rtpPct}.
+					{T.paylines}. {T.combinationDirection}. Only the highest win is {T.paid} per line, and all
+					line wins are added together. The theoretical return to player (RTP) is {rtpPct}.
 				</p>
 			</section>
 
@@ -175,14 +163,14 @@
 				</table>
 				<p class="wp-modes-note">
 					Max win is a multiple of the {T.totalBet}. When a round reaches the cap it ends
-					immediately and the capped amount is paid.
+					immediately and the capped amount is {T.paid}.
 				</p>
 			</section>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Wild</h3>
 				<p>
-					The Sergeant Wild substitutes for every symbol except the Scatter, and also pays as
+					The Sergeant Wild substitutes for every symbol except the Scatter, and also {T.pays} as
 					its own symbol on 3, 4 or 5 of a kind. In the base game Wilds stay a single symbol
 					&mdash; only in Free Spins do they expand.
 				</p>
@@ -191,8 +179,8 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Scatter</h3>
 				<p>
-					The Golden Bananas Scatter appears on all five reels. It does not pay on its own and
-					does not need to land on a payline &mdash; its only job is to open the feature.
+					The Golden Bananas Scatter appears on all five reels. It does not {T.pay} on its own and
+					does not need to land on a {T.payline} &mdash; its only job is to open the feature.
 					Landing 4 or 5 Scatters in a single spin awards {scatterSpins} Free Spins.
 				</p>
 			</section>
@@ -203,7 +191,7 @@
 					During Free Spins, every Wild that lands devours his golden banana and expands to
 					cover the entire reel. Expanded Wilds are sticky — they stay for the rest of the
 					feature — and each one carries a 2&times;&ndash;50&times; win multiplier that is
-					re-rolled on every spin. Multipliers of all expanded Wilds on a winning payline are
+					re-rolled on every spin. Multipliers of all expanded Wilds on a winning {T.payline} are
 					added together.
 				</p>
 			</section>
@@ -229,7 +217,7 @@
 					A hold-and-spin style bonus {T.bought} from the {T.betMenu} for {config.betModes?.superspin
 						?.cost}&times; your {T.totalBet}. You start with 3 respins. Every Coin that lands
 					sticks to the board and resets the respins back to 3. When no respins remain, all
-					stuck Coin values are added up and paid out. Maximum win:
+					stuck Coin values are added up and {T.paid} out. Maximum win:
 					{config.betModes?.superspin?.max_win?.toLocaleString()}&times; the {T.totalBet}.
 				</p>
 			</section>
@@ -247,7 +235,7 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Max Win</h3>
 				<p>
-					The maximum payout is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}. Once
+					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}. Once
 					the cap is reached the round ends immediately and the maximum win is awarded.
 				</p>
 			</section>

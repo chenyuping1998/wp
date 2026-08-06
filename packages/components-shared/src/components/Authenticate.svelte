@@ -113,26 +113,44 @@
 	};
 
 	const handleReplay = async () => {
+		// A replay never authenticates, so nothing else would ever set the currency
+		// and every amount would render as USD.
+		const replayCurrency = stateUrlDerived.currency();
+		if (replayCurrency) stateBet.currency = replayCurrency;
+
 		stateBet.betAmount = (stateUrlDerived.amount() / API_AMOUNT_MULTIPLIER) || 0;
 		stateBet.wageredBetAmount = (stateUrlDerived.amount() / API_AMOUNT_MULTIPLIER) || 0;
 		stateBet.activeBetModeKey = stateUrlDerived.mode();
 
-		const data = await requestReplay({
-			rgsUrl: stateUrlDerived.rgsUrl(),
-			game: stateUrlDerived.game(),
-			mode: stateUrlDerived.mode(),
-			version: stateUrlDerived.version(),
-			event: stateUrlDerived.event(),
-		});
-
-		if(data) {
-			// @ts-ignore
-			stateBet.betToResume = {
-				...data,
-				event: '0',
-				active: true,
+		// Mirrors authenticate()'s handling. Without it a failed replay request
+		// rejected out of onMount, `authenticated` never flipped, and the game
+		// rendered nothing at all — a black screen with no error and no way back.
+		// A replay that cannot be fetched should still land the player in a game
+		// that says so.
+		try {
+			const data = await requestReplay({
+				rgsUrl: stateUrlDerived.rgsUrl(),
+				game: stateUrlDerived.game(),
 				mode: stateUrlDerived.mode(),
-			};
+				version: stateUrlDerived.version(),
+				event: stateUrlDerived.event(),
+				language: stateUrlDerived.lang(),
+			});
+
+			if (data?.error) throw data;
+
+			if (data) {
+				// @ts-ignore
+				stateBet.betToResume = {
+					...data,
+					event: '0',
+					active: true,
+					mode: stateUrlDerived.mode(),
+				};
+			}
+		} catch (error) {
+			console.error(error);
+			stateModal.modal = { name: 'error', error };
 		}
 	};
 

@@ -1,5 +1,6 @@
 export * from './src/stateUrl.svelte';
 export * from './src/stateBet.svelte';
+export * from './src/stateReplay.svelte';
 export * from './src/stateConfig.svelte';
 export * from './src/stateMeta.svelte';
 export * from './src/stateModal.svelte';

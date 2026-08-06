@@ -1,13 +1,15 @@
 <script lang="ts">
-	import { stateUi } from 'state-shared';
+	import { stateReplay, stateUi } from 'state-shared';
 	import { BLACK } from 'constants-shared/colors';
 	import { MainContainer } from 'components-layout';
 	import { Container, Graphics, Rectangle, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
+	import ButtonReplay from './ButtonReplay.svelte';
+	import LabelReplayMultiplier from './LabelReplayMultiplier.svelte';
 	import { getContext } from '../context';
 	import { uiTheme } from '../theme.svelte';
-	import { UI_BASE_FONT_SIZE } from '../constants';
+	import { UI_BASE_FONT_SIZE, UI_BASE_SIZE } from '../constants';
 	import { i18nDerived } from '../i18n/i18nDerived';
 	import type { LayoutUiProps } from '../types';
 
@@ -110,6 +112,28 @@
 	// plus a hair, so the two touch targets never overlap.
 	const STEP_DY = 22;
 
+	// Replay control, drawn in the empty Win→Bet cell (replay mode only).
+	// 0.66 of UI_BASE_SIZE is 99 across — the largest circle that clears the
+	// frame's 128 of inner height with air to spare, and big enough to read as the
+	// primary action now that the spin pod is gone.
+	const REPLAY_SCALE = 0.66;
+	const REPLAY_RADIUS = (UI_BASE_SIZE * REPLAY_SCALE) / 2;
+	// icon + caption centred as one unit on the cell, rather than the icon alone —
+	// otherwise the pair sits visibly right of the space it occupies.
+	const REPLAY_CAPTION_WIDTH = 120;
+	const REPLAY_X = $derived(
+		GAP_CENTER - (REPLAY_RADIUS * 2 + 12 + REPLAY_CAPTION_WIDTH) * 0.5 + REPLAY_RADIUS,
+	);
+
+	const replayCaptionStyle = $derived({
+		fontFamily: uiTheme.fontFamily,
+		fontWeight: uiTheme.fontWeight,
+		fontSize: UI_BASE_FONT_SIZE * 0.62,
+		fill: uiTheme.labelFill,
+		stroke: uiTheme.valueStroke,
+		strokeThickness: 3,
+	});
+
 	const captionStyle = $derived({
 		fontFamily: uiTheme.fontFamily,
 		fontWeight: uiTheme.fontWeight,
@@ -204,7 +228,11 @@
 	{/if}
 
 	<Container x={BALANCE_X} y={readoutTop} scale={READOUT_SCALE}>
-		{@render props.amountBalance({ stacked: true, tiled: false })}
+		{#if stateReplay.enabled}
+			<LabelReplayMultiplier stacked tiled={false} />
+		{:else}
+			{@render props.amountBalance({ stacked: true, tiled: false })}
+		{/if}
 	</Container>
 
 	<Container x={WIN_X} y={readoutTop} scale={READOUT_SCALE}>
@@ -216,36 +244,77 @@
 		{@render props.amountBet({ stacked: true, tiled: false })}
 	</Container>
 
-	<Container x={STEP_X} y={barMid - STEP_DY} scale={STEP_SCALE}>
-		{@render props.buttonIncrease({ anchor: 0.5 })}
-	</Container>
-	<Container x={STEP_X} y={barMid + STEP_DY} scale={STEP_SCALE}>
-		{@render props.buttonDecrease({ anchor: 0.5 })}
-	</Container>
+	{#if stateReplay.enabled}
+		<!--
+			Replay mode. Nothing is wagered, so every control that would place or
+			size a bet is gone: the steppers, the spin button, autospin and Buy
+			Bonus. What replaces them is one control — replay the round again.
 
-	<!-- Spin is the largest thing on the strip and overhangs it top and bottom,
-	     which is what makes it read as the primary action without a caption. -->
-	<Container x={SPIN_X} y={barMid} scale={SPIN_SCALE}>
-		{@render props.buttonBet({ anchor: 0.5 })}
-	</Container>
+			It sits in the empty Win→Bet cell, the slot immediately left of Bet.
+			That cell exists in this layout precisely because it was left blank as
+			a breather, and it is the only place on the strip that can take a
+			control without shifting the readouts around it.
 
-	<Container x={AUTO_X} y={barMid} scale={0.44}>
-		{@render props.buttonAutoSpin({ anchor: 0.5 })}
-	</Container>
-
-	<Container x={TURBO_X} y={barMid} scale={0.44}>
-		{@render props.buttonTurbo({ anchor: 0.5 })}
-	</Container>
-
-	<!-- Buy Bonus keeps its own place off to the left; see uiTheme.buyBonusOnRail -->
-	{#if !uiTheme.buyBonusOnRail}
-		<Container
-			x={uiTheme.railWidth * 0.5}
-			y={box.height * 0.46}
-			scale={uiTheme.buyBonusRailScale}
-		>
-			{@render props.buttonBuyBonus({ anchor: 0.5 })}
+			Turbo moves in from the far right to the spin slot: with the whole right
+			cluster gone it would otherwise sit alone at the end of a very long
+			empty stretch.
+		-->
+		<Container x={REPLAY_X} y={barMid} scale={REPLAY_SCALE}>
+			<ButtonReplay anchor={0.5} />
 		</Container>
+		<!--
+			Captioned, unlike the other icon buttons: in replay mode this is the
+			only control that does anything, and an unlabelled circular arrow next
+			to a turbo bolt reads too easily as "spin again".
+
+			The caption sits beside the icon rather than under it. The frame is 128
+			tall, so a button large enough to be the primary action leaves no room
+			for a line of text below it — but the cell is over 500 wide, so there
+			is all the room in the world to the side.
+		-->
+		<Text
+			anchor={{ x: 0, y: 0.5 }}
+			x={REPLAY_X + REPLAY_RADIUS + 12}
+			y={barMid}
+			text={i18nDerived.replay()}
+			style={replayCaptionStyle}
+		/>
+
+		<Container x={SPIN_X} y={barMid} scale={0.5}>
+			{@render props.buttonTurbo({ anchor: 0.5 })}
+		</Container>
+	{:else}
+		<Container x={STEP_X} y={barMid - STEP_DY} scale={STEP_SCALE}>
+			{@render props.buttonIncrease({ anchor: 0.5 })}
+		</Container>
+		<Container x={STEP_X} y={barMid + STEP_DY} scale={STEP_SCALE}>
+			{@render props.buttonDecrease({ anchor: 0.5 })}
+		</Container>
+
+		<!-- Spin is the largest thing on the strip and overhangs it top and bottom,
+		     which is what makes it read as the primary action without a caption. -->
+		<Container x={SPIN_X} y={barMid} scale={SPIN_SCALE}>
+			{@render props.buttonBet({ anchor: 0.5 })}
+		</Container>
+
+		<Container x={AUTO_X} y={barMid} scale={0.44}>
+			{@render props.buttonAutoSpin({ anchor: 0.5 })}
+		</Container>
+
+		<Container x={TURBO_X} y={barMid} scale={0.44}>
+			{@render props.buttonTurbo({ anchor: 0.5 })}
+		</Container>
+
+		<!-- Buy Bonus keeps its own place off to the left; see uiTheme.buyBonusOnRail -->
+		{#if !uiTheme.buyBonusOnRail}
+			<Container
+				x={uiTheme.railWidth * 0.5}
+				y={box.height * 0.46}
+				scale={uiTheme.buyBonusRailScale}
+			>
+				{@render props.buttonBuyBonus({ anchor: 0.5 })}
+			</Container>
+		{/if}
 	{/if}
 </MainContainer>
 

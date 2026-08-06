@@ -28,6 +28,7 @@ export type ButtonIcon =
 	| 'menu'
 	| 'turbo'
 	| 'autoSpin'
+	| 'replay'
 	| 'payTable'
 	| 'info'
 	| 'settings'

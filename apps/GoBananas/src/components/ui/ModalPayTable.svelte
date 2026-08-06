@@ -5,6 +5,12 @@
 
 	import config from '../../game/config';
 	import assets from '../../game/assets';
+	import { getSocialTerms } from '../../game/socialTerms';
+
+	// Social play forbids betting terminology, and this panel is titled with it.
+	// Shared with the game rules page so the two cannot describe the same rule in
+	// different words. See socialTerms.ts.
+	const T = getSocialTerms();
 
 	type PayRow = { name: string; img: string; label: string; pays: { count: number; value: number }[] };
 
@@ -73,8 +79,12 @@
 {#if stateModal.modal?.name === 'payTable'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-paytable">
-			<h2>PAY TABLE</h2>
-			<p class="wp-note">Pays shown as a multiple of total bet. Line wins pay left to right on {Object.keys(config.paylines).length} fixed paylines.</p>
+			<h2>{T.payTableUpper}</h2>
+			<p class="wp-note">
+				{T.paysStart} shown as a multiple of {T.totalBet}. Line wins {T.winsDirection} on {Object.keys(
+					config.paylines,
+				).length} fixed {T.paylines}.
+			</p>
 
 			<div class="wp-grid">
 				{#each rows as row, i (row.name)}
@@ -90,7 +100,7 @@
 						<div class="wp-pays">
 							{#if row.name === 'S'}
 								<span class="wp-special"
-									>Does not pay &mdash; 4 or 5 Scatters award 12 or 15 Free Spins</span
+									>{T.doesNotPay} &mdash; 4 or 5 Scatters award 12 or 15 Free Spins</span
 								>
 							{:else if row.pays.length}
 								{#each row.pays as pay (pay.count)}
@@ -102,9 +112,11 @@
 				{/each}
 			</div>
 
-			<h3 class="wp-lines-title">{paylines.length} PAYLINES</h3>
+			<h3 class="wp-lines-title">{paylines.length} {T.paylinesUpper}</h3>
 			<p class="wp-note">
-				All {paylines.length} lines are always active. Wins pay left to right from reel 1.
+				<!-- "beginning on reel 1", not "from reel 1": in social play winsDirection
+				     already starts with "start from", and the two collided. -->
+				All {paylines.length} lines are always active. Wins {T.winsDirection}, beginning on reel 1.
 			</p>
 
 			<div class="wp-lines">
@@ -123,9 +135,9 @@
 			</div>
 
 			<p class="wp-note">
-				Wild substitutes for all symbols except Scatter and pays as its own symbol. Only the
-				highest win is paid per line. Max win is capped at {maxWin.toLocaleString()}&times; total
-				bet.
+				Wild substitutes for all symbols except Scatter and {T.pays} as its own symbol. Only the
+				highest win is {T.paid} per line. Max win is capped at {maxWin.toLocaleString()}&times;
+				{T.totalBet}.
 			</p>
 		</div>
 	</Popup>

@@ -182,6 +182,13 @@
 		src: new URL('../../assets/sprites/goBananasUiIcons/autoSpin.png', import.meta.url).href,
 		preload: true,
 	},
+	// only ever drawn in replay mode, but the bet bar's icons are all preloaded
+	// together and one 256px sprite is not worth a separate loading path
+	gbIconReplay: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIcons/replay.png', import.meta.url).href,
+		preload: true,
+	},
 
 	// The full-reel WILD banner as a plain sprite. Same file the wx spine uses,
 	// so it costs no extra download — ExpandingWilds draws it behind a growing

@@ -79,11 +79,15 @@ export const requestReplay = async (options: {
 	mode: string;
 	event: string;
 	rgsUrl: string;
+	// Passed through so the replay is served in the same language the player is
+	// viewing it in; without it a replay always came back in the default locale.
+	language?: string;
 }) => {
+	const query = options.language ? `?lang=${encodeURIComponent(options.language)}` : '';
 	const data = await rgsFetcher.get({
 		rgsUrl: options.rgsUrl,
 		// @ts-ignore TODO: update the schema.ts
-		url: `/bet/replay/${options.game}/${options.version}/${options.mode}/${options.event}`,
+		url: `/bet/replay/${options.game}/${options.version}/${options.mode}/${options.event}${query}`,
 	});
 
 	return data;

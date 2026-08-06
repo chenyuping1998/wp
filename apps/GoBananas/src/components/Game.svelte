@@ -12,6 +12,8 @@
 	import { UI, UiGameName } from 'components-ui-pixi';
 	import { GameVersion } from 'components-ui-html';
 	import Modals from './ui/Modals.svelte';
+	import ReplayIntro from './ui/ReplayIntro.svelte';
+	import { stateReplay } from 'state-shared';
 
 	import { getContext } from '../game/context';
 	// side-effect import: paints the shared bet bar in the jungle palette
@@ -122,6 +124,16 @@
 		<Transition />
 	{/if}
 </App>
+
+<!-- DOM, so it lives outside <App> — the pixi tree cannot host HTML. -->
+{#if stateReplay.waiting}
+	<ReplayIntro
+		onstart={() => {
+			stateReplay.waiting = false;
+			stateReplay.startRequested = true;
+		}}
+	/>
+{/if}
 
 <Modals>
 	{#snippet version()}

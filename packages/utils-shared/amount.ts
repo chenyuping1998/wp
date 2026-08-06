@@ -5,9 +5,13 @@ import { stateBet } from 'state-shared';
 // See numberToCurrencyString for why.
 const CURRENCY_LOCALE = 'en-US';
 
+// Social currencies are shown as their own symbol, never routed through Intl —
+// which is what keeps a "$" off them. XEC is Stake EU's sweeps currency and
+// displays as SC, the same as XSC.
 const NO_LOCALISATION_CURRENCY_MAP: Record<string, string> = {
 	XGC: 'GC',
 	XSC: 'SC',
+	XEC: 'SC',
 };
 
 // bookEventAmount: is the amount or win numbers in the events of books, e.g. the amount in setTotalWin bookEvent
