@@ -8,7 +8,7 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { GAME_FONT, GAME_FONT_WEIGHT, TITLE_FONT } from '../game/fonts';
 	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
@@ -71,7 +71,10 @@
 							y={-sizes.height * 0.26}
 							text={title}
 							style={{
-								fontFamily: GAME_FONT,
+								// The carved face, matching the plaque tier names and the
+								// loading title. Non-Latin locales fall through per character
+								// exactly as they do for GAME_FONT — same stack behind it.
+								fontFamily: TITLE_FONT,
 								fontSize: Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
 								fontWeight: GAME_FONT_WEIGHT,
 								letterSpacing: 6,

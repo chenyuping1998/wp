@@ -449,7 +449,9 @@ const addGlyph = (name, adv, segments, codes, { serif = true } = {}) => {
 	glyphs.push({ name, adv, contours, codes });
 };
 
-addGlyph('space', 300, [], [0x20]);
+// Word space follows the advance: 300 against the runic 560 is the same
+// proportion as 360 against the inscribed 680.
+addGlyph('space', INSCRIBED ? 360 : 300, [], [0x20]);
 
 for (const [ch, segments] of Object.entries(GLYPHS)) {
 	const codes = [ch.charCodeAt(0)];

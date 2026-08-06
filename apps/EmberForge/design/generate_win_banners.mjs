@@ -25,10 +25,12 @@ const OUT = path.join(appRoot, 'static/assets/sprites/emberForgeWinBanners');
 // uses (game/fonts.ts). Baked headline art and live Text have to be the same
 // typeface or the banner reads as a different game to the amount inside it.
 const FONT_DIR = path.join(appRoot, 'static/fonts');
-const BANNER_FONT = 'Titan One';
-// Measured rather than assumed: the widest tier name (SUPER WIN) inks 727px at
-// this size against 876px of clear space inside the brass frame, so 128 carries
-// over from the previous face unchanged.
+const BANNER_FONT = 'Ember Inscribed';
+// Measured rather than assumed. The widest tier name is SUPER WIN: 8 letters at
+// the inscribed face's 680/1000em advance plus one 360 space = 5.80em, so at 128
+// it sets 743px against 876px of clear space inside the brass frame. Fits with
+// room, and lands within a few pixels of what Titan One did at the same size, so
+// nothing else on the plate had to move.
 const TIER_SIZE = 128;
 fs.mkdirSync(OUT, { recursive: true });
 
@@ -241,7 +243,9 @@ ${rivets()}
 for (const [alias, tier] of Object.entries(TIERS)) {
 	const resvg = new Resvg(banner(tier), {
 		fitTo: { mode: 'width', value: W },
-		font: { fontDirs: [FONT_DIR], loadSystemFonts: true, defaultFontFamily: 'Titan One' },
+		// defaultFontFamily matches the requested face: if resvg fails to match it,
+		// falling back to a DIFFERENT font would silently ship the wrong art.
+		font: { fontDirs: [FONT_DIR], loadSystemFonts: true, defaultFontFamily: BANNER_FONT },
 	});
 	fs.writeFileSync(path.join(OUT, `${alias}.png`), resvg.render().asPng());
 	console.log('rendered', `${alias}.png`);

@@ -500,19 +500,68 @@ writeWav(
 	writeWav('bigwin_blast.wav', fadeEnds(normalize(buf, 0.94), SR_SFX, 6), SR_SFX);
 }
 
-// coin_shimmer — the big-win loop bed. Sparse high taps over a bellows hum, so
-// it can cycle for several seconds without becoming irritating.
+// coin_shimmer — the loop under a big win and under the free-game total.
+//
+// Was 26 taps per 2.4s at 1500-3100Hz: a bright, fast sparkle. Wrong instrument
+// for this game twice over. The pitch put it in the same register as a wind
+// chime, and the rate made it busy — under the free-game total, which is the
+// slowest, heaviest moment in the round, it sounded like something being
+// scattered rather than poured.
+//
+// Now it is bullion landing: low, dull, and slow. Three changes, all pulling the
+// same way — an octave and a half down (200-560Hz), bright dropped to 0.28 so
+// the inharmonic partials stay quiet and each hit thuds instead of rings, and
+// the rate roughly halved with the spacing made uneven so it pours rather than
+// ticks. A low furnace bed underneath replaces the bellows hiss.
 {
-	const dur = 2.4;
-	const buf = buffer(dur, SR_SFX);
-	addAt(buf, bellows(SR_SFX, { dur, peak: 0.28 }), 0, 0.5, SR_SFX);
-	for (let i = 0; i < 26; i++) {
-		const at = (i / 26) * dur + rand() * 0.03;
-		const freq = 1500 + rand() * 1600;
-		addAt(buf, strike(SR_SFX, { freq, dur: 0.28, bright: 0.5, decay: 0.22 }), at, 0.32, SR_SFX);
+	const dur = 3.4;
+	const XF = 0.6;
+	const total = dur + XF;
+	const buf = buffer(total, SR_SFX);
+
+	// low bed: the weight the coins are landing into
+	const bed = buffer(total, SR_SFX);
+	for (let i = 0; i < bed.length; i++) bed[i] = rand2();
+	lowpass(bed, SR_SFX, 260);
+	lowpass(bed, SR_SFX, 190);
+	addAt(buf, bed, 0, 0.4, SR_SFX);
+
+	// coins: uneven spacing, so it pours instead of ticking
+	let at = 0.02;
+	while (at < total) {
+		const freq = 200 + rand() * 360;
+		addAt(
+			buf,
+			strike(SR_SFX, { freq, dur: 0.5, bright: 0.28, decay: 0.34 }),
+			at,
+			0.3 + rand() * 0.25,
+			SR_SFX,
+		);
+		// heavier pieces land now and then and take a beat longer to settle
+		if (rand() < 0.22) {
+			addAt(
+				buf,
+				strike(SR_SFX, { freq: freq * 0.55, dur: 0.8, bright: 0.18, decay: 0.6 }),
+				at + 0.01,
+				0.28,
+				SR_SFX,
+			);
+		}
+		at += 0.13 + rand() * 0.16;
 	}
-	// loop-safe: the ends must meet, so fade is short and symmetric
-	writeWav('coin_shimmer.wav', fadeEnds(normalize(buf, 0.55), SR_SFX, 12), SR_SFX);
+
+	lowpass(buf, SR_SFX, 3200);
+
+	// Seamless loop by wrap-around crossfade, the same way the free-game bed is
+	// built. fadeEnds was used here before, which on a LOOP is a dip to silence
+	// on every cycle — audible as a pulse once it has gone round three times.
+	const xf = Math.round(XF * SR_SFX);
+	const loop = Math.round(dur * SR_SFX);
+	for (let i = 0; i < xf; i++) {
+		const t = i / xf;
+		buf[i] = buf[i] * t + buf[loop + i] * (1 - t);
+	}
+	writeWav('coin_shimmer.wav', rmsNormalize(buf.slice(0, loop), 0.16), SR_SFX);
 }
 
 // reel_tension — anticipation loop: rising draught with a tremolo edge
