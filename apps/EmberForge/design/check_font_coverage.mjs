@@ -76,6 +76,85 @@ const readCoverage = (file) => {
 	return covered;
 };
 
+/**
+ * Will a BROWSER accept this file?
+ *
+ * Coverage is measured by reading the cmap, and a lenient parser will read a
+ * cmap out of a file no browser would ever load. That is not hypothetical: both
+ * faces shipped for weeks with an OS/2 table two bytes short of its declared
+ * version and a duplicate cmap segment, so `document.fonts` reported "error",
+ * every Text fell back to Titan One, and the carved face was never once on
+ * screen — while this check happily reported full coverage and the resvg
+ * specimen rendered perfectly.
+ *
+ * These are the two things that were wrong. Both are fatal to a browser's font
+ * sanitiser and invisible to everything else.
+ */
+const OS2_LENGTH_BY_VERSION = { 0: 78, 1: 86, 2: 96, 3: 96, 4: 96, 5: 100 };
+
+const checkLoadable = (file) => {
+	const buf = fs.readFileSync(file);
+	const problems = [];
+	const numTables = buf.readUInt16BE(4);
+	const tables = {};
+	for (let i = 0; i < numTables; i += 1) {
+		const rec = 12 + i * 16;
+		tables[buf.toString('ascii', rec, rec + 4)] = {
+			offset: buf.readUInt32BE(rec + 8),
+			length: buf.readUInt32BE(rec + 12),
+		};
+	}
+
+	const os2 = tables['OS/2'];
+	if (!os2) problems.push('no OS/2 table');
+	else {
+		const version = buf.readUInt16BE(os2.offset);
+		const expected = OS2_LENGTH_BY_VERSION[version];
+		if (expected === undefined) problems.push(`OS/2 declares unknown version ${version}`);
+		else if (os2.length !== expected)
+			problems.push(`OS/2 version ${version} must be ${expected} bytes, is ${os2.length}`);
+	}
+
+	const cmap = tables.cmap;
+	if (!cmap) problems.push('no cmap table');
+	else {
+		const subCount = buf.readUInt16BE(cmap.offset + 2);
+		for (let i = 0; i < subCount; i += 1) {
+			const rec = cmap.offset + 4 + i * 8;
+			const sub = cmap.offset + buf.readUInt32BE(rec + 4);
+			if (buf.readUInt16BE(sub) !== 4) continue;
+			const segCount = buf.readUInt16BE(sub + 6) / 2;
+			const endsAt = sub + 14;
+			let previous = -1;
+			for (let seg = 0; seg < segCount; seg += 1) {
+				const end = buf.readUInt16BE(endsAt + seg * 2);
+				if (end <= previous)
+					problems.push(
+						`cmap segment ${seg} ends at 0x${end.toString(16)}, not after the previous ` +
+							`0x${previous.toString(16)} — format 4 requires strictly increasing endCodes`,
+					);
+				previous = end;
+			}
+			if (previous !== 0xffff) problems.push('cmap format 4 does not end at 0xFFFF');
+		}
+	}
+	return problems;
+};
+
+let unloadable = 0;
+for (const file of TTFS) {
+	const problems = checkLoadable(file);
+	for (const problem of problems) {
+		console.error(`  ${path.basename(file)}: ${problem}`);
+		unloadable += 1;
+	}
+}
+if (unloadable > 0) {
+	console.error(`
+${unloadable} problem(s) that make a browser refuse the file.`);
+	process.exit(1);
+}
+
 // A codepoint counts as covered only if EVERY shipped face has it.
 const perFace = TTFS.map((file) => ({ file, codes: readCoverage(file) }));
 const covered = perFace.reduce(

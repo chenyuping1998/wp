@@ -64,12 +64,18 @@ const DESC = -200;
 // bar into the next glyph. The letter box is narrowed and the advance widened to
 // pay for the overhang, and the stroke is lightened a little because the same
 // weight in a narrower box starts closing the counters of O, B and 8.
-const SW = INSCRIBED ? 112 : 128; // stroke weight
-const L = INSCRIBED ? 130 : 70; // left edge of the letter box
-const R = 490; // right edge
+const SW = INSCRIBED ? 116 : 128; // stroke weight
+// The inscribed face is WIDER, not just serifed. Roman capitals are broad — O and
+// D are close to circular — and the runic box is a tall narrow slot, which is
+// exactly right for a rune and exactly wrong for carved Latin. Rounding the bowls
+// inside the narrow box just produced a condensed decorative face; the width is
+// what makes it read as ancient. The advance grows to match, and keeps a 20-unit
+// bearing beyond the serif overhang so letters do not touch.
+const L = INSCRIBED ? 120 : 70; // left edge of the letter box
+const R = INSCRIBED ? 560 : 490; // right edge
 const M = (L + R) / 2;
 const C = CAP / 2;
-const ADV = INSCRIBED ? 620 : 560; // default advance
+const ADV = INSCRIBED ? 680 : 560; // default advance
 
 // ── glyph definitions ───────────────────────────────────────────────────────
 // Each entry is a list of [x1, y1, x2, y2] centre-line segments. Angular by
@@ -268,6 +274,113 @@ const strokeToContour = ([x1, y1, x2, y2], weight = SW) => {
 	return area < 0 ? pts.reverse() : pts;
 };
 
+// ── smoothing (the inscribed face only) ─────────────────────────────────────
+/**
+ * Round the bowls.
+ *
+ * The runic face has no curves anywhere — that is its whole idea, and the glyph
+ * data reflects it: O is an octagon, C and S are chains of straight facets. The
+ * inscribed face cannot keep that. Ancient Latin capitals are ROUND where they
+ * are round, and a chisel-faceted O reads as stylised, not as old. Serifs alone
+ * did not fix it, because the shape underneath was still a polygon.
+ *
+ * Rather than re-authoring thirty-six glyphs, the existing polylines are treated
+ * as what they already are: coarse approximations of curves. Each shallow corner
+ * is replaced with a quadratic fillet sampled into short segments, which the
+ * stroke expander turns into overlapping quads that union under the non-zero
+ * rule — so a curve costs nothing the straight version did not already cost.
+ *
+ * Only SHALLOW corners are rounded. The turn at an octagon corner is 45 degrees;
+ * the turn at the corner of E is 90, and at the apex of A it is wider still.
+ * Rounding by angle keeps every corner that is meant to be a corner sharp, and
+ * needs no per-glyph annotation.
+ */
+const SMOOTH_MAX_TURN = (62 * Math.PI) / 180;
+const FILLET_STEPS = 5;
+
+const pointKey = (x, y) => `${Math.round(x)},${Math.round(y)}`;
+
+/** Walk the segments into maximal polylines, splitting at junctions. */
+const toChains = (segments) => {
+	const nodes = new Map();
+	const edges = segments.map(([x1, y1, x2, y2], index) => {
+		const a = pointKey(x1, y1);
+		const b = pointKey(x2, y2);
+		for (const k of [a, b]) {
+			if (!nodes.has(k)) nodes.set(k, []);
+			nodes.get(k).push(index);
+		}
+		return { a, b, p1: [x1, y1], p2: [x2, y2], used: false };
+	});
+
+	const chains = [];
+	const walk = (startEdge, startKey) => {
+		const points = [startEdge.a === startKey ? startEdge.p1 : startEdge.p2];
+		let edge = startEdge;
+		let key = startKey;
+		for (;;) {
+			edge.used = true;
+			const nextKey = edge.a === key ? edge.b : edge.a;
+			points.push(edge.a === key ? edge.p2 : edge.p1);
+			const candidates = (nodes.get(nextKey) ?? []).filter((i) => !edges[i].used);
+			// stop at a junction (or a dead end): degree 2 is what makes a chain
+			if ((nodes.get(nextKey) ?? []).length !== 2 || candidates.length !== 1) break;
+			edge = edges[candidates[0]];
+			key = nextKey;
+		}
+		chains.push(points);
+	};
+
+	// start from every free or junction endpoint first, so open chains come out
+	// whole; anything left is a closed loop and can start anywhere
+	for (const [key, indices] of nodes) {
+		if (indices.length === 2) continue;
+		for (const i of indices) if (!edges[i].used) walk(edges[i], key);
+	}
+	for (const [key, indices] of nodes) {
+		for (const i of indices) if (!edges[i].used) walk(edges[i], key);
+	}
+	return chains;
+};
+
+const smoothSegments = (segments) => {
+	if (!INSCRIBED) return segments;
+	const out = [];
+	for (const points of toChains(segments)) {
+		const rounded = [points[0]];
+		for (let i = 1; i < points.length - 1; i += 1) {
+			const [px, py] = points[i - 1];
+			const [qx, qy] = points[i];
+			const [rx, ry] = points[i + 1];
+			const inAngle = Math.atan2(qy - py, qx - px);
+			const outAngle = Math.atan2(ry - qy, rx - qx);
+			let turn = Math.abs(outAngle - inAngle);
+			if (turn > Math.PI) turn = 2 * Math.PI - turn;
+
+			if (turn > SMOOTH_MAX_TURN || turn < 1e-6) {
+				rounded.push([qx, qy]);
+				continue;
+			}
+			// quadratic fillet: cut half of each arm, curve between the cuts
+			const a = [qx + (px - qx) * 0.5, qy + (py - qy) * 0.5];
+			const b = [qx + (rx - qx) * 0.5, qy + (ry - qy) * 0.5];
+			for (let step = 0; step <= FILLET_STEPS; step += 1) {
+				const t = step / FILLET_STEPS;
+				const u = 1 - t;
+				rounded.push([
+					u * u * a[0] + 2 * u * t * qx + t * t * b[0],
+					u * u * a[1] + 2 * u * t * qy + t * t * b[1],
+				]);
+			}
+		}
+		rounded.push(points[points.length - 1]);
+		for (let i = 0; i < rounded.length - 1; i += 1) {
+			out.push([rounded[i][0], rounded[i][1], rounded[i + 1][0], rounded[i + 1][1]]);
+		}
+	}
+	return out;
+};
+
 // ── serifs (the inscribed face only) ────────────────────────────────────────
 /**
  * Roman inscriptional capitals are this skeleton plus one thing: a bar across
@@ -284,8 +397,8 @@ const strokeToContour = ([x1, y1, x2, y2], weight = SW) => {
  * an unclamped bar centred on it hangs half its width into the neighbouring
  * glyph and the word closes up.
  */
-const SERIF_LEN = 230; // across the stem
-const SERIF_W = 72; // its own thickness
+const SERIF_LEN = 200; // across the stem
+const SERIF_W = 64; // its own thickness
 
 const serifSegments = (segments) => {
 	if (!INSCRIBED) return [];
@@ -323,8 +436,12 @@ const glyphs = [{ name: '.notdef', adv: ADV, contours: [], codes: [] }];
 // terminals, which is what the first cut of this face did to every currency
 // amount in the game.
 const addGlyph = (name, adv, segments, codes, { serif = true } = {}) => {
+	// Serifs are taken from the ORIGINAL skeleton, not the smoothed one: smoothing
+	// multiplies a chain into dozens of tiny segments, and every one of their
+	// joints would look like a free end to the terminal detector. Chain endpoints
+	// survive smoothing unmoved, so the two agree.
 	const contours = [
-		...segments.map((segment) => strokeToContour(segment)),
+		...smoothSegments(segments).map((segment) => strokeToContour(segment)),
 		...(serif ? serifSegments(segments) : []).map((segment) =>
 			strokeToContour(segment, SERIF_W),
 		),
@@ -343,10 +460,18 @@ for (const [ch, segments] of Object.entries(GLYPHS)) {
 for (const [ch, parts] of Object.entries(COMPOSED)) {
 	const [base, ...marks] = parts;
 	const segments = [...GLYPHS[base], ...marks.flatMap((mark) => ACCENTS[mark])];
-	// Lowercase maps to the same outline, as with the unaccented letters.
+	// Lowercase maps to the same outline, as with the unaccented letters — but
+	// only when the lowercase is a SINGLE code point.
+	//
+	// Turkish İ (U+0130) lowercases to "i" + COMBINING DOT ABOVE, two code points,
+	// and taking codePointAt(0) of that yields U+0069 — which the plain I glyph
+	// already claims. Two glyphs mapping one codepoint produces a duplicate cmap
+	// segment, and a format 4 cmap requires strictly increasing endCodes, so the
+	// browser's sanitiser rejected the entire file. resvg's parser did not care,
+	// which is why the specimen looked perfect while nothing rendered in game.
 	const lower = ch.toLowerCase();
 	const codes = [ch.codePointAt(0)];
-	if (lower !== ch) codes.push(lower.codePointAt(0));
+	if (lower !== ch && [...lower].length === 1) codes.push(lower.codePointAt(0));
 	addGlyph(`u${ch.codePointAt(0).toString(16)}`, ADV, segments, codes);
 }
 
@@ -359,6 +484,24 @@ for (const [ch, def] of Object.entries(PUNCT)) {
 addGlyph('multiply', 460, [[90, C - 150, 370, C + 150], [370, C - 150, 90, C + 150]], [0x00d7], {
 	serif: false,
 });
+
+// A duplicate codepoint is not a warning: cmap format 4 segments must have
+// strictly increasing endCodes, so two glyphs claiming one code silently
+// produces a file every browser refuses to load. Fail here instead.
+{
+	const seen = new Map();
+	for (const glyph of glyphs) {
+		for (const code of glyph.codes ?? []) {
+			if (seen.has(code)) {
+				throw new Error(
+					`duplicate codepoint U+${code.toString(16).toUpperCase()} claimed by ` +
+						`${seen.get(code)} and ${glyph.name}`,
+				);
+			}
+			seen.set(code, glyph.name);
+		}
+	}
+}
 
 // ── binary writers ──────────────────────────────────────────────────────────
 class Writer {
@@ -551,6 +694,17 @@ os2Writer.u16(4);
 os2Writer.i16(Math.round(ADV * 0.9));
 os2Writer.u16(700).u16(5).i16(0);
 os2Writer.i16(700).i16(-200).i16(200).i16(500).i16(-300).i16(400).i16(0).i16(0).i16(0).i16(0);
+// sFamilyClass, then panose[10].
+//
+// sFamilyClass was missing. Every field after it was therefore written two bytes
+// early and the table came out 94 bytes long — but version 4 is defined as 96,
+// and a browser's font sanitiser rejects the whole file on that mismatch alone.
+// Which it did: `document.fonts` reported "Ember Runic error" and every Text in
+// the game silently rendered in the fallback, so the carved face has never once
+// been on screen. resvg's parser is lenient and drew the specimen happily, which
+// is why the generator looked correct for so long — a specimen proves the glyphs,
+// not the file.
+os2Writer.i16(0);
 os2Writer.i16(0).i16(0).i16(0).i16(0).i16(0);
 os2Writer.u32(0x00000003).u32(0).u32(0).u32(0); // unicode ranges: latin
 os2Writer.push(Buffer.from('EMFG', 'ascii'));

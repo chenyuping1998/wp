@@ -156,6 +156,13 @@ export const TUMBLE_EXPLODE_MS_FREEGAME = 305;
 export const TUMBLE_DROP_MS_FREEGAME = 360;
 export const TUMBLE_EXPLODE_MS_FAST = 180;
 export const TUMBLE_DROP_MS_FAST = 220;
+// Turbo INSIDE the feature is its own tier, because turbo used to win outright
+// and the free game inherited the fastest timings in the game. That is backwards:
+// the feature is the part with the heat grid filling up, and a player who turned
+// turbo on wants the base game to stop dawdling, not to lose the thing they
+// bought. Sits between turbo and the feature's own pace.
+export const TUMBLE_EXPLODE_MS_FAST_FREEGAME = 265;
+export const TUMBLE_DROP_MS_FAST_FREEGAME = 315;
 
 // Clusters within one winInfo start this far apart so several at once read as a
 // volley rather than one flash. Books show up to 14 simultaneous clusters, so the
@@ -163,6 +170,7 @@ export const TUMBLE_DROP_MS_FAST = 220;
 export const CLUSTER_STAGGER_MS = 88;
 export const CLUSTER_STAGGER_MS_FREEGAME = 76;
 export const CLUSTER_STAGGER_MS_FAST = 38;
+export const CLUSTER_STAGGER_MS_FAST_FREEGAME = 60;
 export const CLUSTER_VOLLEY_MAX_MS = 780;
 
 // How long the winning symbols stay LIT before the tumble takes them. This is a
@@ -177,6 +185,7 @@ export const CLUSTER_VOLLEY_MAX_MS = 780;
 export const CLUSTER_HOLD_MS = 570;
 export const CLUSTER_HOLD_MS_FREEGAME = 720;
 export const CLUSTER_HOLD_MS_FAST = 355;
+export const CLUSTER_HOLD_MS_FAST_FREEGAME = 560;
 
 // Beat between a chain ending and the board being spinnable again.
 //

@@ -1,8 +1,12 @@
 <script lang="ts" module>
 	import type { ClusterWinDatum } from '../game/bookEventHandlerMap';
 
-	/** Three speeds, not a boolean: the free game needs its own, slower than base. */
-	export type ClusterPace = 'normal' | 'freegame' | 'turbo';
+	/**
+	 * Four speeds, not a boolean. The free game needs its own, slower than base —
+	 * and turbo inside the feature needs a fourth, because turbo used to win
+	 * outright and hand the feature the fastest timings in the game.
+	 */
+	export type ClusterPace = 'normal' | 'freegame' | 'turbo' | 'turboFreegame';
 
 	export type EmitterEventClusterWins =
 		| { type: 'clusterWinsShow'; wins: ClusterWinDatum[]; pace?: ClusterPace }
@@ -23,10 +27,12 @@
 		CLUSTER_STAGGER_MS,
 		CLUSTER_STAGGER_MS_FREEGAME,
 		CLUSTER_STAGGER_MS_FAST,
+		CLUSTER_STAGGER_MS_FAST_FREEGAME,
 		CLUSTER_VOLLEY_MAX_MS,
 		CLUSTER_HOLD_MS,
 		CLUSTER_HOLD_MS_FREEGAME,
 		CLUSTER_HOLD_MS_FAST,
+		CLUSTER_HOLD_MS_FAST_FREEGAME,
 		FLY_IN_FROM,
 		FLY_IN_DEADLINE_MS,
 		QUENCH_FROM,
@@ -187,18 +193,22 @@
 			const baseStagger =
 				pace === 'turbo'
 					? CLUSTER_STAGGER_MS_FAST
-					: pace === 'freegame'
-						? CLUSTER_STAGGER_MS_FREEGAME
-						: CLUSTER_STAGGER_MS;
+					: pace === 'turboFreegame'
+						? CLUSTER_STAGGER_MS_FAST_FREEGAME
+						: pace === 'freegame'
+							? CLUSTER_STAGGER_MS_FREEGAME
+							: CLUSTER_STAGGER_MS;
 			// Squeeze the gap so the whole volley fits its budget however many
 			// clusters landed — total time must not scale with the size of the win.
 			const stagger = Math.min(baseStagger, CLUSTER_VOLLEY_MAX_MS / incoming.length);
 			const holdMs =
 				pace === 'turbo'
 					? CLUSTER_HOLD_MS_FAST
-					: pace === 'freegame'
-						? CLUSTER_HOLD_MS_FREEGAME
-						: CLUSTER_HOLD_MS;
+					: pace === 'turboFreegame'
+						? CLUSTER_HOLD_MS_FAST_FREEGAME
+						: pace === 'freegame'
+							? CLUSTER_HOLD_MS_FREEGAME
+							: CLUSTER_HOLD_MS;
 
 			// Deduped across the whole volley: a cell shared by two clusters animates
 			// once, for whichever cluster reaches it first. Books show this happening

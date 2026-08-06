@@ -40,6 +40,14 @@
 		'A HEATED POSITION GAINS +1x EACH TIME IT PAYS',
 		'A CLUSTER IS PAID BY THE HEAT IT COVERS',
 	];
+	// Incised title passes, back to front: shadowed upper wall, lit lower wall,
+	// then the face itself in warm stone. Ordered by draw, not by depth value.
+	const TITLE_CARVE = [
+		{ dy: -3, fill: 0x2a1206, alpha: 0.95 },
+		{ dy: 3, fill: 0xffdfa0, alpha: 0.75 },
+		{ dy: 0, fill: 0xc98a34, alpha: 1 },
+	];
+
 	const TIP_MS = 3400;
 	// pulseTick already advances every 32ms for the title pulse — reuse it as the
 	// tip clock rather than starting a second timer
@@ -127,24 +135,31 @@
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.36}
 		>
-			<!-- Game title -->
-			<Text
-				anchor={0.5}
-				text="EMBER FORGE"
-				style={{
-					fontFamily: TITLE_FONT,
-					fontSize: 52,
-					fontWeight: GAME_FONT_WEIGHT,
-					fill: 0xffd43b,
-					letterSpacing: 6,
-					dropShadow: true,
-					dropShadowColor: 0xe03131,
-					dropShadowBlur: 18,
-					dropShadowDistance: 0,
-					stroke: 0xfff4cf,
-					strokeThickness: 1,
-				}}
-			/>
+			<!--
+				Game title, cut into the plate rather than laid on it.
+				
+				Three passes, because an incised letter is defined by which of its walls
+				the light reaches. The lamp is above, so the UPPER inner wall is in
+				shadow and the LOWER one catches the light — offsetting a dark copy up
+				and a bright copy down is the whole trick, and it is what separates
+				"carved" from "glowing", which is what this was before: flat gold with a
+				red bloom sitting on the surface.
+			-->
+			{#each TITLE_CARVE as pass (pass.dy)}
+				<Text
+					anchor={0.5}
+					y={pass.dy}
+					text="EMBER FORGE"
+					alpha={pass.alpha}
+					style={{
+						fontFamily: TITLE_FONT,
+						fontSize: 52,
+						fontWeight: GAME_FONT_WEIGHT,
+						fill: pass.fill,
+						letterSpacing: 6,
+					}}
+				/>
+			{/each}
 
 			<!--
 				Subtitle and the loading line below both sit at 12–15px, which is where

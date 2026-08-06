@@ -144,7 +144,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await eventEmitter.broadcastAsync({
 			type: 'clusterWinsShow',
 			wins: clusters,
-			pace: stateBet.isTurbo ? 'turbo' : stateGame.gameType === 'freegame' ? 'freegame' : 'normal',
+			pace:
+				stateGame.gameType === 'freegame'
+					? stateBet.isTurbo
+						? 'turboFreegame'
+						: 'freegame'
+					: stateBet.isTurbo
+						? 'turbo'
+						: 'normal',
 		});
 
 		// Recorded in the spin ledger. This is what replaces the idle win replay a

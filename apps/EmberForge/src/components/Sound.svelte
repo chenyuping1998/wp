@@ -136,7 +136,10 @@
 		sfx_scatter_win_v2: { name: 'win_gliss_big' },
 		sfx_superfreespin: { name: 'win_gliss_big', volume: 0.8 },
 		jng_intro_fs: { name: 'fs_intro' },
-		sfx_wild_explode: { name: 'wild_expand' },
+		// Fires on EVERY tumble link. At full volume it was the loudest thing in
+		// the free game and it repeated ten to twenty times a round, which is what
+		// buried the bed under it.
+		sfx_wild_explode: { name: 'wild_expand', volume: 0.5 },
 		sfx_multiplier_update: { name: 'mult_update' },
 		sfx_anticipation_start: { name: 'mult_update', volume: 0.5 },
 		sfx_symbols_landing: { name: 'reel_stop', volume: 0.6 },
@@ -266,7 +269,9 @@
 			// Its own sample. This played scatter_1 until now, which made a cluster
 			// paying and a Scatter landing the same sound — the one symbol that has
 			// to stand out was indistinguishable from the most common event there is.
-			playCnSfx('chain_hit', feature ? 1 : 0.75, rate);
+			// Also once per link. Pulled down for the same reason — the ladder still
+			// climbs, it just no longer competes with the music.
+			playCnSfx('chain_hit', feature ? 0.7 : 0.6, rate);
 			// a low thump under the strike, so a feature chain has weight as well as pitch
 			if (feature) playCnSfx('pluck_low', 0.5, 1.15);
 		},

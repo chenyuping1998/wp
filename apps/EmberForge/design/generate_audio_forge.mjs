@@ -548,7 +548,10 @@ const scale = (root, degrees) => degrees.map((d) => root * Math.pow(2, d / 12));
 		addAt(buf, quench(SR_BGM, { dur: 0.5, cutoff: 5200 }), (bar + 1) * beat * 4 - beat, 0.45, SR_BGM);
 	}
 
-	writeWav('bgm_freespin.wav', fadeEnds(normalize(buf, 0.72), SR_BGM, 40), SR_BGM);
+		// Louder than the base bed. Measured against what plays over it: the feature
+	// fires a chain hit and a clear on EVERY tumble link, and at 0.72 the bed sat
+	// ~10dB under them — present in the file, inaudible in the game.
+	writeWav('bgm_freespin.wav', fadeEnds(normalize(buf, 0.92), SR_BGM, 40), SR_BGM);
 }
 
 console.log('\nforge audio written to', OUT);

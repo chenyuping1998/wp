@@ -24,6 +24,8 @@
 		TUMBLE_DROP_MS_FREEGAME,
 		TUMBLE_EXPLODE_MS_FAST,
 		TUMBLE_DROP_MS_FAST,
+		TUMBLE_EXPLODE_MS_FAST_FREEGAME,
+		TUMBLE_DROP_MS_FAST_FREEGAME,
 	} from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
@@ -70,13 +72,25 @@
 		// flourishes but shortens the timings, so the heat grid is still readable.
 		const turbo = stateBet.isTurbo;
 		const freeGame = context.stateGame.gameType === 'freegame';
-		const fast = turbo;
-		const explodeMs = turbo
-			? TUMBLE_EXPLODE_MS_FAST
-			: freeGame
-				? TUMBLE_EXPLODE_MS_FREEGAME
+		// Flourishes are dropped for turbo in the BASE game only. Inside the feature
+		// they stay: the streaks and the landing dust are most of what makes a drop
+		// read as a drop, and turbo there was skipping them on top of the shortest
+		// timings in the game.
+		const fast = turbo && !freeGame;
+		const explodeMs = freeGame
+			? turbo
+				? TUMBLE_EXPLODE_MS_FAST_FREEGAME
+				: TUMBLE_EXPLODE_MS_FREEGAME
+			: turbo
+				? TUMBLE_EXPLODE_MS_FAST
 				: TUMBLE_EXPLODE_MS;
-		const dropMs = turbo ? TUMBLE_DROP_MS_FAST : freeGame ? TUMBLE_DROP_MS_FREEGAME : TUMBLE_DROP_MS;
+		const dropMs = freeGame
+			? turbo
+				? TUMBLE_DROP_MS_FAST_FREEGAME
+				: TUMBLE_DROP_MS_FREEGAME
+			: turbo
+				? TUMBLE_DROP_MS_FAST
+				: TUMBLE_DROP_MS;
 
 		const board = context.stateGame.board;
 
