@@ -11,6 +11,10 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT, TITLE_FONT } from '../game/fonts';
 	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
+	// Amounts are rounded before formatting. The count-up provider hands over a
+	// float and the formatter passes the fraction straight through, so a rolling
+	// amount read $9,289.1716 and only snapped to two decimals on the final
+	// frame. Book amounts are integer minor units, so rounding is exact.
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
 	import { CanvasSizeRectangle } from 'components-layout';
@@ -90,7 +94,7 @@
 						<GoldText
 							y={sizes.height * 0.12}
 							fontSize={sizes.width * 0.15}
-							text={bookEventAmountToCurrencyString(countUpAmount)}
+							text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
 							maxWidth={sizes.width * 0.9}
 						/>
 					{/snippet}

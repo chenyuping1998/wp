@@ -44,11 +44,11 @@
 		{#snippet children({ sizes })}
 			<Text
 				anchor={0.5}
-				y={-sizes.height * 0.26}
+				y={-sizes.height * 0.31}
 				text={title}
 				style={{
 					fontFamily: GAME_FONT,
-					fontSize: Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length),
+					fontSize: Math.min(sizes.width * 0.11, (sizes.width * 1.5) / title.length),
 					fontWeight: GAME_FONT_WEIGHT,
 					letterSpacing: 6,
 					fill: [0xfff3bd, 0xffd75e, 0xc9821a],
@@ -60,14 +60,24 @@
 					dropShadowDistance: 3,
 				}}
 			/>
-			<GoldText y={sizes.height * 0.08} text={freeSpinsFromEvent} fontSize={sizes.width * 0.24} />
+			<!--
+				The count is sized off the interior's HEIGHT, not its width. The supplied
+				plaque is wide and shallow, so a width-derived size put a 112px numeral in
+				a 232px box that also has to hold a title above and a caption below — the
+				numeral's descender box ran straight through AWARDED.
+			-->
+			<GoldText
+				y={sizes.height * 0.02}
+				text={freeSpinsFromEvent}
+				fontSize={Math.min(sizes.width * 0.2, sizes.height * 0.34)}
+			/>
 			<Text
 				anchor={0.5}
-				y={sizes.height * 0.32}
+				y={sizes.height * 0.34}
 				text={subtitle}
 				style={{
 					fontFamily: GAME_FONT,
-					fontSize: Math.min(sizes.width * 0.05, (sizes.width * 1.1) / subtitle.length),
+					fontSize: Math.min(sizes.width * 0.045, (sizes.width * 1.1) / subtitle.length),
 					fontWeight: GAME_FONT_WEIGHT,
 					letterSpacing: 4,
 					fill: 0xf5e3c3,

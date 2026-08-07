@@ -12,6 +12,10 @@
 	import { Container, Sprite } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
+	// Amounts are rounded before formatting. The count-up provider hands over a
+	// float and the formatter passes the fraction straight through, so a rolling
+	// amount read $9,289.1716 and only snapped to two decimals on the final
+	// frame. Book amounts are integer minor units, so rounding is exact.
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { CanvasSizeRectangle, MainContainer } from 'components-layout';
 	import { OnMount } from 'components-shared';
@@ -26,9 +30,8 @@
 
 	const context = getContext();
 
-	// brass tier plaques (design/generate_win_banners.mjs) — a 1000×560 plate
-	// inside a 1280×840 canvas, the extra being margin for the flames around the
-	// frame. The amount rolls inside the plate's dark centre well.
+	// Supplied tier plaques (design/source/winBanners, lettered by
+	// design/generate_win_banners.mjs).
 	const BANNER_KEY: Record<string, string> = {
 		big: 'efWinBannerBig',
 		superwin: 'efWinBannerSuperwin',
@@ -36,15 +39,21 @@
 		epic: 'efWinBannerEpic',
 		max: 'efWinBannerMax',
 	};
-	// The plaque art now has a margin around the plate for the flames to burn in,
-	// so the SPRITE is bigger than the plate it contains. Two sizes, deliberately:
-	// everything positioned against the plaque (the amount, the twinkles) is laid
-	// out against the PLATE, and only the sprite itself uses the canvas — which
-	// keeps every offset below meaning what it meant before the flames existed.
-	const BANNER_CANVAS = { width: 1280, height: 840 };
-	const BANNER_PLATE = { width: 1000, height: 560 };
-	const BANNER_RATIO = BANNER_CANVAS.height / BANNER_CANVAS.width;
-	const BANNER_MARGIN_SCALE = BANNER_CANVAS.width / BANNER_PLATE.width;
+	// These are title BARS, not plates: one well, filled by the tier name, and no
+	// second line. So the amount is no longer inside the plaque — it sits below it,
+	// which is also why it can now be half again the size it was.
+	//
+	// Each tier has its own aspect ratio, because the art gets taller as the
+	// ornament grows (97px at BIG, 160px at MAX). Sizing them all by WIDTH keeps
+	// the bars a consistent length on screen and lets the ornate ones stand taller,
+	// which is the point of them.
+	const BANNER_SOURCE: Record<string, { width: number; height: number }> = {
+		big: { width: 676, height: 97 },
+		superwin: { width: 672, height: 97 },
+		mega: { width: 685, height: 107 },
+		epic: { width: 686, height: 122 },
+		max: { width: 717, height: 160 },
+	};
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
 		big: { mult: 1, glowTint: 0x9ec44a },
@@ -226,10 +235,10 @@
 							{@const alias = winLevelData.alias}
 							{@const fx = TIER_FX[alias] ?? TIER_FX.big}
 							{@const bannerKey = BANNER_KEY[alias] ?? BANNER_KEY.big}
-							{@const pw = SYMBOL_SIZE * 5.2}
-							{@const ph = pw * (BANNER_PLATE.height / BANNER_PLATE.width)}
-							{@const bw = pw * BANNER_MARGIN_SCALE}
-							{@const bh = bw * BANNER_RATIO}
+							{@const src = BANNER_SOURCE[alias] ?? BANNER_SOURCE.big}
+							{@const bw = SYMBOL_SIZE * 5.9}
+							{@const bh = bw * (src.height / src.width)}
+							{@const amountSize = SYMBOL_SIZE * 0.92}
 							<Container scale={bannerPose.scale}>
 								<!-- breathing glow bed behind the plaque -->
 								<Sprite
@@ -237,8 +246,8 @@
 									anchor={0.5}
 									tint={fx.glowTint}
 									blendMode="add"
-									width={pw * 1.45}
-									height={ph * 1.8}
+									width={bw * 1.3}
+									height={bh * 3.4}
 									alpha={bannerPose.glow}
 								/>
 								<Sprite key={bannerKey} anchor={0.5} width={bw} height={bh} />
@@ -259,8 +268,8 @@
 									<Sprite
 										key="fxStar"
 										anchor={0.5}
-										x={Math.cos(tw.angle) * pw * 0.46}
-										y={Math.sin(tw.angle) * ph * 0.44}
+										x={Math.cos(tw.angle) * bw * 0.46}
+										y={Math.sin(tw.angle) * bh * 0.46}
 										rotation={p * 2}
 										tint={0xffffff}
 										blendMode="add"
@@ -269,12 +278,16 @@
 										alpha={Math.sin(p * Math.PI)}
 									/>
 								{/each}
-								<!-- amount rolls inside the plaque's dark centre well -->
+								<!--
+									Amount below the bar, not inside it: the well carries the tier
+									name now. Offset from the bar's own half-height so the gap stays
+									constant as the plaques change height between tiers.
+								-->
 								<GoldText
-									y={ph * 0.16}
-									maxWidth={pw * 0.68}
-									text={bookEventAmountToCurrencyString(countUpAmount)}
-									fontSize={ph * 0.24}
+									y={bh * 0.5 + amountSize * 0.72}
+									maxWidth={bw * 0.86}
+									text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
+									fontSize={amountSize}
 								/>
 							</Container>
 							{#if burstShown}
@@ -285,7 +298,7 @@
 							<GoldText
 								maxWidth={context.stateLayoutDerived.canvasSizes().width /
 									context.stateLayoutDerived.mainLayout().scale}
-								text={bookEventAmountToCurrencyString(countUpAmount)}
+								text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
 								fontSize={SYMBOL_SIZE}
 							/>
 						{/if}

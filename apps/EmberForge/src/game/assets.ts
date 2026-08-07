@@ -67,8 +67,9 @@
 		type: 'sprite',
 		src: new URL('../../assets/sprites/emberForgeWinBanners/max.png', import.meta.url).href,
 	},
-	// hanging iron plaque for the free-spin intro/outro boards and the
-	// counter plaque (text is drawn by the frontend — language-neutral art)
+	// Supplied art: the plaque the free-game intro and outro boards are drawn on.
+	// Replaced the generated iron sign. Text is still drawn by the frontend, so the
+	// art stays language-neutral — see FreeSpinAnimation for the interior it sits in.
 	efFsSign: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/emberForgeFrame/fs_sign.png', import.meta.url).href,
