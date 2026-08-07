@@ -236,9 +236,17 @@
 							{@const fx = TIER_FX[alias] ?? TIER_FX.big}
 							{@const bannerKey = BANNER_KEY[alias] ?? BANNER_KEY.big}
 							{@const src = BANNER_SOURCE[alias] ?? BANNER_SOURCE.big}
-							{@const bw = SYMBOL_SIZE * 5.9}
+							<!--
+								The bar is deliberately wider than the board (756 against 588).
+								These frames are thin by construction — BIG is 676x97 — so the only
+								way to give the plaque vertical mass without stretching the art is
+								to scale the whole thing up, and overhanging the board is the price.
+								It reads fine on a celebration overlay, which already dims
+								everything behind it.
+							-->
+							{@const bw = SYMBOL_SIZE * 9}
 							{@const bh = bw * (src.height / src.width)}
-							{@const amountSize = SYMBOL_SIZE * 0.92}
+							{@const amountSize = SYMBOL_SIZE}
 							<Container scale={bannerPose.scale}>
 								<!-- breathing glow bed behind the plaque -->
 								<Sprite
