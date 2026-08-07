@@ -22,6 +22,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import { keyBlackBackground } from './keyBackground.mjs';
+
 const resvgDir = process.argv[2];
 if (!resvgDir) {
 	console.error('usage: node generate_win_banners.mjs <dir with node_modules/@resvg/resvg-js>');
@@ -190,10 +192,27 @@ for (const [alias, tier] of Object.entries(TIERS)) {
 		// font would silently ship the wrong art.
 		font: { fontDirs: [FONT_DIR], loadSystemFonts: true, defaultFontFamily: BANNER_FONT },
 	});
-	fs.writeFileSync(path.join(OUT, `${alias}.png`), resvg.render().asPng());
+	// The source art is flattened onto black, so the rendered plaque arrives inside
+	// a black rectangle. Key it out AFTER lettering — the type is bright and
+	// survives the luminance ramp, and it sits on the well, which is protected.
+	//
+	// The well is inset from the measured bar: that measurement is the median dark
+	// span, so it runs a little wide of the true interior, and an oversized opaque
+	// shape would square off the frame's rounded ends.
+	const INSET = 0.06;
+	const { buffer, stats } = keyBlackBackground(resvg.render().asPng(), {
+		well: {
+			left: Math.round((well.left + wellW * INSET) * SCALE),
+			right: Math.round((well.right - wellW * INSET) * SCALE),
+			top: Math.round((well.top + wellH * INSET) * SCALE),
+			bottom: Math.round((well.bottom - wellH * INSET) * SCALE),
+		},
+		feather: Math.round(wellH * 0.12 * SCALE),
+	});
+	fs.writeFileSync(path.join(OUT, `${alias}.png`), buffer);
 	console.log(
 		`${alias.padEnd(9)} ${W}x${H} -> ${W * SCALE}x${H * SCALE}`.padEnd(34),
-		`well ${wellW}x${wellH}  type ${size.toFixed(1)}px`,
+		`type ${size.toFixed(1)}px  keyed: ${stats.opaquePct.toFixed(0)}% opaque, ${stats.clearPct.toFixed(0)}% clear`,
 	);
 }
 console.log('win banners written to', path.relative(appRoot, OUT));
