@@ -35,7 +35,8 @@
 		mode: 'Mode',
 		baseBet: social ? 'Base Play' : 'Base Bet',
 		costMultiplier: social ? 'Feature Multiplier' : 'Cost Multiplier',
-		totalCost: social ? 'Total Play Cost' : 'Total Bet Cost',
+		// "Total Play Cost" would still carry the restricted word "cost"
+		totalCost: social ? 'Total Play Amount' : 'Total Bet Cost',
 		payoutMultiplier: social ? 'Final Multiplier' : 'Payout Multiplier',
 		totalWin: 'Total Win',
 		start: 'Start Replay',

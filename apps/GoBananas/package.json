@@ -9,8 +9,9 @@
 		"storybook": "PUBLIC_CHROMATIC=true storybook dev -p 6002 public",
 		"dev": "vite dev --host --port 3002",
 		"check:refs": "node design/check_undefined_refs.mjs",
+		"check:social": "node design/check_social_words.mjs",
 		"replay:harness": "node design/make_replay_harness.mjs",
-		"build": "node design/check_undefined_refs.mjs && vite build",
+		"build": "node design/check_undefined_refs.mjs && node design/check_social_words.mjs && vite build",
 		"preview": "vite preview"
 	},
 	"type": "module",

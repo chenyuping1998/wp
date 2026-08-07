@@ -1308,6 +1308,34 @@ production bundle 裡 `social` 是未定義識別字，元件初始化就丟 Ref
 1. **「載入卡住」的假象**：一開始看到資源只抓了 40 個、一張 PNG 都沒有，我歸因成「瀏覽器面板沒合成所以貼圖載入不前進」。錯的 —— 真相是 `<Game>` 根本沒掛載。判斷關鍵是 `document.querySelector('canvas')` 為 null 而 WebGL2 明明可用。**先確認元件有沒有掛載，再談載入。**
 2. **二分法比推理快**：`git stash push -u -- apps/GoBananas packages` → build → 測 → `git stash pop`，一輪就確定「是我的改動」；再還原三個檔案一輪就鎖定到批次。前面花在推敲 `page.url`、循環相依、service worker 的時間全是白費。
 
+## 5.56 送審回覆：social 限制字第二輪（buy / cost）+ 加守門腳本（2026-08-06）
+
+審核截圖標了 GAME RULES 社交版裡的 `Buy Bonus`、`cost`。掃過一遍發現不只截圖那兩處：
+
+| 位置 | 一般 | social |
+|---|---|---|
+| Controls 條目名 | Buy Bonus | **Play Bonus** |
+| Controls 說明 | The **cost** is shown | The **total** is shown |
+| 買入區塊標題／內文 | Buy Bonus | **Play Bonus** |
+| 買入 ticker | BONUS **BUY** ACTIVATED | BONUS ACTIVATED |
+| superspin 說明 | （原本社交版就寫 "added up and **paid** out"） | added up and **awarded** |
+| 重播卡片 | Total Bet Cost | **Total Play Amount**（原本社交版是 "Total Play **Cost**"，仍帶限制字） |
+
+`buyBonusName` 刻意對齊 bar 上按鈕實際顯示的字 —— `i18nDerived.buyBonus()` 在社交模式回 `PLAY BONUS`，說明頁不能還叫它 Buy Bonus。
+
+### 新增 `design/check_social_words.mjs`（已接進 `pnpm build`）
+
+同一類問題連續兩輪被退（先是 pay，再來是 buy/cost），因為這些字散在沒人會重讀的長段文案裡。兩條可機械檢查的規則：
+
+1. **模板裡的字面文字兩種模式都會顯示**，所以不得含限制字；要隨模式變的一律走 `{…}` 運算式。
+2. **`pick(normal, social)` 的第二個參數**不得含限制字。
+
+第 2 條當場就抓到 superspin 那個 `paid out` —— 那是先前那批漏掉的，截圖裡也沒標。
+
+限制字表：bet/buy/cost/pay/payout/payline/wager/stake/gamble/cash/purchase/price 及其變化型。誤判只處理了一個：`Stake Engine` 是平台自己的名字，出現在必要的版權標示行，比對前先替換掉。
+
+**這條檢查抓不到的**：從變數帶進來的字。它是保險絲，不是證明。
+
 ## 6. 待辦
 
 - [x] math 正式跑完（2026-07-16）：`math-sdk/games/GoBananas/library/` 三模式 RTP 0.97、驗證全過；books 含 `newExpandingWilds`/`updateExpandingWilds`/`newStickySymbols`。注意 `game_config.py` 的 game_id 原是範例殘留 `0_0_expwilds`，已改 `GoBananas`

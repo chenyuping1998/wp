@@ -19,6 +19,12 @@ export const getSocialTerms = () => {
 		buy: pick('buy', 'play'),
 		bought: pick('bought', 'started'),
 		entryVerb: pick('Buy', 'Play'), // sentence-initial, e.g. "Buy for 200x"
+		// "cost" is restricted in social play alongside "bet" and "buy"
+		cost: pick('cost', 'total'),
+		// Must match what the bar button actually says — components-ui-pixi's
+		// i18nDerived.buyBonus() renders "PLAY BONUS" in social play, so the rules
+		// page cannot go on calling it Buy Bonus.
+		buyBonusName: pick('Buy Bonus', 'Play Bonus'),
 
 		// "pay" is restricted in social play just as "bet" is
 		payline: pick('payline', 'playline'),

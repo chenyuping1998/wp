@@ -76,7 +76,10 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			get tickerIdle() {
 				return pick('PLACE YOUR BET', 'READY TO PLAY');
 			},
-			tickerSpin: 'BONUS BUY ACTIVATED',
+			// the ticker is player-facing in both modes, so "BUY" has to go in social
+			get tickerSpin() {
+				return pick('BONUS BUY ACTIVATED', 'BONUS ACTIVATED');
+			},
 			bannerText: '',
 		},
 	},
@@ -93,7 +96,7 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			get dialog() {
 				return pick(
 					'A hold-and-spin round for 50× your bet. You start with 3 respins — every Coin that lands sticks to the board and resets the respins back to 3. When no respins remain, all stuck Coin values are added up and paid out. Maximum win: 2,000× your bet.',
-					'A hold-and-spin round for 50× your amount. You start with 3 respins — every Coin that lands sticks to the board and resets the respins back to 3. When no respins remain, all stuck Coin values are added up and paid out. Maximum win: 2,000× your amount.',
+					'A hold-and-spin round for 50× your amount. You start with 3 respins — every Coin that lands sticks to the board and resets the respins back to 3. When no respins remain, all stuck Coin values are added up and awarded. Maximum win: 2,000× your amount.',
 				);
 			},
 			get description() {

@@ -33,8 +33,8 @@
 		},
 		{
 			icons: [],
-			name: 'Buy Bonus',
-			text: `Opens the feature menu, where Free Spins or Super Spin can be ${T.bought} outright for the stated multiple of your ${T.bet}. The cost is shown before you confirm.`,
+			name: T.buyBonusName,
+			text: `Opens the feature menu, where Free Spins or Super Spin can be ${T.bought} outright for the stated multiple of your ${T.bet}. The ${T.cost} is shown before you confirm.`,
 		},
 		{
 			icons: ['autoSpin'],
@@ -224,10 +224,11 @@
 
 			{#if buyCost}
 				<section class="wp-card">
-					<h3><span class="wp-accent-bar"></span>Buy Bonus</h3>
+					<h3><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
 					<p>
 						Instead of waiting for Scatters, you can {T.buy} direct entry into the Free Spins
-						feature for {buyCost}&times; your {T.totalBet}. The Buy Bonus plays at the same {rtpPct} RTP.
+						feature for {buyCost}&times; your {T.totalBet}. {T.buyBonusName} runs at the same {rtpPct}
+						RTP.
 					</p>
 				</section>
 			{/if}
