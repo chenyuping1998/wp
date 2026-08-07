@@ -142,7 +142,7 @@ const METAL_RATIOS = [1, 2.76, 5.4, 8.93, 13.34, 18.64];
  * A struck metal bar. `bright` controls how much of the upper inharmonic content
  * survives — a light tap keeps little, a full anvil strike keeps a lot.
  */
-const strike = (sr, { freq = 320, dur = 1.1, bright = 1, decay = 1 } = {}) => {
+const strike = (sr, { freq = 320, dur = 1.1, bright = 1, decay = 1, click = true } = {}) => {
 	const buf = buffer(dur, sr);
 	METAL_RATIOS.forEach((ratio, index) => {
 		const partialFreq = freq * ratio;
@@ -158,11 +158,47 @@ const strike = (sr, { freq = 320, dur = 1.1, bright = 1, decay = 1 } = {}) => {
 		}
 	});
 	// Contact noise: the instant of impact, before the bar starts ringing.
-	const clickLen = Math.round(sr * 0.006);
-	for (let i = 0; i < clickLen && i < buf.length; i++) {
-		buf[i] += rand2() * 0.5 * (1 - i / clickLen);
+	//
+	// Switchable, because it does not survive repetition. One hit needs it — it is
+	// the attack, and without it the strike sounds synthesised. A music bed plays
+	// several hundred of them per loop, and several hundred 6ms noise bursts add
+	// up to a continuous sandy layer under the whole feature. `click: false` is
+	// what the beds use.
+	if (click) {
+		const clickLen = Math.round(sr * 0.006);
+		for (let i = 0; i < clickLen && i < buf.length; i++) {
+			buf[i] += rand2() * 0.5 * (1 - i / clickLen);
+		}
 	}
 	return buf;
+};
+
+/** A sine under a percussive envelope: low end with no noise anywhere in it. */
+const pedal = (sr, freq, dur, decay = 0.55) => {
+	const buf = buffer(dur, sr);
+	for (let i = 0; i < buf.length; i++) {
+		const t = i / sr;
+		buf[i] = Math.sin(2 * Math.PI * freq * t) * Math.exp(-t / (dur * decay));
+	}
+	return buf;
+};
+
+/**
+ * Make a loop seamless by wrapping its tail back over its head.
+ *
+ * Generate `loopSec + xfSec` of material and hand it here. Because index 0 ends
+ * up holding what index `loopSec` held, the join plays two samples that were
+ * already adjacent in the source — continuous by construction rather than by
+ * fading, which is what `fadeEnds` on a loop does and why that pumps.
+ */
+const sealLoop = (buf, sr, loopSec, xfSec) => {
+	const xf = Math.round(xfSec * sr);
+	const loop = Math.round(loopSec * sr);
+	for (let i = 0; i < xf; i++) {
+		const t = i / xf;
+		buf[i] = buf[i] * t + buf[loop + i] * (1 - t);
+	}
+	return buf.slice(0, loop);
 };
 
 /** Quench hiss — hot metal into water. Filtered noise with a fast attack. */
@@ -675,111 +711,89 @@ const scale = (root, degrees) => degrees.map((d) => root * Math.pow(2, d / 12));
 	writeWav('bgm_main.wav', fadeEnds(normalize(buf, 0.55), SR_BGM, 40), SR_BGM);
 }
 
-// bgm_freespin — the furnace itself, running.
+// bgm_freespin — 168 BPM. The forge driven hard.
 //
-// This was a 138 BPM figure: hammer on every eighth, a low pedal, and an
-// eight-note melodic phrase repeated once per bar, eight bars to the loop. In
-// isolation it worked. Underneath the feature it did not, for two reasons that
-// compounded: the phrase repeats eight times inside a fourteen-second loop, and
-// the tumble sfx already put a hammer on every clear — so the whole thing read
-// as one short sample stuck on repeat.
+// Third attempt, and the two failures bracket why this one is shaped as it is.
 //
-// The feature does not need a second rhythm section. It needs a room tone: the
-// forge at full draught, continuous, going somewhere slowly. That is the same
-// material the entry flare and the transition are made of, which also means the
-// feature now sounds like the place those fires came from.
+// The first was 138 BPM with an eight-note phrase repeated once per bar, eight
+// bars to the loop: the phrase came round eight times before the loop even did,
+// and with the tumble sfx putting a hammer on every clear it read as one short
+// sample stuck on repeat.
 //
-// ── seamless looping ──
-// A bed is looped by an <audio loop>, so the end must join the start with no
-// seam at all. Two things make that true here and neither is optional:
-//   · every slow modulation completes a WHOLE number of cycles over the loop,
-//     so the motion is continuous across the join rather than jumping phase
-//   · noise cannot be made periodic, so the buffer is generated longer than the
-//     loop and its tail is crossfaded back over its head
-// The old bed did neither, and additionally ran fadeEnds over it — a 40ms dip
-// to silence at both ends, i.e. an audible pump on every single wrap.
+// The second replaced it with a continuous fire bed. That killed the repetition
+// and introduced the opposite fault: broadband noise is a hiss, and a hiss under
+// a feature the player sits in for a minute is fatiguing long before it is
+// noticeable. Filtering it back only made it a quieter hiss.
+//
+// So: rhythm, faster than either, and NO broadband noise anywhere. Every voice
+// is a sine or a struck bar, and the strikes are built with `click: false` —
+// that 6ms contact burst is right for one hit and is a continuous sand layer
+// when a bed plays several hundred of them.
+//
+// The drive is a sixteenth-note pulse on a TONAL bass rather than a percussion
+// bed, metal only on the backbeat so it punctuates instead of filling, and four
+// rotating phrases over sixteen bars so nothing recurs before the loop does.
 {
-	const dur = 24;
-	const XF = 3; // wrap-around crossfade
-	const total = dur + XF;
-	const buf = buffer(total, SR_BGM);
+	const bpm = 168;
+	const beat = 60 / bpm;
+	const bars = 16;
+	const loopSec = beat * 4 * bars;
+	const XF = beat * 2;
+	const buf = buffer(loopSec + XF, SR_BGM);
 
-	// cycles-per-loop as integers: continuous across the join by construction
-	const lfo = (t, cycles, phase = 0) => Math.sin(2 * Math.PI * (cycles * (t / dur) + phase));
-
-	// ── low furnace body: the part felt rather than heard ──
-	const body = buffer(total, SR_BGM);
-	for (let i = 0; i < body.length; i++) body[i] = rand2();
-	lowpass(body, SR_BGM, 200);
-	lowpass(body, SR_BGM, 140);
-	for (let i = 0; i < body.length; i++) {
-		const t = i / SR_BGM;
-		// two slow breaths at incommensurate rates so the swell never settles
-		body[i] *= 0.62 * (0.72 + 0.18 * lfo(t, 3) + 0.12 * lfo(t, 7, 0.31));
-	}
-	addAt(buf, body, 0, 1, SR_BGM);
-
-	// ── mid draught: the flame itself, filter wandering ──
-	// One pass per band rather than a sweeping filter: the one-pole filters here
-	// are static, so the wander is made by cross-fading two fixed bands instead.
-	const near = buffer(total, SR_BGM);
-	const far = buffer(total, SR_BGM);
-	for (let i = 0; i < near.length; i++) {
-		const n = rand2();
-		near[i] = n;
-		far[i] = n;
-	}
-	lowpass(near, SR_BGM, 1100);
-	highpass(near, SR_BGM, 260);
-	lowpass(far, SR_BGM, 620);
-	for (let i = 0; i < near.length; i++) {
-		const t = i / SR_BGM;
-		const open = 0.5 + 0.5 * lfo(t, 5, 0.17);
-		buf[i] += (near[i] * open + far[i] * (1 - open)) * 0.34 * (0.8 + 0.2 * lfo(t, 2, 0.63));
+	// sixteenth pulse: the engine
+	for (let s = 0; s < (bars + 2) * 16; s++) {
+		const at = s * beat * 0.25;
+		const strong = s % 16 % 4 === 0;
+		addAt(buf, pedal(SR_BGM, strong ? 49 : 98, beat * (strong ? 0.9 : 0.4), 0.4), at, strong ? 0.6 : 0.22, SR_BGM);
 	}
 
-	// ── crackle: what makes it fire and not wind ──
-	// Spread over the whole loop including the crossfade tail, so the density is
-	// even across the join.
-	//
-	// BANDED, not just high-passed. At 1800Hz high-pass with nothing above it
-	// taken off, 340 of these put a third of the bed's energy above 3kHz and the
-	// whole thing came out gritty — a bed is listened to for minutes at a time and
-	// anything sibilant in it becomes fatiguing long before it becomes noticeable.
-	// Fire crackle is a woody snap, not a hiss: the band it actually lives in is
-	// roughly 700Hz to 4kHz.
-	for (let n = 0; n < 200; n++) {
-		const at = rand() * total;
-		const len = Math.round(SR_BGM * (0.004 + rand() * 0.02));
-		const tick = new Float32Array(len);
-		for (let i = 0; i < len; i++) tick[i] = rand2() * Math.exp(-(i / len) * 5);
-		highpass(tick, SR_BGM, 700);
-		lowpass(tick, SR_BGM, 3800);
-		addAt(buf, tick, at, 0.14 + rand() * 0.22, SR_BGM);
+	// metal on the backbeat only, with a heavier turnaround every fourth bar
+	for (let bar = 0; bar < bars + 2; bar++) {
+		for (const off of [1, 3]) {
+			addAt(
+				buf,
+				strike(SR_BGM, { freq: 262, dur: 0.42, bright: 0.5, decay: 0.34, click: false }),
+				bar * beat * 4 + off * beat,
+				0.5,
+				SR_BGM,
+			);
+		}
+		if (bar % 4 === 3) {
+			addAt(
+				buf,
+				strike(SR_BGM, { freq: 175, dur: 0.8, bright: 0.6, decay: 0.7, click: false }),
+				bar * beat * 4 + 3.5 * beat,
+				0.55,
+				SR_BGM,
+			);
+		}
 	}
 
-	// ── bellows: a long draught every few seconds, so the room is being worked ──
-	for (let n = 0; n < 5; n++) {
-		addAt(buf, bellows(SR_BGM, { dur: 3.2, peak: 0.5 }), (n * total) / 5 + rand() * 0.6, 0.3, SR_BGM);
+	// four phrases in rotation — the fix for the original's one-bar loop
+	const notes = scale(523, [0, 3, 5, 7, 10, 12]);
+	const phrases = [
+		[0, 2, 3, 2, 5, 3, 2, 0],
+		[3, 5, 4, 2, 0, 2, 3, 5],
+		[5, 3, 2, 4, 5, 2, 3, 0],
+		[2, 0, 3, 5, 2, 4, 3, 2],
+	];
+	for (let bar = 0; bar < bars + 2; bar++) {
+		const figure = phrases[bar % phrases.length];
+		for (let i = 0; i < figure.length; i++) {
+			addAt(
+				buf,
+				strike(SR_BGM, { freq: notes[figure[i]], dur: 0.5, bright: 0.26, decay: 0.7, click: false }),
+				bar * beat * 4 + i * beat * 0.5 + beat * 0.25,
+				0.24,
+				SR_BGM,
+			);
+		}
 	}
 
-	// One last roll-off over everything. A furnace is heard through air and a
-	// room; there is nothing up there to reproduce, and leaving it in is what
-	// makes a long bed tiring.
-	lowpass(buf, SR_BGM, 4600);
-
-	// ── wrap the tail back over the head ──
-	const xfSamples = Math.round(XF * SR_BGM);
-	const loopSamples = Math.round(dur * SR_BGM);
-	for (let i = 0; i < xfSamples; i++) {
-		const t = i / xfSamples;
-		buf[i] = buf[i] * t + buf[loopSamples + i] * (1 - t);
-	}
-	const looped = buf.slice(0, loopSamples);
-
-	// No fadeEnds: this file is looped, and fading its ends is exactly the pump
-	// the old bed had on every wrap.
-	writeWav('bgm_freespin.wav', rmsNormalize(looped, 0.15), SR_BGM);
+	// No fadeEnds: this file is looped, and fading its ends is a dip to silence
+	// on every cycle.
+	writeWav('bgm_freespin.wav', rmsNormalize(sealLoop(buf, SR_BGM, loopSec, XF), 0.15), SR_BGM);
 }
 
 console.log('\nforge audio written to', OUT);
