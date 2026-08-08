@@ -90,6 +90,38 @@ It reads exactly like "asset loading is stuck". It is not.
 
 Getting this order wrong costs hours. Ask "did it mount?" before "did it load?".
 
+### The earlier variant: a ReferenceError at module evaluation
+
+Same symptom, one stage earlier and even quieter — not even the provider logo
+appears, and the console can look empty until you reload.
+
+`stateGame.svelte.ts` builds its reels at module scope, *above* the
+`export const stateGame = $state(…)` they belong to. That is fine as long as
+nothing reaches into `stateGame` before the module finishes evaluating. Margin
+Call passed `createReelForSpinning` a `getReelLength: () => …stateGame.rows`,
+and that function had one call site that ran **while the reel was being
+created** — touching `stateGame` inside its temporal dead zone:
+
+```
+ReferenceError: Cannot access 'stateGame' before initialization
+    at src/game/stateGame.svelte.ts:53
+```
+
+Every module that imports the game state dies with it, so nothing renders at
+all.
+
+**Two rules that follow:**
+
+- A factory in `packages/` must not call a caller-supplied callback while it is
+  constructing. Resolve creation-time values from the arguments it was handed.
+- When a game passes a getter that closes over module state, satisfy yourself it
+  can only run after evaluation — during a spin, an effect, an event handler.
+
+**`vite build` cannot catch any of this.** `+layout.ts` sets `ssr = false`, so
+prerendering emits a shell and never evaluates the game modules. A green build
+and three green guards said nothing was wrong while the uploaded game was a
+black screen. Boot the page.
+
 ## Svelte 5 traps in this codebase
 
 **Proxy identity.** `$state` arrays are deep proxies. An object literal you pushed

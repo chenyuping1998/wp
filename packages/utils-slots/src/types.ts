@@ -42,6 +42,15 @@ type ReelCreateOptions<TRawSymbol extends object, TSymbolState extends string> =
 	symbolHeight: number;
 	onReelStopping: () => void;
 	onSymbolLand: (args: { rawSymbol: TRawSymbol }) => void;
+	/**
+	 * Symbols per reel, when that can change between spins (Margin Call grows the
+	 * board from 3 rows to 5 for its feature game). Omit it and the reel behaves
+	 * exactly as before: fixed at initialSymbols.length, resolved once.
+	 *
+	 * The value is padding-inclusive - it is the number of symbols the reel holds,
+	 * not the number of visible rows.
+	 */
+	getReelLength?: () => number;
 };
 
 export type SpinningReelCreateOptions<

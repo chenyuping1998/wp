@@ -55,7 +55,18 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 
 	// constants
 	const defaultY = -reelOptions.symbolHeight;
-	const reelLength = reelOptions.initialSymbols.length;
+	// Padding-inclusive symbols per reel. Fixed for every game that does not pass
+	// getReelLength, which is all of them except Margin Call - its feature board
+	// grows two rows, and the padding maths below has to follow it or the reel
+	// spins a 5-symbol strip into a 7-symbol window.
+	//
+	// Never call this during creation. A caller's getter typically reads the
+	// game's own module-scope state, and reels are built at module scope too - so
+	// calling it here can touch that state inside its temporal dead zone and throw
+	// a ReferenceError while the module is still being evaluated. That takes the
+	// whole game down before anything renders, and `ssr = false` means the build
+	// never evaluates these modules, so nothing catches it before the browser.
+	const getReelLength = reelOptions.getReelLength ?? (() => reelOptions.initialSymbols.length);
 
 	// interruptible
 	const interruptible = createInterruptible();
@@ -70,13 +81,18 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		readyToSpin: () => {},
 		spinOptions: () => ({}) as SpinningReelSpinOptions,
 	});
-	const basePaddingSize = () => reelLength * reelState.spinOptions().reelPaddingMultiplierNormal;
+	const basePaddingSize = () =>
+		getReelLength() * reelState.spinOptions().reelPaddingMultiplierNormal;
 	const anticipatedPaddingSize = () =>
-		reelLength * reelState.spinOptions().reelPaddingMultiplierAnticipated;
+		getReelLength() * reelState.spinOptions().reelPaddingMultiplierAnticipated;
 
 	// internal states
 	let isPreSpinning = false;
-	let targetPaddingPosition = reelLength - 1;
+	// initialSymbols, not getReelLength(): at creation the reel holds exactly the
+	// symbols it was handed, and this is overwritten by prepareToSpin on every
+	// spin anyway. Same value as before for every caller - and it keeps creation
+	// free of any call into the caller's state.
+	let targetPaddingPosition = reelOptions.initialSymbols.length - 1;
 	let prevSymbols: ReelSymbol[] = createReelSymbols(reelOptions.initialSymbols);
 	let targetSymbols: ReelSymbol[] = createReelSymbols(reelOptions.initialSymbols);
 	let paddingRawReel: TRawSymbol[] = reelOptions.initialSymbols;
@@ -125,7 +141,7 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		const topY =
 			defaultY -
 			symbolsForSpin.length * reelOptions.symbolHeight +
-			reelLength * reelOptions.symbolHeight;
+			getReelLength() * reelOptions.symbolHeight;
 		return topY;
 	};
 
@@ -168,7 +184,7 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		const targetRawSymbols = getPaddingRawSymbols({
 			paddingRawReel: preSpinPaddingRawReel,
 			start: randomStart,
-			length: reelLength,
+			length: getReelLength(),
 		});
 		targetSymbols = createReelSymbols(targetRawSymbols);
 		const topY = await addPadding(0);
@@ -366,7 +382,9 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		reelIndex: reelOptions.reelIndex,
 		symbolHeight: reelOptions.symbolHeight,
 		onReelStopping: reelOptions.onReelStopping,
-		reelLength,
+		get reelLength() {
+			return getReelLength();
+		},
 		// reactive states
 		reelState,
 		// methods
