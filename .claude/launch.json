@@ -8,6 +8,18 @@
 			"port": 3002
 		},
 		{
+			"name": "emberforge-dev",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": ["--dir", "apps/EmberForge", "dev"],
+			"port": 3003
+		},
+		{
+			"name": "margincall-dev",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": ["--dir", "apps/MarginCall", "exec", "vite", "dev", "--host", "--port", "3014"],
+			"port": 3014
+		},
+		{
 			"name": "wildparty-dev",
 			"runtimeExecutable": "pnpm",
 			"runtimeArgs": ["--dir", "apps/WildParty", "dev"],
