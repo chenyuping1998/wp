@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
+		<!--
+			The template's Adobe Typekit stylesheet (proxima-nova) used to be loaded
+			here. It is domain-locked to the template's account, so off that origin it
+			404s and the browser reports "Web font load inactive".
+
+			Crusher Yard ships its own display face instead — self-hosted, so there is no
+			third-party request to 404 and no external dependency at run time. Titan
+			One is SIL Open Font Licence (static/fonts/TitanOne-OFL.txt), which permits
+			commercial use and embedding.
+
+			Preloaded because Pixi measures glyphs when it builds a Text, and a face
+			that arrives late leaves the first frame laid out for the fallback metrics.
+			game/fonts.ts additionally blocks startup on document.fonts.
+		-->
+		<link
+			rel="preload"
+			href="%sveltekit.assets%/fonts/YardPlate.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin
+		/>
+		<link
+			rel="preload"
+			href="%sveltekit.assets%/fonts/YardStencil.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin
+		/>
+		<link
+			rel="preload"
+			href="%sveltekit.assets%/fonts/TitanOne.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin
+		/>
+		<style>
+			@font-face {
+				font-family: 'Yard Plate';
+				src: url('%sveltekit.assets%/fonts/YardPlate.ttf') format('truetype');
+				font-weight: 400;
+				font-style: normal;
+				font-display: block;
+			}
+			@font-face {
+				font-family: 'Yard Stencil';
+				src: url('%sveltekit.assets%/fonts/YardStencil.ttf') format('truetype');
+				font-weight: 400;
+				font-style: normal;
+				font-display: block;
+			}
+			@font-face {
+				font-family: 'Titan One';
+				src: url('%sveltekit.assets%/fonts/TitanOne.ttf') format('truetype');
+				font-weight: 400;
+				font-style: normal;
+				font-display: block;
+			}
+		</style>
+		<meta name="viewport" content="width=device-width" />
+		%sveltekit.head%
+	</head>
+	<body style="margin: 0; padding: 0; overflow: hidden; background-color: black">
+		<div>%sveltekit.body%</div>
+	</body>
+</html>
