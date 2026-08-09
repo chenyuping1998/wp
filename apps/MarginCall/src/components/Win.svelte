@@ -21,21 +21,40 @@
 	import FxBurst from './FxBurst.svelte';
 	import GoldText from './GoldText.svelte';
 	import PressToContinue from './PressToContinue.svelte';
-	import { SYMBOL_SIZE } from '../game/constants';
+	import {
+		SYMBOL_SIZE,
+		WIN_BANNERS,
+		WIN_BANNER_LABEL,
+		WIN_BANNER_WELL_WIDTH,
+	} from '../game/constants';
 	import { getContext } from '../game/context';
 
 	const context = getContext();
 
-	// brass tier plaques (design/generate_win_banners.mjs) — 1000×560, the
-	// amount rolls inside the dark centre well
-	const BANNER_KEY: Record<string, string> = {
-		big: 'mcWinBannerBig',
-		superwin: 'mcWinBannerSuperwin',
-		mega: 'mcWinBannerMega',
-		epic: 'mcWinBannerEpic',
-		max: 'mcWinBannerMax',
+	// Supplied tier frames. Nothing is baked into the art, so the label and the
+	// amount are drawn here, inside each frame's measured well.
+	//
+	// The well is what is held constant, not the image: every tier draws its well
+	// at the same width, so the text never changes size and the frames themselves
+	// grow as the tiers climb - the top tier's flame wings make it noticeably
+	// bigger on screen, which is the point of it being the top tier.
+	const banner = (alias: string) => {
+		const spec = WIN_BANNERS[alias as keyof typeof WIN_BANNERS] ?? WIN_BANNERS.big;
+		const wellWidth = SYMBOL_SIZE * WIN_BANNER_WELL_WIDTH;
+		const width = wellWidth / spec.well.w;
+		const height = width * spec.aspect;
+		return {
+			key: spec.key,
+			width,
+			height,
+			// well centre and size in drawn pixels, relative to the sprite's centre
+			wellX: spec.well.cx * width,
+			wellY: spec.well.cy * height,
+			wellW: wellWidth,
+			wellH: spec.well.h * height,
+			label: WIN_BANNER_LABEL[alias as keyof typeof WIN_BANNER_LABEL] ?? WIN_BANNER_LABEL.big,
+		};
 	};
-	const BANNER_RATIO = 560 / 1000;
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
 		big: { mult: 1, glowTint: 0x4bd67f },
@@ -212,9 +231,10 @@
 						{#if isBigWin}
 							{@const alias = winLevelData.alias}
 							{@const fx = TIER_FX[alias] ?? TIER_FX.big}
-							{@const bannerKey = BANNER_KEY[alias] ?? BANNER_KEY.big}
-							{@const bw = SYMBOL_SIZE * 5.2}
-							{@const bh = bw * BANNER_RATIO}
+							{@const plaque = banner(alias)}
+							{@const bannerKey = plaque.key}
+							{@const bw = plaque.width}
+							{@const bh = plaque.height}
 							<Container scale={bannerPose.scale}>
 								<!-- breathing glow bed behind the plaque -->
 								<Sprite
@@ -254,12 +274,25 @@
 										alpha={Math.sin(p * Math.PI)}
 									/>
 								{/each}
-								<!-- amount rolls inside the plaque's dark centre well -->
+								<!--
+									Label above, amount below, both inside the measured well.
+									Sized from the well's own height so a shallow frame does not
+									push the text over its border.
+								-->
 								<GoldText
-									y={bh * 0.16}
-									maxWidth={bw * 0.68}
+									x={plaque.wellX}
+									y={plaque.wellY - plaque.wellH * 0.26}
+									maxWidth={plaque.wellW * 0.9}
+									text={plaque.label}
+									fontSize={plaque.wellH * 0.3}
+									letterSpacing={2}
+								/>
+								<GoldText
+									x={plaque.wellX}
+									y={plaque.wellY + plaque.wellH * 0.22}
+									maxWidth={plaque.wellW * 0.9}
 									text={bookEventAmountToCurrencyString(countUpAmount)}
-									fontSize={bh * 0.24}
+									fontSize={plaque.wellH * 0.42}
 								/>
 							</Container>
 							{#if burstShown}

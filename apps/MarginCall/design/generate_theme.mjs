@@ -1,11 +1,10 @@
-// Margin Call theme art: reel housing, UI plates, win banners and bet-bar icons.
+// Margin Call theme art: reel housing, UI plates, bet-bar icons and particles.
 //
 // Same trading-terminal language as the symbols (design/generate_symbols.mjs):
 // graphite panels, chamfered corners, a thin phosphor edge light, and colour
-// carrying the meaning. Everything is emitted at the dimensions the scaffold's
-// layout maths already assumes - the housing is 1280x1280 with the board
-// occupying the centred 1000x1000 (BoardFrame's FRAME_SCALE), banners are
-// 1000x560 (Win.svelte's BANNER_RATIO) - so the art can be swapped without
+// carrying the meaning. Everything is emitted at the dimensions the layout maths
+// already assumes - the housing is 1280x1280 with the board occupying the centred
+// 1000x1000 (BoardFrame's FRAME_SCALE) - so the art can be swapped without
 // touching a single number in the components.
 //
 // Type is Titan One, the same self-hosted face the live Text nodes use
@@ -30,10 +29,9 @@ const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const FONT_DIR = path.join(appRoot, 'static/fonts');
 const FRAME_DIR = path.join(appRoot, 'static/assets/sprites/marginCallFrame');
 const UI_DIR = path.join(appRoot, 'static/assets/sprites/marginCallUi');
-const BANNER_DIR = path.join(appRoot, 'static/assets/sprites/marginCallWinBanners');
 const ICON_DIR = path.join(appRoot, 'static/assets/sprites/marginCallUiIcons');
 const FX_DIR = path.join(appRoot, 'static/assets/sprites/marginCallFx');
-for (const dir of [FRAME_DIR, UI_DIR, BANNER_DIR, ICON_DIR, FX_DIR]) {
+for (const dir of [FRAME_DIR, UI_DIR, ICON_DIR, FX_DIR]) {
 	fs.mkdirSync(dir, { recursive: true });
 }
 
@@ -188,43 +186,10 @@ const buyBonusPlate = () => {
 };
 
 // ─── win banners ────────────────────────────────────────────────────────────
-// Escalating tiers. The amount is drawn live by Win.svelte into the dark well
-// under the headline, so the well has to stay clear here.
-const BW = 1000;
-const BH = 560;
-const TIERS = {
-	big: { text: 'BIG WIN', accent: BULL },
-	superwin: { text: 'SUPER WIN', accent: TEAL },
-	mega: { text: 'MEGA WIN', accent: AMBER },
-	epic: { text: 'EPIC WIN', accent: VIOLET },
-	max: { text: 'MAX WIN', accent: BEAR },
-};
-
-const banner = ({ text, accent }) => {
-	const defs = `
-	${panelDefs(accent, 'W')}
-	<linearGradient id="tierFace" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#ffffff"/>
-		<stop offset="0.45" stop-color="${accent}"/>
-		<stop offset="1" stop-color="${accent}" stop-opacity="0.75"/>
-	</linearGradient>
-	<radialGradient id="halo" cx="0.5" cy="0.4" r="0.6">
-		<stop offset="0" stop-color="${accent}" stop-opacity="0.45"/>
-		<stop offset="1" stop-color="${accent}" stop-opacity="0"/>
-	</radialGradient>`;
-	const body = `
-	<rect width="${BW}" height="${BH}" fill="url(#halo)"/>
-	<path d="${chamfer(60, 60, BW - 120, BH - 120, 46)}" fill="url(#faceW)" stroke="${INK}" stroke-width="8"/>
-	<path d="${chamfer(60, 60, BW - 120, BH - 120, 46)}" fill="none" stroke="${accent}" stroke-width="5" opacity="0.9"/>
-	<text x="${BW / 2 + 4}" y="238" font-family="${FONT}" font-size="104" text-anchor="middle"
-		fill="${INK}" opacity="0.6">${text}</text>
-	<text x="${BW / 2}" y="232" font-family="${FONT}" font-size="104" text-anchor="middle"
-		fill="url(#tierFace)" stroke="${INK}" stroke-width="7" paint-order="stroke">${text}</text>
-	<path d="${chamfer(150, 280, BW - 300, 170, 26)}" fill="#040807" opacity="0.85"/>
-	<path d="${chamfer(150, 280, BW - 300, 170, 26)}" fill="none" stroke="${accent}" stroke-width="3" opacity="0.5"/>
-	${rivets(120, BW - 120, 96, 88, accent)}`;
-	return svg(BW, BH, body, defs);
-};
+// Not generated. The five tier frames in static/assets/sprites/marginCallWinBanners
+// are supplied art; their inner wells are measured by design/measure_banner_wells.mjs
+// and the numbers live in constants.ts (WIN_BANNERS). A generator here would
+// overwrite them on the next run.
 
 // ─── bet-bar icons ──────────────────────────────────────────────────────────
 // Line glyphs on a transparent ground, drawn at 256 so they stay crisp on a
@@ -428,11 +393,6 @@ render(fsCounterPanel(), path.join(FRAME_DIR, 'fs_counter_panel.png'), 1280);
 console.log('bet bar');
 render(tickerPlate(), path.join(UI_DIR, 'ticker_plate.png'), 652);
 render(buyBonusPlate(), path.join(UI_DIR, 'buybonus_plate.png'), 640);
-
-console.log('win banners');
-for (const [name, tier] of Object.entries(TIERS)) {
-	render(banner(tier), path.join(BANNER_DIR, `${name}.png`), BW);
-}
 
 console.log('icons');
 for (const [name, source] of Object.entries(ICONS)) {

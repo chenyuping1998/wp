@@ -142,6 +142,51 @@ export const SPIN_OPTIONS_FAST_FREEGAME = {
 
 export const MOTION_BLUR_VELOCITY = 31;
 
+// Win banner frames, one per win level, escalating.
+//
+// These are supplied art with no text baked in, so the tier label and the amount
+// are drawn live and have to land inside each frame's dark inner well. The five
+// frames have different aspect ratios and very different border weights - the
+// top tier's flame wings inflate its image far beyond its well - so centring on
+// the image would put text over the decoration on some tiers and not others.
+//
+// `well` is measured, not eyeballed: design/measure_banner_wells.mjs finds the
+// dark opaque region in each PNG and prints these numbers. Re-run it if the art
+// is replaced.
+//
+// Everything is sized from the WELL, not from the image: the well is drawn at a
+// constant width on screen, so the text is the same size on every tier and the
+// frames grow as the tiers climb.
+export const WIN_BANNER_WELL_WIDTH = 3.8; // in cells
+
+export const WIN_BANNERS = {
+	big: { key: 'mcWinBannerBig', aspect: 0.352, well: { cx: 0.0, cy: 0.043, w: 0.775, h: 0.5 } },
+	superwin: {
+		key: 'mcWinBannerSuperwin',
+		aspect: 0.336,
+		well: { cx: 0.007, cy: 0.02, w: 0.742, h: 0.444 },
+	},
+	mega: {
+		key: 'mcWinBannerMega',
+		aspect: 0.388,
+		well: { cx: 0.007, cy: 0.042, w: 0.689, h: 0.442 },
+	},
+	epic: {
+		key: 'mcWinBannerEpic',
+		aspect: 0.367,
+		well: { cx: 0.006, cy: 0.086, w: 0.676, h: 0.383 },
+	},
+	max: { key: 'mcWinBannerMax', aspect: 0.324, well: { cx: 0.004, cy: 0.037, w: 0.619, h: 0.344 } },
+} as const;
+
+export const WIN_BANNER_LABEL = {
+	big: 'BIG WIN',
+	superwin: 'SUPER WIN',
+	mega: 'MEGA WIN',
+	epic: 'EPIC WIN',
+	max: 'MAX WIN',
+} as const;
+
 // Leverage meter presentation. The math sends +1/+2/+3/+5/+10 per LEVERAGE
 // symbol; anything from +5 up is worth calling out with the hot treatment.
 export const BIG_LEVERAGE_FROM = 5;

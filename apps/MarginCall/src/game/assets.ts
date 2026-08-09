@@ -60,23 +60,23 @@
 	// brass win-tier plaques (design/generate_win_banners.mjs)
 	mcWinBannerBig: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/marginCallWinBanners/big.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/marginCallWinBanners/tier1.png', import.meta.url).href,
 	},
 	mcWinBannerSuperwin: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/marginCallWinBanners/superwin.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/marginCallWinBanners/tier2.png', import.meta.url).href,
 	},
 	mcWinBannerMega: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/marginCallWinBanners/mega.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/marginCallWinBanners/tier3.png', import.meta.url).href,
 	},
 	mcWinBannerEpic: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/marginCallWinBanners/epic.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/marginCallWinBanners/tier4.png', import.meta.url).href,
 	},
 	mcWinBannerMax: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/marginCallWinBanners/max.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/marginCallWinBanners/tier5.png', import.meta.url).href,
 	},
 	// feature header plate for the free-spin intro/outro boards and the
 	// counter plaque (text is drawn by the frontend — language-neutral art)
