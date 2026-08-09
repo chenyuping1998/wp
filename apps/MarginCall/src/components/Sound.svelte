@@ -106,8 +106,12 @@
 		jng_intro_fs: { name: 'feature_intro' },
 		sfx_wild_explode: { name: 'leverage_land' },
 		sfx_anticipation_start: { name: 'meter_tick', volume: 0.5 },
-		sfx_symbols_landing: { name: 'reel_stop', volume: 0.6 },
-		sfx_royals_landing: { name: 'reel_stop', volume: 0.6 },
+		// sfx_symbols_landing and sfx_royals_landing are deliberately NOT mapped.
+		// They used to play the reel-stop knock at 0.6, which meant that knock was
+		// the sound of three different events at once - a reel stopping, a symbol
+		// landing, a royal landing - and every spin ended in a wash of identical
+		// clicks. The reel stop is the one that carries meaning (which reel, in
+		// order), so it keeps the sound to itself.
 	};
 
 	const sfxAudio: Partial<Record<SfxName, HTMLAudioElement>> = {};

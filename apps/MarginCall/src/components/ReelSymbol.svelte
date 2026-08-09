@@ -66,7 +66,12 @@
 	};
 	const landingImpact = $derived(LANDING_IMPACT[props.reelSymbol.rawSymbol.name] ?? 0.9);
 
-	// The completion callback is pinned to the state it was created for.
+	// The win is resolved on its own channel, straight from SymbolWinAnim. No
+	// state guard is needed or wanted here: only the win presentation can call
+	// this, so anything arriving is by definition the win finishing.
+	const onWinComplete = () => props.reelSymbol.oncomplete();
+
+	// The sprite's completion callback is pinned to the state it was created for.
 	//
 	// Reading symbolState at call time instead let a completion from one
 	// presentation resolve another's. Concretely: 'land' renders SymbolSprite and
@@ -83,7 +88,7 @@
 	// every reel's squash at once.
 	const onSymbolComplete = (forState: SymbolState) => () => {
 		if (props.reelSymbol.symbolState !== forState) return;
-		if (forState === 'win') props.reelSymbol.oncomplete();
+		// deliberately does not resolve the win - see onWinComplete
 		if (forState === 'land') props.reelSymbol.symbolState = 'static';
 	};
 
@@ -102,5 +107,6 @@
 			{blur}
 			impact={landingImpact}
 			oncomplete={onSymbolComplete(props.reelSymbol.symbolState)}
+			onwincomplete={onWinComplete}
 		/>
 	</SymbolWrap>

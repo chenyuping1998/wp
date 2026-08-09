@@ -12,6 +12,15 @@
 		state: SymbolState;
 		rawSymbol: RawSymbol;
 		oncomplete?: () => void;
+		// Fired ONLY by the win presentation. Kept separate from oncomplete because
+		// SymbolSprite calls that one from an $effect whenever symbolInfo changes -
+		// including the change that switches this component over to SymbolWinAnim.
+		// Sharing one channel let that stray call land while the symbol was already
+		// in the 'win' state, which resolved the win before it had played and tore
+		// the animation down in the same frame. Whether it happened depended on the
+		// order Svelte flushed each symbol, which tracks the order they were
+		// created - so it read as "the later reels never light up".
+		onwincomplete?: () => void;
 		loop?: boolean;
 		// forwarded to SymbolSprite: reel speed 0..1, and how hard this symbol
 		// lands (see ReelSymbol, which knows both the reel motion and the tier)
@@ -28,7 +37,7 @@
 
 {#if isSprite && isWin}
 	<!-- Win state for sprite symbols: programmatic scale+glow animation -->
-	<SymbolWinAnim {symbolInfo} x={props.x} y={props.y} oncomplete={props.oncomplete} />
+	<SymbolWinAnim {symbolInfo} x={props.x} y={props.y} oncomplete={props.onwincomplete} />
 {:else if isSprite}
 	<SymbolSprite
 		{symbolInfo}

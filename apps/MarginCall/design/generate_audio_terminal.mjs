@@ -167,26 +167,41 @@ const spinStart = () => {
 	return fadeEnds(normalize(out, 0.62), SR, 6);
 };
 
-// Reel stop. Pitched per reel by playbackRate in Sound.svelte, so it has to keep
-// its character across roughly 0.9x-1.3x — hence a short body and a hard head.
+// Reel stop. Deliberately the DULLEST cue in the set: a dry mechanical knock
+// with almost no pitch to it. It fires five times a spin, under everything else,
+// and anything with tone in it competes with the two cues that actually carry
+// information (a LEVERAGE landing and a MARGIN CALL landing). Pitched per reel by
+// playbackRate in Sound.svelte, so it has to hold up across roughly 0.9x-1.3x —
+// hence the short body and the hard head.
 const reelStop = () => {
-	const b = buffer(0.16);
-	addAt(b, lowpass(noise(0.04, { decay: 40 }), 5000), 0, 0.5);
-	addAt(b, tone(0.14, (t) => 220 - 90 * t, { shape: 'rich', decay: 14 }), 0, 0.7);
-	addAt(b, tone(0.1, NOTE(45), { shape: 'sine', decay: 10 }), 0, 0.45);
-	return fadeEnds(normalize(b, 0.7), SR, 3);
+	const b = buffer(0.12);
+	// the knock: a band of noise, gone almost immediately
+	addAt(b, lowpass(highpass(noise(0.05, { decay: 55 }), 250), 2600), 0, 0.85);
+	// just enough body to feel weight, not enough to sing
+	addAt(b, tone(0.07, (t) => 150 - 60 * t, { shape: 'sine', decay: 26 }), 0, 0.4);
+	return fadeEnds(normalize(b, 0.55), SR, 3);
 };
 
-// Five rising alerts. Same voice, one scale degree apart, so three of them in a
-// row is audibly a countdown and not three unrelated pings.
+// A MARGIN CALL landing. Five of them, rising, so three in a row is audibly a
+// countdown rather than three unrelated pings.
+//
+// Built as a siren, not a note: two saws detuned against each other and swept
+// upward, which beats and buzzes the way an alarm does. That is what separates it
+// from the LEVERAGE chime - different waveform, different envelope, different
+// motion - so the two are never in doubt even when both land in one spin.
 const alert = (step) => {
-	const root = NOTE(76 + step * 3);
-	const b = buffer(0.5);
-	addAt(b, tone(0.32, root, { shape: 'square', decay: 9 }), 0, 0.32);
-	addAt(b, tone(0.34, root * 1.5, { shape: 'sine', decay: 8 }), 0.01, 0.24);
-	addAt(b, lowpass(noise(0.06, { decay: 26 }), 6000), 0, 0.3);
-	const withTail = delay(b, 0.11, 0.42, 0.45);
-	return fadeEnds(normalize(withTail, 0.66), SR, 4);
+	const root = NOTE(70 + step * 2);
+	const b = buffer(0.62);
+	const sweep = (t) => root * (1 + 0.22 * t);
+	addAt(b, tone(0.42, sweep, { shape: 'saw', decay: 5, hold: 0.15 }), 0, 0.34);
+	// the detune is the whole point: the beating between them is the alarm
+	addAt(b, tone(0.42, (t) => sweep(t) * 1.012, { shape: 'saw', decay: 5, hold: 0.15 }), 0, 0.34);
+	// a hard transient so it cuts through a busy board
+	addAt(b, highpass(noise(0.05, { decay: 34 }), 1800), 0, 0.4);
+	// sub thump underneath, growing with the count
+	addAt(b, tone(0.3, NOTE(38), { shape: 'sine', decay: 8 }), 0, 0.2 + step * 0.06);
+	const shaped = lowpass(b, 3400);
+	return fadeEnds(normalize(delay(shaped, 0.13, 0.34, 0.3), 0.72), SR, 4);
 };
 
 // The margin call itself: a two-tone klaxon. This is the only sound in the set
@@ -212,13 +227,24 @@ const blast = () => {
 	return fadeEnds(normalize(b, 0.85), SR, 6);
 };
 
-// A LEVERAGE symbol landing: short, bright, upward. Deliberately small — it
-// fires up to four times in one spin.
+// A LEVERAGE symbol landing: a struck metal chime.
+//
+// This has to be identifiable in one hearing and never mistaken for the scatter.
+// It is therefore MUSICAL — a clean two-note rise with a bell's inharmonic
+// partial ringing over it — where the scatter is a siren and the reel stop is a
+// knock. Three different physical objects, not three settings of one.
 const leverageLand = () => {
-	const b = buffer(0.3);
-	addAt(b, tone(0.2, (t) => NOTE(72) * (1 + 0.28 * t), { shape: 'square', decay: 11 }), 0, 0.3);
-	addAt(b, tone(0.22, NOTE(84), { shape: 'sine', decay: 13 }), 0.01, 0.22);
-	return fadeEnds(normalize(delay(b, 0.07, 0.3, 0.35), 0.55), SR, 3);
+	const b = buffer(0.55);
+	const root = NOTE(74);
+	// strike
+	addAt(b, highpass(noise(0.03, { decay: 60 }), 3000), 0, 0.35);
+	// the two notes, a fifth apart, the second a beat later
+	addAt(b, tone(0.4, root, { shape: 'sine', decay: 6 }), 0, 0.55);
+	addAt(b, tone(0.42, root * 1.5, { shape: 'sine', decay: 5.5 }), 0.075, 0.5);
+	// inharmonic partials: what makes it read as struck metal rather than a beep
+	addAt(b, tone(0.45, root * 2.76, { shape: 'sine', decay: 7 }), 0, 0.16);
+	addAt(b, tone(0.5, root * 5.4, { shape: 'sine', decay: 9 }), 0, 0.07);
+	return fadeEnds(normalize(delay(b, 0.11, 0.28, 0.3), 0.62), SR, 4);
 };
 
 // The meter ratcheting up one step.
