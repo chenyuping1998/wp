@@ -84,8 +84,8 @@ export const animateSymbols = async ({
 	if (visiblePositions.length === 0) return;
 	eventEmitter.broadcast({ type: 'boardShow' });
 
-	if (flag === 'win') stateGame.winPositions = visiblePositions;
-	else stateGame.scatterPositions = visiblePositions;
+	stateGame.highlightActive = true;
+	if (flag === 'scatter') stateGame.scatterPositions = visiblePositions;
 
 	try {
 		await eventEmitter.broadcastAsync({
@@ -95,10 +95,17 @@ export const animateSymbols = async ({
 	} finally {
 		// finally, not after the await: a spin started mid-presentation rejects
 		// the pending promise, and leaving the board dimmed forever is a much
-		// worse bug than a highlight that ends early.
-		if (flag === 'win') stateGame.winPositions = [];
-		else stateGame.scatterPositions = [];
+		// worse bug than a highlight that ends early. clearHighlight is called on
+		// every new round as well, because a promise that never settles at all
+		// would not run this either.
+		clearHighlight();
 	}
+};
+
+/** Drop every highlight. Safe to call at any time, from anywhere. */
+export const clearHighlight = () => {
+	stateGame.highlightActive = false;
+	stateGame.scatterPositions = [];
 };
 
 export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContext> = {

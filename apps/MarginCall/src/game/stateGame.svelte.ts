@@ -109,12 +109,14 @@ export const stateGame = $state({
 	// leverage is 1 outside the feature.
 	leverage: 1,
 	leverageHits: [] as LeverageHit[],
-	// Positions taking part in the win currently being presented, in board
-	// coordinates including the padding offset. Everything NOT in here is dimmed
-	// while it plays - a ring around the winners is not enough on a busy board,
-	// the win has to be the only bright thing on screen.
-	winPositions: [] as Position[],
-	// Scatters to flag while the trigger presentation runs.
+	// True while a win or a scatter trigger is being presented. What gets dimmed
+	// is decided from each symbol's own state, NOT from a list of positions -
+	// see ReelSymbol. Two separate rules for "which symbols are lit" and "which
+	// symbols are dim" can disagree, and when they did, a symbol that Board had
+	// correctly lit was being dimmed at the same time and read as not lit.
+	highlightActive: false,
+	// Scatter positions, kept only so ScatterTrigger knows where to draw its
+	// rings. Nothing decides brightness from this.
 	scatterPositions: [] as Position[],
 });
 

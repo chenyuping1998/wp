@@ -32,8 +32,19 @@
 		boardWithAnimateSymbols: async ({ symbolPositions }) => {
 			const getPromises = () =>
 				symbolPositions.map(async (position) => {
-					const reelSymbol = context.stateGame.board[position.reel].reelState.symbols[position.row];
-					if (!reelSymbol) return; // guard against invalid positions
+					const reel = context.stateGame.board[position.reel];
+					const reelSymbol = reel?.reelState.symbols[position.row];
+					if (!reelSymbol) {
+						// This used to return silently, which is how a win that should have
+						// lit five reels can light four and look like a presentation choice
+						// rather than a dropped position. If it ever fires, the reel is not
+						// holding the board the math just described.
+						console.warn(
+							`[MarginCall] no symbol at reel ${position.reel} row ${position.row}`,
+							`(reel holds ${reel?.reelState.symbols.length ?? 0} symbols)`,
+						);
+						return;
+					}
 					// Reset to static first to ensure the state transition triggers $effect
 					if (reelSymbol.symbolState === 'win') {
 						reelSymbol.symbolState = 'static';

@@ -11,6 +11,7 @@ import type { Bet, BookEventOfType } from './typesBookEvent';
 import {
 	bookEventHandlerMap,
 	animateSymbols,
+	clearHighlight,
 	getLastWinPositions,
 	clearLastWinPositions,
 } from './bookEventHandlerMap';
@@ -57,6 +58,12 @@ const runWinReplay = async () => {
 
 export const playBet = async (bet: Bet) => {
 	stopWinReplay();
+	// The idle replay is cancelled by a token, which stops the LOOP but cannot
+	// unwind the animateSymbols call already awaiting inside it - and that call
+	// never settles once the spin replaces the symbols it was waiting on, so its
+	// own cleanup never runs. Clearing here is what actually guarantees a round
+	// starts with an undimmed board.
+	clearHighlight();
 	clearLastWinPositions();
 	stateBet.winBookEventAmount = 0;
 	await playBookEvents(bet.state);

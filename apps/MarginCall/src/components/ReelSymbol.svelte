@@ -20,27 +20,31 @@
 	// the end of a stop: the strip is still moving but far slower, and carrying
 	// full-speed blur through it made the symbols snap from heavily smeared to
 	// perfectly sharp in a single frame.
-	// While a win is on screen every other symbol steps back. At rest a symbol's
-	// index in the reel is its board row, so the win positions (which carry the
-	// padding offset already) can be compared directly.
-	const isWinning = $derived(
-		stateGame.winPositions.some(
-			(p) => p.reel === props.reelIndex && p.row === props.reelSymbol.symbolIndex,
-		),
-	);
-	const isScatterFlagged = $derived(
-		stateGame.scatterPositions.some(
-			(p) => p.reel === props.reelIndex && p.row === props.reelSymbol.symbolIndex,
-		),
-	);
-	const highlightActive = $derived(
-		stateGame.winPositions.length > 0 || stateGame.scatterPositions.length > 0,
+	const reelMotion = $derived(stateGame.board[props.reelIndex]?.reelState.motion);
+
+	// While a win is on screen every other symbol steps back.
+	//
+	// "Winning" is read off the symbol's own state, which is what Board sets on
+	// exactly the symbols it lit - so the lit set and the dimmed set cannot
+	// disagree. Matching board positions against symbolIndex instead, as this
+	// used to, breaks in two ways: a single mismatch dims a symbol that is busy
+	// playing its win animation (it reads as "that reel never lit"), and during a
+	// spin the whole strip is re-indexed, so stale positions alias onto whichever
+	// scrolling symbols happen to land on those indices.
+	//
+	// The motion test is the second half of that: indices and states both belong
+	// to a board at rest, so nothing is ever dimmed on a reel that is moving.
+	// 'postWinStatic' counts as lit, not as a loser. The symbols in a volley
+	// finish a frame or two apart, and dimming each one the moment its own
+	// animation ended made the winners go dark one by one at the end of the win.
+	const isHighlighted = $derived(
+		props.reelSymbol.symbolState === 'win' || props.reelSymbol.symbolState === 'postWinStatic',
 	);
 	const symbolAlpha = $derived(
-		highlightActive && !isWinning && !isScatterFlagged ? LOSING_SYMBOL_ALPHA : 1,
+		stateGame.highlightActive && reelMotion === 'stopped' && !isHighlighted
+			? LOSING_SYMBOL_ALPHA
+			: 1,
 	);
-
-	const reelMotion = $derived(stateGame.board[props.reelIndex]?.reelState.motion);
 	const blur = $derived(reelMotion === 'spinning' ? 1 : reelMotion === 'bouncing' ? 0.3 : 0);
 
 	// Landing weight by tier. The Scatter and the Wild are the two symbols a
