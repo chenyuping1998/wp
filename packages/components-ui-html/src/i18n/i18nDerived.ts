@@ -23,9 +23,11 @@ export const i18nDerived = {
 	startAutoplay: () => stateI18nDerived.translate('START AUTOPLAY'),
 	notification: () => stateI18nDerived.translate('NOTIFICATION'),
 	autoSpinsStopInfo: () => stateI18nDerived.translate('AUTO PLAY HAS STOPPED DUE TO'),
+	// "funds" is on Stake's restricted list for social play; their published
+	// replacement is "balance".
 	insufficientFunds: () =>
 		social()
-			? 'INSUFFICIENT FUNDS TO PLAY THIS ROUND. PLEASE ADD FUNDS TO YOUR ACCOUNT OR LOWER THE AMOUNT.'
+			? 'INSUFFICIENT BALANCE TO PLAY THIS ROUND. PLEASE TOP UP YOUR BALANCE OR LOWER THE AMOUNT.'
 			: stateI18nDerived.translate(
 					'INSUFFICIENT FUNDS TO PLACE THIS BET. PLEASE ADD FUNDS TO YOUR ACCOUNT OR LOWER THE BET LEVEL.',
 				),

@@ -60,6 +60,19 @@
 				// 	}
 				// }
 				stateConfig.jurisdiction = authenticateData?.config?.jurisdiction;
+
+				// Every betting parameter the server sent, not just the ladder.
+				// minBet/maxBet bound the stake, stepBet is the increment when a game
+				// has no discrete ladder, and defaultBetLevel is the stake to open
+				// with — that last one is why a Gold Coin session used to start at
+				// 1 GC instead of the 10,000 GC the server nominates.
+				const toAmount = (value?: number) =>
+					typeof value === 'number' ? value / API_AMOUNT_MULTIPLIER : 0;
+				stateConfig.minBet = toAmount(authenticateData.config?.minBet);
+				stateConfig.maxBet = toAmount(authenticateData.config?.maxBet);
+				stateConfig.stepBet = toAmount(authenticateData.config?.stepBet);
+				stateConfig.defaultBetLevel = toAmount(authenticateData.config?.defaultBetLevel);
+
 				stateConfig.betAmountOptions = (authenticateData.config?.betLevels || []).map(
 					(level) => level / API_AMOUNT_MULTIPLIER,
 				);
@@ -72,6 +85,15 @@
 				// no relation to betLevels at all. The menu is meant to present the
 				// server's betting parameters, so it now presents all of them.
 				stateConfig.betMenuOptions = stateConfig.betAmountOptions;
+
+				// Open on the server's nominated stake. Set after the options above so
+				// the clamp in setBetAmount has the limits to work with; a resumed
+				// round overwrites it further down, which is correct — that stake is
+				// already committed.
+				if (stateConfig.defaultBetLevel > 0) {
+					stateBet.betAmount = stateConfig.defaultBetLevel;
+					stateBet.wageredBetAmount = stateConfig.defaultBetLevel;
+				}
 			}
 
 			// round

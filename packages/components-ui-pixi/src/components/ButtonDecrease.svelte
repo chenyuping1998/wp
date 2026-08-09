@@ -9,24 +9,27 @@
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const context = getContext();
 	const sizes = { width: UI_BASE_SIZE, height: UI_BASE_SIZE };
-	const smallest = $derived(stateConfig.betAmountOptions[0]);
-	// betAmountOptions is empty until authenticate answers, and children render even
-	// when it fails — so guard rather than stepping to undefined.
+	const options = $derived(stateConfig.betAmountOptions);
+	// See ButtonIncrease: the ladder when the server gives one, stepBet otherwise.
+	const smallest = $derived(options.length ? options[0] : stateConfig.minBet);
+	// nothing is known until authenticate answers, and children render even when
+	// it fails — so guard rather than stepping to undefined.
+	const canStep = $derived(options.length > 0 || stateConfig.stepBet > 0);
 	const disabled = $derived(
-		!context.stateXstateDerived.isIdle() ||
-			stateConfig.betAmountOptions.length === 0 ||
-			stateBet.betAmount === smallest,
+		!context.stateXstateDerived.isIdle() || !canStep || stateBet.betAmount === smallest,
 	);
 
 	const onpress = () => {
-		if (stateConfig.betAmountOptions.length === 0) return;
+		if (!canStep) return;
 		context.eventEmitter.broadcast({ type: 'soundPressGeneral' });
 
-		const nextSmaller = [...stateConfig.betAmountOptions]
-			.sort((a, b) => b - a)
-			.find((option) => option < stateBet.betAmount);
+		if (options.length) {
+			const nextSmaller = [...options].sort((a, b) => b - a).find((option) => option < stateBet.betAmount);
+			stateBetDerived.setBetAmount(nextSmaller ?? smallest);
+			return;
+		}
 
-		stateBetDerived.setBetAmount(nextSmaller ?? smallest);
+		stateBetDerived.setBetAmount(stateBet.betAmount - stateConfig.stepBet);
 	};
 </script>
 

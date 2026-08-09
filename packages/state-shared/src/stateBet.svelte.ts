@@ -1,5 +1,6 @@
 import type { BaseBet } from 'utils-bet';
 import { stateMeta } from './stateMeta.svelte';
+import { stateConfig } from './stateConfig.svelte';
 
 export type Currency = string;
 export type BetToResume = BaseBet | null;
@@ -25,9 +26,18 @@ const correctBetAmount = (value: number) => {
 	if (value <= 0) return 0;
 	const costMultiplier = betCostMultiplier();
 	if (costMultiplier === 0) return 0;
-	const max = stateBet.balanceAmount / costMultiplier;
-	if (value >= max) return max;
-	return value;
+
+	// The server's own limits come first: a stake outside minBet/maxBet is one it
+	// would reject. Both are 0 until authenticate answers, and there is nothing
+	// to clamp against until then.
+	let corrected = value;
+	if (stateConfig.maxBet > 0) corrected = Math.min(corrected, stateConfig.maxBet);
+	if (stateConfig.minBet > 0) corrected = Math.max(corrected, stateConfig.minBet);
+
+	// Affordability last, so a player short of the minimum is held to what they
+	// actually have rather than to a stake they cannot place.
+	const affordable = stateBet.balanceAmount / costMultiplier;
+	return Math.min(corrected, affordable);
 };
 
 const setBetAmount = (value: number) => {

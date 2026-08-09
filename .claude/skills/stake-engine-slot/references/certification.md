@@ -39,19 +39,43 @@ Keep the vocabulary in **one place per game** (`src/game/socialTerms.ts`) and pu
 from it in every panel. Two panels with their own copies drift, and the drift is
 what gets flagged.
 
-Restricted so far, with the replacement that was accepted:
+**The authoritative list is Stake's own**, at
+<https://stake-engine.com/docs/approval-guidelines/jurisdiction-requirements>.
+That page is client-rendered — `WebFetch` returns "Loading…", so read it in a
+browser. Reproduced here because three review rounds were lost guessing at it:
 
-| Restricted | Social replacement |
+| Restricted | Stake's replacement |
 |---|---|
-| bet / total bet | amount / total amount |
-| bet level, bet menu | amount level, play menu |
-| buy, bought | play, started |
-| Buy Bonus | Play Bonus |
-| cost | total |
-| pay, pays, paid | award, awards, awarded |
-| payout | award |
-| payline, paytable | playline, play table |
-| "pay left to right" | "start from left to right" |
+| bet / bets / betting | play / plays / playing |
+| total bet | total play |
+| place your bets | come and play / join in the game |
+| rebet | respin |
+| stake | play amount |
+| wager | play |
+| gamble | play |
+| pay / pays / paid | win / wins / won |
+| pay out / paid out / pays out | win / won |
+| win feature | play feature |
+| payer | winner |
+| buy / purchase | play |
+| bought | instantly triggered |
+| buy bonus | get bonus |
+| bonus buy | bonus / feature |
+| at the cost of | for |
+| cost of | can be played for |
+| cash / money | coins |
+| credit / fund | balance |
+| currency | token |
+| deposit / withdraw | get coins / redeem |
+| be awarded to player's accounts | appear in player's accounts |
+
+The replacement column is a suggestion, not a whitelist — anything that avoids a
+restricted word is acceptable. This game used "amount" for bet and
+"award/awarded" for pay/paid, which passed.
+
+Stake also suggest a `sweeps_<lang>` language file for the swapped phrases; this
+repo instead branches at the string, which keeps the two versions next to each
+other where the drift is visible.
 
 Rules learned the hard way:
 
