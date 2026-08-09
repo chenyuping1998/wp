@@ -29,6 +29,9 @@
 	import ReelDust from './ReelDust.svelte';
 	import EntryReveal from './EntryReveal.svelte';
 	import Anticipations from './Anticipations.svelte';
+	import BoardContainer from './BoardContainer.svelte';
+	import BoardExpandFx from './BoardExpandFx.svelte';
+	import ScatterTrigger from './ScatterTrigger.svelte';
 	import LeverageMeter from './LeverageMeter.svelte';
 	import Win from './Win.svelte';
 	import FreeSpinIntro from './FreeSpinIntro.svelte';
@@ -86,7 +89,11 @@
 			<Board />
 			<ReelDust />
 			<Anticipations />
-			<LeverageMeter />
+			<BoardContainer>
+				<ScatterTrigger />
+				<BoardExpandFx />
+				<LeverageMeter />
+			</BoardContainer>
 		</MainContainer>
 
 		<EntryReveal />

@@ -7,7 +7,7 @@ import { waitForTimeout } from 'utils-shared/wait';
 import { eventEmitter } from './eventEmitter';
 import { playBookEvent } from './utils';
 import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
-import { stateGame, stateGameDerived } from './stateGame.svelte';
+import { stateGame, stateGameDerived, displayRows } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
 import type { Position } from './types';
 import { BASE_ROWS, paddedReelLength } from './constants';
@@ -66,7 +66,15 @@ const winLevelSoundsStop = () => {
 // one position can belong to several of them (an H1 win and an L2 win share the
 // wilds that carried both). Deduplicate before animating - a position animated
 // twice would be waited on twice and only ever resolve once.
-export const animateSymbols = async ({ positions }: { positions: Position[] }) => {
+export const animateSymbols = async ({
+	positions,
+	flag = 'win',
+}: {
+	positions: Position[];
+	// Which set to publish while this plays. Everything not in the published set
+	// is dimmed by ReelSymbol, which is what makes a win legible on a full board.
+	flag?: 'win' | 'scatter';
+}) => {
 	// Only animate symbols in visible rows (1..rows) - padding rows have no
 	// oncomplete callback and would freeze the game forever.
 	const visiblePositions = _.uniqBy(
@@ -75,10 +83,22 @@ export const animateSymbols = async ({ positions }: { positions: Position[] }) =
 	);
 	if (visiblePositions.length === 0) return;
 	eventEmitter.broadcast({ type: 'boardShow' });
-	await eventEmitter.broadcastAsync({
-		type: 'boardWithAnimateSymbols',
-		symbolPositions: visiblePositions,
-	});
+
+	if (flag === 'win') stateGame.winPositions = visiblePositions;
+	else stateGame.scatterPositions = visiblePositions;
+
+	try {
+		await eventEmitter.broadcastAsync({
+			type: 'boardWithAnimateSymbols',
+			symbolPositions: visiblePositions,
+		});
+	} finally {
+		// finally, not after the await: a spin started mid-presentation rejects
+		// the pending promise, and leaving the board dimmed forever is a much
+		// worse bug than a highlight that ends early.
+		if (flag === 'win') stateGame.winPositions = [];
+		else stateGame.scatterPositions = [];
+	}
 };
 
 export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContext> = {
@@ -110,8 +130,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	boardExpand: async (bookEvent: BookEventOfType<'boardExpand'>) => {
 		const rows = bookEvent.numRows[0];
 		if (rows === stateGame.rows) return;
-		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
+
+		eventEmitter.broadcast({ type: 'soundSlam' });
+		// stateGame.rows is the logical truth and flips now, because the next
+		// reveal will arrive with a board this tall. displayRows is what the
+		// layout follows, and it takes BOARD_EXPAND_MS to get there - the frame
+		// grows upward out of the basegame board while debris falls through it.
 		stateGame.rows = rows;
+		displayRows.set(rows);
 		await eventEmitter.broadcastAsync({ type: 'boardExpandPlay', rows });
 	},
 
@@ -152,10 +178,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_main' });
 		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
 		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
-		await waitForTimeout(3000);
+		// The shockwave rides the bell rather than following it - the two are one
+		// beat, and a burst that arrives after the sound reads as a lag.
+		eventEmitter.broadcast({ type: 'scatterTriggerShow', positions: bookEvent.positions });
+		await waitForTimeout(1600);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		await animateSymbols({ positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
+		await animateSymbols({ positions: bookEvent.positions, flag: 'scatter' });
+		await animateSymbols({ positions: bookEvent.positions, flag: 'scatter' });
+		eventEmitter.broadcast({ type: 'scatterTriggerHide' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		await eventEmitter.broadcastAsync({ type: 'transition' });
@@ -202,11 +232,12 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
 		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
-		await waitForTimeout(2000);
+		eventEmitter.broadcast({ type: 'scatterTriggerShow', positions: bookEvent.positions });
+		await waitForTimeout(1400);
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		await animateSymbols({ positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
+		await animateSymbols({ positions: bookEvent.positions, flag: 'scatter' });
+		eventEmitter.broadcast({ type: 'scatterTriggerHide' });
 		const extraSpins = Math.max(0, bookEvent.totalFs - stateUi.freeSpinCounterTotal);
 		if (extraSpins > 0) {
 			eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
@@ -252,6 +283,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// the feature board's seven symbols - which would be drawn into a
 		// three-row frame if they were left there. The transition covers it.
 		stateGame.rows = BASE_ROWS;
+		displayRows.set(BASE_ROWS, { duration: 0 });
 		stateGame.leverage = 1;
 		stateGame.leverageHits = [];
 		eventEmitter.broadcast({ type: 'leverageMeterHide' });
@@ -291,6 +323,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		}
 		if (stateGame.rows !== BASE_ROWS) {
 			stateGame.rows = BASE_ROWS;
+			displayRows.set(BASE_ROWS, { duration: 0 });
 			stateGameDerived.enhancedBoard.settle(baseIdleBoard());
 		}
 	},
@@ -323,7 +356,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// leverageUpdate is enough because the event carries the running total,
 		// not the increment.
 		const lastBoardExpandEvent = findLastBookEvent('boardExpand' as const);
-		if (lastBoardExpandEvent) stateGame.rows = lastBoardExpandEvent.numRows[0];
+		if (lastBoardExpandEvent) {
+			stateGame.rows = lastBoardExpandEvent.numRows[0];
+			displayRows.set(stateGame.rows, { duration: 0 });
+		}
 
 		const lastLeverageEvent = findLastBookEvent('leverageUpdate' as const);
 		if (lastLeverageEvent) {

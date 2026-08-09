@@ -7,6 +7,8 @@ import type { EmitterEventWin } from '../components/Win.svelte';
 import type { EmitterEventSound } from '../components/Sound.svelte';
 import type { EmitterEventTransition } from '../components/Transition.svelte';
 import type { EmitterEventLeverageMeter } from '../components/LeverageMeter.svelte';
+import type { EmitterEventBoardExpandFx } from '../components/BoardExpandFx.svelte';
+import type { EmitterEventScatterTrigger } from '../components/ScatterTrigger.svelte';
 
 export type EmitterEventGame =
 	| EmitterEventBoard
@@ -17,4 +19,6 @@ export type EmitterEventGame =
 	| EmitterEventFreeSpinOutro
 	| EmitterEventSound
 	| EmitterEventTransition
-	| EmitterEventLeverageMeter;
+	| EmitterEventLeverageMeter
+	| EmitterEventBoardExpandFx
+	| EmitterEventScatterTrigger;

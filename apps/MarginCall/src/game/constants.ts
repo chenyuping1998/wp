@@ -13,11 +13,54 @@ export const MAX_ROWS = FEATURE_ROWS;
 
 export const NUM_REELS = 5;
 
-// Sized so the tall (5-row) board still clears the bet bar. The basegame board
-// is the same cell size and simply occupies less height.
+// Cell size in BOARD space, not screen space. The board is drawn at this size
+// and then fitted to the screen by boardLayout(), which is what lets the two
+// board heights both fill the frame without the reels (or utils-slots) ever
+// knowing the screen size changed.
 export const SYMBOL_SIZE = 104;
 
 export const REEL_PADDING = 0.53;
+
+// How much of the available box each board should occupy, as a fraction of the
+// shorter fitting axis. The basegame board is short and wide, so it can be
+// pushed close to the edges; the feature board is square and its height is what
+// runs out first, so it settles for less.
+//
+// This is the answer to "the basegame board is too small". Making the cell
+// bigger instead would work for 5x3 and overflow the canvas at 5x5 - three rows
+// at 65% of an 800px box is a 173px cell, and five of those is 867px on an 800px
+// canvas. Fitting per row count keeps the basegame large and the feature board
+// on screen, and the change of scale between them is itself part of the moment.
+// Two limits per board, and whichever runs out first wins. On desktop and
+// landscape the height binds, which is what puts the basegame board at ~64% of
+// the canvas. On tablet and portrait the board is 5 reels wide and only 3 rows
+// tall, so the WIDTH binds instead - and a low width fraction there is what
+// makes the basegame board look tiny even though its height fraction is
+// technically "correct" for the shape. Hence the generous width allowances:
+// they cost nothing on wide screens, where the height limit is reached first.
+export const BOARD_FIT = {
+	basegame: { height: 0.64, width: 0.9 },
+	feature: { height: 0.78, width: 0.92 },
+};
+
+// Both boards stand on the same line, just above the bet bar, so the feature
+// board grows upward out of the basegame one instead of the whole thing
+// re-centring as it expands.
+export const BOARD_BOTTOM_MARGIN = 16;
+
+// How long a winning symbol stays lit before the round moves on. Board awaits
+// this, so it is also the pace of the win presentation.
+export const WIN_HOLD_MS = 1100;
+export const WIN_HOLD_TURBO_MS = 420;
+
+// Symbols that took no part in the win drop to this alpha while it plays. The
+// ring alone is not enough on a full board - the win has to be the only bright
+// thing on screen for it to read at a glance.
+export const LOSING_SYMBOL_ALPHA = 0.32;
+
+// The feature board opening two extra rows. Slow enough to be an event rather
+// than a layout jump, and it grows upward - the bottom edge stays put.
+export const BOARD_EXPAND_MS = 1250;
 
 // A reel holds its visible rows plus one padding symbol above and below.
 export const paddedReelLength = (rows: number) => rows + 2;

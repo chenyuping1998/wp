@@ -3,10 +3,7 @@
 		| { type: 'boardFrameGlowShow' }
 		| { type: 'boardFrameGlowHide' }
 		// something slammed into the frame — kick it and flash the brass
-		| { type: 'boardFrameImpact'; strength?: number }
-		// the feature board just opened two extra rows: awaited, so the first
-		// feature spin does not start sweeping while the housing is still growing
-		| { type: 'boardExpandPlay'; rows: number };
+		| { type: 'boardFrameImpact'; strength?: number };
 </script>
 
 <script lang="ts">

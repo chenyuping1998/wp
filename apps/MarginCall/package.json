@@ -12,7 +12,8 @@
 		"check:social": "node design/check_social_words.mjs",
 		"check:assets": "node design/check_assets.mjs",
 		"check:audio": "node design/check_audio.mjs",
-		"build": "node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_assets.mjs && node design/check_audio.mjs && vite build",
+		"check:fit": "node design/check_board_fit.mjs",
+		"build": "node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_assets.mjs && node design/check_audio.mjs && node design/check_board_fit.mjs && vite build",
 		"preview": "vite preview"
 	},
 	"type": "module",

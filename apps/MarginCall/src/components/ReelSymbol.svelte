@@ -2,6 +2,7 @@
 	import Symbol from './Symbol.svelte';
 	import SymbolWrap from './SymbolWrap.svelte';
 	import { getSymbolInfo, getSymbolX } from '../game/utils';
+	import { LOSING_SYMBOL_ALPHA } from '../game/constants';
 	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
 	import type { SymbolState } from '../game/types';
 
@@ -19,6 +20,26 @@
 	// the end of a stop: the strip is still moving but far slower, and carrying
 	// full-speed blur through it made the symbols snap from heavily smeared to
 	// perfectly sharp in a single frame.
+	// While a win is on screen every other symbol steps back. At rest a symbol's
+	// index in the reel is its board row, so the win positions (which carry the
+	// padding offset already) can be compared directly.
+	const isWinning = $derived(
+		stateGame.winPositions.some(
+			(p) => p.reel === props.reelIndex && p.row === props.reelSymbol.symbolIndex,
+		),
+	);
+	const isScatterFlagged = $derived(
+		stateGame.scatterPositions.some(
+			(p) => p.reel === props.reelIndex && p.row === props.reelSymbol.symbolIndex,
+		),
+	);
+	const highlightActive = $derived(
+		stateGame.winPositions.length > 0 || stateGame.scatterPositions.length > 0,
+	);
+	const symbolAlpha = $derived(
+		highlightActive && !isWinning && !isScatterFlagged ? LOSING_SYMBOL_ALPHA : 1,
+	);
+
 	const reelMotion = $derived(stateGame.board[props.reelIndex]?.reelState.motion);
 	const blur = $derived(reelMotion === 'spinning' ? 1 : reelMotion === 'bouncing' ? 0.3 : 0);
 
@@ -67,6 +88,7 @@
 	<SymbolWrap
 		x={getSymbolX(props.reelIndex)}
 		y={props.reelSymbol.symbolY()}
+		alpha={symbolAlpha}
 		animating={symbolInfo.type === 'spine' &&
 			(props.reelSymbol.symbolState === 'land' || props.reelSymbol.symbolState === 'win')}
 	>
