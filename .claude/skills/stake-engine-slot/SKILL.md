@@ -204,5 +204,25 @@ URL parameters the game receives (`stateUrlDerived`):
   the total cost of a bought mode.
 - Money is formatted against a fixed locale, never the interface language —
   switching to French must not turn `$1,000.00` into `1 000,00 $US`.
+- Amounts in URL parameters are in API units: 1,000,000 = 1 coin. A launcher
+  `balance=100000000` seeds 100 coins, not 100 million.
 
-Details and the recurring review comments: `references/certification.md`.
+## Shipping a new game
+
+Start from `references/review-log.md`. It opens with a pre-submission checklist
+built from six rounds of Stake review on Go Bananas — every line on it cost an
+upload-and-wait cycle, and almost all of them are cheaper to build in than to
+retrofit. The case log underneath explains what each reviewer comment actually
+meant, which is rarely what it says.
+
+The two items that generalise beyond the checklist:
+
+- **Whatever the animation shows as covering the board is what the maths must
+  have evaluated.** Presentation and maths get written months apart, and a
+  disagreement between them reads to a reviewer as a payout bug.
+- **Keep the source layers of any artwork you flatten.** Cover art gets sent
+  back for composition, and a flattened image cannot give back pixels that were
+  cropped away.
+
+`references/certification.md` holds the requirements themselves — restricted
+words, replay, money, and the presentation notes that keep coming back.
