@@ -38,9 +38,11 @@ export const REEL_PADDING = 0.53;
 // makes the basegame board look tiny even though its height fraction is
 // technically "correct" for the shape. Hence the generous width allowances:
 // they cost nothing on wide screens, where the height limit is reached first.
+// Trimmed 10% from the first pass, which sat the basegame board at 64% of the
+// canvas height and read as slightly overbearing next to the bet bar.
 export const BOARD_FIT = {
-	basegame: { height: 0.64, width: 0.9 },
-	feature: { height: 0.78, width: 0.92 },
+	basegame: { height: 0.576, width: 0.81 },
+	feature: { height: 0.702, width: 0.828 },
 };
 
 // Both boards stand on the same line, just above the bet bar, so the feature

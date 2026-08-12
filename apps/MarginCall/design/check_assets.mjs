@@ -1,6 +1,15 @@
-// Every asset path in src/game/assets.ts must exist in the build output.
-// A missing one 404s at load time and — because the preloader waits on the
-// whole batch — can leave the game stuck on the loading screen.
+// Every asset path in src/game/assets.ts must exist in the build output, with
+// exactly the case it is written in.
+//
+// A missing one 404s at load time and — because the preloader waits on the whole
+// batch — can leave the game stuck on the loading screen.
+//
+// The case check matters as much as the existence check on this project: we
+// develop on Windows, where the filesystem is case-insensitive, and ship to a
+// server where it is not. `w.png` referenced against a `W.png` on disk resolves
+// perfectly here and 404s in production, and every other guard we have would
+// stay green. That has already happened once.
+//
 // Usage: node design/check_assets.mjs
 import fs from 'fs';
 import path from 'path';
@@ -8,32 +17,61 @@ import { fileURLToPath } from 'url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = fs.readFileSync(path.join(appRoot, 'src/game/assets.ts'), 'utf8');
+const staticRoot = path.join(appRoot, 'static');
 
-let missing = 0;
+let problems = 0;
 let checked = 0;
+
+const dirCache = new Map();
+const entriesOf = (dir) => {
+	if (!dirCache.has(dir)) {
+		dirCache.set(dir, fs.existsSync(dir) ? fs.readdirSync(dir) : []);
+	}
+	return dirCache.get(dir);
+};
+
+/** Walk a relative path segment by segment, comparing each against the real
+ *  directory listing. That is the only way to see a case difference on a
+ *  case-insensitive filesystem — fs.existsSync cannot. */
+const check = (label, rel) => {
+	checked++;
+	const full = path.join(staticRoot, rel);
+	if (!fs.existsSync(full)) {
+		console.log(`  !! missing: ${label}  →  static/${rel}`);
+		problems++;
+		return;
+	}
+	let dir = staticRoot;
+	for (const segment of rel.split('/')) {
+		const entries = entriesOf(dir);
+		if (!entries.includes(segment)) {
+			const actual = entries.find((e) => e.toLowerCase() === segment.toLowerCase());
+			console.log(
+				`  !! case mismatch: ${label}  →  wants "${segment}", on disk "${actual}"` +
+					' (resolves on Windows, 404s on the server)',
+			);
+			problems++;
+			return;
+		}
+		dir = path.join(dir, segment);
+	}
+};
 
 // new URL('../../assets/…', import.meta.url) is resolved at RUNTIME against the
 // served bundle URL (_app/immutable/…), so it lands on /assets/… — i.e. static/.
 // It is not a build-time import, which is exactly why a typo here fails as a
 // silent 404 instead of breaking the build.
 for (const m of source.matchAll(/new URL\(\s*['"`]([^'"`]+)['"`]\s*,\s*import\.meta\.url/g)) {
-	checked++;
-	const rel = m[1].replace(/^(?:\.\.\/)+/, '');
-	if (fs.existsSync(path.join(appRoot, 'static', rel))) continue;
-	console.log(`  !! missing: ${m[1]}  →  static/${rel}`);
-	missing++;
+	check(m[1], m[1].replace(/^(?:\.\.\/)+/, ''));
 }
 
 for (const m of source.matchAll(/src:\s*['"`](\/[^'"`\s]+)['"`]/g)) {
-	checked++;
-	if (fs.existsSync(path.join(appRoot, 'static', m[1].replace(/^\//, '')))) continue;
-	console.log(`  !! missing (static): ${m[1]}`);
-	missing++;
+	check(m[1], m[1].replace(/^\//, ''));
 }
 
 console.log(
-	missing === 0
+	problems === 0
 		? `OK: all ${checked} asset paths resolve`
-		: `${missing} of ${checked} asset path(s) missing`,
+		: `${problems} of ${checked} asset path(s) wrong`,
 );
-process.exit(missing === 0 ? 0 : 1);
+process.exit(problems === 0 ? 0 : 1);

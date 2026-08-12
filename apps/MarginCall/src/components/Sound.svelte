@@ -84,11 +84,15 @@
 	> = {
 		sfx_btn_general: { name: 'ui_click', volume: 0.7 },
 		sfx_btn_spin: { name: 'spin_start', volume: 0.9 },
-		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.92 },
-		sfx_reel_stop_2: { name: 'reel_stop', rate: 1.0 },
-		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.09 },
-		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.19 },
-		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.3 },
+		// A wider ladder than before, and the last reel lands hardest. Five stops
+		// within a second only read as five if the steps between them are obvious;
+		// the old 0.92-1.30 spread was under a major sixth and blurred into one
+		// repeated click.
+		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.8, volume: 0.85 },
+		sfx_reel_stop_2: { name: 'reel_stop', rate: 0.95, volume: 0.9 },
+		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.12, volume: 0.95 },
+		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.33, volume: 1 },
+		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.6, volume: 1.1 },
 		sfx_scatter_stop_1: { name: 'alert_1' },
 		sfx_scatter_stop_2: { name: 'alert_2' },
 		sfx_scatter_stop_3: { name: 'alert_3' },
@@ -126,14 +130,43 @@
 		return audio;
 	}
 
+	// One-shots need more than one element per file.
+	//
+	// getSfx caches a single HTMLAudioElement per cue, and playing an element that
+	// is already playing does not start a second voice - it rewinds the one that
+	// is running. The five reel stops all play reel_stop within about a second, so
+	// four of them were silently cancelling each other and the player heard one
+	// louder-sounding knock at the end, pitched at whatever the last reel set.
+	// Several LEVERAGE symbols landing in one feature spin collapsed the same way.
+	//
+	// So one-shots take a voice from a small pool and only fall back to stealing
+	// the oldest when every voice is busy. Loops are untouched: they stay on the
+	// single cached element, because stopSfx has to be able to find them again.
+	const VOICES_PER_CUE = 6;
+	const sfxPool: Partial<Record<SfxName, HTMLAudioElement[]>> = {};
+
+	function takeVoice(name: SfxName) {
+		const pool = (sfxPool[name] ??= []);
+		const free = pool.find((voice) => voice.paused || voice.ended);
+		if (free) return free;
+		if (pool.length < VOICES_PER_CUE) {
+			const voice = new Audio(`${base}/assets/audio/${SFX_FILES[name]}`);
+			voice.preload = 'auto';
+			pool.push(voice);
+			return voice;
+		}
+		// every voice busy: steal the one that started first
+		const oldest = pool.reduce((a, b) => (a.currentTime >= b.currentTime ? a : b));
+		return oldest;
+	}
+
 	function playSfx(name: SfxName, volumeScale = 1, rate = 1) {
-		const audio = getSfx(name);
+		const audio = takeVoice(name);
 		audio.loop = false;
 		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
-		// Always assign, never skip when rate is 1: getSfx caches one element per
-		// file, so a rate left over from the previous caller would carry into every
-		// later play of the same sample. reel_stop is shared with symbol/royal
-		// landings, which would otherwise inherit the fifth reel's pitch.
+		// Always assign, never skip when rate is 1: a voice is reused across cues
+		// that share a file, so a rate left over from the previous caller would
+		// carry into the next play.
 		audio.playbackRate = rate;
 		audio.currentTime = 0;
 		audio.play().catch(() => {});
@@ -257,9 +290,13 @@
 	});
 
 	onMount(() => {
-		// Fetch the one-shot sfx up front so the first play is in sync
-		// (an Audio element created lazily would stall on its first fetch).
-		(Object.keys(SFX_FILES) as SfxName[]).forEach(getSfx);
+		// Fetch the one-shot sfx up front so the first play is in sync (an Audio
+		// element created lazily would stall on its first fetch). Warms the pool
+		// rather than the loop element, because the pool is what one-shots use.
+		(Object.keys(SFX_FILES) as SfxName[]).forEach((name) => {
+			takeVoice(name);
+			getSfx(name);
+		});
 
 		playBgm('base');
 

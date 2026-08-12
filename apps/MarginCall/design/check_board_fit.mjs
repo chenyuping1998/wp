@@ -53,7 +53,10 @@ const BAR_FRACTION = 0.15;
 // "Big enough" cannot be a height fraction: a 5-wide, 3-tall board on a portrait
 // canvas is width-limited, and 30% of the height is the largest it can possibly
 // be there. What matters is that it fills the axis that constrains it.
-const MIN_FILL_OF_CONSTRAINING_AXIS = 0.6;
+// Lowered from 0.6 when the board was deliberately trimmed 10%. The floor is
+// here to catch a board that has accidentally become tiny, not to enforce a
+// particular size - so it sits below the intended value rather than at it.
+const MIN_FILL_OF_CONSTRAINING_AXIS = 0.5;
 const MAX_TOP_OVERSHOOT = 0; // the top edge must not leave the canvas
 
 let problems = 0;
