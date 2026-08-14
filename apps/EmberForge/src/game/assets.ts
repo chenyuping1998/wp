@@ -34,20 +34,29 @@ export default {
 		src: new URL('../../assets/sprites/emberForgeFx/fx_vignette.png', import.meta.url).href,
 		preload: true,
 	},
-	// Seamless streaked noise, scrolled through efHeatMask to animate the fire in
-	// the painted scene (design/generate_lava_flow.mjs). Both are preloaded: they
-	// are on screen from the first frame, and popping them in a beat late would be
-	// the room catching fire after the player arrives.
-	fxFlow: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/emberForgeFx/fx_flow.png', import.meta.url).href,
-		preload: true,
-	},
-	efHeatMask: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/emberForgeFx/heat_mask.png', import.meta.url).href,
-		preload: true,
-	},
+	// The fire in the painted scene, as a twelve-frame loop
+	// (design/generate_lava_flow.mjs). LavaFlow cross-fades through these
+	// additively over bg_background.png; see that component for why the motion is
+	// baked into frames rather than scrolled through a mask at runtime.
+	//
+	// Listed one by one rather than built in a loop: check_assets.mjs reads this
+	// file statically and is blind to a computed key, and twelve silently missing
+	// textures would be a scene that simply stops burning.
+	//
+	// Preloaded — they are on screen from the first frame, and popping them in a
+	// beat late would be the room catching fire after the player arrives.
+	efFlow00: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_00.png', import.meta.url).href }, // prettier-ignore
+	efFlow01: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_01.png', import.meta.url).href }, // prettier-ignore
+	efFlow02: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_02.png', import.meta.url).href }, // prettier-ignore
+	efFlow03: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_03.png', import.meta.url).href }, // prettier-ignore
+	efFlow04: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_04.png', import.meta.url).href }, // prettier-ignore
+	efFlow05: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_05.png', import.meta.url).href }, // prettier-ignore
+	efFlow06: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_06.png', import.meta.url).href }, // prettier-ignore
+	efFlow07: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_07.png', import.meta.url).href }, // prettier-ignore
+	efFlow08: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_08.png', import.meta.url).href }, // prettier-ignore
+	efFlow09: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_09.png', import.meta.url).href }, // prettier-ignore
+	efFlow10: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_10.png', import.meta.url).href }, // prettier-ignore
+	efFlow11: { type: 'sprite', preload: true, src: new URL('../../assets/sprites/emberForgeFx/flow/heat_flow_11.png', import.meta.url).href }, // prettier-ignore
 	// bet-bar plates (design/generate_ui_plates.mjs) — brass-framed cast iron
 	// matching the reel housing
 	efUiTicker: {

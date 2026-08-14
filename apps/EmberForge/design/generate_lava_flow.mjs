@@ -7,13 +7,25 @@
 // whole picture cannot separate them: drift the fire and the anvil drifts with
 // it.
 //
-// So the fire is separated out ONCE, here, and animated at runtime:
+// So the fire is separated out ONCE, here, and emitted as a short looping
+// sequence: heat_flow_00..NN.png, each frame the picture's own heat modulated by
+// streaked noise that has scrolled a little further. Cross-fading through them
+// makes the hot pixels churn and the pour run downward while every stone pixel
+// stays exactly where it was painted.
 //
-//   heat_mask.png  where the picture is hot, as an alpha mask
-//   fx_flow.png    seamless streaked noise, scrolled through that mask
+// ── why this is baked and not done at runtime ──
+// The first version did it live: one heat MASK, with noise tiles scrolled
+// underneath it and blended additively. It rendered essentially nothing, and the
+// reason is worth keeping. In Pixi v8 a sprite mask is a filter —
+// `AlphaMaskEffect extends FilterEffect` — so the masked container is drawn into
+// an isolated render texture that starts out transparent. Additive blending adds
+// to whatever is already in the framebuffer, and inside that texture there was
+// nothing to add to; the result then came back as a low-alpha orange film laid
+// over fire that was already bright orange.
 //
-// Scrolling the noise inside the mask makes the hot pixels churn and the pour
-// run downward while every stone pixel stays exactly where it was painted.
+// Additive light has to be drawn straight into the scene. That rules out a mask,
+// which is why the restriction to hot pixels has to be baked into the texture's
+// own alpha instead — which is all these frames are.
 //
 // Usage: node design/generate_lava_flow.mjs <dir with node_modules>
 
@@ -101,7 +113,9 @@ const buildHeatMask = () => {
 		}
 	}
 
-	fs.writeFileSync(path.join(OUT, 'heat_mask.png'), PNG.sync.write(out));
+	// Not written to disk any more — the heat is only an intermediate now. It is
+	// what the flow frames are cut from and what the ember sources are sampled
+	// from, and nothing at runtime ever wants it on its own.
 	return { W, H, hotPct: (100 * hot) / (W * H), heat: out.data };
 };
 
@@ -222,74 +236,81 @@ const buildFlowNoise = () => {
 		return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy;
 	};
 
-	const png = new PNG({ width: FLOW_SIZE, height: FLOW_SIZE });
-	for (let y = 0; y < FLOW_SIZE; y += 1) {
-		for (let x = 0; x < FLOW_SIZE; x += 1) {
-			let sum = 0;
-			let amp = 1;
-			let norm = 0;
-			for (let o = 0; o < OCTAVES; o += 1) {
-				const period = LATTICE * 2 ** o;
-				const u = (x / FLOW_SIZE) * period;
-				// The stretch has to stay commensurate with the period or the wrap
-				// breaks: sample fewer lattice cells down the axis, not a fraction of
-				// one. Rounding up keeps at least one full cell on the tallest octave.
-				const periodY = Math.max(1, Math.round(period / Y_STRETCH));
-				const v = (y / FLOW_SIZE) * periodY;
-				sum += amp * valueNoise(u, v, period, periodY);
-				norm += amp;
-				amp *= 0.5;
+	// fbm at an arbitrary point of the (periodic) noise field.
+	const fbm = (u, v) => {
+		let sum = 0;
+		let amp = 1;
+		let norm = 0;
+		for (let o = 0; o < OCTAVES; o += 1) {
+			const period = LATTICE * 2 ** o;
+			// The stretch has to stay commensurate with the period or the wrap
+			// breaks: sample fewer lattice cells down the axis, not a fraction of
+			// one. Rounding up keeps at least one full cell on the tallest octave.
+			const periodY = Math.max(1, Math.round(period / Y_STRETCH));
+			sum += amp * valueNoise(u * period, v * periodY, period, periodY);
+			norm += amp;
+			amp *= 0.5;
+		}
+		// Contrast: raw fbm is a grey mush centred on 0.5. Fire is mostly dark
+		// with bright veins running through it, which is what this curve makes.
+		return clamp01((sum / norm - 0.34) / 0.42) ** 1.5;
+	};
+
+	return fbm;
+};
+
+// ── 4. the flow frames ───────────────────────────────────────────────────────
+//
+// FRAMES steps through exactly ONE period of the noise, so the last frame runs
+// back into the first with no jump — the loop is seamless in time for the same
+// reason the texture was seamless in space.
+const FRAMES = 12;
+const TILES_X = 2.5; // how many times the noise repeats across the picture
+const TILES_Y = 2;
+// The floor matters: at 0 the fire would go completely out wherever a dark band
+// of noise crossed it, which reads as the picture flickering rather than as
+// something flowing through it. The fire always burns; the bands ride over it.
+const FLOOR = 0.4;
+
+const buildFlowFrames = ({ W, H, heat }, fbm) => {
+	const dir = path.join(OUT, 'flow');
+	fs.mkdirSync(dir, { recursive: true });
+
+	// Precompute the noise once per frame offset rather than per pixel per frame:
+	// the field is the same, only the v offset moves.
+	let bytes = 0;
+	for (let f = 0; f < FRAMES; f += 1) {
+		const phase = f / FRAMES;
+		const png = new PNG({ width: W, height: H });
+		for (let y = 0; y < H; y += 1) {
+			for (let x = 0; x < W; x += 1) {
+				const p = (y * W + x) << 2;
+				const h = heat[p + 3] / 255;
+				// White, tinted at runtime. Storing the painting's actual fire colour
+				// per pixel would quadruple these files to say something the artwork
+				// underneath is already saying.
+				png.data[p] = 255;
+				png.data[p + 1] = 255;
+				png.data[p + 2] = 255;
+				if (h <= 0) continue;
+				// Sideways drift as well as downward, so the flow is not a shutter
+				// coming straight down the picture.
+				const u = (x / W) * TILES_X + phase * 0.35;
+				const v = (y / H) * TILES_Y + phase;
+				png.data[p + 3] = Math.round(h * (FLOOR + (1 - FLOOR) * fbm(u, v)) * 255);
 			}
-			// Contrast: raw fbm is a grey mush centred on 0.5. Fire is mostly dark
-			// with bright veins running through it, which is what this curve makes.
-			const n = clamp01((sum / norm - 0.34) / 0.42) ** 1.5;
-			const v = Math.round(n * 255);
-
-			const p = (y * FLOW_SIZE + x) << 2;
-			png.data[p] = 255;
-			png.data[p + 1] = 255;
-			png.data[p + 2] = 255;
-			png.data[p + 3] = v;
 		}
+		const file = path.join(dir, `heat_flow_${String(f).padStart(2, '0')}.png`);
+		const buffer = PNG.sync.write(png);
+		fs.writeFileSync(file, buffer);
+		bytes += buffer.length;
 	}
-
-	fs.writeFileSync(path.join(OUT, 'fx_flow.png'), PNG.sync.write(png));
-
-	// The seam is the one thing that would be obvious in motion and invisible in a
-	// still, so it is asserted rather than eyeballed.
-	//
-	// The test is NOT "opposite edges are equal" — they should not be. Row 0 and
-	// row 511 are two pixels apart across the wrap, so they differ by one ordinary
-	// gradient step, and on the finest octave (8px per lattice cell) that step is
-	// large. Comparing them directly failed a texture that tiles perfectly.
-	//
-	// What actually matters is that the step ACROSS the seam is no bigger than the
-	// steps everywhere else. Then the wrap is indistinguishable from any other
-	// pair of adjacent rows, which is the definition of seamless.
-	// The baseline is averaged over the WHOLE texture, not one row. The contrast
-	// curve clips large areas flat, so a single mid-texture row can read 0.01 and
-	// make any seam at all look catastrophic by comparison.
-	const alpha = (x, y) => png.data[((y * FLOW_SIZE + x) << 2) + 3];
-	let interior = 0;
-	let interiorN = 0;
-	for (let y = 0; y < FLOW_SIZE - 1; y += 1) {
-		for (let x = 0; x < FLOW_SIZE - 1; x += 1) {
-			interior += Math.abs(alpha(x, y) - alpha(x, y + 1));
-			interior += Math.abs(alpha(x, y) - alpha(x + 1, y));
-			interiorN += 2;
-		}
-	}
-	let seam = 0;
-	for (let i = 0; i < FLOW_SIZE; i += 1) {
-		seam += Math.abs(alpha(i, FLOW_SIZE - 1) - alpha(i, 0));
-		seam += Math.abs(alpha(FLOW_SIZE - 1, i) - alpha(0, i));
-	}
-	return { seam: seam / (FLOW_SIZE * 2), interior: interior / interiorN };
+	return { bytes };
 };
 
 const heat = buildHeatMask();
 console.log(
-	`heat_mask.png  ${heat.W}x${heat.H}  ${heat.hotPct.toFixed(1)}% of the picture reads as hot`,
+	`heat           ${heat.W}x${heat.H}  ${heat.hotPct.toFixed(1)}% of the picture reads as hot`,
 );
 
 const points = buildHeatPoints(heat);
@@ -299,12 +320,8 @@ if (points < EMBER_SOURCES) {
 	process.exit(1);
 }
 
-const flow = buildFlowNoise();
+const fbm = buildFlowNoise();
+const frames = buildFlowFrames(heat, fbm);
 console.log(
-	`fx_flow.png    ${FLOW_SIZE}x${FLOW_SIZE}  ` +
-		`step across seam ${flow.seam.toFixed(2)} vs ${flow.interior.toFixed(2)} inside`,
+	`flow/          ${FRAMES} frames  ${(frames.bytes / 1024 / 1024).toFixed(2)}MB total`,
 );
-if (flow.seam > flow.interior * 1.5 + 1) {
-	console.error('fx_flow.png does not tile — the scroll would show a moving seam');
-	process.exit(1);
-}

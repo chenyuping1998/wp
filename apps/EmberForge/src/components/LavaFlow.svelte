@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Container, Sprite } from 'pixi-svelte';
+	import { Sprite } from 'pixi-svelte';
 
 	/**
 	 * Makes the fire in the painted scene actually burn.
@@ -10,16 +10,21 @@
 	 * same pixels as the anvil and the flagstones. Nothing about the image can be
 	 * moved without moving the stonework with it.
 	 *
-	 * So the motion is put somewhere else entirely: seamless streaked noise is
-	 * scrolled across the scene and CLIPPED TO THE FIRE by a mask baked from the
-	 * painting itself (design/generate_lava_flow.mjs). Bright bands travel through
-	 * every hot pixel and through no cold one — the flames lick, the pour runs, and
-	 * the anvil does not so much as shiver.
+	 * So the fire is separated out offline (design/generate_lava_flow.mjs) into a
+	 * twelve-frame loop: the picture's own heat, modulated by streaked noise that
+	 * scrolls a little further each frame. Drawn additively over the scene, the hot
+	 * pixels churn and the pour runs while the stone does not move at all.
 	 *
-	 * Two layers, because one is unconvincing: a slow deep-orange body carrying the
-	 * bulk of the movement, and a smaller, faster, paler layer on top. Their
-	 * periods do not divide each other, so the combination never visibly repeats
-	 * even though both tile.
+	 * ── why the frames are baked ──
+	 * The first version scrolled a noise texture through a heat MASK at runtime and
+	 * rendered essentially nothing. In Pixi v8 a sprite mask is a filter
+	 * (`AlphaMaskEffect extends FilterEffect`), so the masked container is drawn
+	 * into an isolated render texture that starts transparent — and additive
+	 * blending adds to what is already in the framebuffer, which in there was
+	 * nothing. The light never reached the scene; a faint orange film did.
+	 *
+	 * Hence: no mask, no container, no filter. Four additive sprites straight into
+	 * whatever is drawing this, so they blend against the painting itself.
 	 */
 	type Props = {
 		/** The scene rect, top-left anchored — exactly as the scene Sprite is drawn. */
@@ -34,16 +39,35 @@
 	const props: Props = $props();
 	const intensity = $derived(props.intensity ?? 1);
 
-	// Seconds. Driven by rAF rather than setInterval so the flow advances with the
-	// frames actually being drawn — on a slow device an interval clock makes the
-	// noise jump forward between frames, which reads as the fire stuttering.
+	const FRAMES = 12;
+	const FRAME_KEYS = Array.from(
+		{ length: FRAMES },
+		(_, i) => `efFlow${String(i).padStart(2, '0')}`,
+	);
+
+	// Seconds for one full pass. The frames step through exactly one period of the
+	// noise, so this is also the loop, and it is deliberately slow: lava creeps.
+	const LOOP_SECONDS = 3.6;
+
+	/**
+	 * Two passes over the same twelve frames at different speeds and colours.
+	 *
+	 * One alone reads as the whole picture brightening and dimming together. Two,
+	 * at speeds that do not divide each other, interfere — and the interference is
+	 * what stops the loop from being visible as a loop.
+	 */
+	const LAYERS = [
+		{ rate: 1, phase: 0, tint: 0xff6a14, alpha: 0.6 },
+		{ rate: 1.63, phase: 0.37, tint: 0xffc978, alpha: 0.34 },
+	];
+
 	let clock = $state(0);
 	onMount(() => {
 		let raf = 0;
 		let last = performance.now();
 		const step = (now: number) => {
 			// Clamped: coming back from a backgrounded tab hands you one enormous
-			// delta, which would teleport the flow a long way in a single frame.
+			// delta, which would jump the fire a long way in a single frame.
 			clock += Math.min(now - last, 100) / 1000;
 			last = now;
 			raf = requestAnimationFrame(step);
@@ -53,63 +77,48 @@
 	});
 
 	/**
-	 * cols/rows  how many times the noise repeats across the scene — smaller cells
-	 *            mean finer, faster-reading detail
-	 * speedY     cells travelled per second, so the visual speed stays put when the
-	 *            layout changes size
-	 * drift      a slow sideways component; fire does not fall straight down
+	 * Each layer resolves to a PAIR of frames and a blend between them.
+	 *
+	 * Cutting between twelve frames would strobe at this size. Cross-fading turns
+	 * the twelve discrete phases back into continuous movement — the sum of the two
+	 * alphas is always 1, so the layer's brightness holds steady while its pattern
+	 * travels.
 	 */
-	const LAYERS = [
-		{ cols: 2, rows: 2, speedY: 0.085, drift: -0.017, tint: 0xff5a0c, alpha: 0.42 },
-		{ cols: 3, rows: 3, speedY: 0.21, drift: 0.036, tint: 0xffc154, alpha: 0.26 },
-	];
-
-	// Positive modulo — `%` keeps the sign of its left operand in JS, and the
-	// sideways drift is negative on the first layer.
-	const wrap = (value: number, modulus: number) => ((value % modulus) + modulus) % modulus;
-
-	const tilesOf = (layer: (typeof LAYERS)[number]) => {
-		const cw = props.width / layer.cols;
-		const ch = props.height / layer.rows;
-		// One extra row and column: the grid is scrolled by up to a full cell, so
-		// without the spares a gap opens at whichever edge it is travelling from.
-		const offsetY = ch - wrap(clock * layer.speedY * ch, ch);
-		const offsetX = cw - wrap(clock * layer.drift * cw, cw);
-		const tiles = [];
-		for (let row = -1; row < layer.rows; row += 1) {
-			for (let col = -1; col < layer.cols; col += 1) {
-				tiles.push({
-					x: props.x + col * cw + offsetX,
-					y: props.y + row * ch + offsetY,
-					width: cw,
-					height: ch,
-				});
-			}
-		}
-		return tiles;
-	};
+	const passes = $derived.by(() =>
+		LAYERS.map((layer) => {
+			const position = ((clock / LOOP_SECONDS) * layer.rate + layer.phase) * FRAMES;
+			const index = Math.floor(position) % FRAMES;
+			const blend = position - Math.floor(position);
+			return {
+				tint: layer.tint,
+				from: FRAME_KEYS[((index % FRAMES) + FRAMES) % FRAMES],
+				to: FRAME_KEYS[((index + 1) % FRAMES + FRAMES) % FRAMES],
+				fromAlpha: layer.alpha * (1 - blend) * intensity,
+				toAlpha: layer.alpha * blend * intensity,
+			};
+		}),
+	);
 </script>
 
-<!--
-	The mask and the flow have to live in the same Container and nothing else may
-	join them: `isMask` masks the PARENT, so any sibling added here would be
-	clipped to the fire as well.
--->
-<Container>
-	<Sprite key="efHeatMask" x={props.x} y={props.y} width={props.width} height={props.height} isMask />
-
-	{#each LAYERS as layer, layerIndex (layerIndex)}
-		{#each tilesOf(layer) as tile, tileIndex (tileIndex)}
-			<Sprite
-				key="fxFlow"
-				x={tile.x}
-				y={tile.y}
-				width={tile.width}
-				height={tile.height}
-				blendMode="add"
-				tint={layer.tint}
-				alpha={layer.alpha * intensity}
-			/>
-		{/each}
-	{/each}
-</Container>
+{#each passes as pass, index (index)}
+	<Sprite
+		key={pass.from}
+		x={props.x}
+		y={props.y}
+		width={props.width}
+		height={props.height}
+		blendMode="add"
+		tint={pass.tint}
+		alpha={pass.fromAlpha}
+	/>
+	<Sprite
+		key={pass.to}
+		x={props.x}
+		y={props.y}
+		width={props.width}
+		height={props.height}
+		blendMode="add"
+		tint={pass.tint}
+		alpha={pass.toAlpha}
+	/>
+{/each}

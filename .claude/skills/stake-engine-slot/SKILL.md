@@ -11,11 +11,16 @@ other two games" or "the build was green and the game is dead".
 
 ## Build and run
 
-`pnpm` is not on PATH on this machine. Go through corepack, and use an **absolute**
-`--dir` — a relative one resolves against `E:\stake`, not `E:\stake\wp`:
+**Use the toolchain on E:, not the one in `C:\Program Files\nodejs`.** Node, npm,
+pnpm and corepack all live in `E:\stake\tools\node-v22.23.1-win-x64\` (Node
+v22.23.1). This is the user's explicit preference, and it applies to the design
+scripts as much as to builds.
+
+`pnpm` is not on PATH. Go through corepack, and use an **absolute** `--dir` — a
+relative one resolves against `E:\stake`, not `E:\stake\wp`:
 
 ```bash
-& "C:\Program Files\nodejs\corepack.cmd" pnpm --dir E:\stake\wp\apps\GoBananas build
+& "E:\stake\tools\node-v22.23.1-win-x64\corepack.cmd" pnpm --dir E:\stake\wp\apps\GoBananas build
 ```
 
 Two things about reading the result:
@@ -23,9 +28,9 @@ Two things about reading the result:
 - **Do not trust the exit code from PowerShell.** Redirecting a native command's
   stderr wraps each line in an ErrorRecord and reports failure even on success.
   Look for `✔ done` in the output instead.
-- Node lives in `C:\Program Files\nodejs` and is not on a fresh shell's PATH.
-  The SVG→PNG generators need `E:\stake\tools\gen` passed as their argument —
-  that is where `@resvg/resvg-js` and `pngjs` are installed.
+- The SVG→PNG generators need `E:\stake\tools\gen` passed as their argument —
+  that is where `@resvg/resvg-js` and `pngjs` are installed. That is a separate
+  thing from the Node install above; both are under `E:\stake\tools`.
 
 After touching anything in `packages/`, build **every** app, not just the one you
 were working on. That is the only cheap check that you did not break a sibling.
@@ -121,6 +126,34 @@ all.
 prerendering emits a shell and never evaluates the game modules. A green build
 and three green guards said nothing was wrong while the uploaded game was a
 black screen. Boot the page.
+
+## A Pixi trap: additive blending inside a mask draws nothing
+
+`blendMode: 'add'` adds to what is already in the framebuffer. Put it inside a
+masked container and there is nothing there to add to.
+
+In Pixi v8 a sprite mask is a **filter** — `AlphaMaskEffect extends FilterEffect`
+(`rendering/mask/alpha/AlphaMaskPipe.mjs`) — so the masked container is rendered
+into an isolated render texture that starts transparent. Additive children blend
+against that emptiness, and the result is composited back with ordinary alpha. A
+glow meant to light up the artwork underneath arrives as a faint coloured film
+laid over it, which over already-bright art is invisible.
+
+This cost a whole upload. The build was green, `check_assets` passed, the
+component mounted, every prop was correct, and the effect was simply not there.
+
+**The rule:** additive light must be drawn as a direct sibling of what it is
+lighting, with no mask and no filter between them. If the effect has to be
+confined to part of an image, bake that confinement into the texture's own alpha
+offline rather than masking at runtime.
+
+The same applies to `filters` — anything inside `<Container filters={...}>` is in
+an isolated target too. That case is usually fine, because the thing being lit is
+normally inside the same container.
+
+**How to tell them apart quickly:** if an additive effect is invisible, check
+whether any ancestor has a `mask` or `filters` before touching the effect's own
+numbers. Turning the alpha up will not fix it.
 
 ## Svelte 5 traps in this codebase
 
