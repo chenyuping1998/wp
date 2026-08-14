@@ -251,6 +251,55 @@ Two things that make this expensive to fix late:
 
 ---
 
+## Ember Forge round 1 — "low quality asset", "poor animation"
+
+Two canned phrases, no screenshot, nothing named. They were still specific.
+
+**"Low quality asset" was the sample game's art, still shipping.** Four assets
+had come across with the template and never been replaced, and three of them
+were permanently on screen:
+
+| Asset | Where it was |
+|---|---|
+| `symbols3` / `explosion` | the burst on every cluster clear — dozens a round |
+| `coin` / `SD2_Coin` | the big-win celebration |
+| `anticipation` | the tumble payframe |
+| `reelhouse` | the glow around the playfield |
+
+The reviewers see the sample game constantly. The most repeated animation in the
+game being their own demo art is the loudest possible version of this complaint,
+and no amount of original symbol art compensates for it.
+
+`anticipation` turned out to be **unreachable** — the win state had become a
+sprite, so the branch drawing it was dead — and it was still being downloaded.
+Grep for every template asset key and check each one is both used and yours.
+
+**"Poor animation" was the absence of any.** Every symbol was a still PNG: no
+idle motion, no per-symbol win animation, nothing moving on a settled board,
+which is what a player looks at most of the time. The painted background had the
+same problem one level up — flames, a lava pour and a furnace, all frozen.
+
+What fixed it without commissioning art:
+
+- **Separate the fire from the picture once, offline.** A heat mask baked off
+  the background (bright AND warm, multiplied — either test alone catches the
+  lit stonework or the red gloom), then scroll seamless streaked noise through
+  it at runtime. The fire moves and the stone does not. Sample the same mask for
+  particle emitters and the sparks come off things that are actually burning.
+- **Idle breathing on symbols**, ~1% of scale, phase-offset by cell position so
+  the grid never pulses as one block. Nearly invisible; conspicuous when absent.
+- **Escalate something with the win.** A cluster game's drama is chain depth and
+  nothing on screen was tracking it.
+- **Draw the pressed state.** `pressed` is handed to `UiButton` by `Button` and
+  was never used, so on a phone — no hover — a tap had no acknowledgement at all.
+
+Two general lessons:
+
+- **A canned rejection phrase is still evidence.** Inventory what actually ships
+  and how often each thing is on screen before theorising about taste.
+- **Ship-weight is a quality signal.** The same audit found 17MB of a 50MB build
+  was a template audio bank nothing played from. Assets 46MB → 15MB.
+
 ## Production bugs worth recognising again
 
 Not from review — found while building, and each took far longer than it should
