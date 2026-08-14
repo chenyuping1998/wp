@@ -136,8 +136,12 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			overlay: win.meta.overlay,
 		}));
 
-		// Chain position drives the pitch, so a long tumble climbs.
+		// Chain position drives the pitch, so a long tumble climbs...
 		eventEmitter.broadcast({ type: 'soundTumbleHit', chain: stateGame.tumbleChain });
+		// ...and the camera, so it escalates on screen as well as in the ear. Both
+		// read the same counter deliberately: a chain that sounds like the sixth
+		// link should look like it too.
+		eventEmitter.broadcast({ type: 'boardCameraPush', chain: stateGame.tumbleChain });
 
 		// Turbo wins over everything; otherwise the free game gets its own pace,
 		// which is SLOWER than base play rather than faster.

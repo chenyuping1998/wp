@@ -16,13 +16,13 @@
 	import { getContext } from '../game/context';
 	// side-effect import: paints the shared bet bar in the forge palette
 	import '../game/uiTheme';
-	import EnableSound from './EnableSound.svelte';
 	import EnableGameActor from './EnableGameActor.svelte';
 	import ResumeBet from './ResumeBet.svelte';
 	import Sound from './Sound.svelte';
 	import Background from './Background.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './BoardFrame.svelte';
+	import BoardCamera from './BoardCamera.svelte';
 	import Board from './Board.svelte';
 	import ReelDust from './ReelDust.svelte';
 	import EntryReveal from './EntryReveal.svelte';
@@ -56,7 +56,12 @@
 </script>
 
 <App>
-	<EnableSound />
+	<!--
+		<EnableSound /> used to be here. It loaded the template's howler bank and
+		asked Howler to mute itself when the tab was hidden — but every sound in this
+		game is a plain HTMLAudioElement, which Howler has no say over. Sound.svelte
+		owns those elements and now does the muting itself.
+	-->
 	<EnableHotkey />
 	<EnableGameActor />
 	<EnablePixiExtension />
@@ -89,20 +94,31 @@
 
 		<MainContainer>
 			<!--
-				Order is the draw order, and the heat grid deliberately straddles the
-				board. Its edge and bloom go UNDER the symbols — that is the surface
-				they sit on. Its multiplier numbers go OVER them, further down, or the
-				artwork covers the number.
+				Everything the round draws on the playfield leans in together as a
+				tumble chain deepens. Inside the container, so the push cannot move the
+				board relative to its own effects — the heat plates, the win frames and
+				the numbers all have to travel with the symbols they belong to.
+
+				The painted frame is deliberately OUTSIDE it: the room does not move,
+				the camera does.
 			-->
-			<GridMultipliers />
-			<Board />
-			<ReelDust />
-			<TumbleLayer />
-			<Anticipations />
-			<ScatterBurst />
-			<ClusterWins />
-			<!-- over the symbols: the numbers must stay readable -->
-			<GridMultiplierBadges />
+			<BoardCamera>
+				<!--
+					Order is the draw order, and the heat grid deliberately straddles the
+					board. Its edge and bloom go UNDER the symbols — that is the surface
+					they sit on. Its multiplier numbers go OVER them, further down, or the
+					artwork covers the number.
+				-->
+				<GridMultipliers />
+				<Board />
+				<ReelDust />
+				<TumbleLayer />
+				<Anticipations />
+				<ScatterBurst />
+				<ClusterWins />
+				<!-- over the symbols: the numbers must stay readable -->
+				<GridMultiplierBadges />
+			</BoardCamera>
 		</MainContainer>
 
 		<!-- full-canvas, so it sits outside the board container -->

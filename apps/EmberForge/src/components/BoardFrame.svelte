@@ -8,13 +8,14 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Graphics, Sprite, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import { Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	import { getContext } from '../game/context';
+	import LavaFlow from './LavaFlow.svelte';
+	import SceneEmbers from './SceneEmbers.svelte';
 
 	const context = getContext();
-	const SPINE_SCALE = { width: 0.62, height: 0.66 };
 
 	// ── placing the painted scene ───────────────────────────────────────────
 	//
@@ -59,6 +60,7 @@
 		return () => {
 			clearInterval(id);
 			cancelAnimationFrame(impactRaf);
+			cancelAnimationFrame(glowRaf);
 		};
 	});
 
@@ -136,58 +138,110 @@
 		}
 	};
 
-	type AnimationName = 'reelhouse_glow_start' | 'reelhouse_glow_idle' | 'reelhouse_glow_exit';
+	// ── the housing glow ──────────────────────────────────────────────────────
+	//
+	// This used to be `reelhouse_glow`, a Spine skeleton out of the Stake sample
+	// game. It was template art sitting permanently around the playfield of a
+	// game that is not that game, so it is gone; the glow is drawn here instead,
+	// out of the forge's own fire.
+	//
+	// A ramp rather than a flag: the spine had start / idle / exit animations, and
+	// snapping a glow on and off in their place would be a step backwards. `glow`
+	// eases to its target and the drawing reads it, so show and hide are both
+	// smooth for free.
+	let glow = $state(0);
+	let glowTarget = $state(0);
+	let glowRaf = 0;
 
-	let animationName = $state<AnimationName | undefined>(undefined);
-	let loop = $state(false);
+	const runGlow = () => {
+		cancelAnimationFrame(glowRaf);
+		const step = () => {
+			// Asymmetric: lighting up is quick because it is announcing something,
+			// fading out is slow because nothing is being announced any more.
+			const rate = glowTarget > glow ? 0.09 : 0.035;
+			glow += (glowTarget - glow) * rate;
+			if (Math.abs(glowTarget - glow) < 0.002) {
+				glow = glowTarget;
+				return;
+			}
+			glowRaf = requestAnimationFrame(step);
+		};
+		glowRaf = requestAnimationFrame(step);
+	};
 
 	context.eventEmitter.subscribeOnMount({
 		boardFrameGlowShow: () => {
-			animationName = 'reelhouse_glow_start';
-			loop = false;
+			glowTarget = 1;
+			runGlow();
 		},
 		boardFrameGlowHide: () => {
-			if (animationName) animationName = 'reelhouse_glow_exit';
+			glowTarget = 0;
+			runGlow();
 		},
 		boardFrameImpact: ({ strength }) => runImpact(strength ?? 1),
+	});
+
+	// Edge positions for the glow sprites, as fractions of the board box. Sized off
+	// the board rather than the canvas so the glow tracks the playfield through
+	// every layout, including the popout.
+	const glowEdges = $derived.by(() => {
+		const layout = context.stateGameDerived.boardLayout();
+		const w = layout.width * layout.scale;
+		const h = layout.height * layout.scale;
+		const breathe = 0.82 + 0.18 * pulse;
+		return [
+			{ x: layout.x, y: layout.y - h * 0.5, width: w * 1.15, height: h * 0.42, breathe },
+			{ x: layout.x, y: layout.y + h * 0.5, width: w * 1.15, height: h * 0.42, breathe },
+			{ x: layout.x - w * 0.5, y: layout.y, width: w * 0.42, height: h * 1.15, breathe },
+			{ x: layout.x + w * 0.5, y: layout.y, width: w * 0.42, height: h * 1.15, breathe },
+		];
 	});
 </script>
 
 <Graphics zIndex={-2} draw={drawAmbience} />
 
-{#if animationName}
-	<SpineProvider
-		zIndex={-1}
-		key="reelhouse"
-		x={context.stateGameDerived.boardLayout().x}
-		y={context.stateGameDerived.boardLayout().y}
-		width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * SPINE_SCALE.width}
-		height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * SPINE_SCALE.height}
-	>
-		<SpineTrack
-			trackIndex={0}
-			{animationName}
-			{loop}
-			listener={{
-				complete: (entry) => {
-					if (entry.animation) {
-						if (entry.animation.name === 'reelhouse_glow_start') {
-							animationName = 'reelhouse_glow_idle';
-							loop = true;
-						}
-
-						if (entry.animation.name === 'reelhouse_glow_exit') {
-							animationName = undefined;
-							loop = false;
-						}
-					}
-				},
-			}}
+{#if glow > 0.004}
+	<!-- Heat banked up along the four edges of the housing, breathing on the same
+	     slow pulse as the free-game ambience so the two never fight. -->
+	{#each glowEdges as edge, index (index)}
+		<Sprite
+			key="fxGlow"
+			zIndex={-1}
+			anchor={0.5}
+			x={edge.x}
+			y={edge.y}
+			width={edge.width}
+			height={edge.height}
+			tint={0xff8420}
+			blendMode="add"
+			alpha={0.5 * glow * edge.breathe}
 		/>
-	</SpineProvider>
+	{/each}
 {/if}
 
 <Sprite key="efScene" anchor={0.5} x={scene.x} y={scene.y} width={scene.width} height={scene.height} />
+
+<!--
+	The fire in that picture, set moving. Drawn immediately over the scene and with
+	the same geometry, so every bright band lands exactly on the flame it belongs
+	to; see LavaFlow for why the motion cannot live in the image itself.
+-->
+<LavaFlow
+	x={scene.x - scene.width / 2}
+	y={scene.y - scene.height / 2}
+	width={scene.width}
+	height={scene.height}
+	intensity={context.stateGame.gameType === 'freegame' ? 1.35 : 1}
+/>
+
+<!-- and sparks off the top of it, from the same fire -->
+<SceneEmbers
+	x={scene.x - scene.width / 2}
+	y={scene.y - scene.height / 2}
+	width={scene.width}
+	height={scene.height}
+	intensity={context.stateGame.gameType === 'freegame' ? 1.3 : 1}
+/>
 
 {#if context.stateGame.gameType === 'freegame'}
 	<!--

@@ -1,9 +1,11 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { Sprite } from 'pixi-svelte';
 	import { Tween } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
 
 	import { getSymbolInfo } from '../game/utils';
+	import { idleClock } from '../game/idleClock.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 
 	type Props = {
@@ -62,6 +64,31 @@
 			props.oncomplete?.();
 		}
 	});
+
+	// ── idle breathing ────────────────────────────────────────────────────────
+	//
+	// Every symbol in this game is a still PNG, so a settled board was completely
+	// motionless — which is most of the time a player spends looking at it, and it
+	// is the single clearest tell that a slot has no animation in it.
+	//
+	// The motion is deliberately almost invisible: about one percent of scale and
+	// a faint warm glow, on a slow cycle. It should never be noticed as an effect,
+	// only missed when it is removed.
+	onMount(() => idleClock.acquire());
+
+	// Phase comes from the symbol's own position on the board. Neighbouring cells
+	// land far apart in the cycle, so the grid never breathes as one block — which
+	// is what it would do with a shared phase, and that reads as the whole board
+	// being one pulsing sheet rather than forty-nine hot objects.
+	const phase = $derived((props.x ?? 0) * 0.0131 + (props.y ?? 0) * 0.0207);
+
+	// Only at rest. During a drop the blur ghosts own the look, and during the
+	// landing squash this would fight the Tween for the same scale.
+	const idle = $derived(blur <= 0.01 && !props.landing);
+	const breath = $derived(idle ? Math.sin(idleClock.time * 0.9 + phase) : 0);
+	// Two cycles that do not divide each other, so the glow is not simply the
+	// scale again in another channel.
+	const emberGlow = $derived(idle ? 0.5 + 0.5 * Math.sin(idleClock.time * 0.61 + phase * 1.7) : 0);
 </script>
 
 {#if blur > 0.01}
@@ -93,7 +120,32 @@
 	y={props.y}
 	anchor={0.5}
 	key={props.symbolInfo.assetKey}
-	width={width * sx.current}
-	height={blur > 0.01 ? height * (1 + 0.3 * blur) : height * sy.current}
+	width={width * sx.current * (1 + 0.012 * breath)}
+	height={blur > 0.01
+		? height * (1 + 0.3 * blur)
+		: height * sy.current * (1 + 0.012 * breath)}
 	alpha={1 - 0.15 * blur}
 />
+
+{#if idle}
+	<!--
+		A trace of heat still in the metal. The same artwork drawn over itself with
+		additive blending, exactly as SymbolWinAnim does it — it follows the
+		symbol's own silhouette, so it needs no mask and no per-symbol authoring,
+		and it keeps working for whatever art is dropped in next.
+
+		Held at a fraction of the win effect's strength on purpose: this is a symbol
+		sitting on the board, not a symbol that has just paid.
+	-->
+	<Sprite
+		x={props.x}
+		y={props.y}
+		anchor={0.5}
+		key={props.symbolInfo.assetKey}
+		width={width * sx.current * (1 + 0.012 * breath)}
+		height={height * sy.current * (1 + 0.012 * breath)}
+		blendMode="add"
+		tint={0xffb066}
+		alpha={0.035 + 0.045 * emberGlow}
+	/>
+{/if}

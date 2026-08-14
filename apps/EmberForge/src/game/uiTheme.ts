@@ -71,6 +71,11 @@ setUiTheme({
 	// cursor-over feedback on the rail controls
 	hoverHighlight: true,
 
+	// ...and held-down feedback, which matters more: hover does not exist on a
+	// phone, so without this a tap had no acknowledgement whatsoever until the
+	// spin actually started.
+	pressFeedback: true,
+
 	// breathing glow on the spin button
 	spinButtonGlow: true,
 

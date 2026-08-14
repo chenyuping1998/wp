@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { base } from '$app/paths';
 
-	import { sound, type MusicName, type SoundEffectName, type SoundName } from '../game/sound';
+	import type { MusicName, SoundEffectName, SoundName } from '../game/sound';
 
 	export type EmitterEventSound =
 		| { type: 'soundMusic'; name: MusicName }
@@ -20,8 +20,8 @@
 		| { type: 'soundScatterCounterClear' };
 
 	// ─── forge sound set (synthesized — see design/generate_audio_forge.mjs) ───
-	// Standalone HTML5 Audio; the howler sprite (sounds.json) stays as a
-	// fallback for anything not mapped here (e.g. win-level bgm stingers).
+	// Standalone HTML5 Audio. This is now the ONLY sound bank: the template's
+	// howler sprite is gone, so every name has to resolve here or be silent.
 	//
 	// The file map and the element cache live in the MODULE script, not the
 	// instance script, so the fetches start when this module is first imported —
@@ -144,6 +144,12 @@
 		sfx_anticipation_start: { name: 'mult_update', volume: 0.5 },
 		sfx_symbols_landing: { name: 'reel_stop', volume: 0.6 },
 		sfx_royals_landing: { name: 'reel_stop', volume: 0.6 },
+		// The last two names that were still falling through to the template bank.
+		// Mapping them is what made it possible to delete that bank: sounds.mp3 and
+		// its three transcodes were 17MB of a 50MB build, and nothing in the game
+		// played a single sprite out of them any more.
+		sfx_winlevel_end: { name: 'pluck_low', volume: 0.6 },
+		sfx_youwon_panel: { name: 'win_gliss', volume: 0.8 },
 	};
 
 	function playCnSfx(name: CnSfxName, volumeScale = 1, rate = 1) {
@@ -192,6 +198,10 @@
 		bgmAudio = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
 		bgmAudio.loop = true;
 		bgmAudio.volume = stateSoundDerived.volumeMusic();
+		// A fresh element, so it has to be told the current state rather than
+		// inheriting it: the bed switches to the free-game loop on transitions, and
+		// one of those can land while the tab is hidden.
+		bgmAudio.muted = document.visibilityState === 'hidden';
 		bgmAudio.play().catch(() => {});
 		currentBgm = type;
 	}
@@ -219,34 +229,22 @@
 		soundScatterCounterIncrease: () => (context.stateGame.scatterCounter = context.stateGame.scatterCounter + 1), // prettier-ignore
 		soundScatterCounterClear: () => (context.stateGame.scatterCounter = 0),
 		// game
+		// Only the two forge beds exist. The win-level stingers (bgm_winlevel_*)
+		// never had audio in this set and are deliberately not switched to — see
+		// winLevelSoundsPlay, which explains why interrupting the bed for a track
+		// that does not exist left the celebration silent.
 		soundMusic: ({ name }) => {
-			if (name === 'bgm_main') {
-				playBgm('base');
-			} else if (name === 'bgm_freespin') {
-				playBgm('freespin');
-			} else {
-				// Other music (win levels etc) — pause bgm, play via sprite
-				if (bgmAudio) bgmAudio.pause();
-				currentBgm = null;
-				sound.players.music.play({ name });
-			}
+			if (name === 'bgm_main') playBgm('base');
+			else if (name === 'bgm_freespin') playBgm('freespin');
 		},
 		soundLoop: ({ name }) => {
-			if (name === 'sfx_bigwin_coinloop') {
-				playCnLoop('coin_shimmer', 0.8);
-			} else if (name === 'sfx_anticipation') {
-				// covered by the reel_tension tremolo loop (soundReelTensionStart)
-			} else {
-				sound.players.loop.play({ name });
-			}
+			if (name === 'sfx_bigwin_coinloop') playCnLoop('coin_shimmer', 0.8);
+			// sfx_anticipation is covered by the reel_tension tremolo loop
+			// (soundReelTensionStart), so it is deliberately silent here.
 		},
-		soundOnce: ({ name, forcePlay }) => {
+		soundOnce: ({ name }) => {
 			const mapped = SPRITE_TO_CN[name];
-			if (mapped) {
-				playCnSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
-			} else {
-				sound.players.once.play({ name, forcePlay });
-			}
+			if (mapped) playCnSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
 		},
 		soundFreeGameBell: () => playCnSfx('gong_feature'),
 		soundBigWinBlast: () => playCnSfx('bigwin_blast'),
@@ -278,18 +276,15 @@
 		soundReelTensionStart: () => playCnLoop('reel_tension', 0.8),
 		soundReelTensionStop: () => stopCnSfx('reel_tension'),
 		soundStop: ({ name }) => {
-			if (name === 'bgm_main' || name === 'bgm_freespin') {
-				stopBgm();
-			} else if (name === 'sfx_bigwin_coinloop') {
-				stopCnSfx('coin_shimmer');
-			} else if (name === 'sfx_anticipation') {
-				stopCnSfx('reel_tension');
-				sound.stop({ name });
-			} else {
-				sound.stop({ name });
-			}
+			if (name === 'bgm_main' || name === 'bgm_freespin') stopBgm();
+			else if (name === 'sfx_bigwin_coinloop') stopCnSfx('coin_shimmer');
+			else if (name === 'sfx_anticipation') stopCnSfx('reel_tension');
 		},
-		soundFade: async ({ name, duration, from, to }) => await sound.fade({ name, duration, from, to }), // prettier-ignore
+		// Kept as a no-op subscriber rather than dropped. `broadcastAsync` awaits its
+		// subscribers, and the shared UI fades the bed on some paths; with no
+		// handler at all the event is silent in both senses, which is fine, but the
+		// subscription documents that it was considered.
+		soundFade: async () => {},
 	});
 
 	onMount(() => {
@@ -297,7 +292,23 @@
 		// at app boot, which is a whole loading screen earlier than here.
 		playBgm('base');
 
+		// Silence while the tab is not being looked at.
+		//
+		// This used to be EnableSound's job via Howler, which was ineffective: these
+		// are HTMLAudioElements created with `new Audio()`, so they are not in the
+		// document and Howler does not own them. Switching tabs mid-round left the
+		// forge hammering away behind you.
+		const onVisibilityChange = () => {
+			const muted = document.visibilityState === 'hidden';
+			if (bgmAudio) bgmAudio.muted = muted;
+			for (const audio of Object.values(cnSfxAudio)) {
+				if (audio) audio.muted = muted;
+			}
+		};
+		document.addEventListener('visibilitychange', onVisibilityChange);
+
 		return () => {
+			document.removeEventListener('visibilitychange', onVisibilityChange);
 			if (bgmAudio) {
 				bgmAudio.pause();
 				bgmAudio.src = '';

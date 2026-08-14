@@ -1,10 +1,9 @@
 <script lang="ts">
-	import SymbolSpine from './SymbolSpine.svelte';
+	import SymbolShatter from './SymbolShatter.svelte';
 	import SymbolSprite from './SymbolSprite.svelte';
 	import SymbolWinAnim from './SymbolWinAnim.svelte';
 	import { getSymbolInfo } from '../game/utils';
 	import type { SymbolState, RawSymbol } from '../game/types';
-	import { getContext } from '../game/context';
 
 	type Props = {
 		x?: number;
@@ -22,14 +21,17 @@
 	};
 
 	const props: Props = $props();
-	const context = getContext();
 	const symbolInfo = $derived(getSymbolInfo({ rawSymbol: props.rawSymbol, state: props.state }));
-	const isSprite = $derived(symbolInfo.type === 'sprite');
-	const isWin = $derived(props.state === 'win');
 </script>
 
-{#if isSprite && isWin}
-	<!-- Win state for sprite symbols: programmatic scale+glow animation -->
+<!--
+	Every state is a sprite now. There is no Spine branch left: the only skeleton
+	any symbol ever used was the sample game's `explosion`, and SymbolShatter draws
+	that from the symbol's own artwork instead.
+-->
+{#if props.state === 'explosion'}
+	<SymbolShatter {symbolInfo} x={props.x} y={props.y} oncomplete={props.oncomplete} />
+{:else if props.state === 'win'}
 	<SymbolWinAnim
 		{symbolInfo}
 		x={props.x}
@@ -37,7 +39,7 @@
 		cellMult={props.cellMult}
 		oncomplete={props.oncomplete}
 	/>
-{:else if isSprite}
+{:else}
 	<SymbolSprite
 		{symbolInfo}
 		x={props.x}
@@ -46,22 +48,6 @@
 		landing={props.state === 'land'}
 		impact={props.impact}
 		oncomplete={props.oncomplete}
-	/>
-{:else}
-	<SymbolSpine
-		loop={props.loop}
-		{symbolInfo}
-		x={props.x}
-		y={props.y}
-		showWinFrame={props.state === 'win' && props.rawSymbol.name !== 'S'}
-		listener={{
-			complete: props.oncomplete,
-			event: (_, event) => {
-				if (event.data?.name === 'wildExplode') {
-					context.eventEmitter?.broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
-				}
-			},
-		}}
 	/>
 {/if}
 

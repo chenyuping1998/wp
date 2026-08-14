@@ -1,5 +1,14 @@
-import { createSound } from 'utils-sound';
-
+// Names only.
+//
+// This file used to also build a howler player over the template's sounds.json
+// sprite bank. Every sound in Ember Forge is a synthesized WAV played through a
+// plain HTMLAudioElement (Sound.svelte), nothing ever resolved through the bank
+// once the last two names were mapped, and it was 17MB of the build — so the
+// bank, its four transcodes and the player are gone.
+//
+// The name unions stay: they are what types every `soundOnce` / `soundMusic`
+// broadcast in the game, and they are the reason a renamed sound is a build
+// error rather than a sound that silently stops playing.
 export type MusicName =
 	| 'bgm_main'
 	| 'bgm_freespin'
@@ -56,7 +65,3 @@ export type SoundEffectName =
 	| 'tumble_win_4';
 
 export type SoundName = MusicName | SoundEffectName;
-
-const sound = createSound<SoundName>();
-
-export { sound };

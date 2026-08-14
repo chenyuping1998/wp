@@ -329,12 +329,10 @@ export const zIndexes = {
 	},
 };
 
-const explosion = {
-	type: 'spine',
-	assetKey: 'explosion',
-	animationName: 'explosion',
-	sizeRatios: { width: 1, height: 1 },
-};
+// The explosion used to be `assetKey: 'explosion'` — a Spine skeleton from the
+// sample game's symbols3 atlas. It is drawn by SymbolShatter now, off the
+// symbol's own sprite, which is why this carries the symbol's asset key and
+// ratios like every other state rather than naming an animation.
 
 // Every state is the same PNG; the win state is animated programmatically by
 // SymbolWinAnim rather than by a per-symbol Spine.
@@ -357,7 +355,7 @@ const symbolSprite = (assetKey: string, ratios: { width: number; height: number 
 });
 
 const mixedSymbol = (spriteAssetKey: string, ratios: { width: number; height: number }) => ({
-	explosion,
+	explosion: symbolSprite(spriteAssetKey, ratios),
 	static: symbolSprite(spriteAssetKey, ratios),
 	spin: symbolSprite(spriteAssetKey, ratios),
 	land: symbolSprite(spriteAssetKey, ratios),

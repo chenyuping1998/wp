@@ -80,6 +80,12 @@ export const uiTheme = $state({
 	// that never had hover feedback keep their existing look.
 	hoverHighlight: false,
 
+	// Push a control in while it is held down. `pressed` has always been handed to
+	// UiButton by Button, and nothing has ever drawn it — so a tap produced no
+	// acknowledgement at all until whatever it triggered began, which on a slow
+	// connection is long enough to press again. Off by default, like hoverHighlight.
+	pressFeedback: false,
+
 	// Breathing halo behind the spin button's rotating mark — idle invitation,
 	// brighter while the reels run. Off by default.
 	spinButtonGlow: false,

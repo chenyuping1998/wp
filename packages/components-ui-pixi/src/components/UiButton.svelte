@@ -105,11 +105,22 @@
 
 <Button {...buttonProps}>
 	{#snippet children({ center, hovered, pressed })}
+		{@const held = uiTheme.pressFeedback && pressed && !buttonProps.disabled}
 		<UiSprite
 			{...center}
 			anchor={0.5}
-			width={buttonProps.sizes.width}
-			height={buttonProps.sizes.height}
+			{...held
+				? {
+						// Shrunk about its own centre, which is what a physical button
+						// does. Small on purpose: the bar is pressed every few seconds
+						// and anything larger becomes a twitch.
+						width: buttonProps.sizes.width * 0.93,
+						height: buttonProps.sizes.height * 0.93,
+					}
+				: {
+						width: buttonProps.sizes.width,
+						height: buttonProps.sizes.height,
+					}}
 			backgroundColor={backgroundColor}
 			borderColor={uiTheme.buttonBorder}
 			borderWidth={active ? 10 : 6}
@@ -120,6 +131,23 @@
 					}
 				: {}}
 		/>
+
+		{#if held}
+			<!-- and a shadow over it, so the control reads as pushed into the bar
+			     rather than merely smaller. Drawn at the pressed size, so its edge
+			     lands on the plate's edge. -->
+			<Graphics
+				x={center.x}
+				y={center.y}
+				draw={(g) => {
+					const w = buttonProps.sizes.width * 0.93;
+					const h = buttonProps.sizes.height * 0.93;
+					g.clear();
+					g.roundRect(-w / 2, -h / 2, w, h, w * 0.5);
+					g.fill({ color: 0x000000, alpha: 0.28 });
+				}}
+			/>
+		{/if}
 
 		{#if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover}
 			<!-- subtle lift while the cursor is over the control. A white overlay

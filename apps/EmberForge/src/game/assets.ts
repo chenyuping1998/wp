@@ -1,12 +1,12 @@
-﻿export default {
-	explosion: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/symbols3/symbols3.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/symbols3/explosion.json', import.meta.url).href,
-			scale: 2,
-		},
-	},
+﻿// Nothing in this game is Spine any more.
+//
+// Four skeletons shipped here from the Stake sample game — `explosion`,
+// `anticipation`, `reelhouse` and the coin sheet — and between them they covered
+// the most frequently seen animation in Ember Forge (a cluster clearing), the
+// board's glow, and the big-win celebration. They were somebody else's art, in
+// somebody else's palette, over a forge. All four are now drawn from this game's
+// own FX textures; see SymbolShatter, BoardFrame and WinCoins.
+export default {
 	// soft-falloff FX textures (design/generate_fx_textures.mjs) — every particle
 	// in the game is one of these, tinted and drawn additively
 	fxGlow: {
@@ -32,6 +32,20 @@
 	fxVignette: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/emberForgeFx/fx_vignette.png', import.meta.url).href,
+		preload: true,
+	},
+	// Seamless streaked noise, scrolled through efHeatMask to animate the fire in
+	// the painted scene (design/generate_lava_flow.mjs). Both are preloaded: they
+	// are on screen from the first frame, and popping them in a beat late would be
+	// the room catching fire after the player arrives.
+	fxFlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/emberForgeFx/fx_flow.png', import.meta.url).href,
+		preload: true,
+	},
+	efHeatMask: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/emberForgeFx/heat_mask.png', import.meta.url).href,
 		preload: true,
 	},
 	// bet-bar plates (design/generate_ui_plates.mjs) — brass-framed cast iron
@@ -184,31 +198,6 @@
 			'../../assets/sprites/emberForgeBackground/bg_background.png',
 			import.meta.url,
 		).href,
-		preload: true,
-	},
-	anticipation: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/anticipation/anticipation.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/anticipation/anticipation.json', import.meta.url).href,
-			scale: 2,
-		},
-	},
-	reelhouse: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/reelhouse/reelhouse_glow.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/reelhouse/reelhouse_glow.json', import.meta.url).href,
-			scale: 2,
-		},
-	},
-	coins: {
-		type: 'spriteSheet',
-		src: new URL('../../assets/sprites/coin/SD2_Coin.json', import.meta.url).href,
-	},
-	sound: {
-		type: 'audio',
-		src: new URL('../../assets/audio/sounds.json', import.meta.url).href,
 		preload: true,
 	},
 } as const;

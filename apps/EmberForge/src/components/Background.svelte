@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import LavaFlow from './LavaFlow.svelte';
 
 	const context = getContext();
 	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame');
@@ -48,6 +49,12 @@
 
 	// ── floating embers drifting up off the furnace with a gentle sway.
 	// Soft textured motes (fxGlow), never hard vector circles ──────────────────
+	//
+	// These stay canvas-wide and seeded at random. They live BEHIND the
+	// board-anchored copy of the painting, which is opaque, so what they actually
+	// dress is the margin around it on wide or very tall screens. The embers that
+	// come off the fire itself have to be drawn over that copy instead — see
+	// SceneEmbers, mounted from BoardFrame.
 	const MOTE_COLORS = [0xffe98a, 0xfff7d6, 0xd9e88a, 0xffd75e];
 	const motes = Array.from({ length: 22 }, (_, i) => ({
 		seedX: Math.random(),
@@ -121,6 +128,12 @@
 <!-- the forge room, dimmed, filling whatever the board-anchored copy cannot reach -->
 <Container zIndex={-2}>
 	<Sprite key="efScene" {...parallax} alpha={BACKDROP_ALPHA} />
+	<!--
+		The backdrop burns too. Held well under the board-anchored copy's flow: this
+		one is already dimmed to 55%, and matching its intensity would make the
+		filler brighter than the picture it is filling in behind.
+	-->
+	<LavaFlow {...parallax} intensity={BACKDROP_ALPHA * 0.8} />
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
 </Container>
 

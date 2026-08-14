@@ -119,6 +119,14 @@
 				if (reelSymbol) reelSymbol.symbolState = 'explosion';
 			}
 		}
+		// The blast, once per LINK.
+		//
+		// This used to be broadcast from a Spine event inside the explosion
+		// skeleton, which meant once per exploding CELL — five to a dozen copies of
+		// the same sample stacked on the same frame, every link. Firing it here is
+		// both the fix for that and the only place left to fire it from, now that
+		// the skeleton is gone.
+		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
 		context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: fast ? 0.14 : 0.22 });
 		await waitForTimeout(explodeMs);
 
