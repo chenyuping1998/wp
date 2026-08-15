@@ -91,3 +91,30 @@ export const bookEventAmountToCurrencyString = (bookEventAmount: number) => {
 	const normalisedAmount = bookEventAmountToNormalisedAmount(bookEventAmount);
 	return numberToCurrencyString(normalisedAmount, WIN_MAX_FRACTION_DIGITS);
 };
+
+/**
+ * One frame of a count-up, given the amount it is counting TO.
+ *
+ * The 4-decimal allowance exists so a tiny win still matches the server's JSON
+ * instead of collapsing to "$0.00". Applied per frame it does something nobody
+ * wants: a big-win plaque counting to $33.00 passes through values like 1.299
+ * and 7.4213, so the headline number grows and loses decimal places as it
+ * climbs. Observed on the BIG WIN plaque reading "$1.299".
+ *
+ * The precision a win needs is a property of the win, not of whatever the tween
+ * happens to be showing — so it is decided once from the final amount and held
+ * for every frame. A $33.00 win counts in 2 decimals throughout; a $0.002 win
+ * still gets its 4, so nothing certification asked for is given up.
+ *
+ * A separate function rather than a change to the one above: that one is used by
+ * the other games in this repo, and a shared change has to default to the old
+ * behaviour.
+ */
+export const bookEventAmountToCountUpString = (
+	bookEventAmount: number,
+	finalBookEventAmount: number,
+) => {
+	const finalAmount = bookEventAmountToNormalisedAmount(finalBookEventAmount);
+	const digits = decimalsNeeded(finalAmount, WIN_MAX_FRACTION_DIGITS);
+	return numberToCurrencyString(bookEventAmountToNormalisedAmount(bookEventAmount), digits);
+};

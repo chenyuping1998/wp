@@ -1,0 +1,607 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import { base } from '$app/paths';
+	import { stateUrlDerived } from 'state-shared';
+	import { stateLayout } from '../../game/stateLayout';
+	import { zIndex } from 'constants-shared/zIndex';
+
+	import config from '../../game/config';
+	import { getSocialTerms } from '../../game/socialTerms';
+
+	// The whole opening: studio mark, game logo, volatility, what the game does,
+	// and the tap that starts it — one screen.
+	//
+	// It used to be three. The studio loader ran on black for 1.6s, then this
+	// panel faded in over it, and the pixi loading screen ran underneath both.
+	// Every competitive slot does it as a single held card, and so does the
+	// reference this was rebuilt against.
+	//
+	// The look is deliberately borrowed from a GTA loading screen rather than from
+	// a UI panel: a full-bleed illustrated scene, a cut-out character group with a
+	// hard black outline standing in it, blocky angled panels, and heavy outlined
+	// display type. All three of those images already exist in the game — the base
+	// background, the store tile's foreground cut-out, and the wordmark — so no new
+	// art is drawn for this screen. Stake's quality guidelines count generic
+	// screen-specific assets against a game; reusing what the player is about to
+	// see is both cheaper and more honest.
+	//
+	// Numbers come from the maths config on the same principle as the rules panel:
+	// they cannot drift from what the game actually pays.
+
+	type Props = { onclose?: () => void };
+	const props: Props = $props();
+
+	const T = getSocialTerms();
+	const SYMBOLS = `${base}/assets/sprites/hotMiamiSymbols`;
+	const BRAND = `${base}/assets/sprites/hotMiamiBrand`;
+	const BG = `${base}/assets/sprites/hotMiamiBackground`;
+
+	const maxWin = (config.betModes?.base?.max_win ?? 20000).toLocaleString();
+	const lineCount = Object.keys(config.paylines).length;
+	const buyCosts = [
+		config.betModes?.bonus?.cost,
+		config.betModes?.bonus_hits?.cost,
+		config.betModes?.bonus_epic?.cost,
+	];
+
+	// Four of five. A judgement, not a computed figure: a 20,000x cap on a 96.50%
+	// RTP with a 1-in-13.3m top hit is high but not the top of the scale. Change
+	// it here if the maths moves.
+	const VOLATILITY = 4;
+	const VOLATILITY_MAX = 5;
+
+	const panels: { icons: string[]; overlay?: string; title: string; body: string }[] = [
+		{
+			// The Frame is a hollow border — alone it reads as an empty box. Drawn
+			// over a symbol because that is the only way it ever appears in play.
+			icons: ['h1'],
+			overlay: 'frame',
+			title: 'NEON FRAMES',
+			body: `Frames land carrying <strong>2&times; to 100&times;</strong>. A Frame multiplies any win whose ${T.payline} crosses it &mdash; and where several take part in one win, their values <strong>add together</strong>.`,
+		},
+		{
+			icons: ['c'],
+			title: 'THE COLLECTOR',
+			body: `The Collector sweeps <strong>every Frame on the grid</strong>, won or not, and awards the total &times; your ${T.totalBet}. In free games the Frames are sticky &mdash; the longer they build, the bigger the sweep.`,
+		},
+		{
+			// fs.png, not s.png: the registry's hmS points at fs.png and s.png was a
+			// byte-identical duplicate that nothing referenced, so it was removed.
+			icons: ['fs', 'fs', 'fs'],
+			title: 'FREE SPINS',
+			body: `3, 4 or 5 Scatters open <strong>Neon Nights</strong>, <strong>Sunset Hits</strong> or <strong>Ocean Drive</strong> &mdash; 10 spins each, more Frames at every tier. ${T.entryVerb} in for ${buyCosts[0]}&times;, ${buyCosts[1]}&times; or ${buyCosts[2]}&times;.`,
+		},
+	];
+
+	let show = $state(true);
+
+	// This card is the ONLY opening screen. The pixi loading screen still runs
+	// underneath it — it is what actually loads the assets and reports progress —
+	// but the player never sees it, because the tap is refused until loading has
+	// finished. Letting the tap through early just swapped one opening screen for
+	// another, which is the thing being removed.
+	//
+	// The escape hatch matters. `showLoadingScreen` is cleared by the asset
+	// loader, and the asset loader lives inside <Authenticate>, which renders
+	// nothing until it has a session. So a failed authenticate — a network blip,
+	// a dead RGS — would otherwise leave the player holding an opening card that
+	// cannot be dismissed, which is strictly worse than the screen this replaced.
+	// After the timeout the tap is allowed through regardless; whatever is behind
+	// it can then show its own error.
+	const LOAD_TIMEOUT_MS = 12_000;
+	let timedOut = $state(false);
+	const ready = $derived(!stateLayout.showLoadingScreen || timedOut);
+
+	const close = () => {
+		if (!show || !ready) return;
+		show = false;
+		props.onclose?.();
+	};
+
+	// A short arming delay stops a stray click that was aimed at something else
+	// from dismissing the card before it has finished appearing.
+	let armed = $state(false);
+	onMount(() => {
+		if (stateUrlDerived.replay()) {
+			close();
+			return;
+		}
+		const id = setTimeout(() => (armed = true), 420);
+		const bail = setTimeout(() => (timedOut = true), LOAD_TIMEOUT_MS);
+		return () => {
+			clearTimeout(id);
+			clearTimeout(bail);
+		};
+	});
+</script>
+
+{#if show}
+	<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+	<div
+		class="hm-intro"
+		class:armed
+		style:z-index={zIndex.modal + 20}
+		style:--bg={`url("${BG}/bg_base.png")`}
+		onclick={() => armed && ready && close()}
+		transition:fade={{ duration: 320 }}
+	>
+		<div class="hm-scrim"></div>
+
+		<!--
+			The store tile's cut-out holds both characters side by side in one PNG.
+			Rather than cutting it into two files, the same image is drawn twice and
+			each copy is clipped to one figure, so the source stays intact and the
+			split line stays tunable. 51.46% is the emptiest column between them
+			(87 opaque pixels of 1024 — her fingertips and his sleeve edge), measured
+			off the alpha channel rather than eyeballed.
+		-->
+		<img
+			class="hm-cast hm-cast-left"
+			src={`${BRAND}/tile_foreground.png`}
+			alt=""
+			aria-hidden="true"
+		/>
+		<img
+			class="hm-cast hm-cast-right"
+			src={`${BRAND}/tile_foreground.png`}
+			alt=""
+			aria-hidden="true"
+		/>
+
+		<div class="hm-stage">
+			<img class="hm-logo" src={`${BRAND}/logo.png`} alt="HOT MIAMI" />
+
+			<div class="hm-vol">
+				<span class="hm-vol-label">VOLATILITY</span>
+				<span class="hm-bolts" aria-label={`Volatility ${VOLATILITY} of ${VOLATILITY_MAX}`}>
+					{#each Array(VOLATILITY_MAX) as _, i (i)}
+						<span class="hm-bolt" class:lit={i < VOLATILITY}>&#9889;</span>
+					{/each}
+				</span>
+			</div>
+
+			<div class="hm-panels">
+				{#each panels as panel, i (panel.title)}
+					<section class="hm-panel" style:--delay={`${i * 100}ms`}>
+						<div class="hm-panel-icons" class:multi={panel.icons.length > 1}>
+							{#each panel.icons as icon, k (k)}
+								<img src={`${SYMBOLS}/${icon}.png`} alt="" aria-hidden="true" />
+							{/each}
+							{#if panel.overlay}
+								<img
+									class="hm-panel-overlay"
+									src={`${SYMBOLS}/${panel.overlay}.png`}
+									alt=""
+									aria-hidden="true"
+								/>
+							{/if}
+						</div>
+						<h2>{panel.title}</h2>
+						<p>{@html panel.body}</p>
+					</section>
+				{/each}
+			</div>
+
+			<!--
+				No RTP here. It is a number that can move with a maths pass, and this
+				card is the one surface a player reads before the first spin — a stale
+				figure there is worse than no figure. The rules panel carries RTP per
+				mode, read live from the maths config, which is where it belongs.
+			-->
+			<p class="hm-stats">
+				{lineCount} {T.paylinesUpper} &nbsp;/&nbsp; MAX WIN {maxWin}&times;
+			</p>
+			<p class="hm-cta" class:waiting={!ready}>
+				{ready ? 'TAP TO CONTINUE' : 'LOADING…'}
+			</p>
+		</div>
+
+		<!--
+			The studio mark. It stays while the platform splash goes: Stake's
+			certification notes treat those as two different things and ask for
+			exactly this outcome.
+		-->
+		<div class="hm-studio">
+			<svg class="hm-studio-star" viewBox="0 0 100 100" role="img" aria-label="Silverstars 777">
+				<polygon
+					points="50,7 61,38 94,38 67,57 77,89 50,70 23,89 33,57 6,38 39,38"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="6"
+					stroke-linejoin="round"
+				/>
+				<text x="50" y="57" text-anchor="middle" dominant-baseline="middle">777</text>
+			</svg>
+			<span>SILVERSTARS STUDIO</span>
+		</div>
+	</div>
+{/if}
+
+<style lang="scss">
+	@keyframes riseIn {
+		from {
+			opacity: 0;
+			transform: translateY(26px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* the two walk in from their own side, which is the point of splitting them */
+	@keyframes castInLeft {
+		from {
+			opacity: 0;
+			transform: translateX(-46px) scale(1.03);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0) scale(1);
+		}
+	}
+
+	@keyframes castInRight {
+		from {
+			opacity: 0;
+			transform: translateX(46px) scale(1.03);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0) scale(1);
+		}
+	}
+
+	@keyframes ctaPulse {
+		0%,
+		100% {
+			opacity: 0.5;
+		}
+		50% {
+			opacity: 1;
+		}
+	}
+
+	.hm-intro {
+		position: fixed;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: clamp(0.8rem, 2.5vh, 2rem) clamp(1rem, 3vw, 3rem);
+		box-sizing: border-box;
+		cursor: pointer;
+		overflow: hidden;
+		color: #fff;
+		font-family: var(--gb-body-font, sans-serif);
+		background: var(--bg) center / cover no-repeat, #12042a;
+		opacity: 0;
+		transition: opacity 0.35s ease;
+	}
+
+	.hm-intro.armed {
+		opacity: 1;
+	}
+
+	/* The background is a playfield backdrop, built to sit behind reels — it is
+	   too busy to read text over as-is. Darkened from the centre out rather than
+	   flatly, so the edges keep the scene and the middle carries the type. */
+	.hm-scrim {
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(ellipse at 42% 52%, rgba(10, 3, 20, 0.9) 0%, rgba(10, 3, 20, 0.55) 45%, rgba(10, 3, 20, 0.82) 100%),
+			linear-gradient(180deg, rgba(10, 3, 20, 0.75) 0%, rgba(10, 3, 20, 0.2) 30%, rgba(10, 3, 20, 0.9) 100%);
+	}
+
+	/* Hard black keyline via stacked drop-shadows rather than a border — the
+	   subject is a cut-out PNG, so this is the only way to outline its silhouette.
+	   Four offsets is enough to close the outline at this size. */
+	.hm-cast {
+		position: absolute;
+		bottom: 0;
+		/* One expression for the rendered size, because the horizontal offsets below
+		   are fractions of it. The PNG is square, so height and width are the same
+		   number and the figures' positions inside it can be given as percentages
+		   of either. */
+		--cast-h: min(94vh, 52rem);
+		height: var(--cast-h);
+		width: auto;
+		object-fit: contain;
+		pointer-events: none;
+		/* Hard black keyline via stacked drop-shadows rather than a border — the
+		   subject is a cut-out PNG, so this is the only way to outline its
+		   silhouette. Four offsets is enough to close it at this size. */
+		filter:
+			drop-shadow(3px 0 0 #12041f) drop-shadow(-3px 0 0 #12041f) drop-shadow(0 3px 0 #12041f)
+			drop-shadow(0 -3px 0 #12041f) drop-shadow(0 12px 26px rgba(0, 0, 0, 0.7));
+	}
+
+	/* Each copy keeps one figure. The clip is applied before the drop-shadow
+	   filter in the same element, so the cut edge gets outlined along with the
+	   rest — which is what stops it reading as a slice. */
+	/*
+		Clipping alone leaves each figure stranded in the middle of its own copy:
+		measured off the alpha channel, the man occupies 26.6%-51.5% of the square
+		and the woman 51.5%-73.2%, so anchoring the image to an edge anchors the
+		empty part of it. Each copy is pulled outward by the width of its own dead
+		margin, less a little, so the pair stands just inside the frame rather than
+		flush against it.
+	*/
+	.hm-cast-left {
+		left: calc(var(--cast-h) * -0.16);
+		/*
+			Stepped, not a straight cut. The narrowest column between the two figures
+			is x=527 (51.46%), but that is only true above the ankles: in the band
+			y840-930 the alpha resolves into four separate feet at x 309-374, 431-536,
+			588-664 and 675-728 — his right shoe reaches 536, and hers does not start
+			until 588. A single vertical line at 51.46% therefore left an 8px chip of
+			his shoe stranded beside her foot, which is exactly what it looked like.
+			The step drops to 54.5% (x=558) below 82% height, i.e. between the two.
+		*/
+		clip-path: polygon(0 0, 51.46% 0, 51.46% 82%, 54.5% 82%, 54.5% 100%, 0 100%);
+		animation: castInLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.1s;
+	}
+
+	.hm-cast-right {
+		right: calc(var(--cast-h) * -0.162);
+		clip-path: polygon(51.46% 0, 100% 0, 100% 100%, 54.5% 100%, 54.5% 82%, 51.46% 82%);
+		animation: castInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.16s;
+	}
+
+	/* Below this the pair would sit on top of the panels rather than beside them */
+	@media (max-width: 62rem) {
+		.hm-cast {
+			display: none;
+		}
+	}
+
+	.hm-stage {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: clamp(0.5rem, 1.4vh, 1rem);
+		width: min(58rem, 100%);
+		/* centred now that a figure stands on each side */
+		margin: 0 auto;
+	}
+
+	@media (max-width: 62rem) {
+		.hm-stage {
+			width: min(32rem, 100%);
+		}
+	}
+
+	.hm-logo {
+		width: clamp(12rem, 26vw, 22rem);
+		height: auto;
+		filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.8));
+		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+
+	.hm-vol {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both 0.06s;
+	}
+
+	.hm-vol-label {
+		font-family: var(--gb-display-font, sans-serif);
+		font-size: clamp(0.68rem, 1.4vw, 0.92rem);
+		letter-spacing: 0.2em;
+		color: #ffd7ee;
+	}
+
+	.hm-bolts {
+		display: inline-flex;
+		gap: 0.1rem;
+		font-size: clamp(0.85rem, 1.8vw, 1.15rem);
+		line-height: 1;
+	}
+
+	/* Unlit bolts stay in place so the scale reads as "4 of 5" rather than
+	   "some bolts". */
+	.hm-bolt {
+		filter: grayscale(1) brightness(0.4);
+		opacity: 0.5;
+	}
+
+	.hm-bolt.lit {
+		/* must reset the filter, not just the opacity — without this every bolt
+		   stays greyscale and the scale reads as five unlit bolts */
+		filter: none;
+		opacity: 1;
+		text-shadow: 0 0 10px rgba(255, 200, 80, 0.85);
+	}
+
+	.hm-panels {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(0.5rem, 1.2vw, 0.9rem);
+		width: 100%;
+	}
+
+	/* Below the width where three columns can hold readable body text, stack.
+	   The panels are the content, so reflowing beats shrinking. */
+	@media (max-width: 46rem) {
+		.hm-panels {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Angled corners and a hard keyline instead of a soft neon pill: the card is
+	   meant to read as printed signage in the scene, not as an app dialog. */
+	/*
+		Built to match the character art rather than the UI: the cast is drawn with a
+		thick black keyline, flat saturated fill and a hard shadow, so the panels use
+		the same three things. A 3px near-black border is the keyline, an inset ring
+		supplies the coloured inner line the art uses inside its outlines, and the
+		shadow is a hard offset block with no blur — a blurred shadow is a UI idiom
+		and reads as a different world from the illustration standing next to it.
+
+		The clip-path corner is kept but cut deeper, because a chamfer that size is
+		itself a poster device.
+	*/
+	.hm-panel {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.35rem;
+		padding: clamp(0.7rem, 1.6vh, 1.1rem) clamp(0.6rem, 1.4vw, 1rem);
+		box-sizing: border-box;
+		background:
+			linear-gradient(180deg, rgba(58, 16, 96, 0.96) 0%, rgba(24, 6, 44, 0.97) 62%, rgba(40, 10, 70, 0.97) 100%);
+		border: 3px solid #12041f;
+		clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+		box-shadow:
+			inset 0 0 0 2px #ff8fd0,
+			inset 0 22px 34px -22px rgba(255, 143, 208, 0.5),
+			7px 7px 0 rgba(10, 2, 20, 0.75);
+		text-align: center;
+		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+		animation-delay: var(--delay);
+	}
+
+	/* A flat colour band behind the icon, the way a poster blocks in its subject.
+	   Sits under everything else and stops the icon floating on the gradient. */
+	.hm-panel::before {
+		content: '';
+		position: absolute;
+		inset: 3px 3px auto 3px;
+		height: clamp(3.4rem, 8vh, 5rem);
+		background: linear-gradient(180deg, rgba(255, 46, 136, 0.34) 0%, rgba(255, 46, 136, 0) 100%);
+		pointer-events: none;
+	}
+
+	/* Diagonal cyan flash in the top corner — the same accent the dress and the
+	   shirt use, and it keeps the three panels from reading as plain boxes. */
+	.hm-panel::after {
+		content: '';
+		position: absolute;
+		top: -1px;
+		right: -1px;
+		width: 46px;
+		height: 46px;
+		background: linear-gradient(225deg, #4de8e0 0%, #4de8e0 46%, transparent 47%);
+		pointer-events: none;
+	}
+
+	.hm-panel-icons {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: clamp(2.6rem, 6vh, 3.9rem);
+	}
+
+	.hm-panel-icons img {
+		width: clamp(2.6rem, 6vh, 3.9rem);
+		height: clamp(2.6rem, 6vh, 3.9rem);
+		object-fit: contain;
+		filter: drop-shadow(0 3px 9px rgba(0, 0, 0, 0.6));
+	}
+
+	/* the Frame sits on the symbol, as it does on the grid */
+	.hm-panel-overlay {
+		position: absolute;
+		inset: 0;
+		margin: auto;
+		filter: drop-shadow(0 0 10px rgba(255, 209, 102, 0.6));
+	}
+
+	/* the three Scatters overlap, the way they read when they land together */
+	.hm-panel-icons.multi img:not(:first-child) {
+		margin-left: -0.95rem;
+	}
+
+	.hm-panel h2 {
+		position: relative;
+		z-index: 1;
+		margin: 0;
+		font-family: var(--gb-display-font, sans-serif);
+		font-size: clamp(0.82rem, 1.7vw, 1.08rem);
+		font-weight: 800;
+		letter-spacing: 0.05em;
+		color: #ffd75e;
+		/* heavy keyline on the type, the way signage in this idiom is drawn */
+		text-shadow:
+			2px 0 0 #12041f,
+			-2px 0 0 #12041f,
+			0 2px 0 #12041f,
+			0 -2px 0 #12041f,
+			0 0 16px rgba(255, 215, 94, 0.5);
+	}
+
+	.hm-panel p {
+		margin: 0;
+		font-size: clamp(0.66rem, 1.15vw, 0.79rem);
+		line-height: 1.45;
+		opacity: 0.92;
+	}
+
+	.hm-panel :global(strong) {
+		color: #4de8e0;
+		font-weight: 700;
+	}
+
+	.hm-stats {
+		margin: 0;
+		font-family: var(--gb-display-font, sans-serif);
+		font-size: clamp(0.68rem, 1.4vw, 0.9rem);
+		letter-spacing: 0.12em;
+		color: #ff8fd0;
+		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both 0.32s;
+	}
+
+	/* While loading it is a status line, not an invitation — the pulse would read
+	   as "press me" on something that will not respond. */
+	.hm-cta.waiting {
+		animation: none;
+		opacity: 0.6;
+		letter-spacing: 0.14em;
+	}
+
+	.hm-cta {
+		margin: 0;
+		font-family: var(--gb-display-font, sans-serif);
+		font-size: clamp(0.78rem, 1.6vw, 1rem);
+		letter-spacing: 0.22em;
+		text-shadow:
+			2px 0 0 #12041f,
+			-2px 0 0 #12041f,
+			0 2px 0 #12041f,
+			0 -2px 0 #12041f;
+		animation: ctaPulse 1.7s ease-in-out infinite;
+	}
+
+	.hm-studio {
+		position: absolute;
+		left: clamp(0.8rem, 2vw, 1.6rem);
+		bottom: clamp(0.7rem, 2vh, 1.3rem);
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		color: rgba(255, 255, 255, 0.72);
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: clamp(0.55rem, 1vw, 0.7rem);
+		letter-spacing: 0.14em;
+	}
+
+	.hm-studio-star {
+		width: clamp(1.1rem, 2.2vw, 1.5rem);
+		height: clamp(1.1rem, 2.2vw, 1.5rem);
+		flex-shrink: 0;
+	}
+
+	.hm-studio-star text {
+		fill: currentColor;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 26px;
+		font-weight: 700;
+	}
+</style>
