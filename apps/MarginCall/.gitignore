@@ -5,3 +5,14 @@ design/preview_win_banners.png
 # local replay test harness — a generated copy of build/ with a mock RGS worker
 # in it (design/make_replay_harness.mjs). Never ship this.
 build-replaytest/
+
+# Design previews: renders, not sources. Every one is regenerable from a script
+# in design/, and together they run to several MB (the baked win-animation proof
+# alone is 42 files).
+#
+# This entry was supposed to be added earlier and was not: the check that decided
+# whether it already existed tested for the SUBSTRING "design/preview", which the
+# unrelated "design/preview_win_banners.png" line below already satisfied. So it
+# reported success, added nothing, and 6.4 MB of renders went into the next
+# commit.
+design/preview/
