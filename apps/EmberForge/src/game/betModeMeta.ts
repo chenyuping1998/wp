@@ -4,7 +4,7 @@ import { stateUrlDerived } from 'state-shared';
 import config from './config';
 
 // Ember Forge ships three math modes: base play, the 200x free-spins buy, and the
-// 300x steady buy. The shared library ships a template default (ANTE / SUPER ANTE
+// 300x extended buy. The shared library ships a template default (ANTE / SUPER ANTE
 // / …) with no backing math here, so the meta is overridden with exactly what the
 // math supports.
 //
@@ -35,12 +35,13 @@ const emptyAssets = {
 // which is precisely the sort of mismatch certification looks for.
 const rtpPct = `${(config.rtp * 100).toFixed(1)}%`;
 const bonusCost = config.betModes.bonus.cost;
-const steadyCost = config.betModes.bonusplus.cost;
-// The two buys do NOT share a ceiling — the steady one is capped far lower, and
-// that cap is the reason it is steady. Read per mode so the copy cannot claim a
-// number the maths does not back.
+const bigCost = config.betModes.bonusplus.cost;
+// Read per mode even though the two currently match. They did not during
+// development — bonusplus was briefly capped at 2000x while it was being tried as
+// a low-variance mode — and a single shared constant is exactly what would have
+// let the copy keep claiming 10,000x through that.
 const bonusMaxWin = config.betModes.bonus.max_win.toLocaleString();
-const steadyMaxWin = config.betModes.bonusplus.max_win.toLocaleString();
+const bigMaxWin = config.betModes.bonusplus.max_win.toLocaleString();
 
 export const EMBER_FORGE_BET_MODE_META: Record<string, BetModeData> = {
 	BASE: {
@@ -77,8 +78,8 @@ export const EMBER_FORGE_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy direct entry into FREE SPINS for ${bonusCost}× your bet, at the same ${rtpPct} RTP as base play. Enters on 4 or 5 Scatters, for 10 or 12 spins. Every position that pays is heated and keeps a multiplier that grows by +1 each time it pays again — a cluster is paid by the total heat beneath it. The high-ceiling entry: maximum win ${bonusMaxWin}× your bet.`,
-					`Enter FREE SPINS directly for ${bonusCost}× your amount, at the same ${rtpPct} RTP as normal play. Enters on 4 or 5 Scatters, for 10 or 12 spins. Every position that pays is heated and keeps a multiplier that grows by +1 each time it pays again — a cluster is paid by the total heat beneath it. The high-ceiling entry: maximum win ${bonusMaxWin}× your amount.`,
+					`Buy direct entry into FREE SPINS for ${bonusCost}× your bet, at the same ${rtpPct} RTP as base play. Enters on 4 or 5 Scatters, for 10 or 12 spins. Every position that pays is heated and keeps a multiplier that grows by +1 each time it pays again — a cluster is paid by the total heat beneath it. Maximum win: ${bonusMaxWin}× your bet.`,
+					`Enter FREE SPINS directly for ${bonusCost}× your amount, at the same ${rtpPct} RTP as normal play. Enters on 4 or 5 Scatters, for 10 or 12 spins. Every position that pays is heated and keeps a multiplier that grows by +1 each time it pays again — a cluster is paid by the total heat beneath it. Maximum win: ${bonusMaxWin}× your amount.`,
 				);
 			},
 			get description() {
@@ -103,9 +104,9 @@ export const EMBER_FORGE_BET_MODE_META: Record<string, BetModeData> = {
 			bannerText: '',
 		},
 	},
-	// The steadier entry. What it sells is a narrower spread, NOT a better return,
-	// and the copy has to say so plainly in both modes — a card that costs half
-	// again as much and does not say why invites the reading that it pays better.
+	// The premium entry: the same feature, longer. It is NOT a low-variance mode —
+	// that was tried and does not work at this price and length (see the maths
+	// config) — so nothing here should suggest it is safer, only bigger.
 	BONUSPLUS: {
 		mode: 'BONUSPLUS',
 		costMultiplier: config.betModes.bonusplus.cost,
@@ -116,28 +117,28 @@ export const EMBER_FORGE_BET_MODE_META: Record<string, BetModeData> = {
 		assets: { ...emptyAssets },
 		text: {
 			get title() {
-				return pick('BUY STEADY SPINS', 'STEADY SPINS');
+				return pick('BUY EXTENDED SPINS', 'EXTENDED SPINS');
 			},
 			get dialog() {
 				return pick(
-					`Buy entry into a longer FREE SPINS run for ${steadyCost}× your bet. Enters on 5 or 6 Scatters, for 12 or 15 spins. The RTP is ${rtpPct}, the same as every other mode — this does not pay more overall, it pays more evenly. The trade is the ceiling: maximum win ${steadyMaxWin}× your bet, against ${bonusMaxWin}× on the ${bonusCost}× entry. Capping the top end is what lets the typical result sit much closer to what you paid.`,
-					`Enter a longer FREE SPINS run for ${steadyCost}× your amount. Enters on 5 or 6 Scatters, for 12 or 15 spins. The return is ${rtpPct}, the same as every other mode — this does not give more overall, it gives more evenly. The trade is the ceiling: maximum win ${steadyMaxWin}× your amount, against ${bonusMaxWin}× on the ${bonusCost}× entry. Capping the top end is what lets the typical result sit much closer to what you played.`,
+					`Buy direct entry into an extended FREE SPINS run for ${bigCost}× your bet. Enters on 6 or 7 Scatters, for 15 or 18 spins — half again as many as the ${bonusCost}× entry. More spins means more time for positions to heat, and heat is never reset within a feature. RTP is ${rtpPct} and the maximum win is ${bigMaxWin}× your bet, the same as every other mode.`,
+					`Enter an extended FREE SPINS run directly for ${bigCost}× your amount. Enters on 6 or 7 Scatters, for 15 or 18 spins — half again as many as the ${bonusCost}× entry. More spins means more time for positions to heat, and heat is never reset within a feature. The return is ${rtpPct} and the maximum win is ${bigMaxWin}× your amount, the same as every other mode.`,
 				);
 			},
 			get description() {
 				return pick(
-					`${steadyCost}× BET → longer FREE SPINS, steadier results, ${steadyMaxWin}× cap`,
-					`${steadyCost}× AMOUNT → longer FREE SPINS, steadier results, ${steadyMaxWin}× cap`,
+					`${bigCost}× BET → 15 or 18 FREE SPINS, more time to build heat`,
+					`${bigCost}× AMOUNT → 15 or 18 FREE SPINS, more time to build heat`,
 				);
 			},
 			get button() {
-				return pick(`BUY ${steadyCost}×`, `PLAY ${steadyCost}×`);
+				return pick(`BUY ${bigCost}×`, `PLAY ${bigCost}×`);
 			},
 			get tickerIdle() {
 				return pick('PLACE YOUR BET', 'READY TO PLAY');
 			},
 			get tickerSpin() {
-				return pick('STEADY BUY ACTIVATED', 'STEADY FEATURE ACTIVATED');
+				return pick('EXTENDED BUY ACTIVATED', 'EXTENDED FEATURE ACTIVATED');
 			},
 			bannerText: '',
 		},

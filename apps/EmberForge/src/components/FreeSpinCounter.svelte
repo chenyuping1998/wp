@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { displayFontFor, displayWeightFor } from '../game/fonts';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { Sprite, Text } from 'pixi-svelte';
@@ -78,9 +78,9 @@
 			y={panelSizes.height * 0.33}
 			text={title}
 			style={{
-				fontFamily: GAME_FONT,
+				fontFamily: displayFontFor(title),
 				fontSize: Math.min(panelSizes.width * 0.115, (panelSizes.width * 1.35) / Math.max(1, title.length)),
-				fontWeight: GAME_FONT_WEIGHT,
+				fontWeight: displayWeightFor(title),
 				letterSpacing: 2,
 				fill: [0xfff3bd, 0xffd75e, 0xc9821a],
 				stroke: 0x54330a,

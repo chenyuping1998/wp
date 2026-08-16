@@ -8,7 +8,7 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT, TITLE_FONT } from '../game/fonts';
+	import { GAME_FONT, displayWeightFor, titleFontFor } from '../game/fonts';
 	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	// Amounts are rounded before formatting. The count-up provider hands over a
@@ -78,9 +78,9 @@
 								// The carved face, matching the plaque tier names and the
 								// loading title. Non-Latin locales fall through per character
 								// exactly as they do for GAME_FONT — same stack behind it.
-								fontFamily: TITLE_FONT,
+								fontFamily: titleFontFor(title),
 								fontSize: Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
-								fontWeight: GAME_FONT_WEIGHT,
+								fontWeight: displayWeightFor(title),
 								letterSpacing: 6,
 								fill: [0xfff3bd, 0xffd75e, 0xc9821a],
 								stroke: 0x54330a,

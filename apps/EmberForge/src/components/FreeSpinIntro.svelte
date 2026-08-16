@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { displayFontFor, displayWeightFor } from '../game/fonts';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { waitForResolve } from 'utils-shared/wait';
@@ -47,9 +47,9 @@
 				y={-sizes.height * 0.31}
 				text={title}
 				style={{
-					fontFamily: GAME_FONT,
+					fontFamily: displayFontFor(title),
 					fontSize: Math.min(sizes.width * 0.11, (sizes.width * 1.5) / title.length),
-					fontWeight: GAME_FONT_WEIGHT,
+					fontWeight: displayWeightFor(title),
 					letterSpacing: 6,
 					fill: [0xfff3bd, 0xffd75e, 0xc9821a],
 					stroke: 0x54330a,
@@ -76,9 +76,9 @@
 				y={sizes.height * 0.34}
 				text={subtitle}
 				style={{
-					fontFamily: GAME_FONT,
+					fontFamily: displayFontFor(subtitle),
 					fontSize: Math.min(sizes.width * 0.045, (sizes.width * 1.1) / subtitle.length),
-					fontWeight: GAME_FONT_WEIGHT,
+					fontWeight: displayWeightFor(subtitle),
 					letterSpacing: 4,
 					fill: 0xf5e3c3,
 					stroke: 0x2c1c08,

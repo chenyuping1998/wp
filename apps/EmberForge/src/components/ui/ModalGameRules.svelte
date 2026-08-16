@@ -72,12 +72,11 @@
 	// The steadier, more expensive entry. Guarded everywhere it is used rather than
 	// assumed: the rules modal has to keep rendering if the maths ever ships with
 	// only one buy mode again.
-	const steadyCost = config.betModes?.bonusplus?.cost;
-	// The two buys have DIFFERENT ceilings — the steady one is capped far lower on
-	// purpose. Taken per mode so the prose cannot claim a cap the maths does not
-	// apply; `maxWin` is the game-wide figure and is wrong for bonusplus.
+	const bigCost = config.betModes?.bonusplus?.cost;
+	// Taken per mode even though the two currently match, so the prose can never
+	// claim a cap the maths does not apply.
 	const buyMaxWin = config.betModes?.bonus?.max_win ?? maxWin;
-	const steadyMaxWin = config.betModes?.bonusplus?.max_win ?? maxWin;
+	const bigMaxWin = config.betModes?.bonusplus?.max_win ?? maxWin;
 	// One source for the awarded-spins figure so the Scatter and Retriggers
 	// sections cannot drift apart. Verified against 20,000 books: 4/5/6/7
 	// scatters award 10/12/15/18 (freeSpinTrigger totalFs); three never
@@ -100,7 +99,7 @@
 			['Base game', 'base', 'Every spin'],
 			['Free Spins', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}× ${T.bet}`],
 			[
-				'Free Spins — Steady',
+				'Free Spins — Extended',
 				'bonusplus',
 				`${entryVerb} for ${config.betModes?.bonusplus?.cost}× ${T.bet}`,
 			],
@@ -233,21 +232,21 @@
 					<h3><span class="wp-accent-bar"></span>{T.buyBonusTitle}</h3>
 					<p>
 						Instead of waiting for Scatters, you can {T.buy} direct entry into the Free Spins
-						feature. There are two ways in, and <strong>both {T.pay} the same {rtpPct} RTP</strong>
-						&mdash; they differ only in how much the result varies from one entry to the next.
+						feature. There are two ways in. They differ in length and in price;
+						<strong>both {T.pay} the same {rtpPct} RTP</strong>, and both have the same
+						{buyMaxWin.toLocaleString()}&times; maximum win.
 					</p>
 					<ul>
 						<li>
 							<strong>{buyCost}&times; your {T.totalBet}</strong> &mdash; enters on 4 or 5 Scatters,
-							for 10 or 12 Free Spins. Maximum win {buyMaxWin.toLocaleString()}&times;.
+							for 10 or 12 Free Spins.
 						</li>
-						{#if steadyCost}
+						{#if bigCost}
 							<li>
-								<strong>{steadyCost}&times; your {T.totalBet} (Steady)</strong> &mdash; enters on 5
-								or 6 Scatters, for 12 or 15 Free Spins, and its maximum win is capped at
-								{steadyMaxWin.toLocaleString()}&times; rather than {buyMaxWin.toLocaleString()}&times;.
-								That lower ceiling is the point: it is what lets the typical result sit much
-								closer to what was played. It does <strong>not</strong> {T.pay} more overall.
+								<strong>{bigCost}&times; your {T.totalBet} (Extended)</strong> &mdash; enters on 6
+								or 7 Scatters, for 15 or 18 Free Spins. Half again as many spins for half again
+								the price, and heat is never reset within a feature, so a longer run has more
+								time to build it.
 							</li>
 						{/if}
 					</ul>
@@ -259,10 +258,10 @@
 				<p>
 					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}. Once
 					the cap is reached the round ends immediately and the maximum win is awarded.
-					{#if steadyMaxWin !== maxWin}
-						The Steady entry is the one exception and is capped lower, at
-						{steadyMaxWin.toLocaleString()}&times; &mdash; see the table above, which lists the cap
-						for every mode.
+					{#if bigMaxWin !== maxWin}
+						The Extended entry is the one exception and is capped at
+						{bigMaxWin.toLocaleString()}&times; &mdash; see the table above, which lists the cap for
+						every mode.
 					{/if}
 				</p>
 			</section>

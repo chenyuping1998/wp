@@ -1,5 +1,7 @@
 import { setFontKit, setLocalFonts } from 'pixi-svelte';
 
+import { isCoveredByDisplayFont } from './fontCoverage';
+
 // Ember Forge ships one self-hosted display face.
 //
 // History: the Stake template pulled `proxima-nova` from Adobe Typekit via a
@@ -53,6 +55,39 @@ export const GAME_FONT_WEIGHT = '400' as const;
 // plain humanist stack. Two faces with clearly separated jobs is the normal
 // arrangement, not a compromise.
 export const BODY_FONT = '"Trebuchet MS", "Segoe UI", Tahoma, Arial, sans-serif';
+
+/**
+ * The display face for this string — but only if it can draw all of it.
+ *
+ * The fallbacks written into GAME_FONT and TITLE_FONT above look like they
+ * handle non-Latin scripts, and per character they do. That is the problem:
+ * browsers fall back PER GLYPH, so Polish "SIATKA ŻARU" comes out as SIATKA
+ * ARU in the carved face with a single Ż from something else — two faces, two
+ * weights, inside one word. It reads as a rendering bug.
+ *
+ * So localised strings ask this instead of naming a face. A line the generated
+ * faces cannot set completely is set entirely in the body stack, which is
+ * duller and correct. See src/game/fontCoverage.ts for the table, emitted from
+ * the fonts themselves by design/check_font_coverage.mjs.
+ */
+export const displayFontFor = (text: string): string =>
+	isCoveredByDisplayFont(text) ? GAME_FONT : BODY_FONT;
+
+/**
+ * The title face, under the same rule. Same reasoning as displayFontFor; kept
+ * separate because the two faces are used in different places and a caller
+ * should not have to know they share a coverage table.
+ */
+export const titleFontFor = (text: string): string =>
+	isCoveredByDisplayFont(text) ? TITLE_FONT : BODY_FONT;
+
+/**
+ * Weight to pair with either of the above. The generated faces are
+ * single-weight and must be asked for 400 (see GAME_FONT_WEIGHT), but the body
+ * stack is a normal family and needs real weight to hold up as a display line.
+ */
+export const displayWeightFor = (text: string): '400' | '700' =>
+	isCoveredByDisplayFont(text) ? GAME_FONT_WEIGHT : '700';
 
 // The rules and paytable modals are DOM, not Pixi, so they take their type from
 // CSS. Mirroring both stacks into custom properties lets components/ui/Modals
