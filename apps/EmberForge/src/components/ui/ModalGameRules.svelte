@@ -69,6 +69,15 @@
 	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
 	const maxWin = config.betModes?.base?.max_win ?? 10000;
 	const buyCost = config.betModes?.bonus?.cost;
+	// The steadier, more expensive entry. Guarded everywhere it is used rather than
+	// assumed: the rules modal has to keep rendering if the maths ever ships with
+	// only one buy mode again.
+	const steadyCost = config.betModes?.bonusplus?.cost;
+	// The two buys have DIFFERENT ceilings — the steady one is capped far lower on
+	// purpose. Taken per mode so the prose cannot claim a cap the maths does not
+	// apply; `maxWin` is the game-wide figure and is wrong for bonusplus.
+	const buyMaxWin = config.betModes?.bonus?.max_win ?? maxWin;
+	const steadyMaxWin = config.betModes?.bonusplus?.max_win ?? maxWin;
 	// One source for the awarded-spins figure so the Scatter and Retriggers
 	// sections cannot drift apart. Verified against 20,000 books: 4/5/6/7
 	// scatters award 10/12/15/18 (freeSpinTrigger totalFs); three never
@@ -90,6 +99,11 @@
 		[
 			['Base game', 'base', 'Every spin'],
 			['Free Spins', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}× ${T.bet}`],
+			[
+				'Free Spins — Steady',
+				'bonusplus',
+				`${entryVerb} for ${config.betModes?.bonusplus?.cost}× ${T.bet}`,
+			],
 		] as const
 	).map(([label, key, entry]) => {
 		const mode = config.betModes?.[key] as BetMode | undefined;
@@ -198,7 +212,7 @@
 					Free Spins are played on the same board, but every position now keeps a multiplier. All
 					positions start cold and count as 1&times;. The first time a position is part of a winning
 					cluster it is heated to 1&times;, and every further win on that position raises it by
-					+1&times;. A cluster is paid by its symbol value multiplied by the total heat of every
+					+1&times;. A cluster is {T.paid} by its symbol value multiplied by the total heat of every
 					position it covers, so clusters landing on well-worked areas of the board {T.pay} far more.
 					The grid keeps its heat for the whole feature and is reset when the feature ends.
 				</p>
@@ -216,11 +230,27 @@
 
 			{#if buyCost}
 				<section class="wp-card">
-					<h3><span class="wp-accent-bar"></span>Buy Bonus</h3>
+					<h3><span class="wp-accent-bar"></span>{T.buyBonusTitle}</h3>
 					<p>
 						Instead of waiting for Scatters, you can {T.buy} direct entry into the Free Spins
-						feature for {buyCost}&times; your {T.totalBet}. The Buy Bonus plays at the same {rtpPct} RTP.
+						feature. There are two ways in, and <strong>both {T.pay} the same {rtpPct} RTP</strong>
+						&mdash; they differ only in how much the result varies from one entry to the next.
 					</p>
+					<ul>
+						<li>
+							<strong>{buyCost}&times; your {T.totalBet}</strong> &mdash; enters on 4 or 5 Scatters,
+							for 10 or 12 Free Spins. Maximum win {buyMaxWin.toLocaleString()}&times;.
+						</li>
+						{#if steadyCost}
+							<li>
+								<strong>{steadyCost}&times; your {T.totalBet} (Steady)</strong> &mdash; enters on 5
+								or 6 Scatters, for 12 or 15 Free Spins, and its maximum win is capped at
+								{steadyMaxWin.toLocaleString()}&times; rather than {buyMaxWin.toLocaleString()}&times;.
+								That lower ceiling is the point: it is what lets the typical result sit much
+								closer to what was played. It does <strong>not</strong> {T.pay} more overall.
+							</li>
+						{/if}
+					</ul>
 				</section>
 			{/if}
 
@@ -229,6 +259,11 @@
 				<p>
 					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}. Once
 					the cap is reached the round ends immediately and the maximum win is awarded.
+					{#if steadyMaxWin !== maxWin}
+						The Steady entry is the one exception and is capped lower, at
+						{steadyMaxWin.toLocaleString()}&times; &mdash; see the table above, which lists the cap
+						for every mode.
+					{/if}
 				</p>
 			</section>
 
