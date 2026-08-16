@@ -21,11 +21,17 @@
 	 * centre panel is drawn taller and in the hottest accent so the eye lands
 	 * there first.
 	 *
-	 * Every readable string comes from game/i18nText and is set in GAME_FONT,
-	 * which check_font_coverage holds to "fully covered or cleanly absent" for
-	 * every locale — see design/check_font_coverage.mjs. Body copy uses the system
-	 * stack because it is set small, and the generated faces close up under about
-	 * 15px.
+	 * Every readable string comes from game/i18nText. Titles go through
+	 * fonts.displayFontFor rather than naming a face, so a locale the generated
+	 * faces cannot draw completely — Polish Ż, Vietnamese Ớ and Ệ — is set entirely
+	 * in the body stack instead of coming out half-carved. Body copy is always the
+	 * body stack: it is set small, and the generated faces close their counters
+	 * under about 15px.
+	 *
+	 * Type sizes are SOLVED against the space each block has, not set as fractions
+	 * of the layout. The bodies run from 96 characters in English to 160-odd in
+	 * Russian and German on the same three panels, so any fixed fraction that fits
+	 * one language overflows another — which is exactly what the first version did.
 	 */
 	const context = getContext();
 
@@ -45,11 +51,12 @@
 	// panels stack into rows and the art moves beside the text.
 	const stacked = $derived(layout.width / layout.height < 1.2);
 
-	// Sits under the title block (which ends around 0.36 + the subtitle) and above
-	// the "press anywhere" prompt along the foot.
+	// Sits under the title block and above the "press anywhere" prompt along the
+	// foot. Taller than it first was: at 0.46-0.86 the body copy ran out through
+	// the bottom of every panel and into the prompt.
 	const AREA = $derived({
-		top: layout.height * 0.46,
-		bottom: layout.height * 0.86,
+		top: layout.height * 0.4,
+		bottom: layout.height * 0.885,
 		left: layout.width * 0.11,
 		right: layout.width * 0.89,
 	});
@@ -261,27 +268,78 @@
 					art: { x: box.x + box.w * 0.03, y: box.y + box.h * 0.14, w: artW, h: box.h * 0.72 },
 					text: { x: box.x + box.w * 0.34, w: box.w * 0.62, titleY: box.y + box.h * 0.16 },
 					centred: false,
+					// where the body must stop
+					floor: box.y + box.h * 0.94,
 				};
 			}
+			// The art band is shorter than it was (0.34 -> 0.22 of the panel) and the
+			// text starts higher. Both were needed: the figure is drawn just above the
+			// title and at the old proportions its ascender sat inside the
+			// illustration, which is why 5+ was printed across the cluster grid.
 			return {
-				art: { x: box.x + box.w * 0.1, y: box.y + box.h * 0.07, w: box.w * 0.8, h: box.h * 0.34 },
-				text: { x: box.x + box.w * 0.08, w: box.w * 0.84, titleY: box.y + box.h * 0.52 },
+				art: { x: box.x + box.w * 0.1, y: box.y + box.h * 0.08, w: box.w * 0.8, h: box.h * 0.2 },
+				text: { x: box.x + box.w * 0.08, w: box.w * 0.84, titleY: box.y + box.h * 0.45 },
 				centred: true,
+				floor: box.y + box.h * 0.95,
 			};
 		}),
 	);
 
-	// The body is placed below a title slot two lines deep, ALWAYS, rather than
-	// below the title's measured height. Titles wrap on the long locales — Russian
-	// sets "ВЫИГРЫШИ КЛАСТЕРОМ" over two lines where English sets "CLUSTER WINS"
-	// over one — and a single-line offset would put the body straight through the
-	// second line. Reserving the space unconditionally costs one line of air on
-	// the short locales and cannot collide on any of them.
-	const TITLE_LINES = 2;
+	const figureSize = $derived(Math.round(layout.width * (stacked ? 0.036 : 0.028)));
 
-	const titleSize = $derived(Math.round(stacked ? layout.width * 0.034 : layout.width * 0.023));
-	const bodySize = $derived(Math.round(stacked ? layout.width * 0.025 : layout.width * 0.0148));
-	const figureSize = $derived(Math.round(layout.width * 0.03));
+	/**
+	 * How many lines a string will take, near enough.
+	 *
+	 * Pixi can measure text exactly, but only once a style object exists — and the
+	 * style is what is being solved for. This estimate is deliberately pessimistic
+	 * (0.55em average advance is wider than Trebuchet actually sets at 600) so the
+	 * error runs towards "a little small" rather than "out through the bottom of
+	 * the panel", which is the failure being fixed.
+	 */
+	const linesFor = (text: string, size: number, width: number) =>
+		Math.max(1, Math.ceil((text.length * size * 0.55) / width));
+
+	/**
+	 * Largest size at which the text still fits the height it has been given.
+	 *
+	 * The sizes used to be fixed fractions of the layout width, which works for
+	 * exactly one language. The bodies here run from 96 characters in English to
+	 * 160-odd in Russian and German, so a fraction that fits one overflows the
+	 * others — and every locale renders on the same three panels.
+	 */
+	const fitSize = (text: string, width: number, height: number, max: number, lead: number) => {
+		for (let size = max; size > 6; size -= 1) {
+			if (linesFor(text, size, width) * size * lead <= height) return size;
+		}
+		return 7;
+	};
+
+	// Solved per panel, then levelled: three columns set at three different sizes
+	// read as a mistake even when each one individually fits. The smallest wins.
+	const type = $derived.by(() => {
+		const maxTitle = Math.round(stacked ? layout.width * 0.034 : layout.width * 0.023);
+		const maxBody = Math.round(stacked ? layout.width * 0.025 : layout.width * 0.0155);
+
+		const titleSize = Math.min(
+			...panels.map((panel, i) =>
+				// Two lines of room for the title. Russian sets "ВЫИГРЫШИ КЛАСТЕРОМ"
+				// over two where English sets "CLUSTER WINS" over one.
+				fitSize(panel.title, slots[i].text.w, maxTitle * 2 * 1.2, maxTitle, 1.2),
+			),
+		);
+
+		// The body gets whatever is left between the bottom of the title block and
+		// the panel floor — measured, not assumed, so growing the panel or moving
+		// the title feeds through without a second number to keep in step.
+		const bodySize = Math.min(
+			...panels.map((panel, i) => {
+				const top = slots[i].text.titleY + titleSize * 2 * 1.2;
+				return fitSize(panel.body, slots[i].text.w, slots[i].floor - top, maxBody, 1.35);
+			}),
+		);
+
+		return { titleSize, bodySize, bodyTop: titleSize * 2 * 1.2 };
+	});
 </script>
 
 <MainContainer>
@@ -317,7 +375,7 @@
 				text={panel.figure}
 				anchor={{ x: slot.centred ? 0.5 : 0, y: 1 }}
 				x={slot.centred ? box.x + box.w / 2 : slot.text.x}
-				y={slot.text.titleY - titleSize * 0.9}
+				y={slot.text.titleY - type.titleSize * 0.55}
 				style={{
 					// Always resolves to the carved face in practice — these are ASCII —
 					// but routed through the same helper as everything else so the rule
@@ -341,7 +399,7 @@
 				// face would set the rest of the word in it and let those single
 				// letters arrive from a fallback. See fonts.displayFontFor.
 				fontFamily: displayFontFor(panel.title),
-				fontSize: titleSize,
+				fontSize: type.titleSize,
 				fontWeight: displayWeightFor(panel.title),
 				letterSpacing: 1,
 				fill: panel.accent,
@@ -355,16 +413,16 @@
 			text={panel.body}
 			anchor={{ x: slot.centred ? 0.5 : 0, y: 0 }}
 			x={slot.centred ? box.x + box.w / 2 : slot.text.x}
-			y={slot.text.titleY + titleSize * TITLE_LINES * 1.25}
+			y={slot.text.titleY + type.bodyTop}
 			style={{
 				fontFamily: BODY_FONT,
-				fontSize: bodySize,
+				fontSize: type.bodySize,
 				fontWeight: '600',
 				fill: BODY_FILL,
 				align: slot.centred ? 'center' : 'left',
 				wordWrap: true,
 				wordWrapWidth: slot.text.w,
-				lineHeight: bodySize * 1.4,
+				lineHeight: type.bodySize * 1.35,
 			}}
 		/>
 	{/each}
