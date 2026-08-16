@@ -10,3 +10,14 @@ node_modules/
 *.log
 .DS_Store
 Thumbs.db
+
+# HotMiami art-pipeline intermediates. All regenerable from design/*.py and the
+# source art; keeping them out of history stops a few MB of PNG churn per art
+# pass. _backup_pre_rebuild is the one exception worth explaining: it is the only
+# copy of the pre-2026-08-07 procedural art, whose generator no longer exists, so
+# it is ignored rather than deleted — it stays on disk, it just does not ship.
+apps/HotMiami/design/_backup_pre_rebuild/
+apps/HotMiami/design/_contact/
+apps/HotMiami/design/_painted/
+apps/HotMiami/design/_plated/
+**/__pycache__/
