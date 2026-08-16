@@ -10,6 +10,7 @@
 		| { type: 'soundFreeGameBell' }
 		| { type: 'soundBigWinBlast' }
 		| { type: 'soundSlam' }
+		| { type: 'soundAlarm' }
 		| { type: 'soundReelTensionStart' }
 		| { type: 'soundReelTensionStop' }
 		| { type: 'soundScatterCounterIncrease' }
@@ -29,8 +30,11 @@
 	const context = getContext();
 
 	// ─── Margin Call sound set (synthesized — see design/generate_audio_terminal.mjs) ───
-	// Standalone HTML5 Audio; the howler sprite (sounds.json) stays as a
-	// fallback for anything not mapped here (e.g. win-level bgm stingers).
+	// Standalone HTML5 Audio. The howler sprite (sounds.json) is NOT a fallback
+	// any more: unmapped one-shots are silent, because falling through to it meant
+	// playing a different game's sound set for every cue this one chose not to
+	// have. It is still loaded for soundMusic's non-bgm branch, which nothing
+	// currently reaches.
 	type SfxName =
 		| 'ui_click'
 		| 'spin_start'
@@ -88,28 +92,45 @@
 		// within a second only read as five if the steps between them are obvious;
 		// the old 0.92-1.30 spread was under a major sixth and blurred into one
 		// repeated click.
-		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.8, volume: 0.85 },
-		sfx_reel_stop_2: { name: 'reel_stop', rate: 0.95, volume: 0.9 },
-		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.12, volume: 0.95 },
-		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.33, volume: 1 },
-		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.6, volume: 1.1 },
+		// The volume ladder rises faster than it looks like it should. playbackRate
+		// shortens the sample as well as raising it, so reel 5 at 1.6x carries a
+		// bit over half the energy of reel 1 at 0.8x - a flat volume would make the
+		// last reel, the one that matters most, the quietest of the five.
+		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.8, volume: 0.9 },
+		sfx_reel_stop_2: { name: 'reel_stop', rate: 0.95, volume: 0.95 },
+		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.12, volume: 1.05 },
+		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.33, volume: 1.15 },
+		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.6, volume: 1.3 },
 		sfx_scatter_stop_1: { name: 'alert_1' },
 		sfx_scatter_stop_2: { name: 'alert_2' },
 		sfx_scatter_stop_3: { name: 'alert_3' },
 		sfx_scatter_stop_4: { name: 'alert_4' },
 		sfx_scatter_stop_5: { name: 'alert_5' },
-		// a LEVERAGE symbol landing — fires up to four times in one feature spin,
-		// so it is the quietest cue in the set that still has to be heard
-		sfx_multiplier_landing: { name: 'leverage_land' },
-		sfx_multiplier_update: { name: 'meter_tick' },
+		// The spin itself is deliberately quiet: only the five reel stops and the
+		// scatter landing above. A LEVERAGE landing, the meter tick and the
+		// anticipation tick all used to fire in the same moment as a reel stop, and
+		// four cues layered on one beat is what made the landing sound like mush.
+		// The mappings are left here, commented, because the decision is a
+		// judgement call and easy to want back.
+		// sfx_multiplier_landing stays silent: it fires as the LEVERAGE symbol
+		// lands, in the same moment as a reel stop, and two cues on one beat is
+		// what made the landing sound like mush in the first place.
+		// sfx_multiplier_landing: { name: 'leverage_land' },
+		//
+		// sfx_multiplier_update is a different matter and is now mapped. It no
+		// longer fires on the landing: LeverageMeter broadcasts it when a chip
+		// ARRIVES at the meter, which is hundreds of milliseconds later, on its
+		// own, and is the exact beat the multiplier climbing is meant to register
+		// on. Loud enough to be the event it is.
+		sfx_multiplier_update: { name: 'meter_tick', volume: 1.1 },
 		sfx_winlevel_small: { name: 'win_small' },
 		sfx_winlevel_end: { name: 'blast', volume: 0.85 },
 		sfx_scatter_win: { name: 'win_small' },
 		sfx_scatter_win_v2: { name: 'win_big' },
 		sfx_superfreespin: { name: 'win_big', volume: 0.8 },
 		jng_intro_fs: { name: 'feature_intro' },
-		sfx_wild_explode: { name: 'leverage_land' },
-		sfx_anticipation_start: { name: 'meter_tick', volume: 0.5 },
+		// sfx_wild_explode: { name: 'leverage_land' },
+		// sfx_anticipation_start: { name: 'meter_tick', volume: 0.5 },
 		// sfx_symbols_landing and sfx_royals_landing are deliberately NOT mapped.
 		// They used to play the reel-stop knock at 0.6, which meant that knock was
 		// the sound of three different events at once - a reel stopping, a symbol
@@ -261,17 +282,20 @@
 				sound.players.loop.play({ name });
 			}
 		},
-		soundOnce: ({ name, forcePlay }) => {
+		soundOnce: ({ name }) => {
 			const mapped = SPRITE_TO_SFX[name];
-			if (mapped) {
-				playSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
-			} else {
-				sound.players.once.play({ name, forcePlay });
-			}
+			// Unmapped names are SILENT. They used to fall through to the howler
+			// sprite (sounds.json), which is the template's audio - so every cue
+			// this game deliberately does not have was still playing something,
+			// from a different game's sound set. That is most of what "the audio
+			// is a mess" was.
+			if (mapped) playSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
 		},
 		soundFreeGameBell: () => playSfx('margin_call'),
 		soundBigWinBlast: () => playSfx('blast'),
 		soundSlam: () => playSfx('board_expand'),
+		// the transition wipe IS the margin call landing, so it gets the klaxon
+		soundAlarm: () => playSfx('margin_call', 0.85),
 		soundReelTensionStart: () => playLoop('tension', 0.8),
 		soundReelTensionStop: () => stopSfx('tension'),
 		soundStop: ({ name }) => {

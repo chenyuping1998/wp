@@ -162,7 +162,7 @@ export function createReelForCascading<TRawSymbol extends object, TSymbolState e
 				delay,
 			});
 			reelSymbol.symbolState = 'land' as TSymbolState;
-			reelOptions.onSymbolLand({ rawSymbol: reelSymbol.rawSymbol });
+			reelOptions.onSymbolLand({ rawSymbol: reelSymbol.rawSymbol, symbolIndex: reelSymbol.symbolIndex });
 			if (reelSymbol.symbolIndexOfBoard === reelLengthInBoard - 1) {
 				onSpinFinishing();
 			}

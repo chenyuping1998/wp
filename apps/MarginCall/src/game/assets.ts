@@ -52,6 +52,13 @@
 		src: new URL('../../assets/sprites/marginCallUi/ticker_plate.png', import.meta.url).href,
 		preload: true,
 	},
+	// Generated wordmark (design/generate_wordmark.mjs). The title is art, not
+	// text: see that script for why it is not another webfont.
+	mcWordmark: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/marginCallUi/wordmark.png', import.meta.url).href,
+		preload: true,
+	},
 	mcUiBuyBonus: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/marginCallUi/buybonus_plate.png', import.meta.url).href,
@@ -226,9 +233,13 @@
 			scale: 2,
 		},
 	},
-	coins: {
+	// Win particles (design/generate_particles.mjs): a chip flipping between a
+	// green face and a red one. Replaces the template's SD2_Coin sheet, which was
+	// cartoon gold doubloons raining over a green trading terminal — the most
+	// obviously borrowed asset in the game.
+	mcChips: {
 		type: 'spriteSheet',
-		src: new URL('../../assets/sprites/coin/SD2_Coin.json', import.meta.url).href,
+		src: new URL('../../assets/sprites/marginCallFx/trade_chip.json', import.meta.url).href,
 	},
 	sound: {
 		type: 'audio',

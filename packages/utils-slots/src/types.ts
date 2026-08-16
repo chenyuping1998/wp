@@ -41,7 +41,13 @@ type ReelCreateOptions<TRawSymbol extends object, TSymbolState extends string> =
 	reelIndex: number;
 	symbolHeight: number;
 	onReelStopping: () => void;
-	onSymbolLand: (args: { rawSymbol: TRawSymbol }) => void;
+	/**
+	 * Fired for every symbol on the reel as it lands - which includes the padding
+	 * symbols above and below the visible window. `symbolIndex` is that symbol's
+	 * position in the reel array (0 is the top padding), so a caller that only
+	 * cares about what the player can actually see is able to say so.
+	 */
+	onSymbolLand: (args: { rawSymbol: TRawSymbol; symbolIndex: number }) => void;
 	/**
 	 * Symbols per reel, when that can change between spins (Margin Call grows the
 	 * board from 3 rows to 5 for its feature game). Omit it and the reel behaves

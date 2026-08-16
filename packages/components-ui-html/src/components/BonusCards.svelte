@@ -28,6 +28,18 @@
 			{/snippet}
 
 			{#snippet description()}
+				<!--
+					Optional icon above the description. Opt-in by construction: it
+					renders only when a game puts a non-empty `assets.icon` on the bet
+					mode, and every game in this repo other than Triple Witching leaves
+					it as the empty string, so none of them change.
+
+					It is an <img src>, not an asset key - these cards are DOM, not
+					pixi, so the game supplies a URL.
+				-->
+				{#if betModeData?.assets?.icon}
+					<img class="icon" src={betModeData.assets.icon} alt="" aria-hidden="true" />
+				{/if}
 				{#if betModeData?.text?.description}
 					<div class="description">
 						{betModeData.text.description}
@@ -66,6 +78,16 @@
 		font-size: 1rem;
 		line-height: 1rem;
 		text-align: center;
+	}
+
+	.icon {
+		display: block;
+		height: 1.75rem;
+		width: auto;
+		margin: 0 auto 0.35rem;
+		/* the art is a thin white outline; a little glow keeps it from
+		   disappearing into a pale card background */
+		filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.45));
 	}
 
 	.description {

@@ -20,6 +20,7 @@ import {
 	INITIAL_BOARD,
 	BOARD_FIT,
 	BOARD_BOTTOM_MARGIN,
+	BOARD_HOUSING_CLEARANCE,
 	BOARD_EXPAND_MS,
 	boardSizes,
 	paddedReelLength,
@@ -30,7 +31,20 @@ import {
 	SCATTER_LAND_SOUND_MAP,
 } from './constants';
 
-const onSymbolLand = ({ rawSymbol }: { rawSymbol: RawSymbol; reelIndex?: number }) => {
+const onSymbolLand = ({
+	rawSymbol,
+	symbolIndex,
+}: {
+	rawSymbol: RawSymbol;
+	symbolIndex: number;
+	reelIndex?: number;
+}) => {
+	// A reel lands every symbol it holds, and it holds one padding symbol above
+	// the window and one below. A scatter sitting in either of those rang the
+	// alarm for a scatter the player could not see - "there was no scatter but I
+	// heard the sound". Visible rows are 1..rows.
+	if (symbolIndex < 1 || symbolIndex > stateGame.rows) return;
+
 	if (rawSymbol.name === 'S') {
 		eventEmitter.broadcast({ type: 'soundScatterCounterIncrease' });
 		eventEmitter.broadcast({
@@ -39,9 +53,8 @@ const onSymbolLand = ({ rawSymbol }: { rawSymbol: RawSymbol; reelIndex?: number 
 		});
 	}
 
-	if (rawSymbol.name === 'W') {
-		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
-	}
+	// LEVERAGE deliberately makes no sound as it lands - the spin is only the five
+	// reel stops and the scatter. See SPRITE_TO_SFX in Sound.svelte.
 };
 
 // Listed rather than built with a template literal: `sfx_reel_stop_${n}` widens
@@ -82,7 +95,7 @@ const board = _.range(NUM_REELS).map((reelIndex) => {
 				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
 			}
 		},
-		onSymbolLand: ({ rawSymbol }) => onSymbolLand({ rawSymbol, reelIndex }),
+		onSymbolLand: ({ rawSymbol, symbolIndex }) => onSymbolLand({ rawSymbol, symbolIndex, reelIndex }),
 	});
 
 	reel.reelState.spinOptions = () => {
@@ -182,6 +195,35 @@ const boardLayout = () => {
 // board, whatever is on screen right now.
 const maxBoardSizes = () => boardSizes(MAX_ROWS);
 
+/**
+ * Where the board sits in CANVAS space, for anything drawn outside MainContainer
+ * that has to lay itself out around the board rather than inside it.
+ *
+ * boardLayout is expressed in main-layout space, which is the box MainContainer
+ * scales and positions; the backdrop layers are in canvas space. This applies
+ * the same transform MainContainer does - a point p maps to
+ * `layout.x + (p - anchor.x * layout.width) * layout.scale` - so the two agree
+ * by construction instead of by a hand-tuned constant that a layout change
+ * would silently invalidate.
+ *
+ * The board grows when the feature opens, so these bounds move: whatever reads
+ * them has to be derived, not captured.
+ */
+const boardCanvasBounds = () => {
+	const layout = stateLayoutDerived.mainLayout();
+	const board = boardLayout();
+	// `anchor` here is a bare number, not the {x, y} that anchors are elsewhere in
+	// this codebase (boardLayout returns one of each, a few lines apart). Reading
+	// `.x` off it yields undefined, which propagates as NaN all the way into the
+	// geometry - and NaN coordinates draw nothing at all rather than drawing in
+	// the wrong place, so the only symptom is a layer that silently disappears.
+	const centerX = layout.x + (board.x - layout.anchor * layout.width) * layout.scale;
+	// The housing plate is drawn wider than the reels themselves, and the gutters
+	// have to clear the plate, not the cells.
+	const halfWidth = (board.width * board.scale * layout.scale * BOARD_HOUSING_CLEARANCE) / 2;
+	return { centerX, left: centerX - halfWidth, right: centerX + halfWidth };
+};
+
 const boardRaw = () =>
 	board.map((reel) => reel.reelState.symbols.map((reelSymbol) => reelSymbol.rawSymbol));
 
@@ -201,6 +243,7 @@ export const { getWinLevelDataByWinLevelAlias } = createGetWinLevelDataByWinLeve
 export const stateGameDerived = {
 	onSymbolLand,
 	boardLayout,
+	boardCanvasBounds,
 	maxBoardSizes,
 	boardRaw,
 	scatterLandIndex,

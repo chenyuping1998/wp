@@ -139,6 +139,31 @@ fs.writeFileSync(path.join(OUT, 'replay-mock-sw.js'), sw);
 // tested.
 const REGISTER = `		<script>
 			// replay test harness — injected by design/make_replay_harness.mjs
+			//
+			// Frame pump. Browsers throttle requestAnimationFrame to ZERO in a hidden
+			// or backgrounded tab, and every animation in this game is rAF-driven —
+			// the reels, the win rings, the transition, even FadeContainer's alpha
+			// tween, which means the backdrop containers never so much as mount. An
+			// automated check driving this page therefore sees a permanently frozen
+			// first frame and cannot tell a broken animation from a paused one.
+			//
+			// Opting in with ?pump=1 swaps rAF for a timer so the page animates
+			// regardless of visibility. It is deliberately opt-in and lives only in
+			// build-replaytest/, which is gitignored and never shipped: a timer is
+			// not a frame clock and must not be what a human judges timing on.
+			if (new URLSearchParams(location.search).get('pump') === '1') {
+				let id = 0;
+				const pending = new Map();
+				window.requestAnimationFrame = (cb) => {
+					const handle = ++id;
+					pending.set(handle, setTimeout(() => { pending.delete(handle); cb(performance.now()); }, 16));
+					return handle;
+				};
+				window.cancelAnimationFrame = (handle) => {
+					clearTimeout(pending.get(handle));
+					pending.delete(handle);
+				};
+			}
 			if ('serviceWorker' in navigator) {
 				navigator.serviceWorker.register('./replay-mock-sw.js', { scope: './' }).then(async () => {
 					await navigator.serviceWorker.ready;

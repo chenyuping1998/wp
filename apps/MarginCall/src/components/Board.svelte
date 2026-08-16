@@ -16,6 +16,7 @@
 	import { BoardContext } from 'components-shared';
 
 	import { getContext } from '../game/context';
+	import { getHighlightGeneration } from '../game/bookEventHandlerMap';
 	import BoardContainer from './BoardContainer.svelte';
 	import BoardMask from './BoardMask.svelte';
 	import BoardBase from './BoardBase.svelte';
@@ -30,6 +31,11 @@
 		boardShow: () => (show = true),
 		boardHide: () => (show = false),
 		boardWithAnimateSymbols: async ({ symbolPositions }) => {
+			// The board this volley was asked to light. Every yield below is a place
+			// the player can press spin, which resets the whole strip to 'spin' and
+			// bumps the generation - writing a symbol state after that point paints
+			// the win onto a reel that is already moving.
+			const generation = getHighlightGeneration();
 			const getPromises = () =>
 				symbolPositions.map(async (position) => {
 					const reel = context.stateGame.board[position.reel];
@@ -50,8 +56,10 @@
 						reelSymbol.symbolState = 'static';
 						await waitForResolve((resolve) => setTimeout(resolve, 0));
 					}
+					if (generation !== getHighlightGeneration()) return;
 					reelSymbol.symbolState = 'win';
 					await waitForResolve((resolve) => (reelSymbol.oncomplete = resolve));
+					if (generation !== getHighlightGeneration()) return;
 					reelSymbol.symbolState = 'postWinStatic';
 				});
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
+	import { BODY_FONT } from '../game/fonts';
 	import { Container, Graphics, Text, Sprite } from 'pixi-svelte';
 	import { FadeContainer } from 'components-pixi';
 	import { MainContainer } from 'components-layout';
@@ -8,6 +8,7 @@
 	import { getContext } from '../game/context';
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
+	import FeatureIntro from './FeatureIntro.svelte';
 
 	type Props = {
 		onloaded: () => void;
@@ -16,20 +17,35 @@
 	const props: Props = $props();
 	const context = getContext();
 
+	// Sized against the main box and capped on both axes, so the mark carries the
+	// same visual weight on a 1422-wide desktop layout and an 800-wide portrait
+	// one. 2080x500 is the generated asset's own size; the height follows from it
+	// rather than being a second number that can drift out of ratio.
+	const wordmarkWidth = $derived(
+		Math.min(
+			context.stateLayoutDerived.mainLayout().width * 0.46,
+			context.stateLayoutDerived.mainLayout().height * 0.62,
+		),
+	);
+
 	let loadingType = $state<'start' | 'transition'>('start');
 	let pulseTick = $state(0);
 
 	// Gameplay tips cycling under the progress bar, so the wait teaches the
-	// features instead of just counting. Every line is checked against the rules
-	// modal (components/ui/ModalGameRules) — note in particular that it takes 4 or
-	// 5 Scatters here, not 3, and that multipliers ADD rather than multiply.
+	// features instead of just counting.
+	//
+	// Every line is checked against the rules modal (components/ui/ModalGameRules),
+	// which reads its figures straight out of the maths config. This screen was
+	// inherited wholesale from another game and was still advertising that one:
+	// 15 lines, a 10,000× cap, expanding sticky wilds, a respin mode. None of it
+	// is true here, and it was the very first thing a player read.
 	const TIPS = [
-		'4 OR 5 SCATTERS AWARD 12 OR 15 FREE SPINS',
-		'IN FREE SPINS EVERY WILD EXPANDS TO FILL ITS REEL',
-		'EXPANDED WILDS STICK FOR THE REST OF THE FEATURE',
-		'EACH EXPANDED WILD CARRIES A 2×–50× MULTIPLIER',
-		'MULTIPLIERS ON A WINNING LINE ARE ADDED TOGETHER',
-		'SUPER SPIN: EVERY COIN RESETS THE RESPINS TO 3',
+		'3, 4 OR 5 MARGIN CALLS AWARD 8, 10 OR 12 FREE SPINS',
+		'FREE SPINS OPEN THE BOARD TO 5×5 — 3,125 WAYS',
+		'EVERY LEVERAGE SYMBOL ADDS TO THE LEVERAGE METER',
+		'THE METER APPLIES TO EVERY WIN AND NEVER DROPS',
+		'2 OR MORE MARGIN CALLS IN THE FEATURE AWARD MORE SPINS',
+		'LEVERAGE SUBSTITUTES FOR EVERYTHING EXCEPT MARGIN CALL',
 	];
 	const TIP_MS = 3400;
 	// pulseTick already advances every 32ms for the title pulse — reuse it as the
@@ -70,7 +86,7 @@
 <!-- Margin Call branded loading screen -->
 <FadeContainer show={loadingType === 'start'}>
 	<MainContainer>
-		<!-- Background image (山水 theme) -->
+		<!-- the trading floor, held under a dark overlay for readability -->
 		<Sprite
 			key="mcBgBase"
 			anchor={0.5}
@@ -86,12 +102,12 @@
 				const w = context.stateLayoutDerived.mainLayout().width;
 				const h = context.stateLayoutDerived.mainLayout().height;
 				g.clear();
-				g.beginFill(0x1a0505, 0.68);
+				g.beginFill(0x040807, 0.72);
 				g.drawRect(0, 0, w, h);
 				g.endFill();
 
 				// subtle vignette / top glow so the screen looks less flat
-				g.beginFill(0xffd43b, 0.04);
+				g.beginFill(0x4bd67f, 0.05);
 				g.drawEllipse(w * 0.5, h * 0.28, w * 0.22, h * 0.11);
 				g.endFill();
 
@@ -108,56 +124,60 @@
 				const glowX = w * 0.5 + Math.sin(pulseTick / 48) * w * 0.08;
 				const glowAlpha = 0.03 + 0.015 * (0.5 + 0.5 * Math.sin(pulseTick / 22));
 				g.clear();
-				g.beginFill(0xffd67c, glowAlpha);
+				g.beginFill(0x4bd67f, glowAlpha);
 				g.drawEllipse(glowX, h * 0.34, w * 0.26, h * 0.1);
 				g.endFill();
 			}}
 		/>
 
-		<Container
-			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.36}
-		>
-			<!-- Game title -->
-			<Text
-				anchor={0.5}
-				text="MARGIN CALL"
-				style={{
-					fontFamily: GAME_FONT,
-					fontSize: 52,
-					fontWeight: GAME_FONT_WEIGHT,
-					fill: 0x4bd67f,
-					letterSpacing: 6,
-					dropShadow: true,
-					dropShadowColor: 0x06210f,
-					dropShadowBlur: 18,
-					dropShadowDistance: 0,
-					stroke: 0xfff4cf,
-					strokeThickness: 1,
-				}}
-			/>
+		<!--
+			The title is a generated wordmark, not live text. Titan One is a rounded
+			cartoon display face and it never suited a trading terminal; the mark is
+			drawn in monospace with the ticker furniture the rest of the game uses.
+			See design/generate_wordmark.mjs — no new font ships for it.
 
-			<!--
-				Subtitle and the loading line below both sit at 12–15px, which is where
-				Titan One stops working: it is a heavy rounded display face, and at that
-				size its counters close up and "10,000X" turns to mush. They use the body
-				stack instead — the same split the rules and paytable modals already make
-				(see game/fonts.ts). The 52px title above keeps the display face, which is
-				what it is for.
-			-->
-			<Text
-				anchor={0.5}
-				y={65}
-				text="5X5, 15 LINES — MAX WIN 10,000X"
-				style={{
-					fontFamily: BODY_FONT,
-					fontSize: 15,
-					fontWeight: '600',
-					fill: 0xf7ead6,
-					letterSpacing: 2.5,
-				}}
-			/>
-		</Container>
+			It does NOT move between the loading state and the feature card that
+			replaces it: a headline sliding up while three panels fade in gives the
+			eye two things to follow at once.
+		-->
+		<Sprite
+			key="mcWordmark"
+			anchor={0.5}
+			x={context.stateLayoutDerived.mainLayout().width * 0.5}
+			y={context.stateLayoutDerived.mainLayout().height * 0.155}
+			width={wordmarkWidth}
+			height={(wordmarkWidth * 500) / 2080}
+		/>
+
+	</MainContainer>
+</FadeContainer>
+
+<!-- loading column: retires the moment the assets are in -->
+<FadeContainer show={loadingType === 'start' && !context.stateApp.loaded}>
+	<MainContainer>
+		<!--
+			Strapline. Lives with the progress bar rather than with the title,
+			because the feature card that replaces this column says the same two
+			things in more detail and in the player's own language — and at the
+			title's position it collided with the card's volatility badge.
+
+			12-15px is where Titan One stops working: it is a heavy rounded display
+			face and at that size its counters close up. Body stack here; the 52px
+			title above keeps the display face, which is what it is for.
+		-->
+		<Text
+			anchor={0.5}
+			x={context.stateLayoutDerived.mainLayout().width * 0.5}
+			y={context.stateLayoutDerived.mainLayout().height * 0.155 + (wordmarkWidth * 500) / 2080 / 2 + 22}
+			text="5×3, 243 WAYS — MAX WIN 12,000×"
+			style={{
+				fontFamily: BODY_FONT,
+				fontSize: 15,
+				fontWeight: '600',
+				fill: 0xcfe9da,
+				letterSpacing: 2.5,
+			}}
+		/>
 
 		<!-- Progress bar area -->
 		<Container
@@ -171,13 +191,13 @@
 					const barHeight = 4;
 					g.clear();
 					// Background track
-					g.beginFill(0x38221c, 0.82);
+					g.beginFill(0x11201a, 0.9);
 					g.drawRoundedRect(-barWidth / 2, -barHeight / 2, barWidth, barHeight, 2);
 					g.endFill();
 					// Progress fill
 					const fillWidth = (barWidth * animatedProgress) / 100;
 					if (fillWidth > 0) {
-						g.beginFill(0xffd43b, 0.94);
+						g.beginFill(0x4bd67f, 0.94);
 						g.drawRoundedRect(-barWidth / 2, -barHeight / 2, fillWidth, barHeight, 2);
 						g.endFill();
 					}
@@ -185,42 +205,37 @@
 			/>
 
 			<!--
-				Progress readout — percentage only. It used to switch to "TAP TO
-				CONTINUE" once loading finished, which put two versions of the same
-				instruction on screen at once: this one and the far larger "PRESS
-				ANYWHERE TO CONTINUE" across the foot (PressToContinue.svelte). The big
-				one wins, so this line simply retires and the tip moves up into the space
-				it leaves — the swap happens on the single frame the bar fills and the
-				bottom prompt appears, so nothing visibly jumps.
+				Progress readout. The whole column is gated on `!loaded` now, so this no
+				longer needs its own guard, and the tip no longer has to move up into
+				the space the readout leaves — the feature card takes the screen the
+				moment loading finishes.
 			-->
-			{#if !context.stateApp.loaded}
-				<Text
-					anchor={0.5}
-					y={20}
-					text={`LOADING ${Math.round(animatedProgress)}%`}
-					style={{
-						fontFamily: BODY_FONT,
-						fontSize: 13,
-						fontWeight: '600',
-						// lifted off the previous muted tan, which was dim at 13px against
-						// the dark vignette
-						fill: 0xe8d3b6,
-						letterSpacing: 2,
-					}}
-				/>
-			{/if}
+			<Text
+				anchor={0.5}
+				y={20}
+				text={`LOADING ${Math.round(animatedProgress)}%`}
+				style={{
+					fontFamily: BODY_FONT,
+					fontSize: 13,
+					fontWeight: '600',
+					// lifted off the previous muted tan, which was dim at 13px against
+					// the dark vignette
+					fill: 0xa9c7b6,
+					letterSpacing: 2,
+				}}
+			/>
 
 			<!-- rotating gameplay tip -->
 			<Text
 				anchor={0.5}
-				y={context.stateApp.loaded ? 20 : 48}
+				y={48}
 				alpha={tipAlpha}
 				text={TIPS[tipIndex]}
 				style={{
 					fontFamily: BODY_FONT,
 					fontSize: 13,
 					fontWeight: '600',
-					fill: 0xffd75e,
+					fill: 0x7fe3a4,
 					letterSpacing: 2,
 				}}
 			/>
@@ -228,12 +243,30 @@
 	</MainContainer>
 </FadeContainer>
 
+<!-- feature card: takes the screen once the bar fills -->
+<FadeContainer show={loadingType === 'start' && context.stateApp.loaded}>
+	<FeatureIntro />
+</FadeContainer>
+
 <!-- press to continue -->
 <FadeContainer show={loadingType === 'start' && context.stateApp.loaded}>
 	<PressToContinue onpress={() => (loadingType = 'transition')} />
 </FadeContainer>
 
-<!-- transition between the loading screen and the game -->
+<!--
+	Transition between the loading screen and the game.
+
+	The handover is on `oncover`, not `oncomplete`: that is the frame the
+	circuit-breaker shutters are shut, so the loading screen is torn down and the
+	game put up behind a screen that is showing nothing. Handing over on
+	`oncomplete` instead would play the shutters retracting to reveal... the
+	loading screen again, and only then cut to the game.
+
+	Unmounting here takes the animation with it, so the retract is never seen on
+	this one - the game simply appears from black. That is the intended shape:
+	in-game transitions get the full open because the scene behind them is ready,
+	and this one is a handover between two different trees.
+-->
 <FadeContainer show={loadingType === 'transition'}>
-	<TransitionAnimation oncomplete={props.onloaded} />
+	<TransitionAnimation oncover={props.onloaded} oncomplete={props.onloaded} />
 </FadeContainer>

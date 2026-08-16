@@ -28,18 +28,29 @@
 		S: 'mcS',
 	};
 
+	// Deliberately NOT the names of real coins.
+	//
+	// The premium art depicts recognisable crypto marks, and at least one of them
+	// (the Tether wordmark on H3) is a registered trademark of a company that
+	// would have a view about a gambling product using it. Naming the row after
+	// the brand does not create the exposure, but it does confirm it in writing,
+	// on a page certification reads. The artwork is the real exposure and needs
+	// replacing separately - see HANDOFF.
+	//
+	// These names come from the trading desk the game is set on, which is the
+	// game's own vocabulary and belongs to nobody.
 	const SYMBOL_LABEL: Record<string, string> = {
-		H1: 'Bull',
-		H2: 'Bear',
-		H3: 'Bitcoin',
-		H4: 'Ethereum',
-		H5: 'Bundle',
+		H1: 'B-coin',
+		H2: 'E-coin',
+		H3: 'T-coin',
+		H4: 'S-coin',
+		H5: 'Bull',
 		L1: 'Green Candle',
 		L2: 'Red Candle',
-		L3: 'Rally Arrow',
-		L4: 'Selloff Arrow',
-		W: 'Leverage — Wild',
-		S: 'Margin Call — Scatter',
+		L3: 'Rally',
+		L4: 'Selloff',
+		W: 'LEVERAGE — Wild',
+		S: 'MARGIN CALL — Scatter',
 	};
 
 	// keep high -> low ordering for readability
