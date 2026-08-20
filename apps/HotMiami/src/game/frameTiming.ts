@@ -65,18 +65,30 @@ export const FRAME_TIMING = {
 /**
  * When the Frames for a spin become visible.
  *
- * - `per-reel` — each reel's Frames appear as that reel comes to rest, so the
- *   Frame lands with its symbol and the board fills left to right.
- *   **This is what the reference game does.** Observed directly in The Luxe's
- *   demo (2026-08-09): a screenshot caught mid-spin showed Golden Frames already
- *   drawn on reels 1, 3 and 4 while reel 5 was still visibly in motion.
  * - `during-spin` — all of the spin's Frames appear before the reels are even
- *   awaited, floating over still-spinning columns. Shows where a Frame will land
- *   before its symbol arrives. The Luxe does NOT do this.
+ *   awaited, floating over still-spinning columns. The player sees where the
+ *   Frames will land while the reels are still running, and then watches the
+ *   symbols arrive into them. **This is what the game uses.**
+ * - `per-reel` — each reel's Frames appear as that reel comes to rest, so the
+ *   Frame lands with its symbol and the board fills left to right. This is what
+ *   the reference game does: a screenshot of The Luxe's demo caught mid-spin
+ *   (2026-08-09) showed Golden Frames already drawn on reels 1, 3 and 4 while
+ *   reel 5 was still visibly in motion.
  * - `on-stop` — the original behaviour: nothing appears until every reel has
  *   stopped, one beat after the landing.
+ *
+ * Why `during-spin` and not the reference's `per-reel`: matching The Luxe was
+ * the goal while the mechanic was being built, but it is not the goal now. Under
+ * `per-reel` a Frame cannot appear before its own reel has stopped, so on the
+ * last reel it arrives at the very end of the spin and there is nothing left to
+ * anticipate. Revealing the whole set up front turns the spin itself into the
+ * suspense — the Frames are on the board and the question is what lands in them,
+ * which is the mechanic's actual question.
+ *
+ * The two modes are one constant apart and both are live code paths, so this is
+ * cheap to put back.
  */
-export const FRAME_REVEAL: 'per-reel' | 'during-spin' | 'on-stop' = 'per-reel';
+export const FRAME_REVEAL: 'per-reel' | 'during-spin' | 'on-stop' = 'during-spin';
 
 /**
  * When a spin's Frames are cleared.

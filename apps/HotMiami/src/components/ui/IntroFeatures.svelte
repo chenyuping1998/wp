@@ -4,6 +4,7 @@
 	import { base } from '$app/paths';
 	import { stateUrlDerived } from 'state-shared';
 	import { stateLayout } from '../../game/stateLayout';
+	import { stateApp } from '../../game/stateApp';
 	import { zIndex } from 'constants-shared/zIndex';
 
 	import config from '../../game/config';
@@ -22,9 +23,21 @@
 	// hard black outline standing in it, blocky angled panels, and heavy outlined
 	// display type. All three of those images already exist in the game — the base
 	// background, the store tile's foreground cut-out, and the wordmark — so no new
-	// art is drawn for this screen. Stake's quality guidelines count generic
-	// screen-specific assets against a game; reusing what the player is about to
-	// see is both cheaper and more honest.
+	// art is drawn for this screen.
+	//
+	// CORRECTION: this comment used to justify that by saying "Stake's quality
+	// guidelines count generic screen-specific assets against a game". They do
+	// not, and the claim has been copied out of here into another app since. What
+	// certification actually flags is "heavy reliance on generic or AI art,
+	// standard fonts, emoji icons or gradient fills" (review-log round 1,
+	// restated in certification.md). The operative word is "generic" — how the art
+	// LOOKS. Nothing in either document cares whether an asset serves one screen
+	// or twenty, and a well-drawn bespoke splash would pass fine.
+	//
+	// Reuse is still the right default here, for ordinary reasons: it keeps the
+	// opening in the same visual language as the board, costs nothing, and avoids
+	// rolling the dice on another generated image that might come back reading as
+	// stock AI render.
 	//
 	// Numbers come from the maths config on the same principle as the rules panel:
 	// they cannot drift from what the game actually pays.
@@ -82,29 +95,54 @@
 	// finished. Letting the tap through early just swapped one opening screen for
 	// another, which is the thing being removed.
 	//
-	// The escape hatch matters. `showLoadingScreen` is cleared by the asset
-	// loader, and the asset loader lives inside <Authenticate>, which renders
-	// nothing until it has a session. So a failed authenticate — a network blip,
-	// a dead RGS — would otherwise leave the player holding an opening card that
-	// cannot be dismissed, which is strictly worse than the screen this replaced.
+	// The escape hatch matters. `stateApp.loaded` is set by the asset loader, and
+	// the asset loader lives inside <Authenticate>, which renders nothing until it
+	// has a session. So a failed authenticate — a network blip, a dead RGS — would
+	// otherwise leave the player holding an opening card that cannot be dismissed,
+	// which is strictly worse than the screen this replaced.
 	// After the timeout the tap is allowed through regardless; whatever is behind
 	// it can then show its own error.
 	const LOAD_TIMEOUT_MS = 12_000;
 	let timedOut = $state(false);
-	const ready = $derived(!stateLayout.showLoadingScreen || timedOut);
+	const ready = $derived(stateApp.loaded || timedOut);
+
+	const dismiss = () => {
+		show = false;
+		props.onclose?.();
+	};
 
 	const close = () => {
 		if (!show || !ready) return;
-		show = false;
-		props.onclose?.();
+		// This tap hands the player straight to the board.
+		//
+		// `showLoadingScreen` is what Game.svelte gates the game body on, and it
+		// used to be cleared by the pixi loading screen's own PRESS ANYWHERE TO
+		// CONTINUE — i.e. a second full-screen page, behind this one, asking for a
+		// second tap to do the job this tap already did. Clearing it here retires
+		// that page. Both preconditions it existed for are met at this point:
+		// `ready` means the assets have finished loading, and this click is the
+		// user gesture the audio autoplay policy requires before <Sound /> mounts.
+		//
+		// The loading screen component is still rendered underneath and still owns
+		// the progress bar; it is simply never seen, because this card covers it
+		// and refuses the tap until loading is done. It remains the visible loader
+		// on the replay path (see below) and if this card is ever removed.
+		stateLayout.showLoadingScreen = false;
+		dismiss();
 	};
 
 	// A short arming delay stops a stray click that was aimed at something else
 	// from dismissing the card before it has finished appearing.
 	let armed = $state(false);
 	onMount(() => {
+		// Replay gets out of the way immediately — and via `dismiss`, not `close`,
+		// on purpose. `close` is refused until the assets are loaded, which at mount
+		// they never are, so the replay branch was silently a no-op and the card sat
+		// there until the 12s bail-out. `dismiss` also leaves `showLoadingScreen`
+		// alone, so replay keeps the loading screen it has always had rather than
+		// being handed an unloaded board.
 		if (stateUrlDerived.replay()) {
-			close();
+			dismiss();
 			return;
 		}
 		const id = setTimeout(() => (armed = true), 420);
@@ -156,7 +194,25 @@
 				<span class="hm-vol-label">VOLATILITY</span>
 				<span class="hm-bolts" aria-label={`Volatility ${VOLATILITY} of ${VOLATILITY_MAX}`}>
 					{#each Array(VOLATILITY_MAX) as _, i (i)}
-						<span class="hm-bolt" class:lit={i < VOLATILITY}>&#9889;</span>
+						<!--
+							Drawn, not typed. This was `&#9889;` — U+26A1 HIGH VOLTAGE SIGN —
+							five times, which every platform renders with its own colour emoji
+							font: on macOS five glossy yellow Apple bolts sitting on a magenta
+							and cyan neon card, ignoring every colour in this stylesheet.
+							Stake's round-1 review named this exact class of thing ("emoji
+							icons") and it was the first item on the opening screen.
+							`filter: grayscale()` on the unlit ones was the tell that it had
+							already gone wrong: you only reach for that when you cannot set
+							the fill.
+						-->
+						<svg
+							class="hm-bolt"
+							class:lit={i < VOLATILITY}
+							viewBox="0 0 24 40"
+							aria-hidden="true"
+						>
+							<path d="M14.6 0 3 22.4h6.9L7.4 40 21 16.2h-7.4L14.6 0Z" />
+						</svg>
 					{/each}
 				</span>
 			</div>
@@ -397,24 +453,37 @@
 
 	.hm-bolts {
 		display: inline-flex;
-		gap: 0.1rem;
-		font-size: clamp(0.85rem, 1.8vw, 1.15rem);
+		align-items: center;
+		gap: 0.22rem;
 		line-height: 1;
 	}
 
 	/* Unlit bolts stay in place so the scale reads as "4 of 5" rather than
-	   "some bolts". */
+	   "some bolts" — but now they are drawn as a hollow bolt in the card's own
+	   ink rather than a greyed-out emoji, which is the same distinction the
+	   Neon Frames make between a plain frame and a lit one. */
 	.hm-bolt {
-		filter: grayscale(1) brightness(0.4);
-		opacity: 0.5;
+		height: clamp(0.95rem, 2vw, 1.3rem);
+		width: auto;
+		display: block;
+		overflow: visible;
 	}
 
-	.hm-bolt.lit {
-		/* must reset the filter, not just the opacity — without this every bolt
-		   stays greyscale and the scale reads as five unlit bolts */
-		filter: none;
-		opacity: 1;
-		text-shadow: 0 0 10px rgba(255, 200, 80, 0.85);
+	.hm-bolt path {
+		fill: rgba(255, 215, 238, 0.09);
+		stroke: rgba(255, 143, 208, 0.5);
+		stroke-width: 1.6;
+		stroke-linejoin: round;
+	}
+
+	.hm-bolt.lit path {
+		/* the same magenta-to-gold the wordmark and the frame tiers already use,
+		   so the meter belongs to this game rather than to the OS */
+		fill: #ffd75e;
+		stroke: #ff2e88;
+		stroke-width: 2.2;
+		filter: drop-shadow(0 0 6px rgba(255, 143, 208, 0.9))
+			drop-shadow(0 0 2px rgba(255, 215, 94, 0.9));
 	}
 
 	.hm-panels {
@@ -587,8 +656,19 @@
 		align-items: center;
 		gap: 0.45rem;
 		color: rgba(255, 255, 255, 0.72);
-		font-family: Arial, Helvetica, sans-serif;
+		/*
+			The studio mark used to be set in Arial, here and inside the star. It was
+			inherited from the old HotMiamiLoader, where it was one beat on a screen
+			nobody looks at; on this card it is the only piece of studio branding a
+			reviewer sees, and it was rendering in the operating system's default
+			sans. A wordmark in Arial reads as a placeholder, which is the opposite of
+			what a studio mark is for.
+			Orbitron via --hm-title-font: self-hosted, already loaded for the game's
+			display type, and squared-off enough to sit beside the star.
+		*/
+		font-family: var(--hm-title-font, var(--gb-display-font, sans-serif));
 		font-size: clamp(0.55rem, 1vw, 0.7rem);
+		font-weight: 600;
 		letter-spacing: 0.14em;
 	}
 
@@ -600,8 +680,10 @@
 
 	.hm-studio-star text {
 		fill: currentColor;
-		font-family: Arial, Helvetica, sans-serif;
-		font-size: 26px;
+		font-family: var(--hm-title-font, var(--gb-display-font, sans-serif));
+		/* Orbitron's figures are narrower than Arial's, so 777 no longer fills the
+		   star's counter at 26px — 30px restores the optical size it was drawn at. */
+		font-size: 30px;
 		font-weight: 700;
 	}
 </style>

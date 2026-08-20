@@ -13,7 +13,58 @@ import type { RawSymbol, SymbolState } from './types';
 
 // general utils
 export const { getEmptyBoard } = createGetEmptyPaddedBoard({ reelsDimensions: BOARD_DIMENSIONS });
-export const { playBookEvent, playBookEvents } = createPlayBookUtils({ bookEventHandlerMap });
+
+// ── round tracing ───────────────────────────────────────────────────────────
+// Opt-in per-event timing, off unless something sets `window.__HM_TRACE__`.
+//
+// It exists because a single base spin was measured at over 110 seconds in the
+// local play shell and two rounds of reading the code produced two confident
+// explanations that both turned out to be wrong — a Pixi v8 gradient-fill
+// theory, and the anticipated-reel padding arithmetic (which works out to about
+// ten seconds, not a hundred). The lesson is the one already written at the top
+// of the handoff: measure the thing, do not reason about the thing.
+//
+// Each handler is wrapped rather than timing the whole round, because the whole
+// round being slow is exactly what is already known. What is needed is which
+// handler owns the seconds.
+//
+//     window.__HM_TRACE__ = []   // then spin; each entry is [type, ms]
+//     console.table(window.__HM_TRACE__)
+//
+// Cheap enough to leave in: when the flag is unset this is one `if` per book
+// event, and a round has tens of them.
+// Entry AND exit, as a pair. The first version of this only wrote in `finally`,
+// which meant a handler that never returns left NO row at all — and that was
+// exactly the case being investigated. An empty trace could then mean either
+// "the probe is broken" or "the handler never finished", and the data could not
+// tell those apart; it took a separate signal (the stub's round counter) to
+// distinguish them. A row on entry makes the stuck handler name itself: an
+// `enter` with no matching `exit` is the culprit, and the probe proves it is
+// alive at the same time.
+type TraceRow = { i: number; type: string; phase: 'enter' | 'exit'; t: number; ms?: number };
+let traceSeq = 0;
+const traced = Object.fromEntries(
+	Object.entries(bookEventHandlerMap).map(([type, handler]) => [
+		type,
+		async (...args: unknown[]) => {
+			const trace = (globalThis as { __HM_TRACE__?: TraceRow[] }).__HM_TRACE__;
+			if (!trace) return (handler as (...a: unknown[]) => unknown)(...args);
+			const i = traceSeq++;
+			const t0 = performance.now();
+			trace.push({ i, type, phase: 'enter', t: Math.round(t0) });
+			try {
+				return await (handler as (...a: unknown[]) => Promise<unknown>)(...args);
+			} finally {
+				const t1 = performance.now();
+				trace.push({ i, type, phase: 'exit', t: Math.round(t1), ms: Math.round(t1 - t0) });
+			}
+		},
+	]),
+) as typeof bookEventHandlerMap;
+
+export const { playBookEvent, playBookEvents } = createPlayBookUtils({
+	bookEventHandlerMap: traced,
+});
 
 // ── idle win-line replay ────────────────────────────────────────────────────
 // Once the round is over the board sits still until the player spins again, and

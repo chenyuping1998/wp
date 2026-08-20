@@ -118,8 +118,19 @@
 			</div>
 		</dl>
 
+		<!--
+			The play mark is drawn, not typed. It was a literal ▶ (U+25B6 BLACK
+			RIGHT-POINTING TRIANGLE), which most platforms hand to the colour emoji
+			font — so on the magenta button it arrived as a black-and-white system
+			glyph at whatever size and baseline that font chose, ignoring the button's
+			colour entirely. Same class of defect as the volatility bolts on the
+			opening card, same fix.
+		-->
 		<button class="replay-start" onclick={props.onstart}>
-			▶ {L.start}
+			<svg class="replay-start-mark" viewBox="0 0 12 14" aria-hidden="true">
+				<path d="M1 1v12l10-6z" />
+			</svg>
+			{L.start}
 		</button>
 
 		<p class="replay-foot">{L.foot}</p>
@@ -226,7 +237,10 @@
 	}
 
 	.replay-start {
-		display: block;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
 		width: 100%;
 		margin-top: 1rem;
 		padding: 0.8rem 1rem;
@@ -241,6 +255,16 @@
 		transition:
 			filter 0.2s ease,
 			transform 0.1s ease;
+	}
+
+	/* Sized off the label rather than in rem, so the mark tracks the button text
+	   at any root size. `currentColor` is the point of drawing it: it takes the
+	   button's own ink, which the emoji glyph could not. */
+	.replay-start-mark {
+		height: 0.85em;
+		width: auto;
+		fill: currentColor;
+		flex: none;
 	}
 
 	.replay-start:hover {

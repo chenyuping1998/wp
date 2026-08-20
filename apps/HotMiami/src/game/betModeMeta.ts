@@ -83,10 +83,15 @@ const buildTier = (tier: TierCopy): BetModeData => {
 					`Enter ${tier.title} directly for ${cost}× your amount, at the same ${RTP_PCT} RTP as normal play. ${tier.summary} Landing ${tier.scatters} FS Scatters in normal play opens the same feature. Maximum win: ${MAX_WIN}× your amount.`,
 				);
 			},
+			// An em dash, not the arrow this used to carry. U+2192 is in neither
+			// shipped face — checked against the `cmap` of both TTFs — so the arrow
+			// dropped out of Orbitron mid-string into whatever the browser had, at a
+			// different weight and baseline, right in the middle of the buy menu.
+			// U+00D7 and U+2014 are both present, so the rest of this line is safe.
 			get description() {
 				return pick(
-					`${cost}× BET → ${tier.title} (${tier.scatters} Scatters)`,
-					`${cost}× AMOUNT → ${tier.title} (${tier.scatters} Scatters)`,
+					`${cost}× BET — ${tier.title} (${tier.scatters} Scatters)`,
+					`${cost}× AMOUNT — ${tier.title} (${tier.scatters} Scatters)`,
 				);
 			},
 			get button() {

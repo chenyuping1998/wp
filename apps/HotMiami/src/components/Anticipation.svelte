@@ -7,6 +7,7 @@
 	import { SYMBOL_SIZE, BOARD_SIZES } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
+	import { isFullTier, tierIntensity, pulseRateMs, beamAt } from '../game/anticipationFocus';
 
 	type Props = {
 		reel: Reel;
@@ -27,10 +28,18 @@
 	// the two states apart at a glance. The low tier is a dimmer magenta column
 	// with no chevrons and no rail flare; the full tier adds the white core, the
 	// cyan chevrons converging on the reel, and the rail glow.
-	const isFullTier = $derived((props.magnitude ?? 2) >= 2);
-	const intensity = $derived(isFullTier ? 1 : 0.45);
+	//
+	// The numbers live in game/anticipationFocus.ts so that
+	// design/check_anticipation.mjs can assert the escalation this file's
+	// comments claim — brighter, faster and closer at the higher tier, and more
+	// urgent at each reel to the right.
+	const fullTier = $derived(isFullTier(props.magnitude));
+	const intensity = $derived(tierIntensity(props.magnitude));
 
 	let pulse = $state(0);
+	// ms since the tease started, driving the travelling beam
+	let elapsed = $state(0);
+	const beam = $derived(beamAt(elapsed, props.magnitude));
 	let finished = $state(false);
 
 	// Drawn entirely here rather than through the old `anticipation` spine: that
@@ -51,12 +60,22 @@
 		// per reel, and the low tier (two scatters, not yet a trigger) runs slower
 		// still so the full tier is audibly and visibly the more urgent one.
 		const phase = props.reel.reelIndex * 0.9;
-		const rate = (165 - props.reel.reelIndex * 16) * (isFullTier ? 1 : 1.35);
-		const id = setInterval(() => {
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / rate + phase);
-		}, 24);
+		const rate = pulseRateMs(props.reel.reelIndex, props.magnitude);
 
-		return () => clearInterval(id);
+		// requestAnimationFrame, not the 24ms interval this used to run on. The
+		// beam travels the whole board in under a second and a 41fps sampler puts
+		// a visible stagger on a shaft of light moving in a straight line — the
+		// same reason the win and landing motions were moved off setInterval.
+		const started = performance.now();
+		let raf = 0;
+		const tick = (now: number) => {
+			elapsed = now - started;
+			pulse = 0.5 + 0.5 * Math.sin(now / rate + phase);
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+
+		return () => cancelAnimationFrame(raf);
 	});
 
 	$effect(() => {
@@ -93,7 +112,7 @@
 			g.stroke({ width: 7, color: 0xff2e88, alpha: (0.3 + 0.34 * pulse) * intensity });
 			g.roundRect(LEFT + 6, 6, SYMBOL_SIZE - 12, h - 12, 10);
 			g.stroke({ width: 3, color: 0xff8ede, alpha: (0.45 + 0.4 * pulse) * intensity });
-			if (isFullTier) {
+			if (fullTier) {
 				// white core — the tier-2 tell that the trigger count is already met
 				g.roundRect(LEFT + 10, 10, SYMBOL_SIZE - 20, h - 20, 8);
 				g.stroke({ width: 1.4, color: 0xffffff, alpha: 0.25 + 0.4 * pulse });
@@ -108,7 +127,7 @@
 			g.stroke({ width: 1.5, color: 0xff8ede, alpha: (0.16 + 0.2 * pulse) * intensity });
 
 			// chevrons converging on the column from above and below — full tier only
-			if (isFullTier) {
+			if (fullTier) {
 				const chev = 14 + 6 * pulse;
 				g.moveTo(x - SYMBOL_SIZE * 0.12, -chev - 10);
 				g.lineTo(x, -chev);
@@ -121,6 +140,29 @@
 		}}
 	/>
 
+	<!--
+		Travelling beam.
+
+		This is the piece the tease was missing: the column was lit, but it was lit
+		STATICALLY, so it announced "something is happening here" without ever
+		looking like light. A shaft that runs down the reel and repeats gives the
+		column a direction and a rhythm the eye follows, and it is the cheapest
+		version of what competitors do with a full light rig.
+	-->
+	{#if beam.alpha > 0.01}
+		<Sprite
+			key="fxGlow"
+			anchor={0.5}
+			{x}
+			y={beam.y * BOARD_SIZES.height}
+			width={SYMBOL_SIZE * 0.92}
+			height={SYMBOL_SIZE * beam.height * 3}
+			tint={fullTier ? 0xffffff : 0xff8ede}
+			blendMode="add"
+			alpha={beam.alpha}
+		/>
+	{/if}
+
 	<!-- additive glow hugging each rail, so the tease has depth over the art -->
 	{#each [0, BOARD_SIZES.height] as railY (railY)}
 		<Sprite
@@ -128,8 +170,8 @@
 			anchor={0.5}
 			{x}
 			y={railY}
-			width={SYMBOL_SIZE * (isFullTier ? 1.35 : 1.05)}
-			height={SYMBOL_SIZE * (isFullTier ? 0.7 : 0.5)}
+			width={SYMBOL_SIZE * (fullTier ? 1.35 : 1.05)}
+			height={SYMBOL_SIZE * (fullTier ? 0.7 : 0.5)}
 			tint={0xff2e88}
 			blendMode="add"
 			alpha={(0.22 + 0.3 * pulse) * intensity}

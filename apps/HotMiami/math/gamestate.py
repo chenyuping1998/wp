@@ -46,7 +46,7 @@ class GameState(GameStateOverride):
 
             self.draw_board(emit_event=True)
 
-            new_frames = self.add_frames(self.draw_frame_count())
+            new_frames = self.add_frames(self.draw_frame_count_for_spin())
             if new_frames:
                 new_frames_event(self, new_frames)
             self.apply_frames_to_board()

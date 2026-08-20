@@ -4,10 +4,25 @@
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getContext } from '../game/context';
 
-	// Scene transition: the retrosun symbol drops into the middle of the screen —
-	// two charge blinks — flash. The cut to the next scene lands on the white-hot
-	// peak. (The local identifiers still say "grenade"; that is GoBananas' name
-	// for this animation and is cosmetic, the sprite drawn is hmH2.)
+	// Scene transition: cut to black, then the car tears through the dark with its
+	// headlights raking across the frame.
+	//
+	// Two earlier versions: a grenade (GoBananas' animation with the WOMAN symbol
+	// dropped in as the bomb — armed, blinked red, detonated), then the car
+	// driving across the live board. The car was right but the board being visible
+	// underneath was fighting it: a lit reel grid behind a vehicle reads as a
+	// sprite sliding over a UI, not as something moving through a place.
+	//
+	// Blacking out first is what makes it work, and not only because it looks
+	// better. On black you can draw light, and light is what sells a car —
+	// headlight cones sweeping the frame, a ground smear under the wheels, tail
+	// lights receding. None of that is visible over a magenta reel housing. It
+	// also hides the scene swap completely: the screen is at its most opaque when
+	// `oncomplete` fires and the caller changes scene, so the cut has nowhere to
+	// show.
+	//
+	// The car (hmCarSide, drawn by design/build_transition_car.py) faces right, so
+	// it drives left to right and never needs mirroring.
 	type Props = {
 		oncomplete: () => void;
 	};
@@ -15,76 +30,112 @@
 	const props: Props = $props();
 	const context = getContext();
 
-	const THROW_MS = 460; // grenade drops in from the top, always face-on
-	const TICK_MS = 340; // armed: two red blinks
-	const BOOM_MS = 420; // shockwave + flash ramp (longer so the bigger blast reads)
-	const TOTAL_MS = THROW_MS + TICK_MS + BOOM_MS;
-	const BOOM_AT = THROW_MS + TICK_MS;
+	// 1420ms total, the pacing signed off on the previous version. The drive was
+	// slowed from 760ms once because the car crossed before the eye settled on it;
+	// the blackout is carved out of the front rather than added on top.
+	const DARK_MS = 210; // slam to black
+	const DRIVE_MS = 910; // off-screen left to off-screen right
+	const EXIT_MS = 300; // tail lights recede, smoke catches the light
+	const TOTAL_MS = DARK_MS + DRIVE_MS + EXIT_MS;
+	const DRIVE_AT = DARK_MS;
+	const EXIT_AT = DARK_MS + DRIVE_MS;
 
-	const FRAG_COUNT = 30;
-	type Frag = { a: number; speed: number; r: number; spin: number };
-	const frags: Frag[] = Array.from({ length: FRAG_COUNT }, (_, i) => ({
-		a: (i / FRAG_COUNT) * Math.PI * 2 + Math.random() * 0.4,
-		speed: 0.5 + Math.random() * 0.85,
-		r: 9 + Math.random() * 17,
-		spin: Math.random() * Math.PI,
-	}));
+	// Where in the drive the car is level with the middle of the screen.
+	const PASS_AT = 0.5;
+
+	const PUFF_EVERY_MS = 34;
+	const PUFF_LIFE_MS = 700;
+	// Exhaust reads as warm grey lit by the tail lights, not white — white on
+	// black becomes another light source and competes with the headlights.
+	const SMOKE = 0x9c8fa8;
+	const HEADLIGHT = 0xfff4d0;
+	const TAILLIGHT = 0xff2e5a;
+
+	type Puff = { id: number; x: number; y: number; r0: number; grow: number; born: number; drift: number };
+	let puffs = $state<Puff[]>([]);
+	let puffSeq = 0;
+
+	let clock = $state(0);
+	let darkAlpha = $state(0);
+	let carVisible = $state(false);
+	let carX = $state(0);
+	let carY = $state(0);
+	let carScale = $state(1);
+	let carTilt = $state(0);
+	let beamT = $state(-1); // drive progress, drives the headlights
+	let exitT = $state(-1);
+	let flashAlpha = $state(0);
 
 	let elapsed = 0;
 	let rafId = 0;
 	let completed = false;
-	let boomFired = false;
+	let passFired = false;
+	let lastPuffAt = -1e9;
 
-	let grenadeVisible = $state(false);
-	let grenadeX = $state(0);
-	let grenadeY = $state(0);
-	let grenadeScale = $state(1);
-	let grenadeTint = $state(0xffffff);
-	let boomT = $state(-1);
-	let flashAlpha = $state(0);
+	const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
+	const easeOutCubic = (t: number) => 1 - (1 - clamp01(t)) ** 3;
 
-	const easeOutCubic = (t: number) => 1 - (1 - Math.min(Math.max(t, 0), 1)) ** 3;
+	const spawnPuff = (x: number, y: number, big = false) => {
+		puffs.push({
+			id: puffSeq++,
+			x: x + (Math.random() - 0.5) * 18,
+			y: y + (Math.random() - 0.5) * 14,
+			r0: (big ? 30 : 16) + Math.random() * (big ? 26 : 14),
+			grow: (big ? 3.4 : 2.6) + Math.random() * 1.2,
+			born: elapsed,
+			drift: -0.05 - Math.random() * 0.06,
+		});
+	};
 
 	onMount(() => {
 		let last = 0;
 		const tick = (now: number) => {
 			if (!last) last = now;
-			const dt = now - last;
+			elapsed += now - last;
 			last = now;
-			elapsed += dt;
+			clock = elapsed;
 
-			const h = context.stateLayoutDerived.canvasSizes().height;
+			const { width, height } = context.stateLayoutDerived.canvasSizes();
 
-			if (elapsed < THROW_MS) {
-				// drops in from above and brakes to a stop — deliberately NOT spinning,
-				// so the grenade reads face-on the whole way down
-				const p = easeOutCubic(elapsed / THROW_MS);
-				grenadeVisible = true;
-				grenadeX = 0;
-				grenadeY = -h * 0.72 * (1 - p);
-				grenadeScale = 0.7 + p * 0.5;
-				grenadeTint = 0xffffff;
-			} else if (elapsed < BOOM_AT) {
-				// armed on the spot: two hot red blinks
-				const p = (elapsed - THROW_MS) / TICK_MS;
-				grenadeVisible = true;
-				grenadeX = 0;
-				grenadeY = 0;
-				grenadeScale = 1.2 + Math.sin(p * Math.PI * 2) * 0.06;
-				grenadeTint = Math.sin(p * Math.PI * 4) > 0 ? 0xff5a3a : 0xffffff;
-			} else {
-				// BOOM
-				if (!boomFired) {
-					boomFired = true;
-					// A real explosion, not bigwin_blast (a musical flourish kept for
-					// max wins). This fires on every opening and free-game transition.
-					context.eventEmitter.broadcast({ type: 'soundNeonZap' });
-					// the shockwave rattles the reel housing as it passes
-					context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.4 });
+			// The black is slammed on, not faded — a fade reads as the game dimming,
+			// a slam reads as a cut. It stays up for the whole transition.
+			darkAlpha = Math.min(0.97, easeOutCubic(elapsed / DARK_MS) * 0.97);
+
+			if (elapsed >= DRIVE_AT && elapsed < EXIT_AT) {
+				const p = (elapsed - DRIVE_AT) / DRIVE_MS;
+				beamT = p;
+				carVisible = true;
+				const travel = Math.pow(p, 1.15);
+				carX = -width * 0.78 + travel * width * 1.56;
+				carY = Math.sin(p * Math.PI * 3) * height * 0.012;
+				const near = Math.sin(Math.min(1, p / PASS_AT) * Math.PI * 0.5);
+				carScale = 0.86 + 0.26 * near - 0.1 * Math.max(0, p - PASS_AT);
+				carTilt = -0.05 + 0.09 * p;
+
+				if (elapsed - lastPuffAt >= PUFF_EVERY_MS) {
+					lastPuffAt = elapsed;
+					spawnPuff(carX - height * 0.11 * carScale, carY + height * 0.045 * carScale);
 				}
-				grenadeVisible = false;
-				boomT = (elapsed - BOOM_AT) / BOOM_MS;
-				flashAlpha = Math.min(1, boomT * 1.6) * 0.95;
+
+				if (!passFired && p >= PASS_AT) {
+					passFired = true;
+					context.eventEmitter.broadcast({ type: 'soundNeonZap' });
+					context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.4 });
+					for (let i = 0; i < 14; i++) {
+						spawnPuff(carX - height * 0.1, carY + height * 0.05, true);
+					}
+				}
+			} else if (elapsed >= EXIT_AT) {
+				carVisible = false;
+				beamT = -1;
+				exitT = (elapsed - EXIT_AT) / EXIT_MS;
+				// A short warm bloom, not a white-out: the screen is already black, so
+				// the cut is covered without blinding anyone.
+				flashAlpha = Math.sin(clamp01(exitT) * Math.PI) * 0.34;
+			}
+
+			if (puffs.length && elapsed - puffs[0].born > PUFF_LIFE_MS) {
+				puffs = puffs.filter((puff) => elapsed - puff.born <= PUFF_LIFE_MS);
 			}
 
 			if (elapsed >= TOTAL_MS) {
@@ -102,42 +153,89 @@
 		return () => cancelAnimationFrame(rafId);
 	});
 
-	const drawBoom = (g: PixiGraphics) => {
-		g.clear();
-		if (boomT < 0) return;
+	const puffPose = (puff: Puff) => {
+		const t = clamp01((clock - puff.born) / PUFF_LIFE_MS);
+		const e = easeOutCubic(t);
+		return {
+			size: puff.r0 * (1 + puff.grow * e),
+			alpha: (1 - t) ** 1.6 * 0.42,
+			x: puff.x - e * 90,
+			y: puff.y + puff.drift * e * 140,
+		};
+	};
+
+	const drawDark = (g: PixiGraphics) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
-		// reach past the long edge so the blast genuinely engulfs the screen
-		const maxR = Math.max(width, height) * 0.95;
-		// shockwave rings — a third, slowest ring gives the blast visible depth
-		for (const [delay, color, weight] of [
-			[0, 0xfff7d6, 30],
-			[0.14, 0xfff2c0, 24],
-			[0.3, 0xff9c3a, 18],
+		g.clear();
+		if (darkAlpha <= 0) return;
+		g.rect(-width, -height, width * 2, height * 2);
+		g.fill({ color: 0x05020a, alpha: darkAlpha });
+	};
+
+	// Headlights: two cones thrown ahead of the car, plus the pool of light they
+	// put on the ground. Drawn additively so they build where they overlap, which
+	// is what makes the beams look like light rather than grey wedges.
+	const drawBeams = (g: PixiGraphics) => {
+		g.clear();
+		if (beamT < 0) return;
+		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		const reach = width * 1.1;
+		const nose = carX + height * 0.1 * carScale;
+		// dips as the car passes closest, the way a beam swings past you
+		const swing = Math.sin(beamT * Math.PI) * height * 0.05;
+
+		for (const [dy, spread, alpha] of [
+			[-0.018, 0.1, 0.2],
+			[0.024, 0.13, 0.26],
 		] as [number, number, number][]) {
-			const t = (boomT - delay) / (1 - delay);
-			if (t < 0 || t > 1) continue;
-			g.circle(0, 0, maxR * easeOutCubic(t));
-			g.stroke({ width: weight * (1 - t) + 3, color, alpha: 0.85 * (1 - t) });
+			const y = carY + height * dy;
+			g.moveTo(nose, y);
+			g.lineTo(nose + reach, y - height * spread + swing);
+			g.lineTo(nose + reach, y + height * spread + swing);
+			g.closePath();
+			g.fill({ color: HEADLIGHT, alpha: alpha * (0.35 + 0.65 * Math.sin(beamT * Math.PI)) });
 		}
-		// hot core — expands most of the way across the screen before fading
-		g.circle(0, 0, height * 0.34 * (0.4 + boomT * 1.5));
-		g.fill({ color: 0xfff7d6, alpha: 0.9 * (1 - boomT) });
-		g.beginFill(0xffb347, 0.55 * (1 - boomT));
-		g.drawCircle(0, 0, height * 0.5 * (0.35 + boomT * 1.7));
-		g.endFill();
-		// shrapnel fragments — thrown the full blast radius. The large ones were
-		// 0x35521a, dark jungle-leaf green, in every feature transition.
-		for (const f of frags) {
-			const d = f.speed * easeOutCubic(boomT) * maxR * 1.1;
-			const x = Math.cos(f.a) * d;
-			const y = Math.sin(f.a) * d;
-			g.beginFill(f.r > 13 ? 0xff2e88 : 0xffd75e, 0.9 * (1 - boomT));
-			g.drawPolygon([
-				x, y - f.r,
-				x + f.r * Math.cos(f.spin), y + f.r * Math.sin(f.spin),
-				x - f.r * Math.cos(f.spin), y + f.r * 0.6,
-			]);
-			g.endFill();
+
+		// the two lamps themselves
+		for (const dy of [-0.018, 0.024]) {
+			g.circle(nose, carY + height * dy, height * 0.016 * carScale);
+			g.fill({ color: HEADLIGHT, alpha: 0.9 });
+		}
+
+		// ground smear travelling with the car
+		g.ellipse(carX, carY + height * 0.105 * carScale, height * 0.26, height * 0.022);
+		g.fill({ color: HEADLIGHT, alpha: 0.1 });
+
+		// tail lights: two short red streaks off the back
+		const tail = carX - height * 0.1 * carScale;
+		for (const dy of [-0.012, 0.03]) {
+			const y = carY + height * dy;
+			g.moveTo(tail, y);
+			g.lineTo(tail - height * (0.1 + 0.35 * beamT), y);
+			g.stroke({ width: 6, color: TAILLIGHT, alpha: 0.75 });
+		}
+	};
+
+	// The trail the car leaves, blooming as it goes. On black this is the only
+	// thing still moving once the car is gone.
+	const drawExit = (g: PixiGraphics) => {
+		g.clear();
+		if (exitT < 0) return;
+		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		const e = easeOutCubic(exitT);
+		const maxR = Math.max(width, height) * 0.9;
+		for (const [ox, oy, scale] of [
+			[0.2, 0.02, 1],
+			[-0.12, -0.05, 0.8],
+		] as [number, number, number][]) {
+			g.circle(width * ox * (1 - e), height * oy, maxR * e * scale);
+			g.fill({ color: SMOKE, alpha: 0.22 * (1 - e) });
+		}
+		// the tail lights disappearing into the distance
+		const away = width * (0.55 + e * 0.6);
+		for (const dy of [-0.012, 0.03]) {
+			g.circle(away, height * dy, height * 0.012 * (1 - e));
+			g.fill({ color: TAILLIGHT, alpha: 0.8 * (1 - e) });
 		}
 	};
 
@@ -145,9 +243,8 @@
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		g.clear();
 		if (flashAlpha <= 0) return;
-		g.beginFill(0xfff2c0, flashAlpha);
-		g.drawRect(-width, -height, width * 2, height * 2);
-		g.endFill();
+		g.rect(-width, -height, width * 2, height * 2);
+		g.fill({ color: HEADLIGHT, alpha: flashAlpha });
 	};
 </script>
 
@@ -155,18 +252,46 @@
 	x={context.stateLayoutDerived.canvasSizes().width * 0.5}
 	y={context.stateLayoutDerived.canvasSizes().height * 0.5}
 >
-	{#if grenadeVisible}
+	<!-- black first: everything below is drawn on top of it -->
+	<Graphics draw={drawDark} />
+
+	<!-- beams sit under the smoke and the car so the smoke is lit by them -->
+	<Graphics draw={drawBeams} blendMode="add" />
+
+	{#each puffs as puff (puff.id)}
+		{@const pose = puffPose(puff)}
+		{#if pose.alpha > 0.01}
+			<Sprite
+				key="fxGlow"
+				anchor={0.5}
+				x={pose.x}
+				y={pose.y}
+				width={pose.size}
+				height={pose.size}
+				tint={SMOKE}
+				alpha={pose.alpha}
+			/>
+		{/if}
+	{/each}
+
+	{#if carVisible}
+		<!--
+			car_side.png is 1024x512, so the height is half the width. Passing the
+			same number to both — which the symbol version did, because a symbol is
+			square — would squash it to a wedge half as long as it is drawn.
+		-->
+		{@const carW = context.stateLayoutDerived.canvasSizes().height * 0.62 * carScale}
 		<Sprite
-			key="hmH2"
+			key="hmCarSide"
 			anchor={0.5}
-			x={grenadeX}
-			y={grenadeY}
-			width={context.stateLayoutDerived.canvasSizes().height * 0.2 * grenadeScale}
-			height={context.stateLayoutDerived.canvasSizes().height * 0.2 * grenadeScale}
-			tint={grenadeTint}
+			x={carX}
+			y={carY}
+			rotation={carTilt}
+			width={carW}
+			height={carW * 0.5}
 		/>
 	{/if}
 
-	<Graphics draw={drawBoom} />
+	<Graphics draw={drawExit} />
 	<Graphics draw={drawFlash} />
 </Container>

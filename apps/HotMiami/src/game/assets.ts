@@ -1,12 +1,4 @@
 ﻿export default {
-	explosion: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/symbols3/symbols3.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/symbols3/explosion.json', import.meta.url).href,
-			scale: 2,
-		},
-	},
 	// jungle-military riveted reel frame (SVG-generated ??see design/generate_theme_jungle.mjs)
 	hmFrameBg: {
 		type: 'sprite',
@@ -39,6 +31,13 @@
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hotMiamiFx/fx_leaf.png', import.meta.url).href,
 		preload: true,
+	},
+	// Side-profile car for the scene transition (design/build_transition_car.py).
+	// The car SYMBOL is three-quarter front-on — the angle that reads in a reel
+	// cell — and slid sideways it looks like a car pointing at you being dragged.
+	hmCarSide: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiFx/car_side.png', import.meta.url).href,
 	},
 	fxVignette: {
 		type: 'sprite',
@@ -223,25 +222,13 @@
 		src: new URL('../../assets/sprites/hotMiamiBackground/bg_epic.png', import.meta.url).href,
 		preload: true,
 	},
-	anticipation: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/anticipation/anticipation.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/anticipation/anticipation.json', import.meta.url).href,
-			scale: 2,
-		},
-	},
-	reelhouse: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/reelhouse/reelhouse_glow.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/reelhouse/reelhouse_glow.json', import.meta.url).href,
-			scale: 2,
-		},
-	},
+	// Drawn by design/build_coin_sheet.py. Replaces SD2_Coin.json/.png, a
+	// TexturePacker sheet carried over from a template — 2.5MB of 684px frames
+	// for a particle a few dozen pixels across, under a filename that names
+	// someone else's game. Same twelve-frame spin, same frame names, 88KB.
 	coins: {
 		type: 'spriteSheet',
-		src: new URL('../../assets/sprites/coin/SD2_Coin.json', import.meta.url).href,
+		src: new URL('../../assets/sprites/coin/coin.json', import.meta.url).href,
 	},
 	sound: {
 		type: 'audio',

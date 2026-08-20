@@ -33,6 +33,32 @@ const primaryMachines = createPrimaryMachines<Bet>({
 		// next spin is what sweeps them away
 		if (stateGame.gameType === 'basegame') {
 			eventEmitter.broadcast({ type: 'expandingWildsClear' });
+
+			// Neon Frames belong to the round that landed them, and the moment the
+			// player asks for another round they are last round's furniture.
+			//
+			// They were already cleared, but in the `reveal` handler — which does
+			// not run until the book has come back from the RGS. Between pressing
+			// spin and that reply there is the pre-spin recoil plus a network
+			// round-trip, and for all of it the previous round's gold sat on a
+			// board that had visibly started moving. Turbo made it worse rather
+			// than better: the recoil shortens, the network does not, so the frames
+			// hung over a larger share of the spin.
+			//
+			// This is the press itself — before the `isSpaceHold` and turbo-autobet
+			// early returns below, so it happens on every spin including the ones
+			// that skip the pre-spin entirely. `reveal` still clears them, which is
+			// now a no-op on the base game and still does the real work when a
+			// round is resumed mid-flight.
+			//
+			// Free-game frames are sticky by design and are not touched here; the
+			// guard above is the same one expandingWildsClear uses, and gameType is
+			// back to 'basegame' by this point in a round that ended in free spins
+			// (freeSpinEnd sets it, and clears the frames itself).
+			if (stateGame.frames.length > 0) {
+				stateGame.frames = [];
+				eventEmitter.broadcast({ type: 'framesClear' });
+			}
 		}
 		if (stateBet.isSpaceHold) return;
 

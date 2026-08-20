@@ -238,3 +238,36 @@ export const stateGameDerived = {
 	enhancedBoard,
 	getWinLevelDataByWinLevelAlias,
 };
+
+// ── debug probes ────────────────────────────────────────────────────────────
+// Only attached when the page is opened with `?hmdebug=1`.
+//
+// Both of these earn their keep — the reel probe is what proved a stuck round
+// was stuck before `motion` ever became 'spinning', and the emitter is the only
+// way to summon a presentation beat that the maths produces once in thousands of
+// rounds. Deleting them would mean rediscovering both the next time something is
+// wrong.
+//
+// But a submission build is not a development build. `__HM_EMIT__` can broadcast
+// any presentation event, and while it cannot touch the wallet or the maths (the
+// books come from the RGS; the emitter only drives animation), a reviewer with a
+// console open should not be able to make the game do arbitrary things. Behind a
+// flag they are absent unless asked for, and the play shell just adds
+// `&hmdebug=1` to its URL.
+//
+//     window.__HM_REELS__()               // motion / spinType / anticipating
+//     window.__HM_EMIT__({ type: '...' }) // fire any emitter event
+if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.search)) {
+	(window as unknown as { __HM_REELS__: () => unknown }).__HM_REELS__ = () =>
+		stateGame.board.map((reel, index) => ({
+			reel: index,
+			motion: reel.reelState.motion,
+			spinType: reel.reelState.spinType,
+			anticipating: reel.reelState.anticipating,
+		}));
+
+	(window as unknown as { __HM_EMIT__: (event: unknown) => void }).__HM_EMIT__ = (event) =>
+		eventEmitter.broadcast(event as Parameters<typeof eventEmitter.broadcast>[0]);
+
+	console.info('[hmdebug] __HM_REELS__ and __HM_EMIT__ attached');
+}

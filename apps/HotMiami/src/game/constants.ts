@@ -135,13 +135,6 @@ export const zIndexes = {
 	},
 };
 
-const explosion = {
-	type: 'spine',
-	assetKey: 'explosion',
-	animationName: 'explosion',
-	sizeRatios: { width: 1, height: 1 },
-};
-
 // Hot Miami symbols use PNG for static/spin/land/postWinStatic and generated
 // Spine assets for win state so winning symbols always animate via Spine.
 const HIGH_RATIOS = { width: HIGH_SYMBOL_SIZE, height: HIGH_SYMBOL_SIZE };
@@ -158,7 +151,6 @@ const symbolSprite = (assetKey: string, ratios: { width: number; height: number 
 // symbol state renders from the same sprite. Win emphasis is done in the
 // component layer (scale/tint pulse) rather than by swapping to a Spine track.
 const spriteSymbol = (assetKey: string, ratios: { width: number; height: number }) => ({
-	explosion,
 	static: symbolSprite(assetKey, ratios),
 	spin: symbolSprite(assetKey, ratios),
 	land: symbolSprite(assetKey, ratios),
