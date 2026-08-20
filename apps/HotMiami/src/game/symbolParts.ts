@@ -60,6 +60,13 @@ export type SymbolPart = {
 	key: string;
 	/** pivot in this part's own bbox fractions: [0.5, 1] is bottom centre */
 	pivot: [number, number];
+	/**
+	 * This part turns through a large angle on purpose. Declared, not inferred:
+	 * check_symbol_parts.mjs rejects big rotations because a part swinging past
+	 * ~30 degrees has normally come loose from the body it belongs to — which is
+	 * right for every part except the one whose identity is that it spins.
+	 */
+	spins?: boolean;
 	/** what this part does while the symbol is winning; `t` is ms since the win */
 	win?: (t: number) => Partial<PartFrame>;
 	/** what it does as the symbol lands; `t` is ms since touchdown */
@@ -177,8 +184,202 @@ const boombox: SymbolRig = {
 	],
 };
 
+
+/**
+ * H1, the guy. A bust, so there is no arm to swing — `arm` is a sliver of sleeve
+ * that belongs to the silhouette and stays put. What moves is the head (his
+ * double-take, the same beat his whole-symbol motion nods to) and the gold chain,
+ * which follows a beat later because a chain has no muscles.
+ */
+const hawaiianGuy: SymbolRig = {
+	parts: [
+		{ name: 'torso', key: 'hmH1Torso', pivot: [0.5, 1], win: (t) => ({ scaleY: 1 + 0.008 * Math.sin(t / 260) }) },
+		// Static: in the stack for the silhouette, not for motion. Dropping it took
+		// the assembled stack from IoU 1.00 against the artist's _full.png to 0.83.
+		{ name: 'arm', key: 'hmH1Arm', pivot: [0.5, 0.5] },
+		{
+			name: 'head',
+			key: 'hmH1Head',
+			// the neck, not the middle of the face
+			pivot: [0.5, 1],
+			win: (t) => {
+				const nod = strike(cycle(t, HOLD_MS * 1.08), 9) * Math.sin(cycle(t, HOLD_MS * 1.08) * 44);
+				return { rotation: 0.06 * nod, dy: 0.02 * nod };
+			},
+			land: (t) => {
+				const u = landP(t);
+				return { rotation: -0.07 * Math.exp(-5 * u) * Math.sin(Math.PI * 2.2 * u) };
+			},
+		},
+		{
+			name: 'chain',
+			key: 'hmH1Chain',
+			// hangs from its top edge
+			pivot: [0.5, 0],
+			// A beat behind the head, and wider: the chain is the tell that the man
+			// moved, the way a coat tail is.
+			win: (t) => ({ rotation: 0.09 * Math.sin((t - 90) / 150) }),
+			land: (t) => {
+				const u = landP(t);
+				return { rotation: 0.16 * Math.exp(-3.4 * u) * Math.sin(Math.PI * 3.6 * u) };
+			},
+		},
+	],
+};
+
+/**
+ * H2, the blonde. Her hair is the whole point — it is the biggest soft mass on
+ * the board — so it is split front and back and the two halves swing at
+ * different rates. Hair does not move with the head, it lags it, and the back
+ * mass lags more than the front because there is more of it.
+ */
+const blonde: SymbolRig = {
+	parts: [
+		{
+			name: 'hair_back',
+			key: 'hmH2HairBack',
+			// hangs from the crown
+			pivot: [0.5, 0.12],
+			// The back mass DRIFTS sideways and breathes; it does not swing. Its
+			// first version rotated on a sine like everything else on this symbol
+			// and the checker scored the three moving parts 0.43-0.68 apart — three
+			// sine waves at three rates is one motion with three phases.
+			win: (t) => ({ dx: 0.02 * Math.sin(t / 330), scaleY: 1 + 0.012 * Math.sin(t / 330 + 1.2) }),
+			land: (t) => {
+				const u = landP(t);
+				return { rotation: 0.07 * Math.exp(-3 * u) * Math.sin(Math.PI * 2 * u) };
+			},
+		},
+		{ name: 'torso', key: 'hmH2Torso', pivot: [0.5, 1], win: (t) => ({ scaleY: 1 + 0.01 * Math.sin(t / 240 + 1) }) },
+		{
+			name: 'head',
+			key: 'hmH2Head',
+			pivot: [0.5, 1],
+			// A slow lean rather than a nod — H1 is the one who nods, and these two
+			// portraits sit next to each other on the paytable.
+			win: (t) => ({ rotation: 0.05 * Math.sin(t / 340), dx: 0.008 * Math.sin(t / 340 + 0.6) }),
+			land: (t) => {
+				const u = landP(t);
+				return { rotation: 0.05 * Math.exp(-4 * u) * Math.cos(Math.PI * 1.4 * u) };
+			},
+		},
+		{
+			name: 'hair_front',
+			key: 'hmH2HairFront',
+			pivot: [0.5, 0.08],
+			// The front strands WHIP on the beat and settle, where the back mass
+			// drifts continuously and the head leans slowly: three different
+			// temporal signatures on one symbol, which is the only thing that
+			// separates parts as reliably as it separates symbols.
+			win: (t) => {
+				const whip = strike(cycle(t, HOLD_MS), 5) * Math.sin(cycle(t, HOLD_MS) * 18);
+				return { rotation: -0.075 * whip, dx: -0.016 * whip };
+			},
+			land: (t) => {
+				const u = landP(t);
+				return { rotation: -0.1 * Math.exp(-4.5 * u) * Math.sin(Math.PI * 3 * u) };
+			},
+		},
+	],
+};
+
+/**
+ * H3, the flamingo. The one motion this symbol has ever wanted is the PECK, and
+ * a flat sprite cannot do it: dipping the whole bird dips its legs too. With the
+ * head and its full neck on their own layer, pivoting at the base of the neck,
+ * the bird can strike down and lift slowly while the body stays planted.
+ *
+ * `legs` and `wing` came back painted into the body layer, so they are not in
+ * the rig — moving them would reveal a second copy underneath. The body's own
+ * motion stays in symbolWinMotion/symbolLandMotion.
+ */
+const flamingo: SymbolRig = {
+	parts: [
+		{ name: 'body', key: 'hmH3Body', pivot: [0.5, 1] },
+		{
+			name: 'head_neck',
+			key: 'hmH3HeadNeck',
+			// where the neck meets the body
+			pivot: [0.5, 1],
+			// Fast down, slow up. The asymmetry IS the peck; a symmetric bob is a
+			// bird bouncing, which is a different and much sillier animal.
+			win: (t) => {
+				const u = cycle(t, HOLD_MS);
+				const dip = u < 0.22 ? Math.sin((Math.PI * u) / 0.44) : Math.max(0, Math.cos((Math.PI * (u - 0.22)) / 1.1));
+				return { rotation: 0.34 * dip, dy: 0.03 * dip };
+			},
+			land: (t) => {
+				const u = landP(t);
+				// arrives with the neck trailing, then whips upright
+				return { rotation: 0.2 * Math.exp(-4 * u) * Math.cos(Math.PI * 1.6 * u) };
+			},
+		},
+	],
+};
+
+/**
+ * C, the Collector. Its whole mechanic is pulling the Neon Frames off the board,
+ * so the outer ring turns continuously — the only continuous rotation among the
+ * rigged parts — while the lettered core stays upright and legible and simply
+ * pulses. A spinning word would be unreadable and, in social play, a compliance
+ * problem.
+ */
+const collector: SymbolRig = {
+	parts: [
+		{
+			name: 'ring',
+			key: 'hmCRing',
+			pivot: [0.5, 0.5],
+			// The ring does NOT rotate, and two attempts at making it are worth
+			// recording. A free spin turns the hexagon to arbitrary angles and the
+			// emblem stops looking like itself — the outline breaks away from the
+			// magenta field, which belongs to the core layer, and the badge reads as
+			// coming apart. Snapping to 60° detents fixes the silhouette at the
+			// detents and still looks wrong in between, for the same reason.
+			//
+			// So it BREATHES instead: a slow ring pulse, widest while the core is
+			// pinching in, which is the Collector's own gesture (it pulls things
+			// toward the middle) expressed with the one transform that cannot
+			// misalign concentric art.
+			win: (t) => {
+				const swell = 0.5 + 0.5 * Math.sin(t / 260);
+				return { scaleX: 1 + 0.055 * swell, scaleY: 1 + 0.055 * swell };
+			},
+			land: (t) => {
+				const u = landP(t);
+				const settle = Math.exp(-4 * u) * (1 - u);
+				return { scaleX: 1 + 0.12 * settle, scaleY: 1 + 0.12 * settle };
+			},
+		},
+		{
+			name: 'core',
+			key: 'hmCCore',
+			pivot: [0.5, 0.5],
+			win: (t) => {
+				const beat = strike(cycle(t, HOLD_MS * 0.95), 4);
+				return { scaleX: 1 - 0.05 * beat, scaleY: 1 + 0.04 * beat };
+			},
+			// A DELAYED anisotropic pinch, where the ring around it is an immediate
+			// isotropic settle. Both parts were decaying exponentials at first and
+			// the checker scored them 0.01 apart — the same curve at two sizes, in
+			// the one symbol whose mechanic is that its two rings do different
+			// things. The core squeezes a moment after the badge has landed, as if
+			// the disc took the impact through the frame.
+			land: (t) => {
+				const u = landP(t);
+				const pinch = u < 0.15 || u > 0.85 ? 0 : Math.sin((Math.PI * (u - 0.15)) / 0.7);
+				return { scaleX: 1 - 0.09 * pinch, scaleY: 1 + 0.07 * pinch };
+			},
+		},
+	],
+};
+
 export const SYMBOL_RIGS: Record<string, SymbolRig> = {
+	H1: hawaiianGuy,
+	H2: blonde,
+	H3: flamingo,
 	H4: boombox,
+	C: collector,
 };
 
 /** Exposed so design/check_symbol_parts.mjs can prove the copies above match. */

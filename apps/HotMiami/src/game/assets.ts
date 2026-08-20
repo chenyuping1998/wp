@@ -132,6 +132,67 @@
 		src: new URL('../../assets/sprites/hotMiamiParts/h4/handle.png', import.meta.url).href,
 		preload: true,
 	},
+	// Rigged parts for the other layered symbols (same pipeline as hmH4*).
+	hmH1Torso: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h1/torso.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH1Arm: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h1/arm.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH1Head: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h1/head.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH1Chain: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h1/chain.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH2HairBack: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h2/hair_back.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH2Torso: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h2/torso.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH2Head: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h2/head.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH2HairFront: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h2/hair_front.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH3Body: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h3/body.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH3HeadNeck: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h3/head_neck.png', import.meta.url).href,
+		preload: true,
+	},
+	hmCRing: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/c/ring.png', import.meta.url).href,
+		preload: true,
+	},
+	hmCCore: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/c/core.png', import.meta.url).href,
+		preload: true,
+	},
 	hmL1: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hotMiamiSymbols/l1.png', import.meta.url).href,

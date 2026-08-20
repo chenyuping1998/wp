@@ -17,12 +17,23 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STAGE = os.path.join(ROOT, 'design/_parts')
 BOARD = (40, 10, 66)
 
+# What each symbol is actually rigged from, back to front.
+#
+# Not every delivered file is in here. `h1/arm` is a sliver of sleeve — the art
+# is a bust and there is no arm to move — and `h3/legs`, `h3/wing`, `h5/*` came
+# back painted into their own body layer, which the redundancy test below
+# measures directly (removing them changes nothing, so moving them would reveal
+# a second copy underneath). Listing only the usable parts keeps this file
+# describing the rig that exists rather than the one that was ordered.
 ORDER = {
+    # h1/arm is a sliver of sleeve rather than a movable arm — the art is a bust
+    # — but it IS part of the silhouette: dropping it took the stack from IoU
+    # 1.00 to 0.83. It stays in the stack as a static layer.
     'h1': ['torso', 'arm', 'head', 'chain'],
     'h2': ['hair_back', 'torso', 'head', 'hair_front'],
-    'h3': ['legs', 'body', 'wing', 'head_neck'],
+    'h3': ['body', 'head_neck'],
     'h4': ['body', 'speaker_top', 'speaker_bottom', 'handle'],
-    'h5': ['wheel_rear', 'body', 'wheel_front', 'headlight'],
+    'h5': ['body'],
     'c': ['ring', 'core'],
 }
 
@@ -70,6 +81,29 @@ def main() -> int:
 
         composite = stack(sym)
         full = load(sym, '_full')
+
+        # The stack has to match the SHIPPED symbol, not just the artist's own
+        # assembly. SymbolArt draws the flat sprite while a symbol is at rest and
+        # swaps to the part stack for the landing and the win, so any colour drift
+        # between the two shows up in game as the symbol changing appearance the
+        # instant it lands. Measured over the subject only; the background is
+        # transparent in both.
+        shipped_path = os.path.join(ROOT, 'static/assets/sprites/hotMiamiSymbols', f'{sym}.png')
+        if os.path.exists(shipped_path) and full is not None:
+            shipped = Image.open(shipped_path).convert('RGBA').resize(full.size)
+            fa = list(composite.convert('RGB').getdata())
+            sa = list(shipped.convert('RGB').getdata())
+            ma = list(composite.getchannel('A').point(lambda v: 255 if v > 40 else 0).getdata())
+            n_px = sum(1 for m in ma if m)
+            drift = sum(
+                abs(fa[i][0] - sa[i][0]) + abs(fa[i][1] - sa[i][1]) + abs(fa[i][2] - sa[i][2])
+                for i, m in enumerate(ma) if m
+            ) / (3 * n_px) if n_px else 0
+            if drift > 12:
+                problems.append(
+                    f'{sym}: the stacked parts differ from the shipped symbol by {drift:.1f} mean levels — '
+                    f'the symbol would change appearance the moment it lands'
+                )
         cov_c = coverage(composite)
         note = ''
         if full is not None:
@@ -84,6 +118,50 @@ def main() -> int:
             note = f'coverage stack {cov_c*100:.0f}% vs full {cov_f*100:.0f}%, silhouette IoU {iou:.2f}'
             if iou < 0.85:
                 problems.append(f'{sym}: stacked parts do not line up with _full.png (IoU {iou:.2f}) — a part is displaced, cropped or rescaled')
+        # Is each part actually DOING anything, or is the art underneath already
+        # drawing it?
+        #
+        # Overlap on its own proves nothing — parts are supposed to overlap,
+        # because what is hidden has to be drawn complete (the boombox case has
+        # dark empty speaker wells behind the cones). The question is different:
+        # if this part were removed, would the symbol still look the same? Where
+        # the art below duplicates it — the flamingo body that still has the head
+        # painted on it — the answer is yes, the stack looks unchanged, and
+        # rotating that part reveals a second copy of itself underneath.
+        #
+        # So: composite the stack WITHOUT each part, and measure the colour
+        # difference against the artist's assembled _full.png over that part's own
+        # ink. A part that matters leaves a hole (big difference). A part that is
+        # already painted into its neighbour leaves nothing (small difference).
+        if full is not None:
+            for n, im in parts:
+                if im is None:
+                    continue
+                without = Image.new('RGBA', (512, 512), (0, 0, 0, 0))
+                for other, oim in parts:
+                    if other != n and oim is not None:
+                        without.alpha_composite(oim)
+                mask = im.getchannel('A').point(lambda v: 255 if v > 40 else 0)
+                wa = without.convert('RGB').getdata()
+                fa = full.convert('RGB').getdata()
+                md = list(mask.getdata())
+                n_px = 0
+                diff = 0
+                for i, m in enumerate(md):
+                    if not m:
+                        continue
+                    w = wa[i]
+                    f = fa[i]
+                    diff += abs(w[0] - f[0]) + abs(w[1] - f[1]) + abs(w[2] - f[2])
+                    n_px += 1
+                mean = diff / (3 * n_px) if n_px else 0
+                print(f'   {sym}/{n:14s} removing it changes {mean:5.1f} mean levels under its own ink')
+                if mean < 12:
+                    problems.append(
+                        f'{sym}: {n} is redundant — removing it barely changes the picture '
+                        f'({mean:.1f} mean levels), so the layer underneath already has it painted in'
+                    )
+
         for n, im in parts:
             if im is not None and coverage(im) < 0.004:
                 problems.append(f'{sym}: {n} is nearly empty ({coverage(im)*100:.1f}% of canvas) — keyed away or never drawn')

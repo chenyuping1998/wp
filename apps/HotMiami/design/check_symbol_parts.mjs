@@ -88,7 +88,9 @@ for (const [symbol, rig] of Object.entries(SYMBOL_RIGS)) {
 				const f = partFrame(part, mode, (i / SAMPLES) * window);
 				// ── 6 ──
 				if (Math.abs(f.dx) > 0.2 || Math.abs(f.dy) > 0.2) fail(`${symbol}/${part.name} ${mode}: offset (${f.dx.toFixed(3)}, ${f.dy.toFixed(3)}) leaves the cell`);
-				if (Math.abs(f.rotation) > 0.5) fail(`${symbol}/${part.name} ${mode}: rotation ${f.rotation.toFixed(2)} rad tears the part off the body`);
+				// Spinners are exempt by declaration — see SymbolPart.spins. The
+				// Collector's ring turns because sweeping is what the symbol does.
+				if (!part.spins && Math.abs(f.rotation) > 0.5) fail(`${symbol}/${part.name} ${mode}: rotation ${f.rotation.toFixed(2)} rad tears the part off the body — set spins:true if that is intended`);
 				if (f.scaleX < 0.6 || f.scaleX > 1.5 || f.scaleY < 0.6 || f.scaleY > 1.5) fail(`${symbol}/${part.name} ${mode}: scale (${f.scaleX.toFixed(2)}, ${f.scaleY.toFixed(2)}) is outside 0.6-1.5`);
 				return CHANNELS.map((c) => f[c]);
 			});
