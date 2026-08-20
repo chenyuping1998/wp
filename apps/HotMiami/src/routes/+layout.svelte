@@ -33,8 +33,11 @@
 	No platform splash in front of this. Stake's certification notes are explicit
 	that the Stake Engine splash must be removed while your own studio logo stays —
 	two different things, easy to delete both by accident. The studio mark is
-	inside IntroFeatures; LoaderStakeEngine and static/stake-engine-loader.gif are
-	out of the boot path, with the gif left in static/ so restoring it is one line.
+	inside IntroFeatures. LoaderStakeEngine is out of the boot path AND
+	static/stake-engine-loader.gif is deleted — the checklist line is "does not
+	CONTAIN the Stake Engine Loader", and an asset left in static/ still lands in
+	build/ and is still served. Keeping it "so restoring it is one line" is
+	precisely what that line forbids (approval-guidelines.md, PreChecks).
 -->
 {#if showIntro}
 	<IntroFeatures onclose={() => (showIntro = false)} />

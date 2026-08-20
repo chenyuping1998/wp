@@ -2,7 +2,7 @@
 	import { stateBet, stateReplay, stateUrlDerived } from 'state-shared';
 	import { API_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { numberToCurrencyString } from 'utils-shared/amount';
+	import { numberToCurrencyString, WIN_MAX_FRACTION_DIGITS } from 'utils-shared/amount';
 
 	import { HOT_MIAMI_BET_MODE_META } from '../../game/betModeMeta';
 
@@ -114,7 +114,15 @@
 			</div>
 			<div class="row highlight">
 				<dt>{L.totalWin}</dt>
-				<dd class="win big">{numberToCurrencyString(totalWin)}</dd>
+				<!--
+					Four decimals, like every other win figure. A stake is 2dp, but a
+					win of 2000 book units on a minimum stake is $0.002 and renders as
+					"$0.00" at 2dp — no longer matching the JSON the server sent, which
+					is the certification line "Game displays sub-cent payouts
+					correctly". The replay panel is exactly the surface that gets
+					missed when sweeping for this.
+				-->
+				<dd class="win big">{numberToCurrencyString(totalWin, WIN_MAX_FRACTION_DIGITS)}</dd>
 			</div>
 		</dl>
 

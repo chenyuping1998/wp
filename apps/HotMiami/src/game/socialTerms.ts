@@ -43,9 +43,12 @@ export const getSocialTerms = () => {
 		payline: pick('payline', 'playline'),
 		paylines: pick('paylines', 'playlines'),
 		paylinesUpper: pick('PAYLINES', 'PLAYLINES'),
-		payTableCaps: pick('Pay table', 'Play table'),
-		// matches the bar button, which already reads PLAY TABLE in social play
-		payTableUpper: pick('PAY TABLE', 'PLAY TABLE'),
+		// "WIN TABLE", not "PLAY TABLE". This is one of the two terms Stake names
+		// explicitly rather than leaving to the pay→play substitution, and Wild
+		// Party shipped the derived guess, passed its own restricted-word guard on
+		// it, and had it come back as an open review issue.
+		payTableCaps: pick('Pay table', 'Win table'),
+		payTableUpper: pick('PAY TABLE', 'WIN TABLE'),
 		pays: pick('pays', 'awards'),
 		paysStart: pick('Pays', 'Awards'), // sentence-initial
 		paid: pick('paid', 'awarded'),
