@@ -108,6 +108,30 @@
 		src: new URL('../../assets/sprites/hotMiamiSymbols/h4.png', import.meta.url).href,
 		preload: true,
 	},
+	// H4 rigged parts (design/source/parts/h4, keyed by
+	// design/process_source_parts.py). The flat hmH4 is still the symbol's own
+	// asset and still ships — the reel draws the stack only where a rig exists,
+	// and the flat one is the fallback everywhere else.
+	hmH4Body: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h4/body.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH4SpeakerTop: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h4/speaker_top.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH4SpeakerBottom: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h4/speaker_bottom.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH4Handle: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h4/handle.png', import.meta.url).href,
+		preload: true,
+	},
 	hmL1: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hotMiamiSymbols/l1.png', import.meta.url).href,

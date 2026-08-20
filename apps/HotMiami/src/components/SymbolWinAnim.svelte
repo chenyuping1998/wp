@@ -8,6 +8,7 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
 	import { getSymbolWinMotion } from '../game/symbolWinMotion';
+	import SymbolArt from './SymbolArt.svelte';
 
 	type Props = {
 		x?: number;
@@ -228,11 +229,18 @@
 		x={frame.dx * SYMBOL_SIZE}
 		y={frame.dy * SYMBOL_SIZE}
 	>
-		<Sprite
-			anchor={0.5}
-			key={props.symbolInfo.assetKey}
-			width={SYMBOL_SIZE * props.symbolInfo.sizeRatios.width}
-			height={SYMBOL_SIZE * props.symbolInfo.sizeRatios.height}
+		<!--
+			The art itself. SymbolArt draws the flat sprite for most symbols and the
+			rigged part stack for the ones whose art has been cut into layers, so a
+			boombox's speakers can pump on the beat the body is already thumping to.
+			`t` is the same clock the per-symbol motion runs on, so the parts and the
+			body stay locked together.
+		-->
+		<SymbolArt
+			symbolInfo={props.symbolInfo}
+			symbolName={props.symbolName}
+			mode="win"
+			t={elapsed}
 		/>
 		<!--
 			Neon-tube bloom: an additive copy of the symbol's own art in the letter's
@@ -242,14 +250,13 @@
 			costs nothing where it is not wanted.
 		-->
 		{#if frame.bloomAlpha > 0.01}
-			<Sprite
-				anchor={0.5}
-				key={props.symbolInfo.assetKey}
-				width={SYMBOL_SIZE * props.symbolInfo.sizeRatios.width}
-				height={SYMBOL_SIZE * props.symbolInfo.sizeRatios.height}
-				tint={frame.bloomTint}
-				alpha={frame.bloomAlpha}
-				blendMode="add"
+			<SymbolArt
+				symbolInfo={props.symbolInfo}
+				symbolName={props.symbolName}
+				mode="win"
+				t={elapsed}
+				overlayTint={frame.bloomTint}
+				overlayAlpha={frame.bloomAlpha}
 			/>
 		{/if}
 		<!--
@@ -258,14 +265,14 @@
 			something landing.
 		-->
 		{#if flash.current > 0.01}
-			<Sprite
-				anchor={0.5}
-				key={props.symbolInfo.assetKey}
-				width={SYMBOL_SIZE * props.symbolInfo.sizeRatios.width}
-				height={SYMBOL_SIZE * props.symbolInfo.sizeRatios.height}
-				tint={0xffffff}
-				alpha={flash.current}
-				blendMode="add"
+			<!-- the impact flash follows the PARTS, not a ghost of the flat pose -->
+			<SymbolArt
+				symbolInfo={props.symbolInfo}
+				symbolName={props.symbolName}
+				mode="win"
+				t={elapsed}
+				overlayTint={0xffffff}
+				overlayAlpha={flash.current}
 			/>
 		{/if}
 	</Container>

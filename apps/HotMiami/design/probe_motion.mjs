@@ -79,6 +79,18 @@ await evaluate(`(() => {
     const out = [];
     const walk = (n) => {
       const lbl = (n.texture && n.texture.label) || '';
+      // Rigged parts live in hotMiamiParts/<symbol>/<part>.png and are what
+      // proves a rig is actually running: the flat symbol and the stack look the
+      // same in a screenshot, and only the per-part transforms tell them apart.
+      if (lbl.includes('hotMiamiParts')) {
+        const m = n.worldTransform;
+        const bits = lbl.split('/');
+        out.push(['PART:' + bits[bits.length - 2] + '/' + bits[bits.length - 1].replace('.png',''),
+          +m.tx.toFixed(1), +m.ty.toFixed(1),
+          +Math.hypot(m.a,m.b).toFixed(4), +Math.hypot(m.c,m.d).toFixed(4),
+          +Math.atan2(m.b,m.a).toFixed(4), +(n.alpha||0).toFixed(2), 0]);
+        return;
+      }
       if (lbl.includes('hotMiamiSymbols')) {
         const m = n.worldTransform;
         out.push([lbl.split('/').pop().replace('.png',''),

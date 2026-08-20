@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { Container, Sprite } from 'pixi-svelte';
 
+	import SymbolArt from './SymbolArt.svelte';
+
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolLandMotion, LAND_MS } from '../game/symbolLandMotion';
@@ -162,12 +164,20 @@
 				blendMode="add"
 			/>
 		{/each}
-		<Sprite
-			anchor={0.5}
-			key={props.symbolInfo.assetKey}
-			width={width * at(landing.scaleX)}
-			height={height * at(landing.scaleY)}
-		/>
+		<!--
+			The art. Scale lives on a Container rather than on the sprite's width and
+			height, because a rigged symbol is a STACK — scaling each part's size
+			individually would move them apart, while scaling the group squashes the
+			whole object the way the landing intends.
+		-->
+		<Container scale={{ x: at(landing.scaleX), y: at(landing.scaleY) }}>
+			<SymbolArt
+				symbolInfo={props.symbolInfo}
+				symbolName={props.symbolName}
+				mode="land"
+				t={landT}
+			/>
+		</Container>
 		<!--
 			Neon-tube ignition: an additive copy of the symbol's own art in the
 			letter's colour, for the four royals — a tube seating into the sign
@@ -175,15 +185,16 @@
 			nothing where it is not wanted.
 		-->
 		{#if landing.bloomAlpha > 0.01}
-			<Sprite
-				anchor={0.5}
-				key={props.symbolInfo.assetKey}
-				width={width * at(landing.scaleX)}
-				height={height * at(landing.scaleY)}
-				tint={landing.bloomTint}
-				alpha={landing.bloomAlpha * Math.min(1, weight)}
-				blendMode="add"
-			/>
+			<Container scale={{ x: at(landing.scaleX), y: at(landing.scaleY) }}>
+				<SymbolArt
+					symbolInfo={props.symbolInfo}
+					symbolName={props.symbolName}
+					mode="land"
+					t={landT}
+					overlayTint={landing.bloomTint}
+					overlayAlpha={landing.bloomAlpha * Math.min(1, weight)}
+				/>
+			</Container>
 		{/if}
 		{#each landing.overlays.filter((o) => !o.behind) as overlay, i (i)}
 			<Sprite
