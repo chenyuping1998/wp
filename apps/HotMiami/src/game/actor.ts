@@ -6,7 +6,7 @@ import { createPrimaryMachines, createIntermediateMachines, createGameActor } fr
 
 import type { Bet } from './typesBookEvent';
 import { stateXstateDerived } from './stateXstate';
-import { playBet, convertTorResumableBet } from './utils';
+import { playBet, convertTorResumableBet, stopWinLineReplay } from './utils';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import { eventEmitter } from './eventEmitter';
 import config from './config';
@@ -22,6 +22,13 @@ const primaryMachines = createPrimaryMachines<Bet>({
 		if (lastRevealEvent) stateGameDerived.enhancedBoard.settle(lastRevealEvent.board);
 	},
 	onNewGameStart: async () => {
+		// FIRST, before anything else and before the early returns below: the idle
+		// win-line replay is showing last round's lines on a loop, and the reels
+		// are about to move. playBet stops it too, but playBet does not run until
+		// the RGS answers — so a pass landing inside the press-to-reply window drew
+		// win lines, and lit symbols, over a board that was already spinning.
+		// Reported as "lines appearing from nowhere before the reels stop".
+		stopWinLineReplay();
 		stateBet.winBookEventAmount = 0;
 		// superspin sticky coins live for exactly one bought round
 		if (stateGame.stickyPrizes.length > 0) {

@@ -82,9 +82,17 @@ const REPLAY_GAP_MS = 1600;
 
 // Incremented to cancel: a loop only continues while it still holds the current
 // token, so starting a spin invalidates any pass already in flight.
+//
+// WHO calls the stopper matters, and getting it wrong is what produced win lines
+// drawn over spinning reels. `playBet` stops the replay, but playBet does not run
+// at the press — it runs when the book comes back from the RGS. Between the press
+// and that reply there is the pre-spin recoil plus a network round trip, and a
+// replay pass that fell in that window drew last round's lines (and lit last
+// round's symbols) across a board that had already started moving. So the actor's
+// onNewGameStart stops it as well, at the press itself.
 let replayToken = 0;
 
-const stopWinLineReplay = () => {
+export const stopWinLineReplay = () => {
 	replayToken += 1;
 	eventEmitter.broadcast({ type: 'winLinesHide' });
 };

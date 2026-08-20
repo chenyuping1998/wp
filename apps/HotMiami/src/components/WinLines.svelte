@@ -62,6 +62,10 @@
 
 	let lines = $state<ActiveLine[]>([]);
 	let show = $state(false);
+	// debug bookkeeping for __HM_LINES__ (see stateGame.debugWinLineCount)
+	$effect(() => {
+		context.stateGame.debugWinLineCount = show ? lines.length : 0;
+	});
 	let timing = $state(NORMAL);
 	// tick forces the trail Graphics to redraw while the runners move
 	let tick = $state(0);

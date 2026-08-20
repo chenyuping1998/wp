@@ -117,6 +117,14 @@ export const stateGame = $state({
 	gameType: 'basegame' as GameType,
 	multiplierBoard: [] as (MultiplierSymbol | undefined)[][],
 	scatterCounter: 0,
+	/**
+	 * How many win lines are drawn right now. Debug-only bookkeeping, written by
+	 * WinLines.svelte and read by `__HM_LINES__` under ?hmdebug=1 — win lines are
+	 * Graphics rather than sprites, so nothing outside the game can otherwise
+	 * observe them, and "a line appeared while the reels were spinning" is a bug
+	 * that needs measuring rather than eyeballing.
+	 */
+	debugWinLineCount: 0,
 	// Per-reel anticipation magnitude for the spin now on the reels, after
 	// bookEventHandlerMap's gate. 0 = no tease, 1 = two scatters already landed,
 	// 2+ = three or more (the trigger count), so 2+ means the next scatter pays.
@@ -257,6 +265,7 @@ export const stateGameDerived = {
 //
 //     window.__HM_REELS__()               // motion / spinType / anticipating
 //     window.__HM_EMIT__({ type: '...' }) // fire any emitter event
+//     window.__HM_LINES__()               // win lines on screen right now
 if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.search)) {
 	(window as unknown as { __HM_REELS__: () => unknown }).__HM_REELS__ = () =>
 		stateGame.board.map((reel, index) => ({
@@ -269,5 +278,13 @@ if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.s
 	(window as unknown as { __HM_EMIT__: (event: unknown) => void }).__HM_EMIT__ = (event) =>
 		eventEmitter.broadcast(event as Parameters<typeof eventEmitter.broadcast>[0]);
 
-	console.info('[hmdebug] __HM_REELS__ and __HM_EMIT__ attached');
+	// Win lines are Graphics, not sprites, so nothing outside the game can see
+	// them — a screenshot catches one instant and the scene-graph probe reads
+	// transforms. This counter is what makes "no line was ever drawn while a reel
+	// was spinning" a measurement instead of an impression.
+	(window as unknown as { __HM_LINES__: () => unknown }).__HM_LINES__ = () => ({
+		count: stateGame.debugWinLineCount,
+	});
+
+	console.info('[hmdebug] __HM_REELS__, __HM_EMIT__ and __HM_LINES__ attached');
 }
