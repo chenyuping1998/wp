@@ -20,11 +20,19 @@ BOARD = (40, 10, 66)
 # What each symbol is actually rigged from, back to front.
 #
 # Not every delivered file is in here. `h1/arm` is a sliver of sleeve — the art
-# is a bust and there is no arm to move — and `h3/legs`, `h3/wing`, `h5/*` came
-# back painted into their own body layer, which the redundancy test below
-# measures directly (removing them changes nothing, so moving them would reveal
-# a second copy underneath). Listing only the usable parts keeps this file
+# is a bust and there is no arm to move — `h3/legs` came back painted into the
+# body, and `h5/headlight` likewise. The redundancy test below measures that
+# directly: removing such a part changes nothing, so moving it would reveal a
+# second copy underneath. Listing only the usable parts keeps this file
 # describing the rig that exists rather than the one that was ordered.
+#
+# h3's body and head_neck are cut in code (design/cut_flamingo_parts.py) after
+# three rounds of generated layers could not separate them; its wing is still
+# painted into the body, so there is no wing layer to move. h5's wheels DID come
+# back as complete wheels on the third round, but drawn larger and brighter than
+# the wheels in the shipped symbol — stacking them changes how the car looks,
+# and the car is drawn flat at rest, so it would visibly pop the moment it
+# landed. The car keeps its whole-symbol idle and lunge instead.
 ORDER = {
     # h1/arm is a sliver of sleeve rather than a movable arm — the art is a bust
     # — but it IS part of the silhouette: dropping it took the stack from IoU

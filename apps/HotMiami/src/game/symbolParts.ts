@@ -289,9 +289,16 @@ const blonde: SymbolRig = {
  * head and its full neck on their own layer, pivoting at the base of the neck,
  * the bird can strike down and lift slowly while the body stays planted.
  *
- * `legs` and `wing` came back painted into the body layer, so they are not in
- * the rig — moving them would reveal a second copy underneath. The body's own
- * motion stays in symbolWinMotion/symbolLandMotion.
+ * The two layers are cut in code (design/cut_flamingo_parts.py): three rounds of
+ * generated layer art could not separate this bird — twice the body came back
+ * with the head still on it, and the head layer came back as a fragment of the
+ * wrong area, which stacks into a perfect copy of the whole flamingo and so
+ * passes every numeric check. A neck is in open air, though, so cutting one out
+ * reveals nothing that needs painting back in; the only invented pixels are the
+ * stump that closes the shoulder, and at rest the neck covers it.
+ *
+ * The wing is still painted into the body, so there is no wing to flap. The
+ * body's own motion stays in symbolWinMotion/symbolLandMotion.
  */
 const flamingo: SymbolRig = {
 	parts: [
@@ -299,8 +306,11 @@ const flamingo: SymbolRig = {
 		{
 			name: 'head_neck',
 			key: 'hmH3HeadNeck',
-			// where the neck meets the body
-			pivot: [0.5, 1],
+			// Where the neck meets the body — the bottom of the head layer's own
+			// bbox, pushed right to the neck's centre line rather than the bbox's.
+			// The bbox is wide because the beak reaches left; pivoting at its
+			// middle would swing the whole neck sideways instead of tipping it.
+			pivot: [0.8, 1],
 			// Fast down, slow up. The asymmetry IS the peck; a symmetric bob is a
 			// bird bouncing, which is a different and much sillier animal.
 			win: (t) => {
