@@ -193,6 +193,21 @@
 		src: new URL('../../assets/sprites/hotMiamiParts/c/core.png', import.meta.url).href,
 		preload: true,
 	},
+	hmH5Body: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h5/body.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH5WheelFront: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h5/wheel_front.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH5WheelRear: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h5/wheel_rear.png', import.meta.url).href,
+		preload: true,
+	},
 	hmL1: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hotMiamiSymbols/l1.png', import.meta.url).href,

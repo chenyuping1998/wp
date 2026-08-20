@@ -233,5 +233,46 @@ export const PARTS_MANIFEST: Record<string, Record<string, PartMetrics>> = {
 			],
 			"coverage": 0.0553
 		}
+	},
+	"h5": {
+		"body": {
+			"bbox": [
+				-0.4609,
+				-0.2129,
+				0.459,
+				0.2129
+			],
+			"centroid": [
+				0.0012,
+				-0.005
+			],
+			"coverage": 0.2524
+		},
+		"wheel_front": {
+			"bbox": [
+				0.043,
+				0.0176,
+				0.166,
+				0.1406
+			],
+			"centroid": [
+				0.1055,
+				0.0785
+			],
+			"coverage": 0.0114
+		},
+		"wheel_rear": {
+			"bbox": [
+				0.3535,
+				-0.0723,
+				0.4453,
+				0.0195
+			],
+			"centroid": [
+				0.4025,
+				-0.0278
+			],
+			"coverage": 0.0054
+		}
 	}
 };

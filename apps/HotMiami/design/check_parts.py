@@ -26,13 +26,15 @@ BOARD = (40, 10, 66)
 # second copy underneath. Listing only the usable parts keeps this file
 # describing the rig that exists rather than the one that was ordered.
 #
-# h3's body and head_neck are cut in code (design/cut_flamingo_parts.py) after
+# h3's body and head_neck, and h5's body and two wheels, are cut in code
+# (design/cut_flamingo_parts.py, design/cut_car_wheels.py) after
 # three rounds of generated layers could not separate them; its wing is still
 # painted into the body, so there is no wing layer to move. h5's wheels DID come
 # back as complete wheels on the third round, but drawn larger and brighter than
-# the wheels in the shipped symbol — stacking them changes how the car looks,
-# and the car is drawn flat at rest, so it would visibly pop the moment it
-# landed. The car keeps its whole-symbol idle and lunge instead.
+# the shipped car's own — and the matching body had dark discs punched through
+# the BODYWORK around each arch, so no scaling of them could rebuild the shipped
+# car. Cut from the shipped art instead, the stack is the shipped car to within
+# 1.2 levels.
 ORDER = {
     # h1/arm is a sliver of sleeve rather than a movable arm — the art is a bust
     # — but it IS part of the silhouette: dropping it took the stack from IoU
@@ -41,7 +43,7 @@ ORDER = {
     'h2': ['hair_back', 'torso', 'head', 'hair_front'],
     'h3': ['body', 'head_neck'],
     'h4': ['body', 'speaker_top', 'speaker_bottom', 'handle'],
-    'h5': ['body'],
+    'h5': ['body', 'wheel_rear', 'wheel_front'],
     'c': ['ring', 'core'],
 }
 

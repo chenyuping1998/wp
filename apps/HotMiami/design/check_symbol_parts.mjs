@@ -99,8 +99,16 @@ for (const [symbol, rig] of Object.entries(SYMBOL_RIGS)) {
 			if (mode === 'land') {
 				for (const t of [LAND_MS, LAND_MS * 1.25]) {
 					const f = partFrame(part, 'land', t);
+					// A part with rotational symmetry may finish on any multiple of its
+					// own repeat angle: a five-spoke wheel that has rolled a fifth of
+					// a turn is indistinguishable from one that has not moved, so
+					// nothing snaps when the flat sprite comes back.
+					const period = part.symmetry ? (Math.PI * 2) / part.symmetry : 0;
+					const residual = period
+						? Math.min(((f.rotation % period) + period) % period, period - (((f.rotation % period) + period) % period))
+						: f.rotation;
 					const off = [
-						['dx', f.dx, 0.005], ['dy', f.dy, 0.005], ['rotation', f.rotation, 0.02],
+						['dx', f.dx, 0.005], ['dy', f.dy, 0.005], ['rotation', residual, 0.02],
 						['scaleX', f.scaleX - 1, 0.02], ['scaleY', f.scaleY - 1, 0.02],
 					].filter(([, v, limit]) => Math.abs(v) > limit);
 					if (off.length) fail(`${symbol}/${part.name} has not settled at t=${Math.round(t)}ms: ${off.map(([c, v]) => `${c}=${v.toFixed(3)}`).join(', ')}`);

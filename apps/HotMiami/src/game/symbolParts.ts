@@ -67,6 +67,14 @@ export type SymbolPart = {
 	 * right for every part except the one whose identity is that it spins.
 	 */
 	spins?: boolean;
+	/**
+	 * How many times this part maps onto itself in a full turn — 5 for a
+	 * five-spoke wheel. A landing may finish on any multiple of that angle: the
+	 * part looks untouched there, so nothing snaps when the symbol goes static
+	 * and swaps back to the flat sprite. Without it a rolling wheel has to end
+	 * exactly where it started, which is not what a wheel does.
+	 */
+	symmetry?: number;
 	/** what this part does while the symbol is winning; `t` is ms since the win */
 	win?: (t: number) => Partial<PartFrame>;
 	/** what it does as the symbol lands; `t` is ms since touchdown */
@@ -384,11 +392,76 @@ const collector: SymbolRig = {
 	],
 };
 
+
+/**
+ * H5, the convertible. Its whole-symbol motion is an engine idle and a lunge
+ * forward; what a flat sprite could never do is turn the wheels while the car
+ * itself holds still, and a car whose wheels do not turn is a photograph of a
+ * car.
+ *
+ * The three layers are cut from the shipped art in code
+ * (design/cut_car_wheels.py). A wheel is the one shape where cutting is
+ * completely safe: it is a circle, so rotating it cannot misalign with anything
+ * around it, and the part of it hidden behind the arch was dark to begin with.
+ */
+const convertible: SymbolRig = {
+	parts: [
+		{ name: 'body', key: 'hmH5Body', pivot: [0.5, 0.5] },
+		{
+			name: 'wheel_rear',
+			key: 'hmH5WheelRear',
+			pivot: [0.5, 0.5],
+			spins: true,
+			symmetry: 5,
+			// The far wheel turns STEADILY — it is the one carrying the car along.
+			win: (t) => ({ rotation: t / 260 }),
+			// On landing the far wheel does not roll — it takes the WEIGHT. It
+			// compresses up into its arch and settles, which is a different channel
+			// from the near wheel's scrub entirely. Two wheels both rolling to a
+			// stop scored 0.17, then 0.36 once the near one was given a stall: two
+			// monotonic rotations are one gesture however they are shaped.
+			land: (t) => {
+				const u = landP(t);
+				const compress = u > 0.75 ? 0 : Math.sin((Math.PI * u) / 0.75);
+				return { dy: -0.014 * compress };
+			},
+		},
+		{
+			name: 'wheel_front',
+			key: 'hmH5WheelFront',
+			pivot: [0.5, 0.5],
+			spins: true,
+			symmetry: 5,
+			// The near wheel BREAKS TRACTION on each lunge: a hard burst that decays,
+			// against the rear wheel's steady turn. Two wheels rotating at two
+			// constant rates is one motion at two speeds; a wheel that spins up and
+			// slows is a different event, and it is what the lunge in the car's
+			// whole-symbol motion is doing at the same moment.
+			win: (t) => {
+				const burst = strike(cycle(t, HOLD_MS * 1.15), 4);
+				return { rotation: t / 900 + 2.4 * burst };
+			},
+			// Two fifths of a turn, but in TWO bites with a stall between them: the
+			// near wheel bites, locks for an instant, then rolls the rest. Both
+			// wheels easing smoothly to a detent scored 0.17 apart — the same
+			// gesture at two sizes, which is the fault this whole pass exists to
+			// remove. It also happens to be what a car does when it lands.
+			land: (t) => {
+				const u = landP(t);
+				const bite = Math.min(1, u / 0.32);
+				const roll = u < 0.62 ? 0 : (u - 0.62) / 0.38;
+				return { rotation: ((Math.PI * 2) / 5) * (bite + roll) };
+			},
+		},
+	],
+};
+
 export const SYMBOL_RIGS: Record<string, SymbolRig> = {
 	H1: hawaiianGuy,
 	H2: blonde,
 	H3: flamingo,
 	H4: boombox,
+	H5: convertible,
 	C: collector,
 };
 
