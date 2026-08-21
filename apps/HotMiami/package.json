@@ -18,6 +18,7 @@
 		"check:anticipation": "node design/check_anticipation.mjs --report",
 		"check:frames": "node design/check_frame_beat.mjs --report",
 		"check:parts": "node design/check_symbol_parts.mjs --report",
+		"check:rules": "WINS_PER_MODE=100000 node design/check_rules_match_wins.mjs",
 		"check:idle": "node design/check_idle_breathe.mjs --report"
 	},
 	"type": "module",
