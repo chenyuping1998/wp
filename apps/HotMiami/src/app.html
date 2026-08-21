@@ -109,6 +109,35 @@
 			}
 		</style>
 		<meta name="viewport" content="width=device-width" />
+		<!--
+			display:block on the canvas, and overflow:hidden on <html> as well as
+			<body>.
+
+			The document ran ~5px taller than the viewport at every window size, so
+			the page was scrollable — the rubber-band drag certification checks for
+			under "main game frame should not be scrollable". The cause is not a
+			stray margin: a canvas is display:inline by default, so it sits on a text
+			baseline and the line box reserves descender space underneath it.
+			display:block takes the canvas out of the line box and the phantom row
+			goes with it.
+
+			Found by measuring rather than by eye — design/probe_layout.mjs reports
+			scrollHeight − innerHeight at each popout size — and it is the same
+			defect a sibling game found while fixing something else, which is why the
+			wording here matches theirs.
+
+			overflow:hidden on the root is a backstop. It only blocks user scrolling,
+			not programmatic scrollTo, so it is not a fix on its own.
+		-->
+		<style>
+			html {
+				overflow: hidden;
+			}
+
+			canvas {
+				display: block;
+			}
+		</style>
 		%sveltekit.head%
 	</head>
 	<body style="margin: 0; padding: 0; overflow: hidden; background-color: black">
