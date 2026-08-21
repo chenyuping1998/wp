@@ -29,7 +29,15 @@
   var DATA = window.__STUB_DATA__;
   var MUL = 1000000;
   var balance = 1000 * MUL;          // 1,000.00 to play with
+  // Honour ?currency= from the page URL. The RGS is authoritative about this in
+  // real play, so a stub that always says USD makes one whole compliance surface
+  // untestable: social currencies (XGC/XSC/XEC) must render as GC/SC with no "$"
+  // prefix, and with the stub hardcoded there was no way to see whether they did.
   var currency = 'USD';
+  try {
+    var requested = new URLSearchParams(location.search).get('currency');
+    if (requested) currency = requested;
+  } catch (e) {}
   var forced = null;
   var stats = { rounds: 0, byMode: {}, wagered: 0, won: 0 };
   var current = null;                // the round in flight

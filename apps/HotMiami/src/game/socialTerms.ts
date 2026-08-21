@@ -39,6 +39,16 @@ export const getSocialTerms = () => {
 		// cannot go on calling it Buy Bonus.
 		buyBonusName: pick('Buy Bonus', 'Play Bonus'),
 
+		// The feature-buy menu's own copy. "buy" is restricted, and Stake's named
+		// replacement for "buy bonus" is "get bonus" rather than the mechanical
+		// "play bonus", so the heading follows that.
+		featureMenuTitle: pick('BUY A FEATURE', 'GET A FEATURE'),
+		featureMenuLede: pick(
+			'Enter any of the three free-spin features directly, for the multiple of your bet shown on each card. Every feature plays at the same RTP as the base game.',
+			'Enter any of the three free-spin features directly, for the multiple of your amount shown on each card. Every feature plays at the same RTP as normal play.',
+		),
+		insufficientForMode: pick('Balance too low for this feature.', 'Balance too low for this feature.'),
+
 		// "pay" is restricted in social play just as "bet" is
 		payline: pick('payline', 'playline'),
 		paylines: pick('paylines', 'playlines'),

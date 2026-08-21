@@ -1,16 +1,22 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	// Reuse the shared modals for everything except the pay table / game rules,
-	// which we override locally with Hot Miami-specific content.
+	// Reuse the shared modals for everything except the pay table, the game rules
+	// and the feature-buy menu, which are overridden locally.
+	//
+	// The buy menu is the newest of the three. The shared one renders each mode as
+	// a title, a description and a price — three text tiers in a list — and the
+	// only free-text comment a sibling game's review left was "Bonus buy menu is
+	// too simple". See ModalBuyBonus.svelte.
 	import ModalError from 'components-ui-html/src/components/ModalError.svelte';
 	import ModalBetMenu from 'components-ui-html/src/components/ModalBetMenu.svelte';
-	import ModalBuyBonus from 'components-ui-html/src/components/ModalBuyBonus.svelte';
+
 	import ModalBuyBonusConfirm from 'components-ui-html/src/components/ModalBuyBonusConfirm.svelte';
 	import ModalAutoSpin from 'components-ui-html/src/components/ModalAutoSpin.svelte';
 	import ModalAutoSpinMessage from 'components-ui-html/src/components/ModalAutoSpinMessage.svelte';
 	import ModalSettings from 'components-ui-html/src/components/ModalSettings.svelte';
 
+	import ModalBuyBonus from './ModalBuyBonus.svelte';
 	import ModalPayTable from './ModalPayTable.svelte';
 	import ModalGameRules from './ModalGameRules.svelte';
 
