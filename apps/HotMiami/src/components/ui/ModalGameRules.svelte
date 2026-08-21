@@ -6,6 +6,7 @@
 	import { base } from '$app/paths';
 
 	import config from '../../game/config';
+	import { popupGhost } from './popupGhost';
 	import { getSocialTerms } from '../../game/socialTerms';
 
 	// Social play forbids betting terminology in player-facing copy, and the rules
@@ -120,7 +121,7 @@
 
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="wp-rules">
+		<div class="wp-rules" use:popupGhost>
 			<h2>HOT MIAMI — GAME RULES</h2>
 
 			<section class="wp-card">

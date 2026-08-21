@@ -9,6 +9,7 @@
 	import type { EmitterEventModal } from 'components-ui-html/src/types';
 
 	import assets from '../../game/assets';
+	import { popupGhost } from './popupGhost';
 	import { getSocialTerms } from '../../game/socialTerms';
 
 	/**
@@ -108,7 +109,7 @@
 
 {#if stateModal.modal?.name === 'buyBonus'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="hm-buy">
+		<div class="hm-buy" use:popupGhost>
 			<header>
 				<h2>{T.featureMenuTitle}</h2>
 				<p class="lede">{T.featureMenuLede}</p>
@@ -184,6 +185,19 @@
 
 <style lang="scss">
 	.hm-buy {
+		/*
+		 * Sit above Popup's full-screen click-to-close layer, which is z-index 2
+		 * INSIDE the same stacking context. Without this the panel renders under
+		 * it: everything is visible, nothing is clickable, and a click on a card
+		 * closes the menu instead of buying — which is exactly how this shipped and
+		 * was reported as "the buy bonus can't be clicked".
+		 *
+		 * z-index only applies to a positioned element, so `position: relative` is
+		 * load-bearing here, not decoration. ModalPayTable carries the same pair
+		 * with the same comment; this one was written without it.
+		 */
+		position: relative;
+		z-index: 100;
 		width: min(94vw, 61rem);
 		max-height: 88vh;
 		overflow-y: auto;

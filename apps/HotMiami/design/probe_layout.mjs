@@ -99,7 +99,12 @@ for (const size of SIZES) {
     await shot(`${size.name}_${label}`);
 
     const reach = await ev(`(() => {
-      const root = document.querySelector('.hm-buy');
+      // Popup renders its children TWICE — once in normal flow and once inside
+      // the fixed overlay — so the first .hm-buy in the document is an invisible
+      // ghost sitting below the canvas. Measuring that one is how this reported a
+      // panel "below the fold" while the real one was centred on screen.
+      const roots = document.querySelectorAll('.hm-buy');
+      const root = roots[roots.length - 1];
       if (!root) return { open: false };
       const scroller = root.scrollHeight > root.clientHeight + 2 ? root : null;
       const controls = [...root.querySelectorAll('button')];
@@ -113,13 +118,26 @@ for (const size of SIZES) {
         const r = el.getBoundingClientRect();
         return r.bottom > window.innerHeight + 1 || r.top < -1 || r.right > window.innerWidth + 1 || r.left < -1;
       }).map((el) => el.textContent.trim().slice(0, 18));
-      return { open: true, controls: controls.length, offscreen, scrolls: !!scroller, clipped: root.scrollWidth > root.clientWidth + 2 };
+      // and the click test the reported bug needed: is the panel actually on top
+      // where the player presses, or is Popup's click-to-close layer over it?
+      const blocked = controls.filter((el) => {
+        // scroll it into view FIRST. Without that, a control below the panel's
+        // own scroll fold is tested at a point outside the panel, which lands on
+        // the click-to-close layer and looks like it is covered — the player
+        // would simply have scrolled.
+        el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        const r = el.getBoundingClientRect();
+        const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        return !(top && (top === el || el.contains(top)));
+      }).map((el) => el.textContent.trim().slice(0, 18));
+      return { open: true, copies: roots.length, controls: controls.length, offscreen, blocked, scrolls: !!scroller, clipped: root.scrollWidth > root.clientWidth + 2 };
     })()`);
     if (!reach.open) problems.push(`${size.name}: the ${label} panel did not open`);
     else {
       if (reach.offscreen?.length) problems.push(`${size.name}: ${label} controls unreachable: ${reach.offscreen.join(', ')}`);
       if (reach.clipped) problems.push(`${size.name}: ${label} panel is clipped horizontally`);
-      console.log(`  ${size.name.padEnd(20)} ${label}: ${reach.controls} controls, scrolls=${reach.scrolls}, clipped=${reach.clipped}`);
+      if (reach.blocked?.length) problems.push(`${size.name}: ${label} controls are covered by something and cannot be clicked: ${reach.blocked.join(', ')}`);
+      console.log(`  ${size.name.padEnd(20)} ${label}: ${reach.controls} controls, scrolls=${reach.scrolls}, blocked=${reach.blocked.length}`);
     }
   }
 
