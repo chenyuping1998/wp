@@ -20,6 +20,8 @@
 		impact?: number;
 		// anticipation lift, while this symbol's reel is being teased
 		focus?: { scale: number; bloom: number };
+		// board position, for the idle breath's per-cell phase
+		cell?: { reel: number; row: number };
 	};
 
 	const props: Props = $props();
@@ -47,6 +49,7 @@
 		landing={props.state === 'land'}
 		impact={props.impact}
 		focus={props.focus}
+		cell={props.cell}
 		oncomplete={props.oncomplete}
 	/>
 {/if}

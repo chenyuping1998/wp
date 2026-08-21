@@ -106,6 +106,7 @@
 			rawSymbol={props.reelSymbol.rawSymbol}
 			{blur}
 			{focus}
+			cell={{ reel: props.reelIndex, row: props.reelSymbol.symbolIndex }}
 			impact={landingImpact}
 			oncomplete={() => {
 				// a completion from a presentation the symbol has already left

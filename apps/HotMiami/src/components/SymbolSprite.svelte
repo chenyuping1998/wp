@@ -6,6 +6,8 @@
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolLandMotion, LAND_MS } from '../game/symbolLandMotion';
+	import { idlePhase, idleScale } from '../game/idleBreathe';
+	import { idleClock, useIdleClock } from '../game/idleClock.svelte';
 
 	type Props = {
 		x?: number;
@@ -29,6 +31,12 @@
 		// the teasing reel comes forward out of the board instead of merely being
 		// outlined. Values come from game/anticipationFocus.ts.
 		focus?: { scale: number; bloom: number };
+		/**
+		 * Where this symbol sits on the board. Only used to give it its own place
+		 * in the idle breath — a settled board has to move, and it must not move
+		 * as one block.
+		 */
+		cell?: { reel: number; row: number };
 		oncomplete?: () => void;
 	};
 
@@ -38,6 +46,30 @@
 	const height = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.height);
 	const blur = $derived(Math.max(0, Math.min(1, props.blur ?? 0)));
 	const focusScale = $derived(props.focus?.scale ?? 1);
+
+	// ── idle breath ────────────────────────────────────────────────────────────
+	//
+	// A settled board was the one state nothing animated: every symbol a still
+	// PNG, which is exactly the diagnosis review gave a sibling game in this repo
+	// ("nothing moving on a settled board, which is what a player looks at most
+	// of the time"). About 1% of scale, each cell on its own phase. See
+	// game/idleBreathe.ts for why the variation is in the phase and not in the
+	// shape.
+	//
+	// Not while the reel is moving (the strip is blurred and travelling, and a
+	// breath would fight the motion blur), and not while landing (the landing
+	// motion owns the symbol for those 240ms).
+	const idling = $derived(!props.landing && blur <= 0.01);
+	const breath = $derived(
+		idling && props.cell
+			? idleScale(idleClock.t, idlePhase(props.cell.reel, props.cell.row))
+			: 1,
+	);
+
+	$effect(() => {
+		if (!idling || !props.cell) return;
+		return useIdleClock();
+	});
 	const focusBloom = $derived(props.focus?.bloom ?? 0);
 
 	// ── landing ────────────────────────────────────────────────────────────────
@@ -217,8 +249,8 @@
 		y={props.y}
 		anchor={0.5}
 		key={props.symbolInfo.assetKey}
-		width={width * focusScale}
-		height={(blur > 0.01 ? height * (1 + 0.3 * blur) : height) * focusScale}
+		width={width * focusScale * breath}
+		height={(blur > 0.01 ? height * (1 + 0.3 * blur) : height) * focusScale * breath}
 		alpha={1 - 0.15 * blur}
 	/>
 	<!-- focus bloom: additive copy of the same art, so the teased reel reads as
