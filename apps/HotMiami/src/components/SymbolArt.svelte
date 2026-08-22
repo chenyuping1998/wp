@@ -3,7 +3,8 @@
 
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
-	import { getSymbolRig, partFrame, resolvePivot } from '../game/symbolParts';
+	import { getSymbolRig, partFrame, partKey, resolvePivot, hasIdleVariant } from '../game/symbolParts';
+	import { isBlinking } from '../game/blinkClock';
 	import { PARTS_MANIFEST } from '../game/partsManifest';
 
 	/**
@@ -37,6 +38,15 @@
 		overlayAlpha?: number;
 		/** multiplies the drawn size, for callers that scale the art itself */
 		scale?: number;
+		/**
+		 * Which cell this is. Only used to give the symbol its own blink rhythm —
+		 * without it a cell simply never blinks, which is the right fallback for
+		 * the places that draw a symbol outside the reels (the pay table, the
+		 * intro).
+		 */
+		cell?: { reel: number; row: number };
+		/** this win is a big one: unlocks the rarer face */
+		big?: boolean;
 	};
 
 	const props: Props = $props();
@@ -49,7 +59,25 @@
 	// instead of four per cell, and pixel-identical, because check_parts.py
 	// requires the stack to match the artist's assembled _full.png (H4 measures
 	// IoU 1.00). The stack only appears for the beats that need it.
-	const rig = $derived(props.mode && props.mode !== 'none' ? getSymbolRig(props.symbolName ?? '') : null);
+	// A blink needs the part stack while the board is at rest, but only for the
+	// ~110ms it lasts. `blinkTick` is driven by a shared clock rather than a timer
+	// per cell: twenty cells each running their own interval is twenty wakeups a
+	// second to show nothing.
+	let blinkTick = $state(0);
+	const idleRig = $derived(getSymbolRig(props.symbolName ?? ''));
+	const canBlink = $derived(!!props.cell && hasIdleVariant(idleRig));
+	$effect(() => {
+		if (!canBlink) return;
+		const id = setInterval(() => (blinkTick = performance.now()), 90);
+		return () => clearInterval(id);
+	});
+	const blinking = $derived(
+		canBlink && props.cell ? isBlinking(props.cell.reel, props.cell.row, blinkTick) : false,
+	);
+
+	const rig = $derived(
+		(props.mode && props.mode !== 'none') || blinking ? getSymbolRig(props.symbolName ?? '') : null,
+	);
 	const overlay = $derived((props.overlayAlpha ?? 0) > 0.01);
 	const mode = $derived(props.mode ?? 'none');
 
@@ -64,13 +92,14 @@
 			const metrics = PARTS_MANIFEST[(props.symbolName ?? '').toLowerCase()]?.[part.name];
 			const [px, py] = resolvePivot(metrics?.bbox, part.pivot);
 			const frame = mode === 'none' ? null : partFrame(part, mode, props.t ?? 0);
-			return { part, px, py, frame };
+			const key = partKey(part, { mode, big: props.big, blinking });
+			return { part, px, py, frame, key };
 		}),
 	);
 </script>
 
 {#if rig}
-	{#each geometry as { part, px, py, frame } (part.name)}
+	{#each geometry as { part, px, py, frame, key } (part.name)}
 		<Container
 			x={(px + (frame?.dx ?? 0)) * width}
 			y={(py + (frame?.dy ?? 0)) * height}
@@ -79,7 +108,7 @@
 		>
 			<Sprite
 				anchor={0.5}
-				key={part.key}
+				{key}
 				x={-px * width}
 				y={-py * height}
 				{width}

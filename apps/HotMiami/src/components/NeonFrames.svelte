@@ -443,6 +443,26 @@
 	<!-- Running total riding on the Collector while the frames pour in -->
 	{#if sweepShow && sweepTarget}
 		<Container x={sweepTarget.x} y={sweepTarget.y} scale={sweepScale.current}>
+			<!--
+				The Collector's own lettering, electrified, for as long as it is
+				sweeping.
+
+				It is drawn here rather than through the symbol's win animation
+				because a Collector round has no payline: its win arrives with
+				lineIndex 0, WinLines finds no such line and returns before animating
+				anything, so the symbol at the centre of the game's headline feature
+				was the one symbol on the board that never lit up. The sweep knows
+				where the Collector is — it is flying every Frame to it — so the
+				light belongs here.
+			-->
+			<Sprite
+				key="hmCCoreActive"
+				anchor={{ x: 0.5, y: 0.5 }}
+				width={SYMBOL_SIZE}
+				height={SYMBOL_SIZE}
+				blendMode="add"
+				alpha={0.55 + 0.45 * Math.min(1, sweepScale.current)}
+			/>
 			<Sprite
 				key="fxGlow"
 				anchor={{ x: 0.5, y: 0.5 }}

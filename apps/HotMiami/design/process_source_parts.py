@@ -34,6 +34,14 @@ KEY = {
     'h4': (255, 0, 255), 'h5': (255, 0, 255),
 }
 
+# The glow-only overlays are keyed on GREEN even where the symbol's own parts are
+# keyed on magenta: the light they draw is cyan/magenta/warm-white, and keying
+# magenta out of a magenta glow removes the glow.
+KEY_BY_FILE = {
+    'h4/panel_lit.png': (0, 255, 0),
+    'h5/lights_on.png': (0, 255, 0),
+}
+
 # Distance in RGB below which a pixel is pure background, and above which it is
 # pure subject. Between the two it is feathered, which is what keeps the black
 # outline from getting a hard jagged edge.
@@ -90,7 +98,7 @@ def main() -> int:
         for name in sorted(os.listdir(os.path.join(SRC, sym))):
             if not name.endswith('.png'):
                 continue
-            im = key_image(os.path.join(SRC, sym, name), key)
+            im = key_image(os.path.join(SRC, sym, name), KEY_BY_FILE.get(f'{sym}/{name}', key))
             im.save(os.path.join(out_dir, name))
             opaque = sum(1 for p in im.getdata() if p[3] > 32)
             print(f'   {sym}/{name:18s} kept {opaque * 100 // (im.width * im.height):3d}% of the canvas')

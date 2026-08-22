@@ -67,6 +67,81 @@ def coverage(im: Image.Image) -> float:
     return sum(1 for v in a.getdata() if v > 32) / (im.width * im.height)
 
 
+# Expression swaps: a second drawing of the same part, shown for a beat.
+#
+# `base` is the part it replaces. The rule the brief gives the artist is "only the
+# named feature changes, everything else pixel-identical", and that is exactly
+# what makes a swap invisible as a swap: if the hair or the jawline moves too, the
+# head jumps at the moment of the change and it looks like a glitch rather than an
+# expression. So it is measured — the difference has to be CONCENTRATED, not
+# spread over the whole part.
+EXPRESSIONS = {
+    'h1': [('head', 'head_blink'), ('head', 'head_grin'), ('head', 'head_shades_down')],
+    'h2': [('head', 'head_blink'), ('head', 'head_smile'), ('head', 'head_wink')],
+    'h3': [('head_neck', 'head_neck_blink'), ('head_neck', 'head_neck_squawk')],
+}
+
+# Additive glow layers: not replacements, they are drawn ON TOP of the part that
+# is already there, so all they have to be is non-empty and in the right place.
+GLOW_OVERLAYS = {'h4': ['panel_lit'], 'h5': ['lights_on'], 'c': ['core_active']}
+
+
+def check_expressions(problems: list[str]) -> None:
+    for sym, pairs in EXPRESSIONS.items():
+        for base_name, alt_name in pairs:
+            base, alt = load(sym, base_name), load(sym, alt_name)
+            if base is None or alt is None:
+                problems.append(f'{sym}: expression {alt_name} or its base {base_name} is missing')
+                continue
+
+            bb = base.getchannel('A').point(lambda v: 255 if v > 32 else 0).getbbox()
+            ab = alt.getchannel('A').point(lambda v: 255 if v > 32 else 0).getbbox()
+            drift = max(abs(a - b) for a, b in zip(ab, bb))
+            if drift > 12:
+                problems.append(
+                    f'{sym}/{alt_name}: its outline sits {drift}px from {base_name}\'s — swapping it would make the part jump'
+                )
+
+            ba, aa = list(base.convert('RGB').getdata()), list(alt.convert('RGB').getdata())
+            bm = list(base.getchannel('A').getdata())
+            am = list(alt.getchannel('A').getdata())
+            w = base.width
+            changed = []
+            for i, (p, q) in enumerate(zip(ba, aa)):
+                if bm[i] < 40 and am[i] < 40:
+                    continue
+                if abs(p[0] - q[0]) + abs(p[1] - q[1]) + abs(p[2] - q[2]) > 90 or abs(bm[i] - am[i]) > 90:
+                    changed.append((i % w, i // w))
+            if not changed:
+                problems.append(f'{sym}/{alt_name} is identical to {base_name} — the swap would do nothing')
+                continue
+            xs = [x for x, _ in changed]
+            ys = [y for _, y in changed]
+            box_w, box_h = max(xs) - min(xs) + 1, max(ys) - min(ys) + 1
+            part_w, part_h = bb[2] - bb[0], bb[3] - bb[1]
+            share = (box_w * box_h) / max(1, part_w * part_h)
+            ink = sum(1 for v in bm if v > 32) or 1
+            print(f'   {sym}/{alt_name:20s} differs over {len(changed) * 100 / ink:5.1f}% of the part, in a region {share * 100:.0f}% of its box')
+            # A face is a small part of a head. Anything past half the part's own
+            # box means the whole thing was redrawn, which is the failure mode.
+            if share > 0.55:
+                problems.append(
+                    f'{sym}/{alt_name}: the difference from {base_name} covers {share * 100:.0f}% of the part — '
+                    f'the whole piece was redrawn rather than just the expression'
+                )
+
+    for sym, names in GLOW_OVERLAYS.items():
+        for name in names:
+            glow = load(sym, name)
+            if glow is None:
+                problems.append(f'{sym}: glow overlay {name} is missing')
+                continue
+            cov = coverage(glow)
+            if cov < 0.0015:
+                problems.append(f'{sym}/{name} is effectively empty ({cov * 100:.2f}% of canvas)')
+            print(f'   {sym}/{name:20s} covers {cov * 100:.2f}% of the canvas')
+
+
 def main() -> int:
     problems = []
     rows = []
@@ -202,6 +277,8 @@ def main() -> int:
     out = os.path.join(ROOT, 'design/_parts/contact_sheet.png')
     sheet.save(out)
     print('contact sheet ->', os.path.relpath(out, ROOT))
+
+    check_expressions(problems)
 
     for p in problems:
         print('  !!', p)

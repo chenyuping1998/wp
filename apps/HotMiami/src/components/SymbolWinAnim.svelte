@@ -6,6 +6,7 @@
 	import { featureTimeScale } from '../game/timeScale';
 
 	import { SYMBOL_SIZE } from '../game/constants';
+	import { stateGame } from '../game/stateGame.svelte';
 	import { getSymbolInfo } from '../game/utils';
 	import { getSymbolWinMotion } from '../game/symbolWinMotion';
 	import SymbolArt from './SymbolArt.svelte';
@@ -21,6 +22,8 @@
 		 * symbol itself reacts, and that is looked up from this name.
 		 */
 		symbolName: string;
+		/** cell position — forwarded to SymbolArt, which uses it for the blink */
+		cell?: { reel: number; row: number };
 		oncomplete?: () => void;
 	};
 
@@ -32,6 +35,17 @@
 	let elapsed = $state(0);
 
 	const motion = $derived(getSymbolWinMotion(props.symbolName));
+
+	/**
+	 * Is this a big win? The rarer faces (he pushes his sunglasses down, she winks)
+	 * are held back for these, so they stay worth seeing — a wink on every third
+	 * spin is wallpaper.
+	 *
+	 * Read from the round's own total rather than from this cell, because the tier
+	 * is a property of the round: every winning cell in a big round shows the big
+	 * face, which is what makes the board feel like it is reacting together.
+	 */
+	const isBigWin = $derived(stateGame.currentWinTotal >= BIG_WIN_MULTIPLE * 100);
 	const frame = $derived(motion.frame(elapsed));
 
 	// --- motion ---------------------------------------------------------------
@@ -95,6 +109,15 @@
 	// as the runner crosses the cell, and short enough that three scatter passes
 	// come to 1.4s rather than a stall.
 	const WIN_HOLD_MS = 480;
+
+	/**
+	 * What counts as big, in multiples of the stake. 15× is the game's own "BIG
+	 * WIN" banner threshold (see constants.ts WIN_LEVELS), so the face and the
+	 * banner agree with each other — a wink under a banner that says nothing
+	 * special reads as a bug.
+	 */
+	// Book units are hundredths of the bet, so 15× is 1500.
+	const BIG_WIN_MULTIPLE = 15;
 
 	onMount(() => {
 		// own phase for the cell wash — pulsing every winning cell in sync reads
@@ -241,6 +264,8 @@
 			symbolName={props.symbolName}
 			mode="win"
 			t={elapsed}
+			cell={props.cell}
+			big={isBigWin}
 		/>
 		<!--
 			Neon-tube bloom: an additive copy of the symbol's own art in the letter's

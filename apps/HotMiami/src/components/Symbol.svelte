@@ -35,6 +35,7 @@
 	<SymbolWinAnim
 		{symbolInfo}
 		symbolName={props.rawSymbol.name}
+		cell={props.cell}
 		x={props.x}
 		y={props.y}
 		oncomplete={props.oncomplete}

@@ -118,6 +118,12 @@ export const stateGame = $state({
 	multiplierBoard: [] as (MultiplierSymbol | undefined)[][],
 	scatterCounter: 0,
 	/**
+	 * Book-unit total of the win volley currently being presented (100 = 1× bet),
+	 * written by the `winInfo` handler. Symbol presentations read it to decide
+	 * whether this win is a big one — see SymbolWinAnim's big-win faces.
+	 */
+	currentWinTotal: 0,
+	/**
 	 * How many win lines are drawn right now. Debug-only bookkeeping, written by
 	 * WinLines.svelte and read by `__HM_LINES__` under ?hmdebug=1 — win lines are
 	 * Graphics rather than sprites, so nothing outside the game can otherwise

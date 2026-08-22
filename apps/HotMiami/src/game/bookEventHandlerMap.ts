@@ -212,6 +212,17 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	winInfo: async (bookEvent: BookEventOfType<'winInfo'>) => {
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_winlevel_small' });
 
+		// How big is THIS volley? The characters' rarer faces (he pushes his
+		// sunglasses down, she winks) are gated on it.
+		//
+		// It has to be the volley's own total, not the round's. `winBookEventAmount`
+		// is the running round total, and on the 20,000× book it only becomes big
+		// after the last spin has resolved — long after every symbol animation has
+		// finished — so a face gated on it never appeared once, on the biggest win
+		// in the game. The volley total is also the honest question: this win is
+		// what the symbol is reacting to.
+		stateGame.currentWinTotal = bookEvent.totalWin;
+
 		// Build win line data — each win has a lineIndex from meta
 		const winLineData = bookEvent.wins.map((win) => ({
 			lineIndex: win.meta.lineIndex,

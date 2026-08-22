@@ -208,6 +208,7 @@
 				symbolName={props.symbolName}
 				mode="land"
 				t={landT}
+				cell={props.cell}
 			/>
 		</Container>
 		<!--
@@ -244,15 +245,31 @@
 		{/each}
 	</Container>
 {:else}
-	<Sprite
+	<!--
+		Resting and spinning.
+
+		SymbolArt draws the flat sprite here — one draw call, exactly what this was
+		before — and reaches for the part stack only for the ~110ms a blink lasts,
+		on the symbols that have a blink at all. The idle breath and the
+		anticipation lift stay on the Container so they apply to whichever of the
+		two it drew.
+	-->
+	<Container
 		x={props.x}
 		y={props.y}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * focusScale * breath}
-		height={(blur > 0.01 ? height * (1 + 0.3 * blur) : height) * focusScale * breath}
+		scale={{
+			x: focusScale * breath,
+			y: focusScale * breath * (blur > 0.01 ? 1 + 0.3 * blur : 1),
+		}}
 		alpha={1 - 0.15 * blur}
-	/>
+	>
+		<SymbolArt
+			symbolInfo={props.symbolInfo}
+			symbolName={props.symbolName}
+			mode="none"
+			cell={blur > 0.01 ? undefined : props.cell}
+		/>
+	</Container>
 	<!-- focus bloom: additive copy of the same art, so the teased reel reads as
 	     lit rather than just bigger -->
 	{#if focusBloom > 0.01}

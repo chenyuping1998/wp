@@ -26,6 +26,7 @@ import { fileURLToPath } from 'url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { SYMBOL_RIGS, partFrame, resolvePivot, PART_WINDOWS } = await import(path.join(appRoot, 'src/game/symbolParts.ts'));
+const { blinkCycle, isBlinking, BLINK_MS } = await import(path.join(appRoot, 'src/game/blinkClock.ts'));
 const { PARTS_MANIFEST } = await import(path.join(appRoot, 'src/game/partsManifest.ts'));
 const { HOLD_MS } = await import(path.join(appRoot, 'src/game/symbolWinMotion.ts'));
 const { LAND_MS } = await import(path.join(appRoot, 'src/game/symbolLandMotion.ts'));
@@ -72,6 +73,15 @@ for (const [symbol, rig] of Object.entries(SYMBOL_RIGS)) {
 			fail(`${symbol}/${part.name}: pivot (${px.toFixed(3)}, ${py.toFixed(3)}) is outside the part's own bbox`);
 		}
 		if (m.coverage < 0.004) fail(`${symbol}/${part.name}: the installed PNG is nearly empty (${(m.coverage * 100).toFixed(1)}% of canvas)`);
+	}
+
+	// ── expression swaps: the alternate drawings must actually exist ──
+	for (const part of rig.parts) {
+		for (const [state, key] of Object.entries(part.variants ?? {})) {
+			if (!knownKeys.has(key)) {
+				fail(`${symbol}/${part.name}: ${state} face "${key}" is not in src/game/assets.ts — the swap would draw nothing`);
+			}
+		}
 	}
 
 	for (const mode of ['win', 'land']) {
@@ -160,6 +170,63 @@ for (const [symbol, rig] of Object.entries(SYMBOL_RIGS)) {
 			console.log(`\n  [${symbol} ${mode}] closest pairs:`);
 			for (const [d, a, b] of pairs.slice(0, 4)) console.log(`    ${d.toFixed(2)}  ${a} / ${b}`);
 		}
+	}
+}
+
+// ── blinks must not happen together ──────────────────────────────────────────
+//
+// Twenty symbols closing their eyes on the same frame does not read as twenty
+// characters; it reads as the screen flickering, and it is more conspicuously
+// wrong than not blinking at all. The cycles are derived from cell position, so
+// this can simply walk a minute of them and count.
+{
+	const CELLS = [];
+	for (let reel = 0; reel < 5; reel++) for (let row = 1; row <= 4; row++) CELLS.push([reel, row]);
+
+	// What matters is not the rare coincidence — two or three characters blinking
+	// in the same tenth of a second on a twenty-cell board is invisible — it is
+	// whether the board blinks AS ONE, and how much of the time it is doing
+	// anything like that. So both are measured, and the thresholds come from the
+	// measured distribution rather than from taste: over five minutes the shipped
+	// schedule spends 64% of its time with nobody blinking, 29% with one, 6% with
+	// two, and 0.9% with three or more.
+	//
+	// The first version failed a schedule for putting five cells together once in
+	// sixty seconds, which was the wrong question — with twenty cells each
+	// blinking 2% of the time, a five-way coincidence is arithmetic, not a defect.
+	let worst = 0;
+	let worstAt = 0;
+	let crowdedSamples = 0;
+	let samples = 0;
+	for (let t = 0; t < 300000; t += 10) {
+		const together = CELLS.filter(([reel, row]) => isBlinking(reel, row, t)).length;
+		samples += 1;
+		if (together >= 4) crowdedSamples += 1;
+		if (together > worst) {
+			worst = together;
+			worstAt = t;
+		}
+	}
+	const crowdedShare = crowdedSamples / samples;
+	if (worst > CELLS.length / 2) {
+		fail(`${worst} of the ${CELLS.length} cells blink together at t=${worstAt}ms — half the board at once reads as a flicker`);
+	}
+	if (crowdedShare > 0.005) {
+		fail(`four or more cells blink together ${(crowdedShare * 100).toFixed(2)}% of the time — the board has a rhythm`);
+	}
+
+	const seen = new Map();
+	for (const [reel, row] of CELLS) {
+		const { gap, offset } = blinkCycle(reel, row);
+		const key = `${Math.round(gap / 50)}:${Math.round(offset / 50)}`;
+		if (seen.has(key)) fail(`cells ${seen.get(key)} and ${reel},${row} share a blink rhythm (${Math.round(gap)}ms gap, ${Math.round(offset)}ms offset)`);
+		seen.set(key, `${reel},${row}`);
+	}
+
+	if (process.argv.includes('--report')) {
+		const gaps = CELLS.map(([r, w]) => Math.round(blinkCycle(r, w).gap));
+		console.log(`\n  blink: ${BLINK_MS}ms, gaps ${Math.min(...gaps)}-${Math.max(...gaps)}ms across ${CELLS.length} cells;` +
+			` at most ${worst} together, four-or-more ${(crowdedShare * 100).toFixed(2)}% of the time`);
 	}
 }
 

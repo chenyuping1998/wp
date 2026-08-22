@@ -208,6 +208,37 @@
 		src: new URL('../../assets/sprites/hotMiamiParts/h5/wheel_rear.png', import.meta.url).href,
 		preload: true,
 	},
+	// Expression swaps: a second drawing of the same part, shown for a beat.
+	hmH1HeadGrin: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h1/head_grin.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH1HeadShadesDown: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h1/head_shades_down.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH2HeadBlink: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h2/head_blink.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH2HeadSmile: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h2/head_smile.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH2HeadWink: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h2/head_wink.png', import.meta.url).href,
+		preload: true,
+	},
+	hmCCoreActive: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/c/core_active.png', import.meta.url).href,
+		preload: true,
+	},
 	hmL1: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hotMiamiSymbols/l1.png', import.meta.url).href,

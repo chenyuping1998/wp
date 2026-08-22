@@ -75,6 +75,25 @@ export type SymbolPart = {
 	 * exactly where it started, which is not what a wheel does.
 	 */
 	symmetry?: number;
+	/**
+	 * Alternate drawings of this same part, swapped in for a beat.
+	 *
+	 * A transform can turn a head; it cannot change its expression. The only way
+	 * to make a character act is to draw the face again and swap the image at the
+	 * right moment — the standard 2D trick, and the reason the art brief asks for
+	 * "the same head, only the mouth and eyes differ": if anything else moves, the
+	 * head visibly jumps at the swap. `design/check_parts.py` measures that the
+	 * difference from the base is small and concentrated, so "only the face
+	 * changed" is enforced rather than trusted.
+	 */
+	variants?: {
+		/** a slow blink while the board sits still */
+		blink?: string;
+		/** while this symbol is part of a win */
+		win?: string;
+		/** the rarer face, kept for big wins so it stays worth seeing */
+		bigWin?: string;
+	};
 	/** what this part does while the symbol is winning; `t` is ms since the win */
 	win?: (t: number) => Partial<PartFrame>;
 	/** what it does as the symbol lands; `t` is ms since touchdown */
@@ -208,6 +227,11 @@ const hawaiianGuy: SymbolRig = {
 		{
 			name: 'head',
 			key: 'hmH1Head',
+			// He wears opaque sunglasses, so a blink would be invisible — the eyes
+			// are not on screen to close. His idle tell is the specular sweep across
+			// the lenses in symbolWinMotion instead. What he does have is a grin for
+			// a win, and for a big win he pushes the shades down and looks at you.
+			variants: { win: 'hmH1HeadGrin', bigWin: 'hmH1HeadShadesDown' },
 			// the neck, not the middle of the face
 			pivot: [0.5, 1],
 			win: (t) => {
@@ -262,6 +286,10 @@ const blonde: SymbolRig = {
 		{
 			name: 'head',
 			key: 'hmH2Head',
+			// Her lenses are translucent, so a blink reads — and a blinking symbol on
+			// a settled board is the cheapest evidence a character is alive. The
+			// wink is held back for big wins.
+			variants: { blink: 'hmH2HeadBlink', win: 'hmH2HeadSmile', bigWin: 'hmH2HeadWink' },
 			pivot: [0.5, 1],
 			// A slow lean rather than a nod — H1 is the one who nods, and these two
 			// portraits sit next to each other on the paytable.
@@ -372,6 +400,8 @@ const collector: SymbolRig = {
 		{
 			name: 'core',
 			key: 'hmCCore',
+			// COLLECT electrifies while it is sweeping.
+			variants: { win: 'hmCCoreActive' },
 			pivot: [0.5, 0.5],
 			win: (t) => {
 				const beat = strike(cycle(t, HOLD_MS * 0.95), 4);
@@ -487,6 +517,34 @@ export const resolvePivot = (
 	const [x0, y0, x1, y1] = bbox;
 	return [x0 + (x1 - x0) * pivot[0], y0 + (y1 - y0) * pivot[1]];
 };
+
+/**
+ * Which drawing of this part to use right now.
+ *
+ * Falls back to the base key at every step, so a rig can name a variant the art
+ * has not been delivered for and the symbol simply keeps its usual face.
+ */
+export const partKey = (
+	part: SymbolPart,
+	state: { mode: 'win' | 'land' | 'none'; big?: boolean; blinking?: boolean },
+): string => {
+	if (state.mode === 'win') {
+		if (state.big && part.variants?.bigWin) return part.variants.bigWin;
+		if (part.variants?.win) return part.variants.win;
+		return part.key;
+	}
+	if (state.blinking && part.variants?.blink) return part.variants.blink;
+	return part.key;
+};
+
+/**
+ * Does this symbol have anything to show on a settled board?
+ *
+ * Used to decide whether a resting cell needs the rigged stack at all: only the
+ * symbols with a blink do, and only for the ~100ms the blink lasts.
+ */
+export const hasIdleVariant = (rig: SymbolRig | null) =>
+	!!rig?.parts.some((part) => part.variants?.blink);
 
 export const partFrame = (
 	part: SymbolPart,
