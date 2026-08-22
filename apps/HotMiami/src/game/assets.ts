@@ -239,6 +239,26 @@
 		src: new URL('../../assets/sprites/hotMiamiParts/c/core_active.png', import.meta.url).href,
 		preload: true,
 	},
+	hmH3HeadNeckBlink: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h3/head_neck_blink.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH3HeadNeckSquawk: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h3/head_neck_squawk.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH4PanelLit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h4/panel_lit.png', import.meta.url).href,
+		preload: true,
+	},
+	hmH5LightsOn: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h5/lights_on.png', import.meta.url).href,
+		preload: true,
+	},
 	hmL1: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hotMiamiSymbols/l1.png', import.meta.url).href,

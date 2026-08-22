@@ -100,8 +100,25 @@ export type SymbolPart = {
 	land?: (t: number) => Partial<PartFrame>;
 };
 
+/**
+ * A light that comes on, drawn additively over the whole symbol.
+ *
+ * Not a part: it replaces nothing and pivots about nothing, it is the boombox's
+ * equaliser lighting up and the car's headlamps switching on. Kept separate from
+ * `parts` because it needs neither a pivot nor a motion — a light either is on or
+ * is not, and what makes it read is that it appears exactly when the symbol pays.
+ */
+export type SymbolGlow = {
+	/** asset registry key — must exist in game/assets.ts */
+	key: string;
+	/** peak alpha, 0..1 */
+	alpha: number;
+	/** ms per pulse; the light breathes rather than sitting flat */
+	pulseMs: number;
+};
+
 /** Parts are listed BACK TO FRONT — first drawn is furthest away. */
-export type SymbolRig = { parts: SymbolPart[] };
+export type SymbolRig = { parts: SymbolPart[]; glow?: SymbolGlow };
 
 const rest = (over: Partial<PartFrame> = {}): PartFrame => ({
 	dx: 0,
@@ -139,6 +156,9 @@ const landP = (t: number) => Math.max(0, Math.min(1, t / LAND_MS));
 const BEAT_MS = HOLD_MS * 0.48;
 
 const boombox: SymbolRig = {
+	// The panel lights up while it pays — the one thing a boombox does that says
+	// it is switched on rather than sitting in a shop window.
+	glow: { key: 'hmH4PanelLit', alpha: 0.95, pulseMs: 240 },
 	parts: [
 		{
 			name: 'body',
@@ -342,6 +362,10 @@ const flamingo: SymbolRig = {
 		{
 			name: 'head_neck',
 			key: 'hmH3HeadNeck',
+			// A bird's tell is its beak. It blinks while the board sits still and
+			// calls when it pays — the two things a flamingo can do that a
+			// transform cannot fake.
+			variants: { blink: 'hmH3HeadNeckBlink', win: 'hmH3HeadNeckSquawk' },
 			// Where the neck meets the body — the bottom of the head layer's own
 			// bbox, pushed right to the neck's centre line rather than the bbox's.
 			// The bbox is wide because the beak reaches left; pivoting at its
@@ -435,6 +459,10 @@ const collector: SymbolRig = {
  * around it, and the part of it hidden behind the arch was dark to begin with.
  */
 const convertible: SymbolRig = {
+	// Headlamps on. Slower than the boombox's panel: a car's lights do not flicker
+	// to a beat, and two symbols pulsing at the same rate would read as one effect
+	// applied twice.
+	glow: { key: 'hmH5LightsOn', alpha: 0.9, pulseMs: 620 },
 	parts: [
 		{ name: 'body', key: 'hmH5Body', pivot: [0.5, 0.5] },
 		{
@@ -545,6 +573,16 @@ export const partKey = (
  */
 export const hasIdleVariant = (rig: SymbolRig | null) =>
 	!!rig?.parts.some((part) => part.variants?.blink);
+
+/**
+ * The glow's alpha at time `t` into the win. Rises fast, then breathes — a light
+ * switching on, not a light fading up.
+ */
+export const glowAlpha = (glow: SymbolGlow, t: number) => {
+	const on = Math.min(1, t / 90);
+	const breathe = 0.78 + 0.22 * Math.sin((t / glow.pulseMs) * Math.PI * 2);
+	return glow.alpha * on * breathe;
+};
 
 export const partFrame = (
 	part: SymbolPart,

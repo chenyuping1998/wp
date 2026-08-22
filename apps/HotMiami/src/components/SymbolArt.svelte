@@ -3,7 +3,14 @@
 
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
-	import { getSymbolRig, partFrame, partKey, resolvePivot, hasIdleVariant } from '../game/symbolParts';
+	import {
+		getSymbolRig,
+		partFrame,
+		partKey,
+		resolvePivot,
+		hasIdleVariant,
+		glowAlpha,
+	} from '../game/symbolParts';
 	import { isBlinking } from '../game/blinkClock';
 	import { PARTS_MANIFEST } from '../game/partsManifest';
 
@@ -79,6 +86,12 @@
 		(props.mode && props.mode !== 'none') || blinking ? getSymbolRig(props.symbolName ?? '') : null,
 	);
 	const overlay = $derived((props.overlayAlpha ?? 0) > 0.01);
+	// The symbol's own light, on only while it is paying. Skipped entirely when
+	// this instance is drawing the flash or bloom copy — a light drawn three times
+	// over itself is just a white blob.
+	const glow = $derived(
+		mode === 'win' && !overlay ? (getSymbolRig(props.symbolName ?? '')?.glow ?? null) : null,
+	);
 	const mode = $derived(props.mode ?? 'none');
 
 	// Parts are authored on the same square canvas as the flat symbol, so a part
@@ -128,5 +141,22 @@
 		tint={overlay ? props.overlayTint : undefined}
 		alpha={overlay ? props.overlayAlpha : 1}
 		blendMode={overlay ? 'add' : undefined}
+	/>
+{/if}
+
+{#if glow}
+	<!--
+		The symbol's own light: last, so it sits over the art rather than under it.
+		The boombox's equaliser and the car's headlamps are painted into their base
+		art as dark shapes — the point of the layer is that they light UP, which
+		only reads if it is drawn on top of them.
+	-->
+	<Sprite
+		anchor={0.5}
+		key={glow.key}
+		{width}
+		{height}
+		alpha={glowAlpha(glow, props.t ?? 0)}
+		blendMode="add"
 	/>
 {/if}

@@ -75,6 +75,13 @@ for (const [symbol, rig] of Object.entries(SYMBOL_RIGS)) {
 		if (m.coverage < 0.004) fail(`${symbol}/${part.name}: the installed PNG is nearly empty (${(m.coverage * 100).toFixed(1)}% of canvas)`);
 	}
 
+	// ── the symbol's own light must exist too ──
+	if (rig.glow) {
+		if (!knownKeys.has(rig.glow.key)) fail(`${symbol}: glow "${rig.glow.key}" is not in src/game/assets.ts`);
+		if (!(rig.glow.alpha > 0 && rig.glow.alpha <= 1)) fail(`${symbol}: glow alpha ${rig.glow.alpha} is outside 0-1`);
+		if (rig.glow.pulseMs < 80) fail(`${symbol}: glow pulses every ${rig.glow.pulseMs}ms, which is a strobe`);
+	}
+
 	// ── expression swaps: the alternate drawings must actually exist ──
 	for (const part of rig.parts) {
 		for (const [state, key] of Object.entries(part.variants ?? {})) {
