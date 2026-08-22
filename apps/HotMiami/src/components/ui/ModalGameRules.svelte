@@ -67,6 +67,21 @@
 	];
 
 	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
+	// The modes are no longer all on one number: Ocean Drive is priced at 94.17%
+	// because its strips carry no Scatter and no Collector (maths game_config.py),
+	// while the rest sit at 94.00%. Two sentences below used to assert they were
+	// identical, which certification reads as a claim about the game. Derive the
+	// span from the config instead, so it collapses back to a single figure by
+	// itself if the modes are ever levelled again.
+	const modeRtpValues = Object.values(
+		(config.betModes ?? {}) as Record<string, { rtp?: number }>,
+	)
+		.map((mode) => mode?.rtp)
+		.filter((value): value is number => typeof value === 'number');
+	const rtpLow = modeRtpValues.length ? Math.min(...modeRtpValues) : config.rtp;
+	const rtpHigh = modeRtpValues.length ? Math.max(...modeRtpValues) : config.rtp;
+	const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
+	const rtpRangePct = rtpLow === rtpHigh ? pct(rtpLow) : `${pct(rtpLow)}\u2013${pct(rtpHigh)}`;
 	const lineCount = Object.keys(config.paylines).length;
 	const maxWin = config.betModes?.base?.max_win ?? 20000;
 	const buyCost = config.betModes?.bonus?.cost;
@@ -129,7 +144,8 @@
 				<p>
 					Hot Miami is a {reelCount}&times;{rowCount} video slot with {lineCount} fixed
 					{T.paylines}. {T.combinationDirection}. Only the highest win is {T.paid} per line, and
-					all line wins are added together. The theoretical return to player (RTP) is {rtpPct}.
+					all line wins are added together. The theoretical return to player (RTP) is {rtpRangePct},
+					depending on the mode played &mdash; every mode's figure is listed in the table below.
 				</p>
 			</section>
 
@@ -261,7 +277,8 @@
 					<h3><span class="wp-accent-bar"></span>Feature Entry</h3>
 					<p>
 						Instead of waiting for Scatters, each feature can be {T.bought} directly from the {T.betMenu}
-						for the {T.cost} shown in the table above. Every mode plays at the same {rtpPct} RTP.
+						for the {T.cost} shown in the table above. Each mode's RTP is shown there alongside its
+						{T.cost}; across all modes it ranges from {pct(rtpLow)} to {pct(rtpHigh)}.
 					</p>
 				</section>
 			{/if}

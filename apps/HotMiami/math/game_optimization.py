@@ -112,6 +112,13 @@ class OptimizationSetup:
             },
         }
 
+        # The feature slice is whatever the mode's headline RTP is, less the
+        # 0.001 the wincap fence holds. bonus_epic sits at 94.17% rather than
+        # 94.00% (game_config.py: the Ocean Drive strips no longer carry the
+        # Scatter or the Collector), so it is read off the bet mode rather than
+        # written out flat - the assert in verify_optimization_input compares
+        # these two numbers and a hard-coded 0.939 would be wrong for that mode.
+        mode_rtps = {bm.get_name(): bm.get_rtp() for bm in game_config.bet_modes}
         for mode in ("bonus", "bonus_hits", "bonus_epic"):
             self.game_config.opt_params[mode] = {
                 "conditions": {
@@ -119,7 +126,7 @@ class OptimizationSetup:
                         rtp=0.001, av_win=wincaps[mode], search_conditions=wincaps[mode]
                     ).return_dict(),
                     {"bonus": "freegame_weak", "bonus_hits": "freegame_mid", "bonus_epic": "freegame_strong"}[mode]:
-                        ConstructConditions(rtp=0.939, hr="x").return_dict(),
+                        ConstructConditions(rtp=round(mode_rtps[mode] - 0.001, 5), hr="x").return_dict(),
                 },
                 "scaling": buy_scaling,
                 "parameters": buy_parameters,

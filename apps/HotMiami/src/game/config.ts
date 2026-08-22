@@ -39,7 +39,7 @@ export default {
 			"cost": 500.0,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.94,
+			"rtp": 0.9417,
 			"max_win": 20000.0
 		}
 	},

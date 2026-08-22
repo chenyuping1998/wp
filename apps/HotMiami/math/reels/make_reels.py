@@ -148,6 +148,50 @@ WINCAP_COMPOSITION = {
     "C": [3, 3, 3, 3, 3],
 }
 
+# Ocean Drive (5-scatter tier) plays on its own strips, with no Scatter and no
+# Collector on them at all.
+#
+# The tier ignores both symbols by design — gamestate.run_freespin passes
+# `allow_collector=False` and skips the retrigger check — but it was still
+# dealing them off the shared FR0/WCAP strips, so they landed and did nothing.
+# Measured over 199,735 published Ocean Drive spins: 39.7% showed a Scatter,
+# 57.3% a Collector, 6.1% showed two or more Scatters with no retrigger, and
+# 17.2% ran an anticipation tease that could not pay off. The rules panel
+# meanwhile told the player neither symbol appears in this tier.
+#
+# The freed positions go back to the paying symbols in proportion to what each
+# already holds on that reel (largest-remainder, so every strip keeps its exact
+# length). Proportional is the neutral choice: it leaves the symbol MIX of the
+# strip where it was instead of quietly promoting whichever symbol got picked to
+# absorb the slack. The optimizer sets RTP from the lookup weights regardless;
+# what these counts control is hit-rate shape, and that is what is being held.
+FREE_OCEAN_COMPOSITION = {
+    "L1": [10, 10, 9, 8, 8],
+    "L2": [9, 9, 9, 9, 9],
+    "L3": [7, 7, 7, 8, 8],
+    "L4": [7, 7, 7, 7, 7],
+    "H5": [7, 7, 8, 8, 8],
+    "H4": [6, 6, 6, 6, 6],
+    "H3": [6, 6, 6, 6, 6],
+    "H2": [5, 5, 5, 5, 5],
+    "H1": [4, 4, 4, 4, 4],
+    "W": [3, 3, 3, 3, 3],
+}
+
+# Ocean Drive's wincap-hunting strip. Same removal, same proportional refill.
+WINCAP_OCEAN_COMPOSITION = {
+    "L1": [4, 4, 4, 4, 4],
+    "L2": [4, 4, 4, 4, 4],
+    "L3": [4, 4, 4, 4, 4],
+    "L4": [4, 4, 4, 4, 4],
+    "H5": [6, 6, 6, 6, 6],
+    "H4": [7, 7, 7, 7, 7],
+    "H3": [8, 8, 8, 8, 8],
+    "H2": [9, 9, 9, 9, 9],
+    "H1": [11, 11, 11, 11, 11],
+    "W": [6, 6, 6, 6, 6],
+}
+
 
 def build_reels(composition, seed):
     """Build one reel strip per reel, shuffled deterministically."""
@@ -214,6 +258,8 @@ def main():
         ("BR1.csv", TRIGGER_COMPOSITION, 20260816),
         ("FR0.csv", FREE_COMPOSITION, 20260803),
         ("WCAP.csv", WINCAP_COMPOSITION, 20260804),
+        ("FR_OD.csv", FREE_OCEAN_COMPOSITION, 20260822),
+        ("WCAP_OD.csv", WINCAP_OCEAN_COMPOSITION, 20260823),
     ):
         # Every reel in a strip must come to the same length. write_csv asserts
         # this too, but only after the shuffle — catching it here names the reel

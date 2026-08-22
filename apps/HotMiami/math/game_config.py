@@ -164,10 +164,30 @@ class GameConfig(Config):
         self.tier_seed_frames = {"neon_nights": 1, "sunset_hits": 3, "ocean_drive": 20}
         self.tier_doubling = {"neon_nights": False, "sunset_hits": True, "ocean_drive": True}
 
+        # Ocean Drive removes the Scatter and the Collector from play, so it
+        # deals from a strip that does not contain them rather than dealing them
+        # and then ignoring them.
+        #
+        # This is a substitution applied to whatever strip the distribution
+        # chose, not a distribution of its own: every distribution that can
+        # reach the tier (the three buy modes' wincap fences included) has to be
+        # covered, and they do not all pick the same strip.
+        self.ocean_drive_reels = {"FR0": "FR_OD", "WCAP": "WCAP_OD"}
+
         # ------------------------------------------------------------------
         # Reels
         # ------------------------------------------------------------------
-        reels = {"BR0": "BR0.csv", "BR1": "BR1.csv", "FR0": "FR0.csv", "WCAP": "WCAP.csv"}
+        reels = {
+            "BR0": "BR0.csv",
+            "BR1": "BR1.csv",
+            "FR0": "FR0.csv",
+            "WCAP": "WCAP.csv",
+            # Ocean Drive's own strips - identical to FR0/WCAP except that the
+            # Scatter and the Collector are not on them. See ocean_drive_reels
+            # below and GameStateOverride.create_board_reelstrips.
+            "FR_OD": "FR_OD.csv",
+            "WCAP_OD": "WCAP_OD.csv",
+        }
         self.reels = {}
         for reel_name, filename in reels.items():
             self.reels[reel_name] = self.read_reels_csv(os.path.join(self.reels_path, filename))
@@ -363,10 +383,17 @@ class GameConfig(Config):
             # mode's whole return in its top outcomes.
             self._buy_mode("bonus", 100.0, 3, base_mult, rich_mult, wincap_mult),
             self._buy_mode("bonus_hits", 250.0, 4, base_mult, rich_mult, wincap_mult),
-            self._buy_mode("bonus_epic", 500.0, 5, base_mult, rich_mult, wincap_mult),
+            # 2026-08-22: Ocean Drive is now dealt from a strip with no Scatter
+            # and no Collector on it, which hands ~7 of every 64 positions per
+            # reel back to symbols that actually pay. The tier is priced at
+            # 94.17% rather than the house 94.00% so that the removal reads as a
+            # small gain to the player instead of being taken back through the
+            # lookup weights. Stake requires every mode within 0.5% of the
+            # others; the spread is 0.17%.
+            self._buy_mode("bonus_epic", 500.0, 5, base_mult, rich_mult, wincap_mult, rtp=0.9417),
         ]
 
-    def _buy_mode(self, name, cost, scatters, base_mult, rich_mult, wincap_mult):
+    def _buy_mode(self, name, cost, scatters, base_mult, rich_mult, wincap_mult, rtp=None):
         """Build a feature-buy mode that always enters the given bonus tier."""
         # A bought feature IS the tier it buys, so it carries only that tier's
         # strength group. Offering all three here would let a 100x Neon Nights
@@ -379,7 +406,7 @@ class GameConfig(Config):
         return BetMode(
             name=name,
             cost=cost,
-            rtp=self.rtp,
+            rtp=self.rtp if rtp is None else rtp,
             max_win=self.wincap,
             auto_close_disabled=False,
             is_feature=False,
