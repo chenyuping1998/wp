@@ -272,6 +272,7 @@ export const stateGameDerived = {
 //     window.__HM_REELS__()               // motion / spinType / anticipating
 //     window.__HM_EMIT__({ type: '...' }) // fire any emitter event
 //     window.__HM_LINES__()               // win lines on screen right now
+//     window.__HM_GAME__()                // gameType / isTurbo
 if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.search)) {
 	(window as unknown as { __HM_REELS__: () => unknown }).__HM_REELS__ = () =>
 		stateGame.board.map((reel, index) => ({
@@ -280,6 +281,17 @@ if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.s
 			spinType: reel.reelState.spinType,
 			anticipating: reel.reelState.anticipating,
 		}));
+
+	// Which game is on screen, and whether turbo is on. `__HM_REELS__` returns an
+	// array and probes map over it, so this is a second hook rather than a field
+	// on that one. Needed because reel timing is only meaningful per game type:
+	// base-game turbo lands the board as a block on purpose, feature turbo does
+	// not (SPIN_OPTIONS_FAST_FREEGAME.reelStaggerInTurbo), and a probe that
+	// cannot tell them apart cannot check either.
+	(window as unknown as { __HM_GAME__: () => unknown }).__HM_GAME__ = () => ({
+		gameType: stateGame.gameType,
+		isTurbo: stateBet.isTurbo,
+	});
 
 	(window as unknown as { __HM_EMIT__: (event: unknown) => void }).__HM_EMIT__ = (event) =>
 		eventEmitter.broadcast(event as Parameters<typeof eventEmitter.broadcast>[0]);
@@ -292,5 +304,5 @@ if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.s
 		count: stateGame.debugWinLineCount,
 	});
 
-	console.info('[hmdebug] __HM_REELS__, __HM_EMIT__ and __HM_LINES__ attached');
+	console.info('[hmdebug] __HM_REELS__, __HM_GAME__, __HM_EMIT__ and __HM_LINES__ attached');
 }

@@ -17,6 +17,25 @@ export type SpinningReelSpinOptions = {
 	reelPaddingMultiplierNormal: number;
 	reelPaddingMultiplierAnticipated: number;
 	reelSpinDelay: number;
+	/**
+	 * Keep the reel-by-reel stagger in turbo instead of dropping all five reels
+	 * together.
+	 *
+	 * Turbo normally does three things at once: it skips the per-reel start
+	 * delay, it gives every reel the same travel distance (padding + 0 rather
+	 * than accumulating), and it skips the slide entirely on a reel that was
+	 * already pre-spinning. Together those make the board land as one block,
+	 * which is what turbo is for in the base game.
+	 *
+	 * Inside a bought or triggered feature the same thing reads as the feature
+	 * being over before it started - ten free spins land as ten single thuds.
+	 * With this set, turbo stays fast (its own speeds still apply) but the reels
+	 * still arrive one after another.
+	 *
+	 * Optional and falsy by default: every app that does not set it spins
+	 * exactly as before.
+	 */
+	reelStaggerInTurbo?: boolean;
 };
 
 export type CascadingReelSpinOptions = {

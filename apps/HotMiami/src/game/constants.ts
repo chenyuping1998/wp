@@ -101,12 +101,26 @@ export const SPIN_OPTIONS_FAST = {
 	reelBounceSizeMulti: 0.05,
 };
 
+// Turbo INSIDE the feature - free spins, and every bought feature once it gets
+// there. Fast, but still one reel at a time.
+//
+// Base-game turbo drops all five reels as one block, which is the whole point of
+// turbo when you are grinding. In a feature the same thing reads as the feature
+// being over before it started: ten free spins arrive as ten single thuds, and
+// the round the player paid 100x-500x for is gone. `reelStaggerInTurbo` keeps
+// turbo's speeds and gives the reels back their order (utils-slots; the flag is
+// optional and every other app is unaffected by it).
+//
+// reelSpinDelay is 185 rather than the shared 145 because it is now doing real
+// work: at turbo speed the reels overlap far more, so the start offset has to be
+// wider to read as a sequence at all.
 export const SPIN_OPTIONS_FAST_FREEGAME = {
 	...SPIN_OPTIONS_SHARED,
 	reelPreSpinSpeed: 4.2,
 	reelSpinSpeed: 3.8,
 	reelSpinDelay: 185,
 	reelBounceSizeMulti: 0.08,
+	reelStaggerInTurbo: true,
 };
 
 export const MOTION_BLUR_VELOCITY = 31;

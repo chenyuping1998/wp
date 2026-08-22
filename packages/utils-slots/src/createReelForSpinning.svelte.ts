@@ -230,7 +230,9 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		isPreSpinning = true;
 		reelState.spinType = isTurboBeforeAll ? 'fast' : 'normal';
 		await preSpinPadding({ preSpinPaddingRawReel });
-		if (!isTurboBeforeAll) await delaySpinByReelIndex();
+		if (!isTurboBeforeAll || reelState.spinOptions().reelStaggerInTurbo) {
+			await delaySpinByReelIndex();
+		}
 		preSpinSlideDownLoop({ isTurboBeforeAll, preSpinPaddingRawReel });
 	};
 
@@ -249,7 +251,7 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		// A: When it's preSpinning(isSpinning) and stop button is clicked(isTurbo) and is noStop is false
 		if (noStop) {
 			await slideDown();
-		} else if (stateBet.isTurbo && isSpinning) {
+		} else if (stateBet.isTurbo && isSpinning && !reelState.spinOptions().reelStaggerInTurbo) {
 			// skip
 		} else {
 			await interruptible.add(slideDown);
@@ -331,7 +333,14 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		onSpinFinishing = prepareToSpinOptions.onSpinFinishing;
 
 		const GET_PADDING_SIZE_MAP = {
-			fast: prepareToSpinOptions.previousPaddingSize + 0,
+			// The +0 is what makes turbo land as a block: every reel travels the
+			// same distance, so they all arrive together. reelStaggerInTurbo opts
+			// back into the accumulating padding the normal spin uses, which is
+			// where the reel-by-reel arrival actually comes from - the start delay
+			// above only offsets the beginning.
+			fast: reelState.spinOptions().reelStaggerInTurbo
+				? prepareToSpinOptions.previousPaddingSize + basePaddingSize()
+				: prepareToSpinOptions.previousPaddingSize + 0,
 			normal: prepareToSpinOptions.previousPaddingSize + basePaddingSize(),
 			anticipated: prepareToSpinOptions.previousPaddingSize + anticipatedPaddingSize(),
 		};
