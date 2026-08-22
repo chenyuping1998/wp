@@ -56,6 +56,8 @@
 		| 'win_gliss'
 		| 'win_gliss_big'
 		| 'fs_intro'
+		| 'fs_outro'
+		| 'win_cap'
 		| 'coin_shimmer'
 		| 'wild_expand'
 		| 'mult_update'
@@ -77,6 +79,8 @@
 		win_gliss: 'miami/sfx/win_gliss.wav',
 		win_gliss_big: 'miami/sfx/win_gliss_big.wav',
 		fs_intro: 'miami/sfx/fs_intro.wav',
+		fs_outro: 'miami/sfx/fs_outro.wav',
+		win_cap: 'miami/sfx/win_cap.wav',
 		coin_shimmer: 'miami/sfx/coin_shimmer.wav',
 		wild_expand: 'miami/sfx/wild_expand.wav',
 		mult_update: 'miami/sfx/mult_update.wav',
@@ -122,6 +126,14 @@
 		sfx_scatter_win_v2: { name: 'win_gliss_big' },
 		sfx_superfreespin: { name: 'win_gliss_big', volume: 0.8 },
 		jng_intro_fs: { name: 'fs_intro' },
+		// The free-game outro panel and the max-win stop. Both were unmapped, so
+		// both fell through to the template sprite below and played GoBananas'
+		// jungle samples — audible at the end of every single feature, which is
+		// how it was reported ("FG 結束後有以前的範例音效"). sounds.json still
+		// carries `sfx_youwon_panel` and `sfx_winlevel_end`, so the fallback was
+		// not silent; it was wrong and confident.
+		sfx_youwon_panel: { name: 'fs_outro' },
+		sfx_winlevel_end: { name: 'win_cap' },
 		sfx_wild_explode: { name: 'wild_expand' },
 		sfx_multiplier_update: { name: 'mult_update' },
 		sfx_anticipation_start: { name: 'mult_update', volume: 0.5 },
