@@ -67,6 +67,8 @@
 	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
 	const maxWin = config.betModes?.base?.max_win ?? 12000;
 	const buyCost = config.betModes?.bonus?.cost;
+	const swanCost = config.betModes?.blackswan?.cost;
+	const swanSpins = config.betModes?.blackswan?.typical_spins;
 	// One source for the awarded-spins figures so the Scatter and Retriggers
 	// sections cannot drift apart (see the maths: config.freespin_triggers).
 	const triggerSpins = '8, 10 or 12';
@@ -88,6 +90,7 @@
 		[
 			['Base game', 'base', 'Every spin'],
 			['Liquidation Run', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}× ${T.bet}`],
+			['Black Swan', 'blackswan', `${entryVerb} for ${config.betModes?.blackswan?.cost}× ${T.bet}`],
 		] as const
 	).map(([label, key, entry]) => {
 		const mode = config.betModes?.[key] as BetMode | undefined;
@@ -227,6 +230,15 @@
 						LIQUIDATION RUN for {buyCost}&times; your {T.totalBet}. It runs at the same {rtpPct}
 						RTP as base play.
 					</p>
+					{#if swanCost && swanSpins}
+						<p>
+							BLACK SWAN is a second entry into the same feature for {swanCost}&times; your {T.totalBet}.
+							It opens on {swanSpins[0]}&ndash;{swanSpins[1]} free spins rather than the usual
+							{triggerSpins.split(',')[0]}, and LEVERAGE symbols carry higher values, so the meter
+							climbs faster and further. The RTP and the {maxWin.toLocaleString()}&times; maximum are
+							unchanged &mdash; it is a wider spread of outcomes, not a higher ceiling.
+						</p>
+					{/if}
 				</section>
 			{/if}
 
@@ -236,6 +248,7 @@
 					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}. Once
 					the cap is reached the round ends immediately and the maximum win is awarded.
 				</p>
+
 			</section>
 
 			<div class="wp-divider"></div>

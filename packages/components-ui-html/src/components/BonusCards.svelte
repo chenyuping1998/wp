@@ -20,7 +20,7 @@
 
 {#each props.list as betModeData}
 	{#if betModeData.type !== 'default'}
-		<BonusCard>
+		<BonusCard cover={betModeData?.assets?.dialogImage || undefined}>
 			{#snippet title()}
 				<div class="title">
 					{betModeData.text.title}
@@ -31,8 +31,8 @@
 				<!--
 					Optional icon above the description. Opt-in by construction: it
 					renders only when a game puts a non-empty `assets.icon` on the bet
-					mode, and every game in this repo other than Triple Witching leaves
-					it as the empty string, so none of them change.
+					mode, and the games that do not leave it as the empty string, so none
+					of them change.
 
 					It is an <img src>, not an asset key - these cards are DOM, not
 					pixi, so the game supplies a URL.
@@ -82,12 +82,15 @@
 
 	.icon {
 		display: block;
-		height: 1.75rem;
+		/* 1.75rem originally, which is about 28px: too small to tell four options
+		   apart at a glance, which is the one job it has. */
+		height: 2.75rem;
 		width: auto;
-		margin: 0 auto 0.35rem;
-		/* the art is a thin white outline; a little glow keeps it from
-		   disappearing into a pale card background */
-		filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.45));
+		margin: 0 auto 0.4rem;
+		/* A dark drop rather than the white glow this used to carry. The glow was
+		   for thin white outline art on a pale card; these sit on their own dark
+		   cover, where a white halo reads as a smudge. */
+		filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55));
 	}
 
 	.description {

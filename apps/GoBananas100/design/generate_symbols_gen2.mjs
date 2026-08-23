@@ -61,6 +61,35 @@ const render = (svg, w = CANVAS) =>
 		.render()
 		.asPng();
 
+// Source art arrives as either PNG or JPEG. pngjs cannot read JPEG and the only
+// other library here is resvg, so JPEG is decoded by wrapping it in a one-element
+// SVG and rendering that at native size — resvg decodes embedded rasters, which
+// makes it a JPEG decoder we already have. Cheaper than adding a dependency to
+// the shared tools install for one file format.
+const readImage = (file) => {
+	if (/\.(jpe?g)$/i.test(file)) {
+		const b64 = fs.readFileSync(file).toString('base64');
+		// Probe dimensions first: resvg needs them on the wrapper, and an <image>
+		// with no explicit size is laid out at its intrinsic size, which is exactly
+		// what a zero-size viewport-less render reports back.
+		const probe = new Resvg(
+			`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image xlink:href="data:image/jpeg;base64,${b64}"/></svg>`,
+		);
+		const { width, height } = probe;
+		const svg =
+			`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}">` +
+			`<image width="${width}" height="${height}" xlink:href="data:image/jpeg;base64,${b64}"/></svg>`;
+		return PNG.sync.read(new Resvg(svg, { fitTo: { mode: 'width', value: width } }).render().asPng());
+	}
+	return PNG.sync.read(fs.readFileSync(file));
+};
+
+// Resolve a symbol's source file, whichever extension it was delivered in.
+const findSource = (dir, name) =>
+	['.png', '.jpg', '.jpeg']
+		.map((ext) => path.join(dir, name + ext))
+		.find((p) => fs.existsSync(p));
+
 // ── supplied art: square + resize, nothing else ────────────────────────────
 //
 // The sources are never square and never uniform: the delivered sheet's rows
@@ -210,11 +239,11 @@ const REQUIRED = ['h1', 'h2', 'h3', 'h4', 'l1', 'l2', 'l3', 'l4', 'l5', 'w', 's'
 const missing = [];
 
 const writeOut = (name, png) => fs.writeFileSync(path.join(OUT_DIR, `${name}.png`), PNG.sync.write(png));
-const supplied = (name) => path.join(SRC_DIR, `${name}.png`);
+const supplied = (name) => findSource(SRC_DIR, name);
 
 for (const name of REQUIRED) {
-	if (fs.existsSync(supplied(name))) {
-		const src = PNG.sync.read(fs.readFileSync(supplied(name)));
+	if (supplied(name)) {
+		const src = readImage(supplied(name));
 		const out = sharpen(resize(src, CANVAS), Math.min(src.width, src.height) < CANVAS ? 0.7 : 0.25);
 		writeOut(name, out);
 		console.log(
@@ -233,8 +262,8 @@ for (const name of REQUIRED) {
 
 	// w_fg is the wild's close-up: derive it from the supplied wild rather than
 	// asking for a second painting of the same character.
-	if (name === 'w_fg' && fs.existsSync(supplied('w'))) {
-		const src = PNG.sync.read(fs.readFileSync(supplied('w')));
+	if (name === 'w_fg' && supplied('w')) {
+		const src = readImage(supplied('w'));
 		// centre crop to 78% of each axis = the character's head fills the card.
 		// Cropping proportionally rather than to a square keeps the source's own
 		// aspect, so resize() applies exactly the same squash the full w tile got
@@ -265,21 +294,364 @@ for (const name of REQUIRED) {
 	}
 }
 
-// wx: the full-reel WILD panel, one plate stretched over five cells.
+// grenade: the transition prop, and the one asset here that MUST be a cut-out.
+//
+// TransitionAnimation drops it over the live scene and GrenadeRunner flies it
+// along the win lines, so it is seen against the board rather than in a cell.
+// Both used to draw `gbH2` — which in gen-2 is an opaque riveted plate, so what
+// actually fell down the screen was a tile, bezel and rivets included.
+//
+// Cut from the gen-2 h2 so the prop is the same painting as the symbol. Two
+// things make that cut awkward, and both were learned the hard way:
+//
+//   · COLOUR CANNOT SEPARATE THEM. The plate face samples at 57,59,41 and the
+//     grenade body at 61,73,9 — same hue family, overlapping brightness. Worse,
+//     the body's facet highlights are gold, so a "strip anything gold" rule for
+//     the frame eats the subject too. Only the OUTLINE separates them.
+//   · THE SUBJECT OVERLAPS THE FRAME BAND. Stripping the frame as a fixed inset
+//     rectangle (the first version, 13%) sheared the bottom off the body and the
+//     lever, because the grenade very nearly touches the frame's inner edge.
+//
+// So the frame is peeled by flood, not by geometry, and the gold-or-dark test
+// that peels it is confined to a band along the border where only frame can be:
+//
+//   1. blur, then Sobel — the blur kills the plate's mottling, which would
+//      otherwise read as edges everywhere and block the flood immediately
+//   2. peel frame and black corners inward from the border, gold-or-dark, but
+//      only within BAND of an edge so the body's gold facets are never eligible
+//   3. from there, spread through the plate face, blocked by strong edges
+//   4. dilate the background by GROW to eat the band of plate left hugging the
+//      silhouette, which the edge rule always leaves behind
+//   5. largest island, then fill interior holes
+//
+// EDGE_TH and GROW trade two artefacts against each other, and NEITHER end is
+// clean — this is the honest limit of an automatic cut on this artwork:
+//
+//   aggressive (26 / 2)   no fringe, but the body's shadowed left side is eaten
+//                         away: that shadow runs to values like 9,10,3 and is
+//                         indistinguishable from plate on every channel, the
+//                         G-R guard included
+//   conservative (14 / 0) body intact, but a wide ragged plate fringe survives,
+//                         which reads as a torn sticker
+//
+// 18 / 1 is the middle and what ships: fringe mostly gone, body mostly whole,
+// with a residual bite low on the left. If that ever matters the fix is not a
+// better threshold — it is a hand-made cut-out dropped in as
+// design/source/gen2_symbols/grenade.png, which this function then skips.
+const cutGrenade = (src) => {
+	const W = src.width, H = src.height, N = W * H;
+	const EDGE_TH = 18, BAND = 0.2, GROW = 1, FEATHER = 2;
+
+	const lum = new Float32Array(N);
+	for (let i = 0, j = 0; i < src.data.length; i += 4, j++)
+		lum[j] = src.data[i] * 0.299 + src.data[i + 1] * 0.587 + src.data[i + 2] * 0.114;
+	const L = (x, y) => lum[Math.max(0, Math.min(H - 1, y)) * W + Math.max(0, Math.min(W - 1, x))];
+	const bl = new Float32Array(N);
+	for (let y = 0; y < H; y++)
+		for (let x = 0; x < W; x++) {
+			let s = 0;
+			for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) s += L(x + dx, y + dy);
+			bl[y * W + x] = s / 25;
+		}
+	const B = (x, y) => bl[Math.max(0, Math.min(H - 1, y)) * W + Math.max(0, Math.min(W - 1, x))];
+	const edge = new Float32Array(N);
+	for (let y = 0; y < H; y++)
+		for (let x = 0; x < W; x++) {
+			const gx = -B(x-1,y-1) - 2*B(x-1,y) - B(x-1,y+1) + B(x+1,y-1) + 2*B(x+1,y) + B(x+1,y+1);
+			const gy = -B(x-1,y-1) - 2*B(x,y-1) - B(x+1,y-1) + B(x-1,y+1) + 2*B(x,y+1) + B(x+1,y+1);
+			edge[y * W + x] = Math.hypot(gx, gy);
+		}
+
+	const band = Math.round(Math.min(W, H) * BAND);
+	const nearBorder = (x, y) => Math.min(x, y, W - 1 - x, H - 1 - y) < band;
+	const isGold = (i) => {
+		const r = src.data[i * 4], g = src.data[i * 4 + 1], b = src.data[i * 4 + 2];
+		return r > 120 && r - b > 50 && g > b && g < r;
+	};
+	const frameish = (i) => isGold(i) || lum[i] < 42;
+	// Body guard. The plate face and the grenade DO overlap in hue and brightness,
+	// but not in green offset: sampled across both, G-R averages -1.8 on the face
+	// and +9.7 on the body. Without this the flood squeezed through a soft spot on
+	// the body’s lower left and ate a visible notch out of it, which GROW then
+	// widened and “largest island” happily kept. The lever and ring are grey
+	// (G-R near 0) and are not covered here — they are held by their own outlines.
+	const isBody = (i) => src.data[i * 4 + 1] - src.data[i * 4] >= 4;
+
+	const bg = new Uint8Array(N);
+	const q = [];
+	for (let x = 0; x < W; x++) { q.push([x, 0]); q.push([x, H - 1]); }
+	for (let y = 0; y < H; y++) { q.push([0, y]); q.push([W - 1, y]); }
+	while (q.length) {
+		const [x, y] = q.pop();
+		if (x < 0 || y < 0 || x >= W || y >= H) continue;
+		const i = y * W + x;
+		if (bg[i] || !nearBorder(x, y) || !frameish(i)) continue;
+		bg[i] = 1;
+		q.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+	}
+
+	const q2 = [];
+	for (let i = 0; i < N; i++) if (bg[i]) q2.push(i);
+	while (q2.length) {
+		const c = q2.pop();
+		const cx = c % W, cy = (c / W) | 0;
+		for (const [nx, ny] of [[cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]]) {
+			if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+			const ni = ny * W + nx;
+			if (bg[ni] || edge[ni] > EDGE_TH || isBody(ni)) continue;
+			bg[ni] = 1; q2.push(ni);
+		}
+	}
+
+	for (let g = 0; g < GROW; g++) {
+		const add = [];
+		for (let y = 0; y < H; y++)
+			for (let x = 0; x < W; x++) {
+				const i = y * W + x;
+				if (bg[i]) continue;
+				if ((x > 0 && bg[i-1]) || (x < W-1 && bg[i+1]) || (y > 0 && bg[i-W]) || (y < H-1 && bg[i+W]))
+					add.push(i);
+			}
+		for (const i of add) bg[i] = 1;
+	}
+
+	const lab = new Int32Array(N).fill(-1);
+	let best = -1, bestN = 0;
+	for (let s0 = 0; s0 < N; s0++) {
+		if (bg[s0] || lab[s0] >= 0) continue;
+		const st = [s0]; lab[s0] = s0; let n = 0;
+		while (st.length) {
+			const c = st.pop(); n++;
+			const cx = c % W, cy = (c / W) | 0;
+			for (const [nx, ny] of [[cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]]) {
+				if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+				const ni = ny * W + nx;
+				if (bg[ni] || lab[ni] >= 0) continue;
+				lab[ni] = s0; st.push(ni);
+			}
+		}
+		if (n > bestN) { bestN = n; best = s0; }
+	}
+	const fg = new Uint8Array(N);
+	for (let i = 0; i < N; i++) if (!bg[i] && lab[i] === best) fg[i] = 1;
+
+	// Closing (dilate then erode) to repair what the flood still bit out.
+	//
+	// isBody stops the leak wherever the body has colour, but the deepest shadow
+	// on its lower left runs to values like 9,10,3 — G-R of 1, below the guard, and
+	// indistinguishable from plate on every other axis too. Rather than chase a
+	// classifier that cannot exist, repair the mask: a closing fills notches up to
+	// about 2*CLOSE wide and leaves the silhouette otherwise untouched. CLOSE stays
+	// well under the lever-to-body gap (~10px at source scale) so it cannot weld
+	// the two together.
+	const CLOSE = 3;
+	const morph = (mask, times, grow) => {
+		for (let k = 0; k < times; k++) {
+			const hits = [];
+			for (let y = 0; y < H; y++)
+				for (let x = 0; x < W; x++) {
+					const i = y * W + x;
+					if (mask[i] === (grow ? 1 : 0)) continue;
+					const n = (x > 0 && mask[i-1]) || (x < W-1 && mask[i+1]) || (y > 0 && mask[i-W]) || (y < H-1 && mask[i+W]);
+					if (grow ? n : !((x > 0 ? mask[i-1] : 1) && (x < W-1 ? mask[i+1] : 1) && (y > 0 ? mask[i-W] : 1) && (y < H-1 ? mask[i+W] : 1))) hits.push(i);
+				}
+			for (const i of hits) mask[i] = grow ? 1 : 0;
+		}
+	};
+	morph(fg, CLOSE, true);
+	morph(fg, CLOSE, false);
+
+	const reach = new Uint8Array(N); const q3 = [];
+	for (let x = 0; x < W; x++) { q3.push(x); q3.push((H - 1) * W + x); }
+	for (let y = 0; y < H; y++) { q3.push(y * W); q3.push(y * W + W - 1); }
+	while (q3.length) {
+		const c = q3.pop();
+		if (reach[c] || fg[c]) continue;
+		reach[c] = 1;
+		const cx = c % W, cy = (c / W) | 0;
+		for (const [nx, ny] of [[cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]]) {
+			if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+			const ni = ny * W + nx;
+			if (!reach[ni] && !fg[ni]) q3.push(ni);
+		}
+	}
+	for (let i = 0; i < N; i++) if (!fg[i] && !reach[i]) fg[i] = 1;
+
+	const alpha = new Float32Array(N);
+	for (let y = 0; y < H; y++)
+		for (let x = 0; x < W; x++) {
+			let s0 = 0, c = 0;
+			for (let dy = -FEATHER; dy <= FEATHER; dy++)
+				for (let dx = -FEATHER; dx <= FEATHER; dx++) {
+					const nx = x + dx, ny = y + dy;
+					if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+					s0 += fg[ny * W + nx]; c++;
+				}
+			alpha[y * W + x] = s0 / c;
+		}
+
+	let bx0 = W, bx1 = -1, by0 = H, by1 = -1;
+	for (let y = 0; y < H; y++)
+		for (let x = 0; x < W; x++)
+			if (alpha[y * W + x] > 0.02) {
+				if (x < bx0) bx0 = x; if (x > bx1) bx1 = x;
+				if (y < by0) by0 = y; if (y > by1) by1 = y;
+			}
+	const bw = bx1 - bx0 + 1, bh = by1 - by0 + 1, side = Math.max(bw, bh);
+	const out = new PNG({ width: side, height: side });
+	out.data.fill(0);
+	const ox = Math.floor((side - bw) / 2), oy = Math.floor((side - bh) / 2);
+	for (let y = 0; y < bh; y++)
+		for (let x = 0; x < bw; x++) {
+			const si = (by0 + y) * W + (bx0 + x);
+			const di = ((oy + y) * side + (ox + x)) * 4;
+			const a = Math.max(0, Math.min(1, (alpha[si] - 0.15) / 0.7));
+			out.data[di] = src.data[si * 4];
+			out.data[di + 1] = src.data[si * 4 + 1];
+			out.data[di + 2] = src.data[si * 4 + 2];
+			out.data[di + 3] = Math.round(a * 255);
+		}
+	return out;
+};
+
 {
-	const W = 256, H = 1280;
-	const letters = 'WILD'
-		.split('')
-		.map(
-			(ch, i) =>
-				`<text x="${W / 2}" y="${268 + i * 222}" font-family="Impact, Haettenschweiler, sans-serif" font-size="180" font-weight="bold" text-anchor="middle" fill="#e8c23a" stroke="#4a3a08" stroke-width="9" paint-order="stroke">${ch}</text>`,
-		)
-		.join('');
-	fs.writeFileSync(
-		path.join(OUT_DIR, 'wx.png'),
-		render(plate(letters, W, H), W),
-	);
-	console.log('wx.png    <- procedural (256x1280 full-reel panel)');
+	const own = supplied('grenade');
+	if (own) {
+		writeOut('grenade', sharpen(resize(readImage(own), CANVAS), 0.3));
+		console.log('grenade.png <- supplied cut-out');
+	} else if (supplied('h2')) {
+		writeOut('grenade', resize(cutGrenade(readImage(supplied('h2'))), CANVAS));
+		console.log('grenade.png <- cut out of the gen-2 h2 plate');
+	} else {
+		throw new Error('grenade needs either its own cut-out or h2 to cut from');
+	}
+}
+
+// wx: the full-reel WILD panel. ExpandingWilds draws it at SYMBOL_SIZE x
+// BOARD_SIZES.height — one reel, five cells — so the art has to be 1:5 or the
+// whole panel is stretched to fit.
+const WX_W = 256, WX_H = 1280, WX_ASPECT = WX_H / WX_W;
+
+// Grow a panel to 1:5 by lengthening it, not by stretching it.
+//
+// The delivered art is 1:3.03. Rendered straight into the 1:5 slot everything in
+// it would be pulled 65% taller — a visibly elongated character. Instead the
+// extra height is inserted as *more panel*: a band of the artwork is repeated to
+// push the bottom frame down, leaving the art above it at its true proportions
+// and leaving clear space where the multiplier badge sits (91% down the reel).
+//
+// The band to draw from is found, not hardcoded: within the bottom sixth, the
+// window of rows whose CENTRE is darkest. In this composition that is the gap
+// between the WILD sub-panel's bottom frame and the outer frame — rows that are
+// background plus the two side rails, so continuing them reads as the rails
+// simply running longer. A band containing frame detail would smear into a bar.
+//
+// The fill is a linear blend from the band's first row to its last, NOT a repeat
+// of the band. Repeating (even ping-ponged) turns the rails' highlights into a
+// sawtooth of horizontal stripes, which is what the first attempt looked like.
+// The rails are straight metal, so interpolating between two of their rows gives
+// exactly what they should be: continuous, seamless at both joins.
+const extendPanelToAspect = (src, aspect) => {
+	const targetH = Math.round(src.width * aspect);
+	if (targetH <= src.height) return src;
+	const add = targetH - src.height;
+
+	const lum = (x, y) => {
+		const i = (src.width * y + x) * 4;
+		return (src.data[i] + src.data[i + 1] + src.data[i + 2]) / 3;
+	};
+	const cx0 = Math.round(src.width * 0.25), cx1 = Math.round(src.width * 0.75);
+	const rowLum = [];
+	for (let y = 0; y < src.height; y++) {
+		let s = 0;
+		for (let x = cx0; x < cx1; x++) s += lum(x, y);
+		rowLum.push(s / (cx1 - cx0));
+	}
+
+	// darkest window of MIN_BAND rows inside the bottom sixth, excluding the very
+	// last rows so the outer bottom frame is never consumed
+	const MIN_BAND = 16;
+	const searchFrom = Math.round(src.height * (5 / 6));
+	const searchTo = src.height - MIN_BAND - Math.round(src.height * 0.015);
+	let best = { start: searchFrom, score: Infinity };
+	for (let y = searchFrom; y <= searchTo; y++) {
+		let s = 0;
+		for (let k = 0; k < MIN_BAND; k++) s += rowLum[y + k];
+		if (s < best.score) best = { start: y, score: s };
+	}
+	const bandStart = best.start;
+	const bandLen = MIN_BAND;
+
+	const out = new PNG({ width: src.width, height: targetH });
+	const copyRow = (sy, dy) => {
+		const s = sy * src.width * 4;
+		const d = dy * out.width * 4;
+		src.data.copy(out.data, d, s, s + src.width * 4);
+	};
+
+	for (let y = 0; y < bandStart; y++) copyRow(y, y);
+
+	const fillRows = bandLen + add;
+	const topRow = bandStart;
+	const botRow = bandStart + bandLen - 1;
+	for (let i = 0; i < fillRows; i++) {
+		const t = fillRows === 1 ? 0 : i / (fillRows - 1);
+		const dOff = (bandStart + i) * out.width * 4;
+		const aOff = topRow * src.width * 4;
+		const bOff = botRow * src.width * 4;
+		for (let k = 0; k < src.width * 4; k++) {
+			out.data[dOff + k] = Math.round(src.data[aOff + k] * (1 - t) + src.data[bOff + k] * t);
+		}
+	}
+
+	for (let y = bandStart + bandLen; y < src.height; y++) copyRow(y, y + add);
+	return out;
+};
+
+// Non-square, so it does not go through resize() — that one squares its output.
+const resizeTo = (png, w, h) => {
+	const out = new PNG({ width: w, height: h });
+	const sx = png.width / w, sy = png.height / h;
+	for (let y = 0; y < h; y++) {
+		for (let x = 0; x < w; x++) {
+			const fx = Math.min(png.width - 1, x * sx), fy = Math.min(png.height - 1, y * sy);
+			const x0 = Math.floor(fx), y0 = Math.floor(fy);
+			const x1 = Math.min(png.width - 1, x0 + 1), y1 = Math.min(png.height - 1, y0 + 1);
+			const tx = fx - x0, ty = fy - y0;
+			const d = (y * w + x) * 4;
+			for (let c = 0; c < 4; c++) {
+				const p = (px, py) => png.data[(py * png.width + px) * 4 + c];
+				out.data[d + c] = Math.round(
+					p(x0, y0) * (1 - tx) * (1 - ty) + p(x1, y0) * tx * (1 - ty) +
+						p(x0, y1) * (1 - tx) * ty + p(x1, y1) * tx * ty,
+				);
+			}
+		}
+	}
+	return out;
+};
+
+{
+	const wxSrc = supplied('wx');
+	if (wxSrc) {
+		const src = readImage(wxSrc);
+		const grown = extendPanelToAspect(src, WX_ASPECT);
+		writeOut('wx', sharpen(resizeTo(grown, WX_W, WX_H), 0.3));
+		console.log(
+			`wx.png    <- supplied ${src.width}x${src.height} (1:${(src.height / src.width).toFixed(2)})` +
+				` -> extended to ${grown.width}x${grown.height} (1:5) -> ${WX_W}x${WX_H}`,
+		);
+	} else {
+		const letters = 'WILD'
+			.split('')
+			.map(
+				(ch, i) =>
+					`<text x="${WX_W / 2}" y="${268 + i * 222}" font-family="Impact, Haettenschweiler, sans-serif" font-size="180" font-weight="bold" text-anchor="middle" fill="#e8c23a" stroke="#4a3a08" stroke-width="9" paint-order="stroke">${ch}</text>`,
+			)
+			.join('');
+		fs.writeFileSync(path.join(OUT_DIR, 'wx.png'), render(plate(letters, WX_W, WX_H), WX_W));
+		console.log('wx.png    <- procedural (256x1280 full-reel panel)');
+	}
 }
 
 console.log(`\nwrote ${REQUIRED.length + 1} files to ${path.relative(appRoot, OUT_DIR)}`);

@@ -170,12 +170,99 @@
 		}
 	}
 
-	function playCnLoop(name: CnSfxName, volumeScale = 1) {
-		const audio = getCnSfx(name);
-		audio.loop = true;
-		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
-		audio.currentTime = 0;
-		audio.play().catch(() => {});
+	// ─── looping sfx: Web Audio, not <audio loop> ───
+	//
+	// An HTMLAudioElement with loop = true is NOT gapless. The browser tears down
+	// and restarts playback at the wrap, and the silence either side of that is
+	// plainly audible — on coin_shimmer, a 2.4s clip with a recognisable attack,
+	// it lands as the clip visibly stopping and starting again roughly every two
+	// seconds. On the superspin result plaque, which stays up until the player
+	// presses, that repeats for as long as they look at it.
+	//
+	// Guarding against re-triggering (the previous attempt) removed one cause of
+	// choppiness — winLevelSoundsPlay fires up to three times in a superspin round
+	// and each call was resetting currentTime — but not this one, because this one
+	// happens without anyone asking. An AudioBufferSourceNode with loop = true
+	// loops inside the audio thread and has no seam at all.
+	//
+	// Gain is ramped rather than switched, so the loop also fades in and out
+	// instead of appearing and vanishing.
+	const LOOP_FADE_IN = 0.12;
+	const LOOP_FADE_OUT = 0.25;
+
+	let audioCtx: AudioContext | null = null;
+	const loopBuffers: Partial<Record<CnSfxName, AudioBuffer>> = {};
+	const loopNodes: Partial<Record<CnSfxName, { src: AudioBufferSourceNode; gain: GainNode }>> = {};
+
+	const getAudioCtx = () => {
+		if (typeof window === 'undefined') return null;
+		if (!audioCtx) {
+			const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+			if (!Ctor) return null;
+			audioCtx = new Ctor();
+		}
+		// The context starts suspended until a gesture; the game always has one by
+		// the time anything loops (the loading screen is dismissed by a press).
+		if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+		return audioCtx;
+	};
+
+	async function playCnLoop(name: CnSfxName, volumeScale = 1) {
+		const ctx = getAudioCtx();
+		// No Web Audio (very old browser): fall back to the element, seam and all —
+		// a slightly choppy loop beats silence.
+		if (!ctx) {
+			const audio = getCnSfx(name);
+			audio.loop = true;
+			audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+			if (!audio.paused && !audio.ended) return;
+			audio.currentTime = 0;
+			audio.play().catch(() => {});
+			return;
+		}
+
+		if (loopNodes[name]) return; // already running — never restart it
+
+		let buffer = loopBuffers[name];
+		if (!buffer) {
+			try {
+				const res = await fetch(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
+				buffer = await ctx.decodeAudioData(await res.arrayBuffer());
+				loopBuffers[name] = buffer;
+			} catch {
+				return;
+			}
+		}
+		// Awaiting the decode above means a stop() could have arrived in the
+		// meantime, and a second play() could have won the race.
+		if (loopNodes[name]) return;
+
+		const target = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+		const gain = ctx.createGain();
+		gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+		gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, target), ctx.currentTime + LOOP_FADE_IN);
+		const src = ctx.createBufferSource();
+		src.buffer = buffer;
+		src.loop = true;
+		src.connect(gain).connect(ctx.destination);
+		src.start();
+		loopNodes[name] = { src, gain };
+	}
+
+	function stopCnLoop(name: CnSfxName) {
+		const node = loopNodes[name];
+		if (!node) return;
+		delete loopNodes[name];
+		const ctx = audioCtx;
+		if (!ctx) {
+			node.src.stop();
+			return;
+		}
+		const end = ctx.currentTime + LOOP_FADE_OUT;
+		node.gain.gain.cancelScheduledValues(ctx.currentTime);
+		node.gain.gain.setValueAtTime(Math.max(0.0001, node.gain.gain.value), ctx.currentTime);
+		node.gain.gain.exponentialRampToValueAtTime(0.0001, end);
+		node.src.stop(end);
 	}
 
 	function stopCnSfx(name: CnSfxName) {
@@ -252,7 +339,20 @@
 		},
 		soundLoop: ({ name }) => {
 			if (name === 'sfx_bigwin_coinloop') {
-				playCnLoop('coin_shimmer', 0.8);
+				// Deliberately a ONE-SHOT despite the event name, the same way
+				// sfx_anticipation is deliberately a no-op here: this is where a logical
+				// sound name is turned into what actually happens, and the caller should
+				// not have to know which clips can bear repeating.
+				//
+				// coin_shimmer is a 2.4s chime with a clear attack. Looping it under a
+				// win count-up — on a plaque that stays up until the player presses —
+				// rang that chime over and over, which is what came back as "a bell
+				// repeating while the score counts". Making the loop gapless (playCnLoop,
+				// now Web Audio) fixed the seam but not the repetition, and repetition
+				// was the complaint. One pass accents the start of the count-up and then
+				// leaves it alone. A continuous bed needs a longer, flatter clip, not
+				// this one on repeat.
+				playCnSfx('coin_shimmer', 0.8);
 			} else if (name === 'sfx_anticipation') {
 				// covered by the reel_tension tremolo loop (soundReelTensionStart)
 			} else {
@@ -272,13 +372,21 @@
 		soundGrenadeBlast: () => playCnSfx('grenade_blast'),
 		soundMonkeyExpand: () => playMonkeyExpand(),
 		soundReelTensionStart: () => playCnLoop('reel_tension', 0.8),
-		soundReelTensionStop: () => stopCnSfx('reel_tension'),
+		// stopCnLoop, not stopCnSfx: playCnLoop moved this to Web Audio, and the
+		// element-based stopper would leave the buffer source looping forever.
+		soundReelTensionStop: () => {
+			stopCnLoop('reel_tension');
+			stopCnSfx('reel_tension');
+		},
 		soundStop: ({ name }) => {
 			if (name === 'bgm_main' || name === 'bgm_freespin') {
 				stopBgm();
 			} else if (name === 'sfx_bigwin_coinloop') {
+				// both, because the fallback path above may have used the element
+				stopCnLoop('coin_shimmer');
 				stopCnSfx('coin_shimmer');
 			} else if (name === 'sfx_anticipation') {
+				stopCnLoop('reel_tension');
 				stopCnSfx('reel_tension');
 				sound.stop({ name });
 			} else {
@@ -313,6 +421,10 @@
 					delete cnSfxAudio[name];
 				}
 			}
+			// Web Audio loops outlive the DOM unless they are stopped explicitly.
+			for (const name of Object.keys(loopNodes) as CnSfxName[]) stopCnLoop(name);
+			audioCtx?.close().catch(() => {});
+			audioCtx = null;
 		};
 	});
 </script>

@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 
 	import { BlurFilter } from 'pixi.js';
 	import { EnablePixiExtension } from 'components-pixi';
 	import { EnableHotkey } from 'components-shared';
 	import { MainContainer } from 'components-layout';
-	import { App, Container, Rectangle, Sprite, Text, REM } from 'pixi-svelte';
+	import { App, Container, Rectangle, Sprite } from 'pixi-svelte';
 	import { stateModal } from 'state-shared';
 
 	import { UI, UiGameName } from 'components-ui-pixi';
@@ -130,17 +129,28 @@
 				<UiGameName name="TRIPLE WITCHING" />
 			{/snippet}
 			{#snippet logo()}
-				<Text
-					anchor={{ x: 1, y: 0 }}
-					text="TRIPLE WITCHING"
-					style={{
-						fontFamily: GAME_FONT,
-						fontSize: REM * 1.5,
-						fontWeight: GAME_FONT_WEIGHT,
-						lineHeight: REM * 2,
-						fill: 0xffffff,
-					}}
-				/>
+				<!--
+					Deliberately empty.
+
+					Every layout draws `gameName` at canvas x=20 and `logo` right-anchored
+					at canvas width-20, and the template's games pass the SAME STRING to
+					both — so the title is printed twice and the two blocks close on each
+					other as the canvas narrows. These are canvas-space text at a fixed
+					REM*1.5 (24px, REM is a constant 16), not main-box text, so they do
+					not shrink with the layout: the left block is clock + name ≈ 320px and
+					the right block ≈ 225px, which collide below about 565px of canvas
+					width. Popout S and mobile are both under that, and certification came
+					back with a screenshot of "TRIPLE WITCHING" overprinting itself.
+
+					"TRIPLE WITCHING" is 15 characters, the longest title in the workspace,
+					which is why this game hit it first — the other seven have the same
+					latent bug at a narrower breakpoint.
+
+					Hiding it below a width threshold was the alternative. Printing the
+					name once is better: the right-hand copy carried no information the
+					left-hand one did not, and a title that appears and disappears with the
+					window is its own defect.
+				-->
 			{/snippet}
 		</UI>
 		<Win />

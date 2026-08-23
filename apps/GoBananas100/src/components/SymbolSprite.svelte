@@ -36,6 +36,14 @@
 	const sx = new Tween(1);
 	const sy = new Tween(1);
 	let squashing = false;
+	// Set when this sprite is torn down. The squash is an async chain of Tween
+	// promises, and those promises still resolve after the component is gone —
+	// so without this the chain reported "landing finished" from a presentation
+	// that had already been replaced. See the guard at the end of runSquash.
+	let destroyed = false;
+	$effect(() => () => {
+		destroyed = true;
+	});
 	const runSquash = async () => {
 		if (squashing) return;
 		squashing = true;
@@ -51,6 +59,25 @@
 		sx.set(1, { duration: 80, easing: cubicOut });
 		await sy.set(1, { duration: 80, easing: cubicOut });
 		squashing = false;
+		// THE completion that was lighting one reel and then killing it.
+		//
+		// 'win' renders a Spine, every other state renders this sprite, so a symbol
+		// going land → win unmounts this component mid-squash. The chain above kept
+		// running to its end and called oncomplete anyway; by then the symbol was in
+		// 'win', so Board.boardWithAnimateSymbols took that call as "the win spine
+		// finished", moved the symbol straight to postWinStatic, and the spine was
+		// destroyed on roughly the frame it started. The symbol stayed dark while
+		// the rest of the line lit up.
+		//
+		// It landed on reel 1 far more often than anywhere else because the grenade
+		// reaches reel 1 first — a few frames into the volley, the one moment still
+		// inside this 240ms window.
+		//
+		// ReelSymbol tried to guard this by comparing the current symbolState with a
+		// {@const} snapshot, but {@const} is reactive: by the time the stale call
+		// arrived, the snapshot had been recomputed to 'win' too and the comparison
+		// always passed. Cancelling at the source is not subject to that.
+		if (destroyed) return;
 		props.oncomplete?.();
 	};
 

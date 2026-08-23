@@ -1,0 +1,9 @@
+{
+	"extends": "config-ts/base.json",
+	"include": ["."],
+	// `design/` holds standalone Node build scripts and `static/` holds asset
+	// helpers; neither is part of the bundle, and both are written as loose
+	// .mjs/.ts that never type-checked. Excluding them is what makes
+	// `check:types` a usable gate on src/ rather than 400 lines of noise.
+	"exclude": ["dist", "build", "node_modules", "design", "static"]
+}

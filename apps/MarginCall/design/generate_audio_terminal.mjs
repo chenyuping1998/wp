@@ -261,25 +261,34 @@ const spinStart = () => {
 // hence the short body and the hard head.
 const reelStop = () => {
 	const b = buffer(0.18);
-	// the click of the stop: a short band of noise, high enough to cut. Carries
-	// most of the PERCEIVED loudness - the thump below it is felt, not heard.
-	addAt(b, lowpass(highpass(noise(0.05, { decay: 38 }), 1400), 9000), 0, 1.5);
-	// the knock: this is the part that carries, so it gets the room
-	addAt(b, lowpass(highpass(noise(0.09, { decay: 26 }), 180), 1800), 0, 1);
-	// and the weight underneath it - a short pitched thump, not a tone
-	addAt(b, tone(0.11, (t) => 190 - 90 * t, { shape: 'sine', decay: 14 }), 0, 0.55);
-	// Kept deliberately small. It is felt rather than heard, and every dB of it
-	// is a dB of headroom the click cannot use - which is what held this cue 3 dB
-	// short of its target on the first attempt at levelling it by loudness.
-	addAt(b, tone(0.13, NOTE(33), { shape: 'sine', decay: 11 }), 0, 0.22);
-	// Levelled with the win cues: the spin is only this and the scatter now, so
-	// there is nothing for it to stay out of the way of.
+	// A RELAY, not a knock.
 	//
-	// Saturated first. This cue is almost entirely transient, so its RMS sits far
-	// below its peak and asking for -18 dBFS just hits the clipping ceiling and
-	// stops short. A soft tanh curve pulls the body up towards the peak - the
-	// same thing a compressor is for - and lets it actually reach the target.
-	return fadeEnds(normalizeLoudness(saturate(b, 7), MIX.reelStop), SR, 4);
+	// This used to be a wooden thump with a noise band over it - a physical thing
+	// hitting a physical stop, which is the right sound for a mechanical reel and
+	// the wrong one for a terminal that prints quotes. A contactor has a different
+	// signature: two hard transients a few milliseconds apart (armature strike,
+	// then the contacts seating), almost no body, and a metallic ring rather than
+	// a woody one.
+	//
+	// The armature: a very short, very bright tick.
+	addAt(b, lowpass(highpass(noise(0.02, { decay: 90 }), 2600), 11000), 0, 1.6);
+	// The contacts seating, 7ms later. This double-hit is the whole character of
+	// the sound - one transient reads as a click, two reads as a mechanism.
+	addAt(b, lowpass(highpass(noise(0.035, { decay: 55 }), 1500), 8000), 0.007, 1.1);
+	// A brief metallic ring off the contact plate, high and quick. Two partials
+	// rather than one so it is not a beep.
+	addAt(b, tone(0.05, 2400, { shape: 'sine', decay: 45 }), 0.006, 0.3);
+	addAt(b, tone(0.045, 3260, { shape: 'sine', decay: 52 }), 0.006, 0.2);
+	// Just enough weight to sit on the board. Kept very small: every dB here is a
+	// dB the transient cannot use, which is what held the old cue short of its
+	// loudness target.
+	addAt(b, tone(0.06, (t) => 240 - 120 * t, { shape: 'sine', decay: 30 }), 0, 0.28);
+
+	// Saturated before levelling. This cue is almost entirely transient, so its
+	// RMS sits far below its peak; asking for the target directly just hits the
+	// clipping ceiling and stops short. A soft tanh curve pulls the body up
+	// toward the peak - what a compressor is for - and lets it reach the target.
+	return fadeEnds(normalizeLoudness(saturate(b, 8), MIX.reelStop), SR, 4);
 };
 
 // A MARGIN CALL landing. Five of them, rising, so three in a row is audibly a
@@ -308,13 +317,27 @@ const alert = (step) => {
 // The margin call itself: a two-tone klaxon. This is the only sound in the set
 // allowed to be unpleasant.
 const marginCall = () => {
-	const b = buffer(2.4);
-	for (let k = 0; k < 3; k++) {
-		const t0 = k * 0.72;
-		addAt(b, tone(0.34, NOTE(70), { shape: 'saw', decay: 3, hold: 0.5 }), t0, 0.5);
-		addAt(b, tone(0.34, NOTE(65), { shape: 'saw', decay: 3, hold: 0.5 }), t0 + 0.36, 0.5);
+	// 1.1s, down from 2.4s, and the length is not a taste decision - it is
+	// arithmetic.
+	//
+	// This cue fires 380ms into the circuit-breaker transition, and that
+	// transition is 1780ms end to end, with the shutters starting to retract on
+	// the base game at 1480ms. A 2.4s alarm therefore went on sounding for about
+	// 1.3 SECONDS after the player was already looking at the base board - which
+	// is exactly what "the horn is still going after it has cut back" is.
+	//
+	// Two klaxon cycles instead of three, tightened from 0.72s apart to 0.46s.
+	// Two is still unmistakably an alarm (four tones, rising-falling twice) and
+	// the tighter spacing makes it more urgent, not less - the old spacing was
+	// leisurely for something announcing a liquidation.
+	const b = buffer(1.1);
+	for (let k = 0; k < 2; k++) {
+		const t0 = k * 0.46;
+		addAt(b, tone(0.26, NOTE(70), { shape: 'saw', decay: 3, hold: 0.5 }), t0, 0.5);
+		addAt(b, tone(0.26, NOTE(65), { shape: 'saw', decay: 3, hold: 0.5 }), t0 + 0.24, 0.5);
 	}
-	addAt(b, tone(2.2, (t) => 60 + 18 * Math.sin(t * 26), { shape: 'sine', decay: 1.4 }), 0, 0.55);
+	// the drone underneath, ending with them rather than outlasting them
+	addAt(b, tone(1.0, (t) => 60 + 18 * Math.sin(t * 26), { shape: 'sine', decay: 1.8 }), 0, 0.55);
 	const shaped = lowpass(b, 2600);
 	return fadeEnds(normalizeLoudness(shaped, MIX.marginCall), SR, 10);
 };

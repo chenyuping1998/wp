@@ -148,12 +148,26 @@ export const SPIN_OPTIONS_FAST = {
 	reelBounceSizeMulti: 0.05,
 };
 
+// The feature game's own normal-speed options.
+//
+// The tease length is `reelLength * reelPaddingMultiplierAnticipated`, and the
+// feature reel is 7 symbols to the base game's 5 - so at a shared multiplier the
+// feature tease is automatically 40% LONGER than the base one, which is what
+// made a single Scatter in free spins feel like it held the board hostage for
+// four reels. 10 -> 6 takes that 40% back out; the feature tease is now about
+// the same wall-clock length as the base game's.
+export const SPIN_OPTIONS_DEFAULT_FREEGAME = {
+	...SPIN_OPTIONS_DEFAULT,
+	reelPaddingMultiplierAnticipated: 6,
+};
+
 export const SPIN_OPTIONS_FAST_FREEGAME = {
 	...SPIN_OPTIONS_SHARED,
 	reelPreSpinSpeed: 4.2,
 	reelSpinSpeed: 3.8,
 	reelSpinDelay: 185,
 	reelBounceSizeMulti: 0.08,
+	reelPaddingMultiplierAnticipated: 6,
 };
 
 export const MOTION_BLUR_VELOCITY = 31;
@@ -266,6 +280,30 @@ export const WIN_FX: Record<string, WinFxProfile> = {
 };
 
 export const winFxFor = (name: string): WinFxProfile => WIN_FX[name] ?? WIN_FX.H5;
+
+// Scatter landing frame, ported from TripleWitching (ScatterLandFrame.svelte).
+//
+// The scatter has to be picked out of a board of nine paying symbols, and the
+// thing that decides whether it can be is LUMINANCE, not hue. ScatterTrigger's
+// alarm red (0xff5566) works at ring size on a dimmed board; at CELL size a
+// saturated red on near-black terminal green is just another dark block, so
+// reaching for a different colour does not fix it. These are deliberately
+// bright.
+//
+// Yes, this is gold, and yes, the rest of this game had its inherited gold
+// purged. That was about warm colours standing in for a palette the game does
+// not have. This is different: it is a legibility decision with a measured
+// reason behind it, and it is the ONE hot accent on the board. The alarm stays
+// red where it is drawn large; only the per-cell frame is hot, because only the
+// per-cell frame has a size problem.
+export const SCATTER_FRAME_COLOR = 0xffd166;
+export const SCATTER_FRAME_CORE = 0xfff6da;
+export const SCATTER_FRAME_WIDTH = 5;
+/** the frame flares as the symbol lands, then settles and holds */
+export const SCATTER_FRAME_FLARE_MS = 420;
+export const SCATTER_FRAME_STEADY_ALPHA = 0.85;
+/** how far inside the cell the frame sits, in board units */
+export const SCATTER_FRAME_INSET = 5;
 
 // Leverage meter presentation. The math sends +1/+2/+3/+5/+10 per LEVERAGE
 // symbol; anything from +5 up is worth calling out with the hot treatment.

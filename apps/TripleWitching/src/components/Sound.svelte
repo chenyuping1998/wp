@@ -142,6 +142,11 @@
 	const sfxAudio: Partial<Record<SfxName, HTMLAudioElement>> = {};
 
 	function getSfx(name: SfxName) {
+		// A name with no file is silent, never a request. Without this a typo in a
+		// cue name becomes `assets/audio/undefined` and a 404 per play - which is
+		// worse than silence, because it reaches the operator's logs and a
+		// reviewer's network panel rather than just being unheard.
+		if (!SFX_FILES[name]) return null;
 		let audio = sfxAudio[name];
 		if (!audio) {
 			audio = new Audio(`${base}/assets/audio/${SFX_FILES[name]}`);
@@ -167,6 +172,7 @@
 	const sfxPool: Partial<Record<SfxName, HTMLAudioElement[]>> = {};
 
 	function takeVoice(name: SfxName) {
+		if (!SFX_FILES[name]) return null;
 		const pool = (sfxPool[name] ??= []);
 		const free = pool.find((voice) => voice.paused || voice.ended);
 		if (free) return free;
@@ -183,6 +189,7 @@
 
 	function playSfx(name: SfxName, volumeScale = 1, rate = 1) {
 		const audio = takeVoice(name);
+		if (!audio) return;
 		audio.loop = false;
 		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
 		// Always assign, never skip when rate is 1: a voice is reused across cues
@@ -195,6 +202,7 @@
 
 	function playLoop(name: SfxName, volumeScale = 1) {
 		const audio = getSfx(name);
+		if (!audio) return;
 		audio.loop = true;
 		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
 		audio.currentTime = 0;
@@ -255,8 +263,15 @@
 				playBgm('base');
 			}
 		},
-		soundPressGeneral: () => playSfx('btn', 0.7),
-		soundPressBet: () => playSfx('spin', 0.9),
+		// 'btn' and 'spin' are NOT keys of SFX_FILES - the keys are ui_click and
+		// spin_start. SFX_FILES['btn'] is undefined, so this built
+		// `.../assets/audio/undefined` and fired a 404 on every button press;
+		// soundPressBet fires on every spin, which is exactly what review saw.
+		//
+		// TypeScript would have caught it (neither string is in SfxName), but
+		// `vite build` does not type-check, so it compiled and shipped.
+		soundPressGeneral: () => playSfx('ui_click', 0.7),
+		soundPressBet: () => playSfx('spin_start', 0.9),
 		// scatterCounter
 		soundScatterCounterIncrease: () => (context.stateGame.scatterCounter = context.stateGame.scatterCounter + 1), // prettier-ignore
 		soundScatterCounterClear: () => (context.stateGame.scatterCounter = 0),

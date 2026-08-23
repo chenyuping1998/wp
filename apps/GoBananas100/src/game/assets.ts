@@ -99,6 +99,17 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2.png', import.meta.url).href,
 		preload: true,
 	},
+	// The grenade PROP — a transparent cut-out, deliberately not gbH2.
+	//
+	// The transition drop and the win-line runners both draw a grenade over the
+	// live board, and both used gbH2. In gen-2 that symbol is an opaque riveted
+	// plate, so what actually fell down the screen was a tile complete with bezel
+	// and rivets. See design/generate_symbols_gen2.mjs for where this is cut.
+	gbGrenade: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/grenade.png', import.meta.url).href,
+		preload: true,
+	},
 	gbH3: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3.png', import.meta.url).href,
@@ -358,9 +369,17 @@
 			scale: 2,
 		},
 	},
-	coins: {
+	// Win-spray particles. The emitter is handed this whole sheet and gives each
+	// particle one random frame out of it, so the ten frames are ten viewing
+	// angles of the same banana rather than an animation — see
+	// design/pack_banana_particles.mjs.
+	//
+	// It replaces `coins`, which was SD2_Coin: a Japanese five-yen piece with a
+	// Shiba Inu on it, left over from the template this game started from and
+	// about as far from a jungle-commando theme as an asset can get.
+	winBananas: {
 		type: 'spriteSheet',
-		src: new URL('../../assets/sprites/coin/SD2_Coin.json', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasWinBananas/bananas.json', import.meta.url).href,
 	},
 	sound: {
 		type: 'audio',

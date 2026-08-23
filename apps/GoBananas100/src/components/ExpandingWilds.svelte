@@ -13,7 +13,6 @@
 	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { waitForTimeout } from 'utils-shared/wait';
-	import { stateBet } from 'state-shared';
 
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_SIZES, BOARD_DIMENSIONS } from '../game/constants';
@@ -54,14 +53,21 @@
 		merge: Tween<number>;
 		banner: Tween<number>;
 		badgeScale: Tween<number>;
-		// What the badge actually prints. During a re-roll it cycles through random
-		// values while `mult` already holds the settled figure from the math, so the
-		// roll is pure presentation and can never show a number the book did not
-		// pay. They are equal at every other moment.
+		// What the badge actually prints. While the value is climbing it steps
+		// through the integers between the old and new figure; every one of those is
+		// a value the wild genuinely passed through, so the badge can never show a
+		// number above what the book paid. Equal to `mult` at every other moment.
 		displayMult: number;
+		// 0..1 envelope for the upward surge drawn on the reel when the multiplier
+		// grows — see chargeAndGrow.
+		surge: Tween<number>;
 		// Badge shake amplitude in px, spiked on landing and eased back to 0. The
 		// jitter itself is derived from the pulse clock at render time.
 		shake: Tween<number>;
+		// Set when a win lands on this reel while its takeover is still running:
+		// there is no panel to light yet, so runTakeover fires the flash on the way
+		// out instead of the win being dropped.
+		pendingWin: boolean;
 		// Drives the whole win light-up on the card's gold frame. A Tween, not a
 		// boolean, on purpose: a plain-boolean mutation on an array element is not
 		// reliably reactive in Svelte 5, and a Tween also runs a fixed envelope that
@@ -78,6 +84,10 @@
 	let wilds = $state<WildEntry[]>([]);
 	let bursts = $state<{ id: number; x: number }[]>([]);
 	let sparks = $state<Spark[]>([]);
+	// "+N" figures that float off the badge when a multiplier grows. Driven by the
+	// `pulse` clock rather than their own rAF loop: that clock is already running
+	// whenever any wild exists, which is the only time a gain can be created.
+	let gains = $state<{ id: number; x: number; amount: number; born: number }[]>([]);
 	let nextId = 0;
 	let clock = $state(0);
 	let pulse = $state(0);
@@ -95,6 +105,13 @@
 		life: number;
 		size: number;
 		star: boolean;
+		// px/s^2 pulling the spark down. Separate per spark so one integrator can
+		// serve all three flavours: 'burst' arcs under gravity, 'implode' travels
+		// straight to its target, 'rise' floats up against a weak pull.
+		gravity: number;
+		// 'implode' sparks brighten as they arrive instead of fading out — they are
+		// energy being gathered, so they have to read as converging, not dying.
+		converge: boolean;
 	};
 
 	const startSparkLoop = () => {
@@ -109,12 +126,51 @@
 		rafId = requestAnimationFrame(step);
 	};
 
-	const spawnSparks = (x: number, y: number, count = 8) => {
+	type SparkMode = 'burst' | 'implode' | 'rise';
+
+	const spawnSparks = (x: number, y: number, count = 8, mode: SparkMode = 'burst') => {
 		const now = performance.now();
 		sparks = [
 			...sparks,
 			...Array.from({ length: count }, (_, i) => {
 				const a = (i / count) * Math.PI * 2 + Math.random() * 0.5;
+				if (mode === 'implode') {
+					// Born on a ring and aimed at the centre, arriving exactly as the
+					// life expires — so the gather visibly completes on the beat the
+					// burst starts rather than trailing into it.
+					const life = 260 + Math.random() * 120;
+					const radius = SYMBOL_SIZE * (0.9 + Math.random() * 0.8);
+					return {
+						id: nextId++,
+						x: x + Math.cos(a) * radius,
+						y: y + Math.sin(a) * radius,
+						vx: (-Math.cos(a) * radius) / (life / 1000),
+						vy: (-Math.sin(a) * radius) / (life / 1000),
+						born: now,
+						life,
+						size: 9 + Math.random() * 11,
+						star: i % 3 === 0,
+						gravity: 0,
+						converge: true,
+					};
+				}
+				if (mode === 'rise') {
+					// Narrow upward fan with a weak pull, so they climb the reel
+					// instead of spraying — the value went UP and the sparks say so.
+					return {
+						id: nextId++,
+						x,
+						y,
+						vx: (Math.random() - 0.5) * 90,
+						vy: -(150 + Math.random() * 210),
+						born: now,
+						life: 420 + Math.random() * 280,
+						size: 11 + Math.random() * 15,
+						star: i % 3 === 0,
+						gravity: 90,
+						converge: false,
+					};
+				}
 				const speed = 70 + Math.random() * 120;
 				return {
 					id: nextId++,
@@ -126,6 +182,8 @@
 					life: 300 + Math.random() * 220,
 					size: 12 + Math.random() * 16,
 					star: i % 3 === 0,
+					gravity: 260,
+					converge: false,
 				};
 			}),
 		];
@@ -137,9 +195,9 @@
 		const p = Math.min(1, (clock - s.born) / s.life);
 		return {
 			x: s.x + s.vx * t,
-			y: s.y + s.vy * t + 260 * t * t,
-			size: s.size * (1 - p * 0.5),
-			alpha: (1 - p) ** 1.4,
+			y: s.y + s.vy * t + s.gravity * t * t,
+			size: s.size * (s.converge ? 0.5 + 0.5 * p : 1 - p * 0.5),
+			alpha: s.converge ? Math.min(1, p * 2.2) : (1 - p) ** 1.4,
 		};
 	};
 
@@ -194,57 +252,131 @@
 		};
 	};
 
-	// ── multiplier re-roll (free game, once per spin per locked reel) ─────────
-	// Range comes from the rules panel: an expanded Wild carries 2x-50x. Only the
-	// values shown while spinning are invented — the figure it lands on is always
-	// the one the math sent.
-	const MULT_MIN = 2;
-	const MULT_MAX = 50;
-	// Budget matters more than it looks: this runs once per locked reel on every
-	// free spin, and by the end of a feature four reels are locked across 15
-	// spins. The roll below is ~420ms, so a four-reel group finishes in about a
-	// second — long enough to register, short enough not to add 20s to a feature.
-	const ROLL_STAGGER = 160;
-	const ROLL_STEPS = 7;
+	// ── multiplier growth (free game, once per spin per locked reel) ──────────
+	//
+	// Gen-2 changed what this presentation has to say. The multiplier used to be
+	// re-rolled from 2x-50x every spin, so it was drawn as a slot wheel: digits
+	// flickering through random values before landing. It now only ever GROWS —
+	// an increment is added to what the wild already holds, capped at 100x — and
+	// that wheel actively lied about it, flashing values BELOW the current one on
+	// the way to a higher answer.
+	//
+	// So the beat is charge-and-release instead of spin-and-stop:
+	//
+	//   1. CHARGE   motes are pulled in off the reel and the badge tightens down
+	//               on them. Nothing has happened yet; the reel is winding up.
+	//   2. SURGE    the badge snaps open, a column of light runs UP the reel, and
+	//               the number counts up through the values it passes through.
+	//               Never random, never downward.
+	//   3. SETTLE   scale eases home and a "+N" floats off the top.
+	//
+	// Intensity scales with the SIZE OF THE INCREMENT, not the absolute value:
+	// what just happened is the gain, and a +1 on a 90x wild should feel like a
+	// +1. The absolute figure is already legible in the badge itself.
+	// The biggest single increment any distribution can draw (game_config.py
+	// mult_increments). Used only to normalise the intensity ramp — the ceiling
+	// itself (config.max_wild_multiplier, 100) is enforced by the maths and never
+	// needs to be known here.
+	const MAX_INCREMENT = 50;
+	// Budget: this runs once per locked reel on every free spin, and by the end of
+	// a feature four reels are locked across up to 18 spins. The sequence below is
+	// ~700ms, staggered rather than sequential, so a four-reel group finishes in
+	// about 1.2s — readable without adding 12s to a feature.
+	const ROLL_STAGGER = 150;
+	const CHARGE_MS = 200;
+	// Dwell after the whole group has finished climbing — see expandingWildsUpdate.
+	const HOLD_AFTER_GROW_MS = 340;
+	const COUNT_MS = 260;
+	const COUNT_STEPS = 9;
 
-	const rollMultiplier = async (entry: WildEntry, finalMult: number) => {
-		// Spin the digits, decelerating: step delay grows toward the landing so it
-		// reads as a wheel losing momentum rather than a flicker that stops dead.
-		for (let step = 0; step < ROLL_STEPS; step++) {
-			let next = MULT_MIN + Math.floor(Math.random() * (MULT_MAX - MULT_MIN + 1));
-			// never flash the real answer early — it would spoil the landing
-			if (next === finalMult) next = next === MULT_MAX ? MULT_MIN : next + 1;
-			entry.displayMult = next;
-			entry.badgeScale.set(1.16, { duration: 40 });
-			// Every third step only. The sound layer keeps one Audio element per
-			// file, so a tick on every step — times four overlapping reels — would
-			// retrigger the same element ~30 times a second and turn into a rattle.
-			if (step % 3 === 0) {
-				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
-			}
-			await waitForTimeout(24 + step * 12);
-		}
+	const badgeY = BOARD_SIZES.height - SYMBOL_SIZE * 0.44;
 
-		// land on the real value
-		entry.displayMult = finalMult;
-		entry.mult = finalMult;
-
-		// Force scales with the multiplier across its whole range, so the knock is
-		// information rather than decoration: 2x barely stirs, 50x slams.
-		const t = Math.min(1, Math.max(0, (finalMult - MULT_MIN) / (MULT_MAX - MULT_MIN)));
-		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
-		entry.badgeScale.set(1.5 + 0.55 * t, { duration: 130, easing: backOut }).then(() => {
+	// The whole light-up, in one place so a wild that was mid-takeover when the
+	// win arrived gets exactly the same treatment as the rest.
+	//
+	// Driven entirely by winFlash (a Tween). It used to be gated by a separate
+	// winHold boolean, but (a) a plain-boolean mutation on an array element is not
+	// reliably reactive in Svelte 5 — the badge animates only because a Tween
+	// carries its own reactivity — and (b) winLinesHide cleared the boolean the
+	// instant the volley ended, which in a fast free-game volley killed the frame
+	// before it could register. A Tween is always reactive and runs its full
+	// envelope regardless of when the lines are hidden.
+	//
+	// Envelope: snap to full, hold bright, then a long fade — ~1.1s of clearly-lit
+	// frame, not a flash. winPulse adds the shimmer on top.
+	const flashWin = (entry: WildEntry) => {
+		entry.badgeScale.set(1.45, { duration: 200, easing: cubicOut }).then(() => {
 			entry.badgeScale.set(1, { duration: 260, easing: cubicOut });
 		});
-		entry.shake.set(2.5 + 13 * t, { duration: 60 }).then(() => {
-			entry.shake.set(0, { duration: 300 + 260 * t, easing: cubicOut });
+		entry.winFlash.set(1, { duration: 120, easing: cubicOut }).then(() => {
+			entry.winFlash.set(0.72, { duration: 520 }).then(() => {
+				entry.winFlash.set(0, { duration: 480, easing: cubicOut });
+			});
 		});
-		spawnSparks(getSymbolX(entry.reel), BOARD_SIZES.height - SYMBOL_SIZE * 0.44, 4 + Math.round(10 * t));
-		// Every multiplier knocks the housing now, not only the big ones — a 2x
-		// gives it a barely-there nudge (0.07 ≈ 0.6px) and a 50x slams it (0.7 ≈
-		// 6px), so the force is a readout of the value across the whole range.
-		context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.07 + 0.63 * t });
-		await waitForTimeout(160);
+	};
+
+	const chargeAndGrow = async (entry: WildEntry, to: number) => {
+		const from = entry.mult;
+		const gained = to - from;
+		const x = getSymbolX(entry.reel);
+
+		// Already at the ceiling — the value is genuinely unchanged, so there is
+		// nothing to count and faking a climb would be the same lie the old wheel
+		// told. One steady acknowledging pulse and out.
+		if (gained <= 0) {
+			entry.displayMult = to;
+			entry.mult = to;
+			entry.badgeScale.set(1.16, { duration: 150, easing: cubicOut }).then(() => {
+				entry.badgeScale.set(1, { duration: 280, easing: cubicOut });
+			});
+			await waitForTimeout(170);
+			return;
+		}
+
+		const t = Math.min(1, gained / MAX_INCREMENT);
+
+		// 1 — CHARGE
+		spawnSparks(x, badgeY, 8 + Math.round(10 * t), 'implode');
+		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
+		entry.badgeScale.set(0.86, { duration: CHARGE_MS, easing: cubicIn });
+		await waitForTimeout(CHARGE_MS);
+
+		// 2 — SURGE
+		entry.surge.set(1, { duration: 90, easing: cubicOut }).then(() => {
+			entry.surge.set(0, { duration: 430, easing: cubicOut });
+		});
+		entry.badgeScale.set(1.45 + 0.5 * t, { duration: 120, easing: backOut });
+		entry.shake.set(1.5 + 9 * t, { duration: 60 }).then(() => {
+			entry.shake.set(0, { duration: 300 + 240 * t, easing: cubicOut });
+		});
+		spawnSparks(x, badgeY, 6 + Math.round(12 * t), 'rise');
+		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
+		context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.1 + 0.6 * t });
+
+		// Count through the integers, never more steps than there are values to
+		// show: a +2 ticks twice, not nine times through repeated numbers.
+		const steps = Math.max(1, Math.min(gained, COUNT_STEPS));
+		for (let s = 1; s <= steps; s++) {
+			entry.displayMult = Math.round(from + (gained * s) / steps);
+			await waitForTimeout(COUNT_MS / steps);
+		}
+		entry.displayMult = to;
+		entry.mult = to;
+
+		// 3 — SETTLE
+		const gain = { id: nextId++, x, amount: gained, born: Date.now() };
+		gains = [...gains, gain];
+		entry.badgeScale.set(1, { duration: 300, easing: cubicOut });
+		await waitForTimeout(190);
+		gains = gains.filter((g) => g.id !== gain.id);
+	};
+
+	// "+N" rises off the badge and fades. GAIN_MS also gates removal in
+	// chargeAndGrow, so the figure is gone from state as soon as it is invisible.
+	const GAIN_MS = 620;
+	const gainState = (g: { born: number }) => {
+		const p = Math.min(1, Math.max(0, (pulse - g.born) / GAIN_MS));
+		return { y: badgeY - SYMBOL_SIZE * (0.32 + 0.5 * p), alpha: (1 - p) ** 1.3 };
 	};
 
 	onMount(() => () => cancelAnimationFrame(rafId));
@@ -314,6 +446,10 @@
 
 		entry.phase = 'idle';
 		entry.badgeScale.set(1, { duration: 300, easing: backOut });
+		if (entry.pendingWin) {
+			entry.pendingWin = false;
+			flashWin(entry);
+		}
 	};
 
 	context.eventEmitter.subscribeOnMount({
@@ -330,60 +466,49 @@
 				merge: new Tween(0),
 				banner: new Tween(0),
 				badgeScale: new Tween(0),
+				surge: new Tween(0),
+				pendingWin: false,
 				winFlash: new Tween(0),
 			};
 			wilds = [...wilds.filter((w) => w.reel !== reel), entry];
 			await runTakeover(entry);
 		},
 
-		// Sticky wilds get a fresh multiplier on each reveal. Each one rolls its
-		// number before it settles, then lands with a knock whose force scales with
-		// the value — a 50x should feel like it hit the board harder than a 2x.
+		// Sticky wilds grow their multiplier on each reveal. Each one charges and
+		// releases (see chargeAndGrow), with the force scaling to the size of the
+		// gain — a +50 should feel like it hit the board harder than a +1.
 		//
 		// Reels are STAGGERED, not run one after another. Fully sequential reads
-		// better in isolation but costs ~600ms per locked reel, and by the end of a
-		// feature four reels are locked — that is 2.4s added to every one of 15
-		// spins. Starting each roll ROLL_STAGGER after the last keeps the
-		// one-at-a-time reading while the whole group finishes in about a second.
+		// better in isolation but costs ~700ms per locked reel, and by the end of a
+		// feature four reels are locked — that is 2.8s added to every one of up to
+		// 18 spins. Starting each ROLL_STAGGER after the last keeps the
+		// one-at-a-time reading while the whole group finishes in about 1.2s.
 		expandingWildsUpdate: async ({ wilds: updated }) => {
 			const targets = updated
 				.map((update) => ({ update, entry: wilds.find((w) => w.reel === update.reel) }))
 				.filter((t): t is { update: (typeof updated)[number]; entry: WildEntry } => !!t.entry);
 			if (targets.length === 0) return;
 
-			// Turbo keeps the roll, just compressed. The number still flickers a few
-			// times before it locks, so the multiplier reads as "selected" rather
-			// than appearing from nowhere — only much faster, and without the frame
-			// knock, sparks and sound the full presentation layers on. All reels roll
-			// together (no stagger) to stay inside turbo's tight budget: ~3 flickers
-			// then a settle, ~230ms total, matching the flat delay it replaces.
-			if (stateBet.isTurbo) {
-				await Promise.all(
-					targets.map(async ({ update, entry }) => {
-						for (let s = 0; s < 3; s++) {
-							let next = MULT_MIN + Math.floor(Math.random() * (MULT_MAX - MULT_MIN + 1));
-							if (next === update.mult) next = next === MULT_MAX ? MULT_MIN : next + 1;
-							entry.displayMult = next;
-							entry.badgeScale.set(1.12, { duration: 24 });
-							await waitForTimeout(45);
-						}
-						entry.displayMult = update.mult;
-						entry.mult = update.mult;
-						entry.badgeScale.set(1.5, { duration: 90, easing: backOut }).then(() => {
-							entry.badgeScale.set(1, { duration: 150, easing: cubicOut });
-						});
-					}),
-				);
-				return;
-			}
-
+			// Turbo gets the SAME climb as everything else.
+			//
+			// It used to take a compressed path — no charge wind-up, no sparks, no
+			// sound, a three-step count, ~230ms for the whole group. That was written
+			// to a budget that no longer applies: the accumulating multiplier is the
+			// feature of this game, and the moment it grows is the one moment in a
+			// free spin actually worth stopping for. Racing past it to save a fifth
+			// of a second was saving time on the wrong thing.
+			//
+			// The staggered full sequence runs about 1.1s for a four-reel group.
 			await Promise.all(
 				targets.map(async ({ update, entry }, i) => {
 					await waitForTimeout(i * ROLL_STAGGER);
-					await rollMultiplier(entry, update.mult);
+					await chargeAndGrow(entry, update.mult);
 				}),
 			);
-			await waitForTimeout(180);
+			// A beat with the new figures standing still, before the next spin takes
+			// the board. Without it the last reel's count-up ends and the reels are
+			// already moving again — the number is on screen but never at rest.
+			await waitForTimeout(HOLD_AFTER_GROW_MS);
 		},
 
 		// Bet resume: rebuild locked reels instantly, no animation.
@@ -399,6 +524,8 @@
 				merge: new Tween(1),
 				banner: new Tween(1),
 				badgeScale: new Tween(1),
+				surge: new Tween(0),
+				pendingWin: false,
 				winFlash: new Tween(0),
 			}));
 		},
@@ -414,26 +541,16 @@
 			if (wilds.length === 0) return;
 			const winningReels = new Set(wins.flatMap((win) => win.positions.map((p) => p.reel)));
 			for (const entry of wilds) {
-				if (entry.phase !== 'idle' || !winningReels.has(entry.reel)) continue;
-				// The whole light-up is driven by this one Tween. It used to be gated
-				// by a separate winHold boolean, but (a) a plain-boolean mutation on an
-				// array element is not reliably reactive in Svelte 5 — the badge below
-				// animates only because a Tween carries its own reactivity — and (b)
-				// winLinesHide cleared the boolean the instant the volley ended, which
-				// in a fast free-game volley (~0.5s) killed the frame before it could
-				// register. A Tween is always reactive and runs its full envelope
-				// regardless of when the lines are hidden.
-				//
-				// Envelope: snap to full, hold bright, then a long fade — ~1.1s of
-				// clearly-lit frame, not a flash. winPulse adds the shimmer on top.
-				entry.badgeScale.set(1.45, { duration: 200, easing: cubicOut }).then(() => {
-					entry.badgeScale.set(1, { duration: 260, easing: cubicOut });
-				});
-				entry.winFlash.set(1, { duration: 120, easing: cubicOut }).then(() => {
-					entry.winFlash.set(0.72, { duration: 520 }).then(() => {
-						entry.winFlash.set(0, { duration: 480, easing: cubicOut });
-					});
-				});
+				if (!winningReels.has(entry.reel)) continue;
+				// Its panel is not open yet, so there is no frame to light. Hand it to
+				// runTakeover, which fires the flash the moment the panel locks —
+				// skipping it outright is how a reel could be part of a winning line
+				// and still sit there dark.
+				if (entry.phase !== 'idle') {
+					entry.pendingWin = true;
+					continue;
+				}
+				flashWin(entry);
 			}
 		},
 	});
@@ -548,10 +665,15 @@
 
 		<!--
 			Win light-up — on the wild CARD's own gold frame, not a halo around the
-			reel. The wx card art (256x1280) draws its frame inset ~14px from the edge;
-			rendered at SYMBOL_SIZE x BOARD_SIZES.height (scale 0.461) that inset is
-			~6.5px and the corner radius ~9px on screen, so the highlight traces exactly
-			the gold frame line.
+			reel.
+
+			INSET IS MEASURED FROM THE ART, and the art has already changed once. The
+			original wx card carried its gold frame ~14px in from the edge, so this was
+			drawn at 14/256. The delivered gen-2 panel puts its frame 1-3px from the
+			edge instead — measured by scanning inward for gold at seven heights — which
+			left the highlight tracing a rectangle of jungle background 6.5 screen px
+			INSIDE the frame. It lit up perfectly and looked like nothing had happened.
+			Re-measure if the panel art is replaced again.
 
 			Driven entirely by winFlash (a Tween, so always reactive and running its
 			full ~1.1s envelope) — see the winLinesShow handler for why the old winHold
@@ -562,12 +684,12 @@
 		{#if winGlow > 0.01}
 			{@const p = winPulse(wild.reel)}
 			{@const left = x - SYMBOL_SIZE / 2}
-			{@const inset = SYMBOL_SIZE * (14 / 256)}
+			{@const inset = SYMBOL_SIZE * (3 / 256)}
 			{@const fx0 = left + inset}
 			{@const fy0 = inset}
 			{@const fw = SYMBOL_SIZE - inset * 2}
 			{@const fh = BOARD_SIZES.height - inset * 2}
-			{@const rad = SYMBOL_SIZE * (20 / 256)}
+			{@const rad = SYMBOL_SIZE * (14 / 256)}
 			<Graphics
 				draw={(g: PixiGraphics) => {
 					g.clear();
@@ -591,6 +713,41 @@
 			the bottom rail, and the WILD lettering behind it was shrunk (see
 			design/generate_symbols_realistic.mjs) to leave it clear space.
 		-->
+		<!--
+			The surge: a column of light that runs UP the reel out of the badge when
+			the multiplier grows. Direction is the whole point — the value can only
+			increase now, so the one unmistakable cue is upward motion. Additive and
+			drawn as a direct sibling of the panel with no mask or filter between
+			them, because additive blending inside a masked container composites
+			against an empty render target and disappears.
+		-->
+		{#if wild.surge.current > 0.01}
+			{@const s = wild.surge.current}
+			<Sprite
+				key="fxStreak"
+				anchor={0.5}
+				{x}
+				y={badgeY - BOARD_SIZES.height * 0.42 * s}
+				width={BOARD_SIZES.height * 0.78 * s}
+				height={SYMBOL_SIZE * 0.5}
+				rotation={Math.PI / 2}
+				tint={0xffe98a}
+				blendMode="add"
+				alpha={0.55 * s}
+			/>
+			<Sprite
+				key="fxGlow"
+				anchor={0.5}
+				{x}
+				y={badgeY}
+				width={SYMBOL_SIZE * 1.9 * s}
+				height={SYMBOL_SIZE * 1.9 * s}
+				tint={0xfff3bd}
+				blendMode="add"
+				alpha={0.5 * s}
+			/>
+		{/if}
+
 		{#if wild.badgeScale.current > 0}
 			{@const r = SYMBOL_SIZE * 0.26}
 			{@const sh = wild.shake.current}
@@ -600,7 +757,7 @@
 			     of phase, otherwise the badge just slides on a diagonal. -->
 			<Container
 				x={x + (sh > 0.05 ? Math.sin(pulse / 7) * sh : 0)}
-				y={BOARD_SIZES.height - SYMBOL_SIZE * 0.44 + (sh > 0.05 ? Math.cos(pulse / 5.5) * sh : 0)}
+				y={badgeY + (sh > 0.05 ? Math.cos(pulse / 5.5) * sh : 0)}
 				scale={wild.badgeScale.current}
 			>
 				<Graphics
@@ -635,6 +792,20 @@
 			blendMode="add"
 			alpha={s.alpha}
 		/>
+	{/each}
+
+	<!-- "+N" rising off a badge that just grew -->
+	{#each gains as gain (gain.id)}
+		{@const g = gainState(gain)}
+		{#if g.alpha > 0.01}
+			<Container x={gain.x} y={g.y} alpha={g.alpha}>
+				<GoldText
+					text={`+${gain.amount}`}
+					fontSize={SYMBOL_SIZE * 0.22}
+					maxWidth={SYMBOL_SIZE * 0.9}
+				/>
+			</Container>
+		{/if}
 	{/each}
 
 	{#each bursts as burst (burst.id)}

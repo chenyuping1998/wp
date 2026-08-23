@@ -48,10 +48,57 @@ export const REEL_PADDING = 0.53;
 // The feature board is deliberately NOT shrunk: the bags are a base-game object
 // and are gone by the time it opens, so it has the same room it always had, and
 // the jump in scale when the board expands is now larger, which suits it.
-export const BOARD_FIT = {
+// Per layout type, because portrait is not the same problem. On desktop,
+// landscape and tablet the board is HEIGHT-limited and the bet bar is the slim
+// compact strip. On portrait the board is WIDTH-limited - five reels across an
+// 800-wide box - and the bet bar is the full stacked console, which is four
+// times taller. The single set of numbers below served the first case and broke
+// the second; see PORTRAIT_UI_RESERVE.
+//
+// The portrait widths are set by the HOUSING, not by the reels: BoardFrame draws
+// about BOARD_HOUSING_CLEARANCE (1.32x) wider than the cells, so a width
+// fraction of w puts the frame at 1.32*w of the box. 0.70 -> 92%, which is as
+// close to the edges as the frame's shoulders can go. The old 0.828 feature
+// width put the frame at 109% - the feature board's housing was running off both
+// sides of a portrait screen, which is the "cut off" half of the certification
+// note.
+//
+// Both portrait boards land on the same width limit, so the 5x5 board opens
+// downward-and-upward in place rather than growing. That is correct here: on a
+// portrait screen there is no horizontal room for it to grow into, and pretending
+// otherwise is what pushed it off the edges.
+const BOARD_FIT_DEFAULT = {
 	basegame: { height: 0.461, width: 0.648 },
 	feature: { height: 0.702, width: 0.828 },
 };
+
+const BOARD_FIT_PORTRAIT = {
+	basegame: { height: 0.461, width: 0.7 },
+	feature: { height: 0.702, width: 0.7 },
+};
+
+export const BOARD_FIT_MAP = {
+	desktop: BOARD_FIT_DEFAULT,
+	landscape: BOARD_FIT_DEFAULT,
+	tablet: BOARD_FIT_DEFAULT,
+	portrait: BOARD_FIT_PORTRAIT,
+};
+
+// How much of the bottom of the screen the bet bar owns, in STANDARD portrait
+// units (1080x1920), for the portrait layout only.
+//
+// Not a guess. LayoutPortrait's topmost element is the WIN readout, drawn at
+// standard `height - 670` inside a container scaled 0.81, and UiLabel's stacked
+// plate starts at y=-20 - so its top edge sits at 1920 - 670 - 20*0.81 = 1234,
+// i.e. 686 up from the floor. 700 adds a little air.
+//
+// What it replaces: boardLayout used uiTheme.barHeight (140) on EVERY layout,
+// because uiTheme.betBarLayout is 'compactBottom'. But UIDefault ignores that
+// choice on portrait and forces the full LayoutPortrait console anyway. The
+// board was therefore laid out against a 140-tall bar and drawn under a 686-tall
+// one: the spin button, the balance and the win readout all printed on top of
+// the reels. That is the "overlapping" half of the certification note.
+export const PORTRAIT_UI_RESERVE = 700;
 
 // Both boards stand on the same line, just above the bet bar, so the feature
 // board grows upward out of the basegame one instead of the whole thing
@@ -156,12 +203,49 @@ export const SPIN_OPTIONS_FAST = {
 	reelBounceSizeMulti: 0.05,
 };
 
+// The feature game's own options, at BOTH speeds.
+//
+// This is the single number that made a bonus round look frozen, so the
+// arithmetic is written out rather than tuned by feel.
+//
+// An anticipated reel is slowed by making its strip longer: the reel spins
+// `reelLength * reelPaddingMultiplierAnticipated` extra symbols, and the padding
+// ACCUMULATES along the board, so the last reel of a four-reel tease carries four
+// times that. Two things multiply it here that do not in the base game:
+//
+//   * the feature reel is 7 symbols to the base game's 5, so the same multiplier
+//     buys 40% more strip;
+//   * the maths anticipates the feature from the FIRST scatter
+//     (`anticipation_triggers` is {basegame: 2, freegame: 1}), so the common
+//     shape is [0,1,2,3,4] - four anticipated reels, not two.
+//
+// At the base game's multiplier of 10 that is 8.4 + 4x70 = 288 symbols of padding
+// on reel 5, i.e. ~30,000px at 3px/ms: the board spins for TEN SECONDS. And
+// because every reel from the first anticipated one on is marked `noStop`, the
+// stop button does nothing for the whole of it - which is exactly what "the round
+// is stuck and cannot continue" looks like from the player's side. It fires on
+// about one feature spin in five, so a 10-spin bonus hits it roughly twice.
+//
+// 3 puts the worst case at ~3.1s and a single anticipated reel at ~1.1s. Margin
+// Call, which this game was ported from, had already been through this and set 6
+// - but it also gated the maths' first anticipated reel away on the client, so
+// its worst case was three reels, not four. This game deliberately does not gate
+// (see bookEventHandlerMap), so it needs the smaller number to land in the same
+// place. `design/check_tease_length.mjs` holds the arithmetic to a ceiling.
+const FREEGAME_ANTICIPATION_PADDING = 3;
+
+export const SPIN_OPTIONS_DEFAULT_FREEGAME = {
+	...SPIN_OPTIONS_DEFAULT,
+	reelPaddingMultiplierAnticipated: FREEGAME_ANTICIPATION_PADDING,
+};
+
 export const SPIN_OPTIONS_FAST_FREEGAME = {
 	...SPIN_OPTIONS_SHARED,
 	reelPreSpinSpeed: 4.2,
 	reelSpinSpeed: 3.8,
 	reelSpinDelay: 185,
 	reelBounceSizeMulti: 0.08,
+	reelPaddingMultiplierAnticipated: FREEGAME_ANTICIPATION_PADDING,
 };
 
 export const MOTION_BLUR_VELOCITY = 31;

@@ -46,7 +46,7 @@
 
 	const ROLL_DELAY = 260;
 	const ROLL_MS = 520;
-	const PUNCH_MS = 420;
+	const PUNCH_MS = 480;
 
 	const runAward = () => {
 		landed = false;
@@ -62,7 +62,7 @@
 				// The blast is the award landing. It is the one hard onset on this
 				// panel and it belongs to the number, not to the plate.
 				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_winlevel_end' });
-				context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.3 });
+				context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.9 });
 			}
 			if (awardClock < delay + roll + PUNCH_MS + 400) raf = requestAnimationFrame(tick);
 		};
@@ -87,9 +87,27 @@
 	const punch = $derived(
 		awardClock < 0 ? -1 : clamp01((awardClock - rollDelay - rollMs) / PUNCH_MS),
 	);
+	// The award is the whole point of this panel, so the number hits hard: a 78%
+	// overshoot that settles over about half a second, rather than the 42% it
+	// arrived with. It is the only thing on screen at that moment, so there is
+	// nothing for it to overpower.
+	//
+	// There is deliberately NO full-canvas flash here. One was tried and it was
+	// wrong twice over: a 55% white wash across the whole screen is the visual
+	// weight of a max win, which a free-spin count is not - and it washed out the
+	// very number it was supposed to be emphasising. The impact comes from the
+	// overshoot, the shake, the frame hit and the burst's own hot core, all of
+	// which are local to the number.
 	const countScale = $derived(
-		punch < 0 ? 0.8 : punch === 0 ? 1 : 1 + 0.42 * Math.exp(-5 * punch) * Math.cos(punch * 7),
+		punch < 0 ? 0.78 : punch === 0 ? 1 : 1 + 0.78 * Math.exp(-4.2 * punch) * Math.cos(punch * 6.4),
 	);
+
+	/** The number itself kicks, not just the plate. */
+	const landShake = $derived.by(() => {
+		if (punch < 0 || punch >= 0.35) return { x: 0, y: 0 };
+		const amp = 13 * (1 - punch / 0.35) ** 2;
+		return { x: (Math.random() - 0.5) * 2 * amp, y: (Math.random() - 0.5) * 2 * amp };
+	});
 
 	// Title wipes in behind a light band rather than simply being there.
 	const titleReveal = $derived(awardClock < 0 ? 0 : clamp01(awardClock / 300));
@@ -112,22 +130,25 @@
 	const drawBurst = (g: PixiGraphics, size: number) => {
 		g.clear();
 		if (punch <= 0 || punch >= 1) return;
-		// ring
-		const r = size * (0.28 + 0.5 * easeOut(punch));
+		// a hot core that blows out and fades, under the rings
+		g.circle(0, 0, size * (0.2 + 0.9 * easeOut(punch)));
+		g.fill({ color: 0xeafff2, alpha: 0.28 * (1 - punch) ** 2 });
+		// rings, further and heavier than before
+		const r = size * (0.28 + 0.95 * easeOut(punch));
 		g.circle(0, 0, r);
-		g.stroke({ width: size * 0.05 * (1 - punch) + 1, color: 0xeafff2, alpha: 0.85 * (1 - punch) });
-		const r2 = size * (0.22 + 0.42 * easeOut(clamp01(punch - 0.1)));
+		g.stroke({ width: size * 0.09 * (1 - punch) + 1, color: 0xeafff2, alpha: 0.9 * (1 - punch) });
+		const r2 = size * (0.22 + 0.75 * easeOut(clamp01(punch - 0.1)));
 		g.circle(0, 0, r2);
-		g.stroke({ width: size * 0.035 * (1 - punch) + 1, color: 0x4bd67f, alpha: 0.7 * (1 - punch) });
-		// spokes
-		for (let i = 0; i < 12; i++) {
-			const a = (i / 12) * Math.PI * 2 + 0.26;
-			const d0 = size * (0.3 + 0.42 * easeOut(punch));
-			const d1 = d0 + size * 0.12 * (1 - punch);
+		g.stroke({ width: size * 0.06 * (1 - punch) + 1, color: 0x4bd67f, alpha: 0.8 * (1 - punch) });
+		// spokes: more of them, thrown further
+		for (let i = 0; i < 18; i++) {
+			const a = (i / 18) * Math.PI * 2 + 0.26;
+			const d0 = size * (0.3 + 0.8 * easeOut(punch));
+			const d1 = d0 + size * 0.22 * (1 - punch);
 			g.moveTo(Math.cos(a) * d0, Math.sin(a) * d0);
 			g.lineTo(Math.cos(a) * d1, Math.sin(a) * d1);
 		}
-		g.stroke({ width: 3, color: 0x4bd67f, alpha: 0.7 * (1 - punch), cap: 'round' });
+		g.stroke({ width: 4, color: 0x4bd67f, alpha: 0.8 * (1 - punch), cap: 'round' });
 	};
 </script>
 
@@ -162,9 +183,9 @@
 				/>
 			</Container>
 
-			<Container y={sizes.height * 0.08}>
+			<Container y={sizes.height * 0.08} x={landShake.x} >
 				<Graphics draw={(g) => drawBurst(g, sizes.width * 0.24)} />
-				<Container scale={countScale}>
+				<Container scale={countScale} y={landShake.y}>
 					<GoldText text={shownCount} fontSize={sizes.width * 0.24} />
 				</Container>
 			</Container>

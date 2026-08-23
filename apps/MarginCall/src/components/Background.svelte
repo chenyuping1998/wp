@@ -67,8 +67,12 @@
 
 		g.clear();
 
-		// Keep beams very subtle and in the upper area so they don't distract from reels.
-		g.beginFill(0xfff0b8, 0.05);
+		// Cold, not golden. These were warm sunbeams (0xfff0b8 / 0xffd43b) left
+		// over from the sunrise-jungle scene this project started from, shining
+		// down on a night-time financial district - which reads as a lighting bug
+		// rather than as atmosphere. Same shafts, the colour of the city glow
+		// behind them.
+		g.beginFill(0xa8f0c4, 0.045);
 		g.drawPolygon([
 			centerX - width * 0.018,
 			0,
@@ -81,7 +85,7 @@
 		]);
 		g.endFill();
 
-		g.beginFill(0xffd43b, 0.035);
+		g.beginFill(0x4bd67f, 0.03);
 		g.drawPolygon([
 			centerX + width * 0.11,
 			0,

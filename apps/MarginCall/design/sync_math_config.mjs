@@ -80,6 +80,62 @@ if (problems.length) {
 	process.exit(1);
 }
 
+// Typical free-spin count per buy mode, derived from the maths.
+//
+// This does not ride along in config_fe_*.json - the SDK exports cost/rtp/max_win
+// per mode and nothing about how the feature is triggered. It matters to the copy
+// because BLACK SWAN's whole proposition is that it opens on a longer feature,
+// and that is a maths figure I retune: game_config.py's per-mode
+// scatter_triggers, mapped through freespin_triggers.
+//
+// "Typical" needs a rule, because every mode can technically trigger any count.
+// A scatter count is counted as typical if it carries at least a fifth of the
+// mode's trigger weight - so the 180x bonus reads as 8 (its 3-scatter weight is
+// 80% of the table) and BLACK SWAN reads as 10-12, which is what each actually
+// plays like rather than what each can theoretically do.
+const TYPICAL_SHARE = 0.2;
+const mathSource = fs.readFileSync(
+	path.resolve(appRoot, '../../../math-sdk/games/MarginCall/game_config.py'),
+	'utf8',
+);
+
+const parseIntMap = (text) => {
+	const map = {};
+	for (const [, k, v] of text.matchAll(/(\d+)\s*:\s*(\d+)/g)) map[Number(k)] = Number(v);
+	return map;
+};
+
+const triggerBlock = mathSource.match(
+	/self\.freespin_triggers\s*=\s*\{\s*self\.basegame_type:\s*\{([^}]*)\}/,
+);
+if (!triggerBlock) {
+	console.error('could not read freespin_triggers from game_config.py');
+	process.exit(1);
+}
+const scattersToSpins = parseIntMap(triggerBlock[1]);
+
+// One scatter_triggers per Distribution, in source order. Only the non-forced
+// (i.e. not "wincap") distribution of each buy mode describes normal play, and
+// that is the LAST scatter_triggers inside each BetMode block.
+for (const modeName of Object.keys(raw.betModes)) {
+	const modeStart = mathSource.indexOf(`name="${modeName}"`);
+	if (modeStart < 0) continue;
+	const nextMode = mathSource.indexOf('            BetMode(', modeStart);
+	const block = mathSource.slice(modeStart, nextMode < 0 ? undefined : nextMode);
+	const triggers = [...block.matchAll(/"scatter_triggers":\s*\{([^}]*)\}/g)];
+	if (!triggers.length) continue;
+	const weights = parseIntMap(triggers[triggers.length - 1][1]);
+	const total = Object.values(weights).reduce((a, b) => a + b, 0);
+	const spins = Object.entries(weights)
+		.filter(([, w]) => w / total >= TYPICAL_SHARE)
+		.map(([scatters]) => scattersToSpins[Number(scatters)])
+		.filter((n) => n !== undefined)
+		.sort((a, b) => a - b);
+	if (spins.length) {
+		raw.betModes[modeName].typical_spins = [spins[0], spins[spins.length - 1]];
+	}
+}
+
 const config = { ...raw, symbols };
 
 const header = `// GENERATED FILE - do not edit by hand.
@@ -94,4 +150,10 @@ console.log(`Wrote ${path.relative(appRoot, OUT)} (${kb} KB)`);
 console.log(`  base board ${config.numReels} x ${config.numRows[0]}`);
 console.log(`  symbols: ${Object.keys(symbols).sort().join(', ')}`);
 console.log(`  bet modes: ${Object.keys(config.betModes).join(', ')}`);
+for (const [mode, info] of Object.entries(config.betModes)) {
+	if (info.typical_spins) {
+		const [lo, hi] = info.typical_spins;
+		console.log(`  ${mode}: typically ${lo === hi ? lo : `${lo}-${hi}`} free spins`);
+	}
+}
 console.log(`  rtp ${config.rtp}  max win ${config.betModes.base.max_win}x`);

@@ -152,7 +152,7 @@
 		alpha={alpha * 0.5}
 	/>
 	<Sprite
-		key="gbH2"
+		key="gbGrenade"
 		anchor={0.5}
 		x={pose.x + entryOffset}
 		y={pose.y}

@@ -85,6 +85,100 @@ and for the social branch of `pick()`, and it caught this during the port.
 The bonus cost and max win are interpolated from `config.betModes`, not written
 into the prose - the cost moved 200 -> 120 -> 100 during balancing.
 
+## Review round 1: what came back and what was done
+
+Two issues, both from the first upload.
+
+### 1. "Does not comply with the approved Social Mode terminology guidelines"
+
+The pay table's unit banner said "not an amount in your **currency**". `currency`
+is on Stake's published restricted list (replacement: `token`), and it had simply
+never been in `check_social_words.mjs`'s array - that array had grown one word at
+a time, each addition triggered by a rejection.
+
+Fixed at the class, not the instance:
+
+- the banner now reads "not a fixed amount off your balance", which says the same
+  thing in both modes, so it stays literal template text rather than a `pick()`;
+- the guard now carries **all** of Stake's table, flagged or not - `currency`,
+  `money`, `fund(s)`, `credit(s)`, `deposit`, `withdraw`, `rebet`, `payer`. It
+  fails on the exact sentence review screenshotted; that was checked by putting
+  the sentence back and watching it fail.
+
+The rest of `src` was grepped for the newly added words. The only other hits were
+in code comments, which the player never sees.
+
+### 2. "The Bonus mode gets stuck on the 5th spin and cannot continue"
+
+**The anticipation tease.** It is not a hang - the reels really are turning - but
+from the player's side it is indistinguishable from one, because for the whole of
+it nothing on screen responds.
+
+Three things compound:
+
+- an anticipated reel is slowed by lengthening its strip, by
+  `reelLength * reelPaddingMultiplierAnticipated` symbols, and the padding
+  **accumulates** along the board;
+- the feature reel is 7 symbols to the base game's 5, and the maths anticipates
+  the feature from the **first** scatter (`anticipation_triggers` is
+  `{basegame: 2, freegame: 1}`), so the common shape is `[0,1,2,3,4]` - four
+  chained anticipated reels against the base game's three. It fires on **18.5% of
+  feature spins**, measured over the published bonus books, so a 10-spin bonus
+  hits it about twice;
+- every reel from the first anticipated one on is marked `noStop`, and `noStop`
+  reels awaited their slide directly rather than through the interruptible - so
+  the stop button did nothing for the duration.
+
+At the inherited 10x padding the last reel carried 288 symbols: **10.4 seconds**
+of unbroken spinning with a dead stop button, arriving twice a bonus round. Margin
+Call had already been through this exact problem - its `SPIN_OPTIONS_*_FREEGAME`
+carry a reduced multiplier and a comment saying a single Scatter in free spins
+"held the board hostage for four reels" - and the port dropped it. Two ways:
+
+- there was no `SPIN_OPTIONS_DEFAULT_FREEGAME` at all;
+- the selector in `stateGame.svelte.ts` tested `spinType !== 'fast'`. An
+  anticipated reel's spinType is `'anticipated'`, never `'fast'`, so **the one
+  spin whose length these options exist to control was the one spin that never
+  read them** - in turbo as well.
+
+Three changes:
+
+1. `SPIN_OPTIONS_DEFAULT_FREEGAME` exists, and both feature option sets use
+   `FREEGAME_ANTICIPATION_PADDING = 3`. Worst case 10.4s -> **3.6s**, single
+   anticipated reel ~1.1s. Margin Call's 6 was not copied: it gated the maths'
+   first anticipated reel away on the client, so its worst case was three reels
+   where this game's is four.
+2. The selector branches on game type on the non-fast path too.
+3. `getAnticipationIsStoppable` - a new **opt-in** option on
+   `createReelForSpinning`, off for every other game - lets the stop button
+   interrupt a `noStop` reel. The tease is unchanged in length; it just stops
+   swallowing the only control on screen.
+
+`design/check_tease_length.mjs` reproduces the padding arithmetic out of
+`constants.ts` and fails the build if any tease exceeds its budget, or if the
+feature's tease is longer than the base game's - the taller, more frequent one has
+to be the shorter one. It runs from `pnpm build`.
+
+**What was NOT established.** The recording could not be watched in this
+environment (no compositing, so no screenshots) and the game still cannot be run
+against an RGS locally, so this is a defect that produces exactly the reported
+symptom rather than a reproduction of the reported symptom. If a bonus round still
+stops after this, the next suspects, in order:
+
+- `freeSpinIntroUpdate` on a **retrigger** waits for a player press, exactly as
+  the trigger does, but the UI is not hidden first - a press landing on the bet
+  bar instead of the canvas would not resolve it;
+- `Win.svelte` re-runs its presentation only because `FadeContainer` unmounts its
+  children when the fade reaches 0. Two `setWin`s closer together than that fade
+  would leave `OnMount` un-remounted and `oncomplete` uncalled. Every free spin
+  that pays sends a `setWin`, so the gap is the reel spin.
+
+Ruled out by inspection or by scanning the published books: every symbol name in
+every board is in `SYMBOL_INFO_MAP`; every `winInfo`/`multiplierWilds` position is
+inside the visible rows; every board is rectangular and the right height; every
+`winLevel` is in `winLevelMap`; the multiplier meter's awaited tween is the last
+one retargeted, so it cannot be orphaned.
+
 ## Gaps - do not treat this as finished
 
 1. **Art is Margin Call's.** Symbols, backgrounds, frame, win banners and icons

@@ -25,13 +25,15 @@ import {
 	BASE_ROWS,
 	MAX_ROWS,
 	INITIAL_BOARD,
-	BOARD_FIT,
+	BOARD_FIT_MAP,
+	PORTRAIT_UI_RESERVE,
 	BOARD_BOTTOM_MARGIN,
 	BOARD_HOUSING_CLEARANCE,
 	BOARD_EXPAND_MS,
 	boardSizes,
 	paddedReelLength,
 	SPIN_OPTIONS_DEFAULT,
+	SPIN_OPTIONS_DEFAULT_FREEGAME,
 	SPIN_OPTIONS_FAST,
 	SPIN_OPTIONS_FAST_FREEGAME,
 	INITIAL_SYMBOL_STATE,
@@ -92,6 +94,16 @@ const board = _.range(NUM_REELS).map((reelIndex) => {
 		// building the reel: that touches stateGame inside its temporal dead zone
 		// and throws before a single frame renders. It did exactly that once.
 		getReelLength: () => paddedReelLength(stateGame.rows),
+		// This game opts in to a stoppable tease.
+		//
+		// The maths anticipates the feature from the first scatter, so a tease runs
+		// on about one feature spin in five and the common shape is four chained
+		// reels. Every reel from the first anticipated one on is marked `noStop`,
+		// and without this the stop button is inert for the whole of it - the round
+		// presents as hung, because nothing the player can press does anything.
+		// Opting in leaves the tease exactly as long as it is; it just stops
+		// swallowing the one control on screen.
+		getAnticipationIsStoppable: () => true,
 		onReelStopping: () => {
 			eventEmitter.broadcast({
 				type: 'soundOnce',
@@ -106,7 +118,17 @@ const board = _.range(NUM_REELS).map((reelIndex) => {
 	});
 
 	reel.reelState.spinOptions = () => {
-		if (reel.reelState.spinType !== 'fast') return SPIN_OPTIONS_DEFAULT;
+		// The feature needs its own options at BOTH speeds, and the branch order
+		// matters: an anticipated reel's spinType is 'anticipated', never 'fast',
+		// so a `spinType !== 'fast'` test sent every tease - turbo included - to the
+		// base game's options and its 10x anticipation padding. Which is to say the
+		// one spin whose length this option exists to control was the one spin that
+		// never read it. See SPIN_OPTIONS_DEFAULT_FREEGAME for the arithmetic.
+		if (reel.reelState.spinType !== 'fast') {
+			return stateGame.gameType === 'freegame'
+				? SPIN_OPTIONS_DEFAULT_FREEGAME
+				: SPIN_OPTIONS_DEFAULT;
+		}
 		if (stateGame.gameType === 'freegame') return SPIN_OPTIONS_FAST_FREEGAME;
 		return SPIN_OPTIONS_FAST;
 	};
@@ -176,19 +198,29 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
  */
 const boardLayout = () => {
 	const layout = stateLayoutDerived.mainLayout();
-	const usesBar = uiTheme.betBarLayout === 'compactBottom';
-	// uiTheme.barHeight is expressed against the standard box, so it has to be
-	// converted before it can be subtracted from this one.
-	const barHeight = usesBar
-		? uiTheme.barHeight * (layout.height / stateLayoutDerived.mainLayoutStandard().height)
-		: 0;
+	const layoutType = stateLayoutDerived.layoutType();
 
+	// What the bet bar ACTUALLY occupies, which is not the same as what the theme
+	// asked for. uiTheme.betBarLayout is 'compactBottom', but UIDefault overrides
+	// that on portrait and renders the full stacked console instead - so reading
+	// the theme alone under-reserves by a factor of five there and the board is
+	// drawn underneath the controls. The branch mirrors UIDefault's own.
+	const usesCompactBar = layoutType !== 'portrait' && uiTheme.betBarLayout === 'compactBottom';
+	const reserveStandard = usesCompactBar
+		? uiTheme.barHeight
+		: layoutType === 'portrait'
+			? PORTRAIT_UI_RESERVE
+			: 0;
+	// Both figures are expressed against the standard box, so they have to be
+	// converted before they can be subtracted from this one.
+	const barHeight =
+		reserveStandard * (layout.height / stateLayoutDerived.mainLayoutStandard().height);
+
+	const fit = BOARD_FIT_MAP[layoutType] ?? BOARD_FIT_MAP.desktop;
 	const rows = displayRows.current;
 	const growth = (rows - BASE_ROWS) / (MAX_ROWS - BASE_ROWS);
-	const targetHeight =
-		layout.height * lerp(BOARD_FIT.basegame.height, BOARD_FIT.feature.height, growth);
-	const targetWidth =
-		layout.width * lerp(BOARD_FIT.basegame.width, BOARD_FIT.feature.width, growth);
+	const targetHeight = layout.height * lerp(fit.basegame.height, fit.feature.height, growth);
+	const targetWidth = layout.width * lerp(fit.basegame.width, fit.feature.width, growth);
 
 	const sizes = boardSizes(rows);
 	// Whichever axis runs out first wins, so a portrait screen narrows the board

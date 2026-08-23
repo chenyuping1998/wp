@@ -62,8 +62,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					'Buy direct entry into FREE SPINS for 200× your bet, at the same 92% RTP as base play. Every Wild that lands expands to cover its whole reel and sticks for the rest of the feature — and its multiplier never resets, growing on every spin up to 100×. Multipliers on the same line add together. Maximum win: 25,000× your bet.',
-					'Enter FREE SPINS directly for 200× your amount, at the same 92% RTP as normal play. Every Wild that lands expands to cover its whole reel and sticks for the rest of the feature — and its multiplier never resets, growing on every spin up to 100×. Multipliers on the same line add together. Maximum win: 25,000× your amount.',
+					'Buy direct entry into FREE SPINS for 200× your bet, at the same 95% RTP as base play. Every Wild that lands expands to cover its whole reel and sticks for the rest of the feature — and its multiplier never resets, growing on every spin up to 100×. Multipliers on the same line add together. Maximum win: 25,000× your bet.',
+					'Enter FREE SPINS directly for 200× your amount, at the same 95% RTP as normal play. Every Wild that lands expands to cover its whole reel and sticks for the rest of the feature — and its multiplier never resets, growing on every spin up to 100×. Multipliers on the same line add together. Maximum win: 25,000× your amount.',
 				);
 			},
 			get description() {
@@ -109,8 +109,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					'Buy the strongest entry into FREE SPINS for 500× your bet, at the same 92% RTP as base play. Guarantees a full 5-Scatter start — 18 spins instead of 8 to 15 — and Wilds land more often, start higher and climb faster, all the way to 100×. Maximum win: 25,000× your bet.',
-					'Enter SUPER FREE SPINS for 500× your amount, at the same 92% RTP as normal play. Guarantees a full 5-Scatter start — 18 spins instead of 8 to 15 — and Wilds land more often, start higher and climb faster, all the way to 100×. Maximum win: 25,000× your amount.',
+					'Buy the strongest entry into FREE SPINS for 500× your bet, at the same 95% RTP as base play. Guarantees a full 5-Scatter start — 18 spins instead of 8 to 15 — and Wilds land more often, start higher and climb faster, all the way to 100×. Maximum win: 25,000× your bet.',
+					'Enter SUPER FREE SPINS for 500× your amount, at the same 95% RTP as normal play. Guarantees a full 5-Scatter start — 18 spins instead of 8 to 15 — and Wilds land more often, start higher and climb faster, all the way to 100×. Maximum win: 25,000× your amount.',
 				);
 			},
 			get description() {

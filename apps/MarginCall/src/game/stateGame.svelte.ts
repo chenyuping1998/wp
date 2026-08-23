@@ -25,6 +25,7 @@ import {
 	boardSizes,
 	paddedReelLength,
 	SPIN_OPTIONS_DEFAULT,
+	SPIN_OPTIONS_DEFAULT_FREEGAME,
 	SPIN_OPTIONS_FAST,
 	SPIN_OPTIONS_FAST_FREEGAME,
 	INITIAL_SYMBOL_STATE,
@@ -99,7 +100,14 @@ const board = _.range(NUM_REELS).map((reelIndex) => {
 	});
 
 	reel.reelState.spinOptions = () => {
-		if (reel.reelState.spinType !== 'fast') return SPIN_OPTIONS_DEFAULT;
+		// The feature has its own options at BOTH speeds. It used to fall through
+		// to the base game's at normal speed, which meant its longer reel stretched
+		// every tease by 40%.
+		if (reel.reelState.spinType !== 'fast') {
+			return stateGame.gameType === 'freegame'
+				? SPIN_OPTIONS_DEFAULT_FREEGAME
+				: SPIN_OPTIONS_DEFAULT;
+		}
 		if (stateGame.gameType === 'freegame') return SPIN_OPTIONS_FAST_FREEGAME;
 		return SPIN_OPTIONS_FAST;
 	};

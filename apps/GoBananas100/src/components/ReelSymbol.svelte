@@ -3,6 +3,7 @@
 	import SymbolWrap from './SymbolWrap.svelte';
 	import { getSymbolInfo, getSymbolX } from '../game/utils';
 	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
+	import type { SymbolState } from '../game/types';
 
 	type Props = {
 		reelIndex: number;
@@ -54,6 +55,19 @@
 	};
 	const landingImpact = $derived(LANDING_IMPACT[props.reelSymbol.rawSymbol.name] ?? 0.9);
 
+	// Built by a function so `forState` is a real argument — a plain value copied
+	// at call time — rather than a reference into the template's reactive scope.
+	// The version this replaced read a {@const}, which is recomputed whenever
+	// symbolState changes, so the guard was comparing the state with itself and
+	// never rejected anything. SymbolSprite now cancels at the source as well;
+	// this stays as the second line of defence.
+	const makeOnComplete = (forState: SymbolState) => () => {
+		// a completion from a presentation the symbol has already left
+		if (props.reelSymbol.symbolState !== forState) return;
+		if (forState === 'win') props.reelSymbol.oncomplete();
+		if (forState === 'land') props.reelSymbol.symbolState = 'static';
+	};
+
 	const isHeldDuplicate = $derived(
 		props.reelSymbol.symbolState !== 'win' &&
 			stateGame.board[props.reelIndex]?.reelState.motion !== 'spinning' &&
@@ -64,24 +78,9 @@
 </script>
 
 {#if !isHeldDuplicate}
-	<!--
-		`forState` pins each completion callback to the state it was created for.
-
-		The old version read symbolState at call time, which let a completion from
-		one presentation resolve another's. Concretely: 'land' renders SymbolSprite
-		and runs a ~240ms squash whose promise chain calls oncomplete when it ends.
-		If a win volley set the symbol to 'win' while that squash was still in
-		flight, SymbolSprite unmounted but its chain still finished — and the
-		callback, reading the *current* state, saw 'win' and resolved the win
-		promise straight away. Board then moved the symbol to 'postWinStatic'
-		before the win spine had played, so it never lit up.
-
-		That is why it only showed in turbo, only sometimes, and almost always on
-		reel 1: the grenade reaches reel 1 first, a few frames into the volley,
-		which is the one moment still inside the 240ms squash window — and turbo's
-		slam stop starts every reel's squash at once.
-	-->
-	{@const forState = props.reelSymbol.symbolState}
+	<!-- see makeOnComplete, and SymbolSprite's destroyed guard, for why a
+	     completion has to be pinned to the presentation that produced it -->
+	{@const oncomplete = makeOnComplete(props.reelSymbol.symbolState)}
 	<SymbolWrap
 		x={getSymbolX(props.reelIndex)}
 		y={props.reelSymbol.symbolY()}
@@ -93,12 +92,7 @@
 			rawSymbol={props.reelSymbol.rawSymbol}
 			{blur}
 			impact={landingImpact}
-			oncomplete={() => {
-				// a completion from a presentation the symbol has already left
-				if (props.reelSymbol.symbolState !== forState) return;
-				if (forState === 'win') props.reelSymbol.oncomplete();
-				if (forState === 'land') props.reelSymbol.symbolState = 'static';
-			}}
+			{oncomplete}
 		/>
 	</SymbolWrap>
 {/if}

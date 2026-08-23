@@ -142,11 +142,34 @@
 				beginning on reel 1. A session running WAYS {T.pays} from a different table &mdash;
 				see below.
 			</p>
+			<!--
+				The unit banner, and it is not decoration.
+
+				Certification asked for it to be stated next to each symbol whether a
+				number is a multiplier or a fixed amount taken off the balance, because a
+				bare "50" beside a symbol is genuinely ambiguous - a player holding a
+				balance of 500 has no way to tell 50x from a flat 50, and the two differ
+				by the size of their own play amount. Three things now say it: this
+				banner, the column head over every table, and a "x" suffix on every value.
+
+				"currency" is on the restricted list and was flagged here by review, so
+				the sentence names the balance instead. It says the same thing in both
+				modes, which is why it stays literal text rather than a pick().
+			-->
+			<p class="wp-unit">
+				<b>&times;</b> Every value in the tables below is a <b>MULTIPLIER</b> of your
+				{T.totalBet} &mdash; not a fixed amount off your balance. A value of 50
+				means 50&times; your {T.totalBet}.
+			</p>
 
 			<h3 class="wp-lines-title">LINE {T.payTableUpper}</h3>
 			<p class="wp-note">
 				Used by the base game and by any EXPIRY SESSION that is not running WAYS. Per line.
 			</p>
+			<div class="wp-grid-head">
+				<span>SYMBOL</span>
+				<span>MATCHES &rarr; MULTIPLIER &times; {T.totalBet}</span>
+			</div>
 			<div class="wp-grid">
 				{#each rows as row, i (row.name)}
 					<div class="wp-row" style="animation-delay: {i * 50}ms">
@@ -165,7 +188,7 @@
 								>
 							{:else if row.pays.length}
 								{#each row.pays as pay (pay.count)}
-									<span class="wp-pay-chip"><b>{pay.count}</b> &times; <em>{pay.value}</em></span>
+									<span class="wp-pay-chip"><b>{pay.count}</b><em>{pay.value}&times;</em></span>
 								{/each}
 							{/if}
 						</div>
@@ -235,6 +258,10 @@
 				set of values used on both would make the taller board worth thirteen times the
 				shorter one for the same symbols.
 			</p>
+			<div class="wp-grid-head">
+				<span>SYMBOL</span>
+				<span>MATCHES &rarr; MULTIPLIER &times; {T.totalBet}</span>
+			</div>
 			<div class="wp-grid wp-ways-grid">
 				{#each waysRows as row (row.name)}
 					<div class="wp-row">
@@ -247,11 +274,11 @@
 						<div class="wp-pays">
 							<span class="wp-ways-tag">{BASE_ROWS}&times;{REELS}</span>
 							{#each row.small as pay (pay.count)}
-								<span class="wp-pay-chip"><b>{pay.count}</b> &times; <em>{pay.value}</em></span>
+								<span class="wp-pay-chip"><b>{pay.count}</b><em>{pay.value}&times;</em></span>
 							{/each}
 							<span class="wp-ways-tag">{FEATURE_ROWS}&times;{REELS}</span>
 							{#each row.big as pay (pay.count)}
-								<span class="wp-pay-chip"><b>{pay.count}</b> &times; <em>{pay.value}</em></span>
+								<span class="wp-pay-chip"><b>{pay.count}</b><em>{pay.value}&times;</em></span>
 							{/each}
 						</div>
 					</div>
@@ -363,6 +390,48 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.35rem;
+	}
+
+	/* Unit banner. Deliberately louder than .wp-note — a note at 70% opacity is
+	   what the ambiguous version already had, and it was not read. */
+	.wp-unit {
+		margin: 0;
+		padding: 0.5rem 0.75rem;
+		border-radius: 0.6rem;
+		background: rgba(255, 215, 94, 0.08);
+		border: 1px solid rgba(255, 215, 94, 0.28);
+		font-size: 0.82rem;
+		line-height: 1.5;
+		text-align: left;
+		color: rgba(255, 255, 255, 0.88);
+
+		b {
+			color: #ffd75e;
+			font-weight: 800;
+		}
+	}
+
+	/* Column head over each value table, laid out on the same two-column split as
+	   .wp-row so the caption sits over the column it describes. */
+	.wp-grid-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		padding: 0 0.8rem;
+		font-size: 0.66rem;
+		font-weight: 800;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: rgba(255, 215, 94, 0.75);
+
+		span:first-child {
+			min-width: 9.5rem;
+			text-align: left;
+		}
+		span:last-child {
+			text-align: right;
+		}
 	}
 
 	/* ─── ways explainer block ─── */
@@ -519,10 +588,15 @@
 		font-size: 0.92rem;
 	}
 
+	/* A chip is "<count> | <value>x".
+	   The two numbers used to be joined by a literal "x", which read as
+	   arithmetic - "5 x 50" - and left the value looking like a bare amount. The
+	   separator is now a rule, and the only "x" in the chip is the suffix on the
+	   value, where it means "multiplier" and nothing else. */
 	.wp-pay-chip {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.2rem;
+		gap: 0.4rem;
 		padding: 0.2rem 0.55rem;
 		border-radius: 0.5rem;
 		background: rgba(255, 233, 138, 0.07);
@@ -535,6 +609,8 @@
 		}
 
 		em {
+			padding-left: 0.4rem;
+			border-left: 1px solid rgba(255, 233, 138, 0.22);
 			font-style: normal;
 			font-weight: 600;
 			background: linear-gradient(135deg, #ffe98a, #d8a334);

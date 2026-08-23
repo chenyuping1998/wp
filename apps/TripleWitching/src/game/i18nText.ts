@@ -223,9 +223,56 @@ const TEXTS = {
 	},
 } as const;
 
+// Social-play overrides, keyed exactly as TEXTS. Social jurisdictions forbid
+// wagering vocabulary in anything the player can read, and the feature intro is
+// the FIRST thing they read - certification came back on "Win up to 10,000×
+// your bet in a single round", which every locale carried in its own words.
+//
+// This is the same job socialTerms.ts does for the rules and pay-table panels,
+// but it cannot be done the same way: those build a sentence out of parts at
+// render time, while these are whole sentences translated 16 ways, and swapping
+// one noun inside a Russian or Japanese sentence from the outside does not
+// produce grammar. So the sentence is written twice instead.
+//
+// Only the keys that need it appear here. gameText falls back to TEXTS for
+// everything else, so this stays small rather than becoming a second copy of
+// the whole table that has to be kept in step.
+//
+// design/check_social_words.mjs enforces the pairing: an English string in
+// TEXTS carrying a restricted word MUST have a clean entry here.
+const SOCIAL_TEXTS: Partial<Record<keyof typeof TEXTS, Record<string, string>>> = {
+	introMaxWinBody: {
+		ar: 'اربح حتى 10,000 ضعف مبلغك في جولة واحدة.',
+		de: 'Gewinne bis zum 10.000-Fachen deines Spielbetrags in einer einzigen Runde.',
+		en: 'Win up to 10,000× your total amount in a single round.',
+		es: 'Gana hasta 10.000× tu importe en una sola ronda.',
+		fr: 'Gagnez jusqu’à 10 000× votre montant en une seule partie.',
+		id: 'Menangkan hingga 10.000× jumlah Anda dalam satu ronde.',
+		ja: '1ラウンドでプレイ金額の最大10,000倍を獲得。',
+		ko: '한 라운드에서 플레이 금액의 최대 10,000배까지 획득할 수 있습니다.',
+		pl: 'Wygraj nawet 10 000× swojej kwoty w jednej rundzie.',
+		pt: 'Ganhe até 10.000× o seu valor numa única rodada.',
+		ru: 'Выигрыш до 10 000× вашей суммы за один раунд.',
+		tr: 'Tek bir turda tutarınızın 10.000 katına kadar kazanın.',
+		vi: 'Thắng tới 10.000× số tiền của bạn trong một vòng.',
+		zh: '單一回合最高可贏得遊玩金額的 10,000 倍。',
+		fi: 'Voita jopa 10 000× summasi yhdellä kierroksella.',
+		hi: 'एक ही राउंड में अपनी राशि का 10,000× तक जीतें।',
+	},
+};
+
 type TextKey = keyof typeof TEXTS;
 
 export const gameText = (key: TextKey): string => {
+	const lang = stateUrlDerived.lang();
+	// Social first, and only when a social table exists for this key. Falling
+	// through to TEXTS for a missing LOCALE would put the wagering word back on
+	// screen for that language alone, so the social table's own English is the
+	// fallback once the key is overridden at all.
+	if (stateUrlDerived.social()) {
+		const socialTable = SOCIAL_TEXTS[key];
+		if (socialTable) return socialTable[lang] ?? socialTable.en;
+	}
 	const table = TEXTS[key] as Record<string, string>;
-	return table[stateUrlDerived.lang()] ?? table.en;
+	return table[lang] ?? table.en;
 };

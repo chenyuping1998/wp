@@ -2,8 +2,14 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { Container, Text } from 'pixi-svelte';
 
-	// House gold numerals/labels (replaces the MM template 'gold' bitmap font):
-	// warm gradient face, dark bronze stroke, soft drop shadow. Being a canvas
+	// House numerals/labels for money figures.
+	//
+	// The warm face is kept deliberately: a figure is the amount won, and warm
+	// reads as value in every slot ever made - amber is in this game's palette
+	// too. What is NOT kept is the brown it used to be outlined in (0x54330a,
+	// 0x3a2205), which is leather and wood, not a terminal. The strokes are near
+	// -black ink now, so the figure still separates from the plate behind it
+	// without dragging a second palette in with it. Being a canvas
 	// Text it renders every script (CJK/Arabic/Devanagari), unlike the old
 	// latin-only bitmap font.
 	type Props = {
@@ -58,8 +64,8 @@
 		text={String(props.text)}
 		style={{
 			...base,
-			fill: props.stroke ?? 0x3a2205,
-			stroke: props.stroke ?? 0x3a2205,
+			fill: props.stroke ?? 0x2a1a04,
+			stroke: props.stroke ?? 0x2a1a04,
 			strokeThickness: Math.max(2, props.fontSize * 0.13),
 		}}
 		alpha={0.85}
@@ -72,7 +78,7 @@
 		style={{
 			...base,
 			fill: props.fill ?? [0xfff3bd, 0xffd75e, 0xc9821a],
-			stroke: props.stroke ?? 0x54330a,
+			stroke: props.stroke ?? 0x231703,
 			strokeThickness: Math.max(2, props.fontSize * 0.1),
 			dropShadow: true,
 			dropShadowColor: 0x000000,

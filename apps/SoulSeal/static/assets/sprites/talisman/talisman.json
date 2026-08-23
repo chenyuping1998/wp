@@ -1,0 +1,255 @@
+{
+ "frames": {
+  "1.png": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  },
+  "2.png": {
+   "frame": {
+    "x": 147,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  },
+  "3.png": {
+   "frame": {
+    "x": 294,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  },
+  "4.png": {
+   "frame": {
+    "x": 441,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  },
+  "5.png": {
+   "frame": {
+    "x": 0,
+    "y": 250,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  },
+  "6.png": {
+   "frame": {
+    "x": 147,
+    "y": 250,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  },
+  "7.png": {
+   "frame": {
+    "x": 294,
+    "y": 250,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  },
+  "8.png": {
+   "frame": {
+    "x": 441,
+    "y": 250,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  },
+  "9.png": {
+   "frame": {
+    "x": 0,
+    "y": 500,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  },
+  "10.png": {
+   "frame": {
+    "x": 147,
+    "y": 500,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  },
+  "11.png": {
+   "frame": {
+    "x": 294,
+    "y": 500,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  },
+  "12.png": {
+   "frame": {
+    "x": 441,
+    "y": 500,
+    "w": 147,
+    "h": 250
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 147,
+    "h": 250
+   },
+   "sourceSize": {
+    "w": 147,
+    "h": 250
+   }
+  }
+ },
+ "meta": {
+  "app": "design/generate_talisman_spin.mjs",
+  "version": "1.0",
+  "image": "talisman.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 588,
+   "h": 750
+  },
+  "scale": "1"
+ }
+}

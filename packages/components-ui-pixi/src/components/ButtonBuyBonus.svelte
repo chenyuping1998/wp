@@ -15,6 +15,28 @@
 	const disabled = $derived(!stateXstateDerived.isIdle());
 	const active = $derived(stateBetDerived.activeBetMode()?.type === 'activate');
 
+	// The plate art can be drawn larger than the button's box - see the theme. The
+	// BOX is what positions and hit-tests; only the picture grows.
+	const plate = $derived({
+		width: sizes.width * uiTheme.buyBonusPlateScale,
+		height: sizes.height * uiTheme.buyBonusPlateScale,
+	});
+
+	// Breathing glow while the button is ready to be pressed, for games that ask
+	// for it. Driven by a timer rather than a transition so it keeps going while
+	// nothing else on screen is moving, which is exactly when it is needed.
+	let idlePulse = $state(0);
+	$effect(() => {
+		if (!uiTheme.buyBonusIdleGlow) return;
+		let phase = 0;
+		const id = setInterval(() => {
+			phase += 0.045;
+			idlePulse = 0.5 + 0.5 * Math.sin(phase);
+		}, 32);
+		return () => clearInterval(id);
+	});
+	const idleLit = $derived(uiTheme.buyBonusIdleGlow && !disabled && !active);
+
 	const openModal = () => (stateModal.modal = { name: 'buyBonus' });
 	const disableActiveBetMode = () => (stateBet.activeBetModeKey = 'BASE');
 	const onpress = () => {
@@ -50,16 +72,49 @@
 			pressed,
 		})}
 
+		{#if idleLit}
+			<!--
+				The "you can press this" light, under the plate.
+				Stacked low-alpha rings, the same construction as the spin button's
+				charge, sized to the ART rather than to the button box so it hugs the
+				object instead of squaring it off.
+			-->
+			<Graphics
+				{...center}
+				draw={(g) => {
+					const w = plate.width * uiTheme.buyBonusPlateInset.width;
+					const h = plate.height * uiTheme.buyBonusPlateInset.height;
+					g.clear();
+					for (const [grow, weight] of [
+						[0.42, 0.13],
+						[0.26, 0.2],
+						[0.12, 0.28],
+					] as [number, number][]) {
+						g.roundRect(
+							(-w * (1 + grow)) / 2,
+							(-h * (1 + grow)) / 2,
+							w * (1 + grow),
+							h * (1 + grow),
+							h * 0.06,
+						);
+						g.fill({ color: uiTheme.buyBonusIdleGlowFill, alpha: weight * (0.35 + 0.65 * idlePulse) });
+					}
+				}}
+			/>
+		{/if}
+
 		<UiSprite
 			key="buyBonus"
 			{...center}
 			anchor={0.5}
-			width={sizes.width}
-			height={sizes.height}
-			backgroundColor={0x000000}
-			borderColor={0xffcf66}
-			borderWidth={7}
-			borderRadius={36}
+			width={plate.width}
+			height={plate.height}
+			{...uiTheme.buyBonusPlateChrome
+				? { backgroundColor: 0x000000, borderColor: 0xffcf66, borderWidth: 7, borderRadius: 36 }
+				: {}}
+			{...(uiTheme.buyBonusIdleTint !== undefined && !disabled && !active
+				? { tint: uiTheme.buyBonusIdleTint }
+				: {})}
 			{...disabled
 				? {
 						backgroundColor: 0xaaaaaa,
@@ -82,8 +137,20 @@
 			<Graphics
 				{...center}
 				draw={(g) => {
+					// Sized to the PLATE ART, not to the button box. On a square button
+					// with an object-shaped plate the old version drew a highlight half
+					// again as wide as the thing it was highlighting.
+					const w = plate.width * uiTheme.buyBonusPlateInset.width;
+					const h = plate.height * uiTheme.buyBonusPlateInset.height;
+					// PER AXIS. The standoff used to be a fraction of the HEIGHT on both
+					// axes, which is the same number on a square plate and is not on a
+					// tall one: Soul Seal's talisman is 111 wide by 198 high, so a pad of
+					// 3% of the height put 5.4% of the width on each side and the
+					// highlight read as a loose box round a narrow object.
+					const padX = w * uiTheme.buyBonusHighlightPad;
+					const padY = h * uiTheme.buyBonusHighlightPad;
 					g.clear();
-					g.roundRect(-sizes.width / 2, -sizes.height / 2, sizes.width, sizes.height, 36);
+					g.roundRect(-w / 2 - padX, -h / 2 - padY, w + padX * 2, h + padY * 2, h * 0.05);
 					g.fill({ color: 0xffffff, alpha: 0.16 });
 				}}
 			/>
@@ -96,13 +163,14 @@
 			style={{
 				align: 'center',
 				wordWrap: true,
-				// keep the wrap box inside the 150px button (minus the 7px border)
-				// so the two lines never kiss the gold frame
-				wordWrapWidth: 116,
-				lineHeight: UI_BASE_FONT_SIZE * 0.72,
+				// Keep the wrap box inside the plate, not just inside the button. The
+				// default is the 150px button minus its 7px border; a game whose plate
+				// is an object rather than a panel narrows it - see the theme.
+				wordWrapWidth: uiTheme.buyBonusLabelWrapWidth,
+				lineHeight: UI_BASE_FONT_SIZE * (uiTheme.buyBonusLabelSizeRatio + 0.04),
 				fontFamily: uiTheme.fontFamily,
 				fontWeight: uiTheme.fontWeight,
-				fontSize: UI_BASE_FONT_SIZE * 0.68,
+				fontSize: UI_BASE_FONT_SIZE * uiTheme.buyBonusLabelSizeRatio,
 				// themed, not hardcoded white: on GoBananas' olive plate the white
 				// read as a different game's button sitting on the board. Defaults to
 				// white, so Wild Party is unchanged.

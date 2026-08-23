@@ -71,6 +71,81 @@ export const uiTheme = $state({
 	// as a different game's button dropped onto the board.
 	buyBonusLabelFill: 0xffffff,
 
+	// Chrome behind the Buy Bonus plate art: a black rounded rectangle with a gold
+	// border, hardcoded into ButtonBuyBonus since before the plate could be a
+	// sprite at all. It is right for a plate that is a PANEL and wrong for one that
+	// is an OBJECT - Soul Seal's is a talisman, and a black rectangle with a gold
+	// frame around a piece of hanging paper is a second frame nobody asked for.
+	//
+	// True by default, so every other game keeps the chrome it has.
+	buyBonusPlateChrome: true,
+
+	// Wrap width and size of the label drawn over that plate, in the shared UI's
+	// base font units. Defaults are the numbers that were hardcoded.
+	//
+	// They are here because a plate that is an object rather than a panel has a
+	// smaller writable area than the button it sits in: Soul Seal's talisman is
+	// 0.72 as wide as it is tall, so on a square button the paper is about two
+	// thirds of the width and a label wrapped to the BUTTON overhangs the paper.
+	buyBonusLabelWrapWidth: 116,
+	buyBonusLabelSizeRatio: 0.68,
+
+	// How large the plate art draws relative to the button's own box.
+	//
+	// 1 is the button, which is right for a plate that IS the button - a panel
+	// filling its own frame. A plate that is an object drawn inside a square canvas
+	// covers only part of that square (Soul Seal's talisman is 0.72 as wide as it
+	// is tall, so about 70% of the width), and the label then has to shrink to fit
+	// an object smaller than the control it labels. Drawing the art larger than the
+	// box fixes that without moving the button or its hit area.
+	buyBonusPlateScale: 1,
+
+	// The fraction of the plate's drawn box that the ART actually covers, width
+	// and height. Used to size the hover highlight, which otherwise wraps the
+	// square button and floats well outside an object-shaped plate.
+	buyBonusPlateInset: { width: 1, height: 1 },
+
+	// Light the plate while it can be pressed.
+	//
+	// The button had three visual states - default, disabled, active - and default
+	// and "ready to press" were the same thing, because for a panel-shaped plate
+	// they are. For an object they are not: a talisman sitting unlit reads as
+	// scenery, and the one moment it matters that it is a control is the moment the
+	// reels stop. Off by default; a game opts in.
+	buyBonusIdleGlow: false,
+
+	// Tint for the plate at REST.
+	//
+	// The active state already lifts the plate to 0xfff2c0, and on a painted
+	// talisman that difference reads as "the resting button is the dim one" rather
+	// than as "the active button is lit" - the same picture, one version of it
+	// duller, which looks like a fault in the art.
+	//
+	// A game can therefore ask for the resting plate to be drawn at full strength
+	// and let the border alone carry the active state. Undefined means no tint,
+	// which is what every existing game gets.
+	buyBonusIdleTint: undefined as number | undefined,
+
+	// How far the hover highlight stands off the plate art, as a fraction of the
+	// plate's own size on each axis.
+	//
+	// 0.03 is what it has always been, so nothing moves for a game whose plate
+	// fills its square button - which is every game but Soul Seal, whose plate is
+	// a tall talisman and wants a tighter one.
+	buyBonusHighlightPad: 0.03,
+
+	// What colour that glow is.
+	//
+	// It used to borrow buyBonusLabelFill, on the reasoning that the plate's own
+	// accent is the right accent for its light. That is true right up until a game
+	// writes its label in INK: Soul Seal's is wood-dark #2a1a10, because dark type
+	// is what reads on gold paper - and a wood-dark glow at ten percent alpha on a
+	// night board is not a dim glow, it is nothing at all. The button looked
+	// exactly as unlit as before the glow was added.
+	//
+	// A light has to be light. This is a separate colour for that reason.
+	buyBonusIdleGlowFill: 0xffffff,
+
 	// Show a small chevron on readout panels that open something when tapped.
 	// Only the Bet panel is interactive, and it is otherwise identical to the
 	// Balance/Win panels, so nothing indicates it can be pressed.
@@ -89,6 +164,27 @@ export const uiTheme = $state({
 	// Breathing halo behind the spin button's rotating mark — idle invitation,
 	// brighter while the reels run. Off by default.
 	spinButtonGlow: false,
+
+	// What the spin button should look like while a given bet mode is ACTIVE.
+	//
+	// An activate-type mode charges every spin rather than being bought once, and
+	// nothing on the bar said so: the button looked identical whether a player was
+	// spending 1x or 10x per press. This lets a game light the button for the
+	// duration, and light it DIFFERENTLY per mode, so the two active modes are
+	// told apart by the control itself and not only by the amount beside it.
+	//
+	// Keyed by the uppercased bet-mode key, matching stateBet.activeBetModeKey.
+	// Empty by default, so a game that names nothing here is untouched - including
+	// games with no activate modes at all.
+	//
+	//   color     the charge's own colour, replacing the button's
+	//   strength  multiplies the halo; 1 is the ordinary glow
+	//   speed     multiplies the breathing rate
+	//   orbits    how many motes circle the button, 0 for none
+	spinButtonCharge: {} as Record<
+		string,
+		{ color: number; strength: number; speed: number; orbits: number }
+	>,
 
 	// Uniform scale on the bottom bet bar, applied about its bottom edge so the
 	// bar stays flush with the canvas floor and only its height above that edge

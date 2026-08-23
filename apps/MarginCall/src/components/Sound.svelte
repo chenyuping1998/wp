@@ -247,7 +247,10 @@
 	context.eventEmitter.subscribeOnMount({
 		// ui
 		soundBetMode: async ({ betModeKey }) => {
-			if (betModeKey === 'BONUS') {
+			// Both buys drop straight into the feature, so both take the feature
+			// music. Matching on 'BONUS' alone left BLACKSWAN starting the base
+			// track over a 5x5 board.
+			if (betModeKey === 'BONUS' || betModeKey === 'BLACKSWAN') {
 				playSfx('win_big', 0.7);
 				await waitForTimeout(SECOND);
 				playBgm('freespin');

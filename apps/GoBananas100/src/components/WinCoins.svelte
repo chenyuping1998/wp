@@ -2,7 +2,7 @@
 	import { Container, ParticleEmitter } from 'pixi-svelte';
 	import { MainContainer } from 'components-layout';
 	import { fountain as baseConfig } from 'constants-shared/particleConfig';
-	import { LEVEL_PARTICLE_COIN_MAP } from 'constants-shared/particleCoin';
+	import { LEVEL_PARTICLE_BANANA_MAP } from '../game/particleBananaMap';
 
 	import { getContext } from '../game/context';
 	import type { WinLevelAlias } from '../game/winLevelMap';
@@ -15,7 +15,7 @@
 	const props: Props = $props();
 	const context = getContext();
 	const extraConfig = $derived(
-		props?.levelAlias ? LEVEL_PARTICLE_COIN_MAP[props.levelAlias] : null,
+		props?.levelAlias ? LEVEL_PARTICLE_BANANA_MAP[props.levelAlias] : null,
 	);
 	const config = $derived({ ...baseConfig, ...extraConfig });
 </script>
@@ -26,7 +26,7 @@
 			x={context.stateGameDerived.boardLayout().x}
 			y={context.stateGameDerived.boardLayout().y}
 		>
-			<ParticleEmitter {config} key="coins" emit={props.emit} />
+			<ParticleEmitter {config} key="winBananas" emit={props.emit} />
 		</Container>
 	</MainContainer>
 {/if}

@@ -2,7 +2,7 @@ export default {
 	"providerName": "sample_provider",
 	"gameName": "go_bananas_100",
 	"gameID": "GoBananas100",
-	"rtp": 0.92,
+	"rtp": 0.95,
 	"numReels": 5,
 	"numRows": [
 		5,
@@ -16,28 +16,28 @@ export default {
 			"cost": 1,
 			"feature": true,
 			"buyBonus": false,
-			"rtp": 0.92,
+			"rtp": 0.95,
 			"max_win": 25000
 		},
 		"bonus": {
 			"cost": 200,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.92,
+			"rtp": 0.95,
 			"max_win": 25000
 		},
 		"superbonus": {
 			"cost": 500,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.92,
+			"rtp": 0.95,
 			"max_win": 25000
 		},
 		"superspin": {
 			"cost": 50,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.92,
+			"rtp": 0.95,
 			"max_win": 2000
 		}
 	},

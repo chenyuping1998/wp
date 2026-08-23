@@ -13,7 +13,8 @@
 		"check:assets": "node design/check_assets.mjs",
 		"check:audio": "node design/check_audio.mjs",
 		"check:fit": "node design/check_board_fit.mjs",
-		"build": "node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_assets.mjs && node design/check_audio.mjs && node design/check_board_fit.mjs && node design/check_font_coverage.mjs && vite build",
+		"check:tease": "node design/check_tease_length.mjs",
+		"build": "node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_assets.mjs && node design/check_audio.mjs && node design/check_board_fit.mjs && node design/check_tease_length.mjs && node design/check_font_coverage.mjs && vite build",
 		"preview": "vite preview",
 		"check:fonts": "node design/check_font_coverage.mjs"
 	},

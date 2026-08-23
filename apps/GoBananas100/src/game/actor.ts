@@ -36,11 +36,17 @@ const primaryMachines = createPrimaryMachines<Bet>({
 		}
 		if (stateBet.isSpaceHold) return;
 
+		// Superspin is excluded alongside freegame. Skipping the pre-spin dropped the
+		// wind-up entirely, so a turbo autoplay hold-and-spin went from board to
+		// result with nothing in between — the opposite of a round whose whole
+		// content is watching cells resolve one at a time.
+		const keepsFullPreSpin =
+			stateGame.gameType === 'freegame' || stateGame.gameType === 'superspin';
 		const skipPreSpinInTurboAutoBet =
-			stateBet.isTurbo && stateXstateDerived.isAutoBetting() && stateGame.gameType !== 'freegame';
+			stateBet.isTurbo && stateXstateDerived.isAutoBetting() && !keepsFullPreSpin;
 		if (skipPreSpinInTurboAutoBet) return;
 
-		const forceNormalPreSpin = stateBet.isTurbo && stateGame.gameType === 'freegame';
+		const forceNormalPreSpin = stateBet.isTurbo && keepsFullPreSpin;
 		await stateGameDerived.enhancedBoard.preSpin({
 			paddingBoard: config.paddingReels[stateGame.gameType],
 			isTurboBeforeAllOverride: forceNormalPreSpin ? false : undefined,

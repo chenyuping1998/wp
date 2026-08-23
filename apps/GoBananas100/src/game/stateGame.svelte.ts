@@ -18,7 +18,8 @@ import {
 	BOARD_DIMENSIONS,
 	SPIN_OPTIONS_DEFAULT,
 	SPIN_OPTIONS_FAST,
-	SPIN_OPTIONS_FAST_FREEGAME,
+	SPIN_OPTIONS_TURBO_FREEGAME,
+	SPIN_OPTIONS_SUPERSPIN,
 	INITIAL_SYMBOL_STATE,
 	SCATTER_LAND_SOUND_MAP,
 } from './constants';
@@ -77,13 +78,28 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 			eventEmitter.broadcast({
 				type: 'soundOnce',
 				name: REEL_STOP_SOUNDS[reelIndex] ?? 'sfx_reel_stop_1',
-				forcePlay: !stateBet.isTurbo,
+				// Superspin forces the click through in turbo as well: its stops are
+				// the event, and a dropped reel-stop there is a missing beat rather
+				// than one less click in a rapid sequence.
+				// The free game joins superspin here: its reels now land one at a
+				// time under turbo, and a stop you can see but not hear is worse
+				// than either.
+				forcePlay:
+					!stateBet.isTurbo ||
+					stateGame.gameType === 'superspin' ||
+					stateGame.gameType === 'freegame',
 			});
 			// The housing takes the hit too — a much lighter version of the win
 			// recoil, so a symbol landing reads as weight arriving in the frame
 			// rather than a sprite appearing. Skipped in turbo, where five recoils
 			// inside half a second would just be noise.
-			if (!stateBet.isTurbo) {
+			// Same reasoning as the reel-stop click above — superspin keeps the weight
+			// in its stops no matter what turbo is set to.
+			if (
+				!stateBet.isTurbo ||
+				stateGame.gameType === 'superspin' ||
+				stateGame.gameType === 'freegame'
+			) {
 				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
 			}
 		},
@@ -91,8 +107,17 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 	});
 
 	reel.reelState.spinOptions = () => {
+		// Checked BEFORE spinType, which is the whole point: turbo sets spinType to
+		// 'fast' and every other mode obeys it. The hold-and-spin round does not —
+		// it is a reveal the player is meant to read cell by cell, and at turbo
+		// speed the three respins were over before that was possible.
+		if (stateGame.gameType === 'superspin') return SPIN_OPTIONS_SUPERSPIN;
+		// Also before spinType, and for the same reason. The free game asks for a
+		// NORMAL spin even in turbo (see the reveal handler), so keying its profile
+		// off spinType would have handed it the base-game timings — turbo would
+		// have had no effect in the feature at all rather than too much.
+		if (stateGame.gameType === 'freegame' && stateBet.isTurbo) return SPIN_OPTIONS_TURBO_FREEGAME;
 		if (reel.reelState.spinType !== 'fast') return SPIN_OPTIONS_DEFAULT;
-		if (stateGame.gameType === 'freegame') return SPIN_OPTIONS_FAST_FREEGAME;
 		return SPIN_OPTIONS_FAST;
 	};
 

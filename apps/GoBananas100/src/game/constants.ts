@@ -91,24 +91,60 @@ export const SPIN_OPTIONS_FAST = {
 	reelBounceSizeMulti: 0.05,
 };
 
-export const SPIN_OPTIONS_FAST_FREEGAME = {
+// Turbo inside the free game. Quicker than the base pace, but still a spin.
+//
+// This used to be SPIN_OPTIONS_FAST_FREEGAME, reached only when spinType was
+// 'fast' — and 'fast' is the problem, not the speed. A fast spin is given zero
+// padding, so the reels have no strip to travel through, and the slide is then
+// skipped outright: every reel jumped to its final symbols on the same frame.
+// No sweep, no reel-by-reel stops, nothing to watch. A losing free spin was over
+// before the eye could find the board, which is most of an 18-spin feature.
+//
+// The free game now spins NORMALLY under turbo (reveal passes isTurboOverride)
+// and takes these timings instead. Roughly a third quicker than the base game
+// rather than instant: reelSpinDelay 90 against 145 keeps the reels landing one
+// after another, which is the part that reads as a spin at all. The stop button
+// still cuts it short for anyone who does want it gone.
+export const SPIN_OPTIONS_TURBO_FREEGAME = {
 	...SPIN_OPTIONS_SHARED,
-	reelPreSpinSpeed: 4.2,
-	reelSpinSpeed: 3.8,
-	reelSpinDelay: 185,
-	reelBounceSizeMulti: 0.08,
+	reelPreSpinSpeed: 3.2,
+	reelSpinSpeed: 4.6,
+	reelSpinSpeedBeforeBounce: 5.5,
+	reelBounceBackSpeed: 0.2,
+	reelSpinDelay: 90,
+	reelBounceSizeMulti: 0.18,
+};
+
+// Superspin (the 50x hold-and-spin) gets its own profile, and it is the only
+// mode that never takes a fast one — see stateGame.spinOptions.
+//
+// The round is three respins long and every one of them is the whole event: the
+// player is watching individual cells to see whether a Coin lands. On the shared
+// timings that lasted well under a second, and in turbo it was over before the
+// eye had picked out which cells were new. Speeds come down and, more
+// importantly, reelSpinDelay goes up — that value is multiplied by the reel
+// index, so it is the gap between one reel stopping and the next, i.e. the
+// rhythm itself. At 145 the last reel lands 580ms after the first; at 300 it
+// lands 1.2s after, which is the pace the reveal actually needs.
+export const SPIN_OPTIONS_SUPERSPIN = {
+	...SPIN_OPTIONS_SHARED,
+	reelSpinDelay: 300,
+	reelBounceBackSpeed: 0.11,
+	reelSpinSpeedBeforeBounce: 3,
+	reelPreSpinSpeed: 1.6,
+	reelSpinSpeed: 2.2,
+	// a heavier settle: the coins should look like they dropped into place
+	reelBounceSizeMulti: 0.36,
 };
 
 export const MOTION_BLUR_VELOCITY = 31;
 
-// Superspin presentation. false (default) keeps the shared reel machinery — the
-// column still sweeps, and held cells are covered by an occluder painted in the
-// board's own olive so nothing of the sweep shows through and there is no red
-// box. true switches to SuperspinCells, where each unheld cell spins in place
-// and held cells need no occluder at all because nothing passes behind them.
-// Kept as a switch because the two read quite differently and the choice is a
-// judgement call, not a correctness one.
-export const SUPERSPIN_CELL_SPIN = false;
+// NOTE: there used to be a SUPERSPIN_CELL_SPIN switch here, offering a second
+// superspin presentation where each cell spun in place instead of the column
+// sweeping. It was hardcoded false, so the whole alternative path — a 158-line
+// component, a branch in the reveal handler and a guard in StickyPrizes — was
+// unreachable. The sweep is the shipped presentation; the alternative is in git
+// history if it is ever wanted back.
 
 // Superspin coin grading. Prizes are in book units where 100 = 1x total bet and
 // the strip pays 1/2/3/5/10/25/50/100/500/1000/10000x, so 10x up is the point

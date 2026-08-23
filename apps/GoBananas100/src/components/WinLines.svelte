@@ -60,6 +60,22 @@
 	const FAST = { entry: 30, travel: 210, settle: 60, stagger: 12 };
 	const HOLD_AFTER_MS = 220;
 
+	// A symbol's win spine runs 1.4s (design/generate_spines.mjs). The volley is
+	// far shorter than that in the free game — ~300ms of runners plus a 220ms hold
+	// — so winLinesHide arrived while the winning symbols were about a third of
+	// the way in, and the next spin wiped them before the pop registered.
+	//
+	// The expanded-wild panel never had this problem: it carries its own ~1.1s
+	// Tween envelope that runs to completion regardless of when the lines are
+	// hidden (see ExpandingWilds.winLinesShow). So a free spin could show a
+	// brightly lit wild reel sitting next to dead symbols on the very reels
+	// feeding the line — which is exactly how it was reported.
+	//
+	// Hold until the last symbol to start has had most of its animation. Not the
+	// full 1.4s: the pop has clearly read by then, and every extra millisecond
+	// here is paid on every winning spin of an 18-spin feature.
+	const WIN_ANIM_VISIBLE_MS = 950;
+
 	let lines = $state<ActiveLine[]>([]);
 	let show = $state(false);
 	let timing = $state(NORMAL);
@@ -164,13 +180,38 @@
 			const volleyMs = Math.max(
 				...built.map((line) => line.delay + timing.entry + line.travelMs + timing.settle),
 			);
-			await waitForTimeout(volleyMs + HOLD_AFTER_MS);
+			// when the last grenade reaches its final reel — i.e. when the last
+			// symbol's win animation starts
+			const lastSymbolStartMs = Math.max(
+				...built.map((line) => line.delay + timing.entry + line.travelMs),
+			);
+			// Turbo opts out of the extended hold: there the player has asked for
+			// speed and a clipped win animation is the trade they made.
+			const holdMs = stateBet.isTurbo
+				? HOLD_AFTER_MS
+				: Math.max(HOLD_AFTER_MS, lastSymbolStartMs + WIN_ANIM_VISIBLE_MS - volleyMs);
+			await waitForTimeout(volleyMs);
 			// cancelled while the volley ran — do not touch the board
 			if (generation !== showGeneration) return;
 
-			// safety net: anything the runners missed (padding rows are skipped by
-			// design) still gets its win animation before the round moves on
+			// Safety net, and it runs BEFORE the hold, not after it.
+			//
+			// A runner reports each reel as it crosses it, and anything it misses —
+			// a dropped frame, a line whose geometry rounds a reel away — lands here
+			// instead. That was already true, but the call sat after the hold had
+			// elapsed, which meant a missed symbol started its 1.4s win spine at the
+			// exact moment winLinesHide fired and the round moved on. It was being
+			// animated and never seen, which is indistinguishable from never being
+			// animated: the reported symptom is one reel of a winning line staying
+			// dark while the rest light up.
+			//
+			// Moved here, a missed symbol gets the whole hold to play in, the same
+			// as one the runner did reach. animatedKeys makes this a no-op for
+			// everything already lit, so the wake choreography is untouched.
 			animatePositions(wins.flatMap((win) => win.positions));
+
+			await waitForTimeout(holdMs);
+			if (generation !== showGeneration) return;
 		},
 		winLinesHide: () => {
 			showGeneration += 1;

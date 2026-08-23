@@ -11,7 +11,7 @@ import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
 import type { Position } from './types';
-import { BOARD_DIMENSIONS, SUPERSPIN_CELL_SPIN } from './constants';
+import { BOARD_DIMENSIONS } from './constants';
 import config from './config';
 
 // The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
@@ -85,11 +85,17 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 
 const winLevelSoundsStop = () => {
 	eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' });
-	if (stateBet.activeBetModeKey === 'SUPERSPIN' || stateGame.gameType === 'freegame') {
-		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
-	} else {
-		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
-	}
+	// Decided by the SCENE, never by the bet mode.
+	//
+	// The test used to be `activeBetModeKey === 'SUPERSPIN'`, which stays true for
+	// the whole round including its ending — so after a superspin finished and the
+	// board was already back to base game, the fast free-game bed kept playing over
+	// it. The mode you bought is not where you are; gameType is.
+	const onFeatureScene = stateGame.gameType === 'freegame' || stateGame.gameType === 'superspin';
+	eventEmitter.broadcast({
+		type: 'soundMusic',
+		name: onFeatureScene ? 'bgm_freespin' : 'bgm_main',
+	});
 	eventEmitter.broadcastAsync({ type: 'uiShow' });
 };
 
@@ -113,27 +119,40 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			recordBookEvent({ bookEvent });
 		}
 
-		stateGame.gameType = bookEvent.gameType;
-
-		if (SUPERSPIN_CELL_SPIN && bookEvent.gameType === 'superspin') {
-			// Hold and spin: cells spin individually, not as columns. A column
-			// sweep would drag the whole strip past the coins that are supposed to
-			// be held still, which reads as the hold not holding. Settle the board
-			// straight away and let SuperspinCells cover and animate each unheld
-			// cell instead — held cells simply get no overlay, so nothing moves
-			// behind them.
-			stateGameDerived.enhancedBoard.settle(bookEvent.board);
+		// Entering superspin gets the same grenade the free game gets.
+		//
+		// It had none: this line flipped gameType and the hold-and-spin scene
+		// simply replaced the base board mid-spin, while buying free spins got a
+		// full scatter celebration and a blast. Same money, two completely
+		// different ways of arriving — which is the part that read as broken.
+		//
+		// The condition is true only on a round's FIRST superspin reveal: respins
+		// 2 and 3 already have gameType 'superspin', and the round resets it to
+		// 'basegame' on the way out (freeSpinEnd's cover and the finalWin safety
+		// net), so the next buy trips it again.
+		if (bookEvent.gameType === 'superspin' && stateGame.gameType !== 'superspin') {
 			await eventEmitter.broadcastAsync({
-				type: 'superspinCellsSpin',
-				lockedKeys: stateGame.stickyPrizes.map((p) => `${p.reel},${p.row}`),
+				type: 'transition',
+				cover: () => {
+					stateGame.gameType = bookEvent.gameType;
+					// Raised here rather than by updateFreeSpin, so the scene and the
+					// respin plaque arrive on the same frame the flash clears.
+					eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
+					stateUi.freeSpinCounterShow = true;
+				},
 			});
-			eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
-			return;
+		} else {
+			stateGame.gameType = bookEvent.gameType;
 		}
 
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: { ...bookEvent, anticipation: gateAnticipation(bookEvent.anticipation) },
 			paddingBoard: config.paddingReels[bookEvent.gameType],
+			// Turbo does not apply to the free game's reels. It still applies to
+			// everything around them — no pre-spin wind-up on autoplay, the short
+			// win-line volley, doubled spine timeScale — so turbo is still faster
+			// here, just not instant. SPIN_OPTIONS_TURBO_FREEGAME carries the pace.
+			isTurboOverride: bookEvent.gameType === 'freegame' ? false : undefined,
 		});
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 	},
@@ -191,7 +210,19 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await animateSymbols({ positions: bookEvent.positions });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
-		await eventEmitter.broadcastAsync({ type: 'transition' });
+		// Enter the feature inside the blast's white-out. The swap used to happen
+		// after the intro plaque had already counted up, which meant the blast
+		// cleared onto the BASE scene and the background only changed later, hidden
+		// behind the plaque. Now the grenade falls on the base board and the flash
+		// reveals the free game — which is what the transition is for.
+		await eventEmitter.broadcastAsync({
+			type: 'transition',
+			cover: () => {
+				stateGame.gameType = 'freegame';
+				stateGame.stickyWildReels = [];
+				eventEmitter.broadcast({ type: 'expandingWildsClear' });
+			},
+		});
 		eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'jng_intro_fs' });
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
@@ -199,9 +230,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			type: 'freeSpinIntroUpdate',
 			totalFreeSpins: bookEvent.totalFs,
 		});
-		stateGame.gameType = 'freegame';
-		stateGame.stickyWildReels = [];
-		eventEmitter.broadcast({ type: 'expandingWildsClear' });
 		eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
@@ -270,8 +298,21 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateUi.freeSpinCounterShow = false;
 	},
 	updateFreeSpin: async (bookEvent: BookEventOfType<'updateFreeSpin'>) => {
-		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
-		stateUi.freeSpinCounterShow = true;
+		// A superspin round's FIRST updateFreeSpin arrives before its first reveal —
+		// the maths calls update_freespin() and only then draws the board — so
+		// showing the plaque here put "3 respins" on screen before the grenade had
+		// even been thrown. Hold it back and let the transition's cover raise it
+		// together with the board.
+		//
+		// The test is whether this round's scene is up yet. In the free game it
+		// always is by now: freeSpinTrigger's cover sets gameType to 'freegame'
+		// before any updateFreeSpin. Only a superspin entry is still sitting on the
+		// base-game scene at this point.
+		const sceneNotUpYet = stateGame.gameType === 'basegame';
+		if (!sceneNotUpYet) {
+			eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
+			stateUi.freeSpinCounterShow = true;
+		}
 		eventEmitter.broadcast({
 			type: 'freeSpinCounterUpdate',
 			current: bookEvent.amount + 1,
@@ -317,7 +358,12 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
 
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
-		stateGame.gameType = 'basegame';
+		// gameType is NOT reset here — it moves to the transition's cover below.
+		// Resetting it at this point dropped the player back onto the base
+		// background while the outro plaque was still counting up their feature
+		// win, so by the time the grenade fell the scene had already changed and
+		// the blast revealed nothing. The feature should still look like the
+		// feature until the blast ends it.
 		stateGame.stickyWildReels = [];
 		// NOTE: expandingWildsClear deliberately does NOT fire here — the sticky
 		// overlays must keep covering the reveal-board W stacks through the outro
@@ -335,7 +381,12 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
 		stateUi.freeSpinCounterShow = false;
-		await eventEmitter.broadcastAsync({ type: 'transition' });
+		await eventEmitter.broadcastAsync({
+			type: 'transition',
+			cover: () => {
+				stateGame.gameType = 'basegame';
+			},
+		});
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });
@@ -398,15 +449,27 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			winLevelSoundsStop();
 			eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
 
-			// Back to the base game. Without this the hold-and-spin board stayed on
-			// screen after the plaque was dismissed — stuck coins still overlaid,
-			// reels still showing superspin-only symbols. Mirrors freeSpinEnd: swap
-			// the state, then let the transition wipe cover the change.
-			stateGame.stickyPrizes = [];
-			eventEmitter.broadcast({ type: 'stickyPrizesClear' });
-			stateGame.gameType = 'basegame';
-			stateGameDerived.enhancedBoard.settle(baseIdleBoard());
-			await eventEmitter.broadcastAsync({ type: 'transition' });
+			// Back to the base game — but inside the transition's cover, not before
+			// it. The plaque is already hidden by this point, so swapping here used
+			// to happen in the open: the coin board snapped to the base board, and
+			// only then did the grenade start its 800ms fall. The blast covered a
+			// change the player had already watched.
+			//
+			// Doing it in `cover` gives the sequence the round actually wants:
+			// superspin board -> grenade falls on it -> blast -> base board.
+			await eventEmitter.broadcastAsync({
+				type: 'transition',
+				cover: () => {
+					stateGame.stickyPrizes = [];
+					eventEmitter.broadcast({ type: 'stickyPrizesClear' });
+					stateGame.gameType = 'basegame';
+					stateGameDerived.enhancedBoard.settle(baseIdleBoard());
+					// The bed changes on the same frame as the scene. winLevelSoundsStop
+					// ran earlier, while gameType was still 'superspin', so it correctly
+					// chose the feature bed then — this is the handover back.
+					eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
+				},
+			});
 			await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		}
 		lastWinLevel = null;

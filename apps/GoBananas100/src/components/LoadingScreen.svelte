@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
 	import { Container, Graphics, Text, Sprite } from 'pixi-svelte';
+	import { CanvasTextMetrics, TextStyle } from 'pixi.js';
 	import { FadeContainer } from 'components-pixi';
 	import { MainContainer } from 'components-layout';
 	import { onMount } from 'svelte';
@@ -8,6 +9,7 @@
 	import { getContext } from '../game/context';
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
+	import FeatureIntro from './FeatureIntro.svelte';
 
 	type Props = {
 		onloaded: () => void;
@@ -23,11 +25,21 @@
 	// features instead of just counting. Every line is checked against the rules
 	// modal (components/ui/ModalGameRules) — note in particular that it takes 4 or
 	// 5 Scatters here, not 3, and that multipliers ADD rather than multiply.
+	//
+	// The multiplier lines are gen-2 copy. They used to read "CARRIES A 2×–50×
+	// MULTIPLIER", which described the first game: a value re-rolled every spin.
+	// It now only ever climbs, to 100X, and that is the single thing this game is
+	// named after — so it gets two of the six slots.
+	//
+	// 'X' not '×' throughout: these are set in Titan One, whose subset does not
+	// carry U+00D7, and one glyph arriving from a fallback face in the middle of a
+	// line is more obvious than the plain letter.
 	const TIPS = [
 		'4 OR 5 SCATTERS AWARD 12 OR 15 FREE SPINS',
 		'IN FREE SPINS EVERY WILD EXPANDS TO FILL ITS REEL',
 		'EXPANDED WILDS STICK FOR THE REST OF THE FEATURE',
-		'EACH EXPANDED WILD CARRIES A 2×–50× MULTIPLIER',
+		'WILD MULTIPLIERS NEVER RESET — THEY ONLY CLIMB',
+		'A SINGLE WILD CAN REACH 100X ON ITS OWN',
 		'MULTIPLIERS ON A WINNING LINE ARE ADDED TOGETHER',
 		'SUPER SPIN: EVERY COIN RESETS THE RESPINS TO 3',
 	];
@@ -64,6 +76,59 @@
 			pulseTick += 1;
 		}, 32);
 		return () => clearInterval(id);
+	});
+
+	// ── title layout ──────────────────────────────────────────────────────────
+	// "GO BANANAS" and "100" are two Texts because only the second is orange, but
+	// they have to read as one centred headline — so the pair is measured and
+	// laid out from its combined width rather than each being centred on its own.
+	//
+	// Measurement is re-derived off pulseTick, not taken once. Titan One is a
+	// self-hosted face that finishes loading *after* this screen is already up;
+	// measuring once would bake in the fallback stack's metrics and leave the two
+	// halves permanently mis-spaced. Re-deriving costs two measureText calls per
+	// 32ms tick on a screen that exists for a few seconds, and it self-corrects
+	// the moment the real face lands.
+	const TITLE_SIZE = 46;
+	// "100" runs a third larger than the name. It is the mechanic the game is named
+	// after, and at matched size it simply read as the last word of the title.
+	const HUNDRED_SIZE = Math.round(TITLE_SIZE * 1.34);
+	const TITLE_GAP = 20;
+
+	// Colours. The first pass put a red blur under gold lettering, which is what
+	// made the whole headline look soft: a coloured glow behind warm type on a warm
+	// background has nothing to separate it from, so the edges just smear. Legibility
+	// here comes from a hard DARK outline instead, and the glow is kept for "100"
+	// alone — where it is doing a job, because that is the part that has to jump.
+	const TITLE_FILL = 0xffe27a; // light gold, well clear of the brown backdrop
+	const HUNDRED_FILL = 0xff8c1a; // same hot orange as the feature card's hero panel
+	const OUTLINE = 0x2e1704;
+
+	// v8 TextStyle shapes. The old `stroke: colour` + `strokeThickness: n` pair is
+	// deprecated and was logging a warning on every Text built here; it also capped
+	// out thin, which is exactly the outline weight this needed more of.
+	const titleStyle = {
+		fontFamily: GAME_FONT,
+		fontSize: TITLE_SIZE,
+		fontWeight: GAME_FONT_WEIGHT,
+		letterSpacing: 6,
+		fill: TITLE_FILL,
+		stroke: { color: OUTLINE, width: 6, join: 'round' as const },
+		dropShadow: { color: 0x000000, alpha: 0.5, blur: 5, angle: Math.PI / 2, distance: 4 },
+	};
+	const hundredStyle = {
+		...titleStyle,
+		fontSize: HUNDRED_SIZE,
+		fill: HUNDRED_FILL,
+		stroke: { color: OUTLINE, width: 7, join: 'round' as const },
+		dropShadow: { color: 0xff4400, alpha: 0.95, blur: 16, angle: 0, distance: 0 },
+	};
+
+	const titleMetrics = $derived.by(() => {
+		pulseTick; // re-measure once the display face has loaded
+		const name = CanvasTextMetrics.measureText('GO BANANAS', new TextStyle(titleStyle)).width;
+		const hundred = CanvasTextMetrics.measureText('100', new TextStyle(hundredStyle)).width;
+		return { name, hundred, total: name + TITLE_GAP + hundred };
 	});
 </script>
 
@@ -114,40 +179,85 @@
 			}}
 		/>
 
+		<!--
+			Title. Sits near the top rather than at 0.36 because the feature card
+			that replaces the progress column needs the middle of the screen, and a
+			headline that slides up as three panels fade in gives the eye two things
+			to follow at once. It does not move between the two states.
+
+			"100" sits on the same line in the same face, a third larger, in the hot
+			orange the feature card's hero panel uses. Same colour in both places is
+			the point — by the time the player reaches the card, that orange already
+			means "the number that grows".
+
+			Two earlier attempts are worth not repeating: a stacked brass plaque,
+			which read as a badge bolted under the name rather than part of it; and
+			matching its size to the name, which turned it into the title's last
+			word. Size, a warmer hue and a glow of its own are what make it the
+			thing being announced.
+		-->
 		<Container
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.36}
+			y={context.stateLayoutDerived.mainLayout().height * 0.155}
 		>
-			<!-- Game title -->
 			<Text
-				anchor={0.5}
+				anchor={{ x: 0, y: 0.5 }}
+				x={-titleMetrics.total / 2}
+				style={titleStyle}
 				text="GO BANANAS"
-				style={{
-					fontFamily: GAME_FONT,
-					fontSize: 52,
-					fontWeight: GAME_FONT_WEIGHT,
-					fill: 0xffd43b,
-					letterSpacing: 6,
-					dropShadow: true,
-					dropShadowColor: 0xe03131,
-					dropShadowBlur: 18,
-					dropShadowDistance: 0,
-					stroke: 0xfff4cf,
-					strokeThickness: 1,
-				}}
 			/>
 
 			<!--
-				Subtitle and the loading line below both sit at 12–15px, which is where
-				Titan One stops working: it is a heavy rounded display face, and at that
-				size its counters close up and "10,000X" turns to mush. They use the body
-				stack instead — the same split the rules and paytable modals already make
-				(see game/fonts.ts). The 52px title above keeps the display face, which is
-				what it is for.
+				Breathing warm glow behind "100" only. Drawn as Graphics rather than
+				animated on the Text's own dropShadow: changing a TextStyle re-renders the
+				glyph texture, so pulsing it at 30fps would rebuild the text every frame.
+			-->
+			<Graphics
+				draw={(g) => {
+					const cx = -titleMetrics.total / 2 + titleMetrics.name + TITLE_GAP + titleMetrics.hundred / 2;
+					const breath = 0.5 + 0.5 * Math.sin(pulseTick / 18);
+					g.clear();
+					g.ellipse(cx, 0, titleMetrics.hundred * 0.85, HUNDRED_SIZE * 0.78);
+					g.fill({ color: 0xff5a00, alpha: 0.16 + 0.1 * breath });
+					g.ellipse(cx, 0, titleMetrics.hundred * 0.58, HUNDRED_SIZE * 0.52);
+					g.fill({ color: 0xffa02a, alpha: 0.12 + 0.08 * breath });
+				}}
+			/>
+
+			<Text
+				anchor={{ x: 0, y: 0.5 }}
+				x={-titleMetrics.total / 2 + titleMetrics.name + TITLE_GAP}
+				style={hundredStyle}
+				text="100"
+			/>
+		</Container>
+	</MainContainer>
+</FadeContainer>
+
+<!--
+	Loading column. Retires the moment the assets are in, and the feature card
+	takes the screen in its place.
+
+	The strapline moved down here off the title, because the card says the same
+	two things in more detail — and at the title's position it now collides with
+	the plaque.
+-->
+<FadeContainer show={loadingType === 'start' && !context.stateApp.loaded}>
+	<MainContainer>
+		<Container
+			x={context.stateLayoutDerived.mainLayout().width * 0.5}
+			y={context.stateLayoutDerived.mainLayout().height * 0.6}
+		>
+			<!--
+				12–15px is where Titan One stops working: it is a heavy rounded display
+				face, and at that size its counters close up and "25,000X" turns to
+				mush. Everything in this column uses the body stack — the same split the
+				rules and paytable modals make (see game/fonts.ts). The title above
+				keeps the display face, which is what it is for.
 			-->
 			<Text
 				anchor={0.5}
-				y={65}
+				y={-34}
 				text="5X5, 15 LINES — MAX WIN 25,000X"
 				style={{
 					fontFamily: BODY_FONT,
@@ -157,13 +267,7 @@
 					letterSpacing: 2.5,
 				}}
 			/>
-		</Container>
 
-		<!-- Progress bar area -->
-		<Container
-			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.6}
-		>
 			<!-- Progress bar -->
 			<Graphics
 				draw={(g) => {
@@ -185,35 +289,30 @@
 			/>
 
 			<!--
-				Progress readout — percentage only. It used to switch to "TAP TO
-				CONTINUE" once loading finished, which put two versions of the same
-				instruction on screen at once: this one and the far larger "PRESS
-				ANYWHERE TO CONTINUE" across the foot (PressToContinue.svelte). The big
-				one wins, so this line simply retires and the tip moves up into the space
-				it leaves — the swap happens on the single frame the bar fills and the
-				bottom prompt appears, so nothing visibly jumps.
+				Progress readout. The whole column is now gated on `!loaded`, so this
+				no longer needs its own guard and the tip no longer has to move up into
+				the space it leaves — the feature card takes the screen the moment
+				loading finishes.
 			-->
-			{#if !context.stateApp.loaded}
-				<Text
-					anchor={0.5}
-					y={20}
-					text={`LOADING ${Math.round(animatedProgress)}%`}
-					style={{
-						fontFamily: BODY_FONT,
-						fontSize: 13,
-						fontWeight: '600',
-						// lifted off the previous muted tan, which was dim at 13px against
-						// the dark vignette
-						fill: 0xe8d3b6,
-						letterSpacing: 2,
-					}}
-				/>
-			{/if}
+			<Text
+				anchor={0.5}
+				y={20}
+				text={`LOADING ${Math.round(animatedProgress)}%`}
+				style={{
+					fontFamily: BODY_FONT,
+					fontSize: 13,
+					fontWeight: '600',
+					// lifted off the previous muted tan, which was dim at 13px against
+					// the dark vignette
+					fill: 0xe8d3b6,
+					letterSpacing: 2,
+				}}
+			/>
 
 			<!-- rotating gameplay tip -->
 			<Text
 				anchor={0.5}
-				y={context.stateApp.loaded ? 20 : 48}
+				y={48}
 				alpha={tipAlpha}
 				text={TIPS[tipIndex]}
 				style={{
@@ -228,12 +327,30 @@
 	</MainContainer>
 </FadeContainer>
 
+<!-- feature card: takes the screen once the bar fills -->
+<FadeContainer show={loadingType === 'start' && context.stateApp.loaded}>
+	<FeatureIntro />
+</FadeContainer>
+
 <!-- press to continue -->
 <FadeContainer show={loadingType === 'start' && context.stateApp.loaded}>
 	<PressToContinue onpress={() => (loadingType = 'transition')} />
 </FadeContainer>
 
-<!-- transition between the loading screen and the game -->
+<!--
+	Transition between the loading screen and the game.
+
+	The handover fires on `oncover` as well as `oncomplete`: `oncover` is the
+	frame the blast has gone fully white, so the loading screen is torn down and
+	the game put up behind a screen showing nothing but flash. Handing over only
+	on `oncomplete` meant the flash cleared to reveal the loading screen for a
+	beat before the game appeared.
+
+	`onloaded` unmounts this whole component, which takes the animation with it,
+	so in practice `oncomplete` never fires — the flash vanishes along with the
+	loading screen and the game is already behind it. It stays wired as a safety
+	net for the day the handover stops unmounting.
+-->
 <FadeContainer show={loadingType === 'transition'}>
-	<TransitionAnimation oncomplete={props.onloaded} />
+	<TransitionAnimation oncover={props.onloaded} oncomplete={props.onloaded} />
 </FadeContainer>

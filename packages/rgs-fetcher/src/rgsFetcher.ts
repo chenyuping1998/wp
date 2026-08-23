@@ -1,6 +1,32 @@
 import type { paths } from './schema';
 import { fetcher } from 'utils-fetcher';
 
+/**
+ * Read the body as JSON, and say WHICH request failed if it is not JSON.
+ *
+ * `response.json()` throws a bare SyntaxError naming only a character offset.
+ * Reported from the field that is unactionable: a review came back with
+ * "SyntaxError: Expected ',' or ']' after array element in JSON at position 288"
+ * and nothing to say whether it was authenticate, play or end-round, nor what
+ * the body actually was - and because the failure happens inside authenticate,
+ * the symptom the reviewer sees is a game running on unset betting parameters.
+ *
+ * Reading the body as text first costs one extra string per request and turns
+ * that into a report someone can act on.
+ */
+const parseJson = async (response: Response, endpoint: string, status: number) => {
+	const text = await response.text();
+	try {
+		return JSON.parse(text);
+	} catch (cause) {
+		const detail = text.length > 400 ? `${text.slice(0, 400)}… (${text.length} chars)` : text;
+		throw new Error(
+			`${endpoint} returned HTTP ${status} with a body that is not valid JSON: ` +
+				`${(cause as Error).message}. Body: ${detail}`,
+		);
+	}
+};
+
 export const rgsFetcher = {
 	post: async function post<
 		T extends keyof paths,
@@ -17,7 +43,7 @@ export const rgsFetcher = {
 		});
 
 		if (response.status !== 200) console.error('error', response);
-		const data = await response.json();
+		const data = await parseJson(response, `POST ${options.url}`, response.status);
 		return data as TResponse;
 	},
 	get: async function get<
@@ -30,7 +56,7 @@ export const rgsFetcher = {
 		});
 
 		if (response.status !== 200) console.error('error', response);
-		const data = await response.json();
+		const data = await parseJson(response, `GET ${options.url}`, response.status);
 		return data as TResponse;
 	},
 };

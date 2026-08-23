@@ -26,6 +26,22 @@ const pick = (normal: string, socialText: string) =>
 
 const BUY_COST = config.betModes.bonus.cost;
 const MAX_WIN = config.betModes.bonus.max_win;
+const SWAN_COST = config.betModes.blackswan.cost;
+// Same 12,000x ceiling as everything else - this mode is not capped differently,
+// it is SHAPED differently. Read per-mode anyway so a future divergence cannot
+// go unnoticed in the copy.
+const SWAN_MAX = config.betModes.blackswan.max_win;
+
+// Typical free-spin counts, injected by sync_math_config.mjs from the maths'
+// trigger tables. The length of the feature is what the extra 120x actually
+// buys, so it is the one figure this card must not get wrong - and it is one I
+// retune, which is exactly why it is derived rather than written.
+const spinRange = (mode: 'bonus' | 'blackswan') => {
+	const [lo, hi] = config.betModes[mode].typical_spins;
+	return lo === hi ? `${lo}` : `${lo}-${hi}`;
+};
+const BONUS_SPINS = spinRange('bonus');
+const SWAN_SPINS = spinRange('blackswan');
 // The maths carries rtp per mode; both are the same number, and the copy claims
 // they are, so read the one it is claiming parity WITH.
 const RTP_PCT = `${(config.betModes.base.rtp * 100).toFixed(0)}%`;
@@ -94,6 +110,46 @@ export const MARGIN_CALL_BET_MODE_META: Record<string, BetModeData> = {
 			get tickerSpin() {
 				return pick('BONUS BUY ACTIVATED', 'FEATURE ACTIVATED');
 			},
+			bannerText: '',
+		},
+	},
+	// BLACK SWAN. A second buy at a higher price into the same feature, with the
+	// same ceiling - so the copy has to be precise about what the extra 120x
+	// actually buys, which is 10-12 spins instead of 8 and a hotter meter. It
+	// does NOT buy a higher maximum, and saying so plainly is better than
+	// implying otherwise and being found out.
+	BLACKSWAN: {
+		mode: 'BLACKSWAN',
+		costMultiplier: config.betModes.blackswan.cost,
+		type: 'buy',
+		parent: '',
+		children: '',
+		maxWin: config.betModes.blackswan.max_win,
+		assets: { ...emptyAssets },
+		text: {
+			get title() {
+				return pick('BUY BLACK SWAN', 'BLACK SWAN');
+			},
+			get dialog() {
+				return pick(
+					`Buy the LIQUIDATION RUN at its most violent for ${SWAN_COST}× your bet, at the same ${RTP_PCT} RTP. The feature opens on ${SWAN_SPINS} free spins instead of ${BONUS_SPINS}, and every LEVERAGE symbol carries more weight, so the multiplier climbs faster and further. The same ${WAYS_FEATURE} ways and the same ${SWAN_MAX.toLocaleString('en-US')}× maximum — a wider spread of outcomes, not a higher ceiling.`,
+					`Play the LIQUIDATION RUN at its most violent for ${SWAN_COST}× your amount, at the same ${RTP_PCT} RTP. The feature opens on ${SWAN_SPINS} free spins instead of ${BONUS_SPINS}, and every LEVERAGE symbol carries more weight, so the multiplier climbs faster and further. The same ${WAYS_FEATURE} ways and the same ${SWAN_MAX.toLocaleString('en-US')}× maximum — a wider spread of outcomes, not a higher ceiling.`,
+				);
+			},
+			get description() {
+				return pick(
+					`${SWAN_COST}× BET → ${SWAN_SPINS} spins, hotter leverage, far wilder swings`,
+					`${SWAN_COST}× AMOUNT → ${SWAN_SPINS} spins, hotter leverage, far wilder swings`,
+				);
+			},
+			get button() {
+				return pick(`BUY ${SWAN_COST}×`, `PLAY ${SWAN_COST}×`);
+			},
+			get tickerIdle() {
+				return pick('PLACE YOUR BET', 'READY TO PLAY');
+			},
+			// No pick(): carries no betting term, so it is already safe for social.
+			tickerSpin: 'BLACK SWAN EVENT',
 			bannerText: '',
 		},
 	},

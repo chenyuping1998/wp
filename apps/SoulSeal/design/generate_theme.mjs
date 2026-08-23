@@ -1,0 +1,545 @@
+// Soul Seal theme art: reel housing, UI plates, bet-bar icons and particles.
+//
+// Same trading-terminal language as the symbols (design/generate_symbols.mjs):
+// graphite panels, chamfered corners, a thin phosphor edge light, and colour
+// carrying the meaning. Everything is emitted at the dimensions the layout maths
+// already assumes - the housing is 1280x1280 with the board occupying the centred
+// 1000x1000 (BoardFrame's FRAME_SCALE) - so the art can be swapped without
+// touching a single number in the components.
+//
+// Type is Cinzel, the same self-hosted face the live Text nodes use
+// (game/fonts.ts). Baked headline art and live Text have to be the same face or
+// the join between them is visible.
+//
+// Usage: node design/generate_theme.mjs <dir containing node_modules with @resvg/resvg-js>
+import { createRequire } from 'module';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const resvgDir = process.argv[2];
+if (!resvgDir) {
+	console.error('usage: node generate_theme.mjs <dir with node_modules/@resvg/resvg-js>');
+	process.exit(1);
+}
+const require = createRequire(path.join(resvgDir, 'noop.js'));
+const { Resvg } = require('@resvg/resvg-js');
+
+const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const FONT_DIR = path.join(appRoot, 'static/fonts');
+const FRAME_DIR = path.join(appRoot, 'static/assets/sprites/soulSealFrame');
+const UI_DIR = path.join(appRoot, 'static/assets/sprites/soulSealUi');
+const BANNER_DIR = path.join(appRoot, 'static/assets/sprites/soulSealWinBanners');
+const ICON_DIR = path.join(appRoot, 'static/assets/sprites/soulSealUiIcons');
+const FX_DIR = path.join(appRoot, 'static/assets/sprites/soulSealFx');
+for (const dir of [FRAME_DIR, UI_DIR, BANNER_DIR, ICON_DIR, FX_DIR]) {
+	fs.mkdirSync(dir, { recursive: true });
+}
+
+const FONT = 'Cinzel';
+
+// ─── palette (shared with generate_symbols.mjs) ─────────────────────────────
+const BULL = '#4bd67f';
+const BEAR = '#ff5566';
+const AMBER = '#f7a83a';
+const VIOLET = '#9b7bff';
+const TEAL = '#3fd0d4';
+const PANEL_HI = '#1b2721';
+const PANEL_LO = '#080f0c';
+const INK = '#050908';
+
+const svg = (w, h, body, defs = '') =>
+	`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs>${defs}</defs>${body}</svg>`;
+
+const render = (source, outPath, width) => {
+	const resvg = new Resvg(source, {
+		fitTo: { mode: 'width', value: width },
+		font: { fontDirs: [FONT_DIR], loadSystemFonts: true, defaultFontFamily: FONT },
+	});
+	fs.writeFileSync(outPath, resvg.render().asPng());
+	console.log(`  ${path.basename(path.dirname(outPath))}/${path.basename(outPath)}  ${(fs.statSync(outPath).size / 1024).toFixed(1)} KB`);
+};
+
+// A chamfered rectangle - the corner cut is what makes a panel read as milled
+// hardware rather than as a rounded-rect UI card.
+const chamfer = (x, y, w, h, c) =>
+	`M ${x + c} ${y} L ${x + w - c} ${y} L ${x + w} ${y + c} L ${x + w} ${y + h - c} ` +
+	`L ${x + w - c} ${y + h} L ${x + c} ${y + h} L ${x} ${y + h - c} L ${x} ${y + c} Z`;
+
+const panelDefs = (accent, id) => `
+	<linearGradient id="face${id}" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="${PANEL_HI}"/><stop offset="1" stop-color="${PANEL_LO}"/>
+	</linearGradient>
+	<linearGradient id="edge${id}" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="${accent}" stop-opacity="0.95"/>
+		<stop offset="1" stop-color="${accent}" stop-opacity="0.35"/>
+	</linearGradient>`;
+
+// Rivet ticks along an edge; hardware detail that survives being scaled down.
+const rivets = (x0, x1, y, step, color) => {
+	let out = '';
+	for (let x = x0; x <= x1; x += step) {
+		out += `<circle cx="${x}" cy="${y}" r="4" fill="${color}" opacity="0.5"/>`;
+	}
+	return out;
+};
+
+// ─── reel housing ───────────────────────────────────────────────────────────
+// frame_bg is what sits BEHIND the reels: the well the symbols fall into.
+const F = 1280;
+const WELL = 1000;
+const WELL_X = (F - WELL) / 2;
+
+// eslint-disable-next-line no-unused-vars -- kept as the vector fallback, see 'housing' below
+const frameBg = () => {
+	let grid = '';
+	for (let i = 1; i < 5; i++) {
+		const x = WELL_X + (WELL / 5) * i;
+		grid += `<path d="M ${x} ${WELL_X + 12} L ${x} ${WELL_X + WELL - 12}" stroke="${BULL}" stroke-width="2" opacity="0.10"/>`;
+	}
+	const defs = `
+	<linearGradient id="well" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#0c1512"/><stop offset="1" stop-color="#050b09"/>
+	</linearGradient>
+	<radialGradient id="wellGlow" cx="0.5" cy="0.5" r="0.62">
+		<stop offset="0" stop-color="${BULL}" stop-opacity="0.10"/>
+		<stop offset="1" stop-color="${BULL}" stop-opacity="0"/>
+	</radialGradient>`;
+	const body = `
+	<path d="${chamfer(WELL_X - 10, WELL_X - 10, WELL + 20, WELL + 20, 34)}" fill="url(#well)"/>
+	<path d="${chamfer(WELL_X - 10, WELL_X - 10, WELL + 20, WELL + 20, 34)}" fill="url(#wellGlow)"/>
+	${grid}`;
+	return svg(F, F, body, defs);
+};
+
+// frame_edge is the bezel drawn OVER the reels: a ring, transparent in the
+// middle, so it has to cover the well's rim without covering the symbols.
+// eslint-disable-next-line no-unused-vars -- kept as the vector fallback, see 'housing' below
+const frameEdge = () => {
+	const outer = chamfer(30, 30, F - 60, F - 60, 56);
+	const inner = chamfer(WELL_X - 6, WELL_X - 6, WELL + 12, WELL + 12, 32);
+	const defs = panelDefs(BULL, 'E');
+	const body = `
+	<path d="${outer} ${inner}" fill-rule="evenodd" fill="url(#faceE)"/>
+	<path d="${outer} ${inner}" fill-rule="evenodd" fill="none" stroke="${INK}" stroke-width="6"/>
+	<path d="${inner}" fill="none" stroke="url(#edgeE)" stroke-width="7"/>
+	<path d="${outer}" fill="none" stroke="${BULL}" stroke-width="3" opacity="0.45"/>
+	${rivets(90, F - 90, 62, 74, BULL)}
+	${rivets(90, F - 90, F - 62, 74, BULL)}
+	<g fill="none" stroke="${BULL}" stroke-width="8" stroke-linecap="round" opacity="0.9">
+		<path d="M ${WELL_X - 6} ${WELL_X + 70} L ${WELL_X - 6} ${WELL_X - 6} L ${WELL_X + 70} ${WELL_X - 6}"/>
+		<path d="M ${WELL_X + WELL + 6} ${WELL_X + 70} L ${WELL_X + WELL + 6} ${WELL_X - 6} L ${WELL_X + WELL - 70} ${WELL_X - 6}"/>
+		<path d="M ${WELL_X - 6} ${WELL_X + WELL - 70} L ${WELL_X - 6} ${WELL_X + WELL + 6} L ${WELL_X + 70} ${WELL_X + WELL + 6}"/>
+		<path d="M ${WELL_X + WELL + 6} ${WELL_X + WELL - 70} L ${WELL_X + WELL + 6} ${WELL_X + WELL + 6} L ${WELL_X + WELL - 70} ${WELL_X + WELL + 6}"/>
+	</g>`;
+	return svg(F, F, body, defs);
+};
+
+// ─── free-spin plates ───────────────────────────────────────────────────────
+// Deliberately textless. FreeSpinIntro draws FREE SPINS, the spin count and
+// AWARDED on top of this, and a feature name baked into the plate sat straight
+// under the number. The panel also fills most of the image now - it used to
+// occupy 40% of the height while the text was laid out across 75% of it, so the
+// words fell outside the plate they were supposed to be inside.
+const FS_PANEL = { x: 40, y: 150, w: 1200, h: 700, r: 56 };
+
+// eslint-disable-next-line no-unused-vars -- kept as the vector fallback
+const fsSign = () => {
+	const w = 1280;
+	const h = 1002;
+	const defs = panelDefs(BULL, 'S');
+	const { x, y, w: pw, h: ph, r } = FS_PANEL;
+	const body = `
+	<path d="${chamfer(x, y, pw, ph, r)}" fill="url(#faceS)" stroke="${INK}" stroke-width="8"/>
+	<path d="${chamfer(x, y, pw, ph, r)}" fill="none" stroke="${BULL}" stroke-width="6" opacity="0.9"/>
+	<path d="M ${x + 50} ${y + 66} L ${x + pw - 50} ${y + 66}" stroke="${BULL}" stroke-width="3" opacity="0.3"/>
+	<path d="M ${x + 50} ${y + ph - 66} L ${x + pw - 50} ${y + ph - 66}" stroke="${BULL}" stroke-width="3" opacity="0.3"/>
+	${rivets(x + 70, x + pw - 70, y + 34, 96, BULL)}
+	${rivets(x + 70, x + pw - 70, y + ph - 34, 96, BULL)}`;
+	return svg(w, h, body, defs);
+};
+
+// eslint-disable-next-line no-unused-vars -- kept as the vector fallback, see 'housing'
+const fsCounterPanel = () => {
+	const w = 1280;
+	const h = 966;
+	const defs = panelDefs(BULL, 'C');
+	const body = `
+	<path d="${chamfer(120, 150, w - 240, h - 300, 54)}" fill="url(#faceC)" stroke="${INK}" stroke-width="10"/>
+	<path d="${chamfer(120, 150, w - 240, h - 300, 54)}" fill="none" stroke="${BULL}" stroke-width="5" opacity="0.8"/>
+	<path d="${chamfer(180, 400, w - 360, 300, 32)}" fill="#050b09" opacity="0.75"/>
+	${rivets(190, w - 190, 200, 96, BULL)}`;
+	return svg(w, h, body, defs);
+};
+
+// ─── bet-bar plates ─────────────────────────────────────────────────────────
+const tickerPlate = () => {
+	const w = 652;
+	const h = 146;
+	const defs = panelDefs(BULL, 'T');
+	const body = `
+	<path d="${chamfer(6, 10, w - 12, h - 20, 22)}" fill="url(#faceT)" stroke="${INK}" stroke-width="5"/>
+	<path d="${chamfer(6, 10, w - 12, h - 20, 22)}" fill="none" stroke="${BULL}" stroke-width="3" opacity="0.75"/>
+	<path d="M 26 ${h / 2} L ${w - 26} ${h / 2}" stroke="${BULL}" stroke-width="1.5" opacity="0.14"/>`;
+	return svg(w, h, body, defs);
+};
+
+// The Buy Bonus plate: the talisman itself.
+//
+// It was a chamfered square with rivets and an amber rule - the same panel the
+// readouts use, at a different size. That is a reasonable default and it was
+// wrong here for a specific reason: every other plate in this game is furniture
+// the player reads THROUGH, and this one is the thing they press to spend three
+// hundred times their stake. It should be an object, and the game already has
+// the right object.
+//
+// The art is the same talisman the burst throws and the rail collects
+// (design/source/fx/talisman.png), inlined rather than referenced so the
+// generated PNG cannot end up pointing at a file that later moves.
+//
+// The canvas stays 640x640 even though the talisman is 192x267. The shared bet
+// bar sizes this sprite from its own dimensions, so changing the aspect would
+// change the CTA's footprint on the bar and on the side rail - a layout change
+// dressed up as an art change. The paper sits inside the square with air around
+// it instead, which is also how a talisman hangs.
+// art-bible 2.1.
+const CANDLE = '#FFCB6B';
+
+const buyBonusPlate = () => {
+	const s = 640;
+	// The KEYED talisman, not design/source/fx/talisman.png.
+	//
+	// The source is painted on an opaque black card - 40% of its pixels - and
+	// embedding it put that card on screen as a black rectangle behind the paper,
+	// with hard corners, which is what this plate looked like for two rounds.
+	// design/generate_talisman_spin.mjs keys the card off and writes the result;
+	// run it first (the build does).
+	const flat = path.join(appRoot, 'static/assets/sprites/talisman/talisman_flat.png');
+	if (!fs.existsSync(flat)) {
+		console.error(`missing ${path.relative(appRoot, flat)} - run design/generate_talisman_spin.mjs`);
+		process.exit(1);
+	}
+	const talisman = fs.readFileSync(flat);
+	const href = `data:image/png;base64,${talisman.toString('base64')}`;
+	// 192x267 at 0.97 of the canvas height, centred.
+	//
+	// As large as the square allows, and that is the point: the shared UI wraps
+	// the label to a width the THEME gives it, and the widest that can be is the
+	// paper. At 0.86 the paper was 62% of the button's width and "BUY BONUS" had
+	// to shrink further than it should to sit inside it; at 0.97 it is 70%, which
+	// buys back a size step. The canvas stays square - see the note above.
+	const h = s * 0.97;
+	const w = h * (192 / 267);
+	const x = (s - w) / 2;
+	const y = (s - h) / 2;
+	// Nothing to declare: the plate is one image and no filter survives on it.
+	const defs = '';
+	const body = `
+	<!--
+		The paper, and nothing else.
+
+		There was a blurred candle ellipse behind it, meant to read as the altar
+		light catching the page. It was 62% of the paper's width as a RADIUS, so it
+		reached 54px past the paper on each side and drew two bright vertical bars
+		down the outside of it - light apparently leaking from behind a sheet of
+		paper. The board is already lit; a plate does not need its own sun.
+	-->
+	<image href="${href}" x="${x}" y="${y}" width="${w}" height="${h}"/>
+	<!--
+		No well behind the label.
+
+		There was one: a pale blurred rectangle across the middle, so the wood-dark
+		"BUY BONUS" would have a quiet ground under the talisman's key-fret device.
+		At the opacity needed to do that it read as a grey smear across a gold
+		plaque - it lightened the paper without looking like light.
+
+		It is not needed. Measured against the plain paper the ink is 9.3:1, which
+		is past WCAG AAA for large text; the key-fret behind it is a low-contrast
+		relief in the same gold, so it costs the type nothing.
+	-->`;
+
+	return svg(s, s, body, defs);
+};
+
+// ─── win banners ────────────────────────────────────────────────────────────
+// Not generated. The five tier frames in static/assets/sprites/soulSealWinBanners
+// are supplied art; their inner wells are measured by design/measure_banner_wells.mjs
+// and the numbers live in constants.ts (WIN_BANNERS). A generator here would
+// overwrite them on the next run.
+
+// ─── win banners ────────────────────────────────────────────────────────────
+// Five escalating alert plaques in the game's own language: a graphite panel
+// with a dark readout well, phosphor edge light, rivets, and progressively more
+// hardware bolted to it as the tier climbs. The top tier is the seal itself -
+// lamps and alert bars, in the same cinnabar as the scatter.
+//
+// Nothing is baked in. Win.svelte draws the tier label and the amount live into
+// the well, so the wells are declared here and mirrored in constants.ts
+// (WIN_BANNERS). design/measure_banner_wells.mjs re-derives them from the PNGs
+// and is the check that the two have not drifted.
+//
+// The well shrinks as a fraction of the image as the tier climbs, which is what
+// makes the higher tiers physically bigger on screen: Win.svelte draws every
+// well at the same width, so more decoration around the same readout means a
+// larger plaque.
+const BANNER_TIERS = [
+	{ name: 'tier1', w: 1000, h: 360, well: { w: 0.76, h: 0.5 }, accent: BULL, wings: 0, lamps: 0 },
+	{ name: 'tier2', w: 1000, h: 380, well: { w: 0.72, h: 0.46 }, accent: TEAL, wings: 1, lamps: 0 },
+	{ name: 'tier3', w: 1000, h: 420, well: { w: 0.68, h: 0.42 }, accent: AMBER, wings: 2, lamps: 0 },
+	{ name: 'tier4', w: 1000, h: 450, well: { w: 0.64, h: 0.38 }, accent: VIOLET, wings: 3, lamps: 2 },
+	{ name: 'tier5', w: 1000, h: 500, well: { w: 0.6, h: 0.34 }, accent: BEAR, wings: 4, lamps: 4 },
+];
+
+// A candlestick, the game's own motif, used as the decoration that grows with
+// the tier rather than a generic spike or flame.
+const candle = (x, cy, h, color, up) => `
+	<path d="M ${x} ${cy - h * 0.78} L ${x} ${cy + h * 0.78}" stroke="${color}" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+	<rect x="${x - 13}" y="${cy - h * 0.42}" width="26" height="${h * 0.84}" rx="5"
+		fill="${color}" opacity="${up ? 0.34 : 0.2}"/>
+	<rect x="${x - 13}" y="${cy - h * 0.42}" width="26" height="${h * 0.84}" rx="5"
+		fill="none" stroke="${color}" stroke-width="5"/>`;
+
+// eslint-disable-next-line no-unused-vars -- kept as the vector fallback, see 'win banners' below
+const winBanner = (tier) => {
+	const { w, h, accent } = tier;
+	const wellW = w * tier.well.w;
+	const wellH = h * tier.well.h;
+	const wellX = (w - wellW) / 2;
+	const wellY = (h - wellH) / 2;
+
+	// panel: sits between the well and the outer decoration
+	const padX = 46;
+	const padY = 34;
+	const panelX = wellX - padX;
+	const panelY = wellY - padY;
+	const panelW = wellW + padX * 2;
+	const panelH = wellH + padY * 2;
+
+	let wings = '';
+	for (let i = 0; i < tier.wings; i++) {
+		const gap = 34;
+		const height = panelH * (0.86 - i * 0.13);
+		const left = panelX - gap * (i + 1) - 18 * i;
+		const right = panelX + panelW + gap * (i + 1) + 18 * i;
+		wings += candle(left, h / 2, height, accent, i % 2 === 0);
+		wings += candle(right, h / 2, height, accent, i % 2 === 1);
+	}
+
+	let lamps = '';
+	for (let i = 0; i < tier.lamps; i++) {
+		const lx = panelX + 30 + (panelW - 60) * (i / Math.max(1, tier.lamps - 1));
+		for (const ly of [panelY + 16, panelY + panelH - 16]) {
+			lamps += `<circle cx="${lx}" cy="${ly}" r="11" fill="${accent}" opacity="0.9"/>`;
+			lamps += `<circle cx="${lx}" cy="${ly}" r="20" fill="${accent}" opacity="0.22"/>`;
+		}
+	}
+
+	const defs = `
+	${panelDefs(accent, 'B')}
+	<radialGradient id="bHalo" cx="0.5" cy="0.5" r="0.6">
+		<stop offset="0" stop-color="${accent}" stop-opacity="0.4"/>
+		<stop offset="1" stop-color="${accent}" stop-opacity="0"/>
+	</radialGradient>
+	<linearGradient id="bWell" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#040907"/><stop offset="1" stop-color="#020504"/>
+	</linearGradient>`;
+
+	const body = `
+	<rect width="${w}" height="${h}" fill="url(#bHalo)"/>
+	${wings}
+	<path d="${chamfer(panelX, panelY, panelW, panelH, 40)}" fill="url(#faceB)" stroke="${INK}" stroke-width="9"/>
+	<path d="${chamfer(panelX, panelY, panelW, panelH, 40)}" fill="none" stroke="${accent}" stroke-width="6" opacity="0.95"/>
+	${lamps}
+	<path d="${chamfer(wellX, wellY, wellW, wellH, 24)}" fill="url(#bWell)"/>
+	<path d="${chamfer(wellX, wellY, wellW, wellH, 24)}" fill="none" stroke="${accent}" stroke-width="4" opacity="0.75"/>
+	${rivets(panelX + 56, panelX + panelW - 56, panelY + 17, 78, accent)}
+	${rivets(panelX + 56, panelX + panelW - 56, panelY + panelH - 17, 78, accent)}
+	<g fill="none" stroke="${accent}" stroke-width="7" stroke-linecap="round">
+		<path d="M ${wellX - 14} ${wellY + 34} L ${wellX - 14} ${wellY - 14} L ${wellX + 34} ${wellY - 14}"/>
+		<path d="M ${wellX + wellW + 14} ${wellY + 34} L ${wellX + wellW + 14} ${wellY - 14} L ${wellX + wellW - 34} ${wellY - 14}"/>
+		<path d="M ${wellX - 14} ${wellY + wellH - 34} L ${wellX - 14} ${wellY + wellH + 14} L ${wellX + 34} ${wellY + wellH + 14}"/>
+		<path d="M ${wellX + wellW + 14} ${wellY + wellH - 34} L ${wellX + wellW + 14} ${wellY + wellH + 14} L ${wellX + wellW - 34} ${wellY + wellH + 14}"/>
+	</g>`;
+
+	return svg(w, h, body, defs);
+};
+
+// ─── bet-bar icons ──────────────────────────────────────────────────────────
+// Line glyphs on a transparent ground, drawn at 256 so they stay crisp on a
+// retina bar. Stroke-only: a filled icon at bar size turns into a blob.
+const I = 256;
+const icon = (body, color = BULL) =>
+	svg(
+		I,
+		I,
+		`<g fill="none" stroke="${color}" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">${body}</g>`,
+	);
+
+const ICONS = {
+	// circular arrow: the spin
+	spin: icon(`
+		<path d="M 204 128 A 76 76 0 1 1 172 66"/>
+		<path d="M 176 34 L 176 74 L 136 74"/>`),
+	decrease: icon(`
+		<path d="M 44 60 L 212 60 L 212 196 L 44 196 Z"/>
+		<path d="M 88 128 L 168 128"/>`),
+	increase: icon(`
+		<path d="M 44 60 L 212 60 L 212 196 L 44 196 Z"/>
+		<path d="M 88 128 L 168 128"/><path d="M 128 88 L 128 168"/>`),
+	menu: icon(`
+		<path d="M 52 84 L 204 84"/><path d="M 52 128 L 204 128"/><path d="M 52 172 L 204 172"/>`),
+	menuExit: icon(`<path d="M 72 72 L 184 184"/><path d="M 184 72 L 72 184"/>`),
+	settings: icon(`
+		<circle cx="128" cy="128" r="38"/>
+		<path d="M 128 40 L 128 66"/><path d="M 128 190 L 128 216"/>
+		<path d="M 40 128 L 66 128"/><path d="M 190 128 L 216 128"/>
+		<path d="M 66 66 L 84 84"/><path d="M 172 172 L 190 190"/>
+		<path d="M 190 66 L 172 84"/><path d="M 84 172 L 66 190"/>`),
+	info: icon(`
+		<circle cx="128" cy="128" r="86"/>
+		<path d="M 128 116 L 128 176"/><path d="M 128 80 L 128 88"/>`),
+	// stacked rows: the pay table
+	payTable: icon(`
+		<path d="M 48 56 L 208 56 L 208 200 L 48 200 Z"/>
+		<path d="M 48 104 L 208 104"/><path d="M 48 152 L 208 152"/>
+		<path d="M 128 56 L 128 200"/>`),
+	soundOn: icon(`
+		<path d="M 60 100 L 100 100 L 144 60 L 144 196 L 100 156 L 60 156 Z"/>
+		<path d="M 176 96 A 48 48 0 0 1 176 160"/>
+		<path d="M 202 72 A 84 84 0 0 1 202 184"/>`),
+	soundOff: icon(`
+		<path d="M 60 100 L 100 100 L 144 60 L 144 196 L 100 156 L 60 156 Z"/>
+		<path d="M 176 100 L 224 156"/><path d="M 224 100 L 176 156"/>`),
+	// circular arrow with a count dot: auto spin
+	autoSpin: icon(`
+		<path d="M 204 128 A 76 76 0 1 1 172 66"/>
+		<path d="M 176 34 L 176 74 L 136 74"/>
+		<circle cx="128" cy="128" r="14"/>`),
+	// counter-clockwise arrow: replay
+	replay: icon(`
+		<path d="M 52 128 A 76 76 0 1 0 84 66"/>
+		<path d="M 80 34 L 80 74 L 120 74"/>`),
+	turbo: icon(`<path d="M 148 36 L 84 138 L 128 138 L 108 220 L 176 114 L 130 114 Z"/>`, AMBER),
+};
+
+// ─── particle textures ──────────────────────────────────────────────────────
+// Every particle in the game is one of these, tinted and (mostly) drawn
+// additively, so they are painted white with a soft falloff and carry no colour
+// of their own. Hard-edged vector shapes read as stamped stickers once they are
+// scaled up; a gradient falloff is what makes them look like light.
+const FX = {
+	fx_glow: svg(
+		256,
+		256,
+		'<circle cx="128" cy="128" r="128" fill="url(#g)"/>',
+		`<radialGradient id="g" cx="0.5" cy="0.5" r="0.5">
+			<stop offset="0" stop-color="#fff" stop-opacity="1"/>
+			<stop offset="0.45" stop-color="#fff" stop-opacity="0.35"/>
+			<stop offset="1" stop-color="#fff" stop-opacity="0"/>
+		</radialGradient>`,
+	),
+	fx_star: svg(
+		256,
+		256,
+		`<path d="M 128 8 Q 140 116 248 128 Q 140 140 128 248 Q 116 140 8 128 Q 116 116 128 8 Z" fill="url(#g)"/>`,
+		`<radialGradient id="g" cx="0.5" cy="0.5" r="0.5">
+			<stop offset="0" stop-color="#fff" stop-opacity="1"/>
+			<stop offset="0.6" stop-color="#fff" stop-opacity="0.6"/>
+			<stop offset="1" stop-color="#fff" stop-opacity="0"/>
+		</radialGradient>`,
+	),
+	fx_streak: svg(
+		256,
+		64,
+		'<rect width="256" height="64" fill="url(#g)"/>',
+		`<linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+			<stop offset="0" stop-color="#fff" stop-opacity="0"/>
+			<stop offset="0.5" stop-color="#fff" stop-opacity="0.95"/>
+			<stop offset="1" stop-color="#fff" stop-opacity="0"/>
+		</linearGradient>`,
+	),
+	// A candlestick shard, so the debris thrown by a blast belongs to this game
+	// rather than being generic sparks.
+	fx_tick: svg(
+		256,
+		256,
+		`<g fill="#fff">
+			<rect x="112" y="20" width="32" height="216" rx="14" opacity="0.55"/>
+			<rect x="64" y="76" width="128" height="104" rx="22"/>
+		</g>`,
+	),
+	fx_vignette: svg(
+		512,
+		512,
+		'<rect width="512" height="512" fill="url(#g)"/>',
+		`<radialGradient id="g" cx="0.5" cy="0.5" r="0.5">
+			<stop offset="0.55" stop-color="#000" stop-opacity="0"/>
+			<stop offset="1" stop-color="#000" stop-opacity="0.85"/>
+		</radialGradient>`,
+	),
+};
+
+// ─── store thumbnail ────────────────────────────────────────────────────────
+// The LEVERAGE mark, duplicated from generate_symbols.mjs rather than imported.
+// That file does its rendering at module scope and exits if it is not handed a
+// resvg directory, so importing it here would run the whole symbol set as a side
+// effect. Twelve lines of path data is the cheaper problem — but if the W symbol
+// is redesigned, this has to follow it.
+// ─── thumbnail ──────────────────────────────────────────────────────────────
+// Not generated here any more.
+//
+// What used to sit at this spot drew a 408px card reading TRIPLE WITCHING over
+// "3,125 WAYS" and "MAX 12,000x" - the scaffold's title, the scaffold's ways
+// count, and a cap this game lowered to 10,000x. It kept rendering on every run
+// of this script, so the wrong card was always the freshest file in the repo.
+//
+// The real one is composed from the keyed cover art in design/source/cover (see
+// design/import_cover.mjs) against the supplied background, because Stake's
+// review asks for a painted character on a scene and not for a vector card. That
+// composition is still to be written; until it exists there is deliberately NO
+// thumbnail in the repo, which fails loudly at upload time rather than quietly
+// shipping the wrong one.
+
+// ─── render everything ──────────────────────────────────────────────────────
+console.log('housing');
+// frame_bg.png and frame_edge.png are NOT rendered here any more. They are
+// supplied art now, brought in by design/import_scene.mjs, which also derives
+// src/game/frameGeometry.ts by measuring the supplied frame's actual opening.
+// The vector versions this script still knows how to draw are kept as functions
+// so the fallback is not lost, but rendering them would overwrite the painted
+// art with a drawing of it - and silently, since both write the same filenames.
+// fs_sign.png is gone: the large free-spin cards use the supplied plaque now, at
+// a different size. Rendering it again would put an unreferenced 1280px PNG back
+// in static/ on the next run.
+// eslint-disable-next-line no-unused-vars -- fsSign kept as the vector fallback
+// fs_counter_panel.png is supplied art now, brought in by
+// design/import_banners.mjs. Rendering the vector version would write the same
+// filename and silently replace a painting with a drawing of it - which is what
+// happened to frame_bg, and took two rounds and a screenshot to notice.
+// eslint-disable-next-line no-unused-vars -- fsCounterPanel kept as the fallback
+
+console.log('bet bar');
+render(tickerPlate(), path.join(UI_DIR, 'ticker_plate.png'), 652);
+render(buyBonusPlate(), path.join(UI_DIR, 'buybonus_plate.png'), 640);
+
+// Win banners are NOT rendered here any more.
+//
+// They are supplied art now, brought in by design/import_banners.mjs, which keys
+// the checkerboard its JPEGs carry. This loop writes the same five filenames, so
+// leaving it in would silently replace five painted plaques with drawings of
+// them on the next run of this script - the same trap frame_bg fell into, and it
+// took two rounds and a screenshot to notice that time.
+//
+// winBanner() and BANNER_TIERS are kept as the vector fallback.
+// eslint-disable-next-line no-unused-vars
+
+console.log('icons');
+for (const [name, source] of Object.entries(ICONS)) {
+	render(source, path.join(ICON_DIR, `${name}.png`), I);
+}
+
+console.log('particles');
+for (const [name, source] of Object.entries(FX)) {
+	render(source, path.join(FX_DIR, `${name}.png`), name === 'fx_vignette' ? 512 : 256);
+}
+

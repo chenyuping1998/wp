@@ -70,6 +70,16 @@
 				"3015"
 			],
 			"port": 3015
+		},
+		{
+			"name": "soulseal-dev",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": [
+				"--dir",
+				"apps/SoulSeal",
+				"dev"
+			],
+			"port": 3005
 		}
 	]
 }

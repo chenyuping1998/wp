@@ -76,7 +76,7 @@
 								fontWeight: displayWeightFor(title),
 								letterSpacing: 6,
 								fill: [0xfff3bd, 0xffd75e, 0xc9821a],
-								stroke: 0x54330a,
+								stroke: 0x231703,
 								strokeThickness: 6,
 								dropShadow: true,
 								dropShadowColor: 0x000000,

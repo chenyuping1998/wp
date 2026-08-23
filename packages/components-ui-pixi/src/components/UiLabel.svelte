@@ -96,6 +96,35 @@
 	{/if}
 
 	{#if props.interactive && uiTheme.labelAffordance}
+		<!--
+			The hit area, drawn before the chevron so it sits under everything.
+
+			A pixi Container has no hit area of its own - it hit-tests the union of
+			its children's geometry. This readout's children are two Text nodes and a
+			chevron that is a 2px stroked polyline, so the region that actually
+			responded to a tap was the two words plus a hairline V, with a dead gap
+			between them. Aiming for the chevron - the one part of the panel that
+			LOOKS like a control - was the hardest thing on the bar to hit.
+
+			A rectangle at alpha 0.004 fixes it: pixi hit-tests Graphics by geometry
+			rather than by what you can see, and 0.004 is under a quarter of one 8-bit
+			level, so it cannot tint the plate underneath. Not zero, because a
+			fully transparent fill is the kind of thing a future optimisation is
+			entitled to cull.
+
+			Only drawn where the chevron is, so a game that does not opt into
+			labelAffordance keeps exactly the hit area it has today.
+		-->
+		<Graphics
+			draw={(g) => {
+				// wraps the label, the value and the chevron, with a little air
+				const w = UI_BASE_FONT_SIZE * 8.4;
+				const h = UI_BASE_FONT_SIZE * 2.9;
+				g.clear();
+				g.roundRect(-w / 2, -UI_BASE_FONT_SIZE * 0.5, w, h, 12);
+				g.fill({ color: 0xffffff, alpha: 0.004 });
+			}}
+		/>
 		<!-- chevron marking this panel as tappable -->
 		<Graphics
 			x={UI_BASE_FONT_SIZE * 3.6}

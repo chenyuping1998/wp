@@ -89,6 +89,12 @@ Rules learned the hard way:
 - Check the non-obvious surfaces too: the spin ticker, feature-buy dialogs,
   insufficient-funds messages, the replay panel.
 
+**Put the whole table in the guard, not the words that got flagged.** Triple
+Witching lost a round to `currency` - a word that is on the table above and was
+simply never in `check_social_words.mjs`'s array, because that array had been
+grown one rejection at a time. The half that kept getting missed is the money
+half: `currency`, `money`, `fund`, `credit`, `deposit`, `withdraw`.
+
 `check_social_words.mjs` enforces two mechanical rules — literal template text
 must be clean (it shows in both modes), and the social argument of `pick()` must
 be clean. It cannot see a word that arrives through a variable.
@@ -177,5 +183,29 @@ Recurring, and all cheaper to get right at the start:
   the smallest supported size; percentage `max-height` against an auto-height
   parent silently resolves to `auto`, and `transform: scale()` shrinks text
   regardless of any `font-size` floor you set.
+- **An anticipation tease can be reported as the game freezing.** Review sent a
+  recording of a bonus round "stuck on the 5th spin, unable to continue". Nothing
+  was hung: an anticipated reel is slowed by lengthening its strip by
+  `reelLength * reelPaddingMultiplierAnticipated`, the padding **accumulates**
+  along the board, and every reel from the first anticipated one on is `noStop` -
+  which until now also meant the stop button could not reach it. Triple Witching's
+  feature reel is 7 symbols, its maths anticipates from the *first* scatter
+  (`anticipation_triggers` freegame: 1), and it inherited the base game's 10x
+  padding: 10.4 seconds of spinning with every control dead, on ~18% of feature
+  spins. Three rules follow:
+  - **the feature needs its own `SPIN_OPTIONS_*_FREEGAME` at BOTH speeds.** An
+    anticipated reel's spinType is `'anticipated'`, never `'fast'`, so a selector
+    written as `spinType !== 'fast' ? DEFAULT : ...` sends every tease - turbo
+    included - to the base game's options. The one spin the option exists for is
+    the one spin that never reads it.
+  - a taller feature reel and an earlier anticipation trigger both multiply the
+    tease, so the feature's multiplier has to be *smaller* than the base game's,
+    not equal to it.
+  - `getAnticipationIsStoppable` on `createReelForSpinning` (opt-in, off by
+    default) lets the stop button interrupt a tease. A long beat with no working
+    control is read as a hang whatever it looks like.
+  Triple Witching's `design/check_tease_length.mjs` computes the worst case from
+  `constants.ts` and fails the build over a ceiling; copy it into any game whose
+  maths teases from one scatter.
 - **The Stake Engine splash must be removed.** Your own studio logo stays — they
   are different things, and it is easy to delete both by accident.

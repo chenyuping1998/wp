@@ -17,7 +17,6 @@
 	import { getContext } from '../game/context';
 	import {
 		SYMBOL_SIZE,
-		SUPERSPIN_CELL_SPIN,
 		BOARD_CELL_COLOR,
 		isBigPrize,
 		BIG_PRIZE_FROM,
@@ -138,30 +137,25 @@
 			held on it, instead of a coloured plate laid over the reel. A thin brass
 			edge still marks it as held.
 
-			Skipped entirely when SUPERSPIN_CELL_SPIN is on: in that mode held cells
-			are never animated and nothing passes behind them, so there is nothing
-			left to occlude.
 		-->
-		{#if !SUPERSPIN_CELL_SPIN}
-			<Graphics
-				draw={(g) => {
-					g.clear();
-					// square and full-bleed: a rounded fill alone leaves the cell
-					// corners open and the sweep shows through them
-					g.beginFill(BOARD_CELL_COLOR, 1);
-					g.drawRect(x - SYMBOL_SIZE / 2, y - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE);
-					g.endFill();
-					g.lineStyle(2.5, 0xffd43b, 0.45);
-					g.drawRoundedRect(
-						x - SYMBOL_SIZE / 2 + 3,
-						y - SYMBOL_SIZE / 2 + 3,
-						SYMBOL_SIZE - 6,
-						SYMBOL_SIZE - 6,
-						10,
-					);
-				}}
-			/>
-		{/if}
+		<Graphics
+			draw={(g) => {
+				g.clear();
+				// square and full-bleed: a rounded fill alone leaves the cell
+				// corners open and the sweep shows through them
+				g.beginFill(BOARD_CELL_COLOR, 1);
+				g.drawRect(x - SYMBOL_SIZE / 2, y - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE);
+				g.endFill();
+				g.lineStyle(2.5, 0xffd43b, 0.45);
+				g.drawRoundedRect(
+					x - SYMBOL_SIZE / 2 + 3,
+					y - SYMBOL_SIZE / 2 + 3,
+					SYMBOL_SIZE - 6,
+					SYMBOL_SIZE - 6,
+					10,
+				);
+			}}
+		/>
 		{@const shake = shakeOffset(entry)}
 		<Sprite
 			key="gbP"
