@@ -40,7 +40,7 @@
  */
 
 /** mirrors HOLD_MS in symbolWinMotion.ts */
-const HOLD_MS = 480;
+const HOLD_MS = 620;
 /** mirrors LAND_MS in symbolLandMotion.ts */
 const LAND_MS = 240;
 
@@ -514,14 +514,113 @@ const convertible: SymbolRig = {
 	],
 };
 
-export const SYMBOL_RIGS: Record<string, SymbolRig> = {
-	H1: hawaiianGuy,
-	H2: blonde,
-	H3: flamingo,
-	H4: boombox,
-	H5: convertible,
-	C: collector,
+/**
+ * Raise every part until it is actually visible, and never shrink one.
+ *
+ * The rigs were written to give each part its own gesture, and
+ * `check_symbol_parts.mjs` measures that — pairwise distance on normalised
+ * shapes, blind to amplitude by design. Nothing measured whether a part moved
+ * far enough to SEE, and measured in pixels most did not: H2's head turned 2.9
+ * degrees and slid 0.9px on a 118px cell, H1's 2.5 degrees and 1.7px. At that
+ * size a rigged symbol and a flat PNG are the same picture, and the rig reads as
+ * the sprite quivering — 「動圖的樣子做得太不明顯了反而很怪」.
+ *
+ * A flat multiplier does not work here, unlike the whole-symbol tables: the
+ * parts are already spread over two orders of magnitude (H3's peck is 19.5
+ * degrees, H2's head turn is 2.9), so any gain big enough to rescue the small
+ * ones tears the large ones off the body — and the gate's own bound, 0.5 rad,
+ * says so.
+ *
+ * So each part is scaled by its LOUDEST channel: find the gain that would bring
+ * that channel up to a floor of visibility, then take the smallest gain any
+ * present channel asks for, which leaves a part that is already loud in one
+ * channel exactly where it is. Clamped to [1, MAX] so nothing shrinks, and
+ * clamped again against the gate's bounds so the boost can never be the thing
+ * that fails the build.
+ *
+ * A spinner's rotation is left alone for the same reason as in the win table: a
+ * wheel turning at a different speed is a different wheel, not a louder one.
+ */
+const VISIBLE = {
+	/** ~8 degrees: below this a lean on a 118px cell reads as jitter. */
+	rotation: 0.14,
+	/** cell fractions — 0.05 is 6px, about the width of the flamingo's beak. */
+	offset: 0.05,
+	/** 10% of the part's own size. */
+	scale: 0.1,
+	maxGain: 4,
 };
+
+// The gate's limits, restated so the boost stops short of them rather than
+// being caught by them. Kept a hair inside (0.46 against 0.5) because the boost
+// is computed on a 5ms sample grid and the true peak can sit between samples.
+const PART_BOUNDS = { rotation: 0.46, offset: 0.18, scale: 0.45 };
+
+const boostFrame = (
+	fn: (t: number) => Partial<PartFrame>,
+	windowMs: number,
+	spins: boolean,
+): ((t: number) => Partial<PartFrame>) => {
+	let peakRotation = 0;
+	let peakOffset = 0;
+	let peakScale = 0;
+	for (let t = 0; t <= windowMs; t += 5) {
+		const f = fn(t);
+		peakRotation = Math.max(peakRotation, Math.abs(f.rotation ?? 0));
+		peakOffset = Math.max(peakOffset, Math.abs(f.dx ?? 0), Math.abs(f.dy ?? 0));
+		peakScale = Math.max(peakScale, Math.abs((f.scaleX ?? 1) - 1), Math.abs((f.scaleY ?? 1) - 1));
+	}
+
+	const wanted: number[] = [];
+	const allowed: number[] = [VISIBLE.maxGain];
+	if (peakRotation > 1e-6 && !spins) {
+		wanted.push(VISIBLE.rotation / peakRotation);
+		allowed.push(PART_BOUNDS.rotation / peakRotation);
+	}
+	if (peakOffset > 1e-6) {
+		wanted.push(VISIBLE.offset / peakOffset);
+		allowed.push(PART_BOUNDS.offset / peakOffset);
+	}
+	if (peakScale > 1e-6) {
+		wanted.push(VISIBLE.scale / peakScale);
+		allowed.push(PART_BOUNDS.scale / peakScale);
+	}
+	if (!wanted.length) return fn;
+
+	const gain = Math.max(1, Math.min(...wanted, ...allowed));
+	if (gain === 1) return fn;
+
+	return (t: number) => {
+		const f = fn(t);
+		const out: Partial<PartFrame> = { ...f };
+		if (f.rotation !== undefined && !spins) out.rotation = f.rotation * gain;
+		if (f.dx !== undefined) out.dx = f.dx * gain;
+		if (f.dy !== undefined) out.dy = f.dy * gain;
+		if (f.scaleX !== undefined) out.scaleX = 1 + (f.scaleX - 1) * gain;
+		if (f.scaleY !== undefined) out.scaleY = 1 + (f.scaleY - 1) * gain;
+		return out;
+	};
+};
+
+const boostRig = (rig: SymbolRig): SymbolRig => ({
+	...rig,
+	parts: rig.parts.map((part) => ({
+		...part,
+		land: part.land && boostFrame(part.land, LAND_MS, !!part.spins),
+		win: part.win && boostFrame(part.win, HOLD_MS, !!part.spins),
+	})),
+});
+
+export const SYMBOL_RIGS: Record<string, SymbolRig> = Object.fromEntries(
+	Object.entries({
+		H1: hawaiianGuy,
+		H2: blonde,
+		H3: flamingo,
+		H4: boombox,
+		H5: convertible,
+		C: collector,
+	}).map(([name, rig]) => [name, boostRig(rig)]),
+);
 
 /** Exposed so design/check_symbol_parts.mjs can prove the copies above match. */
 export const PART_WINDOWS = { HOLD_MS, LAND_MS };

@@ -8,7 +8,7 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { stateGame } from '../game/stateGame.svelte';
 	import { getSymbolInfo } from '../game/utils';
-	import { getSymbolWinMotion } from '../game/symbolWinMotion';
+	import { getSymbolWinMotion, HOLD_MS } from '../game/symbolWinMotion';
 	import SymbolArt from './SymbolArt.svelte';
 
 	type Props = {
@@ -108,7 +108,15 @@
 	// 480ms is picked against those two: it is long enough to read on a line win
 	// as the runner crosses the cell, and short enough that three scatter passes
 	// come to 1.4s rather than a stall.
-	const WIN_HOLD_MS = 480;
+	// Imported rather than restated: the motion table sizes its beats against
+	// HOLD_MS (a beat that does not fit inside it is a beat no player ever sees),
+	// and two copies of the number are two chances for the table to be tuned
+	// against a window the component no longer uses.
+	//
+	// 2026-08-23: 480 -> 620 with the amplitude gain. A motion three times the
+	// size needs longer to read as a gesture rather than as a jolt, and the beats
+	// that fit in 480 still fit here.
+	const WIN_HOLD_MS = HOLD_MS;
 
 	/**
 	 * What counts as big, in multiples of the stake. 15× is the game's own "BIG
@@ -145,8 +153,16 @@
 		// the hit itself: overshoot, then settle a little above rest so the cell
 		// stays visibly raised for as long as it is part of the win. Amplitude is
 		// scaled per symbol so the specials land heavier.
-		const overshoot = 1 + (1.22 - 1) * motion.hitScale;
-		const settled = 1 + (1.07 - 1) * motion.hitScale;
+		// 2026-08-23: 1.22/1.07 -> 1.45/1.18. The pop was the other half of the
+		// "動圖不明顯" report: at 1.22 peaking for 200ms and settling to 1.07, a
+		// winning symbol grew by 8px and then sat 4px proud of its neighbours,
+		// which on a board where the royals already draw at 0.92 and the specials
+		// at 1.08 of the cell is inside the size differences the art already has.
+		// At 1.45/1.18 it is unmistakably the symbol that just paid. Nothing masks
+		// the board, so overflowing the cell is safe — and overflowing is the
+		// point: it lifts the winning cell out of the grid.
+		const overshoot = 1 + (1.45 - 1) * motion.hitScale;
+		const settled = 1 + (1.18 - 1) * motion.hitScale;
 		hit.set(overshoot, { duration: fs(200), easing: backOut });
 		flash.set(0, { duration: fs(320), easing: cubicOut });
 		spark.set(1, { duration: fs(420), easing: cubicOut });

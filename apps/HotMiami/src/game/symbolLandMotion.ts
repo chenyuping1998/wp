@@ -117,7 +117,7 @@ const dust = (u: number, width: number, strength: number): SymbolLandOverlay[] =
 
 // ── the table ────────────────────────────────────────────────────────────────
 
-export const SYMBOL_LAND_MOTION: Record<string, SymbolLandMotion> = {
+const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 	// H1 — the guy. Lands on his feet and rocks BACK, one slow lean that returns.
 	// Deliberately the least squashy arrival on the board: the squash was cut to
 	// a quarter of its first draft because with it in, the checker scored H1
@@ -413,6 +413,51 @@ export const SYMBOL_LAND_MOTION: Record<string, SymbolLandMotion> = {
  * Landing motion for a symbol name. Falls back to the old shared squash rather
  * than throwing — an unknown symbol should land plainly, not crash the reel.
  */
+/**
+ * Same gain idea as the win table (see `WIN_MOTION_GAIN` for the argument), and
+ * a smaller number because the landings started out about twice the size of the
+ * win motions — the arrival is an impact, so it was drafted with weight, while
+ * the win motions were drafted as "life" and came out as a tremble.
+ *
+ * 1.6 rather than the win table's 3 also because a landing has 240ms to happen
+ * in and must be back at rest by the end of it: at 3x, H1's lean reaches 24
+ * degrees and has to unwind inside a quarter of a second, which reads as a snap
+ * rather than as weight.
+ */
+export const LAND_MOTION_GAIN = 1.6;
+
+/**
+ * A local copy of `amplify` from symbolWinMotion.ts, deliberately duplicated.
+ *
+ * A VALUE import would have to be written `'./symbolWinMotion.ts'` with the
+ * extension for a bare `node --experimental-strip-types` to resolve it, and
+ * being loadable by a bare node script is the whole reason this file imports
+ * nothing (see the header): it is what lets `design/check_symbol_motion.mjs`
+ * measure the shipped table rather than a re-implementation of it. Twelve lines
+ * of duplication is cheaper than making the gate unable to run.
+ */
+const amplify = (motion: SymbolLandMotion, gain: number): SymbolLandMotion => ({
+	...motion,
+	frame: (t: number) => {
+		const f = motion.frame(t);
+		return {
+			...f,
+			scaleX: 1 + (f.scaleX - 1) * gain,
+			scaleY: 1 + (f.scaleY - 1) * gain,
+			rotation: motion.spins ? f.rotation : f.rotation * gain,
+			dx: f.dx * gain,
+			dy: f.dy * gain,
+		};
+	},
+});
+
+export const SYMBOL_LAND_MOTION: Record<string, SymbolLandMotion> = Object.fromEntries(
+	Object.entries(BASE_LAND_MOTION).map(([name, motion]) => [
+		name,
+		amplify(motion, LAND_MOTION_GAIN),
+	]),
+);
+
 export const getSymbolLandMotion = (name: string): SymbolLandMotion =>
 	SYMBOL_LAND_MOTION[name] ?? {
 		frame: (t) => {

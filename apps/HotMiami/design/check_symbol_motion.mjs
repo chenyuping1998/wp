@@ -42,7 +42,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const { SYMBOL_WIN_MOTION } = await import(path.join(appRoot, 'src/game/symbolWinMotion.ts'));
+const { SYMBOL_WIN_MOTION, HOLD_MS } = await import(
+	path.join(appRoot, 'src/game/symbolWinMotion.ts')
+);
 const { SYMBOL_LAND_MOTION, LAND_MS } = await import(
 	path.join(appRoot, 'src/game/symbolLandMotion.ts')
 );
@@ -88,7 +90,11 @@ const SAMPLE_MS = 10;
 // came from time no player has ever seen, and it hid the fact that four symbols
 // had beats too long to fit. Judge the visible window; if a beat does not
 // complete inside it, that is the bug, not the measurement.
-const WINDOW_MS = { win: 600, land: LAND_MS };
+// Taken from the table's own HOLD_MS rather than restated as 600, which is what
+// it used to say: SymbolWinAnim holds a winning cell for HOLD_MS and the number
+// has since moved (480 -> 620), so a literal here would have quietly gone back
+// to scoring a window the player no longer sees.
+const WINDOW_MS = { win: HOLD_MS, land: LAND_MS };
 
 // ── 1. every symbol on the board has a motion, in BOTH tables ────────────────
 const constants = fs.readFileSync(path.join(appRoot, 'src/game/constants.ts'), 'utf8');

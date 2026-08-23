@@ -103,7 +103,7 @@ export type SymbolWinMotion = {
  * The window a winning cell is actually on screen (SymbolWinAnim's WIN_HOLD_MS).
  * Cycle lengths are expressed against this so they cannot drift apart from it.
  */
-export const HOLD_MS = 480;
+export const HOLD_MS = 620;
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -172,7 +172,7 @@ const neonRoyal = (
 
 // ── the table ────────────────────────────────────────────────────────────────
 
-export const SYMBOL_WIN_MOTION: Record<string, SymbolWinMotion> = {
+const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 	// H1 — the guy in the Hawaiian shirt. A confident lean, and a hard specular
 	// glint sweeping across the sunglasses, which is the readable detail on him.
 	H1: {
@@ -425,6 +425,57 @@ export const SYMBOL_WIN_MOTION: Record<string, SymbolWinMotion> = {
 		},
 	},
 };
+
+/**
+ * How far the table above is from what ships.
+ *
+ * The tables were written to be DISTINGUISHABLE from each other, and
+ * `check_symbol_motion.mjs` measures exactly that — correlation distance on
+ * z-scored traces, which is deliberately blind to amplitude. Nothing in the
+ * project ever measured whether a motion was big enough to SEE, and it turned
+ * out most of them were not: measured across the win window, H2 moved 1.6px on
+ * a 118px cell, H1 3.9px, H5 6.5px. Twelve distinct animations, all of them
+ * below the threshold of noticing, which reads worse than no animation at all —
+ * the symbol looks like it is trembling rather than reacting. That is what the
+ * user reported: 「動圖的樣子做得太不明顯了反而很怪」.
+ *
+ * A single gain is the right shape for the fix. Editing twelve tables by hand
+ * would change their SHAPES, which is the one property that has been carefully
+ * tuned and is the thing that stopped the game reading as one animation with
+ * different art inside it; multiplying every channel by one number leaves every
+ * shape and every pair distance exactly where it was and only makes the whole
+ * board louder.
+ *
+ * Applied here rather than in the component so that the numbers the gate checks
+ * are the numbers that ship: its bounds (scale 0.5-1.8, offset 0.25 cell,
+ * rotation 0.6 rad) now guard the real amplitude instead of a draft of it.
+ *
+ * Rotation is NOT amplified on a spinner: S's identity is that it turns, and
+ * tripling that is a different speed, not a louder version of the same gesture.
+ * bloomAlpha and overlay alphas are left alone too — they are already at 0.75
+ * and cannot get three times brighter, and clamping them would flatten the tops
+ * of the neon flickers, which is a shape change.
+ */
+export const WIN_MOTION_GAIN = 3;
+
+export const amplify = <T extends SymbolWinMotion>(motion: T, gain: number): T => ({
+	...motion,
+	frame: (t: number) => {
+		const f = motion.frame(t);
+		return {
+			...f,
+			scaleX: 1 + (f.scaleX - 1) * gain,
+			scaleY: 1 + (f.scaleY - 1) * gain,
+			rotation: motion.spins ? f.rotation : f.rotation * gain,
+			dx: f.dx * gain,
+			dy: f.dy * gain,
+		};
+	},
+});
+
+export const SYMBOL_WIN_MOTION: Record<string, SymbolWinMotion> = Object.fromEntries(
+	Object.entries(BASE_WIN_MOTION).map(([name, motion]) => [name, amplify(motion, WIN_MOTION_GAIN)]),
+);
 
 /**
  * Motion for a symbol name. Falls back to a neutral breathe rather than
