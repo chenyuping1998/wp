@@ -55,6 +55,22 @@ const evaluate = async (expr) => {
   if (r.result?.exceptionDetails) throw new Error(JSON.stringify(r.result.exceptionDetails));
   return r.result?.result?.value;
 };
+// Spin with the SPACE BAR, not by clicking.
+//
+// Every control in this game is drawn on the canvas, so a probe clicking the
+// spin button is clicking a guessed pixel — and when the guess is wrong the run
+// ends with "0 spins measured", which looks exactly like a game that would not
+// spin. The keyboard path (utils-slots' hotKey handler, Space) is the same code
+// path the player's spacebar takes and needs no coordinates at all.
+const pressSpace = async () => {
+  for (const type of ['keyDown', 'keyUp']) {
+    await send('Input.dispatchKeyEvent', {
+      type, key: ' ', code: 'Space', windowsVirtualKeyCode: 32, nativeVirtualKeyCode: 32,
+    });
+    await sleep(40);
+  }
+};
+
 const click = async (x, y) => {
   for (const type of ['mousePressed', 'mouseReleased']) {
     await send('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 });
@@ -65,9 +81,21 @@ const click = async (x, y) => {
 await send('Runtime.enable');
 await send('Page.enable');
 await send('Page.bringToFront');
-await sleep(4500);
-await click(450, 400);   // loading screen is a press-anywhere gate
-await sleep(2500);
+// Chrome throttles requestAnimationFrame in an unfocused window, and the
+// sampler below IS a rAF loop — without this it records nothing at all and the
+// run ends with "0 spins measured", which reads as a game that would not spin
+// rather than as a probe that was never awake. Same fix as probe_motion.mjs.
+await send('Emulation.setFocusEmulationEnabled', { enabled: true });
+// Press-anywhere gates, plural: the loading screen and then the feature intro
+// card. A single click at a fixed moment only works if the 40MB build happened
+// to be ready by then — when it was not, the click landed on the loader, the
+// intro card came up behind it and stayed, and the probe reported "0 complete
+// spins" as though the game had refused to spin.
+for (const wait of [4500, 2500, 2500, 2000]) {
+  await sleep(wait);
+  await click(450, 400);
+}
+await sleep(1500);
 
 // Sampler: one row per frame per reel-state change. Records the first frame on
 // which each reel is no longer 'spinning', which is the moment the player sees
@@ -102,12 +130,11 @@ await evaluate(`(() => {
 // Turbo on, then spin. The turbo toggle is the lightning button at the far right
 // of the bar; clicking it is what a player does, and reading stateBet directly
 // would prove nothing about the control.
-const turboAt = await evaluate(`(() => {
-  const el = [...document.querySelectorAll('*')].find((e) => /turbo/i.test(e.getAttribute('data-testid') || '') || /turbo/i.test(e.getAttribute('aria-label') || ''));
-  if (!el) return null; const r = el.getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2];
-})()`);
-if (turboAt) await click(turboAt[0], turboAt[1]);
-else console.log('turbo button not found by label — set it in the UI yourself');
+// The toggle is drawn on the canvas, so there is nothing to click by label —
+// `__HM_TURBO__` (hmdebug only) is the only reliable way to put the game in
+// turbo from a probe. An earlier version guessed at coordinates and silently
+// measured nothing.
+await evaluate('window.__HM_TURBO__ ? window.__HM_TURBO__(true) : null');
 await sleep(300);
 console.log('turbo state:', await evaluate('JSON.stringify(window.__HM_GAME__())'));
 
@@ -115,14 +142,27 @@ const spinAt = await evaluate(`(() => {
   const el = [...document.querySelectorAll('*')].find((e) => /spin/i.test(e.getAttribute('data-testid') || '') || /spin/i.test(e.getAttribute('aria-label') || ''));
   if (!el) return null; const r = el.getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2];
 })()`);
-const spin = spinAt || [769, 469];
+// The spin button is canvas too. Its place is stable as a FRACTION of the
+// window (0.838, 0.895 of the 900x620 the probe opens), which a hardcoded pixel
+// pair is not — the previous literal sat in the middle of the reels and every
+// click missed, which the probe reported as "0 complete spins" rather than as a
+// failure to click.
+const spin = spinAt || [Math.round(900 * 0.838), Math.round(620 * 0.929)];
 
+// Diagnostics on the loop itself. A probe that clicks nothing and a probe that
+// clicks a game which refuses to spin both end with an empty report, and the
+// difference matters: the first is a broken probe, the second is a broken game.
+let clicks = 0;
 const deadline = Date.now() + SECONDS * 1000;
 while (Date.now() < deadline) {
   const busy = await evaluate(`(() => { const r = window.__HM_REELS__(); return r.some((x) => x.motion !== 'stopped'); })()`);
-  if (!busy) await click(spin[0], spin[1]);
+  if (!busy) {
+    await pressSpace();
+    clicks += 1;
+  }
   await sleep(1200);
 }
+console.log(`spun ${clicks}x, sampler rows: ${await evaluate('window.__STOPS__ ? window.__STOPS__.length : -1')}`);
 
 const rows = await evaluate('JSON.stringify(window.__STOPS__)').then(JSON.parse);
 const done = rows.filter((r) => r.at.filter((x) => x !== undefined).length === 5);

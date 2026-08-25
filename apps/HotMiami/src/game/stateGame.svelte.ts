@@ -288,6 +288,7 @@ export const stateGameDerived = {
 //     window.__HM_EMIT__({ type: '...' }) // fire any emitter event
 //     window.__HM_LINES__()               // win lines on screen right now
 //     window.__HM_GAME__()                // gameType / isTurbo
+//     window.__HM_TURBO__(true)           // set turbo (the toggle is canvas, not DOM)
 if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.search)) {
 	(window as unknown as { __HM_REELS__: () => unknown }).__HM_REELS__ = () =>
 		stateGame.board.map((reel, index) => ({
@@ -308,6 +309,15 @@ if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.s
 		isTurbo: stateBet.isTurbo,
 	});
 
+	// Turbo, settable. The toggle is a Pixi button on the canvas, so nothing
+	// outside the game can find it by label and every probe that wanted to
+	// measure turbo timing had to guess at its coordinates — which is how one of
+	// them ended up reporting "0 spins measured" after the button moved.
+	(window as unknown as { __HM_TURBO__: (on: boolean) => boolean }).__HM_TURBO__ = (on) => {
+		stateBet.isTurbo = on;
+		return stateBet.isTurbo;
+	};
+
 	(window as unknown as { __HM_EMIT__: (event: unknown) => void }).__HM_EMIT__ = (event) =>
 		eventEmitter.broadcast(event as Parameters<typeof eventEmitter.broadcast>[0]);
 
@@ -319,5 +329,5 @@ if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.s
 		count: stateGame.debugWinLineCount,
 	});
 
-	console.info('[hmdebug] __HM_REELS__, __HM_GAME__, __HM_EMIT__ and __HM_LINES__ attached');
+	console.info('[hmdebug] __HM_REELS__, __HM_GAME__, __HM_TURBO__, __HM_EMIT__ and __HM_LINES__ attached');
 }

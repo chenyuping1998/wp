@@ -84,7 +84,11 @@ const SPIN_OPTIONS_SHARED = {
 	reelSpinSpeedBeforeBounce: 4,
 	reelPaddingMultiplierNormal: 1.2,
 	reelPaddingMultiplierAnticipated: 10,
-	reelSpinDelay: 145,
+	// 200ms, from the Hacksaw spec the user supplied (The Luxe `reelDelay` 0.2s).
+	// Was 145. Their stop stagger is 300ms — 1.5x the start — and ours already
+	// measures ~280ms because it falls out of the accumulating padding, so the
+	// only number that was off was the start.
+	reelSpinDelay: 200,
 };
 
 export const SPIN_OPTIONS_DEFAULT = {
@@ -94,11 +98,21 @@ export const SPIN_OPTIONS_DEFAULT = {
 	reelBounceSizeMulti: 0.3,
 };
 
+// Base-game turbo. Still turbo — the reels are fast and the bounce is almost
+// gone — but the board no longer lands as one block.
+//
+// That was a deliberate choice here and the Hacksaw spec says it is the wrong
+// one: The Luxe's turbo keeps a 150ms stop stagger (`reelStopDelay` 0.15,
+// against 0.3 at normal speed) and only superTurbo collapses it to nothing. A
+// board that lands all at once reads as a screenshot appearing rather than as
+// reels stopping, and it costs about 600ms to fix.
 export const SPIN_OPTIONS_FAST = {
 	...SPIN_OPTIONS_SHARED,
 	reelPreSpinSpeed: 5,
 	reelSpinSpeed: 5,
 	reelBounceSizeMulti: 0.05,
+	reelSpinDelay: 150,
+	reelStaggerInTurbo: true,
 };
 
 // Turbo INSIDE the feature - free spins, and every bought feature once it gets

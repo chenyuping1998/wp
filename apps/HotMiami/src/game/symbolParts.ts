@@ -40,7 +40,7 @@
  */
 
 /** mirrors HOLD_MS in symbolWinMotion.ts */
-const HOLD_MS = 620;
+const HOLD_MS = 970;
 /** mirrors LAND_MS in symbolLandMotion.ts */
 const LAND_MS = 240;
 

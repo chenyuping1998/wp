@@ -103,7 +103,15 @@ export type SymbolWinMotion = {
  * The window a winning cell is actually on screen (SymbolWinAnim's WIN_HOLD_MS).
  * Cycle lengths are expressed against this so they cannot drift apart from it.
  */
-export const HOLD_MS = 620;
+// 2026-08-25: 620 -> 970, from the Hacksaw spec (The Luxe's symbol win spines
+// are all 0.97s; the wild is 1.00s). It is also the floor their own win-tier
+// table applies to the no-count-up tier — the small win takes no extra time,
+// but the symbol still gets a full second to do something.
+//
+// It costs nothing in session time now that levels 1-5 present for 0ms: what
+// used to be 620ms of symbol plus 600-2000ms of ticking count-up is now 970ms
+// of symbol and no count-up at all.
+export const HOLD_MS = 970;
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
