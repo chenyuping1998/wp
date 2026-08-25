@@ -86,6 +86,14 @@ EXPRESSIONS = {
 GLOW_OVERLAYS = {'h4': ['panel_lit'], 'h5': ['lights_on'], 'c': ['core_active']}
 
 
+# The pose sheets (docs/art-prompts-hot-miami-parts.md §11): three more drawings
+# of the same symbol, played as a timeline during a win. Measured by check_poses
+# below, against the OPPOSITE rule from the expression swaps above.
+POSE_NAMES = ('pose_wind', 'pose_peak', 'pose_settle')
+POSE_SYMBOLS = ('h1', 'h2', 'h3', 'h4', 'h5', 'c')
+POSE_BASE: dict[str, str] = {}
+
+
 def check_expressions(problems: list[str]) -> None:
     for sym, pairs in EXPRESSIONS.items():
         for base_name, alt_name in pairs:
@@ -140,6 +148,95 @@ def check_expressions(problems: list[str]) -> None:
             if cov < 0.0015:
                 problems.append(f'{sym}/{name} is effectively empty ({cov * 100:.2f}% of canvas)')
             print(f'   {sym}/{name:20s} covers {cov * 100:.2f}% of the canvas')
+
+
+def check_poses(problems: list[str]) -> None:
+    """The pose sheets, measured against the opposite rule from the expressions.
+
+    An expression swap must change LITTLE and stay put (a face is a small part of
+    a head, and if anything else moves the head jumps). A pose must change A LOT
+    and stay put: the whole point is that the character visibly does something,
+    and the whole risk is that the drawing lands somewhere else on the canvas and
+    the symbol appears to jump between frames.
+
+    So the same two measurements, with the change threshold inverted:
+
+      change   >= 8% of the symbol's own ink, or the pose is not a pose
+      landing  centroid within 3% of the canvas, bbox area within 15%
+
+    Centroid rather than bbox corners, which is what the expression check uses:
+    a flamingo throwing its wings open SHOULD grow its bbox, and its foot is
+    still where it was. The centroid of the ink is the honest measure of "did the
+    drawing move" for a shape that legitimately changes silhouette.
+
+    Silent when no pose has been delivered yet — this ships before the art does.
+    """
+    for sym in sorted(POSE_SYMBOLS):
+        base = load(sym, '_full') or load(sym, POSE_BASE.get(sym, '_full'))
+        delivered = [n for n in POSE_NAMES if load(sym, n) is not None]
+        if not delivered:
+            continue
+        if base is None:
+            problems.append(f'{sym}: poses delivered but no _full.png to measure them against')
+            continue
+        missing = [n for n in POSE_NAMES if n not in delivered]
+        if missing:
+            problems.append(f'{sym}: pose sheet is incomplete — missing {", ".join(missing)}')
+
+        bm = list(base.getchannel('A').getdata())
+        ba = list(base.convert('RGB').getdata())
+        w = base.width
+        base_ink = sum(1 for v in bm if v > 32) or 1
+        bcx, bcy = centroid(bm, w)
+        bbox_area = area_of(base)
+
+        for name in delivered:
+            alt = load(sym, name)
+            am = list(alt.getchannel('A').getdata())
+            aa = list(alt.convert('RGB').getdata())
+            changed = 0
+            for i, (p, q) in enumerate(zip(ba, aa)):
+                if bm[i] < 40 and am[i] < 40:
+                    continue
+                if abs(p[0] - q[0]) + abs(p[1] - q[1]) + abs(p[2] - q[2]) > 90 or abs(bm[i] - am[i]) > 90:
+                    changed += 1
+            share = changed / base_ink
+            acx, acy = centroid(am, w)
+            drift = max(abs(acx - bcx), abs(acy - bcy)) / base.width
+            grow = abs(area_of(alt) - bbox_area) / max(1, bbox_area)
+            print(f'   {sym}/{name:16s} changes {share * 100:5.1f}% of the ink, '
+                  f'centroid drifts {drift * 100:4.1f}%, bbox area {grow * 100:+5.1f}%')
+            if share < 0.08:
+                problems.append(
+                    f'{sym}/{name}: only {share * 100:.1f}% of the symbol differs from rest — '
+                    f'at reel size that is not a pose change, it is the same drawing'
+                )
+            if drift > 0.03:
+                problems.append(
+                    f'{sym}/{name}: the ink centroid moved {drift * 100:.1f}% of the canvas — '
+                    f'the symbol will jump when this pose is swapped in'
+                )
+            if grow > 0.15:
+                problems.append(
+                    f'{sym}/{name}: bbox area differs by {grow * 100:.0f}% — the symbol changes size on the swap'
+                )
+
+
+def centroid(mask: list[int], width: int) -> tuple[float, float]:
+    total = sx = sy = 0
+    for i, v in enumerate(mask):
+        if v > 32:
+            total += 1
+            sx += i % width
+            sy += i // width
+    if not total:
+        return (0.0, 0.0)
+    return (sx / total, sy / total)
+
+
+def area_of(im: Image.Image) -> int:
+    box = im.getchannel('A').point(lambda v: 255 if v > 32 else 0).getbbox()
+    return 0 if box is None else (box[2] - box[0]) * (box[3] - box[1])
 
 
 def main() -> int:
@@ -279,6 +376,7 @@ def main() -> int:
     print('contact sheet ->', os.path.relpath(out, ROOT))
 
     check_expressions(problems)
+    check_poses(problems)
 
     for p in problems:
         print('  !!', p)
