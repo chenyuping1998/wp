@@ -40,6 +40,49 @@
 		};
 	});
 
+	/**
+	 * The near-camera band, drifting further than the plate behind it.
+	 *
+	 * The whole picture moving as one block is a pan, not parallax: depth is the
+	 * thing CLOSE to camera travelling further. The round-2 background finally
+	 * has something close to camera — the yacht deck on the right — so it is cut
+	 * out (design/build_background_layers.py) and drawn back over the plate on
+	 * its own, larger drift.
+	 *
+	 * NEAR_GAIN is what the depth actually is, and it is bounded by the crop.
+	 *
+	 * The band carries about 90px of dark plate in front of the railing, and the
+	 * near layer must not slide further than that or it stops covering its own
+	 * original and the deck doubles. The plate's own amplitude is half its
+	 * overscan slack — 72px on a 1800-wide canvas — so the extra travel is
+	 * 72 * (GAIN - 1): at the 2.4 first tried that is 100px, past the margin.
+	 * Measured on the first build, the near band moved 30px+ while the city moved
+	 * 0, which is separation, but bought at the price of an artefact nobody had
+	 * looked for yet. 1.5 gives 36px of extra travel — half again as far as the
+	 * plate, comfortably inside the margin.
+	 */
+	const NEAR_FRACTION = 0.36;
+	const NEAR_GAIN = 1.5;
+	const nearLayer = $derived.by(() => {
+		const far = parallax;
+		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		const w = width * OVERSCAN;
+		const h = height * OVERSCAN;
+		const slackX = w - width;
+		const slackY = h - height;
+		// The same two sines the plate uses, so the two layers stay in phase and
+		// read as one scene at different depths rather than as two things
+		// wandering independently.
+		const extraX = Math.sin(clock * 0.06) * slackX * 0.5 * (NEAR_GAIN - 1);
+		const extraY = Math.sin(clock * 0.041 + 1.1) * slackY * 0.5 * (NEAR_GAIN - 1);
+		return {
+			width: w * NEAR_FRACTION,
+			height: h,
+			x: far.x + w * (1 - NEAR_FRACTION) + extraX,
+			y: far.y + extraY,
+		};
+	});
+
 	// ── floating bokeh: neon haze drifting up with a gentle sway. Soft textured
 	// motes (fxGlow), never hard vector circles ────────────────────────────────
 	// Was the jungle pollen/firefly set; 0xd9e88a is pale olive and these motes
@@ -128,18 +171,21 @@
 <!-- base-game background: neon sunset -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="hmBgBase" {...parallax} />
+		<Sprite key="hmBgBaseNear" {...nearLayer} />
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
 </FadeContainer>
 
 <!-- free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="hmBgFeature" {...parallax} />
+		<Sprite key="hmBgFeatureNear" {...nearLayer} />
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
 </FadeContainer>
 
 <!-- Ocean Drive feature background -->
 <FadeContainer show={isOceanDrive} duration={SECOND} zIndex={-1}>
 	<Sprite key="hmBgEpic" {...parallax} />
+		<Sprite key="hmBgEpicNear" {...nearLayer} />
 </FadeContainer>
 
 <!-- ambient bokeh drifting in front of whichever scene is showing -->

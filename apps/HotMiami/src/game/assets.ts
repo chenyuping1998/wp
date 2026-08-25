@@ -363,6 +363,24 @@
 		src: new URL('../../assets/sprites/hotMiamiBackground/bg_base.png', import.meta.url).href,
 		preload: true,
 	},
+	// The near-camera band of each background (design/build_background_layers.py):
+	// the right 36%, drawn back over the plate at a larger drift so the deck in
+	// the foreground travels further than the city behind it.
+	hmBgBaseNear: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiBackground/bg_base_near.png', import.meta.url).href,
+		preload: true,
+	},
+	hmBgFeatureNear: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiBackground/bg_feature_near.png', import.meta.url).href,
+		preload: true,
+	},
+	hmBgEpicNear: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiBackground/bg_epic_near.png', import.meta.url).href,
+		preload: true,
+	},
 	hmBgFeature: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hotMiamiBackground/bg_feature.png', import.meta.url).href,
