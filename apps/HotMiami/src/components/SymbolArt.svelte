@@ -94,6 +94,28 @@
 	);
 	const mode = $derived(props.mode ?? 'none');
 
+	// Sizes are multiples of the symbol's own draw size, not pixels: the car is
+	// 470px of art across and the J is 205, and one pixel value cannot be right
+	// for both. 1.045 is a hair over 2px of edge on a 118px cell.
+	const EDGE_COLOR = 0x12071f;
+	const SHADOW_SCALE = 1.07;
+	const SHADOW_OFFSET = { x: 3, y: 9 };
+	const RIM_COLOR = 0xfff6e8;
+
+	// The royals get the heavier treatment, and it is not decoration.
+	//
+	// They are the most common symbols on the grid and they are the thinnest art
+	// in the game: four flat letter shapes with a glow. In the reference build
+	// they are the LOUDEST thing on the board — chunky gradient letters with a
+	// thick light rim inside a dark border, which is what makes them read as
+	// extruded plastic instead of as coloured type. The premiums are already
+	// illustrations with their own painted outlines, so they need a border to
+	// separate them from the panel and nothing more.
+	const RIM_SYMBOLS = ['L1', 'L2', 'L3', 'L4'];
+	const hasRim = $derived(RIM_SYMBOLS.includes(props.symbolName ?? ''));
+	const EDGE_SCALE = $derived(hasRim ? 1.105 : 1.05);
+	const RIM_SCALE = 1.055;
+
 	// Parts are authored on the same square canvas as the flat symbol, so a part
 	// is drawn at the symbol's full size and lands in place by its own transparent
 	// margins. Its pivot comes from the measured bbox (partsManifest.ts): the
@@ -110,6 +132,73 @@
 		}),
 	);
 </script>
+
+<!--
+	WEIGHT: a shadow and an edge, drawn under whichever art follows.
+
+	The reference build the user pointed at (MadLab's Nights of Miami — same
+	5x4/14-line shape, same engine, and it passed the review this game has now
+	failed three times) draws every symbol with a hard drop shadow and a heavy
+	border, and its royals with a bright rim inside that border. Ours were flat
+	art dropped straight onto a flat purple panel. The difference does not read
+	as a different style: theirs are objects sitting on a board, ours are
+	stickers printed on it.
+
+	Done as two extra draws of the SYMBOL'S OWN TEXTURE rather than as baked
+	art, for three reasons that all turned out to matter:
+
+	  · the art already fills its 512 canvas (h2/h3/h4 run to within 20px of the
+	    edge), so a baked outline would be clipped flat across the flamingo's
+	    beak and the boombox's handle;
+	  · scaling a tinted copy gives an outline PROPORTIONAL to the symbol, so
+	    one number is right for a wide car and a narrow letter;
+	  · it applies to the rigged path for free. The parts stack replaces the flat
+	    art during a win, which is exactly when the symbol is biggest — a baked
+	    edge would vanish at that moment, or would have to be baked into every
+	    part and would then draw a seam around each one.
+
+	The silhouette used is always the flat symbol, so it stays put while parts
+	move on top of it. That is also how it should behave: the shadow belongs to
+	the symbol's footprint, not to its head turning.
+
+	Not drawn for the flash/bloom copies (`overlay`) — those are additive passes
+	of the same art, and a black shadow added to a white flash is a grey smear.
+-->
+{#if !overlay}
+	<Sprite
+		anchor={0.5}
+		key={props.symbolInfo.assetKey}
+		width={width * SHADOW_SCALE}
+		height={height * SHADOW_SCALE}
+		x={SHADOW_OFFSET.x}
+		y={SHADOW_OFFSET.y}
+		tint={0x000000}
+		alpha={0.5}
+	/>
+	<Sprite
+		anchor={0.5}
+		key={props.symbolInfo.assetKey}
+		width={width * EDGE_SCALE}
+		height={height * EDGE_SCALE}
+		tint={EDGE_COLOR}
+	/>
+	{#if hasRim}
+		<!--
+			Royals only. They are neon TUBES: a bright inner edge is what makes a
+			letter read as extruded rather than as a coloured shape, and it is the
+			single clearest difference between the reference's royals and ours.
+			Warm white rather than pure white, which over the pink and violet
+			letters goes lilac and looks like a mis-print.
+		-->
+		<Sprite
+			anchor={0.5}
+			key={props.symbolInfo.assetKey}
+			width={width * RIM_SCALE}
+			height={height * RIM_SCALE}
+			tint={RIM_COLOR}
+		/>
+	{/if}
+{/if}
 
 {#if rig}
 	{#each geometry as { part, px, py, frame, key } (part.name)}
