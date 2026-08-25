@@ -66,10 +66,22 @@ const click = async (x, y) => {
 };
 
 await send('Runtime.enable');
-await sleep(4000);
-// dismiss the intro overlay
-await click(450, 400);
-await sleep(2500);
+await send('Page.enable');
+// Focus FIRST, and for every mode — not just the EMIT branch, where this used
+// to live. Chrome throttles rAF in an unfocused window AND the press-anywhere
+// gates were not taking the probe's clicks without it: a spin run would sit on
+// the intro card for its whole length and photograph that instead of the game.
+await send('Page.bringToFront');
+await send('Emulation.setFocusEmulationEnabled', { enabled: true });
+// Press-anywhere gates, plural: the loading screen and then the feature intro
+// card. One click at a fixed moment only works if the 40MB build happened to be
+// ready by then — when it was not, this probe spent a whole run photographing
+// the intro card and reporting it as gameplay.
+for (const wait of [4000, 2500, 2500, 2000]) {
+  await sleep(wait);
+  await click(450, 400);
+}
+await sleep(1200);
 
 // probe: every rAF, every symbol sprite's rendered transform
 await evaluate(`(() => {
@@ -139,8 +151,6 @@ if (process.env.EMIT) {
   // Chrome throttles rAF in an unfocused one — the sampler recorded zero frames
   // for a full run before this was found. Bring the page to the front and turn
   // on focus emulation so the ticker runs while only the probe is driving it.
-  await send('Page.bringToFront');
-  await send('Emulation.setFocusEmulationEnabled', { enabled: true });
   await sleep(300);
   await evaluate(`window.__HM_EMIT__(${process.env.EMIT})`);
   // HOLD_MS keeps recording after the emit; with spins=0 this is the whole run.

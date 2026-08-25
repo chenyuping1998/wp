@@ -18,6 +18,19 @@ export type SpinningReelSpinOptions = {
 	reelPaddingMultiplierAnticipated: number;
 	reelSpinDelay: number;
 	/**
+	 * How fast an ANTICIPATED reel travels, if it should differ from
+	 * `reelSpinSpeed`.
+	 *
+	 * A tease built only out of extra distance is a wait; a tease built out of
+	 * speed is tension. The reference spec this came from (Hacksaw's The Luxe,
+	 * `attentionSpeed` 10 against `speed` 20) halves it, and pairs that with a
+	 * five-times-longer stop.
+	 *
+	 * Optional and unset by default: an app that does not set it spins its
+	 * anticipated reels at exactly the speed it did before.
+	 */
+	reelSpinSpeedAnticipated?: number;
+	/**
 	 * Keep the reel-by-reel stagger in turbo instead of dropping all five reels
 	 * together.
 	 *

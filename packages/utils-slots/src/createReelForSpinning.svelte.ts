@@ -299,7 +299,12 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 
 				await slideY({
 					reelY: defaultY * basePaddingSize(),
-					speed: reelState.spinOptions().reelSpinSpeed,
+					// Slower than an ordinary reel where the app asks for it. Falls
+					// back to the ordinary speed, so nothing changes for an app that
+					// does not set it.
+					speed:
+						reelState.spinOptions().reelSpinSpeedAnticipated ??
+						reelState.spinOptions().reelSpinSpeed,
 				});
 				await slideY({
 					reelY: defaultY + bounceSize,

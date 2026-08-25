@@ -83,12 +83,20 @@ const SPIN_OPTIONS_SHARED = {
 	reelBounceBackSpeed: 0.15,
 	reelSpinSpeedBeforeBounce: 4,
 	reelPaddingMultiplierNormal: 1.2,
-	reelPaddingMultiplierAnticipated: 10,
+	// 10 -> 5, and the speed halves with it (below). Same wall-clock tease, half
+	// the speed: the Hacksaw spec is explicit that anticipation is a SLOWDOWN and
+	// not a wait ("緊張感靠慢下來,不是靠停住等"), and distance alone was all this
+	// had. Ten times the distance at full speed is a reel that blurs past for a
+	// long time; five times at half speed is a reel the player can read.
+	reelPaddingMultiplierAnticipated: 5,
 	// 200ms, from the Hacksaw spec the user supplied (The Luxe `reelDelay` 0.2s).
 	// Was 145. Their stop stagger is 300ms — 1.5x the start — and ours already
 	// measures ~280ms because it falls out of the accumulating padding, so the
 	// only number that was off was the start.
 	reelSpinDelay: 200,
+	// Half of `reelSpinSpeed` (3 -> 1.5), matching their attentionSpeed/speed
+	// ratio. Applies to every mode: turbo turns anticipation off elsewhere.
+	reelSpinSpeedAnticipated: 1.5,
 };
 
 export const SPIN_OPTIONS_DEFAULT = {

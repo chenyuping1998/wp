@@ -35,6 +35,17 @@ import { FRAME_REVEAL, FRAME_CLEAR } from './frameTiming';
 // shared package (and the sibling apps) untouched.
 const ANTICIPATION_MIN_SCATTERS = 2;
 
+// What a teasing reel scrolls instead of the ordinary strip.
+//
+// All scatter, which is what the reference does (its `attention` reelset carries
+// 30 symbols per column against 7, and every one of them is the scatter). It is
+// a presentation strip only: the board that lands comes from the book, and this
+// is never on screen once a reel has stopped.
+//
+// Twelve entries because the strip is sampled cyclically while the reel travels
+// and a short one repeats visibly at anticipation's half speed.
+const TEASE_STRIP = Array.from({ length: 12 }, () => ({ name: 'S' }));
+
 const gateAnticipation = (anticipation: number[]) =>
 	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
 
@@ -203,9 +214,25 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			);
 		}
 
+		// A teasing reel spins a DIFFERENT STRIP.
+		//
+		// `paddingBoard` is what scrolls past while a reel is in motion — it has
+		// nothing to do with the outcome, which is already decided in the book.
+		// The Hacksaw spec the user supplied swaps in an `attention` reelset for
+		// exactly this moment: 4.3x the scatter density and nothing else on it, so
+		// the reel the player is staring at is visibly full of the symbol they
+		// need. Ours was scrolling the ordinary mix, which is the difference
+		// between a reel that looks like it might and a reel that looks like any
+		// other reel with a light on it.
+		//
+		// Only the reels that are actually teasing, and only the ones still to
+		// come — a reel that has already stopped is not spinning anything.
+		const padding = config.paddingReels[bookEvent.gameType];
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: { ...bookEvent, anticipation },
-			paddingBoard: config.paddingReels[bookEvent.gameType],
+			paddingBoard: padding.map((reel: { name: string }[], index: number) =>
+				anticipation[index] > 0 ? TEASE_STRIP : reel,
+			),
 		});
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 	},
