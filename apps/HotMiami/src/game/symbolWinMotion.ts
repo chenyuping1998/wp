@@ -427,54 +427,132 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 };
 
 /**
- * How far the table above is from what ships.
+ * Raise everything to a floor of BOLDNESS, and never shrink anything.
+ *
+ * ── Why this replaced a flat multiplier ─────────────────────────────────────
  *
  * The tables were written to be DISTINGUISHABLE from each other, and
  * `check_symbol_motion.mjs` measures exactly that — correlation distance on
- * z-scored traces, which is deliberately blind to amplitude. Nothing in the
- * project ever measured whether a motion was big enough to SEE, and it turned
- * out most of them were not: measured across the win window, H2 moved 1.6px on
- * a 118px cell, H1 3.9px, H5 6.5px. Twelve distinct animations, all of them
- * below the threshold of noticing, which reads worse than no animation at all —
- * the symbol looks like it is trembling rather than reacting. That is what the
- * user reported: 「動圖的樣子做得太不明顯了反而很怪」.
+ * z-scored traces, deliberately blind to amplitude. Nothing measured whether a
+ * motion was big enough to SEE, and most were not: H2 moved 1.6px on a 118px
+ * cell, H1 3.9px. That went out as a flat x3, which made them visible (H2 12
+ * degrees, H1 11.8px) and scored the same `poor animation` tag a third time.
  *
- * A single gain is the right shape for the fix. Editing twelve tables by hand
- * would change their SHAPES, which is the one property that has been carefully
- * tuned and is the thing that stopped the game reading as one animation with
- * different art inside it; multiplying every channel by one number leaves every
- * shape and every pair distance exactly where it was and only makes the whole
- * board louder.
+ * The instruction after that round was 大破大立 — either make it big or take it
+ * out. A flat multiplier cannot deliver that, because it preserves the ratio
+ * between the loudest and the quietest: at any gain that makes H2 bold, W and S
+ * are through the roof. So each symbol is now raised until its OWN loudest
+ * channel reaches the floor below, and a symbol already past the floor is left
+ * exactly where it is. The hierarchy survives at the top; the bottom is gone.
  *
- * Applied here rather than in the component so that the numbers the gate checks
- * are the numbers that ship: its bounds (scale 0.5-1.8, offset 0.25 cell,
- * rotation 0.6 rad) now guard the real amplitude instead of a draft of it.
+ * Applied here rather than in the component so the numbers the gate checks are
+ * the numbers that ship — including the floor itself, which
+ * `check_symbol_motion.mjs` now asserts as a failure rather than a report.
  *
- * Rotation is NOT amplified on a spinner: S's identity is that it turns, and
- * tripling that is a different speed, not a louder version of the same gesture.
- * bloomAlpha and overlay alphas are left alone too — they are already at 0.75
- * and cannot get three times brighter, and clamping them would flatten the tops
- * of the neon flickers, which is a shape change.
+ * Rotation is not touched on a spinner: S's identity is that it turns, and a
+ * different rate is a different symbol, not a louder one. bloomAlpha and overlay
+ * alphas are left alone as well — they are already at 0.75 and cannot get
+ * brighter, and clamping them would flatten the tops of the neon flickers, which
+ * is a shape change.
  */
-export const WIN_MOTION_GAIN = 3;
+export const VISIBLE_FLOOR = {
+	/** 15 degrees. Below this a lean on a 118px cell is a tremble. */
+	rotation: 0.26,
+	/** cell fractions: 0.10 is ~12px. */
+	offset: 0.1,
+	/** 15% of the symbol's own size. */
+	scale: 0.15,
+};
 
-export const amplify = <T extends SymbolWinMotion>(motion: T, gain: number): T => ({
-	...motion,
-	frame: (t: number) => {
+/** The gate's own limits, restated so a boost stops short of them. */
+export const MOTION_BOUNDS = { rotation: 0.55, offset: 0.22, scale: 0.5 };
+
+/** No motion is multiplied past this, whatever the floor asks for. */
+const MAX_GAIN = 4;
+
+/**
+ * A channel this quiet is incidental, not part of the gesture, and is ignored
+ * when deciding the gain.
+ *
+ * Without it one stray pixel drives everything: H4's win is a speaker thump
+ * (scale) with a 1.4px bob on it, and asking that 1.4px to reach a 12px floor
+ * demanded 8x, which took the whole boombox to +-50% scale. A channel under 15%
+ * of its floor is a detail of the shape, so it rides along at whatever gain the
+ * real channels ask for.
+ */
+const RELEVANT = 0.15;
+
+/**
+ * Nothing ends up more than twice the floor either.
+ *
+ * 大破大立 is a floor, not licence for a symbol to swing 40 degrees because its
+ * quietest relevant channel happened to need 6x. The band this produces —
+ * every symbol between one and two times the floor on the channels it actually
+ * uses — is what keeps twelve bold motions on one board from becoming noise.
+ */
+const CEILING = 2;
+const MARGIN = 1.03;
+
+export const boostToFloor = <T extends SymbolWinMotion>(
+	motion: T,
+	windowMs: number,
+	floor = VISIBLE_FLOOR,
+): T => {
+	let peakRotation = 0;
+	let peakOffset = 0;
+	let peakScale = 0;
+	for (let t = 0; t <= windowMs; t += 5) {
 		const f = motion.frame(t);
-		return {
-			...f,
-			scaleX: 1 + (f.scaleX - 1) * gain,
-			scaleY: 1 + (f.scaleY - 1) * gain,
-			rotation: motion.spins ? f.rotation : f.rotation * gain,
-			dx: f.dx * gain,
-			dy: f.dy * gain,
-		};
-	},
-});
+		peakRotation = Math.max(peakRotation, Math.abs(f.rotation));
+		peakOffset = Math.max(peakOffset, Math.abs(f.dx), Math.abs(f.dy));
+		peakScale = Math.max(peakScale, Math.abs(f.scaleX - 1), Math.abs(f.scaleY - 1));
+	}
+
+	const wanted: number[] = [];
+	const allowed: number[] = [MAX_GAIN];
+	const consider = (peak: number, floorValue: number, bound: number) => {
+		if (peak <= 1e-6) return;
+		// MARGIN, not decoration: the peak here is found on a 5ms grid and the
+		// gate samples on a 10ms one, so a motion boosted to land exactly ON the
+		// floor measures a hair under it there and fails. Aim 3% over.
+		if (peak >= floorValue * RELEVANT) wanted.push((floorValue * MARGIN) / peak);
+		allowed.push(Math.min(bound / peak, (floorValue * CEILING) / peak));
+	};
+	if (!motion.spins) consider(peakRotation, floor.rotation, MOTION_BOUNDS.rotation);
+	consider(peakOffset, floor.offset, MOTION_BOUNDS.offset);
+	consider(peakScale, floor.scale, MOTION_BOUNDS.scale);
+	if (!wanted.length) return motion;
+
+	// The LARGEST gain any channel that is part of the gesture asks for, held
+	// back by the smallest the bounds and the ceiling allow.
+	//
+	// Taking the smallest wanted — the first draft — stops boosting the moment
+	// any one channel reaches the floor, which quietly SHRANK the symbols that
+	// move on two axes: H3 went from 18.9 degrees under the old flat x3 to 12.6.
+	const gain = Math.max(1, Math.min(Math.max(...wanted), ...allowed));
+	if (gain === 1) return motion;
+
+	return {
+		...motion,
+		frame: (t: number) => {
+			const f = motion.frame(t);
+			return {
+				...f,
+				scaleX: 1 + (f.scaleX - 1) * gain,
+				scaleY: 1 + (f.scaleY - 1) * gain,
+				rotation: motion.spins ? f.rotation : f.rotation * gain,
+				dx: f.dx * gain,
+				dy: f.dy * gain,
+			};
+		},
+	};
+};
 
 export const SYMBOL_WIN_MOTION: Record<string, SymbolWinMotion> = Object.fromEntries(
-	Object.entries(BASE_WIN_MOTION).map(([name, motion]) => [name, amplify(motion, WIN_MOTION_GAIN)]),
+	Object.entries(BASE_WIN_MOTION).map(([name, motion]) => [
+		name,
+		boostToFloor(motion, HOLD_MS),
+	]),
 );
 
 /**

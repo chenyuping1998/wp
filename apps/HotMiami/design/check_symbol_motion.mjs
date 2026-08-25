@@ -42,10 +42,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const { SYMBOL_WIN_MOTION, HOLD_MS } = await import(
+const { SYMBOL_WIN_MOTION, HOLD_MS, VISIBLE_FLOOR } = await import(
 	path.join(appRoot, 'src/game/symbolWinMotion.ts')
 );
-const { SYMBOL_LAND_MOTION, LAND_MS } = await import(
+const { SYMBOL_LAND_MOTION, LAND_MS, LAND_FLOOR } = await import(
 	path.join(appRoot, 'src/game/symbolLandMotion.ts')
 );
 
@@ -77,6 +77,23 @@ const MIN_PAIR_DISTANCE = { win: 0.9, land: 0.9 };
 // A symbol whose trace barely varies is static, which passes a difference test
 // trivially and fails the player completely.
 const MIN_MOTION_ENERGY = 0.35;
+
+// ── the visibility floor ─────────────────────────────────────────────────────
+//
+// Distance and energy are both computed on z-scored traces, which is to say both
+// are blind to amplitude on purpose. That blindness shipped three times: twelve
+// motions, provably different from each other, and most of them under 4px on a
+// 118px cell. The third `poor animation` came back after they had been made
+// visible but not bold, and the instruction was 大破大立 — big or gone.
+//
+// So the floor is now a build failure rather than a report. A symbol clears it
+// by reaching the floor on ANY ONE channel it uses: the flamingo is rotation,
+// the boombox is scale, the royals are their neon bloom. The tables raise
+// themselves to it (boostToFloor in symbolWinMotion.ts), so this asserts the
+// property rather than being the thing that enforces it — which is the point, a
+// gate that can only be satisfied by the code it checks proves nothing.
+const BLOOM_FLOOR = 0.5;
+const floorFor = (label) => (label === 'win' ? VISIBLE_FLOOR : LAND_FLOOR);
 
 const CHANNELS = ['scaleX', 'scaleY', 'rotation', 'dx', 'dy', 'bloomAlpha'];
 const SAMPLE_MS = 10;
@@ -157,6 +174,31 @@ const analyse = (label, table, windowMs, { mustEndAtRest = false } = {}) => {
 
 			return [...CHANNELS.map((c) => frame[c]), frame.overlays.reduce((sum, o) => sum + o.alpha, 0)];
 		});
+
+		// ── 5b. bold enough to be seen at all ──
+		const floor = floorFor(label);
+		const peak = { rotation: 0, offset: 0, scale: 0, bloom: 0 };
+		for (const t of times) {
+			const frame = table[name].frame(t);
+			peak.rotation = Math.max(peak.rotation, Math.abs(frame.rotation));
+			peak.offset = Math.max(peak.offset, Math.abs(frame.dx), Math.abs(frame.dy));
+			peak.scale = Math.max(peak.scale, Math.abs(frame.scaleX - 1), Math.abs(frame.scaleY - 1));
+			peak.bloom = Math.max(peak.bloom, frame.bloomAlpha);
+		}
+		const clears =
+			peak.rotation >= floor.rotation - 1e-6 ||
+			peak.offset >= floor.offset - 1e-6 ||
+			peak.scale >= floor.scale - 1e-6 ||
+			peak.bloom >= BLOOM_FLOOR;
+		if (!clears) {
+			fail(
+				`[${label}] ${name} never clears the visibility floor: peaks are ` +
+					`${(peak.rotation * 57.3).toFixed(1)}deg / ${(peak.offset * 118).toFixed(1)}px / ` +
+					`${(peak.scale * 100).toFixed(0)}% / bloom ${peak.bloom.toFixed(2)}, floor is ` +
+					`${(floor.rotation * 57.3).toFixed(0)}deg / ${(floor.offset * 118).toFixed(0)}px / ` +
+					`${(floor.scale * 100).toFixed(0)}% / bloom ${BLOOM_FLOOR} — make it bigger or take it out`,
+			);
+		}
 
 		// ── 6. one-shot motions must finish at rest ──
 		//

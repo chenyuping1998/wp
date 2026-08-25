@@ -414,48 +414,83 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
  * than throwing — an unknown symbol should land plainly, not crash the reel.
  */
 /**
- * Same gain idea as the win table (see `WIN_MOTION_GAIN` for the argument), and
- * a smaller number because the landings started out about twice the size of the
- * win motions — the arrival is an impact, so it was drafted with weight, while
- * the win motions were drafted as "life" and came out as a tremble.
- *
- * 1.6 rather than the win table's 3 also because a landing has 240ms to happen
- * in and must be back at rest by the end of it: at 3x, H1's lean reaches 24
- * degrees and has to unwind inside a quarter of a second, which reads as a snap
- * rather than as weight.
+ * The landing floor. Same idea as the win table's — see `VISIBLE_FLOOR` in
+ * symbolWinMotion.ts for the argument — and a little lower on every channel,
+ * because a landing has 240ms to happen in AND to be back at rest by the end of
+ * it. At the win table's floor H1's lean reaches 26 degrees and has to unwind
+ * inside a quarter of a second, which reads as a snap rather than as weight.
  */
-export const LAND_MOTION_GAIN = 1.6;
+export const LAND_FLOOR = {
+	/** ~11.5 degrees */
+	rotation: 0.2,
+	/** cell fractions: 0.085 is ~10px */
+	offset: 0.085,
+	scale: 0.14,
+};
 
 /**
- * A local copy of `amplify` from symbolWinMotion.ts, deliberately duplicated.
+ * A local copy of `boostToFloor` from symbolWinMotion.ts, deliberately
+ * duplicated.
  *
  * A VALUE import would have to be written `'./symbolWinMotion.ts'` with the
  * extension for a bare `node --experimental-strip-types` to resolve it, and
- * being loadable by a bare node script is the whole reason this file imports
- * nothing (see the header): it is what lets `design/check_symbol_motion.mjs`
- * measure the shipped table rather than a re-implementation of it. Twelve lines
- * of duplication is cheaper than making the gate unable to run.
+ * being loadable by bare node is the whole reason this file imports nothing
+ * (see the header): it is what lets `design/check_symbol_motion.mjs` measure the
+ * shipped table rather than a re-implementation of it. Twenty lines of
+ * duplication is cheaper than making the gate unable to run.
  */
-const amplify = (motion: SymbolLandMotion, gain: number): SymbolLandMotion => ({
-	...motion,
-	frame: (t: number) => {
+const MAX_GAIN = 4;
+const RELEVANT = 0.15;
+const CEILING = 2;
+const MARGIN = 1.03;
+const BOUNDS = { rotation: 0.55, offset: 0.22, scale: 0.5 };
+
+const boostToFloor = (motion: SymbolLandMotion, windowMs: number): SymbolLandMotion => {
+	let peakRotation = 0;
+	let peakOffset = 0;
+	let peakScale = 0;
+	for (let t = 0; t <= windowMs; t += 5) {
 		const f = motion.frame(t);
-		return {
-			...f,
-			scaleX: 1 + (f.scaleX - 1) * gain,
-			scaleY: 1 + (f.scaleY - 1) * gain,
-			rotation: motion.spins ? f.rotation : f.rotation * gain,
-			dx: f.dx * gain,
-			dy: f.dy * gain,
-		};
-	},
-});
+		peakRotation = Math.max(peakRotation, Math.abs(f.rotation));
+		peakOffset = Math.max(peakOffset, Math.abs(f.dx), Math.abs(f.dy));
+		peakScale = Math.max(peakScale, Math.abs(f.scaleX - 1), Math.abs(f.scaleY - 1));
+	}
+	const wanted: number[] = [];
+	const allowed: number[] = [MAX_GAIN];
+	const consider = (peak: number, floorValue: number, bound: number) => {
+		if (peak <= 1e-6) return;
+		// MARGIN, not decoration: the peak here is found on a 5ms grid and the
+		// gate samples on a 10ms one, so a motion boosted to land exactly ON the
+		// floor measures a hair under it there and fails. Aim 3% over.
+		if (peak >= floorValue * RELEVANT) wanted.push((floorValue * MARGIN) / peak);
+		allowed.push(Math.min(bound / peak, (floorValue * CEILING) / peak));
+	};
+	if (!motion.spins) consider(peakRotation, LAND_FLOOR.rotation, BOUNDS.rotation);
+	consider(peakOffset, LAND_FLOOR.offset, BOUNDS.offset);
+	consider(peakScale, LAND_FLOOR.scale, BOUNDS.scale);
+	if (!wanted.length) return motion;
+
+	const gain = Math.max(1, Math.min(Math.max(...wanted), ...allowed));
+	if (gain === 1) return motion;
+
+	return {
+		...motion,
+		frame: (t: number) => {
+			const f = motion.frame(t);
+			return {
+				...f,
+				scaleX: 1 + (f.scaleX - 1) * gain,
+				scaleY: 1 + (f.scaleY - 1) * gain,
+				rotation: motion.spins ? f.rotation : f.rotation * gain,
+				dx: f.dx * gain,
+				dy: f.dy * gain,
+			};
+		},
+	};
+};
 
 export const SYMBOL_LAND_MOTION: Record<string, SymbolLandMotion> = Object.fromEntries(
-	Object.entries(BASE_LAND_MOTION).map(([name, motion]) => [
-		name,
-		amplify(motion, LAND_MOTION_GAIN),
-	]),
+	Object.entries(BASE_LAND_MOTION).map(([name, motion]) => [name, boostToFloor(motion, LAND_MS)]),
 );
 
 export const getSymbolLandMotion = (name: string): SymbolLandMotion =>

@@ -541,14 +541,20 @@ const convertible: SymbolRig = {
  * A spinner's rotation is left alone for the same reason as in the win table: a
  * wheel turning at a different speed is a different wheel, not a louder one.
  */
+// 2026-08-25: raised after the third `poor animation`. 8 degrees and 6px was a
+// floor for "can be noticed at all"; the instruction after that round was
+// 大破大立, so it is now a floor for "reads as a gesture". A part is SECONDARY
+// motion — the symbol's own motion and, once the art lands, its drawn poses are
+// the primary — so this sits below the whole-symbol floor in symbolWinMotion.ts
+// (0.26 rad / 0.10 cell / 0.15) rather than at it.
 const VISIBLE = {
-	/** ~8 degrees: below this a lean on a 118px cell reads as jitter. */
-	rotation: 0.14,
-	/** cell fractions — 0.05 is 6px, about the width of the flamingo's beak. */
-	offset: 0.05,
-	/** 10% of the part's own size. */
-	scale: 0.1,
-	maxGain: 4,
+	/** ~13 degrees */
+	rotation: 0.23,
+	/** cell fractions — 0.085 is ~10px */
+	offset: 0.085,
+	/** 16% of the part's own size */
+	scale: 0.16,
+	maxGain: 6,
 };
 
 // The gate's limits, restated so the boost stops short of them rather than
@@ -556,11 +562,26 @@ const VISIBLE = {
 // is computed on a 5ms sample grid and the true peak can sit between samples.
 const PART_BOUNDS = { rotation: 0.46, offset: 0.18, scale: 0.45 };
 
+/**
+ * Returns the boosted gesture, or `undefined` if it cannot reach the floor.
+ *
+ * Dropping is the point, not a fallback. 「原本那個什麼鳥小小動一下那些幅度太小的
+ * 都拿掉」— a part whose whole range is a couple of pixels does not become a
+ * gesture at any gain the art can survive (the bounds below are where the part
+ * visibly comes off the body), and leaving it in is what makes a rigged symbol
+ * read as a quivering sprite. Six gestures are removed by this rule:
+ * H1/head land, H1/torso win, H2/hair_back land, H2/torso win, H4/body win,
+ * H5/wheel_rear land — every one of them a sub-2px bob or a sub-5% squash.
+ *
+ * Every symbol still has at least one part moving in both modes afterwards,
+ * which check_symbol_parts.mjs enforces, and from the next round the drawn poses
+ * carry the win beat outright.
+ */
 const boostFrame = (
 	fn: (t: number) => Partial<PartFrame>,
 	windowMs: number,
 	spins: boolean,
-): ((t: number) => Partial<PartFrame>) => {
+): ((t: number) => Partial<PartFrame>) | undefined => {
 	let peakRotation = 0;
 	let peakOffset = 0;
 	let peakScale = 0;
@@ -585,9 +606,33 @@ const boostFrame = (
 		wanted.push(VISIBLE.scale / peakScale);
 		allowed.push(PART_BOUNDS.scale / peakScale);
 	}
-	if (!wanted.length) return fn;
 
-	const gain = Math.max(1, Math.min(...wanted, ...allowed));
+	// Largest wanted, not smallest: stopping at the first channel to reach the
+	// floor leaves a part that moves on two axes quieter than one that moves on
+	// one, which is backwards. Same correction as symbolWinMotion.ts.
+	// A part that asks for nothing is a spinner: `consider` skips a spinner's
+	// rotation on purpose (a wheel turning at a different rate is a different
+	// wheel), and its rotation is the only channel it has. Gain 1, and the floor
+	// check below passes it on that rotation.
+	const gain = wanted.length ? Math.max(1, Math.min(Math.max(...wanted), ...allowed)) : 1;
+
+	// Does it clear the floor on ANY channel once boosted? A part only has to be
+	// big on the axis it actually moves along — the flamingo's neck is rotation,
+	// the speaker cones are scale — so this asks the question per channel and
+	// keeps the part if any one of them passes. What gets dropped is the part
+	// that is under the floor on every axis it uses, at every gain the bounds
+	// allow: those are not gestures, they are trembles.
+	// The 1e-6 is not cosmetic: a part that lands exactly ON the floor computes
+	// its own gain as floor/peak and then fails `peak * gain >= floor` by one
+	// ulp. H3's neck (0.2 rad against a 0.23 floor) was dropped by that, which
+	// would have left the flamingo with no part moving on landing at all.
+	const EPS = 1e-6;
+	const clears =
+		(!spins && peakRotation * gain >= VISIBLE.rotation - EPS) ||
+		peakOffset * gain >= VISIBLE.offset - EPS ||
+		peakScale * gain >= VISIBLE.scale - EPS ||
+		(spins && peakRotation >= VISIBLE.rotation);
+	if (!clears) return undefined;
 	if (gain === 1) return fn;
 
 	return (t: number) => {
