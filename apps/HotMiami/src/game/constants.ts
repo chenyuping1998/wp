@@ -60,6 +60,26 @@ export const INITIAL_SYMBOL_STATE: SymbolState = 'static';
 // SPECIAL (Wild, Scatter, superspin Coin) deliberately overflows its cell — at
 // 1.08 that is ~9px proud, up from ~6px — because those three are what the
 // player is hunting and they should sit visually on top of the grid.
+// ── how big a symbol is DRAWN, measured by its ink rather than its canvas ───
+//
+// 2026-08-25, on a report that "外框太大圖騰太小" next to the reference build.
+// Measured, the premiums were fine and the royals were not:
+//
+//     premium art   ink fills 92% of its 512 canvas -> 89% of the cell
+//     l1 / l2       ink fills 62%                   -> 57% of the cell
+//     l3 / l4       ink fills 70%                   -> 65% of the cell
+//     reference     its letters fill about 66% of their cell
+//
+// One number per TIER cannot fix that, because the tier says nothing about how
+// much of its canvas a drawing actually uses: A and K were drawn at the same
+// ratio as Q and J and came out a fifth smaller. The royals are also the most
+// common symbols on the grid, so their ink is most of what the board looks like
+// — which is why the whole board read as small.
+//
+// The ratios below are therefore per symbol, chosen so every royal's ink lands
+// near 70% of the cell. design/check_parts.py measures the shipped PNGs and
+// fails if any symbol drifts out of its band, so redrawn art cannot silently
+// shrink again.
 const HIGH_SYMBOL_SIZE = 0.97;
 // 2026-08-13: 0.8 -> 0.92, on a report that the gaps between symbols were too
 // wide. Measured rather than guessed, at the 132px on-screen cell pitch: a royal
@@ -200,10 +220,13 @@ export const SYMBOL_INFO_MAP = {
 	H3: spriteSymbol('hmH3', HIGH_RATIOS),
 	H4: spriteSymbol('hmH4', HIGH_RATIOS),
 	H5: spriteSymbol('hmH5', HIGH_RATIOS),
-	L1: spriteSymbol('hmL1', LOW_RATIOS),
-	L2: spriteSymbol('hmL2', LOW_RATIOS),
-	L3: spriteSymbol('hmL3', LOW_RATIOS),
-	L4: spriteSymbol('hmL4', LOW_RATIOS),
+	// A and K carry the least ink of anything on the board (62% of their canvas
+	// against 70% for Q and J), so they are drawn bigger to arrive at the same
+	// size on screen.
+	L1: spriteSymbol('hmL1', { width: 1.13, height: 1.13 }),
+	L2: spriteSymbol('hmL2', { width: 1.13, height: 1.13 }),
+	L3: spriteSymbol('hmL3', { width: 1.0, height: 1.0 }),
+	L4: spriteSymbol('hmL4', { width: 1.0, height: 1.0 }),
 	W: spriteSymbol('hmW', SPECIAL_RATIOS),
 	S: spriteSymbol('hmS', SPECIAL_RATIOS),
 	C: spriteSymbol('hmC', SPECIAL_RATIOS),

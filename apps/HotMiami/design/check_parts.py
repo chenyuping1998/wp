@@ -239,6 +239,49 @@ def area_of(im: Image.Image) -> int:
     return 0 if box is None else (box[2] - box[0]) * (box[3] - box[1])
 
 
+# How much of its cell each symbol's INK should fill.
+#
+# The band, not a number: a car is wide and a J is narrow, and forcing them to
+# the same figure would distort the art. What this catches is the failure that
+# actually happened — art whose drawing sits small inside its 512 canvas being
+# drawn at the same ratio as art that fills it, and arriving on the board a
+# fifth smaller than everything around it.
+SYMBOL_DIR = os.path.join(ROOT, 'static/assets/sprites/hotMiamiSymbols')
+INK_BAND = (0.62, 1.06)
+# Mirrors SYMBOL_INFO_MAP in src/game/constants.ts. Checked against it below, so
+# the two cannot drift apart silently.
+DRAW_RATIO = {
+    'h1': 0.97, 'h2': 0.97, 'h3': 0.97, 'h4': 0.97, 'h5': 0.97,
+    'l1': 1.13, 'l2': 1.13, 'l3': 1.0, 'l4': 1.0,
+    'w': 1.08, 'fs': 1.08, 'c': 1.08,
+}
+
+
+def check_symbol_sizes(problems: list[str]) -> None:
+    constants = open(os.path.join(ROOT, 'src/game/constants.ts'), encoding='utf-8').read()
+    for name, ratio in sorted(DRAW_RATIO.items()):
+        path = os.path.join(SYMBOL_DIR, f'{name}.png')
+        if not os.path.exists(path):
+            problems.append(f'{name}: no symbol art at {os.path.relpath(path, ROOT)}')
+            continue
+        im = Image.open(path).convert('RGBA')
+        box = im.getchannel('A').point(lambda v: 255 if v > 32 else 0).getbbox()
+        ink = max(box[2] - box[0], box[3] - box[1]) / im.width
+        share = ink * ratio
+        print(f'   {name:<4} ink {ink * 100:4.0f}% of canvas x draw {ratio:4.2f} = {share * 100:4.0f}% of the cell')
+        if not INK_BAND[0] <= share <= INK_BAND[1]:
+            problems.append(
+                f'{name}: drawn at {share * 100:.0f}% of its cell, outside {INK_BAND[0] * 100:.0f}-{INK_BAND[1] * 100:.0f}% — '
+                f'either the art was redrawn smaller or its ratio in constants.ts is wrong'
+            )
+        # The ratio here has to be the ratio that ships. The asset key is not
+        # always the filename: the scatter's art is fs.png and its key is hmS,
+        # because the SYMBOL is S and the file is named after what it says.
+        key = {'fs': 'hmS'}.get(name, f'hm{name.upper()}')
+        if f"'{key}'" not in constants:
+            problems.append(f'{name}: no {key} entry found in constants.ts')
+
+
 def main() -> int:
     problems = []
     rows = []
@@ -377,6 +420,7 @@ def main() -> int:
 
     check_expressions(problems)
     check_poses(problems)
+    check_symbol_sizes(problems)
 
     for p in problems:
         print('  !!', p)

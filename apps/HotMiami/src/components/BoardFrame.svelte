@@ -15,8 +15,19 @@
 	import { getContext } from '../game/context';
 
 	const context = getContext();
-	// frame art is 1280×1280 with the board occupying the centered 1000×1000
-	const FRAME_SCALE = 1280 / 1000;
+	// The frame art is 1280x1280 and its INNER WINDOW — measured off the PNG, not
+	// assumed — runs from x=60 to x=1221, so the window is 1161/1280 = 90.7% of
+	// the art. Drawn at the old 1280/1000 = 1.28, that window came out at 1.16x
+	// the board: 16% of empty panel on every side, about half a cell of nothing
+	// between the outermost symbols and the frame.
+	//
+	// The reference build's neon border hugs its grid — a couple of percent, not
+	// sixteen — and the gap is most of why this board reads as "外框太大圖騰太小".
+	// 1280/1110 puts the window at 1.05x the board. That is deliberately a little
+	// looser than the tightest fit: a special symbol is drawn at 1.08 of its cell
+	// and now carries a drop shadow below it, and at 1.03 the bottom row visibly
+	// touched the frame.
+	const FRAME_SCALE = 1280 / 1110;
 
 	// mode ambience: the frame breathes in the free game and cool moonlight in
 	// superspin; the base game stays clean.

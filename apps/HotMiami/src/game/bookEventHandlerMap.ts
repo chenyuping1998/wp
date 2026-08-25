@@ -42,9 +42,20 @@ const ANTICIPATION_MIN_SCATTERS = 2;
 // a presentation strip only: the board that lands comes from the book, and this
 // is never on screen once a reel has stopped.
 //
-// Twelve entries because the strip is sampled cyclically while the reel travels
-// and a short one repeats visibly at anticipation's half speed.
-const TEASE_STRIP = Array.from({ length: 12 }, () => ({ name: 'S' }));
+// DENSE, NOT SOLID.
+//
+// The first version was every symbol a scatter, copying the reference's
+// `attention` reelset literally. On our board that reads as broken rather than
+// as loaded — reported as 「MG 聽牌時後面輪整輪變成 SC」 — because our scatter is
+// a big high-contrast green burst and five of them stacked in one column is a
+// solid slab of green with no reel left underneath it.
+//
+// One in two, interleaved with ordinary symbols, is still around six times the
+// density of the real strip (which carries one scatter in twelve) and still
+// reads as "this reel is full of them", while remaining a reel.
+const TEASE_STRIP = Array.from({ length: 12 }, (_, index) =>
+	index % 2 === 0 ? { name: 'S' } : { name: ['H1', 'H3', 'L2', 'H5', 'L4', 'H2'][index >> 1] },
+);
 
 // A BOUGHT round does not get a tease.
 //
