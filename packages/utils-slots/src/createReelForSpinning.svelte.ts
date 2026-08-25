@@ -259,9 +259,21 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 
 		reelState.motion = 'bouncing';
 		onSpinFinishing();
+		// The impact is the START of the bounce, not the end of it. With
+		// `landOnImpact` the symbols squash as the reel hits, in the same frame as
+		// the reel-stop click that onSpinFinishing just played; without it they
+		// wait out the whole bounce-back first (236ms on a 118px cell) and the
+		// sound leads the picture by a quarter of a second.
+		//
+		// `removePaddingAndBounceBack` has already swapped in the final symbols, so
+		// what is being animated here is the board that landed, not the strip.
+		if (reelState.spinOptions().landOnImpact) updateAllReelSymbolState('land');
 		await removePaddingAndBounceBack();
 		reelState.motion = 'stopped';
-		updateAllReelSymbolState('land');
+		// Not repeated when it has already been done: 'land' resolves back to
+		// 'static' after the landing motion, so setting it a second time here
+		// would run the whole squash again from the top.
+		if (!reelState.spinOptions().landOnImpact) updateAllReelSymbolState('land');
 	};
 
 	const fastSpin = () =>

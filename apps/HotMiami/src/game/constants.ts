@@ -117,6 +117,12 @@ const SPIN_OPTIONS_SHARED = {
 	// Half of `reelSpinSpeed` (3 -> 1.5), matching their attentionSpeed/speed
 	// ratio. Applies to every mode: turbo turns anticipation off elsewhere.
 	reelSpinSpeedAnticipated: 1.5,
+	// The squash happens when the reel hits, not a quarter of a second later.
+	// Reported as 「第五輪停輪時符號的抖動會稍微慢一拍」 — measured at 265-269ms on
+	// every reel, and the fifth is simply where it is naked: on reels 1-4 the next
+	// reel arrives 282ms after this one, so the late squash lands about when the
+	// eye has already moved on, and on the last reel there is nothing to hide it.
+	landOnImpact: true,
 };
 
 export const SPIN_OPTIONS_DEFAULT = {

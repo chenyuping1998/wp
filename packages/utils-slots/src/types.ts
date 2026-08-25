@@ -31,6 +31,24 @@ export type SpinningReelSpinOptions = {
 	 */
 	reelSpinSpeedAnticipated?: number;
 	/**
+	 * Start the symbols' landing animation at the moment of IMPACT rather than
+	 * after the reel has finished bouncing back.
+	 *
+	 * The default order is: slide down, flip to 'bouncing', fire onSpinFinishing
+	 * (which is where the reel-stop click plays), run the bounce-back, and only
+	 * then put the symbols into 'land'. The bounce is
+	 * `symbolHeight * reelBounceSizeMulti / reelBounceBackSpeed` — on Hot Miami
+	 * 35.4px at 0.15px/ms, or 236ms — so the symbol reacts a quarter of a second
+	 * after the reel arrives and after the sound has already played.
+	 *
+	 * Measured on all five reels before this existed: 265-269ms between the reel
+	 * stopping and the squash starting, every time.
+	 *
+	 * Optional and false by default: an app that does not set it keeps the
+	 * original order exactly.
+	 */
+	landOnImpact?: boolean;
+	/**
 	 * Keep the reel-by-reel stagger in turbo instead of dropping all five reels
 	 * together.
 	 *

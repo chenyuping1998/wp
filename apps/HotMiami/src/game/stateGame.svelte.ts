@@ -296,6 +296,13 @@ if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.s
 			motion: reel.reelState.motion,
 			spinType: reel.reelState.spinType,
 			anticipating: reel.reelState.anticipating,
+			// The symbols' own state, which is what actually drives the landing
+			// squash. Reading it from outside is the only way to time the gap
+			// between a reel arriving and its symbols reacting: measuring the
+			// squash from the rendered transform cannot separate it from the
+			// motion blur's vertical stretch, which is still decaying at that
+			// moment and pulls the aspect ratio the other way.
+			symbolState: reel.reelState.symbols[1]?.symbolState,
 		}));
 
 	// Which game is on screen, and whether turbo is on. `__HM_REELS__` returns an
