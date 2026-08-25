@@ -224,10 +224,21 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateGame.currentWinTotal = bookEvent.totalWin;
 
 		// Build win line data — each win has a lineIndex from meta
+		// The amount and the Frame multiplier travel with the line now.
+		//
+		// Two reasons, and the second one is a review finding rather than taste.
+		// The reference build the user pointed at (MadLab's Nights of Miami)
+		// prints the value on the winning cells, and a board that shows what it
+		// paid reads as a game rather than as a diagram. And Wild Party's
+		// guidelines round opened "symbol payouts do not match the paytable" on a
+		// game whose maths was provably right — the reviewer could not reconcile
+		// the figure because nothing on screen ever named which line paid what.
 		const winLineData = bookEvent.wins.map((win) => ({
 			lineIndex: win.meta.lineIndex,
 			positions: win.positions,
 			symbolCount: win.positions.length,
+			win: win.win,
+			multiplier: win.meta.multiplier,
 		}));
 
 		// Every winning line runs its grenade at once; free game and turbo use the

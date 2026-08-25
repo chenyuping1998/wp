@@ -30,6 +30,14 @@
 		boardShow: () => (show = true),
 		boardHide: () => (show = false),
 		boardWithAnimateSymbols: async ({ symbolPositions }) => {
+			// Everything not in this volley stands down while it plays. Set before
+			// the first symbol changes state and cleared in a finally, so an
+			// interrupted volley (a new spin, a slam stop) can never leave the
+			// board dimmed with nothing lit.
+			context.stateGame.winningCells = symbolPositions.map((position) => ({
+				reel: position.reel,
+				row: position.row,
+			}));
 			const getPromises = () =>
 				symbolPositions.map(async (position) => {
 					const reelSymbol = context.stateGame.board[position.reel].reelState.symbols[position.row];
@@ -44,7 +52,11 @@
 					reelSymbol.symbolState = 'postWinStatic';
 				});
 
-			await Promise.all(getPromises());
+			try {
+				await Promise.all(getPromises());
+			} finally {
+				context.stateGame.winningCells = [];
+			}
 		},
 	});
 

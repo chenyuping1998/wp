@@ -22,6 +22,8 @@
 		focus?: { scale: number; bloom: number };
 		// board position, for the idle breath's per-cell phase
 		cell?: { reel: number; row: number };
+		// true while another cell is paying: this one steps back
+		dim?: boolean;
 	};
 
 	const props: Props = $props();
@@ -51,6 +53,7 @@
 		impact={props.impact}
 		focus={props.focus}
 		cell={props.cell}
+		dim={props.dim}
 		oncomplete={props.oncomplete}
 	/>
 {/if}

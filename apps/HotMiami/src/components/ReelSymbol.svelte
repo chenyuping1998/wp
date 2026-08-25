@@ -67,6 +67,22 @@
 			: undefined,
 	);
 
+	/**
+	 * Stand down while some OTHER cell is paying.
+	 *
+	 * Not applied to a cell that is itself in the volley, and not while the reel
+	 * is moving — a dimmed symbol mid-spin would fight the motion blur and read
+	 * as the reel going dark.
+	 */
+	const dim = $derived(
+		stateGame.winningCells.length > 0 &&
+			props.reelSymbol.symbolState !== 'win' &&
+			stateGame.board[props.reelIndex]?.reelState.motion !== 'spinning' &&
+			!stateGame.winningCells.some(
+				(cell) => cell.reel === props.reelIndex && cell.row === props.reelSymbol.symbolIndex,
+			),
+	);
+
 	const isHeldDuplicate = $derived(
 		props.reelSymbol.symbolState !== 'win' &&
 			stateGame.board[props.reelIndex]?.reelState.motion !== 'spinning' &&
@@ -108,6 +124,7 @@
 			{focus}
 			cell={{ reel: props.reelIndex, row: props.reelSymbol.symbolIndex }}
 			impact={landingImpact}
+			{dim}
 			oncomplete={() => {
 				// a completion from a presentation the symbol has already left
 				if (props.reelSymbol.symbolState !== forState) return;

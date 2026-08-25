@@ -37,10 +37,47 @@
 		 * as one block.
 		 */
 		cell?: { reel: number; row: number };
+		/**
+		 * Another cell is paying and this one is not part of it.
+		 *
+		 * Drawn darker and slightly transparent, eased rather than switched: a
+		 * board that snaps to two brightnesses reads as a rendering glitch, and
+		 * the ramp is what makes it read as the rest of the board stepping back.
+		 */
+		dim?: boolean;
 		oncomplete?: () => void;
 	};
 
 	const props: Props = $props();
+
+	// How far into the dim we are, 0..1. 140ms is short enough to be part of the
+	// win's own impact rather than a separate fade.
+	const DIM_MS = 140;
+	const DIM_ALPHA = 0.38;
+	const DIM_TINT = 0x6a5aa0;
+	let dimAmount = $state(0);
+	$effect(() => {
+		const target = props.dim ? 1 : 0;
+		if (dimAmount === target) return;
+		const from = dimAmount;
+		const started = performance.now();
+		let raf = 0;
+		const tick = (now: number) => {
+			const u = Math.min(1, (now - started) / DIM_MS);
+			dimAmount = from + (target - from) * u;
+			if (u < 1) raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
+	});
+	const dimAlpha = $derived(1 - (1 - DIM_ALPHA) * dimAmount);
+	const dimTint = $derived(
+		dimAmount < 0.01
+			? 0xffffff
+			: (Math.round(0xff + (((DIM_TINT >> 16) & 0xff) - 0xff) * dimAmount) << 16) |
+					(Math.round(0xff + (((DIM_TINT >> 8) & 0xff) - 0xff) * dimAmount) << 8) |
+					Math.round(0xff + ((DIM_TINT & 0xff) - 0xff) * dimAmount),
+	);
 
 	const width = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.width);
 	const height = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.height);
@@ -261,7 +298,8 @@
 			x: focusScale * breath,
 			y: focusScale * breath * (blur > 0.01 ? 1 + 0.3 * blur : 1),
 		}}
-		alpha={1 - 0.15 * blur}
+		alpha={(1 - 0.15 * blur) * dimAlpha}
+		tint={dimTint}
 	>
 		<SymbolArt
 			symbolInfo={props.symbolInfo}

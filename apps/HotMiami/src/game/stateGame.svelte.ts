@@ -131,6 +131,21 @@ export const stateGame = $state({
 	 * that needs measuring rather than eyeballing.
 	 */
 	debugWinLineCount: 0,
+	/**
+	 * The cells taking part in the win volley on screen right now, or empty.
+	 *
+	 * Written by Board.svelte around `boardWithAnimateSymbols`, read by every
+	 * symbol so the ones NOT in it can stand down: a winning board dims
+	 * everything else instead of leaving twenty equally bright tiles with a thin
+	 * line drawn over some of them.
+	 *
+	 * This is lifted from the reference build the user pointed at (MadLab's
+	 * Nights of Miami, the same 5x4/14-line shape on the same engine): its
+	 * winning cells stay lit and the rest go dark, which is what makes a win read
+	 * as an event rather than as a line being drawn. It costs nothing and it is
+	 * the single largest readability difference between the two boards.
+	 */
+	winningCells: [] as { reel: number; row: number }[],
 	// Per-reel anticipation magnitude for the spin now on the reels, after
 	// bookEventHandlerMap's gate. 0 = no tease, 1 = two scatters already landed,
 	// 2+ = three or more (the trigger count), so 2+ means the next scatter pays.
