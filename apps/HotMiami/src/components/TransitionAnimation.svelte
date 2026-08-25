@@ -24,21 +24,41 @@
 	// The car (hmCarSide, drawn by design/build_transition_car.py) faces right, so
 	// it drives left to right and never needs mirroring.
 	type Props = {
+		/** the screen is fully black and nothing is moving: swap the game here */
+		onblack?: () => void;
+		/** the reveal has finished and this can go away */
 		oncomplete: () => void;
 	};
 
 	const props: Props = $props();
 	const context = getContext();
 
-	// 1420ms total, the pacing signed off on the previous version. The drive was
+	// 2920ms total: 1420ms of car, then 500ms of held black and a 1000ms reveal. The drive was
 	// slowed from 760ms once because the car crossed before the eye settled on it;
 	// the blackout is carved out of the front rather than added on top.
 	const DARK_MS = 210; // slam to black
 	const DRIVE_MS = 910; // off-screen left to off-screen right
 	const EXIT_MS = 300; // tail lights recede, smoke catches the light
-	const TOTAL_MS = DARK_MS + DRIVE_MS + EXIT_MS;
+	// ── the tail, added 2026-08-25 from the Hacksaw spec ───────────────────────
+	//
+	// Their feature entry holds full black for 0.5s and then fades back in over
+	// 1.0s — deliberately twice as slow as the fade that took it out. The switch
+	// itself (their `enterMode`) happens inside the black, so the player never
+	// sees the board change; what they see is a slow reveal of a game that is
+	// already different.
+	//
+	// This transition had NO fade-in at all: the component unmounted at the end
+	// of the car's exit and the black vanished in one frame, which is a cut. The
+	// car stays — it is the game's own idea — but the way it hands over does not.
+	const BLACK_MS = 500;
+	const FADE_IN_MS = 1000;
+	const TOTAL_MS = DARK_MS + DRIVE_MS + EXIT_MS + BLACK_MS + FADE_IN_MS;
 	const DRIVE_AT = DARK_MS;
 	const EXIT_AT = DARK_MS + DRIVE_MS;
+	// The moment the caller may swap the game underneath: full black, nothing
+	// else moving.
+	const BLACK_AT = DARK_MS + DRIVE_MS + EXIT_MS;
+	const FADE_AT = BLACK_AT + BLACK_MS;
 
 	// Where in the drive the car is level with the middle of the screen.
 	const PASS_AT = 0.5;
@@ -69,6 +89,7 @@
 	let elapsed = 0;
 	let rafId = 0;
 	let completed = false;
+	let blackFired = false;
 	let passFired = false;
 	let lastPuffAt = -1e9;
 
@@ -99,7 +120,12 @@
 
 			// The black is slammed on, not faded — a fade reads as the game dimming,
 			// a slam reads as a cut. It stays up for the whole transition.
-			darkAlpha = Math.min(0.97, easeOutCubic(elapsed / DARK_MS) * 0.97);
+			// Only while the black is coming ON. Past BLACK_AT the fade-out branch
+			// below owns this value, and letting both write it made the screen
+			// snap back to full black on every frame of the reveal.
+			if (elapsed < BLACK_AT) {
+				darkAlpha = Math.min(0.97, easeOutCubic(elapsed / DARK_MS) * 0.97);
+			}
 
 			if (elapsed >= DRIVE_AT && elapsed < EXIT_AT) {
 				const p = (elapsed - DRIVE_AT) / DRIVE_MS;
@@ -128,10 +154,22 @@
 			} else if (elapsed >= EXIT_AT) {
 				carVisible = false;
 				beamT = -1;
-				exitT = (elapsed - EXIT_AT) / EXIT_MS;
+				exitT = clamp01((elapsed - EXIT_AT) / EXIT_MS);
 				// A short warm bloom, not a white-out: the screen is already black, so
 				// the cut is covered without blinding anyone.
-				flashAlpha = Math.sin(clamp01(exitT) * Math.PI) * 0.34;
+				flashAlpha = Math.sin(exitT * Math.PI) * 0.34;
+			}
+
+			if (elapsed >= BLACK_AT && !blackFired) {
+				blackFired = true;
+				props.onblack?.();
+			}
+			if (elapsed >= FADE_AT) {
+				// 0.97 -> 0 over a full second. Cubic out, so most of the reveal
+				// happens early and the last of the black lifts slowly — the opposite
+				// shape from the slam that put it there.
+				const p = clamp01((elapsed - FADE_AT) / FADE_IN_MS);
+				darkAlpha = 0.97 * (1 - easeOutCubic(p));
 			}
 
 			if (puffs.length && elapsed - puffs[0].born > PUFF_LIFE_MS) {

@@ -303,16 +303,40 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
 		// gold rings + sparks burst out of the scatters while the bell rings
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
-		await featurePause(3000);
+		// 3000 -> 1000, and three passes of the scatter shake -> one.
+		//
+		// Measured against the Hacksaw spec: their whole non-interactive feature
+		// entry is about 3.6 seconds, splash included. This one spent 3.0s holding
+		// on the bell and then 2.9s repeating the same 970ms symbol animation three
+		// times before the transition had even started — over 7 seconds to say one
+		// thing, and the second and third passes say nothing the first did not.
+		//
+		// The hold is still there because the bell needs somewhere to ring; it is
+		// now the length of the bell rather than three times it.
+		await featurePause(1000);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		// Three passes of the scatter shake — extended trigger celebration
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
-		for (let pass = 0; pass < featurePasses(3); pass++) {
-			await animateSymbols({ positions: bookEvent.positions });
-		}
+		await animateSymbols({ positions: bookEvent.positions });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
+		// Returns at FULL BLACK (Transition.svelte). Everything from here to the
+		// intro card happens where the player cannot see it, and the transition's
+		// own tail reveals the changed board over the following second.
 		await eventEmitter.broadcastAsync({ type: 'transition' });
+
+		// IN THE BLACK: become the free game.
+		//
+		// This used to run after the intro card, which meant the transition's
+		// reveal showed the BASE game — same background, same frame — and the
+		// switch happened later, in plain sight, behind a card. The spec this was
+		// re-timed against does the mode change while the screen is black for
+		// exactly this reason: what the player sees come up out of the black
+		// should already be the game they just won.
+		stateGame.gameType = 'freegame';
+		stateGame.stickyWildReels = [];
+		eventEmitter.broadcast({ type: 'expandingWildsClear' });
+		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
+
 		eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'jng_intro_fs' });
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
@@ -320,11 +344,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			type: 'freeSpinIntroUpdate',
 			totalFreeSpins: bookEvent.totalFs,
 		});
-		stateGame.gameType = 'freegame';
-		stateGame.stickyWildReels = [];
-		eventEmitter.broadcast({ type: 'expandingWildsClear' });
 		eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
-		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
 		stateUi.freeSpinCounterShow = true;
 		eventEmitter.broadcast({
