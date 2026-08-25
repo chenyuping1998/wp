@@ -29,6 +29,15 @@ const primaryMachines = createPrimaryMachines<Bet>({
 		// win lines, and lit symbols, over a board that was already spinning.
 		// Reported as "lines appearing from nowhere before the reels stop".
 		stopWinLineReplay();
+		// Same argument as the line replay above, one layer down: `winningCells`
+		// dims every cell that is NOT paying, and it is cleared by the volley that
+		// set it. A volley that never completes — the board torn down by a feature
+		// ending underneath it, a round interrupted — therefore leaves the board
+		// permanently half-dark, which is exactly what was reported after a free
+		// game ended. Belt and braces with the watchdog in Board.svelte: this
+		// guarantees a fresh round starts with every symbol lit whatever happened
+		// in the last one.
+		stateGame.winningCells = [];
 		stateBet.winBookEventAmount = 0;
 		// superspin sticky coins live for exactly one bought round
 		if (stateGame.stickyPrizes.length > 0) {

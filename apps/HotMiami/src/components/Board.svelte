@@ -16,6 +16,7 @@
 	import { BoardContext } from 'components-shared';
 
 	import { getContext } from '../game/context';
+	import { HOLD_MS } from '../game/symbolWinMotion';
 	import BoardContainer from './BoardContainer.svelte';
 	import BoardMask from './BoardMask.svelte';
 	import BoardBase from './BoardBase.svelte';
@@ -52,8 +53,24 @@
 					reelSymbol.symbolState = 'postWinStatic';
 				});
 
+			// A watchdog, not politeness.
+			//
+			// Each promise resolves from the symbol's own `oncomplete`, and a symbol
+			// whose component goes away mid-animation — the board torn down as a
+			// free game ends, a round interrupted — never fires it. The await then
+			// hangs forever, the `finally` never runs, and every cell that was not
+			// in this volley stays dimmed for the rest of the session. That is the
+			// "board is half dark after the free game" report.
+			//
+			// The cap is generous (four times the symbol hold) because it must
+			// never cut a volley that is merely slow; it exists to bound the damage
+			// of one that is dead.
+			const WATCHDOG_MS = HOLD_MS * 4;
 			try {
-				await Promise.all(getPromises());
+				await Promise.race([
+					Promise.all(getPromises()),
+					new Promise((resolve) => setTimeout(resolve, WATCHDOG_MS)),
+				]);
 			} finally {
 				context.stateGame.winningCells = [];
 			}

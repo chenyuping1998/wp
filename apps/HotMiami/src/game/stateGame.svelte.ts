@@ -307,7 +307,21 @@ if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.s
 	(window as unknown as { __HM_GAME__: () => unknown }).__HM_GAME__ = () => ({
 		gameType: stateGame.gameType,
 		isTurbo: stateBet.isTurbo,
+		betMode: stateBet.activeBetModeKey,
+		// How many cells are currently holding the rest of the board dim. Anything
+		// other than 0 on a settled, idle board is the leak that left the screen
+		// half-dark after a free game.
+		dimmedBy: stateGame.winningCells.length,
+		anticipation: [...stateGame.anticipation],
 	});
+
+	// Bet mode, settable — the same argument as __HM_TURBO__ below: the buy menu
+	// is a Pixi overlay, and "a bought round must not tease" cannot be checked
+	// from outside without being able to enter one.
+	(window as unknown as { __HM_BETMODE__: (key: string) => string }).__HM_BETMODE__ = (key) => {
+		stateBet.activeBetModeKey = key as typeof stateBet.activeBetModeKey;
+		return stateBet.activeBetModeKey;
+	};
 
 	// Turbo, settable. The toggle is a Pixi button on the canvas, so nothing
 	// outside the game can find it by label and every probe that wanted to

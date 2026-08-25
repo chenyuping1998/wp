@@ -46,8 +46,23 @@ const ANTICIPATION_MIN_SCATTERS = 2;
 // and a short one repeats visibly at anticipation's half speed.
 const TEASE_STRIP = Array.from({ length: 12 }, () => ({ name: 'S' }));
 
+// A BOUGHT round does not get a tease.
+//
+// The feature is already paid for and the trigger is forced, so teasing it is
+// theatre about an outcome that was never in doubt — and with the scatter-dense
+// strip in place it looks it: every bought round showed whole reels of nothing
+// but SCATTER, which is what was reported as 「BUY BONUS 聽牌時整行都是 SC 很怪」.
+//
+// The reference spec says the same thing in one line: anticipation is off in
+// `bonus_buy` mode (and in superTurbo). Measured here, EVERY bought round arms
+// anticipation — 3,000 of 3,000 books — so this was not an occasional oddity,
+// it was every single purchase.
+const isBoughtRound = () => stateBet.activeBetModeKey.toUpperCase() !== 'BASE';
+
 const gateAnticipation = (anticipation: number[]) =>
-	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
+	isBoughtRound()
+		? anticipation.map(() => 0)
+		: anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
 
 // The win lines of the round's last winInfo, kept so the board can keep showing
 // them while it sits idle waiting for the next spin — otherwise the lines vanish
