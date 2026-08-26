@@ -81,6 +81,36 @@ setUiTheme({
 	// 旋轉鍵的呼吸光暈
 	spinButtonGlow: true,
 
+	// Platform UX conventions, lifted from Hacksaw's shipped UI bundle. Worth
+	// having precisely BECAUSE they are not one game's design: The Luxe 1.5.1 and
+	// Densho 1.25.1 ship the same 55 element bindings, the same 24-key table, the
+	// same 150/500/50000/100 constants — byte-identical function bodies. That is
+	// the house convention two live titles share, and a player arriving from
+	// either already has it in their hands.
+	//
+	// Nothing here is STYLED from Hacksaw. Their controls are DOM and ours are
+	// pixi, so their rem values transfer to nothing; the layout stays exactly as
+	// measured in stateGame.svelte.ts. What transfers is behaviour.
+	//
+	// To revert: delete this object. `null` is the default and means the previous
+	// behaviour exactly — no hold-repeat, no cooldown, no idle nudge, no
+	// shortcuts, panels left as they were. It can also be turned off on a build
+	// that is already deployed, without rebuilding:
+	//
+	//   localStorage.setItem('platformUx', 'off')   previous behaviour
+	//   localStorage.removeItem('platformUx')       back to this
+	//
+	// The numbers are Hacksaw's own, unchanged.
+	platformUx: {
+		betRepeatMs: 150,
+		betToSpinCooldownMs: 500,
+		idleReminderMs: 50_000,
+		idlePulseMs: 2_000,
+		shortcuts: true,
+		keybindThrottleMs: 100,
+		closePanelsOnSpin: true,
+	},
+
 	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
 	// keep the themed rounded rect, which suits the round buttons)
 	sprites: {
