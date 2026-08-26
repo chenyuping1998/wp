@@ -303,6 +303,12 @@ if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.s
 			// motion blur's vertical stretch, which is still decaying at that
 			// moment and pulls the aspect ratio the other way.
 			symbolState: reel.reelState.symbols[1]?.symbolState,
+			// What this reel is showing. Added while checking that a teasing reel
+			// scrolls the ordinary strip: the question "is there a scatter on the
+			// reels that already stopped" cannot be answered from a screenshot of a
+			// board mid-spin, and reading it off the rendered sprites means reading
+			// motion-blurred art. Names only, and only under ?hmdebug=1.
+			names: reel.reelState.symbols.map((symbol) => symbol.rawSymbol?.name),
 		}));
 
 	// Which game is on screen, and whether turbo is on. `__HM_REELS__` returns an

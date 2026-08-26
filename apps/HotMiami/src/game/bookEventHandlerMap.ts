@@ -35,27 +35,31 @@ import { FRAME_REVEAL, FRAME_CLEAR } from './frameTiming';
 // shared package (and the sibling apps) untouched.
 const ANTICIPATION_MIN_SCATTERS = 2;
 
-// What a teasing reel scrolls instead of the ordinary strip.
+// A teasing reel scrolls the ORDINARY strip.
 //
-// All scatter, which is what the reference does (its `attention` reelset carries
-// 30 symbols per column against 7, and every one of them is the scatter). It is
-// a presentation strip only: the board that lands comes from the book, and this
-// is never on screen once a reel has stopped.
+// Two attempts at a special strip, both reported as wrong by the user, and the
+// second one is the more interesting failure:
 //
-// DENSE, NOT SOLID.
+//   all scatter        copied literally from the reference's `attention`
+//                      reelset. Our scatter is a big high-contrast green burst,
+//                      so a column of them is a solid slab of green with no reel
+//                      left underneath — 「MG 聽牌時後面輪整輪變成 SC」.
+//   one in two         interleaved with ordinary symbols to keep it reading as a
+//                      reel. Still wrong, and for a reason the first version hid:
+//                      at 1-in-2 the column is a REPEATING PAIR, and a scrolling
+//                      two-symbol pattern reads as a broken reel rather than as a
+//                      dense one — 「假轉變成兩顆有一顆 SC 很奇怪」.
 //
-// The first version was every symbol a scatter, copying the reference's
-// `attention` reelset literally. On our board that reads as broken rather than
-// as loaded — reported as 「MG 聽牌時後面輪整輪變成 SC」 — because our scatter is
-// a big high-contrast green burst and five of them stacked in one column is a
-// solid slab of green with no reel left underneath it.
+// The reference can do it because its scatter is a small flat token and its
+// attention reelset is 30 symbols deep, so the density never resolves into a
+// pattern the eye can count. Ours is neither, and no density setting fixes that:
+// sparse enough not to look patterned is also sparse enough not to look loaded.
 //
-// One in two, interleaved with ordinary symbols, is still around six times the
-// density of the real strip (which carries one scatter in twelve) and still
-// reads as "this reel is full of them", while remaining a reel.
-const TEASE_STRIP = Array.from({ length: 12 }, (_, index) =>
-	index % 2 === 0 ? { name: 'S' } : { name: ['H1', 'H3', 'L2', 'H5', 'L4', 'H2'][index >> 1] },
-);
+// So the strip is left alone. The tease is still three things happening at once
+// — the reel slows to 1.5x padding at 0.66 speed, the reel lights up, and the
+// music ducks through a lowpass — and those three are what the reference's own
+// spec lists first. The strip was the fourth, and it is the one that does not
+// survive being ported to a board with symbols this large.
 
 // A BOUGHT round does not get a tease.
 //
@@ -240,25 +244,13 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			);
 		}
 
-		// A teasing reel spins a DIFFERENT STRIP.
-		//
-		// `paddingBoard` is what scrolls past while a reel is in motion — it has
-		// nothing to do with the outcome, which is already decided in the book.
-		// The Hacksaw spec the user supplied swaps in an `attention` reelset for
-		// exactly this moment: 4.3x the scatter density and nothing else on it, so
-		// the reel the player is staring at is visibly full of the symbol they
-		// need. Ours was scrolling the ordinary mix, which is the difference
-		// between a reel that looks like it might and a reel that looks like any
-		// other reel with a light on it.
-		//
-		// Only the reels that are actually teasing, and only the ones still to
-		// come — a reel that has already stopped is not spinning anything.
+		// What scrolls past while a reel is in motion. The ordinary strip, on
+		// teasing reels too — see the note on the tease strip above for why the two
+		// special strips were both removed.
 		const padding = config.paddingReels[bookEvent.gameType];
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: { ...bookEvent, anticipation },
-			paddingBoard: padding.map((reel: { name: string }[], index: number) =>
-				anticipation[index] > 0 ? TEASE_STRIP : reel,
-			),
+			paddingBoard: padding,
 		});
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 	},
