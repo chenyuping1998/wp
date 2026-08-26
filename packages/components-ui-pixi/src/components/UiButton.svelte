@@ -123,7 +123,7 @@
 					}}
 			backgroundColor={backgroundColor}
 			borderColor={uiTheme.buttonBorder}
-			borderWidth={active ? 10 : 6}
+			borderWidth={active ? uiTheme.buttonBorderWidthActive : uiTheme.buttonBorderWidth}
 			borderRadius={buttonProps.sizes.width * 0.5}
 			{...active
 				? {

@@ -56,10 +56,10 @@
 			anchor={0.5}
 			width={sizes.width}
 			height={sizes.height}
-			backgroundColor={0x000000}
-			borderColor={0xffcf66}
-			borderWidth={7}
-			borderRadius={36}
+			backgroundColor={uiTheme.buyBonusFill}
+			borderColor={uiTheme.buyBonusBorder}
+			borderWidth={uiTheme.buyBonusBorderWidth}
+			borderRadius={uiTheme.buyBonusCornerRadius}
 			{...disabled
 				? {
 						backgroundColor: 0xaaaaaa,

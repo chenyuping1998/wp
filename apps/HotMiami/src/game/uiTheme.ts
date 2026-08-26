@@ -132,3 +132,105 @@ setUiTheme({
 		// be hollow when off and fill in when active — a static sprite can't toggle
 	},
 });
+
+// ── Platform chrome (opt-out) ────────────────────────────────────────────────
+//
+// Everything above is Hot Miami's own drawn look: brass-edged plates, a heavy
+// ring on every round control, a lit inner line along the strip. What follows
+// replaces the CASING — not the game — with Hacksaw's platform chrome.
+//
+// Why this is worth having as a second skin rather than an opinion: their UI
+// files are shared across titles. The Luxe 1.5.1 and Densho 1.25.1 differ by one
+// DOM node and five CSS rules, and their 103 theme variables are value-identical.
+// So these numbers are not one game's styling — they are the neutral casing a
+// player has already seen on other titles, which is exactly what a casing is
+// supposed to be. The report that came with the teardown says it in its own
+// first section: "UI 層沒有任何遊戲專屬配色或版面".
+//
+// The values, straight from ui-layout.md §3.1 and §4.1:
+//
+//   .ActionPanel      background #2a2a2a, border 3px solid #0f0f0f, radius 3px
+//   .divider--vertical opacity .15
+//   .Button           radius 4px, border 1px, --hg-btn-bg #4ace4a, color #fff,
+//                     border-color #343a40, disabled #207820 / #bfbfbf
+//   CircleButton      mobile: background rgba(33,37,41,.5), border-width 0
+//
+// Two things deliberately survive the swap: the drawn icon art and the game
+// font. Hacksaw's glyphs are an icon font we do not have, and the fallback here
+// is text/emoji — visibly worse than the icons already drawn for this game.
+//
+// TO GO BACK, three ways, shallowest first:
+//
+//   localStorage.setItem('uiSkin', 'miami')   on a build already deployed
+//   localStorage.removeItem('uiSkin')         back to this default
+//   change DEFAULT_SKIN below to 'miami'      one word, in the build
+//
+// Nothing above this line is edited by the swap, so 'miami' is byte-for-byte the
+// look that shipped.
+const DEFAULT_SKIN: 'hacksaw' | 'miami' = 'hacksaw';
+
+const skin =
+	(typeof localStorage !== 'undefined' && localStorage.getItem('uiSkin')) || DEFAULT_SKIN;
+
+if (skin === 'hacksaw') {
+	setUiTheme({
+		// the strip: flat casing, their panel grey on their near-black edge
+		barStyle: 'flat',
+		barFill: 0x2a2a2a,
+		barAlpha: 1,
+		panelBorder: 0x0f0f0f,
+		panelFill: 0x2a2a2a,
+
+		// round controls: a dark translucent disc with no ring at all, which is
+		// what `--hg-btn-border-width: 0` gives their mobile CircleButtons. The ring
+		// comes back only to mark a toggle that is ON.
+		// Their mobile CircleButtons float on the game art, where a flat dark disc
+		// separates itself. On a grey strip it does not: 0x212529 against a
+		// 0x2a2a2a bar is a 9-level difference and the control disappears. Darker
+		// disc, and the 1px `.Button` border comes back (at 2, since one unit here
+		// is about a third of a CSS pixel at this bar's scale).
+		buttonFill: 0x14171a,
+		buttonFillLight: 0x4ace4a,
+		buttonFillDisabled: 0x207820,
+		buttonFillActive: 0x4ace4a,
+		buttonBorder: 0x565e66,
+		buttonBorderWidth: 2,
+		buttonBorderWidthActive: 5,
+		buttonIconFill: 0xffffff,
+		buttonIconStroke: 0x0f0f0f,
+
+		// the spin button takes their primary green — it is the one control the
+		// platform palette actually colours
+		betFill: 0x4ace4a,
+		betBorder: 0x343a40,
+
+		// readouts: their disabled grey for labels, plain white for values. No
+		// per-metric accent colours; the platform bar does not tint its readouts.
+		labelFill: 0xbfbfbf,
+		balanceLabelFill: 0xbfbfbf,
+		winAccent: { border: 0x343a40, label: 0xbfbfbf },
+		betAccent: { border: 0x343a40, label: 0xbfbfbf },
+		valueFill: 0xffffff,
+		valueStroke: 0x0f0f0f,
+		valueShadow: 0x000000,
+		buyBonusLabelFill: 0xffffff,
+
+		// the brass plate art has to go with the brass: a framed plate behind a
+		// flat grey strip reads as two different bars stacked
+		sprites: {},
+
+		// with the plate art gone the CTA falls back to its rounded rect, which was
+		// black-and-gold to match the brass. Their green marks it as the one
+		// coloured call to action, the same job --hg-btn-bg does in their table.
+		buyBonusFill: 0x14171a,
+		buyBonusBorder: 0x4ace4a,
+		buyBonusBorderWidth: 4,
+		buyBonusCornerRadius: 8,
+
+		// their .CircleButton has :hover and :active states and a 125ms transition;
+		// it does not have a halo
+		spinButtonGlow: false,
+		hoverHighlight: true,
+		pressFeedback: true,
+	});
+}

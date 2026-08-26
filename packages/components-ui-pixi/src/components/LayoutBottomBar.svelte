@@ -176,8 +176,30 @@
 	<Graphics
 		draw={(g: PixiGraphics) => {
 			const h = frameH;
-			const r = 26;
 			g.clear();
+
+			// Platform chrome: a flat casing instead of the drawn housing. Same
+			// colours, different shapes — see uiTheme.barStyle. Hacksaw's
+			// `.ActionPanel` is `border: 3px solid #0f0f0f; border-radius: 3px` on a
+			// flat fill with `.divider--vertical { opacity: .15 }`, and the whole
+			// point of that casing is that it recedes: no inner lit line, no
+			// engraved rules, nothing that asks to be looked at.
+			if (uiTheme.barStyle === 'flat') {
+				const rFlat = 4;
+				g.roundRect(FRAME_X, barTop, frameW, h, rFlat);
+				g.fill({ color: uiTheme.barFill, alpha: uiTheme.barAlpha });
+				g.stroke({ width: 3, color: uiTheme.panelBorder, alpha: 1 });
+				const topF = barTop + DIV_INSET;
+				const botF = barTop + h - DIV_INSET;
+				for (const x of [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
+					g.moveTo(x, topF);
+					g.lineTo(x, botF);
+					g.stroke({ width: 1, color: 0xffffff, alpha: 0.15 });
+				}
+				return;
+			}
+
+			const r = 26;
 			// Pixi v8 API (shape, then fill/stroke), NOT the v7 beginFill/lineStyle
 			// compatibility calls. Mixing those here filled the whole frame with the
 			// last colour set — the strip rendered solid brass instead of dark olive,
