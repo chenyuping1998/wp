@@ -202,6 +202,32 @@ export const uiTheme = $state({
 	// giving up its palette, or vice versa.
 	barStyle: 'framed' as 'framed' | 'flat',
 
+	// compactBottom only — geometry, in standard-layout units (a 1920x1080 box on
+	// wide screens). All three were constants inside LayoutBottomBar; the defaults
+	// here are those constants exactly.
+	//
+	// The numbers a game would want instead come from Hacksaw's own rendered UI,
+	// measured at 1280x720 in ui-appearance.html §1 and §7:
+	//
+	//   MainPanel      830.4 x 70   inset (4.8, 10) in an 840 x 110.4 wrapper
+	//   clear below    30.4         the strip FLOATS, it is not on the floor
+	//   PlaceBetBtn    112 x 112    at y −11, so it stands 21 ABOVE the panel top
+	//                               and is 1.60x the panel's own height
+	//
+	// That last line is the whole visual idea of their bar, and their report says
+	// so outright: the spin button is the only element allowed to break the strip,
+	// and it is what the eye lands on. As fractions of screen height those are
+	// panel 9.7%, float 4.2%, spin 15.6% — which is what a game porting them
+	// should set, rather than the raw pixels.
+	//
+	// barFrameBottom  how far the drawn frame stops short of the canvas floor.
+	//                 barHeight − barFrameBottom is the frame's own height.
+	// spinScale       spin button diameter as a multiple of UI_BASE_SIZE (150).
+	//                 It is centred on the frame, so anything above
+	//                 (barHeight − barFrameBottom) / 150 overhangs top and bottom.
+	barFrameBottom: 12,
+	spinScale: 0.78,
+
 	// compactBottom only — keep the oversized Buy Bonus where the side-rail layout
 	// put it (left of the board, vertically centred) instead of dropping it into
 	// the strip. Buying the feature is a deliberate, occasional action; it does not

@@ -40,9 +40,14 @@
 	// were cut off. The insets are deliberately tight now: the frame is meant to
 	// read as a substantial console, and at the previous 40/18 it floated in the
 	// middle of the margin looking undersized against the reel housing.
-	const FRAME_BOTTOM = 12;
+	//
+	// The inset is a theme key now (uiTheme.barFrameBottom, default 12 — this
+	// value). A flat platform casing wants a much bigger one: Hacksaw's strip
+	// leaves 30.4px clear under it on a 720-tall window, so the bar reads as a
+	// thing laid on the screen rather than a thing built into its edge, and the
+	// oversized spin button has somewhere to hang.
 	const barTop = $derived(box.height - uiTheme.barHeight);
-	const frameH = $derived(uiTheme.barHeight - FRAME_BOTTOM);
+	const frameH = $derived(uiTheme.barHeight - uiTheme.barFrameBottom);
 	const barMid = $derived(barTop + frameH * 0.5);
 
 	// The strip is one framed panel, so the readouts inside it drop their own
@@ -78,7 +83,10 @@
 	// frame top and bottom on purpose, but it also has to stay inside the canvas:
 	// 0.92 put its lower edge 8px past the bottom of the stage, and even 0.8 left
 	// it 1px over. This is the largest size that clears.
-	const SPIN_SCALE = 0.78;
+	// A theme key now (uiTheme.spinScale, default 0.78 — this value). Hacksaw runs
+	// theirs at 1.60x the panel height, deliberately breaking out of the strip;
+	// see the note on spinScale in theme.svelte.ts.
+	const SPIN_SCALE = $derived(uiTheme.spinScale);
 	// The stacked pair has to fit between the frame's inner rails. At 0.36 with a
 	// 30 offset it stood 77 tall against 63 of clear frame and poked out of both.
 	const STEP_SCALE = 0.28;

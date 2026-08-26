@@ -174,6 +174,30 @@ const skin =
 
 if (skin === 'hacksaw') {
 	setUiTheme({
+		// ── geometry, from ui-appearance.html §1 (measured at 1280x720) ─────────
+		//
+		// Their bar is not a band along the bottom edge; it is a slim panel LAID
+		// ON the screen with clear space under it, and one control that breaks
+		// out of it. As fractions of screen height, on our 1080 standard box:
+		//
+		//   wrapper      110.4/720 = 15.3%  ->  barHeight 166
+		//   clear below   30.4/720 =  4.2%  ->  barFrameBottom 46
+		//     (leaves the panel itself 120 tall = 11.1%, against their 9.7%)
+		//   spin button  112/720   = 15.6%  ->  168 across = spinScale 1.12
+		//
+		// The spin button is the point. Theirs is 1.60x the panel's height and
+		// stands 21px proud of its top edge — their own report calls it the only
+		// element that breaks the strip and says the visual centre of gravity
+		// rests on it. Ours was 0.91x the frame: the same size as everything else
+		// and therefore not the primary action at all.
+		//
+		// Ours is CENTRED on the frame, so it overhangs equally top and bottom
+		// (24 each way) rather than their asymmetric 21 up / flush down. Doing it
+		// their way would need the button to hang below the canvas floor.
+		barHeight: 166,
+		barFrameBottom: 46,
+		spinScale: 1.12,
+
 		// the strip: flat casing, their panel grey on their near-black edge
 		barStyle: 'flat',
 		barFill: 0x2a2a2a,
