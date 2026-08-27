@@ -1,10 +1,8 @@
 <script lang="ts">
-	import { Container, Sprite } from 'pixi-svelte';
 	import { MainContainer } from 'components-layout';
 
 	import { getContext } from '../game/context';
-	import { CAST_SWAY, castFrame } from '../game/idleSway';
-	import { idleClock, useIdleClock } from '../game/idleClock.svelte';
+	import CastFigure, { CAST_NATIVE } from './CastFigure.svelte';
 	import { stateGame } from '../game/stateGame.svelte';
 
 	/**
@@ -52,14 +50,7 @@
 	const box = $derived(context.stateLayoutDerived.mainLayout());
 
 	const isFeature = $derived(stateGame.gameType !== 'basegame');
-	const who = $derived(isFeature ? 'girl' : 'guy');
-	const sway = $derived(CAST_SWAY[who]);
-
-	// Native sizes from design/build_cast_figures.py: guy 266x819, girl 224x775.
-	// Held here rather than measured at runtime because the sprite has to be
-	// positioned before its texture resolves, and a figure that jumps into place
-	// when its PNG arrives is worse than one that fades in already standing.
-	const NATIVE = { guy: { w: 266, h: 819 }, girl: { w: 224, h: 775 } };
+	const who = $derived<'guy' | 'girl'>(isFeature ? 'girl' : 'guy');
 
 	// mirrors BoardFrame's own constant
 	const FRAME_SCALE = 1280 / 1110;
@@ -92,7 +83,7 @@
 	const OVERLAP = 10;
 	const BLEED = 1.12; // how far past the screen edge the figure runs
 	const width = $derived((box.width - (boardInkRight - OVERLAP)) * BLEED);
-	const height = $derived((width * NATIVE[who].h) / NATIVE[who].w);
+	const height = $derived((width * CAST_NATIVE[who].h) / CAST_NATIVE[who].w);
 	// 0.11, not 0. In the reference the character's head sits BELOW the top of the
 	// board, not level with it: the board stays the tallest thing on screen and
 	// the figure reads as standing behind it rather than looming over it. At 0.05
@@ -104,30 +95,10 @@
 	// a ground line that is actually on screen. Pivoting at the real feet, 400px
 	// below the canvas, would swing the head twice as far for the same angle.
 	const groundY = $derived(box.height);
-
-	$effect(() => useIdleClock());
-	const frame = $derived(castFrame(sway, idleClock.t));
 </script>
 
-<MainContainer>
-	<!--
-		Pivoted on the ground line, which is how a standing person sways. The
-		container sits on that point and the sprite hangs above it — the same
-		arrangement the rigged parts use.
-	-->
-	<Container
-		x={x}
-		y={groundY + frame.dy * height}
-		rotation={frame.rotation}
-		scale={{ x: 1, y: frame.scaleY }}
-	>
-		<Sprite
-			key={who === 'guy' ? 'hmCastGuy' : 'hmCastGirl'}
-			anchor={{ x: 0.5, y: 0 }}
-			y={topY - groundY}
-			{width}
-			{height}
-			alpha={0.96}
-		/>
-	</Container>
-</MainContainer>
+{#if !stateGame.featureSplashShow}
+	<MainContainer>
+		<CastFigure {who} {x} {topY} {height} {groundY} alpha={0.96} />
+	</MainContainer>
+{/if}

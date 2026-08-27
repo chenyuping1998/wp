@@ -163,6 +163,12 @@ export const stateGame = $state({
 	// rather than inside it.
 	frames: [] as { reel: number; row: number; mult: number }[],
 	bonusTier: null as null | 'neon_nights' | 'sunset_hits' | 'ocean_drive',
+
+	// True while the feature splash is up. Read by Cast.svelte, which stands its
+	// figure down for the duration: the splash draws its OWN copy, lit and on the
+	// near side of the scrim, and two of the same person on screen at once — one
+	// bright, one a dim ghost behind the dimming layer — is worse than either.
+	featureSplashShow: false,
 });
 
 // The reel housing fills 94% of the box height (BOARD_SIZES is 590 tall and
