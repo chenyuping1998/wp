@@ -22,6 +22,13 @@
 	let pulseTick = $state(0);
 
 	const layout = $derived(context.stateLayoutDerived.mainLayout());
+	// What the background has to cover, expressed in the game box's own units: the
+	// canvas can be wider or taller than the box, and MainContainer scales the box
+	// to fit, so dividing the canvas by that scale gives the box-space size that
+	// reaches the real edges.
+	const canvas = $derived(context.stateLayoutDerived.canvasSizes());
+	const coverW = $derived(canvas.width / layout.scale);
+	const coverH = $derived(canvas.height / layout.scale);
 
 	// logo.png's own proportions, so the mark is never stretched
 	const LOGO_W = 1024;
@@ -130,28 +137,24 @@
 -->
 <FadeContainer show={loadingType === 'start'}>
 	<MainContainer>
+		<!--
+			Background and scrim at CANVAS size, not at the game box's.
+
+			They were drawn at mainLayout() — the letterboxed 16:9 box the board
+			lives in — while the canvas can be much wider. On a wide screen that
+			left a black bar down each edge, and the two figures stand exactly
+			there, so the bar read as a dark slab travelling with them
+			(「後面有一片黑一起晃」). It never moved; they did, in front of it.
+
+			Background.svelte has always used canvasSizes() for the same reason.
+		-->
 		<Sprite
 			key="hmBgBase"
 			anchor={0.5}
 			x={layout.width * 0.5}
 			y={layout.height * 0.5}
-			width={layout.width}
-			height={layout.height}
-		/>
-
-		<!-- Reading scrim. Deeper than the old 0.68 because there are figures on
-		     this screen now and they, not the photograph, are what should read. -->
-		<Graphics
-			draw={(g) => {
-				g.clear();
-				g.rect(0, 0, layout.width, layout.height);
-				g.fill({ color: 0x0a0416, alpha: 0.74 });
-				// one warm pool behind the logo, drifting — the only motion on the
-				// screen apart from the bar, and it stops the still from looking frozen
-				const glowX = layout.width * 0.5 + Math.sin(pulseTick / 48) * layout.width * 0.05;
-				g.ellipse(glowX, layout.height * 0.3, layout.width * 0.24, layout.height * 0.13);
-				g.fill({ color: 0xff8ede, alpha: 0.05 + 0.02 * (0.5 + 0.5 * Math.sin(pulseTick / 22)) });
-			}}
+			width={coverW}
+			height={coverH}
 		/>
 
 		<!--

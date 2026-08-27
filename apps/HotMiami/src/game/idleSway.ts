@@ -127,7 +127,30 @@ const blonde: SwayRig = {
 	jitter: { part: 'torso', at: 0.52, durationMs: 700, amplitudeDeg: 0.5 },
 };
 
-export const SWAY_RIGS: Record<string, SwayRig> = { h1: guy, h2: blonde };
+/**
+ * Who sways at rest.
+ *
+ * h2 is NOT here, and the reason is her art rather than her rig. Every one of
+ * her part layers carries a speckled salmon ghost of her face, and hair_front —
+ * drawn on top of everything — is the one that shows. It was invisible for
+ * months because a rigged symbol only draws its stack during a win or the ~110ms
+ * of a blink; putting the stack on screen permanently put the ghost there too
+ * (「女人圖騰的怪怪模樣」).
+ *
+ * It cannot be repaired in the pipeline: measured, 17,170 ghost pixels and 0 of
+ * them covered by head or torso — those two layers do not paint her face at all,
+ * so THE GHOST IS THE ONLY LAYER DRAWING IT. Stripping it opens a hole and
+ * check_parts catches the drop in IoU against the artist's own _full.png. See
+ * the long note in design/process_source_parts.py.
+ *
+ * So she keeps the flat sprite she has always shipped at rest, which is clean,
+ * and `blonde` stays defined and tested for the day her parts are redrawn — one
+ * word puts her back.
+ */
+export const SWAY_RIGS: Record<string, SwayRig> = { h1: guy };
+
+/** Kept out of SWAY_RIGS but still measured by the gate. See above. */
+export const SWAY_RIGS_PENDING_ART: Record<string, SwayRig> = { h2: blonde };
 
 export const getSwayRig = (symbolName: string): SwayRig | null =>
 	SWAY_RIGS[symbolName.toLowerCase()] ?? null;

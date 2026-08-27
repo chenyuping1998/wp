@@ -31,7 +31,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const { SWAY_RIGS, CAST_SWAY, swayFrame, castFrame, jitterAt, IDLE_WRAP_MS } = await import(
+const { SWAY_RIGS, SWAY_RIGS_PENDING_ART, CAST_SWAY, swayFrame, castFrame, jitterAt, IDLE_WRAP_MS } = await import(
 	path.join(appRoot, 'src/game/idleSway.ts')
 );
 
@@ -43,10 +43,14 @@ const DEG = Math.PI / 180;
 const gcd = (a, b) => (b ? gcd(b, a % b) : a);
 const lcm = (a, b) => (a / gcd(a, b)) * b;
 
-const names = Object.keys(SWAY_RIGS);
+// Rigs that are correct but held back on their art are still checked — the table
+// is the thing under test, and letting it rot while it waits is how it comes
+// back wrong. See SWAY_RIGS_PENDING_ART.
+const ALL_RIGS = { ...SWAY_RIGS, ...SWAY_RIGS_PENDING_ART };
+const names = Object.keys(ALL_RIGS);
 
 // ── rule 1: loop lengths must not match, and must realign only rarely ────────
-const loops = names.map((n) => SWAY_RIGS[n].loopMs);
+const loops = names.map((n) => ALL_RIGS[n].loopMs);
 if (new Set(loops).size !== loops.length) {
 	fail(`two characters share a loop length (${loops.join(', ')}ms) — they will sync`);
 }
@@ -56,7 +60,7 @@ if (realign < 20_000) {
 }
 // the shared clock must contain every loop a whole number of times, or a loop
 // jumps when the clock wraps
-for (const [name, rig] of Object.entries(SWAY_RIGS)) {
+for (const [name, rig] of Object.entries(ALL_RIGS)) {
 	if (IDLE_WRAP_MS % rig.loopMs !== 0) {
 		fail(`${name}: the idle clock wraps at ${IDLE_WRAP_MS}ms, which is not a whole number of its ${rig.loopMs}ms loop — the sway will jump on every wrap`);
 	}
@@ -82,7 +86,7 @@ const trace = (rig, part) => {
 
 const report = [];
 
-for (const [name, rig] of Object.entries(SWAY_RIGS)) {
+for (const [name, rig] of Object.entries(ALL_RIGS)) {
 	const measured = Object.fromEntries(rig.parts.map((p) => [p.name, trace(rig, p.name)]));
 
 	// ── rule 2: the body barely moves, the appendage carries it ────────────────
@@ -157,7 +161,7 @@ for (const [name, rig] of Object.entries(SWAY_RIGS)) {
 // behind. Their loops are checked against the SYMBOLS' as well as each other's:
 // four things swaying on screen is four chances to accidentally sync.
 const allLoops = [
-	...Object.values(SWAY_RIGS).map((r) => r.loopMs),
+	...Object.values(ALL_RIGS).map((r) => r.loopMs),
 	...Object.values(CAST_SWAY).map((c) => c.loopMs),
 ];
 if (new Set(allLoops).size !== allLoops.length) {

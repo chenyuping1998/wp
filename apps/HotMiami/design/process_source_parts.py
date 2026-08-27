@@ -42,6 +42,31 @@ KEY_BY_FILE = {
     'h5/lights_on.png': (0, 255, 0),
 }
 
+# ── h2's part set is not repairable here, and this is where the finding lives ──
+#
+# h2's layers all carry a speckled salmon ghost of her face, neck and chest — a
+# bad export, not a keying artefact. hair_front is the one that shows, because it
+# is drawn on top of everything; it was invisible for months because a rigged
+# symbol only draws its part stack during a win or the ~110ms of a blink. Once
+# the character symbols started drawing their stack AT REST (game/idleSway.ts)
+# the ghost sat permanently over the real face — 「女人圖騰的怪怪模樣」.
+#
+# The ghost separates from the hair cleanly on colour (hair is gold, G-B ~79;
+# ghost is salmon, R-G > 45 with G-B low), so removing it looked easy. It is not:
+#
+#   removing it everywhere      dropped the assembled stack's IoU against the
+#                               artist's own _full.png to 0.78 — check_parts
+#                               caught it
+#   removing it only where
+#   another layer covers        removed NOTHING. Measured: 17,170 ghost pixels,
+#                               0 of them covered by head or torso
+#
+# That second number is the whole answer. head.png and torso.png do not paint
+# her face at all — the GHOST IS THE ONLY LAYER DRAWING IT. h2 cannot be
+# assembled from its parts without the artefact, so there is nothing to repair
+# in this file. The fix is in game/idleSway.ts: h2 does not draw its stack at
+# rest, and keeps the flat sprite it has always shipped.
+
 # Distance in RGB below which a pixel is pure background, and above which it is
 # pure subject. Between the two it is feathered, which is what keeps the black
 # outline from getting a hard jagged edge.
