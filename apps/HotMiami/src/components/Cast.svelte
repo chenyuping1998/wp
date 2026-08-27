@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Container, Sprite } from 'pixi-svelte';
 	import { MainContainer } from 'components-layout';
-	import { uiTheme } from 'components-ui-pixi';
 
 	import { getContext } from '../game/context';
 	import { CAST_SWAY, castFrame } from '../game/idleSway';
@@ -42,7 +41,15 @@
 	 * there for why a flat figure has to move LESS than a rigged one, not more.
 	 */
 	const context = getContext();
-	const box = $derived(context.stateLayoutDerived.mainLayoutStandard());
+
+	// The SAME container the board's housing is drawn in (BoardFrame uses
+	// `<MainContainer>` and `stateGameDerived.boardLayout()`), not the standard
+	// box. That is the whole reason the first version sat too far out: it was
+	// positioned as a fraction of a box the board is not measured in, so "near the
+	// board" was a guess that happened to be 147px wrong. Here the figure's inner
+	// edge is derived FROM the board's own edge, so it cannot drift.
+	const layout = $derived(context.stateGameDerived.boardLayout());
+	const box = $derived(context.stateLayoutDerived.mainLayout());
 
 	const isFeature = $derived(stateGame.gameType !== 'basegame');
 	const who = $derived(isFeature ? 'girl' : 'guy');
@@ -54,41 +61,70 @@
 	// when its PNG arrives is worse than one that fades in already standing.
 	const NATIVE = { guy: { w: 266, h: 819 }, girl: { w: 224, h: 775 } };
 
-	// Its feet sit on the strip's top edge, not on the canvas floor — the strip is
-	// a panel laid on the screen (uiTheme.barFrameBottom) and a figure standing
-	// behind it would be cut off at the shins.
-	const FLOOR_GAP = 6;
-	const floorY = $derived(box.height - uiTheme.barHeight + uiTheme.barFrameBottom - FLOOR_GAP);
-	// Tall enough to read as a person rather than a decal, short enough that the
-	// head clears the board's top edge line. 0.74 puts the guy at 606 units on a
-	// 1080 box, which is 4px taller than the board's own housing.
-	const height = $derived(box.height * 0.74);
-	const width = $derived((height * NATIVE[who].w) / NATIVE[who].h);
-	// Pushed off the right edge by a fraction of himself, so part of the figure
-	// runs off-screen the way the reference's does. A whole figure floating in
-	// clear space reads as a sticker; one that is cropped by the frame reads as
-	// standing in a place that continues past it.
-	const x = $derived(box.width - width * 0.42);
+	// mirrors BoardFrame's own constant
+	const FRAME_SCALE = 1280 / 1110;
+	// frame_edge.png's alpha bbox fills 0.938 of its square, so the housing BOX is
+	// wider than the housing INK. The figure is placed against what the player can
+	// see, not against a transparent margin.
+	const FRAME_INK = 0.938;
+	const boardInkRight = $derived(
+		layout.x + layout.width * layout.scale * FRAME_SCALE * 0.5 * FRAME_INK,
+	);
+
+	// ── size and place, from the reference's own proportions ───────────────────
+	//
+	// Measured off the two Miami Mayhem screenshots the user supplied:
+	//
+	//   the band between the board's edge and the screen edge is 23.5% of width
+	//   the figure FILLS that band and is cropped by the screen edge
+	//   the figure's inner edge TOUCHES the board — there is no gap at all
+	//   its head starts about 13% down and its legs run off the bottom
+	//
+	// Ours was 74% of the box height with a 147px gap: small, and marooned in
+	// clear space. The gap was what actually made it read as small — a figure with
+	// air on both sides is a sticker, one that touches the board is scenery.
+	//
+	// Filling the band means the figure has to be CROPPED, because our cut-outs
+	// are 1:3.1 and the band is not that tall. That is not a compromise either:
+	// the reference crops both of its characters at the thigh, and the bet strip
+	// covers everything below its own top edge anyway, so the crop happens where
+	// nothing is visible.
+	const OVERLAP = 10;
+	const BLEED = 1.12; // how far past the screen edge the figure runs
+	const width = $derived((box.width - (boardInkRight - OVERLAP)) * BLEED);
+	const height = $derived((width * NATIVE[who].h) / NATIVE[who].w);
+	// 0.11, not 0. In the reference the character's head sits BELOW the top of the
+	// board, not level with it: the board stays the tallest thing on screen and
+	// the figure reads as standing behind it rather than looming over it. At 0.05
+	// his head was 4px from the housing's own top edge and the two competed.
+	const topY = $derived(box.height * 0.11);
+	const x = $derived(boardInkRight - OVERLAP + width * 0.5);
+	// A person sways about the ground under them. The feet are off-screen at this
+	// size, so the pivot is the bottom of the frame instead — the nearest thing to
+	// a ground line that is actually on screen. Pivoting at the real feet, 400px
+	// below the canvas, would swing the head twice as far for the same angle.
+	const groundY = $derived(box.height);
 
 	$effect(() => useIdleClock());
 	const frame = $derived(castFrame(sway, idleClock.t));
 </script>
 
-<MainContainer standard>
+<MainContainer>
 	<!--
-		Pivoted on the floor under the figure: a person sways about their feet.
-		The container sits on that point and the sprite hangs above it, which is
-		the same arrangement the rigged parts use.
+		Pivoted on the ground line, which is how a standing person sways. The
+		container sits on that point and the sprite hangs above it — the same
+		arrangement the rigged parts use.
 	-->
 	<Container
 		x={x}
-		y={floorY + frame.dy * height}
+		y={groundY + frame.dy * height}
 		rotation={frame.rotation}
 		scale={{ x: 1, y: frame.scaleY }}
 	>
 		<Sprite
 			key={who === 'guy' ? 'hmCastGuy' : 'hmCastGirl'}
-			anchor={{ x: 0.5, y: 1 }}
+			anchor={{ x: 0.5, y: 0 }}
+			y={topY - groundY}
 			{width}
 			{height}
 			alpha={0.96}
