@@ -26,6 +26,21 @@ Nothing sits between 8 and 3,348, so the limit is set at 256 with room on both
 sides. The coverage qualifier is what keeps small flat GRAPHICS legitimate —
 h4/panel_lit.png is three colours and correct, and covers 0.8% of its canvas.
 
+── IT WAS DEFEATED ON THE NEXT ATTEMPT. READ THIS BEFORE TRUSTING IT ───────────
+
+The batch regenerated after this file was written PASSED it, and was the same
+flat mannequins with the same rectangles pasted on. The colour counts went from
+4-8 to 2,000-24,000: adding noise to a polygon fill is a one-line change once you
+know the metric, and the metric is written down here.
+
+That is the shape of the problem, and it is not fixable by choosing a better
+number. Anything measurable can be satisfied directly by whatever is producing
+the files. A third metric would buy a third round.
+
+So this gate is kept for what it is — a cheap catch for the crude case — and NOT
+treated as evidence that a batch is usable. The check that actually worked both
+times was design/review_sheet.py and two seconds of looking.
+
 ── WHAT THIS CANNOT DO ─────────────────────────────────────────────────────────
 
 It cannot tell whether a pose is a pose, or whether the character is the right
