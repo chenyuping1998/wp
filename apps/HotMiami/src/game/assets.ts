@@ -305,6 +305,29 @@
 		preload: true,
 	},
 
+	// The three feature titles, drawn as wordmarks rather than typeset.
+	//
+	// These replace four stacked pixi Texts that imitated the same thing — black
+	// outline, a lit rim in the tier's colour, a dark face. The imitation was as
+	// close as Text gets and it was still typography: the drawn versions carry
+	// letterforms that are not in either shipped face, a diagonal streak across
+	// each face, and a glow that falls off properly instead of being a sprite
+	// behind the word. Same reason the symbols are art and not shapes.
+	//
+	// 1024x360, ink centred in the canvas, so all three drop in at one size.
+	hmTitleNeonNights: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiSplash/title_neon_nights.png', import.meta.url).href,
+	},
+	hmTitleSunsetHits: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiSplash/title_sunset_hits.png', import.meta.url).href,
+	},
+	hmTitleOceanDrive: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiSplash/title_ocean_drive.png', import.meta.url).href,
+	},
+
 	// The cast standing beside the board. Split out of the store tile's two-figure
 	// cut-out by design/build_cast_figures.py, using the same measured polygon the
 	// intro card clips with. Not preloaded: they are decoration on a board that is

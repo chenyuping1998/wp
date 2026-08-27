@@ -40,6 +40,8 @@ export type FeatureTier = {
 	splash: string;
 	/** The tier's own accent, used for its name on the splash. */
 	accent: number;
+	/** The drawn wordmark for the feature splash (design/source/splash/). */
+	titleKey: string;
 };
 
 export const FEATURE_TIERS: FeatureTier[] = [
@@ -54,6 +56,7 @@ export const FEATURE_TIERS: FeatureTier[] = [
 		splash:
 			'ONE NEON FRAME IS ALREADY ON THE GRID. EVERY FRAME STAYS FOR THE WHOLE FEATURE AND IS REFILLED WITH A NEW MULTIPLIER BETWEEN SPINS.',
 		accent: 0xff2e88,
+		titleKey: 'hmTitleNeonNights',
 	},
 	{
 		key: 'bonus_hits',
@@ -66,6 +69,7 @@ export const FEATURE_TIERS: FeatureTier[] = [
 		splash:
 			'THREE STICKY NEON FRAMES TO START. ANY FRAME THAT TAKES PART IN A WIN DOUBLES ITS VALUE BEFORE THE NEXT SPIN.',
 		accent: 0xffa14a,
+		titleKey: 'hmTitleSunsetHits',
 	},
 	{
 		key: 'bonus_epic',
@@ -78,6 +82,7 @@ export const FEATURE_TIERS: FeatureTier[] = [
 		splash:
 			'EVERY POSITION IS FRAMED FROM THE FIRST SPIN, AND WINNING FRAMES STILL DOUBLE. COLLECTOR AND SCATTER DO NOT APPEAR.',
 		accent: 0x00e5ff,
+		titleKey: 'hmTitleOceanDrive',
 	},
 ];
 

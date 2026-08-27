@@ -69,7 +69,6 @@
 	// runs to seven lines; ours runs to four, and forcing the same proportion left
 	// a third of the card empty under the last line.
 	const panelMinHeight = $derived(layout.height * 0.26);
-	const titleSize = $derived(Math.max(30, Math.min(64, layout.width * 0.05)));
 
 
 	// The character. Cast.svelte stands its own copy down while this is up
@@ -204,69 +203,44 @@
 
 			<Container x={layout.width * 0.5}>
 				<!--
-					THE TITLE, drawn four times.
-					────────────────────────────
-					The reference's feature titles are not coloured type — they are a
-					drawn 3D wordmark: a dark extruded body offset down-right, a white
-					outline around it, a bright fill on top, and a glow behind the lot.
-					Ours was one flat Text with a stroke, which is what "有點單調" was
-					looking at: everything else on this screen is neon and the title was
-					typography.
-					Four passes, because pixi Text takes one fill and one stroke:
-					  glow    an additive sprite behind, in the tier's colour
-					  extrude the same word in near-black, pushed down-right
-					  outline the same word in white, thick stroke, no fill
-					  face    the accent fill on top
-					Same technique SymbolArt already uses for the symbols' shadow, edge
-					and rim copies, for the same reason.
+					THE TITLE, as drawn art.
+					────────────────────────
+					It was four stacked pixi Texts imitating a wordmark — black outline,
+					a lit rim in the tier's colour, a dark face, a glow sprite behind.
+					That was as close as Text gets and it was still typography. These
+					PNGs carry letterforms that are in neither shipped face, a diagonal
+					streak across each face, and a glow that falls off properly instead
+					of being a rectangle of light behind the word.
+
+					All three are 1024x360 with the ink centred, so one size fits them:
+					the ink fills 97% of the width and 42% of the height, which is why
+					the drawn WIDTH is divided by 0.97 to make the letters themselves
+					land at the intended fraction of the screen.
 				-->
-				{@const titleFont = Math.min(titleSize, (layout.width * 0.9) / tier.title.length)}
-				{@const titleStyle = {
-					fontFamily: DISPLAY_FONT,
-					fontSize: titleFont,
-					fontWeight: DISPLAY_FONT_WEIGHT,
-					letterSpacing: 6,
-				}}
+				{@const titleInkWidth = Math.min(layout.width * 0.44, panelWidth * 1.25)}
+				<!--
+					A bed of light under it. The wordmark's own glow is drawn for a lit
+					scene; ours sits on a background darkened to 0.74, where a dark-faced
+					letterform is the DIMMEST thing on the card despite being the largest.
+					An additive pool in the tier's colour puts it back on top without
+					touching the art.
+				-->
 				<Sprite
 					key="fxGlow"
 					anchor={0.5}
 					y={titleY}
 					tint={tier.accent}
 					blendMode="add"
-					width={titleFont * tier.title.length * 0.95}
-					height={titleFont * 3.2}
-					alpha={0.4}
+					width={titleInkWidth * 1.15}
+					height={titleInkWidth * 0.34}
+					alpha={0.3}
 				/>
-				<!-- black outer outline -->
-				<Text
+				<Sprite
+					key={tier.titleKey}
 					anchor={0.5}
 					y={titleY}
-					text={tier.title}
-					style={{
-						...titleStyle,
-						fill: 0x0b0710,
-						stroke: 0x0b0710,
-						strokeThickness: titleFont * 0.2,
-					}}
-				/>
-				<!-- the lit tube: a rim of the tier's colour just inside the black -->
-				<Text
-					anchor={0.5}
-					y={titleY}
-					text={tier.title}
-					style={{
-						...titleStyle,
-						fill: tier.accent,
-						stroke: tier.accent,
-						strokeThickness: titleFont * 0.1,
-					}}
-				/>
-				<!-- the face: dark, so the rim reads as light around it -->
-				<Text
-					anchor={0.5}
-					y={titleY}
-					text={tier.title}
-					style={{ ...titleStyle, fill: 0x241b33 }}
+					width={titleInkWidth / 0.97}
+					height={(titleInkWidth / 0.97) * (360 / 1024)}
 				/>
 
 				<FeatureSplashPanel
