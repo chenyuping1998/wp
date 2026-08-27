@@ -309,6 +309,78 @@
 		}
 	}
 
+	/*
+		The two of them keep breathing after they have walked in.
+		─────────────────────────────────────────────────────────
+		Same method as game/idleSway.ts, which does the rigged version on the two
+		character SYMBOLS: lifted from Hacksaw's Miami Mayhem background cast (five
+		spine skeletons, measured). Four rules, and the two that survive being
+		applied to a flat cut-out are the two that matter most:
+
+		  · the loops must not match. His is 8s, hers 5s — they return to the same
+		    relative pose once every 40 seconds, so the pair never reads as one
+		    animation. This is the cheapest of the four and does the most.
+		  · the body barely moves. Their bodies rotate 1-3.3deg while hair reaches
+		    27.5. These are single PNGs with no hair layer, so ALL that is available
+		    here is the body — which means staying at the bottom of that range is
+		    not a compromise, it is the only honest option. 1.1 and 1.4 degrees.
+		  · translate AND stretch on the breath. Their persp bone does both on one
+		    period; translation alone reads as the whole figure floating.
+		  · one irregular hiccup per loop. The uneven stops in the middle of each
+		    set below are it — a regular cycle is recognised as a cycle after about
+		    two passes, and 8s means a player sees two passes while reading the card.
+
+		transform-origin is the floor, because that is where they are standing.
+	*/
+	@keyframes castSwayLeft {
+		0% {
+			transform: rotate(0deg) translateY(0) scaleY(1);
+		}
+		22% {
+			transform: rotate(1.1deg) translateY(-0.5%) scaleY(1.008);
+		}
+		/* the hiccup: four uneven stops, none of them on the beat */
+		47% {
+			transform: rotate(0.15deg) translateY(-0.2%) scaleY(1.003);
+		}
+		52% {
+			transform: rotate(-0.35deg) translateY(-0.1%) scaleY(1.002);
+		}
+		58% {
+			transform: rotate(0.1deg) translateY(-0.15%) scaleY(1.003);
+		}
+		71% {
+			transform: rotate(-1.1deg) translateY(-0.5%) scaleY(1.008);
+		}
+		100% {
+			transform: rotate(0deg) translateY(0) scaleY(1);
+		}
+	}
+
+	@keyframes castSwayRight {
+		0% {
+			transform: rotate(0deg) translateY(0) scaleY(1);
+		}
+		26% {
+			transform: rotate(-1.4deg) translateY(-0.6%) scaleY(1.01);
+		}
+		49% {
+			transform: rotate(-0.2deg) translateY(-0.25%) scaleY(1.004);
+		}
+		55% {
+			transform: rotate(0.4deg) translateY(-0.1%) scaleY(1.002);
+		}
+		61% {
+			transform: rotate(-0.12deg) translateY(-0.2%) scaleY(1.003);
+		}
+		74% {
+			transform: rotate(1.4deg) translateY(-0.6%) scaleY(1.01);
+		}
+		100% {
+			transform: rotate(0deg) translateY(0) scaleY(1);
+		}
+	}
+
 	@keyframes ctaPulse {
 		0%,
 		100% {
@@ -397,19 +469,37 @@
 			The step drops to 54.5% (x=558) below 82% height, i.e. between the two.
 		*/
 		clip-path: polygon(0 0, 51.46% 0, 51.46% 82%, 54.5% 82%, 54.5% 100%, 0 100%);
-		animation: castInLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.1s;
+		transform-origin: 50% 100%;
+		animation:
+			castInLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.1s,
+			castSwayLeft 8s ease-in-out 0.75s infinite;
 	}
 
 	.hm-cast-right {
 		right: calc(var(--cast-h) * -0.162);
 		clip-path: polygon(51.46% 0, 100% 0, 100% 100%, 54.5% 100%, 54.5% 82%, 51.46% 82%);
-		animation: castInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.16s;
+		transform-origin: 50% 100%;
+		animation:
+			castInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.16s,
+			castSwayRight 5s ease-in-out 0.8s infinite;
 	}
 
 	/* Below this the pair would sit on top of the panels rather than beside them */
 	@media (max-width: 62rem) {
 		.hm-cast {
 			display: none;
+		}
+	}
+
+	/* A continuous loop is exactly the kind of motion this setting is for. They
+	   still walk in — that is a one-shot transition, not ambient motion. */
+	@media (prefers-reduced-motion: reduce) {
+		.hm-cast-left {
+			animation: castInLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.1s;
+		}
+
+		.hm-cast-right {
+			animation: castInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.16s;
 		}
 	}
 

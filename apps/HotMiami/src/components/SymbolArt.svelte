@@ -12,6 +12,7 @@
 		glowAlpha,
 	} from '../game/symbolParts';
 	import { isBlinking } from '../game/blinkClock';
+	import { getSwayRig, swayFrame } from '../game/idleSway';
 	import { PARTS_MANIFEST } from '../game/partsManifest';
 
 	/**
@@ -54,6 +55,14 @@
 		cell?: { reel: number; row: number };
 		/** this win is a big one: unlocks the rarer face */
 		big?: boolean;
+		/**
+		 * Time on the shared idle clock, ms. Supplying it lets the two CHARACTER
+		 * symbols sway while the board is settled (game/idleSway.ts) — they draw
+		 * their part stack at rest instead of the flat sprite. Omitting it is the
+		 * old behaviour for every symbol: one draw call and no motion but the
+		 * ambient breath.
+		 */
+		swayT?: number;
 	};
 
 	const props: Props = $props();
@@ -82,8 +91,19 @@
 		canBlink && props.cell ? isBlinking(props.cell.reel, props.cell.row, blinkTick) : false,
 	);
 
+	// The two people sway on a settled board; everything else keeps drawing its
+	// single flat sprite. Gated on `cell` as well as on the clock so the pay
+	// table and the intro — which draw symbols outside the reels — are untouched.
+	const sway = $derived(
+		props.mode === 'none' && props.swayT !== undefined && props.cell
+			? getSwayRig(props.symbolName ?? '')
+			: null,
+	);
+
 	const rig = $derived(
-		(props.mode && props.mode !== 'none') || blinking ? getSymbolRig(props.symbolName ?? '') : null,
+		(props.mode && props.mode !== 'none') || blinking || sway
+			? getSymbolRig(props.symbolName ?? '')
+			: null,
 	);
 	const overlay = $derived((props.overlayAlpha ?? 0) > 0.01);
 	// The symbol's own light, on only while it is paying. Skipped entirely when
@@ -126,7 +146,24 @@
 		(rig?.parts ?? []).map((part) => {
 			const metrics = PARTS_MANIFEST[(props.symbolName ?? '').toLowerCase()]?.[part.name];
 			const [px, py] = resolvePivot(metrics?.bbox, part.pivot);
-			const frame = mode === 'none' ? null : partFrame(part, mode, props.t ?? 0);
+			// Win/land motion and idle sway are the same kind of thing — an offset
+			// on top of the part's resting pose — so they compose by addition, the
+			// same way part motion already composes with whole-symbol motion.
+			// They never run together in practice (sway is rest-only), but adding
+			// rather than branching means a future beat that overlaps them does not
+			// need this line rewritten.
+			const motion = mode === 'none' ? null : partFrame(part, mode, props.t ?? 0);
+			const drift = sway ? swayFrame(sway, part.name, props.swayT ?? 0) : null;
+			const frame =
+				motion || drift
+					? {
+							dx: (motion?.dx ?? 0) + (drift?.dx ?? 0),
+							dy: (motion?.dy ?? 0) + (drift?.dy ?? 0),
+							rotation: (motion?.rotation ?? 0) + (drift?.rotation ?? 0),
+							scaleX: motion?.scaleX ?? 1,
+							scaleY: (motion?.scaleY ?? 1) * (drift?.scaleY ?? 1),
+						}
+					: null;
 			const key = partKey(part, { mode, big: props.big, blinking });
 			return { part, px, py, frame, key };
 		}),

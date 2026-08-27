@@ -306,6 +306,7 @@
 			symbolName={props.symbolName}
 			mode="none"
 			cell={blur > 0.01 ? undefined : props.cell}
+			swayT={idling ? idleClock.t : undefined}
 		/>
 	</Container>
 	<!-- focus bloom: additive copy of the same art, so the teased reel reads as
