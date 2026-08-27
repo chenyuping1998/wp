@@ -163,7 +163,18 @@ export const jitterAt = (u: number): number => {
 	for (let i = 1; i < JITTER_KEYS.length; i += 1) {
 		const [t1, v1] = JITTER_KEYS[i];
 		const [t0, v0] = JITTER_KEYS[i - 1];
-		if (u <= t1) return v0 + ((v1 - v0) * (u - t0)) / (t1 - t0);
+		if (u <= t1) {
+			// Smoothstep between keys, not a straight line.
+			//
+			// Linear interpolation is continuous in POSITION but not in velocity: at
+			// every key the direction changes instantly, and on a figure the height
+			// of the screen that corner reads as a snap rather than as a hiccup —
+			// reported as 「人物晃一晃會有一個抖動」. The reference's keys carry bezier
+			// handles for the same reason. Smoothstep gives zero velocity at each key,
+			// which is what a bezier with flat handles would give.
+			const p = (u - t0) / (t1 - t0);
+			return v0 + (v1 - v0) * p * p * (3 - 2 * p);
+		}
 	}
 	return 0;
 };

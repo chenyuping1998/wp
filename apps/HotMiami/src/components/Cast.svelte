@@ -48,6 +48,18 @@
 	// edge is derived FROM the board's own edge, so it cannot drift.
 	const layout = $derived(context.stateGameDerived.boardLayout());
 	const box = $derived(context.stateLayoutDerived.mainLayout());
+	// The bet strip is drawn in the STANDARD box, the board in the game box, and
+	// on a wide canvas those two are not the same rectangle — the standard box is
+	// letterboxed narrower. That is why a figure placed in the game box ran past
+	// the end of the strip and stood in front of its controls
+	// (「人物擋到下 bar 了」): the strip simply was not there to cover her.
+	//
+	// So she is placed in the STRIP'S box, and the board's edge is converted into
+	// it. Both boxes are centred on the same canvas, so one offset from the centre
+	// in canvas pixels converts by the ratio of their scales.
+	const std = $derived(context.stateLayoutDerived.mainLayoutStandard());
+	const toStandard = (xInGameBox: number) =>
+		std.width * 0.5 + ((xInGameBox - box.width * 0.5) * box.scale) / std.scale;
 
 	const isFeature = $derived(stateGame.gameType !== 'basegame');
 	const who = $derived<'guy' | 'girl'>(isFeature ? 'girl' : 'guy');
@@ -59,7 +71,7 @@
 	// see, not against a transparent margin.
 	const FRAME_INK = 0.938;
 	const boardInkRight = $derived(
-		layout.x + layout.width * layout.scale * FRAME_SCALE * 0.5 * FRAME_INK,
+		toStandard(layout.x + layout.width * layout.scale * FRAME_SCALE * 0.5 * FRAME_INK),
 	);
 
 	// ── size and place, from the reference's own proportions ───────────────────
@@ -71,34 +83,30 @@
 	//   the figure's inner edge TOUCHES the board — there is no gap at all
 	//   its head starts about 13% down and its legs run off the bottom
 	//
-	// Ours was 74% of the box height with a 147px gap: small, and marooned in
-	// clear space. The gap was what actually made it read as small — a figure with
-	// air on both sides is a sticker, one that touches the board is scenery.
-	//
 	// Filling the band means the figure has to be CROPPED, because our cut-outs
 	// are 1:3.1 and the band is not that tall. That is not a compromise either:
 	// the reference crops both of its characters at the thigh, and the bet strip
 	// covers everything below its own top edge anyway, so the crop happens where
 	// nothing is visible.
 	const OVERLAP = 10;
-	const BLEED = 1.12; // how far past the screen edge the figure runs
-	const width = $derived((box.width - (boardInkRight - OVERLAP)) * BLEED);
+	const BLEED = 1.12; // how far past the box edge the figure runs
+	const width = $derived((std.width - (boardInkRight - OVERLAP)) * BLEED);
 	const height = $derived((width * CAST_NATIVE[who].h) / CAST_NATIVE[who].w);
 	// 0.11, not 0. In the reference the character's head sits BELOW the top of the
 	// board, not level with it: the board stays the tallest thing on screen and
-	// the figure reads as standing behind it rather than looming over it. At 0.05
-	// his head was 4px from the housing's own top edge and the two competed.
-	const topY = $derived(box.height * 0.11);
+	// the figure reads as standing behind it rather than looming over it.
+	const topY = $derived(std.height * 0.11);
 	const x = $derived(boardInkRight - OVERLAP + width * 0.5);
 	// A person sways about the ground under them. The feet are off-screen at this
-	// size, so the pivot is the bottom of the frame instead — the nearest thing to
-	// a ground line that is actually on screen. Pivoting at the real feet, 400px
-	// below the canvas, would swing the head twice as far for the same angle.
-	const groundY = $derived(box.height);
+	// size, so the pivot is the bottom of the box instead — the nearest thing to a
+	// ground line that is actually on screen. Pivoting at the real feet, hundreds
+	// of pixels below the canvas, would swing the head twice as far for the same
+	// angle.
+	const groundY = $derived(std.height);
 </script>
 
 {#if !stateGame.featureSplashShow}
-	<MainContainer>
+	<MainContainer standard>
 		<CastFigure {who} {x} {topY} {height} {groundY} alpha={0.96} />
 	</MainContainer>
 {/if}
