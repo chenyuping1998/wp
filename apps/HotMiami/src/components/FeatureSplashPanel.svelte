@@ -18,10 +18,15 @@
 	 *   character        left edge, full height, NOT dimmed
 	 *   click prompt     y 0.968
 	 *
-	 * What is copied is that arrangement. Their panel is a light plate with a pink
-	 * neon edge; ours stays in this game's own palette, edged in the TIER'S colour
-	 * so three otherwise identical cards tell themselves apart before a word is
-	 * read.
+	 * The plate is light, as theirs is — a near-white card with a neon edge, dark
+	 * type on it. It went that way after the dark-indigo version, and the reason is
+	 * legibility as much as likeness: this is the one screen in the game carrying a
+	 * paragraph a player is expected to actually READ, and it sits on a background
+	 * darkened to 0.74. Dark text on a light card is the arrangement that has been
+	 * winning that argument since print.
+	 *
+	 * The EDGE is the tier's own colour, not theirs, so three otherwise identical
+	 * cards tell themselves apart before a word is read.
 	 *
 	 * The header strip is the piece that was missing before. Their card puts the
 	 * spin count INSIDE the panel as its first line, not on a separate plaque
@@ -55,6 +60,12 @@
 	// the box arrive a frame late and pop. Four lines is what the longest `splash`
 	// string wraps to at this width, and the panel is drawn for one more so a
 	// longer one cannot overflow it.
+	// Near-white rather than pure white: at 0.95 over a 0.74-black background a
+	// pure white plate is the brightest thing on screen by a distance and pulls the
+	// eye off the title above it.
+	const PLATE = 0xf4eef8;
+	const INK = 0x1c0b3a;
+
 	const LINE_HEIGHT = $derived(bodySize * 1.5);
 	const STRIP_HEIGHT = $derived(headerSize * 2.2);
 	const bodyY = $derived(STRIP_HEIGHT + PAD * 0.9);
@@ -69,16 +80,22 @@
 			const w = props.width;
 			const h = panelHeight;
 			g.clear();
+			// A soft shadow under the card, so it sits ON the darkened screen rather
+			// than being a hole cut in it.
+			g.roundRect(-w / 2 + 5, 9, w, h, 20);
+			g.fill({ color: 0x000000, alpha: 0.45 });
+
 			g.roundRect(-w / 2, 0, w, h, 20);
-			g.fill({ color: 0x140a30, alpha: 0.9 });
-			g.stroke({ width: 4, color: props.tier.accent, alpha: 0.95 });
+			g.fill({ color: PLATE, alpha: 0.95 });
+			g.stroke({ width: 5, color: props.tier.accent, alpha: 1 });
+
 			// the header strip: a band across the panel's top in the tier's colour,
 			// which is where their card puts the spin count
-			g.roundRect(-w / 2 + 6, 6, w - 12, STRIP_HEIGHT, 14);
-			g.fill({ color: props.tier.accent, alpha: 0.16 });
-			g.moveTo(-w / 2 + 16, 6 + STRIP_HEIGHT);
-			g.lineTo(w / 2 - 16, 6 + STRIP_HEIGHT);
-			g.stroke({ width: 1.5, color: props.tier.accent, alpha: 0.55 });
+			g.roundRect(-w / 2 + 7, 7, w - 14, STRIP_HEIGHT, 14);
+			g.fill({ color: props.tier.accent, alpha: 0.22 });
+			g.moveTo(-w / 2 + 18, 7 + STRIP_HEIGHT);
+			g.lineTo(w / 2 - 18, 7 + STRIP_HEIGHT);
+			g.stroke({ width: 2, color: props.tier.accent, alpha: 0.8 });
 		}}
 	/>
 
@@ -91,9 +108,7 @@
 				fontWeight: DISPLAY_FONT_WEIGHT,
 				fontSize: headerSize,
 				letterSpacing: 2,
-				fill: 0xfff4ff,
-				stroke: 0x1a0838,
-				strokeThickness: 4,
+				fill: INK,
 			}}
 		/>
 	</Container>
@@ -117,9 +132,7 @@
 			align: 'center',
 			wordWrap: true,
 			wordWrapWidth: textWidth,
-			fill: 0xffe6f7,
-			stroke: 0x1a0838,
-			strokeThickness: 3,
+			fill: INK,
 		}}
 	/>
 </Container>
