@@ -305,6 +305,19 @@
 		preload: true,
 	},
 
+	// The cast standing beside the board. Split out of the store tile's two-figure
+	// cut-out by design/build_cast_figures.py, using the same measured polygon the
+	// intro card clips with. Not preloaded: they are decoration on a board that is
+	// already playable without them.
+	hmCastGuy: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiCast/guy.png', import.meta.url).href,
+	},
+	hmCastGirl: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiCast/girl.png', import.meta.url).href,
+	},
+
 	// bet-bar button icons (design/generate_ui_icons.mjs) — brass drawn icons
 	// replacing the template's text/emoji glyphs
 	hmIconMenu: {

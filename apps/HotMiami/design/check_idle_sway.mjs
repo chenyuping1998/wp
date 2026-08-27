@@ -31,7 +31,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const { SWAY_RIGS, swayFrame, jitterAt, IDLE_WRAP_MS } = await import(
+const { SWAY_RIGS, CAST_SWAY, swayFrame, castFrame, jitterAt, IDLE_WRAP_MS } = await import(
 	path.join(appRoot, 'src/game/idleSway.ts')
 );
 
@@ -150,6 +150,48 @@ for (const [name, rig] of Object.entries(SWAY_RIGS)) {
 	}
 }
 
+// ── the cast beside the board ────────────────────────────────────────────────
+//
+// One flat layer each, so only rules 1 and 4 apply — and rule 2 applies in its
+// strictest form, because a flat cut-out has nothing to hide a big rotation
+// behind. Their loops are checked against the SYMBOLS' as well as each other's:
+// four things swaying on screen is four chances to accidentally sync.
+const allLoops = [
+	...Object.values(SWAY_RIGS).map((r) => r.loopMs),
+	...Object.values(CAST_SWAY).map((c) => c.loopMs),
+];
+if (new Set(allLoops).size !== allLoops.length) {
+	fail(`something on screen shares a loop length (${allLoops.join(', ')}ms)`);
+}
+const allRealign = allLoops.reduce(lcm);
+if (allRealign < 40_000) {
+	fail(`everything on screen realigns every ${(allRealign / 1000).toFixed(0)}s — the reference target is 40s`);
+}
+
+for (const [name, c] of Object.entries(CAST_SWAY)) {
+	if (IDLE_WRAP_MS % c.loopMs !== 0) {
+		fail(`cast/${name}: the idle clock wraps at ${IDLE_WRAP_MS}ms, not a whole number of its ${c.loopMs}ms loop — it will jump on every wrap`);
+	}
+	if (c.rotationDeg > 2) {
+		fail(`cast/${name}: rotates ${c.rotationDeg}deg. A flat cut-out has no appendage to carry the motion, so the body has to stay lower than a rigged one, not higher`);
+	}
+	if (!c.dy || !c.scaleY) {
+		fail(`cast/${name}: breathes with only ${c.dy ? 'translation' : 'stretch'} — the reference's persp bone does both, and translation alone reads as the figure floating`);
+	}
+	let peak = 0;
+	let stretch = 0;
+	for (let t = 0; t < c.loopMs; t += 4) {
+		const f = castFrame(c, t);
+		peak = Math.max(peak, Math.abs(f.rotation));
+		stretch = Math.max(stretch, Math.abs(f.scaleY - 1));
+	}
+	if (peak / DEG > c.rotationDeg + c.jitter.amplitudeDeg + 0.01) {
+		fail(`cast/${name}: measured ${(peak / DEG).toFixed(2)}deg, more than the table declares`);
+	}
+	if (stretch < 0.004) fail(`cast/${name}: the breath is ${(stretch * 100).toFixed(2)}% — below about half a percent nothing is on screen`);
+	report.push(`cast ${name.padEnd(11)} ${(peak / DEG).toFixed(2).padStart(6)}deg  loop ${String(c.loopMs).padStart(5)}ms  stretch ${(stretch * 100).toFixed(2)}%`);
+}
+
 // The jitter curve itself: unevenly spaced, and zero at both ends so it grafts on
 const spacings = [0.24, 0.16, 0.16, 0.16, 0.28];
 if (new Set(spacings.map((s) => s.toFixed(3))).size < 2) {
@@ -158,7 +200,7 @@ if (new Set(spacings.map((s) => s.toFixed(3))).size < 2) {
 if (jitterAt(0) !== 0 || jitterAt(1) !== 0) fail('the jitter does not return to zero at its edges — it will step');
 
 if (REPORT) {
-	console.log(`characters realign every ${(realign / 1000).toFixed(0)}s\n`);
+	console.log(`the two character symbols realign every ${(realign / 1000).toFixed(0)}s; everything on screen every ${(allRealign / 1000).toFixed(0)}s\n`);
 	console.log(report.join('\n'));
 	console.log('');
 }

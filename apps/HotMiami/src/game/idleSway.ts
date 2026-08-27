@@ -205,3 +205,65 @@ export const swayFrame = (rig: SwayRig, partName: string, t: number): SwayFrame 
 		scaleY: 1 + (part.scaleY ?? 0) * breath,
 	};
 };
+
+/**
+ * ── The cast standing beside the board ──────────────────────────────────────
+ *
+ * Same method, one layer.
+ *
+ * The two figures beside the board are a single flat cut-out each (split out of
+ * the store tile by design/build_cast_figures.py), so rules 2 and 3 — the body
+ * barely moves, appendages carry it, each link doubles — have nothing to act on:
+ * there is no hair layer to lag behind a head that is welded to the torso.
+ *
+ * That is not a reason to move the body more. It is a reason to move it LESS and
+ * lean entirely on the two rules that survive: loops that do not match, and one
+ * irregular hiccup per loop. A flat figure rotating 1.3 degrees while breathing
+ * reads as a person standing; the same figure rotating 5 reads as a cardboard
+ * cut-out being waved.
+ *
+ * Loop lengths are chosen against the SYMBOLS' as well as against each other —
+ * 8000 / 5000 / 6500 / 4000 share a common multiple of 520 seconds, which is the
+ * whole idle clock. Nothing on screen repeats its relationship to anything else
+ * inside any session.
+ *
+ * When the rigged art lands (docs/art-prompts-hot-miami-parts.md section 14)
+ * these become full SwayRigs with a legs/torso/head/hair/hair_tip chain and this
+ * block goes away.
+ */
+export type CastSway = {
+	loopMs: number;
+	rotationDeg: number;
+	dy: number;
+	scaleY: number;
+	jitter: { at: number; durationMs: number; amplitudeDeg: number };
+};
+
+export const CAST_SWAY: Record<string, CastSway> = {
+	guy: {
+		loopMs: 6500,
+		rotationDeg: 1.1,
+		dy: -0.005,
+		scaleY: 0.008,
+		jitter: { at: 0.47, durationMs: 780, amplitudeDeg: 0.45 },
+	},
+	girl: {
+		loopMs: 4000,
+		rotationDeg: 1.4,
+		dy: -0.006,
+		scaleY: 0.01,
+		jitter: { at: 0.53, durationMs: 620, amplitudeDeg: 0.45 },
+	},
+};
+
+export const castFrame = (sway: CastSway, t: number): SwayFrame => {
+	const wave = Math.sin((Math.PI * 2 * t) / sway.loopMs);
+	const breath = Math.sin((Math.PI * 2 * t) / (sway.loopMs / 4) + 0.7);
+	const u = ((t % sway.loopMs) / sway.loopMs - sway.jitter.at) / (sway.jitter.durationMs / sway.loopMs);
+	return {
+		dx: 0,
+		dy: sway.dy * (0.5 + 0.5 * breath),
+		rotation: sway.rotationDeg * DEG * wave + sway.jitter.amplitudeDeg * DEG * jitterAt(u),
+		scaleY: 1 + sway.scaleY * breath,
+	};
+};

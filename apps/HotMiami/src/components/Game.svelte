@@ -22,6 +22,7 @@
 	import ResumeBet from './ResumeBet.svelte';
 	import Sound from './Sound.svelte';
 	import Background from './Background.svelte';
+	import Cast from './Cast.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './BoardFrame.svelte';
 	import Board from './Board.svelte';
@@ -78,6 +79,10 @@
 			Ref: https://developer.chrome.com/blog/autoplay
 		-->
 		<Sound />
+
+		<!-- Someone standing at the right edge; behind the board's housing so the
+		     reels always win any overlap. See Cast.svelte. -->
+		<Cast />
 
 		<MainContainer>
 			<BoardFrame />

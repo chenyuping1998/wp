@@ -51,7 +51,11 @@ await evaluate(`(() => {
     const out = [];
     const walk = (n) => {
       const lbl = (n.texture && n.texture.label) || '';
-      if (lbl.includes('hotMiamiParts')) {
+      // The cast beside the board is one flat sprite, so it is picked up by
+      // texture label the same way, and reported alongside the rigged parts:
+      // "does the figure at the edge of the screen actually move" is the same
+      // question and has the same failure mode.
+      if (lbl.includes('hotMiamiParts') || lbl.includes('hotMiamiCast')) {
         const m = n.worldTransform;
         const bits = lbl.split('/');
         out.push([bits[bits.length - 2] + '/' + bits[bits.length - 1].replace('.png',''),
