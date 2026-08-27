@@ -60,7 +60,10 @@
 	// and burst are untouched and still play on every "+N".
 	const layout = $derived(context.stateLayoutDerived.mainLayout());
 	const titleY = $derived(layout.height * 0.145);
-	const panelY = $derived(layout.height * 0.24);
+	// Centred, not top-weighted. It was at 0.24 of the height with the card hanging
+	// off that point; the user's read was that it sat too high, and it did — the
+	// title above it plus a top-anchored card left the whole lower half empty.
+	const panelCenterY = $derived(layout.height * 0.54);
 	const panelWidth = $derived(Math.min(layout.width * 0.4, 620));
 	// Content-driven, with a floor. The reference's card is tall because its copy
 	// runs to seven lines; ours runs to four, and forcing the same proportion left
@@ -68,21 +71,16 @@
 	const panelMinHeight = $derived(layout.height * 0.26);
 	const titleSize = $derived(Math.max(30, Math.min(64, layout.width * 0.05)));
 
-	/** Same hue, darker — the bottom stop of the title's gradient. */
-	const deepen = (rgb: number, k: number) =>
-		((Math.round(((rgb >> 16) & 0xff) * k) << 16) |
-			(Math.round(((rgb >> 8) & 0xff) * k) << 8) |
-			Math.round((rgb & 0xff) * k)) >>>
-		0;
 
-	// The character stands on the LEFT here, not the right. On the board she is on
-	// the right because Buy Bonus owns the left; on this card nothing owns either
-	// side, and the reference puts its character on the left with the panel beside
-	// it. Cast.svelte stands its own copy down while this is up
-	// (stateGame.featureSplashShow) so there is only ever one of her.
+	// The character. Cast.svelte stands its own copy down while this is up
+	// (stateGame.featureSplashShow) so there is only ever one of her, and this one
+	// is drawn on the NEAR side of the scrim so the dimming does not touch her.
 	const castHeight = $derived(layout.height * 1.12);
 	const castWidth = $derived((castHeight * CAST_NATIVE.girl.w) / CAST_NATIVE.girl.h);
-	const castX = $derived(castWidth * 0.44);
+	// The RIGHT, as the board's own cast is. Standing her on the left made the two
+	// screens contradict each other: she walks off the right edge of the board and
+	// reappears on the left of the card announcing the feature.
+	const castX = $derived(layout.width - castWidth * 0.44);
 	const castTopY = $derived(layout.height * 0.04);
 
 	// The number's slam, timed against the plaque's drop.
@@ -237,57 +235,43 @@
 					blendMode="add"
 					width={titleFont * tier.title.length * 0.95}
 					height={titleFont * 3.2}
-					alpha={0.34}
+					alpha={0.4}
 				/>
-				<Text
-					anchor={0.5}
-					x={titleFont * 0.055}
-					y={titleY + titleFont * 0.075}
-					text={tier.title}
-					style={{ ...titleStyle, fill: 0x12061f }}
-				/>
+				<!-- black outer outline -->
 				<Text
 					anchor={0.5}
 					y={titleY}
 					text={tier.title}
 					style={{
 						...titleStyle,
-						fill: 0xffffff,
-						stroke: 0xffffff,
-						strokeThickness: titleFont * 0.13,
+						fill: 0x0b0710,
+						stroke: 0x0b0710,
+						strokeThickness: titleFont * 0.2,
 					}}
 				/>
+				<!-- the lit tube: a rim of the tier's colour just inside the black -->
 				<Text
 					anchor={0.5}
 					y={titleY}
 					text={tier.title}
 					style={{
 						...titleStyle,
-						// A vertical gradient, not a flat colour. The reference's wordmark
-						// is lighter at the top and saturates toward the bottom, which is
-						// what stops a big word from looking like a big word. It also
-						// rescues the pale tiers: Ocean Drive's cyan as a flat fill inside
-						// a white outline read as white letters with a blue edge.
-						// A deepened accent, FLAT.
-						//
-						// Two things were learned getting here. First, white at the top of
-						// a gradient made the whole word read as white with a coloured edge
-						// — Ocean Drive's cyan is pale, and the white belongs in the
-						// OUTLINE, which is where the reference puts it. Second, a gradient
-						// array here throws outright: pixi reported
-						// `Unable to convert color 58879,34196`, so this Text path takes a
-						// single colour whatever the plaque's title does with an array.
-						// A flat deepened accent inside a white outline separates cleanly
-						// and cannot fail.
-						fill: deepen(tier.accent, 0.72),
-						stroke: 0x2a0f4a,
-						strokeThickness: 3,
+						fill: tier.accent,
+						stroke: tier.accent,
+						strokeThickness: titleFont * 0.1,
 					}}
+				/>
+				<!-- the face: dark, so the rim reads as light around it -->
+				<Text
+					anchor={0.5}
+					y={titleY}
+					text={tier.title}
+					style={{ ...titleStyle, fill: 0x241b33 }}
 				/>
 
 				<FeatureSplashPanel
 					{tier}
-					y={panelY}
+					centerY={panelCenterY}
 					width={panelWidth}
 					minHeight={panelMinHeight}
 					header={`${freeSpinsFromEvent} ${title} ${subtitle}`}

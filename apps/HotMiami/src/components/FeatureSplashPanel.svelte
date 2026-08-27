@@ -36,8 +36,8 @@
 	 */
 	type Props = {
 		tier: FeatureTier;
-		/** panel top */
-		y: number;
+		/** the panel's own centre line — it places itself around this */
+		centerY: number;
 		width: number;
 		/** minimum height, so a short description still fills the card */
 		minHeight: number;
@@ -63,18 +63,33 @@
 	// Near-white rather than pure white: at 0.95 over a 0.74-black background a
 	// pure white plate is the brightest thing on screen by a distance and pulls the
 	// eye off the title above it.
-	const PLATE = 0xf4eef8;
+	// Sampled off the reference's own plate art (fs_splash/the_hit_bg, 819x783):
+	// a cool lavender-grey, not white, and it FADES OUT toward the foot rather than
+	// closing with a bottom edge.
+	const PLATE = 0xe6e4ee;
 	const INK = 0x1c0b3a;
 
 	const LINE_HEIGHT = $derived(bodySize * 1.5);
 	const STRIP_HEIGHT = $derived(headerSize * 2.2);
 	const bodyY = $derived(STRIP_HEIGHT + PAD * 0.9);
-	const panelHeight = $derived(
-		Math.max(props.minHeight, bodyY + LINE_HEIGHT * 4 + PAD),
+
+	// The panel has TWO regions and the split matters.
+	//
+	//   solid   header strip and the paragraph. Nothing here fades, because the
+	//           first version faded the plate from 55% of its height and the last
+	//           line of body copy went with it — the text was legible for three
+	//           lines and then dissolved.
+	//   tail    below the last line, where plate and border melt into the scene.
+	//           That dissolve is the thing worth copying from the reference; it
+	//           just has to happen under the words rather than through them.
+	const contentHeight = $derived(
+		Math.max(props.minHeight, bodyY + LINE_HEIGHT * 4 + PAD * 0.8),
 	);
+	const TAIL = 0.42; // the fade zone, as a fraction of the solid part
+	const panelHeight = $derived(contentHeight * (1 + TAIL));
 </script>
 
-<Container y={props.y}>
+<Container y={props.centerY - panelHeight / 2}>
 	<Graphics
 		draw={(g: PixiGraphics) => {
 			const w = props.width;
@@ -82,59 +97,84 @@
 			const a = props.tier.accent;
 			g.clear();
 
-			// ── the edge, drawn as a TUBE rather than as a line ──────────────────
+			// ── the plate: solid where the words are, dissolving below them ──────
 			//
-			// The reference's card is bordered by a neon tube: a bright core with
-			// light bleeding outward from it, not a 5px stroke. A stroke is what we
-			// had, and it is the single biggest reason the card read as flat — the
-			// rest of this game is neon and the one panel with a paragraph on it was
-			// drawn like a dialog box.
+			// The reference's plate art is not a closed box. Its top corners are
+			// rounded and its edge is a neon tube, but the bottom third dissolves —
+			// plate and border both — so the card melts into the scene instead of
+			// sitting on it in a rectangle. That, not the colour, is why theirs
+			// "suits the background" and a hard-edged rounded rect does not.
 			//
-			// Four passes, widest and faintest first, so the falloff is drawn rather
-			// than blurred. Cheaper than a filter and it survives any panel size.
-			for (const [width, alpha] of [
-				[26, 0.1],
-				[16, 0.16],
-				[9, 0.3],
-			] as const) {
-				g.roundRect(-w / 2, 0, w, h, 22);
-				g.stroke({ width, color: a, alpha });
+			// The solid part is ONE rect, not bands. Banding the whole plate left
+			// visible horizontal seams straight across the paragraph: 48 slices at
+			// 48 slightly different alphas, overlapping by a pixel, is 48 darker
+			// lines. Only the tail needs banding, and there are no words in it.
+			const solid = contentHeight;
+			g.roundRect(-w / 2, 0, w, solid, 20);
+			g.fill({ color: PLATE, alpha: 0.94 });
+			// square off the solid part's own bottom corners — roundRect rounds all
+			// four, and the two at the foot showed as a pair of little arcs sitting
+			// in the middle of the plate where the tail takes over
+			g.rect(-w / 2, solid - 26, w, 27);
+			g.fill({ color: PLATE, alpha: 0.94 });
+
+			const BANDS = 40;
+			const bandH = (h - solid) / BANDS;
+			for (let i = 0; i < BANDS; i += 1) {
+				const fade = 1 - (i + 1) / BANDS;
+				const alpha = 0.94 * fade * fade;
+				if (alpha < 0.008) continue;
+				g.rect(-w / 2, solid + i * bandH, w, bandH + 0.75);
+				g.fill({ color: PLATE, alpha });
 			}
 
-			// the plate
-			g.roundRect(-w / 2, 0, w, h, 22);
-			g.fill({ color: PLATE, alpha: 0.96 });
-
-			// A cooler wash across the lower half. Their plate is not one flat tone —
-			// it is brightest at the top, under the header, and cools toward the
-			// bottom. Two stacked rects at low alpha do it without a gradient fill.
-			g.roundRect(-w / 2 + 2, h * 0.42, w - 4, h * 0.58 - 2, 20);
-			g.fill({ color: 0xcbd0e8, alpha: 0.28 });
-			g.roundRect(-w / 2 + 2, h * 0.7, w - 4, h * 0.3 - 2, 20);
-			g.fill({ color: 0xb9bede, alpha: 0.22 });
-
-			// the core of the tube, over the plate's own edge
-			g.roundRect(-w / 2, 0, w, h, 22);
-			g.stroke({ width: 4.5, color: a, alpha: 1 });
-			// a white hairline just inside it: what makes a neon tube read as glass
-			g.roundRect(-w / 2 + 4, 4, w - 8, h - 8, 18);
-			g.stroke({ width: 1.5, color: 0xffffff, alpha: 0.75 });
+			// ── the neon tube: top, left and right, fading with the plate ─────────
+			//
+			// Four passes per segment, widest and faintest first, so the falloff is
+			// drawn rather than blurred — the same trick the board frame uses.
+			const TUBE = [
+				[24, 0.1],
+				[14, 0.17],
+				[8, 0.32],
+				[4, 1],
+			] as const;
+			for (const [width, alpha] of TUBE) {
+				// the top, with its two corners
+				g.moveTo(-w / 2, 40);
+				g.arcTo(-w / 2, 0, -w / 2 + 40, 0, 20);
+				g.lineTo(w / 2 - 40, 0);
+				g.arcTo(w / 2, 0, w / 2, 40, 20);
+				g.stroke({ width, color: a, alpha });
+			}
+			// the two verticals, in segments that fade out over the tail
+			const SEGS = 30;
+			for (let i = 0; i < SEGS; i += 1) {
+				const y0 = 30 + (h - 30) * (i / SEGS);
+				const y1 = 30 + (h - 30) * ((i + 1) / SEGS);
+				const fade = y1 <= solid ? 1 : Math.max(0, 1 - (y1 - solid) / (h - solid));
+				if (fade < 0.02) continue;
+				for (const [width, alpha] of TUBE) {
+					g.moveTo(-w / 2, y0);
+					g.lineTo(-w / 2, y1);
+					g.moveTo(w / 2, y0);
+					g.lineTo(w / 2, y1);
+					g.stroke({ width, color: a, alpha: alpha * fade * fade });
+				}
+			}
 
 			// ── the header strip ─────────────────────────────────────────────────
-			g.roundRect(-w / 2 + 7, 7, w - 14, STRIP_HEIGHT, 16);
-			g.fill({ color: a, alpha: 0.3 });
-			g.roundRect(-w / 2 + 7, 7, w - 14, STRIP_HEIGHT * 0.55, 16);
-			g.fill({ color: 0xffffff, alpha: 0.28 });
-			g.moveTo(-w / 2 + 18, 7 + STRIP_HEIGHT);
-			g.lineTo(w / 2 - 18, 7 + STRIP_HEIGHT);
-			g.stroke({ width: 2.5, color: a, alpha: 0.9 });
-			g.moveTo(-w / 2 + 18, 9.5 + STRIP_HEIGHT);
-			g.lineTo(w / 2 - 18, 9.5 + STRIP_HEIGHT);
-			g.stroke({ width: 1, color: 0xffffff, alpha: 0.5 });
+			// Theirs is a slightly DARKER band than the plate with a hard dark rule
+			// under it — the opposite of the tinted, glossy band this had, which was
+			// invented rather than looked at.
+			g.roundRect(-w / 2 + 5, 5, w - 10, STRIP_HEIGHT, 16);
+			g.fill({ color: 0xd7d4e4, alpha: 0.96 });
+			g.moveTo(-w / 2 + 5, 5 + STRIP_HEIGHT);
+			g.lineTo(w / 2 - 5, 5 + STRIP_HEIGHT);
+			g.stroke({ width: 3, color: 0x5b5470, alpha: 0.85 });
 		}}
 	/>
 
-	<Container y={6 + STRIP_HEIGHT * 0.5} scale={props.headerScale ?? 1} alpha={props.headerAlpha ?? 1}>
+	<Container y={5 + STRIP_HEIGHT * 0.5} scale={props.headerScale ?? 1} alpha={props.headerAlpha ?? 1}>
 		<Text
 			anchor={0.5}
 			text={props.header}
@@ -143,9 +183,6 @@
 				fontWeight: DISPLAY_FONT_WEIGHT,
 				fontSize: headerSize,
 				letterSpacing: 2.5,
-				// White with a hard dark outline, as the reference's header line is —
-				// the strip is tinted, so dark-on-light stops working there even though
-				// it is right for the paragraph below.
 				fill: 0xffffff,
 				stroke: INK,
 				strokeThickness: 5,
