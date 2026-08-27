@@ -103,10 +103,24 @@
 	// of pixels below the canvas, would swing the head twice as far for the same
 	// angle.
 	const groundY = $derived(std.height);
+
+	// Grading them into the night street. See CastFigure's `grade` note for why
+	// this is a value problem before it is a colour one. The tint is a violet-grey
+	// multiply — the scene's own shadow colour, not neutral grey, which would just
+	// make them dull; the pool is the magenta the background's neon actually is.
+	const GRADE = { tint: 0x9a86b8, pool: 0xff2e88, poolAlpha: 0.16 };
 </script>
 
 {#if !stateGame.featureSplashShow}
 	<MainContainer standard>
-		<CastFigure {who} {x} {topY} {height} {groundY} alpha={0.96} />
+		<CastFigure
+			{who}
+			{x}
+			{topY}
+			{height}
+			{groundY}
+			flip={who === 'guy'}
+			grade={GRADE}
+		/>
 	</MainContainer>
 {/if}

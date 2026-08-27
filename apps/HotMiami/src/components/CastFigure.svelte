@@ -1,5 +1,6 @@
 <script lang="ts" module>
-	import { Container, Sprite } from 'pixi-svelte';
+	import { Container, Graphics, Sprite } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	import { CAST_SWAY, castFrame } from '../game/idleSway';
 	import { idleClock, useIdleClock } from '../game/idleClock.svelte';
@@ -39,6 +40,28 @@
 		 */
 		groundY: number;
 		alpha?: number;
+		/**
+		 * Face the other way. The art is drawn facing slightly to ITS left, which
+		 * is toward the board when the figure stands on the right — except the guy,
+		 * whose head is turned the other way, so he needs mirroring to look at the
+		 * reels instead of off the edge of the screen.
+		 */
+		flip?: boolean;
+		/**
+		 * Grade the figure into the scene.
+		 *
+		 * The cut-outs are lit like daylight product art — full saturation, near-
+		 * white trousers, clean white shoes — and the game behind them is a
+		 * desaturated night street. That mismatch is what reads as a sticker
+		 * pasted on the screen rather than a person standing in it, and it is a
+		 * VALUE problem before it is a colour one: they are simply brighter than
+		 * anything around them.
+		 *
+		 * So: a multiply tint pulls their whole range down into the scene's, a
+		 * neon pool behind them says where the light is coming from, and a contact
+		 * shadow puts their feet on the floor. Undefined leaves the art untouched.
+		 */
+		grade?: { tint: number; pool: number; poolAlpha: number };
 	};
 
 	const props: Props = $props();
@@ -55,12 +78,39 @@
 	rotation={frame.rotation}
 	scale={{ x: 1, y: frame.scaleY }}
 >
-	<Sprite
-		key={props.who === 'guy' ? 'hmCastGuy' : 'hmCastGirl'}
-		anchor={{ x: 0.5, y: 0 }}
-		y={props.topY - props.groundY}
-		{width}
-		height={props.height}
-		alpha={props.alpha ?? 1}
-	/>
+	{#if props.grade}
+		<!-- the light the figure is standing in, behind them -->
+		<Sprite
+			key="fxGlow"
+			anchor={{ x: 0.5, y: 0.5 }}
+			y={props.topY - props.groundY + props.height * 0.42}
+			tint={props.grade.pool}
+			blendMode="add"
+			width={width * 1.9}
+			height={props.height * 0.7}
+			alpha={props.grade.poolAlpha}
+		/>
+		<!-- and the floor under their feet. Drawn at the ground line rather than at
+		     the art's own bottom edge, which is off-screen at this size. -->
+		<Graphics
+			draw={(g: PixiGraphics) => {
+				g.clear();
+				g.ellipse(0, -6, width * 0.42, width * 0.08);
+				g.fill({ color: 0x000000, alpha: 0.5 });
+				g.ellipse(0, -6, width * 0.3, width * 0.05);
+				g.fill({ color: 0x000000, alpha: 0.45 });
+			}}
+		/>
+	{/if}
+	<Container scale={{ x: props.flip ? -1 : 1, y: 1 }}>
+		<Sprite
+			key={props.who === 'guy' ? 'hmCastGuy' : 'hmCastGirl'}
+			anchor={{ x: 0.5, y: 0 }}
+			y={props.topY - props.groundY}
+			{width}
+			height={props.height}
+			alpha={props.alpha ?? 1}
+			tint={props.grade?.tint}
+		/>
+	</Container>
 </Container>
