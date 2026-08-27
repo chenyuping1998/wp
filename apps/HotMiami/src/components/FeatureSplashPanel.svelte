@@ -79,23 +79,58 @@
 		draw={(g: PixiGraphics) => {
 			const w = props.width;
 			const h = panelHeight;
+			const a = props.tier.accent;
 			g.clear();
-			// A soft shadow under the card, so it sits ON the darkened screen rather
-			// than being a hole cut in it.
-			g.roundRect(-w / 2 + 5, 9, w, h, 20);
-			g.fill({ color: 0x000000, alpha: 0.45 });
 
-			g.roundRect(-w / 2, 0, w, h, 20);
-			g.fill({ color: PLATE, alpha: 0.95 });
-			g.stroke({ width: 5, color: props.tier.accent, alpha: 1 });
+			// ── the edge, drawn as a TUBE rather than as a line ──────────────────
+			//
+			// The reference's card is bordered by a neon tube: a bright core with
+			// light bleeding outward from it, not a 5px stroke. A stroke is what we
+			// had, and it is the single biggest reason the card read as flat — the
+			// rest of this game is neon and the one panel with a paragraph on it was
+			// drawn like a dialog box.
+			//
+			// Four passes, widest and faintest first, so the falloff is drawn rather
+			// than blurred. Cheaper than a filter and it survives any panel size.
+			for (const [width, alpha] of [
+				[26, 0.1],
+				[16, 0.16],
+				[9, 0.3],
+			] as const) {
+				g.roundRect(-w / 2, 0, w, h, 22);
+				g.stroke({ width, color: a, alpha });
+			}
 
-			// the header strip: a band across the panel's top in the tier's colour,
-			// which is where their card puts the spin count
-			g.roundRect(-w / 2 + 7, 7, w - 14, STRIP_HEIGHT, 14);
-			g.fill({ color: props.tier.accent, alpha: 0.22 });
+			// the plate
+			g.roundRect(-w / 2, 0, w, h, 22);
+			g.fill({ color: PLATE, alpha: 0.96 });
+
+			// A cooler wash across the lower half. Their plate is not one flat tone —
+			// it is brightest at the top, under the header, and cools toward the
+			// bottom. Two stacked rects at low alpha do it without a gradient fill.
+			g.roundRect(-w / 2 + 2, h * 0.42, w - 4, h * 0.58 - 2, 20);
+			g.fill({ color: 0xcbd0e8, alpha: 0.28 });
+			g.roundRect(-w / 2 + 2, h * 0.7, w - 4, h * 0.3 - 2, 20);
+			g.fill({ color: 0xb9bede, alpha: 0.22 });
+
+			// the core of the tube, over the plate's own edge
+			g.roundRect(-w / 2, 0, w, h, 22);
+			g.stroke({ width: 4.5, color: a, alpha: 1 });
+			// a white hairline just inside it: what makes a neon tube read as glass
+			g.roundRect(-w / 2 + 4, 4, w - 8, h - 8, 18);
+			g.stroke({ width: 1.5, color: 0xffffff, alpha: 0.75 });
+
+			// ── the header strip ─────────────────────────────────────────────────
+			g.roundRect(-w / 2 + 7, 7, w - 14, STRIP_HEIGHT, 16);
+			g.fill({ color: a, alpha: 0.3 });
+			g.roundRect(-w / 2 + 7, 7, w - 14, STRIP_HEIGHT * 0.55, 16);
+			g.fill({ color: 0xffffff, alpha: 0.28 });
 			g.moveTo(-w / 2 + 18, 7 + STRIP_HEIGHT);
 			g.lineTo(w / 2 - 18, 7 + STRIP_HEIGHT);
-			g.stroke({ width: 2, color: props.tier.accent, alpha: 0.8 });
+			g.stroke({ width: 2.5, color: a, alpha: 0.9 });
+			g.moveTo(-w / 2 + 18, 9.5 + STRIP_HEIGHT);
+			g.lineTo(w / 2 - 18, 9.5 + STRIP_HEIGHT);
+			g.stroke({ width: 1, color: 0xffffff, alpha: 0.5 });
 		}}
 	/>
 
@@ -107,8 +142,17 @@
 				fontFamily: DISPLAY_FONT,
 				fontWeight: DISPLAY_FONT_WEIGHT,
 				fontSize: headerSize,
-				letterSpacing: 2,
-				fill: INK,
+				letterSpacing: 2.5,
+				// White with a hard dark outline, as the reference's header line is —
+				// the strip is tinted, so dark-on-light stops working there even though
+				// it is right for the paragraph below.
+				fill: 0xffffff,
+				stroke: INK,
+				strokeThickness: 5,
+				dropShadow: true,
+				dropShadowColor: 0x000000,
+				dropShadowBlur: 4,
+				dropShadowDistance: 2,
 			}}
 		/>
 	</Container>

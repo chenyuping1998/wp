@@ -62,8 +62,18 @@
 	const titleY = $derived(layout.height * 0.145);
 	const panelY = $derived(layout.height * 0.24);
 	const panelWidth = $derived(Math.min(layout.width * 0.4, 620));
-	const panelMinHeight = $derived(layout.height * 0.36);
+	// Content-driven, with a floor. The reference's card is tall because its copy
+	// runs to seven lines; ours runs to four, and forcing the same proportion left
+	// a third of the card empty under the last line.
+	const panelMinHeight = $derived(layout.height * 0.26);
 	const titleSize = $derived(Math.max(30, Math.min(64, layout.width * 0.05)));
+
+	/** Same hue, darker — the bottom stop of the title's gradient. */
+	const deepen = (rgb: number, k: number) =>
+		((Math.round(((rgb >> 16) & 0xff) * k) << 16) |
+			(Math.round(((rgb >> 8) & 0xff) * k) << 8) |
+			Math.round((rgb & 0xff) * k)) >>>
+		0;
 
 	// The character stands on the LEFT here, not the right. On the board she is on
 	// the right because Buy Bonus owns the left; on this card nothing owns either
@@ -195,22 +205,83 @@
 			/>
 
 			<Container x={layout.width * 0.5}>
+				<!--
+					THE TITLE, drawn four times.
+					────────────────────────────
+					The reference's feature titles are not coloured type — they are a
+					drawn 3D wordmark: a dark extruded body offset down-right, a white
+					outline around it, a bright fill on top, and a glow behind the lot.
+					Ours was one flat Text with a stroke, which is what "有點單調" was
+					looking at: everything else on this screen is neon and the title was
+					typography.
+					Four passes, because pixi Text takes one fill and one stroke:
+					  glow    an additive sprite behind, in the tier's colour
+					  extrude the same word in near-black, pushed down-right
+					  outline the same word in white, thick stroke, no fill
+					  face    the accent fill on top
+					Same technique SymbolArt already uses for the symbols' shadow, edge
+					and rim copies, for the same reason.
+				-->
+				{@const titleFont = Math.min(titleSize, (layout.width * 0.9) / tier.title.length)}
+				{@const titleStyle = {
+					fontFamily: DISPLAY_FONT,
+					fontSize: titleFont,
+					fontWeight: DISPLAY_FONT_WEIGHT,
+					letterSpacing: 6,
+				}}
+				<Sprite
+					key="fxGlow"
+					anchor={0.5}
+					y={titleY}
+					tint={tier.accent}
+					blendMode="add"
+					width={titleFont * tier.title.length * 0.95}
+					height={titleFont * 3.2}
+					alpha={0.34}
+				/>
+				<Text
+					anchor={0.5}
+					x={titleFont * 0.055}
+					y={titleY + titleFont * 0.075}
+					text={tier.title}
+					style={{ ...titleStyle, fill: 0x12061f }}
+				/>
 				<Text
 					anchor={0.5}
 					y={titleY}
 					text={tier.title}
 					style={{
-						fontFamily: DISPLAY_FONT,
-						fontSize: Math.min(titleSize, (layout.width * 0.9) / tier.title.length),
-						fontWeight: DISPLAY_FONT_WEIGHT,
-						letterSpacing: 6,
-						fill: tier.accent,
-						stroke: 0x1a0838,
-						strokeThickness: 7,
-						dropShadow: true,
-						dropShadowColor: 0x000000,
-						dropShadowBlur: 12,
-						dropShadowDistance: 3,
+						...titleStyle,
+						fill: 0xffffff,
+						stroke: 0xffffff,
+						strokeThickness: titleFont * 0.13,
+					}}
+				/>
+				<Text
+					anchor={0.5}
+					y={titleY}
+					text={tier.title}
+					style={{
+						...titleStyle,
+						// A vertical gradient, not a flat colour. The reference's wordmark
+						// is lighter at the top and saturates toward the bottom, which is
+						// what stops a big word from looking like a big word. It also
+						// rescues the pale tiers: Ocean Drive's cyan as a flat fill inside
+						// a white outline read as white letters with a blue edge.
+						// A deepened accent, FLAT.
+						//
+						// Two things were learned getting here. First, white at the top of
+						// a gradient made the whole word read as white with a coloured edge
+						// — Ocean Drive's cyan is pale, and the white belongs in the
+						// OUTLINE, which is where the reference puts it. Second, a gradient
+						// array here throws outright: pixi reported
+						// `Unable to convert color 58879,34196`, so this Text path takes a
+						// single colour whatever the plaque's title does with an array.
+						// A flat deepened accent inside a white outline separates cleanly
+						// and cannot fail.
+						fill: deepen(tier.accent, 0.72),
+						stroke: 0x2a0f4a,
+						strokeThickness: 3,
 					}}
 				/>
 
