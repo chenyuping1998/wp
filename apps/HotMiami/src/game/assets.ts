@@ -309,13 +309,18 @@
 	// cut-out by design/build_cast_figures.py, using the same measured polygon the
 	// intro card clips with. Not preloaded: they are decoration on a board that is
 	// already playable without them.
+	// Preloaded, unlike most decoration: the LOADING SCREEN draws them, so they
+	// have to be there before the thing that reports them being there. Two small
+	// PNGs (266x819 and 224x775) against a 32MB bundle.
 	hmCastGuy: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hotMiamiCast/guy.png', import.meta.url).href,
+		preload: true,
 	},
 	hmCastGirl: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hotMiamiCast/girl.png', import.meta.url).href,
+		preload: true,
 	},
 
 	// bet-bar button icons (design/generate_ui_icons.mjs) — brass drawn icons

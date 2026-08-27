@@ -16,6 +16,9 @@
 
 	import { getContext } from '../game/context';
 	import { gameText } from '../game/i18nText';
+	import { stateGame } from '../game/stateGame.svelte';
+	import { tierByBonusTier } from '../game/featureTiers';
+	import FeatureSplashPanel from './FeatureSplashPanel.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation, { SIGN_DROP_MS } from './FreeSpinAnimation.svelte';
 	import FxBurst from './FxBurst.svelte';
@@ -26,6 +29,25 @@
 	let show = $state(false);
 	let freeSpinsFromEvent = $state(0);
 	let oncomplete = $state(() => {});
+
+	// The description panel is for the moment a feature OPENS, not for every time
+	// this component is shown: retriggers reuse the same event to slam a "+N" onto
+	// the plaque, and re-explaining the rules on a retrigger is noise in the middle
+	// of a feature the player is already inside.
+	let isEntry = $state(true);
+	const tier = $derived(tierByBonusTier(stateGame.bonusTier));
+	const showPanel = $derived(isEntry && tier !== null);
+
+	// The plaque is centred on the board and, at full size, fills the whole height
+	// between the board's top edge and the bet strip on its own — measured, not
+	// guessed: a 485-tall sign centred at y 324 on a 767 canvas spans 81..567, and
+	// the strip starts at 649. So a panel underneath needs the plaque to give up
+	// room, and lifting alone is not enough (at -0.34 its top went off the top of
+	// the screen). It shrinks as well as lifts.
+	//
+	// A retrigger gets neither — scale 1, no lift, exactly what shipped.
+	const PLAQUE_SCALE = 0.74;
+	const PLAQUE_LIFT = -0.3;
 
 	const title = gameText('freeSpins');
 	const subtitle = gameText('spinsAwarded');
@@ -105,6 +127,7 @@
 			stopNumberAnim();
 		},
 		freeSpinIntroUpdate: async (emitterEvent) => {
+			isEntry = emitterEvent.extraSpins === undefined;
 			freeSpinsFromEvent = emitterEvent.extraSpins ?? emitterEvent.totalFreeSpins;
 			// retriggers reuse this event, so the slam replays for the +N as well
 			startNumberAnim();
@@ -116,7 +139,10 @@
 <FadeContainer {show}>
 	<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
 
-	<FreeSpinAnimation>
+	<FreeSpinAnimation
+		offsetY={showPanel ? PLAQUE_LIFT : 0}
+		scale={showPanel ? PLAQUE_SCALE : 1}
+	>
 		{#snippet children({ sizes })}
 			<Text
 				anchor={0.5}
@@ -179,6 +205,14 @@
 			/>
 		{/snippet}
 	</FreeSpinAnimation>
+
+	{#if showPanel && tier}
+		<FeatureSplashPanel
+			{tier}
+			y={context.stateLayoutDerived.mainLayout().height * 0.55}
+			width={context.stateLayoutDerived.mainLayout().width * 0.42}
+		/>
+	{/if}
 
 	<PressToContinue onpress={() => oncomplete()} />
 </FadeContainer>

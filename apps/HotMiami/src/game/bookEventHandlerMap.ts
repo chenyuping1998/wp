@@ -15,6 +15,7 @@ import { BOARD_DIMENSIONS } from './constants';
 import { featureScaled } from './timeScale';
 import config from './config';
 import { FRAME_REVEAL, FRAME_CLEAR } from './frameTiming';
+import { FEATURE_TIERS } from './featureTiers';
 
 // The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
 // a value of 1 means two scatters are already on the board and a value of 2
@@ -354,6 +355,29 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateGame.stickyWildReels = [];
 		eventEmitter.broadcast({ type: 'expandingWildsClear' });
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
+
+		// WHICH tier, one event early.
+		//
+		// The splash panel names the feature and explains it, and it has to know
+		// which of the three this is BEFORE it is shown. The book's own `bonusTier`
+		// event carries that, but it arrives one event LATER — and the intro below
+		// blocks on a player press, so by the time `bonusTier` runs the panel has
+		// already been dismissed. Read on a settled board it was always null, which
+		// is exactly what the first version of the panel did: nothing.
+		//
+		// The Scatter count is the tier, by definition — 3, 4 or 5 opens Neon
+		// Nights, Sunset Hits or Ocean Drive — and `positions` is the Scatters that
+		// triggered it. So the same fact is available here, one event early. The
+		// `bonusTier` handler still runs afterwards and still has the last word; it
+		// writes the same value.
+		//
+		// Falls back to leaving it null rather than guessing: a bought round whose
+		// book carries no trigger positions gets the plaque without the panel, which
+		// is the old behaviour, rather than a panel describing the wrong feature.
+		const triggerTier = FEATURE_TIERS.find(
+			(entry) => entry.scatters === (bookEvent.positions?.length ?? 0),
+		);
+		if (triggerTier) stateGame.bonusTier = triggerTier.tier;
 
 		eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'jng_intro_fs' });
