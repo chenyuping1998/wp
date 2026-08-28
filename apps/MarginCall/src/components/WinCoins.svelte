@@ -26,7 +26,7 @@
 			x={context.stateGameDerived.boardLayout().x}
 			y={context.stateGameDerived.boardLayout().y}
 		>
-			<ParticleEmitter {config} key="coins" emit={props.emit} />
+			<ParticleEmitter {config} key="mcChips" emit={props.emit} />
 		</Container>
 	</MainContainer>
 {/if}

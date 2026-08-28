@@ -13,10 +13,17 @@ import type { Position } from './types';
 import { BASE_ROWS, paddedReelLength } from './constants';
 import config from './config';
 
-// The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
-// a value of 1 means the tease starts on the *second* scatter. Free spins need
-// three, so teasing that early fires on most spins and stops meaning anything.
-const ANTICIPATION_MIN_SCATTERS = 3;
+// The math emits anticipation[reel] = (scatters landed before that reel) - 1.
+//
+// This was 3, and that was wrong. Free spins need three Scatters, so requiring
+// three to have ALREADY landed meant the reel only ever teased once the feature
+// was mathematically guaranteed — the player was held in suspense over an
+// outcome that had already been decided in their favour.
+//
+// The tease belongs on the spin where the player is ONE Scatter away, which is
+// two landed. That is not "most spins" — two Scatters is uncommon on its own,
+// and it is the only moment the last reel actually decides anything.
+const ANTICIPATION_MIN_SCATTERS = 2;
 
 const gateAnticipation = (anticipation: number[]) =>
 	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
@@ -102,8 +109,23 @@ export const animateSymbols = async ({
 	}
 };
 
+// Bumped every time the highlight is torn down. Board captures it when a volley
+// starts and re-checks it after each of the two points where the volley yields;
+// if it has moved, the board it was lighting is gone and it must not write a
+// symbol state.
+//
+// Without this, a spin started while a volley was mid-yield would set
+// `symbolState = 'win'` on a symbol whose reel had ALREADY been reset to 'spin'
+// - and nothing resets it again until the reel lands, so the win ring rode the
+// spinning strip all the way down. The idle replay makes this the common case
+// rather than a rare one: it re-arms every 1.6s, so an idle board is nearly
+// always inside a volley when the player presses spin.
+let highlightGeneration = 0;
+export const getHighlightGeneration = () => highlightGeneration;
+
 /** Drop every highlight. Safe to call at any time, from anywhere. */
 export const clearHighlight = () => {
+	highlightGeneration += 1;
 	stateGame.highlightActive = false;
 	stateGame.scatterPositions = [];
 };
@@ -195,18 +217,31 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'scatterTriggerHide' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
-		await eventEmitter.broadcastAsync({ type: 'transition' });
-		eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
+		await eventEmitter.broadcastAsync({
+			type: 'transition',
+			// Same reasoning as freeSpinEnd: the scene changes while the shutters are
+			// shut. gameType drives which backdrop is showing, so setting it here
+			// means the feature room is already up when they open, rather than
+			// cross-fading in behind the intro panel afterwards.
+			oncover: () => {
+				stateGame.gameType = 'freegame';
+				// The meter is per-feature: it starts at 1x and only climbs from here.
+				stateGame.leverage = 1;
+				stateGame.leverageHits = [];
+				// The award plate goes up here too, so the shutters RETRACT to reveal
+				// it already in place. It used to be shown after the transition had
+				// finished and then dropped in from above - a second big vertical
+				// move, in the opposite direction to the shutters that had just
+				// opened, a beat after them.
+				eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
+			},
+		});
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'jng_intro_fs' });
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
 		await eventEmitter.broadcastAsync({
 			type: 'freeSpinIntroUpdate',
 			totalFreeSpins: bookEvent.totalFs,
 		});
-		stateGame.gameType = 'freegame';
-		// The meter is per-feature: it starts at 1x and only ever climbs from here.
-		stateGame.leverage = 1;
-		stateGame.leverageHits = [];
 		eventEmitter.broadcast({ type: 'leverageMeterShow' });
 		eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
@@ -285,18 +320,30 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
 		stateUi.freeSpinCounterShow = false;
 
-		// Shrink back to the basegame board. Both halves are required: the row
-		// count drives the frame and the layout, and the reels are still holding
-		// the feature board's seven symbols - which would be drawn into a
-		// three-row frame if they were left there. The transition covers it.
-		stateGame.rows = BASE_ROWS;
-		displayRows.set(BASE_ROWS, { duration: 0 });
-		stateGame.leverage = 1;
-		stateGame.leverageHits = [];
-		eventEmitter.broadcast({ type: 'leverageMeterHide' });
-		stateGameDerived.enhancedBoard.settle(baseIdleBoard());
-
-		await eventEmitter.broadcastAsync({ type: 'transition' });
+		// Shrink back to the basegame board, INSIDE the transition.
+		//
+		// All of this used to run before the transition was even started, on the
+		// strength of a comment claiming the transition covered it. It did not: the
+		// board visibly snapped from five rows to three, the meter vanished, and
+		// only then did the alarm play - so the player saw the feature end and then
+		// watched an effect whose whole job was to hide that.
+		//
+		// oncover runs while the circuit-breaker shutters are shut, which is the
+		// only moment on screen where nothing is visible. Both halves have to
+		// happen there: the row count drives the frame and the layout, and the
+		// reels are still holding the feature board's seven symbols, which would be
+		// drawn into a three-row frame if they were left.
+		await eventEmitter.broadcastAsync({
+			type: 'transition',
+			oncover: () => {
+				stateGame.rows = BASE_ROWS;
+				displayRows.set(BASE_ROWS, { duration: 0 });
+				stateGame.leverage = 1;
+				stateGame.leverageHits = [];
+				eventEmitter.broadcast({ type: 'leverageMeterHide' });
+				stateGameDerived.enhancedBoard.settle(baseIdleBoard());
+			},
+		});
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });

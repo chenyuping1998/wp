@@ -37,8 +37,12 @@ const num = (name) => {
 const SYMBOL_SIZE = num('SYMBOL_SIZE');
 const WELL_WIDTH_CELLS = num('WIN_BANNER_WELL_WIDTH');
 
+// Tolerant of extra fields between `aspect` and `well`. The strict version of
+// this regex required them to be adjacent, so adding `accent` to the specs broke
+// the parser silently — the script threw "expected 5 banner specs, read 0" and
+// simply stopped being run, which is how the banners went unchecked.
 const specs = [...constants.matchAll(
-	/(\w+):\s*\{\s*key:\s*'(\w+)',\s*aspect:\s*([0-9.]+),\s*well:\s*\{\s*cx:\s*(-?[0-9.]+),\s*cy:\s*(-?[0-9.]+),\s*w:\s*([0-9.]+),\s*h:\s*([0-9.]+)\s*\}/g,
+	/(\w+):\s*\{\s*key:\s*'(\w+)',\s*aspect:\s*([0-9.]+),[\s\S]*?well:\s*\{\s*cx:\s*(-?[0-9.]+),\s*cy:\s*(-?[0-9.]+),\s*w:\s*([0-9.]+),\s*h:\s*([0-9.]+)\s*\}/g,
 )].map((m) => ({
 	alias: m[1],
 	aspect: Number(m[3]),

@@ -26,7 +26,10 @@
 	let nextBurstId = 0;
 
 	// bokeh reusing the glow texture, tinted per mote
-	const BOKEH_COLORS = [0xffd75e, 0xfff7d1, 0xd9e88a, 0xffb04a];
+	// Was [0xffd75e, 0xfff7d1, 0xd9e88a, 0xffb04a] - gold, cream and an olive
+// yellow-green that belonged to foliage. The palette's own amber stays,
+// because a big win should still feel warm; the olive and the cream go.
+const BOKEH_COLORS = [0xf7a83a, 0xeafff2, 0x4bd67f, 0x3fd0d4];
 	const motes = Array.from({ length: 14 }, (_, i) => ({
 		x: (Math.random() - 0.5) * 1200,
 		y: (Math.random() - 0.6) * 880,
@@ -68,7 +71,7 @@
 			const angle = (i / rayCount) * Math.PI * 2;
 			const reach = radius * (i % 2 === 0 ? 1 : 0.78);
 			const halfWidth = Math.PI / rayCount / 1.9;
-			g.beginFill(i % 2 === 0 ? 0xffd75e : 0xffb64d, alpha);
+			g.beginFill(i % 2 === 0 ? 0xf7a83a : 0x4bd67f, alpha);
 			g.drawPolygon([
 				0,
 				0,
@@ -80,7 +83,7 @@
 			g.endFill();
 		}
 		// warm core so the rays melt into the count-up area
-		g.beginFill(0xffe9a8, (0.14 + 0.1 * pulse) * intensity);
+		g.beginFill(0xa8f0c4, (0.14 + 0.1 * pulse) * intensity);
 		g.drawCircle(0, 0, radius * 0.34);
 		g.endFill();
 	};

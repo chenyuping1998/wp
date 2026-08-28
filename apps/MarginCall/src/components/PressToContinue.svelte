@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { displayFontFor, displayWeightFor } from '../game/fonts';
 	import { onMount } from 'svelte';
 	import { MainContainer, OnPressFullScreen } from 'components-layout';
 	import { OnHotkey } from 'components-shared';
@@ -45,12 +45,19 @@
 		y={yPosition}
 		alpha={pulse}
 		style={{
-			fontFamily: GAME_FONT,
+			// Wraps rather than running off the screen. This line is one sentence in
+			// sixteen languages and some of them are long: Russian's "НАЖМИТЕ В
+			// ЛЮБОМ МЕСТЕ, ЧТОБЫ ПРОДОЛЖИТЬ" measured 447px on a 420px portrait
+			// canvas, i.e. off both edges at once, against English's comfortable fit.
+			wordWrap: true,
+			wordWrapWidth: context.stateLayoutDerived.mainLayout().width * 0.9,
+			align: 'center',
+			fontFamily: displayFontFor(label),
 			fontSize: 28,
-			fontWeight: GAME_FONT_WEIGHT,
+			fontWeight: displayWeightFor(label),
 			letterSpacing: 4,
-			fill: 0xf5e3c3,
-			stroke: 0x2c1c08,
+			fill: 0xcfe9da,
+			stroke: 0x06210f,
 			strokeThickness: 4,
 			dropShadow: true,
 			dropShadowColor: 0x000000,

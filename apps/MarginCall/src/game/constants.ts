@@ -48,7 +48,21 @@ export const BOARD_FIT = {
 // Both boards stand on the same line, just above the bet bar, so the feature
 // board grows upward out of the basegame one instead of the whole thing
 // re-centring as it expands.
-export const BOARD_BOTTOM_MARGIN = 16;
+//
+// Raised from 16: the bar height is derived from uiTheme against a differently
+// shaped box, and 16px of slack was not enough to absorb the error - the board's
+// bottom edge was touching the bar.
+export const BOARD_BOTTOM_MARGIN = 64;
+
+// How much wider than the reels the housing plate reads, as a multiplier on the
+// board's own width. Anything laying itself out beside the board (the ticker
+// backdrop) has to clear the plate rather than the cells, or it draws underneath
+// the frame's shoulders.
+//
+// Measured, not guessed: at the desktop preset the reels are 687px wide on
+// canvas and BoardFrame's bounds are 885px, which is 1.288. The value carries a
+// little past that for the frame's outer glow.
+export const BOARD_HOUSING_CLEARANCE = 1.32;
 
 // How long a winning symbol stays lit before the round moves on. Board awaits
 // this, so it is also the pace of the win presentation.
@@ -134,12 +148,26 @@ export const SPIN_OPTIONS_FAST = {
 	reelBounceSizeMulti: 0.05,
 };
 
+// The feature game's own normal-speed options.
+//
+// The tease length is `reelLength * reelPaddingMultiplierAnticipated`, and the
+// feature reel is 7 symbols to the base game's 5 - so at a shared multiplier the
+// feature tease is automatically 40% LONGER than the base one, which is what
+// made a single Scatter in free spins feel like it held the board hostage for
+// four reels. 10 -> 6 takes that 40% back out; the feature tease is now about
+// the same wall-clock length as the base game's.
+export const SPIN_OPTIONS_DEFAULT_FREEGAME = {
+	...SPIN_OPTIONS_DEFAULT,
+	reelPaddingMultiplierAnticipated: 6,
+};
+
 export const SPIN_OPTIONS_FAST_FREEGAME = {
 	...SPIN_OPTIONS_SHARED,
 	reelPreSpinSpeed: 4.2,
 	reelSpinSpeed: 3.8,
 	reelSpinDelay: 185,
 	reelBounceSizeMulti: 0.08,
+	reelPaddingMultiplierAnticipated: 6,
 };
 
 export const MOTION_BLUR_VELOCITY = 31;
@@ -152,33 +180,51 @@ export const MOTION_BLUR_VELOCITY = 31;
 // top tier's flame wings inflate its image far beyond its well - so centring on
 // the image would put text over the decoration on some tiers and not others.
 //
-// `well` is measured, not eyeballed: design/measure_banner_wells.mjs finds the
-// dark opaque region in each PNG and prints these numbers. Re-run it if the art
-// is replaced.
+// The frames are generated (design/generate_theme.mjs, BANNER_TIERS), so these
+// wells are declared rather than discovered - they are the same numbers the
+// generator draws with. design/measure_banner_wells.mjs re-derives them from
+// the PNGs and is the check that the two have not drifted.
 //
 // Everything is sized from the WELL, not from the image: the well is drawn at a
 // constant width on screen, so the text is the same size on every tier and the
 // frames grow as the tiers climb.
-export const WIN_BANNER_WELL_WIDTH = 3.8; // in cells
+export const WIN_BANNER_WELL_WIDTH = 7.6; // in cells
 
+// `accent` is the same colour the frame is drawn in (BANNER_TIERS in
+// generate_theme.mjs). The tier label takes it so the words belong to the plaque
+// they sit on; the amount stays pale, because it is the number the player is
+// actually reading and legibility beats theming there.
 export const WIN_BANNERS = {
-	big: { key: 'mcWinBannerBig', aspect: 0.352, well: { cx: 0.0, cy: 0.043, w: 0.775, h: 0.5 } },
+	big: {
+		key: 'mcWinBannerBig',
+		aspect: 0.36,
+		accent: 0x4bd67f,
+		well: { cx: 0, cy: 0, w: 0.76, h: 0.5 },
+	},
 	superwin: {
 		key: 'mcWinBannerSuperwin',
-		aspect: 0.336,
-		well: { cx: 0.007, cy: 0.02, w: 0.742, h: 0.444 },
+		aspect: 0.38,
+		accent: 0x3fd0d4,
+		well: { cx: 0, cy: 0, w: 0.72, h: 0.46 },
 	},
 	mega: {
 		key: 'mcWinBannerMega',
-		aspect: 0.388,
-		well: { cx: 0.007, cy: 0.042, w: 0.689, h: 0.442 },
+		aspect: 0.42,
+		accent: 0xf7a83a,
+		well: { cx: 0, cy: 0, w: 0.68, h: 0.42 },
 	},
 	epic: {
 		key: 'mcWinBannerEpic',
-		aspect: 0.367,
-		well: { cx: 0.006, cy: 0.086, w: 0.676, h: 0.383 },
+		aspect: 0.45,
+		accent: 0x9b7bff,
+		well: { cx: 0, cy: 0, w: 0.64, h: 0.38 },
 	},
-	max: { key: 'mcWinBannerMax', aspect: 0.324, well: { cx: 0.004, cy: 0.037, w: 0.619, h: 0.344 } },
+	max: {
+		key: 'mcWinBannerMax',
+		aspect: 0.5,
+		accent: 0xff5566,
+		well: { cx: 0, cy: 0, w: 0.6, h: 0.34 },
+	},
 } as const;
 
 export const WIN_BANNER_LABEL = {
@@ -188,6 +234,76 @@ export const WIN_BANNER_LABEL = {
 	epic: 'EPIC WIN',
 	max: 'MAX WIN',
 } as const;
+
+// Per-symbol win presentation.
+//
+// Every symbol used to win with the identical green ring, which meant the
+// Scatter, the Wild and a low card were all presented as the same event. These
+// profiles scale the same effect by what the symbol is worth, and colour it by
+// what it is: red for MARGIN CALL, bright green for LEVERAGE, green for the
+// premiums, cool teal for the lows so a low win reads as quieter rather than as
+// a weaker copy of a big one.
+//
+// Runtime, not baked frames. The effect is a transform, a self-additive relight
+// and some vector FX, all of which pixi does directly — baking it would have
+// cost ~20 MB of sprite sheets for the eleven symbols and been softer at every
+// size that is not the authored one.
+export type WinFxProfile = {
+	color: number;
+	/** peak overshoot of the scale pop */
+	pop: number;
+	rings: number;
+	sparks: number;
+	/** how hard the artwork relights itself on the hit, 0..1 */
+	flash: number;
+	/** peak alpha of the halo behind the tile */
+	halo: number;
+};
+
+const HIGH = 0x4bd67f;
+const LOW = 0x3fd0d4;
+
+export const WIN_FX: Record<string, WinFxProfile> = {
+	// MARGIN CALL: the alarm. Loudest thing on the board when it pays.
+	S: { color: 0xff5566, pop: 0.4, rings: 3, sparks: 14, flash: 1, halo: 0.2 },
+	// LEVERAGE: the feature's engine.
+	W: { color: HIGH, pop: 0.36, rings: 3, sparks: 12, flash: 0.95, halo: 0.18 },
+	H1: { color: HIGH, pop: 0.3, rings: 2, sparks: 9, flash: 0.85, halo: 0.15 },
+	H2: { color: HIGH, pop: 0.28, rings: 2, sparks: 8, flash: 0.8, halo: 0.14 },
+	H3: { color: HIGH, pop: 0.26, rings: 2, sparks: 7, flash: 0.75, halo: 0.13 },
+	H4: { color: HIGH, pop: 0.24, rings: 2, sparks: 6, flash: 0.7, halo: 0.12 },
+	H5: { color: HIGH, pop: 0.24, rings: 2, sparks: 6, flash: 0.7, halo: 0.12 },
+	L1: { color: LOW, pop: 0.18, rings: 1, sparks: 4, flash: 0.55, halo: 0.09 },
+	L2: { color: LOW, pop: 0.18, rings: 1, sparks: 4, flash: 0.55, halo: 0.09 },
+	L3: { color: LOW, pop: 0.16, rings: 1, sparks: 3, flash: 0.5, halo: 0.08 },
+	L4: { color: LOW, pop: 0.16, rings: 1, sparks: 3, flash: 0.5, halo: 0.08 },
+};
+
+export const winFxFor = (name: string): WinFxProfile => WIN_FX[name] ?? WIN_FX.H5;
+
+// Scatter landing frame, ported from TripleWitching (ScatterLandFrame.svelte).
+//
+// The scatter has to be picked out of a board of nine paying symbols, and the
+// thing that decides whether it can be is LUMINANCE, not hue. ScatterTrigger's
+// alarm red (0xff5566) works at ring size on a dimmed board; at CELL size a
+// saturated red on near-black terminal green is just another dark block, so
+// reaching for a different colour does not fix it. These are deliberately
+// bright.
+//
+// Yes, this is gold, and yes, the rest of this game had its inherited gold
+// purged. That was about warm colours standing in for a palette the game does
+// not have. This is different: it is a legibility decision with a measured
+// reason behind it, and it is the ONE hot accent on the board. The alarm stays
+// red where it is drawn large; only the per-cell frame is hot, because only the
+// per-cell frame has a size problem.
+export const SCATTER_FRAME_COLOR = 0xffd166;
+export const SCATTER_FRAME_CORE = 0xfff6da;
+export const SCATTER_FRAME_WIDTH = 5;
+/** the frame flares as the symbol lands, then settles and holds */
+export const SCATTER_FRAME_FLARE_MS = 420;
+export const SCATTER_FRAME_STEADY_ALPHA = 0.85;
+/** how far inside the cell the frame sits, in board units */
+export const SCATTER_FRAME_INSET = 5;
 
 // Leverage meter presentation. The math sends +1/+2/+3/+5/+10 per LEVERAGE
 // symbol; anything from +5 up is worth calling out with the hot treatment.

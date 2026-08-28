@@ -37,7 +37,13 @@
 
 {#if isSprite && isWin}
 	<!-- Win state for sprite symbols: programmatic scale+glow animation -->
-	<SymbolWinAnim {symbolInfo} x={props.x} y={props.y} oncomplete={props.onwincomplete} />
+	<SymbolWinAnim
+		{symbolInfo}
+		symbolName={props.rawSymbol.name}
+		x={props.x}
+		y={props.y}
+		oncomplete={props.onwincomplete}
+	/>
 {:else if isSprite}
 	<SymbolSprite
 		{symbolInfo}

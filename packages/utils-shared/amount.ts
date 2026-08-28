@@ -71,14 +71,21 @@ export const numberToCurrencyString = (value: number, maximumFractionDigits = 2)
 	// locale is active — so switching the game to French turned "$1,000.00" into
 	// "1 000,00 $US". The amount is the same money either way; only its
 	// presentation moved, which makes the balance look like it changed and puts a
-	// currency suffix where the symbol belongs. A dollar is displayed as "$" in
-	// every language.
+	// currency suffix where the symbol belongs.
+	//
+	// `symbol`, NOT `narrowSymbol`. Narrow is defined as the symbol with its
+	// disambiguating prefix removed, which is precisely the thing that keeps two
+	// currencies apart: at en-US it renders USD, CAD, AUD, MXN, SGD, HKD and NZD
+	// all as "$", and JPY and CNY both as "¥". A player who switched to Canadian
+	// dollars still saw "$1.00" and had no way to tell which money they were
+	// looking at. `symbol` gives CA$, A$, MX$, HK$, NZ$, CN¥ and so on, and has
+	// no collisions across the currencies the platform offers.
 	return new Intl.NumberFormat(CURRENCY_LOCALE, {
 		minimumFractionDigits: 2,
 		maximumFractionDigits,
 		style: 'currency',
 		currency: stateBet.currency,
-		currencyDisplay: 'narrowSymbol',
+		currencyDisplay: 'symbol',
 	}).format(value);
 };
 

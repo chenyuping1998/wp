@@ -37,10 +37,11 @@ const { PNG } = require('pngjs');
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 // source directory -> destination directory
-const SETS = [
-	['design/source/win_banners', 'static/assets/sprites/marginCallWinBanners'],
-	['design/source/symbols', 'static/assets/sprites/marginCallSymbols'],
-];
+// The win banners were supplied art and are generated again now
+// (generate_theme.mjs), so they are deliberately NOT in this list - keying
+// them here would overwrite the generated set on the next run. The originals
+// stay in design/source/win_banners as a reference.
+const SETS = [['design/source/symbols', 'static/assets/sprites/marginCallSymbols']];
 
 // Loose enough to follow a glow's fade a little way in, tight enough not to leak
 // through the lighter metal of a frame or the pale parts of a symbol.
@@ -128,11 +129,70 @@ for (const [srcRel, dstRel] of SETS) {
 			feathered++;
 		}
 
+		// ── the halo ────────────────────────────────────────────────────────
+		// The flood stops as soon as a pixel is darker than FLOOD_MIN_CHANNEL, but
+		// the edge of the art is antialiased: there is a ring one or two pixels
+		// wide that is a blend of the white matte and the artwork, too dark for
+		// the flood to enter and too light to belong to the art. Left alone it
+		// stays fully opaque and reads as a thin white outline around every
+		// symbol - which is exactly what it did.
+		//
+		// Those pixels can be told apart from the art by colour, not brightness:
+		// matte residue is near-grey, the art here is saturated neon. So the ring
+		// just outside the art is walked, and only the near-grey, bright pixels in
+		// it are keyed. Keying on brightness alone would eat the tile's own bright
+		// border, which is saturated and must stay opaque.
+		const MAX_HALO_CHROMA = 34;
+		const MIN_HALO_LEVEL = 128;
+		const HALO_DEPTH = 2;
+
+		let halo = 0;
+		let frontier = new Set();
+		for (let p = 0; p < width * height; p++) if (outside[p]) frontier.add(p);
+
+		for (let step = 0; step < HALO_DEPTH; step++) {
+			const next = new Set();
+			for (const p of frontier) {
+				const x = p % width;
+				const y = (p - x) / width;
+				for (const [nx, ny] of [
+					[x + 1, y],
+					[x - 1, y],
+					[x, y + 1],
+					[x, y - 1],
+				]) {
+					if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+					const q = ny * width + nx;
+					if (outside[q]) continue;
+					const i = q * 4;
+					const min = Math.min(data[i], data[i + 1], data[i + 2]);
+					const max = Math.max(data[i], data[i + 1], data[i + 2]);
+					if (max - min > MAX_HALO_CHROMA || min < MIN_HALO_LEVEL) continue;
+					const a = 1 - min / 255;
+					if (a <= CLEAR_BELOW_ALPHA) {
+						data[i + 3] = 0;
+					} else {
+						for (let c = 0; c < 3; c++) {
+							data[i + c] = Math.max(
+								0,
+								Math.min(255, Math.round((data[i + c] - 255 * (1 - a)) / a)),
+							);
+						}
+						data[i + 3] = Math.round(a * 255);
+					}
+					outside[q] = 1;
+					next.add(q);
+					halo++;
+				}
+			}
+			frontier = next;
+		}
+
 		fs.writeFileSync(path.join(dst, file), PNG.sync.write(png));
 		const total = width * height;
 		console.log(
 			`  ${file}: ${width}x${height}  clear ${((cleared / total) * 100).toFixed(1)}%` +
-				`  feathered ${((feathered / total) * 100).toFixed(1)}%`,
+				`  feathered ${((feathered / total) * 100).toFixed(1)}%  halo ${halo}px`,
 		);
 		processed++;
 	}

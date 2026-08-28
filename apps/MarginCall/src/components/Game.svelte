@@ -6,7 +6,7 @@
 	import { EnablePixiExtension } from 'components-pixi';
 	import { EnableHotkey } from 'components-shared';
 	import { MainContainer } from 'components-layout';
-	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
+	import { App, Container, Rectangle, Sprite, Text, REM } from 'pixi-svelte';
 	import { stateModal } from 'state-shared';
 
 	import { UI, UiGameName } from 'components-ui-pixi';
@@ -23,6 +23,7 @@
 	import ResumeBet from './ResumeBet.svelte';
 	import Sound from './Sound.svelte';
 	import Background from './Background.svelte';
+	import TickerChart from './TickerChart.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './BoardFrame.svelte';
 	import Board from './Board.svelte';
@@ -59,20 +60,35 @@
 	<EnableGameActor />
 	<EnablePixiExtension />
 
-	<Container filters={backgroundBlur}>
-		<Background />
-	</Container>
-	<!-- corner vignette seats the blurred scene behind the board -->
-	<Sprite
-		key="fxVignette"
-		width={context.stateLayoutDerived.canvasSizes().width}
-		height={context.stateLayoutDerived.canvasSizes().height}
-		alpha={0.9}
-	/>
+	<!--
+		Flat ground under everything, including the loading screen. The loading
+		screen paints inside the main-layout box, which does not reach the canvas
+		edges on every aspect ratio - without this the game's own backdrop showed
+		around it, which is a peek at the game before the game has started.
+	-->
+	<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x060b09} />
 
 	{#if context.stateLayout.showLoadingScreen}
 		<LoadingScreen onloaded={() => (context.stateLayout.showLoadingScreen = false)} />
 	{:else}
+		<Container filters={backgroundBlur}>
+			<Background />
+		</Container>
+		<!-- corner vignette seats the blurred scene behind the board -->
+		<Sprite
+			key="fxVignette"
+			width={context.stateLayoutDerived.canvasSizes().width}
+			height={context.stateLayoutDerived.canvasSizes().height}
+			alpha={0.9}
+		/>
+		<!--
+			The ticker is above the vignette and outside the blur on purpose: it is
+			the one part of the backdrop meant to be read, and both of those layers
+			exist to push the backdrop away. It draws only in the gutters beside the
+			board, so being sharp up here costs the reels nothing.
+		-->
+		<TickerChart />
+
 		<ResumeBet />
 		<!--
 			The reason why <Sound /> is rendered after clicking the loading screen:
@@ -92,8 +108,11 @@
 			<BoardContainer>
 				<ScatterTrigger />
 				<BoardExpandFx />
-				<LeverageMeter />
 			</BoardContainer>
+			<!-- LeverageMeter draws in main-box space and brings its own
+			     MainContainer: it has to be able to clamp itself to the top of the
+			     screen, which board space cannot express -->
+			<LeverageMeter />
 		</MainContainer>
 
 		<EntryReveal />

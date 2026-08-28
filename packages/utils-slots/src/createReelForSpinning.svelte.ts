@@ -48,7 +48,10 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		reelState.symbols.forEach((reelSymbol) => {
 			reelSymbol.symbolState = value as TSymbolState;
 			if (value === 'land') {
-				reelOptions.onSymbolLand({ rawSymbol: reelSymbol.rawSymbol });
+				reelOptions.onSymbolLand({
+					rawSymbol: reelSymbol.rawSymbol,
+					symbolIndex: reelSymbol.symbolIndex,
+				});
 			}
 		});
 	};
@@ -67,6 +70,10 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 	// whole game down before anything renders, and `ssr = false` means the build
 	// never evaluates these modules, so nothing catches it before the browser.
 	const getReelLength = reelOptions.getReelLength ?? (() => reelOptions.initialSymbols.length);
+
+	// Off unless the game asks for it: a reel that knows nothing about this keeps
+	// running its tease to the end, exactly as before.
+	const getAnticipationIsStoppable = reelOptions.getAnticipationIsStoppable ?? (() => false);
 
 	// interruptible
 	const interruptible = createInterruptible();
@@ -250,8 +257,25 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		// Q: When to skip the slideDown?
 		// A: When it's preSpinning(isSpinning) and stop button is clicked(isTurbo) and is noStop is false
 		if (noStop) {
-			await slideDown();
-		} else if (stateBet.isTurbo && isSpinning && !reelState.spinOptions().reelStaggerInTurbo) {
+			// `noStop` means this reel is part of an anticipation tease and must not
+			// be cut short by the turbo/pre-spin path above. It used to also mean the
+			// stop button could not reach it, because the slide was awaited directly
+			// rather than through the interruptible - so a long tease was a stretch of
+			// the round with no working control on screen. Going through the
+			// interruptible keeps the tease (nothing else shortens it) while leaving
+			// the player a way out of it.
+			if (getAnticipationIsStoppable()) {
+				await interruptible.add(slideDown);
+			} else {
+				await slideDown();
+			}
+		} else if (
+			(turboOverride ?? stateBet.isTurbo) &&
+			isSpinning &&
+			// opt-in: a game can keep its reels staggered in turbo instead of
+			// snapping them all at once (uiTheme-independent, see types.ts)
+			!reelState.spinOptions().reelStaggerInTurbo
+		) {
 			// skip
 		} else {
 			await interruptible.add(slideDown);
@@ -331,9 +355,13 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		anticipated: anticipatedSpin,
 	};
 
+	// Per-spin opt-out of turbo, set by prepareToSpin. See createEnhanceBoardSpin.
+	let turboOverride: boolean | undefined;
+
 	const prepareToSpin = (prepareToSpinOptions: {
 		noStop: boolean;
 		spinType: SpinType;
+		isTurboOverride?: boolean;
 		symbols: TRawSymbol[];
 		paddingPosition: number;
 		paddingReel: TRawSymbol[];
@@ -341,6 +369,7 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		previousPaddingSize: number;
 	}) => {
 		reelState.spinType = prepareToSpinOptions.spinType;
+		turboOverride = prepareToSpinOptions.isTurboOverride;
 
 		noStop = prepareToSpinOptions.noStop;
 		prevSymbols = targetSymbols;

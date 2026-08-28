@@ -109,7 +109,14 @@ export const convertTorResumableBet = (betToResume: Bet) => {
 
 // other utils
 export const getSymbolX = (reelIndex: number) => SYMBOL_SIZE * (reelIndex + REEL_PADDING);
-export const getSymbolY = (symbolIndexOfBoard: number) => (symbolIndexOfBoard + 0.5) * SYMBOL_SIZE;
+// Where a symbol actually sits in board space, for overlays that have to line up
+// with the reels (the scatter alarm, the leverage chips).
+//
+// A reel at rest has reelY = -symbolHeight, so its symbol at index i is drawn at
+// (i - 0.5) * SYMBOL_SIZE, not (i + 0.5). Getting this wrong put the scatter
+// alarm one full cell below every scatter, lighting up the symbol underneath it
+// instead - which reads as "non-scatter cells are lighting up".
+export const getSymbolY = (symbolIndexOfBoard: number) => (symbolIndexOfBoard - 0.5) * SYMBOL_SIZE;
 
 export const getSymbolInfo = ({
 	rawSymbol,

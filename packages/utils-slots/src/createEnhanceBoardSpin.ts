@@ -22,9 +22,20 @@ export function createEnhanceBoardSpin<TReel extends Reel<any, any>>({
 	async function spin<RevealEvent extends BaseRevealEvent>({
 		revealEvent,
 		paddingBoard,
+		// Forces this one spin to ignore the turbo setting. Undefined — the only
+		// value any existing caller passes — reads stateBet.isTurbo exactly as
+		// before, so a game that does not know about this behaves identically.
+		//
+		// It exists because turbo is not one decision but two, and both are
+		// hardcoded to stateBet.isTurbo: the spin TYPE ('fast' adds no padding, so
+		// the reels have nothing to scroll through) and a skip that drops the slide
+		// altogether. A game whose feature is worth watching needs to opt a
+		// particular scene out of both, not out of one and be left with the other.
+		isTurboOverride,
 	}: {
 		revealEvent: RevealEvent;
 		paddingBoard?: TRawSymbol[][];
+		isTurboOverride?: boolean;
 	}) {
 		if (stateSlots.isPreSpinning) {
 			await Promise.all(
@@ -36,7 +47,8 @@ export function createEnhanceBoardSpin<TReel extends Reel<any, any>>({
 
 		stateSlots.isPreSpinning = false;
 
-		const globalSpinType = stateBet.isTurbo ? 'fast' : 'normal';
+		const isTurbo = isTurboOverride ?? stateBet.isTurbo;
+		const globalSpinType = isTurbo ? 'fast' : 'normal';
 		const globalHasAnticipation = revealEvent.anticipation.some(Boolean);
 		const firstAnticipatedReelIndex = revealEvent.anticipation.findIndex(Boolean);
 		const getSpinType = ({
@@ -62,6 +74,8 @@ export function createEnhanceBoardSpin<TReel extends Reel<any, any>>({
 			const paddingSize = reel.prepareToSpin({
 				noStop,
 				spinType,
+				// @ts-ignore Ignored because isTurboOverride is not required by createCascadingReel
+				isTurboOverride,
 				symbols,
 				// @ts-ignore Ignored because paddingReel is not required by createCascadingReel
 				paddingReel,

@@ -1,5 +1,7 @@
 import { setFontKit, setLocalFonts } from 'pixi-svelte';
 
+import { isCoveredByDisplayFont } from './fontCoverage';
+
 // Margin Call ships one self-hosted display face.
 //
 // History: the Stake template pulled `proxima-nova` from Adobe Typekit via a
@@ -22,6 +24,31 @@ export const GAME_FONT = '"Titan One", "Trebuchet MS", "Segoe UI", Tahoma, Arial
 // synthesise a bold by smearing the outline, which on a face this heavy just
 // turns counters to mud — so anything using GAME_FONT must request 400.
 export const GAME_FONT_WEIGHT = '400' as const;
+
+/**
+ * The face to set a given string in.
+ *
+ * Anything drawn from the localised tables (game/i18nText) has to go through
+ * this rather than naming GAME_FONT directly. Titan One is subset to Latin-1;
+ * nine of Stake's sixteen locales contain characters it cannot draw, and the
+ * browser resolves those per glyph - which sets one word in two faces. Falling
+ * the whole string back to the body stack is not as pretty as the display face,
+ * but it is one typeface instead of two, which is the difference between "a
+ * plainer font" and "broken".
+ *
+ * Fixed English copy (titles, "MAX WIN") can keep GAME_FONT directly; it is
+ * covered by definition.
+ */
+export const displayFontFor = (text: string): string =>
+	isCoveredByDisplayFont(text) ? GAME_FONT : BODY_FONT;
+
+/**
+ * Weight to pair with `displayFontFor`. Titan One is single-weight and must be
+ * asked for 400 (see above), but the body stack is a normal family and needs
+ * real weight to hold up as a display line.
+ */
+export const displayWeightFor = (text: string): '400' | '700' =>
+	isCoveredByDisplayFont(text) ? GAME_FONT_WEIGHT : '700';
 
 // Display faces are for display. The rules and paytable modals carry real
 // paragraphs — the RTP disclaimer, the feature descriptions — and setting body

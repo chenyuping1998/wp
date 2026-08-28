@@ -4,25 +4,46 @@
 		{
 			"name": "gobananas-dev",
 			"runtimeExecutable": "pnpm",
-			"runtimeArgs": ["--dir", "apps/GoBananas", "dev"],
+			"runtimeArgs": [
+				"--dir",
+				"apps/GoBananas",
+				"dev"
+			],
 			"port": 3002
 		},
 		{
 			"name": "emberforge-dev",
 			"runtimeExecutable": "pnpm",
-			"runtimeArgs": ["--dir", "apps/EmberForge", "dev"],
+			"runtimeArgs": [
+				"--dir",
+				"apps/EmberForge",
+				"dev"
+			],
 			"port": 3003
 		},
 		{
 			"name": "margincall-dev",
 			"runtimeExecutable": "pnpm",
-			"runtimeArgs": ["--dir", "apps/MarginCall", "exec", "vite", "dev", "--host", "--port", "3014"],
+			"runtimeArgs": [
+				"--dir",
+				"apps/MarginCall",
+				"exec",
+				"vite",
+				"dev",
+				"--host",
+				"--port",
+				"3014"
+			],
 			"port": 3014
 		},
 		{
 			"name": "wildparty-dev",
 			"runtimeExecutable": "pnpm",
-			"runtimeArgs": ["--dir", "apps/WildParty", "dev"],
+			"runtimeArgs": [
+				"--dir",
+				"apps/WildParty",
+				"dev"
+			],
 			"port": 3001
 		},
 		{
@@ -34,6 +55,31 @@
 				"$env:PUBLIC_CHROMATIC='true'; pnpm --dir apps/WildParty exec storybook dev -p 6001 --ci"
 			],
 			"port": 6001
+		},
+		{
+			"name": "triplewitching-dev",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": [
+				"--dir",
+				"apps/TripleWitching",
+				"exec",
+				"vite",
+				"dev",
+				"--host",
+				"--port",
+				"3015"
+			],
+			"port": 3015
+		},
+		{
+			"name": "soulseal-dev",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": [
+				"--dir",
+				"apps/SoulSeal",
+				"dev"
+			],
+			"port": 3005
 		}
 	]
 }

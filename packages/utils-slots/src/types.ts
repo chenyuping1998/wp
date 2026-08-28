@@ -91,7 +91,13 @@ type ReelCreateOptions<TRawSymbol extends object, TSymbolState extends string> =
 	reelIndex: number;
 	symbolHeight: number;
 	onReelStopping: () => void;
-	onSymbolLand: (args: { rawSymbol: TRawSymbol }) => void;
+	/**
+	 * Fired for every symbol on the reel as it lands - which includes the padding
+	 * symbols above and below the visible window. `symbolIndex` is that symbol's
+	 * position in the reel array (0 is the top padding), so a caller that only
+	 * cares about what the player can actually see is able to say so.
+	 */
+	onSymbolLand: (args: { rawSymbol: TRawSymbol; symbolIndex: number }) => void;
 	/**
 	 * Symbols per reel, when that can change between spins (Margin Call grows the
 	 * board from 3 rows to 5 for its feature game). Omit it and the reel behaves
@@ -101,6 +107,18 @@ type ReelCreateOptions<TRawSymbol extends object, TSymbolState extends string> =
 	 * not the number of visible rows.
 	 */
 	getReelLength?: () => number;
+	/**
+	 * Whether the stop button is allowed to cut short an anticipation tease on
+	 * this reel. Omit it and the reel behaves exactly as before: a reel marked
+	 * `noStop` - which is every reel from the first anticipated one onward - runs
+	 * its slide to the end and ignores `stop()` entirely.
+	 *
+	 * A tease is deliberately slow, and on a tall board with several anticipated
+	 * reels it can run for many seconds. A player with no way to shorten it reads
+	 * that as a hung round rather than as suspense, so a game whose maths teases
+	 * often can opt into letting the stop button through.
+	 */
+	getAnticipationIsStoppable?: () => boolean;
 };
 
 export type SpinningReelCreateOptions<

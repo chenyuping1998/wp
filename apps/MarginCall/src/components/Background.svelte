@@ -67,8 +67,12 @@
 
 		g.clear();
 
-		// Keep beams very subtle and in the upper area so they don't distract from reels.
-		g.beginFill(0xfff0b8, 0.05);
+		// Cold, not golden. These were warm sunbeams (0xfff0b8 / 0xffd43b) left
+		// over from the sunrise-jungle scene this project started from, shining
+		// down on a night-time financial district - which reads as a lighting bug
+		// rather than as atmosphere. Same shafts, the colour of the city glow
+		// behind them.
+		g.beginFill(0xa8f0c4, 0.045);
 		g.drawPolygon([
 			centerX - width * 0.018,
 			0,
@@ -81,7 +85,7 @@
 		]);
 		g.endFill();
 
-		g.beginFill(0xffd43b, 0.035);
+		g.beginFill(0x4bd67f, 0.03);
 		g.drawPolygon([
 			centerX + width * 0.11,
 			0,
@@ -104,16 +108,26 @@
 	});
 </script>
 
-<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x0d0f05} zIndex={-3} />
+<!--
+	Layering, and it matters: this container has sortableChildren, so zIndex is
+	respected and the backdrop sprites are OPAQUE and cover the whole canvas.
+	Anything given a lower zIndex than them is not dimmed, it is invisible.
 
-<!-- 金色日出叢林 base-game background -->
-<FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
+	The ticker is NOT in here. Everything in this component is drawn through a
+	blur filter (see Game.svelte) so the reels read as the subject, and the ticker
+	is meant to be legible - it renders as its own unblurred layer above the
+	vignette instead.
+-->
+<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x060b09} zIndex={-4} />
+
+<!-- the still room, base game -->
+<FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-3}>
 	<Sprite key="mcBgBase" {...parallax} />
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
 </FadeContainer>
 
-<!-- 烈日突擊 free-game background -->
-<FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
+<!-- the still room, feature game -->
+<FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-3}>
 	<Sprite key="mcBgFeature" {...parallax} />
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
 </FadeContainer>

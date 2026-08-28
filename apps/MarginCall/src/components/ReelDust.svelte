@@ -4,10 +4,11 @@
 	import { stateGame } from '../game/stateGame.svelte';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
-	import ImpactDust from './ImpactDust.svelte';
+	import ReelStopFx from './ReelStopFx.svelte';
 
-	// Watches every reel for the slam moment (spinning → bouncing) and kicks a
-	// puff of dust off the floor of that reel.
+	// Watches every reel for the slam moment (spinning → bouncing) and prints the
+	// landing on that reel. The effect itself is in ReelStopFx; this is only the
+	// watcher.
 	const context = getContext();
 
 	// The board is 3 rows in the basegame and 5 in the feature, so its height
@@ -31,9 +32,10 @@
 
 <BoardContainer>
 	{#each puffs as puff (puff.id)}
-		<ImpactDust
+		<ReelStopFx
 			x={getSymbolX(puff.reel)}
 			y={boardHeight - SYMBOL_SIZE * 0.06}
+			height={boardHeight}
 			oncomplete={() => (puffs = puffs.filter((p) => p.id !== puff.id))}
 		/>
 	{/each}

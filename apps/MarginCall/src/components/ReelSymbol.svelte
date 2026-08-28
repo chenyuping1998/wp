@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Symbol from './Symbol.svelte';
 	import SymbolWrap from './SymbolWrap.svelte';
+	import ScatterLandFrame from './ScatterLandFrame.svelte';
 	import { getSymbolInfo, getSymbolX } from '../game/utils';
 	import { LOSING_SYMBOL_ALPHA } from '../game/constants';
 	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
@@ -21,6 +22,7 @@
 	// full-speed blur through it made the symbols snap from heavily smeared to
 	// perfectly sharp in a single frame.
 	const reelMotion = $derived(stateGame.board[props.reelIndex]?.reelState.motion);
+	const isScatter = $derived(props.reelSymbol.rawSymbol.name === 'S');
 
 	// While a win is on screen every other symbol steps back.
 	//
@@ -101,6 +103,15 @@
 		animating={symbolInfo.type === 'spine' &&
 			(props.reelSymbol.symbolState === 'land' || props.reelSymbol.symbolState === 'win')}
 	>
+		<!--
+			Scatter cells get the hot frame once their reel is at rest. Gated on
+			reelMotion, not on the symbol state: a spinning strip carries scatters
+			through the window constantly, and framing those would fire the cue
+			several times a spin for symbols that never landed.
+		-->
+		{#if isScatter && reelMotion === 'stopped'}
+			<ScatterLandFrame />
+		{/if}
 		<Symbol
 			state={props.reelSymbol.symbolState}
 			rawSymbol={props.reelSymbol.rawSymbol}

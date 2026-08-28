@@ -43,15 +43,101 @@ const normalize = (buf, peak = 0.82) => {
 	return buf;
 };
 
-// Short fades at both ends. On a loop this is what removes the click at the
-// seam; on a one-shot it removes the click at the start.
-const fadeEnds = (buf, sr, ms = 6) => {
-	const n = Math.min(buf.length >> 1, Math.round((ms / 1000) * sr));
-	for (let i = 0; i < n; i++) {
-		buf[i] *= i / n;
-		buf[buf.length - 1 - i] *= i / n;
-	}
+// Short fades against clicks. The head and the tail are separate on purpose.
+//
+// A percussive cue peaks within the first millisecond or two. A symmetrical 3ms
+// fade therefore lands squarely on the loudest part of it and scales it down by
+// most of its value - which is exactly what made the reel stop inaudible after
+// it had supposedly been normalised to 0.98: the file measured 0.55. The head
+// only needs to be long enough to stop the waveform starting at full amplitude,
+// which is a fraction of a millisecond; the tail can be longer because nothing
+// important is happening there.
+const fadeEnds = (buf, sr, tailMs = 6, headMs = 0.4) => {
+	const head = Math.min(buf.length >> 1, Math.round((headMs / 1000) * sr));
+	const tail = Math.min(buf.length >> 1, Math.round((tailMs / 1000) * sr));
+	for (let i = 0; i < head; i++) buf[i] *= i / head;
+	for (let i = 0; i < tail; i++) buf[buf.length - 1 - i] *= i / tail;
 	return buf;
+};
+
+// Loudness, not peak.
+//
+// Peak-normalising cues of different lengths does not make them sound equally
+// loud: a 0.18s knock that is mostly transient and a 1.3s run of sustained tones
+// can share a peak of 0.8 and be 6 dB apart to the ear. Everything the player
+// compares - reel stop against win, scatter against both - is levelled here by
+// RMS instead, with a peak ceiling so nothing clips.
+const LEVEL = (dbfs) => Math.pow(10, dbfs / 20);
+
+/** Soft clip. Raises RMS towards the peak, which is how a very transient cue
+ *  gets loud enough to sit with sustained ones without clipping. */
+const saturate = (buf, drive = 2) => {
+	let peak = 0;
+	for (const v of buf) peak = Math.max(peak, Math.abs(v));
+	const norm = peak > 0 ? 1 / peak : 1;
+	for (let i = 0; i < buf.length; i++) buf[i] = Math.tanh(buf[i] * norm * drive);
+	return buf;
+};
+
+const normalizeRms = (buf, dbfs, ceiling = 0.95) => {
+	let sum = 0;
+	for (const v of buf) sum += v * v;
+	const rms = Math.sqrt(sum / buf.length) || 1e-9;
+	let gain = LEVEL(dbfs) / rms;
+	let peak = 0;
+	for (const v of buf) peak = Math.max(peak, Math.abs(v));
+	if (peak * gain > ceiling) gain = ceiling / peak;
+	for (let i = 0; i < buf.length; i++) buf[i] *= gain;
+	return buf;
+};
+
+/**
+ * Perceived loudness, not RMS.
+ *
+ * RMS counts a 50 Hz sine and a 3 kHz sine as equally loud; the ear does not,
+ * by something like 30 dB. Levelling this set by RMS produced numbers that all
+ * looked right and a mix that was audibly wrong - the music, which is dark and
+ * heavily filtered, measured -17 dBFS RMS and sat 10 dB below the win cues to
+ * the ear. The reel stop, mostly low knock, was 7 dB down the same way.
+ *
+ * High-passing at 400 Hz before measuring is a crude stand-in for a loudness
+ * curve, but it is enough to put a bass-heavy loop and a bright chime on the
+ * same scale, which is the whole problem.
+ */
+const weightedRms = (buf, sr) => {
+	let y = 0;
+	let sum = 0;
+	const a = 1 - Math.exp((-2 * Math.PI * 400) / sr);
+	for (const v of buf) {
+		y += a * (v - y);
+		const hp = v - y;
+		sum += hp * hp;
+	}
+	return Math.sqrt(sum / buf.length) || 1e-9;
+};
+
+const normalizeLoudness = (buf, dbfs, sr = SR, ceiling = 0.95) => {
+	let gain = LEVEL(dbfs) / weightedRms(buf, sr);
+	let peak = 0;
+	for (const v of buf) peak = Math.max(peak, Math.abs(v));
+	if (peak * gain > ceiling) gain = ceiling / peak;
+	for (let i = 0; i < buf.length; i++) buf[i] *= gain;
+	return buf;
+};
+
+// Target loudnesses (weighted), in one place so the mix can be read at a glance.
+// The wins are the reference because they are what the player is listening for;
+// the reel stop matches them, the music sits a shade under, the scatter sits
+// clearly below both so it never buries a reel stop it lands on.
+const MIX = {
+	reelStop: -21,
+	alert: -27,
+	winSmall: -21.3,
+	winBig: -20.6,
+	marginCall: -19,
+	shimmer: -23,
+	bgmMain: -22,
+	bgmFeature: -21,
 };
 
 const writeWav = (name, buf, sr = SR) => {
@@ -174,12 +260,35 @@ const spinStart = () => {
 // playbackRate in Sound.svelte, so it has to hold up across roughly 0.9x-1.3x —
 // hence the short body and the hard head.
 const reelStop = () => {
-	const b = buffer(0.12);
-	// the knock: a band of noise, gone almost immediately
-	addAt(b, lowpass(highpass(noise(0.05, { decay: 55 }), 250), 2600), 0, 0.85);
-	// just enough body to feel weight, not enough to sing
-	addAt(b, tone(0.07, (t) => 150 - 60 * t, { shape: 'sine', decay: 26 }), 0, 0.4);
-	return fadeEnds(normalize(b, 0.55), SR, 3);
+	const b = buffer(0.18);
+	// A RELAY, not a knock.
+	//
+	// This used to be a wooden thump with a noise band over it - a physical thing
+	// hitting a physical stop, which is the right sound for a mechanical reel and
+	// the wrong one for a terminal that prints quotes. A contactor has a different
+	// signature: two hard transients a few milliseconds apart (armature strike,
+	// then the contacts seating), almost no body, and a metallic ring rather than
+	// a woody one.
+	//
+	// The armature: a very short, very bright tick.
+	addAt(b, lowpass(highpass(noise(0.02, { decay: 90 }), 2600), 11000), 0, 1.6);
+	// The contacts seating, 7ms later. This double-hit is the whole character of
+	// the sound - one transient reads as a click, two reads as a mechanism.
+	addAt(b, lowpass(highpass(noise(0.035, { decay: 55 }), 1500), 8000), 0.007, 1.1);
+	// A brief metallic ring off the contact plate, high and quick. Two partials
+	// rather than one so it is not a beep.
+	addAt(b, tone(0.05, 2400, { shape: 'sine', decay: 45 }), 0.006, 0.3);
+	addAt(b, tone(0.045, 3260, { shape: 'sine', decay: 52 }), 0.006, 0.2);
+	// Just enough weight to sit on the board. Kept very small: every dB here is a
+	// dB the transient cannot use, which is what held the old cue short of its
+	// loudness target.
+	addAt(b, tone(0.06, (t) => 240 - 120 * t, { shape: 'sine', decay: 30 }), 0, 0.28);
+
+	// Saturated before levelling. This cue is almost entirely transient, so its
+	// RMS sits far below its peak; asking for the target directly just hits the
+	// clipping ceiling and stops short. A soft tanh curve pulls the body up
+	// toward the peak - what a compressor is for - and lets it reach the target.
+	return fadeEnds(normalizeLoudness(saturate(b, 8), MIX.reelStop), SR, 4);
 };
 
 // A MARGIN CALL landing. Five of them, rising, so three in a row is audibly a
@@ -201,21 +310,36 @@ const alert = (step) => {
 	// sub thump underneath, growing with the count
 	addAt(b, tone(0.3, NOTE(38), { shape: 'sine', decay: 8 }), 0, 0.2 + step * 0.06);
 	const shaped = lowpass(b, 3400);
-	return fadeEnds(normalize(delay(shaped, 0.13, 0.34, 0.3), 0.72), SR, 4);
+	// Under the reel stops, not over them: it lands on top of one.
+	return fadeEnds(normalizeLoudness(delay(shaped, 0.13, 0.34, 0.3), MIX.alert), SR, 4);
 };
 
 // The margin call itself: a two-tone klaxon. This is the only sound in the set
 // allowed to be unpleasant.
 const marginCall = () => {
-	const b = buffer(2.4);
-	for (let k = 0; k < 3; k++) {
-		const t0 = k * 0.72;
-		addAt(b, tone(0.34, NOTE(70), { shape: 'saw', decay: 3, hold: 0.5 }), t0, 0.5);
-		addAt(b, tone(0.34, NOTE(65), { shape: 'saw', decay: 3, hold: 0.5 }), t0 + 0.36, 0.5);
+	// 1.1s, down from 2.4s, and the length is not a taste decision - it is
+	// arithmetic.
+	//
+	// This cue fires 380ms into the circuit-breaker transition, and that
+	// transition is 1780ms end to end, with the shutters starting to retract on
+	// the base game at 1480ms. A 2.4s alarm therefore went on sounding for about
+	// 1.3 SECONDS after the player was already looking at the base board - which
+	// is exactly what "the horn is still going after it has cut back" is.
+	//
+	// Two klaxon cycles instead of three, tightened from 0.72s apart to 0.46s.
+	// Two is still unmistakably an alarm (four tones, rising-falling twice) and
+	// the tighter spacing makes it more urgent, not less - the old spacing was
+	// leisurely for something announcing a liquidation.
+	const b = buffer(1.1);
+	for (let k = 0; k < 2; k++) {
+		const t0 = k * 0.46;
+		addAt(b, tone(0.26, NOTE(70), { shape: 'saw', decay: 3, hold: 0.5 }), t0, 0.5);
+		addAt(b, tone(0.26, NOTE(65), { shape: 'saw', decay: 3, hold: 0.5 }), t0 + 0.24, 0.5);
 	}
-	addAt(b, tone(2.2, (t) => 60 + 18 * Math.sin(t * 26), { shape: 'sine', decay: 1.4 }), 0, 0.55);
+	// the drone underneath, ending with them rather than outlasting them
+	addAt(b, tone(1.0, (t) => 60 + 18 * Math.sin(t * 26), { shape: 'sine', decay: 1.8 }), 0, 0.55);
 	const shaped = lowpass(b, 2600);
-	return fadeEnds(normalize(shaped, 0.78), SR, 10);
+	return fadeEnds(normalizeLoudness(shaped, MIX.marginCall), SR, 10);
 };
 
 // Big-win impact: sub drop under a bright transient.
@@ -276,7 +400,7 @@ const winRun = (big) => {
 		if (big) addAt(b, tone(0.4, f * 2, { shape: 'sine', decay: 9 }), i * gap + 0.005, 0.16);
 	});
 	if (big) addAt(b, tone(0.9, NOTE(45), { shape: 'sine', decay: 3 }), 0, 0.5);
-	return fadeEnds(normalize(delay(b, 0.13, 0.36, 0.32), big ? 0.8 : 0.62), SR, 6);
+	return fadeEnds(normalizeLoudness(delay(b, 0.13, 0.36, 0.32), big ? MIX.winBig : MIX.winSmall), SR, 6);
 };
 
 // Feature entry: a riser that resolves onto the downbeat.
@@ -292,80 +416,211 @@ const featureIntro = () => {
 };
 
 // ─── loops ──────────────────────────────────────────────────────────────────
-// Anticipation bed: a tremolo drone that climbs while it plays and loops back
-// on itself, so holding it for a long tease does not turn into a flat tone.
+// Everything below has to survive being played back to back forever, which is a
+// different problem from a one-shot sounding good once.
+//
+// Two rules, and the old versions broke both:
+//
+//  1. NO fade at the ends. A fade is a dip in level at the seam, and on a loop
+//     the ear hears that dip once per pass as a pulse. It is the "obvious break
+//     point" in the coin bed. Instead the content itself is made continuous
+//     across the seam.
+//  2. Anything still ringing when the buffer ends has to WRAP to the start
+//     rather than being cut off. addWrapped does that, so the tail of the last
+//     event is already playing underneath the first one.
+//
+// A loop also has to be periodic in everything that modulates it: a tremolo that
+// speeds up over the buffer cannot line up with itself, so those rates are now
+// whole numbers of cycles per loop.
+
+/** Add `src` at `offsetSec`, wrapping anything past the end back to the start. */
+const addWrapped = (dst, src, offsetSec, gain = 1, sr = SR) => {
+	const start = Math.round(offsetSec * sr);
+	for (let i = 0; i < src.length; i++) {
+		dst[(start + i) % dst.length] += src[i] * gain;
+	}
+};
+
+// Anticipation bed. Held for as long as the tease lasts, so it must not develop
+// - a drone that climbs would reset audibly every couple of seconds.
 const tension = () => {
 	const dur = 2.0;
 	const b = buffer(dur);
+	// 14 tremolo cycles across 2s = exactly 7 Hz, and a whole number of cycles
+	// per loop, so the amplitude curve meets itself at the seam.
+	const TREM_CYCLES = 14;
 	for (let i = 0; i < b.length; i++) {
-		const t = i / b.length;
-		const trem = 0.62 + 0.38 * Math.sin(2 * Math.PI * (7 + 5 * t) * (i / SR));
-		b[i] = (Math.sin((2 * Math.PI * NOTE(52) * i) / SR) + 0.4 * rand2()) * trem;
+		const phase = (i / b.length) * TREM_CYCLES * 2 * Math.PI;
+		const trem = 0.62 + 0.38 * Math.sin(phase);
+		// the carrier is also given a whole number of cycles per loop
+		const carrierCycles = Math.round((NOTE(52) * dur) / 1) / dur;
+		b[i] = (Math.sin((2 * Math.PI * carrierCycles * i) / SR) + 0.4 * rand2()) * trem;
 	}
-	return fadeEnds(normalize(lowpass(b, 1400), 0.42), SR, 40);
+	return normalize(lowpass(b, 1400), 0.42);
 };
 
-// Big-win bed under the count-up.
+// The coin bed under a big-win count-up. Long, dense and evenly spread: the ear
+// finds a seam in a sparse loop far more easily than in a busy one, because in a
+// busy one there is always something already ringing across the join.
 const shimmer = () => {
-	const dur = 2.4;
+	const dur = 3.2;
 	const b = buffer(dur);
-	for (let k = 0; k < 22; k++) {
-		const f = NOTE(81 + (k % 5) * 2);
-		addAt(b, tone(0.5, f, { shape: 'sine', decay: 8 }), (k / 22) * dur, 0.18);
+	const COUNT = 64;
+	for (let k = 0; k < COUNT; k++) {
+		// deterministic jitter so the grid does not turn into a pulse
+		const jitter = (rand() - 0.5) * (dur / COUNT) * 0.8;
+		const at = (k / COUNT) * dur + jitter;
+		const note = 79 + [0, 3, 7, 10, 12, 15][k % 6];
+		addWrapped(b, tone(0.55, NOTE(note), { shape: 'sine', decay: 7 }), at, 0.14);
+		// a sparser upper layer for glitter
+		if (k % 3 === 0) {
+			addWrapped(b, tone(0.35, NOTE(note + 12), { shape: 'sine', decay: 11 }), at, 0.06);
+		}
 	}
-	return fadeEnds(normalize(delay(b, 0.19, 0.45, 0.4), 0.4), SR, 60);
+	// delay adds tail; run it wrapped too so the echoes cross the seam as well
+	const withTail = Float32Array.from(b);
+	const d = Math.round(0.19 * SR);
+	for (let i = 0; i < withTail.length; i++) {
+		withTail[i] += b[(i - d + b.length) % b.length] * 0.35;
+	}
+	return normalizeLoudness(withTail, MIX.shimmer);
 };
 
-// Music. Both loops are the same 4-bar minor progression at two tempos, so the
-// switch into the feature reads as the same room getting busier.
+// ─── music ──────────────────────────────────────────────────────────────────
+// A trading floor at night: a machine that does not stop. The point is pulse and
+// texture rather than melody - a tune would be the wrong kind of memorable
+// under a game the player will hear for hours.
+//
+// 16 bars in two halves. The first eight are sparse and filtered down; the
+// second eight open the filter and add the arp and the open hat, so the loop has
+// somewhere to go and back. The feature version is the same room at a faster
+// tempo with the lid off.
 const CHORDS = [
 	[45, 52, 60], // Am
+	[45, 52, 60],
 	[41, 48, 57], // F
+	[41, 48, 57],
 	[43, 50, 59], // G
+	[43, 50, 59],
 	[40, 47, 55], // Em
+	[38, 45, 53], // D
 ];
 
 const bgm = ({ bpm, bright }) => {
+	const sr = SR_BGM;
 	const beat = 60 / bpm;
-	const bars = 4;
-	const dur = beat * 4 * bars;
-	const b = buffer(dur, SR_BGM);
+	const bar = beat * 4;
+	const bars = 16;
+	const dur = bar * bars;
+	const b = buffer(dur, sr);
 
-	for (let bar = 0; bar < bars; bar++) {
-		const chord = CHORDS[bar % CHORDS.length];
-		const barT = bar * beat * 4;
+	for (let barIndex = 0; barIndex < bars; barIndex++) {
+		const chord = CHORDS[barIndex % CHORDS.length];
+		const barT = barIndex * bar;
+		// second half is the lift
+		const open = barIndex >= bars / 2;
+		const root = chord[0];
 
-		// sub pulse on every beat, harder on 1 and 3
+		// ── kick: four on the floor, soft. The heartbeat. ──
 		for (let beatIndex = 0; beatIndex < 4; beatIndex++) {
-			const t = barT + beatIndex * beat;
-			const gain = beatIndex % 2 === 0 ? 0.85 : 0.45;
-			addAt(b, tone(beat * 0.8, NOTE(chord[0] - 12), { shape: 'sine', decay: 5, sr: SR_BGM }), t, gain, SR_BGM);
+			const at = barT + beatIndex * beat;
+			addWrapped(
+				b,
+				tone(0.22, (x) => 110 * Math.exp(-9 * x) + 44, { shape: 'sine', decay: 7, sr }),
+				at,
+				bright ? 0.5 : 0.42,
+				sr,
+			);
+			addWrapped(b, lowpass(noise(0.03, { decay: 40, sr }), 900, sr), at, 0.18, sr);
 		}
 
-		// arpeggio: eighths in the base loop, sixteenths in the feature
-		const div = bright ? 16 : 8;
-		for (let step = 0; step < div; step++) {
-			const t = barT + (step / div) * beat * 4;
-			const note = chord[step % chord.length] + (bright && step % 4 === 3 ? 12 : 0);
-			addAt(
+		// ── sub: root, held, the floor everything else stands on ──
+		// The sub is the single biggest consumer of headroom and contributes almost
+		// nothing to how loud the loop sounds, so it gets a lot less than instinct
+		// says it should. The loop reads as heavy because of the bass SEQUENCE,
+		// which is a saw and sits high enough to be heard.
+		addWrapped(b, tone(bar * 0.95, NOTE(root - 12), { shape: 'sine', decay: 1.4, sr }), barT, 0.22, sr);
+
+		// ── bass sequence: sixteenths, gated, the machine running ──
+		for (let step = 0; step < 16; step++) {
+			if (step % 4 === 2) continue; // the gap is what makes it groove
+			const at = barT + (step / 16) * bar;
+			const note = root - 12 + (step % 8 === 6 ? 7 : 0);
+			addWrapped(
 				b,
-				tone(beat * 0.7, NOTE(note), { shape: 'square', decay: bright ? 9 : 11, sr: SR_BGM }),
-				t,
-				bright ? 0.2 : 0.14,
-				SR_BGM,
+				tone(beat * 0.22, NOTE(note), { shape: 'saw', decay: 16, sr }),
+				at,
+				open ? 0.34 : 0.24,
+				sr,
 			);
 		}
 
-		// offbeat hats for movement
+		// ── pad: the chord, quiet, holding the bar together ──
+		for (const note of chord) {
+			addWrapped(b, tone(bar * 1.05, NOTE(note), { shape: 'sine', decay: 1.1, sr }), barT, 0.1, sr);
+			addWrapped(
+				b,
+				tone(bar * 1.05, NOTE(note) * 1.005, { shape: 'sine', decay: 1.1, sr }),
+				barT,
+				0.07,
+				sr,
+			);
+		}
+
+		// ── arp: only in the open half, and only sixteenths in the feature ──
+		if (open) {
+			const div = bright ? 16 : 8;
+			for (let step = 0; step < div; step++) {
+				const at = barT + (step / div) * bar;
+				const note = chord[step % chord.length] + (step % 4 === 3 ? 12 : 0);
+				addWrapped(
+					b,
+					tone(beat * 0.6, NOTE(note), { shape: 'square', decay: 12, sr }),
+					at,
+					bright ? 0.22 : 0.16,
+					sr,
+				);
+			}
+		}
+
+		// ── hats: offbeat closed, with an open one to end each phrase ──
 		for (let step = 0; step < 8; step++) {
 			if (step % 2 === 0) continue;
-			const t = barT + (step / 8) * beat * 4;
-			addAt(b, highpass(noise(0.05, { decay: 30, sr: SR_BGM }), 5000, SR_BGM), t, 0.16, SR_BGM);
+			const at = barT + (step / 8) * bar;
+			addWrapped(b, highpass(noise(0.045, { decay: 34, sr }), 6000, sr), at, 0.3, sr);
+		}
+		if (barIndex % 4 === 3) {
+			addWrapped(
+				b,
+				highpass(noise(0.3, { decay: 7, sr }), 5000, sr),
+				barT + bar * 0.75,
+				0.12,
+				sr,
+			);
 		}
 	}
 
-	const shaped = lowpass(b, bright ? 5200 : 3200, SR_BGM);
-	return fadeEnds(normalize(shaped, bright ? 0.6 : 0.5), SR_BGM, 30);
+	// ── one filter sweep across the whole loop, ending where it started ──
+	// A whole number of cycles per loop, so the tone at the seam matches.
+	//
+	// Opened up a long way from the first pass. The loop was so dark that it
+	// could not be made loud enough to hear without clipping - almost all of its
+	// energy sat below where the ear counts it. Brightness is what buys audible
+	// level here, not gain.
+	const base = bright ? 5200 : 3800;
+	const swing = bright ? 3600 : 2600;
+	const shaped = lowpass(b, (x) => base + swing * (0.5 - 0.5 * Math.cos(2 * Math.PI * x)), sr);
+	// Below about 60 Hz there is nothing a laptop or a phone will reproduce, and
+	// on headphones it only steals headroom from everything audible above it.
+	const trimmed = highpass(shaped, 60, sr);
+	// Mastering, in one line. The loop's peaks are the kick and a hat landing on
+	// the same sample; without pulling those down the whole track has to sit
+	// several dB lower than it should just to leave room for them. tanh does the
+	// pulling and adds a little harmonic brightness on the way, which is exactly
+	// the part of the spectrum the loudness measure counts.
+	const pressed = saturate(trimmed, bright ? 2.6 : 2.2);
+
+	return normalizeLoudness(pressed, bright ? MIX.bgmFeature : MIX.bgmMain, sr);
 };
 
 // ─── render ─────────────────────────────────────────────────────────────────

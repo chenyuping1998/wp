@@ -50,6 +50,11 @@ export const socialTerms = () => {
 		paylines: social ? 'award lines' : 'paylines',
 
 		// ── titles ──
+		// "buy bonus" is restricted as a phrase, not just as the word "buy", and
+		// Stake's own replacement is "get bonus". This is a heading rather than
+		// prose, so it needs its own entry — the section it titles has to match the
+		// button, which reads PLAY in social play.
+		buyBonusTitle: social ? 'Get Bonus' : 'Buy Bonus',
 		payTable: social ? 'play table' : 'pay table',
 		payTableTitle: social ? 'PLAY TABLE' : 'PAY TABLE',
 		payTableLabel: social ? 'Play table' : 'Pay table',

@@ -8,7 +8,7 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { displayFontFor, displayWeightFor } from '../game/fonts';
 	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
@@ -71,12 +71,12 @@
 							y={-sizes.height * 0.26}
 							text={title}
 							style={{
-								fontFamily: GAME_FONT,
+								fontFamily: displayFontFor(title),
 								fontSize: Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
-								fontWeight: GAME_FONT_WEIGHT,
+								fontWeight: displayWeightFor(title),
 								letterSpacing: 6,
 								fill: [0xfff3bd, 0xffd75e, 0xc9821a],
-								stroke: 0x54330a,
+								stroke: 0x231703,
 								strokeThickness: 6,
 								dropShadow: true,
 								dropShadowColor: 0x000000,

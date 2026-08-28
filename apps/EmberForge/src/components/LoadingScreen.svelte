@@ -6,8 +6,11 @@
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import { socialTerms } from '../game/socialTerms';
+	import config from '../game/config';
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
+	import FeatureIntro from './FeatureIntro.svelte';
 
 	type Props = {
 		onloaded: () => void;
@@ -15,6 +18,16 @@
 
 	const props: Props = $props();
 	const context = getContext();
+
+	// The strapline said "7X7 CLUSTER PAYS — MAX WIN 10,000X" as a literal, which
+	// was wrong twice: "PAYS" is restricted in social play, and it was the first
+	// thing a player read; and the cap was typed rather than read, so it would have
+	// gone on claiming 10,000x through any maths change. check_social_words cannot
+	// see this one — it scans text BETWEEN tags, and this lives in an attribute.
+	const T = $derived(socialTerms());
+	const strapline = $derived(
+		`7X7 ${T.clusterPays.toUpperCase()} — MAX WIN ${config.betModes.base.max_win.toLocaleString()}X`,
+	);
 
 	let loadingType = $state<'start' | 'transition'>('start');
 	let pulseTick = $state(0);
@@ -131,9 +144,17 @@
 			}}
 		/>
 
+		<!--
+			Up from 0.36 to make room for the three feature panels that take the lower
+			two-thirds once loading finishes.
+
+			It does NOT move between the two states. A headline sliding up while three
+			panels fade in gives the eye two things to follow at once; the title holds
+			still and only the column underneath it changes.
+		-->
 		<Container
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.36}
+			y={context.stateLayoutDerived.mainLayout().height * 0.2}
 		>
 			<!--
 				Game title, cut into the plate rather than laid on it.
@@ -172,7 +193,7 @@
 			<Text
 				anchor={0.5}
 				y={65}
-				text="7X7 CLUSTER PAYS — MAX WIN 10,000X"
+				text={strapline}
 				style={{
 					fontFamily: BODY_FONT,
 					fontSize: 15,
@@ -183,6 +204,16 @@
 			/>
 		</Container>
 
+	</MainContainer>
+</FadeContainer>
+
+<!--
+	Loading column: retires the moment the assets are in, and the feature card
+	takes the space. Its own FadeContainer so the two cross-dissolve rather than
+	one popping out from under the other.
+-->
+<FadeContainer show={loadingType === 'start' && !context.stateApp.loaded}>
+	<MainContainer>
 		<!-- Progress bar area -->
 		<Container
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
@@ -217,27 +248,25 @@
 				it leaves — the swap happens on the single frame the bar fills and the
 				bottom prompt appears, so nothing visibly jumps.
 			-->
-			{#if !context.stateApp.loaded}
-				<Text
-					anchor={0.5}
-					y={20}
-					text={`LOADING ${Math.round(animatedProgress)}%`}
-					style={{
-						fontFamily: BODY_FONT,
-						fontSize: 13,
-						fontWeight: '600',
-						// lifted off the previous muted tan, which was dim at 13px against
-						// the dark vignette
-						fill: 0xe8d3b6,
-						letterSpacing: 2,
-					}}
-				/>
-			{/if}
+			<Text
+				anchor={0.5}
+				y={20}
+				text={`LOADING ${Math.round(animatedProgress)}%`}
+				style={{
+					fontFamily: BODY_FONT,
+					fontSize: 13,
+					fontWeight: '600',
+					// lifted off the previous muted tan, which was dim at 13px against
+					// the dark vignette
+					fill: 0xe8d3b6,
+					letterSpacing: 2,
+				}}
+			/>
 
 			<!-- rotating gameplay tip -->
 			<Text
 				anchor={0.5}
-				y={context.stateApp.loaded ? 20 : 48}
+				y={48}
 				alpha={tipAlpha}
 				text={TIPS[tipIndex]}
 				style={{
@@ -250,6 +279,11 @@
 			/>
 		</Container>
 	</MainContainer>
+</FadeContainer>
+
+<!-- feature card: takes the screen once the bar fills -->
+<FadeContainer show={loadingType === 'start' && context.stateApp.loaded}>
+	<FeatureIntro />
 </FadeContainer>
 
 <!-- press to continue -->

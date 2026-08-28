@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
+		<!--
+			The template's Adobe Typekit stylesheet (proxima-nova) used to be loaded
+			here. It is domain-locked to the template's account, so off that origin it
+			404s and the browser reports "Web font load inactive".
+
+			Soul Seal ships its own display face instead — self-hosted, so there is no
+			third-party request to 404 and no external dependency at run time. Titan
+			Cinzel is SIL Open Font Licence (static/fonts/OFL-Cinzel.txt), which permits
+			commercial use and embedding.
+
+			Preloaded because Pixi measures glyphs when it builds a Text, and a face
+			that arrives late leaves the first frame laid out for the fallback metrics.
+			game/fonts.ts additionally blocks startup on document.fonts.
+		-->
+		<link
+			rel="preload"
+			href="%sveltekit.assets%/fonts/Cinzel.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin
+		/>
+		<style>
+			/*
+			 * Cinzel is a VARIABLE font: one file carrying a weight axis from 400 to
+			 * 900. The range is declared so the browser knows it can instance any
+			 * weight in it rather than synthesising a fake bold by smearing the
+			 * outline - which on an inscriptional face fills the counters and turns
+			 * the serifs to mud.
+			 */
+			@font-face {
+				font-family: 'Cinzel';
+				src: url('%sveltekit.assets%/fonts/Cinzel.ttf') format('truetype-variations');
+				font-weight: 400 900;
+				font-style: normal;
+				font-display: block;
+			}
+		</style>
+		<meta name="viewport" content="width=device-width" />
+		%sveltekit.head%
+	</head>
+	<body style="margin: 0; padding: 0; overflow: hidden; background-color: black">
+		<div>%sveltekit.body%</div>
+	</body>
+</html>
