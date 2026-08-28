@@ -21,3 +21,14 @@ apps/HotMiami/design/_contact/
 apps/HotMiami/design/_painted/
 apps/HotMiami/design/_plated/
 **/__pycache__/
+
+# Local play/replay test rigs — generated, never uploaded
+apps/WildParty/build-playtest/
+
+# Hot Miami art review artefacts — regenerated on demand, never source.
+#   _review/    contact sheets from design/review_sheet.py
+#   _rejected/  art batches that were delivered and refused, plus the scripts
+#               that produced them. Kept on disk as evidence of a failure mode
+#               that has now recurred three times; not worth pushing.
+apps/HotMiami/design/_review/
+apps/HotMiami/design/_rejected/

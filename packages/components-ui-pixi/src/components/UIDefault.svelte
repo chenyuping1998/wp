@@ -27,6 +27,8 @@
 	import ButtonMenu from './ButtonMenu.svelte';
 	import ButtonMenuClose from './ButtonMenuClose.svelte';
 	import ButtonSoundSwitch from './ButtonSoundSwitch.svelte';
+	import EnableShortcuts from './EnableShortcuts.svelte';
+	import { platformUx } from '../platformUx.svelte';
 
 	type Props = {
 		gameName: Snippet;
@@ -74,6 +76,14 @@
 </script>
 
 <EnableSpaceHold />
+<!--
+	Shift-gated keyboard shortcuts — only mounted for a game that opted into
+	uiTheme.platformUx, so a game without the flag gains no keyboard surface at
+	all rather than gaining one that is merely inert.
+-->
+{#if platformUx()?.shortcuts}
+	<EnableShortcuts />
+{/if}
 
 <UiFadeContainer>
 	<LayoutComponent>
