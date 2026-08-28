@@ -328,6 +328,38 @@
 		src: new URL('../../assets/sprites/hotMiamiSplash/title_ocean_drive.png', import.meta.url).href,
 	},
 
+	// Pose sheets: three more DRAWINGS of a symbol, played as a timeline inside
+	// the win hold (game/posePlan.ts). Only h1 and h2 have them — the other four
+	// symbols' sheets arrived as shapes pasted onto the base art and were refused,
+	// so those symbols keep the transform-only win motion they already had.
+	//
+	// Whole-symbol images, not parts: a pose changes the silhouette, which is the
+	// one thing the rigged stack cannot do.
+	hmH1PoseWind: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h1/pose_wind.png', import.meta.url).href,
+	},
+	hmH1PosePeak: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h1/pose_peak.png', import.meta.url).href,
+	},
+	hmH1PoseSettle: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h1/pose_settle.png', import.meta.url).href,
+	},
+	hmH2PoseWind: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h2/pose_wind.png', import.meta.url).href,
+	},
+	hmH2PosePeak: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h2/pose_peak.png', import.meta.url).href,
+	},
+	hmH2PoseSettle: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hotMiamiParts/h2/pose_settle.png', import.meta.url).href,
+	},
+
 	// The cast standing beside the board. Split out of the store tile's two-figure
 	// cut-out by design/build_cast_figures.py, using the same measured polygon the
 	// intro card clips with. Not preloaded: they are decoration on a board that is

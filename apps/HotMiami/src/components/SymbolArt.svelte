@@ -13,6 +13,8 @@
 	} from '../game/symbolParts';
 	import { isBlinking } from '../game/blinkClock';
 	import { getSwayRig, swayFrame } from '../game/idleSway';
+	import { poseKeyAt, smearAt } from '../game/posePlan';
+	import { HOLD_MS } from '../game/symbolWinMotion';
 	import { PARTS_MANIFEST } from '../game/partsManifest';
 
 	/**
@@ -101,10 +103,29 @@
 	);
 
 	const rig = $derived(
-		(props.mode && props.mode !== 'none') || blinking || sway
-			? getSymbolRig(props.symbolName ?? '')
-			: null,
+		poseKey
+			? null
+			: (props.mode && props.mode !== 'none') || blinking || sway
+				? getSymbolRig(props.symbolName ?? '')
+				: null,
 	);
+	// ── the pose sheet ─────────────────────────────────────────────────────────
+	//
+	// Three more DRAWINGS of this symbol, played as a timeline through the win
+	// hold (game/posePlan.ts). When one is up it REPLACES the art entirely — flat
+	// sprite and rigged stack alike — because a pose changes the silhouette, and
+	// the parts stack is exactly the thing that cannot.
+	//
+	// Only h1 and h2 have sheets; every other symbol returns null here and renders
+	// precisely what it rendered before.
+	const poseKey = $derived(
+		mode === 'win' ? poseKeyAt(props.symbolName ?? '', props.t ?? 0, HOLD_MS) : null,
+	);
+	// A cut between two drawings is a cut; a cut with one stretched frame either
+	// side is a movement. Horizontal only — the stretch is along the direction the
+	// character is moving, which is what a smear frame is.
+	const smear = $derived(poseKey ? smearAt(props.t ?? 0, HOLD_MS) : 0);
+
 	const overlay = $derived((props.overlayAlpha ?? 0) > 0.01);
 	// The symbol's own light, on only while it is paying. Skipped entirely when
 	// this instance is drawing the flash or bloom copy — a light drawn three times
@@ -261,9 +282,9 @@
 {:else}
 	<Sprite
 		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		{width}
-		{height}
+		key={poseKey ?? props.symbolInfo.assetKey}
+		width={width * (1 + 0.16 * smear)}
+		height={height * (1 - 0.05 * smear)}
 		tint={overlay ? props.overlayTint : undefined}
 		alpha={overlay ? props.overlayAlpha : 1}
 		blendMode={overlay ? 'add' : undefined}
