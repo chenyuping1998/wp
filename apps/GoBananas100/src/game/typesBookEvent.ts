@@ -143,7 +143,18 @@ export type BookEvent =
 	// customised
 	| BookEventNewExpandingWilds
 	| BookEventUpdateExpandingWilds
-	| BookEventCreateBonusSnapshot;
+	// Both of these were DECLARED above and left out of this union, which meant
+	// the two handlers that drive the whole hold-and-spin round narrowed to
+	// `never` — newPrizes, wins and totalWin were all unchecked. The maths emits
+	// newStickySymbols 2,244 times and prizeWinInfo 353 times in a 400-book
+	// superspin sample, so this was not a dead branch. It was the live one, with
+	// the type checker switched off over it, and nothing said so because
+	// `vite build` does not type-check.
+	//
+	// BookEventCreateBonusSnapshot used to appear here twice, which is the same
+	// mistake in the other direction and is what hid the two missing ones.
+	| BookEventNewStickySymbols
+	| BookEventPrizeWinInfo;
 
 export type Bet = BetType<BookEvent>;
 export type BookEventOfType<T> = Extract<BookEvent, { type: T }>;

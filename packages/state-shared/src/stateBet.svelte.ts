@@ -34,10 +34,36 @@ const correctBetAmount = (value: number) => {
 	if (stateConfig.maxBet > 0) corrected = Math.min(corrected, stateConfig.maxBet);
 	if (stateConfig.minBet > 0) corrected = Math.max(corrected, stateConfig.minBet);
 
-	// Affordability last, so a player short of the minimum is held to what they
-	// actually have rather than to a stake they cannot place.
-	const affordable = stateBet.balanceAmount / costMultiplier;
-	return Math.min(corrected, affordable);
+	// SNAP to a stake the server offered, rather than accepting whatever came in.
+	//
+	// betAmountOptions is the ladder from the authenticate response. Anything not
+	// on it is a value the server never offered, and the game must not present it
+	// as selectable — which is what certification asked for: "the bet level should
+	// not be allowed to be set to a value outside of those provided in the
+	// authenticate response".
+	//
+	// Empty until authenticate answers, and there is no correct fallback for
+	// somebody else's stake ladder, so an unanswered config passes the value
+	// through under the min/max bounds above and nothing else.
+	const options = stateConfig.betAmountOptions;
+	if (options.length > 0) {
+		corrected = options.reduce((best, option) =>
+			Math.abs(option - corrected) < Math.abs(best - corrected) ? option : best,
+		);
+	}
+
+	// NOT clamped to the balance.
+	//
+	// It used to end `Math.min(corrected, affordable)`, so choosing a stake above
+	// the balance silently set it to the balance instead — a value that is almost
+	// never on the ladder, and a selection the player did not make. Certification
+	// called this out directly.
+	//
+	// Being unable to afford the stake is a separate thing from the stake being
+	// invalid: the player picks a level, and if the balance will not cover it the
+	// game says so when they try to play (ButtonBet). Silently rewriting their
+	// choice answers a question nobody asked.
+	return corrected;
 };
 
 const setBetAmount = (value: number) => {

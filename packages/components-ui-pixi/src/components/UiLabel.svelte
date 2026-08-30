@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Graphics, Text } from 'pixi-svelte';
+	import { Container, Graphics, Text } from 'pixi-svelte';
 
 	import UiSprite from './UiSprite.svelte';
 	import { UI_BASE_FONT_SIZE } from '../constants';
@@ -18,9 +18,37 @@
 		// per-metric accent (border + label colour). The value digits deliberately
 		// stay uniform across every panel so the numbers read as one consistent set.
 		accent?: { border: number; label: number };
+		/**
+		 * Widest this readout may draw, in the readout's own units. Beyond it the
+		 * VALUE line is condensed to fit.
+		 *
+		 * The bottom bar divides its left half into fixed cells, and the sizes were
+		 * chosen against "the widest realistic strings" — which turned out to mean
+		 * the widest ones anybody had looked at. A Gold Coin balance is nine
+		 * figures (GC 9,999,652,000) and the value ran straight through the rule
+		 * into the next cell and printed over its neighbour's text.
+		 *
+		 * Undefined means unbounded, so every layout that does not pass one is
+		 * unchanged.
+		 */
+		maxWidth?: number;
 	};
 
 	const props: Props = $props();
+
+	// Measured, not estimated. pixi reports a Text's width once it has laid the
+	// glyphs out, so the only honest way to know whether a string fits is to draw
+	// it and ask — a character-count guess is wrong the moment the font or the
+	// currency changes.
+	//
+	// The shrink is applied to a CONTAINER around the Text, not to the Text.
+	// Text.width is the width after its own scale, so scaling the Text and then
+	// measuring it feeds the measurement back into the thing being measured, and
+	// the two chase each other. Wrapping keeps the reported width the natural one.
+	let valueWidth = $state(0);
+	const valueScale = $derived(
+		props.maxWidth && valueWidth > props.maxWidth ? props.maxWidth / valueWidth : 1,
+	);
 
 	const accent = $derived(props.accent ?? { border: uiTheme.panelBorder, label: uiTheme.labelFill });
 
@@ -61,7 +89,19 @@
 		/>
 	{/if}
 	<Text anchor={{ x: 0.5, y: 0 }} text={props.label} style={labelStyle} />
-	<Text anchor={{ x: 0.5, y: 0 }} text={props.value} style={valueStyle} y={UI_BASE_FONT_SIZE} />
+	<!--
+		Scaled rather than truncated or wrapped. This is a money figure: an ellipsis
+		or a fold turns "9,999,652,000" into something that reads as a different
+		number, and a smaller but complete one does not.
+	-->
+	<Container y={UI_BASE_FONT_SIZE} scale={valueScale}>
+		<Text
+			anchor={{ x: 0.5, y: 0 }}
+			text={props.value}
+			style={valueStyle}
+			onresize={({ width }) => (valueWidth = width)}
+		/>
+	</Container>
 	{#if props.hovered && uiTheme.hoverHighlight}
 		<!--
 			Hover lift. When this readout sits on the ticker plate it fills the plate;

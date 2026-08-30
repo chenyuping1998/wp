@@ -1,6 +1,10 @@
 <script lang="ts" module>
 	import { sound, type MusicName, type SoundEffectName, type SoundName } from '../game/sound';
 
+	// What the mascot can say. One clip per animation — see
+	// design/generate_voice.mjs, which synthesizes them.
+	export type MascotVoice = 'roar' | 'effort';
+
 	export type EmitterEventSound =
 		| { type: 'soundMusic'; name: MusicName }
 		| { type: 'soundOnce'; name: SoundEffectName; forcePlay?: boolean }
@@ -11,6 +15,7 @@
 		| { type: 'soundBigWinBlast' }
 		| { type: 'soundGrenadeBlast' }
 		| { type: 'soundMonkeyExpand' }
+		| { type: 'soundMascotVoice'; name: MascotVoice }
 		| { type: 'soundReelTensionStart' }
 		| { type: 'soundReelTensionStop' }
 		| { type: 'soundScatterCounterIncrease' }
@@ -52,7 +57,9 @@
 		| 'wild_expand'
 		| 'mult_update'
 		| 'grenade_blast'
-		| 'monkey_expand';
+		| 'monkey_expand'
+		| 'voice_roar'
+		| 'voice_effort';
 
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
 		gong_feature: 'jungle/gong_feature.wav',
@@ -76,6 +83,22 @@
 		grenade_blast: 'jungle/grenade_blast.wav',
 		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
 		monkey_expand: 'jungle/monkey_expand.mp3',
+		voice_roar: 'jungle/voice_roar.wav',
+		voice_effort: 'jungle/voice_effort.wav',
+	};
+
+	// He is a character in the scene, not the interface, so he sits UNDER
+	// everything the game says with a sound of its own. Per clip, because they
+	// were levelled against each other and not against the rest of the set: the
+	// chirp plays on most paying spins and has to disappear into the mix, the
+	// chest-beat roar is the loudest thing he ever does.
+	// Louder than the first pass. These play UNDER a big-win blast, a coin
+	// shimmer and the fast free-game bed, and at 0.6 the cheer was mixed low
+	// enough to be arguable whether it was there at all — which is not a level,
+	// it is an absence with a volume control on it.
+	const MASCOT_VOICE_GAIN: Record<MascotVoice, number> = {
+		roar: 1,
+		effort: 0.8,
 	};
 
 	// Sprite sound names re-routed to the Chinese set.
@@ -371,6 +394,12 @@
 		soundBigWinBlast: () => playCnSfx('bigwin_blast'),
 		soundGrenadeBlast: () => playCnSfx('grenade_blast'),
 		soundMonkeyExpand: () => playMonkeyExpand(),
+		// Deliberately NOT forced through the turbo gate that silences ordinary
+		// one-shots: these are tied to animations that play at their own length
+		// whatever the spin speed, so a dropped one is a character opening his
+		// mouth in silence.
+		soundMascotVoice: ({ name }) =>
+			playCnSfx(`voice_${name}` as CnSfxName, MASCOT_VOICE_GAIN[name]),
 		soundReelTensionStart: () => playCnLoop('reel_tension', 0.8),
 		// stopCnLoop, not stopCnSfx: playCnLoop moved this to Web Audio, and the
 		// element-based stopper would leave the buffer source looping forever.

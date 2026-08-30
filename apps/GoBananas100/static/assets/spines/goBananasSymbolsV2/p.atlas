@@ -1,9 +1,0 @@
-p.png
-size:256,256
-format:RGBA8888
-filter:Linear,Linear
-repeat:none
-p
-bounds:0,0,256,256
-offsets:0,0,256,256
-index:-1

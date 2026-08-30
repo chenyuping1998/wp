@@ -1,6 +1,8 @@
 import type { BetModeData } from 'state-shared';
 import { stateUrlDerived } from 'state-shared';
 
+import { base } from '$app/paths';
+
 import config from './config';
 
 // Go Bananas 100 ships four math modes: base play, the 200x free-spins buy, the
@@ -26,6 +28,24 @@ const emptyAssets = {
 	dialogImage: '',
 	dialogVolatility: '',
 };
+
+// The buy modal's card art. A DOM <img> src, not a pixi asset key — the bonus
+// cards are HTML, not canvas.
+//
+// Supplying this is what opts the game into BonusCard's full-bleed cover: the
+// component draws one only when the field is non-empty, and every other game in
+// the workspace leaves it as ''. Without it the three cards are identical dark
+// rectangles told apart only by their words, which is what they were.
+//
+// `icon` is deliberately left empty. It stamps a small glyph above the
+// description, and it was the right answer while the cards had no art — a 44px
+// mark was the only thing separating them. Now that each card carries its own
+// picture edge to edge, an icon would put the same motif on the card twice, once
+// full size behind and once as a thumbnail in the middle of the text.
+//
+// See design/generate_mode_cards.mjs — the art is composited from this game's
+// own symbol sprites, so it follows the symbols whenever they are regenerated.
+const cardArt = (name: string) => `${base}/assets/sprites/goBananasUi/card_${name}.png`;
 
 export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 	BASE: {
@@ -55,7 +75,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 		parent: '',
 		children: '',
 		maxWin: config.betModes.bonus.max_win,
-		assets: { ...emptyAssets },
+		// one locked reel and three Scatters — the ordinary way in
+		assets: { ...emptyAssets, dialogImage: cardArt('bonus') },
 		text: {
 			get title() {
 				return pick('BUY FREE SPINS', 'FREE SPINS');
@@ -102,7 +123,9 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 		parent: '',
 		children: '',
 		maxWin: config.betModes.superbonus.max_win,
-		assets: { ...emptyAssets },
+		// the same picture with five Scatters and two locked reels: what 500x buys
+		// over 200x is more of exactly this
+		assets: { ...emptyAssets, dialogImage: cardArt('superbonus') },
 		text: {
 			get title() {
 				return pick('BUY SUPER FREE SPINS', 'SUPER FREE SPINS');
@@ -138,7 +161,9 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 		parent: '',
 		children: '',
 		maxWin: config.betModes.superspin.max_win,
-		assets: { ...emptyAssets },
+		// a part-filled board of held Coins — deliberately shares no vocabulary
+		// with the two free-spin cards, because it is not free spins
+		assets: { ...emptyAssets, dialogImage: cardArt('superspin') },
 		text: {
 			title: 'SUPER SPIN',
 			get dialog() {

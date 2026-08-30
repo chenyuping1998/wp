@@ -9,6 +9,10 @@
 	import ModalBuyBonusConfirm from 'components-ui-html/src/components/ModalBuyBonusConfirm.svelte';
 	import ModalAutoSpin from 'components-ui-html/src/components/ModalAutoSpin.svelte';
 	import ModalAutoSpinMessage from 'components-ui-html/src/components/ModalAutoSpinMessage.svelte';
+	// Plain notifications — the insufficient-balance notice the bet button
+	// raises. Distinct from ModalAutoSpinMessage above, which opens with "AUTO
+	// PLAY HAS STOPPED DUE TO" and is only correct when a run actually stopped.
+	import ModalMessage from 'components-ui-html/src/components/ModalMessage.svelte';
 	import ModalSettings from 'components-ui-html/src/components/ModalSettings.svelte';
 
 	import ModalPayTable from './ModalPayTable.svelte';
@@ -27,6 +31,7 @@
 <ModalBuyBonusConfirm />
 <ModalAutoSpin />
 <ModalAutoSpinMessage />
+<ModalMessage />
 <ModalPayTable />
 <ModalGameRules />
 <ModalSettings />

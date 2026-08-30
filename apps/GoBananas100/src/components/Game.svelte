@@ -25,6 +25,7 @@
 	import Background from './Background.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './BoardFrame.svelte';
+	import Mascot from './Mascot.svelte';
 	import Board from './Board.svelte';
 	import ReelDust from './ReelDust.svelte';
 	import EntryReveal from './EntryReveal.svelte';
@@ -82,6 +83,9 @@
 		<Sound />
 
 		<MainContainer>
+			<!-- Before the frame, so if a narrow layout ever brings the two close
+			     the housing is the thing that stays in front. -->
+			<Mascot />
 			<BoardFrame />
 		</MainContainer>
 

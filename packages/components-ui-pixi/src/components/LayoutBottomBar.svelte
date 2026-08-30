@@ -98,6 +98,26 @@
 	const WIN_X = 540;
 	const DIV_3 = 656;
 	const dividerBeforeBet = $derived(BET_X - 118);
+
+	// How wide a readout may draw, in ITS OWN units — the cell it sits in, less a
+	// little air, divided by the scale the container applies.
+	//
+	// Certification: "some labels are overlapping on large amounts". The cells
+	// were sized against the widest strings anyone had looked at, and a Gold Coin
+	// balance is nine figures — GC 9,999,652,000 ran through the rule and printed
+	// over the Win readout. Nothing bounded it, because a pixi Text simply draws
+	// however wide it needs to be.
+	//
+	// Derived from the dividers rather than typed in, so moving a rule moves the
+	// limit with it and the two cannot drift apart.
+	const CELL_AIR = 18;
+	const cellWidth = (left: number, right: number) =>
+		Math.max(0, (right - left - CELL_AIR * 2) / READOUT_SCALE);
+	const balanceMaxWidth = $derived(cellWidth(DIV_1, DIV_2));
+	const winMaxWidth = $derived(cellWidth(DIV_2, DIV_3));
+	// The Bet cell is bounded by its own rule on the left and the stepper on the
+	// right, and it also has to leave room for the chevron the affordance draws.
+	const betMaxWidth = $derived(cellWidth(dividerBeforeBet, STEP_X - 24));
 	// centre of the empty Win→Bet span, for the breather tick
 	const GAP_CENTER = $derived((DIV_3 + BET_X - 118) * 0.5);
 
@@ -231,17 +251,17 @@
 		{#if stateReplay.enabled}
 			<LabelReplayMultiplier stacked tiled={false} />
 		{:else}
-			{@render props.amountBalance({ stacked: true, tiled: false })}
+			{@render props.amountBalance({ stacked: true, tiled: false, maxWidth: balanceMaxWidth })}
 		{/if}
 	</Container>
 
 	<Container x={WIN_X} y={readoutTop} scale={READOUT_SCALE}>
-		{@render props.amountWin({ stacked: true, tiled: false })}
+		{@render props.amountWin({ stacked: true, tiled: false, maxWidth: winMaxWidth })}
 	</Container>
 
 	<!-- ── right: bet, stepper, spin, autospin, turbo ─────────────────────── -->
 	<Container x={BET_X} y={readoutTop} scale={READOUT_SCALE}>
-		{@render props.amountBet({ stacked: true, tiled: false })}
+		{@render props.amountBet({ stacked: true, tiled: false, maxWidth: betMaxWidth })}
 	</Container>
 
 	{#if stateReplay.enabled}

@@ -11,7 +11,12 @@
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const { stateXstateDerived, eventEmitter } = getContext();
-	const sizes = { width: UI_BASE_SIZE, height: UI_BASE_SIZE };
+	// The BOX, and therefore the hit area and the space the layout reserves.
+	// Scaling this rather than only the plate art is the difference between a
+	// button that is smaller and a button that merely looks smaller while still
+	// swallowing presses across its old footprint.
+	const box = $derived(UI_BASE_SIZE * uiTheme.buyBonusButtonScale);
+	const sizes = $derived({ width: box, height: box });
 	const disabled = $derived(!stateXstateDerived.isIdle());
 	const active = $derived(stateBetDerived.activeBetMode()?.type === 'activate');
 
@@ -21,6 +26,17 @@
 		width: sizes.width * uiTheme.buyBonusPlateScale,
 		height: sizes.height * uiTheme.buyBonusPlateScale,
 	});
+
+	// The label goes with the button. Left absolute it would keep its full size
+	// inside a shrunken plate, and the wrap width — which is measured against the
+	// plate, not the text — would let it run past the edge.
+	const labelScale = $derived(uiTheme.buyBonusButtonScale);
+
+	const dimmed = $derived(disabled && uiTheme.buyBonusDisabledStyle === 'dim');
+	// The caption dims WITH the plate. Fading the plate alone leaves the words
+	// sitting at full strength on a darkened panel, which is the same mismatch
+	// 'grey' has, just in the other direction.
+	const labelAlpha = $derived(dimmed ? 0.55 : 1);
 
 	// Breathing glow while the button is ready to be pressed, for games that ask
 	// for it. Driven by a timer rather than a transition so it keeps going while
@@ -55,6 +71,14 @@
 		hovered: boolean;
 		pressed: boolean;
 	}) => {
+		// APPEARANCE only. What the button SAYS is decided by `active` alone - see
+		// the label below - because hover and press are how a control looks and
+		// `active` is what it does.
+		//
+		// The label used to be read off this, and the order here put `hovered`
+		// ahead of `active`: moving the cursor over a button that was showing
+		// DISABLE flipped it to BUY BONUS, so the one state where pressing it turns
+		// a mode OFF was labelled as though it would turn one on.
 		if (value.disabled) return 'disabled' as const;
 		if (value.pressed) return 'pressed' as const;
 		if (value.hovered) return 'hovered' as const;
@@ -116,11 +140,25 @@
 				? { tint: uiTheme.buyBonusIdleTint }
 				: {})}
 			{...disabled
-				? {
-						backgroundColor: 0xaaaaaa,
-						// plate art ignores fills, so grey it down with tint instead
-						tint: 0x8a8a8a,
-					}
+				? dimmed
+					? {
+							// Darken, do not lighten, and keep the hue: the plate stays
+							// recognisably the same object with the light off it.
+							//
+							// 0x4a4a4a first time round, which took it close to black - a
+							// hole in the layout rather than a button that is off. The
+							// point is to sit clearly below the enabled state, not to
+							// disappear, and the faded caption already carries most of
+							// that signal. This and labelAlpha above are the two numbers
+							// to move if it needs to go further either way.
+							tint: 0x767670,
+							backgroundColor: 0x1a2208,
+						}
+					: {
+							backgroundColor: 0xaaaaaa,
+							// plate art ignores fills, so grey it down with tint instead
+							tint: 0x8a8a8a,
+						}
 				: {}}
 			{...active
 				? {
@@ -131,7 +169,45 @@
 				: {}}
 		/>
 
-		{#if uiTheme.hoverHighlight && hovered && !disabled}
+		{#if uiTheme.buyBonusHoverStyle === 'outline' && hovered && !disabled}
+			<Graphics
+				{...center}
+				draw={(g) => {
+					// The plate's own edge, stroked. Sized to the ART - see
+					// buyBonusPlateInset - so it sits on the object rather than on the
+					// button box around it.
+					const w = plate.width * uiTheme.buyBonusPlateInset.width;
+					const h = plate.height * uiTheme.buyBonusPlateInset.height;
+					const padX = w * uiTheme.buyBonusHighlightPad;
+					const padY = h * uiTheme.buyBonusHighlightPad;
+					g.clear();
+					g.roundRect(-w / 2 - padX, -h / 2 - padY, w + padX * 2, h + padY * 2, h * 0.04);
+					// Stroked, never filled, and at full alpha. A soft or translucent
+					// line reads as a glow and a glow is what this replaced.
+					g.stroke({
+						width: uiTheme.buyBonusHoverOutlineWidth,
+						color: uiTheme.buyBonusHoverOutlineColor,
+						alpha: 1,
+					});
+				}}
+			/>
+		{:else if uiTheme.buyBonusHoverSprite && hovered && !disabled}
+			<!--
+				The plate's own incantation, lit. Additive, so it reads as the paper
+				catching light rather than as something laid on top of it - a normal
+				blend at any alpha is a lighter object in front, and this has to be
+				the same object brighter.
+			-->
+			<UiSprite
+				key={uiTheme.buyBonusHoverSprite}
+				{...center}
+				anchor={0.5}
+				width={plate.width}
+				height={plate.height}
+				tint={uiTheme.buyBonusHoverSpriteTint}
+				blendMode="add"
+			/>
+		{:else if uiTheme.hoverHighlight && hovered && !disabled}
 			<!-- same subtle lift as the rail buttons; this one is assembled by hand
 			     rather than through UiButton, so it needs its own overlay -->
 			<Graphics
@@ -150,7 +226,13 @@
 					const padX = w * uiTheme.buyBonusHighlightPad;
 					const padY = h * uiTheme.buyBonusHighlightPad;
 					g.clear();
-					g.roundRect(-w / 2 - padX, -h / 2 - padY, w + padX * 2, h + padY * 2, h * 0.05);
+					g.roundRect(
+						-w / 2 - padX,
+						-h / 2 - padY,
+						w + padX * 2,
+						h + padY * 2,
+						h * uiTheme.buyBonusHighlightRadius,
+					);
 					g.fill({ color: 0xffffff, alpha: 0.16 });
 				}}
 			/>
@@ -159,18 +241,19 @@
 		<Text
 			{...center}
 			anchor={0.5}
-			text={state === 'active' ? i18nDerived.disable() : i18nDerived.buyBonus()}
+			alpha={labelAlpha}
+			text={active ? i18nDerived.disable() : i18nDerived.buyBonus()}
 			style={{
 				align: 'center',
 				wordWrap: true,
 				// Keep the wrap box inside the plate, not just inside the button. The
 				// default is the 150px button minus its 7px border; a game whose plate
 				// is an object rather than a panel narrows it - see the theme.
-				wordWrapWidth: uiTheme.buyBonusLabelWrapWidth,
-				lineHeight: UI_BASE_FONT_SIZE * (uiTheme.buyBonusLabelSizeRatio + 0.04),
+				wordWrapWidth: uiTheme.buyBonusLabelWrapWidth * labelScale,
+				lineHeight: UI_BASE_FONT_SIZE * (uiTheme.buyBonusLabelSizeRatio + 0.04) * labelScale,
 				fontFamily: uiTheme.fontFamily,
 				fontWeight: uiTheme.fontWeight,
-				fontSize: UI_BASE_FONT_SIZE * uiTheme.buyBonusLabelSizeRatio,
+				fontSize: UI_BASE_FONT_SIZE * uiTheme.buyBonusLabelSizeRatio * labelScale,
 				// themed, not hardcoded white: on GoBananas' olive plate the white
 				// read as a different game's button sitting on the board. Defaults to
 				// white, so Wild Party is unchanged.
