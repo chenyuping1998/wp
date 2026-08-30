@@ -3,6 +3,7 @@
 	import SymbolWrap from './SymbolWrap.svelte';
 	import { getSymbolInfo, getSymbolX } from '../game/utils';
 	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
+	import { symbolFocus } from '../game/anticipationFocus';
 
 	type Props = {
 		reelIndex: number;
@@ -54,6 +55,34 @@
 	};
 	const landingImpact = $derived(LANDING_IMPACT[props.reelSymbol.rawSymbol.name] ?? 0.9);
 
+	// While THIS reel is the one being teased, its symbols are lifted: slightly
+	// larger, with an additive copy of their own art over them. The tease used to
+	// be drawn entirely outside the reel — a lit column and a dim over the stopped
+	// reels — so the reel that mattered was framed but never actually came
+	// forward. Read per reel rather than per spin, because on a book with
+	// anticipation [0,0,1,2,3] two reels can be teasing at different tiers.
+	const focus = $derived(
+		stateGame.board[props.reelIndex]?.reelState.anticipating
+			? symbolFocus(stateGame.anticipation[props.reelIndex])
+			: undefined,
+	);
+
+	/**
+	 * Stand down while some OTHER cell is paying.
+	 *
+	 * Not applied to a cell that is itself in the volley, and not while the reel
+	 * is moving — a dimmed symbol mid-spin would fight the motion blur and read
+	 * as the reel going dark.
+	 */
+	const dim = $derived(
+		stateGame.winningCells.length > 0 &&
+			props.reelSymbol.symbolState !== 'win' &&
+			stateGame.board[props.reelIndex]?.reelState.motion !== 'spinning' &&
+			!stateGame.winningCells.some(
+				(cell) => cell.reel === props.reelIndex && cell.row === props.reelSymbol.symbolIndex,
+			),
+	);
+
 	const isHeldDuplicate = $derived(
 		props.reelSymbol.symbolState !== 'win' &&
 			stateGame.board[props.reelIndex]?.reelState.motion !== 'spinning' &&
@@ -92,7 +121,10 @@
 			state={props.reelSymbol.symbolState}
 			rawSymbol={props.reelSymbol.rawSymbol}
 			{blur}
+			{focus}
+			cell={{ reel: props.reelIndex, row: props.reelSymbol.symbolIndex }}
 			impact={landingImpact}
+			{dim}
 			oncomplete={() => {
 				// a completion from a presentation the symbol has already left
 				if (props.reelSymbol.symbolState !== forState) return;

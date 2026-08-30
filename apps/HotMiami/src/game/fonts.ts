@@ -41,10 +41,20 @@ export const GAME_FONT_WEIGHT = '400' as const;
 
 // Display faces are for display. The rules and paytable modals carry real
 // paragraphs — the RTP disclaimer, the feature descriptions — and setting body
-// copy in a heavy rounded face makes it genuinely harder to read. Those keep a
-// plain humanist stack. Two faces with clearly separated jobs is the normal
-// arrangement, not a compromise.
-export const BODY_FONT = '"Trebuchet MS", "Segoe UI", Tahoma, Arial, sans-serif';
+// copy in a heavy rounded face makes it genuinely harder to read. Two faces with
+// clearly separated jobs is the normal arrangement, not a compromise.
+//
+// But "not a display face" was being read as "no webfont": this stack used to
+// start at "Trebuchet MS" and every paragraph in the game rendered in the
+// operating system's default sans. That is the same "standard fonts" finding
+// recorded at the top of this file, still live — the fix that followed it only
+// replaced the display face, and the body text it did not touch is the larger
+// share of the words on screen.
+//
+// Saira is self-hosted, SIL OFL, variable 300..700, and drawn for running text.
+// The system stack stays behind it as the fallback it always should have been.
+// Declared in app.html; licence in static/fonts/Saira-OFL.txt.
+export const BODY_FONT = '"Saira", "Trebuchet MS", "Segoe UI", Tahoma, Arial, sans-serif';
 
 // The rules and paytable modals are DOM, not Pixi, so they take their type from
 // CSS. Mirroring both stacks into custom properties lets components/ui/Modals
@@ -66,4 +76,10 @@ setFontKit(null);
 // advances when it builds a Text, so a face still downloading at that moment
 // gets the first frame laid out on the fallback's metrics and never re-measured.
 // Module scope, so this runs well before InitialiseApplication mounts.
-setLocalFonts([`${GAME_FONT_WEIGHT} 16px "Titan One"`, `${DISPLAY_FONT_WEIGHT} 16px "Orbitron"`]);
+// Saira is in this list for the same reason as the other two: LoadingScreen sets
+// its subtitle and its rotating tips in BODY_FONT, and those are pixi Texts.
+setLocalFonts([
+	`${GAME_FONT_WEIGHT} 16px "Titan One"`,
+	`${DISPLAY_FONT_WEIGHT} 16px "Orbitron"`,
+	'400 16px "Saira"',
+]);

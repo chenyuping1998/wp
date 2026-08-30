@@ -60,6 +60,26 @@ export const INITIAL_SYMBOL_STATE: SymbolState = 'static';
 // SPECIAL (Wild, Scatter, superspin Coin) deliberately overflows its cell — at
 // 1.08 that is ~9px proud, up from ~6px — because those three are what the
 // player is hunting and they should sit visually on top of the grid.
+// ── how big a symbol is DRAWN, measured by its ink rather than its canvas ───
+//
+// 2026-08-25, on a report that "外框太大圖騰太小" next to the reference build.
+// Measured, the premiums were fine and the royals were not:
+//
+//     premium art   ink fills 92% of its 512 canvas -> 89% of the cell
+//     l1 / l2       ink fills 62%                   -> 57% of the cell
+//     l3 / l4       ink fills 70%                   -> 65% of the cell
+//     reference     its letters fill about 66% of their cell
+//
+// One number per TIER cannot fix that, because the tier says nothing about how
+// much of its canvas a drawing actually uses: A and K were drawn at the same
+// ratio as Q and J and came out a fifth smaller. The royals are also the most
+// common symbols on the grid, so their ink is most of what the board looks like
+// — which is why the whole board read as small.
+//
+// The ratios below are therefore per symbol, chosen so every royal's ink lands
+// near 70% of the cell. design/check_parts.py measures the shipped PNGs and
+// fails if any symbol drifts out of its band, so redrawn art cannot silently
+// shrink again.
 const HIGH_SYMBOL_SIZE = 0.97;
 // 2026-08-13: 0.8 -> 0.92, on a report that the gaps between symbols were too
 // wide. Measured rather than guessed, at the 132px on-screen cell pitch: a royal
@@ -83,8 +103,26 @@ const SPIN_OPTIONS_SHARED = {
 	reelBounceBackSpeed: 0.15,
 	reelSpinSpeedBeforeBounce: 4,
 	reelPaddingMultiplierNormal: 1.2,
-	reelPaddingMultiplierAnticipated: 10,
-	reelSpinDelay: 145,
+	// 10 -> 5, and the speed halves with it (below). Same wall-clock tease, half
+	// the speed: the Hacksaw spec is explicit that anticipation is a SLOWDOWN and
+	// not a wait ("緊張感靠慢下來,不是靠停住等"), and distance alone was all this
+	// had. Ten times the distance at full speed is a reel that blurs past for a
+	// long time; five times at half speed is a reel the player can read.
+	reelPaddingMultiplierAnticipated: 5,
+	// 200ms, from the Hacksaw spec the user supplied (The Luxe `reelDelay` 0.2s).
+	// Was 145. Their stop stagger is 300ms — 1.5x the start — and ours already
+	// measures ~280ms because it falls out of the accumulating padding, so the
+	// only number that was off was the start.
+	reelSpinDelay: 200,
+	// Half of `reelSpinSpeed` (3 -> 1.5), matching their attentionSpeed/speed
+	// ratio. Applies to every mode: turbo turns anticipation off elsewhere.
+	reelSpinSpeedAnticipated: 1.5,
+	// The squash happens when the reel hits, not a quarter of a second later.
+	// Reported as 「第五輪停輪時符號的抖動會稍微慢一拍」 — measured at 265-269ms on
+	// every reel, and the fifth is simply where it is naked: on reels 1-4 the next
+	// reel arrives 282ms after this one, so the late squash lands about when the
+	// eye has already moved on, and on the last reel there is nothing to hide it.
+	landOnImpact: true,
 };
 
 export const SPIN_OPTIONS_DEFAULT = {
@@ -94,19 +132,43 @@ export const SPIN_OPTIONS_DEFAULT = {
 	reelBounceSizeMulti: 0.3,
 };
 
+// Base-game turbo. Still turbo — the reels are fast and the bounce is almost
+// gone — but the board no longer lands as one block.
+//
+// That was a deliberate choice here and the Hacksaw spec says it is the wrong
+// one: The Luxe's turbo keeps a 150ms stop stagger (`reelStopDelay` 0.15,
+// against 0.3 at normal speed) and only superTurbo collapses it to nothing. A
+// board that lands all at once reads as a screenshot appearing rather than as
+// reels stopping, and it costs about 600ms to fix.
 export const SPIN_OPTIONS_FAST = {
 	...SPIN_OPTIONS_SHARED,
 	reelPreSpinSpeed: 5,
 	reelSpinSpeed: 5,
 	reelBounceSizeMulti: 0.05,
+	reelSpinDelay: 150,
+	reelStaggerInTurbo: true,
 };
 
+// Turbo INSIDE the feature - free spins, and every bought feature once it gets
+// there. Fast, but still one reel at a time.
+//
+// Base-game turbo drops all five reels as one block, which is the whole point of
+// turbo when you are grinding. In a feature the same thing reads as the feature
+// being over before it started: ten free spins arrive as ten single thuds, and
+// the round the player paid 100x-500x for is gone. `reelStaggerInTurbo` keeps
+// turbo's speeds and gives the reels back their order (utils-slots; the flag is
+// optional and every other app is unaffected by it).
+//
+// reelSpinDelay is 185 rather than the shared 145 because it is now doing real
+// work: at turbo speed the reels overlap far more, so the start offset has to be
+// wider to read as a sequence at all.
 export const SPIN_OPTIONS_FAST_FREEGAME = {
 	...SPIN_OPTIONS_SHARED,
 	reelPreSpinSpeed: 4.2,
 	reelSpinSpeed: 3.8,
 	reelSpinDelay: 185,
 	reelBounceSizeMulti: 0.08,
+	reelStaggerInTurbo: true,
 };
 
 export const MOTION_BLUR_VELOCITY = 31;
@@ -135,13 +197,6 @@ export const zIndexes = {
 	},
 };
 
-const explosion = {
-	type: 'spine',
-	assetKey: 'explosion',
-	animationName: 'explosion',
-	sizeRatios: { width: 1, height: 1 },
-};
-
 // Hot Miami symbols use PNG for static/spin/land/postWinStatic and generated
 // Spine assets for win state so winning symbols always animate via Spine.
 const HIGH_RATIOS = { width: HIGH_SYMBOL_SIZE, height: HIGH_SYMBOL_SIZE };
@@ -158,7 +213,6 @@ const symbolSprite = (assetKey: string, ratios: { width: number; height: number 
 // symbol state renders from the same sprite. Win emphasis is done in the
 // component layer (scale/tint pulse) rather than by swapping to a Spine track.
 const spriteSymbol = (assetKey: string, ratios: { width: number; height: number }) => ({
-	explosion,
 	static: symbolSprite(assetKey, ratios),
 	spin: symbolSprite(assetKey, ratios),
 	land: symbolSprite(assetKey, ratios),
@@ -172,10 +226,13 @@ export const SYMBOL_INFO_MAP = {
 	H3: spriteSymbol('hmH3', HIGH_RATIOS),
 	H4: spriteSymbol('hmH4', HIGH_RATIOS),
 	H5: spriteSymbol('hmH5', HIGH_RATIOS),
-	L1: spriteSymbol('hmL1', LOW_RATIOS),
-	L2: spriteSymbol('hmL2', LOW_RATIOS),
-	L3: spriteSymbol('hmL3', LOW_RATIOS),
-	L4: spriteSymbol('hmL4', LOW_RATIOS),
+	// A and K carry the least ink of anything on the board (62% of their canvas
+	// against 70% for Q and J), so they are drawn bigger to arrive at the same
+	// size on screen.
+	L1: spriteSymbol('hmL1', { width: 1.13, height: 1.13 }),
+	L2: spriteSymbol('hmL2', { width: 1.13, height: 1.13 }),
+	L3: spriteSymbol('hmL3', { width: 1.0, height: 1.0 }),
+	L4: spriteSymbol('hmL4', { width: 1.0, height: 1.0 }),
 	W: spriteSymbol('hmW', SPECIAL_RATIOS),
 	S: spriteSymbol('hmS', SPECIAL_RATIOS),
 	C: spriteSymbol('hmC', SPECIAL_RATIOS),

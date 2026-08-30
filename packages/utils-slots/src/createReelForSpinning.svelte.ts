@@ -237,7 +237,9 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		isPreSpinning = true;
 		reelState.spinType = isTurboBeforeAll ? 'fast' : 'normal';
 		await preSpinPadding({ preSpinPaddingRawReel });
-		if (!isTurboBeforeAll) await delaySpinByReelIndex();
+		if (!isTurboBeforeAll || reelState.spinOptions().reelStaggerInTurbo) {
+			await delaySpinByReelIndex();
+		}
 		preSpinSlideDownLoop({ isTurboBeforeAll, preSpinPaddingRawReel });
 	};
 
@@ -267,7 +269,13 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 			} else {
 				await slideDown();
 			}
-		} else if ((turboOverride ?? stateBet.isTurbo) && isSpinning) {
+		} else if (
+			(turboOverride ?? stateBet.isTurbo) &&
+			isSpinning &&
+			// opt-in: a game can keep its reels staggered in turbo instead of
+			// snapping them all at once (uiTheme-independent, see types.ts)
+			!reelState.spinOptions().reelStaggerInTurbo
+		) {
 			// skip
 		} else {
 			await interruptible.add(slideDown);
@@ -275,9 +283,21 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 
 		reelState.motion = 'bouncing';
 		onSpinFinishing();
+		// The impact is the START of the bounce, not the end of it. With
+		// `landOnImpact` the symbols squash as the reel hits, in the same frame as
+		// the reel-stop click that onSpinFinishing just played; without it they
+		// wait out the whole bounce-back first (236ms on a 118px cell) and the
+		// sound leads the picture by a quarter of a second.
+		//
+		// `removePaddingAndBounceBack` has already swapped in the final symbols, so
+		// what is being animated here is the board that landed, not the strip.
+		if (reelState.spinOptions().landOnImpact) updateAllReelSymbolState('land');
 		await removePaddingAndBounceBack();
 		reelState.motion = 'stopped';
-		updateAllReelSymbolState('land');
+		// Not repeated when it has already been done: 'land' resolves back to
+		// 'static' after the landing motion, so setting it a second time here
+		// would run the whole squash again from the top.
+		if (!reelState.spinOptions().landOnImpact) updateAllReelSymbolState('land');
 	};
 
 	const fastSpin = () =>
@@ -315,7 +335,12 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 
 				await slideY({
 					reelY: defaultY * basePaddingSize(),
-					speed: reelState.spinOptions().reelSpinSpeed,
+					// Slower than an ordinary reel where the app asks for it. Falls
+					// back to the ordinary speed, so nothing changes for an app that
+					// does not set it.
+					speed:
+						reelState.spinOptions().reelSpinSpeedAnticipated ??
+						reelState.spinOptions().reelSpinSpeed,
 				});
 				await slideY({
 					reelY: defaultY + bounceSize,
@@ -354,7 +379,14 @@ export function createReelForSpinning<TRawSymbol extends object, TSymbolState ex
 		onSpinFinishing = prepareToSpinOptions.onSpinFinishing;
 
 		const GET_PADDING_SIZE_MAP = {
-			fast: prepareToSpinOptions.previousPaddingSize + 0,
+			// The +0 is what makes turbo land as a block: every reel travels the
+			// same distance, so they all arrive together. reelStaggerInTurbo opts
+			// back into the accumulating padding the normal spin uses, which is
+			// where the reel-by-reel arrival actually comes from - the start delay
+			// above only offsets the beginning.
+			fast: reelState.spinOptions().reelStaggerInTurbo
+				? prepareToSpinOptions.previousPaddingSize + basePaddingSize()
+				: prepareToSpinOptions.previousPaddingSize + 0,
 			normal: prepareToSpinOptions.previousPaddingSize + basePaddingSize(),
 			anticipated: prepareToSpinOptions.previousPaddingSize + anticipatedPaddingSize(),
 		};

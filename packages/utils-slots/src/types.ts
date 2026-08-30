@@ -17,6 +17,56 @@ export type SpinningReelSpinOptions = {
 	reelPaddingMultiplierNormal: number;
 	reelPaddingMultiplierAnticipated: number;
 	reelSpinDelay: number;
+	/**
+	 * How fast an ANTICIPATED reel travels, if it should differ from
+	 * `reelSpinSpeed`.
+	 *
+	 * A tease built only out of extra distance is a wait; a tease built out of
+	 * speed is tension. The reference spec this came from (Hacksaw's The Luxe,
+	 * `attentionSpeed` 10 against `speed` 20) halves it, and pairs that with a
+	 * five-times-longer stop.
+	 *
+	 * Optional and unset by default: an app that does not set it spins its
+	 * anticipated reels at exactly the speed it did before.
+	 */
+	reelSpinSpeedAnticipated?: number;
+	/**
+	 * Start the symbols' landing animation at the moment of IMPACT rather than
+	 * after the reel has finished bouncing back.
+	 *
+	 * The default order is: slide down, flip to 'bouncing', fire onSpinFinishing
+	 * (which is where the reel-stop click plays), run the bounce-back, and only
+	 * then put the symbols into 'land'. The bounce is
+	 * `symbolHeight * reelBounceSizeMulti / reelBounceBackSpeed` — on Hot Miami
+	 * 35.4px at 0.15px/ms, or 236ms — so the symbol reacts a quarter of a second
+	 * after the reel arrives and after the sound has already played.
+	 *
+	 * Measured on all five reels before this existed: 265-269ms between the reel
+	 * stopping and the squash starting, every time.
+	 *
+	 * Optional and false by default: an app that does not set it keeps the
+	 * original order exactly.
+	 */
+	landOnImpact?: boolean;
+	/**
+	 * Keep the reel-by-reel stagger in turbo instead of dropping all five reels
+	 * together.
+	 *
+	 * Turbo normally does three things at once: it skips the per-reel start
+	 * delay, it gives every reel the same travel distance (padding + 0 rather
+	 * than accumulating), and it skips the slide entirely on a reel that was
+	 * already pre-spinning. Together those make the board land as one block,
+	 * which is what turbo is for in the base game.
+	 *
+	 * Inside a bought or triggered feature the same thing reads as the feature
+	 * being over before it started - ten free spins land as ten single thuds.
+	 * With this set, turbo stays fast (its own speeds still apply) but the reels
+	 * still arrive one after another.
+	 *
+	 * Optional and falsy by default: every app that does not set it spins
+	 * exactly as before.
+	 */
+	reelStaggerInTurbo?: boolean;
 };
 
 export type CascadingReelSpinOptions = {

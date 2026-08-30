@@ -258,9 +258,10 @@ def _board_shade(size, strength=0.46):
 # Backgrounds - three different scenes, not one scene in three hues
 # ---------------------------------------------------------------------------
 def build_backgrounds(width=1920, height=1080):
-    build_bg_base(width, height)
-    build_bg_feature(width, height)
-    build_bg_epic(width, height)
+    from generate_hot_miami_backgrounds import build_background
+    build_background("base", "bg_base.png")
+    build_background("feature", "bg_feature.png")
+    build_background("epic", "bg_epic.png")
 
 
 def _finish(canvas, name, width, height):

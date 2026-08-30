@@ -29,6 +29,30 @@ class GameExecutables(GameCalculations):
             return 0
         return int(get_random_outcome(counts))
 
+    def draw_frame_count_for_spin(self) -> int:
+        """Frame count for this spin, with the cosmetic-frame guard applied.
+
+        A distribution that declares `cosmetic_frames` is one whose books cannot
+        win (`win_criteria=0.0`), so the Frames it lands are decoration: there is
+        no line win for them to multiply. The one thing that would still turn
+        them into money is the Collector, which sweeps every Frame on the board
+        whether or not it took part in a win — so on those spins, a Collector on
+        the board means no Frames.
+
+        Without this guard the books would not be wrong, they would be
+        *rejected*: a swept Frame produces a win, the book fails its zero-win
+        criteria, and `check_repeat` redraws. The result would be the same RTP
+        and a slower run — but it would also silently bias which boards survive,
+        because every board carrying a Collector would be redrawn until its
+        Frames happened to be zero. Suppressing the Frames directly is the same
+        outcome, stated on purpose.
+        """
+        conditions = self.get_current_distribution_conditions()
+        count = self.draw_frame_count()
+        if count and conditions.get("cosmetic_frames") and self.collector_position() is not None:
+            return 0
+        return count
+
     def frame_reel_weights(self) -> list:
         """Relative chance of a new frame landing on each reel.
 

@@ -1,1 +1,4 @@
-design/reference/
+# Staging output from the art pipelines. These are regenerated from
+# design/source/ by design/process_source_parts.py and design/check_parts.py,
+# and only what gets --install-ed into static/assets/ is part of the game.
+design/_parts/

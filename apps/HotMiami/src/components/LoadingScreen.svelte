@@ -7,6 +7,7 @@
 
 	import { getContext } from '../game/context';
 	import config from '../game/config';
+	import { CAST_SWAY, castFrame } from '../game/idleSway';
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 
@@ -19,6 +20,40 @@
 
 	let loadingType = $state<'start' | 'transition'>('start');
 	let pulseTick = $state(0);
+
+	const layout = $derived(context.stateLayoutDerived.mainLayout());
+	// What the background has to cover, expressed in the game box's own units: the
+	// canvas can be wider or taller than the box, and MainContainer scales the box
+	// to fit, so dividing the canvas by that scale gives the box-space size that
+	// reaches the real edges.
+	const canvas = $derived(context.stateLayoutDerived.canvasSizes());
+	const coverW = $derived(canvas.width / layout.scale);
+	const coverH = $derived(canvas.height / layout.scale);
+
+	// logo.png's own proportions, so the mark is never stretched
+	const LOGO_W = 1024;
+	const LOGO_H = 512;
+	const logoWidth = $derived(Math.min(layout.width * 0.36, layout.height * 0.62));
+	const barWidth = $derived(Math.min(layout.width * 0.42, 460));
+
+	// The cast, at the screen's own edges, at FULL opacity and untinted.
+	//
+	// Two attempts at holding them back failed the same way. At 0.55 alpha the
+	// city lights showed straight through them; a dark tint at 0.94 dimmed them
+	// until, against a lit background, they read as translucent anyway. The
+	// problem was never the figures — it was that they were competing with the
+	// background art behind them. So the SCRIM does the holding back instead: the
+	// photograph goes down to 0.74 black and the people stay as they are.
+	const castHeight = $derived(layout.height * 0.9);
+	const castWidth = $derived((castHeight * 266) / 819);
+
+	// Their sway runs off the same clock as everywhere else, which is what keeps
+	// the two of them out of step with each other (6500ms and 4000ms) rather than
+	// nodding in unison.
+	const castSway = $derived({
+		guy: castFrame(CAST_SWAY.guy, pulseTick * 32),
+		girl: castFrame(CAST_SWAY.girl, pulseTick * 32),
+	});
 
 	// Gameplay tips cycling under the progress bar, so the wait teaches the
 	// features instead of just counting. Every line is checked against the rules
@@ -80,161 +115,160 @@
 	});
 </script>
 
-<!-- Hot Miami neon-sunset branded loading screen -->
+<!--
+	The loading screen.
+	═══════════════════
+	Rebuilt 2026-08-27. What it was: a typed "HOT MIAMI" in Titan One with a fake
+	neon drop-shadow, a 4px progress rule and two lines of 13px text on a dimmed
+	photograph. Three things were wrong with that, and the first is the one that
+	matters:
+
+	  · THE BRAND MARK WAS NOT ON IT. The game ships a drawn logo (hmLogo) and the
+	    intro card two seconds later uses it. The first frame a player ever sees
+	    was a typographic imitation of the logo standing in for the logo.
+	  · The cast walked on at the intro card and not before, so the two screens
+	    read as belonging to different games.
+	  · 4px of rule and 13px of type is a template's loading screen. Nothing on it
+	    said which game was loading except the words.
+
+	It is now the intro card's screen one beat earlier: same background, same two
+	figures, the real logo, and the progress bar in the game's own neon rather than
+	a grey rule. The tips stay — they were the one good idea in the old one.
+-->
 <FadeContainer show={loadingType === 'start'}>
 	<MainContainer>
-		<!-- Background image (Miami sunset theme) -->
+		<!--
+			Background and scrim at CANVAS size, not at the game box's.
+
+			They were drawn at mainLayout() — the letterboxed 16:9 box the board
+			lives in — while the canvas can be much wider. On a wide screen that
+			left a black bar down each edge, and the two figures stand exactly
+			there, so the bar read as a dark slab travelling with them
+			(「後面有一片黑一起晃」). It never moved; they did, in front of it.
+
+			Background.svelte has always used canvasSizes() for the same reason.
+		-->
 		<Sprite
 			key="hmBgBase"
 			anchor={0.5}
-			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.5}
-			width={context.stateLayoutDerived.mainLayout().width}
-			height={context.stateLayoutDerived.mainLayout().height}
+			x={layout.width * 0.5}
+			y={layout.height * 0.5}
+			width={coverW}
+			height={coverH}
 		/>
 
-		<!-- Dark overlay for readability -->
-		<Graphics
-			draw={(g) => {
-				const w = context.stateLayoutDerived.mainLayout().width;
-				const h = context.stateLayoutDerived.mainLayout().height;
-				g.clear();
-				g.beginFill(0x1a0505, 0.68);
-				g.drawRect(0, 0, w, h);
-				g.endFill();
-
-				// subtle vignette / top glow so the screen looks less flat
-				g.beginFill(0xffd43b, 0.04);
-				g.drawEllipse(w * 0.5, h * 0.28, w * 0.22, h * 0.11);
-				g.endFill();
-
-				g.beginFill(0x000000, 0.22);
-				g.drawRect(0, h * 0.72, w, h * 0.28);
-				g.endFill();
-			}}
-		/>
-
-		<Graphics
-			draw={(g) => {
-				const w = context.stateLayoutDerived.mainLayout().width;
-				const h = context.stateLayoutDerived.mainLayout().height;
-				const glowX = w * 0.5 + Math.sin(pulseTick / 48) * w * 0.08;
-				const glowAlpha = 0.03 + 0.015 * (0.5 + 0.5 * Math.sin(pulseTick / 22));
-				g.clear();
-				g.beginFill(0xffd67c, glowAlpha);
-				g.drawEllipse(glowX, h * 0.34, w * 0.26, h * 0.1);
-				g.endFill();
-			}}
-		/>
-
+		<!--
+			The same two figures that stand on the intro card, at the same edges, so
+			the cut between the two screens changes only what is between them. They
+			breathe here too — game/idleSway.ts, the same table the board cast uses,
+			which is why they are not simply two stills.
+		-->
 		<Container
-			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.36}
+			x={castWidth * 0.42}
+			y={layout.height + castSway.guy.dy * castHeight}
+			rotation={castSway.guy.rotation}
+			scale={{ x: 1, y: castSway.guy.scaleY }}
 		>
-			<!-- Game title -->
-			<Text
-				anchor={0.5}
-				text="HOT MIAMI"
-				style={{
-					fontFamily: DISPLAY_FONT,
-					fontSize: 52,
-					fontWeight: DISPLAY_FONT_WEIGHT,
-					fill: 0xff2e88,
-					letterSpacing: 6,
-					dropShadow: true,
-					dropShadowColor: 0x00e5ff,
-					dropShadowBlur: 18,
-					dropShadowDistance: 0,
-					stroke: 0xfff4cf,
-					strokeThickness: 1,
-				}}
+			<Sprite
+				key="hmCastGuy"
+				anchor={{ x: 0.5, y: 1 }}
+				width={castWidth}
+				height={castHeight}
 			/>
-
-			<!--
-				Subtitle and the loading line below both sit at 12–15px, which is where
-				Titan One stops working: it is a heavy rounded display face, and at that
-				size its counters close up and "10,000X" turns to mush. They use the body
-				stack instead — the same split the rules and paytable modals already make
-				(see game/fonts.ts). The 52px title above keeps the display face, which is
-				what it is for.
-			-->
-			<Text
-				anchor={0.5}
-				y={65}
-				text={subtitle}
-				style={{
-					fontFamily: BODY_FONT,
-					fontSize: 15,
-					fontWeight: '600',
-					fill: 0xf7ead6,
-					letterSpacing: 2.5,
-				}}
+		</Container>
+		<Container
+			x={layout.width - castWidth * 0.42}
+			y={layout.height + castSway.girl.dy * castHeight}
+			rotation={castSway.girl.rotation}
+			scale={{ x: 1, y: castSway.girl.scaleY }}
+		>
+			<Sprite
+				key="hmCastGirl"
+				anchor={{ x: 0.5, y: 1 }}
+				width={castWidth * (224 / 266)}
+				height={castHeight * (775 / 819) * (266 / 224) * (224 / 266)}
 			/>
 		</Container>
 
-		<!-- Progress bar area -->
-		<Container
-			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.6}
-		>
-			<!-- Progress bar -->
+		<!-- The real logo, not a typeset stand-in for it -->
+		<Sprite
+			key="hmLogo"
+			anchor={0.5}
+			x={layout.width * 0.5}
+			y={layout.height * 0.3}
+			width={logoWidth}
+			height={logoWidth * (LOGO_H / LOGO_W)}
+		/>
+
+		<Text
+			anchor={0.5}
+			x={layout.width * 0.5}
+			y={layout.height * 0.3 + logoWidth * (LOGO_H / LOGO_W) * 0.62}
+			text={subtitle}
+			style={{
+				fontFamily: BODY_FONT,
+				fontSize: Math.max(13, Math.min(19, layout.width * 0.014)),
+				fontWeight: '600',
+				fill: 0xffd75e,
+				letterSpacing: 3,
+			}}
+		/>
+
+		<Container x={layout.width * 0.5} y={layout.height * 0.66}>
+			<!--
+				The bar in the game's own neon: an indigo channel with a magenta-to-cyan
+				fill and a lit head, at 10px rather than 4. Drawn rather than tinted
+				from art so it is correct at any width.
+			-->
 			<Graphics
 				draw={(g) => {
-					const barWidth = 240;
-					const barHeight = 4;
+					const w = barWidth;
+					const h = 10;
 					g.clear();
-					// Background track
-					g.beginFill(0x38221c, 0.82);
-					g.drawRoundedRect(-barWidth / 2, -barHeight / 2, barWidth, barHeight, 2);
-					g.endFill();
-					// Progress fill
-					const fillWidth = (barWidth * animatedProgress) / 100;
-					if (fillWidth > 0) {
-						g.beginFill(0xffd43b, 0.94);
-						g.drawRoundedRect(-barWidth / 2, -barHeight / 2, fillWidth, barHeight, 2);
-						g.endFill();
+					g.roundRect(-w / 2, -h / 2, w, h, h / 2);
+					g.fill({ color: 0x1b0f3a, alpha: 0.95 });
+					g.stroke({ width: 2, color: 0x8a3ffc, alpha: 0.65 });
+					const fill = (w - 6) * (animatedProgress / 100);
+					if (fill > 2) {
+						g.roundRect(-w / 2 + 3, -h / 2 + 3, fill, h - 6, (h - 6) / 2);
+						g.fill({ color: 0xff2e88, alpha: 0.95 });
+						// the leading 40% cools toward cyan, so the bar has a direction
+						const head = Math.min(fill, fill * 0.4);
+						g.roundRect(-w / 2 + 3 + fill - head, -h / 2 + 3, head, h - 6, (h - 6) / 2);
+						g.fill({ color: 0x00e5ff, alpha: 0.85 });
 					}
 				}}
 			/>
 
-			<!--
-				Progress readout — percentage only. It used to switch to "TAP TO
-				CONTINUE" once loading finished, which put two versions of the same
-				instruction on screen at once: this one and the far larger "PRESS
-				ANYWHERE TO CONTINUE" across the foot (PressToContinue.svelte). The big
-				one wins, so this line simply retires and the tip moves up into the space
-				it leaves — the swap happens on the single frame the bar fills and the
-				bottom prompt appears, so nothing visibly jumps.
-			-->
 			{#if !context.stateApp.loaded}
 				<Text
 					anchor={0.5}
-					y={20}
+					y={30}
 					text={`LOADING ${Math.round(animatedProgress)}%`}
 					style={{
 						fontFamily: BODY_FONT,
-						fontSize: 13,
+						fontSize: 14,
 						fontWeight: '600',
-						// lifted off the previous muted tan, which was dim at 13px against
-						// the dark vignette
 						fill: 0xe8d3b6,
 						letterSpacing: 2,
 					}}
 				/>
 			{/if}
 
-			<!-- rotating gameplay tip -->
 			<Text
 				anchor={0.5}
-				y={context.stateApp.loaded ? 20 : 48}
+				y={context.stateApp.loaded ? 30 : 62}
 				alpha={tipAlpha}
 				text={TIPS[tipIndex]}
 				style={{
 					fontFamily: BODY_FONT,
-					fontSize: 13,
+					fontSize: Math.max(13, Math.min(17, layout.width * 0.0125)),
 					fontWeight: '600',
 					fill: 0xffd75e,
 					letterSpacing: 2,
+					align: 'center',
+					wordWrap: true,
+					wordWrapWidth: layout.width * 0.62,
 				}}
 			/>
 		</Container>

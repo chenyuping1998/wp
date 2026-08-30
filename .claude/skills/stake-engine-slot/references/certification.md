@@ -99,6 +99,23 @@ half: `currency`, `money`, `fund`, `credit`, `deposit`, `withdraw`.
 must be clean (it shows in both modes), and the social argument of `pick()` must
 be clean. It cannot see a word that arrives through a variable.
 
+### Replacements Stake names explicitly
+
+Most of the table is a mechanical substitution — "bet" → "play", "buy" → "play".
+Two are not, and guessing the pattern produces a term that is wrong but *clean*,
+which no restricted-word guard can catch:
+
+| Term | Their replacement | The guess that fails |
+| :-- | :-- | :-- |
+| PAY TABLE | **WIN TABLE** | "PLAY TABLE" |
+| place your bets | **come and play** | "place your plays" |
+
+Wild Party shipped "PLAY TABLE" in the shared pixi i18n and in its own rules
+page, passed its own guard on both, and came back as an open issue. When Stake
+names a replacement in a review comment, take the literal string — do not
+re-derive it from the pattern.
+
+
 ## Replay mode
 
 Requirements as stated by review:

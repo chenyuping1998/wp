@@ -30,7 +30,7 @@
 
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE } from '../game/constants';
-	import { featureScaled } from '../game/timeScale';
+	import { featureScaled, featureTimeScale } from '../game/timeScale';
 	// Orbitron, not Titan One. The frame multipliers are the one thing on the
 	// board that is permanently visible and is pure money — the place Hacksaw's
 	// Chaos Crew also lets display type get loud. Square geometric figures also
@@ -40,6 +40,7 @@
 	import { DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
 	import { getSymbolX } from '../game/utils';
 	import { FRAME_TIMING as T } from '../game/frameTiming';
+	import { frameEntry, ENTRY_MS, sweepFlight, collectorTick, tierOf as beatTierOf } from '../game/frameBeat';
 	import BoardContainer from './BoardContainer.svelte';
 
 	const context = getContext();
@@ -55,6 +56,18 @@
 		scale: Tween<number>;
 		glow: Tween<number>;
 		fly: Tween<number>;
+		/**
+		 * ms since this Frame appeared, or -1 once its arrival is over.
+		 *
+		 * The arrival is NOT a tween any more: a 2x and a 100x used to share one
+		 * 260ms backOut pop, so a fifty-fold difference in money arrived with the
+		 * identical gesture. It is now a per-tier motion from game/frameBeat.ts,
+		 * sampled per frame, and `design/check_frame_beat.mjs` fails the build if
+		 * the three tiers stop escalating or start sharing a shape.
+		 */
+		entryT: number;
+		/** the tier this Frame ENTERED as, so a re-roll cannot restyle mid-arrival */
+		entryTier: 'plain' | 'premium' | 'elite';
 	};
 
 	let active = $state<ActiveFrame[]>([]);
@@ -84,19 +97,64 @@
 		scale: new Tween(from, { duration: 260, easing: backOut }),
 		glow: new Tween(0.55, { duration: 260, easing: cubicOut }),
 		fly: new Tween(0, { duration: 420, easing: cubicOut }),
+		// `from === 0` means this Frame is arriving on the board; anything else is
+		// a Frame already there being restated (a re-roll or a doubling), which
+		// has its own punch and must not replay the arrival.
+		entryT: from === 0 ? 0 : -1,
+		entryTier: beatTierOf(frame.mult),
 	});
+
+	// One clock for every arriving Frame. Ocean Drive can put twenty on the grid
+	// at once, so this is a single rAF loop over the list rather than a timer per
+	// Frame — and it stops itself as soon as nothing is arriving.
+	let entryRaf = 0;
+	const runEntries = () => {
+		if (entryRaf) return;
+		let last = performance.now();
+		const tick = (now: number) => {
+			const dt = (now - last) * featureTimeScale();
+			last = now;
+			let live = false;
+			for (const frame of active) {
+				if (frame.entryT < 0) continue;
+				frame.entryT += dt;
+				if (frame.entryT >= ENTRY_MS[frame.entryTier]) frame.entryT = -1;
+				else live = true;
+			}
+			// reassign so Svelte sees the mutation of the array's members
+			active = active;
+			entryRaf = live ? requestAnimationFrame(tick) : 0;
+		};
+		entryRaf = requestAnimationFrame(tick);
+	};
+
+	/** The arrival pose, or the resting pose once the arrival is done. */
+	const entryPose = (frame: ActiveFrame) =>
+		frame.entryT < 0 ? null : frameEntry(frame.entryT, frame.entryTier);
 
 	// While flying, a frame lerps from its cell to the Collector along an arc so
 	// the paths fan out instead of overlapping into one straight line.
+	// Flight shaping per Frame, assigned when the sweep starts. The arc used to be
+	// one constant for every Frame, under a comment claiming the paths "fan out
+	// instead of overlapping into one straight line" — two Frames on the same reel
+	// flew the identical path, one under the other. Shapes come from
+	// game/frameBeat.ts and design/check_frame_beat.mjs asserts that neighbouring
+	// Frames in a sweep really do differ.
+	let flightOf = $state(new Map<string, ReturnType<typeof sweepFlight>>());
+
 	const frameX = (frame: ActiveFrame) => {
 		const origin = getSymbolX(frame.reel);
-		return sweepTarget ? origin + (sweepTarget.x - origin) * frame.fly.current : origin;
+		if (!sweepTarget) return origin;
+		const t = frame.fly.current;
+		const bow = flightOf.get(keyOf(frame))?.lateral ?? 0;
+		return origin + (sweepTarget.x - origin) * t + Math.sin(Math.PI * t) * SYMBOL_SIZE * bow;
 	};
 	const frameY = (frame: ActiveFrame) => {
 		const origin = rowCenterY(frame.row);
 		if (!sweepTarget) return origin;
 		const t = frame.fly.current;
-		return origin + (sweepTarget.y - origin) * t - Math.sin(Math.PI * t) * SYMBOL_SIZE * 0.55;
+		const arc = flightOf.get(keyOf(frame))?.arc ?? 0.55;
+		return origin + (sweepTarget.y - origin) * t - Math.sin(Math.PI * t) * SYMBOL_SIZE * arc;
 	};
 
 	const upsert = (frames: FrameEntry[], entryScale: number) => {
@@ -111,7 +169,17 @@
 			return makeFrame(frame, entryScale);
 		});
 		active = [...kept, ...updated];
-		updated.forEach((frame) => frame.scale.set(1, { duration: scaled(T.entryMs), easing: backOut }));
+		// Frames that are ARRIVING run their per-tier motion; the tween is only
+		// still used for the restate/re-roll/doubling punches and for the sweep.
+		updated.forEach((frame) => {
+			if (frame.entryT >= 0) {
+				frame.scale.set(1, { duration: 0 });
+				frame.glow.set(1, { duration: 0 });
+			} else {
+				frame.scale.set(1, { duration: scaled(T.entryMs), easing: backOut });
+			}
+		});
+		if (updated.some((frame) => frame.entryT >= 0)) runEntries();
 	};
 
 	// per-reel reveal: hold the spin's Frames until each one's own reel stops, so
@@ -174,6 +242,7 @@
 				return;
 			}
 
+			flightOf = new Map(swept.map((frame, index) => [keyOf(frame), sweepFlight(index, swept.length, frame.mult)]));
 			sweepTarget = { x: getSymbolX(position.reel), y: rowCenterY(position.row) };
 			sweepTotal = 0;
 			sweepShow = true;
@@ -186,9 +255,17 @@
 			await Promise.all(
 				swept.map(async (frame, index) => {
 					await waitForTimeout(scaled(index * stagger));
-					await frame.fly.set(1, { duration: scaled(T.sweepFlyMs), easing: cubicOut });
+					const flight = flightOf.get(keyOf(frame));
+					await frame.fly.set(1, {
+						duration: scaled(T.sweepFlyMs * (flight?.flightScale ?? 1)),
+						easing: cubicOut,
+					});
 					sweepTotal += frame.mult;
-					sweepScale.set(1.3, { duration: scaled(T.sweepTickOutMs), easing: backOut });
+					// The kick scales with what was just absorbed. It was a fixed 1.3
+					// for every Frame, so taking in a 2x looked exactly like taking in
+					// a 100x — in the one moment of the game whose entire subject is
+					// what each Frame was worth.
+					sweepScale.set(collectorTick(frame.mult), { duration: scaled(T.sweepTickOutMs), easing: backOut });
 					void frame.scale.set(0, { duration: scaled(T.sweepAbsorbMs), easing: cubicOut });
 					sweepScale.set(1, { duration: scaled(T.sweepTickInMs), easing: cubicOut });
 				}),
@@ -203,6 +280,7 @@
 			sweepShow = false;
 			await sweepScale.set(0, { duration: scaled(T.sweepCloseMs), easing: cubicOut });
 			sweepTarget = null;
+			flightOf = new Map();
 			active = [];
 		},
 		bonusTierEnter: async () => {
@@ -256,7 +334,27 @@
 		{@const tier = tierOf(frame.mult)}
 		{@const tint = tintOf(frame.mult)}
 		{@const halo = haloOf(frame.mult)}
-		<Container x={frameX(frame)} y={frameY(frame)} scale={frame.scale.current}>
+		{@const pose = entryPose(frame)}
+		{@const glow = pose ? pose.glow : frame.glow.current}
+		<Container
+			x={frameX(frame)}
+			y={frameY(frame)}
+			scale={(pose ? pose.scale : 1) * frame.scale.current}
+			rotation={pose ? pose.rotation : 0}
+		>
+			<!-- arrival shock ring: premium throws a small one, elite a big one,
+			     plain none at all — see game/frameBeat.ts -->
+			{#if pose && pose.ringAlpha > 0.01}
+				<Sprite
+					key="fxGlow"
+					anchor={{ x: 0.5, y: 0.5 }}
+					tint={tint}
+					blendMode="add"
+					width={SYMBOL_SIZE * pose.ring}
+					height={SYMBOL_SIZE * pose.ring}
+					alpha={pose.ringAlpha}
+				/>
+			{/if}
 			<!-- halo: nothing on a plain 2x-9x, a warm bloom on premium, bigger and
 			     brighter on elite -->
 			{#if halo > 0}
@@ -267,7 +365,7 @@
 					blendMode="add"
 					width={SYMBOL_SIZE * halo}
 					height={SYMBOL_SIZE * halo}
-					alpha={(tier === 'elite' ? 0.55 : 0.3) * (0.6 + 0.4 * frame.glow.current)}
+					alpha={(tier === 'elite' ? 0.55 : 0.3) * (0.6 + 0.4 * glow)}
 				/>
 			{/if}
 
@@ -277,8 +375,21 @@
 				width={SYMBOL_SIZE}
 				height={SYMBOL_SIZE}
 				tint={tint}
-				alpha={0.55 + 0.45 * frame.glow.current}
+				alpha={0.55 + 0.45 * glow}
 			/>
+
+			<!-- arrival flash: a white copy of the casting, fading out of the hit -->
+			{#if pose && pose.flash > 0.01}
+				<Sprite
+					key="hmFrame"
+					anchor={{ x: 0.5, y: 0.5 }}
+					width={SYMBOL_SIZE}
+					height={SYMBOL_SIZE}
+					tint={0xffffff}
+					blendMode="add"
+					alpha={pose.flash}
+				/>
+			{/if}
 
 			<!-- second, slightly larger casting on an elite: reads as heavier metal
 			     rather than as a different shape -->
@@ -290,7 +401,7 @@
 					height={SYMBOL_SIZE * 1.06}
 					tint={ELITE}
 					blendMode="add"
-					alpha={0.45 * (0.5 + 0.5 * frame.glow.current)}
+					alpha={0.45 * (0.5 + 0.5 * glow)}
 				/>
 			{/if}
 
@@ -332,6 +443,26 @@
 	<!-- Running total riding on the Collector while the frames pour in -->
 	{#if sweepShow && sweepTarget}
 		<Container x={sweepTarget.x} y={sweepTarget.y} scale={sweepScale.current}>
+			<!--
+				The Collector's own lettering, electrified, for as long as it is
+				sweeping.
+
+				It is drawn here rather than through the symbol's win animation
+				because a Collector round has no payline: its win arrives with
+				lineIndex 0, WinLines finds no such line and returns before animating
+				anything, so the symbol at the centre of the game's headline feature
+				was the one symbol on the board that never lit up. The sweep knows
+				where the Collector is — it is flying every Frame to it — so the
+				light belongs here.
+			-->
+			<Sprite
+				key="hmCCoreActive"
+				anchor={{ x: 0.5, y: 0.5 }}
+				width={SYMBOL_SIZE}
+				height={SYMBOL_SIZE}
+				blendMode="add"
+				alpha={0.55 + 0.45 * Math.min(1, sweepScale.current)}
+			/>
 			<Sprite
 				key="fxGlow"
 				anchor={{ x: 0.5, y: 0.5 }}

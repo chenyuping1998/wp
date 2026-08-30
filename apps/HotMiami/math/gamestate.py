@@ -11,7 +11,7 @@ folded into the line-win event. That keeps the RGS contract invariant
 after line wins as the rules describe.
 """
 
-from game_override import GameStateOverride
+from game_override import GameStateOverride, OCEAN_DRIVE
 from game_events import (
     bonus_tier_event,
     collector_win_event,
@@ -27,7 +27,6 @@ from src.events.events import (
     win_info_event,
 )
 
-OCEAN_DRIVE = "ocean_drive"
 NEON_NIGHTS = "neon_nights"
 
 
@@ -46,7 +45,7 @@ class GameState(GameStateOverride):
 
             self.draw_board(emit_event=True)
 
-            new_frames = self.add_frames(self.draw_frame_count())
+            new_frames = self.add_frames(self.draw_frame_count_for_spin())
             if new_frames:
                 new_frames_event(self, new_frames)
             self.apply_frames_to_board()

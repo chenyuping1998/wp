@@ -21,6 +21,19 @@
 	// and settles with a swing. Children render at the sign's text area center.
 	type Props = {
 		children: Snippet<[{ sizes: Sizes }]>;
+		/**
+		 * Lift the plaque off the board's centre line, in fractions of its own
+		 * height. Default 0 — exactly where it has always hung. FreeSpinIntro uses
+		 * it to make room for the tier's description panel underneath.
+		 */
+		offsetY?: number;
+		/**
+		 * Uniform scale on the whole plaque. Default 1 — the size it has always
+		 * been. FreeSpinIntro shrinks it when it also has a description panel to
+		 * show: at full size the plaque alone fills the height between the board's
+		 * top edge and the bet strip, and there is no room left underneath it.
+		 */
+		scale?: number;
 	};
 
 	const props: Props = $props();
@@ -57,8 +70,11 @@
 <MainContainer>
 	<Container
 		x={context.stateGameDerived.boardLayout().x}
-		y={context.stateGameDerived.boardLayout().y + dropY.current}
+		y={context.stateGameDerived.boardLayout().y +
+			dropY.current +
+			SIGN_SIZES.height * (props.scale ?? 1) * (props.offsetY ?? 0)}
 		rotation={swing.current}
+		scale={props.scale ?? 1}
 	>
 		<Sprite key="hmFsSign" anchor={0.5} {...SIGN_SIZES} />
 		<!-- children sit centered on the plank area (slightly below the emblem) -->

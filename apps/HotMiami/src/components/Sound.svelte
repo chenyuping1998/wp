@@ -17,6 +17,10 @@
 		// rather than restarting it, so the tension can climb reel by reel.
 		| { type: 'soundReelTensionStart'; rate?: number }
 		| { type: 'soundReelTensionStop' }
+		// Anticipation music duck: a lowpass closing over the music bed while a
+		// reel teases, and snapping back open when it resolves.
+		| { type: 'soundMusicDuck' }
+		| { type: 'soundMusicRelease' }
 		| { type: 'soundScatterCounterIncrease' }
 		| { type: 'soundScatterCounterClear' };
 </script>
@@ -56,6 +60,8 @@
 		| 'win_gliss'
 		| 'win_gliss_big'
 		| 'fs_intro'
+		| 'fs_outro'
+		| 'win_cap'
 		| 'coin_shimmer'
 		| 'wild_expand'
 		| 'mult_update'
@@ -77,6 +83,8 @@
 		win_gliss: 'miami/sfx/win_gliss.wav',
 		win_gliss_big: 'miami/sfx/win_gliss_big.wav',
 		fs_intro: 'miami/sfx/fs_intro.wav',
+		fs_outro: 'miami/sfx/fs_outro.wav',
+		win_cap: 'miami/sfx/win_cap.wav',
 		coin_shimmer: 'miami/sfx/coin_shimmer.wav',
 		wild_expand: 'miami/sfx/wild_expand.wav',
 		mult_update: 'miami/sfx/mult_update.wav',
@@ -122,6 +130,14 @@
 		sfx_scatter_win_v2: { name: 'win_gliss_big' },
 		sfx_superfreespin: { name: 'win_gliss_big', volume: 0.8 },
 		jng_intro_fs: { name: 'fs_intro' },
+		// The free-game outro panel and the max-win stop. Both were unmapped, so
+		// both fell through to the template sprite below and played GoBananas'
+		// jungle samples — audible at the end of every single feature, which is
+		// how it was reported ("FG 結束後有以前的範例音效"). sounds.json still
+		// carries `sfx_youwon_panel` and `sfx_winlevel_end`, so the fallback was
+		// not silent; it was wrong and confident.
+		sfx_youwon_panel: { name: 'fs_outro' },
+		sfx_winlevel_end: { name: 'win_cap' },
 		sfx_wild_explode: { name: 'wild_expand' },
 		sfx_multiplier_update: { name: 'mult_update' },
 		sfx_anticipation_start: { name: 'mult_update', volume: 0.5 },
@@ -182,6 +198,67 @@
 		}
 	}
 
+	// ─── the anticipation duck ────────────────────────────────────────────────
+	//
+	// A lowpass filter closing over the MUSIC while a reel teases, and opening
+	// again when it resolves. From the Hacksaw spec the user supplied: their
+	// anticipation is three things at once — the reel slows to half speed, its
+	// strip is swapped for a scatter-dense one, and the music bus gets a lowpass
+	// that takes 0.7s to close to 150Hz and only 0.3s to snap back to 20kHz.
+	//
+	// The asymmetry is the whole trick and it is worth stating: closing slowly is
+	// tension arriving without being announced, opening fast is the release. A
+	// symmetrical fade reads as a volume dip and nothing more.
+	//
+	// This needs Web Audio, because an HTMLAudioElement has no filter. The graph
+	// is built lazily around whichever element playBgm has just created —
+	// createMediaElementSource can only be called once per element, so it is
+	// created there and remembered here. Everything is guarded: if the browser
+	// has no AudioContext, or it refuses to resume, the game simply plays with no
+	// duck rather than with no music.
+	const DUCK_HZ = 150;
+	const OPEN_HZ = 20000;
+	const DUCK_CLOSE_S = 0.7;
+	const DUCK_OPEN_S = 0.3;
+	let audioContext: AudioContext | null = null;
+	let musicFilter: BiquadFilterNode | null = null;
+	let filteredElement: HTMLAudioElement | null = null;
+
+	const routeThroughFilter = (element: HTMLAudioElement) => {
+		try {
+			const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+			if (!Ctor) return;
+			audioContext = audioContext ?? new Ctor();
+			if (audioContext.state === 'suspended') void audioContext.resume();
+			if (!musicFilter) {
+				musicFilter = audioContext.createBiquadFilter();
+				musicFilter.type = 'lowpass';
+				musicFilter.frequency.value = OPEN_HZ;
+				musicFilter.connect(audioContext.destination);
+			}
+			// One source node per element, and a new element arrives on every track
+			// change. Reconnecting an element that already has a source throws.
+			if (filteredElement === element) return;
+			const source = audioContext.createMediaElementSource(element);
+			source.connect(musicFilter);
+			filteredElement = element;
+		} catch {
+			// no Web Audio, or the element is already routed: play unfiltered
+		}
+	};
+
+	const rampFilter = (hz: number, seconds: number) => {
+		if (!audioContext || !musicFilter) return;
+		if (audioContext.state === 'suspended') void audioContext.resume();
+		const now = audioContext.currentTime;
+		musicFilter.frequency.cancelScheduledValues(now);
+		musicFilter.frequency.setValueAtTime(musicFilter.frequency.value, now);
+		// Exponential, not linear: pitch and filter cutoff are heard
+		// logarithmically, and a linear ramp to 150Hz spends most of its time in
+		// the range where nothing audible is happening yet.
+		musicFilter.frequency.exponentialRampToValueAtTime(Math.max(40, hz), now + seconds);
+	};
+
 	// ─── BGM (both loops are standalone HTML5 Audio) ───
 	let bgmAudio: HTMLAudioElement | null = null;
 	let currentBgm: 'base' | 'freespin' | null = null;
@@ -200,6 +277,7 @@
 			bgmAudio = null;
 		}
 		bgmAudio = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
+		routeThroughFilter(bgmAudio);
 		bgmAudio.loop = true;
 		bgmAudio.volume = stateSoundDerived.volumeMusic();
 		bgmAudio.play().catch(() => {});
@@ -273,6 +351,8 @@
 		soundNeonZap: () => playCnSfx('neon_zap'),
 		soundReelTensionStart: ({ rate }) => playCnLoop('reel_tension', 0.8, rate ?? 1),
 		soundReelTensionStop: () => stopCnSfx('reel_tension'),
+		soundMusicDuck: () => rampFilter(DUCK_HZ, DUCK_CLOSE_S),
+		soundMusicRelease: () => rampFilter(OPEN_HZ, DUCK_OPEN_S),
 		soundStop: ({ name }) => {
 			if (name === 'bgm_main' || name === 'bgm_freespin') {
 				stopBgm();
@@ -289,6 +369,19 @@
 	});
 
 	onMount(() => {
+		// The duck is the one part of the presentation with no visual trace at
+		// all: a probe can screenshot a slowed reel and a scatter-dense strip, but
+		// a lowpass on the music is only observable from inside. Behind the same
+		// ?hmdebug=1 flag as the other hooks (game/stateGame.svelte.ts), so a
+		// submission build does not carry it.
+		if (/[?&]hmdebug=1(&|$)/.test(window.location.search)) {
+			(window as unknown as { __HM_AUDIO__: () => unknown }).__HM_AUDIO__ = () => ({
+				context: audioContext?.state ?? 'none',
+				filtered: !!filteredElement,
+				hz: musicFilter ? Math.round(musicFilter.frequency.value) : null,
+			});
+		}
+
 		// Fetch the one-shot sfx up front so the first play is in sync
 		// (an Audio element created lazily would stall on its first fetch).
 		(Object.keys(CN_SFX_FILES) as CnSfxName[]).forEach(getCnSfx);

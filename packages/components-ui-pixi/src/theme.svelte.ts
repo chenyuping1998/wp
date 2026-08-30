@@ -38,6 +38,13 @@ export const uiTheme = $state({
 	buttonBorder: 0xd8a84e,
 	buttonIconFill: 0xffffff,
 	buttonIconStroke: 0x000000,
+	// Ring thickness on a round control, idle and while it is ON. These were
+	// hard-coded 6 and 10 in UiButton; they are keys now because a flat platform
+	// chrome has no ring at all (Hacksaw's mobile circle buttons ship
+	// `--hg-btn-border-width: 0`) and the heavy brass ring is the single loudest
+	// thing about the drawn look. The defaults are the old constants exactly.
+	buttonBorderWidth: 6,
+	buttonBorderWidthActive: 10,
 
 	// the big bet button
 	betFill: 0x131313,
@@ -75,6 +82,18 @@ export const uiTheme = $state({
 	// hardcoded — a game with a warm plate overrides it so the CTA does not read
 	// as a different game's button dropped onto the board.
 	buyBonusLabelFill: 0xffffff,
+
+	// The Buy Bonus plate, for the case where no plate ART is supplied and the
+	// rounded rect is what the player sees. These four were hard-coded in
+	// ButtonBuyBonus; the defaults here are those constants exactly, so a game
+	// that sets none of them is unchanged. They exist because a game can now
+	// change its casing (uiTheme.barStyle) without the CTA staying behind in the
+	// old one — a black-and-gold plate beside a flat grey strip reads as two
+	// different games' controls sitting next to each other.
+	buyBonusFill: 0x000000,
+	buyBonusBorder: 0xffcf66,
+	buyBonusBorderWidth: 7,
+	buyBonusCornerRadius: 36,
 
 	// Chrome behind the Buy Bonus plate art: a black rounded rectangle with a gold
 	// border, hardcoded into ButtonBuyBonus since before the plate could be a
@@ -288,6 +307,49 @@ export const uiTheme = $state({
 	// strip and always falls back to the full bottom bar.
 	betBarLayout: 'bottom' as 'bottom' | 'sideRail' | 'compactBottom',
 
+	// ── Platform UX conventions ──────────────────────────────────────────────
+	//
+	// Behaviours pulled out of Hacksaw's shipped UI bundle (Densho 1.25.1 —
+	// docs/handoff/moooo_STATE.md records the teardown). Worth having precisely
+	// BECAUSE they are not Densho's design: its UI files and The Luxe's differ by
+	// one DOM node and five CSS rules, so what is written here is the house
+	// convention two live titles share, not one game's styling.
+	//
+	// NOTHING is styled from it — Moooo's controls are pixi, Hacksaw's are DOM, so
+	// their rem values transfer to nothing. What transfers is behaviour: hold-to-
+	// repeat on the stake stepper, a cooldown between changing the stake and
+	// betting it, an idle nudge, keyboard shortcuts, and closing every open panel
+	// when a round starts.
+	//
+	// `null` is the default and means the previous behaviour EXACTLY: no repeat,
+	// no cooldown, no idle animation, no shortcuts, panels left as they were. A
+	// game opts in by assigning the object. One word reverts it.
+	//
+	// It can also be turned off at run time on a build that is already deployed:
+	//
+	//   localStorage.setItem('platformUx', 'off')   previous behaviour
+	//   localStorage.removeItem('platformUx')       back to the game's own
+	//
+	platformUx: null as null | {
+		// Hold the +/- stake buttons and step every N ms (Hacksaw: 150). 0 disables
+		// the repeat and leaves one press = one step.
+		betRepeatMs: number;
+		// Changing the stake locks the bet button for N ms (Hacksaw: 500). This is
+		// a money guard, not a nicety: without it a press that lands in the same
+		// gesture as a stake change bets an amount the player has not seen yet.
+		betToSpinCooldownMs: number;
+		// Idle for N ms with a round already played -> nudge the bet button
+		// (Hacksaw: 50_000, animation 2_000, first delay 300). 0 disables.
+		idleReminderMs: number;
+		idlePulseMs: number;
+		// Shift-gated keyboard shortcuts, throttled to N ms (Hacksaw: 100).
+		shortcuts: boolean;
+		keybindThrottleMs: number;
+		// Starting a round closes the drawer and any open modal. Hacksaw closes
+		// seven panels on every `placeBet()`; this app has two.
+		closePanelsOnSpin: boolean;
+	},
+
 	// compactBottom only — height of the strip, in standard-layout units (the
 	// standard box is 1920x1080 on wide screens, so this is ~9% of the height).
 	// Games that clear the strip by shrinking their board derive the inset from
@@ -298,6 +360,49 @@ export const uiTheme = $state({
 	// controls floating directly on the game art.
 	barFill: 0x0c1206,
 	barAlpha: 0.72,
+
+	// compactBottom only — which chrome the strip is drawn in.
+	//
+	// 'framed'   the drawn housing: 26px corners, a 7px trim edge, a lit inner
+	//            line and engraved section rules. Matches a game whose reel
+	//            housing is itself a framed object. This is the default and is
+	//            byte-for-byte what shipped.
+	// 'flat'     platform chrome: 4px corners, a 3px dark edge, no inner line,
+	//            hairline dividers at 15% white. These proportions are Hacksaw's
+	//            `.ActionPanel` (#2a2a2a on a 3px #0f0f0f border, radius 3px,
+	//            `.divider--vertical { opacity: .15 }`) — the neutral casing two
+	//            of their live titles share, deliberately game-agnostic.
+	//
+	// Colours still come from barFill / barAlpha / panelBorder either way; this
+	// key only changes the SHAPES, so a game can take the flat casing without
+	// giving up its palette, or vice versa.
+	barStyle: 'framed' as 'framed' | 'flat',
+
+	// compactBottom only — geometry, in standard-layout units (a 1920x1080 box on
+	// wide screens). All three were constants inside LayoutBottomBar; the defaults
+	// here are those constants exactly.
+	//
+	// The numbers a game would want instead come from Hacksaw's own rendered UI,
+	// measured at 1280x720 in ui-appearance.html §1 and §7:
+	//
+	//   MainPanel      830.4 x 70   inset (4.8, 10) in an 840 x 110.4 wrapper
+	//   clear below    30.4         the strip FLOATS, it is not on the floor
+	//   PlaceBetBtn    112 x 112    at y −11, so it stands 21 ABOVE the panel top
+	//                               and is 1.60x the panel's own height
+	//
+	// That last line is the whole visual idea of their bar, and their report says
+	// so outright: the spin button is the only element allowed to break the strip,
+	// and it is what the eye lands on. As fractions of screen height those are
+	// panel 9.7%, float 4.2%, spin 15.6% — which is what a game porting them
+	// should set, rather than the raw pixels.
+	//
+	// barFrameBottom  how far the drawn frame stops short of the canvas floor.
+	//                 barHeight − barFrameBottom is the frame's own height.
+	// spinScale       spin button diameter as a multiple of UI_BASE_SIZE (150).
+	//                 It is centred on the frame, so anything above
+	//                 (barHeight − barFrameBottom) / 150 overhangs top and bottom.
+	barFrameBottom: 12,
+	spinScale: 0.78,
 
 	// compactBottom only — keep the oversized Buy Bonus where the side-rail layout
 	// put it (left of the board, vertically centred) instead of dropping it into

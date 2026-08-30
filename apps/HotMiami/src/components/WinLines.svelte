@@ -8,6 +8,10 @@
 		lineIndex: number;
 		positions: { reel: number; row: number }[];
 		symbolCount: number;
+		/** book units (100 = 1x bet), already multiplied by any Neon Frames */
+		win?: number;
+		/** the Frame multiplier that applied to this line, 1 when none did */
+		multiplier?: number;
 	};
 </script>
 
@@ -19,6 +23,8 @@
 
 	import BoardContainer from './BoardContainer.svelte';
 	import WinLineRunner from './WinLineRunner.svelte';
+	import GoldText from './GoldText.svelte';
+	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, REEL_PADDING, BOARD_DIMENSIONS } from '../game/constants';
 	import config from '../game/config';
@@ -52,6 +58,10 @@
 		delay: number;
 		travelMs: number;
 		done: boolean;
+		/** what this line paid, and where to say so */
+		win?: number;
+		multiplier?: number;
+		plate?: Point;
 	};
 
 	// volley timings — every winning line runs at once, staggered just enough
@@ -60,8 +70,17 @@
 	const FAST = { entry: 30, travel: 210, settle: 60, stagger: 12 };
 	const HOLD_AFTER_MS = 220;
 
+	// The value plate. Sized against the 118px cell: wide enough for a five-digit
+	// currency string at 26px, short enough to leave the symbol underneath
+	// readable, since the point is to label that symbol rather than cover it.
+	const PLATE = { w: 104, h: 40, r: 10 };
+
 	let lines = $state<ActiveLine[]>([]);
 	let show = $state(false);
+	// debug bookkeeping for __HM_LINES__ (see stateGame.debugWinLineCount)
+	$effect(() => {
+		context.stateGame.debugWinLineCount = show ? lines.length : 0;
+	});
 	let timing = $state(NORMAL);
 	// tick forces the trail Graphics to redraw while the runners move
 	let tick = $state(0);
@@ -148,6 +167,23 @@
 						y: symbolCenterYFromPayline(row),
 					})),
 					positions: win.positions,
+					win: win.win,
+					multiplier: win.multiplier,
+					// The value is said at the LAST cell of the line, which is where
+					// the eye already is when the runner finishes and where the line
+					// stops — saying it at the start would put the number under the
+					// runner for the whole crossing.
+					plate: (() => {
+						const cells = win.positions.filter((p) => p.row >= 1 && p.row <= BOARD_DIMENSIONS.y);
+						const last = cells[cells.length - 1];
+						if (!last) return undefined;
+						// Lifted clear of the symbol's face rather than centred on it: the
+						// plate names that symbol, so covering it defeats the point.
+						return {
+							x: symbolCenterX(last.reel),
+							y: symbolCenterYFromPayline(last.row - 1) - SYMBOL_SIZE * 0.3,
+						};
+					})(),
 					// stagger drifts a little and each grenade rolls at its own pace
 					delay: index * timing.stagger * jitter(win.lineIndex, 0.35),
 					travelMs: timing.travel * jitter(win.lineIndex + 7, 0.08),
@@ -257,6 +293,38 @@
 						crossed[line.lineIndex] = 1;
 					}}
 				/>
+			{/each}
+			<!--
+				What the line actually paid, said on the board.
+
+				Only after the runner has crossed (`done`), so the number arrives as
+				the payoff of the crossing rather than sitting there through it. The
+				plate is drawn over the last winning cell, tinted with the line's own
+				colour so a board with four lines on it can still be read line by
+				line, and it carries the Frame multiplier when one applied — that is
+				the one number a player cannot derive from the pay table.
+			-->
+			{#each lines.filter((line) => line.done && line.win && line.plate) as line (`v${line.lineIndex}`)}
+				<Container x={line.plate!.x} y={line.plate!.y} zIndex={20}>
+					<Graphics
+						draw={(g) => {
+							g.clear();
+							g.roundRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
+							g.fill({ color: 0x140a24, alpha: 0.88 });
+							g.roundRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
+							g.stroke({ width: 2, color: line.color, alpha: 0.95 });
+						}}
+					/>
+					<GoldText
+						text={bookEventAmountToCurrencyString(line.win!)}
+						fontSize={26}
+						maxWidth={PLATE.w - 12}
+						y={(line.multiplier ?? 1) > 1 ? -9 : 0}
+					/>
+					{#if (line.multiplier ?? 1) > 1}
+						<GoldText text={`x${line.multiplier}`} fontSize={20} maxWidth={PLATE.w - 20} y={13} />
+					{/if}
+				</Container>
 			{/each}
 		</Container>
 	</BoardContainer>

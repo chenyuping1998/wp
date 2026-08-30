@@ -325,6 +325,58 @@ def s_neon_zap():
     )
 
 
+def s_fs_outro():
+    """The free game closing. Deliberately the mirror image of s_fs_intro.
+
+    fs_intro opens a chord upward (rolloff 500 -> 5000) under a rising noise
+    riser, which is what "something is starting" sounds like. Playing that same
+    gesture at the END - which is what the game did, via the template sprite
+    that still answered to `sfx_youwon_panel` - tells the ear the feature is
+    beginning again. So this closes: two chords falling to the tonic, the
+    rolloff shutting (5200 -> 700) instead of opening, and the noise fading out
+    rather than in.
+    """
+    t = t_axis(2.4)
+    n = len(t)
+    half = n // 2
+    chord = np.zeros(n)
+    # V -> I. The first chord is short and only reaches the halfway point; the
+    # tonic underneath it runs the whole clip and is what is left ringing.
+    for deg in (7, 11, 14, 19):
+        voice = saw_stack(note(deg), t[:half], voices=6, rolloff=np.linspace(5200, 2200, half))
+        chord[:half] += voice * env_ad(half, 0.02, 0.9, 1.6)
+    for deg in (0, 7, 12, 16):
+        voice = saw_stack(note(deg), t, voices=7, rolloff=np.linspace(4200, 700, n))
+        chord += voice * env_adsr(n, 0.10, 0.5, 0.55, 1.0)
+    chord /= 8
+    bell = sum(fm_bell(note(d) * 2, t, ratio=2.0, index=4.5, decay=1.8) for d in (0, 12)) / 2
+    fall = band_noise(n, 3000, 9000, sweep_to=(600, 2200)) * np.linspace(1, 0, n) ** 2
+    return gated_reverb(chord + bell * 0.4 + fall * 0.2, room=0.44, gate=0.55, mix=0.42)
+
+
+def s_win_cap():
+    """Max win reached: a ceiling, not another climb.
+
+    Fired on the `wincap` book event, where the round stops paying because it
+    hit 20,000x. The template sprite's `sfx_winlevel_end` was answering this,
+    and it is a rising sting - the wrong shape for a limit being hit. This one
+    lands: a sub that drops and stays, an octave bell pair struck once, and no
+    riser anywhere in it.
+    """
+    t = t_axis(2.6)
+    n = len(t)
+    sub = np.sin(2 * np.pi * np.cumsum(np.linspace(90, 44, n)) / SR)
+    sub *= env_ad(n, 0.003, 1.6, 1.4)
+    stab = np.zeros(n)
+    for deg in (0, 12, 19):
+        stab += saw_stack(note(deg), t, voices=7, rolloff=np.linspace(6000, 900, n))
+    stab = stab / 3 * env_ad(n, 0.004, 2.2, 1.8)
+    bell = sum(fm_bell(note(d) * 2, t, ratio=2.41, index=6.5, decay=2.0) for d in (0, 12)) / 2
+    impact = band_noise(n, 150, 6000) * env_ad(n, 0.001, 0.35, 3.5)
+    return gated_reverb(sub * 0.95 + stab * 0.8 + bell * 0.5 + impact * 0.4,
+                        room=0.5, gate=0.5, mix=0.45)
+
+
 SOUNDS = {
     "btn": s_btn,
     "spin": s_spin,
@@ -340,6 +392,16 @@ SOUNDS = {
     "bigwin_blast": s_bigwin_blast,
     "wild_expand": s_wild_expand,
     "neon_zap": s_neon_zap,
+}
+
+# Built last, after the scatter run, rather than sitting next to fs_intro where
+# they belong by subject. `rng` is ONE seeded stream consumed in generation
+# order, so a sound inserted in the middle re-rolls the noise in everything
+# after it: adding these two rewrote nine unrelated files the first time, and a
+# diff that large hides a real one. Anything added from here on goes here.
+LATER_SOUNDS = {
+    "fs_outro": s_fs_outro,
+    "win_cap": s_win_cap,
 }
 
 
@@ -376,6 +438,8 @@ def main():
     for name, fn in SOUNDS.items():
         save(name, fn())
     save_group([f"scatter_{i + 1}" for i in range(5)], [s_scatter(i) for i in range(5)])
+    for name, fn in LATER_SOUNDS.items():
+        save(name, fn())
     print("done")
 
 

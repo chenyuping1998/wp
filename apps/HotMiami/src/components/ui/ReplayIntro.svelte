@@ -2,7 +2,7 @@
 	import { stateBet, stateReplay, stateUrlDerived } from 'state-shared';
 	import { API_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { numberToCurrencyString } from 'utils-shared/amount';
+	import { numberToCurrencyString, WIN_MAX_FRACTION_DIGITS } from 'utils-shared/amount';
 
 	import { HOT_MIAMI_BET_MODE_META } from '../../game/betModeMeta';
 
@@ -114,12 +114,31 @@
 			</div>
 			<div class="row highlight">
 				<dt>{L.totalWin}</dt>
-				<dd class="win big">{numberToCurrencyString(totalWin)}</dd>
+				<!--
+					Four decimals, like every other win figure. A stake is 2dp, but a
+					win of 2000 book units on a minimum stake is $0.002 and renders as
+					"$0.00" at 2dp — no longer matching the JSON the server sent, which
+					is the certification line "Game displays sub-cent payouts
+					correctly". The replay panel is exactly the surface that gets
+					missed when sweeping for this.
+				-->
+				<dd class="win big">{numberToCurrencyString(totalWin, WIN_MAX_FRACTION_DIGITS)}</dd>
 			</div>
 		</dl>
 
+		<!--
+			The play mark is drawn, not typed. It was a literal ▶ (U+25B6 BLACK
+			RIGHT-POINTING TRIANGLE), which most platforms hand to the colour emoji
+			font — so on the magenta button it arrived as a black-and-white system
+			glyph at whatever size and baseline that font chose, ignoring the button's
+			colour entirely. Same class of defect as the volatility bolts on the
+			opening card, same fix.
+		-->
 		<button class="replay-start" onclick={props.onstart}>
-			▶ {L.start}
+			<svg class="replay-start-mark" viewBox="0 0 12 14" aria-hidden="true">
+				<path d="M1 1v12l10-6z" />
+			</svg>
+			{L.start}
 		</button>
 
 		<p class="replay-foot">{L.foot}</p>
@@ -226,7 +245,10 @@
 	}
 
 	.replay-start {
-		display: block;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
 		width: 100%;
 		margin-top: 1rem;
 		padding: 0.8rem 1rem;
@@ -241,6 +263,16 @@
 		transition:
 			filter 0.2s ease,
 			transform 0.1s ease;
+	}
+
+	/* Sized off the label rather than in rem, so the mark tracks the button text
+	   at any root size. `currentColor` is the point of drawing it: it takes the
+	   button's own ink, which the emoji glyph could not. */
+	.replay-start-mark {
+		height: 0.85em;
+		width: auto;
+		fill: currentColor;
+		flex: none;
 	}
 
 	.replay-start:hover {

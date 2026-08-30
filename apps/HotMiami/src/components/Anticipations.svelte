@@ -95,10 +95,15 @@
 			});
 			// Mechanical reel-ticking loop — keeps the player locked on the glowing reel
 			context.eventEmitter.broadcast({ type: 'soundReelTensionStart', rate: tensionRate });
+			// ...and the music goes underwater. 0.7s to close, 0.3s to open (see
+			// Sound.svelte): the tease arrives without being announced and the
+			// resolution is a snap.
+			context.eventEmitter.broadcast({ type: 'soundMusicDuck' });
 
 			return () => {
 				context.eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
 				context.eventEmitter.broadcast({ type: 'soundReelTensionStop' });
+				context.eventEmitter.broadcast({ type: 'soundMusicRelease' });
 			};
 		}}
 	/>

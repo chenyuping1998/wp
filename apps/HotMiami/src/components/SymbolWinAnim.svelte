@@ -6,19 +6,47 @@
 	import { featureTimeScale } from '../game/timeScale';
 
 	import { SYMBOL_SIZE } from '../game/constants';
+	import { stateGame } from '../game/stateGame.svelte';
 	import { getSymbolInfo } from '../game/utils';
+	import { getSymbolWinMotion, HOLD_MS } from '../game/symbolWinMotion';
+	import SymbolArt from './SymbolArt.svelte';
 
 	type Props = {
 		x?: number;
 		y?: number;
 		symbolInfo: ReturnType<typeof getSymbolInfo>;
+		/**
+		 * Which symbol this is. The cell furniture below (wash, brackets, sparks)
+		 * is deliberately identical for every symbol — it marks a POSITION, and
+		 * Neon Frames pay by position. What must not be identical is how the
+		 * symbol itself reacts, and that is looked up from this name.
+		 */
+		symbolName: string;
+		/** cell position — forwarded to SymbolArt, which uses it for the blink */
+		cell?: { reel: number; row: number };
 		oncomplete?: () => void;
 	};
 
 	const props: Props = $props();
 
-	// pulse 0→1→0 at ~1.4 Hz
+	// pulse 0→1→0, driving the cell furniture only
 	let pulse = $state(0);
+	// milliseconds since this win started, driving the per-symbol motion
+	let elapsed = $state(0);
+
+	const motion = $derived(getSymbolWinMotion(props.symbolName));
+
+	/**
+	 * Is this a big win? The rarer faces (he pushes his sunglasses down, she winks)
+	 * are held back for these, so they stay worth seeing — a wink on every third
+	 * spin is wallpaper.
+	 *
+	 * Read from the round's own total rather than from this cell, because the tier
+	 * is a property of the round: every winning cell in a big round shows the big
+	 * face, which is what makes the board feel like it is reacting together.
+	 */
+	const isBigWin = $derived(stateGame.currentWinTotal >= BIG_WIN_MULTIPLE * 100);
+	const frame = $derived(motion.frame(elapsed));
 
 	// --- motion ---------------------------------------------------------------
 	//
@@ -29,7 +57,18 @@
 	//
 	//   hit    a hard scale overshoot on arrival, easing back — the moment
 	//   flash  a white copy of the symbol over itself, fading out of that moment
-	//   life   a small rotation wobble and vertical bob for as long as it is lit
+	//   life   what the symbol does for as long as it is lit
+	//
+	// `life` used to be one shared sine wobble, and THAT is what three reviewers
+	// rejected the game for. It is not that nothing moved — it is that all twelve
+	// symbols moved identically, so a winning flamingo and a winning letter J
+	// were the same animation with different art inside. `life` now comes from
+	// game/symbolWinMotion.ts, one function per symbol, and
+	// design/check_symbol_motion.mjs fails the build if any two are too alike.
+	//
+	// `hit` and `flash` stay shared on purpose: every win should punch, and the
+	// punch is what says "this paid". Only its amplitude varies, by
+	// `motion.hitScale`, so Wild and Scatter land harder than a card royal.
 	//
 	// Durations run through featureTimeScale(), so turbo shortens the beat
 	// without flattening it. See game/timeScale.ts.
@@ -37,10 +76,6 @@
 
 	const hit = new Tween(0.86, { duration: fs(220), easing: backOut });
 	const flash = new Tween(0.85, { duration: fs(300), easing: cubicOut });
-	// wobble/bob are driven off the same interval as the glow pulse, not their
-	// own tween — they have to keep running for the whole hold, and a Tween that
-	// finishes would just stop.
-	let wobble = $state(0);
 
 	// A short outward burst of sparks on the hit. Six is enough to read as a
 	// burst at 132px without turning the cell into confetti; they are laid out on
@@ -73,33 +108,73 @@
 	// 480ms is picked against those two: it is long enough to read on a line win
 	// as the runner crosses the cell, and short enough that three scatter passes
 	// come to 1.4s rather than a stall.
-	const WIN_HOLD_MS = 480;
+	// Imported rather than restated: the motion table sizes its beats against
+	// HOLD_MS (a beat that does not fit inside it is a beat no player ever sees),
+	// and two copies of the number are two chances for the table to be tuned
+	// against a window the component no longer uses.
+	//
+	// 2026-08-23: 480 -> 620 with the amplitude gain. A motion three times the
+	// size needs longer to read as a gesture rather than as a jolt, and the beats
+	// that fit in 480 still fit here.
+	const WIN_HOLD_MS = HOLD_MS;
+
+	/**
+	 * What counts as big, in multiples of the stake. 15× is the game's own "BIG
+	 * WIN" banner threshold (see constants.ts WIN_LEVELS), so the face and the
+	 * banner agree with each other — a wink under a banner that says nothing
+	 * special reads as a bug.
+	 */
+	// Book units are hundredths of the bet, so 15× is 1500.
+	const BIG_WIN_MULTIPLE = 15;
 
 	onMount(() => {
-		// own phase and a slightly different rate per symbol — pulsing every
-		// winning symbol in sync reads as one object breathing, not five
+		// own phase for the cell wash — pulsing every winning cell in sync reads
+		// as one object breathing, not five
 		const phase = Math.random() * Math.PI * 2;
 		const rate = 225 * (0.9 + Math.random() * 0.2);
-		const id = setInterval(() => {
-			const t = Date.now();
-			pulse = 0.5 + 0.5 * Math.sin(t / rate + phase);
-			wobble = Math.sin(t / (rate * 1.6) + phase);
-		}, 32);
+
+		// requestAnimationFrame, not the 32ms interval this used to run on. The
+		// whole animation is 480ms, so 32ms steps gave it fifteen frames — enough
+		// for a slow breathe, not enough for a struck beat like the boombox's or
+		// the car's idle vibration, which alias into a stutter at 31fps.
+		//
+		// `elapsed` is measured from a mount timestamp rather than accumulated per
+		// frame, so a dropped frame shifts nothing: every symbol's beat stays
+		// aligned to when its win actually started.
+		const started = performance.now();
+		let raf = 0;
+		const tick = (now: number) => {
+			elapsed = (now - started) * featureTimeScale();
+			pulse = 0.5 + 0.5 * Math.sin(now / rate + phase);
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
 
 		// the hit itself: overshoot, then settle a little above rest so the cell
-		// stays visibly raised for as long as it is part of the win
-		hit.set(1.22, { duration: fs(200), easing: backOut });
+		// stays visibly raised for as long as it is part of the win. Amplitude is
+		// scaled per symbol so the specials land heavier.
+		// 2026-08-23: 1.22/1.07 -> 1.45/1.18. The pop was the other half of the
+		// "動圖不明顯" report: at 1.22 peaking for 200ms and settling to 1.07, a
+		// winning symbol grew by 8px and then sat 4px proud of its neighbours,
+		// which on a board where the royals already draw at 0.92 and the specials
+		// at 1.08 of the cell is inside the size differences the art already has.
+		// At 1.45/1.18 it is unmistakably the symbol that just paid. Nothing masks
+		// the board, so overflowing the cell is safe — and overflowing is the
+		// point: it lifts the winning cell out of the grid.
+		const overshoot = 1 + (1.45 - 1) * motion.hitScale;
+		const settled = 1 + (1.18 - 1) * motion.hitScale;
+		hit.set(overshoot, { duration: fs(200), easing: backOut });
 		flash.set(0, { duration: fs(320), easing: cubicOut });
 		spark.set(1, { duration: fs(420), easing: cubicOut });
 		const settle = setTimeout(
-			() => hit.set(1.07, { duration: fs(240), easing: cubicOut }),
+			() => hit.set(settled, { duration: fs(240), easing: cubicOut }),
 			fs(200),
 		);
 
 		const done = setTimeout(() => props.oncomplete?.(), WIN_HOLD_MS / featureTimeScale());
 
 		return () => {
-			clearInterval(id);
+			cancelAnimationFrame(raf);
 			clearTimeout(settle);
 			clearTimeout(done);
 			// Resolve on the way out as well. If anything else changes the cell's
@@ -145,8 +220,15 @@
 </script>
 
 <!--
-  Programmatic win animation: scale pulse + a cell-shaped bracket marking the
-  winning position. Uses the existing symbol PNG sprites — no spine required.
+  Programmatic win animation. Two layers with different jobs:
+
+    the CELL   wash, corner brackets, spark burst — identical for every symbol,
+               because it marks a position and Neon Frames pay by position
+    the SYMBOL its own motion from game/symbolWinMotion.ts — different for all
+               twelve, because that is what got the game rejected
+
+  Uses the existing symbol PNGs and the existing fx sprites. No new art, no
+  Spine skeletons.
 -->
 <Container x={props.x} y={props.y}>
 	<!-- Cell wash, BEHIND the symbol: the cell lighting up, not a light on it -->
@@ -165,34 +247,91 @@
 		than the whole cell sliding around, and it keeps the bracket aligned to the
 		grid while the symbol leans inside it.
 	-->
-	<Container
-		scale={hit.current}
-		rotation={wobble * 0.05}
-		y={wobble * SYMBOL_SIZE * 0.022}
-	>
+	{#each frame.overlays.filter((o) => o.behind) as overlay, i (i)}
 		<Sprite
 			anchor={0.5}
-			key={props.symbolInfo.assetKey}
-			width={SYMBOL_SIZE * props.symbolInfo.sizeRatios.width}
-			height={SYMBOL_SIZE * props.symbolInfo.sizeRatios.height}
+			key={overlay.key}
+			x={overlay.x * SYMBOL_SIZE}
+			y={overlay.y * SYMBOL_SIZE}
+			width={overlay.width * SYMBOL_SIZE}
+			height={overlay.height * SYMBOL_SIZE}
+			rotation={overlay.rotation}
+			alpha={overlay.alpha}
+			tint={overlay.tint}
+			blendMode="add"
 		/>
+	{/each}
+
+	<Container
+		scale={{ x: hit.current * frame.scaleX, y: hit.current * frame.scaleY }}
+		rotation={frame.rotation}
+		x={frame.dx * SYMBOL_SIZE}
+		y={frame.dy * SYMBOL_SIZE}
+	>
+		<!--
+			The art itself. SymbolArt draws the flat sprite for most symbols and the
+			rigged part stack for the ones whose art has been cut into layers, so a
+			boombox's speakers can pump on the beat the body is already thumping to.
+			`t` is the same clock the per-symbol motion runs on, so the parts and the
+			body stay locked together.
+		-->
+		<SymbolArt
+			symbolInfo={props.symbolInfo}
+			symbolName={props.symbolName}
+			mode="win"
+			t={elapsed}
+			cell={props.cell}
+			big={isBigWin}
+		/>
+		<!--
+			Neon-tube bloom: an additive copy of the symbol's own art in the letter's
+			own colour. The four card royals ARE neon letters, so the honest way to
+			animate them is to light them rather than to move them, and each one
+			gets its own switch-on rhythm. Zero for every other symbol, so this
+			costs nothing where it is not wanted.
+		-->
+		{#if frame.bloomAlpha > 0.01}
+			<SymbolArt
+				symbolInfo={props.symbolInfo}
+				symbolName={props.symbolName}
+				mode="win"
+				t={elapsed}
+				overlayTint={frame.bloomTint}
+				overlayAlpha={frame.bloomAlpha}
+			/>
+		{/if}
 		<!--
 			White copy of the same sprite over itself, fading out of the hit. This is
 			the impact: without it the overshoot alone reads as a zoom rather than as
 			something landing.
 		-->
 		{#if flash.current > 0.01}
-			<Sprite
-				anchor={0.5}
-				key={props.symbolInfo.assetKey}
-				width={SYMBOL_SIZE * props.symbolInfo.sizeRatios.width}
-				height={SYMBOL_SIZE * props.symbolInfo.sizeRatios.height}
-				tint={0xffffff}
-				alpha={flash.current}
-				blendMode="add"
+			<!-- the impact flash follows the PARTS, not a ghost of the flat pose -->
+			<SymbolArt
+				symbolInfo={props.symbolInfo}
+				symbolName={props.symbolName}
+				mode="win"
+				t={elapsed}
+				overlayTint={0xffffff}
+				overlayAlpha={flash.current}
 			/>
 		{/if}
 	</Container>
+
+	{#each frame.overlays.filter((o) => !o.behind) as overlay, i (i)}
+		<Sprite
+			anchor={0.5}
+			key={overlay.key}
+			x={overlay.x * SYMBOL_SIZE}
+			y={overlay.y * SYMBOL_SIZE}
+			width={overlay.width * SYMBOL_SIZE}
+			height={overlay.height * SYMBOL_SIZE}
+			rotation={overlay.rotation}
+			alpha={overlay.alpha}
+			tint={overlay.tint}
+			blendMode="add"
+		/>
+	{/each}
 
 	<!-- outward spark burst on the hit -->
 	{#if spark.current < 1}

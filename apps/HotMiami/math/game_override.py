@@ -3,6 +3,10 @@
 from game_executables import GameExecutables
 from src.events.events import reveal_event
 
+# The tier that plays without the Scatter and the Collector. Defined here rather
+# than imported from gamestate, which imports this module.
+OCEAN_DRIVE = "ocean_drive"
+
 
 class GameStateOverride(GameExecutables):
     """Extend the universal state with Neon Frame bookkeeping."""
@@ -22,6 +26,46 @@ class GameStateOverride(GameExecutables):
         (see `apply_frames_to_board`).
         """
         self.special_symbol_functions = {}
+
+    def create_board_reelstrips(self) -> None:
+        """Deal Ocean Drive from its own Scatter-free, Collector-free strips.
+
+        The tier already ignored both symbols - `run_freespin` passes
+        `allow_collector=False` and skips the retrigger check - but they were
+        still being dealt, so the player watched a Scatter land and nothing
+        happen (6.1% of Ocean Drive spins showed two or more of them), and sat
+        through an anticipation tease that could not pay off on 17.2% of them.
+        The rules panel says neither symbol appears in this tier; now that is
+        true.
+
+        Done as a strip substitution at draw time rather than as its own
+        distribution because the tier is reached from several distributions -
+        the natural 5-scatter trigger in `base`, the whole of `bonus_epic`, and
+        both of those modes' wincap fences - and they do not all deal from the
+        same strip. `ocean_drive_reels` maps each one to its twin.
+
+        The conditions dict belongs to the config and is restored immediately;
+        the swap only has to survive the one `super()` call that reads it.
+        Books are generated one simulation at a time per process, so nothing
+        else can observe the window.
+        """
+        weights = self.get_current_distribution_conditions()["reel_weights"]
+        substitutions = self.config.ocean_drive_reels
+        if (
+            self.gametype == self.config.freegame_type
+            and self.bonus_tier == OCEAN_DRIVE
+            and any(strip in substitutions for strip in weights[self.gametype])
+        ):
+            original = weights[self.gametype]
+            weights[self.gametype] = {
+                substitutions.get(strip, strip): weight for strip, weight in original.items()
+            }
+            try:
+                super().create_board_reelstrips()
+            finally:
+                weights[self.gametype] = original
+        else:
+            super().create_board_reelstrips()
 
     def draw_board(self, emit_event: bool = True, trigger_symbol: str = "scatter") -> None:
         """Draw a board carrying at most one Collector.

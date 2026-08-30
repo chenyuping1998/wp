@@ -4,6 +4,7 @@
 	import { stateModal } from 'state-shared';
 
 	import config from '../../game/config';
+	import { popupGhost } from './popupGhost';
 	import { getSocialTerms } from '../../game/socialTerms';
 	import assets from '../../game/assets';
 
@@ -93,7 +94,7 @@
 
 {#if stateModal.modal?.name === 'payTable'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="wp-paytable">
+		<div class="wp-paytable" use:popupGhost>
 			<h2>{T.payTableUpper}</h2>
 			<p class="wp-note">
 				{T.paysStart} shown as a multiple of {T.totalBet}. Line wins {T.winsDirection} on

@@ -39,7 +39,7 @@ export default {
 			"cost": 500.0,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.94,
+			"rtp": 0.9417,
 			"max_win": 20000.0
 		}
 	},
@@ -306,10 +306,10 @@ export default {
 					"name": "L3"
 				},
 				{
-					"name": "L4"
+					"name": "H4"
 				},
 				{
-					"name": "L3"
+					"name": "L2"
 				},
 				{
 					"name": "H5"
@@ -339,7 +339,7 @@ export default {
 					"name": "L3"
 				},
 				{
-					"name": "H4"
+					"name": "H5"
 				},
 				{
 					"name": "L3"
@@ -349,42 +349,6 @@ export default {
 				},
 				{
 					"name": "H4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
 				},
 				{
 					"name": "H3"
@@ -396,10 +360,46 @@ export default {
 					"name": "L1"
 				},
 				{
+					"name": "L2"
+				},
+				{
 					"name": "H2"
 				},
 				{
-					"name": "S"
+					"name": "H4"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H4"
 				},
 				{
 					"name": "L2"
@@ -411,46 +411,7 @@ export default {
 					"name": "H4"
 				},
 				{
-					"name": "H5"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
 					"name": "L3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L2"
 				},
 				{
 					"name": "L4"
@@ -459,10 +420,31 @@ export default {
 					"name": "H5"
 				},
 				{
-					"name": "H3"
+					"name": "L1"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L4"
 				},
 				{
 					"name": "H1"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L1"
 				},
 				{
 					"name": "L3"
@@ -471,10 +453,28 @@ export default {
 					"name": "L2"
 				},
 				{
+					"name": "L4"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L2"
+				},
+				{
 					"name": "L1"
 				},
 				{
-					"name": "H4"
+					"name": "H2"
 				},
 				{
 					"name": "L4"
@@ -485,61 +485,16 @@ export default {
 					"name": "L3"
 				},
 				{
-					"name": "L4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "S"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L4"
-				},
-				{
 					"name": "H3"
 				},
 				{
-					"name": "H4"
+					"name": "L3"
 				},
 				{
 					"name": "H5"
 				},
 				{
-					"name": "W"
-				},
-				{
-					"name": "L2"
-				},
-				{
 					"name": "H4"
-				},
-				{
-					"name": "L3"
 				},
 				{
 					"name": "L1"
@@ -548,234 +503,13 @@ export default {
 					"name": "H3"
 				},
 				{
-					"name": "H5"
-				},
-				{
 					"name": "L4"
-				},
-				{
-					"name": "W"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "C"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "S"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L1"
-				}
-			],
-			[
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "S"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L3"
 				},
 				{
 					"name": "H1"
 				},
 				{
 					"name": "L4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "S"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "H1"
 				},
 				{
 					"name": "C"
@@ -787,10 +521,55 @@ export default {
 					"name": "L1"
 				},
 				{
+					"name": "H4"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H2"
+				},
+				{
 					"name": "L4"
 				},
 				{
 					"name": "L3"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "L1"
 				},
 				{
 					"name": "H4"
@@ -799,13 +578,25 @@ export default {
 					"name": "H5"
 				},
 				{
+					"name": "W"
+				},
+				{
 					"name": "L4"
 				},
 				{
 					"name": "L2"
 				},
 				{
-					"name": "H2"
+					"name": "S"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "W"
+				},
+				{
+					"name": "L1"
 				},
 				{
 					"name": "L2"
@@ -814,13 +605,22 @@ export default {
 					"name": "H3"
 				},
 				{
+					"name": "L1"
+				},
+				{
+					"name": "H3"
+				},
+				{
 					"name": "H5"
 				},
 				{
-					"name": "H2"
+					"name": "L4"
 				},
 				{
-					"name": "W"
+					"name": "L1"
+				},
+				{
+					"name": "L3"
 				},
 				{
 					"name": "L4"
@@ -832,13 +632,34 @@ export default {
 					"name": "H3"
 				},
 				{
-					"name": "L4"
-				},
-				{
 					"name": "L1"
 				},
 				{
+					"name": "H5"
+				},
+				{
+					"name": "H1"
+				},
+				{
 					"name": "L2"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L4"
 				},
 				{
 					"name": "L3"
@@ -848,21 +669,6 @@ export default {
 				},
 				{
 					"name": "H5"
-				},
-				{
-					"name": "W"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H3"
 				},
 				{
 					"name": "L2"
@@ -873,10 +679,31 @@ export default {
 					"name": "L4"
 				},
 				{
+					"name": "L1"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H5"
+				},
+				{
 					"name": "L3"
 				},
 				{
-					"name": "H2"
+					"name": "H1"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L3"
 				},
 				{
 					"name": "L2"
@@ -885,19 +712,10 @@ export default {
 					"name": "L1"
 				},
 				{
-					"name": "H1"
-				},
-				{
-					"name": "L4"
-				},
-				{
 					"name": "L3"
 				},
 				{
 					"name": "L1"
-				},
-				{
-					"name": "L3"
 				},
 				{
 					"name": "H5"
@@ -906,16 +724,52 @@ export default {
 					"name": "H3"
 				},
 				{
-					"name": "W"
+					"name": "L1"
 				},
 				{
-					"name": "H3"
+					"name": "H5"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "W"
 				},
 				{
 					"name": "L4"
 				},
 				{
-					"name": "H1"
+					"name": "L3"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H5"
 				},
 				{
 					"name": "H2"
@@ -925,6 +779,84 @@ export default {
 				},
 				{
 					"name": "H4"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "S"
+				},
+				{
+					"name": "W"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "L2"
 				},
 				{
 					"name": "C"
@@ -934,12 +866,77 @@ export default {
 				},
 				{
 					"name": "H5"
+				}
+			],
+			[
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "S"
 				},
 				{
 					"name": "L2"
 				},
 				{
+					"name": "L1"
+				},
+				{
+					"name": "W"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H1"
+				},
+				{
 					"name": "H5"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L1"
 				},
 				{
 					"name": "L3"
@@ -948,22 +945,22 @@ export default {
 					"name": "L4"
 				},
 				{
-					"name": "L2"
+					"name": "W"
 				},
 				{
-					"name": "S"
+					"name": "H2"
 				},
 				{
 					"name": "L4"
 				},
 				{
-					"name": "L2"
-				},
-				{
 					"name": "H5"
 				},
 				{
-					"name": "H3"
+					"name": "L3"
+				},
+				{
+					"name": "L2"
 				},
 				{
 					"name": "H1"
@@ -975,7 +972,7 @@ export default {
 					"name": "L1"
 				},
 				{
-					"name": "W"
+					"name": "H1"
 				},
 				{
 					"name": "H5"
@@ -993,7 +990,7 @@ export default {
 					"name": "H4"
 				},
 				{
-					"name": "L1"
+					"name": "L3"
 				},
 				{
 					"name": "H2"
@@ -1008,7 +1005,7 @@ export default {
 					"name": "H3"
 				},
 				{
-					"name": "H2"
+					"name": "L4"
 				},
 				{
 					"name": "L2"
@@ -1017,7 +1014,7 @@ export default {
 					"name": "L4"
 				},
 				{
-					"name": "L1"
+					"name": "L3"
 				},
 				{
 					"name": "H4"
@@ -1029,37 +1026,40 @@ export default {
 					"name": "H3"
 				},
 				{
-					"name": "L3"
-				},
-				{
 					"name": "H5"
 				},
 				{
-					"name": "L1"
+					"name": "C"
+				},
+				{
+					"name": "H3"
 				},
 				{
 					"name": "H4"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L1"
 				},
 				{
 					"name": "S"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L2"
 				}
 			],
 			[
@@ -1067,200 +1067,200 @@ export default {
 					"name": "L1"
 				},
 				{
+					"name": "H4"
+				},
+				{
 					"name": "H5"
+				},
+				{
+					"name": "S"
+				},
+				{
+					"name": "L1"
 				},
 				{
 					"name": "L4"
 				},
 				{
 					"name": "H2"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "H4"
 				},
 				{
 					"name": "C"
 				},
 				{
+					"name": "L3"
+				},
+				{
+					"name": "W"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "S"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H1"
+				},
+				{
 					"name": "H4"
 				},
 				{
 					"name": "W"
 				},
 				{
-					"name": "L4"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L2"
-				},
-				{
 					"name": "L1"
 				},
 				{
 					"name": "L3"
 				},
 				{
-					"name": "L1"
+					"name": "L2"
 				},
 				{
 					"name": "L4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "S"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L2"
 				},
 				{
 					"name": "H2"
 				},
 				{
-					"name": "H3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H4"
-				},
-				{
 					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "W"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L2"
 				},
 				{
 					"name": "H3"
-				},
-				{
-					"name": "S"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H5"
 				}
 			]
 		],
 		"freegame": [
 			[
 				{
-					"name": "L2"
+					"name": "L4"
 				},
 				{
 					"name": "L1"
@@ -1272,16 +1272,16 @@ export default {
 					"name": "H1"
 				},
 				{
-					"name": "L2"
+					"name": "H5"
 				},
 				{
-					"name": "S"
+					"name": "W"
 				},
 				{
 					"name": "H2"
 				},
 				{
-					"name": "L1"
+					"name": "H5"
 				},
 				{
 					"name": "H3"
@@ -1296,212 +1296,6 @@ export default {
 					"name": "L4"
 				},
 				{
-					"name": "H1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "W"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "W"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L3"
-				}
-			],
-			[
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "W"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H3"
-				},
-				{
 					"name": "H2"
 				},
 				{
@@ -1511,356 +1305,88 @@ export default {
 					"name": "H3"
 				},
 				{
-					"name": "H4"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "W"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "W"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "S"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
-				}
-			],
-			[
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "W"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "W"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "W"
-				},
-				{
 					"name": "L4"
 				},
 				{
 					"name": "H4"
 				},
 				{
+					"name": "L4"
+				},
+				{
+					"name": "L2"
+				},
+				{
 					"name": "L1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H2"
 				},
 				{
 					"name": "C"
 				},
 				{
-					"name": "L3"
+					"name": "H2"
 				},
 				{
-					"name": "H2"
+					"name": "L2"
 				},
 				{
 					"name": "H1"
 				},
 				{
-					"name": "H2"
-				},
-				{
 					"name": "H3"
 				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "S"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
-				}
-			],
-			[
 				{
 					"name": "H1"
 				},
 				{
-					"name": "L2"
+					"name": "H4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H5"
 				},
 				{
 					"name": "L4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H4"
 				},
 				{
 					"name": "W"
 				},
 				{
-					"name": "L4"
+					"name": "H2"
 				},
 				{
-					"name": "L3"
-				},
-				{
-					"name": "H3"
+					"name": "L2"
 				},
 				{
 					"name": "H5"
@@ -1872,76 +1398,93 @@ export default {
 					"name": "L2"
 				},
 				{
+					"name": "H1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L1"
+				},
+				{
 					"name": "L3"
 				},
 				{
 					"name": "H4"
 				},
 				{
-					"name": "S"
+					"name": "L3"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H5"
 				},
 				{
 					"name": "L2"
 				},
 				{
+					"name": "L3"
+				}
+			],
+			[
+				{
+					"name": "H2"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "C"
+				},
+				{
 					"name": "H4"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "C"
+				},
+				{
+					"name": "L1"
 				},
 				{
 					"name": "H1"
 				},
 				{
-					"name": "H3"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
 					"name": "H4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L3"
 				},
 				{
 					"name": "H2"
@@ -1950,85 +1493,154 @@ export default {
 					"name": "L4"
 				},
 				{
-					"name": "L3"
+					"name": "H3"
 				},
 				{
-					"name": "H5"
+					"name": "L2"
 				},
 				{
-					"name": "H4"
+					"name": "L1"
 				},
 				{
 					"name": "L4"
 				},
 				{
 					"name": "L3"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H4"
 				},
 				{
 					"name": "W"
 				},
 				{
-					"name": "H1"
+					"name": "L3"
 				},
 				{
-					"name": "L2"
+					"name": "H4"
 				},
 				{
 					"name": "W"
 				},
 				{
+					"name": "H5"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L3"
+				},
+				{
 					"name": "H1"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "W"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H5"
 				},
 				{
 					"name": "H3"
 				},
 				{
-					"name": "L1"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H2"
-				},
-				{
 					"name": "L4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L1"
 				},
 				{
 					"name": "L3"
 				},
 				{
-					"name": "L2"
-				},
-				{
 					"name": "L4"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L2"
 				},
 				{
 					"name": "L3"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H3"
 				},
 				{
 					"name": "L4"
@@ -2042,7 +1654,395 @@ export default {
 					"name": "L1"
 				},
 				{
+					"name": "H2"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "C"
+				},
+				{
+					"name": "S"
+				},
+				{
 					"name": "L3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "W"
+				},
+				{
+					"name": "C"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "W"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "W"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H1"
+				}
+			],
+			[
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "W"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "C"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "S"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "W"
+				},
+				{
+					"name": "C"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "W"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "S"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H5"
+				}
+			],
+			[
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "L4"
 				},
 				{
 					"name": "H2"
@@ -2061,6 +2061,102 @@ export default {
 				},
 				{
 					"name": "H3"
+				},
+				{
+					"name": "C"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H5"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "S"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "C"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L2"
+				},
+				{
+					"name": "H3"
+				},
+				{
+					"name": "L3"
+				},
+				{
+					"name": "L1"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "H4"
+				},
+				{
+					"name": "H1"
+				},
+				{
+					"name": "H2"
+				},
+				{
+					"name": "L4"
+				},
+				{
+					"name": "H5"
 				},
 				{
 					"name": "W"
@@ -2072,90 +2168,12 @@ export default {
 					"name": "H5"
 				},
 				{
-					"name": "L3"
-				},
-				{
-					"name": "H5"
-				},
-				{
 					"name": "L4"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H3"
 				},
 				{
 					"name": "H4"
 				},
 				{
-					"name": "W"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "H4"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H3"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L2"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "H1"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L4"
-				},
-				{
 					"name": "H5"
 				},
 				{
@@ -2163,24 +2181,6 @@ export default {
 				},
 				{
 					"name": "L2"
-				},
-				{
-					"name": "H5"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L1"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "H2"
-				},
-				{
-					"name": "L3"
 				},
 				{
 					"name": "L3"
@@ -2210,19 +2210,19 @@ export default {
 					"name": "S"
 				},
 				{
-					"name": "L1"
+					"name": "L2"
 				},
 				{
 					"name": "H2"
 				},
 				{
+					"name": "L1"
+				},
+				{
+					"name": "H5"
+				},
+				{
 					"name": "L3"
-				},
-				{
-					"name": "L4"
-				},
-				{
-					"name": "L2"
 				},
 				{
 					"name": "H2"

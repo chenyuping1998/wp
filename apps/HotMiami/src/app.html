@@ -31,6 +31,13 @@
 			type="font/ttf"
 			crossorigin
 		/>
+		<link
+			rel="preload"
+			href="%sveltekit.assets%/fonts/Saira-latin.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin
+		/>
 		<style>
 			@font-face {
 				font-family: 'Titan One';
@@ -53,8 +60,84 @@
 				font-style: normal;
 				font-display: block;
 			}
+			/*
+				Saira carries the body copy — the feature paragraphs on the opening
+				card, the rules text, the paytable.
+
+				Until now that text ran on `"Trebuchet MS", "Segoe UI", Tahoma, Arial`,
+				i.e. no webfont at all. game/fonts.ts records that certification already
+				flagged this game once for "standard fonts", and that round only
+				replaced the DISPLAY face; the body stack was left as the operating
+				system's, so 462 characters of the first screen a reviewer sees were
+				rendered in whatever sans their machine defaults to.
+
+				Chosen against Orbitron rather than instead of it: Saira is the same
+				squared-off grotesk genus, so the two sit together, but it is drawn for
+				running text and stays readable at the 13-15px the modals use, which
+				Orbitron does not. Variable 300..700 in one file, so every weight the UI
+				asks for is real rather than synthesised.
+
+				Two subsets, split by unicode-range exactly as Google serves them: the
+				browser fetches `latin` always and `latin-ext` only for the accented
+				locales, and every non-Latin script (the CJK and Korean strings in
+				game/i18nText.ts) misses both ranges and falls through to the system
+				font per character — which is the behaviour those locales already had
+				and want.
+
+				SIL Open Font Licence, self-hosted; see static/fonts/Saira-OFL.txt.
+				33KB + 25KB.
+			*/
+			@font-face {
+				font-family: 'Saira';
+				src: url('%sveltekit.assets%/fonts/Saira-latin.woff2') format('woff2');
+				font-weight: 300 700;
+				font-style: normal;
+				font-display: block;
+				unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+					U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+					U+2212, U+2215, U+FEFF, U+FFFD;
+			}
+			@font-face {
+				font-family: 'Saira';
+				src: url('%sveltekit.assets%/fonts/Saira-latin-ext.woff2') format('woff2');
+				font-weight: 300 700;
+				font-style: normal;
+				font-display: block;
+				unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+					U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+					U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+			}
 		</style>
 		<meta name="viewport" content="width=device-width" />
+		<!--
+			display:block on the canvas, and overflow:hidden on <html> as well as
+			<body>.
+
+			The document ran ~5px taller than the viewport at every window size, so
+			the page was scrollable — the rubber-band drag certification checks for
+			under "main game frame should not be scrollable". The cause is not a
+			stray margin: a canvas is display:inline by default, so it sits on a text
+			baseline and the line box reserves descender space underneath it.
+			display:block takes the canvas out of the line box and the phantom row
+			goes with it.
+
+			Found by measuring rather than by eye — design/probe_layout.mjs reports
+			scrollHeight − innerHeight at each popout size — and it is the same
+			defect a sibling game found while fixing something else, which is why the
+			wording here matches theirs.
+
+			overflow:hidden on the root is a backstop. It only blocks user scrolling,
+			not programmatic scrollTo, so it is not a fix on its own.
+		-->
+		<style>
+			html {
+				overflow: hidden;
+			}
+
+			canvas {
+				display: block;
+			}
+		</style>
 		%sveltekit.head%
 	</head>
 	<body style="margin: 0; padding: 0; overflow: hidden; background-color: black">

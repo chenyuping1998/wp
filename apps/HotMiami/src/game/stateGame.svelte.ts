@@ -117,6 +117,35 @@ export const stateGame = $state({
 	gameType: 'basegame' as GameType,
 	multiplierBoard: [] as (MultiplierSymbol | undefined)[][],
 	scatterCounter: 0,
+	/**
+	 * Book-unit total of the win volley currently being presented (100 = 1× bet),
+	 * written by the `winInfo` handler. Symbol presentations read it to decide
+	 * whether this win is a big one — see SymbolWinAnim's big-win faces.
+	 */
+	currentWinTotal: 0,
+	/**
+	 * How many win lines are drawn right now. Debug-only bookkeeping, written by
+	 * WinLines.svelte and read by `__HM_LINES__` under ?hmdebug=1 — win lines are
+	 * Graphics rather than sprites, so nothing outside the game can otherwise
+	 * observe them, and "a line appeared while the reels were spinning" is a bug
+	 * that needs measuring rather than eyeballing.
+	 */
+	debugWinLineCount: 0,
+	/**
+	 * The cells taking part in the win volley on screen right now, or empty.
+	 *
+	 * Written by Board.svelte around `boardWithAnimateSymbols`, read by every
+	 * symbol so the ones NOT in it can stand down: a winning board dims
+	 * everything else instead of leaving twenty equally bright tiles with a thin
+	 * line drawn over some of them.
+	 *
+	 * This is lifted from the reference build the user pointed at (MadLab's
+	 * Nights of Miami, the same 5x4/14-line shape on the same engine): its
+	 * winning cells stay lit and the rest go dark, which is what makes a win read
+	 * as an event rather than as a line being drawn. It costs nothing and it is
+	 * the single largest readability difference between the two boards.
+	 */
+	winningCells: [] as { reel: number; row: number }[],
 	// Per-reel anticipation magnitude for the spin now on the reels, after
 	// bookEventHandlerMap's gate. 0 = no tease, 1 = two scatters already landed,
 	// 2+ = three or more (the trigger count), so 2+ means the next scatter pays.
@@ -134,6 +163,12 @@ export const stateGame = $state({
 	// rather than inside it.
 	frames: [] as { reel: number; row: number; mult: number }[],
 	bonusTier: null as null | 'neon_nights' | 'sunset_hits' | 'ocean_drive',
+
+	// True while the feature splash is up. Read by Cast.svelte, which stands its
+	// figure down for the duration: the splash draws its OWN copy, lit and on the
+	// near side of the scrim, and two of the same person on screen at once — one
+	// bright, one a dim ghost behind the dimming layer — is worse than either.
+	featureSplashShow: false,
 });
 
 // The reel housing fills 94% of the box height (BOARD_SIZES is 590 tall and
@@ -238,3 +273,94 @@ export const stateGameDerived = {
 	enhancedBoard,
 	getWinLevelDataByWinLevelAlias,
 };
+
+// ── debug probes ────────────────────────────────────────────────────────────
+// Only attached when the page is opened with `?hmdebug=1`.
+//
+// Both of these earn their keep — the reel probe is what proved a stuck round
+// was stuck before `motion` ever became 'spinning', and the emitter is the only
+// way to summon a presentation beat that the maths produces once in thousands of
+// rounds. Deleting them would mean rediscovering both the next time something is
+// wrong.
+//
+// But a submission build is not a development build. `__HM_EMIT__` can broadcast
+// any presentation event, and while it cannot touch the wallet or the maths (the
+// books come from the RGS; the emitter only drives animation), a reviewer with a
+// console open should not be able to make the game do arbitrary things. Behind a
+// flag they are absent unless asked for, and the play shell just adds
+// `&hmdebug=1` to its URL.
+//
+//     window.__HM_REELS__()               // motion / spinType / anticipating
+//     window.__HM_EMIT__({ type: '...' }) // fire any emitter event
+//     window.__HM_LINES__()               // win lines on screen right now
+//     window.__HM_GAME__()                // gameType / isTurbo
+//     window.__HM_TURBO__(true)           // set turbo (the toggle is canvas, not DOM)
+if (typeof window !== 'undefined' && /[?&]hmdebug=1(&|$)/.test(window.location.search)) {
+	(window as unknown as { __HM_REELS__: () => unknown }).__HM_REELS__ = () =>
+		stateGame.board.map((reel, index) => ({
+			reel: index,
+			motion: reel.reelState.motion,
+			spinType: reel.reelState.spinType,
+			anticipating: reel.reelState.anticipating,
+			// The symbols' own state, which is what actually drives the landing
+			// squash. Reading it from outside is the only way to time the gap
+			// between a reel arriving and its symbols reacting: measuring the
+			// squash from the rendered transform cannot separate it from the
+			// motion blur's vertical stretch, which is still decaying at that
+			// moment and pulls the aspect ratio the other way.
+			symbolState: reel.reelState.symbols[1]?.symbolState,
+			// What this reel is showing. Added while checking that a teasing reel
+			// scrolls the ordinary strip: the question "is there a scatter on the
+			// reels that already stopped" cannot be answered from a screenshot of a
+			// board mid-spin, and reading it off the rendered sprites means reading
+			// motion-blurred art. Names only, and only under ?hmdebug=1.
+			names: reel.reelState.symbols.map((symbol) => symbol.rawSymbol?.name),
+		}));
+
+	// Which game is on screen, and whether turbo is on. `__HM_REELS__` returns an
+	// array and probes map over it, so this is a second hook rather than a field
+	// on that one. Needed because reel timing is only meaningful per game type:
+	// base-game turbo lands the board as a block on purpose, feature turbo does
+	// not (SPIN_OPTIONS_FAST_FREEGAME.reelStaggerInTurbo), and a probe that
+	// cannot tell them apart cannot check either.
+	(window as unknown as { __HM_GAME__: () => unknown }).__HM_GAME__ = () => ({
+		gameType: stateGame.gameType,
+		isTurbo: stateBet.isTurbo,
+		betMode: stateBet.activeBetModeKey,
+		// How many cells are currently holding the rest of the board dim. Anything
+		// other than 0 on a settled, idle board is the leak that left the screen
+		// half-dark after a free game.
+		dimmedBy: stateGame.winningCells.length,
+		anticipation: [...stateGame.anticipation],
+	});
+
+	// Bet mode, settable — the same argument as __HM_TURBO__ below: the buy menu
+	// is a Pixi overlay, and "a bought round must not tease" cannot be checked
+	// from outside without being able to enter one.
+	(window as unknown as { __HM_BETMODE__: (key: string) => string }).__HM_BETMODE__ = (key) => {
+		stateBet.activeBetModeKey = key as typeof stateBet.activeBetModeKey;
+		return stateBet.activeBetModeKey;
+	};
+
+	// Turbo, settable. The toggle is a Pixi button on the canvas, so nothing
+	// outside the game can find it by label and every probe that wanted to
+	// measure turbo timing had to guess at its coordinates — which is how one of
+	// them ended up reporting "0 spins measured" after the button moved.
+	(window as unknown as { __HM_TURBO__: (on: boolean) => boolean }).__HM_TURBO__ = (on) => {
+		stateBet.isTurbo = on;
+		return stateBet.isTurbo;
+	};
+
+	(window as unknown as { __HM_EMIT__: (event: unknown) => void }).__HM_EMIT__ = (event) =>
+		eventEmitter.broadcast(event as Parameters<typeof eventEmitter.broadcast>[0]);
+
+	// Win lines are Graphics, not sprites, so nothing outside the game can see
+	// them — a screenshot catches one instant and the scene-graph probe reads
+	// transforms. This counter is what makes "no line was ever drawn while a reel
+	// was spinning" a measurement instead of an impression.
+	(window as unknown as { __HM_LINES__: () => unknown }).__HM_LINES__ = () => ({
+		count: stateGame.debugWinLineCount,
+	});
+
+	console.info('[hmdebug] __HM_REELS__, __HM_GAME__, __HM_TURBO__, __HM_EMIT__ and __HM_LINES__ attached');
+}

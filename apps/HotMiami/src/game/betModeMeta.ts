@@ -2,6 +2,9 @@ import type { BetModeData } from 'state-shared';
 import { stateUrlDerived } from 'state-shared';
 
 import config from './config';
+// The three tiers live in game/featureTiers.ts, so the buy menu and the splash
+// that opens a feature cannot describe the same thing differently.
+import { FEATURE_TIERS, type FeatureTier } from './featureTiers';
 
 // Hot Miami ships four math modes: base play plus one feature buy per bonus
 // tier. The shared library ships a template default (ANTE / SUPER ANTE / …)
@@ -29,42 +32,7 @@ const MAX_WIN = config.betModes.base.max_win.toLocaleString();
 
 const idleTicker = () => pick('PLACE YOUR BET', 'READY TO PLAY');
 
-type TierCopy = {
-	key: 'bonus' | 'bonus_hits' | 'bonus_epic';
-	mode: string;
-	title: string;
-	scatters: number;
-	summary: string;
-};
-
-const TIERS: TierCopy[] = [
-	{
-		key: 'bonus',
-		mode: 'BONUS',
-		title: 'NEON NIGHTS',
-		scatters: 3,
-		summary:
-			'10 free spins with one Neon Frame on the grid from the start. All Frames are sticky for the whole feature and are refilled with a new multiplier between spins.',
-	},
-	{
-		key: 'bonus_hits',
-		mode: 'BONUS_HITS',
-		title: 'SUNSET HITS',
-		scatters: 4,
-		summary:
-			'10 free spins starting with three sticky Neon Frames. Frame values persist, and any Frame that takes part in a win doubles before the next spin.',
-	},
-	{
-		key: 'bonus_epic',
-		mode: 'BONUS_EPIC',
-		title: 'OCEAN DRIVE',
-		scatters: 5,
-		summary:
-			'10 free spins with every position framed from the start, keeping the doubling rule. Collector and Scatter symbols do not appear.',
-	},
-];
-
-const buildTier = (tier: TierCopy): BetModeData => {
+const buildTier = (tier: FeatureTier): BetModeData => {
 	const mode = config.betModes[tier.key];
 	const cost = mode.cost;
 	return {
@@ -83,10 +51,15 @@ const buildTier = (tier: TierCopy): BetModeData => {
 					`Enter ${tier.title} directly for ${cost}× your amount, at the same ${RTP_PCT} RTP as normal play. ${tier.summary} Landing ${tier.scatters} FS Scatters in normal play opens the same feature. Maximum win: ${MAX_WIN}× your amount.`,
 				);
 			},
+			// An em dash, not the arrow this used to carry. U+2192 is in neither
+			// shipped face — checked against the `cmap` of both TTFs — so the arrow
+			// dropped out of Orbitron mid-string into whatever the browser had, at a
+			// different weight and baseline, right in the middle of the buy menu.
+			// U+00D7 and U+2014 are both present, so the rest of this line is safe.
 			get description() {
 				return pick(
-					`${cost}× BET → ${tier.title} (${tier.scatters} Scatters)`,
-					`${cost}× AMOUNT → ${tier.title} (${tier.scatters} Scatters)`,
+					`${cost}× BET — ${tier.title} (${tier.scatters} Scatters)`,
+					`${cost}× AMOUNT — ${tier.title} (${tier.scatters} Scatters)`,
 				);
 			},
 			get button() {
@@ -122,5 +95,5 @@ export const HOT_MIAMI_BET_MODE_META: Record<string, BetModeData> = {
 			bannerText: '',
 		},
 	},
-	...Object.fromEntries(TIERS.map((tier) => [tier.mode, buildTier(tier)])),
+	...Object.fromEntries(FEATURE_TIERS.map((tier) => [tier.mode, buildTier(tier)])),
 };

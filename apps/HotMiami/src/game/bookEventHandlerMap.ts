@@ -15,6 +15,7 @@ import { BOARD_DIMENSIONS } from './constants';
 import { featureScaled } from './timeScale';
 import config from './config';
 import { FRAME_REVEAL, FRAME_CLEAR } from './frameTiming';
+import { FEATURE_TIERS } from './featureTiers';
 
 // The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
 // a value of 1 means two scatters are already on the board and a value of 2
@@ -35,8 +36,49 @@ import { FRAME_REVEAL, FRAME_CLEAR } from './frameTiming';
 // shared package (and the sibling apps) untouched.
 const ANTICIPATION_MIN_SCATTERS = 2;
 
+// A teasing reel scrolls the ORDINARY strip.
+//
+// Two attempts at a special strip, both reported as wrong by the user, and the
+// second one is the more interesting failure:
+//
+//   all scatter        copied literally from the reference's `attention`
+//                      reelset. Our scatter is a big high-contrast green burst,
+//                      so a column of them is a solid slab of green with no reel
+//                      left underneath — 「MG 聽牌時後面輪整輪變成 SC」.
+//   one in two         interleaved with ordinary symbols to keep it reading as a
+//                      reel. Still wrong, and for a reason the first version hid:
+//                      at 1-in-2 the column is a REPEATING PAIR, and a scrolling
+//                      two-symbol pattern reads as a broken reel rather than as a
+//                      dense one — 「假轉變成兩顆有一顆 SC 很奇怪」.
+//
+// The reference can do it because its scatter is a small flat token and its
+// attention reelset is 30 symbols deep, so the density never resolves into a
+// pattern the eye can count. Ours is neither, and no density setting fixes that:
+// sparse enough not to look patterned is also sparse enough not to look loaded.
+//
+// So the strip is left alone. The tease is still three things happening at once
+// — the reel slows to 1.5x padding at 0.66 speed, the reel lights up, and the
+// music ducks through a lowpass — and those three are what the reference's own
+// spec lists first. The strip was the fourth, and it is the one that does not
+// survive being ported to a board with symbols this large.
+
+// A BOUGHT round does not get a tease.
+//
+// The feature is already paid for and the trigger is forced, so teasing it is
+// theatre about an outcome that was never in doubt — and with the scatter-dense
+// strip in place it looks it: every bought round showed whole reels of nothing
+// but SCATTER, which is what was reported as 「BUY BONUS 聽牌時整行都是 SC 很怪」.
+//
+// The reference spec says the same thing in one line: anticipation is off in
+// `bonus_buy` mode (and in superTurbo). Measured here, EVERY bought round arms
+// anticipation — 3,000 of 3,000 books — so this was not an occasional oddity,
+// it was every single purchase.
+const isBoughtRound = () => stateBet.activeBetModeKey.toUpperCase() !== 'BASE';
+
 const gateAnticipation = (anticipation: number[]) =>
-	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
+	isBoughtRound()
+		? anticipation.map(() => 0)
+		: anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
 
 // The win lines of the round's last winInfo, kept so the board can keep showing
 // them while it sits idle waiting for the next spin — otherwise the lines vanish
@@ -203,20 +245,46 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			);
 		}
 
+		// What scrolls past while a reel is in motion. The ordinary strip, on
+		// teasing reels too — see the note on the tease strip above for why the two
+		// special strips were both removed.
+		const padding = config.paddingReels[bookEvent.gameType];
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: { ...bookEvent, anticipation },
-			paddingBoard: config.paddingReels[bookEvent.gameType],
+			paddingBoard: padding,
 		});
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 	},
 	winInfo: async (bookEvent: BookEventOfType<'winInfo'>) => {
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_winlevel_small' });
 
+		// How big is THIS volley? The characters' rarer faces (he pushes his
+		// sunglasses down, she winks) are gated on it.
+		//
+		// It has to be the volley's own total, not the round's. `winBookEventAmount`
+		// is the running round total, and on the 20,000× book it only becomes big
+		// after the last spin has resolved — long after every symbol animation has
+		// finished — so a face gated on it never appeared once, on the biggest win
+		// in the game. The volley total is also the honest question: this win is
+		// what the symbol is reacting to.
+		stateGame.currentWinTotal = bookEvent.totalWin;
+
 		// Build win line data — each win has a lineIndex from meta
+		// The amount and the Frame multiplier travel with the line now.
+		//
+		// Two reasons, and the second one is a review finding rather than taste.
+		// The reference build the user pointed at (MadLab's Nights of Miami)
+		// prints the value on the winning cells, and a board that shows what it
+		// paid reads as a game rather than as a diagram. And Wild Party's
+		// guidelines round opened "symbol payouts do not match the paytable" on a
+		// game whose maths was provably right — the reviewer could not reconcile
+		// the figure because nothing on screen ever named which line paid what.
 		const winLineData = bookEvent.wins.map((win) => ({
 			lineIndex: win.meta.lineIndex,
 			positions: win.positions,
 			symbolCount: win.positions.length,
+			win: win.win,
+			multiplier: win.meta.multiplier,
 		}));
 
 		// Every winning line runs its grenade at once; free game and turbo use the
@@ -254,16 +322,63 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
 		// gold rings + sparks burst out of the scatters while the bell rings
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
-		await featurePause(3000);
+		// 3000 -> 1000, and three passes of the scatter shake -> one.
+		//
+		// Measured against the Hacksaw spec: their whole non-interactive feature
+		// entry is about 3.6 seconds, splash included. This one spent 3.0s holding
+		// on the bell and then 2.9s repeating the same 970ms symbol animation three
+		// times before the transition had even started — over 7 seconds to say one
+		// thing, and the second and third passes say nothing the first did not.
+		//
+		// The hold is still there because the bell needs somewhere to ring; it is
+		// now the length of the bell rather than three times it.
+		await featurePause(1000);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		// Three passes of the scatter shake — extended trigger celebration
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
-		for (let pass = 0; pass < featurePasses(3); pass++) {
-			await animateSymbols({ positions: bookEvent.positions });
-		}
+		await animateSymbols({ positions: bookEvent.positions });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
+		// Returns at FULL BLACK (Transition.svelte). Everything from here to the
+		// intro card happens where the player cannot see it, and the transition's
+		// own tail reveals the changed board over the following second.
 		await eventEmitter.broadcastAsync({ type: 'transition' });
+
+		// IN THE BLACK: become the free game.
+		//
+		// This used to run after the intro card, which meant the transition's
+		// reveal showed the BASE game — same background, same frame — and the
+		// switch happened later, in plain sight, behind a card. The spec this was
+		// re-timed against does the mode change while the screen is black for
+		// exactly this reason: what the player sees come up out of the black
+		// should already be the game they just won.
+		stateGame.gameType = 'freegame';
+		stateGame.stickyWildReels = [];
+		eventEmitter.broadcast({ type: 'expandingWildsClear' });
+		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
+
+		// WHICH tier, one event early.
+		//
+		// The splash panel names the feature and explains it, and it has to know
+		// which of the three this is BEFORE it is shown. The book's own `bonusTier`
+		// event carries that, but it arrives one event LATER — and the intro below
+		// blocks on a player press, so by the time `bonusTier` runs the panel has
+		// already been dismissed. Read on a settled board it was always null, which
+		// is exactly what the first version of the panel did: nothing.
+		//
+		// The Scatter count is the tier, by definition — 3, 4 or 5 opens Neon
+		// Nights, Sunset Hits or Ocean Drive — and `positions` is the Scatters that
+		// triggered it. So the same fact is available here, one event early. The
+		// `bonusTier` handler still runs afterwards and still has the last word; it
+		// writes the same value.
+		//
+		// Falls back to leaving it null rather than guessing: a bought round whose
+		// book carries no trigger positions gets the plaque without the panel, which
+		// is the old behaviour, rather than a panel describing the wrong feature.
+		const triggerTier = FEATURE_TIERS.find(
+			(entry) => entry.scatters === (bookEvent.positions?.length ?? 0),
+		);
+		if (triggerTier) stateGame.bonusTier = triggerTier.tier;
+
 		eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'jng_intro_fs' });
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
@@ -271,11 +386,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			type: 'freeSpinIntroUpdate',
 			totalFreeSpins: bookEvent.totalFs,
 		});
-		stateGame.gameType = 'freegame';
-		stateGame.stickyWildReels = [];
-		eventEmitter.broadcast({ type: 'expandingWildsClear' });
 		eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
-		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
 		stateUi.freeSpinCounterShow = true;
 		eventEmitter.broadcast({

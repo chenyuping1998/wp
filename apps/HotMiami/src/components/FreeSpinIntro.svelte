@@ -16,6 +16,11 @@
 
 	import { getContext } from '../game/context';
 	import { gameText } from '../game/i18nText';
+	import { stateGame } from '../game/stateGame.svelte';
+	import { tierByBonusTier } from '../game/featureTiers';
+	import FeatureSplashPanel from './FeatureSplashPanel.svelte';
+	import CastFigure, { CAST_NATIVE } from './CastFigure.svelte';
+	import { MainContainer } from 'components-layout';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation, { SIGN_DROP_MS } from './FreeSpinAnimation.svelte';
 	import FxBurst from './FxBurst.svelte';
@@ -27,18 +32,67 @@
 	let freeSpinsFromEvent = $state(0);
 	let oncomplete = $state(() => {});
 
+	// The description panel is for the moment a feature OPENS, not for every time
+	// this component is shown: retriggers reuse the same event to slam a "+N" onto
+	// the plaque, and re-explaining the rules on a retrigger is noise in the middle
+	// of a feature the player is already inside.
+	let isEntry = $state(true);
+	const tier = $derived(tierByBonusTier(stateGame.bonusTier));
+	const showPanel = $derived(isEntry && tier !== null);
+
+	// "FREE SPINS" and "AWARDED", both translated. On the entry card they compose
+	// the header strip's one line — "AWARDED 10 FREE SPINS" — which is where the
+	// reference puts its count; on a retrigger they stay the plaque's two labels.
 	const title = gameText('freeSpins');
 	const subtitle = gameText('spinsAwarded');
 
-	// The number used to be a bare <GoldText> that only inherited FadeContainer's
-	// alpha fade — the plaque dropped in with backOut and swung, and the figure it
-	// was announcing just materialised. It now slams in from 3x, lands on an
-	// FxBurst + sfx on the exact contact frame, squash-settles and then breathes.
+	// ── the entry card's geometry, from the reference ─────────────────────────
+	//
+	// Measured off the WE SPLIT screenshot the user supplied (1421x808):
+	// title at 0.136 of the height, one panel from 0.208 to 0.780 spanning
+	// 0.32..0.70 of the width, character down the left edge at full height, click
+	// prompt at 0.968. See FeatureSplashPanel for the rest.
+	//
+	// The PLAQUE does not appear on entry any more. It is the retrigger's card
+	// now: the reference's entry has no plaque, and with one the announcement was
+	// two objects — a wooden sign saying FREE SPINS floating above a panel saying
+	// what the feature is — where the reference has one. The plaque's drop, slam
+	// and burst are untouched and still play on every "+N".
+	const layout = $derived(context.stateLayoutDerived.mainLayout());
+	const titleY = $derived(layout.height * 0.145);
+	// Centred, not top-weighted. It was at 0.24 of the height with the card hanging
+	// off that point; the user's read was that it sat too high, and it did — the
+	// title above it plus a top-anchored card left the whole lower half empty.
+	const panelCenterY = $derived(layout.height * 0.54);
+	const panelWidth = $derived(Math.min(layout.width * 0.4, 620));
+	// Content-driven, with a floor. The reference's card is tall because its copy
+	// runs to seven lines; ours runs to four, and forcing the same proportion left
+	// a third of the card empty under the last line.
+	const panelMinHeight = $derived(layout.height * 0.26);
+
+
+	// The character. Cast.svelte stands its own copy down while this is up
+	// (stateGame.featureSplashShow) so there is only ever one of her, and this one
+	// is drawn on the NEAR side of the scrim so the dimming does not touch her.
+	const castHeight = $derived(layout.height * 1.12);
+	const castWidth = $derived((castHeight * CAST_NATIVE.girl.w) / CAST_NATIVE.girl.h);
+	// The RIGHT, as the board's own cast is. Standing her on the left made the two
+	// screens contradict each other: she walks off the right edge of the board and
+	// reappears on the left of the card announcing the feature.
+	const castX = $derived(layout.width - castWidth * 0.44);
+	const castTopY = $derived(layout.height * 0.04);
+
+	// The number's slam, timed against the plaque's drop.
+	//
 	// The sign drops with backOut, which reaches its target well before the tween
 	// ends, so the lead is shorter than SIGN_DROP_MS: the number starts falling
 	// while the sign is arriving and makes contact just as it settles. Holding the
 	// number invisible for the lead matters — at 3x it is wider than the sign, and
 	// slamming during the drop threw a giant numeral across the whole board.
+	//
+	// On the entry card there is no plaque any more, but the same three constants
+	// drive the header strip's arrival, so the count still lands rather than
+	// appearing.
 	const LEAD_S = (SIGN_DROP_MS * 0.6) / 1000;
 	const SLAM_S = 0.3;
 	const SETTLE_S = 0.35;
@@ -99,12 +153,20 @@
 	});
 
 	context.eventEmitter.subscribeOnMount({
-		freeSpinIntroShow: () => (show = true),
+		freeSpinIntroShow: () => {
+			show = true;
+		},
 		freeSpinIntroHide: () => {
 			show = false;
+			stateGame.featureSplashShow = false;
 			stopNumberAnim();
 		},
 		freeSpinIntroUpdate: async (emitterEvent) => {
+			isEntry = emitterEvent.extraSpins === undefined;
+			// Only now is it known whether this showing is an entry (a card with a
+			// character and a panel) or a retrigger (the plaque). `freeSpinIntroShow`
+			// fires first and cannot tell them apart.
+			stateGame.featureSplashShow = isEntry && tierByBonusTier(stateGame.bonusTier) !== null;
 			freeSpinsFromEvent = emitterEvent.extraSpins ?? emitterEvent.totalFreeSpins;
 			// retriggers reuse this event, so the slam replays for the +N as well
 			startNumberAnim();
@@ -114,10 +176,89 @@
 </script>
 
 <FadeContainer {show}>
-	<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
+	<!--
+		Darker than the 0.5 it was. The card now carries a lit character and a
+		framed panel, and both were competing with a background that was still
+		half-visible behind them. The reference's own card is nearly black outside
+		its panel.
+	-->
+	<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={showPanel ? 0.74 : 0.5} />
 
-	<FreeSpinAnimation>
-		{#snippet children({ sizes })}
+	{#if showPanel && tier}
+		<!--
+			ENTRY: the reference's arrangement — character down the left at full
+			height and NOT dimmed (it is drawn here, on the near side of the scrim,
+			which is the whole reason Cast.svelte stands its own copy down), the
+			feature's name as the largest thing on screen, one panel under it
+			carrying the spin count and the rules, and the click prompt at the foot.
+		-->
+		<MainContainer>
+			<CastFigure
+				who="girl"
+				x={castX}
+				topY={castTopY}
+				height={castHeight}
+				groundY={layout.height}
+			/>
+
+			<Container x={layout.width * 0.5}>
+				<!--
+					THE TITLE, as drawn art.
+					────────────────────────
+					It was four stacked pixi Texts imitating a wordmark — black outline,
+					a lit rim in the tier's colour, a dark face, a glow sprite behind.
+					That was as close as Text gets and it was still typography. These
+					PNGs carry letterforms that are in neither shipped face, a diagonal
+					streak across each face, and a glow that falls off properly instead
+					of being a rectangle of light behind the word.
+
+					All three are 1024x360 with the ink centred, so one size fits them:
+					the ink fills 97% of the width and 42% of the height, which is why
+					the drawn WIDTH is divided by 0.97 to make the letters themselves
+					land at the intended fraction of the screen.
+				-->
+				{@const titleInkWidth = Math.min(layout.width * 0.44, panelWidth * 1.25)}
+				<!--
+					A bed of light under it. The wordmark's own glow is drawn for a lit
+					scene; ours sits on a background darkened to 0.74, where a dark-faced
+					letterform is the DIMMEST thing on the card despite being the largest.
+					An additive pool in the tier's colour puts it back on top without
+					touching the art.
+				-->
+				<Sprite
+					key="fxGlow"
+					anchor={0.5}
+					y={titleY}
+					tint={tier.accent}
+					blendMode="add"
+					width={titleInkWidth * 1.15}
+					height={titleInkWidth * 0.34}
+					alpha={0.3}
+				/>
+				<Sprite
+					key={tier.titleKey}
+					anchor={0.5}
+					y={titleY}
+					width={titleInkWidth / 0.97}
+					height={(titleInkWidth / 0.97) * (360 / 1024)}
+				/>
+
+				<FeatureSplashPanel
+					{tier}
+					centerY={panelCenterY}
+					width={panelWidth}
+					minHeight={panelMinHeight}
+					header={`${freeSpinsFromEvent} ${title} ${subtitle}`}
+					headerScale={numberPose.scale}
+					headerAlpha={numberPose.alpha}
+				/>
+			</Container>
+		</MainContainer>
+	{:else}
+		<!-- RETRIGGER: the plaque, exactly as it always was -->
+		<FreeSpinAnimation>
+			{#snippet children({ sizes })}
+
 			<Text
 				anchor={0.5}
 				y={-sizes.height * 0.26}
@@ -178,7 +319,8 @@
 				}}
 			/>
 		{/snippet}
-	</FreeSpinAnimation>
+		</FreeSpinAnimation>
+	{/if}
 
 	<PressToContinue onpress={() => oncomplete()} />
 </FadeContainer>

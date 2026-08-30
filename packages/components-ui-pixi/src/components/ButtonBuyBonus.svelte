@@ -134,7 +134,12 @@
 			width={plate.width}
 			height={plate.height}
 			{...uiTheme.buyBonusPlateChrome
-				? { backgroundColor: 0x000000, borderColor: 0xffcf66, borderWidth: 7, borderRadius: 36 }
+				? {
+						backgroundColor: uiTheme.buyBonusFill,
+						borderColor: uiTheme.buyBonusBorder,
+						borderWidth: uiTheme.buyBonusBorderWidth,
+						borderRadius: uiTheme.buyBonusCornerRadius,
+					}
 				: {}}
 			{...(uiTheme.buyBonusIdleTint !== undefined && !disabled && !active
 				? { tint: uiTheme.buyBonusIdleTint }
