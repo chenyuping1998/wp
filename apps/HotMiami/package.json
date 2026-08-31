@@ -23,6 +23,7 @@
 		"check:sway": "node design/check_idle_sway.mjs --report",
 		"check:poses": "node design/check_poses.mjs --report",
 		"check:art": "python3 design/check_source_art.py --report",
+		"check:spine": "python3 design/check_no_master_slicing.py && python3 design/check_spine_slots_complete.py && python3 design/check_spine_parts_overlap.py",
 		"review": "python3 design/review_sheet.py",
 		"check:sounds": "node design/check_sounds.mjs --report",
 		"check:parts": "node design/run_check_parts.mjs --report"
@@ -41,6 +42,7 @@
 		"@sveltejs/vite-plugin-svelte": "5.0.3"
 	},
 	"dependencies": {
+		"@esotericsoftware/spine-pixi-v8": "4.2.74",
 		"lodash": "4.17.16",
 		"@types/lodash": "4.17.16",
 		"svelte": "5.20.5",

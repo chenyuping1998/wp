@@ -112,8 +112,18 @@ def main() -> int:
     problems: list[str] = []
     rows: list[str] = []
 
-    paths = sorted(SOURCE.rglob('*.png'))
+    # Rig placement guides are intentionally programmatic flat geometry, not
+    # shippable art.  Judge only actual source art with this gate.
+    paths = sorted(
+        path for path in SOURCE.rglob('*.png')
+        if not any(part.startswith('images_placeholder') for part in path.parts)
+        and not path.name.endswith('_pose_master_debug.png')
+    )
     for path in paths:
+        with Image.open(path) as source_image:
+            if 'A' in source_image.getbands() and source_image.getchannel('A').getbbox() is None:
+                rows.append(f'{str(path.relative_to(ROOT)):58} empty transparent canvas')
+                continue
         coverage, colours = measure(path)
         rel = path.relative_to(ROOT)
         rows.append(f'{str(rel):58} subject {coverage:5.1f}%  colours {colours:>7}')

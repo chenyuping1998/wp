@@ -268,6 +268,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// in the game. The volley total is also the honest question: this win is
 		// what the symbol is reacting to.
 		stateGame.currentWinTotal = bookEvent.totalWin;
+		if (bookEvent.wins.length > 0) {
+			stateGame.castReaction = { kind: 'win', seq: stateGame.castReaction.seq + 1 };
+		}
 
 		// Build win line data — each win has a lineIndex from meta
 		// The amount and the Frame multiplier travel with the line now.
@@ -308,6 +311,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateBet.winBookEventAmount = bookEvent.amount;
 	},
 	freeSpinTrigger: async (bookEvent: BookEventOfType<'freeSpinTrigger'>) => {
+		stateGame.castReaction = { kind: 'trigger', seq: stateGame.castReaction.seq + 1 };
 		// The base spin that triggered this may itself have paid, recording its win
 		// lines for the idle replay. But the board is about to become a free game
 		// and then be torn down to base idle, so those lines must not survive to be
@@ -525,7 +529,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
 
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
-		stateGame.gameType = 'basegame';
 		stateGame.stickyWildReels = [];
 		// NOTE: expandingWildsClear deliberately does NOT fire here — the sticky
 		// overlays must keep covering the reveal-board W stacks through the outro
@@ -550,6 +553,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
 		stateUi.freeSpinCounterShow = false;
 		await eventEmitter.broadcastAsync({ type: 'transition' });
+		// Transition resolves at full black; switch the cast and background here so
+		// the reveal returns to MG with the man already restored.
+		stateGame.gameType = 'basegame';
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });

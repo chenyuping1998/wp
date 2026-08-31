@@ -1,0 +1,192 @@
+{
+  "skeleton": {
+    "hash": "guy-psd-aligned-v2",
+    "spine": "4.2.74",
+    "x": -100,
+    "y": 0,
+    "width": 224,
+    "height": 512,
+    "images": "./images/"
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "hips",
+      "parent": "root",
+      "y": 270
+    },
+    {
+      "name": "chest",
+      "parent": "hips",
+      "y": 10
+    },
+    {
+      "name": "head",
+      "parent": "chest",
+      "y": 120
+    },
+    {
+      "name": "arm_lower_l",
+      "parent": "chest",
+      "x": -72,
+      "y": 30
+    },
+    {
+      "name": "hand_l",
+      "parent": "arm_lower_l",
+      "x": 22,
+      "y": -53
+    },
+    {
+      "name": "arm_upper_r",
+      "parent": "chest",
+      "x": 30,
+      "y": 100
+    },
+    {
+      "name": "arm_lower_r",
+      "parent": "arm_upper_r",
+      "x": 30,
+      "y": -40
+    },
+    {
+      "name": "hand_r",
+      "parent": "arm_lower_r",
+      "x": 18,
+      "y": 30
+    },
+    {
+      "name": "bat",
+      "parent": "hand_r",
+      "y": 8
+    }
+  ],
+  "slots": [
+    {
+      "name": "legs",
+      "bone": "hips",
+      "attachment": "legs"
+    },
+    {
+      "name": "torso",
+      "bone": "chest",
+      "attachment": "torso"
+    },
+    {
+      "name": "arm_lower_l",
+      "bone": "arm_lower_l",
+      "attachment": "arm_lower_l"
+    },
+    {
+      "name": "hand_l",
+      "bone": "hand_l",
+      "attachment": "hand_l"
+    },
+    {
+      "name": "arm_upper_r",
+      "bone": "arm_upper_r",
+      "attachment": "arm_upper_r"
+    },
+    {
+      "name": "arm_lower_r",
+      "bone": "arm_lower_r",
+      "attachment": "arm_lower_r"
+    },
+    {
+      "name": "bat",
+      "bone": "bat",
+      "attachment": "bat"
+    },
+    {
+      "name": "hand_r",
+      "bone": "hand_r",
+      "attachment": "hand_r"
+    },
+    {
+      "name": "head",
+      "bone": "head",
+      "attachment": "head"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "legs": {
+          "legs": {
+            "width": 142,
+            "height": 285,
+            "y": -139.5
+          }
+        },
+        "torso": {
+          "torso": {
+            "width": 224,
+            "height": 512,
+            "x": 12.0,
+            "y": -36.0
+          }
+        },
+        "arm_lower_l": {
+          "arm_lower_l": {
+            "width": 55,
+            "height": 89,
+            "x": 6.5,
+            "y": -33.5
+          }
+        },
+        "hand_l": {
+          "hand_l": {
+            "width": 24,
+            "height": 39,
+            "x": 2.0,
+            "y": -15.5
+          }
+        },
+        "arm_upper_r": {
+          "arm_upper_r": {
+            "width": 59,
+            "height": 95,
+            "x": 18.5,
+            "y": -41.5
+          }
+        },
+        "arm_lower_r": {
+          "arm_lower_r": {
+            "width": 49,
+            "height": 70,
+            "x": 12.5,
+            "y": -14.0
+          }
+        },
+        "bat": {
+          "bat": {
+            "width": 203,
+            "height": 115,
+            "x": -60.5,
+            "y": 28.5
+          }
+        },
+        "hand_r": {
+          "hand_r": {
+            "width": 36,
+            "height": 40,
+            "x": 7.0,
+            "y": -1.0
+          }
+        },
+        "head": {
+          "head": {
+            "width": 63,
+            "height": 86,
+            "x": -0.5,
+            "y": 46.0
+          }
+        }
+      }
+    }
+  ],
+  "animations": {}
+}

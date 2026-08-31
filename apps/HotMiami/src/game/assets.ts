@@ -369,12 +369,32 @@
 	// PNGs (266x819 and 224x775) against a 32MB bundle.
 	hmCastGuy: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hotMiamiCast/guy.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hotMiamiCast/guy_spine.png', import.meta.url).href,
 		preload: true,
 	},
 	hmCastGirl: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hotMiamiCast/girl.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hotMiamiCast/girl_spine.png', import.meta.url).href,
+		preload: true,
+	},
+
+	// Rigged versions of the same two figures — real elbow/wrist articulation
+	// instead of a flat cut-out swaying as one rigid body. Cast.svelte uses these
+	// by default, so they must be available before the live rig mounts.
+	hmCastGuySpine: {
+		type: 'spine',
+		src: {
+			atlas: new URL('../../assets/spines/cast_guy/cast_guy_r2.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/cast_guy/guy_r2.json', import.meta.url).href,
+		},
+		preload: true,
+	},
+	hmCastGirlSpine: {
+		type: 'spine',
+		src: {
+			atlas: new URL('../../assets/spines/cast_girl/cast_girl_r2.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/cast_girl/girl_r2.json', import.meta.url).href,
+		},
 		preload: true,
 	},
 
