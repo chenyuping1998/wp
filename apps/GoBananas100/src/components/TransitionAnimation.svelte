@@ -4,9 +4,15 @@
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getContext } from '../game/context';
 
-	// Jungle-commando transition: a pineapple grenade drops into the middle of
-	// the screen — two red ticks — BOOM. The cut to the next scene lands on the
-	// white-hot peak of the blast.
+	// Jungle-commando transition: the sergeant pitches a pineapple grenade into
+	// the middle of the screen — two red ticks — BOOM. The cut to the next scene
+	// lands on the white-hot peak of the blast.
+	//
+	// The grenade comes out of his HAND when he is on screen, and drops in from
+	// above when he is not. Both paths exist because he is only there on layouts
+	// wide enough to stand him beside the board — tablet and portrait have no
+	// room (Mascot.svelte, MIN_GAP), and a grenade materialising out of empty
+	// space at the edge of the screen would be worse than the plain drop.
 	//
 	// The grenade falls over the LIVE scene: for the first 800ms of this
 	// animation whatever is behind it is fully visible. Anything the player must
@@ -24,13 +30,43 @@
 	const props: Props = $props();
 	const context = getContext();
 
-	const THROW_MS = 460; // grenade drops in from the top, always face-on
-	const TICK_MS = 340; // armed: two red blinks
+	// He reaches, a grenade appears in his fist, he winds up, he throws. All of
+	// that happens on the mascot, and this is how long it takes — RELEASE_AT in
+	// design/generate_monkey_spine.mjs, in milliseconds.
+	//
+	// NOT free to change on its own. The skeleton switches the grenade OFF in his
+	// hand at exactly this moment and the transition switches its own copy on, so
+	// if the two drift there is either a frame with two grenades or a frame with
+	// none.
+	const THROW_RELEASE_MS = 580;
+	const FLIGHT_MS = 340; // hand to the middle of the screen
+	const DROP_MS = 460; // the no-mascot fallback: straight down, face-on
+	const TICK_MS = 260; // armed: two red blinks
 	// Longer than it was (420ms) to make room for the smoke. The blast itself did
 	// not need more time; what it needed was somewhere for the white-out to GO.
 	const BOOM_MS = 700;
-	const TOTAL_MS = THROW_MS + TICK_MS + BOOM_MS;
-	const BOOM_AT = THROW_MS + TICK_MS;
+
+	// Which entrance this run uses is decided ONCE, on mount. Reading the state
+	// every frame would let a resize part-way through swap the grenade from a
+	// thrown one to a dropped one in mid-flight.
+	const origin = context.stateGame.mascotThrowOrigin;
+	const thrown = origin !== null;
+
+	const ENTRY_MS = thrown ? THROW_RELEASE_MS + FLIGHT_MS : DROP_MS;
+	const BOOM_AT = ENTRY_MS + TICK_MS;
+	const TOTAL_MS = BOOM_AT + BOOM_MS;
+
+	// The release point in this container's coordinates. The container is centred
+	// on the canvas, and `origin` is in main-layout units, so the conversion is
+	// the same one MainContainer applies: offset from the layout's centre, scaled.
+	const releasePoint = () => {
+		const layout = context.stateLayoutDerived.mainLayout();
+		if (!origin) return { x: 0, y: 0 };
+		return {
+			x: (origin.x - layout.width / 2) * layout.scale,
+			y: (origin.y - layout.height / 2) * layout.scale,
+		};
+	};
 
 	// Flash envelope, as fractions of the boom.
 	//
@@ -84,6 +120,7 @@
 	let grenadeScale = $state(1);
 	let grenadeTint = $state(0xffffff);
 	let grenadeAlpha = $state(1);
+	let grenadeSpin = $state(0);
 	// fraction of the boom over which the grenade is consumed by its own blast
 	const GRENADE_BURN = 0.16;
 	let boomT = $state(-1);
@@ -102,6 +139,11 @@
 	};
 
 	onMount(() => {
+		// Tell him to wind up. Broadcast before the first frame rather than inside
+		// the loop, so the arm is already moving on the frame the flash-less part
+		// of this animation begins.
+		if (thrown) context.eventEmitter.broadcast({ type: 'mascotThrow' });
+
 		let last = 0;
 		const tick = (now: number) => {
 			if (!last) last = now;
@@ -111,21 +153,49 @@
 
 			const h = context.stateLayoutDerived.canvasSizes().height;
 
-			if (elapsed < THROW_MS) {
+			if (thrown && elapsed < THROW_RELEASE_MS) {
+				// still in his hand — nothing to draw yet
+				grenadeVisible = false;
+			} else if (thrown && elapsed < ENTRY_MS) {
+				// FLIGHT: hand to the middle of the screen.
+				//
+				// Linear across, parabolic up and back down: a thrown object's
+				// horizontal speed barely changes and all of the interest is in the
+				// vertical, so easing the x as well is what makes a lobbed prop look
+				// like it is being dragged along a path.
+				const p = (elapsed - THROW_RELEASE_MS) / FLIGHT_MS;
+				const from = releasePoint();
+				// Arc height scales with how far it has to travel, so the lob looks
+				// the same shape on a wide layout as on a narrow one.
+				const lift = Math.hypot(from.x, from.y) * 0.38;
+				grenadeVisible = true;
+				grenadeX = from.x * (1 - p);
+				grenadeY = from.y * (1 - p) - lift * 4 * p * (1 - p);
+				// grows as it comes toward the camera
+				grenadeScale = 0.55 + p * 0.65;
+				// A real thrown grenade tumbles. This is the one moment it should:
+				// on the way down (the fallback) it is deliberately face-on, but a
+				// throw has spin in it and a prop that arrives flat looks placed.
+				grenadeSpin = p * Math.PI * 2.4;
+				grenadeTint = 0xffffff;
+			} else if (!thrown && elapsed < ENTRY_MS) {
 				// drops in from above and brakes to a stop — deliberately NOT spinning,
 				// so the grenade reads face-on the whole way down
-				const p = easeOutCubic(elapsed / THROW_MS);
+				const p = easeOutCubic(elapsed / ENTRY_MS);
 				grenadeVisible = true;
 				grenadeX = 0;
 				grenadeY = -h * 0.72 * (1 - p);
 				grenadeScale = 0.7 + p * 0.5;
+				grenadeSpin = 0;
 				grenadeTint = 0xffffff;
 			} else if (elapsed < BOOM_AT) {
 				// armed on the spot: two hot red blinks
-				const p = (elapsed - THROW_MS) / TICK_MS;
+				const p = (elapsed - ENTRY_MS) / TICK_MS;
 				grenadeVisible = true;
 				grenadeX = 0;
 				grenadeY = 0;
+				// settles out of the tumble rather than snapping to upright
+				grenadeSpin *= 0.82;
 				grenadeScale = 1.2 + Math.sin(p * Math.PI * 2) * 0.06;
 				// Interpolated, not a binary flip. Switching hard between white and red on
 				// the sign of a sine reads as a strobe; easing between them reads as
@@ -291,6 +361,7 @@
 			y={grenadeY}
 			width={context.stateLayoutDerived.canvasSizes().height * 0.2 * grenadeScale}
 			height={context.stateLayoutDerived.canvasSizes().height * 0.2 * grenadeScale}
+			rotation={grenadeSpin}
 			tint={grenadeTint}
 			alpha={grenadeAlpha}
 		/>

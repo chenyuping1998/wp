@@ -85,6 +85,14 @@
 		[
 			['Base game', 'base', 'Every spin'],
 			['Free Spins', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}× ${T.bet}`],
+			// The 500x buy. It was absent from this table while having its own RTP
+			// and its own max win in the maths — which is the one thing the table
+			// exists to state for every mode the player can reach.
+			[
+				'Super Free Spins',
+				'superbonus',
+				`${entryVerb} for ${config.betModes?.superbonus?.cost}× ${T.bet}`,
+			],
 			['Super Spin', 'superspin', `${entryVerb} for ${config.betModes?.superspin?.cost}× ${T.bet}`],
 		] as const
 	).map(([label, key, entry]) => {
@@ -208,8 +216,10 @@
 					<strong>Free Spins cannot be retriggered.</strong> Landing further Scatters while the
 					feature is running does not award additional free spins, and the number of spins
 					granted when the feature starts ({scatterSpins}) is the number you play. This applies
-					to Free Spins entered by landing Scatters and to Free Spins {T.bought} from the {T.betMenu}.
+					to Free Spins entered by landing Scatters, to Free Spins {T.bought} from the {T.betMenu},
+					and to Super Free Spins.
 				</p>
+
 			</section>
 
 			<section class="wp-card">
@@ -234,11 +244,23 @@
 				</section>
 			{/if}
 
+			<!-- The cap is PER MODE, and this section used to state one figure as
+			     though it were the game's. Certification asked for it to be amended
+			     because it does not apply to Super Spin, which the maths caps at
+			     2,000x rather than 25,000x (config.betModes.superspin.max_win).
+			     Both numbers are read from the config so neither can drift from
+			     what the game actually pays. -->
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Max Win</h3>
 				<p>
-					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}. Once
-					the cap is reached the round ends immediately and the maximum win is awarded.
+					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}.
+					Once the cap is reached the round ends immediately and the maximum win is awarded.
+					This applies to the base game, to Free Spins and to Super Free Spins.
+				</p>
+				<p>
+					<strong>Super Spin is capped separately</strong>, at
+					{config.betModes?.superspin?.max_win?.toLocaleString()}&times; the {T.totalBet}. The
+					{maxWin.toLocaleString()}&times; figure above does not apply to it.
 				</p>
 			</section>
 

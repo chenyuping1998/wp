@@ -122,4 +122,21 @@
 		flex-direction: column;
 		gap: 0.5em;
 	}
+
+	/* Scoped to .has-cover, so a card with no art is untouched.
+	 *
+	 * A scrim alone cannot do this job. The scrim is drawn in the CARD's
+	 * coordinates and the art is cropped to fit the card, so how much of the
+	 * art's own darkening survives depends on the card's aspect - which follows
+	 * its text and therefore the locale and the layout. The one case that must
+	 * never fail is a gold title landing on a gold part of the motif.
+	 *
+	 * A shadow travels with the glyphs instead of with the card, so it holds
+	 * whatever the crop turns out to be. Two passes: a tight drop for edge
+	 * definition, a wider soft one to seat the whole word on a dark ground. */
+	.bonus-card-wrap.has-cover .info :global(*) {
+		text-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.95),
+			0 0 7px rgba(0, 0, 0, 0.8);
+	}
 </style>

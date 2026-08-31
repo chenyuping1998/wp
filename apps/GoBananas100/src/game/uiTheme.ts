@@ -51,6 +51,35 @@ setUiTheme({
 	// does not belong beside the control pressed every few seconds.
 	buyBonusOnRail: false,
 
+	// 20% smaller than the template default. The whole control, not just the
+	// picture: box, hit area, plate and label together.
+	buyBonusButtonScale: 0.8,
+
+	// Unlit rather than greyed. The olive plate went pale under the template's
+	// grey tint and read as a placeholder panel dropped over the jungle, with the
+	// gold caption still at full brightness on top of it.
+	buyBonusDisabledStyle: 'dim',
+
+	// The hover highlight is sized and shaped to the PLATE ART, so it stays inside
+	// the button instead of drawing a lighter square around it.
+	//
+	// Measured from design/generate_ui_plates.mjs: the plate body is drawn at
+	// x=10 on a 640 canvas with a 7px stroke, so its outer edge sits at 98.1% of
+	// the sprite, and its corners are rx=66 — 10.3% of the sprite width, which is
+	// 10.7% of the highlight's own height at this inset.
+	//
+	// The defaults are a 1.0 inset plus a 3% outward pad, i.e. 6% WIDER than the
+	// sprite and squarer than it: that is a highlight bigger than the thing it
+	// highlights on all four sides and at every corner.
+	buyBonusPlateInset: { width: 0.96, height: 0.96 },
+	buyBonusHighlightPad: 0,
+	buyBonusHighlightRadius: 0.107,
+
+	// Certification: the bet button must stay clickable when the balance is short
+	// and say so. Paired with <ModalMessage /> in ui/Modals.svelte — without that
+	// the press would raise a modal this app does not render.
+	betButtonMessageOnInsufficientBalance: true,
+
 	// gold on the olive plate, matching every other caption in the game
 	buyBonusLabelFill: 0xffd75e,
 

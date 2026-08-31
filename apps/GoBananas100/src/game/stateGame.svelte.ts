@@ -147,6 +147,14 @@ export const stateGame = $state({
 	// superspin: coins stuck to the board, evaluated at the end of the round
 	// (row includes the padding offset, prize is in book cents)
 	stickyPrizes: [] as { reel: number; row: number; prize: number }[],
+	// Where the mascot's hand is at the moment he lets go of a grenade, in
+	// MAIN-LAYOUT coordinates — or null when he is not on screen at all, which is
+	// every layout too narrow to stand him beside the board (see Mascot.svelte).
+	//
+	// Published by Mascot and read by TransitionAnimation. It goes through state
+	// rather than an event because the transition needs it at the instant it
+	// starts, not whenever the mascot last happened to broadcast.
+	mascotThrowOrigin: null as { x: number; y: number } | null,
 });
 
 // The reel housing fills 94% of the box height (BOARD_SIZES is 590 tall and

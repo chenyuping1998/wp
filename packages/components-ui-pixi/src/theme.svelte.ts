@@ -65,7 +65,12 @@ export const uiTheme = $state({
 	// Optional plate artwork per UiSprite slot. A game supplies asset keys here
 	// to swap the flat rounded-rect placeholders for real framed art; slots left
 	// undefined keep drawing the themed rectangle.
-	sprites: {} as Partial<Record<'base_ticker' | 'buyBonus' | 'bet' | 'base_mobile_drawer', string>>,
+	// Plate art per slot. `buyBonusGlyph` is the one part of a buy-bonus plate that
+	// lights on hover - see buyBonusHoverSprite - and is a slot rather than a bare
+	// asset key because UiSprite resolves every key through this map.
+	sprites: {} as Partial<
+		Record<'base_ticker' | 'buyBonus' | 'buyBonusGlyph' | 'bet' | 'base_mobile_drawer', string>
+	>,
 
 	// Optional drawn icon art per button, keyed by the button's ButtonIcon name
 	// (menu, settings, soundOn, …). When a key is present UiButton draws that
@@ -117,6 +122,42 @@ export const uiTheme = $state({
 	// is tall, so about 70% of the width), and the label then has to shrink to fit
 	// an object smaller than the control it labels. Drawing the art larger than the
 	// box fixes that without moving the button or its hit area.
+	// Scales the WHOLE Buy Bonus control: its box, its hit area, its plate art and
+	// its label, all together. Distinct from buyBonusPlateScale below, which grows
+	// or shrinks only the picture and leaves the button the same size — that one
+	// is for art that overflows its box on purpose, this one is for a button that
+	// should simply be smaller. 1 leaves every game exactly as it was.
+	// What the bet button does when the balance will not cover the stake.
+	//
+	//   false  the template's original: the button is disabled and says nothing.
+	//   true   it stays pressable and raises the insufficient-balance notice.
+	//
+	// Certification asked for this on Go Bananas 100 — "the bet button should
+	// remain clickable and the appropriate message should be displayed" — but a
+	// game that opts in MUST also render <ModalMessage /> in its own Modals
+	// component, or the press sets a modal nothing is listening for and the
+	// button becomes silently unresponsive, which is worse than disabled.
+	//
+	// Every app in this workspace has its own Modals.svelte and imports the
+	// shared modals one by one; the shared Modals.svelte is not used by any of
+	// them. So this cannot be switched on centrally, and it defaults to false.
+	betButtonMessageOnInsufficientBalance: false,
+
+	buyBonusButtonScale: 1,
+
+	// How the Buy Bonus control shows that it cannot be pressed right now.
+	//
+	//   'grey'  the template's original: lighten the plate towards mid-grey.
+	//   'dim'   darken the plate and fade the caption with it, so the control
+	//           reads as UNLIT rather than as a grey rectangle laid over the art.
+	//
+	// 'grey' is the default, so no existing game changes. It has a specific
+	// failure that 'dim' exists to fix: the tint only lightens the plate, while
+	// the caption keeps its full brightness, so a disabled button ends up as a
+	// pale slab with bright text on it - louder than the enabled state it is
+	// meant to be quieter than.
+	buyBonusDisabledStyle: 'grey' as 'grey' | 'dim',
+
 	buyBonusPlateScale: 1,
 
 	// The fraction of the plate's drawn box that the ART actually covers, width
@@ -152,6 +193,45 @@ export const uiTheme = $state({
 	// fills its square button - which is every game but Soul Seal, whose plate is
 	// a tall talisman and wants a tighter one.
 	buyBonusHighlightPad: 0.03,
+
+	// Corner radius of the hover highlight, as a fraction of its own height.
+	//
+	// It was hardcoded at 0.05, which is right for a plate whose corners are
+	// gently rounded and wrong for one that is not: a highlight squarer than the
+	// plate under it pushes its corners out past the artwork even when its sides
+	// line up. 0.05 is the default, so nothing changes for a game that does not
+	// set it — measure the plate art and match it.
+	buyBonusHighlightRadius: 0.05,
+
+	// How the hover state is drawn.
+	//
+	// 'fill' is the default and what every other game gets: a translucent panel
+	// over the plate. 'outline' strokes the plate's own edge instead and adds no
+	// light to its face at all.
+	//
+	// The distinction is not cosmetic. On a plate that is an OBJECT rather than a
+	// panel, anything laid over its face competes with the art: Soul Seal's
+	// talisman is a painted piece of paper with an incantation on it, and both a
+	// translucent panel and a lit glyph turned the middle of it into a pale smear
+	// with the label sitting in the haze. An outline says the same thing - this is
+	// the thing under the cursor - by drawing only its boundary.
+	buyBonusHoverStyle: 'fill' as 'fill' | 'outline',
+	buyBonusHoverOutlineColor: 0xffffff,
+	buyBonusHoverOutlineWidth: 3,
+
+	// A sprite to light on hover INSTEAD of the highlight rectangle.
+	//
+	// The rectangle is the generic answer and it looks like one: a translucent box
+	// laid over whatever art the plate happens to be. A game whose plate is an
+	// object can supply the part of that object that should light up - Soul Seal
+	// hands over the incantation cut off its talisman - and get a hover state that
+	// belongs to the picture rather than to the widget.
+	//
+	// The sprite is expected to be white on transparent and the same size as the
+	// plate, so it registers without any positioning of its own. Undefined keeps
+	// the rectangle, which is what every other game gets.
+	buyBonusHoverSprite: undefined as string | undefined,
+	buyBonusHoverSpriteTint: 0xffd98a,
 
 	// What colour that glow is.
 	//

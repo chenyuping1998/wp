@@ -26,6 +26,15 @@ type ModalAutoSpinMessage = {
 	message: 'insufficientFunds' | 'lossLimitReached' | 'singleWinLimitReached';
 };
 
+// The same notices, raised by something that is NOT an autoplay run — pressing
+// the bet button with too little balance, for instance. Same text, without the
+// "AUTO PLAY HAS STOPPED DUE TO" preamble that only makes sense when a run
+// actually stopped. See ModalMessage.svelte.
+type ModalMessage = {
+	name: 'message';
+	message: 'insufficientFunds' | 'lossLimitReached' | 'singleWinLimitReached';
+};
+
 type ModalPayTable = {
 	name: 'payTable';
 };
@@ -46,6 +55,7 @@ type Modal =
 	| ModalBuyBonusConfirm
 	| ModalAutoSpin
 	| ModalAutoSpinMessage
+	| ModalMessage
 	| ModalPayTable
 	| ModalGameRules
 	| ModalSettings;

@@ -224,6 +224,16 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/p.png', import.meta.url).href,
 		preload: true,
 	},
+	// The sergeant standing beside the board. Built from the supplied character
+	// PSD — see design/extract_monkey_psd.py and design/generate_monkey_spine.mjs.
+	gbMonkey: {
+		type: 'spine',
+		src: {
+			atlas: new URL('../../assets/spines/goBananasMonkey/monkey.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananasMonkey/monkey.json', import.meta.url).href,
+			scale: 1,
+		},
+	},
 	gbSpH1: {
 		type: 'spine',
 		src: {

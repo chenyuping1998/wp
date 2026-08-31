@@ -39,9 +39,12 @@ export type ButtonIcon =
 export type LayoutUiProps = {
 	gameName: Snippet;
 	logo: Snippet;
-	amountBalance: Snippet<[{ stacked?: boolean; tiled?: boolean }]>;
-	amountWin: Snippet<[{ stacked?: boolean; tiled?: boolean }]>;
-	amountBet: Snippet<[{ stacked?: boolean; tiled?: boolean }]>;
+	// maxWidth: the cell the layout has given this readout, in the readout's own
+	// units. Optional — a layout that does not bound its cells passes nothing and
+	// the readout draws at whatever width it needs, as it always did.
+	amountBalance: Snippet<[{ stacked?: boolean; tiled?: boolean; maxWidth?: number }]>;
+	amountWin: Snippet<[{ stacked?: boolean; tiled?: boolean; maxWidth?: number }]>;
+	amountBet: Snippet<[{ stacked?: boolean; tiled?: boolean; maxWidth?: number }]>;
 	buttonBuyBonus: Snippet<[Partial<ButtonProps>]>;
 	buttonBet: Snippet<[Partial<ButtonProps>]>;
 	buttonTurbo: Snippet<[Partial<ButtonProps>]>;

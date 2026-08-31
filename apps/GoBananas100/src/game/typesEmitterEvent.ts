@@ -10,6 +10,7 @@ import type { EmitterEventTransition } from '../components/Transition.svelte';
 import type { EmitterEventExpandingWilds } from '../components/ExpandingWilds.svelte';
 import type { EmitterEventStickyPrizes } from '../components/StickyPrizes.svelte';
 import type { EmitterEventScatterBurst } from '../components/ScatterBurst.svelte';
+import type { EmitterEventMascot } from '../components/Mascot.svelte';
 
 export type EmitterEventGame =
 	| EmitterEventBoard
@@ -23,4 +24,5 @@ export type EmitterEventGame =
 	| EmitterEventTransition
 	| EmitterEventExpandingWilds
 	| EmitterEventStickyPrizes
-	| EmitterEventScatterBurst;
+	| EmitterEventScatterBurst
+	| EmitterEventMascot;
