@@ -32,3 +32,18 @@ apps/WildParty/build-playtest/
 #               that has now recurred three times; not worth pushing.
 apps/HotMiami/design/_review/
 apps/HotMiami/design/_rejected/
+
+# Art-pipeline contact sheets and previews, for the Go Bananas line. Every file
+# matching this is a diagnostic written to be LOOKED at once — spine animation
+# preview strips, symbol sets rendered at their in-game size, background plates
+# with the reels' footprint drawn on, prop cut-outs composited over magenta.
+#
+# 49 MB across two apps on the first commit that would have included them, and
+# they churn completely on every art pass. All are regenerable:
+#   design/preview_monkey_spine.mjs   the _preview_* strips and _compare
+#   design/import_*.py                the check sheets they print a path to
+#
+# The extracted PSD pieces beside them are NOT ignored — the PSD itself lives
+# outside the repo, so those are the only copy.
+apps/*/design/source/_*.png
+apps/*/design/source/monkey/_*.png
