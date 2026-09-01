@@ -87,3 +87,24 @@ export const poseDurations = (holdMs: number): Record<PoseName, number> => {
 	for (const step of POSE_PLAN) out[step.pose] += (step.to - step.from) * holdMs;
 	return out;
 };
+
+/**
+ * Which symbols actually have pose sheets, and the asset key for each drawing.
+ *
+ * Only two. The other four symbols' sheets were delivered as geometry pasted
+ * onto the base art — a black rectangle for a mouth, a pink triangle for a wing
+ * — and refused; see design/check_source_art.py for why no gate catches that.
+ * A symbol absent from this table keeps the transform-only win motion it already
+ * had, which is what every symbol had before this file existed.
+ */
+export const POSE_SHEETS: Record<string, Record<Exclude<PoseName, 'rest'>, string>> = {
+	h1: { wind: 'hmH1PoseWind', peak: 'hmH1PosePeak', settle: 'hmH1PoseSettle' },
+	h2: { wind: 'hmH2PoseWind', peak: 'hmH2PosePeak', settle: 'hmH2PoseSettle' },
+};
+
+export const poseKeyAt = (symbolName: string, t: number, holdMs: number): string | null => {
+	const sheet = POSE_SHEETS[symbolName.toLowerCase()];
+	if (!sheet) return null;
+	const pose = poseAt(t, holdMs);
+	return pose === 'rest' ? null : sheet[pose];
+};

@@ -1,0 +1,56 @@
+{
+  "skeleton": {
+    "hash": "girl-coherent-elbow-v1",
+    "spine": "4.2.74",
+    "x": -145.5,
+    "y": 0,
+    "width": 291,
+    "height": 512
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "elbow",
+      "parent": "root",
+      "x": -30.1388336646786,
+      "y": 345.7442014579192
+    }
+  ],
+  "slots": [
+    {
+      "name": "girl_base",
+      "bone": "root",
+      "attachment": "girl_base"
+    },
+    {
+      "name": "girl_forearm",
+      "bone": "elbow",
+      "attachment": "girl_forearm"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "girl_base": {
+          "girl_base": {
+            "y": 256.0,
+            "width": 291,
+            "height": 512
+          }
+        },
+        "girl_forearm": {
+          "girl_forearm": {
+            "x": 30.1388336646786,
+            "y": -89.74420145791919,
+            "width": 291,
+            "height": 512
+          }
+        }
+      }
+    }
+  ],
+  "animations": {}
+}

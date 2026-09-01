@@ -19,7 +19,8 @@
 	import { stateGame } from '../game/stateGame.svelte';
 	import { tierByBonusTier } from '../game/featureTiers';
 	import FeatureSplashPanel from './FeatureSplashPanel.svelte';
-	import CastFigure, { CAST_NATIVE } from './CastFigure.svelte';
+	import { CAST_NATIVE } from './CastFigure.svelte';
+	import CastFigureSpine from './CastFigureSpine.svelte';
 	import { MainContainer } from 'components-layout';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation, { SIGN_DROP_MS } from './FreeSpinAnimation.svelte';
@@ -184,7 +185,7 @@
 	-->
 	<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={showPanel ? 0.74 : 0.5} />
 
-	{#if showPanel && tier}
+	{#if show && showPanel && tier}
 		<!--
 			ENTRY: the reference's arrangement — character down the left at full
 			height and NOT dimmed (it is drawn here, on the near side of the scrim,
@@ -193,7 +194,7 @@
 			carrying the spin count and the rules, and the click prompt at the foot.
 		-->
 		<MainContainer>
-			<CastFigure
+			<CastFigureSpine
 				who="girl"
 				x={castX}
 				topY={castTopY}

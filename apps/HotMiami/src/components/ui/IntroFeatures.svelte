@@ -48,6 +48,7 @@
 	const T = getSocialTerms();
 	const SYMBOLS = `${base}/assets/sprites/hotMiamiSymbols`;
 	const BRAND = `${base}/assets/sprites/hotMiamiBrand`;
+	const CAST = `${base}/assets/sprites/hotMiamiCast`;
 	const BG = `${base}/assets/sprites/hotMiamiBackground`;
 
 	const maxWin = (config.betModes?.base?.max_win ?? 20000).toLocaleString();
@@ -166,23 +167,15 @@
 	>
 		<div class="hm-scrim"></div>
 
-		<!--
-			The store tile's cut-out holds both characters side by side in one PNG.
-			Rather than cutting it into two files, the same image is drawn twice and
-			each copy is clipped to one figure, so the source stays intact and the
-			split line stays tunable. 51.46% is the emptiest column between them
-			(87 opaque pixels of 1024 — her fingertips and his sleeve edge), measured
-			off the alpha channel rather than eyeballed.
-		-->
 		<img
 			class="hm-cast hm-cast-left"
-			src={`${BRAND}/tile_foreground.png`}
+			src={`${CAST}/guy_spine.png`}
 			alt=""
 			aria-hidden="true"
 		/>
 		<img
 			class="hm-cast hm-cast-right"
-			src={`${BRAND}/tile_foreground.png`}
+			src={`${CAST}/girl_spine.png`}
 			alt=""
 			aria-hidden="true"
 		/>
@@ -337,20 +330,20 @@
 			transform: rotate(0deg) translateY(0) scaleY(1);
 		}
 		22% {
-			transform: rotate(1.1deg) translateY(-0.5%) scaleY(1.008);
+			transform: rotate(0.35deg) scaleY(1.0035);
 		}
 		/* the hiccup: four uneven stops, none of them on the beat */
 		47% {
-			transform: rotate(0.15deg) translateY(-0.2%) scaleY(1.003);
+			transform: rotate(0.05deg) scaleY(1.001);
 		}
 		52% {
-			transform: rotate(-0.35deg) translateY(-0.1%) scaleY(1.002);
+			transform: rotate(-0.11deg) scaleY(1.0007);
 		}
 		58% {
-			transform: rotate(0.1deg) translateY(-0.15%) scaleY(1.003);
+			transform: rotate(0.03deg) scaleY(1.001);
 		}
 		71% {
-			transform: rotate(-1.1deg) translateY(-0.5%) scaleY(1.008);
+			transform: rotate(-0.35deg) scaleY(1.0035);
 		}
 		100% {
 			transform: rotate(0deg) translateY(0) scaleY(1);
@@ -362,19 +355,19 @@
 			transform: rotate(0deg) translateY(0) scaleY(1);
 		}
 		26% {
-			transform: rotate(-1.4deg) translateY(-0.6%) scaleY(1.01);
+			transform: rotate(-0.42deg) scaleY(1.0035);
 		}
 		49% {
-			transform: rotate(-0.2deg) translateY(-0.25%) scaleY(1.004);
+			transform: rotate(-0.06deg) scaleY(1.0012);
 		}
 		55% {
-			transform: rotate(0.4deg) translateY(-0.1%) scaleY(1.002);
+			transform: rotate(0.12deg) scaleY(1.0007);
 		}
 		61% {
-			transform: rotate(-0.12deg) translateY(-0.2%) scaleY(1.003);
+			transform: rotate(-0.04deg) scaleY(1.001);
 		}
 		74% {
-			transform: rotate(1.4deg) translateY(-0.6%) scaleY(1.01);
+			transform: rotate(0.42deg) scaleY(1.0035);
 		}
 		100% {
 			transform: rotate(0deg) translateY(0) scaleY(1);
@@ -458,7 +451,7 @@
 		flush against it.
 	*/
 	.hm-cast-left {
-		left: calc(var(--cast-h) * -0.16);
+		left: calc(var(--cast-h) * 0.045);
 		/*
 			Stepped, not a straight cut. The narrowest column between the two figures
 			is x=527 (51.46%), but that is only true above the ankles: in the band
@@ -468,7 +461,6 @@
 			his shoe stranded beside her foot, which is exactly what it looked like.
 			The step drops to 54.5% (x=558) below 82% height, i.e. between the two.
 		*/
-		clip-path: polygon(0 0, 51.46% 0, 51.46% 82%, 54.5% 82%, 54.5% 100%, 0 100%);
 		transform-origin: 50% 100%;
 		animation:
 			castInLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.1s,
@@ -476,8 +468,7 @@
 	}
 
 	.hm-cast-right {
-		right: calc(var(--cast-h) * -0.162);
-		clip-path: polygon(51.46% 0, 100% 0, 100% 100%, 54.5% 100%, 54.5% 82%, 51.46% 82%);
+		right: calc(var(--cast-h) * 0.04);
 		transform-origin: 50% 100%;
 		animation:
 			castInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.16s,

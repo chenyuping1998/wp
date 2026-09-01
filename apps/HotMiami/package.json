@@ -9,7 +9,7 @@
 		"storybook": "PUBLIC_CHROMATIC=true storybook dev -p 6003 public",
 		"dev": "vite dev --host --port 3003",
 		"check:refs": "node design/check_undefined_refs.mjs",
-		"build": "node design/check_undefined_refs.mjs && node design/check_assets_exist.mjs && node design/check_sprite_keys.mjs && node design/check_social_words.mjs && node design/check_symbol_motion.mjs && node design/check_anticipation.mjs && node design/check_frame_beat.mjs && node design/check_symbol_parts.mjs && node design/check_idle_breathe.mjs && node design/check_idle_sway.mjs && python3 design/check_source_art.py && node design/check_sounds.mjs && node design/run_check_parts.mjs && vite build",
+		"build": "node design/check_undefined_refs.mjs && node design/check_assets_exist.mjs && node design/check_sprite_keys.mjs && node design/check_social_words.mjs && node design/check_symbol_motion.mjs && node design/check_anticipation.mjs && node design/check_frame_beat.mjs && node design/check_symbol_parts.mjs && node design/check_idle_breathe.mjs && node design/check_idle_sway.mjs && node design/check_poses.mjs && python3 design/check_source_art.py && node design/check_sounds.mjs && node design/run_check_parts.mjs && vite build",
 		"preview": "vite preview",
 		"check:assets": "node design/check_assets_exist.mjs",
 		"check:keys": "node design/check_sprite_keys.mjs",
@@ -21,7 +21,9 @@
 		"check:rules": "WINS_PER_MODE=100000 node design/check_rules_match_wins.mjs",
 		"check:idle": "node design/check_idle_breathe.mjs --report",
 		"check:sway": "node design/check_idle_sway.mjs --report",
+		"check:poses": "node design/check_poses.mjs --report",
 		"check:art": "python3 design/check_source_art.py --report",
+		"check:spine": "python3 design/check_no_master_slicing.py && python3 design/check_spine_slots_complete.py && python3 design/check_spine_parts_overlap.py",
 		"review": "python3 design/review_sheet.py",
 		"check:sounds": "node design/check_sounds.mjs --report",
 		"check:parts": "node design/run_check_parts.mjs --report"
@@ -40,6 +42,7 @@
 		"@sveltejs/vite-plugin-svelte": "5.0.3"
 	},
 	"dependencies": {
+		"@esotericsoftware/spine-pixi-v8": "4.2.74",
 		"lodash": "4.17.16",
 		"@types/lodash": "4.17.16",
 		"svelte": "5.20.5",

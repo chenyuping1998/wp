@@ -169,6 +169,7 @@ export const stateGame = $state({
 	// near side of the scrim, and two of the same person on screen at once — one
 	// bright, one a dim ghost behind the dimming layer — is worse than either.
 	featureSplashShow: false,
+	castReaction: { kind: 'idle' as 'idle' | 'win' | 'trigger', seq: 0 },
 });
 
 // The reel housing fills 94% of the box height (BOARD_SIZES is 590 tall and

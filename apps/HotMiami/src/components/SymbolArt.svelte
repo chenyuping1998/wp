@@ -8,11 +8,10 @@
 		partFrame,
 		partKey,
 		resolvePivot,
-		hasIdleVariant,
 		glowAlpha,
 	} from '../game/symbolParts';
-	import { isBlinking } from '../game/blinkClock';
-	import { getSwayRig, swayFrame } from '../game/idleSway';
+	import { poseKeyAt, smearAt } from '../game/posePlan';
+	import { HOLD_MS } from '../game/symbolWinMotion';
 	import { PARTS_MANIFEST } from '../game/partsManifest';
 
 	/**
@@ -46,12 +45,7 @@
 		overlayAlpha?: number;
 		/** multiplies the drawn size, for callers that scale the art itself */
 		scale?: number;
-		/**
-		 * Which cell this is. Only used to give the symbol its own blink rhythm —
-		 * without it a cell simply never blinks, which is the right fallback for
-		 * the places that draw a symbol outside the reels (the pay table, the
-		 * intro).
-		 */
+		/** Which reel cell this is; retained for the board placement contract. */
 		cell?: { reel: number; row: number };
 		/** this win is a big one: unlocks the rarer face */
 		big?: boolean;
@@ -66,6 +60,8 @@
 	};
 
 	const props: Props = $props();
+	const STATIC_CHARACTER_SYMBOLS = ['H1', 'H2', 'H3'];
+	const keepCharacterArtStatic = $derived(STATIC_CHARACTER_SYMBOLS.includes(props.symbolName ?? ''));
 
 	const width = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.width * (props.scale ?? 1));
 	const height = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.height * (props.scale ?? 1));
@@ -75,36 +71,42 @@
 	// instead of four per cell, and pixel-identical, because check_parts.py
 	// requires the stack to match the artist's assembled _full.png (H4 measures
 	// IoU 1.00). The stack only appears for the beats that need it.
-	// A blink needs the part stack while the board is at rest, but only for the
-	// ~110ms it lasts. `blinkTick` is driven by a shared clock rather than a timer
-	// per cell: twenty cells each running their own interval is twenty wakeups a
-	// second to show nothing.
-	let blinkTick = $state(0);
-	const idleRig = $derived(getSymbolRig(props.symbolName ?? ''));
-	const canBlink = $derived(!!props.cell && hasIdleVariant(idleRig));
-	$effect(() => {
-		if (!canBlink) return;
-		const id = setInterval(() => (blinkTick = performance.now()), 90);
-		return () => clearInterval(id);
-	});
-	const blinking = $derived(
-		canBlink && props.cell ? isBlinking(props.cell.reel, props.cell.row, blinkTick) : false,
-	);
+	// Do not swap idle textures. The H2 blink and H3 beak variants are separate
+	// drawings; showing either for one ~110ms frame reads as the whole symbol
+	// flashing. Facial/beak variants remain available for deliberate win beats.
+	const blinking = false;
 
-	// The two people sway on a settled board; everything else keeps drawing its
-	// single flat sprite. Gated on `cell` as well as on the clock so the pay
-	// table and the intro — which draw symbols outside the reels — are untouched.
-	const sway = $derived(
-		props.mode === 'none' && props.swayT !== undefined && props.cell
-			? getSwayRig(props.symbolName ?? '')
-			: null,
-	);
-
+	// Stop and idle always draw the exact same flat source sprite. Previously a
+	// stopping symbol switched to its part stack for `land`, then H1/H2 switched
+	// again to an idle-sway stack. Since those stacks are not pixel-identical to
+	// the flat art, each transition appeared as a one-frame flash. Parts are now
+	// reserved for deliberate win animation only.
 	const rig = $derived(
-		(props.mode && props.mode !== 'none') || blinking || sway
-			? getSymbolRig(props.symbolName ?? '')
+		poseKey
+			? null
+			: props.mode === 'win' && !keepCharacterArtStatic
+				? getSymbolRig(props.symbolName ?? '')
+				: null,
+	);
+	// ── the pose sheet ─────────────────────────────────────────────────────────
+	//
+	// Three more DRAWINGS of this symbol, played as a timeline through the win
+	// hold (game/posePlan.ts). When one is up it REPLACES the art entirely — flat
+	// sprite and rigged stack alike — because a pose changes the silhouette, and
+	// the parts stack is exactly the thing that cannot.
+	//
+	// Only h1 and h2 have sheets; every other symbol returns null here and renders
+	// precisely what it rendered before.
+	const poseKey = $derived(
+		mode === 'win' && !keepCharacterArtStatic
+			? poseKeyAt(props.symbolName ?? '', props.t ?? 0, HOLD_MS)
 			: null,
 	);
+	// A cut between two drawings is a cut; a cut with one stretched frame either
+	// side is a movement. Horizontal only — the stretch is along the direction the
+	// character is moving, which is what a smear frame is.
+	const smear = $derived(poseKey ? smearAt(props.t ?? 0, HOLD_MS) : 0);
+
 	const overlay = $derived((props.overlayAlpha ?? 0) > 0.01);
 	// The symbol's own light, on only while it is paying. Skipped entirely when
 	// this instance is drawing the flash or bloom copy — a light drawn three times
@@ -146,22 +148,17 @@
 		(rig?.parts ?? []).map((part) => {
 			const metrics = PARTS_MANIFEST[(props.symbolName ?? '').toLowerCase()]?.[part.name];
 			const [px, py] = resolvePivot(metrics?.bbox, part.pivot);
-			// Win/land motion and idle sway are the same kind of thing — an offset
-			// on top of the part's resting pose — so they compose by addition, the
-			// same way part motion already composes with whole-symbol motion.
-			// They never run together in practice (sway is rest-only), but adding
-			// rather than branching means a future beat that overlaps them does not
-			// need this line rewritten.
+			// Part transforms run only for a deliberate win. Stop/idle use the flat
+			// source art above and never enter this geometry path.
 			const motion = mode === 'none' ? null : partFrame(part, mode, props.t ?? 0);
-			const drift = sway ? swayFrame(sway, part.name, props.swayT ?? 0) : null;
 			const frame =
-				motion || drift
+				motion
 					? {
-							dx: (motion?.dx ?? 0) + (drift?.dx ?? 0),
-							dy: (motion?.dy ?? 0) + (drift?.dy ?? 0),
-							rotation: (motion?.rotation ?? 0) + (drift?.rotation ?? 0),
-							scaleX: motion?.scaleX ?? 1,
-							scaleY: (motion?.scaleY ?? 1) * (drift?.scaleY ?? 1),
+							dx: motion.dx ?? 0,
+							dy: motion.dy ?? 0,
+							rotation: motion.rotation ?? 0,
+							scaleX: motion.scaleX ?? 1,
+							scaleY: motion.scaleY ?? 1,
 						}
 					: null;
 			const key = partKey(part, { mode, big: props.big, blinking });
@@ -261,9 +258,9 @@
 {:else}
 	<Sprite
 		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		{width}
-		{height}
+		key={poseKey ?? props.symbolInfo.assetKey}
+		width={width * (1 + 0.16 * smear)}
+		height={height * (1 - 0.05 * smear)}
 		tint={overlay ? props.overlayTint : undefined}
 		alpha={overlay ? props.overlayAlpha : 1}
 		blendMode={overlay ? 'add' : undefined}

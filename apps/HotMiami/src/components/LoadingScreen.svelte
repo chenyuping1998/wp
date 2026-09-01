@@ -7,7 +7,6 @@
 
 	import { getContext } from '../game/context';
 	import config from '../game/config';
-	import { CAST_SWAY, castFrame } from '../game/idleSway';
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 
@@ -45,15 +44,15 @@
 	// background art behind them. So the SCRIM does the holding back instead: the
 	// photograph goes down to 0.74 black and the people stay as they are.
 	const castHeight = $derived(layout.height * 0.9);
-	const castWidth = $derived((castHeight * 266) / 819);
+	const castWidth = $derived((castHeight * 441) / 1100);
 
 	// Their sway runs off the same clock as everywhere else, which is what keeps
 	// the two of them out of step with each other (6500ms and 4000ms) rather than
 	// nodding in unison.
-	const castSway = $derived({
-		guy: castFrame(CAST_SWAY.guy, pulseTick * 32),
-		girl: castFrame(CAST_SWAY.girl, pulseTick * 32),
-	});
+	const loadingBreath = $derived(Math.sin((pulseTick * 32) / 1500));
+	const loadingRotationGuy = $derived(loadingBreath * ((0.35 * Math.PI) / 180));
+	const loadingRotationGirl = $derived(loadingBreath * ((0.42 * Math.PI) / 180));
+	const loadingScaleY = $derived(1 + loadingBreath * 0.0035);
 
 	// Gameplay tips cycling under the progress bar, so the wait teaches the
 	// features instead of just counting. Every line is checked against the rules
@@ -164,10 +163,10 @@
 			which is why they are not simply two stills.
 		-->
 		<Container
-			x={castWidth * 0.42}
-			y={layout.height + castSway.guy.dy * castHeight}
-			rotation={castSway.guy.rotation}
-			scale={{ x: 1, y: castSway.guy.scaleY }}
+			x={castWidth * 0.72}
+			y={layout.height}
+			rotation={loadingRotationGuy}
+			scale={{ x: 1, y: loadingScaleY }}
 		>
 			<Sprite
 				key="hmCastGuy"
@@ -177,16 +176,16 @@
 			/>
 		</Container>
 		<Container
-			x={layout.width - castWidth * 0.42}
-			y={layout.height + castSway.girl.dy * castHeight}
-			rotation={castSway.girl.rotation}
-			scale={{ x: 1, y: castSway.girl.scaleY }}
+			x={layout.width - castWidth * 0.72}
+			y={layout.height}
+			rotation={-loadingRotationGirl}
+			scale={{ x: 1, y: loadingScaleY }}
 		>
 			<Sprite
 				key="hmCastGirl"
 				anchor={{ x: 0.5, y: 1 }}
-				width={castWidth * (224 / 266)}
-				height={castHeight * (775 / 819) * (266 / 224) * (224 / 266)}
+				width={castWidth * (473 / 441)}
+				height={castHeight}
 			/>
 		</Container>
 

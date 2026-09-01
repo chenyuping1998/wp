@@ -20,7 +20,7 @@
 	 * texture resolves, and a figure that jumps into place when its PNG arrives is
 	 * worse than one that fades in already standing.
 	 */
-	export const CAST_NATIVE = { guy: { w: 266, h: 819 }, girl: { w: 224, h: 775 } };
+	export const CAST_NATIVE = { guy: { w: 441, h: 1100 }, girl: { w: 473, h: 1100 } };
 </script>
 
 <script lang="ts">
