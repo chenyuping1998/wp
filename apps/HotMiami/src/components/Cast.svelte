@@ -3,11 +3,11 @@
 
   import { getContext } from "../game/context";
   import CastFigure, { CAST_NATIVE } from "./CastFigure.svelte";
-  import CastFigureSpine from "./CastFigureSpine.svelte";
+  import CastFigureMesh from "./CastFigureMesh.svelte";
 
-  // The production cast uses the deliberately simple Spine rigs: one coherent
-  // body attachment plus one articulated forearm, which prevents seam drift.
-  const USE_SPINE = true;
+  // Both figures use one continuous skinned mesh, so weighted joints bend
+  // without opening the seams that segmented Spine attachments produced.
+  const USE_MESH_CAST = true;
   import { stateGame } from "../game/stateGame.svelte";
 
   /**
@@ -103,7 +103,12 @@
   // board, not level with it: the board stays the tallest thing on screen and
   // the figure reads as standing behind it rather than looming over it.
   const topY = $derived(std.height * 0.11);
-  const x = $derived(boardInkRight - OVERLAP + width * 0.5);
+  // Her raygun extends toward the board. Give the feature pose a small extra
+  // gutter so the muzzle and spark stay readable instead of sitting under the
+  // reel housing edge; the base-game man keeps the measured position.
+  const x = $derived(
+    boardInkRight - OVERLAP + width * 0.5 + (who === "girl" ? std.width * 0.025 : 0),
+  );
   // A person sways about the ground under them. The feet are off-screen at this
   // size, so the pivot is the bottom of the box instead — the nearest thing to a
   // ground line that is actually on screen. Pivoting at the real feet, hundreds
@@ -120,16 +125,9 @@
 
 {#if !stateGame.featureSplashShow}
   <MainContainer standard>
-    {#if USE_SPINE}
+    {#if USE_MESH_CAST}
       {#key who}
-        <CastFigureSpine
-          {who}
-          {x}
-          {topY}
-          {height}
-          {groundY}
-          flip={who === "guy"}
-        />
+        <CastFigureMesh {who} {x} {topY} {height} {groundY} flip={who === "guy"} />
       {/key}
     {:else}
       <CastFigure

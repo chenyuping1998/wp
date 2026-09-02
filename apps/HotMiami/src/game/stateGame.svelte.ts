@@ -169,7 +169,12 @@ export const stateGame = $state({
 	// near side of the scrim, and two of the same person on screen at once — one
 	// bright, one a dim ghost behind the dimming layer — is worse than either.
 	featureSplashShow: false,
-	castReaction: { kind: 'idle' as 'idle' | 'win' | 'trigger', seq: 0 },
+	// 'win' is an ordinary line win and 'winBig' one worth a fuss — the cast
+	// reacts on about one base spin in 3.5, so the two tiers are what keep a
+	// frequent reaction from reading as a twitch and a rare one from being
+	// wasted. See skinnedFigure.ts for the amplitudes and BIG_WIN_X in
+	// game/constants.ts for where the line between them is drawn.
+	castReaction: { kind: 'idle' as 'idle' | 'win' | 'winBig' | 'trigger', seq: 0 },
 });
 
 // The reel housing fills 94% of the box height (BOARD_SIZES is 590 tall and

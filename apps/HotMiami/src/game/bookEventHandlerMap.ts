@@ -11,7 +11,7 @@ import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
 import type { Position } from './types';
-import { BOARD_DIMENSIONS } from './constants';
+import { BOARD_DIMENSIONS, INITIAL_BOARD, BIG_WIN_X } from './constants';
 import { featureScaled } from './timeScale';
 import config from './config';
 import { FRAME_REVEAL, FRAME_CLEAR } from './frameTiming';
@@ -269,7 +269,12 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// what the symbol is reacting to.
 		stateGame.currentWinTotal = bookEvent.totalWin;
 		if (bookEvent.wins.length > 0) {
-			stateGame.castReaction = { kind: 'win', seq: stateGame.castReaction.seq + 1 };
+			// Same 15× line SymbolWinAnim draws for its own big-win treatment, and
+			// the same volley total it reads. One threshold for "this one is worth
+			// a fuss" across the board: the symbol and the person beside it should
+			// never disagree about whether a win was big.
+			const kind = bookEvent.totalWin >= BIG_WIN_X * 100 ? 'winBig' : 'win';
+			stateGame.castReaction = { kind, seq: stateGame.castReaction.seq + 1 };
 		}
 
 		// Build win line data — each win has a lineIndex from meta
@@ -528,11 +533,18 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	freeSpinEnd: async (bookEvent: BookEventOfType<'freeSpinEnd'>) => {
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
 
+		// The outro panel is translucent, so its background is still part of the
+		// presentation. Finish the last win volley before showing it: otherwise
+		// winningCells keeps most symbols dim and postWin/expanded-W layers leave
+		// isolated, ghosted letters behind the TOTAL WIN card.
+		stateGame.winningCells = [];
+		stateGame.debugWinLineCount = 0;
+		eventEmitter.broadcast({ type: 'winLinesHide' });
+		eventEmitter.broadcast({ type: 'expandingWildsClear' });
+		stateGameDerived.enhancedBoard.settle(stateGameDerived.boardRaw());
+		eventEmitter.broadcast({ type: 'boardShow' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		stateGame.stickyWildReels = [];
-		// NOTE: expandingWildsClear deliberately does NOT fire here — the sticky
-		// overlays must keep covering the reveal-board W stacks through the outro
-		// and the idle board; the next spin clears them (actor onNewGameStart).
 		// Sticky Frames belong to the free game. Nothing used to remove them here,
 		// so whatever was still on the grid rode through the entire outro and only
 		// vanished when the next base spin's reveal fired framesClear — a beat far
@@ -554,8 +566,15 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateUi.freeSpinCounterShow = false;
 		await eventEmitter.broadcastAsync({ type: 'transition' });
 		// Transition resolves at full black; switch the cast and background here so
-		// the reveal returns to MG with the man already restored.
+		// the reveal returns to MG with the man already restored. Rebuild a complete
+		// base board at the same hidden beat: the last free-game board can contain
+		// expanded-W stacks whose overlay is being torn down, leaving apparently
+		// empty cells if that board is allowed to survive into MG idle.
 		stateGame.gameType = 'basegame';
+		stateGame.winningCells = [];
+		stateGame.stickyWildReels = [];
+		eventEmitter.broadcast({ type: 'expandingWildsClear' });
+		stateGameDerived.enhancedBoard.settle(INITIAL_BOARD);
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });

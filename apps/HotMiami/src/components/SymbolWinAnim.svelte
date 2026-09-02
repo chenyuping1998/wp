@@ -5,7 +5,7 @@
 	import { backOut, cubicOut } from 'svelte/easing';
 	import { featureTimeScale } from '../game/timeScale';
 
-	import { SYMBOL_SIZE } from '../game/constants';
+	import { SYMBOL_SIZE, BIG_WIN_X } from '../game/constants';
 	import { stateGame } from '../game/stateGame.svelte';
 	import { getSymbolInfo } from '../game/utils';
 	import { getSymbolWinMotion, HOLD_MS } from '../game/symbolWinMotion';
@@ -124,8 +124,10 @@
 	 * banner agree with each other — a wink under a banner that says nothing
 	 * special reads as a bug.
 	 */
-	// Book units are hundredths of the bet, so 15× is 1500.
-	const BIG_WIN_MULTIPLE = 15;
+	// Book units are hundredths of the bet, so 15× is 1500. The number itself
+	// lives in game/constants.ts because the cast beside the board tiers its
+	// reaction off the same line.
+	const BIG_WIN_MULTIPLE = BIG_WIN_X;
 
 	onMount(() => {
 		// own phase for the cell wash — pulsing every winning cell in sync reads

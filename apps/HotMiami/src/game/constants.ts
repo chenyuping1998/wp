@@ -245,3 +245,18 @@ export const SCATTER_LAND_SOUND_MAP = {
 	4: 'sfx_scatter_stop_4',
 	5: 'sfx_scatter_stop_5',
 } as const;
+
+/**
+ * The line between an ordinary win and one the game makes a fuss about, in
+ * multiples of the bet.
+ *
+ * Two things read it and they must not disagree: the winning symbols pick their
+ * rarer face off it (SymbolWinAnim), and the person standing beside the board
+ * picks which reaction tier to play off it (bookEventHandlerMap →
+ * skinnedFigure). A wink on a symbol under a character who did not react — or
+ * the reverse — reads as a bug, and it was two separate literals until the cast
+ * gained a tiered reaction and made the disagreement possible.
+ *
+ * Book amounts are hundredths of the bet, so compare against this × 100.
+ */
+export const BIG_WIN_X = 15;
