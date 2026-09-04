@@ -14,6 +14,21 @@ const NO_LOCALISATION_CURRENCY_MAP: Record<string, string> = {
 	XEC: 'SC',
 };
 
+// Currencies whose en-US "symbol" is a WORD rather than a symbol, so they show
+// their ISO code instead.
+//
+// Intl renders XOF as "F CFA 1,234.50" — Stake review rejected exactly that on
+// 2026-09-04, asking for "XOF or CFA, not F CFA". Sweeping all three CFA francs
+// in rather than only the one that was reported: XAF gives "FCFA" and XPF gives
+// "CFPF" from the same table, and there is no reason to make the reviewer find
+// the other two.
+//
+// These stay on Intl rather than joining the map above, because that branch
+// formats with toFixed and loses the thousands separators — and these are
+// exactly the currencies that need them (XOF has no minor unit in practice, so
+// ordinary amounts run to five figures).
+const CODE_DISPLAY_CURRENCIES = new Set(['XOF', 'XAF', 'XPF']);
+
 // bookEventAmount: is the amount or win numbers in the events of books, e.g. the amount in setTotalWin bookEvent
 // {
 // 	"index": 3,
@@ -85,7 +100,7 @@ export const numberToCurrencyString = (value: number, maximumFractionDigits = 2)
 		maximumFractionDigits,
 		style: 'currency',
 		currency: stateBet.currency,
-		currencyDisplay: 'symbol',
+		currencyDisplay: CODE_DISPLAY_CURRENCIES.has(stateBet.currency) ? 'code' : 'symbol',
 	}).format(value);
 };
 

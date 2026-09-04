@@ -111,6 +111,18 @@ setUiTheme({
 		closePanelsOnSpin: true,
 	},
 
+	// A player who cannot afford the bet gets TOLD SO, rather than pressing a
+	// dead button and being left to work it out.
+	//
+	// The machinery has been in ButtonBet all along — it stays pressable, and
+	// answers with the 'message' modal instead of the autoplay one, because
+	// "AUTO PLAY HAS STOPPED DUE TO..." is a claim about something that did not
+	// happen. It is off by default so games that never opted in keep the
+	// disabled button they were built with. Hot Miami had never opted in, and
+	// Stake review raised exactly this on 2026-09-04; GoBananas100 had already
+	// turned it on, presumably after the same note.
+	betButtonMessageOnInsufficientBalance: true,
+
 	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
 	// keep the themed rounded rect, which suits the round buttons)
 	sprites: {

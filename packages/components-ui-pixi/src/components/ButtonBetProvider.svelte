@@ -5,7 +5,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	import { stateBet, stateBetDerived, stateModal } from 'state-shared';
+	import { stateBet, stateBetDerived, stateModal, stateUi } from 'state-shared';
 
 	import { getContext } from '../context';
 	import { isBetOnCooldown, markBetPlaced, platformUx } from '../platformUx.svelte';
@@ -40,10 +40,23 @@
 		// the whole spin it is paying for.
 		if (platformUx()?.closePanelsOnSpin) {
 			stateModal.modal = null;
+			// ONLY when the player can open it again.
+			//
+			// In portrait the drawer is not a panel — it holds the bet controls,
+			// autoplay, game info and the balance. Folding it unconditionally here
+			// deleted the game's primary controls on the first spin and left no way
+			// back: `stateUi.drawerButtonShow` is false by default and is only
+			// turned on when free spins begin, so the button that reopens the drawer
+			// was hidden AND disabled, and nothing broadcasts `drawerUnfold` in the
+			// base game. Reported by Stake review on 2026-09-04 against Hot Miami;
+			// CapoNostra and Moooo opt into the same flag and had the same fault.
+			//
 			// Broadcast only. ButtonDrawer owns `stateUi.drawerFold` and skips its
 			// own fold animation when the flag is already true, so setting it here
 			// would close the drawer by teleporting it shut.
-			context.eventEmitter.broadcast({ type: 'drawerFold' });
+			if (stateUi.drawerButtonShow) {
+				context.eventEmitter.broadcast({ type: 'drawerFold' });
+			}
 		}
 
 		markBetPlaced();

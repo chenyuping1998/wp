@@ -298,8 +298,16 @@
 				expected return is calculated over many plays. The game display is not representative of
 				any physical device and is for illustrative purposes only. Winnings are settled according
 				to the amount received from the Remote Game Server and not from events within the web
-				browser. TM and &copy; 2026 Stake Engine.
+				browser. TM and &copy; 2026 Silverstars Studio.
 			</p>
+			<!--
+				"Stake" must not appear in this disclaimer — Stake review, 2026-09-04,
+				which underlined the words "Stake Engine" in the shipped copy. The
+				line is the STUDIO's copyright notice, so it carries the studio's own
+				name (the one on the loader and the intro card), not the platform's.
+				The required sentence is `disclaimerOpening` above; everything after
+				it is ours to word.
+			-->
 		</div>
 	</Popup>
 {/if}
