@@ -106,8 +106,17 @@ const MODE_COPY: Record<string, ModeCopy> = {
 	bonus300: {
 		name: 'GRAND SEALING',
 		art: 'grand',
-		short: 'EVERY FREE SPIN COLLECTS',
-		what: 'Free spins that guarantee a wild beside a spirit on every single spin, with no carrier worth less than 5x.',
+		// This promised a guaranteed wild beside a spirit on EVERY spin, and the
+		// maths cannot give it that alongside the rail: measured, the guarantee is
+		// worth a factor of forty-six on its own, and with it the WORST round in
+		// ten thousand paid six times the stake - a distribution no weighting can
+		// bring to 0.95. See richfeature_condition in game_config.py.
+		//
+		// What it sells now is the same rail on the densest spirit reels in the
+		// game - 27 carriers a reel against the 100x's 17.6 - with no talisman
+		// under 5x. Both figures are measured and both are on the card.
+		short: 'THE DENSEST SPIRIT REELS, NONE UNDER 5x',
+		what: 'The same rail and the same collect, on the richest reels this game holds: far more spirits reach the board, and not one of them is worth less than 5x.',
 	},
 };
 

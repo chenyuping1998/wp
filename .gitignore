@@ -47,3 +47,6 @@ apps/HotMiami/design/_rejected/
 # outside the repo, so those are the only copy.
 apps/*/design/source/_*.png
 apps/*/design/source/monkey/_*.png
+
+# Cleo is developed here but deliberately kept out of version control.
+apps/Cleo/

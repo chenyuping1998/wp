@@ -188,10 +188,12 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 		},
 	},
 
-	// The top tier. Its maximum win is 1,500x the base bet — 5x this mode's own
-	// cost, against 15x for BONUS100 — so the copy leads on the head start and the
-	// spin count and does NOT imply a bigger top end than the cheaper tiers. It
-	// has the highest floor of the three, not the highest ceiling.
+	// The top tier. All three buys share the game's 10,000x cap, so against its own
+	// 300x price this one has 33x of upside where BONUS100 has 100x — the copy
+	// therefore leads on the head start and the trigger it shows, and does NOT
+	// imply a bigger top end than the cheaper tiers. It has the highest floor of
+	// the three, not the highest ceiling. (The 1,500x this note used to quote was
+	// gen-2's cap and has not been this game's number since the 4-row board.)
 	BONUS300: {
 		mode: 'BONUS300',
 		costMultiplier: config.betModes.bonus300.cost,

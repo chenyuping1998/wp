@@ -89,7 +89,7 @@
 	// design/sync_math_config.mjs, which lifts them out of game_config.py — they
 	// are not part of the SDK's exported shape, so the generated type does not
 	// know about them.
-	type BuyMode = { cost?: number; spins?: number; start_cuts?: number };
+	type BuyMode = { cost?: number; spins?: number; start_cuts?: number; scatters?: number };
 
 	// The three buy tiers. Prices, spin counts and starting cuts all come from
 	// config — the last two are lifted out of game_config.py by the sync script,
@@ -99,7 +99,13 @@
 	const buyTiers = (['bonus100', 'bonus200', 'bonus300'] as const)
 		.map((key) => {
 			const mode = config.betModes[key] as BuyMode | undefined;
-			return { key, cost: mode?.cost, spins: mode?.spins, cuts: mode?.start_cuts };
+			return {
+			key,
+			cost: mode?.cost,
+			spins: mode?.spins,
+			cuts: mode?.start_cuts,
+			scatters: mode?.scatters,
+		};
 		})
 		.filter((t) => t.cost !== undefined && t.spins !== undefined);
 
@@ -343,12 +349,26 @@
 					<ul class="wp-tiers">
 						{#each buyTiers as tier (tier.key)}
 							<li>
-								<strong>{tier.cost}&times; {T.bet}</strong> &mdash; {tier.spins} Free Spins, starting
-								with {tier.cuts}
+								<strong>{tier.cost}&times; {T.bet}</strong> &mdash; {tier.scatters} Scatters, so
+								{tier.spins} Free Spins, starting with {tier.cuts}
 								{tier.cuts === 1 ? 'reel' : 'reels'} already split
 							</li>
 						{/each}
 					</ul>
+					<!--
+						Certification watched a bought round land five Scatters and award
+						eleven Free Spins, against a pay table that says twelve. The maths
+						no longer has a spin count of its own to disagree with the board —
+						every round takes its length from the Scatters it shows — and this
+						is that stated where a player can read it.
+					-->
+					<p>
+						A {T.bought} round opens on a Scatter trigger like any other, and
+						<strong>awards exactly what those Scatters award</strong>: the number above is
+						{scatterSpins} Free Spins for 3, 4 or 5 Scatters, the same table the base game
+						uses. The price changes which trigger you get, how many reels start split and how
+						often Machetes land &mdash; it does not change how the Free Spins are counted.
+					</p>
 					<p>
 						Every round runs at the same {rtpPct} RTP as base play. Splits stick and the final spin
 						is played with all five reels split, exactly as in Free Spins won with Scatters.
@@ -376,13 +396,18 @@
 			</section>
 
 			<div class="wp-divider"></div>
+			<!--
+				The trademark line keeps its TM and copyright but not the operator's
+				name: certification asked for "Stake" out of the disclaimer, so
+				"TM and (c) 2026 Stake Engine" became "TM and (c) 2026 Engine".
+			-->
 			<p class="wp-foot">
 				Malfunction voids all wins and plays. A consistent internet connection is required. In
 				the event of a disconnection, reload the game to finish any uncompleted rounds. The
 				expected return is calculated over many plays. The game display is not representative of
 				any physical device and is for illustrative purposes only. Winnings are settled according
 				to the amount received from the Remote Game Server and not from events within the web
-				browser. TM and &copy; 2026 Stake Engine.
+				browser. TM and &copy; 2026 Engine.
 			</p>
 		</div>
 	</Popup>

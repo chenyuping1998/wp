@@ -15,6 +15,10 @@
 		| { type: 'soundFreeGameBell' }
 		| { type: 'soundBigWinBlast' }
 		| { type: 'soundDynamiteBlast' }
+		| { type: 'soundBlastFuse' }
+		| { type: 'soundBlastDetonate'; full: boolean }
+		| { type: 'soundBlastShatter' }
+		| { type: 'soundBlastReveal' }
 		| { type: 'soundMonkeyExpand' }
 		| { type: 'soundMascotVoice'; name: MascotVoice }
 		| { type: 'soundReelTensionStart' }
@@ -58,6 +62,11 @@
 		| 'wild_expand'
 		| 'mult_update'
 		| 'grenade_blast'
+		| 'fuse_sizzle'
+		| 'dynamite_blast'
+		| 'dynamite_blast_big'
+		| 'symbol_shatter'
+		| 'symbol_reveal'
 		| 'monkey_expand'
 		| 'voice_roar'
 		| 'voice_effort';
@@ -82,6 +91,15 @@
 		wild_expand: 'jungle/wild_expand.wav',
 		mult_update: 'jungle/mult_update.wav',
 		grenade_blast: 'jungle/grenade_blast.wav',
+		// The reel-blast set, synthesized by design/generate_audio_jungle.mjs and
+		// timed to ReelBlast.svelte's four beats. Cartoon, not ordnance: the rest
+		// of this set is marimba and comic horn, and a realistic boom in the
+		// middle of it reads as a bug rather than an effect.
+		fuse_sizzle: 'jungle/fuse_sizzle.wav',
+		dynamite_blast: 'jungle/dynamite_blast.wav',
+		dynamite_blast_big: 'jungle/dynamite_blast_big.wav',
+		symbol_shatter: 'jungle/symbol_shatter.wav',
+		symbol_reveal: 'jungle/symbol_reveal.wav',
 		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
 		monkey_expand: 'jungle/monkey_expand.mp3',
 		voice_roar: 'jungle/voice_roar.wav',
@@ -397,6 +415,17 @@
 		// jungle/grenade_blast.wav is carried over from gen-1 and renaming a wav
 		// would break the audio manifest for no gain.
 		soundDynamiteBlast: () => playCnSfx('grenade_blast'),
+		// The reel blast. Like the mascot's voice these sit outside the turbo gate
+		// that drops ordinary one-shots — ReelBlast runs at its full length
+		// whatever the spin speed, so a silenced blast would be a smoke cloud with
+		// nothing behind it.
+		soundBlastFuse: () => playCnSfx('fuse_sizzle', 0.75),
+		soundBlastDetonate: ({ full }) =>
+			playCnSfx(full ? 'dynamite_blast_big' : 'dynamite_blast'),
+		// Under the bang on purpose: it is the same event heard from closer in, so
+		// it must not compete with the blast for the front of the mix.
+		soundBlastShatter: () => playCnSfx('symbol_shatter', 0.6),
+		soundBlastReveal: () => playCnSfx('symbol_reveal', 0.8),
 		soundMonkeyExpand: () => playMonkeyExpand(),
 		// Deliberately NOT forced through the turbo gate that silences ordinary
 		// one-shots: these are tied to animations that play at their own length

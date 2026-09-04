@@ -21,11 +21,12 @@
 		"check:audio": "node design/check_audio.mjs",
 		"check:fit": "node design/check_board_fit.mjs",
 		"check:tease": "node design/check_tease_length.mjs",
-		"build": "node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_assets.mjs && node design/check_audio.mjs && node design/check_board_fit.mjs && node design/check_tease_length.mjs && node design/check_font_coverage.mjs && node design/check_types.mjs && node design/check_collect_contract.mjs && node design/check_no_cjk_art.mjs && node design/check_graphics_paths.mjs && node design/check_thumbnail.mjs && node design/check_buybonus_label.mjs && node design/check_ui_palette.mjs && vite build",
+		"build": "node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_assets.mjs && node design/check_audio.mjs && node design/check_board_fit.mjs && node design/check_tease_length.mjs && node design/check_font_coverage.mjs && node design/check_types.mjs && node design/check_collect_contract.mjs && node design/check_no_cjk_art.mjs && node design/check_graphics_paths.mjs && node design/check_thumbnail.mjs && node design/check_buybonus_label.mjs && node design/check_ui_palette.mjs && node design/check_feature_promise.mjs && vite build",
 		"preview": "vite preview",
 		"check:fonts": "node design/check_font_coverage.mjs",
 		"check:buybonus": "node design/check_buybonus_label.mjs",
-		"check:palette": "node design/check_ui_palette.mjs"
+		"check:palette": "node design/check_ui_palette.mjs",
+		"check:feature": "node design/check_feature_promise.mjs"
 	},
 	"type": "module",
 	"devDependencies": {

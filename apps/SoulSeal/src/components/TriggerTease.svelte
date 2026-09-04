@@ -87,6 +87,13 @@
 		triggerTeasePlay: () =>
 			new Promise<void>((resolve) => {
 				stop();
+				// NO VOICE HERE for now.
+				//
+				// The tease had a synthesized chant under it - formant synthesis, see
+				// `voice` in design/generate_audio_terminal.mjs - and it is being
+				// replaced with a recording. The cue, the file and the wiring in
+				// Sound.svelte all still exist; this is the one line that fires it, so
+				// putting the voice back is putting this line back.
 				elapsed = 0;
 				const t0 = performance.now();
 				const step = (now: number) => {

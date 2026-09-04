@@ -279,11 +279,25 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
 		stateUi.freeSpinCounterShow = true;
+		// current: 1, NOT undefined.
+		//
+		// The counter component holds `current` and `total` across rounds, and
+		// `undefined` means "leave it alone" — so a new feature raised the plaque
+		// still carrying the spin number the LAST one finished on. It renders
+		// min(current, total) / total, so a round that ended on 13 opened the next
+		// one reading "12 / 12": the feature announced itself as already over.
+		// Certification reported exactly this.
+		//
+		// 1 is the value the first updateFreeSpin would set anyway (it sends
+		// amount + 1, and the first spin's amount is 0). Setting it here just
+		// closes the window between raising the plaque and that event arriving —
+		// a window the intro plaque, uiShow and drawerFold all sit inside.
 		eventEmitter.broadcast({
 			type: 'freeSpinCounterUpdate',
-			current: undefined,
+			current: 1,
 			total: bookEvent.totalFs,
 		});
+		stateUi.freeSpinCounterCurrent = 1;
 		stateUi.freeSpinCounterTotal = bookEvent.totalFs;
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerButtonShow' });

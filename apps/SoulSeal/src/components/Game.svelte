@@ -22,6 +22,7 @@
 	import Sound from './Sound.svelte';
 	import Background from './Background.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
+	import TransitionAnimation from './TransitionAnimation.svelte';
 	import BoardFrame from './BoardFrame.svelte';
 	import Board from './Board.svelte';
 	import ReelDust from './ReelDust.svelte';
@@ -58,6 +59,15 @@
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
 
+	// The opening transition, owned HERE rather than by the loading screen.
+	//
+	// It has to outlive the handover. Game shows the loading screen or the game
+	// and never both, so a transition mounted inside the loading screen is
+	// destroyed by the very swap it is covering - see the note in that file. From
+	// here it covers, the swap happens behind it, and it opens onto a game that is
+	// already standing.
+	let openingTransition = $state(false);
+
 	context.eventEmitter.subscribeOnMount({
 		buyBonusConfirm: () => {
 			stateModal.modal = { name: 'buyBonusConfirm' };
@@ -80,7 +90,10 @@
 	<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x060b09} />
 
 	{#if context.stateLayout.showLoadingScreen}
-		<LoadingScreen onloaded={() => (context.stateLayout.showLoadingScreen = false)} />
+		<LoadingScreen
+			onstart={() => (openingTransition = true)}
+			onloaded={() => (context.stateLayout.showLoadingScreen = false)}
+		/>
 	{:else}
 		<Container>
 			<Background />
@@ -191,6 +204,17 @@
 		<RailMilestone />
 		<FreeSpinOutro />
 		<Transition />
+	{/if}
+
+	<!--
+		Outside the branch on purpose: this is the one thing that has to be on
+		screen while the two trees are exchanged.
+	-->
+	{#if openingTransition}
+		<TransitionAnimation
+			oncover={() => (context.stateLayout.showLoadingScreen = false)}
+			oncomplete={() => (openingTransition = false)}
+		/>
 	{/if}
 </App>
 

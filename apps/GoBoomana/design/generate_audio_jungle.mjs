@@ -543,4 +543,405 @@ const grooveBar = (buf, t0, beat, sr, energy = 1) => {
 	writeWav('grenade_blast.wav', fadeEnds(normalize(buf, 0.95), SR_SFX, 4), SR_SFX);
 }
 
+// ─── space and dynamics ──────────────────────────────────────────────────────
+// WHY THIS EXISTS. The first version of the blast set was synthesized dry:
+// sine bodies, one-pole-filtered white noise, exponential decays, straight to
+// disk. Measured, the envelopes were right; heard, they were obviously not
+// recordings — and the reason is that nothing in them said WHERE the explosion
+// was. A real bang in a mine tunnel arrives three times: the direct sound, a
+// handful of hard early reflections off the rock a few metres away, and a long
+// diffuse tail that loses its highs as it goes, because air absorbs treble
+// faster than bass. None of that is decoration; it is most of what makes a
+// sound read as real rather than as a synth patch.
+//
+// These helpers are ordinary, well-understood DSP, written out because the
+// generator has no dependencies and must stay deterministic.
+
+// One-pole lowpass held as state, so a filter can be swept over time.
+const onePole = () => {
+	let z = 0;
+	return (x, coeff) => (z += coeff * (x - z));
+};
+
+// State-variable filter — a real 2-pole resonant bandpass, which a one-pole
+// cannot be. Rock and metal debris ring at frequencies; broadband hiss does
+// not, and that difference is audible immediately on the rubble.
+const svfBandpass = (sr, freq, q) => {
+	const f = 2 * Math.sin((Math.PI * Math.min(freq, sr * 0.45)) / sr);
+	const damp = 1 / Math.max(0.5, q);
+	let low = 0;
+	let band = 0;
+	return (x) => {
+		low += f * band;
+		const high = x - low - damp * band;
+		band += f * high;
+		return band;
+	};
+};
+
+// Schroeder–Moorer reverb: parallel damped combs into series allpasses.
+//
+// A convolution against a real impulse response would be more faithful, but a
+// 1-second IR against a 2-second signal is ~4e9 multiply-adds in plain JS —
+// minutes per cue. This is O(n), runs instantly, and is the algorithm most
+// hardware reverbs actually used for decades.
+//
+// `damp` is the one that matters most here: it lowpasses inside each comb's
+// feedback path, so every trip round the loop loses more treble. That is air
+// absorption, and without it a tail sounds like a metallic ring rather than a
+// space.
+const reverb = (src, sr, { rt60 = 1.1, mix = 0.3, damp = 0.4, predelay = 0.012, size = 1 } = {}) => {
+	const n = src.length;
+	const tail = Math.round(rt60 * sr);
+	const out = new Float32Array(n + tail);
+
+	// Early reflections: discrete taps off nearby rock. These carry the sense of
+	// enclosure — the tail alone reads as "somewhere big", not "in a tunnel".
+	const taps = [
+		[0.0071, 0.62],
+		[0.0113, 0.5],
+		[0.0169, 0.44],
+		[0.0231, 0.36],
+		[0.0298, 0.28],
+		[0.0411, 0.2],
+	];
+	const wet = new Float32Array(n + tail);
+	const pre = Math.round(predelay * sr);
+	for (const [t, g] of taps) {
+		const d = pre + Math.round(t * size * sr);
+		for (let i = 0; i < n; i++) wet[i + d] += src[i] * g;
+	}
+
+	// Late tail. Delays are the classic mutually-prime Freeverb lengths, scaled
+	// by the room size; prime-ish lengths stop the combs re-enforcing each other
+	// into an audible pitch.
+	const combLens = [1557, 1617, 1491, 1422, 1277, 1356, 1188, 1116];
+	const combs = combLens.map((L) => {
+		const len = Math.max(8, Math.round((L * size * sr) / 44100));
+		// feedback for the requested RT60 at this delay length
+		const g = Math.pow(10, (-3 * len) / (rt60 * sr));
+		return { buf: new Float32Array(len), len, g, idx: 0, lp: 0 };
+	});
+	const apLens = [225, 556, 441, 341];
+	const aps = apLens.map((L) => {
+		const len = Math.max(4, Math.round((L * size * sr) / 44100));
+		return { buf: new Float32Array(len), len, idx: 0 };
+	});
+
+	for (let i = 0; i < n + tail; i++) {
+		const x = (i < n ? src[i] : 0) + wet[i] * 0.35;
+		let acc = 0;
+		for (const c of combs) {
+			const y = c.buf[c.idx];
+			// damping inside the feedback loop = treble loss per round trip
+			c.lp += (1 - damp) * (y - c.lp);
+			c.buf[c.idx] = x + c.lp * c.g;
+			c.idx = (c.idx + 1) % c.len;
+			acc += y;
+		}
+		acc /= combs.length;
+		// allpasses diffuse the comb output so individual echoes stop being
+		// countable — this is what turns flutter into a smooth tail
+		for (const a of aps) {
+			const y = a.buf[a.idx];
+			const v = acc + y * 0.5;
+			a.buf[a.idx] = v;
+			a.idx = (a.idx + 1) % a.len;
+			acc = y - v * 0.5;
+		}
+		out[i] = (i < n ? src[i] : 0) + (acc + wet[i]) * mix;
+	}
+	return out;
+};
+
+// Peak compressor. Real recorded explosions are heavily compressed — it is what
+// keeps the tail audible under the transient instead of the crack eating the
+// whole envelope. Without it the debris disappears the moment the bang lands.
+const compress = (buf, sr, { thresh = 0.45, ratio = 4, attack = 0.003, release = 0.14 } = {}) => {
+	const aC = Math.exp(-1 / (attack * sr));
+	const rC = Math.exp(-1 / (release * sr));
+	let env = 0;
+	for (let i = 0; i < buf.length; i++) {
+		const a = Math.abs(buf[i]);
+		env = a > env ? aC * env + (1 - aC) * a : rC * env + (1 - rC) * a;
+		if (env > thresh) buf[i] *= (thresh + (env - thresh) / ratio) / env;
+	}
+	return buf;
+};
+
+// Gentle saturation. Adds the low-order harmonics that any real transducer
+// chain adds, and stops the peak limiter from having to work at all.
+const saturate = (buf, drive = 1.4) => {
+	const norm = Math.tanh(drive);
+	for (let i = 0; i < buf.length; i++) buf[i] = Math.tanh(buf[i] * drive) / norm;
+	return buf;
+};
+
+// Trim a buffer that reverb has lengthened, fading the very end so the tail
+// does not stop dead at the file boundary.
+//
+// Fades the END ONLY. fadeEnds would have been the obvious call and is wrong
+// here: it ramps the first samples too, and on an explosion the first 14ms IS
+// the crack. Using it cost 0.32 of peak and dropped the crest factor from 6.2
+// to 4.0 — the transient was being faded out of the file that exists to deliver
+// it. Anything with a hard attack must never be faded in.
+const fadeOut = (buf, sr, ms) => {
+	const n = Math.min(buf.length, Math.round((ms / 1000) * sr));
+	for (let i = 0; i < n; i++) buf[buf.length - 1 - i] *= i / n;
+	return buf;
+};
+
+const takeTail = (buf, sr, dur) => {
+	const n = Math.min(buf.length, Math.round(dur * sr));
+	return fadeOut(buf.slice(0, n), sr, 30);
+};
+
+// ─── dynamite blast set ──────────────────────────────────────────────────────
+// Five cues timed to ReelBlast.svelte's five beats:
+//   CHARGE   380ms  fuse_sizzle     the fuse burns down under the covered reels
+//   SHATTER  340ms  dynamite_blast  the bang, and symbol_shatter under it
+//   PUFF     240ms  (the blast tail carries through the smoke)
+//   HOLD     200ms  (silent — the swap happens unseen)
+//   DISPERSE 700ms  symbol_reveal   the cloud thins, the new symbols appear
+//   SETTLE   420ms  (silent — the new board is simply held)
+//
+// These are CARTOON explosions, not ordnance. The rest of this file is marimba,
+// bongo and comic horn; a realistic military boom dropped into that set sounds
+// like a bug. The playfulness lives in three deliberate choices: a horn stab
+// riding on top of the body, a descending boing for the debris, and a rattle of
+// pitched rubble hits scattered through the tail.
+//
+// Cartoon is not the same as fake, though, and the first version confused the
+// two. Everything below is now built dry and then put in a place — see the
+// reverb note above. The mine is a hard, narrow, reflective space, so the cues
+// share one room (MINE) and differ only in how much of it they get: the fuse is
+// close to the player and nearly dry, the full-board blast is the furthest away
+// and the wettest.
+const MINE = { rt60: 1.05, damp: 0.42, predelay: 0.009, size: 0.86 };
+
+// rubble — a scatter of small pitched knocks, as if rock is raining back down.
+// Deterministic through the shared PRNG, so regeneration is reproducible.
+//
+// Each knock is now noise through a resonant bandpass rather than a sine: a
+// chip of rock has a broad, fast-decaying resonance, not a pitch. The sine
+// version read as a marimba being played very quietly, which is exactly the
+// "synthesized" quality this pass exists to remove.
+const rubble = (sr, { dur = 0.7, count = 14, spread = 0.55, from = 0.12 } = {}) => {
+	const out = buffer(dur, sr);
+	for (let i = 0; i < count; i++) {
+		const t = from + rand() * spread;
+		const freq = 320 + rand() * 1900;
+		const q = 3 + rand() * 7;
+		const decay = 60 + rand() * 90;
+		const len = Math.min(out.length, Math.round(sr * 0.09));
+		const bp = svfBandpass(sr, freq, q);
+		const hit = buffer(0.09, sr);
+		for (let k = 0; k < len; k++) {
+			const tt = k / sr;
+			hit[k] = bp(rand2() * Math.exp(-decay * tt)) * 1.6;
+		}
+		// later debris is quieter — it is falling further away
+		const fall = 0.5 * (1 - (t - from) / (spread + 1e-6)) + 0.12;
+		addAt(out, hit, t, fall, sr);
+	}
+	return out;
+};
+
+// fuse — sputtering spark. Bandpassed noise whose cutoff climbs as it burns
+// down, plus discrete spark grains so it crackles rather than hisses flatly.
+{
+	// 0.38s because ReelBlast's CHARGE beat is 380ms: the fuse must run out ON
+	// the bang, not before it. If these two ever diverge the anticipation ends in
+	// a gap of silence, which reads as the effect having failed.
+	const dur = 0.38;
+	const buf = buffer(dur, SR_SFX);
+	const lp = onePole();
+	const hp = onePole();
+	for (let i = 0; i < buf.length; i++) {
+		const t = i / SR_SFX;
+		const p = t / dur;
+		const n = rand2();
+		// cutoff rises through the burn: the spark gets brighter and closer
+		const v = lp(n, 0.18 + 0.34 * p);
+		const b = v - hp(v, 0.06);
+		// irregular sputter, not a steady hiss
+		const sputter = 0.55 + 0.45 * Math.sin(2 * Math.PI * 17 * t + 3 * Math.sin(2 * Math.PI * 6.3 * t));
+		buf[i] = b * sputter * (0.35 + 0.65 * p);
+	}
+	// spark grains. Amplitudes are squared so most are small and a few are loud,
+	// which is how an actual sputter is distributed — uniform grains sound like
+	// a machine, and that was audible on the first version.
+	for (let k = 0; k < 25; k++) {
+		const at = rand() * (dur - 0.02);
+		const g = buffer(0.014, SR_SFX);
+		const bp = svfBandpass(SR_SFX, 2200 + rand() * 3600, 2.5);
+		for (let i = 0; i < g.length; i++) g[i] = bp(rand2() * Math.exp((-300 * i) / SR_SFX));
+		const amp = rand();
+		addAt(buf, g, at, 0.25 + 1.1 * amp * amp, SR_SFX);
+	}
+	// a rising whistle underneath, so the CHARGE beat reads as "something is coming"
+	addAt(buf, boing(SR_SFX, { from: 260, to: 720, dur: 0.34 }), 0.02, 0.13, SR_SFX);
+	// barely any room: the fuse is right next to the player, and a wet fuse
+	// would put it at the far end of the tunnel where its detail is lost
+	const wet = reverb(buf, SR_SFX, { ...MINE, mix: 0.12 });
+	writeWav('fuse_sizzle.wav', takeTail(normalize(wet, 0.55), SR_SFX, 0.38), SR_SFX);
+}
+
+// the bang. Body + crack + debris are what make it an explosion; the horn stab
+// and the boing are what make it THIS game's explosion.
+const blastCore = (sr, { dur, bodyFrom, bodyDecay, weight }) => {
+	const buf = buffer(dur, sr);
+	// body: a fast downward sweep under an exponential decay — the thump you
+	// feel rather than hear. Second and third harmonics at falling amplitude,
+	// because a pressure wave is not a sine, and a little pitch instability so
+	// the sweep does not sound like an oscillator being swept.
+	let ph = 0;
+	for (let i = 0; i < buf.length; i++) {
+		const t = i / sr;
+		const wobble = 1 + 0.035 * Math.sin(2 * Math.PI * 31 * t) * Math.exp(-9 * t);
+		const f = (bodyFrom * Math.exp(-6.5 * t) + 26) * wobble;
+		ph += (2 * Math.PI * f) / sr;
+		const env = Math.exp(-bodyDecay * t);
+		buf[i] +=
+			(Math.sin(ph) + 0.34 * Math.sin(2 * ph) * Math.exp(-14 * t) + 0.12 * Math.sin(3 * ph) * Math.exp(-22 * t)) *
+			env *
+			0.8 *
+			weight;
+	}
+	// debris roar. Three resonant bands whose centres FALL over the tail: as the
+	// cloud expands and moves away, air absorption takes the top off it. A single
+	// static lowpass — the first version — cannot do that, and a spectrum that
+	// never moves is one of the clearest tells of synthesis.
+	const bands = [
+		[2600, 1.1, 0.5],
+		[900, 1.4, 0.75],
+		[320, 1.8, 1.0],
+	];
+	for (const [f0, q, gain] of bands) {
+		let bp = svfBandpass(sr, f0, q);
+		let lastF = f0;
+		for (let i = 0; i < buf.length; i++) {
+			const t = i / sr;
+			const f = f0 * (0.35 + 0.65 * Math.exp(-3.2 * t));
+			// rebuild the filter only when the centre has moved enough to matter,
+			// which keeps this O(n) rather than O(n) filter constructions
+			if (Math.abs(f - lastF) > f0 * 0.06) {
+				bp = svfBandpass(sr, f, q);
+				lastF = f;
+			}
+			buf[i] += bp(rand2()) * (Math.exp(-6 * t) * 0.8 + Math.exp(-1.9 * t) * 0.22) * gain * weight * 0.55;
+		}
+	}
+	// crack: the leading edge. Without this the blast sounds like a pillow.
+	for (let i = 0; i < sr * 0.014; i++) {
+		buf[i] += rand2() * Math.exp((-240 * i) / sr) * 0.65;
+	}
+	return buf;
+};
+
+// single- and multi-reel blast
+{
+	const dry = blastCore(SR_SFX, { dur: 1.0, bodyFrom: 128, bodyDecay: 7.5, weight: 1 });
+	addAt(dry, tom(SR_SFX, 0.9), 0.006, 0.6, SR_SFX); // weight under the crack
+	addAt(dry, horn(P.C4, 0.34, SR_SFX, 0.3), 0.045, 0.5, SR_SFX); // comic "BWAP"
+	addAt(dry, boing(SR_SFX, { from: 880, to: 190, dur: 0.34 }), 0.1, 0.3, SR_SFX); // springy debris
+	addAt(dry, cymbal(0.55, SR_SFX), 0.01, 0.22, SR_SFX);
+	addAt(dry, rubble(SR_SFX, { dur: 1.0, count: 13, spread: 0.5, from: 0.14 }), 0, 0.5, SR_SFX);
+	const wet = reverb(dry, SR_SFX, { ...MINE, mix: 0.3 });
+	saturate(wet, 1.5);
+	compress(wet, SR_SFX, { thresh: 0.4, ratio: 4.5, attack: 0.004, release: 0.16 });
+	writeWav('dynamite_blast.wav', takeTail(normalize(wet, 0.92), SR_SFX, 1.5), SR_SFX);
+}
+
+// full-board blast — the 5-reel payoff. Same anatomy, then it keeps going: the
+// player has just filled the board and the sound has to stay excited for the
+// extra hold ReelBlast adds in that case.
+{
+	const dry = blastCore(SR_SFX, { dur: 2.1, bodyFrom: 155, bodyDecay: 4.4, weight: 1.25 });
+	addAt(dry, tom(SR_SFX, 1), 0.006, 0.8, SR_SFX);
+	addAt(dry, conga(SR_SFX, 0.9), 0.03, 0.5, SR_SFX);
+	addAt(dry, horn(P.C4, 0.5, SR_SFX, 0.34), 0.04, 0.6, SR_SFX);
+	addAt(dry, horn(P.G4, 0.5, SR_SFX, 0.28), 0.09, 0.45, SR_SFX); // a fifth on top — bigger
+	addAt(dry, boing(SR_SFX, { from: 1040, to: 170, dur: 0.42 }), 0.11, 0.34, SR_SFX);
+	addAt(dry, cymbal(1.1, SR_SFX), 0.01, 0.34, SR_SFX);
+	addAt(dry, rubble(SR_SFX, { dur: 2.1, count: 22, spread: 0.85, from: 0.16 }), 0, 0.55, SR_SFX);
+	// …and the celebration on the far side of the debris
+	addAt(dry, hoot(SR_SFX, { from: 560, to: 1020, dur: 0.26 }), 0.86, 0.3, SR_SFX);
+	for (const [i, note] of [P.G4, P.C5, P.E5, P.G5].entries()) {
+		addAt(dry, marimba(note, 0.7, SR_SFX), 1.02 + i * 0.085, 0.55, SR_SFX);
+	}
+	addAt(dry, cymbal(0.9, SR_SFX), 1.02, 0.16, SR_SFX);
+	// the biggest bang gets the most room — it is the furthest-away event in the
+	// set, and the extra tail is what sells five reels going up at once
+	const wet = reverb(dry, SR_SFX, { ...MINE, rt60: 1.35, mix: 0.4 });
+	saturate(wet, 1.6);
+	compress(wet, SR_SFX, { thresh: 0.36, ratio: 5, attack: 0.004, release: 0.2 });
+	writeWav('dynamite_blast_big.wav', takeTail(normalize(wet, 0.95), SR_SFX, 2.7), SR_SFX);
+}
+
+// the symbols breaking. Plays alongside the bang, but its own weight arrives
+// LATE and inside the file rather than on a separate timer: the crack is
+// simultaneous with the detonation, the crumble trails it by ~90ms as the
+// pieces come apart and fall. Keeping that offset in the WAV means ReelBlast
+// needs no extra await, and so no extra cancellation window.
+{
+	const dur = 0.62;
+	const dry = buffer(dur, SR_SFX);
+
+	// the crack — brittle and high, so it sits ABOVE the blast's low body rather
+	// than fighting it. Resonant bursts at stone-like frequencies: rock splitting
+	// rings briefly at a pitch, which broadband noise cannot imitate.
+	for (let k = 0; k < 6; k++) {
+		const at = rand() * 0.05;
+		const g = buffer(0.09, SR_SFX);
+		const bp = svfBandpass(SR_SFX, 1400 + rand() * 3200, 4 + rand() * 6);
+		for (let i = 0; i < g.length; i++) {
+			const t = i / SR_SFX;
+			g[i] = bp(rand2() * Math.exp(-70 * t)) * 1.8;
+		}
+		addAt(dry, g, at, 0.55 + rand() * 0.4, SR_SFX);
+	}
+	// a couple of pitched "chink"s — the ring a chip of stone makes as it splits
+	for (const [at, f] of [[0.01, 1450], [0.035, 990], [0.06, 1820]]) {
+		addAt(dry, bongo(SR_SFX, { from: f, to: f * 0.62, dur: 0.08, punch: 0.5 }), at, 0.4, SR_SFX);
+	}
+
+	// the crumble — the pieces landing, scattered across the tail
+	addAt(dry, rubble(SR_SFX, { dur, count: 18, spread: 0.34, from: 0.09 }), 0, 0.62, SR_SFX);
+	// gravelly wash under the rubble so the individual hits do not sound sparse.
+	// Bandpassed and swept down, for the same air-absorption reason as the blast.
+	let bp = svfBandpass(SR_SFX, 1800, 0.9);
+	let lastF = 1800;
+	for (let i = 0; i < dry.length; i++) {
+		const t = i / SR_SFX;
+		if (t < 0.07) continue;
+		const f = 1800 * (0.4 + 0.6 * Math.exp(-4 * (t - 0.07)));
+		if (Math.abs(f - lastF) > 110) {
+			bp = svfBandpass(SR_SFX, f, 0.9);
+			lastF = f;
+		}
+		dry[i] += bp(rand2()) * 0.34 * Math.exp(-5.5 * (t - 0.07)) * Math.min(1, (t - 0.07) * 30);
+	}
+	const wet = reverb(dry, SR_SFX, { ...MINE, mix: 0.26 });
+	compress(wet, SR_SFX, { thresh: 0.5, ratio: 3.5 });
+	writeWav('symbol_shatter.wav', takeTail(normalize(wet, 0.7), SR_SFX, 1.0), SR_SFX);
+}
+
+// the reveal — plays as the cloud thins and the new symbols come out from
+// behind it. Rising pentatonic marimba: the board just got better, and the ear
+// should be told so before the win evaluation catches up.
+{
+	const dry = buffer(0.8, SR_SFX);
+	for (const [i, note] of [P.C5, P.D5, P.E5, P.G5, P.C6].entries()) {
+		addAt(dry, marimba(note, 0.55, SR_SFX, 0.3), i * 0.055, 0.75 + i * 0.05, SR_SFX);
+	}
+	addAt(dry, shaker(SR_SFX, 0.16, 0.7), 0.0, 0.35, SR_SFX);
+	addAt(dry, shaker(SR_SFX, 0.2, 0.75), 0.13, 0.28, SR_SFX);
+	addAt(dry, cymbal(0.7, SR_SFX), 0.22, 0.12, SR_SFX); // shimmer as it clears
+	// the same tunnel the blast happened in, a moment later — a dry reveal after
+	// a wet blast would sound like the player had been moved somewhere else
+	const wet = reverb(dry, SR_SFX, { ...MINE, mix: 0.24 });
+	writeWav('symbol_reveal.wav', takeTail(normalize(wet, 0.62), SR_SFX, 1.25), SR_SFX);
+}
+
 console.log('done');

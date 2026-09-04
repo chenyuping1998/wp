@@ -79,9 +79,13 @@ const RESTRICTED = {
 const terms = Object.keys(RESTRICTED).sort((a, b) => b.length - a.length);
 const pattern = new RegExp(`(?<![\\w-])(${terms.map((t) => t.replace(/ /g, '\\s+')).join('|')})(?![\\w-])`, 'gi');
 
-// "Stake Engine" is the platform's own name and appears in the attribution line.
-// Only the standalone word is a wagering term.
-const dropProperNouns = (text) => text.replace(/Stake\s+Engine/gi, 'Platform');
+// NOTHING is exempt any more. This used to drop "Stake Engine" before scanning,
+// on the reasoning that the platform's own name is not a wagering term — and
+// that reasoning is what let the disclaimer ship saying "Stake Engine" through
+// several games. Certification asked for "Stake" out of the disclaimer outright,
+// so the attribution line reads "TM and (c) 2026 Engine" and there is no longer
+// any legitimate occurrence to exempt.
+const dropProperNouns = (text) => text;
 
 // Files whose social branches must be clean. Reaches into packages/ on purpose:
 // the shared i18n is where the "funds" string lived, and no game's build was
@@ -192,6 +196,33 @@ for (const file of SOCIAL_BRANCH_SOURCES) {
 		const social = stripInterpolations(m[2]);
 		const hits = social.match(pattern);
 		if (hits) report(file, 'social branch of ternary', social, hits);
+	}
+}
+
+// ── rule 4: plain copy constants ─────────────────────────────────────────────
+// Files that are nothing but player-facing prose. Rules 1-3 all miss these:
+// rule 1 walks .svelte only, and rules 2-3 look for pick() and social ternaries,
+// so a bare `export const X = '...'` is matched by nothing at all.
+//
+// This gap was created and caught in the same session. The legal notice was
+// moved out of ModalGameRules.svelte (covered by rule 1) into a shared .ts
+// constant, and the guard silently stopped guarding it — the checker still
+// reported a clean pass with "Stake Engine" sitting in the file. A guard is only
+// worth having if it has been SEEN to fail.
+const PLAIN_COPY_SOURCES = [path.join(repoRoot, 'packages/state-shared/src/legal.ts')];
+
+for (const file of PLAIN_COPY_SOURCES) {
+	if (!fs.existsSync(file)) continue;
+	const source = fs
+		.readFileSync(file, 'utf8')
+		// comments in these files explain the restrictions, so they name the very
+		// words being looked for
+		.replace(/\/\*[\s\S]*?\*\//g, '')
+		.replace(/\/\/.*/g, '');
+	for (const m of source.matchAll(new RegExp(STRING, 'g'))) {
+		const text = stripInterpolations(m[2]);
+		const hits = text.match(pattern);
+		if (hits) report(file, 'plain copy constant', text, hits);
 	}
 }
 

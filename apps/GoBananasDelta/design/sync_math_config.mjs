@@ -14,9 +14,12 @@
  * Two things the math config does NOT carry, which the client needs and which
  * are therefore lifted out of game_config.py by hand below:
  *
- *   buy_spins        how many free spins each bought tier plays. The SDK exports
- *                    cost/rtp/max_win per mode and nothing about the feature, and
- *                    the tiers' whole proposition is that they run longer.
+ *   buy_scatters     how many Scatters each bought tier's trigger board shows.
+ *                    The SPIN COUNT is not a number of its own any more: it is
+ *                    freespin_triggers[buy_scatters[mode]], exactly as for a
+ *                    round triggered by landing them. Certification rejected the
+ *                    old buy_spins table for the obvious reason — the board said
+ *                    five Scatters and the round awarded eleven spins.
  *   buy_start_cuts   how many reels each tier opens with already split — the
  *                    visible difference between the three cards.
  *
@@ -127,15 +130,12 @@ const readDict = (name) => {
 	return out;
 };
 
-const buySpins = readDict('buy_spins');
+const buyScatters = readDict('buy_scatters');
 const buyCuts = readDict('buy_start_cuts');
-for (const mode of Object.keys(buySpins)) {
-	if (!raw.betModes[mode]) continue;
-	raw.betModes[mode].spins = buySpins[mode];
-	raw.betModes[mode].start_cuts = buyCuts[mode] ?? 0;
-}
 
-// The scatter-count to spin-count map, for the base game's own trigger.
+// The scatter-count to spin-count map. Used twice now: the base game's own
+// trigger, and — since the buys award what their forced trigger board shows —
+// the buy cards' spin counts too.
 const triggerBlock = mathSource.match(
 	/self\.freespin_triggers\s*=\s*\{\s*self\.basegame_type:\s*\{([^}]*)\}/,
 );
@@ -146,6 +146,25 @@ if (!triggerBlock) {
 const scatterSpins = {};
 for (const [, k, v] of triggerBlock[1].matchAll(/(\d+)\s*:\s*(\d+)/g)) {
 	scatterSpins[Number(k)] = Number(v);
+}
+
+// `spins` is DERIVED, never read: there is no separate spin count in the maths
+// to copy, and reconstructing one here would put the drift back in the one place
+// the change was made to remove it.
+for (const mode of Object.keys(buyScatters)) {
+	if (!raw.betModes[mode]) continue;
+	const scatters = buyScatters[mode];
+	const spins = scatterSpins[scatters];
+	if (spins === undefined) {
+		console.error(
+			`${mode} forces ${scatters} scatter(s), which freespin_triggers does not pay: ` +
+				`${JSON.stringify(scatterSpins)}`,
+		);
+		process.exit(1);
+	}
+	raw.betModes[mode].scatters = scatters;
+	raw.betModes[mode].spins = spins;
+	raw.betModes[mode].start_cuts = buyCuts[mode] ?? 0;
 }
 
 const config = { ...raw, symbols, scatterSpins };
@@ -163,7 +182,9 @@ console.log(`  board ${config.numRows[0]} x ${config.numReels}  (${config.numRow
 console.log(`  symbols: ${Object.keys(symbols).sort().join(', ')}`);
 console.log(`  scatters -> spins: ${JSON.stringify(scatterSpins)}`);
 for (const [mode, info] of Object.entries(config.betModes)) {
-	const extra = info.spins ? `, ${info.spins} spins, ${info.start_cuts} starting cut(s)` : '';
+	const extra = info.spins
+		? `, ${info.scatters} scatters -> ${info.spins} spins, ${info.start_cuts} starting cut(s)`
+		: '';
 	console.log(`  ${mode}: ${info.cost}x cost, max win ${info.max_win}x${extra}`);
 }
 console.log(`  rtp ${config.rtp}`);

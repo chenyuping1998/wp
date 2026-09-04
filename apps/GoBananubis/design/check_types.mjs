@@ -1,0 +1,137 @@
+// Type-check guard.
+//
+// `vite build` does not type-check. An undefined identifier is a legal free
+// variable to the bundler, so it compiles happily and explodes at runtime — and
+// check_undefined_refs.mjs is explicitly blind to identifiers used inside
+// <script>. That hole is what this closes, and this game has fallen through it
+// twice already:
+//
+//   · an asset declared `type: 'spritesheet'` instead of 'spriteSheet'. Unknown
+//     type -> never loaded -> upgradeConfig(config, undefined) threw inside an
+//     effect -> Svelte aborted the flush and the game froze mid free game.
+//   · every rotate keyframe written as `angle` instead of `value`. Spine 4.x
+//     silently reads no rotation at all, so the whole animation set played with
+//     the character standing still.
+//
+// Both builds were green. TypeScript would have rejected the first outright.
+//
+// It gates on the count not INCREASING rather than on zero: the app inherited
+// errors from the scaffold it was copied from, and most are in Storybook sample
+// data that is going to be deleted rather than fixed. Ratchet the numbers down
+// as they are fixed; delete entries whose files are gone.
+//
+// PER FILE, not per total. A total-only gate reads "at baseline" when a fixed
+// error in one file is replaced by a new one somewhere else, and offsetting
+// changes are the normal case during a refactor.
+//
+// Never raise a number here to make a red build pass. If a count went up, you
+// broke something.
+//
+// Usage: node design/check_types.mjs
+import { execFileSync } from 'child_process';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// file → known error count, as svelte-check prints the path.
+const BASELINE = {
+	// Storybook sample data, copied from the gen-1 scaffold and never updated to
+	// this game's book events. Dead weight, and the largest block here.
+	'src\\stories\\ModeBonusBookEvent.stories.svelte': 10,
+	'src\\stories\\ModeBaseBookEvent.stories.svelte': 8,
+	'src\\stories\\ModeBonusBook.stories.svelte': 1,
+	'src\\stories\\ModeBaseBook.stories.svelte': 1,
+	'src\\stories\\ComponentsGame.stories.svelte': 1,
+	// third-party / workspace packages, not this game's to fix
+	'node_modules\\utils-xstate\\node_modules\\rgs-requests\\node_modules\\rgs-fetcher\\src\\rgsFetcher.ts': 5,
+	'node_modules\\utils-slots\\src\\createReelForCascading.svelte.ts': 1,
+	'node_modules\\components-ui-html\\node_modules\\envs\\src\\envs.svelte.ts': 1,
+	// deprecated pixi v7 Graphics/TextStyle API — see the 85 remaining uses
+	'src\\components\\GoldText.svelte': 3,
+	'src\\components\\Win.svelte': 2,
+	'src\\components\\FreeSpinIntro.svelte': 2,
+	'src\\components\\ui\\ModalPayTable.svelte': 1,
+	'src\\components\\SymbolSpineMain.svelte': 1,
+	'src\\components\\PressToContinue.svelte': 1,
+	'src\\components\\FreeSpinOutro.svelte': 1,
+	'src\\components\\FreeSpinCounter.svelte': 1,
+	// the padding-reel board literals are typed as { name: string }[][]
+	'src\\game\\bookEventHandlerMap.ts': 2,
+	'src\\game\\actor.ts': 1,
+	'src\\i18n\\messagesMap\\index.ts': 3,
+};
+
+const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const bin = path.join(appRoot, 'node_modules/.bin/svelte-check');
+
+let out = '';
+try {
+	out = execFileSync(bin, ['--threshold', 'error', '--output', 'machine'], {
+		cwd: appRoot,
+		encoding: 'utf8',
+		shell: true,
+	});
+} catch (err) {
+	// svelte-check exits non-zero whenever it found errors, which is the normal
+	// case while any baseline entry is above 0. The output is still on stdout.
+	out = (err.stdout || '') + (err.stderr || '');
+}
+
+// The catch above swallows EVERY failure, including the binary not being there
+// at all - and a run that produced no output then parsed as zero errors, every
+// baseline entry as an improvement, and the whole gate as green.
+//
+// That is not hypothetical. This app was forked by copying a directory, which
+// left node_modules/svelte-check an empty folder; `node design/check_types.mjs`
+// printed "OK: 0 type errors, 19 file(s) now below baseline" and `pnpm build`
+// went straight past it, while the app had a real error in it.
+//
+// svelte-check's machine format always prints a START and a COMPLETED line, so
+// their absence means it never ran, whatever the exit code said. Fail loudly:
+// an unrunnable checker has to be distinguishable from a clean one.
+if (!/^\d+ (START|COMPLETED)/m.test(out)) {
+	console.error('check_types: svelte-check did not run - this is NOT a pass.');
+	console.error('   Nothing was type-checked. Most likely node_modules is broken');
+	console.error('   (a forked app whose node_modules was copied rather than installed):');
+	console.error('   run `pnpm install` from the workspace root and try again.');
+	for (const line of out.trim().split(String.fromCharCode(10)).slice(0, 12)) console.error(`   | ${line.trim()}`);
+	process.exit(1);
+}
+
+const actual = new Map();
+for (const m of out.matchAll(/^\d+ ERROR "([^"]*)"/gm)) {
+	// The machine format escapes backslashes; unescape so the keys above can be
+	// written the way the human format prints them.
+	const file = m[1].replace(/\\\\/g, '\\');
+	actual.set(file, (actual.get(file) ?? 0) + 1);
+}
+
+const regressions = [];
+const improvements = [];
+
+for (const [file, count] of actual) {
+	const allowed = BASELINE[file] ?? 0;
+	if (count > allowed) regressions.push({ file, count, allowed });
+}
+for (const [file, allowed] of Object.entries(BASELINE)) {
+	const count = actual.get(file) ?? 0;
+	if (count < allowed) improvements.push({ file, count, allowed });
+}
+
+if (regressions.length > 0) {
+	console.error(`check_types: ${regressions.length} file(s) above their baseline`);
+	for (const { file, count, allowed } of regressions.sort((a, b) => b.count - a.count)) {
+		console.error(`   ${allowed} -> ${count}  ${file}`);
+	}
+	console.error('   Run: node_modules/.bin/svelte-check --threshold error');
+	process.exit(1);
+}
+
+const total = [...actual.values()].reduce((a, b) => a + b, 0);
+if (improvements.length > 0) {
+	console.log(`OK: ${total} type errors, ${improvements.length} file(s) now below baseline:`);
+	for (const { file, count, allowed } of improvements) {
+		console.log(`     ${allowed} -> ${count}  ${file}   (lower BASELINE)`);
+	}
+} else {
+	console.log(`OK: ${total} type errors, every file at its baseline`);
+}

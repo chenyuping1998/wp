@@ -100,6 +100,12 @@
 	const SEAL_MID = 0x8f7fe0;
 	const SEAL_PALE = 0xece5ff;
 	const SEAL_MOTES = 6;
+	// The figure's drawn size. `FIGURE_ASPECT` is height / width, measured off
+	// design/source/cover/transition_priestess.png at 896x1200.
+	const FIGURE_ASPECT = 1200 / 896;
+	// How much of the canvas height she fills. She is the subject of the shot now,
+	// where the seal was a prop dropped into it.
+	const FIGURE_FILL = 0.52;
 
 	let elapsed = 0;
 	let rafId = 0;
@@ -129,10 +135,30 @@
 	 * The cover is a contract and the storm is a look. They do not share a curve.
 	 */
 	let washT = $state(0);
+	/**
+	 * How much of the SEAL LAYER is still drawn: the charge and the first storm.
+	 *
+	 * It needed one and did not have one. `crashT` is pinned to 1 from the moment
+	 * the frame fills and never comes back down, so once the cover started lifting
+	 * and drawSeal's early-out released, it resumed at FULL strength and stayed
+	 * there for the whole reveal - a stack of dark indigo halo rings sitting in the
+	 * middle of the screen over the board that was supposed to be arriving. That is
+	 * the black backing left behind after the paper has gone.
+	 *
+	 * Faded ahead of the cover, not with it, so the layer is already empty by the
+	 * time anything behind it can be seen.
+	 */
+	let sealFade = $state(1);
 
 	const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
 	const easeOutCubic = (t: number) => 1 - (1 - clamp01(t)) ** 3;
 	const easeInCubic = (t: number) => clamp01(t) ** 3;
+	// Eased at BOTH ends. The reveal uses this rather than a cubic because a curve
+	// that is steep at one end reads as a cut at that end.
+	const smoothstep = (t: number) => {
+		const x = clamp01(t);
+		return x * x * (3 - 2 * x);
+	};
 
 
 	// ── the talisman storm ────────────────────────────────────────────────────
@@ -235,11 +261,32 @@
 					context.eventEmitter.broadcast({ type: 'soundSlam' });
 					context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.4 });
 				}
+				// The seal layer is finished the moment the cover is solid, and it is
+				// emptied HERE rather than in the open phase below.
+				//
+				// The loading screen never reaches the open phase: it fires oncover
+				// and unmounts the whole tree, then fades that tree out. Whatever the
+				// layer drew last fades with it - and what it drew last is a stack of
+				// dark indigo halo rings in the middle of the screen, denser than the
+				// flat cover around them. So the cover faded evenly and the rings
+				// lingered as a dark patch in the middle, which is the black blob left
+				// behind after the paper has gone.
 				if (elapsed < COVERED_AT) {
 					// the storm thickens - easeIn, so the frame fills late and fast
 					dropVisible = true;
 					const through = (elapsed - CLOSE_AT) / CLOSE_MS;
 					floodT = easeInCubic(through);
+					// The seal layer hands over to the storm across this window and is
+					// empty by the time the cover is solid.
+					//
+					// It has to be gone by then, and not merely hidden. The loading
+					// screen never reaches the open phase below - it fires oncover and
+					// unmounts the whole tree, which then FADES - so whatever this
+					// layer drew last fades out over the game. What it drew last was a
+					// stack of dark indigo halo rings in the middle of the screen,
+					// denser than the flat cover around them, so the cover faded
+					// evenly and the rings lingered as a dark patch in the middle.
+					sealFade = 1 - clamp01(through / 0.8);
 					// the wash runs LINEARLY and finishes early, so it is solid well
 					// before the covered window opens
 					washT = clamp01(through / 0.6);
@@ -247,6 +294,7 @@
 					dropVisible = false;
 					floodT = 1;
 					washT = 1;
+					sealFade = 0;
 					if (!covered) {
 						covered = true;
 						props.oncover?.();
@@ -268,7 +316,51 @@
 					// empty.
 					const back = (elapsed - OPEN_AT) / OPEN_MS;
 					floodT = 1 - easeOutCubic(clamp01(back / 0.75));
-					washT = 1 - easeInCubic(clamp01((back - 0.62) / 0.38));
+					// The seal layer goes FIRST and faster than the paper: it is the
+					// only thing on screen with no business being there once the
+					// discharge is over.
+					sealFade = 1 - easeOutCubic(clamp01(back / 0.5));
+					// ── the cover ────────────────────────────────────────────────
+					//
+					// Smoothstep, not easeIn. Easing in holds the cover almost solid
+					// and then drops it over the last few frames, which is a CUT with
+					// a ramp in front of it - the board does not appear, it is
+					// switched on. Smoothstep eases both ends, so the last thing the
+					// player sees is the courtyard coming up rather than a shutter
+					// being pulled.
+					// ── the cover and the paper OVERLAP ─────────────────────────
+					//
+					// This waited for the paper: first at 0.55, then 0.42, on the
+					// reading that the board should not appear until the throw was
+					// finished. That is a hold on black, and measured it was a long
+					// one - 683ms with the cover more than half opaque, and it did not
+					// even begin to lift until 1855ms of a 2180ms transition.
+					//
+					// The two do not need to queue. The storm THINS as it clears, so a
+					// board coming up through the last sparse slips reads as the paper
+					// clearing to reveal it, which is the thing that is actually
+					// happening. Waiting instead produces a beat where the paper has
+					// gone, the board has not arrived, and the screen is simply dark.
+					//
+					// easeOUT, not smoothstep. Smoothstep is eased at both ends, and
+					// the near end is the one that matters here: it held the cover
+					// above half opacity for 417ms before letting go. A reveal should
+					// get out of the way first and settle afterwards, which is the
+					// opposite curve - off the black quickly, then a soft landing.
+					// And over a SHORT window, not the whole open phase.
+					//
+					// The cover has nothing to hide behind it. By the time it starts
+					// lifting the swap has happened and the board, the frame, the rail
+					// and the bar are all drawn - so every extra frame of it is a frame
+					// of the finished game being shown through grey. Captured at 20fps,
+					// the old fade still had 14% of the canvas near-black six frames
+					// after the paper had gone.
+					//
+					// The paper is what carries the reveal, and it runs on to 0.75 of
+					// this window. The cover gets 0.35 of it and then the storm is
+					// clearing over a board the player can already see, which is the
+					// picture this was always meant to be.
+					washT = 1 - easeOutCubic(clamp01((back - 0.03) / 0.32));
 				}
 			}
 
@@ -296,6 +388,12 @@
 	const drawSeal = (g: PixiGraphics) => {
 		g.clear();
 		if (crashT < 0) return;
+		// Nothing drawn here is visible once the wash is solid: drawFlood paints
+		// the whole canvas and is rendered after this one. It kept running anyway -
+		// the charge, and a second full storm of forty-four slips - for the 550ms
+		// the cover is up. That is 33 frames of work behind an opaque rectangle.
+		if (washT > 0.985) return;
+		if (sealFade <= 0.01) return;
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		const diagonal = Math.sqrt(width * width + height * height);
 
@@ -319,7 +417,7 @@
 		// in INDIGO - the night sky the courtyard stands under, and the one strong
 		// colour in this game not already spoken for: cyan is the spirits', teal is
 		// the collect's, candle is the trigger's, cinnabar is the ink's.
-		const wash = clamp01((crashT - 0.15) / 0.85);
+		const wash = clamp01((crashT - 0.15) / 0.85) * sealFade;
 		if (wash > 0) {
 			const breathe = 0.5 + 0.5 * Math.sin(crashT * Math.PI * 3);
 			const reach = diagonal * 0.44 * wash;
@@ -341,13 +439,21 @@
 
 			// The motes, at transition scale. Same idea as the trigger's four: a
 			// halo alone is a glow, something going round it is a thing being held.
+			// The motes circle the FIGURE rather than the discharge.
+			//
+			// They used to orbit at 0.78 of the bloom's reach, which grows with the
+			// discharge - so they started tight and ended up sweeping the far corners
+			// of the screen, which is a shockwave and not a charge. Tied to her drawn
+			// height instead they stay where the eye already is: around the hand the
+			// talismans are floating over.
+			const figure = height * FIGURE_FILL;
 			const orbit = crashT * Math.PI * 2.2;
 			for (let i = 0; i < SEAL_MOTES; i += 1) {
 				const angle = orbit + (Math.PI * 2 * i) / SEAL_MOTES;
-				const ring = reach * (0.78 + 0.06 * Math.sin(orbit * 2 + i));
+				const ring = figure * (0.4 + 0.05 * Math.sin(orbit * 2 + i));
 				const mx = Math.cos(angle) * ring;
 				const my = Math.sin(angle) * ring;
-				const size = diagonal * 0.006 * (0.7 + 0.3 * Math.sin(orbit * 3 + i));
+				const size = figure * 0.018 * (0.7 + 0.3 * Math.sin(orbit * 3 + i));
 				g.circle(mx, my, size * 2.1);
 				g.fill({ color: SEAL_MID, alpha: 0.22 * wash * (0.6 + 0.4 * breathe) });
 				g.circle(mx, my, size);
@@ -377,7 +483,7 @@
 		// turning over in the air instead of a rectangle sliding sideways.
 		const stormT = clamp01((crashT - 0.05) / 0.95);
 		if (stormT > 0) {
-			drawStorm(g, stormT, diagonal, 1);
+			drawStorm(g, stormT, diagonal, sealFade);
 		}
 
 		// NO SPOKES.
@@ -405,8 +511,56 @@
 	// it and they must agree.
 	const FIRE_ALPHA = [0.34, 0.5, 0.66, 0.9];
 
+	/**
+	 * How many alpha steps the storm is quantised into before it is drawn.
+	 *
+	 * ── why the storm is drawn in buckets at all ──
+	 *
+	 * Every slip used to be six draw calls of its own: four for the tapering
+	 * flame it trails, one for the paper, one for the cinnabar column. Six,
+	 * because each carried its own alpha and its own width, and a Pixi Graphics
+	 * path cannot change either without being ended and committed.
+	 *
+	 * Forty-four slips is 264 submissions. For most of the transition TWO storms
+	 * run at once - drawSeal throws one and drawFlood keeps another going over
+	 * the wash - so the peak was over 500 paths rebuilt every frame, and that is
+	 * what the stutter was.
+	 *
+	 * Quantising the alpha lets every slip in a step share one call. The width
+	 * cannot be quantised the same way, so it moved out of the STYLE and into
+	 * the GEOMETRY: the flame is four tapering quads rather than four strokes of
+	 * decreasing width, and the column is a thin quad rather than a stroke. That
+	 * leaves 4 flame passes x steps, 2 paper colours x steps, and steps for the
+	 * columns - 21 submissions instead of 264 at three steps.
+	 *
+	 * Three steps is enough because of what the alpha carries: how far along its
+	 * own flight one slip is, across forty-four overlapping pieces of paper
+	 * crossing the screen in under a second. The banding is between objects and
+	 * never within one, and nothing is on screen long enough to be watched
+	 * crossing a step.
+	 */
+	const STORM_ALPHA_STEPS = 3;
+
 	const drawStorm = (g: PixiGraphics, t: number, diagonal: number, alpha: number) => {
 		const alphaOf = (pass: number) => FIRE_ALPHA[pass] * alpha;
+
+		// Collected first, drawn second. Each bucket holds flat quads: four
+		// [x, y] corners, so a bucket is emitted as one path and one fill.
+		type Quad = [number, number, number, number, number, number, number, number];
+		const flames: Quad[][] = [];
+		for (let i = 0; i < FIRE.length * STORM_ALPHA_STEPS; i += 1) flames.push([]);
+		// index 0 = face-on (lit paper), 1 = edge-on (the paper's dark edge)
+		const papers: Quad[][] = [];
+		for (let i = 0; i < 2 * STORM_ALPHA_STEPS; i += 1) papers.push([]);
+		const columns: Quad[][] = [];
+		for (let i = 0; i < STORM_ALPHA_STEPS; i += 1) columns.push([]);
+
+		/** which alpha step a 0..1 fade falls in */
+		const stepOf = (fade: number) =>
+			Math.min(STORM_ALPHA_STEPS - 1, Math.max(0, Math.floor(fade * STORM_ALPHA_STEPS)));
+		/** the alpha a step is drawn at: the middle of the band it covers */
+		const stepFade = (i: number) => (i + 0.5) / STORM_ALPHA_STEPS;
+
 		for (const slip of talismans) {
 			// each launches on its own delay, then runs to its own reach
 			const local = clamp01((t - slip.delay) / (1 - slip.delay));
@@ -449,55 +603,107 @@
 			// behind by speed, so when the speed goes, so does it. Length comes from
 			// the derivative of the drag curve rather than from a timer, so a slip
 			// that is still moving is still burning and one that has stopped is not.
-			const speed = slip.drag * Math.exp(-slip.drag * local) / (1 - Math.exp(-slip.drag));
+			const speed = (slip.drag * Math.exp(-slip.drag * local)) / (1 - Math.exp(-slip.drag));
 			const tongue = diagonal * 0.055 * slip.size * Math.min(1, speed * 0.55);
+			const fade = 1 - local * 0.3;
+			const band = stepOf(fade);
+
 			if (tongue > 1) {
 				const backX = -Math.cos(slip.angle);
 				const backY = -Math.sin(slip.angle);
-				FIRE.forEach((colour, pass) => {
+				// perpendicular to the direction of travel, for the taper's width
+				const perpX = -backY;
+				const perpY = backX;
+				for (let pass = 0; pass < FIRE.length; pass += 1) {
 					const reach = tongue * [1, 0.72, 0.46, 0.22][pass];
-					const width = halfH * [0.9, 0.66, 0.42, 0.2][pass];
-					g.moveTo(cx, cy);
-					g.lineTo(cx + backX * reach, cy + backY * reach);
-					g.stroke({
-						width: Math.max(1, width),
-						color: colour,
-						alpha: alphaOf(pass) * (1 - local * 0.3),
-						cap: 'round',
-					});
-				});
+					// ── a leaf, not a pennant ────────────────────────────────────
+					//
+					// The first batched version was a triangle: full width at the slip,
+					// closing to a point at the tip. Forty-four slips times four passes
+					// is 176 flat-based triangles roughly fifty pixels across, and what
+					// that reads as is RIBBONS coming off the paper - the flat base is
+					// a hard edge travelling with the slip, and the eye reads a hard
+					// edge as a ribbon and a soft one as fire.
+					//
+					// Tapered at BOTH ends and half as wide. The widest point sits a
+					// third of the way along, which is where a trailing flame is
+					// actually widest - it is pinched where it leaves the object and
+					// pinched again where it burns out.
+					const half = Math.max(0.5, halfH * [0.9, 0.66, 0.42, 0.2][pass] * 0.26);
+					const midX = cx + backX * reach * 0.33;
+					const midY = cy + backY * reach * 0.33;
+					flames[pass * STORM_ALPHA_STEPS + band].push([
+						cx,
+						cy,
+						midX + perpX * half,
+						midY + perpY * half,
+						cx + backX * reach,
+						cy + backY * reach,
+						midX - perpX * half,
+						midY - perpY * half,
+					]);
+				}
 			}
 
 			const [ax, ay] = at(-1, -1);
 			const [bx, by] = at(1, -1);
 			const [dx2, dy2] = at(1, 1);
 			const [ex, ey] = at(-1, 1);
-			g.moveTo(ax, ay);
-			g.lineTo(bx, by);
-			g.lineTo(dx2, dy2);
-			g.lineTo(ex, ey);
-			g.closePath();
 			// Face-on it is lit paper; edge-on it is the paper's dark edge. Driven
 			// by the same cosine as the width, so the two agree.
 			const face = Math.abs(Math.cos(theta));
-			g.fill({
-				color: face > 0.25 ? TALISMAN : BRASS_HI,
-				alpha: alpha * (0.55 + 0.4 * face) * (1 - local * 0.15),
-			});
+			const paperFade = fade * (0.55 + 0.4 * face) * (1 - local * 0.15) * 0.85;
+			papers[(face > 0.25 ? 0 : 1) * STORM_ALPHA_STEPS + stepOf(paperFade)].push([
+				ax,
+				ay,
+				bx,
+				by,
+				dx2,
+				dy2,
+				ex,
+				ey,
+			]);
 
 			// the cinnabar column down the middle, only while the face is readable
 			if (face > 0.4) {
+				const half = Math.max(0.5, halfW * 0.25);
 				const [mx0, my0] = at(0, -0.6);
 				const [mx1, my1] = at(0, 0.6);
-				g.moveTo(mx0, my0);
-				g.lineTo(mx1, my1);
-				g.stroke({
-					width: Math.max(1, halfW * 0.5),
-					color: CINNABAR,
-					alpha: alpha * 0.85,
-					cap: 'round',
-				});
+				columns[band].push([
+					mx0 - half * sin,
+					my0 + half * cos,
+					mx1 - half * sin,
+					my1 + half * cos,
+					mx1 + half * sin,
+					my1 - half * cos,
+					mx0 + half * sin,
+					my0 - half * cos,
+				]);
 			}
+		}
+
+		// ── emit ─────────────────────────────────────────────────────────────
+		const emit = (quads: Quad[], color: number, a: number) => {
+			if (quads.length === 0 || a <= 0.002) return;
+			for (const q of quads) {
+				g.moveTo(q[0], q[1]);
+				g.lineTo(q[2], q[3]);
+				g.lineTo(q[4], q[5]);
+				g.lineTo(q[6], q[7]);
+				g.closePath();
+			}
+			g.fill({ color, alpha: Math.min(1, a) });
+		};
+
+		for (let pass = 0; pass < FIRE.length; pass += 1) {
+			for (let i = 0; i < STORM_ALPHA_STEPS; i += 1) {
+				emit(flames[pass * STORM_ALPHA_STEPS + i], FIRE[pass], alphaOf(pass) * stepFade(i));
+			}
+		}
+		for (let i = 0; i < STORM_ALPHA_STEPS; i += 1) {
+			emit(papers[i], TALISMAN, alpha * stepFade(i));
+			emit(papers[STORM_ALPHA_STEPS + i], BRASS_HI, alpha * stepFade(i));
+			emit(columns[i], CINNABAR, alpha * stepFade(i) * 0.85);
 		}
 	};
 
@@ -539,13 +745,24 @@
 	<Graphics draw={drawSeal} />
 
 	{#if dropVisible}
+		<!--
+			The exorcist, not the seal.
+
+			This was `mcS` - the scatter's paper talisman - drawn square at a fifth of
+			the canvas height. What arrives now is the character who casts, and the
+			talismans that scatter afterwards are the ones she was holding, so the
+			transition tells one story instead of cutting from an object to an effect.
+
+			Sized from the canvas HEIGHT and given its own aspect: the art is 896x1200
+			and drawing a 1.34 portrait in a square box would squash her.
+		-->
 		<Sprite
-			key="mcS"
+			key="mcTransitionPriestess"
 			anchor={0.5}
 			x={0}
 			y={dropY}
-			width={context.stateLayoutDerived.canvasSizes().height * 0.2 * dropScale}
-			height={context.stateLayoutDerived.canvasSizes().height * 0.2 * dropScale}
+			width={(context.stateLayoutDerived.canvasSizes().height * FIGURE_FILL * dropScale) / FIGURE_ASPECT}
+			height={context.stateLayoutDerived.canvasSizes().height * FIGURE_FILL * dropScale}
 			tint={dropTint}
 		/>
 	{/if}

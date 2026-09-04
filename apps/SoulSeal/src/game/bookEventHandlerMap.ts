@@ -30,7 +30,7 @@ import config from './config';
 // reels back after the feature: the feature board is two rows taller, and
 // leaving those symbols mounted while stateGame.rows says 3 would draw seven
 // symbols into a three-row frame.
-const baseIdleBoard = () =>
+export const baseIdleBoard = () =>
 	(config.paddingReels.basegame as { name: string }[][]).map((strip) => {
 		const start = Math.floor(Math.random() * strip.length);
 		return Array.from({ length: paddedReelLength(BASE_ROWS) }, (_, i) => strip[(start + i) % strip.length]);
@@ -41,6 +41,10 @@ const baseIdleBoard = () =>
 // highlight vanishes a moment after it is drawn and a player who looked away has
 // no way to see what actually paid. playBet owns the replay loop.
 let lastWinPositions: Position[] = [];
+// How many reveals this book has played, and how many collects the current spin
+// still owes. See the note in `reveal`.
+let spinsRevealed = 0;
+let collectsLeftThisSpin = 0;
 export const getLastWinPositions = () => lastWinPositions;
 export const clearLastWinPositions = () => {
 	lastWinPositions = [];
@@ -168,6 +172,35 @@ const shouldTease = (reveal: BookEventOfType<'reveal'>, bookEvents: BookEvent[])
 
 export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContext> = {
 	reveal: async (bookEvent: BookEventOfType<'reveal'>, { bookEvents }: BookEventContext) => {
+		// ── is this spin finished scoring? ───────────────────────────────────
+		//
+		// A spin that pays a LINE and then collects sends two setWin events: the
+		// line's own total, and again once the sweep is added. Both used to be
+		// presented, so a round paying 1x on a payline and 18x on the collect put
+		// up the win plaque for the 1x, waited for the player to dismiss it, and
+		// then put it up again for the 19x.
+		//
+		// The first one is not wrong, it is just early - it is the total so far,
+		// not the total. So the presentation is held until the spin has nothing
+		// left to add.
+		//
+		// Found by counting reveals rather than by an event index, because a
+		// handler is given the whole book and not its own position in it.
+		spinsRevealed += 1;
+		{
+			let seen = 0;
+			let collects = 0;
+			for (const event of bookEvents) {
+				if (event.type === 'reveal') {
+					seen += 1;
+					if (seen > spinsRevealed) break;
+				} else if (seen === spinsRevealed && event.type === 'collect') {
+					collects += 1;
+				}
+			}
+			collectsLeftThisSpin = collects;
+		}
+
 		const isBonusGame = checkIsMultipleRevealEvents({ bookEvents });
 		if (isBonusGame) {
 			eventEmitter.broadcast({ type: 'stopButtonEnable' });
@@ -304,7 +337,28 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	// actually collected, so a spin that collected nothing would otherwise leave
 	// the previous spin's sweeps on screen.
 	collect: async (bookEvent: BookEventOfType<'collect'>) => {
+		collectsLeftThisSpin = Math.max(0, collectsLeftThisSpin - 1);
 		stateGame.sweeps = bookEvent.sweeps;
+
+		// ── say WHICH symbols paid, the way every other win does ─────────────
+		//
+		// A base-game collect is a line win: three spirits on a payline, paying
+		// what is written on them. Every other line win in this game lights the
+		// symbols that paid and steps the rest of the board back, and the collect
+		// did not - so the one win type whose amount comes from the symbols
+		// themselves was the one that never pointed at them.
+		//
+		// It used to be marked by a ring drawn round each carrier, which is not
+		// something a line win does to any other symbol and was removed for that
+		// reason. This is the replacement, and it is the same call the paytable
+		// wins make: the carriers light, everything else dims, and only then does
+		// the value leave them.
+		if (bookEvent.sweeps[0]?.source.kind === 'line') {
+			await animateSymbols({
+				positions: bookEvent.sweeps[0].carriers.map((c) => ({ reel: c.reel, row: c.row })),
+			});
+		}
+
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
 		await eventEmitter.broadcastAsync({
 			type: 'collectPlay',
@@ -575,6 +629,13 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	},
 
 	setWin: async (bookEvent: BookEventOfType<'setWin'>) => {
+		// Not yet: this spin still has a sweep to add, so this amount is a running
+		// subtotal rather than what the spin paid. Presenting it would put the
+		// plaque up twice - see the note in `reveal`. The bet bar's WIN field is
+		// driven by setTotalWin and still moves, so nothing is hidden; only the
+		// interruption is deferred.
+		if (collectsLeftThisSpin > 0) return;
+
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
 
 		eventEmitter.broadcast({ type: 'winShow' });
@@ -589,6 +650,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	},
 
 	finalWin: async () => {
+		spinsRevealed = 0;
+		collectsLeftThisSpin = 0;
 		// finalWin is the last event of every book in every mode, so it is the one
 		// place that can guarantee the round did not leave presentation state open.
 		// freeSpinEnd already does all of this earlier in a feature round, and every

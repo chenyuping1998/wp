@@ -27,19 +27,19 @@
 		M: 'cyM',
 	};
 
-	// Rank is carried by material: the high symbols are painted salvage (whole
-	// machines) and the low symbols are bare steel hardware. If the artwork is
-	// replaced, these names have to move with it — they are what a player matches
-	// the picture to.
+	// Rank is carried by colour temperature: the high four are warm (crimson,
+	// gold, magenta, orange) and carry a gold rim, the low four are cool and a
+	// full step darker. If the artwork is replaced, these names have to move with
+	// it — they are what a player matches the picture to.
 	const SYMBOL_LABEL: Record<string, string> = {
-		H1: 'Engine Block',
-		H2: 'Television',
-		H3: 'Washing Machine',
-		H4: 'Bumper',
-		L1: 'Hex Nut',
-		L2: 'Coil Spring',
-		L3: 'Gear',
-		L4: 'Tin Can',
+		H1: 'Muscle Car',
+		H2: 'Grand Piano',
+		H3: 'Jukebox',
+		H4: 'Gumball Machine',
+		L1: 'Oil Drum',
+		L2: 'Shopping Trolley',
+		L3: 'Toilet',
+		L4: 'Traffic Cone',
 		S: 'The Crusher — Scatter',
 		M: 'Nitrogen Tank — Multiplier',
 	};

@@ -32,12 +32,42 @@
 	// yellow did not.
 	const LINE = 0xefb938;
 
-	// How long the lines hold. Long enough to trace one with your eye, short
+	// How long a SINGLE line holds. Long enough to trace one with your eye, short
 	// enough that it is gone before the next spin can start.
 	const HOLD_MS = 1200;
 	// The lines draw on rather than appearing, left to right, so the eye follows
 	// the direction the game pays in.
 	const DRAW_MS = 260;
+
+	// ── more than one line is shown ONE AT A TIME ────────────────────────────
+	//
+	// Every winning line used to be drawn at once and held together. On this board
+	// the paylines cross - 4 and 6 are mirror zigzags, 8 and 9 are opposed
+	// chevrons - so three wins at once is three hairlines crossing each other over
+	// the symbols they are trying to point at, and the player cannot tell which
+	// cells belong to which win.
+	//
+	// The cost of fixing that falls almost entirely on cases that barely happen.
+	// Measured over 267,513 win events:
+	//
+	//     1 line    82.75%      4 lines   0.33%
+	//     2 lines   14.63%      5 lines   0.07%
+	//     3 lines    2.21%      6+       0.01%   (most ever seen: 7)
+	//
+	// So a single line - five wins in six - keeps exactly the presentation it had,
+	// and nothing about the common spin gets slower. Only the 17% that are
+	// genuinely crowded pay for the room to be read.
+	//
+	// NO OVERVIEW.
+	//
+	// The cycle opened with every line drawn together for a beat, on the reasoning
+	// that it is the only thing that can say HOW MANY there are. That is true and
+	// it is not worth what it costs: the overview is the crowded picture the
+	// cycling exists to avoid, shown first, and it delays every line behind it.
+	// The count is legible from the cycle itself.
+	const PER_LINE_MS = 340;
+	// The ceiling the whole cycle fits inside. At seven lines that is 243ms each.
+	const CYCLE_CEILING_MS = 1700;
 
 	let lines = $state<WinLine[]>([]);
 	let elapsed = $state(0);
@@ -59,7 +89,7 @@
 				const t0 = performance.now();
 				const step = (now: number) => {
 					elapsed = now - t0;
-					if (elapsed >= HOLD_MS) {
+					if (elapsed >= totalMs) {
 						stop();
 						resolve();
 						return;
@@ -78,10 +108,36 @@
 	onDestroy(stop);
 
 
-	const drawT = $derived(Math.max(0, Math.min(1, elapsed / DRAW_MS)));
-	// Fade out over the last fifth of the hold, so the board is clear before the
-	// reels can move again.
-	const fade = $derived(Math.max(0, Math.min(1, (HOLD_MS - elapsed) / (HOLD_MS * 0.2))));
+	/** How long one line gets, once the overview is over. */
+	const perLine = $derived(
+		lines.length < 2 ? 0 : Math.min(PER_LINE_MS, CYCLE_CEILING_MS / lines.length),
+	);
+	/** The whole presentation, however many lines there are. */
+	const totalMs = $derived(lines.length < 2 ? HOLD_MS : perLine * lines.length);
+
+	/**
+	 * Which lines are on screen right now, and how far each has drawn on.
+	 *
+	 * During the overview every line is drawn together and shares one draw-on.
+	 * After it, one line at a time, each drawing on from its own start - so the
+	 * eye is led along each win separately rather than being handed a knot.
+	 */
+	const visible = $derived.by(() => {
+		if (lines.length === 0) return [] as { line: WinLine; t: number }[];
+		if (lines.length < 2) {
+			return [{ line: lines[0], t: Math.max(0, Math.min(1, elapsed / DRAW_MS)) }];
+		}
+		const index = Math.min(lines.length - 1, Math.floor(elapsed / perLine));
+		const within = elapsed - index * perLine;
+		// Each line draws on over a fixed share of its own slot rather than over
+		// DRAW_MS, so a crowded win does not end up with lines that never finish
+		// arriving before they are replaced.
+		return [{ line: lines[index], t: Math.max(0, Math.min(1, within / (perLine * 0.45))) }];
+	});
+
+	// Fade out over the last fifth, so the board is clear before the reels can
+	// move again.
+	const fade = $derived(Math.max(0, Math.min(1, (totalMs - elapsed) / (totalMs * 0.2))));
 
 	/**
 	 * The polyline for one win, clipped to `t` of its total length.
@@ -104,7 +160,7 @@
 			draw={(g) => {
 				g.clear();
 
-				for (const line of lines) {
+				for (const { line, t: drawT } of visible) {
 					const pts = pointsFor(line.positions);
 					if (pts.length < 2) continue;
 

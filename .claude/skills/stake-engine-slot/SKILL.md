@@ -231,6 +231,26 @@ URL parameters the game receives (`stateUrlDerived`):
 
 - `social=true` forces English and forbids betting terminology everywhere the
   player can read.
+- **The info page's legal notice lives in `state-shared/src/legal.ts` as
+  `LEGAL_NOTICE`.** It is the same paragraph in every game, so a game renders
+  `<p class="wp-foot">{LEGAL_NOTICE}</p>` and never retypes it. The trademark
+  line is `TM and © 2026 Engine.` — certification asked for "Stake" out of the
+  disclaimer, so `2026 Stake Engine` is wrong. The wording also avoids wagering
+  terms throughout ("wins/plays/rounds", not "pays/bets/spins") because the
+  paragraph is player-facing in the social build too.
+
+  Older apps still hold their own literal copy. That is deliberate — they are
+  shipped, and correcting them is a separate decision — but a new game imports
+  the constant.
+
+  This hid for several games because `check_social_words.mjs` was doing two
+  things wrong: it exempted the phrase "Stake Engine" as a proper noun, and
+  rules 1-3 could not see the text at all once it moved into a `.ts` constant
+  (rule 1 walks `.svelte` only; rules 2-3 look for `pick()` and social
+  ternaries). Rule 4 now scans plain copy constants. **Every one of those gaps
+  was found by injecting the bad string and checking for a non-zero exit** — the
+  checker reported a clean pass in all three broken states. A guard that has
+  never been seen to fail is not evidence of anything.
 - Replay is a GET to `/bet/replay/{game}/{version}/{mode}/{event}`; nothing is
   wagered and `endRound` is skipped, so a round can be replayed repeatedly.
 - Book amounts and `payoutMultiplier` are quoted against the **base** stake, not

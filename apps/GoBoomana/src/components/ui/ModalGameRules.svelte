@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { stateModal } from 'state-shared';
+	import { stateModal, LEGAL_NOTICE } from 'state-shared';
 
 	import { base } from '$app/paths';
 
@@ -358,14 +358,13 @@
 			</section>
 
 			<div class="wp-divider"></div>
-			<p class="wp-foot">
-				Malfunction voids all wins and plays. A consistent internet connection is required. In
-				the event of a disconnection, reload the game to finish any uncompleted rounds. The
-				expected return is calculated over many plays. The game display is not representative of
-				any physical device and is for illustrative purposes only. Winnings are settled according
-				to the amount received from the Remote Game Server and not from events within the web
-				browser. TM and &copy; 2026 Stake Engine.
-			</p>
+			<!--
+				The legal notice is SHARED — state-shared/src/legal.ts — because it is
+				the same paragraph in every game and the wording has already had to be
+				corrected once across every app that kept its own copy. Render the
+				constant; never retype the text here.
+			-->
+			<p class="wp-foot">{LEGAL_NOTICE}</p>
 		</div>
 	</Popup>
 {/if}
