@@ -355,8 +355,17 @@
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
 
-		<!-- Buy Bonus keeps its own place off to the left; see uiTheme.buyBonusOnRail -->
-		{#if !uiTheme.buyBonusOnRail}
+		<!--
+			Buy Bonus keeps its own place off to the left; see uiTheme.buyBonusOnRail.
+
+			Hidden while the menu is open. The menu rises up the SAME left column
+			(MENU_X, four items reaching 110 + 130*3 = 500 above the strip) and ran
+			straight through the plate, so "BUY BONUS" was printed across PAYTABLE
+			and INFO. It is not a stacking fix waiting to happen either: the menu
+			puts a full-screen scrim over everything, so the plate underneath is
+			already unclickable and there is nothing to lose by not drawing it.
+		-->
+		{#if !uiTheme.buyBonusOnRail && !stateUi.menuOpen}
 			<Container
 				x={uiTheme.railWidth * 0.5}
 				y={box.height * 0.46}

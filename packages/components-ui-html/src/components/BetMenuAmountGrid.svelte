@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { OptionsGrid } from 'components-shared';
-	import { stateBet, stateConfig } from 'state-shared';
+	import { stateBet, stateBetDerived, stateConfig } from 'state-shared';
 
 	import BaseIcon from './BaseIcon.svelte';
 	import BaseButtonContent from './BaseButtonContent.svelte';
@@ -29,10 +29,18 @@
 	};
 </script>
 
+<!--
+	Assigned through setBetAmount, not straight onto stateBet.betAmount.
+	A raw assignment skips every check in correctBetAmount — the server's
+	min/max, and affordability — so the menu could hand out a stake the player
+	could not cover (MAX on a $3.40 balance selected $100.00) while the +/-
+	steppers, which do go through it, could not. One entry point, one set of
+	rules.
+-->
 <OptionsGrid
 	value={stateBet.betAmount}
 	{options}
-	onchange={(value) => (stateBet.betAmount = value)}
+	onchange={(value) => stateBetDerived.setBetAmount(value)}
 >
 	{#snippet option({ option })}
 		<BaseIcon

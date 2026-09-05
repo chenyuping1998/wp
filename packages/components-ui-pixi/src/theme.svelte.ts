@@ -141,7 +141,6 @@ export const uiTheme = $state({
 	// Every app in this workspace has its own Modals.svelte and imports the
 	// shared modals one by one; the shared Modals.svelte is not used by any of
 	// them. So this cannot be switched on centrally, and it defaults to false.
-	betButtonMessageOnInsufficientBalance: false,
 
 	buyBonusButtonScale: 1,
 

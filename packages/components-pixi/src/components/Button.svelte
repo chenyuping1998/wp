@@ -18,11 +18,18 @@
 		| 'onpointerover'
 		| 'onpointerout'
 		| 'onpointerdown'
-		| 'onpointerup';
+		| 'onpointerup'
+		| 'onpointerupoutside';
 
 	export type Props = Omit<ContainerProps, ContainerPropsToOmit> & {
 		sizes: Sizes;
 		onpress: () => void;
+		// Optional, and absent by default so nothing that does not pass them can
+		// change behaviour. They exist for hold-to-repeat controls (the stake
+		// steppers): `onpress` still fires once on release, exactly as before, and
+		// the repeat lives entirely in the caller.
+		onpressstart?: () => void;
+		onpressend?: () => void;
 		disabled?: boolean;
 		anchor?: PixiPoint;
 		children: Snippet<
@@ -39,7 +46,17 @@
 </script>
 
 <script lang="ts">
-	const { children, sizes, anchor, disabled, onpress, debug, ...containerProps }: Props = $props();
+	const {
+		children,
+		sizes,
+		anchor,
+		disabled,
+		onpress,
+		onpressstart,
+		onpressend,
+		debug,
+		...containerProps
+	}: Props = $props();
 	const center = $derived({
 		x: sizes.width * 0.5,
 		y: sizes.height * 0.5,
@@ -72,11 +89,23 @@
 	onpointerdown={() => {
 		if (disabled) return;
 		pressed = true;
+		onpressstart?.();
 	}}
 	onpointerup={() => {
 		if (disabled) return;
 		pressed = false;
+		onpressend?.();
 		onpress();
+	}}
+	onpointerupoutside={() => {
+		// Releasing off the control. Without this the button keeps `pressed` true
+		// forever — it renders as held down and, once a caller starts a repeat on
+		// pointerdown, that repeat never stops. `onpress` is deliberately NOT
+		// fired: dragging off a button and letting go is the universal way to
+		// cancel a press.
+		if (disabled) return;
+		pressed = false;
+		onpressend?.();
 	}}
 >
 	{#if debug}

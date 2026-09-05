@@ -1,4 +1,19 @@
 export const stateConfig = $state({
+	/** When the player cannot afford the bet, EXPLAIN rather than go dead.
+	 *
+	 * Stake review, 2026-09-06: "the game should display an Insufficient Balance
+	 * message ... regardless of whether the bet is initiated using the Bet
+	 * button, the spacebar, or Autoplay." Three separate controls have to honour
+	 * it, and they live in two packages — the bet button and the autoplay opener
+	 * in components-ui-pixi, the autoplay start button in components-ui-html,
+	 * which cannot import the pixi package's uiTheme. So the policy lives here,
+	 * where both can read one copy of it.
+	 *
+	 * Off by default: a game that has not opted in keeps the disabled controls it
+	 * was built with rather than pressable ones with nothing behind them.
+	 */
+	explainInsufficientBalance: false,
+
 	jurisdiction: {
 		socialCasino: false,
 		disabledFullscreen: false,

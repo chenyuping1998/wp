@@ -1,24 +1,38 @@
 # What review actually raises — fix these before submitting, not after
 
-Hot Miami took **four submissions**. Three rejections, then a pass with six
-items to clear. Almost none of it was game design.
+Hot Miami took **four submissions**. Three rejections, then a pass — followed by
+**two rounds of items to clear before going live**. Almost none of it was game
+design.
 
-**Five of those six are generic to this codebase**, which means a reskin
-inherits them. They are cheap to fix in advance and expensive to discover in a
-round trip. Work through this list before the first submission of any new game.
+Most of what follows is generic to this codebase, which means a reskin inherits
+it. All of it is cheap to fix in advance and expensive to discover in a round
+trip. Work through this list before the first submission of any new game.
 
-Sources: the 2026-09-04 review comment, and `docs/handoff/hot_miami.md` under
-that date.
+**Two of these came back a second time** because the first fix was partial (the
+balance message covered two routes of three) or applied reasoning instead of the
+instruction (the disclaimer). Both are marked below.
+
+Sources: the review comments of 2026-09-04 and 2026-09-06, and
+`docs/handoff/hot_miami.md` under those dates.
 
 ---
 
 ## The five that will hit your reskin too
 
-### 1. "Stake" must not appear in the General Disclaimer
+### 1. The disclaimer's closing line is DICTATED, not yours to word
 
-The review underlined the words **"Stake Engine"** in the shipped disclaimer.
-That closing line is the STUDIO's copyright notice, not the platform's — so it
-carries the studio's own name (the one on your loader and intro card).
+It took two rounds because the first fix applied reasoning instead of the
+instruction:
+
+| round | instruction | result |
+| :-- | :-- | :-- |
+| 2026-09-04 | "remove the word Stake from the General Disclaimer" | read "Stake Engine" → changed to the studio's name |
+| 2026-09-06 | "replace *Silverstars Studio* with *Engine*" | now exactly `TM and © 2026 Engine.` |
+
+**Do not reason about what a copyright notice ought to contain.** It looks like
+the studio's line and it is not. Use whatever review last dictated, verbatim,
+and leave a comment saying so — otherwise the next person restores a studio name
+on perfectly sensible grounds and it comes back a third time.
 
 The required sentence is the malfunction clause; everything after it is yours to
 word. In Hot Miami it lives in `ModalGameRules.svelte`, with the opening clause
@@ -33,24 +47,44 @@ grep -rl "Stake Engine" apps/<App>/build/ | wc -l   # must be 0
 Source-only greps miss it — the string can arrive through a shared component or
 a generated file.
 
-### 2. Balance too low needs a message, not a dead button
+### 2. Balance too low needs a message on EVERY route into a bet
 
-> "When the player tries to place a Bet but does not have enough Balance, the
-> game should display an insufficient balance message"
+> 2026-09-04: "the game should display an insufficient balance message"
+> 2026-09-06: "regardless of whether the bet is initiated using the Bet button,
+> the spacebar, or Autoplay"
 
-The machinery already exists in the shared `ButtonBet` — the button stays
-pressable and answers with a `message` modal rather than the autoplay one
-(because "AUTO PLAY HAS STOPPED DUE TO…" is a false statement when the player
-pressed spin by hand). It is **off by default** so games that never opted in
-keep the disabled button they were built with.
+**It came back a second time because only two of the three routes were fixed.**
+There are three, and they do not share a component:
+
+| route | component | package |
+| :-- | :-- | :-- |
+| Bet button | `ButtonBet` | components-ui-pixi |
+| spacebar | `ButtonBet`'s `OnHotkey` — same handler, so it follows for free | components-ui-pixi |
+| Autoplay | `ButtonAutoSpin` (opener) **and** `AutoSpinsStartButton` (panel) | pixi **and** html |
+
+Autoplay was a dead end: both of its buttons were `disabled` outright when the
+balance was short, so there was no control left to press and no message to show.
+Check all three by hand before claiming this one is done.
+
+Note the layering trap: `components-ui-html` does **not** depend on
+`components-ui-pixi`, so the html-side button cannot read `uiTheme`. The policy
+therefore lives in `stateConfig.explainInsufficientBalance` (state-shared),
+which both packages can see:
 
 ```ts
-// game/uiTheme.ts
-betButtonMessageOnInsufficientBalance: true,
+// the game's uiTheme.ts, alongside its other UI policy
+stateConfig.explainInsufficientBalance = true;
 ```
 
-One line. Hot Miami had never set it; a sibling game already had, having
-presumably been told the same thing.
+Each control stays pressable and answers with the `message` modal rather than
+the autoplay one — because "AUTO PLAY HAS STOPPED DUE TO…" is a false statement
+when the player pressed spin by hand, or pressed Autoplay and it never started.
+
+The policy is **off by default** so games that never opted in keep the disabled
+controls they were built with. There used to be a
+`uiTheme.betButtonMessageOnInsufficientBalance` for this; it is gone, because a
+theme key the html package cannot read could only ever fix two routes of three.
+If you find that name anywhere, it is stale.
 
 ### 3. Currency symbols that render as words
 
@@ -123,7 +157,33 @@ desktop-only pass never sees.
 
 ---
 
-## The sixth: a maths bug that survived three submissions
+## When the game and the Game Info disagree, check WHICH ONE is wrong
+
+Review will report the contradiction, not the cause. Twice on this game the text
+and the behaviour disagreed, and **the right fix was different each time.**
+
+**Hot Miami's Collector rule said it "never lands inside a Frame".** It does —
+on 35.2% of Collector spins in the top tier, 18.6% and 17.9% in the others. The
+guard was one-directional: `framable_positions()` stops a new Frame landing on
+the Collector, but Frames are sticky across free spins and the board (Collector
+included) is dealt *before* Frames are applied, so the Collector gets dealt onto
+a Frame carried from an earlier spin.
+
+**The text was changed, not the maths**, and the reason is the whole lesson:
+`evaluate_collector()` sweeps every Frame on the board including the one it sits
+on, so the player was paid correctly and nothing was broken. Only the sentence
+was false. Regenerating 100MB of books and moving the RTP to make a decorative
+sentence true would have been the wrong trade.
+
+Contrast with the frame-doubling bug below, where the same shape of complaint —
+"the game does not do what Game Info says" — was a genuine maths fault that cost
+players money and had to be fixed at the source.
+
+**So: before choosing, establish whether the player is actually harmed.** Walk
+the books, measure the frequency, and check whether the money comes out right.
+That measurement is what tells you which side of the contradiction to change.
+
+## The maths bug that survived three submissions
 
 Not generic — but the *shape* of it is, and it is worth understanding before
 trusting any regenerated bundle.

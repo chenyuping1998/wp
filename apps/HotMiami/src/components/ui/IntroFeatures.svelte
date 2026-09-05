@@ -48,7 +48,7 @@
 	const T = getSocialTerms();
 	const SYMBOLS = `${base}/assets/sprites/hotMiamiSymbols`;
 	const BRAND = `${base}/assets/sprites/hotMiamiBrand`;
-	const CAST = `${base}/assets/sprites/hotMiamiCast`;
+	const CAST_MESH = `${base}/assets/meshRigs`;
 	const BG = `${base}/assets/sprites/hotMiamiBackground`;
 
 	const maxWin = (config.betModes?.base?.max_win ?? 20000).toLocaleString();
@@ -169,13 +169,13 @@
 
 		<img
 			class="hm-cast hm-cast-left"
-			src={`${CAST}/guy_spine.png`}
+			src={`${CAST_MESH}/cast_guy/guy_idle.webp`}
 			alt=""
 			aria-hidden="true"
 		/>
 		<img
 			class="hm-cast hm-cast-right"
-			src={`${CAST}/girl_spine.png`}
+			src={`${CAST_MESH}/cast_girl/girl_idle.webp`}
 			alt=""
 			aria-hidden="true"
 		/>
@@ -330,7 +330,7 @@
 			transform: rotate(0deg) translateY(0) scaleY(1);
 		}
 		22% {
-			transform: rotate(0.35deg) scaleY(1.0035);
+			transform: rotate(0.2deg) scaleY(1.0015);
 		}
 		/* the hiccup: four uneven stops, none of them on the beat */
 		47% {
@@ -343,7 +343,7 @@
 			transform: rotate(0.03deg) scaleY(1.001);
 		}
 		71% {
-			transform: rotate(-0.35deg) scaleY(1.0035);
+			transform: rotate(-0.2deg) scaleY(1.0015);
 		}
 		100% {
 			transform: rotate(0deg) translateY(0) scaleY(1);
@@ -355,7 +355,7 @@
 			transform: rotate(0deg) translateY(0) scaleY(1);
 		}
 		26% {
-			transform: rotate(-0.42deg) scaleY(1.0035);
+			transform: rotate(-0.22deg) scaleY(1.0015);
 		}
 		49% {
 			transform: rotate(-0.06deg) scaleY(1.0012);
@@ -367,7 +367,7 @@
 			transform: rotate(-0.04deg) scaleY(1.001);
 		}
 		74% {
-			transform: rotate(0.42deg) scaleY(1.0035);
+			transform: rotate(0.22deg) scaleY(1.0015);
 		}
 		100% {
 			transform: rotate(0deg) translateY(0) scaleY(1);
@@ -451,7 +451,12 @@
 		flush against it.
 	*/
 	.hm-cast-left {
-		left: calc(var(--cast-h) * 0.045);
+		/* His alpha occupies y=85..889 of a 1024px canvas, whereas hers fills her
+		   canvas. Compensate for that transparent padding so the VISIBLE figures,
+		   not their PNG rectangles, share the same 94vh height and floor line. */
+		left: calc(5vw - 15.3vh);
+		bottom: -15.8vh;
+		height: 120vh;
 		/*
 			Stepped, not a straight cut. The narrowest column between the two figures
 			is x=527 (51.46%), but that is only true above the ankles: in the band
@@ -462,17 +467,13 @@
 			The step drops to 54.5% (x=558) below 82% height, i.e. between the two.
 		*/
 		transform-origin: 50% 100%;
-		animation:
-			castInLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.1s,
-			castSwayLeft 8s ease-in-out 0.75s infinite;
+		animation: castInLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.1s;
 	}
 
 	.hm-cast-right {
-		right: calc(var(--cast-h) * 0.04);
+		right: 5vw;
 		transform-origin: 50% 100%;
-		animation:
-			castInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.16s,
-			castSwayRight 5s ease-in-out 0.8s infinite;
+		animation: castInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.16s;
 	}
 
 	/* Below this the pair would sit on top of the panels rather than beside them */
