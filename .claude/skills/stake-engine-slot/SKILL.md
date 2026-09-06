@@ -260,6 +260,33 @@ URL parameters the game receives (`stateUrlDerived`):
 - Amounts in URL parameters are in API units: 1,000,000 = 1 coin. A launcher
   `balance=100000000` seeds 100 coins, not 100 million.
 
+## The optimiser is stochastic, and the noise is bigger than the knob
+
+Measured on Go Boomana: **four runs of one unchanged config** put bonus200's
+break-even band anywhere between 14.9% and 29.1%, and "lost more than half the
+stake" between 42% and 60%. RTP was 0.9600 in all four. The optimiser nails its
+target and then lands the *shape* nearly at random inside a wide band.
+
+- **A single before/after pair proves nothing about a scaling change.** Two
+  conclusions were drawn that way during this work and both were noise, including
+  one that blamed a tier's structure for what was a bad draw.
+- **`scale_factor` has to be big to do anything.** The optimiser injects its own
+  corrective factors of `150.0` and `0.0001` (`optimization_program/src/main.rs`),
+  so values like 1.2 or 0.8 are rounding error next to them.
+- **Select, do not tune.** Run the optimiser N times and keep the best draw —
+  every draw is a valid weighting of real books at exactly the right RTP.
+  `games/GoBoomana/optimise_best_of.py` does this, **per tier**: each mode is its
+  own lookUpTable, and the verification sidecars hash the *books* (which
+  optimisation never rewrites), not the weights, so tables from different runs
+  mix safely. Scoring the three tiers as one sum instead lets a great bonus300
+  drag a mediocre bonus200 along with it.
+- **Book supply is what makes a reshape safe.** Raising the bought tiers to 1e5
+  sims took bonus100's break-even band from 178 books to 1,708 and its commonest
+  book from 1-in-492 to 1-in-1,666. Only then can the band carry 25-40% of the
+  weight without the same round coming back visibly often.
+- Budget the time: one optimisation pass over three tiers is ~4 minutes on 8
+  cores at `num_show`/`num_per_fence` 5000, so a best-of-10 is ~40 minutes.
+
 ## Shipping a new game
 
 Start from `references/review-log.md`. It opens with a pre-submission checklist

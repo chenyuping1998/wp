@@ -4,22 +4,28 @@
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getContext } from '../game/context';
 
-	// Jungle-commando transition: the sergeant pitches a pineapple dynamite into
-	// the middle of the screen — two red ticks — BOOM. The cut to the next scene
-	// lands on the white-hot peak of the blast.
+	// The transition: the gorilla pitches a gravity charge into the middle of the
+	// screen and it ruptures. The cut to the next scene lands on the peak of the
+	// flash.
 	//
-	// The dynamite comes out of his HAND when he is on screen, and drops in from
+	// IT IS NOT AN EXPLOSION, and the whole effect depends on that. There is no
+	// combustion and no shockwave in vacuum — the charge lets go, a ring of cold
+	// light opens outward, and everything it touches DRIFTS UP. Same silhouette as
+	// a blast, opposite behaviour, and the opposite is the point: the transition
+	// is teaching the mechanic while it covers the cut.
+	//
+	// The charge comes out of his HAND when he is on screen, and drops in from
 	// above when he is not. Both paths exist because he is only there on layouts
 	// wide enough to stand him beside the board — tablet and portrait have no
-	// room (Mascot.svelte, MIN_GAP), and a dynamite materialising out of empty
+	// room (Mascot.svelte, MIN_GAP), and a charge materialising out of empty
 	// space at the edge of the screen would be worse than the plain drop.
 	//
-	// The dynamite falls over the LIVE scene: for the first 800ms of this
-	// animation whatever is behind it is fully visible. Anything the player must
-	// not see change therefore has to be swapped inside `oncover`, which fires
-	// only once the flash has gone fully opaque. Swapping before calling for the
-	// transition puts the change on screen a beat before the dynamite even
-	// appears, which is what the hold-and-spin exit used to do.
+	// The charge falls over the LIVE scene: for the first 800ms of this animation
+	// whatever is behind it is fully visible. Anything the player must not see
+	// change therefore has to be swapped inside `oncover`, which fires only once
+	// the flash has gone fully opaque. Swapping before calling for the transition
+	// puts the change on screen a beat before the charge even appears, which is
+	// what the hold-and-spin exit used to do.
 	type Props = {
 		oncomplete: () => void;
 		// Fired at full white, with ~160ms of opaque flash still to run. Swap
@@ -30,13 +36,13 @@
 	const props: Props = $props();
 	const context = getContext();
 
-	// He reaches, a dynamite appears in his fist, he winds up, he throws. All of
+	// He reaches, a charge appears in his fist, he winds up, he throws. All of
 	// that happens on the mascot, and this is how long it takes — RELEASE_AT in
 	// design/generate_monkey_spine.mjs, in milliseconds.
 	//
-	// NOT free to change on its own. The skeleton switches the dynamite OFF in his
+	// NOT free to change on its own. The skeleton switches the charge OFF in his
 	// hand at exactly this moment and the transition switches its own copy on, so
-	// if the two drift there is either a frame with two dynamites or a frame with
+	// if the two drift there is either a frame with two charges or a frame with
 	// none.
 	const THROW_RELEASE_MS = 580;
 	const FLIGHT_MS = 340; // hand to the middle of the screen
@@ -47,7 +53,7 @@
 	const BOOM_MS = 700;
 
 	// Which entrance this run uses is decided ONCE, on mount. Reading the state
-	// every frame would let a resize part-way through swap the dynamite from a
+	// every frame would let a resize part-way through swap the charge from a
 	// thrown one to a dropped one in mid-flight.
 	const origin = context.stateGame.mascotThrowOrigin;
 	const thrown = origin !== null;
@@ -83,29 +89,35 @@
 	// would otherwise swap the scene while the flash was still ramping.
 	const COVER_AT_BOOM_T = (FLASH_IN + FLASH_HOLD) / 2;
 
-	const FRAG_COUNT = 30;
-	type Frag = { a: number; speed: number; r: number; spin: number };
-	const frags: Frag[] = Array.from({ length: FRAG_COUNT }, (_, i) => ({
-		a: (i / FRAG_COUNT) * Math.PI * 2 + Math.random() * 0.4,
-		speed: 0.5 + Math.random() * 0.85,
-		r: 9 + Math.random() * 17,
-		spin: Math.random() * Math.PI,
-	}));
+	// The shrapnel that used to be thrown from here is gone with the fireball that
+	// threw it. It was leaf-green and gold fragments arcing DOWNWARD under gravity,
+	// which is wrong twice over in a game set in vacuum about things drifting up.
+	// The painted burst carries its own debris, and that debris rises.
 
-	// Smoke, as soft round puffs rather than Graphics circles: fxGlow is a radial
-	// falloff texture, and a hard-edged circle reads as a circle, not as smoke.
-	// Normal blending, NOT additive — smoke occludes, and additive smoke over a
+	// VENTED VAPOUR, not smoke. There is no combustion here and nothing for a
+	// plume to billow against — what a ruptured canister leaves in vacuum is a
+	// cloud of freezing gas that expands once and then just drifts.
+	//
+	// It is kept because of what it DOES, not what it is: this cloud is what the
+	// scene swap happens behind, and what the flash fades to is the new scene seen
+	// through it. Deleting it would expose the cut.
+	//
+	// Soft round sprites rather than Graphics circles: fxGlow is a radial falloff
+	// texture, and a hard-edged circle reads as a circle. Normal blending, NOT
+	// additive — this has to OCCLUDE to do its job, and additive vapour over a
 	// dark board would be invisible anyway.
 	const SMOKE_COUNT = 16;
 	type Puff = { a: number; dist: number; size: number; rise: number; delay: number; drift: number };
 	const puffs: Puff[] = Array.from({ length: SMOKE_COUNT }, (_, i) => ({
-		// biased to the sides and slightly upward, the way a ground burst throws it
 		a: (i / SMOKE_COUNT) * Math.PI * 2 + Math.random() * 0.6,
-		dist: 0.26 + Math.random() * 0.5,
+		// less lateral reach and far more lift than the smoke it replaces. A ground
+		// burst throws sideways because the ground stops it going down; nothing
+		// stops this, so it goes up.
+		dist: 0.18 + Math.random() * 0.34,
 		size: 0.4 + Math.random() * 0.62,
-		rise: 0.16 + Math.random() * 0.3,
+		rise: 0.4 + Math.random() * 0.5,
 		delay: Math.random() * 0.22,
-		drift: (Math.random() - 0.5) * 0.24,
+		drift: (Math.random() - 0.5) * 0.18,
 	}));
 
 	let elapsed = 0;
@@ -114,15 +126,15 @@
 	let boomFired = false;
 	let coverFired = false;
 
-	let dynamiteVisible = $state(false);
-	let dynamiteX = $state(0);
-	let dynamiteY = $state(0);
-	let dynamiteScale = $state(1);
-	let dynamiteTint = $state(0xffffff);
-	let dynamiteAlpha = $state(1);
-	let dynamiteSpin = $state(0);
-	// fraction of the boom over which the dynamite is consumed by its own blast
-	const GRENADE_BURN = 0.16;
+	let chargeVisible = $state(false);
+	let chargeX = $state(0);
+	let chargeY = $state(0);
+	let chargeScale = $state(1);
+	let chargeTint = $state(0xffffff);
+	let chargeAlpha = $state(1);
+	let chargeSpin = $state(0);
+	// fraction of the boom over which the charge is consumed by its own blast
+	const CHARGE_BURN = 0.16;
 	let boomT = $state(-1);
 	let flashAlpha = $state(0);
 
@@ -155,7 +167,7 @@
 
 			if (thrown && elapsed < THROW_RELEASE_MS) {
 				// still in his hand — nothing to draw yet
-				dynamiteVisible = false;
+				chargeVisible = false;
 			} else if (thrown && elapsed < ENTRY_MS) {
 				// FLIGHT: hand to the middle of the screen.
 				//
@@ -168,40 +180,41 @@
 				// Arc height scales with how far it has to travel, so the lob looks
 				// the same shape on a wide layout as on a narrow one.
 				const lift = Math.hypot(from.x, from.y) * 0.38;
-				dynamiteVisible = true;
-				dynamiteX = from.x * (1 - p);
-				dynamiteY = from.y * (1 - p) - lift * 4 * p * (1 - p);
+				chargeVisible = true;
+				chargeX = from.x * (1 - p);
+				chargeY = from.y * (1 - p) - lift * 4 * p * (1 - p);
 				// grows as it comes toward the camera
-				dynamiteScale = 0.55 + p * 0.65;
-				// A real thrown dynamite tumbles. This is the one moment it should:
+				chargeScale = 0.55 + p * 0.65;
+				// A real thrown object tumbles, and the banana curve is asymmetric so it
+				// tumbles legibly. This is the one moment it should:
 				// on the way down (the fallback) it is deliberately face-on, but a
 				// throw has spin in it and a prop that arrives flat looks placed.
-				dynamiteSpin = p * Math.PI * 2.4;
-				dynamiteTint = 0xffffff;
+				chargeSpin = p * Math.PI * 2.4;
+				chargeTint = 0xffffff;
 			} else if (!thrown && elapsed < ENTRY_MS) {
 				// drops in from above and brakes to a stop — deliberately NOT spinning,
-				// so the dynamite reads face-on the whole way down
+				// so the charge reads face-on the whole way down
 				const p = easeOutCubic(elapsed / ENTRY_MS);
-				dynamiteVisible = true;
-				dynamiteX = 0;
-				dynamiteY = -h * 0.72 * (1 - p);
-				dynamiteScale = 0.7 + p * 0.5;
-				dynamiteSpin = 0;
-				dynamiteTint = 0xffffff;
+				chargeVisible = true;
+				chargeX = 0;
+				chargeY = -h * 0.72 * (1 - p);
+				chargeScale = 0.7 + p * 0.5;
+				chargeSpin = 0;
+				chargeTint = 0xffffff;
 			} else if (elapsed < BOOM_AT) {
 				// armed on the spot: two hot red blinks
 				const p = (elapsed - ENTRY_MS) / TICK_MS;
-				dynamiteVisible = true;
-				dynamiteX = 0;
-				dynamiteY = 0;
+				chargeVisible = true;
+				chargeX = 0;
+				chargeY = 0;
 				// settles out of the tumble rather than snapping to upright
-				dynamiteSpin *= 0.82;
-				dynamiteScale = 1.2 + Math.sin(p * Math.PI * 2) * 0.06;
+				chargeSpin *= 0.82;
+				chargeScale = 1.2 + Math.sin(p * Math.PI * 2) * 0.06;
 				// Interpolated, not a binary flip. Switching hard between white and red on
 				// the sign of a sine reads as a strobe; easing between them reads as
 				// something heating up.
-				dynamiteTint = mixColor(0xffffff, 0xff5a3a, 0.5 + 0.5 * Math.sin(p * Math.PI * 4));
-				dynamiteAlpha = 1;
+				chargeTint = mixColor(0xffffff, 0xff5a3a, 0.5 + 0.5 * Math.sin(p * Math.PI * 4));
+				chargeAlpha = 1;
 			} else {
 				// BOOM
 				if (!boomFired) {
@@ -218,11 +231,11 @@
 				// on it, which made the cut to the blast the roughest moment in the
 				// whole transition. It now swells and burns out over the first sliver
 				// of the boom, underneath the expanding core.
-				const burn = Math.min(1, boomT / GRENADE_BURN);
-				dynamiteVisible = burn < 1;
-				dynamiteScale = 1.2 + 1.15 * easeOutCubic(burn);
-				dynamiteTint = mixColor(0xffe2b0, 0xffffff, burn);
-				dynamiteAlpha = (1 - burn) ** 1.6;
+				const burn = Math.min(1, boomT / CHARGE_BURN);
+				chargeVisible = burn < 1;
+				chargeScale = 1.2 + 1.15 * easeOutCubic(burn);
+				chargeTint = mixColor(0xffe2b0, 0xffffff, burn);
+				chargeAlpha = (1 - burn) ** 1.6;
 				// Both ends eased. A linear ramp to white lands hard — its rate of change
 				// is constant right up to the instant it saturates — and a linear fade
 				// leaves the same edge on the way out.
@@ -256,8 +269,11 @@
 	// thrown and cools as it expands, so the tint runs from a hot ember colour to
 	// cold ash — a puff that stayed one grey the whole way reads as a decal rather
 	// than as something the explosion just made.
-	const EMBER = [0xff, 0xb0, 0x66];
-	const ASH = [0x4a, 0x44, 0x3c];
+	// Hot at the instant of rupture, freezing a moment later — the same arc as the
+	// smoke it replaces, in the palette the mechanic already uses everywhere else
+	// (ReelGrow's plume, the burst frames, the stretched-reel edge light).
+	const FLASH_CORE = [0xd8, 0xf6, 0xff];
+	const COLD_VAPOUR = [0x2d, 0x6c, 0x8f];
 	const puffState = (puff: Puff) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		const reach = Math.max(width, height);
@@ -265,9 +281,9 @@
 		const spread = easeOutCubic(t);
 		const cool = Math.min(1, t * 1.5);
 		const tint =
-			(Math.round(EMBER[0] + (ASH[0] - EMBER[0]) * cool) << 16) |
-			(Math.round(EMBER[1] + (ASH[1] - EMBER[1]) * cool) << 8) |
-			Math.round(EMBER[2] + (ASH[2] - EMBER[2]) * cool);
+			(Math.round(FLASH_CORE[0] + (COLD_VAPOUR[0] - FLASH_CORE[0]) * cool) << 16) |
+			(Math.round(FLASH_CORE[1] + (COLD_VAPOUR[1] - FLASH_CORE[1]) * cool) << 8) |
+			Math.round(FLASH_CORE[2] + (COLD_VAPOUR[2] - FLASH_CORE[2]) * cool);
 		return {
 			t,
 			x: Math.cos(puff.a) * reach * puff.dist * spread + puff.drift * reach * t,
@@ -293,96 +309,95 @@
 		if (boomT < 0) return;
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		// reach past the long edge so the blast genuinely engulfs the screen
+		// The rings, the hot core and the shrapnel that used to be drawn here are
+		// gone. They were a charge blast: orange fireball, green-and-gold leaf
+		// fragments, debris arcing DOWNWARD under gravity. All three are wrong for
+		// this game — the charge is a pressurised canister rupturing in vacuum, and
+		// the whole point of the effect is that everything it touches drifts UP.
+		//
+		// Replaced by the painted 8-frame burst (gbBurst0..7), which is drawn in the
+		// template below rather than here because it is a sprite sequence, not
+		// geometry. What is left in this function is only the debris-free ground
+		// glow that sits under it.
 		const maxR = Math.max(width, height) * 0.95;
-		// shockwave rings — a third, slowest ring gives the blast visible depth
-		for (const [delay, color, weight] of [
-			[0, 0xfff7d6, 30],
-			[0.14, 0xfff2c0, 24],
-			[0.3, 0xff9c3a, 18],
-		] as [number, number, number][]) {
-			const t = (boomT - delay) / (1 - delay);
-			if (t < 0 || t > 1) continue;
-			// Eased rather than linear: a ring that thins at a constant rate reads as a
-			// line being erased, one that holds and then lets go reads as energy
-			// dissipating.
-			g.lineStyle(weight * (1 - t) ** 1.4 + 3, color, 0.85 * (1 - t) ** 1.8);
-			g.drawCircle(0, 0, maxR * easeOutCubic(t));
-		}
-		// hot core — expands most of the way across the screen before fading
-		// Radius is eased, not linear. A fireball expanding at constant speed for its
-		// whole life looks mechanical; a real one throws hardest at the front and
-		// decelerates, which is what easeOutCubic gives for free.
-		const coreGrow = easeOutCubic(boomT);
 		g.lineStyle(0);
-		g.beginFill(0xfff7d6, 0.9 * (1 - boomT) ** 1.5);
-		g.drawCircle(0, 0, height * 0.34 * (0.4 + coreGrow * 1.5));
+		g.beginFill(0x2d6c8f, 0.35 * (1 - boomT) ** 1.5);
+		g.drawCircle(0, 0, maxR * 0.5 * easeOutCubic(boomT));
 		g.endFill();
-		g.beginFill(0xffb347, 0.55 * (1 - boomT) ** 1.3);
-		g.drawCircle(0, 0, height * 0.5 * (0.35 + coreGrow * 1.7));
-		g.endFill();
-		// leaf/shrapnel fragments — thrown the full blast radius
-		for (const f of frags) {
-			const d = f.speed * easeOutCubic(boomT) * maxR * 1.1;
-			const x = Math.cos(f.a) * d;
-			// arcs downward as it flies: debris thrown dead flat in every direction
-			// reads as a starburst decal rather than as things with weight
-			const y = Math.sin(f.a) * d + maxR * 0.16 * boomT * boomT;
-			// and tumbles while it travels, each at its own rate
-			const spin = f.spin + boomT * f.speed * 7;
-			g.beginFill(f.r > 13 ? 0x35521a : 0xffd75e, 0.9 * (1 - boomT) ** 1.6);
-			g.drawPolygon([
-				x, y - f.r,
-				x + f.r * Math.cos(spin), y + f.r * Math.sin(spin),
-				x - f.r * Math.cos(spin), y + f.r * 0.6,
-			]);
-			g.endFill();
-		}
 	};
 
 	const drawFlash = (g: PixiGraphics) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		g.clear();
 		if (flashAlpha <= 0) return;
-		g.beginFill(0xfff2c0, flashAlpha);
+		g.beginFill(0xdff4ff, flashAlpha);
 		g.drawRect(-width, -height, width * 2, height * 2);
 		g.endFill();
 	};
-	// Width / height of assets/sprites/goBananasSymbolsV3/dynamite.png. Stated here
-	// rather than read at runtime because the Sprite needs it on its first frame,
-	// before the texture has necessarily resolved — a fallback of 1 would flash a
-	// square dynamite for a frame on a cold load.
-	// 691x614: the bundle is WIDER than it is tall, where the grenade it replaced
-	// was taller than wide. Sizing is by height, so leaving the old 651/1000 here
-	// would have drawn it at roughly half the width it should be — a squashed
-	// bundle, which is the same class of bug the note below records, arrived at
-	// from the other direction.
-	const DYNAMITE_ASPECT = 691 / 614;
+	// Width / height of assets/sprites/goBananasSymbolsV3/canister.png. Stated
+	// here rather than read at runtime because the Sprite needs it on its first
+	// frame, before the texture has necessarily resolved — a fallback of 1 would
+	// flash a square prop for a frame on a cold load.
+	//
+	// 777x770, so very nearly square. This number has been wrong twice in this
+	// file's history, both times because the prop was replaced and the ratio was
+	// not: sizing is by HEIGHT, so a stale ratio draws the new art at the wrong
+	// width and it reads as squashed or stretched rather than as the wrong file.
+	// Re-measure it whenever canister.png is regenerated.
+	const PROP_ASPECT = 777 / 770;
 </script>
 
 <Container
 	x={context.stateLayoutDerived.canvasSizes().width * 0.5}
 	y={context.stateLayoutDerived.canvasSizes().height * 0.5}
 >
-	{#if dynamiteVisible}
+	{#if chargeVisible}
 		<!--
 			Sized by HEIGHT, with width following the art's own aspect.
 
 			Both were set to the same value, which was invisible while the prop was a
-			square 256px tile and became a squashed dynamite the moment it was replaced
+			square 256px tile and became a squashed prop the moment it was replaced
 			by a properly trimmed cut-out at 651x1000. A prop is whatever shape its
 			artwork is; only one dimension may be chosen.
 		-->
-		{@const gh = context.stateLayoutDerived.canvasSizes().height * 0.26 * dynamiteScale}
+		{@const gh = context.stateLayoutDerived.canvasSizes().height * 0.26 * chargeScale}
 		<Sprite
-			key="gbDynamite"
+			key="gbCanister"
 			anchor={0.5}
-			x={dynamiteX}
-			y={dynamiteY}
-			width={gh * DYNAMITE_ASPECT}
+			x={chargeX}
+			y={chargeY}
+			width={gh * PROP_ASPECT}
 			height={gh}
-			rotation={dynamiteSpin}
-			tint={dynamiteTint}
-			alpha={dynamiteAlpha}
+			rotation={chargeSpin}
+			tint={chargeTint}
+			alpha={chargeAlpha}
+		/>
+	{/if}
+
+	<!--
+		THE BURST, as 8 painted frames rather than geometry.
+
+		Drawn ADDITIVELY and deliberately still on their black ground: a burst is a
+		light source, so additive makes the black transparent for free and keeps the
+		glow's falloff intact. Keying a soft glow to alpha destroys exactly the
+		gradient that makes it read as light.
+
+		Sized off the canvas rather than the art so it covers the screen the way the
+		fireball it replaces did. The frame index is driven by boomT, so the sequence
+		is tied to the blast's own clock and cannot drift out of step with the flash.
+	-->
+	{#if boomT >= 0 && boomT <= 1}
+		{@const frame = Math.min(7, Math.floor(boomT * 8))}
+		{@const bs = context.stateLayoutDerived.canvasSizes().height * 1.9}
+		<Sprite
+			key={`gbBurst${frame}`}
+			anchor={0.5}
+			x={0}
+			y={0}
+			width={bs * (366 / 352)}
+			height={bs}
+			blendMode="add"
+			alpha={(1 - boomT) ** 0.6}
 		/>
 	{/if}
 

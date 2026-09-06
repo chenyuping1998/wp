@@ -5,7 +5,7 @@
 	export type EmitterEventMascot =
 		| { type: 'mascotChestBeat' }
 		// Raised by the transition as it begins, so the wind-up happens before the
-		// dynamite exists. See THROW_RELEASE_MS there.
+		// canister exists. See THROW_RELEASE_MS there.
 		| { type: 'mascotThrow' }
 		// The goggle tease. Fired at the top of a round that is GOING to trigger
 		// the feature — see playBet in src/game/utils.ts, which owns the coin flip.
@@ -19,20 +19,28 @@
 	import { onDestroy } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import { FRAME_SCALE } from '../game/constants';
 
 	const context = getContext();
 
 	// Skeleton units are the source PSD's pixels, and its origin sits on the
 	// ground between the boots (design/generate_monkey_spine.mjs). So the figure
-	// is 846 units from the floor to the top of the beret, 518 across, and
+	// is 924 units from the floor to the top of his head, 546 across, and
 	// positioning it means putting its FEET somewhere rather than working out
 	// where the centre of a bounding box ought to go.
-	const ART = { height: 846, width: 518 };
+	//
+	// EVERY NUMBER IN THIS BLOCK IS PRINTED BY THE GENERATOR. They were typed
+	// here, and typed numbers survive a new PSD looking plausible while being
+	// wrong — this delivery moved the canvas from 560x912 to 560x928 and rebuilt
+	// the character inside it, and nothing about a stale 846 would have looked
+	// like an error. Re-run the generator and copy its readout whenever the rig
+	// changes; it prints ART, GOGGLE, the release point and both fists.
+	const ART = { height: 924, width: 546 };
 
-	// Where the dynamite leaves his hand, in skeleton units, printed by
+	// Where the canister leaves his hand, in skeleton units, printed by
 	// design/generate_monkey_spine.mjs when it builds the 'throwit' animation:
-	// the left hand at full extension, at RELEASE_AT = 0.38s.
-	const RELEASE = { x: -349, y: 495 };
+	// the left hand at full extension.
+	const RELEASE = { x: -426, y: 524 };
 
 	// Below this there is no room to stand him next to the board without either
 	// overlapping the frame or shrinking him to a thumbnail. Tablet (1000x1000)
@@ -44,9 +52,13 @@
 	const placement = $derived.by(() => {
 		const layout = context.stateLayoutDerived.mainLayout();
 		const board = context.stateGameDerived.boardLayout();
-		// BoardFrame draws the housing at 1.28x the board (its FRAME_SCALE).
-		const frameHalfWidth = (board.width * board.scale * 1.28) / 2;
-		const frameHalfHeight = (board.height * board.scale * 1.28) / 2;
+		// BoardFrame draws the housing at FRAME_SCALE, which is PER AXIS — 1.3 wide
+		// against 1.06 tall. It was a single 1.28 written out here, and when the
+		// housing went asymmetric this kept claiming the frame was 28% taller than
+		// the board: he was pushed down against the bet bar to clear an overhang
+		// that is not there, and given 2% less room on the left than he has.
+		const frameHalfWidth = (board.width * board.scale * FRAME_SCALE.x) / 2;
+		const frameHalfHeight = (board.height * board.scale * FRAME_SCALE.y) / 2;
 
 		// The bet bar's height in this layout's units, recovered from where
 		// boardLayout has already centred the board above it, rather than by
@@ -74,7 +86,7 @@
 		};
 	});
 
-	// Publish the release point for the transition to spawn its dynamite at, in
+	// Publish the release point for the transition to spawn its canister at, in
 	// main-layout coordinates. null when he is not on screen, which is how the
 	// transition knows to fall back to dropping one in from above.
 	// THE CLEAN-UP DOES NOT NULL THIS. That is the whole point of the change.
@@ -84,7 +96,7 @@
 	// an instant and then came back. `placement` depends on boardLayout(), which
 	// depends on gameType, which is changed by a transition's own cover. Any
 	// transition that mounted inside that window read null, decided the mascot was
-	// off screen, and dropped the dynamite in from above without ever telling him
+	// off screen, and dropped the canister in from above without ever telling him
 	// to throw it — which is what "he doesn't throw when you buy Hold and Spin"
 	// was: that mode's transition fires on the round's very first reveal, with far
 	// less slack around it than the free-spin ones.
@@ -130,13 +142,27 @@
 	// decoration floating on his chest rather than as something he did.
 	//
 	// Re-print these whenever the beat's angles change.
+	//
+	// They CROSS on this character, and that is the artwork rather than a mistake.
+	// The shoulder is 354 units above the fist and the pecs are 203 from the
+	// shoulder, so a fist at chest height is either far outside the body or across
+	// it — the only way to a fist on its OWN pec is about 114 degrees of elbow,
+	// which is well past where this arm folds back on itself. Crossed-arm beating
+	// is what a gorilla does anyway; the alternation is what makes it read, so
+	// BEAT_OUT does the work of separating the two.
+	// They are NOT mirror images of each other, and that is the drawing rather than
+	// a bug: this delivery hangs the two arms at different heights, so the left
+	// fist lands 66 units lower than the right. Read out, not assumed — a mirrored
+	// pair would put half the impacts off the fist.
 	const IMPACT_AT = {
-		right: { x: 60, y: 437 },
-		left: { x: -63, y: 380 },
+		right: { x: -17, y: 390 },
+		left: { x: 131, y: 437 },
 	};
 	// At 96 the star was two-thirds of his body width and stopped being a hit on
-	// his chest — it became an explosion he happened to be standing behind.
-	const IMPACT_R = 76;
+	// his chest — it became an explosion he happened to be standing behind. 84 is
+	// 76 carried across to a character 8% taller, and no further: the warning above
+	// is about the ratio, and the ratio has not changed.
+	const IMPACT_R = 84;
 
 	// Ink and fill of a printed panel: flat colour, hard black line, no gradient.
 	const INK = 0x1a1206;
@@ -185,6 +211,23 @@
 		return pts;
 	};
 
+	// A tapered wedge, drawn as a triangle rather than stroked. A comic impact's
+	// action lines are chisel strokes — wide where they leave the hit and coming
+	// to a point — and a constant-width line reads as a diagram of an explosion
+	// instead of a drawing of one.
+	const wedge = (cx: number, cy: number, angle: number, r0: number, r1: number, halfWidth: number) => {
+		const nx = -Math.sin(angle);
+		const ny = Math.cos(angle);
+		return [
+			cx + Math.cos(angle) * r0 + nx * halfWidth,
+			cy + Math.sin(angle) * r0 + ny * halfWidth,
+			cx + Math.cos(angle) * r1,
+			cy + Math.sin(angle) * r1,
+			cx + Math.cos(angle) * r0 - nx * halfWidth,
+			cy + Math.sin(angle) * r0 - ny * halfWidth,
+		];
+	};
+
 	const drawImpacts = (g: PixiGraphics) => {
 		g.clear();
 		if (impactClock < 0) return;
@@ -198,23 +241,34 @@
 			const scale = 0.55 + 0.45 * grow + t * 0.35;
 			// beat 0 is the right fist; the skeleton alternates from there
 			const landing = i % 2 === 0 ? IMPACT_AT.right : IMPACT_AT.left;
-			const cx = landing.x;
-			// pixi y is down, skeleton y is up
-			const cy = -landing.y;
 			const seed = i * 1.7;
+			// The hit KICKS, away from the body centre and slightly up — the
+			// direction the force went. A star that stays exactly on the knuckles
+			// for its whole life is a sticker; one that leaves the fist behind by a
+			// few units is something that happened.
+			const kick = 18 * scale * (t < 0.4 ? t / 0.4 : 1);
+			const cx = landing.x + Math.sign(landing.x || 1) * kick;
+			// pixi y is down, skeleton y is up
+			const cy = -landing.y - kick * 0.5;
 
-			// speed lines first, so the star sits on top of them
-			for (let k = 0; k < 7; k++) {
-				const a = seed * 0.6 + (k / 7) * Math.PI * 2;
-				const r0 = IMPACT_R * 0.82 * scale;
-				const r1 = r0 + (30 + 26 * ((k * 7919) % 11) / 11) * scale;
-				g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0);
-				g.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
+			// 1. THE SHOCK RING. Expands past the star and thins as it goes, which
+			// is the part that gives the hit a size — the star alone reads as an
+			// ornament pinned to his chest.
+			const ring = IMPACT_R * scale * (0.7 + 1.5 * t);
+			g.circle(cx, cy, ring);
+			g.stroke({ width: 13 * scale * (1 - t), color: INK, alpha: alpha * 0.7 });
+
+			// 2. ACTION LINES, under the star so it sits on top of them.
+			for (let k = 0; k < 9; k++) {
+				const a = seed * 0.6 + (k / 9) * Math.PI * 2;
+				const r0 = IMPACT_R * 0.8 * scale;
+				const r1 = r0 + (34 + 30 * (((k * 7919) % 11) / 11)) * scale;
+				g.poly(wedge(cx, cy, a, r0, r1, 7 * scale));
+				g.fill({ color: INK, alpha: alpha * 0.9 });
 			}
-			g.stroke({ width: 7 * scale, color: INK, alpha: alpha * 0.85 });
 
-			// The outer star is drawn TWICE — once filled, once stroked. In pixi v8
-			// a fill() consumes the accumulated path, so a stroke() after it has
+			// 3. The outer star is drawn TWICE — once filled, once stroked. In pixi
+			// v8 a fill() consumes the accumulated path, so a stroke() after it has
 			// nothing left to outline.
 			const outer = starPoints(cx, cy, IMPACT_R * scale, IMPACT_R * 0.46 * scale, 11, seed);
 			g.poly(outer);
@@ -225,6 +279,17 @@
 			const inner = starPoints(cx, cy, IMPACT_R * 0.56 * scale, IMPACT_R * 0.23 * scale, 9, seed + 0.9);
 			g.poly(inner);
 			g.fill({ color: FLASH, alpha });
+
+			// 4. THE FLASH, and it is over almost before it starts. A comic panel
+			// blows the hit out to white for a single frame; anything longer than
+			// about a tenth of a second stops being a flash and becomes a glow, and
+			// a glow on his chest for a quarter of a second is six pale blobs by the
+			// end of the clip.
+			if (t < 0.16) {
+				const punch = 1 - t / 0.16;
+				g.circle(cx, cy, IMPACT_R * 0.9 * scale * (0.5 + 0.9 * punch));
+				g.fill({ color: FLASH, alpha: punch * 0.85 });
+			}
 		}
 	};
 
@@ -246,9 +311,10 @@
 	// a lit green screen, and multiplying a colour over it can only make it
 	// darker. A glow has to be added ON TOP, which a slot tint cannot do.
 	//
-	// The goggle plate in skeleton units, from its layer box in the PSD
-	// (head_1_eye at 232,95, 204x77) put through toSpine.
-	const GOGGLE = { x: 54, y: 750, halfWidth: 102, halfHeight: 38 };
+	// The goggle plate in skeleton units. Printed by the generator, which finds the
+	// `*_eye` layer by pattern — it was head_1_eye last delivery and head_3_eye in
+	// this one, and a hard-coded box would have put the glow on his chin.
+	const GOGGLE = { x: -12, y: 837, halfWidth: 117, halfHeight: 88 };
 	const GOGGLE_GREEN = 0x63ff9c;
 	// Slow in, hold, slow out. A visor that snaps on is a fault light; one that
 	// warms up is a machine noticing something.
@@ -370,7 +436,7 @@
 
 		// Interrupts whatever he was doing, unlike the others. A transition is the
 		// scene being torn down; finishing a shrug first would put the wind-up
-		// after the dynamite should already be in the air.
+		// after the canister should already be in the air.
 		// The glow is pinned to the goggles' REST position, so it is only correct
 		// while the head is where the idle put it. That is the only state it fires
 		// in anyway — the tease runs during the spin — but a big win landing on the

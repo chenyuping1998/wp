@@ -1,6 +1,29 @@
 import _ from 'lodash';
 
 import type { RawSymbol, SymbolState } from './types';
+import config from './config';
+
+// IS THIS BET MODE A BOUGHT ONE?
+//
+// Case-insensitively, and that is the entire reason this is a function. The
+// config's bet modes are keyed as the math names them — lowercase `bonus100` —
+// and `stateBet.activeBetModeKey` is uppercase: it initialises to 'BASE', and
+// HOLD_AND_SPIN_MODE_KEY below is 'HOLDANDSPIN'. Indexing the config with it
+// directly returns undefined for every mode, silently, which is how the mascot's
+// buy reaction first shipped doing nothing at all.
+//
+// state-shared has the same problem and solves it the same way, because the
+// value can arrive from the RGS on a resume where its casing is not ours to
+// decide.
+//
+// It lives HERE rather than beside its first caller so that stateGame can use it
+// too. bookEventHandlerMap already imports stateGame, so defining it there and
+// importing it back would close a cycle — and a cycle in this file set is how
+// the board's types collapsed to `any` once before.
+export const isBoughtMode = (key: string) => {
+	const modes = config.betModes as Record<string, { buyBonus?: boolean } | undefined>;
+	return Boolean((modes[key.toLowerCase()] ?? modes[key.toUpperCase()])?.buyBonus);
+};
 
 // Board geometry. This game's reels change height DURING a round: the baseline
 // is 4 rows on every reel and a reel can be stretched to 5 and then 6, left to
@@ -54,6 +77,26 @@ export const BOARD_ROWS_BASE: number[] = Array(NUM_REELS).fill(BASE_ROWS);
 // How far down a reel of `rows` sits inside the MAX_ROWS box. Zero for a reel at
 // full height; two cells' worth for one at the baseline.
 export const reelYOffset = (rows: number) => (MAX_ROWS - rows) * SYMBOL_SIZE;
+
+// WHERE A CELL ACTUALLY IS, and every overlay must go through here.
+//
+// Five separate components were each deriving a row's y from the six-row box —
+// `row * SYMBOL_SIZE - SYMBOL_SIZE / 2` and variations of it — which is only
+// correct for a reel that has already grown to six. At the baseline every one of
+// them was drawing two cells too high: win frames and the dimming scrim over the
+// closed shutter instead of over the symbols, scatter bursts and held coins
+// floating above the reel they belong to.
+//
+// `row` is the PADDED index the book uses, 1..rows; row 0 and row rows+1 are the
+// padding cells either side and are never drawn by an overlay.
+export const cellTopY = (rows: number, row: number) => reelYOffset(rows) + (row - 1) * SYMBOL_SIZE;
+export const cellCenterY = (rows: number, row: number) =>
+	cellTopY(rows, row) + SYMBOL_SIZE / 2;
+// The reel's own window inside the box: what a full-column overlay may cover.
+export const reelWindow = (rows: number) => ({
+	top: reelYOffset(rows),
+	height: rows * SYMBOL_SIZE,
+});
 
 // initial board — 4 visible rows padded top and bottom (6 symbols per reel).
 export const INITIAL_BOARD: RawSymbol[][] = [
@@ -155,6 +198,28 @@ export const SPIN_OPTIONS_FAST = {
 	reelPreSpinSpeed: 5,
 	reelSpinSpeed: 5,
 	reelBounceSizeMulti: 0.05,
+};
+
+// The trigger spin of a BOUGHT round. Same speeds, a much shorter tease.
+//
+// `reelPaddingMultiplierAnticipated` is how many extra strip lengths an
+// anticipating reel travels before it stops, and 10 is the base game's number.
+// It is right there: the tease is the only thing standing between the player and
+// a feature they might not get, so it should be drawn out.
+//
+// A bought round is not that. The player has already paid, exactly three
+// scatters are on the strip and all three WILL land — the reels are teasing an
+// outcome that was settled at the moment the button was pressed. Ten strip
+// lengths of it, three reels running, turns the thing they bought into a queue.
+//
+// Three keeps the shape of the tease — the reels still stop one at a time, the
+// last one still arrives last — and spends about a third of the time on it.
+export const SPIN_OPTIONS_BOUGHT = {
+	...SPIN_OPTIONS_SHARED,
+	reelPaddingMultiplierAnticipated: 3,
+	reelPreSpinSpeed: 2,
+	reelSpinSpeed: 3,
+	reelBounceSizeMulti: 0.3,
 };
 
 // Turbo inside the free game. Quicker than the base pace, but still a spin.

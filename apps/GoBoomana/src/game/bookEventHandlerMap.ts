@@ -229,17 +229,19 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// gold rings + sparks burst out of the scatters while the bell rings
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
 
-		// Four or more Scatters is the rare way in — three is the ordinary one — so
-		// that is where the mascot's biggest reaction goes. Counted here rather
-		// than in the component: the count is a property of this book event, and a
-		// component that had to go looking for it would be reaching across the game
-		// to find something it was never handed.
+		// EVERY trigger, not just four-plus Scatters.
+		//
+		// This was inherited from gen-3, where it made sense: there the bought
+		// tiers land different Scatter counts because the count IS the spin count,
+		// so bonus200 opens on four and the mascot celebrates. Here all three
+		// bought tiers pay the same eight spins and therefore all show three
+		// Scatters, which made the condition dead on every buy — the chest beat
+		// simply stopped existing for anyone who bought the feature, which is how
+		// most players reach it.
 		//
 		// It runs during the 3s bell hold, which is the only stretch of the trigger
-		// long enough to watch him do it.
-		if (bookEvent.positions.length >= 4) {
-			eventEmitter.broadcast({ type: 'mascotChestBeat' });
-		}
+		// long enough to watch him do it; the animation is 2.68s and fits.
+		eventEmitter.broadcast({ type: 'mascotChestBeat' });
 		await waitForTimeout(3000);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
 		// Three passes of the scatter shake — extended trigger celebration

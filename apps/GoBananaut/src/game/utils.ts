@@ -28,7 +28,7 @@ import type { RawSymbol, SymbolState } from './types';
  *
  * Both restore paths were doing exactly that wrong: a resumed round whose last
  * spin blew up a reel came back showing the symbols that were there BEFORE the
- * explosion, including the dynamite itself, on a board the player had already
+ * explosion, including the canister itself, on a board the player had already
  * been paid for.
  *
  * Only the blast AFTER the last reveal is applied. An earlier one belongs to an

@@ -789,95 +789,18 @@ const rubble = (sr, { dur = 0.7, count = 14, spread = 0.55, from = 0.12 } = {}) 
 
 // the bang. Body + crack + debris are what make it an explosion; the horn stab
 // and the boing are what make it THIS game's explosion.
-const blastCore = (sr, { dur, bodyFrom, bodyDecay, weight }) => {
-	const buf = buffer(dur, sr);
-	// body: a fast downward sweep under an exponential decay — the thump you
-	// feel rather than hear. Second and third harmonics at falling amplitude,
-	// because a pressure wave is not a sine, and a little pitch instability so
-	// the sweep does not sound like an oscillator being swept.
-	let ph = 0;
-	for (let i = 0; i < buf.length; i++) {
-		const t = i / sr;
-		const wobble = 1 + 0.035 * Math.sin(2 * Math.PI * 31 * t) * Math.exp(-9 * t);
-		const f = (bodyFrom * Math.exp(-6.5 * t) + 26) * wobble;
-		ph += (2 * Math.PI * f) / sr;
-		const env = Math.exp(-bodyDecay * t);
-		buf[i] +=
-			(Math.sin(ph) + 0.34 * Math.sin(2 * ph) * Math.exp(-14 * t) + 0.12 * Math.sin(3 * ph) * Math.exp(-22 * t)) *
-			env *
-			0.8 *
-			weight;
-	}
-	// debris roar. Three resonant bands whose centres FALL over the tail: as the
-	// cloud expands and moves away, air absorption takes the top off it. A single
-	// static lowpass — the first version — cannot do that, and a spectrum that
-	// never moves is one of the clearest tells of synthesis.
-	const bands = [
-		[2600, 1.1, 0.5],
-		[900, 1.4, 0.75],
-		[320, 1.8, 1.0],
-	];
-	for (const [f0, q, gain] of bands) {
-		let bp = svfBandpass(sr, f0, q);
-		let lastF = f0;
-		for (let i = 0; i < buf.length; i++) {
-			const t = i / sr;
-			const f = f0 * (0.35 + 0.65 * Math.exp(-3.2 * t));
-			// rebuild the filter only when the centre has moved enough to matter,
-			// which keeps this O(n) rather than O(n) filter constructions
-			if (Math.abs(f - lastF) > f0 * 0.06) {
-				bp = svfBandpass(sr, f, q);
-				lastF = f;
-			}
-			buf[i] += bp(rand2()) * (Math.exp(-6 * t) * 0.8 + Math.exp(-1.9 * t) * 0.22) * gain * weight * 0.55;
-		}
-	}
-	// crack: the leading edge. Without this the blast sounds like a pillow.
-	for (let i = 0; i < sr * 0.014; i++) {
-		buf[i] += rand2() * Math.exp((-240 * i) / sr) * 0.65;
-	}
-	return buf;
-};
-
-// single- and multi-reel blast
-{
-	const dry = blastCore(SR_SFX, { dur: 1.0, bodyFrom: 128, bodyDecay: 7.5, weight: 1 });
-	addAt(dry, tom(SR_SFX, 0.9), 0.006, 0.6, SR_SFX); // weight under the crack
-	addAt(dry, horn(P.C4, 0.34, SR_SFX, 0.3), 0.045, 0.5, SR_SFX); // comic "BWAP"
-	addAt(dry, boing(SR_SFX, { from: 880, to: 190, dur: 0.34 }), 0.1, 0.3, SR_SFX); // springy debris
-	addAt(dry, cymbal(0.55, SR_SFX), 0.01, 0.22, SR_SFX);
-	addAt(dry, rubble(SR_SFX, { dur: 1.0, count: 13, spread: 0.5, from: 0.14 }), 0, 0.5, SR_SFX);
-	const wet = reverb(dry, SR_SFX, { ...MINE, mix: 0.3 });
-	saturate(wet, 1.5);
-	compress(wet, SR_SFX, { thresh: 0.4, ratio: 4.5, attack: 0.004, release: 0.16 });
-	writeWav('dynamite_blast.wav', takeTail(normalize(wet, 0.92), SR_SFX, 1.5), SR_SFX);
-}
-
-// full-board blast — the 5-reel payoff. Same anatomy, then it keeps going: the
-// player has just filled the board and the sound has to stay excited for the
-// extra hold ReelBlast adds in that case.
-{
-	const dry = blastCore(SR_SFX, { dur: 2.1, bodyFrom: 155, bodyDecay: 4.4, weight: 1.25 });
-	addAt(dry, tom(SR_SFX, 1), 0.006, 0.8, SR_SFX);
-	addAt(dry, conga(SR_SFX, 0.9), 0.03, 0.5, SR_SFX);
-	addAt(dry, horn(P.C4, 0.5, SR_SFX, 0.34), 0.04, 0.6, SR_SFX);
-	addAt(dry, horn(P.G4, 0.5, SR_SFX, 0.28), 0.09, 0.45, SR_SFX); // a fifth on top — bigger
-	addAt(dry, boing(SR_SFX, { from: 1040, to: 170, dur: 0.42 }), 0.11, 0.34, SR_SFX);
-	addAt(dry, cymbal(1.1, SR_SFX), 0.01, 0.34, SR_SFX);
-	addAt(dry, rubble(SR_SFX, { dur: 2.1, count: 22, spread: 0.85, from: 0.16 }), 0, 0.55, SR_SFX);
-	// …and the celebration on the far side of the debris
-	addAt(dry, hoot(SR_SFX, { from: 560, to: 1020, dur: 0.26 }), 0.86, 0.3, SR_SFX);
-	for (const [i, note] of [P.G4, P.C5, P.E5, P.G5].entries()) {
-		addAt(dry, marimba(note, 0.7, SR_SFX), 1.02 + i * 0.085, 0.55, SR_SFX);
-	}
-	addAt(dry, cymbal(0.9, SR_SFX), 1.02, 0.16, SR_SFX);
-	// the biggest bang gets the most room — it is the furthest-away event in the
-	// set, and the extra tail is what sells five reels going up at once
-	const wet = reverb(dry, SR_SFX, { ...MINE, rt60: 1.35, mix: 0.4 });
-	saturate(wet, 1.6);
-	compress(wet, SR_SFX, { thresh: 0.36, ratio: 5, attack: 0.004, release: 0.2 });
-	writeWav('dynamite_blast_big.wav', takeTail(normalize(wet, 0.95), SR_SFX, 2.7), SR_SFX);
-}
+// THE BLAST CUES ARE NOT SYNTHESIZED. Do not add them back here.
+//
+// dynamite_blast.wav and dynamite_blast_big.wav are built from a licensed
+// recording by design/import_blast_sample.py, because review called the
+// synthesized versions generic and was right — a better sine-and-noise model is
+// still a sine-and-noise model. The synthesis that used to live at this spot
+// (body sweep, resonant debris bands, mine reverb, compression) was deleted
+// rather than left commented out, because a generator that still knows how to
+// write those two filenames will eventually overwrite the sample with them.
+//
+// Everything around it — the fuse, the shatter and the reveal — is still
+// synthesized, and still uses the reverb and filter helpers above.
 
 // the symbols breaking. Plays alongside the bang, but its own weight arrives
 // LATE and inside the file rather than on a separate timer: the crack is

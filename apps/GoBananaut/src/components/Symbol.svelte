@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Container } from 'pixi-svelte';
+	import { Container, Sprite } from 'pixi-svelte';
 
 	import SymbolSpine from './SymbolSpine.svelte';
 	import SymbolSprite from './SymbolSprite.svelte';
@@ -8,7 +8,13 @@
 	import type { SymbolState, RawSymbol } from '../game/types';
 	import { getContext } from '../game/context';
 	import { stateGame } from '../game/stateGame.svelte';
-	import { SYMBOL_SIZE, isBigPrize, BIG_PRIZE_FILL, BIG_PRIZE_STROKE } from '../game/constants';
+	import {
+		SYMBOL_SIZE,
+		isBigPrize,
+		BIG_PRIZE_FILL,
+		BIG_PRIZE_STROKE,
+		isMarkedSymbolName,
+	} from '../game/constants';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import GoldText from './GoldText.svelte';
 
@@ -31,6 +37,19 @@
 	const symbolInfo = $derived(getSymbolInfo({ rawSymbol: props.rawSymbol, state: props.state }));
 	const isSprite = $derived(symbolInfo.type === 'sprite');
 	const isWin = $derived(props.state === 'win');
+
+	// A grow marker rides on an ordinary symbol rather than being one, so the
+	// maths sends "H2G" and getSymbolInfo already resolves that to H2's art. What
+	// is left is the badge itself, drawn over the cell's TOP-LEFT corner.
+	//
+	// Top-left is reserved for it by the art spec — no symbol may depend on that
+	// corner to be identified — so the badge can be placed by a constant rather
+	// than dodging each symbol's composition.
+	const isMarked = $derived(isMarkedSymbolName(props.rawSymbol.name));
+	// 236x256 source. Sized off the cell so it scales with SYMBOL_SIZE, at the
+	// fraction that was checked against every symbol it can land on.
+	const MARKER_H = SYMBOL_SIZE * 0.42;
+	const MARKER_W = MARKER_H * (236 / 256);
 
 </script>
 
@@ -70,11 +89,32 @@
 	{@render body(props.oncomplete)}
 </Container>
 
-<!-- NOTE: nothing in this game assigns a per-cell `multiplier`. Gen-3 used it to
-     carry the machete's split, which is why the type still has the field and why
-     the ways evaluator is still called with multiplier_strategy="symbol" — with
-     no cell ever carrying one, that path is inert and every cell counts once.
-     A blast changes a cell's SYMBOL, not its count. -->
+{#if isMarked}
+	<!--
+		The grow marker. Drawn AFTER the symbol body so it sits over it, and
+		anchored to the cell's top-left rather than to the artwork's, so it lands in
+		the same place whatever is underneath.
+
+		It separates by a hard dark contour and a bright core rather than by hue,
+		because it has to stay legible over all six accent colours in the set — a
+		coloured glow ring would have disappeared on the ice-cyan comet and the hot
+		orange scatter, which are the two it most needs to be visible over.
+	-->
+	<Sprite
+		key="gbGrowMarker"
+		anchor={0}
+		x={(props.x ?? 0) - SYMBOL_SIZE / 2}
+		y={(props.y ?? 0) - SYMBOL_SIZE / 2}
+		width={MARKER_W}
+		height={MARKER_H}
+	/>
+{/if}
+
+<!-- NOTE on `multiplier`: the FREE GAME assigns one — every cell of a stretched
+     reel carries multiplier = 2, which is why the ways evaluator runs with
+     multiplier_strategy="symbol" and why the doubling shows up in the ways
+     figure rather than as a separate multiplier field. The base game assigns
+     none, so there the path is inert and every cell counts once. -->
 
 {#if props.rawSymbol.prize}
 	<!--

@@ -31,6 +31,7 @@
 	import EntryReveal from './EntryReveal.svelte';
 	import ScatterBurst from './ScatterBurst.svelte';
 	import ReelGrow from './ReelGrow.svelte';
+	import ReelLid from './ReelLid.svelte';
 	import StickyPrizes from './StickyPrizes.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import WinWays from './WinWays.svelte';
@@ -92,6 +93,10 @@
 		<MainContainer>
 			<Board />
 			<ReelDust />
+			<!-- Between the symbols and the stretch FX on purpose: the shutter sits
+			     over the empty rows a short reel leaves, and ReelGrow's cover has to
+			     be able to close over the shutter as well as over the new cell. -->
+			<ReelLid />
 			<ReelGrow />
 			<StickyPrizes />
 			<Anticipations />
@@ -103,12 +108,12 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name="GO BANANAS DELTA" />
+				<UiGameName name="GO BANANAUT" />
 			{/snippet}
 			{#snippet logo()}
 				<Text
 					anchor={{ x: 1, y: 0 }}
-					text="GO BANANAS DELTA"
+					text="GO BANANAUT"
 					style={{
 						fontFamily: GAME_FONT,
 						fontSize: REM * 1.5,

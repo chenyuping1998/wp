@@ -677,7 +677,22 @@ const render = (svg, outPath, width) => {
 for (const [name, svg] of Object.entries(backgrounds)) {
 	render(svg, path.join(BG_DIR, `${name}.png`), 1920);
 }
+// frame_edge is NOT emitted from here any more. The housing is now painted art,
+// cut into parts and recomposited to this exact geometry by
+// design/build_frame_capsule.py, and running this script used to quietly put the
+// olive procedural rails back over it. The SVG below is kept because it is still
+// where the geometry is derived and commented, and because the fs_* panels in
+// the same object depend on the same definitions — it is simply not written out.
+//
+// frame_bg IS still emitted, and is still olive when it lands. Run
+// build_frame_capsule.py --apply after this script: it retints the plate to
+// gunmetal and rebuilds the edge. That ordering is the pipeline.
+const NOT_EMITTED = new Set(['frame_edge']);
 for (const [name, svg] of Object.entries(frames)) {
+	if (NOT_EMITTED.has(name)) {
+		console.log(`  skip ${name} — owned by design/build_frame_capsule.py`);
+		continue;
+	}
 	// FRAME_W, not a fixed 1280: the housing is no longer square, and rendering it
 	// to a width that does not match its authored aspect resamples every rivet.
 	render(svg, path.join(FRAME_DIR, `${name}.png`), name.startsWith('frame_') ? FRAME_W : 1280);

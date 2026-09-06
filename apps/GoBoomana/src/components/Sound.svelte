@@ -424,7 +424,13 @@
 			playCnSfx(full ? 'dynamite_blast_big' : 'dynamite_blast'),
 		// Under the bang on purpose: it is the same event heard from closer in, so
 		// it must not compete with the blast for the front of the mix.
-		soundBlastShatter: () => playCnSfx('symbol_shatter', 0.6),
+		//
+		// Dropped from 0.6 to 0.35 when the blast became a real recording. The
+		// sample already carries its own crack and debris, so this layer is no
+		// longer supplying the impact — it is only tying the sound to the shards
+		// visibly flying off the symbols, and at the old level it just muddied a
+		// cue that was clean on its own.
+		soundBlastShatter: () => playCnSfx('symbol_shatter', 0.35),
 		soundBlastReveal: () => playCnSfx('symbol_reveal', 0.8),
 		soundMonkeyExpand: () => playMonkeyExpand(),
 		// Deliberately NOT forced through the turbo gate that silences ordinary

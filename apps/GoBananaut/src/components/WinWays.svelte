@@ -34,6 +34,7 @@
 		BOARD_DIMENSIONS,
 		BOARD_SIZES,
 		BASE_ROWS,
+		cellTopY,
 	} from '../game/constants';
 	import type { SymbolName } from '../game/types';
 
@@ -148,9 +149,11 @@
 
 	// Same formula as getSymbolX in utils.ts.
 	const cellX = (reel: number) => SYMBOL_SIZE * (reel + REEL_PADDING) - SYMBOL_SIZE / 2;
-	// Board rows are 1..numRows in the padded array; row 0 and numRows+1 are the
-	// padding cells either side and are never lit.
-	const cellY = (row: number) => -SYMBOL_SIZE + row * SYMBOL_SIZE;
+	// PER REEL. This used to be `-SYMBOL_SIZE + row * SYMBOL_SIZE`, which is the
+	// six-row box's own coordinate and correct only for a reel that has grown all
+	// the way. On a reel still at four it put the scrim and the win frames two
+	// cells above the symbols they belong to — over the closed shutter.
+	const cellY = (reel: number, row: number) => cellTopY(reelRows(reel), row);
 
 	// --- symbol animations, fired reel by reel in the wake -------------------
 	// A cell can belong to more than one winning symbol; animating it twice
@@ -255,7 +258,7 @@
 		for (let reel = 0; reel < BOARD_DIMENSIONS.x; reel++) {
 			for (let row = 1; row <= reelRows(reel); row++) {
 				if (litCells.has(`${reel},${row}`)) continue;
-				g.rect(cellX(reel), cellY(row), SYMBOL_SIZE, SYMBOL_SIZE);
+				g.rect(cellX(reel), cellY(reel, row), SYMBOL_SIZE, SYMBOL_SIZE);
 			}
 		}
 		g.fill({ color: SCRIM, alpha: SCRIM_ALPHA });
@@ -268,7 +271,7 @@
 			const [reel, row] = key.split(',').map(Number);
 			g.rect(
 				cellX(reel) + inset,
-				cellY(row) + inset,
+				cellY(reel, row) + inset,
 				SYMBOL_SIZE - inset * 2,
 				SYMBOL_SIZE - inset * 2,
 			);

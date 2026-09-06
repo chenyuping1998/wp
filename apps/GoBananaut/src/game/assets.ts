@@ -99,15 +99,20 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2.png', import.meta.url).href,
 		preload: true,
 	},
-	// The dynamite PROP — a transparent cut-out, deliberately not gbH2.
+	// The gravity charge PROP — a transparent cut-out, and deliberately not any
+	// board symbol.
 	//
-	// The transition drop and the win-line runners both draw a dynamite over the
-	// live board, and both used gbH2. In gen-2 that symbol is an opaque riveted
-	// plate, so what actually fell down the screen was a tile complete with bezel
-	// and rivets. See design/generate_symbols_gen2.mjs for where this is cut.
-	gbDynamite: {
+	// The mascot throws this at every transition. It is a separate asset because
+	// a board symbol is composed for a cell, not for flying across the screen:
+	// the previous generation drew gbH2 here and what actually fell down the
+	// screen was a tile complete with bezel and rivets.
+	//
+	// Cropped to its own alpha bounding box rather than centred on a 1024 square,
+	// because a prop is placed by its own edges and a transparent margin baked
+	// into the file would offset it from wherever the animation puts it.
+	gbCanister: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/dynamite.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/canister.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH3: {
@@ -148,6 +153,67 @@
 	gbW: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/w.png', import.meta.url).href,
+		preload: true,
+	},
+	// The grow marker BADGE. Not a board symbol — it is laid over the top-left
+	// corner of an ordinary symbol's cell, which is why it is cropped to its own
+	// alpha bounding box rather than centred on a square like the symbols are.
+	//
+	// It separates by a hard dark contour and a bright core rather than by hue,
+	// because it has to stay legible over amber, ice-cyan, silver-green, violet,
+	// brass and hot orange alike. A coloured glow ring would have vanished on
+	// exactly the two symbols it most needs to be visible over.
+	gbGrowMarker: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/growMarker.png', import.meta.url).href,
+		preload: true,
+	},
+
+	// The canister burst, 8 frames of 366x352.
+	//
+	// DRAWN ADDITIVELY, and the frames are deliberately still on black. A burst is
+	// a light source: additive blending makes the black ground transparent for
+	// free and keeps the glow's falloff intact, where keying a soft glow to alpha
+	// destroys the falloff and leaves a hard edge that was never in the art.
+	gbBurst0: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananautFx/burst_0.png', import.meta.url).href,
+	},
+	gbBurst1: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananautFx/burst_1.png', import.meta.url).href,
+	},
+	gbBurst2: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananautFx/burst_2.png', import.meta.url).href,
+	},
+	gbBurst3: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananautFx/burst_3.png', import.meta.url).href,
+	},
+	gbBurst4: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananautFx/burst_4.png', import.meta.url).href,
+	},
+	gbBurst5: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananautFx/burst_5.png', import.meta.url).href,
+	},
+	gbBurst6: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananautFx/burst_6.png', import.meta.url).href,
+	},
+	gbBurst7: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananautFx/burst_7.png', import.meta.url).href,
+	},
+
+	// The Scatter. Hot orange is reserved for it and used by nothing else in the
+	// set — in this series a Scatter has been mistaken for a paying symbol three
+	// separate times, so it is separated by hue as well as by silhouette.
+	gbS: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s.png', import.meta.url).href,
 		preload: true,
 	},
 
@@ -201,20 +267,6 @@
 		preload: true,
 	},
 
-	gbS: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/s.png', import.meta.url).href,
-		preload: true,
-	},
-	// The Dynamite: a bundle of sticks bound short with a lit fuse arcing out of
-	// it. The arcing fuse is deliberate — it is the one shape in the set that has
-	// a line leaving the silhouette, which is what keeps it from reading as the
-	// golden-banana Scatter at 140px.
-	gbB: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/b.png', import.meta.url).href,
-		preload: true,
-	},
 	gbX: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/x.png', import.meta.url).href,

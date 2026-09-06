@@ -101,7 +101,27 @@
 	const TOP = 0;
 	const HEIGHT = SYMBOL_SIZE * BOARD_DIMENSIONS.y;
 
-	// Smoke is drawn as overlapping circles, which is what a comic explosion is.
+	// SMOKE, PAINTED THE WAY THE REST OF THE GAME IS PAINTED.
+	//
+	// The first version was flat neutral-grey circles with one lighter grey blob
+	// on each. It read as programmer art next to the symbols, and the reason is
+	// specific rather than vague: this game's art has ONE lighting rule, stated in
+	// design/SYMBOL_PROMPTS.md and followed by every symbol and every background —
+	// a warm mine-lamp key from the upper left, deep shadow to the lower right,
+	// and a lit rim separating every subject from its ground. The smoke obeyed
+	// none of it. It was neutral where everything else is warm, perfectly circular
+	// where everything else is hand-drawn, and it had a highlight blob instead of
+	// a rim, which reads as a decal stuck on a disc rather than as a volume.
+	//
+	// So each lump is now painted in the same four steps a painter would use:
+	// shadow offset down-right, body, lit plane offset up-left, and a warm rim arc
+	// along the lit contour. And the silhouette is lobed rather than round —
+	// cauliflower edges are what makes drawn smoke read as smoke.
+	const SMOKE_SHADOW = 0x2a2016;
+	const SMOKE_BODY = 0x5c4c3a;
+	const SMOKE_LIT = 0x9b8a6e;
+	const SMOKE_RIM = 0xe0a868;
+
 	// The cluster is generated from the reel index rather than from Math.random,
 	// so a reel's cloud is the same shape every frame of one blast — a cloud that
 	// re-rolls its lumps each frame boils instead of billowing.
@@ -115,15 +135,27 @@
 			return {
 				// spread down the column, with the ends pulled slightly inside so the
 				// cloud has a silhouette rather than square corners
-				y: TOP + HEIGHT * (0.06 + 0.88 * (i / (PUFFS_PER_REEL - 1))),
-				x: (rand - 0.5) * SYMBOL_SIZE * 0.5,
+				// jittered off the even spacing, or nine lumps in a column read as a
+				// stack of discs rather than as one mass
+				y:
+					TOP +
+					HEIGHT * (0.05 + 0.9 * (i / (PUFFS_PER_REEL - 1))) +
+					(rand2 - 0.5) * SYMBOL_SIZE * 0.16,
+				x: (rand - 0.5) * SYMBOL_SIZE * 0.72,
 				// At least half a cell wide, so a single lump already spans the column
 				// and the cluster cannot leave a gap down the edges for the old symbol
 				// to show through — the cover has to be total or the swap is visible.
-				r: SYMBOL_SIZE * (0.52 + 0.20 * rand2),
+				r: SYMBOL_SIZE * (0.5 + 0.34 * rand2),
 				// each lump grows at its own rate, so the cloud does not inflate as
 				// one object
 				lag: rand2 * 0.25,
+				// Cauliflower silhouette. Two harmonics is enough to stop the lump
+				// reading as a circle and cheap enough to run per frame; a third adds
+				// noise the eye cannot resolve at this size.
+				w3: 0.11 + 0.07 * rand,
+				w5: 0.05 + 0.06 * rand2,
+				ph3: rand * Math.PI * 2,
+				ph5: rand2 * Math.PI * 2,
 			};
 		});
 
@@ -159,6 +191,69 @@
 				spin: (r3 - 0.5) * 3.4,
 				// heavier pieces fall further within the same beat
 				weight: 0.5 + r1,
+			};
+		});
+
+	// A lobed blob. Radius is modulated by two harmonics, so the outline bulges
+	// and pinches the way drawn smoke does instead of being a circle.
+	const LOBE_STEPS = 34;
+	type Lobe = { w3: number; w5: number; ph3: number; ph5: number };
+	const lobeR = (p: Lobe, th: number) =>
+		1 + p.w3 * Math.sin(3 * th + p.ph3) + p.w5 * Math.sin(5 * th + p.ph5);
+
+	// `skew` rotates the harmonics for one layer only. Without it every layer is a
+	// scaled copy of the same outline, and the four of them stacked read as
+	// contour rings on a topographic map instead of as one lump catching light.
+	const skewed = (p: Lobe, skew: number): Lobe => ({
+		...p,
+		ph3: p.ph3 + skew,
+		ph5: p.ph5 - skew * 1.7,
+	});
+
+	const lobe = (g: PixiGraphics, cx: number, cy: number, r: number, p: Lobe, skew = 0) => {
+		const q = skew ? skewed(p, skew) : p;
+		const pts: number[] = [];
+		for (let i = 0; i < LOBE_STEPS; i++) {
+			const th = (i / LOBE_STEPS) * Math.PI * 2;
+			const rr = r * lobeR(q, th);
+			pts.push(cx + Math.cos(th) * rr, cy + Math.sin(th) * rr);
+		}
+		g.poly(pts);
+	};
+
+	// The lit contour only. Screen y runs down, so the upper-left arc is the
+	// sweep either side of 1.25pi — the same direction the key light comes from
+	// in every symbol and background in this game.
+	const rimArc = (g: PixiGraphics, cx: number, cy: number, r: number, p: Lobe) => {
+		const from = Math.PI * 0.88;
+		const to = Math.PI * 1.62;
+		for (let i = 0; i <= 12; i++) {
+			const th = from + ((to - from) * i) / 12;
+			const rr = r * lobeR(p, th);
+			const x = cx + Math.cos(th) * rr;
+			const y = cy + Math.sin(th) * rr;
+			if (i === 0) g.moveTo(x, y);
+			else g.lineTo(x, y);
+		}
+	};
+
+	// Embers. A dynamite blast in a lamp-lit mine throws burning specks, and the
+	// B symbol already establishes a bright spark as this game's signature detail
+	// — the smoke was the one place the blast produced no light at all.
+	const EMBERS_PER_REEL = 14;
+	const embersOf = (reel: number) =>
+		Array.from({ length: EMBERS_PER_REEL }, (_, i) => {
+			const a = hash(reel + 3.1, i + 7.7, 1);
+			const b = hash(reel + 8.2, i + 2.3, 2);
+			const c = hash(reel + 5.5, i + 9.9, 3);
+			return {
+				dir: a * Math.PI * 2,
+				speed: 0.35 + 0.9 * b,
+				y0: TOP + HEIGHT * (0.1 + 0.8 * c),
+				size: 1.4 + 2.6 * b,
+				// staggered so they do not all leave on the same frame
+				lag: 0.25 * c,
+				warm: b > 0.45,
 			};
 		});
 
@@ -263,6 +358,24 @@
 
 			if (puff <= 0) continue;
 
+			// Embers first, so the smoke closes over them rather than sitting under
+			// them. They are the only light the blast puts into the scene.
+			for (const e of embersOf(reel)) {
+				const t = Math.min(1, Math.max(0, (puff - e.lag) / (1 - e.lag)));
+				if (t <= 0) continue;
+				const travel = (t + disperse * 1.6) * e.speed * SYMBOL_SIZE;
+				const ex = cx + Math.cos(e.dir) * travel;
+				// they rise, then gravity starts to win
+				const ey = e.y0 + Math.sin(e.dir) * travel * 0.55 + disperse ** 2 * SYMBOL_SIZE * 0.6;
+				const life = Math.max(0, 1 - disperse * 1.35);
+				if (life <= 0.01) continue;
+				const r = e.size * (0.6 + 0.4 * life);
+				g.circle(ex, ey, r * 2.2);
+				g.fill({ color: 0xff9a3c, alpha: 0.16 * life });
+				g.circle(ex, ey, r);
+				g.fill({ color: e.warm ? 0xffd489 : 0xffb257, alpha: 0.85 * life });
+			}
+
 			for (const p of puffsOf(reel)) {
 				// grow in, then keep growing as it thins — smoke does not shrink away,
 				// it spreads out until it is gone
@@ -273,12 +386,25 @@
 				const dx = p.x + (p.x >= 0 ? 1 : -1) * disperse * SYMBOL_SIZE * 0.22;
 				const dy = p.y - disperse * SYMBOL_SIZE * 0.35;
 				const alpha = (1 - disperse) ** 1.4;
-				g.circle(cx + dx, dy, p.r * scale);
-				g.fill({ color: 0x6b6055, alpha: alpha });
-				// a lighter core on the upper-left of each lump, which is what makes a
-				// flat circle read as a volume
-				g.circle(cx + dx - p.r * scale * 0.22, dy - p.r * scale * 0.22, p.r * scale * 0.6);
-				g.fill({ color: 0x9a8d7d, alpha: alpha * 0.75 });
+				const px = cx + dx;
+				const r = p.r * scale;
+
+				// 1. shadow, pushed away from the key light
+				lobe(g, px + r * 0.1, dy + r * 0.12, r * 1.02, p, -0.35);
+				g.fill({ color: SMOKE_SHADOW, alpha: alpha * 0.55 });
+				// 2. the mass itself
+				lobe(g, px, dy, r, p);
+				g.fill({ color: SMOKE_BODY, alpha });
+				// 3. the plane facing the lamp, in two soft steps rather than one hard
+				// edge — a single lit shape reads as a cut-out stuck on the lump
+				lobe(g, px - r * 0.14, dy - r * 0.15, r * 0.78, p, 0.55);
+				g.fill({ color: SMOKE_LIT, alpha: alpha * 0.3 });
+				lobe(g, px - r * 0.24, dy - r * 0.26, r * 0.5, p, 1.05);
+				g.fill({ color: SMOKE_LIT, alpha: alpha * 0.38 });
+				// 4. and a hint of rim along the lit contour. Kept faint: at full
+				// strength nine of these stacked read as ink outlines, not as light.
+				rimArc(g, px, dy, r, p);
+				g.stroke({ width: Math.max(1, r * 0.032), color: SMOKE_RIM, alpha: alpha ** 2 * 0.26 });
 			}
 		}
 	};

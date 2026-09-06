@@ -8,7 +8,13 @@
 
 	export type EmitterEventSound =
 		| { type: 'soundMusic'; name: MusicName }
-		| { type: 'soundOnce'; name: SoundEffectName; forcePlay?: boolean }
+		// `rate` and `volume` are per-call overrides on top of whatever SPRITE_TO_CN
+		// already says for the cue. They exist for cues played in a RUN — the board
+		// growing plays one lock per row, up to ten of them — where the same sample
+		// at the same pitch ten times is a hammer rather than a climb. The
+		// alternative was five near-identical sprite names standing in for five
+		// pitches, which is how sfx_reel_stop_1..5 ended up meaning nothing.
+		| { type: 'soundOnce'; name: SoundEffectName; forcePlay?: boolean; rate?: number; volume?: number }
 		| { type: 'soundLoop'; name: SoundEffectName }
 		| { type: 'soundStop'; name: SoundName }
 		| { type: 'soundFade'; name: SoundName; from: number; to: number; duration: number }
@@ -35,7 +41,13 @@
 
 	const context = getContext();
 
-	// ─── jungle-commando sound set (synthesized — see design/generate_audio_jungle.mjs) ───
+	// ─── space sound set (synthesized — see design/generate_audio_space.mjs) ───
+	//
+	// The nineteen synthesised cues moved from jungle/ to space/; the three VOICE
+	// files did not, because they are recordings of the mascot rather than
+	// synthesis and the mascot has not changed. Keeping them in jungle/ is
+	// deliberate and not an oversight — moving a file to a folder whose generator
+	// does not produce it is how a regeneration quietly deletes it.
 	// Standalone HTML5 Audio; the howler sprite (sounds.json) stays as a
 	// fallback for anything not mapped here (e.g. win-level bgm stingers).
 	type CnSfxName =
@@ -57,31 +69,33 @@
 		| 'coin_shimmer'
 		| 'wild_expand'
 		| 'mult_update'
+		| 'grow_lock'
 		| 'grenade_blast'
 		| 'monkey_expand'
 		| 'voice_roar'
 		| 'voice_effort';
 
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
-		gong_feature: 'jungle/gong_feature.wav',
-		bigwin_blast: 'jungle/bigwin_blast.wav',
-		reel_tension: 'jungle/reel_tension.wav',
-		reel_stop: 'jungle/reel_stop.wav',
-		btn: 'jungle/btn.wav',
-		spin: 'jungle/spin.wav',
-		scatter_1: 'jungle/scatter_1.wav',
-		scatter_2: 'jungle/scatter_2.wav',
-		scatter_3: 'jungle/scatter_3.wav',
-		scatter_4: 'jungle/scatter_4.wav',
-		scatter_5: 'jungle/scatter_5.wav',
-		pluck_low: 'jungle/pluck_low.wav',
-		win_gliss: 'jungle/win_gliss.wav',
-		win_gliss_big: 'jungle/win_gliss_big.wav',
-		fs_intro: 'jungle/fs_intro.wav',
-		coin_shimmer: 'jungle/coin_shimmer.wav',
-		wild_expand: 'jungle/wild_expand.wav',
-		mult_update: 'jungle/mult_update.wav',
-		grenade_blast: 'jungle/grenade_blast.wav',
+		gong_feature: 'space/gong_feature.wav',
+		bigwin_blast: 'space/bigwin_blast.wav',
+		reel_tension: 'space/reel_tension.wav',
+		reel_stop: 'space/reel_stop.wav',
+		btn: 'space/btn.wav',
+		spin: 'space/spin.wav',
+		scatter_1: 'space/scatter_1.wav',
+		scatter_2: 'space/scatter_2.wav',
+		scatter_3: 'space/scatter_3.wav',
+		scatter_4: 'space/scatter_4.wav',
+		scatter_5: 'space/scatter_5.wav',
+		pluck_low: 'space/pluck_low.wav',
+		win_gliss: 'space/win_gliss.wav',
+		win_gliss_big: 'space/win_gliss_big.wav',
+		fs_intro: 'space/fs_intro.wav',
+		coin_shimmer: 'space/coin_shimmer.wav',
+		wild_expand: 'space/wild_expand.wav',
+		mult_update: 'space/mult_update.wav',
+		grow_lock: 'space/grow_lock.wav',
+		grenade_blast: 'space/grenade_blast.wav',
 		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
 		monkey_expand: 'jungle/monkey_expand.mp3',
 		voice_roar: 'jungle/voice_roar.wav',
@@ -131,32 +145,81 @@
 		sfx_superfreespin: { name: 'win_gliss_big', volume: 0.8 },
 		jng_intro_fs: { name: 'fs_intro' },
 		sfx_wild_explode: { name: 'wild_expand' },
+		// THE EXPANSION, IN TWO PARTS. `sfx_multiplier_update` is the release at the
+		// top of each step and is deliberately the quietest thing in the mechanic;
+		// `sfx_multiplier_up` is the arrival, and is the emphasis. ReelGrow plays
+		// the second one at a rising rate, one step per row.
 		sfx_multiplier_update: { name: 'mult_update' },
+		sfx_multiplier_up: { name: 'grow_lock' },
 		sfx_anticipation_start: { name: 'mult_update', volume: 0.5 },
 		sfx_symbols_landing: { name: 'reel_stop', volume: 0.6 },
 		sfx_royals_landing: { name: 'reel_stop', volume: 0.6 },
 	};
 
-	const cnSfxAudio: Partial<Record<CnSfxName, HTMLAudioElement>> = {};
+	// A CUE HAS TO BE ABLE TO OVERLAP ITSELF.
+	//
+	// This was one HTMLAudioElement per cue, and every play did `currentTime = 0`.
+	// That is not "restart the sound", it is "cut the one already playing" — a cue
+	// fired twice inside its own length can never be heard twice, only once with a
+	// bite taken out of it.
+	//
+	// It shows worst on the thing the expansion was built around. `grow_lock` is
+	// 700ms and a ten-row run fires it every ~223ms, so nine of the ten were being
+	// truncated at a third of their length. The bell that carries the pitch starts
+	// 80ms in and rings for 450 — cut at 223 there is barely any note left, which
+	// means the rising playbackRate across the run, the entire reason that climb
+	// exists, was inaudible. It sounded like ten identical stubs.
+	//
+	// Same shape on the reel stops: five reels land ~145ms apart and share one
+	// element with the symbol and royal landings, so they were clipping each other
+	// all the way down the board.
+	//
+	// Five voices: ONE RESERVED, four in the round-robin. Four one-shot voices
+	// because grow_lock at its tightest needs 700/223 ≈ 3.1 of them, and the pool
+	// is per cue and built lazily, so the cost is a handful of elements for the
+	// few cues that actually stack.
+	//
+	// Voice 0 is reserved for whatever owns the cue over time — the no-Web-Audio
+	// loop fallback, the monkey hoot's fade. Those set `loop = true` or run a
+	// timed fade on an element they expect to still be theirs; if the round-robin
+	// could land on it, a later one-shot would set loop = false underneath a
+	// running loop and silently end it.
+	const VOICES = 5;
+	const ONESHOT_VOICES = VOICES - 1;
+	const cnSfxAudio: Partial<Record<CnSfxName, HTMLAudioElement[]>> = {};
+	const cnSfxTurn: Partial<Record<CnSfxName, number>> = {};
 
-	function getCnSfx(name: CnSfxName) {
-		let audio = cnSfxAudio[name];
-		if (!audio) {
-			audio = new Audio(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
-			audio.preload = 'auto';
-			cnSfxAudio[name] = audio;
+	function cnSfxVoices(name: CnSfxName) {
+		let pool = cnSfxAudio[name];
+		if (!pool) {
+			pool = Array.from({ length: VOICES }, () => {
+				const audio = new Audio(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
+				audio.preload = 'auto';
+				return audio;
+			});
+			cnSfxAudio[name] = pool;
 		}
-		return audio;
+		return pool;
+	}
+
+	// The cue's FIRST voice. Anything that owns a sound over time — the loop
+	// fallback, the monkey hoot's fade, stopping — works on this one, so those
+	// paths keep the single-element behaviour they were written against.
+	function getCnSfx(name: CnSfxName) {
+		return cnSfxVoices(name)[0]!;
 	}
 
 	function playCnSfx(name: CnSfxName, volumeScale = 1, rate = 1) {
-		const audio = getCnSfx(name);
+		const pool = cnSfxVoices(name);
+		const turn = (cnSfxTurn[name] ?? 0) % ONESHOT_VOICES;
+		cnSfxTurn[name] = turn + 1;
+		const audio = pool[turn + 1]!;
 		audio.loop = false;
 		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
-		// Always assign, never skip when rate is 1: getCnSfx caches one element per
-		// file, so a rate left over from the previous caller would carry into every
-		// later play of the same sample. reel_stop is shared with symbol/royal
-		// landings, which would otherwise inherit the fifth reel's pitch.
+		// Always assign, never skip when rate is 1: a voice is reused, so a rate
+		// left over from the previous caller would carry into every later play on
+		// that voice. reel_stop is shared with symbol/royal landings, which would
+		// otherwise inherit the fifth reel's pitch.
 		audio.playbackRate = rate;
 		audio.currentTime = 0;
 		audio.play().catch(() => {});
@@ -289,47 +352,142 @@
 		node.src.stop(end);
 	}
 
+	// Every voice, not just the first. A cue that can be playing on four elements
+	// has to be stopped on four, or "stop" leaves whatever the pool happened to be
+	// playing still running.
 	function stopCnSfx(name: CnSfxName) {
-		const audio = cnSfxAudio[name];
-		if (audio) {
+		for (const audio of cnSfxAudio[name] ?? []) {
 			audio.pause();
 			audio.currentTime = 0;
 		}
 	}
 
-	// ─── BGM (both loops are standalone HTML5 Audio) ───
+	// ─── BGM ───
+	//
+	// WEB AUDIO, for the reason set out above the looping SFX: an
+	// HTMLAudioElement with `loop = true` is not gapless, and the BGM is the one
+	// thing in this game that loops for an entire session. The note about
+	// coin_shimmer was written, the fix was built, and then the BGM — a fifty
+	// second bed that wraps roughly seventy times an hour — was left on the
+	// element path anyway.
+	//
+	// The element is kept as a fallback for a browser with no AudioContext. A
+	// slightly seamed loop beats silence.
+	//
+	// THE MUSIC IS THE SERIES' JUNGLE BED, not this game's own space set.
+	//
+	// A space BGM was written for it — 76 BPM, C minor pentatonic, sparse — and
+	// then a second pass added reverb and stereo width on the argument that space
+	// is carried by room rather than by notes. Both were rejected in play, and the
+	// second rejection was the whole track rather than the treatment. The four Go
+	// Bananas games ship byte-identical jungle loops (074e57c1c5fc / 71cd46989c03)
+	// and this one already had them on disk, so it is pointed back at those.
+	//
+	// The nineteen synthesised SFX stay on the space set. Only the music moved
+	// back — the cues are this game's own and were not what was being objected to.
+	//
+	// design/generate_audio_space.mjs still writes space/bgm_*.wav. Left alone on
+	// purpose: deleting the generator's output is how you lose the ability to go
+	// back. They are ~4.2MB of audio the game no longer plays and they still ship,
+	// which is worth removing if the decision is settled.
 	let bgmAudio: HTMLAudioElement | null = null;
 	let currentBgm: 'base' | 'freespin' | null = null;
 	const BGM_FILES = {
 		base: 'jungle/bgm_main.wav',
 		freespin: 'jungle/bgm_freespin.wav',
 	} as const;
+	type BgmType = keyof typeof BGM_FILES;
 
-	function playBgm(type: 'base' | 'freespin') {
-		if (currentBgm === type && bgmAudio && !bgmAudio.paused) return;
-		if (bgmAudio) {
-			bgmAudio.pause();
-			bgmAudio = null;
+	// Long enough to be a transition rather than a cut. The base loop hands over
+	// to the free-game loop while the intro card is on screen, and a hard swap
+	// there lands as a glitch in the middle of the game's best moment.
+	const BGM_FADE = 0.9;
+
+	const bgmBuffers: Partial<Record<BgmType, AudioBuffer>> = {};
+	let bgmNode: { src: AudioBufferSourceNode; gain: GainNode } | null = null;
+	// Bumped by every play and stop, so a decode that finishes after the player
+	// has already moved on cannot start a loop nobody asked for.
+	let bgmToken = 0;
+
+	const fadeOutNode = (node: { src: AudioBufferSourceNode; gain: GainNode }, ctx: AudioContext) => {
+		const t = ctx.currentTime;
+		node.gain.gain.cancelScheduledValues(t);
+		node.gain.gain.setValueAtTime(Math.max(0.0001, node.gain.gain.value), t);
+		node.gain.gain.exponentialRampToValueAtTime(0.0001, t + BGM_FADE);
+		try {
+			node.src.stop(t + BGM_FADE + 0.05);
+		} catch {
+			// already stopped
 		}
-		bgmAudio = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
-		bgmAudio.loop = true;
-		bgmAudio.volume = stateSoundDerived.volumeMusic();
-		bgmAudio.play().catch(() => {});
+	};
+
+	async function playBgm(type: BgmType) {
+		if (currentBgm === type && (bgmNode || (bgmAudio && !bgmAudio.paused))) return;
+		const mine = ++bgmToken;
 		currentBgm = type;
+
+		const ctx = getAudioCtx();
+		if (!ctx) {
+			if (bgmAudio) {
+				bgmAudio.pause();
+				bgmAudio = null;
+			}
+			bgmAudio = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
+			bgmAudio.loop = true;
+			bgmAudio.volume = stateSoundDerived.volumeMusic();
+			bgmAudio.play().catch(() => {});
+			return;
+		}
+
+		let buf = bgmBuffers[type];
+		if (!buf) {
+			try {
+				const res = await fetch(`${base}/assets/audio/${BGM_FILES[type]}`);
+				buf = await ctx.decodeAudioData(await res.arrayBuffer());
+				bgmBuffers[type] = buf;
+			} catch {
+				return;
+			}
+		}
+		// The decode above is awaited, so the player may have switched loops or
+		// stopped entirely while it ran.
+		if (mine !== bgmToken) return;
+
+		if (bgmNode) fadeOutNode(bgmNode, ctx);
+		const target = Math.max(0.0001, stateSoundDerived.volumeMusic());
+		const gain = ctx.createGain();
+		gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+		gain.gain.exponentialRampToValueAtTime(target, ctx.currentTime + BGM_FADE);
+		const src = ctx.createBufferSource();
+		src.buffer = buf;
+		src.loop = true;
+		src.connect(gain).connect(ctx.destination);
+		src.start();
+		bgmNode = { src, gain };
 	}
 
 	function stopBgm() {
+		bgmToken += 1;
+		currentBgm = null;
+		if (bgmNode && audioCtx) fadeOutNode(bgmNode, audioCtx);
+		bgmNode = null;
 		if (bgmAudio) {
 			bgmAudio.pause();
 			bgmAudio.currentTime = 0;
 		}
-		currentBgm = null;
 	}
 
-	// Keep volume in sync with settings
+	// Keep volume in sync with settings, on whichever path is live.
+	//
+	// setTargetAtTime rather than an assignment: a bare `gain.value =` during the
+	// crossfade cancels nothing but fights the ramp, and the two together step the
+	// level. This slides to the new value and leaves an in-flight fade alone.
 	$effect(() => {
 		const vol = stateSoundDerived.volumeMusic();
 		if (bgmAudio) bgmAudio.volume = vol;
+		if (bgmNode && audioCtx) {
+			bgmNode.gain.gain.setTargetAtTime(Math.max(0.0001, vol), audioCtx.currentTime, 0.05);
+		}
 	});
 
 	context.eventEmitter.subscribeOnMount({
@@ -355,9 +513,11 @@
 			} else if (name === 'bgm_freespin') {
 				playBgm('freespin');
 			} else {
-				// Other music (win levels etc) — pause bgm, play via sprite
-				if (bgmAudio) bgmAudio.pause();
-				currentBgm = null;
+				// Other music (win levels etc) — stop the bgm, play via sprite.
+				// stopBgm(), not a bare pause: on the Web Audio path the element is
+				// not what is playing, and pausing it would leave the loop running
+				// underneath the win stinger.
+				stopBgm();
 				sound.players.music.play({ name });
 			}
 		},
@@ -383,10 +543,13 @@
 				sound.players.loop.play({ name });
 			}
 		},
-		soundOnce: ({ name, forcePlay }) => {
+		soundOnce: ({ name, forcePlay, rate, volume }) => {
 			const mapped = SPRITE_TO_CN[name];
 			if (mapped) {
-				playCnSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
+				// The per-call values MULTIPLY the cue's own, rather than replacing
+				// them: a caller asking for a pitch should not silently discard a trim
+				// that was set because the sample is hot.
+				playCnSfx(mapped.name, (mapped.volume ?? 1) * (volume ?? 1), (mapped.rate ?? 1) * (rate ?? 1));
 			} else {
 				sound.players.once.play({ name, forcePlay });
 			}
@@ -394,8 +557,9 @@
 		soundFreeGameBell: () => playCnSfx('gong_feature'),
 		soundBigWinBlast: () => playCnSfx('bigwin_blast'),
 		// The EVENT is named for the prop, the CUE is named for the file on disk.
-		// jungle/grenade_blast.wav is carried over from gen-1 and renaming a wav
-		// would break the audio manifest for no gain.
+		// space/grenade_blast.wav is not a grenade any more — it is the gravity
+		// charge rupturing — but the file name is carried through every generation
+		// and renaming a wav would break the audio manifest for no gain.
 		soundDynamiteBlast: () => playCnSfx('grenade_blast'),
 		soundMonkeyExpand: () => playMonkeyExpand(),
 		// Deliberately NOT forced through the turbo gate that silences ordinary
@@ -447,12 +611,11 @@
 				bgmAudio = null;
 			}
 			for (const name of Object.keys(cnSfxAudio) as CnSfxName[]) {
-				const audio = cnSfxAudio[name];
-				if (audio) {
+				for (const audio of cnSfxAudio[name] ?? []) {
 					audio.pause();
 					audio.src = '';
-					delete cnSfxAudio[name];
 				}
+				delete cnSfxAudio[name];
 			}
 			// Web Audio loops outlive the DOM unless they are stopped explicitly.
 			for (const name of Object.keys(loopNodes) as CnSfxName[]) stopCnLoop(name);

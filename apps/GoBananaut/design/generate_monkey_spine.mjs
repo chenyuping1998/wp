@@ -55,20 +55,24 @@ const SRC = path.join(appRoot, 'design/source/monkey');
 const OUT = path.join(appRoot, 'static/assets/spines/goBananasMonkey');
 fs.mkdirSync(OUT, { recursive: true });
 
-// One image that is not a body part: the dynamite he throws. Packed into this
-// atlas rather than referenced from the symbol set, because a Spine skin can
+// One image that is not a body part: the oxygen canister he throws. Packed into
+// this atlas rather than referenced from the symbol set, because a Spine skin can
 // only draw regions from its own atlas.
+//
+// The slot is named `prop` and the animation asks for `prop`. What he throws
+// changes with the theme, and when the slot was named after the object the rename
+// had to be chased through the skeleton, the animation and the component; the
+// machinery is themeless now and only the file is not.
 const PROPS = [
 	{
-		name: 'dynamite',
-		file: path.join(appRoot, 'static/assets/sprites/goBananasSymbolsV3/dynamite.png'),
+		name: 'prop',
+		file: path.join(appRoot, 'static/assets/sprites/goBananasSymbolsV3/canister.png'),
 		bone: 'prop',
-		// skeleton units — about a fifth of his height, which is a bundle in a
-		// gorilla's fist rather than a melon.
+		// skeleton units — about a fifth of his height, which is a canister in a
+		// gorilla's fist rather than a barrel.
 		//
-		// The prop is drawn square here and the art is 691x614, so it renders a
-		// little squat in the hand. That is deliberate: a bundle held in a fist is
-		// mostly foreshortened, and the throw's release only lasts a few frames.
+		// Drawn square: held in a fist a cylinder is mostly foreshortened, and the
+		// release only lasts a few frames.
 		size: 168,
 	},
 ];
@@ -89,8 +93,7 @@ const PROPS = [
 // showing the same atlas region, with nothing attached in the setup pose. An
 // animation that needs the arm in front hides the original and shows the copy;
 // everything else is untouched and keeps the artist's depth. Same mechanism the
-// dynamite already uses, which is why there is no new machinery here.
-const FRONT_COPIES = ['right_arm_1_forearm', 'right_arm_2_hand'];
+// canister already uses, which is why there is no new machinery here.
 const frontName = (name) => `${name}_front`;
 
 const meta = JSON.parse(fs.readFileSync(path.join(SRC, 'layers.json'), 'utf8'));
@@ -104,8 +107,63 @@ const piece = (name) => {
 	return l;
 };
 
+// How many pixels a piece actually contains. Bounding-box area is not a stand-in
+// for it: `head_3_eye` arrives as a 214x159 box holding two specks at opposite
+// corners, and by area it beats the goggles it is competing with.
+const opaqueArea = (l) => {
+	const img = PNG.sync.read(fs.readFileSync(path.join(SRC, l.file)));
+	let n = 0;
+	for (let i = 3; i < img.data.length; i += 4) if (img.data[i] > 40) n += 1;
+	return n;
+};
+const biggest = (re) => {
+	const found = meta.layers.filter((l) => re.test(l.name));
+	if (!found.length) return null;
+	return found.map((l) => [l, opaqueArea(l)]).sort((a, b) => b[1] - a[1])[0][0];
+};
+
+//
+// DERIVED, because whether it is needed at all depends on the delivery. In the
+// PSD this was written for the right arm sat below the trunk and could not be
+// brought forward at any angle. In the one after it BOTH arms are stacked above
+// the trunk and the copies would be two slots that never do anything. So the
+// arm's own z is compared against the torso's, and the copies exist only when
+// the arm is genuinely behind.
+const FRONT_COPIES = (() => {
+	// Against the BIGGEST torso piece, not the highest-stacked one. The torso
+	// group includes a shoulder badge and a chest pocket sitting above everything;
+	// measured against those the arm is "behind" the torso while being plainly in
+	// front of the jacket, which is the thing it actually has to clear.
+	const trunk = biggest(/^torso_/);
+	const torsoZ = trunk ? trunk.z : -1;
+	const behind = meta.layers
+		.filter((l) => /^right_arm_(1|2)/.test(l.name) && l.z < torsoZ)
+		.map((l) => l.name);
+	console.log(
+		behind.length
+			? `front copies  ${behind.join(', ')} (right arm draws behind the torso)`
+			: 'front copies  none needed (both arms draw in front of the torso)',
+	);
+	return behind;
+})();
+
 // Skeleton origin on the PSD canvas: centred between the boots, on the ground.
-const ROOT = { x: 280, y: 884 };
+//
+// DERIVED, like the joints, and for the same reason. It was two typed numbers and
+// they were silently wrong the moment a PSD arrived with a different canvas: this
+// one is 560x928 where the last was 560x912, and the boots sit lower in it. A root
+// left above the soles floats the whole character, and because Mascot.svelte
+// positions him by his FEET the error surfaces as him standing in the bet bar
+// rather than as anything that looks like a bad number.
+const feetBox = (name) => {
+	const l = piece(name);
+	return { cx: l.x + l.w / 2, bottom: l.y + l.h };
+};
+const ROOT = (() => {
+	const a = feetBox('left_leg_2_foot');
+	const b = feetBox('right_leg_2_foot');
+	return { x: Math.round((a.cx + b.cx) / 2), y: Math.max(a.bottom, b.bottom) };
+})();
 const toSpine = (x, y) => ({ x: x - ROOT.x, y: ROOT.y - y });
 
 // ── the skeleton ────────────────────────────────────────────────────────────
@@ -131,41 +189,216 @@ const jointOf = (pieceName) => {
 	return [Math.round(l.x + l.w / 2), Math.round(l.y + JOINT_INSET)];
 };
 
-const RIG = [
-	// Explicit: these three sit inside the torso mass rather than at the top of a
-	// limb, so there is no piece edge to read them off.
-	{ name: 'hip', parent: 'root', at: [280, 498], match: null },
-	{ name: 'torso', parent: 'hip', at: [280, 470], match: /^torso_/ },
-	// The neck, just under the jaw: the head nods and turns about this.
-	{ name: 'head', parent: 'torso', at: [283, 296], match: /^head_/ },
+// A SHOULDER IS NOT AT THE MIDDLE OF THE SLEEVE.
+//
+// Top-CENTRE is right for a knee or an elbow, where the piece hangs straight
+// down from a joint on its own centreline. It is wrong for a shoulder, and the
+// difference is what kept the right sleeve tearing off the jacket.
+//
+// Rotating a sleeve about its own horizontal centre swings the half INBOARD of
+// that pivot the opposite way to the half outboard of it. The elbow goes where
+// the animation asked, and the sleeve's top corner rises out through the
+// jacket's shoulder line as a pale lobe — visible at 20 degrees, which is why
+// the measured "budget" for this arm kept coming out so small. It was not the
+// drawing's limit, it was the pivot's.
+//
+// A real shoulder is where the arm meets the BODY: the top-INNER corner of the
+// sleeve, inner meaning toward the midline. Anchored there the whole sleeve
+// sweeps around the point it is attached at, which is what a shoulder does, and
+// nothing lifts.
+//
+// The rest pose does not move: an attachment is placed relative to its bone, so
+// changing where the bone sits changes only how rotation behaves.
+const shoulderOf = (pieceName, midlineX) => {
+	const l = piece(pieceName);
+	const inner = l.x + l.w / 2 < midlineX ? l.x + l.w - JOINT_INSET : l.x + JOINT_INSET;
+	return [Math.round(inner), Math.round(l.y + JOINT_INSET)];
+};
 
-	// ARMS. `_0_upper_arm` is the sleeve and is correctly named on both sides.
+// The three joints with no distal piece of their own. They were typed numbers and
+// are read off the artwork now too, because "inside the torso mass" still has
+// landmarks:
+//
+//   · the MIDLINE is halfway between the two THIGHS. It used to be the belt
+//     piece's centre, which was right until a delivery arrived with no layer
+//     called a belt — `torso_4_belt` became `torso_1_belt` holding 394 pixels of
+//     speck, and the whole generator stopped dead. The thighs are a pair, they
+//     straddle the spine by construction, and `*_leg_0` is the part of the naming
+//     that has held across four deliveries.
+//   · the HIP is where the thighs pivot — the mean of their two top edges, taken
+//     into the pelvis by the same kind of inset a limb joint uses.
+//   · the NECK is the bottom of the head's MAIN MASS. Not `head_0_face` and not
+//     `head_1_hat`: this delivery has no helmet at all (the character was
+//     redrawn without one) and the head group is a face, a pair of goggles, two
+//     specks and a banana. The biggest piece in the group is the head, whatever
+//     it is called, and the banana hanging 24 units below it is exactly why the
+//     group's bounding box will not do.
+const thighL = () => piece(THIGH.left);
+const thighR = () => piece(THIGH.right);
+const midline = () =>
+	Math.round((thighL().x + thighL().w / 2 + thighR().x + thighR().w / 2) / 2);
+const hipY = () => Math.round((thighL().y + thighR().y) / 2 + 20);
+const neckAt = () => {
+	const head = biggest(/^head_/);
+	if (!head) {
+		console.error('no head_* pieces — check layers.json');
+		process.exit(1);
+	}
+	return [Math.round(head.x + head.w / 2), head.y + head.h - 10];
+};
+
+// A FIST IS NOT A BOUNDING-BOX CENTRE. The pieces that carry a fist run from the
+// elbow down, so their centre is halfway up the forearm; a hand bone placed there
+// puts every comic impact and every thrown prop half a limb away from the hand.
+// Taken as the alpha centroid of the piece's bottom quarter, which is the fist and
+// nothing else.
+const fistOf = (name) => {
+	const l = piece(name);
+	const img = PNG.sync.read(fs.readFileSync(path.join(SRC, l.file)));
+	let sx = 0;
+	let sy = 0;
+	let n = 0;
+	for (let y = Math.floor(l.h * 0.75); y < l.h; y++)
+		for (let x = 0; x < l.w; x++)
+			if (img.data[(y * img.width + x) * 4 + 3] > 60) {
+				sx += x;
+				sy += y;
+				n += 1;
+			}
+	if (!n) return [Math.round(l.x + l.w / 2), l.y + l.h - 20];
+	return [Math.round(l.x + sx / n), Math.round(l.y + sy / n)];
+};
+
+// WHICH PIECES HANG BELOW THE ELBOW, decided by where they are and not by what
+// they are called.
+//
+// `_1_forearm` is a forearm on the LEFT arm and is not one on the RIGHT. Same
+// PSD, same delivery, same name:
+//
+//     right_arm_0_upper_arm   y 203..392      right_arm_1_forearm  y 204..415
+//     left_arm_0_upper_arm    y 210..404      left_arm_1_forearm   y 352..602
+//
+// The right one starts at the SAME height as its own sleeve — it is a second
+// layer over the upper arm, a highlight or a shoulder panel. The left one starts
+// 140 units lower and is a real forearm.
+//
+// Matching the elbow bone with /^right_arm_(1|2)/ therefore hung a piece of the
+// SHOULDER off the ELBOW. Rotating the elbow swung it out from behind the
+// sleeve, and because its outward face carries no ink outline it appeared as a
+// smooth pale wedge beside the shoulder. That is the "shoulder sticking out"
+// that survived two rounds of reducing the shoulder angle — the angle was never
+// the cause, and lowering it further would only have made the wedge smaller.
+//
+// A piece is below the elbow if its top edge is well below the sleeve's top:
+// 40% of the sleeve's own height is far enough down to exclude anything painted
+// over the shoulder and far enough up to catch a forearm.
+const armParts = (side) => {
+	const all = meta.layers.filter((l) => new RegExp('^' + side + '_arm_').test(l.name));
+	const sleeve = all.find((l) => new RegExp('^' + side + '_arm_0').test(l.name));
+	if (!sleeve) {
+		console.error('no sleeve piece for the ' + side + ' arm — check layers.json');
+		process.exit(1);
+	}
+	const cut = sleeve.y + sleeve.h * 0.4;
+	const below = all.filter((l) => l !== sleeve && l.y > cut).sort((a, b) => a.y - b.y);
+	if (!below.length) {
+		console.error('nothing hangs below the ' + side + ' elbow — check layers.json');
+		process.exit(1);
+	}
+	return {
+		upper: all.filter((l) => !below.includes(l)).map((l) => l.name),
+		fore: below.map((l) => l.name),
+		// the elbow is the top of the highest piece that hangs below it
+		elbow: below[0].name,
+		// the fist is in whichever piece reaches lowest
+		fist: [...all].sort((a, b) => b.y + b.h - (a.y + a.h))[0].name,
+	};
+};
+const ARM = { left: armParts('left'), right: armParts('right') };
+const ELBOW_PIECE = { left: ARM.left.elbow, right: ARM.right.elbow };
+// An exact-name alternation, so a bone claims the pieces this decided and not
+// everything that happens to share a prefix.
+const exactly = (names) => new RegExp('^(' + names.join('|') + ')$');
+for (const side of ['left', 'right']) {
+	console.log(
+		`${side} arm    shoulder: ${ARM[side].upper.join(', ')}` +
+			`   elbow: ${ARM[side].fore.join(', ')}`,
+	);
+}
+// The thigh on each side, by prefix rather than by full name.
+const thighOf = (side) => {
+	const found = meta.layers.filter((l) => new RegExp('^' + side + '_leg_0').test(l.name));
+	if (!found.length) {
+		console.error('no ' + side + ' thigh piece — check layers.json');
+		process.exit(1);
+	}
+	return found[0].name;
+};
+const THIGH = { left: thighOf('left'), right: thighOf('right') };
+console.log(`elbow pieces  L=${ELBOW_PIECE.left}  R=${ELBOW_PIECE.right}`);
+console.log(`thighs        L=${THIGH.left}  R=${THIGH.right}`);
+
+const RIG = [
+	// See above: derived, not typed.
+	{ name: 'hip', parent: 'root', at: [midline(), hipY()], match: null },
+	{ name: 'torso', parent: 'hip', at: [midline(), hipY() - 28], match: /^torso_/ },
+	// The neck, just under the jaw: the head nods and turns about this.
+	{ name: 'head', parent: 'torso', at: neckAt(), match: /^head_/ },
+
+	// ARMS. `_0_upper_arm` is the suit sleeve and is correctly named on both sides.
 	//
-	// `_2_hand` is NOT a hand: measured against the joints
-	// (design/source/monkey/_arms.png) it is the forearm AND the fist as one
-	// piece, running from the elbow past the wrist. So it hangs off the ELBOW
-	// alongside the small `_1_forearm` cuff, and the wrist is a dead joint —
-	// there is nothing behind it that can bend.
+	// BELOW THE SLEEVE THE TWO SIDES ARE NOT DRAWN THE SAME, and the layer names do
+	// not say so. This PSD gives the right arm a `_1_forearm` AND a `_2_hand` whose
+	// boxes overlap from mid-forearm down, and the left arm only a `_1_forearm`
+	// that runs the whole way from elbow to knuckles. So neither name means the
+	// same thing on the two sides, and the elbow is read off whichever piece
+	// actually reaches LOWEST on that arm instead of off a fixed name. That is the
+	// one thing here to look at when a new PSD lands, so the generator prints it.
 	//
-	// Its keys are not thrown away: `fuse` moves them to the elbow, scaled by the
-	// lever-arm ratio, so an animation asking for a wrist flick still gets one out
-	// of the forearm instead of the arm going rigid.
-	{ name: 'armL', parent: 'torso', at: jointOf('left_arm_0_upper_arm'), match: /^left_arm_0/ },
-	{ name: 'armL_fore', parent: 'armL', at: jointOf('left_arm_2_hand'), match: /^left_arm_(1|2)/ },
-	{ name: 'armL_hand', parent: 'armL_fore', at: [114, 528], match: null, fuse: 'armL_fore' },
+	// Either way the wrist is a dead joint — nothing behind it can bend — so it is
+	// fused. Its keys are not thrown away: `fuse` moves them to the elbow, scaled
+	// by the lever-arm ratio, so an animation asking for a wrist flick still gets
+	// one out of the forearm instead of the arm going rigid. Unscaled, an animation
+	// asking for 29 degrees produced 54 and threw the fist past the far side of the
+	// body.
+	{
+		name: 'armL',
+		parent: 'torso',
+		at: shoulderOf('left_arm_0_upper_arm', midline()),
+		match: exactly(ARM.left.upper),
+	},
+	{ name: 'armL_fore', parent: 'armL', at: jointOf(ELBOW_PIECE.left), match: exactly(ARM.left.fore) },
+	{
+		name: 'armL_hand',
+		parent: 'armL_fore',
+		at: fistOf(ARM.left.fist),
+		match: null,
+		fuse: 'armL_fore',
+	},
 	// Carries the thrown prop, so it follows the hand exactly rather than being
 	// chased by something outside the skeleton trying to guess where the hand is.
-	{ name: 'prop', parent: 'armL_hand', at: [118, 548], match: null },
+	{ name: 'prop', parent: 'armL_hand', at: fistOf(ARM.left.fist), match: null },
 
-	{ name: 'armR', parent: 'torso', at: jointOf('right_arm_0_upper_arm'), match: /^right_arm_0/ },
-	{ name: 'armR_fore', parent: 'armR', at: jointOf('right_arm_2_hand'), match: /^right_arm_(1|2)/ },
-	{ name: 'armR_hand', parent: 'armR_fore', at: [470, 470], match: null, fuse: 'armR_fore' },
+	{
+		name: 'armR',
+		parent: 'torso',
+		at: shoulderOf('right_arm_0_upper_arm', midline()),
+		match: exactly(ARM.right.upper),
+	},
+	{ name: 'armR_fore', parent: 'armR', at: jointOf(ELBOW_PIECE.right), match: exactly(ARM.right.fore) },
+	{
+		name: 'armR_hand',
+		parent: 'armR_fore',
+		at: fistOf(ARM.right.fist),
+		match: null,
+		fuse: 'armR_fore',
+	},
 
-	{ name: 'legL', parent: 'hip', at: jointOf('left_leg_0_thigh'), match: /^left_leg_0/ },
+	{ name: 'legL', parent: 'hip', at: jointOf(THIGH.left), match: /^left_leg_0/ },
 	{ name: 'legL_calf', parent: 'legL', at: jointOf('left_leg_1_calf'), match: /^left_leg_1/ },
 	{ name: 'legL_foot', parent: 'legL_calf', at: jointOf('left_leg_2_foot'), match: /^left_leg_2/ },
 
-	{ name: 'legR', parent: 'hip', at: jointOf('right_leg_0_thigh'), match: /^right_leg_0/ },
+	{ name: 'legR', parent: 'hip', at: jointOf(THIGH.right), match: /^right_leg_0/ },
 	{ name: 'legR_calf', parent: 'legR', at: jointOf('right_leg_1_calf'), match: /^right_leg_1/ },
 	{ name: 'legR_foot', parent: 'legR_calf', at: jointOf('right_leg_2_foot'), match: /^right_leg_2/ },
 ];
@@ -366,7 +599,35 @@ fs.writeFileSync(path.join(OUT, 'monkey.atlas'), atlas);
 //
 // 46 was the second guess and it was still over the line. Guessing is what put
 // 142 in here the first time.
-const MAX_SHOULDER = 26;
+//
+// RE-MEASURED ON THIS ARTWORK, in both directions, with `--sweep`:
+//
+//   outward   armL and armR both clean at 30; at 40 the white sleeve has lifted
+//             off the shoulder and a gap opens between it and the fur forearm;
+//             by 50 the sleeve is floating
+//   inward    armL 40, armR 45, *_fore 40 — see the chest beat's own budget
+//
+// 26 came from the previous character and was inside this one's limit rather
+// than at it. The suit is the reason there is any room at all: the last one's
+// arms were bare fur tapering to a narrow wrist, so a swing put the wide end at
+// the top of a horizontal bar; a short square sleeve rotating about a point
+// inside itself still reads as a shoulder.
+//
+// RE-MEASURED ON THIS DELIVERY, and the two arms are no longer the same number.
+// That is the whole change: `MAX_SHOULDER` was one value applied to both, which
+// held while the two sleeves were cut alike and stopped holding here.
+//
+//   armR   inward 35, outward 30
+//   armL   inward 45, outward 35
+//
+// RE-MEASURED AGAIN after the shoulder pivot was corrected (see shoulderOf), and
+// the right arm roughly DOUBLED: it was 20 in / 22 out while the sleeve was
+// rotating about its own centre, because half of it swung the wrong way and
+// pushed a lobe out through the jacket. That was never the drawing's limit. It
+// is worth remembering the next time a budget comes out suspiciously small — the
+// first suspect is the joint, not the art.
+const MAX_SHOULDER_L = 32;
+const MAX_SHOULDER_R = 27;
 const MAX_ELBOW = 22;
 //
 // A HANGING FOREARM STAYS PLUMB
@@ -407,8 +668,8 @@ const hang = (shoulder) => -Math.round(shoulder * 0.7);
 // Directions, measured from the rig rather than assumed: shoulder-to-elbow rests
 // at 262 degrees on the left and 283 on the right, so "outward and up" is
 // negative on the left and positive on the right.
-const OUT_L = -MAX_SHOULDER;
-const OUT_R = MAX_SHOULDER;
+const OUT_L = -MAX_SHOULDER_L;
+const OUT_R = MAX_SHOULDER_R;
 const OUT_FORE_L = hang(OUT_L);
 const OUT_FORE_R = hang(OUT_R);
 
@@ -763,29 +1024,72 @@ const cheer = {
 //
 // This is why the beat used to look like a shrug. It was spending an outward
 // budget on an inward motion.
-// The two arms need DIFFERENT angles, and the reason has changed.
+// The two arms need DIFFERENT angles, and the reason has changed twice.
 //
-// On the previous character it was the rigging: one arm was a single rigid piece
-// on a long lever and the other was two-piece. Both are two-piece now, so that
-// reason is gone — and the numbers still have to differ, because the ARTWORK
-// hangs them at different distances from the centre line. The right sleeve sits
-// at x 397..505 and the left at 25..186, so the same rotation lands the two
-// fists in different places.
+// On the first character it was the rigging: one arm was a single rigid piece on
+// a long lever and the other was two-piece. On the second both were two-piece and
+// the numbers still had to differ, because the ARTWORK hangs them at different
+// distances from the centre line.
 //
-// Solved against the readout at the bottom of this file, not guessed:
-//   L 6 / R 14  ->  fists at -63 and +60, each over its own pec.
+// On THIS character — the suit — the rigging asymmetry is back, the other way
+// round: the left arm is one fur piece from elbow to knuckles, the right is a
+// forearm and a hand that overlap. And the budget is far larger than the last
+// two. Swept and looked at (`--sweep`, then _preview__sweep_armL / _armR):
 //
-// Set against the readout at the bottom of this file, which prints where each
-// fist actually is at the top of its strike. The target is each fist over its own
-// side of the chest — about x = -60 on the left and +60 on the right.
-const BEAT_SHOULDER_L = 6;
-const BEAT_SHOULDER_R = 14;
-const BEAT_ELBOW = 20;
+//   armL      holds to 40, borderline at 50, shoulder detaches by 60
+//   armR      holds to 45, shoulder shows a step at 50, gone by 60
+//   *_fore    holds to 40; past that the fist tucks behind the hip
+//
+// The suit is why. The last character's arms were bare fur tapering from a wide
+// shoulder to a narrow wrist, so a swing put the wide end at the top of a
+// horizontal bar and it read as a plank. This one has a SLEEVE — a short, roughly
+// square white cuff over the deltoid — and a sleeve rotating about a point inside
+// itself reads as a shoulder working, at angles the bare arm could not survive.
+//
+// Which matters, because the beat inherited 6 and 14 from the previous rig. Those
+// were most of that character's budget and are a seventh of this one's, and at
+// those angles the fists land on his BELT: the readout at the bottom of this file
+// printed them at y=395 and y=374 against a chest that sits at y≈560. It read as
+// a man patting his stomach.
+//
+// Set against that readout, not guessed. The target is each fist over its own
+// pec — about x = ±70, y = 540.
+//
+// AND THE BEAT OVERSHOOTS ITS TARGET BY 5. `beatKeys` drives the strike through
+// `inward + side * 5` before rebounding, so the angle that has to clear the
+// budget is the target PLUS five, not the target. 30 on the right was really 35
+// against a limit of 20.
+// THE RIGHT SHOULDER BARELY MOVES, and the elbow does its work instead.
+//
+// 26 is inside the measured budget and the sleeve does not tear at it — that was
+// checked, twice, after the pivot and the piece assignment were both fixed. It
+// still looked wrong in the game, and the third report is the one to believe:
+// what was left is not a tear but a SHAPE. That sleeve is a short cap over the
+// deltoid, and swung 31 degrees it rides up into a lump that reads as a hunched,
+// swollen shoulder even while every edge stays joined.
+//
+// The left sleeve is longer and set deeper and does not do this, so the two arms
+// get different numbers here for a third distinct reason — first the rigging,
+// then the pivot, now the silhouette.
+//
+// The reach is not lost. The elbow is split per arm and the right one takes what
+// the shoulder gave up: the fur forearm has no seam against the jacket to open,
+// so it carries a bigger angle without any of this.
+const BEAT_SHOULDER_L = 34; // peaks at 39, inside the left's 45
+const BEAT_SHOULDER_R = 12; // peaks at 17 — nowhere near the limit, on purpose
+const BEAT_ELBOW_L = 24; // peaks at 29, inside the forearm's 30
+const BEAT_ELBOW_R = 26; // peaks at 31; the fur has no edge against the suit
 const BEAT_IN_L = BEAT_SHOULDER_L;
 const BEAT_IN_R = -BEAT_SHOULDER_R;
-const BEAT_FORE_L = BEAT_ELBOW;
-const BEAT_FORE_R = -BEAT_ELBOW;
-const BEAT_OUT = 14; // how far the idle arm cocks away while the other lands
+const BEAT_FORE_L = BEAT_ELBOW_L;
+const BEAT_FORE_R = -BEAT_ELBOW_R;
+// How far the idle arm cocks away while the other lands. It was 14 against a
+// beat of 6 and 14 — more than the strike itself, which was fine then. Against a
+// 28-degree strike it is half the travel, and the two arms sat in almost the same
+// place all the way through: six strikes and no visible alternation, just a mass
+// of fur across the belly. At 24 the cocked arm is back at nearly its rest angle,
+// so each strike arrives from somewhere.
+const BEAT_OUT = 24;
 
 // Smoothing removed the corners; these numbers remove the hurry. Six strikes at
 // 0.25s left every one of them a cock-strike-rebound inside a quarter second,
@@ -1059,7 +1363,7 @@ const nod = {
 	},
 };
 
-// throwit: he produces the dynamite and pitches it at the board.
+// throwit: he produces the canister and pitches it at the board.
 //
 // Named 'throwit' rather than 'throw' because `throw` is a reserved word, and
 // this object is written as JS before it becomes JSON.
@@ -1082,8 +1386,8 @@ const nod = {
 //
 // PACING
 //
-// Deliberately unhurried between the two: a beat to notice the dynamite, a wind
-// up you can read, then the throw. Release used to be at 0.38s with the dynamite
+// Deliberately unhurried between the two: a beat to notice the canister, a wind
+// up you can read, then the throw. Release used to be at 0.38s with the canister
 // invisible until it left, which meant the whole gesture was over before there
 // was anything to see it happen to.
 const APPEAR_AT = 0.2;
@@ -1105,11 +1409,12 @@ const COCK_BACK = 34;
 
 const throwit = {
 	slots: {
-		// nothing, then a dynamite, then nothing again
-		dynamite: {
+		// nothing, then a canister, then nothing again. The SLOT is `prop`: what
+		// he throws is a theme decision and the skeleton does not carry it.
+		prop: {
 			attachment: [
 				{ time: 0, name: null },
-				{ time: APPEAR_AT, name: 'dynamite' },
+				{ time: APPEAR_AT, name: 'prop' },
 				{ time: RELEASE_AT, name: null },
 			],
 		},
@@ -1176,7 +1481,7 @@ const throwit = {
 			],
 		},
 		head: {
-			// looks down at the dynamite as it appears, then follows it out
+			// looks down at the canister as it appears, then follows it out
 			rotate: [
 				{ time: 0, value: 0 },
 				{ time: APPEAR_AT + 0.06, value: 8 },
@@ -1448,37 +1753,51 @@ const smoothAnimation = (animation, loopD) => {
  * were then carried onto a new PSD whose arms are cut completely differently —
  * which is how the chest beat ended up too small to reach across the body.
  *
- * `--sweep` adds one animation per joint that ramps it from 0 to 70 degrees over
- * seven seconds. preview_monkey_spine.mjs samples eight frames across an
- * animation's length, so each contact sheet is that joint at 0, 10, 20 ... 70 —
- * which is the measurement, and it takes one command instead of an afternoon.
+ * `--sweep` adds animations that ramp a joint from 0 to 70 degrees over seven
+ * seconds. preview_monkey_spine.mjs samples eight frames across an animation's
+ * length, so each contact sheet is that joint at 0, 10, 20 ... 70 — which is the
+ * measurement, and it takes one command instead of an afternoon.
  *
  *   node design/generate_monkey_spine.mjs <tools> --sweep
- *   node design/preview_monkey_spine.mjs <tools> _sweep_armR
+ *   node design/preview_monkey_spine.mjs <tools> _sweep_armR_in
+ *
+ * BOTH DIRECTIONS, and that is not symmetry for its own sake. The sweep used to
+ * run inward only, because the chest beat is the animation that spends the
+ * biggest angles — so the beat's budget was measured on each new PSD and
+ * MAX_SHOULDER, which is the OUTWARD limit every other animation uses, was
+ * quietly inherited from the previous character every time. The two limits are
+ * genuinely different: the shoulder pivot sits inside the suit, so swinging in
+ * tucks the sleeve against the chest while swinging out pulls it off the
+ * shoulder, and a number measured one way says nothing about the other.
  *
  * They are OFF by default so the shipped skeleton carries no diagnostics.
  */
 const SWEEP = process.argv.includes('--sweep');
 const SWEEP_TO = 70;
 const SWEEP_SECONDS = 7;
+// Right-side joints swing inward on negative angles.
+const INWARD = (bone) => (bone.startsWith('armR') ? -1 : 1);
+const SWEEP_BONES = ['armR', 'armR_fore', 'armL', 'armL_hand', 'torso', 'head'];
 const sweeps = SWEEP
 	? Object.fromEntries(
-			['armR', 'armR_fore', 'armL', 'armL_hand', 'torso', 'head'].map((bone) => [
-				`_sweep_${bone}`,
-				{
-					bones: {
-						[bone]: {
-							rotate: [
-								{ time: 0, value: 0 },
-								// Right-side joints swing inward on negative angles, so the
-								// sweep has to go the way the chest beat goes or it measures
-								// a direction the animation never uses.
-								{ time: SWEEP_SECONDS, value: bone.startsWith('armR') ? -SWEEP_TO : SWEEP_TO },
-							],
+			SWEEP_BONES.flatMap((bone) =>
+				[
+					['in', INWARD(bone)],
+					['out', -INWARD(bone)],
+				].map(([tag, sign]) => [
+					`_sweep_${bone}_${tag}`,
+					{
+						bones: {
+							[bone]: {
+								rotate: [
+									{ time: 0, value: 0 },
+									{ time: SWEEP_SECONDS, value: sign * SWEEP_TO },
+								],
+							},
 						},
 					},
-				},
-			]),
+				]),
+			),
 		)
 	: {};
 
@@ -1509,12 +1828,12 @@ const skeleton = {
 fs.writeFileSync(path.join(OUT, 'monkey.json'), JSON.stringify(skeleton, null, 2) + '\n');
 
 // The hand's position at RELEASE_AT, in skeleton units. TransitionAnimation
-// spawns the dynamite here, so it is printed rather than left to be guessed at.
+// spawns the canister here, so it is printed rather than left to be guessed at.
 {
 	// FORWARD KINEMATICS, read out of the generated animation.
 	//
 	// Two things outside the skeleton need to know where a hand IS at a given
-	// moment: the transition spawns the dynamite at the release, and the comic
+	// moment: the transition spawns the canister at the release, and the comic
 	// impacts in Mascot.svelte are drawn where the fists land. Both used to be
 	// hard-coded numbers, and both silently stopped being true the moment the rig
 	// changed — the release kept printing a stale figure, and the impacts were a
@@ -1562,6 +1881,32 @@ fs.writeFileSync(path.join(OUT, 'monkey.json'), JSON.stringify(skeleton, null, 2
 	// most of an arm away from where a strike lands.
 	console.log(`beat     R fist at ${at(worldAt('armR_hand', beatAnim, beats[0]))} at t=${beats[0].toFixed(2)}`);
 	console.log(`         L fist at ${at(worldAt('armL_hand', beatAnim, beats[1]))} at t=${beats[1].toFixed(2)}`);
+}
+
+// ART and GOGGLE for Mascot.svelte. Both were typed constants there and both
+// were quietly wrong after a new PSD: the art box decides the scale he is drawn
+// at, and the goggle box decides where the tease glow sits — a glow keyed to the
+// previous character's visor lands on this one's chin.
+{
+	const xs = meta.layers.flatMap((l) => [l.x, l.x + l.w]);
+	const ys = meta.layers.map((l) => l.y);
+	const box = {
+		width: Math.max(...xs) - Math.min(...xs),
+		height: ROOT.y - Math.min(...ys),
+	};
+	console.log(`ART      { height: ${box.height}, width: ${box.width} }`);
+	// the BIGGEST eye piece: this delivery has two, and the other is a pair of
+	// specks whose bounding box is nearly as large as the goggles'
+	const eye = biggest(/^head_\d+_eye/);
+	if (eye) {
+		const c = toSpine(eye.x + eye.w / 2, eye.y + eye.h / 2);
+		console.log(
+			`GOGGLE   { x: ${Math.round(c.x)}, y: ${Math.round(c.y)}, ` +
+				`halfWidth: ${Math.round(eye.w / 2)}, halfHeight: ${Math.round(eye.h / 2)} }`,
+		);
+	} else {
+		console.warn('WARNING no *_eye layer — the goggle tease has nothing to sit on');
+	}
 }
 
 console.log(`atlas   monkey.png ${PAGE_W}x${PAGE_H}, ${placed.length} regions`);

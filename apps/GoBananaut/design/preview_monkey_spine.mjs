@@ -29,6 +29,16 @@ const { PNG } = require('pngjs');
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIR = path.join(appRoot, 'static/assets/spines/goBananasMonkey');
 const animName = process.argv[3] ?? 'idle';
+// Optional slot filter: `node … chestbeat --only=right_arm` draws only those
+// slots. Added because "the shoulder sticks out" was argued about three times
+// from composited frames, where a pale shape beside the jacket could equally be
+// the sleeve, the backpack or a hose. Drawing one limb on its own settles it.
+//
+// A NAMED FLAG, not a positional. argv[4] and argv[5] are already the time
+// window, and taking argv[4] for this silently made `from` NaN — the sheet
+// rendered eight frames at t = NaN, which is a blank character.
+const onlyArg = process.argv.find((a) => a.startsWith('--only='));
+const slotFilter = onlyArg ? new RegExp(onlyArg.slice('--only='.length)) : null;
 
 const skel = JSON.parse(fs.readFileSync(path.join(DIR, 'monkey.json'), 'utf8'));
 const page = PNG.sync.read(fs.readFileSync(path.join(DIR, 'monkey.png')));
@@ -151,10 +161,17 @@ const renderFrame = (time) => {
 		buf.data[i + 3] = 255;
 	}
 	for (const slot of skel.slots) {
+		if (slotFilter && !slotFilter.test(slot.name)) continue;
 		const shown = attachmentAt(slot, time);
 		if (!shown) continue;
 		const att = skel.skins[0].attachments[slot.name]?.[shown];
-		const reg = regions[shown];
+		// `path` is the region an attachment actually draws, and it defaults to the
+		// attachment's own name. The front copies of the right arm use it to point
+		// at the original's region rather than duplicating pixels — so looking the
+		// region up by `shown` alone found nothing, and the preview silently drew a
+		// character with one arm for every animation that swaps them in. The
+		// skeleton was correct the whole time; only this renderer was not.
+		const reg = regions[att?.path ?? shown];
 		if (!att || !reg) continue;
 		const m = world[slot.bone];
 		const hw = att.width / 2;
@@ -212,8 +229,9 @@ const FRAMES = 8;
 // six chest strikes 0.26s apart sampled every 0.33s shows the same pose eight
 // times and looks like nothing is happening.
 //   node design/preview_monkey_spine.mjs <dir> chestbeat 0.3 1.0
-const from = Number(process.argv[4] ?? 0);
-const to = Number(process.argv[5] ?? duration);
+const positional = process.argv.slice(4).filter((a) => !a.startsWith('--'));
+const from = Number(positional[0] ?? 0);
+const to = Number(positional[1] ?? duration);
 const TIMES = Array.from({ length: FRAMES }, (_, i) =>
 	+(from + ((to - from) * i) / (FRAMES - 1)).toFixed(2),
 );
@@ -230,6 +248,6 @@ TIMES.forEach((t, i) => {
 			for (let c = 0; c < 4; c++) sheet.data[d + c] = f.data[s + c];
 		}
 });
-const out = path.join(appRoot, `design/source/monkey/_preview_${animName}.png`);
+const out = path.join(appRoot, `design/source/monkey/_preview_${animName}${slotFilter ? '_only' : ''}.png`);
 fs.writeFileSync(out, PNG.sync.write(sheet));
 console.log(`${animName}: t = ${TIMES.join(', ')}  ->  ${path.relative(appRoot, out)}`);

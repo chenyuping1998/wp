@@ -14,15 +14,20 @@ import config from './config';
 //
 // WHAT THE THREE BUYS ACTUALLY DIFFER BY
 //
-// One thing only: the board they OPEN on. Same seven spins, same reels.
+// One thing only: the board they OPEN on. EIGHT spins for all three, same reels.
 //
 //     100x   4-4-4-4-4   1,024 ways
 //     200x   5-4-4-4-4   1,280 ways
 //     300x   6-4-4-4-4   1,536 ways
 //
-// The copy leads with that, and it can, because unlike the previous generation
-// the head start really is where the price comes from — measured at 106.6x /
-// 182.6x / 287.2x against targets of 96x / 192x / 288x.
+// Eight, not seven — game_config raised it so a bought round pays exactly what
+// the three scatters it forces are worth on the pay table. The spin counts in
+// the copy below all read config.betModes[...].spins, so they followed; this
+// comment did not, and said seven for a while after the game stopped doing it.
+//
+// The copy leads with the head start, and it can, because unlike the previous
+// generation that really is where the price comes from — measured at 112x /
+// 189x / 306x against targets of 96x / 192x / 288x.
 //
 // The ways figures above understate the gap enormously and the copy must not
 // lean on them as the value story. A rung is 1.2x of ways but roughly 1.7x of a
@@ -53,16 +58,35 @@ const emptyAssets = {
 // The buy modal's card art. A DOM <img> src, not a pixi asset key — the cards
 // are HTML, not canvas.
 //
-// NOTE: every one of these files is still gen-2 artwork, copied to the new mode
-// names so nothing renders broken. card_bonus200 and card_bonus300 are currently
-// the SAME image. design/generate_mode_cards.mjs must be re-run against this
-// game's symbols before submission, and the three buy cards want to differ by
-// the number of split reels they show, since that is what the tiers differ by.
+// Regenerated for this game by design/generate_mode_cards.mjs. Each buy card
+// draws the reel housing at FULL height with the tier's opening board standing
+// in it and the slots above it left as empty frames:
+//
+//     bonus100   4-4-4-4-4
+//     bonus200   5-4-4-4-4   reel 1 lit, x2
+//     bonus300   6-4-4-4-4   reel 1 lit to the top, x2
+//
+// so the three differ by exactly what the tiers differ by — buy_start_steps —
+// and by nothing else. The generator reads the same ladder rule the maths uses
+// rather than carrying three literal board shapes.
+//
+// They were gen-2 artwork: one, two and three reels overwritten by a Dynamite,
+// a mechanic this game does not have, with card_bonus200 and card_bonus300
+// rendering as the same image.
 const cardArt = (name: string) => `${base}/assets/sprites/goBananasUi/card_${name}.png`;
 
 // Repeated in every dialog; kept in one place so the figure cannot drift between
 // cards the way it did in gen-2.
-const MAX_WIN = '10,000×';
+//
+// READ FROM CONFIG, not typed. It was typed, as '10,000x', and the maths had
+// moved to 15,000x underneath it — so all three cards were quoting a ceiling a
+// third below the one the game actually pays. That is exactly the drift the
+// "kept in one place" note above was written to prevent, and one place is no
+// help when the one place holds a number nobody re-derives.
+//
+// The three buy tiers all cap at the game's own wincap; holdandspin caps lower
+// and states its own figure inline.
+const MAX_WIN = `${(config.betModes.bonus100.max_win ?? 15000).toLocaleString()}×`;
 // A full board is every cell the same symbol, so every reel contributes all four
 // of its rows: 4^5. Derived, because the board size lives in the maths config.
 // The BASELINE board's ways. config.numRows is a static [4,4,4,4,4] written once
@@ -209,10 +233,12 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 		},
 	},
 
-	// The top tier. Its maximum win is 1,500x the base bet — 5x this mode's own
-	// cost, against 15x for BONUS100 — so the copy leads on the head start and the
-	// spin count and does NOT imply a bigger top end than the cheaper tiers. It
-	// has the highest floor of the three, not the highest ceiling.
+	// The top tier. ALL THREE CAP AT THE SAME 15,000x, so this one is 50x its own
+	// cost against BONUS100's 150x — the copy therefore leads on the head start
+	// and the spin count and does NOT imply a bigger top end than the cheaper
+	// tiers. It has the highest floor of the three, not the highest ceiling.
+	//
+	// (The old note here said 1,500x, which was never this game's number at all.)
 	BONUS300: {
 		mode: 'BONUS300',
 		costMultiplier: config.betModes.bonus300.cost,

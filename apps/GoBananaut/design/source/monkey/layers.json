@@ -1,224 +1,215 @@
 {
  "canvas": [
   560,
-  912
+  928
  ],
  "layers": [
   {
    "z": 0,
-   "name": "torso_1_decoration",
-   "file": "torso_1_decoration.png",
-   "x": 148,
-   "y": 137,
-   "w": 270,
-   "h": 262
+   "name": "torso_0_decoration",
+   "file": "torso_0_decoration.png",
+   "x": 25,
+   "y": 268,
+   "w": 514,
+   "h": 537
   },
   {
    "z": 1,
-   "name": "torso_4_decoration",
-   "file": "torso_4_decoration.png",
-   "x": 196,
+   "name": "torso_1_belt",
+   "file": "torso_1_belt.png",
+   "x": 130,
    "y": 327,
-   "w": 232,
-   "h": 62
+   "w": 174,
+   "h": 445
   },
   {
    "z": 2,
-   "name": "torso_0_trunk",
-   "file": "torso_0_trunk.png",
-   "x": 69,
-   "y": 146,
-   "w": 361,
-   "h": 441
-  },
-  {
-   "z": 3,
    "name": "torso_2_decoration",
    "file": "torso_2_decoration.png",
-   "x": 16,
-   "y": 103,
-   "w": 264,
-   "h": 290
-  },
-  {
-   "z": 4,
-   "name": "torso_3_decoration",
-   "file": "torso_3_decoration.png",
-   "x": 414,
-   "y": 354,
-   "w": 21,
-   "h": 27
-  },
-  {
-   "z": 5,
-   "name": "torso_5_decoration",
-   "file": "torso_5_decoration.png",
-   "x": 413,
-   "y": 312,
-   "w": 25,
-   "h": 34
-  },
-  {
-   "z": 6,
-   "name": "left_leg_0_thigh",
-   "file": "left_leg_0_thigh.png",
-   "x": 140,
-   "y": 466,
-   "w": 153,
+   "x": 50,
+   "y": 158,
+   "w": 168,
    "h": 214
   },
   {
+   "z": 3,
+   "name": "torso_3_trunk",
+   "file": "torso_3_trunk.png",
+   "x": 72,
+   "y": 99,
+   "w": 409,
+   "h": 396
+  },
+  {
+   "z": 4,
+   "name": "left_leg_0_thigh",
+   "file": "left_leg_0_thigh.png",
+   "x": 133,
+   "y": 455,
+   "w": 162,
+   "h": 230
+  },
+  {
+   "z": 5,
+   "name": "left_leg_2_foot",
+   "file": "left_leg_2_foot.png",
+   "x": 96,
+   "y": 762,
+   "w": 119,
+   "h": 162
+  },
+  {
+   "z": 6,
+   "name": "right_arm_2_hand",
+   "file": "right_arm_2_hand.png",
+   "x": 427,
+   "y": 352,
+   "w": 126,
+   "h": 258
+  },
+  {
    "z": 7,
-   "name": "left_leg_1_calf",
-   "file": "left_leg_1_calf.png",
-   "x": 105,
-   "y": 616,
-   "w": 142,
-   "h": 215
+   "name": "right_arm_1_forearm",
+   "file": "right_arm_1_forearm.png",
+   "x": 367,
+   "y": 204,
+   "w": 155,
+   "h": 211
   },
   {
    "z": 8,
-   "name": "left_leg_2_foot",
-   "file": "left_leg_2_foot.png",
-   "x": 107,
-   "y": 765,
-   "w": 113,
-   "h": 126
+   "name": "right_arm_0_upper_arm",
+   "file": "right_arm_0_upper_arm.png",
+   "x": 368,
+   "y": 203,
+   "w": 130,
+   "h": 189
   },
   {
    "z": 9,
-   "name": "right_leg_0_thigh",
-   "file": "right_leg_0_thigh.png",
-   "x": 295,
-   "y": 471,
-   "w": 146,
-   "h": 204
+   "name": "torso_5_decoration",
+   "file": "torso_5_decoration.png",
+   "x": 234,
+   "y": 252,
+   "w": 210,
+   "h": 157
   },
   {
    "z": 10,
-   "name": "right_leg_1_calf",
-   "file": "right_leg_1_calf.png",
-   "x": 323,
-   "y": 612,
-   "w": 126,
-   "h": 200
+   "name": "torso_4_decoration",
+   "file": "torso_4_decoration.png",
+   "x": 210,
+   "y": 322,
+   "w": 228,
+   "h": 89
   },
   {
    "z": 11,
-   "name": "right_leg_2_foot",
-   "file": "right_leg_2_foot.png",
-   "x": 331,
-   "y": 761,
-   "w": 172,
-   "h": 117
+   "name": "left_leg_1_calf",
+   "file": "left_leg_1_calf.png",
+   "x": 95,
+   "y": 630,
+   "w": 155,
+   "h": 212
   },
   {
    "z": 12,
-   "name": "left_arm_1_forearm",
-   "file": "left_arm_1_forearm.png",
-   "x": 23,
-   "y": 383,
-   "w": 129,
-   "h": 91
+   "name": "right_leg_0_thigh",
+   "file": "right_leg_0_thigh.png",
+   "x": 282,
+   "y": 453,
+   "w": 167,
+   "h": 263
   },
   {
    "z": 13,
-   "name": "left_arm_0_upper_arm",
-   "file": "left_arm_0_upper_arm.png",
-   "x": 25,
-   "y": 224,
-   "w": 161,
-   "h": 240
+   "name": "right_leg_1_calf",
+   "file": "right_leg_1_calf.png",
+   "x": 326,
+   "y": 633,
+   "w": 132,
+   "h": 242
   },
   {
    "z": 14,
-   "name": "left_arm_2_hand",
-   "file": "left_arm_2_hand.png",
-   "x": 22,
-   "y": 379,
-   "w": 156,
-   "h": 238
+   "name": "right_leg_2_foot",
+   "file": "right_leg_2_foot.png",
+   "x": 335,
+   "y": 807,
+   "w": 181,
+   "h": 104
   },
   {
    "z": 15,
-   "name": "right_arm_1_forearm",
-   "file": "right_arm_1_forearm.png",
-   "x": 411,
-   "y": 346,
-   "w": 120,
-   "h": 159
+   "name": "left_arm_0_upper_arm",
+   "file": "left_arm_0_upper_arm.png",
+   "x": 10,
+   "y": 210,
+   "w": 171,
+   "h": 194
   },
   {
    "z": 16,
-   "name": "right_arm_2_hand",
-   "file": "right_arm_2_hand.png",
-   "x": 415,
-   "y": 337,
-   "w": 122,
-   "h": 257
+   "name": "left_arm_2_hand",
+   "file": "left_arm_2_hand.png",
+   "x": 35,
+   "y": 482,
+   "w": 135,
+   "h": 152
   },
   {
    "z": 17,
-   "name": "head_0_hair",
-   "file": "head_0_hair.png",
-   "x": 241,
-   "y": 145,
-   "w": 168,
-   "h": 156
-  },
-  {
-   "z": 18,
-   "name": "right_arm_0_upper_arm",
-   "file": "right_arm_0_upper_arm.png",
-   "x": 397,
-   "y": 201,
-   "w": 108,
-   "h": 209
+   "name": "left_arm_1_forearm",
+   "file": "left_arm_1_forearm.png",
+   "x": 7,
+   "y": 352,
+   "w": 145,
+   "h": 250
   },
   {
    "z": 19,
-   "name": "head_1_hair",
-   "file": "head_1_hair.png",
-   "x": 266,
-   "y": 224,
-   "w": 109,
-   "h": 53
+   "name": "head_3_eye",
+   "file": "head_3_eye.png",
+   "x": 162,
+   "y": 0,
+   "w": 214,
+   "h": 159
   },
   {
    "z": 20,
-   "name": "head_3_ear",
-   "file": "head_3_ear.png",
-   "x": 152,
-   "y": 121,
-   "w": 84,
-   "h": 126
+   "name": "head_0_face",
+   "file": "head_0_face.png",
+   "x": 162,
+   "y": 0,
+   "w": 236,
+   "h": 287
   },
   {
    "z": 21,
-   "name": "head_2_face",
-   "file": "head_2_face.png",
-   "x": 134,
+   "name": "head_1_eye",
+   "file": "head_1_eye.png",
+   "x": 162,
    "y": 0,
-   "w": 242,
-   "h": 274
+   "w": 234,
+   "h": 175
   },
   {
    "z": 22,
-   "name": "head_4_hat",
-   "file": "head_4_hat.png",
-   "x": 179,
-   "y": 20,
-   "w": 236,
-   "h": 177
+   "name": "head_4_ear",
+   "file": "head_4_ear.png",
+   "x": 162,
+   "y": 0,
+   "w": 104,
+   "h": 142
   },
   {
    "z": 23,
    "name": "head_5_decoration",
    "file": "head_5_decoration.png",
-   "x": 134,
+   "x": 162,
    "y": 0,
-   "w": 169,
-   "h": 309
+   "w": 158,
+   "h": 311
   }
  ]
 }

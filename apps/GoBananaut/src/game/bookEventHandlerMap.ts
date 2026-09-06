@@ -12,6 +12,8 @@ import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
 import type { Position } from './types';
 import {
+	isBoughtMode,
+	MAX_ROWS,
 	BASE_ROWS,
 	BOARD_ROWS_BASE,
 	NUM_REELS,
@@ -20,17 +22,28 @@ import {
 } from './constants';
 import config from './config';
 
-// The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
-// a value of 1 means the tease starts on the *second* scatter. Free spins need
-// four, so teasing that early fires on most spins and stops meaning anything.
-// Require three scatters already on the board (value >= 2) before any reel
-// teases. Filtering the array here — rather than in utils-slots — keeps the
-// slow reel stop and the on-screen tease gated by the same condition, and
-// leaves the shared package (and WildParty) untouched.
-const ANTICIPATION_MIN_SCATTERS = 3;
-
+// WHAT THE MATH ACTUALLY EMITS, because this was gated against the wrong number.
+//
+// board.py finds the reel where the anticipation_triggers-th scatter landed and
+// then ramps 1, 2, 3 … across every reel after it. `anticipation_triggers` is
+// `min(freespin_triggers) - 1`, which in this game is TWO — so the ramp already
+// means "two scatters are down and this reel is still live". The value is a
+// position in that ramp; it is not a scatter count.
+//
+// The gate here read it as one. It required `value >= 2`, described as "three
+// scatters already on the board", and its comment explained that free spins need
+// FOUR — inherited from a generation where the trigger was four. This game
+// triggers on THREE, so the rule amounted to: do not tease until the feature has
+// already been won. It also dropped the first live reel every time, which on a
+// bought round is reel 4 of the three that are still turning.
+//
+// So the gate keeps only the thing it can legitimately add — nothing. Any reel
+// the math marked is a reel where two scatters are down and this one could still
+// deliver, which is exactly when a slot should tease. Filtering here rather than
+// in utils-slots keeps the slow reel stop and the on-screen tease on the same
+// condition, and leaves the shared package (and WildParty) untouched.
 const gateAnticipation = (anticipation: number[]) =>
-	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
+	anticipation.map((value) => (value >= 1 ? value : 0));
 
 // A plain base-game board, sampled from the base padding strips. Used to put the
 // reels back after a hold and spin: that mode's board is full of P (coin) and X
@@ -195,6 +208,30 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			eventEmitter.broadcast({ type: 'reelGrowClear' });
 		}
 
+		// THE BOARD IS THE AUTHORITY ON ITS OWN HEIGHT, and until now nothing read
+		// it. growRows only ever moved when a growReels event moved it, which is
+		// fine for a round that climbs from the baseline and wrong for one that
+		// does not: a bought tier OPENS part-way up the ladder (buy_start_steps),
+		// so bonus300's first free spin arrives with reel 1 already six rows tall
+		// and no growth event to announce it. The client kept growRows at four,
+		// drew a four-row window over a six-row column, and the tier the player
+		// paid 300x for opened looking exactly like the 100x one.
+		//
+		// Taken from the reveal rather than from config.betModes[…].start_steps:
+		// both would be right here, and only one of them cannot disagree with the
+		// board that is about to be drawn. It also covers the free game's later
+		// spins for free — they arrive at whatever height the run has reached.
+		//
+		// Hold and spin is excluded: its board is a prize grid that has nothing to
+		// do with this ladder, and the transition above has just deliberately put
+		// the heights back to the baseline.
+		if (bookEvent.gameType !== 'holdandspin') {
+			stateGame.growRows = bookEvent.board.map((reel) =>
+				// a padded column is one pad, the rows, one pad
+				Math.max(BASE_ROWS, Math.min(MAX_ROWS, reel.length - 2)),
+			);
+		}
+
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: { ...bookEvent, anticipation: gateAnticipation(bookEvent.anticipation) },
 			paddingBoard: config.paddingReels[bookEvent.gameType],
@@ -257,15 +294,22 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// gold rings + sparks burst out of the scatters while the bell rings
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
 
-		// Four or more Scatters is the rare way in — three is the ordinary one — so
-		// that is where the mascot's biggest reaction goes. Counted here rather
-		// than in the component: the count is a property of this book event, and a
-		// component that had to go looking for it would be reaching across the game
-		// to find something it was never handed.
+		// The mascot's biggest reaction goes on the rare ways in: four or more
+		// Scatters, OR a bought round. Counted here rather than in the component:
+		// the count is a property of this book event, and a component that had to
+		// go looking for it would be reaching across the game to find something it
+		// was never handed.
+		//
+		// THE BUY CLAUSE IS NOT A FLOURISH, it is a regression fix. The test used
+		// to be `>= 4` alone, which worked while a bought round forced FIVE
+		// scatters onto the trigger board. It now forces exactly three — because
+		// three is what the paytable pays the eight spins for — and the side effect
+		// was that the most expensive entry in the game became the only one with no
+		// reaction at all.
 		//
 		// It runs during the 3s bell hold, which is the only stretch of the trigger
 		// long enough to watch him do it.
-		if (bookEvent.positions.length >= 4) {
+		if (bookEvent.positions.length >= 4 || isBoughtMode(stateBet.activeBetModeKey)) {
 			eventEmitter.broadcast({ type: 'mascotChestBeat' });
 		}
 		await waitForTimeout(3000);
@@ -623,7 +667,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// original event order and stopped being true the moment the reveal was
 		// moved BEFORE the blast so the client would have something to explode
 		// from — after which a resumed round came back showing the pre-blast reel,
-		// dynamite and all, on a board that had already been paid.
+		// canister and all, on a board that had already been paid.
 		// SHAPE BEFORE SYMBOLS. The reels lay themselves out per reel from
 		// growRows, so settling a six-symbol column while growRows still says four
 		// draws it into a four-row window and the extra cells are culled. Restore

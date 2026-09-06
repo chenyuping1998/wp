@@ -67,10 +67,21 @@
 	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
 	// The fallback is only reached if the maths config is missing the field, and a
 	// wrong one is worse than a crash: it would print a plausible number nobody
-	// questions. 1500 was gen-2's cap and survived the change to 10,000 here.
-	const maxWin = config.betModes?.base?.max_win ?? 10000;
+	// questions. 1500 was gen-2's cap and survived a change here once already,
+	// which is why the live figure is read and only the fallback is written.
+	const maxWin = config.betModes?.base?.max_win ?? 15000;
 	const reelCount = config.numReels;
 	const rowCount = config.numRows?.[0] ?? 4;
+
+	// The board's floor and ceiling. The signature mechanic moves a reel between
+	// them, so almost every section below quotes one or the other, and they are
+	// read rather than typed for the same reason the row count is.
+	const baseRows = config.growth?.baseRows ?? rowCount;
+	const maxRows = config.growth?.maxRows ?? 6;
+	// A FULL board's ways. It cannot come from numRows: that array is the
+	// BASELINE and never leaves 4-flat no matter how tall the board gets, so
+	// reading it here would print 1,024 in a sentence about a full board.
+	const fullWays = Math.pow(maxRows, reelCount);
 
 	// Ways, not lines. The product of the row counts: 4x5 gives 1,024. Derived
 	// rather than typed, because the board size is config-driven — this comment
@@ -91,7 +102,7 @@
 	// know about them.
 	type BuyMode = { cost?: number; spins?: number; start_steps?: number };
 
-	// The three buy tiers. Prices, spin counts and banked dynamite all come from
+	// The three buy tiers. Prices, spin counts and banked growth steps all come from
 	// config — the last two are lifted out of game_config.py by the sync script,
 	// because the SDK's exported config carries nothing about the feature.
 	// `as const` on the keys, so each lookup is on a known member of config's
@@ -113,7 +124,16 @@
 				rows[reel] += take;
 				remaining -= take;
 			}
-			const startWays = rows.reduce((a: number, b: number) => a * b, 1);
+			// THE OPENING WAYS COUNT INCLUDES THE DOUBLING, because a bought round
+			// opens inside Free Spins and a reel above the baseline doubles there
+			// from its first spin. Counting the rows alone would have printed
+			// "1,536 ways" for a tier the player watches open on 3,072 — the number
+			// the game's own meter shows them — which reads as the rules
+			// understating the thing they just paid for.
+			const startWays = rows.reduce(
+				(a: number, b: number) => a * (b > config.growth.baseRows ? b * 2 : b),
+				1,
+			);
 			return { key, cost: mode?.cost, spins: mode?.spins, startRows: rows, startWays };
 		})
 		.filter((t) => t.cost !== undefined && t.spins !== undefined);
@@ -150,7 +170,7 @@
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-rules">
-			<h2>GO BANANAS DELTA — GAME RULES</h2>
+			<h2>GO BANANAUT — GAME RULES</h2>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>How to play</h3>
@@ -159,14 +179,20 @@
 					     to in the project. config stores it the other way round, as
 					     numReels and numRows, so the order is swapped here rather than
 					     the config being renamed. -->
-					Go Bananas Delta is a {rowCount}&times;{reelCount} video slot with
-					<strong>{waysCount.toLocaleString()} {T.ways}</strong>. There are no fixed lines: a
-					symbol counts wherever it lands on a reel. {T.combinationDirection}. A combination
-					{T.pays} when the same symbol appears on 3 or more adjacent reels starting from the
-					leftmost, and the number of {T.ways} it {T.pays} is the number of that symbol on each
-					of those reels multiplied together. Only the highest win per symbol is {T.paid}, and
-					wins from different symbols are added together. The theoretical return to player (RTP)
-					is {rtpPct}.
+					Go Bananaut is a {rowCount}&times;{reelCount} video slot that starts with
+					<strong>{waysCount.toLocaleString()} {T.ways}</strong> and grows. There are no fixed
+					lines: a symbol counts wherever it lands on a reel. {T.combinationDirection}. A
+					combination {T.pays} when the same symbol appears on 3 or more adjacent reels starting
+					from the leftmost, and the number of {T.ways} it {T.pays} is the number of that symbol
+					on each of those reels multiplied together. Only the highest win per symbol is
+					{T.paid}, and wins from different symbols are added together. The theoretical return
+					to player (RTP) is {rtpPct}.
+				</p>
+				<p>
+					Every reel can be pulled taller, from {baseRows} rows up to {maxRows}, which takes the
+					board as far as {maxRows}&times;{reelCount} and
+					<strong>{fullWays.toLocaleString()} {T.ways}</strong>. See
+					<em>The Stretch</em> below.
 				</p>
 			</section>
 
@@ -244,52 +270,91 @@
 
 			<!-- The signature mechanic gets its own section above Wild and Scatter,
 			     because it is the thing the game is built around and the only rule
-			     a player of other ways games will not already know. -->
+			     a player of other ways games will not already know.
+
+			     It is written as TWO sections, and the split is load-bearing: the
+			     reels getting taller happens everywhere, the doubling happens only
+			     in Free Spins. Stated together they read as one rule and a player
+			     would reasonably expect a base-game double the maths does not pay.
+			-->
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Dynamite &mdash; blasting reels</h3>
+				<h3><span class="wp-accent-bar"></span>The Stretch &mdash; reels grow taller</h3>
 				<p>
-					A Dynamite can land on any reel, and <strong>at most one per reel</strong>. After the
-					reels stop it detonates: every position on that reel becomes
-					<strong>one and the same symbol</strong> &mdash; the
-					<strong>highest-paying symbol already standing on it</strong>. A reel of four
-					matching symbols contributes 4 to the {T.ways}, and because {T.ways} multiply
-					across reels, it can turn a board with no combination at all into a paying one.
+					A <strong>Gravity Charge</strong> rides on an ordinary symbol rather than replacing
+					one, so the symbol underneath {T.pays} exactly as it always would. At most
+					<strong>two charges per reel</strong> land on a spin.
 				</p>
 				<p>
-					The Dynamite is consumed by its own blast and does not {T.pay}. A Scatter caught in
-					a blast is left untouched.
+					When the reels stop, each charge pulls a reel <strong>one row taller</strong> &mdash;
+					from {baseRows} rows up to a maximum of {maxRows}. Rows are added
+					<strong>left to right</strong>: the leftmost reel that is not yet at {maxRows} takes
+					the row, and it is filled to {maxRows} before the next reel is touched. The new rows
+					open at the <strong>top</strong> of the reel and are dealt fresh symbols; nothing
+					already on the board is moved or replaced.
+				</p>
+				<p>
+					A taller reel does not guarantee a win &mdash; it is more chances for a symbol to be
+					there at all. Because {T.ways} multiply across reels, one more matching symbol on an
+					early reel multiplies every combination that runs through it. Cells revealed by a
+					stretch never carry a charge of their own, so a spin stretches once and settles.
 				</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>The blast meter &mdash; Free Spins</h3>
+				<h3><span class="wp-accent-bar"></span>Free Spins &mdash; the reels stay tall, and double</h3>
 				<p>
-					In Free Spins every Dynamite that lands is <strong>collected</strong>, and the meter
-					widens the blast as it fills. The blast covers
-					<strong>1 reel, then 2, 3, 4 and finally all 5</strong>. It never falls back, so a
-					run only ever gets wider.
+					In the base game the board returns to {baseRows} rows on every reel at the start of
+					the next spin. <strong>In Free Spins it does not.</strong> Every row gained is kept
+					for the rest of the round, so the board only ever grows and the shape of it is how far
+					along the run is.
+				</p>
+				<!--
+					NO THEORETICAL CEILING IS QUOTED HERE. This paragraph ended "a single
+					spin is played over 248,832 ways", which is (2 x 6)^5 and is
+					arithmetic rather than an outcome: it describes a board whose thirty
+					cells are all the same symbol, and nothing in this game forces that.
+					game_config.py refuses to advertise 40,435x as a max win for exactly
+					the same reason, and the rules page must not reintroduce the claim in
+					the other unit.
+
+					Measured on the published books, the largest ways figure on a single
+					win is 288 in the base game and 57,600 in Free Spins, 20,000 books
+					each — so the feature does go far past the board's own 7,776, which
+					is the doubling being real, but nowhere near 248,832.
+				-->
+				<p>
+					On top of that, in Free Spins <strong>every cell on a reel standing above
+					{baseRows} rows counts twice</strong>. A stretched reel therefore contributes double
+					to the {T.ways}, and that is on top of the rows it has gained &mdash; so the
+					{T.ways} figure shown on a win in Free Spins can be several times what the board's
+					own shape alone would give.
 				</p>
 				<p>
-					<strong>Five reels showing one symbol is {waysCount.toLocaleString()} {T.ways} on a
-					single spin</strong>, and it is what the meter is climbing towards.
+					A doubling reel is lit and carries an <strong>x2</strong> plate at the top of it. That
+					starts at the <strong>first</strong> extra row, not at the last: a reel on
+					{baseRows + 1} rows is already doubling, and does not have to reach {maxRows} first.
+				</p>
+				<p>
+					The doubling applies in Free Spins only. It changes what a winning board {T.pays},
+					never which boards win.
 				</p>
 			</section>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Wild</h3>
 				<p>
-					The Foreman Wild substitutes for every symbol except the Scatter and the Dynamite.
-					It does not {T.pay} as a symbol of its own. A Wild caught in a blast is replaced along
-					with everything else on that reel.
+					The Astronaut Helmet Wild substitutes for every symbol except the Scatter. It does not
+					{T.pay} as a symbol of its own. A Gravity Charge never rides on a Wild or on a
+					Scatter.
 				</p>
 			</section>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Scatter</h3>
 				<p>
-					The Golden Bananas Scatter appears on all five reels. It does not {T.pay} on its own
-					and does not need to form a combination &mdash; its only job is to open the feature.
-					Landing 3, 4 or 5 Scatters in a single spin awards {scatterSpins} Free Spins
+					The Emergency Beacon Scatter appears on all {reelCount} reels. It does not {T.pay} on
+					its own and does not need to form a combination &mdash; its only job is to open the
+					feature. Landing 3, 4 or 5 Scatters in a single spin awards {scatterSpins} Free Spins
 					respectively.
 				</p>
 			</section>
@@ -313,7 +378,8 @@
 				<h3><span class="wp-accent-bar"></span>Hold and Spin</h3>
 				<p>
 					A separate prize board {T.bought} from the {T.betMenu} for {config.betModes?.holdandspin
-						?.cost}&times; your {T.totalBet}. It does not use {T.ways} or Dynamite. You start
+						?.cost}&times; your {T.totalBet}. It does not use {T.ways}, and the reels do not
+					stretch there. You start
 					with 3 respins. Every Coin that lands sticks to the board and resets the respins back
 					to 3. When no respins remain, all stuck Coin values are added up and {T.paid} out.
 					Maximum win: {config.betModes?.holdandspin?.max_win?.toLocaleString()}&times; the
@@ -333,13 +399,14 @@
 						{#each buyTiers as tier (tier.key)}
 							<li>
 								<strong>{tier.cost}&times; {T.bet}</strong> &mdash; {tier.spins} Free Spins, opens on
-								{tier.startRows.join('-')} ({tier.startWays.toLocaleString()} ways)
+								{tier.startRows.join('-')} ({tier.startWays.toLocaleString()} {T.ways})
 							</li>
 						{/each}
 					</ul>
 					<p>
-						Every round runs at the same {rtpPct} RTP as base play. The meter keeps filling from
-						there, exactly as in Free Spins won with Scatters.
+						Every round runs at the same {rtpPct} RTP as base play, and plays exactly like Free
+						Spins won with Scatters: the rows are kept for the whole round, stretched reels
+						double, and the board keeps climbing from wherever the tier opened it.
 					</p>
 				</section>
 			{/if}

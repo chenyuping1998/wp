@@ -25,29 +25,46 @@
 	const reelCount = config.numReels;
 	const rowCount = config.numRows?.[0] ?? 4;
 	const waysCount = (config.numRows ?? []).reduce((a: number, b: number) => a * b, 1);
-	const maxWin = config.betModes?.base?.max_win ?? 10000;
+	const maxWin = config.betModes?.base?.max_win ?? 15000;
+	const baseRows = config.growth?.baseRows ?? rowCount;
+	const maxRows = config.growth?.maxRows ?? 6;
 
 	let loadingType = $state<'start' | 'transition'>('start');
 	let pulseTick = $state(0);
 
+	// A FULL board's ways — 6^5 = 7,776 — for the strapline and the tip that
+	// quote it. It cannot come from numRows: that array is the BASELINE and never
+	// leaves 4-flat no matter how tall the board gets, so reading it here would
+	// print 1,024 for a line about a full board.
+	const fullWays = Math.pow(maxRows, reelCount);
+
 	// Gameplay tips cycling under the progress bar, so the wait teaches the
 	// features instead of just counting. Every line is checked against the rules
-	// modal (components/ui/ModalGameRules) — note in particular that it takes 4 or
-	// 3 Scatters here, not 4, and that ways MULTIPLY across reels rather than
-	// adding — a player arriving from gen-2 will assume both the other way round.
+	// modal (components/ui/ModalGameRules) — note in particular that ways
+	// MULTIPLY across reels rather than adding, which a player arriving from a
+	// lines game will assume the other way round.
 	//
-	// Three of the seven slots go to the Dynamite, because it is the only rule in
-	// this game a player of other ways games will not already know.
+	// FOUR OF THE EIGHT SLOTS GO TO THE STRETCH, because it is the only rule in
+	// this game a player of other ways games will not already know, and it has
+	// two halves that are easy to conflate: the reel gets TALLER (base game and
+	// feature alike, more ways) and in the feature it also COUNTS TWICE. Those
+	// are separate effects that multiply, and a tip that ran them together would
+	// leave a player thinking a tall reel doubles in base play too.
+	//
+	// These lines used to describe the previous generation's Dynamite — a reel
+	// filled with one symbol, a blast that widens — which is a mechanic this
+	// game does not have at all.
 	//
 	// 'X' not '×' throughout: these are set in Titan One, whose subset does not
 	// carry U+00D7, and one glyph arriving from a fallback face in the middle of a
 	// line is more obvious than the plain letter.
 	const TIPS = [
 		'3, 4 OR 5 SCATTERS AWARD 8, 10 OR 12 FREE SPINS',
-		'A DYNAMITE FILLS ITS WHOLE REEL WITH ONE SYMBOL',
-		'THE FILL IS THE BEST SYMBOL ALREADY ON THAT REEL',
-		'IN FREE SPINS EVERY DYNAMITE WIDENS THE NEXT BLAST',
-		'FIVE REELS OF ONE SYMBOL IS 1,024 WAYS AT ONCE',
+		'A GRAVITY CHARGE PULLS ITS REEL ONE ROW TALLER',
+		`TALLER REELS ARE MORE WAYS — ${baseRows} ROWS UP TO ${maxRows}`,
+		'IN FREE SPINS A STRETCHED REEL STAYS TALL ALL ROUND',
+		'IN FREE SPINS EVERY CELL ON A STRETCHED REEL COUNTS TWICE',
+		`A FULL ${maxRows}X${reelCount} BOARD IS ${fullWays.toLocaleString()} WAYS`,
 		'SYMBOLS COUNT ANYWHERE ON A REEL — THERE ARE NO LINES',
 		'HOLD AND SPIN: EVERY COIN RESETS THE RESPINS TO 3',
 	];
@@ -87,12 +104,12 @@
 	});
 
 	// The two halves of the wordmark. Gen-2's accent was "100", the number its
-	// mechanic was named after; Delta's is the generation name itself.
+	// mechanic was named after; from gen-3 on it is the game's own name.
 	const TITLE_MAIN = 'GO';
-	const TITLE_ACCENT = 'BOOMANA';
+	const TITLE_ACCENT = 'BANANAUT';
 
 	// ── title layout ──────────────────────────────────────────────────────────
-	// "GO BANANAS" and "DELTA" are two Texts because only the second is orange, but
+	// "GO" and "BANANAUT" are two Texts because only the second is orange, but
 	// they have to read as one centred headline — so the pair is measured and
 	// laid out from its combined width rather than each being centred on its own.
 	//
@@ -106,10 +123,10 @@
 	//
 	// The accent word used to run a third larger, which was right when the title
 	// was "GO BANANAS" plus a generation mark that had to be told apart from the
-	// name. Here the name IS "GO BOOMANA" — two words of one thing — and setting
+	// name. Here the name IS "GO BANANAUT" — two words of one thing — and setting
 	// them at different sizes made "GO" read as a prefix stuck on the front.
 	//
-	// Raised from 46 rather than shrinking BOOMANA to match: the headline should
+	// Raised from 46 rather than shrinking BANANAUT to match: the headline should
 	// not get smaller just because the two halves agree.
 	const TITLE_SIZE = 58;
 	const ACCENT_SIZE = TITLE_SIZE;
@@ -122,7 +139,7 @@
 	// accent word alone — where it is doing a job, because that is what has to jump.
 	// ONE COLOUR FOR THE WHOLE TITLE.
 	//
-	// "GO" was light gold and "BOOMANA" hot orange, which read as two words from
+	// "GO" was light gold and the name hot orange, which read as two words from
 	// two different logos rather than one name. The size step and the dark outline
 	// already separate them; colour was doing a third job nobody asked for.
 	//
@@ -179,7 +196,7 @@
 	});
 </script>
 
-<!-- Go Bananas jungle-commando branded loading screen -->
+<!-- Go Bananaut branded loading screen -->
 <FadeContainer show={loadingType === 'start'}>
 	<MainContainer>
 		<!-- Background image (山水 theme) -->
@@ -289,7 +306,7 @@
 			<Text
 				anchor={0.5}
 				y={-34}
-				text={`${rowCount}X${reelCount}, ${waysCount.toLocaleString()} WAYS — MAX WIN ${maxWin.toLocaleString()}X`}
+				text={`${waysCount.toLocaleString()}-${fullWays.toLocaleString()} WAYS — MAX WIN ${maxWin.toLocaleString()}X`}
 				style={{
 					fontFamily: BODY_FONT,
 					fontSize: 15,

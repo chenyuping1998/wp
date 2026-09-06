@@ -17,6 +17,8 @@
 	import { getContext } from '../game/context';
 	import {
 		SYMBOL_SIZE,
+		BASE_ROWS,
+		cellCenterY,
 		BOARD_CELL_COLOR,
 		isBigPrize,
 		BIG_PRIZE_FROM,
@@ -36,8 +38,13 @@
 	};
 
 	const context = getContext();
-	// visible padded row r sits at (r - 0.5) * SYMBOL_SIZE (same as ReelGrow)
-	const rowCenterY = (row: number) => row * SYMBOL_SIZE - SYMBOL_SIZE / 2;
+	// Through cellCenterY, so a held coin sits on the reel and not two cells above
+	// it. Hold and spin never grows — growRows stays at the baseline for the whole
+	// mode — so before this fix EVERY coin in the mode was drawn in the wrong
+	// place, which is also why the reel-side duplicate looked like it had come
+	// adrift rather than like a ghost.
+	const rowCenterY = (reel: number, row: number) =>
+		cellCenterY(context.stateGame.growRows[reel] ?? BASE_ROWS, row);
 	const keyOf = (p: { reel: number; row: number }) => `${p.reel},${p.row}`;
 
 	// threshold and palette live in constants so the reel-side copy of the same
@@ -129,7 +136,7 @@
 <BoardContainer>
 	{#each prizes as entry (keyOf(entry))}
 		{@const x = getSymbolX(entry.reel)}
-		{@const y = rowCenterY(entry.row)}
+		{@const y = rowCenterY(entry.reel, entry.row)}
 		<!--
 			Occluder for the held cell. Its only job is to hide the reel sweeping
 			behind the coin, so it is painted in the board's own olive rather than

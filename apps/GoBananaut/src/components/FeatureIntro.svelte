@@ -10,10 +10,11 @@
 
 	// The three-panel feature card shown once loading reaches 100%.
 	//
-	// The middle slot is the headline and it is the Dynamite, not the trigger: the
-	// split is the only thing here a player of another ways game would not already
-	// know. The trigger sits left because it is the familiar half, and the max win
-	// sits right because it is the figure players scan for last.
+	// The middle slot is the headline and it is THE STRETCH, not the trigger: a
+	// board that changes shape is the only thing here a player of another ways
+	// game would not already know. The trigger sits left because it is the
+	// familiar half, and the max win sits right because it is the figure players
+	// scan for last.
 	//
 	// Copy is English-only, matching this app's loading tips. TripleWitching
 	// localises its equivalent card through game/i18nText; GoBananas has never
@@ -77,48 +78,74 @@
 	 * HEIGHT and the arrow takes the width left over.
 	 */
 	/** A reel cut down the middle: each cell becomes two. */
-	/** A reel going up: five columns, one of them filled and lit. */
-	const drawBlast = (g: PixiGraphics, w: number, h: number) => {
+	/**
+	 * THE STRETCH: five reels standing on a shared floor, the first two grown.
+	 *
+	 * Three things the picture has to get right, because each is a rule a player
+	 * would otherwise have to be told:
+	 *
+	 *   - the board is BOTTOM-ANCHORED and grows UPWARD. The game draws it that
+	 *     way (see reelYOffset in game/constants) and the new cells arrive at the
+	 *     top of the reel, so a diagram growing downward or out from the centre
+	 *     would contradict the first spin the player sees.
+	 *   - the new cells are marked as NEW - hot outline, barely filled - so the
+	 *     eye reads "this reel gained rows" rather than "this reel won".
+	 *   - growth is LEFT TO RIGHT AND DEPTH FIRST: reel 1 fills to six before
+	 *     reel 2 is touched. So the silhouette is a staircase down from the left,
+	 *     never a random comb.
+	 *
+	 * Drawn from config rather than from literals, so the shape cannot disagree
+	 * with the board: baseRows is the floor every reel starts at, maxRows the
+	 * ceiling reel 1 is shown having reached.
+	 */
+	const drawStretch = (g: PixiGraphics, w: number, h: number) => {
 		g.clear();
-		const top = h * 0.12;
-		const bottom = h * 0.9;
-		const rows = 4;
-		const cellH = (bottom - top) / rows;
-		const cols = 5;
-		const cw = (w * 0.9) / cols;
+		const base = config.growth.baseRows;
+		const max = config.growth.maxRows;
+		const cols = config.numReels;
+		const bottom = h * 0.92;
+		// sized off the TALLEST reel, so the full-height column fits the slot and
+		// the baseline ones simply stop short of the top
+		const cellH = (bottom - h * 0.08) / max;
+		const cw = (w * 0.92) / cols;
 		const x0 = w * 0.5 - (cols * cw) / 2;
-		// The middle column is the one that detonated. Filled and gold; the four
-		// around it are empty outlines, so "one reel became one symbol" is the
-		// only thing the picture says.
-		const litCol = 2;
-		for (let c = 0; c < cols; c++) {
+		// The staircase: reel 1 at full height, reel 2 one row up, the rest at the
+		// baseline - exactly what steps 1..3 of the ladder produce.
+		const heights = Array.from({ length: cols }, (_, c) =>
+			c === 0 ? max : c === 1 ? base + 1 : base,
+		);
+		heights.forEach((rows, c) => {
 			for (let r = 0; r < rows; r++) {
+				// r counted from the BOTTOM, which is the direction the reel fills
 				const x = x0 + c * cw;
-				const y = top + r * cellH;
+				const y = bottom - (r + 1) * cellH;
+				const grown = r >= base;
 				g.roundRect(x + 1.5, y + 1.5, cw - 3, cellH - 3, 3);
-				if (c === litCol) {
-					g.fill({ color: GOLD, alpha: 0.85 });
-				} else {
-					g.fill({ color: PANEL_INK, alpha: 0.9 });
-					g.roundRect(x + 1.5, y + 1.5, cw - 3, cellH - 3, 3);
-					g.stroke({ width: 1.4, color: JADE, alpha: 0.4 });
-				}
+				g.fill({ color: grown ? HOT : PANEL_INK, alpha: grown ? 0.28 : 0.9 });
+				g.roundRect(x + 1.5, y + 1.5, cw - 3, cellH - 3, 3);
+				g.stroke({ width: 1.4, color: grown ? HOT : JADE, alpha: grown ? 0.95 : 0.4 });
 			}
-		}
-		// A hot edge down the filled column, the same treatment the buy cards use.
-		g.roundRect(x0 + litCol * cw, top, cw, bottom - top, 4);
-		g.stroke({ width: 2.5, color: HOT, alpha: 0.95 });
+		});
+		// A hot edge around each stretched reel - the same treatment the buy cards
+		// use. NOT the game's doubling colour, which is the ice cyan ReelGrow
+		// washes a doubling column in: this panel is marking the rows as NEW, and
+		// the doubling is a separate rule that only applies in Free Spins.
+		heights.forEach((rows, c) => {
+			if (rows === base) return;
+			g.roundRect(x0 + c * cw, bottom - rows * cellH, cw, rows * cellH, 4);
+			g.stroke({ width: 2.5, color: HOT, alpha: 0.95 });
+		});
 	};
 
-	/** Ways multiplying across reels as more of them are cut. */
+	/** Ways multiplying across reels as more of them stretch. */
 	const drawWaysGrow = (g: PixiGraphics, w: number, h: number) => {
 		g.clear();
 		const barW = w * 0.13;
 		const gap = w * 0.055;
 		const baseY = h * 0.86;
-		// 1, 2, 4, 8 — each cut reel DOUBLES the ways, so the steps double too.
-		// The old panel drew four bars rising linearly to say multipliers ADD;
-		// this game multiplies, and a linear ramp would say the wrong thing.
+		// 1, 2, 4, 8 — in the feature every stretched reel DOUBLES, so the steps
+		// double too. A linear ramp would say the multipliers ADD, which is the
+		// one thing about ways a player is most likely to get wrong.
 		const heights = [0.12, 0.24, 0.48, 0.96];
 		const totalW = heights.length * barW + (heights.length - 1) * gap;
 		const x0 = (w - totalW) / 2;
@@ -163,11 +190,12 @@
 	// Bodies are one short sentence each. The first pass ran to two and three
 	// sentences and overflowed the panels — the copy is a caption for the art, not
 	// the rules screen, which is one tap away and carries the full wording.
-	// 4 rows on 5 reels is 1,024 ways, which is also exactly what a full-board
-	// blast pays on: every cell the same symbol means every reel contributes all
-	// four of its rows. Derived rather than typed, because the board size comes
-	// from the maths config.
-	const BASE_WAYS = (config.numRows ?? []).reduce((a: number, b: number) => a * b, 1);
+	// The FULL board's ways — 6^5 — which is the hero panel's figure.
+	//
+	// Deliberately NOT config.numRows: that array is the BASELINE board and never
+	// leaves 4-flat however tall the reels get, so reading it here would print
+	// 1,024 under a panel about a board that grows to six.
+	const FULL_WAYS = Math.pow(config.growth.maxRows, config.numReels);
 
 	const panels: Panel[] = [
 		{
@@ -180,20 +208,28 @@
 		},
 		{
 			accent: HOT,
-			title: 'DYNAMITE',
-			// The figure is the DREAM, not the average: five reels of one symbol is
-			// what the whole feature climbs towards, and it is a count the player can
-			// verify on the board the first time it happens.
-			body: `Blows up its whole reel and fills it with the best symbol standing on it. In Free Spins each Dynamite widens the next blast: 1 reel, then 2, 3, 4, 5.`,
-			figure: BASE_WAYS.toLocaleString(),
-			art: drawBlast,
+			title: 'THE STRETCH',
+			// The figure is the DREAM, not the average: every reel at full height is
+			// what a feature climbs towards, and it is a number the player can read
+			// straight off the board's own silhouette.
+			//
+			// The body states the two halves separately and in order — taller
+			// first, then the doubling — because they are separate effects that
+			// multiply, and the doubling is FREE SPINS ONLY. Running them together
+			// would promise a base-game double the maths does not pay.
+			body: `A gravity charge pulls its reel one row taller, ${config.growth.baseRows} up to ${config.growth.maxRows}, left to right. In Free Spins the taller reels stay for the whole round and every cell on one counts TWICE.`,
+			figure: FULL_WAYS.toLocaleString(),
+			art: drawStretch,
 			hero: true,
 		},
 		{
 			accent: JADE,
 			title: 'MAX WIN',
 			body: 'The cap on a single round. Reach it and the round ends there and then.',
-			figure: `${(config.betModes?.base?.max_win ?? 10000).toLocaleString()}X`,
+			// 'X' rather than the multiplication sign, for the same reason the
+			// loading tips avoid it: this is set in Titan One and U+00D7 is not in
+			// that face's subset.
+			figure: `${(config.betModes?.base?.max_win ?? 15000).toLocaleString()}X`,
 			art: drawWaysGrow,
 		},
 	];

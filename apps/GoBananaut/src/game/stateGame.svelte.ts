@@ -19,6 +19,8 @@ import {
 	BOARD_ROWS_BASE,
 	MAX_ROWS,
 	paddedReelLength,
+	isBoughtMode,
+	SPIN_OPTIONS_BOUGHT,
 	SPIN_OPTIONS_DEFAULT,
 	SPIN_OPTIONS_FAST,
 	SPIN_OPTIONS_TURBO_FREEGAME,
@@ -136,6 +138,13 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 		// off spinType would have handed it the base-game timings — turbo would
 		// have had no effect in the feature at all rather than too much.
 		if (stateGame.gameType === 'freegame' && stateBet.isTurbo) return SPIN_OPTIONS_TURBO_FREEGAME;
+		// The BASE spin of a bought round — the one that lands the three scatters.
+		// Its anticipation is teasing a result the player has already bought, so it
+		// gets a third of the tease. Gated on gameType as well as the mode: the
+		// free spins that follow are bought too, and they have nothing to tease.
+		if (stateGame.gameType === 'basegame' && isBoughtMode(stateBet.activeBetModeKey)) {
+			return SPIN_OPTIONS_BOUGHT;
+		}
 		if (reel.reelState.spinType !== 'fast') return SPIN_OPTIONS_DEFAULT;
 		return SPIN_OPTIONS_FAST;
 	};
@@ -169,6 +178,16 @@ export const stateGame = $state({
 	// — the maths writes it once, at the end of the run — so this is the only
 	// place the client knows how tall the board actually is.
 	growRows: [...BOARD_ROWS_BASE] as number[],
+	// How long the shutter has to complete its climb on the step currently being
+	// presented, in ms — the part of the step AFTER the new cell is spliced in,
+	// which is the only part anything is visible moving in.
+	//
+	// ReelGrow owns the pacing (the run accelerates and the last step lands) and
+	// publishes the travel window rather than the whole step, so the phase weights
+	// live in one file instead of being re-derived in the other. Published as
+	// state rather than sent as an event because it is a PROPERTY of the moment,
+	// not a thing that happens: a lid mounting mid-run needs to know it too.
+	growTravelMs: 315,
 
 	// Per-reel scoring multiplier, 1 or 2. A stretched reel counts double in the
 	// free game and never in the base game. Sent by the maths rather than derived

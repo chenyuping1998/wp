@@ -63,6 +63,28 @@ for (const [name, file] of files) {
 	}
 }
 
+// ── the two BGM loops ───────────────────────────────────────────────────────
+//
+// A separate constant block from CN_SFX_FILES, and that is exactly why it needs
+// its own check: the set was moved from jungle/ to space/ by replacing the keys
+// of the map above, and BGM_FILES sat outside that edit still pointing at the
+// jungle marimba. Nineteen cues would have been space and the music would not,
+// and nothing here would have said so.
+const bgmBody = src.match(/const BGM_FILES = \{([\s\S]*?)\} as const;/);
+if (!bgmBody) {
+	fail('could not find BGM_FILES — has Sound.svelte been restructured?');
+} else {
+	const bgm = [...bgmBody[1].matchAll(/^\s*(\w+):\s*'([^']+)'/gm)];
+	if (bgm.length === 0) fail('BGM_FILES parsed as empty');
+	for (const [, name, file] of bgm) {
+		if (!fs.existsSync(path.join(AUDIO, file))) {
+			fail(`BGM ${name} -> assets/audio/${file} does not exist`);
+			missing++;
+		}
+	}
+	console.log(`   ${bgm.length} bgm loops resolve`);
+}
+
 // ── the names the code actually plays ───────────────────────────────────────
 const played = new Set();
 const dynamic = new Set();

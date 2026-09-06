@@ -7,7 +7,7 @@
 
 <script lang="ts">
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE } from '../game/constants';
+	import { cellCenterY, BASE_ROWS } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import FxBurst from './FxBurst.svelte';
@@ -19,8 +19,9 @@
 	let bursts = $state<{ id: number; x: number; y: number; delay: number }[]>([]);
 	let nextId = 0;
 
-	// padded book rows: visible row r centre sits at r*SYMBOL_SIZE - SYMBOL_SIZE/2
-	const rowCenterY = (row: number) => row * SYMBOL_SIZE - SYMBOL_SIZE / 2;
+	// Through cellCenterY, which knows the reel is bottom-anchored inside a
+	// six-row box: a burst on a reel still at four otherwise fires two cells above
+	// the scatter that earned it.
 
 	context.eventEmitter.subscribeOnMount({
 		scatterBurst: ({ positions }) => {
@@ -30,7 +31,7 @@
 				...ordered.map((pos, index) => ({
 					id: nextId++,
 					x: getSymbolX(pos.reel),
-					y: rowCenterY(pos.row),
+					y: cellCenterY(context.stateGame.growRows[pos.reel] ?? BASE_ROWS, pos.row),
 					delay: index * 110,
 				})),
 			];

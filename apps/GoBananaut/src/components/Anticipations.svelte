@@ -7,7 +7,7 @@
 	import { cubicOut } from 'svelte/easing';
 
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE, BOARD_SIZES } from '../game/constants';
+	import { SYMBOL_SIZE, BASE_ROWS, reelWindow } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import Anticipation from './Anticipation.svelte';
@@ -31,12 +31,16 @@
 		if (dim.current <= 0.01) return;
 		context.stateGame.board.forEach((reel, i) => {
 			if (reel.reelState.anticipating || reel.reelState.motion !== 'stopped') return;
+			// the reel's own window, not the six-row box: dimming down to the box's
+			// floor darkens the closed shutter above a short reel as well, which
+			// makes the spotlight look like it has missed
+			const win = reelWindow(context.stateGame.growRows[i] ?? BASE_ROWS);
 			g.beginFill(0x000000, 0.3 * dim.current);
 			g.drawRoundedRect(
 				getSymbolX(i) - SYMBOL_SIZE / 2 + 4,
-				4,
+				win.top + 4,
 				SYMBOL_SIZE - 8,
-				BOARD_SIZES.height - 8,
+				win.height - 8,
 				12,
 			);
 			g.endFill();
