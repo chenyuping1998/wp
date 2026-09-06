@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { Graphics } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
+
 	import SymbolSpine from './SymbolSpine.svelte';
 	import SymbolSprite from './SymbolSprite.svelte';
 	import SymbolWinAnim from './SymbolWinAnim.svelte';
@@ -8,6 +11,7 @@
 	import { SYMBOL_SIZE, isBigPrize, BIG_PRIZE_FILL, BIG_PRIZE_STROKE } from '../game/constants';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import GoldText from './GoldText.svelte';
+	import { drawTabletFace } from '../game/tabletArt';
 
 	type Props = {
 		x?: number;
@@ -27,9 +31,16 @@
 	const symbolInfo = $derived(getSymbolInfo({ rawSymbol: props.rawSymbol, state: props.state }));
 	const isSprite = $derived(symbolInfo.type === 'sprite');
 	const isWin = $derived(props.state === 'win');
+	// The sealed tablet, drawn as vector rather than through the sprite path
+	// every other symbol takes. Placeholder until real art exists — see
+	// tabletArt.ts for why it is not simply pointed at a texture.
+	const isTablet = $derived(props.rawSymbol.name === 'M');
+	const drawTablet = (g: PixiGraphics) => drawTabletFace(g, SYMBOL_SIZE * 0.86);
 </script>
 
-{#if isSprite && isWin}
+{#if isTablet}
+	<Graphics x={props.x ?? 0} y={props.y ?? 0} draw={drawTablet} />
+{:else if isSprite && isWin}
 	<!-- Win state for sprite symbols: programmatic scale+glow animation -->
 	<SymbolWinAnim {symbolInfo} x={props.x} y={props.y} oncomplete={props.oncomplete} />
 {:else if isSprite}
