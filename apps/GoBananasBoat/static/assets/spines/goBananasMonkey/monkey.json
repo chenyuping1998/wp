@@ -2,10 +2,10 @@
   "skeleton": {
     "hash": "gb-monkey",
     "spine": "4.1.20",
-    "x": -280,
+    "x": -291,
     "y": 0,
     "width": 560,
-    "height": 884,
+    "height": 924,
     "images": "./"
   },
   "bones": [
@@ -15,38 +15,38 @@
     {
       "name": "hip",
       "parent": "root",
-      "x": 0,
-      "y": 386
+      "x": 1,
+      "y": 389
     },
     {
       "name": "torso",
       "parent": "hip",
       "x": 0,
-      "y": 28
+      "y": 40
     },
     {
       "name": "head",
       "parent": "torso",
-      "x": 3,
-      "y": 174
+      "x": -4,
+      "y": 183
     },
     {
       "name": "armL",
       "parent": "torso",
-      "x": -174,
-      "y": 228
+      "x": -203,
+      "y": 258
     },
     {
       "name": "armL_fore",
       "parent": "armL",
-      "x": -6,
-      "y": -155
+      "x": 0,
+      "y": -171
     },
     {
       "name": "armL_hand",
       "parent": "armL_fore",
-      "x": 14,
-      "y": -131
+      "x": 11,
+      "y": -145
     },
     {
       "name": "prop",
@@ -57,89 +57,59 @@
     {
       "name": "armR",
       "parent": "torso",
-      "x": 171,
-      "y": 251
+      "x": 169,
+      "y": 271
     },
     {
       "name": "armR_fore",
       "parent": "armR",
-      "x": 25,
-      "y": -136
+      "x": 27,
+      "y": -139
     },
     {
       "name": "armR_hand",
       "parent": "armR_fore",
-      "x": -6,
-      "y": -115
+      "x": -7,
+      "y": -119
     },
     {
       "name": "legL",
       "parent": "hip",
-      "x": -63,
-      "y": 14
+      "x": -75,
+      "y": -13
     },
     {
       "name": "legL_calf",
       "parent": "legL",
-      "x": -41,
-      "y": -150
+      "x": -34,
+      "y": -142
     },
     {
       "name": "legL_foot",
       "parent": "legL_calf",
-      "x": -12,
-      "y": -149
+      "x": -29,
+      "y": -140
     },
     {
       "name": "legR",
       "parent": "hip",
-      "x": 88,
-      "y": 9
+      "x": 76,
+      "y": -3
     },
     {
       "name": "legR_calf",
       "parent": "legR",
-      "x": 18,
-      "y": -141
+      "x": 23,
+      "y": -160
     },
     {
       "name": "legR_foot",
       "parent": "legR_calf",
-      "x": 31,
-      "y": -149
+      "x": 40,
+      "y": -122
     }
   ],
   "slots": [
-    {
-      "name": "torso_1_decoration",
-      "bone": "torso",
-      "attachment": "torso_1_decoration"
-    },
-    {
-      "name": "torso_4_decoration",
-      "bone": "torso",
-      "attachment": "torso_4_decoration"
-    },
-    {
-      "name": "torso_0_trunk",
-      "bone": "torso",
-      "attachment": "torso_0_trunk"
-    },
-    {
-      "name": "torso_2_decoration",
-      "bone": "torso",
-      "attachment": "torso_2_decoration"
-    },
-    {
-      "name": "torso_3_decoration",
-      "bone": "torso",
-      "attachment": "torso_3_decoration"
-    },
-    {
-      "name": "torso_5_decoration",
-      "bone": "torso",
-      "attachment": "torso_5_decoration"
-    },
     {
       "name": "left_leg_0_thigh",
       "bone": "legL",
@@ -161,6 +131,16 @@
       "attachment": "right_leg_0_thigh"
     },
     {
+      "name": "torso_3_coat",
+      "bone": "torso",
+      "attachment": "torso_3_coat"
+    },
+    {
+      "name": "torso_1_coat",
+      "bone": "torso",
+      "attachment": "torso_1_coat"
+    },
+    {
       "name": "right_leg_1_calf",
       "bone": "legR_calf",
       "attachment": "right_leg_1_calf"
@@ -176,16 +156,6 @@
       "attachment": "left_arm_1_forearm"
     },
     {
-      "name": "left_arm_0_upper_arm",
-      "bone": "armL",
-      "attachment": "left_arm_0_upper_arm"
-    },
-    {
-      "name": "left_arm_2_hand",
-      "bone": "armL_fore",
-      "attachment": "left_arm_2_hand"
-    },
-    {
       "name": "right_arm_1_forearm",
       "bone": "armR_fore",
       "attachment": "right_arm_1_forearm"
@@ -196,39 +166,44 @@
       "attachment": "right_arm_2_hand"
     },
     {
-      "name": "head_0_hair",
-      "bone": "head",
-      "attachment": "head_0_hair"
-    },
-    {
       "name": "right_arm_0_upper_arm",
       "bone": "armR",
       "attachment": "right_arm_0_upper_arm"
     },
     {
-      "name": "head_1_hair",
-      "bone": "head",
-      "attachment": "head_1_hair"
+      "name": "torso_5_trunk",
+      "bone": "torso",
+      "attachment": "torso_5_trunk"
     },
     {
-      "name": "head_3_ear",
-      "bone": "head",
-      "attachment": "head_3_ear"
+      "name": "torso_4_decoration",
+      "bone": "torso",
+      "attachment": "torso_4_decoration"
     },
     {
-      "name": "head_2_face",
-      "bone": "head",
-      "attachment": "head_2_face"
+      "name": "torso_0_decoration",
+      "bone": "torso",
+      "attachment": "torso_0_decoration"
     },
     {
-      "name": "head_4_hat",
-      "bone": "head",
-      "attachment": "head_4_hat"
+      "name": "left_arm_0_upper_arm",
+      "bone": "armL",
+      "attachment": "left_arm_0_upper_arm"
     },
     {
-      "name": "head_5_decoration",
+      "name": "head_4_face",
       "bone": "head",
-      "attachment": "head_5_decoration"
+      "attachment": "head_4_face"
+    },
+    {
+      "name": "head_0_decoration",
+      "bone": "head",
+      "attachment": "head_0_decoration"
+    },
+    {
+      "name": "head_5_eye",
+      "bone": "head",
+      "attachment": "head_5_eye"
     },
     {
       "name": "right_arm_1_forearm_front",
@@ -247,213 +222,173 @@
     {
       "name": "default",
       "attachments": {
-        "torso_1_decoration": {
-          "torso_1_decoration": {
-            "x": 3,
-            "y": 202,
-            "width": 270,
-            "height": 262
-          }
-        },
-        "torso_4_decoration": {
-          "torso_4_decoration": {
-            "x": 32,
-            "y": 112,
-            "width": 232,
-            "height": 62
-          }
-        },
-        "torso_0_trunk": {
-          "torso_0_trunk": {
-            "x": -30.5,
-            "y": 103.5,
-            "width": 361,
-            "height": 441
-          }
-        },
-        "torso_2_decoration": {
-          "torso_2_decoration": {
-            "x": -132,
-            "y": 222,
-            "width": 264,
-            "height": 290
-          }
-        },
-        "torso_3_decoration": {
-          "torso_3_decoration": {
-            "x": 144.5,
-            "y": 102.5,
-            "width": 21,
-            "height": 27
-          }
-        },
-        "torso_5_decoration": {
-          "torso_5_decoration": {
-            "x": 145.5,
-            "y": 141,
-            "width": 25,
-            "height": 34
-          }
-        },
         "left_leg_0_thigh": {
           "left_leg_0_thigh": {
             "x": -0.5,
-            "y": -89,
-            "width": 153,
-            "height": 214
+            "y": -70.5,
+            "width": 181,
+            "height": 177
           }
         },
         "left_leg_1_calf": {
           "left_leg_1_calf": {
             "x": 0,
-            "y": -89.5,
-            "width": 142,
-            "height": 215
+            "y": -71.5,
+            "width": 138,
+            "height": 179
           }
         },
         "left_leg_2_foot": {
           "left_leg_2_foot": {
             "x": -0.5,
-            "y": -45,
-            "width": 113,
-            "height": 126
+            "y": -38,
+            "width": 117,
+            "height": 112
           }
         },
         "right_leg_0_thigh": {
           "right_leg_0_thigh": {
             "x": 0,
-            "y": -84,
-            "width": 146,
-            "height": 204
+            "y": -80,
+            "width": 176,
+            "height": 196
+          }
+        },
+        "torso_3_coat": {
+          "torso_3_coat": {
+            "x": -12.5,
+            "y": 48.5,
+            "width": 337,
+            "height": 353
+          }
+        },
+        "torso_1_coat": {
+          "torso_1_coat": {
+            "x": -92.5,
+            "y": 212.5,
+            "width": 263,
+            "height": 205
           }
         },
         "right_leg_1_calf": {
           "right_leg_1_calf": {
             "x": 0,
-            "y": -82,
-            "width": 126,
-            "height": 200
+            "y": -63.5,
+            "width": 130,
+            "height": 163
           }
         },
         "right_leg_2_foot": {
           "right_leg_2_foot": {
-            "x": 0,
-            "y": -40.5,
-            "width": 172,
-            "height": 117
+            "x": -0.5,
+            "y": -36,
+            "width": 171,
+            "height": 108
           }
         },
         "left_arm_1_forearm": {
           "left_arm_1_forearm": {
-            "x": -12.5,
-            "y": -31.5,
-            "width": 129,
-            "height": 91
-          }
-        },
-        "left_arm_0_upper_arm": {
-          "left_arm_0_upper_arm": {
             "x": -0.5,
-            "y": -102,
-            "width": 161,
-            "height": 240
-          }
-        },
-        "left_arm_2_hand": {
-          "left_arm_2_hand": {
-            "x": 0,
-            "y": -101,
-            "width": 156,
-            "height": 238
+            "y": -104,
+            "width": 165,
+            "height": 244
           }
         },
         "right_arm_1_forearm": {
           "right_arm_1_forearm": {
-            "x": -5,
-            "y": -70.5,
-            "width": 120,
-            "height": 159
+            "x": -73.5,
+            "y": 5,
+            "width": 55,
+            "height": 144
           }
         },
         "right_arm_2_hand": {
           "right_arm_2_hand": {
-            "x": 0,
-            "y": -110.5,
-            "width": 122,
-            "height": 257
-          }
-        },
-        "head_0_hair": {
-          "head_0_hair": {
-            "x": 42,
-            "y": 73,
-            "width": 168,
-            "height": 156
+            "x": -0.5,
+            "y": -114,
+            "width": 129,
+            "height": 264
           }
         },
         "right_arm_0_upper_arm": {
           "right_arm_0_upper_arm": {
             "x": 0,
-            "y": -86.5,
-            "width": 108,
-            "height": 209
+            "y": -94.5,
+            "width": 154,
+            "height": 225
           }
         },
-        "head_1_hair": {
-          "head_1_hair": {
-            "x": 37.5,
-            "y": 45.5,
-            "width": 109,
-            "height": 53
+        "torso_5_trunk": {
+          "torso_5_trunk": {
+            "x": 15.5,
+            "y": 163,
+            "width": 333,
+            "height": 382
           }
         },
-        "head_3_ear": {
-          "head_3_ear": {
-            "x": -89,
-            "y": 112,
-            "width": 84,
-            "height": 126
+        "torso_4_decoration": {
+          "torso_4_decoration": {
+            "x": 42,
+            "y": 178,
+            "width": 100,
+            "height": 150
           }
         },
-        "head_2_face": {
-          "head_2_face": {
-            "x": -28,
-            "y": 159,
-            "width": 242,
-            "height": 274
+        "torso_0_decoration": {
+          "torso_0_decoration": {
+            "x": -27.5,
+            "y": 236.5,
+            "width": 217,
+            "height": 267
           }
         },
-        "head_4_hat": {
-          "head_4_hat": {
-            "x": 14,
-            "y": 187.5,
-            "width": 236,
-            "height": 177
-          }
-        },
-        "head_5_decoration": {
-          "head_5_decoration": {
-            "x": -64.5,
-            "y": 141.5,
+        "left_arm_0_upper_arm": {
+          "left_arm_0_upper_arm": {
+            "x": -0.5,
+            "y": -87,
             "width": 169,
-            "height": 309
+            "height": 210
+          }
+        },
+        "head_4_face": {
+          "head_4_face": {
+            "x": 0,
+            "y": 162.5,
+            "width": 248,
+            "height": 299
+          }
+        },
+        "head_0_decoration": {
+          "head_0_decoration": {
+            "x": -54,
+            "y": 158.5,
+            "width": 140,
+            "height": 307
+          }
+        },
+        "head_5_eye": {
+          "head_5_eye": {
+            "x": -11.5,
+            "y": 234,
+            "width": 225,
+            "height": 156
           }
         },
         "right_arm_1_forearm_front": {
           "right_arm_1_forearm_front": {
-            "x": -5,
-            "y": -70.5,
-            "width": 120,
-            "height": 159,
+            "x": -73.5,
+            "y": 5,
+            "width": 55,
+            "height": 144,
             "path": "right_arm_1_forearm"
           }
         },
         "right_arm_2_hand_front": {
           "right_arm_2_hand_front": {
-            "x": 0,
-            "y": -110.5,
-            "width": 122,
-            "height": 257,
+            "x": -0.5,
+            "y": -114,
+            "width": 129,
+            "height": 264,
             "path": "right_arm_2_hand"
           }
         },
@@ -921,49 +856,49 @@
               "value": 0,
               "curve": [
                 0.6267,
-                -0.5547,
+                -0.5515,
                 1.2533,
-                -2.1513
+                -2.1389
               ]
             },
             {
               "time": 1.8800000000000001,
-              "value": -2.1512916273205405,
+              "value": -2.1388623755531437,
               "curve": [
                 1.92,
-                -2.1513,
+                -2.1389,
                 1.96,
-                -2.0284
+                -2.0151
               ]
             },
             {
               "time": 2,
-              "value": -1.9609485397027029,
+              "value": -1.9477259314395148,
               "curve": [
                 2.56,
-                -1.0165,
+                -1.0042,
                 3.12,
-                1.0407
+                1.0373
               ]
             },
             {
               "time": 3.68,
-              "value": 1.040660683714367,
+              "value": 1.0373202353110353,
               "curve": [
                 3.7533,
-                1.0407,
+                1.0373,
                 3.8267,
-                0.979
+                0.9737
               ]
             },
             {
               "time": 3.9,
-              "value": 0.9391549147986069,
+              "value": 0.9336454946889452,
               "curve": [
                 4.4,
-                0.6673,
+                0.6602,
                 4.9,
-                0.4426
+                0.44
               ]
             },
             {
@@ -1977,39 +1912,39 @@
               "value": 0,
               "curve": [
                 0.1633,
-                2.2823,
+                2.3139,
                 0.3267,
-                0.7938
+                0.857
               ]
             },
             {
               "time": 0.49,
-              "value": 6.847006075229177,
+              "value": 6.941729438518099,
               "curve": [
                 0.5167,
-                7.8353,
+                7.9352,
                 0.5433,
-                9.949
+                10.0627
               ]
             },
             {
               "time": 0.5700000000000001,
-              "value": 11.658762169144149,
+              "value": 11.768950571337383,
               "curve": [
                 0.5967,
-                13.3686,
+                13.4752,
                 0.6233,
-                17.1058
+                17.1793
               ]
             },
             {
               "time": 0.65,
-              "value": 17.105841446096097,
+              "value": 17.179300380891586,
               "curve": [
                 0.7033,
-                17.1058,
+                17.1793,
                 0.7567,
-                15.682
+                15.6879
               ]
             },
             {
@@ -2017,39 +1952,39 @@
               "value": 14.631578947368421,
               "curve": [
                 0.8833,
-                13.1872,
+                13.1791,
                 0.9567,
-                9.3677
+                9.4196
               ]
             },
             {
               "time": 1.03,
-              "value": 9.367702165453668,
+              "value": 9.419648126487623,
               "curve": [
                 1.05,
-                9.3677,
+                9.4196,
                 1.07,
-                11.1905
+                11.257
               ]
             },
             {
               "time": 1.09,
-              "value": 12.19525730148649,
+              "value": 12.261370342802431,
               "curve": [
                 1.15,
-                15.2096,
+                15.2746,
                 1.21,
-                21.7988
+                21.8153
               ]
             },
             {
               "time": 1.27,
-              "value": 21.798814325371623,
+              "value": 21.815342585700606,
               "curve": [
                 1.29,
-                21.7988,
+                21.8153,
                 1.31,
-                20.3301
+                20.3329
               ]
             },
             {
@@ -2057,7 +1992,7 @@
               "value": 19.545454545454543,
               "curve": [
                 1.3833,
-                17.4531,
+                17.4457,
                 1.4367,
                 13
               ]
@@ -3452,79 +3387,79 @@
               "value": 0,
               "curve": [
                 0.1367,
-                6.4048,
+                6.4263,
                 0.2733,
-                19.2144
+                19.279
               ]
             },
             {
               "time": 0.41000000000000003,
-              "value": 19.214417841927286,
+              "value": 19.278956763211895,
               "curve": [
                 0.4333,
-                19.2144,
+                19.279,
                 0.4567,
-                5.1971
+                5.263
               ]
             },
             {
               "time": 0.48,
-              "value": 5.0802940588417,
+              "value": 5.155851820345632,
               "curve": [
                 0.5267,
-                4.8466,
+                4.9416,
                 0.5733,
-                4.6803
+                4.7883
               ]
             },
             {
               "time": 0.62,
-              "value": 4.812046492670528,
+              "value": 4.9096419346131075,
               "curve": [
                 0.6467,
-                4.8873,
+                4.979,
                 0.6733,
-                10.6275
+                10.7676
               ]
             },
             {
               "time": 0.7000000000000001,
-              "value": 14.158762169144152,
+              "value": 14.268950571337387,
               "curve": [
                 0.7267,
-                17.6901,
+                17.7703,
                 0.7533,
-                24.878
+                24.6469
               ]
             },
             {
               "time": 0.78,
-              "value": 25.99983183754709,
+              "value": 25.91769139227577,
               "curve": [
                 0.79,
-                26.4205,
+                26.3942,
                 0.8,
-                25.7569
+                25.6499
               ]
             },
             {
               "time": 0.81,
-              "value": 25.514096599561835,
+              "value": 25.359832836491307,
               "curve": [
                 0.8367,
-                24.8666,
+                24.5864,
                 0.8633,
-                22.6959
+                22.6049
               ]
             },
             {
               "time": 0.89,
-              "value": 20.722204985845462,
+              "value": 20.662872769279872,
               "curve": [
                 0.9067,
-                19.4886,
+                19.4491,
                 0.9233,
-                17.6953
+                17.6828
               ]
             },
             {
@@ -3532,69 +3467,69 @@
               "value": 16.31578947368421,
               "curve": [
                 0.9867,
-                12.4532,
+                12.4881,
                 1.0333,
-                5.7857
+                5.8009
               ]
             },
             {
               "time": 1.08,
-              "value": 5.4784075102227225,
+              "value": 5.521258555520092,
               "curve": [
                 1.1267,
-                5.1711,
+                5.2416,
                 1.1733,
-                4.5353
+                4.6539
               ]
             },
             {
               "time": 1.22,
-              "value": 4.956815020445445,
+              "value": 5.042517111040183,
               "curve": [
                 1.2467,
-                5.1977,
+                5.2646,
                 1.2733,
-                10.6516
+                10.7898
               ]
             },
             {
               "time": 1.2999999999999998,
-              "value": 14.158762169144131,
+              "value": 14.268950571337365,
               "curve": [
                 1.3267,
-                17.6659,
+                17.7481,
                 1.3533,
-                24.878
+                24.6469
               ]
             },
             {
               "time": 1.38,
-              "value": 25.99983183754709,
+              "value": 25.91769139227577,
               "curve": [
                 1.39,
-                26.4205,
+                26.3942,
                 1.4,
-                25.7569
+                25.6499
               ]
             },
             {
               "time": 1.41,
-              "value": 25.514096599561835,
+              "value": 25.359832836491307,
               "curve": [
                 1.4367,
-                24.8666,
+                24.5864,
                 1.4633,
-                22.6959
+                22.6049
               ]
             },
             {
               "time": 1.49,
-              "value": 20.72220498584546,
+              "value": 20.662872769279872,
               "curve": [
                 1.5067,
-                19.4886,
+                19.4491,
                 1.5233,
-                17.6953
+                17.6828
               ]
             },
             {
@@ -3602,67 +3537,67 @@
               "value": 16.315789473684223,
               "curve": [
                 1.5867,
-                12.4532,
+                12.4881,
                 1.6333,
-                5.7857
+                5.8009
               ]
             },
             {
               "time": 1.68,
-              "value": 5.4784075102227225,
+              "value": 5.521258555520092,
               "curve": [
                 1.7267,
-                5.1711,
+                5.2416,
                 1.7733,
-                4.5353
+                4.6539
               ]
             },
             {
               "time": 1.82,
-              "value": 4.956815020445445,
+              "value": 5.042517111040183,
               "curve": [
                 1.8467,
-                5.1977,
+                5.2646,
                 1.8733,
-                10.6516
+                10.7898
               ]
             },
             {
               "time": 1.9,
-              "value": 14.158762169144131,
+              "value": 14.268950571337365,
               "curve": [
                 1.9267,
-                17.6659,
+                17.7481,
                 1.9533,
-                24.878
+                24.6469
               ]
             },
             {
               "time": 1.98,
-              "value": 25.999831837547095,
+              "value": 25.917691392275778,
               "curve": [
                 1.99,
-                26.4205,
+                26.3942,
                 2,
-                25.7569
+                25.6499
               ]
             },
             {
               "time": 2.01,
-              "value": 25.514096599561842,
+              "value": 25.359832836491314,
               "curve": [
                 2.0367,
-                24.8666,
+                24.5864,
                 2.0633,
-                21.7134
+                21.6225
               ]
             },
             {
               "time": 2.09,
-              "value": 20.722204985845462,
+              "value": 20.662872769279875,
               "curve": [
                 2.1067,
-                20.1027,
+                20.0631,
                 2.1233,
                 20
               ]
@@ -4712,69 +4647,69 @@
               "value": 0,
               "curve": [
                 0.0667,
-                5.0166,
+                4.9878,
                 0.1333,
-                11.1164
+                11.059
               ]
             },
             {
               "time": 0.2,
-              "value": 15.049664389365452,
+              "value": 14.963429987649008,
               "curve": [
                 0.2867,
-                20.1629,
+                20.0392,
                 0.3733,
-                25.9915
+                25.7272
               ]
             },
             {
               "time": 0.46,
-              "value": 26.16422809554054,
+              "value": 25.96588897159272,
               "curve": [
                 0.48,
-                26.2041,
+                26.021,
                 0.5,
-                27.0859
+                27.1806
               ]
             },
             {
               "time": 0.52,
-              "value": 26.62591098773273,
+              "value": 26.574489733375888,
               "curve": [
                 0.5533,
-                25.8593,
+                25.5643,
                 0.5867,
-                -26.5166
+                -26.0992
               ]
             },
             {
               "time": 0.62,
-              "value": -32.35461752528028,
+              "value": -32.16117566365216,
               "curve": [
                 0.6267,
-                -33.5222,
+                -33.3736,
                 0.6333,
-                -31.4933
+                -31.2718
               ]
             },
             {
               "time": 0.6399999999999999,
-              "value": -31.132541409701073,
+              "value": -30.890126924875958,
               "curve": [
                 0.7067,
-                -27.5248,
+                -27.0738,
                 0.7733,
-                -15.3938
+                -15.2757
               ]
             },
             {
               "time": 0.84,
-              "value": -10.680936129511435,
+              "value": -10.624994325321023,
               "curve": [
                 0.86,
-                -9.2671,
+                -9.2298,
                 0.88,
-                -9.0024
+                -8.9931
               ]
             },
             {
@@ -4782,7 +4717,7 @@
               "value": -8.333333333333332,
               "curve": [
                 1,
-                -4.9881,
+                -5.0347,
                 1.1,
                 -2.7778
               ]

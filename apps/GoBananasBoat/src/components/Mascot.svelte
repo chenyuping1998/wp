@@ -24,15 +24,26 @@
 
 	// Skeleton units are the source PSD's pixels, and its origin sits on the
 	// ground between the boots (design/generate_monkey_spine.mjs). So the figure
-	// is 846 units from the floor to the top of the beret, 518 across, and
+	// is 924 units from the floor to the top of his cap, 548 across, and
 	// positioning it means putting its FEET somewhere rather than working out
 	// where the centre of a bounding box ought to go.
-	const ART = { height: 846, width: 518 };
+	//
+	// Measured off the captain PSD's own piece bounds, not estimated: the art
+	// spans x 4..552 and y 0..924 on a 560x928 canvas with the origin on the
+	// ground at (291, 924). Re-measure whenever the character art is replaced —
+	// nothing checks this, it just draws him at the wrong size.
+	const ART = { height: 924, width: 548 };
 
-	// Where the dynamite leaves his hand, in skeleton units, printed by
-	// design/generate_monkey_spine.mjs when it builds the 'throwit' animation:
-	// the left hand at full extension, at RELEASE_AT = 0.38s.
-	const RELEASE = { x: -349, y: 495 };
+	// Where the mine leaves his hand, in skeleton units, PRINTED BY
+	// design/generate_monkey_spine.mjs when it builds the 'throwit' animation
+	// ("release  hand at (x, y) at t=..."): the left hand at full extension, at
+	// RELEASE_AT = 0.58s.
+	//
+	// Not a free number. TransitionAnimation's THROW_RELEASE_MS must equal that
+	// same 0.58s in milliseconds, because the skeleton hides the prop in his fist
+	// at exactly that moment and the transition switches its own copy on. If the
+	// two drift there is a frame with two props or a frame with none.
+	const RELEASE = { x: -392, y: 525 };
 
 	// Below this there is no room to stand him next to the board without either
 	// overlapping the frame or shrinking him to a thumbnail. Tablet (1000x1000)

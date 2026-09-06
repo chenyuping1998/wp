@@ -105,7 +105,13 @@ const piece = (name) => {
 };
 
 // Skeleton origin on the PSD canvas: centred between the boots, on the ground.
-const ROOT = { x: 280, y: 884 };
+// The skeleton origin: on the ground, between the feet. Measured on THIS
+// character — x is the midpoint of the two foot centres, y is the lowest point
+// of the lower foot, both read off layers.json. Carried over from the gen-2
+// commando it was (280, 884) on a 912-tall canvas, which sat 40px above the
+// captain's soles: the whole rig hovered, and Mascot.svelte positions him by his
+// feet, so he would have floated above the bet bar.
+const ROOT = { x: 291, y: 924 };
 const toSpine = (x, y) => ({ x: x - ROOT.x, y: ROOT.y - y });
 
 // ── the skeleton ────────────────────────────────────────────────────────────
@@ -125,19 +131,59 @@ const toSpine = (x, y) => ({ x: x - ROOT.x, y: ROOT.y - y });
 //
 // Only the three joints with no distal piece of their own are given explicitly:
 // the hip (the root of everything), the waist, and the neck.
+//
+// THESE ARE MEASURED ON THE CHARACTER, SO THEY MOVE WHEN THE CHARACTER DOES.
+//
+// Every explicit coordinate below is in PSD pixels on THIS character's canvas
+// (560x928, captain). They were carried over from the gen-2 commando's 560x912
+// canvas when this game was forked and were quietly wrong for the new art — the
+// rig loads and animates either way, so nothing fails; the limbs just pivot
+// about points that are not the character's joints.
+//
+// Re-derived here as fractions of the pieces they sit against, so the same
+// reasoning can be reapplied to the next character rather than re-guessed:
+//
+//   hip        pelvis centre: midway between the thigh tops, x centred on them
+//   torso      the belt line, a little above the hip
+//   head       base of the skull, just under the jaw of head_*_face
+//   armL_hand  ~65% down the left arm's distal piece, at its centre
+//   armR_hand  ~52% down the right arm's distal piece
+//   prop       just outboard and below the left hand, where a held object sits
+//
+// Verify with `node design/preview_monkey_spine.mjs` and look at the rendered
+// _preview_*.png — a joint in the wrong place is obvious there and invisible
+// in the JSON.
 const JOINT_INSET = 18;
-const jointOf = (pieceName) => {
-	const l = piece(pieceName);
+// Takes CANDIDATES, not one name, and uses the first that the PSD actually
+// shipped.
+//
+// Artists do not segment both arms the same way and there is no reason they
+// should. The gen-2 character had `_1_forearm` as a small cuff and `_2_hand` as
+// the forearm-plus-fist on BOTH sides. The captain has that on his right, but on
+// his left the whole lower arm is one `_1_forearm` piece and `_2_hand` is an
+// empty layer — which extract_monkey_psd.py drops, correctly, because it holds
+// no pixels.
+//
+// Naming one piece here made that a crash: `piece()` throws on a name the PSD
+// does not contain, so a perfectly good character could not be rigged because of
+// how its layers happened to be grouped. Asking for the distal piece by
+// preference order costs nothing and lets either segmentation through.
+const jointOf = (...candidates) => {
+	const name = candidates.find((c) => c in byName);
+	if (!name) {
+		throw new Error(`no distal piece found, tried: ${candidates.join(', ')}`);
+	}
+	const l = piece(name);
 	return [Math.round(l.x + l.w / 2), Math.round(l.y + JOINT_INSET)];
 };
 
 const RIG = [
 	// Explicit: these three sit inside the torso mass rather than at the top of a
 	// limb, so there is no piece edge to read them off.
-	{ name: 'hip', parent: 'root', at: [280, 498], match: null },
-	{ name: 'torso', parent: 'hip', at: [280, 470], match: /^torso_/ },
+	{ name: 'hip', parent: 'root', at: [292, 535], match: null },
+	{ name: 'torso', parent: 'hip', at: [292, 495], match: /^torso_/ },
 	// The neck, just under the jaw: the head nods and turns about this.
-	{ name: 'head', parent: 'torso', at: [283, 296], match: /^head_/ },
+	{ name: 'head', parent: 'torso', at: [288, 312], match: /^head_/ },
 
 	// ARMS. `_0_upper_arm` is the sleeve and is correctly named on both sides.
 	//
@@ -151,15 +197,15 @@ const RIG = [
 	// lever-arm ratio, so an animation asking for a wrist flick still gets one out
 	// of the forearm instead of the arm going rigid.
 	{ name: 'armL', parent: 'torso', at: jointOf('left_arm_0_upper_arm'), match: /^left_arm_0/ },
-	{ name: 'armL_fore', parent: 'armL', at: jointOf('left_arm_2_hand'), match: /^left_arm_(1|2)/ },
-	{ name: 'armL_hand', parent: 'armL_fore', at: [114, 528], match: null, fuse: 'armL_fore' },
+	{ name: 'armL_fore', parent: 'armL', at: jointOf('left_arm_2_hand', 'left_arm_1_forearm'), match: /^left_arm_(1|2)/ },
+	{ name: 'armL_hand', parent: 'armL_fore', at: [100, 553], match: null, fuse: 'armL_fore' },
 	// Carries the thrown prop, so it follows the hand exactly rather than being
 	// chased by something outside the skeleton trying to guess where the hand is.
-	{ name: 'prop', parent: 'armL_hand', at: [118, 548], match: null },
+	{ name: 'prop', parent: 'armL_hand', at: [104, 573], match: null },
 
 	{ name: 'armR', parent: 'torso', at: jointOf('right_arm_0_upper_arm'), match: /^right_arm_0/ },
-	{ name: 'armR_fore', parent: 'armR', at: jointOf('right_arm_2_hand'), match: /^right_arm_(1|2)/ },
-	{ name: 'armR_hand', parent: 'armR_fore', at: [470, 470], match: null, fuse: 'armR_fore' },
+	{ name: 'armR_fore', parent: 'armR', at: jointOf('right_arm_2_hand', 'right_arm_1_forearm'), match: /^right_arm_(1|2)/ },
+	{ name: 'armR_hand', parent: 'armR_fore', at: [481, 482], match: null, fuse: 'armR_fore' },
 
 	{ name: 'legL', parent: 'hip', at: jointOf('left_leg_0_thigh'), match: /^left_leg_0/ },
 	{ name: 'legL_calf', parent: 'legL', at: jointOf('left_leg_1_calf'), match: /^left_leg_1/ },

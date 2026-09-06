@@ -76,17 +76,22 @@
 	const rowCenterY = (row: number) => row * SYMBOL_SIZE - SYMBOL_SIZE / 2;
 
 	// Per-cell timeline, in fractions of DURATION:
-	//   0    -> RATTLE_END   the crate shakes; nothing has come loose yet
-	//   RATTLE_END -> 1      the tarp is pulled up and off, fading and turning
-	//   SWAP_AT               the board symbol underneath is swapped — placed at
-	//                         the point the tarp is roughly half gone, so the
-	//                         cargo looks uncovered rather than conjured
+	//   0 -> RATTLE_END   the crate shakes; nothing has come loose yet
+	//   RATTLE_END        the rope gives: the board symbol underneath is swapped
+	//                     on this exact frame, while the tarp still covers it
+	//   RATTLE_END -> 1   the tarp is pulled up and off, fading and turning
+	//
+	// The swap is ON the frame the tarp starts to move, not partway through the
+	// lift. It used to be at 0.5 — halfway up — and that was wrong: the board's
+	// own Symbol.svelte keeps drawing the sealed crate until this fires, so a
+	// tarp lifting off a cell that still held a crate uncovered an identical
+	// crate underneath. Swapping behind cover, on the frame before anything has
+	// moved, is what makes the tarp look like it was hiding the cargo.
 	const DURATION = 460;
 	const DURATION_TURBO = 170;
 	const STAGGER = 70;
 	const STAGGER_TURBO = 22;
 	const RATTLE_END = 0.22;
-	const SWAP_AT = 0.5;
 
 	type RevealEntry = {
 		reel: number;
@@ -124,8 +129,7 @@
 			clock = now;
 			for (const entry of entries) {
 				if (entry.swapped) continue;
-				const p = (now - entry.bornAt) / entry.durationMs;
-				if (p < SWAP_AT) continue;
+				if ((now - entry.bornAt) / entry.durationMs < RATTLE_END) continue;
 				entry.swapped = true;
 				const reelSymbol = context.stateGame.board[entry.reel]?.reelState.symbols[entry.row];
 				if (reelSymbol) {
