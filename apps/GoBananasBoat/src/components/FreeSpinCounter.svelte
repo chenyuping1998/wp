@@ -80,7 +80,9 @@
 		for (let i = 0; i < total; i++) {
 			const lit = i < remaining;
 			g.lineStyle(2, 0x54330a, 1);
-			g.beginFill(lit ? 0xffd75e : 0x1c260c, lit ? 1 : 0.85);
+			// unlit is the plaque's own steel, not the jungle olive it used to be —
+			// an empty socket in the plate rather than a dark green dot on it
+			g.beginFill(lit ? 0xffd75e : 0x26323b, lit ? 1 : 0.85);
 			g.drawCircle(startX + i * gap, y, panelSizes.width * 0.035);
 			g.endFill();
 		}

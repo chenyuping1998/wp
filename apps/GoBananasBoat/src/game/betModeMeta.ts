@@ -5,7 +5,7 @@ import { base } from '$app/paths';
 
 import config from './config';
 
-// Go Bananas Delta ships five math modes: base play, the 50x hold and spin, and
+// Go Bananas Boat ships five math modes: base play, the 50x hold and spin, and
 // three free-spin buys at 100x / 200x / 300x. The keys here are the math mode
 // names uppercased — stateBet looks them up with activeBetModeKey.toUpperCase().
 // The shared library ships a template default (ANTE / SUPER ANTE / …) with no
@@ -14,14 +14,16 @@ import config from './config';
 //
 // WHAT THE THREE BUYS ACTUALLY DIFFER BY
 //
-// Each tier opens with more dynamite already in the blast meter — 0, 2, 4 — and that is the
-// thing the player sees. It is NOT where the price comes from, and the copy is
-// written carefully around that. Measured, going from 0 to all 5 pre-split reels
-// spans only about 2x, because splits stick and the board fills itself within a
-// few spins anyway; 1 -> 3 is +43% against a 3x price step. The money comes from
-// the tiers' hotter reels and longer runs. So the copy leads with the head start
-// AND states the spin count, rather than implying the head start alone is worth
-// triple.
+// Crate density on the free strips — 28% / 31% / 34% against the scatter-won
+// feature's 25% — and the per-spin chance of a Full Shipment, 3.5% / 4% / 4.5%
+// (DENSITY in math-sdk/games/GoBananasBoat/make_mystery_reels.py, and
+// full_shipment_chance in its game_config). All three play the same eight spins.
+//
+// The copy says exactly that and nothing more. It previously described banked
+// dynamite filling a blast meter, which was true of the game this app was forked
+// from and has not been true here since the dynamite was removed: three dialogs
+// and their three social variants were selling a mechanic the player would never
+// see.
 //
 // Social play cannot use betting terminology anywhere the player can read it —
 // that includes the feature cards, their confirmation dialog and the ticker.
@@ -44,20 +46,24 @@ const emptyAssets = {
 // The buy modal's card art. A DOM <img> src, not a pixi asset key — the cards
 // are HTML, not canvas.
 //
-// NOTE: every one of these files is still gen-2 artwork, copied to the new mode
-// names so nothing renders broken. card_bonus200 and card_bonus300 are currently
-// the SAME image. design/generate_mode_cards.mjs must be re-run against this
-// game's symbols before submission, and the three buy cards want to differ by
-// the number of split reels they show, since that is what the tiers differ by.
+// Regenerated from this game's own symbols by design/generate_mode_cards.mjs:
+// each buy card shows two, three or four reels of cargo crates with the lower
+// half already opened on one cargo, which is the tiers' real difference drawn
+// literally. Re-run that script whenever the symbol art changes — the cards
+// composite the actual tile PNGs, so they follow along.
 const cardArt = (name: string) => `${base}/assets/sprites/goBananasUi/card_${name}.png`;
 
-// Repeated in every dialog; kept in one place so the figure cannot drift between
-// cards the way it did in gen-2.
-const MAX_WIN = '10,000×';
+// Repeated in every dialog; DERIVED, so none of these can drift from the maths
+// the way they have twice already. MAX_WIN was a hardcoded '10,000×' and RTP was
+// a hardcoded '96%' — against a game that has been solved to 95% all along, on
+// every card, in both languages.
+const pct = (v: number) => `${Math.round(v * 100)}%`;
+const times = (v: number) => `${v.toLocaleString()}×`;
+const MAX_WIN = times(config.betModes.bonus100.max_win);
 // A full board is every cell the same symbol, so every reel contributes all four
 // of its rows: 4^5. Derived, because the board size lives in the maths config.
 const WAYS = (config.numRows ?? []).reduce((a: number, b: number) => a * b, 1).toLocaleString();
-const RTP = '96%';
+const RTP = pct(config.rtp);
 
 export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 	BASE: {
@@ -131,14 +137,14 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy direct entry into ${config.betModes.bonus100.spins} FREE SPINS for 100× your bet, at the same ${RTP} RTP as base play. Every Dynamite that lands fills its reel with the best symbol on it, and widens the next blast. Five reels of one symbol is 1,024 ways at once. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter ${config.betModes.bonus100.spins} FREE SPINS directly for 100× your amount, at the same ${RTP} RTP as normal play. Every Dynamite that lands fills its reel with the best symbol on it, and widens the next blast. Five reels of one symbol is 1,024 ways at once. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy direct entry into ${config.betModes.bonus100.spins} FREE SPINS for 100× your bet, at the same ${RTP} RTP as base play. The whole round carries one shipment: every cargo crate that lands, on every spin, opens on the same symbol. A Full Shipment turns the entire board into crates — ${WAYS} ways of one symbol in a single spin. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter ${config.betModes.bonus100.spins} FREE SPINS directly for 100× your amount, at the same ${RTP} RTP as normal play. The whole round carries one shipment: every cargo crate that lands, on every spin, opens on the same symbol. A Full Shipment turns the entire board into crates — ${WAYS} ways of one symbol in a single spin. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {
 				return pick(
-					`100× BET → ${config.betModes.bonus100.spins} FREE SPINS, opening with the blast meter part-filled`,
-					`100× AMOUNT → ${config.betModes.bonus100.spins} FREE SPINS, opening with the blast meter part-filled`,
+					`100× BET → ${config.betModes.bonus100.spins} FREE SPINS with extra crates on the reels`,
+					`100× AMOUNT → ${config.betModes.bonus100.spins} FREE SPINS with extra crates on the reels`,
 				);
 			},
 			get button() {
@@ -168,14 +174,14 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy entry into ${config.betModes.bonus200.spins} FREE SPINS for 200× your bet, at the same ${RTP} RTP as base play. The blast meter opens half-filled, so the first Dynamite already blows two reels. Every Dynamite widens the next blast, and five reels of one symbol is ${WAYS} ways at once. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter ${config.betModes.bonus200.spins} FREE SPINS for 200× your amount, at the same ${RTP} RTP as normal play. The blast meter opens half-filled, so the first Dynamite already blows two reels. Every Dynamite widens the next blast, and five reels of one symbol is ${WAYS} ways at once. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy a stronger entry for 200× your bet, at the same ${RTP} RTP as base play: ${config.betModes.bonus200.spins} FREE SPINS with more cargo crates on the reels than the 100× round, and a better chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment is ${WAYS} ways of it in one spin. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter a stronger round for 200× your amount, at the same ${RTP} RTP as normal play: ${config.betModes.bonus200.spins} FREE SPINS with more cargo crates on the reels than the 100× round, and a better chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment is ${WAYS} ways of it in one spin. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {
 				return pick(
-					`200× BET → ${config.betModes.bonus200.spins} FREE SPINS, opening with the blast meter half-filled`,
-					`200× AMOUNT → ${config.betModes.bonus200.spins} FREE SPINS, opening with the blast meter half-filled`,
+					`200× BET → ${config.betModes.bonus200.spins} FREE SPINS, more crates and more Full Shipments`,
+					`200× AMOUNT → ${config.betModes.bonus200.spins} FREE SPINS, more crates and more Full Shipments`,
 				);
 			},
 			get button() {
@@ -209,14 +215,14 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy the strongest entry for 300× your bet, at the same ${RTP} RTP as base play: ${config.betModes.bonus300.spins} FREE SPINS opening with the blast meter nearly full, so the first Dynamite already blows three reels. Every Dynamite widens the next blast, and five reels of one symbol is ${WAYS} ways at once. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter the strongest round for 300× your amount, at the same ${RTP} RTP as normal play: ${config.betModes.bonus300.spins} FREE SPINS opening with the blast meter nearly full, so the first Dynamite already blows three reels. Every Dynamite widens the next blast, and five reels of one symbol is ${WAYS} ways at once. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy the strongest entry for 300× your bet, at the same ${RTP} RTP as base play: ${config.betModes.bonus300.spins} FREE SPINS with the most cargo crates on the reels and the best chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment turns the whole board into that one cargo — ${WAYS} ways in a single spin. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter the strongest round for 300× your amount, at the same ${RTP} RTP as normal play: ${config.betModes.bonus300.spins} FREE SPINS with the most cargo crates on the reels and the best chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment turns the whole board into that one cargo — ${WAYS} ways in a single spin. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {
 				return pick(
-					`300× BET → ${config.betModes.bonus300.spins} FREE SPINS, opening with the blast meter nearly full`,
-					`300× AMOUNT → ${config.betModes.bonus300.spins} FREE SPINS, opening with the blast meter nearly full`,
+					`300× BET → ${config.betModes.bonus300.spins} FREE SPINS, the most crates and the most Full Shipments`,
+					`300× AMOUNT → ${config.betModes.bonus300.spins} FREE SPINS, the most crates and the most Full Shipments`,
 				);
 			},
 			get button() {

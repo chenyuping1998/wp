@@ -543,4 +543,183 @@ const grooveBar = (buf, t0, beat, sr, energy = 1) => {
 	writeWav('grenade_blast.wav', fadeEnds(normalize(buf, 0.95), SR_SFX, 4), SR_SFX);
 }
 
+// canvas — heavy wet tarpaulin being dragged off something.
+//
+// THIS IS NOT A WHOOSH, AND THAT IS THE WHOLE POINT.
+//
+// The first tarp_pull was built out of a bright noise transient plus the generic
+// `whoosh` helper, and it came back described as "peeling a sticker". That is
+// exactly right and the reason is in the numbers: the transient was broadband
+// with a 320/s decay, so nearly all of its energy sat above 4kHz, and `whoosh`
+// opens its filter as the envelope peaks, which brightens on the loudest part.
+// Bright, smooth and fast is adhesive tape. Cloth is none of those.
+//
+// What canvas actually is, and what each part below is for:
+//
+//   · LOW. A heavy tarp has almost nothing above about 2kHz. The noise runs
+//     through TWO one-pole lowpasses in series rather than one, because a single
+//     pole falls at only 6dB/octave and leaves a hiss on top that reads as paper.
+//   · IRREGULAR. Fabric does not slide smoothly, it catches and releases. The
+//     amplitude is modulated by three incommensurable rates plus a random grain,
+//     so no part of it repeats — a smooth envelope is what makes noise sound
+//     synthetic.
+//   · HEAVY. A low thump of displaced air under it, because something with mass
+//     just moved. Without this it is a rustle rather than a haul.
+const canvas = (sr, dur = 0.38, brightness = 1) => {
+	const out = buffer(dur, sr);
+	let lp1 = 0;
+	let lp2 = 0;
+	let grain = 0;
+	let grainLeft = 0;
+	for (let i = 0; i < out.length; i++) {
+		const t = i / sr;
+		const p = t / dur;
+		// The cutoff CLOSES as the tarp comes away and the fold gets bigger and
+		// slower - the opposite of the whoosh helper, which opens on its peak.
+		const cutoff = (0.16 - 0.09 * p) * brightness;
+		lp1 += cutoff * (rand2() - lp1);
+		lp2 += cutoff * (lp1 - lp2);
+		// catch-and-release: three slow rates that never line up, and a grain that
+		// re-rolls its own length
+		if (grainLeft <= 0) {
+			grain = 0.45 + rand() * 0.55;
+			grainLeft = Math.floor(sr * (0.012 + rand() * 0.05));
+		}
+		grainLeft--;
+		const flutter =
+			0.55 +
+			0.2 * Math.sin(t * 41) +
+			0.15 * Math.sin(t * 97 + 1.3) +
+			0.1 * Math.sin(t * 173 + 2.7);
+		// a body that swells and goes, not a click
+		const env = Math.min(1, t / 0.05) * Math.exp(-3.4 * t);
+		out[i] = lp2 * flutter * grain * env * 3.2;
+	}
+	// the air it displaces
+	let ph = 0;
+	for (let i = 0; i < out.length; i++) {
+		const t = i / sr;
+		const f = 74 * Math.exp(-5 * t) + 38;
+		ph += (2 * Math.PI * f) / sr;
+		out[i] += Math.sin(ph) * Math.exp(-11 * t) * 0.28;
+	}
+	return fadeEnds(out, sr, 4);
+};
+
+// ─── the crate reveal ────────────────────────────────────────────────────────
+//
+// The mechanic the game is named after had no sound of its own: it borrowed
+// `mult_update` (a marimba ding, written for a multiplier re-roll) for the
+// batch and `pluck_low` for each crate. Both are pitched musical notes, so the
+// moment the cargo was named sounded like a menu confirming something.
+//
+// What it should sound like is rope and canvas, and it should ARRIVE somewhere:
+// the reveal is the payoff, so it ends on a note rather than on noise.
+
+// rope_strain — once at the top of the batch, under the rattle. Fibrous creak
+// (a low buzz whose rate wanders, which is what makes rope sound like rope
+// rather than like a tone) over a wooden shift in the hold.
+{
+	const dur = 0.42;
+	const buf = buffer(dur, SR_SFX);
+	const n = buf.length;
+	let ph = 0;
+	for (let i = 0; i < n; i++) {
+		const t = i / SR_SFX;
+		// the creak climbs as the rope takes the load
+		const f = 58 + 34 * t + 7 * Math.sin(t * 41);
+		ph += (2 * Math.PI * f) / SR_SFX;
+		// square-ish, so it has the grain a sine does not
+		const saw = ph / Math.PI - 2 * Math.floor(ph / (2 * Math.PI)) - 1;
+		// stick-slip: the creak stutters rather than swelling smoothly
+		const grip = 0.55 + 0.45 * Math.sin(t * 130);
+		buf[i] += saw * grip * Math.exp(-2.2 * t) * 0.5;
+	}
+	addAt(buf, tom(SR_SFX, 0.5), 0, 0.5, SR_SFX); // the crate shifts on the deck
+	// A first small movement of the cover, so the strain is something PULLING on
+	// cloth rather than a creak in the air. The shaker that used to sit here was
+	// grit, which is the same high, dry band that made the pull sound like tape.
+	addAt(buf, canvas(SR_SFX, 0.2, 0.7), 0.14, 0.35, SR_SFX)
+	writeWav('rope_strain.wav', normalize(buf, 0.6), SR_SFX);
+}
+
+// tarp_pull — once per crate, on its own beat. Rope creak, the canvas hauled
+// off, the crate lid knocking, and a marimba note to land on.
+//
+// Played back at a rising rate per column (see Sound.svelte), so a board of four
+// is an ascending run rather than the same click four times — the same trick the
+// five reel stops use, and the reason this is one file and not four.
+{
+	const dur = 0.55;
+	const buf = buffer(dur, SR_SFX);
+	// The rope taking up and letting go. Low and short: this replaced a 10ms
+	// broadband crack that was most of why the cue read as tape.
+	{
+		let ph = 0;
+		for (let i = 0; i < SR_SFX * 0.06; i++) {
+			const t = i / SR_SFX;
+			const f = 160 * Math.exp(-22 * t) + 70;
+			ph += (2 * Math.PI * f) / SR_SFX;
+			const sawish = ph / Math.PI - 2 * Math.floor(ph / (2 * Math.PI)) - 1;
+			buf[i] += sawish * Math.exp(-34 * t) * 0.34;
+		}
+	}
+	// the tarp itself, and a second smaller fold a beat later as it clears the lid
+	addAt(buf, canvas(SR_SFX, 0.4, 1), 0.01, 1, SR_SFX);
+	addAt(buf, canvas(SR_SFX, 0.22, 0.8), 0.16, 0.5, SR_SFX);
+	// the lid knocks against the crate as the cover clears it
+	addAt(buf, bongo(SR_SFX, { from: 330, to: 180, dur: 0.12 }), 0.13, 0.45, SR_SFX);
+	// ...and the cargo is there. This note is the whole point of the cue.
+	addAt(buf, marimba(P.E5, 0.34, SR_SFX, 0.3), 0.19, 0.85, SR_SFX);
+	addAt(buf, marimba(P.A5, 0.3, SR_SFX, 0.5), 0.22, 0.42, SR_SFX);
+	writeWav('tarp_pull.wav', normalize(buf, 0.72), SR_SFX);
+}
+
+// ship_horn - the full shipment. The whole hold comes up at once and the board
+// goes to a single cargo; this is the beat before the tarps move.
+//
+// A ship's horn and not a fanfare, for the same reason the reveal is rope and
+// canvas and not a marimba: the loudest thing this game owns should still be
+// part of the boat. Two stacked low tones a fifth apart, which is what makes a
+// horn read as a HORN rather than as a bass note - a single frequency down
+// there is a rumble.
+{
+	const dur = 1.5;
+	const buf = buffer(dur, SR_SFX);
+	const n = buf.length;
+	// The two voices, and a third an octave up at low level: the octave is what
+	// carries on a phone speaker, which cannot reproduce either of the others.
+	const voices = [
+		{ f: 62, gain: 1.0 },
+		{ f: 93, gain: 0.7 },
+		{ f: 124, gain: 0.32 },
+	];
+	for (const v of voices) {
+		let ph = 0;
+		for (let i = 0; i < n; i++) {
+			const t = i / SR_SFX;
+			// A horn does not start in tune: the pressure takes a moment, so the
+			// pitch comes up about a semitone over the first fifth of a second.
+			const f = v.f * (1 - 0.06 * Math.exp(-9 * t));
+			ph += (2 * Math.PI * f) / SR_SFX;
+			// A little odd harmonic rather than a pure sine, which is the brass.
+			const tone = Math.sin(ph) + 0.28 * Math.sin(ph * 3) + 0.1 * Math.sin(ph * 5);
+			// slow attack, long plateau, slow release
+			const env =
+				t < 0.18 ? t / 0.18 : t > dur - 0.45 ? Math.max(0, (dur - t) / 0.45) : 1;
+			buf[i] += tone * env * v.gain * 0.3;
+		}
+	}
+	// Air. A horn is a column of air being pushed, and without a breath of noise
+	// under it this is an organ.
+	let lp = 0;
+	for (let i = 0; i < n; i++) {
+		const t = i / SR_SFX;
+		lp += (rand2() - lp) * 0.06;
+		const env = t < 0.2 ? t / 0.2 : t > dur - 0.5 ? Math.max(0, (dur - t) / 0.5) : 1;
+		buf[i] += lp * env * 0.5;
+	}
+	writeWav('ship_horn.wav', fadeEnds(normalize(buf, 0.9), SR_SFX, 8), SR_SFX);
+}
+
 console.log('done');

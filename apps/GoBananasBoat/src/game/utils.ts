@@ -25,9 +25,9 @@ import type { RawSymbol, SymbolState } from './types';
  * back showing the symbols that were there BEFORE the explosion, on a board the
  * player had already been paid for. Same failure mode, same fix, new mechanic.
  *
- * Only mysteryReveal events AFTER the last reveal are applied - held cells from
- * EARLIER in the run are already part of `held` on the relevant event, so this
- * needs only the single latest one, not a fold over the whole run.
+ * Only the mysteryReveal AFTER the last reveal is applied, and one is enough:
+ * crates do not persist between spins, so nothing from earlier in the run is
+ * still on the board to restore.
  */
 export const boardAfterLastMysteryReveal = (bookEvents: Bet['state']) => {
 	const lastRevealIndex = _.findLastIndex(bookEvents, (e) => e?.type === 'reveal');
@@ -41,7 +41,7 @@ export const boardAfterLastMysteryReveal = (bookEvents: Bet['state']) => {
 	) as BookEventOfType<'mysteryReveal'> | undefined;
 	if (!mystery) return board;
 
-	for (const position of [...mystery.held, ...mystery.positions]) {
+	for (const position of mystery.positions) {
 		const column = board[position.reel];
 		if (!column?.[position.row]) continue;
 		column[position.row] = { ...column[position.row], name: mystery.symbol };
@@ -110,7 +110,7 @@ export const playBet = async (bet: Bet) => {
 	const isBaseBet = stateBet.activeBetModeKey.toUpperCase() === 'BASE';
 	const willTrigger = bet.state.some((bookEvent) => bookEvent?.type === 'freeSpinTrigger');
 	if (isBaseBet && willTrigger && Math.random() < GOGGLE_TEASE_CHANCE) {
-		eventEmitter.broadcast({ type: 'mascotGoggleTease' });
+		eventEmitter.broadcast({ type: 'mascotTease' });
 	}
 	clearLastWinLines();
 	stateBet.winBookEventAmount = 0;

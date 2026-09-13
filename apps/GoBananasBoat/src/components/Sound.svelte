@@ -14,7 +14,14 @@
 		| { type: 'soundFade'; name: SoundName; from: number; to: number; duration: number }
 		| { type: 'soundFreeGameBell' }
 		| { type: 'soundBigWinBlast' }
-		| { type: 'soundDynamiteBlast' }
+		| { type: 'soundMineBlast' }
+		// The crate reveal. `step` is which crate in the batch this is (0-based);
+		// see playTarpPull for what it does with it.
+		| { type: 'soundCrateStrain' }
+		// The full shipment's horn. Its own event rather than a `soundOnce`,
+		// because it is not in the vendor sprite sheet's name list at all.
+		| { type: 'soundShipHorn' }
+		| { type: 'soundTarpPull'; step: number }
 		| { type: 'soundMonkeyExpand' }
 		| { type: 'soundMascotVoice'; name: MascotVoice }
 		| { type: 'soundReelTensionStart' }
@@ -57,6 +64,9 @@
 		| 'coin_shimmer'
 		| 'wild_expand'
 		| 'mult_update'
+		| 'rope_strain'
+		| 'ship_horn'
+		| 'tarp_pull'
 		| 'grenade_blast'
 		| 'monkey_expand'
 		| 'voice_roar'
@@ -81,6 +91,9 @@
 		coin_shimmer: 'jungle/coin_shimmer.wav',
 		wild_expand: 'jungle/wild_expand.wav',
 		mult_update: 'jungle/mult_update.wav',
+		rope_strain: 'jungle/rope_strain.wav',
+		ship_horn: 'jungle/ship_horn.wav',
+		tarp_pull: 'jungle/tarp_pull.wav',
 		grenade_blast: 'jungle/grenade_blast.wav',
 		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
 		monkey_expand: 'jungle/monkey_expand.mp3',
@@ -167,6 +180,16 @@
 	// from the top, hold, then fade to silence so it covers the grow and settles
 	// as the panel locks, instead of hanging on under the next spin.
 	let monkeyFadeTimers: ReturnType<typeof setTimeout>[] = [];
+	// The crates come off left to right and the cue rises with them, so a board of
+	// four reads as one gesture arriving somewhere rather than as four identical
+	// clicks. Steps beyond the fourth hold at the top: a full board would run the
+	// sample into a chipmunk squeak, and by then the run has made its point.
+	const TARP_RATES = [0.94, 1.06, 1.19, 1.33];
+	function playTarpPull(step: number) {
+		const rate = TARP_RATES[Math.min(step, TARP_RATES.length - 1)];
+		playCnSfx('tarp_pull', 0.85, rate);
+	}
+
 	function playMonkeyExpand() {
 		const audio = getCnSfx('monkey_expand');
 		monkeyFadeTimers.forEach(clearTimeout);
@@ -396,7 +419,12 @@
 		// The EVENT is named for the prop, the CUE is named for the file on disk.
 		// jungle/grenade_blast.wav is carried over from gen-1 and renaming a wav
 		// would break the audio manifest for no gain.
-		soundDynamiteBlast: () => playCnSfx('grenade_blast'),
+		soundMineBlast: () => playCnSfx('grenade_blast'),
+		soundCrateStrain: () => playCnSfx('rope_strain', 0.7),
+		// Loud on purpose, and the only cue in the set that is. It marks the
+		// biggest board this game makes.
+		soundShipHorn: () => playCnSfx('ship_horn', 1),
+		soundTarpPull: ({ step }) => playTarpPull(step),
 		soundMonkeyExpand: () => playMonkeyExpand(),
 		// Deliberately NOT forced through the turbo gate that silences ordinary
 		// one-shots: these are tied to animations that play at their own length

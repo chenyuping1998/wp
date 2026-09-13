@@ -1,4 +1,5 @@
-"""Turn a painted-on transparency checkerboard into a real alpha channel.
+"""Turn a painted-on transparency checkerboard — or a flat plain ground — into a
+real alpha channel.
 
 Image generators asked for "a transparent background" often answer with a JPEG
 of the CHECKERBOARD — the grey-and-white tiles a paint program draws to SHOW
@@ -9,7 +10,7 @@ That is a much easier problem than cutting a subject out of painted scenery,
 and it is worth keeping the two apart (see cut_prop.py, which cannot do the
 other one). Here the background is SYNTHETIC and known:
 
-  · exactly two flat tones, measured off this file as 255 and ~201
+  · one or two flat tones, measured off this file as 255 and ~201
   · perfectly achromatic, R == G == B, where the artwork is saturated
   · flat, so JPEG leaves it clean apart from ringing near the outline
 
@@ -17,6 +18,14 @@ So the test is "achromatic AND close to one of the two tones", and the flood
 from the border is only there to stop the same test eating grey PARTS of the
 subject — this grenade's steel lever is exactly the sort of thing a global
 colour key would delete.
+
+A FLAT WHITE GROUND IS THE SAME PROBLEM WITH ONE TONE INSTEAD OF TWO, and it is
+what a generator returns when asked for a character on a plain background. Every
+property above still holds — synthetic, known, achromatic, flat — so it runs
+through the same machinery rather than a second script that would drift out of
+step with this one. Only the pocket test needs to know the difference: an
+enclosed pocket of background is identified by containing BOTH tones, and with
+one tone there is nothing to test, so pockets are left to the island logic.
 
 Usage:  python design/dechecker.py <in.jpg> <out.png> [--pad 8]
 """
@@ -27,8 +36,8 @@ from collections import deque
 
 from PIL import Image, ImageFilter
 
-# The two checker tones. Read from the file rather than assumed — a different
-# generator uses a different pair.
+# The checker tones, one or two of them. Read from the file rather than assumed —
+# a different generator uses a different pair, and a plain ground has only one.
 TONE_TOLERANCE = 26
 # How far R, G and B may differ from each other before a pixel counts as
 # coloured rather than grey. JPEG ringing near the outline tints the checker
@@ -111,6 +120,11 @@ ISLAND_MIN_SHARE = 0.02
 # contain BOTH tones, before it is removed. See remove_pockets.
 POCKET_MIN = 40
 POCKET_TONE_SHARE = 0.2
+# Plain-ground pockets only: how close to the tone a pixel must sit to count as
+# flat ground rather than paint, and what share of a pocket must be that flat.
+# See the note in remove_pockets.
+POCKET_FLAT = 5
+POCKET_FLAT_SHARE = 0.7
 
 
 def detect_tones(img, band=6):
@@ -144,8 +158,10 @@ def cut(img):
     w, h = rgb.size
     px = rgb.load()
     tones = detect_tones(rgb)
-    if len(tones) < 2:
-        raise SystemExit(f"expected two checker tones, found {tones}")
+    if not tones:
+        raise SystemExit("no flat achromatic ground found around the border")
+    if len(tones) == 1:
+        print(f"  plain ground, one tone: {tones[0]}")
 
     def tone_of(p):
         """Which checker tone this pixel sits on, or None.
@@ -249,6 +265,29 @@ def cut(img):
                         seen[j] = 1
                         stack.append((nx, ny))
                 if len(comp) < POCKET_MIN:
+                    continue
+                # ONE TONE: FLATNESS IS THE TEST, NOT TONE COUNT.
+                #
+                # The both-tones test below tells a checkerboard pocket from a
+                # flat grey PART of the subject: on a checkerboard a subject area
+                # can be one tone and a pocket cannot. A plain ground does not
+                # offer that, and the obvious substitute — "every enclosed
+                # component is a hole" — is wrong. Tried and looked at: it fixed
+                # the gap between the captain's arm and his coat and punched
+                # holes through his brow, his muzzle, both fists, the brass
+                # buttons and the boot cuffs, because a painted near-white
+                # highlight passes is_checker exactly as the ground does.
+                #
+                # What separates them is FLATNESS. The ground is one synthetic
+                # value repeated; a highlight is paint and drifts across itself.
+                # So a pocket has to be almost exactly the tone across almost all
+                # of itself, where is_checker alone allows a ±26 band.
+                if len(tones) < 2:
+                    flat = sum(1 for x, y in comp if abs(px[x, y][0] - tones[0]) <= POCKET_FLAT)
+                    if flat / len(comp) >= POCKET_FLAT_SHARE:
+                        for x, y in comp:
+                            outside[y * w + x] = 1
+                        removed += 1
                     continue
                 if min(counts[t] for t in tones) / len(comp) < POCKET_TONE_SHARE:
                     continue  # one tone only: a highlight, not a pocket

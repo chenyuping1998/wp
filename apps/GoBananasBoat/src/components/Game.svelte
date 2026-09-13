@@ -31,6 +31,8 @@
 	import EntryReveal from './EntryReveal.svelte';
 	import ScatterBurst from './ScatterBurst.svelte';
 	import MysteryReveal from './MysteryReveal.svelte';
+import FullShipment from './FullShipment.svelte';
+import CargoPick from './CargoPick.svelte';
 	import StickyPrizes from './StickyPrizes.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import WinWays from './WinWays.svelte';
@@ -93,6 +95,8 @@
 			<Board />
 			<ReelDust />
 			<MysteryReveal />
+			<FullShipment />
+			<CargoPick />
 			<StickyPrizes />
 			<Anticipations />
 			<ScatterBurst />
@@ -103,12 +107,12 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name="GO BANANAS DELTA" />
+				<UiGameName name="GO BANANAS BOAT" />
 			{/snippet}
 			{#snippet logo()}
 				<Text
 					anchor={{ x: 1, y: 0 }}
-					text="GO BANANAS DELTA"
+					text="GO BANANAS BOAT"
 					style={{
 						fontFamily: GAME_FONT,
 						fontSize: REM * 1.5,

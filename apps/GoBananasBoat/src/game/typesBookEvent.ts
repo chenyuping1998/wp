@@ -100,20 +100,29 @@ type BookEventWinInfo = {
 // cells. Same ordering the blast this replaced relied on, and for the same
 // reason: rewrite before the reveal and there is nothing to animate FROM.
 //
-// `positions` is what opened on THIS spin and is what gets animated. `held` is
-// the whole cargo hold after this spin loaded into it - every cell in the run
-// now permanently showing the cargo symbol - sent in full rather than as a delta
-// because a client given only the delta cannot redraw a cell opened three spins
-// ago, which is exactly what a resumed round has to do.
+// `positions` is every crate that opened on this spin, and there is nothing else
+// to send: crates do not persist between spins. An earlier version held them for
+// the rest of the run and needed a second list carrying the whole hold, because
+// a client given only the delta cannot redraw a cell opened three spins ago on a
+// resumed round. With nothing persisting, this spin's list IS the whole story.
 //
 // `runCargo` is true once the run's shipment is fixed, so the client can stop
 // re-announcing the same symbol on every spin of a feature.
+// Go Bananas Boat: the whole hold comes up — every free cell on the board is a
+// crate. Emitted BEFORE `reveal`, so the client gets the beat before the board
+// it explains; see full_shipment_event in the maths. Carries no data on purpose:
+// `reveal` already carries the board, and a second copy is a thing that can
+// disagree with the first.
+type BookEventFullShipment = {
+	index: number;
+	type: 'fullShipment';
+};
+
 type BookEventMysteryReveal = {
 	index: number;
 	type: 'mysteryReveal';
 	symbol: SymbolName;
 	positions: Position[];
-	held: Position[];
 	runCargo: boolean;
 };
 
@@ -160,6 +169,7 @@ export type BookEvent =
 	| BookEventFreeSpinEnd
 	// customised
 	| BookEventMysteryReveal
+	| BookEventFullShipment
 	// Both of these were DECLARED above and left out of this union, which meant
 	// the two handlers that drive the whole hold-and-spin round narrowed to
 	// `never` — newPrizes, wins and totalWin were all unchecked. The maths emits

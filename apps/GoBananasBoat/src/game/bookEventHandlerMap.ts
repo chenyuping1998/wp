@@ -196,7 +196,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	setTotalWin: async (bookEvent: BookEventOfType<'setTotalWin'>) => {
 		stateBet.winBookEventAmount = bookEvent.amount;
 	},
-	freeSpinTrigger: async (bookEvent: BookEventOfType<'freeSpinTrigger'>) => {
+	freeSpinTrigger: async (
+		bookEvent: BookEventOfType<'freeSpinTrigger'>,
+		{ bookEvents }: BookEventContext,
+	) => {
 		// The base spin that triggered this may itself have paid, recording its win
 		// lines for the idle replay. But the board is about to become a free game
 		// and then be torn down to base idle, so those lines must not survive to be
@@ -251,6 +254,30 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			totalFreeSpins: bookEvent.totalFs,
 		});
 		eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
+
+		// READ THE MANIFEST — see CargoPick.svelte.
+		//
+		// The run carries one cargo symbol for all of its spins, and the maths has
+		// already chosen it. It is not in this event, because the maths draws it
+		// lazily on the run's first crated spin — so it is read out of the BOOK,
+		// from the first mysteryReveal after this trigger.
+		//
+		// Reading ahead is safe and is how the goggle-era tease already worked
+		// (see playBet in game/utils.ts): the whole book arrives before the first
+		// frame is played, and this is the one moment the client knows something
+		// the player has not been shown yet.
+		//
+		// Skipped rather than faked when there is none. A run with no crates at all
+		// is vanishingly rare — 95% of free spins carry them — but a client-side
+		// stand-in would name a cargo the round never delivers.
+		const firstCargo = _.find(
+			bookEvents.slice(bookEvents.indexOf(bookEvent) + 1),
+			(event) => event?.type === 'mysteryReveal',
+		) as BookEventOfType<'mysteryReveal'> | undefined;
+		if (firstCargo) {
+			await eventEmitter.broadcastAsync({ type: 'cargoPick', symbol: firstCargo.symbol });
+		}
+
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
 		stateUi.freeSpinCounterShow = true;
@@ -277,13 +304,19 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	// The tarps come off. Awaited, not fired and forgotten: the ways win that
 	// follows is read off the uncovered board, so playing it while the crates
 	// were still closed would pay cells the player has not been shown yet.
+	// The hold coming up. Awaited: it is a held beat before the board is shown,
+	// and firing it without waiting would put the horn over the top of the reveal
+	// instead of in front of it.
+	fullShipment: async () => {
+		await eventEmitter.broadcastAsync({ type: 'fullShipment' });
+	},
+
 	mysteryReveal: async (bookEvent: BookEventOfType<'mysteryReveal'>) => {
-		if (bookEvent.positions.length === 0 && bookEvent.held.length === 0) return;
+		if (bookEvent.positions.length === 0) return;
 		await eventEmitter.broadcastAsync({
 			type: 'mysteryReveal',
 			symbol: bookEvent.symbol,
 			positions: bookEvent.positions,
-			held: bookEvent.held,
 		});
 	},
 

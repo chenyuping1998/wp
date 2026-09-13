@@ -492,9 +492,9 @@ frames.fs_sign = svgWrap(
 	     to nothing at all, so the sign read as hanging from two loose offcuts.
 	     The brass corners and frame carry it on their own. -->
 	<!-- plank panel -->
-	<rect x="100" y="130" width="720" height="540" rx="26" fill="url(#plankSign)" stroke="#17120a" stroke-width="8"/>
-	<rect x="100" y="300" width="720" height="10" fill="#17120a" opacity="0.5"/>
-	<rect x="100" y="490" width="720" height="10" fill="#17120a" opacity="0.5"/>
+	<rect x="100" y="130" width="720" height="540" rx="26" fill="url(#plankSign)" stroke="#0f181e" stroke-width="8"/>
+	<rect x="100" y="300" width="720" height="10" fill="#0f181e" opacity="0.5"/>
+	<rect x="100" y="490" width="720" height="10" fill="#0f181e" opacity="0.5"/>
 	<rect x="100" y="130" width="720" height="540" rx="26" filter="url(#signGrain)" opacity="0.5"/>
 	<!-- brass frame -->
 	<rect x="112" y="142" width="696" height="516" rx="20" fill="none" stroke="url(#brass)" stroke-width="10"/>
@@ -514,10 +514,17 @@ frames.fs_sign = svgWrap(
 	<!-- inner soft vignette so text pops -->
 	<rect x="130" y="160" width="660" height="480" rx="14" fill="url(#signVign)"/>`,
 	`
+	<!-- PAINTED STEEL, not olive drill canvas.
+	     Both free-spin plaques were #3F4A1E / #2C3812 / #1C260C, which is the
+	     jungle game's canvas, and they were the last two green objects on screen
+	     once the board, the bursts and the vignette had been dealt with. Same
+	     ramp shape, same brass trim, same rivets — a blue-grey ship's plate
+	     instead of a green one, pitched a little darker than the container tiles
+	     so the brass still reads against it. -->
 	<linearGradient id="plankSign" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#3f4a1e"/>
-		<stop offset="0.5" stop-color="#2c3812"/>
-		<stop offset="1" stop-color="#1c260c"/>
+		<stop offset="0" stop-color="#54646f"/>
+		<stop offset="0.5" stop-color="#3b4a55"/>
+		<stop offset="1" stop-color="#26323b"/>
 	</linearGradient>
 	<linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
 		<stop offset="0" stop-color="#ffe282"/>
@@ -551,7 +558,7 @@ frames.fs_counter_panel = svgWrap(
 	824,
 	622,
 	`
-	<rect x="30" y="60" width="764" height="502" rx="34" fill="url(#plankSign)" stroke="#17120a" stroke-width="8"/>
+	<rect x="30" y="60" width="764" height="502" rx="34" fill="url(#plankSign)" stroke="#0f181e" stroke-width="8"/>
 	<rect x="30" y="60" width="764" height="502" rx="34" filter="url(#signGrain)" opacity="0.5"/>
 	<rect x="46" y="76" width="732" height="470" rx="26" fill="none" stroke="url(#brass)" stroke-width="9"/>
 	<rect x="58" y="88" width="708" height="446" rx="20" fill="none" stroke="#ffe98a" stroke-width="2" opacity="0.55"/>
@@ -564,10 +571,17 @@ frames.fs_counter_panel = svgWrap(
 	${bananaEmblem(412, 122, 0.75)}
 	<rect x="70" y="100" width="684" height="422" rx="18" fill="url(#signVign)"/>`,
 	`
+	<!-- PAINTED STEEL, not olive drill canvas.
+	     Both free-spin plaques were #3F4A1E / #2C3812 / #1C260C, which is the
+	     jungle game's canvas, and they were the last two green objects on screen
+	     once the board, the bursts and the vignette had been dealt with. Same
+	     ramp shape, same brass trim, same rivets — a blue-grey ship's plate
+	     instead of a green one, pitched a little darker than the container tiles
+	     so the brass still reads against it. -->
 	<linearGradient id="plankSign" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#3f4a1e"/>
-		<stop offset="0.5" stop-color="#2c3812"/>
-		<stop offset="1" stop-color="#1c260c"/>
+		<stop offset="0" stop-color="#54646f"/>
+		<stop offset="0.5" stop-color="#3b4a55"/>
+		<stop offset="1" stop-color="#26323b"/>
 	</linearGradient>
 	<linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
 		<stop offset="0" stop-color="#ffe282"/>
@@ -598,8 +612,25 @@ const render = (svg, outPath, width) => {
 	fs.writeFileSync(outPath, resvg.render().asPng());
 	console.log('rendered', path.basename(outPath));
 };
-for (const [name, svg] of Object.entries(backgrounds)) {
-	render(svg, path.join(BG_DIR, `${name}.png`), 1920);
+// THE BACKGROUNDS ARE OPT-IN, AND THAT IS A GUARD, NOT A CONVENIENCE.
+//
+// `backgrounds` here are the generation-1 SVG jungle plates. The game does not
+// ship them any more: bg_base / bg_feature / bg_holdandspin are PAINTED art,
+// delivered as image files and brought in by design/import_backgrounds.py.
+//
+// They land in the same directory under two of the same names. So running this
+// script to regenerate a frame — which is the only reason anyone runs it now —
+// silently replaced the dock and the storm deck with two SVG jungles, and the
+// only sign of it would have been the game looking wrong on the next upload.
+//
+//   node design/generate_theme_jungle.mjs <gen dir>                frames only
+//   node design/generate_theme_jungle.mjs <gen dir> --backgrounds  both
+if (process.argv.includes('--backgrounds')) {
+	for (const [name, svg] of Object.entries(backgrounds)) {
+		render(svg, path.join(BG_DIR, `${name}.png`), 1920);
+	}
+} else {
+	console.log('backgrounds skipped (painted plates are imported, not generated)');
 }
 for (const [name, svg] of Object.entries(frames)) {
 	render(svg, path.join(FRAME_DIR, `${name}.png`), 1280);

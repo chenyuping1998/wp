@@ -44,7 +44,9 @@
 			const begin = FIRST_COLUMN_AT + column * COLUMN_DELAY;
 			const alpha = 0.9 * (1 - Math.min(1, Math.max(0, (t - begin) / COLUMN_FADE)));
 			if (alpha <= 0.01) continue;
-			g.beginFill(0x0a1508, alpha);
+			// the hold with the lights off, not the jungle floor: 0x0A1508 was a
+			// dark green carried over with the rest of this component
+			g.beginFill(0x080f14, alpha);
 			g.drawRect(left + column * SYMBOL_SIZE, top, SYMBOL_SIZE, board.height);
 			g.endFill();
 		}
@@ -59,7 +61,7 @@
 				x={context.stateGameDerived.boardLayout().x}
 				y={context.stateGameDerived.boardLayout().y}
 				scale={1.4}
-				flavour="jungle"
+				flavour="cargo"
 			/>
 		{/if}
 	</MainContainer>

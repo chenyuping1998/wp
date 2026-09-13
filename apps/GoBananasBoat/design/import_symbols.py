@@ -46,7 +46,9 @@ DEST = os.path.join(APP, "static/assets/sprites/goBananasSymbolsV3")
 # mapping is fixed by src/game/assets.ts, not by whatever the generator called
 # its output.
 MAPPING = {
-    "b": "b.png",
+    # No "b": the dynamite/blast symbol was removed with the blast mechanic. "m"
+    # is the tarped cargo crate that replaced it as this game's special.
+    "m": "m.png",
     "h1": "h1.png",
     "h2": "h2.png",
     "h3": "h3.png",
@@ -140,6 +142,84 @@ PLATE_FEATHER = 30
 # reaching it. 45 keeps the helmet's steel and the red star out of it.
 PLATE_SIGMA = 45.0
 
+# --- plate exposure ---------------------------------------------------------
+#
+# A DIFFERENT CORRECTION FROM match_plate ABOVE, and the "10" tile is why.
+#
+# match_plate shifts a plate's COLOUR toward a target, feathered, weighted by how
+# close each pixel already is to the plate colour. That is the right tool when a
+# tile comes back the wrong hue. The "10" tile is the right hue: its corner
+# grooves measure (84, 101, 108) against the "A" tile's (89, 104, 111). What is
+# wrong with it is EXPOSURE — the whole container panel is lit brighter, so its
+# plate reads a median luma of 96 where the other four sit at 73-78, and on the
+# board it was the one tile that looked backlit.
+#
+# So this scales the plate's brightness instead of shifting its colour, and it is
+# multiplicative rather than additive: the panel keeps its own contrast, its rust
+# streaks and its grooves stay in proportion, and only the level moves.
+#
+# The stencilled glyph is left alone. It is cream against grey and separates on
+# luma with room to spare, so the gain ramps off between GLYPH_LO and GLYPH_HI —
+# a hard cut there would leave a halo around every letter.
+#
+# The target is not chosen, it is measured: the median plate luma of the four
+# tiles that already agree (A 77.7, K 75.4, Q 72.9, J 74.1).
+PLATE_LUMA_TARGET = 75.0
+GLYPH_LO = 150.0
+GLYPH_HI = 190.0
+# Stems whose plate exposure is levelled to PLATE_LUMA_TARGET.
+PLATE_LEVEL = {"l5"}
+
+
+def _luma(r, g, b):
+    return 0.299 * r + 0.587 * g + 0.114 * b
+
+
+def level_plate(img, target=PLATE_LUMA_TARGET):
+    """Scale the plate's brightness to `target`, leaving the glyph alone."""
+    import statistics
+
+    rgb = img.convert("RGB")
+    px = rgb.load()
+    w, h = rgb.size
+    # Median over the plate only, on a coarse grid — this is a level, and a level
+    # read off every one of a million pixels is the same number.
+    step = max(1, w // 256)
+    plate = []
+    for y in range(0, h, step):
+        for x in range(0, w, step):
+            lum = _luma(*px[x, y])
+            if lum <= GLYPH_LO:
+                plate.append(lum)
+    if not plate:
+        return img, 0.0, 0.0
+    before = statistics.median(plate)
+    if abs(before - target) < 1.5:
+        return img, before, before
+    gain = target / before
+    for y in range(h):
+        for x in range(w):
+            r, g, b = px[x, y]
+            lum = _luma(r, g, b)
+            if lum >= GLYPH_HI:
+                continue
+            k = 1.0 if lum <= GLYPH_LO else (GLYPH_HI - lum) / (GLYPH_HI - GLYPH_LO)
+            f = 1 + (gain - 1) * k
+            px[x, y] = (
+                max(0, min(255, int(r * f))),
+                max(0, min(255, int(g * f))),
+                max(0, min(255, int(b * f))),
+            )
+    after = statistics.median(
+        [
+            _luma(*px[x, y])
+            for y in range(0, h, step)
+            for x in range(0, w, step)
+            if _luma(*px[x, y]) <= GLYPH_LO
+        ]
+    )
+    return rgb, before, after
+
 # --- frame crop -------------------------------------------------------------
 #
 # The generated tiles carry a heavy ornate stone frame, and on a 4x5 board at
@@ -173,14 +253,87 @@ PLATE_SIGMA = 45.0
 # On this pack 10% clears the border with every subject whole; at 14% the
 # dynamite's spark sits on the corner. Not a number to nudge upward without
 # looking again.
-FRAME_CROP = 0.10
-FRAME_CROP_SYMBOLS = {"h1", "h2", "h3", "h4", "s", "w", "b"}
+# ZERO FOR THE CAPTAIN PACK, and that is not laziness — it is the re-measurement
+# the paragraph above demands.
+#
+# Every earlier pack drew an ornate border AROUND the subject, so cropping it
+# away gave the subject the cell. This pack has no border: the shipping-container
+# panel IS the tile, drawn edge to edge, and each subject was composed to sit
+# inside it with its own margin already.
+#
+# Cropped at the inherited 0.10 and looked at, which is the only test that
+# settles it: the mine loses the shackle and chain off its top, the navigation
+# lamp loses its mounting bracket, the scatter loses the hook the cargo net hangs
+# from, and the Wild loses the entire gold border of its plate plus half the WILD
+# nameplate — the border being the thing that makes the Wild identifiable at a
+# glance. h1 and h4 survive; four of six do not.
+FRAME_CROP = 0.0
+FRAME_CROP_SYMBOLS = set()
 
 
 def crop_frame(img, fraction=FRAME_CROP):
     w, h = img.size
     inset = int(round(min(w, h) * fraction))
     return img.crop((inset, inset, w - inset, h - inset))
+
+
+# ZOOM: a symbol whose motif is too small on its own plate.
+#
+# The Wild is the one that needed it. Its plate spends about a fifth of its width
+# on the gold border and another thick grey ring on the porthole, so the captain
+# himself came out around 40% of the tile while the scatter's cargo net fills
+# 75% — and side by side on the board the Wild read as the smallest thing there
+# even though every tile is the same size.
+#
+# There is no room to fix that INSIDE the porthole: the hat already touches the
+# ring's inner edge. The whole plate has to grow, which means the border it grows
+# past has to be put back afterwards, and that is what this does:
+#
+#   1. scale the finished tile about a pivot BELOW centre and crop back to
+#      square. Below centre because the WILD nameplate sits near the bottom edge
+#      and scaling about the middle pushes it off the tile.
+#   2. paste the ORIGINAL outer band back over the result, feathered.
+#
+# So the border and nameplate are untouched and the porthole is bigger and now
+# runs under the border instead of sitting politely inside it — which reads as
+# depth rather than as a crop.
+#
+# Values are (scale, pivot as a fraction of the tile height, border band in px).
+# Empty now. It held the Wild until the plate was redrawn: that art put the
+# captain in a small porthole inside a wide border and he came out about 40% of
+# the tile against the scatter's 75%, so the finished tile was scaled up here and
+# the border pasted back over it. The redraw does it properly — bigger porthole,
+# thinner ring — so scaling it again would only overshoot.
+#
+# Kept, with its machinery, because it is the answer to a problem that recurs
+# every time a symbol pack comes back: add a stem here and it is fixed.
+ZOOM: dict[str, tuple[float, float, int]] = {}
+ZOOM_FEATHER = 10
+
+
+def zoom_tile(img, scale, pivot_y, band, feather=ZOOM_FEATHER):
+    n = img.size[0]
+    base = img.convert("RGBA")
+    py = n * pivot_y
+    # Pillow's AFFINE takes the INVERSE map (dest -> source), which is exactly
+    # the divide-by-scale below; writing it the other way round shrinks the tile.
+    grown = base.transform(
+        (n, n),
+        Image.AFFINE,
+        (1 / scale, 0, (n / 2) * (1 - 1 / scale), 0, 1 / scale, py * (1 - 1 / scale)),
+        resample=Image.BICUBIC,
+    )
+    # Border weight: 1 in the band, ramping to 0 over `feather` inside it.
+    mask = Image.new("L", (n, n), 0)
+    px = mask.load()
+    for y in range(n):
+        for x in range(n):
+            d = min(x, y, n - 1 - x, n - 1 - y)
+            if d < band - feather:
+                px[x, y] = 255
+            elif d < band:
+                px[x, y] = int(255 * (band - d) / feather)
+    return Image.composite(base, grown, mask)
 
 
 def plate_median(img, boxes=((195, 195, 275, 275), (750, 195, 830, 275),
@@ -280,6 +433,13 @@ def main():
         img, note = to_tile(img, source_px=source_px)
         if note_crop:
             note = (note_crop + "; " + note) if note else note_crop
+        if stem in ZOOM:
+            scale, pivot_y, band = ZOOM[stem]
+            img = zoom_tile(img, scale, pivot_y, band)
+            note = (note + "; " if note else "") + f"zoomed x{scale:g}"
+        if stem in PLATE_LEVEL:
+            img, was, now = level_plate(img)
+            note = (note + "; " if note else "") + f"plate luma {was:.0f} -> {now:.0f}"
         if stem in PLATE_FIX:
             img, was, now = match_plate(img)
             note = (note + "; " if note else "") + (

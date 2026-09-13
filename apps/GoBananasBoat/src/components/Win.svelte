@@ -38,7 +38,12 @@
 	const BANNER_RATIO = 560 / 1000;
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
-		big: { mult: 1, glowTint: 0x9ec44a },
+		// A WARM RAMP, all five of them. `big` was 0x9EC44A — jungle lime — which
+		// made the FIRST and by far the commonest win tier the one colour in the
+		// game that belongs to a different game. Brass is the modest end of this
+		// game's own light; the tiers then run gold, amber, red, and finally out
+		// of the palette on purpose for max.
+		big: { mult: 1, glowTint: 0xd8a334 },
 		superwin: { mult: 1.15, glowTint: 0xffd75e },
 		mega: { mult: 1.3, glowTint: 0xffa347 },
 		epic: { mult: 1.5, glowTint: 0xff7a4a },
@@ -263,7 +268,7 @@
 								/>
 							</Container>
 							{#if burstShown}
-								<FxBurst scale={1.7} flavour="jungle" oncomplete={() => (burstShown = false)} />
+								<FxBurst scale={1.7} flavour="cargo" oncomplete={() => (burstShown = false)} />
 							{/if}
 						{:else}
 							<!-- small wins: just the rolling amount over the board -->

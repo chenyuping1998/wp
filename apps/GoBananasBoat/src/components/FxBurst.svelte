@@ -12,8 +12,9 @@
 		// overall size multiplier — 1 fits one symbol cell
 		scale?: number;
 		delay?: number;
-		// 'gold' celebration vs 'jungle' (leaf shards mixed in) for blasts
-		flavour?: 'gold' | 'jungle';
+		// 'gold' is stars alone; 'cargo' mixes in torn tarpaulin scraps, for the
+		// two moments that are about cargo rather than about money.
+		flavour?: 'gold' | 'cargo';
 		oncomplete?: () => void;
 	};
 
@@ -21,7 +22,10 @@
 
 	const DURATION = 850;
 	const GOLD = [0xffd75e, 0xfff7d1, 0xffb04a, 0xffe98a];
-	const JUNGLE = [0xffd75e, 0xfff7d1, 0x8fbf4a, 0xffb04a];
+	// One of the four is the tarpaulin's own cream (#D1CDB9, sampled off the
+	// symbol tiles) rather than the lime green that used to sit here. The other
+	// three are the same warm lights, because the burst is still a celebration.
+	const CARGO = [0xffd75e, 0xfff7d1, 0xd1cdb9, 0xffb04a];
 
 	type Spark = {
 		angle: number;
@@ -30,7 +34,7 @@
 		life: number;
 		color: number;
 		spin: number;
-		leaf: boolean;
+		scrap: boolean;
 		// per-spark stagger breaks the mechanical all-at-once look
 		delay: number;
 	};
@@ -40,9 +44,9 @@
 		speed: 150 + Math.random() * 130,
 		size: 26 + Math.random() * 26,
 		life: 0.55 + Math.random() * 0.3,
-		color: (props.flavour === 'jungle' ? JUNGLE : GOLD)[i % 4],
+		color: (props.flavour === 'cargo' ? CARGO : GOLD)[i % 4],
 		spin: (Math.random() - 0.5) * 6,
-		leaf: props.flavour === 'jungle' && i % 3 === 0,
+		scrap: props.flavour === 'cargo' && i % 3 === 0,
 		delay: Math.random() * 0.09,
 	}));
 
@@ -118,13 +122,13 @@
 			{@const state = sparkState(spark, t)}
 			{#if state}
 				<Sprite
-					key={spark.leaf ? 'fxLeaf' : 'fxStar'}
+					key={spark.scrap ? 'fxScrap' : 'fxStar'}
 					anchor={0.5}
 					x={state.x}
 					y={state.y}
 					rotation={state.rot}
 					tint={spark.color}
-					blendMode={spark.leaf ? 'normal' : 'add'}
+					blendMode={spark.scrap ? 'normal' : 'add'}
 					width={state.size}
 					height={state.size}
 					alpha={state.alpha}

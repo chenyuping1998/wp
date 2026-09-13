@@ -8,6 +8,8 @@ import type { EmitterEventWinWays } from '../components/WinWays.svelte';
 import type { EmitterEventSound } from '../components/Sound.svelte';
 import type { EmitterEventTransition } from '../components/Transition.svelte';
 import type { EmitterEventMysteryReveal } from '../components/MysteryReveal.svelte';
+import type { EmitterEventFullShipment } from '../components/FullShipment.svelte';
+import type { EmitterEventCargoPick } from '../components/CargoPick.svelte';
 import type { EmitterEventStickyPrizes } from '../components/StickyPrizes.svelte';
 import type { EmitterEventScatterBurst } from '../components/ScatterBurst.svelte';
 import type { EmitterEventMascot } from '../components/Mascot.svelte';
@@ -23,6 +25,8 @@ export type EmitterEventGame =
 	| EmitterEventSound
 	| EmitterEventTransition
 	| EmitterEventMysteryReveal
+	| EmitterEventFullShipment
+	| EmitterEventCargoPick
 	| EmitterEventStickyPrizes
 	| EmitterEventScatterBurst
 	| EmitterEventMascot;

@@ -74,14 +74,28 @@ export const INITIAL_SYMBOL_STATE: SymbolState = 'static';
 // brass bevel, the royals are plain steel. See design/GEN2_ART_SPEC.md §2.4.
 // Frameless art needs a gap; framed art must not have one.
 //
-// The royals still carry their riveted plate, and those plates ARE the grid —
-// anything under 1 opens a visible hole in the wall between them. The high
-// symbols, the Wild and the Scatter have had their frames cropped away, so at 1
-// their artwork runs edge to edge and touches the neighbouring tile with nothing
-// between them. 0.88 gives them their own air without breaking the royals' wall.
-const HIGH_SYMBOL_SIZE = 0.88;
+// ALL THREE ARE 1 FOR THE CAPTAIN PACK, and the reason the other two used to be
+// 0.88 is worth keeping because it explains why they no longer are.
+//
+// Every tile in this pack is a complete shipping-container panel drawn edge to
+// edge, and those panels ARE the grid: the board is meant to read as one
+// continuous container wall with the symbols set into it. Anything under 1 opens
+// a visible hole in that wall.
+//
+// The old 0.88 was correct for the pack before this one, where the high symbols,
+// the Wild and the Scatter were FRAME-CROPPED on import — cropped art has no
+// border of its own, so at 1 it ran edge to edge and touched its neighbour with
+// nothing between them, and 0.88 gave it back the air the crop had taken.
+//
+// That premise is gone: design/import_symbols.py now crops nothing for this pack
+// (cropping ate the mine's shackle, the lamp's bracket, the scatter's hook and
+// the Wild's entire gold border), so every tile arrives with its own margin
+// already drawn in. Leaving these at 0.88 shrank the highs and the Wild by 12%
+// against the royals beside them, which on a live board reads as the high
+// symbols being a size smaller than everything else.
+const HIGH_SYMBOL_SIZE = 1;
 const LOW_SYMBOL_SIZE = 1;
-const SPECIAL_SYMBOL_SIZE = 0.88;
+export const SPECIAL_SYMBOL_SIZE = 1;
 
 const SPIN_OPTIONS_SHARED = {
 	reelBounceBackSpeed: 0.15,
@@ -263,23 +277,17 @@ export const SYMBOL_INFO_MAP = {
 	X: mixedSymbol('gbX', LOW_RATIOS),
 	P: mixedSymbol('gbP', SPECIAL_RATIOS),
 
-	// TODO(art): the tarped crate. Drawing gbX (the hold-and-spin blank) as a
-	// stand-in - a covered cell is at least the right IDEA, and a MISSING entry
-	// here is not a missing texture: getSymbolInfo indexes this map by name, so
-	// an unlisted symbol is an undefined lookup on a live board.
-	//
-	// Real art is a canvas-tarped crate roped down, sized SPECIAL like W and S
-	// rather than LOW - it has to read as an event on the board. Every state is
-	// the same sprite and there is no win spine, for the same reason the dynamite
-	// it replaced had none: M never appears in a win, because by the time
-	// anything is scored the tarps are off and the cell holds the cargo symbol.
+	// The tarped cargo crate. Every state is the same sprite and there is no win
+	// spine, for the same reason the dynamite it replaced had none: M never
+	// appears in a win, because by the time anything is scored the tarps are off
+	// and the cell holds the cargo symbol.
 	M: {
 		explosion,
-		static: symbolSprite('gbX', SPECIAL_RATIOS),
-		spin: symbolSprite('gbX', SPECIAL_RATIOS),
-		land: symbolSprite('gbX', SPECIAL_RATIOS),
-		postWinStatic: symbolSprite('gbX', SPECIAL_RATIOS),
-		win: symbolSprite('gbX', SPECIAL_RATIOS),
+		static: symbolSprite('gbM', SPECIAL_RATIOS),
+		spin: symbolSprite('gbM', SPECIAL_RATIOS),
+		land: symbolSprite('gbM', SPECIAL_RATIOS),
+		postWinStatic: symbolSprite('gbM', SPECIAL_RATIOS),
+		win: symbolSprite('gbM', SPECIAL_RATIOS),
 	},
 	// `satisfies`, not `:`. It makes this map exhaustive over SymbolName - which
 	// is derived from the generated config - so a symbol added to the maths fails

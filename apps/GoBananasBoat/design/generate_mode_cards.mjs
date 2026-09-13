@@ -22,21 +22,21 @@
 // The three motifs are designed to read AGAINST each other, since the only
 // question the modal has to answer is how the options differ:
 //
-//   bonus100    ONE reel blasted: every cell of it the same symbol.
-//   bonus200    TWO blasted reels.
-//   bonus300    THREE blasted reels.
+//   bonus100    TWO reels of cargo crates, tarps coming off.
+//   bonus200    THREE.
+//   bonus300    FOUR.
 //               The three buy tiers differ by exactly one thing — how many
-//               Machetes the feature starts with — so that is the only thing the
-//               art varies. Nothing else changes between them, because anything
-//               that did would imply a difference that is not there.
+//               crates the free strips carry — so that is the only thing the art
+//               varies. Nothing else changes between them, because anything that
+//               did would imply a difference that is not there.
 //   holdandspin a board of blank cells with Coins stuck to it. Deliberately
 //               shares nothing with the other three, because it is not free
 //               spins: it pays coins, not ways.
 //
-// A blasted reel is drawn the way the BOARD will draw it — every cell the same
-// symbol — so the card is not an illustration of the mechanic, it is the
-// mechanic, and a player who has seen the card recognises the board the first
-// time a reel goes up.
+// A crate reel is drawn the way the BOARD will draw it — a stack of tarps with
+// the ones below already open on the same cargo — so the card is not an
+// illustration of the mechanic, it is the mechanic, and a player who has seen
+// the card recognises the board the first time a tarp comes off.
 //
 // No text is drawn. The card's title, description and price are DOM text drawn
 // over this by BonusCard, and a second set baked into the art would collide with
@@ -109,45 +109,47 @@ const sym = (name, cx, cy, size, opacity = 1, rotate = 0) =>
 	`<image href="${sprite(name)}" x="${-size / 2}" y="${-size / 2}" width="${size}" height="${size}"/></g>`;
 
 /**
- * The board mid-detonation: `lit` reels filled with one symbol, the rest dim.
+ * The board mid-reveal: `lit` reels carrying cargo crates, the rest dim.
  *
- * This is the mechanic drawn literally. A blast rewrites whole reels to a single
- * symbol, so a filled column IS what the player will see, and the number of
- * filled columns is exactly what a dearer tier buys.
+ * This is the mechanic drawn literally. Crates land in stacks and every one of
+ * them opens on the SAME symbol, so the lower half of each lit column is drawn
+ * already open on one cargo and the upper half is still under its tarp. The
+ * number of lit columns is exactly what a dearer tier buys.
  */
-const blastBoard = (lit) => {
-	// Five columns of three, sized to the crop band. A wide card only ever shows
-	// y 124..374 (250px) and only 360px across, so five columns of 58 with a 4px
-	// gap is the largest that fits both without clipping — see CROP.
+const crateBoard = (lit) => {
+	// Five columns of four — this game's board — sized to the crop band. A wide
+	// card only ever shows y 124..374 (250px) and only 360px across, so 58 with a
+	// 4px gap is the largest that fits both without clipping. See CROP.
 	const cell = 58;
 	const gap = 4;
-	const rows = 3;
+	const rows = 4;
 	const x0 = MOTIF.cx - ((5 - 1) * (cell + gap)) / 2;
 	const y0 = MOTIF.cy - ((rows - 1) * (cell + gap)) / 2;
-	// The fill symbol is the crystal: it is the one cool-coloured tile in the set,
-	// so a filled column reads as filled at card size without needing a label.
-	const FILL = 'h2';
-	// Dim filler for the reels the blast did not reach, so "lit" means something.
+	// What the crates turn out to be. h1 is the diving helmet — the one gold
+	// tile in the set, so an opened column reads as opened at card size without
+	// needing a label.
+	const CARGO = 'h1';
+	// Dim filler for the reels the shipment did not reach, so "lit" means
+	// something.
 	const REST = ['l1', 'l3', 'l2', 'l4', 'l5'];
 
 	let out =
-		`<ellipse cx="${MOTIF.cx}" cy="${MOTIF.cy}" rx="${110 + lit * 26}" ry="104" ` +
-		`fill="#ff8c1a" opacity="0.12" filter="url(#soft)"/>`;
+		`<ellipse cx="${MOTIF.cx}" cy="${MOTIF.cy}" rx="${110 + lit * 22}" ry="112" ` +
+		`fill="#ffb020" opacity="0.12" filter="url(#soft)"/>`;
 
 	for (let reel = 0; reel < 5; reel++) {
 		const cx = x0 + reel * (cell + gap);
-		const blasted = reel < lit;
+		const loaded = reel < lit;
 		for (let row = 0; row < rows; row++) {
 			const cy = y0 + row * (cell + gap);
-			// The dynamite sits on the top cell of the first blasted reel — the
-			// charge that did this, still in the picture so the card explains
-			// itself rather than just showing a result.
-			const name = blasted ? (reel === 0 && row === 0 ? 'b' : FILL) : REST[(reel + row) % REST.length];
-			out += sym(name, cx, cy, cell, blasted ? 1 : 0.4);
+			// Tarps on top, opened cargo below: the tarps come off from the bottom
+			// of the stack, which is the direction the reveal animates.
+			const name = loaded ? (row < 2 ? 'm' : CARGO) : REST[(reel + row) % REST.length];
+			out += sym(name, cx, cy, cell, loaded ? 1 : 0.38);
 		}
-		if (blasted) {
-			// A warm edge down the filled column. Without it the crystal tiles read
-			// as ordinary symbols that happen to match.
+		if (loaded) {
+			// A warm edge down the loaded column. Without it the cargo tiles read as
+			// ordinary symbols that happen to match.
 			const top = y0 - cell / 2;
 			const h = rows * cell + (rows - 1) * gap;
 			out +=
@@ -159,12 +161,12 @@ const blastBoard = (lit) => {
 };
 
 const MOTIFS = {
-	// 0 / 2 / 4 banked dynamite puts the tier's FIRST blast at 1 / 2 / 3 reels
-	// (see blast_ladder in game_config.py). That is the only difference between
-	// the tiers, so it is the only thing the art varies.
-	bonus100: blastBoard(1),
-	bonus200: blastBoard(2),
-	bonus300: blastBoard(3),
+	// The tiers run at 28% / 31% / 34% crate density with a rising chance of a
+	// full shipment (see DENSITY in make_mystery_reels.py). That is the only
+	// difference between them, so it is the only thing the art varies.
+	bonus100: crateBoard(2),
+	bonus200: crateBoard(3),
+	bonus300: crateBoard(4),
 
 	// A board with Coins stuck to it. Shares nothing with the other three on
 	// purpose — it is not free spins and should not look like it.
@@ -197,11 +199,37 @@ const MOTIFS = {
 const defs =
 	surfaceDefs('sf') +
 	`
+	<!--
+		THE HULL, not the jungle.
+		This gradient was three olive greens, carried over from the game these
+		cards were forked from, and it was the loudest thing wrong with the buy
+		modal: three green cards behind steel-blue container tiles, inside a flat
+		grey platform panel. Nothing in this game is green.
+		Steel blue running to near-black, the same range the container plates and
+		the reel housing use, so the card reads as a piece of the ship.
+	-->
 	<linearGradient id="ground" x1="0" y1="0" x2="0.35" y2="1">
-		<stop offset="0" stop-color="#2c3812"/>
-		<stop offset="0.5" stop-color="#1c2609"/>
-		<stop offset="1" stop-color="#101806"/>
+		<stop offset="0" stop-color="#33454f"/>
+		<stop offset="0.5" stop-color="#1a2830"/>
+		<stop offset="1" stop-color="#0b1318"/>
 	</linearGradient>
+	<!--
+		Rust down the seams. The plates are weathered and a perfectly clean card
+		behind them looks like a render of a different game; two soft vertical
+		streaks are enough to say the same thing the tiles say.
+	-->
+	<linearGradient id="rust" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#8a4a1e" stop-opacity="0"/>
+		<stop offset="0.35" stop-color="#8a4a1e" stop-opacity="0.55"/>
+		<stop offset="1" stop-color="#5e2f12" stop-opacity="0"/>
+	</linearGradient>
+	<!-- The corrugation. Wide, low-contrast ribs; at card size anything stronger
+	     turns into a moire against the symbol tiles' own ribbing. -->
+	<pattern id="ribs" width="26" height="8" patternUnits="userSpaceOnUse">
+		<rect width="26" height="8" fill="#ffffff" fill-opacity="0"/>
+		<rect width="2" height="8" fill="#ffffff" fill-opacity="0.05"/>
+		<rect x="13" width="1" height="8" fill="#000000" fill-opacity="0.16"/>
+	</pattern>
 	<!-- The locked reel's own gold. Deeper than the UI brass on purpose: the
 	     column is a large flat area, and the trim ramp used on small pieces goes
 	     pale as soon as it covers one. -->
@@ -228,8 +256,8 @@ const defs =
 		card sitting on the first.
 	-->
 	<linearGradient id="scrimTop" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#0c1305" stop-opacity="0.92"/>
-		<stop offset="1" stop-color="#0c1305" stop-opacity="0"/>
+		<stop offset="0" stop-color="#060d11" stop-opacity="0.92"/>
+		<stop offset="1" stop-color="#060d11" stop-opacity="0"/>
 	</linearGradient>
 	<!--
 		Never fully open. The old ramp dropped to 12% across the middle, which is
@@ -239,14 +267,17 @@ const defs =
 		cropped; the variation on top of it is only for depth.
 	-->
 	<linearGradient id="scrim" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#0c1305" stop-opacity="0.72"/>
-		<stop offset="0.3" stop-color="#0c1305" stop-opacity="0.55"/>
-		<stop offset="0.68" stop-color="#0c1305" stop-opacity="0.58"/>
-		<stop offset="1" stop-color="#0c1305" stop-opacity="0.88"/>
+		<stop offset="0" stop-color="#060d11" stop-opacity="0.72"/>
+		<stop offset="0.3" stop-color="#060d11" stop-opacity="0.55"/>
+		<stop offset="0.68" stop-color="#060d11" stop-opacity="0.58"/>
+		<stop offset="1" stop-color="#060d11" stop-opacity="0.88"/>
 	</linearGradient>`;
 
 const card = (motif) => `
 	<rect width="${W}" height="${H}" fill="url(#ground)"/>
+	<rect width="${W}" height="${H}" fill="url(#ribs)"/>
+	<rect x="${W * 0.16}" y="0" width="10" height="${H}" fill="url(#rust)"/>
+	<rect x="${W * 0.71}" y="0" width="14" height="${H}" fill="url(#rust)"/>
 	${finishRect(0, 0, W, H, 0, 'sf', CANVAS_FINISH)}
 	${motif}
 	<rect width="${W}" height="${H}" fill="url(#scrim)"/>

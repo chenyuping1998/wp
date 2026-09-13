@@ -3,7 +3,6 @@
 
 	export type EmitterEventMysteryReveal = {
 		type: 'mysteryReveal';
-		held: Position[];
 		// SymbolName, not string. It is what gets written into rawSymbol.name, and
 		// SymbolName is derived from the generated config — so a symbol the maths
 		// starts emitting that the client has no entry for fails here rather than
@@ -15,15 +14,13 @@
 
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import { Container, Graphics } from 'pixi-svelte';
-	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { Container, Sprite } from 'pixi-svelte';
 	import { stateBet } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE } from '../game/constants';
+	import { SYMBOL_SIZE, SPECIAL_SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
-	import { drawCrateFace } from '../game/crateArt';
 	import BoardContainer from './BoardContainer.svelte';
 	import ImpactDust from './ImpactDust.svelte';
 
@@ -43,19 +40,20 @@
 	// staggered left-to-right / top-to-bottom in reading order — a wall of
 	// crates popping on one frame reads as a glitch, not as cargo being
 	// unloaded. Per entry: the crate rattles as the rope takes strain, the tarp
-	// (the same shape Symbol.svelte draws for a sealed cell — see crateArt.ts)
-	// is yanked up and off with a puff of dust, and the board's symbol swaps
+	// (the SAME gbM sprite Symbol.svelte draws for a sealed cell, at the same
+	// size, so the frame before it moves and the frame it was sitting in are one
+	// picture) is yanked up and off with a puff of dust, and the board's symbol swaps
 	// underneath it at the moment the tarp is roughly half clear, so the cargo
 	// looks like it was under the canvas the whole time rather than appearing
 	// out of nowhere.
 	//
-	// THE HOLD IS APPLIED WITHOUT ANIMATION.
+	// EVERY CRATE ON THE BOARD IS ONE OF THIS SPIN'S.
 	//
-	// `held` carries every cell the run has already opened, including the ones
-	// this spin just added. Those older cells are re-stamped silently: the maths
-	// re-stamps them on every spin (assign_mystery_symbols), so after a fresh
-	// reveal the board would otherwise show whatever the strips happened to land
-	// there. Only `positions` — this spin's crates — is animated.
+	// There used to be a second list on the event, `held`, carrying cells opened
+	// on earlier spins of the run that were still showing the cargo — those were
+	// re-stamped here silently while only this spin's crates were animated.
+	// Crates no longer persist, so the event's `positions` is the whole board's
+	// worth and all of it is animated.
 	//
 	// The board is mutated in place: reelSymbol is a $state object (see
 	// utils-slots/createReelForSpinning), so assigning rawSymbol is what makes
@@ -87,11 +85,59 @@
 	// tarp lifting off a cell that still held a crate uncovered an identical
 	// crate underneath. Swapping behind cover, on the frame before anything has
 	// moved, is what makes the tarp look like it was hiding the cargo.
+	//
+	// TURBO IS ONLY A LITTLE FASTER, NOT A DIFFERENT ANIMATION.
+	//
+	// It used to be 170/22 — nearly three times the speed — which is what turbo
+	// does to a spin, and it is the wrong rule for this one. The reveal is the
+	// thing the player is here to watch: it is the moment the cargo is named,
+	// and at 170ms with a 22ms stagger the whole board came off in one frame and
+	// the crates simply cut to symbols. Turbo should shorten the WAITING, not
+	// the payoff.
+	//
+	// So it keeps the same shape at about 80% of the length: still a rattle,
+	// still a stagger you can read left to right, just tighter.
 	const DURATION = 460;
-	const DURATION_TURBO = 170;
-	const STAGGER = 70;
-	const STAGGER_TURBO = 22;
+	const DURATION_TURBO = 380;
+	// THE STAGGER IS PER REEL, NOT PER CRATE, and that is the whole shape of this
+	// animation.
+	//
+	// Crates arrive in STACKS — the strips place them in runs of two to four and
+	// the maths pads any lone one (pad_lone_crates), so what lands is columns of
+	// cargo, not scattered lids. Opening them cell by cell was fighting that:
+	// twenty cells is twenty beats, and at 70ms each that is 1.4 seconds of tarps
+	// before the win can even be read, eight times a feature. The previous fix
+	// was to shrink the gap as the batch grew, which kept the length down and
+	// turned a big board into a blur.
+	//
+	// A column at a time fixes both. A full board is FIVE beats instead of
+	// twenty, so the gap can stay at its full width and still finish sooner; and
+	// a whole reel's stack coming off together is what unloading a ship actually
+	// looks like. The count now sets how MUCH happens, not how fast.
+	const STAGGER = 110;
+	const STAGGER_TURBO = 78;
+	// Inside a column the tarps still peel top-down rather than lifting as one
+	// rigid slab. Small enough that the column still reads as one event.
+	const ROW_LAG = 34;
+	const ROW_LAG_TURBO = 22;
 	const RATTLE_END = 0.22;
+
+	// NO WIN-STYLE HIGHLIGHT WHEN THE CARGO IS NAMED.
+	//
+	// There was a pass here that lit the opened cells with a warm band travelling
+	// left to right, to say the thing the reveal never says out loud: every crate
+	// on a board holds the SAME symbol. It was removed, and the reason is worth
+	// keeping so it does not come back a third time.
+	//
+	// It looked like a win. This board already has a language for "these cells
+	// paid" — WinWays dims the losers and frames the winners, and SymbolWinAnim
+	// pulses the tiles — and a warm sweep over freshly opened cells is close
+	// enough to that to be read as a payout that is not there. The same mistake
+	// in a different place cost a per-symbol motion pass earlier in this game's
+	// history.
+	//
+	// The stacks and the shared symbol are legible from the board itself. The
+	// reveal's job is to open the crates.
 
 	type RevealEntry = {
 		reel: number;
@@ -113,6 +159,7 @@
 	let clock = $state(0);
 	let rafId = 0;
 	let loopRunning = false;
+
 
 	const easeOutCubic = (p: number) => 1 - (1 - p) ** 3;
 
@@ -182,59 +229,77 @@
 		};
 	};
 
-	const drawTarp = (g: PixiGraphics) => drawCrateFace(g, SYMBOL_SIZE * 0.86);
 
 	context.eventEmitter.subscribeOnMount({
 		mysteryReveal: async (event) => {
-			// The hold first, silently — see the note above.
-			for (const position of event.held) {
-				const reelSymbol =
-					context.stateGame.board[position.reel]?.reelState.symbols[position.row];
-				if (!reelSymbol) continue;
-				reelSymbol.rawSymbol = { ...reelSymbol.rawSymbol, name: event.symbol };
-			}
-
 			if (event.positions.length === 0) return;
 			pendingSymbol = event.symbol;
 
-			const stagger = stateBet.isTurbo ? STAGGER_TURBO : STAGGER;
 			const durationMs = stateBet.isTurbo ? DURATION_TURBO : DURATION;
 
-			// Reading order — left to right, top to bottom — so several crates
-			// opening at once read as cargo being unloaded down the line rather
-			// than as a scattershot pop.
-			const ordered = [...event.positions].sort((a, b) => a.reel - b.reel || a.row - b.row);
+			const stagger = stateBet.isTurbo ? STAGGER_TURBO : STAGGER;
+			const rowLag = stateBet.isTurbo ? ROW_LAG_TURBO : ROW_LAG;
 
-			context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
+			// Grouped into columns, left to right, each column's cells top to
+			// bottom. See the note on STAGGER — the beat is the reel, not the cell.
+			const byReel = new Map<number, number[]>();
+			for (const position of event.positions) {
+				const rows = byReel.get(position.reel);
+				if (rows) rows.push(position.row);
+				else byReel.set(position.reel, [position.row]);
+			}
+			const columns = [...byReel.entries()]
+				.sort((a, b) => a[0] - b[0])
+				.map(([reel, rows]) => ({ reel, rows: rows.sort((a, b) => a - b) }));
+
+			// Rope taking the load, under the rattle — see design/generate_audio_jungle.
+			// This used to be `sfx_multiplier_update`, a marimba ding written for a
+			// multiplier re-roll, which made the reveal sound like a menu.
+			context.eventEmitter.broadcast({ type: 'soundCrateStrain' });
 			// The housing rattles once for the whole batch, scaled by how many
-			// crates are opening — one crate is a tap, half the board is a slam.
+			// REELS are opening — one column is a tap, the whole board is a slam.
+			// Scaled by reels rather than by cells and no longer capped: the cap
+			// was at seven crates, which meant a full board of twenty landed with
+			// exactly the weight of a small one.
 			context.eventEmitter.broadcast({
 				type: 'boardFrameImpact',
-				strength: 0.15 + Math.min(0.5, ordered.length * 0.08),
+				strength: 0.15 + 0.17 * columns.length,
 			});
 
 			const start = performance.now();
 			entries = [
 				...entries,
-				...ordered.map((position, index) => ({
-					reel: position.reel,
-					row: position.row,
-					bornAt: start + index * stagger,
-					durationMs,
-					swapped: false,
-				})),
+				...columns.flatMap((column, index) =>
+					column.rows.map((row, rowIndex) => ({
+						reel: column.reel,
+						row,
+						bornAt: start + index * stagger + rowIndex * rowLag,
+						durationMs,
+						swapped: false,
+					})),
+				),
 			];
 			ensureLoop();
 
-			for (let i = 0; i < ordered.length; i++) {
-				// One click per crate, on its own beat, rather than a chord — see
-				// the stagger above.
+			for (let i = 0; i < columns.length; i++) {
+				// One pull per COLUMN, on its own beat. Pitched by its place in the
+				// run, so a five-reel board is a rising phrase — which is the one
+				// thing that tells a big unload from a small one by ear.
 				await waitForTimeout(i === 0 ? 0 : stagger);
-				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
+				context.eventEmitter.broadcast({ type: 'soundTarpPull', step: i });
 			}
-			// Ride out the last entry's own animation before handing back — the
-			// win read that follows has to see the board fully settled.
-			await waitForTimeout(durationMs - (ordered.length - 1) * stagger);
+
+			// Ride out the last column's own animation before the cargo call. The
+			// last column starts (columns-1)*stagger in and its own last row a
+			// further rowLag after that; clamped at zero because with enough
+			// columns the batch outlasts one tarp's animation, and a negative wait
+			// does not return early, it throws.
+			const lastColumn = columns[columns.length - 1];
+			const tail = (lastColumn.rows.length - 1) * rowLag;
+			await waitForTimeout(
+				Math.max(0, durationMs + tail - (columns.length - 1) * stagger),
+			);
+
 		},
 	});
 </script>
@@ -250,7 +315,18 @@
 				scale={{ x: 1, y: s.scaleY }}
 				alpha={s.alpha}
 			>
-				<Graphics draw={drawTarp} />
+				<!--
+					gbM, drawn at SPECIAL_RATIOS like Symbol.svelte draws it. It used
+					to be a vector stand-in shared with the board; with real art both
+					sides just point at the same texture, which is what keeps the
+					lift from looking like a swap to a different picture.
+				-->
+				<Sprite
+					key="gbM"
+					anchor={0.5}
+					width={SYMBOL_SIZE * SPECIAL_SYMBOL_SIZE}
+					height={SYMBOL_SIZE * SPECIAL_SYMBOL_SIZE}
+				/>
 			</Container>
 		{/if}
 	{/each}

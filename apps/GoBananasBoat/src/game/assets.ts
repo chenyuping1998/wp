@@ -35,9 +35,9 @@
 		src: new URL('../../assets/sprites/goBananasFx/fx_streak.png', import.meta.url).href,
 		preload: true,
 	},
-	fxLeaf: {
+	fxScrap: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasFx/fx_leaf.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasFx/fx_scrap.png', import.meta.url).href,
 		preload: true,
 	},
 	fxVignette: {
@@ -105,9 +105,9 @@
 	// live board, and both used gbH2. In gen-2 that symbol is an opaque riveted
 	// plate, so what actually fell down the screen was a tile complete with bezel
 	// and rivets. See design/generate_symbols_gen2.mjs for where this is cut.
-	gbDynamite: {
+	gbMine: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/dynamite.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/mine.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH3: {
@@ -201,6 +201,83 @@
 		preload: true,
 	},
 
+	// The platform skin's Buy Bonus: a shipping-container panel, empty, with the
+	// naval mine stencilled on it — and the same stencil lit, drawn for ADDITIVE
+	// blending, for the hover state. Both come out of
+	// design/generate_ui_plates.mjs, and the stencil is derived from mine.png's
+	// own cut-out rather than redrawn.
+	gbUiBuyBonusContainer: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_container.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusLit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_container_lit.png', import.meta.url)
+			.href,
+		preload: true,
+	},
+
+	// ── the same icons in flat monochrome, for the platform UI skin ──────────
+	//
+	// A SECOND SET RATHER THAN A TINT, because UiButton draws uiTheme.icons as a
+	// plain Sprite with no tint (components-ui-pixi/src/components/UiButton.svelte)
+	// — uiTheme.buttonIconFill reaches only the vector-drawn turbo bolt, so on the
+	// platform skin every one of the brass icons above stayed gold on a grey strip.
+	//
+	// Both sets are preloaded and both ship. That is the price of the skin being
+	// switchable at run time from localStorage with no rebuild: whichever one
+	// uiTheme.icons ends up pointing at has to already be in memory. Nine 256px
+	// PNGs of flat white line art, ~4KB each.
+	//
+	// Generated from the SAME shapes as the brass set — see design/generate_ui_icons.mjs,
+	// which renders both palettes in one pass so the two can never drift apart.
+	gbIconMonoMenu: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/menu.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoMenuExit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/menuExit.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSettings: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/settings.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoInfo: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/info.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoPayTable: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/payTable.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSoundOn: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/soundOn.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSoundOff: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/soundOff.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoAutoSpin: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/autoSpin.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoReplay: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/replay.png', import.meta.url).href,
+		preload: true,
+	},
+
 	gbS: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/s.png', import.meta.url).href,
@@ -223,6 +300,13 @@
 	gbP: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/p.png', import.meta.url).href,
+		preload: true,
+	},
+	// The tarped cargo crate. Until this existed M was pointed at gbX, the
+	// hold-and-spin blank, which drew a plain X on the board.
+	gbM: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/m.png', import.meta.url).href,
 		preload: true,
 	},
 	// The sergeant standing beside the board. Built from the supplied character

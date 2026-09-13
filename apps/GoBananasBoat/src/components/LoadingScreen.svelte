@@ -39,7 +39,7 @@
 	// 3 Scatters here, not 4, and that ways MULTIPLY across reels rather than
 	// adding — a player arriving from gen-2 will assume both the other way round.
 	//
-	// Three of the seven slots go to the Dynamite, because it is the only rule in
+	// Three of the seven slots go to the crates, because they are the only rule in
 	// this game a player of other ways games will not already know.
 	//
 	// 'X' not '×' throughout: these are set in Titan One, whose subset does not
@@ -47,10 +47,10 @@
 	// line is more obvious than the plain letter.
 	const TIPS = [
 		'3, 4 OR 5 SCATTERS AWARD 8, 10 OR 12 FREE SPINS',
-		'A DYNAMITE FILLS ITS WHOLE REEL WITH ONE SYMBOL',
-		'THE FILL IS THE BEST SYMBOL ALREADY ON THAT REEL',
-		'IN FREE SPINS EVERY DYNAMITE WIDENS THE NEXT BLAST',
-		'FIVE REELS OF ONE SYMBOL IS 1,024 WAYS AT ONCE',
+		'EVERY CRATE ON THE BOARD HOLDS THE SAME CARGO',
+		'THE CARGO IS DRAWN ONCE, AFTER THE REELS STOP',
+		'IN FREE SPINS ONE SHIPMENT LASTS THE WHOLE ROUND',
+		'AN OPENED CRATE STAYS OPEN FOR THE REST OF THE ROUND',
 		'SYMBOLS COUNT ANYWHERE ON A REEL — THERE ARE NO LINES',
 		'HOLD AND SPIN: EVERY COIN RESETS THE RESPINS TO 3',
 	];
@@ -90,12 +90,16 @@
 	});
 
 	// The two halves of the wordmark. Gen-2's accent was "100", the number its
-	// mechanic was named after; Delta's is the generation name itself.
-	const TITLE_MAIN = 'GO';
-	const TITLE_ACCENT = 'BOOMANA';
+	// mechanic was named after; this one's is the boat.
+	//
+	// It said 'GO' / 'BOOMANA' until now — the name of the game this app was
+	// forked from, on the first screen the player ever sees, while the bet bar
+	// and the rules panel both said Delta. Three names for one game.
+	const TITLE_MAIN = 'GO BANANAS';
+	const TITLE_ACCENT = 'BOAT';
 
 	// ── title layout ──────────────────────────────────────────────────────────
-	// "GO BANANAS" and "DELTA" are two Texts because only the second is orange, but
+	// "GO BANANAS" and "BOAT" are two Texts because only the second is orange, but
 	// they have to read as one centred headline — so the pair is measured and
 	// laid out from its combined width rather than each being centred on its own.
 	//
@@ -107,13 +111,9 @@
 	// the moment the real face lands.
 	// ONE SIZE FOR THE WHOLE TITLE.
 	//
-	// The accent word used to run a third larger, which was right when the title
-	// was "GO BANANAS" plus a generation mark that had to be told apart from the
-	// name. Here the name IS "GO BOOMANA" — two words of one thing — and setting
-	// them at different sizes made "GO" read as a prefix stuck on the front.
-	//
-	// Raised from 46 rather than shrinking BOOMANA to match: the headline should
-	// not get smaller just because the two halves agree.
+	// The accent word used to run a third larger. Kept level here: "GO BANANAS
+	// BOAT" is one name read straight through, and a BOAT a third taller than the
+	// words in front of it made the first two read as a prefix stuck on.
 	const TITLE_SIZE = 58;
 	const ACCENT_SIZE = TITLE_SIZE;
 	const TITLE_GAP = 20;
@@ -126,8 +126,8 @@
 	// ONE COLOUR FOR THE WHOLE TITLE.
 	//
 	// "GO" was light gold and "BOOMANA" hot orange, which read as two words from
-	// two different logos rather than one name. The size step and the dark outline
-	// already separate them; colour was doing a third job nobody asked for.
+	// two different logos rather than one name. The dark outline already carries
+	// the legibility; colour was doing a second job nobody asked for.
 	//
 	// The orange is the one the feature card's hero panel uses, so the title and
 	// the card the player sees straight after it agree.

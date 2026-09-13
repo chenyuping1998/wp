@@ -7,9 +7,11 @@
 		// Raised by the transition as it begins, so the wind-up happens before the
 		// dynamite exists. See THROW_RELEASE_MS there.
 		| { type: 'mascotThrow' }
-		// The goggle tease. Fired at the top of a round that is GOING to trigger
+		// The tease. Fired at the top of a round that is GOING to trigger
 		// the feature — see playBet in src/game/utils.ts, which owns the coin flip.
-		| { type: 'mascotGoggleTease' };
+		| { type: 'mascotTease' }
+		// The cargo reel: 'watch' while it turns, 'reveal' when it stops.
+		| { type: 'mascotCargo'; phase: 'watch' | 'reveal' };
 </script>
 
 <script lang="ts">
@@ -239,28 +241,48 @@
 		}
 	};
 
-	// ── the goggle tease ───────────────────────────────────────────────────
+	// ── the tease ──────────────────────────────────────────────────────────
 	//
 	// A tell, not an announcement. The round already knows it is going to trigger
-	// the feature; half the time the goggles warm up while the reels are still
-	// turning, so a player who is watching him gets a second or two of knowing
-	// before the scatters land.
+	// the feature; half the time he notices while the reels are still turning, so
+	// a player who is watching him gets a second or two of knowing before the
+	// scatters land.
 	//
 	// It is 50/50 on purpose. A tell that fires every single time is not a tell,
 	// it is the result displayed early — the reels stop mattering. Firing half the
-	// time means a lit visor is worth leaning in for and an unlit one means
-	// nothing, which is the only way this reads as luck rather than as a spoiler.
-	// It is also strictly one-directional: it never lights on a round that does
-	// not trigger, so it can promise but never lie.
+	// time means it is worth leaning in for and an unlit one means nothing, which
+	// is the only way this reads as luck rather than as a spoiler. It is also
+	// strictly one-directional: it never lights on a round that does not trigger,
+	// so it can promise but never lie.
 	//
-	// Drawn here rather than tinted onto the Spine slot: the visor art is already
-	// a lit green screen, and multiplying a colour over it can only make it
-	// darker. A glow has to be added ON TOP, which a slot tint cannot do.
+	// IT USED TO BE A GREEN VISOR, ON A CHARACTER WHO HAS NO VISOR.
 	//
-	// The goggle plate in skeleton units, from its layer box in the PSD
-	// (head_1_eye at 232,95, 204x77) put through toSpine.
-	const GOGGLE = { x: 54, y: 750, halfWidth: 102, halfHeight: 38 };
-	const GOGGLE_GREEN = 0x63ff9c;
+	// This was inherited whole from the jungle commando, who wore amber aviator
+	// goggles: one wide rounded plate of #63FF9C drawn at skeleton (54, 750),
+	// measured off THAT psd's `head_1_eye` layer (232,95, 204x77). The captain's
+	// head is a different drawing and a different size — his eyes are two
+	// separate pieces inside `head_5_eye` (164,0, 225x156), whose centres come out
+	// at (-2, 793) and (71, 786). So the tell has been a fluorescent green oval
+	// hanging in the air beside his jaw, roughly 70 across and 95 up from
+	// anything on his face.
+	//
+	// Now it is the light catching his eyes, in the warm amber the rest of this
+	// game is lit by — the lamp on the dock, the lamp in the hold, the brass on
+	// the frame. Two small ellipses rather than one plate, because a gorilla's
+	// eyes are set wide apart and a single lozenge across both reads as a visor
+	// again.
+	//
+	// Drawn here rather than tinted onto the Spine slot: a slot tint MULTIPLIES,
+	// so it can only make art darker. A glow has to be added ON TOP.
+	//
+	// Skeleton units, from the two eye shapes' own bounding boxes in the PSD put
+	// through toSpine. Re-measure these if the head art is ever replaced — like
+	// the numbers they replaced, they fail silently.
+	const EYES = [
+		{ x: -2, y: 793, halfWidth: 36, halfHeight: 18 },
+		{ x: 71, y: 786, halfWidth: 25, halfHeight: 16 },
+	];
+	const TEASE_AMBER = 0xffb347;
 	// Slow in, hold, slow out. A visor that snaps on is a fault light; one that
 	// warms up is a machine noticing something.
 	const TEASE_IN_MS = 620;
@@ -304,21 +326,21 @@
 		const alpha = Math.max(0, level) * TEASE_PEAK * breathe;
 		if (alpha <= 0.002) return;
 
-		const cx = GOGGLE.x;
-		const cy = -GOGGLE.y; // pixi y is down, skeleton y is up
-
-		// Three passes, widest and faintest first: the bloom around the visor, the
-		// plate itself, then a hot core. Rounded to match the goggle's own shape.
+		// Three passes per eye, widest and faintest first: the bloom thrown onto the
+		// brow around it, the eye itself, then a hot core. Ellipses, not rounded
+		// rectangles — a rectangle at this size reads as a lit panel.
 		const passes = [
-			{ pad: 34, radius: 30, a: 0.28 },
-			{ pad: 12, radius: 18, a: 0.5 },
-			{ pad: -6, radius: 10, a: 1 },
+			{ pad: 26, a: 0.22 },
+			{ pad: 9, a: 0.42 },
+			{ pad: -3, a: 1 },
 		];
-		for (const pass of passes) {
-			const w = GOGGLE.halfWidth + pass.pad;
-			const h = GOGGLE.halfHeight + pass.pad;
-			g.roundRect(cx - w, cy - h, w * 2, h * 2, pass.radius);
-			g.fill({ color: GOGGLE_GREEN, alpha: alpha * pass.a });
+		for (const eye of EYES) {
+			const cx = eye.x;
+			const cy = -eye.y; // pixi y is down, skeleton y is up
+			for (const pass of passes) {
+				g.ellipse(cx, cy, eye.halfWidth + pass.pad, eye.halfHeight + pass.pad);
+				g.fill({ color: TEASE_AMBER, alpha: alpha * pass.a });
+			}
 		}
 	};
 
@@ -328,7 +350,7 @@
 	// was dropped.
 	let animationName = $state('idle');
 	let loop = $state(true);
-	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit'];
+	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'alert', 'throwit'];
 
 	const play = (name: string, loops: boolean) => {
 		animationName = name;
@@ -382,16 +404,28 @@
 		// Interrupts whatever he was doing, unlike the others. A transition is the
 		// scene being torn down; finishing a shrug first would put the wind-up
 		// after the dynamite should already be in the air.
-		// The glow is pinned to the goggles' REST position, so it is only correct
+		// The glow is pinned to the eyes' REST position, so it is only correct
 		// while the head is where the idle put it. That is the only state it fires
 		// in anyway — the tease runs during the spin — but a big win landing on the
-		// spin before would start a cheer, and the visor would be left glowing in
-		// mid-air where his head used to be.
-		mascotGoggleTease: () => {
+		// spin before would start a cheer, and the glow would be left hanging in
+		// mid-air where his face used to be.
+		mascotTease: () => {
 			if (!placement) return;
 			if (animationName !== 'idle') return;
 			startTease();
 		},
+
+		// THE MANIFEST BEING READ — see CargoPick.
+		//
+		// The one stretch of the round where he has something other than the board
+		// to look at, and it runs four and a half seconds. He used to stand at idle
+		// through all of it.
+		//
+		// 'watch' is the `alert` lean. 'reveal' is a NOD, not a cheer: what has just
+		// happened is information, not a win, and `cheer` is the gesture this game
+		// keeps for a win worth making a fuss about — spending it here would cost
+		// it there.
+		mascotCargo: ({ phase }) => play(phase === 'watch' ? 'alert' : 'nod', false),
 
 		mascotThrow: () => {
 			play('throwit', false);

@@ -69,14 +69,27 @@ const streak = svgWrap(
 	</radialGradient>`,
 );
 
-// banana-leaf shard — jungle-flavoured debris for grenade blasts and chomps
-const leaf = svgWrap(
+// TORN CANVAS SCRAP — the debris this game actually makes.
+//
+// This was a banana leaf, and it was thrown by both of the game's biggest
+// moments: the burst that opens every round and the burst behind a big win.
+// There is no foliage anywhere in a container port, so a third of the sparks in
+// the two most-seen celebrations were from the previous generation's jungle.
+//
+// A scrap of tarpaulin is what comes off a crate here, and it is the one piece
+// of debris a player has already watched being pulled (see MysteryReveal). Drawn
+// as a rough quadrilateral with ONE ragged edge rather than four: at the ten-odd
+// pixels these are on screen, detail on every side turns into a blob, and a
+// single torn edge against three straight ones is what reads as "torn".
+//
+// White, like the star, because FxBurst tints it.
+const scrap = svgWrap(
 	128,
-	`<path d="M 64 6 Q 104 44 100 78 Q 92 118 64 122 Q 36 118 28 78 Q 24 44 64 6 Z" fill="url(#lf)"/>
-	<path d="M 64 12 L 64 118" stroke="#ffffff" stroke-opacity="0.55" stroke-width="4"/>`,
-	`<linearGradient id="lf" x1="0" y1="0" x2="0" y2="1">
+	`<path d="M 30 16 L 98 8 L 104 92 Q 86 84 72 100 Q 58 116 44 102 Q 34 92 30 16 Z" fill="url(#sc)"/>
+	<path d="M 44 22 Q 56 62 50 98" stroke="#ffffff" stroke-opacity="0.4" stroke-width="3" fill="none"/>`,
+	`<linearGradient id="sc" x1="0" y1="0" x2="0.3" y2="1">
 		<stop offset="0" stop-color="#ffffff" stop-opacity="0.95"/>
-		<stop offset="1" stop-color="#ffffff" stop-opacity="0.55"/>
+		<stop offset="1" stop-color="#ffffff" stop-opacity="0.5"/>
 	</linearGradient>`,
 );
 
@@ -87,14 +100,17 @@ const vignette = svgWrap(
 	`<radialGradient id="v" cx="0.5" cy="0.5" r="0.5">
 		<stop offset="0" stop-color="#000000" stop-opacity="0"/>
 		<stop offset="0.5" stop-color="#000000" stop-opacity="0"/>
-		<stop offset="0.8" stop-color="#0c1404" stop-opacity="0.5"/>
-		<stop offset="1" stop-color="#060a02" stop-opacity="0.88"/>
+		<!-- was #0C1404 / #060A02, a dark GREEN — and this vignette is drawn over
+		     the whole game (Game.svelte), so every background in the ship was
+		     being tinted towards the jungle it came from. -->
+		<stop offset="0.8" stop-color="#0b141a" stop-opacity="0.5"/>
+		<stop offset="1" stop-color="#05090c" stop-opacity="0.88"/>
 	</radialGradient>`,
 );
 
 render(glow, 'fx_glow.png', 128);
 render(star, 'fx_star.png', 128);
 render(streak, 'fx_streak.png', 128);
-render(leaf, 'fx_leaf.png', 128);
+render(scrap, 'fx_scrap.png', 128);
 render(vignette, 'fx_vignette.png', 256);
 console.log('fx textures written to', OUT);

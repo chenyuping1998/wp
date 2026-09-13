@@ -96,7 +96,7 @@
 	// exported config carries nothing about the feature.
 	//
 	// The tiers used to also differ by banked dynamite, and this block derived
-	// each one's opening blast width from the ladder. Both are gone: the blast
+	// each one's opening blast width from that ladder. Both are gone: the blast
 	// was removed and the tiers now differ by CRATE DENSITY, which lives in the
 	// reel strips and has no number the rules screen can honestly quote. Saying
 	// "more crates" is the truthful version and is in the prose below.
@@ -142,7 +142,7 @@
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-rules">
-			<h2>GO BANANAS DELTA — GAME RULES</h2>
+			<h2>GO BANANAS BOAT — GAME RULES</h2>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>How to play</h3>
@@ -151,7 +151,7 @@
 					     to in the project. config stores it the other way round, as
 					     numReels and numRows, so the order is swapped here rather than
 					     the config being renamed. -->
-					Go Bananas Delta is a {rowCount}&times;{reelCount} video slot with
+					Go Bananas Boat is a {rowCount}&times;{reelCount} video slot with
 					<strong>{waysCount.toLocaleString()} {T.ways}</strong>. There are no fixed lines: a
 					symbol counts wherever it lands on a reel. {T.combinationDirection}. A combination
 					{T.pays} when the same symbol appears on 3 or more adjacent reels starting from the
@@ -269,9 +269,8 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Wild</h3>
 				<p>
-					The Foreman Wild substitutes for every symbol except the Scatter and a crate.
-					It does not {T.pay} as a symbol of its own. A Wild caught in a blast is replaced along
-					with everything else on that reel.
+					The Captain Wild substitutes for every symbol except the Scatter and a Crate.
+					It does not {T.pay} as a symbol of its own.
 				</p>
 			</section>
 
@@ -304,7 +303,7 @@
 				<h3><span class="wp-accent-bar"></span>Hold and Spin</h3>
 				<p>
 					A separate prize board {T.bought} from the {T.betMenu} for {config.betModes?.holdandspin
-						?.cost}&times; your {T.totalBet}. It does not use {T.ways} or Dynamite. You start
+						?.cost}&times; your {T.totalBet}. It does not use {T.ways} or Crates. You start
 					with 3 respins. Every Coin that lands sticks to the board and resets the respins back
 					to 3. When no respins remain, all stuck Coin values are added up and {T.paid} out.
 					Maximum win: {config.betModes?.holdandspin?.max_win?.toLocaleString()}&times; the

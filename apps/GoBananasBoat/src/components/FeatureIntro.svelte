@@ -10,7 +10,7 @@
 
 	// The three-panel feature card shown once loading reaches 100%.
 	//
-	// The middle slot is the headline and it is the Dynamite, not the trigger: the
+	// The middle slot is the headline and it is the crates, not the trigger: the
 	// split is the only thing here a player of another ways game would not already
 	// know. The trigger sits left because it is the familiar half, and the max win
 	// sits right because it is the figure players scan for last.
@@ -71,14 +71,15 @@
 	};
 
 	/**
-	 * Drawn beside the panel copy, which is
-	 * the in-game asset rather than a vector stand-in — the panel the player will
-	 * actually see when a reel locks. It is 1:5, so it is sized off the slot's
-	 * HEIGHT and the arrow takes the width left over.
+	 * Crates scattered across the board, all lit the same.
+	 *
+	 * The picture has to say ONE thing: several cells, wherever they fall, turn
+	 * out to be the same cargo. So the lit cells are deliberately NOT a column —
+	 * the art this replaced filled one column because the mechanic it described
+	 * blew up one reel, and reusing that shape would tell the player the crates
+	 * arrive by the reel, which is the one thing they do not do.
 	 */
-	/** A reel cut down the middle: each cell becomes two. */
-	/** A reel going up: five columns, one of them filled and lit. */
-	const drawBlast = (g: PixiGraphics, w: number, h: number) => {
+	const drawCrates = (g: PixiGraphics, w: number, h: number) => {
 		g.clear();
 		const top = h * 0.12;
 		const bottom = h * 0.9;
@@ -87,16 +88,15 @@
 		const cols = 5;
 		const cw = (w * 0.9) / cols;
 		const x0 = w * 0.5 - (cols * cw) / 2;
-		// The middle column is the one that detonated. Filled and gold; the four
-		// around it are empty outlines, so "one reel became one symbol" is the
-		// only thing the picture says.
-		const litCol = 2;
+		// Scattered, and stacked where they land — two on one reel, two on
+		// another, which is the shape the strips actually produce.
+		const crates = new Set(['0,1', '0,2', '2,0', '3,2', '3,3']);
 		for (let c = 0; c < cols; c++) {
 			for (let r = 0; r < rows; r++) {
 				const x = x0 + c * cw;
 				const y = top + r * cellH;
 				g.roundRect(x + 1.5, y + 1.5, cw - 3, cellH - 3, 3);
-				if (c === litCol) {
+				if (crates.has(`${c},${r}`)) {
 					g.fill({ color: GOLD, alpha: 0.85 });
 				} else {
 					g.fill({ color: PANEL_INK, alpha: 0.9 });
@@ -105,9 +105,12 @@
 				}
 			}
 		}
-		// A hot edge down the filled column, the same treatment the buy cards use.
-		g.roundRect(x0 + litCol * cw, top, cw, bottom - top, 4);
-		g.stroke({ width: 2.5, color: HOT, alpha: 0.95 });
+		// A hot edge around each crate, the same treatment the buy cards use.
+		for (const cell of crates) {
+			const [c, r] = cell.split(',').map(Number);
+			g.roundRect(x0 + c * cw + 1.5, top + r * cellH + 1.5, cw - 3, cellH - 3, 3);
+			g.stroke({ width: 2, color: HOT, alpha: 0.95 });
+		}
 	};
 
 	/** Ways multiplying across reels as more of them are cut. */
@@ -163,10 +166,10 @@
 	// Bodies are one short sentence each. The first pass ran to two and three
 	// sentences and overflowed the panels — the copy is a caption for the art, not
 	// the rules screen, which is one tap away and carries the full wording.
-	// 4 rows on 5 reels is 1,024 ways, which is also exactly what a full-board
-	// blast pays on: every cell the same symbol means every reel contributes all
-	// four of its rows. Derived rather than typed, because the board size comes
-	// from the maths config.
+	// 4 rows on 5 reels is 1,024 ways, which is also exactly what a full board of
+	// one cargo pays on: every cell the same symbol means every reel contributes
+	// all four of its rows. Derived rather than typed, because the board size
+	// comes from the maths config.
 	const BASE_WAYS = (config.numRows ?? []).reduce((a: number, b: number) => a * b, 1);
 
 	const panels: Panel[] = [
@@ -180,13 +183,13 @@
 		},
 		{
 			accent: HOT,
-			title: 'DYNAMITE',
-			// The figure is the DREAM, not the average: five reels of one symbol is
-			// what the whole feature climbs towards, and it is a count the player can
+			title: 'CARGO CRATES',
+			// The figure is the DREAM, not the average: a whole board of one cargo
+			// is what the round loads towards, and it is a count the player can
 			// verify on the board the first time it happens.
-			body: `Blows up its whole reel and fills it with the best symbol standing on it. In Free Spins each Dynamite widens the next blast: 1 reel, then 2, 3, 4, 5.`,
+			body: `Every crate on the board holds the same cargo. In Free Spins the whole round shares one shipment, and an opened crate stays open.`,
 			figure: BASE_WAYS.toLocaleString(),
-			art: drawBlast,
+			art: drawCrates,
 			hero: true,
 		},
 		{

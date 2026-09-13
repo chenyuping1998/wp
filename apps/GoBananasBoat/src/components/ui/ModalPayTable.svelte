@@ -41,11 +41,11 @@
 		L5: '10',
 		W: 'Wild',
 		S: 'Golden Bananas — Scatter',
-		B: 'Dynamite',
+		M: 'Cargo Crate',
 	};
 
 	// keep high -> low ordering for readability
-	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'S', 'B'];
+	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'S', 'M'];
 
 	const maxWin = config.betModes?.base?.max_win ?? 10000;
 
@@ -67,12 +67,17 @@
 	const waysCount = (config.numRows ?? []).reduce((a: number, b: number) => a * b, 1);
 
 	// Two worked examples, drawn as mini boards with the matching cells lit. The
-	// second is the same board with one reel blasted, so the two sit side by side
-	// and the doubling is visible rather than described.
+	// second is the SAME board after its crates have opened, so the two sit side
+	// by side and the effect is visible rather than described.
 	//
-	// Cells are [reel, row] pairs. Reel 2 in the second example is the blasted one:
-	// its two matching symbols each count twice, taking the product from
-	// 2x2x2 = 8 to 2x4x2 = 16.
+	// Cells are [reel, row] pairs. Reel 2 carries two crates as well as its two
+	// matching symbols; when they open as that same symbol the reel contributes
+	// four instead of two, taking the product from 2x2x2 = 8 to 2x2x4 = 16.
+	//
+	// This is the honest picture of the mechanic AND the reason the strips stack
+	// crates rather than scattering them: a lone crate lifts a reel from 2 to 3,
+	// a stack of two lifts it to 4, and on a ways board the product is where the
+	// difference lands.
 	type Example = {
 		title: string;
 		lit: [number, number][];
@@ -92,8 +97,8 @@
 		[2, 1],
 		[2, 3],
 	];
-	// A blasted reel is entirely one symbol, so every row of it counts.
-	const LIT_BLASTED: [number, number][] = [
+	// After the crates open, all four rows of reel 2 are the same symbol.
+	const LIT_OPENED: [number, number][] = [
 		[0, 1],
 		[0, 3],
 		[1, 0],
@@ -103,21 +108,19 @@
 		[2, 2],
 		[2, 3],
 	];
-	// The two examples are the SAME board before and after a detonation, so the
-	// blast's effect is a comparison the player can count rather than a claim.
-	// Reel 3 filling means all four of its rows now match, which is why the third
-	// factor goes from 2 to 4.
+	// The two examples are the SAME board before and after the crates open, so
+	// the effect is a comparison the player can count rather than a claim.
 	const examples: Example[] = [
 		{
-			title: 'Three reels, no Dynamite',
+			title: 'Three reels, crates still closed',
 			lit: LIT,
 			split: [],
 			sum: '2 × 2 × 2',
 			ways: 8,
 		},
 		{
-			title: 'The same board, reel 3 blasted',
-			lit: LIT_BLASTED,
+			title: 'The same board, the crates opened as the same symbol',
+			lit: LIT_OPENED,
 			split: [2],
 			sum: '2 × 2 × 4',
 			ways: 16,
@@ -164,6 +167,17 @@
 								<span class="wp-special"
 									>{T.doesNotPay} &mdash; 3, 4 or 5 Scatters award 8, 10 or 12 Free Spins</span
 								>
+							{:else if row.name === 'M'}
+								<!--
+									M is registered in the maths with a 99-of-a-kind row worth 0,
+									purely so the symbol exists. Without this branch that row
+									renders as a "99 x 0" chip, which is not a payout, it is an
+									implementation detail on a player-facing screen.
+								-->
+								<span class="wp-special"
+									>{T.doesNotPay} &mdash; every Crate on the board opens as the same
+									symbol</span
+								>
 							{:else if row.pays.length}
 								{#each row.pays as pay (pay.count)}
 									<span class="wp-pay-chip"><b>{pay.count}</b> &times; <em>{pay.value}</em></span>
@@ -205,14 +219,15 @@
 			</div>
 
 			<p class="wp-note">
-				A <strong>Dynamite</strong> fills its whole reel with the highest-paying symbol already
-				standing on it, so every row of that reel counts. Because {T.ways} multiply across reels,
-				a blasted reel can turn a board with no combination at all into a paying one. In Free
-				Spins each Dynamite widens the next blast, up to all five reels at once.
+				Every <strong>Cargo Crate</strong> on the board opens as one and the same symbol, drawn
+				once after the reels stop. Crates arrive stacked, so a reel carrying them can end up
+				several rows of that symbol deep &mdash; and because {T.ways} multiply across reels,
+				that can turn a board with no combination at all into a paying one. In Free Spins the
+				whole round shares one shipment, and a crate that has opened stays open.
 			</p>
 
 			<p class="wp-note">
-				Wild substitutes for all symbols except Scatter and Dynamite, and does not {T.pay} as a
+				Wild substitutes for all symbols except Scatter and Crate, and does not {T.pay} as a
 				symbol of its own. Only the highest win per symbol is {T.paid}. Max win is capped at
 				{maxWin.toLocaleString()}&times;
 				{T.totalBet}.
@@ -328,7 +343,7 @@
 		gap: 0.55rem;
 	}
 
-	/* Two worked ways examples, side by side so the blast's effect is a
+	/* Two worked ways examples, side by side so the crates' effect is a
 	   comparison rather than a claim. Wider than the old payline thumbnails
 	   because each carries a caption with the arithmetic. */
 	.wp-ways-examples {
@@ -380,7 +395,7 @@
 		}
 	}
 
-	/* A blasted reel's cells: outlined rather than filled, so the filled reel reads
+	/* An opened reel's cells: outlined rather than filled, so the filled reel reads
 	   as a property of the cell instead of a second win. */
 	.wp-cell.split {
 		box-shadow: inset 0 0 0 1px rgba(255, 215, 94, 0.65);

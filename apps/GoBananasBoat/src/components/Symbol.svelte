@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Container, Graphics } from 'pixi-svelte';
-	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { Container } from 'pixi-svelte';
 
 	import SymbolSpine from './SymbolSpine.svelte';
 	import SymbolSprite from './SymbolSprite.svelte';
@@ -12,7 +11,6 @@
 	import { SYMBOL_SIZE, isBigPrize, BIG_PRIZE_FILL, BIG_PRIZE_STROKE } from '../game/constants';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import GoldText from './GoldText.svelte';
-	import { drawCrateFace } from '../game/crateArt';
 
 	type Props = {
 		x?: number;
@@ -33,19 +31,11 @@
 	const symbolInfo = $derived(getSymbolInfo({ rawSymbol: props.rawSymbol, state: props.state }));
 	const isSprite = $derived(symbolInfo.type === 'sprite');
 	const isWin = $derived(props.state === 'win');
-	// The sealed crate. Drawn as vector (see crateArt.ts) rather than through
-	// the sprite path every other symbol takes, so the tarp MysteryReveal peels
-	// off later can be drawn from the exact same function and the two frames
-	// either side of the peel starting are pixel-identical.
-	const isCrate = $derived(props.rawSymbol.name === 'M');
-	const drawCrate = (g: PixiGraphics) => drawCrateFace(g, SYMBOL_SIZE * 0.86);
 
 </script>
 
 {#snippet body(oncomplete: (() => void) | undefined)}
-	{#if isCrate}
-		<Graphics draw={drawCrate} />
-	{:else if isSprite && isWin}
+	{#if isSprite && isWin}
 		<!-- Win state for sprite symbols: programmatic scale+glow animation -->
 		<SymbolWinAnim {symbolInfo} x={0} y={0} {oncomplete} />
 	{:else if isSprite}

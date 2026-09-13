@@ -55,20 +55,28 @@ const SRC = path.join(appRoot, 'design/source/monkey');
 const OUT = path.join(appRoot, 'static/assets/spines/goBananasMonkey');
 fs.mkdirSync(OUT, { recursive: true });
 
-// One image that is not a body part: the dynamite he throws. Packed into this
+// One image that is not a body part: the naval mine he throws. Packed into this
 // atlas rather than referenced from the symbol set, because a Spine skin can
 // only draw regions from its own atlas.
+//
+// It is the SAME object as the H2 symbol, cut off its container panel by
+// design/cut_from_plate.py, so the thing he throws and the thing on the reels
+// are one thing rather than two drawings of a similar idea.
+// Width over height of a prop's source art. Read once, here, so nothing
+// downstream has to remember what shape the file happens to be.
+const propAspect = (prop) => {
+	const img = PNG.sync.read(fs.readFileSync(prop.file));
+	return img.width / img.height;
+};
+
 const PROPS = [
 	{
-		name: 'dynamite',
-		file: path.join(appRoot, 'static/assets/sprites/goBananasSymbolsV3/dynamite.png'),
+		name: 'mine',
+		file: path.join(appRoot, 'static/assets/sprites/goBananasSymbolsV3/mine.png'),
 		bone: 'prop',
-		// skeleton units — about a fifth of his height, which is a bundle in a
-		// gorilla's fist rather than a melon.
-		//
-		// The prop is drawn square here and the art is 691x614, so it renders a
-		// little squat in the hand. That is deliberate: a bundle held in a fist is
-		// mostly foreshortened, and the throw's release only lasts a few frames.
+		// skeleton units — about a fifth of his height, which is a mine in a
+		// gorilla's fist rather than a beach ball. It is the HEIGHT; the width
+		// comes from the file, see below.
 		size: 168,
 	},
 ];
@@ -90,7 +98,33 @@ const PROPS = [
 // animation that needs the arm in front hides the original and shows the copy;
 // everything else is untouched and keeps the artist's depth. Same mechanism the
 // dynamite already uses, which is why there is no new machinery here.
-const FRONT_COPIES = ['right_arm_1_forearm', 'right_arm_2_hand'];
+//
+// ONLY `right_arm_2_hand` GETS ONE, AND THE OTHER PIECE IS THE REASON.
+//
+// `right_arm_1_forearm` is not artwork. Opened on its own it is a 55x144 patch
+// of PURE BLACK with a soft edge — the shadow the artist painted UNDER the arm,
+// which is why the PSD stacks it at z 11, below both the upper arm (13) and the
+// trunk (14). In the rest pose it is completely hidden and it is doing its job.
+//
+// Copied to the front it is drawn on top of the coat at PSD x 387..442,
+// y 286..430 — exactly the right shoulder. That was the black wedge that
+// appeared there through the chest beat: not a tear, not a joint in the wrong
+// place, just a shadow layer promoted in front of the thing it was shading.
+//
+// The real forearm-and-fist is `right_arm_2_hand`, and the sleeve above it is
+// `right_arm_0_upper_arm`. Both come forward.
+//
+// THE SLEEVE WAS LEFT OUT AT FIRST, AND THAT WAS THE "ARM EATEN BY THE BODY".
+//
+// The PSD draws this arm behind the trunk: sleeve at z 13, trunk at z 14. Bring
+// only the forearm forward and the chest beat plays with a fist crossing the
+// coat and no arm attached to it — the sleeve is still behind, so the limb
+// visually ends at the elbow. Opened on its own the sleeve is a FINISHED
+// painting, round the back as well as the front (unlike `right_arm_1_forearm`,
+// which is nothing but shadow), so there is no reason for it to hide.
+// Order matters: these are appended to the draw order in this order, so the
+// upper arm has to come before the forearm or the elbow joint inverts.
+const FRONT_COPIES = ['right_arm_0_upper_arm', 'right_arm_2_hand'];
 const frontName = (name) => `${name}_front`;
 
 const meta = JSON.parse(fs.readFileSync(path.join(SRC, 'layers.json'), 'utf8'));
@@ -290,20 +324,120 @@ for (const l of drawOrder) {
 		},
 	};
 }
-// The copy points at the ORIGINAL's atlas region via `path`, so it costs a slot
-// and nothing else — no second region, no extra pixels in the page.
+// The copy gets its OWN atlas region rather than aliasing the original's via
+// `path`, because it is not quite the same picture — see trimTuck.
 for (const name of FRONT_COPIES) {
 	if (!attachments[name]) continue;
-	attachments[frontName(name)] = {
-		[frontName(name)]: { ...attachments[name][name], path: name },
-	};
+	attachments[frontName(name)] = { [frontName(name)]: { ...attachments[name][name] } };
 }
 
 for (const prop of PROPS) {
 	attachments[prop.name] = {
-		[prop.name]: { x: 0, y: 0, width: prop.size, height: prop.size },
+		// THE ASPECT IS READ FROM THE FILE, NOT ASSUMED SQUARE.
+		//
+		// It used to be drawn `size` by `size` with a note saying the art was
+		// square, which it was. It is not any more: the cut now keeps the mine's
+		// mooring chain, so the file came back 776x837. Drawn square that is a
+		// sphere squashed 7% vertically — and squashed in a way that does not
+		// fail loudly, it just makes the one prop that spends the whole throw
+		// TUMBLING read as an egg.
+		[prop.name]: {
+			x: 0,
+			y: 0,
+			width: Math.round(prop.size * propAspect(prop)),
+			height: prop.size,
+		},
 	};
 }
+
+// EVERY PIECE IS PAINTED WITH A BLACK TUCK, AND A FRONT COPY EXPOSES IT.
+//
+// Open the pieces on their own (design/source/monkey/*.png) and most of them
+// carry a slab of near-black along the edge where they slot into the piece
+// above them: the thigh tops, both sleeves, and the forearm this copy is made
+// of. It is the shadow the artist painted for the seam, it is meant to be
+// covered, and in the PSD's stacking it always is.
+//
+// A front copy breaks that. `right_arm_2_hand` is drawn at the end of the draw
+// order so the fist can cross the chest, and its tuck — the top third of the
+// piece — arrives with it, on top of the coat, as a black wedge at the elbow.
+// (The first pass at this had `right_arm_1_forearm` in the copy list too. That
+// layer is nothing BUT tuck: a 55x144 patch of pure black with no arm in it,
+// which is why the wedge was at the shoulder then and at the elbow now. Same
+// cause, one piece further down.)
+//
+// So the copy is trimmed. The band is not a number typed in here: it is how far
+// the piece ABOVE this one in its own limb reaches down over it, read off the
+// PSD boxes, which is by definition the part that was never meant to be seen.
+// Inside that band, dark pixels are faded out in proportion to how dark they
+// are, and the whole erase ramps off over its last rows so the fur ends in a
+// fade rather than a cut line.
+//
+// Only the copy is trimmed. The original still draws behind the torso with its
+// tuck intact, which is where the tuck does its job.
+const TUCK_LUMA = 48;
+const TUCK_FEATHER = 26;
+
+// WHICH PART OF A PIECE WAS NEVER MEANT TO BE SEEN, worked out from the PSD's
+// own boxes rather than named per piece.
+//
+// It is whatever lies under the piece that COVERS it — so it is a rectangle, and
+// which side of the piece that rectangle sits on depends on the pair:
+//
+//   right_arm_2_hand      covered from ABOVE by right_arm_0_upper_arm (y 206..431
+//                         against the hand's 345..609) -> a band across its top
+//   right_arm_0_upper_arm covered from the LEFT by torso_5_trunk (x 141..474
+//                         against the sleeve's 384..538) -> a band down its side
+//
+// The first version of this only looked at the top, and only at siblings in the
+// same limb. That was enough for the hand and blind to the sleeve, whose coverer
+// is the torso and whose tuck is on its edge rather than its top.
+//
+// Returns the covered rectangle in the piece's LOCAL pixels, or null.
+const tuckRect = (layer) => {
+	let best = null;
+	let bestArea = 0;
+	for (const other of meta.layers) {
+		if (other === layer || other.z <= layer.z) continue;
+		const x0 = Math.max(layer.x, other.x);
+		const y0 = Math.max(layer.y, other.y);
+		const x1 = Math.min(layer.x + layer.w, other.x + other.w);
+		const y1 = Math.min(layer.y + layer.h, other.y + other.h);
+		if (x1 <= x0 || y1 <= y0) continue;
+		const area = (x1 - x0) * (y1 - y0);
+		if (area <= bestArea) continue;
+		bestArea = area;
+		best = { x0: x0 - layer.x, y0: y0 - layer.y, x1: x1 - layer.x, y1: y1 - layer.y };
+	}
+	return best;
+};
+
+const trimTuck = (img, rect) => {
+	const out = new PNG({ width: img.width, height: img.height });
+	img.data.copy(out.data);
+	if (!rect) return out;
+	const { width: w, height: h } = img;
+	for (let y = Math.max(0, rect.y0); y < Math.min(h, rect.y1); y++) {
+		for (let x = Math.max(0, rect.x0); x < Math.min(w, rect.x1); x++) {
+			// How deep inside the covered rectangle this pixel is, counting only the
+			// edges that fall INSIDE the piece — an edge that coincides with the
+			// piece's own border is not a boundary to fade across.
+			let depth = Infinity;
+			if (rect.x0 > 0) depth = Math.min(depth, x - rect.x0);
+			if (rect.x1 < w) depth = Math.min(depth, rect.x1 - 1 - x);
+			if (rect.y0 > 0) depth = Math.min(depth, y - rect.y0);
+			if (rect.y1 < h) depth = Math.min(depth, rect.y1 - 1 - y);
+			const ramp = depth === Infinity ? 1 : Math.min(1, depth / TUCK_FEATHER);
+			if (ramp <= 0) continue;
+			const i = (y * w + x) * 4;
+			const luma = img.data[i] * 0.299 + img.data[i + 1] * 0.587 + img.data[i + 2] * 0.114;
+			if (luma >= TUCK_LUMA) continue;
+			const k = Math.min(1, ((TUCK_LUMA - luma) / TUCK_LUMA) * 1.6) * ramp;
+			out.data[i + 3] = Math.round(img.data[i + 3] * (1 - k));
+		}
+	}
+	return out;
+};
 
 // ── atlas ───────────────────────────────────────────────────────────────────
 // Shelf packing, tallest first. 19 pieces into one page — nothing here justifies
@@ -317,7 +451,18 @@ const placed = [];
 		const img = PNG.sync.read(fs.readFileSync(prop.file));
 		return { name: prop.name, file: prop.file, w: img.width, h: img.height, external: true };
 	});
-	const sorted = [...drawOrder.filter((l) => boneOf[l.name]), ...propImages].sort(
+	// The trimmed front copies, carried as decoded pixels rather than as a file
+	// on disk: nothing outside this atlas ever wants them, and writing them into
+	// design/source would put a derived image next to the artist's originals.
+	const frontImages = FRONT_COPIES.filter((name) => boneOf[name]).map((name) => {
+		const layer = piece(name);
+		const img = trimTuck(
+			PNG.sync.read(fs.readFileSync(path.join(SRC, layer.file))),
+			tuckRect(layer),
+		);
+		return { name: frontName(name), w: img.width, h: img.height, image: img };
+	});
+	const sorted = [...drawOrder.filter((l) => boneOf[l.name]), ...frontImages, ...propImages].sort(
 		(a, b) => b.h - a.h,
 	);
 	let x = PAD, y = PAD, shelf = 0;
@@ -340,7 +485,7 @@ const placed = [];
 const page = new PNG({ width: PAGE_W, height: PAGE_H });
 page.data.fill(0);
 for (const p of placed) {
-	const img = PNG.sync.read(fs.readFileSync(p.external ? p.file : path.join(SRC, p.file)));
+	const img = p.image ?? PNG.sync.read(fs.readFileSync(p.external ? p.file : path.join(SRC, p.file)));
 	for (let yy = 0; yy < p.h; yy++)
 		for (let xx = 0; xx < p.w; xx++) {
 			const s = (yy * img.width + xx) * 4;
@@ -1000,6 +1145,139 @@ const chestbeat = {
 	},
 };
 
+// alert: he turns and watches the cargo reel.
+//
+// The one stretch of the round where the character has a reason to look at
+// something other than the board — the manifest is being read (CargoPick), and
+// standing at idle through four and a half seconds of it was the tell that he is
+// a loop rather than a person.
+//
+// HE IS TO THE RIGHT OF THE BOARD (Mascot.svelte places him in the gap at
+// `board.x + frameHalfWidth`), so "toward it" is negative x.
+//
+// THE TORSO'S SIGN IS MEASURED, NOT ASSUMED, and it is worth saying how, because
+// three attempts at measuring it were wrong before one was right:
+//
+//   · head centroid in absolute sheet pixels — idle measured IDENTICALLY, so it
+//     was reading the contact sheet's own per-frame offset, not the pose
+//   · head centroid minus foot centroid — both animations came out flat zero,
+//     because the preview sheet is OPAQUE and an `alpha > threshold` test counts
+//     every pixel in the frame
+//   · the same, keyed on colour distance from the sheet's corner — this one can
+//     actually see the figure (165k head pixels against 96k foot pixels), and it
+//     showed +4.4px, i.e. the first lean went AWAY from the board
+//
+// Settled by rendering the sheet and looking at it, which is what this rig's
+// notes say to do and what `preview_monkey_spine.mjs <dir> alert` exists for.
+//
+// Inside the same budget as everything else here: this is a pose he HOLDS for
+// most of a second, so it is smaller than the chest beat, not larger.
+const ALERT_LEAN = -6; // torso, toward the board
+const ALERT_TURN = 7; // head
+const ALERT_HOLD_FROM = 0.42;
+const ALERT_HOLD_TO = 0.78;
+const ALERT_END = 1.1;
+
+const alert = {
+	bones: {
+		// weight goes onto the leg nearer the board, and the whole body with it.
+		// A dip first: he drops before he moves, which is what stops the shift
+		// reading as the whole figure being slid sideways.
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.2, x: -4, y: 3 },
+				{ time: ALERT_HOLD_FROM, x: -11, y: -2 },
+				{ time: ALERT_HOLD_TO, x: -11, y: -2 },
+				{ time: ALERT_END, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: ALERT_HOLD_FROM, value: ALERT_LEAN },
+				{ time: ALERT_HOLD_TO, value: ALERT_LEAN },
+				{ time: ALERT_END, value: 0 },
+			],
+			// a breath in: the chest rises as he takes notice
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: ALERT_HOLD_FROM, x: 0.99, y: 1.02 },
+				{ time: ALERT_HOLD_TO, x: 0.99, y: 1.02 },
+				{ time: ALERT_END, x: 1, y: 1 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.16, value: -2 }, // a flick the other way first
+				{ time: 0.4, value: ALERT_TURN },
+				{ time: ALERT_HOLD_TO, value: ALERT_TURN },
+				{ time: ALERT_END, value: 0 },
+			],
+			// the tilt alone reads as a tilt; the shift is what makes it a look
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.4, x: -14, y: 3 },
+				{ time: ALERT_HOLD_TO, x: -14, y: 3 },
+				{ time: ALERT_END, x: 0, y: 0 },
+			],
+		},
+		// the near shoulder comes up and the far one drops, so the body squares to
+		// the wheel without either arm leaving the coat
+		armL: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: ALERT_HOLD_FROM, value: -6 },
+				{ time: ALERT_HOLD_TO, value: -6 },
+				{ time: ALERT_END, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: ALERT_HOLD_FROM + LEAD, value: 4 },
+				{ time: ALERT_HOLD_TO, value: 4 },
+				{ time: ALERT_END, value: 0 },
+			],
+		},
+		armL_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: ALERT_HOLD_FROM + DRAG, value: hang(-6) },
+				{ time: ALERT_HOLD_TO, value: hang(-6) },
+				{ time: ALERT_END, value: 0 },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: ALERT_HOLD_FROM + DRAG + LEAD, value: hang(4) },
+				{ time: ALERT_HOLD_TO, value: hang(4) },
+				{ time: ALERT_END, value: 0 },
+			],
+		},
+		// the weight actually arrives somewhere: the near leg compresses, the far
+		// one lengthens as it unloads
+		legL: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: ALERT_HOLD_FROM, x: 1.012, y: 0.988 },
+				{ time: ALERT_HOLD_TO, x: 1.012, y: 0.988 },
+				{ time: ALERT_END, x: 1, y: 1 },
+			],
+		},
+		legR: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: ALERT_HOLD_FROM, x: 0.996, y: 1.006 },
+				{ time: ALERT_HOLD_TO, x: 0.996, y: 1.006 },
+				{ time: ALERT_END, x: 1, y: 1 },
+			],
+		},
+	},
+};
+
 // nod: the base game paid something. 0.8s, and almost nothing happens.
 //
 // This is the one that plays CONSTANTLY - most base spins that pay anything at
@@ -1105,7 +1383,7 @@ const nod = {
 	},
 };
 
-// throwit: he produces the dynamite and pitches it at the board.
+// throwit: he produces the mine and pitches it at the board.
 //
 // Named 'throwit' rather than 'throw' because `throw` is a reserved word, and
 // this object is written as JS before it becomes JSON.
@@ -1152,10 +1430,10 @@ const COCK_BACK = 34;
 const throwit = {
 	slots: {
 		// nothing, then a dynamite, then nothing again
-		dynamite: {
+		mine: {
 			attachment: [
 				{ time: 0, name: null },
-				{ time: APPEAR_AT, name: 'dynamite' },
+				{ time: APPEAR_AT, name: 'mine' },
 				{ time: RELEASE_AT, name: null },
 			],
 		},
@@ -1543,7 +1821,7 @@ const skeleton = {
 	slots,
 	skins: [{ name: 'default', attachments }],
 	animations: Object.fromEntries(
-			Object.entries({ idle, cheer, chestbeat, nod, throwit, ...sweeps }).map(([name, a]) => [
+			Object.entries({ idle, cheer, chestbeat, nod, alert, throwit, ...sweeps }).map(([name, a]) => [
 				name,
 				// idle is the only one that loops, so it is the only one whose ends
 				// have to meet.
