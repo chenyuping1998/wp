@@ -58,17 +58,40 @@
 	// transparent for most of its life — the change was visible happening, which
 	// makes it read as a graphic replacing another graphic rather than as an
 	// explosion leaving something behind.
+	// These are the beats AT FULL SIZE. Everything after the fuse is then scaled
+	// to how many reels actually went up — see AFTERMATH_SCALE.
 	const CHARGE_MS = 380;
 	const SHATTER_MS = 340;
 	const PUFF_MS = 240;
 	const HOLD_MS = 200;
 	const DISPERSE_MS = 700;
 	const SETTLE_MS = 420;
-	const TOTAL_MS = CHARGE_MS + SHATTER_MS + PUFF_MS + HOLD_MS + DISPERSE_MS;
 
 	// A full board is what the whole feature climbs towards, so it is held longer.
 	// Not a different animation — the same one, given room.
 	const FULL_BOARD_HOLD_MS = 700;
+
+	// THE CEREMONY IS SIZED TO THE BLAST. Indexed by reels covered, 1-5.
+	//
+	// Every blast used to take the same 2.28s whatever it did, and measured on the
+	// published books that is the wrong shape twice over:
+	//
+	//   66% of base blasts and 50% of bonus100's cover ONE reel — the smallest
+	//   thing the feature can do was getting the payoff's full ceremony;
+	//
+	//   54% of a feature's blasts are repeats within the same round (#2, #3, #4),
+	//   so a four-blast feature spent ~9s on the identical animation.
+	//
+	// The feature's whole escalation is the ladder widening 1 -> 5 reels, and at
+	// one fixed length that escalation was invisible: the one-reel opener and the
+	// five-reel payoff took exactly as long. Now a full board runs nearly twice
+	// the length of a single reel, which is the difference the player is chasing.
+	//
+	// THE FUSE IS NOT SCALED. It is the same fuse every time, it is the
+	// anticipation rather than the event, and fuse_sizzle.wav is exactly 380ms so
+	// that it runs out ON the bang — scaling CHARGE would either cut the cue off
+	// or leave a gap of silence before the explosion.
+	const AFTERMATH_SCALE = [0, 0.62, 0.75, 0.88, 1, 1];
 
 	// TURBO DOES NOT SHORTEN THIS. There is no turbo branch anywhere below — the
 	// waits are absolute, so every number here applies at both speeds.
@@ -79,6 +102,35 @@
 	// happen is a detonation that did not happen. Turbo still skips the pre-spin,
 	// the win-line volley and the reel wind-up, so a turbo round is still much
 	// faster; it just does not take this away.
+
+	// The beats this blast is actually running, set from its width before the
+	// clock starts. draw() reads these, not the constants above.
+	let beats = $state({
+		shatter: SHATTER_MS,
+		puff: PUFF_MS,
+		hold: HOLD_MS,
+		disperse: DISPERSE_MS,
+		settle: SETTLE_MS,
+		total: CHARGE_MS + SHATTER_MS + PUFF_MS + HOLD_MS + DISPERSE_MS,
+	});
+
+	const beatsFor = (width: number) => {
+		const k = AFTERMATH_SCALE[Math.min(Math.max(1, width), 5)];
+		// HOLD has a floor: it is the window the symbols are swapped in, unseen,
+		// and it must stay long enough to cover a dropped frame or two.
+		const hold = Math.max(120, Math.round(HOLD_MS * k));
+		const shatter = Math.round(SHATTER_MS * k);
+		const puff = Math.round(PUFF_MS * k);
+		const disperse = Math.round(DISPERSE_MS * k);
+		return {
+			shatter,
+			puff,
+			hold,
+			disperse,
+			settle: Math.round(SETTLE_MS * k),
+			total: CHARGE_MS + shatter + puff + hold + disperse,
+		};
+	};
 
 	let reels = $state<number[]>([]);
 	let clock = $state(-1);
@@ -263,11 +315,11 @@
 
 		const t = clock;
 		const charge = Math.min(1, t / CHARGE_MS);
-		const shatter = t < CHARGE_MS ? 0 : Math.min(1, (t - CHARGE_MS) / SHATTER_MS);
-		const PUFF_AT = CHARGE_MS + SHATTER_MS;
-		const puff = t < PUFF_AT ? 0 : Math.min(1, (t - PUFF_AT) / PUFF_MS);
-		const DISPERSE_AT = PUFF_AT + PUFF_MS + HOLD_MS;
-		const disperse = t < DISPERSE_AT ? 0 : Math.min(1, (t - DISPERSE_AT) / DISPERSE_MS);
+		const shatter = t < CHARGE_MS ? 0 : Math.min(1, (t - CHARGE_MS) / beats.shatter);
+		const PUFF_AT = CHARGE_MS + beats.shatter;
+		const puff = t < PUFF_AT ? 0 : Math.min(1, (t - PUFF_AT) / beats.puff);
+		const DISPERSE_AT = PUFF_AT + beats.puff + beats.hold;
+		const disperse = t < DISPERSE_AT ? 0 : Math.min(1, (t - DISPERSE_AT) / beats.disperse);
 
 		for (const reel of reels) {
 			const cx = getSymbolX(reel);
@@ -430,7 +482,7 @@
 		const t0 = performance.now();
 		const step = (now: number) => {
 			clock = now - t0;
-			if (clock < TOTAL_MS) raf = requestAnimationFrame(step);
+			if (clock < beats.total) raf = requestAnimationFrame(step);
 		};
 		raf = requestAnimationFrame(step);
 	};
@@ -439,6 +491,8 @@
 		reelBlast: async ({ reels: covered, symbol, full: isFull }) => {
 			const mine = ++generation;
 			reels = covered;
+			// sized before the clock starts, because draw() reads these
+			beats = beatsFor(covered.length);
 			clock = 0;
 			runClock();
 
@@ -448,34 +502,46 @@
 			// A blast cancelled mid-fuse must not still go bang.
 			if (mine !== generation) return;
 
-			// The bang and the breakage are the same instant — the dynamite is what
-			// destroys the symbols, so they must not be two separate events.
+			// THE BANG LANDS WHERE THE CRACKS GIVE WAY - the first frame of
+			// SHATTER, when the crazed symbols burst and the pieces start to fly -
+			// and the fuse, which burns for exactly CHARGE_MS, runs out on it.
+			//
+			// This has moved twice, and both moves are worth keeping in mind before
+			// moving it a third time. It began here, and the smoke then arrived 340ms
+			// later in silence, which read as the sound being early. So it was moved
+			// to the cloud - and then the stone broke silently for 340ms, which read
+			// as the sound being late. The fix for both was a second sound, not a
+			// different time: the bang belongs to the breakage, and the cloud now has
+			// a soft puff of its own below.
 			context.eventEmitter.broadcast({ type: 'soundBlastDetonate', full: isFull });
 			context.eventEmitter.broadcast({ type: 'soundBlastShatter' });
-			await waitForTimeout(SHATTER_MS);
+			await waitForTimeout(beats.shatter);
 			if (mine !== generation) return;
+
+			// the cloud bursting out: the air the explosion pushed
+			context.eventEmitter.broadcast({ type: 'soundBlastSmoke' });
 
 			// The cloud is opening. Wait for it to close over the reel before
 			// touching the board.
-			await waitForTimeout(PUFF_MS);
+			await waitForTimeout(beats.puff);
 			if (mine !== generation) return;
 
 			// Fully hidden. Swap here and the player never sees it happen.
 			fillReels(covered, symbol);
-			await waitForTimeout(HOLD_MS);
+			await waitForTimeout(beats.hold);
 			if (mine !== generation) return;
 
 			// The cloud starts thinning here and the swapped symbols come out from
 			// behind it. The rising marimba tells the ear the board just improved,
 			// ahead of the win evaluation that confirms it.
 			context.eventEmitter.broadcast({ type: 'soundBlastReveal' });
-			await waitForTimeout(DISPERSE_MS);
+			await waitForTimeout(beats.disperse);
 			if (mine !== generation) return;
 
 			// The smoke is gone and the new board is standing there. Hold it before
 			// the win evaluation starts moving things again — this wait draws
 			// nothing, which is the point of it.
-			await waitForTimeout(SETTLE_MS);
+			await waitForTimeout(beats.settle);
 			if (mine !== generation) return;
 			if (isFull) await waitForTimeout(FULL_BOARD_HOLD_MS);
 		},

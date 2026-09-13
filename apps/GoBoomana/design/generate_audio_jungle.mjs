@@ -867,4 +867,102 @@ const rubble = (sr, { dur = 0.7, count = 14, spread = 0.55, from = 0.12 } = {}) 
 	writeWav('symbol_reveal.wav', takeTail(normalize(wet, 0.62), SR_SFX, 1.25), SR_SFX);
 }
 
+// the smoke - a soft "fwoomp" as the cloud bursts out over the reel.
+//
+// PUFF used to be silent: the bang rode through it, and when the bang moved
+// back to the moment the stone breaks, the cloud arrived with no sound of its
+// own. This is deliberately small - it is the air the explosion pushed, heard
+// under the tail of the bang, not a second event competing with it.
+//
+// Appended at the END of this file on purpose: every cue above shares one PRNG,
+// and anything inserted earlier would shift the random stream and quietly
+// change every sound generated after it.
+{
+	const dur = 0.8;
+	const buf = buffer(dur, SR_SFX);
+	const lp = onePole();
+	const lp2 = onePole();
+	for (let i = 0; i < buf.length; i++) {
+		const t = i / SR_SFX;
+		// a quick swell rather than a click: smoke has no hard edge
+		const env = Math.min(1, t / 0.035) * Math.exp(-5.2 * t);
+		// the cutoff falls as the cloud spreads out and slows
+		const cut = 0.045 + 0.2 * Math.exp(-7 * t);
+		const n = rand2();
+		const body = lp2(lp(n, cut), cut);
+		buf[i] = body * env * 2.6;
+	}
+	// a little weight at the start: the cloud is pushed, not blown
+	let ph = 0;
+	for (let i = 0; i < SR_SFX * 0.3; i++) {
+		const t = i / SR_SFX;
+		const f = 55 + 60 * Math.exp(-14 * t);
+		ph += (2 * Math.PI * f) / SR_SFX;
+		buf[i] += Math.sin(ph) * Math.min(1, t / 0.02) * Math.exp(-11 * t) * 0.3;
+	}
+	// and the thin hiss of it dispersing, trailing off
+	const hp = onePole();
+	for (let i = 0; i < buf.length; i++) {
+		const t = i / SR_SFX;
+		const n = rand2();
+		const h = n - hp(n, 0.2);
+		buf[i] += h * 0.05 * Math.min(1, t / 0.08) * Math.exp(-3.6 * t);
+	}
+	const wet = reverb(buf, SR_SFX, { ...MINE, mix: 0.22 });
+	writeWav('smoke_puff.wav', takeTail(normalize(wet, 0.6), SR_SFX, 1.1), SR_SFX);
+}
+
+// pressing BUY BONUS - a small charge going off.
+//
+// Not the blast sample quietened: that is 1.29s of licensed recording with a
+// long tail, and a UI press needs to be over before the menu has finished
+// opening. This is the same event at a fraction of the size - a short body, a
+// clipped crack, a handful of chips - so the button sounds like what it sells
+// without competing with the real thing when the feature actually runs.
+//
+// LEVEL IS SET AGAINST THE CLICK IT REPLACES, not by ear. Measured, the first
+// version came out 5.9dB quieter than btn.wav overall and 13.1dB quieter above
+// 300Hz - because nearly all of it was the 48-138Hz body, which a laptop or
+// phone speaker does not reproduce. So the crack and the debris band carry more
+// of it and the band sits higher, rather than just turning the gain up on bass
+// nobody hears.
+//
+// Appended at the END of this file on purpose: every cue above shares one PRNG,
+// and anything inserted earlier would shift the random stream and quietly
+// change every sound generated after it.
+{
+	const dur = 0.5;
+	const buf = buffer(dur, SR_SFX);
+	// the body: shallower and much faster than the real blast's
+	let ph = 0;
+	for (let i = 0; i < buf.length; i++) {
+		const t = i / SR_SFX;
+		const f = 48 + 90 * Math.exp(-13 * t);
+		ph += (2 * Math.PI * f) / SR_SFX;
+		buf[i] += Math.tanh(Math.sin(ph) * 1.3) * Math.exp(-13 * t) * 0.7;
+	}
+	// The crack, kept short - a UI press must not have a tail of its own - but
+	// LOUD, because it is most of what a laptop speaker will actually reproduce.
+	for (let i = 0; i < SR_SFX * 0.014; i++) {
+		buf[i] += rand2() * Math.exp((-300 * i) / SR_SFX) * 0.9;
+	}
+	// debris, through a falling band so it reads as dust rather than hiss
+	let bp = svfBandpass(SR_SFX, 1900, 1.1);
+	let lastF = 1900;
+	for (let i = 0; i < buf.length; i++) {
+		const t = i / SR_SFX;
+		const f = 1900 * (0.38 + 0.62 * Math.exp(-9 * t));
+		if (Math.abs(f - lastF) > 90) {
+			bp = svfBandpass(SR_SFX, f, 1.1);
+			lastF = f;
+		}
+		buf[i] += bp(rand2()) * Math.exp(-11 * t) * 0.95;
+	}
+	// a few chips landing
+	addAt(buf, rubble(SR_SFX, { dur, count: 6, spread: 0.18, from: 0.04 }), 0, 0.55, SR_SFX);
+
+	const wet = reverb(buf, SR_SFX, { ...MINE, mix: 0.18 });
+	writeWav('press_blast.wav', takeTail(normalize(wet, 0.9), SR_SFX, 0.7), SR_SFX);
+}
+
 console.log('done');

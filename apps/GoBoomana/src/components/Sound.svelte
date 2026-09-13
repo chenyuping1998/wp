@@ -18,6 +18,7 @@
 		| { type: 'soundBlastFuse' }
 		| { type: 'soundBlastDetonate'; full: boolean }
 		| { type: 'soundBlastShatter' }
+		| { type: 'soundBlastSmoke' }
 		| { type: 'soundBlastReveal' }
 		| { type: 'soundMonkeyExpand' }
 		| { type: 'soundMascotVoice'; name: MascotVoice }
@@ -32,7 +33,7 @@
 
 	import { waitForTimeout } from 'utils-shared/wait';
 	import { SECOND } from 'constants-shared/time';
-	import { stateBet, stateSoundDerived } from 'state-shared';
+	import { stateBet, stateModal, stateSoundDerived } from 'state-shared';
 	import { base } from '$app/paths';
 
 	import { getContext } from '../game/context';
@@ -66,6 +67,8 @@
 		| 'dynamite_blast'
 		| 'dynamite_blast_big'
 		| 'symbol_shatter'
+		| 'smoke_puff'
+		| 'press_blast'
 		| 'symbol_reveal'
 		| 'monkey_expand'
 		| 'voice_roar'
@@ -99,6 +102,8 @@
 		dynamite_blast: 'jungle/dynamite_blast.wav',
 		dynamite_blast_big: 'jungle/dynamite_blast_big.wav',
 		symbol_shatter: 'jungle/symbol_shatter.wav',
+		smoke_puff: 'jungle/smoke_puff.wav',
+		press_blast: 'jungle/press_blast.wav',
 		symbol_reveal: 'jungle/symbol_reveal.wav',
 		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
 		monkey_expand: 'jungle/monkey_expand.mp3',
@@ -361,7 +366,42 @@
 				playBgm('base');
 			}
 		},
-		soundPressGeneral: () => playCnSfx('btn', 0.7),
+		// PRESSING BUY BONUS SETS OFF A SMALL CHARGE; every other button clicks.
+		//
+		// The shared ButtonBuyBonus raises the same generic soundPressGeneral as
+		// every other control, so the press itself carries nothing to tell them
+		// apart — and per-game behaviour does not belong in wp/packages, where a
+		// key would also affect every other game and has twice gone missing under
+		// another session's edits.
+		//
+		// It is identifiable from here anyway: that button's handler broadcasts
+		// this event and THEN opens the buy menu, both synchronously. So the
+		// decision is deferred by one microtask — which runs after the whole click
+		// handler, still inside the same task and the same user gesture, so audio
+		// is not blocked — and by then stateModal says which button it was. Any
+		// other press, including Buy Bonus while a bought mode is active (that
+		// cancels, and opens nothing), falls through to the normal click.
+		soundPressGeneral: () => {
+			const before = stateModal.modal?.name;
+			queueMicrotask(() => {
+				// Two literal calls, not one with a ternary: design/check_audio.mjs
+				// reads cue names straight out of playCnSfx(...) and a name hidden
+				// inside an expression stops being checked - it counted one cue
+				// fewer the moment this was written the short way.
+				if (stateModal.modal?.name === 'buyBonus' && before !== 'buyBonus') {
+					// 0.7 puts the press at 64% of the reel blast's punch (loudest
+					// 50ms window, both at the volume they actually play): the brief
+					// was 60-70%. Measured rather than judged by ear, because the
+					// first version sounded weak for a reason a volume knob does not
+					// fix - almost all of it was 48-138Hz body, 13dB down above
+					// 300Hz, which is the part a laptop speaker reproduces. The
+					// crack and debris carry it now; see design/generate_audio_jungle.mjs.
+					playCnSfx('press_blast', 0.7);
+				} else {
+					playCnSfx('btn', 0.7);
+				}
+			});
+		},
 		soundPressBet: () => playCnSfx('spin', 0.9),
 		// scatterCounter
 		soundScatterCounterIncrease: () => (context.stateGame.scatterCounter = context.stateGame.scatterCounter + 1), // prettier-ignore
@@ -431,6 +471,9 @@
 		// visibly flying off the symbols, and at the old level it just muddied a
 		// cue that was clean on its own.
 		soundBlastShatter: () => playCnSfx('symbol_shatter', 0.35),
+		// The cloud's own sound, small on purpose: the air the explosion pushed,
+		// heard under the tail of the bang rather than as a second event.
+		soundBlastSmoke: () => playCnSfx('smoke_puff', 0.55),
 		soundBlastReveal: () => playCnSfx('symbol_reveal', 0.8),
 		soundMonkeyExpand: () => playMonkeyExpand(),
 		// Deliberately NOT forced through the turbo gate that silences ordinary

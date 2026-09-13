@@ -57,6 +57,18 @@
 		src: new URL('../../assets/sprites/goBananasUi/buybonus_plate.png', import.meta.url).href,
 		preload: true,
 	},
+	// The platform skin's Buy Bonus: a slab of the royals' stone, and the same
+	// slab splitting for the hover layer. See design/generate_ui_plates.mjs.
+	gbUiBuyBonusStone: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_stone.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusStoneLit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_stone_lit.png', import.meta.url).href,
+		preload: true,
+	},
 	// brass win-tier plaques (design/generate_win_banners.mjs)
 	gbWinBannerBig: {
 		type: 'sprite',
@@ -198,6 +210,56 @@
 	gbIconReplay: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasUiIcons/replay.png', import.meta.url).href,
+		preload: true,
+	},
+
+	// PNGs of flat white line art, ~4KB each.
+	//
+	// Generated from the SAME shapes as the brass set — see design/generate_ui_icons.mjs,
+	// which renders both palettes in one pass so the two can never drift apart.
+	gbIconMonoMenu: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/menu.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoMenuExit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/menuExit.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSettings: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/settings.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoInfo: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/info.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoPayTable: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/payTable.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSoundOn: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/soundOn.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSoundOff: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/soundOff.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoAutoSpin: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/autoSpin.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoReplay: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/replay.png', import.meta.url).href,
 		preload: true,
 	},
 

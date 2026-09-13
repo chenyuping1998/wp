@@ -4,9 +4,27 @@
 // Emoji glyphs render as the viewer's system emoji — different on every OS, and
 // they ignore canvas fill so they cannot be themed — which is exactly the kind
 // of thing a certification pass flags as a "poor bet UI bar". These replace them
-// with proper drawn icons: brass metallic fill, dark outline, a top highlight
-// and a soft drop shadow, matched to the reel housing so the bar reads as one
-// piece of kit.
+// with proper drawn icons.
+//
+// TWO SETS ARE WRITTEN, from one set of shapes:
+//
+//   goBananasUiIcons      brass metallic fill, dark outline, top highlight and a
+//                         soft drop shadow, matched to the reel housing so the
+//                         bar reads as one piece of kit. This is the 'bananaut'
+//                         skin's set and what the rules panel's Controls guide
+//                         illustrates itself with.
+//   goBananasUiIconsMono  flat white with a thin dark contour, for the platform
+//                         skin's grey strip and dark discs.
+//
+// THE MONO SET EXISTS BECAUSE UiButton DOES NOT TINT SPRITE ICONS. It draws
+// uiTheme.icons entries as a plain Sprite with no tint (see
+// components-ui-pixi/src/components/UiButton.svelte), so uiTheme.buttonIconFill
+// reaches only the vector-drawn turbo bolt. Pointing the platform skin at a
+// white PNG is the only way its icons stop being gold.
+//
+// The contour is kept in the mono set rather than dropped. On the dark disc a
+// bare white shape would be fine, but a toggle that is ON draws its disc in the
+// platform green (0x4ace4a) and white on green needs the separation.
 //
 // Usage: node design/generate_ui_icons.mjs <dir with node_modules/@resvg/resvg-js>
 import { createRequire } from 'module';
@@ -25,10 +43,45 @@ const { Resvg } = require('@resvg/resvg-js');
 import { surfaceDefs } from './surface.mjs';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = path.join(appRoot, 'static/assets/sprites/goBananasUiIcons');
-fs.mkdirSync(OUT, { recursive: true });
-
 const SIZE = 256;
+
+// ── palettes ────────────────────────────────────────────────────────────────
+//
+// `contour` is both the underlay colour and the colour of any punched hole (the
+// cog's hub), so a set only has to name it once.
+//
+// `underlay` is the width of the dark contour, and it is a SHAPE control rather
+// than a colour one: it is a stroke around a filled shape, so it fattens every
+// mark by half its width on all sides. The brass set's 26 is what makes those
+// icons look heavy — a 30-unit bar renders 56 wide. The mono set halves it,
+// which is most of what makes the same shapes read as lighter.
+const PALETTES = {
+	brass: {
+		dir: 'goBananasUiIcons',
+		contour: '#3a2508',
+		underlay: 26,
+		body: 'url(#brass)',
+		bodyStroke: '#7a5214',
+		bodyStrokeWidth: 6,
+		emboss: true,
+		sheen: true,
+		shadow: true,
+	},
+	mono: {
+		dir: 'goBananasUiIconsMono',
+		contour: '#0f0f0f',
+		underlay: 12,
+		body: '#ffffff',
+		bodyStroke: '#ffffff',
+		bodyStrokeWidth: 0,
+		// No emboss, no sheen, no drop shadow. The platform strip is flat casing;
+		// a bevelled, lit, shadowed glyph on it reads as a control borrowed from a
+		// different bar — which is exactly what the brass set looks like there now.
+		emboss: false,
+		sheen: false,
+		shadow: false,
+	},
+};
 
 // shared brass look + depth, applied to every icon shape
 const DEFS = surfaceDefs('sf') + `
@@ -46,27 +99,46 @@ const DEFS = surfaceDefs('sf') + `
 		<feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000000" flood-opacity="0.55"/>
 	</filter>`;
 
-// wrap: dark outline underlay for weight, brass fill on top, a soft top sheen.
-// `shape` is drawn 3x — a fat dark stroke (outline), the brass body, then the
-// same body clipped to a top-half sheen — which gives a cheap bevel.
-const icon = (shape, { sheen = true } = {}) => `
+// wrap: dark contour underlay for weight, the body fill on top, a soft top
+// sheen. `shape` is drawn up to 3x — a dark stroke (contour), the body, then the
+// same body clipped to a top-half sheen, which gives a cheap bevel.
+const icon = (shape, palette) => `
 <svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}">
 	<defs>${DEFS}</defs>
-	<g filter="url(#drop)">
-		<g stroke="#3a2508" stroke-width="26" stroke-linejoin="round" stroke-linecap="round" fill="#3a2508">${shape}</g>
-		<g fill="url(#brass)" stroke="#7a5214" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" filter="url(#sfEmboss)">${shape}</g>
-		${sheen ? `<g fill="url(#sheen)" opacity="0.55">${shape}</g>` : ''}
+	<g${palette.shadow ? ' filter="url(#drop)"' : ''}>
+		<g stroke="${palette.contour}" stroke-width="${palette.underlay}" stroke-linejoin="round" stroke-linecap="round" fill="${palette.contour}">${shape}</g>
+		<g fill="${palette.body}" stroke="${palette.bodyStroke}" stroke-width="${palette.bodyStrokeWidth}" stroke-linejoin="round" stroke-linecap="round"${palette.emboss ? ' filter="url(#sfEmboss)"' : ''}>${shape}</g>
+		${palette.sheen ? `<g fill="url(#sheen)" opacity="0.55">${shape}</g>` : ''}
 	</g>
 </svg>`;
 
 // ── icon shapes (256 viewBox, ~34px padding) ─────────────────────────────────
-const bar = (y) => `<rect x="46" y="${y}" width="164" height="30" rx="15"/>`;
+//
+// A shape is a function of the palette wherever it has to punch a hole, since a
+// hole is drawn in the contour colour. Everything else ignores the argument.
+//
+// THE MENU BARS ARE 14 UNITS, not 30. At 30 with the brass set's 26-unit contour
+// each bar rendered 56 units of a 256 box — three of those is more than two
+// thirds of the icon in ink, which is why it read as a solid block rather than
+// as stripes. 14 with the pitch opened to 48 gives 26 units of bar against 22 of
+// gap in the mono set, near enough 1:1, and the brass set is lighter too.
+//
+// It is deliberately changed in BOTH sets. The two skins should not disagree
+// about what the menu button looks like, and the rules panel's Controls guide
+// illustrates itself from the brass files.
+const bar = (y) => `<rect x="46" y="${y}" width="164" height="14" rx="7"/>`;
 const shapes = {
 	// three stacked bars
-	menu: `${bar(70)}${bar(113)}${bar(156)}`,
+	menu: `${bar(66)}${bar(114)}${bar(162)}`,
 
 	// X
-	menuExit: `<path d="M 74 74 L 182 182 M 182 74 L 74 182"/>`,
+	//
+	// The stroke-width is EXPLICIT, and it has to be. Every other shape here
+	// either has a fill or names its own width; this one was a bare stroked path
+	// relying on whatever the wrapping group set — which was 6 in the brass set
+	// and, in the mono set, 0. It rendered as nothing but its dark contour: an
+	// invisible close button on the platform skin.
+	menuExit: `<path d="M 74 74 L 182 182 M 182 74 L 74 182" stroke-width="26"/>`,
 
 	// cog: a gear ring with eight teeth and a hub
 	settings: (() => {
@@ -80,7 +152,9 @@ const shapes = {
 				ty = cy + Math.sin(a) * 96;
 			d += `<rect x="${(tx - 20).toFixed(1)}" y="${(ty - 20).toFixed(1)}" width="40" height="40" rx="8" transform="rotate(${((a * 180) / Math.PI).toFixed(1)} ${tx.toFixed(1)} ${ty.toFixed(1)})"/>`;
 		}
-		return `${d}<circle cx="128" cy="128" r="66"/><circle cx="128" cy="128" r="30" fill="#3a2508" stroke="none"/>`;
+		return (p) =>
+			`${d}<circle cx="128" cy="128" r="66"/>` +
+			`<circle cx="128" cy="128" r="30" fill="${p.contour}" stroke="none"/>`;
 	})(),
 
 	// lowercase i in a ring
@@ -124,10 +198,16 @@ const shapes = {
 
 };
 
-for (const [name, shape] of Object.entries(shapes)) {
-	const svg = icon(shape);
-	const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: SIZE }, font: { loadSystemFonts: false } });
-	fs.writeFileSync(path.join(OUT, `${name}.png`), resvg.render().asPng());
-	console.log('rendered', name);
+for (const palette of Object.values(PALETTES)) {
+	const out = path.join(appRoot, 'static/assets/sprites', palette.dir);
+	fs.mkdirSync(out, { recursive: true });
+	for (const [name, shape] of Object.entries(shapes)) {
+		const svg = icon(typeof shape === 'function' ? shape(palette) : shape, palette);
+		const resvg = new Resvg(svg, {
+			fitTo: { mode: 'width', value: SIZE },
+			font: { loadSystemFonts: false },
+		});
+		fs.writeFileSync(path.join(out, `${name}.png`), resvg.render().asPng());
+	}
+	console.log('rendered', Object.keys(shapes).length, 'icons →', palette.dir);
 }
-console.log('done →', OUT);

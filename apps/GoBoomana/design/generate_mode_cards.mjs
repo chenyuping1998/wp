@@ -197,10 +197,14 @@ const MOTIFS = {
 const defs =
 	surfaceDefs('sf') +
 	`
+	<!-- MINE SLATE, not jungle olive. The olive ground was carried over from
+	     gen-3 and was the one thing in the Buy Bonus menu still saying "jungle".
+	     These are b.png's own plate tones, the rock the dynamite symbol stands
+	     on, so the cards and the board are the same material. -->
 	<linearGradient id="ground" x1="0" y1="0" x2="0.35" y2="1">
-		<stop offset="0" stop-color="#2c3812"/>
-		<stop offset="0.5" stop-color="#1c2609"/>
-		<stop offset="1" stop-color="#101806"/>
+		<stop offset="0" stop-color="#40404c"/>
+		<stop offset="0.5" stop-color="#30303c"/>
+		<stop offset="1" stop-color="#1e2428"/>
 	</linearGradient>
 	<!-- The locked reel's own gold. Deeper than the UI brass on purpose: the
 	     column is a large flat area, and the trim ramp used on small pieces goes
@@ -228,8 +232,8 @@ const defs =
 		card sitting on the first.
 	-->
 	<linearGradient id="scrimTop" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#0c1305" stop-opacity="0.92"/>
-		<stop offset="1" stop-color="#0c1305" stop-opacity="0"/>
+		<stop offset="0" stop-color="#0e0f12" stop-opacity="0.92"/>
+		<stop offset="1" stop-color="#0e0f12" stop-opacity="0"/>
 	</linearGradient>
 	<!--
 		Never fully open. The old ramp dropped to 12% across the middle, which is
@@ -239,20 +243,20 @@ const defs =
 		cropped; the variation on top of it is only for depth.
 	-->
 	<linearGradient id="scrim" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#0c1305" stop-opacity="0.72"/>
-		<stop offset="0.3" stop-color="#0c1305" stop-opacity="0.55"/>
-		<stop offset="0.68" stop-color="#0c1305" stop-opacity="0.58"/>
-		<stop offset="1" stop-color="#0c1305" stop-opacity="0.88"/>
+		<stop offset="0" stop-color="#0e0f12" stop-opacity="0.72"/>
+		<stop offset="0.3" stop-color="#0e0f12" stop-opacity="0.55"/>
+		<stop offset="0.68" stop-color="#0e0f12" stop-opacity="0.58"/>
+		<stop offset="1" stop-color="#0e0f12" stop-opacity="0.88"/>
 	</linearGradient>`;
 
 const card = (motif) => `
 	<rect width="${W}" height="${H}" fill="url(#ground)"/>
-	${finishRect(0, 0, W, H, 0, 'sf', CANVAS_FINISH)}
+	${finishRect(0, 0, W, H, 0, 'sf', { grain: 0.7, mottle: 0.6, spec: 0.1, edge: 0.6, ao: 0.5 })}
 	${motif}
 	<rect width="${W}" height="${H}" fill="url(#scrim)"/>
 	<rect width="${W}" height="${H * 0.22}" fill="url(#scrimTop)"/>
 	<rect x="1.5" y="1.5" width="${W - 3}" height="${H - 3}" rx="12" fill="none"
-	      stroke="#d8a334" stroke-width="3" opacity="0.6"/>`;
+	      stroke="#b3a088" stroke-width="3" opacity="0.55"/>`;
 
 for (const [name, motif] of Object.entries(MOTIFS)) {
 	const svg =

@@ -117,6 +117,194 @@ ${finishRect(10, 10, BS - 20, BS - 20, 66, 'sf', CANVAS_FINISH)}
 ${buyRivets}
 </svg>`;
 
+// ── THE PLATFORM SKIN'S BUY BONUS: a slab of this game's stone ───────────────
+//
+// The platform skin flattens the whole strip to Hacksaw grey and, left alone,
+// gave Buy Bonus the same treatment. That is the one control on the bar that
+// should NOT be generic - it is this game's own feature, pressed rarely and
+// deliberately, the last thing before a 100x+ spend - so it is made of the pale
+// stone the royals are carved into.
+//
+// At rest it is a clean slab and nothing else. Under the cursor it does exactly
+// what a symbol does when the dynamite goes off under it, because that is what
+// the button is selling.
+//
+// Colours, sampled and then lifted. l1.png's stone runs #efe1c5 -> #d0c6b2 ->
+// #a59e90; the button is brighter than that on request, and has to be: the
+// shared button multiplies a DISABLED plate, and at the royals' own values that
+// turned the slab into dark grey rock during every spin.
+//
+//   slab    #fbf4e4 -> #ebe2cf -> #cfc6b4   l1.png's stone, lifted
+//   border  #c8b69e -> #a8937a -> #7e6d58   l1.png's rough outer stone, lifted
+//
+// A TRANSPARENT MARGIN round both images, so the hover glow has somewhere to go.
+// The slab keeps its 640 in the middle; the button draws the whole canvas with
+// buyBonusPlateScale = BB_CS / BS, which leaves the slab exactly as large on
+// screen while the hover layer gets a ring to glow in. The BOX - what positions
+// and hit-tests - is not scaled, so the clickable area is unchanged.
+const BB_MARGIN = 80;
+const BB_CS = BS + BB_MARGIN * 2;
+
+// The rough outer stone, broken into blocks the way the royals' border is.
+const SEAMS = [
+	[150, 10, 150, 44], [330, 10, 330, 44], [500, 10, 500, 44],
+	[140, 596, 140, 630], [310, 596, 310, 630], [480, 596, 480, 630],
+	[10, 170, 44, 170], [10, 360, 44, 360], [10, 500, 44, 500],
+	[596, 150, 630, 150], [596, 320, 630, 320], [596, 470, 630, 470],
+];
+
+const BB_DEFS = `
+	<linearGradient id="stoneFrame" x1="0" y1="0" x2="1" y2="1">
+		<stop offset="0" stop-color="#c8b69e"/>
+		<stop offset="0.5" stop-color="#a8937a"/>
+		<stop offset="1" stop-color="#7e6d58"/>
+	</linearGradient>
+	<linearGradient id="stoneSlab" x1="0" y1="0" x2="1" y2="1">
+		<stop offset="0" stop-color="#fbf4e4"/>
+		<stop offset="0.5" stop-color="#ebe2cf"/>
+		<stop offset="1" stop-color="#cfc6b4"/>
+	</linearGradient>
+	<filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+		<feGaussianBlur stdDeviation="7"/>
+	</filter>
+	<filter id="halo" x="-20%" y="-20%" width="140%" height="140%">
+		<feGaussianBlur stdDeviation="24"/>
+	</filter>
+	<!-- The grain filters return their result as a SQUARE, not in the shape of
+	     the rect they are applied to, so without this the plate sat on faint
+	     dark corners (alpha 71 measured outside the rounded edge). -->
+	<clipPath id="plateClip">
+		<rect x="6" y="6" width="${BS - 12}" height="${BS - 12}" rx="74"/>
+	</clipPath>
+	<clipPath id="slabClip">
+		<rect x="44" y="44" width="${BS - 88}" height="${BS - 88}" rx="44"/>
+	</clipPath>`;
+
+const buyBonusStone = `<svg xmlns="http://www.w3.org/2000/svg" width="${BB_CS}" height="${BB_CS}" viewBox="0 0 ${BB_CS} ${BB_CS}">
+<defs>${DEFS}${BB_DEFS}</defs>
+<g transform="translate(${BB_MARGIN} ${BB_MARGIN})">
+<g clip-path="url(#plateClip)">
+<!-- the rough stone border the royals sit in -->
+<rect x="10" y="10" width="${BS - 20}" height="${BS - 20}" rx="70" fill="url(#stoneFrame)" stroke="#3a3024" stroke-width="7"/>
+${finishRect(10, 10, BS - 20, BS - 20, 70, 'sf', { grain: 0.8, mottle: 0.6, spec: 0.08, edge: 0.9, ao: 0.4 })}
+${SEAMS.map(([a, b, c, d]) => `<path d="M ${a} ${b} L ${c} ${d}" stroke="#4a3e30" stroke-width="5" opacity="0.6"/>`).join('')}
+<!-- the slab, clean: lit from the upper left like every other object here -->
+<rect x="44" y="44" width="${BS - 88}" height="${BS - 88}" rx="44" fill="url(#stoneSlab)"/>
+${finishRect(44, 44, BS - 88, BS - 88, 44, 'sf', { grain: 0.45, mottle: 0.35, spec: 0.1, edge: 0.5, ao: 0.25 })}
+<!-- bevel: a lit lip on the top-left, a shadowed step on the bottom-right -->
+<path d="M 60 ${BS - 110} L 60 88 Q 60 60 88 60 L ${BS - 110} 60" fill="none" stroke="#ffffff" stroke-width="5" opacity="0.85" stroke-linecap="round"/>
+<path d="M 90 ${BS - 58} L ${BS - 88} ${BS - 58} Q ${BS - 58} ${BS - 58} ${BS - 58} ${BS - 88} L ${BS - 58} 90" fill="none" stroke="#7a7062" stroke-width="6" opacity="0.6" stroke-linecap="round"/>
+</g>
+</g>
+</svg>`;
+
+// THE HOVER LAYER: THE SAME THING THE DYNAMITE DOES TO A SYMBOL.
+//
+// Copied from ReelBlast.svelte's CHARGE beat rather than invented, because the
+// button is advertising that exact moment. Two things happen there, and the
+// first is what makes the second work:
+//
+//   the cell DARKENS      0x140d05 at up to 0.5 alpha - "pressure building in
+//                         the rock", and the reason bright cracks read at all
+//   cracks CRAZE OUTWARD  from the cell's centre along the seams the shards
+//                         will break along: seven of them, each two segments
+//                         with a kink, #ffd8a2, 2.2px on a 140px cell
+//
+// An earlier pass here drew dark fractures spreading inward from two corner
+// impacts. It was a decent picture of cracked stone and it was not this game's
+// crack: wrong origin, wrong direction, wrong colour, and dark where the game's
+// are lit. Scaled to the 640 slab, the game's 2.2px line is 10px and its 0.46
+// reach is 294px from the centre.
+//
+// This layer is composited NORMALLY (buyBonusHoverSpriteBlend), not additively,
+// which is what lets it carry the darkening. Additive could only brighten, and
+// on this pale stone a bright line alone is close to invisible - which is
+// exactly why the game darkens the cell first.
+const SHARDS_PER_CELL = 7;
+const SLAB_C = BS / 2;
+const CRACK_REACH = BS * 0.46;
+let bbSeed = 91733;
+const bbRand = () => {
+	bbSeed = (bbSeed * 16807) % 2147483647;
+	return bbSeed / 2147483647;
+};
+// Each seam is walked outward in short steps that wander a little, narrowing as
+// they go, and throws one or two branches on the way. The first pass drew them
+// as single straight strokes of even width, which at button size read as a
+// STARBURST OF BEAMS rather than as broken rock - the kink the game applies is
+// invisible once there is only one of it, and a crack that does not taper or
+// branch is a light ray.
+const walk = (x0, y0, ang, len, steps) => {
+	const pts = [[x0, y0]];
+	let x = x0;
+	let y = y0;
+	let a = ang;
+	for (let k = 0; k < steps; k++) {
+		a += (bbRand() - 0.5) * 0.34;
+		const d = len / steps;
+		x += Math.cos(a) * d;
+		y += Math.sin(a) * d;
+		pts.push([x, y]);
+	}
+	return { pts, ang: a };
+};
+const strokes = [];
+Array.from({ length: SHARDS_PER_CELL }).forEach((_, i) => {
+	const a0 = (i / SHARDS_PER_CELL) * Math.PI * 2;
+	// shardsOf's spin is (rand - 0.5) * 3.4 and the kink is spin * 0.06
+	const kink = (bbRand() - 0.5) * 3.4 * 0.06;
+	const reach = CRACK_REACH * (0.8 + 0.2 * bbRand());
+	const main = walk(SLAB_C, SLAB_C, a0 + kink, reach, 5);
+	strokes.push({ pts: main.pts, w0: 11, w1: 2.5 });
+	// branches, thinner and shorter, leaving part way along
+	const n = 1 + Math.round(bbRand());
+	for (let b = 0; b < n; b++) {
+		const at = 1 + Math.floor(bbRand() * (main.pts.length - 2));
+		const [bx, by] = main.pts[at];
+		const side = bbRand() > 0.5 ? 1 : -1;
+		const br = walk(bx, by, a0 + kink + side * (0.5 + bbRand() * 0.5), reach * (0.22 + 0.2 * bbRand()), 3);
+		strokes.push({ pts: br.pts, w0: 5, w1: 1.2 });
+	}
+});
+
+// tapered: each step is its own stroke, narrowing toward the tip
+const crackLayer = (scale, color, opacity, filter) =>
+	strokes
+		.map(({ pts, w0, w1 }) =>
+			pts
+				.slice(1)
+				.map((p, k) => {
+					const t = k / Math.max(1, pts.length - 2);
+					const w = (w0 + (w1 - w0) * t) * scale;
+					return `<line x1="${pts[k][0].toFixed(1)}" y1="${pts[k][1].toFixed(1)}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}" stroke="${color}" stroke-width="${w.toFixed(2)}" stroke-linecap="round" opacity="${opacity}"${filter ? ` filter="url(#${filter})"` : ''}/>`;
+				})
+				.join(''),
+		)
+		.join('');
+
+const buyBonusStoneLit = `<svg xmlns="http://www.w3.org/2000/svg" width="${BB_CS}" height="${BB_CS}" viewBox="0 0 ${BB_CS} ${BB_CS}">
+<defs>${BB_DEFS}</defs>
+<!-- the glow round the slab, spilling onto whatever is behind the button -->
+<rect x="${BB_MARGIN + 10}" y="${BB_MARGIN + 10}" width="${BS - 20}" height="${BS - 20}" rx="70"
+      fill="none" stroke="#ff8a2a" stroke-width="54" opacity="0.42" filter="url(#halo)"/>
+<rect x="${BB_MARGIN + 10}" y="${BB_MARGIN + 10}" width="${BS - 20}" height="${BS - 20}" rx="70"
+      fill="none" stroke="#ffb040" stroke-width="12" opacity="0.5" filter="url(#soft)"/>
+<g transform="translate(${BB_MARGIN} ${BB_MARGIN})">
+<g clip-path="url(#slabClip)">
+<!-- the rock under pressure, the game's own colour and a little under its 0.5 -->
+<rect x="44" y="44" width="${BS - 88}" height="${BS - 88}" fill="#140d05" opacity="0.42"/>
+<!-- heat gathering at the centre, where the break will start -->
+<circle cx="${SLAB_C}" cy="${SLAB_C}" r="170" fill="#ff8a2a" opacity="0.14" filter="url(#halo)"/>
+${crackLayer(1.9, '#ff7a10', 0.3, 'soft')}
+${crackLayer(1, '#ffd8a2', 0.92)}
+${crackLayer(0.34, '#fff6e0', 0.85)}
+</g>
+</g>
+</svg>`;
+
+render(buyBonusStone, 'buybonus_stone.png', BB_CS);
+render(buyBonusStoneLit, 'buybonus_stone_lit.png', BB_CS);
+
 render(ticker, 'ticker_plate.png', TW);
 render(buyBonus, 'buybonus_plate.png', BS);
 console.log('ui plates written to', OUT);
