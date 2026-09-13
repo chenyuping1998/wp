@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Text, Rectangle } from 'pixi-svelte';
 	import { stateBet } from 'state-shared';
-	import { WHITE } from 'constants-shared/colors';
 
 	import { UI_BASE_SIZE } from '../constants';
 	import { uiTheme } from '../theme.svelte';
@@ -20,8 +19,8 @@
 		width={UI_BASE_SIZE * 0.9}
 		height={UI_BASE_SIZE * 0.9}
 		borderRadius={50}
-		backgroundColor={0x000000}
-		borderColor={0xffd26a}
+		backgroundColor={uiTheme.autoSpinsCounterFill}
+		borderColor={uiTheme.autoSpinsCounterBorder}
 		borderWidth={5}
 	/>
 	<Text
@@ -29,11 +28,13 @@
 		text={stateBet.autoSpinsCounter === Infinity ? '∞' : stateBet.autoSpinsCounter}
 		style={{
 			fontFamily: uiTheme.fontFamily,
-			fill: WHITE,
+			fill: uiTheme.autoSpinsCounterLabel,
 			fontWeight: uiTheme.fontWeight,
 			fontSize: fontSizeMultiplier * UI_BASE_SIZE * 0.2,
-			stroke: 0x6d2692,
-			strokeThickness: 4,
+			// v8 shape. `stroke: colour` plus `strokeThickness: n` is the v7 pair:
+			// deprecated, it logs on every Text built here, and it caps out thinner
+			// than the value asks for.
+			stroke: { color: uiTheme.autoSpinsCounterLabelStroke, width: 4, join: 'round' },
 		}}
 	/>
 {/if}

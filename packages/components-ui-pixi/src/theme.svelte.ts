@@ -104,6 +104,32 @@ export const uiTheme = $state({
 	// True by default, so every other game keeps the chrome it has.
 	buyBonusPlateChrome: true,
 
+	// The plate colour under a DIMMED disabled Buy Bonus.
+	//
+	// This was 0x1a2208 written into ButtonBuyBonus — GoBananas' olive, in a
+	// package shared by fifteen games. It only shows when a game opts into
+	// buyBonusDisabledStyle 'dim', which is why it went unnoticed: every other
+	// game takes the 'grey' branch. GoBananas takes 'dim', so its own colour was
+	// both correct and invisible as a bug — until the same game grew a second
+	// skin, where a flat grey CTA turned olive the moment it was disabled.
+	//
+	// The default is that same 0x1a2208, so nothing anywhere changes until a
+	// theme sets it.
+	buyBonusDisabledFill: 0x1a2208,
+
+	// ── the auto-spins counter ────────────────────────────────────────────────
+	// The badge drawn over the spin button while an auto run is counting down.
+	//
+	// All four were hardcoded in ButtonBetAutoSpinsCounter, and one of them was
+	// wrong for every game in the workspace: the numeral's outline was 0x6d2692,
+	// the TEMPLATE's plum. No game here is plum. The defaults below keep exactly
+	// what was being drawn so nothing changes uninvited, but a themed game should
+	// set at least the border and the stroke.
+	autoSpinsCounterFill: 0x000000,
+	autoSpinsCounterBorder: 0xffd26a,
+	autoSpinsCounterLabel: 0xffffff,
+	autoSpinsCounterLabelStroke: 0x6d2692,
+
 	// Wrap width and size of the label drawn over that plate, in the shared UI's
 	// base font units. Defaults are the numbers that were hardcoded.
 	//
@@ -232,6 +258,25 @@ export const uiTheme = $state({
 	// the rectangle, which is what every other game gets.
 	buyBonusHoverSprite: undefined as string | undefined,
 	buyBonusHoverSpriteTint: 0xffd98a,
+	/**
+	 * How buyBonusHoverSprite is composited over the plate.
+	 *
+	 * 'add' (the default, and every game's behaviour before this existed) makes
+	 * the glyph read as the plate catching light - right for a lit rune on dark
+	 * stone. It can only ever BRIGHTEN, though, and on a pale plate a bright line
+	 * is close to invisible: additive light on a near-white ground just reaches
+	 * white. 'normal' lets the hover layer carry dark detail as well - cracks, a
+	 * shadow, an engraving - composited by its own alpha.
+	 */
+	buyBonusHoverSpriteBlend: 'add' as 'add' | 'normal',
+	/**
+	 * The multiply applied to a DISABLED plate. Undefined keeps the fixed value
+	 * each buyBonusDisabledStyle has always used (0x767670 for 'dim', 0x8a8a8a for
+	 * 'grey'), so nothing changes for a game that does not set it. Those values
+	 * were tuned on dark plates; on a pale one they turn it into dark rock for the
+	 * whole of every spin, and a lighter multiply still reads as off.
+	 */
+	buyBonusDisabledTint: undefined as number | undefined,
 
 	// What colour that glow is.
 	//

@@ -156,13 +156,13 @@
 							// disappear, and the faded caption already carries most of
 							// that signal. This and labelAlpha above are the two numbers
 							// to move if it needs to go further either way.
-							tint: 0x767670,
-							backgroundColor: 0x1a2208,
+							tint: uiTheme.buyBonusDisabledTint ?? 0x767670,
+							backgroundColor: uiTheme.buyBonusDisabledFill,
 						}
 					: {
 							backgroundColor: 0xaaaaaa,
 							// plate art ignores fills, so grey it down with tint instead
-							tint: 0x8a8a8a,
+							tint: uiTheme.buyBonusDisabledTint ?? 0x8a8a8a,
 						}
 				: {}}
 			{...active
@@ -210,7 +210,7 @@
 				width={plate.width}
 				height={plate.height}
 				tint={uiTheme.buyBonusHoverSpriteTint}
-				blendMode="add"
+				blendMode={uiTheme.buyBonusHoverSpriteBlend}
 			/>
 		{:else if uiTheme.hoverHighlight && hovered && !disabled}
 			<!-- same subtle lift as the rail buttons; this one is assembled by hand
