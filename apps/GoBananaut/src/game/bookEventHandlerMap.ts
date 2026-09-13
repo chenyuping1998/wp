@@ -19,6 +19,7 @@ import {
 	NUM_REELS,
 	paddedReelLength,
 	HOLD_AND_SPIN_MODE_KEY,
+	reelMultipliersFor,
 } from './constants';
 import config from './config';
 
@@ -230,6 +231,16 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 				// a padded column is one pad, the rows, one pad
 				Math.max(BASE_ROWS, Math.min(MAX_ROWS, reel.length - 2)),
 			);
+			// AND THE DOUBLING, from the same board.
+			//
+			// Without this a bought round that opens already stretched shows no x2
+			// at all on its first spin: there is no growth, so no growReels event
+			// fires, and growMultipliers is still the reset array. The maths is
+			// doubling reel 1 from that spin onwards — see reelMultipliersFor.
+			stateGame.growMultipliers = reelMultipliersFor(
+				stateGame.growRows,
+				bookEvent.gameType === 'freegame',
+			);
 		}
 
 		await stateGameDerived.enhancedBoard.spin({
@@ -399,13 +410,22 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			type: 'reelsGrow',
 			rows: bookEvent.rows,
 			newCells: bookEvent.newCells,
-			multipliers: bookEvent.reelMultipliers,
+			// Derived, not the event's own field. ReelGrow writes this array back
+			// into stateGame.growMultipliers when the climb finishes, so sending
+			// the stale one here would overwrite the correct value set below the
+			// moment the animation ended.
+			multipliers: reelMultipliersFor(bookEvent.rows, bookEvent.sticky),
 			steps: bookEvent.steps,
 			maxSteps: bookEvent.maxSteps,
 			full: bookEvent.steps >= bookEvent.maxSteps,
 		});
 		stateGame.growRows = [...bookEvent.rows];
-		stateGame.growMultipliers = [...bookEvent.reelMultipliers];
+		// Derived from the rows this event is applying, not read from its
+		// reelMultipliers field: on the books published today that field is one
+		// spin stale, so a reel that just reached five would show no plate until
+		// the next time something grew. `sticky` is the event's own name for "this
+		// is the free game", which is the other half of the rule.
+		stateGame.growMultipliers = reelMultipliersFor(bookEvent.rows, bookEvent.sticky);
 		stateGame.growSteps = bookEvent.steps;
 	},
 
@@ -684,7 +704,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// on stretched reels would misstate what the next win is worth.
 		const lastGrowEvent = findLastBookEvent('growReels' as const);
 		if (lastGrowEvent) {
-			stateGame.growMultipliers = [...lastGrowEvent.reelMultipliers];
+			// Same derivation as the live path, and for the same reason: the
+			// event's own reelMultipliers is one spin stale on the books published
+			// today, so a resume would restore the plates to where they were
+			// BEFORE the last growth.
+			stateGame.growMultipliers = reelMultipliersFor(
+				lastGrowEvent.rows,
+				lastGrowEvent.sticky,
+			);
 			stateGame.growSteps = lastGrowEvent.steps;
 			stateGame.growMaxSteps = lastGrowEvent.maxSteps;
 		}

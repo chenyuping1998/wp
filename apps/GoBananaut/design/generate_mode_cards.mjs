@@ -108,10 +108,23 @@ const SCALE = 2;
 //
 // Centred and compact, the same band shows the whole motif, and it works for a
 // tall crop too (portrait), where the motif is then simply centred.
-const MOTIF = { cx: W / 2, cy: 246 };
+// THE BAND, DERIVED RATHER THAN MEASURED BY EYE — and re-derived, because the
+// old figures were taken off a card of a different size and were 14px out.
+//
+// BonusCard paints this art with `object-fit: cover` into a box whose height
+// follows its own text. On the live modal that box is about 345x250:
+//
+//     scale  = max(345/360, 250/520) = 0.958      (width binds)
+//     shown  = 250 / 0.958 = 261 of the art's 520
+//     band   = (520 - 261) / 2 = 130  ..  391
+//
+// So a wide card shows y 130..391 and the band's centre is 260, not 246. At 246
+// the motif sat 14px high in its own window, which is exactly how much of the
+// housing's top rail was being clipped — and on bonus300, half the x2 plate.
+const MOTIF = { cx: W / 2, cy: 260 };
 // What a wide card actually shows, in this art's coordinates. Keep the motif
 // inside it.
-const CROP = { top: 124, bottom: 374 };
+const CROP = { top: 130, bottom: 391 };
 
 /** A square symbol, placed by centre and size in card pixels. */
 const sym = (name, cx, cy, size, opacity = 1, rotate = 0) =>
@@ -377,21 +390,44 @@ const defs =
 		guarantees a dark ground under every word regardless of how the card is
 		cropped; the variation on top of it is only for depth.
 	-->
+	<!--
+		HALVED, because it is not the only scrim in the stack.
+
+		BonusCard draws its own over this one (0.94 at the ends, 0.38 through the
+		middle) and that one cannot be cropped away, which is the job this one was
+		carrying alone when it was written. Two scrims multiply: at mid-card the
+		old 0.56 under BonusCard's 0.38 let through (1-0.56)(1-0.38) = 27% of the
+		motif. The boards were technically present and practically invisible.
+
+		At these values the same point transmits 47%. The text is unaffected — its
+		dark ground comes from BonusCard's scrim and from the two text-shadows it
+		puts on every glyph, neither of which is touched here.
+	-->
 	<linearGradient id="scrim" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#060b11" stop-opacity="0.72"/>
-		<stop offset="0.3" stop-color="#060b11" stop-opacity="0.55"/>
-		<stop offset="0.68" stop-color="#060b11" stop-opacity="0.58"/>
-		<stop offset="1" stop-color="#060b11" stop-opacity="0.88"/>
+		<stop offset="0" stop-color="#060b11" stop-opacity="0.38"/>
+		<stop offset="0.3" stop-color="#060b11" stop-opacity="0.24"/>
+		<stop offset="0.68" stop-color="#060b11" stop-opacity="0.26"/>
+		<stop offset="1" stop-color="#060b11" stop-opacity="0.5"/>
 	</linearGradient>`;
 
+// NO BORDER IS DRAWN IN THE ART, and this is the one thing about these files
+// that is easy to get wrong twice.
+//
+// There used to be a brass rect inset 1.5px from the edge, which looks like a
+// frame in the PNG and is never a frame on screen. BonusCard sizes the card from
+// its TEXT and paints the art with `object-fit: cover`, so the art is always
+// cropped on one axis — and cropping a rectangle removes two of its four sides.
+// On the live modal that left a gold bar down the left and right of every card
+// and nothing across the top or bottom: not a frame, two stripes.
+//
+// The frame belongs on the CARD ELEMENT, where four sides is what a border means
+// and no crop can reach it. See .bonus-card-wrap in components/ui/Modals.svelte.
 const card = (motif) => `
 	<rect width="${W}" height="${H}" fill="url(#ground)"/>
 	${finishRect(0, 0, W, H, 0, 'sf', CANVAS_FINISH)}
 	${motif}
 	<rect width="${W}" height="${H}" fill="url(#scrim)"/>
-	<rect width="${W}" height="${H * 0.22}" fill="url(#scrimTop)"/>
-	<rect x="1.5" y="1.5" width="${W - 3}" height="${H - 3}" rx="12" fill="none"
-	      stroke="#d8a334" stroke-width="3" opacity="0.6"/>`;
+	<rect width="${W}" height="${H * 0.22}" fill="url(#scrimTop)"/>`;
 
 for (const [name, motif] of Object.entries(MOTIFS)) {
 	const svg =

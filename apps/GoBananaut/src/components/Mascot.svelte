@@ -86,6 +86,146 @@
 		};
 	});
 
+	// ── zero gravity, for the duration of the free game ──────────────────────
+	//
+	// He stands on the board frame's ground line all through the base game, which
+	// is right: there is a floor in that backdrop and he is on it. The free game
+	// is the other side of a hull breach — the transition ends with a gravity
+	// charge going off — and a character still planted on the deck through it is
+	// the one thing on screen insisting nothing happened.
+	//
+	// FOUR MOTIONS, none of them in the skeleton:
+	//
+	//   LIFT   a constant rise, so the feet actually clear the ground. This is the
+	//          part that has to be unambiguous; a bob around the old position
+	//          reads as breathing, not as floating.
+	//   BOB    a slow rise and fall on top of it.
+	//   SWAY   a slow horizontal drift.
+	//   ROLL   a slow tilt, about his MIDDLE rather than his feet. A body with
+	//          nothing under it turns about its own mass; pivoting at the ankles
+	//          is what standing looks like, which is the read being removed.
+	//
+	// The three periods are deliberately not harmonics of each other, so the
+	// combination never visibly repeats.
+	//
+	// DONE AS A TRANSFORM, NOT AS AN ANIMATION. The skeleton's tracks stay exactly
+	// as they are, so the chest beat, the cheer and the nod all still play in
+	// full — they simply play on a body that is off the ground. Adding a floating
+	// idle to the rig instead would have meant a second copy of every reaction.
+	// LIFT carries the FEET OFF THE GROUND and BOB is the swing on top of it, so
+	// the trough — LIFT minus BOB — is the thing that must never approach zero.
+	// At 70/62 the trough was 8 units and his boots brushed the deck at the bottom
+	// of every cycle, which is the one thing this is for.
+	//
+	// Modelled against the two layouts this game draws him on, the feet end up:
+	//
+	//     1080 tall    41 .. 131 px up   (an 89px swing)
+	//      800 tall    28 ..  88 px up   (a  60px swing)
+	const FLOAT_LIFT = 100;
+	const FLOAT_BOB = 52;
+	// He recedes as he drifts, and that is not only a depth cue — it is what buys
+	// the room for the swing above.
+	//
+	// placement fits him to 94% of the space over the bet bar, so his head has
+	// about 50 layout units of clear air and no more. LIFT plus BOB's peak is 132
+	// skeleton units, which at the sizes this game draws him is more than twice
+	// that: without making room the bob would be squeezed to a twitch on exactly
+	// the layouts that draw him biggest. Taking 8% off his height during the
+	// feature frees roughly 70 units, which is what the full swing needs.
+	const FLOAT_SHRINK = 0.1;
+	const FLOAT_SWAY = 20;
+	const FLOAT_ROLL = 0.045; // radians, ~2.6 degrees
+	const BOB_MS = 3700;
+	const SWAY_MS = 5300;
+	const ROLL_MS = 6700;
+	// Asymmetric on purpose: drifting up off the deck is a slow release, coming
+	// back down when the feature ends is gravity returning and is quicker.
+	const FLOAT_IN_MS = 1100;
+	const FLOAT_OUT_MS = 700;
+
+	// THE CLOCK IS KEPT TWICE, and it has to be.
+	//
+	// `floatClockRaw` / `floatLevelRaw` are plain variables the frame loop reads
+	// and writes; `floatClock` / `floatLevel` are the $state copies the render
+	// reads. The effect below must not READ a rune that its own frame writes —
+	// the read makes the effect depend on it, the write re-runs the effect, and
+	// the effect starts a new requestAnimationFrame chain on every single frame.
+	// ReelLid shipped exactly that and the fix was exactly this split.
+	let floatClockRaw = 0;
+	let floatLevelRaw = 0;
+	let floatClock = $state(0);
+	let floatLevel = $state(0);
+	let floatRaf = 0;
+
+	$effect(() => {
+		const t0 = performance.now() - floatClockRaw;
+		let last = performance.now();
+		const step = (now: number) => {
+			floatClockRaw = now - t0;
+			const dt = now - last;
+			last = now;
+			// Read inside the loop rather than as a dependency: this effect must not
+			// re-subscribe every frame, and the target is the only thing it needs
+			// from state.
+			const target = context.stateGame.gameType === 'freegame' ? 1 : 0;
+			const rate = dt / (target > floatLevelRaw ? FLOAT_IN_MS : FLOAT_OUT_MS);
+			floatLevelRaw =
+				target > floatLevelRaw
+					? Math.min(target, floatLevelRaw + rate)
+					: Math.max(target, floatLevelRaw - rate);
+			floatClock = floatClockRaw;
+			floatLevel = floatLevelRaw;
+			floatRaf = requestAnimationFrame(step);
+		};
+		floatRaf = requestAnimationFrame(step);
+		return () => cancelAnimationFrame(floatRaf);
+	});
+
+	// Smoothstep on the level, so he does not arrive at the top of the lift with
+	// the velocity he left the ground at.
+	const floatEase = $derived(floatLevel * floatLevel * (3 - 2 * floatLevel));
+
+	/**
+	 * The float, in MAIN-LAYOUT units, plus the pivot it turns about.
+	 *
+	 * `midY` is half his drawn height: the container sits that far above his feet
+	 * so the roll happens around his middle, and the contents are pushed back down
+	 * by the same amount so nothing else moves.
+	 */
+	const floatXf = $derived.by(() => {
+		if (!placement) return null;
+		const e = floatEase;
+		const t = floatClock;
+		const scale = placement.scale * (1 - FLOAT_SHRINK * e);
+		const midY = (ART.height / 2) * scale;
+
+		// pixi y is down, skeleton y is up, so a lift SUBTRACTS
+		const wanted =
+			(FLOAT_LIFT + FLOAT_BOB * Math.sin((t / BOB_MS) * Math.PI * 2)) * scale * e;
+
+		// FITTED TO THE HEADROOM, NOT CLIPPED TO IT.
+		//
+		// It was Math.min, which is a clip: on a layout with less room than the
+		// swing wants, the top of every bob flattens into a hold and the motion
+		// reads as a stutter rather than as a smaller float. Scaling the whole
+		// wave by the same factor keeps it a sine and simply makes it shallower
+		// where there is no room — which is the honest degradation.
+		const room = Math.max(0, placement.y - ART.height * scale - 8);
+		const peak = (FLOAT_LIFT + FLOAT_BOB) * scale * e;
+		const fit = peak > room && peak > 0 ? room / peak : 1;
+
+		const lift = wanted * fit;
+		const sway = FLOAT_SWAY * Math.sin((t / SWAY_MS) * Math.PI * 2 + 1.7) * scale * e;
+		const roll = FLOAT_ROLL * Math.sin((t / ROLL_MS) * Math.PI * 2 + 0.6) * e;
+		return {
+			midY,
+			scale,
+			x: placement.x + sway,
+			y: placement.y - midY - lift,
+			rotation: roll,
+		};
+	});
+
 	// Publish the release point for the transition to spawn its canister at, in
 	// main-layout coordinates. null when he is not on screen, which is how the
 	// transition knows to fall back to dropping one in from above.
@@ -102,13 +242,32 @@
 	// less slack around it than the free-spin ones.
 	//
 	// Nulling on real unmount still happens, below, where it belongs.
+	// THROUGH THE FLOAT, not through `placement`.
+	//
+	// The skill note for this rig is blunt about it: anything outside the skeleton
+	// that needs to know where a hand is must read it back rather than recompute
+	// it, because a stale release point spawns the prop where the hand used to be.
+	// The float is exactly that kind of staleness — he is lifted, swaying and
+	// rolled, and the hand is wherever those three put it.
+	//
+	// In practice he is on the deck for every transition the game currently makes
+	// (both of them start in the base game), so this is belt and braces. It costs
+	// four lines and it cannot go wrong later.
 	$effect(() => {
-		context.stateGame.mascotThrowOrigin = placement
-			? {
-					x: placement.x + RELEASE.x * placement.scale,
-					y: placement.y - RELEASE.y * placement.scale,
-				}
-			: null;
+		if (!placement || !floatXf) {
+			context.stateGame.mascotThrowOrigin = null;
+			return;
+		}
+		// the hand, in the floating container's own frame — at the FLOATING scale,
+		// since he is drawn smaller while he drifts
+		const lx = RELEASE.x * floatXf.scale;
+		const ly = floatXf.midY - RELEASE.y * floatXf.scale;
+		const cos = Math.cos(floatXf.rotation);
+		const sin = Math.sin(floatXf.rotation);
+		context.stateGame.mascotThrowOrigin = {
+			x: floatXf.x + lx * cos - ly * sin,
+			y: floatXf.y + lx * sin + ly * cos,
+		};
 	});
 
 	// ── comic impacts on the chest beat ────────────────────────────────────
@@ -471,13 +630,27 @@
 	});
 </script>
 
-{#if placement}
+{#if placement && floatXf}
+	<!--
+		THE FLOAT IS THE OUTER CONTAINER, and all three layers take it — the
+		skeleton, the comic impacts and the visor tease. They were three siblings
+		pinned to the same point; if only the skeleton floated, the chest beat's
+		impacts would land where his fists used to be.
+
+		zIndex moves out here with it: it is the wrapper that is now the sibling
+		BoardFrame and the rest are sorted against.
+	-->
+	<Container
+		x={floatXf.x}
+		y={floatXf.y}
+		rotation={floatXf.rotation}
+		zIndex={-1}
+	>
 	<SpineProvider
 		key="gbMonkey"
-		x={placement.x}
-		y={placement.y}
-		scale={placement.scale}
-		zIndex={-1}
+		x={0}
+		y={floatXf.midY}
+		scale={floatXf.scale}
 	>
 		<SpineTrack
 			trackIndex={0}
@@ -511,7 +684,7 @@
 		Same origin and scale as the skeleton, so the impacts are placed in
 		skeleton units and follow him at whatever size the layout gives him.
 	-->
-	<Container x={placement.x} y={placement.y} scale={placement.scale}>
+	<Container x={0} y={floatXf.midY} scale={floatXf.scale}>
 		<Graphics draw={drawImpacts} />
 	</Container>
 
@@ -519,7 +692,8 @@
 		Its own container so the tease is not caught by the impact graphics' clear.
 		Same origin and scale as the skeleton, like the impacts.
 	-->
-	<Container x={placement.x} y={placement.y} scale={placement.scale}>
+	<Container x={0} y={floatXf.midY} scale={floatXf.scale}>
 		<Graphics draw={drawTease} blendMode="add" />
+	</Container>
 	</Container>
 {/if}

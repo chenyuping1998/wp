@@ -267,6 +267,84 @@
 		preload: true,
 	},
 
+	// THE BUY BONUS PLATE — this game's own hatch, in both skins.
+	//
+	// buybonus_plate.png (the jungle generation's olive-and-gold CTA) is still on
+	// disk and still generated, and nothing points at it. It is kept for the same
+	// reason the brass icons are: the skin switch has to work without a rebuild.
+	gbUiBuyBonusHatch: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_hatch.png', import.meta.url).href,
+		preload: true,
+	},
+	// The porthole with the lamp on. Drawn over the plate with blendMode 'add' on
+	// hover, which is why it is transparent everywhere else — see the note in
+	// design/generate_ui_plates.mjs.
+	gbUiBuyBonusLit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_hatch_lit.png', import.meta.url).href,
+		preload: true,
+	},
+
+	// ── the same icons in flat monochrome, for the platform UI skin ──────────
+	//
+	// A SECOND SET RATHER THAN A TINT, because UiButton draws uiTheme.icons as a
+	// plain Sprite with no tint (components-ui-pixi/src/components/UiButton.svelte)
+	// — uiTheme.buttonIconFill reaches only the vector-drawn turbo bolt, so on the
+	// platform skin every one of the brass icons above stayed gold on a grey strip.
+	//
+	// Both sets are preloaded and both ship. That is the price of the skin being
+	// switchable at run time from localStorage with no rebuild: whichever one
+	// uiTheme.icons ends up pointing at has to already be in memory. Nine 256px
+	// PNGs of flat white line art, ~4KB each.
+	//
+	// Generated from the SAME shapes as the brass set — see design/generate_ui_icons.mjs,
+	// which renders both palettes in one pass so the two can never drift apart.
+	gbIconMonoMenu: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/menu.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoMenuExit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/menuExit.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSettings: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/settings.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoInfo: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/info.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoPayTable: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/payTable.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSoundOn: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/soundOn.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSoundOff: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/soundOff.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoAutoSpin: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/autoSpin.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoReplay: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/replay.png', import.meta.url).href,
+		preload: true,
+	},
 	gbX: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/x.png', import.meta.url).href,

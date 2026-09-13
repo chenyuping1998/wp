@@ -37,6 +37,11 @@ export const isBoughtMode = (key: string) => {
 // here, where a reel grows on its own several times inside one feature and a
 // rescale on each would be constant churn.
 export const BASE_ROWS = 4;
+
+// What a stretched reel counts as, in the free game. From the maths config
+// (growth_reel_multiplier) rather than typed, so the client cannot end up
+// doubling something the maths triples.
+export const GROW_MULTIPLIER = config.growth?.reelMultiplier ?? 2;
 export const MAX_ROWS = 6;
 export const NUM_REELS = 5;
 
@@ -73,6 +78,35 @@ export const paddedReelLength = (rows: number) => rows + 2;
 
 // The baseline height every reel starts and resets to.
 export const BOARD_ROWS_BASE: number[] = Array(NUM_REELS).fill(BASE_ROWS);
+
+/**
+ * Per-reel scoring multiplier for a board of this shape.
+ *
+ * A reel standing ABOVE the baseline counts every cell twice, and only in the
+ * free game. Mirrors reel_multipliers() in the maths' game_executables.py — the
+ * rule is `len(board[reel]) > base_num_rows[reel]`, so FIVE rows already
+ * doubles; it does not wait for six.
+ *
+ * DERIVED HERE RATHER THAN TAKEN FROM THE BOOK, and that is a reversal worth
+ * recording. The event carries `reelMultipliers` and stateGame's comment says to
+ * trust it, on the argument that a client which derives is a client that can
+ * derive wrongly. The argument holds; the premise did not. gamestate.py emitted
+ * grow_reels_event BEFORE it recomputed the multipliers, so every published book
+ * carries the PREVIOUS spin's array in that field:
+ *
+ *   · the spin a reel first reaches 5, the event says 1 for it, so the x2 plate
+ *     turned up one growth late
+ *   · a bought round opening tall emits no grow event on its first spin at all,
+ *     so bonus200 and bonus300 opened with reel 1 doubling in the maths and no
+ *     plate on the board
+ *
+ * The maths is fixed, but the fix only reaches the player through a new
+ * simulation run and a republish. Deriving costs one line, is checkable against
+ * the same board the client has already adopted for growRows, and is correct for
+ * the books that are live today.
+ */
+export const reelMultipliersFor = (rows: number[], inFreeGame: boolean): number[] =>
+	rows.map((r) => (inFreeGame && r > BASE_ROWS ? GROW_MULTIPLIER : 1));
 
 // How far down a reel of `rows` sits inside the MAX_ROWS box. Zero for a reel at
 // full height; two cells' worth for one at the baseline.

@@ -244,13 +244,21 @@
 	/* Buy Bonus cards (components-ui-html/BonusCard.svelte → .bonus-card-wrap):
 	   the shared component paints a flat black panel, which read as unfinished
 	   next to the rest of the game. Brass-edged olive plate instead. */
+	/* THE CARD'S FRAME LIVES HERE, not in the art.
+	   The art used to draw its own brass rect, which `object-fit: cover` then
+	   cropped down to a bar on the left and right with nothing across the top or
+	   bottom — see the note in design/generate_mode_cards.mjs. A border on the
+	   element is four-sided by construction whatever shape the card ends up.
+
+	   2px rather than 1: it is now the only thing separating the card art from
+	   the panel behind it, and both are dark. */
 	:global(.bonus-card-wrap) {
 		background: linear-gradient(
 			165deg,
 			rgba(34, 46, 16, 0.95) 0%,
 			rgba(16, 24, 8, 0.97) 100%
 		) !important;
-		border: 1px solid rgba(216, 163, 52, 0.32) !important;
+		border: 2px solid rgba(216, 163, 52, 0.55) !important;
 		border-radius: 12px !important;
 		box-shadow:
 			0 6px 18px rgba(0, 0, 0, 0.5),
@@ -338,5 +346,164 @@
 		border-color: rgba(255, 215, 94, 0.6) !important;
 		outline: none !important;
 		box-shadow: 0 0 8px rgba(216, 163, 52, 0.28) !important;
+	}
+
+	/* ══════════════════════════════════════════════════════
+	   PLATFORM SKIN — the DOM half of it.
+
+	   game/uiTheme.ts stamps the resolved skin on <html>, so these rules apply
+	   only when it resolved to 'platform'. Everything above is untouched and is
+	   byte-for-byte what the 'bananaut' skin shows.
+
+	   Same source as the bet bar's casing: Hacksaw's .ActionPanel (#2a2a2a on a
+	   3px #0f0f0f edge), their .Button table (#343a40 borders, #4ace4a primary,
+	   #bfbfbf disabled text) and their mobile CircleButton disc. The bar went
+	   flat grey and these panels stayed olive and brass, which read as two
+	   different products stacked on one screen.
+	   ═════════════════════════════════════════════════════ */
+
+	/* the shade behind a modal: neutral black, not jungle shade */
+	:global(html[data-ui-skin='platform'] .blur-layer) {
+		background-color: rgba(0, 0, 0, 0.72) !important;
+	}
+
+	/* the panel itself — their .ActionPanel, at the radius they use */
+	:global(html[data-ui-skin='platform'] .ui-popup-standard-content-wrap) {
+		background: #2a2a2a !important;
+		border: 3px solid #0f0f0f !important;
+		border-radius: 4px !important;
+		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7) !important;
+	}
+
+	/* Every button plate in a modal: the Auto Spin round chips, the settings
+	   toggles, the bet-menu amounts. Their CircleButton disc, squared off. */
+	:global(html[data-ui-skin='platform'] .rectangle) {
+		background: #14171a !important;
+		border: 1px solid #565e66 !important;
+		border-radius: 4px !important;
+		box-shadow: none !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .button:hover .rectangle) {
+		border-color: #8a949c !important;
+		box-shadow: none !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .button:active .rectangle) {
+		border-color: #4ace4a !important;
+		box-shadow: none !important;
+		transform: scale(0.97);
+	}
+
+	:global(html[data-ui-skin='platform'] .close-button) {
+		color: #bfbfbf !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .close-button:hover) {
+		color: #ffffff !important;
+		text-shadow: none !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .pop-up-wrap h1),
+	:global(html[data-ui-skin='platform'] .pop-up-wrap h2),
+	:global(html[data-ui-skin='platform'] .pop-up-wrap h3),
+	:global(html[data-ui-skin='platform'] .pop-up-wrap h4) {
+		color: #ffffff !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .pop-up-wrap input),
+	:global(html[data-ui-skin='platform'] .pop-up-wrap select) {
+		background: #14171a !important;
+		border: 1px solid #343a40 !important;
+		border-radius: 4px !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .pop-up-wrap input:focus),
+	:global(html[data-ui-skin='platform'] .pop-up-wrap select:focus) {
+		border-color: #4ace4a !important;
+		box-shadow: none !important;
+	}
+
+	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-track) {
+		background: #1a1a1a;
+	}
+	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-thumb) {
+		background: #565e66;
+	}
+	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-thumb:hover) {
+		background: #8a949c;
+	}
+
+	/* the buy cards, which are the one place the platform palette uses colour */
+	/* The platform card's frame. #0f0f0f was their .ActionPanel edge colour, which
+	   is right for a panel sitting on the game art and invisible here: a near-black
+	   line between a dark card and a #2a2a2a panel. Their .Button border grey
+	   instead, at 2px, so the card has an edge a player can actually see. */
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap) {
+		background: #1f1f1f !important;
+		border: 2px solid #565e66 !important;
+		border-radius: 4px !important;
+		box-shadow: none !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap:hover) {
+		border-color: #4ace4a !important;
+		box-shadow: none !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .title),
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .price) {
+		color: #ffffff !important;
+		text-shadow: none !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .description) {
+		color: #bfbfbf !important;
+	}
+
+	/* ── THE SELECTED CHIP ────────────────────────────────────────────────────
+	   This is a fix, not a restyle, and it applies to BOTH skins.
+
+	   The Auto Spin panel marks the chosen round count three ways, and this file
+	   was destroying two of them. AutoSpinsOptions passes BaseIcon a background
+	   ('#5d2396' when selected, 'black' otherwise) and a border ('2px white
+	   solid' / '2px black solid'); BaseIcon puts both on .rectangle through
+	   custom properties. The .rectangle override above sets `background` and
+	   `border` with !important, and an author !important declaration beats the
+	   package's plain one — so every chip rendered the same plate with the same
+	   brass edge, and the only thing left telling the player which one they had
+	   picked was the gold colour of the number.
+
+	   (The 2px white on '#5d2396' is the template's plum, so the chip was never
+	   this game's colour in either skin. Restoring the package's own values would
+	   put a purple chip in a jungle panel; the selected state is drawn in the
+	   skin's own accent instead.)
+
+	   :has() rather than a class on the button: OptionsGrid renders a plain
+	   Button with no selected state of its own, and the only signal in the DOM is
+	   the .selected class AutoSpinsOptions puts on the label inside it. */
+	:global(.button:has(.selected) .rectangle) {
+		border-color: #ffd75e !important;
+		background: linear-gradient(
+			160deg,
+			rgba(88, 74, 26, 0.95) 0%,
+			rgba(52, 42, 12, 0.98) 100%
+		) !important;
+		box-shadow:
+			0 0 14px rgba(255, 215, 94, 0.35),
+			inset 0 1px 0 rgba(255, 243, 189, 0.14) !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .button:has(.selected) .rectangle) {
+		background: #14171a !important;
+		border: 2px solid #4ace4a !important;
+		box-shadow: none !important;
+	}
+
+	/* the label inside the selected chip: gold is the jungle skin's accent and
+	   has no business on the platform strip, where green is the only colour */
+	:global(html[data-ui-skin='platform'] .selected) {
+		color: #4ace4a !important;
+		text-shadow: none !important;
 	}
 </style>
