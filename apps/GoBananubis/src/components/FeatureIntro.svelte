@@ -5,15 +5,20 @@
 	import { MainContainer } from 'components-layout';
 
 	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
+	import config from '../game/config';
 	import { getContext } from '../game/context';
 
 	// The three-panel feature card shown once loading reaches 100%.
 	//
-	// The middle slot is the headline and it is the growing multiplier, not the
-	// trigger: this is Go Bananas 100, the 100 in the name IS the mechanic, and it
-	// is also the only thing here a player of the first game would not already
-	// know. The trigger sits left because it is the familiar half, and the max win
-	// sits right because it is the figure players scan for last.
+	// The middle slot is the headline and it is the sealed Tablet: this is Go
+	// Bananubis, the Tablet IS the mechanic, and it is the only thing here a
+	// player of an earlier Go Bananas would not already know. The trigger sits
+	// left because it is the familiar half, and the max win sits right because it
+	// is the figure players scan for last.
+	//
+	// This card was inherited from Go Bananas 100 and described that game's
+	// growing wild multiplier — a mechanic this one does not have. Nothing about
+	// the layout was wrong; every word in the middle panel was.
 	//
 	// Copy is English-only, matching this app's loading tips. TripleWitching
 	// localises its equivalent card through game/i18nText; GoBananas has never
@@ -24,13 +29,40 @@
 
 	const context = getContext();
 
+	// THE PALETTE IS THE TOMB'S, NOT THE JUNGLE'S.
+	//
+	// These panels were inherited from Go Bananas and kept its olive greens —
+	// #14200c ink, #2c3a1c cells, a mint-green accent. This is the FIRST screen
+	// of the game, sitting in front of a sandstone hall, and it was the one
+	// surface still painted for the previous game.
+	//
+	// Same four jobs, this game's colours: tomb gold, scarab red, faience
+	// turquoise, and basalt for the panel — the palette the board frame, the
+	// tablets and the win lines already run on.
 	const GOLD = 0xffd43b;
-	const HOT = 0xff8c1a;
-	const JADE = 0x7fe3a4;
-	const PANEL_INK = 0x14200c;
+	const HOT = 0xff7a33;
+	const JADE = 0x5fe3d0;
+	const PANEL_INK = 0x141a1e;
 	const BODY_FILL = 0xf0e2c8;
 
+	// the unlit cells of the two board illustrations: basalt with a sandstone
+	// edge, which is what an empty cell looks like on the real board
+	const CELL_FILL = 0x232b31;
+	const CELL_EDGE = 0x6b7780;
+
 	const layout = $derived(context.stateLayoutDerived.mainLayout());
+
+	// The awards come from the maths (config.scatterSpins, scraped from
+	// game_config.py's freespin_triggers) rather than being typed into the copy.
+	// This card, the loading tips, the rules page and the pay table each used to
+	// carry their own hand-written version of the same sentence, and all four were
+	// wrong in the same way at the same time.
+	const spinsFor = (config.scatterSpins ?? {}) as Record<string, number>;
+	const scatterCounts = Object.keys(spinsFor)
+		.map(Number)
+		.sort((a, b) => a - b);
+	const asList = (values: (string | number)[]) =>
+		values.length > 1 ? `${values.slice(0, -1).join(', ')} or ${values[values.length - 1]}` : `${values[0]}`;
 
 	// Three columns need width. On portrait and square boxes they are too narrow
 	// to hold a sentence, so the panels stack into rows and the art moves beside
@@ -46,61 +78,89 @@
 
 	// ── illustrations ─────────────────────────────────────────────────────────
 
-	/** 5x5 grid with four cells lit — the Scatter count that opens the feature. */
-	const drawScatterGrid = (g: PixiGraphics, w: number, h: number) => {
-		g.clear();
+	// Both grid illustrations are the same 5x5 board at the same size, so the two
+	// panels rhyme rather than each inventing its own geometry.
+	const grid = (w: number, h: number) => {
 		const cell = Math.min(w / 6.2, h / 6.2);
 		const gap = cell * 0.16;
 		const span = 5 * (cell + gap) - gap;
-		const x0 = (w - span) / 2;
-		const y0 = (h - span) / 2;
-		// which cells hold a Scatter — spread out, never adjacent, because that is
-		// how they actually land and a clustered four reads as a cluster mechanic
-		const lit = new Set(['0,1', '1,3', '3,0', '4,2']);
+		return { cell, gap, x0: (w - span) / 2, y0: (h - span) / 2 };
+	};
+
+	/**
+	 * 5x5 grid with the SMALLEST triggering Scatter count lit — three, which is
+	 * both the lowest entry and, on the base strip, 98.6% of the entries that
+	 * happen. The panel is showing the player what a trigger looks like, and a
+	 * five-Scatter board is not what one looks like.
+	 *
+	 * The three-Scatter entry did not exist until the maths was corrected: every
+	 * distribution forced five, so freespin_triggers' 3 and 4 rows were unreachable
+	 * and this panel showed a count the game never awarded.
+	 */
+	const drawScatterGrid = (g: PixiGraphics, w: number, h: number) => {
+		g.clear();
+		const { cell, gap, x0, y0 } = grid(w, h);
+		// which cells hold a Scatter — one per reel, spread out and never adjacent,
+		// because that is how they actually land and a clustered three reads as a
+		// cluster mechanic. Reels 1, 3 and 5, which is where BR0 keeps them.
+		const lit = new Set(['0,1', '2,0', '4,2']);
 		for (let c = 0; c < 5; c++) {
 			for (let r = 0; r < 5; r++) {
 				const x = x0 + c * (cell + gap);
 				const y = y0 + r * (cell + gap);
 				const on = lit.has(`${c},${r}`);
 				g.roundRect(x, y, cell, cell, cell * 0.16);
-				g.fill({ color: on ? GOLD : 0x2c3a1c, alpha: on ? 0.85 : 0.5 });
+				g.fill({ color: on ? GOLD : CELL_FILL, alpha: on ? 0.85 : 0.65 });
 				g.roundRect(x, y, cell, cell, cell * 0.16);
-				g.stroke({ width: 1.5, color: on ? GOLD : 0x4a5c28, alpha: on ? 0.95 : 0.5 });
+				g.stroke({ width: 1.5, color: on ? GOLD : CELL_EDGE, alpha: on ? 0.95 : 0.55 });
 			}
 		}
 	};
 
 	/**
-	 * Climbing arrow drawn beside the real WILD panel art (gbWxPanel), which is
-	 * the in-game asset rather than a vector stand-in — the panel the player will
-	 * actually see when a reel locks. It is 1:5, so it is sized off the slot's
-	 * HEIGHT and the arrow takes the width left over.
+	 * Four sealed Tablets on the same board, scattered across four different reels
+	 * on purpose: they open together as one symbol wherever they are, and two of
+	 * them side by side would read as an adjacency rule.
+	 *
+	 * The empty cells are drawn here; the Tablets themselves are the real `gbM`
+	 * texture, placed as sprites by the template below. It used to draw them with
+	 * a vector stand-in, which was right while the symbol had no art — now that it
+	 * does, this panel has to show the same picture the reels will, or it is
+	 * teaching the player the wrong shape.
 	 */
-	const drawClimb = (g: PixiGraphics, w: number, h: number) => {
-		g.clear();
-		const ax = w * 0.78;
-		const top = h * 0.14;
-		const bottom = h * 0.9;
-		const head = w * 0.09;
-		g.moveTo(ax, bottom);
-		g.lineTo(ax, top);
-		g.moveTo(ax - head, top + head);
-		g.lineTo(ax, top);
-		g.lineTo(ax + head, top + head);
-		g.stroke({ width: 3, color: GOLD, alpha: 0.95 });
+	const SEALED = ['0,3', '1,1', '3,2', '4,0'];
 
-		// three chips up the arrow, each larger and brighter than the last
-		[0.84, 0.52, 0.2].forEach((f, i) => {
-			const r = w * (0.05 + i * 0.018);
-			const cy = top + (bottom - top) * f;
-			g.circle(ax, cy, r);
-			g.fill({ color: PANEL_INK, alpha: 0.95 });
-			g.circle(ax, cy, r);
-			g.stroke({ width: 2, color: i === 2 ? GOLD : HOT, alpha: 0.55 + i * 0.2 });
+	const drawSealedBoard = (g: PixiGraphics, w: number, h: number) => {
+		g.clear();
+		const { cell, gap, x0, y0 } = grid(w, h);
+		const sealed = new Set(SEALED);
+		for (let c = 0; c < 5; c++) {
+			for (let r = 0; r < 5; r++) {
+				if (sealed.has(`${c},${r}`)) continue;
+				const x = x0 + c * (cell + gap);
+				const y = y0 + r * (cell + gap);
+				g.roundRect(x, y, cell, cell, cell * 0.16);
+				g.fill({ color: CELL_FILL, alpha: 0.65 });
+				g.roundRect(x, y, cell, cell, cell * 0.16);
+				g.stroke({ width: 1.5, color: CELL_EDGE, alpha: 0.55 });
+			}
+		}
+	};
+
+	/** Where the Tablet sprites go, in the art slot's own coordinates. */
+	const sealedTiles = (w: number, h: number) => {
+		const { cell, gap, x0, y0 } = grid(w, h);
+		return SEALED.map((key) => {
+			const [c, r] = key.split(',').map(Number);
+			return {
+				x: x0 + c * (cell + gap) + cell / 2,
+				y: y0 + r * (cell + gap) + cell / 2,
+				size: cell,
+			};
 		});
 	};
 
-	/** Multipliers from several Wilds adding into one figure. */
+	/** Multipliers from several opened Tablets adding into one figure. */
 	const drawAddedMultipliers = (g: PixiGraphics, w: number, h: number) => {
 		g.clear();
 		const barW = w * 0.13;
@@ -142,8 +202,8 @@
 		art: (g: PixiGraphics, w: number, h: number) => void;
 		/** square symbol art, centred in the slot */
 		symbolKey?: string;
-		/** 1:5 panel art, sized off the slot height and pushed to the left of it */
-		panelKey?: string;
+		/** repeated square art placed by the panel's own geometry */
+		tiles?: { key: string; at: (w: number, h: number) => { x: number; y: number; size: number }[] };
 		hero?: boolean;
 	};
 
@@ -154,25 +214,27 @@
 		{
 			accent: GOLD,
 			title: 'FREE SPINS',
-			body: 'Land 4 or 5 Scatters anywhere to open 12 or 15 Free Spins.',
-			figure: '4-5',
+			body: `Land ${asList(scatterCounts)} Scatters anywhere to open ${asList(
+				scatterCounts.map((n) => spinsFor[n]),
+			)} Free Spins.`,
+			figure: `${scatterCounts[0]}-${scatterCounts[scatterCounts.length - 1]}`,
 			art: drawScatterGrid,
 			symbolKey: 'gbS',
 		},
 		{
 			accent: HOT,
-			title: 'GROWING WILDS',
-			body: 'A Wild fills its reel and sticks. Its multiplier only ever climbs.',
-			figure: '100X',
-			art: drawClimb,
-			panelKey: 'gbWxPanel',
+			title: 'SEALED TABLETS',
+			body: 'Every Tablet opens to the same symbol. In Free Spins they stay open, each carrying 2X to 50X.',
+			figure: '50X',
+			art: drawSealedBoard,
+			tiles: { key: 'gbM', at: sealedTiles },
 			hero: true,
 		},
 		{
 			accent: JADE,
 			title: 'MAX WIN',
-			body: 'Wild multipliers on a winning line are added together.',
-			figure: '25,000X',
+			body: 'Tablet multipliers on a winning line are added together.',
+			figure: `${(config.betModes?.base?.max_win ?? 0).toLocaleString()}X`,
 			art: drawAddedMultipliers,
 		},
 	];
@@ -221,17 +283,19 @@
 		});
 	};
 
-	// The hero uses the side-by-side arrangement even in the wide layout, because
-	// its art is the real 1:5 WILD panel. Sized to a short, wide art slot that
-	// panel comes out about 24px across — the character in it is unreadable. Given
-	// the full height of the box it is ~60px across and reads properly, and the
-	// copy takes the width instead. Its neighbours keep art-above-text; the hero
-	// already stands proud of them, so the different shape reads as emphasis.
+	// Art above text in the wide layout, art beside text when the panels stack.
+	//
+	// The hero used to take the side-by-side arrangement in BOTH, because its art
+	// was the real 1:5 WILD reel panel and a short wide slot squeezed it to about
+	// 24px across. Its art is now the same square 5x5 board as its left-hand
+	// neighbour, so it wants the same shape as its neighbour: the emphasis is
+	// carried by standing proud of them and by the accent colour, and a third
+	// arrangement in the middle of three panels just looked like a mistake.
 	const slots = $derived(
 		boxes.map((box, i) => {
-			if (stacked || panels[i].hero) {
-				const artW = box.w * (stacked ? 0.28 : 0.32);
-				const textX = box.x + box.w * (stacked ? 0.34 : 0.4);
+			if (stacked) {
+				const artW = box.w * 0.28;
+				const textX = box.x + box.w * 0.34;
 				return {
 					art: { x: box.x + box.w * 0.03, y: box.y + box.h * 0.14, w: artW, h: box.h * 0.72 },
 					text: { x: textX, w: box.x + box.w * 0.95 - textX, titleY: box.y + box.h * 0.2 },
@@ -253,12 +317,11 @@
 	// How far below the title the body starts, MEASURED rather than assumed.
 	//
 	// This was a constant number of title lines, and it was wrong twice in a row:
-	// at two lines it wasted a line under the short titles, and at one line
-	// "GROWING WILDS" — which fits one line in the wide centred panels but wraps
-	// in the hero's narrower side-by-side column — printed the body straight
-	// through its second line. There is no constant that is right for both, so
-	// each panel now reserves exactly what its own title occupies at its own
-	// column width.
+	// at two lines it wasted a line under the short titles, and at one line the
+	// long middle title — which fits one line in a wide centred panel and wraps in
+	// a narrow stacked one — printed the body straight through its second line.
+	// There is no constant that is right for both, so each panel now reserves
+	// exactly what its own title occupies at its own column width.
 	const titleHeights = $derived(
 		panels.map((panel, i) => {
 			const slot = slots[i];
@@ -274,9 +337,10 @@
 					align: slot.centred ? 'center' : 'left',
 				}),
 			).height;
-			// Floor at two lines' worth for the hero: its column is the narrow one,
-			// and if this measures before the display face has loaded the fallback's
-			// narrower metrics would report one line where Titan One needs two.
+			// Floor at two lines' worth for the hero: it has the longest title of the
+			// three, and if this measures before the display face has loaded the
+			// fallback's narrower metrics would report one line where Titan One
+			// needs two — and the body would print through it.
 			const floor = panel.hero ? titleSize * 2.4 : titleSize * 1.2;
 			return Math.max(measured, floor) + bodySize * 0.5;
 		}),
@@ -291,6 +355,18 @@
 		{@const slot = slots[i]}
 		<Container x={slot.art.x} y={slot.art.y}>
 			<Graphics draw={(g) => panel.art(g, slot.art.w, slot.art.h)} />
+			{#if panel.tiles}
+				{#each panel.tiles.at(slot.art.w, slot.art.h) as tile, t (t)}
+					<Sprite
+						key={panel.tiles.key}
+						anchor={0.5}
+						x={tile.x}
+						y={tile.y}
+						width={tile.size}
+						height={tile.size}
+					/>
+				{/each}
+			{/if}
 			{#if panel.symbolKey}
 				<Sprite
 					key={panel.symbolKey}
@@ -299,17 +375,6 @@
 					y={slot.art.h / 2}
 					width={Math.min(slot.art.w, slot.art.h) * 0.44}
 					height={Math.min(slot.art.w, slot.art.h) * 0.44}
-				/>
-			{/if}
-			{#if panel.panelKey}
-				<!-- 1:5 art: driven off the slot height, width follows the ratio. -->
-				<Sprite
-					key={panel.panelKey}
-					anchor={0.5}
-					x={slot.art.h / 10 + slot.art.w * 0.04}
-					y={slot.art.h / 2}
-					width={slot.art.h / 5}
-					height={slot.art.h}
 				/>
 			{/if}
 		</Container>

@@ -235,7 +235,7 @@ const PROCEDURAL = {
 };
 
 // ── build ──────────────────────────────────────────────────────────────────
-const REQUIRED = ['h1', 'h2', 'h3', 'h4', 'l1', 'l2', 'l3', 'l4', 'l5', 'w', 's', 'p', 'x', 'w_fg', 'cudgel'];
+const REQUIRED = ['h1', 'h2', 'h3', 'h4', 'l1', 'l2', 'l3', 'l4', 'l5', 'w', 's', 'm', 'p', 'x', 'w_fg', 'cudgel'];
 const missing = [];
 
 const writeOut = (name, png) => fs.writeFileSync(path.join(OUT_DIR, `${name}.png`), PNG.sync.write(png));
@@ -293,243 +293,206 @@ for (const name of REQUIRED) {
 		throw new Error(`no source, no procedural rule and no gen-1 fallback for ${name}`);
 	}
 }
-
-// grenade: the transition prop, and the one asset here that MUST be a cut-out.
+// The mascot's thrown prop, and the object the transition flies at the board:
+// the SCARAB, cut off its plate.
 //
-// TransitionAnimation drops it over the live scene and GrenadeRunner flies it
-// along the win lines, so it is seen against the board rather than in a cell.
-// Both used to draw `gbH2` — which in gen-2 is an opaque riveted plate, so what
-// actually fell down the screen was a tile, bezel and rivets included.
+// It used to be the pineapple scarab cut out of the jungle h2. The scarab was
+// the previous game's object in every sense — the character threw it, the
+// transition detonated it, and the win runner rolled one along a payline — and
+// none of that survives a jackal god in a temple. The scarab is this game's
+// highest-paying symbol and the one object in the set that reads at a glance
+// while spinning through the air.
 //
-// Cut from the gen-2 h2 so the prop is the same painting as the symbol. Two
-// things make that cut awkward, and both were learned the hard way:
+// CUT BY COLOUR, not by edges. The old routine flooded in from the border over
+// "frame-ish" pixels and needed a green-offset guard to stop it eating a notch
+// out of the scarab, because the olive plate and the green scarab sat in the
+// same hue. This art does not have that problem: the plate is basalt (r-b about
+// 3 across the face) and the scarab is carnelian (r-b about 114), so a plain
+// redness threshold separates them cleanly and there is nothing to guard.
 //
-//   · COLOUR CANNOT SEPARATE THEM. The plate face samples at 57,59,41 and the
-//     grenade body at 61,73,9 — same hue family, overlapping brightness. Worse,
-//     the body's facet highlights are gold, so a "strip anything gold" rule for
-//     the frame eats the subject too. Only the OUTLINE separates them.
-//   · THE SUBJECT OVERLAPS THE FRAME BAND. Stripping the frame as a fixed inset
-//     rectangle (the first version, 13%) sheared the bottom off the body and the
-//     lever, because the grenade very nearly touches the frame's inner edge.
+// Three steps after the threshold, and each one is there for a specific hole:
 //
-// So the frame is peeled by flood, not by geometry, and the gold-or-dark test
-// that peels it is confined to a band along the border where only frame can be:
-//
-//   1. blur, then Sobel — the blur kills the plate's mottling, which would
-//      otherwise read as edges everywhere and block the flood immediately
-//   2. peel frame and black corners inward from the border, gold-or-dark, but
-//      only within BAND of an edge so the body's gold facets are never eligible
-//   3. from there, spread through the plate face, blocked by strong edges
-//   4. dilate the background by GROW to eat the band of plate left hugging the
-//      silhouette, which the edge rule always leaves behind
-//   5. largest island, then fill interior holes
-//
-// EDGE_TH and GROW trade two artefacts against each other, and NEITHER end is
-// clean — this is the honest limit of an automatic cut on this artwork:
-//
-//   aggressive (26 / 2)   no fringe, but the body's shadowed left side is eaten
-//                         away: that shadow runs to values like 9,10,3 and is
-//                         indistinguishable from plate on every channel, the
-//                         G-R guard included
-//   conservative (14 / 0) body intact, but a wide ragged plate fringe survives,
-//                         which reads as a torn sticker
-//
-// 18 / 1 is the middle and what ships: fringe mostly gone, body mostly whole,
-// with a residual bite low on the left. If that ever matters the fix is not a
-// better threshold — it is a hand-made cut-out dropped in as
-// design/source/gen2_symbols/grenade.png, which this function then skips.
-const cutGrenade = (src) => {
+//   · LARGEST ISLAND, which is what discards the four bronze corner studs. They
+//     are warm and saturated enough to pass the threshold and always will be;
+//     they are also four small blobs against one big one.
+//   · FILL, because the beetle's incised seams and its dark contour are not red
+//     and would otherwise punch holes straight through the body. Anything the
+//     background flood cannot reach from outside is interior and belongs to it.
+//   · GROW and FEATHER, so the cut edge is not a hard alias against whatever it
+//     flies over.
+const cutScarab = (src) => {
 	const W = src.width, H = src.height, N = W * H;
-	const EDGE_TH = 18, BAND = 0.2, GROW = 1, FEATHER = 2;
+	const RED = 60, GROW = 1, FEATHER = 2;
 
-	const lum = new Float32Array(N);
-	for (let i = 0, j = 0; i < src.data.length; i += 4, j++)
-		lum[j] = src.data[i] * 0.299 + src.data[i + 1] * 0.587 + src.data[i + 2] * 0.114;
-	const L = (x, y) => lum[Math.max(0, Math.min(H - 1, y)) * W + Math.max(0, Math.min(W - 1, x))];
-	const bl = new Float32Array(N);
-	for (let y = 0; y < H; y++)
-		for (let x = 0; x < W; x++) {
-			let s = 0;
-			for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) s += L(x + dx, y + dy);
-			bl[y * W + x] = s / 25;
-		}
-	const B = (x, y) => bl[Math.max(0, Math.min(H - 1, y)) * W + Math.max(0, Math.min(W - 1, x))];
-	const edge = new Float32Array(N);
-	for (let y = 0; y < H; y++)
-		for (let x = 0; x < W; x++) {
-			const gx = -B(x-1,y-1) - 2*B(x-1,y) - B(x-1,y+1) + B(x+1,y-1) + 2*B(x+1,y) + B(x+1,y+1);
-			const gy = -B(x-1,y-1) - 2*B(x,y-1) - B(x+1,y-1) + B(x-1,y+1) + 2*B(x,y+1) + B(x+1,y+1);
-			edge[y * W + x] = Math.hypot(gx, gy);
-		}
-
-	const band = Math.round(Math.min(W, H) * BAND);
-	const nearBorder = (x, y) => Math.min(x, y, W - 1 - x, H - 1 - y) < band;
-	const isGold = (i) => {
+	const red = new Uint8Array(N);
+	for (let i = 0; i < N; i++) {
 		const r = src.data[i * 4], g = src.data[i * 4 + 1], b = src.data[i * 4 + 2];
-		return r > 120 && r - b > 50 && g > b && g < r;
-	};
-	const frameish = (i) => isGold(i) || lum[i] < 42;
-	// Body guard. The plate face and the grenade DO overlap in hue and brightness,
-	// but not in green offset: sampled across both, G-R averages -1.8 on the face
-	// and +9.7 on the body. Without this the flood squeezed through a soft spot on
-	// the body’s lower left and ate a visible notch out of it, which GROW then
-	// widened and “largest island” happily kept. The lever and ring are grey
-	// (G-R near 0) and are not covered here — they are held by their own outlines.
-	const isBody = (i) => src.data[i * 4 + 1] - src.data[i * 4] >= 4;
+		// red-dominant, and dominant over green too: a warm grey passes the first
+		// test on its own
+		if (r - b > RED && r - g > RED * 0.35) red[i] = 1;
+	}
 
-	const bg = new Uint8Array(N);
+	// everything the outside can reach without crossing red — the rest is body
+	const outside = new Uint8Array(N);
 	const q = [];
-	for (let x = 0; x < W; x++) { q.push([x, 0]); q.push([x, H - 1]); }
-	for (let y = 0; y < H; y++) { q.push([0, y]); q.push([W - 1, y]); }
+	for (let x = 0; x < W; x++) { q.push(x); q.push((H - 1) * W + x); }
+	for (let y = 0; y < H; y++) { q.push(y * W); q.push(y * W + W - 1); }
 	while (q.length) {
-		const [x, y] = q.pop();
-		if (x < 0 || y < 0 || x >= W || y >= H) continue;
-		const i = y * W + x;
-		if (bg[i] || !nearBorder(x, y) || !frameish(i)) continue;
-		bg[i] = 1;
-		q.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+		const i = q.pop();
+		if (outside[i] || red[i]) continue;
+		outside[i] = 1;
+		const x = i % W, y = (i / W) | 0;
+		if (x > 0) q.push(i - 1);
+		if (x < W - 1) q.push(i + 1);
+		if (y > 0) q.push(i - W);
+		if (y < H - 1) q.push(i + W);
 	}
 
-	const q2 = [];
-	for (let i = 0; i < N; i++) if (bg[i]) q2.push(i);
-	while (q2.length) {
-		const c = q2.pop();
-		const cx = c % W, cy = (c / W) | 0;
-		for (const [nx, ny] of [[cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]]) {
-			if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
-			const ni = ny * W + nx;
-			if (bg[ni] || edge[ni] > EDGE_TH || isBody(ni)) continue;
-			bg[ni] = 1; q2.push(ni);
+	// largest connected island of body, which drops the corner studs
+	const label = new Int32Array(N).fill(-1);
+	let best = -1, bestSize = 0;
+	for (let seed = 0; seed < N; seed++) {
+		if (outside[seed] || label[seed] >= 0) continue;
+		const stack = [seed];
+		let size = 0;
+		label[seed] = seed;
+		while (stack.length) {
+			const i = stack.pop();
+			size++;
+			const x = i % W, y = (i / W) | 0;
+			for (const n of [x > 0 ? i - 1 : -1, x < W - 1 ? i + 1 : -1, y > 0 ? i - W : -1, y < H - 1 ? i + W : -1]) {
+				if (n < 0 || outside[n] || label[n] >= 0) continue;
+				label[n] = seed;
+				stack.push(n);
+			}
 		}
+		if (size > bestSize) { bestSize = size; best = seed; }
 	}
+
+	const keep = new Float32Array(N);
+	for (let i = 0; i < N; i++) keep[i] = label[i] === best ? 1 : 0;
 
 	for (let g = 0; g < GROW; g++) {
-		const add = [];
+		const grown = Float32Array.from(keep);
 		for (let y = 0; y < H; y++)
 			for (let x = 0; x < W; x++) {
 				const i = y * W + x;
-				if (bg[i]) continue;
-				if ((x > 0 && bg[i-1]) || (x < W-1 && bg[i+1]) || (y > 0 && bg[i-W]) || (y < H-1 && bg[i+W]))
-					add.push(i);
+				if (keep[i]) continue;
+				if ((x > 0 && keep[i - 1]) || (x < W - 1 && keep[i + 1]) ||
+					(y > 0 && keep[i - W]) || (y < H - 1 && keep[i + W])) grown[i] = 1;
 			}
-		for (const i of add) bg[i] = 1;
+		keep.set(grown);
 	}
 
-	const lab = new Int32Array(N).fill(-1);
-	let best = -1, bestN = 0;
-	for (let s0 = 0; s0 < N; s0++) {
-		if (bg[s0] || lab[s0] >= 0) continue;
-		const st = [s0]; lab[s0] = s0; let n = 0;
-		while (st.length) {
-			const c = st.pop(); n++;
-			const cx = c % W, cy = (c / W) | 0;
-			for (const [nx, ny] of [[cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]]) {
-				if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
-				const ni = ny * W + nx;
-				if (bg[ni] || lab[ni] >= 0) continue;
-				lab[ni] = s0; st.push(ni);
-			}
-		}
-		if (n > bestN) { bestN = n; best = s0; }
-	}
-	const fg = new Uint8Array(N);
-	for (let i = 0; i < N; i++) if (!bg[i] && lab[i] === best) fg[i] = 1;
-
-	// Closing (dilate then erode) to repair what the flood still bit out.
-	//
-	// isBody stops the leak wherever the body has colour, but the deepest shadow
-	// on its lower left runs to values like 9,10,3 — G-R of 1, below the guard, and
-	// indistinguishable from plate on every other axis too. Rather than chase a
-	// classifier that cannot exist, repair the mask: a closing fills notches up to
-	// about 2*CLOSE wide and leaves the silhouette otherwise untouched. CLOSE stays
-	// well under the lever-to-body gap (~10px at source scale) so it cannot weld
-	// the two together.
-	const CLOSE = 3;
-	const morph = (mask, times, grow) => {
-		for (let k = 0; k < times; k++) {
-			const hits = [];
-			for (let y = 0; y < H; y++)
-				for (let x = 0; x < W; x++) {
-					const i = y * W + x;
-					if (mask[i] === (grow ? 1 : 0)) continue;
-					const n = (x > 0 && mask[i-1]) || (x < W-1 && mask[i+1]) || (y > 0 && mask[i-W]) || (y < H-1 && mask[i+W]);
-					if (grow ? n : !((x > 0 ? mask[i-1] : 1) && (x < W-1 ? mask[i+1] : 1) && (y > 0 ? mask[i-W] : 1) && (y < H-1 ? mask[i+W] : 1))) hits.push(i);
-				}
-			for (const i of hits) mask[i] = grow ? 1 : 0;
-		}
-	};
-	morph(fg, CLOSE, true);
-	morph(fg, CLOSE, false);
-
-	const reach = new Uint8Array(N); const q3 = [];
-	for (let x = 0; x < W; x++) { q3.push(x); q3.push((H - 1) * W + x); }
-	for (let y = 0; y < H; y++) { q3.push(y * W); q3.push(y * W + W - 1); }
-	while (q3.length) {
-		const c = q3.pop();
-		if (reach[c] || fg[c]) continue;
-		reach[c] = 1;
-		const cx = c % W, cy = (c / W) | 0;
-		for (const [nx, ny] of [[cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]]) {
-			if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
-			const ni = ny * W + nx;
-			if (!reach[ni] && !fg[ni]) q3.push(ni);
-		}
-	}
-	for (let i = 0; i < N; i++) if (!fg[i] && !reach[i]) fg[i] = 1;
-
-	const alpha = new Float32Array(N);
+	const soft = new Float32Array(N);
+	const R = FEATHER;
 	for (let y = 0; y < H; y++)
 		for (let x = 0; x < W; x++) {
-			let s0 = 0, c = 0;
-			for (let dy = -FEATHER; dy <= FEATHER; dy++)
-				for (let dx = -FEATHER; dx <= FEATHER; dx++) {
-					const nx = x + dx, ny = y + dy;
-					if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
-					s0 += fg[ny * W + nx]; c++;
+			let sum = 0, n = 0;
+			for (let dy = -R; dy <= R; dy++)
+				for (let dx = -R; dx <= R; dx++) {
+					const yy = y + dy, xx = x + dx;
+					if (yy < 0 || xx < 0 || yy >= H || xx >= W) continue;
+					sum += keep[yy * W + xx];
+					n++;
 				}
-			alpha[y * W + x] = s0 / c;
+			soft[y * W + x] = sum / n;
 		}
 
-	let bx0 = W, bx1 = -1, by0 = H, by1 = -1;
-	for (let y = 0; y < H; y++)
-		for (let x = 0; x < W; x++)
-			if (alpha[y * W + x] > 0.02) {
-				if (x < bx0) bx0 = x; if (x > bx1) bx1 = x;
-				if (y < by0) by0 = y; if (y > by1) by1 = y;
-			}
-	const bw = bx1 - bx0 + 1, bh = by1 - by0 + 1, side = Math.max(bw, bh);
-	const out = new PNG({ width: side, height: side });
-	out.data.fill(0);
-	const ox = Math.floor((side - bw) / 2), oy = Math.floor((side - bh) / 2);
-	for (let y = 0; y < bh; y++)
-		for (let x = 0; x < bw; x++) {
-			const si = (by0 + y) * W + (bx0 + x);
-			const di = ((oy + y) * side + (ox + x)) * 4;
-			const a = Math.max(0, Math.min(1, (alpha[si] - 0.15) / 0.7));
-			out.data[di] = src.data[si * 4];
-			out.data[di + 1] = src.data[si * 4 + 1];
-			out.data[di + 2] = src.data[si * 4 + 2];
-			out.data[di + 3] = Math.round(a * 255);
-		}
+	const out = new PNG({ width: W, height: H });
+	for (let i = 0; i < N; i++) {
+		out.data[i * 4] = src.data[i * 4];
+		out.data[i * 4 + 1] = src.data[i * 4 + 1];
+		out.data[i * 4 + 2] = src.data[i * 4 + 2];
+		out.data[i * 4 + 3] = Math.round(255 * soft[i] * (src.data[i * 4 + 3] / 255));
+	}
 	return out;
 };
 
 {
-	const own = supplied('grenade');
+	const own = supplied('scarab');
 	if (own) {
-		writeOut('grenade', sharpen(resize(readImage(own), CANVAS), 0.3));
-		console.log('grenade.png <- supplied cut-out');
-	} else if (supplied('h2')) {
-		writeOut('grenade', resize(cutGrenade(readImage(supplied('h2'))), CANVAS));
-		console.log('grenade.png <- cut out of the gen-2 h2 plate');
+		writeOut('scarab', sharpen(resize(readImage(own), CANVAS), 0.3));
+		console.log('scarab.png <- supplied cut-out');
+	} else if (supplied('h1')) {
+		writeOut('scarab', resize(cutScarab(readImage(supplied('h1'))), CANVAS));
+		console.log('scarab.png <- cut out of the h1 plate');
 	} else {
-		throw new Error('grenade needs either its own cut-out or h2 to cut from');
+		throw new Error('scarab needs either its own cut-out or h1 to cut from');
 	}
 }
 
 // wx: the full-reel WILD panel. ExpandingWilds draws it at SYMBOL_SIZE x
 // BOARD_SIZES.height — one reel, five cells — so the art has to be 1:5 or the
 // whole panel is stretched to fit.
+// ── the sealed tablet's two halves ─────────────────────────────────────────
+//
+// CUT FROM the m.png that was just written, not drawn separately, so the crack
+// shows the same stone that was on the board a frame earlier. MysteryReveal
+// draws the sealed tablet as its two halves resting in place and then lets them
+// fall — if the halves came from anywhere but the face itself, the tablet would
+// change appearance on the frame the break starts, which is the one frame the
+// player is looking straight at it.
+//
+// Entries are [y, x] as fractions of the half-size. A straight split reads as
+// the slab being slid apart rather than broken; the offsets are what make it
+// stone. This profile used to live in src/game/tabletArt.ts, which drew the whole
+// symbol as vector while there was no art for it.
+const FRACTURE = [
+	[-1, 0],
+	[-0.64, 0.12],
+	[-0.28, -0.08],
+	[0.04, 0.14],
+	[0.4, -0.06],
+	[0.72, 0.1],
+	[1, 0],
+];
+
+/** Both halves as full-tile transparent PNGs, so they share one centre. */
+const cutShards = (face) => {
+	const half = face.width / 2;
+	// the fracture as an x for every row, linearly interpolated between profile
+	// points — a per-row edge is all a vertical-ish break needs
+	const edgeAt = (y) => {
+		const t = (y - half) / half; // -1 .. 1
+		let i = 0;
+		while (i < FRACTURE.length - 2 && FRACTURE[i + 1][0] < t) i++;
+		const [y0, x0] = FRACTURE[i];
+		const [y1, x1] = FRACTURE[i + 1];
+		const f = y1 === y0 ? 0 : (t - y0) / (y1 - y0);
+		return half + (x0 + (x1 - x0) * f) * half;
+	};
+	const make = (side) => {
+		const out = new PNG({ width: face.width, height: face.height });
+		out.data.fill(0);
+		for (let y = 0; y < face.height; y++) {
+			const edge = edgeAt(y);
+			for (let x = 0; x < face.width; x++) {
+				// One pixel of feather across the break, so the halves do not show a
+				// hairline of background between them while they are still resting.
+				const d = side < 0 ? edge - x : x - edge;
+				if (d <= -1) continue;
+				const a = Math.min(1, d + 1);
+				const i = (y * face.width + x) * 4;
+				out.data[i] = face.data[i];
+				out.data[i + 1] = face.data[i + 1];
+				out.data[i + 2] = face.data[i + 2];
+				out.data[i + 3] = Math.round(face.data[i + 3] * a);
+			}
+		}
+		return out;
+	};
+	return { left: make(-1), right: make(1) };
+};
+
+if (supplied('m')) {
+	const face = readImage(path.join(OUT_DIR, 'm.png'));
+	const { left, right } = cutShards(face);
+	writeOut('m_shard_l', left);
+	writeOut('m_shard_r', right);
+	console.log('m_shard_l/r.png  <- cut from m.png along the fracture');
+}
+
 const WX_W = 256, WX_H = 1280, WX_ASPECT = WX_H / WX_W;
 
 // Grow a panel to 1:5 by lengthening it, not by stretching it.

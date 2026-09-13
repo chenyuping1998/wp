@@ -483,6 +483,16 @@ const bananaEmblem = (cx, cy, s) => `
 	<path d="M -26 14 Q -12 -8 14 -16 Q 20 -12 17 -4 Q 2 12 -18 20 Q -26 20 -26 14 Z" fill="url(#embGold)" stroke="#6d4a08" stroke-width="3" transform="translate(6 6)"/>
 	<path d="M -18 22 Q -4 2 22 -8 Q 28 -4 25 4 Q 10 20 -10 28 Q -18 28 -18 22 Z" fill="url(#embGold)" stroke="#6d4a08" stroke-width="3" transform="translate(12 12)"/>
 </g>`;
+// A small gold ankh: loop, crossbar, stem — the same flat-path-plus-gilt
+// construction as the emblem above.
+const ankhEmblem = (cx, cy, s = 1) => `
+<g transform="translate(${cx} ${cy}) scale(${s})">
+	<path d="M 0 -48 C 21 -48 32 -33 32 -20 C 32 -7 21 2 0 6 C -21 2 -32 -7 -32 -20 C -32 -33 -21 -48 0 -48 Z"
+		fill="none" stroke="url(#embGold)" stroke-width="13" stroke-linejoin="round"/>
+	<rect x="-46" y="8" width="92" height="15" rx="7" fill="url(#embGold)" stroke="#6d4a08" stroke-width="3"/>
+	<rect x="-8" y="8" width="16" height="64" rx="7" fill="url(#embGold)" stroke="#6d4a08" stroke-width="3"/>
+</g>`;
+
 frames.fs_sign = svgWrap(
 	920,
 	720,
@@ -492,19 +502,19 @@ frames.fs_sign = svgWrap(
 	     to nothing at all, so the sign read as hanging from two loose offcuts.
 	     The brass corners and frame carry it on their own. -->
 	<!-- plank panel -->
-	<rect x="100" y="130" width="720" height="540" rx="26" fill="url(#plankSign)" stroke="#17120a" stroke-width="8"/>
-	<rect x="100" y="300" width="720" height="10" fill="#17120a" opacity="0.5"/>
-	<rect x="100" y="490" width="720" height="10" fill="#17120a" opacity="0.5"/>
+	<rect x="100" y="130" width="720" height="540" rx="26" fill="url(#stonePlate)" stroke="#101418" stroke-width="8"/>
+	<rect x="100" y="300" width="720" height="10" fill="#101418" opacity="0.5"/>
+	<rect x="100" y="490" width="720" height="10" fill="#101418" opacity="0.5"/>
 	<rect x="100" y="130" width="720" height="540" rx="26" filter="url(#signGrain)" opacity="0.5"/>
 	<!-- brass frame -->
-	<rect x="112" y="142" width="696" height="516" rx="20" fill="none" stroke="url(#brass)" stroke-width="10"/>
-	<rect x="124" y="154" width="672" height="492" rx="14" fill="none" stroke="#ffe98a" stroke-width="2.5" opacity="0.6"/>
+	<rect x="112" y="142" width="696" height="516" rx="20" fill="none" stroke="url(#stoneEdge)" stroke-width="10"/>
+	<rect x="124" y="154" width="672" height="492" rx="14" fill="none" stroke="#ffd75e" stroke-width="2.5" opacity="0.75"/>
 	${signRivets}
 	<!-- corner brass plates -->
 	${[[100, 130, 0], [820, 130, 90], [820, 670, 180], [100, 670, 270]]
 		.map(
 			([cx, cy, rot]) => `<g transform="translate(${cx} ${cy}) rotate(${rot})">
-		<path d="M -10 -10 L 84 -10 Q 88 -10 88 -6 L 88 16 Q 62 18 42 38 Q 20 58 18 88 L -4 88 Q -10 88 -10 84 Z" fill="url(#cornerBrass)" stroke="#3a2c08" stroke-width="4"/>
+		<path d="M -10 -10 L 84 -10 Q 88 -10 88 -6 L 88 16 Q 62 18 42 38 Q 20 58 18 88 L -4 88 Q -10 88 -10 84 Z" fill="url(#stoneCorner)" stroke="#2a2116" stroke-width="4"/>
 	</g>`,
 		)
 		.join('')}
@@ -514,33 +524,40 @@ frames.fs_sign = svgWrap(
 	<!-- inner soft vignette so text pops -->
 	<rect x="130" y="160" width="660" height="480" rx="14" fill="url(#signVign)"/>`,
 	`
-	<linearGradient id="plankSign" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#3f4a1e"/>
-		<stop offset="0.5" stop-color="#2c3812"/>
-		<stop offset="1" stop-color="#1c260c"/>
+	<!-- GO BANANUBIS. Its own gradients, not the shared brass ones: the board
+	     frame in this same file still uses those, and the plaques are the only
+	     two pieces being repainted for the tomb. Geometry is untouched — same
+	     plate, same frame, same rivets, same 920x720 / 824x622 boxes the layout
+	     maths depend on. Colours are sampled from the shipped symbol plates:
+	     basalt face, sandstone edge, bronze stud, and the gilt hairline the buy
+	     cards and the held-tablet frames already use. -->
+	<linearGradient id="stonePlate" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#3d4144"/>
+		<stop offset="0.5" stop-color="#2c3033"/>
+		<stop offset="1" stop-color="#1b1f21"/>
 	</linearGradient>
-	<linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#ffe282"/>
-		<stop offset="0.45" stop-color="#d8a334"/>
-		<stop offset="1" stop-color="#8a5c14"/>
+	<linearGradient id="stoneEdge" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#c2a878"/>
+		<stop offset="0.45" stop-color="#8a7859"/>
+		<stop offset="1" stop-color="#5d4c33"/>
 	</linearGradient>
-	<linearGradient id="cornerBrass" x1="0" y1="0" x2="1" y2="1">
-		<stop offset="0" stop-color="#e8bc4e"/>
-		<stop offset="1" stop-color="#8a5c14"/>
+	<linearGradient id="stoneCorner" x1="0" y1="0" x2="1" y2="1">
+		<stop offset="0" stop-color="#b09a72"/>
+		<stop offset="1" stop-color="#5d4c33"/>
 	</linearGradient>
+	<radialGradient id="stoneStud" cx="0.35" cy="0.35" r="1">
+		<stop offset="0" stop-color="#b09a72"/>
+		<stop offset="0.7" stop-color="#7d6547"/>
+		<stop offset="1" stop-color="#3b2f20"/>
+	</radialGradient>
 	<linearGradient id="embGold" x1="0" y1="0" x2="1" y2="1">
-		<stop offset="0" stop-color="#fff2ae"/>
+		<stop offset="0" stop-color="#fff3bd"/>
 		<stop offset="0.5" stop-color="#ffd75e"/>
 		<stop offset="1" stop-color="#c1841a"/>
 	</linearGradient>
-	<radialGradient id="rivet" cx="0.35" cy="0.35" r="1">
-		<stop offset="0" stop-color="#ffe98a"/>
-		<stop offset="0.7" stop-color="#c08a20"/>
-		<stop offset="1" stop-color="#6d4a08"/>
-	</radialGradient>
 	<radialGradient id="signVign" cx="0.5" cy="0.45" r="0.85">
 		<stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
-		<stop offset="1" stop-color="#000000" stop-opacity="0.35"/>
+		<stop offset="1" stop-color="#000000" stop-opacity="0.4"/>
 	</radialGradient>
 	${grainDef('signGrain', 0.5, 0.07)}`,
 );
@@ -551,42 +568,56 @@ frames.fs_counter_panel = svgWrap(
 	824,
 	622,
 	`
-	<rect x="30" y="60" width="764" height="502" rx="34" fill="url(#plankSign)" stroke="#17120a" stroke-width="8"/>
+	<rect x="30" y="60" width="764" height="502" rx="34" fill="url(#stonePlate)" stroke="#101418" stroke-width="8"/>
 	<rect x="30" y="60" width="764" height="502" rx="34" filter="url(#signGrain)" opacity="0.5"/>
-	<rect x="46" y="76" width="732" height="470" rx="26" fill="none" stroke="url(#brass)" stroke-width="9"/>
-	<rect x="58" y="88" width="708" height="446" rx="20" fill="none" stroke="#ffe98a" stroke-width="2" opacity="0.55"/>
+	<rect x="46" y="76" width="732" height="470" rx="26" fill="none" stroke="url(#stoneEdge)" stroke-width="9"/>
+	<rect x="58" y="88" width="708" height="446" rx="20" fill="none" stroke="#ffd75e" stroke-width="2" opacity="0.7"/>
 	${[[70, 100], [754, 100], [70, 522], [754, 522]]
 		.map(
-			([x, y]) => `<circle cx="${x}" cy="${y}" r="10" fill="url(#rivet)" stroke="#3a2c08" stroke-width="2"/>
-	<circle cx="${x - 3}" cy="${y - 3}" r="3" fill="#fff3bd" opacity="0.8"/>`,
+			([x, y]) => `<circle cx="${x}" cy="${y}" r="10" fill="url(#stoneStud)" stroke="#2a2116" stroke-width="2"/>
+	<circle cx="${x - 3}" cy="${y - 3}" r="3" fill="#e8dcc0" opacity="0.7"/>`,
 		)
 		.join('')}
-	${bananaEmblem(412, 122, 0.75)}
+	<!-- An ankh, not the banana. This emblem is the one part of the plaque that
+	     names the game, and a bunch of bananas names the previous one. The ankh is
+	     already on the board as H4, and it draws as three strokes. -->
+	${ankhEmblem(412, 128, 0.6)}
 	<rect x="70" y="100" width="684" height="422" rx="18" fill="url(#signVign)"/>`,
 	`
-	<linearGradient id="plankSign" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#3f4a1e"/>
-		<stop offset="0.5" stop-color="#2c3812"/>
-		<stop offset="1" stop-color="#1c260c"/>
+	<!-- GO BANANUBIS. Its own gradients, not the shared brass ones: the board
+	     frame in this same file still uses those, and the plaques are the only
+	     two pieces being repainted for the tomb. Geometry is untouched — same
+	     plate, same frame, same rivets, same 920x720 / 824x622 boxes the layout
+	     maths depend on. Colours are sampled from the shipped symbol plates:
+	     basalt face, sandstone edge, bronze stud, and the gilt hairline the buy
+	     cards and the held-tablet frames already use. -->
+	<linearGradient id="stonePlate" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#3d4144"/>
+		<stop offset="0.5" stop-color="#2c3033"/>
+		<stop offset="1" stop-color="#1b1f21"/>
 	</linearGradient>
-	<linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#ffe282"/>
-		<stop offset="0.45" stop-color="#d8a334"/>
-		<stop offset="1" stop-color="#8a5c14"/>
+	<linearGradient id="stoneEdge" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#c2a878"/>
+		<stop offset="0.45" stop-color="#8a7859"/>
+		<stop offset="1" stop-color="#5d4c33"/>
 	</linearGradient>
+	<linearGradient id="stoneCorner" x1="0" y1="0" x2="1" y2="1">
+		<stop offset="0" stop-color="#b09a72"/>
+		<stop offset="1" stop-color="#5d4c33"/>
+	</linearGradient>
+	<radialGradient id="stoneStud" cx="0.35" cy="0.35" r="1">
+		<stop offset="0" stop-color="#b09a72"/>
+		<stop offset="0.7" stop-color="#7d6547"/>
+		<stop offset="1" stop-color="#3b2f20"/>
+	</radialGradient>
 	<linearGradient id="embGold" x1="0" y1="0" x2="1" y2="1">
-		<stop offset="0" stop-color="#fff2ae"/>
+		<stop offset="0" stop-color="#fff3bd"/>
 		<stop offset="0.5" stop-color="#ffd75e"/>
 		<stop offset="1" stop-color="#c1841a"/>
 	</linearGradient>
-	<radialGradient id="rivet" cx="0.35" cy="0.35" r="1">
-		<stop offset="0" stop-color="#ffe98a"/>
-		<stop offset="0.7" stop-color="#c08a20"/>
-		<stop offset="1" stop-color="#6d4a08"/>
-	</radialGradient>
 	<radialGradient id="signVign" cx="0.5" cy="0.45" r="0.85">
 		<stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
-		<stop offset="1" stop-color="#000000" stop-opacity="0.35"/>
+		<stop offset="1" stop-color="#000000" stop-opacity="0.4"/>
 	</radialGradient>
 	${grainDef('signGrain', 0.5, 0.07)}`,
 );
@@ -598,9 +629,23 @@ const render = (svg, outPath, width) => {
 	fs.writeFileSync(outPath, resvg.render().asPng());
 	console.log('rendered', path.basename(outPath));
 };
+// An optional whitelist:
+//
+//   node design/generate_theme_jungle.mjs <tooldir> --only=fs_sign,fs_counter_panel
+//
+// GoBananubis' backgrounds are PAINTED ART that replaced this file's output, so
+// a blind full run would overwrite three delivered paintings with the jungle
+// gradients they were commissioned to replace. The frames are still generated
+// here, and this is how one of them can be re-rendered on its own.
+const onlyArg = process.argv.find((arg) => arg.startsWith('--only='));
+const only = onlyArg ? new Set(onlyArg.slice('--only='.length).split(',')) : null;
+const wanted = (name) => !only || only.has(name);
+
 for (const [name, svg] of Object.entries(backgrounds)) {
+	if (!wanted(name)) continue;
 	render(svg, path.join(BG_DIR, `${name}.png`), 1920);
 }
 for (const [name, svg] of Object.entries(frames)) {
+	if (!wanted(name)) continue;
 	render(svg, path.join(FRAME_DIR, `${name}.png`), 1280);
 }

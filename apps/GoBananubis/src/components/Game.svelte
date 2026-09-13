@@ -30,10 +30,14 @@
 	import ReelDust from './ReelDust.svelte';
 	import EntryReveal from './EntryReveal.svelte';
 	import ScatterBurst from './ScatterBurst.svelte';
+	import HeldTablets from './HeldTablets.svelte';
 	import MysteryReveal from './MysteryReveal.svelte';
 	import StickyPrizes from './StickyPrizes.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import WinLines from './WinLines.svelte';
+	import ScatterLand from './ScatterLand.svelte';
+	import MultiplierRoll from './MultiplierRoll.svelte';
+	import MysteryOracle from './MysteryOracle.svelte';
 	import Win from './Win.svelte';
 	import FreeSpinIntro from './FreeSpinIntro.svelte';
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
@@ -92,8 +96,22 @@
 		<MainContainer>
 			<Board />
 			<ReelDust />
+			<!--
+				Before MysteryReveal, so a tablet cracking open draws over the held
+				overlay rather than under it. They never overlap in practice — the
+				overlay only draws cells on reels still in motion and the crack plays
+				once everything has stopped — but the order is the one that stays
+				right if either of those ever changes.
+			-->
+			<HeldTablets />
 			<MysteryReveal />
+			<!-- over the held cells: the wheel has to hide the value it is drawing to -->
+			<MultiplierRoll />
+			<!-- the run's seal, read once before the free spins that pay off whatever it names -->
+			<MysteryOracle />
 			<StickyPrizes />
+			<!-- under the anticipation columns: a Scatter that has landed keeps a hold -->
+			<ScatterLand />
 			<Anticipations />
 			<ScatterBurst />
 			<WinLines />

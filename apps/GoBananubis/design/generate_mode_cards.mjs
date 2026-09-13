@@ -22,12 +22,23 @@
 // The three motifs are designed to read AGAINST each other, since the only
 // question the modal has to answer is how the options differ:
 //
-//   bonus       one Wild locked over its reel, three Scatters under it.
-//               The ordinary way in, and the feature it buys.
-//   superbonus  FIVE Scatters and TWO locked reels. Same vocabulary, more of it
-//               — which is exactly what 500x buys over 200x.
+//   bonus       three Sealed Tablets with the middle one already broken open,
+//               FOUR Scatters under them. The tier's own entry count, and the
+//               feature it buys.
+//   superbonus  FIVE Tablets, two of them open, FIVE Scatters. Same vocabulary,
+//               more of it — which is exactly what 500x buys over 200x.
 //   superspin   a board of blank cells with Coins stuck to it. Deliberately
 //               shares nothing with the other two, because it is not free spins.
+//
+// The Scatter counts are the real ones. These cards used to show three and five
+// against a game that only ever awarded five, and now show four and five because
+// that is what each tier's `scatter_triggers` forces — see betModeMeta.ts, which
+// prints the same numbers in the copy printed over this art.
+//
+// They also used to be built around a WILD LOCKED OVER ITS REEL, which was the
+// feature the previous game sold. This one has no expanding wilds and no locked
+// reels; it has the tablet. A card selling a mechanic the round does not contain
+// is worse than a card with no picture.
 //
 // No text is drawn. The card's title, description and price are DOM text drawn
 // over this by BonusCard, and a second set baked into the art would collide with
@@ -100,55 +111,48 @@ const sym = (name, cx, cy, size, opacity = 1, rotate = 0) =>
 	`<image href="${sprite(name)}" x="${-size / 2}" y="${-size / 2}" width="${size}" height="${size}"/></g>`;
 
 /**
- * A reel locked by an expanded Wild: the brass column with the Wild's plate on
- * it. This is the feature both free-spin modes sell, so it is the one shape that
- * has to be unmistakable — and it is the same drawing on both cards, at one
- * column against two, so the difference between them reads without reading.
+ * Sealed Tablets in a row, one or more already broken open on the symbol they
+ * all hold. This is the feature both free-spin modes sell, so it is the one
+ * shape that has to be unmistakable — and it is the same drawing on both cards,
+ * at three tablets against five, so the difference between them reads without
+ * reading.
+ *
+ * The opened ones show `h1`, and always the same symbol on a given card: every
+ * tablet on a board opens to ONE symbol, and a card showing two different faces
+ * would teach the opposite of the mechanic on the way in.
  */
-const lockedReel = (cx, cy, plate, h) => {
-	const w = plate * 1.16;
-	const top = cy - h / 2;
-	const r = w * 0.1;
-	// The finish helpers are tuned for small trim pieces. Applied at full strength
-	// to a column this size, the specular sweep and the lit edge cover most of the
-	// object and the brass came out as pale beige — it read as frosted glass, not
-	// as the gold panel the game locks over a reel. Grain and scratches carry the
-	// material here; the highlight is drawn deliberately instead, as a band down
-	// one side rather than a wash over everything.
-	// spec and edge are OFF, not merely reduced. Both paint a light wash across
-	// the whole rect, and on an object this size that is most of the object — two
-	// passes of near-white over the gold was the entire reason it came out beige.
-	// The light on this column is the drawn core of the gradient instead.
-	const finish = { grain: 0.3, brushed: 0.2, scratch: 0.22, mottle: 0.25, spec: 0, edge: 0, ao: 0.55 };
-	return `
-		<g filter="url(#drop)"><rect x="${cx - w / 2}" y="${top}" width="${w}" height="${h}" rx="${r}"
-		   fill="url(#reelLock)"/></g>
-		${finishRect(cx - w / 2, top, w, h, r, 'sf', finish)}
-		<!-- one lit face, so the column has a light direction instead of glowing
-		     evenly from nowhere -->
-		<rect x="${cx - w / 2 + w * 0.16}" y="${top + h * 0.02}" width="${w * 0.14}" height="${h * 0.96}"
-		      rx="${w * 0.06}" fill="#fff6d8" opacity="0.3"/>
-		<!-- dark rim, then a bright inner line: the two together are what makes an
-		     edge read as machined metal rather than as a coloured rectangle -->
-		<rect x="${cx - w / 2}" y="${top}" width="${w}" height="${h}" rx="${r}"
-		      fill="none" stroke="#4a3008" stroke-width="5"/>
-		<rect x="${cx - w / 2 + 4}" y="${top + 4}" width="${w - 8}" height="${h - 8}" rx="${r * 0.8}"
-		      fill="none" stroke="#ffe9a8" stroke-width="2" opacity="0.65"/>
-		${sym('w', cx, cy, plate)}`;
+const tabletRow = (cx, cy, count, size, open) => {
+	const gap = size * 0.12;
+	const x0 = cx - ((count - 1) * (size + gap)) / 2;
+	return Array.from({ length: count }, (_, i) => {
+		const x = x0 + i * (size + gap);
+		// The opened ones sit slightly high and large: a broken seal is the event,
+		// and an even row of identical tiles has no event in it.
+		const isOpen = open.includes(i);
+		const y = cy - (isOpen ? size * 0.1 : 0);
+		const s = size * (isOpen ? 1.12 : 1);
+		return (
+			(isOpen
+				? `<ellipse cx="${x}" cy="${y}" rx="${s * 0.72}" ry="${s * 0.72}" fill="#ffd75e" opacity="0.22" filter="url(#soft)"/>`
+				: '') +
+			`<g filter="url(#drop)">${sym(isOpen ? 'h1' : 'm', x, y, s, 1, (i - (count - 1) / 2) * 4)}</g>`
+		);
+	}).join('');
 };
 
 const MOTIFS = {
-	// One locked reel, three Scatters. The ordinary entry and what it buys.
+	// Three Tablets, the middle one open. Four Scatters: this tier's own entry.
 	bonus: `
 		<ellipse cx="${MOTIF.cx}" cy="${MOTIF.cy}" rx="150" ry="104" fill="#ffd75e" opacity="0.1" filter="url(#soft)"/>
-		${lockedReel(MOTIF.cx, MOTIF.cy - 34, 92, 164)}
-		${[-1, 0, 1].map((i) => sym('s', MOTIF.cx + i * 70, MOTIF.cy + 76, 56, 1, i * 7)).join('')}`,
+		${tabletRow(MOTIF.cx, MOTIF.cy - 40, 3, 92, [1])}
+		${[-1.5, -0.5, 0.5, 1.5]
+			.map((i) => sym('s', MOTIF.cx + i * 64, MOTIF.cy + 78, 52, 1, i * 7))
+			.join('')}`,
 
-	// Five Scatters and two locked reels: the same vocabulary, more of it.
+	// Five Tablets, two open, five Scatters: the same vocabulary, more of it.
 	superbonus: `
 		<ellipse cx="${MOTIF.cx}" cy="${MOTIF.cy}" rx="176" ry="110" fill="#ffe282" opacity="0.12" filter="url(#soft)"/>
-		${lockedReel(MOTIF.cx - 74, MOTIF.cy - 38, 74, 148)}
-		${lockedReel(MOTIF.cx + 74, MOTIF.cy - 38, 74, 148)}
+		${tabletRow(MOTIF.cx, MOTIF.cy - 42, 5, 60, [1, 3])}
 		${[-2, -1, 0, 1, 2]
 			.map((i) =>
 				// An arc, not a straight row: the middle one sits highest and largest,
@@ -156,8 +160,8 @@ const MOTIFS = {
 				sym(
 					's',
 					MOTIF.cx + i * 66,
-					MOTIF.cy + 72 - (2 - Math.abs(i)) * 8,
-					48 + (2 - Math.abs(i)) * 6,
+					MOTIF.cy + 76 - (2 - Math.abs(i)) * 8,
+					46 + (2 - Math.abs(i)) * 6,
 					1,
 					i * 6,
 				),
@@ -195,23 +199,20 @@ const MOTIFS = {
 const defs =
 	surfaceDefs('sf') +
 	`
+	<!--
+		Dark basalt, not jungle olive. Two reasons, and the second is the load-
+		bearing one: the symbols composited onto these cards now sit on basalt
+		plates, so a green ground put a green halo around every tile; and the bar
+		these cards open from is going monochrome, which a saturated green card
+		would fight. Neutral stone is the only ground that works against both the
+		art it carries and the chrome it opens from.
+	-->
 	<linearGradient id="ground" x1="0" y1="0" x2="0.35" y2="1">
-		<stop offset="0" stop-color="#2c3812"/>
-		<stop offset="0.5" stop-color="#1c2609"/>
-		<stop offset="1" stop-color="#101806"/>
+		<stop offset="0" stop-color="#31363b"/>
+		<stop offset="0.5" stop-color="#1e2226"/>
+		<stop offset="1" stop-color="#0e1013"/>
 	</linearGradient>
-	<!-- The locked reel's own gold. Deeper than the UI brass on purpose: the
-	     column is a large flat area, and the trim ramp used on small pieces goes
-	     pale as soon as it covers one. -->
-	<linearGradient id="reelLock" x1="0" y1="0" x2="1" y2="0.2">
-		<stop offset="0" stop-color="#3d2706"/>
-		<stop offset="0.13" stop-color="#b8811d"/>
-		<stop offset="0.34" stop-color="#ffd75e"/>
-		<stop offset="0.56" stop-color="#dda42b"/>
-		<stop offset="0.84" stop-color="#8a5c14"/>
-		<stop offset="1" stop-color="#332005"/>
-	</linearGradient>
-	<!-- The column has to sit ON the card, not float in it. -->
+	<!-- The tablets have to sit ON the card, not float in it. -->
 	<filter id="drop" x="-30%" y="-20%" width="160%" height="140%">
 		<feDropShadow dx="0" dy="6" stdDeviation="9" flood-color="#000000" flood-opacity="0.55"/>
 	</filter>
@@ -226,8 +227,8 @@ const defs =
 		card sitting on the first.
 	-->
 	<linearGradient id="scrimTop" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#0c1305" stop-opacity="0.92"/>
-		<stop offset="1" stop-color="#0c1305" stop-opacity="0"/>
+		<stop offset="0" stop-color="#0b0d10" stop-opacity="0.92"/>
+		<stop offset="1" stop-color="#0b0d10" stop-opacity="0"/>
 	</linearGradient>
 	<!--
 		Never fully open. The old ramp dropped to 12% across the middle, which is
@@ -237,10 +238,10 @@ const defs =
 		cropped; the variation on top of it is only for depth.
 	-->
 	<linearGradient id="scrim" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#0c1305" stop-opacity="0.72"/>
-		<stop offset="0.3" stop-color="#0c1305" stop-opacity="0.55"/>
-		<stop offset="0.68" stop-color="#0c1305" stop-opacity="0.58"/>
-		<stop offset="1" stop-color="#0c1305" stop-opacity="0.88"/>
+		<stop offset="0" stop-color="#0b0d10" stop-opacity="0.72"/>
+		<stop offset="0.3" stop-color="#0b0d10" stop-opacity="0.55"/>
+		<stop offset="0.68" stop-color="#0b0d10" stop-opacity="0.58"/>
+		<stop offset="1" stop-color="#0b0d10" stop-opacity="0.88"/>
 	</linearGradient>`;
 
 const card = (motif) => `

@@ -15,16 +15,49 @@ import { BOARD_DIMENSIONS } from './constants';
 import config from './config';
 
 // The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
-// a value of 1 means the tease starts on the *second* scatter. Free spins need
-// four, so teasing that early fires on most spins and stops meaning anything.
-// Require three scatters already on the board (value >= 2) before any reel
-// teases. Filtering the array here — rather than in utils-slots — keeps the
-// slow reel stop and the on-screen tease gated by the same condition, and
-// leaves the shared package (and WildParty) untouched.
-const ANTICIPATION_MIN_SCATTERS = 3;
+// a value of 1 means the tease starts on the *second* scatter.
+//
+// ONE AWAY FROM THE TRIGGER, and the trigger is the SMALLEST count that awards
+// spins — three. So a reel teases once two Scatters are already down. This used
+// to require three already down, which was written when the shipped game only
+// ever triggered on four or more; against a three-Scatter trigger it means the
+// tease fires on boards that have already won, which is the one moment it has
+// nothing left to say.
+//
+// Read from the maths rather than fixed, so it follows freespin_triggers.
+// Filtering the array here — rather than in utils-slots — keeps the slow reel
+// stop and the on-screen tease gated by the same condition, and leaves the
+// shared package (and WildParty) untouched.
+const ANTICIPATION_MIN_SCATTERS =
+	Math.min(...Object.keys(config.scatterSpins ?? { 3: 8 }).map(Number)) - 1;
+
+// A BOUGHT ROUND HAS NOTHING TO ANTICIPATE.
+//
+// Every buy forces its own Scatter count (bonus four, superbonus five — see each
+// mode's `scatter_triggers`), so the feature is not in doubt from the moment the
+// player confirms the price. The tease is a question the round has already
+// answered, and it asks it on the last three reels of every single buy: three
+// slow stops, a rising loop under them, and a held beat before each one.
+//
+// So it is switched off there rather than shortened. Shortening keeps the shape
+// of a question and just rushes it, which reads as the game being impatient with
+// its own animation; removing it lets the reels stop at their normal pace and
+// hands the whole moment to the bell and the mascot, which are the parts that
+// are actually about arriving.
+//
+// The base game is untouched: that is where a Scatter landing is genuinely news.
+// Upper-cased before comparing, and asking whether it is NOT base rather than
+// whether it is one of the buys. stateBet defaults the key to 'BASE' but
+// ResumeBet sets it from whatever the RGS hands back, and stateBet itself tries
+// the key both upper- and lower-cased when it looks up the mode meta — so the
+// casing is not guaranteed. A bare === 'BASE' would silently turn the base
+// game's anticipation off on any resumed round the server spelled in lower case.
+const isBoughtRound = () => String(stateBet.activeBetModeKey).toUpperCase() !== 'BASE';
 
 const gateAnticipation = (anticipation: number[]) =>
-	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
+	isBoughtRound()
+		? anticipation.map(() => 0)
+		: anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
 
 // A plain base-game board, sampled from the base padding strips. Used to put the
 // reels back after a superspin: that mode's board is full of P (coin) and X
@@ -119,7 +152,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			recordBookEvent({ bookEvent });
 		}
 
-		// Entering superspin gets the same grenade the free game gets.
+		// Entering superspin gets the same scarab the free game gets.
 		//
 		// It had none: this line flipped gameType and the hold-and-spin scene
 		// simply replaced the base board mid-spin, while buying free spins got a
@@ -145,6 +178,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			stateGame.gameType = bookEvent.gameType;
 		}
 
+		// The previous spin's Scatter holds go out with the board that carried
+		// them, before this one starts dropping symbols onto it.
+		eventEmitter.broadcast({ type: 'scatterLandClear' });
+
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: { ...bookEvent, anticipation: gateAnticipation(bookEvent.anticipation) },
 			paddingBoard: config.paddingReels[bookEvent.gameType],
@@ -166,9 +203,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			symbolCount: win.positions.length,
 		}));
 
-		// Every winning line runs its grenade at once; free game and turbo use the
+		// Every winning line runs its scarab at once; free game and turbo use the
 		// short timing. WinLines owns the symbol win animations too — it fires them
-		// reel by reel in each grenade's wake (and dedupes positions shared between
+		// reel by reel in each scarab's wake (and dedupes positions shared between
 		// lines, which would otherwise hang waiting for a second completion).
 		const isFreeGame = stateGame.gameType === 'freegame';
 		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins: winLineData, fast: isFreeGame });
@@ -186,7 +223,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	setTotalWin: async (bookEvent: BookEventOfType<'setTotalWin'>) => {
 		stateBet.winBookEventAmount = bookEvent.amount;
 	},
-	freeSpinTrigger: async (bookEvent: BookEventOfType<'freeSpinTrigger'>) => {
+	freeSpinTrigger: async (
+		bookEvent: BookEventOfType<'freeSpinTrigger'>,
+		{ bookEvents }: BookEventContext,
+	) => {
 		// The base spin that triggered this may itself have paid, recording its win
 		// lines for the idle replay. But the board is about to become a free game
 		// and then be torn down to base idle, so those lines must not survive to be
@@ -202,22 +242,30 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// gold rings + sparks burst out of the scatters while the bell rings
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
 
-		// Four or more Scatters is the rare way in — three is the ordinary one — so
-		// that is where the mascot's biggest reaction goes. Counted here rather
-		// than in the component: the count is a property of this book event, and a
-		// component that had to go looking for it would be reaching across the game
-		// to find something it was never handed.
+		// EVERY trigger, not four-or-more.
 		//
-		// It runs during the 3s bell hold, which is the only stretch of the trigger
+		// This used to be gated on `positions.length >= 4`, written when four was
+		// the smallest count the shipped game awarded. Three triggers now, and it
+		// is 98.6% of base entries — so the gate had quietly turned the mascot's
+		// biggest reaction into something almost nobody would ever see, and the
+		// two buys would have been the only reliable way to see it.
+		//
+		// It runs during the bell hold, which is the only stretch of the trigger
 		// long enough to watch him do it.
-		if (bookEvent.positions.length >= 4) {
-			eventEmitter.broadcast({ type: 'mascotChestBeat' });
-		}
-		await waitForTimeout(3000);
+		eventEmitter.broadcast({ type: 'mascotChestBeat' });
+		// The hold is the length of the chest beat, not a round number. It was
+		// 3000ms against a 2.44s animation, so every trigger ended on half a second
+		// of a character standing still with nothing else happening — the one gap
+		// in the sequence where the game had stopped.
+		await waitForTimeout(2450);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		// Three passes of the scatter shake — extended trigger celebration
+		// TWO passes of the scatter shake, not three.
+		//
+		// Three was padding: the same 900ms animation, three times, with nothing
+		// changing between them. Two reads as an emphasis — the burst, then the
+		// symbols answering it twice — and the second is where the blast now
+		// arrives instead of after a third repeat nobody was still watching.
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
 		await animateSymbols({ positions: bookEvent.positions });
 		await animateSymbols({ positions: bookEvent.positions });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
@@ -225,7 +273,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// Enter the feature inside the blast's white-out. The swap used to happen
 		// after the intro plaque had already counted up, which meant the blast
 		// cleared onto the BASE scene and the background only changed later, hidden
-		// behind the plaque. Now the grenade falls on the base board and the flash
+		// behind the plaque. Now the scarab falls on the base board and the flash
 		// reveals the free game — which is what the transition is for.
 		await eventEmitter.broadcastAsync({
 			type: 'transition',
@@ -241,6 +289,30 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			totalFreeSpins: bookEvent.totalFs,
 		});
 		eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
+
+		// READ THE SEAL — see MysteryOracle.svelte.
+		//
+		// The run holds one mystery symbol for every tablet it opens, and the
+		// maths has already chosen it — it is not in THIS event, because
+		// assign_mystery_symbols draws it lazily on the run's first sealed spin.
+		// So it is read out of the BOOK, from the first mysteryReveal after this
+		// trigger, the same way Go Bananas Boat reads its cargo ahead.
+		//
+		// Reading ahead is safe: the whole book has already arrived by the time
+		// any of it is played, and this is the one moment the client knows
+		// something the player has not been shown yet.
+		//
+		// Skipped when there is none — a run whose every spin lands zero tablets
+		// is vanishingly rare, and a client-side stand-in would name a seal the
+		// round never actually casts.
+		const firstSeal = _.find(
+			bookEvents.slice(bookEvents.indexOf(bookEvent) + 1),
+			(event) => event?.type === 'mysteryReveal',
+		) as BookEventOfType<'mysteryReveal'> | undefined;
+		if (firstSeal) {
+			await eventEmitter.broadcastAsync({ type: 'mysteryOracle', symbol: firstSeal.symbol });
+		}
+
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
 		stateUi.freeSpinCounterShow = true;
@@ -297,7 +369,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	updateFreeSpin: async (bookEvent: BookEventOfType<'updateFreeSpin'>) => {
 		// A superspin round's FIRST updateFreeSpin arrives before its first reveal —
 		// the maths calls update_freespin() and only then draws the board — so
-		// showing the plaque here put "3 respins" on screen before the grenade had
+		// showing the plaque here put "3 respins" on screen before the scarab had
 		// even been thrown. Hold it back and let the transition's cover raise it
 		// together with the board.
 		//
@@ -319,16 +391,22 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateUi.freeSpinCounterTotal = bookEvent.total;
 	},
 	freeSpinRetrigger: async (bookEvent: BookEventOfType<'freeSpinRetrigger'>) => {
-		// Same bell moment as the initial trigger: silence the free-game bgm,
-		// ring the bell and hold ~2s, then bring the music back.
+		// The same bell as the entrance, SHORTER THAN THE ENTRANCE.
+		//
+		// It was an exact copy of the trigger — a 3s hold and three passes of the
+		// shake, about 5.7s — and it happens in the middle of a run that is already
+		// paced tightly, sometimes more than once. An entrance can stop the game;
+		// an addition to something already running cannot, or the feature spends
+		// its time announcing itself instead of playing.
+		//
+		// Half the hold and two passes: still the bell, still the symbols
+		// answering, about 3.4s.
 		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
 		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
-		await waitForTimeout(3000);
+		await waitForTimeout(1600);
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		// Three passes of the scatter shake — extended trigger celebration
-		await animateSymbols({ positions: bookEvent.positions });
 		await animateSymbols({ positions: bookEvent.positions });
 		await animateSymbols({ positions: bookEvent.positions });
 		const extraSpins = Math.max(0, bookEvent.totalFs - stateUi.freeSpinCounterTotal);
@@ -358,7 +436,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// gameType is NOT reset here — it moves to the transition's cover below.
 		// Resetting it at this point dropped the player back onto the base
 		// background while the outro plaque was still counting up their feature
-		// win, so by the time the grenade fell the scene had already changed and
+		// win, so by the time the scarab fell the scene had already changed and
 		// the blast revealed nothing. The feature should still look like the
 		// feature until the blast ends it.
 		eventEmitter.broadcast({ type: 'boardFrameGlowHide' });
@@ -445,11 +523,11 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			// Back to the base game — but inside the transition's cover, not before
 			// it. The plaque is already hidden by this point, so swapping here used
 			// to happen in the open: the coin board snapped to the base board, and
-			// only then did the grenade start its 800ms fall. The blast covered a
+			// only then did the scarab start its 800ms fall. The blast covered a
 			// change the player had already watched.
 			//
 			// Doing it in `cover` gives the sequence the round actually wants:
-			// superspin board -> grenade falls on it -> blast -> base board.
+			// superspin board -> scarab falls on it -> blast -> base board.
 			await eventEmitter.broadcastAsync({
 				type: 'transition',
 				cover: () => {
@@ -543,6 +621,22 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 					multiplier: position.mult,
 				};
 			}
+			// The overlay is told explicitly now — it stopped reading the reveal
+			// event when the reveal took ownership of the order things appear in
+			// (see MysteryReveal), and a resumed round has no reveal to play.
+			if (mysteryToRestore.held.length > 0) {
+				eventEmitter.broadcast({ type: 'heldTabletsOpened' });
+				eventEmitter.broadcast({
+					type: 'heldTabletsShow',
+					symbol: mysteryToRestore.symbol,
+					cells: mysteryToRestore.held.map((cell) => ({
+						reel: cell.reel,
+						row: cell.row,
+						mult: cell.mult,
+					})),
+				});
+			}
+
 			// The base game has no hold, so `held` is empty there and `positions`
 			// is the whole reveal. In the feature every position is already in
 			// `held`, so this second pass only ever fires outside a run.

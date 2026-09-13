@@ -24,13 +24,34 @@ import {
 	SCATTER_LAND_SOUND_MAP,
 } from './constants';
 
-const onSymbolLand = ({ rawSymbol, reelIndex }: { rawSymbol: RawSymbol; reelIndex?: number }) => {
+const onSymbolLand = ({
+	rawSymbol,
+	reelIndex,
+	symbolIndex,
+}: {
+	rawSymbol: RawSymbol;
+	reelIndex?: number;
+	symbolIndex?: number;
+}) => {
 	if (rawSymbol.name === 'S') {
 		eventEmitter.broadcast({ type: 'soundScatterCounterIncrease' });
 		eventEmitter.broadcast({
 			type: 'soundOnce',
 			name: SCATTER_LAND_SOUND_MAP[scatterLandIndex()],
 		});
+		// The sound already climbs a step per Scatter — five samples, one per
+		// count. Nothing on SCREEN did, so the first two Scatters of a trigger
+		// landed silently as far as the eye was concerned and the board only
+		// reacted once the third had already decided it. This is the picture
+		// that goes with the note that was already being played.
+		if (reelIndex !== undefined && symbolIndex !== undefined) {
+			eventEmitter.broadcast({
+				type: 'scatterLand',
+				reel: reelIndex,
+				row: symbolIndex,
+				count: scatterLandIndex(),
+			});
+		}
 	}
 
 	if (rawSymbol.name === 'W') {
@@ -93,7 +114,8 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
 			}
 		},
-		onSymbolLand: ({ rawSymbol }) => onSymbolLand({ rawSymbol, reelIndex }),
+		onSymbolLand: ({ rawSymbol, symbolIndex }) =>
+			onSymbolLand({ rawSymbol, reelIndex, symbolIndex }),
 	});
 
 	reel.reelState.spinOptions = () => {
@@ -136,7 +158,7 @@ export const stateGame = $state({
 	// superspin: coins stuck to the board, evaluated at the end of the round
 	// (row includes the padding offset, prize is in book cents)
 	stickyPrizes: [] as { reel: number; row: number; prize: number }[],
-	// Where the mascot's hand is at the moment he lets go of a grenade, in
+	// Where the mascot's hand is at the moment he lets go of a scarab, in
 	// MAIN-LAYOUT coordinates — or null when he is not on screen at all, which is
 	// every layout too narrow to stand him beside the board (see Mascot.svelte).
 	//

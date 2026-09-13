@@ -4,21 +4,27 @@
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getContext } from '../game/context';
 
-	// Jungle-commando transition: the sergeant pitches a pineapple grenade into
-	// the middle of the screen — two red ticks — BOOM. The cut to the next scene
-	// lands on the white-hot peak of the blast.
+	// The transition: the jackal god pitches a carnelian scarab into the middle of
+	// the screen, it charges gold for two beats, and it goes. The cut to the next
+	// scene lands on the white-hot peak of the burst.
 	//
-	// The grenade comes out of his HAND when he is on screen, and drops in from
+	// It was a pineapple grenade with a red fuse, thrown by a commando sergeant.
+	// The beats are unchanged — throw, hold, burst — because they were the right
+	// beats; what changed is the object and what "arming" means for it. A scarab
+	// does not have a fuse, so the pulse warms to GOLD rather than blinking red:
+	// the same rising-heat read, in the colour this game charges things with.
+	//
+	// The scarab comes out of his HAND when he is on screen, and drops in from
 	// above when he is not. Both paths exist because he is only there on layouts
 	// wide enough to stand him beside the board — tablet and portrait have no
-	// room (Mascot.svelte, MIN_GAP), and a grenade materialising out of empty
+	// room (Mascot.svelte, MIN_GAP), and a scarab materialising out of empty
 	// space at the edge of the screen would be worse than the plain drop.
 	//
-	// The grenade falls over the LIVE scene: for the first 800ms of this
+	// The scarab falls over the LIVE scene: for the first 800ms of this
 	// animation whatever is behind it is fully visible. Anything the player must
 	// not see change therefore has to be swapped inside `oncover`, which fires
 	// only once the flash has gone fully opaque. Swapping before calling for the
-	// transition puts the change on screen a beat before the grenade even
+	// transition puts the change on screen a beat before the scarab even
 	// appears, which is what the superspin exit used to do.
 	type Props = {
 		oncomplete: () => void;
@@ -30,13 +36,13 @@
 	const props: Props = $props();
 	const context = getContext();
 
-	// He reaches, a grenade appears in his fist, he winds up, he throws. All of
+	// He reaches, a scarab appears in his fist, he winds up, he throws. All of
 	// that happens on the mascot, and this is how long it takes — RELEASE_AT in
-	// design/generate_monkey_spine.mjs, in milliseconds.
+	// design/generate_anubis_spine.mjs, in milliseconds.
 	//
-	// NOT free to change on its own. The skeleton switches the grenade OFF in his
+	// NOT free to change on its own. The skeleton switches the scarab OFF in his
 	// hand at exactly this moment and the transition switches its own copy on, so
-	// if the two drift there is either a frame with two grenades or a frame with
+	// if the two drift there is either a frame with two scarabs or a frame with
 	// none.
 	const THROW_RELEASE_MS = 580;
 	const FLIGHT_MS = 340; // hand to the middle of the screen
@@ -47,7 +53,7 @@
 	const BOOM_MS = 700;
 
 	// Which entrance this run uses is decided ONCE, on mount. Reading the state
-	// every frame would let a resize part-way through swap the grenade from a
+	// every frame would let a resize part-way through swap the scarab from a
 	// thrown one to a dropped one in mid-flight.
 	const origin = context.stateGame.mascotThrowOrigin;
 	const thrown = origin !== null;
@@ -114,15 +120,15 @@
 	let boomFired = false;
 	let coverFired = false;
 
-	let grenadeVisible = $state(false);
-	let grenadeX = $state(0);
-	let grenadeY = $state(0);
-	let grenadeScale = $state(1);
-	let grenadeTint = $state(0xffffff);
-	let grenadeAlpha = $state(1);
-	let grenadeSpin = $state(0);
-	// fraction of the boom over which the grenade is consumed by its own blast
-	const GRENADE_BURN = 0.16;
+	let scarabVisible = $state(false);
+	let scarabX = $state(0);
+	let scarabY = $state(0);
+	let scarabScale = $state(1);
+	let scarabTint = $state(0xffffff);
+	let scarabAlpha = $state(1);
+	let scarabSpin = $state(0);
+	// fraction of the boom over which the scarab is consumed by its own blast
+	const SCARAB_BURN = 0.16;
 	let boomT = $state(-1);
 	let flashAlpha = $state(0);
 
@@ -155,7 +161,7 @@
 
 			if (thrown && elapsed < THROW_RELEASE_MS) {
 				// still in his hand — nothing to draw yet
-				grenadeVisible = false;
+				scarabVisible = false;
 			} else if (thrown && elapsed < ENTRY_MS) {
 				// FLIGHT: hand to the middle of the screen.
 				//
@@ -168,47 +174,47 @@
 				// Arc height scales with how far it has to travel, so the lob looks
 				// the same shape on a wide layout as on a narrow one.
 				const lift = Math.hypot(from.x, from.y) * 0.38;
-				grenadeVisible = true;
-				grenadeX = from.x * (1 - p);
-				grenadeY = from.y * (1 - p) - lift * 4 * p * (1 - p);
+				scarabVisible = true;
+				scarabX = from.x * (1 - p);
+				scarabY = from.y * (1 - p) - lift * 4 * p * (1 - p);
 				// grows as it comes toward the camera
-				grenadeScale = 0.55 + p * 0.65;
-				// A real thrown grenade tumbles. This is the one moment it should:
+				scarabScale = 0.55 + p * 0.65;
+				// A real thrown scarab tumbles. This is the one moment it should:
 				// on the way down (the fallback) it is deliberately face-on, but a
 				// throw has spin in it and a prop that arrives flat looks placed.
-				grenadeSpin = p * Math.PI * 2.4;
-				grenadeTint = 0xffffff;
+				scarabSpin = p * Math.PI * 2.4;
+				scarabTint = 0xffffff;
 			} else if (!thrown && elapsed < ENTRY_MS) {
 				// drops in from above and brakes to a stop — deliberately NOT spinning,
-				// so the grenade reads face-on the whole way down
+				// so the scarab reads face-on the whole way down
 				const p = easeOutCubic(elapsed / ENTRY_MS);
-				grenadeVisible = true;
-				grenadeX = 0;
-				grenadeY = -h * 0.72 * (1 - p);
-				grenadeScale = 0.7 + p * 0.5;
-				grenadeSpin = 0;
-				grenadeTint = 0xffffff;
+				scarabVisible = true;
+				scarabX = 0;
+				scarabY = -h * 0.72 * (1 - p);
+				scarabScale = 0.7 + p * 0.5;
+				scarabSpin = 0;
+				scarabTint = 0xffffff;
 			} else if (elapsed < BOOM_AT) {
-				// armed on the spot: two hot red blinks
+				// charging on the spot: two gold pulses
 				const p = (elapsed - ENTRY_MS) / TICK_MS;
-				grenadeVisible = true;
-				grenadeX = 0;
-				grenadeY = 0;
+				scarabVisible = true;
+				scarabX = 0;
+				scarabY = 0;
 				// settles out of the tumble rather than snapping to upright
-				grenadeSpin *= 0.82;
-				grenadeScale = 1.2 + Math.sin(p * Math.PI * 2) * 0.06;
-				// Interpolated, not a binary flip. Switching hard between white and red on
+				scarabSpin *= 0.82;
+				scarabScale = 1.2 + Math.sin(p * Math.PI * 2) * 0.06;
+				// Interpolated, not a binary flip. Switching hard between the two ends on
 				// the sign of a sine reads as a strobe; easing between them reads as
 				// something heating up.
-				grenadeTint = mixColor(0xffffff, 0xff5a3a, 0.5 + 0.5 * Math.sin(p * Math.PI * 4));
-				grenadeAlpha = 1;
+				scarabTint = mixColor(0xffffff, 0xffb028, 0.5 + 0.5 * Math.sin(p * Math.PI * 4));
+				scarabAlpha = 1;
 			} else {
 				// BOOM
 				if (!boomFired) {
 					boomFired = true;
 					// A real explosion, not bigwin_blast (a musical flourish kept for
 					// max wins). This fires on every opening and free-game transition.
-					context.eventEmitter.broadcast({ type: 'soundGrenadeBlast' });
+					context.eventEmitter.broadcast({ type: 'soundScarabBlast' });
 					// the shockwave rattles the reel housing as it passes
 					context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.4 });
 				}
@@ -218,11 +224,11 @@
 				// on it, which made the cut to the blast the roughest moment in the
 				// whole transition. It now swells and burns out over the first sliver
 				// of the boom, underneath the expanding core.
-				const burn = Math.min(1, boomT / GRENADE_BURN);
-				grenadeVisible = burn < 1;
-				grenadeScale = 1.2 + 1.15 * easeOutCubic(burn);
-				grenadeTint = mixColor(0xffe2b0, 0xffffff, burn);
-				grenadeAlpha = (1 - burn) ** 1.6;
+				const burn = Math.min(1, boomT / SCARAB_BURN);
+				scarabVisible = burn < 1;
+				scarabScale = 1.2 + 1.15 * easeOutCubic(burn);
+				scarabTint = mixColor(0xffe2b0, 0xffffff, burn);
+				scarabAlpha = (1 - burn) ** 1.6;
 				// Both ends eased. A linear ramp to white lands hard — its rate of change
 				// is constant right up to the instant it saturates — and a linear fade
 				// leaves the same edge on the way out.
@@ -353,17 +359,17 @@
 	x={context.stateLayoutDerived.canvasSizes().width * 0.5}
 	y={context.stateLayoutDerived.canvasSizes().height * 0.5}
 >
-	{#if grenadeVisible}
+	{#if scarabVisible}
 		<Sprite
-			key="gbGrenade"
+			key="gbScarab"
 			anchor={0.5}
-			x={grenadeX}
-			y={grenadeY}
-			width={context.stateLayoutDerived.canvasSizes().height * 0.2 * grenadeScale}
-			height={context.stateLayoutDerived.canvasSizes().height * 0.2 * grenadeScale}
-			rotation={grenadeSpin}
-			tint={grenadeTint}
-			alpha={grenadeAlpha}
+			x={scarabX}
+			y={scarabY}
+			width={context.stateLayoutDerived.canvasSizes().height * 0.2 * scarabScale}
+			height={context.stateLayoutDerived.canvasSizes().height * 0.2 * scarabScale}
+			rotation={scarabSpin}
+			tint={scarabTint}
+			alpha={scarabAlpha}
 		/>
 	{/if}
 

@@ -157,19 +157,33 @@ const write = (name, buf, peak = 0.8) => {
 };
 
 // ── roar: the chest beat ───────────────────────────────────────────────────
-// One clip covering the whole 2.68s animation rather than a grunt fired six
-// times, because the timing is fixed and baking it in is the only way it stays
-// in sync with the strikes. The numbers are BEAT_START and BEAT_GAP from
-// design/generate_monkey_spine.mjs.
+// One clip covering the whole animation rather than a grunt fired per strike,
+// because the timing is fixed and baking it in is the only way it stays in sync.
+//
+// WHICH MEANS THE NUMBERS HAVE TO BE THE CURRENT ONES.
+//
+// They were the GORILLA's — six strikes 0.3s apart starting at 0.48, from
+// design/generate_monkey_spine.mjs — and the character has been Anubis since
+// 2026-09-06, whose beat is four strikes 0.42s apart starting at 0.36 over a
+// 2.44s clip (printed by design/generate_anubis_spine.mjs). So the clip grunted
+// six times against four hits and only the second one landed on anything; the
+// last two arrived after he had stopped.
+//
+// Re-run design/generate_anubis_spine.mjs and read its "chestbeat" line if the
+// animation is ever re-cut; these three numbers are the whole contract.
 {
-	const BEAT_START = 0.48;
-	const BEAT_GAP = 0.3;
-	const buf = buffer(2.7);
+	const BEAT_START = 0.36;
+	const BEAT_GAP = 0.42;
+	const BEAT_COUNT = 4;
+	const buf = buffer(2.44);
 	// the low build while he squares up
 	addAt(
 		buf,
 		syllable({
-			dur: 0.5,
+			// exactly the wind-up, so it has stopped by the time the first fist
+			// lands: measured at 0.5 it was still going through the first strike
+			// and the loudest hit of the four came out muddy
+			dur: 0.34,
 			f0: 105,
 			f0End: 88,
 			f1: 480,
@@ -178,12 +192,14 @@ const write = (name, buf, peak = 0.8) => {
 			rasp: 0.35,
 			shape: (p) => Math.min(1, p * 3) * Math.min(1, (1 - p) * 4),
 		}),
-		0.02,
+		// ends as the first strike lands: the wind-up is 0.22s of the animation
+		// and the build has to finish inside it, not run over the first hit
+		Math.max(0, BEAT_START - 0.34),
 		0.85,
 	);
-	// a grunt forced out on every strike, alternating slightly in pitch so six of
+	// a grunt forced out on every strike, alternating slightly in pitch so four of
 	// them do not read as one sample repeated
-	for (let i = 0; i < 6; i++) {
+	for (let i = 0; i < BEAT_COUNT; i++) {
 		const low = i % 2 === 0;
 		addAt(
 			buf,

@@ -66,12 +66,38 @@
 	const entryVerb = T.entryVerb;
 	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
 	const lineCount = Object.keys(config.paylines).length;
-	const maxWin = config.betModes?.base?.max_win ?? 25000;
+	const maxWin = config.betModes?.base?.max_win ?? 15000;
 	const buyCost = config.betModes?.bonus?.cost;
-	// One source for the awarded-spins figure so the Scatter and Retriggers
-	// sections cannot drift apart. 4 scatters award 12, 5 award 15 (see the
-	// maths: freeSpinTrigger totalFs).
-	const scatterSpins = '12 or 15';
+	// THE SPIN AWARDS, TAKEN FROM THE MATHS RATHER THAN WRITTEN DOWN HERE.
+	//
+	// `scatterSpins` is game_config.py's freespin_triggers, and each bet mode's
+	// `scatterTriggers` is the Scatter count that mode's entry forces — both
+	// scraped by design/sync_math_config.mjs, which also refuses to build if a
+	// mode forces a count the trigger table does not award spins for.
+	//
+	// They are read rather than restated because restating them is what went
+	// wrong: this page, the pay table, the loading tips and the feature card all
+	// said "4 or 5 Scatters award 12 or 15 Free Spins" while every distribution in
+	// the maths forced five — a sentence no book in the shipped game supported,
+	// repeated in four places.
+	const spinsFor = (config.scatterSpins ?? {}) as Record<string, number>;
+	const scatterCounts = Object.keys(spinsFor)
+		.map(Number)
+		.sort((a, b) => a - b);
+	const asList = (values: (string | number)[]) =>
+		values.length > 1 ? `${values.slice(0, -1).join(', ')} or ${values[values.length - 1]}` : `${values[0]}`;
+	const scatterCountList = asList(scatterCounts);
+	const scatterSpinList = asList(scatterCounts.map((n) => spinsFor[n]));
+
+	/** What a bought entry lands and what that Scatter count is worth. */
+	const boughtEntry = (key: 'bonus' | 'superbonus') => {
+		const triggers = (config.betModes?.[key] as { scatterTriggers?: Record<string, number> })
+			?.scatterTriggers;
+		const count = Object.keys(triggers ?? {})[0];
+		return count ? { count: Number(count), spins: spinsFor[count] } : null;
+	};
+	const boughtFree = boughtEntry('bonus');
+	const boughtSuper = boughtEntry('superbonus');
 	const reelCount = config.numReels;
 	const rowCount = config.numRows?.[0] ?? 3;
 
@@ -189,7 +215,14 @@
 				<p>
 					The Golden Bananas Scatter appears on all five reels. It does not {T.pay} on its own and
 					does not need to land on a {T.payline} &mdash; its only job is to open the feature.
-					Landing 4 or 5 Scatters in a single spin awards {scatterSpins} Free Spins.
+					Landing {scatterCountList} Scatters in a single spin awards {scatterSpinList} Free Spins
+					respectively.
+					{#if boughtFree && boughtSuper}
+						A {T.bought} entry lands its own Scatters and is {T.paid} the same way: Free Spins
+						open on {boughtFree.count} Scatters for {boughtFree.spins} spins, Super Free Spins on
+						{boughtSuper.count} for {boughtSuper.spins}. The number of spins is always the number
+						the board in front of you is worth.
+					{/if}
 				</p>
 			</section>
 
@@ -230,9 +263,9 @@
 				<p>
 					<strong>Free Spins cannot be retriggered.</strong> Landing further Scatters while the
 					feature is running does not award additional free spins, and the number of spins
-					granted when the feature starts ({scatterSpins}) is the number you play. This applies
-					to Free Spins entered by landing Scatters, to Free Spins {T.bought} from the {T.betMenu},
-					and to Super Free Spins.
+					granted when the feature starts is the number you play. This applies to Free Spins
+					entered by landing Scatters, to Free Spins {T.bought} from the {T.betMenu}, and to
+					Super Free Spins.
 				</p>
 
 			</section>
@@ -253,8 +286,9 @@
 					<h3><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
 					<p>
 						Instead of waiting for Scatters, you can {T.buy} direct entry into the Free Spins
-						feature for {buyCost}&times; your {T.totalBet}. {T.buyBonusName} runs at the same {rtpPct}
-						RTP.
+						feature for {buyCost}&times; your {T.totalBet}. The round opens on a real triggering
+						board and plays the spins that board is worth &mdash; there are no extra spins
+						granted behind the scenes. {T.buyBonusName} runs at the same {rtpPct} RTP.
 					</p>
 				</section>
 			{/if}
@@ -262,7 +296,7 @@
 			<!-- The cap is PER MODE, and this section used to state one figure as
 			     though it were the game's. Certification asked for it to be amended
 			     because it does not apply to Super Spin, which the maths caps at
-			     2,000x rather than 25,000x (config.betModes.superspin.max_win).
+			     2,000x rather than the line games' cap (config.betModes.superspin.max_win).
 			     Both numbers are read from the config so neither can drift from
 			     what the game actually pays. -->
 			<section class="wp-card">

@@ -18,21 +18,31 @@
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import BoardContainer from './BoardContainer.svelte';
-	import GrenadeRunner from './GrenadeRunner.svelte';
+	import ScarabRunner from './ScarabRunner.svelte';
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, REEL_PADDING, BOARD_DIMENSIONS } from '../game/constants';
 	import config from '../game/config';
 
 	const context = getContext();
 
+	// THE LINES ARE THIS GAME'S THREE COLOURS, NOT THIRTY-FIVE.
+	//
+	// What was here was the template's neon set — hot pink, cyan, lime, violet,
+	// thirty-five of them — chosen so that adjacent paylines could never be
+	// confused. On a board of grey stone and gold that reads as a different
+	// product's UI laid over this one's art, and it is exactly the kind of thing
+	// certification writes up as inconsistent presentation.
+	//
+	// Three hues instead, each the colour of something already on the board: the
+	// tomb gold of the frame and the tablets, the faience turquoise of the Ankh,
+	// and the scarab's red. Four brightness steps of each keeps twelve distinct
+	// values in rotation, and no two lines of a volley are ever the same colour
+	// unless there are more than twelve of them at once — at which point the
+	// runners are staggered anyway (see `jitter` and the volley timings).
 	const LINE_COLORS = [
-		0xff2288, 0x00eeff, 0xffee00, 0xff6600, 0x00ff88,
-		0xcc44ff, 0x44aaff, 0xffaa00, 0xff44aa, 0x22ffcc,
-		0xff4444, 0x88ff44, 0x4488ff, 0xff88ff, 0xaaff22,
-		0xff6688, 0x66ffee, 0xffcc44, 0xaa66ff, 0x44ff66,
-		0xff3366, 0x3399ff, 0xffff66, 0xff9944, 0x66ff99,
-		0xdd44ff, 0x44ddff, 0xff6633, 0x99ff44, 0xff44dd,
-		0x44ffbb, 0xffbb44, 0x7744ff, 0x44ff44, 0xff4477,
+		0xffd75e, 0x5fe3d0, 0xff7a4a, 0xfff3bd,
+		0x2fc9b4, 0xff5a2a, 0xe0b23c, 0x9ff3e6,
+		0xff9d6b, 0xffe9a0, 0x18a894, 0xd9432a,
 	];
 
 	// deterministic per-line jitter: same line always moves the same way, but no
@@ -82,7 +92,7 @@
 	// tick forces the trail Graphics to redraw while the runners move
 	let tick = $state(0);
 	let tickRaf = 0;
-	// crossing progress per line, 0..1, mirrors each grenade's travel
+	// crossing progress per line, 0..1, mirrors each scarab's travel
 	let crossed = $state<Record<number, number>>({});
 
 	const lineScale = $derived(lines.length >= 6 ? 0.7 : 1);
@@ -93,7 +103,7 @@
 	const symbolCenterYFromPayline = (paylineRow: number) =>
 		-SYMBOL_SIZE + (paylineRow + 1 + 0.5) * SYMBOL_SIZE;
 
-	// ── symbols light up in the grenade's wake ────────────────────────────────
+	// ── symbols light up in the scarab's wake ────────────────────────────────
 	// A position may sit on several winning lines; animating the same one twice
 	// re-assigns symbolState='win' without retriggering the effect and the game
 	// would hang waiting for a completion that never fires. Dedupe per volley.
@@ -119,7 +129,7 @@
 		context.eventEmitter.broadcast({ type: 'boardWithAnimateSymbols', symbolPositions: fresh });
 	};
 
-	const onGrenadeReel = (line: ActiveLine, reelIndex: number) => {
+	const onScarabReel = (line: ActiveLine, reelIndex: number) => {
 		crossed[line.lineIndex] = Math.max(
 			crossed[line.lineIndex] ?? 0,
 			reelIndex / Math.max(1, line.points.length - 1),
@@ -157,7 +167,7 @@
 						y: symbolCenterYFromPayline(row),
 					})),
 					positions: win.positions,
-					// stagger drifts a little and each grenade rolls at its own pace
+					// stagger drifts a little and each scarab rolls at its own pace
 					delay: index * timing.stagger * jitter(win.lineIndex, 0.35),
 					travelMs: timing.travel * jitter(win.lineIndex + 7, 0.08),
 					done: false,
@@ -173,7 +183,7 @@
 			const volleyMs = Math.max(
 				...built.map((line) => line.delay + timing.entry + line.travelMs + timing.settle),
 			);
-			// when the last grenade reaches its final reel — i.e. when the last
+			// when the last scarab reaches its final reel — i.e. when the last
 			// symbol's win animation starts
 			const lastSymbolStartMs = Math.max(
 				...built.map((line) => line.delay + timing.entry + line.travelMs),
@@ -272,7 +282,7 @@
 		<Container zIndex={10}>
 			<Graphics draw={drawTrails} />
 			{#each lines as line (line.lineIndex)}
-				<GrenadeRunner
+				<ScarabRunner
 					points={line.points}
 					color={line.color}
 					delay={line.delay}
@@ -280,7 +290,7 @@
 					entryMs={timing.entry}
 					travelMs={line.travelMs}
 					settleMs={timing.settle}
-					onreel={(reelIndex) => onGrenadeReel(line, reelIndex)}
+					onreel={(reelIndex) => onScarabReel(line, reelIndex)}
 					oncomplete={() => {
 						line.done = true;
 						crossed[line.lineIndex] = 1;

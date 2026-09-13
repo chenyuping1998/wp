@@ -69,7 +69,7 @@
 		// destroyed on roughly the frame it started. The symbol stayed dark while
 		// the rest of the line lit up.
 		//
-		// It landed on reel 1 far more often than anywhere else because the grenade
+		// It landed on reel 1 far more often than anywhere else because the scarab
 		// reaches reel 1 first — a few frames into the volley, the one moment still
 		// inside this 240ms window.
 		//

@@ -228,15 +228,14 @@ export const SYMBOL_INFO_MAP = {
 	S: mixedSymbol('gbS', 'gbSpS', SPECIAL_RATIOS),
 	X: mixedSymbol('gbX', 'gbSpX', LOW_RATIOS),
 	P: mixedSymbol('gbP', 'gbSpP', SPECIAL_RATIOS),
-	// TODO(art): the sealed tablet. Drawing gbX (the hold-and-spin blank) as a
-	// stand-in, because a covered cell is at least the right IDEA and a missing
-	// entry here is not a missing texture — getSymbolInfo indexes this map by
-	// name, so an unlisted symbol is an undefined lookup on a live board.
+	// The sealed tablet. SPECIAL rather than LOW on purpose: it has to read as an
+	// event on the board, and the reveal animation cracks it along its seal.
 	//
-	// The real art is a stone tablet with a jackal-eye seal, sized SPECIAL like
-	// W and S rather than LOW: it has to read as an event on the board, and the
-	// reveal animation cracks it along that seal.
-	M: mixedSymbol('gbX', 'gbSpX', SPECIAL_RATIOS),
+	// The win spine is gbSpX and is never played. A tablet cannot be part of a
+	// winning line — assign_mystery_symbols replaces every M before the lines are
+	// read, so by the time anything is paid there are none left on the board. The
+	// slot still needs a key here because mixedSymbol builds every state.
+	M: mixedSymbol('gbM', 'gbSpX', SPECIAL_RATIOS),
 	// `satisfies`, not `:`. The annotation makes the map exhaustive over
 	// SymbolName — which is derived from the generated config, so adding a symbol
 	// to the maths now fails the build here — while `as const` keeps the literal

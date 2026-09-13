@@ -11,6 +11,14 @@ import type { EmitterEventMysteryReveal } from '../components/MysteryReveal.svel
 import type { EmitterEventStickyPrizes } from '../components/StickyPrizes.svelte';
 import type { EmitterEventScatterBurst } from '../components/ScatterBurst.svelte';
 import type { EmitterEventMascot } from '../components/Mascot.svelte';
+import type { EmitterEventScatterLand } from '../components/ScatterLand.svelte';
+import type { EmitterEventMultiplierRoll } from '../components/MultiplierRoll.svelte';
+import type {
+	EmitterEventHeldTabletsPending,
+	EmitterEventHeldTabletsOpened,
+	EmitterEventHeldTabletsShow,
+} from '../components/HeldTablets.svelte';
+import type { EmitterEventMysteryOracle } from '../components/MysteryOracle.svelte';
 
 export type EmitterEventGame =
 	| EmitterEventBoard
@@ -25,4 +33,10 @@ export type EmitterEventGame =
 	| EmitterEventMysteryReveal
 	| EmitterEventStickyPrizes
 	| EmitterEventScatterBurst
-	| EmitterEventMascot;
+	| EmitterEventMascot
+	| EmitterEventScatterLand
+	| EmitterEventMultiplierRoll
+	| EmitterEventHeldTabletsPending
+	| EmitterEventHeldTabletsOpened
+	| EmitterEventHeldTabletsShow
+	| EmitterEventMysteryOracle;

@@ -57,6 +57,20 @@
 		src: new URL('../../assets/sprites/goBananasUi/buybonus_plate.png', import.meta.url).href,
 		preload: true,
 	},
+	// The platform skin's Buy Bonus: the same dark basalt plate every symbol
+	// stands on, empty, with the sealed tablet's eye carved into it — and the
+	// same eye lit, drawn for ADDITIVE blending, for the hover state. Both come
+	// out of design/generate_ui_plates.mjs.
+	gbUiBuyBonusStone: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_stone.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusLit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_stone_lit.png', import.meta.url).href,
+		preload: true,
+	},
 	// brass win-tier plaques (design/generate_win_banners.mjs)
 	gbWinBannerBig: {
 		type: 'sprite',
@@ -99,15 +113,15 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2.png', import.meta.url).href,
 		preload: true,
 	},
-	// The grenade PROP — a transparent cut-out, deliberately not gbH2.
+	// The scarab PROP — a transparent cut-out, deliberately not gbH2.
 	//
-	// The transition drop and the win-line runners both draw a grenade over the
+	// The transition drop and the win-line runners both draw a scarab over the
 	// live board, and both used gbH2. In gen-2 that symbol is an opaque riveted
 	// plate, so what actually fell down the screen was a tile complete with bezel
 	// and rivets. See design/generate_symbols_gen2.mjs for where this is cut.
-	gbGrenade: {
+	gbScarab: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/grenade.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/scarab.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH3: {
@@ -201,17 +215,72 @@
 		preload: true,
 	},
 
-	// The full-reel WILD banner as a plain sprite. Same file the wx spine uses,
-	// so it costs no extra download — the board draws it behind a growing
-	// mask to unroll the banner down the reel instead of hard-cutting to it.
-	gbWxPanel: {
-		type: 'sprite',
-		src: new URL('../../assets/spines/goBananasSymbolsV3/wx.png', import.meta.url).href,
-		preload: true,
-	},
+	// gbWxPanel and gbSpWx are GONE. They were the full-reel WILD banner and its
+	// spine — the art for expanding wilds, a mechanic this game does not have.
+	// Nothing had referenced either of them since that feature was removed, so
+	// they were two textures being preloaded on every session for nothing.
 	gbS: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/s.png', import.meta.url).href,
+		preload: true,
+	},
+	// ── the same icons in flat monochrome, for the platform UI skin ──────────
+	//
+	// A SECOND SET RATHER THAN A TINT, because UiButton draws uiTheme.icons as a
+	// plain Sprite with no tint (components-ui-pixi/src/components/UiButton.svelte)
+	// — uiTheme.buttonIconFill reaches only the vector-drawn turbo bolt, so on the
+	// platform skin every one of the brass icons above stayed gold on a grey strip.
+	//
+	// Both sets are preloaded and both ship. That is the price of the skin being
+	// switchable at run time from localStorage with no rebuild: whichever one
+	// uiTheme.icons ends up pointing at has to already be in memory. Nine 256px
+	// PNGs of flat white line art, ~4KB each.
+	//
+	// Generated from the SAME shapes as the brass set — see design/generate_ui_icons.mjs,
+	// which renders both palettes in one pass so the two can never drift apart.
+	gbIconMonoMenu: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/menu.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoMenuExit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/menuExit.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSettings: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/settings.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoInfo: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/info.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoPayTable: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/payTable.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSoundOn: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/soundOn.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoSoundOff: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/soundOff.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoAutoSpin: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/autoSpin.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconMonoReplay: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUiIconsMono/replay.png', import.meta.url).href,
 		preload: true,
 	},
 	gbX: {
@@ -224,13 +293,35 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/p.png', import.meta.url).href,
 		preload: true,
 	},
-	// The sergeant standing beside the board. Built from the supplied character
-	// PSD — see design/extract_monkey_psd.py and design/generate_monkey_spine.mjs.
-	gbMonkey: {
+	// The sealed tablet, and its two halves.
+	//
+	// The halves are CUT FROM m.png by design/generate_symbols_gen2.mjs rather
+	// than drawn, so the crack shows the same stone the board was showing a frame
+	// earlier — MysteryReveal renders the intact tablet as the two halves resting
+	// in place and then lets them fall, and anything else would change the
+	// tablet's appearance on the exact frame the player is watching it break.
+	gbM: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/m.png', import.meta.url).href,
+		preload: true,
+	},
+	gbMShardL: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/m_shard_l.png', import.meta.url).href,
+		preload: true,
+	},
+	gbMShardR: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/m_shard_r.png', import.meta.url).href,
+		preload: true,
+	},
+	// The jackal god standing beside the board. Built from the supplied character
+	// PSD — see design/extract_character_psd.py and design/generate_anubis_spine.mjs.
+	gbAnubis: {
 		type: 'spine',
 		src: {
-			atlas: new URL('../../assets/spines/goBananasMonkey/monkey.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasMonkey/monkey.json', import.meta.url).href,
+			atlas: new URL('../../assets/spines/goBananubisAnubis/anubis.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/goBananubisAnubis/anubis.json', import.meta.url).href,
 			scale: 1,
 		},
 	},
@@ -335,15 +426,6 @@
 		src: {
 			atlas: new URL('../../assets/spines/goBananasSymbolsV3/p.atlas', import.meta.url).href,
 			skeleton: new URL('../../assets/spines/goBananasSymbolsV3/p.json', import.meta.url).href,
-			scale: 1,
-		},
-	},
-	// Expanding wild: monkey eats a banana and grows to fill the reel
-	gbSpWx: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/goBananasSymbolsV3/wx.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasSymbolsV3/wx.json', import.meta.url).href,
 			scale: 1,
 		},
 	},

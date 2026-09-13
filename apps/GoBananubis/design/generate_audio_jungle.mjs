@@ -543,4 +543,62 @@ const grooveBar = (buf, t0, beat, sr, energy = 1) => {
 	writeWav('grenade_blast.wav', fadeEnds(normalize(buf, 0.95), SR_SFX, 4), SR_SFX);
 }
 
+// ─── the tablet reveal ───────────────────────────────────────────────────────
+//
+// The mechanic had no sound of its own: it borrowed `mult_update` (a marimba
+// ding written for a multiplier re-roll) for the batch and `pluck_low` for each
+// tablet, so the moment the symbol was named sounded like a menu confirming
+// something.
+//
+// Written against the ANIMATION, which is stone: the tablets strain, the seal
+// gives, the halves fall and gold sand pours out of the break. So this is grit
+// and stone where Go Bananas Boat's crate reveal is rope and canvas — the two
+// games' reveals share their timing and share nothing else, which is most of
+// what stops them feeling like one game in two costumes.
+
+// seal_strain — once at the top of the batch, under the shudder. Stone grinding
+// on stone: low, rough, and going nowhere until it gives.
+{
+	const dur = 0.42;
+	const buf = buffer(dur, SR_SFX);
+	const n = buf.length;
+	let lp = 0;
+	for (let i = 0; i < n; i++) {
+		const t = i / SR_SFX;
+		// heavily lowpassed noise, amplitude-stuttered: grinding, not hissing
+		lp += (rand2() - lp) * 0.12;
+		const grind = 0.5 + 0.5 * Math.sin(t * 88 + Math.sin(t * 23) * 2);
+		buf[i] += lp * grind * (0.35 + 0.65 * t) * 1.4;
+	}
+	addAt(buf, tom(SR_SFX, 0.6), 0, 0.55, SR_SFX); // the slab settles in its frame
+	writeWav('seal_strain.wav', normalize(buf, 0.6), SR_SFX);
+}
+
+// stone_crack — once per tablet, on its own beat. The seal snaps, the two halves
+// grind apart, sand pours from the break, and a marimba note lands on the symbol
+// underneath.
+//
+// Played back at a rising rate per tablet (see Sound.svelte), so several on one
+// board are an ascending run rather than the same crack repeated — the same
+// trick the five reel stops use, and the reason this is one file and not four.
+{
+	const dur = 0.55;
+	const buf = buffer(dur, SR_SFX);
+	// the snap: short, hard, and dry
+	for (let i = 0; i < SR_SFX * 0.014; i++) {
+		buf[i] += rand2() * Math.exp((-240 * i) / SR_SFX) * 0.9;
+	}
+	addAt(buf, bongo(SR_SFX, { from: 200, to: 90, dur: 0.16 }), 0, 0.7, SR_SFX); // the weight of it
+	// the halves grind apart — a short downward noise band, opposite direction to
+	// the Boat tarp's upward whoosh, because these pieces fall
+	addAt(buf, whoosh(0.26, SR_SFX, [0.2, 0.12, 0.07], 0.05), 0.03, 0.6, SR_SFX);
+	// sand out of the break: fine, dry, and lasting past the crack
+	addAt(buf, shaker(SR_SFX, 0.26, 0.8), 0.07, 0.5, SR_SFX);
+	addAt(buf, shaker(SR_SFX, 0.2, 0.7), 0.16, 0.3, SR_SFX);
+	// ...and the symbol is there. This note is the whole point of the cue.
+	addAt(buf, marimba(P.E5, 0.36, SR_SFX, 0.25), 0.18, 0.9, SR_SFX);
+	addAt(buf, marimba(P.C6, 0.3, SR_SFX, 0.5), 0.21, 0.4, SR_SFX);
+	writeWav('stone_crack.wav', normalize(buf, 0.75), SR_SFX);
+}
+
 console.log('done');

@@ -133,16 +133,67 @@ for (const [, k, v] of triggerBlock[1].matchAll(/(\d+)\s*:\s*(\d+)/g)) {
 	scatterSpins[Number(k)] = Number(v);
 }
 
-// Extra spins the 500x buy opens with, on top of the scatter award.
-const bonusSpinsBlock = mathSource.match(/self\.freespin_bonus_spins\s*=\s*\{([^}]*)\}/);
-const bonusSpins = {};
-if (bonusSpinsBlock) {
-	for (const [, k, v] of bonusSpinsBlock[1].matchAll(/"(\w+)"\s*:\s*(\d+)/g)) {
-		bonusSpins[k] = Number(v);
+// How many Scatters each bet mode's ordinary entry puts on the board.
+//
+// `freespin_bonus_spins` used to be read here instead, because the 500x buy
+// added three spins on top of its award and the rules page had to say so. That
+// mechanism is gone: every mode now awards exactly what its own Scatter count is
+// worth, so what the front end needs is the COUNT, and the spins follow from
+// scatterSpins above.
+//
+// It is scraped rather than restated for the reason this whole file exists. The
+// loading tips, the feature card and the rules page all print "N Scatters award
+// M spins", and all three of them once said "4 or 5 award 12 or 15" while every
+// distribution in the maths forced five — a claim no book in the shipped game
+// supported. Numbers a player reads come from the maths or they come from
+// nowhere.
+//
+// The wincap criteria is skipped: it manufactures a cap book and is not the
+// entry a player normally sees. It is checked against the ordinary one instead,
+// because a cap book that lands a different Scatter count than the rest of its
+// mode is a visible tell and awards a different number of spins.
+const betModeBlocks = mathSource.split(/\bBetMode\(/).slice(1);
+for (const block of betModeBlocks) {
+	const name = block.match(/name="(\w+)"/)?.[1];
+	if (!name || !raw.betModes[name]) continue;
+	const byCriteria = {};
+	for (const chunk of block.split(/\bDistribution\(/).slice(1)) {
+		const criteria = chunk.match(/criteria="([^"]+)"/)?.[1];
+		const triggers = chunk.match(/"scatter_triggers":\s*\{([^}]*)\}/);
+		if (!criteria || !triggers) continue;
+		const weights = {};
+		for (const [, k, v] of triggers[1].matchAll(/(\d+)\s*:\s*(\d+)/g)) weights[Number(k)] = Number(v);
+		byCriteria[criteria] = weights;
 	}
+	const entry = byCriteria.freegame;
+	if (!entry) continue;
+	for (const count of Object.keys(entry)) {
+		if (!(count in scatterSpins)) {
+			problems.push(`bet mode ${name} forces ${count} Scatters, which freespin_triggers does not award spins for`);
+		}
+	}
+	if (byCriteria.wincap) {
+		const capCounts = Object.keys(byCriteria.wincap);
+		const entryCounts = Object.keys(entry);
+		for (const count of capCounts) {
+			if (!entryCounts.includes(count)) {
+				problems.push(
+					`bet mode ${name}: wincap books land ${count} Scatters but ordinary entries land ` +
+						`${entryCounts.join('/')} — the cap book would show a board the mode never otherwise makes, ` +
+						`and award ${scatterSpins[count]} spins instead of ${entryCounts.map((c) => scatterSpins[c]).join('/')}`,
+				);
+			}
+		}
+	}
+	raw.betModes[name].scatterTriggers = entry;
 }
-for (const [mode, extraSpins] of Object.entries(bonusSpins)) {
-	if (raw.betModes[mode]) raw.betModes[mode].bonusSpins = extraSpins;
+
+// Re-checked after the scatter scrape, which is the only validation that needs
+// both files. Everything above this ran before game_config.py had been read.
+if (problems.length) {
+	console.error('Math config failed validation:');
+	for (const p of problems) console.error(`  - ${p}`);
+	process.exit(1);
 }
 
 const config = { ...raw, symbols, scatterSpins };

@@ -9,7 +9,7 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
-	import { Graphics, Sprite, Text } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBet } from 'state-shared';
 
@@ -61,12 +61,55 @@
 	const remaining = $derived(Math.max(0, total - (current - 1)));
 	const title = $derived(isSuperspin ? gameText('respins') : gameText('freeSpins'));
 
+	// ── the counter MOVES ────────────────────────────────────────────────────
+	//
+	// It was a static readout: the number changed between spins and nothing else
+	// happened, including on a retrigger — the one moment in the feature where
+	// the player is being handed something. A spin being spent gets a small
+	// knock; spins being ADDED get a hard punch and a gold flash over the plaque,
+	// because those are two different pieces of news.
+	let punchAt = $state(0);
+	let punchForce = $state(0);
+	let now = $state(0);
+	let clock = 0;
+
+	const PUNCH_MS = 520;
+
+	const knock = (force: number) => {
+		punchAt = Date.now();
+		punchForce = force;
+		now = punchAt;
+		clearInterval(clock);
+		// a timer rather than requestAnimationFrame: rAF stops dead in a hidden
+		// tab, and this runs unattended through an 18-spin feature
+		clock = setInterval(() => {
+			now = Date.now();
+			if (now - punchAt > PUNCH_MS) {
+				clearInterval(clock);
+				clock = 0;
+			}
+		}, 16) as unknown as number;
+	};
+
+	$effect(() => () => clearInterval(clock));
+
+	// 1 → 0 over PUNCH_MS, springy at the start
+	const punch = $derived.by(() => {
+		const p = (now - punchAt) / PUNCH_MS;
+		if (punchAt === 0 || p < 0 || p > 1) return 0;
+		return Math.sin(p * Math.PI) * (1 - p) * punchForce;
+	});
+
 	context.eventEmitter.subscribeOnMount({
 		freeSpinCounterShow: () => (show = true),
 		freeSpinCounterHide: () => (show = false),
 		freeSpinCounterUpdate: (emitterEvent) => {
+			const gained = emitterEvent.total !== undefined && emitterEvent.total > total && total > 0;
+			const spent = emitterEvent.current !== undefined && emitterEvent.current !== current;
 			if (emitterEvent.current !== undefined) current = emitterEvent.current;
 			if (emitterEvent.total !== undefined) total = emitterEvent.total;
+			if (gained) knock(1);
+			else if (spent) knock(0.38);
 		},
 	});
 
@@ -109,24 +152,45 @@
 			}}
 		/>
 
+		<!-- the plaque takes the news too: a gold wash on a retrigger, a hint of
+		     one when a spin is spent -->
+		<Sprite
+			key="fxGlow"
+			anchor={0.5}
+			x={panelSizes.width * 0.5}
+			y={panelSizes.height * 0.5}
+			width={panelSizes.width * 1.5}
+			height={panelSizes.height * 1.9}
+			tint={0xffd75e}
+			blendMode="add"
+			alpha={0.42 * punch}
+		/>
+
 		{#if isSuperspin}
 			<!-- big remaining-respins number (the hold'n'spin heartbeat) -->
-			<GoldText
+			<Container
 				x={panelSizes.width * 0.5}
 				y={panelSizes.height * 0.55}
-				text={remaining}
-				fontSize={panelSizes.width * 0.3}
-			/>
+				scale={1 + 0.26 * punch}
+			>
+				<GoldText x={0} y={0} text={remaining} fontSize={panelSizes.width * 0.3} />
+			</Container>
 			<Graphics draw={drawPips} />
 		{:else}
 			<!-- free game: current spin of total -->
-			<GoldText
+			<Container
 				x={panelSizes.width * 0.5}
 				y={panelSizes.height * 0.58}
-				text={`${Math.min(current, total)} / ${total}`}
-				fontSize={panelSizes.width * 0.19}
-				maxWidth={panelSizes.width * 0.72}
-			/>
+				scale={1 + 0.26 * punch}
+			>
+				<GoldText
+					x={0}
+					y={0}
+					text={`${Math.min(current, total)} / ${total}`}
+					fontSize={panelSizes.width * 0.19}
+					maxWidth={panelSizes.width * 0.72}
+				/>
+			</Container>
 		{/if}
 	</FadeContainer>
 </MainContainer>

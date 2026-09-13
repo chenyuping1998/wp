@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Sprite } from 'pixi-svelte';
 
-	// One grenade rolling along one payline, left to right. Deliberately quiet:
+	// One scarab rolling along one payline, left to right. Deliberately quiet:
 	// no blast on arrival — the job is to draw the eye along the line so the
 	// player can read which symbols paid, not to put on a show.
 	type Point = { x: number; y: number };
@@ -17,7 +17,7 @@
 		entryMs?: number;
 		travelMs?: number;
 		settleMs?: number;
-		// fired as the grenade crosses each reel, so symbols light up in its wake
+		// fired as the scarab crosses each reel, so symbols light up in its wake
 		onreel?: (reelIndex: number) => void;
 		oncomplete?: () => void;
 	};
@@ -33,7 +33,7 @@
 	let lastReel = -1;
 
 	// Emit every reel between the last one reported and `reel`. Back-filling
-	// matters on a dropped frame: the grenade can jump two reels in one tick and
+	// matters on a dropped frame: the scarab can jump two reels in one tick and
 	// the skipped reel's symbols would otherwise never light up.
 	const reportReelsUpTo = (reel: number) => {
 		for (let r = lastReel + 1; r <= reel; r++) props.onreel?.(r);
@@ -72,7 +72,7 @@
 		return { lengths, total };
 	});
 
-	// 0 → 1 along the whole path, on a trapezoid velocity profile: the grenade
+	// 0 → 1 along the whole path, on a trapezoid velocity profile: the scarab
 	// picks up speed after the toss, rolls at pace, then leans into a stop at
 	// the last reel. Constant speed with hard ends is what makes this kind of
 	// motion read as machine-driven.
@@ -94,7 +94,7 @@
 	};
 	const travel = $derived(t < 0 ? 0 : travelAt(t));
 
-	// which reel the grenade is over at a given travel fraction
+	// which reel the scarab is over at a given travel fraction
 	const reelAt = (p: number) => {
 		const { lengths, total } = segments;
 		let want = total * p;
@@ -139,7 +139,7 @@
 </script>
 
 {#if t >= 0 && alpha > 0}
-	<!-- soft coloured halo so each grenade stays tied to its own line colour -->
+	<!-- soft coloured halo so each scarab stays tied to its own line colour -->
 	<Sprite
 		key="fxGlow"
 		anchor={0.5}
@@ -152,7 +152,7 @@
 		alpha={alpha * 0.5}
 	/>
 	<Sprite
-		key="gbGrenade"
+		key="gbScarab"
 		anchor={0.5}
 		x={pose.x + entryOffset}
 		y={pose.y}

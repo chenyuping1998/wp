@@ -15,15 +15,13 @@
 
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import { Container, Graphics } from 'pixi-svelte';
-	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { Container, Sprite } from 'pixi-svelte';
 	import { waitForTimeout } from 'utils-shared/wait';
 	import { stateBet } from 'state-shared';
 
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
-	import { drawTabletShard } from '../game/tabletArt';
 	import BoardContainer from './BoardContainer.svelte';
 	import ImpactDust from './ImpactDust.svelte';
 
@@ -96,10 +94,33 @@
 	//   STRAIN_END        the seal gives: the symbol underneath is swapped on
 	//                     this exact frame, while the halves still cover it
 	//   STRAIN_END -> 1   the two halves tip apart and fall away, fading
-	const DURATION = 460;
-	const DURATION_TURBO = 170;
-	const STAGGER = 70;
-	const STAGGER_TURBO = 22;
+	//
+	// TURBO IS ONLY A LITTLE FASTER, NOT A DIFFERENT ANIMATION.
+	//
+	// It used to be 170/22 — nearly three times the speed — which is what turbo
+	// does to a spin, and it is the wrong rule for this one. The seals giving way
+	// is the thing the player is here to watch: it is the moment the symbol is
+	// named, and at 170ms with a 22ms stagger the whole board cracked on one
+	// frame and the tablets simply cut to symbols. Turbo should shorten the
+	// WAITING, not the payoff.
+	//
+	// So it keeps the same shape at 70% of the length — the same ratio the
+	// multiplier wheel in front of it uses, so turbo scales the whole tablet
+	// sequence by one number rather than two: still a strain,
+	// still a stagger you can read left to right, just tighter. Same numbers as
+	// Go Bananas Boat's crate reveal, deliberately — the two games' reveals are
+	// paced as one mechanic in two costumes.
+	//
+	// SLOWED AGAIN (and turbo with it). The re-roll of the held tablets now plays
+	// in front of this — the wheel, then the seals — and at the old pace the two
+	// ran into each other: the crack started while the last wheel was still
+	// settling, so the board was doing two things at once at the exact moment
+	// both of them matter. There is no part of a free spin worth hurrying more
+	// than these two.
+	const DURATION = 620;
+	const DURATION_TURBO = 434;
+	const STAGGER = 95;
+	const STAGGER_TURBO = 67;
 	const STRAIN_END = 0.22;
 
 	type RevealEntry = {
@@ -111,6 +132,13 @@
 	};
 
 	type SandPuff = { id: number; reel: number; row: number };
+
+	// The multiplier each held cell showed on the PREVIOUS free spin. Plain state
+	// rather than $state: nothing renders from it, it only decides what the
+	// re-roll wheels start from.
+	let lastMults = new Map<string, number>();
+	// what the tablets breaking right now are hiding, applied as each one gives
+	let pendingMults = new Map<string, number>();
 
 	let entries = $state<RevealEntry[]>([]);
 	// Each break spawns one ImpactDust, which manages its own lifetime and
@@ -138,7 +166,12 @@
 				entry.swapped = true;
 				const reelSymbol = context.stateGame.board[entry.reel]?.reelState.symbols[entry.row];
 				if (reelSymbol) {
-					reelSymbol.rawSymbol = { ...reelSymbol.rawSymbol, name: pendingSymbol };
+					reelSymbol.rawSymbol = {
+						...reelSymbol.rawSymbol,
+						name: pendingSymbol,
+						// the multiplier arrives with the symbol, not before it
+						multiplier: pendingMults.get(`${entry.reel},${entry.row}`),
+					};
 				}
 				sandPuffs = [...sandPuffs, { id: nextSandId++, reel: entry.reel, row: entry.row }];
 			}
@@ -194,24 +227,140 @@
 		rot: side * fallT * 0.6,
 	});
 
-	const drawLeft = (g: PixiGraphics) => drawTabletShard(g, SYMBOL_SIZE * 0.86, -1);
-	const drawRight = (g: PixiGraphics) => drawTabletShard(g, SYMBOL_SIZE * 0.86, 1);
+	// The two halves are sprites cut from the tablet's own texture by
+	// design/generate_symbols_gen2.mjs, not vector stand-ins. Each is a full-tile
+	// image with the other half transparent, so both draw at the same centre and
+	// the pair reassembles into the intact face pixel for pixel.
+	//
+	// They were vector while there was no art for the tablet. Leaving them that
+	// way once the face became a painting would have meant a painted slab shedding
+	// two flat-shaded pieces, on the one frame the player is looking straight at
+	// it.
+	const SHARD = SYMBOL_SIZE * 0.86;
 
 	context.eventEmitter.subscribeOnMount({
 		mysteryReveal: async (event) => {
-			// The hold first, silently — see the note above.
+			// A hold belongs to one run: a reveal outside the free game (the base
+			// game's own tablets) shares nothing with the last feature's values.
+			if (context.stateGame.gameType !== 'freegame') lastMults.clear();
+
+			// ── the wheels first ────────────────────────────────────────────────
+			//
+			// Cells that were ALREADY open and are being given a new value this
+			// spin: those are a re-roll, and MultiplierRoll draws them as one. A
+			// cell opening on this spin is not in this list — its number arrives
+			// with its seal breaking, which is its own moment.
+			//
+			// `from` COMES FROM THE LAST EVENT, NOT FROM THE BOARD.
+			//
+			// The first version read it off the board cell, which worked in
+			// isolation and never once fired in a real game: by the time this event
+			// arrives the reels have already spun, so those cells hold whatever the
+			// strip landed in them and the multiplier the player was looking at a
+			// second ago is gone. The overlay (HeldTablets) is what kept it on
+			// screen, and that is state, not the board.
+			//
+			// So the previous spin's values are remembered here, which is also the
+			// only record that survives a spin at all.
+			const opening = new Set(event.positions.map((p) => `${p.reel},${p.row}`));
+			const rerolled = event.held
+				.filter((cell) => !opening.has(`${cell.reel},${cell.row}`))
+				.map((cell) => ({
+					reel: cell.reel,
+					row: cell.row,
+					from: lastMults.get(`${cell.reel},${cell.row}`) ?? 0,
+					to: cell.mult,
+				}))
+				// EVERY open tablet spins, including the ones that land back on the
+				// value they already had. A cell that stayed at 5X did not sit out
+				// the draw — it was drawn again and came up 5X — and freezing it
+				// while its neighbours spin says the opposite: that some cells are
+				// locked and others are live. `from > 0` is only excluding cells
+				// with no previous value at all, which are the ones opening on this
+				// spin and get their number with their seal.
+				.filter((cell) => cell.from > 0);
+
+			// ── ORDER OF THE SPIN ───────────────────────────────────────────────
+			//
+			//   1. the cells already open take this spin's symbol, keeping the
+			//      multiplier they were showing
+			//   2. the tablets that landed this spin crack open
+			//   3. only then do the open cells re-roll their multipliers
+			//
+			// Seal first, wheels after. The wheels used to run first, which put a
+			// second and a half between a tablet landing and its seal breaking —
+			// and since the overlay was already drawing it open, the break then
+			// played on a cell that had been showing the answer the whole time. It
+			// read as the tablet opening twice.
+			context.eventEmitter.broadcast({
+				type: 'heldTabletsPending',
+				positions: event.positions,
+			});
+
+			// 1 — the symbol, silently, on the cells that are already open. The
+			// multiplier stays at LAST spin's value: it is the wheel's job to
+			// change it, and writing the answer here would hand it over early.
 			for (const position of event.held) {
+				if (opening.has(`${position.reel},${position.row}`)) continue;
 				const reelSymbol =
 					context.stateGame.board[position.reel]?.reelState.symbols[position.row];
 				if (!reelSymbol) continue;
 				reelSymbol.rawSymbol = {
 					...reelSymbol.rawSymbol,
 					name: event.symbol,
-					multiplier: position.mult,
+					// the spin wiped the board, so the old value has to be put back
+					multiplier: lastMults.get(`${position.reel},${position.row}`) ?? position.mult,
 				};
 			}
+			context.eventEmitter.broadcast({
+				type: 'heldTabletsShow',
+				symbol: event.symbol,
+				cells: event.held.map((cell) => ({
+					reel: cell.reel,
+					row: cell.row,
+					mult: lastMults.get(`${cell.reel},${cell.row}`) ?? cell.mult,
+				})),
+			});
 
-			if (event.positions.length === 0) return;
+			// 2 — the tablets opening this spin are stamped by the break itself, at
+			// the frame the halves start to move (see ensureLoop), so nothing about
+			// them is on screen before the seal gives.
+			pendingMults = new Map(
+				event.held
+					.filter((cell) => opening.has(`${cell.reel},${cell.row}`))
+					.map((cell) => [`${cell.reel},${cell.row}`, cell.mult]),
+			);
+
+			// 3 — the wheels, once the seals are done. Deferred so the sequence can
+			// be read in the order it happens; runs after the crack below.
+			const rollAndSettle = async () => {
+				if (rerolled.length > 0) {
+					await context.eventEmitter.broadcastAsync({ type: 'multiplierRoll', cells: rerolled });
+				}
+				for (const cell of event.held) {
+					const reelSymbol =
+						context.stateGame.board[cell.reel]?.reelState.symbols[cell.row];
+					if (!reelSymbol) continue;
+					reelSymbol.rawSymbol = {
+						...reelSymbol.rawSymbol,
+						name: event.symbol,
+						multiplier: cell.mult,
+					};
+				}
+				context.eventEmitter.broadcast({
+					type: 'heldTabletsShow',
+					symbol: event.symbol,
+					cells: event.held.map((cell) => ({ reel: cell.reel, row: cell.row, mult: cell.mult })),
+				});
+				// What this spin ends up showing, for the next spin to roll away from.
+				lastMults = new Map(event.held.map((cell) => [`${cell.reel},${cell.row}`, cell.mult]));
+			};
+
+			if (event.positions.length === 0) {
+				context.eventEmitter.broadcast({ type: 'heldTabletsOpened' });
+				await rollAndSettle();
+				return;
+			}
 			pendingSymbol = event.symbol;
 
 			const stagger = stateBet.isTurbo ? STAGGER_TURBO : STAGGER;
@@ -221,7 +370,11 @@
 			// giving way at once read as a sequence rather than a scattershot pop.
 			const ordered = [...event.positions].sort((a, b) => a.reel - b.reel || a.row - b.row);
 
-			context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
+			// Stone taking the strain, under the shudder — see
+			// design/generate_audio_jungle. This used to be `sfx_multiplier_update`,
+			// a marimba ding written for a multiplier re-roll, which made the reveal
+			// sound like a menu.
+			context.eventEmitter.broadcast({ type: 'soundSealStrain' });
 			// The housing takes one knock for the whole batch, scaled by how many
 			// seals are giving — one tablet is a tap, half the board is a slam.
 			context.eventEmitter.broadcast({
@@ -246,11 +399,17 @@
 				// One crack per tablet, on its own beat, rather than a chord — see
 				// the stagger above.
 				await waitForTimeout(i === 0 ? 0 : stagger);
-				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
+				// One seal giving, pitched by its place in the run.
+				context.eventEmitter.broadcast({ type: 'soundStoneCrack', step: i });
 			}
 			// Ride out the last tablet's own fall before handing back — the line
 			// read that follows has to see the board fully settled.
 			await waitForTimeout(durationMs - (ordered.length - 1) * stagger);
+			// The overlay can have these cells now: the board is drawing them.
+			context.eventEmitter.broadcast({ type: 'heldTabletsOpened' });
+
+			// …and now the cells that were already open re-draw their values.
+			await rollAndSettle();
 		},
 	});
 </script>
@@ -264,23 +423,24 @@
 			{#if s.whole}
 				<!--
 					Still sealed. Drawn as the two halves in their resting positions
-					rather than as the intact face: they interlock exactly (see
-					FRACTURE in tabletArt.ts), so this is the same picture, and it
+					rather than as the intact face: they are cut from the tablet's own
+					texture along one shared fracture (design/generate_symbols_gen2.mjs)
+					so they interlock exactly, this is the same picture, and it
 					means nothing has to be swapped out on the frame the break
 					starts — the halves simply begin to move.
 				-->
 				<Container x={cx + s.shake.x} y={cy + s.shake.y}>
-					<Graphics draw={drawLeft} />
-					<Graphics draw={drawRight} />
+					<Sprite key="gbMShardL" anchor={0.5} width={SHARD} height={SHARD} />
+					<Sprite key="gbMShardR" anchor={0.5} width={SHARD} height={SHARD} />
 				</Container>
 			{:else}
 				{@const l = shardOffset(s.fall, -1)}
 				{@const r = shardOffset(s.fall, 1)}
 				<Container x={cx + l.x} y={cy + l.y} rotation={l.rot} alpha={s.alpha}>
-					<Graphics draw={drawLeft} />
+					<Sprite key="gbMShardL" anchor={0.5} width={SHARD} height={SHARD} />
 				</Container>
 				<Container x={cx + r.x} y={cy + r.y} rotation={r.rot} alpha={s.alpha}>
-					<Graphics draw={drawRight} />
+					<Sprite key="gbMShardR" anchor={0.5} width={SHARD} height={SHARD} />
 				</Container>
 			{/if}
 		{/if}

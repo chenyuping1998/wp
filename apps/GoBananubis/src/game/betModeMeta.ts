@@ -5,7 +5,7 @@ import { base } from '$app/paths';
 
 import config from './config';
 
-// Go Bananas 100 ships four math modes: base play, the 200x free-spins buy, the
+// Go Bananubis ships four math modes: base play, the 200x free-spins buy, the
 // 500x super free-spins buy and the 50x superspin (hold'em) buy. The keys here
 // are the math mode names uppercased — stateBet looks them up with
 // activeBetModeKey.toUpperCase(). The shared library ships a template default
@@ -20,6 +20,30 @@ import config from './config';
 // string properties as far as BetModeData is concerned.
 const pick = (normal: string, socialText: string) =>
 	stateUrlDerived.social() ? socialText : normal;
+
+// EVERY NUMBER IN THE CARDS BELOW COMES FROM THE MATHS.
+//
+// These cards are the last thing a player reads before spending 200x or 500x, and
+// until this pass they described Go Bananas 100: expanding sticky Wilds whose
+// multipliers climbed to 100x, a 25,000x cap, and "18 spins instead of 8 to 15".
+// None of the three mechanics existed here, the cap had moved, and the spin
+// counts were a mode's award plus three invisible extra spins.
+//
+// So the counts are derived. `config.scatterSpins` is game_config.py's
+// freespin_triggers and each mode's `scatterTriggers` is the Scatter count its
+// entry forces — both scraped by design/sync_math_config.mjs, which refuses to
+// build if a mode forces a count the trigger table does not pay spins for.
+const spinsFor = (config.scatterSpins ?? {}) as Record<string, number>;
+const entryOf = (key: 'bonus' | 'superbonus') => {
+	const triggers = (config.betModes[key] as { scatterTriggers?: Record<string, number> })
+		?.scatterTriggers;
+	const count = Number(Object.keys(triggers ?? {})[0]);
+	return { scatters: count, spins: spinsFor[count] };
+};
+const BONUS_ENTRY = entryOf('bonus');
+const SUPER_ENTRY = entryOf('superbonus');
+const capX = (mode: 'base' | 'bonus' | 'superbonus' | 'superspin') =>
+	(config.betModes[mode].max_win ?? 0).toLocaleString();
 
 const emptyAssets = {
 	icon: '',
@@ -75,7 +99,10 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 		parent: '',
 		children: '',
 		maxWin: config.betModes.bonus.max_win,
-		// one locked reel and three Scatters — the ordinary way in
+		// Three Sealed Tablets with the middle one broken open, over this tier's
+		// own four Scatters. Composited from the game's live symbol art by
+		// design/generate_mode_cards.mjs, so it follows the symbols whenever they
+		// are regenerated.
 		assets: { ...emptyAssets, dialogImage: cardArt('bonus') },
 		text: {
 			get title() {
@@ -83,14 +110,14 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					'Buy direct entry into FREE SPINS for 200× your bet, at the same 95% RTP as base play. Every Wild that lands expands to cover its whole reel and sticks for the rest of the feature — and its multiplier never resets, growing on every spin up to 100×. Multipliers on the same line add together. Maximum win: 25,000× your bet.',
-					'Enter FREE SPINS directly for 200× your amount, at the same 95% RTP as normal play. Every Wild that lands expands to cover its whole reel and sticks for the rest of the feature — and its multiplier never resets, growing on every spin up to 100×. Multipliers on the same line add together. Maximum win: 25,000× your amount.',
+					`Buy direct entry into FREE SPINS for ${config.betModes.bonus.cost}× your bet, at the same 95% RTP as base play. The round opens on a real ${BONUS_ENTRY.scatters}-Scatter board and plays the ${BONUS_ENTRY.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus')}× your bet.`,
+					`Enter FREE SPINS directly for ${config.betModes.bonus.cost}× your amount, at the same 95% RTP as normal play. The round opens on a real ${BONUS_ENTRY.scatters}-Scatter board and plays the ${BONUS_ENTRY.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus')}× your amount.`,
 				);
 			},
 			get description() {
 				return pick(
-					'200× BET → FREE SPINS with sticky Wilds whose multipliers grow to 100×',
-					'200× AMOUNT → FREE SPINS with sticky Wilds whose multipliers grow to 100×',
+					`${config.betModes.bonus.cost}× BET → ${BONUS_ENTRY.scatters} Scatters, ${BONUS_ENTRY.spins} FREE SPINS with Tablets that stay open`,
+					`${config.betModes.bonus.cost}× AMOUNT → ${BONUS_ENTRY.scatters} Scatters, ${BONUS_ENTRY.spins} FREE SPINS with Tablets that stay open`,
 				);
 			},
 			get button() {
@@ -106,16 +133,28 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			bannerText: '',
 		},
 	},
-	// The 500x buy. Max win is 25,000x the base bet, i.e. 50x this mode's own cost
-	// against 125x for BONUS, so the copy leads on the guaranteed 5-Scatter entry
-	// rather than implying a bigger top end than BONUS has.
+	// The 500x buy. It shares BONUS's max win, so the copy leads on the entry it
+	// guarantees rather than implying a bigger top end than BONUS has: one more
+	// Scatter, the three more spins that Scatter is worth, and a hotter Tablet
+	// weight table underneath.
 	//
-	// That framing matches what the optimised maths actually does. Against the 200x
-	// buy this mode has a higher floor (median 0.54x its cost vs 0.31x, and 73%
-	// chance of finishing under cost vs 80%) and better odds at the cap (1 in 2,000
-	// vs 1 in 12,500), paid for out of the p90-p99 band, where it comes in below
-	// BONUS. It is the safer buy, not the wilder one — do not write copy that sells
-	// it as the bigger-win mode.
+	// It no longer gets spins BONUS's board could not explain. This tier used to
+	// run eighteen — its five-Scatter award of fifteen plus three from
+	// freespin_bonus_spins — so the card had to say "18 spins" about a board that
+	// accounted for fifteen. That mechanism is gone from the maths.
+	//
+	// Measured against the published books, weighted by the lookup table (which is
+	// the served distribution — raw book order is not). Both in base-bet multiples:
+	//
+	//                 median     p90      p99    p99.9   under cost   cap
+	//   200x buy       64.2x    552x   1,139x   2,001x     74.7%    1 in 15,000
+	//   500x buy      126.3x  1,361x   2,400x   3,811x     69.3%    1 in  2,500
+	//
+	// So the super buy is genuinely the stronger entry now, and the copy may say
+	// so: it beats the cheaper tier in every absolute band and is six times likelier
+	// to cap. What it does NOT do is return more per unit staked — the median is
+	// 0.21x its own cost against 0.35x — so do not write copy implying better value,
+	// only a bigger outcome. Both modes run at 0.95 RTP; the difference is shape.
 	SUPERBONUS: {
 		mode: 'SUPERBONUS',
 		costMultiplier: config.betModes.superbonus.cost,
@@ -123,8 +162,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 		parent: '',
 		children: '',
 		maxWin: config.betModes.superbonus.max_win,
-		// the same picture with five Scatters and two locked reels: what 500x buys
-		// over 200x is more of exactly this
+		// The same picture with five Tablets, two of them open, and five Scatters:
+		// what 500x buys over 200x is more of exactly this.
 		assets: { ...emptyAssets, dialogImage: cardArt('superbonus') },
 		text: {
 			get title() {
@@ -132,14 +171,14 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					'Buy the strongest entry into FREE SPINS for 500× your bet, at the same 95% RTP as base play. Guarantees a full 5-Scatter start — 18 spins instead of 8 to 15 — and Wilds land more often, start higher and climb faster, all the way to 100×. Maximum win: 25,000× your bet.',
-					'Enter SUPER FREE SPINS for 500× your amount, at the same 95% RTP as normal play. Guarantees a full 5-Scatter start — 18 spins instead of 8 to 15 — and Wilds land more often, start higher and climb faster, all the way to 100×. Maximum win: 25,000× your amount.',
+					`Buy the strongest entry into FREE SPINS for ${config.betModes.superbonus.cost}× your bet, at the same 95% RTP as base play. Guarantees a full ${SUPER_ENTRY.scatters}-Scatter board — ${SUPER_ENTRY.spins} spins, the most the game awards — and Sealed Tablets open on the high symbols far more often. Maximum win: ${capX('superbonus')}× your bet.`,
+					`Enter SUPER FREE SPINS for ${config.betModes.superbonus.cost}× your amount, at the same 95% RTP as normal play. Guarantees a full ${SUPER_ENTRY.scatters}-Scatter board — ${SUPER_ENTRY.spins} spins, the most the game awards — and Sealed Tablets open on the high symbols far more often. Maximum win: ${capX('superbonus')}× your amount.`,
 				);
 			},
 			get description() {
 				return pick(
-					'500× BET → 18 FREE SPINS, more Wilds and faster multiplier growth',
-					'500× AMOUNT → 18 FREE SPINS, more Wilds and faster multiplier growth',
+					`${config.betModes.superbonus.cost}× BET → ${SUPER_ENTRY.scatters} Scatters, ${SUPER_ENTRY.spins} FREE SPINS and richer Tablets`,
+					`${config.betModes.superbonus.cost}× AMOUNT → ${SUPER_ENTRY.scatters} Scatters, ${SUPER_ENTRY.spins} FREE SPINS and richer Tablets`,
 				);
 			},
 			get button() {
@@ -168,14 +207,14 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			title: 'SUPER SPIN',
 			get dialog() {
 				return pick(
-					'A hold-and-spin round for 50× your bet. You start with 3 respins — every Coin that lands sticks to the board and resets the respins back to 3. When no respins remain, all stuck Coin values are added up and paid out. Maximum win: 2,000× your bet.',
-					'A hold-and-spin round for 50× your amount. You start with 3 respins — every Coin that lands sticks to the board and resets the respins back to 3. When no respins remain, all stuck Coin values are added up and awarded. Maximum win: 2,000× your amount.',
+					`A hold-and-spin round for ${config.betModes.superspin.cost}× your bet. You start with 3 respins — every Coin that lands sticks to the board and resets the respins back to 3. When no respins remain, all stuck Coin values are added up and paid out. Maximum win: ${capX('superspin')}× your bet.`,
+					`A hold-and-spin round for ${config.betModes.superspin.cost}× your amount. You start with 3 respins — every Coin that lands sticks to the board and resets the respins back to 3. When no respins remain, all stuck Coin values are added up and awarded. Maximum win: ${capX('superspin')}× your amount.`,
 				);
 			},
 			get description() {
 				return pick(
-					'50× BET → 3 respins, Coins stick and reset the count (max 2,000×)',
-					'50× AMOUNT → 3 respins, Coins stick and reset the count (max 2,000×)',
+					`${config.betModes.superspin.cost}× BET → 3 respins, Coins stick and reset the count (max ${capX('superspin')}×)`,
+					`${config.betModes.superspin.cost}× AMOUNT → 3 respins, Coins stick and reset the count (max ${capX('superspin')}×)`,
 				);
 			},
 			get button() {

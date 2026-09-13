@@ -1,11 +1,17 @@
 """Split the supplied character PSD into one trimmed PNG per body part.
 
-    py -3 design/extract_monkey_psd.py "<path to spine-pieces-project-2.psd>"
+    py -3 design/extract_character_psd.py "<path to the psd>" [out-name]
 
-Writes design/source/monkey/*.png plus layers.json, which records each piece's
-position on the original 560x912 canvas. generate_monkey_spine.mjs reads that
-file to place the attachments, so the rig inherits the artist's own layout
+Writes design/source/<out-name>/*.png plus layers.json, which records each
+piece's position on the original canvas. The matching generate_*_spine.mjs reads
+that file to place the attachments, so the rig inherits the artist's own layout
 instead of anything being eyeballed here.
+
+Both characters this game has shipped come from the same character generator and
+so use the same layer naming ("<part> - <n> - <role>" with a non-ASCII dash) and
+the same 560-wide canvas, which is why one script serves both. What differs is
+WHICH roles are present - the gorilla has a coat and a belt, the jackal has ears
+and a nemes - so nothing here may assume a fixed set of layer names.
 
 Needs psd-tools:  py -3 -m pip install psd-tools
 
@@ -20,10 +26,10 @@ Two things about this PSD that the obvious version of this script gets wrong:
     pixels, so it reports the full canvas even for cleanly keyed layers. The
     bounds have to come from the alpha channel alone.
 
-Five layers in this file (torso 2, head 1/2/3/5 "decoration") contain nothing
-but that haze - no pixel above alpha 11 anywhere. They are dropped, and the
-script proves nothing was lost by rebuilding the character from the pieces it
-kept and writing _compare.png next to the PSD's own flatten.
+Some layers in these files contain nothing but that haze - no pixel above alpha
+11 anywhere - or are empty outright. They are dropped, and the script proves
+nothing was lost by rebuilding the character from the pieces it kept and writing
+_compare.png next to the PSD's own flatten.
 """
 
 import json
@@ -37,10 +43,10 @@ from psd_tools import PSDImage
 ALPHA_FLOOR = 12
 
 APP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(APP_ROOT, 'design', 'source', 'monkey')
 
 
-def main(psd_path: str) -> None:
+def main(psd_path: str, out_name: str) -> None:
+    OUT = os.path.join(APP_ROOT, 'design', 'source', out_name)
     os.makedirs(OUT, exist_ok=True)
     for name in os.listdir(OUT):
         if name.endswith('.png'):
@@ -53,6 +59,7 @@ def main(psd_path: str) -> None:
     for z, layer in enumerate(psd):
         image = layer.topil()
         if image is None:
+            print(f'  dropped (empty layer): {layer.name}')
             continue
         image = image.convert('RGBA')
         alpha = image.getchannel('A').point(lambda v: 0 if v < ALPHA_FLOOR else v)
@@ -96,4 +103,4 @@ def main(psd_path: str) -> None:
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         sys.exit(__doc__)
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else 'monkey')

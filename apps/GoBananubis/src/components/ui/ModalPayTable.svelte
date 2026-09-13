@@ -26,13 +26,18 @@
 		L5: 'gbL5',
 		W: 'gbW',
 		S: 'gbS',
+		M: 'gbM',
 	};
 
+	// Named for what the art now IS. These were the jungle set's names — Combat
+	// Helmet, Pineapple Grenade, Banana Ammo Crate, Golden Compass — against
+	// Egyptian art that had replaced all four, so the pay table was labelling
+	// every high symbol with the wrong object.
 	const SYMBOL_LABEL: Record<string, string> = {
-		H1: 'Combat Helmet',
-		H2: 'Pineapple Grenade',
-		H3: 'Banana Ammo Crate',
-		H4: 'Golden Compass',
+		H1: 'Carnelian Scarab',
+		H2: 'Eye of Horus',
+		H3: 'Offering Chest',
+		H4: 'Turquoise Ankh',
 		L1: 'A',
 		L2: 'K',
 		L3: 'Q',
@@ -40,12 +45,25 @@
 		L5: '10',
 		W: 'Wild',
 		S: 'Golden Bananas — Scatter',
+		M: 'Sealed Tablet',
 	};
 
-	// keep high -> low ordering for readability
-	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'S'];
+	// keep high -> low ordering for readability, with the two symbols that do not
+	// pay a line at the end
+	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'S', 'M'];
 
-	const maxWin = config.betModes?.base?.max_win ?? 25000;
+	const maxWin = config.betModes?.base?.max_win ?? 15000;
+
+	// From the maths (design/sync_math_config.mjs scrapes freespin_triggers), not
+	// written down here — this line said "4 or 5 Scatters award 12 or 15" while
+	// the game only ever awarded one of those.
+	const spinsFor = (config.scatterSpins ?? {}) as Record<string, number>;
+	const scatterCounts = Object.keys(spinsFor)
+		.map(Number)
+		.sort((a, b) => a - b);
+	const asList = (values: (string | number)[]) =>
+		values.length > 1 ? `${values.slice(0, -1).join(', ')} or ${values[values.length - 1]}` : `${values[0]}`;
+	const scatterAward = `${asList(scatterCounts)} Scatters award ${asList(scatterCounts.map((n) => spinsFor[n]))} Free Spins`;
 
 	const imgSrc = (name: string) => {
 		const key = SYMBOL_ASSET[name];
@@ -100,7 +118,17 @@
 						<div class="wp-pays">
 							{#if row.name === 'S'}
 								<span class="wp-special"
-									>{T.doesNotPay} &mdash; 4 or 5 Scatters award 12 or 15 Free Spins</span
+									>{T.doesNotPay} &mdash; {scatterAward}</span
+								>
+							{:else if row.name === 'M'}
+								<!--
+									The tablet has a paytable row in the maths — (99, "M"): 0 —
+									purely to register the symbol, so `pays` would render a
+									meaningless "99 x 0" chip. It cannot win a line: every M is
+									replaced by the symbol it opens to before the lines are read.
+								-->
+								<span class="wp-special"
+									>{T.doesNotPay} &mdash; opens to another symbol before lines are read</span
 								>
 							{:else if row.pays.length}
 								{#each row.pays as pay (pay.count)}

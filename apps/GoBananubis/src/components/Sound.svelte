@@ -13,7 +13,11 @@
 		| { type: 'soundFade'; name: SoundName; from: number; to: number; duration: number }
 		| { type: 'soundFreeGameBell' }
 		| { type: 'soundBigWinBlast' }
-		| { type: 'soundGrenadeBlast' }
+		| { type: 'soundScarabBlast' }
+		// The tablet reveal. `step` is which tablet in the batch this is (0-based);
+		// see playStoneCrack for what it does with it.
+		| { type: 'soundSealStrain' }
+		| { type: 'soundStoneCrack'; step: number }
 		| { type: 'soundMonkeyExpand' }
 		| { type: 'soundMascotVoice'; name: MascotVoice }
 		| { type: 'soundReelTensionStart' }
@@ -56,7 +60,9 @@
 		| 'coin_shimmer'
 		| 'wild_expand'
 		| 'mult_update'
-		| 'grenade_blast'
+		| 'seal_strain'
+		| 'stone_crack'
+		| 'scarab_blast'
 		| 'monkey_expand'
 		| 'voice_roar'
 		| 'voice_effort';
@@ -80,7 +86,12 @@
 		coin_shimmer: 'jungle/coin_shimmer.wav',
 		wild_expand: 'jungle/wild_expand.wav',
 		mult_update: 'jungle/mult_update.wav',
-		grenade_blast: 'jungle/grenade_blast.wav',
+		seal_strain: 'jungle/seal_strain.wav',
+		stone_crack: 'jungle/stone_crack.wav',
+		// The cue is named for what is thrown now; the FILE keeps its old name
+		// because renaming a wav is a re-render, not an edit. design/generate_audio_jungle.mjs
+		// still writes grenade_blast.wav, and the blast it makes is a blast either way.
+		scarab_blast: 'jungle/grenade_blast.wav',
 		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
 		monkey_expand: 'jungle/monkey_expand.mp3',
 		voice_roar: 'jungle/voice_roar.wav',
@@ -166,6 +177,16 @@
 	// from the top, hold, then fade to silence so it covers the grow and settles
 	// as the panel locks, instead of hanging on under the next spin.
 	let monkeyFadeTimers: ReturnType<typeof setTimeout>[] = [];
+	// The seals give in reading order and the cue rises with them, so several
+	// tablets on one board read as one gesture arriving somewhere rather than as
+	// the same crack repeated. Steps beyond the fourth hold at the top: a full
+	// board would run the sample into a chirp, and by then the run has made its
+	// point.
+	const CRACK_RATES = [0.94, 1.06, 1.19, 1.33];
+	function playStoneCrack(step: number) {
+		playCnSfx('stone_crack', 0.85, CRACK_RATES[Math.min(step, CRACK_RATES.length - 1)]);
+	}
+
 	function playMonkeyExpand() {
 		const audio = getCnSfx('monkey_expand');
 		monkeyFadeTimers.forEach(clearTimeout);
@@ -392,7 +413,9 @@
 		},
 		soundFreeGameBell: () => playCnSfx('gong_feature'),
 		soundBigWinBlast: () => playCnSfx('bigwin_blast'),
-		soundGrenadeBlast: () => playCnSfx('grenade_blast'),
+		soundScarabBlast: () => playCnSfx('scarab_blast'),
+		soundSealStrain: () => playCnSfx('seal_strain', 0.7),
+		soundStoneCrack: ({ step }) => playStoneCrack(step),
 		soundMonkeyExpand: () => playMonkeyExpand(),
 		// Deliberately NOT forced through the turbo gate that silences ordinary
 		// one-shots: these are tied to animations that play at their own length
