@@ -223,6 +223,40 @@ Frostline 的買轉卡目前維持平台灰；如果同樣的審核意見回來�
 `check_assets.mjs` 只驗 `assets.ts` 裡的**路徑**存不存在，兩者不重疊。
 守門有注入錯字驗證過會紅（exit 1）。
 
+### 交付素材接入：12 張符號 + 22 個音效（2026-09-14）
+
+桌面 `frostline_assets_2026-09-13/frostline_assets` 的交付已全部接入。詳表在
+`design/FROSTLINE_ASSET_TODO.md` 的〈交付狀態〉。
+
+**符號**：來源丟進 `design/source/gen2_symbols/`，跑 `generate_symbols_gen2.mjs`
+產出 256px 與 spine。在 118px（實際格子大小）逐張看過：主體都讀得出來，
+`h4` 確實是暖銅提燈而不是青藍指北針（規格要求的換色），`h3` 箱側印的是 `SUPPLY`
+而不是任何博弈字眼，底板是暗的——**規格裡我最擔心的那條（底板不能變白）沒有踩到**。
+
+**音效**：22 個 44.1k/16-bit WAV 放進 `static/assets/audio/frost/`，`Sound.svelte`
+的 19 個 cue 加 2 首 bgm 改指向。量測過全部無削波、無近似靜音、取樣率正確；
+另外驗過 `scatter_1`–`_5` 的**音高階梯確實遞增**（831→1065Hz），五個不是同一個檔案
+複製五份。
+
+**素材一換，描述它們的文字就必須跟著換**，這次有兩處：
+
+- 賠付表的符號名稱（Combat Helmet / Pineapple Grenade / Banana Ammo Crate /
+  Golden Compass → Fur-lined Helmet / Signal Flare / Supply Crate / Oil Lantern）。
+  先前刻意保留是因為當時盤上還是叢林素材；現在不改就會變成賠付表寫的東西不在盤上，
+  那正是這個家族被開過的 "symbol payouts do not match the paytable"。
+- 遊戲說明的「every Wild that lands **devours his golden banana** and expands」
+  → 「**freezes its reel solid** and expands」。跑的是 v2 結霜版，舊句子描述的是
+  v1 的動畫。
+
+**買轉卡**已用新符號重新合成。superspin 那張整張冰了；兩張免費遊戲卡還是金柱＋猴子，
+因為 W 家族不在這次交付裡。
+
+**驗收發現**：交付說明寫圖像是**逐張生成**的，這正是 `gb-spine-and-art` skill 警告
+的做法，量測也印證了——高賠群底板 (27..52) 與低賠群底板 (72..89) 分成兩群，
+邊框粗細也不同。方向是對的（規格本來就要求高低賠有階層線索），**但幅度比規格設想
+的大**。刻意**沒有做事後校色**：skill 明確說底板顏色屬於提示詞、不屬於校正 pass。
+要收斂就整套重生並把底板值寫死在提示詞裡。
+
 ### 連線單色 / 買轉介面 / 盤面框（2026-09-13）
 
 **1. 中獎線改成單一顏色** `LINE_COLOR = 0x8fd9ff`（冰藍），中心保留 1.2px 白色髮絲。

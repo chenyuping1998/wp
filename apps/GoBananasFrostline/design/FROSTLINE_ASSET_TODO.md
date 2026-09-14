@@ -1,7 +1,46 @@
-# Frostline 待製素材清單 — 盤面圖案（W 除外）與音效
+# Frostline 素材清單
 
-盤上與音效裡還是 **Go Bananas 100 叢林素材**的東西。W 家族依使用者指示不在此清單，
-另案處理。
+> **2026-09-14 更新：12 張盤面圖案與 22 個音效已交付並接入。**
+> 下面兩節保留原始規格（重生時仍然適用），交付狀態記在各節開頭。
+
+## 交付狀態（2026-09-14）
+
+| 項目 | 狀態 |
+|---|---|
+| 12 張盤面圖案（h1–h4, s, l1–l5, p, x） | **已接入**。來源在 `design/source/gen2_symbols/`，用 `generate_symbols_gen2.mjs` 產出 256px + spine |
+| 22 個音效 | **已接入** `static/assets/audio/frost/`，`Sound.svelte` 的 19 個 cue + 2 首 bgm 已改指向 |
+| 買轉卡 | 已用新符號重新合成（`generate_mode_cards.mjs`）|
+| 賠付表符號名稱 | 已跟著改：Combat Helmet → Fur-lined Helmet、Pineapple Grenade → Signal Flare、Banana Ammo Crate → Supply Crate、Golden Compass → Oil Lantern |
+| 遊戲說明 | 「devours his golden banana」→「freezes its reel solid」，因為跑的是 v2 結霜版 |
+
+### 還沒做的
+
+- **W 家族**（`w` / `wx` / `w_fg` / `cudgel`）——使用者指示另案處理。盤面上現在
+  只剩這幾張是叢林素材，在一排冰藍符號裡非常顯眼；買轉卡的兩張免費遊戲卡也還是
+  金柱＋猴子。
+- **盤面框的真冰素材**——見 `FRAME_ART_PROMPT.md`。目前是叢林框的換色版。
+- **5 個音效**：`monkey_expand`、`wild_expand`、`grenade_blast`、`voice_roar`、
+  `voice_effort`。交付方判斷為 v1 專用或無呼叫端而未製作，**這個判斷是對的**。
+
+### 驗收時發現的一件事
+
+交付說明寫「圖像使用 OpenAI 內建 image generation **逐張生成**」。這正是
+`gb-spine-and-art` skill 警告的做法（"Generate the whole set in one pass"），
+而量測結果也確實呈現出來了——**底板亮度分成兩群**：
+
+```
+h1–h4 / s / p   底板 (27,39,52) … (52,63,75)    暗、偏藍、有冰晶紋理
+l1–l5 / x       底板 (72,81,91) … (89,98,108)   亮、偏灰、素面
+```
+
+高低賠**本來就該有階層線索**（本規格第 20 行要求 `h`/`s` 加冰藍內斜角、`l` 維持
+素鋼），所以這個差異方向是對的，在 118px 實際尺寸下也讀得出是「高賠冰、低賠石」。
+**但幅度比規格設想的大**（底板值差約兩倍，邊框粗細也不同），而規格明確要求
+「邊框粗細所有符號一致」，因為盤面不畫格線、符號邊框就是格線。
+
+**沒有做事後校色**，這是刻意的：skill 明確說 "Plate colour belongs in the prompt,
+not in a correction pass"。要收斂的話應該是**把 l 系列連同 h 系列一次重生**，
+並在提示詞裡把底板值寫死。
 
 ---
 

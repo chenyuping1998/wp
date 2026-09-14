@@ -28,11 +28,18 @@
 		S: 'gbS',
 	};
 
+	// These name what is ON THE BOARD, so they move whenever the symbol art does.
+	// They were the jungle set's — Combat Helmet, Pineapple Grenade, Banana Ammo
+	// Crate, Golden Compass — and were deliberately left alone while the art was
+	// still jungle. The Frostline symbols landed 2026-09-14, so they move now: a
+	// pay table naming objects that are not on the reels is the exact shape of the
+	// "symbol payouts do not match the paytable" finding this family has already
+	// had opened on it once.
 	const SYMBOL_LABEL: Record<string, string> = {
-		H1: 'Combat Helmet',
-		H2: 'Pineapple Grenade',
-		H3: 'Banana Ammo Crate',
-		H4: 'Golden Compass',
+		H1: 'Fur-lined Helmet',
+		H2: 'Signal Flare',
+		H3: 'Supply Crate',
+		H4: 'Oil Lantern',
 		L1: 'A',
 		L2: 'K',
 		L3: 'Q',

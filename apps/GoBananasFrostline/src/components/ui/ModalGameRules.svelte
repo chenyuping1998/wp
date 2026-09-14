@@ -196,7 +196,7 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Free Spins &amp; Expanding Wilds</h3>
 				<p>
-					During Free Spins, every Wild that lands devours his golden banana and expands to
+					During Free Spins, every Wild that lands freezes its reel solid and expands to
 					cover the entire reel. Expanded Wilds are sticky — they stay for the rest of the
 					feature — and each one carries a win multiplier that <strong>only ever grows</strong>: it
 					increases on every following spin, up to a maximum of 100&times; per Wild. Multipliers of
