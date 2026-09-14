@@ -132,7 +132,7 @@
 		align-items: center;
 		justify-content: center;
 		padding: 1rem;
-		background: rgba(6, 10, 4, 0.82);
+		background: rgba(6, 12, 20, 0.82);
 		backdrop-filter: blur(8px);
 		-webkit-backdrop-filter: blur(8px);
 		overflow-y: auto;
@@ -145,8 +145,8 @@
 		box-sizing: border-box;
 		padding: 1.25rem;
 		border-radius: 14px;
-		background: linear-gradient(180deg, rgba(26, 36, 12, 0.98) 0%, rgba(10, 18, 6, 0.99) 100%);
-		border: 1px solid rgba(216, 163, 52, 0.35);
+		background: linear-gradient(180deg, rgba(34, 48, 63, 0.98) 0%, rgba(13, 20, 29, 0.99) 100%);
+		border: 1px solid rgba(143, 217, 255, 0.35);
 		box-shadow: 0 14px 44px rgba(0, 0, 0, 0.8);
 		color: #fff;
 		font-family: var(--gb-body-font, sans-serif);
@@ -157,8 +157,9 @@
 		display: inline-block;
 		padding: 0.2rem 0.7rem;
 		border-radius: 999px;
-		background: #ffd75e;
-		color: #2a1a04;
+		/* chrome, not an amount — palette.ts rule 2 puts it in the cold half */
+		background: #8fd9ff;
+		color: #06121c;
 		font-weight: 800;
 		font-size: 0.7rem;
 		letter-spacing: 0.08em;
@@ -199,7 +200,7 @@
 		margin-top: 0.15rem;
 		padding: 0.45rem 0.55rem;
 		border-radius: 8px;
-		background: rgba(255, 215, 94, 0.07);
+		background: rgba(143, 217, 255, 0.07);
 	}
 
 	dt {
@@ -214,8 +215,12 @@
 	.accent {
 		color: #ffd75e;
 	}
+	/* The payout the replay paid. Was #9ee27a, a green that belongs to no palette
+	   this game has ever had — not the jungle set's, not the ice one. It is an
+	   AMOUNT, so rule 2 puts it in gold alongside .accent, and the two are told
+	   apart by weight and size rather than by hue. */
 	.win {
-		color: #9ee27a;
+		color: #ffe98a;
 	}
 	.big {
 		font-size: 1.05rem;
@@ -228,8 +233,8 @@
 		padding: 0.8rem 1rem;
 		border: none;
 		border-radius: 10px;
-		background: linear-gradient(180deg, #ffe98a 0%, #e0a838 100%);
-		color: #2a1a04;
+		background: linear-gradient(180deg, #a8e4ff 0%, #3f7fa8 100%);
+		color: #06121c;
 		font-family: var(--gb-display-font, sans-serif);
 		font-size: 1.05rem;
 		font-weight: 700;

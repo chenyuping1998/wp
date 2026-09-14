@@ -800,11 +800,15 @@
 						const h = rect.bottom - rect.top;
 						g.clear();
 						if (h <= 0) return;
-						g.beginFill(0x0a1508, 1);
-						g.drawRect(x - SYMBOL_SIZE / 2, rect.top, SYMBOL_SIZE, h);
-						g.endFill();
-						g.lineStyle(3, 0xffd43b, 0.7);
-						g.drawRoundedRect(x - SYMBOL_SIZE / 2 + 3, rect.top + 3, SYMBOL_SIZE - 6, h - 6, 10);
+						// Pixi 8: path, then fill/stroke. Under `lineStyle` the inner frame
+						// drew nothing, and worse: the style outlived the draw (clear()
+						// resets the path, not the stroke style), so from the second
+						// frame the endFill above outlined the square backing with it —
+						// a hard gold rectangle instead of the inset rounded one.
+						g.rect(x - SYMBOL_SIZE / 2, rect.top, SYMBOL_SIZE, h);
+						g.fill({ color: 0x0a1508, alpha: 1 });
+						g.roundRect(x - SYMBOL_SIZE / 2 + 3, rect.top + 3, SYMBOL_SIZE - 6, h - 6, 10);
+						g.stroke({ width: 3, color: 0xffd43b, alpha: 0.7 });
 					}}
 				/>
 			{/if}
@@ -981,10 +985,14 @@
 				draw={(g: PixiGraphics) => {
 					const glow = auraPulse(wild.reel);
 					g.clear();
-					g.lineStyle(9, 0xffd75e, 0.08 + 0.1 * glow);
-					g.drawRoundedRect(x - SYMBOL_SIZE / 2 - 3, -3, SYMBOL_SIZE + 6, BOARD_SIZES.height + 6, 16);
-					g.lineStyle(4, 0xffe98a, 0.16 + 0.18 * glow);
-					g.drawRoundedRect(x - SYMBOL_SIZE / 2, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
+					// Pixi 8: path, then `.stroke()`. Both layers of this aura emitted no
+					// geometry at all, so a locked reel had no breathing edge — the one
+					// thing telling the player it is still live for the rest of the
+					// feature. Inherited from Go Bananas 100, where it is still dead.
+					g.roundRect(x - SYMBOL_SIZE / 2 - 3, -3, SYMBOL_SIZE + 6, BOARD_SIZES.height + 6, 16);
+					g.stroke({ width: 9, color: 0xffd75e, alpha: 0.08 + 0.1 * glow });
+					g.roundRect(x - SYMBOL_SIZE / 2, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
+					g.stroke({ width: 4, color: 0xffe98a, alpha: 0.16 + 0.18 * glow });
 				}}
 			/>
 		{/if}
@@ -1091,13 +1099,17 @@
 						const glow = auraPulse(wild.reel);
 						g.clear();
 						// soft halo only — enough to lift the number off the art behind
-						// it without boxing it in
-						g.lineStyle(10, 0xffd75e, 0.1 + 0.1 * glow);
-						g.drawCircle(0, 0, r);
-						g.lineStyle(3.5, 0xd8a334, 1);
-						g.drawCircle(0, 0, r);
-						g.lineStyle(1.5, 0xfff3bd, 0.7);
-						g.drawCircle(0, 0, r - 5);
+						// it without boxing it in.
+						//
+						// Pixi 8: path, then `.stroke()`. All three rings were dead, which
+						// left the badge as a bare GoldText floating over the panel with
+						// nothing under it — on the number that IS this game's mechanic.
+						g.circle(0, 0, r);
+						g.stroke({ width: 10, color: 0xffd75e, alpha: 0.1 + 0.1 * glow });
+						g.circle(0, 0, r);
+						g.stroke({ width: 3.5, color: 0xd8a334, alpha: 1 });
+						g.circle(0, 0, r - 5);
+						g.stroke({ width: 1.5, color: 0xfff3bd, alpha: 0.7 });
 					}}
 				/>
 				<GoldText text={`${wild.displayMult}X`} fontSize={SYMBOL_SIZE * 0.27} maxWidth={r * 1.7} />
