@@ -223,6 +223,30 @@ Frostline 的買轉卡目前維持平台灰；如果同樣的審核意見回來�
 `check_assets.mjs` 只驗 `assets.ts` 裡的**路徑**存不存在，兩者不重疊。
 守門有注入錯字驗證過會紅（exit 1）。
 
+### 音效回退到上一版（2026-09-14）
+
+交付的 22 個音效**接進去當天就被退回**。現在的狀態跟接入之前**逐位元組相同**：
+
+- `Sound.svelte` 的 19 個 cue + 2 首 bgm 指回 `jungle/`
+- `frost/` 只剩 `frost_creep` / `ice_freeze` / `ice_crack` 三個，且已從
+  commit `095ba62` 還原成我合成的那一版（三個檔案都比對過，byte-for-byte 相同）
+- 對應表也和 `095ba62` 的版本 diff 過，**完全一致**
+
+**交付檔案沒有刪除**，19 個 WAV 都在 commit `375b628` 裡。要放回去：
+
+```bash
+git checkout 375b628 -- apps/GoBananasFrostline/static/assets/audio/frost/
+# 再把 Sound.svelte 裡那 21 個字串從 jungle/ 翻回 frost/
+```
+
+不需要重新生成、不需要重新交付。
+
+**要記住的是：兩版音效都被聽過、都被退回，而兩次都沒有留下「哪裡不對」的紀錄。**
+第一版（我合成的）量測全過但聲音不行；第二版（外部交付）宣稱針對「像白噪音、太電子」
+重做，一樣被退。**第三版在沒有具體回饋之前不要開工**——那只是換一組亂猜的參數。
+`design/FROSTLINE_ASSET_TODO.md` 列了五個可能方向，包含「整體方向就不要」
+（也許根本不想要冰的音色），需要有人勾一個。
+
 ### 優化收尾（2026-09-14）
 
 **`ExpandingWilds` 最後三處 v8 死筆觸修掉了**，這個 app 現在**沒有任何死筆觸**

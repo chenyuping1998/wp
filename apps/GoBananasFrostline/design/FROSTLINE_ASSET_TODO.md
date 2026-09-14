@@ -8,7 +8,7 @@
 | 項目 | 狀態 |
 |---|---|
 | 12 張盤面圖案（h1–h4, s, l1–l5, p, x） | **已接入**。來源在 `design/source/gen2_symbols/`，用 `generate_symbols_gen2.mjs` 產出 256px + spine |
-| 22 個音效 | **已接入** `static/assets/audio/frost/`，`Sound.svelte` 的 19 個 cue + 2 首 bgm 已改指向 |
+| 22 個音效 | **已回退**（2026-09-14，使用者指示）。19 個 cue + 2 首 bgm 指回 `jungle/`，那 3 個接管音效回到我合成的版本。交付檔案沒有刪除，都在 git commit `375b628` 裡 |
 | 買轉卡 | 已用新符號重新合成（`generate_mode_cards.mjs`）|
 | 賠付表符號名稱 | 已跟著改：Combat Helmet → Fur-lined Helmet、Pineapple Grenade → Signal Flare、Banana Ammo Crate → Supply Crate、Golden Compass → Oil Lantern |
 | 遊戲說明 | 「devours his golden banana」→「freezes its reel solid」，因為跑的是 v2 結霜版 |
@@ -122,16 +122,36 @@ not in a correction pass"。要收斂的話應該是**把 l 系列連同 h 系�
 
 # 二、音效
 
-## 最高優先：擴展百搭的三個結霜音效要**重做**
+## 音效目前的狀態（2026-09-14）
 
-第一版已經在遊戲裡跑（`design/generate_audio_frost.mjs` → `static/assets/audio/frost/`），
-**使用者聽過之後判定要重做**（2026-09-13）。
+**整批交付的 22 個音效已回退**，遊戲又回到：19 個 cue + 2 首 bgm 用 `jungle/`，
+3 個接管音效用 `design/generate_audio_frost.mjs` 合成的第一版。
 
-| 檔案 | 長度 | 用途 | 狀態 |
-|---|---|---|---|
-| `frost_creep.wav` | 0.26s | 每格開始結霜 | **重做** |
-| `ice_freeze.wav` | 1.35s | 爬霜整拍的鋪底 | **重做** |
-| `ice_crack.wav` | 0.95s | 冰板凝結裂開 | **重做** |
+也就是說，**兩版都被聽過、兩版都被退回**：
+
+| 版本 | 來源 | 結果 |
+|---|---|---|
+| 第一版（3 個接管音效） | 本專案合成 | 2026-09-13 判定要重做 |
+| 第二版（22 個全套） | 外部交付，宣稱針對「像白噪音、太電子」重做 | 2026-09-14 判定回退 |
+
+交付檔案**沒有刪除**，全部在 git commit `375b628`。要放回去是
+`git checkout 375b628 -- <path>` 加上把 `Sound.svelte` 的字串翻回 `frost/`，
+不需要重新生成或重新交付。
+
+### 下一次動音效之前，先解決這件事
+
+兩版都沒有留下「哪裡不對」的紀錄，所以第三版一樣是猜。**在做之前先取得具體回饋**，
+至少要能回答下面其中一項（這份清單第一版就寫了，但沒有被填答過）：
+
+- **太吵／太小聲** → 調 `Sound.svelte` 的 `volume` 就好，不必重生成
+- **不像冰，像白噪音／嘶聲** → 分音結構問題，要加更多非諧和共振峰、拉長 ring
+- **太合成、太電子** → 要加不規則性：微小音高漂移、每次觸發的細微變化
+- **和畫面對不上** → 時間點問題，改 `ExpandingWilds.svelte` 的觸發時機，不是音檔
+- **整體方向就不要** → 例如根本不想要冰的音色，想維持叢林打擊樂
+
+**沒有這個答案就不要再生第三版。**
+
+### 第一版為什麼會過關又不行 —— 這條仍然成立
 
 ### 第一版為什麼會過關又不行 —— 這條比清單本身重要
 

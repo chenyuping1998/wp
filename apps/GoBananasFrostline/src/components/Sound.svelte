@@ -67,39 +67,40 @@
 		| 'ice_freeze'
 		| 'ice_crack';
 
-	// WHERE EACH CUE LIVES, and the split is meaningful.
+	// WHERE EACH CUE LIVES.
 	//
-	// `frost/` is this game's own set (design/generate_audio_frost.mjs for the
-	// three takeover cues, the rest delivered 2026-09-14). `jungle/` is what is
-	// left of Go Bananas 100's.
+	// `frost/` is this game's own, and is currently just the three takeover cues
+	// from design/generate_audio_frost.mjs. Everything else is still Go Bananas
+	// 100's `jungle/` set.
 	//
-	// The five still on jungle/ are there on purpose, not by omission:
-	// monkey_expand and wild_expand belong to the v1 'grow' takeover, and
-	// grenade_blast, voice_roar and voice_effort have no caller at all. They are
-	// unreachable while TAKEOVER is 'freeze', so re-cutting them would be work
-	// nobody hears — see design/FROSTLINE_ASSET_TODO.md.
+	// A delivered set of 22 frost cues replaced the whole jungle bed on
+	// 2026-09-14 and was REVERTED the same day at the user's direction. It is not
+	// deleted, only unhooked: every file is in git at commit 375b628, so putting
+	// it back is a checkout of that path plus flipping these strings — no
+	// regeneration, no re-delivery. See design/FROSTLINE_ASSET_TODO.md for what
+	// was in it and what was measured about it.
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
 		frost_creep: 'frost/frost_creep.wav',
 		ice_freeze: 'frost/ice_freeze.wav',
 		ice_crack: 'frost/ice_crack.wav',
-		gong_feature: 'frost/gong_feature.wav',
-		bigwin_blast: 'frost/bigwin_blast.wav',
-		reel_tension: 'frost/reel_tension.wav',
-		reel_stop: 'frost/reel_stop.wav',
-		btn: 'frost/btn.wav',
-		spin: 'frost/spin.wav',
-		scatter_1: 'frost/scatter_1.wav',
-		scatter_2: 'frost/scatter_2.wav',
-		scatter_3: 'frost/scatter_3.wav',
-		scatter_4: 'frost/scatter_4.wav',
-		scatter_5: 'frost/scatter_5.wav',
-		pluck_low: 'frost/pluck_low.wav',
-		win_gliss: 'frost/win_gliss.wav',
-		win_gliss_big: 'frost/win_gliss_big.wav',
-		fs_intro: 'frost/fs_intro.wav',
-		coin_shimmer: 'frost/coin_shimmer.wav',
+		gong_feature: 'jungle/gong_feature.wav',
+		bigwin_blast: 'jungle/bigwin_blast.wav',
+		reel_tension: 'jungle/reel_tension.wav',
+		reel_stop: 'jungle/reel_stop.wav',
+		btn: 'jungle/btn.wav',
+		spin: 'jungle/spin.wav',
+		scatter_1: 'jungle/scatter_1.wav',
+		scatter_2: 'jungle/scatter_2.wav',
+		scatter_3: 'jungle/scatter_3.wav',
+		scatter_4: 'jungle/scatter_4.wav',
+		scatter_5: 'jungle/scatter_5.wav',
+		pluck_low: 'jungle/pluck_low.wav',
+		win_gliss: 'jungle/win_gliss.wav',
+		win_gliss_big: 'jungle/win_gliss_big.wav',
+		fs_intro: 'jungle/fs_intro.wav',
+		coin_shimmer: 'jungle/coin_shimmer.wav',
 		wild_expand: 'jungle/wild_expand.wav',
-		mult_update: 'frost/mult_update.wav',
+		mult_update: 'jungle/mult_update.wav',
 		grenade_blast: 'jungle/grenade_blast.wav',
 		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
 		monkey_expand: 'jungle/monkey_expand.mp3',
@@ -326,8 +327,8 @@
 	let bgmAudio: HTMLAudioElement | null = null;
 	let currentBgm: 'base' | 'freespin' | null = null;
 	const BGM_FILES = {
-		base: 'frost/bgm_main.wav',
-		freespin: 'frost/bgm_freespin.wav',
+		base: 'jungle/bgm_main.wav',
+		freespin: 'jungle/bgm_freespin.wav',
 	} as const;
 
 	function playBgm(type: 'base' | 'freespin') {
