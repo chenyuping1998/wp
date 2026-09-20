@@ -25,8 +25,10 @@
 	let bursts = $state<{ id: number; x: number; y: number; scale: number }[]>([]);
 	let nextBurstId = 0;
 
-	// jungle-gold bokeh reusing the glow texture, tinted per mote
-	const BOKEH_COLORS = [0xffd75e, 0xfff7d1, 0xd9e88a, 0xffb04a];
+	// gold bokeh reusing the glow texture, tinted per mote. The third used to be
+	// a pale lime, the jungle's; now it is the spray-blue of the harbour motes in
+	// Background.svelte, so a big win lights the same air the scene already has.
+	const BOKEH_COLORS = [0xffd75e, 0xfff7d1, 0xcfe8f0, 0xffb04a];
 	const motes = Array.from({ length: 14 }, (_, i) => ({
 		x: (Math.random() - 0.5) * 1200,
 		y: (Math.random() - 0.6) * 880,
@@ -68,8 +70,9 @@
 			const angle = (i / rayCount) * Math.PI * 2;
 			const reach = radius * (i % 2 === 0 ? 1 : 0.78);
 			const halfWidth = Math.PI / rayCount / 1.9;
-			g.beginFill(i % 2 === 0 ? 0xffd75e : 0xffb64d, alpha);
-			g.drawPolygon([
+			// PIXI v8 API. The alternating gold/amber was the point of the fan and
+			// the v7 shim flattened all twelve wedges plus the core to one colour.
+			g.poly([
 				0,
 				0,
 				Math.cos(angle - halfWidth) * reach,
@@ -77,12 +80,11 @@
 				Math.cos(angle + halfWidth) * reach,
 				Math.sin(angle + halfWidth) * reach,
 			]);
-			g.endFill();
+			g.fill({ color: i % 2 === 0 ? 0xffd75e : 0xffb64d, alpha });
 		}
 		// warm core so the rays melt into the count-up area
-		g.beginFill(0xffe9a8, (0.14 + 0.1 * pulse) * intensity);
-		g.drawCircle(0, 0, radius * 0.34);
-		g.endFill();
+		g.circle(0, 0, radius * 0.34);
+		g.fill({ color: 0xffe9a8, alpha: (0.14 + 0.1 * pulse) * intensity });
 	};
 </script>
 

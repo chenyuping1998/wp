@@ -10,9 +10,12 @@ import type { EmitterEventTransition } from '../components/Transition.svelte';
 import type { EmitterEventMysteryReveal } from '../components/MysteryReveal.svelte';
 import type { EmitterEventFullShipment } from '../components/FullShipment.svelte';
 import type { EmitterEventCargoPick } from '../components/CargoPick.svelte';
+import type { EmitterEventMultiplierPick } from '../components/MultiplierPick.svelte';
+import type { EmitterEventMultiplierStrike } from '../components/MultiplierStrike.svelte';
 import type { EmitterEventStickyPrizes } from '../components/StickyPrizes.svelte';
 import type { EmitterEventScatterBurst } from '../components/ScatterBurst.svelte';
 import type { EmitterEventMascot } from '../components/Mascot.svelte';
+import type { EmitterEventCameraShake } from '../components/CameraShake.svelte';
 
 export type EmitterEventGame =
 	| EmitterEventBoard
@@ -27,6 +30,9 @@ export type EmitterEventGame =
 	| EmitterEventMysteryReveal
 	| EmitterEventFullShipment
 	| EmitterEventCargoPick
+	| EmitterEventMultiplierPick
+	| EmitterEventMultiplierStrike
 	| EmitterEventStickyPrizes
 	| EmitterEventScatterBurst
-	| EmitterEventMascot;
+	| EmitterEventMascot
+	| EmitterEventCameraShake;

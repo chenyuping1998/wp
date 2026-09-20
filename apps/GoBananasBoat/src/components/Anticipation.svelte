@@ -53,35 +53,44 @@
 		draw={(g) => {
 			const h = BOARD_SIZES.height;
 			g.clear();
-			g.beginFill(0xff9c2e, 0.1 + 0.12 * pulse);
-			g.drawRoundedRect(LEFT + 3, 3, SYMBOL_SIZE - 6, h - 6, 12);
-			g.endFill();
+
+			// PIXI v8 API — roundRect/fill/stroke, not beginFill/lineStyle.
+			//
+			// This was written against the v7 shim, and the shim is why the comment
+			// below ("three nested strokes so the edge reads as lit metal") did not
+			// describe what was on screen: the shim defers, so a run of lineStyle +
+			// draw* calls in one Graphics resolves with the LAST style applied to
+			// everything, and the three nested rects, the cell ticks and the chevrons
+			// were all coming out as one 4px `0xffd75e` line. Which is also why the
+			// tease read flat. Each shape now closes its own stroke.
+			g.roundRect(LEFT + 3, 3, SYMBOL_SIZE - 6, h - 6, 12);
+			g.fill({ color: 0xff9c2e, alpha: 0.1 + 0.12 * pulse });
 
 			// full-height frame: three nested strokes so the edge reads as lit metal
-			g.lineStyle(7, 0xffd75e, 0.3 + 0.34 * pulse);
-			g.drawRoundedRect(LEFT + 2, 2, SYMBOL_SIZE - 4, h - 4, 13);
-			g.lineStyle(3, 0xffe98a, 0.45 + 0.4 * pulse);
-			g.drawRoundedRect(LEFT + 6, 6, SYMBOL_SIZE - 12, h - 12, 10);
-			g.lineStyle(1.4, 0xffffff, 0.25 + 0.4 * pulse);
-			g.drawRoundedRect(LEFT + 10, 10, SYMBOL_SIZE - 20, h - 20, 8);
+			g.roundRect(LEFT + 2, 2, SYMBOL_SIZE - 4, h - 4, 13);
+			g.stroke({ width: 7, color: 0xffd75e, alpha: 0.3 + 0.34 * pulse });
+			g.roundRect(LEFT + 6, 6, SYMBOL_SIZE - 12, h - 12, 10);
+			g.stroke({ width: 3, color: 0xffe98a, alpha: 0.45 + 0.4 * pulse });
+			g.roundRect(LEFT + 10, 10, SYMBOL_SIZE - 20, h - 20, 8);
+			g.stroke({ width: 1.4, color: 0xffffff, alpha: 0.25 + 0.4 * pulse });
 
 			// cell ticks down the column so the frame reads as five slots, not a tube
-			g.lineStyle(1.5, 0xffe98a, 0.16 + 0.2 * pulse);
 			for (let row = 1; row < BOARD_SIZES.height / SYMBOL_SIZE; row++) {
 				const y = row * SYMBOL_SIZE;
 				g.moveTo(LEFT + 14, y);
 				g.lineTo(LEFT + SYMBOL_SIZE - 14, y);
 			}
+			g.stroke({ width: 1.5, color: 0xffe98a, alpha: 0.16 + 0.2 * pulse });
 
 			// chevrons converging on the column from above and below
 			const chev = 14 + 6 * pulse;
-			g.lineStyle(4, 0xffd75e, 0.5 + 0.4 * pulse);
 			g.moveTo(x - SYMBOL_SIZE * 0.12, -chev - 10);
 			g.lineTo(x, -chev);
 			g.lineTo(x + SYMBOL_SIZE * 0.12, -chev - 10);
 			g.moveTo(x - SYMBOL_SIZE * 0.12, h + chev + 10);
 			g.lineTo(x, h + chev);
 			g.lineTo(x + SYMBOL_SIZE * 0.12, h + chev + 10);
+			g.stroke({ width: 4, color: 0xffd75e, alpha: 0.5 + 0.4 * pulse });
 		}}
 	/>
 

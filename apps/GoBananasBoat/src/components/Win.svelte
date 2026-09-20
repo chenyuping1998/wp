@@ -38,16 +38,13 @@
 	const BANNER_RATIO = 560 / 1000;
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
-		// A WARM RAMP, all five of them. `big` was 0x9EC44A — jungle lime — which
-		// made the FIRST and by far the commonest win tier the one colour in the
-		// game that belongs to a different game. Brass is the modest end of this
-		// game's own light; the tiers then run gold, amber, red, and finally out
-		// of the palette on purpose for max.
-		big: { mult: 1, glowTint: 0xd8a334 },
+		// each plaque glows in its own material (design/generate_win_banners.mjs):
+		// teak, polished brass, verdigris copper, storm iron, then solid gold.
+		big: { mult: 1, glowTint: 0xe0a860 },
 		superwin: { mult: 1.15, glowTint: 0xffd75e },
-		mega: { mult: 1.3, glowTint: 0xffa347 },
-		epic: { mult: 1.5, glowTint: 0xff7a4a },
-		max: { mult: 1.8, glowTint: 0xff8ede },
+		mega: { mult: 1.3, glowTint: 0x5fe6c8 },
+		epic: { mult: 1.5, glowTint: 0x9fd8ff },
+		max: { mult: 1.8, glowTint: 0xfff3c4 },
 	};
 
 	let show = $state(false);
@@ -58,19 +55,52 @@
 
 	// camera shake as the presentation slams in
 	let shake = $state({ x: 0, y: 0 });
-	const startShake = () => {
+	const startShake = (ms = 700, peak = 11) => {
 		const start = Date.now();
 		const id = setInterval(() => {
-			const p = (Date.now() - start) / 700;
+			const p = (Date.now() - start) / ms;
 			if (p >= 1) {
 				shake = { x: 0, y: 0 };
 				clearInterval(id);
 				return;
 			}
-			const amp = 11 * (1 - p) ** 2;
+			const amp = peak * (1 - p) ** 2;
 			shake = { x: (Math.random() - 0.5) * 2 * amp, y: (Math.random() - 0.5) * 2 * amp };
 		}, 16);
 	};
+
+	// ── THE AMOUNT LANDS ──────────────────────────────────────────────────────
+	//
+	// The count-up used to simply stop: the last digit arrived and nothing marked
+	// it, so the one number the presentation exists to show had no moment of its
+	// own. Now, when it finishes (by itself or on a press), the figure swells and
+	// settles like a crate set down hard, the plaque flares, the scene takes a
+	// short knock and a spray of gilt goes off behind the digits, with a cargo
+	// thud under it. Big wins only. Timer-driven so a hidden tab cannot leave
+	// the figure stuck swollen.
+	let landPunch = $state(1);
+	let landFlare = $state(0);
+	let landBurst = $state(0);
+	const landAmount = () => {
+		if (winLevelData?.type !== 'big') return;
+		const start = Date.now();
+		landBurst++;
+		startShake(320, 6);
+		context.eventEmitter.broadcast({ type: 'soundCargoLock' });
+		const id = setInterval(() => {
+			const p = (Date.now() - start) / 520;
+			if (p >= 1) {
+				landPunch = 1;
+				landFlare = 0;
+				clearInterval(id);
+				return;
+			}
+			// up fast, then a damped settle: overshoot, a small dip, rest
+			landPunch = 1 + 0.32 * Math.exp(-p * 5.5) * Math.cos(p * Math.PI * 2.4 - 0.9) * (p < 0.08 ? p / 0.08 : 1);
+			landFlare = 0.6 * (1 - p) ** 2;
+		}, 16);
+	};
+	onCountUpComplete = landAmount;
 
 	// hit-stop impact frame: white flash + scale punch on the slam-in
 	let flash = $state(0);
@@ -153,7 +183,7 @@
 		return {
 			scale,
 			glow: 0.42 + 0.24 * (0.5 + 0.5 * Math.sin(t * 2.6)),
-			blink,
+			blink: Math.max(blink, landFlare),
 		};
 	});
 
@@ -260,12 +290,18 @@
 									/>
 								{/each}
 								<!-- amount rolls inside the plaque's dark centre well -->
-								<GoldText
-									y={bh * 0.16}
-									maxWidth={bw * 0.68}
-									text={bookEventAmountToCurrencyString(countUpAmount)}
-									fontSize={bh * 0.24}
-								/>
+								<Container y={bh * 0.16} scale={landPunch}>
+									<GoldText
+										maxWidth={bw * 0.68}
+										text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
+										fontSize={bh * 0.24}
+									/>
+								</Container>
+								{#key landBurst}
+									{#if landBurst > 0}
+										<FxBurst y={bh * 0.16} scale={1.3} />
+									{/if}
+								{/key}
 							</Container>
 							{#if burstShown}
 								<FxBurst scale={1.7} flavour="cargo" oncomplete={() => (burstShown = false)} />
@@ -275,7 +311,7 @@
 							<GoldText
 								maxWidth={context.stateLayoutDerived.canvasSizes().width /
 									context.stateLayoutDerived.mainLayout().scale}
-								text={bookEventAmountToCurrencyString(countUpAmount)}
+								text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
 								fontSize={SYMBOL_SIZE}
 							/>
 						{/if}

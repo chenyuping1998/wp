@@ -22,7 +22,6 @@ if (!resvgDir) {
 }
 const require = createRequire(path.join(resvgDir, 'noop.js'));
 const { Resvg } = require('@resvg/resvg-js');
-const { PNG } = require('pngjs');
 
 import { surfaceDefs, finishRect, CANVAS_FINISH, BRASS_FINISH } from './surface.mjs';
 
@@ -35,7 +34,6 @@ const UI_BASE_FONT_SIZE = 45;
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(appRoot, 'static/assets/sprites/goBananasUi');
-const SYMBOLS = path.join(appRoot, 'static/assets/sprites/goBananasSymbolsV3');
 fs.mkdirSync(OUT, { recursive: true });
 
 const render = (svg, name, width) => {
@@ -144,86 +142,41 @@ ${buyRivets}
 // that tile's own worn cream, #D1CDB9, because the low symbols ARE stencils
 // sprayed on container doors and this is the same mark on the same door.
 //
-// WHY THE MINE. It is the thing the captain throws to start the feature, so it
-// already means "the feature begins" before a player has read the caption; and
-// it needs no colour keying, because mine.png is already cut out (see
-// cut_from_plate.py). Drawing one by hand would put a second, slightly
-// different mine in a game that already has one.
+// WHY THE SHIP'S WHEEL.
 //
-// A FLAT SILHOUETTE IS THE WRONG REDUCTION FOR THIS SUBJECT, and it is worth
-// saying why, because Go Bananubis's plate takes exactly that route and is
-// right to. An eye IS its outline. A mine is a sphere with its horns pointing
-// at the camera, so its outline is a circle with four bumps on it - rendered
-// cream on a panel it came out as a blob, and nothing about it said mine.
+// The mark that was here first was the naval mine, and it was the wrong mark
+// twice over. It is the TRANSITION PROP — the thing the captain throws at the
+// camera between the base game and the free games — and it is also H2, a mid-tier
+// paying symbol on the reels. So the button wore a picture of a symbol you can
+// land, while the thing it actually sells is the free round.
 //
-// What carries the shape is the artist's own dark contour: the seam band, the
-// collars, the line down each horn. So the stencil is the cut-out MINUS those
-// lines - a solid cream shape with its own linework knocked out of it, which is
-// what a real spray stencil looks like anyway, bridges and all.
+// A wheel is not a symbol and never will be. It is the control you take hold of
+// to commit the ship to a course, and pressing Buy Bonus is that: paying to go
+// now instead of waiting for three scatters to turn up.
 //
-// The threshold is measured, not chosen: rendered at 60, 80 and 100 and looked
-// at. At 80 the sphere's shaded lower right starts dropping out in patches and
-// by 100 the shape has come apart; 60 takes the contour and nothing else.
-const STENCIL_INK = 60;
-
-const mineSilhouette = () => {
-	const src = PNG.sync.read(fs.readFileSync(path.join(SYMBOLS, 'mine.png')));
-	const { width: W, height: H, data } = src;
-	const lit = (i) => data[i * 4] * 0.299 + data[i * 4 + 1] * 0.587 + data[i * 4 + 2] * 0.114;
-	const on = (i) => data[i * 4 + 3] > 128 && lit(i) > STENCIL_INK;
-	// Bounds off the CUT-OUT, not the stencil: the contour runs right to the
-	// silhouette's edge, so cropping to the painted area alone would shave the
-	// outermost ring off every horn.
-	let x0 = W, y0 = H, x1 = 0, y1 = 0;
-	const rowWidth = new Int32Array(H);
-	for (let y = 0; y < H; y++) {
-		let lo = -1, hi = -1;
-		for (let x = 0; x < W; x++)
-			if (data[(y * W + x) * 4 + 3] > 128) {
-				if (lo < 0) lo = x;
-				hi = x;
-				if (x < x0) x0 = x;
-				if (x > x1) x1 = x;
-				if (y < y0) y0 = y;
-				if (y > y1) y1 = y;
-			}
-		rowWidth[y] = lo < 0 ? 0 : hi - lo + 1;
-	}
-	// THE MOORING CHAIN IS CROPPED OFF, and the height budget is why.
-	//
-	// The cut keeps the chain the mine hangs from, which is right for the prop
-	// the captain throws and wrong for a button mark: the stencil is sized by
-	// height (see MINE_H), so a chain occupying the top third of the art spends
-	// a third of the budget on something that, at the 120px this button is
-	// actually drawn at, is three grey pixels. The mine came out a small dense
-	// blob.
-	//
-	// Cropped by a property of the shape rather than a typed-in row: scanning
-	// down from the top, the first row at least this wide is where the mine
-	// starts. There is a clean step to sit in — measured down the current art,
-	// the chain holds between 5% and 25% of the widest row for its whole length
-	// and the very next rows jump to 38% as the upper horns come in. 0.45 was
-	// the first guess and it landed INSIDE the sphere, cropping its dome off
-	// flat.
-	const CHAIN_CUT = 0.3;
-	const widest = Math.max(...rowWidth);
-	for (let y = y0; y <= y1; y++)
-		if (rowWidth[y] >= widest * CHAIN_CUT) {
-			y0 = y;
-			break;
-		}
-	const w = x1 - x0 + 1;
-	const h = y1 - y0 + 1;
-	const out = new PNG({ width: w, height: h });
-	for (let y = 0; y < h; y++)
-		for (let x = 0; x < w; x++) {
-			const o = (y * w + x) * 4;
-			out.data[o] = out.data[o + 1] = out.data[o + 2] = 255;
-			out.data[o + 3] = on((y + y0) * W + (x + x0)) ? 255 : 0;
-		}
-	return { href: `data:image/png;base64,${PNG.sync.write(out).toString('base64')}`, aspect: h / w };
-};
-
+// IT WAS AN ENGINE TELEGRAPH FIRST, and the difference is worth writing down
+// because it is the whole of why this was redrawn. A telegraph reduces to a
+// graduated dial with two small levers on the case. Rendered at the 150px this
+// button is actually drawn at, a graduated dial is a CLOCK — and no amount of
+// work on the levers fixed that, because the levers are a detail and the clock
+// is the shape. A wheel reduces to something no other object shares: a rim with
+// HANDSPIKES RADIATING OUT OF IT. That reads at any size, and it reads in
+// silhouette, which is what a mark on a button has to do.
+//
+// DRAWN HERE AS PATHS, NOT CUT OUT OF ARTWORK. The old note in this file argued
+// against hand-drawing the mark, and it was right: hand-drawing a mine would have
+// put a second, slightly different mine in a game that already had one. That
+// argument only holds for a mark that is already art somewhere. Nothing in this
+// game is a ship's wheel, and a flat mark IS a vector shape — so authoring it as
+// SVG is both cheaper and more accurate than generating a painting and cutting
+// it off its plate.
+//
+// THE CENTRE IS LEFT BARE ON PURPOSE. A wheel's spokes converge on a hub, and
+// the hub is exactly where the caption has to go — so there are no inner spokes
+// at all and the words stand where the hub would be. That is a real constraint
+// honoured rather than worked around: see the clear-zone arithmetic below, and
+// note that the handspikes alone carry the read, which is why losing the spokes
+// costs nothing.
 // WHERE THE CAPTION LANDS, derived rather than typed.
 //
 // The shared button centres its two lines on the plate and offers no way to move
@@ -253,21 +206,81 @@ const LABEL_BLOCK = ((UI_BASE_FONT_SIZE * (LABEL_RATIO + 0.04) * 2) / 150) * BS;
 // The top of the line box, which is what the stencil above has to clear.
 const LABEL_TOP = Math.round(BS / 2 - LABEL_BLOCK / 2);
 
-// THE STENCIL IS SIZED BY HEIGHT, NOT WIDTH, and the caption is why.
+// ── the telegraph, in plate coordinates ────────────────────────────────────
 //
-// It has to END before the placard starts, which makes the vertical budget the
-// fixed quantity and the width whatever the art's aspect gives. That matters
-// here because the aspect is not fixed either: the mine came back 776x837 once
-// the cut stopped eating its mooring chain, where it had been square, and a
-// width-driven layout quietly pushed the stencil down over the first line.
-const MINE = mineSilhouette();
-const MINE_Y = 26;
-const MINE_H = LABEL_TOP - MINE_Y - 14;
-const MINE_W = Math.round(MINE_H / MINE.aspect);
-const MINE_X = BS / 2 - MINE_W / 2;
+// THE CLEAR ZONE IS THE CONSTRAINT, and it is a number rather than a judgement.
+// The shared button wraps the caption at buyBonusLabelWrapWidth (108 of its 150
+// units), so the widest the words can ever be is 108/150 of the plate — +-230px
+// here — and their two lines stand 119px each side of the centre. Nothing cream
+// may be drawn inside that, or the words lose the panel they read against.
+//
+// So the ring's inner edge sits at 246, every tick points OUTWARD from the rim
+// rather than inward, and the pointer starts at 150 — which is outside the
+// caption's top line (119) and inside the rim.
+const DIAL_CX = BS / 2;
+const DIAL_CY = BS / 2;
 
-const mineImage = (filter, dy = 0) =>
-	`<image href="${MINE.href}" x="${MINE_X}" y="${MINE_Y + dy}" width="${MINE_W}" height="${MINE_H}" filter="url(#${filter})"/>`;
+// THE CLEAR ZONE IS THE CONSTRAINT, and it is a number rather than a judgement.
+// The shared button wraps the caption at buyBonusLabelWrapWidth (94 of its 150
+// units), so the widest the words can ever be is +-200px here, and their two
+// lines stand 119px each side of the centre. At the height of a line the rim's
+// inner edge has sqrt(216^2 - 119^2) = 180px of clearance, against the ~167 that
+// BUY BONUS actually measures — so nothing cream is ever drawn through the words.
+//
+// Raising buyBonusLabelWrapWidth in uiTheme.ts without raising RIM_IN here is
+// what would break it. The comment there says the same thing from the far side.
+const RIM_IN = 216;
+const RIM_OUT = 244;
+
+// The handspikes. EIGHT, EVENLY SPACED, AND LONG — this is the entire mark.
+//
+// A ring with many short teeth is a cog; a ring with a few long tapered ones is
+// a wheel, and nothing else in a slot cabinet looks like it. They are drawn as
+// tapered quads rather than round-capped lines because a handspike is turned
+// wood: wide where it is socketed into the rim, narrower along its length, with
+// a swell at the end for the hand.
+//
+// The outer reach is bounded by the plate it sits on rather than by the canvas:
+// the tip plus its swell (286 + 18) has to stay inside CASE_R, or the wheel grows
+// out of its own mounting.
+const SPIKE_N = 8;
+const SPIKE_OUT = 286;
+const spikes = Array.from({ length: SPIKE_N }, (_, i) => {
+	const a = (i / SPIKE_N) * Math.PI * 2;
+	const sin = Math.sin(a);
+	const cos = Math.cos(a);
+	// along the spike, and across it
+	const at = (r, w) => [
+		DIAL_CX + sin * r - cos * w,
+		DIAL_CY - cos * r - sin * w,
+	];
+	const [ax, ay] = at(RIM_OUT - 10, 15);
+	const [bx, by] = at(SPIKE_OUT, 9);
+	const [cx, cy] = at(SPIKE_OUT, -9);
+	const [dx, dy] = at(RIM_OUT - 10, -15);
+	const [kx, ky] = at(SPIKE_OUT, 0);
+	return `<path d="M ${ax.toFixed(1)} ${ay.toFixed(1)} L ${bx.toFixed(1)} ${by.toFixed(1)} L ${cx.toFixed(1)} ${cy.toFixed(1)} L ${dx.toFixed(1)} ${dy.toFixed(1)} Z" stroke="none"/>
+	<circle cx="${kx.toFixed(1)}" cy="${ky.toFixed(1)}" r="18" stroke="none"/>`;
+}).join('');
+
+// The felloes — the rim of a wooden wheel is built from segments, and the joints
+// fall BETWEEN the handspikes. A small detail that costs eight short lines and
+// is most of what stops the rim reading as a plain printed hoop.
+const felloes = Array.from({ length: SPIKE_N }, (_, i) => {
+	const a = ((i + 0.5) / SPIKE_N) * Math.PI * 2;
+	const at = (r) => [DIAL_CX + Math.sin(a) * r, DIAL_CY - Math.cos(a) * r];
+	const [x0, y0] = at(RIM_IN - 1);
+	const [x1, y1] = at(RIM_OUT + 1);
+	return `<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke-width="7" opacity="0.45"/>`;
+}).join('');
+
+// One group, so the whole mark can be stamped twice — once as the dark creep
+// under the paint, once as the paint.
+const helm = (fill, opacity, dy = 0) => `<g transform="translate(0 ${dy})" fill="${fill}" stroke="${fill}" opacity="${opacity}">
+	<circle cx="${DIAL_CX}" cy="${DIAL_CY}" r="${(RIM_IN + RIM_OUT) / 2}" fill="none" stroke-width="${RIM_OUT - RIM_IN}"/>
+	${spikes}
+	<g stroke="#000000" opacity="1">${felloes}</g>
+</g>`;
 
 const buyBonusContainer = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
 <defs>
@@ -328,8 +341,8 @@ ${finishRect(8, 8, BS - 16, BS - 16, 26, 'sf', CANVAS_FINISH)}
 ${finishRect(46, 46, BS - 92, BS - 92, 16, 'sf', CANVAS_FINISH)}
 <rect x="55" y="55" width="${BS - 110}" height="${BS - 110}" rx="12" fill="none" stroke="#000000" stroke-width="2" opacity="0.22"/>
 
-${mineImage('cPaintShadow', 5)}
-${mineImage('cPaint')}
+${helm('#000000', 0.3, 5)}
+${helm('#d1cdb9', 0.88)}
 
 ${[[46, 46], [BS - 46, 46], [46, BS - 46], [BS - 46, BS - 46]]
 	.map(([x, y]) => `<rect x="${x - 21}" y="${y - 21}" width="42" height="42" rx="5" fill="url(#cSteel)" stroke="#1e2426" stroke-width="4"/>
@@ -347,7 +360,7 @@ ${[[46, 46], [BS - 46, 46], [46, BS - 46], [BS - 46, BS - 46]]
 const buyBonusContainerLit = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
 <defs>
 	<radialGradient id="cBloom" cx="0.5" cy="0.5" r="0.5">
-		<stop offset="0" stop-color="#ffb02c" stop-opacity="0.4"/>
+		<stop offset="0" stop-color="#ffb02c" stop-opacity="0.26"/>
 		<stop offset="0.4" stop-color="#ff8c1a" stop-opacity="0.17"/>
 		<stop offset="1" stop-color="#ff6a10" stop-opacity="0"/>
 	</radialGradient>
@@ -362,13 +375,104 @@ const buyBonusContainerLit = `<svg xmlns="http://www.w3.org/2000/svg" width="${B
 		<feGaussianBlur stdDeviation="2"/>
 	</filter>
 </defs>
-<ellipse cx="${BS / 2}" cy="${MINE_Y + MINE_H / 2}" rx="${BS * 0.42}" ry="${BS * 0.3}" fill="url(#cBloom)"/>
-${mineImage('cLitSoft')}
-${mineImage('cLitCore')}
+<ellipse cx="${DIAL_CX}" cy="${DIAL_CY}" rx="${BS * 0.46}" ry="${BS * 0.4}" fill="url(#cBloom)"/>
+<!-- 0.55, not 1: at the 150px the button is actually drawn, a full-strength
+     soft pass blew the rim out into a white ring and took the caption with it -->
+<g filter="url(#cLitSoft)" opacity="0.55">${helm('#ffffff', 1)}</g>
+<g filter="url(#cLitCore)">${helm('#ffffff', 1)}</g>
 </svg>`;
+
+// ── THE GROUND UNDER THE MARK: three answers, so it can be chosen by looking ──
+//
+// The question is whether the container door is still earning its place now that
+// the mark is an instrument rather than a stencil. In the game it sits to the
+// left of a board MADE OF container panels, so a container panel next to it can
+// read as a stray board cell that came loose — which is the case for dropping it.
+// The case for keeping it is that a button needs an edge: a mark floating on the
+// painted dock has no boundary, and a control with no boundary is not obviously
+// a control.
+//
+// Rendered all three rather than argued about.
+
+// B — no ground at all. The dial sprayed straight onto the scene.
+const buyBonusBare = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
+<defs>${DEFS}</defs>
+${helm('#000000', 0.45, 6)}
+${helm('#d1cdb9', 0.94)}
+</svg>`;
+
+// C — the instrument's own case. A dark steel body with a brass bezel, which is
+// what a telegraph actually is, and which gives the caption a face to sit on
+// instead of a painted panel. Note this is NOT the black placard that was tried
+// and rejected under the words once before: that was a rectangle stuck on a grey
+// panel to prop the type up, this is the object the mark belongs to.
+// ONE RING, NOT TWO. The first version of this put a heavy brass bezel around
+// the plate, which was right while the mark was a painted dial — the bezel was
+// the only warm thing on a grey bet bar and the dial had no weight of its own.
+// A wheel is a physical object with its own rim, so a bezel around it is a second
+// concentric circle doing the same job a few pixels further out, and the two read
+// as one fussy target. The brass moved INTO the wheel instead: same warmth on the
+// bar, one object instead of two, and the mark now looks turned and mounted
+// rather than stencilled.
+const CASE_R = 310;
+const buyBonusCase = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
+<defs>
+	${DEFS}
+	<radialGradient id="caseFace" cx="0.38" cy="0.32" r="0.85">
+		<stop offset="0" stop-color="#46525c"/>
+		<stop offset="0.6" stop-color="#2f3a43"/>
+		<stop offset="1" stop-color="#171f25"/>
+	</radialGradient>
+	<!-- lit from the upper left, like the reel housing's brass -->
+	<linearGradient id="helmBrass" x1="0.15" y1="0" x2="0.7" y2="1">
+		<stop offset="0" stop-color="#ffeaa0"/>
+		<stop offset="0.3" stop-color="#e8b545"/>
+		<stop offset="0.65" stop-color="#b57e1e"/>
+		<stop offset="1" stop-color="#6d4a0d"/>
+	</linearGradient>
+</defs>
+<circle cx="${DIAL_CX}" cy="${DIAL_CY}" r="${CASE_R}" fill="url(#caseFace)"/>
+<!-- the only thing left of the bezel: a hairline, so the button has an edge -->
+<circle cx="${DIAL_CX}" cy="${DIAL_CY}" r="${CASE_R - 3}" fill="none" stroke="#8a5c14" stroke-width="5" opacity="0.85"/>
+<circle cx="${DIAL_CX}" cy="${DIAL_CY}" r="${CASE_R - 9}" fill="none" stroke="#000000" stroke-width="12" opacity="0.4"/>
+${helm('#000000', 0.45, 6)}
+${helm('url(#helmBrass)', 1)}
+<!-- a top highlight along the rim, which is what makes brass look turned -->
+<circle cx="${DIAL_CX}" cy="${DIAL_CY}" r="${(RIM_IN + RIM_OUT) / 2 - 8}" fill="none" stroke="#ffeaa0" stroke-width="3" opacity="0.4"/>
+</svg>`;
+
+// `node generate_ui_plates.mjs <dir> --variants <outdir>` writes the three
+// grounds side by side instead of shipping one. Nothing else reads this.
+const variantDir = process.argv.indexOf('--variants') > -1 && process.argv[process.argv.indexOf('--variants') + 1];
+if (variantDir) {
+	fs.mkdirSync(variantDir, { recursive: true });
+	for (const [name, svg] of [['a_door', buyBonusContainer], ['b_bare', buyBonusBare], ['c_case', buyBonusCase]]) {
+		const r = new Resvg(svg, { fitTo: { mode: 'width', value: BS }, font: { loadSystemFonts: false } });
+		fs.writeFileSync(path.join(variantDir, `${name}.png`), r.render().asPng());
+		console.log('variant', name);
+	}
+}
 
 render(ticker, 'ticker_plate.png', TW);
 render(buyBonus, 'buybonus_plate.png', BS);
-render(buyBonusContainer, 'buybonus_container.png', BS);
+// THE CASE, NOT THE DOOR.
+//
+// buybonus_container.png keeps its name — it is wired through uiTheme.ts and an
+// asset key rename buys nothing — but what it now contains is the instrument's
+// own body rather than a shipping-container panel.
+//
+// The door went because it had stopped doing a job. It was there to say "this
+// button belongs to this game" back when the mark on it was a stencil, and a
+// stencil needs a panel to be sprayed on. An engine telegraph is an object, not
+// a marking, and it brings its own edges. Worse, in place the door sat to the
+// left of a board MADE of container panels and read as a board cell that had
+// come loose.
+//
+// The brass is the other half of the reason. The platform skin's bet bar is flat
+// grey and the door was grey on grey, which made the one control the game most
+// wants pressed the quietest thing on the strip. The bezel is the same brass as
+// the reel housing and the win plaques, so the CTA is now the only warm object
+// down there — which is exactly what a CTA should be.
+render(buyBonusCase, 'buybonus_container.png', BS);
 render(buyBonusContainerLit, 'buybonus_container_lit.png', BS);
 console.log('ui plates written to', OUT);

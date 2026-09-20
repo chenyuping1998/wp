@@ -46,9 +46,14 @@
 			if (alpha <= 0.01) continue;
 			// the hold with the lights off, not the jungle floor: 0x0A1508 was a
 			// dark green carried over with the rest of this component
-			g.beginFill(0x080f14, alpha);
-			g.drawRect(left + column * SYMBOL_SIZE, top, SYMBOL_SIZE, board.height);
-			g.endFill();
+			// PIXI v8 API, and this one mattered more than most: every column here
+			// is the SAME colour at a DIFFERENT alpha, which is what makes the
+			// covers lift one after another. The v7 shim resolves a Graphics with
+			// the last fill applied throughout, so all four columns were drawn at
+			// the last column's alpha and the stagger this component exists for
+			// never reached the screen — the board simply faded up as one block.
+			g.rect(left + column * SYMBOL_SIZE, top, SYMBOL_SIZE, board.height);
+			g.fill({ color: 0x080f14, alpha });
 		}
 	};
 </script>

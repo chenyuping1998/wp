@@ -151,6 +151,14 @@ export const stateGame = $state({
 	// rather than an event because the transition needs it at the instant it
 	// starts, not whenever the mascot last happened to broadcast.
 	mascotThrowOrigin: null as { x: number; y: number } | null,
+	// Scene offset for the whole-screen shake. Written by CameraShake, read by
+	// Game.svelte, which applies it to the layers that are allowed to move — see
+	// the comment there about which ones those are and why.
+	cameraShake: { x: 0, y: 0 },
+	// This Free Spins round's multiplier (freeGameMultiplier), or null outside a
+	// round. Null rather than 1 so the badge that shows it can tell "no round"
+	// from "a round at x1".
+	fgMultiplier: null as number | null,
 });
 
 // The reel housing fills 94% of the box height (BOARD_SIZES is 590 tall and

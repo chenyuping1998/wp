@@ -13,6 +13,7 @@ import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEv
 import type { Position } from './types';
 import { BOARD_DIMENSIONS, HOLD_AND_SPIN_MODE_KEY } from './constants';
 import config from './config';
+import { startDockSplash } from './dockSplash.svelte';
 
 // The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
 // a value of 1 means the tease starts on the *second* scatter. Free spins need
@@ -57,6 +58,10 @@ export type WinLineDatum = {
 	kind: number;
 	ways: number;
 	win: number;
+	// Only base-game wins are ever replayed (see below), and the base game has no
+	// multiplier, so this is always the same number as `win` here. It is carried
+	// anyway because WinWays takes one type for both paths.
+	winBase: number;
 	positions: { reel: number; row: number }[];
 	symbolCount: number;
 };
@@ -172,6 +177,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			kind: win.kind,
 			ways: win.meta.ways,
 			win: win.win,
+			// what the ways made before the round's multiplier. Both numbers come
+			// from the book — see the two-stage note below.
+			winBase: win.meta.winWithoutMult,
 			positions: win.positions,
 			symbolCount: win.positions.length,
 		}));
@@ -182,6 +190,25 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// completion).
 		const isFreeGame = stateGame.gameType === 'freegame';
 		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins: winLineData, fast: isFreeGame });
+
+		// ── THE MULTIPLIER, AS A SECOND BEAT ─────────────────────────────────
+		//
+		// In a free game carrying a multiplier above x1, the board has just shown
+		// what the WAYS made. Now the badge in the corner drops onto it and the
+		// amounts become what the book pays. Two beats instead of one: the first
+		// number is a floor, the second is the part with upside, and the player
+		// has known since the wheel how big that part is.
+		//
+		// Every win in a round shares the round's multiplier, so reading it off
+		// the first win is reading it off all of them. At x1 the strike is a no-op
+		// (see MultiplierStrike) and this costs nothing.
+		const roundMultiplier = bookEvent.wins[0]?.meta.globalMult ?? 1;
+		if (isFreeGame && roundMultiplier > 1) {
+			await eventEmitter.broadcastAsync({
+				type: 'multiplierStrike',
+				multiplier: roundMultiplier,
+			});
+		}
 
 		eventEmitter.broadcast({ type: 'winLinesHide' });
 
@@ -215,17 +242,27 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// gold rings + sparks burst out of the scatters while the bell rings
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
 
-		// Four or more Scatters is the rare way in — three is the ordinary one — so
-		// that is where the mascot's biggest reaction goes. Counted here rather
-		// than in the component: the count is a property of this book event, and a
-		// component that had to go looking for it would be reaching across the game
-		// to find something it was never handed.
+		// THE CHEST BEAT, ON EVERY TRIGGER — and the harbour answers it.
+		//
+		// This used to be for four or more Scatters only, as "the rare way in".
+		// Bought features land five, so a buy always passed; but three is the
+		// ordinary way in from the base game — measured over the published base
+		// books, 245 of 301 triggers — and every one of those skipped the gesture,
+		// and would now skip the whole waterfront reacting to it. So it runs on
+		// every trigger. Go Boomana made the same change for a related reason (its
+		// bought tiers land three).
+		//
+		// On each of the six strikes the scene jolts, the sea slops over the pier
+		// above and runs off it, spray slaps up from below, and drops land on the
+		// lens (game/dockSplash, components/HarbourSplash). Trigger only: the big-win
+		// chest beat stays a celebration and does not soak the room, or the effect
+		// would wear out.
 		//
 		// It runs during the 3s bell hold, which is the only stretch of the trigger
-		// long enough to watch him do it.
-		if (bookEvent.positions.length >= 4) {
-			eventEmitter.broadcast({ type: 'mascotChestBeat' });
-		}
+		// long enough to watch him do it; the chest beat is 2.68s and fits.
+		eventEmitter.broadcast({ type: 'mascotChestBeat' });
+		startDockSplash();
+		eventEmitter.broadcast({ type: 'soundDockSplash' });
 		await waitForTimeout(3000);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
 		// Three passes of the scatter shake — extended trigger celebration
@@ -278,6 +315,27 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			await eventEmitter.broadcastAsync({ type: 'cargoPick', symbol: firstCargo.symbol });
 		}
 
+		// ...and then THE MULTIPLIER WHEEL, straight after the cargo wheel.
+		//
+		// Read ahead for the same reason the cargo is: the maths emits
+		// freeGameMultiplier as its own event after this one, but the player
+		// should meet both wheels as one ceremony — what the crates hold, then
+		// what every win will be worth — before the counter comes up and the
+		// round starts, not with the intro plaque wedged between them. The
+		// event's own handler below only records the value, so playing it here
+		// does not show it twice.
+		const multiplierEvent = _.find(
+			bookEvents.slice(bookEvents.indexOf(bookEvent) + 1),
+			(event) => event?.type === 'freeGameMultiplier',
+		) as BookEventOfType<'freeGameMultiplier'> | undefined;
+		if (multiplierEvent) {
+			await eventEmitter.broadcastAsync({
+				type: 'multiplierPick',
+				multiplier: multiplierEvent.multiplier,
+			});
+			stateGame.fgMultiplier = multiplierEvent.multiplier;
+		}
+
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
 		stateUi.freeSpinCounterShow = true;
@@ -309,6 +367,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	// instead of in front of it.
 	fullShipment: async () => {
 		await eventEmitter.broadcastAsync({ type: 'fullShipment' });
+	},
+
+	// Records the round's multiplier. The wheel that presents it is played from
+	// freeSpinTrigger, which reads ahead to this event so the two wheels run
+	// back to back; this handler is what keeps the value right on any path that
+	// does not go through the trigger (a resumed round).
+	freeGameMultiplier: async (bookEvent: BookEventOfType<'freeGameMultiplier'>) => {
+		stateGame.fgMultiplier = bookEvent.multiplier;
 	},
 
 	mysteryReveal: async (bookEvent: BookEventOfType<'mysteryReveal'>) => {
@@ -428,6 +494,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			type: 'transition',
 			cover: () => {
 				stateGame.gameType = 'basegame';
+				// the multiplier belongs to the round; gone with it, so the badge goes too
+				stateGame.fgMultiplier = null;
 			},
 		});
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
@@ -506,6 +574,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 					stateGame.stickyPrizes = [];
 					eventEmitter.broadcast({ type: 'stickyPrizesClear' });
 					stateGame.gameType = 'basegame';
+					// the multiplier belongs to the round; gone with it, so the badge goes too
+					stateGame.fgMultiplier = null;
 					stateGameDerived.enhancedBoard.settle(baseIdleBoard());
 					// The bed changes on the same frame as the scene. winLevelSoundsStop
 					// ran earlier, while gameType was still 'hold and spin', so it correctly
@@ -543,6 +613,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// padded with undefined. Reset it here too.
 		if (stateGame.gameType !== 'basegame') {
 			stateGame.gameType = 'basegame';
+			// the multiplier belongs to the round; gone with it, so the badge goes too
+			stateGame.fgMultiplier = null;
 		}
 	},
 	wincap: async (bookEvent: BookEventOfType<'wincap'>) => {

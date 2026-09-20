@@ -290,21 +290,52 @@
 		font-size: 1.6rem !important;
 	}
 
-	/* card copy: title in banana gold, price in the brass used on the bet bar */
+	/* ── CARD COPY OVER ARTWORK ───────────────────────────────────────────────
+	   Every one of these cards has a full-bleed cover behind its text, and the
+	   text is spread across the whole of it — the card renders about 355x250
+	   above its button while the art is 360x520, so object-fit crops to a band
+	   that the title, the description and the price all sit inside. There is no
+	   part of the art the words are not on.
+
+	   So each line carries its OWN dark ground: a tight contact shadow plus a
+	   wider soft one. Two shadows rather than one because they do different jobs
+	   — the 1px offset separates the glyph from whatever is immediately behind
+	   it, the blurred one darkens the area around it so a bright detail cannot
+	   sit in a counter.
+
+	   This is the half of the fix that holds at any crop, any locale and any card
+	   height. The scrim baked into the art (design/generate_mode_cards.mjs) is a
+	   fixed gradient and cannot know where the words ended up; between them the
+	   art stays visible and the copy stays readable. Raising the scrim instead
+	   was tried and it turns the cards to mud — the arithmetic is in that file.
+	*/
 	:global(.bonus-card-wrap .title) {
 		color: #ffd75e !important;
 		font-weight: 800 !important;
 		letter-spacing: 0.04em !important;
+		text-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.95),
+			0 0 10px rgba(0, 0, 0, 0.8) !important;
 	}
 
 	:global(.bonus-card-wrap .price) {
 		color: #fff7d6 !important;
 		font-weight: 800 !important;
-		text-shadow: 0 0 10px rgba(216, 163, 52, 0.45) !important;
+		text-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.95),
+			0 0 12px rgba(0, 0, 0, 0.85),
+			0 0 18px rgba(216, 163, 52, 0.35) !important;
 	}
 
+	/* Was rgba(255,247,214,0.72). The description is the longest line on the card
+	   and the one a player actually has to read to tell the tiers apart, and it
+	   was the faintest thing on it — a translucent cream on a lit gold column.
+	   Opaque, and a shade warmer than the title so the two still separate. */
 	:global(.bonus-card-wrap .description) {
-		color: rgba(255, 247, 214, 0.72) !important;
+		color: #ece4cf !important;
+		text-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.95),
+			0 0 9px rgba(0, 0, 0, 0.85) !important;
 	}
 
 	/* Scrollbars */
@@ -347,110 +378,166 @@
 	   only when it resolved to 'platform'. Everything above is untouched and is
 	   byte-for-byte what the 'boat' skin shows.
 
-	   Same source as the bet bar's casing: Hacksaw's .ActionPanel (#2a2a2a on a
-	   3px #0f0f0f edge), their .Button table (#343a40 borders, #4ace4a primary,
-	   #bfbfbf disabled text) and their mobile CircleButton disc. The bar went
-	   flat grey and these panels stayed olive and brass, which read as two
-	   different products stacked on one screen.
+	   Same SHAPES as the bet bar's casing — Hacksaw's .ActionPanel, their
+	   .Button table and their mobile CircleButton disc, at their radii and
+	   weights — in this game's NAVY AND BRASS rather than their grey and green.
+
+	   The colours are the ones in game/palette.ts, written out as hex because CSS
+	   cannot import a TS module. Change one there, change it here. The rule is the
+	   same too: navy and steel are the ship, brass is what you touch and what you
+	   win. In a menu that means panels and idle chips are navy, and the one thing
+	   that goes brass is the thing you have SELECTED or are pressing.
+
+	     HULL        #122029   panel ground
+	     PANEL       #172733   (unused here; the bar's readout plates)
+	     DISC        #0b141b   chips, inputs, card ground
+	     STEEL_EDGE  #5b7a8f   panel edge, idle chip ring
+	     STEEL_DIM   #3e5a6e   input ring, scrollbar
+	     STEEL_TEXT  #8fa6b8   secondary text, the close ×
+	     BRASS_TEXT  #e8b545   selected, active, focus
+	     CREAM       #ece4cf   headings and anything read
 	   ═════════════════════════════════════════════════════ */
 
-	/* the shade behind a modal: neutral black, not jungle shade */
+	/* the shade behind a modal: deep water, not neutral black — the game shows
+	   through it, and a navy shade over a navy-and-steel scene keeps it the same
+	   scene with the lights down */
 	:global(html[data-ui-skin='platform'] .blur-layer) {
-		background-color: rgba(0, 0, 0, 0.72) !important;
+		background-color: rgba(4, 10, 15, 0.74) !important;
 	}
 
-	/* the panel itself — their .ActionPanel, at the radius they use */
+	/* THE PANEL — their .ActionPanel at the radius they use, in hull navy.
+	   A single faint brass line inside the steel edge: the trim a bridge console
+	   has, and the one piece of decoration the panel carries. It is at 0.18 so it
+	   reads as a finish, not as a second border. */
 	:global(html[data-ui-skin='platform'] .ui-popup-standard-content-wrap) {
-		background: #2a2a2a !important;
-		border: 3px solid #0f0f0f !important;
-		border-radius: 4px !important;
-		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7) !important;
+		background: linear-gradient(180deg, #152531 0%, #122029 60%, #0f1b23 100%) !important;
+		border: 2px solid #5b7a8f !important;
+		border-radius: 6px !important;
+		box-shadow:
+			0 12px 40px rgba(0, 0, 0, 0.7),
+			inset 0 0 0 1px rgba(232, 181, 69, 0.18) !important;
 	}
 
 	/* Every button plate in a modal: the Auto Spin round chips, the settings
 	   toggles, the bet-menu amounts. Their CircleButton disc, squared off. */
+	/* THE CHIPS — every button plate in a modal: the Auto Spin counts, the
+	   settings toggles, the bet amounts. The same disc as the bar's round
+	   controls, with the same steel ring, so a control looks the same wherever
+	   it is. */
 	:global(html[data-ui-skin='platform'] .rectangle) {
-		background: #14171a !important;
-		border: 1px solid #565e66 !important;
+		background: #0b141b !important;
+		border: 1px solid #5b7a8f !important;
 		border-radius: 4px !important;
 		box-shadow: none !important;
 	}
 
+	/* Hover LIGHTENS THE STEEL rather than jumping to brass. Brass means
+	   "selected" in this skin, and a colour that also meant "the pointer is near
+	   it" would stop meaning anything — the player could no longer tell which
+	   chip they had actually picked by glancing at the panel. */
 	:global(html[data-ui-skin='platform'] .button:hover .rectangle) {
-		border-color: #8a949c !important;
+		border-color: #9fb6c7 !important;
+		background: #0f1b24 !important;
 		box-shadow: none !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .button:active .rectangle) {
-		border-color: #4ace4a !important;
+		border-color: #e8b545 !important;
 		box-shadow: none !important;
 		transform: scale(0.97);
 	}
 
 	:global(html[data-ui-skin='platform'] .close-button) {
-		color: #bfbfbf !important;
+		color: #8fa6b8 !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .close-button:hover) {
-		color: #ffffff !important;
+		color: #ece4cf !important;
 		text-shadow: none !important;
 	}
 
+	/* Headings in cream, for the reason the bar's values are: pure white on navy
+	   glares, and these are the words that name every panel. */
 	:global(html[data-ui-skin='platform'] .pop-up-wrap h1),
 	:global(html[data-ui-skin='platform'] .pop-up-wrap h2),
 	:global(html[data-ui-skin='platform'] .pop-up-wrap h3),
 	:global(html[data-ui-skin='platform'] .pop-up-wrap h4) {
-		color: #ffffff !important;
+		color: #ece4cf !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .pop-up-wrap input),
 	:global(html[data-ui-skin='platform'] .pop-up-wrap select) {
-		background: #14171a !important;
-		border: 1px solid #343a40 !important;
+		background: #0b141b !important;
+		border: 1px solid #3e5a6e !important;
 		border-radius: 4px !important;
+		color: #ece4cf !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .pop-up-wrap input:focus),
 	:global(html[data-ui-skin='platform'] .pop-up-wrap select:focus) {
-		border-color: #4ace4a !important;
+		border-color: #e8b545 !important;
 		box-shadow: none !important;
+	}
+
+	/* A range input's thumb and track are the only native controls left in the
+	   modals that would still render in the browser's own blue. accent-color
+	   hands the browser this skin's brass for them in one line. */
+	:global(html[data-ui-skin='platform'] .pop-up-wrap input) {
+		accent-color: #e8b545;
 	}
 
 	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-track) {
-		background: #1a1a1a;
+		background: #0b141b;
 	}
 	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-thumb) {
-		background: #565e66;
+		background: #3e5a6e;
 	}
 	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-thumb:hover) {
-		background: #8a949c;
+		background: #5b7a8f;
 	}
 
-	/* the buy cards, which are the one place the platform palette uses colour */
-	/* The platform card's frame. #0f0f0f was their .ActionPanel edge colour, which
-	   is right for a panel sitting on the game art and invisible here: a near-black
-	   line between a dark card and a #2a2a2a panel. Their .Button border grey
-	   instead, at 2px, so the card has an edge a player can actually see. */
+	/* The card frame: 2px, because a near-black 1px edge between a dark card and
+	   a dark panel is not visible — steel at rest, brass under the pointer. Brass here is not
+	   the "selected" brass of the chips — nothing on a card is selected — but it
+	   IS the "this is what you press" brass, which is the other half of the rule,
+	   and these cards are the most expensive thing the player can press. */
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap) {
-		background: #1f1f1f !important;
-		border: 2px solid #565e66 !important;
-		border-radius: 4px !important;
-		box-shadow: none !important;
+		background: #0b141b !important;
+		border: 2px solid #5b7a8f !important;
+		border-radius: 6px !important;
+		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
+		transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap:hover) {
-		border-color: #4ace4a !important;
-		box-shadow: none !important;
+		border-color: #e8b545 !important;
+		box-shadow:
+			0 6px 18px rgba(0, 0, 0, 0.5),
+			0 0 16px rgba(232, 181, 69, 0.22) !important;
 	}
 
+	/* THE SHADOWS SURVIVE THE SKIN SWITCH, and that is deliberate.
+	   This block used to set `text-shadow: none`, on the reasoning that the
+	   platform palette is flat and unshadowed — which is true of text on the
+	   platform's own grey panels and false here: these cards keep their artwork
+	   in both skins, so in this skin the copy was sitting on a lit gold column
+	   with nothing behind it at all. Flat is a palette, not a licence to put
+	   white on gold. Colours stay platform-flat; the ground stays. */
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap .title),
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap .price) {
 		color: #ffffff !important;
-		text-shadow: none !important;
+		text-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.95),
+			0 0 11px rgba(0, 0, 0, 0.85) !important;
 	}
 
+	/* #bfbfbf is the platform's secondary grey, and it is meant for text on a
+	   #2a2a2a panel. On artwork it was the least legible thing in the modal. */
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap .description) {
-		color: #bfbfbf !important;
+		color: #e6e6e6 !important;
+		text-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.95),
+			0 0 9px rgba(0, 0, 0, 0.85) !important;
 	}
 
 	/* ── THE SELECTED CHIP ────────────────────────────────────────────────────
@@ -474,6 +561,23 @@
 	   :has() rather than a class on the button: OptionsGrid renders a plain
 	   Button with no selected state of its own, and the only signal in the DOM is
 	   the .selected class AutoSpinsOptions puts on the label inside it. */
+	/* THE BET MENU HAS NO .selected CLASS TO FIND, and that is why only the Auto
+	   Spin panel lit up.
+
+	   BetMenuAmountGrid marks the current stake one way only: it hands BaseIcon a
+	   border of '2px white solid' for the chosen amount and '2px black solid' for
+	   the rest, and BaseIcon writes that into the chip's own inline style as
+	   --border-value. The .rectangle overrides in this file set `border` with
+	   !important, so that one signal was erased and every stake rendered the same
+	   — the selected bet was visible only as a hover-grey border, if at all.
+
+	   The inline style is the only thing in the DOM that distinguishes the chosen
+	   chip, so this keys on it: [style*='2px white solid'] matches the selected
+	   amount and nothing else. AutoSpinsOptions passes the same value for ITS
+	   selection, so the two panels now mark a choice identically — which is the
+	   point. `.button` in front so it outranks the hover rule, which would
+	   otherwise repaint a selected chip steel the moment the pointer crossed it. */
+	:global(.button .rectangle[style*='2px white solid']),
 	:global(.button:has(.selected) .rectangle) {
 		border-color: #ffd75e !important;
 		background: linear-gradient(
@@ -486,16 +590,54 @@
 			inset 0 1px 0 rgba(255, 243, 189, 0.14) !important;
 	}
 
+	/* THE COMMIT BUTTON IS BRASS.
+
+	   Every button in these panels is the same BaseIcon plate, so the one that
+	   ACTS — Start autoplay, the bet menu's confirm, BUY on a feature card, and
+	   the CONFIRM on the buy dialog, the most expensive press in the game — was
+	   drawn identically to the option chips above it: eight navy squares and a
+	   ninth navy bar, told apart only by their words. A player had to read the
+	   panel to find the way out of it.
+
+	   Brass, the same deep brass as the spin button and for the same reason: the
+	   label on it is white and SPIN_BRASS is the brass it reads on (4.06). This is
+	   the rule in palette.ts doing its job — the thing you press to commit is the
+	   warm thing on the panel, exactly as it is on the bar.
+
+	   :not(.disabled), so a BUY the balance cannot cover stays a navy chip. A brass
+	   button that does nothing when pressed would be the one misleading control in
+	   the menu. */
+	:global(html[data-ui-skin='platform'] .ui-modal-button-wrap .full-width .button:not(.disabled) .rectangle),
+	:global(html[data-ui-skin='platform'] .ui-modal-button-wrap .max-width .button:not(.disabled) .rectangle),
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .button:not(.disabled) .rectangle) {
+		background: linear-gradient(180deg, #b8811d 0%, #a8741a 55%, #8f6216 100%) !important;
+		border: 2px solid #e8b545 !important;
+		box-shadow: inset 0 1px 0 rgba(255, 233, 168, 0.35) !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .ui-modal-button-wrap .full-width .button:not(.disabled):hover .rectangle),
+	:global(html[data-ui-skin='platform'] .ui-modal-button-wrap .max-width .button:not(.disabled):hover .rectangle),
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .button:not(.disabled):hover .rectangle) {
+		background: linear-gradient(180deg, #c68c22 0%, #b17b1c 55%, #976718 100%) !important;
+		border-color: #ffd46b !important;
+	}
+
+	/* SELECTED IS BRASS: a brass ring and a faint brass wash inside it, so the
+	   chosen chip is picked out by colour, by weight AND by fill — three signals,
+	   which is what this block was restoring in the first place. */
+	:global(html[data-ui-skin='platform'] .button .rectangle[style*='2px white solid']),
 	:global(html[data-ui-skin='platform'] .button:has(.selected) .rectangle) {
-		background: #14171a !important;
-		border: 2px solid #4ace4a !important;
+		background: linear-gradient(180deg, #2a2210 0%, #1a160b 100%) !important;
+		border: 2px solid #e8b545 !important;
 		box-shadow: none !important;
 	}
 
-	/* the label inside the selected chip: gold is the jungle skin's accent and
-	   has no business on the platform strip, where green is the only colour */
+	/* the label inside the selected chip, in the same brass as its ring. The bet
+	   grid's number has no class of its own, so it is found as the text sitting
+	   beside the marked rectangle in the same button. */
+	:global(html[data-ui-skin='platform'] .button:has(.rectangle[style*='2px white solid']) span),
 	:global(html[data-ui-skin='platform'] .selected) {
-		color: #4ace4a !important;
+		color: #e8b545 !important;
 		text-shadow: none !important;
 	}
 </style>

@@ -195,10 +195,16 @@ export const isBigPrize = (prize: number) => prize >= BIG_PRIZE_FROM;
 export const BIG_PRIZE_FILL = [0xfff0c0, 0xffa93a, 0xd44a12];
 export const BIG_PRIZE_STROKE = 0x5a1f06;
 
-// The board's own cell colour, sampled from frame_bg.png (#1c270d at centre).
-// Held hold and spin cells are filled with this so they read as an ordinary empty
-// cell rather than a coloured plate laid over the reel.
-export const BOARD_CELL_COLOR = 0x1e290e;
+// The board's own cell colour: the MID STOP of the plate gradient in frame_bg
+// (design/generate_theme_jungle.mjs, #plate). Held hold and spin cells are filled
+// with this so they read as an ordinary empty cell rather than a coloured plate
+// laid over the reel.
+//
+// It was 0x1e290e — the olive plate's mid stop, although the comment here called
+// it a sample of the PNG's centre, which it never matched (the centre is darker,
+// under the plate's shadow layer). Moved with the plate to hull steel, so a held
+// coin no longer sits on a green square in a steel-and-navy board.
+export const BOARD_CELL_COLOR = 0x1c2a34;
 
 
 

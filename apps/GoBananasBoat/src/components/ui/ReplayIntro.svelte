@@ -147,8 +147,11 @@
 		box-sizing: border-box;
 		padding: 1.25rem;
 		border-radius: 14px;
-		background: linear-gradient(180deg, rgba(26, 36, 12, 0.98) 0%, rgba(10, 18, 6, 0.99) 100%);
-		border: 1px solid rgba(216, 163, 52, 0.35);
+		/* hull navy, not olive: the same panel as the menus (game/palette.ts, and
+		   the platform block in Modals.svelte). This card styles itself rather than
+		   going through Modals, so the skin's panel colours never reached it. */
+		background: linear-gradient(180deg, rgba(21, 37, 49, 0.98) 0%, rgba(15, 27, 35, 0.99) 100%);
+		border: 1px solid rgba(91, 122, 143, 0.7);
 		box-shadow: 0 14px 44px rgba(0, 0, 0, 0.8);
 		color: #fff;
 		font-family: var(--gb-body-font, sans-serif);
@@ -217,7 +220,9 @@
 		color: #ffd75e;
 	}
 	.win {
-		color: #9ee27a;
+		/* brass, not green: the Win readout on the bar is brass, and this is the
+		   same number — see the navy-and-brass rule in game/palette.ts */
+		color: #e8b545;
 	}
 	.big {
 		font-size: 1.05rem;

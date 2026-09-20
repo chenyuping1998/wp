@@ -135,7 +135,7 @@ const crateBoard = (lit) => {
 
 	let out =
 		`<ellipse cx="${MOTIF.cx}" cy="${MOTIF.cy}" rx="${110 + lit * 22}" ry="112" ` +
-		`fill="#ffb020" opacity="0.12" filter="url(#soft)"/>`;
+		`fill="#ffb020" opacity="0.3" filter="url(#soft)"/>`;
 
 	for (let reel = 0; reel < 5; reel++) {
 		const cx = x0 + reel * (cell + gap);
@@ -145,16 +145,31 @@ const crateBoard = (lit) => {
 			// Tarps on top, opened cargo below: the tarps come off from the bottom
 			// of the stack, which is the direction the reveal animates.
 			const name = loaded ? (row < 2 ? 'm' : CARGO) : REST[(reel + row) % REST.length];
-			out += sym(name, cx, cy, cell, loaded ? 1 : 0.38);
+			// 0.22, not 0.38. The tiers differ by HOW MANY COLUMNS ARE LOADED and
+			// nothing else, so that contrast is the only thing the card has to say —
+			// at 0.38 the unbought reels were legible enough to compete with the
+			// bought ones and all three cards read as the same grey board.
+			out += sym(name, cx, cy, cell, loaded ? 1 : 0.22);
 		}
 		if (loaded) {
 			// A warm edge down the loaded column. Without it the cargo tiles read as
 			// ordinary symbols that happen to match.
+			//
+			// USING `reelLock` AND `drop`, both of which were defined in this file
+			// and never referenced — a flat #ffb020 hairline was drawn instead. Two
+			// dead defs is a reliable sign that a piece of art was left half done,
+			// and this one was: the gradient is what makes the edge read as metal
+			// rather than as a highlighter line, and the shadow is what stops the
+			// column floating.
 			const top = y0 - cell / 2;
 			const h = rows * cell + (rows - 1) * gap;
 			out +=
-				`<rect x="${cx - cell / 2 - 2}" y="${top - 2}" width="${cell + 4}" height="${h + 4}" ` +
-				`rx="6" fill="none" stroke="#ffb020" stroke-width="3" opacity="0.75"/>`;
+				`<g filter="url(#drop)"><rect x="${cx - cell / 2 - 3}" y="${top - 3}" width="${cell + 6}" height="${h + 6}" ` +
+				`rx="7" fill="none" stroke="url(#brassEdge)" stroke-width="5"/></g>` +
+				// a hot inner line, so the edge has a lit side like every other piece
+				// of brass in this game
+				`<rect x="${cx - cell / 2 + 1}" y="${top + 1}" width="${cell - 2}" height="${h - 2}" ` +
+				`rx="4" fill="none" stroke="#ffe9a8" stroke-width="1.5" opacity="0.3"/>`;
 		}
 	}
 	return out;
@@ -183,13 +198,16 @@ const MOTIFS = {
 		const x0 = MOTIF.cx - ((cols - 1) * (cell + gap)) / 2;
 		const y0 = MOTIF.cy - ((rows - 1) * (cell + gap)) / 2;
 		return (
-			`<ellipse cx="${MOTIF.cx}" cy="${MOTIF.cy}" rx="164" ry="112" fill="#ffd75e" opacity="0.09" filter="url(#soft)"/>` +
+			`<ellipse cx="${MOTIF.cx}" cy="${MOTIF.cy}" rx="164" ry="112" fill="#ffd75e" opacity="0.24" filter="url(#soft)"/>` +
 			Array.from({ length: rows }, (_, r) =>
 				Array.from({ length: cols }, (_, c) => {
 					const cx = x0 + c * (cell + gap);
 					const cy = y0 + r * (cell + gap);
 					const held = coins.has(`${c},${r}`);
-					return sym(held ? 'p' : 'x', cx, cy, cell, held ? 1 : 0.72);
+					// 0.34, not 0.72: a hold-and-spin board is mostly empty, and the
+					// picture is about WHICH cells are held. At 0.72 the blanks were
+					// carrying almost as much weight as the coins.
+					return sym(held ? 'p' : 'x', cx, cy, cell, held ? 1 : 0.34);
 				}).join(''),
 			).join('')
 		);
@@ -220,7 +238,7 @@ const defs =
 	-->
 	<linearGradient id="rust" x1="0" y1="0" x2="0" y2="1">
 		<stop offset="0" stop-color="#8a4a1e" stop-opacity="0"/>
-		<stop offset="0.35" stop-color="#8a4a1e" stop-opacity="0.55"/>
+		<stop offset="0.35" stop-color="#8a4a1e" stop-opacity="0.34"/>
 		<stop offset="1" stop-color="#5e2f12" stop-opacity="0"/>
 	</linearGradient>
 	<!-- The corrugation. Wide, low-contrast ribs; at card size anything stronger
@@ -241,6 +259,29 @@ const defs =
 		<stop offset="0.84" stop-color="#8a5c14"/>
 		<stop offset="1" stop-color="#332005"/>
 	</linearGradient>
+	<!--
+		THE SAME BRASS, RAMPED DOWN THE LONG AXIS, AND IT MATTERS BECAUSE OF WHERE
+		A STROKE ACTUALLY PAINTS.
+
+		reelLock ramps ACROSS its element (x1=0 to x2=1) and puts near-black at
+		both ends of that ramp, which is right for a wide filled shape. Used as the
+		STROKE of a tall hollow rect it is wrong in a way that is invisible in the
+		source and obvious in the render: a hollow rect paints only its border, so
+		the two long vertical sides sit at x=0 and x=1 — precisely the two dark ends
+		— and the bright middle of the ramp lands on the horizontal top and bottom
+		edges, which are 58px of a 244px-tall outline. The locked columns came out
+		as thin brown lines.
+
+		This ramps down the element instead and keeps light in both ends, so a tall
+		outline is lit along its whole length.
+	-->
+	<linearGradient id="brassEdge" x1="0.1" y1="0" x2="0.6" y2="1">
+		<stop offset="0" stop-color="#ffe9a8"/>
+		<stop offset="0.3" stop-color="#e8b545"/>
+		<stop offset="0.62" stop-color="#9a6a17"/>
+		<stop offset="0.85" stop-color="#d8a334"/>
+		<stop offset="1" stop-color="#ffdd7a"/>
+	</linearGradient>
 	<!-- The column has to sit ON the card, not float in it. -->
 	<filter id="drop" x="-30%" y="-20%" width="160%" height="140%">
 		<feDropShadow dx="0" dy="6" stdDeviation="9" flood-color="#000000" flood-opacity="0.55"/>
@@ -260,17 +301,56 @@ const defs =
 		<stop offset="1" stop-color="#060d11" stop-opacity="0"/>
 	</linearGradient>
 	<!--
-		Never fully open. The old ramp dropped to 12% across the middle, which is
-		fine on a tall card where the middle carries no text — and is the WHOLE
-		card once a wide crop throws the ends away. The floor here is what
-		guarantees a dark ground under every word regardless of how the card is
-		cropped; the variation on top of it is only for depth.
+		THERE ARE TWO SCRIMS AND ONLY ONE OF THEM BELONGS HERE.
+		=======================================================
+
+		BonusCard (packages/components-ui-html) draws its own scrim over this art,
+		in the CARD's coordinates — 0.94 at the top, 0.38 through the middle, 0.95
+		at the bottom. That one cannot be cropped away whatever shape the card ends
+		up, which is exactly why it exists there, and it is what guarantees a dark
+		ground under every word.
+
+		This file then had a second scrim with a FLOOR of 0.55-0.58 across the whole
+		card, added for the same reason before the component had one. Stacked, the
+		two multiply: the middle of the motif was sitting at roughly 0.72 combined,
+		which is why the cards came back looking muddy and unfinished. The art was
+		fine; it was being covered up.
+
+		THE FLOOR IS BACK, AT HALF ITS OLD DEPTH, AND HERE IS THE ARITHMETIC.
+
+		The card as it actually renders is about 355 wide by 250 tall above its
+		button, against art drawn 360x520. object-fit: cover matches the width and
+		throws away the top and bottom, so the visible band is roughly y 133..386 —
+		and the title, the description and the price are spread across ALL of it.
+		There is no open middle on this card: the words and the motif occupy the
+		same space, and any floor of 0 there puts the description on bare gold.
+		That is what happened, and it is what a screenshot showed.
+
+		Multiplying through: this floor f combines with the component's 0.38 to
+		1-(1-f)(1-0.38).
+
+		    f = 0.58  ->  0.74   the original. Legible, and the art is mud.
+		    f = 0.07  ->  0.42   the last pass. The art is back and the words are not.
+		    f = 0.24  ->  0.53   here.
+
+		0.53 alone would still not be enough over the lit columns, which are the
+		brightest thing on the card and sit directly behind the copy. The rest of
+		the job is done by a tight dark halo on the text itself, in the game's own
+		Modals.svelte — that is the part that works at any crop, any locale and any
+		card height, which a fixed gradient cannot.
 	-->
 	<linearGradient id="scrim" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#060d11" stop-opacity="0.72"/>
-		<stop offset="0.3" stop-color="#060d11" stop-opacity="0.55"/>
-		<stop offset="0.68" stop-color="#060d11" stop-opacity="0.58"/>
-		<stop offset="1" stop-color="#060d11" stop-opacity="0.88"/>
+		<stop offset="0" stop-color="#060d11" stop-opacity="0.6"/>
+		<stop offset="0.24" stop-color="#060d11" stop-opacity="0.24"/>
+		<stop offset="0.74" stop-color="#060d11" stop-opacity="0.26"/>
+		<stop offset="1" stop-color="#060d11" stop-opacity="0.72"/>
+	</linearGradient>
+	<!-- A light from above, so the plate is not one flat value from top to bottom.
+	     Cheap, and most of what separates a rendered panel from a lit one. -->
+	<linearGradient id="keyLight" x1="0.2" y1="0" x2="0.8" y2="1">
+		<stop offset="0" stop-color="#ffffff" stop-opacity="0.07"/>
+		<stop offset="0.45" stop-color="#ffffff" stop-opacity="0.015"/>
+		<stop offset="1" stop-color="#000000" stop-opacity="0.22"/>
 	</linearGradient>`;
 
 const card = (motif) => `
@@ -279,11 +359,17 @@ const card = (motif) => `
 	<rect x="${W * 0.16}" y="0" width="10" height="${H}" fill="url(#rust)"/>
 	<rect x="${W * 0.71}" y="0" width="14" height="${H}" fill="url(#rust)"/>
 	${finishRect(0, 0, W, H, 0, 'sf', CANVAS_FINISH)}
+	<rect width="${W}" height="${H}" fill="url(#keyLight)"/>
 	${motif}
 	<rect width="${W}" height="${H}" fill="url(#scrim)"/>
-	<rect width="${W}" height="${H * 0.22}" fill="url(#scrimTop)"/>
-	<rect x="1.5" y="1.5" width="${W - 3}" height="${H - 3}" rx="12" fill="none"
-	      stroke="#d8a334" stroke-width="3" opacity="0.6"/>`;
+	<rect width="${W}" height="${H * 0.18}" fill="url(#scrimTop)"/>
+	<!-- The edge, in the same brass as everything else, with its own lit inner
+	     line. A single flat stroke at 0.6 was the last thing on the card still
+	     reading as a wireframe rather than as a made object. -->
+	<rect x="2" y="2" width="${W - 4}" height="${H - 4}" rx="12" fill="none"
+	      stroke="url(#brassEdge)" stroke-width="4"/>
+	<rect x="5.5" y="5.5" width="${W - 11}" height="${H - 11}" rx="9" fill="none"
+	      stroke="#ffe9a8" stroke-width="1.2" opacity="0.28"/>`;
 
 for (const [name, motif] of Object.entries(MOTIFS)) {
 	const svg =

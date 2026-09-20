@@ -137,8 +137,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy direct entry into ${config.betModes.bonus100.spins} FREE SPINS for 100× your bet, at the same ${RTP} RTP as base play. The whole round carries one shipment: every cargo crate that lands, on every spin, opens on the same symbol. A Full Shipment turns the entire board into crates — ${WAYS} ways of one symbol in a single spin. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter ${config.betModes.bonus100.spins} FREE SPINS directly for 100× your amount, at the same ${RTP} RTP as normal play. The whole round carries one shipment: every cargo crate that lands, on every spin, opens on the same symbol. A Full Shipment turns the entire board into crates — ${WAYS} ways of one symbol in a single spin. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy direct entry into ${config.betModes.bonus100.spins} FREE SPINS for 100× your bet, at the same ${RTP} RTP as base play. The whole round carries one shipment: every cargo crate that lands, on every spin, opens on the same symbol. A Full Shipment fills the board with crates — ${WAYS} ways of one symbol in a single spin. Every round opens on a multiplier wheel: x1 to x5 on every win. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter ${config.betModes.bonus100.spins} FREE SPINS directly for 100× your amount, at the same ${RTP} RTP as normal play. The whole round carries one shipment: every cargo crate that lands, on every spin, opens on the same symbol. A Full Shipment fills the board with crates — ${WAYS} ways of one symbol in a single spin. Every round opens on a multiplier wheel: x1 to x5 on every win. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {
@@ -174,8 +174,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy a stronger entry for 200× your bet, at the same ${RTP} RTP as base play: ${config.betModes.bonus200.spins} FREE SPINS with more cargo crates on the reels than the 100× round, and a better chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment is ${WAYS} ways of it in one spin. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter a stronger round for 200× your amount, at the same ${RTP} RTP as normal play: ${config.betModes.bonus200.spins} FREE SPINS with more cargo crates on the reels than the 100× round, and a better chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment is ${WAYS} ways of it in one spin. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy a stronger entry for 200× your bet, at the same ${RTP} RTP as base play: ${config.betModes.bonus200.spins} FREE SPINS with more cargo crates on the reels than the 100× round, and a better chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment is ${WAYS} ways of it in one spin. Every round opens on a multiplier wheel: x1 to x5 on every win. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter a stronger round for 200× your amount, at the same ${RTP} RTP as normal play: ${config.betModes.bonus200.spins} FREE SPINS with more cargo crates on the reels than the 100× round, and a better chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment is ${WAYS} ways of it in one spin. Every round opens on a multiplier wheel: x1 to x5 on every win. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {
@@ -215,8 +215,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy the strongest entry for 300× your bet, at the same ${RTP} RTP as base play: ${config.betModes.bonus300.spins} FREE SPINS with the most cargo crates on the reels and the best chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment turns the whole board into that one cargo — ${WAYS} ways in a single spin. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter the strongest round for 300× your amount, at the same ${RTP} RTP as normal play: ${config.betModes.bonus300.spins} FREE SPINS with the most cargo crates on the reels and the best chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment turns the whole board into that one cargo — ${WAYS} ways in a single spin. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy the strongest entry for 300× your bet, at the same ${RTP} RTP as base play: ${config.betModes.bonus300.spins} FREE SPINS with the most cargo crates on the reels and the best chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment turns the whole board into that one cargo — ${WAYS} ways in a single spin. Every round opens on a multiplier wheel: x1 to x5 on every win. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter the strongest round for 300× your amount, at the same ${RTP} RTP as normal play: ${config.betModes.bonus300.spins} FREE SPINS with the most cargo crates on the reels and the best chance of a Full Shipment. Every crate in the round opens on the same symbol, and a Full Shipment turns the whole board into that one cargo — ${WAYS} ways in a single spin. Every round opens on a multiplier wheel: x1 to x5 on every win. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {

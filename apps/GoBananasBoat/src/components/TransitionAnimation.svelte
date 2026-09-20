@@ -84,13 +84,33 @@
 	const COVER_AT_BOOM_T = (FLASH_IN + FLASH_HOLD) / 2;
 
 	const FRAG_COUNT = 30;
-	type Frag = { a: number; speed: number; r: number; spin: number };
-	const frags: Frag[] = Array.from({ length: FRAG_COUNT }, (_, i) => ({
-		a: (i / FRAG_COUNT) * Math.PI * 2 + Math.random() * 0.4,
-		speed: 0.5 + Math.random() * 0.85,
-		r: 9 + Math.random() * 17,
-		spin: Math.random() * Math.PI,
-	}));
+	// WHAT A MINE THROWS ON A DOCK: timber, water and a few brass sparks.
+	//
+	// This was leaves and gold — the jungle game's debris, a grenade going off in
+	// undergrowth. On a pier the blast tears up planking and throws the harbour
+	// into the air, so a third of the fragments are SPLINTERS (long, pale-edged,
+	// tumbling end over end), a third are SEAWATER in the same sea-foam and ink
+	// the chest-beat splash uses, and a third stay as brass sparks, which is the
+	// mine's own casing.
+	type FragKind = 'wood' | 'water' | 'spark';
+	type Frag = { a: number; speed: number; r: number; spin: number; kind: FragKind };
+	const FRAG_KINDS: FragKind[] = ['wood', 'water', 'spark'];
+	const frags: Frag[] = Array.from({ length: FRAG_COUNT }, (_, i) => {
+		const kind = FRAG_KINDS[i % 3];
+		return {
+			a: (i / FRAG_COUNT) * Math.PI * 2 + Math.random() * 0.4,
+			speed: 0.5 + Math.random() * 0.85,
+			// planks come off in big pieces; water and sparks are small
+			r: kind === 'wood' ? 14 + Math.random() * 14 : 6 + Math.random() * 7,
+			spin: Math.random() * Math.PI,
+			kind,
+		};
+	});
+	const WOOD = 0x7a5a3a;
+	const WOOD_LIT = 0xc4966a;
+	const WOOD_INK = 0x24170c;
+	const SEA = 0x9bdcea;
+	const SEA_INK = 0x0c2a35;
 
 	// Smoke, as soft round puffs rather than Graphics circles: fxGlow is a radial
 	// falloff texture, and a hard-edged circle reads as a circle, not as smoke.
@@ -305,22 +325,30 @@
 			// Eased rather than linear: a ring that thins at a constant rate reads as a
 			// line being erased, one that holds and then lets go reads as energy
 			// dissipating.
-			g.lineStyle(weight * (1 - t) ** 1.4 + 3, color, 0.85 * (1 - t) ** 1.8);
-			g.drawCircle(0, 0, maxR * easeOutCubic(t));
+			// PIXI v8 API throughout this function. It is the worst case of the v7
+			// shim in the game: three shockwave rings at three ages, two fireball
+			// cores at two colours and a field of shrapnel in two more all shared one
+			// Graphics, so every one of them was painted with whatever the LAST fill
+			// happened to be — the blast was a flat one-colour starburst rather than
+			// the layered thing the code describes.
+			g.circle(0, 0, maxR * easeOutCubic(t));
+			g.stroke({
+				width: weight * (1 - t) ** 1.4 + 3,
+				color,
+				alpha: 0.85 * (1 - t) ** 1.8,
+			});
 		}
 		// hot core — expands most of the way across the screen before fading
 		// Radius is eased, not linear. A fireball expanding at constant speed for its
 		// whole life looks mechanical; a real one throws hardest at the front and
 		// decelerates, which is what easeOutCubic gives for free.
 		const coreGrow = easeOutCubic(boomT);
-		g.lineStyle(0);
-		g.beginFill(0xfff7d6, 0.9 * (1 - boomT) ** 1.5);
-		g.drawCircle(0, 0, height * 0.34 * (0.4 + coreGrow * 1.5));
-		g.endFill();
-		g.beginFill(0xffb347, 0.55 * (1 - boomT) ** 1.3);
-		g.drawCircle(0, 0, height * 0.5 * (0.35 + coreGrow * 1.7));
-		g.endFill();
-		// leaf/shrapnel fragments — thrown the full blast radius
+		// amber halo first, white core over it — the order is the picture
+		g.circle(0, 0, height * 0.5 * (0.35 + coreGrow * 1.7));
+		g.fill({ color: 0xffb347, alpha: 0.55 * (1 - boomT) ** 1.3 });
+		g.circle(0, 0, height * 0.34 * (0.4 + coreGrow * 1.5));
+		g.fill({ color: 0xfff7d6, alpha: 0.9 * (1 - boomT) ** 1.5 });
+		// the debris — thrown the full blast radius (see FRAG_KINDS)
 		for (const f of frags) {
 			const d = f.speed * easeOutCubic(boomT) * maxR * 1.1;
 			const x = Math.cos(f.a) * d;
@@ -329,13 +357,46 @@
 			const y = Math.sin(f.a) * d + maxR * 0.16 * boomT * boomT;
 			// and tumbles while it travels, each at its own rate
 			const spin = f.spin + boomT * f.speed * 7;
-			g.beginFill(f.r > 13 ? 0x35521a : 0xffd75e, 0.9 * (1 - boomT) ** 1.6);
-			g.drawPolygon([
-				x, y - f.r,
-				x + f.r * Math.cos(spin), y + f.r * Math.sin(spin),
-				x - f.r * Math.cos(spin), y + f.r * 0.6,
-			]);
-			g.endFill();
+			const alpha = 0.92 * (1 - boomT) ** 1.6;
+			const ux = Math.cos(spin);
+			const uy = Math.sin(spin);
+
+			if (f.kind === 'wood') {
+				// a splinter: long and narrow, square at one end and torn to a point
+				// at the other, with its lit edge on the side facing up-left
+				const L = f.r * 1.15;
+				const w = f.r * 0.24;
+				const nx = -uy;
+				const ny = ux;
+				g.poly([
+					x - ux * L + nx * w, y - uy * L + ny * w,
+					x + ux * L * 0.72 + nx * w, y + uy * L * 0.72 + ny * w,
+					x + ux * L, y + uy * L,
+					x + ux * L * 0.55 - nx * w, y + uy * L * 0.55 - ny * w,
+					x - ux * L - nx * w, y - uy * L - ny * w,
+				])
+					.fill({ color: WOOD, alpha })
+					.stroke({ width: Math.max(1.5, f.r * 0.11), color: WOOD_INK, alpha, join: 'round' });
+				// the lit edge, on whichever long side faces the key light
+				const lit = nx + ny < 0 ? 1 : -1;
+				g.moveTo(x - ux * L * 0.8 + nx * w * 0.5 * lit, y - uy * L * 0.8 + ny * w * 0.5 * lit)
+					.lineTo(x + ux * L * 0.6 + nx * w * 0.5 * lit, y + uy * L * 0.6 + ny * w * 0.5 * lit)
+					.stroke({ width: Math.max(1, f.r * 0.08), color: WOOD_LIT, alpha: alpha * 0.9, cap: 'round' });
+			} else if (f.kind === 'water') {
+				// a gob of harbour water, the chest-beat splash's drop at blast scale
+				const r = f.r * 0.7;
+				g.ellipse(x, y, r, r * 1.25)
+					.fill({ color: SEA, alpha: alpha * 0.85 })
+					.stroke({ width: Math.max(1.2, r * 0.2), color: SEA_INK, alpha: alpha * 0.8 });
+				g.circle(x - r * 0.35, y - r * 0.45, Math.max(1, r * 0.3)).fill({ color: 0xffffff, alpha });
+			} else {
+				// a spark off the mine's brass casing
+				g.poly([
+					x, y - f.r,
+					x + f.r * ux, y + f.r * uy,
+					x - f.r * ux, y + f.r * 0.6,
+				]).fill({ color: 0xffd75e, alpha });
+			}
 		}
 	};
 
@@ -343,9 +404,8 @@
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		g.clear();
 		if (flashAlpha <= 0) return;
-		g.beginFill(0xfff2c0, flashAlpha);
-		g.drawRect(-width, -height, width * 2, height * 2);
-		g.endFill();
+		g.rect(-width, -height, width * 2, height * 2);
+		g.fill({ color: 0xfff2c0, alpha: flashAlpha });
 	};
 	// Width / height of assets/sprites/goBananasSymbolsV3/mine.png. Stated here
 	// rather than read at runtime because the Sprite needs it on its first frame,

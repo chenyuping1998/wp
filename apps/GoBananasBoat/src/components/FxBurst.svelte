@@ -98,10 +98,12 @@
 		] as const) {
 			const p = (t - delayP) / (1 - delayP);
 			if (p <= 0 || p >= 1) continue;
-			g.lineStyle(width * s * (1 - p), 0xffe08a, (1 - p) * 0.7);
-			g.drawCircle(0, 0, (18 + 68 * easeOut(p)) * s);
+			// PIXI v8 API. Two rings at different ages, so under the v7 shim they
+			// were drawn at the same width and alpha — i.e. as one ring, which is
+			// why the second was never visible as a follower.
+			g.circle(0, 0, (18 + 68 * easeOut(p)) * s);
+			g.stroke({ width: width * s * (1 - p), color: 0xffe08a, alpha: (1 - p) * 0.7 });
 		}
-		g.lineStyle(0);
 	};
 </script>
 

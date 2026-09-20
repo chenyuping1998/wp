@@ -7,7 +7,8 @@
 			scale: 2,
 		},
 	},
-	// jungle-military riveted reel frame (SVG-generated ??see design/generate_theme_jungle.mjs)
+	// reel frame: hull-steel plate behind the reels and the brass housing ring
+	// (SVG-generated, see design/generate_theme_jungle.mjs)
 	gbFrameBg: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasFrame/frame_bg.png', import.meta.url).href,

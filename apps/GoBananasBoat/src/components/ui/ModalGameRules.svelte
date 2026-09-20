@@ -254,15 +254,42 @@
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>The cargo hold &mdash; Free Spins</h3>
+				<!-- REWRITTEN when the sticky hold was removed. This used to say an
+				     opened crate stays on the board for the rest of the run and that
+				     the hold only ever fills; neither has been true since
+				     game_executables.assign_mystery_symbols stopped holding anything.
+				     What replaced it is the Full Shipment (full_shipment), and the rules
+				     never mentioned it. Wilds are the only thing it spares on a free
+				     spin: it also keeps Scatters, but none appear during the feature
+				     (see Retriggers). -->
 				<p>
 					In Free Spins the whole run carries <strong>one shipment</strong>: every crate,
-					on every spin, holds the same symbol. And once a crate is opened it
-					<strong>stays on the board</strong> for the rest of the run.
+					on every spin, holds the same symbol. Crates are uncovered afresh on each spin
+					&mdash; nothing is held on the board from one spin to the next.
 				</p>
 				<p>
-					The hold only ever fills. Spin by spin the same symbol builds up across the reels,
-					and <strong>a full board of one symbol is {waysCount.toLocaleString()} {T.ways} on a
-					single spin</strong> &mdash; which is what the run is loading towards.
+					<strong>Full Shipment.</strong> On any Free Spin there is a small chance that every
+					symbol on the board except Wilds turns into a crate. They all open as the run's
+					shipment, and <strong>a full board of one symbol is {waysCount.toLocaleString()}
+					{T.ways} on a single spin</strong>. Full Shipments only happen in Free Spins.
+				</p>
+			</section>
+
+			<!-- The Free Spins multiplier (freeGameMultiplier in the maths). States the
+			     RANGE and never the odds: the wheel's weights are simulation weights
+			     and the optimiser sets each book's real probability, so any figure
+			     here would be a number the game does not actually play at. -->
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>Free Spins multiplier</h3>
+				<p>
+					Before every Free Spins round begins, once the round's shipment has been shown, a
+					second wheel sets the round's multiplier: <strong>x1, x2, x3, x4 or x5</strong>.
+					Every win in that round is multiplied by it, and it stays on screen under the Free
+					Spins counter until the round ends.
+				</p>
+				<p>
+					This applies to Free Spins won with Scatters and to every round {T.bought} from the
+					{T.betMenu}. The maximum win is unchanged: the multiplier cannot take a round past it.
 				</p>
 			</section>
 
@@ -317,7 +344,8 @@
 					<p>
 						Instead of waiting for Scatters, you can {T.buy} direct entry into Free Spins. Three
 						rounds are available. All three play the same number of spins; what a dearer round
-						buys is <strong>more crates on the reels</strong>, so the hold fills faster:
+						buys is <strong>more crates on the reels and a higher chance of a Full
+						Shipment</strong>:
 					</p>
 					<ul class="wp-tiers">
 						{#each buyTiers as tier (tier.key)}
@@ -327,9 +355,8 @@
 						{/each}
 					</ul>
 					<p>
-						Every round runs at the same {rtpPct} RTP as base play, and works exactly as Free
-						Spins won with Scatters do: one shipment for the whole round, and every crate
-						opened stays on the board.
+						Every round runs at the same {rtpPct} RTP as base play, and works in the same way as
+						Free Spins won with Scatters: one shipment for the whole round.
 					</p>
 				</section>
 			{/if}
@@ -437,7 +464,7 @@
 			font-size: 1.65rem;
 			font-weight: 800;
 			letter-spacing: 0.08em;
-			background: linear-gradient(135deg, #ffe98a 0%, #ffd75e 50%, #9ec44a 100%);
+			background: linear-gradient(135deg, #fff3bd 0%, #ffd75e 50%, #c9821a 100%);
 			background-size: 200% auto;
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
@@ -629,7 +656,7 @@
 		width: 3px;
 		height: 1.1em;
 		border-radius: 2px;
-		background: linear-gradient(180deg, #ffd75e, #9ec44a);
+		background: linear-gradient(180deg, #ffd75e, #b8811d);
 		flex-shrink: 0;
 		animation: accentPulse 3s ease-in-out infinite;
 	}

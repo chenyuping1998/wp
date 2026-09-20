@@ -17,7 +17,17 @@
 
 	// ── slow ken-burns drift over a small overscan, so the still jungle art
 	// breathes instead of sitting dead behind the reels ────────────────────────
-	const OVERSCAN = 1.08;
+	// OVERSCAN AND THE DRIFT SHARE THIS SLACK, and the split matters now that the
+	// scene can be shaken (CameraShake). The ken-burns drift used to swing across
+	// the FULL slack, so at the ends of its travel the plate's edge sat exactly on
+	// the canvas edge with nothing behind it — fine while nothing moved the scene,
+	// and a visible bar of empty canvas the moment something did.
+	//
+	// 1.14 overscan with the drift limited to 0.3 of the slack leaves ~0.2 of it
+	// (about 36px on a 1280-wide canvas) spare on every side at the worst point of
+	// the drift, which covers the 17px peak shake with room over.
+	const OVERSCAN = 1.14;
+	const DRIFT_SHARE = 0.3;
 	const parallax = $derived.by(() => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		const w = width * OVERSCAN;
@@ -27,14 +37,20 @@
 		return {
 			width: w,
 			height: h,
-			x: -slackX * 0.5 + Math.sin(clock * 0.06) * slackX * 0.5,
-			y: -slackY * 0.5 + Math.sin(clock * 0.041 + 1.1) * slackY * 0.5,
+			x: -slackX * 0.5 + Math.sin(clock * 0.06) * slackX * DRIFT_SHARE,
+			y: -slackY * 0.5 + Math.sin(clock * 0.041 + 1.1) * slackY * DRIFT_SHARE,
 		};
 	});
 
-	// ── floating jungle bokeh: pollen/fireflies drifting up with a gentle sway.
-	// Soft textured motes (fxGlow), never hard vector circles ──────────────────
-	const MOTE_COLORS = [0xffe98a, 0xfff7d6, 0xd9e88a, 0xffd75e];
+	// ── harbour air: motes drifting up through the dock lamps, with a gentle
+	// sway. Soft textured motes (fxGlow), never hard vector circles ─────────────
+	//
+	// These were "jungle bokeh — pollen and fireflies", with a pale lime among
+	// the colours, drifting over a painted dock at dusk. Same motion, harbour
+	// light: most of them warm, the colour of the sodium lamps on the posts, and
+	// one in four the cool pale blue of salt spray catching the light off the
+	// water — which is the colour this game's water is drawn in.
+	const MOTE_COLORS = [0xffe98a, 0xfff7d6, 0xcfe8f0, 0xffd75e];
 	const NIGHT_COLORS = [0xffd75e, 0xfff2b0, 0x9fd0ff, 0xffe98a];
 	const motes = Array.from({ length: 22 }, (_, i) => ({
 		seedX: Math.random(),

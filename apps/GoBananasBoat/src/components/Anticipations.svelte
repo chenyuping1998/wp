@@ -31,15 +31,15 @@
 		if (dim.current <= 0.01) return;
 		context.stateGame.board.forEach((reel, i) => {
 			if (reel.reelState.anticipating || reel.reelState.motion !== 'stopped') return;
-			g.beginFill(0x000000, 0.3 * dim.current);
-			g.drawRoundedRect(
+			// v8 API, same reason as Anticipation's frame.
+			g.roundRect(
 				getSymbolX(i) - SYMBOL_SIZE / 2 + 4,
 				4,
 				SYMBOL_SIZE - 8,
 				BOARD_SIZES.height - 8,
 				12,
 			);
-			g.endFill();
+			g.fill({ color: 0x000000, alpha: 0.3 * dim.current });
 		});
 	};
 </script>

@@ -132,7 +132,7 @@
 		{@const y = rowCenterY(entry.row)}
 		<!--
 			Occluder for the held cell. Its only job is to hide the reel sweeping
-			behind the coin, so it is painted in the board's own olive rather than
+			behind the coin, so it is painted in the board's own plate colour rather than
 			the old red — the cell then reads as an ordinary empty slot with a coin
 			held on it, instead of a coloured plate laid over the reel. A thin brass
 			edge still marks it as held.
@@ -143,17 +143,18 @@
 				g.clear();
 				// square and full-bleed: a rounded fill alone leaves the cell
 				// corners open and the sweep shows through them
-				g.beginFill(BOARD_CELL_COLOR, 1);
-				g.drawRect(x - SYMBOL_SIZE / 2, y - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE);
-				g.endFill();
-				g.lineStyle(2.5, 0xffd43b, 0.45);
-				g.drawRoundedRect(
+				// PIXI v8 API. Olive plate and brass edge are two different colours in
+				// one Graphics, which is exactly what the v7 shim collapses.
+				g.rect(x - SYMBOL_SIZE / 2, y - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE);
+				g.fill({ color: BOARD_CELL_COLOR, alpha: 1 });
+				g.roundRect(
 					x - SYMBOL_SIZE / 2 + 3,
 					y - SYMBOL_SIZE / 2 + 3,
 					SYMBOL_SIZE - 6,
 					SYMBOL_SIZE - 6,
 					10,
 				);
+				g.stroke({ width: 2.5, color: 0xffd43b, alpha: 0.45 });
 			}}
 		/>
 		{@const shake = shakeOffset(entry)}

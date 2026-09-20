@@ -24,9 +24,15 @@
 		| { type: 'soundTarpPull'; step: number }
 		| { type: 'soundMonkeyExpand' }
 		| { type: 'soundMascotVoice'; name: MascotVoice }
-		| { type: 'soundReelTensionStart' }
+		// `gain` because this loop has two callers with different jobs: on the board
+		// it plays UNDER four reels still spinning, on the manifest reel it is the
+		// only thing happening. One level cannot be right for both.
+		| { type: 'soundReelTensionStart'; gain?: number }
 		| { type: 'soundReelTensionStop' }
 		| { type: 'soundScatterCounterIncrease' }
+		| { type: 'soundCargoRoll'; phase: 'start' | 'swell' | 'stop' }
+		| { type: 'soundCargoLock' }
+		| { type: 'soundDockSplash' }
 		| { type: 'soundScatterCounterClear' };
 </script>
 
@@ -65,6 +71,9 @@
 		| 'wild_expand'
 		| 'mult_update'
 		| 'rope_strain'
+		| 'cargo_roll'
+		| 'cargo_lock'
+		| 'dock_splash'
 		| 'ship_horn'
 		| 'tarp_pull'
 		| 'grenade_blast'
@@ -92,6 +101,10 @@
 		wild_expand: 'jungle/wild_expand.wav',
 		mult_update: 'jungle/mult_update.wav',
 		rope_strain: 'jungle/rope_strain.wav',
+		cargo_roll: 'jungle/cargo_roll.wav',
+		cargo_lock: 'jungle/cargo_lock.wav',
+		// the harbour answering the chest beat on a trigger, timed to game/dockSplash
+		dock_splash: 'jungle/dock_splash.wav',
 		ship_horn: 'jungle/ship_horn.wav',
 		tarp_pull: 'jungle/tarp_pull.wav',
 		grenade_blast: 'jungle/grenade_blast.wav',
@@ -296,6 +309,41 @@
 		loopNodes[name] = { src, gain };
 	}
 
+		// Change a running loop's level and SPEED without restarting it.
+	//
+	// The speed half is the point. A reel that only gets louder as it slows is a
+	// volume knob; a reel whose ticks get further apart is a thing losing
+	// momentum, and playbackRate on the buffer source is the whole of it.
+	//
+	// The retry exists because playCnLoop awaits a fetch and a decode on the first
+	// play of a clip, so a ramp scheduled shortly after the start can arrive
+	// before there is a node to ramp. Rather than block the presentation on the
+	// decode, this waits for the node to show up and gives up quietly if it never
+	// does — a reel that swells late is worse than one that does not, but both are
+	// better than a spin that stalls waiting for audio.
+	function rampCnLoop(
+		name: CnSfxName,
+		{ volumeScale = 1, rate, seconds = 0.4 }: { volumeScale?: number; rate?: number; seconds?: number },
+		tries = 6,
+	) {
+		const node = loopNodes[name];
+		const ctx = audioCtx;
+		if (!node || !ctx) {
+			if (tries > 0) setTimeout(() => rampCnLoop(name, { volumeScale, rate, seconds }, tries - 1), 120);
+			return;
+		}
+		const end = ctx.currentTime + seconds;
+		const target = Math.max(0.0001, Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale));
+		node.gain.gain.cancelScheduledValues(ctx.currentTime);
+		node.gain.gain.setValueAtTime(Math.max(0.0001, node.gain.gain.value), ctx.currentTime);
+		node.gain.gain.exponentialRampToValueAtTime(target, end);
+		if (rate !== undefined) {
+			node.src.playbackRate.cancelScheduledValues(ctx.currentTime);
+			node.src.playbackRate.setValueAtTime(node.src.playbackRate.value, ctx.currentTime);
+			node.src.playbackRate.linearRampToValueAtTime(rate, end);
+		}
+	}
+
 	function stopCnLoop(name: CnSfxName) {
 		const node = loopNodes[name];
 		if (!node) return;
@@ -421,6 +469,13 @@
 		// would break the audio manifest for no gain.
 		soundMineBlast: () => playCnSfx('grenade_blast'),
 		soundCrateStrain: () => playCnSfx('rope_strain', 0.7),
+		// The manifest reel arriving at its stop. Loud, and the second-loudest cue
+		// in the set after the ship's horn — it is the moment that settles what
+		// every crate in the round will open as.
+		soundCargoLock: () => playCnSfx('cargo_lock', 1),
+		// Under the roar, not over it: he is the event and the water is the room
+		// reacting to him.
+		soundDockSplash: () => playCnSfx('dock_splash', 0.7),
 		// Loud on purpose, and the only cue in the set that is. It marks the
 		// biggest board this game makes.
 		soundShipHorn: () => playCnSfx('ship_horn', 1),
@@ -432,7 +487,24 @@
 		// mouth in silence.
 		soundMascotVoice: ({ name }) =>
 			playCnSfx(`voice_${name}` as CnSfxName, MASCOT_VOICE_GAIN[name]),
-		soundReelTensionStart: () => playCnLoop('reel_tension', 0.8),
+		// THE MANIFEST REEL TURNING.
+		//
+		// 'start' is the reel under way, 'swell' is it arriving at the last cell.
+		// The swell is louder AND SLOWER — 0.72x playback, so the chain ticks
+		// further apart — because the reel really is slowing there (see
+		// APPROACH_SHARE in CargoPick, which spends nearly half the clock on that
+		// one cell) and a roll that kept its speed while the picture slowed would
+		// come apart.
+		soundCargoRoll: ({ phase }) => {
+			if (phase === 'start') {
+				playCnLoop('cargo_roll', 0.85);
+			} else if (phase === 'swell') {
+				rampCnLoop('cargo_roll', { volumeScale: 1, rate: 0.72, seconds: 0.5 });
+			} else {
+				stopCnLoop('cargo_roll');
+			}
+		},
+		soundReelTensionStart: ({ gain }) => playCnLoop('reel_tension', gain ?? 0.8),
 		// stopCnLoop, not stopCnSfx: playCnLoop moved this to Web Audio, and the
 		// element-based stopper would leave the buffer source looping forever.
 		soundReelTensionStop: () => {

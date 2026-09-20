@@ -1,6 +1,23 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
 
+import {
+	HULL,
+	PANEL,
+	DISC,
+	STEEL_EDGE,
+	STEEL_DIM,
+	STEEL_TEXT,
+	SPIN_BRASS,
+	BRASS_RIM,
+	BRASS_EDGE,
+	BRASS_TEXT,
+	BRASS_BRIGHT,
+	BRASS_UNLIT,
+	CREAM,
+	INK,
+} from './palette';
+
 // Jungle-commando bet bar: deep olive-canvas buttons with the same brass trim
 // as the reel frame and the free-spin plaques, plus the game's sans typeface.
 // Applied once at module load (imported by Game.svelte) — the shared UI package
@@ -181,12 +198,24 @@ const skin = uiSkin;
 
 if (skin === 'platform') {
 	setUiTheme({
-		// the strip: flat casing, their panel grey on their near-black edge
+		// ── NAVY AND BRASS ───────────────────────────────────────────────────
+		//
+		// Hacksaw's SHAPES, this game's COLOURS. The flat strip, the round discs,
+		// the thin rings and the layout are theirs and stay theirs — they are what
+		// a player already knows how to use, and that is most of what makes a bar
+		// usable. What changes is what they are made of: navy for everything
+		// structural, brass for everything you press or win. The rule, and the
+		// contrast table every value below was chosen from, are in palette.ts.
+		//
+		// THE STRIP. HULL rather than their #2a2a2a, and a steel hairline rather
+		// than their near-black edge — at ~1px a #0f0f0f line against a dark strip
+		// measures 1.15, which is to say it is not there. STEEL_EDGE is 3.66: a
+		// line you can see without it becoming a frame.
 		barStyle: 'flat',
-		barFill: 0x2a2a2a,
+		barFill: HULL,
 		barAlpha: 1,
-		panelBorder: 0x0f0f0f,
-		panelFill: 0x2a2a2a,
+		panelBorder: STEEL_EDGE,
+		panelFill: PANEL,
 
 		// Round controls: a dark disc with a thin cool-grey ring.
 		//
@@ -196,30 +225,62 @@ if (skin === 'platform') {
 		// the control disappears — so the disc goes darker and the 1px `.Button`
 		// border comes back at 2, one unit here being about a third of a CSS pixel at
 		// this bar's scale. Hot Miami found the same thing and fixed it the same way.
-		buttonFill: 0x14171a,
-		buttonFillLight: 0x4ace4a,
-		buttonFillDisabled: 0x207820,
-		buttonFillActive: 0x4ace4a,
-		buttonBorder: 0x565e66,
+		buttonFill: DISC,
+		buttonFillLight: BRASS_BRIGHT,
+		// The spin button when it cannot be pressed: the same brass, unlit. Their
+		// 0x207820 was the muted version of their green, which is the same idea.
+		buttonFillDisabled: BRASS_UNLIT,
+		// AN ON TOGGLE IS BRASS. Turbo and autoplay, when engaged, become the same
+		// metal as the spin button — so "this is on" and "this is the button" are
+		// visibly the same kind of thing, and an idle toggle stays navy with the
+		// rest of the furniture. SPIN_BRASS rather than the brighter accent because
+		// the mono icons drawn on it are white: 4.06 there, against 1.41 for
+		// BRASS_BRIGHT, which would have made an ON toggle's icon vanish.
+		buttonFillActive: SPIN_BRASS,
+		buttonBorder: STEEL_EDGE,
 		buttonBorderWidth: 2,
 		buttonBorderWidthActive: 5,
 		buttonIconFill: 0xffffff,
-		buttonIconStroke: 0x0f0f0f,
+		buttonIconStroke: INK,
 
-		// the spin button takes their primary green — it is the one control the
-		// platform palette actually colours
-		betFill: 0x4ace4a,
-		betBorder: 0x343a40,
+		// THE SPIN BUTTON — the one control the platform palette colours, so the
+		// one place a single colour has to carry the whole game.
+		//
+		// SPIN_BRASS and not the natural #d8a334 brass: the arrow drawn on it is
+		// hard-coded white (ButtonBetSpinIcon), and white on the pale brass
+		// measures 2.28 — barely better than the green's 2.06. The deep brass is
+		// 4.06, twice what the green gave the arrow, and still reads as metal.
+		//
+		// A polished rim round it, which is what makes a brass disc look like a
+		// fitting rather than a coloured circle. betBorder also draws the idle
+		// nudge ring that breathes out of the button, so that is brass too.
+		betFill: SPIN_BRASS,
+		betBorder: BRASS_RIM,
 
-		// readouts: their disabled grey for labels, plain white for values. No
-		// per-metric accent colours; the platform bar does not tint its readouts, so
-		// the jungle green / brass split above is dropped rather than recoloured.
-		labelFill: 0xbfbfbf,
-		balanceLabelFill: 0xbfbfbf,
-		winAccent: { border: 0x343a40, label: 0xbfbfbf },
-		betAccent: { border: 0x343a40, label: 0xbfbfbf },
-		valueFill: 0xffffff,
-		valueStroke: 0x0f0f0f,
+		// THE READOUTS, in a three-step order: the spin button loudest, then the
+		// casing and Balance on STEEL_EDGE, then Bet quietest on STEEL_DIM — with
+		// WIN picked out in brass.
+		//
+		// Win is the only readout that changes because of the game rather than
+		// because of the player, and it is the number the eye goes looking for
+		// after every spin. The platform bar tints none of its readouts; this tints
+		// exactly one, and it is the one that is an amount you received — which is
+		// the rule in palette.ts, applied rather than excepted.
+		//
+		// Balance cannot be given its own accent: LayoutBottomBar draws it on
+		// uiTheme.panelBorder directly. So it shares the casing's steel, which is
+		// where it belongs anyway.
+		//
+		// Values in CREAM rather than white. White on navy measures 15.3 and it
+		// glares; cream is 12.05, still far past anything a reading figure needs,
+		// and it is what makes the bar comfortable to look at for a long session
+		// rather than merely legible.
+		labelFill: STEEL_TEXT,
+		balanceLabelFill: STEEL_TEXT,
+		winAccent: { border: BRASS_EDGE, label: BRASS_TEXT },
+		betAccent: { border: STEEL_DIM, label: STEEL_TEXT },
+		valueFill: CREAM,
+		valueStroke: INK,
 		valueShadow: 0x000000,
 		// THE CAPTION IS A STENCIL, NOT A LABEL.
 		//
@@ -239,15 +300,27 @@ if (skin === 'platform') {
 		//
 		// The Buy Bonus does NOT fall back, it gets the board's own steel: the same
 		// corrugated shipping-container panel every low symbol is stencilled on,
-		// empty except for the naval mine sprayed across it. A green rounded
-		// rectangle is what every other game's CTA looks like, and this is the one
-		// control that should say which game it belongs to.
+		// with the ship's wheel mounted on it. A coloured rounded rectangle is what
+		// every other game's CTA looks like, and this is the one control that should
+		// say which game it belongs to.
 		//
 		// setUiTheme is a shallow Object.assign, so this REPLACES the sprites map
 		// rather than merging into it — which is the whole mechanism. gbUiTicker and
 		// gbUiBuyBonus stay loaded and untouched, so switching back is instant and
 		// needs no rebuild.
 		sprites: { buyBonus: 'gbUiBuyBonusContainer', buyBonusGlyph: 'gbUiBuyBonusLit' },
+
+		// THE WHEEL TURNS UNDER THE POINTER.
+		//
+		// The plate is a ship's wheel, and a wheel that does not move when a hand
+		// goes near it is a picture of a wheel. This is the one hover state in the
+		// game where the object has an obvious thing to do.
+		//
+		// 45 degrees a second, and the number is a function of the ART: the wheel
+		// has eight handspikes, so it repeats every 45 degrees and one visual
+		// revolution takes exactly a second. Fast enough to be unmistakable, slow
+		// enough that the spokes never strobe against the frame rate.
+		buyBonusHoverSpin: 45,
 
 		// HOVER: THE STENCIL CATCHES THE LIGHT.
 		//
@@ -297,29 +370,36 @@ if (skin === 'platform') {
 		// limit is the stencil above it, and bigger type is the cheapest legibility
 		// there is.
 		buyBonusLabelSizeRatio: 0.58,
-		buyBonusLabelWrapWidth: 108,
+		// 94, NOT 108, AND THE PLATE ART DEPENDS ON IT.
+		//
+		// The telegraph's dial has to leave a clear centre for these two lines, and
+		// the widest they can ever be is this fraction of the button's 150 units.
+		// Raising it without raising DIAL_IN in design/generate_ui_plates.mjs puts a
+		// long caption through the dial's inner ring; the comment there says the
+		// same thing from the other side.
+		buyBonusLabelWrapWidth: 94,
 
 		// The rounded-rect fallback, for the case where the sprite fails to load.
 		// Kept in the platform palette rather than the game's: if the art is missing
 		// the button should look like the bar it is sitting on.
-		buyBonusFill: 0x14171a,
-		buyBonusBorder: 0x4ace4a,
+		buyBonusFill: DISC,
+		buyBonusBorder: BRASS_RIM,
 		buyBonusBorderWidth: 4,
 		buyBonusCornerRadius: 8,
 
-		// The auto-spins counter, in the platform palette. Green edge, because it
-		// sits on the green spin button and is the one badge the platform bar
-		// draws; a gold ring there would be the only warm thing left on the strip.
-		autoSpinsCounterFill: 0x14171a,
-		autoSpinsCounterBorder: 0x4ace4a,
-		autoSpinsCounterLabel: 0xffffff,
-		autoSpinsCounterLabelStroke: 0x0f0f0f,
+		// The auto-spins counter. It sits ON the spin button, so its ring is the
+		// brightest brass on the bar — the same metal as the button, lit, so the
+		// badge reads as part of it rather than as a sticker on it.
+		autoSpinsCounterFill: DISC,
+		autoSpinsCounterBorder: BRASS_BRIGHT,
+		autoSpinsCounterLabel: CREAM,
+		autoSpinsCounterLabelStroke: INK,
 
 		// The dimmed Buy Bonus plate. buyBonusDisabledStyle is 'dim' above, and
 		// the package's default fill for that branch is this game's own olive —
-		// which on a flat grey strip turned the CTA green the moment it was
-		// disabled. Same disc as every other control instead.
-		buyBonusDisabledFill: 0x14171a,
+		// which on the strip turned the CTA green the moment it was disabled. Same
+		// disc as every other control instead.
+		buyBonusDisabledFill: DISC,
 
 		// AND THE TINT THAT DIM MULTIPLIES BY, which is the number that was
 		// actually wrong.
@@ -341,6 +421,16 @@ if (skin === 'platform') {
 		// multiplier would have taken the disabled state well below anything else
 		// on screen.
 		buyBonusDisabledTint: 0xbcc6cc,
+
+		// ...AND THE TINT IT GOES BACK TO, which the shared button never restores
+		// on its own. ButtonBuyBonus only passes `tint` while disabled or active,
+		// and a prop that stops being passed keeps its last value on the pixi
+		// sprite. The button is disabled while the game loads, so the plate picked
+		// up the disabled tint above on the first frame and kept it for the whole
+		// session: the ship's wheel has been drawn about a fifth darker than its
+		// art. Setting an idle tint makes the button pass one in every state. The
+		// same bug was found and fixed the same way in Go Bananubis.
+		buyBonusIdleTint: 0xffffff,
 
 		// their .CircleButton has :hover and :active states and a 125ms transition;
 		// it does not have a halo

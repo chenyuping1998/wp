@@ -606,6 +606,129 @@ const canvas = (sr, dur = 0.38, brightness = 1) => {
 	return fadeEnds(out, sr, 4);
 };
 
+// wood_knock — a lid dropping onto a wooden crate. Two transients close
+// together, because a lid that is let go bounces once; one alone is a click.
+//
+// Wood rings INHARMONICALLY and briefly — the partials are not whole multiples
+// of anything, which is why a wooden knock does not read as a pitch even though
+// it plainly has one. That is the whole difference from `bongo`, which is a
+// stretched membrane and therefore a drum: the lid was a bongo until now, and a
+// hand drum under a cargo cue is the single most tropical thing left in this
+// game's sound.
+const woodKnock = (sr, f = 190) => {
+	const dur = 0.2;
+	const out = buffer(dur, sr);
+	const hit = (at, gain, pitch) => {
+		const start = Math.round(at * sr);
+		for (let i = 0; start + i < out.length; i++) {
+			const t = i / sr;
+			// inharmonic, and each partial dies at its own rate — the high ones first,
+			// which is what makes a knock sound like it happened rather than like it
+			// is being held
+			const v =
+				Math.sin(2 * Math.PI * pitch * t) * Math.exp(-30 * t) +
+				Math.sin(2 * Math.PI * pitch * 2.41 * t) * 0.45 * Math.exp(-52 * t) +
+				Math.sin(2 * Math.PI * pitch * 4.17 * t) * 0.22 * Math.exp(-80 * t);
+			// the contact itself: a few milliseconds of dry noise
+			const tap = rand2() * Math.exp(-260 * t) * 0.5;
+			out[start + i] += (v * 0.55 + tap) * gain;
+		}
+	};
+	hit(0, 1, f);
+	hit(0.062, 0.34, f * 1.06); // the bounce, fractionally higher and much smaller
+	return fadeEnds(out, sr, 3);
+};
+
+// brass_ring — the hasp on the crate. Bell partials (1 : 2.76 : 5.40 : 8.93,
+// the classic inharmonic set), struck hard and gone quickly.
+//
+// This replaces the MARIMBA that used to end tarp_pull, and the marimba is what
+// made the reveal "not fit": it is a tuned tropical mallet instrument out of the
+// gen-1 jungle kit, so the moment the cargo was named landed on a wooden xylophone
+// note. It arrived, which was the job — but it arrived in a different game.
+// Brass is what this board's housing is made of and what the ship's horn is made
+// of, and it can carry a pitch without being a melody instrument, so the cue
+// still RESOLVES rather than just stopping.
+const brassRing = (sr, f = 620, dur = 0.5) => {
+	const out = buffer(dur, sr);
+	// The FUNDAMENTAL IS NOT THE LOUDEST PARTIAL, and that is deliberate. A small
+	// piece of struck metal puts most of its energy into the partials above the
+	// fundamental — leading on the fundamental is what turns a bell into a tone,
+	// and a tone is what made the marimba read as a menu confirming something.
+	const partials = [
+		[1, 0.55, 7],
+		[2.76, 1, 11],
+		[5.4, 0.42, 17],
+		[8.93, 0.18, 26],
+	];
+	for (let i = 0; i < out.length; i++) {
+		const t = i / sr;
+		let v = 0;
+		for (const [ratio, gain, decay] of partials) {
+			v += Math.sin(2 * Math.PI * f * ratio * t) * gain * Math.exp(-decay * t);
+		}
+		// the striker — metal on metal, very short and not pitched
+		v += rand2() * Math.exp(-190 * t) * 0.35;
+		out[i] = v * 0.4;
+	}
+	return fadeEnds(out, sr, 3);
+};
+
+// swipe - one stroke of cloth dragged off something. The whole of "刷".
+//
+// WHY THIS REPLACED A FIVE-PART CUE. tarp_pull used to be a rope release, two
+// canvas hauls, a lid knock and a pair of brass rings — built to ARRIVE
+// somewhere, on the theory that the reveal is a payoff and should resolve. It
+// came back as "sounding like a broken speaker", and the measurement says why:
+// 65% of its energy sat in forty FFT bins, i.e. it was largely a set of low
+// tones, and a low tone with an abrupt envelope is exactly the noise a blown
+// driver makes. The sub sine inside canvas() and the low sawtooth rope release
+// were most of it.
+//
+// A swipe is not a chord and does not resolve. It is one gesture that starts
+// instantly, moves, and stops — so this is noise and nothing but noise.
+//
+//   · NOTHING BELOW ~400Hz. The band is taken out by subtracting a slow
+//     follower from the filtered noise, which is a one-pole highpass. That is
+//     the single change that removes the broken-speaker quality: there is no
+//     low-frequency content left to flap.
+//   · THE BAND SWEEPS DOWNWARD. Fabric moving away from you loses its highs.
+//     A static band reads as a burst of hiss; a falling one reads as travel.
+//   · GRAIN. Fibres catch and release, so the amplitude is broken up by a grain
+//     that re-rolls its own length. A smooth noise envelope is a synthesiser.
+//
+// Bright, but not tape-bright: the first version of this cue put 79% of its
+// energy above 4kHz and came back as "peeling a sticker". Cloth lives between
+// about 400Hz and 4kHz and this stays there.
+const swipe = (sr, dur = 0.24, top = 0.6, bottom = 0.15, decay = 16) => {
+	const out = buffer(dur, sr);
+	let lp1 = 0;
+	let lp2 = 0;
+	let hp = 0;
+	let grain = 0;
+	let grainLeft = 0;
+	for (let i = 0; i < out.length; i++) {
+		const t = i / sr;
+		const p = t / dur;
+		const cut = top + (bottom - top) * p;
+		lp1 += cut * (rand2() - lp1);
+		lp2 += cut * (lp1 - lp2);
+		// the follower IS the low end; subtracting it leaves the band
+		hp += 0.055 * (lp2 - hp);
+		const band = lp2 - hp;
+		if (grainLeft <= 0) {
+			grain = 0.6 + rand() * 0.4;
+			grainLeft = Math.floor(sr * (0.004 + rand() * 0.016));
+		}
+		grainLeft--;
+		const flutter = 0.7 + 0.18 * Math.sin(t * 310) + 0.12 * Math.sin(t * 173 + 1.1);
+		// 2.5ms attack: fast enough to be a strike, slow enough not to click
+		const env = Math.min(1, t / 0.0025) * Math.exp(-decay * t);
+		out[i] = band * grain * flutter * env * 3;
+	}
+	return fadeEnds(out, sr, 2);
+};
+
 // ─── the crate reveal ────────────────────────────────────────────────────────
 //
 // The mechanic the game is named after had no sound of its own: it borrowed
@@ -616,63 +739,67 @@ const canvas = (sr, dur = 0.38, brightness = 1) => {
 // What it should sound like is rope and canvas, and it should ARRIVE somewhere:
 // the reveal is the payoff, so it ends on a note rather than on noise.
 
-// rope_strain — once at the top of the batch, under the rattle. Fibrous creak
-// (a low buzz whose rate wanders, which is what makes rope sound like rope
-// rather than like a tone) over a wooden shift in the hold.
+// rope_strain — once at the top of the batch, before any crate opens. The line
+// coming taut.
+//
+// THE SAWTOOTH IS GONE. This was a raw low saw sweeping 58Hz upward with a
+// stick-slip tremolo on it, and measured, 67% of its energy sat below 120Hz with
+// three quarters of the total concentrated in forty bins. That is a loud, nearly
+// tonal, very low buzz — and since it plays immediately before the tarps move,
+// it was carrying most of the "broken speaker" the reveal was described as.
+//
+// Rope is fibre under tension, not a bass oscillator. So the creak is now
+// FILTERED NOISE gated by stick-slip: the same stutter, made out of the right
+// material. The low end is removed the same way as in `swipe`, by subtracting a
+// follower, and the only weight left in the cue is one wooden shift of the crate
+// on the deck, kept well down in the mix.
 {
-	const dur = 0.42;
+	const dur = 0.36;
 	const buf = buffer(dur, SR_SFX);
-	const n = buf.length;
-	let ph = 0;
-	for (let i = 0; i < n; i++) {
+	let lp1 = 0;
+	let lp2 = 0;
+	let hp = 0;
+	for (let i = 0; i < buf.length; i++) {
 		const t = i / SR_SFX;
-		// the creak climbs as the rope takes the load
-		const f = 58 + 34 * t + 7 * Math.sin(t * 41);
-		ph += (2 * Math.PI * f) / SR_SFX;
-		// square-ish, so it has the grain a sine does not
-		const saw = ph / Math.PI - 2 * Math.floor(ph / (2 * Math.PI)) - 1;
-		// stick-slip: the creak stutters rather than swelling smoothly
-		const grip = 0.55 + 0.45 * Math.sin(t * 130);
-		buf[i] += saw * grip * Math.exp(-2.2 * t) * 0.5;
+		// the grip wanders rather than beating at a fixed rate — a rope that
+		// stutters on the beat is a machine, which is what a plain tremolo gave
+		const grip = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * 112 + 5 * Math.sin(t * 19)));
+		lp1 += 0.22 * (rand2() - lp1);
+		lp2 += 0.22 * (lp1 - lp2);
+		hp += 0.05 * (lp2 - hp);
+		buf[i] += (lp2 - hp) * grip * Math.exp(-4.2 * t) * 3.2;
 	}
-	addAt(buf, tom(SR_SFX, 0.5), 0, 0.5, SR_SFX); // the crate shifts on the deck
-	// A first small movement of the cover, so the strain is something PULLING on
-	// cloth rather than a creak in the air. The shaker that used to sit here was
-	// grit, which is the same high, dry band that made the pull sound like tape.
-	addAt(buf, canvas(SR_SFX, 0.2, 0.7), 0.14, 0.35, SR_SFX)
-	writeWav('rope_strain.wav', normalize(buf, 0.6), SR_SFX);
+	// the crate shifts on the deck. Low, but brief and quiet — this is the only
+	// weight in the cue and it is there to seat it, not to be heard as a hit.
+	addAt(buf, woodKnock(SR_SFX, 148), 0.015, 0.3, SR_SFX);
+	writeWav('rope_strain.wav', normalize(buf, 0.55), SR_SFX);
 }
 
-// tarp_pull — once per crate, on its own beat. Rope creak, the canvas hauled
-// off, the crate lid knocking, and a marimba note to land on.
+// tarp_pull — once per crate, on its own beat. One swipe of canvas: 刷.
+//
+// Everything that used to follow the cloth — the lid knock and the brass hasp it
+// resolved on — is gone. See `swipe` for the measurement that killed them; the
+// short version is that they were the tonal part, and the tonal part was the
+// problem. What is left is the gesture and nothing else, which is also what the
+// cue was asked for: a swipe, not a phrase.
 //
 // Played back at a rising rate per column (see Sound.svelte), so a board of four
-// is an ascending run rather than the same click four times — the same trick the
-// five reel stops use, and the reason this is one file and not four.
+// is four progressively lighter, quicker swipes rather than the same one four
+// times — and on pure noise a rate change shifts the whole band, which reads as
+// a smaller piece of cloth rather than as a pitch going up.
 {
-	const dur = 0.55;
+	const dur = 0.3;
 	const buf = buffer(dur, SR_SFX);
-	// The rope taking up and letting go. Low and short: this replaced a 10ms
-	// broadband crack that was most of why the cue read as tape.
-	{
-		let ph = 0;
-		for (let i = 0; i < SR_SFX * 0.06; i++) {
-			const t = i / SR_SFX;
-			const f = 160 * Math.exp(-22 * t) + 70;
-			ph += (2 * Math.PI * f) / SR_SFX;
-			const sawish = ph / Math.PI - 2 * Math.floor(ph / (2 * Math.PI)) - 1;
-			buf[i] += sawish * Math.exp(-34 * t) * 0.34;
-		}
-	}
-	// the tarp itself, and a second smaller fold a beat later as it clears the lid
-	addAt(buf, canvas(SR_SFX, 0.4, 1), 0.01, 1, SR_SFX);
-	addAt(buf, canvas(SR_SFX, 0.22, 0.8), 0.16, 0.5, SR_SFX);
-	// the lid knocks against the crate as the cover clears it
-	addAt(buf, bongo(SR_SFX, { from: 330, to: 180, dur: 0.12 }), 0.13, 0.45, SR_SFX);
-	// ...and the cargo is there. This note is the whole point of the cue.
-	addAt(buf, marimba(P.E5, 0.34, SR_SFX, 0.3), 0.19, 0.85, SR_SFX);
-	addAt(buf, marimba(P.A5, 0.3, SR_SFX, 0.5), 0.22, 0.42, SR_SFX);
-	writeWav('tarp_pull.wav', normalize(buf, 0.72), SR_SFX);
+	// the cover coming off
+	// The top of the sweep is MEASURED, not chosen. At 0.62 the clip put 27% of
+	// its energy above 4kHz, which is the band that made the very first version of
+	// this cue read as sticky tape; at 0.46 that falls to about 15% and the swipe
+	// still starts bright enough to be a strike rather than a rumble.
+	addAt(buf, swipe(SR_SFX, 0.26, 0.46, 0.13, 16), 0, 1, SR_SFX);
+	// and the last corner of it clearing the lid a beat later: shorter, quieter,
+	// and darker, so the cue tails off rather than stopping on a cut
+	addAt(buf, swipe(SR_SFX, 0.12, 0.32, 0.14, 30), 0.1, 0.3, SR_SFX);
+	writeWav('tarp_pull.wav', normalize(buf, 0.8), SR_SFX);
 }
 
 // ship_horn - the full shipment. The whole hold comes up at once and the board
@@ -720,6 +847,250 @@ const canvas = (sr, dur = 0.38, brightness = 1) => {
 		buf[i] += lp * env * 0.5;
 	}
 	writeWav('ship_horn.wav', fadeEnds(normalize(buf, 0.9), SR_SFX, 8), SR_SFX);
+}
+
+// cargo_roll - the manifest reel TURNING. Looped for as long as it runs, and
+// the only sustained mechanical sound in the game.
+//
+// Before this, the reel's whole three-second spin had one 0.42s rope_strain at
+// the top of it and then silence until the last cell. A reel that makes no noise
+// while it turns is a picture of a reel; the sound is most of why a spinning
+// thing feels like it has weight and is going somewhere.
+//
+// What it is, physically: a chain hoist running. A motor rumble underneath, and
+// the chain itself clicking over the drum. The clicks are the important half —
+// they are what a listener uses to hear SPEED, which is why this is played back
+// at a falling playbackRate as the reel slows (see Sound.svelte / CargoPick)
+// rather than merely getting quieter. The clicks slow down, and that is the
+// sound of something coming to rest.
+//
+// LOOPING IT SEAMLESSLY. Every part is periodic over `dur` by construction —
+// the rumble partials are integer multiples of 1/dur and the detents sit at
+// exact multiples of dur/DETENTS — except the noise bed, which cannot be. So the
+// buffer is rendered LONGER than it is used and the overhang is crossfaded back
+// over the head (`loopify`). Because the detent pattern is periodic and dur is a
+// whole number of detent spacings, a detent in the overhang lands exactly on top
+// of its counterpart at the head and survives the crossfade; only the noise is
+// actually blended. Without this the wrap is an audible click every half second,
+// which on a three-second spin is six of them.
+{
+	const dur = 0.5;
+	const DETENTS = 8; // 16 links a second at rate 1
+	const XFADE = 0.05;
+	const n = Math.round(dur * SR_SFX);
+	const x = Math.round(XFADE * SR_SFX);
+	const raw = buffer(dur + XFADE, SR_SFX);
+
+	// the drum motor: 60Hz and its octave, both whole cycle counts in 0.5s, plus
+	// a slow wobble so it is a machine under load rather than a test tone
+	for (let i = 0; i < raw.length; i++) {
+		const t = i / SR_SFX;
+		const wobble = 1 + 0.06 * Math.sin(2 * Math.PI * 4 * t); // 2 cycles in dur
+		raw[i] +=
+			(Math.sin(2 * Math.PI * 60 * t) * 0.3 + Math.sin(2 * Math.PI * 120 * t) * 0.12) * wobble;
+	}
+
+	// the hold around it - broadband, heavily damped, so the space has a floor
+	{
+		let lp1 = 0;
+		let lp2 = 0;
+		for (let i = 0; i < raw.length; i++) {
+			lp1 += 0.08 * (rand2() - lp1);
+			lp2 += 0.08 * (lp1 - lp2);
+			raw[i] += lp2 * 1.6;
+		}
+	}
+
+	// the chain over the drum. Alternating weight per link, because a chain has
+	// two orientations and they do not sound the same - four identical clicks a
+	// beat is a metronome, which is the machine sound everybody has learned to
+	// stop hearing.
+	for (let k = 0; k * (n / DETENTS) < raw.length; k++) {
+		const at = (k * (n / DETENTS)) / SR_SFX;
+		const heavy = k % 2 === 0;
+		addAt(
+			raw,
+			bongo(SR_SFX, {
+				from: heavy ? 420 : 620,
+				to: heavy ? 170 : 260,
+				dur: 0.05,
+				punch: 1.3,
+			}),
+			at,
+			heavy ? 0.5 : 0.3,
+			SR_SFX,
+		);
+	}
+
+	// wrap the overhang back over the head
+	const out = buffer(dur, SR_SFX);
+	for (let i = 0; i < n; i++) out[i] = raw[i];
+	for (let i = 0; i < x; i++) {
+		const f = i / x;
+		out[i] = raw[i] * f + raw[n + i] * (1 - f);
+	}
+	// NOT fadeEnds: this loops, and fading its ends is putting the gap back in.
+	writeWav('cargo_roll.wav', normalize(out, 0.8), SR_SFX);
+}
+
+// cargo_lock - the manifest reel STOPPING on its cargo.
+//
+// The landing used to borrow tarp_pull, which is a cue about a cover coming OFF
+// something. Nothing is being uncovered when the reel stops; a mechanism is
+// arriving at its stop and locking there, and it should be the heaviest single
+// hit in the round short of the ship's horn, because it is the moment that
+// decides every crate in the free games.
+//
+// Three parts, in the order they happen:
+//   · the pin driving home - a short, very low iron impact
+//   · the drum taking the whole weight - a sub drop, which is the part that is
+//     FELT rather than heard, and what the screen shake is standing on
+//   · the hasp ringing off it, same brass as the reveal, so the two cues are
+//     plainly the same machine
+{
+	const dur = 1.3;
+	const buf = buffer(dur, SR_SFX);
+
+	// the pin: dense low noise, gone in 80ms
+	{
+		let lp1 = 0;
+		let lp2 = 0;
+		for (let i = 0; i < SR_SFX * 0.12; i++) {
+			const t = i / SR_SFX;
+			lp1 += 0.1 * (rand2() - lp1);
+			lp2 += 0.1 * (lp1 - lp2);
+			buf[i] += lp2 * Math.exp(-42 * t) * 5.5;
+		}
+	}
+
+	// the weight arriving. 96Hz down to 34 - low enough to be a body blow on a
+	// phone speaker's harmonics and on a desktop's actual bass.
+	{
+		let ph = 0;
+		for (let i = 0; i < SR_SFX * 0.75; i++) {
+			const t = i / SR_SFX;
+			const f = 34 + 62 * Math.exp(-7 * t);
+			ph += (2 * Math.PI * f) / SR_SFX;
+			buf[i] += Math.sin(ph) * Math.exp(-4.4 * t) * 0.95;
+		}
+	}
+
+	// the iron frame ringing after the hit, and the hasp on top of it
+	addAt(buf, woodKnock(SR_SFX, 132), 0.012, 0.8, SR_SFX);
+	addAt(buf, brassRing(SR_SFX, 330, 0.9), 0.03, 0.55, SR_SFX);
+	addAt(buf, brassRing(SR_SFX, 660, 0.7), 0.045, 0.3, SR_SFX);
+
+	// ...and the hold answering, so the hit has a room around it rather than
+	// stopping dead. A slow noise swell under an exponential tail is the cheapest
+	// honest reverb there is and it does not need an impulse response.
+	{
+		let lp = 0;
+		for (let i = 0; i < buf.length; i++) {
+			const t = i / SR_SFX;
+			lp += 0.035 * (rand2() - lp);
+			buf[i] += lp * Math.min(1, t / 0.06) * Math.exp(-2.6 * t) * 1.5;
+		}
+	}
+
+	writeWav('cargo_lock.wav', fadeEnds(normalize(buf, 0.95), SR_SFX, 6), SR_SFX);
+}
+
+// dock_splash - the harbour answering the chest beat on a feature trigger.
+// Timed to game/dockSplash.svelte.ts: six strikes at 0.48s + i*0.30s.
+//
+// Go Boomana's cave_quake is the same idea in a mine: rumble and falling grit.
+// Water sounds nothing like that, and the difference is the whole cue:
+//
+//   · A SLOSH on every strike, not a thud. Water hit hard is broadband noise
+//     with the top and the bottom taken off and a fast swell — plus, under it,
+//     one short low knock: the pier's timber taking the blow the water is
+//     answering. Each strike a little bigger than the last, as the picture is.
+//   · PLIPS after every strike — the drops coming back down. A water drop's
+//     sound is a bubble ringing as it forms, which is why it RISES in pitch: a
+//     sine sweeping up about an octave in 30ms and gone in 60. That rising
+//     'plip' is the most recognisable water sound there is, and it is also what
+//     makes the cue fun rather than merely wet.
+//   · SPRAY on the three hardest strikes, where the picture throws water up
+//     from below: a short bright burst — brief, because a long one is tape hiss.
+//   · A dripping tail after the last strike, thinning out, so the water keeps
+//     running off after the captain has stopped.
+{
+	const dur = 3.6;
+	const buf = buffer(dur, SR_SFX);
+	const strike = (i) => 0.48 + i * 0.3;
+
+	const slosh = (sr, weight) => {
+		const d = 0.34;
+		const out = buffer(d, sr);
+		let lp1 = 0;
+		let lp2 = 0;
+		let hp = 0;
+		for (let i = 0; i < out.length; i++) {
+			const t = i / sr;
+			lp1 += 0.28 * (rand2() - lp1);
+			lp2 += 0.28 * (lp1 - lp2);
+			hp += 0.03 * (lp2 - hp);
+			// the water moving: a wobble in the level, not a smooth decay
+			const churn = 0.7 + 0.3 * Math.sin(t * 70 + Math.sin(t * 23) * 2);
+			const env = Math.min(1, t / 0.012) * Math.exp(-9 * t);
+			out[i] = (lp2 - hp) * churn * env * 4 * weight;
+		}
+		// the pier taking the hit
+		let ph = 0;
+		for (let i = 0; i < sr * 0.12; i++) {
+			const t = i / sr;
+			const f = 55 + 45 * Math.exp(-30 * t);
+			ph += (2 * Math.PI * f) / sr;
+			out[i] += Math.sin(ph) * Math.exp(-26 * t) * 0.5 * weight;
+		}
+		return out;
+	};
+
+	const plip = (sr, f0) => {
+		const d = 0.09;
+		const out = buffer(d, sr);
+		let ph = 0;
+		for (let i = 0; i < out.length; i++) {
+			const t = i / sr;
+			// rising: the bubble ringing up as it closes
+			const f = f0 * (1 + 0.95 * Math.min(1, t / 0.03));
+			ph += (2 * Math.PI * f) / sr;
+			out[i] = Math.sin(ph) * Math.min(1, t / 0.002) * Math.exp(-55 * t);
+		}
+		return out;
+	};
+
+	const spray = (sr) => {
+		const d = 0.22;
+		const out = buffer(d, sr);
+		let lp = 0;
+		let hp = 0;
+		for (let i = 0; i < out.length; i++) {
+			const t = i / sr;
+			lp += 0.55 * (rand2() - lp);
+			hp += 0.2 * (lp - hp);
+			out[i] = (lp - hp) * Math.min(1, t / 0.02) * Math.exp(-16 * t) * 1.4;
+		}
+		return out;
+	};
+
+	for (let i = 0; i < 6; i++) {
+		const at = strike(i);
+		addAt(buf, slosh(SR_SFX, 0.62 + i * 0.09), at, 1, SR_SFX);
+		// the drops coming back down, a beat after the hit
+		const n = 2 + Math.floor(i / 2);
+		for (let k = 0; k < n; k++) {
+			addAt(buf, plip(SR_SFX, 720 + rand() * 620), at + 0.09 + rand() * 0.2, 0.28 + rand() * 0.16, SR_SFX);
+		}
+		if (i % 2 === 1) addAt(buf, spray(SR_SFX), at + 0.03, 0.55 + i * 0.05, SR_SFX);
+	}
+	// the tail: water still running off the edge, thinning out
+	for (let k = 0; k < 14; k++) {
+		const at = strike(5) + 0.35 + k * 0.08 + rand() * 0.06;
+		const fade = 1 - k / 14;
+		addAt(buf, plip(SR_SFX, 800 + rand() * 700), at, 0.24 * fade + 0.04, SR_SFX);
+	}
+	writeWav('dock_splash.wav', fadeEnds(normalize(buf, 0.82), SR_SFX, 10), SR_SFX);
 }
 
 console.log('done');

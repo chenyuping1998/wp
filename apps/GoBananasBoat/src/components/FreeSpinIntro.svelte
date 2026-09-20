@@ -6,6 +6,7 @@
 </script>
 
 <script lang="ts">
+	import { verticalFill } from '../game/gradientFill';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
@@ -51,7 +52,7 @@
 					fontSize: Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length),
 					fontWeight: GAME_FONT_WEIGHT,
 					letterSpacing: 6,
-					fill: [0xfff3bd, 0xffd75e, 0xc9821a],
+					fill: verticalFill([0xfff3bd, 0xffd75e, 0xc9821a], Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length)),
 					stroke: 0x54330a,
 					strokeThickness: 6,
 					dropShadow: true,

@@ -118,6 +118,17 @@ type BookEventFullShipment = {
 	type: 'fullShipment';
 };
 
+// Go Bananas Boat: this Free Spins round's multiplier, x1-x5, drawn once at the
+// top of the round and applied to every win in it (each win also carries it as
+// meta.globalMult — the amounts in the book are already multiplied). Emitted
+// after freeSpinTrigger and before the first spin; see freegame_multiplier_event
+// in the maths.
+type BookEventFreeGameMultiplier = {
+	index: number;
+	type: 'freeGameMultiplier';
+	multiplier: number;
+};
+
 type BookEventMysteryReveal = {
 	index: number;
 	type: 'mysteryReveal';
@@ -170,6 +181,7 @@ export type BookEvent =
 	// customised
 	| BookEventMysteryReveal
 	| BookEventFullShipment
+	| BookEventFreeGameMultiplier
 	// Both of these were DECLARED above and left out of this union, which meant
 	// the two handlers that drive the whole hold-and-spin round narrowed to
 	// `never` — newPrizes, wins and totalWin were all unchecked. The maths emits

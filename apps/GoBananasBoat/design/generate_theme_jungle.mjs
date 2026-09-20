@@ -364,7 +364,22 @@ backgrounds.bg_superspin = svgWrap(
 // ─── reel frame (1280×1280, board occupies the centered 1000×1000) ──────────
 const frames = {};
 
-// canvas plate behind the reels: deep olive drill-canvas
+// THE PLATE BEHIND THE REELS: hull steel, not olive drill-canvas.
+//
+// This was the last jungle colour left on the board. It is mostly hidden — the
+// symbols are opaque tiles butted edge to edge — but not entirely: it shows as
+// the gap between tiles while the reels spin, and as the band between the board
+// and the brass housing, where it covered 43.8% of the margin ring. An olive
+// strip round a board of steel-blue containers inside a brass frame read as a
+// part left over from another game, which is what it was.
+//
+// Now the same family as everything around it: darker than the container steel
+// the tiles are painted on (the tile face means #485157), so it still reads as
+// the shadow gap it is, and in the navy of the bet bar and menus
+// (src/game/palette.ts) so the board sits in the same material as the UI.
+//
+// BOARD_CELL_COLOR in src/game/constants.ts is SAMPLED FROM THIS PNG, for the
+// held hold-and-spin cells. Re-sample it whenever this changes.
 seed = 55;
 frames.frame_bg = svgWrap(
 	1280,
@@ -381,12 +396,12 @@ frames.frame_bg = svgWrap(
 	-->
 	<rect x="128" y="128" width="1024" height="1024" rx="30" fill="#000000" opacity="0.45"/>
 	<rect x="128" y="128" width="1024" height="1024" rx="30" fill="url(#innerShadow)"/>
-	<rect x="136" y="136" width="1008" height="1008" rx="24" fill="none" stroke="#66782f" stroke-width="2" opacity="0.4"/>`,
+	<rect x="136" y="136" width="1008" height="1008" rx="24" fill="none" stroke="#5b7a8f" stroke-width="2" opacity="0.4"/>`,
 	`
 	<linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#2c3812"/>
-		<stop offset="0.5" stop-color="#1e2a0e"/>
-		<stop offset="1" stop-color="#131c08"/>
+		<stop offset="0" stop-color="#2a3a46"/>
+		<stop offset="0.5" stop-color="#1c2a34"/>
+		<stop offset="1" stop-color="#111b22"/>
 	</linearGradient>
 	<radialGradient id="innerShadow" cx="0.5" cy="0.5" r="0.72">
 		<stop offset="0.72" stop-color="#000000" stop-opacity="0"/>
@@ -395,7 +410,15 @@ frames.frame_bg = svgWrap(
 	${grainDef('canvasGrain', 0.55, 0.06)}`,
 );
 
-// brass-trimmed military frame ring (transparent middle)
+// THE HOUSING RING (transparent middle): brass rail and rivets on a band of
+// hull steel.
+//
+// The band was olive — "olive steel", the military jungle housing this app was
+// forked from — and it is the widest single piece of colour round the board,
+// on screen for every spin. It is now the navy of the bet bar and menus
+// (src/game/palette.ts), a step lighter than the plate behind the reels so the
+// housing still reads as the thing in front. The brass is untouched: navy and
+// brass is the palette's whole rule, and the rail was already the brass half.
 seed = 91;
 const rivets = (() => {
 	let out = '';
@@ -412,12 +435,12 @@ frames.frame_edge = svgWrap(
 	1280,
 	1280,
 	`
-	<!-- olive steel band with brass faces -->
+	<!-- hull-steel band with brass faces -->
 	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke="url(#bandOuter)" stroke-width="60"/>
 	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke-width="60" filter="url(#sfBrushed)" stroke="#000000" opacity="0.5"/>
 	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke-width="60" filter="url(#sfScratch)" stroke="#000000" opacity="0.4"/>
 	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke-width="60" filter="url(#sfMottle)" stroke="#000000" opacity="0.45"/>
-	<rect x="24" y="24" width="1232" height="1232" rx="64" fill="none" stroke="#0c1206" stroke-width="9"/>
+	<rect x="24" y="24" width="1232" height="1232" rx="64" fill="none" stroke="#070d12" stroke-width="9"/>
 	<rect x="86" y="86" width="1108" height="1108" rx="38" fill="none" stroke="url(#brass)" stroke-width="12"/>
 	<rect x="86" y="86" width="1108" height="1108" rx="38" fill="none" stroke="#000000" stroke-width="12" filter="url(#sfBrushed)" opacity="0.45"/>
 	<rect x="97" y="97" width="1086" height="1086" rx="32" fill="none" stroke="#7a5a14" stroke-width="4"/>
@@ -437,13 +460,13 @@ frames.frame_edge = svgWrap(
 		.join('')}`,
 	`
 	<linearGradient id="bandOuter" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#4a4a26"/>
-		<stop offset="0.5" stop-color="#33361a"/>
-		<stop offset="1" stop-color="#20240f"/>
+		<stop offset="0" stop-color="#3d5261"/>
+		<stop offset="0.5" stop-color="#27384a"/>
+		<stop offset="1" stop-color="#172430"/>
 	</linearGradient>
 	<linearGradient id="bandLight" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#8a8a52" stop-opacity="0.8"/>
-		<stop offset="0.18" stop-color="#8a8a52" stop-opacity="0"/>
+		<stop offset="0" stop-color="#8fa6b8" stop-opacity="0.8"/>
+		<stop offset="0.18" stop-color="#8fa6b8" stop-opacity="0"/>
 		<stop offset="0.85" stop-color="#000000" stop-opacity="0"/>
 		<stop offset="1" stop-color="#000000" stop-opacity="0.6"/>
 	</linearGradient>

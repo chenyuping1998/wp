@@ -201,13 +201,13 @@
 				const w = context.stateLayoutDerived.mainLayout().width;
 				const h = context.stateLayoutDerived.mainLayout().height;
 				g.clear();
-				g.beginFill(0x1a0505, 0.68);
-				g.drawRect(0, 0, w, h);
-				g.endFill();
+				// PIXI v8 API. Two fills, so the v7 shim gave the full-screen wash the
+				// lower band's 0.22 black and the readability overlay stopped working.
+				g.rect(0, 0, w, h);
+				g.fill({ color: 0x1a0505, alpha: 0.68 });
 
-				g.beginFill(0x000000, 0.22);
-				g.drawRect(0, h * 0.72, w, h * 0.28);
-				g.endFill();
+				g.rect(0, h * 0.72, w, h * 0.28);
+				g.fill({ color: 0x000000, alpha: 0.22 });
 			}}
 		/>
 
@@ -305,16 +305,18 @@
 					const barWidth = 240;
 					const barHeight = 4;
 					g.clear();
+					// PIXI v8 API. A progress bar is a dark track with a bright fill over
+					// part of it — two colours in one Graphics, which the v7 shim resolves
+					// to the last one. So once loading started, the whole track was painted
+					// gold and the bar read as full from the first frame.
 					// Background track
-					g.beginFill(0x38221c, 0.82);
-					g.drawRoundedRect(-barWidth / 2, -barHeight / 2, barWidth, barHeight, 2);
-					g.endFill();
+					g.roundRect(-barWidth / 2, -barHeight / 2, barWidth, barHeight, 2);
+					g.fill({ color: 0x38221c, alpha: 0.82 });
 					// Progress fill
 					const fillWidth = (barWidth * animatedProgress) / 100;
 					if (fillWidth > 0) {
-						g.beginFill(0xffd43b, 0.94);
-						g.drawRoundedRect(-barWidth / 2, -barHeight / 2, fillWidth, barHeight, 2);
-						g.endFill();
+						g.roundRect(-barWidth / 2, -barHeight / 2, fillWidth, barHeight, 2);
+						g.fill({ color: 0xffd43b, alpha: 0.94 });
 					}
 				}}
 			/>

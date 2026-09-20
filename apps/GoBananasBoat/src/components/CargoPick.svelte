@@ -14,6 +14,7 @@
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS, SYMBOL_INFO_MAP } from '../game/constants';
 	import BoardContainer from './BoardContainer.svelte';
+	import GoldText from './GoldText.svelte';
 
 	// READING THE MANIFEST — which cargo this run is carrying.
 	//
@@ -107,6 +108,11 @@
 	onDestroy(() => {
 		cancelAnimationFrame(raf);
 		clearTimeout(killTimer);
+		// A LOOP, so it has to be stopped by something that always runs. The happy
+		// path stops it when the reel lands; this is for the round being torn down
+		// mid-spin, which would otherwise leave a hoist running under the free
+		// games for as long as the tab is open.
+		context.eventEmitter.broadcast({ type: 'soundCargoRoll', phase: 'stop' });
 	});
 
 	// Cubic ease-out for the approach: fast off the mark, losing momentum all the
@@ -206,12 +212,23 @@
 
 			// ...and then the rope takes the load and it goes.
 			context.eventEmitter.broadcast({ type: 'soundCrateStrain' });
+			// ...and the hoist runs for as long as the reel does. rope_strain above
+			// is the load being taken — one event, 0.42s — and for the three seconds
+			// after it the reel used to turn in silence.
+			context.eventEmitter.broadcast({ type: 'soundCargoRoll', phase: 'start' });
 			spin(event.symbol, ms);
 			// Hand over to the anticipation loop for the final cell — the same
 			// tremolo the reels use when a scatter is one reel away, which is the
 			// cue this game has already taught the player to read as "wait".
 			await waitForTimeout(ms * APPROACH_SHARE);
-			context.eventEmitter.broadcast({ type: 'soundReelTensionStart' });
+			// Louder than the board's own anticipation (0.8). There, this plays under
+			// four reels still spinning; here it is the only thing happening, and the
+			// moment it marks decides every crate in the round.
+			context.eventEmitter.broadcast({ type: 'soundReelTensionStart', gain: 1 });
+			// The roll comes UP into the last cell rather than fading out of the way
+			// of the tension loop. This is the loudest the reel gets, and it should
+			// be: it is the point of the whole ceremony.
+			context.eventEmitter.broadcast({ type: 'soundCargoRoll', phase: 'swell' });
 			// He leans in a second time as the reel reaches its final cell. `alert` is
 			// a 1.1s one-shot against a three-second spin, so a single look at the
 			// start left him back at rest for the half of it that matters — and the
@@ -219,10 +236,22 @@
 			context.eventEmitter.broadcast({ type: 'mascotCargo', phase: 'watch' });
 			await waitForTimeout(ms * (1 - APPROACH_SHARE));
 			context.eventEmitter.broadcast({ type: 'soundReelTensionStop' });
-			// Landing reuses the crate cue: it ends on the note that means "the
-			// cargo is there", which is exactly what has just happened.
-			context.eventEmitter.broadcast({ type: 'soundTarpPull', step: 0 });
-			context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.55 });
+			context.eventEmitter.broadcast({ type: 'soundCargoRoll', phase: 'stop' });
+			// THE LOCK.
+			//
+			// This used to borrow `soundTarpPull` and rattle the housing at 0.55, and
+			// both were understating it. tarp_pull is a cue about a cover coming OFF
+			// something, and nothing is being uncovered here — the reel is arriving at
+			// its stop. And 0.55 on the frame alone says "something bumped the
+			// housing", when what has actually happened is that the machine deciding
+			// the whole round has come to rest.
+			//
+			// So: its own cue (cargo_lock — iron pin, sub drop, brass hasp), the frame
+			// at full, and the WHOLE SCENE thrown. This is the only place the scene
+			// shake is spent at strength 1.
+			context.eventEmitter.broadcast({ type: 'soundCargoLock' });
+			context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1 });
+			context.eventEmitter.broadcast({ type: 'cameraShake', strength: 1 });
 			context.eventEmitter.broadcast({ type: 'mascotCargo', phase: 'reveal' });
 			await waitForTimeout(stateBet.isTurbo ? HOLD_MS_TURBO : HOLD_MS);
 			show = false;
@@ -243,6 +272,11 @@
 		/>
 
 		<Container x={board.width / 2} y={board.height / 2}>
+			<!-- what this wheel is deciding: the round's cargo SYMBOL. The multiplier
+			     wheel that follows carries its own caption in the same place, so
+			     the two read as a pair — first the symbol, then what it is worth. -->
+			<GoldText text="SYMBOL" y={-CELL * 0.82} fontSize={SYMBOL_SIZE * 0.2} letterSpacing={3} />
+
 			<Graphics draw={drawSlot} />
 
 			<!--

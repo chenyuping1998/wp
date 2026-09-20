@@ -24,10 +24,16 @@
 
 	const context = getContext();
 
+	// NAVY, BRASS AND SEA — the palette in game/palette.ts, plus the sea-foam the
+	// harbour water is drawn in. This card was the jungle's: a mint-jade accent
+	// on olive panels, which made the first screen a player sees each session the
+	// one screen that belonged to a different game.
 	const GOLD = 0xffd43b;
 	const HOT = 0xff8c1a;
-	const JADE = 0x7fe3a4;
-	const PANEL_INK = 0x14200c;
+	const SEA = 0x9bdcea;
+	const PANEL_INK = 0x0f1b24;
+	const CELL_OFF = 0x22323d;
+	const CELL_EDGE = 0x3e5a6e;
 	const BODY_FILL = 0xf0e2c8;
 
 	const layout = $derived(context.stateLayoutDerived.mainLayout());
@@ -46,26 +52,33 @@
 
 	// ── illustrations ─────────────────────────────────────────────────────────
 
-	/** 5x5 grid with four cells lit — the Scatter count that opens the feature. */
+	/**
+	 * This game's board — 5 reels of 4 — with three Scatters lit, the ordinary
+	 * way in. It was a 5x5 grid with four lit: the board of the lines game this
+	 * card was forked from, and a count that is not the one that opens anything.
+	 */
 	const drawScatterGrid = (g: PixiGraphics, w: number, h: number) => {
 		g.clear();
-		const cell = Math.min(w / 6.2, h / 6.2);
+		const cols = 5;
+		const rows = 4;
+		const cell = Math.min(w / 6.2, h / 5.2);
 		const gap = cell * 0.16;
-		const span = 5 * (cell + gap) - gap;
-		const x0 = (w - span) / 2;
-		const y0 = (h - span) / 2;
+		const spanX = cols * (cell + gap) - gap;
+		const spanY = rows * (cell + gap) - gap;
+		const x0 = (w - spanX) / 2;
+		const y0 = (h - spanY) / 2;
 		// which cells hold a Scatter — spread out, never adjacent, because that is
-		// how they actually land and a clustered four reads as a cluster mechanic
-		const lit = new Set(['0,1', '1,3', '3,0', '4,2']);
-		for (let c = 0; c < 5; c++) {
-			for (let r = 0; r < 5; r++) {
+		// how they actually land and a clustered group reads as a cluster mechanic
+		const lit = new Set(['0,1', '2,3', '4,0']);
+		for (let c = 0; c < cols; c++) {
+			for (let r = 0; r < rows; r++) {
 				const x = x0 + c * (cell + gap);
 				const y = y0 + r * (cell + gap);
 				const on = lit.has(`${c},${r}`);
 				g.roundRect(x, y, cell, cell, cell * 0.16);
-				g.fill({ color: on ? GOLD : 0x2c3a1c, alpha: on ? 0.85 : 0.5 });
+				g.fill({ color: on ? GOLD : CELL_OFF, alpha: on ? 0.85 : 0.6 });
 				g.roundRect(x, y, cell, cell, cell * 0.16);
-				g.stroke({ width: 1.5, color: on ? GOLD : 0x4a5c28, alpha: on ? 0.95 : 0.5 });
+				g.stroke({ width: 1.5, color: on ? GOLD : CELL_EDGE, alpha: on ? 0.95 : 0.6 });
 			}
 		}
 	};
@@ -101,7 +114,7 @@
 				} else {
 					g.fill({ color: PANEL_INK, alpha: 0.9 });
 					g.roundRect(x + 1.5, y + 1.5, cw - 3, cellH - 3, 3);
-					g.stroke({ width: 1.4, color: JADE, alpha: 0.4 });
+					g.stroke({ width: 1.4, color: CELL_EDGE, alpha: 0.7 });
 				}
 			}
 		}
@@ -113,41 +126,36 @@
 		}
 	};
 
-	/** Ways multiplying across reels as more of them are cut. */
-	const drawWaysGrow = (g: PixiGraphics, w: number, h: number) => {
+	/**
+	 * Wins climbing to a ceiling.
+	 *
+	 * This panel used to show bars doubling with multiplication signs between
+	 * them — "ways multiplying as more reels are cut", the machete split of the
+	 * game this was forked from. That mechanic is gone and the panel is about the
+	 * cap, so the picture is the cap: four rising stacks and the last one
+	 * reaching a line it does not cross.
+	 */
+	const drawMaxWin = (g: PixiGraphics, w: number, h: number) => {
 		g.clear();
 		const barW = w * 0.13;
-		const gap = w * 0.055;
-		const baseY = h * 0.86;
-		// 1, 2, 4, 8 — each cut reel DOUBLES the ways, so the steps double too.
-		// The old panel drew four bars rising linearly to say multipliers ADD;
-		// this game multiplies, and a linear ramp would say the wrong thing.
-		const heights = [0.12, 0.24, 0.48, 0.96];
+		const gap = w * 0.06;
+		const baseY = h * 0.88;
+		const capY = h * 0.14;
+		const heights = [0.22, 0.42, 0.66, 1];
 		const totalW = heights.length * barW + (heights.length - 1) * gap;
 		const x0 = (w - totalW) / 2;
 		heights.forEach((f, i) => {
-			const bh = h * 0.7 * f;
+			const bh = (baseY - capY) * f;
 			const x = x0 + i * (barW + gap);
 			g.roundRect(x, baseY - bh, barW, bh, barW * 0.22);
-			g.fill({ color: JADE, alpha: 0.18 + i * 0.16 });
+			g.fill({ color: SEA, alpha: 0.16 + i * 0.14 });
 			g.roundRect(x, baseY - bh, barW, bh, barW * 0.22);
-			g.stroke({ width: 2, color: JADE, alpha: 0.5 + i * 0.14 });
+			g.stroke({ width: 2, color: SEA, alpha: 0.5 + i * 0.14 });
 		});
-
-		// Multiplication signs between the bars. Built in a second pass on
-		// purpose — fill()/stroke() consume the current path, so interleaving
-		// these with the bars would hand each pending cross to the next bar's
-		// fill() and paint it as a filled blob instead of a stroke.
-		for (let i = 0; i < heights.length - 1; i++) {
-			const px = x0 + i * (barW + gap) + barW + gap / 2;
-			const py = baseY - h * 0.1;
-			const sz = gap * 0.26;
-			g.moveTo(px - sz, py - sz);
-			g.lineTo(px + sz, py + sz);
-			g.moveTo(px + sz, py - sz);
-			g.lineTo(px - sz, py + sz);
-		}
-		g.stroke({ width: 2.5, color: GOLD, alpha: 0.8 });
+		// the ceiling: a brass line the tallest stack stops dead against
+		g.moveTo(x0 - gap * 0.6, capY);
+		g.lineTo(x0 + totalW + gap * 0.6, capY);
+		g.stroke({ width: 3, color: GOLD, alpha: 0.95, cap: 'round' });
 	};
 
 	type Panel = {
@@ -176,7 +184,7 @@
 		{
 			accent: GOLD,
 			title: 'FREE SPINS',
-			body: 'Land 3, 4 or 5 Scatters anywhere to open 8, 10 or 12 Free Spins.',
+			body: 'Land 3, 4 or 5 Scatters anywhere to open 8, 10 or 12 Free Spins, each round with an x1 to x5 multiplier.',
 			figure: '3-5',
 			art: drawScatterGrid,
 			symbolKey: 'gbS',
@@ -187,17 +195,19 @@
 			// The figure is the DREAM, not the average: a whole board of one cargo
 			// is what the round loads towards, and it is a count the player can
 			// verify on the board the first time it happens.
-			body: `Every crate on the board holds the same cargo. In Free Spins the whole round shares one shipment, and an opened crate stays open.`,
+			// "an opened crate stays open" went with the sticky hold. What replaced
+			// it is the Full Shipment, and that is the thing worth a line here.
+			body: `Every crate on the board holds the same cargo. In Free Spins the whole round shares one shipment, and a Full Shipment can fill the board with crates.`,
 			figure: BASE_WAYS.toLocaleString(),
 			art: drawCrates,
 			hero: true,
 		},
 		{
-			accent: JADE,
+			accent: SEA,
 			title: 'MAX WIN',
 			body: 'The cap on a single round. Reach it and the round ends there and then.',
 			figure: `${(config.betModes?.base?.max_win ?? 10000).toLocaleString()}X`,
-			art: drawWaysGrow,
+			art: drawMaxWin,
 		},
 	];
 

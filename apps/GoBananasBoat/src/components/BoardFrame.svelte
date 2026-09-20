@@ -91,9 +91,13 @@
 			[20, 0.09 + 0.09 * pulse],
 			[10, 0.14 + 0.12 * pulse],
 		];
+		// PIXI v8 API. Under the v7 shim these three strokes resolved with the LAST
+		// style applied to all of them, so the halo was one 10px ring at the
+		// brightest alpha instead of a wide soft one falling off outward — which is
+		// the entire difference between a glow and an outline.
 		for (const [width, alpha] of layers) {
-			g.lineStyle(width, ambienceColor, alpha);
-			g.drawRoundedRect(x, y, w, h, 40);
+			g.roundRect(x, y, w, h, 40);
+			g.stroke({ width, color: ambienceColor, alpha });
 		}
 	};
 
