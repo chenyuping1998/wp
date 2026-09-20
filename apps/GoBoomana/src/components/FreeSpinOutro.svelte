@@ -9,6 +9,7 @@
 
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { verticalFill } from '../game/gradientFill';
 	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
@@ -75,7 +76,10 @@
 								fontSize: Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
 								fontWeight: GAME_FONT_WEIGHT,
 								letterSpacing: 6,
-								fill: [0xfff3bd, 0xffd75e, 0xc9821a],
+								fill: verticalFill(
+									[0xfff3bd, 0xffd75e, 0xc9821a],
+									Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
+								),
 								stroke: 0x54330a,
 								strokeThickness: 6,
 								dropShadow: true,

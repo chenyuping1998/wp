@@ -235,10 +235,11 @@ const symbolSpine = (
 // `payframe` gold outline SymbolSpine draws alongside it. The reported "old win
 // effect" was both of those at once.
 //
-// Routing `win` through a sprite sends it to SymbolWinAnim instead, which
-// animates the CURRENT art programmatically and draws no frame of its own (the
-// framing is WinWays' job). The spine assets and the gbSp* registry entries are
-// dead once nothing points at them.
+// Routing `win` through a sprite sends it to SymbolWinAnim instead, which plays
+// GB100's per-symbol win move on the CURRENT art (game/winMoves.ts holds the
+// keys, lifted out of those same spines) and draws its own frame, moving with
+// the tile. The spine assets and the gbSp* registry entries are dead once
+// nothing points at them.
 const mixedSymbol = (spriteAssetKey: string, ratios: { width: number; height: number }) => ({
 	explosion,
 	static: symbolSprite(spriteAssetKey, ratios),

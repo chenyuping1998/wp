@@ -150,6 +150,11 @@ export const stateGame = $state({
 	// seen is just a sequence of surprises.
 	blastLevel: 1,
 	blastMaxLevel: 5,
+	// The cells a win presentation keeps lit, as "reel,row" keys, or null when
+	// nothing is being presented. WinWays decides it; WinScrim draws it, from
+	// inside Board, because the dimming has to sit BETWEEN the resting tiles and
+	// the winning ones — see WinScrim for why that could not stay in WinWays.
+	winLitCells: null as string[] | null,
 
 
 	// hold and spin: coins stuck to the board, evaluated at the end of the round

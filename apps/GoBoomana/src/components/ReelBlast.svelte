@@ -23,6 +23,7 @@
 	import { stateGame } from '../game/stateGame.svelte';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
+	import { makeRockShape, paintRock } from '../game/rockPaint';
 	import type { SymbolName } from '../game/types';
 
 	const context = getContext();
@@ -67,9 +68,9 @@
 	const DISPERSE_MS = 700;
 	const SETTLE_MS = 420;
 
-	// A full board is what the whole feature climbs towards, so it is held longer.
-	// Not a different animation — the same one, given room.
-	const FULL_BOARD_HOLD_MS = 700;
+	// A full board used to be held 700ms longer here and was otherwise the same
+	// blast. It now gets its own beats either side instead — the chain of fuses
+	// before and the stamp after — in FullBoard.svelte, so no hold is needed here.
 
 	// THE CEREMONY IS SIZED TO THE BLAST. Indexed by reels covered, 1-5.
 	//
@@ -289,25 +290,76 @@
 		}
 	};
 
-	// Embers. A dynamite blast in a lamp-lit mine throws burning specks, and the
-	// B symbol already establishes a bright spark as this game's signature detail
-	// — the smoke was the one place the blast produced no light at all.
-	const EMBERS_PER_REEL = 14;
-	const embersOf = (reel: number) =>
-		Array.from({ length: EMBERS_PER_REEL }, (_, i) => {
-			const a = hash(reel + 3.1, i + 7.7, 1);
-			const b = hash(reel + 8.2, i + 2.3, 2);
-			const c = hash(reel + 5.5, i + 9.9, 3);
+	// CHIPS OF ROCK, THROWN OUT OF THE DYNAMITE.
+	//
+	// From the dynamite itself, not from the reels: the charge is in that cell, so
+	// that is where the rock comes from, and it flies out across whatever is
+	// around it. They are thrown at the bang and STOP when the symbols are
+	// swapped - a burst that ends with the change, not a shower that runs on
+	// into the reveal. The last of them fade over the final beat, so nothing is
+	// left hanging in the air when the new board is standing there.
+	//
+	// (They used to be thrown from the middle of every covered reel and carried on
+	// through the whole disperse. On a wide blast that was a screenful of rock with
+	// no obvious source.)
+	//
+	// These were EMBERS: fourteen warm dots per reel, each with a glow around it,
+	// on the argument that a dynamite blast in a lamp-lit mine throws burning
+	// specks. On screen they were small yellow circles flying off the reels —
+	// they read as a UI particle effect rather than as anything the mine had
+	// done, and this game already has a spark of its own on the fuse and on the
+	// B symbol, so the blast did not need another.
+	//
+	// Stone instead, painted by the same rule as everything else that falls here
+	// (game/rockPaint.ts). Dynamite in rock throws rock.
+	const CHIPS_PER_DYNAMITE = 26;
+	const CHIP_GRAVITY = 7; // in cells per second squared
+	const chipsOf = (origin: number) =>
+		Array.from({ length: CHIPS_PER_DYNAMITE }, (_, i) => {
+			const a = hash(origin + 3.1, i + 7.7, 1);
+			const b = hash(origin + 8.2, i + 2.3, 2);
+			const c = hash(origin + 5.5, i + 9.9, 3);
+			let seed = Math.floor(1 + a * 2147483646);
+			const rand = () => {
+				seed = (seed * 16807) % 2147483647;
+				return seed / 2147483647;
+			};
+			// biased upward: a charge throws rock up and out, and gravity brings it
+			// back, which is what makes the burst read as thrown rather than radiating
+			const dir = -Math.PI / 2 + (a - 0.5) * Math.PI * 1.75;
 			return {
-				dir: a * Math.PI * 2,
-				speed: 0.35 + 0.9 * b,
-				y0: TOP + HEIGHT * (0.1 + 0.8 * c),
-				size: 1.4 + 2.6 * b,
+				dir,
+				// cells per second
+				speed: 2.2 + 3 * b,
+				size: 8 + 11 * b,
 				// staggered so they do not all leave on the same frame
-				lag: 0.25 * c,
-				warm: b > 0.45,
+				lag: 60 * c,
+				spin: (b - 0.5) * 12,
+				shape: makeRockShape(rand),
 			};
 		});
+
+	// where the dynamite(s) are, captured when the blast starts - by the swap the
+	// board no longer has them. In board coordinates, centre of the cell.
+	let origins = $state<{ x: number; y: number }[]>([]);
+	const findDynamite = (covered: number[]) => {
+		const found: { x: number; y: number }[] = [];
+		for (let reel = 0; reel < BOARD_DIMENSIONS.x; reel++) {
+			const symbols = stateGame.board[reel]?.reelState.symbols;
+			if (!symbols) continue;
+			for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
+				if (symbols[row]?.rawSymbol?.name === 'B') {
+					found.push({ x: getSymbolX(reel), y: (row - 0.5) * SYMBOL_SIZE });
+				}
+			}
+		}
+		// a resumed or replayed blast may no longer show the dynamite: throw from
+		// the middle of the first covered reel instead of from nowhere
+		if (found.length === 0 && covered.length > 0) {
+			found.push({ x: getSymbolX(covered[0]), y: HEIGHT / 2 });
+		}
+		return found;
+	};
 
 	const draw = (g: PixiGraphics) => {
 		g.clear();
@@ -410,24 +462,6 @@
 
 			if (puff <= 0) continue;
 
-			// Embers first, so the smoke closes over them rather than sitting under
-			// them. They are the only light the blast puts into the scene.
-			for (const e of embersOf(reel)) {
-				const t = Math.min(1, Math.max(0, (puff - e.lag) / (1 - e.lag)));
-				if (t <= 0) continue;
-				const travel = (t + disperse * 1.6) * e.speed * SYMBOL_SIZE;
-				const ex = cx + Math.cos(e.dir) * travel;
-				// they rise, then gravity starts to win
-				const ey = e.y0 + Math.sin(e.dir) * travel * 0.55 + disperse ** 2 * SYMBOL_SIZE * 0.6;
-				const life = Math.max(0, 1 - disperse * 1.35);
-				if (life <= 0.01) continue;
-				const r = e.size * (0.6 + 0.4 * life);
-				g.circle(ex, ey, r * 2.2);
-				g.fill({ color: 0xff9a3c, alpha: 0.16 * life });
-				g.circle(ex, ey, r);
-				g.fill({ color: e.warm ? 0xffd489 : 0xffb257, alpha: 0.85 * life });
-			}
-
 			for (const p of puffsOf(reel)) {
 				// grow in, then keep growing as it thins — smoke does not shrink away,
 				// it spreads out until it is gone
@@ -458,6 +492,30 @@
 				rimArc(g, px, dy, r, p);
 				g.stroke({ width: Math.max(1, r * 0.032), color: SMOKE_RIM, alpha: alpha ** 2 * 0.26 });
 			}
+		}
+
+		// THE CHIPS, from the dynamite, from the bang until the swap.
+		const SWAP_AT = PUFF_AT + beats.puff;
+		const CHIP_FADE_MS = 200;
+		if (t >= CHARGE_MS && t < SWAP_AT + CHIP_FADE_MS) {
+			const fadeOut = t <= SWAP_AT ? 1 : 1 - (t - SWAP_AT) / CHIP_FADE_MS;
+			origins.forEach((o, oi) => {
+				for (const e of chipsOf(oi)) {
+					const tau = (t - CHARGE_MS - e.lag) / 1000;
+					if (tau <= 0) continue;
+					const v = e.speed * SYMBOL_SIZE;
+					const cx = o.x + Math.cos(e.dir) * v * tau;
+					const cy = o.y + Math.sin(e.dir) * v * tau + 0.5 * CHIP_GRAVITY * SYMBOL_SIZE * tau * tau;
+					paintRock(g, {
+						shape: e.shape,
+						cx,
+						cy,
+						r: e.size,
+						turn: e.spin * tau,
+						alpha: Math.min(1, fadeOut * 1.2),
+					});
+				}
+			});
 		}
 	};
 
@@ -491,6 +549,7 @@
 		reelBlast: async ({ reels: covered, symbol, full: isFull }) => {
 			const mine = ++generation;
 			reels = covered;
+			origins = findDynamite(covered);
 			// sized before the clock starts, because draw() reads these
 			beats = beatsFor(covered.length);
 			clock = 0;
@@ -543,7 +602,6 @@
 			// nothing, which is the point of it.
 			await waitForTimeout(beats.settle);
 			if (mine !== generation) return;
-			if (isFull) await waitForTimeout(FULL_BOARD_HOLD_MS);
 		},
 		reelBlastClear: () => {
 			generation += 1;

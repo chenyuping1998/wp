@@ -36,8 +36,8 @@
 
 {#snippet body(oncomplete: (() => void) | undefined)}
 	{#if isSprite && isWin}
-		<!-- Win state for sprite symbols: programmatic scale+glow animation -->
-		<SymbolWinAnim {symbolInfo} x={0} y={0} {oncomplete} />
+		<!-- Win state for sprite symbols: GB100's per-symbol win move -->
+		<SymbolWinAnim {symbolInfo} symbolName={props.rawSymbol.name} x={0} y={0} {oncomplete} />
 	{:else if isSprite}
 		<SymbolSprite
 			{symbolInfo}

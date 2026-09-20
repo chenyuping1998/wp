@@ -97,6 +97,19 @@
 		}
 	};
 
+	// THE TEMPLATE'S FRAME GLOW IS OFF.
+	//
+	// reelhouse_glow is the purple halo and the drifting star particles from the
+	// template this game started as. In the feature it drew a purple band round
+	// a mine-coloured housing and scattered small amber dots over the frame — one
+	// of which sat on the bottom edge of the board looking like a stray light.
+	// Neither belongs to this game. What is left is drawAmbience above: the
+	// housing breathing amber, which is the game's own colour.
+	//
+	// The events and the animation state below are still driven, so switching it
+	// back on is this one flag.
+	const SPINE_GLOW = false;
+
 	type AnimationName = 'reelhouse_glow_start' | 'reelhouse_glow_idle' | 'reelhouse_glow_exit';
 
 	let animationName = $state<AnimationName | undefined>(undefined);
@@ -116,7 +129,7 @@
 
 <Graphics zIndex={-2} draw={drawAmbience} />
 
-{#if animationName}
+{#if SPINE_GLOW && animationName}
 	<SpineProvider
 		zIndex={-1}
 		key="reelhouse"

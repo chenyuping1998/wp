@@ -13,6 +13,7 @@ import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEv
 import type { Position } from './types';
 import { BOARD_DIMENSIONS, HOLD_AND_SPIN_MODE_KEY } from './constants';
 import config from './config';
+import { startCaveQuake } from './caveQuake.svelte';
 
 // The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
 // a value of 1 means the tease starts on the *second* scatter. Free spins need
@@ -79,11 +80,16 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 	// coin-shimmer loop cycling on its own (the "music keeps repeating" report),
 	// and — because currentBgm was cleared — the dedupe guard failed so the bgm
 	// restarted from the top when it came back. Keeping the running bgm playing
-	// under the blast + coin loop fixes both. (Restore this line only once real
-	// win-level tracks exist in the jungle set.)
+	// under the blast + coin loop fixes both.
+	//
+	// The escalation per tier now comes from soundWinTier instead: a FANFARE laid
+	// OVER the running bed, one per tier and each bigger than the last. It never
+	// touches the bed, which is the whole reason it can exist where per-tier
+	// music could not.
 	if (winLevelData?.type === 'big') {
 		// Blast accent as the big/super/mega/epic win presentation slams in
 		eventEmitter.broadcast({ type: 'soundBigWinBlast' });
+		eventEmitter.broadcast({ type: 'soundWinTier', tier: winLevelData.alias });
 		eventEmitter.broadcast({ type: 'soundLoop', name: 'sfx_bigwin_coinloop' });
 	}
 };
@@ -242,6 +248,11 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// It runs during the 3s bell hold, which is the only stretch of the trigger
 		// long enough to watch him do it; the animation is 2.68s and fits.
 		eventEmitter.broadcast({ type: 'mascotChestBeat' });
+		// ...and the mine answers him: the scene jolts on each strike and the roof
+		// sheds grit and rocks (game/caveQuake). Trigger only — see there for why
+		// the big-win chest beat does not shake the room.
+		startCaveQuake();
+		eventEmitter.broadcast({ type: 'soundCaveQuake' });
 		await waitForTimeout(3000);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
 		// Three passes of the scatter shake — extended trigger celebration
@@ -300,17 +311,27 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	// The detonation. The reveal has already landed the board the reels stopped
 	// on; this turns it into the board that was scored.
 	blastReels: async (bookEvent: BookEventOfType<'blastReels'>) => {
+		const climbed = bookEvent.level > stateGame.blastLevel;
 		stateGame.blastReels = bookEvent.reels;
 		stateGame.blastLevel = bookEvent.level;
 		stateGame.blastMaxLevel = bookEvent.maxLevel;
+		const full = bookEvent.reels.length >= bookEvent.maxLevel;
+		// A full board gets a beat either side of the blast: the fuses catching
+		// reel by reel before it, and the stamp after. See FullBoard.svelte.
+		if (full) await eventEmitter.broadcastAsync({ type: 'fullBoardTease' });
 		await eventEmitter.broadcastAsync({
 			type: 'reelBlast',
 			reels: bookEvent.reels,
 			symbol: bookEvent.symbol,
 			level: bookEvent.level,
 			maxLevel: bookEvent.maxLevel,
-			full: bookEvent.reels.length >= bookEvent.maxLevel,
+			full,
 		});
+		if (full) await eventEmitter.broadcastAsync({ type: 'fullBoardStamp' });
+		// The rung is HEARD once the smoke has cleared and the new board is
+		// standing there, which is when the mine (MineAir) is visibly warming to
+		// it — not on top of the fuse, where it would fight the bang.
+		if (climbed) eventEmitter.broadcast({ type: 'soundLadderUp', level: bookEvent.level });
 	},
 
 	// GoBananas hold and spin: new prize coins stick to the board — every new coin
@@ -361,39 +382,21 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateUi.freeSpinCounterCurrent = bookEvent.amount + 1;
 		stateUi.freeSpinCounterTotal = bookEvent.total;
 	},
-	freeSpinRetrigger: async (bookEvent: BookEventOfType<'freeSpinRetrigger'>) => {
-		// Same bell moment as the initial trigger: silence the free-game bgm,
-		// ring the bell and hold ~2s, then bring the music back.
-		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_freespin' });
-		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
-		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
-		await waitForTimeout(3000);
-		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
-		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		// Three passes of the scatter shake — extended trigger celebration
-		await animateSymbols({ positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
-		const extraSpins = Math.max(0, bookEvent.totalFs - stateUi.freeSpinCounterTotal);
-		if (extraSpins > 0) {
-			eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
-			eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
-			await eventEmitter.broadcastAsync({
-				type: 'freeSpinIntroUpdate',
-				totalFreeSpins: bookEvent.totalFs,
-				extraSpins,
-			});
-			eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
-		}
-		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
-		stateUi.freeSpinCounterShow = true;
-		eventEmitter.broadcast({
-			type: 'freeSpinCounterUpdate',
-			current: stateUi.freeSpinCounterCurrent,
-			total: bookEvent.totalFs,
-		});
-		stateUi.freeSpinCounterTotal = bookEvent.totalFs;
-	},
+	// NO freeSpinRetrigger HANDLER, AND THAT IS DELIBERATE.
+	//
+	// This game has no retriggers. game_config.py keeps the free-game strip FR0
+	// free of Scatters entirely — "so a scatter can never land in the feature and
+	// appear to do nothing" — so the event cannot be emitted: measured, 0 in 4,000
+	// bought features.
+	//
+	// What used to be here was a full presentation for it: stop the music, ring
+	// the bell, hold 3s, three passes of the Scatter shake, then add spins. Dead
+	// the day the strip was written, and misleading to anyone reading this file
+	// for what the feature can do.
+	//
+	// If a retrigger is ever added to the maths, createPlayBookUtils logs
+	// 'Missing bookEventHandler' for an unhandled event, so it fails loudly in the
+	// console rather than silently skipping the round.
 	freeSpinEnd: async (bookEvent: BookEventOfType<'freeSpinEnd'>) => {
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
 

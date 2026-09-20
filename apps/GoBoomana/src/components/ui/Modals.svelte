@@ -751,29 +751,37 @@
 
 	/* ── THE BUY CARDS ─────────────────────────────────────────────────────────
 	   Stone-edged, and ALIVE UNDER THE CURSOR, the same promise the Buy Bonus
-	   button makes: the card lifts, its edge catches the spark's amber, a warm
-	   light comes up round it and the cover art brightens. Nothing moves at rest.
+	   button makes: the edge catches the spark's amber, a warm light comes up
+	   inside it and the cover art brightens. Nothing moves, at rest or on hover -
+	   see the clipping note below for why nothing may.
 
 	   The cover art is part of this too. It was olive jungle canvas carried over
 	   from gen-3, and no frame colour could fix that; design/generate_mode_cards.mjs
 	   now paints the cards on the same mine slate as this panel. */
+	/* NOTHING ON HOVER MAY LEAVE THE CARD'S BOX.
+	   The row is BaseScrollable type="row", which carries the global .scrollX —
+	   `overflow-x: auto` WITH `overflow-y: hidden`. So anything drawn above or
+	   below a card is clipped: a first version lifted the card 4px on hover and
+	   the top border was cut off by that clip, which looked like the gold frame
+	   sliding away and vanishing. An outer glow is cut in half the same way.
+	   The lift is gone and the glow is INSET, so the card lights up from within
+	   its own edges and its geometry never moves. */
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap) {
 		background: #22252b !important;
 		border: 2px solid #9b876e !important;
 		border-radius: 10px !important;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45) !important;
 		transition:
-			transform 0.16s ease,
 			box-shadow 0.16s ease,
 			border-color 0.16s ease;
 	}
 
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap:hover) {
-		transform: translateY(-4px);
 		border-color: #ffa53a !important;
 		box-shadow:
-			0 10px 24px rgba(0, 0, 0, 0.55),
-			0 0 18px rgba(255, 165, 58, 0.45) !important;
+			0 4px 12px rgba(0, 0, 0, 0.45),
+			inset 0 0 0 1px rgba(255, 165, 58, 0.5),
+			inset 0 0 20px rgba(255, 165, 58, 0.28) !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap .cover) {
@@ -823,16 +831,13 @@
 		box-shadow: none !important;
 	}
 
-	/* no lift, no fades, for players who have asked for less motion */
+	/* no fades, for players who have asked for less motion. There is no lift to
+	   disable any more - see the clipping note above. */
 	@media (prefers-reduced-motion: reduce) {
 		:global(html[data-ui-skin='platform'] .bonus-card-wrap),
 		:global(html[data-ui-skin='platform'] .bonus-card-wrap .cover),
 		:global(html[data-ui-skin='platform'] .rectangle) {
 			transition: none;
-		}
-
-		:global(html[data-ui-skin='platform'] .bonus-card-wrap:hover) {
-			transform: none;
 		}
 	}
 
@@ -878,6 +883,47 @@
 	/* the label inside the selected chip, in the spark's amber - the platform
 	   skin's accent in this game, as green was in the one it was ported from */
 	:global(html[data-ui-skin='platform'] .selected) {
+		color: #ffc45a !important;
+		text-shadow: none !important;
+	}
+
+	/* ── THE SELECTED BET AMOUNT: LIT THE SAME AS THE AUTO SPIN CHIP ──────────
+	   The bet menu's grid (BetMenuAmountGrid) marks its choice only through
+	   BaseIcon's border prop - '2px white solid' when chosen, '2px black solid'
+	   otherwise - and puts no .selected class on the label the way
+	   AutoSpinsOptions does. So the :has(.selected) rules above never matched
+	   it, the .rectangle override flattened its border like every other chip,
+	   and a clicked stake looked exactly like the ones around it.
+
+	   Matched here on the inline style BaseIcon writes rather than by adding the
+	   class to the shared package: that package is shared by every game, and a
+	   class there would change the bet menu of the ones already shipped. The
+	   Auto Spin chip carries the same border when selected, so both panels land
+	   on these same rules. */
+	:global(.button:has(.rectangle[style*='2px white solid']) .rectangle) {
+		border-color: #ffd75e !important;
+		background: linear-gradient(
+			160deg,
+			rgba(88, 74, 26, 0.95) 0%,
+			rgba(52, 42, 12, 0.98) 100%
+		) !important;
+		box-shadow:
+			0 0 14px rgba(255, 215, 94, 0.35),
+			inset 0 1px 0 rgba(255, 243, 189, 0.14) !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .button:has(.rectangle[style*='2px white solid']) .rectangle) {
+		background: #2e2416 !important;
+		border: 2px solid #ffa53a !important;
+		box-shadow: 0 0 8px rgba(255, 165, 58, 0.3) !important;
+	}
+
+	:global(.button:has(.rectangle[style*='2px white solid']) span) {
+		color: #ffd76a !important;
+		font-weight: 700;
+	}
+
+	:global(html[data-ui-skin='platform'] .button:has(.rectangle[style*='2px white solid']) span) {
 		color: #ffc45a !important;
 		text-shadow: none !important;
 	}

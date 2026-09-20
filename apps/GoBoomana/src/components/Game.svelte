@@ -31,6 +31,10 @@
 	import EntryReveal from './EntryReveal.svelte';
 	import ScatterBurst from './ScatterBurst.svelte';
 	import ReelBlast from './ReelBlast.svelte';
+	import FullBoard from './FullBoard.svelte';
+	import CaveRockfall from './CaveRockfall.svelte';
+	import MineAir from './MineAir.svelte';
+	import { caveQuake, quakeShake } from '../game/caveQuake.svelte';
 	import StickyPrizes from './StickyPrizes.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import WinWays from './WinWays.svelte';
@@ -41,6 +45,21 @@
 	import Transition from './Transition.svelte';
 
 	const context = getContext();
+
+	// The cave quake's camera: offset and zoomed about the canvas centre. The
+	// scene is wrapped in it twice, background and board, because the loading
+	// screen sits between them in the tree — both read the same numbers, so they
+	// move as one. The UI bar is NOT in it: the room shakes, the controls do not.
+	const quakeCamera = $derived.by(() => {
+		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		const shake = quakeShake(caveQuake.clock, height);
+		return {
+			pivot: { x: width / 2, y: height / 2 },
+			x: width / 2 + shake.x,
+			y: height / 2 + shake.y,
+			scale: shake.zoom,
+		};
+	});
 
 	// soft depth-of-field on the jungle scene so the reels read as the subject
 	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
@@ -60,16 +79,18 @@
 	<EnableGameActor />
 	<EnablePixiExtension />
 
-	<Container filters={backgroundBlur}>
-		<Background />
+	<Container {...quakeCamera}>
+		<Container filters={backgroundBlur}>
+			<Background />
+		</Container>
+		<!-- corner vignette seats the blurred scene behind the board -->
+		<Sprite
+			key="fxVignette"
+			width={context.stateLayoutDerived.canvasSizes().width}
+			height={context.stateLayoutDerived.canvasSizes().height}
+			alpha={0.9}
+		/>
 	</Container>
-	<!-- corner vignette seats the blurred scene behind the board -->
-	<Sprite
-		key="fxVignette"
-		width={context.stateLayoutDerived.canvasSizes().width}
-		height={context.stateLayoutDerived.canvasSizes().height}
-		alpha={0.9}
-	/>
 
 	{#if context.stateLayout.showLoadingScreen}
 		<LoadingScreen onloaded={() => (context.stateLayout.showLoadingScreen = false)} />
@@ -82,6 +103,11 @@
 		-->
 		<Sound />
 
+		<Container {...quakeCamera}>
+		<!-- the feature's air: lamp warmth and dust behind the reels, and rocks -->
+		<MineAir layer="back" />
+		<CaveRockfall layer="back" />
+
 		<MainContainer>
 			<!-- Before the frame, so if a narrow layout ever brings the two close
 			     the housing is the thing that stays in front. -->
@@ -93,11 +119,17 @@
 			<Board />
 			<ReelDust />
 			<ReelBlast />
+			<FullBoard />
 			<StickyPrizes />
 			<Anticipations />
 			<ScatterBurst />
 			<WinWays />
 		</MainContainer>
+
+		<!-- and the few that come down in front of it -->
+		<CaveRockfall layer="front" />
+		<MineAir layer="front" />
+		</Container>
 
 		<EntryReveal />
 

@@ -187,7 +187,9 @@ if (skin === 'platform') {
 		barStyle: 'flat',
 		barFill: 0x2a2a2a,
 		barAlpha: 1,
-		panelBorder: 0x0f0f0f,
+		// A stone hairline rather than their near-black edge, which on this strip
+		// is not there at all. It is also Balance's border — see the readouts.
+		panelBorder: 0x6e5e4a,
 		panelFill: 0x2a2a2a,
 
 		// Round controls: a dark disc with a thin cool-grey ring.
@@ -213,14 +215,27 @@ if (skin === 'platform') {
 		betFill: 0x4ace4a,
 		betBorder: 0x343a40,
 
-		// readouts: their disabled grey for labels, plain white for values. No
-		// per-metric accent colours; the platform bar does not tint its readouts, so
-		// the jungle green / brass split above is dropped rather than recoloured.
-		labelFill: 0xbfbfbf,
-		balanceLabelFill: 0xbfbfbf,
-		winAccent: { border: 0x343a40, label: 0xbfbfbf },
-		betAccent: { border: 0x343a40, label: 0xbfbfbf },
-		valueFill: 0xffffff,
+		// THE READOUTS, AS GO BANANAS BOAT DOES THEM: Balance and Bet in the bar's
+		// quiet material, and WIN alone picked out in the game's accent.
+		//
+		// Win is the only readout that changes because of the game rather than the
+		// player, and it is the number the eye goes looking for after every spin,
+		// so it is the one that gets colour. Boat's metal is brass on navy steel;
+		// this game's is the fuse's amber on the royals' stone:
+		//
+		//   Balance   stone edge #6e5e4a, pale stone label — it is drawn on
+		//             panelBorder directly (LayoutBottomBar), so it shares the
+		//             casing's edge, which is where it belongs anyway
+		//   Bet       the same label on a dimmer edge, the quietest of the three
+		//   Win       amber edge #c07a14, spark label #ffc45a
+		//
+		// Values in the pale stone's cream rather than white, as Boat's are in
+		// cream: white on the dark strip glares over a long session.
+		labelFill: 0xb8ad98,
+		balanceLabelFill: 0xb8ad98,
+		winAccent: { border: 0xc07a14, label: 0xffc45a },
+		betAccent: { border: 0x4c4438, label: 0xb8ad98 },
+		valueFill: 0xf3e6c8,
 		valueStroke: 0x0f0f0f,
 		valueShadow: 0x000000,
 		// Dark, like the royals' carved letters. The plate is their pale stone now,
@@ -281,6 +296,11 @@ if (skin === 'platform') {
 		// undefined by default, so other games keep their fixed values.
 		buyBonusDisabledStyle: 'dim',
 		buyBonusDisabledTint: 0xf0ece4,
+		// The tint the package passes in the READY state. Without it the disabled
+		// tint above, applied on the first frame while the game loads, is never
+		// undone and the slab stays dimmed for the whole session. White makes
+		// "ready" explicit and resets the sprite.
+		buyBonusIdleTint: 0xffffff,
 
 		// Both images carry an 80px transparent margin so the hover glow has
 		// somewhere to go; the slab is the middle 640 of an 800 canvas.

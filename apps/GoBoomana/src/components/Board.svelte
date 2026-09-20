@@ -18,6 +18,7 @@
 
 	import { getContext } from '../game/context';
 	import BoardContainer from './BoardContainer.svelte';
+	import WinScrim from './WinScrim.svelte';
 	import BoardMask from './BoardMask.svelte';
 	import BoardBase from './BoardBase.svelte';
 
@@ -122,6 +123,11 @@
 			<BoardBase />
 		</BoardContainer>
 	</BoardContext>
+
+	<!-- between the resting tiles and the winning ones: see WinScrim -->
+	<BoardContainer>
+		<WinScrim />
+	</BoardContainer>
 
 	<BoardContext animate={true}>
 		<BoardContainer>

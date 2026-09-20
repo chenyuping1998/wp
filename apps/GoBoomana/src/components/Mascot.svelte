@@ -339,6 +339,18 @@
 		context.eventEmitter.broadcast({ type: 'soundMascotVoice', name });
 	};
 
+	// The chest beat, with its roar and its six impacts. A function rather than
+	// inline in the handler because two things raise it: the free-game trigger,
+	// and the top three big-win tiers.
+	const beatChest = () => {
+		play('chestbeat', false);
+		// one clip covering all six strikes, so the grunts cannot drift out of
+		// sync with them
+		say('roar');
+		// no point running a clock for something with nowhere to be drawn
+		if (placement) startImpacts();
+	};
+
 	context.eventEmitter.subscribeOnMount({
 		winUpdate: ({ winLevelData }) => {
 			// Only for a win the game is itself making a fuss about. Reacting to
@@ -346,27 +358,30 @@
 			// feature, and a mascot who celebrates everything is celebrating
 			// nothing.
 			if (winLevelData.type !== 'big') return;
-			// cheer ends standing, and that is the whole of it.
+			// HE ESCALATES WITH THE TIER. Every big win used to get the same cheer,
+			// so a 20x big win and the 10,000x cap drew the identical reaction from
+			// him — alongside identical audio, which soundWinTier now also fixes.
 			//
-			// It used to hand over to a looping 'celebrate' that held the arms up
-			// while the plaque was on screen. The plaque waits for the player, so
-			// "while the plaque is up" is unbounded, and the result was a character
-			// standing with both arms in the air for as long as anyone looked away.
-			// Held that long it stops reading as a celebration and starts reading as
-			// something that has jammed.
-			play('cheer', false);
+			//   big, superwin      cheer — the jump, arms up
+			//   mega, epic, max    the chest beat, with its roar and impacts
+			//
+			// The chest beat is the biggest thing he does, and it already means the
+			// feature trigger. Sharing it with the top tiers is deliberate rather
+			// than an accident of reuse: both say "this is the big one", and a
+			// separate animation for it is not something this rig has the arm range
+			// to make read differently (see 'brace', and why it was dropped).
+			//
+			// Each ends standing, and that is the whole of it. There used to be a
+			// looping 'celebrate' held while the plaque was up; the plaque waits for
+			// the player, so that ran unbounded and read as something jammed.
+			const alias = winLevelData.alias;
+			if (alias === 'mega' || alias === 'epic' || alias === 'max') beatChest();
+			else play('cheer', false);
 		},
 		// The gorilla, for the biggest way into the feature. Deliberately not the
 		// same gesture as the win: using one celebration for "you are going in" and
 		// "you won" makes both of them mean less.
-		mascotChestBeat: () => {
-			play('chestbeat', false);
-			// one clip covering all six strikes, so the grunts cannot drift out of
-			// sync with them
-			say('roar');
-			// no point running a clock for something with nowhere to be drawn
-			if (placement) startImpacts();
-		},
+		mascotChestBeat: () => beatChest(),
 
 		// Interrupts whatever he was doing, unlike the others. A transition is the
 		// scene being torn down; finishing a shrug first would put the wind-up

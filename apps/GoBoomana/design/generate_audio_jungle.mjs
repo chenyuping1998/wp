@@ -965,4 +965,281 @@ const rubble = (sr, { dur = 0.7, count = 14, spread = 0.55, from = 0.12 } = {}) 
 	writeWav('press_blast.wav', takeTail(normalize(wet, 0.9), SR_SFX, 0.7), SR_SFX);
 }
 
+// ── the big-win tiers, and the two win-screen cues ──────────────────────────
+//
+// FIVE TIERS THAT USED TO SOUND IDENTICAL. The game has five big-win levels —
+// big, super, mega, epic, max — and all of them played the same thing: the
+// running music bed, one blast, and the coin shimmer. A 20x big win and the
+// 10,000x cap were indistinguishable by ear.
+//
+// Per-tier MUSIC (bgm_winlevel_*) was the obvious fix and was deliberately
+// turned off: switching the bed paused the running music and cleared the
+// bgm dedupe, which left a silent plaque and a restart from the top. So these
+// are FANFARES laid OVER the bed rather than music replacing it. Nothing about
+// the bed is touched, which is what made the old attempt fail.
+//
+// They are written in the bed's own key — C major pentatonic, the P table
+// above — so they sit on top of it instead of clashing with it.
+//
+// ESCALATION IS STRUCTURAL, not a volume knob. Each tier is longer, uses more
+// horn voices, runs the marimba further and higher, and has denser percussion
+// than the one below; max alone gets a low boom under the hit and a held final
+// chord. Loudness rises only a little — a bigger win should be MORE, not just
+// louder.
+//
+// Appended at the END of this file on purpose: every cue above shares one PRNG,
+// and anything inserted earlier would shift the random stream and quietly
+// change every sound generated after it.
+const fanfare = (level) => {
+	const dur = 1.6 + level * 0.6;
+	const buf = buffer(dur, SR_SFX);
+
+	// max only: the ground drops out first
+	if (level >= 5) {
+		let ph = 0;
+		for (let i = 0; i < SR_SFX * 1.1; i++) {
+			const t = i / SR_SFX;
+			const f = 38 + 70 * Math.exp(-5 * t);
+			ph += (2 * Math.PI * f) / SR_SFX;
+			buf[i] += Math.tanh(Math.sin(ph) * 1.4) * Math.exp(-3.4 * t) * 0.7;
+		}
+		addAt(buf, tom(SR_SFX, 1), 0.0, 0.9, SR_SFX);
+	}
+
+	// the hit: a horn chord, one more voice per tier
+	const chord = [P.C4, P.G4, P.E4, P.C5, P.G5].slice(0, 1 + Math.min(level, 4));
+	chord.forEach((f, i) => {
+		addAt(buf, horn(f, 0.8 + level * 0.18, SR_SFX, 0.14), 0.02 + i * 0.014, 0.5 / Math.sqrt(chord.length), SR_SFX);
+	});
+	addAt(buf, tom(SR_SFX, 0.8), 0.01, 0.55, SR_SFX);
+
+	// the run: further and higher per tier
+	const run = [P.C5, P.D5, P.E5, P.G5, P.A5, P.C6];
+	const steps = 3 + level;
+	for (let i = 0; i < steps; i++) {
+		const octave = i >= run.length ? 2 : 1;
+		const note = run[i % run.length] * octave;
+		addAt(buf, marimba(note, 0.5, SR_SFX, 0.2), 0.2 + i * 0.068, 0.62, SR_SFX);
+	}
+	const runEnd = 0.2 + steps * 0.068;
+
+	// percussion density
+	addAt(buf, conga(SR_SFX, 0.8), 0.14, 0.4 * Math.min(1, level / 2), SR_SFX);
+	if (level >= 3) {
+		// a tom roll into the top of the run
+		for (let i = 0; i < 3; i++) addAt(buf, tom(SR_SFX, 0.7), runEnd - 0.24 + i * 0.08, 0.45, SR_SFX);
+	}
+	if (level >= 4) {
+		// a snare roll, crescendo
+		const hits = 6 + level * 2;
+		for (let i = 0; i < hits; i++) {
+			addAt(buf, snare(SR_SFX, 0.3 + 0.7 * (i / hits)), runEnd - 0.5 + i * (0.5 / hits), 0.35, SR_SFX);
+		}
+	}
+
+	// the crash at the top of the run, bigger per tier
+	addAt(buf, cymbal(0.7 + level * 0.25, SR_SFX), runEnd, 0.14 + level * 0.05, SR_SFX);
+
+	// the landing: a restated chord, held on the top two tiers
+	const landing = [P.C4, P.E4, P.G4, P.C5].slice(0, 2 + Math.min(level, 2));
+	landing.forEach((f, i) => {
+		addAt(buf, horn(f, level >= 4 ? 1.4 : 0.7, SR_SFX, 0.08), runEnd + 0.04 + i * 0.01, 0.42 / Math.sqrt(landing.length), SR_SFX);
+	});
+	if (level >= 2) addAt(buf, shaker(SR_SFX, 0.3, 0.75), runEnd, 0.2, SR_SFX);
+
+	const wet = reverb(buf, SR_SFX, { ...MINE, rt60: 1.1 + level * 0.06, mix: 0.24 + level * 0.03 });
+	compress(wet, SR_SFX, { thresh: 0.5, ratio: 3.5 });
+	return takeTail(normalize(wet, 0.78 + level * 0.035), SR_SFX, dur + 0.5);
+};
+
+[
+	['win_big.wav', 1],
+	['win_super.wav', 2],
+	['win_mega.wav', 3],
+	['win_epic.wav', 4],
+	['win_max.wav', 5],
+].forEach(([name, level]) => writeWav(name, fanfare(level), SR_SFX));
+
+// THE TOTAL-WIN PLAQUE ARRIVING (was the template's sfx_youwon_panel). A slab
+// of stone set down, then a chord rising off it: the plaque is a result being
+// presented, so it is warm rather than loud.
+{
+	const dur = 1.7;
+	const buf = buffer(dur, SR_SFX);
+	addAt(buf, tom(SR_SFX, 0.9), 0, 0.7, SR_SFX);
+	addAt(buf, rubble(SR_SFX, { dur, count: 5, spread: 0.12, from: 0.03 }), 0, 0.3, SR_SFX);
+	[P.C5, P.E5, P.G5, P.C6].forEach((f, i) => addAt(buf, marimba(f, 0.9, SR_SFX, 0.3), 0.12 + i * 0.09, 0.6, SR_SFX));
+	addAt(buf, cymbal(0.9, SR_SFX), 0.46, 0.12, SR_SFX);
+	const wet = reverb(buf, SR_SFX, { ...MINE, mix: 0.26 });
+	writeWav('win_panel.wav', takeTail(normalize(wet, 0.66), SR_SFX, 2.1), SR_SFX);
+}
+
+// THE 10,000x CAP (was the template's sfx_winlevel_end, which only ever played
+// on wincap - so the single largest moment in the game ended on stock audio).
+// The whole seam coming down: a long, deep boom that keeps rumbling, and one
+// held chord over it.
+{
+	const dur = 3.2;
+	const buf = buffer(dur, SR_SFX);
+	let ph = 0;
+	for (let i = 0; i < buf.length; i++) {
+		const t = i / SR_SFX;
+		const f = 32 + 90 * Math.exp(-3.5 * t);
+		ph += (2 * Math.PI * f) / SR_SFX;
+		buf[i] += Math.tanh(Math.sin(ph) * 1.6) * Math.exp(-1.6 * t) * 0.8;
+	}
+	addAt(buf, rubble(SR_SFX, { dur, count: 26, spread: 1.6, from: 0.1 }), 0, 0.5, SR_SFX);
+	addAt(buf, cymbal(2.4, SR_SFX), 0.02, 0.26, SR_SFX);
+	[P.C3, P.G3, P.C4, P.E4, P.G4].forEach((f, i) => addAt(buf, horn(f, 2.2, SR_SFX, 0.06), 0.3 + i * 0.02, 0.2, SR_SFX));
+	const wet = reverb(buf, SR_SFX, { ...MINE, rt60: 1.5, mix: 0.36 });
+	compress(wet, SR_SFX, { thresh: 0.45, ratio: 4 });
+	writeWav('win_cap.wav', takeTail(normalize(wet, 0.95), SR_SFX, 3.8), SR_SFX);
+}
+
 console.log('done');
+
+// ── THE FULL BOARD: the chain of fuses, and the stamp ───────────────────────
+//
+// Five reels of one symbol is what the whole feature climbs towards, and it
+// used to arrive as the ordinary blast played a little longer. These two cues
+// belong to FullBoard.svelte, which puts a beat BEFORE that blast and one
+// AFTER it, and they are timed to its constants — change one, change both.
+//
+// fullboard_chain   1.3s  a fuse catches on each reel, left to right, every
+//                         190ms, each one a step higher; the sizzle thickens as
+//                         more of them burn, and the last 0.35s is a swell that
+//                         sucks the air out ahead of the bang
+// fullboard_stamp   2.2s  the "BOOM!" landing: a sub drop, a horn stab, and a
+//                         glittering run falling out of it
+//
+// Appended at the END of this file on purpose: every cue above shares one PRNG,
+// and anything inserted earlier would shift the random stream and quietly
+// change every sound generated after it.
+{
+	const dur = 1.3;
+	const IGNITE_EVERY = 0.19;
+	const buf = buffer(dur, SR_SFX);
+	const notes = [P.C5, P.D5, P.E5, P.G5, P.A5];
+	notes.forEach((f, k) => {
+		const at = k * IGNITE_EVERY;
+		// the match strike: a bright, very short scrape
+		const strike = buffer(0.05, SR_SFX);
+		const bp = svfBandpass(SR_SFX, 3200 + k * 400, 1.6);
+		for (let i = 0; i < strike.length; i++) strike[i] = bp(rand2()) * Math.exp((-90 * i) / SR_SFX);
+		addAt(buf, strike, at, 0.9, SR_SFX);
+		// and a step up the scale, so the chain is heard CLIMBING
+		addAt(buf, marimba(f, 0.4, SR_SFX, 0.15), at + 0.005, 0.55, SR_SFX);
+		addAt(buf, bongo(SR_SFX, { from: 300 + k * 40, to: 200 + k * 30, dur: 0.12 }), at, 0.35, SR_SFX);
+	});
+	// the sizzle: one voice per fuse alight, so it thickens as they catch
+	const lp = onePole();
+	const hp = onePole();
+	for (let i = 0; i < buf.length; i++) {
+		const t = i / SR_SFX;
+		const alight = Math.min(5, Math.floor(t / IGNITE_EVERY) + 1);
+		const n = rand2();
+		const v = lp(n, 0.22 + 0.05 * alight);
+		const b = v - hp(v, 0.06);
+		const sputter = 0.6 + 0.4 * Math.sin(2 * Math.PI * 19 * t + 2.5 * Math.sin(2 * Math.PI * 5.1 * t));
+		buf[i] += b * sputter * 0.12 * alight * Math.min(1, (dur - t) / 0.05);
+	}
+	// the intake: a rising swell that stops dead, so the bang lands in a hole
+	for (let i = 0; i < SR_SFX * 0.35; i++) {
+		const t = i / SR_SFX;
+		const at = Math.floor((dur - 0.36) * SR_SFX) + i;
+		const env = Math.pow(t / 0.35, 2.4);
+		buf[at] += rand2() * env * 0.35;
+	}
+	addAt(buf, boing(SR_SFX, { from: 180, to: 900, dur: 0.5 }), dur - 0.52, 0.22, SR_SFX);
+	const wet = reverb(buf, SR_SFX, { ...MINE, mix: 0.18 });
+	writeWav('fullboard_chain.wav', takeTail(normalize(wet, 0.7), SR_SFX, dur), SR_SFX);
+}
+{
+	const dur = 2.2;
+	const buf = buffer(dur, SR_SFX);
+	// the drop
+	let ph = 0;
+	for (let i = 0; i < SR_SFX * 1.2; i++) {
+		const t = i / SR_SFX;
+		const f = 34 + 80 * Math.exp(-6 * t);
+		ph += (2 * Math.PI * f) / SR_SFX;
+		buf[i] += Math.tanh(Math.sin(ph) * 1.5) * Math.exp(-3 * t) * 0.75;
+	}
+	addAt(buf, tom(SR_SFX, 1), 0, 0.8, SR_SFX);
+	addAt(buf, snare(SR_SFX, 1), 0, 0.5, SR_SFX);
+	// the stab, full major chord
+	[P.C4, P.E4, P.G4, P.C5].forEach((f, i) => addAt(buf, horn(f, 0.6, SR_SFX, 0.1), 0.01 + i * 0.008, 0.26, SR_SFX));
+	addAt(buf, cymbal(1.6, SR_SFX), 0.01, 0.3, SR_SFX);
+	// glitter falling out of it: a fast run down from the top
+	const run = [P.C6 * 2, P.A5 * 2, P.G5 * 2, P.E5 * 2, P.D5 * 2, P.C6, P.A5, P.G5, P.E5, P.C5];
+	run.forEach((f, i) => addAt(buf, marimba(f, 0.35, SR_SFX, 0.1), 0.16 + i * 0.045, 0.34, SR_SFX));
+	addAt(buf, shaker(SR_SFX, 0.5, 0.8), 0.16, 0.18, SR_SFX);
+	const wet = reverb(buf, SR_SFX, { ...MINE, rt60: 1.4, mix: 0.3 });
+	compress(wet, SR_SFX, { thresh: 0.5, ratio: 3.5 });
+	writeWav('fullboard_stamp.wav', takeTail(normalize(wet, 0.9), SR_SFX, dur), SR_SFX);
+}
+
+// ── THE CAVE QUAKE: the roof answering the chest beat on a trigger ───────────
+//
+// Timed to game/caveQuake.svelte.ts: six strikes from 0.48s, 0.30s apart, and
+// 3.3s in all. Two layers. Under everything, a low rumble that comes up with
+// the first strike and settles after the last - the room itself moving. Over
+// it, on each strike, a short crumble of stone coming off the roof, heavier on
+// the later strikes as more of the roof lets go. No thump of its own on the
+// strikes: the chest beat already has one, and doubling it would put the hit
+// in two places.
+//
+// Appended at the END of this file on purpose: every cue above shares one PRNG,
+// and anything inserted earlier would shift the random stream and quietly
+// change every sound generated after it.
+{
+	const dur = 3.3;
+	const START = 0.48;
+	const GAP = 0.3;
+	const buf = buffer(dur, SR_SFX);
+	const lp = onePole();
+	const lp2 = onePole();
+	for (let i = 0; i < buf.length; i++) {
+		const t = i / SR_SFX;
+		const env =
+			t < START ? (t / START) * 0.4 : t < START + 5 * GAP + 0.4 ? 1 : Math.max(0, 1 - (t - (START + 5 * GAP + 0.4)) / 1.0);
+		// low, grinding: noise through two poles, then a slow wobble so it rolls
+		const n = lp2(lp(rand2(), 0.02), 0.03);
+		buf[i] = n * env * 9 * (0.75 + 0.25 * Math.sin(2 * Math.PI * 3.1 * t));
+	}
+	for (let s = 1; s < 6; s++) {
+		addAt(buf, rubble(SR_SFX, { dur: 0.9, count: 4 + s * 2, spread: 0.45, from: 0.03 }), START + s * GAP, 0.22 + s * 0.05, SR_SFX);
+	}
+	// and a last patter of grit as it settles
+	addAt(buf, rubble(SR_SFX, { dur: 1.1, count: 10, spread: 0.9, from: 0.05 }), START + 5 * GAP + 0.35, 0.18, SR_SFX);
+	const wet = reverb(buf, SR_SFX, { ...MINE, rt60: 1.3, mix: 0.3 });
+	writeWav('cave_quake.wav', takeTail(normalize(wet, 0.8), SR_SFX, dur), SR_SFX);
+}
+
+// ── A RUNG OF THE BLAST LADDER ───────────────────────────────────────────────
+//
+// Heard when the feature's ladder climbs one step (see soundLadderUp), as the
+// mine warms and the dust picks up. Stone settling, then one low note that
+// rises a fifth and holds: the sound of something deeper down answering. It is
+// short and dark on purpose - it sits under the reveal's marimba, not on top.
+//
+// Appended at the END of this file on purpose: every cue above shares one PRNG,
+// and anything inserted earlier would shift the random stream and quietly
+// change every sound generated after it.
+{
+	const dur = 1.1;
+	const buf = buffer(dur, SR_SFX);
+	addAt(buf, rubble(SR_SFX, { dur: 0.5, count: 6, spread: 0.2, from: 0.02 }), 0, 0.5, SR_SFX);
+	addAt(buf, tom(SR_SFX, 0.9), 0.02, 0.6, SR_SFX);
+	// the note: P.C3 rising to P.G3 over 0.5s, with a slow tremble
+	let ph = 0;
+	for (let i = 0; i < SR_SFX * 1.0; i++) {
+		const t = i / SR_SFX;
+		const f = P.C3 * Math.pow(P.G3 / P.C3, Math.min(1, t / 0.5));
+		ph += (2 * Math.PI * f) / SR_SFX;
+		const env = Math.min(1, t / 0.03) * Math.exp(-2.6 * t);
+		buf[i] += (Math.sin(ph) + 0.35 * Math.sin(2 * ph)) * env * (0.85 + 0.15 * Math.sin(2 * Math.PI * 6 * t)) * 0.45;
+	}
+	const wet = reverb(buf, SR_SFX, { ...MINE, rt60: 1.2, mix: 0.28 });
+	writeWav('ladder_up.wav', takeTail(normalize(wet, 0.75), SR_SFX, dur), SR_SFX);
+}

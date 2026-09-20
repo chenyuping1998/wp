@@ -7,6 +7,7 @@
 
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { verticalFill } from '../game/gradientFill';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { waitForResolve } from 'utils-shared/wait';
@@ -51,8 +52,12 @@
 					fontSize: Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length),
 					fontWeight: GAME_FONT_WEIGHT,
 					letterSpacing: 6,
-					fill: [0xfff3bd, 0xffd75e, 0xc9821a],
-					stroke: 0x54330a,
+					// the mine's palette; see FreeSpinCounter for the note
+					fill: verticalFill(
+						[0xfff6e0, 0xffc45a, 0xc07a14],
+						Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length),
+					),
+					stroke: 0x2a2016,
 					strokeThickness: 6,
 					dropShadow: true,
 					dropShadowColor: 0x000000,
@@ -60,7 +65,13 @@
 					dropShadowDistance: 3,
 				}}
 			/>
-			<GoldText y={sizes.height * 0.08} text={freeSpinsFromEvent} fontSize={sizes.width * 0.24} />
+			<GoldText
+				y={sizes.height * 0.08}
+				text={freeSpinsFromEvent}
+				fontSize={sizes.width * 0.24}
+				fill={[0xfff6e0, 0xffc45a, 0xc07a14]}
+				stroke={0x2a2016}
+			/>
 			<Text
 				anchor={0.5}
 				y={sizes.height * 0.32}
@@ -70,8 +81,8 @@
 					fontSize: Math.min(sizes.width * 0.05, (sizes.width * 1.1) / subtitle.length),
 					fontWeight: GAME_FONT_WEIGHT,
 					letterSpacing: 4,
-					fill: 0xf5e3c3,
-					stroke: 0x2c1c08,
+					fill: 0xf3e6c8,
+					stroke: 0x2a2016,
 					strokeThickness: 3,
 				}}
 			/>

@@ -17,8 +17,7 @@
 </script>
 
 <script lang="ts">
-	import { Graphics, Container } from 'pixi-svelte';
-	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { Container } from 'pixi-svelte';
 	import { stateBet } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
@@ -27,8 +26,9 @@
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
 	import { getContext } from '../game/context';
+	import { stateGame } from '../game/stateGame.svelte';
 	import { getSymbolInfo } from '../game/utils';
-	import { SYMBOL_SIZE, REEL_PADDING, BOARD_DIMENSIONS, BOARD_SIZES } from '../game/constants';
+	import { SYMBOL_SIZE, BOARD_DIMENSIONS, BOARD_SIZES } from '../game/constants';
 	import type { SymbolName } from '../game/types';
 
 	const context = getContext();
@@ -60,9 +60,6 @@
 	// their animation — the same bug gen-2 had with its line volley.
 	const WIN_ANIM_VISIBLE_MS = 950;
 
-	const SCRIM = 0x05070a;
-	const SCRIM_ALPHA = 0.62;
-	const FRAME = 0xffd75e;
 
 	let wins = $state<WinWayData[]>([]);
 	// Reels revealed so far: the wake runs left to right, which is the direction
@@ -134,12 +131,6 @@
 		}
 		return set;
 	});
-
-	// Same formula as getSymbolX in utils.ts.
-	const cellX = (reel: number) => SYMBOL_SIZE * (reel + REEL_PADDING) - SYMBOL_SIZE / 2;
-	// Board rows are 1..numRows in the padded array; row 0 and numRows+1 are the
-	// padding cells either side and are never lit.
-	const cellY = (row: number) => -SYMBOL_SIZE + row * SYMBOL_SIZE;
 
 	// --- symbol animations, fired reel by reel in the wake -------------------
 	// A cell can belong to more than one winning symbol; animating it twice
@@ -234,42 +225,25 @@
 		},
 	});
 
-	const draw = (g: PixiGraphics) => {
-		g.clear();
-		if (!show || wins.length === 0) return;
-
-		// Dim every cell that is not part of a win. Reels the wake has not reached
-		// yet are dimmed whole, so the board darkens ahead of the reveal and the
-		// wins appear to light up out of it.
-		for (let reel = 0; reel < BOARD_DIMENSIONS.x; reel++) {
-			for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
-				if (litCells.has(`${reel},${row}`)) continue;
-				g.rect(cellX(reel), cellY(row), SYMBOL_SIZE, SYMBOL_SIZE);
-			}
-		}
-		g.fill({ color: SCRIM, alpha: SCRIM_ALPHA });
-
-		// A frame around each winning cell. Drawn after the scrim so it sits over
-		// the boundary between a lit cell and a dimmed neighbour, which is where
-		// the eye looks for the edge of a win.
-		const inset = 3;
-		for (const key of litCells) {
-			const [reel, row] = key.split(',').map(Number);
-			g.rect(
-				cellX(reel) + inset,
-				cellY(row) + inset,
-				SYMBOL_SIZE - inset * 2,
-				SYMBOL_SIZE - inset * 2,
-			);
-		}
-		g.stroke({ width: 3, color: FRAME, alpha: 0.9 });
-	};
+	// THE DIMMING AND THE FRAMES MOVED OUT OF HERE.
+	//
+	// Winning symbols now play GB100's win moves and grow to 1.3-1.55x over
+	// their neighbours (SymbolWinAnim). Drawn from here, above the whole board,
+	// the scrim over a losing neighbour dimmed the half of the winning tile that
+	// had grown across it, and the fixed cell frame cut straight through it.
+	//
+	// So this publishes WHICH cells are lit, and WinScrim draws the dimming from
+	// inside Board, under the layer the winning symbols play on. The frame is
+	// drawn by the symbol itself and moves with it. Reels the wake has not
+	// reached are still dimmed whole, so the wins light up out of a dark board.
+	$effect(() => {
+		stateGame.winLitCells = show && wins.length > 0 ? [...litCells] : null;
+	});
 </script>
 
 {#if show && wins.length > 0}
 	<BoardContainer>
 		<Container zIndex={10}>
-			<Graphics {draw} />
 			{#if revealedReels > 0 && current}
 				{@const y = BOARD_SIZES.height + SYMBOL_SIZE * 0.3}
 				<!-- icon then count, as one centred pair: the icon is anchored on its

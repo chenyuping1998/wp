@@ -477,6 +477,25 @@ const signRivets = (() => {
 	}
 	return out;
 })();
+// A bundle of dynamite, for the free-spin plaques. Same construction as the
+// banana emblem it replaces there - a flat shape with a lit edge - in b.png's
+// own reds, so the plaque and the dynamite on the reels are the same thing.
+const dynamiteEmblem = (cx, cy, s = 1) => `
+<g transform="translate(${cx} ${cy}) scale(${s})">
+	${[[-34, -14], [-26, 12], [-38, 38]]
+		.map(
+			([x, y]) => `<rect x="${x}" y="${y}" width="150" height="24" rx="11" fill="url(#dynStick)" stroke="#3a0c0a" stroke-width="3"/>
+	<ellipse cx="${x + 11}" cy="${y + 12}" rx="7" ry="9" fill="#c85040" stroke="#3a0c0a" stroke-width="2"/>`,
+		)
+		.join('')}
+	<rect x="14" y="-20" width="16" height="84" rx="5" fill="#9c7860" stroke="#3a2818" stroke-width="3"/>
+	<rect x="72" y="-20" width="16" height="84" rx="5" fill="#9c7860" stroke="#3a2818" stroke-width="3"/>
+	<path d="M 116 24 C 146 18 156 -6 148 -30" fill="none" stroke="#2a1a10" stroke-width="9" stroke-linecap="round"/>
+	<path d="M 116 24 C 146 18 156 -6 148 -30" fill="none" stroke="#9c7860" stroke-width="5" stroke-linecap="round"/>
+	<circle cx="148" cy="-32" r="9" fill="#ffd070"/>
+	<circle cx="148" cy="-32" r="4" fill="#fff6e0"/>
+</g>`;
+
 const bananaEmblem = (cx, cy, s) => `
 <g transform="translate(${cx} ${cy}) scale(${s})">
 	<path d="M -34 6 Q -20 -18 6 -24 Q 12 -20 9 -12 Q -6 6 -26 12 Q -34 12 -34 6 Z" fill="url(#embGold)" stroke="#6d4a08" stroke-width="3"/>
@@ -492,13 +511,13 @@ frames.fs_sign = svgWrap(
 	     to nothing at all, so the sign read as hanging from two loose offcuts.
 	     The brass corners and frame carry it on their own. -->
 	<!-- plank panel -->
-	<rect x="100" y="130" width="720" height="540" rx="26" fill="url(#plankSign)" stroke="#17120a" stroke-width="8"/>
-	<rect x="100" y="300" width="720" height="10" fill="#17120a" opacity="0.5"/>
-	<rect x="100" y="490" width="720" height="10" fill="#17120a" opacity="0.5"/>
+	<rect x="100" y="130" width="720" height="540" rx="26" fill="url(#mineSlate)" stroke="#101216" stroke-width="8"/>
+	<rect x="100" y="300" width="720" height="10" fill="#101216" opacity="0.5"/>
+	<rect x="100" y="490" width="720" height="10" fill="#101216" opacity="0.5"/>
 	<rect x="100" y="130" width="720" height="540" rx="26" filter="url(#signGrain)" opacity="0.5"/>
 	<!-- brass frame -->
 	<rect x="112" y="142" width="696" height="516" rx="20" fill="none" stroke="url(#brass)" stroke-width="10"/>
-	<rect x="124" y="154" width="672" height="492" rx="14" fill="none" stroke="#ffe98a" stroke-width="2.5" opacity="0.6"/>
+	<rect x="124" y="154" width="672" height="492" rx="14" fill="none" stroke="#f0e6d2" stroke-width="2.5" opacity="0.6"/>
 	${signRivets}
 	<!-- corner brass plates -->
 	${[[100, 130, 0], [820, 130, 90], [820, 670, 180], [100, 670, 270]]
@@ -514,19 +533,26 @@ frames.fs_sign = svgWrap(
 	<!-- inner soft vignette so text pops -->
 	<rect x="130" y="160" width="660" height="480" rx="14" fill="url(#signVign)"/>`,
 	`
-	<linearGradient id="plankSign" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#3f4a1e"/>
-		<stop offset="0.5" stop-color="#2c3812"/>
-		<stop offset="1" stop-color="#1c260c"/>
+	<!-- THE MINE'S OWN ROCK, not the jungle plank this was built from: the same
+	     slate every high symbol stands on, sampled off b.png. The brass studs
+	     stay, because that plate has them too. -->
+	<linearGradient id="mineSlate" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#40404c"/>
+		<stop offset="0.5" stop-color="#30303c"/>
+		<stop offset="1" stop-color="#1e2428"/>
 	</linearGradient>
+	<!-- l1.png's rough outer stone: the trim the Buy Bonus slab already uses -->
 	<linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#ffe282"/>
-		<stop offset="0.45" stop-color="#d8a334"/>
-		<stop offset="1" stop-color="#8a5c14"/>
+		<stop offset="0" stop-color="#e0d2ba"/>
+		<stop offset="0.45" stop-color="#a8937a"/>
+		<stop offset="1" stop-color="#6e5e4a"/>
 	</linearGradient>
+	<!-- the lantern brass of the studs, not the old bright gold: with the trim
+	     now stone, those corner plates were the only saturated thing left and
+	     read as a different plaque's furniture bolted on -->
 	<linearGradient id="cornerBrass" x1="0" y1="0" x2="1" y2="1">
-		<stop offset="0" stop-color="#e8bc4e"/>
-		<stop offset="1" stop-color="#8a5c14"/>
+		<stop offset="0" stop-color="#c49a5c"/>
+		<stop offset="1" stop-color="#6d4a08"/>
 	</linearGradient>
 	<linearGradient id="embGold" x1="0" y1="0" x2="1" y2="1">
 		<stop offset="0" stop-color="#fff2ae"/>
@@ -551,28 +577,37 @@ frames.fs_counter_panel = svgWrap(
 	824,
 	622,
 	`
-	<rect x="30" y="60" width="764" height="502" rx="34" fill="url(#plankSign)" stroke="#17120a" stroke-width="8"/>
+	<rect x="30" y="60" width="764" height="502" rx="34" fill="url(#mineSlate)" stroke="#101216" stroke-width="8"/>
 	<rect x="30" y="60" width="764" height="502" rx="34" filter="url(#signGrain)" opacity="0.5"/>
 	<rect x="46" y="76" width="732" height="470" rx="26" fill="none" stroke="url(#brass)" stroke-width="9"/>
-	<rect x="58" y="88" width="708" height="446" rx="20" fill="none" stroke="#ffe98a" stroke-width="2" opacity="0.55"/>
+	<rect x="58" y="88" width="708" height="446" rx="20" fill="none" stroke="#f0e6d2" stroke-width="2" opacity="0.55"/>
 	${[[70, 100], [754, 100], [70, 522], [754, 522]]
 		.map(
 			([x, y]) => `<circle cx="${x}" cy="${y}" r="10" fill="url(#rivet)" stroke="#3a2c08" stroke-width="2"/>
 	<circle cx="${x - 3}" cy="${y - 3}" r="3" fill="#fff3bd" opacity="0.8"/>`,
 		)
 		.join('')}
-	${bananaEmblem(412, 122, 0.75)}
+	${dynamiteEmblem(374, 122, 0.62)}
 	<rect x="70" y="100" width="684" height="422" rx="18" fill="url(#signVign)"/>`,
 	`
-	<linearGradient id="plankSign" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#3f4a1e"/>
-		<stop offset="0.5" stop-color="#2c3812"/>
-		<stop offset="1" stop-color="#1c260c"/>
+	<!-- THE MINE'S OWN ROCK, not the jungle plank this was built from: the same
+	     slate every high symbol stands on, sampled off b.png. The brass studs
+	     stay, because that plate has them too. -->
+	<linearGradient id="mineSlate" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#40404c"/>
+		<stop offset="0.5" stop-color="#30303c"/>
+		<stop offset="1" stop-color="#1e2428"/>
 	</linearGradient>
+	<!-- l1.png's rough outer stone: the trim the Buy Bonus slab already uses -->
 	<linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#ffe282"/>
-		<stop offset="0.45" stop-color="#d8a334"/>
-		<stop offset="1" stop-color="#8a5c14"/>
+		<stop offset="0" stop-color="#e0d2ba"/>
+		<stop offset="0.45" stop-color="#a8937a"/>
+		<stop offset="1" stop-color="#6e5e4a"/>
+	</linearGradient>
+	<linearGradient id="dynStick" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#d24a3a"/>
+		<stop offset="0.35" stop-color="#a83024"/>
+		<stop offset="1" stop-color="#6c1818"/>
 	</linearGradient>
 	<linearGradient id="embGold" x1="0" y1="0" x2="1" y2="1">
 		<stop offset="0" stop-color="#fff2ae"/>
@@ -598,8 +633,22 @@ const render = (svg, outPath, width) => {
 	fs.writeFileSync(outPath, resvg.render().asPng());
 	console.log('rendered', path.basename(outPath));
 };
-for (const [name, svg] of Object.entries(backgrounds)) {
-	render(svg, path.join(BG_DIR, `${name}.png`), 1920);
+// THE BACKGROUNDS ARE NOT GENERATED HERE ANY MORE. Do not switch this back on.
+//
+// This file is gen-1's jungle theme, and the SVG backgrounds above still paint
+// green canopy and an orange sunset. Go Boomana's backdrops are mine tunnels,
+// brought in from real art by design/import_backgrounds.py. Running this to
+// rebuild a FRAME used to silently overwrite all three of them - bg_base went
+// from near-black rock to #183000 green, bg_feature to an orange sky - and it
+// also wrote a bg_superspin.png this game does not use (its hold and spin
+// backdrop is bg_holdandspin.png).
+//
+// The SVGs are left in place because the frames below share their gradients and
+// filters; they are simply never written to disk.
+if (process.env.WRITE_JUNGLE_BACKGROUNDS) {
+	for (const [name, svg] of Object.entries(backgrounds)) {
+		render(svg, path.join(BG_DIR, `${name}.png`), 1920);
+	}
 }
 for (const [name, svg] of Object.entries(frames)) {
 	render(svg, path.join(FRAME_DIR, `${name}.png`), 1280);

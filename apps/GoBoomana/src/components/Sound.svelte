@@ -14,6 +14,11 @@
 		| { type: 'soundFade'; name: SoundName; from: number; to: number; duration: number }
 		| { type: 'soundFreeGameBell' }
 		| { type: 'soundBigWinBlast' }
+		| { type: 'soundWinTier'; tier: string }
+		| { type: 'soundFullBoardChain' }
+		| { type: 'soundFullBoardStamp' }
+		| { type: 'soundCaveQuake' }
+		| { type: 'soundLadderUp'; level: number }
 		| { type: 'soundDynamiteBlast' }
 		| { type: 'soundBlastFuse' }
 		| { type: 'soundBlastDetonate'; full: boolean }
@@ -69,6 +74,17 @@
 		| 'symbol_shatter'
 		| 'smoke_puff'
 		| 'press_blast'
+		| 'win_big'
+		| 'win_super'
+		| 'win_mega'
+		| 'win_epic'
+		| 'win_max'
+		| 'win_panel'
+		| 'win_cap'
+		| 'fullboard_chain'
+		| 'fullboard_stamp'
+		| 'cave_quake'
+		| 'ladder_up'
 		| 'symbol_reveal'
 		| 'monkey_expand'
 		| 'voice_roar'
@@ -104,6 +120,22 @@
 		symbol_shatter: 'jungle/symbol_shatter.wav',
 		smoke_puff: 'jungle/smoke_puff.wav',
 		press_blast: 'jungle/press_blast.wav',
+		// One fanfare per big-win tier, each larger than the last, laid over the
+		// running bed rather than replacing it. See soundWinTier below.
+		win_big: 'jungle/win_big.wav',
+		win_super: 'jungle/win_super.wav',
+		win_mega: 'jungle/win_mega.wav',
+		win_epic: 'jungle/win_epic.wav',
+		win_max: 'jungle/win_max.wav',
+		win_panel: 'jungle/win_panel.wav',
+		win_cap: 'jungle/win_cap.wav',
+		// the full board's own beats, timed to FullBoard.svelte
+		fullboard_chain: 'jungle/fullboard_chain.wav',
+		fullboard_stamp: 'jungle/fullboard_stamp.wav',
+		// the roof answering the chest beat on a trigger, timed to game/caveQuake
+		cave_quake: 'jungle/cave_quake.wav',
+		// a rung of the blast ladder reached: stone settling, then a low rising note
+		ladder_up: 'jungle/ladder_up.wav',
 		symbol_reveal: 'jungle/symbol_reveal.wav',
 		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
 		monkey_expand: 'jungle/monkey_expand.mp3',
@@ -152,6 +184,12 @@
 		sfx_scatter_win: { name: 'win_gliss' },
 		sfx_scatter_win_v2: { name: 'win_gliss_big' },
 		sfx_superfreespin: { name: 'win_gliss_big', volume: 0.8 },
+		// The last two sounds of the win presentation, which were still falling
+		// through to the template sprite. sfx_youwon_panel is the total-win plaque
+		// arriving; sfx_winlevel_end only ever fires on wincap, so the single
+		// largest moment in the game used to end on stock audio.
+		sfx_youwon_panel: { name: 'win_panel' },
+		sfx_winlevel_end: { name: 'win_cap' },
 		jng_intro_fs: { name: 'fs_intro' },
 		sfx_wild_explode: { name: 'wild_expand' },
 		sfx_multiplier_update: { name: 'mult_update' },
@@ -451,6 +489,29 @@
 		},
 		soundFreeGameBell: () => playCnSfx('gong_feature'),
 		soundBigWinBlast: () => playCnSfx('bigwin_blast'),
+		// FIVE TIERS THAT USED TO SOUND IDENTICAL. Big and max both got the bed,
+		// one blast and the coin shimmer. Each tier now adds its own fanfare, built
+		// to escalate on length, voice count, register and percussion density
+		// (design/generate_audio_jungle.mjs). Literal calls per case, not a lookup:
+		// design/check_audio.mjs reads cue names out of playCnSfx(...) and a name
+		// held in a variable is not checked.
+		// The full board: the fuses catching on each reel in turn, and the stamp
+		// after the blast. Both are timed to FullBoard.svelte's constants.
+		soundFullBoardChain: () => playCnSfx('fullboard_chain', 0.85),
+		soundFullBoardStamp: () => playCnSfx('fullboard_stamp', 0.9),
+		// Under the roar and the bell: it is the room, not the event, so it sits
+		// back in the mix and is felt more than heard.
+		soundCaveQuake: () => playCnSfx('cave_quake', 0.6),
+		// Louder on each rung, so the climb is heard as well as seen: 0.5 at the
+		// first step up to 0.85 at the top.
+		soundLadderUp: ({ level }) => playCnSfx('ladder_up', Math.min(0.85, 0.35 + 0.13 * level)),
+		soundWinTier: ({ tier }) => {
+			if (tier === 'big') playCnSfx('win_big', 0.8);
+			else if (tier === 'superwin') playCnSfx('win_super', 0.8);
+			else if (tier === 'mega') playCnSfx('win_mega', 0.82);
+			else if (tier === 'epic') playCnSfx('win_epic', 0.85);
+			else if (tier === 'max') playCnSfx('win_max', 0.88);
+		},
 		// The EVENT is named for the prop, the CUE is named for the file on disk.
 		// jungle/grenade_blast.wav is carried over from gen-1 and renaming a wav
 		// would break the audio manifest for no gain.
