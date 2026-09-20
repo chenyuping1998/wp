@@ -1,61 +1,16 @@
 // Bet-bar plate art for GoBananas: the balance/win/bet tickers and the Buy
-// Bonus button, matched to the reel housing so the whole UI reads as one piece
-// of kit.
+// Bonus button.
 //
-// Three Buy Bonus plates are written:
+// TWO SETS, because this game ships two skins (see src/game/uiTheme.ts):
 //
-//   buybonus_plate           the jungle generation's olive-and-gold CTA. Kept
-//                            so the brass skin can be switched back to without
-//                            a rebuild; nothing points at it any more.
-//   buybonus_hatch           THIS game's: the reel housing's own gunmetal with
-//                            a porthole cut into the top third.
-//   buybonus_hatch_lit       the same porthole with the lamp on, drawn for
-//                            ADDITIVE blending, for the hover state.
-//
-// THE HATCH'S METAL WAS SAMPLED OFF THE BOARD. frame_edge.png is 24% warm
-// pixels and 44% neutral ones, and those two clusters are the brass and the
-// steel the housing is actually made of:
-//
-//   brass  #251f12  #443a29  #6a5642  #8f8063  #a79676
-//   steel  #000100  #313230  #3f403b  #4f5455  #636465
-//
-// THEN IT WAS LIFTED, because the housing's own value is the wrong value for a
-// button that does not sit on the housing. Measured in the region the CTA
-// actually occupies — left of the board, vertically centred:
-//
-//   backdrop            mean L    p90
-//   bg_base               22.3    42.9
-//   bg_holdandspin        34.2    62.0
-//   bg_feature            53.7   113.0
-//   the plate, as first drawn   50.8    77.8
-//
-// On the base backdrop that is a 28-level gap, which sounds like enough and is
-// not: the plate's own p10 is 25.5, so its recessed panel and its 9px outer
-// stroke were sitting ON the background rather than against it, and an edge that
-// matches its surroundings is an edge that is not there. On bg_feature the whole
-// plate was within three levels of the backdrop and effectively vanished.
-//
-// RAISED AGAIN, to match the board's own low symbols. The A/K/Q/J/10 tiles are
-// the pale stone the player looks at most, and they measure:
-//
-//   tile      L p25    p50    p75
-//   l1        140.4  175.2  190.2
-//   l5        105.2  166.8  185.3
-//
-// so their FACE sits around 170-190. The plate's body was at a median of 126 and
-// read as a darker object than anything on the board.
-//
-// Two things move it, and the second matters more than the first:
-//
-//   · the ramps go up
-//   · THE FINISH CHANGES FROM CANVAS TO STEEL. CANVAS_FINISH is a cloth preset —
-//     ao 0.45, spec 0.22 — and that ambient-occlusion pass was costing about 45
-//     levels on its own. STEEL_FINISH is ao 0.35 with spec 0.5 and a brushed
-//     pass, which is both the right material for a pressed steel panel and
-//     substantially less darkening.
-//
-// The dark outer stroke stays: on a LIGHT body a dark contour is what makes the
-// edge crisp; it was only a problem while the body was dark too.
+//   ticker_plate / buybonus_plate      the jungle generation's olive canvas and
+//                                      brass, matched to the OLD reel housing.
+//                                      Used by the 'bananaut' skin, byte for
+//                                      byte as it shipped.
+//   buybonus_helmet / buybonus_helmet_lit
+//                                      the EVA helmet, visor down. Used by the
+//                                      'platform' skin; the visor lights on
+//                                      hover.
 // Usage: node design/generate_ui_plates.mjs <dir with node_modules for @resvg/resvg-js>
 import { createRequire } from 'module';
 import fs from 'fs';
@@ -70,7 +25,7 @@ if (!resvgDir) {
 const require = createRequire(path.join(resvgDir, 'noop.js'));
 const { Resvg } = require('@resvg/resvg-js');
 
-import { surfaceDefs, finishRect, CANVAS_FINISH, BRASS_FINISH, STEEL_FINISH } from './surface.mjs';
+import { surfaceDefs, finishRect, CANVAS_FINISH, BRASS_FINISH } from './surface.mjs';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(appRoot, 'static/assets/sprites/goBananasUi');
@@ -172,155 +127,242 @@ ${finishRect(10, 10, BS - 20, BS - 20, 66, 'sf', CANVAS_FINISH)}
 ${buyRivets}
 </svg>`;
 
-// ── the hatch: this game's Buy Bonus ────────────────────────────────────────
+// ── the EVA helmet: this game's Buy Bonus ──────────────────────────────────
 //
-// A PORTHOLE, and the choice is not decoration. The reel housing was rebuilt
-// from cut parts of a hatch (see design/build_frame_capsule.py), so a hatch is
-// the board's own object — the button is a panel off the same capsule rather
-// than a plaque hung next to it. It also gives the hover an obvious physical
-// reading: the lamp behind the glass comes on.
+// WHY A HELMET. The plate has been a porthole and then a hatch wheel, and both
+// were capsule furniture: correct for the setting, generic for the game. This
+// game's character is an astronaut gorilla, and the single object that says
+// "astronaut" before anything else on screen does is the helmet.
 //
-// GEOMETRY IS CONSTRAINED BY THE LABEL. UiButtonBuyBonus centres its caption and
-// cannot move it; at buyBonusLabelSizeRatio 0.46 the two lines run y 224..416 in
-// this 640 canvas. So the porthole has to FINISH above 224, which is what puts
-// its centre at 140 with a 76 radius — 64..216, with 8px of clearance.
-const PORT_CX = BS / 2;
-const PORT_CY = 140;
-const PORT_R = 76;
+// IT IS NOT THE WILD, and the distinction is deliberate rather than lucky. W is
+// a PORTRAIT — the gorilla's face behind goggles with a banana in his mouth.
+// This is an empty EVA helmet seen front on, visor down and mirrored, with side
+// pods and a neck ring. Go Bananas Boat's notes record the trap: its button wore
+// the naval mine, which is also H2, so the CTA advertised a symbol you can land
+// instead of the round it sells. Nothing here is landable.
+//
+// THE VISOR IS THE CAPTION'S GROUND, and that is the constraint turned into the
+// design. ButtonBuyBonus centres its two lines on the plate and offers no way to
+// move them, so the middle of any plate has to be clear — which is why the
+// porthole and the wheel both ended up as rings round a bare well. A helmet has
+// a large flat disc in exactly that position already.
+//
+// A MIRRORED visor, not a dark one, and that is what lets the caption stay dark
+// engraved type. Measured, the ink (#141a1e) against the worst point of each
+// state:
+//
+//   at rest, visor bottom   #8fa8b8   7.07
+//   at rest, darkest        #7d94a4   5.55
+//   lit, visor bottom       #4fb8d8   7.67
+//   lit, darkest            #35a5c7   6.15
+//
+// So the words read in both states with no placard behind them. A dark visor
+// would have forced pale type, and pale type cannot survive the visor lighting
+// up.
+//
+// NO ROTATION. buyBonusHoverSpin goes to 0 in uiTheme.ts: a wheel turning under
+// the hand is right and a helmet turning is a prop falling over. The hover is the
+// visor lighting instead, which is the same language the board already speaks —
+// the doubling wash, the x2 plate and the transition burst are all this ice.
+const C = BS / 2;
+const SHELL_R = 298;
+const VISOR_R = 214;
+const POD_X = 268;
+const POD_W = 66;
+const POD_H = 168;
+const NECK_TOP = 520;
+const NECK_H = 86;
+const NECK_W = 372;
 
-// Bolts around the rim at 45 degrees. Four, not eight: at the 120px the button
-// is actually drawn, eight merge into a grey ring and the porthole stops reading
-// as a made thing.
-const portBolts = [45, 135, 225, 315]
-	.map((deg) => {
-		const a = (deg * Math.PI) / 180;
-		const x = PORT_CX + Math.cos(a) * (PORT_R - 9);
-		const y = PORT_CY + Math.sin(a) * (PORT_R - 9);
-		return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="#2b2f31" stroke="#14171a" stroke-width="1.6"/>
-	<circle cx="${(x - 1.6).toFixed(1)}" cy="${(y - 1.6).toFixed(1)}" r="2" fill="#8f979a" opacity="0.7"/>`;
-	})
-	.join('');
+// The caption's clear zone, checked rather than assumed. At
+// buyBonusLabelSizeRatio 0.48 on the 0.8-scale 150-unit button, "BONUS" is
+// 3.51 em = 324 plate units across (+-162) and the two lines stand 100 units
+// either side of centre. The visor therefore needs
+// sqrt(VISOR_R^2 - 100^2) >= 162 + margin: at 214 that is 189 against 162, so
+// 27 units of clearance. Raising the ratio in uiTheme.ts without raising
+// VISOR_R here is what would break it.
 
-const hatchRivets = [
-	[46, 46],
-	[BS - 46, 46],
-	[46, BS - 46],
-	[BS - 46, BS - 46],
-]
+const polar = (deg, r) => {
+	const a = (deg * Math.PI) / 180;
+	return [C + Math.sin(a) * r, C - Math.cos(a) * r];
+};
+const arcBand = (fromDeg, toDeg, rIn, rOut) => {
+	const [x0, y0] = polar(fromDeg, rOut);
+	const [x1, y1] = polar(toDeg, rOut);
+	const [x2, y2] = polar(toDeg, rIn);
+	const [x3, y3] = polar(fromDeg, rIn);
+	const big = Math.abs(toDeg - fromDeg) > 180 ? 1 : 0;
+	return `M ${x0.toFixed(1)} ${y0.toFixed(1)} A ${rOut} ${rOut} 0 ${big} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)} A ${rIn} ${rIn} 0 ${big} 0 ${x3.toFixed(1)} ${y3.toFixed(1)} Z`;
+};
+
+// The neck ring's latches, and the pods' vents: both are the helmet's hardware,
+// and both repeat so the plate has a rhythm rather than a scatter of detail.
+const latches = [-118, -42, 42, 118]
 	.map(
-		([x, y]) => `<circle cx="${x}" cy="${y}" r="17" fill="url(#hatchBrass)" stroke="#1a160d" stroke-width="4"/>
-	<circle cx="${x - 5}" cy="${y - 5}" r="5" fill="#c8b894" opacity="0.7"/>`,
+		(dx) => `<rect x="${C + dx - 21}" y="${NECK_TOP + 14}" width="42" height="${NECK_H - 28}" rx="6" fill="#5d6e7a" stroke="#1b2329" stroke-width="3"/>
+	<rect x="${C + dx - 13}" y="${NECK_TOP + 22}" width="26" height="8" rx="4" fill="#cfd9de" opacity="0.5"/>`,
 	)
-	.join('');
+	.join('\n\t');
 
-const buyBonusHatch = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
+const pod = (side) => {
+	const x = C + side * POD_X - POD_W / 2;
+	const y = C - POD_H / 2;
+	return `<rect x="${x}" y="${y}" width="${POD_W}" height="${POD_H}" rx="26" fill="url(#podFace)" stroke="#1b2329" stroke-width="7"/>
+	<rect x="${x + 9}" y="${y + 14}" width="${POD_W - 18}" height="10" rx="5" fill="#0f171d" opacity="0.5"/>
+	<rect x="${x + 9}" y="${y + POD_H - 30}" width="${POD_W - 18}" height="10" rx="5" fill="#0f171d" opacity="0.5"/>
+	<circle cx="${C + side * POD_X}" cy="${C}" r="17" fill="#121c23" stroke="#4d5d69" stroke-width="5"/>`;
+};
+
+const buyBonusHelmet = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
 <defs>
 	${DEFS}
-	<linearGradient id="hatchSteel" x1="0" y1="0" x2="0.35" y2="1">
+	<!-- THE SHELL is the suit's own white. It has to be light for a second reason
+	     beyond being a spacesuit: the backdrop behind this control runs L 22-54,
+	     and the shell at L ~200 is the only reason the button has an edge at all. -->
+	<linearGradient id="shell" x1="0.25" y1="0" x2="0.7" y2="1">
 		<stop offset="0" stop-color="#f4f7f8"/>
-		<stop offset="0.45" stop-color="#dde3e6"/>
-		<stop offset="1" stop-color="#bac3c8"/>
+		<stop offset="0.45" stop-color="#dfe5e8"/>
+		<stop offset="1" stop-color="#aeb8bd"/>
 	</linearGradient>
-	<linearGradient id="hatchPanel" x1="0" y1="0" x2="0.2" y2="1">
-		<stop offset="0" stop-color="#eaeff1"/>
-		<stop offset="0.55" stop-color="#d6dde0"/>
-		<stop offset="1" stop-color="#b4bdc2"/>
+	<linearGradient id="crest" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#ffffff"/>
+		<stop offset="1" stop-color="#c8d1d5"/>
 	</linearGradient>
-	<!-- the brass is lifted with it, or the rivets sink into the new steel: at the
-	     old values they were within a few levels of it and stopped reading as a
-	     different metal at all -->
-	<linearGradient id="hatchBrass" x1="0" y1="0" x2="0.3" y2="1">
-		<stop offset="0" stop-color="#e8d4a6"/>
-		<stop offset="0.4" stop-color="#c9b184"/>
-		<stop offset="0.75" stop-color="#9c8259"/>
-		<stop offset="1" stop-color="#6a5642"/>
+	<linearGradient id="podFace" x1="0" y1="0" x2="0.4" y2="1">
+		<stop offset="0" stop-color="#8b98a1"/>
+		<stop offset="0.5" stop-color="#5e6c76"/>
+		<stop offset="1" stop-color="#37424a"/>
 	</linearGradient>
-	<!-- the glass. Cool and very dark, so the lit state has somewhere to go: a
-	     porthole that is already bright cannot be switched on. -->
-	<radialGradient id="hatchGlass" cx="0.38" cy="0.32" r="0.85">
-		<stop offset="0" stop-color="#1b2630"/>
-		<stop offset="0.6" stop-color="#101821"/>
-		<stop offset="1" stop-color="#080c11"/>
-	</radialGradient>
+	<linearGradient id="neck" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#9aa7b0"/>
+		<stop offset="0.45" stop-color="#6b7883"/>
+		<stop offset="1" stop-color="#3a444c"/>
+	</linearGradient>
+	<!-- THE MIRROR. A visor reflects the sky above it and the ground below, so it
+	     runs bright at the top and cool-dark at the bottom — which is also what
+	     keeps the caption's contrast: the type sits across the middle band. -->
+	<linearGradient id="mirror" x1="0.3" y1="0" x2="0.55" y2="1">
+		<stop offset="0" stop-color="#e4eff5"/>
+		<stop offset="0.38" stop-color="#c3d3dd"/>
+		<stop offset="0.72" stop-color="#9fb3c1"/>
+		<stop offset="1" stop-color="#7d94a4"/>
+	</linearGradient>
 </defs>
-<rect x="8" y="8" width="${BS - 16}" height="${BS - 16}" rx="26" fill="url(#hatchSteel)" stroke="#14171a" stroke-width="9"/>
-${finishRect(8, 8, BS - 16, BS - 16, 26, 'sf', STEEL_FINISH)}
 
-<!-- the recessed panel, with a hairline lit top edge so the plate reads as a
-     pressed sheet rather than a flat tile -->
-<rect x="40" y="40" width="${BS - 80}" height="${BS - 80}" rx="16" fill="url(#hatchPanel)" stroke="#1c2022" stroke-width="6"/>
-${finishRect(40, 40, BS - 80, BS - 80, 16, 'sf', STEEL_FINISH)}
-<!-- DARK, not light. This was a pale hairline, which is how you draw a lit edge
-     on dark steel and is invisible on pale steel. On a light body the engraved
-     line is the shadow. -->
-<rect x="49" y="49" width="${BS - 98}" height="${BS - 98}" rx="12" fill="none" stroke="#2b3236" stroke-width="1.8" opacity="0.35"/>
+<!-- the shell, with a dark contour so it has an edge against the backdrop -->
+<circle cx="${C}" cy="${C}" r="${SHELL_R}" fill="url(#shell)" stroke="#161d22" stroke-width="9"/>
+${finishRect(C - SHELL_R, C - SHELL_R, SHELL_R * 2, SHELL_R * 2, SHELL_R, 'sf', { grain: 0.45, mottle: 0.35, spec: 0, edge: 0, ao: 0 })}
 
-<!-- THE PORTHOLE, outside in: brass ring, dark bevel, glass, then a lit lower
-     lip. The lip is the same trick the carved motifs use — a shadow on its own
-     is a stain, a shadow with a lit edge under it is a groove. -->
-<circle cx="${PORT_CX}" cy="${PORT_CY}" r="${PORT_R}" fill="url(#hatchBrass)" stroke="#14120c" stroke-width="5"/>
-<circle cx="${PORT_CX}" cy="${PORT_CY + 3}" r="${PORT_R - 3}" fill="none" stroke="#c8b894" stroke-width="2.4" opacity="0.35"/>
-<circle cx="${PORT_CX}" cy="${PORT_CY}" r="${PORT_R - 14}" fill="#101418" stroke="#0a0d10" stroke-width="3"/>
-<circle cx="${PORT_CX}" cy="${PORT_CY}" r="${PORT_R - 20}" fill="url(#hatchGlass)"/>
-<!-- a single specular streak across the glass: without it the disc is a hole -->
-<path d="M ${PORT_CX - 40} ${PORT_CY + 12} A ${PORT_R - 22} ${PORT_R - 22} 0 0 1 ${PORT_CX + 6} ${PORT_CY - 42}"
-      fill="none" stroke="#c3cbcf" stroke-width="7" opacity="0.22" stroke-linecap="round"/>
-${portBolts}
+<!-- the sun-visor housing across the crown, and the seam where it slides -->
+<path d="${arcBand(-64, 64, 244, SHELL_R - 10)}" fill="url(#crest)" stroke="#2b343a" stroke-width="5"/>
+<path d="${arcBand(-64, 64, 244, 252)}" fill="#8b98a1" opacity="0.55" stroke="none"/>
 
-<!-- NO PLACARD BEHIND THE CAPTION.
-     There was one — a recessed dark panel sized to the two lines of type — added
-     when the label was white, because white on pale steel has no edges and
-     UiButtonBuyBonus draws its caption as a plain Text with no stroke or shadow
-     to give it any. The label is dark ink again, so the panel is doing nothing
-     except putting a black box on a grey plate. The bare steel IS the contrast. -->
+${pod(-1)}
+${pod(1)}
 
-<!-- A GRIP RECESS low on the panel. The label runs y 224..416, so the bottom
-     fifth is dead space and an empty field there makes the plate read as
-     unfinished. This is a real hatch feature rather than ornament, and it is
-     drawn at very low contrast on purpose: at the 120px the button is actually
-     drawn it should register as construction, not as a second thing to look at. -->
-<rect x="${BS / 2 - 96}" y="524" width="192" height="26" rx="13" fill="#22272a" stroke="#14171a" stroke-width="3"/>
-<rect x="${BS / 2 - 90}" y="547" width="180" height="5" rx="3" fill="#e2e8ea" opacity="0.35"/>
+<!-- the neck ring, in front of the shell's lower arc -->
+<rect x="${C - NECK_W / 2}" y="${NECK_TOP}" width="${NECK_W}" height="${NECK_H}" rx="26" fill="url(#neck)" stroke="#161d22" stroke-width="8"/>
+<rect x="${C - NECK_W / 2 + 12}" y="${NECK_TOP + 8}" width="${NECK_W - 24}" height="7" rx="4" fill="#d7e0e4" opacity="0.45"/>
+${latches}
 
-${hatchRivets}
+<!-- THE VISOR: rim, mirror, then the reflections on it -->
+<circle cx="${C}" cy="${C}" r="${VISOR_R + 13}" fill="#2f3941" stroke="#141b20" stroke-width="7"/>
+<circle cx="${C}" cy="${C}" r="${VISOR_R + 5}" fill="none" stroke="#9fb0bb" stroke-width="4" opacity="0.7"/>
+<circle cx="${C}" cy="${C}" r="${VISOR_R}" fill="url(#mirror)"/>
+<!-- a specular sweep across the top left, and the faint horizon a mirror shows.
+     Both are clear of the caption band, which is the middle +-100. -->
+<path d="M ${C - 168} ${C - 44} A ${VISOR_R - 16} ${VISOR_R - 16} 0 0 1 ${C + 30} ${C - 190}"
+      fill="none" stroke="#ffffff" stroke-width="30" opacity="0.4" stroke-linecap="round"/>
+<path d="M ${C - 196} ${C + 84} A ${VISOR_R - 8} ${VISOR_R - 8} 0 0 0 ${C + 196} ${C + 84}"
+      fill="none" stroke="#5f7686" stroke-width="5" opacity="0.28"/>
+<!-- the ice hairline the hover lights up: present at rest, barely -->
+<circle cx="${C}" cy="${C}" r="${VISOR_R - 7}" fill="none" stroke="#8fe4ff" stroke-width="3" opacity="0.3"/>
 </svg>`;
 
-// ── the same porthole, LIT — drawn for ADDITIVE blending ────────────────────
+// ── the same helmet with the VISOR RAISED ──────────────────────────────────────
 //
-// Transparent everywhere else, so it lays over the plate with blendMode 'add'
-// and reads as the lamp coming on behind the glass rather than as a sticker
-// dropped on top. The bloom is baked into the texture rather than filtered at
-// run time: an additive child inside a filtered or masked container composites
-// into an isolated target that starts empty, so a filter here would be adding to
-// nothing and arrive as a faint film.
+// THE HOVER STATE IS THE HATCH OPENING, not the glass changing colour. The first
+// version simply relit the mirror in ice-blue, which read as a coloured disc — and
+// because that sprite was opaque and mounted on top of the caption, it also hid
+// the words entirely (see the note on the caption in ButtonBuyBonus.svelte). A
+// visor that slides UP into the crown is the thing a helmet actually does, and it
+// gives the hover something to SHOW rather than just something to recolour.
 //
-// ICE CYAN, the value ReelGrow washes a doubling column in. The button buys FREE
-// SPINS, and the free game is where the doubling lives — so the light behind the
-// glass is the same light the thing it sells is made of. Amber would have tied it
-// to the Scatter instead, which is the one route into the feature this button is
-// an alternative to.
-const buyBonusHatchLit = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
+// WHAT IS DRAWN, and only this:
+//
+//   · the interior, lit — a bright chamber where the mirror was, shaded so it has
+//     depth instead of being a flat disc
+//   · the raised glass, tucked into the top of the opening as a mirrored segment
+//     clipped to the visor's own circle, with a bright seam along its lower edge
+//   · the shadow that glass throws down onto the interior
+//   · the halo of light spilling out onto the shell, and the pod lamps
+//
+// THE MIDDLE BAND IS KEPT CLEAN, and it is a constraint rather than a taste. The
+// caption occupies y +-100 of centre; nothing here has detail inside it, and the
+// raised glass and its shadow both stop above it. The interior is the caption's
+// ground in this state, and the ink against its worst point measures 7.5.
+//
+// Painted over the plate with NORMAL blending. Only the visor, the pod lamps and a
+// bloom are drawn: the white shell is left alone, or the helmet would read as a
+// lamp rather than as a hatch that has opened.
+const RAISED_TO = C - 150; // the glass' lower edge once it has slid up
+const buyBonusHelmetLit = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
 <defs>
-	<radialGradient id="portBloom" cx="0.5" cy="0.5" r="0.5">
-		<stop offset="0" stop-color="#8fe4ff" stop-opacity="0.34"/>
-		<stop offset="0.45" stop-color="#3aa8d8" stop-opacity="0.14"/>
-		<stop offset="1" stop-color="#1c6a90" stop-opacity="0"/>
+	<clipPath id="opening"><circle cx="${C}" cy="${C}" r="${VISOR_R}"/></clipPath>
+	<!-- THE INTERIOR: bright at the centre, cooling toward the padded rim. The
+	     centre sits a little low, so the light seems to come from within and below
+	     — which also keeps the top, under the raised glass, the darker part. -->
+	<radialGradient id="chamber" gradientUnits="userSpaceOnUse" cx="${C}" cy="${C + 26}" r="${VISOR_R + 30}">
+		<stop offset="0" stop-color="#f6feff"/>
+		<stop offset="0.5" stop-color="#bdeefa"/>
+		<stop offset="0.85" stop-color="#6ccbe6"/>
+		<stop offset="1" stop-color="#3fa9cb"/>
 	</radialGradient>
-	<radialGradient id="portCore" cx="0.42" cy="0.36" r="0.7">
-		<stop offset="0" stop-color="#ddf6ff" stop-opacity="0.95"/>
-		<stop offset="0.45" stop-color="#8fe4ff" stop-opacity="0.6"/>
-		<stop offset="1" stop-color="#2ea8d8" stop-opacity="0.18"/>
-	</radialGradient>
+	<linearGradient id="raisedGlass" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#e4eff5"/>
+		<stop offset="0.6" stop-color="#b9cbd6"/>
+		<stop offset="1" stop-color="#8ea6b6"/>
+	</linearGradient>
+	<!-- what the raised glass throws onto the chamber: strongest at its edge, gone
+	     before the caption band begins -->
+	<linearGradient id="castShadow" x1="0" y1="0" x2="0" y2="1">
+		<stop offset="0" stop-color="#155a76" stop-opacity="0.5"/>
+		<stop offset="1" stop-color="#155a76" stop-opacity="0"/>
+	</linearGradient>
+	<filter id="bloom" x="-40%" y="-40%" width="180%" height="180%">
+		<feGaussianBlur stdDeviation="15"/>
+	</filter>
 </defs>
-<ellipse cx="${PORT_CX}" cy="${PORT_CY}" rx="${BS * 0.36}" ry="${BS * 0.3}" fill="url(#portBloom)"/>
-<circle cx="${PORT_CX}" cy="${PORT_CY}" r="${PORT_R - 20}" fill="url(#portCore)"/>
-<!-- the ring catches it too, or the glass looks lit and the metal around it does
-     not, which reads as a screen rather than as a window -->
-<circle cx="${PORT_CX}" cy="${PORT_CY}" r="${PORT_R - 7}" fill="none" stroke="#8fe4ff" stroke-width="6" opacity="0.3"/>
+<!-- the light spilling out onto the shell around the opening -->
+<circle cx="${C}" cy="${C}" r="${VISOR_R + 16}" fill="none" stroke="#8fe4ff" stroke-width="34" opacity="0.55" filter="url(#bloom)"/>
+
+<g clip-path="url(#opening)">
+	<circle cx="${C}" cy="${C}" r="${VISOR_R}" fill="url(#chamber)"/>
+	<!-- the padded rim of the interior, a step darker than the light inside it -->
+	<circle cx="${C}" cy="${C}" r="${VISOR_R - 8}" fill="none" stroke="#2a86a8" stroke-width="14" opacity="0.5"/>
+	<circle cx="${C}" cy="${C}" r="${VISOR_R - 18}" fill="none" stroke="#1b6684" stroke-width="2" opacity="0.32"/>
+	<!-- the shadow of the raised glass, then the glass itself and its seam -->
+	<rect x="${C - VISOR_R}" y="${RAISED_TO}" width="${VISOR_R * 2}" height="46" fill="url(#castShadow)"/>
+	<rect x="${C - VISOR_R}" y="${C - VISOR_R}" width="${VISOR_R * 2}" height="${RAISED_TO - (C - VISOR_R)}" fill="url(#raisedGlass)"/>
+	<rect x="${C - VISOR_R}" y="${RAISED_TO - 5}" width="${VISOR_R * 2}" height="9" fill="#2f3941"/>
+	<rect x="${C - VISOR_R}" y="${RAISED_TO + 4}" width="${VISOR_R * 2}" height="4" fill="#ffffff" opacity="0.85"/>
+	<!-- a streak of reflection on the raised glass, so it reads as glass -->
+	<path d="M ${C - 150} ${RAISED_TO - 22} L ${C - 40} ${RAISED_TO - 22}" stroke="#ffffff" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+</g>
+
+<!-- the opening's rim, lit -->
+<circle cx="${C}" cy="${C}" r="${VISOR_R + 5}" fill="none" stroke="#8fe4ff" stroke-width="6" opacity="0.9"/>
+<circle cx="${C}" cy="${C}" r="${VISOR_R - 1}" fill="none" stroke="#dff7ff" stroke-width="3" opacity="0.8"/>
+
+<!-- the pod lamps come on with it: the helmet is powered, not just opened -->
+<circle cx="${C - POD_X}" cy="${C}" r="13" fill="#dff7ff"/>
+<circle cx="${C + POD_X}" cy="${C}" r="13" fill="#dff7ff"/>
+<circle cx="${C - POD_X}" cy="${C}" r="24" fill="#8fe4ff" opacity="0.6" filter="url(#bloom)"/>
+<circle cx="${C + POD_X}" cy="${C}" r="24" fill="#8fe4ff" opacity="0.6" filter="url(#bloom)"/>
 </svg>`;
 
 render(ticker, 'ticker_plate.png', TW);
 render(buyBonus, 'buybonus_plate.png', BS);
-render(buyBonusHatch, 'buybonus_hatch.png', BS);
-render(buyBonusHatchLit, 'buybonus_hatch_lit.png', BS);
+render(buyBonusHelmet, 'buybonus_helmet.png', BS);
+render(buyBonusHelmetLit, 'buybonus_helmet_lit.png', BS);
 console.log('ui plates written to', OUT);

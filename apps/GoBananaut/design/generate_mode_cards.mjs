@@ -166,7 +166,19 @@ const rowsForSteps = (steps) => {
 // It leaves horizontal room unused (187 of 360), which is fine. A board is a
 // board; stretching the columns to fill the width would draw a shape the game
 // never makes.
-const CELL = 35;
+// 26, DOWN FROM 35, AND THE BOARD MOVES OFF CENTRE.
+//
+// BonusCard centres its title, description, price and button down the middle of
+// the card and offers no way to move them. A board drawn at the card's own
+// centre therefore has the price sitting on it whatever it is made of, which is
+// why every earlier pass of these cards read as cluttered rather than as art.
+//
+// So the composition is a poster instead: the board on the LEFT, the character
+// on the RIGHT, and the type running down the channel between them. Smaller
+// because it has half the width now — and the board's JOB on this card is the
+// silhouette (which reels are tall), which survives the size; the symbols on it
+// are texture.
+const CELL = 26;
 const GAP = 3;
 const BOARD_W = REELS * CELL + (REELS - 1) * GAP;
 const BOARD_H = MAX_ROWS * CELL + (MAX_ROWS - 1) * GAP;
@@ -216,10 +228,11 @@ const x2Plate = (cx, cy) => {
  *      Free Spins, so a taller reel is doubling from its very first spin — the
  *      card would be understating the tier if it left that out.
  */
+const BOARD_CX = W * 0.29;
 const stretchBoard = (steps) => {
 	const rows = rowsForSteps(steps);
-	const x0 = MOTIF.cx - BOARD_W / 2;
-	const yBottom = MOTIF.cy + BOARD_H / 2;
+	const x0 = BOARD_CX - BOARD_W / 2;
+	const yBottom = MOTIF.cy + BOARD_H / 2 + 14;
 	// slot 0 is the BOTTOM one: the board fills upward, so counting from the
 	// bottom means a cell's index does not change when the reel grows.
 	const slotY = (i) => yBottom - (i + 1) * CELL - i * GAP;
@@ -231,17 +244,21 @@ const stretchBoard = (steps) => {
 	const grownReels = rows.filter((r) => r > BASE_ROWS).length;
 
 	let out =
-		`<ellipse cx="${MOTIF.cx}" cy="${MOTIF.cy}" rx="150" ry="128" ` +
-		`fill="${grownReels ? DOUBLE_TINT : '#ffd75e'}" opacity="0.2" filter="url(#soft)"/>`;
+		`<ellipse cx="${BOARD_CX}" cy="${MOTIF.cy + 14}" rx="118" ry="104" ` +
+		`fill="${grownReels ? DOUBLE_TINT : '#ffd75e'}" opacity="0.22" filter="url(#soft)"/>`;
 
 	// THE HOUSING ITSELF — the frame the whole thing happens inside, drawn once
 	// around all six rows. Without it the empty slots read as missing symbols
 	// rather than as room.
 	out +=
 		`<rect x="${x0 - 7}" y="${slotY(MAX_ROWS - 1) - 7}" width="${BOARD_W + 14}" ` +
-		`height="${BOARD_H + 14}" rx="7" fill="#0a0f14" opacity="0.55"/>` +
+		`height="${BOARD_H + 14}" rx="7" fill="#0a0f14" opacity="0.78"/>` +
 		`<rect x="${x0 - 7}" y="${slotY(MAX_ROWS - 1) - 7}" width="${BOARD_W + 14}" ` +
-		`height="${BOARD_H + 14}" rx="7" fill="none" stroke="url(#reelLock)" stroke-width="3"/>`;
+		`height="${BOARD_H + 14}" rx="7" fill="none" stroke="url(#reelLock)" stroke-width="3"/>` +
+		// a lit top rail, so the housing is an object being lit rather than a
+		// rectangle drawn on the sky behind it
+		`<rect x="${x0 - 4}" y="${slotY(MAX_ROWS - 1) - 5}" width="${BOARD_W + 8}" height="2.4" ` +
+		`rx="1.2" fill="#e6eef4" opacity="0.5"/>`;
 
 	for (let reel = 0; reel < REELS; reel += 1) {
 		const cx = reelX(reel) + CELL / 2;
@@ -254,10 +271,10 @@ const stretchBoard = (steps) => {
 				// outline here reads as a cell that failed to draw its symbol.
 				out +=
 					`<rect x="${reelX(reel)}" y="${y}" width="${CELL}" height="${CELL}" rx="4" ` +
-					`fill="#0d141b" opacity="0.5"/>` +
+					`fill="#0d141b" opacity="0.62"/>` +
 					`<rect x="${reelX(reel) + 1.5}" y="${y + 1.5}" width="${CELL - 3}" height="${CELL - 3}" ` +
-					`rx="3" fill="none" stroke="#8aa0b4" stroke-width="1.4" stroke-dasharray="5 4" ` +
-					`opacity="0.42"/>`;
+					`rx="3" fill="none" stroke="#9fb6c7" stroke-width="1.3" stroke-dasharray="5 4" ` +
+					`opacity="0.34"/>`;
 				continue;
 			}
 			// A FILLED CELL. The new rows above the baseline always carry the top
@@ -267,7 +284,9 @@ const stretchBoard = (steps) => {
 			const name = above ? 'h1' : FILL[(reel * 2 + i) % FILL.length];
 			out +=
 				`<rect x="${reelX(reel)}" y="${y}" width="${CELL}" height="${CELL}" rx="4" ` +
-				`fill="#25333f" opacity="0.95"/>` +
+				`fill="#3b4f62" opacity="0.98"/>` +
+				`<rect x="${reelX(reel) + 1}" y="${y + 1}" width="${CELL - 2}" height="${CELL * 0.4}" ` +
+				`rx="3" fill="#ffffff" opacity="0.07"/>` +
 				sym(name, cx, cy, CELL * 0.94);
 		}
 
@@ -291,10 +310,19 @@ const stretchBoard = (steps) => {
 
 		if (height > BASE_ROWS) {
 			// The doubling: a wash over the whole column and an edge around it, the
-			// same two marks ReelGrow makes on the board.
+			// same two marks ReelGrow makes on the board — plus a SHAFT OF LIGHT
+			// rising out of the reel and past the housing.
+			//
+			// The shaft is the one piece of pure theatre on the card, and it earns
+			// its place: it is the only thing that says the stretched reel is the
+			// thing being sold. A wash and an edge describe a state; light coming
+			// off it says it is worth something.
 			const top = slotY(height - 1);
 			const h = height * CELL + (height - 1) * GAP;
+			const shaftTop = slotY(MAX_ROWS - 1) - 54;
 			out +=
+				`<rect x="${reelX(reel) - 5}" y="${shaftTop}" width="${CELL + 10}" ` +
+				`height="${top - shaftTop + h}" fill="url(#shaft)" opacity="0.75"/>` +
 				`<rect x="${reelX(reel)}" y="${top}" width="${CELL}" height="${h}" rx="4" ` +
 				`fill="${DOUBLE_TINT}" opacity="0.16"/>` +
 				`<rect x="${reelX(reel) - 2}" y="${top - 2}" width="${CELL + 4}" height="${h + 4}" ` +
@@ -303,6 +331,160 @@ const stretchBoard = (steps) => {
 		}
 	}
 	return out;
+};
+
+// ── THE SKY BEHIND ALL FOUR CARDS ───────────────────────────────────────────
+//
+// The cards were a diagram on a flat ground: correct, and dry. A player opens
+// this menu to be sold something, and four dark rectangles with a wireframe on
+// each is a form.
+//
+// What is added is SCENERY, not decoration — the game's own art placed behind
+// the motif so the board is standing somewhere rather than floating on a
+// swatch. Built from the shipped sprites for the reason this file's header
+// already gives: vector stand-ins next to painted symbols read as placeholder
+// art nobody removed.
+//
+// ONE SKY FOR ALL FOUR, deliberately. The same starfield and the same planet in
+// the same place makes the four cards one location seen four times, which is
+// what a set of options in a single feature should look like. Four different
+// skies would say they were four different games.
+//
+// Everything here stays behind the scrim and out of the motif's own band: the
+// planet is cropped by the card's top edge, the horizon sits under the board,
+// and the stars are small and sparse. None of it competes with what the card is
+// actually telling the player.
+
+// ── ONE SCENE PER CARD, ESCALATING ──────────────────────────────────────────
+//
+// THE LAST VERSION USED ONE SKY FOR ALL FOUR, on the argument that a set of
+// options in one feature should look like one place seen four times. That was
+// half right and it cost the thing the menu exists to do: the three free-spin
+// cards differ by ONE reel's height, which at card size is a few pixels of
+// silhouette, so a player choosing between them had almost nothing to see.
+//
+// So the board keeps telling the truth — it is what the tier actually buys — and
+// the SCENE now carries the size of the offer. The three are one place at three
+// levels of drama, each with its own colour world, and the colour is the read
+// from across the modal:
+//
+//   bonus100   steel blue, one calm planet                 the baseline
+//   bonus200   teal, a comet coming in                     it has started to move
+//   bonus300   gold, a huge planet, sparkle and a flare    the top of the ladder
+//
+// Gold for the top card is deliberate: H1 is the top-paying symbol and amber is
+// its colour. It is NOT orange, which is reserved for the Scatter.
+//
+// HOLD AND SPIN IS A DIFFERENT WORLD ENTIRELY, and shares nothing but the ground:
+// warm, dark, a shower of coins. It is not free spins and must not look like one.
+//
+// NO CHARACTER ON ANY OF THEM. The gorilla was on the right of every card and it
+// read as a promise of a Wild; on the coin card in particular it was simply the
+// wrong picture. The game's own SYMBOLS carry the scenery instead — the planet,
+// the comet, the coin — which is what this file's header argues for anyway.
+
+// A deterministic scatter — the same sky every build, so a regenerated card set
+// does not churn in git for no reason. Reseeded per card so each sky is its own.
+//
+// CONFINED TO THE MIDDLE BAND, and that is a measurement rather than a
+// composition choice. Two scrims stack on this art: this file's own, and
+// BonusCard's, which is drawn in the CARD's coordinates and cannot be cropped
+// away. BonusCard's runs 0.94 at the ends against 0.38 through the middle, so
+// combined with this file's the card transmits about 47% of the artwork at
+// mid-height and almost nothing at the top and bottom. Everything below lives in
+// the band that actually transmits.
+const BAND = { top: MOTIF.cy - 96, bottom: MOTIF.cy + 96 };
+const skyStars = (seedStart, count, colour) => {
+	let seed = seedStart;
+	const rnd = () => {
+		seed = (seed * 1103515245 + 12345) % 2147483648;
+		return seed / 2147483648;
+	};
+	return Array.from({ length: count }, () => {
+		const x = rnd() * W;
+		const y = BAND.top - 24 + rnd() * (BAND.bottom - BAND.top + 48);
+		const r = 0.7 + rnd() * 1.7;
+		const a = 0.4 + rnd() * 0.5;
+		return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(2)}" fill="${colour}" opacity="${a.toFixed(2)}"/>`;
+	}).join('');
+};
+
+// A four-point sparkle: two crossed curves pinched to a point at the centre.
+const sparkle = (x, y, r, colour = '#ffffff', opacity = 0.9) =>
+	`<path d="M ${x} ${y - r} Q ${x} ${y} ${x + r} ${y} Q ${x} ${y} ${x} ${y + r} ` +
+	`Q ${x} ${y} ${x - r} ${y} Q ${x} ${y} ${x} ${y - r} Z" fill="${colour}" opacity="${opacity}"/>`;
+
+// The ground the board stands on and the shadow it casts, shared by the three
+// free-spin cards: they are the same board.
+const groundUnderBoard = (tint) => `
+	<ellipse cx="${W * 0.35}" cy="${MOTIF.cy + 126}" rx="${W * 0.46}" ry="30" fill="${tint}" opacity="0.3" filter="url(#soft)"/>
+	<ellipse cx="${BOARD_CX}" cy="${MOTIF.cy + 134}" rx="96" ry="18" fill="#070c11" opacity="0.62" filter="url(#soft)"/>`;
+
+// A coin cut out of its plate. p.png is a coin on a square panel, which is right
+// in a grid and wrong floating in space; the coin's own circle is about 0.74 of
+// the tile, so it is clipped to that and the panel is dropped.
+let coinId = 0;
+const floatingCoin = (cx, cy, size, rotate, opacity = 1) => {
+	const id = `coin${coinId++}`;
+	return (
+		`<clipPath id="${id}"><circle cx="${cx}" cy="${cy}" r="${size * 0.375}"/></clipPath>` +
+		`<circle cx="${cx}" cy="${cy}" r="${size * 0.6}" fill="#ffd75e" opacity="0.22" filter="url(#soft)"/>` +
+		`<g clip-path="url(#${id})" opacity="${opacity}">${sym('p', cx, cy, size, 1, rotate)}</g>`
+	);
+};
+
+const SCENES = {
+	bonus100: `
+	<!-- STEEL BLUE, CALM. One planet, few stars: the baseline. -->
+	<ellipse cx="${W * 0.8}" cy="${MOTIF.cy - 10}" rx="220" ry="176" fill="#7fb4d6" opacity="0.3" filter="url(#soft)"/>
+	${skyStars(20260920, 58, '#e8f1f7')}
+	${sym('h1', W * 0.93, MOTIF.cy + 66, 232, 0.96)}
+	${groundUnderBoard('#6f8496')}`,
+
+	bonus200: `
+	<!-- TEAL, AND SOMETHING IS COMING IN. Two nebulae and a comet with its own
+	     trail, aimed at the board. -->
+	<ellipse cx="${W * 0.72}" cy="${MOTIF.cy - 34}" rx="236" ry="130" fill="#28c6c8" opacity="0.2" filter="url(#soft)"/>
+	<ellipse cx="${W * 0.92}" cy="${MOTIF.cy + 64}" rx="150" ry="120" fill="#3f8fe0" opacity="0.16" filter="url(#soft)"/>
+	${skyStars(20260921, 66, '#d6fbff')}
+	<path d="M ${W * 0.98} ${MOTIF.cy - 96} L ${W * 0.62} ${MOTIF.cy + 34}" stroke="#8fe4ff" stroke-width="34" opacity="0.14" stroke-linecap="round" filter="url(#soft)"/>
+	<path d="M ${W * 0.98} ${MOTIF.cy - 80} L ${W * 0.64} ${MOTIF.cy + 28}" stroke="#dff7ff" stroke-width="5" opacity="0.5" stroke-linecap="round"/>
+	${sym('h2', W * 0.8, MOTIF.cy - 4, 262, 1)}
+	${groundUnderBoard('#5fa9b8')}`,
+
+	bonus300: `
+	<!-- GOLD, THE TOP OF THE LADDER. A huge planet with a halo, a flare, and the
+	     sky full of light. -->
+	<ellipse cx="${W * 0.78}" cy="${MOTIF.cy - 20}" rx="250" ry="152" fill="#ffc24a" opacity="0.22" filter="url(#soft)"/>
+	<ellipse cx="${W * 0.5}" cy="${MOTIF.cy + 40}" rx="230" ry="110" fill="#8a5cff" opacity="0.11" filter="url(#soft)"/>
+	${skyStars(20260922, 78, '#fff4d6')}
+	${sym('h1', W * 0.96, MOTIF.cy + 62, 312, 1)}
+	<circle cx="${W * 0.96}" cy="${MOTIF.cy + 62}" r="160" fill="none" stroke="#ffd75e" stroke-width="3" opacity="0.4"/>
+	<circle cx="${W * 0.96}" cy="${MOTIF.cy + 62}" r="176" fill="none" stroke="#ffd75e" stroke-width="1.5" opacity="0.25"/>
+	<!-- the flare, on the planet's lit edge -->
+	<circle cx="${W * 0.78}" cy="${MOTIF.cy - 34}" r="46" fill="#fff1c2" opacity="0.5" filter="url(#soft)"/>
+	${sparkle(W * 0.78, MOTIF.cy - 34, 30, '#fffbea', 0.95)}
+	${sparkle(W * 0.6, MOTIF.cy - 66, 13, '#fff4d6', 0.85)}
+	${sparkle(W * 0.9, MOTIF.cy + 16, 11, '#fff4d6', 0.8)}
+	${sparkle(W * 0.52, MOTIF.cy + 20, 9, '#fff4d6', 0.7)}
+	${sparkle(W * 0.68, MOTIF.cy + 84, 12, '#fff4d6', 0.75)}
+	${groundUnderBoard('#b39a5c')}`,
+
+	holdandspin: `
+	<!-- WARM, DARK, A SHOWER OF COINS. Shares nothing with the free-spin cards but
+	     the ground, because it is not free spins. -->
+	<ellipse cx="${W * 0.62}" cy="${MOTIF.cy - 4}" rx="240" ry="150" fill="#ffb020" opacity="0.2" filter="url(#soft)"/>
+	<ellipse cx="${W * 0.2}" cy="${MOTIF.cy + 60}" rx="150" ry="100" fill="#8a4a10" opacity="0.2" filter="url(#soft)"/>
+	${skyStars(20260923, 40, '#ffe9b8')}
+	${floatingCoin(W * 0.86, MOTIF.cy - 52, 92, -14)}
+	${floatingCoin(W * 0.7, MOTIF.cy + 30, 64, 18)}
+	${floatingCoin(W * 0.93, MOTIF.cy + 62, 74, 8)}
+	${floatingCoin(W * 0.62, MOTIF.cy - 78, 44, -22)}
+	${floatingCoin(W * 0.78, MOTIF.cy + 96, 46, 24)}
+	${sparkle(W * 0.74, MOTIF.cy - 22, 12, '#fff4d6', 0.9)}
+	${sparkle(W * 0.96, MOTIF.cy - 8, 9, '#fff4d6', 0.8)}
+	${sparkle(W * 0.6, MOTIF.cy + 60, 8, '#fff4d6', 0.7)}
+	<ellipse cx="${BOARD_CX}" cy="${MOTIF.cy + 134}" rx="96" ry="18" fill="#070c11" opacity="0.62" filter="url(#soft)"/>`,
 };
 
 const MOTIFS = {
@@ -316,7 +498,7 @@ const MOTIFS = {
 	// A board with Coins stuck to it. Shares nothing with the other three on
 	// purpose — it is not free spins and should not look like it.
 	holdandspin: (() => {
-		const cell = 68;
+		const cell = 58;
 		const gap = 5;
 		const cols = 3;
 		const rows = 3;
@@ -325,10 +507,13 @@ const MOTIFS = {
 		// Deliberately lopsided. An X or a cross reads as a noughts-and-crosses
 		// board, which is a game, and the wrong one.
 		const coins = new Set(['0,0', '1,0', '2,1', '0,2', '1,2']);
-		const x0 = MOTIF.cx - ((cols - 1) * (cell + gap)) / 2;
-		const y0 = MOTIF.cy - ((rows - 1) * (cell + gap)) / 2;
+		// LEFT, like the stretch boards, and for the same reason: the card's own
+		// title, price and button run down the centre, so the middle is a channel
+		// for type rather than a place to put a picture.
+		const x0 = BOARD_CX - ((cols - 1) * (cell + gap)) / 2;
+		const y0 = MOTIF.cy + 14 - ((rows - 1) * (cell + gap)) / 2;
 		return (
-			`<ellipse cx="${MOTIF.cx}" cy="${MOTIF.cy}" rx="164" ry="112" fill="#ffd75e" opacity="0.09" filter="url(#soft)"/>` +
+			`<ellipse cx="${BOARD_CX}" cy="${MOTIF.cy + 14}" rx="126" ry="104" fill="#ffd75e" opacity="0.12" filter="url(#soft)"/>` +
 			Array.from({ length: rows }, (_, r) =>
 				Array.from({ length: cols }, (_, c) => {
 					const cx = x0 + c * (cell + gap);
@@ -345,14 +530,18 @@ const defs =
 	surfaceDefs('sf') +
 	`
 	<!--
-		GUNMETAL, not olive. This gradient was the jungle generation's, and it is
-		the same swap the board's own frame_bg took: three cards showing a space
-		capsule's reel housing were sitting on a khaki ground.
+		THE PLATFORM PALETTE'S GROUND. HULL (#151c23) through DISC (#0b1015), the
+		two values the bet bar and the modals are built from (see src/game/palette.ts),
+		so the card art and the panel it sits in are one material and the frame
+		round it has something to be a frame OF.
+
+		It was #26333f at the top, which was gunmetal chosen by eye against the
+		board's own frame and read as a lighter slab set into a darker panel.
 	-->
 	<linearGradient id="ground" x1="0" y1="0" x2="0.35" y2="1">
-		<stop offset="0" stop-color="#26333f"/>
-		<stop offset="0.5" stop-color="#141d26"/>
-		<stop offset="1" stop-color="#080d13"/>
+		<stop offset="0" stop-color="#1f2a33"/>
+		<stop offset="0.5" stop-color="#151c23"/>
+		<stop offset="1" stop-color="#0b1015"/>
 	</linearGradient>
 	<!-- The locked reel's own gold. Deeper than the UI brass on purpose: the
 	     column is a large flat area, and the trim ramp used on small pieces goes
@@ -371,6 +560,13 @@ const defs =
 	</filter>
 	<!-- The pool is a lit area, not an object. Unblurred, its ellipse edge draws
 	     a visible arc across the card. -->
+	<!-- the shaft of light off a stretched reel: brightest at the reel, gone by
+	     the time it clears the housing -->
+	<linearGradient id="shaft" x1="0" y1="1" x2="0" y2="0">
+		<stop offset="0" stop-color="#8fe4ff" stop-opacity="0.34"/>
+		<stop offset="0.55" stop-color="#8fe4ff" stop-opacity="0.12"/>
+		<stop offset="1" stop-color="#8fe4ff" stop-opacity="0"/>
+	</linearGradient>
 	<filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
 		<feGaussianBlur stdDeviation="30"/>
 	</filter>
@@ -422,9 +618,10 @@ const defs =
 //
 // The frame belongs on the CARD ELEMENT, where four sides is what a border means
 // and no crop can reach it. See .bonus-card-wrap in components/ui/Modals.svelte.
-const card = (motif) => `
+const card = (motif, name) => `
 	<rect width="${W}" height="${H}" fill="url(#ground)"/>
 	${finishRect(0, 0, W, H, 0, 'sf', CANVAS_FINISH)}
+	${SCENES[name]}
 	${motif}
 	<rect width="${W}" height="${H}" fill="url(#scrim)"/>
 	<rect width="${W}" height="${H * 0.22}" fill="url(#scrimTop)"/>`;
@@ -432,7 +629,7 @@ const card = (motif) => `
 for (const [name, motif] of Object.entries(MOTIFS)) {
 	const svg =
 		`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">` +
-		`<defs>${defs}</defs>${card(motif)}</svg>`;
+		`<defs>${defs}</defs>${card(motif, name)}</svg>`;
 	const png = new Resvg(svg, {
 		fitTo: { mode: 'width', value: W * SCALE },
 		font: { fontDirs: [FONT_DIR], loadSystemFonts: false, defaultFontFamily: 'Titan One' },

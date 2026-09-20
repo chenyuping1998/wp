@@ -22,6 +22,7 @@ const require = createRequire(path.join(resvgDir, 'noop.js'));
 const { Resvg } = require('@resvg/resvg-js');
 
 import { surfaceDefs, finishRect, CANVAS_FINISH, BACKDROP_FINISH, STEEL_FINISH, BRASS_FINISH } from './surface.mjs';
+import { PLATE_DEFS, hexStuds, satellite, ringedPlanet, starfield, galaxyBand, nebula, planetLimb, shootingStar } from './plate_parts.mjs';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BG_DIR = path.join(appRoot, 'static/assets/sprites/goBananasBackground');
@@ -540,131 +541,129 @@ frames.frame_edge = svgWrap(
 	${grainDef('bandGrain', 0.6, 0.1)}`,
 );
 
-// ─── free-spin sign + counter plaque (replaces the MM template boards) ──────
-// hanging military plank sign, 920×720: brass-framed olive planks, rivets,
-// banana-bunch emblem, rope hangers — text is rendered by the frontend so the
-// panel stays language-neutral
+// ─── free-spin sign + counter plaque ─────────────────────────────────────────
+//
+// THE SIGN AND THE COUNTER WERE ARMY PLANKS: olive planks with brass corner
+// plates and a ring of rivets, on a game whose board frame, housing and bet bar
+// had all become a space capsule. The sign is what the player reads at the START
+// of the feature and again on TOTAL WIN at the end of it, and the counter is on
+// screen for every spin between — the two most-watched plates in the game were
+// the last thing still dressed for the jungle.
+//
+// So both are built from the same parts as the win-tier banners
+// (design/generate_win_banners.mjs, via design/plate_parts.mjs): a gunmetal
+// frame that carries NO colour, and a piece of sky on the face — a starfield in
+// three depths, a galaxy band behind it, a nebula, and a planet's edge. The sign
+// takes the satellite over its top edge; the counter takes a small ringed planet
+// where Go Bananubis' takes an ankh.
+//
+// A FIRST VERSION HAD A BAND OF STATUS LIGHTS ROUND THE EDGE, in ice, white and
+// signal yellow. It was rejected: it put a ring of saturated colour round the
+// one thing on each plate that is meant to be the picture. The frame is plain
+// metal now and the sky does the work.
+//
+// GEOMETRY IS UNTOUCHED. Both boxes (920x720 and 824x622) and the plate
+// rectangles inside them are what the frontend's text layout is measured
+// against, so only the painting changes.
+//
+// The frontend draws its text in gold over the face, and it reads on this the way
+// it read on lapis: the face is dark, the BRIGHT stars are kept out of the region
+// the type occupies, and the inner vignette pulls the middle down further.
 seed = 33;
-const signRivets = (() => {
-	let out = '';
-	for (const [x, y] of [[150, 180], [770, 180], [150, 620], [770, 620], [460, 180], [460, 620], [150, 400], [770, 400]]) {
-		out += `<circle cx="${x}" cy="${y}" r="9" fill="url(#rivet)" stroke="#3a2c08" stroke-width="2"/>
-		<circle cx="${x - 2.5}" cy="${y - 2.5}" r="2.8" fill="#fff3bd" opacity="0.8"/>`;
-	}
-	return out;
-})();
-const bananaEmblem = (cx, cy, s) => `
-<g transform="translate(${cx} ${cy}) scale(${s})">
-	<path d="M -34 6 Q -20 -18 6 -24 Q 12 -20 9 -12 Q -6 6 -26 12 Q -34 12 -34 6 Z" fill="url(#embGold)" stroke="#6d4a08" stroke-width="3"/>
-	<path d="M -26 14 Q -12 -8 14 -16 Q 20 -12 17 -4 Q 2 12 -18 20 Q -26 20 -26 14 Z" fill="url(#embGold)" stroke="#6d4a08" stroke-width="3" transform="translate(6 6)"/>
-	<path d="M -18 22 Q -4 2 22 -8 Q 28 -4 25 4 Q 10 20 -10 28 Q -18 28 -18 22 Z" fill="url(#embGold)" stroke="#6d4a08" stroke-width="3" transform="translate(12 12)"/>
-</g>`;
+
+const SPACE_DEFS = `${PLATE_DEFS}
+	<linearGradient id="spFace" x1="0" y1="0" x2="0.3" y2="1">
+		<stop offset="0" stop-color="#1d3f7a"/>
+		<stop offset="1" stop-color="#050b1c"/>
+	</linearGradient>
+	<radialGradient id="spSheen" cx="0.35" cy="0.2" r="0.8">
+		<stop offset="0" stop-color="#ffffff" stop-opacity="0.14"/>
+		<stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+	</radialGradient>
+	<radialGradient id="spVign" cx="0.5" cy="0.45" r="0.85">
+		<stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
+		<stop offset="1" stop-color="#000000" stop-opacity="0.5"/>
+	</radialGradient>
+	<!-- the faces, so a blurred cloud or a planet cannot spill out past the frame -->
+	<clipPath id="signClip"><rect x="100" y="130" width="720" height="540" rx="28"/></clipPath>
+	<clipPath id="counterClip"><rect x="30" y="60" width="764" height="502" rx="34"/></clipPath>
+	${grainDef('signGrain', 0.5, 0.07)}`;
+
+// the regions the frontend draws its title, counts and totals into
+const SIGN_KEEP = [{ x: 190, y: 200, w: 540, h: 430 }];
+const COUNTER_KEEP = [{ x: 110, y: 130, w: 600, h: 360 }];
+
 frames.fs_sign = svgWrap(
 	920,
 	720,
 	`
-	<!-- No rope hangers. They used to run (190,96)->(250,12) and (730,96)->(670,12):
-	     the lower ends stopped 34px short of the plank and the upper ends attached
-	     to nothing at all, so the sign read as hanging from two loose offcuts.
-	     The brass corners and frame carry it on their own. -->
-	<!-- plank panel -->
-	<rect x="100" y="130" width="720" height="540" rx="26" fill="url(#plankSign)" stroke="#17120a" stroke-width="8"/>
-	<rect x="100" y="300" width="720" height="10" fill="#17120a" opacity="0.5"/>
-	<rect x="100" y="490" width="720" height="10" fill="#17120a" opacity="0.5"/>
-	<rect x="100" y="130" width="720" height="540" rx="26" filter="url(#signGrain)" opacity="0.5"/>
-	<!-- brass frame -->
-	<rect x="112" y="142" width="696" height="516" rx="20" fill="none" stroke="url(#brass)" stroke-width="10"/>
-	<rect x="124" y="154" width="672" height="492" rx="14" fill="none" stroke="#ffe98a" stroke-width="2.5" opacity="0.6"/>
-	${signRivets}
-	<!-- corner brass plates -->
-	${[[100, 130, 0], [820, 130, 90], [820, 670, 180], [100, 670, 270]]
-		.map(
-			([cx, cy, rot]) => `<g transform="translate(${cx} ${cy}) rotate(${rot})">
-		<path d="M -10 -10 L 84 -10 Q 88 -10 88 -6 L 88 16 Q 62 18 42 38 Q 20 58 18 88 L -4 88 Q -10 88 -10 84 Z" fill="url(#cornerBrass)" stroke="#3a2c08" stroke-width="4"/>
-	</g>`,
-		)
-		.join('')}
-	<!-- Banana emblem removed too: at (460,205) it sat directly behind the title
-	     the frontend draws at ~y=260, so its three overlapping banana shapes poked
-	     out between "FREE" and "SPINS" as a pair of disconnected gold slivers. -->
-	<!-- inner soft vignette so text pops -->
-	<rect x="130" y="160" width="660" height="480" rx="14" fill="url(#signVign)"/>`,
-	`
-	<linearGradient id="plankSign" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#3f4a1e"/>
-		<stop offset="0.5" stop-color="#2c3812"/>
-		<stop offset="1" stop-color="#1c260c"/>
-	</linearGradient>
-	<linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#ffe282"/>
-		<stop offset="0.45" stop-color="#d8a334"/>
-		<stop offset="1" stop-color="#8a5c14"/>
-	</linearGradient>
-	<linearGradient id="cornerBrass" x1="0" y1="0" x2="1" y2="1">
-		<stop offset="0" stop-color="#e8bc4e"/>
-		<stop offset="1" stop-color="#8a5c14"/>
-	</linearGradient>
-	<linearGradient id="embGold" x1="0" y1="0" x2="1" y2="1">
-		<stop offset="0" stop-color="#fff2ae"/>
-		<stop offset="0.5" stop-color="#ffd75e"/>
-		<stop offset="1" stop-color="#c1841a"/>
-	</linearGradient>
-	<radialGradient id="rivet" cx="0.35" cy="0.35" r="1">
-		<stop offset="0" stop-color="#ffe98a"/>
-		<stop offset="0.7" stop-color="#c08a20"/>
-		<stop offset="1" stop-color="#6d4a08"/>
-	</radialGradient>
-	<radialGradient id="signVign" cx="0.5" cy="0.45" r="0.85">
-		<stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
-		<stop offset="1" stop-color="#000000" stop-opacity="0.35"/>
-	</radialGradient>
-	${grainDef('signGrain', 0.5, 0.07)}`,
+	<!-- the sky: the same 720x540 plate at (100,130) the layout is measured against -->
+	<rect x="100" y="130" width="720" height="540" rx="28" fill="url(#spFace)" stroke="#0b1015" stroke-width="8"/>
+	<rect x="100" y="130" width="720" height="540" rx="28" filter="url(#signGrain)" opacity="0.4"/>
+	<g clip-path="url(#signClip)">
+		${planetLimb({ cx: 460, cy: 990, rx: 640, ry: 330, rim: '#8fb4ff', body: '#03060e' })}
+		${nebula(150, 320, 90, 170, '#3f7cff', 0.3)}
+		${nebula(770, 470, 90, 170, '#56f0dc', 0.2)}
+		${galaxyBand({ cx: 460, cy: 330, rx: 470, ry: 78, angle: -22, colour: '#cfe0ff', seed: 21, strength: 0.14 })}
+		${starfield({ x0: 104, y0: 134, x1: 816, y1: 666, seed: 601, far: 170, mid: 56, near: 11, keepOut: SIGN_KEEP })}
+		${shootingStar(716, 208, 130, 18, '#ffffff')}
+		<rect x="100" y="130" width="720" height="540" fill="url(#spSheen)"/>
+	</g>
+	<!-- the frame: a gunmetal setting, a dark groove, a fine inner line. No colour. -->
+	<rect x="112" y="142" width="696" height="516" rx="22" fill="none" stroke="url(#spSteel)" stroke-width="11"/>
+	<rect x="122" y="152" width="676" height="496" rx="16" fill="none" stroke="#070b0e" stroke-width="8" opacity="0.85"/>
+	<rect x="140" y="170" width="640" height="460" rx="12" fill="none" stroke="url(#spSteel)" stroke-width="5"/>
+	<rect x="146" y="176" width="628" height="448" rx="10" fill="none" stroke="#000000" stroke-width="2" opacity="0.5"/>
+	${hexStuds(
+		[
+			[140, 170],
+			[780, 170],
+			[140, 630],
+			[780, 630],
+		],
+		21,
+	)}
+	<!-- the satellite over the top edge, where the winged sun sits on the tablets -->
+	${satellite(460, 122, 1)}
+	<!-- inner soft vignette so the text the frontend draws pops -->
+	<rect x="146" y="176" width="628" height="448" rx="10" fill="url(#spVign)"/>`,
+	SPACE_DEFS,
 );
 
-// small brass-trimmed plaque for the free-spin counter (824×622 like the MM
+// small gunmetal-framed plaque for the free-spin counter (824x622 like the MM
 // panel it replaces so the layout maths stay put)
 frames.fs_counter_panel = svgWrap(
 	824,
 	622,
 	`
-	<rect x="30" y="60" width="764" height="502" rx="34" fill="url(#plankSign)" stroke="#17120a" stroke-width="8"/>
-	<rect x="30" y="60" width="764" height="502" rx="34" filter="url(#signGrain)" opacity="0.5"/>
-	<rect x="46" y="76" width="732" height="470" rx="26" fill="none" stroke="url(#brass)" stroke-width="9"/>
-	<rect x="58" y="88" width="708" height="446" rx="20" fill="none" stroke="#ffe98a" stroke-width="2" opacity="0.55"/>
-	${[[70, 100], [754, 100], [70, 522], [754, 522]]
-		.map(
-			([x, y]) => `<circle cx="${x}" cy="${y}" r="10" fill="url(#rivet)" stroke="#3a2c08" stroke-width="2"/>
-	<circle cx="${x - 3}" cy="${y - 3}" r="3" fill="#fff3bd" opacity="0.8"/>`,
-		)
-		.join('')}
-	${bananaEmblem(412, 122, 0.75)}
-	<rect x="70" y="100" width="684" height="422" rx="18" fill="url(#signVign)"/>`,
-	`
-	<linearGradient id="plankSign" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#3f4a1e"/>
-		<stop offset="0.5" stop-color="#2c3812"/>
-		<stop offset="1" stop-color="#1c260c"/>
-	</linearGradient>
-	<linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#ffe282"/>
-		<stop offset="0.45" stop-color="#d8a334"/>
-		<stop offset="1" stop-color="#8a5c14"/>
-	</linearGradient>
-	<linearGradient id="embGold" x1="0" y1="0" x2="1" y2="1">
-		<stop offset="0" stop-color="#fff2ae"/>
-		<stop offset="0.5" stop-color="#ffd75e"/>
-		<stop offset="1" stop-color="#c1841a"/>
-	</linearGradient>
-	<radialGradient id="rivet" cx="0.35" cy="0.35" r="1">
-		<stop offset="0" stop-color="#ffe98a"/>
-		<stop offset="0.7" stop-color="#c08a20"/>
-		<stop offset="1" stop-color="#6d4a08"/>
-	</radialGradient>
-	<radialGradient id="signVign" cx="0.5" cy="0.45" r="0.85">
-		<stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
-		<stop offset="1" stop-color="#000000" stop-opacity="0.35"/>
-	</radialGradient>
-	${grainDef('signGrain', 0.5, 0.07)}`,
+	<rect x="30" y="60" width="764" height="502" rx="34" fill="url(#spFace)" stroke="#0b1015" stroke-width="8"/>
+	<rect x="30" y="60" width="764" height="502" rx="34" filter="url(#signGrain)" opacity="0.4"/>
+	<g clip-path="url(#counterClip)">
+		${planetLimb({ cx: 412, cy: 800, rx: 620, ry: 300, rim: '#8fb4ff', body: '#03060e' })}
+		${nebula(80, 250, 90, 150, '#3f7cff', 0.28)}
+		${nebula(750, 400, 90, 150, '#56f0dc', 0.18)}
+		${galaxyBand({ cx: 412, cy: 300, rx: 440, ry: 70, angle: -18, colour: '#cfe0ff', seed: 22, strength: 0.13 })}
+		${starfield({ x0: 34, y0: 64, x1: 790, y1: 558, seed: 702, far: 150, mid: 46, near: 9, keepOut: COUNTER_KEEP })}
+		<rect x="30" y="60" width="764" height="502" fill="url(#spSheen)"/>
+	</g>
+	<rect x="42" y="72" width="740" height="478" rx="28" fill="none" stroke="url(#spSteel)" stroke-width="11"/>
+	<rect x="52" y="82" width="720" height="458" rx="22" fill="none" stroke="#070b0e" stroke-width="8" opacity="0.85"/>
+	<rect x="70" y="100" width="684" height="422" rx="18" fill="none" stroke="url(#spSteel)" stroke-width="5"/>
+	<rect x="76" y="106" width="672" height="410" rx="16" fill="none" stroke="#000000" stroke-width="2" opacity="0.5"/>
+	${hexStuds(
+		[
+			[72, 102],
+			[752, 102],
+			[72, 520],
+			[752, 520],
+		],
+		20,
+	)}
+	<!-- A ringed planet, not the banana: this emblem is the one part of the plaque
+	     that names the game, and a bunch of bananas names the previous one. -->
+	${ringedPlanet(412, 150, 0.85)}
+	<rect x="76" y="106" width="672" height="410" rx="16" fill="url(#spVign)"/>`,
+	SPACE_DEFS,
 );
 
 // ─── render ──────────────────────────────────────────────────────────────────
@@ -674,7 +673,21 @@ const render = (svg, outPath, width) => {
 	fs.writeFileSync(outPath, resvg.render().asPng());
 	console.log('rendered', path.basename(outPath));
 };
+// AN OPTIONAL WHITELIST, and it is what makes this script safe to run for one
+// plate:
+//
+//   node design/generate_theme_jungle.mjs <tooldir> --only=fs_sign,fs_counter_panel
+//
+// The backgrounds this file draws are the jungle gradients that PAINTED art
+// replaced, and frame_bg lands olive and needs build_frame_capsule.py after it.
+// A blind full run therefore overwrites delivered paintings with the placeholder
+// they were commissioned to replace. Go Bananubis carries the same guard.
+const onlyArg = process.argv.find((arg) => arg.startsWith('--only='));
+const only = onlyArg ? new Set(onlyArg.slice('--only='.length).split(',')) : null;
+const wanted = (name) => !only || only.has(name);
+
 for (const [name, svg] of Object.entries(backgrounds)) {
+	if (!wanted(name)) continue;
 	render(svg, path.join(BG_DIR, `${name}.png`), 1920);
 }
 // frame_edge is NOT emitted from here any more. The housing is now painted art,
@@ -689,6 +702,7 @@ for (const [name, svg] of Object.entries(backgrounds)) {
 // gunmetal and rebuilds the edge. That ordering is the pipeline.
 const NOT_EMITTED = new Set(['frame_edge']);
 for (const [name, svg] of Object.entries(frames)) {
+	if (!wanted(name)) continue;
 	if (NOT_EMITTED.has(name)) {
 		console.log(`  skip ${name} — owned by design/build_frame_capsule.py`);
 		continue;

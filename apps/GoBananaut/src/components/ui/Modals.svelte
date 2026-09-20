@@ -348,140 +348,224 @@
 		box-shadow: 0 0 8px rgba(216, 163, 52, 0.28) !important;
 	}
 
+	/* THE PRICE HAS ITS OWN GROUND, and only the price.
+
+	   The card's artwork is the point now — a planet, a comet, a shower of coins —
+	   and BonusCard puts its text at whatever height its own content makes it,
+	   with no way to move it. Measured, the title and description sit under
+	   BonusCard's scrim at 0.94-0.72 and were legible from the start. The PRICE
+	   is the one line that lands in the middle of the card, where that scrim is
+	   at its most open (0.38) and the art at its brightest.
+
+	   A first version put a soft dark plate behind the whole text block. It fixed
+	   the price and buried the art under it: at 0.86 over most of the card the
+	   three free-spin cards stopped being distinguishable, which was the thing
+	   they were being redrawn to be. So it is a small pill behind the number and
+	   nothing else. The feathered shadow round it keeps it from reading as a
+	   button, which it is not.
+
+	   Both skins: it is about reading, not about palette. */
+	:global(.bonus-card-wrap.has-cover .price) {
+		align-self: center;
+		padding: 0.1rem 0.9rem;
+		border-radius: 999px;
+		background: rgba(5, 9, 14, 0.74);
+		box-shadow: 0 0 12px 5px rgba(5, 9, 14, 0.55);
+	}
+
 	/* ══════════════════════════════════════════════════════
 	   PLATFORM SKIN — the DOM half of it.
 
 	   game/uiTheme.ts stamps the resolved skin on <html>, so these rules apply
 	   only when it resolved to 'platform'. Everything above is untouched and is
-	   byte-for-byte what the 'bananaut' skin shows.
+	   what the 'bananaut' skin shows.
 
-	   Same source as the bet bar's casing: Hacksaw's .ActionPanel (#2a2a2a on a
-	   3px #0f0f0f edge), their .Button table (#343a40 borders, #4ace4a primary,
-	   #bfbfbf disabled text) and their mobile CircleButton disc. The bar went
-	   flat grey and these panels stayed olive and brass, which read as two
-	   different products stacked on one screen.
+	   Same SHAPES as the bet bar's casing — Hacksaw's .ActionPanel, their
+	   .Button table and their mobile CircleButton disc, at their radii and
+	   weights — in this game's GUNMETAL AND ICE rather than their grey and green.
+
+	   The colours are the ones in game/palette.ts, written out as hex because CSS
+	   cannot import a TS module. Change one there, change it here. The rule is the
+	   same too: gunmetal is the capsule, ice is what is live. In a menu that means
+	   panels and idle chips are gunmetal, and the one thing that goes ice is the
+	   thing you have SELECTED or are pressing.
+
+	     HULL        #151c23   panel ground
+	     PANEL       #1c252e   (unused here; the bar's readout plates)
+	     DISC        #0b1015   chips, inputs, card ground
+	     STEEL_EDGE  #62798a   panel edge, idle chip ring
+	     STEEL_DIM   #44586a   input ring, scrollbar
+	     STEEL_TEXT  #93a8b7   secondary text, the close ×
+	     SPIN_ICE    #1a7f9f   the commit buttons (white type reads at 4.58)
+	     ICE_RIM     #8fe4ff   selected, active, focus
+	     ICE_BRIGHT  #c4f1ff   text inside a selected chip
+	     CREAM       #e6eaed   headings and anything read
 	   ═════════════════════════════════════════════════════ */
 
-	/* the shade behind a modal: neutral black, not jungle shade */
+	/* the shade behind a modal: cold and dark rather than neutral black — the
+	   game shows through it, and a slate shade over a gunmetal scene keeps it the
+	   same scene with the lights down */
 	:global(html[data-ui-skin='platform'] .blur-layer) {
-		background-color: rgba(0, 0, 0, 0.72) !important;
+		background-color: rgba(5, 9, 13, 0.74) !important;
 	}
 
-	/* the panel itself — their .ActionPanel, at the radius they use */
+	/* THE PANEL — their .ActionPanel at the radius they use, in hull slate. A
+	   single faint ice line inside the steel edge: the trim a console has, and the
+	   one piece of decoration the panel carries. It is at 0.14 so it reads as a
+	   finish, not as a second border. */
 	:global(html[data-ui-skin='platform'] .ui-popup-standard-content-wrap) {
-		background: #2a2a2a !important;
-		border: 3px solid #0f0f0f !important;
-		border-radius: 4px !important;
-		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7) !important;
+		background: linear-gradient(180deg, #182029 0%, #151c23 60%, #11181e 100%) !important;
+		border: 2px solid #62798a !important;
+		border-radius: 6px !important;
+		box-shadow:
+			0 12px 40px rgba(0, 0, 0, 0.7),
+			inset 0 0 0 1px rgba(143, 228, 255, 0.14) !important;
 	}
 
-	/* Every button plate in a modal: the Auto Spin round chips, the settings
-	   toggles, the bet-menu amounts. Their CircleButton disc, squared off. */
+	/* THE CHIPS — every button plate in a modal: the Auto Spin counts, the
+	   settings toggles, the bet amounts. The same disc as the bar's round
+	   controls, with the same steel ring, so a control looks the same wherever it
+	   is. */
 	:global(html[data-ui-skin='platform'] .rectangle) {
-		background: #14171a !important;
-		border: 1px solid #565e66 !important;
+		background: #0b1015 !important;
+		border: 1px solid #62798a !important;
 		border-radius: 4px !important;
 		box-shadow: none !important;
 	}
 
+	/* Hover LIGHTENS THE STEEL rather than jumping to ice. Ice means "selected"
+	   in this skin, and a colour that also meant "the pointer is near it" would
+	   stop meaning anything — the player could no longer tell which chip they had
+	   actually picked by glancing at the panel. */
 	:global(html[data-ui-skin='platform'] .button:hover .rectangle) {
-		border-color: #8a949c !important;
+		border-color: #9fb6c7 !important;
+		background: #101820 !important;
 		box-shadow: none !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .button:active .rectangle) {
-		border-color: #4ace4a !important;
+		border-color: #8fe4ff !important;
 		box-shadow: none !important;
 		transform: scale(0.97);
 	}
 
 	:global(html[data-ui-skin='platform'] .close-button) {
-		color: #bfbfbf !important;
+		color: #93a8b7 !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .close-button:hover) {
-		color: #ffffff !important;
+		color: #e6eaed !important;
 		text-shadow: none !important;
 	}
 
+	/* Headings in cream, for the reason the bar's values are: pure white on this
+	   slate glares, and these are the words that name every panel. */
 	:global(html[data-ui-skin='platform'] .pop-up-wrap h1),
 	:global(html[data-ui-skin='platform'] .pop-up-wrap h2),
 	:global(html[data-ui-skin='platform'] .pop-up-wrap h3),
 	:global(html[data-ui-skin='platform'] .pop-up-wrap h4) {
-		color: #ffffff !important;
+		color: #e6eaed !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .pop-up-wrap input),
 	:global(html[data-ui-skin='platform'] .pop-up-wrap select) {
-		background: #14171a !important;
-		border: 1px solid #343a40 !important;
+		background: #0b1015 !important;
+		border: 1px solid #44586a !important;
 		border-radius: 4px !important;
+		color: #e6eaed !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .pop-up-wrap input:focus),
 	:global(html[data-ui-skin='platform'] .pop-up-wrap select:focus) {
-		border-color: #4ace4a !important;
+		border-color: #8fe4ff !important;
 		box-shadow: none !important;
+	}
+
+	/* A range input's thumb and track are the only native controls left in the
+	   modals that would still render in the browser's own blue. accent-color
+	   hands the browser this skin's ice for them in one line. */
+	:global(html[data-ui-skin='platform'] .pop-up-wrap input) {
+		accent-color: #8fe4ff;
 	}
 
 	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-track) {
-		background: #1a1a1a;
+		background: #0b1015;
 	}
 	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-thumb) {
-		background: #565e66;
+		background: #44586a;
 	}
 	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-thumb:hover) {
-		background: #8a949c;
+		background: #62798a;
 	}
 
-	/* the buy cards, which are the one place the platform palette uses colour */
-	/* The platform card's frame. #0f0f0f was their .ActionPanel edge colour, which
-	   is right for a panel sitting on the game art and invisible here: a near-black
-	   line between a dark card and a #2a2a2a panel. Their .Button border grey
-	   instead, at 2px, so the card has an edge a player can actually see. */
+	/* THE BUY CARDS. Their frame is 2px, because a near-black 1px edge between a
+	   dark card and a dark panel is not visible — steel at rest, ice under the
+	   pointer. Ice here is not the "selected" ice of the chips — nothing on a card
+	   is selected — but it IS the "this is what you press" ice, which is the other
+	   half of the rule, and these cards are the most expensive thing the player
+	   can press. */
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap) {
-		background: #1f1f1f !important;
-		border: 2px solid #565e66 !important;
-		border-radius: 4px !important;
-		box-shadow: none !important;
+		background: #0b1015 !important;
+		border: 2px solid #62798a !important;
+		border-radius: 6px !important;
+		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
+		transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap:hover) {
-		border-color: #4ace4a !important;
-		box-shadow: none !important;
+		border-color: #8fe4ff !important;
+		box-shadow:
+			0 6px 18px rgba(0, 0, 0, 0.5),
+			0 0 16px rgba(143, 228, 255, 0.24) !important;
 	}
 
+	/* THE SHADOWS SURVIVE THE SKIN SWITCH, and that is deliberate. The cards keep
+	   their artwork in both skins, so in this skin the copy is sitting on the
+	   board picture with nothing behind it unless the text carries its own dark
+	   ground. Flat is a palette, not a licence to put white on a bright board.
+	   Colours stay platform-flat; the ground stays. */
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap .title),
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap .price) {
 		color: #ffffff !important;
-		text-shadow: none !important;
+		text-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.95),
+			0 0 11px rgba(0, 0, 0, 0.85) !important;
 	}
 
+	/* #bfbfbf is the platform's secondary grey, and it is meant for text on a
+	   flat panel. On artwork it was the least legible thing in the modal. */
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap .description) {
-		color: #bfbfbf !important;
+		color: #e6e6e6 !important;
+		text-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.95),
+			0 0 9px rgba(0, 0, 0, 0.85) !important;
 	}
 
 	/* ── THE SELECTED CHIP ────────────────────────────────────────────────────
 	   This is a fix, not a restyle, and it applies to BOTH skins.
 
-	   The Auto Spin panel marks the chosen round count three ways, and this file
-	   was destroying two of them. AutoSpinsOptions passes BaseIcon a background
-	   ('#5d2396' when selected, 'black' otherwise) and a border ('2px white
-	   solid' / '2px black solid'); BaseIcon puts both on .rectangle through
-	   custom properties. The .rectangle override above sets `background` and
-	   `border` with !important, and an author !important declaration beats the
-	   package's plain one — so every chip rendered the same plate with the same
-	   brass edge, and the only thing left telling the player which one they had
-	   picked was the gold colour of the number.
+	   Every option grid marks the chosen chip through the SHARED components, and
+	   this file was destroying the mark. BaseIcon writes the chip's border and
+	   background into its own inline style as --border-value / --background-value;
+	   the .rectangle override above sets `border` and `background` with
+	   !important, and an author !important declaration beats the package's plain
+	   one — so every chip rendered the same plate and the choice was invisible.
 
-	   (The 2px white on '#5d2396' is the template's plum, so the chip was never
-	   this game's colour in either skin. Restoring the package's own values would
-	   put a purple chip in a jungle panel; the selected state is drawn in the
-	   skin's own accent instead.)
+	   TWO PANELS, TWO SIGNALS, and this needs both selectors:
 
-	   :has() rather than a class on the button: OptionsGrid renders a plain
-	   Button with no selected state of its own, and the only signal in the DOM is
-	   the .selected class AutoSpinsOptions puts on the label inside it. */
+	     · Auto Spin marks its choice with a `.selected` class on the label, so
+	       .button:has(.selected) finds it.
+	     · THE BET MENU HAS NO CLASS TO FIND. BetMenuAmountGrid hands BaseIcon a
+	       border of '2px white solid' for the chosen stake and '2px black solid'
+	       for the rest, and that inline style is the ONLY thing in the DOM that
+	       distinguishes the chosen chip. So it is keyed on directly:
+	       [style*='2px white solid'] matches the selected amount and nothing else
+	       — Auto Spin passes the same value for its own selection, so both panels
+	       now mark a choice identically.
+
+	   `.button` in front so it outranks the hover rule, which would otherwise
+	   repaint a selected chip steel the moment the pointer crossed it. */
+	:global(.button .rectangle[style*='2px white solid']),
 	:global(.button:has(.selected) .rectangle) {
 		border-color: #ffd75e !important;
 		background: linear-gradient(
@@ -494,16 +578,60 @@
 			inset 0 1px 0 rgba(255, 243, 189, 0.14) !important;
 	}
 
+	/* THE SELECTED CHIP LIGHTS UP. Three signals, because the platform chip is a
+	   dark disc and a ring alone is not enough to pick one out of nine:
+	     · an ICE RING at double weight
+	     · a teal wash INSIDE it, dark enough that the number stays readable
+	     · a GLOW outside it, so the chosen chip is the one thing in the grid that
+	       throws light — which is what "lit" means. */
+	:global(html[data-ui-skin='platform'] .button .rectangle[style*='2px white solid']),
 	:global(html[data-ui-skin='platform'] .button:has(.selected) .rectangle) {
-		background: #14171a !important;
-		border: 2px solid #4ace4a !important;
-		box-shadow: none !important;
+		background: linear-gradient(180deg, #14485b 0%, #0d2f3d 100%) !important;
+		border: 2px solid #8fe4ff !important;
+		box-shadow:
+			0 0 14px rgba(143, 228, 255, 0.55),
+			0 0 4px rgba(143, 228, 255, 0.7),
+			inset 0 0 12px rgba(143, 228, 255, 0.2) !important;
 	}
 
-	/* the label inside the selected chip: gold is the jungle skin's accent and
-	   has no business on the platform strip, where green is the only colour */
+	/* the label inside the selected chip, lit to match its ring. The bet grid's
+	   number has no class of its own, so it is found as the text sitting beside
+	   the marked rectangle in the same button. */
+	:global(html[data-ui-skin='platform'] .button:has(.rectangle[style*='2px white solid']) span),
 	:global(html[data-ui-skin='platform'] .selected) {
-		color: #4ace4a !important;
-		text-shadow: none !important;
+		color: #c4f1ff !important;
+		text-shadow: 0 0 8px rgba(143, 228, 255, 0.65) !important;
+	}
+
+	/* THE COMMIT BUTTON IS ICE.
+
+	   Every button in these panels is the same BaseIcon plate, so the one that
+	   ACTS — Start autoplay, the bet menu's confirm, BUY on a feature card, and
+	   the CONFIRM on the buy dialog, the most expensive press in the game — was
+	   drawn identically to the option chips above it: a grid of dark squares and
+	   one more dark bar, told apart only by their words. A player had to read the
+	   panel to find the way out of it.
+
+	   The same deep ice as the spin button and for the same reason: the label on
+	   it is white and SPIN_ICE is the colour it reads on (4.58). This is the rule
+	   in palette.ts doing its job — the thing you press to commit is the lit thing
+	   on the panel, exactly as it is on the bar.
+
+	   :not(.disabled), so a BUY the balance cannot cover stays a dark chip. A lit
+	   button that does nothing when pressed would be the one misleading control in
+	   the menu. */
+	:global(html[data-ui-skin='platform'] .ui-modal-button-wrap .full-width .button:not(.disabled) .rectangle),
+	:global(html[data-ui-skin='platform'] .ui-modal-button-wrap .max-width .button:not(.disabled) .rectangle),
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .button:not(.disabled) .rectangle) {
+		background: linear-gradient(180deg, #1d88a9 0%, #1a7f9f 55%, #146a86 100%) !important;
+		border: 2px solid #8fe4ff !important;
+		box-shadow: inset 0 1px 0 rgba(196, 241, 255, 0.35) !important;
+	}
+
+	:global(html[data-ui-skin='platform'] .ui-modal-button-wrap .full-width .button:not(.disabled):hover .rectangle),
+	:global(html[data-ui-skin='platform'] .ui-modal-button-wrap .max-width .button:not(.disabled):hover .rectangle),
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .button:not(.disabled):hover .rectangle) {
+		background: linear-gradient(180deg, #1f8dae 0%, #1c86a7 55%, #157190 100%) !important;
+		border-color: #c4f1ff !important;
 	}
 </style>

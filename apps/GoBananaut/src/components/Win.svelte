@@ -38,11 +38,15 @@
 	const BANNER_RATIO = 560 / 1000;
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
-		big: { mult: 1, glowTint: 0x9ec44a },
-		superwin: { mult: 1.15, glowTint: 0xffd75e },
-		mega: { mult: 1.3, glowTint: 0xffa347 },
-		epic: { mult: 1.5, glowTint: 0xff7a4a },
-		max: { mult: 1.8, glowTint: 0xff8ede },
+		// each plaque glows in its own patch of sky (design/generate_win_banners.mjs):
+		// deep space, teal nebula, violet nebula, then the amber ring of the black
+		// hole and the white-gold of the supernova. Big was jungle green, and the
+		// pink under MAX belonged to the old set.
+		big: { mult: 1, glowTint: 0x6fa8ff },
+		superwin: { mult: 1.15, glowTint: 0x56f0dc },
+		mega: { mult: 1.3, glowTint: 0xb48cff },
+		epic: { mult: 1.5, glowTint: 0xffd75e },
+		max: { mult: 1.8, glowTint: 0xfff3c4 },
 	};
 
 	let show = $state(false);
@@ -263,7 +267,10 @@
 								/>
 							</Container>
 							{#if burstShown}
-								<FxBurst scale={1.7} flavour="jungle" oncomplete={() => (burstShown = false)} />
+								<!-- 'gold', not 'jungle': the jungle flavour mixes LEAF SHARDS into the
+								     burst, and a pile of leaves is what erupted behind an EPIC WIN in a
+								     game set in space. -->
+								<FxBurst scale={1.7} flavour="gold" oncomplete={() => (burstShown = false)} />
 							{/if}
 						{:else}
 							<!-- small wins: just the rolling amount over the board -->

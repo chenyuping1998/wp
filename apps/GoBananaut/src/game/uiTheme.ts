@@ -1,6 +1,24 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
 
+import {
+	HULL,
+	PANEL,
+	DISC,
+	STEEL_EDGE,
+	STEEL_DIM,
+	STEEL_TEXT,
+	SPIN_ICE,
+	ICE_RIM,
+	ICE_EDGE,
+	ICE_TEXT,
+	ICE_BRIGHT,
+	ICE_UNLIT,
+	CREAM,
+	STONE_INK,
+	INK,
+} from './palette';
+
 // Jungle-commando bet bar: deep olive-canvas buttons with the same brass trim
 // as the reel frame and the free-spin plaques, plus the game's sans typeface.
 // Applied once at module load (imported by Game.svelte) — the shared UI package
@@ -55,80 +73,51 @@ setUiTheme({
 	// picture: box, hit area, plate and label together.
 	buyBonusButtonScale: 0.8,
 
-	// THE LABEL, SHRUNK — and it is what makes room for the porthole.
-	//
-	// The shared default is 0.68 of UI_BASE_FONT_SIZE (45), which at this game's
-	// 0.8 button scale is 24.5px of type on a 120px plate: two lines standing
-	// 52px tall, i.e. 43% of the button's height, centred. That is most of the
-	// plate and it sits squarely on anything above it.
-	//
-	// 0.46 gives 16.6px and a 36px block, so the label occupies the middle third
-	// and the porthole has the top third to itself — which is exactly the budget
-	// the art is drawn to: the glass finishes at y 216 of 640 and the caption
-	// starts at 224. The wrap width comes down with it, or "BUY BONUS" fits on one
-	// line and stops being two.
-	buyBonusLabelSizeRatio: 0.46,
-	buyBonusLabelWrapWidth: 90,
-
 	// Unlit rather than greyed. The olive plate went pale under the template's
 	// grey tint and read as a placeholder panel dropped over the jungle, with the
 	// gold caption still at full brightness on top of it.
 	buyBonusDisabledStyle: 'dim',
 
-	// RE-TUNED FOR A LIGHT PLATE, and this is the one number that quietly undid
-	// the whole point of lightening it.
+	// THE TINT THE PLATE GOES BACK TO, which the shared button never restores on
+	// its own — and this was a real bug, in both skins, that a wrong diagnosis
+	// hid for several rounds.
 	//
-	// The shared default is 0x767670, and the comment on it in ButtonBuyBonus is
-	// right about what it is for — darken, do not lighten, keep the hue. It was
-	// tuned against the OLIVE plate, which was already dark. The hatch is
-	// deliberately at L 119 so it clears a backdrop that runs 22 to 54, and
-	// 0x767670 is a multiply by 0.463:
+	// ButtonBuyBonus only passes `tint` while the button is disabled or active,
+	// and a prop that stops being passed keeps its last value on the pixi sprite.
+	// The button is disabled while the game LOADS, so the plate picked up the
+	// disabled tint on the first frame and kept it for the whole session: the
+	// plate has been drawn about half as bright as its art, permanently, not just
+	// while a spin is running.
 	//
-	//     119.4 x 0.463 = 55
-	//
-	// which is the backdrop's own value. Every moment the button is disabled — and
-	// it is disabled for the whole of every spin, since disabled is
-	// !isIdle() — the plate dropped back into the background it had just been
-	// lifted out of.
-	//
-	// 0xbc is a multiply by 0.737, so the disabled plate sits at 88: clearly below
-	// the enabled 119 and clearly above every backdrop. The blue channel stays 5%
-	// under the other two, which is the warm skew the default had.
-	buyBonusDisabledTint: 0xbcbcb3,
+	// It was first put down to the disabled tint being too dark and that value was
+	// re-tuned — which helped and fixed nothing, because the plate was never
+	// coming back out of it. Setting an idle tint makes the button pass one in
+	// every state. Found and fixed the same way in Go Bananubis and Go Bananas
+	// Boat.
+	buyBonusIdleTint: 0xffffff,
 
 	// The hover highlight is sized and shaped to the PLATE ART, so it stays inside
 	// the button instead of drawing a lighter square around it.
 	//
-	// RE-MEASURED for the hatch: its body is drawn at x=8 on a 640 canvas, so the
-	// art covers 97.5% of the box on both axes, and its corners are rx=26 — 4.1%
-	// of the sprite width against the olive plate's 10.3%, because a pressed steel
-	// panel has a much tighter radius than a padded canvas one.
+	// Measured from design/generate_ui_plates.mjs: the plate body is drawn at
+	// x=10 on a 640 canvas with a 7px stroke, so its outer edge sits at 98.1% of
+	// the sprite, and its corners are rx=66 — 10.3% of the sprite width, which is
+	// 10.7% of the highlight's own height at this inset.
 	//
 	// The defaults are a 1.0 inset plus a 3% outward pad, i.e. 6% WIDER than the
 	// sprite and squarer than it: that is a highlight bigger than the thing it
 	// highlights on all four sides and at every corner.
-	//
-	// Only the 'outline' hover style reads these, and this game now uses the
-	// sprite hover above instead — they are kept correct so the numbers are right
-	// if anyone switches.
-	buyBonusPlateInset: { width: 0.975, height: 0.975 },
+	buyBonusPlateInset: { width: 0.96, height: 0.96 },
 	buyBonusHighlightPad: 0,
-	buyBonusHighlightRadius: 0.041,
+	buyBonusHighlightRadius: 0.107,
 
 	// Certification: the bet button must stay clickable when the balance is short
 	// and say so. Paired with <ModalMessage /> in ui/Modals.svelte — without that
 	// the press would raise a modal this app does not render.
 	betButtonMessageOnInsufficientBalance: true,
 
-	// DARK INK ON BARE STEEL.
-	//
-	// The plate sits at L 120-150 — lifted there to clear the backdrop — so the
-	// caption has to go the other way. It went white for a pass, which needed a
-	// recessed dark placard under it to have any edges at all, and a black box on
-	// a grey plate is a worse object than an engraved one. Dark type needs nothing
-	// behind it: #141a1e on that steel is a 110-level separation on its own, and
-	// engraved ink is what a hatch placard actually carries.
-	buyBonusLabelFill: 0x141a1e,
+	// gold on the olive plate, matching every other caption in the game
+	buyBonusLabelFill: 0xffd75e,
 
 	// The auto-spins counter over the spin button. Set because the package's
 	// defaults are the numbers that were hardcoded in it, and one of them —
@@ -150,34 +139,12 @@ setUiTheme({
 	// 旋轉鍵的呼吸光暈
 	spinButtonGlow: true,
 
-	// THE BUY BONUS IS A HATCH OFF THE BOARD'S OWN HOUSING.
-	//
-	// It was the jungle generation's olive plate with a hot gold bevel, which is
-	// the one piece of furniture on this screen that still belonged to a different
-	// game. The replacement is gunmetal with a porthole, and its metal is sampled
-	// off frame_edge.png rather than invented, so the button and the reel housing
-	// are the same material — see design/generate_ui_plates.mjs.
-	//
-	// In BOTH skins, and deliberately. The bar's casing is a skin; the CTA is this
-	// game's own object, and an olive plate is wrong next to a space capsule
-	// whichever bar it is sitting on. gbUiBuyBonus stays loaded so switching back
-	// needs no rebuild.
+	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
+	// keep the themed rounded rect, which suits the round buttons)
 	sprites: {
 		base_ticker: 'gbUiTicker',
-		buyBonus: 'gbUiBuyBonusHatch',
-		buyBonusGlyph: 'gbUiBuyBonusLit',
+		buyBonus: 'gbUiBuyBonus',
 	},
-
-	// HOVER: THE LAMP COMES ON.
-	//
-	// A SLOT NAME, NOT AN ASSET KEY. UiSprite resolves whatever it is handed
-	// through uiTheme.sprites, so an asset key here matches nothing — and the miss
-	// is silent: it falls back to its default rounded rectangle, which, drawn with
-	// blendMode 'add', arrives as a pale glowing box around the whole button.
-	buyBonusHoverSprite: 'buyBonusGlyph',
-	// 0xffffff, not the default warm tint: the texture carries its own cyan, and
-	// tinting it again pushes the core past white into a flat blob.
-	buyBonusHoverSpriteTint: 0xffffff,
 
 	// drawn brass icons in place of the template's text/emoji button glyphs
 	icons: {
@@ -197,17 +164,17 @@ setUiTheme({
 
 // ── Platform chrome (opt-in casing, opt-out at any time) ─────────────────────
 //
-// Everything above is this game's own drawn look: olive canvas plates, brass
-// trim, gold captions, the framed housing that matches the reel frame. What
-// follows replaces the CASING — not the game — with the flat dark platform
-// chrome Hot Miami runs, taken from that app's uiTheme unchanged.
+// Everything above is this game's own first look: olive canvas plates, brass
+// trim, gold captions, the framed housing that matched the jungle generation's
+// reel frame. What follows replaces the CASING — not the game — with the flat
+// dark platform chrome Hot Miami runs, in this game's own colours.
 //
-// WHY IT IS WORTH HAVING AS A SECOND SKIN rather than an opinion: the values are
+// WHY IT IS WORTH HAVING AS A SECOND SKIN rather than an opinion: the SHAPES are
 // Hacksaw's, and their UI files are shared across titles — The Luxe 1.5.1 and
 // Densho 1.25.1 differ by one DOM node and five CSS rules, and their 103 theme
-// variables are value-identical. So these numbers are not one game's styling,
-// they are the neutral casing a player has already seen on other titles, which
-// is what a casing is supposed to be.
+// variables are value-identical. So the strip, the round discs and the thin rings
+// are not one game's styling, they are the neutral casing a player has already
+// seen on other titles, which is what a casing is supposed to be.
 //
 // ONLY COLOURS AND SHAPES ARE TAKEN. Hot Miami also moves the bar's GEOMETRY —
 // barHeight 166, barFrameBottom 46, spinScale 1.12, a spin button standing
@@ -225,9 +192,9 @@ setUiTheme({
 // Taking the palette and the shapes but not the geometry is the same trade in
 // the third direction, and it means this skin cannot move the board by a pixel.
 //
-// Two more things deliberately survive the swap: the drawn brass ICON art and
-// the game font. The icons are this game's own and there is no platform set to
-// replace them with — the fallback is text and emoji, visibly worse.
+// The game FONT deliberately survives the swap — it is the one thing left that
+// says which game this is. The icons do not: they are swapped for a flat
+// monochrome set drawn from the same shapes (see the icons map at the bottom).
 //
 // TO GO BACK, three ways, shallowest first:
 //
@@ -235,8 +202,8 @@ setUiTheme({
 //   localStorage.removeItem('uiSkin')            back to whatever DEFAULT_SKIN is
 //   change DEFAULT_SKIN below to 'bananaut'      one word, in the build
 //
-// Nothing above this line is edited by the swap, so 'bananaut' is byte-for-byte
-// the look that shipped before it.
+// Nothing above this line is edited by the swap, so 'bananaut' is the look that
+// shipped before it.
 const DEFAULT_SKIN: 'platform' | 'bananaut' = 'platform';
 
 export const uiSkin =
@@ -260,86 +227,195 @@ const skin = uiSkin;
 
 if (skin === 'platform') {
 	setUiTheme({
-		// the strip: flat casing, their panel grey on their near-black edge
+		// ── GUNMETAL AND ICE ─────────────────────────────────────────────────
+		//
+		// Hacksaw's SHAPES, this game's COLOURS. The flat strip, the round discs,
+		// the thin rings and the layout are theirs and stay theirs — they are what
+		// a player already knows how to use, and that is most of what makes a bar
+		// usable. What changes is what they are made of: gunmetal for everything
+		// structural, ice for everything you press or win. The rule, and the
+		// contrast table every value below was chosen from, are in palette.ts.
+		//
+		// THE STRIP. HULL rather than their #2a2a2a, and a steel hairline rather
+		// than their near-black edge — at ~1px a #0f0f0f line against a dark strip
+		// measures 1.15, which is to say it is not there. STEEL_EDGE is 3.78: a
+		// line you can see without it becoming a frame.
 		barStyle: 'flat',
-		barFill: 0x2a2a2a,
+		barFill: HULL,
 		barAlpha: 1,
-		panelBorder: 0x0f0f0f,
-		panelFill: 0x2a2a2a,
+		panelBorder: STEEL_EDGE,
+		panelFill: PANEL,
 
-		// Round controls: a dark disc with a thin cool-grey ring.
+		// Round controls: a dark disc with a thin steel ring.
 		//
 		// Their mobile CircleButtons carry `--hg-btn-border-width: 0` and float on
-		// the game art, where a flat dark disc separates itself on its own. On a grey
-		// strip it does not — 0x212529 against 0x2a2a2a is a nine-level difference and
-		// the control disappears — so the disc goes darker and the 1px `.Button`
-		// border comes back at 2, one unit here being about a third of a CSS pixel at
-		// this bar's scale. Hot Miami found the same thing and fixed it the same way.
-		buttonFill: 0x14171a,
-		buttonFillLight: 0x4ace4a,
-		buttonFillDisabled: 0x207820,
-		buttonFillActive: 0x4ace4a,
-		buttonBorder: 0x565e66,
+		// the game art, where a flat dark disc separates itself on its own. On a
+		// grey strip it does not — 0x212529 against 0x2a2a2a is a nine-level
+		// difference and the control disappears — so the disc goes darker and the
+		// 1px `.Button` border comes back at 2, one unit here being about a third
+		// of a CSS pixel at this bar's scale. Hot Miami found the same thing and
+		// fixed it the same way.
+		buttonFill: DISC,
+		buttonFillLight: ICE_BRIGHT,
+		// The spin button when it cannot be pressed: the same ice, unlit.
+		buttonFillDisabled: ICE_UNLIT,
+		// AN ON TOGGLE IS ICE. Turbo and autoplay, when engaged, become the same
+		// colour as the spin button — so "this is on" and "this is the button" are
+		// visibly the same kind of thing, and an idle toggle stays gunmetal with
+		// the rest of the furniture. SPIN_ICE rather than the brighter accent
+		// because the mono icons drawn on it are white: 4.58 there, against ~1.5
+		// for ICE_RIM, which would have made an ON toggle's icon vanish.
+		buttonFillActive: SPIN_ICE,
+		buttonBorder: STEEL_EDGE,
 		buttonBorderWidth: 2,
 		buttonBorderWidthActive: 5,
 		buttonIconFill: 0xffffff,
-		buttonIconStroke: 0x0f0f0f,
+		buttonIconStroke: INK,
 
-		// the spin button takes their primary green — it is the one control the
-		// platform palette actually colours
-		betFill: 0x4ace4a,
-		betBorder: 0x343a40,
-
-		// readouts: their disabled grey for labels, plain white for values. No
-		// per-metric accent colours; the platform bar does not tint its readouts, so
-		// the jungle green / brass split above is dropped rather than recoloured.
-		labelFill: 0xbfbfbf,
-		balanceLabelFill: 0xbfbfbf,
-		winAccent: { border: 0x343a40, label: 0xbfbfbf },
-		betAccent: { border: 0x343a40, label: 0xbfbfbf },
-		valueFill: 0xffffff,
-		valueStroke: 0x0f0f0f,
-		valueShadow: 0x000000,
-		// Dark ink here too — the CTA keeps the hatch under the platform skin, so
-		// it is the same pale steel and the same problem.
-		buyBonusLabelFill: 0x141a1e,
-
-		// The brass TICKER art has to go with the brass: a framed gold plate behind
-		// a flat grey strip reads as two different bars stacked.
+		// THE SPIN BUTTON — the one control the platform palette colours, so the
+		// one place a single colour has to carry the whole game.
 		//
-		// THE BUY BONUS DOES NOT, and that is the one deliberate exception on this
-		// strip. The bar is every-few-seconds furniture and belongs to the platform;
-		// buying the feature is this game's own thing, is pressed rarely and
-		// deliberately, and is the last screen before the player spends 300x. It
-		// keeps the hatch — the board's own gunmetal, with the lamp that comes on
-		// when you hover it.
+		// SPIN_ICE and not a brighter cyan: the arrow drawn on it is hard-coded
+		// white (ButtonBetSpinIcon), and white on the pale ice measures 3.7 —
+		// barely better than the green's 2.06. The deep ice is 4.58, more than
+		// twice what the green gave the arrow, and still reads as light.
+		//
+		// A bright rim round it, which is what makes a lit disc look like a
+		// fitting rather than a coloured circle. betBorder also draws the idle
+		// nudge ring that breathes out of the button, so that is ice too.
+		betFill: SPIN_ICE,
+		betBorder: ICE_RIM,
+
+		// THE READOUTS, in a three-step order: the spin button loudest, then the
+		// casing and Balance on STEEL_EDGE, then Bet quietest on STEEL_DIM — with
+		// WIN picked out in ice.
+		//
+		// Win is the only readout that changes because of the game rather than
+		// because of the player, and it is the number the eye goes looking for
+		// after every spin. The platform bar tints none of its readouts; this tints
+		// exactly one, and it is the one that is an amount you received — which is
+		// the rule in palette.ts, applied rather than excepted.
+		//
+		// Balance cannot be given its own accent: LayoutBottomBar draws it on
+		// uiTheme.panelBorder directly. So it shares the casing's steel, which is
+		// where it belongs anyway.
+		//
+		// Values in CREAM rather than white. White on this panel measures 15.5 and
+		// it glares; cream is 12.8, still far past anything a reading figure
+		// needs, and it is what makes the bar comfortable to look at for a long
+		// session rather than merely legible.
+		labelFill: STEEL_TEXT,
+		balanceLabelFill: STEEL_TEXT,
+		winAccent: { border: ICE_EDGE, label: ICE_TEXT },
+		betAccent: { border: STEEL_DIM, label: STEEL_TEXT },
+		valueFill: CREAM,
+		valueStroke: INK,
+		valueShadow: 0x000000,
+
+		// THE CAPTION IS DARK, ON GLASS, IN BOTH STATES.
+		//
+		// A MIRRORED visor rather than a dark one is what allows this, and it is
+		// the constraint that chose the design. Measured, the ink against the worst
+		// point of each state: 5.55 at rest, 6.15 lit. A dark visor would have
+		// forced pale type, and pale type cannot survive the glass lighting up.
+		buyBonusLabelFill: STONE_INK,
+
+		// The brass TICKER plate has to go with the brass: a framed gold plate
+		// behind a flat grey strip reads as two different bars stacked. So the
+		// readouts fall back to the platform's own panel.
+		//
+		// The Buy Bonus does NOT fall back, it gets the EVA HELMET: the one object
+		// that says "astronaut" before anything else on screen does. A coloured
+		// rounded rectangle is what every other game's CTA looks like, and this is
+		// the one control that should say which game it belongs to.
+		//
+		// Not the Wild, which is also a helmet: W is a PORTRAIT — the gorilla's
+		// face, goggles, banana. This is an empty helmet with a mirrored visor.
+		// Go Bananas Boat's notes record what happens when a CTA wears a symbol
+		// the player can land.
 		//
 		// setUiTheme is a shallow Object.assign, so this REPLACES the sprites map
-		// rather than merging into it. gbUiTicker stays loaded and untouched, so
-		// switching back is instant and needs no rebuild.
-		sprites: { buyBonus: 'gbUiBuyBonusHatch', buyBonusGlyph: 'gbUiBuyBonusLit' },
+		// rather than merging into it — which is the whole mechanism. gbUiTicker
+		// and gbUiBuyBonus stay loaded and untouched, so switching back is instant
+		// and needs no rebuild.
+		sprites: { buyBonus: 'gbUiBuyBonusHelmet', buyBonusGlyph: 'gbUiBuyBonusHelmetLit' },
 
-		// The rounded-rect fallback, for the case where the plate art fails to
-		// load. Kept in the platform palette rather than the game's: if the art is
-		// missing the button should look like the bar it is sitting on.
-		buyBonusFill: 0x14171a,
-		buyBonusBorder: 0x4ace4a,
+		// NO ROTATION, and it is a deliberate revert. The plate was a hatch wheel
+		// for a while and turned at 45 deg/s under the pointer, which is right for
+		// a wheel and absurd for a helmet — one that spins is a prop falling over.
+		// The hover is the visor lighting instead.
+		buyBonusHoverSpin: 0,
+
+		// HOVER: THE VISOR LIGHTS.
+		//
+		// A SLOT NAME, NOT AN ASSET KEY. UiSprite resolves whatever it is handed
+		// through uiTheme.sprites, so an asset key here matches nothing — and the
+		// miss is silent: it falls back to its default rounded rectangle, which
+		// arrives as a pale box around the whole button. The lit helmet is
+		// registered as `buyBonusGlyph` above, which is the slot the shared theme
+		// documents for exactly this.
+		buyBonusHoverSprite: 'buyBonusGlyph',
+		// NORMAL BLENDING, unlike the stone plates in the other games. Those are
+		// additive on a dark disc; the visor is already a bright mirror, so
+		// additive light would only push it to white and arrive as a haze. The lit
+		// visor is painted over the silver one, so the glass visibly CHANGES —
+		// which is the state a player reads.
+		buyBonusHoverSpriteBlend: 'normal',
+		// 0xffffff, not the default warm tint: the texture already carries its own
+		// cyan, and tinting it again pushes the core past white into a flat blob.
+		buyBonusHoverSpriteTint: 0xffffff,
+
+		// Measured off buybonus_helmet.png: the shell is drawn at r=298 with a 9px
+		// contour on a 640 canvas, so its art covers 94.6% of the box. Only the
+		// 'outline' hover style reads this, which this game does not use — it is set
+		// so the number is right if anyone ever switches.
+		buyBonusPlateInset: { width: 0.946, height: 0.946 },
+
+		// THE LABEL, SHRUNK — and it is what keeps it inside the visor.
+		//
+		// The shared default is 0.68 of UI_BASE_FONT_SIZE (45), which at this
+		// game's 0.8 button scale is 24.5px of type on a 120px plate: two lines
+		// standing 52px tall. "BONUS" alone is 3.51 em wide in Titan One, so at
+		// 0.68 it is 86px — wider than the whole well the wheel leaves for it.
+		//
+		// 0.48 gives 17.3px, "BONUS" at 61px, and two lines 37px tall.
+		//
+		// KEEP THIS IN STEP WITH VISOR_R in design/generate_ui_plates.mjs, which is
+		// sized against exactly this band (R >= 203 needed, 214 drawn). Raise one
+		// without the other and BONUS runs off the glass.
+		buyBonusLabelSizeRatio: 0.48,
+		// 94, NOT THE DEFAULT 116, AND THE PLATE ART DEPENDS ON IT. It is what makes
+		// "BUY BONUS" break into two lines at all — one line of it is 5.86 em, 101px
+		// at this size, against a 75px wrap box — and it keeps BONUS on the glass.
+		buyBonusLabelWrapWidth: 94,
+
+		// The rounded-rect fallback, for the case where the sprite fails to load.
+		// Kept in the platform palette rather than the game's: if the art is missing
+		// the button should look like the bar it is sitting on.
+		buyBonusFill: DISC,
+		buyBonusBorder: ICE_RIM,
 		buyBonusBorderWidth: 4,
 		buyBonusCornerRadius: 8,
 
-		// The auto-spins counter, in the platform palette. Green edge, because it
-		// sits on the green spin button and is the one badge the platform bar
-		// draws; a gold ring there would be the only warm thing left on the strip.
-		autoSpinsCounterFill: 0x14171a,
-		autoSpinsCounterBorder: 0x4ace4a,
-		autoSpinsCounterLabel: 0xffffff,
-		autoSpinsCounterLabelStroke: 0x0f0f0f,
+		// The auto-spins counter. It sits ON the spin button, so its ring is the
+		// brightest ice on the bar — the same colour as the button, lit, so the
+		// badge reads as part of it rather than as a sticker on it.
+		autoSpinsCounterFill: DISC,
+		autoSpinsCounterBorder: ICE_BRIGHT,
+		autoSpinsCounterLabel: CREAM,
+		autoSpinsCounterLabelStroke: INK,
 
 		// The dimmed Buy Bonus plate. buyBonusDisabledStyle is 'dim' above, and
 		// the package's default fill for that branch is this game's own olive —
-		// which on a flat grey strip turned the CTA green the moment it was
-		// disabled. Same disc as every other control instead.
-		buyBonusDisabledFill: 0x14171a,
+		// which on the strip turned the CTA green the moment it was disabled. Same
+		// disc as every other control instead.
+		buyBonusDisabledFill: DISC,
+
+		// What dim MULTIPLIES BY while a spin is running. The package's default is
+		// 0x767670, a x0.46 that takes the white shell down past the backdrop and
+		// turns it warm; this is x0.73, cool-leaning, so what dim takes away is
+		// light and not the colour.
+		buyBonusDisabledTint: 0xb9c3c9,
 
 		// their .CircleButton has :hover and :active states and a 125ms transition;
 		// it does not have a halo

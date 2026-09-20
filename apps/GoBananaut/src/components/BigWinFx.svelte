@@ -25,8 +25,11 @@
 	let bursts = $state<{ id: number; x: number; y: number; scale: number }[]>([]);
 	let nextBurstId = 0;
 
-	// jungle-gold bokeh reusing the glow texture, tinted per mote
-	const BOKEH_COLORS = [0xffd75e, 0xfff7d1, 0xd9e88a, 0xffb04a];
+	// gold and ice bokeh reusing the glow texture, tinted per mote. It was
+	// jungle-gold — a yellow-green and an orange among the four — and a big win in
+	// a space game is starlight: the same gold the amount is set in, and the ice
+	// the rest of the game lights its live things with.
+	const BOKEH_COLORS = [0xffd75e, 0xfff7d1, 0x8fe4ff, 0xc4f1ff];
 	const motes = Array.from({ length: 14 }, (_, i) => ({
 		x: (Math.random() - 0.5) * 1200,
 		y: (Math.random() - 0.6) * 880,

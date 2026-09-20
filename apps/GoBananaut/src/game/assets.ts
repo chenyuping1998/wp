@@ -267,22 +267,20 @@
 		preload: true,
 	},
 
-	// THE BUY BONUS PLATE — this game's own hatch, in both skins.
+	// THE BUY BONUS HELMET — the platform skin's Buy Bonus.
 	//
-	// buybonus_plate.png (the jungle generation's olive-and-gold CTA) is still on
-	// disk and still generated, and nothing points at it. It is kept for the same
-	// reason the brass icons are: the skin switch has to work without a rebuild.
-	gbUiBuyBonusHatch: {
+	// The EVA helmet, visor down, drawn by design/generate_ui_plates.mjs. The
+	// olive plate (gbUiBuyBonus) stays loaded for the 'bananaut' skin, so
+	// switching skins needs no rebuild.
+	gbUiBuyBonusHelmet: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasUi/buybonus_hatch.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_helmet.png', import.meta.url).href,
 		preload: true,
 	},
-	// The porthole with the lamp on. Drawn over the plate with blendMode 'add' on
-	// hover, which is why it is transparent everywhere else — see the note in
-	// design/generate_ui_plates.mjs.
-	gbUiBuyBonusLit: {
+	// The same helmet with the visor lit, painted OVER the plate on hover.
+	gbUiBuyBonusHelmetLit: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasUi/buybonus_hatch_lit.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_helmet_lit.png', import.meta.url).href,
 		preload: true,
 	},
 
