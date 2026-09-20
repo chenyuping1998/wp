@@ -9,6 +9,8 @@
 	import { SYMBOL_SIZE, isBigPrize, BIG_PRIZE_FILL, BIG_PRIZE_STROKE } from '../game/constants';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import GoldText from './GoldText.svelte';
+	import { Graphics } from 'pixi-svelte';
+	import { drawMultiplierBadge, BADGE_W, BADGE_H } from '../game/multiplierBadge';
 
 	type Props = {
 		x?: number;
@@ -79,6 +81,21 @@
 	count rather than a re-roll.
 -->
 {#if props.rawSymbol.multiplier}
+	<!-- the cartouche it is carved into, the same one the re-roll spins inside
+	     (game/multiplierBadge.ts) — drawn here too so the value does not change
+	     furniture the moment the roll hands it back to the board -->
+	<Graphics
+		draw={(g) => {
+			g.clear();
+			drawMultiplierBadge(g, {
+				x: props.x ?? 0,
+				y: (props.y ?? 0) + SYMBOL_SIZE * 0.3,
+				width: SYMBOL_SIZE * BADGE_W,
+				height: SYMBOL_SIZE * BADGE_H,
+				lit: true,
+			});
+		}}
+	/>
 	<GoldText
 		x={props.x ?? 0}
 		y={(props.y ?? 0) + SYMBOL_SIZE * 0.3}

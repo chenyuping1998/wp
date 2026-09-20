@@ -20,7 +20,7 @@ export const setContext = () => {
 	setContextApp({ stateApp });
 
 	// Restrict the buy screen to the modes the Go Bananas math supports
-	// (base + 200x bonus + 500x superbonus + 50x superspin); otherwise the shared template
+	// (base + 100x/200x/500x buys + 50x superspin); otherwise the shared template
 	// defaults expose extra unplayable buy options.
 	stateMeta.betModeMeta = GO_BANANAS_BET_MODE_META;
 };

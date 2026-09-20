@@ -296,6 +296,29 @@
 		font-size: 1.6rem !important;
 	}
 
+	/* FOUR BUY CARDS FIT ON ONE ROW.
+	   
+	   The 100x tier made it four, and the sizes above are content-box: 288 of
+	   content plus 0.8rem of padding each side plus a 5px frame is 323px on the
+	   page, so four of them and their gaps want 1,340px against the 1,240 the
+	   modal actually gives. The fourth wrapped onto a row of its own — which
+	   reads as "and also this one" rather than as a ladder of four prices.
+	   
+	   Measured, not guessed: the numbers above come from the rendered cards.
+	   Switching to border-box and giving them a quarter-share basis lets the row
+	   hold four and still collapses to fewer on a narrow screen, where the
+	   stacking rules further down take over. */
+	:global(.bonuses-wrap) {
+		gap: 0.75rem !important;
+	}
+
+	:global(.bonus-card-wrap) {
+		box-sizing: border-box !important;
+		flex: 1 1 calc((100% - 2.25rem) / 4) !important;
+		min-width: 224px !important;
+		max-width: 323px !important;
+	}
+
 	:global(.bonus-card-wrap .info) {
 		gap: 0.8em !important;
 	}
@@ -399,8 +422,12 @@
 		box-shadow: none !important;
 	}
 
+	/* The accent is this game's gold, not the platform's green — same swap as the
+	   bet bar's spin button (see game/uiTheme.ts). It was green because green is
+	   the one colour the platform palette contributes; on a game lit entirely in
+	   gilt it was the only note from somewhere else. */
 	:global(html[data-ui-skin='platform'] .button:active .rectangle) {
-		border-color: #4ace4a !important;
+		border-color: #ffd75e !important;
 		box-shadow: none !important;
 		transform: scale(0.97);
 	}
@@ -430,7 +457,7 @@
 
 	:global(html[data-ui-skin='platform'] .pop-up-wrap input:focus),
 	:global(html[data-ui-skin='platform'] .pop-up-wrap select:focus) {
-		border-color: #4ace4a !important;
+		border-color: #ffd75e !important;
 		box-shadow: none !important;
 	}
 
@@ -544,17 +571,55 @@
 			inset 0 1px 0 rgba(255, 243, 189, 0.14) !important;
 	}
 
-	:global(html[data-ui-skin='platform'] .button:has(.selected) .rectangle) {
-		background: #14171a !important;
-		border: 2px solid #4ace4a !important;
-		box-shadow: none !important;
+	/* ── THE CHOSEN OPTION IS LIT ─────────────────────────────────────────────
+	   Bet amount, auto-spin rounds, loss limit, single-win limit: four grids,
+	   and in every one of them the option you picked looked exactly like the
+	   ones you did not.
+
+	   The package does mark it. Each grid hands BaseIcon '2px white solid' for
+	   the chosen option and '2px black solid' for the rest, and BaseIcon puts
+	   that on .rectangle as an inline custom property. The platform .rectangle
+	   rule above then sets `border` with !important, which beats an inline
+	   custom property — so the one signal of which bet you were on was being
+	   painted over on every chip.
+
+	   Selected by that inline value rather than by a class, because the bet grid
+	   gives the DOM nothing else to go on (only the auto-spin chip carries a
+	   .selected label) and this game may not add one to a shared component. The
+	   string is identical in all four grids, so one rule covers them all.
+
+	   Lit, not just outlined: a thin gold ring on a dark chip was the auto-spin
+	   fix, and at 2px on a 2rem button it read as a hairline, not as "this
+	   one". Gold edge, a warm fill and a glow, in the same gilt the rest of the
+	   game lights things with. */
+	/* The :hover forms are listed on purpose. `.button:hover .rectangle` above is
+	   the more specific rule, and on desktop the cursor is still sitting on the
+	   chip you just clicked — so without these the option you chose went back to
+	   a grey edge at the exact moment you looked at it. */
+	:global(html[data-ui-skin='platform'] .button:has(.selected) .rectangle),
+	:global(html[data-ui-skin='platform'] .button:hover:has(.selected) .rectangle),
+	:global(html[data-ui-skin='platform'] .rectangle[style*='white solid']),
+	:global(html[data-ui-skin='platform'] .button:hover .rectangle[style*='white solid']) {
+		background: linear-gradient(180deg, #4a3c16 0%, #2b2310 100%) !important;
+		border: 2px solid #ffd75e !important;
+		box-shadow:
+			0 0 12px rgba(255, 215, 94, 0.55),
+			inset 0 1px 0 rgba(255, 243, 189, 0.35) !important;
 	}
 
-	/* the label inside the selected chip: gold is the jungle skin's accent and
-	   has no business on the platform strip, where green is the only colour */
-	:global(html[data-ui-skin='platform'] .selected) {
-		color: #4ace4a !important;
-		text-shadow: none !important;
+	/* its label, in the same gold as its edge */
+	:global(html[data-ui-skin='platform'] .selected),
+	:global(html[data-ui-skin='platform'] .button:has(.rectangle[style*='white solid']) span) {
+		color: #ffd75e !important;
+		text-shadow: 0 0 8px rgba(255, 215, 94, 0.45) !important;
+	}
+
+	/* The press itself flashes, so the tap is answered before the selection
+	   moves — on a phone the finger hides the chip it is choosing, and a
+	   highlight that only appears once it lifts is a beat late. */
+	:global(html[data-ui-skin='platform'] .button:active .rectangle) {
+		border-color: #fff3bd !important;
+		box-shadow: 0 0 16px rgba(255, 215, 94, 0.7) !important;
 	}
 
 	/* ══════════════════════════════════════════════════════

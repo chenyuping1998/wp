@@ -17,6 +17,8 @@
 	const context = getContext();
 
 	let pulse = $state(0);
+	// ms since this tease began: drives the sand and the ankhs lighting in turn
+	let clock = $state(0);
 	let finished = $state(false);
 
 	// Drawn entirely here rather than through the old `anticipation` spine: that
@@ -31,8 +33,10 @@
 		// them strobe as one block instead of shimmering along the board
 		const phase = props.reel.reelIndex * 0.9;
 		const rate = 145 + props.reel.reelIndex * 11;
+		const born = Date.now();
 		const id = setInterval(() => {
 			pulse = 0.5 + 0.5 * Math.sin(Date.now() / rate + phase);
+			clock = Date.now() - born;
 		}, 24);
 
 		return () => clearInterval(id);
@@ -82,6 +86,57 @@
 			g.moveTo(x - SYMBOL_SIZE * 0.12, h + chev + 10);
 			g.lineTo(x, h + chev);
 			g.lineTo(x + SYMBOL_SIZE * 0.12, h + chev + 10);
+		}}
+	/>
+
+	<!--
+		THE TOMB HOLDING ITS BREATH. The frame above only pulsed, the same beat for
+		as long as the reel took, so the tease had no rising edge. Two things now
+		run inside it:
+		  · sand pours down both sides of the column, as it does from a ceiling
+		    that is about to give — the same image as the trigger's rockfall, a
+		    beat earlier and much quieter
+		  · a small ankh at every row on both rails lights in turn, top to bottom,
+		    and the sweep quickens the longer the reel spins, so waiting reads as
+		    something building rather than something stuck
+		Drawn with the v8 API: this is its own Graphics so it cannot pick up the
+		fill colour the beginFill shim above leaves behind.
+	-->
+	<Graphics
+		draw={(g) => {
+			g.clear();
+			const h = BOARD_SIZES.height;
+			const rows = Math.round(h / SYMBOL_SIZE);
+			// sand
+			const GRAINS = 16;
+			for (const [side, seed] of [
+				[LEFT + 7, 0.37],
+				[LEFT + SYMBOL_SIZE - 7, 0.71],
+			] as const) {
+				for (let k = 0; k < GRAINS; k++) {
+					const f = ((clock * 0.00042 + k / GRAINS + seed) % 1 + 1) % 1;
+					const y = 8 + f * (h - 16);
+					const x = side + Math.sin(k * 12.9 + seed * 40) * 2.2;
+					const edge = Math.min(1, f / 0.08, (1 - f) / 0.08);
+					g.circle(x, y, 1.6 + (k % 3) * 0.5).fill({ color: 0xf2d59a, alpha: 0.75 * edge });
+				}
+			}
+			// ankhs: one lit at a time, the sweep period shrinking from 900ms to 380ms
+			const period = Math.max(380, 900 - clock * 0.25);
+			const lit = (clock / (period / rows)) % rows;
+			for (let row = 0; row < rows; row++) {
+				const cy = (row + 0.5) * SYMBOL_SIZE;
+				const d = Math.min(Math.abs(row - lit), rows - Math.abs(row - lit));
+				const glow = Math.max(0, 1 - d / 1.2);
+				const a = 0.22 + 0.78 * glow;
+				const col = glow > 0.5 ? 0xfff3c4 : 0xffd75e;
+				for (const ax of [LEFT + 13, LEFT + SYMBOL_SIZE - 13]) {
+					const w = 2 + glow;
+					g.ellipse(ax, cy - 8, 3.6, 4.6).stroke({ width: w, color: col, alpha: a });
+					g.moveTo(ax - 6, cy - 2).lineTo(ax + 6, cy - 2).stroke({ width: w, color: col, alpha: a });
+					g.moveTo(ax, cy - 2).lineTo(ax, cy + 11).stroke({ width: w, color: col, alpha: a });
+				}
+			}
 		}}
 	/>
 

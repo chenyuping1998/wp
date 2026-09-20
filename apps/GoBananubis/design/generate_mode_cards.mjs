@@ -141,6 +141,20 @@ const tabletRow = (cx, cy, count, size, open) => {
 };
 
 const MOTIFS = {
+	// TWO Tablets, one open. THREE Scatters: the entry tier's own board.
+	//
+	// Deliberately the smallest arrangement of the same three parts the other two
+	// cards are built from, because that is exactly what this tier is — the
+	// ordinary trigger, bought rather than waited for. A card that borrowed the
+	// 200x tier's three Tablets would be selling a board this mode does not open
+	// on.
+	bonus100: `
+		<ellipse cx="${MOTIF.cx}" cy="${MOTIF.cy}" rx="132" ry="98" fill="#ffd75e" opacity="0.09" filter="url(#soft)"/>
+		${tabletRow(MOTIF.cx, MOTIF.cy - 38, 2, 96, [0])}
+		${[-1, 0, 1]
+			.map((i) => sym('s', MOTIF.cx + i * 66, MOTIF.cy + 78, 54, 1, i * 7))
+			.join('')}`,
+
 	// Three Tablets, the middle one open. Four Scatters: this tier's own entry.
 	bonus: `
 		<ellipse cx="${MOTIF.cx}" cy="${MOTIF.cy}" rx="150" ry="104" fill="#ffd75e" opacity="0.1" filter="url(#soft)"/>

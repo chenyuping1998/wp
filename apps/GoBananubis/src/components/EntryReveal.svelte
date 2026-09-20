@@ -59,7 +59,7 @@
 				x={context.stateGameDerived.boardLayout().x}
 				y={context.stateGameDerived.boardLayout().y}
 				scale={1.4}
-				flavour="jungle"
+				flavour="tomb"
 			/>
 		{/if}
 	</MainContainer>

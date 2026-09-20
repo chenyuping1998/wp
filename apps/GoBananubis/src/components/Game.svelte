@@ -43,8 +43,26 @@
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
 	import FreeSpinOutro from './FreeSpinOutro.svelte';
 	import Transition from './Transition.svelte';
+	import TombRockfall from './TombRockfall.svelte';
+	import { tombQuake, quakeShake } from '../game/tombQuake.svelte';
 
 	const context = getContext();
+
+	// The tomb quake's camera: offset and zoomed about the canvas centre. The
+	// scene is wrapped in it twice, background and board, because the loading
+	// screen sits between them in the tree — both read the same numbers, so they
+	// move as one. The UI bar is NOT in it: the hall shakes, the controls do not.
+	// Same arrangement as Go Boomana's cave quake, which this is ported from.
+	const quakeCamera = $derived.by(() => {
+		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		const shake = quakeShake(tombQuake.clock, height);
+		return {
+			pivot: { x: width / 2, y: height / 2 },
+			x: width / 2 + shake.x,
+			y: height / 2 + shake.y,
+			scale: shake.zoom,
+		};
+	});
 
 	// soft depth-of-field on the jungle scene so the reels read as the subject
 	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
@@ -64,16 +82,18 @@
 	<EnableGameActor />
 	<EnablePixiExtension />
 
-	<Container filters={backgroundBlur}>
-		<Background />
+	<Container {...quakeCamera}>
+		<Container filters={backgroundBlur}>
+			<Background />
+		</Container>
+		<!-- corner vignette seats the blurred scene behind the board -->
+		<Sprite
+			key="fxVignette"
+			width={context.stateLayoutDerived.canvasSizes().width}
+			height={context.stateLayoutDerived.canvasSizes().height}
+			alpha={0.9}
+		/>
 	</Container>
-	<!-- corner vignette seats the blurred scene behind the board -->
-	<Sprite
-		key="fxVignette"
-		width={context.stateLayoutDerived.canvasSizes().width}
-		height={context.stateLayoutDerived.canvasSizes().height}
-		alpha={0.9}
-	/>
 
 	{#if context.stateLayout.showLoadingScreen}
 		<LoadingScreen onloaded={() => (context.stateLayout.showLoadingScreen = false)} />
@@ -85,6 +105,10 @@
 			Ref: https://developer.chrome.com/blog/autoplay
 		-->
 		<Sound />
+
+		<Container {...quakeCamera}>
+		<!-- stone and sand falling in the far dark, behind the reels -->
+		<TombRockfall layer="back" />
 
 		<MainContainer>
 			<!-- Before the frame, so if a narrow layout ever brings the two close
@@ -116,6 +140,10 @@
 			<ScatterBurst />
 			<WinLines />
 		</MainContainer>
+
+		<!-- and the few that come down in front of it -->
+		<TombRockfall layer="front" />
+		</Container>
 
 		<EntryReveal />
 

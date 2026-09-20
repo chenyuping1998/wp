@@ -35,11 +35,6 @@
 		src: new URL('../../assets/sprites/goBananasFx/fx_streak.png', import.meta.url).href,
 		preload: true,
 	},
-	fxLeaf: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasFx/fx_leaf.png', import.meta.url).href,
-		preload: true,
-	},
 	fxVignette: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasFx/fx_vignette.png', import.meta.url).href,
@@ -69,6 +64,113 @@
 	gbUiBuyBonusLit: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasUi/buybonus_stone_lit.png', import.meta.url).href,
+		preload: true,
+	},
+	// The platform skin's Buy Bonus: Khepri, the scarab lifting the sun, and its
+	// additive lit copy for hover (design/generate_ui_plates.mjs).
+	gbUiBuyBonusScarab: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit.png', import.meta.url).href,
+		preload: true,
+	},
+	// THE HOVER GLOW, ANIMATED: 16 frames of a light running round the rim,
+	// cycled by game/buyBonusGlow.ts. Half size — they are blurred light.
+	gbUiBuyBonusScarabLit00: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_00.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit01: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_01.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit02: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_02.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit03: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_03.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit04: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_04.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit05: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_05.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit06: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_06.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit07: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_07.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit08: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_08.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit09: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_09.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit10: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_10.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit11: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_11.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit12: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_12.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit13: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_13.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit14: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_14.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusScarabLit15: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_scarab_lit_15.png', import.meta.url).href,
+		preload: true,
+	},
+	// The platform skin's Buy Bonus since the sun disc: a lapis palace ceiling in
+	// an inlaid gold rim with the sun's rays round it, and its additive lit copy
+	// for hover (design/generate_ui_plates.mjs).
+	gbUiBuyBonusSun: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_sun.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusSunLit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_sun_lit.png', import.meta.url).href,
 		preload: true,
 	},
 	// brass win-tier plaques (design/generate_win_banners.mjs)

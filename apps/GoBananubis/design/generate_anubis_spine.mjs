@@ -1230,6 +1230,141 @@ const alert = {
 	},
 };
 
+
+// idlebreak: he shifts his weight and takes a look around.
+//
+// WHY
+//
+// `idle` is a breath and nothing else, and it is what the player watches for
+// most of a session — between spins, through autoplay, while reading the bet
+// bar. A character who only breathes for ten minutes stops being a character and
+// becomes wallpaper, which is the same note certification wrote up about the
+// still drawing in the first place. So every so often he does something small
+// and goes back to breathing.
+//
+// ANGLES: DELIBERATELY WELL INSIDE EVERY BUDGET
+//
+// This one is UNPROMPTED — nothing has happened — so it has to be the quietest
+// thing in the set. Anything that reads as a reaction here would have the
+// player looking at the board for a win that is not coming. Measured against the
+// three budgets on this drawing (see MAX_SHOULDER / MAX_LEAN / MAX_HEAD):
+//
+//   head   5 away, then 6 back    of 12   — the nemes lappets never leave the collar
+//   torso  3                      of 8    — the kilt hem stays cloth
+//   arms   5 at the shoulder      of 22   — the collar covers both joints throughout
+//   elbows counter-rotated by hang(), because these arms are HANGING, not pushed
+//
+// The read is carried where it costs no angle at all: the hip slides 8 units
+// onto one leg, that leg compresses while the other unloads, and the chest
+// breathes across the whole move. That is a person standing and shifting, not a
+// puppet being posed.
+//
+// It starts and ends at exactly the setup pose, so Mascot.svelte can drop back
+// into `idle` from it without a snap, and it can be interrupted at any frame by
+// a real reaction (nod, alert, chestbeat) with nothing left offset.
+const BREAK_TURN_AWAY = -5; // head, against MAX_HEAD 12
+const BREAK_TURN_BACK = 6;
+const BREAK_LEAN = 3; // torso, against MAX_LEAN 8
+const BREAK_ARM = 5; // shoulders, against MAX_SHOULDER 22
+const idlebreak = {
+	bones: {
+		// the weight goes onto his right leg and comes back
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.45, x: 4, y: 2 }, // sinks slightly as he unweights
+				{ time: 0.95, x: 8, y: 0 },
+				{ time: 2.1, x: 8, y: 0 },
+				{ time: 2.9, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.95, value: -BREAK_LEAN }, // away from the board first
+				{ time: 1.75, value: BREAK_LEAN - 1 }, // and back over the shift
+				{ time: 2.9, value: 0 },
+			],
+			// a long breath under the whole thing
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.95, x: 0.995, y: 1.012 },
+				{ time: 1.9, x: 1.004, y: 0.994 },
+				{ time: 2.9, x: 1, y: 1 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.85, value: BREAK_TURN_AWAY },
+				{ time: 1.25, value: BREAK_TURN_AWAY },
+				{ time: 1.8, value: BREAK_TURN_BACK },
+				{ time: 2.25, value: BREAK_TURN_BACK },
+				{ time: 2.9, value: 0 },
+			],
+			// the tilt alone reads as a tilt; the shift is what makes it a look
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.85, x: 5, y: 1 },
+				{ time: 1.25, x: 5, y: 1 },
+				{ time: 1.8, x: -5, y: 2 },
+				{ time: 2.25, x: -5, y: 2 },
+				{ time: 2.9, x: 0, y: 0 },
+			],
+		},
+		// the arms only trail the body, and by less than a quarter of their budget
+		armL: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.95 + LEAD, value: BREAK_ARM },
+				{ time: 1.9, value: -2 },
+				{ time: 2.9, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.95, value: -BREAK_ARM },
+				{ time: 1.9, value: 2 },
+				{ time: 2.9, value: 0 },
+			],
+		},
+		armL_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.95 + LEAD + DRAG, value: hang(BREAK_ARM) },
+				{ time: 1.9 + DRAG, value: hang(-2) },
+				{ time: 2.9, value: 0 },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.95 + DRAG, value: hang(-BREAK_ARM) },
+				{ time: 1.9 + DRAG, value: hang(2) },
+				{ time: 2.9, value: 0 },
+			],
+		},
+		// the leg he stands on compresses; the other lengthens as it unloads
+		legR: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.95, x: 1.01, y: 0.99 },
+				{ time: 2.1, x: 1.01, y: 0.99 },
+				{ time: 2.9, x: 1, y: 1 },
+			],
+		},
+		legL: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.95, x: 0.997, y: 1.005 },
+				{ time: 2.1, x: 0.997, y: 1.005 },
+				{ time: 2.9, x: 1, y: 1 },
+			],
+		},
+	},
+};
+
 // throwit: he produces the scarab and pitches it at the board.
 //
 // Named 'throwit' rather than 'throw' because `throw` is a reserved word, and
@@ -1591,6 +1726,7 @@ const skeleton = {
 				chestbeat,
 				nod,
 				alert,
+				idlebreak,
 				throwit,
 				// Left un-smoothed on purpose: a calibration sweep has to be linear,
 				// or the angle at a given frame is not the angle it is labelled with.

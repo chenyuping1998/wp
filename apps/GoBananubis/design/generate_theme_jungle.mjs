@@ -381,12 +381,12 @@ frames.frame_bg = svgWrap(
 	-->
 	<rect x="128" y="128" width="1024" height="1024" rx="30" fill="#000000" opacity="0.45"/>
 	<rect x="128" y="128" width="1024" height="1024" rx="30" fill="url(#innerShadow)"/>
-	<rect x="136" y="136" width="1008" height="1008" rx="24" fill="none" stroke="#66782f" stroke-width="2" opacity="0.4"/>`,
+	<rect x="136" y="136" width="1008" height="1008" rx="24" fill="none" stroke="#8a7859" stroke-width="3" opacity="0.7"/>`,
 	`
 	<linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#2c3812"/>
-		<stop offset="0.5" stop-color="#1e2a0e"/>
-		<stop offset="1" stop-color="#131c08"/>
+		<stop offset="0" stop-color="#2f363b"/>
+		<stop offset="0.5" stop-color="#222a2e"/>
+		<stop offset="1" stop-color="#161b1f"/>
 	</linearGradient>
 	<radialGradient id="innerShadow" cx="0.5" cy="0.5" r="0.72">
 		<stop offset="0.72" stop-color="#000000" stop-opacity="0"/>
@@ -417,11 +417,11 @@ frames.frame_edge = svgWrap(
 	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke-width="60" filter="url(#sfBrushed)" stroke="#000000" opacity="0.5"/>
 	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke-width="60" filter="url(#sfScratch)" stroke="#000000" opacity="0.4"/>
 	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke-width="60" filter="url(#sfMottle)" stroke="#000000" opacity="0.45"/>
-	<rect x="24" y="24" width="1232" height="1232" rx="64" fill="none" stroke="#0c1206" stroke-width="9"/>
+	<rect x="24" y="24" width="1232" height="1232" rx="64" fill="none" stroke="#0b0e11" stroke-width="9"/>
 	<rect x="86" y="86" width="1108" height="1108" rx="38" fill="none" stroke="url(#brass)" stroke-width="12"/>
 	<rect x="86" y="86" width="1108" height="1108" rx="38" fill="none" stroke="#000000" stroke-width="12" filter="url(#sfBrushed)" opacity="0.45"/>
-	<rect x="97" y="97" width="1086" height="1086" rx="32" fill="none" stroke="#7a5a14" stroke-width="4"/>
-	<rect x="79" y="79" width="1122" height="1122" rx="42" fill="none" stroke="#ffe98a" stroke-width="2.5" opacity="0.75"/>
+	<rect x="97" y="97" width="1086" height="1086" rx="32" fill="none" stroke="#3d3324" stroke-width="4"/>
+	<rect x="79" y="79" width="1122" height="1122" rx="42" fill="none" stroke="#ffd75e" stroke-width="2.5" opacity="0.95"/>
 	<!-- top bevel light / bottom shade on the band -->
 	<rect x="52" y="52" width="1176" height="1176" rx="52" fill="none" stroke="url(#bandLight)" stroke-width="60" opacity="0.5"/>
 	${rivets}
@@ -429,37 +429,52 @@ frames.frame_edge = svgWrap(
 	${[[52, 52, 0], [1228, 52, 90], [1228, 1228, 180], [52, 1228, 270]]
 		.map(
 			([cx, cy, rot]) => `<g transform="translate(${cx} ${cy}) rotate(${rot})">
-		<path d="M -14 -14 L 118 -14 Q 124 -14 124 -8 L 124 22 Q 86 24 58 52 Q 26 82 24 124 L -8 124 Q -14 124 -14 118 Z" fill="url(#cornerBrass)" stroke="#3a2c08" stroke-width="5"/>
-		<circle cx="34" cy="34" r="10" fill="url(#rivet)" stroke="#3a2c08" stroke-width="2"/>
-		<circle cx="31" cy="31" r="3" fill="#fff3bd" opacity="0.85"/>
+		<path d="M -14 -14 L 118 -14 Q 124 -14 124 -8 L 124 22 Q 86 24 58 52 Q 26 82 24 124 L -8 124 Q -14 124 -14 118 Z" fill="url(#cornerBrass)" stroke="#2a2116" stroke-width="5"/>
+		<circle cx="34" cy="34" r="10" fill="url(#rivet)" stroke="#2a2116" stroke-width="2"/>
+		<circle cx="31" cy="31" r="3" fill="#e8dcc0" opacity="0.75"/>
 	</g>`,
 		)
 		.join('')}`,
 	`
+	<!-- GO BANANUBIS — the housing is stone, and it is no longer the game's
+	     accent colour.
+
+	     It shipped as the jungle build's brass band, whose bright gold measured
+	     rgb(228,199,108): 1.39:1 against the Scatter's own gold, 1.21:1 against
+	     the turquoise Ankh and 1.19:1 against #ffd75e — the colour every lit
+	     thing in this game uses (held tablets, win brackets, the oracle's lip).
+	     The frame was wearing the palette that is supposed to mean "look here",
+	     and a fifth of its area was brighter than L 0.30.
+
+	     Now: basalt band, dark mud-brick trim and bronze studs, with ONE 2.5px
+	     gilt hairline as the only light line on it. That puts the bright area at
+	     2.5% and the band at 4.49:1 against the Scatter. The hairline is also
+	     what keeps the board's edge readable now that housing and plates are cut
+	     from the same stone. -->
 	<linearGradient id="bandOuter" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#4a4a26"/>
-		<stop offset="0.5" stop-color="#33361a"/>
-		<stop offset="1" stop-color="#20240f"/>
+		<stop offset="0" stop-color="#474d51"/>
+		<stop offset="0.5" stop-color="#33383c"/>
+		<stop offset="1" stop-color="#1e2226"/>
 	</linearGradient>
 	<linearGradient id="bandLight" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#8a8a52" stop-opacity="0.8"/>
-		<stop offset="0.18" stop-color="#8a8a52" stop-opacity="0"/>
+		<stop offset="0" stop-color="#8d969c" stop-opacity="0.75"/>
+		<stop offset="0.18" stop-color="#8d969c" stop-opacity="0"/>
 		<stop offset="0.85" stop-color="#000000" stop-opacity="0"/>
 		<stop offset="1" stop-color="#000000" stop-opacity="0.6"/>
 	</linearGradient>
 	<linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#ffe282"/>
-		<stop offset="0.45" stop-color="#d8a334"/>
-		<stop offset="1" stop-color="#8a5c14"/>
+		<stop offset="0" stop-color="#6e5f46"/>
+		<stop offset="0.45" stop-color="#5a4c37"/>
+		<stop offset="1" stop-color="#342b1e"/>
 	</linearGradient>
 	<linearGradient id="cornerBrass" x1="0" y1="0" x2="1" y2="1">
-		<stop offset="0" stop-color="#e8bc4e"/>
-		<stop offset="1" stop-color="#8a5c14"/>
+		<stop offset="0" stop-color="#6e5f46"/>
+		<stop offset="1" stop-color="#342b1e"/>
 	</linearGradient>
 	<radialGradient id="rivet" cx="0.35" cy="0.35" r="1">
-		<stop offset="0" stop-color="#ffe98a"/>
-		<stop offset="0.7" stop-color="#c08a20"/>
-		<stop offset="1" stop-color="#6d4a08"/>
+		<stop offset="0" stop-color="#8a7859"/>
+		<stop offset="0.7" stop-color="#5d4c33"/>
+		<stop offset="1" stop-color="#2a2116"/>
 	</radialGradient>
 	${grainDef('bandGrain', 0.6, 0.1)}`,
 );
@@ -493,73 +508,154 @@ const ankhEmblem = (cx, cy, s = 1) => `
 	<rect x="-8" y="8" width="16" height="64" rx="7" fill="url(#embGold)" stroke="#6d4a08" stroke-width="3"/>
 </g>`;
 
+
+// ─── the tomb-tablet plaques ─────────────────────────────────────────────────
+//
+// The free-spin sign and the counter panel were basalt slabs with a sandstone
+// edge and bronze studs — correct for the board, and by now the plainest thing
+// on screen: the win plaques, the Buy Bonus and the tablet multipliers had all
+// moved on to gold and lapis with inlay, and the sign is what the player reads
+// at the START of the feature and again on TOTAL WIN at the end of it.
+//
+// So both are built from the same parts as the win plaques
+// (design/generate_win_banners.mjs): a lapis face, a gold setting holding a band
+// of lapis / carnelian / turquoise cells, carnelian-set gold studs at the
+// corners, and the winged sun over the top edge.
+//
+// GEOMETRY IS UNTOUCHED. Both boxes (920x720 and 824x622) and the plate
+// rectangles inside them are what the frontend's text layout is measured
+// against, so only the painting changes.
+const TABLET_INLAY = ['#3f74de', '#e8643c', '#3fd0bd'];
+
+// cells along the straight runs of a setting, inset from the plate edge
+const tabletInlay = (x, y, w, h, inset, cell, thick) => {
+	let out = '';
+	const run = (from, to) => {
+		const span = to - from;
+		const count = Math.max(1, Math.floor(span / (cell + 6)));
+		const step = span / count;
+		return Array.from({ length: count }, (_, i) => ({ at: from + i * step + 3, size: step - 6, i }));
+	};
+	for (const seg of run(x + inset + cell, x + w - inset - cell)) {
+		for (const cy of [y + inset, y + h - inset - thick]) {
+			out += `<rect x="${seg.at.toFixed(1)}" y="${cy}" width="${seg.size.toFixed(1)}" height="${thick}" rx="3" fill="${TABLET_INLAY[seg.i % 3]}"/>`;
+		}
+	}
+	for (const seg of run(y + inset + cell, y + h - inset - cell)) {
+		for (const cx of [x + inset, x + w - inset - thick]) {
+			out += `<rect x="${cx}" y="${seg.at.toFixed(1)}" width="${thick}" height="${seg.size.toFixed(1)}" rx="3" fill="${TABLET_INLAY[(seg.i + 1) % 3]}"/>`;
+		}
+	}
+	return out;
+};
+
+const tabletStuds = (points, r) =>
+	points
+		.map(
+			([x, y]) => `<rect x="${x - r}" y="${y - r}" width="${r * 2}" height="${r * 2}" rx="5" fill="url(#tabGold)" stroke="#5e4210" stroke-width="3"/>
+	<rect x="${x - r * 0.48}" y="${y - r * 0.48}" width="${r * 0.96}" height="${r * 0.96}" rx="2" fill="url(#tabCarn)" stroke="#6b470c" stroke-width="2"/>`,
+		)
+		.join('');
+
+// the winged sun, centred on (cx, cy) and scaled about it
+const wingedSunTablet = (cx, cy, scale = 1) => {
+	let out = '';
+	for (const d of [-1, 1]) {
+		for (let row = 0; row < 3; row++) {
+			const len = [170, 140, 108][row];
+			const y0 = -16 + row * 11;
+			const n = 9;
+			for (let i = 0; i < n; i++) {
+				const x0 = d * (32 + (i / n) * len);
+				const x1 = d * (32 + ((i + 1) / n) * len);
+				const drop = (i / n) * 12;
+				const fill = row === 1 ? TABLET_INLAY[(i + (d > 0 ? 0 : 1)) % 3] : 'url(#tabGold)';
+				out += `<path d="M ${x0.toFixed(1)} ${(y0 + drop).toFixed(1)} L ${x1.toFixed(1)} ${(y0 + drop + 1.3).toFixed(1)} L ${x1.toFixed(1)} ${(y0 + drop + 12.3).toFixed(1)} L ${x0.toFixed(1)} ${(y0 + drop + 11).toFixed(1)} Z" fill="${fill}" stroke="#5e4210" stroke-width="2"/>`;
+			}
+		}
+		out += `<path d="M ${d * 24} 18 q ${d * 12} -18 ${d * 2} -36 q ${d * -8} -10 ${d * 2} -14 q ${d * 10} 6 ${d * 6} 16 q ${d * -6} 14 ${d * 4} 34 Z" fill="url(#tabGold)" stroke="#5e4210" stroke-width="2.5"/>`;
+	}
+	out += `<circle cx="0" cy="0" r="27" fill="url(#tabGold)" stroke="#5e4210" stroke-width="3"/>
+	<circle cx="0" cy="0" r="19" fill="url(#tabCarn)" stroke="#6b470c" stroke-width="2"/>
+	<ellipse cx="-6" cy="-7" rx="6" ry="4" fill="#ffffff" opacity="0.5"/>`;
+	return `<g transform="translate(${cx} ${cy}) scale(${scale})">${out}</g>`;
+};
+
+// ceiling stars, placed only where the frontend draws no text
+const tabletStars = (points) =>
+	points
+		.map(([x, y, r = 11]) => {
+			const pts = Array.from({ length: 10 }, (_, k) => {
+				const a = (k / 10) * Math.PI * 2;
+				const rr = k % 2 === 0 ? r : r * 0.36;
+				return `${(x + Math.sin(a) * rr).toFixed(1)},${(y - Math.cos(a) * rr).toFixed(1)}`;
+			});
+			return `<polygon points="${pts.join(' ')}" fill="#e8b84a" opacity="0.65"/>`;
+		})
+		.join('');
+
+const TABLET_DEFS = `
+	<linearGradient id="tabGold" x1="0.15" y1="0" x2="0.6" y2="1">
+		<stop offset="0" stop-color="#fff8d2"/>
+		<stop offset="0.3" stop-color="#ffd86a"/>
+		<stop offset="0.65" stop-color="#e8ae3c"/>
+		<stop offset="1" stop-color="#9a6a14"/>
+	</linearGradient>
+	<linearGradient id="tabLapis" x1="0" y1="0" x2="0.3" y2="1">
+		<stop offset="0" stop-color="#2f55a8"/>
+		<stop offset="1" stop-color="#0d1a46"/>
+	</linearGradient>
+	<radialGradient id="tabCarn" cx="0.35" cy="0.3" r="0.8">
+		<stop offset="0" stop-color="#ff9a6a"/>
+		<stop offset="0.45" stop-color="#d8452a"/>
+		<stop offset="1" stop-color="#7e1c0c"/>
+	</radialGradient>
+	<radialGradient id="tabSheen" cx="0.35" cy="0.2" r="0.8">
+		<stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
+		<stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+	</radialGradient>
+	<radialGradient id="signVign" cx="0.5" cy="0.45" r="0.85">
+		<stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
+		<stop offset="1" stop-color="#000000" stop-opacity="0.42"/>
+	</radialGradient>`;
+
 frames.fs_sign = svgWrap(
 	920,
 	720,
 	`
-	<!-- No rope hangers. They used to run (190,96)->(250,12) and (730,96)->(670,12):
-	     the lower ends stopped 34px short of the plank and the upper ends attached
-	     to nothing at all, so the sign read as hanging from two loose offcuts.
-	     The brass corners and frame carry it on their own. -->
-	<!-- plank panel -->
-	<rect x="100" y="130" width="720" height="540" rx="26" fill="url(#stonePlate)" stroke="#101418" stroke-width="8"/>
-	<rect x="100" y="300" width="720" height="10" fill="#101418" opacity="0.5"/>
-	<rect x="100" y="490" width="720" height="10" fill="#101418" opacity="0.5"/>
-	<rect x="100" y="130" width="720" height="540" rx="26" filter="url(#signGrain)" opacity="0.5"/>
-	<!-- brass frame -->
-	<rect x="112" y="142" width="696" height="516" rx="20" fill="none" stroke="url(#stoneEdge)" stroke-width="10"/>
-	<rect x="124" y="154" width="672" height="492" rx="14" fill="none" stroke="#ffd75e" stroke-width="2.5" opacity="0.75"/>
-	${signRivets}
-	<!-- corner brass plates -->
-	${[[100, 130, 0], [820, 130, 90], [820, 670, 180], [100, 670, 270]]
-		.map(
-			([cx, cy, rot]) => `<g transform="translate(${cx} ${cy}) rotate(${rot})">
-		<path d="M -10 -10 L 84 -10 Q 88 -10 88 -6 L 88 16 Q 62 18 42 38 Q 20 58 18 88 L -4 88 Q -10 88 -10 84 Z" fill="url(#stoneCorner)" stroke="#2a2116" stroke-width="4"/>
-	</g>`,
-		)
-		.join('')}
-	<!-- Banana emblem removed too: at (460,205) it sat directly behind the title
-	     the frontend draws at ~y=260, so its three overlapping banana shapes poked
-	     out between "FREE" and "SPINS" as a pair of disconnected gold slivers. -->
-	<!-- inner soft vignette so text pops -->
-	<rect x="130" y="160" width="660" height="480" rx="14" fill="url(#signVign)"/>`,
-	`
-	<!-- GO BANANUBIS. Its own gradients, not the shared brass ones: the board
-	     frame in this same file still uses those, and the plaques are the only
-	     two pieces being repainted for the tomb. Geometry is untouched — same
-	     plate, same frame, same rivets, same 920x720 / 824x622 boxes the layout
-	     maths depend on. Colours are sampled from the shipped symbol plates:
-	     basalt face, sandstone edge, bronze stud, and the gilt hairline the buy
-	     cards and the held-tablet frames already use. -->
-	<linearGradient id="stonePlate" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#3d4144"/>
-		<stop offset="0.5" stop-color="#2c3033"/>
-		<stop offset="1" stop-color="#1b1f21"/>
-	</linearGradient>
-	<linearGradient id="stoneEdge" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#c2a878"/>
-		<stop offset="0.45" stop-color="#8a7859"/>
-		<stop offset="1" stop-color="#5d4c33"/>
-	</linearGradient>
-	<linearGradient id="stoneCorner" x1="0" y1="0" x2="1" y2="1">
-		<stop offset="0" stop-color="#b09a72"/>
-		<stop offset="1" stop-color="#5d4c33"/>
-	</linearGradient>
-	<radialGradient id="stoneStud" cx="0.35" cy="0.35" r="1">
-		<stop offset="0" stop-color="#b09a72"/>
-		<stop offset="0.7" stop-color="#7d6547"/>
-		<stop offset="1" stop-color="#3b2f20"/>
-	</radialGradient>
-	<linearGradient id="embGold" x1="0" y1="0" x2="1" y2="1">
-		<stop offset="0" stop-color="#fff3bd"/>
-		<stop offset="0.5" stop-color="#ffd75e"/>
-		<stop offset="1" stop-color="#c1841a"/>
-	</linearGradient>
-	<radialGradient id="signVign" cx="0.5" cy="0.45" r="0.85">
-		<stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
-		<stop offset="1" stop-color="#000000" stop-opacity="0.4"/>
-	</radialGradient>
-	${grainDef('signGrain', 0.5, 0.07)}`,
+	<!-- the stone: the same 720x540 plate at (100,130) the layout is measured against -->
+	<rect x="100" y="130" width="720" height="540" rx="28" fill="url(#tabLapis)" stroke="#1a1206" stroke-width="8"/>
+	<rect x="100" y="130" width="720" height="540" rx="28" filter="url(#signGrain)" opacity="0.4"/>
+	<rect x="100" y="130" width="720" height="540" rx="28" fill="url(#tabSheen)"/>
+	<!-- stars, out along the sides where the frontend draws no text -->
+	${tabletStars([
+		[172, 230],
+		[172, 400],
+		[172, 570],
+		[748, 230],
+		[748, 400],
+		[748, 570],
+	])}
+	<!-- gold setting, the channel the inlay sits in, inner gold line -->
+	<rect x="112" y="142" width="696" height="516" rx="22" fill="none" stroke="url(#tabGold)" stroke-width="11"/>
+	<rect x="126" y="156" width="668" height="488" rx="16" fill="none" stroke="#6b470c" stroke-width="22"/>
+	${tabletInlay(100, 130, 720, 540, 18, 34, 16)}
+	<rect x="150" y="180" width="620" height="440" rx="12" fill="none" stroke="url(#tabGold)" stroke-width="5"/>
+	<rect x="158" y="188" width="604" height="424" rx="10" fill="none" stroke="#8fb4ff" stroke-width="2" opacity="0.55"/>
+	${tabletStuds(
+		[
+			[140, 170],
+			[780, 170],
+			[140, 630],
+			[780, 630],
+		],
+		21,
+	)}
+	<!-- the winged sun over the top edge, as on a temple doorway -->
+	${wingedSunTablet(460, 122, 1)}
+	<!-- inner soft vignette so the text the frontend draws pops -->
+	<rect x="150" y="180" width="620" height="440" rx="12" fill="url(#signVign)"/>`,
+	`${TABLET_DEFS}${grainDef('signGrain', 0.5, 0.07)}`,
 );
 
 // small brass-trimmed plaque for the free-spin counter (824×622 like the MM
@@ -568,57 +664,33 @@ frames.fs_counter_panel = svgWrap(
 	824,
 	622,
 	`
-	<rect x="30" y="60" width="764" height="502" rx="34" fill="url(#stonePlate)" stroke="#101418" stroke-width="8"/>
-	<rect x="30" y="60" width="764" height="502" rx="34" filter="url(#signGrain)" opacity="0.5"/>
-	<rect x="46" y="76" width="732" height="470" rx="26" fill="none" stroke="url(#stoneEdge)" stroke-width="9"/>
-	<rect x="58" y="88" width="708" height="446" rx="20" fill="none" stroke="#ffd75e" stroke-width="2" opacity="0.7"/>
-	${[[70, 100], [754, 100], [70, 522], [754, 522]]
-		.map(
-			([x, y]) => `<circle cx="${x}" cy="${y}" r="10" fill="url(#stoneStud)" stroke="#2a2116" stroke-width="2"/>
-	<circle cx="${x - 3}" cy="${y - 3}" r="3" fill="#e8dcc0" opacity="0.7"/>`,
-		)
-		.join('')}
-	<!-- An ankh, not the banana. This emblem is the one part of the plaque that
-	     names the game, and a bunch of bananas names the previous one. The ankh is
-	     already on the board as H4, and it draws as three strokes. -->
-	${ankhEmblem(412, 128, 0.6)}
-	<rect x="70" y="100" width="684" height="422" rx="18" fill="url(#signVign)"/>`,
-	`
-	<!-- GO BANANUBIS. Its own gradients, not the shared brass ones: the board
-	     frame in this same file still uses those, and the plaques are the only
-	     two pieces being repainted for the tomb. Geometry is untouched — same
-	     plate, same frame, same rivets, same 920x720 / 824x622 boxes the layout
-	     maths depend on. Colours are sampled from the shipped symbol plates:
-	     basalt face, sandstone edge, bronze stud, and the gilt hairline the buy
-	     cards and the held-tablet frames already use. -->
-	<linearGradient id="stonePlate" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#3d4144"/>
-		<stop offset="0.5" stop-color="#2c3033"/>
-		<stop offset="1" stop-color="#1b1f21"/>
-	</linearGradient>
-	<linearGradient id="stoneEdge" x1="0" y1="0" x2="0" y2="1">
-		<stop offset="0" stop-color="#c2a878"/>
-		<stop offset="0.45" stop-color="#8a7859"/>
-		<stop offset="1" stop-color="#5d4c33"/>
-	</linearGradient>
-	<linearGradient id="stoneCorner" x1="0" y1="0" x2="1" y2="1">
-		<stop offset="0" stop-color="#b09a72"/>
-		<stop offset="1" stop-color="#5d4c33"/>
-	</linearGradient>
-	<radialGradient id="stoneStud" cx="0.35" cy="0.35" r="1">
-		<stop offset="0" stop-color="#b09a72"/>
-		<stop offset="0.7" stop-color="#7d6547"/>
-		<stop offset="1" stop-color="#3b2f20"/>
-	</radialGradient>
+	<rect x="30" y="60" width="764" height="502" rx="34" fill="url(#tabLapis)" stroke="#1a1206" stroke-width="8"/>
+	<rect x="30" y="60" width="764" height="502" rx="34" filter="url(#signGrain)" opacity="0.4"/>
+	<rect x="30" y="60" width="764" height="502" rx="34" fill="url(#tabSheen)"/>
+	<rect x="42" y="72" width="740" height="478" rx="28" fill="none" stroke="url(#tabGold)" stroke-width="11"/>
+	<rect x="56" y="86" width="712" height="450" rx="22" fill="none" stroke="#6b470c" stroke-width="20"/>
+	${tabletInlay(30, 60, 764, 502, 18, 34, 15)}
+	<rect x="84" y="114" width="656" height="394" rx="16" fill="none" stroke="url(#tabGold)" stroke-width="5"/>
+	<rect x="92" y="122" width="640" height="378" rx="14" fill="none" stroke="#8fb4ff" stroke-width="2" opacity="0.55"/>
+	${tabletStuds(
+		[
+			[72, 102],
+			[752, 102],
+			[72, 520],
+			[752, 520],
+		],
+		20,
+	)}
+	<!-- An ankh, not the banana: this emblem is the one part of the plaque that
+	     names the game, and a bunch of bananas names the previous one. -->
+	${ankhEmblem(412, 150, 0.55)}
+	<rect x="84" y="114" width="656" height="394" rx="16" fill="url(#signVign)"/>`,
+	`${TABLET_DEFS}
 	<linearGradient id="embGold" x1="0" y1="0" x2="1" y2="1">
 		<stop offset="0" stop-color="#fff3bd"/>
 		<stop offset="0.5" stop-color="#ffd75e"/>
 		<stop offset="1" stop-color="#c1841a"/>
 	</linearGradient>
-	<radialGradient id="signVign" cx="0.5" cy="0.45" r="0.85">
-		<stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
-		<stop offset="1" stop-color="#000000" stop-opacity="0.4"/>
-	</radialGradient>
 	${grainDef('signGrain', 0.5, 0.07)}`,
 );
 

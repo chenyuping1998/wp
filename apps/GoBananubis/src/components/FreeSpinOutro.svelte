@@ -22,6 +22,8 @@
 	import PressToContinue from './PressToContinue.svelte';
 	import WinCoins from './WinCoins.svelte';
 	import GoldText from './GoldText.svelte';
+	import FxBurst from './FxBurst.svelte';
+	import { Container } from 'pixi-svelte';
 
 	const context = getContext();
 
@@ -40,6 +42,33 @@
 	// ends with the count-up.
 	const onCountUpComplete = () => {
 		context.eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' });
+		landTotal();
+	};
+
+	// THE TOTAL LANDS. The round's whole result used to just stop counting. Now
+	// the figure is set down like a tablet: it swells and settles, a burst of
+	// gilt, inlay and sand goes off behind it, and a stone thud sits under it —
+	// the same landing the big-win plaque gives its amount (Win.svelte), so the
+	// two ends of a winning feature speak the same way. A zero total gets none of
+	// it: there is nothing to land.
+	let landPunch = $state(1);
+	let landBurst = $state(0);
+	const landTotal = () => {
+		if (amount <= 0) return;
+		landBurst++;
+		context.eventEmitter.broadcast({ type: 'soundStoneCrack', step: 0 });
+		const start = Date.now();
+		const id = setInterval(() => {
+			const p = (Date.now() - start) / 520;
+			if (p >= 1) {
+				landPunch = 1;
+				clearInterval(id);
+				return;
+			}
+			landPunch =
+				1 +
+				0.3 * Math.exp(-p * 5.5) * Math.cos(p * Math.PI * 2.4 - 0.9) * (p < 0.08 ? p / 0.08 : 1);
+		}, 16);
 	};
 
 	const title = gameText('totalWin');
@@ -84,12 +113,18 @@
 								dropShadowDistance: 3,
 							}}
 						/>
-						<GoldText
-							y={sizes.height * 0.12}
-							fontSize={sizes.width * 0.15}
-							text={bookEventAmountToCurrencyString(countUpAmount)}
-							maxWidth={sizes.width * 0.9}
-						/>
+						{#key landBurst}
+							{#if landBurst > 0}
+								<FxBurst y={sizes.height * 0.12} scale={2} flavour="tomb" />
+							{/if}
+						{/key}
+						<Container y={sizes.height * 0.12} scale={landPunch}>
+							<GoldText
+								fontSize={sizes.width * 0.15}
+								text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
+								maxWidth={sizes.width * 0.9}
+							/>
+						</Container>
 					{/snippet}
 				</FreeSpinAnimation>
 

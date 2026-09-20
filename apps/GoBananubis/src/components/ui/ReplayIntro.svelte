@@ -50,7 +50,9 @@
 	// here — one is machine naming, the other is a call to action.
 	const MODE_LABELS: Record<string, string> = {
 		BASE: 'Base Game',
+		BONUS100: 'Free Spins',
 		BONUS: 'Free Spins',
+		SUPERBONUS: 'Super Free Spins',
 		SUPERSPIN: 'Super Spin',
 	};
 

@@ -90,12 +90,13 @@
 	const scatterSpinList = asList(scatterCounts.map((n) => spinsFor[n]));
 
 	/** What a bought entry lands and what that Scatter count is worth. */
-	const boughtEntry = (key: 'bonus' | 'superbonus') => {
+	const boughtEntry = (key: 'bonus100' | 'bonus' | 'superbonus') => {
 		const triggers = (config.betModes?.[key] as { scatterTriggers?: Record<string, number> })
 			?.scatterTriggers;
 		const count = Object.keys(triggers ?? {})[0];
 		return count ? { count: Number(count), spins: spinsFor[count] } : null;
 	};
+	const boughtEntry100 = boughtEntry('bonus100');
 	const boughtFree = boughtEntry('bonus');
 	const boughtSuper = boughtEntry('superbonus');
 	const reelCount = config.numReels;
@@ -110,7 +111,15 @@
 	const modeRows = (
 		[
 			['Base game', 'base', 'Every spin'],
-			['Free Spins', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}× ${T.bet}`],
+			// The 100x entry buy. Certification asks for RTP and max win to be
+			// stated for every mode the player can reach, so a mode added to the buy
+			// menu has to arrive in this table on the same day.
+			[
+				'Free Spins (100×)',
+				'bonus100',
+				`${entryVerb} for ${config.betModes?.bonus100?.cost}× ${T.bet}`,
+			],
+			['Free Spins (200×)', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}× ${T.bet}`],
 			// The 500x buy. It was absent from this table while having its own RTP
 			// and its own max win in the maths — which is the one thing the table
 			// exists to state for every mode the player can reach.
@@ -217,9 +226,11 @@
 					does not need to land on a {T.payline} &mdash; its only job is to open the feature.
 					Landing {scatterCountList} Scatters in a single spin awards {scatterSpinList} Free Spins
 					respectively.
-					{#if boughtFree && boughtSuper}
-						A {T.bought} entry lands its own Scatters and is {T.paid} the same way: Free Spins
-						open on {boughtFree.count} Scatters for {boughtFree.spins} spins, Super Free Spins on
+					{#if boughtEntry100 && boughtFree && boughtSuper}
+						A {T.bought} entry lands its own Scatters and is {T.paid} the same way &mdash; each
+						one opens on the count it names, and the spins follow from the table above:
+						{boughtEntry100.count} Scatters for {boughtEntry100.spins} spins,
+						{boughtFree.count} for {boughtFree.spins}, and Super Free Spins on
 						{boughtSuper.count} for {boughtSuper.spins}. The number of spins is always the number
 						the board in front of you is worth.
 					{/if}

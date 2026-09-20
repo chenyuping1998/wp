@@ -107,6 +107,44 @@
 	// Nothing to animate also means no clock, so this costs nothing per frame.
 	const HOLD_GOLD = 0xffd75e;
 
+	// ── LOCKING IN ───────────────────────────────────────────────────────────
+	//
+	// The one exception to "nothing animates here": the moment a newly opened
+	// tablet JOINS the held set. It used to just acquire its frame, so a spin
+	// that added a tablet to the run looked the same as one that did not, and the
+	// player had to count frames to notice. Now the frame slams in from a size
+	// larger onto the cell and flares as it seats, with a low pluck under it —
+	// once per batch, not per cell, so four opening together is one hit.
+	//
+	// Timed with a short-lived interval (only while a lock is playing) and
+	// Date.now, so a backgrounded tab finishes the lock instead of freezing it
+	// half-seated.
+	const LOCK_MS = 420;
+	let locks = $state<Record<string, number>>({});
+	let lockNow = $state(0);
+	let lockTimer: ReturnType<typeof setInterval> | undefined;
+	const startLocks = (keys: string[]) => {
+		if (!keys.length) return;
+		const at = Date.now();
+		locks = { ...locks, ...Object.fromEntries(keys.map((k) => [k, at])) };
+		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
+		clearInterval(lockTimer);
+		lockTimer = setInterval(() => {
+			lockNow = Date.now();
+			const live = Object.fromEntries(
+				Object.entries(locks).filter(([, t0]) => lockNow - t0 < LOCK_MS),
+			);
+			if (Object.keys(live).length !== Object.keys(locks).length) locks = live;
+			if (!Object.keys(live).length) clearInterval(lockTimer);
+		}, 16);
+	};
+	// 0 → 1 across the lock, or -1 for a cell that is simply held
+	const lockProgress = (key: string) => {
+		const t0 = locks[key];
+		if (t0 === undefined) return -1;
+		return Math.min(1, Math.max(0, (lockNow - t0) / LOCK_MS));
+	};
+
 	const drawFrames = (g: PixiGraphics) => {
 		g.clear();
 
@@ -115,7 +153,21 @@
 			// the plate art's own footprint, and the plate is opaque — so the first
 			// version was drawn every frame and covered up every frame, which is why
 			// it could not be seen in the game while the code looked correct.
-			const half = SYMBOL_SIZE * 0.5 - 2;
+			const base = SYMBOL_SIZE * 0.5 - 2;
+			const lp = lockProgress(`${cell.reel},${cell.row}`);
+			// slam: from 1.35x to the cell over the first 45%, then seated
+			const slam = lp < 0 ? 0 : 1 - Math.min(1, lp / 0.45);
+			const half = base * (1 + 0.35 * slam * slam);
+			// flare as it seats, fading over the rest of the lock
+			const flare = lp < 0 ? 0 : lp < 0.45 ? 0 : 1 - (lp - 0.45) / 0.55;
+			if (flare > 0) {
+				g.rect(
+					getSymbolX(cell.reel) - half - 6,
+					rowCenterY(cell.row) - half - 6,
+					(half + 6) * 2,
+					(half + 6) * 2,
+				).stroke({ width: 10 * flare, color: 0xfff3c4, alpha: 0.7 * flare });
+			}
 			g.rect(
 				getSymbolX(cell.reel) - half,
 				rowCenterY(cell.row) - half,
@@ -163,7 +215,10 @@
 		},
 		// Raised when the last seal has finished breaking: from here the board is
 		// showing those cells itself, so the overlay takes them back over.
-		heldTabletsOpened: () => (pending = new Set()),
+		heldTabletsOpened: () => {
+			startLocks([...pending]);
+			pending = new Set();
+		},
 		// The whole snapshot, every time — the reveal sends it in full precisely so
 		// a client can rebuild cells it never saw open.
 		heldTabletsShow: ({ symbol, cells }) => {

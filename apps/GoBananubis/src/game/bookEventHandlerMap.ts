@@ -4,6 +4,7 @@ import { recordBookEvent, checkIsMultipleRevealEvents, type BookEventHandlerMap 
 import { stateBet, stateUi } from 'state-shared';
 import { SECOND } from 'constants-shared/time';
 import { waitForTimeout } from 'utils-shared/wait';
+import { startTombQuake } from './tombQuake.svelte';
 
 import { eventEmitter } from './eventEmitter';
 import { playBookEvent } from './utils';
@@ -33,8 +34,9 @@ const ANTICIPATION_MIN_SCATTERS =
 
 // A BOUGHT ROUND HAS NOTHING TO ANTICIPATE.
 //
-// Every buy forces its own Scatter count (bonus four, superbonus five — see each
-// mode's `scatter_triggers`), so the feature is not in doubt from the moment the
+// Every buy forces its own Scatter count (bonus100 three, bonus four, superbonus
+// five — see each mode's `scatter_triggers`), so the feature is not in doubt
+// from the moment the
 // player confirms the price. The tease is a question the round has already
 // answered, and it asks it on the last three reels of every single buy: three
 // slow stops, a rising loop under them, and a held beat before each one.
@@ -253,6 +255,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// It runs during the bell hold, which is the only stretch of the trigger
 		// long enough to watch him do it.
 		eventEmitter.broadcast({ type: 'mascotChestBeat' });
+		// ...and the tomb answers it: the scene jolts on each strike and the
+		// ceiling sheds sand and stone (game/tombQuake.svelte.ts). Started on the
+		// same line as the beat, so the clock both of them read begins together.
+		startTombQuake();
 		// The hold is the length of the chest beat, not a round number. It was
 		// 3000ms against a 2.44s animation, so every trigger ended on half a second
 		// of a character standing still with nothing else happening — the one gap

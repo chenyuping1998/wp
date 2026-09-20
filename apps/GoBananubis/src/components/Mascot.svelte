@@ -16,9 +16,10 @@
 	import { Container, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import { BEAT_START_MS, BEAT_GAP_MS, BEATS } from '../game/tombQuake.svelte';
 
 	const context = getContext();
 
@@ -98,13 +99,11 @@
 	// a drawing, and this wants to be generated - a different jag on every hit,
 	// so six of them in a row do not read as the same stamp six times.
 	//
-	// The timings mirror design/generate_anubis_spine.mjs (BEAT_START 0.36,
-	// BEAT_GAP 0.42, four strikes). They are duplicated, which is a cost, and the
-	// alternative - firing an event per strike out of an animation that has no
-	// event track - would mean adding one to the skeleton for four numbers.
-	const BEAT_START_MS = 360;
-	const BEAT_GAP_MS = 420;
-	const BEATS = 4;
+	// The timings are the chest beat's own (BEAT_START 0.36, BEAT_GAP 0.42, four
+	// strikes, printed by design/generate_anubis_spine.mjs). They live in
+	// game/tombQuake.svelte.ts now, because the quake shakes the room and drops
+	// stone on the same four strikes — one copy of four numbers, read by the
+	// stars, the board knocks, the shake and the debris alike.
 	// Short, and shorter than the gap. A star that outlives its strike is still on
 	// screen when the next one lands, and two stars at once is a firework rather
 	// than a blow.
@@ -248,12 +247,49 @@
 	// was dropped.
 	let animationName = $state('idle');
 	let loop = $state(true);
-	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'alert', 'throwit'];
+	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'alert', 'throwit', 'idlebreak'];
 
 	const play = (name: string, loops: boolean) => {
 		animationName = name;
 		loop = loops;
 	};
+
+	// ── HE DOES NOT ONLY BREATHE ─────────────────────────────────────────────
+	//
+	// `idle` is a breath, and it is what the player watches for most of a
+	// session — between spins, through autoplay, while reading the bet bar. Left
+	// at that he stops being a character and becomes a print beside the board,
+	// which is the note certification raised about the still drawing to begin
+	// with. So every so often he shifts his weight and looks around
+	// (design/generate_anubis_spine.mjs: `idlebreak`, deliberately the quietest
+	// move in the set so it is never mistaken for a reaction to the board).
+	//
+	// ONLY FROM IDLE, and the clock is re-armed at a random interval so it never
+	// falls into a rhythm the player can predict — a character who does the same
+	// thing every fifteen seconds is as mechanical as one who does nothing.
+	//
+	// A timer rather than requestAnimationFrame: rAF stops dead in a hidden tab,
+	// and a player coming back to the tab should find him alive rather than find
+	// a break that was queued up and fires the instant the tab is focused.
+	const BREAK_MIN_MS = 13000;
+	const BREAK_SPREAD_MS = 9000;
+	let breakTimer: ReturnType<typeof setTimeout> | undefined;
+	const armIdleBreak = () => {
+		clearTimeout(breakTimer);
+		breakTimer = setTimeout(
+			() => {
+				// anything at all going on — a win, a trigger, a feature intro — and
+				// he simply keeps breathing; the break waits for the next window
+				if (animationName === 'idle') play('idlebreak', false);
+				armIdleBreak();
+			},
+			BREAK_MIN_MS + Math.random() * BREAK_SPREAD_MS,
+		);
+	};
+	onMount(() => {
+		armIdleBreak();
+		return () => clearTimeout(breakTimer);
+	});
 
 	// He makes a noise for two things, and stays quiet for everything else.
 	//
@@ -286,6 +322,14 @@
 			// Held that long it stops reading as a celebration and starts reading as
 			// something that has jammed.
 			play('cheer', false);
+		},
+		// The end of a feature. The total-win plaque used to arrive with him
+		// standing idle beside it, as if nothing had happened; a big total gets
+		// the cheer, anything smaller a nod — the same scale of reaction as a
+		// base-game win, so the size of his response still means something.
+		freeSpinOutroCountUp: ({ amount, winLevelData }) => {
+			if (amount <= 0) return;
+			play(winLevelData.type === 'big' ? 'cheer' : 'nod', false);
 		},
 		// The gorilla, for the biggest way into the feature. Deliberately not the
 		// same gesture as the win: using one celebration for "you are going in" and

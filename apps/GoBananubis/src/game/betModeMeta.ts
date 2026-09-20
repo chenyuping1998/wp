@@ -5,8 +5,12 @@ import { base } from '$app/paths';
 
 import config from './config';
 
-// Go Bananubis ships four math modes: base play, the 200x free-spins buy, the
-// 500x super free-spins buy and the 50x superspin (hold'em) buy. The keys here
+// Go Bananubis ships five math modes: base play, the 100x / 200x / 500x
+// free-spins buys and the 50x superspin (hold'em) buy. The three free-spin buys
+// are one ladder, and each rung is named by the Scatter count it forces — 3, 4,
+// 5 — with the spins following from freespin_triggers, the same table the base
+// game pays by. So a player can read what a buy is worth off the board it opens
+// on, without knowing anything about bet modes. The keys here
 // are the math mode names uppercased — stateBet looks them up with
 // activeBetModeKey.toUpperCase(). The shared library ships a template default
 // (ANTE / SUPER ANTE / …) with no backing math here, so we override the shared
@@ -34,15 +38,16 @@ const pick = (normal: string, socialText: string) =>
 // entry forces — both scraped by design/sync_math_config.mjs, which refuses to
 // build if a mode forces a count the trigger table does not pay spins for.
 const spinsFor = (config.scatterSpins ?? {}) as Record<string, number>;
-const entryOf = (key: 'bonus' | 'superbonus') => {
+const entryOf = (key: 'bonus100' | 'bonus' | 'superbonus') => {
 	const triggers = (config.betModes[key] as { scatterTriggers?: Record<string, number> })
 		?.scatterTriggers;
 	const count = Number(Object.keys(triggers ?? {})[0]);
 	return { scatters: count, spins: spinsFor[count] };
 };
+const ENTRY_100 = entryOf('bonus100');
 const BONUS_ENTRY = entryOf('bonus');
 const SUPER_ENTRY = entryOf('superbonus');
-const capX = (mode: 'base' | 'bonus' | 'superbonus' | 'superspin') =>
+const capX = (mode: 'base' | 'bonus100' | 'bonus' | 'superbonus' | 'superspin') =>
 	(config.betModes[mode].max_win ?? 0).toLocaleString();
 
 const emptyAssets = {
@@ -92,6 +97,57 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			bannerText: '',
 		},
 	},
+	// The 100x buy — the entry rung.
+	//
+	// It opens on THREE Scatters, which is the board the base game itself lands
+	// 98.6% of the time it triggers. That is the whole proposition: not a richer
+	// feature, the ordinary one, bought instead of waited for. Its Tablet weights
+	// are the base game's `standard` table for the same reason — the three buys
+	// run one table each (standard / rich / premium), so no tier shares its mix
+	// with the one above it.
+	//
+	// The cap is the same 15,000x as the other line modes and it IS reachable in
+	// eight spins — measured 1 in 4,000 runs on the wincap strip — but it is four
+	// times rarer here than in the twelve-spin tier. The copy therefore leads on
+	// the entry, not on the top end.
+	BONUS100: {
+		mode: 'BONUS100',
+		costMultiplier: config.betModes.bonus100.cost,
+		type: 'buy',
+		parent: '',
+		children: '',
+		maxWin: config.betModes.bonus100.max_win,
+		// Two Tablets, one open, three Scatters — the smallest arrangement of the
+		// same parts the other two cards are built from.
+		assets: { ...emptyAssets, dialogImage: cardArt('bonus100') },
+		text: {
+			get title() {
+				return pick('BUY FREE SPINS', 'FREE SPINS');
+			},
+			get dialog() {
+				return pick(
+					`Buy direct entry into FREE SPINS for ${config.betModes.bonus100.cost}× your bet, at the same 95% RTP as base play. The round opens on a real ${ENTRY_100.scatters}-Scatter board — the board the base game triggers on — and plays the ${ENTRY_100.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus100')}× your bet.`,
+					`Enter FREE SPINS directly for ${config.betModes.bonus100.cost}× your amount, at the same 95% RTP as normal play. The round opens on a real ${ENTRY_100.scatters}-Scatter board — the board normal play triggers on — and plays the ${ENTRY_100.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus100')}× your amount.`,
+				);
+			},
+			get description() {
+				return pick(
+					`${config.betModes.bonus100.cost}× BET → ${ENTRY_100.scatters} Scatters, ${ENTRY_100.spins} FREE SPINS with Tablets that stay open`,
+					`${config.betModes.bonus100.cost}× AMOUNT → ${ENTRY_100.scatters} Scatters, ${ENTRY_100.spins} FREE SPINS with Tablets that stay open`,
+				);
+			},
+			get button() {
+				return pick('BUY 100×', 'PLAY 100×');
+			},
+			get tickerIdle() {
+				return pick('PLACE YOUR BET', 'READY TO PLAY');
+			},
+			get tickerSpin() {
+				return pick('BONUS BUY ACTIVATED', 'BONUS ACTIVATED');
+			},
+			bannerText: '',
+		},
+	},
 	BONUS: {
 		mode: 'BONUS',
 		costMultiplier: config.betModes.bonus.cost,
@@ -106,7 +162,7 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 		assets: { ...emptyAssets, dialogImage: cardArt('bonus') },
 		text: {
 			get title() {
-				return pick('BUY FREE SPINS', 'FREE SPINS');
+				return pick('BUY MORE FREE SPINS', 'MORE FREE SPINS');
 			},
 			get dialog() {
 				return pick(

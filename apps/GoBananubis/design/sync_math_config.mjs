@@ -42,7 +42,13 @@ const EXPECTED_SYMBOLS = [
 	'L1', 'L2', 'L3', 'L4', 'L5',
 	'W', 'S', 'M', 'P', 'X',
 ];
-const EXPECTED_MODES = ['base', 'bonus', 'superbonus', 'superspin'];
+// The three free-spin buys are one ladder — 100x / 200x / 500x forcing 3 / 4 / 5
+// Scatters — plus base play and the 50x hold-and-spin. Listed rather than taken
+// from the maths so that a mode appearing on either side alone is a build
+// failure: a mode in the maths with no client meta reaches the buy menu as a
+// blank card, and one in the client with no maths is a card that cannot be
+// bought.
+const EXPECTED_MODES = ['base', 'bonus100', 'bonus', 'superbonus', 'superspin'];
 
 if (!fs.existsSync(MATH_CONFIG)) {
 	console.error(`Math config not found: ${MATH_CONFIG}`);

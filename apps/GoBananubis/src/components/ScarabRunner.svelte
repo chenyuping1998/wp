@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Sprite } from 'pixi-svelte';
+	import { Graphics, Sprite } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	// One scarab rolling along one payline, left to right. Deliberately quiet:
 	// no blast on arrival — the job is to draw the eye along the line so the
@@ -27,7 +28,10 @@
 	const entryMs = $derived(props.entryMs ?? 80);
 	const travelMs = $derived(props.travelMs ?? 540);
 	const settleMs = $derived(props.settleMs ?? 140);
-	const size = $derived(46 * (props.scale ?? 1));
+	// 92, not the grenade's 46: scarab.png is padded — the beetle fills under
+	// half its texture — so at 46 it rolled along the line at about a ninth of a
+	// cell, a red speck the eye could not follow. At 92 it is a third of a cell.
+	const size = $derived(92 * (props.scale ?? 1));
 
 	let t = $state(-1); // ms since this runner's own start; < 0 while delayed
 	let lastReel = -1;
@@ -107,9 +111,9 @@
 		return Math.min(props.points.length - 1, Math.round(index + f));
 	};
 
-	const pose = $derived.by(() => {
+	const poseAt = (p: number) => {
 		const { lengths, total } = segments;
-		let want = total * travel;
+		let want = total * Math.min(1, Math.max(0, p));
 		let index = 0;
 		while (index < lengths.length && want > lengths[index]) {
 			want -= lengths[index];
@@ -119,7 +123,8 @@
 		const b = props.points[Math.min(index + 1, props.points.length - 1)];
 		const f = lengths[index] ? want / lengths[index] : 0;
 		return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f };
-	});
+	};
+	const pose = $derived(poseAt(travel));
 
 	// entry: drops in from the left of reel 1 and settles onto the start point
 	const entryOffset = $derived(t < entryMs ? -(1 - easeOutCubic(Math.max(0, t) / entryMs)) * size * 2.2 : 0);
@@ -136,10 +141,54 @@
 		return Math.max(0, 1 - (t - arriveAt) / settleMs);
 	});
 
+
+	// ── THE SAND IT KICKS UP ─────────────────────────────────────────────────
+	//
+	// A scarab rolling along a line used to leave nothing behind it but the line.
+	// Now it trails a short wake of gold sand: grains laid at the points it has
+	// just passed, each settling a little lower and fading the further back it
+	// is, so the eye reads a direction and a speed and not just a moving dot.
+	// Short on purpose — the line itself is the record of where it went.
+	const TRAIL = 12;
+	const TRAIL_SPAN = 0.24; // how far back along the run the wake reaches
+	// fixed per-grain scatter, so the wake shimmers with the motion, not per frame
+	const scatter = Array.from({ length: TRAIL }, (_, k) => {
+		const h = Math.sin((k + 1) * 78.233) * 43758.5453;
+		return h - Math.floor(h) - 0.5;
+	});
+	const SAND = [0xffe08a, 0xf2cf7a, 0xffd75e];
+
+	const drawTrail = (g: PixiGraphics) => {
+		g.clear();
+		if (t < 0 || alpha <= 0 || travel <= 0) return;
+		for (let k = 1; k <= TRAIL; k++) {
+			const back = travel - (k / TRAIL) * TRAIL_SPAN;
+			if (back <= 0) break;
+			const q = k / TRAIL;
+			const at = poseAt(back);
+			g.circle(
+				at.x + scatter[k - 1] * size * 0.18,
+				at.y + size * 0.16 + q * size * 0.12 + scatter[(k * 7) % TRAIL] * size * 0.12,
+				size * 0.11 * (1 - q * 0.5),
+			).fill({ color: SAND[k % 3], alpha: alpha * 0.85 * (1 - q) });
+		}
+	};
+
+	// ── ARRIVAL ──────────────────────────────────────────────────────────────
+	// At the last reel it hops, and its halo flares out, so the end of each line
+	// is marked rather than the scarab simply dissolving where it stopped.
+	const arrival = $derived.by(() => {
+		const arriveAt = entryMs + travelMs;
+		if (t < arriveAt) return 0;
+		return Math.min(1, (t - arriveAt) / Math.max(1, settleMs));
+	});
+	const hop = $derived(arrival > 0 ? 1 + 0.4 * Math.sin(Math.PI * arrival) : 1);
 </script>
 
 {#if t >= 0 && alpha > 0}
-	<!-- soft coloured halo so each scarab stays tied to its own line colour -->
+	<Graphics draw={drawTrail} />
+	<!-- soft coloured halo so each scarab stays tied to its own line colour;
+	     it flares out on arrival -->
 	<Sprite
 		key="fxGlow"
 		anchor={0.5}
@@ -147,9 +196,9 @@
 		y={pose.y}
 		tint={props.color}
 		blendMode="add"
-		width={size * 1.9}
-		height={size * 1.9}
-		alpha={alpha * 0.5}
+		width={size * (1.2 + 1.6 * arrival)}
+		height={size * (1.2 + 1.6 * arrival)}
+		alpha={arrival > 0 ? 0.9 * (1 - arrival) : alpha * 0.5}
 	/>
 	<Sprite
 		key="gbScarab"
@@ -157,8 +206,8 @@
 		x={pose.x + entryOffset}
 		y={pose.y}
 		{rotation}
-		width={size}
-		height={size}
+		width={size * hop}
+		height={size * hop}
 		{alpha}
 	/>
 {/if}

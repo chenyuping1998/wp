@@ -1,5 +1,7 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
+// animates the Buy Bonus hover glow; see the file
+import './buyBonusGlow';
 
 // Jungle-commando bet bar: deep olive-canvas buttons with the same brass trim
 // as the reel frame and the free-spin plaques, plus the game's sans typeface.
@@ -207,26 +209,55 @@ if (skin === 'platform') {
 		// border comes back at 2, one unit here being about a third of a CSS pixel at
 		// this bar's scale. Hot Miami found the same thing and fixed it the same way.
 		buttonFill: 0x14171a,
-		buttonFillLight: 0x4ace4a,
-		buttonFillDisabled: 0x207820,
-		buttonFillActive: 0x4ace4a,
+		// GOLD, NOT THE PLATFORM GREEN.
+		//
+		// Everything else on this strip is deliberately theirs — flat grey casing,
+		// cool-grey rings, white glyphs — because the bar is furniture the player
+		// presses every few seconds and furniture should be generic. The ACCENT is
+		// the exception: green is the one colour the platform palette contributes,
+		// and on a game whose every other lit thing is gilt (the housing, the held
+		// tablets, the oracle's lip, the buy plate's eye) it was the single note
+		// that belonged to another game.
+		//
+		// Same ladder as the rest of this game: #ffd75e lit, #e8b53a at rest,
+		// #6b5518 drained — which is exactly the relationship #4ace4a / #207820
+		// had, so the states still read apart by brightness rather than by hue.
+		buttonFillLight: 0xffd75e,
+		buttonFillDisabled: 0x6b5518,
+		buttonFillActive: 0xffd75e,
 		buttonBorder: 0x565e66,
 		buttonBorderWidth: 2,
 		buttonBorderWidthActive: 5,
 		buttonIconFill: 0xffffff,
 		buttonIconStroke: 0x0f0f0f,
 
-		// the spin button takes their primary green — it is the one control the
-		// platform palette actually colours
-		betFill: 0x4ace4a,
+		// the spin button is the one control the bar actually colours, so it takes
+		// this game's gold rather than the platform's green. A shade under the lit
+		// gilt above: it is the resting state of the biggest thing on the strip,
+		// and at full #ffd75e it glared against a white icon.
+		betFill: 0xe8b53a,
 		betBorder: 0x343a40,
 
-		// readouts: their disabled grey for labels, plain white for values. No
-		// per-metric accent colours; the platform bar does not tint its readouts, so
-		// the jungle green / brass split above is dropped rather than recoloured.
+		// THE READOUTS: Balance and Bet quiet, WIN in gold. The same rule Go
+		// Bananas Boat runs on this bar.
+		//
+		// Win is the only one of the three that changes because of the GAME rather
+		// than because of the player, and it is the number the eye goes looking for
+		// after every spin. So it is the one readout that carries this game's
+		// accent — the gold of the spin button, the held tablets and the win
+		// brackets — and the other two stay in the platform's grey.
+		//
+		// On this layout it is the CAPTION that carries it. compactBottom draws the
+		// readouts untiled (the whole strip is one frame), so accent.border is not
+		// drawn, and UiLabel deliberately keeps the digits one colour across all
+		// three. The border is set anyway so a tiled layout would match.
+		//
+		// LabelWin already flashes its accent towards white when a win lands; with
+		// a gold base that flash now reads as the gold catching the light, instead
+		// of a grey word blinking.
 		labelFill: 0xbfbfbf,
 		balanceLabelFill: 0xbfbfbf,
-		winAccent: { border: 0x343a40, label: 0xbfbfbf },
+		winAccent: { border: 0xd8a334, label: 0xffd75e },
 		betAccent: { border: 0x343a40, label: 0xbfbfbf },
 		valueFill: 0xffffff,
 		valueStroke: 0x0f0f0f,
@@ -251,9 +282,47 @@ if (skin === 'platform') {
 		// rather than merging into it. gbUiTicker and gbUiBuyBonus stay loaded and
 		// untouched, so switching back to the brass skin is instant and needs no
 		// rebuild.
-		sprites: { buyBonus: 'gbUiBuyBonusStone', buyBonusGlyph: 'gbUiBuyBonusLit' },
+		//
+		// THE SUN DISC REPLACED THE STONE. The stone plate was the low symbols'
+		// plate and sat beside a board made of them, where it read as a loose
+		// tile. Go Bananas Boat solved the same thing with a ship's wheel that
+		// turns under the pointer; this is the palace's answer — a lapis ceiling
+		// set in inlaid gold with the sun's rays round it. The stone art stays
+		// registered, so switching back is one line.
+		//
+		// AND THEN THE SCARAB REPLACED THE SUN, at the user's call for something
+		// more Egyptian: Khepri lifting the sun disc, winged in inlay, as on the
+		// royal pectorals. The sun disc art stays registered too.
+		sprites: { buyBonus: 'gbUiBuyBonusScarab', buyBonusGlyph: 'gbUiBuyBonusScarabLit' },
 
-		// HOVER: THE EYE OPENS.
+		// NO HOVER SPIN. The sun disc turned (30 degrees a second, one ray period),
+		// but the shared button rotates the WHOLE plate, and a scarab orbiting its
+		// own sun reads as broken. Hover lights the emblem instead.
+		buyBonusHoverSpin: 0,
+
+		// THE EMBLEM IS DRAWN BIGGER THAN THE BUTTON. The caption's size is tied to
+		// the button box, and at 1:1 the word BONUS ran into the rim. 1.25 grows
+		// only the picture (the box, the hit area and the text stay put), which is
+		// what "a bigger frame that clears the words" means. The art's own clear
+		// zone is worked out for this number in design/generate_ui_plates.mjs.
+		buyBonusPlateScale: 1.25,
+
+		// THE PLATE WAS STUCK DIM, and this is the fix.
+		//
+		// ButtonBuyBonus passes `tint` only in the states that want one: dim while
+		// disabled, gold while active, nothing while simply ready. But "nothing" does
+		// not put the tint back — a prop that stops being passed keeps its last
+		// value on the pixi sprite. The button is disabled while the game loads, so
+		// it picked up the 0x767670 disabled tint on the first frame and kept it for
+		// the whole session: the art was being drawn at under half brightness, which
+		// is why the emblem looked muddy in play however bright the PNG was.
+		//
+		// buyBonusIdleTint is the one tint the package passes in the ready state, so
+		// setting it to white makes "ready" explicit and resets the sprite.
+		buyBonusIdleTint: 0xffffff,
+
+		// HOVER: THE EMBLEM LIGHTS UP. (The notes below were written for the stone
+		// plate's eye; the mechanism is the same for the scarab, its wings and the rim.)
 		//
 		// buyBonusHoverSprite is drawn over the plate with blendMode 'add', so it
 		// reads as the stone catching light rather than as a decal laid on it — the
@@ -301,22 +370,26 @@ if (skin === 'platform') {
 		// 0.46 gives 16.6px and a 36px block, so the label occupies the middle
 		// third and the eye has the top third to itself. The wrap width comes down
 		// with it, or "BUY BONUS" fits on one line and stops being two.
-		buyBonusLabelSizeRatio: 0.46,
+		//
+		// Raised to 0.52 with the sun disc: there is no eye above the words now,
+		// only the lapis face, whose clear zone generate_ui_plates.mjs sizes for
+		// exactly this ratio. Keep the two in step.
+		buyBonusLabelSizeRatio: 0.52,
 		buyBonusLabelWrapWidth: 90,
 
 		// The rounded-rect fallback, for the case where the sprite fails to load.
 		// Kept in the platform palette rather than the game's, because if the art is
 		// missing the button should look like the bar it is sitting on.
 		buyBonusFill: 0x14171a,
-		buyBonusBorder: 0x4ace4a,
+		buyBonusBorder: 0xffd75e,
 		buyBonusBorderWidth: 4,
 		buyBonusCornerRadius: 8,
 
-		// The auto-spins counter, in the platform palette. Green edge, because it
-		// sits on the green spin button and is the one badge the platform bar
-		// draws; a gold ring there would be the only warm thing left on the strip.
+		// The auto-spins counter. Its edge matches the spin button it sits on —
+		// which is now gold, so this is too. (It was green for the same reason:
+		// the badge belongs to the button, not to the strip.)
 		autoSpinsCounterFill: 0x14171a,
-		autoSpinsCounterBorder: 0x4ace4a,
+		autoSpinsCounterBorder: 0xffd75e,
 		autoSpinsCounterLabel: 0xffffff,
 		autoSpinsCounterLabelStroke: 0x0f0f0f,
 

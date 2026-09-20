@@ -12,8 +12,8 @@
 		// overall size multiplier — 1 fits one symbol cell
 		scale?: number;
 		delay?: number;
-		// 'gold' celebration vs 'jungle' (leaf shards mixed in) for blasts
-		flavour?: 'gold' | 'jungle';
+		// 'gold' celebration vs 'tomb' (inlay chips and a spray of sand) for blasts
+		flavour?: 'gold' | 'tomb';
 		oncomplete?: () => void;
 	};
 
@@ -21,7 +21,14 @@
 
 	const DURATION = 850;
 	const GOLD = [0xffd75e, 0xfff7d1, 0xffb04a, 0xffe98a];
-	const JUNGLE = [0xffd75e, 0xfff7d1, 0x8fbf4a, 0xffb04a];
+	// THE TOMB BLAST. It was 'jungle': every third spark a green leaf, left over
+	// from Go Bananas 100 and the one green thing in a gold-and-lapis game. What a
+	// blast throws in a tomb is gilt and inlay — so every third spark is a chip of
+	// lapis, carnelian or turquoise (the Buy Bonus scarab's and the win plaques'
+	// stones), and a fan of sand grains falls under it.
+	const TOMB = [0xffd75e, 0xfff7d1, 0xffe98a, 0xffb04a];
+	const INLAY = [0x3f74de, 0xe8643c, 0x3fd0bd];
+	const SAND = [0xe8c98a, 0xd9b877, 0xf2dcae];
 
 	type Spark = {
 		angle: number;
@@ -30,7 +37,7 @@
 		life: number;
 		color: number;
 		spin: number;
-		leaf: boolean;
+		chip: boolean;
 		// per-spark stagger breaks the mechanical all-at-once look
 		delay: number;
 	};
@@ -40,10 +47,21 @@
 		speed: 150 + Math.random() * 130,
 		size: 26 + Math.random() * 26,
 		life: 0.55 + Math.random() * 0.3,
-		color: (props.flavour === 'jungle' ? JUNGLE : GOLD)[i % 4],
+		color:
+			props.flavour === 'tomb' && i % 3 === 0 ? INLAY[(i / 3) % 3] : (props.flavour === 'tomb' ? TOMB : GOLD)[i % 4],
 		spin: (Math.random() - 0.5) * 6,
-		leaf: props.flavour === 'jungle' && i % 3 === 0,
+		chip: props.flavour === 'tomb' && i % 3 === 0,
 		delay: Math.random() * 0.09,
+	}));
+
+	// sand: many small grains, thrown up and out and falling faster than the
+	// sparks, so the blast settles like dust rather than like fireworks
+	const grains = Array.from({ length: props.flavour === 'tomb' ? 26 : 0 }, () => ({
+		angle: -Math.PI / 2 + (Math.random() - 0.5) * 2.6,
+		speed: 90 + Math.random() * 170,
+		size: 2 + Math.random() * 3,
+		color: SAND[Math.floor(Math.random() * 3)],
+		delay: Math.random() * 0.06,
 	}));
 
 	let t = $state(-1); // -1 = waiting out the delay
@@ -101,6 +119,40 @@
 	};
 </script>
 
+<!-- sand and chips, drawn as vector: flat stones are not light, so they are
+     solid and normal-blended where the sparks are additive -->
+{#snippet stones()}
+	<Graphics
+		draw={(g) => {
+			g.clear();
+			if (t < 0 || t >= 1) return;
+			const s = props.scale ?? 1;
+			const seconds = (t * DURATION) / 1000;
+			for (const grain of grains) {
+				const sec = seconds - grain.delay;
+				if (sec <= 0) continue;
+				const x = Math.cos(grain.angle) * grain.speed * sec * s;
+				const y = (Math.sin(grain.angle) * grain.speed * sec + 420 * sec * sec) * s;
+				g.circle(x, y, grain.size * s).fill({ color: grain.color, alpha: 1 - t });
+			}
+			for (const spark of sparks) {
+				if (!spark.chip) continue;
+				const st = sparkState(spark, t);
+				if (!st) continue;
+				// a faceted chip: a rhombus with a lit upper face
+				const r = st.size * 0.28;
+				const c = Math.cos(st.rot);
+				const sn = Math.sin(st.rot);
+				const pt = (px: number, py: number) => [st.x + px * c - py * sn, st.y + px * sn + py * c];
+				const pts = [pt(0, -r), pt(r * 0.8, 0), pt(0, r), pt(-r * 0.8, 0)].flat();
+				g.poly(pts).fill({ color: spark.color, alpha: st.alpha });
+				g.poly(pts).stroke({ width: Math.max(1, r * 0.22), color: 0xffd75e, alpha: st.alpha });
+				g.poly([pt(0, -r), pt(r * 0.8, 0), pt(0, 0)].flat()).fill({ color: 0xffffff, alpha: st.alpha * 0.35 });
+			}
+		}}
+	/>
+{/snippet}
+
 <Container x={props.x ?? 0} y={props.y ?? 0}>
 	{#if t >= 0 && t < 1}
 		<!-- soft central flash -->
@@ -114,17 +166,18 @@
 			alpha={(1 - t) ** 1.6}
 		/>
 		<Graphics draw={drawRings} />
+		{@render stones()}
 		{#each sparks as spark, index (index)}
 			{@const state = sparkState(spark, t)}
-			{#if state}
+			{#if state && !spark.chip}
 				<Sprite
-					key={spark.leaf ? 'fxLeaf' : 'fxStar'}
+					key="fxStar"
 					anchor={0.5}
 					x={state.x}
 					y={state.y}
 					rotation={state.rot}
 					tint={spark.color}
-					blendMode={spark.leaf ? 'normal' : 'add'}
+					blendMode="add"
 					width={state.size}
 					height={state.size}
 					alpha={state.alpha}

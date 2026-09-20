@@ -39,6 +39,7 @@
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
+	import { drawMultiplierBadge, BADGE_W, BADGE_H } from '../game/multiplierBadge';
 
 	const context = getContext();
 
@@ -75,6 +76,11 @@
 		from: number;
 		to: number;
 		shown: number;
+		// the face leaving as `shown` arrives, and when that swap happened — the
+		// two are what let the figures ROLL past each other instead of blinking
+		previous: number;
+		stepAt: number;
+		stepMs: number;
 		landed: boolean;
 		landedAt: number;
 	};
@@ -126,8 +132,12 @@
 			// never the answer, and never the same face twice in a row: both make
 			// the wheel look like it has already stopped
 			const options = LADDER.filter((value) => value !== roll.to && value !== previous);
-			previous = options[Math.floor(Math.random() * options.length)];
-			roll.shown = previous;
+			const next = options[Math.floor(Math.random() * options.length)];
+			roll.previous = previous;
+			previous = next;
+			roll.shown = next;
+			roll.stepAt = Date.now();
+			roll.stepMs = step;
 			// NO SOUND ON THE FLICKER. A pluck per step is a dozen per cell, and a
 			// board with five held tablets turned the re-roll into a rattle with no
 			// shape to it. The landings still speak — five of those is a phrase,
@@ -135,7 +145,10 @@
 			await waitForTimeout(step);
 		}
 
+		roll.previous = roll.shown;
 		roll.shown = roll.to;
+		roll.stepAt = Date.now();
+		roll.stepMs = 150;
 		roll.landed = true;
 		roll.landedAt = Date.now();
 		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
@@ -160,6 +173,9 @@
 				from: cell.from,
 				to: cell.to,
 				shown: cell.from,
+				previous: cell.from,
+				stepAt: 0,
+				stepMs: 1,
 				landed: false,
 				landedAt: 0,
 			}));
@@ -190,26 +206,53 @@
 
 	$effect(() => () => stopClock());
 
-	// The chip the figure sits on. It also does a job: the board underneath has
-	// already been stamped with the new value by the time this runs, so without
-	// something opaque here the answer would be legible under the wheel.
+	// ── THE CARTOUCHE THE FIGURE ROLLS IN ────────────────────────────────────
+	//
+	// Something opaque has to sit here: the board underneath has already been
+	// stamped with this spin's new value by the time the wheel runs, so the
+	// answer would otherwise be legible straight through it.
+	//
+	// It used to be a flat near-black box with a grey outline — a hole punched in
+	// the tablet for the duration of the roll, which is what made the re-roll
+	// look unfinished. It is now the thing this game would actually carve a
+	// number into: a rounded lapis cartouche in a gold setting, with a bead at
+	// each end, lit from above. Same stones as the Buy Bonus scarab and the win
+	// plaques.
+	const chipBox = (roll: Roll) => {
+		const punch = punchOf(roll);
+		return {
+			punch,
+			width: SYMBOL_SIZE * (BADGE_W + 0.05 * punch),
+			height: SYMBOL_SIZE * (BADGE_H + 0.035 * punch),
+			x: getSymbolX(roll.reel),
+			y: badgeY(roll.row),
+		};
+	};
+
 	const drawChips = (g: PixiGraphics) => {
 		now;
 		g.clear();
 		for (const roll of rolls) {
-			const punch = punchOf(roll);
-			const w = SYMBOL_SIZE * (0.66 + 0.06 * punch);
-			const h = SYMBOL_SIZE * (0.3 + 0.04 * punch);
-			const x = getSymbolX(roll.reel) - w / 2;
-			const y = badgeY(roll.row) - h / 2;
-			g.rect(x, y, w, h).fill({ color: 0x10151a, alpha: 0.95 });
-			g.rect(x, y, w, h).stroke({
-				width: 2 + 2 * punch,
-				color: roll.landed ? 0xffd75e : 0x8a7859,
-				alpha: 0.7 + 0.3 * punch,
-			});
+			const box = chipBox(roll);
+			drawMultiplierBadge(g, { ...box, lit: roll.landed, shadow: true });
 		}
 	};
+
+	// how far through the current face's step we are, 0 → 1
+	const stepProgress = (roll: Roll) => {
+		if (!roll.stepAt) return 1;
+		return Math.min(1, Math.max(0, (now - roll.stepAt) / Math.max(1, roll.stepMs)));
+	};
+	// THE FIGURES ROLL PAST EACH OTHER. The old version swapped the text between
+	// frames, so a slowing wheel looked like a number being retyped. Now the face
+	// arriving climbs into the window while the one it replaces climbs out of it,
+	// which is what a physical wheel does — and it is why the cartouche is masked.
+	const enterOffset = (roll: Roll) => {
+		const p = stepProgress(roll);
+		const ease = 1 - (1 - p) ** 2;
+		return SYMBOL_SIZE * BADGE_H * 0.9 * (1 - ease);
+	};
+	const leaveOffset = (roll: Roll) => enterOffset(roll) - SYMBOL_SIZE * BADGE_H * 0.9;
 </script>
 
 {#if running}
@@ -222,7 +265,30 @@
 					y={badgeY(roll.row)}
 					scale={1 + 0.28 * punchOf(roll)}
 				>
-					<GoldText x={0} y={0} text={`${roll.shown}X`} fontSize={26} maxWidth={SYMBOL_SIZE * 0.6} />
+					<!-- the window the figures roll through: everything in this
+					     container is clipped to the cartouche's stone -->
+					<Graphics
+						isMask
+						draw={(g) => {
+							now;
+							g.clear();
+							const w = SYMBOL_SIZE * BADGE_W - 9;
+							const h = SYMBOL_SIZE * BADGE_H - 9;
+							g.roundRect(-w / 2, -h / 2, w, h, h / 2).fill({ color: 0xffffff });
+						}}
+					/>
+					<Container y={leaveOffset(roll)}>
+						<GoldText
+							x={0}
+							y={0}
+							text={`${roll.previous}X`}
+							fontSize={26}
+							maxWidth={SYMBOL_SIZE * 0.6}
+						/>
+					</Container>
+					<Container y={enterOffset(roll)}>
+						<GoldText x={0} y={0} text={`${roll.shown}X`} fontSize={26} maxWidth={SYMBOL_SIZE * 0.6} />
+					</Container>
 				</Container>
 			{/each}
 		</Container>
