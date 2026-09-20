@@ -4,6 +4,11 @@
 	export type Props = RectangleProps & {
 		// slot name — a game can map this to plate artwork via uiTheme.sprites
 		key?: string;
+		// Radians, about the sprite's anchor. Only meaningful for a themed plate:
+		// the fallback Rectangle below is a plain panel and turning one would just
+		// put a tilted box in the layout. Defaults to 0, so nothing that does not
+		// ask for it moves.
+		rotation?: number;
 	};
 </script>
 
@@ -36,6 +41,7 @@
 		{height}
 		alpha={props.alpha}
 		tint={props.tint}
+		rotation={props.rotation ?? 0}
 	/>
 {:else}
 	<Rectangle

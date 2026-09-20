@@ -256,6 +256,21 @@ export const uiTheme = $state({
 	// The sprite is expected to be white on transparent and the same size as the
 	// plate, so it registers without any positioning of its own. Undefined keeps
 	// the rectangle, which is what every other game gets.
+	/**
+	 * Degrees per second the buy-bonus plate turns while the pointer is over it.
+	 * 0 — the default — means it never turns, so no game that does not ask for
+	 * this changes at all.
+	 *
+	 * It exists because a plate whose art is a WHEEL has an obvious thing to do on
+	 * hover, and a static highlight on one is a missed open goal. The caption is
+	 * drawn separately and stays upright, so only the plate moves.
+	 *
+	 * The button spins up quickly and coasts down slowly — see ButtonBuyBonus —
+	 * because that is what something with mass does, and a plate that stops dead
+	 * the instant the pointer leaves reads as a video being paused.
+	 */
+	buyBonusHoverSpin: 0,
+
 	buyBonusHoverSprite: undefined as string | undefined,
 	buyBonusHoverSpriteTint: 0xffd98a,
 	/**
