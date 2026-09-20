@@ -10,7 +10,7 @@ import { stateLayout, stateLayoutDerived } from './stateLayout';
 import { stateApp } from './stateApp';
 
 import { stateGame, stateGameDerived } from './stateGame.svelte';
-import { WILD_PARTY_BET_MODE_META } from './betModeMeta';
+import { buildBetModeMeta } from './betModeMeta';
 import { i18nDerived } from '../i18n/i18nDerived';
 
 export const setContext = () => {
@@ -22,7 +22,7 @@ export const setContext = () => {
 	// Restrict the buy-bonus screen to the only modes Wild Party math supports
 	// (base + 100x bonus); otherwise the shared template defaults expose extra
 	// unplayable buy options.
-	stateMeta.betModeMeta = WILD_PARTY_BET_MODE_META;
+	stateMeta.betModeMeta = buildBetModeMeta();
 };
 
 export const getContext = () => ({

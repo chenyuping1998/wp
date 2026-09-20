@@ -71,9 +71,14 @@ blind spot worth knowing:
 |---|---|---|
 | `check_assets.mjs` | asset paths in `assets.ts` that do not resolve | assets referenced by a computed key |
 | `check_undefined_refs.mjs` | template referencing an identifier the script never declares | **identifiers used inside `<script>`** — it explicitly lets through any name that appears anywhere in the script |
-| `check_social_words.mjs` | restricted words in literal template text and in the social branch of `pick()` | a restricted word arriving through a variable |
+| `check_social_words.mjs` | restricted words in literal template text, in the social branch of `pick()`/ternaries, in the bet-mode table's `text:` blocks, and in whitespace-bearing string literals inside listed components' `<script>` | a word arriving through a variable — and, by nature, a **wrong replacement** that contains no banned word at all |
 
 They run from the app's `build` script. When you add a game, copy them.
+
+Every one of those rules exists because a submission failed while the guard was
+green. Before trusting a clean run, **inject the exact string that failed and
+confirm the guard reports it** — three of the four holes above were files the
+script already read but structurally could not judge.
 
 ### Why a missing identifier kills the whole game, not one panel
 
@@ -181,10 +186,65 @@ export const getSocialTerms = () => {
 };
 ```
 
-**Effects that write state they also read** converge as long as the write is
-idempotent, but watch for a watcher that clears a flag another effect just set —
-a one-frame race that looks like flakiness. Prefer deriving from a machine state
-transition over hand-maintained booleans.
+**Effects that write state they also read.** The old note here said these
+"converge as long as the write is idempotent". That is wrong for anything driving
+a **timed animation**, and the correction cost two rounds of a bug the user could
+see and two rounds of measurement that said it was fixed.
+
+An `$effect` that reads a `$state` its own `requestAnimationFrame` loop writes
+re-runs on every tick. The cleanup cancels the in-flight rAF and the body starts a
+**fresh ramp with a fresh `performance.now()` baseline** from wherever the value
+had reached. The ease never completes on its stated schedule; it decays
+asymptotically, covering only `frameMs / DURATION_MS` of what is left each frame.
+
+```ts
+// WRONG — a 140ms ease that actually takes about a second
+let dimAmount = $state(0);
+$effect(() => {
+  const target = props.dim ? 1 : 0;
+  if (dimAmount === target) return;   // reads dimAmount -> subscribes to it
+  const from = dimAmount;             // …and again
+  const started = performance.now();
+  const tick = (now: number) => {
+    dimAmount = from + (target - from) * Math.min(1, (now - started) / DIM_MS);
+    if (…) raf = requestAnimationFrame(tick);
+  };
+  raf = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(raf);
+});
+
+// RIGHT — depend on the input only
+import { untrack } from 'svelte';
+const from = untrack(() => dimAmount);
+if (from === target) return;
+```
+
+Measured on Capo Nostra 2026-09-10: releasing a symbol dim ran
+`0.50 → 0.60 → 0.68 → 0.74 → 0.75 → 0.76 → … → 0.93` over ~26 frames instead of
+the ~8 the 140ms constant implies. The visible symptom was three tiers removed
+from the cause — symbols looked like they *vanished* under a big-win banner,
+because a board still fading up from 0.5 sat under a banner that reached full
+opacity in 9 frames. Two earlier fixes aimed at the banner's ordering had no
+visible effect, because the ramp was slow no matter when it started.
+
+**The tell:** an animation whose measured duration does not match its own
+constant, and a recovery curve shaped like exponential decay rather than a line
+or an ease. When you see that, look for the effect's dependency list before you
+look at anything else.
+
+Still true, and unchanged: watch for a watcher that clears a flag another effect
+just set — a one-frame race that looks like flakiness. Prefer deriving from a
+machine state transition over hand-maintained booleans.
+
+**Full-screen celebrations must gate the layers underneath, not race them.** The
+same bug had a second half: the board's win volley dims every cell not in the
+volley, and nothing stopped that dim while a full-screen banner was up. Clearing
+the state the dim reads (at the moment the banner opens) is the fix that *looks*
+right and is not enough — the release is a fade, and the fade outlasts the
+banner's arrival. Give the celebration an explicit flag
+(`stateGame.winCelebrationShow`, alongside the existing `featureSplashShow`),
+gate the dim on it, and **snap rather than ease when releasing under a
+celebration** — there is nothing to smooth when the board is behind a scrim.
 
 **Module-scope `$state` in `.svelte.ts`** is the established pattern for shared
 state; keep new state files consistent with `stateBet.svelte.ts`.
@@ -215,6 +275,38 @@ graphs and framework internals is slower and usually wrong.
 **A probe must prove it can see its target before its zero means anything.** A
 check that reports "no glow anywhere" is worthless if its matcher never could have
 matched. Validate the probe against a known-positive case first.
+
+**Measure the composed value, over frames, per SLOT — not per node.** For "is
+something visible on the board" questions, three details decide whether the
+number means anything, and getting any of them wrong produces a confident zero:
+
+- **World alpha, not `node.alpha`.** Multiply down the parent chain
+  (`let a = n.alpha; let p = n.parent; while (p) { a *= p.alpha; p = p.parent; }`).
+  A cell at 0.38 under a container at 0.5 is at 0.19, and neither node alone says so.
+- **Enumerate the 20 board cells and ask each one what it has**, rather than
+  walking the tree collecting sprites. A probe that averages "every symbol sprite
+  found" cannot tell a dimmed cell from a cell whose sprite was never mounted, and
+  it silently includes the off-screen reel-strip symbols, which are legitimately
+  faded. In this codebase the cells are one container each under
+  `stage.children[4].children[0].children[0]` — find the equivalent by dumping the
+  tree with labels and child counts before writing the real probe.
+- **Sample on `setInterval` and record a series**, then report worst-case and a
+  frame count. Instantaneous reads miss windows a few hundred ms wide, which is
+  exactly the size of the bugs that show up in a screenshot but not in a test.
+
+The counter-example is worth remembering: a probe that walked the scene for symbol
+sprites and reported "every sprite found is at full alpha during the banner" was
+*true* and was also useless, because the sprites in question were at 0.5 and the
+probe's `min` was being taken over a set that included shadow copies at 0.5 by
+design. Cell-by-cell, worst-case, over time — or don't quote a number.
+
+**Screenshots are proof of the symptom, measurement is proof of the fix.** The
+browser pane renders at a fixed size regardless of the emulated viewport, and its
+`zoom` cannot crop; `drawImage` off a WebGL canvas returns blank when the context
+has `preserveDrawingBuffer: false`, which is the default here. So: use screenshots
+to confirm you are looking at the right moment (freeze the ticker when the
+condition is detected, then screenshot), and use scene-graph sampling for the
+number you actually report.
 
 **Correct the record when you were wrong.** These notes and the per-game
 `HANDOFF.md` are read later as fact. A wrong root cause left in writing costs more
@@ -259,3 +351,50 @@ The two items that generalise beyond the checklist:
 
 `references/certification.md` holds the requirements themselves — restricted
 words, replay, money, and the presentation notes that keep coming back.
+
+`references/approval-guidelines.md` is the 51-item checklist a reviewer ticks
+off on the approval page, transcribed. It is scored **separately from the star
+rating that decides publication**, so a game can be published with none of it
+checked and the change requests arrive afterwards. Read it before the first
+upload, not after.
+
+Wild Party's guidelines review opened **ten** issues over several rounds and is
+now live. Plan for a series of round trips, not one fix-everything push: each
+resubmission is re-tested and can surface the next problem — two of the ten
+existed only because earlier fixes were being exercised.
+
+Four shapes from that round are worth carrying into any game:
+
+- **The tile is three files, not one** — background, foreground and provider
+  logo, which Stake composites. A submission missing the logo, or including a
+  pre-composited tile, fails the thumbnail line before the art is even discussed.
+- **The `oncomplete` race.** `state = 'running'` immediately followed by
+  `await waitForResolve((resolve) => (oncomplete = resolve))` freezes the round
+  whenever the animation completes between the two statements — the resolver was
+  not armed yet, so the completion calls the previous no-op. Arm the resolver
+  first, and put a ceiling on every such wait. This has caused two separate dead
+  sessions in one game and the same shape was found in three more components.
+  See [review-log.md](references/review-log.md#the-oncomplete-race--one-shape-five-places).
+- **A guard proves absence, not correctness — and only if it can see its
+  target.** The restricted-word check passed on four separate submissions that
+  certification then failed: once the file was unscanned, once it was scanned but
+  contained none of the shapes the rules match, once the copy lived in a
+  component's `<script>` (which the template rule strips), and once the banned
+  word was genuinely gone but the replacement was the wrong one. **Inject the
+  exact string a reviewer reported, watch the guard fire, then remove it.** A
+  clean run means nothing until the check has been shown to fail.
+- **Every selectable stake must be one the server named.** Affordability may pick
+  a lower rung of the server's ladder, never the balance itself — clamping with
+  `Math.min(level, balance)` invents a bet level the RGS never offered. And every
+  control that sets a stake has to go through the same clamp; a menu that assigns
+  `stateBet.betAmount` directly skips all of it. Reproducing this needs a balance
+  sitting *between* two rungs.
+
+Two things about the rating worth knowing while planning, not at submission:
+
+- The threshold **rose from 4.5/9 to 6/9**. A build that is compliant, well laid
+  out and correctly themed but has ordinary symbol art and template motion
+  scores around 4.7 — enough under the old bar, short under the new one.
+- **Reskinning template spines does not answer "poor animations".** Retexturing
+  changes the picture and leaves the motion identical. Budget symbol craft and
+  motion as their own workstream rather than as part of a visual overhaul.

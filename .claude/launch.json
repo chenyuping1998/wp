@@ -80,6 +80,26 @@
 				"dev"
 			],
 			"port": 3005
+		},
+		{
+			"name": "turfwar-dev",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": [
+				"--dir",
+				"apps/TurfWar",
+				"dev"
+			],
+			"port": 3016
+		},
+		{
+			"name": "caponostra-dev",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": [
+				"--dir",
+				"apps/CapoNostra",
+				"dev"
+			],
+			"port": 3013
 		}
 	]
 }

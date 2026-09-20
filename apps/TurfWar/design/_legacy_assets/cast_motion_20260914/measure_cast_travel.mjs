@@ -1,0 +1,237 @@
+/**
+ * How far the figure actually travels at each tier's peak — in rig pixels and as
+ * a fraction of the figure box.
+ *
+ * This exists because the browser harness cannot hold a preview pane composited
+ * for the ~1.4s a reaction takes: rAF freezes while the pane is hidden and the
+ * pending reel stops then resolve in one frame, so an on-screen capture of the
+ * pose is not reliably obtainable there. The skinning is pure arithmetic, so it
+ * can be done here instead — this file reimplements exactly what
+ * skinnedFigure.update() does (same matrix composition, same LBS, same order of
+ * operations, including the perspective push landing AFTER the hierarchy) and
+ * reports the peak displacement of the vertices the eye actually tracks.
+ *
+ *   node design/measure_cast_travel.mjs
+ *   node design/measure_cast_travel.mjs --compare   # against the old tables
+ */
+
+import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const { TIERS_BY_POSE, IDLE_BY_POSE, DEG, idleAngle, reactionEnvelope, MOTION_SCALE } = await import(
+  join(HERE, "..", "src/game/castMotion.ts")
+);
+
+/* Turf War has one rig per drawing. With no --rig this runs itself once per rig
+ * and fails if any of them does; with --rig=<stem> it measures that one against
+ * the tables of the pose that rig was fitted to. */
+const RIG_POSE = { guy: "base", guy_feature: "shoulder", guy_kingpin: "shoulder" };
+const rigArg = process.argv.find((a) => a.startsWith("--rig="))?.slice(6);
+if (!rigArg) {
+  let status = 0;
+  for (const stem of Object.keys(RIG_POSE)) {
+    console.log(`\n=== ${stem} (${RIG_POSE[stem]} pose) ===`);
+    const run = spawnSync(process.execPath, [fileURLToPath(import.meta.url), `--rig=${stem}`, ...process.argv.slice(2)], { stdio: "inherit" });
+    status ||= run.status ?? 1;
+  }
+  process.exit(status);
+}
+const POSE = RIG_POSE[rigArg];
+if (!POSE) throw new Error(`unknown rig '${rigArg}'`);
+const TIERS = TIERS_BY_POSE[POSE];
+const IDLE = IDLE_BY_POSE[POSE];
+
+const rig = JSON.parse(
+  readFileSync(join(HERE, `../static/assets/meshRigs/cast_guy/${rigArg}.rig.json`), "utf8"),
+);
+
+/** The old tables, kept here only so --compare has something to compare to. */
+const OLD = {
+  win: { rise: 0.008, stretch: 0.006, lean: 0.002, push: null,
+    bones: { hips: [0.5, 0], waist: [0.75, 10], chest: [0.95, 18], neck: [1.4, 30],
+      head: [2.0, 42], arm_l: [0.4, 24], fore_l: [2.3, 60], arm_r: [-0.4, 22], fore_r: [-2.3, 54] } },
+  winBig: { rise: 0.015, stretch: 0.011, lean: 0.005, push: null,
+    bones: { hips: [1.1, 0], waist: [1.6, 25], chest: [2.0, 45], neck: [3.0, 75],
+      head: [4.2, 105], arm_l: [0.85, 60], fore_l: [4.8, 150], arm_r: [-0.85, 55], fore_r: [-4.8, 135] } },
+  trigger: { rise: 0.022, stretch: 0.016, lean: 0.008, push: null,
+    bones: { hips: [1.1, 0], waist: [1.9, 45], chest: [3.2, 85], neck: [5.2, 145],
+      head: [8.4, 210], arm_l: [1.5, 95], fore_l: [9.5, 235], arm_r: [-1.2, 135], fore_r: [-6.4, 275] } },
+};
+
+/** Which bone owns each vertex — the ONLY safe way to name a body part here.
+ *
+ * The first version of this script picked body parts by POSITION ("the 12
+ * leftmost vertices are the hand"). Every one of those turned out to be a
+ * head or neck vertex sitting on the texture's left edge at x=0: the mesh is a
+ * regular grid over the whole image, including transparent space, so a
+ * vertex's coordinate says nothing about what it is part of. Every head/hand
+ * figure that version printed was the head compared against itself. */
+const BONE = rig.bones.map((b) => b.name);
+const dominant = rig.verts.map((_, index) => {
+  const w = rig.weights[index];
+  let best = 0;
+  w.forEach((value, j) => { if (value > w[best]) best = j; });
+  return best;
+});
+const groupOf = (...names) =>
+  new Set(dominant.map((d, i) => (names.includes(BONE[d]) ? i : -1)).filter((i) => i >= 0));
+
+const scale = typeof MOTION_SCALE === "number" ? MOTION_SCALE : 1;
+const [boxX0, boxY0, boxX1, boxY1] = rig.figure_box;
+const figureWidth = boxX1 - boxX0;
+const figureHeight = boxY1 - boxY0;
+
+/** Byte-for-byte the same skinning skinnedFigure.update() performs. */
+function pose(tier, reactionAge, durationMs, timeMs) {
+  const matrices = rig.bones.map(() => new Float64Array(6));
+  const bodyReaction =
+    reactionAge === null ? 0 : reactionEnvelope(reactionAge / durationMs, tier.snap, tier.hold);
+
+  for (let index = 0; index < rig.bones.length; index += 1) {
+    const bone = rig.bones[index];
+    const idle = idleAngle(IDLE[bone.name] ?? [0, 0, 2000, 0], timeMs);
+    let reaction = 0;
+    const spec = tier.bones[bone.name];
+    if (spec && reactionAge !== null) {
+      const [amplitude, lagMs] = spec;
+      reaction =
+        amplitude * scale * reactionEnvelope((reactionAge - lagMs) / durationMs, tier.snap, tier.hold);
+    }
+    const angle = (idle + reaction) * DEG;
+    const cosine = Math.cos(angle);
+    const sine = Math.sin(angle);
+    let offsetX = 0;
+    let offsetY = 0;
+    let scaleY = 1;
+    if (index === 0 && bodyReaction > 0) {
+      offsetX = figureWidth * (tier.lean ?? 0) * scale * bodyReaction;
+      offsetY = figureHeight * -(tier.rise ?? 0) * scale * bodyReaction;
+      scaleY = 1 + (tier.stretch ?? 0) * scale * bodyReaction;
+    }
+    const a = cosine, b = -sine * scaleY, d = sine, e = cosine * scaleY;
+    const local = [a, b, bone.x - a * bone.x - b * bone.y + offsetX,
+                   d, e, bone.y - d * bone.x - e * bone.y + offsetY];
+    const m = matrices[index];
+    if (bone.parent < 0) m.set(local);
+    else {
+      const p = matrices[bone.parent];
+      m[0] = p[0] * local[0] + p[1] * local[3];
+      m[1] = p[0] * local[1] + p[1] * local[4];
+      m[2] = p[0] * local[2] + p[1] * local[5] + p[2];
+      m[3] = p[3] * local[0] + p[4] * local[3];
+      m[4] = p[3] * local[1] + p[4] * local[4];
+      m[5] = p[3] * local[2] + p[4] * local[5] + p[5];
+    }
+  }
+
+  // …and the push, AFTER the hierarchy, on one bone's final matrix only.
+  const push = tier.push;
+  if (push && bodyReaction > 0) {
+    const i = rig.bones.findIndex((bone) => bone.name === push.bone);
+    if (i >= 0) {
+      matrices[i][2] += figureWidth * push.x * scale * bodyReaction;
+      matrices[i][5] += figureHeight * push.y * scale * bodyReaction;
+    }
+  }
+
+  return rig.verts.map((vertex, index) => {
+    const [x, y] = vertex;
+    let ax = 0, ay = 0;
+    rig.weights[index].forEach((weight, boneIndex) => {
+      if (weight <= 0.002) return;
+      const m = matrices[boneIndex];
+      ax += (m[0] * x + m[1] * y + m[2]) * weight;
+      ay += (m[3] * x + m[4] * y + m[5]) * weight;
+    });
+    return [ax, ay];
+  });
+}
+
+/** Peak displacement per vertex over the beat, against the same beat's own idle. */
+function travel(tier, durationMs) {
+  const T0 = 1_000_000;                       // arbitrary but fixed idle phase
+  let peakAny = 0, peakHand = 0, peakHead = 0, peakFoot = 0;
+  const rest = pose(tier, null, durationMs, T0);
+  const headSet = groupOf("head");
+  const handSet = groupOf("fore_l", "fore_r");
+  const botY = Math.max(...rest.map((v) => v[1]));
+  const footSet = new Set(rest.map((v, i) => (v[1] > botY - figureHeight * 0.05 ? i : -1)).filter((i) => i >= 0));
+
+  for (let step = 0; step <= 60; step += 1) {
+    const age = (step / 60) * durationMs;
+    const now = pose(tier, age, durationMs, T0 + age);
+    const base = pose(tier, null, durationMs, T0 + age);   // idle-only at the same instant
+    for (let i = 0; i < now.length; i += 1) {
+      const dx = now[i][0] - base[i][0];
+      const dy = now[i][1] - base[i][1];
+      const d = Math.hypot(dx, dy);
+      if (d > peakAny) peakAny = d;
+      if (handSet.has(i) && d > peakHand) peakHand = d;
+      if (headSet.has(i) && d > peakHead) peakHead = d;
+      if (footSet.has(i) && d > peakFoot) peakFoot = d;
+    }
+  }
+  return { peakAny, peakHand, peakHead, peakFoot };
+}
+
+/** What the head is ALLOWED to travel, as a percentage of figure height.
+ *
+ * The original tables ran the trigger head to 17.4% of body height. Holding the
+ * reference's own ratio (head 0.38 of the carrier) brings it to 6.1%. These
+ * ceilings sit just above the measured values, so drifting back toward the old
+ * lurch fails here.
+ *
+ * This is a DISPLACEMENT budget and check_cast_motion.mjs deliberately cannot
+ * hold it: that gate is angles only, because it loads castMotion.ts under bare
+ * node and never sees the rig. Displacement needs the rig, so it lives here —
+ * and the two are not interchangeable. Cutting the head's ANGLE to the
+ * reference ratio moved its measured TRAVEL far less than expected, because the
+ * head is the last link of a spine that composes.
+ *
+ * head/hand is printed as information, not as a test. On this drawing the head
+ * always travels further than the hand (3.23x with the original tables): it
+ * swings on the longest lever arm in the figure, while the arms are drawn
+ * against the body and own five mesh vertices between them.
+ */
+const HEAD_BUDGET_PCT = { win: 2.6, winBig: 4.2, trigger: 7.0 };
+let failed = false;
+
+const compare = process.argv.includes("--compare");
+const order = ["win", "winBig", "trigger"];
+const pct = (v) => ((v / figureHeight) * 100).toFixed(2) + "%";
+
+console.log(`figure box ${figureWidth.toFixed(0)} x ${figureHeight.toFixed(0)} rig px\n`);
+console.log(`vertex groups: head ${groupOf("head").size}, hand (fore_l+fore_r) ${groupOf("fore_l", "fore_r").size}` +
+  ` — the arms carry few vertices on this drawing, which is itself a constraint on how much they can show.\n`);
+console.log("tier      whole-figure   hand peak        head peak        FEET      head vs budget");
+for (const name of order) {
+  const tier = TIERS[name];
+  const now = travel(tier, tier.durationMs);
+  let line = `${name.padEnd(9)} ${(tier.rise + tier.stretch + tier.lean === 0 ? "none" : "MOVES").padEnd(14)} ` +
+    `${now.peakHand.toFixed(1).padStart(5)}px ${pct(now.peakHand).padStart(6)}   ` +
+    `${now.peakHead.toFixed(1).padStart(5)}px ${pct(now.peakHead).padStart(6)}   ` +
+    `${now.peakFoot.toFixed(1).padStart(5)}px  `;
+  // The head budget — what "頭部位移太多" becomes once it is a number.
+  const headPct = (now.peakHead / figureHeight) * 100;
+  const budget = HEAD_BUDGET_PCT[name];
+  if (headPct > budget) failed = true;
+  line +=
+    `${headPct.toFixed(2)}% / ${budget.toFixed(1)}%` +
+    (headPct > budget ? "  <-- OVER BUDGET" : "  ok") +
+    `   head/hand ${(now.peakHead / now.peakHand).toFixed(2)}x`;
+  if (compare) {
+    const before = travel({ ...TIERS[name], ...OLD[name] }, tier.durationMs);
+    line += `      was hand ${before.peakHand.toFixed(1)}px / head ${before.peakHead.toFixed(1)}px / feet ${before.peakFoot.toFixed(1)}px` +
+      `  ->  ${(-100 * (1 - now.peakHand / before.peakHand)).toFixed(0)}% hand`;
+  }
+  console.log(line);
+}
+
+if (failed) {
+  console.log("\nFAIL: head travel over budget — see the ratio note above before widening it");
+  process.exit(1);
+}
+console.log("\nok: head travel inside budget");

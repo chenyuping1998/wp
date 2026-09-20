@@ -159,7 +159,7 @@
 					     run, then finishes its turn and rests when they stop -->
 					<ButtonBetSpinIcon
 						spinning={['stop_default', 'stop_disabled'].includes(key)}
-						radius={sizes.width * 0.22}
+						radius={sizes.width * uiTheme.betIconScale}
 					/>
 				</Container>
 			{/snippet}

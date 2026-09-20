@@ -77,6 +77,59 @@ Sections that earned their place doing this for Capo Nostra:
   own bespoke skin — settings, generic popups) still needs the new theme's
   colour tokens even though no art asset covers it; this is a code-side
   follow-up but belongs in the brief so it isn't forgotten as "not art's job."
+- **The persistent Buy Bonus CTA button (the one always sitting in the bet
+  bar) is a SEPARATE asset from the Buy Bonus modal's card frames, and it is
+  easy to brief one and forget the other.** Capo Nostra's art brief covered
+  the modal cards from day one and didn't add the bet-bar button's own plate
+  until a user asked for it explicitly, weeks later. State both in one pass:
+  the modal card frame (see the 9-slice note above) AND the standalone bet-bar
+  button plate (a single non-stretched image, sized to the shared component's
+  box — check `ButtonBuyBonus.svelte`/its equivalent for the actual pixel
+  size rather than guessing).
+- **Before assuming new art for that button will actually render, check
+  whether the active UI skin is suppressing the sprite slot.** A shared
+  `ButtonBuyBonus`-style component commonly falls back from custom plate art
+  to a flat drawn rectangle when its sprite-registry key is undefined for the
+  ACTIVE skin — and a game can ship more than one skin (a "platform chrome"
+  variant that intentionally clears most of `sprites` to keep a flat, neutral
+  bet bar, alongside the game's own fully-themed skin). Grep every skin
+  variant's sprite map for the button's key, not just the default one's
+  source file, before telling the user "just drop the file in and it'll
+  show." See `dead-asset-audit.md`'s note on skin-level overrides for the
+  concrete case this came from.
+- **Round-button icons (menu / paytable / info / settings / sound / autoplay /
+  +/−) must be THIN line icons, and this is the rule most likely to be lost by
+  recolouring.** They render at ~30–48px inside a plate's dark recess, so heavy
+  strokes, pill-shaped fills that touch, solid glyphs with no holes, and a soft
+  glow all collapse into blobs: paytable's rows fused into one slab, menu's
+  three bars into a block, settings into a solid flower. It hit Capo Nostra
+  (redrawn 2026-09-14) and then Hard Time a day later, because Hard Time's set
+  was made by recolouring Capo's icons to steel — from the PRE-redraw copy.
+  Brief them with numbers, not "clean icons":
+  - stroke ≈ 7–8% of the canvas, every gap at least one stroke wide;
+  - holes stay open (settings has a punched hub, info a separate dot);
+  - a thin dark edge (~2% each side) for contrast on the dark recess, no glow;
+  - all ink within 0.78 of the half-canvas, so the `buttonIconScale` 0.70
+    fallback lands every mark at ~0.48–0.53 of the button radius. MEASURE the
+    new plate's recess edge (walk a row of `button_plate.png` from the centre
+    until luminance jumps) — Capo's ends at 0.64, Hard Time's at 0.74 — and
+    keep the ink inside it;
+  - autoSpin: override `uiTheme.iconScales.autoSpin = 0.7` — UiButton's own
+    0.82 default makes its arrow both oversized and heavier than its neighbours.
+
+  Don't wait for art for these: they are pure geometry. Copy the source
+  game's drawer (`CapoNostra/design/generate_capo_ui_icons.py`, ported as
+  `HardTime/design/generate_hard_time_ui_icons.py`), point `APP`, the plate
+  path and a LEGACY folder at the new game, and sample the icon colour from
+  the backed-up old file — never from the shipped folder, or a second run
+  samples its own output. It prints each icon's ink radius and writes an
+  old-vs-new preview on the real plate at 64px and 36px; look at the 36px row.
+  Spin (drawn by `ButtonBetSpinIcon`) and turbo (a vector bolt) are not
+  sprites and are not covered by it.
+  **On any reskin, before recolouring an inherited asset set, check whether
+  the source game has since redrawn it** (look for a `generate_*` script or a
+  `_legacy_assets/` copy in the source's `design/`) — recolouring takes the
+  geometry you copied at scaffold time, not the source's current geometry.
 
 ## 7. Backgrounds (per mode/tier if the source game varies them)
 
@@ -106,6 +159,8 @@ an assumption:
       ladder matching pay order
 - [ ] Low-pay coverage/bright-area ≤ high-pay's minimum (see §2)
 - [ ] No hue from the OLD theme survives anywhere in the shipped set
+- [ ] Bet-bar round-button icons composited on the real plate at 36px: every
+      paytable row, menu bar and settings hole still separate (§6)
 - [ ] Store tile/thumbnail reads as the new theme shrunk to ~200px
 - [ ] `pnpm run build` green including any bespoke asset-consistency guards
 - [ ] Played through at least once per feature tier with the final art

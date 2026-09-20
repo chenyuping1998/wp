@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
-	import { base } from '$app/paths';
 	import { GlobalStyle } from 'components-ui-html';
-	import { Authenticate, LoaderStakeEngine, LoadI18n } from 'components-shared';
+	import { Authenticate, LoadI18n } from 'components-shared';
 	import Game from '../components/Game.svelte';
-	import WildPartyLoader from '../components/WildPartyLoader.svelte';
+	import IntroFeatures from '../components/ui/IntroFeatures.svelte';
 	import { setContext } from '../game/context';
 
 	import messagesMap from '../i18n/messagesMap';
@@ -13,25 +12,23 @@
 
 	const props: Props = $props();
 
-	let showYourLoader = $state(false);
-	// pixi canvas text can't late-bind fonts — hold the game until Cinzel is
-	// registered (the brand splash covers the wait)
+	// Pixi canvas text can't late-bind fonts — it measures glyph advances when it
+	// builds a Text and never re-measures — so hold the game until the face is
+	// resident. The brand splash covers the wait.
+	//
+	// This used to construct the FontFace by hand. It no longer needs to: the
+	// face is declared in app.html and the file is preloaded there, so all that
+	// is left is waiting for it. Constructing a second FontFace for the same
+	// family on top of that just registered a duplicate.
 	let fontsReady = $state(false);
 	onMount(async () => {
 		try {
-			const face = new FontFace('Cinzel', `url(${base}/fonts/cinzel.woff2)`, {
-				weight: '100 900',
-			});
-			await face.load();
-			document.fonts.add(face);
+			await document.fonts.load('900 16px "Orbitron"');
 		} catch {
-			// fall back to Georgia/serif silently
+			// fall back to the system sans silently
 		}
 		fontsReady = true;
 	});
-
-	// static/*.gif — must use kit base path (Stake hosts games under a subpath, not site root)
-	const loaderUrlStakeEngine = `${base}/stake-engine-loader.gif`;
 
 	setContext();
 </script>
@@ -46,10 +43,25 @@
 	</Authenticate>
 </GlobalStyle>
 
-<LoaderStakeEngine src={loaderUrlStakeEngine} oncomplete={() => (showYourLoader = true)} />
+<!--
+	One opening card, not two.
 
-{#if showYourLoader}
-	<WildPartyLoader />
-{/if}
+	The boot used to be: Stake Engine's platform splash, then the studio loader,
+	then the pixi loading screen with its own PRESS ANYWHERE TO CONTINUE — three
+	full-screen pages and two taps before the reels. Certification is explicit that
+	the platform splash must go while the studio mark stays (two different things,
+	easy to delete both by accident), and every competitive slot holds a single
+	card. IntroFeatures is that card: it carries the studio mark, the wordmark, the
+	volatility read and the three features, and its tap clears the pixi loader's
+	gate as well as its own.
+
+	The pixi loading screen still runs underneath — it owns asset loading and the
+	progress bar — but it is never seen, because this card refuses the tap until
+	loading has finished.
+
+	WildPartyLoader.svelte and static/stake-engine-loader.gif are both left in the
+	tree so either can be put back in one line.
+-->
+<IntroFeatures />
 
 {@render props.children()}

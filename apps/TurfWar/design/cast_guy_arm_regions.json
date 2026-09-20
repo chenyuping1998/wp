@@ -1,0 +1,38 @@
+{
+  "about": "Where the man's arms are, traced 2026-09-18 off the two drawings in RIG px (the textures are 512x1024, same as the rigs). Read by design/check_cast_motion.mjs rule 11. Traced independently of design/rig/build_turf_rigs.py's part polygons, so the gate is not checking the builder against itself. Arm polygons cover sleeve, forearm and fist only (the bat is a prop and is left out). 'anchored' regions are reported but not gated: both pocket hands are pinned to the hips on purpose (the rig builder's 'hand in pocket stays put'). 'spill' is hoodie beside each arm that should stay on the spine. guy_kingpin.png shares guy_feature.png's alpha to the pixel (0 of 92811 px differ, measured 2026-09-18), so one trace serves both. Belongs to the DRAWINGS: redraw either pose and re-trace it.",
+  "own_floor": 0.5,
+  "poses": {
+    "base": {
+      "textures": ["sprites/turfCast/guy.png"],
+      "arms": [
+        { "label": "left sleeve, upper", "side": "l", "poly": [[214, 212], [240, 222], [250, 250], [246, 330], [240, 372], [196, 372], [196, 320], [204, 262]] },
+        { "label": "left forearm", "side": "l", "poly": [[192, 372], [226, 372], [220, 425], [190, 425]] },
+        { "label": "left fist", "side": "l", "poly": [[172, 420], [214, 420], [210, 470], [178, 478]] },
+        { "label": "right sleeve, upper", "side": "r", "poly": [[340, 215], [360, 232], [372, 280], [374, 372], [342, 372], [340, 300]] },
+        { "label": "right forearm", "side": "r", "poly": [[340, 372], [372, 372], [370, 425], [344, 425]] }
+      ],
+      "anchored": [
+        { "label": "right hand in pocket", "side": "r", "poly": [[322, 425], [356, 425], [354, 470], [322, 470]] }
+      ],
+      "spill": [
+        { "label": "hoodie beside left arm", "side": "l", "poly": [[258, 260], [290, 260], [290, 400], [258, 400]] },
+        { "label": "hoodie beside right arm", "side": "r", "poly": [[300, 260], [330, 260], [330, 400], [300, 400]] }
+      ]
+    },
+    "shoulder": {
+      "textures": ["sprites/turfCast/guy_feature.png", "sprites/turfCast/guy_kingpin.png"],
+      "arms": [
+        { "label": "left sleeve, raised", "side": "l", "poly": [[208, 222], [262, 238], [262, 300], [240, 330], [190, 332], [184, 290], [196, 245]] },
+        { "label": "left fist", "side": "l", "poly": [[214, 190], [256, 192], [262, 212], [250, 236], [222, 238], [212, 215]] },
+        { "label": "right sleeve", "side": "r", "poly": [[360, 228], [384, 250], [398, 300], [402, 400], [392, 440], [372, 440], [364, 330], [356, 262]] }
+      ],
+      "anchored": [
+        { "label": "right hand in pocket", "side": "r", "poly": [[344, 430], [372, 430], [370, 468], [344, 468]] }
+      ],
+      "spill": [
+        { "label": "hoodie beside left arm", "side": "l", "poly": [[268, 280], [295, 280], [295, 420], [268, 420]] },
+        { "label": "hoodie beside right arm", "side": "r", "poly": [[320, 280], [350, 280], [350, 420], [320, 420]] }
+      ]
+    }
+  }
+}

@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import { CYAN, INK, WHITE_HOT } from '../game/palette';
 	import type { Reel } from '../game/stateGame.svelte';
 	import { REEL_PADDING, SYMBOL_SIZE } from '../game/constants';
 
@@ -35,7 +36,7 @@
 		xRatio: (i % 5) / 4 - 0.5,
 		speed: 2400 + (i % 3) * 600,
 		size: 14 + (i % 3) * 8,
-		color: i % 2 ? 0xfff07a : 0xff8ede,
+		color: i % 2 ? CYAN : WHITE_HOT,
 	}));
 
 	// textured soft motes instead of hard vector dots (pulse drives re-eval)
@@ -75,7 +76,7 @@
 		const colLeft = left + props.reel.reelIndex * SYMBOL_SIZE;
 		const alpha = 0.42 * dimFade;
 		g.clear();
-		g.beginFill(0x0d0212, alpha);
+		g.beginFill(INK, alpha);
 		if (colLeft > left) g.drawRect(left, top, colLeft - left, board.height);
 		const colRight = colLeft + SYMBOL_SIZE;
 		if (colRight < left + board.width) {
@@ -110,12 +111,12 @@
 			const glowAlpha = 0.14 + 0.24 * pulse;
 			const coreAlpha = 0.16 + 0.32 * pulse;
 			g.clear();
-			g.beginFill(0xff66cc, glowAlpha);
+			g.beginFill(CYAN, glowAlpha);
 			g.drawRoundedRect(-SYMBOL_SIZE * 0.22, -SYMBOL_SIZE * 0.72, SYMBOL_SIZE * 0.44, SYMBOL_SIZE * 1.44, 22);
 			g.endFill();
-			g.lineStyle(3, 0xfff07a, coreAlpha);
+			g.lineStyle(3, CYAN, coreAlpha);
 			g.drawRoundedRect(-SYMBOL_SIZE * 0.2, -SYMBOL_SIZE * 0.68, SYMBOL_SIZE * 0.4, SYMBOL_SIZE * 1.36, 20);
-			g.lineStyle(1.6, 0xffffff, 0.25 + 0.35 * pulse);
+			g.lineStyle(1.6, WHITE_HOT, 0.25 + 0.35 * pulse);
 			g.drawRoundedRect(-SYMBOL_SIZE * 0.17, -SYMBOL_SIZE * 0.63, SYMBOL_SIZE * 0.34, SYMBOL_SIZE * 1.26, 18);
 			g.lineStyle(0);
 		}}

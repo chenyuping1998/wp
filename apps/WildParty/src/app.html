@@ -1,11 +1,65 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" style="overflow: hidden">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
-		<link rel="stylesheet" href="https://use.typekit.net/aba0ebl.css" />
+		<!--
+			The Stake template's Adobe Typekit stylesheet (proxima-nova) used to be
+			loaded here. It is domain-locked to the template's account, so off that
+			origin it 404s and every Text silently fell back — which is what this game
+			was actually shipping. The same trap is documented in the sibling
+			apps/HotMiami.
+
+			Orbitron replaces it: self-hosted, so there is no third-party request to
+			fail, and SIL Open Font Licence (static/fonts/Orbitron-OFL.txt), which
+			permits commercial use and embedding. See src/game/fonts.ts for why this
+			face and not the Cinzel the code used to name.
+
+			Preloaded because Pixi measures glyphs when it builds a Text, and a face
+			that arrives late leaves the first frame laid out for fallback metrics.
+		-->
+		<link
+			rel="preload"
+			href="%sveltekit.assets%/fonts/Orbitron.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin
+		/>
+		<style>
+			/*
+				Variable font, 400..900 axis — the range is declared rather than a
+				single weight so a real bold is used instead of a synthesised one.
+			*/
+			@font-face {
+				font-family: 'Orbitron';
+				src: url('%sveltekit.assets%/fonts/Orbitron.ttf') format('truetype-variations');
+				font-weight: 400 900;
+				font-style: normal;
+				font-display: block;
+			}
+		</style>
 		<meta name="viewport" content="width=device-width" />
 		%sveltekit.head%
+		<!--
+			display:block on the canvas, and overflow:hidden on <html> as well as
+			<body>.
+
+			The document ran ~5px taller than the viewport, so the page was
+			scrollable — the rubber-band drag certification checks for under "main
+			game frame should not be scrollable". The cause was not a stray margin:
+			a canvas is display:inline by default, so it sits on a text baseline and
+			the line box reserves descender space underneath it. display:block takes
+			the canvas out of the line box and the phantom row goes with it.
+
+			overflow:hidden on the root is kept as a backstop. It only blocks user
+			scrolling, not programmatic scrollTo, which is why it was not a fix on
+			its own.
+		-->
+		<style>
+			canvas {
+				display: block;
+			}
+		</style>
 	</head>
 	<body style="margin: 0; padding: 0; overflow: hidden; background-color: black">
 		<div>%sveltekit.body%</div>

@@ -82,10 +82,15 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_winlevel_small' });
 
 		// Build win line data — each win has a lineIndex from meta
+		// symbol/kind/win ride along so the readout can name what paid — see
+		// WinLines.svelte for why the lines are grouped rather than cycled.
 		const winLineData = bookEvent.wins.map((win) => ({
 			lineIndex: win.meta.lineIndex,
 			positions: win.positions,
 			symbolCount: win.positions.length,
+			symbol: win.symbol,
+			kind: win.kind,
+			win: win.win,
 		}));
 
 		// In free game: show all lines instantly; in base: stagger

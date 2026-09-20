@@ -29,11 +29,21 @@
 	// the intro/outro text layout is unchanged after swapping the spine for
 	// the ornate sliced panel
 	const CONTENT_SCALE = 0.7;
-	// ornate backdrop plate (fs_ornate_panel.png, 1.4:1) — sized/positioned to
-	// hug the YOU WON + number block
+	// Ornate backdrop plate (fs_ornate_panel.png), sized to hug the YOU WON +
+	// number block.
+	//
+	// The plate's chrome bezel occupies the top 10% of the source image, so the
+	// usable interior starts a tenth of PANEL_H below its top edge — at the
+	// previous 500/40 that put the inner edge at y=-160 while YOU WON spanned
+	// -194..-136, i.e. the headline's upper half sat on the bezel. The plate is
+	// grown upwards (bottom edge held, so FREE SPINS below is unaffected) rather
+	// than the text pushed down, because pushing it down runs it into the number.
 	const PANEL_W = 700;
-	const PANEL_H = 500;
-	const PANEL_Y = 40;
+	const PANEL_H = 548;
+	const PANEL_Y = 17;
+	// Interior top edge, in the local space the children lay out in, is
+	// PANEL_Y - PANEL_H * 0.4 = -202. Text in FreeSpinIntro/FreeSpinOutro must
+	// stay below it.
 </script>
 
 <MainContainer>

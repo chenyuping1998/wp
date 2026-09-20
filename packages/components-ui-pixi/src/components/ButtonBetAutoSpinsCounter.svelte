@@ -21,18 +21,27 @@
 		height={UI_BASE_SIZE * 0.9}
 		borderRadius={50}
 		backgroundColor={0x000000}
-		borderColor={0xffd26a}
+		borderColor={uiTheme.buttonBorder}
 		borderWidth={5}
 	/>
+	<!--
+		The remaining-spins badge is a NUMBER, so it takes valueFontFamily where a
+		game supplies one, and the game's own colours everywhere it used to carry
+		the Wild Party template's constants: a 0xffd26a amber ring and a 0x6d2692
+		purple outline, hard-coded, drawn over every game's bet bar. Capo Nostra has
+		no purple in it at all and that outline was the only one on its strip.
+		uiTheme.buttonBorder / valueStroke default to the template's own plum-gold
+		pair, so a game that themes nothing is close to unchanged.
+	-->
 	<Text
 		anchor={0.5}
 		text={stateBet.autoSpinsCounter === Infinity ? '∞' : stateBet.autoSpinsCounter}
 		style={{
-			fontFamily: uiTheme.fontFamily,
+			fontFamily: uiTheme.valueFontFamily ?? uiTheme.fontFamily,
 			fill: WHITE,
-			fontWeight: uiTheme.fontWeight,
+			fontWeight: uiTheme.valueFontWeight ?? uiTheme.fontWeight,
 			fontSize: fontSizeMultiplier * UI_BASE_SIZE * 0.2,
-			stroke: 0x6d2692,
+			stroke: uiTheme.valueStroke,
 			strokeThickness: 4,
 		}}
 	/>

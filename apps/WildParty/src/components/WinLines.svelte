@@ -8,17 +8,27 @@
 		lineIndex: number;
 		positions: { reel: number; row: number }[];
 		symbolCount: number;
+		/** Maths symbol code, e.g. 'L2'. */
+		symbol: string;
+		/** How many in the run — 3, 4 or 5. */
+		kind: number;
+		/** This line's win, in book units (100 = 1x the stake). */
+		win: number;
 	};
 </script>
 
 <script lang="ts">
-	import { Graphics, Container } from 'pixi-svelte';
+	import { Graphics, Container, Text } from 'pixi-svelte';
 	import { waitForTimeout } from 'utils-shared/wait';
+	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 
 	import BoardContainer from './BoardContainer.svelte';
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE, REEL_PADDING } from '../game/constants';
+	import { SYMBOL_SIZE, REEL_PADDING, BOARD_DIMENSIONS } from '../game/constants';
 	import config from '../game/config';
+	import { symbolLabel } from '../game/symbolLabels';
+	import { GAME_FONT } from '../game/fonts';
+	import { WHITE_HOT, CYAN, INK } from '../game/palette';
 
 	const context = getContext();
 
@@ -38,11 +48,31 @@
 		points: { x: number; y: number }[];
 	};
 
-	const WIN_LINE_STEP_DELAY_FAST = 70;
-	const WIN_LINE_STEP_DELAY_NORMAL = 140;
+	// One beat per SYMBOL GROUP, not per line.
+	//
+	// This used to flick through one line every 140ms with nothing naming them,
+	// and certification could not reconcile the payout against the pay table —
+	// reasonably, because the screen never said which symbol had paid or how
+	// much. A 35-payline board reaches 35 simultaneous line wins, so simply
+	// slowing the cycle down was not available: at a readable pace that is half a
+	// minute of animation.
+	//
+	// Lines that won on the same symbol and the same run length pay identically,
+	// so they are one fact, not thirty-five. Grouping on (symbol, kind) collapses
+	// every book in this game to at most 5 groups and 92% of them to 3 — which
+	// fits comfortably at a pace someone can actually read.
+	const GROUP_DELAY_FAST = 420;
+	const GROUP_DELAY_NORMAL = 800;
 	const WIN_LINE_END_DELAY = 80;
 
+	type WinGroup = { key: string; lines: DrawnLine[]; label: string };
+
+	// Centred on the board, just below the bottom row.
+	const READOUT_X = (SYMBOL_SIZE * BOARD_DIMENSIONS.x) / 2;
+	const READOUT_Y = SYMBOL_SIZE * BOARD_DIMENSIONS.y + 34;
+
 	let drawnLines = $state<DrawnLine[]>([]);
+	let readout = $state('');
 	let show = $state(false);
 
 	// Symbol center X: same formula as getSymbolX in utils.ts
@@ -60,48 +90,66 @@
 	context.eventEmitter.subscribeOnMount({
 		winLinesShow: async ({ wins, fast }) => {
 			drawnLines = [];
+			readout = '';
 			show = true;
 
-			const allLines: DrawnLine[] = [];
+			// Group first, then build geometry, so the order the player sees is
+			// the order the groups were found rather than payline order.
+			const groups: WinGroup[] = [];
+			const byKey = new Map<string, WinGroup>();
 
 			for (const win of wins) {
-				const lineIdx = win.lineIndex;
-				const color = LINE_COLORS[(lineIdx - 1) % LINE_COLORS.length];
-
-				// Full payline path
-				const paylineRows: number[] =
-					(config.paylines as Record<string, number[]>)[String(lineIdx)];
+				const paylineRows: number[] = (config.paylines as Record<string, number[]>)[
+					String(win.lineIndex)
+				];
 				if (!paylineRows) continue;
 
-				const points: { x: number; y: number }[] = [];
-				for (let reel = 0; reel < paylineRows.length; reel++) {
-					points.push({
-						x: symbolCenterX(reel),
-						y: symbolCenterYFromPayline(paylineRows[reel]),
-					});
+				const points = paylineRows.map((row, reel) => ({
+					x: symbolCenterX(reel),
+					y: symbolCenterYFromPayline(row),
+				}));
+				const line: DrawnLine = {
+					lineIndex: win.lineIndex,
+					color: LINE_COLORS[(win.lineIndex - 1) % LINE_COLORS.length],
+					points,
+				};
+
+				const key = `${win.symbol}x${win.kind}`;
+				const existing = byKey.get(key);
+				if (existing) {
+					existing.lines.push(line);
+					continue;
 				}
-				allLines.push({ lineIndex: lineIdx, color, points });
+				const group: WinGroup = { key, lines: [line], label: '' };
+				byKey.set(key, group);
+				groups.push(group);
 			}
 
-			if (fast) {
-				for (let i = 0; i < allLines.length; i++) {
-					drawnLines = [allLines[i]];
-					await waitForTimeout(WIN_LINE_STEP_DELAY_FAST);
-				}
-			} else {
-				for (let i = 0; i < allLines.length; i++) {
-					drawnLines = [allLines[i]];
-					await waitForTimeout(WIN_LINE_STEP_DELAY_NORMAL);
-				}
+			// Label last, so it can state how many lines the group ended up with.
+			for (const group of groups) {
+				const win = wins.find((w) => `${w.symbol}x${w.kind}` === group.key);
+				if (!win) continue;
+				const amount = bookEventAmountToCurrencyString(win.win);
+				const lines = group.lines.length > 1 ? ` · ${group.lines.length} lines` : '';
+				group.label = `${symbolLabel(win.symbol)} ×${win.kind}  ${amount}${lines}`;
+			}
+
+			const delay = fast ? GROUP_DELAY_FAST : GROUP_DELAY_NORMAL;
+			for (const group of groups) {
+				drawnLines = group.lines;
+				readout = group.label;
+				await waitForTimeout(delay);
 			}
 			await waitForTimeout(WIN_LINE_END_DELAY);
 		},
 		winLinesHide: () => {
 			show = false;
 			drawnLines = [];
+			readout = '';
 		},
 		winLinesClear: () => {
 			drawnLines = [];
+			readout = '';
 		},
 	});
 </script>
@@ -126,6 +174,40 @@
 					}}
 				/>
 			{/each}
+
+			<!-- Names the group the lit lines belong to: which symbol, how long a
+			     run, and what it paid. Sits on the board's bottom edge, over the
+			     housing rather than over a cell, so it never covers a symbol the
+			     player is being asked to read. -->
+			{#if readout}
+				<Container x={READOUT_X} y={READOUT_Y}>
+					<Graphics
+						draw={(g) => {
+							const w = Math.max(240, readout.length * 15 + 48);
+							g.clear();
+							g.beginFill(INK, 0.82);
+							g.lineStyle(2, CYAN, 0.65);
+							g.drawRoundedRect(-w / 2, -24, w, 48, 24);
+							g.endFill();
+						}}
+					/>
+					<Text
+						anchor={0.5}
+						text={readout}
+						style={{
+							fontFamily: GAME_FONT,
+							fontSize: 26,
+							fontWeight: '700',
+							fill: WHITE_HOT,
+							letterSpacing: 1.5,
+							dropShadow: true,
+							dropShadowColor: CYAN,
+							dropShadowBlur: 10,
+							dropShadowDistance: 0,
+						}}
+					/>
+				</Container>
+			{/if}
 		</Container>
 	</BoardContainer>
 {/if}

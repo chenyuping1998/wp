@@ -52,8 +52,13 @@
 
 	const accent = $derived(props.accent ?? { border: uiTheme.panelBorder, label: uiTheme.labelFill });
 
+	// The caption is a WORD and the value is a NUMBER, and a game may want them in
+	// different faces — see uiTheme.valueFontFamily. Both keys are null by default
+	// and resolve to exactly what was here before: fontFamily, and no weight at
+	// all on either style.
 	const labelStyle = $derived({
 		fontFamily: uiTheme.fontFamily,
+		...(uiTheme.labelFontWeight ? { fontWeight: uiTheme.labelFontWeight } : {}),
 		fontSize: UI_BASE_FONT_SIZE,
 		fill: accent.label,
 		stroke: uiTheme.valueStroke,
@@ -62,7 +67,8 @@
 
 	// uniform across Balance / Win / Bet — never tinted by accent
 	const valueStyle = $derived({
-		fontFamily: uiTheme.fontFamily,
+		fontFamily: uiTheme.valueFontFamily ?? uiTheme.fontFamily,
+		...(uiTheme.valueFontWeight ? { fontWeight: uiTheme.valueFontWeight } : {}),
 		fontSize: UI_BASE_FONT_SIZE,
 		fill: uiTheme.valueFill,
 		stroke: uiTheme.valueStroke,

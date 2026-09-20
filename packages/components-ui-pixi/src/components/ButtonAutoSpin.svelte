@@ -6,11 +6,15 @@
 	import UiButton from './UiButton.svelte';
 	import { getContext } from '../context';
 	import { UI_BASE_SIZE } from '../constants';
+	import { uiTheme } from '../theme.svelte';
 	import ButtonBetAutoSpinsCounter from './ButtonBetAutoSpinsCounter.svelte';
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const context = getContext();
-	const sizes = { width: UI_BASE_SIZE, height: UI_BASE_SIZE };
+	const sizes = $derived({
+		width: UI_BASE_SIZE * uiTheme.railButtonScale,
+		height: UI_BASE_SIZE * uiTheme.railButtonScale,
+	});
 	const active = $derived(stateBetDerived.hasAutoBetCounter());
 	const cannotAfford = $derived(!stateBetDerived.isBetCostAvailable());
 	const explains = $derived(stateConfig.explainInsufficientBalance);

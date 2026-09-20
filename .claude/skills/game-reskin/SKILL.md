@@ -1,6 +1,18 @@
 ---
 name: game-reskin
-description: Turning an existing Stake Engine slot in this `wp` monorepo into a new, uploadable game — new theme, new mechanics, new art, same proven engine. Use this whenever a user wants to reskin/fork an existing app under `wp/apps/*` into a new one, from the first "what should we call it" through the final upload zips. Covers the whole pipeline in order: confirming the source and theme, spec changes, scaffolding, math, the art brief, frontend build and theming, wiring in art the user generates, fine-tuning, pre-submission QA, thumbnail, and packaging. Built from shipping Capo Nostra out of Hot Miami, then extended with the six findings from the Stake review that passed Hot Miami — five of which are generic to this codebase and will be raised against any reskin unless fixed first. Every gotcha in here cost real turns the first time.
+description: >-
+  Turning an existing Stake Engine slot in this `wp` monorepo into a new,
+  uploadable game — new theme, new mechanics, new art, same proven engine. Use
+  this whenever a user wants to reskin/fork an existing app under `wp/apps/*`
+  into a new one, from the first "what should we call it" through the final
+  upload zips. Covers the whole pipeline in order: confirming the source and
+  theme, spec changes, scaffolding, math, the art brief, frontend build and
+  theming, wiring in art the user generates, fine-tuning, pre-submission QA,
+  thumbnail, and packaging. Built from shipping Capo Nostra out of Hot Miami,
+  then extended with the six findings from the Stake review that passed Hot
+  Miami — five of which are generic to this codebase and will be raised against
+  any reskin unless fixed first. Every gotcha in here cost real turns the first
+  time.
 ---
 
 # Reskinning a Stake Engine slot
@@ -46,6 +58,33 @@ here means redoing everything downstream of the guess:
    in writing as a short diff table before touching code — it is the spec for
    every phase after it, and it is worth showing back to the user once as
    "here's what I understood, confirm or correct" before scaffolding.
+
+### The user's vocabulary — pin these before acting on a tuning request
+
+Two words in this project mean something narrower than their generic slot sense,
+and reading them the generic way cost **five** optimizer re-runs on Turf War
+before the intent was nailed down. When the user asks to "lower X to get more
+Y", confirm which of these they mean before touching a slice:
+
+- **"odds"** = the **pay-table payout values themselves** — the per-combination
+  multipliers in `game_config.py`'s `self.paytable` (the 5×/4×/3× numbers the
+  in-game pay-table modal shows). NOT the win hit-rate, NOT an optimizer slice
+  hit-rate. "Lower the odds" → cut the `self.paytable` dict values, keeping the
+  ladder monotonic (H1 > … > L). `sync_math_config.py` then propagates the new
+  table to the frontend's `config.ts` and the pay-table modal automatically;
+  the rules-modal prose does not restate symbol pay values, so it needs no edit.
+- **"feature"** = the game's **signature mechanics** (for Turf War: the
+  expanding wild and the full-board Big Score frame). NOT the free-spin trigger
+  rate. "Trade odds for more feature" → cut the pay-table AND make those
+  mechanics land more often (reel special-symbol density in `make_reels.py`, the
+  full-board-frame chance in `game_config.py`) — leave the `freegame_*` trigger
+  hit-rates in `game_optimization.py` alone unless the user explicitly says
+  "more free spins".
+
+The optimizer holds each mode's RTP regardless, so cutting the pay-table on its
+own just makes an ordinary line win a smaller number on screen and pushes that
+return into whatever the "more feature" ask points at — within the `basegame`
+slice, not by moving the base/feature split.
 
 ## The workflow
 
@@ -115,6 +154,16 @@ Two requirements that are easy to state and easy to drop by the last art pass:
   mesh rig needs (see that skill's own notes on why a tight-armed pose drags
   hands into the torso at scale), and say so in the art brief if the pose
   needs adjusting for it.
+- **The Buy Bonus CTA button in the bet bar is its own asset, separate from
+  the Buy Bonus modal's card frames** — brief both in the same pass, not just
+  the modal (Capo Nostra's brief covered the cards from day one and the
+  bet-bar button only got added weeks later, on request). And before telling
+  the user new art for it will just show up once dropped in: check every UI
+  skin the game defines, not only the default one — a "platform chrome"
+  variant can silently clear the sprite slot that points at it, so a
+  perfectly good asset renders as a flat rect regardless. See
+  `references/art-brief-template.md` §6 and `references/dead-asset-audit.md`
+  for the concrete mechanism.
 
 ### 4. Frontend: style match
 
@@ -137,6 +186,12 @@ are easiest to leave in by accident. Match the NEW theme in:
   `references/dead-asset-audit.md` for how to find the ones an eyeball pass
   misses (win-line palettes, symbol-land flash colours, splash-panel plate
   colours borrowed wholesale from a different game's own asset).
+- **Button icons.** The bet-bar round-button icons have to be thin line icons
+  with open gaps, or they blob at 30–48px. This was reported on Capo Nostra and
+  then again on Hard Time, whose icons were Capo's old heavy set recoloured.
+  Redraw them with the source game's icon drawer instead of recolouring, and
+  check the source for a later redraw before copying any asset set. Full rules
+  and the script are in `references/art-brief-template.md` §6.
 - **Character.** Built via `mesh-cast-rig`. It has to actually move — see
   that skill for the motion-table discipline (appendages carry the motion,
   the body barely moves; a body that sways as far as its limbs reads as a
@@ -208,10 +263,47 @@ the real examples found doing this for Capo Nostra. Do this pass LAST, after
 art integration is done, because earlier passes will have false negatives on
 anything not wired in yet.
 
+**Audit every player-facing description against the published BOOKS, not the
+spec.** A reskin rewrites the mechanic, and the copy gets written from the spec
+— which says what was *intended*. Hard Time's copy passed every guard and still
+promised four things the game does not do (listed in §9). Every surface that
+describes the game, all read together so they cannot disagree:
+
+- loading-screen tips
+- the opening intro / INFO card
+- the game-rules modal and the pay table
+- the feature splash text (`featureTiers.ts` summary + splash)
+- the buy-menu labels and descriptions
+- the submission description (§9)
+
+For each sentence ask "which book event proves this?", then write a short
+script that walks all four `books_*.jsonl.zst` and measures it. Do not trust
+`design/check_rules_match_wins.mjs` for this: it is inherited, defaults to the
+SOURCE game's bundle path (`upload/HotMiami/math`), and models that game's
+mechanic. On Hard Time it reported 6,579 "mismatches", all from Hot Miami's
+books.
+
 Also check at normal and smallest supported sizes, and check whatever the
 shared bottom-bar menu can overlap (Capo Nostra's Buy Bonus button sat on top
 of the paytable/info icons when the menu opened — a shared-component
 interaction, not something either game's own code visibly caused).
+
+**Look at the big-win banner with a busy board behind it.** This is the screen a
+reviewer stares at, and it is the one place two independently-correct dimming
+layers can multiply into something that looks broken: the win volley dims every
+cell that is not paying, the banner lays its own scrim over everything, and a
+cell at 0.38 under a 0.5 scrim reads as an empty slot. On Capo Nostra it looked
+like symbols were *vanishing* under EPIC WIN while the sticky frames on top of
+them stayed perfectly visible (frames are a separate overlay and take no dim) —
+which sent two rounds of investigation at the frames before anyone looked at the
+board layer. See `stake-engine-slot`'s Svelte-5 traps section for the root cause
+and the `untrack` fix, and its debugging section for how to measure it.
+
+Set this up deliberately rather than hoping to catch it: force a top-tier feature
+book with several sticky frames, freeze the ticker the moment the banner reaches
+full opacity, and check every cell has its symbol. A reskin inherits this whole
+mechanism unchanged, so if the source game has the bug, yours does too — Turf War
+had it byte-for-byte from Capo Nostra.
 
 ### 7. Thumbnail
 
@@ -219,6 +311,35 @@ Platform-composited layers (BG/FG/logo), no burned-in title or provider text
 per Stake's own convention — see the source game's thumbnail files as the
 reference for what "correct" already looks like, since this part rarely
 changes shape between reskins.
+
+Treat those layers literally. **FG contains only the main character or single
+theme hero cutout.** Do not put the game title, wordmark, provider logo,
+decorative typography, scenery, or a full-frame colour field in FG. Provider
+art stays in the separate provider-logo file; any platform title treatment
+stays outside FG. Export genuine RGBA transparency around the hero — a painted
+checkerboard is an opaque RGB image and fails even if it looks transparent in
+a preview. Inspect the file mode/alpha channel, not only the thumbnail viewer.
+
+**Do not derive the store BG by simply darkening an in-game night background.**
+The tile is reviewed at roughly 200 px, where a scene that looks atmospheric at
+1024 px can collapse into a near-black square. Design the thumbnail background
+as its own key-art layer with broad, readable value masses. A dark game may use
+overcast daylight, practical lights, pale architecture, or another theme-valid
+source of exposure; it does not need to reproduce the game's time of day.
+
+Before packaging, measure the final 1024×1024 BG after reducing it to 200×200
+using `scripts/check_thumbnail.py <BG> [FG]`. Unless the platform or user gives
+a different target, require all three background gates on an 8-bit Rec.709
+luminance scale:
+
+- mean luminance at least 80;
+- 10th-percentile luminance at least 35;
+- pixels below luminance 32 no more than 30%.
+
+Also inspect the BG+FG composite at 200×200. The subject, theme cue, and any
+platform title safe area must remain distinct without relying on zoom. A numeric pass does not
+replace this visual check; it prevents obviously underexposed tiles from
+reaching it. Record the measurements in the art status or handoff.
 
 ### 8. Package
 
@@ -230,6 +351,78 @@ playtest-only files in the upload build). Write or update a HANDOFF.md as you
 go, not retroactively — it is the only place the exact retarget numbers and
 the reasoning behind each scale_factor live, and reconstructing that after
 the fact from a diff is much slower than writing two sentences at the time.
+
+### 9. Submission description
+
+When the user asks for "a description for submission" / "送審用的描述" /
+"a blurb to introduce this game", produce it in **this exact shape** — it is
+what the user wants every time, so don't reinvent the format:
+
+- **Plain text in one copyable fenced block.** No `**bold**`, no `(MG)` /
+  `(FG)` / `(BB)` parenthetical tags on the headers — the header word alone.
+- **Sectioned, in this order**, each header on its own line with a blank line
+  under it: `Base Game` → the standalone signature mechanic if it has one
+  (e.g. `The Big Score`) → `Free Spins` → `Buy Bonus` → `RTP & Max Win`.
+- **Every number matches the shipped config** — grid size, paylines, each
+  multiplier range and cap, spins per tier, scatter counts, retrigger table,
+  buy costs, the full RTP spread (base %  → top-mode %, and the spread
+  figure), Max Win cap. Pull these from `game_config.py` / the optimizer
+  output, not from memory.
+- **Every CLAIM is checked against the published books, not just the
+  numbers.** The config says what *can* happen; the books say what the player
+  actually gets. The description must say the same thing as the in-game copy,
+  so run the §6 copy audit first and write this from the corrected copy. Four
+  wrong claims Hard Time shipped in-game and in its first description draft
+  (2026-09-16), each read straight off the spec or the config:
+  1. **"Multipliers on a line add together."** The SDK's
+     `multiplier_method="symbol"` skips multipliers of 1, so a ×1 cell adds
+     nothing: ×2 + ×1 pays ×2, not ×3. This hit 55–65% of multiplied wins.
+     Recompute `meta.multiplier` from the lit/framed cells for every win.
+  2. **"Multiplier range 1×–25×"** was the normal ladders' range. The
+     `wincap` distribution has its own top-heavy ladder, so 50× and 100×
+     really land in max-win rounds. Read ranges off the landing events across
+     ALL books, including the capped ones.
+  3. **"The tier opens with one Searchlight already lit."** The seed was a
+     symbol dropped onto free spin 1, and the frontend ignored `seedLights`.
+     Check what the board looks like at feature entry, not what the config
+     key is called.
+  4. **"The Scatter appears on all five reels."** True for the base strips
+     only; the free-game strip had Scatters on reels 3–5, so 4- and 5-Scatter
+     retriggers never occurred in 100k books. Check every strip the claim
+     covers.
+- **Register:** flat and factual, one paragraph per section, present
+  tense, no marketing adjectives.
+- **Length is a hard limit: ~150–190 words total, always** — whether or not
+  the user supplied a reference. The five sections above are the WHOLE
+  deliverable: no "Worth noting for review" appendix, no symbol list, no
+  social/replay/controls/fonts/turbo notes, no per-mode hit odds, no QA
+  claims. Hard Time's first draft (2026-09-15) ran ~900 words with all of
+  that and was sent back as "太長，字數像附圖就好". Count words before
+  handing it over.
+
+Example (Turf War):
+
+```
+Base Game
+
+Turf War is a 5×4 video slot with 14 fixed paylines, built around two core mechanics. Loot Bags land in 1×1, 2×2, or 3×3 sizes carrying a random multiplier (2×–100× on a single position, up to 10× on a 2×2, up to 8× on a 3×3) that applies to every payline crossing them; multiple Bags in one win stack additively. The Bruiser is an expanding Wild that appears on the three middle reels and fills its entire reel with Wilds before wins are evaluated — at most one per spin.
+
+The Big Score
+
+On any spin, in normal play or a feature, the whole grid can become a single 5×–50× Loot Bag.
+
+Free Spins
+
+Three tiers of free spins — Lookout (3 Scatters), Muscle (4 Scatters), and Kingpin (5 Scatters) — each award 10 spins with rising starting Bag counts and stickiness. In Kingpin, every reel a Bruiser fills stays Wild for the rest of the feature. Retriggers add 2/4/6/8 spins for 2/3/4/5 Scatters across all three tiers.
+
+Buy Bonus
+
+Every tier can also be entered directly via Buy Bonus at 100×, 500×, or 1000× the bet.
+
+RTP & Max Win
+
+RTP ranges from 93.58% (base) to 93.78% (Kingpin buy mode), with a spread of 0.20% across all four modes. Max Win is capped at 20,000× total bet in every mode.
+```
 
 ## Cross-cutting principles
 
@@ -247,6 +440,45 @@ enormous gaps that have nothing to do with the real timing. Front the tab
 before timing anything, or measure on a clock that keeps running regardless
 (the Web Audio clock, for instance, for anything sound-timing-related), and
 say explicitly in any report which one was used.
+
+**A fix that measures clean but the user still sees the bug means the probe is
+wrong, not the user.** Twice on one bug the reported evidence was "0 dimmed
+frames" and twice the user came back with a screenshot of the symptom. The
+measurement was honest and the code change was real; the probe was answering a
+narrower question than the one being asked (it sampled the sprites it could find
+rather than asking each board cell what it had, and it took a `min` over a set
+that legitimately contained half-alpha shadow copies). When this happens, do not
+re-fix the same theory harder — go and reproduce the user's exact screenshot
+first, then build the probe to distinguish the specific states that screenshot
+rules in and out. Ask what the evidence CANNOT tell apart.
+
+**When the same symptom survives two fixes, the second cause is usually in a
+different layer than the first.** Here the first cause was event ordering (the
+banner opened before the board's state was cleared) and the second was framework
+reactivity (the ease that cleared it re-armed its own clock every frame). Fixing
+ordering harder could never have worked. If two independent-looking attempts both
+fail, stop and enumerate every mechanism that can produce the symptom — for
+"something is invisible", that is at minimum: not mounted, `visible = false`,
+own alpha, an ancestor's alpha, occluded by a sibling drawn later, masked, or
+tinted to the background — and rule them out one at a time with a measurement
+that can actually separate them.
+
+**"I ported it to the sibling game" is a claim, and the only proof is a grep of
+the SIBLING's own built bundle.** A fix agreed as "do both games" was made in
+Capo Nostra and reported as done for both; Turf War still had the entire old
+five-rung reel-stop pitch ladder, and the user caught it by ear. Editing app A
+creates no pressure of any kind on app B — same repo, same file names, same
+comments describing the change, and B is untouched. So for every cross-app
+change, finish with a single command that would FAIL if the port were missing:
+
+    grep -rn "<the removed identifier>" apps/A/src apps/B/src   # expect: no hits
+    grep -o "<the new mapping>" apps/B/build/index.html         # expect: the new value
+
+Run it against the built output, not just `src` — a stale `build/` is how a
+correct source change still ships the old behaviour. And when the port also
+needs ASSETS (audio files, art), check the sibling's asset directory too: Turf
+War's code was ported while `win_tier_*.wav` existed only under Capo Nostra, so
+the reskin would have shipped code referring to sounds it did not have.
 
 **Nothing is inherited by default — everything is inherited unless replaced.**
 The scaffold step copies the OLD game byte-for-byte. Every subsequent phase's

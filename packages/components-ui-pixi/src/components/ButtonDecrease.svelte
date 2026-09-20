@@ -8,10 +8,14 @@
 	import { createBetRepeat, markBetChanged } from '../platformUx.svelte';
 	import { getContext } from '../context';
 	import { UI_BASE_SIZE } from '../constants';
+	import { uiTheme } from '../theme.svelte';
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const context = getContext();
-	const sizes = { width: UI_BASE_SIZE, height: UI_BASE_SIZE };
+	const sizes = $derived({
+		width: UI_BASE_SIZE * uiTheme.railButtonScale,
+		height: UI_BASE_SIZE * uiTheme.railButtonScale,
+	});
 	const options = $derived(stateConfig.betAmountOptions);
 	// See ButtonIncrease: the ladder when the server gives one, stepBet otherwise.
 	const smallest = $derived(options.length ? options[0] : stateConfig.minBet);

@@ -10,6 +10,13 @@ short** — and every one of them needed at least one iteration because the
 relationship between a config knob and its measured effect is not linear or
 obvious in advance.
 
+**Before you touch a slice: which knob does the request actually mean?** See
+SKILL.md's "The user's vocabulary" — on this project "odds" means the
+`self.paytable` payout values (cut the dict, don't touch slices) and "feature"
+means the signature mechanics (reel special-symbol density, full-board-frame
+chance), not the free-spin trigger rate. Turf War burned five optimizer runs
+before that was pinned down.
+
 ## The assertion to check before every run
 
 `OptimizationSetup.__init__` calls `verify_optimization_input`, which asserts

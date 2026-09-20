@@ -24,6 +24,7 @@
 	import { getContext } from '../game/context';
 	import { neonNumberStyle } from '../game/textStyles';
 	import winBanners from '../game/winBanners.json';
+	import { CHROME_LIGHT, GOLD_ACCENT, LIME, MAGENTA } from '../game/palette';
 
 	const context = getContext();
 
@@ -44,12 +45,20 @@
 		max: 0.3,
 	};
 	// presentation intensity scales with the tier
+	// The intensity ladder was already here; only the colours were off-palette
+	// (gold, pink, purple, orange-red, cyan — five hues from no particular
+	// system). They now climb the same ladder the printed banners do, so the
+	// light around the plaque and the plaque itself agree about which tier this
+	// is: chrome for the first two steps, then the accents, then gold.
+	//
+	// Gold arriving only at epic/max is the point — palette.ts reserves gold for
+	// money, so the tiers where it appears are the ones that feel like money.
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
-		big: { mult: 1, glowTint: 0xffd75e },
-		superwin: { mult: 1.15, glowTint: 0xff8ede },
-		mega: { mult: 1.3, glowTint: 0xb44dff },
-		epic: { mult: 1.5, glowTint: 0xff5a3c },
-		max: { mult: 1.8, glowTint: 0x7df0ff },
+		big: { mult: 1, glowTint: CHROME_LIGHT },
+		superwin: { mult: 1.15, glowTint: MAGENTA },
+		mega: { mult: 1.3, glowTint: LIME },
+		epic: { mult: 1.5, glowTint: GOLD_ACCENT },
+		max: { mult: 1.8, glowTint: 0xfff3cf },
 	};
 
 	let show = $state(false);
@@ -168,12 +177,19 @@
 		winUpdate: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
+			// Resolver armed before the animations start — the same race that froze
+			// the free-spin trigger (Board.svelte) and the room transition
+			// (Transition.svelte): a completion arriving between the start and the
+			// assignment calls the previous no-op and this never resolves.
+			const settled = waitForResolve<void>((resolve) => {
+				oncomplete = resolve;
+			});
 			if (emitterEvent.winLevelData.type === 'big') {
 				startShake();
 				startImpact();
 				startBannerFx();
 			}
-			await waitForResolve((resolve) => (oncomplete = resolve));
+			await settled;
 		},
 	});
 </script>

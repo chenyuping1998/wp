@@ -1,0 +1,38 @@
+{
+ "base": {
+  "hips": 1,
+  "waist": 0,
+  "chest": 0,
+  "neck": 0,
+  "head": 6,
+  "arm_l": 0,
+  "fore_l": 0,
+  "arm_r": 2,
+  "fore_r": 2,
+  "hair": 1
+ },
+ "feature": {
+  "hips": 6,
+  "waist": 1,
+  "chest": 2,
+  "neck": 0,
+  "head": 1,
+  "arm_l": 1,
+  "fore_l": 1,
+  "arm_r": 1,
+  "fore_r": 3,
+  "hair": 40
+ },
+ "kingpin": {
+  "hips": 6,
+  "waist": 1,
+  "chest": 2,
+  "neck": 0,
+  "head": 1,
+  "arm_l": 1,
+  "fore_l": 1,
+  "arm_r": 1,
+  "fore_r": 3,
+  "hair": 40
+ }
+}

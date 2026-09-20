@@ -11,14 +11,46 @@
 
 	const context = getContext();
 	const SPINE_SCALE = { width: 0.62, height: 0.66 };
-	// v3 ornate art frame (generate_frames_v3.mjs): window measures 83% x 61.5%
-	// of the art, so these draw scales put the inner window at the board size
-	// plus a 4% breathing gap
-	const SPRITE_SCALE = { width: 1.253, height: 1.015 };
-	// the art's window center sits 25px (art) below its canvas center
-	// (scales with the board: -16 at board width 600)
-	const Y_OFFSET = -21;
-	const POSITION_ADJUSTMENT = 1.01;
+
+	// Neon Y2K chrome housing (design/build_neon_y2k_assets.py). Both numbers are
+	// derived from the art, not tuned by eye — the build script prints the window
+	// geometry every run, so regenerating the frame tells you whether these still
+	// hold.
+	//
+	// Measured window: 83.9% x 79.6% of the 1494x946 art. Both scales are
+	// expressed against the board WIDTH — that is how the sprite below is sized —
+	// and target the board plus a 4% breathing gap:
+	//   width  = 1.04 / 0.839       = 1.240
+	//   height = 0.6 * 1.04 / 0.796 = 0.784
+	//
+	// Those window percentages are not what the generator produced. It drew a
+	// thick cabinet (window 67.5% of the art), which at this board size puts the
+	// housing at 1109px across a 1422px layout box — wide enough to run under the
+	// Buy Bonus CTA and the readout plates. The build script rebuilds the texture
+	// as a nine-patch so the bezel is thin relative to the window without any
+	// feature being cropped; see rebuild_frame_nine_patch(). The result draws at
+	// 893px, essentially the 902px footprint the side-rail layout was tuned for.
+	const SPRITE_SCALE = { width: 1.24, height: 0.784 };
+
+	// The rebuilt texture is very nearly window-centred (8 art-px high), so this
+	// is now almost nothing: 8 * 0.597 drawn scale = 5px.
+	const Y_OFFSET = 5;
+	// 1, not 1.01.
+	//
+	// This was a multiplier on the board's centre COORDINATE, which is not an
+	// offset — it scales with position, so it pushed the housing right and down by
+	// 1% of wherever the board happened to sit. At boardLayout().x = 711 that is
+	// 7.1 layout px, ~6px on screen. Measured off the running game: the symbol
+	// columns centred on 640 while frame_bg and frame_edge both centred on 646.
+	//
+	// Six pixels is small enough to look like "the symbols are not centred in
+	// their cells" rather than "the frame is off", which is exactly how it was
+	// reported — the reels were correct and the housing, with its cell lattice,
+	// was the thing lying.
+	//
+	// Whatever asymmetry in the old ornate art this was compensating for is gone
+	// with that art. The new housing is symmetrical by construction.
+	const POSITION_ADJUSTMENT = 1;
 
 	type AnimationName = 'reelhouse_glow_start' | 'reelhouse_glow_idle' | 'reelhouse_glow_exit';
 
@@ -69,9 +101,9 @@
 {/if}
 
 <!-- interior backdrop: sized to just cover the window so it never peeks out
-     from behind the ornate frame (art fill spans 1032x852 of its 1080x900) -->
+     from behind the housing -->
 <Sprite
-	key="frame_bg.png"
+	key="frameBg"
 	anchor={0.5}
 	x={context.stateGameDerived.boardLayout().x * POSITION_ADJUSTMENT}
 	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT}
@@ -80,7 +112,7 @@
 />
 
 <Sprite
-	key="frame_edge.png"
+	key="frameEdge"
 	anchor={0.5}
 	x={context.stateGameDerived.boardLayout().x * POSITION_ADJUSTMENT}
 	y={context.stateGameDerived.boardLayout().y * POSITION_ADJUSTMENT + Y_OFFSET}

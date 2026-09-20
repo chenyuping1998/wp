@@ -1,0 +1,13 @@
+cast_girl.png
+size: 863,3024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+girl_base
+bounds: 2,2,859,1509
+offsets: 0,0,859,1509
+index: -1
+girl_forearm
+bounds: 2,1513,859,1509
+offsets: 0,0,859,1509
+index: -1

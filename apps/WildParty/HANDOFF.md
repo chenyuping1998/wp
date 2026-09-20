@@ -1,6 +1,6 @@
 # Wild Party — 專案交接文件
 
-> 最後更新：2026-07-04（動畫手感四連修：粒子紋理化/win 曲線化/hit-stop/聽牌壓暗，見 §4.26）  
+> 最後更新：2026-08-21（Guidelines 10 項全數通過，**遊戲已上線**，見 §16.8–16.10）  
 > 涵蓋範圍：math-sdk 數學後端 + `WildParty_Front` 前端 + Stake 上架素材  
 > **Skill 路由：** `@wild-party-skill-guide`｜**交接：** `@WILD_PARTY_HANDOFF.md`
 
@@ -1242,3 +1242,238 @@ ls games/WildParty/design/foreground_wild_party.png
 ---
 
 *本文件由 Cursor Agent 依多輪對話與實際程式變更整理，供後續接手或在新對話中 `@WILD_PARTY_HANDOFF.md` 繼續開發。*
+
+---
+
+## 15. Neon Y2K 全面改版與首次送審（2026-08，本輪）
+
+> 本節記錄「重新開始做 Wild Party」那一輪的完整經過。上面 §1–§14 是更早的
+> math + 前端接線階段，路徑與結論多半仍成立，但視覺部分已被本節取代。
+
+### 15.1 範圍與定案
+
+使用者要求大改 UI／背景／圖騰／動畫，參考 GoBananas 與 HotMiami。經確認後定案：
+
+- 美術方向：**霓虹夜店 Y2K Disco**
+- 範圍：**只改視覺與演出，數學完全不動**
+
+規格與完整生圖題詞見 `design/REDESIGN_NEON_Y2K.md`。
+
+### 15.2 建立的系統
+
+| 檔案 | 作用 |
+|---|---|
+| `src/game/palette.ts` | 唯一色彩來源。`MAGENTA` / `LIME` / `CYAN` / `VIOLET`＋`CHROME_STOPS`；`GOLD_ACCENT` 保留給金額 |
+| `src/game/fonts.ts` | 自帶 Orbitron，並 `setFontKit(null)` 關掉 pixi-svelte 預設的 Typekit 請求 |
+| `src/game/uiTheme.ts` | 下方橫式投注列、九個手繪 icon（取代 emoji）、霓虹按鈕 |
+| `src/game/socialTerms.ts` | 社交模式用語集中管理 |
+| `src/components/ui/IntroFeatures.svelte` | 三格特色介紹的單張開場卡 |
+| `design/build_neon_y2k_assets.py` | 全部美術合成管線 |
+| `design/process_fg_audio.py` | 音訊裁切／循環／編碼管線 |
+| `design/make_play_harness.mjs` | 本地試玩殼（見 15.4） |
+
+**顏色語意**：青＝聽牌／系統提示，萊姆＝免費遊戲，洋紅＝Wild 與主要動作，金＝只用於金錢。
+
+### 15.3 修掉的功能性 bug（都不是視覺問題）
+
+| 症狀 | 真正原因 |
+|---|---|
+| 免費遊戲觸發後整輪凍結數分鐘 | `symbolState='win'` 先於 resolver 掛載，`complete` 落在兩行之間就呼叫到舊的 no-op callback。改成先掛 resolver 再改狀態，並加 4 秒上限 |
+| 主題背景音樂永遠不播 | `loadMusicLoops()` 非同步，解碼贏不過第一次 `playBgm('base')`，於是走降級分支放範本 mp3，之後 `currentBgm==='base'` 讓它再也切不回來。加了解碼完成後的接手 |
+| `YOU WON` 壓在面板鍍鉻框上 | 面板圖鍍鉻邊佔高度 10%，內緣在 y=-160，而文字跨 -194~-136。把面板往上長（`PANEL_H` 500→548、`PANEL_Y` 40→17）。`FreeSpinOutro` 有同樣的 bug，一併修 |
+| 圖騰沒在格子中間 | 兩個獨立原因：`frame_bg` 格線切在貼圖而非盤面上；`POSITION_ADJUSTMENT=1.01` 把整個框往右推 6px |
+| 聽牌是範本琥珀色 | 色相旋轉而非重畫（spine 的形狀、alpha、骨骼綁定都是對的，只有色相錯）。原檔備份在 `design/source/legacy/` |
+
+**都是只有實際玩才會發現的**——`vite build` 全綠、Storybook 正常、三支 guard 全過。
+
+### 15.4 試玩殼（`build-playtest/`）
+
+`rgs-fetcher` 寫死 `https://${rgsUrl}`，本地 stub server 需要瀏覽器信任的憑證；**service worker 可以合成跨網域回應，只要 localhost 就夠**。攔截 `/wallet/authenticate`、`/wallet/play`、`/wallet/end-round`、`/bet/event`，牌局來自 `src/stories/data/*_books.ts`。
+
+錢包狀態存在 **Cache API**——service worker 沒有 localStorage，而且閒置會被殺掉重啟；狀態放模組變數會讓每次轉輪都重播第 0 局。
+
+**`build-playtest/` 是測試治具，絕對不可上傳**（已加入 `.gitignore`）。
+
+### 15.5 送審結果與回饋
+
+**4.7 / 9，通過**（當時門檻 4.5；HotMiami 之後為 6）。
+
+| 標籤 | 人數 |
+|---|---|
+| Low quality assets | 2 |
+| Poor animations | 2 |
+| "Bonus buy menu is too simple" | 1 |
+
+沒有人提色調、版面、字體、社交用字或封面——本輪主要修的項目守住了。**扣分全部集中在美術品質與動畫**，也就是本輪投入最少的兩塊。
+
+重點認知：本輪已經把範本素材清乾淨（刪掉範本 spine、重上色聽牌、重繪硬幣圖集、移除約 24MB 未用資產），畫面上沒有任何範本美術，**仍然拿到「Low quality assets」**。所以這句話的第二個意思是字面意思——圖本身的完成度。同理，替 spine 換貼圖不會改變它的**動作**，所以「Poor animations」在重貼圖之後依然成立。
+
+詳見 `wp/.claude/skills/stake-engine-slot/references/review-log.md` 的「Wild Party round 1」。
+
+### 15.6 尚未處理
+
+- **Guidelines 51 項全部未勾**（Rating 與 Guidelines 是分開的）。清單與風險註記見
+  `wp/.claude/skills/stake-engine-slot/references/approval-guidelines.md`
+- **`static/stake-engine-loader.gif`（1.3MB）仍在 build 裡**，雖然沒有任何程式引用。
+  Guidelines 明文「Game should not contain the Stake Engine Loader」——是「內含」不是「顯示」
+- **Replay 五項從未驗證過**
+- 基礎遊戲的 `sfx_*` 多數仍為範本 sprite（音樂與觸發音已換）
+- 從未對真實 RGS 測試過
+
+---
+
+## 16. Guidelines 審核八項回饋與修正（2026-08-18/19，**尚未有審核結果**）
+
+> 上線後 Guidelines 分頁開了八個 issue。以下修正已一次做完並重新上傳，
+> **截至撰寫時尚未收到審核結果**，所以這節記錄的是成因與做法，不是被接受的解法。
+
+### 16.1 三項不是表面看起來那樣
+
+**「符號賠付與賠付表不符」不是數學問題。** 把全部 **556 筆線獎**對著
+`config.symbols` 重算，**零筆不符**；賠付表本來就是讀同一份 config，不是第二份硬寫的
+數字。真正的問題是 35 條線同時中獎時，演出每 140ms 閃過一條、且**完全沒有標示是哪個
+符號、幾連、付多少**，所以金額無從對帳。
+
+改成標示，但關鍵在節奏：逐條放慢不可行（最多 35 條）。同符號同連數付的是同一件事，
+按 `(symbol, kind)` 分組後全部牌局收斂到**最多 5 組**、92% 在 3 組以內，每組 800ms。
+
+**「縮圖不符規範」大部分是包裝問題。** 規格是**三個檔案**（BG／FG／廠商 logo），
+Stake 自己合成。我們送的是兩個命名不符的檔、**完全沒有廠商 logo**、外加一個規格明文
+不要的預先合成圖。詳見 `upload/WildParty/thumbnail/README.md`。
+
+**「貨幣處理」點名的 CAD／CNY／MXN／ARS**，正好是 `Intl.NumberFormat` 的
+`currencyDisplay: 'narrowSymbol'` 會顯示歧義的那一組——它會拿掉國別前綴，en-US 下
+CAD/MXN/ARS 全變成裸 `$`、CNY 變 `¥`。改成 `'symbol'`。**這是共用套件，其他遊戲一併受益。**
+
+### 16.2 其餘五項
+
+| 項目 | 成因 |
+|---|---|
+| 社交用字／模式命名 | `betModeMeta.ts` 整份寫死英文，一個字都沒走 socialTerms。改為 `buildBetModeMeta()` 在 `setContext()` 呼叫（社交旗標來自網址，不能在模組層級讀） |
+| Popout S/L | `MIN_SCALE` 的註解說「溢出可捲動」，但兩個 `BaseScrollable` 都帶 `noScroll`；且金額徽章 `position: fixed` 釘視窗、卡片往左讓位，窄視窗時對撞 |
+| 操作說明 | 規則頁列了所有特色卻沒有控制項。改用按鈕實際圖檔 |
+| Replay 重播 | `resumeGame` 啟動時把 `betToResume` 清成 null，跑完一次就沒東西可重播 |
+| （自己發現）主畫面可捲 5px | `canvas` 預設 `display: inline`，坐在文字基線上，行框在下方留 descender 空間 |
+
+### 16.3 同一個競態，第二次與第三到五次
+
+```js
+state = 'running';                                          // 掛載／啟動動畫
+await waitForResolve((resolve) => (oncomplete = resolve));  // resolver 才掛
+```
+
+動畫若在這兩行之間完成，回呼到的是前一個（通常是 no-op），真正的 resolver 永遠不被叫到。
+**§15.3 修掉的免費遊戲當機是這個形狀，`Transition.svelte` 的轉場也是**，掃描後另外三處
+（`Win`、`PreFreeGameHint`、`GlobalMultiplier`）同樣形狀一併改。
+
+兩條規則：**resolver 一律先掛再改狀態**；**每個這種等待都要有上限**——上限讓漏掉的回呼
+從「整局死掉」降級成「少一個節拍」，而且不管競態是不是真正成因都值得加，因為這類問題
+是間歇性的，「沒再看到」不構成證據。
+
+### 16.4 工具
+
+- 試玩殼加了 `/bet/replay/`。Stake 只對真實歷史注單提供這個端點，所以整條 replay 路徑
+  本來在本地**完全無法測試**——這正是它一直壞著沒被發現的原因。
+- `design/build_store_tile.py`：從兩張素材產生 BG/FG。需要兩張是因為已核可的主視覺把
+  圖徽烘進場景了，而 BG 必須無圖徽，否則 Stake 合成後會出現兩個。去背可行性有量過並
+  否決：圖徽外圈光暈平均亮度 0.334 且與背景連續，沒有 alpha 邊界。
+- `check_social_words.mjs` 補了第四條規則（掃 `text:` 區塊的字串字面值）。原本它**看得到
+  `betModeMeta.ts` 卻不可能抓到**——只檢查 `pick()` 和 `social ? :` 兩種形狀，而該檔一個
+  分支都沒有，於是回報乾淨通過。
+
+### 16.5 尚未驗證
+
+- **Popout S/L 只有原始碼推理加編譯確認，沒有任何執行期證據**。Popout 是平台啟動模式，
+  本地重現不了。這是八項裡最該在 tester 實測的。
+- Info 分頁 Controls 只驗到 DOM（11 列、圖檔載入、SVG 24×24），沒截到完整版面。
+- XGC/SC 不顯示 `$` 本地測不到——試玩殼的 mock authenticate 寫死回 USD。
+
+### 16.6 第九項：PAY TABLE → WIN TABLE（2026-08-19）
+
+前八項全數通過，第九項是 Stake 另開的：restricted term「PAY TABLE」要換成「**WIN TABLE**」。
+
+我們**本來就有在替換**，只是換成了 `PLAY TABLE`——照著整張表「pay → play」的規律推導出來的。
+這是這輪最值得記住的一點：**禁用詞確實不見了，所以 guard 通過，但用詞仍然是錯的**。
+靜態檢查能證明「沒有禁用詞」，不能證明「替換得對」。審核在留言裡指名替換字時，直接把那個
+字串抄進 socialTerms，不要自己從規律推。
+
+兩處要一起改，只改一處會前後不一致：
+
+| 位置 | 說明 |
+|---|---|
+| `src/game/socialTerms.ts` | `payTableUpper` 改 `WIN TABLE`，並新增小寫 `payTable` |
+| `packages/components-ui-pixi/src/i18n/i18nDerived.ts` | **選單按鈕本身**的文字，原本硬寫 `PLAY TABLE`。共用套件，五支 app 全數重建通過 |
+
+另外證據截圖指出 guard 的第四個盲點：被抓到的那句是**我上一輪才新增的** Controls 說明，
+它住在元件 `<script>` 裡的陣列。guard 的規則 1 掃 `.svelte` 前會先剝掉 `<script>`，所以看不到。
+補了規則 5：掃指定元件 `<script>` 裡**含空白字元**的字串字面值——文案有空格，
+`'payTable'`、`'wp-paytable'` 這類識別字沒有，用這個條件分辨不需要維護例外清單。
+雙向驗證過（還原原句→抓到、注入識別字→不誤報、還原→通過）。
+
+### 16.7 第十項：Max Bet 產生 RGS 未提供的注額（2026-08-19）
+
+> 「when the player has, for example, a 1,120 GC balance and selects Max Bet, the
+> game sets the bet to 1,120 GC. This bet level is not provided by the RGS.」
+
+**兩條獨立路徑，兩個不同的錯**，都在共用套件：
+
+**1. `packages/state-shared/src/stateBet.svelte.ts` — 造出非清單值**
+
+`correctBetAmount()` 最後一行是 `Math.min(corrected, affordable)`，其中
+`affordable = balanceAmount / costMultiplier`。餘額比所選檔位小時，這個 min **直接回傳餘額本身**
+——1,120 GC 餘額按 Max Bet 就得到 1,120 GC 的注額，而 `betLevels` 裡沒有這個數字。
+
+改成：夾完之後**往下吸附到伺服器清單裡的檔位**。連最低檔都買不起時仍顯示最低檔，
+由 insufficient-balance 流程拒絕下注——**憑空生一個玩家買得起的注額不是我們該做的事**。
+沒有離散清單的遊戲（走 `stepBet`）維持原本的夾法。
+
+**2. 下注選單 — 完全沒有夾**
+
+`BetMenuAmountGrid` 和 `BetMenuAmountToggle` 都是 `stateBet.betAmount = value` 直接指派，
+**繞過整個 `correctBetAmount`**。實測 $3.40 餘額按 MAX 會選到 $100.00。改成走
+`stateBetDerived.setBetAmount()`，讓所有入口共用同一套規則。
+
+`Authenticate.svelte` 裡的三處原始指派**刻意保留**：伺服器指定的開局注額、已承諾的續玩回合、
+replay 錄製時的注額，都不該被夾。
+
+**驗證**：吸附邏輯單獨測過六個情境全通過，並掃 1,460 種餘額**零筆**落在清單外。
+遊戲內以 `?mockBalance=3400000`（$3.40，卡在 $2 與 $5 之間）實測：MAX → **$2.00**，
+連按 `+` 仍維持 $2.00（$5.00 買不起）。六支 app 全數重建通過。
+
+試玩殼加了 `?mockBalance=`——這個缺陷只有在餘額**卡在兩個檔位之間**時才會出現，
+需要精確指定才重現得了。
+
+### 16.8 結案：全數通過，遊戲上線（2026-08-21）
+
+Guidelines 審核總共開了 **10 項**，分數輪陸續提出，全部通過，**遊戲已上線**。
+
+| # | 項目 | 成因摘要 |
+|---|---|---|
+| 1 | 縮圖 | 規格是三個檔（BG/FG/logo），我們送兩個錯名檔＋預合成圖、無 logo |
+| 2 | 貨幣 | `currencyDisplay: 'narrowSymbol'` 讓 CAD/MXN/ARS 全變 `$`、CNY 變 `¥` |
+| 3 | Popout S/L | `MIN_SCALE` 假設可捲動，但兩個 `BaseScrollable` 都是 `noScroll`；金額徽章 `position: fixed` 與卡片對撞 |
+| 4 | 操作說明 | 規則頁有全部特色卻沒有控制項清單 |
+| 5 | 派彩對不上賠付表 | **不是數學問題**（556 筆對帳零誤差），是多線同中時演出沒有標示 |
+| 6 | 社交用字 | `betModeMeta.ts` 整份寫死英文 |
+| 7 | 模式命名 | 同上 |
+| 8 | Replay 重播 | `resumeGame` 啟動時清掉 `betToResume` |
+| 9 | PAY TABLE | 有替換，但換成 `PLAY TABLE`；正解是 `WIN TABLE` |
+| 10 | Max Bet | `Math.min(level, balance)` 造出 RGS 沒給的注額；選單另外完全沒夾 |
+
+### 16.9 §16.5「尚未驗證」的結果
+
+| 當時記的 | 實際結果 |
+|---|---|
+| Popout S/L 只有原始碼推理，無執行期證據 | **修正正確**，審核通過 |
+| Info 分頁 Controls 只驗到 DOM，沒看過完整版面 | 版面沒問題，但**內文有 `pay table`**（第 9 項）——DOM 驗證看不出用詞對錯 |
+| XGC/SC 不顯示 `$` 本地測不到 | 通過 |
+
+第二列是這輪最該記住的一課：**驗證的種類要對得上風險的種類**。我驗了「元件有沒有渲染、圖檔有沒有載入」，那證明不了「文案用詞合不合規」——而那正是這個檔案唯一會出錯的地方。
+
+### 16.10 這個專案的通則
+
+1. **審核不是一次過**，是連續數輪。每次重送都會被重新測試，可能翻出下一個問題。第 9、10 項之所以出現，正是因為前面的修正被實際操作到了。
+2. **guard 通過不代表沒事**。restricted-word guard 在四次被打回的送審中全部是綠的。要相信一次乾淨的結果之前，先把審核回報的字串注入進去，確認它會叫。
+3. **「回饋指向 A、成因在 B」很常見**。第 5 項寫的是「賠付與賠付表不符」，實際是演出問題；第 1 項寫的是美術，一半是打包格式。**先照字面讀規格，再往設計意圖解釋。**
+4. **共用套件的修正要重建全部 app**。第 2、3、9、10 項都動到 `packages/`。
+5. **有些缺陷需要特定狀態才會出現**。Max Bet 只在餘額卡在兩檔之間時發生；replay 只有 mock 了 `/bet/replay/` 才測得到。治具要能造出這些狀態，否則「玩起來沒問題」什麼都不代表。

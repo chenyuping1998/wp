@@ -3,6 +3,7 @@
 	import { Button, type ButtonProps } from 'components-pixi';
 	import { stateModal, stateBet, stateBetDerived } from 'state-shared';
 
+	import BuyBonusHoverSpin from './BuyBonusHoverSpin.svelte';
 	import UiSprite from './UiSprite.svelte';
 	import { UI_BASE_FONT_SIZE, UI_BASE_SIZE } from '../constants';
 	import { getContext } from '../context';
@@ -95,6 +96,24 @@
 			hovered,
 			pressed,
 		})}
+
+		{#if uiTheme.buyBonusHoverSpin && !disabled}
+			<!--
+				Behind everything, so the plate covers the rays' roots and only their
+				tips show past its corners. It draws nothing until the cursor arrives
+				and keeps its own clock, so a button nobody is pointing at costs one
+				`if`.
+			-->
+			<BuyBonusHoverSpin
+				{hovered}
+				{center}
+				{plate}
+				speed={uiTheme.buyBonusHoverSpin}
+				rays={uiTheme.buyBonusHoverSpinRays}
+				color={uiTheme.buyBonusHoverSpinColor}
+				radius={uiTheme.buyBonusHoverSpinRadius}
+			/>
+		{/if}
 
 		{#if idleLit}
 			<!--

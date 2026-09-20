@@ -5,6 +5,14 @@
 
 	import config from '../../game/config';
 	import assets from '../../game/assets';
+	import { getSocialTerms } from '../../game/socialTerms';
+	import { SYMBOL_LABEL } from '../../game/symbolLabels';
+
+	// Social play forbids betting terminology in anything the player can read.
+	// Resolved here rather than at module scope because getSocialTerms() reads the
+	// page URL, which is not available while a module is being evaluated — the
+	// trap documented in the stake-engine-slot skill.
+	const terms = getSocialTerms();
 
 	type PayRow = { name: string; img: string; label: string; pays: { count: number; value: number }[] };
 
@@ -19,19 +27,6 @@
 		L4: 'wpL4',
 		W: 'wpW',
 		S: 'wpS',
-	};
-
-	const SYMBOL_LABEL: Record<string, string> = {
-		H1: 'Disco Ball',
-		H2: 'Champagne',
-		H3: 'Cocktail',
-		H4: 'Gift',
-		L1: 'A',
-		L2: 'K',
-		L3: 'Q',
-		L4: 'J',
-		W: 'Wild',
-		S: 'Scatter',
 	};
 
 	// keep high -> low ordering for readability
@@ -60,8 +55,8 @@
 {#if stateModal.modal?.name === 'payTable'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-paytable">
-			<h2>PAY TABLE</h2>
-			<p class="wp-note">Pays shown as a multiple of total bet. Line wins pay left to right on {Object.keys(config.paylines).length} fixed paylines.</p>
+			<h2>{terms.payTableUpper}</h2>
+			<p class="wp-note">{terms.paysStart} shown as a multiple of {terms.totalBet}. Line wins {terms.winsDirection} on {Object.keys(config.paylines).length} fixed {terms.paylines}.</p>
 
 			<div class="wp-grid">
 				{#each rows as row, i (row.name)}
@@ -87,15 +82,15 @@
 				{/each}
 			</div>
 
-			<p class="wp-note">Wild substitutes for all symbols except Scatter. Max win is capped at {maxWin.toLocaleString()}&times; total bet.</p>
+			<p class="wp-note">Wild substitutes for all symbols except Scatter. Max win is capped at {maxWin.toLocaleString()}&times; {terms.totalBet}.</p>
 
-			<h3 class="wp-section">PAYLINES</h3>
-			<p class="wp-note">All {Object.keys(config.paylines).length} lines are always active. Highlighted cells show each line's shape across the {config.numReels} reels; wins pay from the leftmost reel.</p>
+			<h3 class="wp-section">{terms.paylinesUpper}</h3>
+			<p class="wp-note">All {Object.keys(config.paylines).length} lines are always active. Highlighted cells show each line's shape across the {config.numReels} reels; wins start from the leftmost reel.</p>
 			<div class="wp-lines">
 				{#each Object.entries(config.paylines) as [lineNo, rowsOfLine] (lineNo)}
 					<div class="wp-line">
 						<span>{lineNo}</span>
-						<svg viewBox="0 0 62 38" aria-label={`Payline ${lineNo}`}>
+						<svg viewBox="0 0 62 38" aria-label={`${terms.payline} ${lineNo}`}>
 							{#each [0, 1, 2] as r (r)}
 								{#each [0, 1, 2, 3, 4] as c (c)}
 									{@const active = (rowsOfLine as number[])[c] === r}
@@ -124,11 +119,11 @@
 				</div>
 				<div class="wp-feature">
 					<b>GLOBAL MULTIPLIER</b>
-					<p>During Free Spins a single Global Multiplier applies to every line win. It starts at 1&times;&ndash;3&times; &mdash; one for each payline the triggering Scatters complete &mdash; then adds +1 for every Wild that lands (up to 100&times;), and never resets during the feature.</p>
+					<p>During Free Spins a single Global Multiplier applies to every line win. It starts at 1&times;&ndash;3&times; &mdash; one for each {terms.payline} the triggering Scatters complete &mdash; then adds +1 for every Wild that lands (up to 100&times;), and never resets during the feature.</p>
 				</div>
 				<div class="wp-feature">
-					<b>BUY BONUS</b>
-					<p>Buy direct entry into Free Spins at three tiers: Quick 50&times; (starts 1&times;), Bonus 100&times; (starts 1&times;&ndash;3&times;, same as a natural trigger) or Super 200&times; (elevated start, higher volatility). All tiers play at the same {(config.rtp * 100).toFixed(2)}% RTP.</p>
+					<b>{terms.buyBonusName.toUpperCase()}</b>
+					<p>{terms.entryVerb} direct entry into Free Spins at three tiers: Quick 50&times; (starts 1&times;), Bonus 100&times; (starts 1&times;&ndash;3&times;, same as a natural trigger) or Super 200&times; (elevated start, higher volatility). All tiers play at the same {(config.rtp * 100).toFixed(2)}% RTP.</p>
 				</div>
 			</div>
 		</div>

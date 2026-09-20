@@ -64,6 +64,35 @@ reskins rather than from the immediate source).
   RTP figure, an old game name in a "why this exists" note) that were true
   when written and are now misleading to the next reader.
 
+## An asset that's wired and still never shows: skin-level overrides
+
+The registry can resolve a key, the component can be correctly wired to read
+it, and the art can even be genuinely reskinned — and it can still never
+render, because a THEME-SKIN-LEVEL override further down the same file clears
+the sprite map for that key on the skin that's actually active. This is a
+different failure from everything else in this document: those are all about
+old content sitting where new content should be; this one is about new
+content that's correct and simply never gets drawn.
+
+Concretely, in Capo Nostra (`src/game/uiTheme.ts`): the base theme wired
+`sprites.buyBonus` to a custom plate asset from day one, matching Hot Miami's
+own drawn-UI look. But the game also ships a second "platform chrome" skin —
+a neutral, cross-title casing Hacksaw's own UI files use, selected as the
+DEFAULT — and that skin's own theme object set `sprites: {}`, deliberately
+emptying the sprite map to keep a flat, generic bet bar. `ButtonBuyBonus`'s
+fallback path (custom sprite if the key resolves, else a flat drawn rect)
+then silently drew the flat rect under the active default skin, regardless of
+whether a themed plate asset existed and was correctly registered elsewhere in
+the same file. Weeks of screenshots showed a plain black rounded rectangle and
+nobody caught why, because every individual link in the chain — asset file,
+registry entry, component wiring — was checked and was fine in isolation.
+
+**If a game defines more than one UI skin/theme variant, grep every variant's
+own sprite/colour map for the key in question, not just the "main" one.**
+`grep -n "sprites:" src/game/uiTheme.ts` (or equivalent) and read what each
+match actually contains — an empty object several skins down is easy to miss
+scrolling past it once, and it silently wins if it's the active default.
+
 ## Unreferenced asset folders
 
 Compare what the asset registry (`assets.ts` or equivalent) actually

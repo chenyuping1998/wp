@@ -5,10 +5,14 @@
 	import UiButton from './UiButton.svelte';
 	import { UI_BASE_SIZE } from '../constants';
 	import { getContext } from '../context';
+	import { uiTheme } from '../theme.svelte';
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const context = getContext();
-	const sizes = { width: UI_BASE_SIZE, height: UI_BASE_SIZE };
+	const sizes = $derived({
+		width: UI_BASE_SIZE * uiTheme.railButtonScale,
+		height: UI_BASE_SIZE * uiTheme.railButtonScale,
+	});
 
 	const onpress = () => {
 		context.eventEmitter.broadcast({ type: 'soundPressGeneral' });

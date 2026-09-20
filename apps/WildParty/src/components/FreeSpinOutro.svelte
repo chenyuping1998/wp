@@ -20,6 +20,14 @@
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import WinCoins from './WinCoins.svelte';
+	import { GAME_FONT } from '../game/fonts';
+	import { LIME, WHITE_HOT } from '../game/palette';
+
+	// Free-game copy carries the feature's colour: white type with a lime
+	// halo, matching the Scatter that triggers it, the Buy Bonus CTA that
+	// sells it and the counter that runs through it. It was cream on a pink
+	// halo — the old plum/gold scheme, the one colour pairing in this screen
+	// that told the player nothing about which round they were entering.
 
 	const context = getContext();
 
@@ -56,19 +64,21 @@
 
 				<FreeSpinAnimation>
 					{#snippet children({ sizes })}
-						<!-- headline: same type treatment as the WILD PARTY title -->
+						<!-- headline: same type treatment as the WILD PARTY title.
+						     -330 for the same reason as the intro: the plate grew
+						     upwards to stop YOU WON landing on its bezel. -->
 						<Text
 							anchor={0.5}
-							y={-300}
+							y={-330}
 							text={context.i18nDerived.congratulations()}
 							style={{
-								fontFamily: 'Cinzel, Georgia, serif',
+								fontFamily: GAME_FONT,
 								fontSize: 96,
 								fontWeight: '900',
-								fill: 0xfff4cf,
+								fill: WHITE_HOT,
 								letterSpacing: 8,
 								dropShadow: true,
-								dropShadowColor: 0xff9edf,
+								dropShadowColor: LIME,
 								dropShadowBlur: 18,
 								dropShadowDistance: 0,
 								stroke: 0xffffff,
@@ -80,13 +90,13 @@
 							y={-165}
 							text={context.i18nDerived.youWon()}
 							style={{
-								fontFamily: 'Cinzel, Georgia, serif',
+								fontFamily: GAME_FONT,
 								fontSize: 58,
 								fontWeight: '900',
-								fill: 0xfff4cf,
+								fill: WHITE_HOT,
 								letterSpacing: 6,
 								dropShadow: true,
-								dropShadowColor: 0xff9edf,
+								dropShadowColor: LIME,
 								dropShadowBlur: 14,
 								dropShadowDistance: 0,
 							}}
@@ -114,13 +124,13 @@
 							y={325}
 							text={context.i18nDerived.totalWin()}
 							style={{
-								fontFamily: 'Cinzel, Georgia, serif',
+								fontFamily: GAME_FONT,
 								fontSize: 58,
 								fontWeight: '900',
-								fill: 0xfff4cf,
+								fill: WHITE_HOT,
 								letterSpacing: 6,
 								dropShadow: true,
-								dropShadowColor: 0xff9edf,
+								dropShadowColor: LIME,
 								dropShadowBlur: 14,
 								dropShadowDistance: 0,
 							}}

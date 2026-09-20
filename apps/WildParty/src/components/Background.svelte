@@ -6,6 +6,15 @@
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import {
+		CHROME_LIGHT,
+		CYAN,
+		LIME,
+		MAGENTA,
+		NIGHT,
+		VIOLET_NEON,
+		WHITE_HOT,
+	} from '../game/palette';
 
 	const context = getContext();
 	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame');
@@ -13,6 +22,8 @@
 
 	let beamPhase = $state(0);
 	let tick = $state(0);
+	// see the onMount loop: a feature-accelerated companion to `tick`
+	let flow = $state(0);
 	// win reactivity: kicked up on a win, eased back to 0 — brightens/quickens
 	// the beams and thumps the dance-floor pulse so the scene answers the play.
 	// Tiered: a regular win gives a gentle bump; big-tier wins hit far harder and
@@ -55,7 +66,7 @@
 	// between club hues (≈9s each) with a slow breath. Deliberately NOT beat-
 	// synced — no strobing/flashing. A win adds a smooth swell (winBoost eases
 	// in and out), so it brightens and settles gently rather than flashing.
-	const FLOOR_HUES = [0xff2fa0, 0x9a4dff, 0x2fb6ff, 0xffb833];
+	const FLOOR_HUES = [MAGENTA, VIOLET_NEON, CYAN, LIME];
 	const FLOOR_CYCLE = 9;
 	const floorWash = $derived.by(() => {
 		const t = tick / 62.5;
@@ -63,9 +74,17 @@
 		const j = (i + 1) % FLOOR_HUES.length;
 		const f = (t % FLOOR_CYCLE) / FLOOR_CYCLE;
 		const smooth = f * f * (3 - 2 * f);
-		const color = lerpHex(FLOOR_HUES[i], FLOOR_HUES[j], smooth);
+		const cycled = lerpHex(FLOOR_HUES[i], FLOOR_HUES[j], smooth);
+		// Free games pull the whole room toward lime. The palette already uses lime
+		// for the feature everywhere else — the Scatter that triggers it, the Buy
+		// Bonus CTA that sells it, the free-spin counter — so bending the ambient
+		// light the same way makes the round itself read as the feature rather
+		// than as base play with a counter on top. featureLevel eases in over
+		// ~1.5s, so this is a lighting change, not a cut.
+		const color = lerpHex(cycled, LIME, 0.55 * featureLevel);
 		const breathe = 0.5 + 0.5 * Math.sin(t * 0.28);
-		const alpha = 0.02 + 0.028 * breathe + 0.03 * winBoost;
+		// the room also runs brighter in the feature
+		const alpha = 0.02 + 0.028 * breathe + 0.03 * winBoost + 0.022 * featureLevel;
 		return { color, alpha };
 	});
 
@@ -76,7 +95,9 @@
 		return seed / 0x7fffffff;
 	};
 
-	const BOKEH_COLORS = [0xfff0b8, 0xff8ede, 0x9ef3ff, 0xffffff];
+	// chrome white leads, then the three accents — no warm bokeh any more, gold
+	// is reserved for wins (palette.ts)
+	const BOKEH_COLORS = [CHROME_LIGHT, MAGENTA, CYAN, WHITE_HOT];
 	// two depths: big slow blurry orbs at low alpha + small brighter motes
 	const BOKEH = Array.from({ length: 24 }, (_, i) => ({
 		x: rand(),
@@ -103,8 +124,8 @@
 		};
 	});
 
-	// bg-art palette: gold / magenta / violet / hot pink (matches the club scene)
-	const CONFETTI_COLORS = [0xffb833, 0xff2fa0, 0x4fc3ff, 0xb04ef0, 0xffe066];
+	// bg-art palette: the three neon accents plus chrome (matches the club scene)
+	const CONFETTI_COLORS = [MAGENTA, CYAN, LIME, VIOLET_NEON, CHROME_LIGHT];
 	const CONFETTI = Array.from({ length: 26 }, (_, i) => ({
 		x: rand(),
 		phase: rand(),
@@ -147,7 +168,7 @@
 
 		g.clear();
 
-		g.beginFill(0xfff0b8, 0.13 * flicker);
+		g.beginFill(MAGENTA, 0.13 * flicker);
 		g.drawPolygon([
 			centerX - width * 0.02,
 			0,
@@ -160,7 +181,7 @@
 		]);
 		g.endFill();
 
-		g.beginFill(0xff8bd8, 0.1 * flicker);
+		g.beginFill(LIME, 0.1 * flicker);
 		g.drawPolygon([
 			centerX + width * 0.11,
 			0,
@@ -174,7 +195,7 @@
 		g.endFill();
 
 		// counter-sweeping cyan beam for depth
-		g.beginFill(0x9ef3ff, 0.09 * flicker);
+		g.beginFill(CYAN, 0.09 * flicker);
 		g.drawPolygon([
 			counterX - width * 0.016,
 			0,
@@ -188,7 +209,7 @@
 		g.endFill();
 
 		// hot cores inside the main beams
-		g.beginFill(0xffffff, 0.07 * flicker);
+		g.beginFill(WHITE_HOT, 0.07 * flicker);
 		g.drawPolygon([
 			centerX - width * 0.008,
 			0,
@@ -242,19 +263,19 @@
 				const yTop = height - h;
 
 				// soft halo so the column still reads once the blur smears it
-				g.beginFill(0xff8ede, 0.14);
+				g.beginFill(MAGENTA, 0.14);
 				g.drawRoundedRect(x - barW * 0.45, yTop - barW * 0.4, barW * 1.9, h + barW * 0.8, radius * 2);
 				g.endFill();
-				// lower body — champagne gold
-				g.beginFill(0xffc65a, 0.62);
+				// lower body — magenta at the base, bending to lime in the feature
+				g.beginFill(lerpHex(MAGENTA, LIME, 0.7 * featureLevel), 0.62);
 				g.drawRoundedRect(x, yTop + h * 0.4, barW, h * 0.6, radius);
 				g.endFill();
-				// upper body — pink
-				g.beginFill(0xff8ede, 0.55);
+				// upper body — cyan climbing out of it, likewise
+				g.beginFill(lerpHex(CYAN, LIME, 0.55 * featureLevel), 0.55);
 				g.drawRoundedRect(x, yTop, barW, h * 0.55, radius);
 				g.endFill();
 				// lit cap
-				g.beginFill(0xfff6dd, 0.95);
+				g.beginFill(WHITE_HOT, 0.95);
 				g.drawRoundedRect(x, yTop, barW, Math.max(3, barW * 0.55), radius);
 				g.endFill();
 			}
@@ -265,7 +286,7 @@
 	// motes (fxGlow) instead of hard vector circles
 	const bokehState = (orb: (typeof BOKEH)[number]) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
-		const seconds = tick / 62.5;
+		const seconds = flow;
 		const travel = height + orb.size * 4;
 		const y = height + orb.size * 2 - ((seconds * orb.rise + orb.phase * travel) % travel);
 		const x = orb.x * width + Math.sin(seconds * orb.swayFreq + orb.phase * 9) * orb.swayAmp;
@@ -276,7 +297,7 @@
 	// confetti raining down, each piece glowing like the bloom-lit bits in the bg art
 	const drawConfetti = (g: PixiGraphics) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
-		const seconds = tick / 62.5;
+		const seconds = flow;
 		g.clear();
 		for (const piece of CONFETTI) {
 			const travel = height + 60;
@@ -328,8 +349,17 @@
 		const id = setInterval(() => {
 			// beams sweep a touch quicker while a win boost is active (kept mild so
 			// the flicker never speeds up into a strobe)
-			beamPhase += 0.004 * (1 + 0.4 * winBoost);
+			beamPhase += 0.004 * (1 + 0.4 * winBoost) * (1 + 0.35 * featureLevel);
 			tick += 1;
+			// A second clock that runs faster during the feature, so the drifting
+			// layers (confetti, bokeh) speed up with it while everything keyed off
+			// `tick` — the colour cycle, the EQ swell — keeps its own pace. Running
+			// one clock faster would have sped up the ambient hue cycle too, which
+			// reads as the scene glitching rather than as the room getting livelier.
+			//
+			// The dance-floor grid is baked into the background artwork, so it
+			// cannot be scrolled from here; this is the drifting layers only.
+			flow += (1 + 0.55 * featureLevel) / 62.5;
 			winBoost += (0 - winBoost) * 0.02; // ease the boost back to rest
 			featureLevel += ((showFeatureBackground ? 1 : 0) - featureLevel) * 0.03;
 		}, 16);
@@ -337,7 +367,7 @@
 	});
 </script>
 
-<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x120016} zIndex={-3} />
+<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={NIGHT} zIndex={-3} />
 
 {#snippet bokeh()}
 	{#each BOKEH as orb, index (index)}

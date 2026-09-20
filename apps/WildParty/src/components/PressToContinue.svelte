@@ -4,6 +4,7 @@
 	import { Text } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
+	import { GAME_FONT } from '../game/fonts';
 
 	type Props = {
 		onpress: () => void;
@@ -32,7 +33,7 @@
 		x={context.stateLayoutDerived.mainLayout().width * 0.5}
 		y={yPosition}
 		style={{
-			fontFamily: 'Cinzel, Georgia, serif',
+			fontFamily: GAME_FONT,
 			fontSize: 34,
 			fontWeight: '900',
 			fill: 0xfff4cf,

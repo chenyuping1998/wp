@@ -1,0 +1,695 @@
+[
+  {
+    "asset": "w",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "h1",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "h2",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "h3",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "h4",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "h5",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "sw",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "fs",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "l1",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      191
+    ]
+  },
+  {
+    "asset": "l2",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      191
+    ]
+  },
+  {
+    "asset": "l3",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      191
+    ]
+  },
+  {
+    "asset": "l4",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      191
+    ]
+  },
+  {
+    "asset": "bg_base",
+    "size": [
+      1920,
+      1080
+    ],
+    "alpha": [
+      255,
+      255
+    ]
+  },
+  {
+    "asset": "bg_feature",
+    "size": [
+      1920,
+      1080
+    ],
+    "alpha": [
+      255,
+      255
+    ]
+  },
+  {
+    "asset": "bg_epic",
+    "size": [
+      1920,
+      1080
+    ],
+    "alpha": [
+      255,
+      255
+    ]
+  },
+  {
+    "asset": "logo",
+    "size": [
+      1200,
+      520
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "guy",
+    "size": [
+      512,
+      1024
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "frame_1x1",
+    "size": [
+      256,
+      256
+    ],
+    "alpha": [
+      0,
+      217
+    ]
+  },
+  {
+    "asset": "frame_2x2",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      217
+    ]
+  },
+  {
+    "asset": "frame_3x3",
+    "size": [
+      768,
+      768
+    ],
+    "alpha": [
+      0,
+      217
+    ]
+  },
+  {
+    "asset": "frame_full",
+    "size": [
+      1280,
+      1280
+    ],
+    "alpha": [
+      0,
+      102
+    ]
+  },
+  {
+    "asset": "frame_bg",
+    "size": [
+      1280,
+      1280
+    ],
+    "alpha": [
+      255,
+      255
+    ]
+  },
+  {
+    "asset": "frame_edge",
+    "size": [
+      1280,
+      1280
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "title_lookout",
+    "size": [
+      1024,
+      360
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "title_muscle",
+    "size": [
+      1024,
+      360
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "title_kingpin",
+    "size": [
+      1024,
+      360
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "shutter_l",
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha": [
+      255,
+      255
+    ]
+  },
+  {
+    "asset": "shutter_r",
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha": [
+      255,
+      255
+    ]
+  },
+  {
+    "asset": "lock",
+    "size": [
+      1024,
+      1024
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "fs_sign",
+    "size": [
+      1280,
+      1002
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "buy_card_frame",
+    "size": [
+      512,
+      440
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "sw_bat_swing",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "sw_column_beam",
+    "size": [
+      256,
+      1024
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "sw_debris",
+    "size": [
+      64,
+      64
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "sw_cracks",
+    "size": [
+      512,
+      512
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "sw_locked",
+    "size": [
+      256,
+      1024
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "frame_full_edge",
+    "size": [
+      1280,
+      1280
+    ],
+    "alpha": [
+      0,
+      217
+    ]
+  },
+  {
+    "asset": "frame_sticky",
+    "size": [
+      256,
+      256
+    ],
+    "alpha": [
+      0,
+      115
+    ]
+  },
+  {
+    "asset": "tile_foreground",
+    "size": [
+      1024,
+      1024
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "tile_background",
+    "size": [
+      1024,
+      1024
+    ],
+    "alpha": [
+      255,
+      255
+    ]
+  },
+  {
+    "asset": "big",
+    "size": [
+      1000,
+      560
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "superwin",
+    "size": [
+      1000,
+      560
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "mega",
+    "size": [
+      1000,
+      560
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "epic",
+    "size": [
+      1000,
+      560
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "max",
+    "size": [
+      1000,
+      560
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "bg_base_near",
+    "size": [
+      1920,
+      1080
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "bg_feature_near",
+    "size": [
+      1920,
+      1080
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "bg_epic_near",
+    "size": [
+      1920,
+      1080
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_info",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_soundOff",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_decrease",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_settings",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_increase",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_turbo",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_menu",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_menuExit",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_soundOn",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_autoSpin",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_spin",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "icon_payTable",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "guy_feature",
+    "size": [
+      512,
+      1024
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "guy_kingpin",
+    "size": [
+      512,
+      1024
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  },
+  {
+    "asset": "coin",
+    "size": [
+      128,
+      128
+    ],
+    "alpha": [
+      0,
+      255
+    ]
+  }
+]

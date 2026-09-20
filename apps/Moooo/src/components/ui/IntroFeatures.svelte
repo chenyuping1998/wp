@@ -1,0 +1,695 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import { base } from '$app/paths';
+	import { stateUrlDerived } from 'state-shared';
+	import { stateLayout } from '../../game/stateLayout';
+	import { stateApp } from '../../game/stateApp';
+	import { zIndex } from 'constants-shared/zIndex';
+
+	import config from '../../game/config';
+	import { getSocialTerms } from '../../game/socialTerms';
+
+	// The whole opening: studio mark, game logo, volatility, what the game does,
+	// and the tap that starts it — one screen.
+	//
+	// It used to be three. The studio loader ran on black for 1.6s, then this
+	// panel faded in over it, and the pixi loading screen ran underneath both.
+	// Every competitive slot does it as a single held card, and so does the
+	// reference this was rebuilt against.
+	//
+	// The look is deliberately borrowed from a GTA loading screen rather than from
+	// a UI panel: a full-bleed illustrated scene, a cut-out character group with a
+	// hard black outline standing in it, blocky angled panels, and heavy outlined
+	// display type. All three of those images already exist in the game — the base
+	// background, the store tile's foreground cut-out, and the wordmark — so no new
+	// art is drawn for this screen.
+	//
+	// CORRECTION: this comment used to justify that by saying "Stake's quality
+	// guidelines count generic screen-specific assets against a game". They do
+	// not, and the claim has been copied out of here into another app since. What
+	// certification actually flags is "heavy reliance on generic or AI art,
+	// standard fonts, emoji icons or gradient fills" (review-log round 1,
+	// restated in certification.md). The operative word is "generic" — how the art
+	// LOOKS. Nothing in either document cares whether an asset serves one screen
+	// or twenty, and a well-drawn bespoke splash would pass fine.
+	//
+	// Reuse is still the right default here, for ordinary reasons: it keeps the
+	// opening in the same visual language as the board, costs nothing, and avoids
+	// rolling the dice on another generated image that might come back reading as
+	// stock AI render.
+	//
+	// Numbers come from the maths config on the same principle as the rules panel:
+	// they cannot drift from what the game actually pays.
+
+	type Props = { onclose?: () => void };
+	const props: Props = $props();
+
+	const T = getSocialTerms();
+	const SYMBOLS = `${base}/assets/sprites/mooooSymbols`;
+	const BRAND = `${base}/assets/sprites/mooooBrand`;
+	const BG = `${base}/assets/sprites/mooooBackground`;
+
+	const maxWin = (config.betModes?.base?.max_win ?? 10000).toLocaleString();
+	const lineCount = Object.keys(config.paylines).length;
+	const buyCosts = [config.betModes?.bonus?.cost, config.betModes?.super?.cost];
+
+	// Four of five. A judgement, not a computed figure: a 10,000x cap on a 94.00%
+	// RTP with a 1-in-6.7m top hit, base SD 10.77. High, not the top of the
+	// scale, and the same call the reference makes. Change it if the maths moves.
+	const VOLATILITY = 4;
+	const VOLATILITY_MAX = 5;
+
+	const panels: { icons: string[]; overlay?: string; title: string; body: string }[] = [
+		{
+			icons: ['w'],
+			title: 'MOOOO WILDS',
+			body: `A cow opens its mouth and fills its whole reel &mdash; but <strong>only if that reel crosses a win line</strong>. Its bell carries a multiplier, and where several cows take part in one win their values <strong>add together</strong>.`,
+		},
+		{
+			icons: ['m'],
+			title: 'THE MILK METER',
+			body: `Every reel carries a meter in free games. A <strong>Milk Churn</strong> raises that reel&rsquo;s meter one step, and a reel&rsquo;s meter is the <strong>lowest bell</strong> a cow can carry there for the rest of the round.`,
+		},
+		{
+			// fs.png, not s.png: the registry's mooooS points at fs.png.
+			icons: ['fs', 'fs', 'fs'],
+			title: 'FREE SPINS',
+			body: `3 Scatters open <strong>Free Spins</strong>, 4 open <strong>Super Free Spins</strong> with every meter already a step in &mdash; 10 spins each. ${T.entryVerb} in for ${buyCosts[0]}&times; or ${buyCosts[1]}&times;.`,
+		},
+	];
+
+	let show = $state(true);
+
+	// This card is the ONLY opening screen. The pixi loading screen still runs
+	// underneath it — it is what actually loads the assets and reports progress —
+	// but the player never sees it, because the tap is refused until loading has
+	// finished. Letting the tap through early just swapped one opening screen for
+	// another, which is the thing being removed.
+	//
+	// The escape hatch matters. `stateApp.loaded` is set by the asset loader, and
+	// the asset loader lives inside <Authenticate>, which renders nothing until it
+	// has a session. So a failed authenticate — a network blip, a dead RGS — would
+	// otherwise leave the player holding an opening card that cannot be dismissed,
+	// which is strictly worse than the screen this replaced.
+	// After the timeout the tap is allowed through regardless; whatever is behind
+	// it can then show its own error.
+	const LOAD_TIMEOUT_MS = 12_000;
+	let timedOut = $state(false);
+	const ready = $derived(stateApp.loaded || timedOut);
+
+	const dismiss = () => {
+		show = false;
+		props.onclose?.();
+	};
+
+	const close = () => {
+		if (!show || !ready) return;
+		// This tap hands the player straight to the board.
+		//
+		// `showLoadingScreen` is what Game.svelte gates the game body on, and it
+		// used to be cleared by the pixi loading screen's own PRESS ANYWHERE TO
+		// CONTINUE — i.e. a second full-screen page, behind this one, asking for a
+		// second tap to do the job this tap already did. Clearing it here retires
+		// that page. Both preconditions it existed for are met at this point:
+		// `ready` means the assets have finished loading, and this click is the
+		// user gesture the audio autoplay policy requires before <Sound /> mounts.
+		//
+		// The loading screen component is still rendered underneath and still owns
+		// the progress bar; it is simply never seen, because this card covers it
+		// and refuses the tap until loading is done. It remains the visible loader
+		// on the replay path (see below) and if this card is ever removed.
+		stateLayout.showLoadingScreen = false;
+		dismiss();
+	};
+
+	// A short arming delay stops a stray click that was aimed at something else
+	// from dismissing the card before it has finished appearing.
+	let armed = $state(false);
+	onMount(() => {
+		// Replay gets out of the way immediately — and via `dismiss`, not `close`,
+		// on purpose. `close` is refused until the assets are loaded, which at mount
+		// they never are, so the replay branch was silently a no-op and the card sat
+		// there until the 12s bail-out. `dismiss` also leaves `showLoadingScreen`
+		// alone, so replay keeps the loading screen it has always had rather than
+		// being handed an unloaded board.
+		if (stateUrlDerived.replay()) {
+			dismiss();
+			return;
+		}
+		const id = setTimeout(() => (armed = true), 420);
+		const bail = setTimeout(() => (timedOut = true), LOAD_TIMEOUT_MS);
+		return () => {
+			clearTimeout(id);
+			clearTimeout(bail);
+		};
+	});
+</script>
+
+{#if show}
+	<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+	<div
+		class="moo-intro"
+		class:armed
+		style:z-index={zIndex.modal + 20}
+		style:--bg={`url("${BG}/bg_base.png")`}
+		onclick={() => armed && ready && close()}
+		transition:fade={{ duration: 320 }}
+	>
+		<div class="moo-scrim"></div>
+
+		<!--
+			The store tile's cut-out holds both characters side by side in one PNG.
+			Rather than cutting it into two files, the same image is drawn twice and
+			each copy is clipped to one figure, so the source stays intact and the
+			split line stays tunable. 51.46% is the emptiest column between them
+			(87 opaque pixels of 1024 — her fingertips and his sleeve edge), measured
+			off the alpha channel rather than eyeballed.
+		-->
+		<img
+			class="moo-cast moo-cast-left"
+			src={`${BRAND}/tile_foreground.png`}
+			alt=""
+			aria-hidden="true"
+		/>
+		<img
+			class="moo-cast moo-cast-right"
+			src={`${BRAND}/tile_foreground.png`}
+			alt=""
+			aria-hidden="true"
+		/>
+
+		<div class="moo-stage">
+			<img class="moo-logo" src={`${BRAND}/logo.png`} alt="MOOOO" />
+
+			<div class="moo-vol">
+				<span class="moo-vol-label">VOLATILITY</span>
+				<span class="moo-bolts" aria-label={`Volatility ${VOLATILITY} of ${VOLATILITY_MAX}`}>
+					{#each Array(VOLATILITY_MAX) as _, i (i)}
+						<!--
+							Drawn, not typed. This was `&#9889;` — U+26A1 HIGH VOLTAGE SIGN —
+							five times, which every platform renders with its own colour emoji
+							font: on macOS five glossy yellow Apple bolts sitting on a magenta
+							and cyan neon card, ignoring every colour in this stylesheet.
+							Stake's round-1 review named this exact class of thing ("emoji
+							icons") and it was the first item on the opening screen.
+							`filter: grayscale()` on the unlit ones was the tell that it had
+							already gone wrong: you only reach for that when you cannot set
+							the fill.
+						-->
+						<svg
+							class="moo-bolt"
+							class:lit={i < VOLATILITY}
+							viewBox="0 0 24 40"
+							aria-hidden="true"
+						>
+							<path d="M14.6 0 3 22.4h6.9L7.4 40 21 16.2h-7.4L14.6 0Z" />
+						</svg>
+					{/each}
+				</span>
+			</div>
+
+			<div class="moo-panels">
+				{#each panels as panel, i (panel.title)}
+					<section class="moo-panel" style:--delay={`${i * 100}ms`}>
+						<div class="moo-panel-icons" class:multi={panel.icons.length > 1}>
+							{#each panel.icons as icon, k (k)}
+								<img src={`${SYMBOLS}/${icon}.png`} alt="" aria-hidden="true" />
+							{/each}
+							{#if panel.overlay}
+								<img
+									class="moo-panel-overlay"
+									src={`${SYMBOLS}/${panel.overlay}.png`}
+									alt=""
+									aria-hidden="true"
+								/>
+							{/if}
+						</div>
+						<h2>{panel.title}</h2>
+						<p>{@html panel.body}</p>
+					</section>
+				{/each}
+			</div>
+
+			<!--
+				No RTP here. It is a number that can move with a maths pass, and this
+				card is the one surface a player reads before the first spin — a stale
+				figure there is worse than no figure. The rules panel carries RTP per
+				mode, read live from the maths config, which is where it belongs.
+			-->
+			<p class="moo-stats">
+				{lineCount} {T.paylinesUpper} &nbsp;/&nbsp; MAX WIN {maxWin}&times;
+			</p>
+			<p class="moo-cta" class:waiting={!ready}>
+				{ready ? 'TAP TO CONTINUE' : 'LOADING…'}
+			</p>
+		</div>
+
+		<!--
+			The studio mark. It stays while the platform splash goes: Stake's
+			certification notes treat those as two different things and ask for
+			exactly this outcome.
+		-->
+		<div class="moo-studio">
+			<svg class="moo-studio-star" viewBox="0 0 100 100" role="img" aria-label="Silverstars 777">
+				<polygon
+					points="50,7 61,38 94,38 67,57 77,89 50,70 23,89 33,57 6,38 39,38"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="6"
+					stroke-linejoin="round"
+				/>
+				<text x="50" y="57" text-anchor="middle" dominant-baseline="middle">777</text>
+			</svg>
+			<span>SILVERSTARS STUDIO</span>
+		</div>
+	</div>
+{/if}
+
+<style lang="scss">
+	/* ── Palette, 2026-08-26 ─────────────────────────────────────────────────
+	   These cards were Hot Miami's: violet plates, cyan corner flashes, hot-pink
+	   headings — the same third-hand palette that was found byte-identical in
+	   game/uiTheme.ts. It matters more here than in the bet bar, because this is
+	   the FIRST screen a player sees.
+
+	   Remapped onto the values measured off this game's own art (see the sampling
+	   note in game/uiTheme.ts): housing timber for the plate, aged brass 0xb8863f
+	   for the fittings and headings, and the free-spin sign's fairground red for
+	   the accent. Banana gold #ffd75e was already this game's and stays.
+
+	   Champion gold #ffc43d is deliberately absent, as everywhere else outside
+	   the reel: that colour belongs to the bell. */
+
+	@keyframes riseIn {
+		from {
+			opacity: 0;
+			transform: translateY(26px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* the two walk in from their own side, which is the point of splitting them */
+	@keyframes castInLeft {
+		from {
+			opacity: 0;
+			transform: translateX(-46px) scale(1.03);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0) scale(1);
+		}
+	}
+
+	@keyframes castInRight {
+		from {
+			opacity: 0;
+			transform: translateX(46px) scale(1.03);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0) scale(1);
+		}
+	}
+
+	@keyframes ctaPulse {
+		0%,
+		100% {
+			opacity: 0.5;
+		}
+		50% {
+			opacity: 1;
+		}
+	}
+
+	.moo-intro {
+		position: fixed;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: clamp(0.8rem, 2.5vh, 2rem) clamp(1rem, 3vw, 3rem);
+		box-sizing: border-box;
+		cursor: pointer;
+		overflow: hidden;
+		color: #fff;
+		font-family: var(--moo-body-font, sans-serif);
+		background: var(--bg) center / cover no-repeat, #12042a;
+		opacity: 0;
+		transition: opacity 0.35s ease;
+	}
+
+	.moo-intro.armed {
+		opacity: 1;
+	}
+
+	/* The background is a playfield backdrop, built to sit behind reels — it is
+	   too busy to read text over as-is. Darkened from the centre out rather than
+	   flatly, so the edges keep the scene and the middle carries the type. */
+	.moo-scrim {
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(ellipse at 42% 52%, rgba(12, 7, 3, 0.9) 0%, rgba(12, 7, 3, 0.55) 45%, rgba(12, 7, 3, 0.82) 100%),
+			linear-gradient(180deg, rgba(12, 7, 3, 0.75) 0%, rgba(12, 7, 3, 0.2) 30%, rgba(12, 7, 3, 0.9) 100%);
+	}
+
+	/* Hard black keyline via stacked drop-shadows rather than a border — the
+	   subject is a cut-out PNG, so this is the only way to outline its silhouette.
+	   Four offsets is enough to close the outline at this size. */
+	.moo-cast {
+		position: absolute;
+		bottom: 0;
+		/* One expression for the rendered size, because the horizontal offsets below
+		   are fractions of it. The PNG is square, so height and width are the same
+		   number and the figures' positions inside it can be given as percentages
+		   of either. */
+		--cast-h: min(94vh, 52rem);
+		height: var(--cast-h);
+		width: auto;
+		object-fit: contain;
+		pointer-events: none;
+		/* Hard black keyline via stacked drop-shadows rather than a border — the
+		   subject is a cut-out PNG, so this is the only way to outline its
+		   silhouette. Four offsets is enough to close it at this size. */
+		filter:
+			drop-shadow(3px 0 0 #1a0f06) drop-shadow(-3px 0 0 #1a0f06) drop-shadow(0 3px 0 #1a0f06)
+			drop-shadow(0 -3px 0 #1a0f06) drop-shadow(0 12px 26px rgba(0, 0, 0, 0.7));
+	}
+
+	/* Each copy keeps one figure. The clip is applied before the drop-shadow
+	   filter in the same element, so the cut edge gets outlined along with the
+	   rest — which is what stops it reading as a slice. */
+	/*
+		Clipping alone leaves each figure stranded in the middle of its own copy:
+		measured off the alpha channel, the man occupies 26.6%-51.5% of the square
+		and the woman 51.5%-73.2%, so anchoring the image to an edge anchors the
+		empty part of it. Each copy is pulled outward by the width of its own dead
+		margin, less a little, so the pair stands just inside the frame rather than
+		flush against it.
+	*/
+	.moo-cast-left {
+		left: calc(var(--cast-h) * -0.16);
+		/*
+			Stepped, not a straight cut. The narrowest column between the two figures
+			is x=527 (51.46%), but that is only true above the ankles: in the band
+			y840-930 the alpha resolves into four separate feet at x 309-374, 431-536,
+			588-664 and 675-728 — his right shoe reaches 536, and hers does not start
+			until 588. A single vertical line at 51.46% therefore left an 8px chip of
+			his shoe stranded beside her foot, which is exactly what it looked like.
+			The step drops to 54.5% (x=558) below 82% height, i.e. between the two.
+		*/
+		clip-path: polygon(0 0, 51.46% 0, 51.46% 82%, 54.5% 82%, 54.5% 100%, 0 100%);
+		animation: castInLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.1s;
+	}
+
+	.moo-cast-right {
+		right: calc(var(--cast-h) * -0.162);
+		clip-path: polygon(51.46% 0, 100% 0, 100% 100%, 54.5% 100%, 54.5% 82%, 51.46% 82%);
+		animation: castInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.16s;
+	}
+
+	/* Below this the pair would sit on top of the panels rather than beside them */
+	@media (max-width: 62rem) {
+		.moo-cast {
+			display: none;
+		}
+	}
+
+	.moo-stage {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: clamp(0.5rem, 1.4vh, 1rem);
+		width: min(58rem, 100%);
+		/* centred now that a figure stands on each side */
+		margin: 0 auto;
+	}
+
+	@media (max-width: 62rem) {
+		.moo-stage {
+			width: min(32rem, 100%);
+		}
+	}
+
+	.moo-logo {
+		width: clamp(12rem, 26vw, 22rem);
+		height: auto;
+		filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.8));
+		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+
+	.moo-vol {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both 0.06s;
+	}
+
+	.moo-vol-label {
+		font-family: var(--moo-display-font, sans-serif);
+		font-size: clamp(0.68rem, 1.4vw, 0.92rem);
+		letter-spacing: 0.2em;
+		color: #ffd7ee;
+	}
+
+	.moo-bolts {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.22rem;
+		line-height: 1;
+	}
+
+	/* Unlit bolts stay in place so the scale reads as "4 of 5" rather than
+	   "some bolts" — but now they are drawn as a hollow bolt in the card's own
+	   ink rather than a greyed-out emoji, which is the same distinction the
+	   Milk Meter's pips make between an empty step and a filled one. */
+	.moo-bolt {
+		height: clamp(0.95rem, 2vw, 1.3rem);
+		width: auto;
+		display: block;
+		overflow: visible;
+	}
+
+	.moo-bolt path {
+		fill: rgba(255, 238, 205, 0.09);
+		stroke: rgba(232, 149, 106, 0.5);
+		stroke-width: 1.6;
+		stroke-linejoin: round;
+	}
+
+	.moo-bolt.lit path {
+		/* the same magenta-to-gold the wordmark and the frame tiers already use,
+		   so the meter belongs to this game rather than to the OS */
+		fill: #ffd75e;
+		stroke: #e8542e;
+		stroke-width: 2.2;
+		filter: drop-shadow(0 0 6px rgba(232, 149, 106, 0.9))
+			drop-shadow(0 0 2px rgba(255, 215, 94, 0.9));
+	}
+
+	.moo-panels {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(0.5rem, 1.2vw, 0.9rem);
+		width: 100%;
+	}
+
+	/* Below the width where three columns can hold readable body text, stack.
+	   The panels are the content, so reflowing beats shrinking. */
+	@media (max-width: 46rem) {
+		.moo-panels {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Angled corners and a hard keyline instead of a soft neon pill: the card is
+	   meant to read as printed signage in the scene, not as an app dialog. */
+	/*
+		Built to match the character art rather than the UI: the cast is drawn with a
+		thick black keyline, flat saturated fill and a hard shadow, so the panels use
+		the same three things. A 3px near-black border is the keyline, an inset ring
+		supplies the coloured inner line the art uses inside its outlines, and the
+		shadow is a hard offset block with no blur — a blurred shadow is a UI idiom
+		and reads as a different world from the illustration standing next to it.
+
+		The clip-path corner is kept but cut deeper, because a chamfer that size is
+		itself a poster device.
+	*/
+	.moo-panel {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.35rem;
+		padding: clamp(0.7rem, 1.6vh, 1.1rem) clamp(0.6rem, 1.4vw, 1rem);
+		box-sizing: border-box;
+		background:
+			linear-gradient(180deg, rgba(78, 50, 30, 0.96) 0%, rgba(38, 24, 14, 0.97) 62%, rgba(52, 33, 19, 0.97) 100%);
+		border: 3px solid #1a0f06;
+		clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+		box-shadow:
+			inset 0 0 0 2px #e8956a,
+			inset 0 22px 34px -22px rgba(232, 149, 106, 0.5),
+			7px 7px 0 rgba(12, 7, 3, 0.75);
+		text-align: center;
+		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+		animation-delay: var(--delay);
+	}
+
+	/* A flat colour band behind the icon, the way a poster blocks in its subject.
+	   Sits under everything else and stops the icon floating on the gradient. */
+	.moo-panel::before {
+		content: '';
+		position: absolute;
+		inset: 3px 3px auto 3px;
+		height: clamp(3.4rem, 8vh, 5rem);
+		background: linear-gradient(180deg, rgba(232, 84, 46, 0.34) 0%, rgba(232, 84, 46, 0) 100%);
+		pointer-events: none;
+	}
+
+	/* Diagonal cyan flash in the top corner — the same accent the dress and the
+	   shirt use, and it keeps the three panels from reading as plain boxes. */
+	.moo-panel::after {
+		content: '';
+		position: absolute;
+		top: -1px;
+		right: -1px;
+		width: 46px;
+		height: 46px;
+		background: linear-gradient(225deg, #b8863f 0%, #b8863f 46%, transparent 47%);
+		pointer-events: none;
+	}
+
+	.moo-panel-icons {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: clamp(2.6rem, 6vh, 3.9rem);
+	}
+
+	.moo-panel-icons img {
+		width: clamp(2.6rem, 6vh, 3.9rem);
+		height: clamp(2.6rem, 6vh, 3.9rem);
+		object-fit: contain;
+		filter: drop-shadow(0 3px 9px rgba(0, 0, 0, 0.6));
+	}
+
+	/* the Frame sits on the symbol, as it does on the grid */
+	.moo-panel-overlay {
+		position: absolute;
+		inset: 0;
+		margin: auto;
+		filter: drop-shadow(0 0 10px rgba(255, 209, 102, 0.6));
+	}
+
+	/* the three Scatters overlap, the way they read when they land together */
+	.moo-panel-icons.multi img:not(:first-child) {
+		margin-left: -0.95rem;
+	}
+
+	.moo-panel h2 {
+		position: relative;
+		z-index: 1;
+		margin: 0;
+		font-family: var(--moo-display-font, sans-serif);
+		font-size: clamp(0.82rem, 1.7vw, 1.08rem);
+		font-weight: 800;
+		letter-spacing: 0.05em;
+		color: #ffd75e;
+		/* heavy keyline on the type, the way signage in this idiom is drawn */
+		text-shadow:
+			2px 0 0 #1a0f06,
+			-2px 0 0 #1a0f06,
+			0 2px 0 #1a0f06,
+			0 -2px 0 #1a0f06,
+			0 0 16px rgba(255, 215, 94, 0.5);
+	}
+
+	.moo-panel p {
+		margin: 0;
+		font-size: clamp(0.66rem, 1.15vw, 0.79rem);
+		line-height: 1.45;
+		opacity: 0.92;
+	}
+
+	.moo-panel :global(strong) {
+		color: #b8863f;
+		font-weight: 700;
+	}
+
+	.moo-stats {
+		margin: 0;
+		font-family: var(--moo-display-font, sans-serif);
+		font-size: clamp(0.68rem, 1.4vw, 0.9rem);
+		letter-spacing: 0.12em;
+		color: #e8956a;
+		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both 0.32s;
+	}
+
+	/* While loading it is a status line, not an invitation — the pulse would read
+	   as "press me" on something that will not respond. */
+	.moo-cta.waiting {
+		animation: none;
+		opacity: 0.6;
+		letter-spacing: 0.14em;
+	}
+
+	.moo-cta {
+		margin: 0;
+		font-family: var(--moo-display-font, sans-serif);
+		font-size: clamp(0.78rem, 1.6vw, 1rem);
+		letter-spacing: 0.22em;
+		text-shadow:
+			2px 0 0 #1a0f06,
+			-2px 0 0 #1a0f06,
+			0 2px 0 #1a0f06,
+			0 -2px 0 #1a0f06;
+		animation: ctaPulse 1.7s ease-in-out infinite;
+	}
+
+	.moo-studio {
+		position: absolute;
+		left: clamp(0.8rem, 2vw, 1.6rem);
+		bottom: clamp(0.7rem, 2vh, 1.3rem);
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		color: rgba(255, 255, 255, 0.72);
+		/*
+			The studio mark used to be set in Arial, here and inside the star. It was
+			inherited from the old MooooLoader, where it was one beat on a screen
+			nobody looks at; on this card it is the only piece of studio branding a
+			reviewer sees, and it was rendering in the operating system's default
+			sans. A wordmark in Arial reads as a placeholder, which is the opposite of
+			what a studio mark is for.
+			Orbitron via --moo-title-font: self-hosted, already loaded for the game's
+			display type, and squared-off enough to sit beside the star.
+		*/
+		font-family: var(--moo-title-font, var(--moo-display-font, sans-serif));
+		font-size: clamp(0.55rem, 1vw, 0.7rem);
+		font-weight: 600;
+		letter-spacing: 0.14em;
+	}
+
+	.moo-studio-star {
+		width: clamp(1.1rem, 2.2vw, 1.5rem);
+		height: clamp(1.1rem, 2.2vw, 1.5rem);
+		flex-shrink: 0;
+	}
+
+	.moo-studio-star text {
+		fill: currentColor;
+		font-family: var(--moo-title-font, var(--moo-display-font, sans-serif));
+		/* Orbitron's figures are narrower than Arial's, so 777 no longer fills the
+		   star's counter at 26px — 30px restores the optical size it was drawn at. */
+		font-size: 30px;
+		font-weight: 700;
+	}
+</style>
