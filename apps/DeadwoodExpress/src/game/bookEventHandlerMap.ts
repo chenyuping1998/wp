@@ -328,7 +328,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// book carries no trigger positions gets the plaque without the panel, which
 		// is the old behaviour, rather than a panel describing the wrong feature.
 		const triggerTier = FEATURE_TIERS.find(
-			(entry) => entry.scatters === Math.min(4, bookEvent.positions?.length ?? 3),
+			(entry) => entry.scatters === Math.min(config.featureRules.triggerScatters.phantom_express, bookEvent.positions?.length ?? config.featureRules.triggerScatters.midnight_passage),
 		);
 		if (triggerTier) stateGame.bonusTier = triggerTier.tier;
 
@@ -419,12 +419,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'boardShow' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		stateGame.stickyWildReels = [];
-		// Sticky Frames belong to the free game. Nothing used to remove them here,
-		// so whatever was still on the grid rode through the entire outro and only
-		// vanished when the next base spin's reveal fired framesClear — a beat far
-		// too late, and visibly wrong behind the outro panel.
-		stateGame.frames = [];
-		eventEmitter.broadcast({ type: 'framesClear' });
 		eventEmitter.broadcast({ type: 'boardFrameGlowHide' });
 		eventEmitter.broadcast({ type: 'freeSpinOutroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_youwon_panel' });

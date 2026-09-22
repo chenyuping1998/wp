@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { Container, Sprite } from 'pixi-svelte';
 
 	import SymbolArt from './SymbolArt.svelte';
@@ -58,13 +59,16 @@
 	let dimAmount = $state(0);
 	$effect(() => {
 		const target = props.dim ? 1 : 0;
-		if (dimAmount === target) return;
-		const from = dimAmount;
+		// Do not make this effect depend on the value it animates. Tracking
+		// dimAmount here restarts the effect on every RAF assignment and can stack
+		// partially completed interpolations until the RGB channels leave 0..255.
+		const from = untrack(() => dimAmount);
+		if (from === target) return;
 		const started = performance.now();
 		let raf = 0;
 		const tick = (now: number) => {
 			const u = Math.min(1, (now - started) / DIM_MS);
-			dimAmount = from + (target - from) * u;
+			dimAmount = Math.max(0, Math.min(1, from + (target - from) * u));
 			if (u < 1) raf = requestAnimationFrame(tick);
 		};
 		raf = requestAnimationFrame(tick);
@@ -74,9 +78,9 @@
 	const dimTint = $derived(
 		dimAmount < 0.01
 			? 0xffffff
-			: (Math.round(0xff + (((DIM_TINT >> 16) & 0xff) - 0xff) * dimAmount) << 16) |
+			: ((Math.round(0xff + (((DIM_TINT >> 16) & 0xff) - 0xff) * dimAmount) << 16) |
 					(Math.round(0xff + (((DIM_TINT >> 8) & 0xff) - 0xff) * dimAmount) << 8) |
-					Math.round(0xff + ((DIM_TINT & 0xff) - 0xff) * dimAmount),
+					Math.round(0xff + ((DIM_TINT & 0xff) - 0xff) * dimAmount)) >>> 0,
 	);
 
 	const width = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.width);

@@ -23,10 +23,10 @@
   const std = $derived(context.stateLayoutDerived.mainLayoutStandard());
   const texture = $derived(
     app.stateApp.loadedAssets[
-      props.who === "guy" ? "hmCastGuyMesh" : "hmCastGirlMesh"
+      "hmCastGuyMesh"
     ] as Texture,
   );
-  const rigUrl = '/assets/deadwood/conductor.rig.json';
+  const rigUrl = './assets/deadwood/conductor.rig.json';
   let figure = $state<SkinnedFigure | null>(null);
   let seenReactionSeq = stateGame.castReaction.seq;
 

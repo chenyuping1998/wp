@@ -9,7 +9,7 @@ c.eventEmitter.subscribeOnMount({boardFrameGlowShow:()=>{glow=true;},boardFrameG
 const b=$derived(c.stateGameDerived.boardLayout());
 </script>
 <Graphics draw={g=>{
-const w=b.width*b.scale,h=b.height*b.scale,x=b.x-w/2,y=b.y-h/2;
+const w=b.width*b.scale; const h=b.height*b.scale; const x=b.x-w/2; const y=b.y-h/2;
 g.clear();g.roundRect(x-22,y-22,w+44,h+44,15).fill(0x142623).stroke({width:5,color:0x8e7244});
 g.roundRect(x-10,y-10,w+20,h+20,7).fill(0x071714).stroke({width:2,color:glow?0x92e9cf:0xc4a46b});
 for(let i=0;i<=4;i++){const yy=y+i*h/4;g.moveTo(x,yy).lineTo(x+w,yy).stroke({width:1,color:0x305448,alpha:.45});}

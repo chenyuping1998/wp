@@ -19,8 +19,8 @@
     "fore_r": 11.0
   },
   "referenceReaction": {
-    "minArea": 0.6210065271650697,
-    "maxArea": 1.3683635231858118
+    "minArea": 0.5807949313984031,
+    "maxArea": 1.3899151545377808
   },
   "sourceAlpha": {
     "clearFraction": 0.5432834625244141

@@ -3,23 +3,7 @@
 	import { Container, Text } from 'pixi-svelte';
 
 
-	// House numerals/labels (replaces the MM template 'gold' bitmap font): warm
-	// gradient face, dark stroke, soft drop shadow. Being a canvas Text it
-	// renders every script (CJK/Arabic/Devanagari), unlike the old latin-only
-	// bitmap font.
-	//
-	// The ramp is the Miami one, not GoBananas' brass. Gold itself is deliberate
-	// and stays — it is the money colour, and it is what uiTheme already uses for
-	// balanceLabelFill/buyBonusLabelFill and what NeonFrames sets its multipliers
-	// in. What was inherited and is now gone is the BROWN either side of it: the
-	// bottom gradient stop 0xc9821a (bronze) and the two strokes 0x3a2205 /
-	// 0x54330a (dark brown), which are jungle-commando leather, not neon. The
-	// ramp now runs cream → gold → hot pink, the same three stops the modal
-	// headings already ship (255,233,138 → 255,215,94 → 255,142,222), over the
-	// deep-plum stroke NeonFrames uses.
-	//
-	// No call site passes `fill` or `stroke` except Symbol.svelte's superspin
-	// coin grading, so these defaults are every number a player reads.
+	// Brass numerals with a charcoal outline and restrained ivory highlight.
 	type Props = {
 		text: string | number;
 		fontSize: number;
@@ -34,10 +18,7 @@
 		// into a hotter amber so they read apart from the common ones
 		fill?: number | number[];
 		stroke?: number;
-		// Opt in to Orbitron (DISPLAY_FONT). Titan One stays the default because
-		// its digits are the legible ones at bet-bar size — see game/fonts.ts —
-		// but a big-win amount is a display callout, not a readout, and it is
-		// exactly the kind of place fonts.ts reserves for the display face.
+		// Optional display-family override for callouts.
 		fontFamily?: string;
 		fontWeight?: string;
 	};
@@ -78,8 +59,8 @@
 		text={String(props.text)}
 		style={{
 			...base,
-			fill: props.stroke ?? 0x1a0838,
-			stroke: props.stroke ?? 0x1a0838,
+			fill: props.stroke ?? 0x091713,
+			stroke: props.stroke ?? 0x091713,
 			strokeThickness: Math.max(2, props.fontSize * 0.13),
 		}}
 		alpha={0.85}
@@ -91,8 +72,8 @@
 		onresize={(sizes) => (measuredWidth = sizes.width)}
 		style={{
 			...base,
-			fill: props.fill ?? [0xffe98a, 0xffd75e, 0xff8ede],
-			stroke: props.stroke ?? 0x2b0a2e,
+			fill: props.fill ?? [0xf7e9c6, 0xddbc77, 0xa58145],
+			stroke: props.stroke ?? 0x14201d,
 			strokeThickness: Math.max(2, props.fontSize * 0.1),
 			dropShadow: true,
 			dropShadowColor: 0x000000,

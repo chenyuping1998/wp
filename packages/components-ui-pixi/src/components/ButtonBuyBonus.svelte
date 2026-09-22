@@ -196,6 +196,7 @@
 		{#if uiTheme.buyBonusHoverStyle === 'outline' && hovered && !disabled}
 			<Graphics
 				{...center}
+				y={center.y + plate.height * uiTheme.buyBonusPlateInsetOffsetY}
 				draw={(g) => {
 					// The plate's own edge, stroked. Sized to the ART - see
 					// buyBonusPlateInset - so it sits on the object rather than on the
@@ -236,6 +237,7 @@
 			     rather than through UiButton, so it needs its own overlay -->
 			<Graphics
 				{...center}
+				y={center.y + plate.height * uiTheme.buyBonusPlateInsetOffsetY}
 				draw={(g) => {
 					// Sized to the PLATE ART, not to the button box. On a square button
 					// with an object-shaped plate the old version drew a highlight half
@@ -264,6 +266,8 @@
 
 		<Text
 			{...center}
+			x={center.x + sizes.width * uiTheme.buyBonusLabelOffsetX}
+			y={center.y + sizes.height * uiTheme.buyBonusLabelOffsetY}
 			anchor={0.5}
 			alpha={labelAlpha}
 			text={active ? i18nDerived.disable() : i18nDerived.buyBonus()}

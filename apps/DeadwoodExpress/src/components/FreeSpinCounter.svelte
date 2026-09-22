@@ -90,14 +90,11 @@
 		const y = panelSizes.height * 0.78;
 		for (let i = 0; i < total; i++) {
 			const lit = i < remaining;
-			// 0x1c260c (an unlit pip) was olive — R28 G38 B12, sampled off
-			// GoBananas' frame. It is written as a ternary branch rather than a
-			// named constant, which is why every jungle-palette grep missed it.
 			// Pixi 8: fill and stroke are explicit calls, not state set beforehand.
 			g.circle(startX + i * gap, y, panelSizes.width * 0.035);
-			g.fill({ color: lit ? 0xffd75e : 0x2a1244, alpha: lit ? 1 : 0.85 });
+			g.fill({ color: lit ? 0xffd75e : 0x203c36, alpha: lit ? 1 : 0.85 });
 			g.circle(startX + i * gap, y, panelSizes.width * 0.035);
-			g.stroke({ width: 2, color: 0x2b0a2e, alpha: 1 });
+			g.stroke({ width: 2, color: 0x101f1b, alpha: 1 });
 		}
 	};
 </script>
@@ -117,8 +114,8 @@
 				fontSize: Math.min(panelSizes.width * 0.115, (panelSizes.width * 1.35) / Math.max(1, title.length)),
 				fontWeight: GAME_FONT_WEIGHT,
 				letterSpacing: 2,
-				fill: [0xffe98a, 0xffd75e, 0xff8ede],
-				stroke: 0x2b0a2e,
+				fill: [0xf7e9c6, 0xddbc77, 0xa58145],
+				stroke: 0x101f1b,
 				strokeThickness: 4,
 				wordWrap: false,
 			}}

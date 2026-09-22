@@ -18,7 +18,7 @@ function choose(mode:string){stateBonus.selectedBetModeKey=mode;eventEmitter.bro
 <div class="menu"><h2>{T.featureMenuTitle}</h2><BetMenuAmountToggle/>
 <div class="cards">{#each modes as mode,i}
 <section style:--accent={i?'#e2b971':'#8dddc3'}>
-<div class="art" style:background-image={`url('/assets/deadwood/${i?'background_feature':'background'}.png')`}><img src="/assets/deadwood/symbol_S.png" alt="Spectral ticket"/></div>
+<div class="art" style:background-image={`url('./assets/deadwood/${i?'background_feature':'background'}.png')`}><img src="./assets/deadwood/symbol_S.png" alt="Spectral ticket"/></div>
 <h3>{mode.text.title}</h3><p>{mode.text.dialog}</p><strong>{mode.costMultiplier}×</strong>
 <button onclick={()=>choose(mode.mode)}>{mode.text.button} · {numberToCurrencyString(stateBet.betAmount*mode.costMultiplier)}</button>
 </section>{/each}</div></div>

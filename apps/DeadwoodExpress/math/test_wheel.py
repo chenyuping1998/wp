@@ -8,6 +8,7 @@ from gamestate import GameState
 
 def assert_book(events):
     held, tier, spin, wheel = 1, None, None, None
+    cap = 200
     count = 0
     for index, event in enumerate(events):
         assert event["index"] == index
@@ -23,8 +24,8 @@ def assert_book(events):
         elif kind == "multiplierWheel":
             assert spin == "freegame" and wheel is None
             assert event["previous"] == held
-            assert held <= event["value"] <= 100
-            assert all(held <= v <= 100 for v in event["eligibleValues"])
+            assert held <= event["value"] <= cap
+            assert all(held <= v <= cap for v in event["eligibleValues"])
             assert event["value"] in event["eligibleValues"]
             if tier == "phantom_express":
                 assert all(v % 5 == 0 for v in event["eligibleValues"])
@@ -55,6 +56,15 @@ class WheelTests(unittest.TestCase):
         self.assertEqual([(m.get_name(),m.get_cost()) for m in self.config.bet_modes],
                          [("base",1.0),("bonus",100.0),("bonus_hits",250.0)])
 
+    def test_all_retrigger_counts_physically_reachable(self):
+        self.assertTrue(all("S" in reel for reel in self.config.reels["FR0"]))
+
+    def test_seed_replays_identically(self):
+        self.state.run_spin(1234)
+        events = list(self.state.book.events)
+        self.state.run_spin(1234)
+        self.assertEqual(events,self.state.book.events)
+
     def test_round_streams(self):
         count = 0
         for mode, criteria in [("base","basegame"),("base","0"),("base","freegame_weak"),
@@ -72,15 +82,15 @@ class WheelTests(unittest.TestCase):
         s = self.state
         s.gametype = self.config.freegame_type
         s.bonus_tier = "phantom_express"
-        s.held_multiplier = 95
+        s.held_multiplier = 190
         s.board = [[s.create_symbol("W") for _ in range(4)] for _ in range(5)]
-        with patch("game_executables.get_random_outcome", return_value=100):
+        with patch("game_executables.get_random_outcome", return_value=200):
             s.resolve_spin()
         self.assertEqual(s.book.events[0]["type"],"multiplierWheel")
         self.assertEqual(len(s.win_data["wins"]),14)
-        self.assertTrue(all(w["meta"]["globalMult"] == 100 for w in s.win_data["wins"]))
+        self.assertTrue(all(w["meta"]["globalMult"] == 200 for w in s.win_data["wins"]))
         s.draw_wheel()
-        self.assertEqual(s.book.events[-1]["eligibleValues"],[100])
+        self.assertEqual(s.book.events[-1]["eligibleValues"],[200])
 
     def test_losing_spin_preserves_multiplier(self):
         s = self.state

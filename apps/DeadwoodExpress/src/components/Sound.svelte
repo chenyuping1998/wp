@@ -68,27 +68,27 @@
 		| 'neon_zap';
 
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
-		gong_feature: 'miami/sfx/gong_feature.wav',
-		bigwin_blast: 'miami/sfx/bigwin_blast.wav',
-		reel_tension: 'miami/sfx/reel_tension.wav',
-		reel_stop: 'miami/sfx/reel_stop.wav',
-		btn: 'miami/sfx/btn.wav',
-		spin: 'miami/sfx/spin.wav',
-		scatter_1: 'miami/sfx/scatter_1.wav',
-		scatter_2: 'miami/sfx/scatter_2.wav',
-		scatter_3: 'miami/sfx/scatter_3.wav',
-		scatter_4: 'miami/sfx/scatter_4.wav',
-		scatter_5: 'miami/sfx/scatter_5.wav',
-		pluck_low: 'miami/sfx/pluck_low.wav',
-		win_gliss: 'miami/sfx/win_gliss.wav',
-		win_gliss_big: 'miami/sfx/win_gliss_big.wav',
-		fs_intro: 'miami/sfx/fs_intro.wav',
-		fs_outro: 'miami/sfx/fs_outro.wav',
-		win_cap: 'miami/sfx/win_cap.wav',
-		coin_shimmer: 'miami/sfx/coin_shimmer.wav',
-		wild_expand: 'miami/sfx/wild_expand.wav',
-		mult_update: 'miami/sfx/mult_update.wav',
-		neon_zap: 'miami/sfx/neon_zap.wav',
+		gong_feature: 'deadwood/sfx/gong_feature.wav',
+		bigwin_blast: 'deadwood/sfx/bigwin_blast.wav',
+		reel_tension: 'deadwood/sfx/reel_tension.wav',
+		reel_stop: 'deadwood/sfx/reel_stop.wav',
+		btn: 'deadwood/sfx/btn.wav',
+		spin: 'deadwood/sfx/spin.wav',
+		scatter_1: 'deadwood/sfx/scatter_1.wav',
+		scatter_2: 'deadwood/sfx/scatter_2.wav',
+		scatter_3: 'deadwood/sfx/scatter_3.wav',
+		scatter_4: 'deadwood/sfx/scatter_4.wav',
+		scatter_5: 'deadwood/sfx/scatter_5.wav',
+		pluck_low: 'deadwood/sfx/pluck_low.wav',
+		win_gliss: 'deadwood/sfx/win_gliss.wav',
+		win_gliss_big: 'deadwood/sfx/win_gliss_big.wav',
+		fs_intro: 'deadwood/sfx/fs_intro.wav',
+		fs_outro: 'deadwood/sfx/fs_outro.wav',
+		win_cap: 'deadwood/sfx/win_cap.wav',
+		coin_shimmer: 'deadwood/sfx/coin_shimmer.wav',
+		wild_expand: 'deadwood/sfx/wild_expand.wav',
+		mult_update: 'deadwood/sfx/mult_update.wav',
+		neon_zap: 'deadwood/sfx/neon_zap.wav',
 	};
 
 	// Sprite sound names re-routed to the Chinese set.
@@ -150,7 +150,7 @@
 	function getCnSfx(name: CnSfxName) {
 		let audio = cnSfxAudio[name];
 		if (!audio) {
-			audio = new Audio(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
+			audio = new Audio(`./assets/audio/${CN_SFX_FILES[name]}`);
 			audio.preload = 'auto';
 			cnSfxAudio[name] = audio;
 		}
@@ -266,8 +266,8 @@
 	// they need to be seamless at the join — a track that ends on a decaying tail
 	// will click audibly every 31 seconds.
 	const BGM_FILES = {
-		base: 'miami/White_Line_Escape.mp3',
-		freespin: 'miami/Triple_Seven_Surge.mp3',
+		base: 'deadwood/base.mp3',
+		freespin: 'deadwood/feature.mp3',
 	} as const;
 
 	function playBgm(type: 'base' | 'freespin') {
@@ -276,7 +276,7 @@
 			bgmAudio.pause();
 			bgmAudio = null;
 		}
-		bgmAudio = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
+		bgmAudio = new Audio(`./assets/audio/${BGM_FILES[type]}`);
 		routeThroughFilter(bgmAudio);
 		bgmAudio.loop = true;
 		bgmAudio.volume = stateSoundDerived.volumeMusic();

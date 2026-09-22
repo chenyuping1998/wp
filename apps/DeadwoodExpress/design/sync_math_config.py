@@ -32,6 +32,10 @@ def main():
         raise SystemExit(f"math config not found: {source}\nRun games/{GAME_ID}/run.py first.")
 
     config = json.load(open(source, encoding="UTF-8"))
+    sys.path.insert(0, os.path.abspath(sdk))
+    sys.path.insert(0, os.path.join(os.path.abspath(sdk), "games", GAME_ID))
+    from game_config import GameConfig
+    config["featureRules"] = GameConfig().feature_rules
     config["providerName"] = PROVIDER_NAME
     config["gameName"] = GAME_ID
     config["gameID"] = FRONTEND_GAME_ID

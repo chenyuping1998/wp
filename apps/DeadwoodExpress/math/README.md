@@ -1,22 +1,23 @@
-# Hot Miami — maths source
+# Deadwood Express — math source
 
-The game's maths lives here so it is versioned with the frontend it feeds. It is
-a copy of `math-sdk/games/hot_miami/`; the SDK itself is a separate checkout of
-`StakeEngine/math-sdk` and is not part of this repo.
+Mirror of `math-sdk/games/deadwood_express/`. Run from the SDK root with Python 3.10+:
 
-To regenerate books and lookup tables, copy this directory back into an SDK
-checkout and run it from the SDK root (it imports `src.*` and needs Python 3.10+
-for `match`):
+    PYTHONPATH=. python games/deadwood_express/run.py
+    PYTHONPATH=.:games/deadwood_express python -m unittest discover -s games/deadwood_express -p 'test_*.py'
+    PYTHONPATH=.:games/deadwood_express python games/deadwood_express/verify_books.py
 
-    cp -R apps/HotMiami/math/ <sdk>/games/hot_miami/
-    cd <sdk> && PYTHONPATH=. python games/hot_miami/run.py
+The run generates 40,000 base books and 20,000 books per buy mode, optimizes
+lookup weights, generates configs and checks book hashes and payouts.
+Generated `library/` output is kept in the SDK rather than this source mirror.
+Regenerate frontend config and fixtures after every math change:
 
-`library/` — books, lookup tables, publish files, stat sheets — is deliberately
-not copied. It is ~140 MB of generated output and is rebuilt by that command.
+    python apps/DeadwoodExpress/design/sync_math_config.py /absolute/path/to/math-sdk
+    python apps/DeadwoodExpress/design/sync_story_books.py
 
-Before uploading the result, run the bundle gate. It exists because a bundle was
-once copied out of `library/publish_files/` while the optimiser was still
-writing it, which shipped two modes with the previous run's lookup tables and was
-rejected by Stake as `ERR_MATH_OUTSIDE_RANGE`:
+The free-spin wheel emits `multiplierWheel` after reveal and before line wins.
+Its selected global multiplier applies to that spin, persists across losses and
+retriggers, and resets to 1 on feature entry and exit. Premium selections are
+multiples of five; both ladders cap at 200. Only base/100x/250x modes exist.
 
-    python apps/HotMiami/design/check_math_bundle.py <upload>/math
+Published RTP and other gate measurements are documented in
+`docs/handoff/deadwood_express.md`; target RTP alone is not a measurement.

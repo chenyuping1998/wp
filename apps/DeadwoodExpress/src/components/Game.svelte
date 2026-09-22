@@ -100,10 +100,16 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name="DEADWOOD EXPRESS" />
+				<!-- The name text ends at x≈322 and the logo starts 196 in from the
+				     right, so below ~560 wide they overlap (375 wide: 90–322 against
+				     179–355). The logo already spells the name; drop the text there. -->
+				<UiGameName
+					name={context.stateLayoutDerived.canvasSizes().width < 560 ? '' : 'DEADWOOD EXPRESS'}
+				/>
 			{/snippet}
 			{#snippet logo()}
-				<Text
+				<Sprite key="hmLogo" anchor={{ x: 1, y: 0 }} width={REM * 11} height={REM * 5.5} />
+				<!-- <Text
 					anchor={{ x: 1, y: 0 }}
 					text="DEADWOOD EXPRESS"
 					style={{
@@ -113,7 +119,7 @@
 						lineHeight: REM * 2,
 						fill: 0xffffff,
 					}}
-				/>
+				/> -->
 			{/snippet}
 		</UI>
 		<Win />

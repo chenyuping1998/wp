@@ -78,6 +78,14 @@ class GameConfig(Config):
                                         [1200,650,360,220,150,100,65,45,25,16,10,7,4,3,2,1])),
             "phantom_express": {v:max(1,int(1500/((v/5)**2.7))) for v in range(5,101,5)},
         }
+        self.feature_rules = {
+            "initialSpins": self.freespin_triggers[self.basegame_type][3],
+            "triggerScatters": {"midnight_passage": 3, "phantom_express": 4},
+            "retriggerAwards": self.freespin_triggers[self.freegame_type],
+            "maxMultiplier": max(self.wheel_weights["midnight_passage"]),
+            "premiumStep": 5,
+            "wheelValues": {tier:list(weights) for tier,weights in self.wheel_weights.items()},
+        }
         self.reels = {n:self.read_reels_csv(os.path.join(self.reels_path,n+".csv")) for n in ("BR0","BR1","FR0","WCAP")}
         self.padding_reels = {self.basegame_type:self.reels["BR0"], self.freegame_type:self.reels["FR0"]}
         self.bet_modes = [

@@ -45,10 +45,7 @@
 		// would sweep a board it never actually filled.
 		stateBet.winBookEventAmount = 0;
 		context.eventEmitter.broadcast({ type: 'winLinesClear' });
-		if (context.stateGame.frames.length > 0) {
-			context.stateGame.frames = [];
-			context.eventEmitter.broadcast({ type: 'framesClear' });
-		}
+
 		if (context.stateGame.stickyPrizes.length > 0) {
 			context.stateGame.stickyPrizes = [];
 			context.eventEmitter.broadcast({ type: 'stickyPrizesClear' });

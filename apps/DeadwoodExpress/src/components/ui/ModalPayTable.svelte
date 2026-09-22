@@ -22,7 +22,6 @@
 		H5: 'hmH5',
 		W: 'hmW',
 		S: 'hmS',
-		C: 'hmC',
 	};
 
 	// Must match the drawn art. The low pays were bespoke Miami objects (palm,
@@ -41,13 +40,12 @@
 		L4: 'Jack',
 		W: 'Wild',
 		S: 'FS — Scatter',
-		C: 'Collector',
 	};
 
 	// keep high -> low ordering for readability
 	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'H5', 'L1', 'L2', 'L3', 'L4', 'S'];
 
-	const maxWin = config.betModes?.base?.max_win ?? 20000;
+	const maxWin = config.betModes.base.max_win;
 
 	const imgSrc = (name: string) => {
 		const key = SYMBOL_ASSET[name];
@@ -64,7 +62,7 @@
 	// Every tier awards the same number of free spins; the Scatter count selects
 	// which tier is played rather than how long it lasts (maths: freespin_triggers
 	// is {3: 10, 4: 10, 5: 10}). Kept in step with ModalGameRules.
-	const FREE_SPINS = 10;
+	const FREE_SPINS = config.featureRules.initialSpins;
 
 	// Fixed paylines, each an array of row indices (0 = top row). Rendered below
 	// as mini boards with the line's cells lit, so a player can see the actual
@@ -97,7 +95,7 @@
 		<div class="wp-paytable" use:popupGhost>
 			<h2>{T.payTableUpper}</h2>
 			<p class="wp-note">
-				{T.paysStart} shown as a multiple of {T.totalBet}. Line wins {T.winsDirection} on
+				{T.paysStart} shown as a multiple of {T.baseBet}, before any feature multiplier. Line wins {T.winsDirection} on
 				{Object.keys(config.paylines).length} fixed {T.paylines}.
 			</p>
 
@@ -115,7 +113,7 @@
 						<div class="wp-pays">
 							{#if row.name === 'S'}
 								<span class="wp-special"
-									>{T.doesNotPay} &mdash; 3, 4 or 5 Scatters award {FREE_SPINS} Free Spins</span
+									>{T.doesNotPay} &mdash; {config.featureRules.triggerScatters.midnight_passage} Scatters award {FREE_SPINS} Midnight Passage Free Spins; {config.featureRules.triggerScatters.phantom_express} or more award {FREE_SPINS} Phantom Express Free Spins</span
 								>
 							{:else if row.pays.length}
 								{#each row.pays as pay (pay.count)}
@@ -135,7 +133,7 @@
 			<div class="wp-lines">
 				{#each paylines as line (line.id)}
 					<div class="wp-line">
-						<div class="wp-line-grid">
+						<div class="wp-line-grid" style:grid-template-columns={`repeat(${REELS}, 1fr)`}>
 							{#each Array(ROWS) as _, row (row)}
 								{#each Array(REELS) as _, reel (reel)}
 									<span class="wp-cell" class:lit={isLit(line.cells, reel, row)}></span>
@@ -150,7 +148,7 @@
 			<p class="wp-note">
 				Wild substitutes for all symbols except the Scatter, and {T.pays} as its
 				own symbol. Only the highest win is {T.paid} per line. Max win is capped at {maxWin.toLocaleString()}&times;
-				{T.totalBet}.
+				{T.baseBet} in every mode, including directly entered features. Reaching the cap ends the round immediately.
 			</p>
 		</div>
 	</Popup>

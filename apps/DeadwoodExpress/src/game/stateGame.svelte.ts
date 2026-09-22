@@ -161,7 +161,6 @@ export const stateGame = $state({
 	// Neon Frames currently on the grid, keyed by board position. Frames are
 	// positional overlays rather than symbols, so they live beside the board
 	// rather than inside it.
-	frames: [] as { reel: number; row: number; mult: number }[],
 	bonusTier: null as null | 'midnight_passage' | 'phantom_express',
 
 	// True while the feature splash is up. Read by Cast.svelte, which stands its

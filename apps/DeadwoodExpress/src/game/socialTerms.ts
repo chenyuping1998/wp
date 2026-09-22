@@ -24,6 +24,7 @@ export const getSocialTerms = () => {
 
 	return {
 		bet: pick('bet', 'amount'), // "your bet" / "your amount"
+		baseBet: pick('base bet', 'base amount'),
 		totalBet: pick('total bet', 'total amount'),
 		betLevel: pick('bet level', 'amount level'),
 		betLevels: pick('bet levels', 'amount levels'),
@@ -44,8 +45,8 @@ export const getSocialTerms = () => {
 		// "play bonus", so the heading follows that.
 		featureMenuTitle: pick('BUY A FEATURE', 'GET A FEATURE'),
 		featureMenuLede: pick(
-			'Enter any of the three free-spin features directly, for the multiple of your bet shown on each card. Every feature plays at the same RTP as the base game.',
-			'Enter any of the three free-spin features directly, for the multiple of your amount shown on each card. Every feature plays at the same RTP as normal play.',
+			'Enter either of the two free-spin features directly, for the multiple of your bet shown on each card. Every feature plays at the same RTP as the base game.',
+			'Enter either of the two free-spin features directly, for the multiple of your amount shown on each card. Every feature plays at the same RTP as normal play.',
 		),
 		insufficientForMode: pick('Balance too low for this feature.', 'Balance too low for this feature.'),
 

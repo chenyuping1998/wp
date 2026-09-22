@@ -22,12 +22,12 @@
 	import GoldText from './GoldText.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
-	import { DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
+	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { getContext } from '../game/context';
 
 	const context = getContext();
 
-	// brass tier plaques (design/generate_win_banners.mjs) — 1000×560, the
+	// brass tier plaques (design/deadwood_ui_assets.mjs) — 1000×560, the
 	// amount rolls inside the dark centre well
 	const BANNER_KEY: Record<string, string> = {
 		big: 'hmWinBannerBig',
@@ -37,20 +37,13 @@
 		max: 'hmWinBannerMax',
 	};
 	const BANNER_RATIO = 560 / 1000;
-	// Presentation intensity scales with the tier, and so does the glow bed's hue:
-	// the ramp climbs gold → amber → coral → pink as the win gets bigger.
-	//
-	// BIG was 0x2ee6a8 — mint green, behind a magenta plaque. Mint is a legitimate
-	// Miami colour (uiTheme's win accent is 0x2ee6a8), which is exactly why the
-	// jungle-palette greps never flagged it, but it is the one tier that had a
-	// glow bed complementary to its own plaque, and BIG is the tier a player sees
-	// most often. It now starts the ramp in gold instead of sitting off it.
+	// Higher tiers shift from brass light to spectral teal.
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
 		big: { mult: 1, glowTint: 0xffd75e },
 		superwin: { mult: 1.15, glowTint: 0xffc14a },
-		mega: { mult: 1.3, glowTint: 0xffa347 },
-		epic: { mult: 1.5, glowTint: 0xff7a4a },
-		max: { mult: 1.8, glowTint: 0xff8ede },
+		mega: { mult: 1.3, glowTint: 0xe0c48b },
+		epic: { mult: 1.5, glowTint: 0x86cbb7 },
+		max: { mult: 1.8, glowTint: 0x9de5d3 },
 	};
 
 	let show = $state(false);
@@ -262,23 +255,14 @@
 										alpha={Math.sin(p * Math.PI)}
 									/>
 								{/each}
-								<!--
-									Amount rolls inside the plaque's dark centre well, set in
-									Orbitron. DISPLAY_FONT was declared in game/fonts.ts for
-									"titles, the free-spin plaques, big-win callouts" and then
-									used in exactly two places, so every number in play was
-									Titan One — the same file GoBananas ships. This is the
-									biggest number the game ever draws and the least
-									legibility-constrained, which is what fonts.ts reserves the
-									display face for. The bet-bar readouts stay Titan One.
-								-->
+								<!-- Saira numerals roll beneath the upper title zone. -->
 								<GoldText
 									y={bh * 0.16}
 									maxWidth={bw * 0.68}
 									text={bookEventAmountToCountUpString(countUpAmount, amount)}
 									fontSize={bh * 0.24}
-									fontFamily={DISPLAY_FONT}
-									fontWeight={DISPLAY_FONT_WEIGHT}
+									fontFamily={GAME_FONT}
+									fontWeight={GAME_FONT_WEIGHT}
 								/>
 							</Container>
 							{#if burstShown}

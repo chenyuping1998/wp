@@ -6,74 +6,27 @@ export default {
   "board": [
    [
     {
-     "name": "L2"
-    },
-    {
-     "name": "L4"
-    },
-    {
-     "name": "H2"
-    },
-    {
-     "name": "H3"
-    },
-    {
-     "name": "L4"
-    },
-    {
-     "name": "H2"
-    }
-   ],
-   [
-    {
-     "name": "L4"
+     "name": "H1"
     },
     {
      "name": "H4"
     },
     {
-     "name": "L3"
-    },
-    {
-     "name": "S",
-     "scatter": true
-    },
-    {
-     "name": "L4"
-    },
-    {
-     "name": "L2"
-    }
-   ],
-   [
-    {
-     "name": "L4"
-    },
-    {
      "name": "H5"
     },
     {
-     "name": "L2"
+     "name": "H4"
     },
     {
-     "name": "L3"
+     "name": "L1"
     },
     {
-     "name": "L2"
-    },
-    {
-     "name": "H2"
+     "name": "H5"
     }
    ],
    [
     {
-     "name": "H2"
-    },
-    {
-     "name": "H3"
-    },
-    {
-     "name": "H2"
+     "name": "H4"
     },
     {
      "name": "S",
@@ -83,37 +36,85 @@ export default {
      "name": "L1"
     },
     {
-     "name": "L3"
+     "name": "H3"
+    },
+    {
+     "name": "H4"
+    },
+    {
+     "name": "L4"
     }
    ],
    [
     {
-     "name": "H5"
+     "name": "L4"
+    },
+    {
+     "name": "H3"
+    },
+    {
+     "name": "W",
+     "wild": true
+    },
+    {
+     "name": "L4"
     },
     {
      "name": "L3"
     },
     {
-     "name": "H5"
+     "name": "L2"
+    }
+   ],
+   [
+    {
+     "name": "L3"
     },
     {
      "name": "S",
      "scatter": true
     },
     {
+     "name": "H5"
+    },
+    {
      "name": "H3"
+    },
+    {
+     "name": "L3"
     },
     {
      "name": "L4"
     }
+   ],
+   [
+    {
+     "name": "L2"
+    },
+    {
+     "name": "L1"
+    },
+    {
+     "name": "L4"
+    },
+    {
+     "name": "S",
+     "scatter": true
+    },
+    {
+     "name": "L4"
+    },
+    {
+     "name": "H5"
+    }
    ]
   ],
   "paddingPositions": [
-   7,
-   14,
-   4,
-   25,
-   16
+   17,
+   9,
+   19,
+   36,
+   35
   ],
   "gameType": "basegame",
   "anticipation": [
@@ -136,11 +137,11 @@ export default {
   "positions": [
    {
     "reel": 1,
-    "row": 3
+    "row": 1
    },
    {
     "reel": 3,
-    "row": 3
+    "row": 1
    },
    {
     "reel": 4,
@@ -161,96 +162,92 @@ export default {
   "total": 10
  },
  "multiplierWheel": {
-  "index": 12,
+  "index": 6,
   "type": "multiplierWheel",
   "previous": 1,
-  "value": 3,
+  "value": 10,
   "eligibleValues": [
-   1,
    2,
-   3,
    4,
-   5,
    6,
    8,
    10,
-   15,
+   12,
+   16,
    20,
-   25,
    30,
    40,
    50,
-   75,
-   100
+   60,
+   80,
+   100,
+   150,
+   200
   ]
  },
  "winInfo": {
-  "index": 13,
+  "index": 7,
   "type": "winInfo",
-  "totalWin": 6000,
+  "totalWin": 200,
   "wins": [
    {
-    "symbol": "H3",
-    "kind": 4,
-    "win": 6000,
+    "symbol": "L3",
+    "kind": 3,
+    "win": 200,
     "positions": [
      {
       "reel": 0,
-      "row": 4
+      "row": 3
      },
      {
       "reel": 1,
-      "row": 3
+      "row": 2
      },
      {
       "reel": 2,
-      "row": 4
-     },
-     {
-      "reel": 3,
-      "row": 3
+      "row": 2
      }
     ],
     "meta": {
-     "lineIndex": 14,
-     "multiplier": 3,
-     "winWithoutMult": 2000,
-     "globalMult": 3,
+     "lineIndex": 11,
+     "multiplier": 10,
+     "winWithoutMult": 20,
+     "globalMult": 10,
      "lineMultiplier": 1
     }
    }
   ]
  },
  "setWin": {
-  "index": 14,
+  "index": 8,
   "type": "setWin",
-  "amount": 6000,
-  "winLevel": 8
- },
- "freeSpinEnd": {
-  "index": 43,
-  "type": "freeSpinEnd",
-  "amount": 7120,
-  "winLevel": 6
- },
- "finalWin": {
-  "index": 44,
-  "type": "finalWin",
-  "amount": 7120
+  "amount": 200,
+  "winLevel": 4
  },
  "freeSpinRetrigger": {
-  "index": 10,
+  "index": 46,
   "type": "freeSpinRetrigger",
   "totalFs": 12,
   "positions": [
    {
     "reel": 3,
-    "row": 4
+    "row": 2
    },
    {
     "reel": 4,
-    "row": 2
+    "row": 4
    }
   ]
+ },
+ "freeSpinEnd": {
+  "index": 59,
+  "type": "freeSpinEnd",
+  "amount": 22000,
+  "winLevel": 7
+ },
+ "finalWin": {
+  "index": 60,
+  "type": "finalWin",
+  "amount": 22000
  }
 };

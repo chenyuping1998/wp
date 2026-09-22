@@ -6,8 +6,9 @@ exist in bookEventHandlerMap and the story hangs forever with no console error.
 """
 
 import json
+import io
 import random
-import subprocess
+import zstandard
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -17,19 +18,28 @@ OUT = Path(__file__).resolve().parent.parent / "src/stories/data"
 SAMPLE_COUNT = 12
 
 
-def read_books(mode: str) -> list:
-    raw = subprocess.run(
-        ["zstd", "-dc", str(PUBLISH / f"books_{mode}.jsonl.zst")],
-        capture_output=True,
-        check=True,
-    ).stdout.decode()
-    return [json.loads(line) for line in raw.splitlines() if line.strip()]
+def read_books(mode: str):
+    with (PUBLISH / f"books_{mode}.jsonl.zst").open("rb") as raw:
+        with zstandard.ZstdDecompressor().stream_reader(raw) as stream:
+            for line in io.TextIOWrapper(stream):
+                if line.strip():
+                    yield json.loads(line)
 
 
-def sample(books: list, want_win: bool) -> list:
-    pool = [b for b in books if (b["payoutMultiplier"] > 0) == want_win]
-    random.seed(7)
-    return random.sample(pool, min(SAMPLE_COUNT, len(pool)))
+def sample(books, want_win: bool) -> list:
+    rng = random.Random(7)
+    pool, seen = [], 0
+    for book in books:
+        if (book["payoutMultiplier"] > 0) != want_win:
+            continue
+        seen += 1
+        if len(pool) < SAMPLE_COUNT:
+            pool.append(book)
+        else:
+            slot = rng.randrange(seen)
+            if slot < SAMPLE_COUNT:
+                pool[slot] = book
+    return pool
 
 
 def write_books(name: str, books: list, header: str) -> None:

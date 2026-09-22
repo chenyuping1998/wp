@@ -1,5 +1,4 @@
 <script lang="ts">
-import { base } from '$app/paths';
 import { stateApp } from '../../game/stateApp';
 import { stateLayout } from '../../game/stateLayout';
 import config from '../../game/config';
@@ -9,15 +8,15 @@ function close(){if(!stateApp.loaded)return;show=false;stateLayout.showLoadingSc
 </script>
 {#if show}
 <div class="intro">
-<img class="scene" src={`${base}/assets/deadwood/background.png`} alt=""/>
+<img class="scene" src="./assets/deadwood/background.png" alt=""/>
 <div class="shade"></div>
-<img class="conductor" src={`${base}/assets/deadwood/conductor.png`} alt="The spectral conductor"/>
+<img class="conductor" src="./assets/deadwood/conductor.png" alt="The spectral conductor"/>
 <main>
 <div class="studio">SILVERSTARS STUDIO</div>
-<img class="logo" src={`${base}/assets/deadwood/logo.png`} alt="Deadwood Express"/>
+<img class="logo" src="./assets/deadwood/logo.png" alt="Deadwood Express"/>
 <div class="rule"></div>
 <p class="tagline">THE LAST TRAIN NEVER STOPS</p>
-<div class="features"><section><strong>THE PRESSURE WHEEL</strong><p>Every paying free spin turns the wheel. The new multiplier powers every line win immediately.</p></section><section><strong>ONLY UP FROM HERE</strong><p>Your multiplier never falls. Empty spins preserve the pressure until the journey ends.</p></section></div>
+<div class="features"><section><strong>THE PRESSURE WHEEL</strong><p>Every winning free spin turns the wheel. The new multiplier powers every line win immediately.</p></section><section><strong>ONLY UP FROM HERE</strong><p>Your multiplier never falls. Empty spins preserve the pressure until the journey ends.</p></section></div>
 <div class="facts">{config.numReels} × {config.numRows[0]} REELS · {Object.keys(config.paylines).length} LINES · MAX {config.betModes.base.max_win.toLocaleString()}×</div>
 <button onclick={close} disabled={!stateApp.loaded}>{stateApp.loaded?'BOARD THE EXPRESS':'PREPARING YOUR JOURNEY…'}</button>
 </main>

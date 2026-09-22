@@ -1,40 +1,54 @@
 import { Container, Mesh, MeshGeometry, type Texture } from "pixi.js";
 
 import {
-  DEG,
-  IDLE,
   TIERS,
   WIN_REACTION,
-  idleAngle,
-  reactionEnvelope,
+  buildWeightIndex,
+  composeBoneMatrices,
+  skinVertices,
   type CastReactionKind,
+  type MeshRig,
   type ReactionTier,
 } from "./castMotion";
 
-type Bone = { name: string; x: number; y: number; parent: number };
+export type { MeshRig } from "./castMotion";
 
-export type MeshRig = {
-  size: [number, number];
-  figure_box: [number, number, number, number];
-  verts: [number, number][];
-  tris: [number, number, number][];
-  weights: number[][];
-  bones: Bone[];
-};
-
-
+/**
+ * The prisoner, as one continuous skinned mesh.
+ *
+ * This class is a RENDERER and nothing else. Every number it animates lives in
+ * game/castMotion.ts, which imports nothing and is therefore loadable by
+ * design/check_cast_motion.mjs under bare node — that gate is the only reason
+ * anyone can believe the tables. It also deliberately has no import on
+ * `stateBetDerived` / `featureTimeScale`: turbo is state the CALLER reads and
+ * hands to `react()`, the same way `atMs` is.
+ */
 export class SkinnedFigure {
   readonly view = new Container();
   readonly mesh: Mesh;
+  /** Additive copy of `mesh`, sharing its geometry — see the constructor. */
+  readonly glow: Mesh;
   readonly figureBox: [number, number, number, number];
 
   private readonly rest: Float32Array;
   private readonly positions: Float32Array;
-  private readonly weightedBones: number[][];
-  private readonly weightedValues: number[][];
+  private readonly weightIndex: { bones: number[][]; values: number[][] };
   private readonly matrices: Float32Array[];
-	private reactionStart: number | null = null;
-	private reactionTier: ReactionTier = WIN_REACTION;
+  // What each bone's children compose against — rotation and translation, no
+  // squash and stretch. See composeBoneMatrices for why the two are separate.
+  private readonly chain: Float32Array[];
+  private reactionStart: number | null = null;
+  private reactionTier: ReactionTier = WIN_REACTION;
+  // How long past `durationMs` the last-starting bone is still moving. The
+  // reaction may not be cleared before then or the laggards are cut mid-swing.
+  private reactionTailMs = 0;
+  // Turbo shortens this beat the same way it shortens everything the reaction
+  // rides alongside (the win volley, the FG trigger sequence). 1 = normal,
+  // >1 = faster. The duration and every lag are divided by it; the snap/hold
+  // FRACTIONS and every amplitude are untouched, so turbo makes the reaction
+  // quicker, never smaller.
+  private reactionDurationMs = 0;
+  private reactionSpeed = 1;
 
   constructor(
     private readonly rig: MeshRig,
@@ -63,20 +77,7 @@ export class SkinnedFigure {
       indices[index * 3 + 2] = triangle[2];
     });
 
-    this.weightedBones = [];
-    this.weightedValues = [];
-    for (const row of rig.weights) {
-      const bones: number[] = [];
-      const values: number[] = [];
-      row.forEach((weight, boneIndex) => {
-        if (weight > 0.002) {
-          bones.push(boneIndex);
-          values.push(weight);
-        }
-      });
-      this.weightedBones.push(bones);
-      this.weightedValues.push(values);
-    }
+    this.weightIndex = buildWeightIndex(rig);
 
     const geometry = new MeshGeometry({
       positions: this.positions,
@@ -85,98 +86,73 @@ export class SkinnedFigure {
     });
     this.mesh = new Mesh({ geometry, texture });
     this.matrices = rig.bones.map(() => new Float32Array(6));
+    this.chain = rig.bones.map(() => new Float32Array(6));
     this.view.addChild(this.mesh);
+
+    // The glow: the SAME texture drawn again over itself with additive
+    // blending, its alpha ridden up and down by the reaction envelope.
+    //
+    // Straight out of the reference teardown (`character-reactions.md` §4c),
+    // which calls this the cheapest of their three ways of making a reaction
+    // feel big: five of their glow slots point at the same attachment as the
+    // body and differ only by `"blend": "additive"`. No bone moves for it and
+    // no new art is drawn for it.
+    //
+    // `geometry` is the SAME instance the body mesh uses, so this deforms with
+    // the body for free — one skinning pass still feeds both. Alpha 0 until a
+    // tier with a `glow` fires, so games and tiers that do not ask for it pay
+    // nothing but one extra draw call of a fully transparent mesh.
+    this.glow = new Mesh({ geometry, texture });
+    this.glow.blendMode = 'add';
+    this.glow.alpha = 0;
+    this.view.addChild(this.glow);
   }
 
-	react(kind: CastReactionKind, atMs = performance.now()) {
-		this.reactionStart = atMs;
-		this.reactionTier = TIERS[kind] ?? WIN_REACTION;
+  react(kind: CastReactionKind, atMs = performance.now(), speed = 1) {
+    const tier = TIERS[kind] ?? WIN_REACTION;
+    this.reactionStart = atMs;
+    this.reactionTier = tier;
+    this.reactionSpeed = speed > 0 ? speed : 1;
+    this.reactionDurationMs = tier.durationMs / this.reactionSpeed;
+    let maxLag = 0;
+    for (const bone of this.rig.bones) {
+      maxLag = Math.max(maxLag, tier.bones[bone.name]?.[1] ?? 0);
+    }
+    this.reactionTailMs = maxLag / this.reactionSpeed;
   }
 
   update(timeMs: number) {
     const tier = this.reactionTier;
-    // The whole-body envelope, used for the rise and the stretch. Individual
-    // bones each evaluate their own, offset by their lag.
-    let bodyReaction = 0;
-    if (this.reactionStart !== null) {
-      const age = (timeMs - this.reactionStart) / tier.durationMs;
-      bodyReaction = reactionEnvelope(age);
-      // The longest per-bone lag has to finish too, or the hair is cut off
-      // mid-swing when the body has already settled.
-      if (age >= 1.4) this.reactionStart = null;
-    }
+    const reactionAge =
+      this.reactionStart === null ? null : timeMs - this.reactionStart;
+    const durationMs = this.reactionDurationMs;
+    if (reactionAge !== null && reactionAge >= durationMs + this.reactionTailMs)
+      this.reactionStart = null;
 
-    const [, boxY0, , boxY1] = this.figureBox;
-    const figureHeight = boxY1 - boxY0;
-    for (let index = 0; index < this.rig.bones.length; index += 1) {
-      const bone = this.rig.bones[index];
-      const idle = idleAngle(IDLE[bone.name] ?? [0, 0, 2000, 0], timeMs);
-      // Each bone runs the same envelope, started `lag` milliseconds later, so
-      // the pose travels along the chain instead of arriving all at once.
-      let reaction = 0;
-      const spec = tier.bones[bone.name];
-      if (spec && this.reactionStart !== null) {
-        const [amplitude, lagMs] = spec;
-        reaction =
-          amplitude *
-          this.motionScale *
-          reactionEnvelope((timeMs - this.reactionStart - lagMs) / tier.durationMs);
-      }
-      const angle = (idle + reaction) * DEG;
-      const cosine = Math.cos(angle);
-      const sine = Math.sin(angle);
-      let offsetY = 0;
-      // Rise and stretch ride the root, so they move the ENTIRE figure rigidly
-      // — no joint bends, so no mesh distortion at any amplitude. This is the
-      // cheapest travel available and it is why the beat reads without pushing
-      // any single joint near its measured limit.
-      let scaleY = 1;
-      if (index === 0 && bodyReaction > 0) {
-        offsetY = figureHeight * -tier.rise * this.motionScale * bodyReaction;
-        scaleY = 1 + tier.stretch * this.motionScale * bodyReaction;
-      }
-      const a = cosine;
-      const b = -sine * scaleY;
-      const d = sine;
-      const e = cosine * scaleY;
-      const local = [
-        a,
-        b,
-        bone.x - a * bone.x - b * bone.y,
-        d,
-        e,
-        bone.y - d * bone.x - e * bone.y + offsetY,
-      ];
-      const matrix = this.matrices[index];
-      if (bone.parent < 0) {
-        matrix.set(local);
-      } else {
-        const parent = this.matrices[bone.parent];
-        matrix[0] = parent[0] * local[0] + parent[1] * local[3];
-        matrix[1] = parent[0] * local[1] + parent[1] * local[4];
-        matrix[2] = parent[0] * local[2] + parent[1] * local[5] + parent[2];
-        matrix[3] = parent[3] * local[0] + parent[4] * local[3];
-        matrix[4] = parent[3] * local[1] + parent[4] * local[4];
-        matrix[5] = parent[3] * local[2] + parent[4] * local[5] + parent[5];
-      }
-    }
+    // Every matrix, and the body's own lag-free share of the envelope. Both
+    // come out of castMotion.ts so that design/check_cast_motion.mjs poses the
+    // mesh with THIS code rather than a copy of it — see the note above
+    // `composeBoneMatrices` for why that matters.
+    const bodyReaction = composeBoneMatrices(
+      this.rig,
+      {
+        timeMs,
+        tier,
+        reactionAge,
+        durationMs,
+        speed: this.reactionSpeed,
+        motionScale: this.motionScale,
+      },
+      this.matrices,
+      this.chain,
+    );
 
-    for (let vertex = 0; vertex < this.rig.verts.length; vertex += 1) {
-      const x = this.rest[vertex * 2];
-      const y = this.rest[vertex * 2 + 1];
-      let animatedX = 0;
-      let animatedY = 0;
-      const bones = this.weightedBones[vertex];
-      const values = this.weightedValues[vertex];
-      for (let weightIndex = 0; weightIndex < bones.length; weightIndex += 1) {
-        const matrix = this.matrices[bones[weightIndex]];
-        const weight = values[weightIndex];
-        animatedX += (matrix[0] * x + matrix[1] * y + matrix[2]) * weight;
-        animatedY += (matrix[3] * x + matrix[4] * y + matrix[5]) * weight;
-      }
-      this.positions[vertex * 2] = animatedX;
-      this.positions[vertex * 2 + 1] = animatedY;
-    }
+    skinVertices(this.rest, this.weightIndex, this.matrices, this.positions);
     this.mesh.geometry.getBuffer("aPosition").update();
+
+    // Glow rides the body's own envelope — no lag, so the flash is at its
+    // brightest with the pose rather than trailing the hands. Only the tiers
+    // that ask for it (currently the feature trigger) light at all.
+    this.glow.alpha = (tier.glow ?? 0) * bodyReaction;
   }
 }

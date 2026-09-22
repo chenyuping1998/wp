@@ -42,7 +42,7 @@ const buildTier = (tier: FeatureTier): BetModeData => {
 		parent: '',
 		children: '',
 		maxWin: mode.max_win,
-		assets: { ...emptyAssets },
+		assets: { ...emptyAssets, dialogImage: `./assets/deadwood/${tier.key === 'bonus' ? 'card_standard' : 'card_premium'}.png` },
 		text: {
 			title: tier.title,
 			get dialog() {

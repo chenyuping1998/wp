@@ -13,12 +13,17 @@ def main():
     for mode in GameConfig().bet_modes:
         name, cost = mode.get_name(), mode.get_cost()
         count = wheels = 0
+        retriggers = {}
         path = root / f"books_{name}.jsonl.zst"
         with path.open("rb") as raw:
             with zstandard.ZstdDecompressor().stream_reader(raw) as stream:
                 for line in io.TextIOWrapper(stream):
                     book = json.loads(line)
                     wheels += assert_book(book["events"])
+                    for event in book["events"]:
+                        if event["type"] == "freeSpinRetrigger":
+                            n = len(event["positions"])
+                            retriggers[n] = retriggers.get(n,0) + 1
                     assert book["payoutMultiplier"] <= 2000000
                     terminal = [e["amount"] for e in book["events"] if e["type"] == "finalWin"][-1]
                     assert terminal == book["payoutMultiplier"]
@@ -27,6 +32,7 @@ def main():
         etl = get_etl_cvar_p5k_10k_vales(d,cost)[2]
         report[name] = {
             "books":count, "wheel_events":wheels,
+            "retrigger_scatter_counts":retriggers,
             "rtp":sum(w*p for w,p in d.items())/cost,
             "maxwin":max(d), "maxwin_1_in":1/d[20000],
             "nonzero_1_in":1/(1-d.get(0,0)), "zero_probability":d.get(0,0),

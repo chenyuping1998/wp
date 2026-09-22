@@ -83,7 +83,7 @@
 	<!-- drawer container -->
 	<Container y={drawerTween.current}>
 		<Container
-			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - 470}
+			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - uiTheme.portraitSideButtonX}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
 		>
 			{@render props.buttonMenu({ anchor: 0.5 })}
@@ -91,8 +91,9 @@
 
 		{#if !stateReplay.enabled}
 			<Container
-				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + 470}
+				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + uiTheme.portraitSideButtonX}
 				y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
+				scale={uiTheme.portraitBuyBonusScale}
 			>
 				{@render props.buttonBuyBonus({ anchor: 0.5 })}
 			</Container>

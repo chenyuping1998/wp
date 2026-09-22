@@ -153,6 +153,12 @@ export const uiTheme = $state({
 	// thirds of the width and a label wrapped to the BUTTON overhangs the paper.
 	buyBonusLabelWrapWidth: 116,
 	buyBonusLabelSizeRatio: 0.68,
+	// Optical offset for the caption inside illustrated plates. The PNG canvas
+	// can be geometrically centred while its writable inset is not (for example,
+	// a crest above the panel moves the artwork's visual centre). Fractions are
+	// relative to the button box; zero preserves every existing game.
+	buyBonusLabelOffsetX: 0,
+	buyBonusLabelOffsetY: 0,
 
 	// How large the plate art draws relative to the button's own box.
 	//
@@ -203,6 +209,10 @@ export const uiTheme = $state({
 	// and height. Used to size the hover highlight, which otherwise wraps the
 	// square button and floats well outside an object-shaped plate.
 	buyBonusPlateInset: { width: 1, height: 1 },
+	// Where that covered area's centre sits, as a fraction of the plate height
+	// below the drawn box's centre. A crest or ornament on one edge moves the
+	// plate's body off the texture centre; 0 preserves every existing game.
+	buyBonusPlateInsetOffsetY: 0,
 
 	// Light the plate while it can be pressed.
 	//
@@ -441,6 +451,14 @@ export const uiTheme = $state({
 	// Wide layouts only; portrait has no horizontal room for rails or a compact
 	// strip and always falls back to the full bottom bar.
 	betBarLayout: 'bottom' as 'bottom' | 'sideRail' | 'compactBottom',
+
+	// Portrait spin row: menu and Buy Bonus sit this far either side of centre
+	// (main-layout units). 470 was sized for the original round buttons; a larger
+	// menu disc or a plate drawn past its box (buyBonusPlateScale) runs off the
+	// screen edge at that distance. Buy Bonus cannot simply come in - turbo is
+	// next to it - so its portrait scale is separate. Defaults preserve every game.
+	portraitSideButtonX: 470,
+	portraitBuyBonusScale: 1,
 
 	// ── Platform UX conventions ──────────────────────────────────────────────
 	//

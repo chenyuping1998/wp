@@ -13,7 +13,7 @@ Status: approved concept; implementation scaffold, not a playable reskin yet.
 - Each result is greater than or equal to the current value and persists until the feature ends.
 - A spin without a line win neither draws the wheel nor resets its value.
 - Buy Bonus costs: 100x and 250x the base stake. No third buy mode.
-- Both wheels have a maximum multiplier of 100x.
+- Both wheels have a maximum multiplier of 200x.
 - The 250x wheel contains only positive multiples of five.
 - IMG_0982.PNG is a visual wheel reference ONLY. Its cap, retriggers, Wild exceptions and feature limits are not specifications.
 
@@ -24,7 +24,7 @@ Status: approved concept; implementation scaffold, not a playable reskin yet.
 - Natural 3-Scatter entry uses the standard wheel; 4 or 5 Scatters use the premium wheel. Both start at 1x before the first paying spin; the premium wheel's first selection is at least 5x.
 - Standard wheel candidate ladder: 1, 2, 3, 4, 5, 6, 8, 10, 15, 20, 25, 30, 40, 50, 75, 100.
 - Premium wheel candidate ladder: 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100.
-- Draw from the eligible values >= the held multiplier, using configured weights. At 100x, a paying spin still presents a draw resolving to 100x.
+- Draw from the eligible values >= the held multiplier, using configured weights. At 200x, a paying spin still presents a draw resolving to 200x.
 - Remove Collector together with frames: its source behavior only collects frame values.
 - Retain the source's 94% RTP and 20,000x total round win cap as targets, not verified results.
 - New assets, weights, paytable tuning and the distribution of returns require implementation and verification.
@@ -56,6 +56,6 @@ Working feature names: Midnight Passage (100x) and Phantom Express (250x). Check
 - No decreasing multipliers; premium selections are divisible by five; every result <=100.
 - Multiplier persists through losses and retriggers, and resets between features.
 - Multiple simultaneous lines and five-Wild wins receive the same newly selected multiplier.
-- 100x saturation, turbo, interruption/resume and replay have deterministic outcomes.
+- 200x saturation, turbo, interruption/resume and replay have deterministic outcomes.
 - Only base/100x/250x modes are selectable; displayed prices agree with math.
 - Generated books, lookup weights, measured RTP and cap reachability are verified before packaging.

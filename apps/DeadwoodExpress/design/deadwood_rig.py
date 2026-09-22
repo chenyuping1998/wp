@@ -14,6 +14,13 @@ sys.path.insert(0, str(TOOLKIT))
 import skin
 import motion
 
+# The installed toolkit derives leaf axes from the upper arm. This drawing's
+# left forearm bends sideways, so honor authored leaf axes like the game does.
+_derived_axes = skin.bone_axes
+def authored_axes(bones):
+    return [np.array(b.get('axis', axis), float) for b, axis in zip(bones, _derived_axes(bones))]
+skin.bone_axes = authored_axes
+
 APP = Path(__file__).resolve().parents[1]
 SOURCE = APP / 'static/assets/deadwood/conductor.png'
 OUT = APP / 'static/assets/deadwood/conductor.rig.json'
@@ -88,6 +95,11 @@ def measure(rig, im, ownership):
             r=area(skin.pose(rig,a,o,motion.reaction_scales(rig['bones'],start+dt,start)))/rest
             lo=min(lo,float(r.min()));hi=max(hi,float(r.max()))
     report=dict(size=rig['size'],armOwnership=ownership,geometricLimits=limits,referenceReaction=dict(minArea=lo,maxArea=hi),sourceAlpha=dict(clearFraction=float((np.array(im)[:,:,3]==0).mean())))
+    parity=[]
+    for start,dt in [(0,0),(0,170),(2000,400),(7000,650)]:
+        a,o,_=motion.reaction_state(rig['bones'],start+dt,start,rig['figure_box'])
+        parity.append(dict(time=start+dt,age=dt,vertices=skin.pose(rig,a,o,motion.reaction_scales(rig['bones'],start+dt,start)).tolist()))
+    (APP/'design/deadwood_rig_parity.json').write_text(json.dumps(parity,separators=(',',':'))+'\n')
     (APP/'design/deadwood_rig_report.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(report,indent=2))
     frames=[]
@@ -97,6 +109,24 @@ def measure(rig, im, ownership):
     sheet=Image.new('RGB',(355*len(frames),509),(70,65,80))
     for i,frame in enumerate(frames):sheet.paste(frame,(355*i,0),frame)
     sheet.save(APP/'design/deadwood_rig_reaction.png')
+    # Full-resolution hand crops make texture shear visible rather than hiding
+    # it by judging only the 500px full-figure contact sheet.
+    peak_a, peak_o, _ = motion.reaction_state(rig['bones'],400,0,rig['figure_box'])
+    peak = skin.render(rig,im,peak_a,80,offsets=peak_o,scales=motion.reaction_scales(rig['bones'],400,0))
+    crops = [im.crop((45,365,285,650)),peak.crop((80,380,320,665)),im.crop((660,615,900,900)),peak.crop((680,625,920,910))]
+    hands=Image.new('RGB',(960,285),(70,65,80))
+    for i,f in enumerate(crops):hands.paste(f,(240*i,0),f)
+    hands.save(APP/'design/deadwood_rig_hands.png')
+    panels=[]
+    for name, angle in [('arm_l',5),('fore_l',5),('arm_r',4),('fore_r',5)]:
+        for sign in [-1,1]:
+            a=[0]*len(rig['bones']);a[[b['name'] for b in rig['bones']].index(name)]=angle*sign
+            f=skin.render(rig,im,a,80)
+            box=(100,430,420,790) if name.endswith('l') else (670,670,990,1030)
+            panels.append(f.crop(box))
+    joint_sheet=Image.new('RGB',(320*4,360*2),(70,65,80))
+    for i,f in enumerate(panels):joint_sheet.paste(f,((i//2)*320,(i%2)*360),f)
+    joint_sheet.save(APP/'design/deadwood_rig_joint_hands.png')
     assert lo>=.5 and hi<=1.6,(lo,hi)
 
 if __name__=='__main__':

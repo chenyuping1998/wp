@@ -344,4 +344,9 @@
 		outline: none !important;
 		box-shadow: 0 0 8px rgba(216, 163, 52, 0.28) !important;
 	}
+	:global(.pop-up-wrap), :global(.modal-panel) {background-color:#0b211c !important;}
+	:global(.bonus-card-wrap) {background:#0b211c !important;border-color:#b89554 !important;}
+	:global(.bonus-card-wrap .title) {color:#e7d1a0 !important;}
+	:global(.bonus-card-wrap .description) {color:#dbebe4 !important;}
+	:global(::-webkit-scrollbar-thumb) {background:#8eab9f !important;}
 </style>

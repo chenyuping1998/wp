@@ -16,7 +16,7 @@ W: spectral locomotive front. S: punched railway ticket. H1: conductor's pocket 
 
 Use the user's image for the half-circle composition only. Build an aged-brass pressure wheel with radial numbered wedges, a fixed top pointer, a readable selected wedge and a central held-multiplier display. Runtime text supplies numbers so the eligible ladder can change. A losing spin leaves the compact held-value gauge visible. A winning FG spin reveals the larger wheel, resolves the recorded result, then presents multiplied wins. Never imply a client-side random draw or misleading equal probabilities from ornamental wedge sizes.
 
-Standard/premium variants share geometry. Midnight Passage uses brass and subdued teal; Phantom Express uses luminous teal details and stronger steam/pressure accents. Numbers in both variants extend to 100x; premium numbers are all multiples of five.
+Standard/premium variants share geometry. Midnight Passage uses brass and subdued teal; Phantom Express uses luminous teal details and stronger steam/pressure accents. Numbers in both variants extend to 200x; premium numbers are all multiples of five.
 
 ## Housing, scenes and transitions
 

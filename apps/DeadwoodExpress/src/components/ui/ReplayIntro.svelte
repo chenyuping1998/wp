@@ -5,6 +5,7 @@
 	import { numberToCurrencyString, WIN_MAX_FRACTION_DIGITS } from 'utils-shared/amount';
 
 	import { HOT_MIAMI_BET_MODE_META } from '../../game/betModeMeta';
+	import { FEATURE_TIERS } from '../../game/featureTiers';
 
 	// Replay start card.
 	//
@@ -51,9 +52,7 @@
 	// names the rules panel and the free-spin intro use.
 	const MODE_LABELS: Record<string, string> = {
 		BASE: 'Base Game',
-		BONUS: 'Neon Nights',
-		BONUS_HITS: 'Sunset Hits',
-		BONUS_EPIC: 'Ocean Drive',
+		...Object.fromEntries(FEATURE_TIERS.map((tier) => [tier.mode, tier.title])),
 	};
 
 	const modeKey = $derived(`${stateBet.activeBetModeKey || 'BASE'}`.toUpperCase());
@@ -155,7 +154,7 @@
 		align-items: center;
 		justify-content: center;
 		padding: 1rem;
-		background: rgba(10, 4, 20, 0.84);
+		background: rgba(4, 16, 14, 0.84);
 		backdrop-filter: blur(8px);
 		-webkit-backdrop-filter: blur(8px);
 		overflow-y: auto;
@@ -168,8 +167,8 @@
 		box-sizing: border-box;
 		padding: 1.25rem;
 		border-radius: 14px;
-		background: linear-gradient(180deg, rgba(52, 16, 84, 0.98) 0%, rgba(24, 7, 42, 0.99) 100%);
-		border: 1px solid rgba(255, 92, 176, 0.4);
+		background: linear-gradient(180deg, rgba(20, 48, 40, 0.98) 0%, rgba(7, 20, 17, 0.99) 100%);
+		border: 1px solid rgba(214, 184, 121, 0.4);
 		box-shadow: 0 14px 44px rgba(0, 0, 0, 0.8);
 		color: #fff;
 		font-family: var(--gb-body-font, sans-serif);
@@ -180,8 +179,8 @@
 		display: inline-block;
 		padding: 0.2rem 0.7rem;
 		border-radius: 999px;
-		background: #ff5cb0;
-		color: #2a0632;
+		background: #d6b879;
+		color: #102522;
 		font-weight: 800;
 		font-size: 0.7rem;
 		letter-spacing: 0.08em;
@@ -222,7 +221,7 @@
 		margin-top: 0.15rem;
 		padding: 0.45rem 0.55rem;
 		border-radius: 8px;
-		background: rgba(255, 92, 176, 0.09);
+		background: rgba(131, 231, 201, 0.09);
 	}
 
 	dt {
@@ -235,7 +234,7 @@
 	}
 
 	.accent {
-		color: #ff8fd0;
+		color: #d6b879;
 	}
 	.win {
 		color: #4de8e0;
@@ -254,8 +253,8 @@
 		padding: 0.8rem 1rem;
 		border: none;
 		border-radius: 10px;
-		background: linear-gradient(180deg, #ff8fd0 0%, #e0378f 100%);
-		color: #2a0632;
+		background: linear-gradient(180deg, #bde8d8 0%, #69ad94 100%);
+		color: #102522;
 		font-family: var(--gb-display-font, sans-serif);
 		font-size: 1.05rem;
 		font-weight: 700;

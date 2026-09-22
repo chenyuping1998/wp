@@ -17,7 +17,7 @@ and the math bundle had none.
 This is that gate. Run it against the bundle that is about to be uploaded, not
 against the source tree, because copying is exactly where it went wrong.
 
-    python design/check_math_bundle.py ../../upload/HotMiami/math
+    python design/check_math_bundle.py ../../upload/DeadwoodExpress/math
 
 Checks, in the order they fail usefully:
 
@@ -164,5 +164,5 @@ def main(bundle):
 
 
 if __name__ == "__main__":
-    target = sys.argv[1] if len(sys.argv) > 1 else "upload/HotMiami/math"
+    target = sys.argv[1] if len(sys.argv) > 1 else "upload/DeadwoodExpress/math"
     sys.exit(main(target))
