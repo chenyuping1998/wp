@@ -73,6 +73,34 @@ strips them — re-inject if missing, don't assume they survived):
 rsync -a --delete wp/apps/<Game>/build/ upload/<Game>/frontend/
 ```
 
+**Only on the FIRST staging.** After that, look at what is already staged
+before overwriting it. A reskin's `static/` still carries the source game's
+leftovers (Deadwood Express's `build/` had Hot Miami's `hotMiami*` sprites,
+spines, cast rigs and audio — 190 files the game never loads), and the first
+staging pass usually prunes them and swaps the full-size art for
+resized/palette-compressed copies (Deadwood: 66 MB → 31 MB, symbols 1254 px
+RGBA → 512 px indexed). `rsync --delete build/` puts all of that straight back
+and nothing downstream fails — the game still boots, the greps in step 7 still
+pass, the zip is just twice the size and full of the old game.
+
+For a code-only rebuild, replace just the code and leave the assets:
+
+```bash
+B=wp/apps/<Game>/build; U=upload/<Game>/frontend
+tar czf _upload_backups/<Game>-frontend-$(date +%m%d-%H%M).tgz -C upload/<Game> frontend
+cp $B/index.html $U/index.html
+rm -rf $U/_app/immutable && cp -R $B/_app/immutable $U/_app/immutable
+# anything the new bundle references that the pruned staging lacks?
+(cd $B && find . -type f -not -path './_app/*' | sed 's|^\./||') | while read f; do
+  [ -e "$U/$f" ] || ! grep -rqF "$f" $U/_app $U/index.html || echo "PRUNED BUT REFERENCED: $f"
+done
+```
+
+If art genuinely changed, re-run whatever produced the compressed copies (the
+game's `design/export_upload_art.mjs` or equivalent) rather than copying from
+`build/`. Tell-tale that you got this wrong: `cmp` reports every PNG in
+`assets/<game>/` as changed when you only touched code.
+
 ## 7. Sanity checks BEFORE zipping — these are the actual gate, not the zip step
 
 ```bash

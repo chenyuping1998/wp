@@ -11,8 +11,10 @@ description: >-
   thumbnail, and packaging. Built from shipping Capo Nostra out of Hot Miami,
   then extended with the six findings from the Stake review that passed Hot
   Miami — five of which are generic to this codebase and will be raised against
-  any reskin unless fixed first. Every gotcha in here cost real turns the first
-  time.
+  any reskin unless fixed first, and with Deadwood Express's 5/10 "poor UI"
+  review (controls that stay lit after a touch tap, portrait controls off the
+  screen edge) and its restaging trap. Every gotcha in here cost real turns the
+  first time.
 ---
 
 # Reskinning a Stake Engine slot
@@ -206,6 +208,26 @@ are easiest to leave in by accident. Match the NEW theme in:
   backdrop IS a vault room; the beat needed a mechanically equivalent
   replacement, not a re-skinned car). Re-derive the beat from the new theme,
   don't just recolour the old one's asset.
+- **A visible random draw (wheel, dial, pick) must not look computed.**
+  Deadwood Express's multiplier wheel first printed its values in ascending
+  order and always stopped dead centre on the result — both read as fake.
+  Lay the segments out as a fixed scramble with every big value between small
+  ones (split the set into lower/upper halves, shuffle each with a seed derived
+  from the set so the same set always draws the same dial, alternate them),
+  jitter the stop within the segment, and some of the time (~20%) stop near the
+  edge next to a much bigger neighbour for a near miss. All of it is
+  presentation: the book still decides the value, so math, books and RTP are
+  untouched. See `apps/DeadwoodExpress/src/game/wheelState.svelte.ts`.
+- **"Is it centred?" is a measurement, not a look.** A label can be centred in
+  its own box and the plate art still look off, because a crest or wing on one
+  edge moves the plate's writable area off the texture centre. Measure the
+  text's ink (pixels of its fill colour inside its bounds) against the plate's
+  inner frame (from the PNG's alpha/colour), then correct with
+  `buyBonusLabelOffsetX/Y`; the hover highlight has the same problem and takes
+  `buyBonusPlateInset` + `buyBonusPlateInsetOffsetY`. On Deadwood the caption
+  turned out to be centred to 1 px — the real defects were a highlight lighting
+  the whole square canvas and portrait controls running off-screen
+  (`references/review-findings.md` §5b). Check portrait before concluding.
 
 Wire book events and presentation with the same discipline the source game
 used (reveal/board-state consistency, sound-per-event, guard scripts) — that
@@ -254,6 +276,10 @@ the word "Stake" in the disclaimer, no insufficient-balance message, currencies
 that render as words (XOF/XAF/XPF), a store tile with more than one character,
 and portrait controls that vanish permanently after the first spin. All five are
 one-line-to-one-file fixes in advance and a full round trip to discover.
+The same file also covers portrait controls that run off the screen edge
+(§5b) and Deadwood Express's 5/10 "poor UI": controls that stay lit after a
+touch tap, and a spin halo that flares on press. Test those on a touch
+pointer, not just a mouse.
 
 On top of all of that, run the reskin-specific one neither `game-qa` nor
 `stake-compliance` is built to catch: **is anything still the old game's?** See `references/dead-asset-audit.md` for
@@ -351,6 +377,12 @@ playtest-only files in the upload build). Write or update a HANDOFF.md as you
 go, not retroactively — it is the only place the exact retarget numbers and
 the reasoning behind each scale_factor live, and reconstructing that after
 the fact from a diff is much slower than writing two sentences at the time.
+
+**On every restage after the first, do not `rsync --delete` the build over the
+staged frontend.** The first pass prunes the source game's leftovers and
+compresses the art; the build folder still has both. Replace only `index.html`
+and `_app/immutable` — `references/packaging.md` §6 has the commands and the
+check that the new bundle references nothing the staging pruned.
 
 ### 9. Submission description
 
