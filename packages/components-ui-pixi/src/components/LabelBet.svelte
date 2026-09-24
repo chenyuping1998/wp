@@ -40,8 +40,14 @@
 <Container
 	eventMode="static"
 	cursor={stateReplay.enabled ? 'default' : disabled ? 'not-allowed' : 'pointer'}
-	onpointerup={onpress}
-	onpointerover={() => (hovered = true)}
+	onpointerup={(event) => {
+		// see Button.svelte: a finger never sends pointerout, so drop the hover here
+		if (event.pointerType === 'touch') hovered = false;
+		onpress();
+	}}
+	onpointerover={(event) => {
+		if (event.pointerType !== 'touch') hovered = true;
+	}}
 	onpointerout={() => (hovered = false)}
 >
 	<UiLabel

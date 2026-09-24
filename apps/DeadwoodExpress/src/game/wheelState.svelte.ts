@@ -1,5 +1,14 @@
 import { waitForTimeout } from 'utils-shared/wait';
 
+/**
+ * How long the dial turns. MultiplierWheel uses these for the CSS transition and
+ * animateWheel waits on them, so they must stay one number. Slowed from
+ * 4.2s / 2s on 2026-09-23 so the decelerating tiles, and a near miss, can be read,
+ * then doubled the same day (12.4s), which was too slow — settled at 9s. Turbo is
+ * the player asking for speed, so it stays short.
+ */
+export const WHEEL_SPIN_MS = { normal: 9000, turbo: 2600 };
+
 export const wheelState = $state({ held: 1, previous: 1, selected: 1, values: [] as number[], visible: false, landed: false, rotation: 0 });
 
 /** Deterministic PRNG so the same eligible set always draws the same dial. */
@@ -61,9 +70,9 @@ export async function animateWheel(event: { previous: number; value: number; eli
  const step = 360 / Math.max(1, wheelState.values.length);
  const turns = 4 + Math.floor(Math.random() * 2);
  wheelState.rotation = turns * 360 - (index + stopOffset(wheelState.values, index)) * step;
- await waitForTimeout(turbo ? 2100 : 4300);
+ await waitForTimeout((turbo ? WHEEL_SPIN_MS.turbo : WHEEL_SPIN_MS.normal) + 100);
  wheelState.held = event.value;
  wheelState.landed = true;
- await waitForTimeout(turbo ? 700 : 1200);
+ await waitForTimeout(turbo ? 800 : 1500);
  wheelState.visible = false;
 }

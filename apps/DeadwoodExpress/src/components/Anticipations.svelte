@@ -58,8 +58,14 @@
 	// the focus dim ramps in and back out — snapping it on made the tease read
 	// as a glitch rather than the lights going down
 	const dim = new Tween(0, { duration: 260, easing: cubicOut });
+	// Not in free spins. There a single Scatter already teases (one more is a
+	// retrigger), so about 28% of feature spins tease — mostly reels 4-5 after
+	// one Scatter — and the stopped reels 1-3 went dark on spins that then paid
+	// nothing. Players read it as the board blacking out (2026-09-23). The teasing
+	// reel keeps its glow and sound; only the darkening of the others is dropped.
+	const spotlight = $derived(context.stateGame.gameType !== 'freegame');
 	$effect(() => {
-		dim.set(hasAnticipation ? 1 : 0);
+		dim.set(hasAnticipation && spotlight ? 1 : 0);
 	});
 
 	// spotlight focus: while a reel is teasing, dim the reels that have already

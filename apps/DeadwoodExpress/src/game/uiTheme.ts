@@ -94,8 +94,11 @@ setUiTheme({
   // cursor-over feedback on the rail controls
   hoverHighlight: true,
 
-  // 旋轉鍵的呼吸光暈
-  spinButtonGlow: true,
+  // No halo on the spin button. It breathed at idle and flared brighter the
+  // moment Spin was pressed; Stake review marked the UI poor (5/10, 2026-09-23)
+  // and the collaborator's platform skin — the one their passing games default
+  // to — ships it off. The press itself is acknowledged by the icon spinning.
+  spinButtonGlow: false,
 
   // Platform UX conventions, lifted from Hacksaw's shipped UI bundle. Worth
   // having precisely BECAUSE they are not one game's design: The Luxe 1.5.1 and

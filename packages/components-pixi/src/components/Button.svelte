@@ -78,8 +78,12 @@
 	eventMode="static"
 	cursor={disabled ? 'not-allowed' : 'pointer'}
 	pivot={anchorToPivot({ sizes, anchor })}
-	onpointerover={() => {
-		if (disabled) return;
+	onpointerover={(event) => {
+		// Hover is a mouse/pen state. A finger fires pointerover on tap and no
+		// pointerout when it lifts, so on a phone the highlight stuck on whatever
+		// was last tapped — the Bet panel stayed lit after every tap. Stake review
+		// scored that as poor UI (Deadwood Express, 2026-09-23).
+		if (disabled || event.pointerType === 'touch') return;
 		hovered = true;
 	}}
 	onpointerout={() => {
@@ -91,8 +95,9 @@
 		pressed = true;
 		onpressstart?.();
 	}}
-	onpointerup={() => {
+	onpointerup={(event) => {
 		if (disabled) return;
+		if (event.pointerType === 'touch') hovered = false;
 		pressed = false;
 		onpressend?.();
 		onpress();
