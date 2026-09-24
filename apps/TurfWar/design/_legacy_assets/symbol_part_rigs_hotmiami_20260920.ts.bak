@@ -1,0 +1,391 @@
+// 從 src/game/symbolParts.ts 取出，2026-09-20。**沒有人 import 這個檔。**
+//
+// 切片符號的動作定義。早就停用了（`SYMBOL_RIGS` 是空的 map），因為零件的圖畫的是
+// Hot Miami 的角色，不是這款的符號 —— 變數名自己說了：hawaiianGuy、blonde、
+// flamingo、boombox、convertible。
+//
+// 2026-09-20 把 `sprites/hotMiamiParts/`（4.5MB）整個刪掉、assets.ts 的對應條目也刪掉：
+// 先前只把 `preload` 關掉沒有用，Vite 對 `new URL(..., import.meta.url)` 是**無條件
+// 打包**的，那 4.5MB 每次出貨都在包裡，玩家下載了但永遠看不到。
+//
+// 動作本身值得留（symbolParts.ts 原本的註解就這麼說），所以整段搬到這裡。
+// 要復活：把這款自己的零件圖畫進 sprites/<新資料夾>/、重跑
+// design/build_parts_manifest.py、在 assets.ts 加回條目（用這款的命名）、
+// 把下面的定義貼回去並填進 SYMBOL_RIGS。
+
+// ── the rigs ─────────────────────────────────────────────────────────────────
+
+/**
+ * H4, the boombox. The first rigged symbol, and the one the art came back
+ * cleanest for: the case ships with two empty speaker wells, and the cones and
+ * the handle are separate complete objects.
+ *
+ * The beat is H4's whole character — it is the only symbol on the board that
+ * keeps time — so the rig is built on the same beat the body already thumps to
+ * (HOLD_MS * 0.48), and the parts play AGAINST it rather than with it:
+ *
+ *   cones    push out on the beat, the bass driver harder and a beat behind
+ *   handle   swings on its own inertia, lagging the case
+ *
+ * Everything a speaker does is scale about its own centre — a cone pumps, it
+ * does not travel — and the handle only rotates, about where it meets the case.
+ */
+const BEAT_MS = HOLD_MS * 0.48;
+
+const boombox: SymbolRig = {
+	// The panel lights up while it pays — the one thing a boombox does that says
+	// it is switched on rather than sitting in a shop window.
+	glow: { key: 'hmH4PanelLit', alpha: 0.95, pulseMs: 240 },
+	parts: [
+		{
+			name: 'body',
+			key: 'hmH4Body',
+			pivot: [0.5, 0.5],
+			// The case itself stays almost still. Its thump already lives in
+			// symbolWinMotion/symbolLandMotion as the whole-symbol motion, and
+			// doubling it here would just make the symbol bigger, not livelier.
+			win: (t) => ({ scaleY: 1 - 0.012 * strike(cycle(t, BEAT_MS), 6) }),
+		},
+		{
+			name: 'speaker_top',
+			key: 'hmH4SpeakerTop',
+			pivot: [0.5, 0.5],
+			// Tweeter: quick, small, on the beat.
+			win: (t) => {
+				const push = strike(cycle(t, BEAT_MS), 7);
+				return { scaleX: 1 + 0.085 * push, scaleY: 1 + 0.085 * push, dy: -0.004 * push };
+			},
+			// The shock reaches the small cone LATE and passes through it once: a
+			// single hump starting at 18% of the landing, not a decay from the
+			// impact frame. Two exponential decays at different rates still read as
+			// one motion to the checker (they scored 0.19, then 0.40 after the woofer
+			// was given an oscillation) — and to the eye. Different TIMING is what
+			// separates parts, exactly as it separates whole symbols.
+			land: (t) => {
+				const u = landP(t);
+				const pulse = u < 0.18 || u > 0.62 ? 0 : Math.sin((Math.PI * (u - 0.18)) / 0.44);
+				return { scaleX: 1 + 0.07 * pulse, scaleY: 1 + 0.07 * pulse };
+			},
+		},
+		{
+			name: 'speaker_bottom',
+			key: 'hmH4SpeakerBottom',
+			pivot: [0.5, 0.5],
+			// Woofer: bigger excursion, slower recovery, and HALF A BEAT LATE, so
+			// the two cones read as two drivers rather than one pair blinking.
+			win: (t) => {
+				const push = strike(cycle(t + BEAT_MS * 0.5, BEAT_MS), 4.5);
+				return { scaleX: 1 + 0.13 * push, scaleY: 1 + 0.13 * push, dy: 0.006 * push };
+			},
+			// On landing the heavy cone FLAPS — pushed out, sucked back, out again —
+			// where the tweeter above just jolts once and stops. The first version
+			// gave both of them the same decaying push and the gate scored them 0.19
+			// apart: two cones doing one motion at two sizes, which is the flat
+			// sprite's problem re-created inside a rig.
+			land: (t) => {
+				const u = landP(t);
+				const flap = Math.exp(-4.5 * u) * Math.cos(Math.PI * 2.6 * u);
+				return { scaleX: 1 + 0.12 * flap, scaleY: 1 + 0.12 * flap };
+			},
+		},
+		{
+			name: 'handle',
+			key: 'hmH4Handle',
+			// Rotates about where it meets the case — bottom centre of its own
+			// bbox — not about the middle of the cell, which would swing the whole
+			// handle sideways like a windscreen wiper.
+			pivot: [0.5, 1],
+			// Inertia: the case moves first and the handle follows, so its sway is
+			// a slower wave than the beat and never lines up with it.
+			win: (t) => ({ rotation: 0.05 * Math.sin(t / 190) }),
+			// On landing it whips once and rings down — the only part of this
+			// symbol that oscillates rather than pulses.
+			land: (t) => {
+				const u = landP(t);
+				return { rotation: 0.11 * Math.exp(-4 * u) * Math.sin(Math.PI * 3.2 * u) };
+			},
+		},
+	],
+};
+
+
+/**
+ * H1, the guy. A bust, so there is no arm to swing — `arm` is a sliver of sleeve
+ * that belongs to the silhouette and stays put. What moves is the head (his
+ * double-take, the same beat his whole-symbol motion nods to) and the gold chain,
+ * which follows a beat later because a chain has no muscles.
+ */
+const hawaiianGuy: SymbolRig = {
+	parts: [
+		{ name: 'torso', key: 'hmH1Torso', pivot: [0.5, 1], win: (t) => ({ scaleY: 1 + 0.008 * Math.sin(t / 260) }) },
+		// Static: in the stack for the silhouette, not for motion. Dropping it took
+		// the assembled stack from IoU 1.00 against the artist's _full.png to 0.83.
+		{ name: 'arm', key: 'hmH1Arm', pivot: [0.5, 0.5] },
+		{
+			name: 'head',
+			key: 'hmH1Head',
+			// He wears opaque sunglasses, so a blink would be invisible — the eyes
+			// are not on screen to close. His idle tell is the specular sweep across
+			// the lenses in symbolWinMotion instead. What he does have is a grin for
+			// a win, and for a big win he pushes the shades down and looks at you.
+			variants: { win: 'hmH1HeadGrin', bigWin: 'hmH1HeadShadesDown' },
+			// the neck, not the middle of the face
+			pivot: [0.5, 1],
+			win: (t) => {
+				const nod = strike(cycle(t, HOLD_MS * 1.08), 9) * Math.sin(cycle(t, HOLD_MS * 1.08) * 44);
+				return { rotation: 0.06 * nod, dy: 0.02 * nod };
+			},
+			land: (t) => {
+				const u = landP(t);
+				return { rotation: -0.07 * Math.exp(-5 * u) * Math.sin(Math.PI * 2.2 * u) };
+			},
+		},
+		{
+			name: 'chain',
+			key: 'hmH1Chain',
+			// hangs from its top edge
+			pivot: [0.5, 0],
+			// A beat behind the head, and wider: the chain is the tell that the man
+			// moved, the way a coat tail is.
+			win: (t) => ({ rotation: 0.09 * Math.sin((t - 90) / 150) }),
+			land: (t) => {
+				const u = landP(t);
+				return { rotation: 0.16 * Math.exp(-3.4 * u) * Math.sin(Math.PI * 3.6 * u) };
+			},
+		},
+	],
+};
+
+/**
+ * H2, the blonde. Her hair is the whole point — it is the biggest soft mass on
+ * the board — so it is split front and back and the two halves swing at
+ * different rates. Hair does not move with the head, it lags it, and the back
+ * mass lags more than the front because there is more of it.
+ */
+const blonde: SymbolRig = {
+	parts: [
+		{
+			name: 'hair_back',
+			key: 'hmH2HairBack',
+			// hangs from the crown
+			pivot: [0.5, 0.12],
+			// The back mass DRIFTS sideways and breathes; it does not swing. Its
+			// first version rotated on a sine like everything else on this symbol
+			// and the checker scored the three moving parts 0.43-0.68 apart — three
+			// sine waves at three rates is one motion with three phases.
+			win: (t) => ({ dx: 0.02 * Math.sin(t / 330), scaleY: 1 + 0.012 * Math.sin(t / 330 + 1.2) }),
+			land: (t) => {
+				const u = landP(t);
+				return { rotation: 0.07 * Math.exp(-3 * u) * Math.sin(Math.PI * 2 * u) };
+			},
+		},
+		{ name: 'torso', key: 'hmH2Torso', pivot: [0.5, 1], win: (t) => ({ scaleY: 1 + 0.01 * Math.sin(t / 240 + 1) }) },
+		{
+			name: 'head',
+			key: 'hmH2Head',
+			// Her lenses are translucent, so a blink reads — and a blinking symbol on
+			// a settled board is the cheapest evidence a character is alive. The
+			// wink is held back for big wins.
+			variants: { blink: 'hmH2HeadBlink', win: 'hmH2HeadSmile', bigWin: 'hmH2HeadWink' },
+			pivot: [0.5, 1],
+			// A slow lean rather than a nod — H1 is the one who nods, and these two
+			// portraits sit next to each other on the paytable.
+			win: (t) => ({ rotation: 0.05 * Math.sin(t / 340), dx: 0.008 * Math.sin(t / 340 + 0.6) }),
+			land: (t) => {
+				const u = landP(t);
+				return { rotation: 0.05 * Math.exp(-4 * u) * Math.cos(Math.PI * 1.4 * u) };
+			},
+		},
+		{
+			name: 'hair_front',
+			key: 'hmH2HairFront',
+			pivot: [0.5, 0.08],
+			// The front strands WHIP on the beat and settle, where the back mass
+			// drifts continuously and the head leans slowly: three different
+			// temporal signatures on one symbol, which is the only thing that
+			// separates parts as reliably as it separates symbols.
+			win: (t) => {
+				const whip = strike(cycle(t, HOLD_MS), 5) * Math.sin(cycle(t, HOLD_MS) * 18);
+				return { rotation: -0.075 * whip, dx: -0.016 * whip };
+			},
+			land: (t) => {
+				const u = landP(t);
+				return { rotation: -0.1 * Math.exp(-4.5 * u) * Math.sin(Math.PI * 3 * u) };
+			},
+		},
+	],
+};
+
+/**
+ * H3, the flamingo. The one motion this symbol has ever wanted is the PECK, and
+ * a flat sprite cannot do it: dipping the whole bird dips its legs too. With the
+ * head and its full neck on their own layer, pivoting at the base of the neck,
+ * the bird can strike down and lift slowly while the body stays planted.
+ *
+ * The two layers are cut in code (design/cut_flamingo_parts.py): three rounds of
+ * generated layer art could not separate this bird — twice the body came back
+ * with the head still on it, and the head layer came back as a fragment of the
+ * wrong area, which stacks into a perfect copy of the whole flamingo and so
+ * passes every numeric check. A neck is in open air, though, so cutting one out
+ * reveals nothing that needs painting back in; the only invented pixels are the
+ * stump that closes the shoulder, and at rest the neck covers it.
+ *
+ * The wing is still painted into the body, so there is no wing to flap. The
+ * body's own motion stays in symbolWinMotion/symbolLandMotion.
+ */
+const flamingo: SymbolRig = {
+	parts: [
+		{ name: 'body', key: 'hmH3Body', pivot: [0.5, 1] },
+		{
+			name: 'head_neck',
+			key: 'hmH3HeadNeck',
+			// A bird's tell is its beak. It blinks while the board sits still and
+			// calls when it pays — the two things a flamingo can do that a
+			// transform cannot fake.
+			variants: { blink: 'hmH3HeadNeckBlink', win: 'hmH3HeadNeckSquawk' },
+			// Where the neck meets the body — the bottom of the head layer's own
+			// bbox, pushed right to the neck's centre line rather than the bbox's.
+			// The bbox is wide because the beak reaches left; pivoting at its
+			// middle would swing the whole neck sideways instead of tipping it.
+			pivot: [0.8, 1],
+			// Fast down, slow up. The asymmetry IS the peck; a symmetric bob is a
+			// bird bouncing, which is a different and much sillier animal.
+			win: (t) => {
+				const u = cycle(t, HOLD_MS);
+				const dip = u < 0.22 ? Math.sin((Math.PI * u) / 0.44) : Math.max(0, Math.cos((Math.PI * (u - 0.22)) / 1.1));
+				return { rotation: 0.34 * dip, dy: 0.03 * dip };
+			},
+			land: (t) => {
+				const u = landP(t);
+				// arrives with the neck trailing, then whips upright
+				return { rotation: 0.2 * Math.exp(-4 * u) * Math.cos(Math.PI * 1.6 * u) };
+			},
+		},
+	],
+};
+
+/**
+ * SW, the Bruiser. Its whole mechanic is filling its reel with Wilds,
+ * so the outer ring turns continuously — the only continuous rotation among the
+ * rigged parts — while the lettered core stays upright and legible and simply
+ * pulses. A spinning word would be unreadable and, in social play, a compliance
+ * problem.
+ */
+const tommyGun: SymbolRig = {
+	parts: [
+		{
+			name: 'ring',
+			key: 'hmSwRing',
+			pivot: [0.5, 0.5],
+			// The ring does NOT rotate, and two attempts at making it are worth
+			// recording. A free spin turns the hexagon to arbitrary angles and the
+			// emblem stops looking like itself — the outline breaks away from the
+			// magenta field, which belongs to the core layer, and the badge reads as
+			// coming apart. Snapping to 60° detents fixes the silhouette at the
+			// detents and still looks wrong in between, for the same reason.
+			//
+			// So it BREATHES instead: a slow ring pulse, widest while the core is
+			// at its brightest — the gun spinning up — expressed with the one
+			// transform that cannot misalign concentric art.
+			win: (t) => {
+				const swell = 0.5 + 0.5 * Math.sin(t / 260);
+				return { scaleX: 1 + 0.055 * swell, scaleY: 1 + 0.055 * swell };
+			},
+			land: (t) => {
+				const u = landP(t);
+				const settle = Math.exp(-4 * u) * (1 - u);
+				return { scaleX: 1 + 0.12 * settle, scaleY: 1 + 0.12 * settle };
+			},
+		},
+		{
+			name: 'core',
+			key: 'hmSwCore',
+			// COLLECT electrifies while it is sweeping.
+			variants: { win: 'hmSwCoreActive' },
+			pivot: [0.5, 0.5],
+			win: (t) => {
+				const beat = strike(cycle(t, HOLD_MS * 0.95), 4);
+				return { scaleX: 1 - 0.05 * beat, scaleY: 1 + 0.04 * beat };
+			},
+			// A DELAYED anisotropic pinch, where the ring around it is an immediate
+			// isotropic settle. Both parts were decaying exponentials at first and
+			// the checker scored them 0.01 apart — the same curve at two sizes, in
+			// the one symbol whose mechanic is that its two rings do different
+			// things. The core squeezes a moment after the badge has landed, as if
+			// the disc took the impact through the frame.
+			land: (t) => {
+				const u = landP(t);
+				const pinch = u < 0.15 || u > 0.85 ? 0 : Math.sin((Math.PI * (u - 0.15)) / 0.7);
+				return { scaleX: 1 - 0.09 * pinch, scaleY: 1 + 0.07 * pinch };
+			},
+		},
+	],
+};
+
+
+/**
+ * H5, the convertible. Its whole-symbol motion is an engine idle and a lunge
+ * forward; what a flat sprite could never do is turn the wheels while the car
+ * itself holds still, and a car whose wheels do not turn is a photograph of a
+ * car.
+ *
+ * The three layers are cut from the shipped art in code
+ * (design/cut_car_wheels.py). A wheel is the one shape where cutting is
+ * completely safe: it is a circle, so rotating it cannot misalign with anything
+ * around it, and the part of it hidden behind the arch was dark to begin with.
+ */
+const convertible: SymbolRig = {
+	// Headlamps on. Slower than the boombox's panel: a car's lights do not flicker
+	// to a beat, and two symbols pulsing at the same rate would read as one effect
+	// applied twice.
+	glow: { key: 'hmH5LightsOn', alpha: 0.9, pulseMs: 620 },
+	parts: [
+		{ name: 'body', key: 'hmH5Body', pivot: [0.5, 0.5] },
+		{
+			name: 'wheel_rear',
+			key: 'hmH5WheelRear',
+			pivot: [0.5, 0.5],
+			spins: true,
+			symmetry: 5,
+			// The far wheel turns STEADILY — it is the one carrying the car along.
+			win: (t) => ({ rotation: t / 260 }),
+			// On landing the far wheel does not roll — it takes the WEIGHT. It
+			// compresses up into its arch and settles, which is a different channel
+			// from the near wheel's scrub entirely. Two wheels both rolling to a
+			// stop scored 0.17, then 0.36 once the near one was given a stall: two
+			// monotonic rotations are one gesture however they are shaped.
+			land: (t) => {
+				const u = landP(t);
+				const compress = u > 0.75 ? 0 : Math.sin((Math.PI * u) / 0.75);
+				return { dy: -0.014 * compress };
+			},
+		},
+		{
+			name: 'wheel_front',
+			key: 'hmH5WheelFront',
+			pivot: [0.5, 0.5],
+			spins: true,
+			symmetry: 5,
+			// The near wheel BREAKS TRACTION on each lunge: a hard burst that decays,
+			// against the rear wheel's steady turn. Two wheels rotating at two
+			// constant rates is one motion at two speeds; a wheel that spins up and
+			// slows is a different event, and it is what the lunge in the car's
+			// whole-symbol motion is doing at the same moment.
+			win: (t) => {
+				const burst = strike(cycle(t, HOLD_MS * 1.15), 4);
+				return { rotation: t / 900 + 2.4 * burst };
+			},
+			// Two fifths of a turn, but in TWO bites with a stall between them: the
+			// near wheel bites, locks for an instant, then rolls the rest. Both
+			// wheels easing smoothly to a detent scored 0.17 apart — the same
+			// gesture at two sizes, which is the fault this whole pass exists to
+			// remove. It also happens to be what a car does when it lands.
+			land: (t) => {
+				const u = landP(t);
+				const bite = Math.min(1, u / 0.32);
+				const roll = u < 0.62 ? 0 : (u - 0.62) / 0.38;
+				return { rotation: ((Math.PI * 2) / 5) * (bite + roll) };
+			},
+		},
+	],
+};

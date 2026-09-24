@@ -23,7 +23,12 @@ export const i18nDerived = {
 	autoSpin: () => stateI18nDerived.translate('AUTO SPIN'),
 	replay: () => stateI18nDerived.translate('REPLAY'),
 	// "pay" is restricted in social play, same as "bet"
-	payTable: () => (stateUrlDerived.social() ? 'PLAY TABLE' : stateI18nDerived.translate('PAYTABLE')),
+	// 'WIN TABLE', not 'PLAY TABLE'. Stake named this replacement explicitly —
+	// it is not the "pay → play" substitution the rest of the social vocabulary
+	// follows, which is what this originally assumed. A wrong-but-clean
+	// replacement is invisible to the restricted-word guard: 'play table' is not
+	// on the banned list, so nothing flags it.
+	payTable: () => (stateUrlDerived.social() ? 'WIN TABLE' : stateI18nDerived.translate('PAYTABLE')),
 	info: () => stateI18nDerived.translate('INFO'),
 	settings: () => stateI18nDerived.translate('SETTINGS'),
 	soundOn: () => stateI18nDerived.translate('SOUND ON'),

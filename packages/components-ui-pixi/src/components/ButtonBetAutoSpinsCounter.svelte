@@ -20,21 +20,34 @@
 		height={UI_BASE_SIZE * 0.9}
 		borderRadius={50}
 		backgroundColor={uiTheme.autoSpinsCounterFill}
-		borderColor={uiTheme.autoSpinsCounterBorder}
+		borderColor={uiTheme.autoSpinsCounterBorder ?? uiTheme.buttonBorder}
 		borderWidth={5}
 	/>
+	<!--
+		The remaining-spins badge is a NUMBER, so it takes valueFontFamily where a
+		game supplies one, and the game's own colours everywhere it used to carry
+		the Wild Party template's constants: a 0xffd26a amber ring and a 0x6d2692
+		purple outline, hard-coded, drawn over every game's bet bar. Capo Nostra has
+		no purple in it at all and that outline was the only one on its strip.
+		uiTheme.buttonBorder / valueStroke default to the template's own plum-gold
+		pair, so a game that themes nothing is close to unchanged.
+	-->
 	<Text
 		anchor={0.5}
 		text={stateBet.autoSpinsCounter === Infinity ? '∞' : stateBet.autoSpinsCounter}
 		style={{
-			fontFamily: uiTheme.fontFamily,
+			fontFamily: uiTheme.valueFontFamily ?? uiTheme.fontFamily,
 			fill: uiTheme.autoSpinsCounterLabel,
-			fontWeight: uiTheme.fontWeight,
+			fontWeight: uiTheme.valueFontWeight ?? uiTheme.fontWeight,
 			fontSize: fontSizeMultiplier * UI_BASE_SIZE * 0.2,
 			// v8 shape. `stroke: colour` plus `strokeThickness: n` is the v7 pair:
 			// deprecated, it logs on every Text built here, and it caps out thinner
 			// than the value asks for.
-			stroke: { color: uiTheme.autoSpinsCounterLabelStroke, width: 4, join: 'round' },
+			stroke: {
+				color: uiTheme.autoSpinsCounterLabelStroke ?? uiTheme.valueStroke,
+				width: 4,
+				join: 'round',
+			},
 		}}
 	/>
 {/if}

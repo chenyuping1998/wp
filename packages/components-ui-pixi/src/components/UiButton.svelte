@@ -106,9 +106,35 @@
 <Button {...buttonProps}>
 	{#snippet children({ center, hovered, pressed })}
 		{@const held = uiTheme.pressFeedback && pressed && !buttonProps.disabled}
+		<!-- `button` is a uiTheme.sprites slot: undefined for every game, which
+		     keeps the flat rounded rect this has always drawn. A game that supplies
+		     a drawn disc gets it here, on every round control at once.
+
+		     UiSprite ignores backgroundColor/borderColor once a sprite resolves, so
+		     the three states the fill was carrying (idle / disabled / ON) have to be
+		     carried some other way or the art ships stateless — a turbo toggle that
+		     looks identical on and off. They are: `tint` below dims the plate when
+		     the control is disabled, and the ring after it redraws the active
+		     border over the art. Both are skipped entirely when there is no plate.
+
+		     A game can also supply `buttonActive`: the same disc drawn LIT. When it
+		     does, the ON state is carried by the art and the ring below is dropped —
+		     a heavy ring stroked over a plate that is already lit is a second frame
+		     nobody asked for. Games with only `button` keep the ring. -->
+		{@const litPlate = active ? uiTheme.sprites.buttonActive : undefined}
+		{@const plate = litPlate ?? uiTheme.sprites.button}
 		<UiSprite
 			{...center}
+			key={litPlate ? 'buttonActive' : 'button'}
 			anchor={0.5}
+			{...plate && buttonProps.disabled
+				? {
+						// tint multiplies, so it can only darken — which is the right
+						// direction for "unavailable" and the wrong one for "ON". ON is
+						// the ring below.
+						tint: 0x6b6b6b,
+					}
+				: {}}
 			{...held
 				? {
 						// Shrunk about its own centre, which is what a physical button
@@ -131,6 +157,23 @@
 					}
 				: {}}
 		/>
+
+		{#if plate && active && !litPlate}
+			<!-- ON state for a control drawn from plate art. The rounded rect draws
+			     this as a thicker border; a sprite has no border, so it is stroked
+			     here instead, in the same colour and at the same width. -->
+			<Graphics
+				x={center.x}
+				y={center.y}
+				draw={(g) => {
+					const w = buttonProps.sizes.width * (held ? 0.93 : 1);
+					const h = buttonProps.sizes.height * (held ? 0.93 : 1);
+					g.clear();
+					g.roundRect(-w / 2, -h / 2, w, h, w * 0.5);
+					g.stroke({ width: uiTheme.buttonBorderWidthActive, color: uiTheme.buttonBorder });
+				}}
+			/>
+		{/if}
 
 		{#if held}
 			<!-- and a shadow over it, so the control reads as pushed into the bar
@@ -168,8 +211,18 @@
 		{#if uiTheme.icons[icon]}
 			<!-- drawn icon art (brass, with depth) replacing the text/emoji glyph;
 			     opted into per game via uiTheme.icons, so games without it keep the
-			     glyphs. Sized to sit inside the button with a small margin. -->
-			{@const iconScale = iconSpriteScaleMap[icon] ?? 0.62}
+			     glyphs. Sized to sit inside the button with a small margin.
+
+			     0.62 was tuned for a flat drawn circle (buttonFill/buttonBorder),
+			     where the whole button face is available. A game whose `sprites.
+			     button` plate has a rim eating into the diameter needs the icon
+			     bigger to actually reach the recess — `buttonIconScale` lets a
+			     game raise the FALLBACK only, so `iconSpriteScaleMap` entries
+			     tuned for a specific icon (autoSpin/replay's 0.82, chosen for
+			     their own shared arc radius) still win where set. Unset for
+			     every game that hasn't asked for it, so this is a no-op
+			     everywhere but where a game opts in. -->
+			{@const iconScale = uiTheme.iconScales[icon] ?? iconSpriteScaleMap[icon] ?? uiTheme.buttonIconScale ?? 0.62}
 			<Sprite
 				{...center}
 				anchor={0.5}
@@ -187,7 +240,7 @@
 					// 0.72: bolt body fills most of the circle so the hollow
 					// interior reads clearly at UI size; x widened 1.4x so the
 					// interior area reads bigger left-right
-					const s = (buttonProps.sizes.width * 0.72) / 96;
+					const s = (buttonProps.sizes.width * (uiTheme.turboIconScale ?? 0.72)) / 96;
 					const sx = s * 1.4;
 					g.poly([10 * sx, -48 * s, -22 * sx, 6 * s, -2 * sx, 6 * s, -12 * sx, 48 * s, 24 * sx, -10 * s, 2 * sx, -10 * s]);
 					if (active) g.fill(0xffffff);

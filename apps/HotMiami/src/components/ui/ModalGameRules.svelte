@@ -230,7 +230,8 @@
 					The Collector gathers the values of every Neon Frame on the grid, whether or not they
 					formed part of a winning combination. The collected total is multiplied by your {T.totalBet}
 					and awarded after all line wins have been {T.paid}. Only one Collector appears on the
-					grid at a time, and it never lands inside a Frame.
+					grid at a time. It may land on a position that already holds a Frame — that Frame is
+					swept with the rest.
 				</p>
 			</section>
 
@@ -298,8 +299,21 @@
 				expected return is calculated over many plays. The game display is not representative of
 				any physical device and is for illustrative purposes only. Winnings are settled according
 				to the amount received from the Remote Game Server and not from events within the web
-				browser. TM and &copy; 2026 Stake Engine.
+				browser. TM and &copy; 2026 Engine.
 			</p>
+			<!--
+				This closing line is DICTATED BY REVIEW, twice, and is not ours to
+				word:
+				  2026-09-04  "Please remove the word Stake from the General
+				              Disclaimer" — it had read "Stake Engine", so it was
+				              changed to the studio's own name.
+				  2026-09-06  "Please replace Silverstars Studio with Engine" —
+				              so it is now exactly "Engine", with no studio name
+				              and no "Stake".
+				Do not restore a studio name here on the reasoning that a copyright
+				notice ought to carry one. It was tried; it came back.
+				The required sentence is `disclaimerOpening` above.
+			-->
 		</div>
 	</Popup>
 {/if}

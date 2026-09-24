@@ -27,6 +27,25 @@ export const uiTheme = $state({
 	fontFamily: 'Cinzel, Georgia, serif',
 	fontWeight: '600' as FontWeight,
 
+	// Separate face for the NUMBER in a readout panel (balance / win / bet), and
+	// separate weight for its CAPTION.
+	//
+	// One `fontFamily` was enough while every game set the bar in a single face.
+	// It stops being enough for a game whose own type rule is "letters follow the
+	// art, digits follow legibility" — Capo Nostra's art is Art Deco inscriptional
+	// capitals, so its captions want a Roman serif (Cinzel), while a Roman serif's
+	// figures are narrow and lose at bet-bar size, so its digits want the squared
+	// display face (Orbitron). With one key those two requirements cannot both be
+	// met and the bar ends up in whichever face lost.
+	//
+	// All three are `null` by default and fall back to `fontFamily` / no weight at
+	// all, which is exactly what every existing game already renders — including
+	// the three that set fontWeight '700', whose readout captions have never had a
+	// weight applied and must not silently gain one.
+	valueFontFamily: null as string | null,
+	valueFontWeight: null as FontWeight | null,
+	labelFontWeight: null as FontWeight | null,
+
 	// buttons
 	buttonFill: 0x1d0b28,
 	buttonFillLight: 0x8fe6ff,
@@ -68,8 +87,29 @@ export const uiTheme = $state({
 	// Plate art per slot. `buyBonusGlyph` is the one part of a buy-bonus plate that
 	// lights on hover - see buyBonusHoverSprite - and is a slot rather than a bare
 	// asset key because UiSprite resolves every key through this map.
+	// `button` is the round control's own plate (menu, turbo, autoplay, sound,
+	// settings, info, paytable, the steppers). It had no slot at all, so those
+	// controls could only ever be the flat rounded rect — a game whose whole
+	// material language is drawn metal had no way to hand them a brass disc.
+	// Undefined for every game, so nothing changes until one supplies art.
+	// `buttonActive` is the same disc LIT, for a toggle that is currently ON
+	// (turbo, autoplay). Without it an ON control drawn from plate art is
+	// signalled only by the ring UiButton strokes over the top; with it the art
+	// itself carries the state and the ring is dropped, because a heavy ring over
+	// a plate that is already lit is a second frame nobody asked for.
+	// `bar` is the compactBottom strip's own background — see barSpriteSlice.
 	sprites: {} as Partial<
-		Record<'base_ticker' | 'buyBonus' | 'buyBonusGlyph' | 'bet' | 'base_mobile_drawer', string>
+		Record<
+			| 'base_ticker'
+			| 'buyBonus'
+			| 'buyBonusGlyph'
+			| 'bet'
+			| 'base_mobile_drawer'
+			| 'button'
+			| 'buttonActive'
+			| 'bar',
+			string
+		>
 	>,
 
 	// Optional drawn icon art per button, keyed by the button's ButtonIcon name
@@ -122,13 +162,13 @@ export const uiTheme = $state({
 	//
 	// All four were hardcoded in ButtonBetAutoSpinsCounter, and one of them was
 	// wrong for every game in the workspace: the numeral's outline was 0x6d2692,
-	// the TEMPLATE's plum. No game here is plum. The defaults below keep exactly
-	// what was being drawn so nothing changes uninvited, but a themed game should
-	// set at least the border and the stroke.
+	// the TEMPLATE's plum. No game here is plum. Border and stroke default to null,
+	// which falls back to the game's buttonBorder / valueStroke — so a game that
+	// themes its bet bar gets a matching badge without naming these at all.
 	autoSpinsCounterFill: 0x000000,
-	autoSpinsCounterBorder: 0xffd26a,
+	autoSpinsCounterBorder: null as number | null,
 	autoSpinsCounterLabel: 0xffffff,
-	autoSpinsCounterLabelStroke: 0x6d2692,
+	autoSpinsCounterLabelStroke: null as number | null,
 
 	// Wrap width and size of the label drawn over that plate, in the shared UI's
 	// base font units. Defaults are the numbers that were hardcoded.
@@ -139,6 +179,12 @@ export const uiTheme = $state({
 	// thirds of the width and a label wrapped to the BUTTON overhangs the paper.
 	buyBonusLabelWrapWidth: 116,
 	buyBonusLabelSizeRatio: 0.68,
+	// Optical offset for the caption inside illustrated plates. The PNG canvas
+	// can be geometrically centred while its writable inset is not (for example,
+	// a crest above the panel moves the artwork's visual centre). Fractions are
+	// relative to the button box; zero preserves every existing game.
+	buyBonusLabelOffsetX: 0,
+	buyBonusLabelOffsetY: 0,
 
 	// How large the plate art draws relative to the button's own box.
 	//
@@ -167,7 +213,6 @@ export const uiTheme = $state({
 	// Every app in this workspace has its own Modals.svelte and imports the
 	// shared modals one by one; the shared Modals.svelte is not used by any of
 	// them. So this cannot be switched on centrally, and it defaults to false.
-	betButtonMessageOnInsufficientBalance: false,
 
 	buyBonusButtonScale: 1,
 
@@ -190,6 +235,10 @@ export const uiTheme = $state({
 	// and height. Used to size the hover highlight, which otherwise wraps the
 	// square button and floats well outside an object-shaped plate.
 	buyBonusPlateInset: { width: 1, height: 1 },
+	// Where that covered area's centre sits, as a fraction of the plate height
+	// below the drawn box's centre. A crest or ornament on one edge moves the
+	// plate's body off the texture centre; 0 preserves every existing game.
+	buyBonusPlateInsetOffsetY: 0,
 
 	// Light the plate while it can be pressed.
 	//
@@ -293,6 +342,26 @@ export const uiTheme = $state({
 	 */
 	buyBonusDisabledTint: undefined as number | undefined,
 
+	// HOVER SPIN: a ring of rays behind the plate that lights when the cursor
+	// arrives and turns while it stays.
+	//
+	// Asked for against a reference whose button is a ship's wheel — a rim that
+	// can turn because it is radially symmetric and carries no type. Most plates
+	// are not: they are panels with words on them, and rotating one puts the label
+	// upside down. So the turning part is a rim of the button's OWN, drawn behind
+	// the plate; the plate and its label do not move.
+	//
+	// Degrees per second, 0 = off, which is what every game gets until it opts in.
+	// Negative turns anticlockwise. Around 40 reads as deliberate; past ~90 it
+	// starts to look like a loading spinner, which says "wait" rather than "press".
+	buyBonusHoverSpin: 0,
+	buyBonusHoverSpinRays: 12,
+	buyBonusHoverSpinColor: 0xffd98a,
+	// Ring radius as a multiple of the plate's half-DIAGONAL, so it clears the
+	// corners of a rectangular plate rather than only its edges. Below 1 the rays
+	// hide behind the plate entirely and nothing shows.
+	buyBonusHoverSpinRadius: 1.12,
+
 	// What colour that glow is.
 	//
 	// It used to borrow buyBonusLabelFill, on the reasoning that the plate's own
@@ -323,6 +392,82 @@ export const uiTheme = $state({
 	// Breathing halo behind the spin button's rotating mark — idle invitation,
 	// brighter while the reels run. Off by default.
 	spinButtonGlow: false,
+
+	// Radius of the double-arrow spin mark, as a fraction of the button's own
+	// width (ButtonBet.svelte). 0.22 was tuned for a FLAT drawn circle
+	// (betFill/betBorder), where the whole button face is the "usable" area.
+	// A game whose `sprites.bet` plate has a recessed well smaller than the
+	// full plate (a metal rim eats a chunk of the diameter) needs a bigger
+	// value or the mark reads as a small ring floating in the middle of a much
+	// larger dark well — found 2026-09-09 on Capo Nostra's spin_plate.png,
+	// whose recess measures ~0.67 of the plate width against the mark's
+	// default visible extent of ~0.52 (radius 0.22 × the icon's own 1.18
+	// outer-ring multiplier). Left at 0.22 by default so every other game's
+	// flat-circle spin button is unaffected; a game with plate art should set
+	// this to roughly (measured recess fraction) / 1.18, leaving a small
+	// margin rather than touching the rim.
+	betIconScale: 0.22,
+
+	// Fallback icon scale for the round rail buttons (UiButton.svelte), same
+	// reasoning as betIconScale: 0.62 (the component's own hardcoded fallback)
+	// assumes a flat circle. `undefined` here means "don't touch it" — the
+	// component keeps its 0.62 fallback and its per-icon overrides (autoSpin/
+	// replay at 0.82) exactly as before for every game that doesn't set this.
+	// A game with `sprites.button` plate art should measure that plate's own
+	// recess fraction and set this close to it, same method as betIconScale.
+	buttonIconScale: undefined as number | undefined,
+
+	// Box size for the round rail buttons (menu/turbo/autoplay/+/-/drawer/
+	// replay), as a multiplier on UI_BASE_SIZE (150 — see constants.ts).
+	// UI_BASE_SIZE is a cross-game constant, not something one game can edit,
+	// so this is the per-game lever instead: each of those button components
+	// reads `uiTheme.railButtonScale ?? 1`, so leaving it unset is a total
+	// no-op — same box size as always, for every game.
+	//
+	// Raising it makes the button (hit area AND drawn plate/circle) bigger
+	// while its CENTRE stays exactly where LayoutBottomBar already positions
+	// it — nothing here moves buttons apart to make room for a bigger one, so
+	// a large value can visibly overlap neighbours. Verify actual spacing
+	// (read the rendered widths/positions back from the scene graph — screen-
+	// shots at this size are not reliable enough to catch a few px of
+	// overlap) rather than assuming a number is safe because it "sounds
+	// reasonable."
+	railButtonScale: 1,
+
+	// Same idea as railButtonScale, but for the turbo button ONLY, checked
+	// FIRST (railButtonScale is still the fallback if this is unset). Turbo
+	// sits at the end of the rail cluster (menu / +- / spin / autoplay /
+	// turbo) with the bar's own right edge on one side and only autoplay on
+	// the other, so it usually has more free room than a single scale shared
+	// across the whole cluster can safely use — the cluster's tightest gap
+	// (spin to autoplay) caps how far railButtonScale alone can go, and turbo
+	// never needed to be capped by that gap in the first place. Unset by
+	// default: every game that doesn't set this keeps using railButtonScale
+	// for turbo exactly as before.
+	turboButtonScale: undefined as number | undefined,
+
+	// Size of the turbo BOLT relative to its button (UiButton draws it as a
+	// vector, not a sprite). The component's own value is 0.72, tuned for a flat
+	// circle where the whole face is usable. On plate art with a rim, 0.72 puts
+	// the bolt's tips at ~0.80 of the button's radius — past a recess that
+	// typically ends near 0.64. Unset = 0.72 for every game, as before.
+	turboIconScale: undefined as number | undefined,
+
+	// Per-icon sprite scale, checked BEFORE UiButton's own per-icon map and the
+	// buttonIconScale fallback. Exists because one fallback cannot fit every
+	// icon: the drawn icons paint very different fractions of their own square
+	// canvas (a gear reaching the corners vs a small cross), so the same scale
+	// lands some inside the plate's recess and pushes others over the rim.
+	// Measure each icon's ink radius and set only the ones that overflow.
+	// Empty = no change for any game.
+	iconScales: {} as Partial<Record<string, number>>,
+
+	// The bet +/- stepper pair in the compact bottom bar: their container scale
+	// and the vertical offset of each from the bar's centre line. These were
+	// hard-coded 0.28 / 22 in LayoutBottomBar; defaults are those same values.
+	// Raise the gap WITH the scale, or the two plates overlap.
+	stepButtonScale: 0.28,
+	stepButtonGap: 22,
 
 	// What the spin button should look like while a given bet mode is ACTIVE.
 	//
@@ -366,6 +511,14 @@ export const uiTheme = $state({
 	// Wide layouts only; portrait has no horizontal room for rails or a compact
 	// strip and always falls back to the full bottom bar.
 	betBarLayout: 'bottom' as 'bottom' | 'sideRail' | 'compactBottom',
+
+	// Portrait spin row: menu and Buy Bonus sit this far either side of centre
+	// (main-layout units). 470 was sized for the original round buttons; a larger
+	// menu disc or a plate drawn past its box (buyBonusPlateScale) runs off the
+	// screen edge at that distance. Buy Bonus cannot simply come in - turbo is
+	// next to it - so its portrait scale is separate. Defaults preserve every game.
+	portraitSideButtonX: 470,
+	portraitBuyBonusScale: 1,
 
 	// ── Platform UX conventions ──────────────────────────────────────────────
 	//
@@ -437,6 +590,23 @@ export const uiTheme = $state({
 	// key only changes the SHAPES, so a game can take the flat casing without
 	// giving up its palette, or vice versa.
 	barStyle: 'framed' as 'framed' | 'flat',
+
+	// compactBottom only — how far in from each END of uiTheme.sprites.bar the
+	// artwork stops being a cap and starts being stretchable middle, measured in
+	// the SOURCE texture's own pixels.
+	//
+	// The strip is the one element whose aspect ratio is not fixed: barHeight is a
+	// constant but the width is the canvas width less a margin, so on a desktop
+	// box it is about 15:1 and on the tablet box far squarer. One Sprite scaled to
+	// fit smears it. UiBarStrip slices it horizontally instead — the caps keep
+	// their aspect ratio, only the middle stretches — and this is where the cut
+	// falls.
+	//
+	// Source pixels, not layout units, so art delivered at 2x wants twice the
+	// number. UiBarStrip divides by the texture's own height to convert.
+	//
+	// Ignored entirely unless sprites.bar is set, which no game does by default.
+	barSpriteSlice: 64,
 
 	// compactBottom only — geometry, in standard-layout units (a 1920x1080 box on
 	// wide screens). All three were constants inside LayoutBottomBar; the defaults

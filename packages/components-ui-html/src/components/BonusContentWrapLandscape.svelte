@@ -39,11 +39,17 @@
 <BaseContent maxWidth="100%">
 	<div class="bonuses-wrap" use:resizeObserver={(value) => (contentRect = value)}>
 		<div class="bonuses" style="transform: scale({Math.min(scale, 1)});">
-			<BaseScrollable type="row" noScroll>
+			<!-- Scrollable, not noScroll.
+			     MIN_SCALE above accepts overflow on the grounds that "the wrapper
+			     scrolls, so overflow is recoverable" — but both rows passed
+			     noScroll, so it did not, and the tiers were simply cut off at the
+			     window edge. Certification reported exactly that on Popout S/L.
+			     Honouring the floor's own bargain is the smaller fix. -->
+			<BaseScrollable type="row">
 				{@render props.bonusCardsActivate()}
 			</BaseScrollable>
 
-			<BaseScrollable type="row" noScroll>
+			<BaseScrollable type="row">
 				{@render props.bonusCardsBuy()}
 			</BaseScrollable>
 		</div>
@@ -55,11 +61,27 @@
 </BaseContent>
 
 <style lang="scss">
+	// The cards sit 7rem left of centre to clear the amount badge, which is
+	// pinned to the right of the VIEWPORT rather than to this panel. On a wide
+	// window those two never meet. On a narrow one — the small popout — the badge
+	// walks inwards while the cards, already at the MIN_SCALE floor, cannot give
+	// any more ground, and the two overlap: certification's screenshot shows the
+	// stake amount printed on top of its own +/- controls.
+	//
+	// Below the width where that reserve stops being affordable, the side-by-side
+	// arrangement is abandoned rather than squeezed: cards centre themselves and
+	// the badge drops beneath them.
+	$narrow: 900px;
+
 	.bonuses-wrap {
 		position: absolute;
 		left: 50%;
 		top: 50%;
 		transform: translate(calc(-50% - 7rem), -50%);
+
+		@media (max-width: $narrow) {
+			transform: translate(-50%, calc(-50% - 2.5rem));
+		}
 	}
 
 	.bonuses {
@@ -75,5 +97,13 @@
 		top: calc(50% + 1.2rem);
 		right: 1rem;
 		transform: translateY(-50%);
+
+		@media (max-width: $narrow) {
+			top: auto;
+			right: auto;
+			left: 50%;
+			bottom: 1.5rem;
+			transform: translateX(-50%);
+		}
 	}
 </style>

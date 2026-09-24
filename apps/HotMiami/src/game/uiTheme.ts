@@ -1,5 +1,6 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
+import { stateConfig } from 'state-shared';
 
 // Neon bet bar: deep indigo plates with magenta and cyan trim, matching the
 // reel frame and the free-spin plaques. Applied once at module load (imported by
@@ -110,6 +111,7 @@ setUiTheme({
 		keybindThrottleMs: 100,
 		closePanelsOnSpin: true,
 	},
+
 
 	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
 	// keep the themed rounded rect, which suits the round buttons)
@@ -258,3 +260,9 @@ if (skin === 'hacksaw') {
 		pressFeedback: true,
 	});
 }
+
+// A player who cannot afford the bet is TOLD SO, on every route into a bet —
+// the Bet button, the spacebar and Autoplay. Stake review asked for all three
+// by name (2026-09-06). The controls that honour it live in two packages, so
+// the policy sits in state-shared rather than in uiTheme; see stateConfig.
+stateConfig.explainInsufficientBalance = true;

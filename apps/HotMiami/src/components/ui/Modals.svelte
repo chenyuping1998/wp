@@ -14,6 +14,7 @@
 	import ModalBuyBonusConfirm from 'components-ui-html/src/components/ModalBuyBonusConfirm.svelte';
 	import ModalAutoSpin from 'components-ui-html/src/components/ModalAutoSpin.svelte';
 	import ModalAutoSpinMessage from 'components-ui-html/src/components/ModalAutoSpinMessage.svelte';
+	import ModalMessage from 'components-ui-html/src/components/ModalMessage.svelte';
 	import ModalSettings from 'components-ui-html/src/components/ModalSettings.svelte';
 
 	import ModalBuyBonus from './ModalBuyBonus.svelte';
@@ -33,6 +34,9 @@
 <ModalBuyBonusConfirm />
 <ModalAutoSpin />
 <ModalAutoSpinMessage />
+<!-- Manual bet and spacebar affordability failures use the plain notification
+     modal; autoplay keeps its dedicated "autoplay stopped" message above. -->
+<ModalMessage />
 <ModalPayTable />
 <ModalGameRules />
 <ModalSettings />

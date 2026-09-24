@@ -3,6 +3,7 @@
 	import { Button, type ButtonProps } from 'components-pixi';
 	import { stateModal, stateBet, stateBetDerived } from 'state-shared';
 
+	import BuyBonusHoverSpin from './BuyBonusHoverSpin.svelte';
 	import UiSprite from './UiSprite.svelte';
 	import { UI_BASE_FONT_SIZE, UI_BASE_SIZE } from '../constants';
 	import { getContext } from '../context';
@@ -137,6 +138,24 @@
 			pressed,
 		})}
 
+		{#if uiTheme.buyBonusHoverSpin && !disabled}
+			<!--
+				Behind everything, so the plate covers the rays' roots and only their
+				tips show past its corners. It draws nothing until the cursor arrives
+				and keeps its own clock, so a button nobody is pointing at costs one
+				`if`.
+			-->
+			<BuyBonusHoverSpin
+				{hovered}
+				{center}
+				{plate}
+				speed={uiTheme.buyBonusHoverSpin}
+				rays={uiTheme.buyBonusHoverSpinRays}
+				color={uiTheme.buyBonusHoverSpinColor}
+				radius={uiTheme.buyBonusHoverSpinRadius}
+			/>
+		{/if}
+
 		{#if idleLit}
 			<!--
 				The "you can press this" light, under the plate.
@@ -219,6 +238,7 @@
 		{#if uiTheme.buyBonusHoverStyle === 'outline' && hovered && !disabled}
 			<Graphics
 				{...center}
+				y={center.y + plate.height * uiTheme.buyBonusPlateInsetOffsetY}
 				draw={(g) => {
 					// The plate's own edge, stroked. Sized to the ART - see
 					// buyBonusPlateInset - so it sits on the object rather than on the
@@ -260,6 +280,7 @@
 			     rather than through UiButton, so it needs its own overlay -->
 			<Graphics
 				{...center}
+				y={center.y + plate.height * uiTheme.buyBonusPlateInsetOffsetY}
 				draw={(g) => {
 					// Sized to the PLATE ART, not to the button box. On a square button
 					// with an object-shaped plate the old version drew a highlight half
@@ -307,6 +328,8 @@
 		{#key hovered && !disabled}
 			<Text
 				{...center}
+				x={center.x + sizes.width * uiTheme.buyBonusLabelOffsetX}
+				y={center.y + sizes.height * uiTheme.buyBonusLabelOffsetY}
 				anchor={0.5}
 				alpha={labelAlpha}
 				text={active ? i18nDerived.disable() : i18nDerived.buyBonus()}

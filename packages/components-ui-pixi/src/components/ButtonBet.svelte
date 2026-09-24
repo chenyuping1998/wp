@@ -3,7 +3,7 @@
 	import { Container } from 'pixi-svelte';
 	import { Button, type ButtonProps } from 'components-pixi';
 	import { OnHotkey } from 'components-shared';
-	import { stateBetDerived, stateModal } from 'state-shared';
+	import { stateBetDerived, stateConfig, stateModal } from 'state-shared';
 
 	import UiSprite from './UiSprite.svelte';
 	import ButtonBetProvider from './ButtonBetProvider.svelte';
@@ -30,7 +30,9 @@
 	const cannotAfford = $derived(!stateBetDerived.isBetCostAvailable());
 	// Off by default, so a game that has not opted in keeps the disabled button
 	// it has always had rather than a pressable one with nothing behind it.
-	const explains = $derived(uiTheme.betButtonMessageOnInsufficientBalance);
+	// Lives in state-shared, not uiTheme, because the autoplay start button needs
+	// the same answer and sits in a package that cannot see uiTheme.
+	const explains = $derived(stateConfig.explainInsufficientBalance);
 	const disabled = $derived(cannotAfford && !explains);
 	const sizes = { width: UI_BASE_SIZE * 1.12, height: UI_BASE_SIZE * 1.12 };
 
@@ -157,7 +159,7 @@
 					     run, then finishes its turn and rests when they stop -->
 					<ButtonBetSpinIcon
 						spinning={['stop_default', 'stop_disabled'].includes(key)}
-						radius={sizes.width * 0.22}
+						radius={sizes.width * uiTheme.betIconScale}
 					/>
 				</Container>
 			{/snippet}

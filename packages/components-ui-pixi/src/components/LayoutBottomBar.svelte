@@ -7,6 +7,7 @@
 
 	import ButtonReplay from './ButtonReplay.svelte';
 	import LabelReplayMultiplier from './LabelReplayMultiplier.svelte';
+	import UiBarStrip from './UiBarStrip.svelte';
 	import { getContext } from '../context';
 	import { uiTheme } from '../theme.svelte';
 	import { UI_BASE_FONT_SIZE, UI_BASE_SIZE } from '../constants';
@@ -89,7 +90,8 @@
 	const SPIN_SCALE = $derived(uiTheme.spinScale);
 	// The stacked pair has to fit between the frame's inner rails. At 0.36 with a
 	// 30 offset it stood 77 tall against 63 of clear frame and poked out of both.
-	const STEP_SCALE = 0.28;
+	// uiTheme.stepButtonScale, default 0.28 (this value).
+	const STEP_SCALE = $derived(uiTheme.stepButtonScale);
 
 	// Left half, divided into labelled cells rather than floating items. Four rules
 	// in total: after the menu, after Balance, after Win, and one closing the empty
@@ -138,7 +140,8 @@
 	// chevrons) because up/down arrows next to a money value are ambiguous about
 	// whether they change the stake or scroll a list. The offset is half a button
 	// plus a hair, so the two touch targets never overlap.
-	const STEP_DY = 22;
+	// uiTheme.stepButtonGap, default 22 (this value) — raise it with the scale.
+	const STEP_DY = $derived(uiTheme.stepButtonGap);
 
 	// Replay control, drawn in the empty Win→Bet cell (replay mode only).
 	// 0.66 of UI_BASE_SIZE is 99 across — the largest circle that clears the
@@ -178,6 +181,10 @@
 	// now sits 110 above the frame, leaving ~60 between caption and close button.
 	const MENU_PITCH = 130;
 	const menuItemY = $derived((i: number) => barTop - 110 - MENU_PITCH * i);
+
+	// Drawn strip artwork, if the game supplies any. Undefined for every game, so
+	// the vector casing below is unchanged unless one opts in.
+	const barSpriteKey = $derived(uiTheme.sprites.bar);
 </script>
 
 <Container x={20}>
@@ -200,11 +207,36 @@
 		did once before. Nine-slicing would spare the corners but smear the rivets
 		that run along its edges, so the shapes are drawn instead and stay correct
 		at any width.
+
+		A game whose material language is a photographed surface rather than drawn
+		metal can supply uiTheme.sprites.bar and get that surface instead. It is
+		sliced horizontally (UiBarStrip) for exactly the reason above: the strip's
+		aspect ratio changes with the canvas, so the ends have to be left alone and
+		only the middle stretched. It replaces the casing's FILL and EDGE only —
+		the section rules are still drawn on top of it, because they divide the
+		controls rather than decorate the panel, and their positions move with the
+		layout rather than with the art.
 	-->
+	{#if barSpriteKey}
+		<UiBarStrip
+			assetKey={barSpriteKey}
+			x={FRAME_X}
+			y={barTop}
+			width={frameW}
+			height={frameH}
+			slice={uiTheme.barSpriteSlice}
+		/>
+	{/if}
+
 	<Graphics
 		draw={(g: PixiGraphics) => {
 			const h = frameH;
 			g.clear();
+
+			// The strip art IS the fill and the edge when a game supplies one, so
+			// drawing either over it would hide it. Everything below that is not
+			// fill or edge still runs.
+			const drawCasing = !barSpriteKey;
 
 			// Platform chrome: a flat casing instead of the drawn housing. Same
 			// colours, different shapes — see uiTheme.barStyle. Hacksaw's
@@ -214,9 +246,11 @@
 			// engraved rules, nothing that asks to be looked at.
 			if (uiTheme.barStyle === 'flat') {
 				const rFlat = 4;
-				g.roundRect(FRAME_X, barTop, frameW, h, rFlat);
-				g.fill({ color: uiTheme.barFill, alpha: uiTheme.barAlpha });
-				g.stroke({ width: 3, color: uiTheme.panelBorder, alpha: 1 });
+				if (drawCasing) {
+					g.roundRect(FRAME_X, barTop, frameW, h, rFlat);
+					g.fill({ color: uiTheme.barFill, alpha: uiTheme.barAlpha });
+					g.stroke({ width: 3, color: uiTheme.panelBorder, alpha: 1 });
+				}
 				const topF = barTop + DIV_INSET;
 				const botF = barTop + h - DIV_INSET;
 				for (const x of [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
@@ -233,12 +267,14 @@
 			// last colour set — the strip rendered solid brass instead of dark olive,
 			// and every readout on it lost its contrast. Numeric layout checks cannot
 			// see that; it took looking at the frame.
-			g.roundRect(FRAME_X, barTop, frameW, h, r);
-			g.fill({ color: uiTheme.barFill, alpha: uiTheme.barAlpha });
-			g.stroke({ width: 7, color: uiTheme.panelBorder, alpha: 0.95 });
-			// thin lit line just inside the brass edge
-			g.roundRect(FRAME_X + 9, barTop + 9, frameW - 18, h - 18, r - 8);
-			g.stroke({ width: 2, color: uiTheme.labelFill, alpha: 0.35 });
+			if (drawCasing) {
+				g.roundRect(FRAME_X, barTop, frameW, h, r);
+				g.fill({ color: uiTheme.barFill, alpha: uiTheme.barAlpha });
+				g.stroke({ width: 7, color: uiTheme.panelBorder, alpha: 0.95 });
+				// thin lit line just inside the brass edge
+				g.roundRect(FRAME_X + 9, barTop + 9, frameW - 18, h - 18, r - 8);
+				g.stroke({ width: 2, color: uiTheme.labelFill, alpha: 0.35 });
+			}
 
 			// Section rules. The rivet rows that used to run along both rails were
 			// removed: two dotted lines spanning the full width tied the eye
@@ -355,8 +391,17 @@
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
 
-		<!-- Buy Bonus keeps its own place off to the left; see uiTheme.buyBonusOnRail -->
-		{#if !uiTheme.buyBonusOnRail}
+		<!--
+			Buy Bonus keeps its own place off to the left; see uiTheme.buyBonusOnRail.
+
+			Hidden while the menu is open. The menu rises up the SAME left column
+			(MENU_X, four items reaching 110 + 130*3 = 500 above the strip) and ran
+			straight through the plate, so "BUY BONUS" was printed across PAYTABLE
+			and INFO. It is not a stacking fix waiting to happen either: the menu
+			puts a full-screen scrim over everything, so the plate underneath is
+			already unclickable and there is nothing to lose by not drawing it.
+		-->
+		{#if !uiTheme.buyBonusOnRail && !stateUi.menuOpen}
 			<Container
 				x={uiTheme.railWidth * 0.5}
 				y={box.height * 0.46}

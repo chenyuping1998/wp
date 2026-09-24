@@ -5,6 +5,7 @@
 		stateBet,
 		stateModal,
 		stateBetDerived,
+		stateConfig,
 		AUTO_SPINS_TEXT_OPTION_MAP,
 		AUTO_SPINS_LOSS_LIMIT_MULTIPLIER_MAP,
 		AUTO_SPINS_SINGLE_WIN_LIMIT_MULTIPLIER_MAP,
@@ -18,7 +19,17 @@
 
 	const { eventEmitter } = getContextEventEmitter<EmitterEventModal>();
 
+	const cannotAfford = $derived(!stateBetDerived.isBetCostAvailable());
+	const explains = $derived(stateConfig.explainInsufficientBalance);
+
 	const startAutoBet = () => {
+		// Say why, rather than doing nothing. Same modal and same wording the Bet
+		// button uses, so the three routes into a bet answer identically — which
+		// is what Stake review asked for on 2026-09-06.
+		if (cannotAfford && explains) {
+			stateModal.modal = { name: 'message', message: 'insufficientFunds' };
+			return;
+		}
 		stateBet.autoSpinsCounter = AUTO_SPINS_TEXT_OPTION_MAP[stateUi.autoSpinsText];
 		stateBet.autoSpinsLossLimitAmount = stateBet.betAmount * AUTO_SPINS_LOSS_LIMIT_MULTIPLIER_MAP[stateUi.autoSpinsLossLimitText]; // prettier-ignore
 		stateBet.autoSpinsSingleWinLimitAmount = stateBet.betAmount * AUTO_SPINS_SINGLE_WIN_LIMIT_MULTIPLIER_MAP[stateUi.autoSpinsSingleWinLimitText]; // prettier-ignore
@@ -29,7 +40,7 @@
 	};
 </script>
 
-<Button disabled={!stateBetDerived.isBetCostAvailable()} onclick={startAutoBet}>
+<Button disabled={cannotAfford && !explains} onclick={startAutoBet}>
 	<BaseIcon width="100%" height="3rem" />
 	<BaseButtonContent>
 		<span style="font-size: 1rem;">{i18nDerived.startAutoplay()}</span>

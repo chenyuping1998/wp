@@ -7,6 +7,7 @@
 	import { getContext } from '../game/context';
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
+	import { GAME_FONT } from '../game/fonts';
 
 	type Props = {
 		onloaded: () => void;
@@ -114,7 +115,7 @@
 				anchor={0.5}
 				text="WILD PARTY"
 				style={{
-					fontFamily: 'Cinzel, Georgia, serif',
+					fontFamily: GAME_FONT,
 					fontSize: 56,
 					fontWeight: '900',
 					fill: 0xfff4cf,
@@ -134,7 +135,7 @@
 				y={65}
 				text="3X5, 35 LINES MAX WIN 5,000X"
 				style={{
-					fontFamily: 'Cinzel, Georgia, serif',
+					fontFamily: GAME_FONT,
 					fontSize: 14,
 					fontWeight: '600',
 					fill: 0xd9d8e8,
@@ -176,7 +177,7 @@
 					? 'TAP TO CONTINUE'
 					: `LOADING ${Math.round(animatedProgress)}%`}
 				style={{
-					fontFamily: 'Cinzel, Georgia, serif',
+					fontFamily: GAME_FONT,
 					fontSize: 12,
 					fontWeight: '500',
 					fill: 0xb6a8c9,
@@ -191,7 +192,7 @@
 				alpha={tipAlpha}
 				text={TIPS[tipIndex]}
 				style={{
-					fontFamily: 'Cinzel, Georgia, serif',
+					fontFamily: GAME_FONT,
 					fontSize: 13,
 					fontWeight: '600',
 					fill: 0xffd8f1,

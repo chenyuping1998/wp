@@ -372,6 +372,16 @@
 		src: new URL('../../assets/sprites/hotMiamiCast/guy_spine.png', import.meta.url).href,
 		preload: true,
 	},
+	hmCastGuyMesh: {
+		type: 'sprite',
+		src: new URL('../../assets/meshRigs/cast_guy/guy.png', import.meta.url).href,
+		preload: true,
+	},
+	hmCastGirlMesh: {
+		type: 'sprite',
+		src: new URL('../../assets/meshRigs/cast_girl/girl.png', import.meta.url).href,
+		preload: true,
+	},
 	hmCastGirl: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hotMiamiCast/girl_spine.png', import.meta.url).href,

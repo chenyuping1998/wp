@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { stateBet, stateConfig } from 'state-shared';
+	import { stateBet, stateBetDerived, stateConfig } from 'state-shared';
 	import { Button, OptionsToggle } from 'components-shared';
 	import { getContextEventEmitter } from 'utils-event-emitter';
 	import { numberToCurrencyString } from 'utils-shared/amount';
@@ -17,7 +17,9 @@
 	value={stateBet.betAmount}
 	options={stateConfig.betAmountOptions}
 	onchange={(value) => {
-		stateBet.betAmount = value;
+		// Through setBetAmount for the same reason as BetMenuAmountGrid: a raw
+		// assignment bypasses the server's limits and the affordability check.
+		stateBetDerived.setBetAmount(value);
 		eventEmitter.broadcast({ type: 'soundPressGeneral' });
 	}}
 >

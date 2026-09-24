@@ -46,11 +46,14 @@
 			style="transform: scale({Math.min(scale, 1)});"
 			use:resizeObserver={(value) => (contentRect = value)}
 		>
-			<BaseScrollable type="row" noScroll>
+			<!-- Scrollable for the same reason as the landscape wrap: MIN_SCALE
+			     stops shrinking on the grounds that overflow can be scrolled, and
+			     noScroll made that untrue, so tiers were cut off instead. -->
+			<BaseScrollable type="row">
 				{@render props.bonusCardsActivate()}
 			</BaseScrollable>
 
-			<BaseScrollable type="row" noScroll>
+			<BaseScrollable type="row">
 				{@render props.bonusCardsBuy()}
 			</BaseScrollable>
 		</div>

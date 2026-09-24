@@ -19,13 +19,14 @@
 	import Sound from './Sound.svelte';
 	import Background from './Background.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
-	// side-effect import: switches the shared bet bar to the side-rail layout
+	// side-effect import: applies this game's bet-bar layout, palette and icons
 	import '../game/uiTheme';
 	import BoardFrame from './BoardFrame.svelte';
 	import Board from './Board.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import GlobalMultiplier from './GlobalMultiplier.svelte';
 	import MultiplierComet from './MultiplierComet.svelte';
+	import MultiplierShockwave from './MultiplierShockwave.svelte';
 	import WinLines from './WinLines.svelte';
 	import Win from './Win.svelte';
 	import FreeSpinIntro from './FreeSpinIntro.svelte';
@@ -34,6 +35,7 @@
 	import Transition from './Transition.svelte';
 	import EntryReveal from './EntryReveal.svelte';
 	import PreFreeGameHint from './PreFreeGameHint.svelte';
+	import { GAME_FONT } from '../game/fonts';
 
 	const context = getContext();
 
@@ -87,6 +89,7 @@
 			<GlobalMultiplier />
 			<WinLines />
 			<MultiplierComet />
+			<MultiplierShockwave />
 		</MainContainer>
 
 		<EntryReveal />
@@ -111,7 +114,7 @@
 					anchor={{ x: 1, y: 0 }}
 					text="WILD PARTY"
 					style={{
-						fontFamily: 'Cinzel, Georgia, serif',
+						fontFamily: GAME_FONT,
 						fontSize: REM * 1.5,
 						fontWeight: '600',
 						lineHeight: REM * 2,

@@ -9,6 +9,7 @@
 	import config from '../game/config';
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
+	import CastFigureMesh from './CastFigureMesh.svelte';
 
 	type Props = {
 		onloaded: () => void;
@@ -21,6 +22,11 @@
 	let pulseTick = $state(0);
 
 	const layout = $derived(context.stateLayoutDerived.mainLayout());
+	// The cast figures are drawn by CastFigureMesh, which positions itself in
+	// the STANDARD box's own units (same contract Cast.svelte uses beside the
+	// board) rather than this game box — the two boxes differ in width on a
+	// wide canvas, so mixing them silently drifts.
+	const std = $derived(context.stateLayoutDerived.mainLayoutStandard());
 	// What the background has to cover, expressed in the game box's own units: the
 	// canvas can be wider or taller than the box, and MainContainer scales the box
 	// to fit, so dividing the canvas by that scale gives the box-space size that
@@ -43,16 +49,16 @@
 	// problem was never the figures — it was that they were competing with the
 	// background art behind them. So the SCRIM does the holding back instead: the
 	// photograph goes down to 0.74 black and the people stay as they are.
-	const castHeight = $derived(layout.height * 0.9);
-	const castWidth = $derived((castHeight * 441) / 1100);
+	const castHeight = $derived(std.height * 0.9);
+	// Feet flush to the bottom edge, matching where the sprites used to sit.
+	const castTopY = $derived(std.height - castHeight);
+	// Horizontal placement mirrors the old sprites' inset from each edge, just
+	// measured in the standard box now instead of the game box.
+	const castInsetX = $derived(std.width * 0.18);
 
-	// Their sway runs off the same clock as everywhere else, which is what keeps
-	// the two of them out of step with each other (6500ms and 4000ms) rather than
-	// nodding in unison.
-	const loadingBreath = $derived(Math.sin((pulseTick * 32) / 1500));
-	const loadingRotationGuy = $derived(loadingBreath * ((0.35 * Math.PI) / 180));
-	const loadingRotationGirl = $derived(loadingBreath * ((0.42 * Math.PI) / 180));
-	const loadingScaleY = $derived(1 + loadingBreath * 0.0035);
+	// Each rig drives its own idle sway internally (skinnedFigure.ts, IDLE
+	// table) off performance.now() rather than a shared clock, which is what
+	// keeps the two of them out of step with each other.
 
 	// Gameplay tips cycling under the progress bar, so the wait teaches the
 	// features instead of just counting. Every line is checked against the rules
@@ -158,36 +164,27 @@
 
 		<!--
 			The same two figures that stand on the intro card, at the same edges, so
-			the cut between the two screens changes only what is between them. They
-			breathe here too — game/idleSway.ts, the same table the board cast uses,
-			which is why they are not simply two stills.
+			the cut between the two screens changes only what is between them. Real
+			rigs (CastFigureMesh/skinnedFigure.ts), not the flat sprite keys — those
+			resolve to the source art unposed and stretched to a guessed aspect
+			ratio, which is what a static `<Sprite>` here used to draw. Each rig
+			breathes on its own clock (see the note above), which is why they are
+			not simply two stills.
 		-->
-		<Container
-			x={castWidth * 0.72}
-			y={layout.height}
-			rotation={loadingRotationGuy}
-			scale={{ x: 1, y: loadingScaleY }}
-		>
-			<Sprite
-				key="hmCastGuy"
-				anchor={{ x: 0.5, y: 1 }}
-				width={castWidth}
-				height={castHeight}
-			/>
-		</Container>
-		<Container
-			x={layout.width - castWidth * 0.72}
-			y={layout.height}
-			rotation={-loadingRotationGirl}
-			scale={{ x: 1, y: loadingScaleY }}
-		>
-			<Sprite
-				key="hmCastGirl"
-				anchor={{ x: 0.5, y: 1 }}
-				width={castWidth * (473 / 441)}
-				height={castHeight}
-			/>
-		</Container>
+		<CastFigureMesh
+			who="guy"
+			x={castInsetX}
+			topY={castTopY}
+			height={castHeight}
+			groundY={std.height}
+		/>
+		<CastFigureMesh
+			who="girl"
+			x={std.width - castInsetX}
+			topY={castTopY}
+			height={castHeight}
+			groundY={std.height}
+		/>
 
 		<!-- The real logo, not a typeset stand-in for it -->
 		<Sprite

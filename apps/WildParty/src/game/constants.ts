@@ -6,7 +6,14 @@ import type { RawSymbol, SymbolState } from './types';
 // coordinate system keys off this, so frame/symbols/fx scale together
 export const SYMBOL_SIZE = 144;
 
-export const REEL_PADDING = 0.53;
+// Horizontal centre of a reel, as a fraction of a cell. This is the twin of
+// getSymbolY's `+ 0.5`, and it should have been 0.5 all along — at 0.53 every
+// symbol on the board sat 0.03 * 144 = 4.3px right of its cell's centre.
+//
+// Named "padding" but used as a centre offset, which is probably how the drift
+// survived. getSymbolX, WinLines and Anticipation all read it, so they move
+// together and win-line anchors stay on the symbols.
+export const REEL_PADDING = 0.5;
 
 // initial board (padded top and bottom)
 export const INITIAL_BOARD: RawSymbol[][] = [
@@ -175,12 +182,6 @@ export const zIndexes = {
 	},
 };
 
-const explosion = {
-	type: 'spine',
-	assetKey: 'explosion',
-	animationName: 'explosion',
-	sizeRatios: { width: 1, height: 1 },
-};
 
 // WildParty symbols use PNG for static/spin/land/postWinStatic and generated
 // Spine assets for win state so winning symbols always animate via Spine.
@@ -210,7 +211,9 @@ const mixedSymbol = (
 	winSpineAssetKey: string,
 	ratios: { width: number; height: number },
 ) => ({
-	explosion,
+	// No `explosion` member any more. It carried the template's explosion spine,
+	// and nothing in this game or in packages/ ever read symbolInfo.explosion —
+	// it just kept a 16MB set of sample-game spines alive in the bundle.
 	static: symbolSprite(spriteAssetKey, ratios),
 	spin: symbolSprite(spriteAssetKey, ratios),
 	land: symbolSprite(spriteAssetKey, ratios),

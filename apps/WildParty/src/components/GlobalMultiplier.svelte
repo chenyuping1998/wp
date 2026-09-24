@@ -112,11 +112,16 @@
 				animationName = 'reset';
 				await waitForTimeout(300);
 				sfx('sfx_multiplier_reset');
+				// Armed before the state that drives the animation — see
+				// Transition.svelte for the race this shape produces.
+				const settled = waitForResolve<void>((resolve) => {
+					oncomplete = resolve;
+				});
 				multiplier = 1;
 				base = 1;
 				rowCount = 1;
 				rollPos = 0;
-				await waitForResolve((resolve) => (oncomplete = resolve));
+				await settled;
 				animationName = 'static';
 				return;
 			}

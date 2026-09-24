@@ -13,7 +13,10 @@
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const context = getContext();
-	const sizes = { width: UI_BASE_SIZE, height: UI_BASE_SIZE };
+	const sizes = $derived({
+		width: UI_BASE_SIZE * uiTheme.railButtonScale,
+		height: UI_BASE_SIZE * uiTheme.railButtonScale,
+	});
 
 	const degreesToRads = (degrees: number) => (degrees * Math.PI) / 180.0;
 

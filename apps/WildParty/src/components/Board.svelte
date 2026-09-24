@@ -27,6 +27,12 @@
 
 	let show = $state(true);
 	// short-lived dust bursts at the floor of each stopping reel
+	// Ceiling on the per-symbol win-animation wait. The spine is 1.4s; this is
+	// generous enough never to cut a real animation short even at the slowest time
+	// scale, and short enough that a lost callback is a hiccup rather than a
+	// frozen round. See the handshake below.
+	const WIN_ANIM_TIMEOUT = 4000;
+
 	let impacts = $state<{ id: number; reelIndex: number }[]>([]);
 	let nextImpactId = 0;
 
@@ -48,8 +54,35 @@
 						reelSymbol.symbolState = 'static';
 						await waitForResolve((resolve) => setTimeout(resolve, 0));
 					}
+					// Arm the resolver BEFORE the state change, and bound the wait.
+					//
+					// This handshake froze the game in a real play-through: three
+					// Scatters landed, the free-spin trigger awaited these promises, one
+					// never resolved, and the round sat on a looping Scatter animation
+					// for minutes with the bet never settling. It is intermittent — the
+					// same book completed normally on a later run — which is the
+					// signature of a race, not of a broken animation.
+					//
+					// Two changes, because the second matters even if the first is not
+					// the whole story:
+					//
+					// 1. `oncomplete` is assigned first. Setting symbolState to 'win'
+					//    remounts the symbol as a spine, and the assignment used to
+					//    happen on the line after — so a `complete` arriving in between
+					//    called the previous (no-op) callback and the real resolver was
+					//    never invoked.
+					// 2. The wait has a ceiling. The win spine runs 1.4s; at the slowest
+					//    time scale that is well under this. A missed callback now costs
+					//    one beat of presentation instead of the session, which is the
+					//    difference between a glitch and a game that has to be reloaded.
+					const settled = waitForResolve<void>((resolve) => {
+						reelSymbol.oncomplete = resolve;
+					});
 					reelSymbol.symbolState = 'win';
-					await waitForResolve((resolve) => (reelSymbol.oncomplete = resolve));
+					await Promise.race([
+						settled,
+						waitForResolve<void>((resolve) => setTimeout(resolve, WIN_ANIM_TIMEOUT)),
+					]);
 					reelSymbol.symbolState = 'postWinStatic';
 				});
 

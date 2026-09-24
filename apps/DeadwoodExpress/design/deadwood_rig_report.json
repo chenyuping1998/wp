@@ -1,0 +1,28 @@
+{
+  "size": [
+    1024,
+    1536
+  ],
+  "armOwnership": {
+    "l": 0.8656846124228839,
+    "r": 0.9083914725752069
+  },
+  "geometricLimits": {
+    "hips": 6.5,
+    "waist": 17.5,
+    "chest": 9.0,
+    "neck": 10.5,
+    "head": 15.0,
+    "arm_l": 12.5,
+    "fore_l": 17.5,
+    "arm_r": 5.5,
+    "fore_r": 11.0
+  },
+  "referenceReaction": {
+    "minArea": 0.5807949313984031,
+    "maxArea": 1.3899151545377808
+  },
+  "sourceAlpha": {
+    "clearFraction": 0.5432834625244141
+  }
+}

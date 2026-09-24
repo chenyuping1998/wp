@@ -99,7 +99,7 @@
 	:global(.pop-up-wrap h2),
 	:global(.pop-up-wrap h3),
 	:global(.pop-up-wrap .button) {
-		font-family: 'Cinzel', Georgia, serif !important;
+		font-family: 'Orbitron', 'Trebuchet MS', Arial, sans-serif !important;
 		letter-spacing: 0.08em;
 	}
 	:global(.pop-up-wrap h1),
@@ -203,7 +203,7 @@
 	}
 
 	:global(.bonus-card-wrap .title) {
-		font-family: 'Cinzel', Georgia, serif !important;
+		font-family: 'Orbitron', 'Trebuchet MS', Arial, sans-serif !important;
 		color: #ffd77a !important;
 		font-weight: 700 !important;
 		letter-spacing: 0.06em;
@@ -213,7 +213,7 @@
 		color: rgba(240, 225, 255, 0.78) !important;
 	}
 	:global(.bonus-card-wrap .price) {
-		font-family: 'Cinzel', Georgia, serif !important;
+		font-family: 'Orbitron', 'Trebuchet MS', Arial, sans-serif !important;
 		color: #fff !important;
 		font-weight: 700 !important;
 		background: linear-gradient(180deg, rgba(216, 168, 78, 0.3), rgba(216, 168, 78, 0.12));
@@ -263,13 +263,13 @@
 		cursor: pointer;
 	}
 	:global(.pop-up-wrap .col > span) {
-		font-family: 'Cinzel', Georgia, serif !important;
+		font-family: 'Orbitron', 'Trebuchet MS', Arial, sans-serif !important;
 		color: #ffd77a !important;
 		letter-spacing: 0.05em;
 		margin-bottom: 0.35rem;
 	}
 	:global(.pop-up-wrap .value span) {
-		font-family: 'Cinzel', Georgia, serif !important;
+		font-family: 'Orbitron', 'Trebuchet MS', Arial, sans-serif !important;
 		color: #fff !important;
 		font-weight: 700;
 	}

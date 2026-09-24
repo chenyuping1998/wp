@@ -22,6 +22,13 @@
 	const WAIT_TO_HOLD_TIMEOUT = 400;
 	let isHolding = $state(false);
 	let isWaitingToHold = $state(false);
+	// The OS repeats keydown while a key is held. This is not a preference and is
+	// not gated: no caller wants auto-repeat counted as separate presses, and for
+	// the bet button it means one held spacebar can place TWO bets — `onpress`
+	// fires on every keydown until `isHolding` flips at WAIT_TO_HOLD_TIMEOUT
+	// (400ms), and a machine set to a short repeat delay gets a second one inside
+	// that window. Hacksaw guards the same thing the same way (`_keyDowns[" "]`).
+	let isDown = false;
 
 	const holdTimeoutStart = async () => {
 		isWaitingToHold = true;
@@ -39,11 +46,14 @@
 	};
 
 	const keyDown = () => {
+		if (isDown) return;
+		isDown = true;
 		if (!isWaitingToHold) holdTimeoutStart();
 		if (!isHolding) props.onpress?.();
 	};
 
 	const keyUp = () => {
+		isDown = false;
 		if (isWaitingToHold) holdTimeoutStop();
 
 		if (isHolding) {

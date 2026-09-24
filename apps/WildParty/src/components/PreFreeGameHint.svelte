@@ -99,8 +99,13 @@
 
 	context.eventEmitter.subscribeOnMount({
 		preFreeGameHintShow: async () => {
+			// Armed before runAnimation() — see Transition.svelte for the race this
+			// shape produces.
+			const settled = waitForResolve<void>((resolve) => {
+				oncomplete = resolve;
+			});
 			runAnimation();
-			await waitForResolve((resolve) => (oncomplete = resolve));
+			await settled;
 		},
 	});
 

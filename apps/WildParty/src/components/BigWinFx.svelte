@@ -4,6 +4,7 @@
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	import FxBurst from './FxBurst.svelte';
+	import { CHROME_LIGHT, GOLD_ACCENT, LIME, MAGENTA } from '../game/palette';
 
 	type Props = {
 		x?: number;
@@ -24,7 +25,7 @@
 
 	// ambient bokeh dust — soft, slow-drifting color motes for background depth,
 	// reuses the existing fxGlow texture (no new asset needed) tinted per-mote
-	const BOKEH_COLORS = [0xffd75e, 0xff8ede, 0xc59bff, 0x9ef3ff];
+	const BOKEH_COLORS = [CHROME_LIGHT, MAGENTA, LIME, GOLD_ACCENT];
 	const motes = Array.from({ length: 14 }, (_, i) => ({
 		x: (Math.random() - 0.5) * radius * 2.3,
 		y: (Math.random() - 0.6) * radius * 1.7,

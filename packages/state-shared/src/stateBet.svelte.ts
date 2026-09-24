@@ -34,36 +34,35 @@ const correctBetAmount = (value: number) => {
 	if (stateConfig.maxBet > 0) corrected = Math.min(corrected, stateConfig.maxBet);
 	if (stateConfig.minBet > 0) corrected = Math.max(corrected, stateConfig.minBet);
 
-	// SNAP to a stake the server offered, rather than accepting whatever came in.
+	// Affordability last, so a player short of the minimum is held to what they
+	// actually have rather than to a stake they cannot place.
 	//
-	// betAmountOptions is the ladder from the authenticate response. Anything not
-	// on it is a value the server never offered, and the game must not present it
-	// as selectable — which is what certification asked for: "the bet level should
-	// not be allowed to be set to a value outside of those provided in the
-	// authenticate response".
+	// Snapped DOWN to a level the server offers, never to the balance itself.
+	// `Math.min(corrected, affordable)` returned the raw balance whenever the
+	// balance was the smaller number, so a player holding 1,120 GC who pressed
+	// Max Bet got a stake of exactly 1,120 GC — a level `betLevels` never
+	// contained. Certification reported it as a bet level not provided by the RGS.
 	//
-	// Empty until authenticate answers, and there is no correct fallback for
-	// somebody else's stake ladder, so an unanswered config passes the value
-	// through under the min/max bounds above and nothing else.
-	const options = stateConfig.betAmountOptions;
-	if (options.length > 0) {
-		corrected = options.reduce((best, option) =>
-			Math.abs(option - corrected) < Math.abs(best - corrected) ? option : best,
-		);
+	// Every selectable stake has to be one of the server's, so affordability may
+	// only ever pick a lower rung of the server's own ladder. If the player cannot
+	// afford even the lowest rung, the lowest rung is still what is shown: the
+	// insufficient-balance path then refuses the spin, which is the correct
+	// outcome, whereas inventing a stake they can afford is not ours to do.
+	const affordable = stateBet.balanceAmount / costMultiplier;
+	const ceiling = Math.min(corrected, affordable);
+
+	const levels = stateConfig.betAmountOptions;
+	if (!levels.length) {
+		// No discrete ladder — the game steps by stepBet, and there is no rung to
+		// snap to. Clamping to the ceiling is all that can be done here.
+		return ceiling;
 	}
 
-	// NOT clamped to the balance.
-	//
-	// It used to end `Math.min(corrected, affordable)`, so choosing a stake above
-	// the balance silently set it to the balance instead — a value that is almost
-	// never on the ladder, and a selection the player did not make. Certification
-	// called this out directly.
-	//
-	// Being unable to afford the stake is a separate thing from the stake being
-	// invalid: the player picks a level, and if the balance will not cover it the
-	// game says so when they try to play (ButtonBet). Silently rewriting their
-	// choice answers a question nobody asked.
-	return corrected;
+	let snapped = -Infinity;
+	for (const level of levels) {
+		if (level <= ceiling && level > snapped) snapped = level;
+	}
+	return snapped > -Infinity ? snapped : Math.min(...levels);
 };
 
 const setBetAmount = (value: number) => {

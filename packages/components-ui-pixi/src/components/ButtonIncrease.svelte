@@ -8,10 +8,14 @@
 	import { createBetRepeat, markBetChanged } from '../platformUx.svelte';
 	import { getContext } from '../context';
 	import { UI_BASE_SIZE } from '../constants';
+	import { uiTheme } from '../theme.svelte';
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const context = getContext();
-	const sizes = { width: UI_BASE_SIZE, height: UI_BASE_SIZE };
+	const sizes = $derived({
+		width: UI_BASE_SIZE * uiTheme.railButtonScale,
+		height: UI_BASE_SIZE * uiTheme.railButtonScale,
+	});
 	const options = $derived(stateConfig.betAmountOptions);
 	// The ladder is the server's list of allowed stakes, so walk it when there is
 	// one. stepBet is the fallback for a config that offers a continuous range

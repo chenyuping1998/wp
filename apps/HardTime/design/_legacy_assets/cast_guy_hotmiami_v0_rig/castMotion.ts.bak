@@ -1,0 +1,460 @@
+/**
+ * Every number the Don's motion is made of, and nothing else.
+ *
+ * THIS MODULE MUST NOT IMPORT ANYTHING. design/check_cast_motion.mjs loads it
+ * with bare node so it can MEASURE these tables instead of trusting them — the
+ * same arrangement game/idleSway.ts already has with check_idle_sway.mjs. One
+ * pixi import here and that gate cannot run at all. It must also stay clear of
+ * the turbo modules (`state-shared`, `game/timeScale`): the speed a reaction
+ * runs at is read by the CALLER and passed into `react()`, never imported here.
+ *
+ * skinnedFigure.ts owns the rendering; this owns what the rendering is asked to
+ * do. The split exists so the second one can be checked.
+ */
+
+export type MotionSpec = [
+  amplitude: number,
+  lagMs: number,
+  periodMs: number,
+  oddScale: number,
+];
+
+/** A reaction's per-bone amplitude in degrees, and how much LATER than the
+ *  reaction's own start that bone begins moving.
+ *
+ *  The lag is the whole point. Every bone used to share one envelope, so the
+ *  figure snapped into its pose as a single rigid unit — the read is a twitch,
+ *  not a person. Motion travels OUT along the chain, each link starting after
+ *  the one it hangs from: hips lead, the head arrives later, the hands last,
+ *  because the hands are what the eye is on. */
+export type ReactionSpec = Record<string, [amplitudeDeg: number, lagMs: number]>;
+
+/** One reaction tier.
+ *
+ *    bones      — what each joint does, and when it starts
+ *    durationMs — the beat's length at speed 1 (turbo divides it)
+ *    snap/hold  — fractions of the duration spent arriving, and the point the
+ *                 release starts. The quick tiers snap and let go; the big ones
+ *                 arrive fast and STAY there, which is the difference between a
+ *                 movement and a flinch.
+ *
+ *  and the three whole-body moves:
+ *
+ *    rise    — root translation UP, as a fraction of the figure box height
+ *    stretch — root vertical SCALE, as a fraction
+ *    lean    — root translation toward the board, fraction of figure width
+ *
+ *  ⚠ ALL THREE ARE NOW ZERO IN EVERY TIER, and new tiers should leave them
+ *  there. They are kept only because the gate's escalation metric reads them.
+ *
+ *  They were the whole of "the reaction is too big". Going back to the
+ *  reference teardown (`reports/character-reactions.md` §4a) with that
+ *  complaint in hand, the sentence that matters is:
+ *
+ *    「這四個角色都沒有任何整體平移。`root` 與 `*_root_pelvis` 在 reaction 裡
+ *      一格關鍵幀都沒有。」
+ *
+ *  Not "a little" — not one keyframe, on any of the four reacting characters.
+ *  What we had instead moved and vertically scaled the ENTIRE figure on every
+ *  reaction. That is the one thing the reference never does, and it is exactly
+ *  what reads as the man lurching rather than reacting.
+ *
+ *  Their size comes from `push` below instead. And the joints were never the
+ *  problem: the reference's own peaks are hand +20.0deg, arm +18.8, and up to
+ *  +27.1 on `bikinigirl` — all LARGER than ours. */
+export type ReactionTier = {
+  bones: ReactionSpec;
+  durationMs: number;
+  snap: number;
+  hold: number;
+  rise: number;
+  stretch: number;
+  lean: number;
+  /**
+   * The perspective push — where the sense of SIZE comes from now that no tier
+   * moves the figure as a whole.
+   *
+   * This is the reference's `*_persp` bone, reproduced. Their teardown
+   * (`character-reactions.md` §4a) measures it on all four reacting characters:
+   * a control bone parented under the spine, carrying a displacement of
+   * (+50.7, +90.8) on `main_guy`, weighted 0.39–0.52 across the torso mesh —
+   * and, critically, **with no child bones**. It does not carry the character
+   * anywhere. It pushes the torso's own vertices and nothing else, so the
+   * silhouette swells toward the viewer while the feet, the head and the hands
+   * stay exactly where the joints put them.
+   *
+   * `x` / `y` are fractions of the figure box, applied to the named bone's
+   * FINAL matrix after the hierarchy has already been composed — that is what
+   * keeps it off the children. See skinnedFigure.update().
+   */
+  push?: { bone: string; x: number; y: number };
+  /**
+   * What happens DURING the hold, and why a tier that omits it looks stuck.
+   *
+   * Measured off the reference cast (Miami Mayhem teardown, `reports/
+   * character-reactions.md` §3): every one of their reactions puts something in
+   * the hold. `main_guy` shakes his biceps scale between 1.40 and 1.52 on a
+   * 0.067s period — a muscle straining — and swings the bat 14.6 degrees inside
+   * a single frame at the midpoint. Their note is explicit that a hold with
+   * nothing moving in it reads as "卡住" (jammed) rather than as effort.
+   *
+   * Ours is the same idea on the only channel this rig has: a small, fast
+   * oscillation added to the named bones for the length of the hold, riding on
+   * top of the pose they are already holding.
+   *
+   *   deg      amplitude, degrees, added and subtracted
+   *   periodMs full cycle; the reference's 67ms is the shortest that still
+   *            reads as a tremor rather than as noise
+   *   bones    which bones shake. Keep it to what is ALREADY carrying the
+   *            gesture — a tremor on a bone that is not moving reads as a glitch
+   */
+  tremor?: { deg: number; periodMs: number; bones: string[] };
+  /**
+   * Additive re-draw of the figure's own texture, peaking with the reaction.
+   *
+   * The reference's third and cheapest source of "size" (§4c): five of their
+   * glow slots point at the SAME attachment as the body, differing only by
+   * `"blend": "additive"`. No bone moves, no new art is drawn — the same image
+   * again, added to itself, is the flash. `skinnedFigure.ts` does exactly this
+   * with a second Mesh sharing the first one's geometry, so it deforms with the
+   * body for free.
+   *
+   * 0 or omitted = no glow, which is right for the small tiers: a line win that
+   * lights the man up would be louder than the win.
+   */
+  glow?: number;
+};
+
+export const DEG = Math.PI / 180;
+export const LOOP_MS = 8000;
+
+// Idle envelope shape, and the default for the reaction tiers that do not
+// override it.
+export const SNAP = 0.18;
+export const HOLD = 0.63;
+
+/* THE IDLE, unchanged from the pass that tuned it in the running game.
+ *
+ * Measured travel over one 8s loop, as a fraction of the figure's height
+ * (801px), computed against meshRigs/cast_guy/guy.rig.json:
+ *
+ *   forearm  1.65%   <- the free end carrying the motion
+ *   head     0.98%
+ *   chest    0.37%
+ *   hips     0.00%   <- feet planted, root amplitude is 0
+ *
+ * Appendage-to-body ratio 4.5x, inside the 4-8x band game/idleSway.ts rule 2
+ * takes from the reference. That ratio is what keeps this from being the large
+ * whole-body sway that failed review once: a body that travels as far as its
+ * limbs reads as a person swaying, which is worse than a person standing still.
+ *
+ * THE ARMS ARE THE BUDGET HERE, and the 2026-09-05 joint sweep says so in
+ * numbers: the shoulder tears at 4 degrees on this drawing and the idle alone
+ * already peaks at 2.2 of them. That is 55% of the shoulder's entire range
+ * spent on the motion that never stops — deliberately left alone, because it
+ * was tuned by eye in the running game and the reaction has enough room in what
+ * remains, but it is the reason the reaction tables below load the FOREARMS and
+ * the SPINE rather than the shoulders.
+ *
+ * Periods are left alone — rule 1 (no two loops matching) depends on them being
+ * mutually prime-ish, and changing amplitude does not touch that. */
+export const IDLE: Record<string, MotionSpec> = {
+  root: [0, 0, 2000, 0],
+  hips: [0.099, 0, 2450, 0],
+  waist: [0.198, 360, 2800, 0.2],
+  chest: [0.396, 180, 2150, 0.3],
+  neck: [0.627, 120, 2650, 0.5],
+  head: [0.9075, 60, 1750, 0.8],
+  arm_l: [1.408, 0, 2050, 0.4],
+  fore_l: [1.056, 300, 1800, 0.3],
+  arm_r: [1.32, 180, 1500, 0.4],
+  fore_r: [0.968, 360, 1550, 0.3],
+};
+
+/* WHY THESE NUMBERS, AND WHY THEY ARE MUCH LARGER THAN THEY WERE.
+ *
+ * The tables that shipped before peaked at 0.55deg on a line win and 2.4 on a
+ * feature trigger, on a figure that stands 372 CSS px tall — about 1.2px of
+ * travel for a win, which is the mesh-cast-rig doc's defect #4 ("a reaction so
+ * small it could not be seen") almost exactly. They were sized by caution, not
+ * by measurement, and the caution was wrong by a factor of five.
+ *
+ * ── THE CEILING WAS MEASURED, 2026-09-05 ─────────────────────────────────────
+ *
+ * One joint rotated at a time against static/assets/meshRigs/cast_guy, rendered
+ * through the exact matrix maths skinnedFigure.ts uses, and looked at ZOOMED ON
+ * THE EXTREMITY rather than at viewing size. Where the Don's drawing tears:
+ *
+ *     arm_l / arm_r   clean to ~4deg; at 5 the fingers merge, at 8 the hand is
+ *                     a mitten, at 12 a paddle with the sleeve sheared
+ *     fore_l          clean to ~12deg; the fingers fuse by 20, the hand is a
+ *                     wedge by 35
+ *     fore_r          clean past 20deg — that wrist sits at the hand itself and
+ *                     carries almost no blended vertices, so it barely deforms
+ *     hips            clean to ~8deg (it drags the whole body: 10deg moves the
+ *                     head 97px, so a little is already a lot)
+ *     waist / chest   clean to ~10deg; by 14 the head widens visibly
+ *     neck            clean to ~15deg
+ *     head            clean to ~25deg; the jaw fattens by 30
+ *
+ * The shoulders are the tight ones, and it is the drawing's fault, not the
+ * rig's: the Don stands with his arms against his sides, each about one grid
+ * cell wide, with no mesh across them to absorb a bend — the same constraint
+ * ART_AUDIO_BRIEF.md §1 already warns about and the same one Hot Miami's man has. So
+ * the amplitude goes where there IS room: down the spine (where every joint
+ * stays under half its own limit while the figure travels a long way, because
+ * rotation accumulated down a chain carries everything below it RIGIDLY and
+ * rigid costs nothing) and into the forearms.
+ *
+ * ── SIGN CONVENTION, and the bug it fixes ────────────────────────────────────
+ *
+ * Measured by rotating each bone and tracking where the hand actually goes:
+ * arm_l +10deg moves that hand 44px OUTWARD, arm_r -10deg moves its hand 32px
+ * outward. So POSITIVE on the left arm and NEGATIVE on the right OPENS the
+ * body; the forearms follow their own arm's sign. Positive on the spine leans
+ * the figure toward the board.
+ *
+ * The trigger table already did this. The win and big-win tables did the exact
+ * opposite — arm_l negative, arm_r positive — so the two reactions the player
+ * sees most often were the Don pulling his arms IN. A deflating gesture on a
+ * win, and the same defect Hot Miami shipped (its doc, defect #5). Both are
+ * flipped here, and check_cast_motion.mjs now fails if either ever flips back.
+ */
+
+/** The feature trigger: the top of the ladder and the rarest thing the figure
+ *  does, so it is allowed to be the biggest. Worst case against the measured
+ *  limits, amplitude plus the idle peak in the same direction:
+ *
+ *     arm_l 3.60 / 4    fore_l 9.53 / 12    hips 1.92 / 8    chest 3.98 / 10
+ *     arm_r 3.48 / 4    fore_r 9.43 / 20    head 8.79 / 25   neck 6.05 / 15
+ *
+ *  Rendered at that worst case and inspected at 5x on both hands: fingers turn
+ *  and curl, nothing blades or tears.
+ *
+ *  What the three tiers actually move, measured in the running game at 1280x720
+ *  against a PURE-IDLE reference at the same instants (the top-of-head vertex,
+ *  in CSS px, on a figure that renders 744 CSS px tall):
+ *
+ *                     win        winBig      trigger
+ *    head travel      24.8px     52.2px      83.9px
+ *    hand travel      11.7px     23.7px      38.2px
+ *    peak at          176ms      560ms       368ms
+ *    back at rest     768ms      1088ms      1424ms
+ *
+ *  The tables that shipped before moved the loudest body vertex 1.2 / 3.0 / 9.2
+ *  px on a figure half this size. */
+/**
+ * The feature trigger. Rebuilt 2026-09-10 after the submission came back at
+ * 5.3 with "poor animation" and the user's own word for this beat: 抽筋 — a
+ * seizure.
+ *
+ * What was wrong with the version it replaces, checked against the reference
+ * teardown (`reports/character-reactions.md`) rather than by taste:
+ *
+ * 1. PERFECT BILATERAL SYMMETRY. It moved fore_l +8.0 and fore_r -8.0, arm_l
+ *    +1.4 and arm_r -1.4, at lags 190/175 — the same magnitudes on both sides
+ *    at the same instant. No reference character does this: main_guy peaks at
+ *    hand +20.0 against hand_r -16.5, bikinigirl at +27.1 against -22.2. A body
+ *    that snaps symmetrically is a body having a spasm; the asymmetry is what
+ *    makes it read as a person choosing to move.
+ * 2. THE LADDER WAS TOO FLAT. hips 1.8 -> waist 2.6 -> chest 3.4 -> neck 5.0 ->
+ *    head 7.0 is about 1.4x per link. The reference's rule (§1 of
+ *    background-idle-technique, and the beard measurement in §3) is ~2x per
+ *    link — that is what makes a wave look like it is travelling up a body
+ *    rather than the whole trunk tilting at once.
+ * 3. THE LAG SPREAD WAS TOO SHORT. 140ms from hips to head, against a 1250ms
+ *    beat: the wave was over before the eye caught it moving.
+ * 4. THE HOLD WAS DEAD. Nothing at all happened between snap and release — see
+ *    the `tremor` note on ReactionTier for why the reference never does that.
+ * 5. NO GLOW. The cheapest channel they have (§4c) was simply unused here.
+ *
+ * The joint angles below are mostly SMALLER than the ones they replace, not
+ * bigger. That is the point of §4: the reference's own joints rarely pass 20
+ * degrees, and the size comes from the other three channels. This rig has no
+ * prop and no perspective bone, so it spends what it does have — the follow
+ * chain, the tremor, the rigid root move, and now the glow.
+ */
+export const TRIGGER_REACTION: ReactionTier = {
+  durationMs: 1250,
+  snap: 0.18,
+  hold: 0.63,
+  // Zero, and staying zero — see the header. The size is `push`, below.
+  rise: 0,
+  stretch: 0,
+  lean: 0,
+  // The reference's persp displacement is (+50.7, +90.8) on a figure whose box
+  // is about the same proportions as ours, i.e. roughly 10% of the box on the
+  // long axis. Ours is deliberately under half of that: their push is doing the
+  // work of a whole-body lunge we are not otherwise making, ours sits on top of
+  // joints that are already moving.
+  push: { bone: "chest", x: 0.012, y: 0.038 },
+  // Peaks with the pose and falls with it. Enough to read as the man catching
+  // the light as the vault opens, well short of blowing him out to white.
+  glow: 0.34,
+  // The forearms are what the eye is on, so they are what strains. 67ms is the
+  // reference's own period; 0.5deg is small enough to be texture rather than a
+  // second motion.
+  tremor: { deg: 0.5, periodMs: 67, bones: ["fore_l", "fore_r"] },
+  bones: {
+    // ~1.7x per link, and the spread is now 210ms rather than 140 — the wave
+    // takes a sixth of the beat to travel, which is what makes it visible AS a
+    // travelling wave.
+    hips: [0.6, 0],
+    waist: [0.95, 45],
+    chest: [1.6, 85],
+    neck: [1.7, 145],
+    // 本體小、附屬物大. The head's own angle was 0.88 of the carrier; the
+    // reference runs 0.38 (girl_head 7.19deg against girl_arm_R 18.77), and
+    // that ratio is what these five numbers now hold.
+    //
+    // MEASURED RESULT: head travel 139.4px -> 49.2px, 17.4% of body height
+    // down to 6.1%. design/measure_cast_travel.mjs, which budgets it.
+    //
+    // A second, deeper cut was made here and then REVERTED. It was chasing a
+    // head/hand ratio under 1.0, and that number was an artefact: the measuring
+    // script was picking "the hand" by position, and every vertex it chose was
+    // a head or neck vertex on the texture's left edge. On this drawing the
+    // head ALWAYS travels further than the hand — 3.23x with the original
+    // tables — because it swings on the longest lever arm in the figure while
+    // the arms are pinned to the sides and own five vertices between them.
+    // Cutting the spine until that ratio inverted would have meant cutting
+    // until the man stopped reacting, to satisfy a number measured wrong.
+    head: [2.5, 210],
+    // Deliberately NOT mirrored. The left side leads and opens wider; the right
+    // follows 40ms later and stops short, so the pose has a direction. Both
+    // still obey the sign convention rule 5 of check_cast_motion.mjs enforces
+    // (positive left, negative right = opening the body).
+    // The shoulders stay tiny. check_cast_motion caught arm_l at 2.2 here:
+    // added to its own 2.20deg idle peak that is 4.40 against a measured tear
+    // limit of 4.0. This boss is drawn with his arms against his body, so the
+    // shoulder is the one joint with almost no mesh to absorb a bend — the
+    // reference's own guy had the same constraint. The gesture is carried by
+    // the ELBOWS, which have room (12 and 20 degrees), not by the shoulders.
+    arm_l: [1.1, 95],
+    fore_l: [6.7, 235],
+    arm_r: [-0.9, 135],
+    fore_r: [-4.5, 275],
+  },
+};
+
+/** A win worth making a fuss about — `BIG_WIN_MULTIPLE` in game/constants.ts,
+ *  the same threshold the winning symbols use for their own rare faces, so the
+ *  symbol and the man beside it can never disagree about what just happened.
+ *
+ *  Same gesture as the trigger at about 60% of it, not a different pose: a big
+ *  win has to read as "the same man, more of it". Snaps sooner and holds longer
+ *  than a line win. The hold is not dead — the idle keeps running underneath
+ *  the whole reaction. */
+export const WIN_BIG_REACTION: ReactionTier = {
+  durationMs: 940,
+  snap: 0.15,
+  hold: 0.6,
+  rise: 0,
+  stretch: 0,
+  lean: 0,
+  push: { bone: "chest", x: 0.007, y: 0.022 },
+  bones: {
+    hips: [0.45, 0],
+    waist: [0.6, 25],
+    chest: [0.8, 45],
+    neck: [0.9, 75],
+    head: [1.3, 105],
+    arm_l: [0.6, 60],
+    fore_l: [3.4, 150],
+    arm_r: [-0.6, 55],
+    fore_r: [-3.4, 135],
+  },
+};
+
+/** An ordinary line win — the common case by a wide margin, so it stays a nod
+ *  rather than a celebration. It is still five times what shipped before,
+ *  because what shipped before sat UNDER the idle sway: 0.55deg of reaction on
+ *  a forearm whose idle peaks at 1.53 is not a quiet acknowledgement, it is an
+ *  invisible one. The gate now checks exactly that (rule 2b). */
+export const WIN_REACTION: ReactionTier = {
+  durationMs: 720,
+  snap: 0.18,
+  hold: 0.42,
+  rise: 0,
+  stretch: 0,
+  lean: 0,
+  push: { bone: "chest", x: 0.003, y: 0.009 },
+  bones: {
+    // The forearm has a HARD FLOOR here, not a taste judgement: its own idle
+    // sway peaks at 1.53deg, and check_cast_motion rule 2b requires the
+    // reaction to clear that by 1.25x (1.92) as well as the 2.0 visibility
+    // minimum. Cutting this tier further does not make the win quieter, it
+    // makes it invisible underneath the breathing. What made the line win feel
+    // big was the whole-figure rise this tier no longer has.
+    hips: [0.27, 0],
+    waist: [0.4, 10],
+    chest: [0.5, 18],
+    neck: [0.55, 30],
+    head: [0.8, 42],
+    arm_l: [0.36, 24],
+    fore_l: [2.1, 60],
+    arm_r: [-0.36, 22],
+    fore_r: [-2.1, 54],
+  },
+};
+
+/** How much of the tables the artwork actually takes.
+ *
+ * Hot Miami needs this because two figures drawn very differently share one set
+ * of tables, and its man takes 0.36 of them. Capo Nostra has exactly ONE cast
+ * member, so the tables above ARE the Don's and his scale is 1 — the reduction
+ * that a shared table would need is already baked into the numbers, which were
+ * written against his own measured limits rather than someone else's.
+ *
+ * It stays as a dial because the gate multiplies by it: if a second figure is
+ * ever stood beside this board, it needs its own entry here AND its own row in
+ * check_cast_motion.mjs's JOINT_LIMIT_DEG, measured the same way. Adding one
+ * without the other is exactly how the shipped build with the broken hand
+ * happened on the other game. */
+export const MOTION_SCALE: Record<"guy", number> = {
+  guy: 1,
+};
+
+export type CastReactionKind = "win" | "winBig" | "trigger";
+
+export const TIERS: Record<CastReactionKind, ReactionTier> = {
+  win: WIN_REACTION,
+  winBig: WIN_BIG_REACTION,
+  trigger: TRIGGER_REACTION,
+};
+
+export function wave(value: number) {
+  const u = value - Math.floor(value);
+  const v = u < 0.38 ? u / 0.38 : 1 - (u - 0.38) / 0.62;
+  return v * v * (3 - 2 * v) * 2 - 1;
+}
+
+export function oddBeat(value: number) {
+  return value < 0.5 || value > 0.74
+    ? 0
+    : -Math.sin((Math.PI * (value - 0.5)) / 0.24);
+}
+
+export function idleAngle(spec: MotionSpec, timeMs: number) {
+  const [amplitude, lagMs, periodMs, oddScale] = spec;
+  if (!amplitude) return 0;
+  const phase = timeMs - lagMs;
+  let angle = amplitude * wave(phase / periodMs);
+  angle += amplitude * 0.25 * Math.sin((Math.PI * 2 * phase) / LOOP_MS);
+  if (oddScale) {
+    const loopPosition = (((phase % LOOP_MS) + LOOP_MS) % LOOP_MS) / LOOP_MS;
+    angle += amplitude * oddScale * oddBeat(loopPosition);
+  }
+  return angle;
+}
+
+export function reactionEnvelope(value: number, snap = SNAP, hold = HOLD) {
+  if (value <= 0 || value >= 1) return 0;
+  if (value < snap) {
+    const t = value / snap;
+    return t * t * (3 - 2 * t);
+  }
+  if (value < hold) return 1;
+  const t = 1 - (value - hold) / (1 - hold);
+  return t * t * (3 - 2 * t);
+}
