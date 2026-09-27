@@ -155,6 +155,57 @@ player has a way to undo it. **Still check a portrait viewport before every
 submission**, because this is the class of bug that no gate catches and that a
 desktop-only pass never sees.
 
+### 5b. …and portrait controls must fit on the screen at all
+
+Separate from surviving the spin: `LayoutPortrait` puts the menu disc and Buy
+Bonus at a fixed ±470 from centre, sized for the original round buttons. A
+reskin that enlarges either one pushes it off the edge — on Deadwood Express at
+375×812 the menu disc lost 9 px on the left and the Buy Bonus plate (drawn at
+`buyBonusPlateScale` 1.25) lost 28 px on the right. Buy Bonus cannot simply move
+in, because turbo sits next to it.
+
+`uiTheme.portraitSideButtonX` (default 470) and `portraitBuyBonusScale`
+(default 1) exist for this; Deadwood uses 445 / 0.85. At the same width the
+text game name at top-left (ends ≈x 322) ran under the logo (starts 196 px in
+from the right) — a game whose logo already spells the name can drop the text
+below ~560 px canvas width. **Measure the bounds, don't eyeball them:** walk the
+pixi tree and compare each control's `getBounds()` against `app.screen`.
+
+---
+
+## Deadwood Express: 5/10 "poor UI" — things that light up on a tap
+
+Deadwood's first submission (2026-09-22) scored 5/10 with poor UI. The
+collaborator's advice was that controls lighting up when tapped is what earns
+that mark. Two separate things did it, and both are template behaviour a
+reskin inherits:
+
+**Sticky hover on touch.** The shared `Button` (every round control, Buy Bonus)
+and `LabelBet` (the Bet panel) set `hovered` on `pointerover` and clear it on
+`pointerout`. A finger fires `pointerover` on tap and **never** fires
+`pointerout` when it lifts, so on a phone whatever was tapped last stayed
+highlighted — the Bet panel kept its box after every tap. Fixed in the shared
+components on 2026-09-23: hover ignores `pointerType === 'touch'` and a touch
+`pointerup` clears it. Mouse behaviour is unchanged. Desktop testing never
+shows this; a browser pane's "mobile" preset does not either, because its
+clicks still arrive as mouse events. Verify with synthetic
+`new PointerEvent(..., { pointerType: 'touch' })` dispatched on the canvas.
+
+**The spin halo.** `uiTheme.spinButtonGlow` draws a breathing ring behind the
+spin button that runs faster and brighter the moment Spin is pressed. The
+collaborator's recent titles (Go Bananas Boat / Frostline / Bananaut /
+Bananubis, Go Boomana) default `DEFAULT_SKIN = 'platform'`, whose flat
+Hacksaw-style chrome ships it off. Deadwood set `spinButtonGlow: false`.
+
+Note the naming trap when the user reports this: **`ButtonBet` is the spin
+button** in this codebase, and the Bet *panel* is `LabelBet`. "Bet lights up"
+can mean either — fix both rather than guess.
+
+If a game still draws "poor UI" after that, the next lever is the whole
+platform skin (every reskin from Hot Miami carries it as a second `setUiTheme`
+block behind a `DEFAULT_SKIN` switch). It changes the whole bar's look, so ask
+before flipping it.
+
 ---
 
 ## When the game and the Game Info disagree, check WHICH ONE is wrong

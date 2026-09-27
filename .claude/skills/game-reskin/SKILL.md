@@ -6,13 +6,23 @@ description: >-
   this whenever a user wants to reskin/fork an existing app under `wp/apps/*`
   into a new one, from the first "what should we call it" through the final
   upload zips. Covers the whole pipeline in order: confirming the source and
-  theme, spec changes, scaffolding, math, the art brief, frontend build and
+  theme, spec changes, scaffolding, math, choosing the art style WITH the user
+  (a scored shortlist — American comic, noir black-and-white plus one accent,
+  woodcut, engraving, screenprint, ink wash, rubber-hose, manga, street
+  sticker-bomb, TV-cartoon mascot, grotesque caricature, grime and more, each
+  checked against atlases of what Hacksaw's 183 and Nolimit City's 143
+  shipped slots use — asked before any prompt is written), the art brief and its anti-"AI look" rules, frontend build and
   theming, wiring in art the user generates, fine-tuning, pre-submission QA,
-  thumbnail, and packaging. Built from shipping Capo Nostra out of Hot Miami,
+  thumbnail, and packaging. Also use it when generated art looks too
+  AI-made, when a game's style needs choosing or changing, or on 畫風 / 美術風格
+  / 風格 / AI 感 / 太像 AI / 美式漫畫 / 黑白 / 版畫 / 橡皮管 / 日漫 / 塗鴉 /
+  貼紙 / 參考 Hacksaw 或 Nolimit 畫風. Built from shipping Capo Nostra out of Hot Miami,
   then extended with the six findings from the Stake review that passed Hot
   Miami — five of which are generic to this codebase and will be raised against
-  any reskin unless fixed first. Every gotcha in here cost real turns the first
-  time.
+  any reskin unless fixed first, and with Deadwood Express's 5/10 "poor UI"
+  review (controls that stay lit after a touch tap, portrait controls off the
+  screen edge) and its restaging trap. Every gotcha in here cost real turns the
+  first time.
 ---
 
 # Reskinning a Stake Engine slot
@@ -31,15 +41,22 @@ re-derived:
 - **`stake-engine-slot`** — the build commands, the static guards, the Svelte 5
   traps, and the certification/pre-submission checklist. Load it for anything
   about *how this codebase builds and gets reviewed*, independent of reskinning.
-- **`mesh-cast-rig`** — animating a character from one flat illustration with a
-  skinned mesh. The "must have a moving character" requirement below is built
-  with this, not with cut-out Spine parts.
+- **`hacksaw-character-motion`** (user scope) — the cast character. Its
+  `archetype/` flow is the default for a reskin: the user PICKS a pose
+  archetype from a numbered gallery, that choice becomes the character's art
+  brief directly (layers, cut lines, pose, joint guide), the delivered layers
+  are rigged one mesh per layer on a shared skeleton and gated, and the game
+  gets its OWN motion table measured from the archetype. Its research-only
+  motion packs replay the reference exactly for comparison and never ship.
+- **`mesh-cast-rig`** — the older one-flat-illustration skinned mesh. Still
+  what Capo Nostra / Turf War run today; use it only when a game keeps a
+  single-image figure.
 
 This skill is the sequencing and the reskin-specific gotchas on top of both.
 
 ## Before starting: confirm, don't assume
 
-Three things must come from the user, not from a guess, because guessing wrong
+Four things must come from the user, not from a guess, because guessing wrong
 here means redoing everything downstream of the guess:
 
 1. **Source game.** Which existing `wp/apps/*` app is the base. If unstated,
@@ -58,6 +75,12 @@ here means redoing everything downstream of the guess:
    in writing as a short diff table before touching code — it is the spec for
    every phase after it, and it is worth showing back to the user once as
    "here's what I understood, confirm or correct" before scaffolding.
+4. **Art style.** Not the source game's style by default, and not "whatever
+   the image model draws" — that default (glossy semi-real metal, even
+   micro-detail, soft glow) is what five of this repo's games already look
+   like. Ask with a scored shortlist and a recommendation, as soon as theme
+   and name are settled; the full procedure is step 3 below. It can be asked
+   in the same AskUserQuestion round as the name if both are open.
 
 ### The user's vocabulary — pin these before acting on a tuning request
 
@@ -134,6 +157,57 @@ the whole pipeline, so starting it late just makes it the critical path later.
 
 ### 3. Art brief
 
+**Choose the art style with the user first — before a single prompt exists.**
+Read `references/art-direction.md` and run its procedure; the short version:
+
+1. **Find the theme's native medium** — what that world would have printed,
+   painted or carved itself (1930s mob → pulp covers and noir halftone;
+   Western → woodcut wanted posters; finance → banknote engraving). A real
+   medium has physical rules a model can follow, which is the main defence
+   against the default render look. Then check
+   `references/hacksaw-style-atlas.md` for what Hacksaw's 183 slots chose for
+   that theme and which lanes are still empty
+   (`scripts/hacksaw_styles.py list --theme <word>`). For crime, prison,
+   horror, western, war, punk and satire themes also check
+   `references/nolimit-city-styles.md` (Nolimit City's 143 slots,
+   `scripts/nolimit_styles.py list --theme <word>`) and its board rules: a
+   frame that is an object from the world, a colour card behind each high,
+   low pays in the world's own material, one alarm colour, ugly specific
+   faces. Its main finding: their art measures like a render on
+   `check_style.py` and still has an identity, because the identity comes
+   from those decisions, not from low colour counts.
+2. **Shortlist three styles plus one contrast** from the catalogue (American
+   comic, noir black-and-white plus one reserved accent, woodcut, engraving,
+   screenprint/risograph, flat vector, cel, ink wash, constructivist, Art
+   Nouveau, gouache, TV-cartoon mascot, rubber-hose 1930s, manga ink, street
+   sticker-bomb, grotesque caricature, grime plus one alarm colour,
+   found-object collage — and the semi-real 3D default, listed with its honest cost
+   rather than silently fallen back to). **Score each** on theme fit,
+   readability at a 70 px portrait cell, cast-rig compatibility, lobby
+   distinctiveness at 200 px, generation control/post-process cost, and
+   review risk. This scoring IS the professional opinion — give it, don't
+   just list names.
+3. **Ask** — AskUserQuestion, 畫風 (recommended one first, labelled
+   「（推薦）」, each option's `preview` the scored card in 繁中, naming two or
+   three Hacksaw or Nolimit titles that use the style) and 色彩策略, optionally
+   質感. Send one `hacksaw_styles.py sheet --key <key> --kind screen` (or
+   `nolimit_styles.py sheet --key <key> --kind screen`) contact sheet
+   per option with it, so the user picks from pictures. Titles and sheets are
+   for looking only: never in a prompt, never attached to a generation. If
+   the user defers, take the recommendation and say so.
+4. **Style test** — H1, one low-pay, the Wild, a background crop (and the
+   cast head if in scope), composited on the real board and at 200 px, plus
+   `scripts/check_style.py --sheet`. The approved result is the **style
+   frame**; its measured numbers go into the brief's §0 and gate every later
+   delivery.
+5. **Propagate §0** — into the cast brief via `archetype/brief.py --style
+   <app>/ART_BRIEF.md --style-kind <key> --style-frame <frame>` (without
+   `--style` the figure comes back in the default look beside stylised
+   symbols, and the generated README says it isn't ready to hand over), the
+   icon drawer's line weight, frame/plate art, win-FX colours, fonts,
+   transitions and the thumbnail. Keep §0's heading as `## 0…` — that is what
+   `--style` extracts.
+
 Write the art requirements doc BEFORE the frontend build reaches anything
 that depends on final art, so the user can start generating while frontend
 work proceeds on placeholder/inherited art. See
@@ -149,11 +223,21 @@ Two requirements that are easy to state and easy to drop by the last art pass:
   vs. feature) to one suited boss throughout, because the theme's logic didn't
   support a second figure the way Miami's did. Don't carry over the source
   game's cast COUNT or COMPOSITION by default; derive it from the new theme.
-- **A moving character is not optional** — see `mesh-cast-rig`. Decide early
-  whether the new art will be drawn with the daylight-under-the-arms margin a
-  mesh rig needs (see that skill's own notes on why a tight-armed pose drags
-  hands into the torso at scale), and say so in the art brief if the pose
-  needs adjusting for it.
+- **A moving character is not optional — and the user chooses its pose.**
+  In this step, run `hacksaw-character-motion`'s archetype flow: show
+  `gallery/overview.gif`, ask which archetype (AskUserQuestion, two questions:
+  hanging arms / carrying a prop / arms crossed, then which one), then
+  `python archetype/brief.py -c N --game <Name> --out design/cast_brief/
+  --feet-y .. --top-y .. --style ART_BRIEF.md --style-kind <key>
+  [--style-frame <frame>]` and hand the user that brief alongside the main art
+  brief. It is a LAYERED brief (body / head / each arm shoulder-to-fingertip /
+  fingers over a prop / prop / dangles, every layer a full-canvas PNG), because
+  a single image with the arms against the body is what made three games'
+  arms read 「像沒骨頭」 (2026-09-23/24): a pinned hand plus an arm that moves
+  can only bow. Hands must be free (no pockets, not on the thigh, not on a
+  planted prop) and a hanging forearm >= 48 px off the body at 1024 wide.
+  Only STRUCTURE comes from the archetype — never trace, sample or attach
+  reference art.
 - **The Buy Bonus CTA button in the bet bar is its own asset, separate from
   the Buy Bonus modal's card frames** — brief both in the same pass, not just
   the modal (Capo Nostra's brief covered the cards from day one and the
@@ -177,7 +261,8 @@ are easiest to leave in by accident. Match the NEW theme in:
   drawn-lettering vs runtime-text as one pass: everything the art shows as
   lettering (plaques, tier titles, banners, logo) sets the runtime font
   family; numbers do not follow it if it costs legibility. See
-  `references/art-brief-template.md`'s lettering-audit section.
+  `references/art-brief-template.md`'s lettering-audit section; the chosen
+  style's catalogue entry in `references/art-direction.md` suggests a pairing.
 - **Colour.** The shared UI packages default to whatever palette the LAST game
   that touched them shipped with (`components-ui-pixi` in particular carries
   a previous game's hardcoded hex values in several components — bet bar,
@@ -192,8 +277,11 @@ are easiest to leave in by accident. Match the NEW theme in:
   Redraw them with the source game's icon drawer instead of recolouring, and
   check the source for a later redraw before copying any asset set. Full rules
   and the script are in `references/art-brief-template.md` §6.
-- **Character.** Built via `mesh-cast-rig`. It has to actually move — see
-  that skill for the motion-table discipline (appendages carry the motion,
+- **Character.** Built via `hacksaw-character-motion`'s `archetype/layered/`
+  (check_layered_art → build_layered_rig → layeredFigure.ts → the game's
+  motion table from `archetype/motion_table.py` → check_layered_cast), or via
+  `mesh-cast-rig` for a single-image figure. It has to actually move — see
+  those skills for the motion-table discipline (appendages carry the motion,
   the body barely moves; a body that sways as far as its limbs reads as a
   person swaying, which reads worse than standing still) — and it has to be
   sized against the ACTUAL side-band width at every breakpoint, including
@@ -206,6 +294,26 @@ are easiest to leave in by accident. Match the NEW theme in:
   backdrop IS a vault room; the beat needed a mechanically equivalent
   replacement, not a re-skinned car). Re-derive the beat from the new theme,
   don't just recolour the old one's asset.
+- **A visible random draw (wheel, dial, pick) must not look computed.**
+  Deadwood Express's multiplier wheel first printed its values in ascending
+  order and always stopped dead centre on the result — both read as fake.
+  Lay the segments out as a fixed scramble with every big value between small
+  ones (split the set into lower/upper halves, shuffle each with a seed derived
+  from the set so the same set always draws the same dial, alternate them),
+  jitter the stop within the segment, and some of the time (~20%) stop near the
+  edge next to a much bigger neighbour for a near miss. All of it is
+  presentation: the book still decides the value, so math, books and RTP are
+  untouched. See `apps/DeadwoodExpress/src/game/wheelState.svelte.ts`.
+- **"Is it centred?" is a measurement, not a look.** A label can be centred in
+  its own box and the plate art still look off, because a crest or wing on one
+  edge moves the plate's writable area off the texture centre. Measure the
+  text's ink (pixels of its fill colour inside its bounds) against the plate's
+  inner frame (from the PNG's alpha/colour), then correct with
+  `buyBonusLabelOffsetX/Y`; the hover highlight has the same problem and takes
+  `buyBonusPlateInset` + `buyBonusPlateInsetOffsetY`. On Deadwood the caption
+  turned out to be centred to 1 px — the real defects were a highlight lighting
+  the whole square canvas and portrait controls running off-screen
+  (`references/review-findings.md` §5b). Check portrait before concluding.
 
 Wire book events and presentation with the same discipline the source game
 used (reveal/board-state consistency, sound-per-event, guard scripts) — that
@@ -227,7 +335,17 @@ Once the user starts generating art:
    opacity, recolouring a set, building a sheet), that's `asset-pipeline`
    work — measure before/after (opacity %, contrast ratio, coverage), don't
    eyeball it.
-4. Iterate against concrete, stated feedback each round. If a round's
+4. **Every round, check the delivery against the style frame, not against
+   memory.** Run `scripts/check_style.py` with §0's palette, accent caps and
+   gates on the whole symbol set (royals included — rendered highs next to
+   flat low-pay glyphs is two styles on one reel), then go down the
+   AI-tells table in `references/art-direction.md` at 180 px and 70 px:
+   baked sheen/glow, detail at one even density, airbrushed gradients, fake
+   halftone/hatching, generated lettering, nonsense ornament, broken counts,
+   mismatched light. Reject and regenerate what fails; post-processing can
+   hold a palette but cannot turn a render into the chosen style
+   (quantising a render gives a posterised render).
+5. Iterate against concrete, stated feedback each round. If a round's
    feedback implies a broader rule ("too colourful/messy" led to a whole
    palette-consistency pass, not just the one screen mentioned), write that
    rule down in the art brief so the next round of generated art doesn't
@@ -254,6 +372,10 @@ the word "Stake" in the disclaimer, no insufficient-balance message, currencies
 that render as words (XOF/XAF/XPF), a store tile with more than one character,
 and portrait controls that vanish permanently after the first spin. All five are
 one-line-to-one-file fixes in advance and a full round trip to discover.
+The same file also covers portrait controls that run off the screen edge
+(§5b) and Deadwood Express's 5/10 "poor UI": controls that stay lit after a
+touch tap, and a spin halo that flares on press. Test those on a touch
+pointer, not just a mouse.
 
 On top of all of that, run the reskin-specific one neither `game-qa` nor
 `stake-compliance` is built to catch: **is anything still the old game's?** See `references/dead-asset-audit.md` for
@@ -351,6 +473,12 @@ playtest-only files in the upload build). Write or update a HANDOFF.md as you
 go, not retroactively — it is the only place the exact retarget numbers and
 the reasoning behind each scale_factor live, and reconstructing that after
 the fact from a diff is much slower than writing two sentences at the time.
+
+**On every restage after the first, do not `rsync --delete` the build over the
+staged frontend.** The first pass prunes the source game's leftovers and
+compresses the art; the build folder still has both. Replace only `index.html`
+and `_app/immutable` — `references/packaging.md` §6 has the commands and the
+check that the new bundle references nothing the staging pruned.
 
 ### 9. Submission description
 
@@ -479,6 +607,13 @@ correct source change still ships the old behaviour. And when the port also
 needs ASSETS (audio files, art), check the sibling's asset directory too: Turf
 War's code was ported while `win_tier_*.wav` existed only under Capo Nostra, so
 the reskin would have shipped code referring to sounds it did not have.
+
+**The image model's default is not a style.** A prompt that names a theme and
+objects but no medium gets the same glossy semi-real render every time — it is
+why Capo Nostra, Turf War, Hard Time, Deadwood Express and Soul Seal's symbol
+sets are interchangeable side by side. Every prompt carries §0's technique
+block (how ink goes down, how shading is made, how many inks), and the style
+is chosen with the user, not inherited from the source game or from the model.
 
 **Nothing is inherited by default — everything is inherited unless replaced.**
 The scaffold step copies the OLD game byte-for-byte. Every subsequent phase's
