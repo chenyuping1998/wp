@@ -492,6 +492,515 @@ for (const prop of PROPS) {
 	};
 }
 
+// ── WEIGHTED SLEEVES ────────────────────────────────────────────────────────
+//
+// The shoulder budget (MAX_SHOULDER_L / _R) was set by one failure: each suit
+// sleeve is a RIGID plate hung on its arm bone, so past ~27-32 degrees the whole
+// plate swings about the joint — its rounded cap rises above the shoulder line,
+// and a dark gap opens at the armpit (render_monkey_runtime.mjs on the --sweep
+// build shows it on both sides). Nothing in the keys could fix it; the piece
+// could not bend.
+//
+// So the sleeves are weighted MESHES now — the one-image-one-mesh method of the
+// symbol wins, inside Spine, as Go Bananubis did for its mascot's trunk: within
+// SLEEVE_HOLD px of the shoulder joint a sleeve stays on the TORSO, and over the
+// next SLEEVE_BLEND px it hands over to the arm. The cap stays seated on the
+// shoulder and the sleeve bends below it.
+//
+// Spine stores a weighted vertex once per influencing bone, in that bone's
+// setup space. Every bone in this rig is unrotated and unscaled in setup, so
+// that is the vertex's world position minus the bone's.
+const SLEEVE_HOLD = 18;
+const SLEEVE_BLEND = 70;
+const smoothW = (v) => {
+	const t = Math.max(0, Math.min(1, v));
+	return t * t * (3 - 2 * t);
+};
+// bones added below (the banana, the hose) are ROTATED along their piece, for
+// the physics; the body's are not. A weighted vertex is stored in its bone's
+// own setup frame, so a rotated bone needs its offset turned back.
+const extraWorld = {};
+// A mesh on explicit grid lines (PSD x's and y's, both edges of the piece
+// included), so a piece can be fine where something small bends — a pen, a
+// test tube — and coarse over the rest of a big, mostly empty layer.
+const meshGrid = (layer, xs, ys, weightsAt) => {
+	const cols = xs.length - 1, rows = ys.length - 1;
+	// the hull (the outer ring, in order) first, as Spine expects, then the interior
+	const at = (c, r) => [xs[c], ys[r]];
+	const ring = [];
+	for (let c = 0; c < cols; c++) ring.push([c, 0]);
+	for (let r = 0; r < rows; r++) ring.push([cols, r]);
+	for (let c = cols; c > 0; c--) ring.push([c, rows]);
+	for (let r = rows; r > 0; r--) ring.push([0, r]);
+	const inner = [];
+	for (let r = 1; r < rows; r++) for (let c = 1; c < cols; c++) inner.push([c, r]);
+	const order = [...ring, ...inner];
+	const index = new Map(order.map(([c, r], i) => [`${c},${r}`, i]));
+	const uvs = [], vertices = [], triangles = [];
+	for (const [c, r] of order) {
+		const [x, y] = at(c, r);
+		uvs.push(+((xs[c] - layer.x) / layer.w).toFixed(5), +((ys[r] - layer.y) / layer.h).toFixed(5));
+		const entries = Object.entries(weightsAt(x, y)).filter(([, v]) => v > 1e-4);
+		const total = entries.reduce((a, [, v]) => a + v, 0);
+		const world = toSpine(x, y);
+		vertices.push(entries.length);
+		for (const [bone, v] of entries) {
+			const j = extraWorld[bone] ?? { ...jointWorld[bone], rot: 0 };
+			const r = (-j.rot * Math.PI) / 180;
+			const dx = world.x - j.x, dy = world.y - j.y;
+			const lx = dx * Math.cos(r) - dy * Math.sin(r);
+			const ly = dx * Math.sin(r) + dy * Math.cos(r);
+			vertices.push(bones.findIndex((b) => b.name === bone), +lx.toFixed(2), +ly.toFixed(2), +(v / total).toFixed(4));
+		}
+	}
+	for (let r = 0; r < rows; r++)
+		for (let c = 0; c < cols; c++) {
+			const a = index.get(`${c},${r}`), b = index.get(`${c + 1},${r}`);
+			const d = index.get(`${c},${r + 1}`), e = index.get(`${c + 1},${r + 1}`);
+			triangles.push(a, b, e, a, e, d);
+		}
+	return { type: 'mesh', uvs, triangles, vertices, hull: ring.length, width: layer.w, height: layer.h };
+};
+const meshAttachment = (layer, cols, rows, weightsAt) =>
+	meshGrid(
+		layer,
+		Array.from({ length: cols + 1 }, (_, c) => layer.x + (layer.w * c) / cols),
+		Array.from({ length: rows + 1 }, (_, r) => layer.y + (layer.h * r) / rows),
+		weightsAt,
+	);
+// grid lines from `from` to `to` every `step`, plus finer ones over [a, b]
+const gridLines = (from, to, step, dense = []) => {
+	const set = new Set([from, to]);
+	for (let v = from; v < to; v += step) set.add(+v.toFixed(2));
+	for (const [a, b, st] of dense) for (let v = Math.max(from, a); v <= Math.min(to, b); v += st) set.add(+v.toFixed(2));
+	return [...set].sort((p, q) => p - q);
+};
+// every suit-sleeve piece on a shoulder bone: the two `_0_upper_arm`s, and the
+// right arm's second sleeve layer (`right_arm_1_forearm` — see ARM above: on
+// this PSD it is a sleeve, and it rides armR)
+// RIGID_SLEEVES=1 builds the old rigid plates, for before/after renders
+const SLEEVES = process.env.RIGID_SLEEVES ? [] : meta.layers.filter((l) => /^arm[LR]$/.test(boneOf[l.name] ?? '') && /_arm_[01]_/.test(l.name));
+for (const layer of SLEEVES) {
+	const bone = boneOf[layer.name];
+	const joint = RIG.find((b) => b.name === bone).at;
+	attachments[layer.name][layer.name] = meshAttachment(layer, 8, 10, (x, y) => {
+		const arm = smoothW((Math.hypot(x - joint[0], y - joint[1]) - SLEEVE_HOLD) / SLEEVE_BLEND);
+		return { torso: 1 - arm, [bone]: arm };
+	});
+	console.log(`mesh    ${layer.name}: sleeve on torso within ${SLEEVE_HOLD}px of ${bone}, blending over ${SLEEVE_BLEND}`);
+}
+
+// ── WHAT HANGS OFF HIM: the banana and the backpack hose ────────────────────
+//
+// Asked for 2026-09-26: the pieces that hang off him drifting on their own,
+// "so floating in the feature feels like space". The same set-up as Go
+// Bananubis' banana, ears and kilt (and Go Bananas Boat's captain before it):
+//
+//   · a BONE along each piece, and the piece a weighted MESH on it
+//   · PHYSICS CONSTRAINTS (Spine 4.2): inertia, so when the body moves they
+//     lag, overshoot and settle on their own, with no keys at all
+//   · `flutter` on TRACK 1 (Mascot.svelte), forever, keying only those bones:
+//     the banana chewed now and then, the hose drifting — so he is never quite
+//     still whatever track 0 plays. `flutter_float` is the same, bigger and
+//     slower, for the free spins, where he floats in zero-g.
+//
+// The goggles stay put: the feature tease draws its glow at their REST place
+// (Mascot.svelte GOGGLE), and goggles that drift would leave it behind.
+//
+// Coordinates are PSD pixels, measured off the pieces' own ink.
+const MOUTH = [288, 217], BANANA_TIP = [212, 297];
+// the hose is a C-shaped loop on the backpack's left, fastened at BOTH ends
+// (PSD ink 51..110 x 161..297): it cannot swing from one end, so its bone runs
+// from the top fastening out to the belly of the curve, and the weight rises
+// toward the middle and falls away again at the bottom fastening — it bulges
+const HOSE_TOP = [98, 166], HOSE_BELLY = [54, 232], HOSE_Y = [161, 297], HOSE_MAX_X = 118;
+
+const addBone = (name, parent, from, to) => {
+	const a = toSpine(from[0], from[1]);
+	const b = toSpine(to[0], to[1]);
+	const rot = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+	const p = jointWorld[parent];
+	bones.push({
+		name,
+		parent,
+		x: +(a.x - p.x).toFixed(2),
+		y: +(a.y - p.y).toFixed(2),
+		rotation: +rot.toFixed(2),
+		length: +Math.hypot(b.x - a.x, b.y - a.y).toFixed(2),
+	});
+	extraWorld[name] = { x: a.x, y: a.y, rot };
+};
+addBone('banana', 'head', MOUTH, BANANA_TIP);
+addBone('hose', 'torso', HOSE_TOP, HOSE_BELLY);
+// how far along a line a point is, 0 at `from`, 1 at `to`
+const alongLine = (p, from, to) => {
+	const dx = to[0] - from[0], dy = to[1] - from[1];
+	return ((p[0] - from[0]) * dx + (p[1] - from[1]) * dy) / (dx * dx + dy * dy);
+};
+{
+	const banana = meta.layers.find((l) => l.name === 'head_5_decoration');
+	const hose = meta.layers.find((l) => l.name === 'torso_2_decoration');
+	if (!banana || !hose) {
+		console.error('banana or hose piece missing: the hanging bones need head_5_decoration and torso_2_decoration');
+		process.exit(1);
+	}
+	// held at the mouth, free toward its tip
+	attachments[banana.name][banana.name] = meshAttachment(banana, 8, 8, (x, y) => {
+		const b = smoothW((alongLine([x, y], MOUTH, BANANA_TIP) - 0.08) / 0.35);
+		return { head: 1 - b, banana: b };
+	});
+	// the hose's middle on its bone, both fastenings and everything else in the
+	// piece (the pens, the badge, the vial) on the torso
+	attachments[hose.name][hose.name] = meshAttachment(hose, 10, 14, (x, y) => {
+		const t = Math.max(0, Math.min(1, (y - HOSE_Y[0]) / (HOSE_Y[1] - HOSE_Y[0])));
+		const onHose = smoothW((HOSE_MAX_X - x) / 14);
+		const h = onHose * Math.sin(Math.PI * t) ** 1.5;
+		return { torso: 1 - h, hose: h };
+	});
+	console.log('hanging banana (head_5_decoration) and hose (torso_2_decoration): bones, meshes, physics');
+}
+
+// ── THE SUIT'S LOOSE BITS (asked for 2026-09-27: "衣服配件用網格法做動態") ─────
+//
+// Everything small on the suit was welded to the torso. Now, like the banana and
+// the hose, each loose piece has a bone and a PHYSICS constraint, so it answers
+// the body with no keys at all:
+//
+//   PENS     the three in the chest holder (torso_5): each tilts about the
+//            holder's top edge, springy
+//   TUBES    the test tubes in the chest rack — two in torso_4, a standing pair
+//            in torso_5: each rocks about its own base, stiff and quick, so a
+//            jolt makes them RATTLE rather than swing
+//   CROTCH   the lower part of torso_0 follows the thighs a little (a weighted
+//            mesh), so the suit moves with a lifted leg instead of staying
+//            printed on the hips
+//
+// THE PENS AND TUBES ARE CUT OUT, NOT WEIGHTED. The first version weighted them
+// inside their layer's mesh, and a rigid object in a continuous mesh has to
+// shear the 2-3px between it and its neighbours: check_monkey_rig failed every
+// animation on exactly those seams. So the generator cuts each one out of its
+// layer into its own small image (design/source/monkey_fx/cut_*.png), erases it
+// from the layer's copy, and hangs it on its bone as a RIGID region — nothing
+// deforms at all. A pen is drawn BEHIND its holder, and its cut runs down into
+// the holder, so its foot tucks under the band as it tilts.
+//
+// torso_0 is the "shorts" layer, but what shows of it is the belt and the crotch
+// panel: its leg hems are under the thighs (nothing of it is visible below y
+// 580), and the belt has no hanging tab — so there is no hem or strap to flap.
+//
+// Coordinates are PSD pixels, measured off the pieces' own ink
+// (2026-09-27, per-row alpha runs of torso_4 / torso_5 / torso_3).
+const PEN_PIVOT = 334; // on the holder band's top edge
+const PEN_FOOT = 348; // the cut runs this far down, under the band
+const PENS = [
+	{ name: 'pen1', x: 393, tip: 298, half: 8 },
+	{ name: 'pen2', x: 414.5, tip: 298, half: 8 },
+	{ name: 'pen3', x: 435, tip: 303, half: 8 },
+];
+const TUBES = [
+	{ name: 'tube4a', layer: 'torso_4_decoration', x0: 214, x1: 236, top: 322, base: 392 },
+	{ name: 'tube4b', layer: 'torso_4_decoration', x0: 236, x1: 254, top: 323, base: 387 },
+	{ name: 'tubes5', layer: 'torso_5_decoration', x0: 235, x1: 275, top: 324, base: 375 },
+];
+const CROTCH_FROM = 515;
+const CROTCH_LEG = 0.45; // at most this much of a vertex follows its thigh
+
+for (const pen of PENS) addBone(pen.name, 'torso', [pen.x, PEN_PIVOT], [pen.x, pen.tip]);
+for (const t of TUBES) addBone(t.name, 'torso', [(t.x0 + t.x1) / 2, t.base], [(t.x0 + t.x1) / 2, t.top]);
+{
+	const t0 = meta.layers.find((l) => l.name === 'torso_0_decoration');
+	if (!t0) {
+		console.error('suit piece torso_0_decoration missing');
+		process.exit(1);
+	}
+	const legL = RIG.find((b) => b.name === 'legL').at, legR = RIG.find((b) => b.name === 'legR').at;
+	const mid = (legL[0] + legR[0]) / 2;
+	attachments[t0.name][t0.name] = meshGrid(
+		t0,
+		gridLines(t0.x, t0.x + t0.w, 48, [[150, 434, 14]]),
+		gridLines(t0.y, t0.y + t0.h, 48, [[500, 612, 12]]),
+		(x, y) => {
+			const leg = CROTCH_LEG * smoothW((y - CROTCH_FROM) / 45);
+			const l = leg * smoothW((mid + 14 - x) / 28);
+			const r = leg * smoothW((x - (mid - 14)) / 28);
+			return { torso: 1 - l - r, legL: l, legR: r };
+		},
+	);
+	console.log(`mesh    ${t0.name}: ${attachments[t0.name][t0.name].uvs.length / 2} vertices (the crotch follows the thighs)`);
+}
+
+// ── THE LIGHTS AND THE BADGE: generated overlays, drawn additive ──────────────
+//
+// Written by this script into design/source/monkey_fx and packed into the atlas
+// like the props. White, tinted by the slot colour.
+const FX_DIR = path.join(appRoot, 'design/source/monkey_fx');
+fs.mkdirSync(FX_DIR, { recursive: true });
+const writeFx = (name, w, h, alphaAt) => {
+	const png = new PNG({ width: w, height: h });
+	for (let y = 0; y < h; y++)
+		for (let x = 0; x < w; x++) {
+			const i = (y * w + x) * 4;
+			png.data[i] = png.data[i + 1] = png.data[i + 2] = 255;
+			png.data[i + 3] = Math.round(255 * Math.max(0, Math.min(1, alphaAt(x + 0.5, y + 0.5))));
+		}
+	const file = path.join(FX_DIR, `${name}.png`);
+	fs.writeFileSync(file, PNG.sync.write(png));
+	return { name, file, w, h, external: true };
+};
+// a soft capsule: full inside a (cw x ch) core, falling off over `soft`
+const capsule = (cx, cy, cw, ch, soft) => (x, y) => {
+	const dx = Math.max(0, Math.abs(x - cx) - cw / 2), dy = Math.max(0, Math.abs(y - cy) - ch / 2);
+	return Math.exp(-((Math.hypot(dx, dy) / soft) ** 2));
+};
+// ── the cut-outs: each pen and tube out of its layer, onto its bone ──
+const LAYER_FILE = {}; // layer name -> its erased copy, for the atlas
+const CUT_PIECES = []; // { name, bone, file, box } rigid regions
+{
+	const loaded = {};
+	const layerImg = (name) => {
+		if (!loaded[name]) {
+			const l = meta.layers.find((x) => x.name === name);
+			loaded[name] = { l, img: PNG.sync.read(fs.readFileSync(path.join(SRC, l.file))) };
+		}
+		return loaded[name];
+	};
+	// copy the box out of the layer into its own image; erase only where `erase`
+	// says (a pen keeps its foot in the layer, under the band, as well)
+	const cut = (name, layerName, bone, box, erase) => {
+		const { l, img } = layerImg(layerName);
+		const w = box.x1 - box.x0, h = box.y1 - box.y0;
+		const png = new PNG({ width: w, height: h });
+		for (let y = 0; y < h; y++)
+			for (let x = 0; x < w; x++) {
+				const px = box.x0 + x, py = box.y0 + y;
+				const lx = px - l.x, ly = py - l.y;
+				if (lx < 0 || ly < 0 || lx >= img.width || ly >= img.height) continue;
+				const si = (ly * img.width + lx) * 4, di = (y * w + x) * 4;
+				for (let c = 0; c < 4; c++) png.data[di + c] = img.data[si + c];
+				if (erase(px, py)) img.data[si + 3] = 0;
+			}
+		const file = path.join(FX_DIR, `cut_${name}.png`);
+		fs.writeFileSync(file, PNG.sync.write(png));
+		CUT_PIECES.push({ name: `cut_${name}`, bone, file, box, layer: layerName });
+	};
+	for (const pen of PENS)
+		cut(pen.name, 'torso_5_decoration', pen.name, { x0: Math.floor(pen.x - pen.half), x1: Math.ceil(pen.x + pen.half), y0: pen.tip - 4, y1: PEN_FOOT }, (x, y) => y < PEN_PIVOT - 3);
+	for (const t of TUBES) cut(t.name, t.layer, t.name, { x0: t.x0, x1: t.x1, y0: t.top, y1: t.base }, () => true);
+	for (const [name, { l, img }] of Object.entries(loaded)) {
+		const file = path.join(FX_DIR, `${name}_erased.png`);
+		fs.writeFileSync(file, PNG.sync.write(img));
+		LAYER_FILE[l.name] = file;
+	}
+	// each piece a rigid region on its bone. The bones are ROTATED along the
+	// piece (addBone), so the offset is turned into the bone's frame and the
+	// region turned back upright.
+	for (const piece of CUT_PIECES) {
+		const j = extraWorld[piece.bone];
+		const c = toSpine((piece.box.x0 + piece.box.x1) / 2, (piece.box.y0 + piece.box.y1) / 2);
+		const r = (-j.rot * Math.PI) / 180;
+		const dx = c.x - j.x, dy = c.y - j.y;
+		attachments[piece.name] = {
+			[piece.name]: {
+				x: +(dx * Math.cos(r) - dy * Math.sin(r)).toFixed(2),
+				y: +(dx * Math.sin(r) + dy * Math.cos(r)).toFixed(2),
+				rotation: +(-j.rot).toFixed(2),
+				width: piece.box.x1 - piece.box.x0,
+				height: piece.box.y1 - piece.box.y0,
+			},
+		};
+	}
+	console.log(`cut     ${CUT_PIECES.map((c) => c.name).join(', ')} (rigid, on their own bones)`);
+}
+
+// the three liquid windows on the chest panel (warm ink in torso_3_trunk)
+const WINDOWS = [
+	{ x: 244.5, y: 379, tint: 'ffd08a' },
+	{ x: 264.5, y: 379, tint: 'ff9d80' },
+	{ x: 290.5, y: 379, tint: 'ffc08a' },
+];
+const FX = [];
+FX.push(writeFx('fx_vial_glow', 26, 44, capsule(13, 22, 7, 22, 5)));
+const PANEL_BOX = { x: 226, y: 350, w: 84, h: 58 };
+FX.push(
+	writeFx('fx_panel_flash', PANEL_BOX.w, PANEL_BOX.h, (x, y) =>
+		Math.min(
+			1,
+			// the windows only: a halo over the whole panel read as a white slab
+			WINDOWS.reduce((a, w) => a + capsule(w.x - PANEL_BOX.x, w.y - PANEL_BOX.y, 7, 20, 5)(x, y), 0),
+		),
+	),
+);
+// the badge's glint: its disc (torso_5's own ink within the badge's circle)
+// with a diagonal band of light across it, one frame per step of the sweep
+const BADGE = { x: 418.5, y: 271, r: 19.5 };
+const GLINT_FRAMES = 8;
+const BADGE_BOX = { x: BADGE.x - 22, y: BADGE.y - 22, w: 44, h: 44 };
+{
+	const t5 = meta.layers.find((l) => l.name === 'torso_5_decoration');
+	const img = PNG.sync.read(fs.readFileSync(path.join(SRC, t5.file)));
+	const inkAt = (px, py) => {
+		const lx = Math.floor(px - t5.x), ly = Math.floor(py - t5.y);
+		if (lx < 0 || ly < 0 || lx >= img.width || ly >= img.height) return 0;
+		return img.data[(ly * img.width + lx) * 4 + 3] / 255;
+	};
+	for (let f = 0; f < GLINT_FRAMES; f++) {
+		const c = -1.3 * BADGE.r + (2.6 * BADGE.r * f) / (GLINT_FRAMES - 1);
+		FX.push(
+			writeFx(`fx_badge_glint_${f}`, BADGE_BOX.w, BADGE_BOX.h, (x, y) => {
+				const px = BADGE_BOX.x + x, py = BADGE_BOX.y + y;
+				if (Math.hypot(px - BADGE.x, py - BADGE.y) > BADGE.r) return 0;
+				const u = (px - BADGE.x + (py - BADGE.y)) / Math.SQRT2;
+				return inkAt(px, py) * 0.85 * Math.exp(-(((u - c) / 4.5) ** 2));
+			}),
+		);
+	}
+}
+const onTorso = (box) => {
+	const c = toSpine(box.x + box.w / 2, box.y + box.h / 2);
+	const j = jointWorld.torso;
+	return { x: +(c.x - j.x).toFixed(2), y: +(c.y - j.y).toFixed(2), width: box.w, height: box.h };
+};
+const SUIT_FX_SLOTS = {
+	afterTrunk: [
+		...WINDOWS.map((w, i) => ({ name: `vial_glow_${i + 1}`, bone: 'torso', attachment: `vial_glow_${i + 1}`, color: `${w.tint}40`, blend: 'additive' })),
+		{ name: 'panel_flash', bone: 'torso', attachment: 'panel_flash', color: 'fff0d800', blend: 'additive' },
+	],
+	afterBadge: [{ name: 'badge_glint', bone: 'torso', blend: 'additive' }],
+};
+const pieceSlot = (name) => {
+	const c = CUT_PIECES.find((p) => p.name === `cut_${name}`);
+	return { name: c.name, bone: c.bone, attachment: c.name };
+};
+WINDOWS.forEach((w, i) => {
+	attachments[`vial_glow_${i + 1}`] = {
+		[`vial_glow_${i + 1}`]: { ...onTorso({ x: w.x - 13, y: w.y - 22, w: 26, h: 44 }), path: 'fx_vial_glow' },
+	};
+});
+attachments.panel_flash = { panel_flash: { ...onTorso(PANEL_BOX), path: 'fx_panel_flash' } };
+attachments.badge_glint = Object.fromEntries(
+	Array.from({ length: GLINT_FRAMES }, (_, f) => [`fx_badge_glint_${f}`, onTorso(BADGE_BOX)]),
+);
+
+// PHYSICS: inertia on the two hanging bones. The banana is gripped in his
+// teeth, so it is stiffer; the hose is a light loop and the floatiest thing on
+// him. EVERY CONSTRAINT NEEDS ITS OWN `order` (Go Bananubis found only the first
+// of seven running when they all sat at the default 0).
+const physics = [
+	{ name: 'banana_phys', bone: 'banana', rotate: 1, inertia: 0.5, strength: 110, damping: 0.8, mass: 1 },
+	{ name: 'hose_phys', bone: 'hose', rotate: 1, inertia: 0.6, strength: 70, damping: 0.82, mass: 1 },
+	// the suit's loose bits: pens light and springy, tubes stiff and quick (a
+	// rattle, not a swing)
+	...PENS.map((p) => ({ name: `${p.name}_phys`, bone: p.name, rotate: 1, inertia: 0.5, strength: 170, damping: 0.65, mass: 1 })),
+	...TUBES.map((t) => ({ name: `${t.name}_phys`, bone: t.name, rotate: 1, inertia: 0.55, strength: 240, damping: 0.5, mass: 1 })),
+].map((c, order) => ({ ...c, order }));
+
+// THE FLUTTER, on track 1, forever. Whole cycles only, so it loops seamlessly.
+const FLUTTER_LOOP = 4.8;
+const loopKeys = (amp, n, phase, steps = 24) =>
+	Array.from({ length: steps + 1 }, (_, i) => {
+		const t = (FLUTTER_LOOP * i) / steps;
+		return { time: +t.toFixed(4), value: +(amp * Math.sin((2 * Math.PI * n * t) / FLUTTER_LOOP + phase)).toFixed(3) };
+	});
+// a slow sway with quick bumps on top of it (the chews)
+const bumpKeys = (events, sway, steps = 96) =>
+	Array.from({ length: steps + 1 }, (_, i) => {
+		const t = (FLUTTER_LOOP * i) / steps;
+		let v = sway.amp * Math.sin((2 * Math.PI * sway.n * t) / FLUTTER_LOOP + sway.phase);
+		for (const { at, amp, width } of events) {
+			const u = (t - at) / width;
+			if (u > 0 && u < 1) v += amp * Math.sin(Math.PI * u);
+		}
+		return { time: +t.toFixed(4), value: +v.toFixed(3) };
+	});
+const flutter = {
+	bones: {
+		banana: { rotate: bumpKeys([{ at: 0.6, amp: 9, width: 0.22 }, { at: 0.95, amp: 7, width: 0.22 }], { amp: 2, n: 2, phase: 0 }) },
+		hose: { rotate: loopKeys(3, 1, 0.8) },
+		// the suit's bits never quite still: the pens sway a hair, the tubes give
+		// one little rattle a loop
+		...Object.fromEntries(PENS.map((p, i) => [p.name, { rotate: loopKeys(1.2, 2, 1.3 * i) }])),
+		...Object.fromEntries(
+			TUBES.map((t, i) => [
+				t.name,
+				{
+					rotate: bumpKeys(
+						[
+							{ at: 2.1 + 0.05 * i, amp: 3, width: 0.1 },
+							{ at: 2.2 + 0.05 * i, amp: -2.4, width: 0.1 },
+							{ at: 2.3 + 0.05 * i, amp: 1.4, width: 0.1 },
+						],
+						{ amp: 0.5, n: 1, phase: i },
+					),
+				},
+			]),
+		),
+	},
+};
+// zero-g: everything that hangs drifts further and slower, and the chews float
+const flutterFloat = {
+	bones: {
+		banana: { rotate: bumpKeys([{ at: 0.8, amp: 11, width: 0.4 }, { at: 3.1, amp: 8, width: 0.4 }], { amp: 5, n: 1, phase: 0.3 }) },
+		hose: { rotate: loopKeys(8, 1, 0.8) },
+		// weightless: everything loose drifts, slowly and out of step
+		...Object.fromEntries(PENS.map((p, i) => [p.name, { rotate: loopKeys(4, 1, 0.9 * i) }])),
+		...Object.fromEntries(TUBES.map((t, i) => [t.name, { rotate: loopKeys(3, 1, 1.7 + i) }])),
+	},
+};
+
+// THE SPARKLE, on track 2, forever (Mascot.svelte): the chest windows breathing
+// out of step (whole cycles in the loop, so it closes), and one glint across the
+// badge per loop. Its own track and its own, longer loop, so the glint comes by
+// every ~10s rather than with every flutter, and a flutter / flutter_float swap
+// does not restart the lights.
+const SPARKLE_LOOP = 9.6;
+const hex2 = (v) => Math.round(Math.max(0, Math.min(1, v)) * 255).toString(16).padStart(2, '0');
+const sparkle = {
+	slots: {
+		...Object.fromEntries(
+			WINDOWS.map((w, i) => [
+				`vial_glow_${i + 1}`,
+				{
+					rgba: Array.from({ length: 49 }, (_, k) => {
+						const t = (SPARKLE_LOOP * k) / 48;
+						const a = 0.18 + 0.32 * (0.5 + 0.5 * Math.sin((2 * Math.PI * (3 + i) * t) / SPARKLE_LOOP + 1.9 * i));
+						return { time: +t.toFixed(4), color: `${w.tint}${hex2(a)}` };
+					}),
+				},
+			]),
+		),
+		badge_glint: {
+			attachment: [
+				{ time: 0, name: null },
+				...Array.from({ length: GLINT_FRAMES }, (_, f) => ({ time: +(3 + 0.05 * f).toFixed(3), name: `fx_badge_glint_${f}` })),
+				{ time: +(3 + 0.05 * GLINT_FRAMES).toFixed(3), name: null },
+				{ time: SPARKLE_LOOP, name: null },
+			],
+		},
+	},
+};
+
+// THE PANEL FLARES on his reactions: sampled from a sum of quick pulses, so
+// pulses that overlap add up rather than cut each other off.
+const flashKeys = (peaks, duration) =>
+	Array.from({ length: Math.round(duration / 0.02) + 1 }, (_, k) => {
+		const t = k * 0.02;
+		let a = 0;
+		for (const [at, amp] of peaks) {
+			const u = t - at;
+			a += amp * (u < 0 ? Math.exp(-((u / 0.04) ** 2)) : Math.exp(-u / 0.16));
+		}
+		return { time: +t.toFixed(3), color: `fff0d8${hex2(Math.min(1, a) * 0.8)}` };
+	});
+
+// the lights sit on the chest panel (right after the trunk, under the tubes
+// standing in front of the windows); the glint right over the badge's piece
+slots.splice(slots.findIndex((sl) => sl.name === 'torso_3_trunk') + 1, 0, ...SUIT_FX_SLOTS.afterTrunk);
+slots.splice(slots.findIndex((sl) => sl.name === 'torso_5_decoration') + 1, 0, ...SUIT_FX_SLOTS.afterBadge);
+// the pens BEHIND their holder (torso_5), the tubes over the layer they came from
+slots.splice(slots.findIndex((sl) => sl.name === 'torso_5_decoration'), 0, ...PENS.map((p) => pieceSlot(p.name)));
+slots.splice(slots.findIndex((sl) => sl.name === 'torso_5_decoration') + 1, 0, pieceSlot('tubes5'));
+slots.splice(slots.findIndex((sl) => sl.name === 'torso_4_decoration') + 1, 0, pieceSlot('tube4a'), pieceSlot('tube4b'));
+
 // ── atlas ───────────────────────────────────────────────────────────────────
 // Shelf packing, tallest first. 19 pieces into one page — nothing here justifies
 // a real bin packer, and a predictable layout is easier to eyeball when a region
@@ -504,7 +1013,11 @@ const placed = [];
 		const img = PNG.sync.read(fs.readFileSync(prop.file));
 		return { name: prop.name, file: prop.file, w: img.width, h: img.height, external: true };
 	});
-	const sorted = [...drawOrder.filter((l) => boneOf[l.name]), ...propImages].sort(
+	const layers = drawOrder
+		.filter((l) => boneOf[l.name])
+		.map((l) => (LAYER_FILE[l.name] ? { ...l, file: LAYER_FILE[l.name], external: true } : l));
+	const pieces = CUT_PIECES.map((c) => ({ name: c.name, file: c.file, w: c.box.x1 - c.box.x0, h: c.box.y1 - c.box.y0, external: true }));
+	const sorted = [...layers, ...propImages, ...FX, ...pieces].sort(
 		(a, b) => b.h - a.h,
 	);
 	let x = PAD, y = PAD, shelf = 0;
@@ -626,8 +1139,15 @@ fs.writeFileSync(path.join(OUT, 'monkey.atlas'), atlas);
 // pushed a lobe out through the jacket. That was never the drawing's limit. It
 // is worth remembering the next time a budget comes out suspiciously small — the
 // first suspect is the joint, not the art.
-const MAX_SHOULDER_L = 32;
-const MAX_SHOULDER_R = 27;
+//
+// RAISED 2026-09-26 WITH THE WEIGHTED SLEEVES (see WEIGHTED SLEEVES above). As
+// rigid plates the sleeves measured outward 30 (R) / 35 (L) and shipped at 27 /
+// 32. As meshes, rendered through the real runtime (render_monkey_runtime.mjs
+// on the --sweep build, zoomed on each shoulder, rigid and mesh side by side),
+// the cap stays seated and the armpit closed to ~45 (R) / ~50 (L). Shipped at
+// about 80% of that, with check_monkey_rig.mjs passing every animation.
+const MAX_SHOULDER_L = 42;
+const MAX_SHOULDER_R = 36;
 const MAX_ELBOW = 22;
 //
 // A HANGING FOREARM STAYS PLUMB
@@ -1544,6 +2064,611 @@ const throwit = {
 	},
 };
 
+// ── SPACEWALK ───────────────────────────────────────────────────────────────
+//
+// His resting state for the whole of the free spins (Mascot.svelte loops it in
+// place of idle there, inside the zero-g float, and cuts to the cheer only for
+// a big win). Asked for 2026-09-26 as "like Boat's march, so floating in the
+// feature feels more like space".
+//
+// It is Go Bananas Boat's march-in-place, slowed and emptied of weight:
+//
+//   - the SAME leg mechanism. From the front a knee cannot come up by rotating
+//     anything — rotating the thigh swings the leg out sideways and parts the
+//     hip — so the thigh bone is SCALED shorter and the boot rises as if the
+//     knee came toward the camera. 0.85 at the top of a stride: the boot clears
+//     plainly and the leg still reads as a leg.
+//   - but slow strides (0.9s against the march's 0.5) with long, soft holds,
+//     because nothing is pushing back.
+//   - NO landing bob. The march drops the hip as each boot lands; there is no
+//     floor here to land on. Instead each stride lifts him a little, and he
+//     sinks back slowly — treading space.
+//   - a lazy swimming swing of the arms, opposite to the legs, trailing further
+//     than the march's (the forearm lags the shoulder by 0.18s, not 0.08).
+//   - the head lags the body.
+//
+// All inside the measured budgets (shoulders 32/27, arms 10 here), nothing
+// swapped, nothing rotated below the hip. IT LOOPS, so every key at 0 and at the
+// end is the rest pose and no key sits past the end.
+const WALK_STEPS = 4;
+const WALK_STEP = 0.9;
+const WALK_LIFT = 0.85; // thigh length at the top of a stride
+const WALK_SWING = 14; // degrees of arm swing (10 before the weighted sleeves raised the shoulder budget)
+const WALK_DRAG = 0.18;
+const SPACEWALK_LOOP = WALK_STEPS * WALK_STEP;
+const strideAt = (i) => +(i * WALK_STEP).toFixed(3);
+const WALK_LEFT = [0, 2];
+const WALK_RIGHT = [1, 3];
+
+// one leg: rises slowly on its own strides, hangs, drifts back
+const walkLeg = (mine) => [
+	{ time: 0, x: 1, y: 1 },
+	...mine.flatMap((i) => [
+		...(strideAt(i) > 0 ? [{ time: strideAt(i), x: 1, y: 1 }] : []),
+		{ time: +(strideAt(i) + 0.38).toFixed(3), x: 1.02, y: WALK_LIFT },
+		{ time: +(strideAt(i) + 0.52).toFixed(3), x: 1.02, y: WALK_LIFT + 0.01 },
+		{ time: +(strideAt(i) + 0.86).toFixed(3), x: 1, y: 1 },
+	]),
+	{ time: SPACEWALK_LOOP, x: 1, y: 1 },
+];
+// the boot comes a little nearer the lens as it rises
+const walkFoot = (mine) => [
+	{ time: 0, x: 1, y: 1 },
+	...mine.flatMap((i) => [
+		...(strideAt(i) > 0 ? [{ time: strideAt(i), x: 1, y: 1 }] : []),
+		{ time: +(strideAt(i) + 0.42).toFixed(3), x: 1.06, y: 1.06 },
+		{ time: +(strideAt(i) + 0.86).toFixed(3), x: 1, y: 1 },
+	]),
+	{ time: SPACEWALK_LOOP, x: 1, y: 1 },
+];
+// arm swings out while the OPPOSITE leg rises; `out` is the outward sign
+// (negative on the left, positive on the right — OUT_L / OUT_R above)
+const walkSwing = (out, mine) => [
+	{ time: 0, value: 0 },
+	...[0, 1, 2, 3].map((i) => ({
+		time: +(strideAt(i) + 0.45).toFixed(3),
+		value: mine.includes(i) ? out * WALK_SWING : -out * WALK_SWING * 0.45,
+	})),
+	{ time: SPACEWALK_LOOP, value: 0 },
+];
+const walkHang = (keys) =>
+	keys.map((k) =>
+		k.time === 0 || k.time === SPACEWALK_LOOP
+			? { time: k.time, value: 0 }
+			: { time: +(k.time + WALK_DRAG).toFixed(3), value: hang(k.value) },
+	);
+const walkArmR = walkSwing(1, WALK_LEFT);
+const walkArmL = walkSwing(-1, WALK_RIGHT);
+
+const spacewalk = {
+	bones: {
+		legL: { scale: walkLeg(WALK_LEFT) },
+		legR: { scale: walkLeg(WALK_RIGHT) },
+		legL_foot: { scale: walkFoot(WALK_LEFT) },
+		legR_foot: { scale: walkFoot(WALK_RIGHT) },
+		// each stride lifts him (y is UP here), and he sinks back slowly
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				...[0, 1, 2, 3].flatMap((i) => [
+					{ time: +(strideAt(i) + 0.4).toFixed(3), x: WALK_LEFT.includes(i) ? -1.5 : 1.5, y: 5 },
+					{ time: +(strideAt(i) + 0.88).toFixed(3), x: 0, y: 1 },
+				]),
+				{ time: SPACEWALK_LOOP, x: 0, y: 0 },
+			],
+		},
+		// leaning off the rising leg, softly
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				...[0, 1, 2, 3].map((i) => ({
+					time: +(strideAt(i) + 0.45).toFixed(3),
+					value: WALK_LEFT.includes(i) ? -1.8 : 1.8,
+				})),
+				{ time: SPACEWALK_LOOP, value: 0 },
+			],
+		},
+		// the head follows the lean a beat late, the other way: it is floating
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				...[0, 1, 2, 3].map((i) => ({
+					time: +(strideAt(i) + 0.7).toFixed(3),
+					value: WALK_LEFT.includes(i) ? 2 : -2,
+				})),
+				{ time: SPACEWALK_LOOP, value: 0 },
+			],
+		},
+		armR: { rotate: walkArmR },
+		armL: { rotate: walkArmL },
+		armR_fore: { rotate: walkHang(walkArmR) },
+		armL_fore: { rotate: walkHang(walkArmL) },
+	},
+};
+
+// ── THREE MORE REACTIONS (asked for 2026-09-26: "符合人體工學, 節奏順暢") ──────
+//
+// Every angle below stays inside the budgets measured above — shoulders out to
+// MAX_SHOULDER_L / _R, in to the chest beat's reach, a HANGING forearm plumb
+// (hang()) and a DRIVEN one bending with its shoulder, the thighs foreshortened
+// no further than the cheer's crouch — and check_monkey_rig.mjs asserts it
+// (the BUDGETS table there), along with no vertex jumping between frames.
+// Each is carried by the BODY first, as everything on this drawing must be: a
+// gather, a drive, an overshoot, a settle, with the arms trailing by DRAG and
+// the head a beat behind the torso.
+
+// TUCK — the zero-g flip (Mascot.svelte turns the whole float a full circle
+// while this plays; the skeleton only has to curl up and open out again). A
+// real somersault pulls the knees in to spin faster and opens out to stop: so a
+// gather, the tuck held through the fast half of the turn, and an opening that
+// lands on the turn's end.
+// 1.15s: Mascot.svelte's FLIP_MS turns the float over the same span
+const tuck = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.16, x: 0, y: -10 }, // gather
+				{ time: 0.36, x: 0, y: 14 }, // the knees come up, the hips with them
+				{ time: 0.8, x: 0, y: 12 },
+				{ time: 1.0, x: 0, y: -4 }, // opening out
+				{ time: 1.15, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.16, x: 1.06, y: 0.93 },
+				{ time: 0.36, x: 1.07, y: 0.9 }, // curled
+				{ time: 0.8, x: 1.06, y: 0.91 },
+				{ time: 1.0, x: 0.97, y: 1.05 }, // opened long
+				{ time: 1.15, x: 1, y: 1 },
+			],
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.36, value: 3 },
+				{ time: 0.8, value: 2 },
+				{ time: 1.15, value: 0 },
+			],
+		},
+		// the knees pulled in: both thighs foreshortened, one a hair after the other
+		legL: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.16, x: 1.02, y: 0.95 },
+				{ time: 0.38, x: 1.03, y: 0.85 },
+				{ time: 0.8, x: 1.03, y: 0.86 },
+				{ time: 1.02, x: 0.99, y: 1.03 },
+				{ time: 1.15, x: 1, y: 1 },
+			],
+		},
+		legR: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.18, x: 1.02, y: 0.95 },
+				{ time: 0.4, x: 1.03, y: 0.85 },
+				{ time: 0.82, x: 1.03, y: 0.86 },
+				{ time: 1.04, x: 0.99, y: 1.03 },
+				{ time: 1.15, x: 1, y: 1 },
+			],
+		},
+		// chin down into the tuck, up as he opens
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.22, value: 6 },
+				{ time: 0.82, value: 7 },
+				{ time: 1.04, value: -5 },
+				{ time: 1.15, value: 0 },
+			],
+		},
+		// arms drawn in across the body (inward: + on the left, - on the right),
+		// the elbows DRIVEN — folding the fists in — then thrown out to stop the turn
+		armL: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.2, value: 20 },
+				{ time: 0.8, value: 22 },
+				{ time: 1.0, value: OUT_L * 0.6 },
+				{ time: 1.15, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.2 + LEAD, value: -14 },
+				{ time: 0.8, value: -15 },
+				{ time: 1.0 + LEAD, value: OUT_R * 0.6 },
+				{ time: 1.15, value: 0 },
+			],
+		},
+		armL_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.2 + DRAG, value: 18 },
+				{ time: 0.8, value: 20 },
+				{ time: 1.0 + DRAG, value: hang(OUT_L * 0.6) },
+				{ time: 1.15, value: 0 },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.2 + DRAG + LEAD, value: -16 },
+				{ time: 0.8, value: -17 },
+				{ time: 1.0 + DRAG, value: hang(OUT_R * 0.6) },
+				{ time: 1.15, value: 0 },
+			],
+		},
+	},
+};
+
+// PUSH — the reels growing (Mascot.svelte fires it as the markers let go). No
+// hand of this drawing can go over his head, so this is not a push UP: it is
+// the capsule being forced open from the inside. He gathers low with his fists
+// in at the chest, DRIVES up through the legs with both arms thrown out to the
+// sides — the walls going — on the beat the marker releases (ReelGrow's coil is
+// 300ms), holds it, and claps twice as the reels finish climbing.
+const PUSH_DRIVE = 0.32;
+const CLAP_1 = 0.84;
+const CLAP_2 = 1.06;
+const push = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.2, x: 0, y: -16 }, // gather low
+				{ time: PUSH_DRIVE + 0.06, x: 0, y: 14 }, // drive up
+				{ time: 0.62, x: 0, y: 3 },
+				{ time: CLAP_1, x: 0, y: -4 },
+				{ time: CLAP_2, x: 0, y: -3 },
+				{ time: 1.4, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.2, x: 1.08, y: 0.9 },
+				{ time: PUSH_DRIVE + 0.06, x: 0.93, y: 1.1 },
+				{ time: 0.62, x: 1.01, y: 1.0 },
+				{ time: CLAP_1, x: 1.03, y: 0.97 },
+				{ time: CLAP_1 + 0.1, x: 1, y: 1 },
+				{ time: CLAP_2, x: 1.03, y: 0.97 },
+				{ time: 1.4, x: 1, y: 1 },
+			],
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.2, value: 2 },
+				{ time: PUSH_DRIVE + 0.1, value: -2 },
+				{ time: 0.7, value: 0 },
+				{ time: 1.4, value: 0 },
+			],
+		},
+		legL: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.2, x: 1.03, y: 0.94 },
+				{ time: PUSH_DRIVE + 0.06, x: 0.99, y: 1.03 },
+				{ time: 0.62, x: 1, y: 1 },
+				{ time: 1.4, x: 1, y: 1 },
+			],
+		},
+		legR: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.22, x: 1.03, y: 0.94 },
+				{ time: PUSH_DRIVE + 0.08, x: 0.99, y: 1.03 },
+				{ time: 0.64, x: 1, y: 1 },
+				{ time: 1.4, x: 1, y: 1 },
+			],
+		},
+		// eyes on the work, then chin up as it gives
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.22, value: 5 },
+				{ time: PUSH_DRIVE + 0.14, value: -7 },
+				{ time: 0.7, value: -2 },
+				{ time: CLAP_1 + 0.04, value: 2 },
+				{ time: CLAP_2 + 0.04, value: 2 },
+				{ time: 1.4, value: 0 },
+			],
+		},
+		// in to the chest, out to the walls, in twice to clap
+		armL: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.2, value: 16 },
+				{ time: PUSH_DRIVE + 0.1, value: OUT_L + 4 },
+				{ time: 0.6, value: OUT_L * 0.8 },
+				{ time: CLAP_1 - 0.1, value: OUT_L * 0.4 },
+				{ time: CLAP_1, value: 24 },
+				{ time: CLAP_1 + 0.1, value: 6 },
+				{ time: CLAP_2, value: 24 },
+				{ time: CLAP_2 + 0.12, value: 8 },
+				{ time: 1.4, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.2 + LEAD, value: -12 },
+				{ time: PUSH_DRIVE + 0.1 + LEAD, value: OUT_R - 4 },
+				{ time: 0.6, value: OUT_R * 0.8 },
+				{ time: CLAP_1 - 0.1, value: OUT_R * 0.4 },
+				{ time: CLAP_1, value: -16 },
+				{ time: CLAP_1 + 0.1, value: -4 },
+				{ time: CLAP_2, value: -16 },
+				{ time: CLAP_2 + 0.12, value: -6 },
+				{ time: 1.4, value: 0 },
+			],
+		},
+		// driven in (fists folded to the chest and together for the claps),
+		// hanging plumb while the arms are out
+		armL_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.2 + DRAG, value: 16 },
+				{ time: PUSH_DRIVE + 0.1 + DRAG, value: hang(OUT_L + 4) },
+				{ time: 0.6 + DRAG, value: hang(OUT_L * 0.8) },
+				{ time: CLAP_1, value: 20 },
+				{ time: CLAP_1 + 0.1, value: 8 },
+				{ time: CLAP_2, value: 20 },
+				{ time: CLAP_2 + 0.14, value: 6 },
+				{ time: 1.4, value: 0 },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.2 + DRAG + LEAD, value: -14 },
+				{ time: PUSH_DRIVE + 0.1 + DRAG + LEAD, value: hang(OUT_R - 4) },
+				{ time: 0.6 + DRAG, value: hang(OUT_R * 0.8) },
+				{ time: CLAP_1, value: -18 },
+				{ time: CLAP_1 + 0.1, value: -6 },
+				{ time: CLAP_2, value: -18 },
+				{ time: CLAP_2 + 0.14, value: -5 },
+				{ time: 1.4, value: 0 },
+			],
+		},
+	},
+};
+
+// IDLE BREAKS — a waiting player gets a small bit of business every so often
+// (Mascot.svelte, base game only, after a stretch with no spin). Four, picked
+// at random, never the same twice running; each one small enough to be glanced
+// at rather than watched, and each ending exactly at rest so idle picks up
+// under it without a seam.
+
+// 1. something passes overhead: he looks up, follows it across, shrugs.
+const lookup = {
+	bones: {
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.4, value: 4.5 }, // leaning back to look
+				{ time: 1.1, value: -4.5 }, // following it across
+				{ time: 1.5, value: -1 },
+				{ time: 2.2, value: 0 },
+			],
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 1.5, x: 1, y: 1 },
+				{ time: 1.62, x: 1.05, y: 0.93 }, // the shrug
+				{ time: 1.82, x: 0.99, y: 1.02 },
+				{ time: 2.2, x: 1, y: 1 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.5, value: -11 }, // chin up
+				{ time: 1.1, value: -8 },
+				{ time: 1.5, value: 0 },
+				{ time: 1.66, value: 3 },
+				{ time: 2.2, value: 0 },
+			],
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.5, x: -7, y: 5 },
+				{ time: 1.1, x: 7, y: 5 },
+				{ time: 1.5, x: 0, y: 0 },
+				{ time: 2.2, x: 0, y: 0 },
+			],
+		},
+		// the shrug: both arms a little out and back, hanging
+		armL: { rotate: [{ time: 0, value: 0 }, { time: 1.5, value: 0 }, { time: 1.66, value: -16 }, { time: 1.95, value: 0 }, { time: 2.2, value: 0 }] },
+		armR: { rotate: [{ time: 0, value: 0 }, { time: 1.52, value: 0 }, { time: 1.68, value: 13 }, { time: 1.97, value: 0 }, { time: 2.2, value: 0 }] },
+		armL_fore: { rotate: [{ time: 0, value: 0 }, { time: 1.5 + DRAG, value: 0 }, { time: 1.66 + DRAG, value: hang(-16) }, { time: 2.0, value: 0 }, { time: 2.2, value: 0 }] },
+		armR_fore: { rotate: [{ time: 0, value: 0 }, { time: 1.52 + DRAG, value: 0 }, { time: 1.68 + DRAG, value: hang(13) }, { time: 2.02, value: 0 }, { time: 2.2, value: 0 }] },
+	},
+};
+
+// 2. a big stretch and a yawn: arms out wide and long, body long, head back,
+// a tremble at the top, and a slump out of it.
+const stretch = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.6, x: 0, y: 6 },
+				{ time: 1.3, x: 0, y: 6 },
+				{ time: 1.6, x: 0, y: -5 }, // slump
+				{ time: 2.4, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.6, x: 0.96, y: 1.06 },
+				{ time: 1.3, x: 0.96, y: 1.06 },
+				{ time: 1.6, x: 1.04, y: 0.95 },
+				{ time: 2.4, x: 1, y: 1 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.7, value: -10 }, // yawning, head back
+				{ time: 1.3, value: -9 },
+				{ time: 1.62, value: 4 },
+				{ time: 2.4, value: 0 },
+			],
+		},
+		armL: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.6, value: OUT_L * 0.9 },
+				{ time: 0.95, value: OUT_L * 0.9 + 1.5 }, // the tremble
+				{ time: 1.1, value: OUT_L * 0.9 - 1 },
+				{ time: 1.3, value: OUT_L * 0.9 },
+				{ time: 1.62, value: 4 },
+				{ time: 2.4, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.6 + LEAD, value: OUT_R * 0.9 },
+				{ time: 1.0, value: OUT_R * 0.9 - 1.5 },
+				{ time: 1.15, value: OUT_R * 0.9 + 1 },
+				{ time: 1.3, value: OUT_R * 0.9 },
+				{ time: 1.64, value: -3 },
+				{ time: 2.4, value: 0 },
+			],
+		},
+		// a stretch is a DRIVEN arm: the elbows straighten with the reach rather
+		// than hang, but only part way — a locked arm is the plank
+		armL_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.6 + DRAG, value: hang(OUT_L * 0.9) * 0.5 },
+				{ time: 1.3, value: hang(OUT_L * 0.9) * 0.5 },
+				{ time: 1.66, value: 4 },
+				{ time: 2.4, value: 0 },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.6 + DRAG + LEAD, value: hang(OUT_R * 0.9) * 0.5 },
+				{ time: 1.3, value: hang(OUT_R * 0.9) * 0.5 },
+				{ time: 1.68, value: -3 },
+				{ time: 2.4, value: 0 },
+			],
+		},
+	},
+};
+
+// 3. a wave at the player with the free (left) arm: the body leans toward us,
+// the arm goes out and the forearm swings three times about its hanging line.
+const wave = {
+	bones: {
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.35, value: -3 },
+				{ time: 1.6, value: -3 },
+				{ time: 2.2, value: 0 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.4, value: 4 }, // a friendly tilt
+				{ time: 1.6, value: 3 },
+				{ time: 2.2, value: 0 },
+			],
+		},
+		// the whole arm bobs a little with each swing, so the wave reads at the
+		// shoulder as well as the wrist — this arm cannot lift the hand, so the
+		// swing has to carry it
+		armL: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.35, value: -38 },
+				...[0, 1, 2].flatMap((i) => [
+					{ time: 0.62 + i * 0.3, value: -40 },
+					{ time: 0.77 + i * 0.3, value: -35 },
+				]),
+				{ time: 1.6, value: -36 },
+				{ time: 2.1, value: 0 },
+				{ time: 2.2, value: 0 },
+			],
+		},
+		// the swing about the hanging line: -13 / +10 around hang(-38) = 27,
+		// so 14..37 — inside the elbow's 40
+		armL_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.35 + DRAG, value: hang(-38) },
+				...[0, 1, 2].flatMap((i) => [
+					{ time: 0.62 + i * 0.3 + 0.04, value: hang(-38) - 13 },
+					{ time: 0.77 + i * 0.3 + 0.04, value: hang(-38) + 10 },
+				]),
+				{ time: 1.6 + DRAG, value: hang(-36) },
+				{ time: 2.2, value: 0 },
+			],
+		},
+		// the other arm stays down, a small counter-swing so it is not a post
+		armR: { rotate: [{ time: 0, value: 0 }, { time: 0.4, value: -4 }, { time: 1.6, value: -3 }, { time: 2.2, value: 0 }] },
+	},
+};
+
+// 4. tapping a foot: the weight on the left leg, the right boot tapping four
+// times, the head nodding with it.
+const TAPS = [0.35, 0.7, 1.05, 1.4];
+const foottap = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.25, x: -8, y: -3 },
+				{ time: 1.7, x: -8, y: -3 },
+				{ time: 2.0, x: 0, y: 0 },
+			],
+		},
+		legR: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				...TAPS.flatMap((t) => [
+					{ time: t - 0.1, x: 1.02, y: 0.91 }, // the toe up
+					{ time: t, x: 1, y: 1 }, // and down
+				]),
+				{ time: 2.0, x: 1, y: 1 },
+			],
+		},
+		legR_foot: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				...TAPS.flatMap((t) => [
+					{ time: t - 0.1, x: 1.07, y: 1.07 },
+					{ time: t, x: 1, y: 1 },
+				]),
+				{ time: 2.0, x: 1, y: 1 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				...TAPS.flatMap((t) => [
+					{ time: t, value: 4 },
+					{ time: t + 0.17, value: 0 },
+				]),
+				{ time: 2.0, value: 0 },
+			],
+		},
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.25, value: 2.5 },
+				{ time: 1.7, value: 2.5 },
+				{ time: 2.0, value: 0 },
+			],
+		},
+	},
+};
+
 // ── interpolation ───────────────────────────────────────────────────────────
 //
 // THIS IS WHERE THE JERK CAME FROM, NOT THE KEYFRAME VALUES
@@ -1801,6 +2926,18 @@ const sweeps = SWEEP
 		)
 	: {};
 
+// the panel flare, keyed into the reactions (track 0)
+{
+	const withFlash = (anim, peaks, duration) => {
+		anim.slots = { ...(anim.slots ?? {}), panel_flash: { rgba: flashKeys(peaks, duration) } };
+	};
+	withFlash(cheer, [[0.42, 1], [0.66, 0.8], [1.02, 0.9], [1.5, 0.5]], 2.05);
+	withFlash(nod, [[0.24, 0.45]], 1.0);
+	withFlash(chestbeat, beats.map((t, i) => [t, 0.75 + 0.05 * i]), BEAT_END + 0.4);
+	withFlash(push, [[PUSH_DRIVE + 0.06, 1], [CLAP_1, 0.6], [CLAP_2, 0.6]], 1.4);
+	withFlash(tuck, [[0.5, 0.8]], 1.15);
+}
+
 const skeleton = {
 	skeleton: {
 		hash: 'gb-monkey',
@@ -1814,13 +2951,23 @@ const skeleton = {
 	},
 	bones,
 	slots,
+	physics,
 	skins: [{ name: 'default', attachments }],
 	animations: Object.fromEntries(
-			Object.entries({ idle, cheer, chestbeat, nod, throwit, ...sweeps }).map(([name, a]) => [
+			Object.entries({ idle, cheer, chestbeat, nod, throwit, spacewalk, tuck, push, lookup, stretch, wave, foottap, ...sweeps }).map(([name, a]) => [
 				name,
-				// idle is the only one that loops, so it is the only one whose ends
-				// have to meet.
-				smoothAnimation(fuseDeadJoints(a, name), name === 'idle' ? IDLE_LOOP : undefined),
+				// idle and the spacewalk loop, so they are the ones whose ends have
+				// to meet.
+				smoothAnimation(
+					fuseDeadJoints(a, name),
+					name === 'idle' ? IDLE_LOOP : name === 'spacewalk' ? SPACEWALK_LOOP : undefined,
+				),
+			]).concat([
+				// track 1's loops key only the hanging bones: nothing to fuse
+				['flutter', smoothAnimation(flutter, FLUTTER_LOOP)],
+				['flutter_float', smoothAnimation(flutterFloat, FLUTTER_LOOP)],
+				// track 2: the chest lights and the badge glint
+				['sparkle', sparkle],
 			]),
 		),
 };

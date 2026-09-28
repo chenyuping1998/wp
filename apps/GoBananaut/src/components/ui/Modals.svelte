@@ -5,8 +5,10 @@
 	// which we override locally with WildParty-specific content.
 	import ModalError from 'components-ui-html/src/components/ModalError.svelte';
 	import ModalBetMenu from 'components-ui-html/src/components/ModalBetMenu.svelte';
-	import ModalBuyBonus from 'components-ui-html/src/components/ModalBuyBonus.svelte';
-	import ModalBuyBonusConfirm from 'components-ui-html/src/components/ModalBuyBonusConfirm.svelte';
+	// the feature-buy menu is this game's own (space cards, GoBoomana's layout)
+	import ModalBuyBonus from './ModalBuyBonus.svelte';
+	// ...and so is its confirmation, which shows the chosen card again
+	import ModalBuyBonusConfirm from './ModalBuyBonusConfirm.svelte';
 	import ModalAutoSpin from 'components-ui-html/src/components/ModalAutoSpin.svelte';
 	import ModalAutoSpinMessage from 'components-ui-html/src/components/ModalAutoSpinMessage.svelte';
 	// Plain notifications — the insufficient-balance notice the bet button

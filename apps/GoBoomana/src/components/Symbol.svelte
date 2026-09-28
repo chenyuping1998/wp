@@ -4,6 +4,8 @@
 	import SymbolSpine from './SymbolSpine.svelte';
 	import SymbolSprite from './SymbolSprite.svelte';
 	import SymbolWinAnim from './SymbolWinAnim.svelte';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import { MESH_WINS, MESH_LANDS } from '../game/meshWin';
 	import { getSymbolInfo } from '../game/utils';
 	import type { SymbolState, RawSymbol } from '../game/types';
 	import { getContext } from '../game/context';
@@ -31,11 +33,38 @@
 	const symbolInfo = $derived(getSymbolInfo({ rawSymbol: props.rawSymbol, state: props.state }));
 	const isSprite = $derived(symbolInfo.type === 'sprite');
 	const isWin = $derived(props.state === 'win');
+	// Symbols whose win is a deforming mesh (game/meshWin/*), the GoBananubis
+	// method. The rest keep GB100's win moves (SymbolWinAnim) until they get one.
+	const isMeshWin = $derived(isWin && props.rawSymbol.name in MESH_WINS);
+	// The dynamite's landing is a mesh too (meshWin/landB.ts): the bundle hits
+	// and squashes, the fuse whips and fizzes. SymbolMeshWin plays any spec;
+	// this one reports the land complete instead of a win.
+	const isMeshLand = $derived(props.state === 'land' && props.rawSymbol.name in MESH_LANDS);
 
 </script>
 
 {#snippet body(oncomplete: (() => void) | undefined)}
-	{#if isSprite && isWin}
+	{#if isMeshLand}
+		<SymbolMeshWin
+			{symbolInfo}
+			symbolName={props.rawSymbol.name}
+			spec={MESH_LANDS[props.rawSymbol.name]}
+			showWinFrame={false}
+			x={0}
+			y={0}
+			{oncomplete}
+		/>
+	{:else if isMeshWin}
+		<SymbolMeshWin
+			{symbolInfo}
+			symbolName={props.rawSymbol.name}
+			reel={props.reelIndex}
+			showWinFrame={props.rawSymbol.name !== 'S'}
+			x={0}
+			y={0}
+			{oncomplete}
+		/>
+	{:else if isSprite && isWin}
 		<!-- Win state for sprite symbols: GB100's per-symbol win move -->
 		<SymbolWinAnim {symbolInfo} symbolName={props.rawSymbol.name} x={0} y={0} {oncomplete} />
 	{:else if isSprite}

@@ -143,7 +143,23 @@ const material = ({ planks, brushed, patina }) => {
 	return out;
 };
 
-const banner = ({ text, a, b, rim, stars, gold, planks, brushed, patina }) => `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+// The tier name, as its two text elements (the offset shadow and the face).
+// `only`: undefined draws every letter; a number draws just that letter, the
+// rest laid out but invisible, so it sits exactly where it sits in the word —
+// kerning and all — which is how the letters are cut for the hop (below).
+const tspans = (text, only) =>
+	[...text]
+		// a space is never wrapped: a whitespace-only tspan is collapsed away,
+		// which shortened the line, re-centred it and put every cut letter in
+		// the wrong place (the reassembled BIG WIN read "BI G WIN")
+		.map((ch, i) => (ch === ' ' || only === undefined || i === only ? ch : `<tspan fill-opacity="0" stroke-opacity="0">${ch}</tspan>`))
+		.join('');
+const titleSvg = (text, gold, only) => `<text x="${W / 2 + 5}" y="235" font-family="${BANNER_FONT}" font-size="${TIER_SIZE}" text-anchor="middle" xml:space="preserve" fill="#1a0e02" opacity="0.55">${tspans(text, only)}</text>
+<text x="${W / 2}" y="230" font-family="${BANNER_FONT}" font-size="${TIER_SIZE}" text-anchor="middle" xml:space="preserve" fill="url(#tierFace)" stroke="${gold ? '#fff3c4' : '#54330a'}" stroke-width="7" paint-order="stroke">${tspans(text, only)}</text>`;
+
+// part: 'full' (the plaque as it always was), 'plate' (the plaque without its
+// name) or a letter index (that letter alone, on nothing)
+const banner = ({ text, a, b, rim, stars, gold, planks, brushed, patina }, part = 'full') => `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
 <defs>
 ${surfaceDefs('sf')}
 	<linearGradient id="plate" x1="0" y1="0" x2="0.3" y2="1">
@@ -174,6 +190,7 @@ ${surfaceDefs('sf')}
 		<stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
 	</radialGradient>
 </defs>
+<g${typeof part === 'number' ? ' display="none"' : ''}>
 <!-- the material -->
 <rect x="34" y="34" width="${W - 68}" height="${H - 68}" rx="30" fill="url(#plate)" stroke="#17120a" stroke-width="8"/>
 ${finishRect(34, 34, W - 68, H - 68, 30, 'sf', CANVAS_FINISH)}
@@ -191,19 +208,75 @@ ${anchor()}
 <!-- dark centre well where the amount rolls -->
 <rect x="120" y="286" width="${W - 240}" height="170" rx="20" fill="url(#inner)"/>
 <rect x="120" y="286" width="${W - 240}" height="170" rx="20" fill="none" stroke="url(#gold)" stroke-width="4"/>
+</g>
 <!-- Tier name in the game's display face. Titan One is single-weight, so no
      font-weight is requested — asking for 900 risks resvg failing the match and
      silently substituting a system face. -->
-<text x="${W / 2 + 5}" y="235" font-family="${BANNER_FONT}" font-size="${TIER_SIZE}" text-anchor="middle" fill="#1a0e02" opacity="0.55">${text}</text>
-<text x="${W / 2}" y="230" font-family="${BANNER_FONT}" font-size="${TIER_SIZE}" text-anchor="middle" fill="url(#tierFace)" stroke="${gold ? '#fff3c4' : '#54330a'}" stroke-width="7" paint-order="stroke">${text}</text>
+${part === 'plate' ? '' : titleSvg(text, gold, typeof part === 'number' ? part : undefined)}
 </svg>`;
 
-for (const [alias, tier] of Object.entries(TIERS)) {
-	const resvg = new Resvg(banner(tier), {
+const render = (svg) =>
+	new Resvg(svg, {
 		fitTo: { mode: 'width', value: W },
 		font: { fontDirs: [FONT_DIR], loadSystemFonts: true, defaultFontFamily: 'Titan One' },
+	}).render();
+
+// THE NAME, CUT INTO LETTERS, so Win.svelte can make them hop in a wave as the
+// plaque lands (the letters are the loudest thing on it, and they were one
+// flat picture). Each tier writes:
+//   {alias}_plate.png     the plaque with no name on it
+//   {alias}_letters.png   every letter cropped to its ink, packed in a row
+// and all tiers' boxes go to src/game/winBannerLetters.ts: where each letter
+// sits on the 1000x560 plaque and where it is in its strip.
+const { PNG } = require('pngjs');
+const PAD = 4;
+const manifest = {};
+for (const [alias, tier] of Object.entries(TIERS)) {
+	fs.writeFileSync(path.join(OUT, `${alias}.png`), render(banner(tier)).asPng());
+	fs.writeFileSync(path.join(OUT, `${alias}_plate.png`), render(banner(tier, 'plate')).asPng());
+	const cuts = [];
+	[...tier.text].forEach((ch, i) => {
+		if (ch === ' ') return;
+		const img = render(banner(tier, i));
+		const px = img.pixels;
+		let x0 = W, y0 = H, x1 = -1, y1 = -1;
+		for (let y = 0; y < H; y++)
+			for (let x = 0; x < W; x++)
+				if (px[(y * W + x) * 4 + 3] > 2) {
+					if (x < x0) x0 = x;
+					if (x > x1) x1 = x;
+					if (y < y0) y0 = y;
+					if (y > y1) y1 = y;
+				}
+		if (x1 < 0) throw new Error(`${alias}: letter ${i} (${ch}) rendered nothing`);
+		cuts.push({ ch, px, x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 });
 	});
-	fs.writeFileSync(path.join(OUT, `${alias}.png`), resvg.render().asPng());
-	console.log('rendered', `${alias}.png`);
+	const SW = cuts.reduce((s, c) => s + c.w + PAD, PAD);
+	const SH = Math.max(...cuts.map((c) => c.h)) + PAD * 2;
+	const strip = new PNG({ width: SW, height: SH });
+	strip.data.fill(0);
+	let ax = PAD;
+	manifest[alias] = cuts.map((c) => {
+		for (let y = 0; y < c.h; y++)
+			for (let x = 0; x < c.w; x++) {
+				const s = ((c.y + y) * W + c.x + x) * 4, d = ((PAD + y) * SW + ax + x) * 4;
+				for (let k = 0; k < 4; k++) strip.data[d + k] = c.px[s + k];
+			}
+		const entry = { ch: c.ch, x: c.x, y: c.y, w: c.w, h: c.h, ax, ay: PAD };
+		ax += c.w + PAD;
+		return entry;
+	});
+	fs.writeFileSync(path.join(OUT, `${alias}_letters.png`), PNG.sync.write(strip));
+	console.log('rendered', `${alias}.png + plate + ${cuts.length} letters`);
 }
+fs.writeFileSync(
+	path.join(appRoot, 'src/game/winBannerLetters.ts'),
+	`// GENERATED by design/generate_win_banners.mjs — do not edit.
+// Where each letter of each tier's name sits on the 1000x560 plaque (x, y, w, h)
+// and where it is in that tier's {alias}_letters.png strip (ax, ay).
+export const WIN_BANNER_SIZE = { width: ${W}, height: ${H} };
+export type WinBannerLetter = { ch: string; x: number; y: number; w: number; h: number; ax: number; ay: number };
+export const WIN_BANNER_LETTERS: Record<string, WinBannerLetter[]> = ${JSON.stringify(manifest, null, '	')};
+`,
+);
 console.log('win banners written to', OUT);

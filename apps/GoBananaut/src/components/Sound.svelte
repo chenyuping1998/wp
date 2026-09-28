@@ -352,6 +352,58 @@
 		node.src.stop(end);
 	}
 
+	// ─── THE MASCOT'S VOICE: ON THE BEAT, NOT NEAR IT ───
+	//
+	// The roar is one clip carrying all six chest-beat grunts, cut to the
+	// animation's strikes (0.48s, then every 0.30s — generate_monkey_spine.mjs),
+	// and the impact stars are drawn on the same clock. It was played on an
+	// HTMLAudioElement, and an element starts when IT is ready: seek to 0, wait for
+	// data, then play. The chest beat is the rarest reaction in the game (4+
+	// Scatters or a bought round), so its element was almost never buffered — a
+	// phone ignores `preload` outright — and the grunts came in a few hundred ms
+	// behind the fists. Reported as "搥胸的音效沒有對到撞擊".
+	//
+	// So the voices are decoded into Web Audio buffers when the game loads and
+	// start the moment they are asked for. And if one is asked for before its
+	// decode has finished, it starts at the point the animation has reached — the
+	// offset since the request — not at its top: a grunt that has to be late is
+	// dropped, the rest land on their strikes.
+	const voiceBuffers: Partial<Record<CnSfxName, AudioBuffer>> = {};
+	const voiceLoads: Partial<Record<CnSfxName, Promise<AudioBuffer | null>>> = {};
+	const loadVoice = (name: CnSfxName) =>
+		(voiceLoads[name] ??= (async () => {
+			const ctx = getAudioCtx();
+			if (!ctx) return null;
+			try {
+				const res = await fetch(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
+				const buf = await ctx.decodeAudioData(await res.arrayBuffer());
+				voiceBuffers[name] = buf;
+				return buf;
+			} catch {
+				delete voiceLoads[name];
+				return null;
+			}
+		})());
+
+	function playVoice(name: CnSfxName, volumeScale = 1) {
+		const ctx = getAudioCtx();
+		if (!ctx) return playCnSfx(name, volumeScale); // no Web Audio: the element, late or not
+		const asked = performance.now();
+		const start = (buf: AudioBuffer) => {
+			const offset = (performance.now() - asked) / 1000;
+			if (offset >= buf.duration) return;
+			const gain = ctx.createGain();
+			gain.gain.value = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+			const src = ctx.createBufferSource();
+			src.buffer = buf;
+			src.connect(gain).connect(ctx.destination);
+			src.start(0, offset);
+		};
+		const buf = voiceBuffers[name];
+		if (buf) start(buf);
+		else loadVoice(name).then((b) => (b ? start(b) : playCnSfx(name, volumeScale)));
+	}
+
 	// Every voice, not just the first. A cue that can be playing on four elements
 	// has to be stopped on four, or "stop" leaves whatever the pool happened to be
 	// playing still running.
@@ -566,8 +618,7 @@
 		// one-shots: these are tied to animations that play at their own length
 		// whatever the spin speed, so a dropped one is a character opening his
 		// mouth in silence.
-		soundMascotVoice: ({ name }) =>
-			playCnSfx(`voice_${name}` as CnSfxName, MASCOT_VOICE_GAIN[name]),
+		soundMascotVoice: ({ name }) => playVoice(`voice_${name}` as CnSfxName, MASCOT_VOICE_GAIN[name]),
 		soundReelTensionStart: () => playCnLoop('reel_tension', 0.8),
 		// stopCnLoop, not stopCnSfx: playCnLoop moved this to Web Audio, and the
 		// element-based stopper would leave the buffer source looping forever.
@@ -597,6 +648,9 @@
 		// Fetch the one-shot sfx up front so the first play is in sync
 		// (an Audio element created lazily would stall on its first fetch).
 		(Object.keys(CN_SFX_FILES) as CnSfxName[]).forEach(getCnSfx);
+		// the mascot's voices go through Web Audio, decoded now (see playVoice)
+		loadVoice('voice_roar');
+		loadVoice('voice_effort');
 
 		if (stateBet.activeBetModeKey === HOLD_AND_SPIN_MODE_KEY) {
 			playBgm('freespin');
@@ -621,6 +675,8 @@
 			for (const name of Object.keys(loopNodes) as CnSfxName[]) stopCnLoop(name);
 			audioCtx?.close().catch(() => {});
 			audioCtx = null;
+			for (const name of Object.keys(voiceLoads) as CnSfxName[]) delete voiceLoads[name];
+			for (const name of Object.keys(voiceBuffers) as CnSfxName[]) delete voiceBuffers[name];
 		};
 	});
 </script>

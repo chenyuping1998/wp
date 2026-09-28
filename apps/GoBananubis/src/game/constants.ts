@@ -253,3 +253,13 @@ export const SCATTER_LAND_SOUND_MAP = {
 	4: 'sfx_scatter_stop_4',
 	5: 'sfx_scatter_stop_5',
 } as const;
+
+/**
+ * A cell in BOARD UNITS — -1..1 across, -1 (top) .. 1 (bottom) — which is how
+ * a `boardFrameImpact` says where a knock came from. `row` is the PADDED row
+ * index the reels report (1 is the top visible row).
+ */
+export const cellToBoardUnits = (reel: number, row: number): [number, number] => [
+	((reel + 0.5) / BOARD_DIMENSIONS.x) * 2 - 1,
+	((row - 0.5) / BOARD_DIMENSIONS.y) * 2 - 1,
+];

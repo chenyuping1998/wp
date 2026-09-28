@@ -1,5 +1,6 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
+import { stateConfig } from 'state-shared';
 
 // Jungle-commando bet bar: deep olive-canvas buttons with the same brass trim
 // as the reel frame and the free-spin plaques, plus the game's sans typeface.
@@ -75,10 +76,6 @@ setUiTheme({
 	buyBonusHighlightPad: 0,
 	buyBonusHighlightRadius: 0.107,
 
-	// Certification: the bet button must stay clickable when the balance is short
-	// and say so. Paired with <ModalMessage /> in ui/Modals.svelte — without that
-	// the press would raise a modal this app does not render.
-	betButtonMessageOnInsufficientBalance: true,
 
 	// gold on the olive plate, matching every other caption in the game
 	buyBonusLabelFill: 0xffd75e,
@@ -115,3 +112,11 @@ setUiTheme({
 		// be hollow when off and fill in when active — a static sprite can't toggle
 	},
 });
+
+// A player who cannot afford the bet is TOLD SO, on every route into a bet —
+// the Bet button, the spacebar and Autoplay. It used to be the uiTheme key
+// betButtonMessageOnInsufficientBalance; it moved to state-shared because the
+// Autoplay start button lives in a package that cannot see uiTheme. Paired with
+// <ModalMessage /> in ui/Modals.svelte — without that the press would raise a
+// modal this app does not render.
+stateConfig.explainInsufficientBalance = true;

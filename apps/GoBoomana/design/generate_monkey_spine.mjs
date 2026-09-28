@@ -73,24 +73,26 @@ const PROPS = [
 	},
 ];
 
-// PIECES THAT NEED A FRONT-DRAWING COPY.
+// PIECES THAT NEED A FRONT-DRAWING COPY: NONE, ON THIS ARTWORK.
 //
-// The artist drew this character with a front arm and a back arm: the left arm's
-// layers sit above the trunk in the PSD's stacking (z 14-15 against the trunk's
-// 9), the right arm's sit below it (z 7-8). In the rest pose that is exactly
-// right and it is what gives the pose its depth.
+// Inherited from GoBananasBoat's first rig, whose artist stacked the right arm
+// BEHIND the trunk — there, a fist swung across the chest slid behind it, so the
+// chest beat swapped the arm for copies drawn at the very end of the order.
 //
-// It also means the right fist CANNOT come to the front, at any angle. The chest
-// beat was swinging it a full 26 degrees inward and it was sliding behind the
-// chest the whole way — which is what "doesn't punch to the front" was. No
-// change to the rotation could have fixed it.
+// This PSD stacks it the other way. The whole right arm is already in front of
+// the trunk (forearm z 15, hand z 16, against the trunk's 2), and the SLEEVE
+// (right_arm_0_upper_arm, z 18) is drawn over the forearm, hiding the dark fur
+// painted at its top for the elbow seam. Copying only the forearm and the hand
+// to the end put them on top of the sleeve: through every right-arm strike a
+// slab of fur sat across the cuff, and the arm looked broken at the elbow —
+// the same fault Boat had, for the same reason (a copy promoted over the piece
+// that was meant to cover it).
 //
-// So each of these pieces gets a second slot at the very end of the draw order,
-// showing the same atlas region, with nothing attached in the setup pose. An
-// animation that needs the arm in front hides the original and shows the copy;
-// everything else is untouched and keeps the artist's depth. Same mechanism the
-// dynamite already uses, which is why there is no new machinery here.
-const FRONT_COPIES = ['right_arm_1_forearm', 'right_arm_2_hand'];
+// Nothing needs promoting here, so the list is empty and the chest beat plays
+// the arm in the artist's own stacking. The machinery stays for a future
+// artwork that does stack an arm behind the body — if one does, copy the WHOLE
+// limb in PSD order (forearm, hand, then the sleeve over them), as Boat now does.
+const FRONT_COPIES = [];
 const frontName = (name) => `${name}_front`;
 
 const meta = JSON.parse(fs.readFileSync(path.join(SRC, 'layers.json'), 'utf8'));
@@ -135,9 +137,24 @@ const RIG = [
 	// Explicit: these three sit inside the torso mass rather than at the top of a
 	// limb, so there is no piece edge to read them off.
 	{ name: 'hip', parent: 'root', at: [280, 498], match: null },
-	{ name: 'torso', parent: 'hip', at: [280, 470], match: /^torso_/ },
+	{ name: 'torso', parent: 'hip', at: [280, 470], match: /^torso_(?!2_decoration)/ },
 	// The neck, just under the jaw: the head nods and turns about this.
-	{ name: 'head', parent: 'torso', at: [283, 296], match: /^head_/ },
+	{ name: 'head', parent: 'torso', at: [283, 296], match: /^head_(?!4_hat|5_decoration)/ },
+
+	// THE THINGS THAT HANG OFF HIM (see "THE ACCESSORIES MOVE ON THEIR OWN" at
+	// the bottom): each is its own layer in the PSD, so each gets its own bone,
+	// pointed along the piece (`dir`) because rotation physics needs a direction
+	// and a length. Measured on the PSD, 2026-09-26.
+	//   helmet   on the middle of the head, pointing up to its crown
+	//   banana   gripped in his teeth at (290,226), its tip down at (214,302)
+	//   pocket   the tube standing up out of his chest pocket
+	{ name: 'helmet', parent: 'head', at: [296, 150], dir: [279, 21], match: /^head_4_hat$/ },
+	{ name: 'banana', parent: 'head', at: [290, 226], dir: [214, 302], match: /^head_5_decoration$/ },
+	{ name: 'pocket', parent: 'torso', at: [265, 380], dir: [263, 327], match: /^torso_2_decoration$/ },
+	// NOT the vials in his left chest pocket (torso_4_decoration). Tried
+	// 2026-09-27 and taken out: the pocket and all three vials are painted on
+	// the shirt itself, and that layer is only their caps laid over the top —
+	// on its own bone the caps slid off the vials they belong to.
 
 	// ARMS. `_0_upper_arm` is the sleeve and is correctly named on both sides.
 	//
@@ -151,6 +168,9 @@ const RIG = [
 	// lever-arm ratio, so an animation asking for a wrist flick still gets one out
 	// of the forearm instead of the arm going rigid.
 	{ name: 'armL', parent: 'torso', at: jointOf('left_arm_0_upper_arm'), match: /^left_arm_0/ },
+	// the sleeve's hem: no art of its own — the sleeve MESH hands its lower part
+	// to it (see "THE CLOTHES MOVE") — pointed down the sleeve for the physics
+	{ name: 'cuffL', parent: 'armL', at: [104, 370], dir: [98, 452], match: null },
 	{ name: 'armL_fore', parent: 'armL', at: jointOf('left_arm_2_hand'), match: /^left_arm_(1|2)/ },
 	{ name: 'armL_hand', parent: 'armL_fore', at: [114, 528], match: null, fuse: 'armL_fore' },
 	// Carries the thrown prop, so it follows the hand exactly rather than being
@@ -158,14 +178,18 @@ const RIG = [
 	{ name: 'prop', parent: 'armL_hand', at: [118, 548], match: null },
 
 	{ name: 'armR', parent: 'torso', at: jointOf('right_arm_0_upper_arm'), match: /^right_arm_0/ },
+	{ name: 'cuffR', parent: 'armR', at: [458, 327], dir: [470, 404], match: null },
 	{ name: 'armR_fore', parent: 'armR', at: jointOf('right_arm_2_hand'), match: /^right_arm_(1|2)/ },
 	{ name: 'armR_hand', parent: 'armR_fore', at: [470, 470], match: null, fuse: 'armR_fore' },
 
 	{ name: 'legL', parent: 'hip', at: jointOf('left_leg_0_thigh'), match: /^left_leg_0/ },
+	// the baggy lower half of each trouser leg, same idea as the cuffs
+	{ name: 'pantL', parent: 'legL', at: [214, 580], dir: [206, 672], match: null },
 	{ name: 'legL_calf', parent: 'legL', at: jointOf('left_leg_1_calf'), match: /^left_leg_1/ },
 	{ name: 'legL_foot', parent: 'legL_calf', at: jointOf('left_leg_2_foot'), match: /^left_leg_2/ },
 
 	{ name: 'legR', parent: 'hip', at: jointOf('right_leg_0_thigh'), match: /^right_leg_0/ },
+	{ name: 'pantR', parent: 'legR', at: [368, 580], dir: [376, 668], match: null },
 	{ name: 'legR_calf', parent: 'legR', at: jointOf('right_leg_1_calf'), match: /^right_leg_1/ },
 	{ name: 'legR_foot', parent: 'legR_calf', at: jointOf('right_leg_2_foot'), match: /^right_leg_2/ },
 ];
@@ -201,11 +225,20 @@ if (unmatched.length) console.warn(`WARNING layers matched to no bone: ${unmatch
 const jointWorld = Object.fromEntries(RIG.map((b) => [b.name, toSpine(b.at[0], b.at[1])]));
 jointWorld.root = { x: 0, y: 0 };
 
+const boneRot = {};
 const bones = [{ name: 'root' }];
 for (const b of RIG) {
 	const w = jointWorld[b.name];
 	const p = jointWorld[b.parent];
-	bones.push({ name: b.name, parent: b.parent, x: +(w.x - p.x).toFixed(2), y: +(w.y - p.y).toFixed(2) });
+	const bone = { name: b.name, parent: b.parent, x: +(w.x - p.x).toFixed(2), y: +(w.y - p.y).toFixed(2) };
+	if (b.dir) {
+		const tip = toSpine(b.dir[0], b.dir[1]);
+		const rot = (Math.atan2(tip.y - w.y, tip.x - w.x) * 180) / Math.PI;
+		bone.rotation = +rot.toFixed(2);
+		bone.length = +Math.hypot(tip.x - w.x, tip.y - w.y).toFixed(2);
+		boneRot[b.name] = rot;
+	}
+	bones.push(bone);
 }
 
 // Slots in the PSD's own stacking order, so the character assembles exactly as
@@ -235,15 +268,111 @@ for (const l of drawOrder) {
 	if (!bone) continue;
 	const centre = toSpine(l.x + l.w / 2, l.y + l.h / 2);
 	const j = jointWorld[bone];
+	const rot = boneRot[bone] ?? 0;
+	const a = (-rot * Math.PI) / 180;
+	const dx = centre.x - j.x, dy = centre.y - j.y;
 	attachments[l.name] = {
 		[l.name]: {
-			x: +(centre.x - j.x).toFixed(2),
-			y: +(centre.y - j.y).toFixed(2),
+			x: +(dx * Math.cos(a) - dy * Math.sin(a)).toFixed(2),
+			y: +(dx * Math.sin(a) + dy * Math.cos(a)).toFixed(2),
+			...(rot ? { rotation: +(-rot).toFixed(2) } : {}),
 			width: l.w,
 			height: l.h,
 		},
 	};
 }
+// ── THE CLOTHES MOVE ────────────────────────────────────────────────────────
+//
+// Asked for 2026-09-27: "his clothes and accessories moving, so he is more fun
+// to watch". The sleeves and the trouser thighs were rigid plates hung on
+// their limb bones: whatever the arm or the leg did, the cloth did exactly, and
+// at the shoulder the plate simply turned about the joint.
+//
+// They are WEIGHTED MESHES now — GoBananaut's sleeves (the one-image-one-mesh
+// method of the symbol wins, inside Spine), with one addition: the loose END of
+// each piece belongs to a bone of its own with physics on it —
+//
+//   sleeve   within CLOTH_HOLD px of the shoulder the cap stays on the TORSO,
+//            over CLOTH_BLEND it hands over to the arm, and its lower part goes
+//            on to the hem bone (cuffL / cuffR)
+//   thigh    the waistband stays on the HIP, the middle on the leg, the baggy
+//            lower half on pantL / pantR
+//
+// — so the cloth bends where it joins the body instead of turning as a card,
+// and the hem swings a beat behind every move (physics at the bottom of the
+// file), with a slow drift in `flutter` so it is never quite still.
+//
+// A weighted vertex is stored once per bone, in that bone's SETUP frame: its
+// world position minus the joint, turned back by the bone's rotation (only the
+// `dir` bones have one).
+const CLOTH_HOLD = 18;
+const CLOTH_BLEND = 70;
+const smoothW = (v) => {
+	const t = Math.max(0, Math.min(1, v));
+	return t * t * (3 - 2 * t);
+};
+const meshAttachment = (layer, cols, rows, weightsAt) => {
+	const at = (c, r) => [layer.x + (layer.w * c) / cols, layer.y + (layer.h * r) / rows];
+	// the hull (the outer ring, in order) first, as Spine expects, then the inside
+	const ring = [];
+	for (let c = 0; c < cols; c++) ring.push([c, 0]);
+	for (let r = 0; r < rows; r++) ring.push([cols, r]);
+	for (let c = cols; c > 0; c--) ring.push([c, rows]);
+	for (let r = rows; r > 0; r--) ring.push([0, r]);
+	const inner = [];
+	for (let r = 1; r < rows; r++) for (let c = 1; c < cols; c++) inner.push([c, r]);
+	const order = [...ring, ...inner];
+	const index = new Map(order.map(([c, r], i) => [`${c},${r}`, i]));
+	const uvs = [], vertices = [], triangles = [];
+	for (const [c, r] of order) {
+		const [x, y] = at(c, r);
+		uvs.push(+(c / cols).toFixed(5), +(r / rows).toFixed(5));
+		const entries = Object.entries(weightsAt(x, y)).filter(([, v]) => v > 1e-4);
+		const total = entries.reduce((a, [, v]) => a + v, 0);
+		const world = toSpine(x, y);
+		vertices.push(entries.length);
+		for (const [bone, v] of entries) {
+			const j = jointWorld[bone];
+			const rot = (-(boneRot[bone] ?? 0) * Math.PI) / 180;
+			const dx = world.x - j.x, dy = world.y - j.y;
+			vertices.push(
+				bones.findIndex((b) => b.name === bone),
+				+(dx * Math.cos(rot) - dy * Math.sin(rot)).toFixed(2),
+				+(dx * Math.sin(rot) + dy * Math.cos(rot)).toFixed(2),
+				+(v / total).toFixed(4),
+			);
+		}
+	}
+	for (let r = 0; r < rows; r++)
+		for (let c = 0; c < cols; c++) {
+			const a = index.get(`${c},${r}`), b = index.get(`${c + 1},${r}`);
+			const d = index.get(`${c},${r + 1}`), e = index.get(`${c + 1},${r + 1}`);
+			triangles.push(a, b, e, a, e, d);
+		}
+	return { type: 'mesh', uvs, triangles, vertices, hull: ring.length, width: layer.w, height: layer.h };
+};
+// how far down a piece a point is, 0 at its top edge, 1 at its bottom
+const down = (layer, y) => (y - layer.y) / layer.h;
+const CLOTH = [
+	// sleeve: torso at the cap -> arm -> hem bone over its lower half
+	{ piece: 'left_arm_0_upper_arm', body: 'torso', limb: 'armL', hem: 'cuffL', hemFrom: 0.5, hemOver: 0.35 },
+	{ piece: 'right_arm_0_upper_arm', body: 'torso', limb: 'armR', hem: 'cuffR', hemFrom: 0.5, hemOver: 0.35 },
+	// thigh: hip at the waistband -> leg -> the baggy lower half
+	{ piece: 'left_leg_0_thigh', body: 'hip', limb: 'legL', hem: 'pantL', hemFrom: 0.45, hemOver: 0.4 },
+	{ piece: 'right_leg_0_thigh', body: 'hip', limb: 'legR', hem: 'pantR', hemFrom: 0.45, hemOver: 0.4 },
+];
+// RIGID_CLOTH=1 builds the old rigid plates, for before/after renders
+for (const c of process.env.RIGID_CLOTH ? [] : CLOTH) {
+	const layer = piece(c.piece);
+	const joint = RIG.find((b) => b.name === c.limb).at;
+	attachments[c.piece][c.piece] = meshAttachment(layer, 8, 10, (x, y) => {
+		const onLimb = smoothW((Math.hypot(x - joint[0], y - joint[1]) - CLOTH_HOLD) / CLOTH_BLEND);
+		const onHem = smoothW((down(layer, y) - c.hemFrom) / c.hemOver);
+		return { [c.body]: 1 - onLimb, [c.limb]: onLimb * (1 - onHem), [c.hem]: onLimb * onHem };
+	});
+	console.log(`mesh    ${c.piece}: ${c.body} -> ${c.limb} -> ${c.hem}`);
+}
+
 // The copy points at the ORIGINAL's atlas region via `path`, so it costs a slot
 // and nothing else — no second region, no extra pixels in the page.
 for (const name of FRONT_COPIES) {
@@ -1482,6 +1611,361 @@ const sweeps = SWEEP
 		)
 	: {};
 
+// ── HE REACTS TO THE GAME HE IS STANDING NEXT TO ─────────────────────────────
+//
+// He had nothing to do with the dynamite. The blast is the thing this game is
+// about, and he stood through every one of them in his idle — the brace he used
+// to do was dropped because the ARMS could not carry it (see MAX_SHOULDER: this
+// artwork has no raised arm in it). So all three of these are carried by the
+// BODY — the hip, the torso's squash and stretch, the head — with the arms
+// only trailing, and the physics on the banana, the helmet and the pocket tube
+// (see "THE ACCESSORIES MOVE ON THEIR OWN") turns every one of those body moves
+// into follow-through for free.
+//
+// He stands to the RIGHT of the board, so "toward the board" is -x, and a
+// lean or a tilt toward it is a POSITIVE rotation (Spine turns counter-
+// clockwise, y up) — checked on the rendered frames, not assumed.
+const TOWARD_X = -1;
+
+// FLINCH — every detonation (Mascot.svelte, on reelBlast). A STARTLE, not a
+// duck: he watches the fuse for ReelBlast's 380ms CHARGE beat, a little tense,
+// and on the bang he gives a small jump — body straightens and lifts, the head
+// jerks back, the arms fly out a touch — lands with the knees taking it, and
+// is himself again. The first version ducked away and hunched; the user asked
+// for "a slight jump, as if a little startled" instead (2026-09-27).
+//
+// Small on purpose: this fires on every dynamite, several times a feature, so
+// it has to stay a flinch and not become a routine. The physics on the helmet,
+// the banana and the pocket tube carries the rest.
+const FLINCH_BANG = 0.38; // ReelBlast CHARGE_MS
+const FLINCH_END = 1.0;
+const UP = FLINCH_BANG + 0.1; // top of the hop
+const LAND = FLINCH_BANG + 0.24;
+const flinch = {
+	bones: {
+		// The legs hang from the hip, so the hip carries the whole body. On the
+		// ground its drop must MATCH the legs' squash (~386 units of leg: 0.97 is
+		// 12 units) or the feet lift off or sink; in the air the legs tuck a
+		// little rather than stretch — stretching pushed the feet back down onto
+		// the floor and the jump read as him merely standing up (measured: head
+		// +60, feet +5).
+		hip: {
+			// braced while he watches; up on the bang, a hair away from the board
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: FLINCH_BANG, x: 0, y: -3 },
+				{ time: UP, x: -3 * TOWARD_X, y: 22 },
+				{ time: LAND, x: -2 * TOWARD_X, y: -12 },
+				{ time: LAND + 0.16, x: 0, y: 1 },
+				{ time: FLINCH_END, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			// straightens up with the jump, leaning back from the bang
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: FLINCH_BANG, value: 1 },
+				{ time: UP, value: -3 },
+				{ time: LAND + 0.06, value: 1 },
+				{ time: FLINCH_END, value: 0 },
+			],
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: FLINCH_BANG, x: 1.01, y: 0.985 },
+				{ time: FLINCH_BANG + 0.08, x: 0.97, y: 1.05 },
+				{ time: LAND, x: 1.04, y: 0.95 },
+				{ time: LAND + 0.16, x: 0.995, y: 1.01 },
+				{ time: FLINCH_END, x: 1, y: 1 },
+			],
+		},
+		head: {
+			// the jerk back, then a nod as he lands
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: FLINCH_BANG, value: 2 },
+				{ time: FLINCH_BANG + 0.07, value: -6 },
+				{ time: LAND + 0.04, value: 3 },
+				{ time: FLINCH_END, value: 0 },
+			],
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: FLINCH_BANG + 0.07, x: -3 * TOWARD_X, y: 6 },
+				{ time: LAND, x: 0, y: -3 },
+				{ time: FLINCH_END, x: 0, y: 0 },
+			],
+		},
+		// the knees give a little while he braces, tuck in the air, and take the
+		// landing — each on-ground value paired with the hip's drop above
+		legL: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: FLINCH_BANG, x: 1.004, y: 0.992 },
+				{ time: UP, x: 1, y: 0.985 },
+				{ time: LAND, x: 1.012, y: 0.97 },
+				{ time: LAND + 0.16, x: 1, y: 1.003 },
+				{ time: FLINCH_END, x: 1, y: 1 },
+			],
+		},
+		legR: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: FLINCH_BANG, x: 1.004, y: 0.992 },
+				{ time: UP, x: 1, y: 0.985 },
+				{ time: LAND, x: 1.012, y: 0.97 },
+				{ time: LAND + 0.16, x: 1, y: 1.003 },
+				{ time: FLINCH_END, x: 1, y: 1 },
+			],
+		},
+		// the arms fly out a touch (outward is - on the left, + on the right,
+		// see OUT_L / OUT_R) — well inside MAX_SHOULDER — with the forearms
+		// hanging behind them, and come back in on the landing
+		armL: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: FLINCH_BANG + 0.08, value: -12 },
+				{ time: LAND + 0.08, value: -3 },
+				{ time: FLINCH_END, value: 0 },
+			],
+		},
+		armL_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: FLINCH_BANG + 0.08 + DRAG, value: hang(-12) },
+				{ time: LAND + 0.1 + DRAG, value: hang(-3) },
+				{ time: FLINCH_END, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: FLINCH_BANG + 0.08 + LEAD, value: 12 },
+				{ time: LAND + 0.1, value: 3 },
+				{ time: FLINCH_END, value: 0 },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: FLINCH_BANG + 0.08 + LEAD + DRAG, value: hang(12) },
+				{ time: LAND + 0.12 + DRAG, value: hang(3) },
+				{ time: FLINCH_END, value: 0 },
+			],
+		},
+	},
+};
+
+// ALERT — he takes notice. The full-board tease (the fuses catching reel by
+// reel) and a Scatter anticipation. From GoBananasBoat's 'alert': the weight
+// goes onto the leg nearer the board with a dip first (so it does not read as
+// the figure being slid), a breath in, and the head flicks the other way
+// before it turns — a look, not a tilt.
+const ALERT_HOLD_FROM = 0.45;
+const ALERT_HOLD_TO = 1.0;
+const ALERT_END = 1.35;
+const alert = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.2, x: 4 * TOWARD_X, y: 3 },
+				{ time: ALERT_HOLD_FROM, x: 11 * TOWARD_X, y: -2 },
+				{ time: ALERT_HOLD_TO, x: 11 * TOWARD_X, y: -2 },
+				{ time: ALERT_END, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: ALERT_HOLD_FROM, value: 5 },
+				{ time: ALERT_HOLD_TO, value: 5 },
+				{ time: ALERT_END, value: 0 },
+			],
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: ALERT_HOLD_FROM, x: 0.99, y: 1.02 },
+				{ time: ALERT_HOLD_TO, x: 0.99, y: 1.02 },
+				{ time: ALERT_END, x: 1, y: 1 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.16, value: -2 },
+				{ time: 0.4, value: 7 },
+				{ time: ALERT_HOLD_TO, value: 7 },
+				{ time: ALERT_END, value: 0 },
+			],
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.4, x: 14 * TOWARD_X, y: 3 },
+				{ time: ALERT_HOLD_TO, x: 14 * TOWARD_X, y: 3 },
+				{ time: ALERT_END, x: 0, y: 0 },
+			],
+		},
+		// the near shoulder comes up, the far one drops
+		armL: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: ALERT_HOLD_FROM, value: -6 },
+				{ time: ALERT_HOLD_TO, value: -6 },
+				{ time: ALERT_END, value: 0 },
+			],
+		},
+		armL_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: ALERT_HOLD_FROM + DRAG, value: hang(-6) },
+				{ time: ALERT_HOLD_TO, value: hang(-6) },
+				{ time: ALERT_END, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: ALERT_HOLD_FROM + LEAD, value: -3 },
+				{ time: ALERT_HOLD_TO, value: -3 },
+				{ time: ALERT_END, value: 0 },
+			],
+		},
+		// the near leg takes the weight, the far one unloads
+		legL: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: ALERT_HOLD_FROM, x: 1.012, y: 0.988 },
+				{ time: ALERT_HOLD_TO, x: 1.012, y: 0.988 },
+				{ time: ALERT_END, x: 1, y: 1 },
+			],
+		},
+		legR: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: ALERT_HOLD_FROM, x: 0.996, y: 1.006 },
+				{ time: ALERT_HOLD_TO, x: 0.996, y: 1.006 },
+				{ time: ALERT_END, x: 1, y: 1 },
+			],
+		},
+	},
+};
+
+// GLANCE — idle variety. The idle loop is 5.4s and he plays it for as long as
+// the player sits there; now and then (Mascot.svelte schedules it) he looks
+// over at the board and back. Small: the head does it, the torso follows a
+// little, nothing else.
+const GLANCE_END = 1.6;
+const glance = {
+	bones: {
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.35, value: 5 },
+				{ time: 0.95, value: 5 },
+				{ time: GLANCE_END, value: 0 },
+			],
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.35, x: 8 * TOWARD_X, y: 1 },
+				{ time: 0.95, x: 8 * TOWARD_X, y: 1 },
+				{ time: GLANCE_END, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.45, value: 1.5 },
+				{ time: 1.0, value: 1.5 },
+				{ time: GLANCE_END, value: 0 },
+			],
+		},
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.5, x: 3 * TOWARD_X, y: -1 },
+				{ time: 1.0, x: 3 * TOWARD_X, y: -1 },
+				{ time: GLANCE_END, x: 0, y: 0 },
+			],
+		},
+	},
+};
+
+// ── THE ACCESSORIES MOVE ON THEIR OWN ─────────────────────────────────────────
+//
+// Ported from GoBananasBoat's captain (its neckerchief and banana). The rule,
+// measured off Hacksaw's cast (wp/.claude/skills/mesh-cast-rig §3): the body
+// barely moves and the amplitude goes to what HANGS off it, a beat late. His
+// helmet, the banana in his teeth and the tube in his chest pocket used to be
+// glued to the head and the torso — whatever the body did, they did, exactly.
+//
+// They move two ways at once, and no other animation has to know:
+//
+//   · PHYSICS CONSTRAINTS (Spine 4.2): inertia. When the body moves — the
+//     chest beat, the cheer's jump, the throw — they lag, overshoot and settle.
+//   · `flutter`, a loop on TRACK 1 (Mascot.svelte), always playing: he chews
+//     the banana, so he is never perfectly still even at idle.
+//
+// Unlike Boat's scarf these are single rigid pieces, each its own PSD layer, so
+// they need no mesh: a bone each is enough.
+//
+// THE HELMET IS STIFF, deliberately. Under it the head is painted only as far
+// as the brim (27% of the helmet's area has anything beneath it), so a helmet
+// that tipped far would show the flat top of his head. Its physics keeps it to
+// a small, late wobble; nothing keys it.
+const FLUTTER_LOOP = 4.8;
+
+// EVERY CONSTRAINT NEEDS ITS OWN `order`. Spine builds its update cache by
+// walking order 0, 1, 2 ... and placing the ONE constraint whose order matches
+// each step — so three constraints all left at the default 0 put the first in
+// the cache and silently dropped the other two (inactive, never applied, no
+// warning). Measured with spine-core 4.2.74: the helmet and the tube never
+// moved until each got an order. (GoBananasBoat's rig, where this came from,
+// has the same bug: only its first constraint runs.)
+const physics = [
+	{ name: 'banana_phys', bone: 'banana', rotate: 1, inertia: 0.5, strength: 110, damping: 0.78, mass: 1 },
+	{ name: 'helmet_phys', bone: 'helmet', rotate: 1, inertia: 0.04, strength: 1300, damping: 0.9, mass: 2 },
+	{ name: 'pocket_phys', bone: 'pocket', rotate: 1, inertia: 0.3, strength: 200, damping: 0.82, mass: 1 },
+	// THE CLOTHES (see "THE CLOTHES MOVE"): hems loose enough to swing a beat
+	// behind the limb, stiff enough that a hem never lifts off the forearm or the
+	// knee it covers.
+	{ name: 'cuffL_phys', bone: 'cuffL', rotate: 1, inertia: 0.28, strength: 230, damping: 0.82, mass: 1 },
+	{ name: 'cuffR_phys', bone: 'cuffR', rotate: 1, inertia: 0.28, strength: 230, damping: 0.82, mass: 1 },
+	{ name: 'pantL_phys', bone: 'pantL', rotate: 1, inertia: 0.9, strength: 80, damping: 0.78, mass: 1.2 },
+	{ name: 'pantR_phys', bone: 'pantR', rotate: 1, inertia: 0.9, strength: 80, damping: 0.78, mass: 1.2 },
+];
+
+// whole cycles of FLUTTER_LOOP only, so it loops without a seam
+const flutterKeys = (amp, n, phase, steps = 24) =>
+	Array.from({ length: steps + 1 }, (_, i) => {
+		const t = (FLUTTER_LOOP * i) / steps;
+		return { time: +t.toFixed(4), value: +(amp * Math.sin((2 * Math.PI * n * t) / FLUTTER_LOOP + phase)).toFixed(3) };
+	});
+// the chew: two quick bites, then a rest, once a loop, with a slow waggle
+// between so the banana is never parked
+const chew = (() => {
+	const keys = [];
+	for (let i = 0; i <= 48; i++) {
+		const t = (FLUTTER_LOOP * i) / 48;
+		const bite = (t0) => {
+			const u = (t - t0) / 0.22;
+			return u > 0 && u < 1 ? Math.sin(Math.PI * u) : 0;
+		};
+		// + swings the tip DOWN (the bone points down-left from the mouth)
+		keys.push({ time: +t.toFixed(4), value: +(-10 * (bite(0.6) + 0.8 * bite(0.95)) + 3 * Math.sin((2 * Math.PI * 2 * t) / FLUTTER_LOOP)).toFixed(3) });
+	}
+	return keys;
+})();
+const flutter = {
+	bones: {
+		banana: { rotate: chew },
+		// the tube rocks in its pocket, out of step with the chew
+		pocket: { rotate: flutterKeys(4, 2, 1.1) },
+		// and the cloth drifts, each piece on its own phase so nothing moves in
+		// step: the hems a couple of degrees
+		cuffL: { rotate: flutterKeys(2, 1, 0.3) },
+		cuffR: { rotate: flutterKeys(2, 1, 2.0) },
+		pantL: { rotate: flutterKeys(1.5, 1, 3.6) },
+		pantR: { rotate: flutterKeys(1.5, 1, 5.1) },
+	},
+};
+
 const skeleton = {
 	skeleton: {
 		hash: 'gb-monkey',
@@ -1495,13 +1979,13 @@ const skeleton = {
 	},
 	bones,
 	slots,
+	physics: physics.map((c, order) => ({ ...c, order })),
 	skins: [{ name: 'default', attachments }],
 	animations: Object.fromEntries(
-			Object.entries({ idle, cheer, chestbeat, nod, throwit, ...sweeps }).map(([name, a]) => [
+			Object.entries({ idle, cheer, chestbeat, nod, throwit, flinch, alert, glance, flutter, ...sweeps }).map(([name, a]) => [
 				name,
-				// idle is the only one that loops, so it is the only one whose ends
-				// have to meet.
-				smoothAnimation(fuseDeadJoints(a, name), name === 'idle' ? IDLE_LOOP : undefined),
+				// idle and flutter are the loops, so theirs are the ends that meet
+				smoothAnimation(fuseDeadJoints(a, name), name === 'idle' ? IDLE_LOOP : name === 'flutter' ? FLUTTER_LOOP : undefined),
 			]),
 		),
 };

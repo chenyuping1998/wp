@@ -180,6 +180,13 @@
 		const accent = CanvasTextMetrics.measureText(TITLE_ACCENT, new TextStyle(accentStyle)).width;
 		return { name, accent, total: name + TITLE_GAP + accent };
 	});
+
+	// the 16:9 plate fills the screen at its own aspect, cropped about the centre
+	// (see Background.svelte) — sized straight to the layout it was squeezed in
+	// portrait
+	const bgCover = $derived(
+		Math.max(context.stateLayoutDerived.mainLayout().width / 1920, context.stateLayoutDerived.mainLayout().height / 1080),
+	);
 </script>
 
 <!-- Go Bananas jungle-commando branded loading screen -->
@@ -191,8 +198,8 @@
 			anchor={0.5}
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.5}
-			width={context.stateLayoutDerived.mainLayout().width}
-			height={context.stateLayoutDerived.mainLayout().height}
+			width={1920 * bgCover}
+			height={1080 * bgCover}
 		/>
 
 		<!-- Dark overlay for readability -->

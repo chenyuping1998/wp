@@ -5,7 +5,9 @@
 	// which we override locally with WildParty-specific content.
 	import ModalError from 'components-ui-html/src/components/ModalError.svelte';
 	import ModalBetMenu from 'components-ui-html/src/components/ModalBetMenu.svelte';
-	import ModalBuyBonus from 'components-ui-html/src/components/ModalBuyBonus.svelte';
+	// the buy menu is this game's own: scene, captain, meter, price and button
+	// per card (GoBoomana's layout) — see ModalBuyBonus.svelte
+	import ModalBuyBonus from './ModalBuyBonus.svelte';
 	import ModalBuyBonusConfirm from 'components-ui-html/src/components/ModalBuyBonusConfirm.svelte';
 	import ModalAutoSpin from 'components-ui-html/src/components/ModalAutoSpin.svelte';
 	import ModalAutoSpinMessage from 'components-ui-html/src/components/ModalAutoSpinMessage.svelte';

@@ -29,13 +29,26 @@ import {
 	SCATTER_LAND_SOUND_MAP,
 } from './constants';
 
-const onSymbolLand = ({ rawSymbol, reelIndex }: { rawSymbol: RawSymbol; reelIndex?: number }) => {
+const onSymbolLand = ({
+	rawSymbol,
+	reelIndex,
+	symbolIndex,
+}: {
+	rawSymbol: RawSymbol;
+	reelIndex?: number;
+	symbolIndex?: number;
+}) => {
 	if (rawSymbol.name === 'S') {
 		eventEmitter.broadcast({ type: 'soundScatterCounterIncrease' });
 		eventEmitter.broadcast({
 			type: 'soundOnce',
 			name: SCATTER_LAND_SOUND_MAP[scatterLandIndex()],
 		});
+		// The picture that goes with the note: the hit and the lock-on
+		// (ScatterLand.svelte), harder with each Scatter of the spin.
+		if (reelIndex !== undefined && symbolIndex !== undefined) {
+			eventEmitter.broadcast({ type: 'scatterLand', reel: reelIndex, row: symbolIndex, count: scatterLandIndex() });
+		}
 	}
 
 	if (rawSymbol.name === 'W') {
@@ -124,7 +137,7 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
 			}
 		},
-		onSymbolLand: ({ rawSymbol }) => onSymbolLand({ rawSymbol, reelIndex }),
+		onSymbolLand: ({ rawSymbol, symbolIndex }) => onSymbolLand({ rawSymbol, reelIndex, symbolIndex }),
 	});
 
 	reel.reelState.spinOptions = () => {
@@ -188,6 +201,20 @@ export const stateGame = $state({
 	// state rather than sent as an event because it is a PROPERTY of the moment,
 	// not a thing that happens: a lid mounting mid-run needs to know it too.
 	growTravelMs: 315,
+
+	// True while the Free Spins trigger has the Scatters in the win state, so
+	// Symbol.svelte plays the trigger beat (meshWin S_TRIGGER) instead of the
+	// line-win one. Set and cleared by bookEventHandlerMap.freeSpinTrigger.
+	scatterTrigger: false,
+
+	// The one Wild or Scatter doing its idle beat on a waiting board, or none
+	// (IdleActors.svelte sets and clears it; ReelSymbol / Symbol play it).
+	idleActor: null as null | { reel: number; row: number },
+
+	// How many reels each winning cell's win spans ("reel,row" -> kind), set by
+	// WinWays for the win being shown: the mesh plays its beat to that size
+	// (meshRig.WIN_LEVELS). A cell in two wins takes the bigger.
+	winKinds: {} as Record<string, number>,
 
 	// Per-reel scoring multiplier, 1 or 2. A stretched reel counts double in the
 	// free game and never in the base game. Sent by the maths rather than derived

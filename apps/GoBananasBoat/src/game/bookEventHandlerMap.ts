@@ -263,6 +263,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'mascotChestBeat' });
 		startDockSplash();
 		eventEmitter.broadcast({ type: 'soundDockSplash' });
+		eventEmitter.broadcast({ type: 'soundChestHoot' });
 		await waitForTimeout(3000);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
 		// Three passes of the scatter shake — extended trigger celebration

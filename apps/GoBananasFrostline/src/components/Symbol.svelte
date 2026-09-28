@@ -1,4 +1,6 @@
 <script lang="ts">
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import { MESH_WINS } from '../game/meshWin';
 	import SymbolSpine from './SymbolSpine.svelte';
 	import SymbolSprite from './SymbolSprite.svelte';
 	import SymbolWinAnim from './SymbolWinAnim.svelte';
@@ -20,6 +22,8 @@
 		// lands (see ReelSymbol, which knows both the reel motion and the tier)
 		blur?: number;
 		impact?: number;
+		/** the reel this cell is on, so a line of wins can cascade across it */
+		reel?: number;
 	};
 
 	const props: Props = $props();
@@ -27,9 +31,22 @@
 	const symbolInfo = $derived(getSymbolInfo({ rawSymbol: props.rawSymbol, state: props.state }));
 	const isSprite = $derived(symbolInfo.type === 'sprite');
 	const isWin = $derived(props.state === 'win');
+	// Symbols whose win is a deforming mesh instead of the halo-and-pulse
+	// animation: the high pays (game/meshWin/*). Everything else still takes
+	// SymbolWinAnim.
+	const isMeshWin = $derived(isWin && props.rawSymbol.name in MESH_WINS);
 </script>
 
-{#if isSprite && isWin}
+{#if isMeshWin}
+	<SymbolMeshWin
+		{symbolInfo}
+		symbolName={props.rawSymbol.name}
+		reel={props.reel}
+		x={props.x}
+		y={props.y}
+		oncomplete={props.oncomplete}
+	/>
+{:else if isSprite && isWin}
 	<!-- Win state for sprite symbols: programmatic scale+glow animation -->
 	<SymbolWinAnim {symbolInfo} x={props.x} y={props.y} oncomplete={props.oncomplete} />
 {:else if isSprite}

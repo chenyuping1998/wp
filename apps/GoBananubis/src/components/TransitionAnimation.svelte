@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Container, Graphics, Sprite } from 'pixi-svelte';
+	import MeshWalker from './MeshWalker.svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getContext } from '../game/context';
 
@@ -125,6 +126,11 @@
 	let scarabY = $state(0);
 	let scarabScale = $state(1);
 	let scarabTint = $state(0xffffff);
+	// THE LEGS (H1's mesh, MeshWalker): they flail in flight, paddle on the
+	// drop-in, tremble with each gold pulse while it charges, and splay as it
+	// bursts — it used to be a flat picture tumbling
+	let scarabPhase = $state(0);
+	let scarabStride = $state(0);
 	let scarabAlpha = $state(1);
 	let scarabSpin = $state(0);
 	// fraction of the boom over which the scarab is consumed by its own blast
@@ -184,6 +190,8 @@
 				// throw has spin in it and a prop that arrives flat looks placed.
 				scarabSpin = p * Math.PI * 2.4;
 				scarabTint = 0xffffff;
+				scarabPhase = (elapsed / 70) * Math.PI * 2;
+				scarabStride = 1;
 			} else if (!thrown && elapsed < ENTRY_MS) {
 				// drops in from above and brakes to a stop — deliberately NOT spinning,
 				// so the scarab reads face-on the whole way down
@@ -194,6 +202,8 @@
 				scarabScale = 0.7 + p * 0.5;
 				scarabSpin = 0;
 				scarabTint = 0xffffff;
+				scarabPhase = (elapsed / 110) * Math.PI * 2;
+				scarabStride = 0.8 * (1 - p) + 0.2;
 			} else if (elapsed < BOOM_AT) {
 				// charging on the spot: two gold pulses
 				const p = (elapsed - ENTRY_MS) / TICK_MS;
@@ -208,6 +218,9 @@
 				// something heating up.
 				scarabTint = mixColor(0xffffff, 0xffb028, 0.5 + 0.5 * Math.sin(p * Math.PI * 4));
 				scarabAlpha = 1;
+				// a fast tremble that swells with each pulse
+				scarabPhase = (elapsed / 45) * Math.PI * 2;
+				scarabStride = 0.25 + 0.5 * (0.5 + 0.5 * Math.sin(p * Math.PI * 4));
 			} else {
 				// BOOM
 				if (!boomFired) {
@@ -229,6 +242,9 @@
 				scarabScale = 1.2 + 1.15 * easeOutCubic(burn);
 				scarabTint = mixColor(0xffe2b0, 0xffffff, burn);
 				scarabAlpha = (1 - burn) ** 1.6;
+				// legs thrown wide as it goes up
+				scarabStride = 1;
+				scarabPhase = Math.PI / 2;
 				// Both ends eased. A linear ramp to white lands hard — its rate of change
 				// is constant right up to the instant it saturates — and a linear fade
 				// leaves the same edge on the way out.
@@ -360,16 +376,18 @@
 	y={context.stateLayoutDerived.canvasSizes().height * 0.5}
 >
 	{#if scarabVisible}
-		<Sprite
-			key="gbScarab"
-			anchor={0.5}
+		<MeshWalker
+			symbolName="H1"
+			bottom
 			x={scarabX}
 			y={scarabY}
-			width={context.stateLayoutDerived.canvasSizes().height * 0.2 * scarabScale}
-			height={context.stateLayoutDerived.canvasSizes().height * 0.2 * scarabScale}
+			size={context.stateLayoutDerived.canvasSizes().height * 0.2}
+			scale={scarabScale}
 			rotation={scarabSpin}
 			tint={scarabTint}
 			alpha={scarabAlpha}
+			phase={scarabPhase}
+			amount={scarabStride}
 		/>
 	{/if}
 

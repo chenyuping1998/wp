@@ -39,6 +39,7 @@
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS, SYMBOL_INFO_MAP } from '../game/constants';
 	import BoardContainer from './BoardContainer.svelte';
+	import { runBadgeTarget } from '../game/counterPlacement';
 
 	const context = getContext();
 
@@ -83,6 +84,51 @@
 	type Phase = 'lead' | 'turning' | 'approach' | 'landed';
 	let phase = $state<Phase>('lead');
 	let raf = 0;
+
+	// ── THE TILE GOES TO THE PLAQUE ──────────────────────────────────────────
+	//
+	// The reading used to end by simply going away: the slot disappeared and the
+	// answer with it, so the payoff of the whole sequence was a second of a symbol
+	// and then nothing — and the player had to remember it, or wait for tablets to
+	// crack to find out again. Now the slot lifts off the board and FLIES to the
+	// free-spins plaque, shrinking as it goes, and drops into the medal waiting
+	// there (FreeSpinCounter). It is the same tile the reel just landed on, so the
+	// eye follows one object from "it decided" to "and this is what you are
+	// playing for", and the answer stays on screen for the rest of the round.
+	//
+	// A timer and not a frame loop: it has to finish in a hidden tab, because the
+	// trigger handler is waiting for it.
+	const FLIGHT_MS = 760;
+	const FLIGHT_MS_TURBO = 520;
+	let flight = $state<{ p: number; x: number; y: number; scale: number; tilt: number } | null>(null);
+	let trail = $state<{ x: number; y: number; s: number }[]>([]);
+	const flyToPlaque = (): Promise<void> =>
+		new Promise((resolve) => {
+			const target = runBadgeTarget(context);
+			const from = { x: board.width / 2, y: board.height / 2 };
+			const end = target.size / (CELL * 1.12);
+			// up and out, then down onto the medal: an arc, not a straight slide
+			const ctrl = { x: (from.x + target.x) / 2 - 40, y: Math.min(from.y, target.y) - board.height * 0.28 };
+			const ms = stateBet.isTurbo ? FLIGHT_MS_TURBO : FLIGHT_MS;
+			const t0 = Date.now();
+			trail = [];
+			const step = () => {
+				const raw = Math.min(1, (Date.now() - t0) / ms);
+				// slow to lift, quick across, settling at the end
+				const p = raw < 0.5 ? 2 * raw * raw : 1 - (-2 * raw + 2) ** 2 / 2;
+				const x = (1 - p) ** 2 * from.x + 2 * (1 - p) * p * ctrl.x + p * p * target.x;
+				const y = (1 - p) ** 2 * from.y + 2 * (1 - p) * p * ctrl.y + p * p * target.y;
+				const scale = 1 + (end - 1) * p;
+				flight = { p: raw, x, y, scale, tilt: 0.3 * Math.sin(raw * Math.PI) };
+				trail = [...trail.slice(-9), { x, y, s: scale }];
+				if (raw >= 1) {
+					clearInterval(id);
+					resolve();
+				}
+			};
+			const id = setInterval(step, 16);
+			step();
+		});
 	// The frame loop stops in a backgrounded tab — same rule every clock in this
 	// game follows now. The timer owns the ending; rAF only interpolates.
 	let killTimer = 0;
@@ -224,7 +270,15 @@
 			context.eventEmitter.broadcast({ type: 'mascotOracle', phase: 'reveal' });
 			slam();
 			await waitForTimeout(stateBet.isTurbo ? HOLD_MS_TURBO : HOLD_MS);
+			// the reading leaves the board for the plaque, and the plaque takes it
+			context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
+			await flyToPlaque();
+			context.eventEmitter.broadcast({ type: 'runSymbol', symbol: event.symbol });
+			context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
+			context.eventEmitter.broadcast({ type: 'soundStoneCrack', step: 1 });
 			show = false;
+			flight = null;
+			trail = [];
 		},
 	});
 </script>
@@ -237,14 +291,29 @@
 			draw={(g) => {
 				g.clear();
 				g.rect(0, 0, board.width, board.height);
-				g.fill({ color: 0x05070a, alpha: 0.78 });
+				g.fill({ color: 0x05070a, alpha: 0.78 * (1 - (flight?.p ?? 0)) });
 			}}
 		/>
 
+		<!-- the comet it leaves on the way to the plaque -->
+		{#if flight}
+			{@const flightP = flight.p}
+			<Graphics
+				draw={(g) => {
+					g.clear();
+					trail.forEach((pt, i) => {
+						const k = (i + 1) / trail.length;
+						g.circle(pt.x, pt.y, 4 + 14 * k * pt.s).fill({ color: 0xffd75e, alpha: 0.35 * k * (1 - flightP * 0.6) });
+					});
+				}}
+			/>
+		{/if}
+
 		<Container
-			x={board.width / 2}
-			y={board.height / 2}
-			scale={1 + 0.11 * punch.current}
+			x={flight ? flight.x : board.width / 2}
+			y={flight ? flight.y : board.height / 2}
+			rotation={flight?.tilt ?? 0}
+			scale={flight ? flight.scale : 1 + 0.11 * punch.current}
 		>
 			<Graphics draw={drawSlot} />
 

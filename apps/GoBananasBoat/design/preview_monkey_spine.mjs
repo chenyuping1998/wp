@@ -154,7 +154,9 @@ const renderFrame = (time) => {
 		const shown = attachmentAt(slot, time);
 		if (!shown) continue;
 		const att = skel.skins[0].attachments[slot.name]?.[shown];
-		const reg = regions[shown];
+		// `path` names the atlas region when it differs from the attachment's
+		// name — the Spine runtime honours it, so the preview has to as well
+		const reg = regions[att?.path ?? shown];
 		if (!att || !reg) continue;
 		const m = world[slot.bone];
 		const hw = att.width / 2;

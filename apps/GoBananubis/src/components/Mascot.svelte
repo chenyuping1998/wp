@@ -3,7 +3,11 @@
 	// four scatters is something only the book knows, and a component that had to
 	// go and find that out would be reaching across the game to do it.
 	export type EmitterEventMascot =
-		| { type: 'mascotChestBeat' }
+		// `voice: false` on a retrigger, where the bell is already ringing
+		| { type: 'mascotChestBeat'; voice?: boolean }
+		// A held tablet's multiplier wheel has landed (MultiplierRoll), once per
+		// tablet.
+		| { type: 'mascotMultiplier'; value: number }
 		// Raised by the transition as it begins, so the wind-up happens before the
 		// scarab exists. See THROW_RELEASE_MS there.
 		| { type: 'mascotThrow' }
@@ -35,7 +39,7 @@
 	// animation - the whole chain, including the torso lean and the hip drive, not
 	// just the arm angles - and reports the centre of the scarab's own drawing at
 	// RELEASE_AT.
-	const RELEASE = { x: -356, y: 473 };
+	const RELEASE = { x: -349, y: 532 };
 
 	// Below this there is no room to stand him next to the board without either
 	// overlapping the frame or shrinking him to a thumbnail. Tablet (1000x1000)
@@ -109,8 +113,9 @@
 	// than a blow.
 	const IMPACT_LIFE_MS = 260;
 	// WHERE THE FIST ACTUALLY IS, printed by design/generate_anubis_spine.mjs when
-	// it builds the animation: the right fist lands at (53, 367) on beats 0 and 2,
-	// the left at (-3, 397) on beats 1 and 3. Lifted 45 units to sit on the
+	// it builds the animation: the right fist lands at (14, 377) on beats 0 and 2,
+	// the left at (25, 420) on beats 1 and 3 (re-printed 2026-09-26, when the
+	// shoulder budget grew from 22 to 28 with the collar mesh). Lifted 45 units to sit on the
 	// KNUCKLES rather than the centre of the hand drawing, which is where a blow
 	// would land.
 	//
@@ -127,8 +132,8 @@
 	// of his body width and stopped being a hit on his chest — it became an
 	// explosion he happened to be standing behind.
 	const IMPACT_AT = [
-		{ x: 53, y: 412 }, // right fist, beats 0 and 2
-		{ x: -3, y: 442 }, // left fist, beats 1 and 3
+		{ x: 14, y: 422 }, // right fist, beats 0 and 2
+		{ x: 25, y: 465 }, // left fist, beats 1 and 3
 	];
 	const IMPACT_R = 80;
 
@@ -254,6 +259,22 @@
 		loop = loops;
 	};
 
+	// ── THE VICTORY STOMP ────────────────────────────────────────────────────
+	//
+	// A big win counts up for 6 to 32 seconds (winLevelMap presentDuration) and
+	// the cheer is two. So the cheer hands over to `dance`, looped, for as long
+	// as the count-up runs — and never longer: `celebrateUntil` is the count-up
+	// plus the plaque's hold, because a plaque that waits for the player
+	// (superspin's total) is unbounded, and a character dancing at nobody is
+	// the jammed look the old looping 'celebrate' had. When the plaque goes,
+	// he finishes the bar he is in (the loop's `complete`) and drops to idle.
+	let celebrateUntil = 0;
+	const celebrate = (winLevelData: { presentDuration: number }) => {
+		celebrateUntil = performance.now() + winLevelData.presentDuration + 1300;
+		play('cheer', false);
+	};
+	const stopCelebrating = () => (celebrateUntil = 0);
+
 	// ── HE DOES NOT ONLY BREATHE ─────────────────────────────────────────────
 	//
 	// `idle` is a breath, and it is what the player watches for most of a
@@ -321,24 +342,27 @@
 			// standing with both arms in the air for as long as anyone looked away.
 			// Held that long it stops reading as a celebration and starts reading as
 			// something that has jammed.
-			play('cheer', false);
+			celebrate(winLevelData);
 		},
+		winHide: stopCelebrating,
+		freeSpinOutroHide: stopCelebrating,
 		// The end of a feature. The total-win plaque used to arrive with him
 		// standing idle beside it, as if nothing had happened; a big total gets
 		// the cheer, anything smaller a nod — the same scale of reaction as a
 		// base-game win, so the size of his response still means something.
 		freeSpinOutroCountUp: ({ amount, winLevelData }) => {
 			if (amount <= 0) return;
-			play(winLevelData.type === 'big' ? 'cheer' : 'nod', false);
+			if (winLevelData.type === 'big') celebrate(winLevelData);
+			else play('nod', false);
 		},
 		// The gorilla, for the biggest way into the feature. Deliberately not the
 		// same gesture as the win: using one celebration for "you are going in" and
 		// "you won" makes both of them mean less.
-		mascotChestBeat: () => {
+		mascotChestBeat: ({ voice = true }) => {
 			play('chestbeat', false);
 			// one clip covering all four strikes, so the grunts cannot drift out of
 			// sync with them
-			say('roar');
+			if (voice) say('roar');
 			// no point running a clock for something with nowhere to be drawn
 			if (placement) startImpacts();
 			// The board housing takes each strike too. Reusing the knock the sealed
@@ -355,6 +379,8 @@
 						() =>
 							context.eventEmitter.broadcast({
 								type: 'boardFrameImpact',
+								// from his side of the housing: he stands to the right
+								from: [1.15, 0.2],
 								strength: i === 0 ? 0.5 : 0.38,
 							}),
 						BEAT_START_MS + i * BEAT_GAP_MS,
@@ -403,6 +429,44 @@
 			play('alert', false);
 		},
 
+		// ── HE WATCHES THE FEATURE ───────────────────────────────────────────────
+		//
+		// The free game used to happen entirely beside him: he did the trigger and
+		// the total, and stood through every spin in between — which is where the
+		// player spends the whole feature. When a tablet is about to settle on a HUGE
+		// multiplier (25X or 50X) he turns to look at the board as the wheel spins —
+		// the same look he gives the second Scatter (`alert`) — so the player's eye
+		// follows his to the cell.
+		//
+		// Only from idle, like every other reaction, so nothing here can cut off a
+		// trigger, an oracle or a total in progress.
+		// ── AND REACTS TO WHAT IT GIVES ──────────────────────────────────────────
+		//
+		// He watched the wheel (above); what it lands on gets an answer, graded
+		// like everything else he does: a 50X is the cheer, a 25X a nod, anything
+		// smaller nothing — tablets re-roll every spin, and a reaction to a 10X
+		// would be one per spin. Several tablets land one after another, so the
+		// first big one decides it and the rest land on a reaction already
+		// playing (the cheer is never downgraded to a nod).
+		mascotMultiplier: ({ value }) => {
+			if (context.stateGame.gameType !== 'freegame') return;
+			if (value >= 50 && animationName !== 'cheer') play('cheer', false);
+			else if (value >= 25 && (animationName === 'idle' || animationName === 'alert')) play('nod', false);
+		},
+		// The last free spin: he leans in to watch it. The same look as the
+		// second Scatter, for the same reason — it is the spin everything is
+		// riding on, and his eye takes the player's with it.
+		freeSpinCounterUpdate: ({ current, total }) => {
+			if (context.stateGame.gameType !== 'freegame') return;
+			if (current === undefined || total === undefined || total <= 1 || current !== total) return;
+			if (animationName !== 'idle') return;
+			play('alert', false);
+		},
+		multiplierRoll: ({ cells }) => {
+			if (context.stateGame.gameType !== 'freegame') return;
+			if (animationName !== 'idle') return;
+			if (cells.some((cell) => cell.to >= 25)) play('alert', false);
+		},
 		// An ordinary base-game win. This is the common case by a wide margin, so
 		// it is the smallest thing he does — see the 'nod' animation, which is
 		// deliberately almost nothing.
@@ -457,12 +521,29 @@
 					// trigger arrives about a second later, so the beat was being
 					// cancelled a frame or two after it started — reported as the
 					// chest beat having disappeared.
-					if (finished && finished === animationName && ONE_SHOTS.includes(finished)) {
+					if (!finished || finished !== animationName) return;
+					const celebrating = performance.now() < celebrateUntil;
+					// the cheer, and each bar of the stomp, go on to another bar
+					// while the win is still counting up
+					if ((finished === 'cheer' || finished === 'dance') && celebrating) {
+						if (finished === 'cheer') play('dance', true);
+					} else if (finished === 'dance' || ONE_SHOTS.includes(finished)) {
 						play('idle', true);
 					}
 				},
 			}}
 		/>
+		<!-- TRACK 1, ALWAYS: what hangs off him — the banana, the ears, the
+		     cobra, the kilt's three panels (flutter, in
+		     design/generate_anubis_spine.mjs; the same set-up as Go Bananas
+		     Boat's captain). It keys only their own bones, so it layers over
+		     whatever track 0 plays; their physics adds the follow-through. -->
+		<SpineTrack trackIndex={1} animationName="flutter" loop />
+		<!-- TRACK 2, ALWAYS: the gold catching the light — a glint sweeping
+		     across the headband, then an armband, then a cuff, one at a time
+		     (`glints`, design/generate_anubis_spine.mjs). Keys only the glint
+		     slots, so it layers over everything else. -->
+		<SpineTrack trackIndex={2} animationName="glints" loop />
 	</SpineProvider>
 
 	<!--

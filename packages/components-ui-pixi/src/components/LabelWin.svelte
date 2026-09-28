@@ -66,4 +66,15 @@
 	);
 </script>
 
-<UiLabel tiled={props.tiled ?? true} {label} {value} stacked={props.stacked} {accent} maxWidth={props.maxWidth} />
+<UiLabel
+	tiled={props.tiled ?? true}
+	{label}
+	{value}
+	stacked={props.stacked}
+	{accent}
+	maxWidth={props.maxWidth}
+	pop={flash}
+	valueTint={uiTheme.winFlashTint === undefined || flash < 0.02
+		? undefined
+		: lerpHex(0xffffff, uiTheme.winFlashTint, flash)}
+/>

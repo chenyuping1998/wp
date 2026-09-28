@@ -12,6 +12,8 @@
 //                 darkens as the reel cools.
 //   ice_crack     the slab setting. One snap, a body, a glassy ring, and a few
 //                 settling crackles after it.
+//   reel_stop     the ordinary reel-landing knock, which is not a takeover cue
+//                 at all but had to be rebuilt here — see section 4.
 //
 // ── How these are built ──────────────────────────────────────────────────────
 //
@@ -254,6 +256,73 @@ const writeWav = (name, buf) => {
 	}
 
 	writeWav('ice_crack.wav', fadeEnds(normalize(out, 0.9), 8));
+}
+
+// ── 4. reel_stop ────────────────────────────────────────────────────────────
+//
+// NOT CURRENTLY WIRED TO ANYTHING. Sound.svelte points `reel_stop` back at
+// jungle/reel_stop.wav — Go Bananas 100's pitched drum — because that is what was
+// wanted in the end. Kept because the analysis below is the reason the first
+// attempt at this failed, and because re-enabling it is one line in CN_SFX_FILES.
+// The written file is deleted after generating unless it is being used.
+//
+// A flat, low roller impact. This was to replace jungle/reel_stop.wav, and the reason
+// it had to be replaced rather than re-pitched is worth writing down.
+//
+// The jungle sample is bongo(): a sine whose frequency GLIDES from 420 Hz down
+// to 300 Hz. It is a tuned drum with a pitch bend baked into it. So when the
+// five reel stops were collapsed onto the single lowest variant, the rise
+// between reels went away but each individual stop still swooped — the "low to
+// high" was inside the sample, not in the choice of sample. Changing which one
+// played could never have fixed it.
+//
+// What a detent actually sounds like: a contact transient, then a very short
+// low body, then nothing. So:
+//
+//   (a) the contact   3ms of band noise around 1.6kHz — the mechanical click
+//   (b) the body      a FIXED 78Hz, decayed so hard only about three cycles
+//                     survive. Fixed frequency and few cycles is what makes it
+//                     read as a thump instead of a note; a glide of any size
+//                     reads as pitch, which is the thing being removed.
+//   (c) the knock     a fixed 190Hz with an even faster decay, for the housing
+//                     the roller hits
+//
+// Short on purpose (0.15s): five of these land inside about a second, and
+// anything with a tail turns that into mud.
+{
+	const DUR = 0.15;
+	const out = buffer(DUR);
+
+	// (a) the contact
+	const click = svf(noise(0.012), () => 1600, 0.9, 'band');
+	for (let i = 0; i < click.length; i++) click[i] *= Math.exp(-((i / SR) / 0.0016));
+	addAt(out, click, 0, 0.5);
+
+	// (b) the body — no glide
+	{
+		const body = buffer(0.12);
+		let phase = 0;
+		for (let i = 0; i < body.length; i++) {
+			const t = i / SR;
+			phase += (2 * Math.PI * 78) / SR;
+			body[i] = Math.sin(phase) * Math.exp(-34 * t);
+		}
+		addAt(out, body, 0.0008, 1);
+	}
+
+	// (c) the knock
+	{
+		const knock = buffer(0.06);
+		let phase = 0;
+		for (let i = 0; i < knock.length; i++) {
+			const t = i / SR;
+			phase += (2 * Math.PI * 190) / SR;
+			knock[i] = Math.sin(phase) * Math.exp(-70 * t);
+		}
+		addAt(out, knock, 0.0008, 0.45);
+	}
+
+	writeWav('reel_stop.wav', fadeEnds(normalize(out, 0.72), 3));
 }
 
 console.log('frost audio written to', path.relative(appRoot, OUT));

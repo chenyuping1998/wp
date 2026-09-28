@@ -2,7 +2,12 @@
 	export type EmitterEventFreeSpinCounter =
 		| { type: 'freeSpinCounterShow' }
 		| { type: 'freeSpinCounterHide' }
-		| { type: 'freeSpinCounterUpdate'; current?: number; total?: number };
+		| { type: 'freeSpinCounterUpdate'; current?: number; total?: number }
+		// The symbol every tablet in this run will open to. 'pending' while the
+		// oracle is still deciding it (the badge shows a question mark), the symbol
+		// once it lands, null to clear it.
+		| { type: 'runSymbol'; symbol: SymbolName | 'pending' | null };
+	import type { SymbolName } from '../game/types';
 </script>
 
 <script lang="ts">
@@ -14,46 +19,55 @@
 	import { stateBet } from 'state-shared';
 
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE } from '../game/constants';
+	import { SYMBOL_SIZE, SYMBOL_INFO_MAP } from '../game/constants';
+	import { counterPlacement, runBadgeMain } from '../game/counterPlacement';
 	import { gameText } from '../game/i18nText';
 	import GoldText from './GoldText.svelte';
+	import SheetMesh from './SheetMesh.svelte';
+	import { buildCounterGrid, poseCounter, COUNTER, COUNTER_KNOCK_S, type CounterKnock } from '../game/meshWin/sheets';
 
 	const context = getContext();
 
-	// brass plaque left of the board (fs_counter_panel.png, 824×622)
-	const PANEL_RATIO = 824 / 622;
-	const panelWidth = $derived(SYMBOL_SIZE * 2.1);
-	const panelSizes = $derived({ width: panelWidth, height: panelWidth / PANEL_RATIO });
-	const isPortrait = $derived(context.stateLayoutDerived.layoutType() === 'portrait');
-	const position = $derived(
-		isPortrait
-			? {
-					// portrait: centered above the board (no room at the side)
-					x: context.stateGameDerived.boardLayout().x - panelSizes.width * 0.5,
-					y:
-						context.stateGameDerived.boardLayout().y -
-						context.stateGameDerived.boardLayout().height * 0.5 -
-						panelSizes.height * 1.28 -
-						SYMBOL_SIZE * 0.3,
-				}
-			: {
-					x:
-						context.stateGameDerived.boardLayout().x -
-						context.stateGameDerived.boardLayout().width * 0.5 -
-						panelSizes.width -
-						SYMBOL_SIZE * 0.6,
-					// Pinned near the top of the screen rather than to the board's top
-					// edge. With the side-rail UI the Buy Bonus button is centred in
-					// the left rail, and the board now fills 94% of the height — the
-					// old board-relative position put this plaque straight through it.
-					y: context.stateLayoutDerived.mainLayout().height * 0.05,
-				},
-	);
+	// brass plaque left of the board (fs_counter_panel.png, 824×622); where it sits
+	// is computed in game/counterPlacement.ts, because the oracle flies the run's
+	// symbol into it and has to land in the same place
+	const placement = $derived(counterPlacement(context));
+	const panelSizes = $derived(placement.panelSizes);
+	const position = $derived(placement.position);
+	const badge = $derived(runBadgeMain(context));
 
 	let show = $state(false);
 	// `current` = spins USED + 1 (set by the updateFreeSpin handler); `total` = window size
 	let current = $state(1);
 	let total = $state(0);
+
+	// ── THE RUN'S SYMBOL LIVES ON THE PLAQUE ─────────────────────────────────
+	//
+	// The one fact about a free round the player most needs to keep hold of is
+	// which symbol every tablet will open to — and after the oracle names it, it
+	// used to vanish: the player had to remember it, or watch tablets crack to
+	// find out again. So it is kept: a small medal on the plaque's corner, empty
+	// (a question mark) while the oracle is still spinning and filled by the tile
+	// flying into it (MysteryOracle) — a payoff at the end of the reading, and a
+	// reminder for every spin after.
+	let runSymbol = $state<SymbolName | 'pending' | null>(null);
+	let badgeAt = $state(0);
+	const runAssetKey = $derived(
+		runSymbol && runSymbol !== 'pending'
+			? (SYMBOL_INFO_MAP as Record<string, { static: { assetKey: string } }>)[runSymbol]?.static
+					.assetKey
+			: undefined,
+	);
+	// the medal's own pop as the tile lands in it: rides the same clock as the plaque
+	const badgePop = $derived.by(() => {
+		const p = (now - badgeAt) / 520;
+		if (!badgeAt || p < 0 || p > 1) return 0;
+		return Math.sin(p * Math.PI * 0.5 + Math.PI * 0.5) * (1 - p) ** 1.2;
+	});
+	// round over (or a resumed round that never had an oracle): nothing to show
+	$effect(() => {
+		if (context.stateGame.gameType !== 'freegame' && runSymbol !== null) runSymbol = null;
+	});
 
 	const isSuperspin = $derived(stateBet.activeBetModeKey === 'SUPERSPIN');
 	// superspin is hold'n'spin: what matters is how many respins REMAIN
@@ -75,7 +89,17 @@
 
 	const PUNCH_MS = 520;
 
+	// THE PLAQUE TAKES THE KNOCK (meshWin/sheets.ts poseCounter): a ripple out
+	// from the count and the ankh swinging on its loop. Knocks add, so a
+	// retrigger landing on a spent spin's tap is both.
+	const counterGrid = buildCounterGrid();
+	let plaqueKnocks: CounterKnock[] = [];
+	const plaqueClock = () => performance.now() / 1000;
+	const poseThePlaque = (out: Float32Array) => poseCounter(counterGrid, plaqueKnocks, plaqueClock(), out);
+
 	const knock = (force: number) => {
+		const t = plaqueClock();
+		plaqueKnocks = [...plaqueKnocks.filter((k) => t - k.at < COUNTER_KNOCK_S), { at: t, force }];
 		punchAt = Date.now();
 		punchForce = force;
 		now = punchAt;
@@ -102,7 +126,17 @@
 
 	context.eventEmitter.subscribeOnMount({
 		freeSpinCounterShow: () => (show = true),
-		freeSpinCounterHide: () => (show = false),
+		freeSpinCounterHide: () => {
+			show = false;
+			runSymbol = null;
+		},
+		runSymbol: ({ symbol }) => {
+			runSymbol = symbol;
+			if (symbol && symbol !== 'pending') {
+				badgeAt = Date.now();
+				knock(0.9);
+			}
+		},
 		freeSpinCounterUpdate: (emitterEvent) => {
 			const gained = emitterEvent.total !== undefined && emitterEvent.total > total && total > 0;
 			const spent = emitterEvent.current !== undefined && emitterEvent.current !== current;
@@ -132,7 +166,17 @@
 
 <MainContainer>
 	<FadeContainer {show} {...position}>
-		<Sprite key="gbFsPanel" {...panelSizes} />
+		<SheetMesh
+			layers={[{ key: 'gbFsPanel' }]}
+			grid={counterGrid}
+			artWidth={COUNTER.w}
+			artHeight={COUNTER.h}
+			x={panelSizes.width / 2}
+			y={panelSizes.height / 2}
+			width={panelSizes.width}
+			height={panelSizes.height}
+			pose={poseThePlaque}
+		/>
 
 		<!-- title on the upper plank area, auto-shrunk for long locales -->
 		<Text
@@ -192,5 +236,34 @@
 				/>
 			</Container>
 		{/if}
+	</FadeContainer>
+
+	<!-- the run's symbol, in the screen's top-right corner; fades with the plaque -->
+	<FadeContainer {show}>
+		{#if runSymbol && !isSuperspin}
+			<!-- the medal: a stone plate in a gold rim, over the plaque's corner -->
+			<Container x={badge.x} y={badge.y} scale={1 + 0.5 * badgePop}>
+				<Graphics
+					draw={(g) => {
+						g.clear();
+						const r = badge.size / 2;
+						g.roundRect(-r - 3, -r - 1, r * 2 + 6, r * 2 + 6, 12).fill({ color: 0x000000, alpha: 0.4 });
+						g.roundRect(-r, -r, r * 2, r * 2, 11).fill({ color: 0xe8ae3c });
+						g.roundRect(-r + 4, -r + 4, r * 2 - 8, r * 2 - 8, 8).fill({ color: 0x14171a });
+						g.roundRect(-r + 4, -r + 4, r * 2 - 8, r * 2 - 8, 8).stroke({
+							width: 1.6,
+							color: 0xfff3c4,
+							alpha: 0.6,
+						});
+					}}
+				/>
+				{#if runAssetKey}
+					<Sprite key={runAssetKey} anchor={0.5} width={badge.size * 0.84} height={badge.size * 0.84} />
+				{:else}
+					<GoldText x={0} y={0} text="?" fontSize={badge.size * 0.62} />
+				{/if}
+			</Container>
+		{/if}
+
 	</FadeContainer>
 </MainContainer>

@@ -43,21 +43,27 @@
 	<Graphics
 		draw={(g) => {
 			g.clear();
-			// Pixi 8: path, then fill/stroke.
+			// GO BANANAS 100'S WIN HALO — what it actually SHOWS, not what its code
+			// says.
 			//
-			// Both rings were invisible — `lineStyle` emits no geometry in v8 — so a
-			// winning symbol got the soft filled disc and neither of the two crisp
-			// rings that are supposed to define it. And because the stroke style
-			// survives `clear()`, from the second frame on the filled disc was
-			// itself outlined with the leftover 1.5px white, putting a hard edge at
-			// r=0.54 where the design wants it at r=0.44. Inherited from Go Bananas
-			// 100.
-			g.circle(0, 0, SYMBOL_SIZE * 0.54);
-			g.fill({ color: 0xffe050, alpha: 0.08 + 0.14 * pulse });
-			g.circle(0, 0, SYMBOL_SIZE * 0.49);
-			g.stroke({ width: 3.5, color: 0xffe050, alpha: 0.35 + 0.45 * pulse });
-			g.circle(0, 0, SYMBOL_SIZE * 0.44);
-			g.stroke({ width: 1.5, color: 0xffffff, alpha: 0.2 + 0.3 * pulse });
+			// GB100's code draws a soft gold disc and two crisp rings inside it (a
+			// 3.5px gold one at r 0.49 and a 1.5px white one at r 0.44). Under Pixi 8
+			// neither ring has ever rendered: `lineStyle` is a deprecation shim that
+			// sets the stroke style and emits no geometry. And because that style
+			// survives `clear()`, from the second frame on the disc's own `endFill`
+			// strokes it with the leftover 1.5px white. So what a GB100 player sees
+			// on a winning symbol is the soft gold glow with ONE thin white rim at the
+			// disc's edge, pulsing with the scale.
+			//
+			// This game fixed the dead strokes, and the two rings appeared: a bold
+			// gold hoop and a second white one on every scoring symbol, which is a
+			// much louder win than the one GB100 shipped. Asked to present scoring
+			// symbols the way GB100 does, this reproduces GB100's rendered result on
+			// purpose, in working v8 calls — the glow and its single rim — rather
+			// than restoring the bug that produced it.
+			g.circle(0, 0, SYMBOL_SIZE * 0.54)
+				.fill({ color: 0xffe050, alpha: 0.08 + 0.14 * pulse })
+				.stroke({ width: 1.5, color: 0xffffff, alpha: 0.2 + 0.3 * pulse });
 		}}
 	/>
 	<!-- Symbol sprite -->

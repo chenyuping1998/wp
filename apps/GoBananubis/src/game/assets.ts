@@ -215,15 +215,184 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2.png', import.meta.url).href,
 		preload: true,
 	},
-	// The scarab PROP — a transparent cut-out, deliberately not gbH2.
-	//
-	// The transition drop and the win-line runners both draw a scarab over the
-	// live board, and both used gbH2. In gen-2 that symbol is an opaque riveted
-	// plate, so what actually fell down the screen was a tile complete with bezel
-	// and rivets. See design/generate_symbols_gen2.mjs for where this is cut.
-	gbScarab: {
+	// (gbScarab, the scarab.png prop, is gone: the transition and the win-line
+	// runners now draw H1's own beetle through its mesh — MeshWalker — which has
+	// the hind legs that cut-out was missing.)
+	// The high-pay mesh wins (SymbolMeshWin.svelte, game/meshWin/*): each H
+	// symbol split into plate / subject / drop shadow / light-sweep atlas by
+	// design/make_symbol_layers.mjs. Written out literally so check_assets.mjs
+	// can see every path.
+	gbH1Plate: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/scarab.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	// The panel-mode mesh wins (letters, Wild, Scatter): the flash's glow
+	// texture and the light-sweep atlas (design/make_symbol_layers.mjs). The mesh
+	// itself draws each symbol's own sprite.
+	gbL1Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbWGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbWSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbMGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/m_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbMSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/m_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbPGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/p_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbPSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/p_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH3: {

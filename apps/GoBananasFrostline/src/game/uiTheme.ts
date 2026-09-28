@@ -1,5 +1,6 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
+import { stateConfig } from 'state-shared';
 
 import {
 	ICE_PLATE,
@@ -7,8 +8,10 @@ import {
 	ICE_EDGE,
 	ICE_BRIGHT,
 	ICE_HIGHLIGHT,
+	ICE_SHARD,
 	GOLD,
 	GOLD_BRIGHT,
+	GOLD_DARK,
 	INK,
 } from './palette';
 
@@ -23,6 +26,31 @@ import {
 // a cold bar that makes the money the warmest thing in the frame, which is where
 // the eye should land.
 setUiTheme({
+	// PORTRAIT: the menu button and Buy Bonus sit this far either side of centre
+	// in the 1080-wide portrait layout, which fills a phone's width exactly. At
+	// the shared default of 470 the 150-wide menu disc started at x -5 — off the
+	// left edge of the screen — and Buy Bonus ended within 10 of the right one
+	// (5 PAST it where the platform skin enlarges the plate to 150). 440 is Go
+	// Boomana's value: both sit 25 inside the edges, and still clear turbo and
+	// autoplay (at 540 +/- 285) by 27.5.
+	portraitSideButtonX: 440,
+
+	// Hacksaw's house behaviours (see the shared theme's platformUx), the same
+	// values as Go Boomana: hold -/+ to keep stepping, a short lock on the spin
+	// button after the stake changes so a press cannot bet an amount not yet
+	// seen, an idle nudge on the spin button, shift-key shortcuts, and panels
+	// closing when a round starts. Can be switched off on a deployed build with
+	// localStorage.setItem('platformUx', 'off').
+	platformUx: {
+		betRepeatMs: 150,
+		betToSpinCooldownMs: 500,
+		idleReminderMs: 30000,
+		idlePulseMs: 2000,
+		shortcuts: true,
+		keybindThrottleMs: 100,
+		closePanelsOnSpin: true,
+	},
+
 	fontFamily: GAME_FONT,
 	// Titan One is single-weight; 700 would only get a synthesised bold
 	fontWeight: GAME_FONT_WEIGHT,
@@ -97,10 +125,6 @@ setUiTheme({
 	buyBonusHighlightPad: 0,
 	buyBonusHighlightRadius: 0.107,
 
-	// Certification: the bet button must stay clickable when the balance is short
-	// and say so. Paired with <ModalMessage /> in ui/Modals.svelte — without that
-	// the press would raise a modal this app does not render.
-	betButtonMessageOnInsufficientBalance: true,
 
 	// gold on the slate plate: it names a price, so rule 2 puts it in the warm
 	// half along with every other amount in the game
@@ -115,6 +139,12 @@ setUiTheme({
 
 	// 旋轉鍵的呼吸光暈
 	spinButtonGlow: true,
+
+	// The Win figure swells and flashes in the Win label's colour when a win
+	// lands; the Bet figure swells when the stake moves (shared theme:
+	// valuePop / winFlashTint). Ported from GoBoomana, 2026-09-27.
+	valuePop: 0.18,
+	winFlashTint: GOLD,
 
 	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
 	// keep the themed rounded rect, which suits the round buttons)
@@ -157,21 +187,28 @@ setUiTheme({
 	// jungle palette this game just left.
 	buyBonusHoverSpriteTint: 0xffffff,
 
-	// THE LABEL, SHRUNK — and it is what makes room for the crystal.
+	// THE LABEL, IN THE HUB.
 	//
-	// The shared default is 0.68 of UI_BASE_FONT_SIZE (45), which at this game's
-	// 0.8 button scale is 24.5px of type on a 120px plate: two lines standing 52px
-	// tall, centred, i.e. most of the plate. The shared button centres its caption
-	// and cannot move it, so the only way the crystal and the words share the
-	// plate is for the type to get smaller and the crystal to sit above it. At
-	// 0.46 the two lines run roughly y=224..416 of the 640 canvas the plate art is
-	// drawn on, which is what sizes the crystal: it is centred at y=142 with a
-	// radius of 76, so it spans 66..218 and clears the caption with 6px to spare.
-	// Its top clears the inner bevel too (31 plus an 11px stroke). Both numbers
-	// are named constants in design/generate_ui_plates.mjs — change this ratio and
-	// they have to move with it, or the crystal starts sitting under the words.
-	buyBonusLabelSizeRatio: 0.46,
-	buyBonusLabelWrapWidth: 90,
+	// This used to be 0.46 / 90, shrunk so the caption could squeeze underneath
+	// a crystal engraved in the plate's top third. The plate is now a crystal
+	// cut CRYSTAL (design/generate_ui_plates.mjs, THE ICE CRYSTAL) whose flat
+	// table is the caption's, so the words get the middle of the button instead
+	// of its bottom half.
+	//
+	// 0.50, NOT BOAT'S 0.58. Boat's clear-zone arithmetic was copied first and
+	// did not hold: its "BUY BONUS measures ~167px" is a fact about its caption
+	// face, and Titan One is much wider. At 0.58 BONUS touched the rim and
+	// DISABLE — one seven-letter word, the widest caption the button carries —
+	// ran onto it. The measured widths are in generate_ui_plates.mjs; this ratio
+	// and R_TABLE there are one decision in two files.
+	buyBonusLabelSizeRatio: 0.5,
+	buyBonusLabelWrapWidth: 94,
+
+	// NO buyBonusHoverRotate. The plate was briefly a crystal WHEEL, built on Go
+	// Bananas Boat's ship's wheel, and its lit copy turned. It is a cut crystal
+	// now, and a crystal rotating on the spot reads as a texture coming loose —
+	// so the hover is the stone catching light instead (see the lit copy in
+	// design/generate_ui_plates.mjs), and nothing spins.
 
 	// drawn brass icons in place of the template's text/emoji button glyphs
 	icons: {
@@ -244,11 +281,32 @@ if (typeof document !== 'undefined') {
 
 if (uiSkin === 'platform') {
 	setUiTheme({
-		// the strip: flat casing, their panel grey on their near-black edge
+		// ── THE STRIP ───────────────────────────────────────────────────────
+		//
+		// Their panel grey, but the casing edge is this game's blue rather than
+		// Hacksaw's near-black #0f0f0f. The strip is the one piece of chrome that
+		// touches the board on every screen, and a black outline made it read as a
+		// borrowed part sitting under the game rather than as part of it.
+		//
+		// ICE_EDGE AND NOT A DEEPER BLUE, because of how thin this actually is.
+		// LayoutBottomBar strokes the casing at 3 units, and one unit here is about
+		// a third of a CSS pixel at this bar's scale — so it is a ~1px hairline.
+		// Hairlines need contrast or they vanish; fills need restraint. Measured
+		// against the 0x2a2a2a casing:
+		//
+		//   #0f0f0f (theirs)   1.34   invisible by design — their casing recedes
+		//   ICE_SHARD #2b5f80  2.09   still reads as a dark line at 1px
+		//   ICE_DEEP  #1e6fa8  2.66
+		//   ICE_EDGE  #5fa8d8  5.52   reads as a deliberate blue edge
+		//   ICE_BRIGHT #8fd9ff 9.25   too loud wrapped round the whole strip
+		//
+		// It is the same blue as the spin button's fill, which is wanted: one is a
+		// filled disc and the other a hairline, so they read as the same material
+		// at two weights rather than as two competing blues.
 		barStyle: 'flat',
 		barFill: 0x2a2a2a,
 		barAlpha: 1,
-		panelBorder: 0x0f0f0f,
+		panelBorder: ICE_EDGE,
 		panelFill: 0x2a2a2a,
 
 		// Round controls: a dark disc with a thin cool-grey ring.
@@ -261,6 +319,11 @@ if (uiSkin === 'platform') {
 		// of a CSS pixel at this bar's scale. Hot Miami and Go Bananubis both found
 		// this and fixed it the same way.
 		buttonFill: 0x14171a,
+		// The ring on the round controls goes from neutral steel to a cool blue-grey
+		// of the same weight — 0x565e66 measured 2.73 on the 0x14171a disc, this
+		// measures 5.01, so the controls are both more legible and in the family.
+		// Not a saturated ice: these are utility buttons, and the accent is spent on
+		// the spin button and the casing.
 		// ── THE ACCENT IS ICE, NOT THE PLATFORM'S GREEN ──────────────────────
 		//
 		// Hacksaw's chrome uses one accent colour, #4ace4a, on the spin button and
@@ -284,7 +347,7 @@ if (uiSkin === 'platform') {
 		// the muted counterpart of the accent, as 0x207820 was of the green
 		buttonFillDisabled: 0x2a5c7a,
 		buttonFillActive: ICE_BRIGHT,
-		buttonBorder: 0x565e66,
+		buttonBorder: 0x6b8ba3,
 		buttonBorderWidth: 2,
 		buttonBorderWidthActive: 5,
 		buttonIconFill: 0xffffff,
@@ -297,15 +360,44 @@ if (uiSkin === 'platform') {
 		betFill: ICE_EDGE,
 		betBorder: 0x343a40,
 
-		// Readouts: their disabled grey for labels, plain white for values. No
-		// per-metric accent colours — the platform bar does not tint its readouts,
-		// so the gold/steel split above is dropped rather than recoloured.
-		labelFill: 0xbfbfbf,
-		balanceLabelFill: 0xbfbfbf,
-		winAccent: { border: 0x343a40, label: 0xbfbfbf },
-		betAccent: { border: 0x343a40, label: 0xbfbfbf },
-		valueFill: 0xffffff,
-		valueStroke: 0x0f0f0f,
+		// ── THE READOUTS — Go Bananas Boat's order, in this game's materials ──
+		//
+		// Balance and Bet in ICE, WIN ALONE IN GOLD. This used to be the
+		// platform's neutral grey on all three, which made the bar tidy and made
+		// the number the player actually looks for after every spin just one of
+		// three identical boxes.
+		//
+		// Win is the only readout that changes because of the GAME rather than
+		// because of the player, and it is an amount received — which is exactly
+		// what palette.ts rule 2 reserves gold for. So this is that rule applied,
+		// not an exception to the platform look. Boat does the same thing in brass.
+		//
+		// Measured on the 0x2a2a2a casing, against Boat's equivalents:
+		//
+		//                        here                     Boat
+		//   Balance/Bet label    ice 0x8fb8d6    6.83     steel 5.68
+		//   WIN label            GOLD            10.34    brass 7.61
+		//   WIN edge             GOLD_DARK       6.29     brass 4.23
+		//   Bet edge             ICE_SHARD       2.09     steel-dim 1.98  (quietest)
+		//   values               ICE_HIGHLIGHT   12.19    cream 11.32
+		//
+		// Win's label runs louder than Boat's on purpose — it is meant to be
+		// picked out, and GOLD is the palette's money colour rather than a tint
+		// chosen for this. Balance keeps the casing's ICE_EDGE because
+		// LayoutBottomBar draws it on uiTheme.panelBorder directly and it cannot be
+		// given its own accent.
+		//
+		// VALUES IN PALE ICE, NOT WHITE, for Boat's reason: white on this dark
+		// strip measures 14.35 and glares over a long session; ICE_HIGHLIGHT is
+		// 12.19, still far beyond anything a figure needs to be read. The digits
+		// are the same in all three readouts — UiLabel never tints a value by its
+		// accent — so only the frame and the caption say which one is Win.
+		labelFill: 0x8fb8d6,
+		balanceLabelFill: 0x8fb8d6,
+		winAccent: { border: GOLD_DARK, label: GOLD },
+		betAccent: { border: ICE_SHARD, label: 0x8fb8d6 },
+		valueFill: ICE_HIGHLIGHT,
+		valueStroke: INK,
 		valueShadow: 0x000000,
 		// White rather than the ice bar's gold: the caption sits on the dark slate
 		// plate and the platform strip has no warm colour left for it to belong to.
@@ -377,3 +469,11 @@ if (uiSkin === 'platform') {
 		},
 	});
 }
+
+// A player who cannot afford the bet is TOLD SO, on every route into a bet —
+// the Bet button, the spacebar and Autoplay. It used to be the uiTheme key
+// betButtonMessageOnInsufficientBalance; it moved to state-shared because the
+// Autoplay start button lives in a package that cannot see uiTheme. Paired with
+// <ModalMessage /> in ui/Modals.svelte — without that the press would raise a
+// modal this app does not render.
+stateConfig.explainInsufficientBalance = true;

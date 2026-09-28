@@ -9,6 +9,7 @@
 
 <script lang="ts">
 	import { onDestroy } from 'svelte';
+	import { stateBet } from 'state-shared';
 	import { Container, Sprite } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
@@ -20,6 +21,8 @@
 	import BigWinFx from './BigWinFx.svelte';
 	import FxBurst from './FxBurst.svelte';
 	import GoldText from './GoldText.svelte';
+	import BannerMesh from './BannerMesh.svelte';
+	import { BANNER_CYCLE_MS } from '../game/meshWin/bannerTitle';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
@@ -99,8 +102,16 @@
 	let burstShown = $state(false);
 	let nextBurstAt = 0;
 
+	// When the count-up LANDS, in fxNow seconds; -1 until it does. The plaque's
+	// second beat hangs off it (bannerPose): the name jiggles again, the plaque
+	// takes a knock and swings on its hanger, the amount pops. Before this the
+	// count simply stopped, and the biggest number in the game arrived with no
+	// full stop.
+	let landedAt = $state(-1);
+
 	const startBannerFx = () => {
 		cancelAnimationFrame(fxRaf);
+		landedAt = -1;
 		twinkles = [];
 		nextTwinkleAt = 0;
 		nextBurstAt = 0;
@@ -136,7 +147,7 @@
 	onDestroy(stopBannerFx);
 
 	const bannerPose = $derived.by(() => {
-		if (fxNow < 0) return { scale: 1, glow: 0.4, blink: 0 };
+		if (fxNow < 0) return { scale: 1, glow: 0.4, blink: 0, titleMs: 0, titleAmp: 0, rot: 0, amountPop: 1 };
 		const t = fxNow;
 		// entrance: overshoot slam matching the hit-stop flash
 		const scale =
@@ -149,10 +160,34 @@
 			t < 0.3 ? 0.55 * (1 - t / 0.3) : 0,
 			phase < 0.32 ? 0.34 * (1 - phase / 0.32) : 0,
 		);
+		// The tier name's jiggle (BannerMesh): the full one on the slam-in, then a
+		// smaller one on each later flare. The flare above peaks at t = 0.4 + 2.3k
+		// and the jiggle's stretch peaks 260ms into its beat, so each beat starts
+		// just ahead of its flare.
+		const cycle = BANNER_CYCLE_MS / 1000;
+		const beat = Math.floor(Math.max(0, t - 0.14) / cycle);
+		let titleMs = t < 0.14 ? 0 : ((t - 0.14) % cycle) * 1000;
+		let titleAmp = beat === 0 ? 1 : 0.45;
+		// the amount landing takes the name over for one beat, nearly as hard as
+		// the slam-in
+		const sinceLand = landedAt < 0 ? -1 : t - landedAt;
+		if (sinceLand >= 0 && sinceLand < 1.2) {
+			titleMs = sinceLand * 1000;
+			titleAmp = 0.8;
+		}
+		const knock = sinceLand >= 0 && sinceLand < 0.24 ? Math.sin((Math.PI * sinceLand) / 0.24) : 0;
+		// Hung from its satellite: a slow sway all the time it is up, and a swing
+		// kicked off by the landing that dies away. Radians; about a degree at most.
+		const swing = sinceLand >= 0 ? 0.03 * Math.exp(-2.4 * sinceLand) * Math.sin(sinceLand * 7) : 0;
+		const sway = 0.008 * Math.sin(t * 1.6);
 		return {
-			scale,
-			glow: 0.42 + 0.24 * (0.5 + 0.5 * Math.sin(t * 2.6)),
-			blink,
+			scale: scale * (1 + 0.05 * knock),
+			glow: 0.42 + 0.24 * (0.5 + 0.5 * Math.sin(t * 2.6)) + 0.3 * knock,
+			blink: Math.max(blink, 0.45 * knock),
+			titleMs,
+			titleAmp,
+			rot: sway + swing,
+			amountPop: 1 + 0.18 * knock,
 		};
 	});
 
@@ -178,8 +213,22 @@
 <FadeContainer {show}>
 	{#if winLevelData}
 		{@const isBigWin = winLevelData.type === 'big'}
-		{@const duration = winLevelData.presentDuration}
-		<WinCountUpProvider {amount} {duration} oncomplete={() => onCountUpComplete()}>
+		<!-- TURBO HALVES THE COUNT-UP. A player who asked for speed was still
+		     sitting through 6s / 18s / 20s / 26s of rolling on a big win, the same
+		     as without it. Half, and the hold after it shortened to match; the
+		     plaque, the music and the landing beat all still play. -->
+		{@const duration = winLevelData.presentDuration * (stateBet.isTurbo ? 0.5 : 1)}
+		<!-- countUpAmount is a tween, so between frames it is fractional book units:
+	     unrounded it rolled as "$1.7264" / "$2.9952" (seen in a 2026-09-26 capture).
+	     Rounded to whole book units, the way Go Bananubis does, it rolls in cents. -->
+	<WinCountUpProvider
+		{amount}
+		{duration}
+		oncomplete={() => {
+			if (fxNow >= 0) landedAt = fxNow;
+			onCountUpComplete();
+		}}
+	>
 			{#snippet children({ countUpAmount, startCountUp, finishCountUp, countUpCompleted })}
 				{#if isBigWin}
 					<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
@@ -191,7 +240,7 @@
 						// the numbers start rolling
 						if (isBigWin) await waitForTimeout(90);
 						await startCountUp();
-						await waitForTimeout(isBigWin ? 1300 : 300);
+						await waitForTimeout(isBigWin ? (stateBet.isTurbo ? 700 : 1300) : 300);
 						oncomplete();
 					}}
 				/>
@@ -219,7 +268,10 @@
 							{@const bannerKey = BANNER_KEY[alias] ?? BANNER_KEY.big}
 							{@const bw = SYMBOL_SIZE * 5.2}
 							{@const bh = bw * BANNER_RATIO}
-							<Container scale={bannerPose.scale}>
+							<!-- pivots at the plaque's top edge, where the satellite would hang it -->
+							{@const hangY = -bh * 0.46}
+							<Container y={hangY} rotation={bannerPose.rot}>
+							<Container y={-hangY} scale={bannerPose.scale}>
 								<!-- breathing glow bed behind the plaque -->
 								<Sprite
 									key="fxGlow"
@@ -230,18 +282,20 @@
 									height={bh * 1.8}
 									alpha={bannerPose.glow}
 								/>
-								<Sprite key={bannerKey} anchor={0.5} width={bw} height={bh} />
-								<!-- additive self-copy = the whole plaque flares -->
-								{#if bannerPose.blink > 0}
-									<Sprite
-										key={bannerKey}
-										anchor={0.5}
+								<!-- the plaque, its tier name jelly (BannerMesh, meshWin/bannerTitle.ts),
+								     with the additive flare drawn through the same mesh -->
+								<!-- its own container: the mesh attaches on mount, and without a
+								     slot of its own it would land over the amount drawn below -->
+								<Container>
+									<BannerMesh
+										textureKey={bannerKey}
 										width={bw}
 										height={bh}
-										blendMode="add"
-										alpha={bannerPose.blink}
+										t={bannerPose.titleMs}
+										amp={bannerPose.titleAmp}
+										blink={bannerPose.blink}
 									/>
-								{/if}
+								</Container>
 								<!-- twinkles running the riveted rim -->
 								{#each twinkles as tw (tw.id)}
 									{@const p = Math.min(1, (fxNow - tw.born) / 0.7)}
@@ -259,12 +313,15 @@
 									/>
 								{/each}
 								<!-- amount rolls inside the plaque's dark centre well -->
-								<GoldText
-									y={bh * 0.16}
-									maxWidth={bw * 0.68}
-									text={bookEventAmountToCurrencyString(countUpAmount)}
-									fontSize={bh * 0.24}
-								/>
+								<!-- the amount pops as it lands (bannerPose.amountPop) -->
+								<Container y={bh * 0.16} scale={bannerPose.amountPop}>
+									<GoldText
+										maxWidth={bw * 0.68}
+										text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
+										fontSize={bh * 0.24}
+									/>
+								</Container>
+							</Container>
 							</Container>
 							{#if burstShown}
 								<!-- 'gold', not 'jungle': the jungle flavour mixes LEAF SHARDS into the
@@ -277,7 +334,7 @@
 							<GoldText
 								maxWidth={context.stateLayoutDerived.canvasSizes().width /
 									context.stateLayoutDerived.mainLayout().scale}
-								text={bookEventAmountToCurrencyString(countUpAmount)}
+								text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
 								fontSize={SYMBOL_SIZE}
 							/>
 						{/if}

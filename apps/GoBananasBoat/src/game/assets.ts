@@ -41,6 +41,23 @@
 		src: new URL('../../assets/sprites/goBananasFx/fx_scrap.png', import.meta.url).href,
 		preload: true,
 	},
+	// the win effects' matter (meshWin/fx.ts): the helmet's air bubbles and
+	// splash, the mine's grit, the letters' paint mist
+	fxBubble: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFx/fx_bubble.png', import.meta.url).href,
+		preload: true,
+	},
+	fxPuff: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFx/fx_puff.png', import.meta.url).href,
+		preload: true,
+	},
+	fxDrop: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFx/fx_drop.png', import.meta.url).href,
+		preload: true,
+	},
 	fxVignette: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasFx/fx_vignette.png', import.meta.url).href,
@@ -59,6 +76,48 @@
 		preload: true,
 	},
 	// brass win-tier plaques (design/generate_win_banners.mjs)
+	// the plaques cut for the letter hop (WinBannerLetters): each without its
+	// name, and the name's letters in a strip — design/generate_win_banners.mjs
+	gbWinBannerBigPlate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/big_plate.png', import.meta.url).href,
+	},
+	gbWinBannerBigLetters: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/big_letters.png', import.meta.url).href,
+	},
+	gbWinBannerSuperwinPlate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/superwin_plate.png', import.meta.url).href,
+	},
+	gbWinBannerSuperwinLetters: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/superwin_letters.png', import.meta.url).href,
+	},
+	gbWinBannerMegaPlate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/mega_plate.png', import.meta.url).href,
+	},
+	gbWinBannerMegaLetters: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/mega_letters.png', import.meta.url).href,
+	},
+	gbWinBannerEpicPlate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/epic_plate.png', import.meta.url).href,
+	},
+	gbWinBannerEpicLetters: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/epic_letters.png', import.meta.url).href,
+	},
+	gbWinBannerMaxPlate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/max_plate.png', import.meta.url).href,
+	},
+	gbWinBannerMaxLetters: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasWinBanners/max_letters.png', import.meta.url).href,
+	},
 	gbWinBannerBig: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasWinBanners/big.png', import.meta.url).href,
@@ -308,6 +367,236 @@
 	gbM: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/m.png', import.meta.url).href,
+		preload: true,
+	},
+	// THE MESH WINS' LAYERS (src/game/meshWin, SymbolMeshWin.svelte): every
+	// winning symbol split into plate / subject / drop shadow / light-sweep
+	// atlas by design/make_symbol_layers.mjs, and the Wild's glow and sweep.
+	// Written out literally so check_assets.mjs can see every path.
+	gbH1Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSPlate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSSubject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSShadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	// the tarp coming off a crate (MysteryReveal, game/meshWin/mReveal.ts)
+	gbMPlate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/m_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbMSubject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/m_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbMSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/m_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbWGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbWSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	// The sergeant standing beside the board. Built from the supplied character

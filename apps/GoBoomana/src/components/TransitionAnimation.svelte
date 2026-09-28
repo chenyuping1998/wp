@@ -3,6 +3,9 @@
 	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getContext } from '../game/context';
+	import { DYNAMITE } from '../game/meshWin';
+	import type { DynamiteEnv } from '../game/meshWin/dynamiteProp';
+	import PropMesh from './PropMesh.svelte';
 
 	// Jungle-commando transition: the sergeant pitches a pineapple dynamite into
 	// the middle of the screen — two red ticks — BOOM. The cut to the next scene
@@ -126,6 +129,13 @@
 	let boomT = $state(-1);
 	let flashAlpha = $state(0);
 
+	// What the dynamite's MESH is told each frame (game/meshWin/dynamiteProp):
+	// the fuse trails the tumble and flutters in the flight, whips over on the
+	// arrival, and the bundle squashes, swells with the blinks and the burn.
+	let shownAt = -1;
+	let spinRate = 0; // turns per second, eased so the fuse does not snap
+	let dynamiteEnv = $state<DynamiteEnv>({ t: 0, flying: 1, spin: 0, arriveT: -1, armedT: -1, burn: 0 });
+
 	const easeOutCubic = (t: number) => 1 - (1 - Math.min(Math.max(t, 0), 1)) ** 3;
 	const mixColor = (from: number, to: number, t: number) => {
 		const k = Math.max(0, Math.min(1, t));
@@ -235,6 +245,24 @@
 					coverFired = true;
 					props.oncover?.();
 				}
+			}
+
+			if (dynamiteVisible) {
+				if (shownAt < 0) shownAt = elapsed;
+				const inFlight = elapsed < ENTRY_MS;
+				// the throw tumbles 2.4 turns over the flight; afterwards the spin
+				// settles out (dynamiteSpin *= 0.82) and so does the drag
+				const targetSpin = thrown && inFlight ? 2.4 / (FLIGHT_MS / 1000) : 0;
+				spinRate += (targetSpin - spinRate) * Math.min(1, dt / 60);
+				const arriveT = inFlight ? -1 : elapsed - ENTRY_MS;
+				dynamiteEnv = {
+					t: elapsed - shownAt,
+					flying: inFlight ? 1 : Math.max(0, 1 - arriveT / 90),
+					spin: spinRate,
+					arriveT,
+					armedT: arriveT,
+					burn: boomT >= 0 ? Math.min(1, boomT / GRENADE_BURN) : 0,
+				};
 			}
 
 			if (elapsed >= TOTAL_MS) {
@@ -375,8 +403,10 @@
 			artwork is; only one dimension may be chosen.
 		-->
 		{@const gh = context.stateLayoutDerived.canvasSizes().height * 0.26 * dynamiteScale}
-		<Sprite
-			key="gbDynamite"
+		<!-- drawn through its mesh (game/meshWin/dynamiteProp.ts), same box -->
+		<PropMesh
+			spec={DYNAMITE}
+			env={dynamiteEnv}
 			anchor={0.5}
 			x={dynamiteX}
 			y={dynamiteY}

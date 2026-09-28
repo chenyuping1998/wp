@@ -5,7 +5,7 @@ import { base } from '$app/paths';
 
 import config from './config';
 
-// Go Bananas Delta ships five math modes: base play, the 50x hold and spin, and
+// Go Boomana ships five math modes: base play, the 50x hold and spin, and
 // three free-spin buys at 100x / 200x / 300x. The keys here are the math mode
 // names uppercased — stateBet looks them up with activeBetModeKey.toUpperCase().
 // The shared library ships a template default (ANTE / SUPER ANTE / …) with no
@@ -137,8 +137,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get description() {
 				return pick(
-					`100× BET → ${config.betModes.bonus100.spins} FREE SPINS, opening with the blast meter part-filled`,
-					`100× AMOUNT → ${config.betModes.bonus100.spins} FREE SPINS, opening with the blast meter part-filled`,
+					`100× BET → ${config.betModes.bonus100.spins} FREE SPINS, opening with the blast meter empty: the first Dynamite blows one reel`,
+					`100× AMOUNT → ${config.betModes.bonus100.spins} FREE SPINS, opening with the blast meter empty: the first Dynamite blows one reel`,
 				);
 			},
 			get button() {
@@ -174,8 +174,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get description() {
 				return pick(
-					`200× BET → ${config.betModes.bonus200.spins} FREE SPINS, opening with the blast meter half-filled`,
-					`200× AMOUNT → ${config.betModes.bonus200.spins} FREE SPINS, opening with the blast meter half-filled`,
+					`200× BET → ${config.betModes.bonus200.spins} FREE SPINS, opening with the blast meter half-filled: the first Dynamite blows two reels`,
+					`200× AMOUNT → ${config.betModes.bonus200.spins} FREE SPINS, opening with the blast meter half-filled: the first Dynamite blows two reels`,
 				);
 			},
 			get button() {
@@ -215,8 +215,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get description() {
 				return pick(
-					`300× BET → ${config.betModes.bonus300.spins} FREE SPINS, opening with the blast meter nearly full`,
-					`300× AMOUNT → ${config.betModes.bonus300.spins} FREE SPINS, opening with the blast meter nearly full`,
+					`300× BET → ${config.betModes.bonus300.spins} FREE SPINS, opening with the blast meter nearly full: the first Dynamite blows three reels`,
+					`300× AMOUNT → ${config.betModes.bonus300.spins} FREE SPINS, opening with the blast meter nearly full: the first Dynamite blows three reels`,
 				);
 			},
 			get button() {

@@ -519,18 +519,48 @@ frames.fs_sign = svgWrap(
 	<rect x="100" y="300" width="720" height="10" fill="#0f181e" opacity="0.5"/>
 	<rect x="100" y="490" width="720" height="10" fill="#0f181e" opacity="0.5"/>
 	<rect x="100" y="130" width="720" height="540" rx="26" filter="url(#signGrain)" opacity="0.5"/>
-	<!-- brass frame -->
+	<!-- THE BIG-WIN PLAQUES' LANGUAGE (design/generate_win_banners.mjs): the sign
+	     used to be a plain steel plate with rivets and brass corner plates,
+	     the one framed panel in the game that did not match the plaques. Now
+	     the same setting: a brass rim, a dark channel carrying a band of
+	     signal-flag colours, an inner brass line, bollard studs in the
+	     corners and an anchor riding the top edge. -->
 	<rect x="112" y="142" width="696" height="516" rx="20" fill="none" stroke="url(#brass)" stroke-width="10"/>
-	<rect x="124" y="154" width="672" height="492" rx="14" fill="none" stroke="#ffe98a" stroke-width="2.5" opacity="0.6"/>
-	${signRivets}
-	<!-- corner brass plates -->
-	${[[100, 130, 0], [820, 130, 90], [820, 670, 180], [100, 670, 270]]
+	<rect x="126" y="156" width="668" height="488" rx="14" fill="none" stroke="#1a1206" stroke-width="20"/>
+	${(() => {
+		const FLAGS = ['#d8402c', '#f4f0e2', '#2f5fb8', '#f0c030'];
+		let out = '';
+		const cell = 34, gap = 6, t = 14;
+		for (let x = 176, i = 0; x + cell <= 744; x += cell + gap, i++)
+			for (const y of [149, 651 - t])
+				out += `<rect x="${x}" y="${y}" width="${cell}" height="${t}" rx="3" fill="${FLAGS[i % 4]}" stroke="#1a1206" stroke-width="1.5"/>`;
+		for (let y = 206, i = 0; y + cell <= 594; y += cell + gap, i++)
+			for (const x of [119, 801 - t])
+				out += `<rect x="${x}" y="${y}" width="${t}" height="${cell}" rx="3" fill="${FLAGS[(i + 2) % 4]}" stroke="#1a1206" stroke-width="1.5"/>`;
+		return out;
+	})()}
+	<rect x="140" y="170" width="640" height="460" rx="10" fill="none" stroke="url(#brass)" stroke-width="5"/>
+	<rect x="148" y="178" width="624" height="444" rx="8" fill="none" stroke="#ffe98a" stroke-width="2" opacity="0.45"/>
+	<!-- bollard studs -->
+	${[[128, 158], [792, 158], [128, 642], [792, 642]]
 		.map(
-			([cx, cy, rot]) => `<g transform="translate(${cx} ${cy}) rotate(${rot})">
-		<path d="M -10 -10 L 84 -10 Q 88 -10 88 -6 L 88 16 Q 62 18 42 38 Q 20 58 18 88 L -4 88 Q -10 88 -10 84 Z" fill="url(#cornerBrass)" stroke="#3a2c08" stroke-width="4"/>
-	</g>`,
+			([x, y]) => `<circle cx="${x}" cy="${y}" r="24" fill="url(#cornerBrass)" stroke="#3a2c08" stroke-width="3"/>
+	<circle cx="${x}" cy="${y}" r="13" fill="#1a1206" stroke="#6d4a08" stroke-width="2"/>
+	<circle cx="${x - 4}" cy="${y - 4}" r="4" fill="#fff3bd" opacity="0.45"/>`,
 		)
 		.join('')}
+	<!-- the anchor over the top edge -->
+	${(() => {
+		const cx = 460;
+		const a = (stroke, w) => `<g fill="none" stroke="${stroke}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">
+		<circle cx="${cx}" cy="86" r="10"/>
+		<path d="M ${cx - 30} 108 L ${cx + 30} 108"/>
+		<path d="M ${cx} 96 L ${cx} 160"/>
+		<path d="M ${cx - 46} 134 Q ${cx - 42} 162 ${cx} 164 Q ${cx + 42} 162 ${cx + 46} 134"/>
+	</g>
+	<path d="M ${cx - 56} 131 L ${cx - 36} 126 L ${cx - 46} 144 Z M ${cx + 56} 131 L ${cx + 36} 126 L ${cx + 46} 144 Z" fill="${stroke}" stroke="${stroke}" stroke-width="${w > 9 ? 4 : 0}" stroke-linejoin="round"/>`;
+		return a('#3a2c08', 15) + a('url(#brass)', 8);
+	})()}
 	<!-- Banana emblem removed too: at (460,205) it sat directly behind the title
 	     the frontend draws at ~y=260, so its three overlapping banana shapes poked
 	     out between "FREE" and "SPINS" as a pair of disconnected gold slivers. -->

@@ -137,7 +137,7 @@
 			<Container
 				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 - 170}
 				y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
-				scale={0.5}
+				scale={uiTheme.portraitStepButtonScale}
 			>
 				{@render props.buttonDecrease({ anchor: 0.5 })}
 			</Container>
@@ -145,7 +145,7 @@
 			<Container
 				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5 + 170}
 				y={context.stateLayoutDerived.mainLayoutStandard().height - 400}
-				scale={0.5}
+				scale={uiTheme.portraitStepButtonScale}
 			>
 				{@render props.buttonIncrease({ anchor: 0.5 })}
 			</Container>

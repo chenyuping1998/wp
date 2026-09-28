@@ -244,6 +244,26 @@
 			// game's own tablets) shares nothing with the last feature's values.
 			if (context.stateGame.gameType !== 'freegame') lastMults.clear();
 
+			// ── A TABLET THAT IS ALREADY OPEN DOES NOT CRACK AGAIN ─────────────
+			//
+			// `positions` is meant to be the tablets that opened on THIS spin, but the
+			// maths builds it from every M the reels drew — and a reel can draw an M
+			// straight onto a cell the run already holds. That cell is stamped with
+			// the seal regardless (the hold is applied first), so it is not new, yet
+			// it arrived here in `positions` and the seal broke over a tablet that had
+			// been showing its face for spins. The player saw a stuck tablet crack
+			// open a second time.
+			//
+			// The last spin's values are the record of what was already open, so
+			// anything in it is dropped from the cracking list. It is still in
+			// `held`, so it is redrawn and re-rolled like the rest. (The maths now
+			// filters these out too — game_executables.assign_mystery_symbols — but
+			// books already published carry them, and a client that trusts the event
+			// completely is what let this through.)
+			const positions = event.positions.filter(
+				(p) => !lastMults.has(`${p.reel},${p.row}`),
+			);
+
 			// ── the wheels first ────────────────────────────────────────────────
 			//
 			// Cells that were ALREADY open and are being given a new value this
@@ -262,7 +282,7 @@
 			//
 			// So the previous spin's values are remembered here, which is also the
 			// only record that survives a spin at all.
-			const opening = new Set(event.positions.map((p) => `${p.reel},${p.row}`));
+			const opening = new Set(positions.map((p) => `${p.reel},${p.row}`));
 			const rerolled = event.held
 				.filter((cell) => !opening.has(`${cell.reel},${cell.row}`))
 				.map((cell) => ({
@@ -294,7 +314,7 @@
 			// read as the tablet opening twice.
 			context.eventEmitter.broadcast({
 				type: 'heldTabletsPending',
-				positions: event.positions,
+				positions: positions,
 			});
 
 			// 1 — the symbol, silently, on the cells that are already open. The
@@ -356,7 +376,7 @@
 				lastMults = new Map(event.held.map((cell) => [`${cell.reel},${cell.row}`, cell.mult]));
 			};
 
-			if (event.positions.length === 0) {
+			if (positions.length === 0) {
 				context.eventEmitter.broadcast({ type: 'heldTabletsOpened' });
 				await rollAndSettle();
 				return;
@@ -368,7 +388,7 @@
 
 			// Reading order — left to right, top to bottom — so several tablets
 			// giving way at once read as a sequence rather than a scattershot pop.
-			const ordered = [...event.positions].sort((a, b) => a.reel - b.reel || a.row - b.row);
+			const ordered = [...positions].sort((a, b) => a.reel - b.reel || a.row - b.row);
 
 			// Stone taking the strain, under the shudder — see
 			// design/generate_audio_jungle. This used to be `sfx_multiplier_update`,

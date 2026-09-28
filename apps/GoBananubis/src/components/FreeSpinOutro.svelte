@@ -53,9 +53,12 @@
 	// it: there is nothing to land.
 	let landPunch = $state(1);
 	let landBurst = $state(0);
+	// when it landed (performance.now), for the sign's second ripple
+	let landAt = $state(-1);
 	const landTotal = () => {
 		if (amount <= 0) return;
 		landBurst++;
+		landAt = performance.now();
 		context.eventEmitter.broadcast({ type: 'soundStoneCrack', step: 0 });
 		const start = Date.now();
 		const id = setInterval(() => {
@@ -93,7 +96,7 @@
 
 				<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
 
-				<FreeSpinAnimation>
+				<FreeSpinAnimation {landAt}>
 					{#snippet children({ sizes })}
 						<Text
 							anchor={0.5}

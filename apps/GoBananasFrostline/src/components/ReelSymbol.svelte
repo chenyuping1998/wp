@@ -120,6 +120,7 @@
 			rawSymbol={props.reelSymbol.rawSymbol}
 			{blur}
 			impact={landingImpact}
+			reel={props.reelIndex}
 			{oncomplete}
 		/>
 	</SymbolWrap>

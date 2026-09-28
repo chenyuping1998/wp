@@ -1,5 +1,6 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
+import { stateConfig } from 'state-shared';
 // animates the Buy Bonus hover glow; see the file
 import './buyBonusGlow';
 
@@ -8,6 +9,31 @@ import './buyBonusGlow';
 // Applied once at module load (imported by Game.svelte) — the shared UI package
 // otherwise keeps its plum/gold defaults for other games in the workspace.
 setUiTheme({
+	// PORTRAIT: the menu button and Buy Bonus sit this far either side of centre
+	// in the 1080-wide portrait layout, which fills a phone's width exactly. At
+	// the shared default of 470 the 150-wide menu disc started at x -5 — off the
+	// left edge of the screen — and Buy Bonus ended within 10 of the right one
+	// (5 PAST it where the platform skin enlarges the plate to 150). 440 is Go
+	// Boomana's value: both sit 25 inside the edges, and still clear turbo and
+	// autoplay (at 540 +/- 285) by 27.5.
+	portraitSideButtonX: 440,
+
+	// Hacksaw's house behaviours (see the shared theme's platformUx), the same
+	// values as Go Boomana: hold -/+ to keep stepping, a short lock on the spin
+	// button after the stake changes so a press cannot bet an amount not yet
+	// seen, an idle nudge on the spin button, shift-key shortcuts, and panels
+	// closing when a round starts. Can be switched off on a deployed build with
+	// localStorage.setItem('platformUx', 'off').
+	platformUx: {
+		betRepeatMs: 150,
+		betToSpinCooldownMs: 500,
+		idleReminderMs: 30000,
+		idlePulseMs: 2000,
+		shortcuts: true,
+		keybindThrottleMs: 100,
+		closePanelsOnSpin: true,
+	},
+
 	fontFamily: GAME_FONT,
 	// Titan One is single-weight; 700 would only get a synthesised bold
 	fontWeight: GAME_FONT_WEIGHT,
@@ -77,10 +103,6 @@ setUiTheme({
 	buyBonusHighlightPad: 0,
 	buyBonusHighlightRadius: 0.107,
 
-	// Certification: the bet button must stay clickable when the balance is short
-	// and say so. Paired with <ModalMessage /> in ui/Modals.svelte — without that
-	// the press would raise a modal this app does not render.
-	betButtonMessageOnInsufficientBalance: true,
 
 	// gold on the olive plate, matching every other caption in the game
 	buyBonusLabelFill: 0xffd75e,
@@ -104,6 +126,12 @@ setUiTheme({
 
 	// 旋轉鍵的呼吸光暈
 	spinButtonGlow: true,
+
+	// The Win figure swells and flashes in the Win label's colour when a win
+	// lands; the Bet figure swells when the stake moves (shared theme:
+	// valuePop / winFlashTint). Ported from GoBoomana, 2026-09-27.
+	valuePop: 0.18,
+	winFlashTint: 0xffd75e,
 
 	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
 	// keep the themed rounded rect, which suits the round buttons)
@@ -298,7 +326,7 @@ if (skin === 'platform') {
 		// NO HOVER SPIN. The sun disc turned (30 degrees a second, one ray period),
 		// but the shared button rotates the WHOLE plate, and a scarab orbiting its
 		// own sun reads as broken. Hover lights the emblem instead.
-		buyBonusHoverSpin: 0,
+		buyBonusHoverRotate: 0,
 
 		// THE EMBLEM IS DRAWN BIGGER THAN THE BUTTON. The caption's size is tied to
 		// the button box, and at 1:1 the word BONUS ran into the rim. 1.25 grows
@@ -427,3 +455,11 @@ if (skin === 'platform') {
 		},
 	});
 }
+
+// A player who cannot afford the bet is TOLD SO, on every route into a bet —
+// the Bet button, the spacebar and Autoplay. It used to be the uiTheme key
+// betButtonMessageOnInsufficientBalance; it moved to state-shared because the
+// Autoplay start button lives in a package that cannot see uiTheme. Paired with
+// <ModalMessage /> in ui/Modals.svelte — without that the press would raise a
+// modal this app does not render.
+stateConfig.explainInsufficientBalance = true;

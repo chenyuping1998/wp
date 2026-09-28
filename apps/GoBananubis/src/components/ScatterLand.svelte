@@ -39,7 +39,7 @@
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
+	import { SYMBOL_SIZE, BOARD_DIMENSIONS, cellToBoardUnits } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import ImpactDust from './ImpactDust.svelte';
@@ -106,6 +106,8 @@
 			context.eventEmitter.broadcast({
 				type: 'boardFrameImpact',
 				strength: 0.2 + 0.12 * Math.min(count, 5),
+				// the wave runs out from this Scatter's own cell
+				from: cellToBoardUnits(reel, row),
 			});
 		},
 		// The hold belongs to the board it landed on: the next spin clears it as

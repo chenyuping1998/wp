@@ -63,8 +63,13 @@ import CameraShake from './CameraShake.svelte';
 		};
 	});
 
-	// soft depth-of-field on the jungle scene so the reels read as the subject
-	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
+	// A TOUCH of depth-of-field on the dock so the reels read as the subject.
+	// 0.6, Deadwood Express's value: it was 4, which turned 1920px painted plates
+	// into a smear — "why is this game's background always blurry, it cannot be
+	// as sharp as Deadwood" (2026-09-27). The vignette and the board's own frame
+	// already separate the reels from the scene; the blur only has to take the
+	// edge off, not the detail.
+	const backgroundBlur = [new BlurFilter({ strength: 0.6, quality: 3 })];
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
 

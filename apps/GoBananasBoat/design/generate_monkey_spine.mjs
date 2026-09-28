@@ -122,9 +122,23 @@ const PROPS = [
 // visually ends at the elbow. Opened on its own the sleeve is a FINISHED
 // painting, round the back as well as the front (unlike `right_arm_1_forearm`,
 // which is nothing but shadow), so there is no reason for it to hide.
-// Order matters: these are appended to the draw order in this order, so the
-// upper arm has to come before the forearm or the elbow joint inverts.
-const FRONT_COPIES = ['right_arm_0_upper_arm', 'right_arm_2_hand'];
+// Order matters: these are appended to the draw order in this order, and it has
+// to be the PSD's own — forearm FIRST, sleeve over it (hand z below sleeve z).
+// It used to be the other way round, which put the forearm on top of the cuff:
+// its top end, the part painted to disappear up inside the sleeve (dark fur
+// roots and the cut-out's ink edge), was drawn ACROSS the cuff, and on every
+// right-arm strike a dark band crossed the elbow. trimTuck faded the darkest of
+// it and the rest still showed.
+const FRONT_COPIES = ['right_arm_2_hand', 'right_arm_0_upper_arm'];
+// The sleeve copy is now in front of the trunk, so its tucked edge is exposed
+// and trimTuck erases it. The forearm copy is under its sleeve again, but gets a
+// harder cut of its own (cutUnderSleeve): its top is a pointed cap of dark fur
+// painted to vanish up the sleeve, and the strike bends the elbow ~25 degrees
+// inward, which swings that cap OUT past the inner side of the cuff. trimTuck
+// only fades pixels darker than luma 48, and most of the cap is brown fur above
+// that, so it still showed as a dark wedge climbing toward the scarf.
+const TRIM_FRONT = new Set(['right_arm_0_upper_arm']);
+const CUT_UNDER_SLEEVE = { right_arm_2_hand: 'right_arm_0_upper_arm' };
 const frontName = (name) => `${name}_front`;
 
 const meta = JSON.parse(fs.readFileSync(path.join(SRC, 'layers.json'), 'utf8'));
@@ -439,6 +453,49 @@ const trimTuck = (img, rect) => {
 	return out;
 };
 
+// Erase whatever part of a piece its coverer actually hides, using the
+// coverer's OWN OUTLINE rather than its bounding box, and keep a strip just
+// under the coverer's lower edge. The strip is what stops a gap opening at the
+// joint when the piece rotates under its cover; everything deeper than it was
+// never meant to be seen and is removed outright, whatever its colour.
+//
+// Depth is measured per column, up from the lowest covered pixel in that
+// column: the cuff edge is a slanted line, and a single row cut-off would keep
+// cap on one side and bite into the forearm on the other.
+const SLEEVE_KEEP = 10; // px of forearm kept under the cuff edge
+const SLEEVE_FEATHER = 12; // then faded out over this many
+const cutUnderSleeve = (img, layer, cover) => {
+	const out = new PNG({ width: img.width, height: img.height });
+	img.data.copy(out.data);
+	const c = PNG.sync.read(fs.readFileSync(path.join(SRC, cover.file)));
+	const { width: w, height: h } = img;
+	const covered = (x, y) => {
+		const cx = x + layer.x - cover.x;
+		const cy = y + layer.y - cover.y;
+		if (cx < 0 || cy < 0 || cx >= c.width || cy >= c.height) return false;
+		return c.data[(cy * c.width + cx) * 4 + 3] > 20;
+	};
+	for (let x = 0; x < w; x++) {
+		let bottom = -1;
+		for (let y = h - 1; y >= 0; y--) {
+			if (covered(x, y)) {
+				bottom = y;
+				break;
+			}
+		}
+		if (bottom < 0) continue;
+		for (let y = 0; y <= bottom; y++) {
+			if (!covered(x, y)) continue;
+			const depth = bottom - y;
+			const k = Math.min(1, Math.max(0, (depth - SLEEVE_KEEP) / SLEEVE_FEATHER));
+			if (k <= 0) continue;
+			const i = (y * w + x) * 4;
+			out.data[i + 3] = Math.round(img.data[i + 3] * (1 - k));
+		}
+	}
+	return out;
+};
+
 // ── atlas ───────────────────────────────────────────────────────────────────
 // Shelf packing, tallest first. 19 pieces into one page — nothing here justifies
 // a real bin packer, and a predictable layout is easier to eyeball when a region
@@ -456,10 +513,10 @@ const placed = [];
 	// design/source would put a derived image next to the artist's originals.
 	const frontImages = FRONT_COPIES.filter((name) => boneOf[name]).map((name) => {
 		const layer = piece(name);
-		const img = trimTuck(
-			PNG.sync.read(fs.readFileSync(path.join(SRC, layer.file))),
-			tuckRect(layer),
-		);
+		const raw = PNG.sync.read(fs.readFileSync(path.join(SRC, layer.file)));
+		const img = CUT_UNDER_SLEEVE[name]
+			? cutUnderSleeve(raw, layer, piece(CUT_UNDER_SLEEVE[name]))
+			: trimTuck(raw, TRIM_FRONT.has(name) ? tuckRect(layer) : null);
 		return { name: frontName(name), w: img.width, h: img.height, image: img };
 	});
 	const sorted = [...drawOrder.filter((l) => boneOf[l.name]), ...frontImages, ...propImages].sort(
@@ -1010,8 +1067,18 @@ const beatKeys = (inward, side, mine) =>
 // the ends rather than around each strike: swapping per beat would flicker the
 // arm through the chest six times, and there is nothing in this pose that needs
 // it behind.
-const chestbeatSlots = Object.fromEntries(
-	FRONT_COPIES.flatMap((name) => [
+//
+// And the arm's CAST SHADOW goes for the same stretch. right_arm_1_forearm is
+// not a forearm at all: it is a solid black blob, the shadow the hanging arm
+// throws on the coat inside the sleeve. It is rigged to the elbow bone, so on
+// every right-arm strike it rotated inward with the forearm and swept out from
+// behind the sleeve across the chest as a black wedge. A shadow cast by an arm
+// hanging at the side has nothing to do with an arm held across the body, so it
+// is simply off while the arm is in front.
+const CAST_SHADOW = 'right_arm_1_forearm';
+const chestbeatSlots = Object.fromEntries([
+	[CAST_SHADOW, { attachment: [{ time: 0, name: null }, { time: BEAT_END + 0.34, name: CAST_SHADOW }] }],
+	...FRONT_COPIES.flatMap((name) => [
 		[name, { attachment: [{ time: 0, name: null }, { time: BEAT_END + 0.34, name }] }],
 		[
 			frontName(name),
@@ -1023,7 +1090,7 @@ const chestbeatSlots = Object.fromEntries(
 			},
 		],
 	]),
-);
+]);
 
 const chestbeat = {
 	slots: chestbeatSlots,
@@ -1563,6 +1630,114 @@ const throwit = {
 	},
 };
 
+// ── MARCH IN PLACE ──────────────────────────────────────────────────────────
+//
+// His resting state for the whole of the free spins (Mascot.svelte loops it
+// there in place of idle, and cuts to the cheer only for a big win). Not used
+// in the base game.
+//
+// Seen from the front a knee cannot come up by rotating anything — rotating the
+// thigh swings the leg out sideways and pulls it out from under the coat
+// (measured: from ~30 degrees the hip visibly parts). The jump already solved
+// this the only way a front view allows: FORESHORTENING. Scaling the thigh bone
+// shortens the whole leg below it, so the boot leaves the ground as if the knee
+// were coming toward the camera. At 0.83 the boot clears the floor plainly and
+// the leg still reads as a leg; much past that it reads as squashed.
+//
+// The arms keep time with a small sideways swing, opposite to the legs, inside
+// the shoulder budget and with the forearm hanging (hang()). Nothing is swapped
+// and nothing leaves its budget, so there is nothing to show a dark seam.
+//
+// IT LOOPS, so it is built to close on itself: four steps exactly fill the clip,
+// every key at 0 and at the end is the rest pose, and no key sits past the end
+// (the forearm's DRAG is folded back inside the clip) — a key beyond it would
+// make the clip longer than the stride and put a hitch in every fourth step.
+const MARCH_STEPS = 4;
+const MARCH_STEP = 0.5;
+const MARCH_LIFT = 0.83; // thigh length at the top of the step
+const MARCH_SWING = 7; // degrees of arm swing
+const MARCH_END = MARCH_STEPS * MARCH_STEP;
+const stepAt = (i) => i * MARCH_STEP;
+const LEFT_STEPS = [0, 2];
+const RIGHT_STEPS = [1, 3];
+
+// one leg: lifts on its own steps, planted on the others
+const legKeys = (mine) => [
+	{ time: 0, x: 1, y: 1 },
+	...mine.flatMap((i) => [
+		...(stepAt(i) > 0 ? [{ time: stepAt(i), x: 1, y: 1 }] : []),
+		{ time: stepAt(i) + 0.2, x: 1.02, y: MARCH_LIFT },
+		{ time: stepAt(i) + 0.42, x: 1, y: 1 },
+	]),
+	{ time: MARCH_END, x: 1, y: 1 },
+];
+// the boot comes a little nearer the lens as it lifts
+const footKeys = (mine) => [
+	{ time: 0, x: 1, y: 1 },
+	...mine.flatMap((i) => [
+		...(stepAt(i) > 0 ? [{ time: stepAt(i), x: 1, y: 1 }] : []),
+		{ time: stepAt(i) + 0.2, x: 1.06, y: 1.06 },
+		{ time: stepAt(i) + 0.42, x: 1, y: 1 },
+	]),
+	{ time: MARCH_END, x: 1, y: 1 },
+];
+// arm swings out while the OPPOSITE leg lifts; `out` is the outward sign
+const swingKeys = (out, mine) => [
+	{ time: 0, value: 0 },
+	...[0, 1, 2, 3].map((i) => ({
+		time: stepAt(i) + 0.2,
+		value: mine.includes(i) ? out * MARCH_SWING : -out * MARCH_SWING * 0.5,
+	})),
+	{ time: MARCH_END, value: 0 },
+];
+// the forearm trails the shoulder by DRAG, except at the two ends of the clip,
+// which have to be the rest pose for the loop to close
+const hangKeys = (keys) =>
+	keys.map((k) =>
+		k.time === 0 || k.time === MARCH_END
+			? { time: k.time, value: 0 }
+			: { time: +(k.time + DRAG).toFixed(3), value: hang(k.value) },
+	);
+
+const marchArmR = swingKeys(1, LEFT_STEPS);
+const marchArmL = swingKeys(-1, RIGHT_STEPS);
+
+const march = {
+	bones: {
+		legL: { scale: legKeys(LEFT_STEPS) },
+		legR: { scale: legKeys(RIGHT_STEPS) },
+		legL_foot: { scale: footKeys(LEFT_STEPS) },
+		legR_foot: { scale: footKeys(RIGHT_STEPS) },
+		// a small bob: down as each boot lands
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				...[0, 1, 2, 3].flatMap((i) => [
+					{ time: stepAt(i) + 0.2, x: 0, y: 2 },
+					{ time: stepAt(i) + 0.44, x: 0, y: -5 },
+				]),
+				{ time: MARCH_END, x: 0, y: 0 },
+			],
+		},
+		// weight over the standing leg
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				...[0, 1, 2, 3].map((i) => ({
+					time: stepAt(i) + 0.2,
+					value: LEFT_STEPS.includes(i) ? -1.5 : 1.5,
+				})),
+				{ time: MARCH_END, value: 0 },
+			],
+		},
+		armR: { rotate: marchArmR },
+		armL: { rotate: marchArmL },
+		armR_fore: { rotate: hangKeys(marchArmR) },
+		armL_fore: { rotate: hangKeys(marchArmL) },
+	},
+};
+
+
 // ── interpolation ───────────────────────────────────────────────────────────
 //
 // THIS IS WHERE THE JERK CAME FROM, NOT THE KEYFRAME VALUES
@@ -1806,6 +1981,439 @@ const sweeps = SWEEP
 		)
 	: {};
 
+
+// ── THE SCARF AND THE BANANA MOVE ON THEIR OWN ──────────────────────────────
+//
+// They used to be rigid pieces glued to the torso and the head: whatever the
+// body did they did, exactly, and never anything of their own — which is why
+// the whole figure read as stiff. The rule measured off Hacksaw's cast (see
+// wp/.claude/skills/mesh-cast-rig §3) is that the body barely moves and the
+// amplitude goes to what HANGS off it, a beat late.
+//
+// So the three pieces that hang are MESHES now, not regions — one image each,
+// deforming, no seams — weighted between the body and bones of their own:
+//
+//   scarf_l / scarf_r    the two pairs of neckerchief tails (torso_0 and
+//   (+ _tip children)    torso_4), hanging from the knot under the chin
+//   banana               the banana, from where it is held in his teeth
+//
+// Those bones move two ways at once, and neither needs any other animation to
+// know about them:
+//
+//   · PHYSICS CONSTRAINTS (Spine 4.2): the tails and the banana have inertia.
+//     When the body moves — the chest beat, the march, the jump in the cheer —
+//     they lag, overshoot and settle on their own.
+//   · `flutter`, a loop on TRACK 1 (Mascot.svelte), always playing: a slow
+//     breeze through the tails and a chew of the banana, so he is never
+//     perfectly still even standing at idle in the base game.
+//
+// WHICH PIXELS FOLLOW is read off the art, not traced: the neckerchief is
+// brown (red over blue) and the lapel it lies on is navy (blue over red), so
+// a vertex's weight to the tails is how brown the art is around it, times how
+// far it hangs below the knot. The knot itself stays put.
+const FLUTTER_LOOP = 4.8;
+const MESH_CELL = 8; // px of PSD per mesh cell
+
+const KNOT = [322, 298];
+const TAILS = {
+	scarf_l: { tip: [296, 390] },
+	scarf_r: { tip: [372, 380] },
+};
+// THE COLLAR: the left lapel's standing point. The coat is painted in full
+// underneath it (checked by rendering without torso_0), so it can lift and
+// settle without opening a hole. It hinges near the knot and the point moves.
+const COLLAR_BASE = [262, 300];
+const COLLAR_TIP = [178, 140];
+// ...and the right one, which is not a piece of its own: it is painted into
+// the coat (torso_5_trunk), rising behind the right of his head. So the coat is
+// a mesh too, and only its collar point is weighted to move.
+const COLLAR_R_BASE = [412, 246];
+const COLLAR_R_TIP = [385, 148];
+const MOUTH = [292, 222];
+const BANANA_TIP = [210, 298];
+
+// a new bone, pointing from `from` to `to`, with its length — rotation physics
+// needs both
+const extraBones = [];
+const extraWorld = {};
+const addBone = (name, parent, from, to) => {
+	const a = toSpine(from[0], from[1]);
+	const b = toSpine(to[0], to[1]);
+	const rot = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+	const len = Math.hypot(b.x - a.x, b.y - a.y);
+	const pw = extraWorld[parent] ?? { ...jointWorld[parent], rot: 0 };
+	// local position in the parent's frame
+	const pr = (-pw.rot * Math.PI) / 180;
+	const dx = a.x - pw.x, dy = a.y - pw.y;
+	extraBones.push({
+		name,
+		parent,
+		x: +(dx * Math.cos(pr) - dy * Math.sin(pr)).toFixed(2),
+		y: +(dx * Math.sin(pr) + dy * Math.cos(pr)).toFixed(2),
+		rotation: +(rot - pw.rot).toFixed(2),
+		length: +len.toFixed(2),
+	});
+	extraWorld[name] = { x: a.x, y: a.y, rot };
+};
+for (const [name, { tip }] of Object.entries(TAILS)) {
+	const mid = [(KNOT[0] + tip[0]) / 2, (KNOT[1] + tip[1]) / 2];
+	addBone(name, 'torso', KNOT, mid);
+	addBone(`${name}_tip`, name, mid, tip);
+}
+addBone('banana', 'head', MOUTH, BANANA_TIP);
+addBone('collar', 'torso', COLLAR_BASE, COLLAR_TIP);
+addBone('collar_r', 'torso', COLLAR_R_BASE, COLLAR_R_TIP);
+
+// ── THE CLOTHES MOVE ────────────────────────────────────────────────────────
+//
+// Asked for 2026-09-27: "can the character's clothes and accessories move with
+// the mesh method, so he is more fun to watch". The neckerchief, the collars
+// and the banana already did; the rest of his kit was rigid plates, turning
+// as cards about their joints. Now four more pieces are weighted meshes, each
+// with a free end on a bone of its own that has physics on it (GoBananaut's
+// and GoBoomana's sleeves, the same method):
+//
+//   sleeves   the cap stays on the TORSO within CLOTH_HOLD px of the shoulder,
+//             hands over to the arm over CLOTH_BLEND, and the rolled cuff at
+//             the bottom goes on to cuffL / cuffR — so a sleeve bends where it
+//             joins the coat, and its cuff swings a beat behind every punch
+//   trousers  the waistband on the HIP, the middle on the leg, the baggy lower
+//             half on pantL / pantR
+//   coat skirt  the flare of the coat below the belt (torso_3_coat) on skirtL /
+//             skirtR, split about the buttons — it flicks out on the march and
+//             the cheer's jump and swings back
+//
+// and the EYES BLINK: head_5_eye is its own layer, and the face painted under
+// it has closed lids, so fading the layer out for a moment is a blink (keyed
+// in `flutter`).
+const CLOTH_HOLD = 18;
+const CLOTH_BLEND = 70;
+const CLOTH = [
+	{ piece: 'left_arm_0_upper_arm', body: 'torso', limb: 'armL', hem: 'cuffL', hemFrom: 0.56, hemOver: 0.4, from: [86, 362], to: [80, 424] },
+	{ piece: 'right_arm_0_upper_arm', body: 'torso', limb: 'armR', hem: 'cuffR', hemFrom: 0.56, hemOver: 0.4, from: [468, 356], to: [476, 424] },
+	{ piece: 'left_leg_0_thigh', body: 'hip', limb: 'legL', hem: 'pantL', hemFrom: 0.45, hemOver: 0.4, from: [212, 620], to: [206, 700] },
+	{ piece: 'right_leg_0_thigh', body: 'hip', limb: 'legR', hem: 'pantR', hemFrom: 0.45, hemOver: 0.4, from: [370, 620], to: [376, 708] },
+];
+for (const c of CLOTH) addBone(c.hem, c.limb, c.from, c.to);
+// the skirt: hangs from the belt, one flap either side of the buttons
+const BELT_Y = 540;
+const SKIRT_MID = 290;
+addBone('skirtL', 'torso', [200, BELT_Y], [186, 622]);
+addBone('skirtR', 'torso', [380, BELT_Y], [396, 622]);
+bones.push(...extraBones);
+const boneIndex = Object.fromEntries(bones.map((b, i) => [b.name, i]));
+const worldOf = (name) => extraWorld[name] ?? { ...jointWorld[name], rot: 0 };
+
+const smooth01 = (v) => {
+	const t = Math.max(0, Math.min(1, v));
+	return t * t * (3 - 2 * t);
+};
+// how far a PSD point hangs past `from` along the direction to `to`, 0..1 at `to`
+const along = (p, from, to) => {
+	const dx = to[0] - from[0], dy = to[1] - from[1];
+	return ((p[0] - from[0]) * dx + (p[1] - from[1]) * dy) / (dx * dx + dy * dy);
+};
+
+// A weighted grid mesh over one piece. `weights(p, rgba)` gives, for a PSD
+// point, the extra bones' weights; whatever is left goes to the piece's own
+// bone. Colours are sampled blurred (r = 6px) so weights are smooth.
+const meshAttachment = (layerName, weights) => {
+	const l = piece(layerName);
+	const img = PNG.sync.read(fs.readFileSync(path.join(SRC, l.file)));
+	const sample = (x, y) => {
+		let r = 0, g = 0, b = 0, a = 0;
+		for (let dy = -6; dy <= 6; dy += 2)
+			for (let dx = -6; dx <= 6; dx += 2) {
+				const xi = Math.round(x - l.x + dx), yi = Math.round(y - l.y + dy);
+				if (xi < 0 || yi < 0 || xi >= img.width || yi >= img.height) continue;
+				const i = (yi * img.width + xi) * 4;
+				const al = img.data[i + 3] / 255;
+				r += img.data[i] * al;
+				g += img.data[i + 1] * al;
+				b += img.data[i + 2] * al;
+				a += al;
+			}
+		return a > 0 ? [r / a, g / a, b / a, a] : [0, 0, 0, 0];
+	};
+	const own = boneOf[layerName];
+	const cols = Math.max(2, Math.round(l.w / MESH_CELL));
+	const rows = Math.max(2, Math.round(l.h / MESH_CELL));
+	const uvs = [], vertices = [], triangles = [];
+	// Pass 1: weights where there is art. Pass 2: every vertex in the AIR takes
+	// the weights of the nearest vertex that has art, so the transparent margin
+	// moves with the edge beside it instead of pinning it in place (a pinned
+	// margin drags the edge back as a smear — the skill's "air follows the
+	// nearest part").
+	const V = (cols + 1) * (rows + 1);
+	const pts = [], alpha = [], raw = [];
+	for (let r = 0; r <= rows; r++)
+		for (let c = 0; c <= cols; c++) {
+			const u = c / cols, v = r / rows;
+			const p = [l.x + u * l.w, l.y + v * l.h];
+			uvs.push(+u.toFixed(5), +v.toFixed(5));
+			const rgba = sample(p[0], p[1]);
+			pts.push(p);
+			alpha.push(rgba[3]);
+			raw.push(rgba[3] > 0.05 ? weights(p, rgba) : null);
+		}
+	const inked = [];
+	for (let i = 0; i < V; i++) if (raw[i]) inked.push(i);
+	for (let i = 0; i < V; i++) {
+		if (raw[i]) continue;
+		let best = -1, bd = Infinity;
+		for (const j of inked) {
+			const d = Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]);
+			if (d < bd) { bd = d; best = j; }
+		}
+		raw[i] = best >= 0 ? raw[best] : {};
+	}
+	for (let i = 0; i < V; i++) {
+		const p = pts[i];
+		const extra = raw[i];
+		let rest = 1;
+		const list = [];
+		for (const [name, w] of Object.entries(extra)) {
+			if (w <= 1e-4) continue;
+			list.push([name, w]);
+			rest -= w;
+		}
+		if (rest < -1e-6) throw new Error(`${layerName}: weights over 1 at ${p}`);
+		if (rest > 1e-4) list.push([own, rest]);
+		const s = toSpine(p[0], p[1]);
+		vertices.push(list.length);
+		for (const [name, w] of list) {
+			const bw = worldOf(name);
+			const a = (-bw.rot * Math.PI) / 180;
+			const dx = s.x - bw.x, dy = s.y - bw.y;
+			vertices.push(
+				boneIndex[name],
+				+(dx * Math.cos(a) - dy * Math.sin(a)).toFixed(2),
+				+(dx * Math.sin(a) + dy * Math.cos(a)).toFixed(2),
+				+w.toFixed(4),
+			);
+		}
+	}
+	for (let r = 0; r < rows; r++)
+		for (let c = 0; c < cols; c++) {
+			const a = r * (cols + 1) + c, b = a + 1, d = a + cols + 1, e = d + 1;
+			triangles.push(a, d, b, b, d, e);
+		}
+	attachments[layerName] = {
+		[layerName]: { type: 'mesh', uvs, triangles, vertices, width: l.w, height: l.h },
+	};
+};
+
+// THE TAILS: everything inside the tails' own outline below the knot — the
+// brown AND its black ink edge — except the navy of the lapel where the left
+// tail lies over it. The first version picked the tails by colour alone
+// ("brown"), and it was wrong twice over: the lapel's worn highlights are warm
+// too and swung with the scarf far from it, and the tails' own black outline
+// is not brown, stayed pinned to the coat and tore every edge the moment a
+// tail moved. Split left/right about the knot; each tail hands its lower half
+// to its tip bone.
+// Drawn well OUTSIDE the tails on their free sides (left and bottom run past
+// the art): its soft edge pins what it passes through, and the first zone ran
+// its left edge straight down the left tail's outline, which then tore at
+// every swing. The lapel under that side is kept out by colour (navy), not by
+// the zone.
+const TAIL_ZONE = [[286, 286], [352, 274], [398, 334], [400, 412], [250, 412], [250, 350], [274, 318]];
+const inPoly = (pts, [x, y]) => {
+	let inside = false;
+	for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+		const [xi, yi] = pts[i], [xj, yj] = pts[j];
+		if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+	}
+	return inside;
+};
+// distance from a point to a polygon's edge, for a soft zone border
+const edgeDist = (pts, [x, y]) => {
+	let best = Infinity;
+	for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+		const [ax, ay] = pts[j], [bx, by] = pts[i];
+		const dx = bx - ax, dy = by - ay;
+		const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy)));
+		best = Math.min(best, Math.hypot(ax + t * dx - x, ay + t * dy - y));
+	}
+	return best;
+};
+const tailWeightsFor = (layerName) => (p, [r, , b]) => {
+	if (!inPoly(TAIL_ZONE, p)) return {};
+	const zone = smooth01(edgeDist(TAIL_ZONE, p) / 8);
+	const hang = smooth01((Math.hypot(p[0] - KNOT[0], p[1] - KNOT[1]) - 10) / 30);
+	// THE LEFT TAIL SWINGS ONLY BELOW THE LAPEL. Its upper half lies against
+	// the lapel's edge in the same image with no gap between them, so any
+	// swing there has nowhere to go but through the lapel (measured: the
+	// lapel folded to -75% in the chest beat). Below the lapel's corner, at
+	// y 368, it hangs in open air, and that is the part that swings.
+	//
+	// Then the lapel's corner — which the left tail lies against, in the same
+	// image, with no gap — is not held still but CARRIED, a little: its weight
+	// falls off over 30px into the lapel. Holding it still (the first two
+	// versions) either froze the left tail's upper half, which read as a
+	// one-sided scarf, or tore the tail where the hold began. Carried, the
+	// corner of the lapel lifts with the scarf lying on it, which is what cloth
+	// under cloth does.
+	const leftGuard = layerName !== 'torso_0_decoration' ? 1 : smooth01((p[0] - 262) / 30);
+	const w = zone * hang * leftGuard;
+	if (w <= 0) return {};
+	const dl = along(p, KNOT, TAILS.scarf_l.tip), dr = along(p, KNOT, TAILS.scarf_r.tip);
+	const toR = smooth01((p[0] - KNOT[0] + 8) / 20);
+	const out = {};
+	const split = (name, share, t) => {
+		const tip = smooth01((t - 0.4) / 0.35);
+		out[name] = share * w * (1 - tip);
+		out[`${name}_tip`] = share * w * tip;
+	};
+	split('scarf_l', 1 - toR, dl);
+	split('scarf_r', toR, dr);
+	return out;
+};
+// torso_0 is the lapel AND the knot and front tails: the tails zone goes to
+// the scarf, the rest of it (the lapel) to the collar, more toward its point
+meshAttachment('torso_0_decoration', (p, rgba) => {
+	if (inPoly(TAIL_ZONE, p)) return tailWeightsFor('torso_0_decoration')(p, rgba);
+	const lift = smooth01((along(p, COLLAR_BASE, COLLAR_TIP) - 0.12) / 0.6);
+	// fades to nothing toward the tails zone, so the knot stays put
+	const clear = smooth01((edgeDist(TAIL_ZONE, p) - 4) / 20);
+	return { collar: lift * clear };
+});
+meshAttachment('torso_4_decoration', tailWeightsFor('torso_4_decoration'));
+meshAttachment('torso_5_trunk', (p) => {
+	if (p[1] > 256 || p[0] < 350) return {};
+	const lift = smooth01((along(p, COLLAR_R_BASE, COLLAR_R_TIP) - 0.12) / 0.6);
+	return { collar_r: lift * smooth01((p[0] - 356) / 40) * smooth01((256 - p[1]) / 14) };
+});
+// the banana: all of it but the end in his teeth
+meshAttachment('head_0_decoration', (p) => ({
+	banana: smooth01((along(p, MOUTH, BANANA_TIP) - 0.04) / 0.3),
+}));
+
+// THE CLOTHES (see "THE CLOTHES MOVE"). RIGID_CLOTH=1 builds the old plates,
+// for before/after renders.
+if (!process.env.RIGID_CLOTH) {
+	for (const c of CLOTH) {
+		const l = piece(c.piece);
+		const joint = RIG.find((b) => b.name === c.limb).at;
+		meshAttachment(c.piece, (p) => {
+			const onLimb = smooth01((Math.hypot(p[0] - joint[0], p[1] - joint[1]) - CLOTH_HOLD) / CLOTH_BLEND);
+			const onHem = smooth01(((p[1] - l.y) / l.h - c.hemFrom) / c.hemOver);
+			// what is not the body's or the hem's stays on the limb (the piece's own bone)
+			return { [c.body]: 1 - onLimb, [c.hem]: onLimb * onHem };
+		});
+		// the chest beat's front copy of the right sleeve deforms with it: the same
+		// mesh on its own (trimmed) region
+		if (FRONT_COPIES.includes(c.piece)) {
+			const f = frontName(c.piece);
+			attachments[f] = { [f]: { ...attachments[c.piece][c.piece] } };
+		}
+	}
+	// the coat below the belt, left and right of the buttons
+	meshAttachment('torso_3_coat', (p) => {
+		const hang = smooth01((p[1] - BELT_Y) / 60);
+		if (hang <= 0) return {};
+		const toR = smooth01((p[0] - SKIRT_MID + 30) / 60);
+		return { skirtL: hang * (1 - toR), skirtR: hang * toR };
+	});
+}
+
+// PHYSICS: inertia on every hanging bone. The tips carry more (they are the
+// free ends), the banana far less (it is gripped).
+const physics = [
+	// Tuned with ALL seven running (see `order` in the skeleton below). The
+	// first settings were chosen while only the first one ran, and with every
+	// constraint live they threw the right tail to 32 degrees and the right
+	// collar through itself in the cheer. Stiffer upper bones, the whip kept in
+	// the tips.
+	{ name: 'scarf_l_phys', bone: 'scarf_l', rotate: 1, inertia: 0.18, strength: 230, damping: 0.8, mass: 2 },
+	{ name: 'scarf_l_tip_phys', bone: 'scarf_l_tip', rotate: 1, inertia: 0.35, strength: 120, damping: 0.8, mass: 2 },
+	{ name: 'scarf_r_phys', bone: 'scarf_r', rotate: 1, inertia: 0.18, strength: 230, damping: 0.8, mass: 2 },
+	{ name: 'scarf_r_tip_phys', bone: 'scarf_r_tip', rotate: 1, inertia: 0.35, strength: 120, damping: 0.8, mass: 2 },
+	{ name: 'collar_r_phys', bone: 'collar_r', rotate: 1, inertia: 0.08, strength: 320, damping: 0.8, mass: 1.5 },
+	{ name: 'collar_phys', bone: 'collar', rotate: 1, inertia: 0.2, strength: 220, damping: 0.8, mass: 1.5 },
+	{ name: 'banana_phys', bone: 'banana', rotate: 1, inertia: 0.25, strength: 180, damping: 0.78, mass: 1 },
+	// THE CLOTHES: hems loose enough to swing a beat behind the limb, stiff
+	// enough that a cuff never lifts off the fist or a trouser hem off the boot
+	// top under it; the skirt the loosest, it is the widest free edge he has
+	{ name: 'cuffL_phys', bone: 'cuffL', rotate: 1, inertia: 0.22, strength: 320, damping: 0.86, mass: 1 },
+	{ name: 'cuffR_phys', bone: 'cuffR', rotate: 1, inertia: 0.22, strength: 320, damping: 0.86, mass: 1 },
+	{ name: 'pantL_phys', bone: 'pantL', rotate: 1, inertia: 0.35, strength: 180, damping: 0.82, mass: 1.2 },
+	{ name: 'pantR_phys', bone: 'pantR', rotate: 1, inertia: 0.35, strength: 180, damping: 0.82, mass: 1.2 },
+	{ name: 'skirtL_phys', bone: 'skirtL', rotate: 1, inertia: 0.32, strength: 220, damping: 0.82, mass: 1.5 },
+	{ name: 'skirtR_phys', bone: 'skirtR', rotate: 1, inertia: 0.32, strength: 220, damping: 0.82, mass: 1.5 },
+];
+
+// THE FLUTTER, on track 1, forever. Whole cycles of FLUTTER_LOOP only, so it
+// loops without a seam; the two tails are out of phase and the tips lag.
+const flutterKeys = (amp, n, phase, steps = 24) =>
+	Array.from({ length: steps + 1 }, (_, i) => {
+		const t = (FLUTTER_LOOP * i) / steps;
+		return { time: +t.toFixed(4), value: +(amp * Math.sin((2 * Math.PI * n * t) / FLUTTER_LOOP + phase)).toFixed(3) };
+	});
+// the chew: two quick bites, then a rest, once a loop
+const chew = (() => {
+	const keys = [];
+	for (let i = 0; i <= 48; i++) {
+		const t = (FLUTTER_LOOP * i) / 48;
+		const bite = (t0) => {
+			const u = (t - t0) / 0.22;
+			return u > 0 && u < 1 ? Math.sin(Math.PI * u) : 0;
+		};
+		// two bites of ~16 degrees (~10px on screen at the tip), and a slow
+		// waggle between them so the banana is never parked
+		keys.push({ time: +t.toFixed(4), value: +(16 * (bite(0.6) + 0.8 * bite(0.95)) + 3.5 * Math.sin((2 * Math.PI * 2 * t) / FLUTTER_LOOP)).toFixed(3) });
+	}
+	return keys;
+})();
+const flutter = {
+	bones: {
+		// Sized for the SCREEN, not the art: he is drawn at about a third of the
+		// PSD, and the first pass (2-3 degrees) moved the tails ~2px there —
+		// correct and invisible. The free ends now travel ~7px on screen.
+		// The two tails move with ONE breeze, a beat apart — not on two clocks.
+		// Swinging in opposite directions they pinched the V between them at the
+		// knot to 13% of its area; in step, they open and close it together.
+		scarf_l: { rotate: flutterKeys(3, 2, 0) },
+		scarf_l_tip: { rotate: flutterKeys(9, 2, -0.9) },
+		scarf_r: { rotate: flutterKeys(5, 2, -0.35) },
+		scarf_r_tip: { rotate: flutterKeys(8, 2, -1.2) },
+		banana: { rotate: chew },
+		// the collar point lifts in the breeze, out of step with the tails
+		collar: { rotate: flutterKeys(4.5, 2, 2.4) },
+		// the right point, mirrored and out of step with the left
+		collar_r: { rotate: flutterKeys(4.5, 2, 0.7) },
+		// the clothes drift, each on its own phase so nothing moves in step
+		cuffL: { rotate: flutterKeys(2, 1, 0.3) },
+		cuffR: { rotate: flutterKeys(2, 1, 2.0) },
+		pantL: { rotate: flutterKeys(1.5, 1, 3.6) },
+		pantR: { rotate: flutterKeys(1.5, 1, 5.1) },
+		skirtL: { rotate: flutterKeys(2.5, 2, 1.4) },
+		skirtR: { rotate: flutterKeys(2.5, 2, 2.9) },
+	},
+	// THE BLINK: one, then later a double, once a loop — never on a beat, so it
+	// does not read as a clock. Fading the eyes out uncovers the closed lids
+	// painted on the face; 90ms down and up is a blink, not a wink.
+	slots: {
+		head_5_eye: {
+			rgba: [
+				[0, 1],
+				[1.3, 1],
+				[1.36, 0],
+				[1.42, 0],
+				[1.5, 1],
+				[3.7, 1],
+				[3.76, 0],
+				[3.8, 0],
+				[3.88, 1],
+				[4.02, 1],
+				[4.08, 0],
+				[4.12, 0],
+				[4.2, 1],
+				[FLUTTER_LOOP, 1],
+			].map(([time, a]) => ({ time, color: `ffffff${Math.round(a * 255).toString(16).padStart(2, '0')}` })),
+		},
+	},
+};
+
 const skeleton = {
 	skeleton: {
 		hash: 'gb-monkey',
@@ -1819,13 +2427,18 @@ const skeleton = {
 	},
 	bones,
 	slots,
+	// EVERY CONSTRAINT NEEDS ITS OWN `order`. Spine sorts constraints by order
+	// and takes only the FIRST one it finds at each number (Skeleton.updateCache,
+	// `continue outer`); left unset they are all 0, so only scarf_l_phys ran and
+	// the other six were dropped without a word.
+	physics: physics.map((c, order) => ({ ...c, order })),
 	skins: [{ name: 'default', attachments }],
 	animations: Object.fromEntries(
-			Object.entries({ idle, cheer, chestbeat, nod, alert, throwit, ...sweeps }).map(([name, a]) => [
+			Object.entries({ idle, cheer, chestbeat, nod, alert, throwit, march, flutter, ...sweeps }).map(([name, a]) => [
 				name,
 				// idle is the only one that loops, so it is the only one whose ends
 				// have to meet.
-				smoothAnimation(fuseDeadJoints(a, name), name === 'idle' ? IDLE_LOOP : undefined),
+				smoothAnimation(fuseDeadJoints(a, name), name === 'idle' ? IDLE_LOOP : name === 'flutter' ? FLUTTER_LOOP : undefined),
 			]),
 		),
 };

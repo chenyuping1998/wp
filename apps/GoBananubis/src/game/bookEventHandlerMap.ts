@@ -316,6 +316,19 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			(event) => event?.type === 'mysteryReveal',
 		) as BookEventOfType<'mysteryReveal'> | undefined;
 		if (firstSeal) {
+			// The plaque comes up FIRST, holding a question mark: the oracle's tile
+			// flies into it when the reading ends (see MysteryOracle), so it has to be
+			// there to be flown to — and an empty medal waiting to be filled is part
+			// of the tension of the reading.
+			eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
+			stateUi.freeSpinCounterShow = true;
+			eventEmitter.broadcast({
+				type: 'freeSpinCounterUpdate',
+				current: undefined,
+				total: bookEvent.totalFs,
+			});
+			stateUi.freeSpinCounterTotal = bookEvent.totalFs;
+			eventEmitter.broadcast({ type: 'runSymbol', symbol: 'pending' });
 			await eventEmitter.broadcastAsync({ type: 'mysteryOracle', symbol: firstSeal.symbol });
 		}
 
@@ -410,6 +423,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
 		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
+		// He squares up for the extra spins the way he did for the feature: the
+		// chest beat, board knocks and all — but no roar over the bell.
+		eventEmitter.broadcast({ type: 'mascotChestBeat', voice: false });
 		await waitForTimeout(1600);
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
@@ -630,6 +646,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			// The overlay is told explicitly now — it stopped reading the reveal
 			// event when the reveal took ownership of the order things appear in
 			// (see MysteryReveal), and a resumed round has no reveal to play.
+			// the run's symbol goes back on the plaque, which a resumed round would
+			// otherwise show without it
+			eventEmitter.broadcast({ type: 'runSymbol', symbol: mysteryToRestore.symbol });
 			if (mysteryToRestore.held.length > 0) {
 				eventEmitter.broadcast({ type: 'heldTabletsOpened' });
 				eventEmitter.broadcast({

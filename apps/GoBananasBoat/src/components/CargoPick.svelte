@@ -15,6 +15,8 @@
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS, SYMBOL_INFO_MAP } from '../game/constants';
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import { MESH_WINS, MESH_LANDS, AMP_MAX } from '../game/meshWin';
 
 	// READING THE MANIFEST — which cargo this run is carrying.
 	//
@@ -132,6 +134,13 @@
 		p < APPROACH_SHARE
 			? easeOutCubic(p / APPROACH_SHARE) * (last - 1)
 			: last - 1 + smoothstep((p - APPROACH_SHARE) / (1 - APPROACH_SHARE));
+
+	// the symbol that landed, and when — keys the act on the lock
+	const landedName = $derived(strip.length ? String(strip[strip.length - 1]) : '');
+	let landedAt = $state(0);
+	$effect(() => {
+		if (phase === 'landed') landedAt = Date.now();
+	});
 
 	const assetKeyOf = (name: string) =>
 		(SYMBOL_INFO_MAP as Record<string, { static: { assetKey: string } }>)[name].static.assetKey;
@@ -312,6 +321,33 @@
 					{/each}
 				</Container>
 			</Container>
+
+			<!--
+				THE CARGO ARRIVES AS ITSELF. On the lock the symbol that landed acts —
+				the helmet sits down hard, the mine swings on its shackle, the net
+				bounces on its rope (game/meshWin/lands.ts), at the heaviest impact a
+				cell can take — instead of the whole tile just stopping. The letters
+				have no landing, so they play their win, sped up to fit the hold.
+
+				OUTSIDE the window's mask and over it: a mask isolates its contents,
+				so the win's additive flash would draw nothing there (stake-engine-slot
+				skill), and the landing's squash would be clipped at the window's edge.
+				At rest its plate is exactly the sprite in the window underneath.
+			-->
+			{#if phase === 'landed' && landedName}
+				{#key landedAt}
+					<SymbolMeshWin
+						symbolName={landedName}
+						land={landedName in MESH_LANDS}
+						amp={AMP_MAX}
+						width={CELL}
+						height={CELL}
+						speed={landedName in MESH_LANDS
+							? stateBet.isTurbo ? 1.5 : 1
+							: MESH_WINS[landedName].durationMs / ((stateBet.isTurbo ? HOLD_MS_TURBO : HOLD_MS) - 60)}
+					/>
+				{/key}
+			{/if}
 		</Container>
 	</BoardContainer>
 {/if}

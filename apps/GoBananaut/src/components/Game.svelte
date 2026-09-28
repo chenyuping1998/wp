@@ -30,11 +30,14 @@
 	import ReelDust from './ReelDust.svelte';
 	import EntryReveal from './EntryReveal.svelte';
 	import ScatterBurst from './ScatterBurst.svelte';
+	import ScatterLand from './ScatterLand.svelte';
+	import IdleActors from './IdleActors.svelte';
 	import ReelGrow from './ReelGrow.svelte';
 	import ReelLid from './ReelLid.svelte';
 	import StickyPrizes from './StickyPrizes.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import WinWays from './WinWays.svelte';
+	import BarWays from './BarWays.svelte';
 	import Win from './Win.svelte';
 	import FreeSpinIntro from './FreeSpinIntro.svelte';
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
@@ -44,7 +47,12 @@
 	const context = getContext();
 
 	// soft depth-of-field on the jungle scene so the reels read as the subject
-	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
+	// 0.6, was 4 (2026-09-27): 4 smeared the painted plates — "why is the
+	// background always blurry, it cannot be as sharp as Deadwood". The range
+	// asked for is 0.6-1, picked per game by what sits beside the board:
+	// the board sits in the dark window of the hull and the detail is all on the
+	// sides — the contrast is there already; this only takes the edge off.
+	const backgroundBlur = [new BlurFilter({ strength: 0.6, quality: 3 })];
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
 
@@ -101,6 +109,8 @@
 			<StickyPrizes />
 			<Anticipations />
 			<ScatterBurst />
+			<ScatterLand />
+			<IdleActors />
 			<WinWays />
 		</MainContainer>
 
@@ -124,6 +134,8 @@
 				/>
 			{/snippet}
 		</UI>
+		<!-- over the bar: the board's ways in its empty Win→Bet cell -->
+		<BarWays />
 		<Win />
 		<FreeSpinIntro />
 		<FreeSpinCounter />

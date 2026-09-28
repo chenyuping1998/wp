@@ -69,7 +69,7 @@
 	let spinSpeed = $state(0); // radians/second
 
 	$effect(() => {
-		if (!uiTheme.buyBonusHoverSpin) return;
+		if (!uiTheme.buyBonusHoverRotate) return;
 		let last = Date.now();
 		// A timer, not requestAnimationFrame: rAF does not run at all in a
 		// backgrounded tab, and a wheel left mid-spin would still be at that angle
@@ -80,7 +80,7 @@
 			const dt = Math.min(0.1, (now - last) / 1000);
 			last = now;
 			const want =
-				hovering && !disabled ? (uiTheme.buyBonusHoverSpin * Math.PI) / 180 : 0;
+				hovering && !disabled ? (uiTheme.buyBonusHoverRotate * Math.PI) / 180 : 0;
 			// Takes hold quickly, lets go slowly. The asymmetry is the whole feel of
 			// it: a wheel answers a hand at once and then carries its own momentum.
 			const k = want > spinSpeed ? 7 : 1.8;

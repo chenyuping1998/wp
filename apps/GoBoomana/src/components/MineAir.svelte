@@ -123,7 +123,10 @@
 		rank: number;
 	};
 
-	const MAX_DEBRIS = 12;
+	// 15 per layer (was 12): asked for 20-30% more down the sides, 2026-09-27.
+	// The pool is what sets the density at every rung (`amount` is a fraction of
+	// it), so this is +25% everywhere without touching the speed or the rhythm.
+	const MAX_DEBRIS = 15;
 	const debris = $derived.by<Debris[]>(() => {
 		const rand = seeded(isBack ? 40213 : 77191);
 		return Array.from({ length: MAX_DEBRIS }, () => ({

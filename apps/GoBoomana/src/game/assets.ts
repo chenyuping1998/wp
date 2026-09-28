@@ -100,7 +100,149 @@
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasFrame/fs_counter_panel.png', import.meta.url).href,
 	},
+	// the blast ladder's dynamite sticks on the counter (design/generate_ladder_sticks.mjs)
+	gbLadderLit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/ladder_stick_lit.png', import.meta.url).href,
+	},
+	gbLadderOff: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/ladder_stick_off.png', import.meta.url).href,
+	},
 	// Go Bananas symbol art (SVG-generated PNGs ??see design/generate_art.mjs)
+	// Mesh-win layers (design/make_symbol_layers.mjs, drawn by SymbolMeshWin).
+	// CUT symbols carry plate / subject / shadow / sheen; PANEL symbols glow /
+	// sheen over their own sprite.
+	gbH3Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbWGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbWSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbBGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/b_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbBSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/b_sheen.png', import.meta.url).href,
+		preload: true,
+	},
 	gbH1: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1.png', import.meta.url).href,

@@ -50,6 +50,17 @@ const SUPER_ENTRY = entryOf('superbonus');
 const capX = (mode: 'base' | 'bonus100' | 'bonus' | 'superbonus' | 'superspin') =>
 	(config.betModes[mode].max_win ?? 0).toLocaleString();
 
+/** What the feature-buy menu's cards print (components/ui/ModalBuyBonus.svelte),
+ *  from the same maths as the copy below — never retyped there. */
+export const BUY_FACTS = {
+	BONUS100: ENTRY_100,
+	BONUS: BONUS_ENTRY,
+	SUPERBONUS: SUPER_ENTRY,
+	lineCap: capX('bonus'),
+	superspinCap: capX('superspin'),
+	rtpPercent: Math.round(config.betModes.bonus.rtp * 100),
+};
+
 const emptyAssets = {
 	icon: '',
 	volatility: '',

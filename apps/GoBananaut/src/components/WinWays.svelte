@@ -214,6 +214,11 @@
 
 			wins = usable;
 			show = true;
+			// every winning cell's win size, for the mesh beats (meshRig.WIN_LEVELS)
+			const kinds: Record<string, number> = {};
+			for (const w of usable)
+				for (const p of w.positions) kinds[`${p.reel},${p.row}`] = Math.max(kinds[`${p.reel},${p.row}`] ?? 0, w.kind);
+			context.stateGame.winKinds = kinds;
 			context.eventEmitter.broadcast({ type: 'boardShow' });
 
 			const quick = fast || stateBet.isTurbo;

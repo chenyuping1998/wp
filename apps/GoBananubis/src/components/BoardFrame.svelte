@@ -3,16 +3,21 @@
 		| { type: 'boardFrameGlowShow' }
 		| { type: 'boardFrameGlowHide' }
 		// something slammed into the frame — kick it and flash the brass
-		| { type: 'boardFrameImpact'; strength?: number };
+		// `from`: where it came from, in board units (-1..1 across, -1 top ..
+		// 1 bottom; past 1 is outside, the gorilla's side) — the knock runs
+		// round the ring from there. The centre when unsaid.
+		| { type: 'boardFrameImpact'; strength?: number; from?: [number, number] };
 </script>
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Graphics, Sprite, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import { Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBet } from 'state-shared';
 
 	import { getContext } from '../game/context';
+	import { buildFrameGrid, poseFrame, FRAME, FRAME_KNOCK_S, type FrameKnock } from '../game/meshWin/sheets';
+	import SheetMesh from './SheetMesh.svelte';
 
 	const context = getContext();
 	const SPINE_SCALE = { width: 0.62, height: 0.66 };
@@ -66,7 +71,9 @@
 			impactEnergy = strength * (1 - p);
 			// decaying rattle: fast wobble under an exponential envelope
 			const decay = (1 - p) ** 2.2;
-			const amp = 9 * strength * decay;
+			// two thirds of what it was: the wave through the ring (below) now
+			// carries part of the hit
+			const amp = 6 * strength * decay;
 			impact = {
 				x: Math.sin(p * 46) * amp * 0.45,
 				y: Math.sin(p * 38 + 1.1) * amp,
@@ -76,6 +83,19 @@
 		};
 		impactRaf = requestAnimationFrame(step);
 	};
+
+	// ── THE KNOCK RUNS ROUND THE RING (meshWin/sheets.ts poseFrame) ──────────
+	// Every knock also sends a wave through the steel from where it came, on
+	// top of the whole-housing recoil above. Unlike the recoil these ADD:
+	// five reel stops in a row are five small waves, not the last one.
+	const frameGrid = buildFrameGrid();
+	let knocks: FrameKnock[] = [];
+	const clock = () => performance.now() / 1000;
+	const knock = (strength: number, from: [number, number]) => {
+		const now = clock();
+		knocks = [...knocks.filter((k) => now - k.at < FRAME_KNOCK_S), { from, at: now, strength }];
+	};
+	const poseTheFrame = (out: Float32Array) => poseFrame(frameGrid, knocks, clock(), out);
 
 	const drawAmbience = (g: PixiGraphics) => {
 		g.clear();
@@ -109,7 +129,10 @@
 		boardFrameGlowHide: () => {
 			if (animationName) animationName = 'reelhouse_glow_exit';
 		},
-		boardFrameImpact: ({ strength }) => runImpact(strength ?? 1),
+		boardFrameImpact: ({ strength, from }) => {
+			runImpact(strength ?? 1);
+			knock(strength ?? 1, from ?? [0, 0]);
+		},
 	});
 </script>
 
@@ -147,34 +170,20 @@
 	</SpineProvider>
 {/if}
 
-<Sprite
-	key="gbFrameBg"
-	anchor={0.5}
+<!-- the backing, the steel ring and its additive white-hot copy: one grid, so
+     a knock's wave runs through all three as one piece (meshWin/sheets.ts) -->
+<SheetMesh
+	layers={[
+		{ key: 'gbFrameBg' },
+		{ key: 'gbFrameEdge' },
+		{ key: 'gbFrameEdge', blendMode: 'add', alpha: impact.flash },
+	]}
+	grid={frameGrid}
+	artWidth={FRAME.w}
+	artHeight={FRAME.h}
 	x={context.stateGameDerived.boardLayout().x + impact.x}
 	y={context.stateGameDerived.boardLayout().y + impact.y}
 	width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
 	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
+	pose={poseTheFrame}
 />
-
-<Sprite
-	key="gbFrameEdge"
-	anchor={0.5}
-	x={context.stateGameDerived.boardLayout().x + impact.x}
-	y={context.stateGameDerived.boardLayout().y + impact.y}
-	width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-/>
-
-{#if impact.flash > 0}
-	<!-- additive copy of the brass edge = the whole housing rings white-hot -->
-	<Sprite
-		key="gbFrameEdge"
-		anchor={0.5}
-		x={context.stateGameDerived.boardLayout().x + impact.x}
-		y={context.stateGameDerived.boardLayout().y + impact.y}
-		width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-		height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-		blendMode="add"
-		alpha={impact.flash}
-	/>
-{/if}

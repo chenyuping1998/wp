@@ -317,8 +317,13 @@ export const uiTheme = $state({
 	 * The button spins up quickly and coasts down slowly — see ButtonBuyBonus —
 	 * because that is what something with mass does, and a plate that stops dead
 	 * the instant the pointer leaves reads as a video being paused.
+	 *
+	 * NOT buyBonusHoverSpin, which is the ring of rays BEHIND the plate. This one
+	 * turns the plate itself, so it is only for art that is radially symmetric and
+	 * carries no type; on a panel with a word on it, it puts the word upside down.
+	 * The two used to share one name, and every game that set it got both.
 	 */
-	buyBonusHoverSpin: 0,
+	buyBonusHoverRotate: 0,
 
 	buyBonusHoverSprite: undefined as string | undefined,
 	buyBonusHoverSpriteTint: 0xffd98a,
@@ -388,6 +393,15 @@ export const uiTheme = $state({
 	// acknowledgement at all until whatever it triggered began, which on a slow
 	// connection is long enough to press again. Off by default, like hoverHighlight.
 	pressFeedback: false,
+
+	// The readout VALUE answers a change: the Win figure when a win lands, the
+	// Bet figure when the stake moves. It swells by this fraction and settles
+	// over ~0.3s (LabelWin / LabelBet drive it, UiLabel draws it). 0 = off,
+	// which is what every game had.
+	valuePop: 0,
+	// The Win figure's colour at the moment a win lands, easing back to the
+	// ordinary value colour (as a tint on it). Undefined = off.
+	winFlashTint: undefined as number | undefined,
 
 	// Breathing halo behind the spin button's rotating mark — idle invitation,
 	// brighter while the reels run. Off by default.
@@ -519,6 +533,12 @@ export const uiTheme = $state({
 	// next to it - so its portrait scale is separate. Defaults preserve every game.
 	portraitSideButtonX: 470,
 	portraitBuyBonusScale: 1,
+	// Portrait spin row: scale of the bet -/+ pair either side of the spin
+	// button (they sit at ±170). 0.5 of a 150 box is a 75-unit disc, about 27 CSS
+	// px on a 390-wide phone — well under a comfortable touch target. Up to ~0.72
+	// clears both the spin button and the autospin/turbo pair at ±285. Default
+	// preserves every game.
+	portraitStepButtonScale: 0.5,
 
 	// ── Platform UX conventions ──────────────────────────────────────────────
 	//

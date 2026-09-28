@@ -20,6 +20,7 @@
 	import BigWinFx from './BigWinFx.svelte';
 	import FxBurst from './FxBurst.svelte';
 	import GoldText from './GoldText.svelte';
+	import PlaqueMesh from './PlaqueMesh.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
@@ -103,8 +104,12 @@
 	let landPunch = $state(1);
 	let landFlare = $state(0);
 	let landBurst = $state(0);
+	// when the amount landed, on the plaque's FX clock: the plaque mesh sends a
+	// second ripple out from the number well (PlaqueMesh / meshWin/plaque.ts)
+	let landAtFx = $state(-1);
 	const landAmount = () => {
 		if (winLevelData?.type !== 'big') return;
+		landAtFx = fxNow;
 		const start = Date.now();
 		landBurst++;
 		startShake(320, 6);
@@ -137,6 +142,7 @@
 	const startBannerFx = () => {
 		cancelAnimationFrame(fxRaf);
 		twinkles = [];
+		landAtFx = -1;
 		nextTwinkleAt = 0;
 		nextBurstAt = 0;
 		burstShown = true;
@@ -265,18 +271,20 @@
 									height={bh * 1.8}
 									alpha={bannerPose.glow}
 								/>
-								<Sprite key={bannerKey} anchor={0.5} width={bw} height={bh} />
-								<!-- additive self-copy = the whole plaque flares -->
-								{#if bannerPose.blink > 0}
-									<Sprite
-										key={bannerKey}
-										anchor={0.5}
+								<!-- the plaque itself, through a mesh: an impact ripple and a crest
+								     jolt on the slam, another ripple when the amount lands, a hung
+								     sign's sway while it holds; its additive self-copy is the flare -->
+								{#key bannerKey}
+									<PlaqueMesh
+										textureKey={bannerKey}
 										width={bw}
 										height={bh}
-										blendMode="add"
-										alpha={bannerPose.blink}
+										t={Math.max(0, fxNow)}
+										landAge={landAtFx < 0 ? -1 : fxNow - landAtFx}
+										mult={fx.mult}
+										blink={bannerPose.blink}
 									/>
-								{/if}
+								{/key}
 								<!-- twinkles running the riveted rim -->
 								{#each twinkles as tw (tw.id)}
 									{@const p = Math.min(1, (fxNow - tw.born) / 0.7)}

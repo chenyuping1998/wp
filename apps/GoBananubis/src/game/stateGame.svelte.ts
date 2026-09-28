@@ -111,7 +111,12 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 				stateGame.gameType === 'superspin' ||
 				stateGame.gameType === 'freegame'
 			) {
-				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
+				// from the foot of the reel that stopped
+				eventEmitter.broadcast({
+					type: 'boardFrameImpact',
+					strength: 0.12,
+					from: [((reelIndex + 0.5) / BOARD_DIMENSIONS.x) * 2 - 1, 1],
+				});
 			}
 		},
 		onSymbolLand: ({ rawSymbol, symbolIndex }) =>
@@ -212,6 +217,12 @@ const scatterLandIndex = () => {
 	return stateGame.scatterCounter as 1 | 2 | 3 | 4 | 5;
 };
 
+// THE TEASE: two or more Scatters down and a reel still turning. The counter
+// is cleared only once the whole board has stopped (bookEventHandlerMap
+// `reveal`), so this goes false exactly when the spin is decided.
+const scatterTease = () =>
+	stateGame.scatterCounter >= 2 && stateGame.board.some((reel) => reel.reelState.motion !== 'stopped');
+
 const { enhanceBoard } = createEnhanceBoard();
 const enhancedBoard = enhanceBoard({ board: stateGame.board });
 
@@ -224,6 +235,7 @@ export const stateGameDerived = {
 	boardLayout,
 	boardRaw,
 	scatterLandIndex,
+	scatterTease,
 	enhancedBoard,
 	getWinLevelDataByWinLevelAlias,
 };

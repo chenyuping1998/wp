@@ -33,6 +33,7 @@
 		| { type: 'soundCargoRoll'; phase: 'start' | 'swell' | 'stop' }
 		| { type: 'soundCargoLock' }
 		| { type: 'soundDockSplash' }
+		| { type: 'soundChestHoot' }
 		| { type: 'soundScatterCounterClear' };
 </script>
 
@@ -45,6 +46,7 @@
 	import { base } from '$app/paths';
 
 	import { getContext } from '../game/context';
+	import { strikeAt, SPLASH_BEATS } from '../game/dockSplash.svelte';
 
 	const context = getContext();
 
@@ -201,6 +203,56 @@
 	function playTarpPull(step: number) {
 		const rate = TARP_RATES[Math.min(step, TARP_RATES.length - 1)];
 		playCnSfx('tarp_pull', 0.85, rate);
+	}
+
+	// THE HOOT OVER THE CHEST BEAT: GB100's expanding-wild monkey call, laid over
+	// the six strikes so it starts and stops with them.
+	//
+	// Measured on the clip (10ms RMS windows), not guessed:
+	//   · the first hoot starts 40ms in, so playback starts 40ms BEFORE strike 1
+	//     and the first hoot lands on it
+	//   · from there, the clip has a hoot burst at 1.50-1.59s, which lands on
+	//     strike 6 (the six strikes span 1.5s), and then 90ms of silence
+	//     (-37dB) at 1.60-1.69s before the next hoot
+	// so it is cut at 1.62s, inside that silence: it stops with the last strike
+	// and there is nothing left ringing to click off. The cut watches the clip's
+	// own position rather than a wall-clock timer, so a slow start to playback
+	// cannot move it into the next hoot; a timer backs it up in case the clip
+	// never starts at all.
+	//
+	// Change the strike clock (game/dockSplash) and these two numbers need
+	// measuring again.
+	const HOOT_ONSET_S = 0.04;
+	const HOOT_CUT_S = 1.62;
+	let hootTimers: ReturnType<typeof setTimeout>[] = [];
+	let hootWatch: ReturnType<typeof setInterval> | null = null;
+	const stopHoot = (audio: HTMLAudioElement) => {
+		if (hootWatch !== null) clearInterval(hootWatch);
+		hootWatch = null;
+		hootTimers.forEach(clearTimeout);
+		hootTimers = [];
+		audio.pause();
+	};
+	function playChestHoot() {
+		const audio = getCnSfx('monkey_expand');
+		stopHoot(audio);
+		const beatsMs = strikeAt(SPLASH_BEATS - 1) - strikeAt(0);
+		hootTimers.push(
+			setTimeout(
+				() => {
+					audio.loop = false;
+					audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * 0.9);
+					audio.playbackRate = 1;
+					audio.currentTime = 0;
+					audio.play().catch(() => {});
+					hootWatch = setInterval(() => {
+						if (audio.currentTime >= HOOT_CUT_S) stopHoot(audio);
+					}, 10);
+					hootTimers.push(setTimeout(() => stopHoot(audio), beatsMs + 600));
+				},
+				Math.max(0, strikeAt(0) - HOOT_ONSET_S * 1000),
+			),
+		);
 	}
 
 	function playMonkeyExpand() {
@@ -476,6 +528,7 @@
 		// Under the roar, not over it: he is the event and the water is the room
 		// reacting to him.
 		soundDockSplash: () => playCnSfx('dock_splash', 0.7),
+		soundChestHoot: () => playChestHoot(),
 		// Loud on purpose, and the only cue in the set that is. It marks the
 		// biggest board this game makes.
 		soundShipHorn: () => playCnSfx('ship_horn', 1),

@@ -344,13 +344,32 @@
 		}
 	};
 
-	// idle loops; cheer, chestbeat and nod are one-shots that return to it.
+	// idle (and, in the free spins, the march) loops; cheer, chestbeat, nod and
+	// the rest are one-shots that return to it — see rest() below.
 	// Transitions run off the track's own complete callback rather than timers, so
 	// a one-shot cannot be cut short or leave him stuck in a pose because a frame
 	// was dropped.
 	let animationName = $state('idle');
 	let loop = $state(true);
 	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'alert', 'throwit'];
+
+	// WHAT HE DOES WHEN NOTHING IS HAPPENING. In the base game he stands (idle);
+	// through the free spins he MARCHES IN PLACE, looping, and the only thing
+	// that stops him is a big win, which gets the cheer and then hands straight
+	// back to the march. Every one-shot returns here rather than to idle, so a
+	// cheer in the feature ends marching and a cheer in the base game ends
+	// standing, without either one needing to know which game it is in.
+	const inFreeGame = $derived(context.stateGame.gameType === 'freegame');
+	const rest = () => (inFreeGame ? 'march' : 'idle');
+
+	// ...and following the game in and out of the feature while he is at rest.
+	// Only from rest: if the switch lands mid-gesture (the throw that carries
+	// the scene into the feature, a cheer on the last spin), that gesture ends
+	// in rest() and picks the right one then.
+	$effect(() => {
+		if (inFreeGame && animationName === 'idle') play('march', true);
+		else if (!inFreeGame && animationName === 'march' && loop) play('idle', true);
+	});
 
 	const play = (name: string, loops: boolean) => {
 		animationName = name;
@@ -473,16 +492,37 @@
 				 * is just long enough to cover the pop.
 				 */
 				mixDuration: 0.16,
+				/*
+				 * Keep an animation's ATTACHMENT SWAPS through its blend-out.
+				 *
+				 * Spine's default (0) drops them the instant the next animation
+				 * starts mixing in, while the bones still take mixDuration to get
+				 * home. The chest beat swaps in front copies of the right arm and
+				 * hides its cast shadow; cut short (the throw interrupts it), the
+				 * default would snap the resting pieces back with the arm still
+				 * across the chest, and for a few frames show the black shadow
+				 * blob and the forearm under the cuff that the swaps exist to
+				 * hide. At 1 they hold until the blend is done, when the pose is
+				 * back at rest and the resting pieces fit again. Animations that
+				 * end on their own are unaffected: their last keys already
+				 * restore the resting pieces.
+				 */
+				mixAttachmentThreshold: 1,
 			}}
 			listener={{
 				complete: (entry) => {
 					const finished = entry.animation?.name;
-					// idle loops, so complete fires on every pass — only the
-					// one-shots have anywhere to go from here.
-					if (finished && ONE_SHOTS.includes(finished)) play('idle', true);
+					// Loops fire complete on every pass (idle always, and the march
+					// while it is the feature's rest) — only a one-shot that has run
+					// out has anywhere to go.
+					if (finished && !entry.loop && ONE_SHOTS.includes(finished)) play(rest(), true);
 				},
 			}}
 		/>
+		<!-- TRACK 1, ALWAYS: the neckerchief tails and the banana (flutter, in
+	     design/generate_monkey_spine.mjs). It keys only their own bones, so it
+	     layers over whatever track 0 plays; their physics adds follow-through. -->
+	<SpineTrack trackIndex={1} animationName="flutter" loop />
 	</SpineProvider>
 
 	<!--

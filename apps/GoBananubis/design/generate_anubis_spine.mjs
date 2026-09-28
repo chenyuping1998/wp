@@ -126,6 +126,10 @@ const toSpine = (x, y) => ({ x: x - ROOT.x, y: ROOT.y - y });
 // centre is somewhere the limb never is.
 const RIG = [
 	{ name: 'hip', parent: 'root', at: [284, 496], parts: [] },
+	// The kilt below the belt, as a bone of its own: the trunk is a weighted
+	// mesh (see WEIGHTED MESHES below) whose lower half hangs from here, so the
+	// kilt can swing a beat behind the body instead of being a rigid board.
+	{ name: 'kilt', parent: 'hip', at: [284, 492], parts: [] },
 	// The waist, at the belt. Everything above it leans and breathes about here.
 	{ name: 'torso', parent: 'hip', at: [284, 470], parts: [
 		'torso_4_decoration', 'torso_0_trunk', 'torso_5_decoration',
@@ -137,6 +141,14 @@ const RIG = [
 	{ name: 'head', parent: 'torso', at: [285, 280], parts: [
 		'head_1_face', 'head_3_hair', 'head_0_ear', 'head_4_decoration', 'head_5_decoration',
 	] },
+	// The lower jaw, on the mouth line under the upper teeth. Two bones, one
+	// above the other, because two tracks drive it and a higher track REPLACES a
+	// lower one on the same timeline: `jaw_act` is the acting on track 0 (a grunt
+	// on the chest beat, a shout on the cheer), `jaw` is the chewing on track 1
+	// (`flutter`). The face mesh below the lip is weighted to `jaw`, the leaf, so
+	// the two add. No part rides them - it is the face mesh that bends.
+	{ name: 'jaw_act', parent: 'head', at: [315, 223], parts: [] },
+	{ name: 'jaw', parent: 'jaw_act', at: [315, 223], parts: [] },
 
 	{ name: 'armL', parent: 'torso', at: [122, 248], parts: ['left_arm_0_upper_arm'] },
 	{ name: 'armL_fore', parent: 'armL', at: [61, 386], parts: ['left_arm_1_forearm'] },
@@ -206,6 +218,398 @@ for (const prop of PROPS) {
 	};
 }
 
+// ── THE EYES: THE PSD HAS BOTH, AND HE WAS WEARING THE WRONG ONE ─────────────
+//
+// head_3_hair is not hair. It is the upper face drawn a second time with the
+// lids SHUT — brows, nose, side fur and ear pixel-aligned with head_1_face
+// (best match at offset 0,0; mean difference 9 over the brow and eyes, all of
+// it in the two sockets) — stacked on top. So until now he stood through every
+// spin with his eyes closed, and head_1_face's amber, open eyes were painted
+// underneath and never seen.
+//
+// That second drawing is a blink frame. It is split here, not in the source:
+//   · head_3_hair keeps everything but a soft hole over each eye (fully gone
+//     inside 0.75 of the ellipse, feathered out to 1.0), so the open eyes below
+//     show through with no seam — the two drawings agree outside the sockets;
+//   · lid_l / lid_r are the same pixels over each eye, solid to 1.0 and
+//     feathered to 1.25, so where the hole is partial the lid is solid on top
+//     of it. With both lids at full alpha the composite equals the old one
+//     exactly (max channel difference 0), so SHUT is the original drawing.
+// Eyes are OPEN by default. The lids are driven by slot alpha on two pairs of
+// slots, because a timeline on a higher track replaces a lower one for the same
+// property: lid_* blink from `flutter` on track 1, lid_*_hold carry the acting
+// (a contented close on the nod, a flinch, a wink) on track 0. Either one
+// opaque shuts the eye.
+const EYES = {
+	lid_l: { c: [293, 142], r: [22, 13] },
+	lid_r: { c: [357, 147], r: [20, 12] },
+};
+const LID_FEATHER = 0.25;
+const lidStep = (v) => (v <= 0 ? 0 : v >= 1 ? 1 : v * v * (3 - 2 * v));
+const eyeDist = (x, y) =>
+	Math.min(...Object.values(EYES).map(({ c, r }) => Math.hypot((x - c[0]) / r[0], (y - c[1]) / r[1])));
+const regionImages = {};
+{
+	const hairLayer = piece('head_3_hair');
+	const hair = PNG.sync.read(fs.readFileSync(path.join(SRC, hairLayer.file)));
+	const holed = new PNG({ width: hair.width, height: hair.height });
+	hair.data.copy(holed.data);
+	for (let y = 0; y < hair.height; y++)
+		for (let x = 0; x < hair.width; x++) {
+			const e = eyeDist(hairLayer.x + x + 0.5, hairLayer.y + y + 0.5);
+			const i = (y * hair.width + x) * 4 + 3;
+			holed.data[i] = Math.round(hair.data[i] * (1 - lidStep((1 - e) / LID_FEATHER)));
+		}
+	regionImages.head_3_hair = holed;
+	for (const [name, { c, r }] of Object.entries(EYES)) {
+		const k = 1 + LID_FEATHER;
+		const x0 = Math.floor(c[0] - r[0] * k), y0 = Math.floor(c[1] - r[1] * k);
+		const w = Math.ceil(c[0] + r[0] * k) - x0, h = Math.ceil(c[1] + r[1] * k) - y0;
+		const lid = new PNG({ width: w, height: h });
+		lid.data.fill(0);
+		for (let y = 0; y < h; y++)
+			for (let x = 0; x < w; x++) {
+				const sx = x0 + x - hairLayer.x, sy = y0 + y - hairLayer.y;
+				const s = (sy * hair.width + sx) * 4, d = (y * w + x) * 4;
+				const e = Math.hypot((x0 + x + 0.5 - c[0]) / r[0], (y0 + y + 0.5 - c[1]) / r[1]);
+				for (let ch = 0; ch < 3; ch++) lid.data[d + ch] = hair.data[s + ch];
+				lid.data[d + 3] = Math.round(hair.data[s + 3] * lidStep((k - e) / LID_FEATHER));
+			}
+		regionImages[name] = lid;
+		const centre = toSpine(x0 + w / 2, y0 + h / 2);
+		const j = jointWorld.head;
+		const region = { x: +(centre.x - j.x).toFixed(2), y: +(centre.y - j.y).toFixed(2), width: w, height: h };
+		attachments[name] = { [name]: region };
+		attachments[`${name}_hold`] = { [name]: region };
+	}
+	// just above the shut-eyed drawing they were cut from
+	const at = slots.findIndex((s) => s.name === 'head_3_hair') + 1;
+	slots.splice(
+		at,
+		0,
+		...['lid_l_hold', 'lid_r_hold', 'lid_l', 'lid_r'].map((name) => ({
+			name,
+			bone: 'head',
+			attachment: name.replace('_hold', ''),
+			color: 'ffffff00',
+		})),
+	);
+}
+
+// ── GOLD THAT CATCHES THE LIGHT ─────────────────────────────────────────────
+//
+// The headband, the two upper-arm bands and the two wrist cuffs are painted
+// into their pieces (the head's ear-and-band layer, the upper arms, the
+// forearms), so they cannot move on their own — but they can SHINE. Each band
+// gets a glint: a slanted streak of light that sweeps across it, baked here as
+// GLINT_FRAMES frames and flipped through by an attachment timeline, on an
+// ADDITIVE slot drawn straight after the band's own piece and riding the same
+// bone. So the light lands only on the band's own metal (the mask is the
+// piece's pixels that are bright and warm — the fur around them is neither),
+// follows the shading already painted in (brighter where the gold is lit),
+// moves with the arm or the head exactly, and is covered by whatever covers the
+// band (the hand over the cuff's edge, the chest over the far arm's band, the
+// cobra over the headband).
+//
+// Baked at half size: the streak is soft, and five bands at ten frames each
+// would otherwise add ~500k px to the atlas. Played by `glints` on track 2
+// (Mascot.svelte), one band at a time.
+const GLINT_FRAMES = 10;
+const GLINT_SCALE = 0.5;
+const BANDS = [
+	{ name: 'headband', piece: 'head_0_ear', bone: 'head', box: [208, 82, 392, 118] },
+	{ name: 'armL_band', piece: 'left_arm_0_upper_arm', bone: 'armL', box: [35, 290, 165, 392] },
+	{ name: 'armR_band', piece: 'right_arm_0_upper_arm', bone: 'armR', box: [380, 300, 505, 395] },
+	{ name: 'armL_cuff', piece: 'left_arm_1_forearm', bone: 'armL_fore', box: [20, 455, 140, 550] },
+	{ name: 'armR_cuff', piece: 'right_arm_1_forearm', bone: 'armR_fore', box: [450, 445, 535, 520] },
+];
+const glintStep = (v) => (v <= 0 ? 0 : v >= 1 ? 1 : v * v * (3 - 2 * v));
+for (const band of BANDS) {
+	const layer = piece(band.piece);
+	const img = PNG.sync.read(fs.readFileSync(path.join(SRC, layer.file)));
+	const [bx0, by0, bx1, by1] = band.box;
+	// the metal, and where it actually is inside the box
+	const metal = new Map();
+	let tx0 = Infinity, ty0 = Infinity, tx1 = -Infinity, ty1 = -Infinity;
+	for (let y = by0; y < by1; y++)
+		for (let x = bx0; x < bx1; x++) {
+			const lx = x - layer.x, ly = y - layer.y;
+			if (lx < 0 || ly < 0 || lx >= img.width || ly >= img.height) continue;
+			const i = (ly * img.width + lx) * 4;
+			const [r, g, b, a] = [img.data[i], img.data[i + 1], img.data[i + 2], img.data[i + 3]];
+			const m = (a / 255) * glintStep((Math.max(r, g, b) - 85) / 30) * glintStep((r - b - 25) / 25);
+			if (m < 0.05) continue;
+			metal.set(y * 4096 + x, { m, luma: (0.3 * r + 0.59 * g + 0.11 * b) / 255 });
+			tx0 = Math.min(tx0, x); ty0 = Math.min(ty0, y); tx1 = Math.max(tx1, x + 1); ty1 = Math.max(ty1, y + 1);
+		}
+	const W = tx1 - tx0, H = ty1 - ty0;
+	const w = Math.ceil(W * GLINT_SCALE), h = Math.ceil(H * GLINT_SCALE);
+	for (let k = 0; k < GLINT_FRAMES; k++) {
+		// the streak's centre, from before the left end to past the right one
+		const c = -0.3 + (1.6 * k) / (GLINT_FRAMES - 1);
+		const frame = new PNG({ width: w, height: h });
+		frame.data.fill(0);
+		for (let y = 0; y < h; y++)
+			for (let x = 0; x < w; x++) {
+				// box-filter the full-size pixels this half-size one covers
+				let alpha = 0, n = 0;
+				for (let sy = 0; sy < 2; sy++)
+					for (let sx = 0; sx < 2; sx++) {
+						const px = tx0 + Math.floor((x * 2 + sx) / (2 * GLINT_SCALE) * 1), py = ty0 + Math.floor((y * 2 + sy) / (2 * GLINT_SCALE));
+						n++;
+						const mt = metal.get(py * 4096 + px);
+						if (!mt) continue;
+						// slanted: the streak leans, so it reads as light on a curved band
+						const u = (px - tx0) / W + 0.35 * ((py - ty0) / H) - 0.175;
+						const streak = Math.exp(-(((u - c) / 0.11) ** 2));
+						alpha += mt.m * streak * (0.35 + 0.65 * mt.luma);
+					}
+				const d = (y * w + x) * 4;
+				frame.data[d] = 255;
+				frame.data[d + 1] = 238;
+				frame.data[d + 2] = 196;
+				frame.data[d + 3] = Math.round(255 * Math.min(1, (alpha / n) * 0.95));
+			}
+		regionImages[`${band.name}_glint_${k}`] = frame;
+	}
+	const centre = toSpine(tx0 + W / 2, ty0 + H / 2);
+	const j = jointWorld[band.bone];
+	attachments[`${band.name}_glint`] = Object.fromEntries(
+		Array.from({ length: GLINT_FRAMES }, (_, k) => [
+			`${band.name}_glint_${k}`,
+			{ x: +(centre.x - j.x).toFixed(2), y: +(centre.y - j.y).toFixed(2), width: W, height: H },
+		]),
+	);
+	// straight after the band's own piece
+	const at = slots.findIndex((sl) => sl.name === band.piece) + 1;
+	slots.splice(at, 0, { name: `${band.name}_glint`, bone: band.bone, blend: 'additive' });
+	band.size = [W, H];
+}
+
+// ── WHAT HANGS OFF HIM MOVES ON ITS OWN (after Go Bananas Boat's captain) ────
+//
+// The body barely moves; the amplitude goes to what HANGS off it, a beat late
+// (wp/.claude/skills/mesh-cast-rig §3). Boat's captain does it with three
+// things, and so does this:
+//
+//   · bones of their own for the pieces that hang — the banana from his teeth,
+//     the two jackal ears, the cobra on the brow, and the kilt's three cloth
+//     panels from the belt — each pointing along its piece, with a length;
+//   · PHYSICS CONSTRAINTS (Spine 4.2) on those bones: inertia, so when the body
+//     moves they lag, overshoot and settle on their own, with no keys at all;
+//   · `flutter`, a loop on TRACK 1 (Mascot.svelte) that keys only those bones: a
+//     breeze through the kilt, the banana chewed, an ear twitching now and then,
+//     the cobra swaying — so he is never perfectly still, whatever track 0 plays.
+//
+// Coordinates are PSD pixels, read off the composed drawing.
+const MOUTH = [293, 220], BANANA_TIP = [214, 290];
+const EAR_L = { base: [240, 77], tip: [233, 10] };
+const EAR_R = { base: [365, 77], tip: [372, 10] };
+const COBRA = { base: [335, 100], tip: [337, 63] };
+const KILT_L = { base: [215, 525], tip: [175, 655] };
+const KILT_C = { base: [310, 525], tip: [310, 690] };
+const KILT_R = { base: [395, 525], tip: [425, 655] };
+// the usekh collar's lower arc — the gold tiers and the turquoise bead rim —
+// hangs from just under the neck, so it bounces and sways a beat behind the
+// chest: heavy beads on a jump, a chest beat, a stomp
+const COLLAR_HEM = { base: [285, 262], tip: [285, 344] };
+
+// a bone from `from` to `to` in PSD pixels, rotated to point along the piece and
+// with its length (rotation physics needs both). Parents here are all unrotated
+// setup bones, so the local position is just the world offset.
+const extraWorld = {};
+const addBone = (name, parent, from, to) => {
+	const a = toSpine(from[0], from[1]);
+	const b = toSpine(to[0], to[1]);
+	const rot = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+	const p = jointWorld[parent];
+	bones.push({
+		name,
+		parent,
+		x: +(a.x - p.x).toFixed(2),
+		y: +(a.y - p.y).toFixed(2),
+		rotation: +rot.toFixed(2),
+		length: +Math.hypot(b.x - a.x, b.y - a.y).toFixed(2),
+	});
+	extraWorld[name] = { x: a.x, y: a.y, rot };
+};
+addBone('banana', 'head', MOUTH, BANANA_TIP);
+addBone('ear_l', 'head', EAR_L.base, EAR_L.tip);
+addBone('ear_r', 'head', EAR_R.base, EAR_R.tip);
+addBone('cobra', 'head', COBRA.base, COBRA.tip);
+addBone('kilt_l', 'kilt', KILT_L.base, KILT_L.tip);
+addBone('kilt_c', 'kilt', KILT_C.base, KILT_C.tip);
+addBone('kilt_r', 'kilt', KILT_R.base, KILT_R.tip);
+addBone('collar_hem', 'torso', COLLAR_HEM.base, COLLAR_HEM.tip);
+
+// how far along a bone's line a point is, 0 at its base, 1 at its tip
+const along = (p, from, to) => {
+	const dx = to[0] - from[0], dy = to[1] - from[1];
+	return ((p[0] - from[0]) * dx + (p[1] - from[1]) * dy) / (dx * dx + dy * dy);
+};
+
+// ── WEIGHTED MESHES ─────────────────────────────────────────────────────────
+//
+// Three pieces set this character's whole pose budget, and all three for the
+// same reason: they were RIGID plates hung on one bone (see MAX_SHOULDER,
+// MAX_LEAN, MAX_HEAD below).
+//
+//   torso_0_trunk        the chest, the belt AND the kilt in one piece. Leaning
+//                        the torso swung the kilt's hem, 294 units below the
+//                        waist, across the thighs.
+//   torso_5_decoration   the usekh collar, on the torso. Raising a shoulder
+//                        opened a wedge of bare chest at the collar's end.
+//   head_1_face          the face with the nemes hood, whose lappets hang into
+//                        the collar. Turning the head lifted them out of it.
+//
+// Each is now a weighted mesh — the one-image-one-mesh method of the symbol
+// wins (wp/.claude/skills/mesh-cast-rig) inside Spine: the chest follows the
+// torso, the kilt hangs from the hip and its own `kilt` bone, the collar's ends
+// ride the shoulders, the lappets' tips stay with the torso. Nothing is cut;
+// the pieces bend.
+//
+// Spine stores a weighted vertex once per influencing bone, in that bone's
+// setup space. Every bone here is unrotated and unscaled in setup, so that is
+// just the vertex's world position minus the bone's.
+const smooth = (v) => {
+	const t = Math.max(0, Math.min(1, v));
+	return t * t * (3 - 2 * t);
+};
+const boneIndex = Object.fromEntries(bones.map((b, i) => [b.name, i]));
+const meshAttachment = (layer, cols, rows, weightsAt) => {
+	// grid in the piece's own pixels; the hull (the outer ring, in order) first,
+	// as Spine expects, then the interior
+	const at = (c, r) => [layer.x + (layer.w * c) / cols, layer.y + (layer.h * r) / rows];
+	const ring = [];
+	for (let c = 0; c < cols; c++) ring.push([c, 0]);
+	for (let r = 0; r < rows; r++) ring.push([cols, r]);
+	for (let c = cols; c > 0; c--) ring.push([c, rows]);
+	for (let r = rows; r > 0; r--) ring.push([0, r]);
+	const inner = [];
+	for (let r = 1; r < rows; r++) for (let c = 1; c < cols; c++) inner.push([c, r]);
+	const order = [...ring, ...inner];
+	const index = new Map(order.map(([c, r], i) => [`${c},${r}`, i]));
+	const uvs = [], vertices = [], triangles = [];
+	for (const [c, r] of order) {
+		const [x, y] = at(c, r);
+		uvs.push(+(c / cols).toFixed(5), +(r / rows).toFixed(5));
+		const entries = Object.entries(weightsAt(x, y)).filter(([, v]) => v > 1e-4);
+		const total = entries.reduce((a, [, v]) => a + v, 0);
+		const world = toSpine(x, y);
+		vertices.push(entries.length);
+		for (const [bone, v] of entries) {
+			// in the bone's own setup frame: the hanging-piece bones are rotated
+			// to point along their piece, the body's are not
+			const j = extraWorld[bone] ?? { ...jointWorld[bone], rot: 0 };
+			const r = (-j.rot * Math.PI) / 180;
+			const dx = world.x - j.x, dy = world.y - j.y;
+			const lx = dx * Math.cos(r) - dy * Math.sin(r);
+			const ly = dx * Math.sin(r) + dy * Math.cos(r);
+			vertices.push(boneIndex[bone], +lx.toFixed(2), +ly.toFixed(2), +(v / total).toFixed(4));
+		}
+	}
+	for (let r = 0; r < rows; r++)
+		for (let c = 0; c < cols; c++) {
+			const a = index.get(`${c},${r}`), b = index.get(`${c + 1},${r}`);
+			const d = index.get(`${c},${r + 1}`), e = index.get(`${c + 1},${r + 1}`);
+			triangles.push(a, b, e, a, e, d);
+		}
+	return { type: 'mesh', uvs, triangles, vertices, hull: ring.length, width: layer.w, height: layer.h };
+};
+const layerByName = Object.fromEntries(meta.layers.map((l) => [l.name, l]));
+
+// the trunk: chest on the torso; from under the pectorals down through the
+// belt (y 340..520) it hands over to the hip; down the kilt, more and more of it to
+// the `kilt` bone; the hem's corners carry a little of the thigh on their side,
+// so a stride moves them.
+//
+// The hand-over was first 34px, across the belt alone. check_anubis_rig.mjs
+// caught it: an 18-degree lean moves a point at the belt's end ~33px, so that
+// strip folded flat and inside out on the side he leaned to (-41% in the chest
+// beat) while the preview frame looked fine. At 95px it still pinched the
+// leaning side to 28%; over 180px the whole belly takes the bend (54% worst).
+const BELT_TOP = 340, BELT_BOTTOM = 520;
+// ...and below the belt, the kilt's lower half hangs from its three cloth
+// panels (left, centre front, right — the pleated seams run at x ~260 and ~352),
+// more of it the further down, so each panel swings from where it is sewn on.
+// A finer grid than the chest needs: the panels are 80-130px wide.
+attachments.torso_0_trunk.torso_0_trunk = meshAttachment(layerByName.torso_0_trunk, 16, 28, (x, y) => {
+	const torso = smooth((BELT_BOTTOM - y) / (BELT_BOTTOM - BELT_TOP));
+	const below = 1 - torso;
+	const kiltShare = below * smooth((y - 500) / 140);
+	const legShare = kiltShare * 0.35 * smooth((y - 620) / 120);
+	const left = smooth((300 - x) / 32);
+	const hang = (kiltShare - legShare) * smooth((y - 530) / 90);
+	const panelL = smooth((262 - x) / 24);
+	const panelR = smooth((x - 350) / 24);
+	const panelC = Math.max(0, 1 - panelL - panelR);
+	return {
+		torso,
+		hip: below - kiltShare,
+		kilt: kiltShare - legShare - hang,
+		kilt_l: hang * panelL,
+		kilt_c: hang * panelC,
+		kilt_r: hang * panelR,
+		legL: legShare * left,
+		legR: legShare * (1 - left),
+	};
+});
+// the banana: held at the mouth, free toward its tip
+attachments.head_5_decoration.head_5_decoration = meshAttachment(layerByName.head_5_decoration, 8, 8, (x, y) => {
+	const b = smooth((along([x, y], MOUTH, BANANA_TIP) - 0.05) / 0.35);
+	return { head: 1 - b, banana: b };
+});
+// the ears (and the gold headband in the same piece, which stays on the head):
+// each ear from its base up, more of it toward the tip
+attachments.head_0_ear.head_0_ear = meshAttachment(layerByName.head_0_ear, 12, 8, (x, y) => {
+	const up = (e) => smooth((along([x, y], e.base, e.tip) - 0.05) / 0.5);
+	const l = x < 285 ? up(EAR_L) * smooth((80 - y) / 12) : 0;
+	const r = x >= 285 ? up(EAR_R) * smooth((80 - y) / 12) : 0;
+	return { head: 1 - l - r, ear_l: l, ear_r: r };
+});
+// the cobra: from where it sits on the band, up to its hood
+attachments.head_4_decoration.head_4_decoration = meshAttachment(layerByName.head_4_decoration, 4, 6, (x, y) => {
+	const c = smooth((along([x, y], COBRA.base, COBRA.tip) - 0.1) / 0.5);
+	return { head: 1 - c, cobra: c };
+});
+// the collar: its two ends ride the shoulders, just over half; its lower arc
+// hangs from `collar_hem`, more of it the lower it is, so the bead rim swings
+// and the band round the neck stays put. A finer grid than the ends needed
+// (17px cells), or the hand-over falls inside one row and the arc bends as a
+// plank.
+attachments.torso_5_decoration.torso_5_decoration = meshAttachment(layerByName.torso_5_decoration, 20, 10, (x, y) => {
+	const l = 0.55 * smooth((200 - x) / 70);
+	const r = 0.55 * smooth((x - 368) / 70);
+	const hem = 0.65 * smooth((y - 250) / 70) * (1 - l - r);
+	return { torso: 1 - l - r - hem, armL: l, armR: r, collar_hem: hem };
+});
+// the face and hood: the lappets' lower tips stay with the torso, tucked into
+// the collar, and the hood bends between them and the head
+//
+// ...and everything under the mouth line - lower lip, chin, beard - hangs from
+// the `jaw`, so he can chew and grunt. The line is read off the drawing: from
+// the grin's corner at the left (where the banana sits) down to under the
+// upper teeth and along the lower lip. The hand-over is 10px, centred just
+// below the line, so an opening shows as the dark lip line parting rather than
+// the chin sliding. A finer grid than the hood needs (12px cells), or that
+// 10px ramp falls inside one row and the whole cell smears.
+const MOUTH_LINE = [[240, 205], [250, 208], [270, 214], [300, 222], [340, 225], [370, 224], [395, 221]];
+const mouthY = (x) => {
+	const pts = MOUTH_LINE;
+	if (x <= pts[0][0]) return pts[0][1];
+	for (let i = 1; i < pts.length; i++)
+		if (x <= pts[i][0]) {
+			const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+			return y0 + ((y1 - y0) * (x - x0)) / (x1 - x0);
+		}
+	return pts[pts.length - 1][1];
+};
+attachments.head_1_face.head_1_face = meshAttachment(layerByName.head_1_face, 22, 22, (x, y) => {
+	const tip = 0.8 * smooth((y - 200) / 70) * smooth((Math.abs(x - 285) - 85) / 35);
+	const jaw = (1 - tip) * smooth((y - mouthY(x) + 3) / 20) * smooth((x - 236) / 20) * smooth((378 - x) / 34);
+	return { head: 1 - tip - jaw, torso: tip, jaw };
+});
+
 // ── atlas ───────────────────────────────────────────────────────────────────
 // Shelf packing, tallest first. 19 pieces into one page — nothing here justifies
 // a real bin packer, and a predictable layout is easier to eyeball when a region
@@ -218,7 +622,13 @@ const placed = [];
 		const img = PNG.sync.read(fs.readFileSync(prop.file));
 		return { name: prop.name, file: prop.file, w: img.width, h: img.height, external: true };
 	});
-	const sorted = [...drawOrder.filter((l) => boneOf[l.name]), ...propImages].sort(
+	// the two eyelids cut from head_3_hair (THE EYES, above), in memory
+	// the regions built in memory that are not PSD layers: the eyelids (THE
+	// EYES) and the glint frames (GOLD THAT CATCHES THE LIGHT)
+	const memImages = Object.keys(regionImages)
+		.filter((name) => !byName[name])
+		.map((name) => ({ name, w: regionImages[name].width, h: regionImages[name].height }));
+	const sorted = [...drawOrder.filter((l) => boneOf[l.name]), ...propImages, ...memImages].sort(
 		(a, b) => b.h - a.h,
 	);
 	let x = PAD, y = PAD, shelf = 0;
@@ -241,7 +651,7 @@ const placed = [];
 const page = new PNG({ width: PAGE_W, height: PAGE_H });
 page.data.fill(0);
 for (const p of placed) {
-	const img = PNG.sync.read(fs.readFileSync(p.external ? p.file : path.join(SRC, p.file)));
+	const img = regionImages[p.name] ?? PNG.sync.read(fs.readFileSync(p.external ? p.file : path.join(SRC, p.file)));
 	for (let yy = 0; yy < p.h; yy++)
 		for (let xx = 0; xx < p.w; xx++) {
 			const s = (yy * img.width + xx) * 4;
@@ -340,7 +750,13 @@ fs.writeFileSync(path.join(OUT, 'anubis.atlas'), atlas);
 // stretch, the head, and the timing between them. The arms only trail. That is a
 // real constraint honestly worked within, not a compromise hidden in the middle
 // of a file.
-const MAX_SHOULDER = 22;
+//
+// RE-MEASURED 2026-09-26, after the collar became a weighted mesh whose ends
+// ride the shoulders (WEIGHTED MESHES above). The wedge at 24 is gone: the
+// collar's end rises with the arm, and the joint stays covered through 40. What
+// is left is the arm's own drawing — past ~30 the painted taper starts to read
+// as a plank, which no rig fixes. So 28, not 22.
+const MAX_SHOULDER = 28;
 const MAX_ELBOW = 20;
 //
 // AND A THIRD BUDGET THIS DRAWING HAS THAT THE GORILLA DID NOT: THE LEAN
@@ -363,7 +779,13 @@ const MAX_ELBOW = 20;
 // range on the hip instead. This is the constraint that cost the most: on the
 // old rig the torso was the cheap channel that made up for capped arms, and on
 // this one it is nearly as tight as they are.
-const MAX_LEAN = 8;
+//
+// RE-MEASURED 2026-09-26, after the trunk became a weighted mesh (chest on the
+// torso, kilt on the hip and its own trailing `kilt` bone). The kilt no longer
+// swings with the chest at all, so the hem never crosses the thighs: the lean
+// bends at the belt, clean through 20, the belt starting to pinch at 30. So 18,
+// not 8 — and the torso is a cheap channel again.
+const MAX_LEAN = 18;
 //
 // The head has a budget too, measured the same way (`sweepHead`). The nemes is a
 // rigid slab whose lappets sit INTO the collar, and the collar belongs to the
@@ -371,7 +793,12 @@ const MAX_LEAN = 8;
 // Everything below stays at 10 or under, so this is a ceiling rather than a
 // number anything is pressed against - but it is the reason none of them go
 // looking for more.
-const MAX_HEAD = 12;
+//
+// RE-MEASURED 2026-09-26, after the face became a weighted mesh whose lappet
+// tips stay with the torso: they no longer lift out of the collar; the hood
+// bends between them and the head instead. Clean through 20, the far cheek
+// shearing by 30. So 18, not 12.
+const MAX_HEAD = 18;
 //
 // A HANGING FOREARM STAYS PLUMB
 //
@@ -1114,19 +1541,19 @@ const nod = {
 //
 // This rig cannot turn a head: it is a 2D cutout, so "looking at the board" has
 // to be spelled with a tilt, a shift of weight and a shoulder. And the budget
-// here is the tightest on the character — the usekh collar is rigid and hangs
-// off the torso (MAX_SHOULDER 22), the nemes lappets sit into that collar
-// (MAX_HEAD 12), and the kilt hem is 294 units from the hip pivot (MAX_LEAN 8).
-// Everything below is well inside all three: the head goes to 7 of 12, the torso
-// to 4 of 8, and the shoulders to 6 of 22. The rest of the read is carried by
+// here was the tightest on the character — the usekh collar, the nemes lappets
+// and the kilt were rigid plates (MAX_SHOULDER / MAX_HEAD / MAX_LEAN). They are
+// weighted meshes now and the budgets are 28 / 18 / 18; the alert scaled with
+// them, to 11 of 18 on the head and 8 of 18 on the torso, shoulders 6 of 28. The rest of the read is carried by
 // the hip sliding 11 units toward the board and the weight moving onto that leg,
 // which costs no angle at all.
 //
 // It holds at the top of the move — a look is a pause, not a swing — then
 // settles back rather than snapping, so it can be interrupted by the chest beat
 // that follows if the third Scatter lands.
-const ALERT_TURN = 7; // head, against MAX_HEAD 12
-const ALERT_LEAN = 4; // torso, against MAX_LEAN 8
+// scaled with the budgets when they were re-measured (12 -> 18, 8 -> 18)
+const ALERT_TURN = 11; // head, against MAX_HEAD 18
+const ALERT_LEAN = 8; // torso, against MAX_LEAN 18
 const alert = {
 	bones: {
 		// weight goes onto the leg nearer the board, and the whole body with it
@@ -1262,10 +1689,11 @@ const alert = {
 // It starts and ends at exactly the setup pose, so Mascot.svelte can drop back
 // into `idle` from it without a snap, and it can be interrupted at any frame by
 // a real reaction (nod, alert, chestbeat) with nothing left offset.
-const BREAK_TURN_AWAY = -5; // head, against MAX_HEAD 12
-const BREAK_TURN_BACK = 6;
-const BREAK_LEAN = 3; // torso, against MAX_LEAN 8
-const BREAK_ARM = 5; // shoulders, against MAX_SHOULDER 22
+// scaled with the budgets when they were re-measured
+const BREAK_TURN_AWAY = -8; // head, against MAX_HEAD 18
+const BREAK_TURN_BACK = 9;
+const BREAK_LEAN = 6; // torso, against MAX_LEAN 18
+const BREAK_ARM = 7; // shoulders, against MAX_SHOULDER 28
 const idlebreak = {
 	bones: {
 		// the weight goes onto his right leg and comes back
@@ -1705,6 +2133,391 @@ const sweepElbow = {
 	},
 };
 
+// ── the kilt's follow-through ───────────────────────────────────────────────
+//
+// Cloth trails what carries it. Every animation gets a `kilt` track derived
+// from its torso and hip: the torso's turn, 0.1s LATE and opposed at 40%, so
+// the hem swings back as the body leans and catches up after; plus a share of
+// any sideways hip shift, the same beat late. Derived, not keyed by hand, so a
+// change to an animation's body never leaves its kilt behind. On the looping
+// idle the delay wraps round the loop, so the kilt's ends meet as well.
+const KILT_DELAY = 0.1, KILT_TURN = -0.4, KILT_SHIFT = -0.08;
+const withKilt = (anim, loop) => {
+	const lin = (keys, time, field) => {
+		if (!keys?.length) return 0;
+		if (time <= keys[0].time) return keys[0][field] ?? 0;
+		const last = keys[keys.length - 1];
+		if (time >= last.time) return last[field] ?? 0;
+		let i = 0;
+		while (i < keys.length - 1 && keys[i + 1].time < time) i++;
+		const k0 = keys[i], k1 = keys[i + 1];
+		const f = (time - k0.time) / (k1.time - k0.time);
+		return (k0[field] ?? 0) + ((k1[field] ?? 0) - (k0[field] ?? 0)) * f;
+	};
+	const torso = anim.bones?.torso?.rotate;
+	const hip = anim.bones?.hip?.translate;
+	if (!torso && !hip) return anim;
+	const end = Math.max(
+		...Object.values(anim.bones ?? {}).flatMap((t) => Object.values(t).flatMap((k) => k.map((x) => x.time))),
+	);
+	const span = loop ?? end;
+	const keys = [];
+	for (let t = 0; t <= span + 1e-9; t += 0.05) {
+		let back = t - KILT_DELAY;
+		if (back < 0) back = loop ? back + loop : 0;
+		const value = KILT_TURN * lin(torso, back, 'value') + KILT_SHIFT * lin(hip, back, 'x');
+		keys.push({ time: +t.toFixed(3), value: +value.toFixed(3) });
+	}
+	return { ...anim, bones: { ...anim.bones, kilt: { rotate: keys } } };
+};
+
+// PHYSICS: inertia on every hanging bone (after Boat's captain). The free
+// ends carry the most; the banana less (it is gripped); the cobra least (it is
+// cast metal on a band); the kilt's panels are heavy linen, well damped.
+// Ears and cobra are STIFF on purpose: at 0.45/120 the ears swung their tips
+// ~75px and tore the ear mesh to 178% in cheer/throwit, and the cobra
+// inverted in chestbeat. check_anubis_rig (in the build) is what caught it.
+const physics = [
+	{ name: 'banana_phys', bone: 'banana', rotate: 1, inertia: 0.5, strength: 110, damping: 0.78, mass: 1 },
+	{ name: 'ear_l_phys', bone: 'ear_l', rotate: 1, inertia: 0.25, strength: 350, damping: 0.9, mass: 1 },
+	{ name: 'ear_r_phys', bone: 'ear_r', rotate: 1, inertia: 0.25, strength: 350, damping: 0.9, mass: 1 },
+	{ name: 'cobra_phys', bone: 'cobra', rotate: 1, inertia: 0.12, strength: 600, damping: 0.95, mass: 1 },
+	{ name: 'kilt_l_phys', bone: 'kilt_l', rotate: 1, inertia: 0.5, strength: 90, damping: 0.85, mass: 2 },
+	{ name: 'kilt_c_phys', bone: 'kilt_c', rotate: 1, inertia: 0.5, strength: 90, damping: 0.85, mass: 2 },
+	{ name: 'kilt_r_phys', bone: 'kilt_r', rotate: 1, inertia: 0.5, strength: 90, damping: 0.85, mass: 2 },
+	// the collar's bead rim: heavy, so it drops and bounces up and down (y) on a
+	// jump or a strike, and swings a little side to side (rotate)
+	{ name: 'collar_hem_phys', bone: 'collar_hem', y: 1, rotate: 0.5, inertia: 0.25, strength: 300, damping: 0.9, mass: 1 },
+	// EVERY CONSTRAINT NEEDS ITS OWN `order`. Spine's update cache schedules one
+	// constraint per order value; left at the default 0, only the first of these
+	// (the banana) ever ran and the other six sat inactive — measured on
+	// spine-core, the ears and the kilt moved 0.0 units under physics. (Go
+	// Bananas Boat's captain, where this set-up comes from, has the same gap.)
+].map((c, order) => ({ ...c, order }));
+
+// THE FLUTTER, on track 1, forever. Whole cycles of FLUTTER_LOOP only, so it
+// loops without a seam. One breeze through the kilt, the panels a beat apart
+// (in step, not on three clocks — opposed, they would pinch the seams); the
+// banana chewed twice a loop; each ear twitching once, at different moments;
+// the cobra swaying slowly.
+const FLUTTER_LOOP = 4.8;
+const flutterKeys = (amp, n, phase, steps = 24) =>
+	Array.from({ length: steps + 1 }, (_, i) => {
+		const t = (FLUTTER_LOOP * i) / steps;
+		return { time: +t.toFixed(4), value: +(amp * Math.sin((2 * Math.PI * n * t) / FLUTTER_LOOP + phase)).toFixed(3) };
+	});
+const pulsesKeys = (events, sway, steps = 96) =>
+	Array.from({ length: steps + 1 }, (_, i) => {
+		const t = (FLUTTER_LOOP * i) / steps;
+		let v = sway.amp * Math.sin((2 * Math.PI * sway.n * t) / FLUTTER_LOOP + sway.phase);
+		for (const { at, amp, width } of events) {
+			const u = (t - at) / width;
+			if (u > 0 && u < 1) v += amp * Math.sin(Math.PI * u);
+		}
+		return { time: +t.toFixed(4), value: +v.toFixed(3) };
+	});
+const flutter = {
+	bones: {
+		kilt_l: { rotate: flutterKeys(2.5, 2, 0) },
+		kilt_c: { rotate: flutterKeys(1.8, 2, -0.45) },
+		kilt_r: { rotate: flutterKeys(2.5, 2, -0.9) },
+		// two bites, and a slow waggle between them so it is never parked
+		// the chew under those bites: the jaw drops, then clamps on the banana
+		// at the peak of each jerk (the pulses peak at 0.71 and 1.06), a hair
+		// past shut; and once more, lazily, in the quiet half of the loop
+		jaw: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.48, x: 0, y: 0 },
+				{ time: 0.62, x: 0, y: -4 },
+				{ time: 0.71, x: 0, y: 0.8 },
+				{ time: 0.8, x: 0, y: 0 },
+				{ time: 0.9, x: 0, y: -3 },
+				{ time: 1.06, x: 0, y: 0.6 },
+				{ time: 1.18, x: 0, y: 0 },
+				{ time: 3.4, x: 0, y: 0 },
+				{ time: 3.62, x: 0, y: -2.2 },
+				{ time: 3.9, x: 0, y: 0 },
+				{ time: FLUTTER_LOOP, x: 0, y: 0 },
+			],
+		},
+		banana: { rotate: pulsesKeys([{ at: 0.6, amp: 12, width: 0.22 }, { at: 0.95, amp: 9, width: 0.22 }], { amp: 2.5, n: 2, phase: 0 }) },
+		// a quick flick each, at different moments; a hair of sway between.
+		// The left ear points up and a little LEFT, so + turns its tip outward;
+		// the right ear the mirror
+		ear_l: { rotate: pulsesKeys([{ at: 1.4, amp: 7, width: 0.2 }], { amp: 1, n: 1, phase: 0.4 }) },
+		ear_r: { rotate: pulsesKeys([{ at: 3.3, amp: -7, width: 0.2 }], { amp: 1, n: 1, phase: 2.1 }) },
+		cobra: { rotate: flutterKeys(2.5, 1, 1.2) },
+	},
+};
+
+// ── THE JAW (track 0, `jaw_act`; the chewing is `flutter`'s) ─────────────────
+// y down opens. Each opening is a snap and a slower close: a grunt, not a yawn.
+const jawKeys = (events, end) => {
+	const keys = [{ time: 0, x: 0, y: 0 }];
+	for (const { at, open, hold = 0, close = 0.26 } of events)
+		keys.push(
+			{ time: +Math.max(0, at - 0.07).toFixed(3), x: 0, y: 0 },
+			{ time: +at.toFixed(3), x: 0, y: -open },
+			...(hold ? [{ time: +(at + hold).toFixed(3), x: 0, y: -open * 0.85 }] : []),
+			{ time: +(at + hold + close).toFixed(3), x: 0, y: 0 },
+		);
+	keys.push({ time: end, x: 0, y: 0 });
+	return { jaw_act: { translate: keys } };
+};
+// ── dance: the victory stomp, while a big win counts up ─────────────────────
+//
+// WHY: a big win's count-up runs 6 to 32 seconds (winLevelMap presentDuration)
+// and the cheer is 2. He used to spend the rest of it standing beside the
+// plaque breathing. Mascot.svelte now chains this after the cheer, LOOPED, for
+// as long as that count-up runs and never past it (the old looping
+// `celebrate` was tied to the plaque, which can wait on the player, and read
+// as jammed). When the plaque goes he finishes the bar and drops to idle.
+//
+// WHAT: a gorilla's two-step stomp, carried by the body because that is where
+// this drawing has range — the arms cannot go up (MAX_SHOULDER), the weight can
+// go anywhere. Lift the left foot (hip up and onto the right leg, the left leg
+// shortens so the foot leaves the floor), STOMP (hip drops, both legs take it,
+// the torso slams toward the stomping side and squashes, the head whips, the
+// arms pound down, a grunt), then the mirror. The kilt panels and the banana
+// get flung by their physics on every stomp — that is most of the fun of it.
+//
+// THE FEET DO NOT SKATE: the legs are children of the hip, so a hip moved 8
+// sideways drags both feet 8 sideways. Each thigh turns by the angle that puts
+// its foot back (atan(8/386) = 1.2 degrees), which is too small to read as the
+// leg being thrown out — the reason legs are otherwise never rotated here.
+const DANCE_LOOP = 1.8;
+const LEG = 386;
+const footBack = (hipX) => +((-Math.atan(hipX / LEG) * 180) / Math.PI).toFixed(2);
+const DANCE_HIP = [
+	[0, 0, -4],
+	[0.2, 8, 8], // lift the left foot: weight right and up
+	[0.45, 0, -9], // STOMP
+	[0.62, 0, -4],
+	[1.1, -8, 8], // lift the right
+	[1.35, 0, -9], // STOMP
+	[1.52, 0, -4],
+	[DANCE_LOOP, 0, -4],
+];
+// leg length changes, as fractions of LEG: the planted leg lengthens by exactly
+// the hip's rise so its foot stays down; the lifted one shortens so its foot
+// comes up ~30; on the stomp both take the 9 the hip drops
+const legScale = (t, lifted) => ({ time: t, x: 1, y: +lifted.toFixed(4) });
+const dance = {
+	bones: {
+		hip: { translate: DANCE_HIP.map(([time, x, y]) => ({ time, x, y })) },
+		legL: {
+			rotate: DANCE_HIP.map(([time, x]) => ({ time, value: footBack(x) })),
+			scale: [
+				legScale(0, 1 - 4 / LEG),
+				legScale(0.2, 1 - 22 / LEG), // up: the foot clears the floor by ~30
+				legScale(0.45, 1 - 9 / LEG),
+				legScale(0.62, 1 - 4 / LEG),
+				legScale(1.1, 1 + 8 / LEG), // planted, stretched
+				legScale(1.35, 1 - 9 / LEG),
+				legScale(1.52, 1 - 4 / LEG),
+				legScale(DANCE_LOOP, 1 - 4 / LEG),
+			],
+		},
+		legR: {
+			rotate: DANCE_HIP.map(([time, x]) => ({ time, value: footBack(x) })),
+			scale: [
+				legScale(0, 1 - 4 / LEG),
+				legScale(0.2, 1 + 8 / LEG),
+				legScale(0.45, 1 - 9 / LEG),
+				legScale(0.62, 1 - 4 / LEG),
+				legScale(1.1, 1 - 22 / LEG),
+				legScale(1.35, 1 - 9 / LEG),
+				legScale(1.52, 1 - 4 / LEG),
+				legScale(DANCE_LOOP, 1 - 4 / LEG),
+			],
+		},
+		torso: {
+			// + is toward the board (screen left): lean off the lifted foot, then
+			// slam onto it
+			rotate: [
+				{ time: 0, value: -3 },
+				{ time: 0.2, value: -6 },
+				{ time: 0.45, value: 9 },
+				{ time: 0.66, value: 4 },
+				{ time: 1.1, value: 6 },
+				{ time: 1.35, value: -9 },
+				{ time: 1.56, value: -4 },
+				{ time: DANCE_LOOP, value: -3 },
+			],
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.2, x: 0.98, y: 1.035 },
+				{ time: 0.45, x: 1.05, y: 0.94 },
+				{ time: 0.62, x: 1, y: 1.01 },
+				{ time: 1.1, x: 0.98, y: 1.035 },
+				{ time: 1.35, x: 1.05, y: 0.94 },
+				{ time: 1.52, x: 1, y: 1.01 },
+				{ time: DANCE_LOOP, x: 1, y: 1 },
+			],
+		},
+		head: {
+			// counters the torso a beat late, then whips past
+			rotate: [
+				{ time: 0, value: 2 },
+				{ time: 0.2, value: 4 },
+				{ time: 0.45, value: -5 },
+				{ time: 0.6, value: 4 },
+				{ time: 0.9, value: -1 },
+				{ time: 1.1, value: -4 },
+				{ time: 1.35, value: 5 },
+				{ time: 1.5, value: -4 },
+				{ time: DANCE_LOOP, value: 2 },
+			],
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.2, x: 0, y: 4 },
+				{ time: 0.47, x: 0, y: -6 },
+				{ time: 0.64, x: 0, y: 1 },
+				{ time: 1.1, x: 0, y: 4 },
+				{ time: 1.37, x: 0, y: -6 },
+				{ time: 1.54, x: 0, y: 1 },
+				{ time: DANCE_LOOP, x: 0, y: 0 },
+			],
+		},
+		// out and up on the lift (OUT_* signs: - is outward on the left), pounded
+		// down on the stomp; the arm on the stomping side swings wider
+		armL: {
+			rotate: [
+				{ time: 0, value: -2 },
+				{ time: 0.2 + LEAD, value: -20 },
+				{ time: 0.45, value: 5 },
+				{ time: 0.66, value: -3 },
+				{ time: 1.1 + LEAD, value: -11 },
+				{ time: 1.35, value: 3 },
+				{ time: 1.56, value: -4 },
+				{ time: DANCE_LOOP, value: -2 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 4 },
+				{ time: 0.2, value: 11 },
+				{ time: 0.45 + LEAD, value: -3 },
+				{ time: 0.66, value: 3 },
+				{ time: 1.1, value: 20 },
+				{ time: 1.35 + LEAD, value: -5 },
+				{ time: 1.56, value: 2 },
+				{ time: DANCE_LOOP, value: 4 },
+			],
+		},
+		armL_fore: {
+			rotate: [
+				{ time: 0, value: hang(-2) },
+				{ time: 0.2 + LEAD + DRAG, value: hang(-20) },
+				{ time: 0.45 + DRAG, value: hang(5) },
+				{ time: 0.66 + DRAG, value: hang(-3) },
+				{ time: 1.1 + LEAD + DRAG, value: hang(-11) },
+				{ time: 1.35 + DRAG, value: hang(3) },
+				{ time: 1.56 + DRAG, value: hang(-4) },
+				{ time: DANCE_LOOP, value: hang(-2) },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: hang(4) },
+				{ time: 0.2 + DRAG, value: hang(11) },
+				{ time: 0.45 + LEAD + DRAG, value: hang(-3) },
+				{ time: 0.66 + DRAG, value: hang(3) },
+				{ time: 1.1 + DRAG, value: hang(20) },
+				{ time: 1.35 + LEAD + DRAG, value: hang(-5) },
+				{ time: 1.56 + DRAG, value: hang(2) },
+				{ time: DANCE_LOOP, value: hang(4) },
+			],
+		},
+		// a grunt on each stomp
+		...jawKeys(
+			[
+				{ at: 0.45, open: 4.5, close: 0.24 },
+				{ at: 1.35, open: 4.5, close: 0.24 },
+			],
+			DANCE_LOOP,
+		),
+	},
+};
+
+// ── THE LIDS (see THE EYES) ─────────────────────────────────────────────────
+//
+// A sprite blink, not a fade: open, half, shut, (held), half, open, a frame
+// (1/30s) at each step, all STEPPED. A 120ms linear fade reads as the eyes
+// dissolving; the half frame is the one in-between a sprite animator draws.
+//
+// Blinks go where an animator puts them — on a head turn, on an impact — and
+// the idle ones are uneven (a single, then a double) so the 4.8s loop does not
+// read as a metronome.
+const F = 1 / 30;
+const lidKeys = (events) => {
+	const keys = [{ time: 0, value: 0, curve: 'stepped' }];
+	for (const { at, hold = 0.07 } of events)
+		keys.push(
+			{ time: +at.toFixed(4), value: 0.5, curve: 'stepped' },
+			{ time: +(at + F).toFixed(4), value: 1, curve: 'stepped' },
+			{ time: +(at + F + hold).toFixed(4), value: 0.5, curve: 'stepped' },
+			{ time: +(at + 2 * F + hold).toFixed(4), value: 0, curve: 'stepped' },
+		);
+	return keys;
+};
+const lids = (suffix, events, only) =>
+	Object.fromEntries(
+		['l', 'r'].filter((s) => !only || s === only).map((s) => [`lid_${s}${suffix}`, { alpha: lidKeys(events) }]),
+	);
+// the chest beat: a grunt on every strike, the last one the loudest
+Object.assign(
+	chestbeat.bones,
+	jawKeys(beats.map((b, i) => ({ at: b, open: i === beats.length - 1 ? 8 : 5.5, close: 0.22 })), BEAT_END),
+);
+// the cheer: a shout as he leaves the ground, a smaller one on the second hop
+Object.assign(cheer.bones, jawKeys([{ at: 0.38, open: 6, hold: 0.14, close: 0.3 }, { at: 1.02, open: 3.5 }], 2.05));
+// the alert: a small drop of the jaw as the head arrives on the board - "oh?"
+Object.assign(alert.bones, jawKeys([{ at: 0.4, open: 2.5, hold: 0.38, close: 0.3 }], 1.1));
+// the throw: a "hup" on the release
+Object.assign(throwit.bones, jawKeys([{ at: RELEASE_AT, open: 4, close: 0.28 }], 1.2));
+
+// track 1: the idle blinks
+flutter.slots = lids('', [{ at: 0.35 }, { at: 2.2 }, { at: 2.45, hold: 0.05 }]);
+// track 0: the acting
+// the nod: eyes shut through the dip — a contented "mm", not a blink
+nod.slots = lids('_hold', [{ at: 0.18, hold: 0.36 }]);
+// the cheer: screwed shut on the crouch, and they pop open as he leaves the ground
+cheer.slots = lids('_hold', [{ at: 0.06, hold: 0.22 }]);
+// the alert: a blink on the turn, eyes open as the head arrives on the board
+alert.slots = lids('_hold', [{ at: 0.16, hold: 0.08 }]);
+// the idle break: a blink at the start of each head turn
+idlebreak.slots = lids('_hold', [{ at: 0.5 }, { at: 1.4 }]);
+// the chest beat: a flinch on the last, biggest strike
+chestbeat.slots = lids('_hold', [{ at: beats[beats.length - 1] - F, hold: 0.1 }]);
+// the throw: a wink at the player once the scarab has gone (the eye away from
+// the board)
+throwit.slots = { ...throwit.slots, ...lids('_hold', [{ at: RELEASE_AT + 0.14, hold: 0.3 }], 'r') };
+
+// ── glints: the gold catching the light, TRACK 2 (Mascot.svelte) ────────────
+// One band at a time, round the figure, a glint about every two seconds — so
+// each band catches the light about once every ten. Frames at 24 per second:
+// a sweep is 0.42s, quick enough to read as light and not as a stripe moving.
+const GLINTS_LOOP = 9.6;
+const GLINT_AT = { headband: 0.9, armL_band: 2.8, armR_cuff: 4.5, armR_band: 6.3, armL_cuff: 8.0 };
+const glints = {
+	slots: Object.fromEntries(
+		BANDS.map((band) => {
+			const at = GLINT_AT[band.name];
+			const keys = [{ time: 0, name: null }];
+			for (let k = 0; k < GLINT_FRAMES; k++) keys.push({ time: +(at + k / 24).toFixed(4), name: `${band.name}_glint_${k}` });
+			keys.push({ time: +(at + GLINT_FRAMES / 24).toFixed(4), name: null });
+			// the loop's full length, on one slot, so Spine plays the gap at the end
+			if (band.name === 'headband') keys.push({ time: GLINTS_LOOP, name: null });
+			return [`${band.name}_glint`, { attachment: keys }];
+		}),
+	),
+};
+
+// the two that loop, and so whose ends have to meet
+const LOOPS = { idle: IDLE_LOOP, dance: DANCE_LOOP };
+
 const skeleton = {
 	skeleton: {
 		hash: 'gb-anubis',
@@ -1718,6 +2531,7 @@ const skeleton = {
 	},
 	bones,
 	slots,
+	physics,
 	skins: [{ name: 'default', attachments }],
 	animations: Object.fromEntries(
 			Object.entries({
@@ -1728,16 +2542,23 @@ const skeleton = {
 				alert,
 				idlebreak,
 				throwit,
+				dance,
+				flutter,
+				glints,
 				// Left un-smoothed on purpose: a calibration sweep has to be linear,
 				// or the angle at a given frame is not the angle it is labelled with.
 				...(CALIBRATE ? { sweepShoulder, sweepElbow, sweepHead, sweepTorso } : {}),
 			}).map(([name, a]) => [
 				name,
-				// idle is the only one that loops, so it is the only one whose ends
+				// idle and dance loop (LOOPS), so theirs are the ends that
 				// have to meet.
 				name.startsWith('sweep')
 					? a
-					: smoothAnimation(a, name === 'idle' ? IDLE_LOOP : undefined),
+					: name === 'glints'
+						? a
+						: name === 'flutter'
+						? smoothAnimation(a, FLUTTER_LOOP)
+						: smoothAnimation(withKilt(a, LOOPS[name]), LOOPS[name]),
 			]),
 		),
 };

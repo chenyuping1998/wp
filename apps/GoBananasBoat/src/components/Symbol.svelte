@@ -41,6 +41,7 @@
 	{:else if isSprite}
 		<SymbolSprite
 			{symbolInfo}
+			symbolName={props.rawSymbol.name}
 			x={0}
 			y={0}
 			blur={props.state === 'spin' ? (props.blur ?? 1) : 0}

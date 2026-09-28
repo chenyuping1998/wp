@@ -14,7 +14,7 @@
 
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import { Container, Sprite } from 'pixi-svelte';
+	import { Container } from 'pixi-svelte';
 	import { stateBet } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
@@ -23,6 +23,8 @@
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import ImpactDust from './ImpactDust.svelte';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import { REVEAL_MS, RATTLE_END as MESH_RATTLE_END } from '../game/meshWin/mReveal';
 
 	// The tarps come off, and every crate is the same cargo.
 	//
@@ -97,7 +99,14 @@
 	//
 	// So it keeps the same shape at about 80% of the length: still a rattle,
 	// still a stagger you can read left to right, just tighter.
-	const DURATION = 460;
+	// THE TARP IS A MESH (game/meshWin/mReveal.ts). It strains against its
+	// ropes, is yanked up by the knot — the top of the canvas stretching toward
+	// the pull before the rest follows — and flies off turning. It used to be the
+	// whole M tile, steel panel and all, shaken, lifted and squashed, which read
+	// as a floor tile flying away. Only the tarp moves now; what it uncovers is
+	// the new symbol's own tile. The timeline below is unchanged, and the mesh
+	// plays it: DURATION is its length, RATTLE_END the frame the rope gives.
+	const DURATION = REVEAL_MS;
 	const DURATION_TURBO = 380;
 	// THE STAGGER IS PER REEL, NOT PER CRATE, and that is the whole shape of this
 	// animation.
@@ -120,7 +129,7 @@
 	// rigid slab. Small enough that the column still reads as one event.
 	const ROW_LAG = 34;
 	const ROW_LAG_TURBO = 22;
-	const RATTLE_END = 0.22;
+	const RATTLE_END = MESH_RATTLE_END;
 
 	// NO WIN-STYLE HIGHLIGHT WHEN THE CARGO IS NAMED.
 	//
@@ -161,7 +170,6 @@
 	let loopRunning = false;
 
 
-	const easeOutCubic = (p: number) => 1 - (1 - p) ** 3;
 
 	// One rAF loop drives every crate currently in flight, the same shape
 	// StickyPrizes uses for its landing shake — cheaper than a promise chain
@@ -203,30 +211,12 @@
 	let pendingSymbol: SymbolName = 'L1';
 
 	const crateState = (entry: RevealEntry) => {
+		// the strain, the yank and the flight are the mesh's (mReveal.ts); this
+		// only fades the tarp through the second half of its flight
 		const p = Math.max(0, Math.min(1, (clock - entry.bornAt) / entry.durationMs));
-		if (p < RATTLE_END) {
-			// RATTLE: decaying jitter, nothing has lifted yet
-			const shakeT = p / RATTLE_END;
-			const amp = SYMBOL_SIZE * 0.02 * (1 - shakeT);
-			return {
-				x: Math.sin(shakeT * 26) * amp,
-				y: Math.cos(shakeT * 19) * amp * 0.6,
-				rot: 0,
-				scaleY: 1,
-				alpha: 1,
-			};
-		}
-		// LIFT: the tarp rides up and off, shrinking in Y as if being yanked by
-		// one corner, rotating slightly, fading through the second half
+		if (p < RATTLE_END) return { alpha: 1 };
 		const liftT = (p - RATTLE_END) / (1 - RATTLE_END);
-		const eased = easeOutCubic(liftT);
-		return {
-			x: eased * SYMBOL_SIZE * 0.3,
-			y: -eased * SYMBOL_SIZE * 0.55,
-			rot: eased * 0.5,
-			scaleY: 1 - eased * 0.75,
-			alpha: liftT < 0.5 ? 1 : 1 - (liftT - 0.5) / 0.5,
-		};
+		return { alpha: liftT < 0.5 ? 1 : 1 - (liftT - 0.5) / 0.5 };
 	};
 
 
@@ -308,24 +298,19 @@
 	{#each entries as entry (`${entry.reel},${entry.row}`)}
 		{@const s = crateState(entry)}
 		{#if s.alpha > 0.01}
-			<Container
-				x={getSymbolX(entry.reel) + s.x}
-				y={rowCenterY(entry.row) + s.y}
-				rotation={s.rot}
-				scale={{ x: 1, y: s.scaleY }}
-				alpha={s.alpha}
-			>
+			<Container x={getSymbolX(entry.reel)} y={rowCenterY(entry.row)} alpha={s.alpha}>
 				<!--
-					gbM, drawn at SPECIAL_RATIOS like Symbol.svelte draws it. It used
-					to be a vector stand-in shared with the board; with real art both
-					sides just point at the same texture, which is what keeps the
-					lift from looking like a swap to a different picture.
+					The tarp, cut off gbM at SPECIAL_RATIOS like Symbol.svelte draws
+					it, so at rest it lies exactly on the crate the board is showing
+					and the frame before it moves is one picture with the cell.
 				-->
-				<Sprite
-					key="gbM"
-					anchor={0.5}
+				<SymbolMeshWin
+					reveal
+					symbolName="M"
 					width={SYMBOL_SIZE * SPECIAL_SYMBOL_SIZE}
 					height={SYMBOL_SIZE * SPECIAL_SYMBOL_SIZE}
+					speed={DURATION / entry.durationMs}
+					delay={Math.max(0, entry.bornAt - performance.now())}
 				/>
 			</Container>
 		{/if}

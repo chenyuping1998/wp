@@ -101,7 +101,13 @@ const SPIN_OPTIONS_SHARED = {
 	reelBounceBackSpeed: 0.15,
 	reelSpinSpeedBeforeBounce: 4,
 	reelPaddingMultiplierNormal: 1.2,
-	reelPaddingMultiplierAnticipated: 5,
+	// 5 -> 3: the tease ran too long once it was slowed to half speed. Distance is
+	// the right end to cut, not speed — the Hacksaw spec this was ported from is
+	// explicit that anticipation is a SLOWDOWN rather than a wait, and the slow
+	// pass is what makes the reel readable. Cutting padding shortens the tease to
+	// about 60% of its wall-clock (3/1.5 against 5/1.5) while the reel still
+	// crawls past at the same speed.
+	reelPaddingMultiplierAnticipated: 3,
 	reelSpinDelay: 200,
 	reelSpinSpeedAnticipated: 1.5,
 	landOnImpact: true,

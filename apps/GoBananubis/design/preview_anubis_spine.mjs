@@ -4,9 +4,11 @@
 //   node design/preview_anubis_spine.mjs <dir with node_modules for pngjs> [anim]
 //
 // This is a deliberately small forward-kinematics renderer: bone hierarchy,
-// linear keyframe interpolation, and one axis-aligned quad per attachment. It
-// does NOT implement Spine — no meshes, no IK, no curve interpolation, no draw
-// order timelines — because the rig does not use any of that. What it does check
+// linear keyframe interpolation, one quad per region attachment, and WEIGHTED
+// MESHES (the trunk, the collar and the face are meshes since the generator's
+// WEIGHTED MESHES section — a preview that drew them as rigid quads would show
+// exactly the seams they exist to remove). It does NOT implement IK, curve
+// interpolation or draw order timelines, because the rig does not use them. What it does check
 // is the thing that actually goes wrong when a cutout rig is written by hand: a
 // joint in the wrong place, so a limb swings from its elbow, or a piece parented
 // to the wrong bone, so an arm is left behind when the torso turns.
@@ -136,10 +138,73 @@ const attachmentAt = (slot, time) => {
 	return name;
 };
 
+// Slot alpha: the setup colour's alpha, then the clip's `alpha` keys. Every
+// alpha key in this rig is stepped (the eyelids' sprite blink), so the last key
+// at or before `time` is the value.
+const alphaAt = (slot, time) => {
+	let a = slot.color ? parseInt(slot.color.slice(6, 8), 16) / 255 : 1;
+	for (const k of anim.slots?.[slot.name]?.alpha ?? []) {
+		if (k.time > time + 1e-6) break;
+		a = k.value;
+	}
+	return a;
+};
+
 // ── raster ──────────────────────────────────────────────────────────────────
 // Origin sits between the feet; give the frame room above for a jump.
 const FRAME = { w: 1000, h: 1140, originX: 500, groundY: 1080 };
 const toPixel = (p) => ({ x: p.x + FRAME.originX, y: FRAME.groundY - p.y });
+
+// A weighted mesh: each vertex is the weighted sum of where its bones put it
+// (Spine stores it once per bone, in that bone's setup space), then every
+// triangle is filled from the region by its UVs.
+const blendOver = (buf, px, py, sx, sy) => {
+	const s = ((sy | 0) * page.width + (sx | 0)) * 4;
+	const a = page.data[s + 3] / 255;
+	if (a <= 0.004) return;
+	const d = (py * FRAME.w + px) * 4;
+	for (let c = 0; c < 3; c++) buf.data[d + c] = Math.round(page.data[s + c] * a + buf.data[d + c] * (1 - a));
+};
+const drawMesh = (buf, att, reg, world) => {
+	const pts = [];
+	const v = att.vertices;
+	for (let i = 0; i < v.length; ) {
+		const n = v[i++];
+		let x = 0, y = 0;
+		for (let k = 0; k < n; k++) {
+			const m = world[skel.bones[v[i]].name];
+			const p = apply(m, v[i + 1], v[i + 2]);
+			x += p.x * v[i + 3];
+			y += p.y * v[i + 3];
+			i += 4;
+		}
+		pts.push(toPixel({ x, y }));
+	}
+	const uv = att.uvs;
+	for (let t = 0; t < att.triangles.length; t += 3) {
+		const [a, b, c] = [att.triangles[t], att.triangles[t + 1], att.triangles[t + 2]];
+		const A = pts[a], B = pts[b], C = pts[c];
+		const den = (B.y - C.y) * (A.x - C.x) + (C.x - B.x) * (A.y - C.y);
+		if (Math.abs(den) < 1e-9) continue;
+		const minX = Math.max(0, Math.floor(Math.min(A.x, B.x, C.x)));
+		const maxX = Math.min(FRAME.w - 1, Math.ceil(Math.max(A.x, B.x, C.x)));
+		const minY = Math.max(0, Math.floor(Math.min(A.y, B.y, C.y)));
+		const maxY = Math.min(FRAME.h - 1, Math.ceil(Math.max(A.y, B.y, C.y)));
+		for (let py = minY; py <= maxY; py++)
+			for (let px = minX; px <= maxX; px++) {
+				const x = px + 0.5, y = py + 0.5;
+				const l1 = ((B.y - C.y) * (x - C.x) + (C.x - B.x) * (y - C.y)) / den;
+				const l2 = ((C.y - A.y) * (x - C.x) + (A.x - C.x) * (y - C.y)) / den;
+				const l3 = 1 - l1 - l2;
+				if (l1 < -1e-6 || l2 < -1e-6 || l3 < -1e-6) continue;
+				const u = l1 * uv[a * 2] + l2 * uv[b * 2] + l3 * uv[c * 2];
+				const w = l1 * uv[a * 2 + 1] + l2 * uv[b * 2 + 1] + l3 * uv[c * 2 + 1];
+				const sx = Math.min(reg.x + reg.w - 1, reg.x + u * reg.w);
+				const sy = Math.min(reg.y + reg.h - 1, reg.y + w * reg.h);
+				blendOver(buf, px, py, sx, sy);
+			}
+	}
+};
 
 const renderFrame = (time) => {
 	const world = worldAt(time);
@@ -153,9 +218,15 @@ const renderFrame = (time) => {
 	for (const slot of skel.slots) {
 		const shown = attachmentAt(slot, time);
 		if (!shown) continue;
+		const slotAlpha = alphaAt(slot, time);
+		if (slotAlpha <= 0.004) continue;
 		const att = skel.skins[0].attachments[slot.name]?.[shown];
 		const reg = regions[shown];
 		if (!att || !reg) continue;
+		if (att.type === 'mesh') {
+			drawMesh(buf, att, reg, world);
+			continue;
+		}
 		const m = world[slot.bone];
 		const hw = att.width / 2;
 		const hh = att.height / 2;
@@ -188,7 +259,7 @@ const renderFrame = (time) => {
 				const sx = Math.min(reg.x + reg.w - 1, reg.x + u * reg.w);
 				const sy = Math.min(reg.y + reg.h - 1, reg.y + v * reg.h);
 				const s = ((sy | 0) * page.width + (sx | 0)) * 4;
-				const a = page.data[s + 3] / 255;
+				const a = (page.data[s + 3] / 255) * slotAlpha;
 				if (a <= 0.004) continue;
 				const d = (py * FRAME.w + px) * 4;
 				for (let c = 0; c < 3; c++)
@@ -203,7 +274,7 @@ const renderFrame = (time) => {
 // clocks, and a hardcoded list silently stops covering the end of the longer one.
 const duration = Math.max(
 	0.001,
-	...Object.values(anim.bones ?? {}).flatMap((track) =>
+	...[...Object.values(anim.bones ?? {}), ...Object.values(anim.slots ?? {})].flatMap((track) =>
 		Object.values(track).flatMap((keys) => keys.map((k) => k.time)),
 	),
 );

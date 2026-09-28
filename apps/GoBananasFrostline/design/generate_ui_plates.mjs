@@ -12,19 +12,11 @@
 //      the same pass, and a slate-and-ice bar behind brass-and-olive plate art
 //      reads as two bars stacked.
 //
-//   2. The Buy Bonus gets its own object, the way every other game in the family
-//      does — Go Bananubis carves the sealed tablet's eye into basalt, Go
-//      Bananas Boat uses a cargo container, Go Bananaut an airlock hatch. Here it
-//      is a frost crystal cut into a steel hatch: the button is the one control
-//      the player presses deliberately before spending 200x, so it earns being a
-//      thing rather than a rounded rectangle with words on it.
+//   2. The Buy Bonus is an OBJECT — a cut ice crystal. See THE ICE CRYSTAL
+//      below for why that shape, and for the wheel and the hatch it replaced.
 //
-//   3. That crystal ships TWICE — cut, and lit. The lit copy is drawn over the
-//      plate with blendMode 'add' on hover, so it reads as the steel catching
-//      light rather than as a decal. Its bloom is BAKED INTO the texture rather
-//      than applied as a runtime filter: an additive child inside a filtered or
-//      masked container composites into an isolated target that starts
-//      transparent, so it would be adding to nothing and arrive as a faint film.
+//   3. That crystal ships TWICE — as ice, and catching light. The lit copy is
+//      drawn over the plate with blendMode 'add' on hover.
 // Usage: node design/generate_ui_plates.mjs <dir with node_modules for @resvg/resvg-js>
 import { createRequire } from 'module';
 import fs from 'fs';
@@ -143,94 +135,206 @@ ${finishRect(10, 10, BS - 20, BS - 20, 66, 'sf', CANVAS_FINISH)}
 ${buyRivets}
 </svg>`;
 
-// ── the frost crystal, CUT into the plate ──────────────────────────────────
+// ── THE ICE CRYSTAL ────────────────────────────────────────────────────────
 //
-// Six arms at 60 degrees, each with two pairs of barbs - the standard dendrite,
-// drawn as geometry rather than sampled off a symbol. Go Bananubis reads its eye
-// out of the shipped h2 art so that button and the board share an object; there
-// is no equivalent here yet, because the Frostline symbol set is not drawn. When
-// it is, and if one of its symbols carries a crystal, this should be re-cut from
-// that art for the same reason.
+// A cut crystal: a pointed-top hexagon with six bevelled faces round a flat
+// table, the caption on the table. Still Go Bananas Boat's principle — the
+// button is an OBJECT from the game's world, not a panel with a decoration on
+// it — but not Boat's shape. A crystal wheel was built first, on Boat's ship's
+// wheel, and it read as a helm; the brief is a crystal, and a crystal is a gem
+// cut, not a wheel.
 //
-// Sits in the TOP THIRD and stops above where the caption begins. The shared
-// button centres its two-line label and cannot move it, so the only way both fit
-// on a 120px plate is for the crystal to end before the words start - which is
-// also why uiTheme.ts shrinks buyBonusLabelSizeRatio to 0.46. At that ratio the
-// two lines run roughly y=224..416 in this 640 canvas, so the crystal is sized
-// to END at 218: centred at 142 with a radius of 76. Its top at 66 clears the
-// inner bevel (which sits at 31 plus an 11px stroke). Those are the two
-// constraints — bevel above, caption below — and they leave a 152px band.
-const CRYSTAL_CY = 142;
-const CRYSTAL_R = 76;
+// WHY A GEM CUT READS AT ~120px: the six bevel faces are each a different value,
+// lit from the upper left like every plate in this game — pale at the top-left,
+// deep blue at the bottom-right. That light-to-dark ring of flat facets is what
+// a crystal looks like at any size, and it is carried by VALUE, so it survives
+// being drawn small. A plain blue hexagon with a gradient reads as a tile.
+//
+// THE HOVER DOES NOT TURN. The wheel's lit copy spun, because wheels turn. A
+// crystal turning on the spot looks like the texture came loose, so the lit copy
+// here is the crystal CATCHING LIGHT: its ridges flare and a glint opens on the
+// upper-left corner. buyBonusHoverSpin is unset in uiTheme.ts for that reason.
+//
+// ── THE CLEAR ZONE — measured in this game's face ───────────────────────────
+//
+// Measured by rendering each caption in Titan One (see design/preview_buybonus
+// for the harness), at buyBonusLabelSizeRatio 0.50, in this 640 canvas:
+//
+//     BONUS     half-width 168, line box reaches y = +87
+//     DISABLE   half-width 204, single line, y within +-35   <- the widest
+//
+// A pointed-top hexagon's flat sides sit at x = +-R*cos(30deg). The table is
+// R_TABLE 254, so its sides are at +-220 — DISABLE clears them by 16 — and
+// they run straight from y = -127 to +127, well past the caption's +-87.
+// buyBonusLabelSizeRatio in src/game/uiTheme.ts and R_TABLE here are one
+// decision in two files.
+const CX = BS / 2;
+const CY = BS / 2;
+const R_OUT = 306; // the crystal's outline
+const R_TABLE = 254; // the flat face the caption sits on
 
-const crystalPath = () => {
-	const seg = [];
-	for (let i = 0; i < 6; i++) {
-		const a = (Math.PI / 3) * i - Math.PI / 2;
-		const dx = Math.cos(a);
-		const dy = Math.sin(a);
-		seg.push(
-			`M ${BS / 2} ${CRYSTAL_CY} L ${(BS / 2 + dx * CRYSTAL_R).toFixed(1)} ${(CRYSTAL_CY + dy * CRYSTAL_R).toFixed(1)}`,
-		);
-		// two barb pairs per arm, at 55% and 78% out, swept back at 45 degrees
-		for (const [at, len] of [
-			[0.55, 0.3],
-			[0.78, 0.2],
-		]) {
-			const bx = BS / 2 + dx * CRYSTAL_R * at;
-			const by = CRYSTAL_CY + dy * CRYSTAL_R * at;
-			for (const sweep of [-1, 1]) {
-				const ba = a + sweep * (Math.PI / 4);
-				seg.push(
-					`M ${bx.toFixed(1)} ${by.toFixed(1)} L ${(bx + Math.cos(ba) * CRYSTAL_R * len).toFixed(1)} ${(by + Math.sin(ba) * CRYSTAL_R * len).toFixed(1)}`,
-				);
-			}
-		}
-	}
-	return seg.join(' ');
+const hexPts = (r, dy = 0) =>
+	Array.from({ length: 6 }, (_, k) => {
+		const a = ((-90 + 60 * k) * Math.PI) / 180;
+		return [CX + Math.cos(a) * r, CY + dy + Math.sin(a) * r];
+	});
+const poly = (pts) => pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+
+// Light from the upper left. Each bevel face's brightness is the dot product of
+// its outward normal with that direction, mapped onto the ice ramp.
+const LIGHT = [-0.62, -0.78];
+const RAMP = ['#1e6fa8', '#3f8ec4', '#5fa8d8', '#8fd9ff', '#c9ecff', '#eaf7ff'];
+const facetColour = (k) => {
+	const mid = ((-60 + 60 * k) * Math.PI) / 180; // the face between vertex k and k+1
+	const d = Math.cos(mid) * LIGHT[0] + Math.sin(mid) * LIGHT[1]; // -1..1
+	const t = (d + 1) / 2;
+	return RAMP[Math.min(RAMP.length - 1, Math.round(t * (RAMP.length - 1)))];
 };
-const CRYSTAL = crystalPath();
 
-// A cut is a dark groove with a LIT LOWER EDGE under it. A groove without the
-// lit edge is a stain, and that is the whole difference between carved and
-// printed - the same trick Go Bananubis uses on its eye.
-const crystalCut = `
-<path d="${CRYSTAL}" fill="none" stroke="#9ecbe6" stroke-opacity="0.4" stroke-width="13" stroke-linecap="round" transform="translate(0,6)"/>
-<path d="${CRYSTAL}" fill="none" stroke="#0a1420" stroke-opacity="0.55" stroke-width="13" stroke-linecap="round"/>
-<circle cx="${BS / 2}" cy="${CRYSTAL_CY + 6}" r="15" fill="#9ecbe6" fill-opacity="0.4"/>
-<circle cx="${BS / 2}" cy="${CRYSTAL_CY}" r="15" fill="#0a1420" fill-opacity="0.55"/>`;
+const O = hexPts(R_OUT);
+const T = hexPts(R_TABLE);
+const facets = Array.from({ length: 6 }, (_, k) => {
+	const k2 = (k + 1) % 6;
+	return `<polygon points="${poly([O[k], O[k2], T[k2], T[k]])}" fill="${facetColour(k)}"/>`;
+}).join('\n');
+// the ridges between faces: a dark hairline, so each face reads as a separate
+// plane rather than as one gradient
+const ridges = Array.from(
+	{ length: 6 },
+	(_, k) =>
+		`<line x1="${O[k][0].toFixed(1)}" y1="${O[k][1].toFixed(1)}" x2="${T[k][0].toFixed(1)}" y2="${T[k][1].toFixed(1)}"/>`,
+).join('');
 
-const buyBonusIce = buyBonus.replace(buyRivets, `${crystalCut}\n${buyRivets}`);
+// A four-point glint: the one sharp highlight a cut stone throws.
+const glint = (x, y, r, fill, opacity) =>
+	`<path d="M ${x} ${y - r} Q ${x + r * 0.14} ${y - r * 0.14} ${x + r} ${y} Q ${x + r * 0.14} ${y + r * 0.14} ${x} ${y + r} Q ${x - r * 0.14} ${y + r * 0.14} ${x - r} ${y} Q ${x - r * 0.14} ${y - r * 0.14} ${x} ${y - r} Z" fill="${fill}" opacity="${opacity}"/>`;
 
-// ── the same crystal, LIT - drawn for ADDITIVE blending ────────────────────
+const buyBonusIce = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
+<defs>
+	<!-- the table: DARK ice, deep enough that a white caption reads on it -->
+	<linearGradient id="table" x1="0.2" y1="0" x2="0.8" y2="1">
+		<stop offset="0" stop-color="#2c5878"/>
+		<stop offset="0.5" stop-color="#173650"/>
+		<stop offset="1" stop-color="#0c1f31"/>
+	</linearGradient>
+	<radialGradient id="depth" cx="0.3" cy="0.22" r="0.7">
+		<stop offset="0" stop-color="#8fd9ff" stop-opacity="0.28"/>
+		<stop offset="1" stop-color="#8fd9ff" stop-opacity="0"/>
+	</radialGradient>
+</defs>
+<!-- the shadow the crystal casts, then its dark outline -->
+<polygon points="${poly(hexPts(R_OUT, 8))}" fill="#000000" opacity="0.45"/>
+<polygon points="${poly(O)}" fill="#0a1420"/>
+${facets}
+<g stroke="#0a1420" stroke-width="4" opacity="0.55">${ridges}</g>
+<polygon points="${poly(T)}" fill="url(#table)" stroke="#0a1420" stroke-width="5" stroke-opacity="0.6"/>
+<polygon points="${poly(T)}" fill="url(#depth)"/>
+<!-- the inner reflection: the upper-left edges seen again through the table,
+     a little way in. This replaced two drawn "fractures", which at button size
+     came out as tick marks — a symbol, not depth. -->
+<polyline points="${poly([hexPts(R_TABLE - 24)[3], hexPts(R_TABLE - 24)[4], hexPts(R_TABLE - 24)[5], hexPts(R_TABLE - 24)[0]])}" fill="none" stroke="#8fd9ff" stroke-width="3" opacity="0.3" stroke-linejoin="round"/>
+<!-- the outline's own lit edge, upper-left faces only -->
+<polyline points="${poly([O[3], O[4], O[5], O[0]])}" fill="none" stroke="#ffffff" stroke-width="4" opacity="0.5" stroke-linejoin="round"/>
+${glint(O[5][0] + 14, O[5][1] + 26, 22, '#ffffff', 0.85)}
+</svg>`;
+
+// ── the same crystal, CATCHING LIGHT — drawn for ADDITIVE blending ─────────
 //
-// Transparent everywhere else. Ice blue rather than near-white: this sits on a
-// DARK plate, so unlike Go Bananubis' pale granite there is room to go bright
-// without the glyph reading as a hole punched in the button.
+// Transparent everywhere else, bloom baked in (an additive child inside a
+// filtered or masked container composites into an empty target and arrives as
+// a faint film). No table fill: the caption lives there and a lit table would
+// wash the words out — which is exactly what took Boat's caption with it.
+const litEdges = (stroke, w) => `<g fill="none" stroke="${stroke}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round">
+	<polygon points="${poly(O)}"/>
+	<polygon points="${poly(T)}"/>
+	${Array.from({ length: 6 }, (_, k) => `<line x1="${O[k][0].toFixed(1)}" y1="${O[k][1].toFixed(1)}" x2="${T[k][0].toFixed(1)}" y2="${T[k][1].toFixed(1)}"/>`).join('')}
+</g>`;
 const buyBonusIceLit = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
 <defs>
-	<radialGradient id="bloom" cx="0.5" cy="0.5" r="0.5">
-		<stop offset="0" stop-color="#8fd9ff" stop-opacity="0.4"/>
-		<stop offset="0.4" stop-color="#5fa8d8" stop-opacity="0.17"/>
-		<stop offset="1" stop-color="#1e6fa8" stop-opacity="0"/>
-	</radialGradient>
-	<filter id="litSoft" x="-70%" y="-70%" width="240%" height="240%">
-		<feGaussianBlur stdDeviation="11"/>
-	</filter>
-	<filter id="litCore" x="-30%" y="-30%" width="160%" height="160%">
-		<feGaussianBlur stdDeviation="2"/>
-	</filter>
+	<filter id="litSoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="11"/></filter>
+	<filter id="litCore" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="2"/></filter>
 </defs>
-<ellipse cx="${BS / 2}" cy="${CRYSTAL_CY}" rx="${BS * 0.42}" ry="${BS * 0.3}" fill="url(#bloom)"/>
-<g filter="url(#litSoft)">
-	<path d="${CRYSTAL}" fill="none" stroke="#5fa8d8" stroke-width="15" stroke-linecap="round"/>
-	<circle cx="${BS / 2}" cy="${CRYSTAL_CY}" r="17" fill="#5fa8d8"/>
-</g>
-<g filter="url(#litCore)">
-	<path d="${CRYSTAL}" fill="none" stroke="#d8f0ff" stroke-opacity="0.88" stroke-width="7" stroke-linecap="round"/>
-	<circle cx="${BS / 2}" cy="${CRYSTAL_CY}" r="10" fill="#d8f0ff" fill-opacity="0.88"/>
-</g>
+<!-- the upper-left faces themselves brighten; the lower-right ones stay dark,
+     so the light has a direction instead of the whole stone switching on -->
+<g opacity="0.35">${[3, 4, 5].map((k) => `<polygon points="${poly([O[k], O[(k + 1) % 6], T[(k + 1) % 6], T[k]])}" fill="#8fd9ff"/>`).join('')}</g>
+<g filter="url(#litSoft)" opacity="0.6">${litEdges('#8fd9ff', 16)}</g>
+<g filter="url(#litCore)">${litEdges('#eaf7ff', 5)}</g>
+<g filter="url(#litSoft)">${glint(O[5][0] + 14, O[5][1] + 26, 60, '#eaf7ff', 0.9)}</g>
+${glint(O[5][0] + 14, O[5][1] + 26, 40, '#ffffff', 1)}
 </svg>`;
+
+// ── VARIANT: the snowball ──────────────────────────────────────────────────
+//
+// Offered alongside, not shipped. `--variants <dir>` writes it; nothing reads it
+// unless it is swapped in by name.
+//
+// The catch with a snowball is the caption. The shared button draws its text
+// with no stroke and no shadow, and a snowball is the one object in this game
+// that is LIGHTER than white type. Choosing it means buyBonusLabelFill goes to a
+// deep ice blue in uiTheme.ts (both skins), which the preview renders.
+const SB_R = 292;
+const lumps = (() => {
+	// deterministic, so a re-run does not reshuffle the silhouette
+	let seed = 7;
+	const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+	const out = [];
+	// FEW, FLAT AND UNEVEN. The first pass put 22 even lumps right on the edge
+	// and the ball read as a cog. Packed snow is only slightly irregular: a
+	// dozen shallow bulges of different sizes, set well inside the outline so
+	// each one only nudges it.
+	for (let k = 0; k < 12; k++) {
+		const a = (k / 12) * Math.PI * 2 + rnd() * 0.35;
+		const size = 26 + rnd() * 30;
+		const r = SB_R - size + 6 + rnd() * 5;
+		out.push([CX + Math.cos(a) * r, CY + Math.sin(a) * r, size]);
+	}
+	return out;
+})();
+const specks = (() => {
+	let seed = 11;
+	const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+	const out = [];
+	for (let k = 0; k < 90; k++) {
+		const a = rnd() * Math.PI * 2;
+		const r = Math.sqrt(rnd()) * (SB_R - 20);
+		out.push([CX + Math.cos(a) * r, CY + Math.sin(a) * r, 2 + rnd() * 5, rnd() < 0.5]);
+	}
+	return out;
+})();
+const snowball = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
+<defs>
+	<radialGradient id="snow" cx="0.36" cy="0.3" r="0.78">
+		<stop offset="0" stop-color="#ffffff"/>
+		<stop offset="0.45" stop-color="#e6f4ff"/>
+		<stop offset="0.8" stop-color="#a9d0ec"/>
+		<stop offset="1" stop-color="#5f8fb8"/>
+	</radialGradient>
+</defs>
+<circle cx="${CX}" cy="${CY + 10}" r="${SB_R}" fill="#000000" opacity="0.4"/>
+<g fill="#0a1420">${lumps.map(([x, y, r]) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r + 5).toFixed(1)}"/>`).join('')}<circle cx="${CX}" cy="${CY}" r="${SB_R + 5}"/></g>
+<g fill="url(#snow)">${lumps.map(([x, y, r]) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"/>`).join('')}<circle cx="${CX}" cy="${CY}" r="${SB_R}"/></g>
+${specks.map(([x, y, r, light]) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${light ? '#ffffff' : '#7fa9cc'}" opacity="${light ? 0.7 : 0.35}"/>`).join('')}
+${glint(CX - 150, CY - 170, 26, '#ffffff', 0.95)}
+</svg>`;
+const snowballLit = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
+<defs><filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="12"/></filter></defs>
+<circle cx="${CX}" cy="${CY}" r="${SB_R + 6}" fill="none" stroke="#8fd9ff" stroke-width="18" opacity="0.6" filter="url(#s)"/>
+${[[-150, -170, 56], [140, -120, 30], [-60, 190, 26]].map(([dx, dy, r]) => `<g filter="url(#s)">${glint(CX + dx, CY + dy, r * 1.4, '#eaf7ff', 0.8)}</g>${glint(CX + dx, CY + dy, r, '#ffffff', 1)}`).join('')}
+</svg>`;
+
+const variantIdx = process.argv.indexOf('--variants');
+if (variantIdx > -1 && process.argv[variantIdx + 1]) {
+	const dir = process.argv[variantIdx + 1];
+	fs.mkdirSync(dir, { recursive: true });
+	for (const [name, svg] of [
+		['buybonus_snowball.png', snowball],
+		['buybonus_snowball_lit.png', snowballLit],
+	]) {
+		const r = new Resvg(svg, { fitTo: { mode: 'width', value: BS }, font: { loadSystemFonts: false } });
+		fs.writeFileSync(path.join(dir, name), r.render().asPng());
+		console.log('variant', name);
+	}
+}
 
 render(ticker, 'ticker_plate.png', TW);
 render(buyBonus, 'buybonus_plate.png', BS);

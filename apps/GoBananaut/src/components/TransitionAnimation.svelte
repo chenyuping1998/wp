@@ -3,6 +3,8 @@
 	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getContext } from '../game/context';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import { CANISTER } from '../game/meshWin/cCanister';
 
 	// The transition: the gorilla pitches a gravity charge into the middle of the
 	// screen and it ruptures. The cut to the next scene lands on the peak of the
@@ -345,6 +347,18 @@
 	// width and it reads as squashed or stretched rather than as the wrong file.
 	// Re-measure it whenever canister.png is regenerated.
 	const PROP_ASPECT = 777 / 770;
+	// c.png pads it to a square on its long side, so the square's side is the
+	// art's height times this
+	const CANISTER_PAD = Math.max(1, PROP_ASPECT);
+
+	// This transition's clock mapped onto the canister's acting (cCanister.ts):
+	// its entrance, however long, fills the spec's flight; arming and the boom
+	// run in real time from there.
+	const canisterClock = () => {
+		const flightFrom = thrown ? THROW_RELEASE_MS : 0;
+		if (elapsed < ENTRY_MS) return ((elapsed - flightFrom) / (ENTRY_MS - flightFrom)) * CANISTER.land;
+		return CANISTER.land + (elapsed - ENTRY_MS) * ((CANISTER.boom - CANISTER.land) / TICK_MS);
+	};
 </script>
 
 <Container
@@ -361,17 +375,20 @@
 			artwork is; only one dimension may be chosen.
 		-->
 		{@const gh = context.stateLayoutDerived.canvasSizes().height * 0.26 * chargeScale}
-		<Sprite
-			key="gbCanister"
-			anchor={0.5}
-			x={chargeX}
-			y={chargeY}
-			width={gh * PROP_ASPECT}
-			height={gh}
-			rotation={chargeSpin}
-			tint={chargeTint}
-			alpha={chargeAlpha}
-		/>
+		<!--
+			A MESH, not a sprite (meshWin/cCanister.ts): stretched by the throw,
+			squashed on arrival, swelling with each red blink and bulging as it goes.
+			This component still owns where it is, its spin, tint and fade — they
+			sit on the wrapper — and the mesh is posed from THIS clock, mapped onto
+			the spec's phases, so its swells land on the blinks for the thrown and
+			the dropped entrance alike.
+
+			Sized as the sprite was, by the art's height: c.png is canister.png
+			padded square, so the square the mesh fills is 777/770 of that.
+		-->
+		<Container x={chargeX} y={chargeY} rotation={chargeSpin} tint={chargeTint} alpha={chargeAlpha}>
+			<SymbolMeshWin symbolName="C" size={gh * CANISTER_PAD} clock={canisterClock} />
+		</Container>
 	{/if}
 
 	<!--

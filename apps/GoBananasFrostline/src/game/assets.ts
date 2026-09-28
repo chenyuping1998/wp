@@ -108,6 +108,94 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1.png', import.meta.url).href,
 		preload: true,
 	},
+
+	// THE MESH-WIN LAYERS for the four high pays: the plate with the subject
+	// lifted off it, the subject cut out, its drop shadow, and the baked
+	// 24-frame light-sweep atlas. Written by design/make_symbol_layers.mjs and
+	// drawn by components/SymbolMeshWin.svelte; see game/meshWin/.
+	//
+	// Preloaded with the symbols themselves: a win is the one moment these are
+	// needed, and fetching four textures at that moment would show the swap.
+	gbH1Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Subject: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_subject.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_sheen.png', import.meta.url).href,
+		preload: true,
+	},
 	gbH2: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2.png', import.meta.url).href,

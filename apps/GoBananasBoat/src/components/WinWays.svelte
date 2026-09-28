@@ -39,6 +39,8 @@
 
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import { MESH_WINS } from '../game/meshWin';
 	import { getContext } from '../game/context';
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE, REEL_PADDING, BOARD_DIMENSIONS, BOARD_SIZES } from '../game/constants';
@@ -72,6 +74,35 @@
 	// without a hold the next spin wipes the symbols a third of the way into
 	// their animation — the same bug gen-2 had with its line volley.
 	const WIN_ANIM_VISIBLE_MS = 950;
+
+	// ── THE SYMBOLS ACT (game/meshWin, SymbolMeshWin) ──────────────────────
+	//
+	// Every symbol that can win has a mesh win: the subject is cut off its steel
+	// plate and performs — the helmet hops and its dome turns, the mine swings on
+	// its shackle, the flags snap in a gust, the letters hop off the panel — the
+	// method GoBananubis uses. It is drawn HERE, in the popped copy, in place of
+	// the flat sprite: this copy is what the player sees (the board's own cell is
+	// under the scrim and under this). The glow and the gold rings stay round it.
+	//
+	// Two things change for a cell that acts:
+	//
+	//   · IT DOES NOT PULSE. The pop pulse existed to make a flat tile read as
+	//     alive; a tile that acts is alive, and a pulse on top of a hop makes the
+	//     subject bob twice at once. It still comes forward — MESH_LIFT — so it
+	//     keeps clear of its neighbours.
+	//   · THE HOLD COVERS THE ACT. The presentation is torn down the moment
+	//     winLinesShow returns (winInfo broadcasts winLinesHide straight after),
+	//     so a hold shorter than the act cuts the subject off mid-hop and the tile
+	//     snaps back. The hold is sized to the longest act ON THE BOARD, not the
+	//     longest in the game: a board of letters holds for a letter's beat.
+	//
+	// The acts play faster where the player has asked for pace: 1.35x in the fast
+	// presentations (the free game, the idle replay) and 2x in turbo, so the
+	// hold that covers them grows by as little as it can.
+	const MESH_LIFT = 0.09;
+	const ACT_SPEED_FAST = 1.35;
+	const actSpeed = (fast: boolean) => (stateBet.isTurbo ? 2 : 1) * (fast ? ACT_SPEED_FAST : 1);
+	let presentSpeed = $state(1);
 
 	const SCRIM = 0x05070a;
 	const SCRIM_ALPHA = 0.62;
@@ -118,8 +149,6 @@
 	//     Math.random() per mount — GB100's intent (every symbol on its own beat)
 	//     without a cell's rhythm changing when the component remounts.
 	const POP = 0.16;
-	const RING_GOLD = 0xffe050; // GB100's
-	const RING_WHITE = 0xffffff;
 	// GB100: 225ms * 0.9..1.1 per radian, i.e. a ~1.4s cycle
 	const PULSE_RATE_MS = 225;
 	const ARRIVE_MS = 160; // the glow and rings coming up as the wake reaches the reel
@@ -271,6 +300,19 @@
 			context.eventEmitter.broadcast({ type: 'boardShow' });
 
 			const stagger = fast || stateBet.isTurbo ? REVEAL_STAGGER.fast : REVEAL_STAGGER.normal;
+			presentSpeed = actSpeed(!!fast);
+			// the longest act among the cells that will light, at this speed
+			const actMs = Math.max(
+				0,
+				...usable.flatMap((w) =>
+					w.positions
+						.filter((p) => p.row >= 1 && p.row <= BOARD_DIMENSIONS.y)
+						.map((p) => {
+							const name = context.stateGame.board[p.reel]?.reelState.symbols[p.row]?.rawSymbol.name;
+							return name && MESH_WINS[name] ? MESH_WINS[name].durationMs / presentSpeed : 0;
+						}),
+				),
+			);
 
 			// Widest win decides how far the wake travels; reels beyond it hold
 			// nothing, so stopping there keeps a 3-of-a-kind from waiting out two
@@ -294,9 +336,12 @@
 			// Turbo opts out of the extended hold: there the player asked for speed
 			// and a clipped win animation is the trade they made.
 			const elapsed = (lastReel + 1) * stagger;
-			const hold = stateBet.isTurbo
-				? HOLD_AFTER_MS
-				: Math.max(HOLD_AFTER_MS, WIN_ANIM_VISIBLE_MS - elapsed);
+			const flatHold = stateBet.isTurbo ? HOLD_AFTER_MS : Math.max(HOLD_AFTER_MS, WIN_ANIM_VISIBLE_MS - elapsed);
+			// The last reel's cells started acting one stagger ago; hold until
+			// their act is done. Turbo too: an act cut off mid-hop snaps the tile
+			// back, which reads as a glitch rather than as speed, and at 2x the
+			// longest act is ~0.7s.
+			const hold = Math.max(flatHold, actMs - stagger);
 			await waitForTimeout(hold);
 			if (mine !== generation) return;
 		},
@@ -346,10 +391,14 @@
 			cx: number;
 			cy: number;
 			assetKey: string;
+			symbol: string;
+			mesh: boolean;
 			w: number;
 			h: number;
 			pulse: number;
 			arrive: number;
+			snap: number;
+			flare: number;
 		}[] = [];
 		for (const key of litCells) {
 			const [reel, row] = key.split(',').map(Number);
@@ -365,6 +414,8 @@
 				cx: cellX(reel) + SYMBOL_SIZE / 2,
 				cy: cellY(row) + SYMBOL_SIZE / 2,
 				assetKey: info.assetKey,
+				symbol: reelSymbol.rawSymbol.name,
+				mesh: reelSymbol.rawSymbol.name in MESH_WINS,
 				w: SYMBOL_SIZE * info.sizeRatios.width,
 				h: SYMBOL_SIZE * info.sizeRatios.height,
 				// Own phase per cell, as GB100 does. The copy still appears at exactly
@@ -372,6 +423,9 @@
 				// `arrive` — so there is no jump when it lands over the tile.
 				pulse: 0.5 + 0.5 * Math.sin(age / rate + noise * Math.PI * 2),
 				arrive: easeOutCubic(Math.min(1, age / ARRIVE_MS)),
+				// the frame snaps in from a touch larger, and flashes white once
+				snap: 1 + 0.08 * (1 - easeOutCubic(Math.min(1, age / ARRIVE_MS))),
+				flare: Math.max(0, 1 - age / 260) ** 2,
 			});
 		}
 		return out;
@@ -422,13 +476,47 @@
 		return tags;
 	});
 
-	// GB100's rings, at GB100's radii and alphas, drawn over the tile.
-	const drawRings = (g: PixiGraphics, pulse: number, arrive: number) => {
+	// ── THE FRAME AND THE SHADOW, instead of a glow and rings ──────────────
+	//
+	// The win used to put a gold additive halo, 1.75 cells wide, behind every
+	// popped tile, and GB100's two circles over it. On this board both were
+	// wrong for the same reason — the tiles are opaque squares packed edge to
+	// edge. The halo had nowhere to show but ON THE NEIGHBOURS: the next copy
+	// in draw order lay its gold over the tile beside it, and over the dimmed
+	// losing cells, so a line win arrived as a yellow wash across the board. The
+	// circles sat on square tiles and framed nothing.
+	//
+	// So a tile now wins the way a card is picked up: a soft DARK shadow under
+	// it (it has lifted — depth, not light), and a crisp frame on its own edge —
+	// a dark keyline, a gold line, a pale inner hairline — that snaps in as the
+	// wake reaches the reel and flashes white once. All the light left is the
+	// subject's own flash and sweep (SymbolMeshWin), on the subject.
+	//
+	// DRAWN IN THREE PASSES — every shadow, then every tile, then every frame —
+	// so no cell's shadow or frame can land on a neighbour's tile.
+	const FRAME_R = SYMBOL_SIZE * 0.065;
+	const drawShadow = (g: PixiGraphics, half: number, arrive: number) => {
 		g.clear();
-		g.circle(0, 0, SYMBOL_SIZE * 0.47);
-		g.stroke({ width: 3.5, color: RING_GOLD, alpha: (0.35 + 0.45 * pulse) * arrive });
-		g.circle(0, 0, SYMBOL_SIZE * 0.42);
-		g.stroke({ width: 1.5, color: RING_WHITE, alpha: (0.2 + 0.3 * pulse) * arrive });
+		// a soft drop shadow faked by stacked rounded rects (no filter: a filter
+		// isolates its contents and this sits beside the additive flashes)
+		for (const [grow, a] of [
+			[10, 0.08],
+			[6, 0.12],
+			[3, 0.16],
+			[0, 0.2],
+		] as [number, number][]) {
+			g.roundRect(-half - grow, -half - grow + 5, (half + grow) * 2, (half + grow) * 2, FRAME_R + grow);
+			g.fill({ color: 0x000000, alpha: a * arrive });
+		}
+	};
+	const drawFrame = (g: PixiGraphics, half: number, arrive: number, flare: number) => {
+		g.clear();
+		g.roundRect(-half, -half, half * 2, half * 2, FRAME_R);
+		g.stroke({ width: 5, color: 0x0a0804, alpha: 0.85 * arrive, alignment: 1 });
+		g.roundRect(-half + 1, -half + 1, half * 2 - 2, half * 2 - 2, FRAME_R - 1);
+		g.stroke({ width: 2.5, color: flare > 0.01 ? 0xffffff : 0xffd05a, alpha: arrive });
+		g.roundRect(-half + 4, -half + 4, half * 2 - 8, half * 2 - 8, FRAME_R - 3);
+		g.stroke({ width: 1, color: 0xfff6d6, alpha: (0.4 + 0.6 * flare) * arrive });
 	};
 
 	const draw = (g: PixiGraphics) => {
@@ -461,21 +549,65 @@
 		<Container zIndex={10}>
 			<Graphics {draw} />
 
-			<!-- the winning symbols, popped — above the scrim, see POP -->
+			<!-- the winning symbols, popped — above the scrim, see POP. Three
+			     passes: shadows, tiles, frames (see the note on the frame). -->
 			{#each popCells as cell (cell.key)}
-				<Container x={cell.cx} y={cell.cy} scale={1 + POP * cell.pulse * cell.arrive}>
-					<!-- the light behind: shows only as a halo round the square -->
-					<Sprite
-						key="fxGlow"
-						anchor={0.5}
-						width={SYMBOL_SIZE * 1.75}
-						height={SYMBOL_SIZE * 1.75}
-						tint={RING_GOLD}
-						blendMode="add"
-						alpha={(0.16 + 0.3 * cell.pulse) * cell.arrive}
+				{@const lift = 1 + (cell.mesh ? MESH_LIFT : POP * cell.pulse) * cell.arrive}
+				<Graphics
+					x={cell.cx}
+					y={cell.cy}
+					draw={(g) => drawShadow(g, (cell.w * lift) / 2, cell.arrive)}
+				/>
+			{/each}
+			{#each popCells as cell (cell.key)}
+				<Container
+					x={cell.cx}
+					y={cell.cy}
+					scale={1 + (cell.mesh ? MESH_LIFT : POP * cell.pulse) * cell.arrive}
+				>
+					{#if cell.mesh}
+						<!-- the symbol acting (SymbolMeshWin draws into this container).
+						     A leaping high pay leaves only its plate here: its subject
+						     is drawn in the last pass, above everything -->
+						<Container zIndex={1}>
+							<SymbolMeshWin
+								symbolName={cell.symbol}
+								width={cell.w}
+								height={cell.h}
+								speed={presentSpeed}
+								part={MESH_WINS[cell.symbol].leaps ? 'plate' : 'all'}
+							/>
+						</Container>
+					{:else}
+						<Sprite key={cell.assetKey} anchor={0.5} width={cell.w} height={cell.h} zIndex={1} />
+					{/if}
+				</Container>
+			{/each}
+			{#each popCells as cell (cell.key)}
+				{@const lift = 1 + (cell.mesh ? MESH_LIFT : POP * cell.pulse) * cell.arrive}
+				<Graphics
+					x={cell.cx}
+					y={cell.cy}
+					scale={cell.snap}
+					draw={(g) => drawFrame(g, (cell.w * lift) / 2, cell.arrive, cell.flare)}
+				/>
+			{/each}
+			<!-- THE LEAPERS: the high pays' subjects, above every cell and frame, so
+			     a helmet flipping out of its cell crosses the ones above it instead
+			     of vanishing under them (game/meshWin/leaps.ts) -->
+			{#each popCells.filter((c) => c.mesh && MESH_WINS[c.symbol].leaps) as cell (cell.key)}
+				<Container
+					x={cell.cx}
+					y={cell.cy}
+					scale={1 + MESH_LIFT * cell.arrive}
+				>
+					<SymbolMeshWin
+						symbolName={cell.symbol}
+						width={cell.w}
+						height={cell.h}
+						speed={presentSpeed}
+						part="subject"
 					/>
-					<Sprite key={cell.assetKey} anchor={0.5} width={cell.w} height={cell.h} />
-					<Graphics draw={(g) => drawRings(g, cell.pulse, cell.arrive)} />
 				</Container>
 			{/each}
 

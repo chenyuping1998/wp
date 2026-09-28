@@ -28,7 +28,8 @@
 			// five curtains of sand would be a sandstorm, not a cue
 			if (i === 0 && prevMotion[i] && prevMotion[i] !== 'spinning' && motion === 'spinning') {
 				sheds = [...sheds, nextId++];
-				context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.22 });
+				// the strip launches upward, so the knock comes off the top edge
+				context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.22, from: [0, -1] });
 			}
 			prevMotion[i] = motion;
 		});

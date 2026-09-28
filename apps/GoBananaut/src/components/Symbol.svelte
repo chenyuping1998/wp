@@ -4,6 +4,8 @@
 	import SymbolSpine from './SymbolSpine.svelte';
 	import SymbolSprite from './SymbolSprite.svelte';
 	import SymbolWinAnim from './SymbolWinAnim.svelte';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import { MESH_WINS } from '../game/meshWin';
 	import { getSymbolInfo } from '../game/utils';
 	import type { SymbolState, RawSymbol } from '../game/types';
 	import { getContext } from '../game/context';
@@ -14,6 +16,9 @@
 		BIG_PRIZE_FILL,
 		BIG_PRIZE_STROKE,
 		isMarkedSymbolName,
+		unmarkSymbolName,
+		GROW_MARKER_H,
+		GROW_MARKER_W,
 	} from '../game/constants';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import GoldText from './GoldText.svelte';
@@ -30,6 +35,10 @@
 		// lands (see ReelSymbol, which knows both the reel motion and the tier)
 		blur?: number;
 		impact?: number;
+		/** this cell is doing its idle beat on a waiting board (IdleActors) */
+		idleActing?: boolean;
+		/** how many reels this cell's win spans (WinWays), for the beat's size */
+		winKind?: number;
 	};
 
 	const props: Props = $props();
@@ -37,6 +46,23 @@
 	const symbolInfo = $derived(getSymbolInfo({ rawSymbol: props.rawSymbol, state: props.state }));
 	const isSprite = $derived(symbolInfo.type === 'sprite');
 	const isWin = $derived(props.state === 'win');
+	// Every symbol that can win in a ways pay acts through a deforming mesh
+	// (game/meshWin/*, SymbolMeshWin) — the GoBananubis method. SymbolWinAnim's
+	// pulse and bloom stay as the fallback for anything without a spec.
+	// A marked cell ("H2G") is H2 with a badge on it, and acts as H2. A Scatter
+	// on the Free Spins trigger plays the trigger beat instead of its win.
+	const meshName = $derived.by(() => {
+		const base = unmarkSymbolName(props.rawSymbol.name);
+		return base === 'S' && stateGame.scatterTrigger ? 'S_TRIGGER' : base;
+	});
+	const isMeshWin = $derived(isWin && meshName in MESH_WINS);
+	// ...and their LANDING, every spin: each lands its own way (a ring tip, a
+	// hose, a banana) instead of the whole picture squashing (meshRig.landPose)
+	const landName = $derived(unmarkSymbolName(props.rawSymbol.name));
+	const isMeshLand = $derived(props.state === 'land' && landName in MESH_WINS);
+	// ...and the idle beat of a Wild or Scatter while the board waits
+	const idleName = $derived(`${landName}_IDLE`);
+	const isMeshIdle = $derived(!!props.idleActing && idleName in MESH_WINS);
 
 	// A grow marker rides on an ordinary symbol rather than being one, so the
 	// maths sends "H2G" and getSymbolInfo already resolves that to H2's art. What
@@ -46,15 +72,37 @@
 	// corner to be identified — so the badge can be placed by a constant rather
 	// than dodging each symbol's composition.
 	const isMarked = $derived(isMarkedSymbolName(props.rawSymbol.name));
-	// 236x256 source. Sized off the cell so it scales with SYMBOL_SIZE, at the
-	// fraction that was checked against every symbol it can land on.
-	const MARKER_H = SYMBOL_SIZE * 0.42;
-	const MARKER_W = MARKER_H * (236 / 256);
+	// sized in constants, shared with ReelGrow's launch
+	const MARKER_H = GROW_MARKER_H;
+	const MARKER_W = GROW_MARKER_W;
 
 </script>
 
 {#snippet body(oncomplete: (() => void) | undefined)}
-	{#if isSprite && isWin}
+	{#if isMeshWin}
+		<SymbolMeshWin
+			{symbolInfo}
+			symbolName={meshName}
+			reel={props.reelIndex}
+			kind={meshName === 'S_TRIGGER' ? undefined : props.winKind}
+			x={0}
+			y={0}
+			{oncomplete}
+		/>
+	{:else if isMeshIdle}
+		<SymbolMeshWin {symbolInfo} symbolName={idleName} reel={props.reelIndex} x={0} y={0} />
+	{:else if isMeshLand}
+		<SymbolMeshWin
+			{symbolInfo}
+			beat="land"
+			impact={props.impact}
+			symbolName={landName}
+			reel={props.reelIndex}
+			x={0}
+			y={0}
+			{oncomplete}
+		/>
+	{:else if isSprite && isWin}
 		<!-- Win state for sprite symbols: programmatic scale+glow animation -->
 		<SymbolWinAnim {symbolInfo} x={0} y={0} {oncomplete} />
 	{:else if isSprite}

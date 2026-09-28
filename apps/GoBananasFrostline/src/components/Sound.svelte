@@ -125,10 +125,18 @@
 	// Sprite sound names re-routed to the Chinese set.
 	//
 	// `rate` sets playbackRate, which on a short percussive sample reads as pitch.
-	// The five reel stops share one file and used to be indistinguishable — worse,
-	// only _1 was ever played, so every reel landed on the identical click. They
-	// now rise reel by reel, which is what gives a spin its sense of building
-	// toward the last reel.
+	//
+	// THE SAMPLE IS GO BANANAS 100'S, THE FIVE-STEP CLIMB IS NOT USED. Only
+	// sfx_reel_stop_1 is ever broadcast (REEL_STOP_SOUND in stateGame.svelte.ts);
+	// _2.._5 are kept so the names in SoundEffectName still resolve.
+	//
+	// A flat 78Hz knock with no pitch content was built to replace the sample
+	// itself (generate_audio_frost.mjs section 4, still there, wired to nothing)
+	// and was not wanted. The first game's sample stays; only the rise between
+	// reels goes.
+	//
+	// The rising figure now belongs to the scatter alone — SCATTER_LAND_SOUND_MAP
+	// walks scatter_1..5 as scatters land, on its own set of files.
 	const SPRITE_TO_CN: Partial<
 		Record<SoundEffectName, { name: CnSfxName; volume?: number; rate?: number }>
 	> = {
@@ -150,7 +158,9 @@
 		// cell (four times a takeover) and has to sit under the bed, not on it.
 		sfx_frost_creep: { name: 'frost_creep', volume: 0.5 },
 		sfx_ice_freeze: { name: 'ice_freeze', volume: 0.65 },
-		sfx_ice_crack: { name: 'ice_crack', volume: 0.9 },
+		// full level: this is the loudest single moment of the takeover and it was
+		// being held back below the freeze bed it is supposed to break through
+		sfx_ice_crack: { name: 'ice_crack', volume: 1 },
 		sfx_winlevel_small: { name: 'win_gliss' },
 		sfx_scatter_win: { name: 'win_gliss' },
 		sfx_scatter_win_v2: { name: 'win_gliss_big' },

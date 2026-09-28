@@ -10,6 +10,7 @@ import type { EmitterEventTransition } from '../components/Transition.svelte';
 import type { EmitterEventReelGrow } from '../components/ReelGrow.svelte';
 import type { EmitterEventStickyPrizes } from '../components/StickyPrizes.svelte';
 import type { EmitterEventScatterBurst } from '../components/ScatterBurst.svelte';
+import type { EmitterEventScatterLand } from '../components/ScatterLand.svelte';
 import type { EmitterEventMascot } from '../components/Mascot.svelte';
 
 export type EmitterEventGame =
@@ -25,4 +26,5 @@ export type EmitterEventGame =
 	| EmitterEventReelGrow
 	| EmitterEventStickyPrizes
 	| EmitterEventScatterBurst
+	| EmitterEventScatterLand
 	| EmitterEventMascot;

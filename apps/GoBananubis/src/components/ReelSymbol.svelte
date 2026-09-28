@@ -2,7 +2,7 @@
 	import Symbol from './Symbol.svelte';
 	import SymbolWrap from './SymbolWrap.svelte';
 	import { getSymbolInfo, getSymbolX } from '../game/utils';
-	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
+	import { stateGame, stateGameDerived, type ReelSymbol } from '../game/stateGame.svelte';
 	import type { SymbolState } from '../game/types';
 
 	type Props = {
@@ -53,7 +53,16 @@
 		L4: 0.7,
 		L5: 0.7,
 	};
-	const landingImpact = $derived(LANDING_IMPACT[props.reelSymbol.rawSymbol.name] ?? 0.9);
+	// The Scatter lands HARDER with every one the spin has shown — the tease
+	// builds with the sound, which already climbs a step per Scatter. The
+	// counter is bumped in the same pass that sets 'land', so it already
+	// includes this one: 1 -> 1.1, 2 -> 1.25, 3 -> 1.4, 4+ -> 1.6 (the gate
+	// checks every landing up to 1.6). SymbolMeshWin reads it once, at mount.
+	const landingImpact = $derived(
+		props.reelSymbol.rawSymbol.name === 'S'
+			? Math.min(1.6, 0.95 + 0.15 * stateGameDerived.scatterLandIndex())
+			: (LANDING_IMPACT[props.reelSymbol.rawSymbol.name] ?? 0.9),
+	);
 
 	// Built by a function so `forState` is a real argument — a plain value copied
 	// at call time — rather than a reference into the template's reactive scope.
@@ -92,6 +101,7 @@
 			rawSymbol={props.reelSymbol.rawSymbol}
 			{blur}
 			impact={landingImpact}
+			reel={props.reelIndex}
 			{oncomplete}
 		/>
 	</SymbolWrap>

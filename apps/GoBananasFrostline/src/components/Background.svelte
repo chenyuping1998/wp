@@ -18,7 +18,16 @@
 
 	// ── slow ken-burns drift over a small overscan, so the still jungle art
 	// breathes instead of sitting dead behind the reels ────────────────────────
-	const OVERSCAN = 1.08;
+	// OVERSCAN AND THE DRIFT SHARE THIS SLACK — Go Bananas Boat's split.
+	//
+	// It was 1.08 with the drift allowed the full slack, which left nothing at the
+	// drift's extreme: any offset of the scene would show the canvas edge. The
+	// chest-beat quake (game/frostQuake.svelte.ts) jolts the whole scene by up to
+	// ~15px, so the slack is raised to 1.12 and the drift held to 0.3 of it. At a
+	// 1080 canvas that is ~26px spare at the worst point, and the drift's own
+	// travel (~39px) stays about what it was at 1.08 x 0.5 (~43px).
+	const OVERSCAN = 1.12;
+	const DRIFT = 0.3;
 	const parallax = $derived.by(() => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		const w = width * OVERSCAN;
@@ -28,8 +37,8 @@
 		return {
 			width: w,
 			height: h,
-			x: -slackX * 0.5 + Math.sin(clock * 0.06) * slackX * 0.5,
-			y: -slackY * 0.5 + Math.sin(clock * 0.041 + 1.1) * slackY * 0.5,
+			x: -slackX * 0.5 + Math.sin(clock * 0.06) * slackX * DRIFT,
+			y: -slackY * 0.5 + Math.sin(clock * 0.041 + 1.1) * slackY * DRIFT,
 		};
 	});
 

@@ -2,13 +2,17 @@
 	import type { Snippet } from 'svelte';
 	import { onMount } from 'svelte';
 
-	import { Container, Sprite, type Sizes } from 'pixi-svelte';
+	import { Container, type Sizes } from 'pixi-svelte';
 	import { MainContainer } from 'components-layout';
 	import { Tween } from 'svelte/motion';
 	import { backOut, cubicOut } from 'svelte/easing';
 
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
+	import { SIGN } from '../game/meshWin';
+	import { SIGN_CANVAS, signTextOffset, type SignEnv } from '../game/meshWin/fsSign';
+	import type { Pose, Rig } from '../game/meshWin/meshRig';
+	import PropMesh from './PropMesh.svelte';
 
 	// Jungle-military plank sign (gbFsSign, 920×720) that drops in from the top
 	// and settles with a swing. Children render at the sign's text area center.
@@ -31,7 +35,22 @@
 	const dropY = new Tween(-SIGN_SIZES.height * 1.2);
 	const swing = new Tween(0);
 
+	// The sign's MESH (game/meshWin/fsSign.ts): it lands — the board squashes,
+	// the planks rattle top to bottom — then breathes. Its clock starts with
+	// the drop, which fsSign.SIGN_LAND_MS is timed against. setInterval, not
+	// the frame loop, like the other meshes: it keeps time in a hidden tab.
+	let signEnv = $state<SignEnv>({ t: 0 });
+	// the text rides the middle plank
+	let textOffset = $state({ x: 0, y: 0 });
+	const UNIT = SIGN_SIZES.width / SIGN_CANVAS[0];
+	const onpose = (rig: Rig, pose: Pose) => {
+		const [x, y] = signTextOffset(rig, pose);
+		textOffset = { x: x * UNIT, y: y * UNIT };
+	};
+
 	onMount(() => {
+		const started = Date.now();
+		const clock = setInterval(() => (signEnv = { t: Date.now() - started }), 16);
 		dropY.set(0, { duration: 700, easing: backOut });
 		(async () => {
 			await swing.set(0.035, { duration: 380, easing: cubicOut, delay: 250 });
@@ -39,6 +58,7 @@
 			await swing.set(0.01, { duration: 420, easing: cubicOut });
 			await swing.set(0, { duration: 380, easing: cubicOut });
 		})();
+		return () => clearInterval(clock);
 	});
 </script>
 
@@ -48,9 +68,11 @@
 		y={context.stateGameDerived.boardLayout().y + dropY.current}
 		rotation={swing.current}
 	>
-		<Sprite key="gbFsSign" anchor={0.5} {...SIGN_SIZES} />
-		<!-- children sit centered on the plank area (slightly below the emblem) -->
-		<Container y={SIGN_SIZES.height * 0.06}>
+		<!-- drawn through its mesh (game/meshWin/fsSign.ts), same box -->
+		<PropMesh spec={SIGN} env={signEnv} anchor={0.5} {...SIGN_SIZES} {onpose} />
+		<!-- children sit centered on the plank area (slightly below the emblem),
+		     riding the middle plank as it rattles -->
+		<Container x={textOffset.x} y={SIGN_SIZES.height * 0.06 + textOffset.y}>
 			{@render props.children({ sizes: TEXT_AREA })}
 		</Container>
 	</Container>

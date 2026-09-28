@@ -48,7 +48,11 @@ const LIVE = path.join(APP, 'static/assets/sprites/goBananasFrame');
 const ORIG = path.join(DESIGN, 'source/frame_jungle');
 fs.mkdirSync(ORIG, { recursive: true });
 
-const FILES = ['frame_bg.png', 'frame_edge.png', 'fs_counter_panel.png', 'fs_sign.png'];
+// fs_counter_panel.png is NOT re-coloured here any more. It is drawn from
+// scratch by generate_fs_counter_frost.mjs (a snowdrift, icicles, frost in the
+// corners) — re-running this with it still listed would put the blue-painted
+// jungle plaque, banana emblem and all, straight back over it.
+const FILES = ['frame_bg.png', 'frame_edge.png', 'fs_sign.png'];
 
 /** Ramp lookup: stops are [luminance, r, g, b], linearly interpolated. */
 const ramp = (stops) => (l) => {

@@ -155,6 +155,164 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/w.png', import.meta.url).href,
 		preload: true,
 	},
+	// Mesh-win layers (design/make_symbol_layers.mjs; drawn by SymbolMeshWin).
+	// Preloaded: SymbolMeshWin reads them synchronously the moment a win lands.
+	gbH1Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH1Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH2Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH3Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbWShadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbWSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSShadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	// The thrown canister padded square for its mesh (design/make_symbol_layers.mjs,
+	// meshWin/cCanister.ts), and that mesh's layers.
+	gbC: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/c.png', import.meta.url).href,
+		preload: true,
+	},
+	gbCShadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/c_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbCSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/c_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	// The grow marker padded square for its mesh (design/make_symbol_layers.mjs,
+	// meshWin/gMarker.ts), and that mesh's layers.
+	gbG: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/g.png', import.meta.url).href,
+		preload: true,
+	},
+	gbGShadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/g_shadow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbGSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/g_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	// the parts that light on their own (meshWin spec.feature): the comet's
+	// craters, the pack's lamps
+	gbH2Feature: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_feature.png', import.meta.url).href,
+		preload: true,
+	},
+	gbH4Feature: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_feature.png', import.meta.url).href,
+		preload: true,
+	},
 	// The grow marker BADGE. Not a board symbol — it is laid over the top-left
 	// corner of an ordinary symbol's cell, which is why it is cropped to its own
 	// alpha bounding box rather than centred on a square like the symbols are.

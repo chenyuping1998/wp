@@ -2,12 +2,14 @@
 	import type { Snippet } from 'svelte';
 	import { onMount } from 'svelte';
 
-	import { Container, Sprite, type Sizes } from 'pixi-svelte';
+	import { Container, type Sizes } from 'pixi-svelte';
 	import { MainContainer } from 'components-layout';
 	import { Tween } from 'svelte/motion';
 	import { backOut, cubicOut } from 'svelte/easing';
 
 	import { getContext } from '../game/context';
+	import PlateMesh from './PlateMesh.svelte';
+	import { SIGN_JELLY } from '../game/meshWin/plateJelly';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 
 	// Jungle-military plank sign (gbFsSign, 920×720) that drops in from the top
@@ -30,15 +32,20 @@
 
 	const dropY = new Tween(-SIGN_SIZES.height * 1.2);
 	const swing = new Tween(0);
+	// the sign's sky face rings when the drop lands (PlateMesh, plateJelly.ts):
+	// backOut reaches its resting line ~40% of the way through its 700ms
+	let hit = $state(0);
 
 	onMount(() => {
 		dropY.set(0, { duration: 700, easing: backOut });
+		const land = setTimeout(() => (hit += 1), 290);
 		(async () => {
 			await swing.set(0.035, { duration: 380, easing: cubicOut, delay: 250 });
 			await swing.set(-0.022, { duration: 420, easing: cubicOut });
 			await swing.set(0.01, { duration: 420, easing: cubicOut });
 			await swing.set(0, { duration: 380, easing: cubicOut });
 		})();
+		return () => clearTimeout(land);
 	});
 </script>
 
@@ -48,7 +55,11 @@
 		y={context.stateGameDerived.boardLayout().y + dropY.current}
 		rotation={swing.current}
 	>
-		<Sprite key="gbFsSign" anchor={0.5} {...SIGN_SIZES} />
+		<!-- its own container: the mesh attaches on mount, and without a slot of
+		     its own it would land over the text drawn below -->
+		<Container>
+			<PlateMesh spec={SIGN_JELLY} {...SIGN_SIZES} {hit} amp={1} centred />
+		</Container>
 		<!-- children sit centered on the plank area (slightly below the emblem) -->
 		<Container y={SIGN_SIZES.height * 0.06}>
 			{@render props.children({ sizes: TEXT_AREA })}

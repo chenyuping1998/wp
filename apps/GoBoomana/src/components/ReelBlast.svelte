@@ -19,6 +19,7 @@
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import BoardContainer from './BoardContainer.svelte';
+	import BlastSwell from './BlastSwell.svelte';
 	import { getContext } from '../game/context';
 	import { stateGame } from '../game/stateGame.svelte';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
@@ -61,6 +62,7 @@
 	// explosion leaving something behind.
 	// These are the beats AT FULL SIZE. Everything after the fuse is then scaled
 	// to how many reels actually went up — see AFTERMATH_SCALE.
+	// BlastSwell's tiles swell for exactly this long (meshWin/swell.ts SWELL_MS)
 	const CHARGE_MS = 380;
 	const SHATTER_MS = 340;
 	const PUFF_MS = 240;
@@ -613,6 +615,8 @@
 </script>
 
 <BoardContainer>
+	<!-- the covered tiles swelling during CHARGE, under the darkening and cracks -->
+	<BlastSwell />
 	<Container>
 		<Graphics {draw} />
 	</Container>

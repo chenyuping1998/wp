@@ -143,7 +143,7 @@
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-rules">
-			<h2>GO BANANAS DELTA — GAME RULES</h2>
+			<h2>GO BOOMANA — GAME RULES</h2>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>How to play</h3>
@@ -152,7 +152,7 @@
 					     to in the project. config stores it the other way round, as
 					     numReels and numRows, so the order is swapped here rather than
 					     the config being renamed. -->
-					Go Bananas Delta is a {rowCount}&times;{reelCount} video slot with
+					Go Boomana is a {rowCount}&times;{reelCount} video slot with
 					<strong>{waysCount.toLocaleString()} {T.ways}</strong>. There are no fixed lines: a
 					symbol counts wherever it lands on a reel. {T.combinationDirection}. A combination
 					{T.pays} when the same symbol appears on 3 or more adjacent reels starting from the

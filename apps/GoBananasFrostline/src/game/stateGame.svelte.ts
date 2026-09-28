@@ -44,17 +44,21 @@ const onSymbolLand = ({ rawSymbol, reelIndex }: { rawSymbol: RawSymbol; reelInde
 	}
 };
 
-// Listed rather than built with a template literal: `sfx_reel_stop_${n}` widens
-// to plain string, losing the SoundEffectName check, and would silently produce
-// a name that does not exist if the reel count ever changed. The index fallback
-// below covers that case too.
-const REEL_STOP_SOUNDS = [
-	'sfx_reel_stop_1',
-	'sfx_reel_stop_2',
-	'sfx_reel_stop_3',
-	'sfx_reel_stop_4',
-	'sfx_reel_stop_5',
-] as const;
+// ONE STOP FOR ALL FIVE REELS, and it is Go Bananas 100's sample.
+//
+// Two separate things were tangled together here, which is why this took two
+// passes. The SAMPLE is jungle/reel_stop.wav — the first game's — after a
+// purpose-built flat 78Hz knock was tried and rejected. The RAMP is separate:
+// sfx_reel_stop_1..5 are that one sample at five playback rates, climbing a step
+// per reel, and that climb is what had to go.
+//
+// Reverting to "what Go Bananas 100 does" restored both at once, which put the
+// climb straight back. Only the sample was wanted.
+//
+// _1 is the lowest rate (0.92) of the five, so every reel now lands on the same
+// low knock. _2.._5 stay in SPRITE_TO_CN as dead entries so the names in
+// SoundEffectName still resolve; nothing plays them.
+const REEL_STOP_SOUND = 'sfx_reel_stop_1';
 
 const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 	const reel = createReelForSpinning({
@@ -72,12 +76,9 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 			// sounds — the takeover's own impact follows.
 			if (stateGame.stickyWildReels.includes(reelIndex)) return;
 
-			// Each reel plays its own stop, pitched a step higher than the last
-			// (see SPRITE_TO_CN in Sound.svelte). This used to be hardcoded to _1,
-			// so all five reels landed on one identical click and _2.._5 were dead.
 			eventEmitter.broadcast({
 				type: 'soundOnce',
-				name: REEL_STOP_SOUNDS[reelIndex] ?? 'sfx_reel_stop_1',
+				name: REEL_STOP_SOUND,
 				// Superspin forces the click through in turbo as well: its stops are
 				// the event, and a dropped reel-stop there is a missing beat rather
 				// than one less click in a rapid sequence.

@@ -119,69 +119,231 @@
 	// Timed with a short-lived interval (only while a lock is playing) and
 	// Date.now, so a backgrounded tab finishes the lock instead of freezing it
 	// half-seated.
-	const LOCK_MS = 420;
+	const LOCK_MS = 640;
 	let locks = $state<Record<string, number>>({});
-	let lockNow = $state(0);
-	let lockTimer: ReturnType<typeof setInterval> | undefined;
+	let now = $state(0);
+	let braceAt = $state(0);
+	let glintCell = -1;
+	let glintAt = $state(0);
+	let glintKey = $state('');
+	let nextGlintAt = 0;
+	let clock: ReturnType<typeof setInterval> | undefined;
+
+	// ── ONE CLOCK, ONLY WHILE SOMETHING IS HELD ──────────────────────────────
+	//
+	// The frames used to be steady and cost nothing. They are a little alive now:
+	// pegs slam in when a tablet joins, the whole set braces when the reels
+	// launch, and a glint crosses one tablet at a time. So there is a clock — but
+	// it exists only while the run holds a tablet, at ~40fps, and drawing a
+	// handful of rectangles per tick is nothing. A timer and not rAF, so the lock
+	// finishes in a hidden tab instead of freezing half-seated.
+	const runClock = () => {
+		if (clock) return;
+		now = Date.now();
+		clock = setInterval(() => {
+			now = Date.now();
+			const live = Object.entries(locks).filter(([, t0]) => now - t0 < LOCK_MS);
+			if (live.length !== Object.keys(locks).length) locks = Object.fromEntries(live);
+			// a glint every ~2.4s, walking round the held tablets in turn
+			if (held.length > 0 && now >= nextGlintAt) {
+				glintCell = (glintCell + 1) % held.length;
+				glintKey = `${held[glintCell].reel},${held[glintCell].row}`;
+				glintAt = now;
+				nextGlintAt = now + 2400 + Math.random() * 900;
+			}
+		}, 25);
+	};
+	const stopClock = () => {
+		clearInterval(clock);
+		clock = undefined;
+	};
+	$effect(() => {
+		if (held.length > 0) runClock();
+		else stopClock();
+	});
+	$effect(() => () => stopClock());
+
 	const startLocks = (keys: string[]) => {
 		if (!keys.length) return;
 		const at = Date.now();
 		locks = { ...locks, ...Object.fromEntries(keys.map((k) => [k, at])) };
+		// the low thud of a peg going home, and the multiplier's own landing note
 		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
-		clearInterval(lockTimer);
-		lockTimer = setInterval(() => {
-			lockNow = Date.now();
-			const live = Object.fromEntries(
-				Object.entries(locks).filter(([, t0]) => lockNow - t0 < LOCK_MS),
-			);
-			if (Object.keys(live).length !== Object.keys(locks).length) locks = live;
-			if (!Object.keys(live).length) clearInterval(lockTimer);
-		}, 16);
+		context.eventEmitter.broadcast({ type: 'soundStoneCrack', step: 0 });
+		runClock();
 	};
 	// 0 → 1 across the lock, or -1 for a cell that is simply held
 	const lockProgress = (key: string) => {
 		const t0 = locks[key];
 		if (t0 === undefined) return -1;
-		return Math.min(1, Math.max(0, (lockNow - t0) / LOCK_MS));
+		return Math.min(1, Math.max(0, (now - t0) / LOCK_MS));
 	};
 
+	// ── THE REELS LAUNCH, AND THE TABLETS BRACE ──────────────────────────────
+	// Every free spin the rest of the board leaves and these stay. The frames
+	// tighten and the pegs flare for a beat as the first reel goes, which is the
+	// board saying, out loud, "not these".
+	let prevMotion = '';
+	$effect(() => {
+		const motion = context.stateGame.board[0]?.reelState.motion ?? '';
+		if (prevMotion && prevMotion !== 'spinning' && motion === 'spinning' && held.length > 0) {
+			braceAt = Date.now();
+			runClock();
+		}
+		prevMotion = motion;
+	});
+	const BRACE_MS = 380;
+	const brace = () => {
+		const p = (now - braceAt) / BRACE_MS;
+		if (!braceAt || p < 0 || p > 1) return 0;
+		return Math.sin(p * Math.PI);
+	};
+
+	// a diagonal band of light crossing a square, clipped to it: the polygon of
+	// the band c-w <= (x + y) <= c+w inside [-h, h]^2
+	const bandPoly = (h: number, c: number, w: number) => {
+		const pts: number[] = [];
+		const lines = [c - w, c + w];
+		const corners: [number, number][] = [
+			[-h, -h],
+			[h, -h],
+			[h, h],
+			[-h, h],
+		];
+		const inside = (x: number, y: number) => x + y >= lines[0] && x + y <= lines[1];
+		for (let i = 0; i < 4; i++) {
+			const [ax, ay] = corners[i];
+			const [bx, by] = corners[(i + 1) % 4];
+			if (inside(ax, ay)) pts.push(ax, ay);
+			for (const l of lines) {
+				const da = ax + ay - l;
+				const db = bx + by - l;
+				if (da * db < 0) {
+					const t = da / (da - db);
+					pts.push(ax + (bx - ax) * t, ay + (by - ay) * t);
+				}
+			}
+		}
+		return pts;
+	};
+
+	// a four-pointed glint, for where a peg meets the stone
+	const spark = (g: PixiGraphics, x: number, y: number, r: number, alpha: number) => {
+		g.poly([
+			x, y - r,
+			x + r * 0.28, y - r * 0.28,
+			x + r, y,
+			x + r * 0.28, y + r * 0.28,
+			x, y + r,
+			x - r * 0.28, y + r * 0.28,
+			x - r, y,
+			x - r * 0.28, y - r * 0.28,
+		]).fill({ color: 0xfff3c4, alpha });
+	};
+
+	const CORNERS = [
+		[-1, -1],
+		[1, -1],
+		[1, 1],
+		[-1, 1],
+	];
+
 	const drawFrames = (g: PixiGraphics) => {
+		now;
 		g.clear();
+		const braced = brace();
 
 		for (const cell of covered) {
+			const key = `${cell.reel},${cell.row}`;
+			const cx = getSymbolX(cell.reel);
+			const cy = rowCenterY(cell.row);
 			// ON the cell boundary, not inside it. At 0.455 the frame fell within
 			// the plate art's own footprint, and the plate is opaque — so the first
 			// version was drawn every frame and covered up every frame, which is why
 			// it could not be seen in the game while the code looked correct.
 			const base = SYMBOL_SIZE * 0.5 - 2;
-			const lp = lockProgress(`${cell.reel},${cell.row}`);
-			// slam: from 1.35x to the cell over the first 45%, then seated
-			const slam = lp < 0 ? 0 : 1 - Math.min(1, lp / 0.45);
+			const lp = lockProgress(key);
+			const fresh = lp >= 0;
+			// the frame closes in from 1.35x over the first 45% of the lock
+			const slam = !fresh ? 0 : 1 - Math.min(1, lp / 0.45);
 			const half = base * (1 + 0.35 * slam * slam);
-			// flare as it seats, fading over the rest of the lock
-			const flare = lp < 0 ? 0 : lp < 0.45 ? 0 : 1 - (lp - 0.45) / 0.55;
+			// the moment it seats, and how long the light of that lasts
+			const seated = !fresh ? -1 : lp < 0.45 ? -1 : (lp - 0.45) / 0.55;
+			const flare = seated < 0 ? 0 : 1 - seated;
+
 			if (flare > 0) {
-				g.rect(
-					getSymbolX(cell.reel) - half - 6,
-					rowCenterY(cell.row) - half - 6,
-					(half + 6) * 2,
-					(half + 6) * 2,
-				).stroke({ width: 10 * flare, color: 0xfff3c4, alpha: 0.7 * flare });
+				g.rect(cx - half - 6, cy - half - 6, (half + 6) * 2, (half + 6) * 2).stroke({
+					width: 10 * flare,
+					color: 0xfff3c4,
+					alpha: 0.7 * flare,
+				});
+				// a shockwave off the cell: the stone taking the blow
+				const wave = SYMBOL_SIZE * (0.5 + 0.55 * seated);
+				g.rect(cx - wave, cy - wave, wave * 2, wave * 2).stroke({
+					width: 3.5 * flare,
+					color: 0xffd75e,
+					alpha: 0.55 * flare,
+				});
 			}
-			g.rect(
-				getSymbolX(cell.reel) - half,
-				rowCenterY(cell.row) - half,
-				half * 2,
-				half * 2,
-			).stroke({ width: 4.5, color: HOLD_GOLD, alpha: 0.92 });
+			g.rect(cx - half, cy - half, half * 2, half * 2).stroke({
+				width: 4.5 + 2.4 * braced,
+				color: HOLD_GOLD,
+				alpha: 0.92,
+			});
 			// a paler line just outside it: one line alone reads as a border, two
 			// read as gilding — the same pair the buy cards and the symbol plates use
-			g.rect(
-				getSymbolX(cell.reel) - half - 4,
-				rowCenterY(cell.row) - half - 4,
-				(half + 4) * 2,
-				(half + 4) * 2,
-			).stroke({ width: 1.4, color: 0xfff3bd, alpha: 0.38 });
+			g.rect(cx - half - 4, cy - half - 4, (half + 4) * 2, (half + 4) * 2).stroke({
+				width: 1.4,
+				color: 0xfff3bd,
+				alpha: Math.min(1, 0.38 + 0.4 * braced),
+			});
+
+			// ── FOUR GOLD PEGS, DRIVEN INTO THE CORNERS ─────────────────────────
+			//
+			// What says "this tablet is now fixed to the board for the rest of the
+			// run" is something being fixed to it. On a lock the pegs come in from
+			// outside along the diagonals and seat with a glint; afterwards they stay
+			// as four studs on the frame — the permanent mark that these cells are
+			// pinned, and one a player can find at a glance among moving reels.
+			for (const [sx, sy] of CORNERS) {
+				const drive = !fresh ? 0 : Math.max(0, 1 - lp / 0.4);
+				const off = SYMBOL_SIZE * 0.32 * drive * drive;
+				const px = cx + sx * (base + off);
+				const py = cy + sy * (base + off);
+				const r = 5.2 + 1.8 * braced + 2.2 * (fresh && lp < 0.5 ? 1 - lp * 2 : 0);
+				g.circle(px, py, r + 1.6).fill({ color: 0x3a2c08, alpha: 0.9 });
+				g.circle(px, py, r).fill({ color: 0xe8ae3c });
+				g.circle(px - r * 0.3, py - r * 0.3, r * 0.42).fill({ color: 0xfff3c4, alpha: 0.9 });
+			}
+			// glints at each corner as the pegs seat, and a few sparks thrown outward
+			if (seated >= 0 && flare > 0) {
+				for (const [sx, sy] of CORNERS) {
+					spark(g, cx + sx * base, cy + sy * base, 13 * flare + 3, flare);
+					for (let k = 0; k < 3; k++) {
+						const a = Math.atan2(sy, sx) + (k - 1) * 0.55;
+						const d = seated * SYMBOL_SIZE * (0.22 + k * 0.05);
+						g.circle(cx + sx * base + Math.cos(a) * d, cy + sy * base + Math.sin(a) * d, 2.2 * flare).fill({
+							color: 0xffe08a,
+							alpha: flare,
+						});
+					}
+				}
+			}
+
+			// ── THE GLINT: one tablet at a time catches the light ────────────────
+			if (glintKey === key && glintAt) {
+				const p = (now - glintAt) / 620;
+				if (p >= 0 && p <= 1) {
+					const c = -base * 2 + 4 * base * p;
+					const poly = bandPoly(base, c, base * 0.22);
+					if (poly.length >= 6) {
+						g.poly(poly.map((v, i) => (i % 2 === 0 ? cx + v : cy + v))).fill({
+							color: 0xffffff,
+							alpha: 0.32 * Math.sin(p * Math.PI),
+						});
+					}
+				}
+			}
 		}
 	};
 

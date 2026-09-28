@@ -243,6 +243,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			);
 		}
 
+		// The previous spin's Scatter lock-ons go out with the board that carried
+		// them, before this one starts dropping symbols onto it (ScatterLand).
+		eventEmitter.broadcast({ type: 'scatterLandClear' });
+
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: { ...bookEvent, anticipation: gateAnticipation(bookEvent.anticipation) },
 			paddingBoard: config.paddingReels[bookEvent.gameType],
@@ -325,11 +329,19 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		}
 		await waitForTimeout(3000);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		// Three passes of the scatter shake — extended trigger celebration
+		// The Scatters GO OFF: one climbing trigger beat (meshWin S_TRIGGER — three
+		// pulses and a flare, 2.3s) in place of the line-win beat played three
+		// times over, which read as the same small gesture on repeat at the
+		// biggest moment in the base game. The flag is what tells Symbol.svelte
+		// to pick the trigger beat, and it is cleared in a finally so an
+		// interrupted trigger cannot leave the next line win playing it.
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
+		stateGame.scatterTrigger = true;
+		try {
+			await animateSymbols({ positions: bookEvent.positions });
+		} finally {
+			stateGame.scatterTrigger = false;
+		}
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		// Enter the feature inside the blast's white-out. The swap used to happen
@@ -486,10 +498,16 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await waitForTimeout(3000);
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		// Three passes of the scatter shake — extended trigger celebration
-		await animateSymbols({ positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
+		// the mascot flips in zero-g for the extra spins (Mascot.svelte)
+		eventEmitter.broadcast({ type: 'mascotFlip' });
+		// The Scatters go off with the same climbing trigger beat as the first
+		// trigger (meshWin S_TRIGGER), not the line-win beat three times over.
+		stateGame.scatterTrigger = true;
+		try {
+			await animateSymbols({ positions: bookEvent.positions });
+		} finally {
+			stateGame.scatterTrigger = false;
+		}
 		const extraSpins = Math.max(0, bookEvent.totalFs - stateUi.freeSpinCounterTotal);
 		if (extraSpins > 0) {
 			eventEmitter.broadcast({ type: 'freeSpinIntroShow' });

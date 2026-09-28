@@ -9,7 +9,10 @@
 		| { type: 'mascotThrow' }
 		// The goggle tease. Fired at the top of a round that is GOING to trigger
 		// the feature — see playBet in src/game/utils.ts, which owns the coin flip.
-		| { type: 'mascotGoggleTease' };
+		| { type: 'mascotGoggleTease' }
+		// The zero-g flip: extra free spins won (freeSpinRetrigger). A big win in
+		// the feature flips him too, from winUpdate here.
+		| { type: 'mascotFlip' };
 </script>
 
 <script lang="ts">
@@ -185,6 +188,55 @@
 	// the velocity he left the ground at.
 	const floatEase = $derived(floatLevel * floatLevel * (3 - 2 * floatLevel));
 
+	// ── THE ZERO-G FLIP ─────────────────────────────────────────────────────
+	//
+	// In the free spins he floats, and a floating body that gets excited turns
+	// head over heels. The float container already turns him about his MIDDLE
+	// (see floatXf), so the flip is one more rotation on it — a full circle —
+	// while the skeleton plays `tuck`: curled up through the fast half of the
+	// turn, opened out to stop it, the way a real somersault is done.
+	//
+	// The curve: a small counter-swing first (the wind-up), the turn eased in
+	// and out so it neither starts nor stops dead, a few degrees of overshoot, and
+	// back — a spring, not a stop. FLIP_MS matches tuck's 1.15s.
+	const FLIP_MS = 1150;
+	let flipAngle = $state(0);
+	let flipRaf = 0;
+	const flipCurve = (u: number) => {
+		const full = -Math.PI * 2;
+		if (u < 0.14) return 0.12 * Math.sin((Math.PI / 2) * (u / 0.14)); // wind-up
+		if (u < 0.8) {
+			const k = (u - 0.14) / 0.66;
+			const e = k < 0.5 ? 4 * k * k * k : 1 - (-2 * k + 2) ** 3 / 2;
+			return 0.12 * (1 - e) + full * e; // the turn
+		}
+		const k = (u - 0.8) / 0.2; // the overshoot, sprung back
+		return full - 0.08 * Math.sin(Math.PI * k) ** 2 * (1 - 0.5 * k);
+	};
+	const startFlip = () => {
+		cancelAnimationFrame(flipRaf);
+		const t0 = performance.now();
+		const step = (now: number) => {
+			const u = (now - t0) / FLIP_MS;
+			if (u >= 1) {
+				flipAngle = 0; // a full turn is the same as none
+				return;
+			}
+			flipAngle = flipCurve(u);
+			flipRaf = requestAnimationFrame(step);
+		};
+		flipRaf = requestAnimationFrame(step);
+	};
+	// the flip is a free-spins move: on the deck he is standing, not floating
+	let cheerAfterTuck = false;
+	const flip = (thenCheer: boolean) => {
+		if (!placement || context.stateGame.gameType !== 'freegame') return false;
+		cheerAfterTuck = thenCheer;
+		play('tuck', false);
+		startFlip();
+		return true;
+	};
+
 	/**
 	 * The float, in MAIN-LAYOUT units, plus the pivot it turns about.
 	 *
@@ -222,7 +274,7 @@
 			scale,
 			x: placement.x + sway,
 			y: placement.y - midY - lift,
-			rotation: roll,
+			rotation: roll + flipAngle,
 		};
 	});
 
@@ -410,12 +462,22 @@
 			// pixi y is down, skeleton y is up
 			const cy = -landing.y - kick * 0.5;
 
+			// THE BLACK SHADOW (reported 2026-09-26, "搥胸時的黑影", with a screen
+			// capture): the ring and the action lines were drawn in INK, and on this
+			// character they land on dark fur and a white suit — a thin black circle
+			// and a spray of black wedges round every hit. Worse, the star's ink
+			// outline faded at the same rate as its gold, so each hit spent its last
+			// third as a muddy brown-black blob on the suit. The ring and the lines
+			// are LIGHT now (they are the energy of the hit, not its drawing), and
+			// the star's ink goes well before its fill, so a hit fades out pale.
+			const ink = alpha ** 3;
+
 			// 1. THE SHOCK RING. Expands past the star and thins as it goes, which
 			// is the part that gives the hit a size — the star alone reads as an
 			// ornament pinned to his chest.
 			const ring = IMPACT_R * scale * (0.7 + 1.5 * t);
 			g.circle(cx, cy, ring);
-			g.stroke({ width: 13 * scale * (1 - t), color: INK, alpha: alpha * 0.7 });
+			g.stroke({ width: 11 * scale * (1 - t), color: FLASH, alpha: alpha * 0.55 });
 
 			// 2. ACTION LINES, under the star so it sits on top of them.
 			for (let k = 0; k < 9; k++) {
@@ -423,7 +485,7 @@
 				const r0 = IMPACT_R * 0.8 * scale;
 				const r1 = r0 + (34 + 30 * (((k * 7919) % 11) / 11)) * scale;
 				g.poly(wedge(cx, cy, a, r0, r1, 7 * scale));
-				g.fill({ color: INK, alpha: alpha * 0.9 });
+				g.fill({ color: GOLD, alpha: alpha * 0.85 });
 			}
 
 			// 3. The outer star is drawn TWICE — once filled, once stroked. In pixi
@@ -433,7 +495,7 @@
 			g.poly(outer);
 			g.fill({ color: GOLD, alpha });
 			g.poly(outer);
-			g.stroke({ width: 6 * scale, color: INK, alpha });
+			g.stroke({ width: 6 * scale, color: INK, alpha: ink });
 
 			const inner = starPoints(cx, cy, IMPACT_R * 0.56 * scale, IMPACT_R * 0.23 * scale, 9, seed + 0.9);
 			g.poly(inner);
@@ -536,18 +598,73 @@
 		}
 	};
 
-	// idle loops; cheer, chestbeat and nod are one-shots that return to it.
+	// idle (and, in the free spins, the spacewalk) loops; cheer, chestbeat, nod
+	// and the throw are one-shots that return to it — see rest() below.
 	// Transitions run off the track's own complete callback rather than timers, so
 	// a one-shot cannot be cut short or leave him stuck in a pose because a frame
 	// was dropped.
 	let animationName = $state('idle');
 	let loop = $state(true);
-	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit'];
+	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'tuck', 'push', 'lookup', 'stretch', 'wave', 'foottap'];
 
 	const play = (name: string, loops: boolean) => {
 		animationName = name;
 		loop = loops;
 	};
+
+	// WHAT HE DOES WHEN NOTHING IS HAPPENING. In the base game he stands (idle);
+	// through the free spins, floating in zero-g, he SPACEWALKS — a slow
+	// stride in place, looping (the 'spacewalk' in generate_monkey_spine.mjs,
+	// Go Bananas Boat's march made weightless). Every one-shot returns here
+	// rather than to idle, so a cheer in the feature ends walking and a cheer in
+	// the base game ends standing, without either needing to know which game it
+	// is in.
+	const inFreeGame = $derived(context.stateGame.gameType === 'freegame');
+
+	// ── IDLE BREAKS ─────────────────────────────────────────────────────────
+	//
+	// A player who has stopped spinning gets a small bit of business now and
+	// then: he looks up at something passing, stretches and yawns, waves, or
+	// taps a foot. Base game only (the feature never waits), only while the game
+	// is idle and he is standing in idle, one at a time, never the same one twice
+	// running, and not before the player has actually stopped for a while.
+	const BREAKS = ['lookup', 'stretch', 'wave', 'foottap'];
+	const BREAK_AFTER_MS = [13000, 21000];
+	let lastBreak = '';
+	let quietSince = performance.now();
+	let breakAt = BREAK_AFTER_MS[0];
+	const breakTimer = setInterval(() => {
+		const now = performance.now();
+		const quiet =
+			context.stateGame.gameType === 'basegame' &&
+			context.stateXstateDerived.isIdle() &&
+			animationName === 'idle';
+		if (!quiet) {
+			quietSince = now;
+			return;
+		}
+		if (!placement || now - quietSince < breakAt) return;
+		const pool = BREAKS.filter((b) => b !== lastBreak);
+		lastBreak = pool[Math.floor(Math.random() * pool.length)];
+		play(lastBreak, false);
+		// the next one a while after this one ends, not after the last spin
+		quietSince = now;
+		breakAt = BREAK_AFTER_MS[0] + Math.random() * (BREAK_AFTER_MS[1] - BREAK_AFTER_MS[0]);
+	}, 500);
+	onDestroy(() => {
+		clearInterval(breakTimer);
+		cancelAnimationFrame(flipRaf);
+	});
+	const rest = () => (inFreeGame ? 'spacewalk' : 'idle');
+
+	// ...and following the game in and out of the feature while he is at rest.
+	// Only from rest: if the switch lands mid-gesture (the throw that carries the
+	// scene into the feature, a cheer on the last spin), that gesture ends in
+	// rest() and picks the right one then.
+	$effect(() => {
+		if (inFreeGame && animationName === 'idle') play('spacewalk', true);
+		else if (!inFreeGame && animationName === 'spacewalk') play('idle', true);
+	});
 
 	// He makes a noise for two things, and stays quiet for everything else.
 	//
@@ -579,7 +696,23 @@
 			// standing with both arms in the air for as long as anyone looked away.
 			// Held that long it stops reading as a celebration and starts reading as
 			// something that has jammed.
+			// In the free spins he flips first and cheers out of it.
+			if (flip(true)) return;
 			play('cheer', false);
+		},
+		mascotFlip: () => {
+			if (animationName === 'tuck') return;
+			flip(false);
+		},
+
+		// THE REELS GROWING: he forces the capsule open — gathers low, drives up
+		// with both arms thrown out, claps twice (`push`). Fired as the markers
+		// let go, so his drive lands on their release. Only from rest: a cheer, a
+		// throw or a flip is not interrupted for it.
+		growMarkersLift: () => {
+			if (!placement) return;
+			if (animationName !== 'idle' && animationName !== 'spacewalk') return;
+			play('push', false);
 		},
 		// The gorilla, for the biggest way into the feature. Deliberately not the
 		// same gesture as the win: using one celebration for "you are going in" and
@@ -671,12 +804,35 @@
 			listener={{
 				complete: (entry) => {
 					const finished = entry.animation?.name;
-					// idle loops, so complete fires on every pass — only the
-					// one-shots have anywhere to go from here.
-					if (finished && ONE_SHOTS.includes(finished)) play('idle', true);
+					// only a one-shot that has run out has anywhere to go: the two
+					// rests loop, and complete fires on every pass of them
+					if (!finished || entry.loop || !ONE_SHOTS.includes(finished)) return;
+					// a flip for a big win opens out into the cheer
+					if (finished === 'tuck' && cheerAfterTuck) {
+						cheerAfterTuck = false;
+						play('cheer', false);
+						return;
+					}
+					play(rest(), true);
 				},
 			}}
 		/>
+		<!-- TRACK 1, ALWAYS: what hangs off him — the banana and the backpack
+		     hose (flutter, in design/generate_monkey_spine.mjs; Go Bananubis'
+		     set-up). It keys only their own bones, so it layers over whatever
+		     track 0 plays, and their physics adds the follow-through. In the free
+		     spins he floats, and so does everything hanging off him:
+		     flutter_float drifts further and slower. -->
+		<SpineTrack
+			trackIndex={1}
+			animationName={inFreeGame ? 'flutter_float' : 'flutter'}
+			loop
+			{...{ mixDuration: 0.6 }}
+		/>
+		<!-- TRACK 2, ALWAYS: the suit's lights — the chest windows breathing and a
+		     glint across the badge now and then (sparkle, generate_monkey_spine.mjs).
+		     Slot colours and an attachment only, so it layers over everything. -->
+		<SpineTrack trackIndex={2} animationName="sparkle" loop />
 	</SpineProvider>
 
 	<!--

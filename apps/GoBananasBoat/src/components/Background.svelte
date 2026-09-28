@@ -7,6 +7,14 @@
 
 	import { getContext } from '../game/context';
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
+	import { MESH_BG } from '../game/meshWin';
+	import BackgroundMeshPatch from './BackgroundMeshPatch.svelte';
+
+	// THE PLATES MOVE IN PLACES (game/meshWin/bgPatches.ts): the crane hook
+	// swings on the dock, the tarps on the container stacks flap in the storm,
+	// the caged lamp in the hold sways. Each is a patch of the plate itself,
+	// drawn over the plate at the plate's own place, inside the plate's own
+	// FadeContainer, so it arrives and leaves with its scene.
 
 	const context = getContext();
 	const isHoldAndSpin = $derived(stateBet.activeBetModeKey === HOLD_AND_SPIN_MODE_KEY);
@@ -104,16 +112,25 @@
 <!-- 金色日出叢林 base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="gbBgBase" {...parallax} />
+	{#each MESH_BG.gbBgBase as spec (spec.symbol)}
+		<BackgroundMeshPatch {spec} {...parallax} />
+	{/each}
 </FadeContainer>
 
 <!-- 烈日突擊 free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgFeature" {...parallax} />
+	{#each MESH_BG.gbBgFeature as spec (spec.symbol)}
+		<BackgroundMeshPatch {spec} {...parallax} />
+	{/each}
 </FadeContainer>
 
 <!-- 地底金庫 hold-and-spin background -->
 <FadeContainer show={isHoldAndSpin} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgHoldAndSpin" {...parallax} />
+	{#each MESH_BG.gbBgHoldAndSpin as spec (spec.symbol)}
+		<BackgroundMeshPatch {spec} {...parallax} />
+	{/each}
 </FadeContainer>
 
 <!-- ambient bokeh drifting in front of whichever scene is showing -->

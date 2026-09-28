@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
+	import { Tween } from 'svelte/motion';
+	import { cubicInOut } from 'svelte/easing';
+	import { SECOND } from 'constants-shared/time';
 
 	import { BlurFilter } from 'pixi.js';
 	import { EnablePixiExtension } from 'components-pixi';
 	import { EnableHotkey } from 'components-shared';
 	import { MainContainer } from 'components-layout';
 	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
-	import { stateModal } from 'state-shared';
+	import { stateModal, stateBet } from 'state-shared';
 
 	import { UI, UiGameName } from 'components-ui-pixi';
 	import { GameVersion } from 'components-ui-html';
@@ -16,6 +19,7 @@
 	import { stateReplay } from 'state-shared';
 
 	import { getContext } from '../game/context';
+	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 	// side-effect import: paints the shared bet bar in the jungle palette
 	import '../game/uiTheme';
 	import EnableSound from './EnableSound.svelte';
@@ -61,8 +65,33 @@
 		};
 	});
 
-	// soft depth-of-field on the jungle scene so the reels read as the subject
-	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
+	// A touch of depth-of-field on the scene so the reels read as the subject,
+	// BY MODE (2026-09-27). It was 4 everywhere, which smeared the painted plates
+	// ("why is the background always blurry, it cannot be as sharp as
+	// Deadwood"), then 1.0 everywhere; the user then asked for it per mode:
+	//   base game      0.6  a calm tunnel — the least the range allows
+	//   free spins     1.0  the busiest plate of the family: gold veins,
+	//                       crystals, smoke and debris round the board
+	//   hold and spin  0.6  the vault is as calm as the base tunnel (the user
+	//                       named base and FG only; this follows base)
+	// One filter, eased to the new strength over the same second the plates
+	// crossfade in (Background.svelte), so the switch is not a jump in focus.
+	const BLUR_BASE = 0.6;
+	const BLUR_FEATURE = 1.0;
+	const blur = new BlurFilter({ strength: BLUR_BASE, quality: 3 });
+	const backgroundBlur = [blur];
+	const blurTarget = $derived(
+		context.stateGame.gameType === 'freegame' && stateBet.activeBetModeKey !== HOLD_AND_SPIN_MODE_KEY
+			? BLUR_FEATURE
+			: BLUR_BASE,
+	);
+	const blurTween = new Tween(BLUR_BASE, { duration: SECOND, easing: cubicInOut });
+	$effect(() => {
+		blurTween.set(blurTarget);
+	});
+	$effect(() => {
+		blur.strength = blurTween.current;
+	});
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
 
@@ -135,20 +164,25 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name="GO BANANAS DELTA" />
+				<UiGameName name="GO BOOMANA" />
 			{/snippet}
 			{#snippet logo()}
-				<Text
-					anchor={{ x: 1, y: 0 }}
-					text="GO BANANAS DELTA"
-					style={{
-						fontFamily: GAME_FONT,
-						fontSize: REM * 1.5,
-						fontWeight: GAME_FONT_WEIGHT,
-						lineHeight: REM * 2,
-						fill: 0xffffff,
-					}}
-				/>
+				<!-- The same name again, top right. Not in portrait: on a phone's
+				     width it ran into the clock-and-name on the left and the two
+				     printed over each other as one unreadable line. -->
+				{#if context.stateLayoutDerived.layoutType() !== 'portrait'}
+					<Text
+						anchor={{ x: 1, y: 0 }}
+						text="GO BOOMANA"
+						style={{
+							fontFamily: GAME_FONT,
+							fontSize: REM * 1.5,
+							fontWeight: GAME_FONT_WEIGHT,
+							lineHeight: REM * 2,
+							fill: 0xffffff,
+						}}
+					/>
+				{/if}
 			{/snippet}
 		</UI>
 		<Win />

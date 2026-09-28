@@ -33,7 +33,17 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { getContext } from '../game/context';
 	import { stateGame, stateGameDerived } from '../game/stateGame.svelte';
-	import { SYMBOL_SIZE, MAX_ROWS, BASE_ROWS, NUM_REELS, reelYOffset } from '../game/constants';
+	import {
+		SYMBOL_SIZE,
+		MAX_ROWS,
+		BASE_ROWS,
+		NUM_REELS,
+		reelYOffset,
+		GROW_MARKER_H,
+		GROW_MARKER_W,
+	} from '../game/constants';
+	import { MARKER_CHARGE_MS, MARKER_LIFT_MS } from '../game/meshWin/gMarker';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
 	import { getSymbolX } from '../game/utils';
 	import type { RawSymbol } from '../game/types';
 
@@ -117,7 +127,12 @@
 	// The markers letting go is its own, quieter beat, and it runs BEFORE the
 	// stretch: the marker is the cause and the stretch is the effect, so they must
 	// not overlap or the causation is lost.
-	const LIFT_MS = 400;
+	//
+	// It is two beats now (meshWin/gMarker.ts): the badge COILS in place for
+	// MARKER_CHARGE_MS, then flies. It was 400ms of flight alone, from the cell's
+	// centre, while the badge itself stayed painted on the corner.
+	const LIFT_MS = MARKER_LIFT_MS;
+	const FLY_MS = MARKER_LIFT_MS - MARKER_CHARGE_MS;
 
 	// TURBO DOES NOT SHORTEN EITHER OF THESE, for the reason Boomana gives about
 	// its detonation: every other part of a turbo spin is the player skipping
@@ -398,21 +413,27 @@
 	// Only the trail stays procedural — a sprite cannot stretch between two points
 	// the way an elongating streak has to, and elongation is the thing that reads
 	// as low gravity.
-	const liftProgress = $derived(liftClock < 0 ? -1 : Math.min(1, liftClock / LIFT_MS));
+	// the flight, 0..1, once the coil has let go; -1 before it and when idle
+	const flyProgress = $derived(
+		liftClock < MARKER_CHARGE_MS ? -1 : Math.min(1, (liftClock - MARKER_CHARGE_MS) / FLY_MS),
+	);
 
+	// the BADGE's centre, on the cell's top-left corner where Symbol.svelte draws
+	// it — the launch starts from the badge, not from the middle of the cell
 	const markerAt = (mark: { reel: number; row: number }) => {
 		const rows = stateGame.growRows[mark.reel] ?? BASE_ROWS;
 		return {
-			// padded row -> the cell's centre inside this reel's own window
-			cx: getSymbolX(mark.reel),
-			cy: reelYOffset(rows) + (mark.row - 0.5) * SYMBOL_SIZE,
+			// padded row -> the cell's centre inside this reel's own window, then
+			// out to the corner
+			cx: getSymbolX(mark.reel) - SYMBOL_SIZE / 2 + GROW_MARKER_W / 2,
+			cy: reelYOffset(rows) + (mark.row - 0.5) * SYMBOL_SIZE - SYMBOL_SIZE / 2 + GROW_MARKER_H / 2,
 		};
 	};
 
 	const drawLift = (g: PixiGraphics) => {
 		g.clear();
-		if (liftProgress < 0 || lifting.length === 0) return;
-		const p = liftProgress;
+		if (flyProgress < 0 || lifting.length === 0) return;
+		const p = flyProgress;
 
 		for (const mark of lifting) {
 			const { cx, cy } = markerAt(mark);
@@ -503,6 +524,15 @@
 	context.eventEmitter.subscribeOnMount({
 		growMarkersLift: async ({ markers }) => {
 			if (markers.length === 0) return;
+			// The badge leaves its cell: the cell becomes the plain symbol under it
+			// (the event names it) and the mesh copy below takes the badge's place
+			// on the same frame. Renamed in place, one cell at a time — settling a
+			// whole board would remount every symbol on it. The resume path
+			// (utils.boardAfterLastGrowth) makes the same change from the event.
+			for (const m of markers) {
+				const cell = stateGame.board[m.reel]?.reelState.symbols[m.row];
+				if (cell) cell.rawSymbol = { ...cell.rawSymbol, name: m.symbol };
+			}
 			lifting = markers;
 			liftClock = 0;
 			runLiftClock();
@@ -633,19 +663,34 @@
 			burst is a light source, and keying a soft glow to alpha would destroy the
 			falloff that makes it read as light.
 		-->
-		{#if liftProgress >= 0}
-			{@const frame = Math.min(7, Math.floor(liftProgress * 8))}
+		<!--
+			The badge itself: it coils where it sat, then rides the flight up and
+			fades. Speed pinned to 1 because LIFT_MS above is not scaled by turbo,
+			and the coil has to let go on the frame the flight starts.
+		-->
+		{#if liftClock >= 0}
+			{#each lifting as mark (`${mark.reel}-${mark.row}`)}
+				{@const at = markerAt(mark)}
+				{@const fly = Math.max(0, flyProgress)}
+				<Container x={at.cx} y={at.cy - SYMBOL_SIZE * 1.5 * easeOut(fly)} alpha={(1 - fly) ** 1.2}>
+					<SymbolMeshWin symbolName="G" size={GROW_MARKER_H} speed={1} />
+				</Container>
+			{/each}
+		{/if}
+
+		{#if flyProgress >= 0}
+			{@const frame = Math.min(7, Math.floor(flyProgress * 8))}
 			{#each lifting as mark (`${mark.reel}-${mark.row}`)}
 				{@const at = markerAt(mark)}
 				<Sprite
 					key={`gbBurst${frame}`}
 					anchor={0.5}
 					x={at.cx}
-					y={at.cy - SYMBOL_SIZE * 1.5 * easeOut(liftProgress)}
+					y={at.cy - SYMBOL_SIZE * 1.5 * easeOut(flyProgress)}
 					width={SYMBOL_SIZE * 1.6 * (366 / 352)}
 					height={SYMBOL_SIZE * 1.6}
 					blendMode="add"
-					alpha={(1 - liftProgress) ** 0.8}
+					alpha={(1 - flyProgress) ** 0.8}
 				/>
 			{/each}
 		{/if}

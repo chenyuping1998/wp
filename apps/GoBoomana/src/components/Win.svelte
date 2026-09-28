@@ -10,6 +10,7 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 	import { Container, Sprite } from 'pixi-svelte';
+	import BannerMesh from './BannerMesh.svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
@@ -226,18 +227,10 @@
 									height={bh * 1.8}
 									alpha={bannerPose.glow}
 								/>
-								<Sprite key={bannerKey} anchor={0.5} width={bw} height={bh} />
-								<!-- additive self-copy = the whole plaque flares -->
-								{#if bannerPose.blink > 0}
-									<Sprite
-										key={bannerKey}
-										anchor={0.5}
-										width={bw}
-										height={bh}
-										blendMode="add"
-										alpha={bannerPose.blink}
-									/>
-								{/if}
+								<!-- the plaque as a mesh: jelly on the slam, the title bulging with
+								     each flare, a squash when the count lands (meshWin/banner.ts).
+								     Its additive flare copy rides the same geometry. -->
+								<BannerMesh key={bannerKey} width={bw} height={bh} blink={bannerPose.blink} landed={countUpCompleted} />
 								<!-- twinkles running the riveted rim -->
 								{#each twinkles as tw (tw.id)}
 									{@const p = Math.min(1, (fxNow - tw.born) / 0.7)}

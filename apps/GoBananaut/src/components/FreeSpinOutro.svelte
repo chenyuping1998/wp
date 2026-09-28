@@ -10,6 +10,7 @@
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { Text } from 'pixi-svelte';
+	import { stateBet } from 'state-shared';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
@@ -57,7 +58,8 @@
 
 <FadeContainer {show}>
 	{#if winLevelData}
-		{@const duration = winLevelData.presentDuration}
+		<!-- turbo halves the count-up here too (see Win.svelte) -->
+		{@const duration = winLevelData.presentDuration * (stateBet.isTurbo ? 0.5 : 1)}
 		<WinCountUpProvider {amount} {duration} oncomplete={() => onCountUpComplete()}>
 			{#snippet children({ countUpAmount, startCountUp, finishCountUp, countUpCompleted })}
 				<OnMount onmount={() => startCountUp()} />
@@ -87,7 +89,7 @@
 						<GoldText
 							y={sizes.height * 0.12}
 							fontSize={sizes.width * 0.15}
-							text={bookEventAmountToCurrencyString(countUpAmount)}
+							text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
 							maxWidth={sizes.width * 0.9}
 						/>
 					{/snippet}

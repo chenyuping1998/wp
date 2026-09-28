@@ -335,11 +335,15 @@
 			{/if}
 		</Container>
 
+		<!-- The figure sits ABOVE the title in the wide columns. Stacked (portrait,
+		     square), the rows are too short for that: it was pushed up onto the
+		     accent rule at the top of the card and read as struck through. There
+		     it goes on the title's own line, right-aligned in the text column. -->
 		<Text
 			text={panel.figure}
-			anchor={{ x: slot.centred ? 0.5 : 0, y: 1 }}
-			x={slot.centred ? box.x + box.w / 2 : slot.text.x}
-			y={slot.text.titleY - titleSize * 0.85}
+			anchor={stacked ? { x: 1, y: 0 } : { x: slot.centred ? 0.5 : 0, y: 1 }}
+			x={stacked ? slot.text.x + slot.text.w : slot.centred ? box.x + box.w / 2 : slot.text.x}
+			y={stacked ? slot.text.titleY : slot.text.titleY - titleSize * 0.85}
 			style={{
 				fontFamily: GAME_FONT,
 				fontSize: figureSize,

@@ -6,6 +6,8 @@
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import { BG_BASE, BG_FEATURE } from '../game/meshWin';
+	import BgProps from './BgProps.svelte';
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 
 	const context = getContext();
@@ -17,18 +19,28 @@
 
 	// ── slow ken-burns drift over a small overscan, so the still jungle art
 	// breathes instead of sitting dead behind the reels ────────────────────────
+	//
+	// COVER, NOT STRETCH. The plates are 16:9; they used to be sized straight to
+	// the canvas, which on a portrait phone squeezed them to a third of their
+	// width. Now they keep their aspect and fill the canvas, cropped about the
+	// centre — the tunnel's vanishing point in all three plates. The drift only
+	// uses the OVERSCAN margin, not the crop, so in portrait it does not slide the
+	// plate sideways across half its width. BgProps is handed the same rect, so
+	// the lantern and ropes stay pinned to the art.
 	const OVERSCAN = 1.08;
+	const PLATE = [1920, 1080];
 	const parallax = $derived.by(() => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
-		const w = width * OVERSCAN;
-		const h = height * OVERSCAN;
-		const slackX = w - width;
-		const slackY = h - height;
+		const cover = Math.max(width / PLATE[0], height / PLATE[1]);
+		const w = PLATE[0] * cover * OVERSCAN;
+		const h = PLATE[1] * cover * OVERSCAN;
+		const driftX = (width * (OVERSCAN - 1)) / 2;
+		const driftY = (height * (OVERSCAN - 1)) / 2;
 		return {
 			width: w,
 			height: h,
-			x: -slackX * 0.5 + Math.sin(clock * 0.06) * slackX * 0.5,
-			y: -slackY * 0.5 + Math.sin(clock * 0.041 + 1.1) * slackY * 0.5,
+			x: (width - w) / 2 + Math.sin(clock * 0.06) * driftX,
+			y: (height - h) / 2 + Math.sin(clock * 0.041 + 1.1) * driftY,
 		};
 	});
 
@@ -88,11 +100,15 @@
 <!-- 金色日出叢林 base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="gbBgBase" {...parallax} />
+	<!-- the lantern on its hook, and the rope coil (meshWin/bgProps.ts) -->
+	<BgProps spec={BG_BASE} {...parallax} />
 </FadeContainer>
 
 <!-- 烈日突擊 free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgFeature" {...parallax} />
+	<!-- the ropes and the plank hanging from the broken roof -->
+	<BgProps spec={BG_FEATURE} {...parallax} />
 </FadeContainer>
 
 <!-- 地底金庫 hold-and-spin background -->

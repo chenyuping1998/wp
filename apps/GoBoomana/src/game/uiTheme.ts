@@ -1,5 +1,6 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
+import { stateConfig } from 'state-shared';
 
 // Jungle-commando bet bar: deep olive-canvas buttons with the same brass trim
 // as the reel frame and the free-spin plaques, plus the game's sans typeface.
@@ -75,10 +76,6 @@ setUiTheme({
 	buyBonusHighlightPad: 0,
 	buyBonusHighlightRadius: 0.107,
 
-	// Certification: the bet button must stay clickable when the balance is short
-	// and say so. Paired with <ModalMessage /> in ui/Modals.svelte — without that
-	// the press would raise a modal this app does not render.
-	betButtonMessageOnInsufficientBalance: true,
 
 	// gold on the olive plate, matching every other caption in the game
 	buyBonusLabelFill: 0xffd75e,
@@ -92,6 +89,38 @@ setUiTheme({
 
 	// 旋轉鍵的呼吸光暈
 	spinButtonGlow: true,
+
+	// PHONE PORTRAIT: the menu disc and the Buy Bonus plate sat at ±470 and ran
+	// off both screen edges (the menu lost a third of its disc). ±440 keeps
+	// both inside with ~30 units to spare and still clears turbo/autoplay.
+	portraitSideButtonX: 440,
+	// The bet -/+ were 27 CSS px on a 390-wide phone; 0.68 makes them ~37 and
+	// leaves a visible gap to the spin button and to autoplay/turbo (0.72 all
+	// but touched autoplay, checked in the sandbox 2026-09-27).
+	portraitStepButtonScale: 0.68,
+	// the same pair on the desktop strip: 28px -> 36px, the gap widened with it
+	// so the two plates do not touch
+	stepButtonScale: 0.36,
+	stepButtonGap: 28,
+
+	// the Win figure swells and flashes gold when a win lands; the Bet figure
+	// swells when the stake moves
+	valuePop: 0.18,
+	winFlashTint: 0xffd36a,
+
+	// Hacksaw's house behaviours (see the shared theme): hold -/+ to keep
+	// stepping, a short lock on the spin button after the stake changes so a
+	// press cannot bet an amount not yet seen, an idle nudge on the spin button,
+	// shift-key shortcuts, and panels closing when a round starts.
+	platformUx: {
+		betRepeatMs: 150,
+		betToSpinCooldownMs: 500,
+		idleReminderMs: 30000,
+		idlePulseMs: 2000,
+		shortcuts: true,
+		keybindThrottleMs: 100,
+		closePanelsOnSpin: true,
+	},
 
 	// framed plate art for the readouts and the Buy Bonus CTA (the other slots
 	// keep the themed rounded rect, which suits the round buttons)
@@ -183,14 +212,18 @@ const skin = uiSkin;
 
 if (skin === 'platform') {
 	setUiTheme({
-		// the strip: flat casing, their panel grey on their near-black edge
+		// the strip: flat casing — in the mine's warm dark iron rather than their
+		// neutral grey, so the bar belongs to the same game as the reel frame,
+		// the buy menu and the counter (2026-09-27)
 		barStyle: 'flat',
-		barFill: 0x2a2a2a,
+		barFill: 0x1d1812,
 		barAlpha: 1,
 		// A stone hairline rather than their near-black edge, which on this strip
 		// is not there at all. It is also Balance's border — see the readouts.
-		panelBorder: 0x6e5e4a,
-		panelFill: 0x2a2a2a,
+		// Now a muted brass: the casing's edge and Balance's border. One step
+		// under the Win amber, so Win still stands out alone.
+		panelBorder: 0x8a6a36,
+		panelFill: 0x1d1812,
 
 		// Round controls: a dark disc with a thin cool-grey ring.
 		//
@@ -200,20 +233,22 @@ if (skin === 'platform') {
 		// the control disappears — so the disc goes darker and the 1px `.Button`
 		// border comes back at 2, one unit here being about a third of a CSS pixel at
 		// this bar's scale. Hot Miami found the same thing and fixed it the same way.
-		buttonFill: 0x14171a,
-		buttonFillLight: 0x4ace4a,
-		buttonFillDisabled: 0x207820,
-		buttonFillActive: 0x4ace4a,
-		buttonBorder: 0x565e66,
+		buttonFill: 0x15110c,
+		// highlights in the dynamite amber (were their green)
+		buttonFillLight: 0xf2a33a,
+		buttonFillDisabled: 0x6b4a1c,
+		buttonFillActive: 0xf2a33a,
+		buttonBorder: 0x6a5130,
 		buttonBorderWidth: 2,
 		buttonBorderWidthActive: 5,
 		buttonIconFill: 0xffffff,
 		buttonIconStroke: 0x0f0f0f,
 
-		// the spin button takes their primary green — it is the one control the
-		// platform palette actually colours
-		betFill: 0x4ace4a,
-		betBorder: 0x343a40,
+		// The spin button is the one control the platform palette colours. It
+		// was their green; it is the dynamite amber now, the colour of every
+		// "press this" in the game (the buy buttons, the fuse sparks).
+		betFill: 0xf2a33a,
+		betBorder: 0x6b3a0c,
 
 		// THE READOUTS, AS GO BANANAS BOAT DOES THEM: Balance and Bet in the bar's
 		// quiet material, and WIN alone picked out in the game's accent.
@@ -231,10 +266,10 @@ if (skin === 'platform') {
 		//
 		// Values in the pale stone's cream rather than white, as Boat's are in
 		// cream: white on the dark strip glares over a long session.
-		labelFill: 0xb8ad98,
-		balanceLabelFill: 0xb8ad98,
+		labelFill: 0xc9b48c,
+		balanceLabelFill: 0xc9b48c,
 		winAccent: { border: 0xc07a14, label: 0xffc45a },
-		betAccent: { border: 0x4c4438, label: 0xb8ad98 },
+		betAccent: { border: 0x5e4a2c, label: 0xc9b48c },
 		valueFill: 0xf3e6c8,
 		valueStroke: 0x0f0f0f,
 		valueShadow: 0x000000,
@@ -321,7 +356,7 @@ if (skin === 'platform') {
 		// black-and-gold to match the brass. Their green marks it as the one coloured
 		// call to action, the same job --hg-btn-bg does in their table.
 		buyBonusFill: 0x14171a,
-		buyBonusBorder: 0x4ace4a,
+		buyBonusBorder: 0xf2a33a,
 		buyBonusBorderWidth: 4,
 		buyBonusCornerRadius: 8,
 
@@ -329,7 +364,7 @@ if (skin === 'platform') {
 		// sits on the green spin button and is the one badge the platform bar
 		// draws; a gold ring there would be the only warm thing left on the strip.
 		autoSpinsCounterFill: 0x14171a,
-		autoSpinsCounterBorder: 0x4ace4a,
+		autoSpinsCounterBorder: 0xf2a33a,
 		autoSpinsCounterLabel: 0xffffff,
 		autoSpinsCounterLabelStroke: 0x0f0f0f,
 
@@ -341,7 +376,8 @@ if (skin === 'platform') {
 
 		// their .CircleButton has :hover and :active states and a 125ms transition;
 		// it does not have a halo
-		spinButtonGlow: false,
+		// the breathing halo behind the amber spin button, with the idle nudge
+		spinButtonGlow: true,
 		hoverHighlight: true,
 		pressFeedback: true,
 
@@ -367,3 +403,11 @@ if (skin === 'platform') {
 		},
 	});
 }
+
+// A player who cannot afford the bet is TOLD SO, on every route into a bet —
+// the Bet button, the spacebar and Autoplay. It used to be the uiTheme key
+// betButtonMessageOnInsufficientBalance; it moved to state-shared because the
+// Autoplay start button lives in a package that cannot see uiTheme. Paired with
+// <ModalMessage /> in ui/Modals.svelte — without that the press would raise a
+// modal this app does not render.
+stateConfig.explainInsufficientBalance = true;

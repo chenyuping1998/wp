@@ -10,7 +10,7 @@
 	import { verticalFill } from '../game/gradientFill';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
-	import { Graphics, Sprite, Text } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBet } from 'state-shared';
 
@@ -19,6 +19,9 @@
 	import { SYMBOL_SIZE, HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 	import { gameText } from '../game/i18nText';
 	import GoldText from './GoldText.svelte';
+	import PropMesh from './PropMesh.svelte';
+	import { COUNTER } from '../game/meshWin';
+	import { COUNTER_CANVAS, PLATE_CENTRE, plateScale, type CounterEnv } from '../game/meshWin/fsCounter';
 
 	const context = getContext();
 
@@ -155,52 +158,87 @@
 	});
 	$effect(() => () => clearInterval(popTimer));
 
-	const drawLadder = (g: PixiGraphics) => {
-		g.clear();
-		if (isSuperspin) return;
+	// THE PLATE ANSWERS THE GAME (game/meshWin/fsCounter.ts): a knock for every
+	// spin used, a bulge for a retrigger (or the respins topping back up), and
+	// the dynamite icon shuddering for a rung up the ladder. Keyed off
+	// `remaining` rather than the raw events, so the free game and the
+	// hold-and-spin read the same way. The first fill (0 -> the award) is the
+	// counter appearing, not a retrigger.
+	let spinAt = -1;
+	let retrigAt = -1;
+	let levelAt = -1;
+	let lastRemaining = 0;
+	let lastLevelSeen = 1;
+	$effect(() => {
+		const now = remaining;
+		if (show && lastRemaining > 0) {
+			if (now < lastRemaining) spinAt = Date.now();
+			else if (now > lastRemaining) retrigAt = Date.now();
+		}
+		lastRemaining = now;
+	});
+	$effect(() => {
+		const now = level;
+		if (now > lastLevelSeen) levelAt = Date.now();
+		lastLevelSeen = now;
+	});
+	let counterEnv = $state<CounterEnv>({ spinT: -1, retrigT: -1, levelT: -1 });
+	$effect(() => {
+		if (!show) return;
+		// setInterval, not the frame loop: it keeps time in a hidden tab
+		const timer = setInterval(() => {
+			const t = Date.now();
+			counterEnv = {
+				spinT: spinAt < 0 ? -1 : t - spinAt,
+				retrigT: retrigAt < 0 ? -1 : t - retrigAt,
+				levelT: levelAt < 0 ? -1 : t - levelAt,
+			};
+		}, 16);
+		return () => clearInterval(timer);
+	});
+	// the title, the count and the ladder take the plate's own scale about its
+	// centre, so they stay on it while it bulges
+	const overlay = $derived.by(() => {
+		const [sx, sy] = plateScale(counterEnv);
+		const cx = (PLATE_CENTRE[0] / COUNTER_CANVAS[0]) * panelSizes.width;
+		const cy = (PLATE_CENTRE[1] / COUNTER_CANVAS[1]) * panelSizes.height;
+		return { x: cx * (1 - sx), y: cy * (1 - sy), sx, sy };
+	});
+
+	// THE LADDER: one dynamite stick per rung, the same drawing as the buy menu's
+	// (design/generate_ladder_sticks.mjs), so the ladder the player picked on
+	// the card is the one they watch fill. The sticks are sprites; the sparks on
+	// their fuse tips stay drawn here, because they are what moves.
+	const STICK_ASPECT = 28 / 48;
+	// the fuse tip in the 28 x 48 drawing
+	const FUSE_TIP = [21.5 / 28, 3 / 48] as const;
+	const ladder = $derived.by(() => {
+		if (isSuperspin) return [];
 		const w = panelSizes.width;
 		const h = panelSizes.height;
 		const gap = w * 0.118;
 		const startX = w * 0.5 - ((maxLevel - 1) * gap) / 2;
-		const stickW = w * 0.052;
-		const stickH = h * 0.1;
-		const baseY = h * 0.815;
-
-		for (let i = 0; i < maxLevel; i++) {
-			const lit = i < level;
-			// back-out pop: overshoots to 1.55x and settles
+		const baseY = h * 0.85;
+		return Array.from({ length: maxLevel }, (_, i) => {
+			// the rung that just lit swells and settles
 			const k = i === popRung && popT < 1 ? 1 + 0.55 * Math.sin(popT * Math.PI) * (1 - popT * 0.4) : 1;
-			const sw = stickW * k;
-			const sh = stickH * k;
+			const sh = h * 0.17 * k;
+			const sw = sh * STICK_ASPECT;
 			const cx = startX + i * gap;
-			const top = baseY - sh;
+			const x = cx - sw / 2;
+			const y = baseY - sh;
+			return { i, lit: i < level, x, y, w: sw, h: sh, fx: x + FUSE_TIP[0] * sw, fy: y + FUSE_TIP[1] * sh };
+		});
+	});
 
-			if (lit) {
-				// the stick: dynamite red, lit from the upper left like everything here
-				g.roundRect(cx - sw / 2, top, sw, sh, sw * 0.28)
-					.fill({ color: 0xc23a2a })
-					.stroke({ width: 2, color: 0x4a1410 });
-				g.roundRect(cx - sw / 2 + sw * 0.16, top + sh * 0.08, sw * 0.2, sh * 0.8, sw * 0.1).fill({
-					color: 0xff8a70,
-					alpha: 0.55,
-				});
-				// the paper band
-				g.rect(cx - sw / 2, top + sh * 0.56, sw, sh * 0.13).fill({ color: 0x8a6a48 });
-			} else {
-				// an empty slot, cut into the plaque
-				g.roundRect(cx - sw / 2, top, sw, sh, sw * 0.28)
-					.fill({ color: 0x1c1e24, alpha: 0.9 })
-					.stroke({ width: 2, color: 0x4c505a });
-			}
-
-			// the fuse
-			const fx = cx + sw * 0.35;
-			const fy = top - sh * 0.26;
-			g.moveTo(cx, top)
-				.quadraticCurveTo(cx + sw * 0.05, fy, fx, fy)
-				.stroke({ width: 2, color: lit ? 0x8a7458 : 0x3e424b, cap: 'round' });
-
-			if (!lit) {
+	const drawSparks = (g: PixiGraphics) => {
+		g.clear();
+		for (const rung of ladder) {
+			const { i, fx, fy } = rung;
+			// sized off the stick, so a swelling rung's spark swells with it
+			const stickW = rung.w * 0.5;
+			if (!rung.lit) {
+				// the next rung to light breathes when the board is one short
 				if (isNearFull && i === level) {
 					const breathe = 0.5 + 0.5 * Math.sin(sparkT * 3.2);
 					g.circle(fx, fy, stickW * 0.5).fill({ color: 0xff7a10, alpha: 0.12 + 0.18 * breathe });
@@ -208,9 +246,6 @@
 				}
 				continue;
 			}
-			// the spark. At the top of the ladder every one flickers, out of step
-			// with its neighbours, so the plaque looks like five fuses burning
-			// rather than five lights on a timer.
 			const flicker = isFullBoard ? 0.55 + 0.45 * Math.abs(Math.sin(sparkT * 9 + i * 1.7)) : 0.75;
 			const flash = i === popRung && popT < 1 ? 1 - popT : 0;
 			const r = stickW * (0.26 + 0.14 * flicker + 0.5 * flash);
@@ -223,7 +258,10 @@
 
 <MainContainer>
 	<FadeContainer {show} {...position}>
-		<Sprite key="gbFsPanel" {...panelSizes} />
+		<!-- drawn through its mesh (game/meshWin/fsCounter.ts), same box -->
+		<PropMesh spec={COUNTER} env={counterEnv} {...panelSizes} />
+
+		<Container x={overlay.x} y={overlay.y} scale={{ x: overlay.sx, y: overlay.sy }}>
 
 		<!-- title on the upper plank area, auto-shrunk for long locales -->
 		<Text
@@ -270,7 +308,11 @@
 				fill={[0xfff6e0, 0xffc45a, 0xc07a14]}
 				stroke={0x2a2016}
 			/>
-			<Graphics draw={drawLadder} />
+			{#each ladder as rung (rung.i)}
+				<Sprite key={rung.lit ? 'gbLadderLit' : 'gbLadderOff'} x={rung.x} y={rung.y} width={rung.w} height={rung.h} />
+			{/each}
+			<Graphics draw={drawSparks} />
 		{/if}
+		</Container>
 	</FadeContainer>
 </MainContainer>

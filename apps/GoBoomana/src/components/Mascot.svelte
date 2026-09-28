@@ -317,7 +317,32 @@
 	// was dropped.
 	let animationName = $state('idle');
 	let loop = $state(true);
-	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit'];
+	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'flinch', 'alert', 'glance'];
+	// The small reactions (flinch, alert, glance, nod) may interrupt each other
+	// and idle; they never cut into the big three, which each mean something.
+	const INTERRUPTIBLE = ['idle', 'nod', 'glance', 'alert', 'flinch'];
+	const react = (name: string) => {
+		if (!INTERRUPTIBLE.includes(animationName)) return;
+		play(name, false);
+	};
+
+	// GLANCE: idle variety. The idle loop plays for as long as the player sits
+	// there; every so often he looks over at the board and back. Sooner in the
+	// free game, and sooner still as the blast level climbs, so the tension shows
+	// on him too.
+	let glanceTimer = 0;
+	const scheduleGlance = () => {
+		clearTimeout(glanceTimer);
+		const fg = context.stateGame.gameType === 'freegame';
+		const level = Math.max(1, context.stateGame.blastLevel ?? 1);
+		const base = fg ? Math.max(3500, 7000 - level * 700) : 8000;
+		glanceTimer = setTimeout(() => {
+			if (placement && animationName === 'idle') play('glance', false);
+			scheduleGlance();
+		}, base + Math.random() * base * 0.6) as unknown as number;
+	};
+	scheduleGlance();
+	onDestroy(() => clearTimeout(glanceTimer));
 
 	const play = (name: string, loops: boolean) => {
 		animationName = name;
@@ -417,6 +442,14 @@
 			if (animationName !== 'idle') return;
 			play('nod', false);
 		},
+
+		// Every detonation. The animation's own 380ms lead-in is ReelBlast's
+		// CHARGE beat, so the startled hop lands on the bang. Not during the chest beat,
+		// the cheer or the throw.
+		reelBlast: () => react('flinch'),
+
+		// The fuses catching reel by reel: he takes notice and leans in.
+		fullBoardTease: () => react('alert'),
 	});
 </script>
 
@@ -453,6 +486,11 @@
 				},
 			}}
 		/>
+		<!-- TRACK 1, ALWAYS: the banana chewing and the pocket tube rocking
+		     (`flutter`, design/generate_monkey_spine.mjs). It keys only those two
+		     bones, so it layers over whatever track 0 plays; the physics on the
+		     banana, the helmet and the tube adds the follow-through. -->
+		<SpineTrack trackIndex={1} animationName="flutter" loop />
 	</SpineProvider>
 
 	<!--

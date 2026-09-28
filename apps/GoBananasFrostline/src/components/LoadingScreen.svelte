@@ -286,26 +286,19 @@
 				g.drawRect(0, 0, w, h);
 				g.endFill();
 
-				// subtle vignette / top glow so the screen looks less flat
-				g.beginFill(0x8fd9ff, 0.05);
-				g.drawEllipse(w * 0.5, h * 0.28, w * 0.22, h * 0.11);
-				g.endFill();
+				// NO HALO UNDER THE TITLE. There were two ice-blue ellipses below the
+				// wordmark — a static one here at h*0.28 and a drifting, pulsing one
+				// at h*0.34 — and with the title sitting at h*0.155 both of them read
+				// as a glow hanging off the bottom of the name.
+				//
+				// This is the third time a halo has been removed from this screen: the
+				// wordmark lost a breathing one behind it and a zero-offset blurred
+				// drop shadow (see the title comment below). Same answer each time —
+				// the type separates from the plate with an outline and an OFFSET cast
+				// shadow, and anything centred and blurred behind it is just fog.
 
 				g.beginFill(0x000000, 0.22);
 				g.drawRect(0, h * 0.72, w, h * 0.28);
-				g.endFill();
-			}}
-		/>
-
-		<Graphics
-			draw={(g) => {
-				const w = context.stateLayoutDerived.mainLayout().width;
-				const h = context.stateLayoutDerived.mainLayout().height;
-				const glowX = w * 0.5 + Math.sin(pulseTick / 48) * w * 0.08;
-				const glowAlpha = 0.03 + 0.015 * (0.5 + 0.5 * Math.sin(pulseTick / 22));
-				g.clear();
-				g.beginFill(0x8fd9ff, glowAlpha);
-				g.drawEllipse(glowX, h * 0.34, w * 0.26, h * 0.1);
 				g.endFill();
 			}}
 		/>

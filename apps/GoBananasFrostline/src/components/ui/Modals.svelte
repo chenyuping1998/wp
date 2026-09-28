@@ -546,30 +546,87 @@
 	   :has() rather than a class on the button: OptionsGrid renders a plain
 	   Button with no selected state of its own, and the only signal in the DOM is
 	   the .selected class AutoSpinsOptions puts on the label inside it. */
+	/* WHICH CHIP IS SELECTED — read off the border the package passes in.
+
+	   The `.selected` class above only ever existed on the Auto Spin COUNT grid.
+	   The BET MENU's amount grid (BetMenuAmountGrid) never sets it, and nor do
+	   the two auto-spin limit grids, so on those screens the chosen chip was
+	   marked by nothing but the package's `2px white solid` border — which the
+	   .rectangle override flattens along with every other border. The bet menu
+	   showed 1.40 selected as a hair of lighter edge on a grid of identical chips.
+
+	   All four grids pass the same string for the chosen chip and `2px black
+	   solid` for the rest, and BaseIcon writes it into .rectangle's inline style
+	   as --border-value. Nothing else in components-ui-html uses "white solid",
+	   so the string IS the selected state, and one selector covers every grid.
+	   `.selected` is kept alongside it as a second route in, not a replacement. */
+
+	/* ice skin */
+	:global(.button:has(.rectangle[style*='white solid']) .rectangle),
 	:global(.button:has(.selected) .rectangle) {
 		border-color: #8fd9ff !important;
 		background: linear-gradient(
 			160deg,
-			rgba(31, 74, 104, 0.95) 0%,
-			rgba(17, 35, 51, 0.98) 100%
+			rgba(47, 121, 173, 0.98) 0%,
+			rgba(27, 90, 134, 0.98) 100%
 		) !important;
 		box-shadow:
-			0 0 14px rgba(143, 217, 255, 0.35),
-			inset 0 1px 0 rgba(216, 240, 255, 0.14) !important;
+			0 0 16px rgba(143, 217, 255, 0.5),
+			inset 0 1px 0 rgba(216, 240, 255, 0.3) !important;
+		animation: chip-lit 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
+	/* platform skin: the same LIT chip. It used to be a dark disc with a blue
+	   hairline — correct, but it was the same dark disc as every other chip, and
+	   a 2px line on a 40px chip is not what "I picked this one" looks like.
+	   Filled with the accent instead, the way the spin button is: the one blue
+	   solid on the panel is the one you chose. */
+	:global(html[data-ui-skin='platform'] .button:has(.rectangle[style*='white solid']) .rectangle),
 	:global(html[data-ui-skin='platform'] .button:has(.selected) .rectangle) {
-		background: #14171a !important;
+		background: linear-gradient(180deg, #3a8cc4 0%, #1f6a9e 100%) !important;
 		border: 2px solid #8fd9ff !important;
-		box-shadow: none !important;
+		box-shadow:
+			0 0 14px rgba(143, 217, 255, 0.55),
+			inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
 	}
 
-	/* the label inside the selected chip: the ice skin marks it with the gold it
-	   uses for amounts, which has no business on the platform strip — there the
-	   accent is the only colour, and it is this game's light blue */
+	/* THE PRESS. When a rule carrying an animation starts to match, the animation
+	   runs from the top — so the chip that has just BECOME selected flashes once,
+	   and the rest do nothing. It is the only way to key an effect to the click
+	   without touching the shared package: the grid re-renders the inline style,
+	   the selector newly matches, the flash plays. */
+	@keyframes -global-chip-lit {
+		0% {
+			transform: scale(0.94);
+			filter: brightness(1.9);
+		}
+		55% {
+			transform: scale(1.04);
+			filter: brightness(1.25);
+		}
+		100% {
+			transform: scale(1);
+			filter: brightness(1);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		:global(.button:has(.rectangle[style*='white solid']) .rectangle),
+		:global(.button:has(.selected) .rectangle) {
+			animation: none;
+		}
+	}
+
+	/* The label on a selected chip. White on the lit fill in both skins: the old
+	   platform rule painted it ice blue, which was right on a dark chip and would
+	   vanish on a blue one. The chip's own fill is the marker now. */
+	:global(.button:has(.rectangle[style*='white solid']) span),
+	:global(.button:has(.selected) .selected),
+	:global(html[data-ui-skin='platform'] .button:has(.rectangle[style*='white solid']) span),
 	:global(html[data-ui-skin='platform'] .selected) {
-		color: #8fd9ff !important;
-		text-shadow: none !important;
+		color: #ffffff !important;
+		font-weight: 700 !important;
+		text-shadow: 0 1px 2px rgba(6, 20, 34, 0.6) !important;
 	}
 
 	/* ══════════════════════════════════════════════════════
@@ -611,31 +668,35 @@
 			0 18px 48px rgba(0, 0, 0, 0.75) !important;
 	}
 
-	/* RIME ALONG THE TOP EDGE.
-	   Repeating-linear-gradient rather than an image: it is a row of fine spikes
-	   of alternating length hanging off the inside of the top border, which is
-	   what the reel cells grow when they frost (ExpandingWilds' drawCellFrost does
-	   the same thing in Graphics). Two layers at different periods so the spacing
-	   does not read as a comb.
-	   Pointer-events off and behind the content, so it decorates and never
-	   intercepts a tap. */
-	:global(html[data-modal^='buyBonus'] .ui-popup-standard-content-wrap::before) {
-		content: '';
-		position: absolute;
-		left: 0;
-		right: 0;
-		top: 0;
-		height: 14px;
-		pointer-events: none;
-		background-image:
-			repeating-linear-gradient(
-				90deg,
-				rgba(216, 240, 255, 0.55) 0 1px,
-				transparent 1px 7px
-			),
-			repeating-linear-gradient(90deg, rgba(143, 217, 255, 0.38) 0 1px, transparent 1px 13px);
-		-webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 100%);
-		mask-image: linear-gradient(180deg, #000 0%, transparent 100%);
+	/* NO RIME ALONG THE TOP EDGE.
+	   There was a row of fine spikes here, drawn with two repeating-linear-
+	   gradients under a mask, meant to read as frost creeping along the panel's
+	   top edge. On screen it read as a BARCODE — a dense row of even tick marks
+	   across the full width of the modal.
+
+	   That is the second time the same idea has failed the same way: the reel
+	   cells' rime looked like a ruler until its spike positions and lengths were
+	   jittered and a third of them dropped. A CSS repeating-gradient cannot be
+	   jittered, so there is no version of this that works here. Removed rather
+	   than retried. The frost on this screen is the Buy Bonus plate's own crystal
+	   and the card art, both of which are painted. */
+
+	/* THE BET STEPPER GOES BELOW THE CARDS.
+	   BonusContentWrapLarge renders betAmount first and the card list second, in a
+	   column. Reading order should be "here is what you can buy, here is what it
+	   will cost you" — the amount is the last decision, not the first.
+
+	   column-reverse rather than an order: on the children, because the wrapper
+	   holds exactly these two and flipping the container cannot get out of step
+	   with a child that is added later.
+
+	   :has(> .toggle-wrap) picks the buy MENU specifically. The confirm dialog is
+	   built from the same wrapper class and has no stepper in it; without this it
+	   would have its own contents reversed.
+	   Exact [data-modal='buyBonus'], not ^=, so buyBonusConfirm is excluded too —
+	   belt and braces, because the two guards protect against different mistakes. */
+	:global(html[data-modal='buyBonus'] .ui-popup-standard-content-wrap:has(> .toggle-wrap)) {
+		flex-direction: column-reverse !important;
 	}
 
 	/* Headings pick up the ice rather than staying platform white. */
@@ -674,5 +735,119 @@
 	}
 	:global(html[data-modal^='buyBonus'] .close-button:hover) {
 		color: #d8f0ff !important;
+	}
+
+	/* ── THE CARDS THEMSELVES ─────────────────────────────────────────────────
+	   The platform-skin rules above already give every card its slate edge, ice
+	   hairline and corner studs, and those still apply here — this block only adds
+	   what the buy MENU needs and the pay table does not: a lit body, and a hover
+	   worth pointing at.
+
+	   Why a hover at all. This is the one screen where the player is choosing
+	   between three things that cost different amounts, and the three cards are
+	   otherwise identical furniture. Without a pointer state, nothing tells you
+	   which one you are about to spend 500x on until you have already clicked it.
+
+	   Three parts, in the order they are noticed:
+	     the LIFT    4px of translateY, so the card comes off the slab
+	     the GLOW    a cold halo, which is the only light in the modal that moves
+	     the SHEEN   a single pass of light across the ice, ::before because the
+	                 platform skin owns ::after for the studs
+
+	   Exact [data-modal='buyBonus'] and not ^=, so the confirm dialog — which
+	   renders the chosen card again, as a statement rather than a choice — keeps a
+	   still card. A card that lifts under the pointer there would read as clickable
+	   when it is not. */
+	:global(html[data-modal='buyBonus'] .bonus-card-wrap) {
+		position: relative;
+		overflow: hidden;
+		background:
+			radial-gradient(140% 60% at 50% -12%, rgba(143, 217, 255, 0.16) 0%, transparent 62%),
+			linear-gradient(168deg, #24323f 0%, #16202c 56%, #0e151f 100%) !important;
+		transition:
+			transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+			border-color 0.18s ease,
+			box-shadow 0.18s ease !important;
+	}
+
+	:global(html[data-modal='buyBonus'] .bonus-card-wrap:hover) {
+		transform: translateY(-4px);
+		border-color: #4d6c8c !important;
+		box-shadow:
+			inset 0 0 0 1px rgba(216, 240, 255, 0.95),
+			0 14px 30px rgba(0, 0, 0, 0.6),
+			0 0 26px rgba(143, 217, 255, 0.22) !important;
+	}
+
+	/* THE SHEEN. Parked off the left edge and swept across on hover. `left` rather
+	   than a transform because the band is skewed already and animating both on one
+	   element makes the skew wobble; the wrap's overflow:hidden clips it at the
+	   padding box either way.
+
+	   THE TRANSITION LIVES ON :hover ONLY, AND THAT IS THE WHOLE POINT.
+	   With it on the base rule, leaving a card animated `left` back from 115% to
+	   -60% — dragging the band across that card in REVERSE. Moving the pointer
+	   from one card to the next therefore lit two cards at once: the new one
+	   sweeping forward and the old one sweeping back. It read as a bug in the
+	   hover target, but every card was behaving correctly; the exit was simply
+	   also an animation.
+
+	   Declared here, the return has no transition and snaps to -60% instantly,
+	   which is off-card and invisible. Only the card under the pointer ever
+	   shows a moving band. */
+	:global(html[data-modal='buyBonus'] .bonus-card-wrap::before) {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: -60%;
+		width: 45%;
+		z-index: 2;
+		pointer-events: none;
+		transform: skewX(-18deg);
+		background: linear-gradient(
+			90deg,
+			transparent,
+			rgba(216, 240, 255, 0.16),
+			rgba(216, 240, 255, 0.03),
+			transparent
+		);
+	}
+
+	:global(html[data-modal='buyBonus'] .bonus-card-wrap:hover::before) {
+		left: 115%;
+		transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	/* The art pushes in slowly rather than popping, so the motif reads as sitting
+	   deeper in its frame instead of as a button state. */
+	:global(html[data-modal='buyBonus'] .bonus-card-wrap .cover) {
+		transition:
+			transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+			filter 0.3s ease;
+	}
+	:global(html[data-modal='buyBonus'] .bonus-card-wrap:hover .cover) {
+		transform: scale(1.06);
+		filter: saturate(1.08) brightness(1.06);
+	}
+
+	/* Copy sits above the sheen. Without this the band passes over the words and
+	   they flicker as it goes. */
+	:global(html[data-modal='buyBonus'] .bonus-card-wrap .info),
+	:global(html[data-modal='buyBonus'] .bonus-card-wrap .button) {
+		position: relative;
+		z-index: 3;
+	}
+
+	/* Anyone who has asked not to be moved keeps the colour and loses the motion.
+	   The sheen is motion and nothing else, so it goes entirely. */
+	@media (prefers-reduced-motion: reduce) {
+		:global(html[data-modal='buyBonus'] .bonus-card-wrap:hover),
+		:global(html[data-modal='buyBonus'] .bonus-card-wrap:hover .cover) {
+			transform: none;
+		}
+		:global(html[data-modal='buyBonus'] .bonus-card-wrap::before) {
+			display: none;
+		}
 	}
 </style>

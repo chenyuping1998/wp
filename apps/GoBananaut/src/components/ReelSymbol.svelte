@@ -2,8 +2,9 @@
 	import Symbol from './Symbol.svelte';
 	import SymbolWrap from './SymbolWrap.svelte';
 	import { getSymbolInfo, getSymbolX } from '../game/utils';
-	import { reelYOffset, BASE_ROWS } from '../game/constants';
-	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
+	import { reelYOffset, BASE_ROWS, unmarkSymbolName } from '../game/constants';
+	import { stateGame, stateGameDerived, type ReelSymbol } from '../game/stateGame.svelte';
+	import { MESH_WINS } from '../game/meshWin';
 	import type { SymbolState } from '../game/types';
 
 	type Props = {
@@ -54,7 +55,16 @@
 		L4: 0.7,
 		L5: 0.7,
 	};
-	const landingImpact = $derived(LANDING_IMPACT[props.reelSymbol.rawSymbol.name] ?? 0.9);
+	// The Scatter lands HARDER with every one the spin has shown — the tease
+	// builds with the sound, which already climbs a step per Scatter. The
+	// counter is bumped in the same pass that sets 'land', so it already includes
+	// this one: 1 -> 1.1, 2 -> 1.25, 3 -> 1.4, 4+ -> 1.6 (the mesh gate checks
+	// every landing up to 1.6). SymbolMeshWin reads it once, at mount.
+	const landingImpact = $derived(
+		props.reelSymbol.rawSymbol.name === 'S'
+			? Math.min(1.6, 0.95 + 0.15 * stateGameDerived.scatterLandIndex())
+			: (LANDING_IMPACT[unmarkSymbolName(props.reelSymbol.rawSymbol.name)] ?? 0.9),
+	);
 
 	// Built by a function so `forState` is a real argument — a plain value copied
 	// at call time — rather than a reference into the template's reactive scope.
@@ -68,6 +78,20 @@
 		if (forState === 'win') props.reelSymbol.oncomplete();
 		if (forState === 'land') props.reelSymbol.symbolState = 'static';
 	};
+
+	// A mesh win draws on the board's UNMASKED layer (BoardContext animate): its
+	// flash and light sweep are additive, and inside the reel mask additive light
+	// has nothing to add to; its pop may also leave the cell.
+	// this cell is the one doing its idle beat (IdleActors)
+	const isIdleActing = $derived(
+		(props.reelSymbol.symbolState === 'static' || props.reelSymbol.symbolState === 'postWinStatic') &&
+			stateGame.idleActor?.reel === props.reelIndex &&
+			stateGame.idleActor?.row === props.reelSymbol.symbolIndex,
+	);
+
+	const isMeshWin = $derived(
+		props.reelSymbol.symbolState === 'win' && unmarkSymbolName(props.reelSymbol.rawSymbol.name) in MESH_WINS,
+	);
 
 	const isHeldDuplicate = $derived(
 		props.reelSymbol.symbolState !== 'win' &&
@@ -98,8 +122,10 @@
 		y={props.reelSymbol.symbolY() + reelYOffset(rows)}
 		windowTop={reelYOffset(rows)}
 		windowRows={rows}
-		animating={symbolInfo.type === 'spine' &&
-			(props.reelSymbol.symbolState === 'land' || props.reelSymbol.symbolState === 'win')}
+		animating={(symbolInfo.type === 'spine' &&
+			(props.reelSymbol.symbolState === 'land' || props.reelSymbol.symbolState === 'win')) ||
+			isMeshWin ||
+			isIdleActing}
 	>
 		<Symbol
 			reelIndex={props.reelIndex}
@@ -107,6 +133,8 @@
 			rawSymbol={props.reelSymbol.rawSymbol}
 			{blur}
 			impact={landingImpact}
+			idleActing={isIdleActing}
+			winKind={stateGame.winKinds[`${props.reelIndex},${props.reelSymbol.symbolIndex}`]}
 			{oncomplete}
 		/>
 	</SymbolWrap>

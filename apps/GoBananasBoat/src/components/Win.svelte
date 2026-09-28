@@ -19,6 +19,7 @@
 	import WinCoins from './WinCoins.svelte';
 	import BigWinFx from './BigWinFx.svelte';
 	import FxBurst from './FxBurst.svelte';
+	import WinBannerLetters from './WinBannerLetters.svelte';
 	import GoldText from './GoldText.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
@@ -261,18 +262,26 @@
 									height={bh * 1.8}
 									alpha={bannerPose.glow}
 								/>
-								<Sprite key={bannerKey} anchor={0.5} width={bw} height={bh} />
-								<!-- additive self-copy = the whole plaque flares -->
-								{#if bannerPose.blink > 0}
-									<Sprite
-										key={bannerKey}
-										anchor={0.5}
-										width={bw}
-										height={bh}
-										blendMode="add"
-										alpha={bannerPose.blink}
-									/>
-								{/if}
+								<!-- the plaque WITHOUT its name: the name is WinBannerLetters' -->
+								<Sprite key={`${bannerKey}Plate`} anchor={0.5} width={bw} height={bh} />
+								<!-- additive self-copy = the whole plaque flares. Always mounted
+								     (alpha 0 between flares), so it stays under the letters. -->
+								<Sprite
+									key={`${bannerKey}Plate`}
+									anchor={0.5}
+									width={bw}
+									height={bh}
+									blendMode="add"
+									alpha={bannerPose.blink}
+								/>
+								<!-- the tier name, hopping; it lights with the flare too -->
+								<WinBannerLetters
+									{alias}
+									stripKey={`${bannerKey}Letters`}
+									width={bw}
+									height={bh}
+									blink={bannerPose.blink}
+								/>
 								<!-- twinkles running the riveted rim -->
 								{#each twinkles as tw (tw.id)}
 									{@const p = Math.min(1, (fxNow - tw.born) / 0.7)}

@@ -424,6 +424,14 @@ export const SYMBOL_INFO_MAP = {
 // under. Named once, here, so the two ends cannot drift.
 export const GROW_MARKER_SUFFIX = 'G';
 
+// The grow marker badge on a cell's top-left corner: growMarker.png is 236x256,
+// sized off the cell so it scales with SYMBOL_SIZE, at the fraction that was
+// checked against every symbol it can land on. Shared by Symbol.svelte (the
+// badge) and ReelGrow.svelte (the badge letting go), which must agree on where
+// it is or the launch would start somewhere the badge is not.
+export const GROW_MARKER_H = SYMBOL_SIZE * 0.42;
+export const GROW_MARKER_W = GROW_MARKER_H * (236 / 256);
+
 /** The ordinary symbol under a marked name; unmarked names pass through. */
 export const unmarkSymbolName = (name: string): keyof typeof SYMBOL_INFO_MAP => {
 	if (name.endsWith(GROW_MARKER_SUFFIX)) {

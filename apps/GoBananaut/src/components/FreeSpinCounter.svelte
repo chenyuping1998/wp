@@ -9,7 +9,7 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
-	import { Graphics, Sprite, Text } from 'pixi-svelte';
+	import { Container, Graphics, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBet } from 'state-shared';
 
@@ -17,6 +17,8 @@
 	import { SYMBOL_SIZE, HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 	import { gameText } from '../game/i18nText';
 	import GoldText from './GoldText.svelte';
+	import PlateMesh from './PlateMesh.svelte';
+	import { COUNTER_JELLY } from '../game/meshWin/plateJelly';
 
 	const context = getContext();
 
@@ -54,6 +56,11 @@
 	// `current` = spins USED + 1 (set by the updateFreeSpin handler); `total` = window size
 	let current = $state(1);
 	let total = $state(0);
+	// the plaque's face rings on every update (PlateMesh, plateJelly.ts): a tap
+	// for the count moving on, a real knock when spins are ADDED — a retrigger,
+	// or hold and spin's respins snapping back to full on a new coin
+	let hit = $state(0);
+	let hitAmp = $state(0.4);
 
 	const isSuperspin = $derived(stateBet.activeBetModeKey === HOLD_AND_SPIN_MODE_KEY);
 	// hold and spin: what matters is how many respins REMAIN
@@ -65,8 +72,12 @@
 		freeSpinCounterShow: () => (show = true),
 		freeSpinCounterHide: () => (show = false),
 		freeSpinCounterUpdate: (emitterEvent) => {
+			const before = Math.max(0, total - (current - 1));
 			if (emitterEvent.current !== undefined) current = emitterEvent.current;
 			if (emitterEvent.total !== undefined) total = emitterEvent.total;
+			const after = Math.max(0, total - (current - 1));
+			hitAmp = after > before ? 1 : 0.4;
+			hit += 1;
 		},
 	});
 
@@ -89,7 +100,9 @@
 
 <MainContainer>
 	<FadeContainer {show} {...position}>
-		<Sprite key="gbFsPanel" {...panelSizes} />
+		<Container>
+			<PlateMesh spec={COUNTER_JELLY} {...panelSizes} {hit} amp={hitAmp} />
+		</Container>
 
 		<!-- title on the upper plank area, auto-shrunk for long locales -->
 		<Text

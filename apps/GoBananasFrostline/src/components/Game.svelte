@@ -39,11 +39,25 @@
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
 	import FreeSpinOutro from './FreeSpinOutro.svelte';
 	import Transition from './Transition.svelte';
+	import SnowShed from './SnowShed.svelte';
+	import { frostQuake, quakeShake } from '../game/frostQuake.svelte';
 
 	const context = getContext();
 
+	// The scene's offset during the chest-beat quake (game/frostQuake). The
+	// background, the mascot and the board all move together and the bet bar does
+	// not: the world takes the hit, the controls stay where the hand is.
+	const sceneOffset = $derived.by(() =>
+		quakeShake(frostQuake.clock, context.stateLayoutDerived.canvasSizes().height),
+	);
+
 	// soft depth-of-field on the scene so the reels read as the subject
-	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
+	// 0.8, was 4 (2026-09-27): 4 smeared the painted plates — "why is the
+	// background always blurry, it cannot be as sharp as Deadwood". The range
+	// asked for is 0.6-1, picked per game by what sits beside the board:
+	// the brightest plates of the family (mean luminance 69) with hard ice
+	// edges beside the board; softened so pale ice does not compete with it.
+	const backgroundBlur = [new BlurFilter({ strength: 0.8, quality: 3 })];
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
 
@@ -60,16 +74,18 @@
 	<EnableGameActor />
 	<EnablePixiExtension />
 
-	<Container filters={backgroundBlur}>
-		<Background />
+	<Container x={sceneOffset.x} y={sceneOffset.y}>
+		<Container filters={backgroundBlur}>
+			<Background />
+		</Container>
+		<!-- corner vignette seats the blurred scene behind the board -->
+		<Sprite
+			key="fxVignette"
+			width={context.stateLayoutDerived.canvasSizes().width}
+			height={context.stateLayoutDerived.canvasSizes().height}
+			alpha={0.9}
+		/>
 	</Container>
-	<!-- corner vignette seats the blurred scene behind the board -->
-	<Sprite
-		key="fxVignette"
-		width={context.stateLayoutDerived.canvasSizes().width}
-		height={context.stateLayoutDerived.canvasSizes().height}
-		alpha={0.9}
-	/>
 
 	{#if context.stateLayout.showLoadingScreen}
 		<LoadingScreen onloaded={() => (context.stateLayout.showLoadingScreen = false)} />
@@ -82,24 +98,35 @@
 		-->
 		<Sound />
 
-		<MainContainer>
-			<!-- Before the frame, so if a narrow layout ever brings the two close
-			     the housing is the thing that stays in front. -->
-			<Mascot />
-			<BoardFrame />
-		</MainContainer>
+		<!-- same offset as the background above: the scene takes the quake as one -->
+		<Container x={sceneOffset.x} y={sceneOffset.y}>
+			<!-- snow coming down in the distance, BEHIND the mascot and the reels —
+			     the depth is what puts a ledge above them -->
+			<SnowShed layer="back" />
 
-		<MainContainer>
-			<Board />
-			<ReelDust />
-			<ExpandingWilds />
-			<StickyPrizes />
-			<Anticipations />
-			<ScatterBurst />
-			<WinLines />
-		</MainContainer>
+			<MainContainer>
+				<!-- Before the frame, so if a narrow layout ever brings the two close
+				     the housing is the thing that stays in front. -->
+				<Mascot />
+				<BoardFrame />
+			</MainContainer>
 
-		<EntryReveal />
+			<MainContainer>
+				<Board />
+				<ReelDust />
+				<ExpandingWilds />
+				<StickyPrizes />
+				<Anticipations />
+				<ScatterBurst />
+				<WinLines />
+			</MainContainer>
+
+			<!-- ...and in front: the clumps off the ledge, the bouncing graupel, the
+			     powder. Kept off the middle of the board by construction. -->
+			<SnowShed layer="front" />
+
+			<EntryReveal />
+		</Container>
 
 		<UI>
 			{#snippet gameName()}

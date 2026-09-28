@@ -2,8 +2,12 @@
 	import { onMount } from 'svelte';
 	import { Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import MeshWalker from './MeshWalker.svelte';
 
-	// One scarab rolling along one payline, left to right. Deliberately quiet:
+	// One scarab WALKING along one payline, left to right — H1's own beetle, all
+	// six legs, through its mesh (MeshWalker, h1Scarab.walk). It used to be a
+	// picture spun like a ball, which read as rolling, not as a beetle going
+	// somewhere. Deliberately quiet:
 	// no blast on arrival — the job is to draw the eye along the line so the
 	// player can read which symbols paid, not to put on a show.
 	type Point = { x: number; y: number };
@@ -129,9 +133,24 @@
 	// entry: drops in from the left of reel 1 and settles onto the start point
 	const entryOffset = $derived(t < entryMs ? -(1 - easeOutCubic(Math.max(0, t) / entryMs)) * size * 2.2 : 0);
 
-	// rolling: spin follows distance covered, so it never looks like it is
-	// sliding sideways
-	const rotation = $derived(travel * segments.total * 0.022);
+	// WALKING. It faces where it is going (the art faces up, hence +90deg), the
+	// gait's phase follows distance covered so the feet never skate, and how
+	// hard it strides follows its speed on the run's own profile — it picks up,
+	// scuttles, and slows into the last reel. Dropping in, its legs are splayed.
+	const heading = $derived.by(() => {
+		const a = poseAt(Math.max(0, travel - 0.01));
+		const b = poseAt(Math.min(1, travel + 0.01));
+		return Math.atan2(b.y - a.y, b.x - a.x) + Math.PI / 2;
+	});
+	const STRIDE = 0.45; // body sizes per gait cycle
+	const phase = $derived(((travel * segments.total) / (size * STRIDE)) * 2 * Math.PI);
+	const speedAt = (ms: number) => {
+		if (ms < entryMs || ms >= entryMs + travelMs) return 0;
+		const p = (ms - entryMs) / travelMs;
+		if (p < ACC) return p / ACC;
+		if (p <= 1 - DEC) return 1;
+		return 1 - (p - (1 - DEC)) / DEC;
+	};
 
 	// after arriving it fades out and leaves the finished line behind
 	const alpha = $derived.by(() => {
@@ -183,6 +202,9 @@
 		return Math.min(1, (t - arriveAt) / Math.max(1, settleMs));
 	});
 	const hop = $derived(arrival > 0 ? 1 + 0.4 * Math.sin(Math.PI * arrival) : 1);
+	// how hard it strides: its speed on the run's profile; splayed while it
+	// drops in, and a last few steps dying away as it arrives
+	const stride = $derived(t < 0 ? 0 : t < entryMs ? 0.6 : Math.max(speedAt(t), 0.25 * (1 - arrival)));
 </script>
 
 {#if t >= 0 && alpha > 0}
@@ -200,14 +222,15 @@
 		height={size * (1.2 + 1.6 * arrival)}
 		alpha={arrival > 0 ? 0.9 * (1 - arrival) : alpha * 0.5}
 	/>
-	<Sprite
-		key="gbScarab"
-		anchor={0.5}
+	<MeshWalker
+		symbolName="H1"
 		x={pose.x + entryOffset}
 		y={pose.y}
-		{rotation}
-		width={size * hop}
-		height={size * hop}
+		{size}
+		scale={hop}
+		rotation={heading}
+		{phase}
+		amount={stride}
 		{alpha}
 	/>
 {/if}

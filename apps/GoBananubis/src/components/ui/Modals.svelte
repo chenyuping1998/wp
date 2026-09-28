@@ -5,7 +5,9 @@
 	// which we override locally with WildParty-specific content.
 	import ModalError from 'components-ui-html/src/components/ModalError.svelte';
 	import ModalBetMenu from 'components-ui-html/src/components/ModalBetMenu.svelte';
-	import ModalBuyBonus from 'components-ui-html/src/components/ModalBuyBonus.svelte';
+	// the feature-buy menu is this game's own (Go Boomana's layout, the tomb's
+	// dress): scene, heroes, meter, price and button per card
+	import ModalBuyBonus from './ModalBuyBonus.svelte';
 	import ModalBuyBonusConfirm from 'components-ui-html/src/components/ModalBuyBonusConfirm.svelte';
 	import ModalAutoSpin from 'components-ui-html/src/components/ModalAutoSpin.svelte';
 	import ModalAutoSpinMessage from 'components-ui-html/src/components/ModalAutoSpinMessage.svelte';
@@ -787,8 +789,47 @@
 	}
 
 	:global(html[data-ui-skin='platform'][data-modal^='buyBonus'] .bonus-card-wrap .description) {
-		color: #e6d7b2 !important;
-		text-shadow: 0 0 5px rgba(0, 0, 0, 0.95) !important;
+		color: #f7ecc8 !important;
+		text-shadow:
+			0 1px 1px #000,
+			0 0 4px rgba(0, 0, 0, 1),
+			0 0 9px rgba(0, 0, 0, 0.9) !important;
+	}
+
+	/* ── LEGIBILITY OVER THE POSTER ART ───────────────────────────────────────
+	   The card art is now a poster — a miniature board on the left, a big prop on
+	   the right — and the copy runs straight across the top of it. A text shadow
+	   alone could not hold a small grey description against painted symbols, so
+	   each block of copy gets a dark backing plate of its own: the art stays
+	   visible around and between the lines, and every word sits on stone.
+
+	   Sized to the text (align-self: center, no fixed width), so a short line does
+	   not draw a full-width bar across the card. */
+	:global(html[data-ui-skin='platform'][data-modal^='buyBonus'] .bonus-card-wrap.has-cover .info) {
+		align-items: center !important;
+	}
+
+	:global(html[data-ui-skin='platform'][data-modal^='buyBonus'] .bonus-card-wrap.has-cover .description) {
+		background: rgba(8, 9, 11, 0.72) !important;
+		padding: 0.3em 0.7em !important;
+		border-radius: 0.5em !important;
+		border: 1px solid rgba(216, 163, 52, 0.28) !important;
+		font-weight: 600 !important;
+		line-height: 1.25 !important;
+	}
+
+	:global(html[data-ui-skin='platform'][data-modal^='buyBonus'] .bonus-card-wrap.has-cover .title),
+	:global(html[data-ui-skin='platform'][data-modal^='buyBonus'] .bonus-card-wrap.has-cover .price) {
+		background: rgba(8, 9, 11, 0.55) !important;
+		padding: 0.08em 0.6em !important;
+		border-radius: 0.45em !important;
+	}
+
+	:global(html[data-ui-skin='platform'][data-modal^='buyBonus'] .bonus-card-wrap.has-cover .title) {
+		text-shadow:
+			0 2px 0 #1c1206,
+			0 0 3px #000,
+			0 0 10px rgba(0, 0, 0, 1) !important;
 	}
 
 	/* the ×, and the confirm dialog's heading and text */

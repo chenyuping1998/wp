@@ -65,7 +65,12 @@
 	});
 
 	// soft depth-of-field on the jungle scene so the reels read as the subject
-	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
+	// 0.7, was 4 (2026-09-27): 4 smeared the painted plates — "why is the
+	// background always blurry, it cannot be as sharp as Deadwood". The range
+	// asked for is 0.6-1, picked per game by what sits beside the board:
+	// a dark hall behind the board, but the feature plate's orange door glow
+	// sits right behind it — a little more than the minimum.
+	const backgroundBlur = [new BlurFilter({ strength: 0.7, quality: 3 })];
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
 

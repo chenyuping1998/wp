@@ -35,7 +35,7 @@
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE } from '../game/constants';
+	import { SYMBOL_SIZE, cellToBoardUnits } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
@@ -60,10 +60,41 @@
 	// the flicker slows as it runs: first step this long, last one this long
 	const STEP_FAST = 48;
 	const STEP_SLOW = 165;
-	const HOLD_AFTER = 320;
+	// long enough for the direction cue below to play out on the last cell to land
+	const HOLD_AFTER = 560;
 	// Turbo keeps the shape at three quarters of the length rather than cutting
 	// the animation out.
 	const TURBO_SCALE = 0.7;
+
+	// ── WHICH WAY IT MOVED ───────────────────────────────────────────────────
+	//
+	// A re-roll can be good news or bad, and the wheel used to land both the same
+	// way: a knock and a new number. Five going to fifty and fifty going to two
+	// are opposite events, and the player should FEEL the difference before they
+	// read a digit — so the landing has a direction:
+	//
+	//   UP    gold chevrons lift off the cartouche (one for a small rise, three
+	//         for a jump), the figure rises into place and the rim flares; a
+	//         landing on 25X or 50X also throws a ring
+	//   DOWN  carnelian chevrons sink from it, the cartouche dims for a beat and
+	//         the figure settles down into place — brief, and no sound, so a
+	//         board of tablets that all drop does not sound like a fault
+	//   SAME  just the knock: it drew the value it already had
+	//
+	// It costs nothing in time: it plays inside the hold the roll already has.
+	const CUE_MS = 700;
+	const dirOf = (roll: Roll) => Math.sign(roll.to - roll.from);
+	const jumpOf = (roll: Roll) => {
+		const hi = Math.max(roll.to, roll.from);
+		const lo = Math.max(1, Math.min(roll.to, roll.from));
+		const ratio = hi / lo;
+		return ratio >= 6 ? 3 : ratio >= 2.5 ? 2 : 1;
+	};
+	// 0 → 1 across the cue, -1 before the landing
+	const cueOf = (roll: Roll) => {
+		if (!roll.landed) return -1;
+		return Math.min(1, Math.max(0, (now - roll.landedAt) / CUE_MS));
+	};
 
 	const rowCenterY = (row: number) => row * SYMBOL_SIZE - SYMBOL_SIZE / 2;
 	// where Symbol.svelte draws a held cell's badge, so the rolling figure sits
@@ -152,8 +183,12 @@
 		roll.landed = true;
 		roll.landedAt = Date.now();
 		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
+		// he watched it spin (Mascot: multiplierRoll); he answers what it gives
+		context.eventEmitter.broadcast({ type: 'mascotMultiplier', value: roll.to });
 		context.eventEmitter.broadcast({
 			type: 'boardFrameImpact',
+			// out from the tablet that just landed
+			from: cellToBoardUnits(roll.reel, roll.row),
 			// a 50X lands harder than a 2X — the only place the value itself is
 			// allowed to change the presentation
 			strength: 0.16 + 0.3 * Math.min(1, roll.to / 25),
@@ -235,7 +270,53 @@
 		for (const roll of rolls) {
 			const box = chipBox(roll);
 			drawMultiplierBadge(g, { ...box, lit: roll.landed, shadow: true });
+
+			const cue = cueOf(roll);
+			const dir = dirOf(roll);
+			if (cue >= 0 && cue < 1 && dir !== 0) {
+				const { x, y, width: w, height: h } = box;
+				if (dir < 0) {
+					// the stone goes dim for a beat
+					g.roundRect(x - w / 2, y - h / 2, w, h, h / 2).fill({ color: 0x0a0d18, alpha: 0.5 * (1 - cue) ** 1.5 });
+				}
+				const n = jumpOf(roll);
+				for (let k = 0; k < n; k++) {
+					const p = Math.min(1, Math.max(0, (cue - k * 0.14) / 0.72));
+					if (p <= 0) continue;
+					const travel = SYMBOL_SIZE * 0.4 * (1 - (1 - p) ** 2);
+					const cy = dir > 0 ? y - h / 2 - 3 - travel : y + h / 2 + 3 + travel;
+					const arm = dir > 0 ? 6 : -6;
+					g.moveTo(x - 10, cy + arm)
+						.lineTo(x, cy - arm * 0.7)
+						.lineTo(x + 10, cy + arm)
+						.stroke({
+							width: 4,
+							color: dir > 0 ? 0xffe08a : 0xe8643c,
+							alpha: 0.95 * (1 - p),
+							cap: 'round',
+							join: 'round',
+						});
+				}
+				// a rise into a big number is worth a ring
+				if (dir > 0 && roll.to >= 25) {
+					const p = cue;
+					g.roundRect(x - w / 2 - 12 * p, y - h / 2 - 12 * p, w + 24 * p, h + 24 * p, h / 2 + 12 * p).stroke({
+						width: 5 * (1 - p),
+						color: 0xfff3c4,
+						alpha: 0.8 * (1 - p),
+					});
+				}
+			}
 		}
+	};
+
+	// the figure comes to rest from the side it moved from: a rise lifts into
+	// place from below, a fall settles down into it from above
+	const cueLift = (roll: Roll) => {
+		const cue = cueOf(roll);
+		const dir = dirOf(roll);
+		if (cue < 0 || cue >= 1 || dir === 0) return 0;
+		return -dir * 5 * (1 - cue) ** 2 * Math.sin(cue * Math.PI * 0.5 + 0.4);
 	};
 
 	// how far through the current face's step we are, 0 → 1
@@ -262,7 +343,7 @@
 			{#each rolls as roll (`${roll.reel},${roll.row}`)}
 				<Container
 					x={getSymbolX(roll.reel)}
-					y={badgeY(roll.row)}
+					y={badgeY(roll.row) + cueLift(roll)}
 					scale={1 + 0.28 * punchOf(roll)}
 				>
 					<!-- the window the figures roll through: everything in this

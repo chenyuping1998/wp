@@ -31,6 +31,7 @@
 		slabAt,
 		clarifyAt,
 	} from '../game/frostTakeover';
+	import { ICE_BRIGHT, ICE_HIGHLIGHT } from '../game/palette';
 
 	// ── WHICH TAKEOVER RUNS ───────────────────────────────────────────────────
 	//
@@ -571,6 +572,16 @@
 		// flat cadence, so the sound tracks the front rather than running against
 		// it. The landed cell gets none: it is where the frost is coming from and
 		// it is already frosting as the beat opens.
+		// THE MONKEY STILL ROARS. When this takeover replaced v1 the hoot was moved
+		// inside the 'grow' branch, on the reasoning that a jungle whoop over a reel
+		// icing over was the wrong material. That went too far: the roar is not
+		// jungle dressing, it is the character announcing that HE has taken the reel,
+		// and without it the freeze is weather rather than an act.
+		//
+		// Fired at the top of beat 1 with the ice bed under it. The clip holds about
+		// 2s and the three beats total 2010ms (1150 + 560 + 300), so it covers the
+		// takeover almost exactly and does not need cutting off.
+		context.eventEmitter.broadcast({ type: 'soundMonkeyExpand' });
 		// the bed runs under the whole creep, so the beat has a floor rather than
 		// being four ticks in silence
 		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_ice_freeze' });
@@ -591,11 +602,32 @@
 		// is not rendered in this version.
 		entry.phase = 'merge';
 		entry.merge.set(1, { duration: FROST_TIMING.freezeMs });
-		// the crack, at the instant slabAt says the ice sets
+		// THE CRACK, at the instant slabAt says the ice sets. This is the beat the
+		// whole takeover is built around — everything before it is a slow creep and
+		// everything after is the panel arriving — so it gets the hardest hit in the
+		// game. It was previously landing softer than the transition wipe.
+		//
+		//   strength 1 -> 1.6   the transition wipe uses 1.4 and an ordinary reel
+		//                       stop uses 0.12, so this is now the biggest knock the
+		//                       housing takes, which is what it should be.
+		//   14 -> 3 x 14 shards A slab splitting is a LINE, not a point. One burst at
+		//                       the middle read as a puff; three up the reel's height,
+		//                       fired 30ms apart from the centre outwards, reads as
+		//                       the fracture running. The stagger is what sells it —
+		//                       three simultaneous bursts just look like one big one.
 		waitForTimeout(FROST_TIMING.freezeMs * CRACK_AT).then(() => {
 			context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_ice_crack' });
-			context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1 });
+			context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.6 });
 			spawnSparks(x, REEL_CENTER_Y, 14);
+			for (const [delay, dy] of [
+				[30, -BOARD_SIZES.height * 0.3],
+				[60, BOARD_SIZES.height * 0.3],
+			] as const) {
+				waitForTimeout(delay).then(() => {
+					if (entry.phase !== 'merge') return;
+					spawnSparks(x, REEL_CENTER_Y + dy, 14);
+				});
+			}
 		});
 		await waitForTimeout(FROST_TIMING.freezeMs);
 
@@ -989,10 +1021,13 @@
 					// geometry at all, so a locked reel had no breathing edge — the one
 					// thing telling the player it is still live for the rest of the
 					// feature. Inherited from Go Bananas 100, where it is still dead.
+					// Ice, not gold: the panel underneath is an ice pillar now. The multiplier
+					// badge and its surge stay gold on purpose — palette.ts rule 2, gold is
+					// money, and the multiplier is the one money figure on the reel.
 					g.roundRect(x - SYMBOL_SIZE / 2 - 3, -3, SYMBOL_SIZE + 6, BOARD_SIZES.height + 6, 16);
-					g.stroke({ width: 9, color: 0xffd75e, alpha: 0.08 + 0.1 * glow });
+					g.stroke({ width: 9, color: ICE_BRIGHT, alpha: 0.08 + 0.1 * glow });
 					g.roundRect(x - SYMBOL_SIZE / 2, 0, SYMBOL_SIZE, BOARD_SIZES.height, 14);
-					g.stroke({ width: 4, color: 0xffe98a, alpha: 0.16 + 0.18 * glow });
+					g.stroke({ width: 4, color: ICE_HIGHLIGHT, alpha: 0.16 + 0.18 * glow });
 				}}
 			/>
 		{/if}
@@ -1003,11 +1038,19 @@
 
 			INSET IS MEASURED FROM THE ART, and the art has already changed once. The
 			original wx card carried its gold frame ~14px in from the edge, so this was
-			drawn at 14/256. The delivered gen-2 panel puts its frame 1-3px from the
-			edge instead — measured by scanning inward for gold at seven heights — which
-			left the highlight tracing a rectangle of jungle background 6.5 screen px
-			INSIDE the frame. It lit up perfectly and looked like nothing had happened.
-			Re-measure if the panel art is replaced again.
+			drawn at 14/256. The gen-2 panel put its frame 1-3px from the edge instead,
+			which left the highlight tracing a rectangle of jungle background 6.5 screen
+			px INSIDE the frame. It lit up perfectly and looked like nothing happened.
+
+			IT MOVED AGAIN. The arctic panel (2026-09-14) carries a ~9px ice band
+			running x=6..15 of 256, so its centre line is 10/256 — measured by scanning
+			inward for the brightest pixel at eight heights, median 10 — and the same
+			profile says its corners are square, not the 14/256 radius this drew. Both
+			constants below are that measurement.
+
+			Wrong on two of the three panels this game has shipped, so: re-measure
+			whenever the panel art is replaced. It fails SILENTLY when it is wrong,
+			which is the worst way for it to fail.
 
 			Driven entirely by winFlash (a Tween, so always reactive and running its
 			full ~1.1s envelope) — see the winLinesShow handler for why the old winHold
@@ -1018,21 +1061,21 @@
 		{#if winGlow > 0.01}
 			{@const p = winPulse(wild.reel)}
 			{@const left = x - SYMBOL_SIZE / 2}
-			{@const inset = SYMBOL_SIZE * (3 / 256)}
+			{@const inset = SYMBOL_SIZE * (10 / 256)}
 			{@const fx0 = left + inset}
 			{@const fy0 = inset}
 			{@const fw = SYMBOL_SIZE - inset * 2}
 			{@const fh = BOARD_SIZES.height - inset * 2}
-			{@const rad = SYMBOL_SIZE * (14 / 256)}
+			{@const rad = SYMBOL_SIZE * (3 / 256)}
 			<Graphics
 				draw={(g: PixiGraphics) => {
 					g.clear();
 					// soft bloom hugging the frame, so the gold reads as glowing metal
 					g.roundRect(fx0, fy0, fw, fh, rad);
-					g.stroke({ width: 13, color: 0xffe050, alpha: winGlow * (0.3 + 0.18 * p) });
+					g.stroke({ width: 13, color: ICE_BRIGHT, alpha: winGlow * (0.3 + 0.18 * p) });
 					// the frame line itself, bright — this is what "lights up"
 					g.roundRect(fx0, fy0, fw, fh, rad);
-					g.stroke({ width: 5, color: 0xfff3bd, alpha: winGlow * (0.85 + 0.15 * p) });
+					g.stroke({ width: 5, color: ICE_HIGHLIGHT, alpha: winGlow * (0.85 + 0.15 * p) });
 					// crisp white highlight riding on top of the frame line
 					g.roundRect(fx0, fy0, fw, fh, rad);
 					g.stroke({ width: 2, color: 0xffffff, alpha: winGlow * (0.65 + 0.35 * p) });

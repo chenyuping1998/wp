@@ -21,7 +21,9 @@
 
 	const context = getContext();
 
-	// brass plaque left of the board (fs_counter_panel.png, 824×622)
+	// the ice-framed counter plate left of the board, snow on top and icicles
+	// under it (fs_counter_panel.png, drawn by design/generate_fs_counter_frost.mjs;
+	// the canvas keeps the old 824:622 ratio, so every fraction below still holds)
 	const PANEL_RATIO = 824 / 622;
 	const panelWidth = $derived(SYMBOL_SIZE * 2.1);
 	const panelSizes = $derived({ width: panelWidth, height: panelWidth / PANEL_RATIO });

@@ -13,6 +13,7 @@ import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEv
 import type { Position } from './types';
 import { BOARD_DIMENSIONS } from './constants';
 import config from './config';
+import { startFrostQuake } from './frostQuake.svelte';
 
 // The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
 // a value of 2 means three scatters are already on the board and a value of 3
@@ -41,8 +42,23 @@ import config from './config';
 // shared package (and every sibling app) untouched.
 const ANTICIPATION_MIN_SCATTERS = 3;
 
+// NO TEASE ON A BOUGHT FEATURE.
+//
+// A tease is a question — is the fourth scatter coming? On a buy the player has
+// already paid for the answer, so the slow reel is pure delay on the one screen
+// where they are spending fastest. Every buy in this game guarantees its feature
+// (bonus and superbonus force scatter_triggers, superspin has no scatters at
+// all), so there is never a bought spin where the question is open.
+//
+// Keyed off activeBetModeKey rather than gameType: this runs on the REVEAL, and
+// gameType has not become 'freegame' yet at that point — it is still whatever
+// the base spin was. BASE is the only mode that is not a buy.
+const isBoughtFeature = () => (stateBet.activeBetModeKey || 'BASE').toUpperCase() !== 'BASE';
+
 const gateAnticipation = (anticipation: number[]) =>
-	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
+	isBoughtFeature()
+		? anticipation.map(() => 0)
+		: anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));
 
 // A plain base-game board, sampled from the base padding strips. Used to put the
 // reels back after a superspin: that mode's board is full of P (coin) and X
@@ -229,16 +245,28 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// gold rings + sparks burst out of the scatters while the bell rings
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
 
-		// Four or more Scatters is the rare way in — three is the ordinary one — so
-		// that is where the mascot's biggest reaction goes. Counted here rather
-		// than in the component: the count is a property of this book event, and a
-		// component that had to go looking for it would be reaching across the game
-		// to find something it was never handed.
+		// The chest beat, and the arctic front answering it.
 		//
-		// It runs during the 3s bell hold, which is the only stretch of the trigger
-		// long enough to watch him do it.
+		// THE >= 4 GATE IS ALWAYS TRUE IN THIS GAME, and the comment that used to
+		// sit here said otherwise ("three is the ordinary way in"). That is Go
+		// Bananas 100's reasoning, inherited with the fork. Every distribution in
+		// this game's game_config.py forces scatter_triggers {4, 5} (or {5} for
+		// the super buy), so no trigger ever lands three: the gate never filters
+		// anything. It is left in place so that re-solving the maths with a
+		// three-scatter trigger keeps the gesture for the rarer way in — but
+		// nobody should "fix" it to 3 on the strength of the old comment.
+		//
+		// On each of the six strikes the scene jolts, snow sloughs off a ledge
+		// above the frame, graupel comes down and bounces, and powder hangs in
+		// the air (game/frostQuake, components/SnowShed). Trigger only — the
+		// big-win celebration does not bring the weather down, or it would wear
+		// out, which is Go Bananas Boat's rule for its harbour splash.
+		//
+		// It runs during the 3s bell hold, which is the only stretch of the
+		// trigger long enough to watch him do it; the chest beat is 2.68s and fits.
 		if (bookEvent.positions.length >= 4) {
 			eventEmitter.broadcast({ type: 'mascotChestBeat' });
+			startFrostQuake();
 		}
 		await waitForTimeout(3000);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
