@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "archetype": "miami_main_girl",
+  "size": [
+    1024,
+    2048
+  ],
+  "feet_y": 1822,
+  "top_y": 260,
+  "sides": "anatomical",
+  "mirrored": false,
+  "order": [
+    "body",
+    "head",
+    "arm_l",
+    "prop_bat",
+    "arm_r",
+    "dangle_ponytail",
+    "dangle_earring_l",
+    "dangle_earring_r",
+    "fingers_l"
+  ],
+  "joints": {
+    "head_top": [
+      482.804,
+      260.0
+    ],
+    "neck": [
+      472.098,
+      530.552
+    ],
+    "chest": [
+      510.054,
+      613.275
+    ],
+    "waist": [
+      509.08,
+      786.506
+    ],
+    "hips": [
+      525.625,
+      1035.647
+    ],
+    "shoulder_r": [
+      357.26,
+      585.052
+    ],
+    "elbow_r": [
+      305.294,
+      807.391
+    ],
+    "wrist_r": [
+      226.966,
+      1034.422
+    ],
+    "shoulder_l": [
+      605.428,
+      535.418
+    ],
+    "elbow_l": [
+      719.293,
+      694.051
+    ],
+    "wrist_l": [
+      750.436,
+      488.704
+    ]
+  },
+  "anchors": {
+    "prop_bat": [
+      747.517,
+      484.811
+    ],
+    "dangle_ponytail": [
+      410.786,
+      302.821
+    ],
+    "dangle_earring_r": [
+      420.518,
+      407.928
+    ],
+    "dangle_earring_l": [
+      513.946,
+      443.936
+    ]
+  },
+  "arms": {
+    "r": "hanging",
+    "l": "raised_prop"
+  },
+  "variants": [
+    "capo",
+    "don"
+  ],
+  "style": {
+    "kind": "render",
+    "source": "../../../ART_BRIEF.md",
+    "frames": [
+      "style_frame/h1.png",
+      "style_frame/h2.png",
+      "style_frame/w.png"
+    ]
+  },
+  "source": "full-concept-v1.png + source_generated",
+  "parents": {
+    "prop_bat": "fore_l",
+    "dangle_ponytail": "head",
+    "dangle_earring_l": "head",
+    "dangle_earring_r": "head"
+  },
+  "variant": "capo"
+}

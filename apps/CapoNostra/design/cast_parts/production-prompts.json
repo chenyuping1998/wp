@@ -1,0 +1,69 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-09-28",
+  "requests": {
+    "mg_body_args": {
+      "referenced_image_paths": [
+        "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/mg/full-concept-v1.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Production layer extraction / hidden-area completion for the supplied character. Output ONLY his torso + hips + both legs + shoes as ONE continuous transparent PNG layer, same original full 1:2 portrait canvas and exactly same pixel position, scale, perspective and costume. Remove BOTH entire arms including sleeves from shoulder outward, remove hands, remove head, hat, cigar and smoke. Retain entire charcoal pinstripe vest and jacket body, ivory scarf, collar, tie, watch chain, trousers and shoes. Reconstruct the hidden jacket torso sides and shoulder caps completely, so this looks like the same armless headless tailored suit body. No holes or transparent voids in torso. Neck hole may be covered by dark collar backing. Keep shoulder silhouette inside original torso, no arm stumps projecting. Do NOT recenter, zoom, crop or change visible cloth details. This is a separated animation body layer, not a new character. Original subdued warm overhead light, no neon, no text, genuine transparent background. No skin, face or arms. Match material texture of original exactly."
+    },
+    "fg_body_args": {
+      "referenced_image_paths": [
+        "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/fg/full-concept-v1.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Production body layer extraction with completion of hidden regions. Output ONLY this exact woman's torso/chest/shoulder caps + hips + whole burgundy velvet gown + shoes as ONE continuous transparent PNG layer. REMOVE head, neck above clavicle, hair, feather, earrings, BOTH entire arms from shoulder outward and BOTH hands/gloves, ALL microphone stand/shaft/base/metal objects. Keep shoulder caps, neckline, bare upper chest, collarbones, torso and complete flowing dress. Restore complete torso where arms previously covered it. The dress is intact, NO holes, NO arm stumps. Same design, same dark oxblood velvet folds, gold Art Deco neckline beads, pose, single warm overhead illumination. Preserve all original visible dress details and face-free shoulders, scale, position, original portrait 1:2 full canvas. Do not zoom or recenter. The top of this layer is collarbones, no head/face/neck. The continuous dress ends with original shoes and hem. Genuine transparent background. No text or scenery. This is a headless armless paper-doll torso for animation, not a full character."
+    },
+    "mg_head_args": {
+      "referenced_image_paths": [
+        "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/mg/full-concept-v1.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Extract ONLY the exact man's HEAD, including same black fedora, grey slicked hair, face, ears, double chin and full neck. Exact same face identity, camera angle, expression and lighting. REMOVE cigar and smoke, restore closed lips naturally. Remove ALL suit, shirt, tie, scarf, shoulders, arms and body. Continue neck below jaw to a natural flat bottom with 80 pixels of hidden underlap available. The neck connects to no clothing. Isolated head and neck on transparent background, centered, no text, no shadows, no graphic frame. Do not embellish. Warm single overhead light, low saturation, semi-realistic engraved details from original. We will register and scale this separate head into original animation canvas."
+    },
+    "fg_head_args": {
+      "referenced_image_paths": [
+        "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/fg/full-concept-v1.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Extract ONLY exact woman's HEAD and complete long neck as a separated animation layer, including the SAME black 1930s finger-wave bob and thin gold headband. Keep her recognizable face, asymmetrical knowing smirk, strong cheekbones, wine lipstick, add the specified tiny beauty mark at corner of mouth and subtle mature crow's feet for age forty. REMOVE feather entirely; REMOVE both earrings entirely and paint clean ears/hair/neck behind them. REMOVE ALL body, shoulders, dress, jewelry, gloves, microphone and stand. Bottom of layer is neck extending to just below collarbones to supply generous hidden underlap. No chest or breasts. True transparent background, no text. Same semi-realistic engraved game-illustration texture and single warm overhead light, subdued tones. Do not add accessories. Produce one large clean separate head and neck, no extra parts."
+    },
+    "fg_prop_args": {
+      "referenced_image_paths": [
+        "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/fg/full-concept-v1.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Create ONE isolated vintage 1930s straight microphone stand, a separate game character prop. Reference is for materials only. NO woman, no body parts, no hands, no clothing. TWO ENDPOINTS connected by ONE STRAIGHT metal pole. Endpoint A at LOWER LEFT: elegant oval gold 1930s microphone grille. Endpoint B at UPPER RIGHT: heavy black circular disk base with thin antique gold trim. A single continuous straight gunmetal pole runs between them at a 45-degree rising-right diagonal. All components on one geometrically straight axis, no bends, no side branches, no T joints, no bent goose-neck, no cables. Image shows full assembly from microphone tip to round base, perspective appropriate for carried over a shoulder. Black/gunmetal and small restrained gold accents, subdued warm overhead lamp, finely engraved semi-realistic illustration matching reference. Transparent background with large clear margins. The stand floats in isolation, not upright on a floor. Square canvas, object extending diagonally from lower left to upper right, mic and base similar visual size, pole at least 5x microphone length. NO letters, no logo."
+    },
+    "mg_arm_l_args": {
+      "referenced_image_paths": [
+        "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/mg/full-concept-v1.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Extract and complete ONE isolated arm only: this Don's anatomical LEFT arm (on viewer RIGHT of reference), from full rounded shoulder cap to all fingertips. Same charcoal subtly pinstriped wool sleeve, same bone-white shirt cuff, tiny gold cufflink, mature stocky relaxed EMPTY left hand. Hand back faces viewer with thumb toward viewer left. Arm hangs DOWN and slightly outward to viewer RIGHT, bent gently 15 degrees at elbow. Shoulder near upper-left, elbow near middle, hand lower-right. Keep entire shoulder cap rounded and fully painted including hidden 60px underlap, no straight cut across cap. Sleeve must have NO breast pocket, NO handkerchief, NO lapel, NO vest, NO scarf, NO piece of torso. One anatomically solid continuous sleeve arm from shoulder to fingertips, not separate forearm. Matte fabric, no hard pinstripe at elbow, same original warm overhead light and finely engraved semi-realistic texture. Transparent background with clean antialiasing, no cast shadow, no labels, nothing else. Portrait canvas."
+    },
+    "mg_arm_alpha_args": {
+      "referenced_image_paths": [
+        "/Users/stone/.codex/generated_images/01a0e3cd-1c0d-73f1-aeaf-6cd75fd13def/exec-3b2327da-a673-4271-ba3a-a1ac478b91e8.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Background extraction ONLY. Keep exact arm pixels, exact shape and position. Remove ALL black/brown backdrop, atmospheric glow, haze and light bloom surrounding the arm. Everything outside the fabric sleeve, cuff and hand must become fully transparent alpha zero, including between fingers. Crisp antialiased cutout of one solid opaque arm. NO glow, NO shadow, NO colored fringe. Do not redraw the hand or sleeve. Output isolated shoulder-to-fingers arm only on genuine RGBA transparency."
+    },
+    "fg_capo_args": {
+      "referenced_image_paths": [
+        "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/fg/full.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Lighting-only edit for CAPO tier of this exact game character. Preserve EVERY contour, pose, facial feature, fabric fold, jewelry, microphone stand, canvas framing, scale, placement and genuine transparent background. No new objects. No repainting face or changing geometry. Strengthen the same warm OVERHEAD key light moderately, bring out wine-red velvet lit folds with dark muted #5C2126, richer warm skin and subtle gold bead highlights, maintain deep burgundy shadows #3A1A1C. Do not make bright red, no signal red #C1272D, no neon. NO outline/rim light for this tier. No glow outside the silhouette. This is a color and lighting variant of the first image ONLY. Keep whole 1:2 portrait canvas including its existing large transparent margins, do not zoom."
+    },
+    "fg_don_args": {
+      "referenced_image_paths": [
+        "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/fg/full.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Lighting-only edit for DON highest tier of this exact game character. Preserve EVERY contour, pose, facial identity, fold, feather, jewelry, microphone stand and original framing including large clear margins. Exact same geometry. Rich warm overhead key illumination, deep dark oxblood #3A1A1C velvet, muted wine #5C2126 highlights. Add a refined thin GOLD rim light along existing character edges, especially shoulder, arm, hair, feather and dress contour. Golden edge light stays INSIDE character silhouette; no external glow or extra pixels outside. Small jewel highlights. Gold restrained under 12% of figure; no gold dress, no recolored costume, no neon, no signal red #C1272D. Keep body and props in original positions, do not zoom or recenter. Transparent RGBA background. Do not add labels or text. ONLY change lighting, not design."
+    }
+  }
+}

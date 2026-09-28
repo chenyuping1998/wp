@@ -2,12 +2,9 @@
   import { MainContainer } from "components-layout";
 
   import { getContext } from "../game/context";
-  import CastFigure, { CAST_NATIVE } from "./CastFigure.svelte";
-  import CastFigureMesh from "./CastFigureMesh.svelte";
+  import { CAST_NATIVE } from "../game/castLayout";
+  import CastFigureLayered from "./CastFigureLayered.svelte";
 
-  // Both figures use one continuous skinned mesh, so weighted joints bend
-  // without opening the seams that segmented Spine attachments produced.
-  const USE_MESH_CAST = true;
   import { stateGame } from "../game/stateGame.svelte";
 
   /**
@@ -66,9 +63,15 @@
   const toStandard = (xInGameBox: number) =>
     std.width * 0.5 + ((xInGameBox - box.width * 0.5) * box.scale) / std.scale;
 
-  // Capo Nostra uses one Don in every mode; mode is communicated by lighting
-  // and the room, never by swapping back to Miami's female cast member.
-  const who = $derived<"guy">("guy");
+  // Two figures, one per mode (the 2026-09-28 rule for every game): the Don in
+  // the base game, the nightclub hostess in the feature. Two different people,
+  // not the Don relit — his old guy_feature / guy_don grades are retired. The
+  // swap happens while the feature splash is up (this whole component is
+  // hidden then, see the {#if} below), so the player never sees one figure
+  // turn into the other.
+  const who = $derived<"don" | "hostess">(
+    stateGame.gameType === "freegame" ? "hostess" : "don",
+  );
 
   // mirrors BoardFrame's own constant
   const FRAME_SCALE = 1280 / 1110;
@@ -99,7 +102,9 @@
   const OVERLAP = 10;
   const BLEED = 1.12; // how far past the box edge the figure runs
   const width = $derived((std.width - (boardInkRight - OVERLAP)) * BLEED);
-  const height = $derived((width * CAST_NATIVE[who].h) / CAST_NATIVE[who].w);
+  // Both figures stand in the old Don's box; CastFigureLayered scales each one's
+  // own ink height into it, so the pair shares a feet line and head height.
+  const height = $derived((width * CAST_NATIVE.guy.h) / CAST_NATIVE.guy.w);
   // 0.11, not 0. In the reference the character's head sits BELOW the top of the
   // board, not level with it: the board stays the tallest thing on screen and
   // the figure reads as standing behind it rather than looming over it.
@@ -115,11 +120,6 @@
   // angle.
   const groundY = $derived(std.height);
 
-  // Grading them into the night street. See CastFigure's `grade` note for why
-  // this is a value problem before it is a colour one. The tint is a violet-grey
-  // multiply — the scene's own shadow colour, not neutral grey, which would just
-  // make them dull; the pool is the magenta the background's neon actually is.
-  const GRADE = { tint: 0xb9aa91, pool: 0xc9a227, poolAlpha: 0.08 };
 
   // ── when there is no band, there is no figure ─────────────────────────────
   //
@@ -140,20 +140,8 @@
 
 {#if !stateGame.featureSplashShow && hasSideBand}
   <MainContainer standard>
-    {#if USE_MESH_CAST}
-      {#key who}
-        <CastFigureMesh {who} {x} {topY} {height} {groundY} flip={who === "guy"} />
-      {/key}
-    {:else}
-      <CastFigure
-        {who}
-        {x}
-        {topY}
-        {height}
-        {groundY}
-        flip={who === "guy"}
-        grade={GRADE}
-      />
-    {/if}
+    {#key who}
+      <CastFigureLayered figure={who} {x} {topY} {height} {groundY} innerEdge={boardInkRight} />
+    {/key}
   </MainContainer>
 {/if}

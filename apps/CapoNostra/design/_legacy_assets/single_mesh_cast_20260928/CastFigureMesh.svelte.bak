@@ -55,6 +55,9 @@
     groundY: number;
     alpha?: number;
     flip?: boolean;
+    /** board ink's outer edge in the caller's container space; the figure's
+     *  ink (plus its motion margin) never crosses it */
+    innerEdge?: number;
   };
 
   const props: Props = $props();
@@ -97,6 +100,14 @@
   ).href;
   const rigUrl = $derived(props.who === "guy" ? guyRigUrl : girlRigUrl);
   let figure = $state<SkinnedFigure | null>(null);
+
+  // Daylight between the figure and the reel housing, in standard-box units,
+  // plus room for the idle sway / reaction swing (fraction of figure height).
+  // figure_box is the texture's alpha bbox (the mesh itself spans the whole
+  // canvas, so its bounds are useless here). The fixed trim below placed the box
+  // centre only, so on narrower screens the sleeve sat on the housing (「人物跟盤面重疊」, 2026-09-25).
+  const BOARD_GAP = 14;
+  const MOTION_MARGIN = 0.03;
   let seenReactionSeq = stateGame.castReaction.seq;
 
   onMount(() => {
@@ -195,6 +206,16 @@
       std.x +
       (props.x - MESH_TRIM_X - std.width * anchorX) * std.scale +
       direction * -contentCenterX * drawScale;
+    if (props.innerEdge !== undefined) {
+      const pad = MOTION_MARGIN * contentHeight;
+      const inner = Math.min(
+        direction * (x0 - pad),
+        direction * (x1 + pad),
+      ) * drawScale;
+      const leftLimit =
+        std.x + (props.innerEdge + BOARD_GAP - std.width * anchorX) * std.scale;
+      figure.view.x = Math.max(figure.view.x, leftLimit - inner);
+    }
     figure.view.y =
       std.y + (props.topY - std.height * anchorY) * std.scale - y0 * drawScale;
     figure.view.alpha = props.alpha ?? 1;

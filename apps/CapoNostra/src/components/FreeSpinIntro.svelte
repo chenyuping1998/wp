@@ -19,8 +19,8 @@
 	import { stateGame } from '../game/stateGame.svelte';
 	import { tierByBonusTier } from '../game/featureTiers';
 	import FeatureSplashPanel from './FeatureSplashPanel.svelte';
-	import { CAST_NATIVE } from './CastFigure.svelte';
-	import CastFigureMesh from './CastFigureMesh.svelte';
+	import { CAST_NATIVE } from '../game/castLayout';
+	import CastFigureLayered from './CastFigureLayered.svelte';
 	import { MainContainer } from 'components-layout';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation, { SIGN_DROP_MS } from './FreeSpinAnimation.svelte';
@@ -195,28 +195,21 @@
 		-->
 		<MainContainer>
 			<!--
-				The BOSS, from the mesh rig — not CastFigureSpine.
-
-				This card drew `who="girl"`: Hot Miami's woman, in a pink-and-cyan
-				dress, holding a neon toy ray gun. It is shown every time a player
-				enters the free game, which is the largest moment the game has, and
-				it had survived every pass because the splash is only reachable on a
-				feature trigger.
-				
-				Switching the same component to "guy" would not have helped — that
-				spine is Miami's man in a Hawaiian shirt with a baseball bat. Both
-				spine figures belong to the other game. The only Capo Nostra
-				character that exists is the mesh rig (meshRigs/cast_guy), which is
-				what stands beside the board, so the splash uses it too and the
-				player meets the same man in both places.
+				THE HOSTESS — the feature's own figure (2026-09-28: every game stands
+				one figure in MG and a different one in FG). This card is where the
+				player meets her; she is who stands beside the board for the rest of the
+				feature, graded by tier. It used to show the Don, because he was the only
+				Capo character; before that, Hot Miami's woman with a toy ray gun.
 			-->
-			<CastFigureMesh
-				who="guy"
+			<CastFigureLayered
+				figure="hostess"
+				clampScreen={false}
+				onTop
+				box="main"
 				x={castX}
 				topY={castTopY}
 				height={castHeight}
 				groundY={layout.height}
-				flip
 			/>
 
 			<Container x={layout.width * 0.5}>

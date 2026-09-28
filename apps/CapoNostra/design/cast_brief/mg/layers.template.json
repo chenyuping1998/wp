@@ -1,0 +1,92 @@
+{
+ "version": 1,
+ "archetype": "miami_boss",
+ "size": [
+  1024,
+  2048
+ ],
+ "feet_y": 1822,
+ "top_y": 224,
+ "sides": "anatomical",
+ "mirrored": false,
+ "order": [
+  "arm_l",
+  "body",
+  "head",
+  "prop_cigar",
+  "dangle_smoke",
+  "arm_r"
+ ],
+ "joints": {
+  "neck": [
+   485,
+   448
+  ],
+  "chest": [
+   510,
+   631
+  ],
+  "waist": [
+   513,
+   921
+  ],
+  "hips": [
+   512,
+   991
+  ],
+  "head_top": [
+   493,
+   224
+  ],
+  "shoulder_r": [
+   255,
+   455
+  ],
+  "elbow_r": [
+   192,
+   750
+  ],
+  "wrist_r": [
+   292,
+   1009
+  ],
+  "shoulder_l": [
+   678,
+   573
+  ],
+  "elbow_l": [
+   660,
+   805
+  ],
+  "wrist_l": [
+   715,
+   1046
+  ]
+ },
+ "anchors": {
+  "prop_cigar": [
+   489,
+   354
+  ],
+  "dangle_smoke": [
+   436,
+   373
+  ]
+ },
+ "arms": {
+  "r": "hanging",
+  "l": "hanging"
+ },
+ "variants": [
+  "base"
+ ],
+ "style": {
+  "kind": "render",
+  "source": "../../../ART_BRIEF.md",
+  "frames": [
+   "style_frame/h1.png",
+   "style_frame/h2.png",
+   "style_frame/w.png"
+  ]
+ }
+}

@@ -1,4 +1,7 @@
 """
+SUPERSEDED 2026-09-28: the Don was redrawn as layers; the opening card now uses
+intro_don_v4.png from design/build_cast_layers_runtime.py. Kept for history.
+
 The opening screen's Don, cut from the same drawing as the board's.
 
     python3 design/build_intro_boss.py [--report]

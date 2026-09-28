@@ -1,0 +1,26 @@
+{
+  "poses": 3784,
+  "flips": 0,
+  "minAreaRatio": 0.942,
+  "maxAreaRatio": 1.0551,
+  "worst": {
+    "shrink": "head tri 114",
+    "grow": "head tri 123"
+  },
+  "minInkMarginPx": 113.29,
+  "armBendPx": {
+    "arm_l": 0,
+    "arm_r": 0
+  },
+  "layers": [
+    "body",
+    "head",
+    "arm_l",
+    "prop_bat",
+    "arm_r",
+    "dangle_ponytail",
+    "dangle_earring_l",
+    "dangle_earring_r",
+    "fingers_l"
+  ]
+}

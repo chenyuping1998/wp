@@ -280,51 +280,189 @@
 	// Whole-symbol images, not parts: a pose changes the silhouette, which is the
 	// one thing the rigged stack cannot do.
 
-	// The cast standing beside the board. Split out of the store tile's two-figure
-	// cut-out by design/build_cast_figures.py, using the same measured polygon the
-	// intro card clips with. Not preloaded: they are decoration on a board that is
-	// already playable without them.
-	// Preloaded, unlike most decoration: the LOADING SCREEN draws them, so they
-	// have to be there before the thing that reports them being there. Two small
-	// PNGs (266x819 and 224x775) against a 32MB bundle.
-	hmCastGuy: {
+	// (2026-09-28) The flat cut-outs, the single-mesh Don and his graded states
+	// were retired for the layered MG/FG pair below. The old files sit in the
+	// design folder's legacy area, under single_mesh_cast_20260928.
+	// ── The layered cast (2026-09-28): MG = the Don, FG = the hostess. ──────────
+	// Every game stands one figure in MG and a different one in FG. Each layer is
+	// cropped to its ink by design/build_cast_layers_runtime.py; the crop is in the
+	// figure's layers.json. Keys are capoCast<Figure><Variant>_<layer>; the FG tier
+	// variants (capo, don) share the base hostess's geometry and alpha. All
+	// preloaded: the hostess is swapped in under the feature intro, the loudest beat
+	// in the game, and a texture that arrives a frame late there is a visible pop.
+	capoCastDon_head: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/capoCast/guy_spine.png', import.meta.url).href,
+		src: new URL('../../assets/castLayers/don/head.png', import.meta.url).href,
 		preload: true,
 	},
-	hmCastGuyMesh: {
+	capoCastDon_arm_l: {
 		type: 'sprite',
-		src: new URL('../../assets/meshRigs/cast_guy/guy.png', import.meta.url).href,
+		src: new URL('../../assets/castLayers/don/arm_l.png', import.meta.url).href,
 		preload: true,
 	},
-	// The same drawing, graded — design/build_cast_guy_states.py derives both
-	// from guy.png and touches RGB only, so all three share ONE mesh rig and one
-	// set of measured joint limits. See that script for why they are not drawn
-	// separately.
-	//
-	// Preloaded, both of them, although neither is used until a feature opens.
-	// They are swapped in at the exact moment the feature starts, which is the
-	// loudest beat in the game; a texture that arrives a frame late there is a
-	// pop on the one screen nobody will miss. ~250 KB each is a cheap price for
-	// that not being possible.
-	hmCastGuyMeshFeature: {
+	capoCastDon_body: {
 		type: 'sprite',
-		src: new URL('../../assets/meshRigs/cast_guy/guy_feature.png', import.meta.url).href,
+		src: new URL('../../assets/castLayers/don/body.png', import.meta.url).href,
 		preload: true,
 	},
-	hmCastGuyMeshDon: {
+	capoCastDon_arm_r: {
 		type: 'sprite',
-		src: new URL('../../assets/meshRigs/cast_guy/guy_don.png', import.meta.url).href,
+		src: new URL('../../assets/castLayers/don/arm_r.png', import.meta.url).href,
 		preload: true,
 	},
-	hmCastGirlMesh: {
+	capoCastDon_prop_cigar: {
 		type: 'sprite',
-		src: new URL('../../assets/meshRigs/cast_girl/girl.png', import.meta.url).href,
+		src: new URL('../../assets/castLayers/don/prop_cigar.png', import.meta.url).href,
 		preload: true,
 	},
-	hmCastGirl: {
+	capoCastDon_dangle_smoke: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/capoCast/girl_spine.png', import.meta.url).href,
+		src: new URL('../../assets/castLayers/don/dangle_smoke.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastDon_full: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/don/full.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostess_body: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/body.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostess_head: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/head.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostess_arm_l: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/arm_l.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostess_prop_bat: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/prop_bat.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostess_arm_r: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/arm_r.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostess_dangle_ponytail: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/dangle_ponytail.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostess_dangle_earring_l: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/dangle_earring_l.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostess_dangle_earring_r: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/dangle_earring_r.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostess_fingers_l: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/fingers_l.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessCapo_body: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/capo/body.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessCapo_head: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/capo/head.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessCapo_arm_l: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/capo/arm_l.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessCapo_prop_bat: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/capo/prop_bat.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessCapo_arm_r: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/capo/arm_r.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessCapo_dangle_ponytail: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/capo/dangle_ponytail.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessCapo_dangle_earring_l: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/capo/dangle_earring_l.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessCapo_dangle_earring_r: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/capo/dangle_earring_r.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessCapo_fingers_l: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/capo/fingers_l.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessDon_body: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/don/body.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessDon_head: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/don/head.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessDon_arm_l: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/don/arm_l.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessDon_prop_bat: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/don/prop_bat.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessDon_arm_r: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/don/arm_r.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessDon_dangle_ponytail: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/don/dangle_ponytail.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessDon_dangle_earring_l: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/don/dangle_earring_l.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessDon_dangle_earring_r: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/don/dangle_earring_r.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostessDon_fingers_l: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/don/fingers_l.png', import.meta.url).href,
+		preload: true,
+	},
+	capoCastHostess_full: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/hostess/full.png', import.meta.url).href,
 		preload: true,
 	},
 

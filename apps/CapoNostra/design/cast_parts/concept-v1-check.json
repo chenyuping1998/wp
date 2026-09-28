@@ -1,0 +1,36 @@
+{
+  "mg": {
+    "file": "wp/apps/CapoNostra/design/cast_parts/mg/full-concept-v1.png",
+    "size": [
+      887,
+      1774
+    ],
+    "mode": "RGBA",
+    "alpha_bounds": [
+      41,
+      110,
+      859,
+      1758
+    ],
+    "transparent_pixels": 928519,
+    "semi_transparent_pixels": 643953,
+    "opaque_pixels": 1066
+  },
+  "fg": {
+    "file": "wp/apps/CapoNostra/design/cast_parts/fg/full-concept-v1.png",
+    "size": [
+      887,
+      1774
+    ],
+    "mode": "RGBA",
+    "alpha_bounds": [
+      0,
+      33,
+      873,
+      1742
+    ],
+    "transparent_pixels": 957233,
+    "semi_transparent_pixels": 615063,
+    "opaque_pixels": 1242
+  }
+}

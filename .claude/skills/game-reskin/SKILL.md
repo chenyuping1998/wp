@@ -218,13 +218,34 @@ specific failure).
 
 Two requirements that are easy to state and easy to drop by the last art pass:
 
-- **One clear identity per role, matching the new theme's own logic** — Capo
-  Nostra went from Hot Miami's two-figure cast (a man and a woman marking base
-  vs. feature) to one suited boss throughout, because the theme's logic didn't
-  support a second figure the way Miami's did. Don't carry over the source
-  game's cast COUNT or COMPOSITION by default; derive it from the new theme.
+- **Two characters, always: one for MG (the base game), one for FG (free
+  spins).** This is the user's standing rule (2026-09-28) for every game from
+  now on, and it replaces the old "derive the cast count from the theme" advice
+  that took Capo Nostra down to one boss in every mode. Capo is being brought
+  back to two for that reason.
+  - **Two different people**, not one person relit. Capo's `guy_feature.png`
+    and `guy_don.png` are the Don with warmer or gold rim light. That is a
+    lighting variant of the MG figure, and it does not count as the FG
+    character. Lighting variants per FG tier can still sit on top of the FG
+    figure.
+  - **The swap is the mode change.** MG figure in the base game, FG figure
+    from the FG intro until the FG outro closes, then back. Swap under the
+    transition, never mid-spin and never on a win, and do not show both at
+    once on the board.
+  - **The pair reads as a pair**: same §0 style, light direction and scale
+    (feet on the same line, heads within about 5% of each other), and a
+    contrast the player sees at a glance, such as build, gender, age or one
+    colour (Hot Miami: a man in MG, a woman in FG). Their roles come from the
+    new theme, never copied from the source game.
+  - **Neither is a pay-symbol portrait** (standing the H1 art beside a board
+    that shows H1 reads as a bug; see Capo's `Cast.svelte` note). The store
+    tile still shows one character (`review-findings.md`).
+  - **Both go through the archetype flow below**, one brief each, and each
+    may take a different archetype. Each figure is rigged and gated on its
+    own; they can share the game's motion table only if both pass its gates.
 - **A moving character is not optional — and the user chooses its pose.**
-  In this step, run `hacksaw-character-motion`'s archetype flow: show
+  In this step, run `hacksaw-character-motion`'s archetype flow once for the
+  MG figure and once for the FG figure: show
   `gallery/overview.gif`, ask which archetype (AskUserQuestion, two questions:
   hanging arms / carrying a prop / arms crossed, then which one), then
   `python archetype/brief.py -c N --game <Name> --out design/cast_brief/

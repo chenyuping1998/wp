@@ -1,0 +1,65 @@
+{
+  "canvas": [
+    1024,
+    2048
+  ],
+  "order": [
+    "head",
+    "arm_l",
+    "body",
+    "arm_r",
+    "prop_cigar",
+    "dangle_smoke"
+  ],
+  "spec": "delivery spec",
+  "composite": "pixel-exact",
+  "psd": "layers match PNGs",
+  "body_holes": 0,
+  "arms": {
+    "arm_l": {
+      "shoulder_overlap_px": 117,
+      "kind": "hanging",
+      "forearm_clearance_px": 55.01
+    },
+    "arm_r": {
+      "shoulder_overlap_px": 63,
+      "kind": "hanging",
+      "forearm_clearance_px": 52.95
+    }
+  },
+  "neck_overlap_px": 80,
+  "figure_box": [
+    73,
+    224,
+    964,
+    1823
+  ],
+  "margin_px": 60,
+  "edges": {
+    "head": {
+      "contour_soft": 0.999,
+      "colours": 37543
+    },
+    "arm_l": {
+      "contour_soft": 0.998,
+      "colours": 17574
+    },
+    "body": {
+      "contour_soft": 1.0,
+      "colours": 45474
+    },
+    "arm_r": {
+      "contour_soft": 1.0,
+      "colours": 18531
+    },
+    "prop_cigar": {
+      "contour_soft": 1.0,
+      "colours": 1710
+    },
+    "dangle_smoke": {
+      "contour_soft": 1.0,
+      "colours": 2690
+    }
+  },
+  "variants": []
+}

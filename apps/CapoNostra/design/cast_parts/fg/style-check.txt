@@ -1,0 +1,4 @@
+wp/apps/CapoNostra/design/cast_parts/fg/full.png: colors95=97 soft=55.9% accentC9A227=0.0% chroma=20.0 PASS
+wp/apps/CapoNostra/design/cast_parts/fg/capo/full.png: colors95=106 soft=53.5% accentC9A227=0.0% chroma=25.1 PASS
+wp/apps/CapoNostra/design/cast_parts/fg/don/full.png: colors95=127 soft=52.0% accentC9A227=0.1% chroma=24.2 PASS
+sheet: wp/apps/CapoNostra/design/cast_parts/review/style-scale-check.png

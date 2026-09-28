@@ -101,6 +101,12 @@ export type ReactionTier = {
    * lights the man up would be louder than the win.
    */
   glow?: number;
+  /** Per-bone squash and stretch at the peak, [along the bone, across it],
+   *  times k. Arms only, and ACROSS rather than along — see ARM_BULGE. */
+  scale?: { k: number; shape: Record<string, [along: number, across: number]> };
+  /** A shake on the bulge while the pose holds (the reference's biceps
+   *  trembling 1.40 <-> 1.52 every 2 frames). */
+  flutter?: { depth: number; periodMs: number };
 };
 
 export const DEG = Math.PI / 180;
@@ -134,141 +140,24 @@ export const IDLE: Record<string, MotionSpec> = {
   fore_l: [0.66, 300, 1800, 0.3],
   arm_r: [0.825, 180, 1500, 0.4],
   fore_r: [0.605, 360, 1550, 0.3],
+  // The layered MG / FG figures' free-hanging pieces (2026-09-28). They carry
+  // the idle's visible life, the way Miami's ponytail and earrings do; the
+  // archetype measurements are 13° smoke, 15° ponytail, 8–12° earrings, taken
+  // here at roughly a third so a standing figure does not look windblown.
+  // Bone names are unique to those figures, so the old single-mesh rig never
+  // reads these rows.
+  dangle_smoke: [4.5, 0, 3300, 0.2],
+  dangle_ponytail: [5.0, 260, 1700, 0.3],
+  dangle_earring_l: [3.5, 120, 1300, 0.2],
+  dangle_earring_r: [4.0, 200, 1450, 0.2],
 };
 
-/* WHY THESE REACTION NUMBERS ARE THE SIZE THEY ARE — Hot Miami's own reasoning,
- * kept because it is the reasoning that produced the tables:
- *
- * The tables this game shipped before peaked at 0.41deg on a line win. On a
- * figure drawn ~400px tall that moves an extremity under 3px across the whole
- * beat: the reaction was, measurably, invisible.
- *
- * The ceiling is measured rather than guessed, by rotating one joint at a time
- * and rendering the mesh. What breaks, and when, on a figure drawn like this one:
- *
- *     shoulder (arm_*)   clean to ~10 deg, visibly tearing by 15-30
- *     elbow (fore_*)     clean to ~15 deg, the hand goes to a blade by 30-45
- *     chest / waist      clean to ~20-25 deg
- *     neck / head        clean past 60 deg
- *
- * The limit is each joint's OWN local angle, not the total the chain adds up to:
- * an accumulated rotation carries the parts below it rigidly, and rigid costs
- * nothing. So the amplitude is spread down the chain, and every entry sits well
- * inside its own joint's measured budget while the figure as a whole moves many
- * times further than it used to.
- *
- * ⚠ THIS FIGURE'S OWN LIMITS ARE TIGHTER THAN THE LIST ABOVE and they are what
- * the gate enforces: the Don's shoulders were measured at 4.5 / 7deg, not 10,
- * because his arms hang against his body. That is why MOTION_SCALE exists and
- * why it is 0.36. See check_cast_motion JOINT_LIMIT_DEG.
- */
-
-// The feature trigger: the top of the ladder, and the rarest, so it is allowed
-// to be the biggest thing the figure does.
-export const TRIGGER_REACTION: ReactionTier = {
-  durationMs: 1250,
-  snap: SNAP,
-  hold: HOLD,
-  rise: 0.045,
-  stretch: 0.025,
-  glow: 0.34,
-  bones: {
-    hips: [1.6, 0],
-    waist: [2.5, 40],
-    chest: [3.5, 80],
-    neck: [4.7, 130],
-    head: [6.4, 180],
-    arm_l: [7.5, 110],
-    fore_l: [12.5, 190],
-    arm_r: [-3.8, 110],
-    fore_r: [-7.5, 190],
-  },
-};
-
-// A win worth making a fuss about (see BIG_WIN at the call site). Reads clearly
-// from across the screen without matching the trigger.
-export const WIN_BIG_REACTION: ReactionTier = {
-  durationMs: 1100,
-  snap: SNAP,
-  hold: HOLD,
-  rise: 0.035,
-  stretch: 0.02,
-  bones: {
-    hips: [1.3, 0],
-    waist: [2.0, 40],
-    chest: [2.8, 80],
-    neck: [3.8, 130],
-    head: [5.1, 180],
-    arm_l: [6.0, 110],
-    fore_l: [10.0, 190],
-    arm_r: [-3.0, 110],
-    fore_r: [-6.0, 190],
-  },
-};
-
-// An ordinary line win. This is the common case by a wide margin, so it stays a
-// nod rather than a celebration. It is still an order of magnitude larger than
-// what shipped before, because what shipped before could not be seen at all.
-export const WIN_REACTION: ReactionTier = {
-  durationMs: 950,
-  snap: SNAP,
-  hold: HOLD,
-  rise: 0.015,
-  stretch: 0.01,
-  bones: {
-    hips: [0.6, 0],
-    waist: [0.9, 40],
-    chest: [1.3, 80],
-    neck: [1.8, 130],
-    head: [2.4, 180],
-    arm_l: [3.0, 110],
-    fore_l: [5.0, 190],
-    arm_r: [-1.5, 110],
-    fore_r: [-3.0, 190],
-  },
-};
-
-/** How much of the tables the artwork actually takes.
- *
- * NOT a taste dial — it is a property of THIS DRAWING, and it was measured, not
- * chosen. Hot Miami's man runs at 0.36; the Don needs half that, and the reason
- * is worth reading before anyone raises it.
- *
- * The binding constraint is not a joint angle. Every joint above is inside its
- * measured limit at 0.36 (the worst is the left shoulder at 4.07 against 4.5).
- * What fails is check_cast_motion rule 10, which poses the actual mesh and
- * watches every triangle's area: the LEFT FOREARM folds. Swept against the gate,
- * trigger fold (floor 50%, and 0 flips at every setting):
- *
- *     MOTION_SCALE   trigger fold   winBig fold
- *        0.36           37%            47%     <- fails
- *        0.30           45%            53%     <- fails
- *        0.26           51%            58%     <- passes by one point
- *        0.22           56%            62%
- *        0.18           62%            66%     <- shipped, 12 points of margin
- *
- * The fold is always at the same vertex, (85, 529), and it is a WEIGHT CLIFF:
- * the two grid columns either side of it carry fore_l at 0.17 and 0.83, a 0.66
- * jump across one 32px cell. The usual fix is more lattice smoothing in
- * design/build_cast_guy_rig.py, and it is NOT available here — that script's own
- * sweep shows smooth=2 drops the cigar arm's upper-arm ownership to 0.42, under
- * the 0.5 floor rule 11 enforces. The script says why, and it is the drawing:
- * a cell is 32px and each of the Don's arms is 40-50px wide, so an arm is ONE
- * lattice column with no interior to keep rigid while the rim softens.
- *
- * ⚠ THE REAL UNLOCK IS THE ART, and it is already written down in ART_BRIEF.md
- * §1: the Don is drawn with his arms against his body. Draw him with daylight
- * under the arms and there is mesh across the joint to absorb the bend — the
- * limits go up, the cliff softens, and this number can go back toward Hot
- * Miami's 0.36. Until then, raising it past 0.26 ships a creased sleeve.
- *
- * If a second figure is ever stood beside this board it needs its own entry here
- * AND its own row in check_cast_motion's JOINT_LIMIT_DEG, measured the same way.
- * Adding one without the other is exactly how a shipped build with a broken hand
- * happened on the other game. */
-export const MOTION_SCALE: Record<"guy", number> = {
-  guy: 0.18,
-};
+/* (2026-09-28) The single-mesh Don's reaction ladder (TRIGGER / WIN_BIG / WIN,
+ * TIERS) and its MOTION_SCALE were retired with that figure. The layered MG / FG
+ * figures carry their own tables in layeredCastMotion.ts, built from the same
+ * Hot Miami ladder; the old tables and their measurement history are in the
+ * design folder's legacy area (single_mesh_cast_20260928/). What stays here is
+ * shared by both figures: the idle, the envelope and the posing / skinning. */
 
 /** MOTION_SCALE exists to stop a JOINT from folding the mesh. `rise` and
  * `stretch` do not bend a joint: they translate and scale the ROOT, so the whole
@@ -290,11 +179,6 @@ export const BODY_SCALE = 1;
 
 export type CastReactionKind = "win" | "winBig" | "trigger";
 
-export const TIERS: Record<CastReactionKind, ReactionTier> = {
-  win: WIN_REACTION,
-  winBig: WIN_BIG_REACTION,
-  trigger: TRIGGER_REACTION,
-};
 
 export function wave(value: number) {
   const u = value - Math.floor(value);
@@ -353,10 +237,9 @@ export type Bone = {
   x: number;
   y: number;
   parent: number;
-  /** Unit vector along the bone. Written by design/build_cast_guy_rig.py and
-   *  kept in the rig files, but NOTHING reads it since squash and stretch was
-   *  removed on 2026-09-20 — it was the only consumer. Left on the type so the
-   *  existing rig JSON still parses. */
+  /** Unit vector along the bone. Written by design/build_cast_guy_rig.py; the
+   *  arm bulge reads it (boneAxes), because a folded forearm's direction cannot
+   *  be derived from its children. */
   axis?: [number, number];
 };
 
@@ -394,15 +277,50 @@ export function bodyEnvelope(state: PoseState) {
   );
 }
 
+const axesCache = new WeakMap<MeshRig, Float64Array>();
+/** Each bone's unit direction — `axis` from the rig when given, else toward its
+ *  first child, else away from its parent. Only the bulge reads it. */
+export function boneAxes(rig: MeshRig) {
+  const cached = axesCache.get(rig);
+  if (cached) return cached;
+  const firstChild = new Map<number, number>();
+  rig.bones.forEach((bone, index) => {
+    if (bone.parent >= 0 && !firstChild.has(bone.parent)) firstChild.set(bone.parent, index);
+  });
+  const axes = new Float64Array(rig.bones.length * 2);
+  rig.bones.forEach((bone, index) => {
+    let dx = 0;
+    let dy = -1;
+    const child = firstChild.get(index);
+    if (bone.axis) {
+      [dx, dy] = bone.axis;
+    } else if (child !== undefined) {
+      dx = rig.bones[child].x - bone.x;
+      dy = rig.bones[child].y - bone.y;
+    } else if (bone.parent >= 0) {
+      dx = bone.x - rig.bones[bone.parent].x;
+      dy = bone.y - rig.bones[bone.parent].y;
+    }
+    const length = Math.hypot(dx, dy);
+    axes[index * 2] = length > 1e-9 ? dx / length : 0;
+    axes[index * 2 + 1] = length > 1e-9 ? dy / length : -1;
+  });
+  axesCache.set(rig, axes);
+  return axes;
+}
+
+// Scratch for callers that do not keep their own `chain` (the gates).
+const chainCache = new WeakMap<MeshRig, Float32Array[]>();
+
 /**
  * Compose every bone's world matrix into `out` — one Float32Array(6) per bone,
  * allocated by the caller so the per-frame path allocates nothing. Returns the
  * body envelope, which the renderer also needs for the glow.
  *
- * Rotation and translation only. There used to be a second matrix per bone here
- * (`chain`) because the squash-and-stretch channel had to reach the bone's own
- * vertices without passing to its children. That channel went on 2026-09-20 with
- * the rest of the transcription, so one matrix per bone is all there is again.
+ * Two matrices per bone again since 2026-09-24: `out` is what the bone's own
+ * vertices are skinned with, `chain` is what its children compose against —
+ * rotation and translation only — so an arm's bulge reaches the arm and is not
+ * inherited by the forearm below it.
  *
  * The posing lives in THIS module rather than in skinnedFigure.ts so that
  * design/check_cast_motion.mjs can run it under bare node and measure the real
@@ -413,11 +331,21 @@ export function composeBoneMatrices(
   rig: MeshRig,
   state: PoseState,
   out: Float32Array[],
+  chain?: Float32Array[],
 ) {
+  if (!chain) {
+    chain = chainCache.get(rig);
+    if (!chain) {
+      chain = rig.bones.map(() => new Float32Array(6));
+      chainCache.set(rig, chain);
+    }
+  }
   const { tier, reactionAge, durationMs, speed, motionScale, timeMs } = state;
   const bodyReaction = bodyEnvelope(state);
   const [boxY0, boxY1] = [rig.figure_box[1], rig.figure_box[3]];
   const figureHeight = boxY1 - boxY0;
+  const shape = tier.scale?.shape;
+  const axes = shape ? boneAxes(rig) : null;
 
   for (let index = 0; index < rig.bones.length; index += 1) {
     const bone = rig.bones[index];
@@ -461,17 +389,67 @@ export function composeBoneMatrices(
       bone.y - d * bone.x - e * bone.y + offsetY,
     ];
 
+    // The bulge, on the same lagged envelope as this bone's rotation so it
+    // arrives with the swing. Applied to this bone's own skin matrix only.
+    let skin = local;
+    const shapeEntry = shape?.[bone.name];
+    if (shapeEntry && axes && reactionAge !== null) {
+      const lagMs = spec ? spec[1] : 0;
+      const u = (reactionAge - lagMs / speed) / durationMs;
+      const envelope = reactionEnvelope(u, tier.snap, tier.hold);
+      if (envelope > 0) {
+        const k = tier.scale?.k ?? 0;
+        let wobble = 0;
+        const flutter = tier.flutter;
+        if (flutter && u >= tier.snap && u <= tier.hold) {
+          wobble = flutter.depth * Math.sin((reactionAge / (flutter.periodMs / speed)) * Math.PI * 2);
+        }
+        const along = 1 + (shapeEntry[0] - 1) * envelope * k * (1 + wobble);
+        const across = 1 + (shapeEntry[1] - 1) * envelope * k * (1 + wobble);
+        const ux = axes[index * 2];
+        const uy = axes[index * 2 + 1];
+        // A · diag(along, across) · Aᵀ, A the bone's frame
+        const s00 = ux * ux * along + uy * uy * across;
+        const s01 = ux * uy * (along - across);
+        const s11 = uy * uy * along + ux * ux * across;
+        const m00 = a * s00 + b * s01;
+        const m01 = a * s01 + b * s11;
+        const m10 = d * s00 + e * s01;
+        const m11 = d * s01 + e * s11;
+        skin = [
+          m00,
+          m01,
+          bone.x - m00 * bone.x - m01 * bone.y,
+          m10,
+          m11,
+          bone.y - m10 * bone.x - m11 * bone.y + offsetY,
+        ];
+      }
+    }
+
     const matrix = out[index];
+    const link = chain[index];
     if (bone.parent < 0) {
-      matrix.set(local);
+      matrix.set(skin);
+      link.set(local);
     } else {
-      const parent = out[bone.parent];
-      matrix[0] = parent[0] * local[0] + parent[1] * local[3];
-      matrix[1] = parent[0] * local[1] + parent[1] * local[4];
-      matrix[2] = parent[0] * local[2] + parent[1] * local[5] + parent[2];
-      matrix[3] = parent[3] * local[0] + parent[4] * local[3];
-      matrix[4] = parent[3] * local[1] + parent[4] * local[4];
-      matrix[5] = parent[3] * local[2] + parent[4] * local[5] + parent[5];
+      const parent = chain[bone.parent];
+      matrix[0] = parent[0] * skin[0] + parent[1] * skin[3];
+      matrix[1] = parent[0] * skin[1] + parent[1] * skin[4];
+      matrix[2] = parent[0] * skin[2] + parent[1] * skin[5] + parent[2];
+      matrix[3] = parent[3] * skin[0] + parent[4] * skin[3];
+      matrix[4] = parent[3] * skin[1] + parent[4] * skin[4];
+      matrix[5] = parent[3] * skin[2] + parent[4] * skin[5] + parent[5];
+      if (skin === local) {
+        link.set(matrix);
+      } else {
+        link[0] = parent[0] * local[0] + parent[1] * local[3];
+        link[1] = parent[0] * local[1] + parent[1] * local[4];
+        link[2] = parent[0] * local[2] + parent[1] * local[5] + parent[2];
+        link[3] = parent[3] * local[0] + parent[4] * local[3];
+        link[4] = parent[3] * local[1] + parent[4] * local[4];
+        link[5] = parent[3] * local[2] + parent[4] * local[5] + parent[5];
+      }
     }
   }
 

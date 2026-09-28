@@ -1,0 +1,82 @@
+{
+  "canvas": [
+    1024,
+    2048
+  ],
+  "order": [
+    "body",
+    "head",
+    "arm_l",
+    "prop_bat",
+    "arm_r",
+    "dangle_ponytail",
+    "dangle_earring_l",
+    "dangle_earring_r",
+    "fingers_l"
+  ],
+  "spec": "delivery spec",
+  "composite": "pixel-exact",
+  "psd": "layers match PNGs",
+  "body_holes": 0,
+  "arms": {
+    "arm_l": {
+      "shoulder_overlap_px": 56,
+      "kind": "raised_prop"
+    },
+    "arm_r": {
+      "shoulder_overlap_px": 53,
+      "kind": "hanging",
+      "forearm_clearance_px": 53.14
+    }
+  },
+  "neck_overlap_px": 50,
+  "figure_box": [
+    195,
+    187,
+    932,
+    1823
+  ],
+  "margin_px": 92,
+  "edges": {
+    "body": {
+      "contour_soft": 1.0,
+      "colours": 45210
+    },
+    "head": {
+      "contour_soft": 0.991,
+      "colours": 21081
+    },
+    "arm_l": {
+      "contour_soft": 1.0,
+      "colours": 18434
+    },
+    "prop_bat": {
+      "contour_soft": 0.993,
+      "colours": 9432
+    },
+    "arm_r": {
+      "contour_soft": 1.0,
+      "colours": 22148
+    },
+    "dangle_ponytail": {
+      "contour_soft": 1.0,
+      "colours": 14761
+    },
+    "dangle_earring_l": {
+      "contour_soft": 0.981,
+      "colours": 1037
+    },
+    "dangle_earring_r": {
+      "contour_soft": 0.988,
+      "colours": 1813
+    },
+    "fingers_l": {
+      "contour_soft": 1.0,
+      "colours": 2799
+    }
+  },
+  "variants": [
+    "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/fg/capo",
+    "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/fg/don"
+  ]
+}

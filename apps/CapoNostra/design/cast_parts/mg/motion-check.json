@@ -1,0 +1,23 @@
+{
+  "poses": 3784,
+  "flips": 0,
+  "minAreaRatio": 0.9244,
+  "maxAreaRatio": 1.0546,
+  "worst": {
+    "shrink": "head tri 202",
+    "grow": "head tri 193"
+  },
+  "minInkMarginPx": 70.93,
+  "armBendPx": {
+    "arm_l": 0,
+    "arm_r": 0
+  },
+  "layers": [
+    "head",
+    "arm_l",
+    "body",
+    "arm_r",
+    "prop_cigar",
+    "dangle_smoke"
+  ]
+}

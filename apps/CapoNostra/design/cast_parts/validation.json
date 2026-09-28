@@ -1,0 +1,241 @@
+{
+  "status": "passed",
+  "canvas": [
+    1024,
+    2048
+  ],
+  "characters": {
+    "mg": {
+      "layer_count": 6,
+      "feet_y": 1822,
+      "head_top_y": 224,
+      "psd_rgba_roundtrip": "pixel-exact",
+      "art": {
+        "canvas": [
+          1024,
+          2048
+        ],
+        "order": [
+          "head",
+          "arm_l",
+          "body",
+          "arm_r",
+          "prop_cigar",
+          "dangle_smoke"
+        ],
+        "spec": "delivery spec",
+        "composite": "pixel-exact",
+        "psd": "layers match PNGs",
+        "body_holes": 0,
+        "arms": {
+          "arm_l": {
+            "shoulder_overlap_px": 117,
+            "kind": "hanging",
+            "forearm_clearance_px": 55.01
+          },
+          "arm_r": {
+            "shoulder_overlap_px": 63,
+            "kind": "hanging",
+            "forearm_clearance_px": 52.95
+          }
+        },
+        "neck_overlap_px": 80,
+        "figure_box": [
+          73,
+          224,
+          964,
+          1823
+        ],
+        "margin_px": 60,
+        "edges": {
+          "head": {
+            "contour_soft": 0.999,
+            "colours": 37543
+          },
+          "arm_l": {
+            "contour_soft": 0.998,
+            "colours": 17574
+          },
+          "body": {
+            "contour_soft": 1.0,
+            "colours": 45474
+          },
+          "arm_r": {
+            "contour_soft": 1.0,
+            "colours": 18531
+          },
+          "prop_cigar": {
+            "contour_soft": 1.0,
+            "colours": 1710
+          },
+          "dangle_smoke": {
+            "contour_soft": 1.0,
+            "colours": 2690
+          }
+        },
+        "variants": []
+      },
+      "motion": {
+        "poses": 3784,
+        "flips": 0,
+        "minAreaRatio": 0.9244,
+        "maxAreaRatio": 1.0546,
+        "worst": {
+          "shrink": "head tri 202",
+          "grow": "head tri 193"
+        },
+        "minInkMarginPx": 70.93,
+        "armBendPx": {
+          "arm_l": 0,
+          "arm_r": 0
+        },
+        "layers": [
+          "head",
+          "arm_l",
+          "body",
+          "arm_r",
+          "prop_cigar",
+          "dangle_smoke"
+        ]
+      },
+      "full_sha256": "57ae79789df7acef32e620cd16eddecb7b93aff11c238d62bc0ddfb95cc3b3f3"
+    },
+    "fg": {
+      "layer_count": 9,
+      "feet_y": 1822,
+      "head_top_y": 259,
+      "psd_rgba_roundtrip": "pixel-exact",
+      "art": {
+        "canvas": [
+          1024,
+          2048
+        ],
+        "order": [
+          "body",
+          "head",
+          "arm_l",
+          "prop_bat",
+          "arm_r",
+          "dangle_ponytail",
+          "dangle_earring_l",
+          "dangle_earring_r",
+          "fingers_l"
+        ],
+        "spec": "delivery spec",
+        "composite": "pixel-exact",
+        "psd": "layers match PNGs",
+        "body_holes": 0,
+        "arms": {
+          "arm_l": {
+            "shoulder_overlap_px": 56,
+            "kind": "raised_prop"
+          },
+          "arm_r": {
+            "shoulder_overlap_px": 53,
+            "kind": "hanging",
+            "forearm_clearance_px": 53.14
+          }
+        },
+        "neck_overlap_px": 50,
+        "figure_box": [
+          195,
+          187,
+          932,
+          1823
+        ],
+        "margin_px": 92,
+        "edges": {
+          "body": {
+            "contour_soft": 1.0,
+            "colours": 45210
+          },
+          "head": {
+            "contour_soft": 0.991,
+            "colours": 21081
+          },
+          "arm_l": {
+            "contour_soft": 1.0,
+            "colours": 18434
+          },
+          "prop_bat": {
+            "contour_soft": 0.993,
+            "colours": 9432
+          },
+          "arm_r": {
+            "contour_soft": 1.0,
+            "colours": 22148
+          },
+          "dangle_ponytail": {
+            "contour_soft": 1.0,
+            "colours": 14761
+          },
+          "dangle_earring_l": {
+            "contour_soft": 0.981,
+            "colours": 1037
+          },
+          "dangle_earring_r": {
+            "contour_soft": 0.988,
+            "colours": 1813
+          },
+          "fingers_l": {
+            "contour_soft": 1.0,
+            "colours": 2799
+          }
+        },
+        "variants": [
+          "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/fg/capo",
+          "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/fg/don"
+        ]
+      },
+      "motion": {
+        "poses": 3784,
+        "flips": 0,
+        "minAreaRatio": 0.942,
+        "maxAreaRatio": 1.0551,
+        "worst": {
+          "shrink": "head tri 114",
+          "grow": "head tri 123"
+        },
+        "minInkMarginPx": 113.29,
+        "armBendPx": {
+          "arm_l": 0,
+          "arm_r": 0
+        },
+        "layers": [
+          "body",
+          "head",
+          "arm_l",
+          "prop_bat",
+          "arm_r",
+          "dangle_ponytail",
+          "dangle_earring_l",
+          "dangle_earring_r",
+          "fingers_l"
+        ]
+      },
+      "full_sha256": "12e4436b15c2be087ca0a7da9a783dcd917e1c5780ba25575487254423391d87",
+      "prop_head_clearance_px": 70.18
+    }
+  },
+  "variants": {
+    "capo": {
+      "alpha": "pixel-identical in all 9 layers and composite",
+      "psd_rgba": "pixel-exact round trip",
+      "lighting_source": "source_generated/fg_capo.png",
+      "method": "bounded low-frequency ImageGen illumination transfer; don rim confined inside existing layer alpha"
+    },
+    "don": {
+      "alpha": "pixel-identical in all 9 layers and composite",
+      "psd_rgba": "pixel-exact round trip",
+      "lighting_source": "source_generated/fg_don.png",
+      "method": "bounded low-frequency ImageGen illumination transfer; don rim confined inside existing layer alpha"
+    }
+  },
+  "game_integration": "not changed; art delivery and independent preview only",
+  "browser": {
+    "preview_url": "http://127.0.0.1:8768/preview.html",
+    "motion_url": "http://127.0.0.1:8768/motion.html",
+    "images_loaded": true,
+    "screenshot": "review/browser-motion.png"
+  }
+}

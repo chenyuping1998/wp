@@ -12,6 +12,23 @@
 
 開場說明頁已改成單一西裝大佬，base 背景已換成地下賭場包廂 v1；feature／Don 背景與近景層仍待製作，清單在 ART_STATUS.md 第 2 節。
 
+> **2026-09-28 角色改成兩隻（MG 一隻、FG 一隻）。** 使用者新規則：之後每款都要兩個不同的角色。
+> - MG：The Don 重畫（分層、雙手離開身體）；FG：夜總會女主人（扛立式麥克風架），Soldier／Capo／Don 三個等級是她的打光版。
+> - 交件在 `design/cast_parts/`（全畫布分層＋骨架），需求單在 `design/cast_brief/`。
+> - `design/build_cast_layers_runtime.py` 把每層裁到有墨的範圍輸出到 `static/assets/castLayers/{don,hostess}/`（GPU 約 21MB，全畫布會要 260MB），也輸出開場卡的 `intro_don_v4.png`。
+> - 執行期：`CastFigureLayered.svelte` ＋ `game/layeredFigure.ts`（UV 對應裁切）＋ `game/layeredCastMotion.ts`（兩隻各自的動作表）。
+>   Cast.svelte 依 `gameType` 換人（feature splash 蓋著時換）；FreeSpinIntro 放女主人（`onTop`、`box="main"`、不夾右邊界）。
+> - ⚠ 這兩具骨架的 `arm_l` 在畫面右、**負角度往外張**，跟舊 Don 相反，舊表的手臂正負號不能沿用。
+>   Don 的手離畫布邊只有 ~65px，往外甩會超出 check 的 40px 邊界，所以他的反應是「手肘外張、前臂收回」。
+> - 閘門：`design/check_cast_layers.mjs`（已加進 build）＝技能的 check_layered_cast（複製成 `design/lib_check_layered_cast.mjs`）＋掃描擺動範圍是否在 `LAYERED_X_ENVELOPE` 內。改動作表就要重量 `design/measure_cast_envelope.mjs`。
+> - 退役（09-28 清完）：單一網格 Don（meshRigs/cast_guy：guy／guy_feature／guy_don）、Hot Miami 女角（cast_girl、capoCast 的 girl／girl_spine）、
+>   平面剪影（capoCast 的 guy／guy_spine／guy_bat*）、舊開場 `intro_boss_v3.png`、`CastFigure.svelte`、`CastFigureMesh.svelte`、`skinnedFigure.ts`，
+>   以及只讀舊 rig 的 `check_cast_motion.mjs`（已移出 build，`check:cast` 改跑 `check_cast_layers.mjs`）、`dump_cast_pose.mjs`、`measure_cast_travel.mjs`、
+>   `build_cast_guy_rig.py`、`build_cast_guy_states.py`、`build_intro_boss.py`、`build_cast_figures.py`，全部搬到 `design/_legacy_assets/single_mesh_cast_20260928/`。
+>   `castMotion.ts` 拿掉舊 Don 的反應表與 MOTION_SCALE，只留共用的 idle 與姿勢／蒙皮程式；`CAST_NATIVE` 搬到 `game/castLayout.ts`。
+>   `idleSway.ts` 的 `CAST_SWAY` 沒動：它參與 check_idle_sway 的循環週期計算，不帶任何素材。
+> - 已在 playtest shell 實測：MG Don → FG 開場卡女主人 → FG 盤面女主人（Capo 打光版）→ 結算 → 回到 Don；4:3／16:10／16:9 都不壓到盤面。
+
 ---
 
 ## 1. 這款跟 Hot Miami 差在哪

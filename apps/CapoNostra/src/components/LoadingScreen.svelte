@@ -44,7 +44,8 @@
 	// background art behind them. So the SCRIM does the holding back instead: the
 	// photograph goes down to 0.74 black and the people stay as they are.
 	const castHeight = $derived(layout.height * 0.9);
-	const castWidth = $derived((castHeight * 441) / 1100);
+	// castLayers/don/full.png is the Don's ink box, 891x1599 (2026-09-28 redraw)
+	const castWidth = $derived((castHeight * 891) / 1599);
 
 	// Their sway runs off the same clock as everywhere else, which is what keeps
 	// the two of them out of step with each other (6500ms and 4000ms) rather than
@@ -179,7 +180,7 @@
 			y={layout.height}
 		>
 			<Sprite
-				key="hmCastGuyMesh"
+				key="capoCastDon_full"
 				anchor={{ x: 0.5, y: 1 }}
 				width={castWidth}
 				height={castHeight}

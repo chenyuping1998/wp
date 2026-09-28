@@ -190,7 +190,7 @@
 		<div class="hm-cast-wrap hm-cast-wrap-left">
 			<img
 				class="hm-cast hm-cast-left"
-				src={`${base}/assets/sprites/capoCast/intro_boss_v3.png`}
+				src={`${base}/assets/sprites/capoCast/intro_don_v4.png`}
 				alt=""
 				aria-hidden="true"
 			/>
@@ -452,12 +452,11 @@
 		flush against it.
 	*/
 	.hm-cast-wrap-left {
-		/* Capo Nostra uses one boss throughout, and this cutout is the SAME
-		   drawing as the one standing beside the reels — design/build_intro_boss.py
-		   cuts it from the v3 master that guy.png was downsampled from, and fails
-		   if the two silhouettes stop matching. Before that it was a separate
-		   2026-09-02 render, so the first screen showed a boss with no scarf and
-		   no cigar and the board showed one with both.
+		/* This cutout is the SAME drawing as the MG figure standing beside the
+		   reels — design/build_cast_layers_runtime.py writes both from the
+		   2026-09-28 layered Don (design/cast_parts/mg/full.png). Before that it
+		   was cut from the retired v3 Don, and before that a separate 2026-09-02
+		   render, so the first screen showed a different boss from the board's.
 
 		   The cutout is cropped to its alpha box, so the figure reaches the bottom
 		   edge of its own image and `bottom` below places the FEET rather than a

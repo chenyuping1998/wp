@@ -1,0 +1,1 @@
+wp/apps/CapoNostra/design/cast_parts/mg/full.png: colors95=85 soft=66.5% accentC9A227=0.0% chroma=8.1 PASS

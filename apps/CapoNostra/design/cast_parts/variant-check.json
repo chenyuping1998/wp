@@ -1,0 +1,14 @@
+{
+  "capo": {
+    "alpha": "pixel-identical in all 9 layers and composite",
+    "psd_rgba": "pixel-exact round trip",
+    "lighting_source": "source_generated/fg_capo.png",
+    "method": "bounded low-frequency ImageGen illumination transfer; don rim confined inside existing layer alpha"
+  },
+  "don": {
+    "alpha": "pixel-identical in all 9 layers and composite",
+    "psd_rgba": "pixel-exact round trip",
+    "lighting_source": "source_generated/fg_don.png",
+    "method": "bounded low-frequency ImageGen illumination transfer; don rim confined inside existing layer alpha"
+  }
+}

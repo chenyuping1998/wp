@@ -63,8 +63,13 @@ games already share.
   anywhere to draw the line between "arm" and "torso", and at animation scale
   the hands visibly drag into the jacket. State the minimum gap in the brief
   rather than discovering it after rigging.
-- One identity, matching the new theme's own logic for how many cast members
-  make sense — don't default to the source game's cast count.
+- **Two characters: §1a MG figure, §1b FG figure.** Two different people, not
+  one person relit. For each one: who they are in the theme, the archetype
+  picked, the cast brief path (`design/cast_brief/mg/`, `design/cast_brief/fg/`),
+  and the per-FG-tier lighting variants if any. Then one line on how the pair
+  contrasts (build, gender, age or one colour) and one line confirming both
+  share §0, light direction, feet line and head height. Neither may be a
+  pay-symbol portrait.
 
 ## 2. Symbols
 
