@@ -179,12 +179,15 @@
 			x={layout.width - castWidth * 0.72}
 			y={layout.height}
 		>
-			<Sprite
-				key="capoCastDon_full"
-				anchor={{ x: 0.5, y: 1 }}
-				width={castWidth}
-				height={castHeight}
-			/>
+			<!-- mirrored: the Don is drawn facing screen-right and stands on the right -->
+			<Container scale={{ x: -1, y: 1 }}>
+				<Sprite
+					key="capoCastDon_full"
+					anchor={{ x: 0.5, y: 1 }}
+					width={castWidth}
+					height={castHeight}
+				/>
+			</Container>
 		</Container>
 
 		<!-- The real logo, not a typeset stand-in for it -->

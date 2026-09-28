@@ -102,6 +102,12 @@
   const OVERLAP = 10;
   const BLEED = 1.12; // how far past the box edge the figure runs
   const width = $derived((std.width - (boardInkRight - OVERLAP)) * BLEED);
+  // Both figures are DRAWN facing screen-right, and they stand right of the
+  // board, so both are mirrored to face the reels (the user's standing rule:
+  // a figure beside the board faces the board). Checked on screen, not from the
+  // source art — reading the source crop is how this shipped facing away once.
+  const MIRROR_TO_FACE_BOARD = true;
+
   // Both figures stand in the old Don's box; CastFigureLayered scales each one's
   // own ink height into it, so the pair shares a feet line and head height.
   const height = $derived((width * CAST_NATIVE.guy.h) / CAST_NATIVE.guy.w);
@@ -141,7 +147,7 @@
 {#if !stateGame.featureSplashShow && hasSideBand}
   <MainContainer standard>
     {#key who}
-      <CastFigureLayered figure={who} {x} {topY} {height} {groundY} innerEdge={boardInkRight} />
+      <CastFigureLayered figure={who} {x} {topY} {height} {groundY} flip={MIRROR_TO_FACE_BOARD} innerEdge={boardInkRight} />
     {/key}
   </MainContainer>
 {/if}

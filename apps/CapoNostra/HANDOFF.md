@@ -18,6 +18,7 @@
 > - `design/build_cast_layers_runtime.py` 把每層裁到有墨的範圍輸出到 `static/assets/castLayers/{don,hostess}/`（GPU 約 21MB，全畫布會要 260MB），也輸出開場卡的 `intro_don_v4.png`。
 > - 執行期：`CastFigureLayered.svelte` ＋ `game/layeredFigure.ts`（UV 對應裁切）＋ `game/layeredCastMotion.ts`（兩隻各自的動作表）。
 >   Cast.svelte 依 `gameType` 換人（feature splash 蓋著時換）；FreeSpinIntro 放女主人（`onTop`、`box="main"`、不夾右邊界）。
+> - ⚠ 兩隻原圖都**朝畫面右**，站在盤面右側所以**都要鏡像**才會面向盤面：Cast.svelte 的 `MIRROR_TO_FACE_BOARD`、FreeSpinIntro 女主人的 `flip`、LoadingScreen 的 Don 包一層 `scale x -1`。開場說明頁的 Don 在左側、原圖朝右，不用鏡像。
 > - ⚠ 這兩具骨架的 `arm_l` 在畫面右、**負角度往外張**，跟舊 Don 相反，舊表的手臂正負號不能沿用。
 >   Don 的手離畫布邊只有 ~65px，往外甩會超出 check 的 40px 邊界，所以他的反應是「手肘外張、前臂收回」。
 > - 閘門：`design/check_cast_layers.mjs`（已加進 build）＝技能的 check_layered_cast（複製成 `design/lib_check_layered_cast.mjs`）＋掃描擺動範圍是否在 `LAYERED_X_ENVELOPE` 內。改動作表就要重量 `design/measure_cast_envelope.mjs`。

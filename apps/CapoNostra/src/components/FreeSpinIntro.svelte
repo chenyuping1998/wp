@@ -203,6 +203,7 @@
 			-->
 			<CastFigureLayered
 				figure="hostess"
+				flip
 				clampScreen={false}
 				onTop
 				box="main"
