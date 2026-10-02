@@ -208,7 +208,7 @@ const duration = Math.max(
 		Object.values(track).flatMap((keys) => keys.map((k) => k.time)),
 	),
 );
-const FRAMES = 8;
+const FRAMES = Math.max(2, Number(process.env.PREVIEW_FRAMES || 8));
 // An optional window, because a fast cycle aliases against a whole-clip sweep:
 // six chest strikes 0.26s apart sampled every 0.33s shows the same pose eight
 // times and looks like nothing is happening.
@@ -231,6 +231,6 @@ TIMES.forEach((t, i) => {
 			for (let c = 0; c < 4; c++) sheet.data[d + c] = f.data[s + c];
 		}
 });
-const out = path.join(appRoot, `design/source/monkey/_preview_${animName}.png`);
+const out = process.env.PREVIEW_OUT || path.join(appRoot, `design/source/monkey/_preview_${animName}.png`);
 fs.writeFileSync(out, PNG.sync.write(sheet));
 console.log(`${animName}: t = ${TIMES.join(', ')}  ->  ${path.relative(appRoot, out)}`);

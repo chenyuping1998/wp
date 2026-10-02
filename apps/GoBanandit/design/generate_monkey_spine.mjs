@@ -145,7 +145,7 @@ const RIG = [
 	{ name: 'hip', parent: 'root', at: RIGPTS.hip, match: null },
 	{ name: 'torso', parent: 'hip', at: RIGPTS.waist, match: /^torso_(?!2_decoration)/ },
 	// The neck, just under the jaw: the head nods and turns about this.
-	{ name: 'head', parent: 'torso', at: RIGPTS.neck, match: /^head_(?!4_hat|5_decoration)/ },
+	{ name: 'head', parent: 'torso', at: RIGPTS.neck, match: /^head_(?!4_hat|5_decoration|6_bubble)/ },
 
 	// THE THINGS THAT HANG OFF HIM (see "THE ACCESSORIES MOVE ON THEIR OWN" at
 	// the bottom): each is its own layer in the PSD, so each gets its own bone,
@@ -157,6 +157,12 @@ const RIG = [
 	{ name: 'helmet', parent: 'head', at: RIGPTS.helmet.at, dir: RIGPTS.helmet.dir, match: /^head_4_hat$/ },
 	{ name: 'banana', parent: 'head', at: RIGPTS.banana.at, dir: RIGPTS.banana.dir, match: /^head_5_decoration$/ },
 	{ name: 'pocket', parent: 'torso', at: RIGPTS.pocket.at, dir: RIGPTS.pocket.dir, match: /^torso_2_decoration$/ },
+	// The Lookout's bubble gum (head_6_bubble, cut by cut_cast_layers.py). Its
+	// bone sits at the LIPS and points into the bubble, so scaling it grows the
+	// bubble out of her mouth. Only casts whose rig.json has a `bubble` get it.
+	...(RIGPTS.bubble
+		? [{ name: 'bubble', parent: 'head', at: RIGPTS.bubble.at, dir: RIGPTS.bubble.dir, match: /^head_6_bubble$/ }]
+		: []),
 	// NOT the vials in his left chest pocket (torso_4_decoration). Tried
 	// 2026-09-27 and taken out: the pocket and all three vials are painted on
 	// the shirt itself, and that layer is only their caps laid over the top —
@@ -1958,6 +1964,19 @@ const chew = (() => {
 	}
 	return keys;
 })();
+// [time, scaleX, scaleY] — 1.0 is the bubble as drawn
+const BUBBLE_KEYS = [
+	[0, 0.3, 0.3],
+	[0.55, 0.58, 0.58], [0.72, 0.54, 0.55],
+	[1.4, 0.88, 0.88], [1.57, 0.84, 0.85],
+	[2.25, 1.18, 1.18], [2.42, 1.13, 1.14],
+	[3.1, 1.5, 1.5], [3.27, 1.45, 1.46],
+	[3.9, 1.86, 1.84],
+	[4.0, 2.0, 1.86], // stretched to bursting
+	[4.04, 0, 0], // pop
+	[4.45, 0, 0],
+	[4.8, 0.3, 0.3],
+].map(([time, x, y]) => ({ time, x, y }));
 const flutter = {
 	bones: {
 		banana: { rotate: chew },
@@ -1969,6 +1988,11 @@ const flutter = {
 		cuffR: { rotate: flutterKeys(2, 1, 2.0) },
 		pantL: { rotate: flutterKeys(1.5, 1, 3.6) },
 		pantR: { rotate: flutterKeys(1.5, 1, 5.1) },
+		// BUBBLE GUM: blown up in puffs, bigger each time, then POP — once a
+		// loop. Each puff swells and settles back a touch (a breath in, a
+		// breath out), the last one stretches wide, and it is gone in 40ms.
+		// It regrows from nothing so the loop closes on the same small bubble.
+		...(RIGPTS.bubble ? { bubble: { scale: BUBBLE_KEYS, rotate: flutterKeys(3, 2, 0.7) } } : {}),
 	},
 };
 

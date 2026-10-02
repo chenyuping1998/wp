@@ -131,7 +131,7 @@
 			<h2>GO BANANDIT — GAME RULES</h2>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>How to play</h3>
+				<h3 style="color: #d24a2c !important"><span class="wp-accent-bar"></span>How to play</h3>
 				<p>
 					<!-- Written rows-first ("4x5"), which is how this board is referred
 					     to in the project. config stores it the other way round, as
@@ -152,7 +152,7 @@
 			     information. Kept as a definition list of the actual on-screen
 			     controls, in the order they sit on the bar. -->
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Controls</h3>
+				<h3 style="color: #d24a2c !important"><span class="wp-accent-bar"></span>Controls</h3>
 				<ul class="wp-controls">
 					{#each controls as control (control.name)}
 						<li class:no-icon={control.icons.length === 0}>
@@ -176,7 +176,7 @@
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>RTP &amp; Max Win by mode</h3>
+				<h3 style="color: #d24a2c !important"><span class="wp-accent-bar"></span>RTP &amp; Max Win by mode</h3>
 				<!--
 					Scroll wrapper, and the unit lifted out of every row into the header.
 
@@ -224,7 +224,7 @@
 			     because it is the thing the game is built around and the only rule
 			     a player of other ways games will not already know. -->
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Banana Sacks &amp; the Bandit</h3>
+				<h3 style="color: #d24a2c !important"><span class="wp-accent-bar"></span>Banana Sacks &amp; the Bandit</h3>
 				<p>
 					<strong>Banana Sacks</strong> land carrying a value from 1&times; to 50&times; the
 					{T.bet} (up to 250&times; in Free Spins), printed on the sack. A Sack does not form combinations and does not {T.pay} on
@@ -240,7 +240,7 @@
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>The Bandit meter &mdash; Free Spins</h3>
+				<h3 style="color: #d24a2c !important"><span class="wp-accent-bar"></span>The Bandit meter &mdash; Free Spins</h3>
 				<p>
 					In Free Spins every Bandit that lands is counted, whether or not there is a Sack to
 					collect. Each time the count reaches the next mark, <strong>{meter.spinsAdded} extra Free
@@ -259,7 +259,7 @@
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Wild</h3>
+				<h3 style="color: #d24a2c !important"><span class="wp-accent-bar"></span>Wild</h3>
 				<p>
 					The Bandit Wild substitutes for every symbol except the Scatter and the Banana Sack. It
 					does not {T.pay} as a symbol of its own.
@@ -267,7 +267,7 @@
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Scatter</h3>
+				<h3 style="color: #d24a2c !important"><span class="wp-accent-bar"></span>Scatter</h3>
 				<p>
 					The Vault Scatter appears on all five reels in the base game. It does not {T.pay} on its
 					own and does not need to form a combination &mdash; its only job is to open the feature.
@@ -277,7 +277,7 @@
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Retriggers</h3>
+				<h3 style="color: #d24a2c !important"><span class="wp-accent-bar"></span>Retriggers</h3>
 				<p>
 					<strong>Scatters cannot retrigger Free Spins.</strong> Scatters do not appear on the
 					reels during the feature. Extra spins come only from the Bandit meter, as described
@@ -288,7 +288,7 @@
 
 			{#if buyTiers.length}
 				<section class="wp-card">
-					<h3><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
+					<h3 style="color: #d24a2c !important"><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
 					<p>
 						Instead of waiting for Scatters, you can {T.buy} direct entry into Free Spins. Two
 						rounds are available, both with the same number of spins:
@@ -313,7 +313,7 @@
 			{/if}
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Max Win</h3>
+				<h3 style="color: #d24a2c !important"><span class="wp-accent-bar"></span>Max Win</h3>
 				<p>
 					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}
 					in every mode. Once the cap is reached the round ends immediately and the maximum win

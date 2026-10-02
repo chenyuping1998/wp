@@ -105,7 +105,7 @@
 			     fit on a 720px-tall screen -->
 			<div class="head">
 				<div class="titles">
-					<h2>{social ? 'FEATURES' : 'BUY FEATURE'}</h2>
+					<h2 style="color: #1e1b1a !important">{social ? 'FEATURES' : 'BUY FEATURE'}</h2>
 					<div class="sub">CHOOSE YOUR JOB</div>
 				</div>
 				<div class="amount"><BetMenuAmountToggle /></div>
@@ -133,7 +133,7 @@
 								<span class="tag">{card.tag}</span>
 							</div>
 							<div class="body">
-								<h3>{card.title}</h3>
+								<h3 style={`color: ${card.accent} !important`}>{card.title}</h3>
 								<div class="meter">
 									{#each { length: card.meter.of } as _, i (i)}
 										{@render pip(i < card.meter.on)}

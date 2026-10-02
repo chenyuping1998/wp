@@ -63,6 +63,11 @@ CUTS = {
         ("right_leg_0_thigh", 14, [(300, 515), (452, 515), (452, 590), (442, 656), (330, 660), (300, 570)], None),
     ],
     "fg": [
+        # the bubble-gum bubble: its own piece (colour-picked, then filled) on
+        # its own bone, so `flutter` can blow it up and pop it. Drawn OVER the
+        # face; the face is inpainted underneath (see INPAINT_UNDER) so the
+        # mouth is there when the bubble is small or popped.
+        ("head_6_bubble", 31, [(346, 116), (416, 116), (416, 184), (346, 184)], "bubble"),
         ("head_2_face", 30, [(150, 4), (425, 4), (425, 120), (412, 166), (372, 186), (330, 200), (290, 205), (250, 215), (200, 236), (158, 232), (148, 150)], None),
         # the scarf's loose tail crosses the right shoulder: its own layer, drawn
         # OVER the arm, so the arm does not carry it off when it swings
@@ -106,7 +111,24 @@ def mirror_rig(rig):
     return out
 
 
+# Pieces whose area must be PAINTED on the piece below rather than just
+# underlaid at the rim: a bubble that shrinks to nothing uncovers its whole
+# footprint, not 26px of it. Only inside the head's own silhouette — where the
+# bubble stood out into the air, nothing is painted.
+INPAINT_UNDER = {"head_6_bubble": "head_2_face"}
+
+
 def colour_ok(kind, rgb):
+    if kind == "bubble":
+        r, g, b = rgb[..., 0].astype(int), rgb[..., 1].astype(int), rgb[..., 2].astype(int)
+        pink = (r > 215) & (g > 85) & (g < 135) & (b > 65) & (b < 110)
+        lab, n = ndimage.label(pink)
+        if n == 0:
+            return pink
+        sizes = ndimage.sum(pink, lab, range(1, n + 1))
+        blob = ndimage.binary_fill_holes(lab == sizes.argmax() + 1)
+        # one pixel more, for the anti-aliased rim
+        return ndimage.binary_dilation(blob, iterations=1)
     if kind == "scarf":
         r, g, b = rgb[..., 0].astype(int), rgb[..., 1].astype(int), rgb[..., 2].astype(int)
         return (r > 140) & (r - g > 60) & (r - b > 70)
@@ -177,10 +199,31 @@ def main(cast):
                 above |= owner == j
         dist, (iy, ix) = ndimage.distance_transform_edt(~own, return_indices=True)
         grow = above & (dist <= UNDERLAY)
+        # a piece listed in INPAINT_UNDER gets its whole footprint painted on
+        # this one, within this piece's own (closed) silhouette
+        for top, under in INPAINT_UNDER.items():
+            if under != name:
+                continue
+            tops = [j for j, (n2, _) in enumerate(pieces) if n2 == top]
+            if not tops:
+                continue
+            foot = owner == tops[0]
+            inside = ndimage.binary_closing(own | foot, iterations=14) & ndimage.binary_fill_holes(
+                ndimage.binary_closing(own, iterations=18))
+            grow = grow | (foot & inside)
         layer = np.zeros_like(px)
         layer[own] = px[own]
         layer[grow, :3] = px[iy[grow], ix[grow], :3]
         layer[grow, 3] = 255
+        # SPECKS: underlay can reach past a gap of some other piece and land as
+        # a detached fleck, which then floats beside the limb whenever it
+        # moves (the green dots by the knees and hands). Keep only underlay
+        # that touches this piece's own pixels.
+        lab, n = ndimage.label(layer[..., 3] > 0)
+        if n > 1:
+            keep_ids = np.unique(lab[own])
+            drop = (lab > 0) & ~np.isin(lab, keep_ids)
+            layer[drop] = 0
         ys, xs = np.nonzero(layer[..., 3] > 0)
         x0, y0, x1, y1 = xs.min(), ys.min(), xs.max() + 1, ys.max() + 1
         piece = Image.fromarray(layer[y0:y1, x0:x1])

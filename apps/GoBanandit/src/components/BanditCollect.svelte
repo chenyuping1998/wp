@@ -25,8 +25,10 @@
 	//                               one Sack at a time
 	//   3. STAMP (free spins only)  the tag is stamped "xN" and jumps to the
 	//                               multiplied figure
-	// The tags stay up until the next spin's reveal clears them, so a player who
-	// looked away can still read what each Bandit took.
+	// The tags stay up through the spin's win (the setWin that follows carries
+	// the total), then fade as that win is put away. They used to stay until the
+	// next spin's reveal — through the whole idle, sitting on the Bandits' faces
+	// long after the money had moved to the WIN box.
 	import { onDestroy } from 'svelte';
 	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
@@ -35,6 +37,7 @@
 	import { SYMBOL_SIZE, isBigPrize } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
+	import SackBadge from './SackBadge.svelte';
 	import { NUMBER_FONT } from '../game/fonts';
 
 	const context = getContext();
@@ -63,6 +66,10 @@
 	let clock = $state(0);
 	let pickStart = $state(-1);
 	let stampStart = $state(-1);
+	// 1 while the tags are up; eased to 0 once the spin's win is put away
+	let tagAlpha = $state(1);
+	let collected = false;
+	const TAG_FADE_MS = 320;
 
 	let raf = 0;
 	let running = false;
@@ -125,6 +132,8 @@
 	context.eventEmitter.subscribeOnMount({
 		banditCollect: async (event) => {
 			startClock();
+			collected = false;
+			tagAlpha = 1;
 			mult = event.mult;
 			stampStart = -1;
 			sacks = event.sacks.map((s) => ({ x: cellX(s.reel), y: cellY(s.row), value: s.value }));
@@ -176,9 +185,30 @@
 			}
 			await waitMs(HOLD_MS);
 			pickStart = -1;
+			collected = true;
 			stopClock();
 		},
+		// The setWin after a collection shows the spin's total; when it is put
+		// away, the tags have done their job.
+		winHide: async () => {
+			if (!collected || tags.length === 0) return;
+			collected = false;
+			const t0 = performance.now();
+			await new Promise<void>((resolve) => {
+				const step = (now: number) => {
+					tagAlpha = Math.max(0, 1 - (now - t0) / TAG_FADE_MS);
+					if (tagAlpha > 0) requestAnimationFrame(step);
+					else resolve();
+				};
+				requestAnimationFrame(step);
+			});
+			tags = [];
+			stampStart = -1;
+			tagAlpha = 1;
+		},
 		banditCollectClear: () => {
+			collected = false;
+			tagAlpha = 1;
 			sacks = [];
 			tags = [];
 			flyers = [];
@@ -215,6 +245,13 @@
 				width={SYMBOL_SIZE * 0.88 * (1 + hop * 0.12)}
 				height={SYMBOL_SIZE * 0.88 * (1 + hop * 0.12)}
 			/>
+			<!-- the copy lies over the reel's sack, so it carries the value too -->
+			<SackBadge
+				prize={sack.value / 100}
+				x={sack.x}
+				y={sack.y - hop * SYMBOL_SIZE * 0.12 - SYMBOL_SIZE * 0.1 * (1 + hop * 0.12)}
+				scale={1 + hop * 0.12}
+			/>
 		{/if}
 	{/each}
 
@@ -230,11 +267,19 @@
 				width={SYMBOL_SIZE * p.scale}
 				height={SYMBOL_SIZE * p.scale}
 			/>
+			<!-- the value it carries, so the count-up on the tag can be followed -->
+			<SackBadge
+				prize={(sacks[i]?.value ?? 0) / 100}
+				x={p.x}
+				y={p.y - SYMBOL_SIZE * 0.1 * (p.scale / 0.88)}
+				scale={p.scale / 0.88}
+			/>
 		{/if}
 	{/each}
 
 	<!-- 3. each Bandit's tag: a paper ticket with a red offset print, the way
 	     the screenprint plates are built (flat inks, no glow) -->
+	<Container alpha={tagAlpha}>
 	{#each tags as tag, i (i)}
 		{#if tag.shown > 0}
 			{@const s = tagPop(tag)}
@@ -266,4 +311,5 @@
 			{/if}
 		{/if}
 	{/each}
+	</Container>
 </BoardContainer>

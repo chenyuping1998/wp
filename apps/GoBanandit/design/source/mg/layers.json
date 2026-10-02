@@ -19,7 +19,7 @@
    "file": "right_leg_0_thigh.png",
    "x": 234,
    "y": 515,
-   "w": 201,
+   "w": 184,
    "h": 161
   },
   {
@@ -27,26 +27,26 @@
    "name": "right_leg_1_calf",
    "file": "right_leg_1_calf.png",
    "x": 310,
-   "y": 625,
+   "y": 650,
    "w": 138,
-   "h": 161
+   "h": 136
   },
   {
    "z": 12,
    "name": "right_leg_2_foot",
    "file": "right_leg_2_foot.png",
-   "x": 233,
+   "x": 259,
    "y": 760,
-   "w": 225,
+   "w": 199,
    "h": 129
   },
   {
    "z": 14,
    "name": "left_leg_0_thigh",
    "file": "left_leg_0_thigh.png",
-   "x": 95,
+   "x": 120,
    "y": 515,
-   "w": 165,
+   "w": 140,
    "h": 161
   },
   {
@@ -99,9 +99,9 @@
    "name": "left_arm_0_upper_arm",
    "file": "left_arm_0_upper_arm.png",
    "x": 28,
-   "y": 212,
-   "w": 174,
-   "h": 281
+   "y": 235,
+   "w": 153,
+   "h": 258
   },
   {
    "z": 30,

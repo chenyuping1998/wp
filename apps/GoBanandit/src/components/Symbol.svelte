@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Container, Graphics, Text } from 'pixi-svelte';
+	import { Container } from 'pixi-svelte';
+	import SackBadge from './SackBadge.svelte';
 
 	import SymbolSpine from './SymbolSpine.svelte';
 	import SymbolSprite from './SymbolSprite.svelte';
@@ -10,7 +11,6 @@
 	import type { SymbolState, RawSymbol } from '../game/types';
 	import { getContext } from '../game/context';
 	import { stateGame } from '../game/stateGame.svelte';
-	import { NUMBER_FONT } from '../game/fonts';
 	import { SYMBOL_SIZE } from '../game/constants';
 
 	type Props = {
@@ -103,41 +103,8 @@
 </Container>
 
 {#if props.rawSymbol.prize}
-	<!--
-		Banana Sack value. The maths sends it in BET MULTIPLES (5 = 5x bet), not in
-		book units, so it prints as-is. BanditCollect shows the collected total
-		as money once a Bandit takes it.
-
-		A printed STAMP on the sack, not loose type: the value was 34px ink with a
-		paper rim on a paper sack, and at reel size it read as part of the drawing
-		(user: 袋子的倍數太不明顯). A banana-yellow disc (yellow is reserved for
-		the collect mechanic) with an ink rim and an offset ink shadow; the big
-		values change plate so a 10x+ sack is spotted before it is read.
-	-->
-	{@const prize = props.rawSymbol.prize}
-	{@const plate = prize >= 100 ? 0x1e1b1a : prize >= 10 ? 0xd24a2c : 0xf4c21b}
-	{@const ink = prize >= 100 ? 0xf4c21b : prize >= 10 ? 0xf2e8d0 : 0x1e1b1a}
-	{@const label = `${prize}×`}
-	{@const r = SYMBOL_SIZE * 0.25}
-	<Container x={props.x ?? 0} y={(props.y ?? 0) - SYMBOL_SIZE * 0.1}>
-		<Graphics
-			draw={(g) => {
-				g.clear();
-				g.circle(4, 4, r).fill(0x1e1b1a);
-				g.circle(0, 0, r).fill(plate).stroke({ width: 4, color: 0x1e1b1a });
-				g.circle(0, 0, r - 7).stroke({ width: 2, color: ink, alpha: 0.6 });
-			}}
-		/>
-		<Text
-			anchor={0.5}
-			y={2}
-			text={label}
-			style={{
-				fontFamily: NUMBER_FONT,
-				fontSize: label.length > 3 ? 30 : label.length > 2 ? 38 : 46,
-				fill: ink,
-				fontWeight: '400',
-			}}
-		/>
-	</Container>
+	<!-- Banana Sack value, in BET MULTIPLES as the maths sends it (5 = 5x bet).
+	     The user asked for it to read at a glance (袋子的倍數太不明顯), so it is a
+	     stamp, not loose type — see SackBadge. -->
+	<SackBadge prize={props.rawSymbol.prize} x={props.x ?? 0} y={(props.y ?? 0) - SYMBOL_SIZE * 0.1} />
 {/if}

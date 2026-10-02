@@ -15,7 +15,6 @@
 <script lang="ts">
 	import { Container, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
-	import { OutlineFilter } from 'pixi-filters';
 
 	import { onDestroy } from 'svelte';
 
@@ -43,28 +42,18 @@
 		basegame: {
 			key: 'gbBandit',
 			art: { height: 854, width: 526 },
-			release: { x: -383, y: 502 },
-			impact: { right: { x: 44, y: 344 }, left: { x: -104, y: 332 } },
+			release: { x: -374, y: 490 },
+			impact: { right: { x: 44, y: 344 }, left: { x: -109, y: 334 } },
 			tease: { x: -20, y: 739, halfWidth: 95, halfHeight: 28 },
 		},
 		freegame: {
 			key: 'gbLookout',
 			art: { height: 881, width: 462 },
-			release: { x: -378, y: 523 },
-			impact: { right: { x: -6, y: 371 }, left: { x: -50, y: 339 } },
+			release: { x: -367, y: 513 },
+			impact: { right: { x: -6, y: 371 }, left: { x: -54, y: 340 } },
 			tease: { x: -12, y: 843, halfWidth: 62, halfHeight: 25 },
 		},
 	} as const;
-	// KEYLINE. Both casts are printed in the same three inks as the warehouse
-	// behind them — the Bandit's red-and-paper stripes sat on the red sun and red
-	// shed, his green trousers on the green yard, and he dissolved into the
-	// poster. A screenprint cut-out keeps its figure off the ground with a
-	// registration keyline: a hard ink rim, then a band of bare paper. Screen
-	// pixels, so it stays the same weight at every layout scale.
-	const keyline = [
-		new OutlineFilter({ thickness: 2.5, color: 0x1e1b1a, quality: 0.2 }),
-		new OutlineFilter({ thickness: 4, color: 0xf2e8d0, quality: 0.2 }),
-	];
 
 	const cast = $derived(context.stateGame.gameType === 'freegame' ? CASTS.freegame : CASTS.basegame);
 	const ART = $derived(cast.art);
@@ -484,7 +473,18 @@
 
 {#if placement}
 	{#key cast.key}
-	<Container filters={keyline}>
+	<Container>
+	{#if context.stateGame.gameType === 'freegame'}
+		<!-- A single flat paper spotlight keeps the green Lookout readable on the
+		     green warehouse wall without drawing a contour around the figure. -->
+		<Container x={placement.x} y={placement.y} scale={placement.scale} zIndex={-2}>
+			<Graphics draw={(g) => {
+				g.clear();
+				g.poly([-310, -930, 230, -930, 300, 0, -300, 0]);
+				g.fill({ color: 0xf2e8d0, alpha: 0.42 });
+			}} />
+		</Container>
+	{/if}
 	<SpineProvider
 		key={cast.key}
 		x={placement.x}

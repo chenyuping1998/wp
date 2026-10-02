@@ -8,14 +8,13 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Graphics, Sprite, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import { Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBet } from 'state-shared';
 
 	import { getContext } from '../game/context';
 
 	const context = getContext();
-	const SPINE_SCALE = { width: 0.62, height: 0.66 };
 	// frame art is 1280×1280 with the board occupying the centered 1000×1000
 	const FRAME_SCALE = 1280 / 1000;
 
@@ -26,15 +25,8 @@
 		isSuperspin ? 0xf2e8d0 : context.stateGame.gameType === 'freegame' ? 0xf2e8d0 : null,
 	);
 
-	let pulse = $state(0);
 	onMount(() => {
-		const id = setInterval(() => {
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 620);
-		}, 33);
-		return () => {
-			clearInterval(id);
-			cancelAnimationFrame(impactRaf);
-		};
+		return () => cancelAnimationFrame(impactRaf);
 	});
 
 	// ── frame impact: a short recoil plus a hot flash along the brass, so a
@@ -92,69 +84,12 @@
 		}
 	};
 
-	// THE TEMPLATE'S FRAME GLOW IS OFF.
-	//
-	// reelhouse_glow is the purple halo and the drifting star particles from the
-	// template this game started as. In the feature it drew a purple band round
-	// a mine-coloured housing and scattered small amber dots over the frame — one
-	// of which sat on the bottom edge of the board looking like a stray light.
-	// Neither belongs to this game. What is left is drawAmbience above: the
-	// housing breathing amber, which is the game's own colour.
-	//
-	// The events and the animation state below are still driven, so switching it
-	// back on is this one flag.
-	const SPINE_GLOW = false;
-
-	type AnimationName = 'reelhouse_glow_start' | 'reelhouse_glow_idle' | 'reelhouse_glow_exit';
-
-	let animationName = $state<AnimationName | undefined>(undefined);
-	let loop = $state(false);
-
 	context.eventEmitter.subscribeOnMount({
-		boardFrameGlowShow: () => {
-			animationName = 'reelhouse_glow_start';
-			loop = false;
-		},
-		boardFrameGlowHide: () => {
-			if (animationName) animationName = 'reelhouse_glow_exit';
-		},
 		boardFrameImpact: ({ strength }) => runImpact(strength ?? 1),
 	});
 </script>
 
 <Graphics zIndex={-2} draw={drawAmbience} />
-
-{#if SPINE_GLOW && animationName}
-	<SpineProvider
-		zIndex={-1}
-		key="reelhouse"
-		x={context.stateGameDerived.boardLayout().x}
-		y={context.stateGameDerived.boardLayout().y}
-		width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * SPINE_SCALE.width}
-		height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * SPINE_SCALE.height}
-	>
-		<SpineTrack
-			trackIndex={0}
-			{animationName}
-			{loop}
-			listener={{
-				complete: (entry) => {
-					if (entry.animation) {
-						if (entry.animation.name === 'reelhouse_glow_start') {
-							animationName = 'reelhouse_glow_idle';
-							loop = true;
-						}
-
-						if (entry.animation.name === 'reelhouse_glow_exit') {
-							animationName = undefined;
-							loop = false;
-						}
-					}
-				},
-			}}
-		/>
-	</SpineProvider>
-{/if}
 
 <Sprite
 	key="gbFrameBg"

@@ -8,18 +8,18 @@
    "z": 2,
    "name": "torso_0_trunk",
    "file": "torso_0_trunk.png",
-   "x": 137,
+   "x": 138,
    "y": 154,
-   "w": 257,
+   "w": 256,
    "h": 376
   },
   {
    "z": 10,
    "name": "right_leg_0_thigh",
    "file": "right_leg_0_thigh.png",
-   "x": 229,
+   "x": 255,
    "y": 500,
-   "w": 184,
+   "w": 152,
    "h": 186
   },
   {
@@ -44,9 +44,9 @@
    "z": 14,
    "name": "left_leg_0_thigh",
    "file": "left_leg_0_thigh.png",
-   "x": 118,
+   "x": 138,
    "y": 474,
-   "w": 125,
+   "w": 105,
    "h": 216
   },
   {
@@ -99,9 +99,9 @@
    "name": "left_arm_0_upper_arm",
    "file": "left_arm_0_upper_arm.png",
    "x": 69,
-   "y": 189,
-   "w": 136,
-   "h": 240
+   "y": 212,
+   "w": 124,
+   "h": 217
   },
   {
    "z": 28,
@@ -120,6 +120,15 @@
    "y": 12,
    "w": 252,
    "h": 225
+  },
+  {
+   "z": 31,
+   "name": "head_6_bubble",
+   "file": "head_6_bubble.png",
+   "x": 155,
+   "y": 127,
+   "w": 51,
+   "h": 46
   }
  ]
 }

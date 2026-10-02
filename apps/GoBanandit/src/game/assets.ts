@@ -287,22 +287,6 @@ export default {
 		src: new URL('../../assets/sprites/bananditBackground/bg_feature.png', import.meta.url).href,
 		preload: true,
 	},
-	anticipation: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/anticipation/anticipation.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/anticipation/anticipation.json', import.meta.url).href,
-			scale: 2,
-		},
-	},
-	reelhouse: {
-		type: 'spine',
-		src: {
-			atlas: new URL('../../assets/spines/reelhouse/reelhouse_glow.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/reelhouse/reelhouse_glow.json', import.meta.url).href,
-			scale: 2,
-		},
-	},
 	// Win-spray particles. The emitter is handed this whole sheet and gives each
 	// particle one random frame out of it, so the ten frames are ten viewing
 	// angles of the same banana rather than an animation — see

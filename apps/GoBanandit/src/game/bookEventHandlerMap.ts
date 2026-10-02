@@ -273,6 +273,12 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			mult: bookEvent.mult,
 			amount: bookEvent.amount,
 		});
+		// The WIN box. The maths writes setTotalWin BEFORE the collection, and in
+		// the base game never again for that spin, so the box stopped at the
+		// ways win and never counted what the Bandits took (book 671: box $0.40,
+		// balance +$2.40). In free spins the next spin's setTotalWin restates the
+		// same running total, so adding here only removes a one-spin lag there.
+		stateBet.winBookEventAmount += bookEvent.amount;
 	},
 	// Free spins: this spin's Bandits were counted. A rung adds spins and raises
 	// the multiplier on every LATER collection (this spin's was already paid).
