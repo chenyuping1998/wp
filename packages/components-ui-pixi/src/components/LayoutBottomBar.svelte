@@ -109,6 +109,19 @@
 	const DIV_3 = 656;
 	const dividerBeforeBet = $derived(BET_X - 118);
 
+	// uiTheme.stepperLayout 'flank': −  BET  + in one row. The − sits 40 of air
+	// in from the Win rule, the + keeps the stacked pair's x beside the spin pod,
+	// and the readout centres between them; the empty Win→Bet cell (and its
+	// closing rule and breather tick) is what the pair takes up.
+	const flank = $derived(uiTheme.stepperLayout === 'flank');
+	const STEP_R = $derived((UI_BASE_SIZE * STEP_SCALE) / 2);
+	// the pair closes in on the readout when the span allows: at the full width
+	// the − sat far from the amount it changes and read as a separate control
+	const FLANK_SPREAD = 210;
+	const PLUS_X = $derived(STEP_X);
+	const MINUS_X = $derived(Math.max(DIV_3 + 40 + STEP_R, PLUS_X - FLANK_SPREAD * 2));
+	const betReadoutX = $derived(flank ? (MINUS_X + PLUS_X) * 0.5 : BET_X);
+
 	// How wide a readout may draw, in ITS OWN units — the cell it sits in, less a
 	// little air, divided by the scale the container applies.
 	//
@@ -127,7 +140,9 @@
 	const winMaxWidth = $derived(cellWidth(DIV_2, DIV_3));
 	// The Bet cell is bounded by its own rule on the left and the stepper on the
 	// right, and it also has to leave room for the chevron the affordance draws.
-	const betMaxWidth = $derived(cellWidth(dividerBeforeBet, STEP_X - 24));
+	const betMaxWidth = $derived(
+		flank ? cellWidth(MINUS_X + STEP_R, PLUS_X - STEP_R) : cellWidth(dividerBeforeBet, STEP_X - 24),
+	);
 	// centre of the empty Win→Bet span, for the breather tick
 	const GAP_CENTER = $derived((DIV_3 + BET_X - 118) * 0.5);
 
@@ -253,7 +268,7 @@
 				}
 				const topF = barTop + DIV_INSET;
 				const botF = barTop + h - DIV_INSET;
-				for (const x of [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
+				for (const x of flank ? [DIV_1, DIV_2, DIV_3] : [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
 					g.moveTo(x, topF);
 					g.lineTo(x, botF);
 					g.stroke({ width: 1, color: 0xffffff, alpha: 0.15 });
@@ -282,7 +297,7 @@
 			// Vertical rules do the opposite — they separate.
 			const top = barTop + DIV_INSET;
 			const bot = barTop + h - DIV_INSET;
-			for (const x of [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
+			for (const x of flank ? [DIV_1, DIV_2, DIV_3] : [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
 				g.moveTo(x, top);
 				g.lineTo(x, bot);
 				g.stroke({ width: 2, color: uiTheme.panelBorder, alpha: 0.55 });
@@ -298,11 +313,14 @@
 			// the middle third of the frame's height — gives that emptiness a centre
 			// to sit around so it reads as designed space rather than a gap. Not a
 			// section rule: it separates nothing, it just breathes.
-			const midY = barTop + h * 0.5;
-			const half = (h - DIV_INSET * 2) * 0.28;
-			g.moveTo(GAP_CENTER, midY - half);
-			g.lineTo(GAP_CENTER, midY + half);
-			g.stroke({ width: 2, color: uiTheme.panelBorder, alpha: 0.3 });
+			// flank fills that span, so there is no emptiness to give a centre to
+			if (!flank) {
+				const midY = barTop + h * 0.5;
+				const half = (h - DIV_INSET * 2) * 0.28;
+				g.moveTo(GAP_CENTER, midY - half);
+				g.lineTo(GAP_CENTER, midY + half);
+				g.stroke({ width: 2, color: uiTheme.panelBorder, alpha: 0.3 });
+			}
 		}}
 	/>
 
@@ -326,7 +344,7 @@
 	</Container>
 
 	<!-- ── right: bet, stepper, spin, autospin, turbo ─────────────────────── -->
-	<Container x={BET_X} y={readoutTop} scale={READOUT_SCALE}>
+	<Container x={betReadoutX} y={readoutTop} scale={READOUT_SCALE}>
 		{@render props.amountBet({ stacked: true, tiled: false, maxWidth: betMaxWidth })}
 	</Container>
 
@@ -370,12 +388,21 @@
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
 	{:else}
-		<Container x={STEP_X} y={barMid - STEP_DY} scale={STEP_SCALE}>
-			{@render props.buttonIncrease({ anchor: 0.5 })}
-		</Container>
-		<Container x={STEP_X} y={barMid + STEP_DY} scale={STEP_SCALE}>
-			{@render props.buttonDecrease({ anchor: 0.5 })}
-		</Container>
+		{#if flank}
+			<Container x={MINUS_X} y={barMid} scale={STEP_SCALE}>
+				{@render props.buttonDecrease({ anchor: 0.5 })}
+			</Container>
+			<Container x={PLUS_X} y={barMid} scale={STEP_SCALE}>
+				{@render props.buttonIncrease({ anchor: 0.5 })}
+			</Container>
+		{:else}
+			<Container x={STEP_X} y={barMid - STEP_DY} scale={STEP_SCALE}>
+				{@render props.buttonIncrease({ anchor: 0.5 })}
+			</Container>
+			<Container x={STEP_X} y={barMid + STEP_DY} scale={STEP_SCALE}>
+				{@render props.buttonDecrease({ anchor: 0.5 })}
+			</Container>
+		{/if}
 
 		<!-- Spin is the largest thing on the strip and overhangs it top and bottom,
 		     which is what makes it read as the primary action without a caption. -->

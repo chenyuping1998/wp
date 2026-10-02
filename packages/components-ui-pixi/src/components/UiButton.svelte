@@ -192,7 +192,36 @@
 			/>
 		{/if}
 
-		{#if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover}
+		{#if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover && uiTheme.hoverPlateLight !== undefined && plate}
+			<!-- the plate itself, lit: drawn again additive in a warm tint -->
+			<UiSprite
+				{...center}
+				key={litPlate ? 'buttonActive' : 'button'}
+				anchor={0.5}
+				width={buttonProps.sizes.width}
+				height={buttonProps.sizes.height}
+				tint={uiTheme.hoverPlateLight}
+				blendMode="add"
+			/>
+		{:else if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover && uiTheme.hoverPlateLight !== undefined}
+			<!-- flat drawn disc: a lit rim and a faint lift of the face, never a
+			     white film (a filled disc of light reads as a pale/grey button) -->
+			<Graphics
+				x={center.x}
+				y={center.y}
+				blendMode="add"
+				draw={(g) => {
+					const w = buttonProps.sizes.width;
+					const h = buttonProps.sizes.height;
+					g.clear();
+					// this checkout's theme has no buttonCornerRadius (it would be NaN
+					// and draw nothing); the bar's round controls are discs
+					g.circle(0, 0, Math.min(w, h) / 2 - 1.5);
+					g.fill({ color: uiTheme.hoverPlateLight ?? 0xffffff, alpha: 0.12 });
+					g.stroke({ width: 3, color: uiTheme.hoverPlateLight ?? 0xffffff, alpha: 1 });
+				}}
+			/>
+		{:else if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover}
 			<!-- subtle lift while the cursor is over the control. A white overlay
 			     rather than a tint: tint multiplies, so it can only darken. -->
 			<Graphics

@@ -114,7 +114,18 @@
 			onresize={({ width }) => (valueWidth = width)}
 		/>
 	</Container>
-	{#if props.hovered && uiTheme.hoverHighlight}
+	{#if props.hovered && uiTheme.hoverHighlight && uiTheme.hoverPlateLight !== undefined}
+		<!-- a short lit underline under the amount instead of a grey box -->
+		<Graphics
+			draw={(g) => {
+				const w = Math.max(valueWidth, UI_BASE_FONT_SIZE * 2.4) * 0.9;
+				const y = UI_BASE_FONT_SIZE * 2.2;
+				g.clear();
+				g.roundRect(-w / 2, y, w, 3, 1.5);
+				g.fill({ color: uiTheme.hoverPlateLight ?? 0xffffff, alpha: 0.95 });
+			}}
+		/>
+	{:else if props.hovered && uiTheme.hoverHighlight}
 		<!--
 			Hover lift. When this readout sits on the ticker plate it fills the plate;
 			with no plate (the compact bottom bar passes tiled=false) it must instead
