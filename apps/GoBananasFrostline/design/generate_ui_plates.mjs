@@ -264,6 +264,22 @@ const buyBonusIceLit = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" he
 <polygon points="${poly(G)}" fill="none" stroke="#ffe69b" stroke-width="5" opacity="0.85"/>
 </svg>`;
 
+// ── the HOVER: only the rim, faintly lit ──────────────────────────────────
+//
+// What the hover draws now (uiTheme buyBonusHoverSprite → buyBonusEdge). The
+// full lit copy above flared the faces and the gold rim, and was asked to go
+// as too much light; what was asked for instead is the EDGE catching a
+// little — so this is the crystal's outline and nothing else, thin, cool and
+// low. Additive, like the lit copy: on the dark rim it reads as light, and it
+// adds nothing to the table the caption sits on.
+const buyBonusIceEdge = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
+<defs>
+	<filter id="edgeSoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6"/></filter>
+</defs>
+<g filter="url(#edgeSoft)" opacity="0.32"><polygon points="${poly(O)}" fill="none" stroke="#8fd9ff" stroke-width="12" stroke-linejoin="round"/></g>
+<polygon points="${poly(O)}" fill="none" stroke="#d8f2ff" stroke-width="3.5" stroke-linejoin="round" opacity="0.5"/>
+</svg>`;
+
 // ── VARIANT: the snowball ──────────────────────────────────────────────────
 //
 // Offered alongside, not shipped. `--variants <dir>` writes it; nothing reads it
@@ -341,4 +357,5 @@ render(ticker, 'ticker_plate.png', TW);
 render(buyBonus, 'buybonus_plate.png', BS);
 render(buyBonusIce, 'buybonus_ice.png', BS);
 render(buyBonusIceLit, 'buybonus_ice_lit.png', BS);
+render(buyBonusIceEdge, 'buybonus_ice_edge.png', BS);
 console.log('ui plates written to', OUT);

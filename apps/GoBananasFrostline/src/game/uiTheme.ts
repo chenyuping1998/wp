@@ -166,7 +166,9 @@ setUiTheme({
 	sprites: {
 		base_ticker: 'gbUiTicker',
 		buyBonus: 'gbUiBuyBonusIce',
-		buyBonusGlyph: 'gbUiBuyBonusLit',
+		// the rim alone, faintly lit (see the hover note below) — not the
+		// full lit crystal, gbUiBuyBonusLit, which stays loaded
+		buyBonusGlyph: 'gbUiBuyBonusEdge',
 	},
 
 	// HOVER: THE CRYSTAL LIGHTS.
@@ -182,13 +184,14 @@ setUiTheme({
 	// what an incised relief looks like. The label is drawn AFTER the hover
 	// sprite, so the crystal brightens behind the words rather than through them.
 	//
-	// REMOVED on request: the pointer no longer lights the crystal, and the
-	// prize halo of rays behind it is off (buyBonusHoverSpin 0). The hover is
-	// drawn as an 'outline' of zero width — i.e. nothing — because without a
-	// hover sprite the button would otherwise fall back to the generic
-	// hoverHighlight panel, which the rail buttons still want.
-	buyBonusHoverStyle: 'outline',
-	buyBonusHoverOutlineWidth: 0,
+	// TONED DOWN on request: the whole crystal lighting up (buybonus_ice_lit)
+	// was too much, and so was the prize halo of rays behind it
+	// (buyBonusHoverSpin 0). What the pointer gets now is the RIM catching a
+	// little light — buybonus_ice_edge, the outline alone, thin and cool. Not
+	// the theme's 'outline' style: that strokes a rectangle, and this plate is a
+	// hexagon. It is the `buyBonusGlyph` slot (the shared theme's slot names
+	// are a closed list), so the resting breath is that same rim, fainter.
+	buyBonusHoverSprite: 'buyBonusGlyph',
 	// The shaped highlight still breathes gently at rest; the crystal itself
 	// stays still.
 	buyBonusIdleGlow: true,
@@ -428,7 +431,7 @@ if (uiSkin === 'platform') {
 		// rather than merging into it — which is how base_ticker gets dropped.
 		// gbUiTicker stays loaded and untouched, so switching back to the ice skin
 		// is instant and needs no rebuild.
-		sprites: { buyBonus: 'gbUiBuyBonusIce', buyBonusGlyph: 'gbUiBuyBonusLit' },
+		sprites: { buyBonus: 'gbUiBuyBonusIce', buyBonusGlyph: 'gbUiBuyBonusEdge' },
 
 		// The rounded-rect fallback, for the case where the plate fails to load.
 		// Kept in the platform palette rather than the game's, because if the art

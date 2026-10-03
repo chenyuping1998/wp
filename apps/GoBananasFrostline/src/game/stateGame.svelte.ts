@@ -21,16 +21,18 @@ import {
 	SPIN_OPTIONS_TURBO_FREEGAME,
 	SPIN_OPTIONS_SUPERSPIN,
 	INITIAL_SYMBOL_STATE,
-	SCATTER_LAND_SOUND_MAP,
 } from './constants';
 
 const onSymbolLand = ({ rawSymbol, reelIndex }: { rawSymbol: RawSymbol; reelIndex?: number }) => {
 	if (rawSymbol.name === 'S') {
 		eventEmitter.broadcast({ type: 'soundScatterCounterIncrease' });
-		eventEmitter.broadcast({
-			type: 'soundOnce',
-			name: SCATTER_LAND_SOUND_MAP[scatterLandIndex()],
-		});
+		// NO landing accent. The Scatter's ladder (scatter_1..5, each louder and
+		// brighter than the last) played on every Scatter as the reels stopped —
+		// a bright chime climbing reel by reel, 10dB over the stop click, on
+		// nearly every base-game spin. Measured off the player's capture: that
+		// was the 'noisy reel stop'. A Scatter reel now stops on the same light
+		// click as every other. The count still climbs: the tease and the
+		// anticipation read it.
 	}
 
 	if (rawSymbol.name === 'W') {

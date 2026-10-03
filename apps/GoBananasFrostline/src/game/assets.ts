@@ -68,6 +68,12 @@
 		src: new URL('../../assets/sprites/goBananasUi/entry_ice.png', import.meta.url).href,
 		preload: true,
 	},
+	// the hover: the crystal's rim, faintly lit (generate_ui_plates.mjs)
+	gbUiBuyBonusEdge: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_ice_edge.png', import.meta.url).href,
+		preload: true,
+	},
 	gbUiBuyBonusIce: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasUi/buybonus_ice.png', import.meta.url).href,
