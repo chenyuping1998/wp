@@ -13,6 +13,7 @@
  */
 import { settled, type MeshWinSpec } from './meshRig';
 import { LANDS } from './lands';
+import { hopped } from './winHop';
 import { IDLES } from './idles';
 import { H1 } from './h1Ushanka';
 import { H2 } from './h2Flare';
@@ -26,10 +27,11 @@ export { PILLAR } from './wxPillar';
 export { SIGN } from './fsSign';
 export { FRAME, REELS as FRAME_REELS } from './frameEdge';
 
-// every win blends home at the end, so the swap back to the static sprite is
-// seamless (meshRig.settled)
+// every win bounces ON THE PICTURE (winHop.ts — the tile stays put) and
+// blends home at the end, so the swap back to the static sprite is seamless
+// (meshRig.settled)
 export const MESH_WINS: Record<string, MeshWinSpec> = Object.fromEntries(
-	Object.entries({ H1, H2, H3, H4, L1, L2, L3, L4, L5, W, S }).map(([k, spec]) => [k, settled(spec)]),
+	Object.entries({ H1, H2, H3, H4, L1, L2, L3, L4, L5, W, S }).map(([k, spec]) => [k, settled(hopped(spec))]),
 );
 
 // the landings blend home too: a reel that spins again mid-act is cut off by

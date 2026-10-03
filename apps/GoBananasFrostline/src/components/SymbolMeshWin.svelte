@@ -106,59 +106,10 @@
 	const GOLD = 0xffd75e;
 
 	const fit = (SYMBOL_SIZE * props.symbolInfo.sizeRatios.height) / CANVAS;
-	// The mesh gives each picture its own gesture; the whole winning picture
-	// also springs out of its cell, as in Boom. Both curves return to rest before
-	// the static symbol replaces this component.
-	// Raised from 0.26 / 0.08 / 0.14 after a capture of the live game: the win
-	// read as the symbols sitting still under their frames. The pop and hop are
-	// on the WHOLE picture, so they cost the mesh nothing (no triangle can tear
-	// from them); the mesh's own gesture stays inside its gated limits.
-	const POP_UP = 0.36;
-	const POP_HOLD = 0.13;
-	const HOP = 0.24;
-	/** squash on each touchdown, stretch at the top of each hop */
-	const SQUASH = 0.14;
-	const POP_OUT_MS = 260;
-	const smooth01 = (value: number) => {
-		const x = Math.min(1, Math.max(0, value));
-		return x * x * (3 - 2 * x);
-	};
-	const easeOutBack = (value: number) => {
-		const x = value - 1;
-		return 1 + 2.9 * x * x * x + 1.9 * x * x;
-	};
-	const cellPop = (t: number) => {
-		const hit = Math.max(1, spec.hitMs);
-		const rise = t < hit ? POP_UP * easeOutBack(Math.max(0, t / hit)) : 0;
-		const hold = t >= hit
-			? POP_HOLD + (POP_UP - POP_HOLD) * Math.exp(-(t - hit) / 160)
-				+ 0.025 * Math.sin((t - hit) / 70) * smooth01((t - hit) / 200)
-			: 0;
-		const home = 1 - smooth01((t - (spec.durationMs - POP_OUT_MS)) / POP_OUT_MS);
-		return 1 + (t < hit ? rise : hold) * home;
-	};
-	const cellHop = (t: number) => {
-		if (t <= 0) return 0;
-		const period = 2 * Math.max(120, spec.hitMs);
-		const arch = Math.abs(Math.sin((Math.PI * t) / period));
-		const decay = Math.exp(-t / 1000);
-		const home = 1 - smooth01((t - (spec.durationMs - POP_OUT_MS)) / POP_OUT_MS);
-		return SYMBOL_SIZE * HOP * arch * decay * home;
-	};
-	// [sx, sy] for the hop: flattened as it lands and pushes off, drawn tall in
-	// the air — the hop read as a sprite sliding up and down without it. Same
-	// period, decay and home as cellHop, and eased in from 1 so the first frame
-	// is the drawing.
-	const cellSquash = (t: number): [number, number] => {
-		if (t <= 0) return [1, 1];
-		const period = 2 * Math.max(120, spec.hitMs);
-		const phase = (t / period) % 1; // 0 at each touchdown (cellHop's arch is 0 there), 1 at the next
-		const contact = Math.exp(-((Math.min(phase, 1 - phase) / 0.14) ** 2));
-		const air = Math.sin(Math.PI * phase);
-		const k = Math.exp(-t / 1000) * smooth01(t / 60) * (1 - smooth01((t - (spec.durationMs - POP_OUT_MS)) / POP_OUT_MS));
-		const squash = SQUASH * k * contact, stretch = 0.5 * SQUASH * k * air;
-		return [1 + squash - 0.6 * stretch, 1 - squash + stretch];
-	};
+	// THE TILE STAYS PUT. The win used to pop and hop the whole cell — plate,
+	// frame and all — and turned up to that it read as the board jumping, not
+	// the picture. The bounce is now inside the mesh, on the picture only
+	// (game/meshWin/winHop.ts: the highs' tricks, the panels' jelly).
 	let dust = $state(false);
 
 	const root = new Container();
@@ -259,11 +210,8 @@
 				: spec.pose(rig, t, props.amp);
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();
-			// the cell pop and hop are the WIN's: a landing stays in its cell
-			const pop = fit * pose.plateHit * (landing ? 1 : cellPop(t));
-			const [qx, qy] = landing ? [1, 1] : cellSquash(t);
-			root.scale.set(pop * qx, pop * qy);
-			root.position.set(props.x ?? 0, (props.y ?? 0) - (landing ? 0 : cellHop(t)));
+			root.scale.set(fit * pose.plateHit);
+			root.position.set(props.x ?? 0, props.y ?? 0);
 
 			if (shadow) {
 				const air = pose.air;
