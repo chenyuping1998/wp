@@ -32,6 +32,8 @@
 		clarifyAt,
 	} from '../game/frostTakeover';
 	import { ICE_BRIGHT, ICE_HIGHLIGHT } from '../game/palette';
+	import { PILLAR } from '../game/meshWin';
+	import PropMesh from './PropMesh.svelte';
 
 	// ── WHICH TAKEOVER RUNS ───────────────────────────────────────────────────
 	//
@@ -996,11 +998,23 @@
 		{/if}
 
 		<!-- beat 3: the locked banner. Height is driven by `banner`, so it is
-		     thrown open by the impact rather than fading in. -->
+		     thrown open by the impact rather than fading in.
+
+		     Drawn through a mesh (game/meshWin/wxPillar.ts): the ice frame stays
+		     still, the gorilla painted inside it is set down by the slam, swells
+		     with each multiplier surge and breathes while the reel is held, and
+		     the WILD lettering pops on a surge and shimmers on a win. The clock
+		     is offset per reel so two held reels do not breathe in step. -->
 		{#if wild.banner.current > 0}
 			{@const b = Math.min(1, wild.banner.current)}
-			<Sprite
-				key="gbWxPanel"
+			<PropMesh
+				spec={PILLAR}
+				env={{
+					banner: wild.banner.current,
+					surge: wild.surge.current,
+					win: wild.winFlash.current,
+					clock: pulse + wild.reel * 233,
+				}}
 				anchor={0.5}
 				{x}
 				y={REEL_CENTER_Y}

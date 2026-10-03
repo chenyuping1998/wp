@@ -21,6 +21,7 @@ import { L1, L2, L3, L4, L5, W, S } from './panelWins';
 export { MESH_BG } from './bgPatches';
 export { COIN } from './coinP';
 export { COUNTER } from './counterPanel';
+export { PILLAR } from './wxPillar';
 
 // every win blends home at the end, so the swap back to the static sprite is
 // seamless (meshRig.settled)

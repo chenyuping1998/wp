@@ -61,7 +61,7 @@ const { PNG } = require('pngjs');
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const core = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/meshRig.ts')).href);
-const { MESH_WINS, MESH_LANDS, AMP_MAX, COIN, COUNTER } = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/index.ts')).href);
+const { MESH_WINS, MESH_LANDS, AMP_MAX, COIN, COUNTER, PILLAR } = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/index.ts')).href);
 // The landings are gated at the HEAVIEST impact a cell can ask for (AMP_MAX),
 // so the worst case is the one measured. Named 'H1:land' etc.
 const LAND_SPECS = Object.fromEntries(
@@ -70,7 +70,7 @@ const LAND_SPECS = Object.fromEntries(
 		{ ...spec, pose: (rig, ms) => spec.pose(rig, ms, AMP_MAX) },
 	]),
 );
-const MESH_SPECS = { ...MESH_WINS, ...LAND_SPECS, COIN, COUNTER };
+const MESH_SPECS = { ...MESH_WINS, ...LAND_SPECS, COIN, COUNTER, PILLAR };
 
 const pick = args[0] && !args[0].startsWith('--') ? args.shift().split(',') : Object.keys(MESH_SPECS);
 const mode = args[0];
