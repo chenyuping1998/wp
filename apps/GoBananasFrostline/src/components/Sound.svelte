@@ -41,11 +41,7 @@
 		| 'gong_feature'
 		| 'bigwin_blast'
 		| 'reel_tension'
-		| 'reel_stop_1'
-		| 'reel_stop_2'
-		| 'reel_stop_3'
-		| 'reel_stop_4'
-		| 'reel_stop_5'
+		| 'reel_stop'
 		| 'btn'
 		| 'spin'
 		| 'scatter_1'
@@ -87,11 +83,7 @@
 		gong_feature: 'frost/gong_feature.wav',
 		bigwin_blast: 'frost/bigwin_blast.wav',
 		reel_tension: 'frost/reel_tension.wav',
-		reel_stop_1: 'frost/reel_stop_1.wav',
-		reel_stop_2: 'frost/reel_stop_2.wav',
-		reel_stop_3: 'frost/reel_stop_3.wav',
-		reel_stop_4: 'frost/reel_stop_4.wav',
-		reel_stop_5: 'frost/reel_stop_5.wav',
+		reel_stop: 'frost/reel_stop.wav',
 		btn: 'frost/btn.wav',
 		spin: 'frost/spin.wav',
 		scatter_1: 'frost/scatter_1.wav',
@@ -163,11 +155,14 @@
 		sfx_multiplier_up: { name: 'mult_update' },
 		sfx_multiplier_update: { name: 'mult_update' },
 		sfx_multiplier_win: { name: 'mult_win' },
-		sfx_reel_stop_1: { name: 'reel_stop_1' },
-		sfx_reel_stop_2: { name: 'reel_stop_2' },
-		sfx_reel_stop_3: { name: 'reel_stop_3' },
-		sfx_reel_stop_4: { name: 'reel_stop_4' },
-		sfx_reel_stop_5: { name: 'reel_stop_5' },
+		// one light click, the same on every reel and at the same level — no
+		// per-reel ladder (the old one, inherited from Hot Miami, swelled reel
+		// by reel through every base-game spin)
+		sfx_reel_stop_1: { name: 'reel_stop' },
+		sfx_reel_stop_2: { name: 'reel_stop' },
+		sfx_reel_stop_3: { name: 'reel_stop' },
+		sfx_reel_stop_4: { name: 'reel_stop' },
+		sfx_reel_stop_5: { name: 'reel_stop' },
 		sfx_royals_landing: { name: 'pluck_low', volume: 0.4 },
 		sfx_scatter_reveal: { name: 'scatter_1', volume: 0.55 },
 		sfx_scatter_stop_1: { name: 'scatter_1' },

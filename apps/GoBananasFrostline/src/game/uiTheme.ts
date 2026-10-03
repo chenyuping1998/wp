@@ -181,15 +181,19 @@ setUiTheme({
 	// At rest the crystal is a dark groove with a pale lit edge under it, which is
 	// what an incised relief looks like. The label is drawn AFTER the hover
 	// sprite, so the crystal brightens behind the words rather than through them.
-	buyBonusHoverSprite: 'buyBonusGlyph',
-	// The shaped highlight breathes gently at rest; the crystal itself stays
-	// still. Hover adds a restrained prize halo behind it.
+	//
+	// REMOVED on request: the pointer no longer lights the crystal, and the
+	// prize halo of rays behind it is off (buyBonusHoverSpin 0). The hover is
+	// drawn as an 'outline' of zero width — i.e. nothing — because without a
+	// hover sprite the button would otherwise fall back to the generic
+	// hoverHighlight panel, which the rail buttons still want.
+	buyBonusHoverStyle: 'outline',
+	buyBonusHoverOutlineWidth: 0,
+	// The shaped highlight still breathes gently at rest; the crystal itself
+	// stays still.
 	buyBonusIdleGlow: true,
 	buyBonusIdleSprite: 'buyBonusGlyph',
-	buyBonusHoverSpin: 18,
-	buyBonusHoverSpinRays: 9,
-	buyBonusHoverSpinColor: GOLD_BRIGHT,
-	buyBonusHoverSpinRadius: 1.08,
+	buyBonusHoverSpin: 0,
 	// 0xffffff, not the default warm tint (0xffd98a): the texture carries its own
 	// ice blue, and a warm tint over it would drag the whole glow back toward the
 	// jungle palette this game just left.

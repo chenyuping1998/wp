@@ -237,9 +237,7 @@ ${medalRim}
 <polygon points="${poly(T)}" fill="url(#table)" stroke="#0a1420" stroke-width="5" stroke-opacity="0.6"/>
 <polygon points="${poly(T)}" fill="url(#depth)"/>
 <polygon points="${poly(T)}" fill="url(#prizeGlow)"/>
-<g fill="#ffe09a" stroke="#754519" stroke-width="4">
-	<circle cx="69" cy="320" r="11"/><circle cx="571" cy="320" r="11"/>
-</g>
+<!-- no rivets on the two flat sides: asked to go, they read as stray dots -->
 </svg>`;
 
 // ── the same crystal, CATCHING LIGHT — drawn for ADDITIVE blending ─────────

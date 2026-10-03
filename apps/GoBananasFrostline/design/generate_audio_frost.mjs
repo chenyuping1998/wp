@@ -2,7 +2,7 @@
 //
 //   node design/generate_audio_frost.mjs
 //
-// Three freeze takeover cues and five reel stops for the ice setting.
+// Three freeze takeover cues and the reel stop for the ice setting.
 //
 //   frost_creep   a cell starts icing over. Fires up to four times per takeover,
 //                 so it has to be quiet and short or it becomes a drum pattern.
@@ -10,9 +10,7 @@
 //                 darkens as the reel cools.
 //   ice_crack     the slab setting. One snap, a body, a glassy ring, and a few
 //                 settling crackles after it.
-//   reel_stop_1..5  one tactile ice-and-steel detent per reel. Same pitch
-//                   centre, different attacks; the fifth has a little more
-//                   shimmer without turning the stops into a rising melody.
+//   reel_stop     one light ice-and-steel detent, the same on every reel.
 //
 // ── How these are built ──────────────────────────────────────────────────────
 //
@@ -257,29 +255,30 @@ const writeWav = (name, buf) => {
 	writeWav('ice_crack.wav', fadeEnds(normalize(out, 0.9), 8));
 }
 
-// ── 4. reel detents ─────────────────────────────────────────────────────────
-// The visible stop is the transient at sample zero. A steel catch, a short
-// wooden housing knock and three inharmonic ice partials give it material;
-// fixed frequencies avoid the old bongo's pitch swoop. The click changes
-// texture across five stops, with a touch more ice on the fifth.
-for (let reel = 0; reel < 5; reel++) {
-	const out = buffer(0.19);
-	const click = svf(noise(0.025), () => 2100 + reel * 90, 0.75, 'band');
+// ── 4. the reel stop ────────────────────────────────────────────────────────
+// ONE light detent, the same on every reel. The five-stop set it replaces was
+// a ladder inherited from Hot Miami (a rate step per reel there; here a level
+// and shimmer step), and on a base-game spin it read as the stops swelling
+// louder reel by reel. Now every reel ends on the same small click, as the
+// free game's quick stops always sounded. The visible stop is the transient at
+// sample zero: a short steel catch, a soft knock under it, a little ice.
+{
+	const out = buffer(0.16);
+	const click = svf(noise(0.02), () => 2200, 0.75, 'band');
 	for (let i = 0; i < click.length; i++) {
 		const t = i / SR;
-		out[i] += click[i] * 0.55 * Math.exp(-t * (270 - reel * 8));
+		out[i] += click[i] * 0.5 * Math.exp(-t * 290);
 	}
 	let thudPhase = 0;
 	for (let i = 0; i < out.length; i++) {
 		const t = i / SR;
-		thudPhase += 2 * Math.PI * 118 / SR;
+		thudPhase += 2 * Math.PI * 122 / SR;
 		const attack = Math.min(1, t * 1100);
-		out[i] += Math.sin(thudPhase) * attack * Math.exp(-t * 48) * 0.72;
-		out[i] += Math.sin(2 * Math.PI * 285 * t) * attack * Math.exp(-t * 83) * 0.3;
-		for (const [freq, decay, level] of [[827, 46, 0.15], [1379, 59, 0.1], [2237, 83, 0.07]])
-			out[i] += Math.sin(2 * Math.PI * freq * t) * Math.exp(-t * decay) * level * (1 + reel * 0.07);
+		out[i] += Math.sin(thudPhase) * attack * Math.exp(-t * 60) * 0.55;
+		for (const [freq, decay, level] of [[827, 60, 0.1], [1379, 75, 0.07], [2237, 95, 0.05]])
+			out[i] += Math.sin(2 * Math.PI * freq * t) * Math.exp(-t * decay) * level;
 	}
-	writeWav(`reel_stop_${reel + 1}.wav`, fadeEnds(normalize(out, 0.66 + reel * 0.025), 3));
+	writeWav('reel_stop.wav', fadeEnds(normalize(out, 0.5), 3));
 }
 
 console.log('frost audio written to', path.relative(appRoot, OUT));

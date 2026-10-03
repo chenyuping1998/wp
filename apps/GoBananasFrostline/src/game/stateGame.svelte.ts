@@ -44,9 +44,9 @@ const onSymbolLand = ({ rawSymbol, reelIndex }: { rawSymbol: RawSymbol; reelInde
 	}
 };
 
-// A timbre sequence rather than a pitch ladder: each reel has its own detent,
-// and all five use the same fixed low body. The event fires on the reel's actual
-// stopping callback, so the audio onset is the visible stop.
+// Five event names, ONE sound: Sound.svelte maps them all to the same light
+// click, so no reel stops louder than another. The event fires on the reel's
+// actual stopping callback, so the audio onset is the visible stop.
 const REEL_STOP_SOUNDS = [
 	'sfx_reel_stop_1', 'sfx_reel_stop_2', 'sfx_reel_stop_3', 'sfx_reel_stop_4', 'sfx_reel_stop_5',
 ] as const;
