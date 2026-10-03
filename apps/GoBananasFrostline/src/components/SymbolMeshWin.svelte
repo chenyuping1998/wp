@@ -53,7 +53,7 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
 	import { CANVAS, skin } from '../game/meshWin/meshRig';
-	import { MESH_WINS, MESH_LANDS, MESH_IDLES } from '../game/meshWin';
+	import { MESH_WINS, MESH_LANDS, MESH_IDLES, MESH_TEASES, teasePose } from '../game/meshWin';
 	import ImpactDust from './ImpactDust.svelte';
 
 	type Props = {
@@ -75,6 +75,13 @@
 		/** IDLE mode (game/meshWin/idles.ts): an act between spins, chosen by the
 		 *  idle director. Quiet in the same way a landing is. */
 		idle?: boolean;
+		/** TEASE mode (game/meshWin/teases.ts): the Scatter sways while the spin
+		 *  is still undecided. Loops while `teaseOn`; once that drops it blends
+		 *  home over TEASE_HOME_MS — SymbolSprite takes the cell back after. */
+		tease?: boolean;
+		teaseOn?: boolean;
+		/** its weight (teaseWeight: harder with each Scatter down) */
+		teaseK?: number;
 		oncomplete?: () => void;
 	};
 
@@ -83,8 +90,11 @@
 	const parent = getContextParent();
 	// a landing and an idle act are both QUIET: inside the cell, no light, no
 	// sparks, no dust, no frame, no pop, no completion of their own
-	const landing = !!props.land || !!props.idle;
-	const spec = props.idle
+	const landing = !!props.land || !!props.idle || !!props.tease;
+	const teaseSpec = props.tease ? MESH_TEASES[props.symbolName] : undefined;
+	const spec = teaseSpec
+		? teaseSpec
+		: props.idle
 		? MESH_IDLES[props.symbolName]
 		: props.land
 			? MESH_LANDS[props.symbolName]
@@ -133,7 +143,9 @@
 	const root = new Container();
 
 	onMount(() => {
-		const speed = stateBetDerived.timeScale();
+		// a tease runs on the wall clock: it lasts as long as the reels take,
+		// and turbo already shortens that
+		const speed = teaseSpec ? 1 : stateBetDerived.timeScale();
 		const started = performance.now();
 		// WinLines already starts each reel as the runner reaches it. React at
 		// that moment instead of delaying the picture a second time.
@@ -215,10 +227,15 @@
 		const rows = Math.ceil(SHEEN_FRAMES / SHEEN_COLS);
 		const atlasW = SHEEN_COLS * SHEEN_CELL, atlasH = rows * SHEEN_CELL;
 		let sheenCell = -1;
+		// when the tease was told to stop, in its own ms (-1: still running)
+		let stoppedAt = -1;
 
 		const tick = () => {
 			const t = Math.max(0, performance.now() - started - delay / speed) * speed;
-			const pose = spec.pose(rig, t, props.amp);
+			if (teaseSpec && !props.teaseOn && stoppedAt < 0) stoppedAt = t;
+			const pose = teaseSpec
+				? teasePose(teaseSpec, rig, t, props.teaseK ?? 1, stoppedAt < 0 ? -1 : t - stoppedAt)
+				: spec.pose(rig, t, props.amp);
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();
 			// the cell pop and hop are the WIN's: a landing stays in its cell

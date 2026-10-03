@@ -7,7 +7,8 @@
 
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
-	import { MESH_LANDS, MESH_IDLES, AMP_MAX } from '../game/meshWin';
+	import { MESH_LANDS, MESH_IDLES, MESH_TEASES, AMP_MAX, TEASE_HOME_MS, teaseWeight } from '../game/meshWin';
+	import { stateGame } from '../game/stateGame.svelte';
 	import { idleCells } from '../game/idleDirector';
 	import SymbolMeshWin from './SymbolMeshWin.svelte';
 
@@ -101,7 +102,7 @@
 	$effect(() => {
 		const name = props.symbolName;
 		const spec = name ? MESH_IDLES[name] : undefined;
-		const still = !!props.idleable && blur <= 0.01 && !props.landing && !meshLand;
+		const still = !!props.idleable && blur <= 0.01 && !props.landing && !meshLand && !teasing;
 		if (!spec || !still || !name) {
 			idleAct = null;
 			return;
@@ -109,7 +110,7 @@
 		const off = idleCells.add({
 			name,
 			play: () => {
-				if (idleAct || meshLand || destroyed) return false;
+				if (idleAct || meshLand || teasing || destroyed) return false;
 				const mine = ++idleId;
 				idleAct = { id: mine };
 				clearTimeout(idleTimer);
@@ -123,6 +124,43 @@
 			off();
 			clearTimeout(idleTimer);
 		};
+	});
+
+	// THE TEASE (game/meshWin/teases.ts, from GoBananubis). A Scatter already
+	// down sways on its cell while any reel is still under the anticipation —
+	// harder with each Scatter — and when the last one stops it settles back
+	// onto the drawing and hands the cell to the sprite again. Anything else the
+	// cell does (a spin, a landing) takes it away at once.
+	const teaseOn = $derived(
+		!!props.symbolName &&
+			!!MESH_TEASES[props.symbolName] &&
+			!!props.idleable &&
+			blur <= 0.01 &&
+			!props.landing &&
+			!meshLand &&
+			stateGame.board.some((reel) => reel.reelState.anticipating),
+	);
+	const teaseK = $derived(teaseWeight(stateGame.scatterCounter));
+	let teasing = $state<{ id: number } | null>(null);
+	let teaseId = 0;
+	$effect(() => {
+		if (teaseOn) {
+			if (!teasing) teasing = { id: ++teaseId };
+			return;
+		}
+		if (!teasing) return;
+		const cut = !props.idleable || blur > 0.01 || props.landing || !!meshLand;
+		if (cut) {
+			teasing = null;
+			return;
+		}
+		// reels stopped: let it blend home, then give the cell back (a timer,
+		// so a hidden tab cannot leave it on the cell)
+		const mine = teasing.id;
+		const home = setTimeout(() => {
+			if (teasing?.id === mine) teasing = null;
+		}, TEASE_HOME_MS + 60);
+		return () => clearTimeout(home);
 	});
 
 	const runSquash = async () => {
@@ -203,6 +241,18 @@
 		<SymbolMeshWin
 			land
 			amp={meshLand.amp}
+			symbolInfo={props.symbolInfo}
+			symbolName={props.symbolName}
+			x={props.x}
+			y={props.y}
+		/>
+	{/key}
+{:else if teasing && blur <= 0.01 && props.symbolName}
+	{#key teasing.id}
+		<SymbolMeshWin
+			tease
+			{teaseOn}
+			{teaseK}
 			symbolInfo={props.symbolInfo}
 			symbolName={props.symbolName}
 			x={props.x}

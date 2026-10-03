@@ -517,28 +517,29 @@ export const AMP_MAX = 1.5;
 
 export const settled = (spec: MeshWinSpec): MeshWinSpec => ({
 	...spec,
-	pose: (rig, t, amp) => {
-		const pose = spec.pose(rig, t, amp);
-		const k = smoothstep((t - (spec.durationMs - SETTLE_MS)) / SETTLE_MS);
-		if (k <= 0) return pose;
-		for (const b of pose.bones) {
-			b.angle = mix(b.angle, 0, k);
-			b.along = mix(b.along, 1, k);
-			b.across = mix(b.across, 1, k);
-			b.dx = mix(b.dx, 0, k);
-			b.dy = mix(b.dy, 0, k);
-		}
-		const r = pose.rigid;
-		r.sx = mix(r.sx, 1, k);
-		r.sy = mix(r.sy, 1, k);
-		r.rot = mix(r.rot, 0, k);
-		r.pop = mix(r.pop, 1, k);
-		r.dx = mix(r.dx, 0, k);
-		r.dy = mix(r.dy, 0, k);
-		pose.flash = mix(pose.flash, 0, k);
-		pose.air = mix(pose.air, 0, k);
-		pose.plateHit = mix(pose.plateHit, 1, k);
-		if (k >= 1) pose.sheen = -1;
-		return pose;
-	},
+	pose: (rig, t, amp) => blendHome(spec.pose(rig, t, amp), smoothstep((t - (spec.durationMs - SETTLE_MS)) / SETTLE_MS)),
 });
+
+/** blend a pose toward rest by k (0 = untouched, 1 = exactly rest), in place */
+export const blendHome = (pose: Pose, k: number): Pose => {
+	if (k <= 0) return pose;
+	for (const b of pose.bones) {
+		b.angle = mix(b.angle, 0, k);
+		b.along = mix(b.along, 1, k);
+		b.across = mix(b.across, 1, k);
+		b.dx = mix(b.dx, 0, k);
+		b.dy = mix(b.dy, 0, k);
+	}
+	const r = pose.rigid;
+	r.sx = mix(r.sx, 1, k);
+	r.sy = mix(r.sy, 1, k);
+	r.rot = mix(r.rot, 0, k);
+	r.pop = mix(r.pop, 1, k);
+	r.dx = mix(r.dx, 0, k);
+	r.dy = mix(r.dy, 0, k);
+	pose.flash = mix(pose.flash, 0, k);
+	pose.air = mix(pose.air, 0, k);
+	pose.plateHit = mix(pose.plateHit, 1, k);
+	if (k >= 1) pose.sheen = -1;
+	return pose;
+};

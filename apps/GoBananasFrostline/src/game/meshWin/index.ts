@@ -44,5 +44,9 @@ export const MESH_IDLES: Record<string, MeshWinSpec> = Object.fromEntries(
 );
 export { IDLE_WEIGHT } from './idles';
 
+// the Scatter's sway while the spin is still undecided (teases.ts). Not
+// `settled`: it has no fixed end — teasePose blends it home when told to stop.
+export { TEASES as MESH_TEASES, teasePose, teaseWeight, TEASE_HOME_MS, type TeaseSpec } from './teases';
+
 export { AMP_MAX } from './meshRig';
 export type { MeshWinSpec } from './meshRig';

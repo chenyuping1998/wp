@@ -61,7 +61,7 @@ const { PNG } = require('pngjs');
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const core = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/meshRig.ts')).href);
-const { MESH_WINS, MESH_LANDS, MESH_IDLES, AMP_MAX, COIN, COUNTER, PILLAR, SIGN, FRAME } = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/index.ts')).href);
+const { MESH_WINS, MESH_LANDS, MESH_IDLES, MESH_TEASES, AMP_MAX, COIN, COUNTER, PILLAR, SIGN, FRAME } = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/index.ts')).href);
 // The landings are gated at the HEAVIEST impact a cell can ask for (AMP_MAX),
 // so the worst case is the one measured. Named 'H1:land' etc.
 const LAND_SPECS = Object.fromEntries(
@@ -71,7 +71,14 @@ const LAND_SPECS = Object.fromEntries(
 	]),
 );
 const IDLE_SPECS = Object.fromEntries(Object.entries(MESH_IDLES).map(([k, spec]) => [`${k}:idle`, spec]));
-const MESH_SPECS = { ...MESH_WINS, ...LAND_SPECS, ...IDLE_SPECS, COIN, COUNTER, PILLAR, SIGN, FRAME };
+// The Scatter's tease (teases.ts) at each weight it can be played at — two,
+// three and four-plus Scatters down: the loop, then the stop. Named 'S:tease@0.85'.
+const TEASE_SPECS = Object.fromEntries(
+	Object.entries(MESH_TEASES).flatMap(([k, spec]) =>
+		[0.85, 1.05, 1.25].map((w) => [`${k}:tease@${w}`, { ...spec, pose: (rig, ms) => spec.pose(rig, ms, w) }]),
+	),
+);
+const MESH_SPECS = { ...MESH_WINS, ...LAND_SPECS, ...IDLE_SPECS, ...TEASE_SPECS, COIN, COUNTER, PILLAR, SIGN, FRAME };
 
 const pick = args[0] && !args[0].startsWith('--') ? args.shift().split(',') : Object.keys(MESH_SPECS);
 const mode = args[0];
