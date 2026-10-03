@@ -38,7 +38,10 @@ export const H3: MeshWinSpec = {
 	landMs: T.land,
 	hitMs: 340,
 	rig: {
-		grid: { x0: 28, y0: 34, x1: 218, y1: 226, cols: 34, rows: 34 },
+		grid: { x0: 18, y0: 18, x1: 228, y1: 234, cols: 37, rows: 38 },
+		// covers the WHOLE painted subject (alpha > 8 on its _subject.png, which
+		// runs to 20..236). It used to stop short of it, so the mesh dropped the
+		// subject's edges while it acted and they reappeared with the sprite.
 		soft: 6,
 		parts: [
 			// the runners: the part that touches the ground and never leaves it

@@ -39,7 +39,10 @@ export const H2: MeshWinSpec = {
 	landMs: T.tipB,
 	hitMs: 380,
 	rig: {
-		grid: { x0: 78, y0: 28, x1: 186, y1: 228, cols: 24, rows: 40 },
+		grid: { x0: 74, y0: 18, x1: 188, y1: 236, cols: 25, rows: 43 },
+		// covers the WHOLE painted subject (alpha > 8 on its _subject.png, which
+		// runs to 20..236). It used to stop short of it, so the mesh dropped the
+		// subject's edges while it acted and they reappeared with the sprite.
 		soft: 4,
 		parts: [
 			// the body: the cylinder and its base

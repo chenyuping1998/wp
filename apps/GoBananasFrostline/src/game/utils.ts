@@ -33,7 +33,11 @@ const REPLAY_GAP_MS = 1600;
 // token, so starting a spin invalidates any pass already in flight.
 let replayToken = 0;
 
-const stopWinLineReplay = () => {
+// Exported for the actor: a spin STARTS (onNewGameStart — the fake spin while
+// the bet request is in flight) well before playBet runs with its result, and
+// a replay pass that came due in that gap drew last round's win lines over
+// reels already spinning. Called at both points; it is idempotent.
+export const stopWinLineReplay = () => {
 	replayToken += 1;
 	eventEmitter.broadcast({ type: 'winLinesHide' });
 };

@@ -41,7 +41,10 @@ export const H1: MeshWinSpec = {
 	landMs: T.land,
 	hitMs: 210,
 	rig: {
-		grid: { x0: 32, y0: 30, x1: 214, y1: 228, cols: 32, rows: 36 },
+		grid: { x0: 18, y0: 18, x1: 238, y1: 238, cols: 38, rows: 40 },
+		// covers the WHOLE painted subject (alpha > 8 on its _subject.png, which
+		// runs to 20..236). It used to stop short of it, so the mesh dropped the
+		// subject's edges while it acted and they reappeared with the sprite.
 		soft: 5,
 		parts: [
 			// the crown: everything above the flaps, and what they hang from
