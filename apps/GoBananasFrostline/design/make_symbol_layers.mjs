@@ -101,7 +101,7 @@ const FRAME = 18;
 // same shape GoBananubis's chest had; the rest need none. The lantern's pierced
 // vent holes are deliberately NOT closed — they show plate through, and the cut
 // sends an enclosed plate-bright region back to the plate on its own.
-const CLOSE = { h1: 0, h2: 0, h3: 6, h4: 0 };
+const CLOSE = { h1: 11, h2: 5, h3: 10, h4: 7 };
 
 const morph = (mask, W, H, R, grow) => {
 	// separable square max (grow) or min (shrink)
@@ -134,7 +134,7 @@ const cut = (plate, close) => {
 	// Nothing within EDGE of the border is ever subject. The centroid test below
 	// is not enough on its own: on h3 the right and bottom frame bars join into
 	// one L whose centroid lands INSIDE the band, and the chest came out framed.
-	const EDGE = 38;
+	const EDGE = 24;
 	const hit = new Uint8Array(N);
 	for (let i = 0; i < N; i++) {
 		const x = i % W, y = (i / W) | 0;
@@ -208,8 +208,15 @@ const cut = (plate, close) => {
 		}
 		const cx = sx / island.length, cy = sy / island.length;
 		if (Math.min(cx, W - cx, cy, H - cy) < FRAME || island.length < 12) continue;
+		// The new ice bezel has four bright gem rivets. They are separate islands,
+		// but are frame furniture, not moving parts of the painted subject.
+		if (Math.min(cx, W - cx) < 48 && Math.min(cy, H - cy) < 48) continue;
 		for (const i of island) keep[i] = 1;
 	}
+	for (let y = 0; y < H; y++)
+		for (let x = 0; x < W; x++)
+			if (Math.min(x, W - 1 - x) < 45 && Math.min(y, H - 1 - y) < 45)
+				keep[y * W + x] = 0;
 
 	// grow 2px (the dark outline ring is neutral and fails the colour test),
 	// then feather 2px so the edge is not a hard alias
@@ -263,7 +270,7 @@ const fillPlate = (plate, alpha) => {
 	for (let i = 0; i < N; i++) hole[i] = alpha[i] > 0.03 ? 1 : 0;
 	// grown 4px: the dark outline and bevel shade around a subject run wider
 	// than its cut, and at 2px h4 left a dotted ghost of the ankh's outline
-	for (let g = 0; g < 4; g++) {
+	for (let g = 0; g < 8; g++) {
 		const next = Uint8Array.from(hole);
 		for (let y = 1; y < H - 1; y++)
 			for (let x = 1; x < W - 1; x++) {
@@ -306,39 +313,9 @@ const fillPlate = (plate, alpha) => {
 		for (let it = 0; it < 1500; it++) for (const i of idx) v[i] = 0.25 * (v[i - 1] + v[i + 1] + v[i - W] + v[i + W]);
 		for (const i of idx) out[i * 4 + c] = v[i];
 	}
-	// grain comes from a clear square of this plate, inside the frame and
-	// clear of the hole. A fixed patch overlapped h4's ankh and tiled
-	// its cracks across the fill.
-	const PATCH = (() => {
-		// 16px from the frame's inner edge (36) in: h3's chest fills its plate
-		// nearly to the frame and leaves no 24px square anywhere
-		const P = 16, IN = 36, M = 4;
-		for (let y = IN + M; y + P + M < H - IN; y += 2)
-			for (let x = IN + M; x + P + M < W - IN; x += 2) {
-				let clear = true;
-				for (let yy = y - M; yy < y + P + M && clear; yy++)
-					for (let xx = x - M; xx < x + P + M; xx++)
-						if (hole[yy * W + xx]) { clear = false; break; }
-				if (clear) return { x, y, w: P, h: P };
-			}
-		throw new Error('no clear grain patch on this plate');
-	})();
-	const lum = (i) => (plate.data[i * 4] + plate.data[i * 4 + 1] + plate.data[i * 4 + 2]) / 3;
-	const grainAt = (x, y) => {
-		const px = PATCH.x + (x % PATCH.w), py = PATCH.y + (y % PATCH.h);
-		let s = 0, n = 0;
-		for (let dy = -2; dy <= 2; dy++)
-			for (let dx = -2; dx <= 2; dx++) {
-				s += lum((py + dy) * W + px + dx);
-				n++;
-			}
-		return lum(py * W + px) - s / n;
-	};
 	for (const i of idx) {
-		const x = i % W, y = (i / W) | 0;
 		const shade = 1 - 0.1 * Math.min(1, depth[i] / 18);
-		const grain = grainAt(x, y) * 0.9;
-		for (let c = 0; c < 3; c++) out[i * 4 + c] = Math.max(0, Math.min(255, Math.round(out[i * 4 + c] * shade + grain)));
+		for (let c = 0; c < 3; c++) out[i * 4 + c] = Math.max(0, Math.min(255, Math.round(out[i * 4 + c] * shade)));
 		out[i * 4 + 3] = 255;
 	}
 	return out;

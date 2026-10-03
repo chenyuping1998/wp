@@ -11,7 +11,7 @@
 		"check:refs": "node design/check_undefined_refs.mjs",
 		"check:social": "node design/check_social_words.mjs",
 		"replay:harness": "node design/make_replay_harness.mjs",
-		"build": "node design/check_assets.mjs && node design/check_audio.mjs && node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_ui_theme_refs.mjs && node design/check_anticipation.mjs && node design/check_frost_takeover.mjs && node design/check_mesh_wins.mjs && node design/check_book_events.mjs && node design/check_types.mjs && vite build",
+		"build": "node design/check_assets.mjs && node design/check_audio.mjs && node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_ui_theme_refs.mjs && node design/check_anticipation.mjs && node design/check_frost_takeover.mjs && node design/check_mesh_wins.mjs && node design/check_banner_mesh.mjs && node design/check_background_mesh.mjs && node design/check_coat_mesh.mjs && node design/check_book_events.mjs && node design/check_types.mjs && vite build",
 		"preview": "vite preview",
 		"check:meshwins": "node design/check_mesh_wins.mjs",
 		"check:types": "node design/check_types.mjs",

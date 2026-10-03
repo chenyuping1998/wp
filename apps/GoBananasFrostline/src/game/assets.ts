@@ -252,6 +252,77 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/w.png', import.meta.url).href,
 		preload: true,
 	},
+	// Panel-mesh win layers for low pays, Wild and Scatter.
+	gbL1Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Glow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Sheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbWGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbWSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_sheen.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbSSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_sheen.png', import.meta.url).href,
+		preload: true,
+	},
 
 	// bet-bar button icons (design/generate_ui_icons.mjs) — brass drawn icons
 	// replacing the template's text/emoji glyphs
@@ -385,8 +456,8 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/p.png', import.meta.url).href,
 		preload: true,
 	},
-	// The sergeant standing beside the board. Built from the supplied character
-	// PSD — see design/extract_monkey_psd.py and design/generate_monkey_spine.mjs.
+	// The sergeant standing beside the board. Built from the Frostline cutout —
+	// see design/slice_frostline_monkey.mjs and design/generate_monkey_spine.mjs.
 	gbMonkey: {
 		type: 'spine',
 		src: {

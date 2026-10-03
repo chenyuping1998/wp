@@ -107,6 +107,8 @@ export type PartSpec = {
 
 export type RigSpec = {
 	grid: { x0: number; y0: number; x1: number; y1: number; cols: number; rows: number };
+	/** Full texture dimensions for patches cut from a background plate. */
+	uv?: Point;
 	parts: PartSpec[];
 	/** px width of the soft blend between neighbouring parts. Wider buys joint
 	 *  range and drags the neighbour's edge — see the skill. */
@@ -136,8 +138,8 @@ export const buildRig = (spec: RigSpec): Rig => {
 			const y = y0 + ((y1 - y0) * r) / rows;
 			rest[v * 2] = x;
 			rest[v * 2 + 1] = y;
-			uvs[v * 2] = x / CANVAS;
-			uvs[v * 2 + 1] = y / CANVAS;
+			uvs[v * 2] = x / (spec.uv?.[0] ?? CANVAS);
+			uvs[v * 2 + 1] = y / (spec.uv?.[1] ?? CANVAS);
 		}
 	const indices = new Uint32Array(cols * rows * 6);
 	for (let r = 0, k = 0; r < rows; r++)

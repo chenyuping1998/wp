@@ -32,8 +32,7 @@
 	const isSprite = $derived(symbolInfo.type === 'sprite');
 	const isWin = $derived(props.state === 'win');
 	// Symbols whose win is a deforming mesh instead of the halo-and-pulse
-	// animation: the high pays (game/meshWin/*). Everything else still takes
-	// SymbolWinAnim.
+	// animation: all painted symbols (game/meshWin/*).
 	const isMeshWin = $derived(isWin && props.rawSymbol.name in MESH_WINS);
 </script>
 
@@ -41,6 +40,7 @@
 	<SymbolMeshWin
 		{symbolInfo}
 		symbolName={props.rawSymbol.name}
+			showWinFrame={props.rawSymbol.name !== 'S'}
 		reel={props.reel}
 		x={props.x}
 		y={props.y}

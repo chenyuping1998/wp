@@ -20,6 +20,8 @@
 	import BigWinFx from './BigWinFx.svelte';
 	import FxBurst from './FxBurst.svelte';
 	import GoldText from './GoldText.svelte';
+	import PropMesh from './PropMesh.svelte';
+	import { bannerMesh } from '../game/meshWin/banner';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
@@ -36,6 +38,7 @@
 		max: 'gbWinBannerMax',
 	};
 	const BANNER_RATIO = 560 / 1000;
+	const BANNER_MESH = Object.fromEntries(Object.values(BANNER_KEY).map((key) => [key, bannerMesh(key)]));
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
 		big: { mult: 1, glowTint: 0x9ec44a },
@@ -88,6 +91,7 @@
 	// ── plaque FX clock: entrance overshoot, breathing glow, periodic blink,
 	// rim twinkles and repeating bursts on the top tiers ──────────────────────
 	let fxNow = $state(-1);
+	let bannerLandAt = $state(-1);
 	let fxRaf = 0;
 	let twinkles = $state<{ id: number; born: number; angle: number }[]>([]);
 	let nextTwinkleAt = 0;
@@ -96,6 +100,7 @@
 	let nextBurstAt = 0;
 
 	const startBannerFx = () => {
+		bannerLandAt = -1;
 		cancelAnimationFrame(fxRaf);
 		twinkles = [];
 		nextTwinkleAt = 0;
@@ -175,7 +180,7 @@
 	{#if winLevelData}
 		{@const isBigWin = winLevelData.type === 'big'}
 		{@const duration = winLevelData.presentDuration}
-		<WinCountUpProvider {amount} {duration} oncomplete={() => onCountUpComplete()}>
+		<WinCountUpProvider {amount} {duration} oncomplete={() => { bannerLandAt = fxNow; onCountUpComplete(); }}>
 			{#snippet children({ countUpAmount, startCountUp, finishCountUp, countUpCompleted })}
 				{#if isBigWin}
 					<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
@@ -226,7 +231,11 @@
 									height={bh * 1.8}
 									alpha={bannerPose.glow}
 								/>
-								<Sprite key={bannerKey} anchor={0.5} width={bw} height={bh} />
+								<PropMesh
+									spec={BANNER_MESH[bannerKey]}
+									env={{ t: Math.max(0, fxNow * 1000), landT: bannerLandAt < 0 ? -1 : Math.max(0, (fxNow - bannerLandAt) * 1000), blink: bannerPose.blink }}
+									width={bw} height={bh} anchor={0.5}
+								/>
 								<!-- additive self-copy = the whole plaque flares -->
 								{#if bannerPose.blink > 0}
 									<Sprite

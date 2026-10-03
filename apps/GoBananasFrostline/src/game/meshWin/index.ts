@@ -14,11 +14,15 @@ import { H1 } from './h1Ushanka';
 import { H2 } from './h2Flare';
 import { H3 } from './h3Sled';
 import { H4 } from './h4Lantern';
+import { L1, L2, L3, L4, L5, W, S } from './panelWins';
+export { MESH_BG } from './bgPatches';
+export { COIN } from './coinP';
+export { COUNTER } from './counterPanel';
 
 // every win blends home at the end, so the swap back to the static sprite is
 // seamless (meshRig.settled)
 export const MESH_WINS: Record<string, MeshWinSpec> = Object.fromEntries(
-	Object.entries({ H1, H2, H3, H4 }).map(([k, spec]) => [k, settled(spec)]),
+	Object.entries({ H1, H2, H3, H4, L1, L2, L3, L4, L5, W, S }).map(([k, spec]) => [k, settled(spec)]),
 );
 
 export type { MeshWinSpec } from './meshRig';

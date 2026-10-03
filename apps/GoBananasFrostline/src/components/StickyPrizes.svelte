@@ -26,6 +26,9 @@
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
+	import PropMesh from './PropMesh.svelte';
+	import { COIN } from '../game/meshWin';
+	import { coinFaceSwell, coinLift, type CoinEnv } from '../game/meshWin/coinP';
 
 	type PrizeEntry = {
 		reel: number;
@@ -33,6 +36,8 @@
 		prize: number;
 		scale: Tween<number>;
 		landedAt: number;
+		hopAt: number;
+		celebrateAt: number;
 	};
 
 	const context = getContext();
@@ -57,17 +62,17 @@
 
 	let clock = $state(0);
 	let rafId = 0;
-	let shakeRunning = false;
+	let clockRunning = false;
 
-	const startShake = () => {
-		if (shakeRunning) return;
-		shakeRunning = true;
+	const startClock = () => {
+		if (clockRunning) return;
+		clockRunning = true;
 		const step = (now: number) => {
 			clock = now;
-			if (prizes.some((entry) => now - entry.landedAt < SHAKE_MS)) {
+			if (prizes.length > 0) {
 				rafId = requestAnimationFrame(step);
 			} else {
-				shakeRunning = false;
+				clockRunning = false;
 			}
 		};
 		rafId = requestAnimationFrame(step);
@@ -88,6 +93,14 @@
 	};
 
 	let prizes = $state<PrizeEntry[]>([]);
+	const coinEnv = (entry: PrizeEntry): CoinEnv => ({
+		t: clock,
+		stickT: entry.landedAt > 0 ? clock - entry.landedAt : -1,
+		hopT: entry.hopAt > 0 && clock >= entry.hopAt ? clock - entry.hopAt : -1,
+		celebrateT: entry.celebrateAt > 0 && clock >= entry.celebrateAt ? clock - entry.celebrateAt : -1,
+		big: isBig(entry.prize),
+	});
+	const ART_PX = SYMBOL_SIZE / 256;
 
 	onDestroy(() => cancelAnimationFrame(rafId));
 
@@ -95,9 +108,17 @@
 		// New coins landed and stuck: pop each in with a bounce (superspin
 		// "hold em" — every new coin also resets the remaining spins).
 		stickyPrizesNew: async ({ prizes: incoming }) => {
-			const fresh = incoming.map((p) => ({ ...p, scale: new Tween(0), landedAt: performance.now() }));
+			const fresh = incoming.map((p) => ({
+				...p, scale: new Tween(0), landedAt: performance.now(), hopAt: -1, celebrateAt: -1,
+			}));
+			const origin = incoming[0];
+			const now = performance.now();
+			for (const held of prizes) {
+				if (!origin || incoming.some((p) => keyOf(p) === keyOf(held))) continue;
+				held.hopAt = now + 110 + Math.hypot(held.reel - origin.reel, held.row - origin.row) * 45;
+			}
 			prizes = [...prizes.filter((p) => !incoming.some((n) => keyOf(n) === keyOf(p))), ...fresh];
-			startShake();
+			startClock();
 			for (const entry of fresh) {
 				entry.landedAt = performance.now();
 				entry.scale.set(1, { duration: 420, easing: backOut });
@@ -108,8 +129,10 @@
 		// Final tally: pulse every winning coin while the win counts up.
 		stickyPrizesCelebrate: async ({ wins }) => {
 			const winningKeys = new Set(wins.map(keyOf));
+			const now = performance.now();
 			for (const entry of prizes) {
 				if (!winningKeys.has(keyOf(entry))) continue;
+				entry.celebrateAt = now + entry.reel * 45 + entry.row * 9;
 				entry.scale.set(1.35, { duration: 260, easing: cubicOut });
 			}
 			await waitForTimeout(420);
@@ -118,7 +141,10 @@
 		},
 		// Bet resume: rebuild instantly, no animation.
 		stickyPrizesRestore: ({ prizes: restored }) => {
-			prizes = restored.map((p) => ({ ...p, scale: new Tween(1), landedAt: 0 }));
+			prizes = restored.map((p) => ({
+				...p, scale: new Tween(1), landedAt: 0, hopAt: -1, celebrateAt: -1,
+			}));
+			startClock();
 		},
 		stickyPrizesClear: () => {
 			prizes = [];
@@ -165,8 +191,10 @@
 			}}
 		/>
 		{@const shake = shakeOffset(entry)}
-		<Sprite
-			key="gbP"
+		{@const env = coinEnv(entry)}
+		<PropMesh
+			spec={COIN}
+			{env}
 			anchor={0.5}
 			x={x + shake.x}
 			y={y + shake.y}
@@ -187,7 +215,11 @@
 				alpha={0.22 + 0.18 * Math.min(1, entry.scale.current)}
 			/>
 		{/if}
-		<Container x={x + shake.x} y={y + shake.y} scale={entry.scale.current}>
+		<Container
+			x={x + shake.x}
+			y={y + shake.y - coinLift(env) * ART_PX * entry.scale.current}
+			scale={entry.scale.current * (1 + 0.6 * coinFaceSwell(env))}
+		>
 			<GoldText
 				text={bookEventAmountToCurrencyString(entry.prize)}
 				fontSize={28}

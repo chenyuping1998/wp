@@ -1,19 +1,19 @@
 <script lang="ts">
-	import { Container, Graphics, Rectangle, Sprite } from 'pixi-svelte';
-	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { Container, Rectangle, Sprite } from 'pixi-svelte';
 	import { FadeContainer } from 'components-pixi';
 	import { SECOND } from 'constants-shared/time';
 	import { stateBet } from 'state-shared';
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import { MESH_BG } from '../game/meshWin';
+	import BackgroundMeshPatch from './BackgroundMeshPatch.svelte';
 
 	const context = getContext();
 	const isSuperspin = $derived(stateBet.activeBetModeKey === 'SUPERSPIN');
 	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame' && !isSuperspin);
 	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame' && !isSuperspin);
 
-	let beamPhase = $state(0);
 	let clock = $state(0);
 
 	// ── slow ken-burns drift over a small overscan, so the still jungle art
@@ -55,18 +55,18 @@
 	const MOTE_COLORS = [0xffffff, 0xe8f6ff, 0xbcdcf0, 0x9fc8e4];
 	// Superspin runs colder and quieter — same snow, pushed toward moonlight.
 	const NIGHT_COLORS = [0xe8f6ff, 0xffffff, 0x9fd0ff, 0xc8e2f4];
-	const motes = Array.from({ length: 22 }, (_, i) => ({
+	const motes = Array.from({ length: 12 }, (_, i) => ({
 		seedX: Math.random(),
 		seedY: Math.random(),
 		// A wider spread than the bokeh had (it was 12-58). Snow at one size reads
 		// as a texture laid over the screen; a mix of near and far flakes reads as
 		// weather with depth in it.
-		size: 8 + Math.random() * 52,
+		size: 6 + Math.random() * 24,
 		colorIndex: i % 4,
 		phase: Math.random() * Math.PI * 2,
 		fallSpeed: 0.012 + Math.random() * 0.022,
 		swayAmp: 18 + Math.random() * 46,
-		alpha: 0.1 + Math.random() * 0.22,
+		alpha: 0.06 + Math.random() * 0.12,
 	}));
 
 	const moteState = (mote: (typeof motes)[number]) => {
@@ -82,44 +82,8 @@
 		};
 	};
 
-	const drawSoftBeams = (g: PixiGraphics, phaseShift = 0) => {
-		const { width, height } = context.stateLayoutDerived.canvasSizes();
-		const beamReachY = Math.min(height * 0.42, 340);
-		const centerX = width * 0.5 + Math.sin(beamPhase + phaseShift) * width * 0.15;
-
-		g.clear();
-
-		// Keep beams very subtle and in the upper area so they don't distract from reels.
-		g.beginFill(0xdff0ff, 0.05);
-		g.drawPolygon([
-			centerX - width * 0.018,
-			0,
-			centerX + width * 0.018,
-			0,
-			centerX + width * 0.22,
-			beamReachY,
-			centerX - width * 0.22,
-			beamReachY,
-		]);
-		g.endFill();
-
-		g.beginFill(0x9fd0ff, 0.035);
-		g.drawPolygon([
-			centerX + width * 0.11,
-			0,
-			centerX + width * 0.135,
-			0,
-			centerX + width * 0.32,
-			beamReachY * 0.9,
-			centerX + width * 0.26,
-			beamReachY * 0.9,
-		]);
-		g.endFill();
-	};
-
 	onMount(() => {
 		const id = setInterval(() => {
-			beamPhase += 0.004;
 			clock += 0.016;
 		}, 16);
 		return () => clearInterval(id);
@@ -132,18 +96,25 @@
 <!-- 金色日出叢林 base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="gbBgBase" {...parallax} />
-	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
+	{#each MESH_BG.gbBgBase as spec (spec.symbol)}
+		<BackgroundMeshPatch {spec} {...parallax} />
+	{/each}
 </FadeContainer>
 
 <!-- 烈日突擊 free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgFeature" {...parallax} />
-	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
+	{#each MESH_BG.gbBgFeature as spec (spec.symbol)}
+		<BackgroundMeshPatch {spec} {...parallax} />
+	{/each}
 </FadeContainer>
 
 <!-- 夜襲 superspin background -->
 <FadeContainer show={isSuperspin} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgSuperspin" {...parallax} />
+	{#each MESH_BG.gbBgSuperspin as spec (spec.symbol)}
+		<BackgroundMeshPatch {spec} {...parallax} />
+	{/each}
 </FadeContainer>
 
 <!-- ambient bokeh drifting in front of whichever scene is showing -->

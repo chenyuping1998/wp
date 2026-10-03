@@ -193,17 +193,18 @@ const facetColour = (k) => {
 
 const O = hexPts(R_OUT);
 const T = hexPts(R_TABLE);
+const G = hexPts(275);
 const facets = Array.from({ length: 6 }, (_, k) => {
 	const k2 = (k + 1) % 6;
 	return `<polygon points="${poly([O[k], O[k2], T[k2], T[k]])}" fill="${facetColour(k)}"/>`;
 }).join('\n');
+const goldRamp = ['#8a521a', '#bb7825', '#e4a943', '#ffe095', '#ffd06a', '#9e641e'];
+const medalRim = Array.from({ length: 6 }, (_, k) => {
+	const n = (k + 1) % 6;
+	return `<polygon points="${poly([G[k], G[n], T[n], T[k]])}" fill="${goldRamp[k]}"/>`;
+}).join('\n');
 // the ridges between faces: a dark hairline, so each face reads as a separate
 // plane rather than as one gradient
-const ridges = Array.from(
-	{ length: 6 },
-	(_, k) =>
-		`<line x1="${O[k][0].toFixed(1)}" y1="${O[k][1].toFixed(1)}" x2="${T[k][0].toFixed(1)}" y2="${T[k][1].toFixed(1)}"/>`,
-).join('');
 
 // A four-point glint: the one sharp highlight a cut stone throws.
 const glint = (x, y, r, fill, opacity) =>
@@ -221,21 +222,24 @@ const buyBonusIce = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" heigh
 		<stop offset="0" stop-color="#8fd9ff" stop-opacity="0.28"/>
 		<stop offset="1" stop-color="#8fd9ff" stop-opacity="0"/>
 	</radialGradient>
+	<radialGradient id="prizeGlow" cx="0.5" cy="0.1" r="0.75">
+		<stop offset="0" stop-color="#e6ae50" stop-opacity="0.18"/>
+		<stop offset="0.55" stop-color="#e6ae50" stop-opacity="0.04"/>
+		<stop offset="1" stop-color="#e6ae50" stop-opacity="0"/>
+	</radialGradient>
 </defs>
 <!-- the shadow the crystal casts, then its dark outline -->
 <polygon points="${poly(hexPts(R_OUT, 8))}" fill="#000000" opacity="0.45"/>
 <polygon points="${poly(O)}" fill="#0a1420"/>
 ${facets}
-<g stroke="#0a1420" stroke-width="4" opacity="0.55">${ridges}</g>
+<polygon points="${poly(G)}" fill="#442b18" stroke="#061725" stroke-width="6"/>
+${medalRim}
 <polygon points="${poly(T)}" fill="url(#table)" stroke="#0a1420" stroke-width="5" stroke-opacity="0.6"/>
 <polygon points="${poly(T)}" fill="url(#depth)"/>
-<!-- the inner reflection: the upper-left edges seen again through the table,
-     a little way in. This replaced two drawn "fractures", which at button size
-     came out as tick marks — a symbol, not depth. -->
-<polyline points="${poly([hexPts(R_TABLE - 24)[3], hexPts(R_TABLE - 24)[4], hexPts(R_TABLE - 24)[5], hexPts(R_TABLE - 24)[0]])}" fill="none" stroke="#8fd9ff" stroke-width="3" opacity="0.3" stroke-linejoin="round"/>
-<!-- the outline's own lit edge, upper-left faces only -->
-<polyline points="${poly([O[3], O[4], O[5], O[0]])}" fill="none" stroke="#ffffff" stroke-width="4" opacity="0.5" stroke-linejoin="round"/>
-${glint(O[5][0] + 14, O[5][1] + 26, 22, '#ffffff', 0.85)}
+<polygon points="${poly(T)}" fill="url(#prizeGlow)"/>
+<g fill="#ffe09a" stroke="#754519" stroke-width="4">
+	<circle cx="69" cy="320" r="11"/><circle cx="571" cy="320" r="11"/>
+</g>
 </svg>`;
 
 // ── the same crystal, CATCHING LIGHT — drawn for ADDITIVE blending ─────────
@@ -247,7 +251,6 @@ ${glint(O[5][0] + 14, O[5][1] + 26, 22, '#ffffff', 0.85)}
 const litEdges = (stroke, w) => `<g fill="none" stroke="${stroke}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round">
 	<polygon points="${poly(O)}"/>
 	<polygon points="${poly(T)}"/>
-	${Array.from({ length: 6 }, (_, k) => `<line x1="${O[k][0].toFixed(1)}" y1="${O[k][1].toFixed(1)}" x2="${T[k][0].toFixed(1)}" y2="${T[k][1].toFixed(1)}"/>`).join('')}
 </g>`;
 const buyBonusIceLit = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" height="${BS}" viewBox="0 0 ${BS} ${BS}">
 <defs>
@@ -259,8 +262,8 @@ const buyBonusIceLit = `<svg xmlns="http://www.w3.org/2000/svg" width="${BS}" he
 <g opacity="0.35">${[3, 4, 5].map((k) => `<polygon points="${poly([O[k], O[(k + 1) % 6], T[(k + 1) % 6], T[k]])}" fill="#8fd9ff"/>`).join('')}</g>
 <g filter="url(#litSoft)" opacity="0.6">${litEdges('#8fd9ff', 16)}</g>
 <g filter="url(#litCore)">${litEdges('#eaf7ff', 5)}</g>
-<g filter="url(#litSoft)">${glint(O[5][0] + 14, O[5][1] + 26, 60, '#eaf7ff', 0.9)}</g>
-${glint(O[5][0] + 14, O[5][1] + 26, 40, '#ffffff', 1)}
+<polygon points="${poly(G)}" fill="none" stroke="#ffce65" stroke-width="16" opacity="0.58" filter="url(#litSoft)"/>
+<polygon points="${poly(G)}" fill="none" stroke="#ffe69b" stroke-width="5" opacity="0.85"/>
 </svg>`;
 
 // ── VARIANT: the snowball ──────────────────────────────────────────────────

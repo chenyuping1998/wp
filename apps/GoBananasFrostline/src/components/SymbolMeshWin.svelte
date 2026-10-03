@@ -79,6 +79,38 @@
 	const GOLD = 0xffd75e;
 
 	const fit = (SYMBOL_SIZE * props.symbolInfo.sizeRatios.height) / CANVAS;
+	// The mesh gives each picture its own gesture; the whole winning picture
+	// also springs out of its cell, as in Boom. Both curves return to rest before
+	// the static symbol replaces this component.
+	const POP_UP = 0.26;
+	const POP_HOLD = 0.08;
+	const POP_OUT_MS = 260;
+	const smooth01 = (value: number) => {
+		const x = Math.min(1, Math.max(0, value));
+		return x * x * (3 - 2 * x);
+	};
+	const easeOutBack = (value: number) => {
+		const x = value - 1;
+		return 1 + 2.9 * x * x * x + 1.9 * x * x;
+	};
+	const cellPop = (t: number) => {
+		const hit = Math.max(1, spec.hitMs);
+		const rise = t < hit ? POP_UP * easeOutBack(Math.max(0, t / hit)) : 0;
+		const hold = t >= hit
+			? POP_HOLD + (POP_UP - POP_HOLD) * Math.exp(-(t - hit) / 160)
+				+ 0.025 * Math.sin((t - hit) / 70) * smooth01((t - hit) / 200)
+			: 0;
+		const home = 1 - smooth01((t - (spec.durationMs - POP_OUT_MS)) / POP_OUT_MS);
+		return 1 + (t < hit ? rise : hold) * home;
+	};
+	const cellHop = (t: number) => {
+		if (t <= 0) return 0;
+		const period = 2 * Math.max(120, spec.hitMs);
+		const arch = Math.abs(Math.sin((Math.PI * t) / period));
+		const decay = Math.exp(-t / 1000);
+		const home = 1 - smooth01((t - (spec.durationMs - POP_OUT_MS)) / POP_OUT_MS);
+		return SYMBOL_SIZE * 0.14 * arch * decay * home;
+	};
 	let dust = $state(false);
 
 	const root = new Container();
@@ -86,12 +118,9 @@
 	onMount(() => {
 		const speed = stateBetDerived.timeScale();
 		const started = performance.now();
-		// A line of three identical symbols acting in perfect sync reads as one
-		// object copied three times. Cascade them left to right, 60ms a reel.
-		// The reel comes in as a prop: reading the cell container's x at mount
-		// got 0 for every cell (pixi-svelte has not applied it yet), and the
-		// probe saw all twelve start in the same millisecond.
-		const delay = (props.reel ?? 0) * 60;
+		// WinLines already starts each reel as the runner reaches it. React at
+		// that moment instead of delaying the picture a second time.
+		const delay = 0;
 		root.label = `meshWin ${spec.symbol} reel ${props.reel ?? '?'} +${delay}ms`;
 		// completion and the landing are on TIMERS, not the frame loop: rAF stops
 		// in a hidden tab, and the board awaits the completion to move on
@@ -156,8 +185,10 @@
 			if (layer) content.addChild(layer);
 		root.addChild(content);
 		root.position.set(props.x ?? 0, props.y ?? 0);
-		// under the pay frame, which the markup draws
-		parent.parent.addChildAt(root, 0);
+		// High-pay art springs past the cell edge; keep it above neighbouring
+		// content while it performs. Smaller symbols remain under the pay frame.
+		if (['H1', 'H2', 'H3', 'H4'].includes(spec.symbol)) parent.parent.addChild(root);
+		else parent.parent.addChildAt(root, 0);
 
 		const rows = Math.ceil(SHEEN_FRAMES / SHEEN_COLS);
 		const atlasW = SHEEN_COLS * SHEEN_CELL, atlasH = rows * SHEEN_CELL;
@@ -168,7 +199,8 @@
 			const pose = spec.pose(rig, t);
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();
-			root.scale.set(fit * pose.plateHit);
+			root.scale.set(fit * pose.plateHit * cellPop(t));
+			root.position.set(props.x ?? 0, (props.y ?? 0) - cellHop(t));
 
 			if (shadow) {
 				const air = pose.air;

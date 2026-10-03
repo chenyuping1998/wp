@@ -3,21 +3,19 @@
 //
 //   node design/preview_buybonus.mjs <toolsDir> [out.png]
 //
-// Six frames side by side on the platform bar's #2a2a2a with its ICE_EDGE
-// casing line: idle, and hover with the lit copy additively over the plate at
-// 0, 20 and 40 degrees of turn — ButtonBuyBonus spins the lit sprite over a
-// static plate, so a frozen frame at 0 would hide the only thing the hover does.
-// Then the two other captions the button can carry: PLAY BONUS in social play
+// Four frames side by side on the platform bar's #2a2a2a with its ICE_EDGE
+// casing line: idle, hover, then PLAY BONUS in social play
 // and DISABLE while a bought mode is active. DISABLE is one seven-letter word
 // that does not wrap, so it is the widest thing the hub ever has to hold.
 //
 // The numbers are ButtonBuyBonus's, copied rather than imported for the same
 // reason generate_ui_plates.mjs copies them: a node script has no business
 // loading a Svelte package to read four constants.
-//   plate      150 units * buyBonusButtonScale 0.8 = 120px
-//   caption    UI_BASE_FONT_SIZE 45 * buyBonusLabelSizeRatio * 0.8, two lines
+//   plate      150 units * buyBonusButtonScale 0.88 = 132px
+//   caption    UI_BASE_FONT_SIZE 45 * buyBonusLabelSizeRatio * 0.88, two lines
 import { createRequire } from 'module';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -31,12 +29,12 @@ const { Resvg } = require('@resvg/resvg-js');
 
 const APP = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const UI = path.join(APP, 'static/assets/sprites/goBananasUi');
-const out = process.argv[3] && !process.argv[3].startsWith('--') ? process.argv[3] : path.join(APP, 'design/preview_buybonus.png');
+const out = process.argv[3] && !process.argv[3].startsWith('--') ? process.argv[3] : path.join(os.tmpdir(), 'frostline-buybonus-preview.png');
 
-const PLATE = 120;
+const PLATE = 132;
 const LABEL_RATIO = 0.5; // keep equal to buyBonusLabelSizeRatio in uiTheme.ts
-const FONT = 45 * LABEL_RATIO * 0.8;
-const CELL = 170;
+const FONT = 45 * LABEL_RATIO * 0.88;
+const CELL = 185;
 const W = CELL * 4;
 const H = CELL;
 
@@ -47,7 +45,7 @@ const arg = (k) => process.argv.find((a) => a.startsWith(`--${k}=`))?.slice(k.le
 const b64 = (f) => fs.readFileSync(path.isAbsolute(f) ? f : path.join(UI, f)).toString('base64');
 const plate = b64(arg('plate') ?? 'buybonus_ice.png');
 const lit = b64(arg('lit') ?? 'buybonus_ice_lit.png');
-const INK = arg('ink') ?? '#ffffff';
+const INK = arg('ink') ?? '#ffeaa6';
 
 const frame = (i, spinDeg, hover, lines = ['BUY', 'BONUS'], note = hover ? 'hover' : 'idle') => {
 	const cx = CELL * i + CELL / 2;
@@ -56,6 +54,7 @@ const frame = (i, spinDeg, hover, lines = ['BUY', 'BONUS'], note = hover ? 'hove
 	const y = cy - PLATE / 2;
 	return `
 	<image href="data:image/png;base64,${plate}" x="${x}" y="${y}" width="${PLATE}" height="${PLATE}"/>
+	${!hover ? `<image href="data:image/png;base64,${lit}" x="${x}" y="${y}" width="${PLATE}" height="${PLATE}" opacity="0.18" style="mix-blend-mode:plus-lighter"/>` : ''}
 	${
 		hover
 			? `<image href="data:image/png;base64,${lit}" x="${x}" y="${y}" width="${PLATE}" height="${PLATE}"
@@ -68,7 +67,7 @@ const frame = (i, spinDeg, hover, lines = ['BUY', 'BONUS'], note = hover ? 'hove
 
 // One or two lines, centred as a block the way the shared button centres them.
 const caption = (cx, cy, lines) => {
-	const lh = 45 * (LABEL_RATIO + 0.04) * 0.8;
+	const lh = 45 * (LABEL_RATIO + 0.04) * 0.88;
 	const top = cy - (lh * lines.length) / 2;
 	return lines
 		.map(
@@ -95,4 +94,4 @@ const r = new Resvg(svg, {
 	},
 });
 fs.writeFileSync(out, r.render().asPng());
-console.log('preview written to', path.relative(APP, out), '(2x, so each plate is 240px on screen)');
+console.log('preview written to', out, '(2x)');

@@ -19,17 +19,17 @@
 
 	const context = getContext();
 
-	// Skeleton units are the source PSD's pixels, and its origin sits on the
+	// Skeleton units are the prepared Frostline cutout's pixels, and its origin sits on the
 	// ground between the boots (design/generate_monkey_spine.mjs). So the figure
-	// is 846 units from the floor to the top of the beret, 518 across, and
+	// is 823 units from the floor to the top of the cap, 535 across, and
 	// positioning it means putting its FEET somewhere rather than working out
 	// where the centre of a bounding box ought to go.
-	const ART = { height: 846, width: 518 };
+	const ART = { height: 823, width: 535 };
 
 	// Where the grenade leaves his hand, in skeleton units, printed by
 	// design/generate_monkey_spine.mjs when it builds the 'throwit' animation:
-	// the left hand at full extension, at RELEASE_AT = 0.38s.
-	const RELEASE = { x: -363, y: 445 };
+	// the left hand at full extension, at RELEASE_AT = 0.58s.
+	const RELEASE = { x: -369, y: 520 };
 
 	// Below this there is no room to stand him next to the board without either
 	// overlapping the frame or shrinking him to a thumbnail. Tablet (1000x1000)
@@ -313,6 +313,7 @@
 				},
 			}}
 		/>
+		<SpineTrack trackIndex={1} animationName="clothFlutter" loop />
 	</SpineProvider>
 
 	<!--

@@ -4,9 +4,8 @@
 //   node design/preview_monkey_spine.mjs <dir with node_modules for pngjs> [anim]
 //
 // This is a deliberately small forward-kinematics renderer: bone hierarchy,
-// linear keyframe interpolation, and one axis-aligned quad per attachment. It
-// does NOT implement Spine — no meshes, no IK, no curve interpolation, no draw
-// order timelines — because the rig does not use any of that. What it does check
+// linear keyframe interpolation, region quads and weighted mesh triangles. It
+// does NOT implement the full Spine runtime (IK or draw order timelines). It checks
 // is the thing that actually goes wrong when a cutout rig is written by hand: a
 // joint in the wrong place, so a limb swings from its elbow, or a piece parented
 // to the wrong bone, so an arm is left behind when the torso turns.
@@ -15,6 +14,7 @@
 // reassemble into the character at all.
 import { createRequire } from 'module';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -156,6 +156,46 @@ const renderFrame = (time) => {
 		const att = skel.skins[0].attachments[slot.name]?.[shown];
 		const reg = regions[shown];
 		if (!att || !reg) continue;
+		if (att.type === 'mesh') {
+			const points = [];
+			let cursor = 0;
+			for (let v = 0; v < att.uvs.length / 2; v++) {
+				const count = att.vertices[cursor++];
+				let x = 0, y = 0;
+				for (let k = 0; k < count; k++) {
+					const bone = skel.bones[att.vertices[cursor++]];
+					const bx = att.vertices[cursor++], by = att.vertices[cursor++], weight = att.vertices[cursor++];
+					const p = apply(world[bone.name], bx, by);
+					x += p.x * weight; y += p.y * weight;
+				}
+				points.push(toPixel({ x, y }));
+			}
+			for (let i = 0; i < att.triangles.length; i += 3) {
+				const ia = att.triangles[i], ib = att.triangles[i + 1], ic = att.triangles[i + 2];
+				const a = points[ia], b = points[ib], c = points[ic];
+				const den = (b.y - c.y) * (a.x - c.x) + (c.x - b.x) * (a.y - c.y);
+				if (Math.abs(den) < 1e-6) continue;
+				const minX = Math.max(0, Math.floor(Math.min(a.x, b.x, c.x)));
+				const maxX = Math.min(FRAME.w - 1, Math.ceil(Math.max(a.x, b.x, c.x)));
+				const minY = Math.max(0, Math.floor(Math.min(a.y, b.y, c.y)));
+				const maxY = Math.min(FRAME.h - 1, Math.ceil(Math.max(a.y, b.y, c.y)));
+				for (let py = minY; py <= maxY; py++) for (let px = minX; px <= maxX; px++) {
+					const u = ((b.y - c.y) * (px + 0.5 - c.x) + (c.x - b.x) * (py + 0.5 - c.y)) / den;
+					const v = ((c.y - a.y) * (px + 0.5 - c.x) + (a.x - c.x) * (py + 0.5 - c.y)) / den;
+					const w = 1 - u - v;
+					if (u < -1e-5 || v < -1e-5 || w < -1e-5) continue;
+					const tx = u * att.uvs[ia * 2] + v * att.uvs[ib * 2] + w * att.uvs[ic * 2];
+					const ty = u * att.uvs[ia * 2 + 1] + v * att.uvs[ib * 2 + 1] + w * att.uvs[ic * 2 + 1];
+					const sx = Math.max(reg.x, Math.min(reg.x + reg.w - 1, reg.x + tx * reg.w)) | 0;
+					const sy = Math.max(reg.y, Math.min(reg.y + reg.h - 1, reg.y + ty * reg.h)) | 0;
+					const s = (sy * page.width + sx) * 4, alpha = page.data[s + 3] / 255;
+					if (alpha <= 0.004) continue;
+					const d = (py * FRAME.w + px) * 4;
+					for (let ch = 0; ch < 3; ch++) buf.data[d + ch] = Math.round(page.data[s + ch] * alpha + buf.data[d + ch] * (1 - alpha));
+				}
+			}
+			continue;
+		}
 		const m = world[slot.bone];
 		const hw = att.width / 2;
 		const hh = att.height / 2;
@@ -230,6 +270,10 @@ TIMES.forEach((t, i) => {
 			for (let c = 0; c < 4; c++) sheet.data[d + c] = f.data[s + c];
 		}
 });
-const out = path.join(appRoot, `design/source/monkey/_preview_${animName}.png`);
+// Preview sheets are disposable QA output, not source art. Keep them outside
+// the project so repeated animation checks do not fill the checkout.
+const previewDir = path.join(os.tmpdir(), 'go-bananas-frostline-spine-previews');
+fs.mkdirSync(previewDir, { recursive: true });
+const out = path.join(previewDir, `_preview_${animName}.png`);
 fs.writeFileSync(out, PNG.sync.write(sheet));
-console.log(`${animName}: t = ${TIMES.join(', ')}  ->  ${path.relative(appRoot, out)}`);
+console.log(`${animName}: t = ${TIMES.join(', ')}  ->  ${out}`);

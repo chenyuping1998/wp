@@ -1,5 +1,7 @@
 # Frostline 素材清單
 
+> **2026-10-03 音訊更新：**主遊戲、免費遊戲與五段大獎 BGM 已換成新製作的冰原音樂；常用 UI、轉輪、SC、Wild、倍數和得分提示音也改為 `static/assets/audio/frost/`。猴叫仍使用角色原音。音樂與音效產生器是 `design/generate_audio_frost_suite.py`；停輪與結霜接管音效由 `design/generate_audio_frost.mjs` 產生。下方 2026-09-14 記錄保留為歷史狀態。
+
 > **2026-09-14 更新：12 張盤面圖案與 22 個音效已交付並接入。**
 > 下面兩節保留原始規格（重生時仍然適用），交付狀態記在各節開頭。
 

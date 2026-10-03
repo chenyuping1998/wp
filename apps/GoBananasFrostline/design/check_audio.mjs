@@ -33,6 +33,7 @@ import { fileURLToPath } from 'url';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOUND = path.join(appRoot, 'src/components/Sound.svelte');
+const SOUND_TYPES = path.join(appRoot, 'src/game/sound.ts');
 const AUDIO = path.join(appRoot, 'static/assets/audio');
 
 const src = fs.readFileSync(SOUND, 'utf8');
@@ -63,6 +64,42 @@ for (const [name, file] of files) {
 	}
 }
 
+// The music map is separate from the one-shot map, but a missing entry has
+// the same silent result at runtime. Every declared MusicName must have a file.
+const musicBody = src.match(/const BGM_FILES: Record<MusicName, string> = \{([\s\S]*?)\n\t\};/);
+if (!musicBody) fail('could not find BGM_FILES');
+const bgms = new Map();
+for (const line of (musicBody?.[1] ?? '').split('\n')) {
+	const m = line.match(/^\s*(\w+):\s*'([^']+)'/);
+	if (m) bgms.set(m[1], m[2]);
+}
+for (const [name, file] of bgms) {
+	if (!fs.existsSync(path.join(AUDIO, file))) fail(`${name} -> assets/audio/${file} does not exist`);
+}
+
+const declared = fs.readFileSync(SOUND_TYPES, 'utf8');
+const musicType = declared.match(/export type MusicName =([\s\S]*?);/);
+const effectType = declared.match(/export type SoundEffectName =([\s\S]*?);/);
+if (!musicType || !effectType) fail('could not parse game sound names');
+const typeNames = (body) => [...(body ?? '').split('\n').filter((line) => !line.trim().startsWith('//')).join('\n').matchAll(/'([^']+)'/g)].map((m) => m[1]);
+for (const name of typeNames(musicType?.[1])) {
+	if (!bgms.has(name)) fail(`MusicName ${name} has no BGM_FILES entry`);
+}
+
+const routingBody = src.match(/const SPRITE_TO_CN:[\s\S]*?= \{([\s\S]*?)\n\t\};/);
+if (!routingBody) fail('could not find SPRITE_TO_CN');
+const routed = new Map();
+for (const line of (routingBody?.[1] ?? '').split('\n')) {
+	const m = line.match(/^\s*(\w+):\s*\{\s*name:\s*'([^']+)'/);
+	if (m) routed.set(m[1], m[2]);
+}
+for (const name of typeNames(effectType?.[1])) {
+	if (!routed.has(name)) fail(`SoundEffectName ${name} still uses the legacy sprite`);
+}
+for (const [name, target] of routed) {
+	if (!files.has(target)) fail(`${name} routes to unknown cue ${target}`);
+}
+
 // ── the names the code actually plays ───────────────────────────────────────
 const played = new Set();
 const dynamic = new Set();
@@ -87,7 +124,7 @@ for (const prefix of dynamic) {
 
 if (!process.exitCode) {
 	const note = dynamic.size ? `, ${dynamic.size} built from a variable` : '';
-	console.log(`OK: all ${files.size} audio cues resolve (${played.size} named directly${note})`);
+	console.log(`OK: ${bgms.size} BGM and ${files.size} audio cues resolve; ${routed.size} events routed (${played.size} named directly${note})`);
 } else {
 	console.error(`check_audio: ${missing} missing file(s)`);
 	process.exit(1);

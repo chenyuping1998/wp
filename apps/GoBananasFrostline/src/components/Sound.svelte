@@ -16,6 +16,7 @@
 		| { type: 'soundGrenadeBlast' }
 		| { type: 'soundMonkeyExpand' }
 		| { type: 'soundMascotVoice'; name: MascotVoice }
+		| { type: 'soundChestHoot' }
 		| { type: 'soundReelTensionStart' }
 		| { type: 'soundReelTensionStop' }
 		| { type: 'soundScatterCounterIncrease' }
@@ -34,14 +35,17 @@
 
 	const context = getContext();
 
-	// ─── jungle-commando sound set (synthesized — see design/generate_audio_jungle.mjs) ───
-	// Standalone HTML5 Audio; the howler sprite (sounds.json) stays as a
-	// fallback for anything not mapped here (e.g. win-level bgm stingers).
+	// Frostline's own ice-and-steel sound set. Monkey calls remain the character's
+	// voice. The template sprite stays available for any future unmapped cue.
 	type CnSfxName =
 		| 'gong_feature'
 		| 'bigwin_blast'
 		| 'reel_tension'
-		| 'reel_stop'
+		| 'reel_stop_1'
+		| 'reel_stop_2'
+		| 'reel_stop_3'
+		| 'reel_stop_4'
+		| 'reel_stop_5'
 		| 'btn'
 		| 'spin'
 		| 'scatter_1'
@@ -60,48 +64,59 @@
 		| 'monkey_expand'
 		| 'voice_roar'
 		| 'voice_effort'
-		// the freeze takeover's own cues (design/generate_audio_frost.mjs). In
-		// their own directory rather than jungle/, because they are the first
-		// sounds in this game that are actually Frostline's.
+		| 'mult_combine'
+		| 'mult_reset'
+		| 'mult_win'
+		| 'ice_burst'
+		| 'riser_short'
+		| 'win_end'
+		| 'win_standard'
+		| 'win_substantial'
+		| 'youwon_panel'
+		| 'tumble_win'
 		| 'frost_creep'
 		| 'ice_freeze'
 		| 'ice_crack';
 
-	// WHERE EACH CUE LIVES.
-	//
-	// `frost/` is this game's own, and is currently just the three takeover cues
-	// from design/generate_audio_frost.mjs. Everything else is still Go Bananas
-	// 100's `jungle/` set.
-	//
-	// A delivered set of 22 frost cues replaced the whole jungle bed on
-	// 2026-09-14 and was REVERTED the same day at the user's direction. It is not
-	// deleted, only unhooked: every file is in git at commit 375b628, so putting
-	// it back is a checkout of that path plus flipping these strings — no
-	// regeneration, no re-delivery. See design/FROSTLINE_ASSET_TODO.md for what
-	// was in it and what was measured about it.
+	// The original monkey voice stays recognizable; all recurring music and
+	// gameplay cues are made for this ice setting.
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
 		frost_creep: 'frost/frost_creep.wav',
 		ice_freeze: 'frost/ice_freeze.wav',
 		ice_crack: 'frost/ice_crack.wav',
-		gong_feature: 'jungle/gong_feature.wav',
-		bigwin_blast: 'jungle/bigwin_blast.wav',
-		reel_tension: 'jungle/reel_tension.wav',
-		reel_stop: 'jungle/reel_stop.wav',
-		btn: 'jungle/btn.wav',
-		spin: 'jungle/spin.wav',
-		scatter_1: 'jungle/scatter_1.wav',
-		scatter_2: 'jungle/scatter_2.wav',
-		scatter_3: 'jungle/scatter_3.wav',
-		scatter_4: 'jungle/scatter_4.wav',
-		scatter_5: 'jungle/scatter_5.wav',
-		pluck_low: 'jungle/pluck_low.wav',
-		win_gliss: 'jungle/win_gliss.wav',
-		win_gliss_big: 'jungle/win_gliss_big.wav',
-		fs_intro: 'jungle/fs_intro.wav',
-		coin_shimmer: 'jungle/coin_shimmer.wav',
-		wild_expand: 'jungle/wild_expand.wav',
-		mult_update: 'jungle/mult_update.wav',
-		grenade_blast: 'jungle/grenade_blast.wav',
+		gong_feature: 'frost/gong_feature.wav',
+		bigwin_blast: 'frost/bigwin_blast.wav',
+		reel_tension: 'frost/reel_tension.wav',
+		reel_stop_1: 'frost/reel_stop_1.wav',
+		reel_stop_2: 'frost/reel_stop_2.wav',
+		reel_stop_3: 'frost/reel_stop_3.wav',
+		reel_stop_4: 'frost/reel_stop_4.wav',
+		reel_stop_5: 'frost/reel_stop_5.wav',
+		btn: 'frost/btn.wav',
+		spin: 'frost/spin.wav',
+		scatter_1: 'frost/scatter_1.wav',
+		scatter_2: 'frost/scatter_2.wav',
+		scatter_3: 'frost/scatter_3.wav',
+		scatter_4: 'frost/scatter_4.wav',
+		scatter_5: 'frost/scatter_5.wav',
+		pluck_low: 'frost/pluck_low.wav',
+		win_gliss: 'frost/win_gliss.wav',
+		win_gliss_big: 'frost/win_gliss_big.wav',
+		fs_intro: 'frost/fs_intro.wav',
+		coin_shimmer: 'frost/coin_shimmer.wav',
+		wild_expand: 'frost/wild_expand.wav',
+		mult_update: 'frost/mult_update.wav',
+		mult_combine: 'frost/mult_combine.wav',
+		mult_reset: 'frost/mult_reset.wav',
+		mult_win: 'frost/mult_win.wav',
+		ice_burst: 'frost/ice_burst.wav',
+		riser_short: 'frost/riser_short.wav',
+		win_end: 'frost/win_end.wav',
+		win_standard: 'frost/win_standard.wav',
+		win_substantial: 'frost/win_substantial.wav',
+		youwon_panel: 'frost/youwon_panel.wav',
+		tumble_win: 'frost/tumble_win.wav',
+		grenade_blast: 'frost/grenade_blast.wav',
 		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
 		monkey_expand: 'jungle/monkey_expand.mp3',
 		voice_roar: 'jungle/voice_roar.wav',
@@ -118,41 +133,48 @@
 	// enough to be arguable whether it was there at all — which is not a level,
 	// it is an absence with a volume control on it.
 	const MASCOT_VOICE_GAIN: Record<MascotVoice, number> = {
-		roar: 1,
+		roar: 0.55,
 		effort: 0.8,
 	};
 
-	// Sprite sound names re-routed to the Chinese set.
+	// Route the template's logical events into Frostline's sound palette.
 	//
 	// `rate` sets playbackRate, which on a short percussive sample reads as pitch.
 	//
-	// THE SAMPLE IS GO BANANAS 100'S, THE FIVE-STEP CLIMB IS NOT USED. Only
-	// sfx_reel_stop_1 is ever broadcast (REEL_STOP_SOUND in stateGame.svelte.ts);
-	// _2.._5 are kept so the names in SoundEffectName still resolve.
-	//
-	// A flat 78Hz knock with no pitch content was built to replace the sample
-	// itself (generate_audio_frost.mjs section 4, still there, wired to nothing)
-	// and was not wanted. The first game's sample stays; only the rise between
-	// reels goes.
-	//
-	// The rising figure now belongs to the scatter alone — SCATTER_LAND_SOUND_MAP
-	// walks scatter_1..5 as scatters land, on its own set of files.
+	// Five ice-and-steel detents share a pitch centre and differ in attack and
+	// brightness. The melodic rise belongs only to the scatter landing cues.
 	const SPRITE_TO_CN: Partial<
 		Record<SoundEffectName, { name: CnSfxName; volume?: number; rate?: number }>
 	> = {
+		jng_intro_fs: { name: 'fs_intro' },
+		sfx_anticipation: { name: 'riser_short', volume: 0.55 },
+		sfx_anticipation_start: { name: 'riser_short', volume: 0.55 },
+		sfx_bigwin_coinloop: { name: 'coin_shimmer' },
 		sfx_btn_general: { name: 'btn', volume: 0.7 },
 		sfx_btn_spin: { name: 'spin', volume: 0.9 },
-		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.92 },
-		sfx_reel_stop_2: { name: 'reel_stop', rate: 1.0 },
-		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.09 },
-		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.19 },
-		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.3 },
+		sfx_fs_respins: { name: 'mult_reset' },
+		sfx_multiplier_combine_a: { name: 'mult_combine' },
+		sfx_multiplier_combine_b: { name: 'mult_combine', rate: 1.06 },
+		sfx_multiplier_explosion_a: { name: 'ice_burst', volume: 0.75 },
+		sfx_multiplier_explosion_b: { name: 'ice_burst', volume: 0.9 },
+		sfx_multiplier_explosion_c: { name: 'ice_burst' },
+		sfx_multiplier_landing: { name: 'pluck_low' },
+		sfx_multiplier_reset: { name: 'mult_reset' },
+		sfx_multiplier_up: { name: 'mult_update' },
+		sfx_multiplier_update: { name: 'mult_update' },
+		sfx_multiplier_win: { name: 'mult_win' },
+		sfx_reel_stop_1: { name: 'reel_stop_1' },
+		sfx_reel_stop_2: { name: 'reel_stop_2' },
+		sfx_reel_stop_3: { name: 'reel_stop_3' },
+		sfx_reel_stop_4: { name: 'reel_stop_4' },
+		sfx_reel_stop_5: { name: 'reel_stop_5' },
+		sfx_royals_landing: { name: 'pluck_low', volume: 0.4 },
+		sfx_scatter_reveal: { name: 'scatter_1', volume: 0.55 },
 		sfx_scatter_stop_1: { name: 'scatter_1' },
 		sfx_scatter_stop_2: { name: 'scatter_2' },
 		sfx_scatter_stop_3: { name: 'scatter_3' },
 		sfx_scatter_stop_4: { name: 'scatter_4' },
 		sfx_scatter_stop_5: { name: 'scatter_5' },
-		sfx_multiplier_landing: { name: 'pluck_low' },
 		// Freeze takeover. Volumes set here rather than baked into the WAVs so the
 		// balance can be changed without regenerating: the creep fires once per
 		// cell (four times a takeover) and has to sit under the bed, not on it.
@@ -161,16 +183,21 @@
 		// full level: this is the loudest single moment of the takeover and it was
 		// being held back below the freeze bed it is supposed to break through
 		sfx_ice_crack: { name: 'ice_crack', volume: 1 },
+		sfx_winlevel_end: { name: 'win_end' },
+		sfx_winlevel_nice: { name: 'win_gliss' },
 		sfx_winlevel_small: { name: 'win_gliss' },
+		sfx_winlevel_standard: { name: 'win_standard' },
+		sfx_winlevel_substantial: { name: 'win_substantial' },
 		sfx_scatter_win: { name: 'win_gliss' },
 		sfx_scatter_win_v2: { name: 'win_gliss_big' },
 		sfx_superfreespin: { name: 'win_gliss_big', volume: 0.8 },
-		jng_intro_fs: { name: 'fs_intro' },
 		sfx_wild_explode: { name: 'wild_expand' },
-		sfx_multiplier_update: { name: 'mult_update' },
-		sfx_anticipation_start: { name: 'mult_update', volume: 0.5 },
-		sfx_symbols_landing: { name: 'reel_stop', volume: 0.6 },
-		sfx_royals_landing: { name: 'reel_stop', volume: 0.6 },
+		sfx_symbols_landing: { name: 'pluck_low', volume: 0.4 },
+		sfx_youwon_panel: { name: 'youwon_panel' },
+		tumble_win_1: { name: 'tumble_win', volume: 0.65 },
+		tumble_win_2: { name: 'tumble_win', volume: 0.72, rate: 1.04 },
+		tumble_win_3: { name: 'tumble_win', volume: 0.8, rate: 1.08 },
+		tumble_win_4: { name: 'tumble_win', volume: 0.88, rate: 1.12 },
 	};
 
 	const cnSfxAudio: Partial<Record<CnSfxName, HTMLAudioElement>> = {};
@@ -186,13 +213,26 @@
 	}
 
 	function playCnSfx(name: CnSfxName, volumeScale = 1, rate = 1) {
+		const ctx = getAudioCtx();
+		const buffer = oneShotBuffers[name];
+		if (ctx?.state === 'running' && buffer) {
+			// A fresh source for every hit: close reel stops and scatter accents can
+			// overlap without restarting one cached HTMLAudioElement.
+			const source = ctx.createBufferSource();
+			const gain = ctx.createGain();
+			source.buffer = buffer;
+			source.playbackRate.value = rate;
+			gain.gain.value = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+			source.connect(gain).connect(ctx.destination);
+			source.onended = () => { source.disconnect(); gain.disconnect(); };
+			source.start(ctx.currentTime);
+			return;
+		}
 		const audio = getCnSfx(name);
 		audio.loop = false;
 		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
-		// Always assign, never skip when rate is 1: getCnSfx caches one element per
-		// file, so a rate left over from the previous caller would carry into every
-		// later play of the same sample. reel_stop is shared with symbol/royal
-		// landings, which would otherwise inherit the fifth reel's pitch.
+		// Always assign, never skip when rate is 1: the fallback caches one
+		// element per cue, so an earlier playback rate must not carry over.
 		audio.playbackRate = rate;
 		audio.currentTime = 0;
 		audio.play().catch(() => {});
@@ -228,6 +268,64 @@
 				),
 			);
 		}
+	}
+
+	// The player-supplied monkey call rides over the six SC chest strikes. The
+	// clip's first hoot begins 40ms in; starting it at 440ms puts that onset on
+	// the first 480ms fist. Its next calls span the 300ms cadence, and a short
+	// fade after source time 1.64s clears the last strike without another hoot.
+	const CHEST_HOOT_DELAY = 0.44;
+	const CHEST_HOOT_CUT = 1.64;
+	let chestHootSource: AudioBufferSourceNode | null = null;
+	let chestHootFallback: HTMLAudioElement | null = null;
+	let chestHootTimer: ReturnType<typeof setTimeout> | undefined;
+	let chestHootTimeout: ReturnType<typeof setTimeout> | undefined;
+	let chestHootWatch: ReturnType<typeof setInterval> | undefined;
+	const stopChestHoot = () => {
+		clearTimeout(chestHootTimer);
+		clearTimeout(chestHootTimeout);
+		clearInterval(chestHootWatch);
+		chestHootTimer = undefined;
+		chestHootTimeout = undefined;
+		chestHootWatch = undefined;
+		try { chestHootSource?.stop(); } catch { /* source already ended */ }
+		chestHootSource = null;
+		chestHootFallback?.pause();
+		chestHootFallback = null;
+	};
+	function playChestHoot() {
+		stopChestHoot();
+		const ctx = getAudioCtx();
+		const buffer = oneShotBuffers.monkey_expand;
+		if (ctx?.state === 'running' && buffer) {
+			const start = ctx.currentTime + CHEST_HOOT_DELAY;
+			const source = ctx.createBufferSource();
+			const gain = ctx.createGain();
+			source.buffer = buffer;
+			gain.gain.setValueAtTime(0.0001, start);
+			gain.gain.linearRampToValueAtTime(Math.max(0.0001, stateSoundDerived.volumeSoundEffect() * 0.78), start + 0.02);
+			gain.gain.setValueAtTime(Math.max(0.0001, stateSoundDerived.volumeSoundEffect() * 0.78), start + CHEST_HOOT_CUT - 0.07);
+			gain.gain.linearRampToValueAtTime(0.0001, start + CHEST_HOOT_CUT);
+			source.connect(gain).connect(ctx.destination);
+			source.onended = () => { if (chestHootSource === source) chestHootSource = null; source.disconnect(); gain.disconnect(); };
+			source.start(start, 0, CHEST_HOOT_CUT);
+			chestHootSource = source;
+			return;
+		}
+		// First-load fallback, while the MP3 is still decoding.
+		chestHootTimer = setTimeout(() => {
+			// A separate element keeps the expansion call independent of this cue.
+			const audio = getCnSfx('monkey_expand').cloneNode(true) as HTMLAudioElement;
+			chestHootFallback = audio;
+			audio.loop = false;
+			audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * 0.78);
+			audio.playbackRate = 1;
+			audio.currentTime = 0;
+			audio.play().catch(() => stopChestHoot());
+			chestHootWatch = setInterval(() => { if (audio.currentTime >= CHEST_HOOT_CUT) stopChestHoot(); }, 10);
+			// Stalled media must not leave the watcher alive indefinitely.
+			chestHootTimeout = setTimeout(stopChestHoot, 2600);
+		}, CHEST_HOOT_DELAY * 1000);
 	}
 
 	// ─── looping sfx: Web Audio, not <audio loop> ───
@@ -266,6 +364,21 @@
 		if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
 		return audioCtx;
 	};
+	const oneShotBuffers: Partial<Record<CnSfxName, AudioBuffer>> = {};
+	const oneShotLoading: Partial<Record<CnSfxName, Promise<void>>> = {};
+	function warmOneShot(name: CnSfxName) {
+		if (oneShotBuffers[name] || oneShotLoading[name]) return;
+		const ctx = getAudioCtx();
+		if (!ctx) return;
+		oneShotLoading[name] = (async () => {
+			try {
+				const response = await fetch(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
+				if (!response.ok) return;
+				oneShotBuffers[name] = await ctx.decodeAudioData(await response.arrayBuffer());
+			} catch { /* HTMLAudio fallback remains available */ }
+			finally { delete oneShotLoading[name]; }
+		})();
+	}
 
 	async function playCnLoop(name: CnSfxName, volumeScale = 1) {
 		const ctx = getAudioCtx();
@@ -333,39 +446,95 @@
 		}
 	}
 
-	// ─── BGM (both loops are standalone HTML5 Audio) ───
+	// ─── BGM: seamless phrase lengths and a short scene crossfade ───
 	let bgmAudio: HTMLAudioElement | null = null;
-	let currentBgm: 'base' | 'freespin' | null = null;
-	const BGM_FILES = {
-		base: 'jungle/bgm_main.wav',
-		freespin: 'jungle/bgm_freespin.wav',
-	} as const;
-
-	function playBgm(type: 'base' | 'freespin') {
-		if (currentBgm === type && bgmAudio && !bgmAudio.paused) return;
-		if (bgmAudio) {
-			bgmAudio.pause();
-			bgmAudio = null;
+	let bgmPrevious: HTMLAudioElement | null = null;
+	let bgmFadeTimer: ReturnType<typeof setInterval> | undefined;
+	let bgmFadeProgress = 1;
+	let currentBgm: MusicName | null = null;
+	const BGM_FILES: Record<MusicName, string> = {
+		bgm_main: 'frost/bgm_main.wav',
+		bgm_freespin: 'frost/bgm_freespin.wav',
+		bgm_winlevel_big: 'frost/bgm_winlevel_big.wav',
+		bgm_winlevel_superwin: 'frost/bgm_winlevel_superwin.wav',
+		bgm_winlevel_mega: 'frost/bgm_winlevel_mega.wav',
+		bgm_winlevel_epic: 'frost/bgm_winlevel_epic.wav',
+		bgm_winlevel_max: 'frost/bgm_winlevel_max.wav',
+	};
+	const bgmCache: Partial<Record<MusicName, HTMLAudioElement>> = {};
+	function getBgm(type: MusicName) {
+		let audio = bgmCache[type];
+		if (!audio) {
+			audio = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
+			audio.loop = true;
+			audio.preload = 'auto';
+			bgmCache[type] = audio;
 		}
-		bgmAudio = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
-		bgmAudio.loop = true;
-		bgmAudio.volume = stateSoundDerived.volumeMusic();
-		bgmAudio.play().catch(() => {});
+		return audio;
+	}
+
+	function clearBgmFade() {
+		clearInterval(bgmFadeTimer);
+		bgmFadeTimer = undefined;
+		bgmPrevious?.pause();
+		bgmPrevious = null;
+	}
+
+	function playBgm(type: MusicName) {
+		if (currentBgm === type && bgmAudio && !bgmAudio.paused) return;
+		clearBgmFade();
+		const previous = bgmAudio;
+		const previousName = currentBgm;
+		const next = getBgm(type);
+		next.currentTime = 0;
+		bgmAudio = next;
 		currentBgm = type;
+		if (!previous || previous.paused) {
+			previous?.pause();
+			bgmFadeProgress = 1;
+			next.volume = stateSoundDerived.volumeMusic();
+			next.play().catch(() => {});
+			return;
+		}
+		bgmPrevious = previous;
+		bgmFadeProgress = 0;
+		next.volume = 0;
+		next.play().then(() => {
+			if (bgmAudio !== next || bgmPrevious !== previous) return;
+			const started = performance.now();
+			bgmFadeTimer = setInterval(() => {
+				const p = Math.min(1, (performance.now() - started) / 380);
+				bgmFadeProgress = p;
+				const vol = stateSoundDerived.volumeMusic();
+				if (bgmAudio === next) next.volume = vol * p;
+				if (bgmPrevious === previous) previous.volume = vol * (1 - p);
+				if (p >= 1) clearBgmFade();
+			}, 20);
+		}).catch(() => {
+			if (bgmAudio !== next || bgmPrevious !== previous) return;
+			bgmPrevious = null;
+			bgmAudio = previous;
+			currentBgm = previousName;
+			bgmFadeProgress = 1;
+			previous.volume = stateSoundDerived.volumeMusic();
+		});
 	}
 
 	function stopBgm() {
+		clearBgmFade();
 		if (bgmAudio) {
 			bgmAudio.pause();
 			bgmAudio.currentTime = 0;
 		}
+		bgmFadeProgress = 1;
 		currentBgm = null;
 	}
 
 	// Keep volume in sync with settings
 	$effect(() => {
 		const vol = stateSoundDerived.volumeMusic();
-		if (bgmAudio) bgmAudio.volume = vol;
+		if (bgmAudio) bgmAudio.volume = vol * bgmFadeProgress;
+		if (bgmPrevious) bgmPrevious.volume = vol * (1 - bgmFadeProgress);
 	});
 
 	context.eventEmitter.subscribeOnMount({
@@ -374,9 +543,9 @@
 			if (betModeKey === 'SUPERSPIN') {
 				playCnSfx('win_gliss_big', 0.7);
 				await waitForTimeout(SECOND);
-				playBgm('freespin');
+				playBgm('bgm_freespin');
 			} else {
-				playBgm('base');
+				playBgm('bgm_main');
 			}
 		},
 		soundPressGeneral: () => playCnSfx('btn', 0.7),
@@ -385,18 +554,7 @@
 		soundScatterCounterIncrease: () => (context.stateGame.scatterCounter = context.stateGame.scatterCounter + 1), // prettier-ignore
 		soundScatterCounterClear: () => (context.stateGame.scatterCounter = 0),
 		// game
-		soundMusic: ({ name }) => {
-			if (name === 'bgm_main') {
-				playBgm('base');
-			} else if (name === 'bgm_freespin') {
-				playBgm('freespin');
-			} else {
-				// Other music (win levels etc) — pause bgm, play via sprite
-				if (bgmAudio) bgmAudio.pause();
-				currentBgm = null;
-				sound.players.music.play({ name });
-			}
-		},
+		soundMusic: ({ name }) => playBgm(name),
 		soundLoop: ({ name }) => {
 			if (name === 'sfx_bigwin_coinloop') {
 				// Deliberately a ONE-SHOT despite the event name, the same way
@@ -437,6 +595,7 @@
 		// mouth in silence.
 		soundMascotVoice: ({ name }) =>
 			playCnSfx(`voice_${name}` as CnSfxName, MASCOT_VOICE_GAIN[name]),
+		soundChestHoot: () => playChestHoot(),
 		soundReelTensionStart: () => playCnLoop('reel_tension', 0.8),
 		// stopCnLoop, not stopCnSfx: playCnLoop moved this to Web Audio, and the
 		// element-based stopper would leave the buffer source looping forever.
@@ -445,7 +604,7 @@
 			stopCnSfx('reel_tension');
 		},
 		soundStop: ({ name }) => {
-			if (name === 'bgm_main' || name === 'bgm_freespin') {
+			if (name in BGM_FILES) {
 				stopBgm();
 			} else if (name === 'sfx_bigwin_coinloop') {
 				// both, because the fallback path above may have used the element
@@ -463,21 +622,43 @@
 	});
 
 	onMount(() => {
+		// Autoplay may be blocked when this component mounts before the loading
+		// screen is dismissed. The first real gesture retries the selected bed.
+		const resumeBgmAfterGesture = () => {
+			if (currentBgm && bgmAudio?.paused) bgmAudio.play().catch(() => {});
+		};
+		window.addEventListener('pointerdown', resumeBgmAfterGesture);
+		window.addEventListener('keydown', resumeBgmAfterGesture);
 		// Fetch the one-shot sfx up front so the first play is in sync
 		// (an Audio element created lazily would stall on its first fetch).
 		(Object.keys(CN_SFX_FILES) as CnSfxName[]).forEach(getCnSfx);
+		(Object.keys(BGM_FILES) as MusicName[]).forEach(getBgm);
+		// Decode short cues ahead of the first spin. Web Audio starts on the event
+		// sample and lets multiple hits overlap; the elements remain a fallback.
+		(Object.keys(CN_SFX_FILES) as CnSfxName[])
+			.filter((name) => !['reel_tension', 'ice_freeze', 'coin_shimmer'].includes(name))
+			.forEach(warmOneShot);
 
 		if (stateBet.activeBetModeKey === 'SUPERSPIN') {
-			playBgm('freespin');
+			playBgm('bgm_freespin');
 		} else {
-			playBgm('base');
+			playBgm('bgm_main');
 		}
 
 		return () => {
+			window.removeEventListener('pointerdown', resumeBgmAfterGesture);
+			window.removeEventListener('keydown', resumeBgmAfterGesture);
+			stopChestHoot();
+			monkeyFadeTimers.forEach(clearTimeout);
+			monkeyFadeTimers = [];
+			clearBgmFade();
 			if (bgmAudio) {
 				bgmAudio.pause();
-				bgmAudio.src = '';
 				bgmAudio = null;
+			}
+			for (const name of Object.keys(bgmCache) as MusicName[]) {
+				const audio = bgmCache[name];
+				if (audio) { audio.pause(); audio.src = ''; delete bgmCache[name]; }
 			}
 			for (const name of Object.keys(cnSfxAudio) as CnSfxName[]) {
 				const audio = cnSfxAudio[name];

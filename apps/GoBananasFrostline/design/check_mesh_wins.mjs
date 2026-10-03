@@ -1,4 +1,4 @@
-// The gate for the high-pay mesh wins (src/game/meshWin/*).
+// The gate for the symbol and UI meshes (src/game/meshWin/*).
 //
 // It poses each REAL rig with the REAL pose code — the meshWin modules import
 // nothing outside their folder, so bare node (22.18+, type stripping) can load
@@ -61,9 +61,10 @@ const { PNG } = require('pngjs');
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const core = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/meshRig.ts')).href);
-const { MESH_WINS } = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/index.ts')).href);
+const { MESH_WINS, COIN, COUNTER } = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/index.ts')).href);
+const MESH_SPECS = { ...MESH_WINS, COIN, COUNTER };
 
-const pick = args[0] && !args[0].startsWith('--') ? args.shift().split(',') : Object.keys(MESH_WINS);
+const pick = args[0] && !args[0].startsWith('--') ? args.shift().split(',') : Object.keys(MESH_SPECS);
 const mode = args[0];
 
 const load = (spec) => {
@@ -134,7 +135,7 @@ const measure = (S, pos, rigid) => {
 };
 
 for (const name of pick) {
-	const spec = MESH_WINS[name];
+	const spec = MESH_SPECS[name];
 	if (!spec) throw new Error(`no mesh win for ${name}`);
 	const S = load(spec);
 	const { rig, B, V } = S;

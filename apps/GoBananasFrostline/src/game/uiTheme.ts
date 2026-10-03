@@ -99,9 +99,9 @@ setUiTheme({
 	// does not belong beside the control pressed every few seconds.
 	buyBonusOnRail: false,
 
-	// 20% smaller than the template default. The whole control, not just the
-	// picture: box, hit area, plate and label together.
-	buyBonusButtonScale: 0.8,
+	// A little larger than the other games' 0.8 control so the medal can read at
+	// glance; the hit area grows with the picture and caption.
+	buyBonusButtonScale: 0.88,
 
 	// Unlit rather than greyed. The olive plate went pale under the template's
 	// grey tint and read as a placeholder panel dropped over the jungle, with the
@@ -182,6 +182,14 @@ setUiTheme({
 	// what an incised relief looks like. The label is drawn AFTER the hover
 	// sprite, so the crystal brightens behind the words rather than through them.
 	buyBonusHoverSprite: 'buyBonusGlyph',
+	// The shaped highlight breathes gently at rest; the crystal itself stays
+	// still. Hover adds a restrained prize halo behind it.
+	buyBonusIdleGlow: true,
+	buyBonusIdleSprite: 'buyBonusGlyph',
+	buyBonusHoverSpin: 18,
+	buyBonusHoverSpinRays: 9,
+	buyBonusHoverSpinColor: GOLD_BRIGHT,
+	buyBonusHoverSpinRadius: 1.08,
 	// 0xffffff, not the default warm tint (0xffd98a): the texture carries its own
 	// ice blue, and a warm tint over it would drag the whole glow back toward the
 	// jungle palette this game just left.
@@ -399,9 +407,9 @@ if (uiSkin === 'platform') {
 		valueFill: ICE_HIGHLIGHT,
 		valueStroke: INK,
 		valueShadow: 0x000000,
-		// White rather than the ice bar's gold: the caption sits on the dark slate
-		// plate and the platform strip has no warm colour left for it to belong to.
-		buyBonusLabelFill: 0xffffff,
+		// The caption stays gold on the dark crystal: this is the costly feature
+		// entry point, so it should read as a prize even above the platform bar.
+		buyBonusLabelFill: GOLD_BRIGHT,
 
 		// The ticker plates lose their art and become part of the flat casing: a
 		// framed ice plate behind a flat grey strip reads as two bars stacked.

@@ -1,12 +1,10 @@
-// The sergeant mascot: a cutout Spine rig built from the supplied character PSD.
+// The sergeant mascot: a cutout Spine rig built from the Frostline skin.
 //
-//   py -3 design/extract_monkey_psd.py <psd>      # once, writes design/source/monkey
+//   node design/slice_frostline_monkey.mjs <dir with node_modules for pngjs>
 //   node design/generate_monkey_spine.mjs <dir with node_modules for pngjs>
 //
-// The PSD arrives as separate body parts with no skeleton — "spine pieces", not a
-// spine. This builds the skeleton: packs the pieces into one atlas page and emits
-// a Spine 4.1 JSON with a bone per joint, the artist's own layout preserved, and
-// two animations.
+// This builds the skeleton: packs the prepared pieces into one atlas page and
+// emits a Spine 4.1 JSON with a bone per joint and the existing animations.
 //
 // WHY A RIG AND NOT A STILL
 //
@@ -26,14 +24,12 @@
 // in both versions, which is why the hip and torso moved and only the limbs
 // looked frozen.
 //
-// The PSD is 560x912 with y increasing DOWNWARD from the top-left. Spine has y
+// The cutout is 573x860 with y increasing DOWNWARD from the top-left. Spine has y
 // increasing UPWARD from the skeleton origin, which is placed between the feet
 // (ROOT below) so the character can be positioned by its ground contact rather
 // than by the corner of a canvas.
 //
-// Every joint below is read off the piece bounding boxes in layers.json — a knee
-// is the top edge of the calf, a shoulder the top of the upper arm — so the rig
-// follows the artist's drawing instead of numbers invented here. Bones are all
+// The joints below follow the visible seams of the new character. Bones are all
 // unrotated in setup pose, so each attachment is simply its piece's centre
 // relative to its bone, and an animation rotating a bone pivots the art about the
 // real joint.
@@ -51,7 +47,7 @@ const require = createRequire(path.join(toolDir, 'noop.js'));
 const { PNG } = require('pngjs');
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SRC = path.join(appRoot, 'design/source/monkey');
+const SRC = path.join(appRoot, 'design/source/monkey_frostline');
 const OUT = path.join(appRoot, 'static/assets/spines/goBananasMonkey');
 fs.mkdirSync(OUT, { recursive: true });
 
@@ -74,54 +70,53 @@ const byName = Object.fromEntries(meta.layers.map((l) => [l.name, l]));
 const piece = (name) => {
 	const l = byName[name];
 	if (!l) {
-		console.error(`missing piece: ${name} — re-run design/extract_monkey_psd.py`);
+		console.error(`missing piece: ${name} — re-run design/slice_frostline_monkey.mjs`);
 		process.exit(1);
 	}
 	return l;
 };
 
-// Skeleton origin on the PSD canvas: centred between the boots, on the ground.
-const ROOT = { x: 280, y: 884 };
+// Skeleton origin: centred between the boots, on the ground.
+const ROOT = { x: 286, y: 838 };
 const toSpine = (x, y) => ({ x: x - ROOT.x, y: ROOT.y - y });
 
 // ── the skeleton ────────────────────────────────────────────────────────────
 //
-// `at` is the joint in PSD pixels. `parts` are the pieces that ride on that bone.
-// Torso and head each carry several pieces (coat, belt, webbing, fur) — they are
-// separate layers so they can be drawn in the right order, not because they move
-// independently.
+// `at` is the joint in cutout pixels. `parts` ride on that bone.
 //
 // Shoulder and hip joints are pulled slightly INSIDE the piece from its top edge:
 // a limb rotating about the exact top corner of its own artwork tears away from
 // the body, because the art overlaps the joint it hangs from.
 const RIG = [
-	{ name: 'hip', parent: 'root', at: [280, 498], parts: [] },
-	{ name: 'torso', parent: 'hip', at: [280, 470], parts: [
-		'torso_0_decoration', 'torso_3_belt', 'torso_4_decoration', 'torso_1_coat', 'torso_5_trunk',
-	] },
+	{ name: 'hip', parent: 'root', at: [286, 574], parts: [] },
+	{ name: 'torso', parent: 'hip', at: [286, 550], parts: ['torso_1_coat'] },
+	// These bones own only the lower coat mesh. The chest, collar and neck stay
+	// on torso, so the free hem cannot drift across the face or banana.
+	{ name: 'coatHemL', parent: 'torso', at: [212, 399], parts: [] },
+	{ name: 'coatHemR', parent: 'torso', at: [371, 399], parts: [] },
 	// The neck, just under the jaw: the head nods and turns about this.
-	{ name: 'head', parent: 'torso', at: [283, 296], parts: ['head_0_face', 'head_4_eye'] },
+	{ name: 'head', parent: 'torso', at: [286, 244], parts: ['head_0_face'] },
 
-	{ name: 'armL', parent: 'torso', at: [120, 258], parts: ['left_arm_0_upper_arm'] },
-	{ name: 'armL_fore', parent: 'armL', at: [96, 428], parts: ['left_arm_1_forearm'] },
-	{ name: 'armL_hand', parent: 'armL_fore', at: [114, 528], parts: ['left_arm_2_hand'] },
+	{ name: 'armL', parent: 'torso', at: [172, 220], parts: ['left_arm_0_upper_arm'] },
+	{ name: 'armL_fore', parent: 'armL', at: [105, 348], parts: ['left_arm_1_forearm'] },
+	{ name: 'armL_hand', parent: 'armL_fore', at: [85, 476], parts: ['left_arm_2_hand'] },
 	// Carries the grenade, so it follows the hand exactly rather than being
 	// chased by something outside the skeleton trying to guess where the hand is.
 	// Offset into the palm, and it exists only to be scaled - the pop as the
 	// grenade appears is this bone growing, since a slot cannot be scaled.
-	{ name: 'prop', parent: 'armL_hand', at: [118, 548], parts: [] },
+	{ name: 'prop', parent: 'armL_hand', at: [86, 516], parts: [] },
 
-	{ name: 'armR', parent: 'torso', at: [438, 252], parts: ['right_arm_0_upper_arm'] },
-	{ name: 'armR_fore', parent: 'armR', at: [464, 366], parts: ['right_arm_1_forearm'] },
-	{ name: 'armR_hand', parent: 'armR_fore', at: [470, 470], parts: ['right_arm_2_hand'] },
+	{ name: 'armR', parent: 'torso', at: [402, 220], parts: ['right_arm_0_upper_arm'] },
+	{ name: 'armR_fore', parent: 'armR', at: [480, 354], parts: ['right_arm_1_forearm'] },
+	{ name: 'armR_hand', parent: 'armR_fore', at: [493, 476], parts: ['right_arm_2_hand'] },
 
-	{ name: 'legL', parent: 'hip', at: [216, 492], parts: ['left_leg_0_thigh'] },
-	{ name: 'legL_calf', parent: 'legL', at: [210, 566], parts: ['left_leg_1_calf'] },
-	{ name: 'legL_foot', parent: 'legL_calf', at: [172, 748], parts: ['left_leg_2_foot'] },
+	{ name: 'legL', parent: 'hip', at: [207, 578], parts: ['left_leg_0_thigh'] },
+	{ name: 'legL_calf', parent: 'legL', at: [194, 676], parts: ['left_leg_1_calf'] },
+	{ name: 'legL_foot', parent: 'legL_calf', at: [177, 748], parts: ['left_leg_2_foot'] },
 
-	{ name: 'legR', parent: 'hip', at: [376, 508], parts: ['right_leg_0_thigh'] },
-	{ name: 'legR_calf', parent: 'legR', at: [396, 722], parts: ['right_leg_1_calf'] },
-	{ name: 'legR_foot', parent: 'legR_calf', at: [402, 790], parts: ['right_leg_2_foot'] },
+	{ name: 'legR', parent: 'hip', at: [368, 578], parts: ['right_leg_0_thigh'] },
+	{ name: 'legR_calf', parent: 'legR', at: [379, 676], parts: ['right_leg_1_calf'] },
+	{ name: 'legR_foot', parent: 'legR_calf', at: [400, 748], parts: ['right_leg_2_foot'] },
 ];
 
 const boneOf = {};
@@ -136,8 +131,8 @@ for (const b of RIG) {
 	bones.push({ name: b.name, parent: b.parent, x: +(w.x - p.x).toFixed(2), y: +(w.y - p.y).toFixed(2) });
 }
 
-// Slots in the PSD's own stacking order, so the character assembles exactly as
-// the artist stacked it. Anything else and the coat ends up behind the trunk.
+// Slots in the cutout's stacking order, so the character assembles in the same
+// pose as the approved painting.
 const drawOrder = [...meta.layers].sort((a, b) => a.z - b.z);
 const slots = drawOrder
 	.filter((l) => boneOf[l.name])
@@ -166,6 +161,44 @@ for (const prop of PROPS) {
 	attachments[prop.name] = {
 		[prop.name]: { x: 0, y: 0, width: prop.size, height: prop.size },
 	};
+}
+
+// A single weighted grid over the existing coat painting. The top rows remain
+// on the torso; lower rows blend onto two hem bones with no cut seam.
+{
+	const l = piece('torso_1_coat');
+	const cols = 12, rows = 18;
+	const ring = [];
+	for (let c = 0; c < cols; c++) ring.push([c, 0]);
+	for (let r = 0; r < rows; r++) ring.push([cols, r]);
+	for (let c = cols; c > 0; c--) ring.push([c, rows]);
+	for (let r = rows; r > 0; r--) ring.push([0, r]);
+	const order = [...ring];
+	for (let r = 1; r < rows; r++) for (let c = 1; c < cols; c++) order.push([c, r]);
+	const lookup = new Map(order.map(([c, r], i) => [`${c},${r}`, i]));
+	const uvs = [], vertices = [], triangles = [];
+	const ease = (v) => { const t = Math.max(0, Math.min(1, v)); return t * t * (3 - 2 * t); };
+	for (const [c, r] of order) {
+		const x = l.x + l.w * c / cols, y = l.y + l.h * r / rows;
+		uvs.push(+(c / cols).toFixed(5), +(r / rows).toFixed(5));
+		const hem = ease((y - 385) / 170) * 0.9;
+		const side = ease((x - 260) / 70);
+		const weights = { torso: 1 - hem, coatHemL: hem * (1 - side), coatHemR: hem * side };
+		const world = toSpine(x, y);
+		const entries = Object.entries(weights).filter(([, w]) => w > 1e-4);
+		vertices.push(entries.length);
+		for (const [bone, weight] of entries) {
+			const joint = jointWorld[bone];
+			vertices.push(bones.findIndex((b) => b.name === bone),
+				+(world.x - joint.x).toFixed(2), +(world.y - joint.y).toFixed(2), +weight.toFixed(5));
+		}
+	}
+	for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+		const a = lookup.get(`${c},${r}`), b = lookup.get(`${c + 1},${r}`);
+		const d = lookup.get(`${c},${r + 1}`), e = lookup.get(`${c + 1},${r + 1}`);
+		triangles.push(a, b, e, a, e, d);
+	}
+	attachments[l.name][l.name] = { type: 'mesh', uvs, triangles, vertices, hull: ring.length, width: l.w, height: l.h };
 }
 
 // ── atlas ───────────────────────────────────────────────────────────────────
@@ -663,8 +696,10 @@ const cheer = {
 // It reads as pounding because of the rhythm and the weight, not the reach.
 const BEAT_IN_L = MAX_SHOULDER - 4;
 const BEAT_IN_R = -(MAX_SHOULDER - 4);
-const BEAT_FORE_L = MAX_ELBOW - 2;
-const BEAT_FORE_R = -(MAX_ELBOW - 2);
+// The new coat's long sleeves need a deeper fold to put the hands near the
+// centre of the chest than the short-sleeved source rig did.
+const BEAT_FORE_L = 55;
+const BEAT_FORE_R = -55;
 const BEAT_OUT = 14; // how far the idle arm cocks away while the other lands
 
 // Smoothing removed the corners; these numbers remove the hurry. Six strikes at
@@ -924,9 +959,8 @@ const nod = {
 // Named 'throwit' rather than 'throw' because `throw` is a reserved word, and
 // this object is written as JS before it becomes JSON.
 //
-// He throws with the LEFT arm - the one nearer the board, and the one the PSD
-// stacks IN FRONT of the coat, so the whole swing stays visible instead of
-// disappearing behind the vest halfway through.
+// He throws with the LEFT arm - the one nearer the board, and the one the
+// cutout stacks in front of the coat, so the whole swing stays visible.
 //
 // THE GRENADE IS PART OF THE SKELETON
 //
@@ -1219,6 +1253,20 @@ const smoothAnimation = (animation, loopD) => {
 	return animation;
 };
 
+// Track 1 runs beside every reaction. The two coat tails share one slow wind
+// but lag each other, so their weighted mesh bends rather than pivots as a card.
+const CLOTH_LOOP = 4.8;
+const clothKeys = (amp, phase) => Array.from({ length: 33 }, (_, i) => {
+	const time = CLOTH_LOOP * i / 32;
+	return { time: +time.toFixed(4), value: +(amp * Math.sin(2 * Math.PI * time / CLOTH_LOOP + phase)).toFixed(3) };
+});
+const clothFlutter = {
+	bones: {
+		coatHemL: { rotate: clothKeys(4.1, 0.2) },
+		coatHemR: { rotate: clothKeys(4.7, -0.55) },
+	},
+};
+
 const skeleton = {
 	skeleton: {
 		hash: 'gb-monkey',
@@ -1234,11 +1282,11 @@ const skeleton = {
 	slots,
 	skins: [{ name: 'default', attachments }],
 	animations: Object.fromEntries(
-			Object.entries({ idle, cheer, chestbeat, nod, throwit }).map(([name, a]) => [
+			Object.entries({ idle, cheer, chestbeat, nod, throwit, clothFlutter }).map(([name, a]) => [
 				name,
 				// idle is the only one that loops, so it is the only one whose ends
 				// have to meet.
-				smoothAnimation(a, name === 'idle' ? IDLE_LOOP : undefined),
+				smoothAnimation(a, name === 'idle' ? IDLE_LOOP : name === 'clothFlutter' ? CLOTH_LOOP : undefined),
 			]),
 		),
 };

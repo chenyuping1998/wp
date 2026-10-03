@@ -44,21 +44,12 @@ const onSymbolLand = ({ rawSymbol, reelIndex }: { rawSymbol: RawSymbol; reelInde
 	}
 };
 
-// ONE STOP FOR ALL FIVE REELS, and it is Go Bananas 100's sample.
-//
-// Two separate things were tangled together here, which is why this took two
-// passes. The SAMPLE is jungle/reel_stop.wav — the first game's — after a
-// purpose-built flat 78Hz knock was tried and rejected. The RAMP is separate:
-// sfx_reel_stop_1..5 are that one sample at five playback rates, climbing a step
-// per reel, and that climb is what had to go.
-//
-// Reverting to "what Go Bananas 100 does" restored both at once, which put the
-// climb straight back. Only the sample was wanted.
-//
-// _1 is the lowest rate (0.92) of the five, so every reel now lands on the same
-// low knock. _2.._5 stay in SPRITE_TO_CN as dead entries so the names in
-// SoundEffectName still resolve; nothing plays them.
-const REEL_STOP_SOUND = 'sfx_reel_stop_1';
+// A timbre sequence rather than a pitch ladder: each reel has its own detent,
+// and all five use the same fixed low body. The event fires on the reel's actual
+// stopping callback, so the audio onset is the visible stop.
+const REEL_STOP_SOUNDS = [
+	'sfx_reel_stop_1', 'sfx_reel_stop_2', 'sfx_reel_stop_3', 'sfx_reel_stop_4', 'sfx_reel_stop_5',
+] as const;
 
 const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 	const reel = createReelForSpinning({
@@ -78,7 +69,7 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 
 			eventEmitter.broadcast({
 				type: 'soundOnce',
-				name: REEL_STOP_SOUND,
+				name: REEL_STOP_SOUNDS[reelIndex],
 				// Superspin forces the click through in turbo as well: its stops are
 				// the event, and a dropped reel-stop there is a missing beat rather
 				// than one less click in a rapid sequence.
