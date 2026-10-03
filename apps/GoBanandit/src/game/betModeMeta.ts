@@ -41,7 +41,9 @@ const emptyAssets = {
 const cardArt = (name: string) => `${base}/assets/sprites/bananditUi/card_${name}.png`;
 
 const MAX_WIN = '10,000×';
-const RTP = '96%';
+// from the synced math config, never typed: it was a literal '96%' and would
+// have gone on saying so after the RTP moved
+const RTP = `${(config.rtp * 100).toFixed(2)}%`;
 const meter = config.banditMeter;
 const firstRung = meter.thresholds[0];
 const firstMult = meter.mults[1];

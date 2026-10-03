@@ -153,7 +153,7 @@
 					{/if}
 				{/each}
 			</div>
-			<div class="foot">All features play at 96% RTP · Max win 10,000×</div>
+			<div class="foot">All features play at {(config.rtp * 100).toFixed(2)}% RTP · Max win {(config.betModes.base.max_win ?? 10000).toLocaleString()}×</div>
 		</div>
 	</Popup>
 {/if}

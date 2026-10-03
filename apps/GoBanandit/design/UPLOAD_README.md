@@ -14,9 +14,9 @@ Reskin of Go Boomana (chenyuping1998/wp). Same ways engine; mechanic, math and a
 
 | mode | cost | RTP | max win |
 |---|---|---|---|
-| base | 1× | 96.00% | 10,000× |
-| bonus（Free Spins） | 100× | 96.00% | 10,000× |
-| superbonus（Super Free Spins，meter opens at 4, ×2） | 150× | 96.00% | 10,000× |
+| base | 1× | 94.50% | 10,000× |
+| bonus（Free Spins） | 100× | 94.50% | 10,000× |
+| superbonus（Super Free Spins，meter opens at 4, ×2） | 150× | 94.50% | 10,000× |
 
 Custom events: `collect`, `banditMeter`.
 
@@ -42,5 +42,5 @@ Free Spins can be entered directly for 100× the bet, or for 150× with the mete
 
 RTP & Max Win
 
-RTP is 96.00% in all three modes, with a spread of 0.00%. Max Win is capped at 10,000× the bet in every mode.
+RTP is 94.50% in all three modes, with a spread of 0.00%. Max Win is capped at 10,000× the bet in every mode.
 ```
