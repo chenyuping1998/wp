@@ -481,7 +481,15 @@ export type MeshWinSpec = {
 	/** bones allowed to collapse (a blink): the fold floor does not apply to
 	 *  the triangles they own, but they may still never invert */
 	collapsible?: string[];
-	pose: (rig: Rig, ms: number) => Pose;
+	/** `amp` scales the act: a LANDING's weight, which is the cell's impact
+	 *  (ReelSymbol: the Scatter and the Wild land harder). Wins ignore it. */
+	pose: (rig: Rig, ms: number, amp?: number) => Pose;
+	/** a landing (game/meshWin/lands.ts), not a win. Small, inside the board
+	 *  mask, on most spins: SymbolMeshWin draws no flash, sweep, sparks, dust or
+	 *  cell pop for it, and does not report completion — SymbolSprite still
+	 *  reports "landed" at 240ms, as the plain squash always did, so the reel's
+	 *  stop sequence is unchanged and the act finishes over a settled board. */
+	landing?: boolean;
 };
 
 // ---------------------------------------------------------------------------
@@ -502,10 +510,15 @@ const mix = (a: number, b: number, k: number) => a + (b - a) * k;
  * acting before that; check_mesh_wins.mjs fails any win that does not end at
  * rest.
  */
+/** the heaviest landing a cell can ask for — SymbolSprite clamps impact to it,
+ *  and check_mesh_wins.mjs poses every landing at it, so the worst case is the
+ *  one measured */
+export const AMP_MAX = 1.5;
+
 export const settled = (spec: MeshWinSpec): MeshWinSpec => ({
 	...spec,
-	pose: (rig, t) => {
-		const pose = spec.pose(rig, t);
+	pose: (rig, t, amp) => {
+		const pose = spec.pose(rig, t, amp);
 		const k = smoothstep((t - (spec.durationMs - SETTLE_MS)) / SETTLE_MS);
 		if (k <= 0) return pose;
 		for (const b of pose.bones) {

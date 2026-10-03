@@ -53,7 +53,7 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
 	import { CANVAS, skin } from '../game/meshWin/meshRig';
-	import { MESH_WINS } from '../game/meshWin';
+	import { MESH_WINS, MESH_LANDS } from '../game/meshWin';
 	import ImpactDust from './ImpactDust.svelte';
 
 	type Props = {
@@ -65,13 +65,21 @@
 		reel?: number;
 		/** the gold pay frame round the cell (every winning symbol but the Scatter) */
 		showWinFrame?: boolean;
+		/** LANDING mode (game/meshWin/lands.ts): the reel has just stopped on this
+		 *  cell. Drawn in place of the sprite's squash, inside the board mask, with
+		 *  none of the win's light, sparks, dust or cell pop, and with no completion
+		 *  of its own — SymbolSprite reports "landed" on its usual clock. */
+		land?: boolean;
+		/** the landing's weight: the cell's impact, clamped to AMP_MAX */
+		amp?: number;
 		oncomplete?: () => void;
 	};
 
 	const props: Props = $props();
 	const app = getContextApp();
 	const parent = getContextParent();
-	const spec = MESH_WINS[props.symbolName];
+	const landing = !!props.land;
+	const spec = landing ? MESH_LANDS[props.symbolName] : MESH_WINS[props.symbolName];
 
 	// must match make_symbol_layers.mjs (the atlas) and render_mesh_wins.py
 	const SHEEN_FRAMES = 24, SHEEN_COLS = 6, SHEEN_CELL = 128;
@@ -124,8 +132,8 @@
 		root.label = `meshWin ${spec.symbol} reel ${props.reel ?? '?'} +${delay}ms`;
 		// completion and the landing are on TIMERS, not the frame loop: rAF stops
 		// in a hidden tab, and the board awaits the completion to move on
-		const done = setTimeout(() => props.oncomplete?.(), (delay + spec.durationMs) / speed);
-		const land = setTimeout(() => (dust = true), (delay + spec.landMs) / speed);
+		const done = landing ? undefined : setTimeout(() => props.oncomplete?.(), (delay + spec.durationMs) / speed);
+		const land = landing ? undefined : setTimeout(() => (dust = true), (delay + spec.landMs) / speed);
 		const clearTimers = () => {
 			clearTimeout(done);
 			clearTimeout(land);
@@ -169,7 +177,9 @@
 		sheen.visible = false;
 
 		// sparks: born on the hit, flung out from the subject, gone in ~0.5s
-		const sparks = Array.from({ length: starTex ? 8 : 0 }, (_, i) => {
+		// None on a landing: a landing spec's hitMs is 0, so the spark clock below
+		// would otherwise fire a burst on every cell the instant its reel stops.
+		const sparks = Array.from({ length: starTex && !landing ? 8 : 0 }, (_, i) => {
 			const s = new Sprite(starTex);
 			s.anchor.set(0.5);
 			s.blendMode = 'add';
@@ -187,7 +197,10 @@
 		root.position.set(props.x ?? 0, props.y ?? 0);
 		// High-pay art springs past the cell edge; keep it above neighbouring
 		// content while it performs. Smaller symbols remain under the pay frame.
-		if (['H1', 'H2', 'H3', 'H4'].includes(spec.symbol)) parent.parent.addChild(root);
+		// (parent is pixi-svelte's context object, so parent.parent is THIS cell's
+		// own container: (0,0) is the cell centre either way.) A landing replaces
+		// the cell's sprite, so it simply sits where the sprite was.
+		if (landing || ['H1', 'H2', 'H3', 'H4'].includes(spec.symbol)) parent.parent.addChild(root);
 		else parent.parent.addChildAt(root, 0);
 
 		const rows = Math.ceil(SHEEN_FRAMES / SHEEN_COLS);
@@ -196,11 +209,12 @@
 
 		const tick = () => {
 			const t = Math.max(0, performance.now() - started - delay / speed) * speed;
-			const pose = spec.pose(rig, t);
+			const pose = spec.pose(rig, t, props.amp);
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();
-			root.scale.set(fit * pose.plateHit * cellPop(t));
-			root.position.set(props.x ?? 0, (props.y ?? 0) - cellHop(t));
+			// the cell pop and hop are the WIN's: a landing stays in its cell
+			root.scale.set(fit * pose.plateHit * (landing ? 1 : cellPop(t)));
+			root.position.set(props.x ?? 0, (props.y ?? 0) - (landing ? 0 : cellHop(t)));
 
 			if (shadow) {
 				const air = pose.air;
@@ -261,8 +275,10 @@
 	});
 </script>
 
-{#if props.showWinFrame ?? true}
-	<!-- the same pay frame every other winning symbol gets (SymbolSpine) -->
+{#if !landing && (props.showWinFrame ?? true)}
+	<!-- the same pay frame every other winning symbol gets (SymbolSpine). It
+	     defaults ON, so a landing has to refuse it outright, or every cell on a
+	     stopping reel would light up as if it had paid. -->
 	<SpineProvider x={props.x} y={props.y} key="anticipation" width={SYMBOL_SIZE * 0.19}>
 		<SpineTrack trackIndex={0} animationName={'payframe'} loop />
 	</SpineProvider>

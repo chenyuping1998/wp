@@ -57,6 +57,7 @@
 		blur={props.state === 'spin' ? (props.blur ?? 1) : 0}
 		landing={props.state === 'land'}
 		impact={props.impact}
+		symbolName={props.rawSymbol.name}
 		oncomplete={props.oncomplete}
 	/>
 {:else}

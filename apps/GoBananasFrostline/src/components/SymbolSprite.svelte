@@ -3,8 +3,12 @@
 	import { Tween } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
 
+	import { stateBetDerived } from 'state-shared';
+
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
+	import { MESH_LANDS, AMP_MAX } from '../game/meshWin';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
 
 	type Props = {
 		x?: number;
@@ -21,6 +25,8 @@
 		// card royals barely at all, so weight reads as importance rather than
 		// every tile bouncing identically.
 		impact?: number;
+		/** the symbol's id, for its mesh landing (game/meshWin/lands.ts) */
+		symbolName?: string;
 		oncomplete?: () => void;
 	};
 
@@ -44,7 +50,44 @@
 	$effect(() => () => {
 		destroyed = true;
 	});
+	// THE LANDING, ACTED (game/meshWin/lands.ts, from Go Bananas Boat). For a
+	// symbol with a mesh landing the slate plate stays put and the subject takes
+	// the weight, instead of the whole tile — plate and all — being squashed like
+	// a sticker.
+	//
+	// The act runs LAND_MS (480), longer than the squash; "landed" is still
+	// reported at 240ms, exactly when the squash reported it, so the reel's stop
+	// sequence does not move and the act simply finishes over the settled board.
+	// It gives way the moment the reel spins again (the blur takes over), and a
+	// new act on the same cell replaces the old one.
+	const LANDED_MS = 240;
+	let meshLand = $state<{ id: number; amp: number } | null>(null);
+	let meshLandId = 0;
+	let meshLandTimer: ReturnType<typeof setTimeout> | undefined;
+	$effect(() => () => clearTimeout(meshLandTimer));
+	const runMeshLand = async (spec: (typeof MESH_LANDS)[string]) => {
+		if (squashing) return;
+		squashing = true;
+		const amp = Math.max(0, Math.min(AMP_MAX, props.impact ?? 1));
+		meshLand = { id: ++meshLandId, amp };
+		clearTimeout(meshLandTimer);
+		const mine = meshLandId;
+		meshLandTimer = setTimeout(
+			() => {
+				if (meshLand?.id === mine) meshLand = null;
+			},
+			spec.durationMs / stateBetDerived.timeScale() + 40,
+		);
+		await new Promise((resolve) => setTimeout(resolve, LANDED_MS));
+		squashing = false;
+		// the same guard as the squash below, for the same reason
+		if (destroyed) return;
+		props.oncomplete?.();
+	};
+
 	const runSquash = async () => {
+		const meshSpec = props.symbolName ? MESH_LANDS[props.symbolName] : undefined;
+		if (meshSpec) return runMeshLand(meshSpec);
 		if (squashing) return;
 		squashing = true;
 		// Ceiling is 1.5, not 1: the point of the tier is that Scatter and Wild hit
@@ -115,12 +158,25 @@
 	/>
 {/if}
 
-<Sprite
-	x={props.x}
-	y={props.y}
-	anchor={0.5}
-	key={props.symbolInfo.assetKey}
-	width={width * sx.current}
-	height={blur > 0.01 ? height * (1 + 0.3 * blur) : height * sy.current}
-	alpha={1 - 0.15 * blur}
-/>
+{#if meshLand && blur <= 0.01 && props.symbolName}
+	{#key meshLand.id}
+		<SymbolMeshWin
+			land
+			amp={meshLand.amp}
+			symbolInfo={props.symbolInfo}
+			symbolName={props.symbolName}
+			x={props.x}
+			y={props.y}
+		/>
+	{/key}
+{:else}
+	<Sprite
+		x={props.x}
+		y={props.y}
+		anchor={0.5}
+		key={props.symbolInfo.assetKey}
+		width={width * sx.current}
+		height={blur > 0.01 ? height * (1 + 0.3 * blur) : height * sy.current}
+		alpha={1 - 0.15 * blur}
+	/>
+{/if}
