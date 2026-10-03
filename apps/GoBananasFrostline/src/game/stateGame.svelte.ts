@@ -92,7 +92,7 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 				stateGame.gameType === 'superspin' ||
 				stateGame.gameType === 'freegame'
 			) {
-				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
+				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12, reel: reelIndex });
 			}
 		},
 		onSymbolLand: ({ rawSymbol }) => onSymbolLand({ rawSymbol, reelIndex }),

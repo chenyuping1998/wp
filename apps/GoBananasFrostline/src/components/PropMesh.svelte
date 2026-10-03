@@ -12,6 +12,10 @@
 		width: number;
 		height: number;
 		anchor?: number;
+		/** for an additive copy of a mesh (the frame's flash): it has to bend
+		 *  with the mesh it lights, or the light doubles the rail it is on */
+		alpha?: number;
+		blendMode?: 'normal' | 'add';
 	};
 	const props: Props = $props();
 	const app = getContextApp();
@@ -33,6 +37,7 @@
 			if (texture) {
 				geometry = new MeshGeometry({ positions, uvs: rig.uvs, indices: rig.indices });
 				mesh = new Mesh({ geometry, texture });
+				mesh.blendMode = props.blendMode ?? 'normal';
 				body.addChild(mesh);
 			}
 		}
@@ -46,6 +51,8 @@
 		root.position.set(props.x ?? 0, props.y ?? 0);
 		body.scale.set(props.width / 256, props.height / 256);
 		body.position.set(-props.width * anchor, -props.height * anchor);
+		root.alpha = props.alpha ?? 1;
+		if (mesh) mesh.blendMode = props.blendMode ?? 'normal';
 	});
 
 	onDestroy(() => geometry?.destroy());

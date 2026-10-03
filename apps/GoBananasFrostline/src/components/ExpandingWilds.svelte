@@ -509,7 +509,7 @@
 		});
 		spawnSparks(x, badgeY, 6 + Math.round(12 * t), 'rise');
 		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
-		context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.1 + 0.6 * t });
+		context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.1 + 0.6 * t, reel: entry.reel });
 
 		// Count through the integers, never more steps than there are values to
 		// show: a +2 ticks twice, not nine times through repeated numbers.
@@ -619,7 +619,7 @@
 		//                       three simultaneous bursts just look like one big one.
 		waitForTimeout(FROST_TIMING.freezeMs * CRACK_AT).then(() => {
 			context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_ice_crack' });
-			context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.6 });
+			context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.6, reel: entry.reel });
 			spawnSparks(x, REEL_CENTER_Y, 14);
 			for (const [delay, dy] of [
 				[30, -BOARD_SIZES.height * 0.3],
@@ -701,7 +701,7 @@
 
 		// beat 3 — impact, and the banner is thrown open by it
 		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
-		context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1 });
+		context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1, reel: entry.reel });
 		bursts = [...bursts, { id: nextId++, x }];
 		spawnSparks(x, REEL_CENTER_Y, 16);
 		entry.banner.set(1, { duration: BANNER_MS, easing: backOut });

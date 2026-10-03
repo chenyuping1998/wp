@@ -2,8 +2,10 @@
 	export type EmitterEventBoardFrame =
 		| { type: 'boardFrameGlowShow' }
 		| { type: 'boardFrameGlowHide' }
-		// something slammed into the frame — kick it and flash the brass
-		| { type: 'boardFrameImpact'; strength?: number };
+		// something slammed into the frame — kick it and flash the rails. `reel`
+		// is the column it came from: that column's rails bow (game/meshWin/
+		// frameEdge.ts). Without one, every column bows.
+		| { type: 'boardFrameImpact'; strength?: number; reel?: number };
 </script>
 
 <script lang="ts">
@@ -14,6 +16,8 @@
 
 	import { getContext } from '../game/context';
 	import { ICE_DEEP } from '../game/palette';
+	import { FRAME, FRAME_REELS } from '../game/meshWin';
+	import PropMesh from './PropMesh.svelte';
 
 	const context = getContext();
 	const SPINE_SCALE = { width: 0.62, height: 0.66 };
@@ -43,15 +47,57 @@
 		}, 33);
 		return () => {
 			clearInterval(id);
-			cancelAnimationFrame(impactRaf);
+			clearInterval(impactTimer);
+			clearInterval(bowTimer);
 		};
 	});
 
 	// ── frame impact: a short recoil plus a hot flash along the brass, so a
 	// wild slamming into the housing is felt and not just seen ────────────────
 	let impact = $state({ x: 0, y: 0, flash: 0 });
-	let impactRaf = 0;
+	// A TIMER, not requestAnimationFrame. rAF stops dead in a hidden tab, and an
+	// impact started just before the tab was hidden left the whole housing
+	// frozen at its offset — a frame visibly out of line with the board — until
+	// the player came back. (The pixi v8 note on this has the same lesson.)
+	let impactTimer: ReturnType<typeof setInterval> | undefined;
 	const IMPACT_MS = 420;
+
+	// THE BOW (game/meshWin/frameEdge.ts): when each column last took a hit and
+	// how hard. The rails are drawn through a mesh fed these, on their own timer
+	// that runs only while some column is still ringing.
+	const BOW_MS = 950;
+	const bowAt = Array.from({ length: FRAME_REELS }, () => -Infinity);
+	const bowStrength = Array.from({ length: FRAME_REELS }, () => 0);
+	let bowEnv = $state({
+		blastT: Array.from({ length: FRAME_REELS }, () => -1),
+		strength: Array.from({ length: FRAME_REELS }, () => 0),
+	});
+	let bowTimer: ReturnType<typeof setInterval> | undefined;
+	const tickBow = () => {
+		const now = Date.now();
+		const blastT = bowAt.map((at) => (now - at < BOW_MS ? now - at : -1));
+		bowEnv = { blastT, strength: [...bowStrength] };
+		if (blastT.every((t) => t < 0)) {
+			clearInterval(bowTimer);
+			bowTimer = undefined;
+		}
+	};
+	// The square root keeps a reel stop (requested at 0.12, a rattle) visible as
+	// a bow at all — 0.35 — while the ice crack (1.6) still bows hardest (1.26).
+	const runBow = (strength: number, reel?: number) => {
+		const now = Date.now();
+		const s = Math.sqrt(Math.max(0, strength));
+		for (let i = 0; i < FRAME_REELS; i++) {
+			if (reel !== undefined && i !== reel) continue;
+			// a weaker hit does not cut a stronger one off mid-swing
+			const left = bowStrength[i] * Math.max(0, 1 - (now - bowAt[i]) / BOW_MS);
+			if (s < left) continue;
+			bowAt[i] = now;
+			bowStrength[i] = s;
+		}
+		if (!bowTimer) bowTimer = setInterval(tickBow, 16);
+		tickBow();
+	};
 
 	// Energy still left in the impact currently playing, so a weaker one cannot
 	// cut it short. Reel stops now request a light 0.12 rattle on every reel; a
@@ -61,14 +107,15 @@
 
 	const runImpact = (strength: number) => {
 		if (strength < impactEnergy) return;
-		cancelAnimationFrame(impactRaf);
+		clearInterval(impactTimer);
 		impactEnergy = strength;
-		const start = performance.now();
-		const step = (now: number) => {
-			const p = (now - start) / IMPACT_MS;
+		const start = Date.now();
+		const step = () => {
+			const p = (Date.now() - start) / IMPACT_MS;
 			if (p >= 1) {
 				impact = { x: 0, y: 0, flash: 0 };
 				impactEnergy = 0;
+				clearInterval(impactTimer);
 				return;
 			}
 			// decay the gate alongside the motion, so a later hit of similar size
@@ -82,9 +129,9 @@
 				y: Math.sin(p * 38 + 1.1) * amp,
 				flash: 0.55 * strength * (1 - p) ** 3,
 			};
-			impactRaf = requestAnimationFrame(step);
 		};
-		impactRaf = requestAnimationFrame(step);
+		impactTimer = setInterval(step, 16);
+		step();
 	};
 
 	const drawAmbience = (g: PixiGraphics) => {
@@ -123,7 +170,10 @@
 		boardFrameGlowHide: () => {
 			if (animationName) animationName = 'reelhouse_glow_exit';
 		},
-		boardFrameImpact: ({ strength }) => runImpact(strength ?? 1),
+		boardFrameImpact: ({ strength, reel }) => {
+			runImpact(strength ?? 1);
+			runBow(strength ?? 1, reel);
+		},
 	});
 </script>
 
@@ -170,8 +220,10 @@
 	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
 />
 
-<Sprite
-	key="gbFrameEdge"
+<!-- the rails, through the mesh: the column that took the hit bows -->
+<PropMesh
+	spec={FRAME}
+	env={bowEnv}
 	anchor={0.5}
 	x={context.stateGameDerived.boardLayout().x + impact.x}
 	y={context.stateGameDerived.boardLayout().y + impact.y}
@@ -180,9 +232,12 @@
 />
 
 {#if impact.flash > 0}
-	<!-- additive copy of the brass edge = the whole housing rings white-hot -->
-	<Sprite
-		key="gbFrameEdge"
+	<!-- additive copy of the rails = the housing rings white-hot. Through the
+	     same mesh and the same bow, or the light would sit where the rail was
+	     before it bent and draw it twice. -->
+	<PropMesh
+		spec={FRAME}
+		env={bowEnv}
 		anchor={0.5}
 		x={context.stateGameDerived.boardLayout().x + impact.x}
 		y={context.stateGameDerived.boardLayout().y + impact.y}
