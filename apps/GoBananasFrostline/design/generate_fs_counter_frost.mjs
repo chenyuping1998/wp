@@ -55,16 +55,26 @@ const require = createRequire(path.join(toolsDir, 'noop.js'));
 const { Resvg } = require('@resvg/resvg-js');
 
 const APP = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = path.join(APP, 'static/assets/sprites/goBananasFrame/fs_counter_panel.png');
+// `--sign` draws the FREE-GAME SIGN (fs_sign.png) instead: the board that drops
+// in over the reels for the intro and the outro. It was the same blue-painted
+// jungle plank board the counter used to be — three planks, rivets, corner
+// brackets — so it gets the same answer, from the same code: snow settled on
+// top, icicles under it, frost in the corners. Its canvas and plate placement
+// are the old art's (1280x1002, plate ~x 122..1157, y 164..948), so
+// FreeSpinAnimation's SIGN_RATIO and text area stay valid.
+const SIGN = process.argv.includes('--sign');
+const OUT = path.join(APP, 'static/assets/sprites/goBananasFrame', SIGN ? 'fs_sign.png' : 'fs_counter_panel.png');
 
 const W = 1280;
-const H = 966;
+const H = SIGN ? 1002 : 966;
 // the plate, where the old art had it
-const PX = 52;
-const PY = 112;
+const PX = SIGN ? 128 : 52;
+const PY = SIGN ? 182 : 112;
 const PW = W - PX * 2;
-const PH = 870 - PY;
+const PH = (SIGN ? 932 : 870) - PY;
 const RX = 44;
+// the lowest the drift may slump: above the first line of text on the plate
+const TEXT_TOP = SIGN ? PY + 120 : 250;
 
 // seeded, so a re-run does not reshuffle the drift or the icicles
 let seed = 20260919;
@@ -244,11 +254,11 @@ ${Array.from({ length: 26 }, () => {
 				.map((s) => Number(s.split(' ')[2])),
 		).toFixed(1),
 	);
-	if (lowest > 240) {
-		console.error(`the drift slumps to y ${lowest}, into the title's band (starts ~250). Lower the slump depth.`);
+	if (lowest > TEXT_TOP - 10) {
+		console.error(`the drift slumps to y ${lowest}, into the text band (starts ~${TEXT_TOP}). Lower the slump depth.`);
 		process.exit(1);
 	}
-	console.log(`drift reaches down to y ${lowest} (title band starts ~250)`);
+	console.log(`drift reaches down to y ${lowest} (text band starts ~${TEXT_TOP})`);
 }
 
 const png = new Resvg(svg, { fitTo: { mode: 'width', value: W } }).render().asPng();

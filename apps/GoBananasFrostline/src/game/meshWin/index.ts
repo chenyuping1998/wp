@@ -22,6 +22,7 @@ export { MESH_BG } from './bgPatches';
 export { COIN } from './coinP';
 export { COUNTER } from './counterPanel';
 export { PILLAR } from './wxPillar';
+export { SIGN } from './fsSign';
 
 // every win blends home at the end, so the swap back to the static sprite is
 // seamless (meshRig.settled)

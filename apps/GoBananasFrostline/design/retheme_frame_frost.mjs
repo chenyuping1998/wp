@@ -52,7 +52,9 @@ fs.mkdirSync(ORIG, { recursive: true });
 // scratch by generate_fs_counter_frost.mjs (a snowdrift, icicles, frost in the
 // corners) — re-running this with it still listed would put the blue-painted
 // jungle plaque, banana emblem and all, straight back over it.
-const FILES = ['frame_bg.png', 'frame_edge.png', 'fs_sign.png'];
+// fs_sign.png left the list for the same reason (generate_fs_counter_frost.mjs
+// --sign draws it).
+const FILES = ['frame_bg.png', 'frame_edge.png'];
 
 /** Ramp lookup: stops are [luminance, r, g, b], linearly interpolated. */
 const ramp = (stops) => (l) => {
