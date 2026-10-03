@@ -183,7 +183,7 @@
 			title: 'THE BANDIT',
 			// The figure is the top of the meter: the multiplier the whole free-spin
 			// chase climbs towards.
-			body: `Every Bandit collects every Banana Sack. In Free Spins each ${config.banditMeter.thresholds[0]} Bandits add ${config.banditMeter.spinsAdded} spins and raise collections.`,
+			body: `Every Bandit collects every Banana Sack. In Free Spins ${config.banditMeter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Bandits each add ${config.banditMeter.spinsAdded} spins and raise collections.`,
 			figure: `X${(config.banditMeter.mults as number[]).at(-1)}`,
 			art: drawBlast,
 			symbolKey: 'gbW',

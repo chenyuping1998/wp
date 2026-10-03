@@ -67,7 +67,7 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 0.85rem;
-		font-family: Arial, Helvetica, sans-serif;
+		font-family: 'Archivo', Arial, Helvetica, sans-serif;
 	}
 
 	.wp-star-wrap {
@@ -87,7 +87,7 @@
 		font-size: 18px;
 		font-weight: 900;
 		letter-spacing: 0;
-		font-family: Arial, Helvetica, sans-serif;
+		font-family: 'Archivo', Arial, Helvetica, sans-serif;
 	}
 
 	.wp-title {

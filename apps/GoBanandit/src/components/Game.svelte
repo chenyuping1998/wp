@@ -12,7 +12,8 @@
 	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
 	import { stateModal, stateBet } from 'state-shared';
 
-	import { UI, UiGameName } from 'components-ui-pixi';
+	import { UI } from 'components-ui-pixi';
+	import GameNameClock from './GameNameClock.svelte';
 	import { GameVersion } from 'components-ui-html';
 	import Modals from './ui/Modals.svelte';
 	import ReplayIntro from './ui/ReplayIntro.svelte';
@@ -124,7 +125,7 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name="GO BANANDIT" />
+				<GameNameClock name="GO BANANDIT" />
 			{/snippet}
 			{#snippet logo()}
 				<!-- The same name again, top right. Not in portrait: on a phone's
@@ -139,7 +140,9 @@
 							fontSize: REM * 1.5,
 							fontWeight: GAME_FONT_WEIGHT,
 							lineHeight: REM * 2,
-							fill: 0xffffff,
+							// ink on a paper rim: white was lost on the cream sky
+							fill: 0x1e1b1a,
+							stroke: { color: 0xf2e8d0, width: 5, join: 'round' },
 						}}
 					/>
 				{/if}

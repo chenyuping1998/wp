@@ -118,6 +118,11 @@
 							{#if row.img}
 								<div class="wp-symbol-glow">
 									<img src={row.img} alt={row.label} />
+									<!-- the royals share one blank plate; the reels typeset the
+									     letter on it at runtime, so the table has to as well -->
+									{#if /^L\d$/.test(row.name)}
+										<span class="wp-letter" aria-hidden="true">{row.label}</span>
+									{/if}
 								</div>
 							{/if}
 							<span class="wp-symbol-name">{row.label}</span>
@@ -449,16 +454,29 @@
 			position: absolute;
 			inset: -3px;
 			border-radius: 50%;
-			background: radial-gradient(circle, rgba(255, 215, 94, 0.3) 0%, transparent 70%);
+			background: radial-gradient(circle, rgba(210, 74, 44, 0.25) 0%, transparent 70%);
 			opacity: 0;
 			transition: opacity 0.3s ease;
 		}
 	}
 
+	.wp-letter {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 2;
+		font-family: var(--gb-display-font, sans-serif);
+		font-size: 1.35rem;
+		color: #1e1b1a;
+		pointer-events: none;
+	}
+
 	.wp-row:hover .wp-symbol-glow {
 		img {
 			transform: scale(1.12);
-			filter: drop-shadow(0 0 8px rgba(255, 233, 138, 0.6));
+			filter: drop-shadow(0 0 6px rgba(210, 74, 44, 0.45));
 		}
 		&::after {
 			opacity: 1;

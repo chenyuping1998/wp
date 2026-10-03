@@ -132,7 +132,7 @@
 		align-items: center;
 		justify-content: center;
 		padding: 1rem;
-		background: rgba(6, 10, 4, 0.82);
+		background: rgba(30, 27, 26, 0.78);
 		backdrop-filter: blur(8px);
 		-webkit-backdrop-filter: blur(8px);
 		overflow-y: auto;
@@ -145,10 +145,11 @@
 		box-sizing: border-box;
 		padding: 1.25rem;
 		border-radius: 14px;
-		background: linear-gradient(180deg, rgba(26, 36, 12, 0.98) 0%, rgba(10, 18, 6, 0.99) 100%);
-		border: 1px solid rgba(216, 163, 52, 0.35);
-		box-shadow: 0 14px 44px rgba(0, 0, 0, 0.8);
-		color: #fff;
+		/* the game's screenprint plate: paper on a hard ink rim, red offset print */
+		background: #f2e8d0;
+		border: 3px solid #1e1b1a;
+		box-shadow: 6px 6px 0 #d24a2c;
+		color: #1e1b1a;
 		font-family: var(--gb-body-font, sans-serif);
 		text-align: center;
 	}
@@ -157,8 +158,8 @@
 		display: inline-block;
 		padding: 0.2rem 0.7rem;
 		border-radius: 999px;
-		background: #ffd75e;
-		color: #2a1a04;
+		background: #1f5c4a;
+		color: #f2e8d0;
 		font-weight: 800;
 		font-size: 0.7rem;
 		letter-spacing: 0.08em;
@@ -175,8 +176,8 @@
 		margin: 0;
 		padding: 0.85rem;
 		border-radius: 10px;
-		background: rgba(0, 0, 0, 0.35);
-		border: 1px solid rgba(255, 255, 255, 0.05);
+		background: rgba(30, 27, 26, 0.06);
+		border: 2px solid #1e1b1a;
 		text-align: left;
 	}
 
@@ -199,7 +200,7 @@
 		margin-top: 0.15rem;
 		padding: 0.45rem 0.55rem;
 		border-radius: 8px;
-		background: rgba(255, 215, 94, 0.07);
+		background: rgba(31, 92, 74, 0.12);
 	}
 
 	dt {
@@ -212,10 +213,10 @@
 	}
 
 	.accent {
-		color: #ffd75e;
+		color: #d24a2c;
 	}
 	.win {
-		color: #9ee27a;
+		color: #1f5c4a;
 	}
 	.big {
 		font-size: 1.05rem;
@@ -228,8 +229,10 @@
 		padding: 0.8rem 1rem;
 		border: none;
 		border-radius: 10px;
-		background: linear-gradient(180deg, #ffe98a 0%, #e0a838 100%);
-		color: #2a1a04;
+		background: #d24a2c;
+		color: #f2e8d0;
+		border: 3px solid #1e1b1a;
+		box-shadow: 4px 4px 0 #1e1b1a;
 		font-family: var(--gb-display-font, sans-serif);
 		font-size: 1.05rem;
 		font-weight: 700;

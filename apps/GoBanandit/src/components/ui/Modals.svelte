@@ -665,12 +665,13 @@
 
 	/* the panel: slate in a stone edge, lit along its top like every object here */
 	:global(html[data-ui-skin='platform'] .ui-popup-standard-content-wrap) {
-		background: linear-gradient(160deg, #1f5c4a 0%, #174a3b 100%) !important;
-		border: 3px solid #4e2e22 !important;
+		/* flat print, like every other plate in the game: one green ink on a
+		   hard ink rim with the red pass offset behind it (no gradient — review
+		   lists "gradient fills" under low-quality assets) */
+		background: #1f5c4a !important;
+		border: 3px solid #1e1b1a !important;
 		border-radius: 12px !important;
-		box-shadow:
-			0 12px 40px rgba(0, 0, 0, 0.7),
-			inset 0 1px 0 rgba(239, 225, 197, 0.18) !important;
+		box-shadow: 6px 6px 0 #d24a2c !important;
 	}
 
 	/* Every button plate in a modal: the Auto Spin round chips, the settings
@@ -701,13 +702,14 @@
 	/* the primary action at the foot of Auto Spin, the bet menu and the buy
 	   confirmation: amber, the game's accent - see the header for why not red */
 	:global(html[data-ui-skin='platform'] .ui-modal-button-wrap .rectangle) {
-		background: linear-gradient(180deg, #4a3a22 0%, #1e1b1a 100%) !important;
-		border: 2px solid #d24a2c !important;
+		background: #d24a2c !important;
+		border: 2px solid #1e1b1a !important;
+		box-shadow: 3px 3px 0 #1e1b1a !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .ui-modal-button-wrap .button:hover .rectangle) {
-		background: linear-gradient(180deg, #6a4f26 0%, #3e2f18 100%) !important;
-		box-shadow: 0 0 16px rgba(210, 74, 44, 0.5) !important;
+		background: #e0603f !important;
+		box-shadow: 3px 3px 0 #1e1b1a !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .close-button) {
@@ -812,17 +814,15 @@
 
 	/* The card's BUY button: dynamite red, the one place it is used. */
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap .rectangle) {
-		background: linear-gradient(180deg, #d24a2c 0%, #8e2f1b 100%) !important;
-		border: 1px solid #3a0c0a !important;
-		box-shadow: inset 0 1px 0 rgba(255, 190, 170, 0.35) !important;
+		background: #d24a2c !important;
+		border: 2px solid #1e1b1a !important;
+		box-shadow: none !important;
 	}
 
 	:global(html[data-ui-skin='platform'] .bonus-card-wrap .button:hover .rectangle) {
-		background: linear-gradient(180deg, #e04a36 0%, #8a2018 100%) !important;
-		border-color: #d24a2c !important;
-		box-shadow:
-			inset 0 1px 0 rgba(255, 210, 190, 0.45),
-			0 0 14px rgba(255, 120, 40, 0.55) !important;
+		background: #e0603f !important;
+		border-color: #1e1b1a !important;
+		box-shadow: none !important;
 	}
 
 	/* A button that cannot be pressed (not enough balance) must not look lit. */

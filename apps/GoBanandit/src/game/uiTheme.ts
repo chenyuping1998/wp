@@ -385,8 +385,10 @@ if (skin === 'platform') {
 
 		// their .CircleButton has :hover and :active states and a 125ms transition;
 		// it does not have a halo
-		// the breathing halo behind the amber spin button, with the idle nudge
-		spinButtonGlow: true,
+		// OFF, like the collaborator's Go Bananas titles and Deadwood: a halo that
+		// flares when Spin is pressed is part of what review scored 5/10 "poor UI"
+		// on Deadwood (2026-09-22). The plate's own press feedback is enough.
+		spinButtonGlow: false,
 		hoverHighlight: true,
 		// 2026-10-01 (user rule, every game): hover never greys a control out —
 		// the control lights in the game's own red-orange instead of a white film.

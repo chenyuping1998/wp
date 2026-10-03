@@ -82,8 +82,8 @@ export const GO_BANANDIT_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy direct entry into ${config.betModes.bonus.spins} FREE SPINS for ${config.betModes.bonus.cost}× your bet, at the same ${RTP} RTP as base play. Every Bandit that lands takes every Banana Sack on the board, and every ${firstRung} Bandits add ${meter.spinsAdded} spins and raise the collect multiplier. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter ${config.betModes.bonus.spins} FREE SPINS directly for ${config.betModes.bonus.cost}× your amount, at the same ${RTP} RTP as normal play. Every Bandit that lands takes every Banana Sack on the board, and every ${firstRung} Bandits add ${meter.spinsAdded} spins and raise the collect multiplier. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy direct entry into ${config.betModes.bonus.spins} FREE SPINS for ${config.betModes.bonus.cost}× your bet, at the same ${RTP} RTP as base play. Every Bandit that lands takes every Banana Sack on the board, and at ${meter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Bandits ${meter.spinsAdded} spins are added and the collect multiplier rises. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter ${config.betModes.bonus.spins} FREE SPINS directly for ${config.betModes.bonus.cost}× your amount, at the same ${RTP} RTP as normal play. Every Bandit that lands takes every Banana Sack on the board, and at ${meter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Bandits ${meter.spinsAdded} spins are added and the collect multiplier rises. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {

@@ -61,7 +61,7 @@
 			focus: '60% 70%',
 			heroes: [{ src: SACK, w: 56, x: -28, y: 14 }],
 			meter: { on: 0, of: firstRung, label: 'BANDIT METER STARTS EMPTY' },
-			points: [`${spins('bonus')} free spins`, `Every ${firstRung} Bandits: +${meter.spinsAdded} spins, bigger collections`],
+			points: [`${spins('bonus')} free spins`, `${meter.thresholds.join(' / ')} Bandits: +${meter.spinsAdded} spins, bigger collections`],
 		},
 		SUPERBONUS: {
 			title: 'SUPER FREE SPINS',
