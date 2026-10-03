@@ -96,6 +96,14 @@ const RIG = [
 	{ name: 'coatHemR', parent: 'torso', at: [371, 399], parts: [] },
 	// The neck, just under the jaw: the head nods and turns about this.
 	{ name: 'head', parent: 'torso', at: [286, 244], parts: ['head_0_face'] },
+	// These own parts of the HEAD mesh, the way coatHemL/R own the coat's hem.
+	// Measured off head_0_face.png (slice at 203,15): the banana sticks out past
+	// the face into open air from the mouth at slice (122,140) to its tip at
+	// x ~188; the ushanka's two flaps hang down either cheek from about (28,46)
+	// and (160,60). Pivots are where each one is held: the teeth, the crown seams.
+	{ name: 'banana', parent: 'head', at: [325, 155], parts: [] },
+	{ name: 'earL', parent: 'head', at: [231, 61], parts: [] },
+	{ name: 'earR', parent: 'head', at: [363, 75], parts: [] },
 
 	{ name: 'armL', parent: 'torso', at: [172, 220], parts: ['left_arm_0_upper_arm'] },
 	{ name: 'armL_fore', parent: 'armL', at: [105, 348], parts: ['left_arm_1_forearm'] },
@@ -184,6 +192,85 @@ for (const prop of PROPS) {
 		const hem = ease((y - 385) / 170) * 0.9;
 		const side = ease((x - 260) / 70);
 		const weights = { torso: 1 - hem, coatHemL: hem * (1 - side), coatHemR: hem * side };
+		const world = toSpine(x, y);
+		const entries = Object.entries(weights).filter(([, w]) => w > 1e-4);
+		vertices.push(entries.length);
+		for (const [bone, weight] of entries) {
+			const joint = jointWorld[bone];
+			vertices.push(bones.findIndex((b) => b.name === bone),
+				+(world.x - joint.x).toFixed(2), +(world.y - joint.y).toFixed(2), +weight.toFixed(5));
+		}
+	}
+	for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+		const a = lookup.get(`${c},${r}`), b = lookup.get(`${c + 1},${r}`);
+		const d = lookup.get(`${c},${r + 1}`), e = lookup.get(`${c + 1},${r + 1}`);
+		triangles.push(a, b, e, a, e, d);
+	}
+	attachments[l.name][l.name] = { type: 'mesh', uvs, triangles, vertices, hull: ring.length, width: l.w, height: l.h };
+}
+
+// The HEAD as one weighted grid over the existing painting, like the coat.
+//
+// It was a single region on one bone, so the banana in his teeth and the two
+// flaps of his hat were welded to his skull: when he nodded the whole picture
+// tilted as one card. Now each of those three is owned by its own bone, faded
+// back to the head over a RING round its pivot rather than across its box —
+// the lesson from the symbol meshes (meshRig.hinge): a blend laid across the
+// far end of a part makes that end absorb the whole swing and tear, a blend
+// centred on the pivot lets the far end ride rigidly with its bone.
+//
+// Everything outside the three parts stays on `head`, so the face, the eyes and
+// the goggles cannot move against each other.
+{
+	const l = piece('head_0_face');
+	const cols = 14, rows = 18;
+	const ring = [];
+	for (let c = 0; c < cols; c++) ring.push([c, 0]);
+	for (let r = 0; r < rows; r++) ring.push([cols, r]);
+	for (let c = cols; c > 0; c--) ring.push([c, rows]);
+	for (let r = rows; r > 0; r--) ring.push([0, r]);
+	const order = [...ring];
+	for (let r = 1; r < rows; r++) for (let c = 1; c < cols; c++) order.push([c, r]);
+	const lookup = new Map(order.map(([c, r], i) => [`${c},${r}`, i]));
+	const uvs = [], vertices = [], triangles = [];
+	const ease = (v) => { const t = Math.max(0, Math.min(1, v)); return t * t * (3 - 2 * t); };
+	// in SLICE pixels: [pivot, region test, ring start, ring width]
+	// px INSIDE the box (0 on its edge, negative outside). The weight fades in
+	// over the first EDGE px of it as well as round the pivot: with only the
+	// pivot ring, the column just inside the flap's box held ~0.9 of the flap
+	// and the column just outside held none, and that hard step tore a triangle
+	// to 2.9x on the first gate run.
+	const EDGE = 22;
+	const inBox = (x0, y0, x1, y1) => (x, y) => Math.min(x - x0, x1 - x, y - y0, y1 - y);
+	const parts = {
+		banana: { at: [122, 140], inside: inBox(116, 112, 188, 168), r0: 6, fade: 18 },
+		earL: { at: [28, 46], inside: inBox(0, 38, 42, 150), r0: 8, fade: 22 },
+		earR: { at: [160, 60], inside: inBox(146, 52, 188, 136), r0: 8, fade: 22 },
+	};
+	for (const [c, r] of order) {
+		const sx = l.w * c / cols, sy = l.h * r / rows;
+		const x = l.x + sx, y = l.y + sy;
+		uvs.push(+(c / cols).toFixed(5), +(r / rows).toFixed(5));
+		const weights = { head: 1 };
+		for (const [bone, part] of Object.entries(parts)) {
+			const depth = part.inside(sx, sy);
+			if (depth <= 0) continue;
+			const d = Math.hypot(sx - part.at[0], sy - part.at[1]);
+			// Parts are listed banana first and each may only take what is left of
+			// the head: the right flap's box and the banana's overlap at the right
+			// edge, and without this cap both claimed the same vertex and the head
+			// went negative — which the assertion below caught on the first run.
+			// A box edge that is also the slice's own edge needs no fade: nothing
+			// lies beyond it to tear against.
+			const open = (sx <= 0.5 || sx >= l.w - 0.5 || sy <= 0.5 || sy >= l.h - 0.5) ? 1 : ease(depth / EDGE);
+			const w = Math.min(weights.head, ease((d - part.r0) / part.fade) * open * (bone === 'banana' ? 1 : 0.9));
+			weights[bone] = w;
+			weights.head -= w;
+		}
+		// the sum-to-1 assertion the skill asks of every script that touches
+		// weights: two bugs in that pipeline were caught by exactly this line
+		const sum = Object.values(weights).reduce((a, b) => a + b, 0);
+		if (Math.abs(sum - 1) > 1e-6 || weights.head < -1e-6) throw new Error(`head weights at ${c},${r}: ${sum}`);
 		const world = toSpine(x, y);
 		const entries = Object.entries(weights).filter(([, w]) => w > 1e-4);
 		vertices.push(entries.length);
@@ -1260,10 +1347,23 @@ const clothKeys = (amp, phase) => Array.from({ length: 33 }, (_, i) => {
 	const time = CLOTH_LOOP * i / 32;
 	return { time: +time.toFixed(4), value: +(amp * Math.sin(2 * Math.PI * time / CLOTH_LOOP + phase)).toFixed(3) };
 });
+// The head's three loose parts ride the same loop, each on its own phase so
+// none of them is in step with the coat. The banana bobs in his teeth; the two
+// flaps hang off the crown and sway.
+//
+// The flaps are SMALL, and the drawing is why: each lies against the cheek in
+// a strip three grid cells wide, with no air between flap and face to absorb a
+// bend. Swept against check_coat_mesh.mjs (the head is gated there): earL 4.6
+// stretched a triangle 2.9x, and the right flap tops out at 1.7 before the
+// seam where it meets the face passes 1.5x. The banana sticks out into open
+// air and takes 3.2 cleanly — it is the head's real secondary motion.
 const clothFlutter = {
 	bones: {
 		coatHemL: { rotate: clothKeys(4.1, 0.2) },
 		coatHemR: { rotate: clothKeys(4.7, -0.55) },
+		banana: { rotate: clothKeys(3.2, 1.3) },
+		earL: { rotate: clothKeys(2.4, 2.1) },
+		earR: { rotate: clothKeys(-1.7, 0.9) },
 	},
 };
 
