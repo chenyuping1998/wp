@@ -10,6 +10,7 @@
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import FeatureIntro from './FeatureIntro.svelte';
+	import FrostTitle from './FrostTitle.svelte';
 
 	type Props = {
 		onloaded: () => void;
@@ -200,31 +201,10 @@
 
 	// ── icicles ────────────────────────────────────────────────────────────────
 	//
-	// Hung from the underside of FROSTLINE. Deterministic rather than random:
-	// re-rolling them on every reactive pass would make the word shiver, and a
-	// loading screen that never renders the same title twice reads as a glitch.
-	//
-	// Lengths come from a hash of the index, so they are varied but stable, and
-	// the pattern is the same every time the game loads.
+	// Hung from the underside of FROSTLINE: FrostTitle draws them, each one
+	// belonging to the letter it hangs from (same hashed, stable pattern as
+	// before — the same every load).
 	const ICICLE_COUNT = 9;
-	const icicleAt = (i: number, width: number) => {
-		const h = Math.abs(Math.sin(i * 78.233) * 43758.5453) % 1;
-		const h2 = Math.abs(Math.sin(i * 12.9898 + 4.1) * 24634.6345) % 1;
-		// inset from both ends so none hangs off the first or last glyph's edge
-		const t = (i + 0.5) / ICICLE_COUNT;
-		return {
-			// relative to the lockup's centre, since both lines are centre-anchored
-			x: -width / 2 + width * (0.06 + 0.88 * t),
-			// long enough to read, short enough not to reach the strapline below
-			len: SUBTITLE_SIZE * (0.2 + 0.34 * h),
-			// A first pass had these at 0.035-0.065 of the cap height, which on an
-			// 81px subtitle is a spike 6-11px wide and up to 44 long — roughly 1:10,
-			// and an offline render showed exactly what that is: a drip, or a
-			// scratch down the screen. Real icicles are stubby. 1:2 to 1:4 is the
-			// band where the eye files the shape as ice.
-			halfWidth: SUBTITLE_SIZE * (0.07 + 0.06 * h2),
-		};
-	};
 
 	// ── frost sparkles ─────────────────────────────────────────────────────────
 	//
@@ -281,10 +261,11 @@
 				const w = context.stateLayoutDerived.mainLayout().width;
 				const h = context.stateLayoutDerived.mainLayout().height;
 				g.clear();
-				// was 0x1a0505, a warm red-black over the jungle art
-				g.beginFill(0x0a1018, 0.68);
-				g.drawRect(0, 0, w, h);
-				g.endFill();
+				// was 0x1a0505, a warm red-black over the jungle art.
+				// v8 API: through the beginFill shim the second fill's colour bled
+				// into the first, the full-screen wash (see the pixi v8 notes).
+				g.rect(0, 0, w, h);
+				g.fill({ color: 0x0a1018, alpha: 0.68 });
 
 				// NO HALO UNDER THE TITLE. There were two ice-blue ellipses below the
 				// wordmark — a static one here at h*0.28 and a drifting, pulsing one
@@ -297,9 +278,8 @@
 				// the type separates from the plate with an outline and an OFFSET cast
 				// shadow, and anything centred and blurred behind it is just fog.
 
-				g.beginFill(0x000000, 0.22);
-				g.drawRect(0, h * 0.72, w, h * 0.28);
-				g.endFill();
+				g.rect(0, h * 0.72, w, h * 0.28);
+				g.fill({ color: 0x000000, alpha: 0.22 });
 			}}
 		/>
 
@@ -333,63 +313,41 @@
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.155}
 		>
-			<!-- line 1: the family name, centred on its own -->
-			<Text
-				anchor={{ x: 0.5, y: 0.5 }}
-				y={LINE_Y.name}
-				style={titleStyle}
-				text="GO BANANAS"
-			/>
+			<!--
+				THE WORDMARK FALLS INTO PLACE (FrostTitle; Go Bananas Boat's hopping
+				title, in ice): each letter drops in stiffly and lands with a clink,
+				GO BANANAS first and FROSTLINE after it, the icicles grow once their
+				letter is down, and every few seconds a shiver runs along the word
+				with a glint across its lit edge.
+
+				line 1: the family name, centred on its own
+			-->
+			<FrostTitle text="GO BANANAS" style={titleStyle} layers={[{ style: titleStyle }]} y={LINE_Y.name} delay={300} />
 
 			<!--
-				line 2: FROSTLINE, iced. Three text passes (see subtitleUnderStyle)
-				with the icicles drawn BETWEEN the under-pass and the body pass — so
-				they grow out of the word's underside rather than hanging in front of
-				it, which is what separates ice from a sticker of ice.
+				line 2: FROSTLINE, iced. The same three passes as ever (see
+				subtitleUnderStyle), per letter, with the icicles drawn BETWEEN the
+				under-pass and the body pass — so they grow out of the word's
+				underside rather than hanging in front of it.
 			-->
-			<Text
-				anchor={{ x: 0.5, y: 0.5 }}
-				y={LINE_Y.subtitle + ICE_BEVEL}
-				style={subtitleUnderStyle}
+			<FrostTitle
 				text="FROSTLINE"
-			/>
-
-			<Graphics
-				draw={(g) => {
-					const top = LINE_Y.subtitle + SUBTITLE_SIZE * 0.3;
-					g.clear();
-					for (let i = 0; i < ICICLE_COUNT; i++) {
-						const ic = icicleAt(i, titleMetrics.subtitle);
-						// body: a tapered spike, in the same deep water blue as the
-						// under-pass it is growing out of
-						g.moveTo(ic.x - ic.halfWidth, top);
-						g.lineTo(ic.x + ic.halfWidth, top);
-						g.lineTo(ic.x, top + ic.len);
-						g.fill({ color: SUBTITLE_UNDER, alpha: 0.95 });
-						// lit face down one side: an unlit spike reads as a spine, and
-						// the point is that these are the same frozen water as the
-						// letters above them
-						g.moveTo(ic.x - ic.halfWidth * 0.55, top);
-						g.lineTo(ic.x - ic.halfWidth * 0.05, top);
-						g.lineTo(ic.x, top + ic.len * 0.92);
-						g.fill({ color: 0x9fdcff, alpha: 0.5 });
-					}
-				}}
-			/>
-
-			<Text
-				anchor={{ x: 0.5, y: 0.5 }}
-				y={LINE_Y.subtitle}
 				style={subtitleStyle}
-				text="FROSTLINE"
-			/>
-
-			<Text
-				anchor={{ x: 0.5, y: 0.5 }}
-				y={LINE_Y.subtitle - ICE_BEVEL * 0.55}
-				alpha={0.38}
-				style={subtitleSheenStyle}
-				text="FROSTLINE"
+				layers={[
+					{ style: subtitleUnderStyle, dy: ICE_BEVEL },
+					{ style: subtitleStyle },
+					{ style: subtitleSheenStyle, dy: -ICE_BEVEL * 0.55, alpha: 0.38, sheen: true },
+				]}
+				iciclesAfter={0}
+				icicles={{
+					count: ICICLE_COUNT,
+					top: SUBTITLE_SIZE * 0.3,
+					color: SUBTITLE_UNDER,
+					litColor: 0x9fdcff,
+					size: SUBTITLE_SIZE,
+				}}
+				y={LINE_Y.subtitle}
+				delay={760}
 			/>
 
 			<!--
@@ -470,18 +428,16 @@
 					// Background track. Was 0x38221c, a warm brown; the bar sits under an
 					// iced title and a cold strapline, and it was the last warm object in
 					// the column.
-					g.beginFill(0x1c2734, 0.82);
-					g.drawRoundedRect(-barWidth / 2, -barHeight / 2, barWidth, barHeight, 2);
-					g.endFill();
+					g.roundRect(-barWidth / 2, -barHeight / 2, barWidth, barHeight, 2);
+					g.fill({ color: 0x1c2734, alpha: 0.82 });
 					// Progress fill
 					const fillWidth = (barWidth * animatedProgress) / 100;
 					if (fillWidth > 0) {
 						// The fill is ICE_BRIGHT rather than the deeper ICE_EDGE: this is a
 						// 4px bar and the only thing it has to do is be obviously fuller
 						// than the track behind it.
-						g.beginFill(0x8fd9ff, 0.94);
-						g.drawRoundedRect(-barWidth / 2, -barHeight / 2, fillWidth, barHeight, 2);
-						g.endFill();
+						g.roundRect(-barWidth / 2, -barHeight / 2, fillWidth, barHeight, 2);
+						g.fill({ color: 0x8fd9ff, alpha: 0.94 });
 					}
 				}}
 			/>

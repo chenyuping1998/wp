@@ -61,6 +61,13 @@
 	// crystal for the hover state. `buybonus_plate` above is the same plate with
 	// nothing cut into it; it stays loaded so switching back is one line in
 	// uiTheme and needs no rebuild.
+	// the ice pane the game opens under, shattered by EntryReveal
+	// (design/generate_entry_ice.mjs)
+	gbEntryIce: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/entry_ice.png', import.meta.url).href,
+		preload: true,
+	},
 	gbUiBuyBonusIce: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasUi/buybonus_ice.png', import.meta.url).href,
