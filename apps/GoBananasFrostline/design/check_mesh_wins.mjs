@@ -61,7 +61,7 @@ const { PNG } = require('pngjs');
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const core = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/meshRig.ts')).href);
-const { MESH_WINS, MESH_LANDS, AMP_MAX, COIN, COUNTER, PILLAR, SIGN, FRAME } = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/index.ts')).href);
+const { MESH_WINS, MESH_LANDS, MESH_IDLES, AMP_MAX, COIN, COUNTER, PILLAR, SIGN, FRAME } = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/index.ts')).href);
 // The landings are gated at the HEAVIEST impact a cell can ask for (AMP_MAX),
 // so the worst case is the one measured. Named 'H1:land' etc.
 const LAND_SPECS = Object.fromEntries(
@@ -70,7 +70,8 @@ const LAND_SPECS = Object.fromEntries(
 		{ ...spec, pose: (rig, ms) => spec.pose(rig, ms, AMP_MAX) },
 	]),
 );
-const MESH_SPECS = { ...MESH_WINS, ...LAND_SPECS, COIN, COUNTER, PILLAR, SIGN, FRAME };
+const IDLE_SPECS = Object.fromEntries(Object.entries(MESH_IDLES).map(([k, spec]) => [`${k}:idle`, spec]));
+const MESH_SPECS = { ...MESH_WINS, ...LAND_SPECS, ...IDLE_SPECS, COIN, COUNTER, PILLAR, SIGN, FRAME };
 
 const pick = args[0] && !args[0].startsWith('--') ? args.shift().split(',') : Object.keys(MESH_SPECS);
 const mode = args[0];
@@ -326,7 +327,11 @@ for (const name of pick) {
 			if (S.isGroup(b)) { ok(`${bone.name} is a group (acts through its children)`); return; }
 			const l = `${bone.name} turns +${peak[b].pos.toFixed(2)}/${lim.pos} -${peak[b].neg.toFixed(2)}/${lim.neg}, travels ${travel[b].toFixed(1)}px`;
 			if (peak[b].pos > lim.pos + 1e-6 || peak[b].neg > lim.neg + 1e-6) fail(`${l} — past its limit`);
-			else if (travel[b] < 1.5) fail(`${l} — does not visibly act`);
+			// An IDLE act is one small gesture by design — the crate peeks with its
+			// lid and nothing else — so rule 6 is the win's to enforce: the same rig
+			// in its win already proves every bone can act. Everything else (limits,
+			// fold, stretch, pops, ending at rest) still applies to idles.
+			else if (travel[b] < 1.5 && !name.endsWith(':idle')) fail(`${l} — does not visibly act`);
 			else ok(l);
 		});
 	}

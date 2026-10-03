@@ -13,6 +13,7 @@
  */
 import { settled, type MeshWinSpec } from './meshRig';
 import { LANDS } from './lands';
+import { IDLES } from './idles';
 import { H1 } from './h1Ushanka';
 import { H2 } from './h2Flare';
 import { H3 } from './h3Sled';
@@ -36,6 +37,12 @@ export const MESH_WINS: Record<string, MeshWinSpec> = Object.fromEntries(
 export const MESH_LANDS: Record<string, MeshWinSpec> = Object.fromEntries(
 	Object.entries(LANDS).map(([k, spec]) => [k, settled(spec)]),
 );
+
+// the idle acts between spins (idles.ts), played by the idle director
+export const MESH_IDLES: Record<string, MeshWinSpec> = Object.fromEntries(
+	Object.entries(IDLES).map(([k, spec]) => [k, settled(spec)]),
+);
+export { IDLE_WEIGHT } from './idles';
 
 export { AMP_MAX } from './meshRig';
 export type { MeshWinSpec } from './meshRig';

@@ -7,7 +7,8 @@
 
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
-	import { MESH_LANDS, AMP_MAX } from '../game/meshWin';
+	import { MESH_LANDS, MESH_IDLES, AMP_MAX } from '../game/meshWin';
+	import { idleCells } from '../game/idleDirector';
 	import SymbolMeshWin from './SymbolMeshWin.svelte';
 
 	type Props = {
@@ -27,6 +28,9 @@
 		impact?: number;
 		/** the symbol's id, for its mesh landing (game/meshWin/lands.ts) */
 		symbolName?: string;
+		/** may it do an idle act between spins (ReelSymbol: a visible row, simply
+		 *  sitting there) */
+		idleable?: boolean;
 		oncomplete?: () => void;
 	};
 
@@ -84,6 +88,42 @@
 		if (destroyed) return;
 		props.oncomplete?.();
 	};
+
+	// THE IDLE ACT (game/meshWin/idles.ts, from Go Bananas Boat). While this cell
+	// stands still and its symbol has one, it is on the idle director's register;
+	// the director calls `play` when it is this cell's turn. It stays registered
+	// while it acts (it just says it is busy), so an act does not reset the
+	// board's quiet clock. Spinning, landing, or a landing act still running all
+	// take it off.
+	let idleAct = $state<{ id: number } | null>(null);
+	let idleId = 0;
+	let idleTimer: ReturnType<typeof setTimeout> | undefined;
+	$effect(() => {
+		const name = props.symbolName;
+		const spec = name ? MESH_IDLES[name] : undefined;
+		const still = !!props.idleable && blur <= 0.01 && !props.landing && !meshLand;
+		if (!spec || !still || !name) {
+			idleAct = null;
+			return;
+		}
+		const off = idleCells.add({
+			name,
+			play: () => {
+				if (idleAct || meshLand || destroyed) return false;
+				const mine = ++idleId;
+				idleAct = { id: mine };
+				clearTimeout(idleTimer);
+				idleTimer = setTimeout(() => {
+					if (idleAct?.id === mine) idleAct = null;
+				}, spec.durationMs / stateBetDerived.timeScale() + 60);
+				return true;
+			},
+		});
+		return () => {
+			off();
+			clearTimeout(idleTimer);
+		};
+	});
 
 	const runSquash = async () => {
 		const meshSpec = props.symbolName ? MESH_LANDS[props.symbolName] : undefined;
@@ -168,6 +208,10 @@
 			x={props.x}
 			y={props.y}
 		/>
+	{/key}
+{:else if idleAct && blur <= 0.01 && props.symbolName}
+	{#key idleAct.id}
+		<SymbolMeshWin idle symbolInfo={props.symbolInfo} symbolName={props.symbolName} x={props.x} y={props.y} />
 	{/key}
 {:else}
 	<Sprite

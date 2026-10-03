@@ -53,7 +53,7 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
 	import { CANVAS, skin } from '../game/meshWin/meshRig';
-	import { MESH_WINS, MESH_LANDS } from '../game/meshWin';
+	import { MESH_WINS, MESH_LANDS, MESH_IDLES } from '../game/meshWin';
 	import ImpactDust from './ImpactDust.svelte';
 
 	type Props = {
@@ -72,14 +72,23 @@
 		land?: boolean;
 		/** the landing's weight: the cell's impact, clamped to AMP_MAX */
 		amp?: number;
+		/** IDLE mode (game/meshWin/idles.ts): an act between spins, chosen by the
+		 *  idle director. Quiet in the same way a landing is. */
+		idle?: boolean;
 		oncomplete?: () => void;
 	};
 
 	const props: Props = $props();
 	const app = getContextApp();
 	const parent = getContextParent();
-	const landing = !!props.land;
-	const spec = landing ? MESH_LANDS[props.symbolName] : MESH_WINS[props.symbolName];
+	// a landing and an idle act are both QUIET: inside the cell, no light, no
+	// sparks, no dust, no frame, no pop, no completion of their own
+	const landing = !!props.land || !!props.idle;
+	const spec = props.idle
+		? MESH_IDLES[props.symbolName]
+		: props.land
+			? MESH_LANDS[props.symbolName]
+			: MESH_WINS[props.symbolName];
 
 	// must match make_symbol_layers.mjs (the atlas) and render_mesh_wins.py
 	const SHEEN_FRAMES = 24, SHEEN_COLS = 6, SHEEN_CELL = 128;

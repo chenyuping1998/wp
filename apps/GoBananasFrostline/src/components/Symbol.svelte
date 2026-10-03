@@ -24,6 +24,8 @@
 		impact?: number;
 		/** the reel this cell is on, so a line of wins can cascade across it */
 		reel?: number;
+		/** may it do an idle act between spins (see ReelSymbol) */
+		idleable?: boolean;
 	};
 
 	const props: Props = $props();
@@ -58,6 +60,7 @@
 		landing={props.state === 'land'}
 		impact={props.impact}
 		symbolName={props.rawSymbol.name}
+		idleable={props.idleable}
 		oncomplete={props.oncomplete}
 	/>
 {:else}

@@ -40,6 +40,7 @@
 	import FreeSpinOutro from './FreeSpinOutro.svelte';
 	import Transition from './Transition.svelte';
 	import SnowShed from './SnowShed.svelte';
+	import IdleDirector from './IdleDirector.svelte';
 	import { frostQuake, quakeShake } from '../game/frostQuake.svelte';
 
 	const context = getContext();
@@ -97,6 +98,8 @@
 			Ref: https://developer.chrome.com/blog/autoplay
 		-->
 		<Sound />
+		<!-- picks a settled cell now and then to do a small act (draws nothing) -->
+		<IdleDirector />
 
 		<!-- same offset as the background above: the scene takes the quake as one -->
 		<Container x={sceneOffset.x} y={sceneOffset.y}>
