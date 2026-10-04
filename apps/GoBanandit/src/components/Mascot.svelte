@@ -13,12 +13,13 @@
 </script>
 
 <script lang="ts">
-	import { Container, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import { Container, Graphics, SpineProvider, SpineTrack, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	import { onDestroy } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 
 	const context = getContext();
 
@@ -44,6 +45,9 @@
 			art: { height: 854, width: 526 },
 			release: { x: -374, y: 490 },
 			impact: { right: { x: 44, y: 344 }, left: { x: -109, y: 334 } },
+			// his 'chestbeat' is a laugh (design/cast_motions.mjs): the beats pop
+			// HA! off his head instead of stars off his fists
+			beatFx: 'laugh',
 			tease: { x: -20, y: 739, halfWidth: 95, halfHeight: 28 },
 		},
 		freegame: {
@@ -51,6 +55,8 @@
 			art: { height: 881, width: 462 },
 			release: { x: -367, y: 513 },
 			impact: { right: { x: -6, y: 371 }, left: { x: -54, y: 340 } },
+			// his is a hip shimmy: nothing lands, so nothing is drawn
+			beatFx: 'none',
 			tease: { x: -12, y: 843, halfWidth: 62, halfHeight: 25 },
 		},
 	} as const;
@@ -207,9 +213,34 @@
 		return pts;
 	};
 
+	// The Bandit's laugh: one HA! per beat, alternating either side of his head
+	// and climbing, printed red on an ink rim like every other caption.
+	const HA_LIFE_MS = 420;
+	const haPops = $derived.by(() => {
+		if (impactClock < 0 || cast.beatFx !== 'laugh') return [];
+		const pops = [];
+		for (let i = 0; i < BEATS; i++) {
+			const t = (impactClock - (BEAT_START_MS + i * BEAT_GAP_MS)) / HA_LIFE_MS;
+			if (t < 0 || t > 1) continue;
+			const side = i % 2 === 0 ? 1 : -1;
+			pops.push({
+				i,
+				x: side * (150 + 14 * i) - 20,
+				// pixi y is down; above his shoulders, rising as it fades
+				y: -(ART.height * 0.84 + 20 * i) - 60 * t,
+				scale: (t < 0.15 ? 0.6 + 0.6 * (t / 0.15) : 1.2 - 0.2 * Math.min(1, (t - 0.15) / 0.3)) * (1 + 0.06 * i),
+				rotation: side * (0.18 + 0.03 * i),
+				alpha: t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4,
+			});
+		}
+		return pops;
+	});
+
 	const drawImpacts = (g: PixiGraphics) => {
 		g.clear();
 		if (impactClock < 0) return;
+		// the comic stars are kept for a cast whose beat lands on its chest
+		if ((cast.beatFx as string) !== 'stars') return;
 		for (let i = 0; i < BEATS; i++) {
 			const t = (impactClock - (BEAT_START_MS + i * BEAT_GAP_MS)) / IMPACT_LIFE_MS;
 			if (t < 0 || t > 1) continue;
@@ -533,6 +564,24 @@
 	-->
 	<Container x={placement.x} y={placement.y} scale={placement.scale}>
 		<Graphics draw={drawImpacts} />
+		{#each haPops as pop (pop.i)}
+			<Text
+				anchor={0.5}
+				x={pop.x}
+				y={pop.y}
+				scale={pop.scale}
+				rotation={pop.rotation}
+				alpha={pop.alpha}
+				text="HA!"
+				style={{
+					fontFamily: GAME_FONT,
+					fontWeight: GAME_FONT_WEIGHT,
+					fontSize: 92,
+					fill: 0xd24a2c,
+					stroke: { color: 0x1e1b1a, width: 12, join: 'round' },
+				}}
+			/>
+		{/each}
 	</Container>
 
 	<!--

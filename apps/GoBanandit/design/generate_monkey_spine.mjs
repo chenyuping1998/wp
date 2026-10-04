@@ -41,6 +41,7 @@ import { createRequire } from 'module';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { castMotions } from './cast_motions.mjs';
 
 const toolDir = process.argv[2];
 if (!toolDir) {
@@ -1996,6 +1997,14 @@ const flutter = {
 	},
 };
 
+// Each cast's own motion table (design/cast_motions.mjs) laid over the set
+// above by name — the inherited set is only the fallback now (throwit, and the
+// sweeps). See that file for why.
+const own = castMotions({ CAST, hang, TOWARD_X, BEAT_START, BEAT_GAP, RIGPTS });
+const allAnims = { idle, cheer, chestbeat, nod, throwit, flinch, alert, glance, flutter, ...sweeps, ...own.anims };
+if (own.flutterBones) allAnims.flutter = { bones: { ...allAnims.flutter.bones, ...own.flutterBones } };
+const LOOPS = { idle: own.loops?.idle ?? IDLE_LOOP, flutter: own.loops?.flutter ?? FLUTTER_LOOP };
+
 const skeleton = {
 	skeleton: {
 		hash: 'gb-monkey',
@@ -2012,10 +2021,10 @@ const skeleton = {
 	physics: physics.map((c, order) => ({ ...c, order })),
 	skins: [{ name: 'default', attachments }],
 	animations: Object.fromEntries(
-			Object.entries({ idle, cheer, chestbeat, nod, throwit, flinch, alert, glance, flutter, ...sweeps }).map(([name, a]) => [
+			Object.entries(allAnims).map(([name, a]) => [
 				name,
 				// idle and flutter are the loops, so theirs are the ends that meet
-				smoothAnimation(fuseDeadJoints(a, name), name === 'idle' ? IDLE_LOOP : name === 'flutter' ? FLUTTER_LOOP : undefined),
+				smoothAnimation(fuseDeadJoints(a, name), LOOPS[name]),
 			]),
 		),
 };
