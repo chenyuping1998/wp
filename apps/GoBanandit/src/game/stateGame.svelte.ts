@@ -32,6 +32,9 @@ const onSymbolLand = ({ rawSymbol, reelIndex }: { rawSymbol: RawSymbol; reelInde
 		});
 	}
 
+	// a Banana Sack set down on the reels — quiet, it lands often
+	if (rawSymbol.name === 'P') eventEmitter.broadcast({ type: 'soundSackLand' });
+
 	if (rawSymbol.name === 'W') {
 		// No suppression here, unlike gen-2. A sticky expanded wild filled its whole
 		// reel with W on every reveal, so the landing pluck had to be silenced or it

@@ -162,9 +162,10 @@
 					start: base + i * STAGGER_MS,
 					done: false,
 				}));
-				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
+				context.eventEmitter.broadcast({ type: 'soundCollectGrab' });
 				for (let i = 0; i < sacks.length; i++) {
 					await waitMs(i === 0 ? FLY_MS : STAGGER_MS);
+					context.eventEmitter.broadcast({ type: 'soundCoinIn', index: i });
 					tag.shown += sacks[i].value;
 					tag.pop = performance.now();
 				}
@@ -174,7 +175,7 @@
 
 			if (mult > 1) {
 				stampStart = performance.now();
-				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
+				context.eventEmitter.broadcast({ type: 'soundCollectStamp' });
 				await waitMs(STAMP_MS * 0.35);
 				for (const tag of tags) {
 					tag.stamped = true;

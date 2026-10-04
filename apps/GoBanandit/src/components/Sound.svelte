@@ -17,6 +17,12 @@
 		| { type: 'soundLadderUp'; level: number }
 		| { type: 'soundStamp' }
 		| { type: 'soundMonkeyExpand' }
+		// the heist's own moments, which used to borrow multiplier sounds
+		| { type: 'soundSackLand' }
+		| { type: 'soundCollectGrab' }
+		| { type: 'soundCoinIn'; index: number }
+		| { type: 'soundCollectStamp' }
+		| { type: 'soundShutterDown' }
 		| { type: 'soundMascotVoice'; name: MascotVoice }
 		| { type: 'soundReelTensionStart' }
 		| { type: 'soundReelTensionStop' }
@@ -36,78 +42,88 @@
 
 	const context = getContext();
 
-	// ─── jungle-commando sound set (synthesized — see design/generate_audio_jungle.mjs) ───
-	// Standalone HTML5 Audio; the howler sprite (sounds.json) stays as a
-	// fallback for anything not mapped here (e.g. win-level bgm stingers).
+	// ─── heist-caper sound set (synthesized — see design/generate_audio_heist.py) ───
+	// Spy-jazz combo plus the hardware of a robbery: safe dial, tumblers, sacks,
+	// coins, bill counter, register, roller shutter, alarm bell. The first
+	// submission shipped the Go Bananas jungle set unchanged and came back "Bad
+	// sound design" / "Reused assets" (2026-10-04); none of these files exist in
+	// any other game. Every sprite name is mapped below, so the template sprite
+	// (sounds.json) is never the thing that sounds.
 	type CnSfxName =
-		| 'gong_feature'
-		| 'bigwin_blast'
-		| 'reel_tension'
-		| 'reel_stop'
 		| 'btn'
 		| 'spin'
+		| 'reel_stop'
 		| 'scatter_1'
 		| 'scatter_2'
 		| 'scatter_3'
 		| 'scatter_4'
 		| 'scatter_5'
-		| 'pluck_low'
-		| 'win_gliss'
-		| 'win_gliss_big'
+		| 'sack_land'
+		| 'bandit_land'
+		| 'collect_grab'
+		| 'coin_in'
+		| 'collect_stamp'
+		| 'tumbler_up'
+		| 'dial_tick'
+		| 'reel_tension'
+		| 'alarm_bell'
+		| 'alarm_trip'
+		| 'sack_throw'
+		| 'shutter_down'
+		| 'shutter_slam'
+		| 'safe_open'
 		| 'fs_intro'
-		| 'coin_shimmer'
-		| 'wild_expand'
-		| 'mult_update'
-		| 'press_blast'
+		| 'win_small'
+		| 'win_mid'
+		| 'bill_counter'
+		| 'cash_register'
+		| 'bigwin_slam'
 		| 'win_big'
 		| 'win_super'
 		| 'win_mega'
 		| 'win_epic'
 		| 'win_max'
-		| 'win_panel'
 		| 'win_cap'
-		| 'fullboard_stamp'
-		| 'ladder_up'
-		| 'monkey_expand'
-		| 'voice_roar'
-		| 'voice_effort';
+		| 'voice_laugh'
+		| 'voice_hup';
 
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
-		gong_feature: 'jungle/gong_feature.wav',
-		bigwin_blast: 'jungle/bigwin_blast.wav',
-		reel_tension: 'jungle/reel_tension.wav',
-		reel_stop: 'jungle/reel_stop.wav',
-		btn: 'jungle/btn.wav',
-		spin: 'jungle/spin.wav',
-		scatter_1: 'jungle/scatter_1.wav',
-		scatter_2: 'jungle/scatter_2.wav',
-		scatter_3: 'jungle/scatter_3.wav',
-		scatter_4: 'jungle/scatter_4.wav',
-		scatter_5: 'jungle/scatter_5.wav',
-		pluck_low: 'jungle/pluck_low.wav',
-		win_gliss: 'jungle/win_gliss.wav',
-		win_gliss_big: 'jungle/win_gliss_big.wav',
-		fs_intro: 'jungle/fs_intro.wav',
-		coin_shimmer: 'jungle/coin_shimmer.wav',
-		wild_expand: 'jungle/wild_expand.wav',
-		mult_update: 'jungle/mult_update.wav',
-		press_blast: 'jungle/press_blast.wav',
-		// One fanfare per big-win tier, each larger than the last, laid over the
-		// running bed rather than replacing it. See soundWinTier below.
-		win_big: 'jungle/win_big.wav',
-		win_super: 'jungle/win_super.wav',
-		win_mega: 'jungle/win_mega.wav',
-		win_epic: 'jungle/win_epic.wav',
-		win_max: 'jungle/win_max.wav',
-		win_panel: 'jungle/win_panel.wav',
-		win_cap: 'jungle/win_cap.wav',
-		fullboard_stamp: 'jungle/fullboard_stamp.wav',
-		// a rung of the blast ladder reached: stone settling, then a low rising note
-		ladder_up: 'jungle/ladder_up.wav',
-		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
-		monkey_expand: 'jungle/monkey_expand.mp3',
-		voice_roar: 'jungle/voice_roar.wav',
-		voice_effort: 'jungle/voice_effort.wav',
+		btn: 'heist/btn.wav',
+		spin: 'heist/spin.wav',
+		reel_stop: 'heist/reel_stop.wav',
+		scatter_1: 'heist/scatter_1.wav',
+		scatter_2: 'heist/scatter_2.wav',
+		scatter_3: 'heist/scatter_3.wav',
+		scatter_4: 'heist/scatter_4.wav',
+		scatter_5: 'heist/scatter_5.wav',
+		sack_land: 'heist/sack_land.wav',
+		bandit_land: 'heist/bandit_land.wav',
+		collect_grab: 'heist/collect_grab.wav',
+		coin_in: 'heist/coin_in.wav',
+		collect_stamp: 'heist/collect_stamp.wav',
+		tumbler_up: 'heist/tumbler_up.wav',
+		dial_tick: 'heist/dial_tick.wav',
+		reel_tension: 'heist/reel_tension.wav',
+		alarm_bell: 'heist/alarm_bell.wav',
+		alarm_trip: 'heist/alarm_trip.wav',
+		sack_throw: 'heist/sack_throw.wav',
+		shutter_down: 'heist/shutter_down.wav',
+		shutter_slam: 'heist/shutter_slam.wav',
+		safe_open: 'heist/safe_open.wav',
+		fs_intro: 'heist/fs_intro.wav',
+		win_small: 'heist/win_small.wav',
+		win_mid: 'heist/win_mid.wav',
+		bill_counter: 'heist/bill_counter.wav',
+		cash_register: 'heist/cash_register.wav',
+		bigwin_slam: 'heist/bigwin_slam.wav',
+		win_big: 'heist/win_big.wav',
+		win_super: 'heist/win_super.wav',
+		win_mega: 'heist/win_mega.wav',
+		win_epic: 'heist/win_epic.wav',
+		win_max: 'heist/win_max.wav',
+		win_cap: 'heist/win_cap.wav',
+		voice_laugh: 'heist/voice_laugh.wav',
+		voice_hup: 'heist/voice_hup.wav',
 	};
 
 	// He is a character in the scene, not the interface, so he sits UNDER
@@ -119,6 +135,10 @@
 	// shimmer and the fast free-game bed, and at 0.6 the cheer was mixed low
 	// enough to be arguable whether it was there at all — which is not a level,
 	// it is an absence with a volume control on it.
+	const MASCOT_VOICE_FILE: Record<MascotVoice, CnSfxName> = {
+		roar: 'voice_laugh',
+		effort: 'voice_hup',
+	};
 	const MASCOT_VOICE_GAIN: Record<MascotVoice, number> = {
 		roar: 1,
 		effort: 0.8,
@@ -131,8 +151,9 @@
 	// only _1 was ever played, so every reel landed on the identical click. They
 	// now rise reel by reel, which is what gives a spin its sense of building
 	// toward the last reel.
-	const SPRITE_TO_CN: Partial<
-		Record<SoundEffectName, { name: CnSfxName; volume?: number; rate?: number }>
+	const SPRITE_TO_CN: Record<
+		SoundEffectName,
+		{ name: CnSfxName; volume?: number; rate?: number } | null
 	> = {
 		sfx_btn_general: { name: 'btn', volume: 0.7 },
 		sfx_btn_spin: { name: 'spin', volume: 0.9 },
@@ -146,23 +167,44 @@
 		sfx_scatter_stop_3: { name: 'scatter_3' },
 		sfx_scatter_stop_4: { name: 'scatter_4' },
 		sfx_scatter_stop_5: { name: 'scatter_5' },
-		sfx_multiplier_landing: { name: 'pluck_low' },
-		sfx_winlevel_small: { name: 'win_gliss' },
-		sfx_scatter_win: { name: 'win_gliss' },
-		sfx_scatter_win_v2: { name: 'win_gliss_big' },
-		sfx_superfreespin: { name: 'win_gliss_big', volume: 0.8 },
-		// The last two sounds of the win presentation, which were still falling
-		// through to the template sprite. sfx_youwon_panel is the total-win plaque
-		// arriving; sfx_winlevel_end only ever fires on wincap, so the single
-		// largest moment in the game used to end on stock audio.
-		sfx_youwon_panel: { name: 'win_panel' },
+		// a Bandit landing on the reels
+		sfx_multiplier_landing: { name: 'bandit_land', volume: 0.8 },
+		sfx_wild_explode: { name: 'bandit_land' },
+		sfx_winlevel_small: { name: 'win_small' },
+		sfx_winlevel_nice: { name: 'win_small' },
+		sfx_winlevel_standard: { name: 'win_mid', volume: 0.8 },
+		sfx_winlevel_substantial: { name: 'win_mid' },
+		sfx_scatter_win: { name: 'win_mid' },
+		// the scatter count that sets the alarm off
+		sfx_scatter_win_v2: { name: 'alarm_trip' },
+		// the transition opening: the sack thrown at the shutter
+		sfx_superfreespin: { name: 'sack_throw', volume: 0.8 },
+		sfx_youwon_panel: { name: 'cash_register' },
 		sfx_winlevel_end: { name: 'win_cap' },
 		jng_intro_fs: { name: 'fs_intro' },
-		sfx_wild_explode: { name: 'wild_expand' },
-		sfx_multiplier_update: { name: 'mult_update' },
-		sfx_anticipation_start: { name: 'mult_update', volume: 0.5 },
+		sfx_multiplier_update: { name: 'dial_tick' },
+		sfx_anticipation_start: { name: 'dial_tick', volume: 0.5 },
 		sfx_symbols_landing: { name: 'reel_stop', volume: 0.6 },
 		sfx_royals_landing: { name: 'reel_stop', volume: 0.6 },
+		// template names this game never raises — mapped anyway so nothing can
+		// fall through to the sprite
+		sfx_multiplier_combine_a: { name: 'dial_tick' },
+		sfx_multiplier_combine_b: { name: 'dial_tick' },
+		sfx_multiplier_explosion_a: { name: 'collect_stamp' },
+		sfx_multiplier_explosion_b: { name: 'collect_stamp' },
+		sfx_multiplier_explosion_c: { name: 'collect_stamp' },
+		sfx_multiplier_reset: { name: 'dial_tick', volume: 0.5 },
+		sfx_multiplier_up: { name: 'tumbler_up' },
+		sfx_multiplier_win: { name: 'win_mid' },
+		sfx_fs_respins: { name: 'tumbler_up' },
+		sfx_scatter_reveal: { name: 'dial_tick' },
+		tumble_win_1: { name: 'win_small' },
+		tumble_win_2: { name: 'win_small' },
+		tumble_win_3: { name: 'win_mid' },
+		tumble_win_4: { name: 'win_mid' },
+		// handled as loops / not at all, below
+		sfx_anticipation: null,
+		sfx_bigwin_coinloop: null,
 	};
 
 	const cnSfxAudio: Partial<Record<CnSfxName, HTMLAudioElement>> = {};
@@ -190,36 +232,13 @@
 		audio.play().catch(() => {});
 	}
 
-	// The monkey hoot the player supplied is ~5s, but it needs to track the wild
-	// expansion — which lasts about 1.5s — and then get out of the way. Play it
-	// from the top, hold, then fade to silence so it covers the grow and settles
-	// as the panel locks, instead of hanging on under the next spin.
-	let monkeyFadeTimers: ReturnType<typeof setTimeout>[] = [];
-	function playMonkeyExpand() {
-		const audio = getCnSfx('monkey_expand');
-		monkeyFadeTimers.forEach(clearTimeout);
-		monkeyFadeTimers = [];
-		audio.loop = false;
-		const vol = Math.min(1, stateSoundDerived.volumeSoundEffect());
-		audio.volume = vol;
-		audio.playbackRate = 1;
-		audio.currentTime = 0;
+	// Overlapping copies of one clip: the sacks in a collect arrive faster than
+	// coin_in finishes, and the single cached element would cut each one off.
+	function playCnSfxLayered(name: CnSfxName, volumeScale = 1, rate = 1) {
+		const audio = getCnSfx(name).cloneNode(true) as HTMLAudioElement;
+		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+		audio.playbackRate = rate;
 		audio.play().catch(() => {});
-		// hold at full to ~2s, fade over 600ms, stop by ~2.6s
-		const HOLD_MS = 2000;
-		const FADE_MS = 600;
-		const STEPS = 12;
-		for (let s = 1; s <= STEPS; s++) {
-			monkeyFadeTimers.push(
-				setTimeout(
-					() => {
-						audio.volume = Math.max(0, vol * (1 - s / STEPS));
-						if (s === STEPS) audio.pause();
-					},
-					HOLD_MS + (FADE_MS / STEPS) * s,
-				),
-			);
-		}
 	}
 
 	// ─── looping sfx: Web Audio, not <audio loop> ───
@@ -329,8 +348,8 @@
 	let bgmAudio: HTMLAudioElement | null = null;
 	let currentBgm: 'base' | 'freespin' | null = null;
 	const BGM_FILES = {
-		base: 'jungle/bgm_main.wav',
-		freespin: 'jungle/bgm_freespin.wav',
+		base: 'heist/bgm_main.wav',
+		freespin: 'heist/bgm_freespin.wav',
 	} as const;
 
 	function playBgm(type: 'base' | 'freespin') {
@@ -395,8 +414,8 @@
 					// first version sounded weak for a reason a volume knob does not
 					// fix - almost all of it was 48-138Hz body, 13dB down above
 					// 300Hz, which is the part a laptop speaker reproduces. The
-					// crack and debris carry it now; see design/generate_audio_jungle.mjs.
-					playCnSfx('press_blast', 0.7);
+					// bolt and door carry it now; see design/generate_audio_heist.py.
+					playCnSfx('safe_open', 0.8);
 				} else {
 					playCnSfx('btn', 0.7);
 				}
@@ -413,10 +432,8 @@
 			} else if (name === 'bgm_freespin') {
 				playBgm('freespin');
 			} else {
-				// Other music (win levels etc) — pause bgm, play via sprite
-				if (bgmAudio) bgmAudio.pause();
-				currentBgm = null;
-				sound.players.music.play({ name });
+				// win-level music (bgm_winlevel_*) is deliberately not switched to:
+				// the fanfares in soundWinTier sit over the running bed instead
 			}
 		},
 		soundLoop: ({ name }) => {
@@ -434,35 +451,38 @@
 				// was the complaint. One pass accents the start of the count-up and then
 				// leaves it alone. A continuous bed needs a longer, flatter clip, not
 				// this one on repeat.
-				playCnSfx('coin_shimmer', 0.8);
+				playCnSfx('bill_counter', 0.7);
 			} else if (name === 'sfx_anticipation') {
 				// covered by the reel_tension tremolo loop (soundReelTensionStart)
-			} else {
-				sound.players.loop.play({ name });
 			}
 		},
 		soundOnce: ({ name, forcePlay }) => {
+			void forcePlay;
 			const mapped = SPRITE_TO_CN[name];
-			if (mapped) {
-				playCnSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
-			} else {
-				sound.players.once.play({ name, forcePlay });
-			}
+			if (mapped) playCnSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
 		},
-		soundFreeGameBell: () => playCnSfx('gong_feature'),
-		soundBigWinBlast: () => playCnSfx('bigwin_blast'),
+		soundFreeGameBell: () => playCnSfx('alarm_bell'),
+		soundBigWinBlast: () => playCnSfx('bigwin_slam'),
 		// FIVE TIERS THAT USED TO SOUND IDENTICAL. Big and max both got the bed,
 		// one blast and the coin shimmer. Each tier now adds its own fanfare, built
 		// to escalate on length, voice count, register and percussion density
-		// (design/generate_audio_jungle.mjs). Literal calls per case, not a lookup:
+		// (design/generate_audio_heist.py). Literal calls per case, not a lookup:
 		// design/check_audio.mjs reads cue names out of playCnSfx(...) and a name
 		// held in a variable is not checked.
 		// Louder on each rung, so the climb is heard as well as seen: 0.5 at the
 		// first step up to 0.85 at the top.
 		// the shutter hitting the floor and the free-spin count stamped onto the
 		// plan: one rubber-stamp slam, reused (the file kept its gen-4 name)
-		soundStamp: () => playCnSfx('fullboard_stamp', 0.9),
-		soundLadderUp: ({ level }) => playCnSfx('ladder_up', Math.min(0.85, 0.35 + 0.13 * level)),
+		soundStamp: () => playCnSfx('shutter_slam', 0.9),
+		soundLadderUp: ({ level }) =>
+			playCnSfx('tumbler_up', Math.min(0.85, 0.35 + 0.13 * level), 1 + 0.06 * Math.max(0, level - 1)),
+		soundSackLand: () => playCnSfx('sack_land', 0.55),
+		soundCollectGrab: () => playCnSfx('collect_grab', 0.8),
+		// each sack into the bag a little higher than the last, so a long
+		// collect climbs instead of repeating
+		soundCoinIn: ({ index }) => playCnSfxLayered('coin_in', 0.7, Math.min(1.6, 1 + 0.07 * index)),
+		soundCollectStamp: () => playCnSfx('collect_stamp', 0.9),
+		soundShutterDown: () => playCnSfx('shutter_down', 0.85),
 		soundWinTier: ({ tier }) => {
 			if (tier === 'big') playCnSfx('win_big', 0.8);
 			else if (tier === 'superwin') playCnSfx('win_super', 0.8);
@@ -470,13 +490,13 @@
 			else if (tier === 'epic') playCnSfx('win_epic', 0.85);
 			else if (tier === 'max') playCnSfx('win_max', 0.88);
 		},
-		soundMonkeyExpand: () => playMonkeyExpand(),
+		soundMonkeyExpand: () => playCnSfx('bandit_land'),
 		// Deliberately NOT forced through the turbo gate that silences ordinary
 		// one-shots: these are tied to animations that play at their own length
 		// whatever the spin speed, so a dropped one is a character opening his
 		// mouth in silence.
 		soundMascotVoice: ({ name }) =>
-			playCnSfx(`voice_${name}` as CnSfxName, MASCOT_VOICE_GAIN[name]),
+			playCnSfx(MASCOT_VOICE_FILE[name], MASCOT_VOICE_GAIN[name]),
 		soundReelTensionStart: () => playCnLoop('reel_tension', 0.8),
 		// stopCnLoop, not stopCnSfx: playCnLoop moved this to Web Audio, and the
 		// element-based stopper would leave the buffer source looping forever.
@@ -489,8 +509,8 @@
 				stopBgm();
 			} else if (name === 'sfx_bigwin_coinloop') {
 				// both, because the fallback path above may have used the element
-				stopCnLoop('coin_shimmer');
-				stopCnSfx('coin_shimmer');
+				stopCnLoop('bill_counter');
+				stopCnSfx('bill_counter');
 			} else if (name === 'sfx_anticipation') {
 				stopCnLoop('reel_tension');
 				stopCnSfx('reel_tension');

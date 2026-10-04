@@ -74,7 +74,12 @@
 
 	// the slam: a short vertical jolt of the whole shutter as it hits the floor
 	let slammed = false;
+	let rolling = false;
 	$effect(() => {
+		if (!rolling && elapsed >= LEAD_MS) {
+			rolling = true;
+			context.eventEmitter.broadcast({ type: 'soundShutterDown' });
+		}
 		if (!slammed && elapsed >= LEAD_MS + DOWN_MS * 0.86) {
 			slammed = true;
 			context.eventEmitter.broadcast({ type: 'soundStamp' });
@@ -116,7 +121,8 @@
 
 	onMount(() => {
 		if (throwing) context.eventEmitter.broadcast({ type: 'mascotThrow' });
-		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
+		// the sack's whoosh only when there is a throw to hear
+		if (throwing) context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		// A CAPPED clock, not wall time. On the way out of the feature the page
 		// can hitch for a second as the base scene's textures come back to the
 		// GPU; against performance.now() the shutter came out of that hitch
