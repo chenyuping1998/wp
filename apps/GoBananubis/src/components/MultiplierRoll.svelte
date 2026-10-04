@@ -185,6 +185,8 @@
 		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
 		// he watched it spin (Mascot: multiplierRoll); he answers what it gives
 		context.eventEmitter.broadcast({ type: 'mascotMultiplier', value: roll.to });
+		// ...and so does the symbol in the tablet (HeldTablets)
+		context.eventEmitter.broadcast({ type: 'heldTabletKnock', reel: roll.reel, row: roll.row, value: roll.to });
 		context.eventEmitter.broadcast({
 			type: 'boardFrameImpact',
 			// out from the tablet that just landed

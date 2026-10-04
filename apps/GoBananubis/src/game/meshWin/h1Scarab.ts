@@ -116,6 +116,16 @@ export const H1: MeshWinSpec = {
 		for (const leg of Object.keys(LEGS)) boneOf(rig, pose, leg).angle = OPEN[leg] * 2.5 * k * Math.max(0, landFlick(t));
 		boneOf(rig, pose, 'head').angle = 1.5 * k * landFlick(t, 50);
 	},
+	// IDLE: a shuffle while it waits — each leg lifts and sets down in turn,
+	// round the body, and the head turns to look about
+	idle: (rig, t) => {
+		const pose = restPose(rig);
+		['fore_l', 'mid_r', 'hind_l', 'fore_r', 'mid_l', 'hind_r'].forEach((leg, i) => {
+			boneOf(rig, pose, leg).angle = OPEN[leg] * 5 * bump(t, 60 + i * 110, 300 + i * 110);
+		});
+		boneOf(rig, pose, 'head').angle = 3.5 * Math.sin((2 * Math.PI * t) / 900) * bump(t, 0, 1000);
+		return pose;
+	},
 	pose: (rig: Rig, t: number) => {
 		const pose = restPose(rig);
 		// off the stone: springs up with overshoot, hangs, then FALLS (accelerating)

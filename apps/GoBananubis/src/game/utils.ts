@@ -33,7 +33,11 @@ const REPLAY_GAP_MS = 1600;
 // token, so starting a spin invalidates any pass already in flight.
 let replayToken = 0;
 
-const stopWinLineReplay = () => {
+// Exported for the spin's START (actor onNewGameStart): playBet only runs once
+// the round has come back from the server, and the reels have been pre-spinning
+// since the press — a replay pass whose gap ran out in between drew last
+// round's lines over the spinning reels.
+export const stopWinLineReplay = () => {
 	replayToken += 1;
 	eventEmitter.broadcast({ type: 'winLinesHide' });
 };

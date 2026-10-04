@@ -30,6 +30,7 @@
 				sheds = [...sheds, nextId++];
 				// the strip launches upward, so the knock comes off the top edge
 				context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.22, from: [0, -1] });
+				context.eventEmitter.broadcast({ type: 'spinLaunch' });
 			}
 			prevMotion[i] = motion;
 		});

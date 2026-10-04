@@ -7,6 +7,8 @@
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import { WARPS } from '../game/meshWin/bgWarp';
+	import BackgroundWarp from './BackgroundWarp.svelte';
 
 	const context = getContext();
 	const isSuperspin = $derived(stateBet.activeBetModeKey === 'SUPERSPIN');
@@ -109,18 +111,30 @@
 <!-- 金色日出叢林 base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="gbBgBase" {...parallax} />
+	{#each WARPS.gbBgBase as warp (warp.id)}
+		<BackgroundWarp {warp} plate="gbBgBase" {...parallax} />
+	{/each}
 	<Graphics draw={(g) => drawSoftBeams(g, 0)} />
 </FadeContainer>
 
 <!-- 烈日突擊 free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgFeature" {...parallax} />
+	<!-- the sanctum is on fire behind its columns: the firelit gap wavers and
+	     the dust at their feet drifts (game/meshWin/bgWarp.ts). After the plate,
+	     before the beams, so the light still falls over it. -->
+	{#each WARPS.gbBgFeature as warp (warp.id)}
+		<BackgroundWarp {warp} plate="gbBgFeature" {...parallax} />
+	{/each}
 	<Graphics draw={(g) => drawSoftBeams(g, 1.2)} />
 </FadeContainer>
 
 <!-- 夜襲 superspin background -->
 <FadeContainer show={isSuperspin} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgSuperspin" {...parallax} />
+	{#each WARPS.gbBgSuperspin as warp (warp.id)}
+		<BackgroundWarp {warp} plate="gbBgSuperspin" {...parallax} />
+	{/each}
 </FadeContainer>
 
 <!-- ambient bokeh drifting in front of whichever scene is showing -->

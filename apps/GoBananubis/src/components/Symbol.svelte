@@ -9,10 +9,13 @@
 	import type { SymbolState, RawSymbol } from '../game/types';
 	import { getContext } from '../game/context';
 	import { stateGameDerived } from '../game/stateGame.svelte';
+	import { idleAct } from '../game/idleAct.svelte';
 	import { SYMBOL_SIZE, isBigPrize, BIG_PRIZE_FILL, BIG_PRIZE_STROKE } from '../game/constants';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import GoldText from './GoldText.svelte';
 	import { Container, Graphics } from 'pixi-svelte';
+	import { Tween } from 'svelte/motion';
+	import { backOut, cubicOut } from 'svelte/easing';
 	import { coinFace } from '../game/meshWin/pCoin';
 	import { drawMultiplierBadge, BADGE_W, BADGE_H } from '../game/multiplierBadge';
 
@@ -29,6 +32,8 @@
 		impact?: number;
 		/** the reel this cell is on, for effects that cascade across a line */
 		reel?: number;
+		/** its padded row (1 = the top visible row), for the board's idle act */
+		row?: number;
 	};
 
 	const props: Props = $props();
@@ -64,6 +69,17 @@
 		if (props.state !== 'static') teasing = false;
 	});
 
+	// THE IDLE ACT (BoardIdle picks the cell): this static cell does its small
+	// act once, then hands back to the sprite. Only ever on a static cell, so a
+	// spin or a win takes it away at once.
+	const idleHere = $derived(
+		props.state === 'static' &&
+			idleAct.reel === props.reel &&
+			idleAct.row === props.row &&
+			!!MESH_LANDS[props.rawSymbol.name]?.idle,
+	);
+	const idleId = $derived(idleAct.id);
+
 	// The superspin coin's value rides the coin's face as it rings down on
 	// landing (meshWin/pCoin: the mesh and this read the same `coinFace`). A
 	// frame clock only while it lands; the face is back at rest either way when
@@ -86,14 +102,35 @@
 			face = REST_FACE;
 		};
 	});
+
+	// ── IT FLINCHES WHEN SOMETHING LANDS NEXT TO IT (cellKnock) ─────────────
+	// A Wild coming down, a Scatter, a high pay landing its leap: the cells
+	// round it are jolted away from it a few px and settle back. Cause and
+	// effect between cells is what makes the board one thing rather than
+	// fifteen clips. Resting cells only — anything mid-act keeps its act.
+	const flinch = new Tween({ x: 0, y: 0 });
+	context.eventEmitter.subscribeOnMount({
+		cellKnock: ({ reel, row, strength }) => {
+			if (props.reel === undefined || props.row === undefined) return;
+			if (props.state !== 'static' && props.state !== 'postWinStatic') return;
+			const dx = props.reel - reel, dy = props.row - row;
+			if ((dx === 0 && dy === 0) || Math.abs(dx) > 1 || Math.abs(dy) > 1) return;
+			const len = Math.hypot(dx, dy);
+			const d = 7 * strength;
+			flinch
+				.set({ x: (dx / len) * d, y: (dy / len) * d + 1.5 * strength }, { duration: 60, easing: cubicOut })
+				.then(() => flinch.set({ x: 0, y: 0 }, { duration: 340, easing: backOut }));
+		},
+	});
 </script>
 
+<Container x={flinch.current.x} y={flinch.current.y}>
 {#if isMeshWin}
 	<SymbolMeshWin
 		{symbolInfo}
 		symbolName={props.rawSymbol.name}
 		reel={props.reel}
-		showWinFrame={!['S', 'M'].includes(props.rawSymbol.name)}
+		row={props.row}
 		x={props.x}
 		y={props.y}
 		oncomplete={props.oncomplete}
@@ -119,6 +156,20 @@
 		y={props.y}
 		oncomplete={() => (teasing = false)}
 	/>
+{:else if idleHere}
+	{#key idleId}
+		<SymbolMeshWin
+			{symbolInfo}
+			beat="idle"
+			symbolName={props.rawSymbol.name}
+			reel={props.reel}
+			x={props.x}
+			y={props.y}
+			oncomplete={() => {
+				if (idleAct.id === idleId) idleAct.reel = -1;
+			}}
+		/>
+	{/key}
 {:else if isSprite && isWin}
 	<!-- Win state for sprite symbols: programmatic scale+glow animation -->
 	<SymbolWinAnim {symbolInfo} x={props.x} y={props.y} oncomplete={props.oncomplete} />
@@ -138,7 +189,6 @@
 		{symbolInfo}
 		x={props.x}
 		y={props.y}
-		showWinFrame={props.state === 'win' && !['S', 'M'].includes(props.rawSymbol.name)}
 		listener={{
 			complete: props.oncomplete,
 			event: (_, event) => {
@@ -217,3 +267,4 @@
 		/>
 	</Container>
 {/if}
+</Container>

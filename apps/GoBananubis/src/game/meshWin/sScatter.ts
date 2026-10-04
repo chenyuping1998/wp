@@ -40,6 +40,14 @@ export const S: MeshWinSpec = {
 	feetY: INNER[3],
 	durationMs: T.done,
 	landMs: T.land,
+	// THE LANDING SWINGS THE WHOLE BUNCH. The bones can only turn it ~3deg in
+	// the parchment before it stretches, which on the board read as a twitch.
+	// So the tile itself swings from its top edge like a hung sign (meshRig
+	// landSwing): 6.5deg at a first Scatter, harder with each one after (the
+	// weight climbs per Scatter, ReelSymbol), and the bunch and bow swing inside
+	// it on top. Long enough to ring out before it hands over to the tease.
+	landSwing: 6.5,
+	landDuration: 950,
 	hitMs: 210,
 	inked: (p) => BUNCH(p) === 0,
 	// gold bananas and the blue bow are strongly coloured; the parchment is

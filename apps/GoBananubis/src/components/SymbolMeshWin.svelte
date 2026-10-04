@@ -46,13 +46,13 @@
 	 * layers have something to add to.
 	 */
 	import { Mesh, MeshGeometry, Sprite, Container, type Texture } from 'pixi.js';
-	import { SpineProvider, SpineTrack, getContextApp, getContextParent } from 'pixi-svelte';
+	import { getContextApp, getContextParent } from 'pixi-svelte';
 	import { stateBetDerived } from 'state-shared';
 	import { onMount } from 'svelte';
 
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
-	import { CANVAS, TEASE_HOME_MS, landMsOf, landPose, skin, teasePose } from '../game/meshWin/meshRig';
+	import { CANVAS, IDLE_MS, TEASE_HOME_MS, dampPose, idlePose, landMsOf, landPose, landSwingAt, skin, teasePose, track } from '../game/meshWin/meshRig';
 	import { MESH_LANDS } from '../game/meshWin';
 	import ImpactDust from './ImpactDust.svelte';
 	import { getContext } from '../game/context';
@@ -66,16 +66,29 @@
 		symbolInfo: ReturnType<typeof getSymbolInfo>;
 		/** which reel the cell is on: the win cascades left to right */
 		reel?: number;
-		/** the gold pay frame round the cell (every winning symbol but the Scatter) */
-		showWinFrame?: boolean;
+		/** its padded row, so a leap's landing can knock the cells round it */
+		row?: number;
 		/** 'win' (default) or 'land': the landing every spin (meshRig.landPose) —
 		 *  a fixed 240ms, plate and subject only, no light, sparks or frame */
-		beat?: 'win' | 'land' | 'tease';
+		/** 'reveal': the symbol's win act, smaller (revealSize), bursting out as it is named — a
+		 *  Sealed Tablet cracking open (MysteryReveal), the seal being read
+		 *  (MysteryOracle). No cascade,
+		 *  and the tile swells as it bursts out */
+		beat?: 'win' | 'land' | 'tease' | 'idle' | 'reveal';
+		/** add on top of the parent's children instead of under them (the board
+		 *  draws the pay frame over a cell; the intro card draws the art under it) */
+		onTop?: boolean;
 		/** 'tease': while true it loops; set false and it settles home
 		 *  (TEASE_HOME_MS) and then reports complete */
 		active?: boolean;
 		/** the landing's weight (ReelSymbol's impact tier) */
 		impact?: number;
+		/** 'reveal': how much of the win act it plays (default REVEAL_SIZE) */
+		revealSize?: number;
+		/** 'land': each change plays the landing again from the start, at the
+		 *  current `impact` — a held superspin coin ringing again (StickyPrizes)
+		 *  without being remounted. Timers are not re-armed: a replay reports nothing */
+		replay?: number;
 		oncomplete?: () => void;
 	};
 
@@ -90,10 +103,27 @@
 	const SHEEN_FRAMES = 24, SHEEN_COLS = 6, SHEEN_CELL = 128;
 	const SHADOW_ALPHA = 0.55, SHADOW_SPREAD = 0.12, SHADOW_DROP = 3;
 	const GOLD = 0xffd75e;
-	// the win's tile hop (see tick): how far it lifts, as a share of the cell;
-	// how much it grows at the top; how much harder the plate's crouch and
-	// landing knocks land
-	const TILE_HOP = 0.09, TILE_POP = 0.12, TILE_KNOCK = 1.8;
+	// THE WIN, BY RANK. Every winner used to act at one size, so a line of 10s
+	// paying a fraction of the bet threw itself about exactly as hard as the
+	// Wild — the board was loud all the time and nothing stood out. Now the
+	// size of the act says what the symbol is worth:
+	//
+	//   low     the letters: their act at 80%, a small tile hop
+	//   high    H1-H4 leap inside their cell (leap.ts) — the act in full
+	//   special the Wild and the Scatter: the act in full and the full tile
+	//           hop (no bigger: a tile that leaves its cell was tried, and cut)
+	//
+	// Above all of them sits the big win's own presentation (Win.svelte).
+	//
+	// `act` scales the symbol's own motion (dampPose); the tile hop (see tick)
+	// is how far the tile lifts, as a share of the cell, how much it grows at
+	// the top, and how much harder the plate's crouch and landing knocks land.
+	const RANK = {
+		low: { act: 0.8, hop: 0.05, pop: 0.07, knock: 1.4 },
+		full: { act: 1, hop: 0.09, pop: 0.12, knock: 1.8 },
+	};
+	const rank = RANK[/^L\d$/.test(props.symbolName) ? 'low' : 'full'];
+	const TILE_HOP = rank.hop, TILE_POP = rank.pop, TILE_KNOCK = rank.knock;
 
 	// THE HIGH PAYS JUMP inside their own cell (game/meshWin/leap.ts): the plate
 	// stays, the subject springs off it, and the landing knocks the housing.
@@ -106,9 +136,21 @@
 
 	// the tease is drawn like a landing: plate and subject, no light
 	const teasing = props.beat === 'tease';
-	const landing = props.beat === 'land' || teasing;
+	// the idle act too (BoardIdle): plate and subject, no light, a fixed length
+	const idling = props.beat === 'idle';
+	const revealing = props.beat === 'reveal';
+	// how far the tile swells as it bursts out. Only ever UP: at under 1 the
+	// static drawing beneath it (the board cell, the strip) would show round it
+	const REVEAL_POP = 0.1;
+	// A REVEAL IS THE ACT AT A FRACTION OF ITS SIZE. Played full, every tablet
+	// that cracked on a free spin threw its whole win act — the high pays even
+	// leapt — and a board of them read as the symbols jumping about rather than
+	// as seals giving way. It names the symbol; the win act is for when it pays.
+	// The light stays (dampPose keeps flash at sqrt(k)), and the sparks, smaller.
+	const REVEAL_SIZE = 0.5;
+	const landing = props.beat === 'land' || teasing || idling;
 	// the feature symbols' landings carry light (meshRig: landLight)
-	const lit = !landing || (!teasing && !!spec.landLight);
+	const lit = !landing || (!teasing && !idling && !!spec.landLight);
 
 	// the tease's completion also on a TIMER: the frame loop stops in a hidden
 	// tab, and a tease that never reported would sit on the cell until the next
@@ -127,18 +169,21 @@
 
 	onMount(() => {
 		// the landing is NOT scaled by turbo: every reel settles on the same beat
-		const speed = landing ? 1 : stateBetDerived.timeScale();
+		// a reveal keeps 70% of its length under turbo, like the seal it bursts
+		// out of: turbo shortens the waiting, not the payoff
+		const speed = landing ? 1 : revealing ? Math.min(1 / 0.7, stateBetDerived.timeScale()) : stateBetDerived.timeScale();
 		// read ONCE: the Scatter's weight follows a counter that moves while the
 		// board keeps landing, and a weight that changed mid-landing would jump
-		const weight = props.impact ?? 1;
-		const started = performance.now();
+		let weight = props.impact ?? 1;
+		let started = performance.now();
+		let replayed = props.replay;
 		// A line of three identical symbols acting in perfect sync reads as one
 		// object copied three times. Cascade them left to right, 60ms a reel.
 		// The reel comes in as a prop: reading the cell container's x at mount
 		// got 0 for every cell (pixi-svelte has not applied it yet), and the
 		// probe saw all twelve start in the same millisecond.
-		const delay = landing ? 0 : (props.reel ?? 0) * 60;
-		root.label = `meshWin ${spec.symbol} ${landing ? 'land' : 'win'} reel ${props.reel ?? '?'} +${delay}ms`;
+		const delay = landing || revealing ? 0 : (props.reel ?? 0) * 60;
+		root.label = `meshWin ${spec.symbol} ${props.beat ?? 'win'} reel ${props.reel ?? '?'} +${delay}ms`;
 		// completion and the landing are on TIMERS, not the frame loop: rAF stops
 		// in a hidden tab, and the board awaits the completion to move on. Both are
 		// cleared on unmount, so a landing cut short by the win (land -> win in the
@@ -147,8 +192,11 @@
 		// a tease has no fixed end: it completes after settling (see tick)
 		const done = teasing
 			? undefined
-			: setTimeout(() => props.oncomplete?.(), (delay + (landing ? landMsOf(spec) : spec.durationMs)) / speed);
-		const dustAt = teasing ? undefined : landing ? spec.landDust : spec.landMs;
+			: setTimeout(
+					() => props.oncomplete?.(),
+					(delay + (idling ? IDLE_MS : landing ? landMsOf(spec) : spec.durationMs)) / speed,
+				);
+		const dustAt = teasing || idling ? undefined : landing ? spec.landDust : spec.landMs;
 		const land = dustAt === undefined ? undefined : setTimeout(() => (dust = true), (delay + dustAt) / speed);
 		const clearTimers = () => {
 			clearTimeout(done);
@@ -200,7 +248,7 @@
 			s.tint = i % 2 ? 0xffffff : GOLD;
 			s.visible = false;
 			const angle = -Math.PI / 2 + (i / 8) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
-			return { s, angle, reach: 70 + Math.random() * 40, spin: (Math.random() - 0.5) * 6 };
+			return { s, angle, reach: (70 + Math.random() * 40) * (revealing ? 0.6 : 1), spin: (Math.random() - 0.5) * 6 };
 		});
 
 		const content = new Container();
@@ -220,8 +268,10 @@
 		// its shadow stays on its own cell, underneath. Everything else sits
 		// under the pay frame, which the markup draws.
 		// under the pay frame, which the markup draws
-		parent.parent.addChildAt(root, 0);
-		const leap = !landing && spec.symbol in SUBJECT_BOX;
+		if (props.onTop) parent.parent.addChild(root);
+		else parent.parent.addChildAt(root, 0);
+		// no leap on a reveal: it is the act at half size, in its own place
+		const leap = !landing && !revealing && spec.symbol in SUBJECT_BOX;
 		const leapS = leapState();
 		let knocked = false;
 
@@ -231,13 +281,22 @@
 
 		let stoppedAt = -1;
 		const tick = () => {
+			if (props.replay !== replayed) {
+				replayed = props.replay;
+				started = performance.now();
+				weight = props.impact ?? 1;
+			}
 			const t = Math.max(0, performance.now() - started - delay / speed) * speed;
 			if (teasing && !props.active && stoppedAt < 0) stoppedAt = t;
-			const pose = teasing
+			const raw = teasing
 				? teasePose(spec, rig, t, weight, stoppedAt < 0 ? -1 : t - stoppedAt)
-				: landing
+				: idling
+					? idlePose(spec, rig, t)
+					: landing
 					? landPose(spec, rig, t, weight)
 					: spec.pose(rig, t);
+			const size = revealing ? (props.revealSize ?? REVEAL_SIZE) : landing ? 1 : rank.act;
+			const pose = size < 1 ? dampPose(raw, size) : raw;
 			if (teasing && stoppedAt >= 0 && t - stoppedAt >= TEASE_HOME_MS && !teaseDone) {
 				teaseDone = true;
 				props.oncomplete?.();
@@ -245,11 +304,26 @@
 			if (leap) applyLeap(spec, pose, t, leapS);
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();
-			if (landing) root.scale.set(fit * pose.plateHit);
-			else if (leap) {
+			// the reveal's burst: up fast, a small second swell, home
+			const burst = revealing
+				? 1 + REVEAL_POP * track(t, [[0, 0], [90, 1, 'out'], [260, 0.15, 'inOut'], [420, 0, 'out']])
+				: 1;
+			if (landing) {
+				root.scale.set(fit * pose.plateHit);
+				// a hung symbol swings from its top edge (meshRig landSwing)
+				const swing = teasing || idling ? 0 : (landSwingAt(spec, t, weight) * Math.PI) / 180;
+				const hang = (CANVAS / 2) * fit * pose.plateHit;
+				root.rotation = swing;
+				root.position.set((props.x ?? 0) - hang * Math.sin(swing), (props.y ?? 0) - hang * (1 - Math.cos(swing)));
+			}
+			else if (revealing && !leap) {
+				// in its own cell: the tile does not hop off it (it would uncover
+				// the static drawing beneath), it bursts and the act does the rest
+				root.scale.set(fit * pose.plateHit * burst);
+			} else if (leap) {
 				// the tile stays in its cell with its own small knocks; the jump is
 				// the subject's (applyLeap above). The landing knocks the housing.
-				root.scale.set(fit * pose.plateHit);
+				root.scale.set(fit * pose.plateHit * burst);
 				if (t >= spec.landMs && !knocked) {
 					knocked = true;
 					context.eventEmitter.broadcast({
@@ -257,6 +331,10 @@
 						strength: 0.22,
 						from: [(((props.reel ?? 2) + 0.5) / BOARD_DIMENSIONS.x) * 2 - 1, 0],
 					});
+					// ...and the cells round it flinch (Symbol.svelte)
+					if (props.reel !== undefined && props.row !== undefined) {
+						context.eventEmitter.broadcast({ type: 'cellKnock', reel: props.reel, row: props.row, strength: 0.6 });
+					}
 				}
 			} else {
 				// THE WHOLE TILE HOPS TOO, on the symbol's own jump (pose.air, 0 at
@@ -334,12 +412,10 @@
 	});
 </script>
 
-{#if !landing && (props.showWinFrame ?? true)}
-	<!-- the same pay frame every other winning symbol gets (SymbolSpine) -->
-	<SpineProvider x={props.x} y={props.y} key="anticipation" width={SYMBOL_SIZE * 0.19}>
-		<SpineTrack trackIndex={0} animationName={'payframe'} loop />
-	</SpineProvider>
-{/if}
+<!-- NO PAY FRAME. A gold frame closed round every winning cell (WinFrame,
+     and the template's payframe spine before it); it drew the eye to the
+     border and away from the symbol's own act, which is the thing that
+     should read. The act alone says the cell won. -->
 
 {#if dust}
 	<!-- the landing, at the subject's feet -->

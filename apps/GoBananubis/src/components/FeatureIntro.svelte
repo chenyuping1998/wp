@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
+	import { Container, Graphics, Text } from 'pixi-svelte';
+	import IntroSymbol from './IntroSymbol.svelte';
 	import { CanvasTextMetrics, TextStyle } from 'pixi.js';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { MainContainer } from 'components-layout';
@@ -356,25 +357,29 @@
 		<Container x={slot.art.x} y={slot.art.y}>
 			<Graphics draw={(g) => panel.art(g, slot.art.w, slot.art.h)} />
 			{#if panel.tiles}
+				<!-- the Tablets land in turn as the card comes up, and again now and
+				     then: the seal presses and the Eye flares (meshWin/mSeal) -->
 				{#each panel.tiles.at(slot.art.w, slot.art.h) as tile, t (t)}
-					<Sprite
-						key={panel.tiles.key}
-						anchor={0.5}
+					<IntroSymbol
+						name="M"
+						beat="land"
 						x={tile.x}
 						y={tile.y}
-						width={tile.size}
-						height={tile.size}
+						size={tile.size}
+						delay={400 + t * 220}
+						every={3400}
 					/>
 				{/each}
 			{/if}
 			{#if panel.symbolKey}
-				<Sprite
-					key={panel.symbolKey}
-					anchor={0.5}
+				<!-- the Scatter sways from its knot, the loop it holds on the board
+				     while a trigger is still open (meshWin/sScatter `tease`) -->
+				<IntroSymbol
+					name="S"
+					beat="tease"
 					x={slot.art.w / 2}
 					y={slot.art.h / 2}
-					width={Math.min(slot.art.w, slot.art.h) * 0.44}
-					height={Math.min(slot.art.w, slot.art.h) * 0.44}
+					size={Math.min(slot.art.w, slot.art.h) * 0.44}
 				/>
 			{/if}
 		</Container>

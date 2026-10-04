@@ -24,6 +24,8 @@
 		settleMs?: number;
 		// fired as the scarab crosses each reel, so symbols light up in its wake
 		onreel?: (reelIndex: number) => void;
+		// every frame: how far along the line it is, 0..1 (the ribbon follows it)
+		ontravel?: (travel: number) => void;
 		oncomplete?: () => void;
 	};
 
@@ -56,6 +58,7 @@
 			if (!start) start = now + (props.delay ?? 0);
 			t = now - start;
 			if (t >= entryMs) reportReelsUpTo(reelAt(travelAt(t)));
+			props.ontravel?.(t < 0 ? 0 : travelAt(t));
 			if (t >= total) {
 				// guarantee the far end reported before handing back
 				reportReelsUpTo(props.points.length - 1);

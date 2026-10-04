@@ -117,7 +117,7 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 	// run one table each (standard / rich / premium), so no tier shares its mix
 	// with the one above it.
 	//
-	// The cap is the same 15,000x as the other line modes and it IS reachable in
+	// The cap is the same 12,000x as the other line modes and it IS reachable in
 	// eight spins — measured 1 in 4,000 runs on the wincap strip — but it is four
 	// times rarer here than in the twelve-spin tier. The copy therefore leads on
 	// the entry, not on the top end.

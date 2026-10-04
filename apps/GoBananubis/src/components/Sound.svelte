@@ -17,9 +17,12 @@
 		// The tablet reveal. `step` is which tablet in the batch this is (0-based);
 		// see playStoneCrack for what it does with it.
 		| { type: 'soundSealStrain' }
+		// the opening's board rising out of the sand (EntryReveal) — sand only
+		| { type: 'soundSandPour' }
 		| { type: 'soundStoneCrack'; step: number }
 		| { type: 'soundMonkeyExpand' }
 		| { type: 'soundMascotVoice'; name: MascotVoice }
+		| { type: 'soundChestHoot' }
 		| { type: 'soundReelTensionStart' }
 		| { type: 'soundReelTensionStop' }
 		| { type: 'soundScatterCounterIncrease' }
@@ -62,6 +65,7 @@
 		| 'mult_update'
 		| 'seal_strain'
 		| 'stone_crack'
+		| 'sand_pour'
 		| 'scarab_blast'
 		| 'monkey_expand'
 		| 'voice_roar'
@@ -87,6 +91,7 @@
 		wild_expand: 'jungle/wild_expand.wav',
 		mult_update: 'jungle/mult_update.wav',
 		seal_strain: 'jungle/seal_strain.wav',
+		sand_pour: 'jungle/sand_pour.wav',
 		stone_crack: 'jungle/stone_crack.wav',
 		// The cue is named for what is thrown now; the FILE keeps its old name
 		// because renaming a wav is a re-render, not an edit. design/generate_audio_jungle.mjs
@@ -185,6 +190,61 @@
 	const CRACK_RATES = [0.94, 1.06, 1.19, 1.33];
 	function playStoneCrack(step: number) {
 		playCnSfx('stone_crack', 0.85, CRACK_RATES[Math.min(step, CRACK_RATES.length - 1)]);
+	}
+
+	// THE HOOT OVER THE CHEST BEAT: GB100's expanding-wild monkey call, laid over
+	// the strikes of the Scatter-trigger chest beat so it starts and stops WITH
+	// them (ported from GoBananasBoat, 2026-09-28).
+	//
+	// Measured on the clip (monkey_expand.mp3, 10ms RMS windows), not guessed:
+	//   · the first hoot starts 40ms in, so playback starts 40ms BEFORE the first
+	//     strike and the first hoot lands on it
+	//   · the clip has hoots with short silences between them (-30dB and below
+	//     at 0.86, 1.04, 1.21-1.31, 1.40-1.50, 1.60-1.69, 1.80s ...). It is cut
+	//     inside the silence right after the hoot that lands on the LAST strike,
+	//     so it stops with that strike and nothing is left ringing to click off.
+	//     CUT_S below is that point for this rig's strikes: the Anubis chest beat is four strikes 420ms apart, 1.26s, so the last lands at 1.30s on the clip, on the hoot that starts at 1.31; the silence after it is 1.40-1.50, cut at 1.42.
+	//
+	// The cut watches the clip's own position rather than a wall-clock timer, so
+	// a slow start to playback cannot move it into the next hoot; a timer backs
+	// it up in case the clip never starts at all.
+	//
+	// The strikes are the mascot rig's (design/generate_anubis_spine.mjs: BEAT_START / BEAT_GAP).
+	// Change them and CUT_S has to be measured again.
+	const HOOT_FIRST_STRIKE_MS = 360;
+	const HOOT_STRIKE_GAP_MS = 420;
+	const HOOT_STRIKES = 4;
+	const HOOT_ONSET_S = 0.04;
+	const HOOT_CUT_S = 1.42;
+	let hootTimers: ReturnType<typeof setTimeout>[] = [];
+	let hootWatch: ReturnType<typeof setInterval> | null = null;
+	const stopHoot = (audio: HTMLAudioElement) => {
+		if (hootWatch !== null) clearInterval(hootWatch);
+		hootWatch = null;
+		hootTimers.forEach(clearTimeout);
+		hootTimers = [];
+		audio.pause();
+	};
+	function playChestHoot() {
+		const audio = getCnSfx('monkey_expand');
+		stopHoot(audio);
+		const beatsMs = (HOOT_STRIKES - 1) * HOOT_STRIKE_GAP_MS;
+		hootTimers.push(
+			setTimeout(
+				() => {
+					audio.loop = false;
+					audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * 0.9);
+					audio.playbackRate = 1;
+					audio.currentTime = 0;
+					audio.play().catch(() => {});
+					hootWatch = setInterval(() => {
+						if (audio.currentTime >= HOOT_CUT_S) stopHoot(audio);
+					}, 10);
+					hootTimers.push(setTimeout(() => stopHoot(audio), beatsMs + 600));
+				},
+				Math.max(0, HOOT_FIRST_STRIKE_MS - HOOT_ONSET_S * 1000),
+			),
+		);
 	}
 
 	function playMonkeyExpand() {
@@ -415,12 +475,14 @@
 		soundBigWinBlast: () => playCnSfx('bigwin_blast'),
 		soundScarabBlast: () => playCnSfx('scarab_blast'),
 		soundSealStrain: () => playCnSfx('seal_strain', 0.7),
+		soundSandPour: () => playCnSfx('sand_pour', 0.8),
 		soundStoneCrack: ({ step }) => playStoneCrack(step),
 		soundMonkeyExpand: () => playMonkeyExpand(),
 		// Deliberately NOT forced through the turbo gate that silences ordinary
 		// one-shots: these are tied to animations that play at their own length
 		// whatever the spin speed, so a dropped one is a character opening his
 		// mouth in silence.
+		soundChestHoot: () => playChestHoot(),
 		soundMascotVoice: ({ name }) =>
 			playCnSfx(`voice_${name}` as CnSfxName, MASCOT_VOICE_GAIN[name]),
 		soundReelTensionStart: () => playCnLoop('reel_tension', 0.8),

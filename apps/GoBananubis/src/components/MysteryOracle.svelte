@@ -40,6 +40,8 @@
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS, SYMBOL_INFO_MAP } from '../game/constants';
 	import BoardContainer from './BoardContainer.svelte';
 	import { runBadgeTarget } from '../game/counterPlacement';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import { MESH_WINS } from '../game/meshWin';
 
 	const context = getContext();
 
@@ -79,6 +81,30 @@
 	};
 
 	let show = $state(false);
+
+	// ── THE CHOSEN SYMBOL COMES ALIVE ────────────────────────────────────────
+	//
+	// The reel used to stop on a still picture and hold it for 1.7s. Now, on the
+	// slam, the symbol it landed on performs — its whole win act, bursting out
+	// of the slot (SymbolMeshWin `reveal`: the scarab springs, the Eye flies
+	// open, the chest bangs up, the Anubis grins) — through the hold, and THEN
+	// flies to the plaque. "This is what your run is sealed with" should look
+	// like it is happening, not like a menu item being selected.
+	//
+	// Drawn BESIDE the strip, not in it: the strip is masked to the slot, and
+	// a mask would swallow the act's additive flash and light. Same size as the
+	// strip's cell, so at rest it is exactly the tile it covers.
+	let chosen = $state('');
+	let acting = $state(false);
+	const actInfo = $derived.by(() => {
+		if (!chosen) return null;
+		const info = (SYMBOL_INFO_MAP as Record<string, { static: unknown }>)[chosen]?.static as
+			| { sizeRatios: { width: number; height: number } }
+			| undefined;
+		if (!info) return null;
+		const r = CELL / SYMBOL_SIZE;
+		return { ...info, sizeRatios: { width: r, height: r } };
+	});
 	let strip = $state<string[]>([]);
 	let pos = $state(0);
 	type Phase = 'lead' | 'turning' | 'approach' | 'landed';
@@ -269,6 +295,8 @@
 			context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.55 });
 			context.eventEmitter.broadcast({ type: 'mascotOracle', phase: 'reveal' });
 			slam();
+			chosen = event.symbol;
+			acting = !!MESH_WINS[event.symbol];
 			await waitForTimeout(stateBet.isTurbo ? HOLD_MS_TURBO : HOLD_MS);
 			// the reading leaves the board for the plaque, and the plaque takes it
 			context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
@@ -277,6 +305,7 @@
 			context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
 			context.eventEmitter.broadcast({ type: 'soundStoneCrack', step: 1 });
 			show = false;
+			acting = false;
 			flight = null;
 			trail = [];
 		},
@@ -337,6 +366,18 @@
 					{/each}
 				</Container>
 			</Container>
+			<!-- the landed symbol performing, over the strip (outside its mask) -->
+			{#if acting && actInfo}
+				<SymbolMeshWin
+					symbolInfo={actInfo as never}
+					beat="reveal"
+					revealSize={0.8}
+					symbolName={chosen}
+					x={0}
+					y={0}
+					onTop
+				/>
+			{/if}
 		</Container>
 	</BoardContainer>
 {/if}

@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { stateModal } from 'state-shared';
+	import { stateModal, LEGAL_NOTICE } from 'state-shared';
 
 	import { base } from '$app/paths';
 
 	import config from '../../game/config';
 	import { getSocialTerms } from '../../game/socialTerms';
+	import { GO_BANANAS_BET_MODE_META } from '../../game/betModeMeta';
 
 	// Shared with the pay table — the two panels describe the same game and must
 	// use the same words for it. See socialTerms.ts.
@@ -66,7 +67,7 @@
 	const entryVerb = T.entryVerb;
 	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
 	const lineCount = Object.keys(config.paylines).length;
-	const maxWin = config.betModes?.base?.max_win ?? 15000;
+	const maxWin = config.betModes?.base?.max_win ?? 12000;
 	const buyCost = config.betModes?.bonus?.cost;
 	// THE SPIN AWARDS, TAKEN FROM THE MATHS RATHER THAN WRITTEN DOWN HERE.
 	//
@@ -139,6 +140,31 @@
 			maxWin: `${(mode?.max_win ?? maxWin).toLocaleString()}×`,
 		};
 	});
+	// EVERY MODE DESCRIBED, WITH ITS COST (Stake review 2026-10-04, Go Bananas
+	// Boat: "the Game Info contains a description for each available game
+	// mode"). The bought modes reuse the description their own confirmation
+	// shows (betModeMeta's dialog — one text, worded for social play already),
+	// so the two can never say different things; the base game has none there
+	// and gets one line. "Cost" is restricted in social play, so its label
+	// comes through the social vocabulary.
+	const costLabel = T.cost.charAt(0).toUpperCase() + T.cost.slice(1);
+	const modeDescriptions = (
+		[
+		['Base game', 'BASE'],
+		['Free Spins (100×)', 'BONUS100'],
+		['Free Spins (200×)', 'BONUS'],
+		['Super Free Spins', 'SUPERBONUS'],
+		['Super Spin', 'SUPERSPIN'],
+		] as const
+	).map(([name, key]) => {
+		const meta = GO_BANANAS_BET_MODE_META[key];
+		return {
+			name,
+			key,
+			cost: `${meta?.costMultiplier ?? 1}× ${T.bet}`,
+			text: key === 'BASE' ? `The standard game. Sealed Tablets that land all open on one and the same symbol, and Scatters trigger Free Spins.` : (meta?.text.dialog ?? ''),
+		};
+	});
 </script>
 
 {#if stateModal.modal?.name === 'gameRules'}
@@ -208,6 +234,16 @@
 					Max win is a multiple of the {T.totalBet}. When a round reaches the cap it ends
 					immediately and the capped amount is {T.paid}.
 				</p>
+			</section>
+
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>Game modes</h3>
+				<dl class="wp-modelist">
+					{#each modeDescriptions as mode (mode.key)}
+						<dt>{mode.name} <span class="wp-modecost">{costLabel}: {mode.cost}</span></dt>
+						<dd>{mode.text}</dd>
+					{/each}
+				</dl>
 			</section>
 
 			<section class="wp-card">
@@ -325,14 +361,10 @@
 			</section>
 
 			<div class="wp-divider"></div>
-			<p class="wp-foot">
-				Malfunction voids all wins and plays. A consistent internet connection is required. In
-				the event of a disconnection, reload the game to finish any uncompleted rounds. The
-				expected return is calculated over many plays. The game display is not representative of
-				any physical device and is for illustrative purposes only. Winnings are settled according
-				to the amount received from the Remote Game Server and not from events within the web
-				browser. TM and &copy; 2026 Stake Engine.
-			</p>
+			<!-- the official general disclaimer, word for word (studio.engine.io/docs/
+			     approval-guidelines/general-disclaimer); this copy said "Stake
+			     Engine" — Stake review 2026-10-04 (Go Bananas Boat) -->
+			<p class="wp-foot">{LEGAL_NOTICE}</p>
 		</div>
 	</Popup>
 {/if}
@@ -588,6 +620,25 @@
 		background: linear-gradient(90deg, transparent, rgba(255, 215, 94, 0.3), rgba(255, 233, 138, 0.2), transparent);
 	}
 
+	.wp-modelist {
+		margin: 0;
+	}
+	.wp-modelist dt {
+		margin-top: 0.7em;
+		font-weight: 700;
+	}
+	.wp-modelist dt:first-child {
+		margin-top: 0;
+	}
+	.wp-modelist dd {
+		margin: 0.2em 0 0;
+	}
+	.wp-modecost {
+		margin-left: 0.4em;
+		font-weight: 600;
+		opacity: 0.8;
+		white-space: nowrap;
+	}
 	.wp-foot {
 		margin: 0;
 		font-size: 0.75rem;

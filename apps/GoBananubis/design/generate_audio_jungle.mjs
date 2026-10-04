@@ -601,4 +601,45 @@ const grooveBar = (buf, t0, beat, sr, energy = 1) => {
 	writeWav('stone_crack.wav', normalize(buf, 0.75), SR_SFX);
 }
 
+// sand_pour — the opening (EntryReveal): the board rising out of the tomb floor
+// and the sand running off it. SAND ONLY — no note, no snap, nothing that could
+// be heard as a win: stone_crack carries a marimba note for a revealed symbol,
+// and played on the opening it sounded like scoring before the first spin.
+//
+// Timed to the rise (0.72s up, ~0.2s to seat, sand off the sides for ~1.3s):
+//   a dry rush of falling grains that swells as the board comes up, a soft low
+//   "fwump" of sand settling as it seats at 0.92s, then a thinning trickle.
+{
+	const dur = 2.3;
+	const buf = buffer(dur, SR_SFX);
+	const n = buf.length;
+	const SEAT = 0.92;
+	let lp = 0, hp = 0, body = 0;
+	for (let i = 0; i < n; i++) {
+		const t = i / SR_SFX;
+		// the rush: band-limited hiss, swelling with the rise, thinning after
+		const swell = t < SEAT ? 0.25 + 0.75 * (t / SEAT) ** 1.5 : Math.exp(-(t - SEAT) / 0.55);
+		const x = rand2();
+		lp += 0.45 * (x - lp);
+		hp += 0.06 * (lp - hp);
+		const hiss = lp - hp;
+		// grain flutter: the stream is not steady
+		const flutter = 0.7 + 0.3 * Math.sin(t * 37 + Math.sin(t * 11) * 3);
+		buf[i] += hiss * swell * flutter * 0.55;
+		// the settle: a short, soft, low noise thump (no pitch)
+		if (t >= SEAT && t < SEAT + 0.25) {
+			body += 0.03 * (rand2() - body);
+			buf[i] += body * Math.exp(-(t - SEAT) / 0.06) * 3.2;
+		}
+	}
+	// single grains ticking off the edges: sparse, many, fading out at the end
+	for (let k = 0; k < 520; k++) {
+		const at = rand() * (dur - 0.05);
+		const density = at < SEAT ? 0.4 + 0.6 * (at / SEAT) : Math.exp(-(at - SEAT) / 0.6);
+		if (rand() > density) continue;
+		addAt(buf, shaker(SR_SFX, 0.012, 0.9), at, 0.18 + 0.25 * rand(), SR_SFX);
+	}
+	writeWav('sand_pour.wav', fadeEnds(normalize(buf, 0.6), SR_SFX, 20), SR_SFX);
+}
+
 console.log('done');

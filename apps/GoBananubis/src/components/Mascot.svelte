@@ -18,6 +18,7 @@
 
 <script lang="ts">
 	import { Container, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import MascotGaze from './MascotGaze.svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	import { onDestroy, onMount } from 'svelte';
@@ -39,7 +40,7 @@
 	// animation - the whole chain, including the torso lean and the hip drive, not
 	// just the arm angles - and reports the centre of the scarab's own drawing at
 	// RELEASE_AT.
-	const RELEASE = { x: -349, y: 532 };
+	const RELEASE = { x: -393, y: 622 };
 
 	// Below this there is no room to stand him next to the board without either
 	// overlapping the frame or shrinking him to a thumbnail. Tablet (1000x1000)
@@ -58,7 +59,9 @@
 		// The bet bar's height in this layout's units, recovered from where
 		// boardLayout has already centred the board above it, rather than by
 		// importing the bar's own theme and re-deriving the same fraction twice.
-		const barHeight = layout.height - board.y * 2;
+		// (less the opening rise: he stands where he stands while the board comes up)
+		const boardY = board.y - context.stateGame.boardLift;
+		const barHeight = layout.height - boardY * 2;
 
 		const gapLeft = board.x + frameHalfWidth;
 		const gapWidth = layout.width - gapLeft;
@@ -76,7 +79,7 @@
 			// Standing on the same line the board frame sits on, so he shares its
 			// ground plane instead of floating at his own height. Clamped off the
 			// bet bar, which on a short layout the frame's own foot reaches into.
-			y: Math.min(board.y + frameHalfHeight, layout.height - barHeight - 6),
+			y: Math.min(boardY + frameHalfHeight, layout.height - barHeight - 6),
 			scale: height / ART.height,
 		};
 	});
@@ -123,10 +126,11 @@
 	// that a comic star is a convention and marks where the blow *should* be. It
 	// does not survive contact: the star was a hand's width above the hand, so the
 	// eye read two separate things happening rather than one, and the strike lost
-	// the only cue tying it to the arm. The fists cannot reach the chest on this
-	// drawing — measured, see the note in the generator — so the impact goes where
-	// the fists go, which on a hunched gorilla is the base of the sternum. It
-	// still reads as a chest beat because the body is slamming into it.
+	// the only cue tying it to the arm. The impact goes where the fists go:
+	// printed at (14, 377) and (25, 420), each lifted 45 onto the knuckles. The
+	// strikes keep their original 26 / 18 degrees even though the mesh arms could
+	// swing further in — pulled deeper (36 / 34, tried 2026-09-28) the fists
+	// crossed the body and the beat read as him hugging his belly.
 	//
 	// Sized against this figure's own proportions: at 96 the star was two-thirds
 	// of his body width and stopped being a hit on his chest — it became an
@@ -252,7 +256,11 @@
 	// was dropped.
 	let animationName = $state('idle');
 	let loop = $state(true);
-	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'alert', 'throwit', 'idlebreak'];
+	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'alert', 'throwit', 'idlebreak', 'sigh', 'ready', 'pray'];
+	// the ready is small but it would still be a tic on every spin of a fast
+	// session: never two within READY_GAP_MS
+	const READY_GAP_MS = 4500;
+	let readyAt = -Infinity;
 
 	const play = (name: string, loops: boolean) => {
 		animationName = name;
@@ -456,11 +464,36 @@
 		// The last free spin: he leans in to watch it. The same look as the
 		// second Scatter, for the same reason — it is the spin everything is
 		// riding on, and his eye takes the player's with it.
+		// ...and on the LAST one, more than a look: fists to the chest, head
+		// bowed, eyes shut, rocking on his heels while it spins (`pray`). The
+		// alert said "look at this"; this says "come on", which is what the
+		// player is thinking on the spin everything rides on.
 		freeSpinCounterUpdate: ({ current, total }) => {
 			if (context.stateGame.gameType !== 'freegame') return;
 			if (current === undefined || total === undefined || total <= 1 || current !== total) return;
+			if (animationName !== 'idle' && animationName !== 'alert') return;
+			play('pray', false);
+		},
+
+		// ONE SHORT. The spin ended with two Scatters on the board — the tease
+		// ran, the reels teased, and it did not come. He lets the breath go
+		// (`sigh`). It may cut the alert he gave the second Scatter, never
+		// anything bigger.
+		scatterNearMiss: () => {
+			if (context.stateGame.gameType !== 'basegame') return;
+			if (animationName !== 'idle' && animationName !== 'alert') return;
+			play('sigh', false);
+		},
+
+		// The reels have been sent off: he sets his weight (`ready`). Base game,
+		// from idle, and never two close together.
+		spinLaunch: () => {
+			if (context.stateGame.gameType !== 'basegame') return;
 			if (animationName !== 'idle') return;
-			play('alert', false);
+			const now = performance.now();
+			if (now - readyAt < READY_GAP_MS) return;
+			readyAt = now;
+			play('ready', false);
 		},
 		multiplierRoll: ({ cells }) => {
 			if (context.stateGame.gameType !== 'freegame') return;
@@ -544,6 +577,9 @@
 		     (`glints`, design/generate_anubis_spine.mjs). Keys only the glint
 		     slots, so it layers over everything else. -->
 		<SpineTrack trackIndex={2} animationName="glints" loop />
+		<!-- he looks at what just happened (a Scatter, a Wild, a paying line),
+		     added over whatever is playing, only while he idles -->
+		<MascotGaze x={placement.x} y={placement.y} scale={placement.scale} enabled={animationName === 'idle'} />
 	</SpineProvider>
 
 	<!--

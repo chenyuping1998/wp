@@ -537,8 +537,11 @@ attachments.torso_0_trunk.torso_0_trunk = meshAttachment(layerByName.torso_0_tru
 	const torso = smooth((BELT_BOTTOM - y) / (BELT_BOTTOM - BELT_TOP));
 	const below = 1 - torso;
 	const kiltShare = below * smooth((y - 500) / 140);
-	const legShare = kiltShare * 0.35 * smooth((y - 620) / 120);
-	const left = smooth((300 - x) / 32);
+	// the hem's share of the thighs, and which thigh: split over 110px across
+	// the middle, not 32 — spread in a sumo lift, the two thighs pulled a narrow
+	// split apart and tore the hem's centre (168% at 20deg, sweepKnee)
+	const legShare = kiltShare * 0.25 * smooth((y - 620) / 120);
+	const left = smooth((340 - x) / 110);
 	const hang = (kiltShare - legShare) * smooth((y - 530) / 90);
 	const panelL = smooth((262 - x) / 24);
 	const panelR = smooth((x - 350) / 24);
@@ -572,14 +575,17 @@ attachments.head_4_decoration.head_4_decoration = meshAttachment(layerByName.hea
 	const c = smooth((along([x, y], COBRA.base, COBRA.tip) - 0.1) / 0.5);
 	return { head: 1 - c, cobra: c };
 });
-// the collar: its two ends ride the shoulders, just over half; its lower arc
+// the collar: its two ends ride the shoulders — a third, over 100px: at the
+// 0.55 they had while the arms were rigid, the wider swings the mesh arms
+// allow dragged the ends to 43% / 170%; the arms' own shoulder caps now stay
+// with the torso, so the collar need not chase them as far. Its lower arc
 // hangs from `collar_hem`, more of it the lower it is, so the bead rim swings
 // and the band round the neck stays put. A finer grid than the ends needed
 // (17px cells), or the hand-over falls inside one row and the arc bends as a
 // plank.
 attachments.torso_5_decoration.torso_5_decoration = meshAttachment(layerByName.torso_5_decoration, 20, 10, (x, y) => {
-	const l = 0.55 * smooth((200 - x) / 70);
-	const r = 0.55 * smooth((x - 368) / 70);
+	const l = 0.35 * smooth((200 - x) / 100);
+	const r = 0.35 * smooth((x - 368) / 100);
 	const hem = 0.65 * smooth((y - 250) / 70) * (1 - l - r);
 	return { torso: 1 - l - r - hem, armL: l, armR: r, collar_hem: hem };
 });
@@ -604,6 +610,57 @@ const mouthY = (x) => {
 		}
 	return pts[pts.length - 1][1];
 };
+// THE LIMBS, AS MESHES. They were rigid cut-outs turning about their joints,
+// and a joint was hidden by whatever happened to be drawn over it — which is
+// what set the angle budgets (MAX_SHOULDER / MAX_ELBOW) and ruled out an arm
+// raised in celebration. Now each piece hands the end nearest its parent over
+// to the parent, so a joint BENDS: the shoulder cap stays with the torso as the
+// arm swings, the elbow and the wrist and the knee fold instead of two plates
+// sliding past each other.
+//
+//   `up`    the share of the parent at the piece's near end, fading to 0 over
+//           `upBand` (fractions along the bone: 0 at its joint, 1 at the next)
+//   `down`  the share of the CHILD at the far end, over `downBand` — only on
+//           the legs. The arms carry the gold bands and cuffs, whose glints are
+//           flat images on the arm bones (GOLD THAT CATCHES THE LIGHT): any bend
+//           under a band would slide the gold out from under its glint, so an
+//           arm piece bends only at its near end, above its band, and the next
+//           piece — drawn over it — takes the seam.
+//   `reach` the parent's share also fades with distance from the joint, px:
+//           along the bone alone, the inner corner of the upper arm by the
+//           armpit (66px from the pivot but level with it) kept a torso share,
+//           was left behind as the arm swung out and stretched to 204%
+const limbMesh = ({ piece: name, bone, parent, a, b, up, upBand, child, down = 0, downBand = [1, 1.2], grid = [12, 18], reach = 60 }) =>
+	meshAttachment(layerByName[name], grid[0], grid[1], (x, y) => {
+		const t = along([x, y], a, b);
+		const near = smooth((reach - Math.hypot(x - a[0], y - a[1])) / (reach * 0.6));
+		const wp = up * smooth((upBand[1] - t) / (upBand[1] - upBand[0])) * near;
+		const wc = child ? down * smooth((t - downBand[0]) / (downBand[1] - downBand[0])) : 0;
+		return { [bone]: 1 - wp - wc, [parent]: wp, ...(child ? { [child]: wc } : {}) };
+	});
+const J = Object.fromEntries(RIG.map((r) => [r.name, r.at]));
+const LIMBS = [
+	// the arms: the near end only, above the gold
+	{ piece: 'left_arm_0_upper_arm', bone: 'armL', parent: 'torso', a: J.armL, b: J.armL_fore, up: 0.5, upBand: [-0.05, 0.15] },
+	{ piece: 'left_arm_1_forearm', bone: 'armL_fore', parent: 'armL', a: J.armL_fore, b: J.armL_hand, up: 0.5, upBand: [-0.05, 0.2] },
+	{ piece: 'left_arm_2_hand', bone: 'armL_hand', parent: 'armL_fore', a: J.armL_hand, b: [100, 630], up: 0.45, upBand: [-0.05, 0.3] },
+	{ piece: 'right_arm_0_upper_arm', bone: 'armR', parent: 'torso', a: J.armR, b: J.armR_fore, up: 0.5, upBand: [-0.05, 0.15] },
+	{ piece: 'right_arm_1_forearm', bone: 'armR_fore', parent: 'armR', a: J.armR_fore, b: J.armR_hand, up: 0.5, upBand: [-0.05, 0.2] },
+	{ piece: 'right_arm_2_hand', bone: 'armR_hand', parent: 'armR_fore', a: J.armR_hand, b: [500, 605], up: 0.45, upBand: [-0.05, 0.3] },
+	// the legs, like the arms: each piece blends only at its near end, and the
+	// thigh not even there (its hip is under the kilt). A thigh bottom blended
+	// into the calf was sheared between the two in a sumo lift — thigh out,
+	// calf turned back — to 168% at 20deg (sweepKnee); the calf's own top blend
+	// takes the knee instead
+	{ piece: 'left_leg_0_thigh', bone: 'legL', parent: 'hip', a: J.legL, b: J.legL_calf, up: 0, upBand: [-0.05, 0.15] },
+	{ piece: 'left_leg_1_calf', bone: 'legL_calf', parent: 'legL', a: J.legL_calf, b: J.legL_foot, up: 0.5, upBand: [-0.1, 0.5], reach: 110, child: 'legL_foot', down: 0.4, downBand: [0.85, 1.05] },
+	{ piece: 'left_leg_2_foot', bone: 'legL_foot', parent: 'legL_calf', a: J.legL_foot, b: [130, 915], up: 0.45, upBand: [-0.05, 0.3] },
+	{ piece: 'right_leg_0_thigh', bone: 'legR', parent: 'hip', a: J.legR, b: J.legR_calf, up: 0, upBand: [-0.05, 0.15] },
+	{ piece: 'right_leg_1_calf', bone: 'legR_calf', parent: 'legR', a: J.legR_calf, b: J.legR_foot, up: 0.5, upBand: [-0.1, 0.5], reach: 110, child: 'legR_foot', down: 0.4, downBand: [0.85, 1.05] },
+	{ piece: 'right_leg_2_foot', bone: 'legR_foot', parent: 'legR_calf', a: J.legR_foot, b: [470, 900], up: 0.45, upBand: [-0.05, 0.3] },
+];
+for (const limb of LIMBS) attachments[limb.piece][limb.piece] = limbMesh(limb);
+
 attachments.head_1_face.head_1_face = meshAttachment(layerByName.head_1_face, 22, 22, (x, y) => {
 	const tip = 0.8 * smooth((y - 200) / 70) * smooth((Math.abs(x - 285) - 85) / 35);
 	const jaw = (1 - tip) * smooth((y - mouthY(x) + 3) / 20) * smooth((x - 236) / 20) * smooth((378 - x) / 34);
@@ -756,8 +813,14 @@ fs.writeFileSync(path.join(OUT, 'anubis.atlas'), atlas);
 // collar's end rises with the arm, and the joint stays covered through 40. What
 // is left is the arm's own drawing — past ~30 the painted taper starts to read
 // as a plank, which no rig fixes. So 28, not 22.
-const MAX_SHOULDER = 28;
-const MAX_ELBOW = 20;
+// RE-MEASURED 2026-09-28, after the arms became weighted meshes (THE LIMBS,
+// AS MESHES): the shoulder cap now stays with the torso and the elbow folds,
+// so the limit is the mesh's, not the collar's. sweepShoulder through the rig
+// gate: 40deg 61%..137%, 50deg 51%..145%, 60deg 42% — the floor is 50%. 45
+// leaves room for the torso's lean and the physics on top.
+const MAX_SHOULDER = 45;
+// sweepElbow likewise (shoulder at its limit): 40deg 60%, 50deg 51%. 40.
+const MAX_ELBOW = 40;
 //
 // AND A THIRD BUDGET THIS DRAWING HAS THAT THE GORILLA DID NOT: THE LEAN
 //
@@ -841,6 +904,8 @@ const hang = (shoulder) => -Math.round(shoulder * 0.7);
 const OUT_L = -MAX_SHOULDER;
 const OUT_R = MAX_SHOULDER;
 const OUT_FORE_L = hang(OUT_L);
+// the cheer's elbow: turned the SAME way as the raise, inside the budget
+const FIST_UP = MAX_ELBOW - 4;
 const OUT_FORE_R = hang(OUT_R);
 
 // LEAD and DRAG. One arm starts fractionally before the other, and the forearm
@@ -1119,27 +1184,34 @@ const cheer = {
 		// Elbows bend the SAME way as the raise, so the arm keeps a visible angle
 		// at the joint instead of going out as one straight bar - and they arrive
 		// DRAG later than the shoulder, so the elbow trails the swing.
+		// ARMS FLUNG WIDE. Since the arms became meshes the elbow folds instead of
+		// two plates sliding apart, so the forearms turn the SAME way as the raise
+		// instead of being held plumb by hang(): the arm straightens out sideways
+		// and he opens up, a full-width "ta-da" on the jump — then they drop and
+		// fling open again twice, the second smaller. (Fists up by the head would
+		// need ~90deg at the elbow: the forearm hangs down at rest, and 40 only
+		// brings it level. Measured on the preview, not assumed.)
 		armR_fore: {
 			rotate: [
 				{ time: 0, value: 0 },
-				{ time: 0.36 + DRAG, value: OUT_FORE_R + 10 },
-				{ time: 0.52 + DRAG, value: OUT_FORE_R },
-				{ time: 0.98, value: OUT_FORE_R + 8 },
-				{ time: 1.22, value: OUT_FORE_R - 4 },
-				{ time: 1.44, value: OUT_FORE_R + 5 },
-				{ time: 1.64, value: OUT_FORE_R },
+				{ time: 0.36 + DRAG, value: FIST_UP + 4 },
+				{ time: 0.52 + DRAG, value: FIST_UP },
+				{ time: 0.98, value: FIST_UP - 24 },
+				{ time: 1.22, value: FIST_UP + 2 },
+				{ time: 1.44, value: FIST_UP - 16 },
+				{ time: 1.64, value: FIST_UP - 2 },
 				{ time: 1.9, value: 0 },
 			],
 		},
 		armL_fore: {
 			rotate: [
 				{ time: 0, value: 0 },
-				{ time: 0.36 + DRAG + LEAD, value: OUT_FORE_L - 10 },
-				{ time: 0.52 + DRAG + LEAD, value: OUT_FORE_L },
-				{ time: 0.98 + LEAD, value: OUT_FORE_L - 8 },
-				{ time: 1.22 + LEAD, value: OUT_FORE_L + 4 },
-				{ time: 1.44 + LEAD, value: OUT_FORE_L - 5 },
-				{ time: 1.64 + LEAD, value: OUT_FORE_L },
+				{ time: 0.36 + DRAG + LEAD, value: -(FIST_UP + 4) },
+				{ time: 0.52 + DRAG + LEAD, value: -FIST_UP },
+				{ time: 0.98 + LEAD, value: -(FIST_UP - 24) },
+				{ time: 1.22 + LEAD, value: -(FIST_UP + 2) },
+				{ time: 1.44 + LEAD, value: -(FIST_UP - 16) },
+				{ time: 1.64 + LEAD, value: -(FIST_UP - 2) },
 				{ time: 1.9, value: 0 },
 			],
 		},
@@ -1199,10 +1271,15 @@ const cheer = {
 // Mascot.svelte draws the comic star and knocks the board housing on the same
 // beats. Those land where the fists actually are, not where a chest would be —
 // see IMPACT_AT there, which is taken from the numbers this file prints.
-const BEAT_IN_L = MAX_SHOULDER - 2;
-const BEAT_IN_R = -(MAX_SHOULDER - 2);
-const BEAT_FORE_L = MAX_ELBOW - 2;
-const BEAT_FORE_R = -(MAX_ELBOW - 2);
+// The strikes keep the ORIGINAL angles — 26 at the shoulder, 18 at the elbow,
+// what the rigid arms allowed. The mesh arms can swing further in (36 / 34
+// was tried, 2026-09-28), but that pulled the fists so far across the body the
+// beat read as him hugging his own belly; the user asked for the old pose back.
+// Fixed numbers, not MAX_* - 2: the budgets grew and this must not grow with them.
+const BEAT_IN_L = 26;
+const BEAT_IN_R = -26;
+const BEAT_FORE_L = 18;
+const BEAT_FORE_R = -18;
 // How far the idle arm cocks the OTHER way while its partner lands. Small: this
 // arm is not doing anything, it is getting out of the way and loading.
 const BEAT_OUT = 12;
@@ -1527,6 +1604,219 @@ const nod = {
 	},
 };
 
+// sigh: the spin ended ONE Scatter short (Mascot `scatterNearMiss`).
+//
+// The moment a real player groans, and the one the character used to stand
+// through as if nothing had happened. A breath in, the shoulders going up with
+// it, and then all of it let go: shoulders drop, the head goes down, the weight
+// sinks, eyes shut — held, and only then back up. 1.9s, and the hold is the
+// point: a sigh that bounces straight back is a nod.
+//
+// Same vocabulary as the nod (its shrug, its head dip), just larger, slower and
+// ending low instead of up — so it reads as the same person, disappointed.
+const SIGH_IN = 0.34;
+const SIGH_OUT = 0.78;
+const SIGH_HOLD = 1.3;
+const SIGH_END = 1.9;
+const sigh = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: SIGH_IN, x: 0, y: 4 },
+				{ time: SIGH_OUT, x: 0, y: -10 },
+				{ time: SIGH_HOLD, x: 0, y: -9 },
+				{ time: SIGH_END, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			// the chest fills, then empties and sags
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: SIGH_IN, x: 0.99, y: 1.03 },
+				{ time: SIGH_OUT, x: 1.02, y: 0.965 },
+				{ time: SIGH_HOLD, x: 1.02, y: 0.97 },
+				{ time: SIGH_END, x: 1, y: 1 },
+			],
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: SIGH_OUT, value: 3 },
+				{ time: SIGH_HOLD, value: 3 },
+				{ time: SIGH_END, value: 0 },
+			],
+		},
+		head: {
+			// a little up on the breath, then down — further than the nod goes
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: SIGH_IN, value: -4 },
+				{ time: SIGH_OUT + 0.06, value: 13 },
+				{ time: SIGH_HOLD, value: 12 },
+				{ time: SIGH_END, value: 0 },
+			],
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: SIGH_IN, x: 0, y: 3 },
+				{ time: SIGH_OUT + 0.06, x: 0, y: -7 },
+				{ time: SIGH_HOLD, x: 0, y: -6 },
+				{ time: SIGH_END, x: 0, y: 0 },
+			],
+		},
+		// the shrug up on the breath (the nod's direction), then dropped past rest
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: SIGH_IN, value: -9 },
+				{ time: SIGH_OUT, value: 5 },
+				{ time: SIGH_HOLD, value: 4 },
+				{ time: SIGH_END, value: 0 },
+			],
+		},
+		armL: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: SIGH_IN + LEAD, value: 9 },
+				{ time: SIGH_OUT + LEAD, value: -5 },
+				{ time: SIGH_HOLD, value: -4 },
+				{ time: SIGH_END, value: 0 },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: SIGH_IN + DRAG, value: hang(-9) },
+				{ time: SIGH_OUT + DRAG, value: hang(5) },
+				{ time: SIGH_HOLD, value: hang(4) },
+				{ time: SIGH_END, value: 0 },
+			],
+		},
+		armL_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: SIGH_IN + DRAG + LEAD, value: hang(9) },
+				{ time: SIGH_OUT + DRAG + LEAD, value: hang(-5) },
+				{ time: SIGH_HOLD, value: hang(-4) },
+				{ time: SIGH_END, value: 0 },
+			],
+		},
+	},
+};
+
+// ready: the reels have just been sent off (Mascot `spinLaunch`). A quick
+// set of the weight — a dip, fists tightening, chin down a touch — the way
+// someone leans in when they press the button. 0.6s and small: it can play
+// on a lot of spins (never two close together, see Mascot), so it is
+// designed like the nod, to be felt rather than watched.
+const ready = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.16, x: -3, y: -8 },
+				{ time: 0.36, x: -2, y: 1 },
+				{ time: 0.6, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.18, value: 2.5 },
+				{ time: 0.6, value: 0 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.18, value: 3.5 },
+				{ time: 0.42, value: -1 },
+				{ time: 0.6, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.16, value: -4 },
+				{ time: 0.6, value: 0 },
+			],
+		},
+		armL: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.16 + LEAD, value: 4 },
+				{ time: 0.6, value: 0 },
+			],
+		},
+		armR_hand: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.14, value: -6 },
+				{ time: 0.6, value: 0 },
+			],
+		},
+		armL_hand: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.14 + LEAD, value: 6 },
+				{ time: 0.6, value: 0 },
+			],
+		},
+	},
+};
+
+// pray: the LAST free spin is about to go (Mascot `freeSpinCounterUpdate`).
+// Both fists brought to the chest and held there — the chest beat's own reach
+// (BEAT_IN / BEAT_FORE), so it cannot ask the meshes for anything the beat
+// does not already — the head bowed over them, eyes shut, rocking a little on
+// the heels while the spin is in the air. 2.2s.
+const PRAY_IN = 0.3;
+const PRAY_OUT = 1.85;
+const PRAY_END = 2.25;
+const prayRock = (amp) => [0.55, 0.85, 1.15, 1.45].map((t, i) => ({ time: t, value: i % 2 ? -amp : amp }));
+const pray = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: PRAY_IN, x: 0, y: -6 },
+				{ time: 0.7, x: 0, y: -3 },
+				{ time: 1.0, x: 0, y: -6 },
+				{ time: 1.3, x: 0, y: -3 },
+				{ time: PRAY_OUT, x: 0, y: -6 },
+				{ time: PRAY_END, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			rotate: [{ time: 0, value: 0 }, { time: PRAY_IN, value: 2 }, ...prayRock(1.2), { time: PRAY_OUT, value: 2 }, { time: PRAY_END, value: 0 }],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: PRAY_IN + 0.06, value: 10 },
+				{ time: PRAY_OUT, value: 10 },
+				{ time: PRAY_END, value: 0 },
+			],
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: PRAY_IN + 0.06, x: 0, y: -4 },
+				{ time: PRAY_OUT, x: 0, y: -4 },
+				{ time: PRAY_END, x: 0, y: 0 },
+			],
+		},
+		armR: {
+			rotate: [{ time: 0, value: 0 }, { time: PRAY_IN, value: BEAT_IN_R }, { time: PRAY_OUT, value: BEAT_IN_R }, { time: PRAY_END, value: 0 }],
+		},
+		armL: {
+			rotate: [{ time: 0, value: 0 }, { time: PRAY_IN + LEAD, value: BEAT_IN_L }, { time: PRAY_OUT, value: BEAT_IN_L }, { time: PRAY_END, value: 0 }],
+		},
+		armR_fore: {
+			rotate: [{ time: 0, value: 0 }, { time: PRAY_IN + DRAG, value: BEAT_FORE_R }, { time: PRAY_OUT, value: BEAT_FORE_R }, { time: PRAY_END, value: 0 }],
+		},
+		armL_fore: {
+			rotate: [{ time: 0, value: 0 }, { time: PRAY_IN + DRAG + LEAD, value: BEAT_FORE_L }, { time: PRAY_OUT, value: BEAT_FORE_L }, { time: PRAY_END, value: 0 }],
+		},
+	},
+};
+
 // alert: the second Scatter has landed and he has noticed.
 //
 // WHY THIS EXISTS
@@ -1833,9 +2123,13 @@ const RELEASE_AT = 0.58;
 //
 // This is the one exception in the file, and it is an exception about DWELL, not
 // about the drawing suddenly being able to take more.
-const THROW_SHOULDER = 30;
-const THROW_ELBOW = 26;
-const COCK_BACK = 28;
+// 2026-09-28: the arms are meshes now and the budgets grew (MAX_SHOULDER 45,
+// MAX_ELBOW 40, 36 inward), so the throw no longer has to break them to read:
+// a deeper cock across the body and a fling out to the full budget, with a
+// longer follow-through.
+const THROW_SHOULDER = 45;
+const THROW_ELBOW = 38;
+const COCK_BACK = 34;
 
 const throwit = {
 	slots: {
@@ -1927,7 +2221,7 @@ const throwit = {
 				{ time: APPEAR_AT, value: 12 }, // hand comes in to receive it
 				{ time: 0.44, value: COCK_BACK }, // cocked back across the body
 				{ time: RELEASE_AT, value: -THROW_SHOULDER },
-				{ time: 0.76, value: -18 }, // follow through, then let it fall
+				{ time: 0.76, value: -26 }, // follow through, then let it fall
 				{ time: 1.2, value: 0 },
 			],
 		},
@@ -1935,7 +2229,7 @@ const throwit = {
 			rotate: [
 				{ time: 0, value: 0 },
 				{ time: APPEAR_AT, value: 14 },
-				{ time: 0.44 + DRAG, value: 26 },
+				{ time: 0.44 + DRAG, value: 32 },
 				{ time: RELEASE_AT + DRAG * 0.5, value: -THROW_ELBOW },
 				{ time: 0.84, value: -10 },
 				{ time: 1.2, value: 0 },
@@ -2124,6 +2418,17 @@ const sweepTorso = {
 const sweepHead = {
 	bones: { head: { rotate: SWEEP.map((k) => ({ time: k.time, value: k.deg })) } },
 };
+// A SUMO LIFT: the thigh swung out to the side (knee up and out, - on the left
+// leg) with the calf turned back the same amount so the foot hangs under the
+// knee — what the stomp in `dance` asks of the legs since they became meshes.
+const sweepKnee = {
+	bones: {
+		legL: { rotate: SWEEP.map((k) => ({ time: k.time, value: -k.deg })) },
+		legL_calf: { rotate: SWEEP.map((k) => ({ time: k.time, value: k.deg })) },
+		legR: { rotate: SWEEP.map((k) => ({ time: k.time, value: k.deg })) },
+		legR_calf: { rotate: SWEEP.map((k) => ({ time: k.time, value: -k.deg })) },
+	},
+};
 const sweepElbow = {
 	bones: {
 		armL: { rotate: SWEEP.map((k) => ({ time: k.time, value: -MAX_SHOULDER })) },
@@ -2303,11 +2608,19 @@ const DANCE_HIP = [
 // the hip's rise so its foot stays down; the lifted one shortens so its foot
 // comes up ~30; on the stomp both take the 9 the hip drops
 const legScale = (t, lifted) => ({ time: t, x: 1, y: +lifted.toFixed(4) });
+// how far out the thigh swings on a sumo lift, deg: sweepKnee holds to 50 with
+// BOTH legs spread; one at a time, with the stomp's squash on top, 26
+const DANCE_LIFT = 26;
 const dance = {
 	bones: {
 		hip: { translate: DANCE_HIP.map(([time, x, y]) => ({ time, x, y })) },
+		// THE SUMO LIFT (the legs are meshes now, sweepKnee): on the lift the
+		// thigh swings out to the side, knee up and out, and the calf turns back
+		// so the foot hangs under the knee — then the stomp brings it down
+		// hard and straight. On top of the anti-skate turn (footBack) and the
+		// foreshortening, which still lift the foot off the floor.
 		legL: {
-			rotate: DANCE_HIP.map(([time, x]) => ({ time, value: footBack(x) })),
+			rotate: DANCE_HIP.map(([time, x]) => ({ time, value: footBack(x) - (time === 0.2 ? DANCE_LIFT : 0) })),
 			scale: [
 				legScale(0, 1 - 4 / LEG),
 				legScale(0.2, 1 - 22 / LEG), // up: the foot clears the floor by ~30
@@ -2319,8 +2632,24 @@ const dance = {
 				legScale(DANCE_LOOP, 1 - 4 / LEG),
 			],
 		},
+		legL_calf: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.2 + 0.03, value: DANCE_LIFT * 0.9 },
+				{ time: 0.45, value: 0 },
+				{ time: DANCE_LOOP, value: 0 },
+			],
+		},
+		legR_calf: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 1.1 + 0.03, value: -DANCE_LIFT * 0.9 },
+				{ time: 1.35, value: 0 },
+				{ time: DANCE_LOOP, value: 0 },
+			],
+		},
 		legR: {
-			rotate: DANCE_HIP.map(([time, x]) => ({ time, value: footBack(x) })),
+			rotate: DANCE_HIP.map(([time, x]) => ({ time, value: footBack(x) + (time === 1.1 ? DANCE_LIFT : 0) })),
 			scale: [
 				legScale(0, 1 - 4 / LEG),
 				legScale(0.2, 1 + 8 / LEG),
@@ -2494,6 +2823,14 @@ chestbeat.slots = lids('_hold', [{ at: beats[beats.length - 1] - F, hold: 0.1 }]
 // the throw: a wink at the player once the scarab has gone (the eye away from
 // the board)
 throwit.slots = { ...throwit.slots, ...lids('_hold', [{ at: RELEASE_AT + 0.14, hold: 0.3 }], 'r') };
+// the sigh: eyes shut as the breath goes out, and kept shut through the hold
+sigh.slots = lids('_hold', [{ at: SIGH_OUT - 0.1, hold: SIGH_HOLD - SIGH_OUT + 0.1 }]);
+// the prayer: shut for as long as the fists are at the chest
+pray.slots = lids('_hold', [{ at: PRAY_IN, hold: PRAY_OUT - PRAY_IN - 0.1 }]);
+// the ready: a blink as he sets
+ready.slots = lids('_hold', [{ at: 0.12 }]);
+// the sigh: the mouth falls open a little on the breath out - 'haah'
+Object.assign(sigh.bones, jawKeys([{ at: SIGH_IN + 0.08, open: 3, hold: 0.3, close: 0.4 }], SIGH_END));
 
 // ── glints: the gold catching the light, TRACK 2 (Mascot.svelte) ────────────
 // One band at a time, round the figure, a glint about every two seconds — so
@@ -2542,12 +2879,15 @@ const skeleton = {
 				alert,
 				idlebreak,
 				throwit,
+				sigh,
+				ready,
+				pray,
 				dance,
 				flutter,
 				glints,
 				// Left un-smoothed on purpose: a calibration sweep has to be linear,
 				// or the angle at a given frame is not the angle it is labelled with.
-				...(CALIBRATE ? { sweepShoulder, sweepElbow, sweepHead, sweepTorso } : {}),
+				...(CALIBRATE ? { sweepShoulder, sweepElbow, sweepHead, sweepTorso, sweepKnee } : {}),
 			}).map(([name, a]) => [
 				name,
 				// idle and dance loop (LOOPS), so theirs are the ends that
@@ -2623,7 +2963,20 @@ fs.writeFileSync(path.join(OUT, 'anubis.json'), JSON.stringify(skeleton, null, 2
 		};
 		for (const b of bones) resolve(b);
 		const s = slots.find((x) => x.name === slot);
-		const a = attachments[slot]?.[slot] ?? { x: 0, y: 0 };
+		// a region stores its centre relative to its bone; a MESH does not (the
+		// limbs are meshes now), so take the piece's own centre the same way
+		const layer = layerByName[slot];
+		const region = attachments[slot]?.[slot];
+		const a =
+			region && region.type !== 'mesh'
+				? region
+				: layer
+					? (() => {
+							const c = toSpine(layer.x + layer.w / 2, layer.y + layer.h / 2);
+							const j = jointWorld[s.bone];
+							return { x: c.x - j.x, y: c.y - j.y };
+						})()
+					: { x: 0, y: 0 };
 		const m = world[s.bone];
 		return { x: m[0] * a.x + m[2] * a.y + m[4], y: m[1] * a.x + m[3] * a.y + m[5] };
 	};

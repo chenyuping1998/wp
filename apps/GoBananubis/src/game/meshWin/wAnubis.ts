@@ -133,6 +133,15 @@ export const W: MeshWinSpec = {
 		boneOf(rig, pose, 'banana').angle = 3 * k * landFlick(t, 50);
 		boneOf(rig, pose, 'cobra').angle = 4 * k * landFlick(t, 60);
 	},
+	// IDLE: two chews on the banana and a flick of the ears
+	idle: (rig, t) => {
+		const pose = restPose(rig);
+		boneOf(rig, pose, 'jaw').dy = 3 * (bump(t, 120, 360) + bump(t, 440, 680));
+		boneOf(rig, pose, 'banana').angle = 3 * (bump(t, 160, 400) - bump(t, 480, 720));
+		boneOf(rig, pose, 'ear_l').angle = -3.5 * bump(t, 620, 860);
+		boneOf(rig, pose, 'ear_r').angle = 3.5 * bump(t, 680, 920);
+		return pose;
+	},
 	pose: (rig: Rig, t: number) => {
 		const pose = restPose(rig);
 		const b = (name: string) => pose.bones[rig.bones.findIndex((x) => x.name === name)];

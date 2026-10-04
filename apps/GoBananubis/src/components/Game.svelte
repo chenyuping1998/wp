@@ -26,9 +26,11 @@
 	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './BoardFrame.svelte';
 	import Mascot from './Mascot.svelte';
+	import BoardIdle from './BoardIdle.svelte';
 	import Board from './Board.svelte';
 	import ReelDust from './ReelDust.svelte';
 	import EntryReveal from './EntryReveal.svelte';
+	import HitStop from './HitStop.svelte';
 	import ScatterBurst from './ScatterBurst.svelte';
 	import HeldTablets from './HeldTablets.svelte';
 	import MysteryReveal from './MysteryReveal.svelte';
@@ -120,6 +122,8 @@
 			     the housing is the thing that stays in front. -->
 			<Mascot />
 			<BoardFrame />
+			<!-- no picture of its own: picks which symbol does its idle act -->
+			<BoardIdle />
 		</MainContainer>
 
 		<MainContainer>
@@ -151,6 +155,7 @@
 		</Container>
 
 		<EntryReveal />
+		<HitStop />
 
 		<UI>
 			{#snippet gameName()}

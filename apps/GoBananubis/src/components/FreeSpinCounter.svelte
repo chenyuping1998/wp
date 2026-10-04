@@ -143,7 +143,12 @@
 			if (emitterEvent.current !== undefined) current = emitterEvent.current;
 			if (emitterEvent.total !== undefined) total = emitterEvent.total;
 			if (gained) knock(1);
-			else if (spent) knock(0.38);
+			else if (spent && current === total && total > 1 && !isSuperspin) {
+				// THE LAST ONE: two hard knocks, a heartbeat apart, so the plaque
+				// itself says this is it (he puts his hands together beside it)
+				knock(1.15);
+				setTimeout(() => knock(0.7), 300);
+			} else if (spent) knock(0.38);
 		},
 	});
 

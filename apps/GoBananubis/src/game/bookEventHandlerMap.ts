@@ -9,7 +9,7 @@ import { startTombQuake } from './tombQuake.svelte';
 import { eventEmitter } from './eventEmitter';
 import { playBookEvent } from './utils';
 import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
-import { stateGame, stateGameDerived } from './stateGame.svelte';
+import { stateGame, stateGameDerived, visibleScatters } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
 import type { Position } from './types';
 import { BOARD_DIMENSIONS } from './constants';
@@ -193,6 +193,15 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			// here, just not instant. SPIN_OPTIONS_TURBO_FREEGAME carries the pace.
 			isTurboOverride: bookEvent.gameType === 'freegame' ? false : undefined,
 		});
+		// ONE SHORT: the base spin stopped with two Scatters showing. Not on a
+		// spin that pays — a sigh followed by a win reads as a mistake.
+		if (
+			bookEvent.gameType === 'basegame' &&
+			visibleScatters() === 2 &&
+			!bookEvents.some((event) => event.type === 'winInfo')
+		) {
+			eventEmitter.broadcast({ type: 'scatterNearMiss' });
+		}
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 	},
 	winInfo: async (bookEvent: BookEventOfType<'winInfo'>) => {
@@ -255,6 +264,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// It runs during the bell hold, which is the only stretch of the trigger
 		// long enough to watch him do it.
 		eventEmitter.broadcast({ type: 'mascotChestBeat' });
+		// GB100's monkey call over the strikes, cut to start and stop with them
+		eventEmitter.broadcast({ type: 'soundChestHoot' });
 		// ...and the tomb answers it: the scene jolts on each strike and the
 		// ceiling sheds sand and stone (game/tombQuake.svelte.ts). Started on the
 		// same line as the beat, so the clock both of them read begins together.

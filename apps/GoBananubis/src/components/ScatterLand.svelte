@@ -28,7 +28,8 @@
 	 *
 	 *   · a hit on the cell as it lands — a hot flash, a ring thrown off it and
 	 *     a puff of the same sand the reels kick up (ImpactDust)
-	 *   · a hold: the cell keeps a slow red-gold breath for the rest of the spin,
+	 *   · a hold: the cell keeps a slow red-gold glow for the rest of the spin
+	 *     (no frame round it — see drawHits),
 	 *     so two Scatters sitting on the board are visibly two Scatters sitting
 	 *     on the board while the remaining reels are still turning
 	 *
@@ -59,6 +60,20 @@
 	type Landed = { id: number; reel: number; row: number; count: number; at: number };
 
 	let landed = $state<Landed[]>([]);
+	// when the spin ended one Scatter short (scatterNearMiss): the holds fade out
+	const MISS_FADE_MS = 900;
+	let missedAt = $state(0);
+	$effect(() => {
+		if (landed.length === 0) missedAt = 0;
+	});
+	// A TORCH, NOT A SINE: two slow incommensurate waves and a quick one,
+	// summed, so the hold flickers unevenly and no two cells (or two spins)
+	// ever breathe in step
+	const flicker = (t: number, seed: number) =>
+		0.5 +
+		0.25 * Math.sin(t / 530 + seed * 1.7) +
+		0.15 * Math.sin(t / 290 + seed * 4.1) +
+		0.1 * Math.sin(t / 97 + seed * 9.3);
 	let dust = $state<{ id: number; x: number; y: number }[]>([]);
 	let nextId = 0;
 	let now = $state(0);
@@ -91,7 +106,7 @@
 			// The reel reports the row it landed on including its padding symbols —
 			// row 0 sits above the top rail and row 6 below the bottom one — and a
 			// Scatter that lands in padding is a symbol the player never sees. Its
-			// brackets were being drawn anyway, a whole cell outside the housing.
+			// hold was being drawn anyway, a whole cell outside the housing.
 			if (row < 1 || row > BOARD_DIMENSIONS.y) return;
 
 			const id = nextId++;
@@ -113,6 +128,13 @@
 		// The hold belongs to the board it landed on: the next spin clears it as
 		// it starts, and a torn-down board takes it too.
 		scatterLandClear: () => (landed = []),
+		// ONE SHORT: the held light goes out, slowly, while he sighs
+		scatterNearMiss: () => {
+			missedAt = Date.now();
+			setTimeout(() => {
+				if (missedAt) landed = [];
+			}, MISS_FADE_MS + 50);
+		},
 		boardHide: () => (landed = []),
 	});
 
@@ -148,29 +170,10 @@
 				}
 			}
 
-			// The hold: four corner brackets, breathing.
-			//
-			// It was a plain square outline first, and a thin orange box around a
-			// cell is the one thing on this board that looks drawn by a program
-			// rather than made. Brackets are the game's own mark — the corner studs
-			// on every symbol plate, the buy cards and the tally slab — and they
-			// frame the symbol instead of boxing it in.
-			const breath = 0.5 + 0.5 * Math.sin((now - hit.at) / 340);
-			const half = SYMBOL_SIZE * 0.44;
-			const arm = SYMBOL_SIZE * (0.15 + 0.02 * breath);
-			const width = 3 + 1.2 * breath;
-			const alpha = (0.5 + 0.35 * breath) * force;
-			for (const [cx, cy] of [
-				[-1, -1],
-				[1, -1],
-				[-1, 1],
-				[1, 1],
-			]) {
-				g.moveTo(x + cx * half - cx * arm, y + cy * half);
-				g.lineTo(x + cx * half, y + cy * half);
-				g.lineTo(x + cx * half, y + cy * half - cy * arm);
-				g.stroke({ width, color: HOLD_TINT, alpha, cap: 'round' as const });
-			}
+			// NO FRAME ON THE HOLD. It was four breathing corner brackets (a square
+			// outline before that); like the pay frame they drew the eye to the
+			// cell's border and off the Scatter's own tease. The hold is the glow
+			// under it (markup) and the Scatter's own sway.
 		}
 	};
 </script>
@@ -182,7 +185,10 @@
 
 			<!-- the glow under the hold, which a stroke cannot give on its own -->
 			{#each landed as hit (hit.id)}
-				{@const breath = 0.5 + 0.5 * Math.sin((now - hit.at) / 320)}
+				{@const age = now - hit.at}
+				{@const flare = Math.max(0, 1 - age / 500)}
+				{@const out = missedAt ? Math.max(0, 1 - (now - missedAt) / MISS_FADE_MS) : 1}
+				{@const breath = (0.55 + 0.45 * flicker(age, hit.id)) * out}
 				<Sprite
 					key="fxGlow"
 					anchor={0.5}
@@ -192,7 +198,7 @@
 					height={SYMBOL_SIZE * 1.5}
 					tint={HOLD_TINT}
 					blendMode="add"
-					alpha={0.1 + 0.12 * breath}
+					alpha={(0.1 + 0.12 * breath + 0.3 * flare) * out}
 				/>
 			{/each}
 

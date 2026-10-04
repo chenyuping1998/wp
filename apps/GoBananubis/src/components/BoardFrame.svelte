@@ -31,21 +31,19 @@
 		isSuperspin ? 0x9fd0ff : context.stateGame.gameType === 'freegame' ? 0xffd75e : null,
 	);
 
-	let pulse = $state(0);
-	onMount(() => {
-		const id = setInterval(() => {
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 620);
-		}, 33);
-		return () => {
-			clearInterval(id);
-			cancelAnimationFrame(impactRaf);
-		};
-	});
+	// NOT A PULSE. The mode light used to breathe on a 620ms sine forever,
+	// in step with nothing — and in step with every other breathing light on
+	// screen, which is how a scene starts to look generated. It is steady now
+	// and FLARES when the frame is hit (impact.flash): the reel stops, a
+	// Scatter, the chest beat. It moves when something happens to it.
+	onMount(() => () => cancelAnimationFrame(impactRaf));
 
 	// ── frame impact: a short recoil plus a hot flash along the brass, so a
 	// wild slamming into the housing is felt and not just seen ────────────────
 	let impact = $state({ x: 0, y: 0, flash: 0 });
 	let impactRaf = 0;
+	// the mode light (see above): steady, flaring with each hit
+	const pulse = $derived(Math.min(1, 0.35 + impact.flash * 1.6));
 	const IMPACT_MS = 420;
 
 	// Energy still left in the impact currently playing, so a weaker one cannot

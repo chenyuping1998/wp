@@ -12,13 +12,13 @@
 </script>
 
 <script lang="ts">
-	import { Graphics, Container } from 'pixi-svelte';
-	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { Container } from 'pixi-svelte';
 	import { stateBet } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import BoardContainer from './BoardContainer.svelte';
 	import ScarabRunner from './ScarabRunner.svelte';
+	import WinLineRibbon from './WinLineRibbon.svelte';
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, REEL_PADDING, BOARD_DIMENSIONS } from '../game/constants';
 	import config from '../game/config';
@@ -89,11 +89,6 @@
 	let lines = $state<ActiveLine[]>([]);
 	let show = $state(false);
 	let timing = $state(NORMAL);
-	// tick forces the trail Graphics to redraw while the runners move
-	let tick = $state(0);
-	let tickRaf = 0;
-	// crossing progress per line, 0..1, mirrors each scarab's travel
-	let crossed = $state<Record<number, number>>({});
 
 	const lineScale = $derived(lines.length >= 6 ? 0.7 : 1);
 
@@ -130,27 +125,14 @@
 	};
 
 	const onScarabReel = (line: ActiveLine, reelIndex: number) => {
-		crossed[line.lineIndex] = Math.max(
-			crossed[line.lineIndex] ?? 0,
-			reelIndex / Math.max(1, line.points.length - 1),
-		);
 		animatePositions(line.positions.filter((p) => p.reel === reelIndex));
-	};
-
-	const startTicker = () => {
-		cancelAnimationFrame(tickRaf);
-		const step = () => {
-			tick++;
-			if (show) tickRaf = requestAnimationFrame(step);
-		};
-		tickRaf = requestAnimationFrame(step);
 	};
 
 	context.eventEmitter.subscribeOnMount({
 		winLinesShow: async ({ wins, fast }) => {
 			const generation = ++showGeneration;
 			animatedKeys = new Set();
-			crossed = {};
+			travels = {};
 			timing = fast || stateBet.isTurbo ? FAST : NORMAL;
 
 			const built: ActiveLine[] = [];
@@ -177,8 +159,11 @@
 
 			lines = built;
 			show = true;
+			// he looks at the line that pays (the first; the middle of it)
+			const first = built[0].positions;
+			const mid = first[Math.floor(first.length / 2)];
+			if (mid) context.eventEmitter.broadcast({ type: 'mascotGaze', reel: mid.reel, row: mid.row });
 			context.eventEmitter.broadcast({ type: 'boardShow' });
-			startTicker();
 
 			const volleyMs = Math.max(
 				...built.map((line) => line.delay + timing.entry + line.travelMs + timing.settle),
@@ -220,67 +205,30 @@
 			showGeneration += 1;
 			show = false;
 			lines = [];
-			crossed = {};
-			cancelAnimationFrame(tickRaf);
 		},
 		winLinesClear: () => {
 			showGeneration += 1;
 			lines = [];
-			crossed = {};
 		},
 	});
 
-	// walk the polyline up to `p` of total length and return the drawn portion
-	const pathAt = (points: Point[], p: number) => {
-		if (p >= 1) return points;
-		const lengths = points.slice(1).map((pt, i) => Math.hypot(pt.x - points[i].x, pt.y - points[i].y));
-		const total = lengths.reduce((sum, l) => sum + l, 0);
-		let want = total * Math.max(0, p);
-		const out = [points[0]];
-		for (let i = 0; i < lengths.length; i++) {
-			if (want >= lengths[i]) {
-				out.push(points[i + 1]);
-				want -= lengths[i];
-				continue;
-			}
-			const f = lengths[i] === 0 ? 0 : want / lengths[i];
-			out.push({
-				x: points[i].x + (points[i + 1].x - points[i].x) * f,
-				y: points[i].y + (points[i + 1].y - points[i].y) * f,
-			});
-			break;
-		}
-		return out;
-	};
-
-	const drawTrails = (g: PixiGraphics) => {
-		tick; // redraw every frame while the volley runs
-		g.clear();
-		const width = lines.length >= 6 ? 0.72 : 1;
-		for (const line of lines) {
-			const p = line.done ? 1 : (crossed[line.lineIndex] ?? 0);
-			if (p <= 0) continue;
-			const drawn = pathAt(line.points, p);
-			if (drawn.length < 2) continue;
-			const stroke = (w: number, color: number, alpha: number) => {
-				g.lineStyle(w * width, color, alpha);
-				g.moveTo(drawn[0].x, drawn[0].y);
-				for (let i = 1; i < drawn.length; i++) g.lineTo(drawn[i].x, drawn[i].y);
-			};
-			// scorch underlay: reads as a burn mark where the line crosses the
-			// gold expanding-wild panel, and all but disappears over the dark board
-			stroke(11, 0x1a1206, 0.5);
-			stroke(7, line.color, 0.22);
-			stroke(3, line.color, 0.95);
-			stroke(1.2, 0xffffff, 0.5);
-		}
-	};
+	// how far each line's scarab has got, written every frame by its runner and
+	// read every frame by its ribbon — plain, not $state: nothing re-renders
+	let travels: Record<number, number> = {};
 </script>
 
 {#if show && lines.length > 0}
 	<BoardContainer>
 		<Container zIndex={10}>
-			<Graphics draw={drawTrails} />
+			<!-- the ribbons first, so every scarab walks on top of every line -->
+			{#each lines as line (line.lineIndex)}
+				<WinLineRibbon
+					points={line.points}
+					color={line.color}
+					scale={lineScale}
+					travel={() => (line.done ? 1 : (travels[line.lineIndex] ?? 0))}
+				/>
+			{/each}
 			{#each lines as line (line.lineIndex)}
 				<ScarabRunner
 					points={line.points}
@@ -291,9 +239,9 @@
 					travelMs={line.travelMs}
 					settleMs={timing.settle}
 					onreel={(reelIndex) => onScarabReel(line, reelIndex)}
+					ontravel={(p) => (travels[line.lineIndex] = p)}
 					oncomplete={() => {
 						line.done = true;
-						crossed[line.lineIndex] = 1;
 					}}
 				/>
 			{/each}

@@ -147,6 +147,15 @@ export const H3: MeshWinSpec = {
 		boneOf(rig, pose, 'bananas').dy = -2.5 * k * Math.max(0, landFlick(t, 60));
 		boneOf(rig, pose, 'stalk').angle = 4 * k * landFlick(t, 80);
 	},
+	// IDLE: the lid lifts a crack, the bananas peek up and the stalk waggles,
+	// and it all settles shut again
+	idle: (rig, t) => {
+		const pose = restPose(rig);
+		boneOf(rig, pose, 'lid').across = 1 + 0.16 * bump(t, 120, 760);
+		boneOf(rig, pose, 'bananas').dy = -3 * bump(t, 220, 720);
+		boneOf(rig, pose, 'stalk').angle = 5 * Math.sin((2 * Math.PI * (t - 220)) / 320) * bump(t, 220, 900);
+		return pose;
+	},
 	pose: (rig: Rig, t: number) => {
 		const pose = restPose(rig);
 		const air = track(t, [[0, 0], [T.crouch, 0], [T.rise, 1, 'back'], [T.fall, 1], [T.land, 0, 'in']]);

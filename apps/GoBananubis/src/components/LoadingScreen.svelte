@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
 	import { Container, Graphics, Text, Sprite } from 'pixi-svelte';
-	import { CanvasTextMetrics, TextStyle } from 'pixi.js';
 	import { FadeContainer } from 'components-pixi';
 	import { MainContainer } from 'components-layout';
 	import { onMount } from 'svelte';
@@ -11,6 +10,9 @@
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import FeatureIntro from './FeatureIntro.svelte';
+	import TombTitle from './TombTitle.svelte';
+	import BackgroundWarp from './BackgroundWarp.svelte';
+	import { WARPS } from '../game/meshWin/bgWarp';
 
 	type Props = {
 		onloaded: () => void;
@@ -140,7 +142,7 @@
 	// is a portmanteau — BANANAS wearing ANUBIS — and colouring "GO BAN" against
 	// "ANUBIS" is what shows the join. It does mean the break falls mid-word, so
 	// the two halves have to be laid out from the width of the UNBROKEN word
-	// rather than from their own; see titleMetrics.
+	// rather than from their own; TombTitle sets them as one run of letters.
 	//
 	// Gold reads as the series (every game in it wears this yellow) and white
 	// reads as the god, which is the same trade the art makes: gilded inlay on
@@ -178,19 +180,19 @@
 		// thing that keeps type readable over an image.
 	};
 
-	const titleMetrics = $derived.by(() => {
-		pulseTick; // re-measure once the display face has loaded
-		const style = new TextStyle(titleStyle);
-		const go = CanvasTextMetrics.measureText('GO', style).width;
-		// The UNBROKEN word, and the tail measured on its own. "ANUBIS" is then
-		// placed at (full - anubis) rather than after the measured width of "BAN",
-		// so the seam lands exactly where it would inside "BANANUBIS" whatever the
-		// face does at that pair — letterSpacing, kerning and whether a trailing
-		// gap is counted all cancel out, because the same two measurements decide
-		// both the layout and the total width.
-		const full = CanvasTextMetrics.measureText('BANANUBIS', style).width;
-		const anubis = CanvasTextMetrics.measureText('ANUBIS', style).width;
-		return { go, full, anubis, total: go + TITLE_GAP + full };
+	// THE TITLE RISES OUT OF THE SAND (TombTitle): Go Bananas Boat's letters
+	// hop; this name is carved and gilded, so each letter is raised out of the
+	// floor and settles with a stone's weight, and light crosses the gilding
+	// every few seconds after. The split inside the word survives — the three
+	// parts keep their own styles — and "ANUBIS" butts straight onto "BAN" (no
+	// gap), which is the seam the old titleMetrics measured for.
+	//
+	// TombTitle measures its letters once, so it is laid out again when the
+	// display face has actually loaded; before that it would keep the fallback
+	// face's spacing.
+	const fontReady = $derived.by(() => {
+		pulseTick;
+		return typeof document !== 'undefined' && document.fonts.check(`${TITLE_SIZE}px ${GAME_FONT}`);
 	});
 </script>
 
@@ -206,6 +208,19 @@
 			width={context.stateLayoutDerived.mainLayout().width}
 			height={context.stateLayoutDerived.mainLayout().height}
 		/>
+		<!-- the sun dust drifting, as on the base game behind it (meshWin/bgWarp) -->
+		{#if context.stateApp.loadedAssets?.gbBgBase}
+			{#each WARPS.gbBgBase as warp (warp.id)}
+				<BackgroundWarp
+					{warp}
+					plate="gbBgBase"
+					x={0}
+					y={0}
+					width={context.stateLayoutDerived.mainLayout().width}
+					height={context.stateLayoutDerived.mainLayout().height}
+				/>
+			{/each}
+		{/if}
 
 		<!-- Dark overlay for readability -->
 		<Graphics
@@ -228,18 +243,10 @@
 			}}
 		/>
 
-		<Graphics
-			draw={(g) => {
-				const w = context.stateLayoutDerived.mainLayout().width;
-				const h = context.stateLayoutDerived.mainLayout().height;
-				const glowX = w * 0.5 + Math.sin(pulseTick / 48) * w * 0.08;
-				const glowAlpha = 0.03 + 0.015 * (0.5 + 0.5 * Math.sin(pulseTick / 22));
-				g.clear();
-				g.beginFill(0xffd67c, glowAlpha);
-				g.drawEllipse(glowX, h * 0.34, w * 0.26, h * 0.1);
-				g.endFill();
-			}}
-		/>
+		<!-- NO BREATHING GLOW. A warm pool drifted and pulsed behind the title on a
+		     sine wave; the plate brings its own light, and the title's letters
+		     (TombTitle) are what moves here now. Something breathing on a timer
+		     with no cause is the most machine-made thing a screen can do. -->
 
 		<!--
 			Title. Sits near the top rather than at 0.36 because the feature card
@@ -251,7 +258,7 @@
 			gold, "ANUBIS" in white. The break falls inside the word on purpose —
 			the name is BANANAS wearing ANUBIS, and this is what shows the join —
 			which is also why "ANUBIS" is positioned from the width of the whole
-			word rather than placed after "BAN" (see titleMetrics).
+			word, set as one run of letters (TombTitle).
 
 			The colour used to borrow the feature card's hero orange, on the
 			argument that it would already mean "the tablet" by the time the player
@@ -268,29 +275,17 @@
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.155}
 		>
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2}
-				style={titleStyle}
-				text="GO"
-			/>
-
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2 + titleMetrics.go + TITLE_GAP}
-				style={titleStyle}
-				text="BAN"
-			/>
-
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2 +
-					titleMetrics.go +
-					TITLE_GAP +
-					(titleMetrics.full - titleMetrics.anubis)}
-				style={nameStyle}
-				text="ANUBIS"
-			/>
+			{#key fontReady}
+				<TombTitle
+					parts={[
+						{ text: 'GO', style: titleStyle },
+						{ text: 'BAN', style: titleStyle, gapBefore: TITLE_GAP },
+						{ text: 'ANUBIS', style: nameStyle },
+					]}
+					y={0}
+					delay={300}
+				/>
+			{/key}
 		</Container>
 	</MainContainer>
 </FadeContainer>

@@ -470,6 +470,13 @@ export type MeshWinSpec = {
 	 *  fits in 240ms. The shared squash still ends at LAND_MS; `land` carries
 	 *  the rest. */
 	landDuration?: number;
+	/** degrees: a HUNG symbol's landing swings the whole tile from its top
+	 *  edge, a decaying pendulum, times the landing's weight (capped at
+	 *  LAND_SWING_MAX). A rigid turn of the tile in SymbolMeshWin — the mesh
+	 *  itself cannot turn that far in panel mode, it would stretch the
+	 *  parchment — so the gate never sees it. Needs a landDuration that lets it
+	 *  ring out. */
+	landSwing?: number;
 	/** the landing draws the light layers too — `land` sets `pose.flash` and
 	 *  `pose.sheen`. Only the two feature symbols: fifteen cells land every
 	 *  spin, and the ordinary ones never want light. */
@@ -477,18 +484,26 @@ export type MeshWinSpec = {
 	/** ms into the landing that the dust puff fires (the tablet's thud) */
 	landDust?: number;
 	/** how far the landing's rebound lifts, as a fraction of height (default:
-	 *  0.05 cut, 0.015 panel). W takes 0: its crown sits under the frame. */
+	 *  0.03 cut, 0.012 panel). W takes 0: its crown sits under the frame. */
 	landRebound?: number;
-	/** how much the landing widens the subject as it squashes (default: 0.1
-	 *  cut, 0.03 panel — a panel's subject can sit close to the frame, and at
+	/** how much the landing widens the subject as it squashes (default: 0.06
+	 *  cut, 0.02 panel — a panel's subject can sit close to the frame, and at
 	 *  0.06 the 10 and the Wild's headdress were pushed into it). W takes 0. */
 	landSpread?: number;
-	/** how deep the landing squashes, as a fraction of height (default 0.16
-	 *  cut, 0.1 panel). The squash pivots on the bottom, so a subject that fills
+	/** how deep the landing squashes, as a fraction of height (default 0.1
+	 *  cut, 0.07 panel; was 0.16/0.1, which with the strip's own stop bounce had
+	 *  the whole board jelly-wobbling every spin). The squash pivots on the bottom, so a subject that fills
 	 *  its panel moves its TOP the most — W's ears, which reach into the frame
 	 *  band, came down 35px against the fixed frame; even 0.03 stretched the frame
 	 *  round them to 1.9x. W takes 0.012. */
 	landDepth?: number;
+	/** THE IDLE: a small act the symbol does now and then while the board
+	 *  waits for the player (components/BoardIdle.svelte picks the cell). IDLE_MS
+	 *  long, `t` ms into it; it must start on the drawing (ease in), and
+	 *  idlePose blends it home over the end. Drawn as plate and subject only —
+	 *  no light, no frame, one symbol at a time — so it can never be read as a
+	 *  win. The gate checks it like the tease. */
+	idle?: (rig: Rig, t: number) => Pose;
 	/** THE TEASE: a loop the symbol holds while the spin is still undecided
 	 *  (the Scatter, while two or more are down and a reel is still turning).
 	 *  `t` ms since it began — it must start ON the drawing and ease in — and
@@ -559,6 +574,16 @@ export const settled = (spec: MeshWinSpec): MeshWinSpec => ({
  *  and every reel has to settle on the same beat whatever lands on it. */
 export const LAND_MS = 240;
 const LAND_HOME_MS = 60;
+/** the idle act's length, ms (MeshWinSpec.idle) */
+export const IDLE_MS = 1100;
+const IDLE_HOME_MS = 160;
+/** the idle act at `t`, home on the drawing by IDLE_MS */
+export const idlePose = (spec: MeshWinSpec, rig: Rig, t: number): Pose => {
+	const pose = spec.idle ? spec.idle(rig, t) : restPose(rig);
+	const home = smoothstep((t - (IDLE_MS - IDLE_HOME_MS)) / IDLE_HOME_MS);
+	if (home > 0) blendHome(pose, home);
+	return pose;
+};
 /** how long a tease takes to settle back onto the drawing once the reels stop */
 export const TEASE_HOME_MS = 220;
 /** the tease at `t`; `stoppedFor` >= 0 once it has been told to stop */
@@ -569,6 +594,17 @@ export const teasePose = (spec: MeshWinSpec, rig: Rig, t: number, k: number, sto
 };
 /** a spec's landing length */
 export const landMsOf = (spec: MeshWinSpec) => spec.landDuration ?? LAND_MS;
+
+export const LAND_SWING_MAX = 10;
+/** the tile's swing, degrees, `t` ms into a landing of weight `k`: a kick to
+ *  one side, two smaller returns, and at rest by the end of the landing */
+export const landSwingAt = (spec: MeshWinSpec, t: number, k: number) => {
+	if (!spec.landSwing || t <= 0) return 0;
+	const end = landMsOf(spec);
+	const fade = 1 - smoothstep((t - end * 0.6) / (end * 0.4));
+	const amp = Math.min(LAND_SWING_MAX, spec.landSwing * k);
+	return amp * Math.exp(-t / 330) * Math.sin((2 * Math.PI * t) / 500) * fade;
+};
 
 /**
  * A symbol hitting the reel: the shared squash — hammer down, rebound, settle,
@@ -585,9 +621,9 @@ export const landPose = (spec: MeshWinSpec, rig: Rig, t: number, k: number): Pos
 	const sq = track(t, [[0, 0], [70, 1, 'out'], [160, -1, 'out'], [LAND_MS, 0, 'out']]);
 	const down = Math.max(0, sq), up = Math.max(0, -sq);
 	const panel = spec.mode === 'panel';
-	const rebound = spec.landRebound ?? (panel ? 0.015 : 0.05);
-	const spread = spec.landSpread ?? (panel ? 0.03 : 0.1);
-	const depth = spec.landDepth ?? (panel ? 0.1 : 0.16);
+	const rebound = spec.landRebound ?? (panel ? 0.012 : 0.03);
+	const spread = spec.landSpread ?? (panel ? 0.02 : 0.06);
+	const depth = spec.landDepth ?? (panel ? 0.07 : 0.1);
 	if (panel) {
 		const p = pose.bones[rig.bones.findIndex((b) => b.name === 'panel')];
 		p.along = 1 - depth * down * k + rebound * up * k;
@@ -611,3 +647,30 @@ export const landFlick = (t: number, t0 = 30) => flick(t, t0, 5.5, 11);
 /** the pose of a bone by name */
 export const boneOf = (rig: Rig, pose: Pose, name: string): BonePose =>
 	pose.bones[rig.bones.findIndex((b) => b.name === name)];
+
+/** The same act, smaller: every bone, the rigid move, the lift and the plate's
+ *  knock pulled toward rest by `k` (1 = the full act, 0 = the drawing). Rest is
+ *  the identity, so this is a straight lerp and folds nothing the full act
+ *  does not. The light is kept a little stronger than the motion — a quieter
+ *  act should still be seen to happen. */
+export const dampPose = (pose: Pose, k: number): Pose => {
+	const toward = (v: number, rest: number) => rest + (v - rest) * k;
+	for (const b of pose.bones) {
+		b.angle *= k;
+		b.along = toward(b.along, 1);
+		b.across = toward(b.across, 1);
+		b.dx *= k;
+		b.dy *= k;
+	}
+	const r = pose.rigid;
+	r.sx = toward(r.sx, 1);
+	r.sy = toward(r.sy, 1);
+	r.rot *= k;
+	r.pop = toward(r.pop, 1);
+	r.dx *= k;
+	r.dy *= k;
+	pose.air *= k;
+	pose.plateHit = toward(pose.plateHit, 1);
+	pose.flash *= Math.sqrt(k);
+	return pose;
+};

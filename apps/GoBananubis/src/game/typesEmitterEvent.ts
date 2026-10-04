@@ -17,8 +17,10 @@ import type {
 	EmitterEventHeldTabletsPending,
 	EmitterEventHeldTabletsOpened,
 	EmitterEventHeldTabletsShow,
+	EmitterEventHeldTabletKnock,
 } from '../components/HeldTablets.svelte';
 import type { EmitterEventMysteryOracle } from '../components/MysteryOracle.svelte';
+import type { EmitterEventActing } from './actingEvents';
 
 export type EmitterEventGame =
 	| EmitterEventBoard
@@ -39,4 +41,6 @@ export type EmitterEventGame =
 	| EmitterEventHeldTabletsPending
 	| EmitterEventHeldTabletsOpened
 	| EmitterEventHeldTabletsShow
-	| EmitterEventMysteryOracle;
+	| EmitterEventHeldTabletKnock
+	| EmitterEventMysteryOracle
+	| EmitterEventActing;

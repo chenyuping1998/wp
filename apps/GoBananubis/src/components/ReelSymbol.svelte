@@ -102,6 +102,7 @@
 			{blur}
 			impact={landingImpact}
 			reel={props.reelIndex}
+			row={props.reelSymbol.symbolIndex}
 			{oncomplete}
 		/>
 	</SymbolWrap>

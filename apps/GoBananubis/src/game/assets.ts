@@ -35,6 +35,18 @@
 		src: new URL('../../assets/sprites/goBananasFx/fx_streak.png', import.meta.url).href,
 		preload: true,
 	},
+	// the big-win pour's gold coin, cut from the P symbol (design/cut_fx_coin.py)
+	fxCoin: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFx/fx_coin.png', import.meta.url).href,
+		preload: true,
+	},
+	// the win line's cross-section (WinLineRibbon) — design/generate_mesh_fx.mjs
+	fxLineRibbon: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFx/line_ribbon.png', import.meta.url).href,
+		preload: true,
+	},
 	fxVignette: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasFx/fx_vignette.png', import.meta.url).href,
@@ -731,18 +743,6 @@
 			skeleton: new URL('../../assets/spines/reelhouse/reelhouse_glow.json', import.meta.url).href,
 			scale: 2,
 		},
-	},
-	// Win-spray particles. The emitter is handed this whole sheet and gives each
-	// particle one random frame out of it, so the ten frames are ten viewing
-	// angles of the same banana rather than an animation — see
-	// design/pack_banana_particles.mjs.
-	//
-	// It replaces `coins`, which was SD2_Coin: a Japanese five-yen piece with a
-	// Shiba Inu on it, left over from the template this game started from and
-	// about as far from a jungle-commando theme as an asset can get.
-	winBananas: {
-		type: 'spriteSheet',
-		src: new URL('../../assets/sprites/goBananasWinBananas/bananas.json', import.meta.url).href,
 	},
 	sound: {
 		type: 'audio',

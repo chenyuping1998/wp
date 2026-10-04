@@ -15,15 +15,23 @@
 
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import { Container, Sprite } from 'pixi-svelte';
+	import { Container, Graphics, Sprite } from 'pixi-svelte';
+	import GoldText from './GoldText.svelte';
+	import { drawMultiplierBadge, BADGE_W, BADGE_H } from '../game/multiplierBadge';
 	import { waitForTimeout } from 'utils-shared/wait';
 	import { stateBet } from 'state-shared';
 
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE } from '../game/constants';
+	import { TABLET_ART, buildTabletGrid, poseTabletStrain } from '../game/meshWin/tabletStrain';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import ImpactDust from './ImpactDust.svelte';
+	import SheetMesh from './SheetMesh.svelte';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import { MESH_WINS } from '../game/meshWin';
+	import { getSymbolInfo } from '../game/utils';
+	import type { RawSymbol } from '../game/types';
 
 	// The sealed tablets crack open, and every one of them is the same symbol.
 	//
@@ -141,6 +149,38 @@
 	let pendingMults = new Map<string, number>();
 
 	let entries = $state<RevealEntry[]>([]);
+
+	// ── WHAT COMES OUT OF THE STONE ──────────────────────────────────────────
+	//
+	// The seal giving way used to uncover a still picture: the halves fell and
+	// the symbol was just there. It is the moment the whole feature is about,
+	// so the symbol now BURSTS OUT of the break — its whole win act (the
+	// scarab springs off its plate, the Eye flies open, the chest lid bangs up,
+	// the letters pop), with the flash, the light sweep and the sparks, and the
+	// tile swelling as it comes (SymbolMeshWin's `reveal` beat). No pay frame:
+	// this names the symbol, it pays nothing yet.
+	//
+	// Drawn HERE, not by the cell: this layer is above the held-tablet overlay
+	// and outside the board's mask, so the act is not cut off when the overlay
+	// takes the cell over, and its additive light has something to add to. It
+	// starts on the frame the seal gives (the swap, in the loop below) and sits
+	// under the falling halves, so they fall away in front of it; a stagger of
+	// tablets bursts in the same reading order they crack in. Cleared on a
+	// timer, so a hidden tab cannot leave one standing.
+	type Act = { key: string; reel: number; row: number; symbol: string; mult?: number };
+	let acts = $state<Act[]>([]);
+	let actSerial = 0;
+	const actTimers: ReturnType<typeof setTimeout>[] = [];
+	const startAct = (reel: number, row: number, symbol: string, mult?: number) => {
+		const spec = MESH_WINS[symbol];
+		if (!spec) return;
+		const key = `${reel},${row},${actSerial++}`;
+		acts = [...acts.filter((a) => !(a.reel === reel && a.row === row)), { key, reel, row, symbol, mult }];
+		// SymbolMeshWin runs a reveal at 1/0.7 under turbo
+		const ms = spec.durationMs * (stateBet.isTurbo ? 0.7 : 1) + 80;
+		actTimers.push(setTimeout(() => (acts = acts.filter((a) => a.key !== key)), ms));
+	};
+	const actInfo = (symbol: string) => getSymbolInfo({ rawSymbol: { name: symbol } as RawSymbol, state: 'static' });
 	// Each break spawns one ImpactDust, which manages its own lifetime and
 	// removes itself via oncomplete — the idiom ReelDust uses for a reel's
 	// landing puff. This array only tracks WHICH cells currently have one.
@@ -174,6 +214,7 @@
 					};
 				}
 				sandPuffs = [...sandPuffs, { id: nextSandId++, reel: entry.reel, row: entry.row }];
+				startAct(entry.reel, entry.row, pendingSymbol, pendingMults.get(`${entry.reel},${entry.row}`));
 			}
 			entries = entries.filter((entry) => now - entry.bornAt < entry.durationMs);
 			if (entries.length > 0) {
@@ -185,7 +226,10 @@
 		rafId = requestAnimationFrame(tick);
 	};
 
-	onDestroy(() => cancelAnimationFrame(rafId));
+	onDestroy(() => {
+		cancelAnimationFrame(rafId);
+		for (const t of actTimers) clearTimeout(t);
+	});
 
 	// Set for the run of the current batch, read by the rAF loop above. Every
 	// entry in one batch always reveals the same symbol (the maths draws once per
@@ -201,6 +245,7 @@
 			const amp = SYMBOL_SIZE * 0.022 * (1 - strainT);
 			return {
 				whole: true,
+				strain: strainT,
 				shake: {
 					x: Math.sin(strainT * 27) * amp,
 					y: Math.cos(strainT * 21) * amp * 0.6,
@@ -215,6 +260,7 @@
 		const fallT = (p - STRAIN_END) / (1 - STRAIN_END);
 		return {
 			whole: false,
+			strain: 1,
 			shake: { x: 0, y: 0 },
 			fall: fallT,
 			alpha: fallT < 0.45 ? 1 : 1 - (fallT - 0.45) / 0.55,
@@ -237,6 +283,7 @@
 	// two flat-shaded pieces, on the one frame the player is looking straight at
 	// it.
 	const SHARD = SYMBOL_SIZE * 0.86;
+	const tabletGrid = buildTabletGrid();
 
 	context.eventEmitter.subscribeOnMount({
 		mysteryReveal: async (event) => {
@@ -382,6 +429,9 @@
 				return;
 			}
 			pendingSymbol = event.symbol;
+			// he looks at the first seal to give
+			const firstSeal = [...positions].sort((a, b) => a.reel - b.reel || a.row - b.row)[0];
+			context.eventEmitter.broadcast({ type: 'mascotGaze', reel: firstSeal.reel, row: firstSeal.row });
 
 			const stagger = stateBet.isTurbo ? STAGGER_TURBO : STAGGER;
 			const durationMs = stateBet.isTurbo ? DURATION_TURBO : DURATION;
@@ -435,24 +485,71 @@
 </script>
 
 <BoardContainer>
+	<!-- the symbols bursting out, under the halves falling away in front -->
+	{#each acts as act (act.key)}
+		<SymbolMeshWin
+			symbolInfo={actInfo(act.symbol)}
+			beat="reveal"
+			symbolName={act.symbol}
+			reel={act.reel}
+			x={getSymbolX(act.reel)}
+			y={rowCenterY(act.row)}
+		/>
+		<!-- the tablet's multiplier stays readable over the act: the cell draws
+		     it, and the act covers the cell (same badge as Symbol.svelte) -->
+		{#if act.mult}
+			<Graphics
+				draw={(g) => {
+					g.clear();
+					drawMultiplierBadge(g, {
+						x: getSymbolX(act.reel),
+						y: rowCenterY(act.row) + SYMBOL_SIZE * 0.3,
+						width: SYMBOL_SIZE * BADGE_W,
+						height: SYMBOL_SIZE * BADGE_H,
+						lit: true,
+					});
+				}}
+			/>
+			<GoldText
+				x={getSymbolX(act.reel)}
+				y={rowCenterY(act.row) + SYMBOL_SIZE * 0.3}
+				text={`${act.mult}X`}
+				fontSize={26}
+				maxWidth={SYMBOL_SIZE * 0.72}
+			/>
+		{/if}
+	{/each}
 	{#each entries as entry (`${entry.reel},${entry.row}`)}
 		{@const s = tabletState(entry)}
 		{#if s.alpha > 0.01}
 			{@const cx = getSymbolX(entry.reel)}
 			{@const cy = rowCenterY(entry.row)}
 			{#if s.whole}
-				<!--
-					Still sealed. Drawn as the two halves in their resting positions
-					rather than as the intact face: they are cut from the tablet's own
-					texture along one shared fracture (design/generate_symbols_gen2.mjs)
-					so they interlock exactly, this is the same picture, and it
-					means nothing has to be swapped out on the frame the break
-					starts — the halves simply begin to move.
-				-->
-				<Container x={cx + s.shake.x} y={cy + s.shake.y}>
-					<Sprite key="gbMShardL" anchor={0.5} width={SHARD} height={SHARD} />
-					<Sprite key="gbMShardR" anchor={0.5} width={SHARD} height={SHARD} />
-				</Container>
+				<!-- The two cut images stay joined at the fracture, but each
+				     painted half flexes under the strain. At strain=1 the meshes
+				     are exactly at rest, matching the falling sprites below. -->
+				<SheetMesh
+					layers={[{ key: 'gbMShardL' }]}
+					grid={tabletGrid}
+					artWidth={TABLET_ART}
+					artHeight={TABLET_ART}
+					x={cx + s.shake.x}
+					y={cy + s.shake.y}
+					width={SHARD}
+					height={SHARD}
+					pose={(out) => poseTabletStrain(tabletGrid, s.strain, -1, out)}
+				/>
+				<SheetMesh
+					layers={[{ key: 'gbMShardR' }]}
+					grid={tabletGrid}
+					artWidth={TABLET_ART}
+					artHeight={TABLET_ART}
+					x={cx + s.shake.x}
+					y={cy + s.shake.y}
+					width={SHARD}
+					height={SHARD}
+					pose={(out) => poseTabletStrain(tabletGrid, s.strain, 1, out)}
+				/>
 			{:else}
 				{@const l = shardOffset(s.fall, -1)}
 				{@const r = shardOffset(s.fall, 1)}

@@ -27,6 +27,8 @@
 //   9. the LANDING (meshRig.landPose), every spin: at weights 0.7 / 1 / 1.6
 //      the same fold, stretch, inversion, limit and pop rules, and it starts
 //      and ends on the drawing (the static sprite is on both sides of it)
+//  13. the IDLE (meshRig.idlePose), the small act while the board waits:
+//      same rules, starts and ends exactly on the drawing
 //  12. the LEAP of the high pays (meshWin/leap.ts): their subject's box stays
 //      inside its own tile on every frame, and it ends on the drawing
 //  11. the TEASE (a loop held while the spin is undecided): at every
@@ -462,6 +464,42 @@ for (const name of pick) {
 		else ok(line);
 	}
 
+	// 13. the IDLE, if the symbol has one (meshRig.idlePose): the small act it
+	//     does while the board waits — the same fold / stretch / inversion /
+	//     limit / pop rules, and it starts and ends exactly on the drawing
+	if (spec.idle) {
+		let lo = Infinity, hi = -Infinity, flips = 0, starts = 0, ends = 0, pops = 0, over = '', travel = 0;
+		const steps = new Float64Array(core.IDLE_MS + 1);
+		const prev = new Float32Array(V * 2);
+		for (let ms = 0; ms <= core.IDLE_MS; ms++) {
+			const pose = core.idlePose(spec, rig, ms);
+			pose.bones.forEach((p, b) => {
+				const lim = spec.limits[rig.bones[b].name];
+				if (lim && (p.angle > lim.pos + 1e-6 || -p.angle > lim.neg + 1e-6))
+					over ||= `${rig.bones[b].name} ${p.angle.toFixed(2)}° at ${ms}ms`;
+			});
+			core.skin(rig, pose, spec.feetY, out);
+			const m = measure(S, out, core.rigidAreaFactor(pose.rigid));
+			flips += m.flips;
+			lo = Math.min(lo, m.lo);
+			hi = Math.max(hi, m.hi);
+			let step = 0;
+			if (ms > 0) for (let v = 0; v < V; v++) step = Math.max(step, Math.hypot(out[v * 2] - prev[v * 2], out[v * 2 + 1] - prev[v * 2 + 1]));
+			steps[ms] = step;
+			prev.set(out);
+			let e = 0;
+			for (let i = 0; i < out.length; i++) e = Math.max(e, Math.abs(out[i] - rig.rest[i]));
+			travel = Math.max(travel, e);
+			if (ms === 0) starts = e;
+			if (ms === core.IDLE_MS) ends = e;
+		}
+		for (let ms = 2; ms < core.IDLE_MS; ms++)
+			if (steps[ms] > 1 && steps[ms] > 3 * Math.max(steps[ms - 1], steps[ms + 1])) pops++;
+		const line = `idle: area ${(lo * 100).toFixed(1)}%..${(hi * 100).toFixed(1)}%, ${flips} inversions, moves up to ${travel.toFixed(1)}px, starts off by ${starts.toFixed(4)}px, ends off by ${ends.toFixed(4)}px, ${pops} pops`;
+		if (flips || lo < 0.5 || hi > 1.6 || starts > 1e-3 || ends > 1e-3 || pops || over || travel < 1.5) fail(over ? `${line}; past limit: ${over}` : line);
+		else ok(line);
+	}
+
 	// 10. the WALK cycle, if the subject has one: a whole stride at every
 	//     amount, same fold / stretch / inversion / limit rules
 	if (spec.walk) {
@@ -620,6 +658,95 @@ if (!mode || mode === '--sheets') {
 		[{ at: 0.05, force: 0.38 }, { at: 0.3, force: 1 }, { at: 0.9, force: 0.9 }],
 	];
 	checkSheet('COUNTER', counter, counterRuns.map((knocks) => (t, out) => SH.poseCounter(counter, knocks, t, out)), 4);
+
+	// the background warps (meshWin/bgWarp.ts): the same rules over twelve
+	// seconds of wall clock — they never loop — and the border pinned: every
+	// vertex on the patch's edge stays exactly on the plate
+	const BW = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/bgWarp.ts')).href);
+	for (const [plate, warps] of Object.entries(BW.WARPS)) {
+		for (const w of warps) {
+			const grid = BW.buildWarpGrid(w);
+			const n = grid.rest.length / 2;
+			const [x0, y0, x1, y1] = w.rect;
+			const border = [];
+			for (let v = 0; v < n; v++) {
+				const x = grid.rest[v * 2], y = grid.rest[v * 2 + 1];
+				if (x === x0 || x === x1 || y === y0 || y === y1) border.push(v);
+			}
+			const warpOut = new Float32Array(n * 2);
+			let edgeMove = 0;
+			const run = (t, out) => {
+				// the sheet check starts at t=0 against the rest grid; the warp is
+				// already moving at 0, so it is measured from an offset clock and
+				// the "starts on the art" rule is replaced by the border rule below
+				BW.poseWarp(w, grid, t, out);
+				for (const v of border) edgeMove = Math.max(edgeMove, Math.abs(out[v * 2] - grid.rest[v * 2]), Math.abs(out[v * 2 + 1] - grid.rest[v * 2 + 1]));
+			};
+			const label = `WARP ${plate}/${w.id}`;
+			// checkSheet requires a start on the art and a settle; a warp does neither
+			// by design, so measure it directly with the same fold/stretch rules
+			const T = grid.indices.length / 3;
+			const areaOf = (pos, k) => {
+				const a = grid.indices[k * 3], b = grid.indices[k * 3 + 1], c = grid.indices[k * 3 + 2];
+				return (pos[b * 2] - pos[a * 2]) * (pos[c * 2 + 1] - pos[a * 2 + 1]) - (pos[b * 2 + 1] - pos[a * 2 + 1]) * (pos[c * 2] - pos[a * 2]);
+			};
+			const restArea = Float64Array.from({ length: T }, (_, k) => areaOf(grid.rest, k));
+			let lo = Infinity, hi = -Infinity, flips = 0, moved = 0;
+			for (let ms = 0; ms <= 12000; ms += 20) {
+				run(ms / 1000, warpOut);
+				for (let k = 0; k < T; k++) {
+					const r = areaOf(warpOut, k) / restArea[k];
+					if (r <= 0) flips++;
+					lo = Math.min(lo, r);
+					hi = Math.max(hi, r);
+				}
+				for (let i = 0; i < warpOut.length; i++) moved = Math.max(moved, Math.abs(warpOut[i] - grid.rest[i]));
+			}
+			const line = `${label.toLowerCase()}: area ${(lo * 100).toFixed(1)}%..${(hi * 100).toFixed(1)}%, ${flips} inversions, moves up to ${moved.toFixed(1)}px, border off by ${edgeMove.toFixed(4)}px`;
+			console.log(label);
+			if (flips || lo < 0.5 || hi > 1.6 || edgeMove > 1e-3 || moved < 2) {
+				console.log(`  !! ${line}`);
+				process.exitCode = 1;
+			} else console.log(`  ok ${line}`);
+		}
+	}
+}
+
+if (!mode) {
+	// The reveal replaces these meshes with rigid shard sprites at the break.
+	// Check every step of the strain, including that handoff and the pinned
+	// outside edge; a fold or a one-frame mismatch would show on every tablet.
+	const TS = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/tabletStrain.ts')).href);
+	const grid = TS.buildTabletGrid();
+	const out = new Float32Array(grid.rest.length);
+	const area = (pos, k) => {
+		const a = grid.indices[k * 3], b = grid.indices[k * 3 + 1], c = grid.indices[k * 3 + 2];
+		return (pos[b * 2] - pos[a * 2]) * (pos[c * 2 + 1] - pos[a * 2 + 1]) - (pos[b * 2 + 1] - pos[a * 2 + 1]) * (pos[c * 2] - pos[a * 2]);
+	};
+	let lo = Infinity, hi = -Infinity, edge = 0, handoff = 0, moved = 0;
+	for (const side of [-1, 1]) {
+		for (let step = 0; step <= 100; step++) {
+			TS.poseTabletStrain(grid, step / 100, side, out);
+			for (let k = 0; k < grid.indices.length / 3; k++) {
+				const ratio = area(out, k) / area(grid.rest, k);
+				lo = Math.min(lo, ratio);
+				hi = Math.max(hi, ratio);
+			}
+			for (let v = 0; v < out.length / 2; v++) {
+				const x = grid.rest[v * 2], dx = Math.abs(out[v * 2] - x);
+				const dy = Math.abs(out[v * 2 + 1] - grid.rest[v * 2 + 1]);
+				moved = Math.max(moved, dx, dy);
+				if (x === 0 || x === TS.TABLET_ART) edge = Math.max(edge, dx, dy);
+				if (step === 0 || step === 100) handoff = Math.max(handoff, dx, dy);
+			}
+		}
+	}
+	const line = `tablet strain: area ${(lo * 100).toFixed(1)}%..${(hi * 100).toFixed(1)}%, moves ${moved.toFixed(1)}px, edge ${edge.toFixed(4)}px, handoff ${handoff.toFixed(4)}px`;
+	console.log('TABLET STRAIN');
+	if (lo < 0.5 || hi > 1.6 || edge > 1e-3 || handoff > 1e-3 || moved < 2) {
+		console.log(`  !! ${line}`);
+		process.exitCode = 1;
+	} else console.log(`  ok ${line}`);
 }
 
 if (!mode) console.log(process.exitCode ? '\ncheck_mesh_wins: FAILED' : '\ncheck_mesh_wins: all checks passed');

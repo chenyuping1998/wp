@@ -6,7 +6,7 @@ import { createPrimaryMachines, createIntermediateMachines, createGameActor } fr
 
 import type { Bet } from './typesBookEvent';
 import { stateXstateDerived } from './stateXstate';
-import { playBet, convertTorResumableBet } from './utils';
+import { playBet, convertTorResumableBet, stopWinLineReplay } from './utils';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import { eventEmitter } from './eventEmitter';
 import config from './config';
@@ -22,6 +22,9 @@ const primaryMachines = createPrimaryMachines<Bet>({
 		if (lastRevealEvent) stateGameDerived.enhancedBoard.settle(lastRevealEvent.board);
 	},
 	onNewGameStart: async () => {
+		// last round's lines go the moment the spin is pressed, before the reels
+		// start pre-spinning — not when the new round arrives (see utils)
+		stopWinLineReplay();
 		stateBet.winBookEventAmount = 0;
 		// superspin sticky coins live for exactly one bought round
 		if (stateGame.stickyPrizes.length > 0) {

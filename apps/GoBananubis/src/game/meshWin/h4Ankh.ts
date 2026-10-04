@@ -94,6 +94,15 @@ export const H4: MeshWinSpec = {
 		boneOf(rig, pose, 'arm_r').angle = -slap;
 		boneOf(rig, pose, 'loop').along = 1 - 0.06 * k * landFlick(t, 45);
 	},
+	// IDLE: sways on its foot and flexes its arms, left then right
+	idle: (rig, t) => {
+		const pose = restPose(rig);
+		pose.rigid.rot = 2.5 * Math.sin((2 * Math.PI * t) / 1000) * bump(t, 0, 1000);
+		boneOf(rig, pose, 'arm_l').angle = 5 * bump(t, 150, 550);
+		boneOf(rig, pose, 'arm_r').angle = -5 * bump(t, 350, 750);
+		boneOf(rig, pose, 'loop').along = 1 + 0.03 * bump(t, 450, 850);
+		return pose;
+	},
 	pose: (rig: Rig, t: number) => {
 		const pose = restPose(rig);
 		const air = track(t, [[0, 0], [T.crouch, 0], [T.rise, 1, 'back'], [T.fall - 60, 1], [T.land, 0, 'in']]);

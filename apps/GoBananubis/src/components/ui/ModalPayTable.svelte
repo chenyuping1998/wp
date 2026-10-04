@@ -52,7 +52,7 @@
 	// pay a line at the end
 	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'S', 'M'];
 
-	const maxWin = config.betModes?.base?.max_win ?? 15000;
+	const maxWin = config.betModes?.base?.max_win ?? 12000;
 
 	// From the maths (design/sync_math_config.mjs scrapes freespin_triggers), not
 	// written down here — this line said "4 or 5 Scatters award 12 or 15" while

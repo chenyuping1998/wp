@@ -20,7 +20,8 @@
 	import { gameText } from '../game/i18nText';
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
-	import WinCoins from './WinCoins.svelte';
+	import TreasureFall from './TreasureFall.svelte';
+	import { MainContainer } from 'components-layout';
 	import GoldText from './GoldText.svelte';
 	import FxBurst from './FxBurst.svelte';
 	import { Container } from 'pixi-svelte';
@@ -96,6 +97,11 @@
 
 				<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
 
+				<!-- the run's treasure, pouring behind the total (see TreasureFall) -->
+				<MainContainer>
+					<TreasureFall emit={!countUpCompleted} levelAlias={winLevelData?.alias} burst={landBurst} />
+				</MainContainer>
+
 				<FreeSpinAnimation {landAt}>
 					{#snippet children({ sizes })}
 						<Text
@@ -130,8 +136,6 @@
 						</Container>
 					{/snippet}
 				</FreeSpinAnimation>
-
-				<WinCoins emit={!countUpCompleted} levelAlias={winLevelData?.alias} />
 
 				<PressToContinue
 					position="betweenBoardAndBottom"

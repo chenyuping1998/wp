@@ -138,6 +138,18 @@ export const H2: MeshWinSpec = {
 		boneOf(rig, pose, 'curl').angle = 7 * k * landFlick(t, 60);
 		boneOf(rig, pose, 'drop').angle = 3 * k * landFlick(t, 50);
 	},
+	// IDLE: glances to one side, looks back, then blinks once the pupil is home
+	idle: (rig, t) => {
+		const pose = restPose(rig);
+		const look = track(t, [[0, 0], [100, 0], [180, 1, 'out'], [480, 1], [600, 0, 'out']]);
+		boneOf(rig, pose, 'pupil').dx = 4 * look;
+		// the win's blink, smaller: the brow comes down with the lid and takes part
+		// of its travel, so the skin between them is not stretched on its own
+		const blink = bump(t, 700, 840);
+		boneOf(rig, pose, 'eye').across = 1 - 0.7 * blink;
+		boneOf(rig, pose, 'brow').dy = -1.2 * look + 4 * blink;
+		return pose;
+	},
 	pose: (rig: Rig, t: number) => {
 		const pose = restPose(rig);
 		const air = track(t, [[0, 0], [T.crouch, 0], [T.rise, 1, 'back'], [T.fall, 1], [T.land, 0, 'in']]);

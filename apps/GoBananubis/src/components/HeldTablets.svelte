@@ -15,6 +15,15 @@
 		type: 'heldTabletsOpened';
 	};
 
+	export type EmitterEventHeldTabletKnock = {
+		// A held tablet's multiplier wheel has just landed (MultiplierRoll): the
+		// symbol in it takes the hit — its own landing mesh, harder for a bigger
+		// value — so the new number lands ON something.
+		type: 'heldTabletKnock';
+		reel: number;
+		row: number;
+		value: number;
+	};
 	export type EmitterEventHeldTabletsShow = {
 		// WHAT TO DRAW, decided by MysteryReveal rather than by this component.
 		//
@@ -371,7 +380,24 @@
 		);
 	});
 
+	// ── THE KNOCK (heldTabletKnock) ─────────────────────────────────────────
+	// The cell's symbol plays its LANDING (meshRig.landPose) once, instead of
+	// sitting as a still picture while a 50X lands on it: 0.9 for a 2X up to
+	// 1.4 for 25X and more (the gate checks landings to 1.6). Back to rest when
+	// the landing reports done.
+	let knocks = $state<Record<string, { id: number; impact: number }>>({});
+	let knockId = 0;
+	const knockDone = (key: string, id: number) => {
+		if (knocks[key]?.id !== id) return;
+		const next = { ...knocks };
+		delete next[key];
+		knocks = next;
+	};
+
 	context.eventEmitter.subscribeOnMount({
+		heldTabletKnock: ({ reel, row, value }) => {
+			knocks = { ...knocks, [`${reel},${row}`]: { id: ++knockId, impact: 0.9 + 0.5 * Math.min(1, value / 25) } };
+		},
 		heldTabletsPending: ({ positions }) => {
 			pending = new Set(positions.map((position) => `${position.reel},${position.row}`));
 		},
@@ -418,12 +444,18 @@
 				hand-rolled here would be a second place for the held cell's
 				appearance to be defined, and the two would drift.
 			-->
-			<Symbol
-				x={getSymbolX(cell.reel)}
-				y={rowCenterY(cell.row)}
-				state="postWinStatic"
-				rawSymbol={{ name: cell.symbol, multiplier: cell.mult }}
-			/>
+			{@const knock = knocks[`${cell.reel},${cell.row}`]}
+			{#key knock?.id}
+				<Symbol
+					x={getSymbolX(cell.reel)}
+					y={rowCenterY(cell.row)}
+					state={knock ? 'land' : 'postWinStatic'}
+					impact={knock?.impact}
+					reel={cell.reel}
+					rawSymbol={{ name: cell.symbol, multiplier: cell.mult }}
+					oncomplete={knock ? () => knockDone(`${cell.reel},${cell.row}`, knock.id) : undefined}
+				/>
+			{/key}
 		</Container>
 	{/each}
 

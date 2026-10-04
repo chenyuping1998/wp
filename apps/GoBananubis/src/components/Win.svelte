@@ -16,7 +16,7 @@
 	import { CanvasSizeRectangle, MainContainer } from 'components-layout';
 	import { OnMount } from 'components-shared';
 
-	import WinCoins from './WinCoins.svelte';
+	import TreasureFall from './TreasureFall.svelte';
 	import BigWinFx from './BigWinFx.svelte';
 	import FxBurst from './FxBurst.svelte';
 	import GoldText from './GoldText.svelte';
@@ -114,6 +114,7 @@
 		landBurst++;
 		startShake(320, 6);
 		context.eventEmitter.broadcast({ type: 'soundStoneCrack', step: 0 });
+		context.eventEmitter.broadcast({ type: 'hitStop', ms: 70 });
 		const id = setInterval(() => {
 			const p = (Date.now() - start) / 520;
 			if (p >= 1) {
@@ -192,7 +193,9 @@
 		);
 		return {
 			scale,
-			glow: 0.42 + 0.24 * (0.5 + 0.5 * Math.sin(t * 2.6)),
+			// steady, not breathing: the plaque's light moves when something
+			// happens to it — the slam, each blink, the amount landing
+			glow: 0.52,
 			blink: Math.max(blink, landFlare),
 		};
 	});
@@ -247,6 +250,19 @@
 						/>
 					</MainContainer>
 				{/if}
+
+					<!-- the treasure pouring from the ceiling: behind the plaque, so
+				     nothing falls across the figure; the gush answers the amount
+				     landing, thrown up from the number well -->
+				<MainContainer>
+					<TreasureFall
+						emit={!countUpCompleted}
+						levelAlias={winLevelData?.alias}
+						burst={landBurst}
+						gushY={context.stateGameDerived.boardLayout().y +
+							SYMBOL_SIZE * 5.2 * BANNER_RATIO * 0.16}
+					/>
+				</MainContainer>
 
 				<MainContainer>
 					<Container
@@ -331,8 +347,6 @@
 						{/if}
 					</Container>
 				</MainContainer>
-
-				<WinCoins emit={!countUpCompleted} levelAlias={winLevelData?.alias} />
 
 				{#if flash > 0}
 					<CanvasSizeRectangle backgroundColor={0xffffff} backgroundAlpha={flash} />

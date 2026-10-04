@@ -62,7 +62,41 @@ const onSymbolLand = ({
 			name: 'sfx_multiplier_landing',
 		});
 	}
+
+	// ── THE LANDING ACTS ON THE BOARD AROUND IT ──────────────────────────────
+	// Only cells the player can see: padding rows land too, off the board.
+	if (reelIndex === undefined || symbolIndex === undefined) return;
+	if (symbolIndex < 1 || symbolIndex > BOARD_DIMENSIONS.y) return;
+	const base = stateGame.gameType === 'basegame';
+	if (rawSymbol.name === 'W') {
+		// the Wild comes down hard enough to jolt the cells beside it, and in the
+		// base game the frame holds on it for a beat (in the free game Wilds are
+		// common enough that a hold each time would be a stutter)
+		eventEmitter.broadcast({ type: 'cellKnock', reel: reelIndex, row: symbolIndex, strength: 0.85 });
+		if (base) eventEmitter.broadcast({ type: 'hitStop', ms: 60 });
+		if (base) eventEmitter.broadcast({ type: 'mascotGaze', reel: reelIndex, row: symbolIndex });
+	}
+	if (rawSymbol.name === 'S') {
+		const count = scatterLandIndex();
+		eventEmitter.broadcast({ type: 'cellKnock', reel: reelIndex, row: symbolIndex, strength: 0.4 + 0.12 * count });
+		if (base) {
+			eventEmitter.broadcast({ type: 'mascotGaze', reel: reelIndex, row: symbolIndex });
+			// the THIRD is the one that decides it: the frame holds on it
+			if (count === 3) eventEmitter.broadcast({ type: 'hitStop', ms: 90 });
+		}
+	}
 };
+
+/** visible Scatters on the board as it stands (rows 1..BOARD_DIMENSIONS.y) */
+export const visibleScatters = () =>
+	stateGame.board.reduce(
+		(n, reel) =>
+			n +
+			reel.reelState.symbols.filter(
+				(s, row) => row >= 1 && row <= BOARD_DIMENSIONS.y && s.rawSymbol.name === 'S',
+			).length,
+		0,
+	);
 
 // Listed rather than built with a template literal: `sfx_reel_stop_${n}` widens
 // to plain string, losing the SoundEffectName check, and would silently produce
@@ -156,6 +190,10 @@ export type MultiplierSymbol = {
 
 export const stateGame = $state({
 	board,
+	// px (main layout) the whole board sits BELOW its place: the opening rise
+	// (EntryReveal). Everything laid out off boardLayout rides it — housing,
+	// mask, reels, overlays — and nothing else needs to know. 0 at rest.
+	boardLift: 0,
 	gameType: 'basegame' as GameType,
 	multiplierBoard: [] as (MultiplierSymbol | undefined)[][],
 	scatterCounter: 0,
@@ -200,7 +238,7 @@ const boardLayout = () => {
 	return {
 		x: layout.width * 0.5,
 		// centred in the area above the strip, not in the whole box
-		y: layout.height * (0.5 - barFraction * 0.5),
+		y: layout.height * (0.5 - barFraction * 0.5) + stateGame.boardLift,
 		scale: usesBar ? BOARD_SHRINK : 1,
 		anchor: { x: 0.5, y: 0.5 },
 		pivot: { x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 },
