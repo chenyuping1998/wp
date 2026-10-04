@@ -147,7 +147,7 @@
 	onDestroy(stopBannerFx);
 
 	const bannerPose = $derived.by(() => {
-		if (fxNow < 0) return { scale: 1, glow: 0.4, blink: 0, titleMs: 0, titleAmp: 0, rot: 0, amountPop: 1 };
+		if (fxNow < 0) return { scale: 1, glow: 0.4, blink: 0, titleMs: 0, titleAmp: 0, rot: 0, amountPop: 1, wellMs: -1, wellAmp: 0 };
 		const t = fxNow;
 		// entrance: overshoot slam matching the hit-stop flash
 		const scale =
@@ -176,6 +176,10 @@
 			titleAmp = 0.8;
 		}
 		const knock = sinceLand >= 0 && sinceLand < 0.24 ? Math.sin((Math.PI * sinceLand) / 0.24) : 0;
+		// The amount's WELL rings (bannerTitle.ts): hard when the count lands,
+		// lighter as the plaque slams in (the slam's scale bottoms out at 0.34s)
+		const wellMs = sinceLand >= 0 && sinceLand < 0.95 ? sinceLand * 1000 : t >= 0.34 && t < 1.25 ? (t - 0.34) * 1000 : -1;
+		const wellAmp = sinceLand >= 0 && sinceLand < 0.95 ? 1 : 0.55;
 		// Hung from its satellite: a slow sway all the time it is up, and a swing
 		// kicked off by the landing that dies away. Radians; about a degree at most.
 		const swing = sinceLand >= 0 ? 0.03 * Math.exp(-2.4 * sinceLand) * Math.sin(sinceLand * 7) : 0;
@@ -188,6 +192,8 @@
 			titleAmp,
 			rot: sway + swing,
 			amountPop: 1 + 0.18 * knock,
+			wellMs,
+			wellAmp,
 		};
 	});
 
@@ -294,6 +300,8 @@
 										t={bannerPose.titleMs}
 										amp={bannerPose.titleAmp}
 										blink={bannerPose.blink}
+										wellT={bannerPose.wellMs}
+										wellAmp={bannerPose.wellAmp}
 									/>
 								</Container>
 								<!-- twinkles running the riveted rim -->

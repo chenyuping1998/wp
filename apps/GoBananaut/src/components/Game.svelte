@@ -77,7 +77,7 @@
 		key="fxVignette"
 		width={context.stateLayoutDerived.canvasSizes().width}
 		height={context.stateLayoutDerived.canvasSizes().height}
-		alpha={0.9}
+		alpha={0.55}
 	/>
 
 	{#if context.stateLayout.showLoadingScreen}

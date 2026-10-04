@@ -20,6 +20,7 @@
 	import BoardContainer from './BoardContainer.svelte';
 	import BoardMask from './BoardMask.svelte';
 	import BoardBase from './BoardBase.svelte';
+	import BoardGrid from './BoardGrid.svelte';
 
 	const context = getContext();
 
@@ -116,6 +117,7 @@
 </script>
 
 {#if show}
+	<BoardGrid />
 	<BoardContext animate={false}>
 		<BoardContainer>
 			<BoardMask />

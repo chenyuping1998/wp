@@ -619,13 +619,18 @@ const addBone = (name, parent, from, to) => {
 	const a = toSpine(from[0], from[1]);
 	const b = toSpine(to[0], to[1]);
 	const rot = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
-	const p = jointWorld[parent];
+	// the parent may itself be one of these added (rotated) bones — the chest,
+	// under which the pens hang: then the offset goes into ITS frame, and the
+	// rotation is relative to its own
+	const p = extraWorld[parent] ?? { ...jointWorld[parent], rot: 0 };
+	const pr = (-p.rot * Math.PI) / 180;
+	const dx = a.x - p.x, dy = a.y - p.y;
 	bones.push({
 		name,
 		parent,
-		x: +(a.x - p.x).toFixed(2),
-		y: +(a.y - p.y).toFixed(2),
-		rotation: +rot.toFixed(2),
+		x: +(dx * Math.cos(pr) - dy * Math.sin(pr)).toFixed(2),
+		y: +(dx * Math.sin(pr) + dy * Math.cos(pr)).toFixed(2),
+		rotation: +(rot - p.rot).toFixed(2),
 		length: +Math.hypot(b.x - a.x, b.y - a.y).toFixed(2),
 	});
 	extraWorld[name] = { x: a.x, y: a.y, rot };
@@ -697,15 +702,23 @@ const PENS = [
 	{ name: 'pen2', x: 414.5, tip: 298, half: 8 },
 	{ name: 'pen3', x: 435, tip: 303, half: 8 },
 ];
-const TUBES = [
-	{ name: 'tube4a', layer: 'torso_4_decoration', x0: 214, x1: 236, top: 322, base: 392 },
-	{ name: 'tube4b', layer: 'torso_4_decoration', x0: 236, x1: 254, top: 323, base: 387 },
-	{ name: 'tubes5', layer: 'torso_5_decoration', x0: 235, x1: 275, top: 324, base: 375 },
-];
+// THE TEST TUBES DO NOT MOVE (taken out 2026-09-28, from the user's capture:
+// "藥水罐看起來有問題"). Each vial on the chest is TWO drawings stacked: the
+// glass and cap on torso_4 / torso_5, and its liquid in the window on the chest
+// panel (torso_3_trunk) underneath. Rocking the glass tore it off its own liquid
+// and left the panel's copy showing through — a broken vial. They stay painted;
+// the windows' glow (the SPARKLE) is what lights them up now. The list is kept,
+// empty, so the rig reads the same if a later PSD draws them whole.
+const TUBES = [];
 const CROTCH_FROM = 515;
 const CROTCH_LEG = 0.45; // at most this much of a vertex follows its thigh
 
-for (const pen of PENS) addBone(pen.name, 'torso', [pen.x, PEN_PIVOT], [pen.x, pen.tip]);
+// THE CHEST (2026-10-02): the suit BREATHES in zero-g — a `chest` bone whose
+// scale swells the front of the suit (see THE SUIT BREATHES below), and the
+// pens hang from it so they ride the swell with the holder they sit in.
+const CHEST = { at: [300, 330], r: 150, fade: 70 };
+addBone('chest', 'torso', CHEST.at, [CHEST.at[0], CHEST.at[1] - 60]);
+for (const pen of PENS) addBone(pen.name, 'chest', [pen.x, PEN_PIVOT], [pen.x, pen.tip]);
 for (const t of TUBES) addBone(t.name, 'torso', [(t.x0 + t.x1) / 2, t.base], [(t.x0 + t.x1) / 2, t.top]);
 {
 	const t0 = meta.layers.find((l) => l.name === 'torso_0_decoration');
@@ -727,6 +740,201 @@ for (const t of TUBES) addBone(t.name, 'torso', [(t.x0 + t.x1) / 2, t.base], [(t
 		},
 	);
 	console.log(`mesh    ${t0.name}: ${attachments[t0.name][t0.name].uvs.length / 2} vertices (the crotch follows the thighs)`);
+}
+
+// ── THE FACE (asked for 2026-09-28: "人物的臉用網格法") ──────────────────────────
+//
+// head_0_face was one rigid plate: everything on him moved except his face. It
+// is a weighted mesh now, on five small bones under `head`:
+//
+//   jaw      the lower lip and chin; it CHEWS on track 1, on the same beats the
+//            banana is chewed on (flutter / flutter_float), so the banana is no
+//            longer bobbing about in a still mouth
+//   brow     the forehead above the goggles: up on a cheer, down before the
+//            chest beat and on the effort of a throw
+//   nose     the nostrils flare (a scale across) before the roar and on the push
+//   cheekL/R puff out (a translate apart) on the push, the throw and the tuck
+//
+// THE GOGGLES DO NOT MOVE. They are their own layers (head_1_eye / head_3_eye),
+// and Mascot.svelte pins the tease glow to their rest place. Everything that
+// moves is above or below them; the brow's weight is gone by their top edge.
+//
+// The jaw is on track 1 ONLY: track 1 is applied after track 0, so a jaw key in
+// a reaction would be overwritten by the chewing anyway. The reactions own the
+// brow, the nose and the cheeks, which track 1 never keys.
+//
+// Every blend is 18px or more (mesh-cast-rig: "joint blends need length").
+// PSD pixels, off the face layer's own ink (2026-09-28).
+const FACE = {
+	jawHinge: [315, 176],
+	mouthLine: 206, // the jaw's weight starts here and is whole by +26
+	chin: [240, 392], // x span of the jaw, fading 22px at each side
+	// bell between the crown's fur (above y ~48, the hair bone's) and the goggles
+	brow: { y0: 48, y1: 104, x: [214, 396] },
+	nose: [307, 176],
+	noseR: 38,
+	cheekL: [256, 204],
+	cheekR: [362, 204],
+	cheekR_: 28,
+};
+addBone('jaw', 'head', FACE.jawHinge, [FACE.jawHinge[0], 280]);
+addBone('brow', 'head', [305, 70], [305, 40]);
+addBone('nose', 'head', FACE.nose, [FACE.nose[0] + 30, FACE.nose[1]]);
+addBone('cheekL', 'head', FACE.cheekL, [FACE.cheekL[0] - 20, FACE.cheekL[1]]);
+addBone('cheekR', 'head', FACE.cheekR, [FACE.cheekR[0] + 20, FACE.cheekR[1]]);
+
+// THE CROWN'S FUR AND THE EAR (2026-09-28): the two things on his head that
+// hang loose, so — mesh-cast-rig's rule — the ones that get the life. Each a
+// bone with PHYSICS, so a jump or a landing flicks them late, and a keyed drift
+// on track 1 (wider and slower in the float). The fur is the band under the
+// head's top outline (measured per column below); it turns about the middle of
+// the head, so the tuft sways and the skull under it does not. The ear
+// (head_4_ear, its own layer, root on its right where it meets the head) turns
+// about its root.
+const CROWN_TOP = [[200, 123], [215, 84], [230, 56], [245, 39], [260, 26], [275, 26], [290, 21], [305, 19], [320, 21], [335, 26], [350, 35], [365, 47], [380, 67], [395, 175]];
+const crownTopAt = (x) => {
+	if (x <= CROWN_TOP[0][0]) return CROWN_TOP[0][1];
+	for (let i = 1; i < CROWN_TOP.length; i++) {
+		const [x1, y1] = CROWN_TOP[i];
+		if (x <= x1) {
+			const [x0, y0] = CROWN_TOP[i - 1];
+			return y0 + ((y1 - y0) * (x - x0)) / (x1 - x0);
+		}
+	}
+	return CROWN_TOP[CROWN_TOP.length - 1][1];
+};
+const FUR_DEPTH = 30;
+const EAR_ROOT = [258, 128], EAR_TIP = [220, 102];
+addBone('hair', 'head', [305, 112], [305, 19]);
+addBone('ear', 'head', EAR_ROOT, EAR_TIP);
+{
+	const face = meta.layers.find((l) => l.name === 'head_0_face');
+	if (!face) {
+		console.error('head_0_face missing');
+		process.exit(1);
+	}
+	const radial = (x, y, c, r, soft) => smoothW((r - Math.hypot(x - c[0], (y - c[1]) * 1.1)) / soft);
+	attachments[face.name][face.name] = meshGrid(
+		face,
+		gridLines(face.x, face.x + face.w, 24, [[212, 400, 9]]),
+		gridLines(face.y, face.y + face.h, 24, [[22, 290, 9]]),
+		(x, y) => {
+			const out = { head: 1 };
+			const take = (bone, w) => {
+				const t = Math.min(Math.max(0, w), out.head);
+				if (t > 0) {
+					out[bone] = t;
+					out.head -= t;
+				}
+			};
+			take('nose', radial(x, y, FACE.nose, FACE.noseR, 18));
+			take('cheekL', radial(x, y, FACE.cheekL, FACE.cheekR_, 18));
+			take('cheekR', radial(x, y, FACE.cheekR, FACE.cheekR_, 18));
+			take(
+				'jaw',
+				smoothW((y - FACE.mouthLine) / 26) * smoothW((x - FACE.chin[0]) / 22) * smoothW((FACE.chin[1] - x) / 22),
+			);
+			take(
+				'brow',
+				smoothW((y - FACE.brow.y0) / 24) * smoothW((FACE.brow.y1 - y) / 22) *
+					smoothW((x - FACE.brow.x[0]) / 26) * smoothW((FACE.brow.x[1] - x) / 26),
+			);
+			// the fur: whole at the outline, gone FUR_DEPTH below it; the sides of
+			// the head (where the outline drops to the ears) keep out of it
+			take('hair', smoothW((crownTopAt(x) + FUR_DEPTH - y) / 30) * smoothW((x - 245) / 30) * smoothW((365 - x) / 30));
+			return out;
+		},
+	);
+	console.log(`mesh    ${face.name}: ${attachments[face.name][face.name].uvs.length / 2} vertices (jaw, brow, nose, cheeks, fur)`);
+
+	const ear = meta.layers.find((l) => l.name === 'head_4_ear');
+	if (ear) {
+		// held at the root, free toward the rim
+		attachments[ear.name][ear.name] = meshAttachment(ear, 8, 10, (x, y) => {
+			const e = smoothW((Math.hypot(x - EAR_ROOT[0], y - EAR_ROOT[1]) - 8) / 22);
+			return { head: 1 - e, ear: e };
+		});
+		console.log(`mesh    ${ear.name}: the ear on its root`);
+	}
+}
+
+// ── THE LEGS (2026-10-02, "腿和靴子用網格") ──────────────────────────────────────
+//
+// The legs were three rigid plates each — thigh, calf (knee pad and boot shaft),
+// foot — so at the knee and the ankle two plates slid over each other whenever
+// the joint bent. The calf and the foot are weighted meshes now, the sleeves'
+// method turned down the leg: within LEG_HOLD of the joint a piece still rides
+// its PARENT, and over the next LEG_BLEND (measured along the leg, which stands
+// near-vertical) it hands over to its own bone — the knee pad bends between the
+// thigh and the shin instead of hinging on a seam.
+//
+// And the two things that hang off the boots get a bone with PHYSICS each, so a
+// landing kicks them and the float drifts them: the tag on its metal clip on
+// the right boot's outside, and the frayed lace ends on the left boot's. They
+// are CUT OUT onto their bones (the pens' method, below), not weighted: each
+// sits right against the boot, and weighting them sheared the 4px between them
+// and the shaft on every swing (check_monkey_rig, 18 animations).
+// PSD pixels, off the pieces' own ink (2026-10-02).
+const LEG_HOLD = { knee: 6, ankle: 4 };
+const LEG_BLEND = { knee: 46, ankle: 30 };
+const DANGLERS = [
+	{ name: 'tagR', bone: 'legR_calf', layer: 'right_leg_1_calf', from: [446, 748], to: [449, 802], box: [434, 740, 462, 808] },
+	{ name: 'laceL', bone: 'legL_calf', layer: 'left_leg_1_calf', from: [108, 744], to: [97, 774], box: [86, 736, 114, 780] },
+];
+for (const d of DANGLERS) addBone(d.name, d.bone, d.from, d.to);
+{
+	const at = (bone) => RIG.find((b) => b.name === bone).at;
+	// [piece, its bone, its parent, joint kind]
+	const LEG_PIECES = [
+		['left_leg_1_calf', 'legL_calf', 'legL', 'knee'],
+		['right_leg_1_calf', 'legR_calf', 'legR', 'knee'],
+		['left_leg_2_foot', 'legL_foot', 'legL_calf', 'ankle'],
+		['right_leg_2_foot', 'legR_foot', 'legR_calf', 'ankle'],
+	];
+	for (const [name, bone, parent, kind] of LEG_PIECES) {
+		const layer = meta.layers.find((l) => l.name === name);
+		if (!layer || boneOf[name] !== bone) {
+			console.warn(`WARNING leg piece ${name} not on ${bone}; left rigid`);
+			continue;
+		}
+		const jy = at(bone)[1];
+		attachments[name][name] = meshGrid(
+			layer,
+			gridLines(layer.x, layer.x + layer.w, 14),
+			gridLines(layer.y, layer.y + layer.h, 12, [[jy - 10, jy + LEG_HOLD[kind] + LEG_BLEND[kind] + 10, 6]]),
+			(x, y) => {
+				const own = smoothW((y - jy - LEG_HOLD[kind]) / LEG_BLEND[kind]);
+				return { [parent]: 1 - own, [bone]: own };
+			},
+		);
+		console.log(`mesh    ${name}: ${attachments[name][name].uvs.length / 2} vertices (${kind} blends ${parent} -> ${bone})`);
+	}
+}
+
+// ── THE SUIT BREATHES (2026-10-02) ───────────────────────────────────────────
+//
+// In the float the suit swells and settles like a pressure suit in vacuum: the
+// trunk and both chest-decoration layers (pockets, badge, holder, tubes) are
+// weighted to `chest` by one bell round the middle of the chest — whole within
+// CHEST.r, gone over the next CHEST.fade — so they move as one surface and
+// nothing on the chest slides against the cloth under it. The collar, the
+// shoulders and the waist sit outside the bell and hold.
+{
+	const chestW = (x, y) => smoothW((CHEST.r + CHEST.fade - Math.hypot(x - CHEST.at[0], (y - CHEST.at[1]) * 1.15)) / CHEST.fade);
+	for (const name of ['torso_3_trunk', 'torso_4_decoration', 'torso_5_decoration']) {
+		const layer = meta.layers.find((l) => l.name === name);
+		if (!layer || boneOf[name] !== 'torso') continue;
+		attachments[name][name] = meshGrid(
+			layer,
+			gridLines(layer.x, layer.x + layer.w, 22),
+			gridLines(layer.y, layer.y + layer.h, 22),
+			(x, y) => {
+				const w = chestW(x, y);
+				return { torso: 1 - w, chest: w };
+			},
+		);
+		console.log(`mesh    ${name}: ${attachments[name][name].uvs.length / 2} vertices (the suit breathes)`);
+	}
 }
 
 // ── THE LIGHTS AND THE BADGE: generated overlays, drawn additive ──────────────
@@ -786,6 +994,7 @@ const CUT_PIECES = []; // { name, bone, file, box } rigid regions
 	for (const pen of PENS)
 		cut(pen.name, 'torso_5_decoration', pen.name, { x0: Math.floor(pen.x - pen.half), x1: Math.ceil(pen.x + pen.half), y0: pen.tip - 4, y1: PEN_FOOT }, (x, y) => y < PEN_PIVOT - 3);
 	for (const t of TUBES) cut(t.name, t.layer, t.name, { x0: t.x0, x1: t.x1, y0: t.top, y1: t.base }, () => true);
+	for (const d of DANGLERS) cut(d.name, d.layer, d.name, { x0: d.box[0], x1: d.box[2], y0: d.box[1], y1: d.box[3] }, () => true);
 	for (const [name, { l, img }] of Object.entries(loaded)) {
 		const file = path.join(FX_DIR, `${name}_erased.png`);
 		fs.writeFileSync(file, PNG.sync.write(img));
@@ -812,14 +1021,50 @@ const CUT_PIECES = []; // { name, bone, file, box } rigid regions
 	console.log(`cut     ${CUT_PIECES.map((c) => c.name).join(', ')} (rigid, on their own bones)`);
 }
 
-// the three liquid windows on the chest panel (warm ink in torso_3_trunk)
+// ── TWO VIALS PAINTED OUT (2026-09-28, "把最左邊跟最右邊的兩瓶移除掉") ──
+//
+// The chest rack showed five vials, and the outer two were only LIQUID — a grey
+// window at the left and a brown one at the right, painted into the chest panel
+// with no glass above them, which next to the three whole vials read as broken.
+// They are painted over here, on the trunk's copy, with the panel's own plain
+// face: each row of a hole is filled from the same row of a clean stretch of the
+// panel (x 218..236, between the grey window and the first tube, which is on
+// another layer), feathered at the edges so no patch shows.
+{
+	const trunk = meta.layers.find((l) => l.name === 'torso_3_trunk');
+	const img = PNG.sync.read(fs.readFileSync(path.join(SRC, trunk.file)));
+	const SOURCE_X = [218, 236];
+	const HOLES = [
+		{ x0: 197, x1: 217, y0: 357, y1: 388 }, // the grey window
+		{ x0: 281, x1: 299, y0: 352, y1: 394 }, // the brown window
+	];
+	const at = (x, y) => ((y - trunk.y) * img.width + (x - trunk.x)) * 4;
+	const FEATHER = 3;
+	for (const h of HOLES) {
+		const span = SOURCE_X[1] - SOURCE_X[0];
+		for (let y = h.y0 - FEATHER; y <= h.y1 + FEATHER; y++)
+			for (let x = h.x0 - FEATHER; x <= h.x1 + FEATHER; x++) {
+				const sx = SOURCE_X[0] + ((x - h.x0) % span + span) % span;
+				const d = Math.min(x - (h.x0 - FEATHER), h.x1 + FEATHER - x, y - (h.y0 - FEATHER), h.y1 + FEATHER - y);
+				const k = Math.max(0, Math.min(1, d / FEATHER));
+				const di = at(x, y), si = at(sx, y);
+				for (let c = 0; c < 4; c++) img.data[di + c] = Math.round(img.data[di + c] * (1 - k) + img.data[si + c] * k);
+			}
+	}
+	const file = path.join(FX_DIR, 'torso_3_trunk_edited.png');
+	fs.writeFileSync(file, PNG.sync.write(img));
+	LAYER_FILE[trunk.name] = file;
+	console.log('trunk   the two lone liquid windows painted out');
+}
+
+// the liquid windows on the chest panel that still have a vial (warm ink in torso_3_trunk)
 const WINDOWS = [
 	{ x: 244.5, y: 379, tint: 'ffd08a' },
 	{ x: 264.5, y: 379, tint: 'ff9d80' },
-	{ x: 290.5, y: 379, tint: 'ffc08a' },
 ];
 const FX = [];
 FX.push(writeFx('fx_vial_glow', 26, 44, capsule(13, 22, 7, 22, 5)));
+
 const PANEL_BOX = { x: 226, y: 350, w: 84, h: 58 };
 FX.push(
 	writeFx('fx_panel_flash', PANEL_BOX.w, PANEL_BOX.h, (x, y) =>
@@ -855,17 +1100,28 @@ const BADGE_BOX = { x: BADGE.x - 22, y: BADGE.y - 22, w: 44, h: 44 };
 		);
 	}
 }
+// the chest's overlays (the lights, the flash, the glint) ride the CHEST bone,
+// which addBone turned along its piece (straight up): the offset goes into the
+// bone's frame and the region is turned back upright
 const onTorso = (box) => {
 	const c = toSpine(box.x + box.w / 2, box.y + box.h / 2);
-	const j = jointWorld.torso;
-	return { x: +(c.x - j.x).toFixed(2), y: +(c.y - j.y).toFixed(2), width: box.w, height: box.h };
+	const j = extraWorld.chest;
+	const r = (-j.rot * Math.PI) / 180;
+	const dx = c.x - j.x, dy = c.y - j.y;
+	return {
+		x: +(dx * Math.cos(r) - dy * Math.sin(r)).toFixed(2),
+		y: +(dx * Math.sin(r) + dy * Math.cos(r)).toFixed(2),
+		rotation: +(-j.rot).toFixed(2),
+		width: box.w,
+		height: box.h,
+	};
 };
 const SUIT_FX_SLOTS = {
 	afterTrunk: [
-		...WINDOWS.map((w, i) => ({ name: `vial_glow_${i + 1}`, bone: 'torso', attachment: `vial_glow_${i + 1}`, color: `${w.tint}40`, blend: 'additive' })),
-		{ name: 'panel_flash', bone: 'torso', attachment: 'panel_flash', color: 'fff0d800', blend: 'additive' },
+		...WINDOWS.map((w, i) => ({ name: `vial_glow_${i + 1}`, bone: 'chest', attachment: `vial_glow_${i + 1}`, color: `${w.tint}40`, blend: 'additive' })),
+		{ name: 'panel_flash', bone: 'chest', attachment: 'panel_flash', color: 'fff0d800', blend: 'additive' },
 	],
-	afterBadge: [{ name: 'badge_glint', bone: 'torso', blend: 'additive' }],
+	afterBadge: [{ name: 'badge_glint', bone: 'chest', blend: 'additive' }],
 };
 const pieceSlot = (name) => {
 	const c = CUT_PIECES.find((p) => p.name === `cut_${name}`);
@@ -892,6 +1148,13 @@ const physics = [
 	// rattle, not a swing)
 	...PENS.map((p) => ({ name: `${p.name}_phys`, bone: p.name, rotate: 1, inertia: 0.5, strength: 170, damping: 0.65, mass: 1 })),
 	...TUBES.map((t) => ({ name: `${t.name}_phys`, bone: t.name, rotate: 1, inertia: 0.55, strength: 240, damping: 0.5, mass: 1 })),
+	// the fur follows a head move a beat late; the ear flicks
+	// stiff (mesh-cast-rig: a loose tip flung by a jump tears its mesh); the keyed
+	// drift carries the life, physics only the follow-through
+	{ name: 'hair_phys', bone: 'hair', rotate: 1, inertia: 0.12, strength: 600, damping: 0.95, mass: 1, mix: 0.4 },
+	{ name: 'ear_phys', bone: 'ear', rotate: 1, inertia: 0.4, strength: 180, damping: 0.7, mass: 1 },
+	// the boots' tag and lace ends: light, they kick on a landing
+	...DANGLERS.map((d) => ({ name: `${d.name}_phys`, bone: d.name, rotate: 1, inertia: 0.4, strength: 150, damping: 0.75, mass: 1 })),
 ].map((c, order) => ({ ...c, order }));
 
 // THE FLUTTER, on track 1, forever. Whole cycles only, so it loops seamlessly.
@@ -912,8 +1175,25 @@ const bumpKeys = (events, sway, steps = 96) =>
 		}
 		return { time: +t.toFixed(4), value: +v.toFixed(3) };
 	});
+// the jaw's chew: down a few px on each of the banana's chews, as bumps over a
+// still baseline, so it loops with the flutter
+const chewKeys = (events, steps = 96) =>
+	Array.from({ length: steps + 1 }, (_, i) => {
+		const t = (FLUTTER_LOOP * i) / steps;
+		let v = 0;
+		for (const { at, amp, width } of events) {
+			const u = (t - at) / width;
+			if (u > 0 && u < 1) v += amp * Math.sin(Math.PI * u);
+		}
+		return { time: +t.toFixed(4), x: 0, y: +(-v).toFixed(3) };
+	});
 const flutter = {
 	bones: {
+		jaw: { translate: chewKeys([{ at: 0.6, amp: 3, width: 0.22 }, { at: 0.95, amp: 2.4, width: 0.22 }]) },
+		hair: { rotate: loopKeys(1.2, 1, 0.4) },
+		...Object.fromEntries(DANGLERS.map((d, i) => [d.name, { rotate: loopKeys(2, 1, 0.7 + 1.9 * i) }])),
+		// the ear twitches once a loop, between the chews
+		ear: { rotate: bumpKeys([{ at: 2.6, amp: 7, width: 0.16 }, { at: 2.78, amp: -3, width: 0.14 }], { amp: 0.8, n: 1, phase: 1.1 }) },
 		banana: { rotate: bumpKeys([{ at: 0.6, amp: 9, width: 0.22 }, { at: 0.95, amp: 7, width: 0.22 }], { amp: 2, n: 2, phase: 0 }) },
 		hose: { rotate: loopKeys(3, 1, 0.8) },
 		// the suit's bits never quite still: the pens sway a hair, the tubes give
@@ -939,6 +1219,11 @@ const flutter = {
 // zero-g: everything that hangs drifts further and slower, and the chews float
 const flutterFloat = {
 	bones: {
+		jaw: { translate: chewKeys([{ at: 0.8, amp: 2.6, width: 0.4 }, { at: 3.1, amp: 2, width: 0.4 }]) },
+		// weightless: the fur and the ear drift, wide and slow
+		hair: { rotate: loopKeys(3, 1, 0.4) },
+		...Object.fromEntries(DANGLERS.map((d, i) => [d.name, { rotate: loopKeys(7, 1, 0.7 + 1.9 * i) }])),
+		ear: { rotate: loopKeys(4, 1, 2.3) },
 		banana: { rotate: bumpKeys([{ at: 0.8, amp: 11, width: 0.4 }, { at: 3.1, amp: 8, width: 0.4 }], { amp: 5, n: 1, phase: 0.3 }) },
 		hose: { rotate: loopKeys(8, 1, 0.8) },
 		// weightless: everything loose drifts, slowly and out of step
@@ -998,8 +1283,9 @@ slots.splice(slots.findIndex((sl) => sl.name === 'torso_3_trunk') + 1, 0, ...SUI
 slots.splice(slots.findIndex((sl) => sl.name === 'torso_5_decoration') + 1, 0, ...SUIT_FX_SLOTS.afterBadge);
 // the pens BEHIND their holder (torso_5), the tubes over the layer they came from
 slots.splice(slots.findIndex((sl) => sl.name === 'torso_5_decoration'), 0, ...PENS.map((p) => pieceSlot(p.name)));
-slots.splice(slots.findIndex((sl) => sl.name === 'torso_5_decoration') + 1, 0, pieceSlot('tubes5'));
-slots.splice(slots.findIndex((sl) => sl.name === 'torso_4_decoration') + 1, 0, pieceSlot('tube4a'), pieceSlot('tube4b'));
+for (const t of TUBES) slots.splice(slots.findIndex((sl) => sl.name === t.layer) + 1, 0, pieceSlot(t.name));
+// the boots' tag and lace ends, right over the boot they came off
+for (const d of DANGLERS) slots.splice(slots.findIndex((sl) => sl.name === d.layer) + 1, 0, pieceSlot(d.name));
 
 // ── atlas ───────────────────────────────────────────────────────────────────
 // Shelf packing, tallest first. 19 pieces into one page — nothing here justifies
@@ -2186,6 +2472,57 @@ const spacewalk = {
 	},
 };
 
+// ── ZERO-G (2026-10-02, "FG裡面人物飄起來的可以用網格強化嗎") ──────────────────
+//
+// What he does at rest in the free spins, replacing the spacewalk. A body in
+// weightlessness does not walk: it settles into the NEUTRAL BODY POSTURE —
+// arms floating up and out in front, knees drawn a little, the trunk faintly
+// curled — and everything drifts on its own slow clock. So: the arms out to
+// ZG_ARM (inside the shoulder budgets), drifting out of step; the thighs drawn
+// to ZG_KNEE (a shorter thigh is a knee raised, as in the walk and the tuck)
+// and paddling slowly in turn; the trunk and the head drifting, the head a
+// beat behind; and the suit BREATHING (the chest's swell, THE SUIT BREATHES).
+// Whole cycles in ZG_LOOP, so it loops without a seam.
+const ZG_LOOP = 6.4;
+const ZG_ARM = { L: -22, R: 20 };
+const ZG_DRIFT = 6;
+const ZG_KNEE = 0.9;
+const ZG_PADDLE = 0.045;
+const zgKeys = (fn, steps = 32) =>
+	Array.from({ length: steps + 1 }, (_, i) => {
+		const t = (ZG_LOOP * i) / steps;
+		return { time: +t.toFixed(4), ...fn(t) };
+	});
+const zgSin = (t, n, phase) => Math.sin((2 * Math.PI * n * t) / ZG_LOOP + phase);
+const zgArm = (base, phase) => zgKeys((t) => ({ value: +(base + ZG_DRIFT * zgSin(t, 1, phase)).toFixed(3) }));
+const zgFore = (base, phase) => zgKeys((t) => ({ value: +(hang(base + ZG_DRIFT * zgSin(t - 0.35, 1, phase)) + 4 * zgSin(t, 2, phase)).toFixed(3) }));
+const zgLeg = (phase) => zgKeys((t) => ({ x: 1.01, y: +(ZG_KNEE + ZG_PADDLE * zgSin(t, 2, phase)).toFixed(4) }));
+const zgFoot = (phase) => zgKeys((t) => {
+	const k = 1.03 + 0.03 * zgSin(t, 2, phase);
+	return { x: +k.toFixed(4), y: +k.toFixed(4) };
+});
+const zerog = {
+	bones: {
+		armL: { rotate: zgArm(ZG_ARM.L, 0) },
+		armR: { rotate: zgArm(ZG_ARM.R, 2.1) },
+		armL_fore: { rotate: zgFore(ZG_ARM.L, 0) },
+		armR_fore: { rotate: zgFore(ZG_ARM.R, 2.1) },
+		legL: { scale: zgLeg(0) },
+		legR: { scale: zgLeg(Math.PI) },
+		legL_foot: { scale: zgFoot(0) },
+		legR_foot: { scale: zgFoot(Math.PI) },
+		torso: { rotate: zgKeys((t) => ({ value: +(1.5 * zgSin(t, 1, 0.7)).toFixed(3) })) },
+		head: { rotate: zgKeys((t) => ({ value: +(2.5 * zgSin(t, 1, 1.9)).toFixed(3) })) },
+		// the suit breathing: two breaths a loop, the swell wider than it is tall
+		chest: {
+			scale: zgKeys((t) => {
+				const b = 0.5 - 0.5 * Math.cos((2 * Math.PI * 2 * t) / ZG_LOOP);
+				return { x: +(1 + 0.03 * b).toFixed(4), y: +(1 + 0.02 * b).toFixed(4) };
+			}),
+		},
+	},
+};
+
 // ── THREE MORE REACTIONS (asked for 2026-09-26: "符合人體工學, 節奏順暢") ──────
 //
 // Every angle below stays inside the budgets measured above — shoulders out to
@@ -2938,6 +3275,51 @@ const sweeps = SWEEP
 	withFlash(tuck, [[0.5, 0.8]], 1.15);
 }
 
+// the face in the reactions (track 0): brow up (+) or down (-) in px, the
+// nostrils' flare as a scale across, the cheeks' puff in px apart
+{
+	const durationOf = (anim) => {
+		let d = 0;
+		for (const tl of Object.values(anim.bones ?? {}))
+			for (const keys of Object.values(tl)) for (const k of keys) d = Math.max(d, k.time);
+		return d;
+	};
+	const withFace = (anim, { brow = [], nose = [], cheeks = [] }) => {
+		const end = durationOf(anim);
+		const close = (keys, rest) => {
+			const k = [[0, rest], ...keys];
+			if (k[k.length - 1][0] < end) k.push([end, rest]);
+			return k;
+		};
+		anim.bones = anim.bones ?? {};
+		if (brow.length) anim.bones.brow = { translate: close(brow, 0).map(([time, v]) => ({ time, x: 0, y: v })) };
+		if (nose.length) anim.bones.nose = { scale: close(nose, 1).map(([time, v]) => ({ time, x: v, y: 1 })) };
+		if (cheeks.length) {
+			anim.bones.cheekL = { translate: close(cheeks, 0).map(([time, v]) => ({ time, x: -v, y: 0 })) };
+			anim.bones.cheekR = { translate: close(cheeks, 0).map(([time, v]) => ({ time, x: v, y: 0 })) };
+		}
+	};
+	withFace(cheer, { brow: [[0.2, 4], [1.3, 4], [1.8, 0]], cheeks: [[0.35, 1.5], [0.8, 0]] });
+	withFace(chestbeat, {
+		brow: [[0.25, -3], [BEAT_END, -3], [BEAT_END + 0.4, 0]],
+		nose: [[0.3, 1.12], [BEAT_END, 1.1], [BEAT_END + 0.4, 1]],
+	});
+	withFace(nod, { brow: [[0.24, 2], [0.7, 0]] });
+	withFace(push, {
+		cheeks: [[0.15, 2.5], [PUSH_DRIVE + 0.06, 0.5], [0.9, 0]],
+		brow: [[PUSH_DRIVE + 0.06, 3], [1.2, 0]],
+		nose: [[PUSH_DRIVE, 1.08], [0.8, 1]],
+	});
+	withFace(throwit, {
+		brow: [[0.3, -3], [RELEASE_AT, 2], [1.2, 0]],
+		cheeks: [[0.4, 2.5], [RELEASE_AT, 0]],
+	});
+	withFace(tuck, { brow: [[0.2, -2.5], [0.9, 0]], cheeks: [[0.3, 2], [0.8, 0]] });
+	withFace(lookup, { brow: [[0.35, 3.5], [durationOf(lookup) - 0.3, 3], [durationOf(lookup), 0]] });
+	withFace(stretch, { brow: [[0.4, 3], [durationOf(stretch) - 0.4, 0]], nose: [[0.6, 1.08], [durationOf(stretch) - 0.4, 1]] });
+	withFace(wave, { brow: [[0.2, 2.5], [durationOf(wave) - 0.2, 0]] });
+}
+
 const skeleton = {
 	skeleton: {
 		hash: 'gb-monkey',
@@ -2954,13 +3336,13 @@ const skeleton = {
 	physics,
 	skins: [{ name: 'default', attachments }],
 	animations: Object.fromEntries(
-			Object.entries({ idle, cheer, chestbeat, nod, throwit, spacewalk, tuck, push, lookup, stretch, wave, foottap, ...sweeps }).map(([name, a]) => [
+			Object.entries({ idle, cheer, chestbeat, nod, throwit, spacewalk, zerog, tuck, push, lookup, stretch, wave, foottap, ...sweeps }).map(([name, a]) => [
 				name,
 				// idle and the spacewalk loop, so they are the ones whose ends have
 				// to meet.
 				smoothAnimation(
 					fuseDeadJoints(a, name),
-					name === 'idle' ? IDLE_LOOP : name === 'spacewalk' ? SPACEWALK_LOOP : undefined,
+					name === 'idle' ? IDLE_LOOP : name === 'spacewalk' ? SPACEWALK_LOOP : name === 'zerog' ? ZG_LOOP : undefined,
 				),
 			]).concat([
 				// track 1's loops key only the hanging bones: nothing to fuse
@@ -3054,6 +3436,10 @@ fs.writeFileSync(path.join(OUT, 'monkey.json'), JSON.stringify(skeleton, null, 2
 	} else {
 		console.warn('WARNING no *_eye layer — the goggle tease has nothing to sit on');
 	}
+	// the backpack's thruster (Mascot.svelte NOZZLE): the middle of the pack's
+	// left wall, where the puffs come out in the free spins
+	const nz = toSpine(86, 160);
+	console.log(`NOZZLE   { x: ${Math.round(nz.x)}, y: ${Math.round(nz.y)} }`);
 }
 
 console.log(`atlas   monkey.png ${PAGE_W}x${PAGE_H}, ${placed.length} regions`);

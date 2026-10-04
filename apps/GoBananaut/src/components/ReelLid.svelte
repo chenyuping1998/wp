@@ -23,8 +23,10 @@
 	// the gap happened to be would have every tube shrink a little on every step —
 	// which is a lid being scaled, not a lid being retracted.
 	import { onDestroy } from 'svelte';
-	import { Graphics } from 'pixi-svelte';
+	import { Container, Graphics } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
+
+	import LidMesh from './LidMesh.svelte';
 
 	import BoardContainer from './BoardContainer.svelte';
 	import { getContext } from '../game/context';
@@ -125,6 +127,31 @@
 	// When each reel's dip started, or 0 if it is not dipping.
 	const dipAt = new Array<number>(NUM_REELS).fill(0);
 
+	// THE STRAIN (LidMesh): as a reel starts to grow, the reel underneath pushes
+	// on the sill — the shutter bows UP in the middle and trembles for the first
+	// STRAIN_HOLD of the step, then gives way and springs past flat before it
+	// settles, as it retracts. In the free spins every shutter also BREATHES, a
+	// hatch holding pressure. Both are px on the sill's middle; the mesh fades
+	// them to nothing at the rails and at the housing.
+	const STRAIN_PX = 9;
+	const STRAIN_HOLD = 0.3; // of the step's travel
+	const TREMBLE_PX = 1.4;
+	const BREATH_PX = 1.3;
+	const BREATH_MS = 2600;
+	const strainAt = new Array<number>(NUM_REELS).fill(0);
+	let bulge = $state<number[]>(new Array(NUM_REELS).fill(0));
+	let tremble = $state<number[]>(new Array(NUM_REELS).fill(0));
+	const inFreeGame = $derived(stateGame.gameType === 'freegame');
+
+	// THE TEASE (2026-10-02): over a reel spinning on for the last Scatter, the
+	// shutter trembles and throbs, and the housing over that column bows out on
+	// every throb (FrameMesh) — the capsule straining with the reel
+	const TEASE_TREMBLE = 1.2;
+	const TEASE_BULGE = 3;
+	const TEASE_THROB_MS = 420;
+	const lastThrob = new Array<number>(NUM_REELS).fill(0);
+	const teasing = $derived(stateGame.board.map((r) => !!r.reelState.anticipating));
+
 	const targets = $derived(
 		Array.from({ length: NUM_REELS }, (_, i) => stateGame.growRows[i] ?? BASE_ROWS),
 	);
@@ -146,6 +173,43 @@
 
 		let moving = false;
 		let changed = false;
+		const travel = Math.max(90, stateGame.growTravelMs);
+		const nextBulge = new Array<number>(NUM_REELS).fill(0);
+		const nextTremble = new Array<number>(NUM_REELS).fill(0);
+		for (let i = 0; i < NUM_REELS; i += 1) {
+			if (inFreeGame) nextBulge[i] = BREATH_PX * Math.sin((2 * Math.PI * now) / BREATH_MS + i * 0.9);
+			if (!strainAt[i]) continue;
+			const p = (now - strainAt[i]) / travel;
+			if (p >= 1) {
+				strainAt[i] = 0;
+				continue;
+			}
+			moving = true;
+			if (p < STRAIN_HOLD) {
+				const k = p / STRAIN_HOLD;
+				nextBulge[i] += STRAIN_PX * k * k;
+				nextTremble[i] = TREMBLE_PX * k;
+			} else {
+				// it gives: springs past flat and settles
+				const q = (p - STRAIN_HOLD) / (1 - STRAIN_HOLD);
+				nextBulge[i] += STRAIN_PX * Math.cos(q * Math.PI * 2.5) * Math.exp(-3.2 * q);
+				nextTremble[i] = TREMBLE_PX * (1 - q) * 0.5;
+			}
+		}
+		for (let i = 0; i < NUM_REELS; i += 1) {
+			if (!teasing[i]) continue;
+			moving = true;
+			const throb = 0.5 + 0.5 * Math.sin((2 * Math.PI * now) / TEASE_THROB_MS + i);
+			nextBulge[i] += TEASE_BULGE * throb;
+			nextTremble[i] = Math.max(nextTremble[i], TEASE_TREMBLE);
+			if (now - lastThrob[i] >= TEASE_THROB_MS) {
+				lastThrob[i] = now;
+				context.eventEmitter.broadcast({ type: 'boardFrameImpact', reel: i, out: true });
+			}
+		}
+		bulge = nextBulge;
+		tremble = nextTremble;
+		if (inFreeGame) moving = true;
 		for (let i = 0; i < NUM_REELS; i += 1) {
 			const target = targets[i] ?? BASE_ROWS;
 			const before = posRaw[i];
@@ -206,10 +270,21 @@
 			// a reel that has just been asked to grow loads before it lifts
 			if ((t[i] ?? BASE_ROWS) > (posRaw[i] ?? BASE_ROWS) && !dipAt[i] && vel[i] === 0) {
 				dipAt[i] = now;
+				strainAt[i] = now;
+				// the housing over this reel bows out with it (FrameMesh)
+				context.eventEmitter.broadcast({ type: 'boardFrameImpact', reel: i, out: true });
 			}
 		}
 		if (!raf) {
 			last = now;
+			raf = requestAnimationFrame(frame);
+		}
+	});
+
+	// the breathing and the tease need frames even when nothing is growing
+	$effect(() => {
+		if ((inFreeGame || teasing.some(Boolean)) && !raf) {
+			last = performance.now();
 			raf = requestAnimationFrame(frame);
 		}
 	});
@@ -334,83 +409,77 @@
 		}
 	};
 
-	const draw = (g: PixiGraphics) => {
+	// the shutter's full height, painted once per reel into LidMesh's texture:
+	// the rails, both slats and the sill, with the shadow it throws below it. The
+	// same drawing the shutter always was, at x = SYMBOL_SIZE / 2.
+	const painter = (reel: number) => (g: PixiGraphics, full: number) => {
+		const cx = SYMBOL_SIZE / 2;
+		rails(g, cx, full);
+		for (let k = 0; k * SYMBOL_SIZE < full; k += 1) {
+			const bottom = full - k * SYMBOL_SIZE;
+			slat(g, cx, Math.max(0, bottom - SYMBOL_SIZE), bottom, reel + k, k === 0);
+		}
+		const sill = 12;
+		g.rect(cx - W / 2, full - sill, W, sill);
+		g.fill({ color: BRASS_MID });
+		g.rect(cx - W / 2, full - sill, W, sill * 0.3);
+		g.fill({ color: BRASS_LIT, alpha: 0.95 });
+		g.rect(cx - W / 2, full - 2, W, 2);
+		g.fill({ color: BRASS_DARK, alpha: 0.9 });
+		g.rect(cx - W / 2, full, W, 9);
+		g.fill({ color: 0x000000, alpha: 0.42 });
+		g.rect(cx - W / 2, full, W, 3);
+		g.fill({ color: 0x000000, alpha: 0.35 });
+	};
+	const painters = Array.from({ length: NUM_REELS }, (_, reel) => painter(reel));
+	const gapOf = (reel: number) => Math.max(0, reelYOffset((pos[reel] ?? BASE_ROWS) + (dipShown[reel] ?? 0)));
+
+	// under the shutter: the backing plate of the opening
+	const drawUnder = (g: PixiGraphics) => {
 		g.clear();
 		for (let reel = 0; reel < NUM_REELS; reel += 1) {
-			const gap = Math.max(0, reelYOffset((pos[reel] ?? BASE_ROWS) + (dipShown[reel] ?? 0)));
+			const gap = gapOf(reel);
+			if (gap < 0.5) continue;
+			g.rect(getSymbolX(reel) - SYMBOL_SIZE / 2, 0, SYMBOL_SIZE, gap);
+			g.fill({ color: BACKING });
+		}
+	};
+
+	// over it: the housing's lip, the shade at the top of the opening (it depends
+	// on how deep the opening is, so it is not baked into the texture), and the
+	// sill's glint while it moves — drawn on the same arch the mesh bows to
+	const drawOver = (g: PixiGraphics) => {
+		g.clear();
+		for (let reel = 0; reel < NUM_REELS; reel += 1) {
+			const gap = gapOf(reel);
 			if (gap < 0.5) continue;
 			const cx = getSymbolX(reel);
 
-			// AN OPAQUE COVER FIRST, ACROSS THE WHOLE CELL.
-			//
-			// The slats are W wide — twelve less than the cell — because that seam is
-			// what stops three shutters at the same height merging into one grey
-			// wall. The seam is also a hole: symbols do not stop existing above the
-			// window, they scroll through it, and SymbolWrap culls them by their
-			// CENTRE, so at any moment during a spin one symbol is straddling the
-			// reel's top edge with half of itself above it. The slats hid that in
-			// the middle of the cell and the seam let it through, six pixels down
-			// each side — a strip of moving symbol running up the gap between the
-			// shutters.
-			//
-			// So the gap is floored with the backing plate's own colour before
-			// anything else is drawn on it. Nothing changes visually — the seam
-			// still reads as backing, because it IS backing — and the reel can no
-			// longer show through it. Full SYMBOL_SIZE and not W, and adjacent
-			// reels tile exactly, so there is no hairline between them either.
-			g.rect(cx - SYMBOL_SIZE / 2, 0, SYMBOL_SIZE, gap);
-			g.fill({ color: BACKING });
-
-			// The slot the shutter rolls into. Without it the top slat is a panel
-			// that simply stops at the edge of the box, and a door that does not
-			// visibly go anywhere is just a lid.
 			g.rect(cx - W / 2 - 3, 0, W + 6, 9);
 			g.fill({ color: 0x000000, alpha: 0.85 });
 			g.rect(cx - W / 2 - 3, 7, W + 6, 3);
 			g.fill({ color: BRASS_MID, alpha: 0.75 });
 
-			rails(g, cx, gap);
-
-			// SLATS FROM THE BOTTOM UP, and consumed from the top. The closing edge
-			// is pinned to the reel; what a growth step removes is the slat furthest
-			// into the housing. Building the stack downward from the top instead
-			// would make every slat shift on every step, which is a shutter being
-			// scaled rather than one rolling away.
-			for (let k = 0; k * SYMBOL_SIZE < gap; k += 1) {
-				const bottom = gap - k * SYMBOL_SIZE;
-				const top = Math.max(0, bottom - SYMBOL_SIZE);
-				slat(g, cx, top, bottom, reel + k, k === 0);
-			}
-
-			// depth: the further into the housing, the less light reaches it
 			for (let b = 0; b < 4; b += 1) {
 				g.rect(cx - W / 2, (gap * b) / 4, W, gap / 4 + 1);
 				g.fill({ color: 0x000000, alpha: 0.3 * (1 - b / 4) });
 			}
 
-			// THE CLOSING EDGE. The bottom of the lowest slat is the part that sits
-			// on the reel, so it gets the weight: a brass sill, a hot line along it,
-			// and the shadow it throws onto the symbol underneath. That shadow is
-			// the only thing putting the shutter IN FRONT of the board rather than
-			// beside it.
-			const sill = Math.min(12, gap);
-			g.rect(cx - W / 2, gap - sill, W, sill);
-			g.fill({ color: BRASS_MID });
-			g.rect(cx - W / 2, gap - sill, W, Math.max(1.5, sill * 0.3));
-			g.fill({ color: BRASS_LIT, alpha: 0.95 });
-			g.rect(cx - W / 2, gap - 2, W, 2);
-			g.fill({ color: BRASS_DARK, alpha: 0.9 });
-			g.rect(cx - W / 2, gap, W, 9);
-			g.fill({ color: 0x000000, alpha: 0.42 });
-			g.rect(cx - W / 2, gap, W, 3);
-			g.fill({ color: 0x000000, alpha: 0.35 });
-
-			// While it is actually travelling the sill runs hot. It is the cheapest
-			// way to say the shutter MOVED rather than simply being somewhere new,
-			// and it is only ever on for the few frames of the climb.
 			const speed = Math.min(1, Math.abs(vel[reel] ?? 0) / 6);
 			if (speed > 0.02) {
-				g.rect(cx - W / 2, gap - sill, W, sill);
+				const sill = Math.min(12, gap);
+				const lift = bulge[reel] ?? 0;
+				const pts: number[] = [];
+				const N = 12;
+				for (let j = 0; j <= N; j += 1) {
+					const u = -1 + (2 * j) / N;
+					pts.push(cx + (u * W) / 2, gap - sill - lift * (1 - u * u));
+				}
+				for (let j = N; j >= 0; j -= 1) {
+					const u = -1 + (2 * j) / N;
+					pts.push(cx + (u * W) / 2, gap - lift * (1 - u * u));
+				}
+				g.poly(pts);
 				g.fill({ color: 0xd8f4ff, alpha: 0.5 * speed });
 			}
 		}
@@ -418,5 +487,17 @@
 </script>
 
 <BoardContainer>
-	<Graphics {draw} />
+	<Graphics draw={drawUnder} />
+	{#each painters as paint, reel (reel)}
+		<Container>
+			<LidMesh
+				cx={getSymbolX(reel)}
+				gap={gapOf(reel)}
+				bulge={bulge[reel] ?? 0}
+				tremble={tremble[reel] ?? 0}
+				{paint}
+			/>
+		</Container>
+	{/each}
+	<Graphics draw={drawOver} />
 </BoardContainer>

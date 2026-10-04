@@ -101,7 +101,13 @@ export const W: MeshWinSpec = {
 	},
 	// landing: the banana flops
 	land: (rig, t, k, pose) => {
+		const press = Math.max(0, track(t, [[0, 0], [70, 1, 'out'], [155, 0, 'out']]));
+		boneOf(rig, pose, 'face').along = 1 - 0.06 * press * k;
+		boneOf(rig, pose, 'cheek_l').across = 1 + 0.07 * press * k;
+		boneOf(rig, pose, 'cheek_r').across = 1 + 0.07 * press * k;
 		boneOf(rig, pose, 'banana').angle = -4 * k * landFlick(t, 40);
+		boneOf(rig, pose, 'pod_l').dx = -2 * press * k;
+		boneOf(rig, pose, 'pod_r').dx = 2 * press * k;
 	},
 	pose: (rig: Rig, t: number) => {
 		const pose = restPose(rig);

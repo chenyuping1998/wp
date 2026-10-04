@@ -44,6 +44,7 @@
 	} from '../game/constants';
 	import { MARKER_CHARGE_MS, MARKER_LIFT_MS } from '../game/meshWin/gMarker';
 	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import GrowCellMesh from './GrowCellMesh.svelte';
 	import { getSymbolX } from '../game/utils';
 	import type { RawSymbol } from '../game/types';
 
@@ -628,6 +629,15 @@
 
 <BoardContainer>
 	<Container>
+		{#if step && clock >= 0}
+			<Container>
+				<GrowCellMesh
+					left={getSymbolX(step.reel) - SYMBOL_SIZE / 2}
+					top={step.top}
+					phase={clock / stepMs}
+				/>
+			</Container>
+		{/if}
 		<Graphics {draw} />
 		<Graphics draw={drawLift} />
 

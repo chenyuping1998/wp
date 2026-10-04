@@ -34,14 +34,14 @@ export const H3: MeshWinSpec = {
 	key: 'gbH3',
 	sprite: 'gbH3',
 	dust: true,
-	feetY: 186,
+	feetY: 240,
 	durationMs: T.done,
 	landMs: T.stomp,
 	hitMs: T.stomp,
 	rig: {
 		// finer than the first pass (50x32): a buckle is ~26px across and needs
 		// a few cells of its own to turn in
-		grid: { x0: 20, y0: 60, x1: 236, y1: 196, cols: 64, rows: 40 },
+		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 64, rows: 64 },
 		soft: 4,
 		parts: [
 			{ name: 'core', pivot: [128, 186], dist: (p) => Math.min(14, polygon([[26, 128], [232, 128], [232, 190], [26, 190]])(p)) },
@@ -89,8 +89,13 @@ export const H3: MeshWinSpec = {
 	},
 	// landing: the toe cap slaps, the ankle wobbles
 	land: (rig, t, k, pose) => {
+		const press = Math.max(0, track(t, [[0, 0], [70, 1, 'out'], [155, 0, 'out']]));
+		boneOf(rig, pose, 'tread').along = 1 - 0.05 * press * k;
+		boneOf(rig, pose, 'toe').along = 1 - 0.045 * press * k;
 		boneOf(rig, pose, 'toe').angle = -3 * k * landFlick(t, 30);
 		boneOf(rig, pose, 'ankle').angle = 2 * k * landFlick(t, 45);
+		boneOf(rig, pose, 'buckle_hi').angle = 3 * k * landFlick(t, 50);
+		boneOf(rig, pose, 'buckle_lo').angle = -3 * k * landFlick(t, 65);
 	},
 	pose: (rig: Rig, t: number) => {
 		const pose = restPose(rig);

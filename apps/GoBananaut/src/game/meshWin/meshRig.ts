@@ -467,6 +467,12 @@ export type MeshWinSpec = {
 	mode?: 'cut' | 'panel';
 	/** the art's own sprite key, drawn through the mesh (both modes here) */
 	sprite: string;
+	/** cut mode, a subject cut off its tile (the letters): the file the layers
+	 *  are baked from and the gate reads (`${symbol}.png` when absent) */
+	art?: string;
+	/** cut mode: the tile the subject was cut from, drawn UNDER it and never
+	 *  moved — the win moves the subject, not the plate */
+	plate?: string;
 	/** panel mode: where the drawing matters — the gate checks fold and stretch
 	 *  here, and the glow and light sweep are masked to it */
 	inked?: (p: Point) => boolean;
@@ -596,8 +602,11 @@ export const landPose = (spec: MeshWinSpec, rig: Rig, t: number, k: number): Pos
 	const down = Math.max(0, sq), up = Math.max(0, -sq);
 	const panel = spec.mode === 'panel';
 	const rebound = spec.landRebound ?? (panel ? 0.015 : 0.05);
-	const spread = spec.landSpread ?? (panel ? 0.03 : 0.1);
-	const depth = spec.landDepth ?? (panel ? 0.1 : 0.16);
+	// Cut-out symbols get their weight from the parts that actually make contact.
+	// Keep the shared body compression restrained so the tail, boot tread, lamp
+	// glass and face can each answer the impact without the entire drawing folding.
+	const spread = spec.landSpread ?? (panel ? 0.03 : 0.06);
+	const depth = spec.landDepth ?? (panel ? 0.1 : 0.1);
 	if (panel) {
 		const p = pose.bones[rig.bones.findIndex((b) => b.name === 'panel')];
 		p.along = 1 - depth * down * k + rebound * up * k;

@@ -160,9 +160,13 @@ def main(dump, out_path):
         textures = (plate, load(f'{key}.png'), None, load(f'{key}_sheen.png'), load(f'{key}_glow.png'))
     else:
         # Bananaut's cut-outs stand on no plate: the mesh draws the sprite itself
-        # over the dark board
-        plate = np.full((size, size, 3), BOARD)
-        textures = (plate, load(f'{key}.png'), load(f'{key}_shadow.png'), load(f'{key}_sheen.png'), None)
+        # over the dark board — except a subject cut off its tile (the letters),
+        # which acts over that tile, still (spec.plate)
+        if data.get('plateFile'):
+            plate = np.asarray(Image.open(SPRITES / data['plateFile']).convert('RGB').resize((size, size), Image.LANCZOS), float) / 255
+        else:
+            plate = np.full((size, size, 3), BOARD)
+        textures = (plate, load(data.get('art') or f'{key}.png'), load(f'{key}_shadow.png'), load(f'{key}_sheen.png'), None)
 
     frames = [(f['ms'], compose(f, data, textures), compose(f, data, textures, local=True)) for f in data['frames']]
 

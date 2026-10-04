@@ -51,6 +51,11 @@
 	type Landed = { id: number; reel: number; row: number; count: number; at: number };
 
 	let landed = $state<Landed[]>([]);
+	// when the Free Spins trigger began, for the brackets' burst (0: none)
+	let triggerAt = 0;
+	$effect(() => {
+		if (context.stateGame.scatterTrigger) triggerAt = Date.now();
+	});
 	let nextId = 0;
 	let now = $state(0);
 	let raf = 0;
@@ -95,6 +100,7 @@
 			context.eventEmitter.broadcast({
 				type: 'boardFrameImpact',
 				strength: 0.2 + 0.12 * Math.min(count, 5),
+				reel,
 			});
 		},
 		scatterLandClear: () => (landed = []),
@@ -123,9 +129,16 @@
 				}
 			}
 
-			// the hold: a lock-on reticle, four corner brackets, breathing
+			// the hold: a lock-on reticle, four corner brackets, breathing.
+			// ELASTIC (2026-10-02): the brackets SNAP in from wide on a spring and
+			// overshoot, their arms bowing out like rubber and ringing straight; on
+			// the trigger every bracket bursts out and springs back.
 			const breath = 0.5 + 0.5 * Math.sin((now - hit.at) / 340);
-			const half = SYMBOL_SIZE * 0.45;
+			const since = now - hit.at;
+			const snap = 1 + 0.55 * Math.exp(-since / 90) * Math.cos(since / 55);
+			const burst = triggerAt ? 0.45 * Math.exp(-(now - triggerAt) / 220) * Math.sin((now - triggerAt) / 60) : 0;
+			const sag = SYMBOL_SIZE * 0.05 * Math.exp(-since / 140) * Math.sin(since / 45) + SYMBOL_SIZE * 0.04 * burst;
+			const half = SYMBOL_SIZE * 0.45 * (snap + Math.abs(burst));
 			const arm = SYMBOL_SIZE * (0.15 + 0.02 * breath);
 			const width = 3 + 1.2 * breath;
 			const alpha = Math.min(1, (0.5 + 0.35 * breath) * force);
@@ -135,9 +148,10 @@
 				[-1, 1],
 				[1, 1],
 			]) {
-				g.moveTo(x + cx * half - cx * arm, y + cy * half);
-				g.lineTo(x + cx * half, y + cy * half);
-				g.lineTo(x + cx * half, y + cy * half - cy * arm);
+				const kx = x + cx * half, ky = y + cy * half;
+				g.moveTo(kx - cx * arm, ky);
+				g.quadraticCurveTo(kx - (cx * arm) / 2, ky + cy * sag, kx, ky);
+				g.quadraticCurveTo(kx + cx * sag, ky - (cy * arm) / 2, kx, ky - cy * arm);
 				g.stroke({ width, color: HOLD_TINT, alpha, cap: 'round' as const });
 			}
 		}

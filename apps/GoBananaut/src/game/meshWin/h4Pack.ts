@@ -1,50 +1,37 @@
 /**
  * H4 — THE LIFE-SUPPORT PACK. It fires: a squash as it pressurises, a jump
- * off the cell on the burst, a hover with a slow bob, and the two hoses — the
- * big one arcing over the left and the short vent on top — whipping after it and
- * settling on springs. The pack body is rigid metal; only the hoses bend.
+ * off the cell on the burst, a hover with a slow bob, and the left canister and
+ * top handle settling after it. The pack body stays rigid.
  *
- * And the machine reacts: the gauge's NEEDLE whips to the stop when it fires
- * and trembles back, the three KNOBS spin a quarter turn and settle, and the two
- * purple status LAMPS blink (spec.feature). A needle 2-3px wide is half a cell
- * of the first grid, so the grid is finer here (2.9px).
+ * The central dial catches the pressure surge and the violet status lights
+ * blink (spec.feature). The dial mesh uses a fine grid so its motion stays
+ * local to the painted hardware.
  */
 import { bump, flick, polygon, polyline, ramp, restPose, smoothstep, track, type MeshWinSpec, type Point, type Rig, boneOf, landFlick } from './meshRig';
 
 const T = { crouch: 120, rise: 300, fall: 640, land: 820, done: 1000 };
 const HOSE_PIVOT: Point = [118, 60];
-// the gauge needle: pivot on the dial's hub, tail to tip
-const NEEDLE_PIVOT: Point = [189.2, 121.5];
-const NEEDLE = polyline([[184, 128], [198, 106]], 2.5);
-// the three knobs under the gauge, and the two purple status lamps
-const KNOBS: Point[] = [[175, 182], [197, 180], [217, 177]];
-const KNOB_R = 7;
-const LAMPS: Point[] = [[157, 157], [221, 143]];
-const knob = (c: Point, i: number) => ({
-	name: `knob${i}`,
-	parent: 'core',
-	pivot: c,
-	priority: 4,
-	dist: (p: Point) => Math.max(0, Math.hypot(p[0] - c[0], p[1] - c[1]) - KNOB_R),
-	keep: (p: Point) => smoothstep((KNOB_R + 3 - Math.hypot(p[0] - c[0], p[1] - c[1])) / 5),
-});
+// A small rotating highlight on the central life-support dial.
+const NEEDLE_PIVOT: Point = [132, 112];
+const NEEDLE = polyline([[128, 119], [140, 101]], 2.5);
+// the central dial and one lower status light
+const LAMPS: Point[] = [[128, 112], [151, 203]];
 
 export const H4: MeshWinSpec = {
 	symbol: 'H4',
 	key: 'gbH4',
 	sprite: 'gbH4',
-	feetY: 222,
+	feetY: 240,
 	durationMs: T.done,
 	landMs: T.land,
 	hitMs: 240,
 	rig: {
-		grid: { x0: 22, y0: 22, x1: 234, y1: 230, cols: 72, rows: 72 },
+		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 72, rows: 72 },
 		soft: 4,
 		parts: [
 			{ name: 'core', pivot: [128, 222], dist: (p) => Math.min(14, polygon([[64, 60], [198, 60], [198, 228], [64, 228]])(p)) },
 			{
-				// the corrugated hose: from the pack's top edge up over the left and
-				// down its side
+				// The left canister and its top connector.
 				name: 'hose',
 				parent: 'core',
 				pivot: HOSE_PIVOT,
@@ -72,7 +59,6 @@ export const H4: MeshWinSpec = {
 				priority: 6,
 				dist: NEEDLE.dist,
 			},
-			...KNOBS.map(knob),
 		],
 	},
 	// the status lamps: saturated purple, in two small spots
@@ -87,11 +73,7 @@ export const H4: MeshWinSpec = {
 		vent: { pos: 6, neg: 7 },
 		// geometric (check_mesh_wins.mjs H4 --limits): needle +16.5 -14 — a 2px
 		// line turning through a still dial drags the face beside it — and the
-		// knobs +39/-37.5, +30/-32, +27.5/-26.5
 		needle: { pos: 12, neg: 12 },
-		knob0: { pos: 30, neg: 30 },
-		knob1: { pos: 27, neg: 27 },
-		knob2: { pos: 25, neg: 25 },
 	},
 	// landing: the hoses whip
 	land: (rig, t, k, pose) => {
@@ -125,14 +107,6 @@ export const H4: MeshWinSpec = {
 			-9.5 * track(t, [[0, 0], [T.crouch, 0], [220, 1, 'back'], [T.fall, 0.85], [T.land + 120, 0, 'inOut']]) +
 			1.5 * Math.sin(t / 18) * ramp(t, 240, 320) * (1 - ramp(t, T.fall - 60, T.fall)) +
 			5 * flick(t, T.land, 3.5, 4);
-		// the knobs spin in turn, and wind back — popping out a little as they
-		// turn, since a 7px knob turning alone moves its edge barely a pixel
-		KNOBS.forEach((_, i) => {
-			const k = b(`knob${i}`);
-			const on = track(t, [[0, 0], [T.crouch + i * 50, 0], [T.crouch + 180 + i * 50, 1, 'out'], [T.fall + i * 40, 1], [T.land + 60 + i * 30, 0, 'inOut']]);
-			k.along = k.across = 1 + 0.14 * bump(t, T.crouch + i * 50, T.crouch + 300 + i * 50);
-			k.angle = [25, 23, 21][i] * on + 3 * flick(t, T.land + 60 + i * 30, 3, 5);
-		});
 		// the lamps blink: on-off-on on the burst, a double flash on the landing
 		const blink = (at: number, len = 70) => (t >= at && t < at + len ? 1 : 0) * (1 - ramp(t, at + len - 20, at + len));
 		pose.feature = 0.9 * Math.max(blink(T.crouch + 60), blink(T.crouch + 190), blink(T.crouch + 320, 120), blink(T.land + 20), blink(T.land + 140));

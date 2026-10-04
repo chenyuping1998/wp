@@ -99,7 +99,7 @@ const BASE_WAYS = (config.numRows ?? []).reduce((a: number, b: number) => a * b,
 // leaves the baseline no matter what the board does, so reading it here would
 // have printed "a full 6x5 board is 1,024 ways" on all three buy cards.
 const WAYS = Math.pow(config.growth.maxRows, config.numReels).toLocaleString();
-const RTP = '96%';
+const RTP = `${(config.rtp * 100).toFixed(0)}%`;
 
 export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 	BASE: {

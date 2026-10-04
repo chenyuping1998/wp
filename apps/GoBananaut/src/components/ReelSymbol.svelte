@@ -89,6 +89,13 @@
 			stateGame.idleActor?.row === props.reelSymbol.symbolIndex,
 	);
 
+	// a landed Scatter while another reel is teasing (Symbol.svelte isMeshTease)
+	const isTeasing = $derived(
+		(props.reelSymbol.symbolState === 'static' || props.reelSymbol.symbolState === 'postWinStatic') &&
+			unmarkSymbolName(props.reelSymbol.rawSymbol.name) === 'S' &&
+			stateGame.board.some((r) => r.reelState.anticipating),
+	);
+
 	const isMeshWin = $derived(
 		props.reelSymbol.symbolState === 'win' && unmarkSymbolName(props.reelSymbol.rawSymbol.name) in MESH_WINS,
 	);
@@ -125,7 +132,8 @@
 		animating={(symbolInfo.type === 'spine' &&
 			(props.reelSymbol.symbolState === 'land' || props.reelSymbol.symbolState === 'win')) ||
 			isMeshWin ||
-			isIdleActing}
+			isIdleActing ||
+			isTeasing}
 	>
 		<Symbol
 			reelIndex={props.reelIndex}
@@ -134,6 +142,7 @@
 			{blur}
 			impact={landingImpact}
 			idleActing={isIdleActing}
+			teasing={isTeasing}
 			winKind={stateGame.winKinds[`${props.reelIndex},${props.reelSymbol.symbolIndex}`]}
 			{oncomplete}
 		/>

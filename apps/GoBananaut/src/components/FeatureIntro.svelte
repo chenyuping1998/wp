@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, Text, getContextApp } from 'pixi-svelte';
+	import { onDestroy } from 'svelte';
+
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
 	import { CanvasTextMetrics, TextStyle } from 'pixi.js';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { MainContainer } from 'components-layout';
@@ -24,6 +27,21 @@
 	// lives in the script block where it cannot see it.
 
 	const context = getContext();
+
+	// THE SCATTER ACTS while it is being introduced (2026-09-28): its mesh beats
+	// in turn — the idle tick, the win beat, the trigger's climbing flare — with
+	// a breath between, instead of a still picture. The layers are preloaded; if
+	// they are somehow not there yet, the still picture stays.
+	const app = getContextApp();
+	const meshReady = !!app.stateApp.loadedAssets?.gbSSheen && !!app.stateApp.loadedAssets?.gbSShadow;
+	const INTRO_BEATS = ['S_IDLE', 'S', 'S_IDLE', 'S_TRIGGER'];
+	let beat = $state(0);
+	let beatTimer: ReturnType<typeof setTimeout> | undefined;
+	const nextBeat = () => {
+		clearTimeout(beatTimer);
+		beatTimer = setTimeout(() => (beat += 1), 650);
+	};
+	onDestroy(() => clearTimeout(beatTimer));
 
 	const GOLD = 0xffd43b;
 	const HOT = 0xff8c1a;
@@ -348,7 +366,20 @@
 		{@const slot = slots[i]}
 		<Container x={slot.art.x} y={slot.art.y}>
 			<Graphics draw={(g) => panel.art(g, slot.art.w, slot.art.h)} />
-			{#if panel.symbolKey}
+			{#if panel.symbolKey && meshReady}
+				<Container>
+					{#key beat}
+						<SymbolMeshWin
+							symbolName={INTRO_BEATS[beat % INTRO_BEATS.length]}
+							x={slot.art.w / 2}
+							y={slot.art.h / 2}
+							size={Math.min(slot.art.w, slot.art.h) * 0.44}
+							speed={1}
+							oncomplete={nextBeat}
+						/>
+					{/key}
+				</Container>
+			{:else if panel.symbolKey}
 				<Sprite
 					key={panel.symbolKey}
 					anchor={0.5}

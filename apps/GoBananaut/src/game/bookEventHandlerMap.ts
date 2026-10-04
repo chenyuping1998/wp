@@ -326,6 +326,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// long enough to watch him do it.
 		if (bookEvent.positions.length >= 4 || isBoughtMode(stateBet.activeBetModeKey)) {
 			eventEmitter.broadcast({ type: 'mascotChestBeat' });
+			// GB100's monkey call over the strikes, cut to start and stop with them
+			eventEmitter.broadcast({ type: 'soundChestHoot' });
 		}
 		await waitForTimeout(3000);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });

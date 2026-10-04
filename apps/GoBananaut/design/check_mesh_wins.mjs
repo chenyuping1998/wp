@@ -84,7 +84,7 @@ const load = (spec) => {
 	} else {
 		// Bananaut's cut-outs ARE the sprite (no plate to cut them off), drawn at
 		// 1024px: the rig works in the 256 canvas, so scale into the PNG
-		const file = path.join(appRoot, 'static/assets/sprites/goBananasSymbolsV3', `${spec.symbol.toLowerCase()}.png`);
+		const file = path.join(appRoot, 'static/assets/sprites/goBananasSymbolsV3', spec.art ?? `${spec.symbol.toLowerCase()}.png`);
 		const png = PNG.sync.read(fs.readFileSync(file));
 		const k = png.width / core.CANVAS;
 		inkAt = (x, y) => {
@@ -171,6 +171,7 @@ for (const name of pick) {
 		});
 		fs.writeFileSync(file, JSON.stringify({
 			symbol: spec.symbol, mode: spec.mode ?? 'cut', feetY: spec.feetY, canvas: core.CANVAS,
+			art: spec.art ?? null, plateFile: spec.plate ? `${spec.symbol.toLowerCase()}_plate.png` : null,
 			flashTint: spec.flashTint ?? 0xffd75e,
 			featureTint: spec.feature?.tint ?? null,
 			uvs: Array.from(rig.uvs), indices: Array.from(rig.indices), frames,

@@ -37,6 +37,9 @@
 		amp: number;
 		/** alpha of the additive flare copy, 0 for none */
 		blink: number;
+		/** ms since the amount's well was struck, and how hard (bannerTitle.ts) */
+		wellT?: number;
+		wellAmp?: number;
 	};
 
 	const props: Props = $props();
@@ -79,6 +82,7 @@
 	$effect(() => {
 		// read every prop the frame depends on, so the effect tracks them
 		const { t, amp, blink, width, height } = props;
+		const wellT = props.wellT ?? -1, wellAmp = props.wellAmp ?? 0;
 		const tex = texture();
 		if (!mesh || !flare || !geometry || !positions) return;
 		if (tex && mesh.texture !== tex) {
@@ -86,7 +90,7 @@
 			flare.texture = tex;
 		}
 		const r = bannerRig();
-		skin(r, bannerTitlePose(r, t, amp), BANNER_TITLE.feetY, positions);
+		skin(r, bannerTitlePose(r, t, amp, wellT, wellAmp), BANNER_TITLE.feetY, positions);
 		geometry.getBuffer('aPosition').update();
 		flare.alpha = blink;
 		root.scale.set(width / BANNER_W, height / BANNER_H);

@@ -39,6 +39,9 @@
 		idleActing?: boolean;
 		/** how many reels this cell's win spans (WinWays), for the beat's size */
 		winKind?: number;
+		/** a Scatter already on the board while another reel teases the next one:
+		 *  it keeps ticking (S_IDLE, over and over) until the tease ends */
+		teasing?: boolean;
 	};
 
 	const props: Props = $props();
@@ -63,6 +66,11 @@
 	// ...and the idle beat of a Wild or Scatter while the board waits
 	const idleName = $derived(`${landName}_IDLE`);
 	const isMeshIdle = $derived(!!props.idleActing && idleName in MESH_WINS);
+	// THE TEASE (2026-10-02): while a reel spins on for the next Scatter, the
+	// Scatters already landed throb with it — the idle beat, replayed back to back
+	// and a little quicker, for as long as the tease lasts
+	const isMeshTease = $derived(!!props.teasing && idleName in MESH_WINS);
+	let teaseBeat = $state(0);
 
 	// A grow marker rides on an ordinary symbol rather than being one, so the
 	// maths sends "H2G" and getSymbolInfo already resolves that to H2's art. What
@@ -89,6 +97,18 @@
 			y={0}
 			{oncomplete}
 		/>
+	{:else if isMeshTease}
+		{#key teaseBeat}
+			<SymbolMeshWin
+				{symbolInfo}
+				symbolName={idleName}
+				reel={props.reelIndex}
+				x={0}
+				y={0}
+				speed={1.3}
+				oncomplete={() => (teaseBeat += 1)}
+			/>
+		{/key}
 	{:else if isMeshIdle}
 		<SymbolMeshWin {symbolInfo} symbolName={idleName} reel={props.reelIndex} x={0} y={0} />
 	{:else if isMeshLand}

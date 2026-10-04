@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import BgMesh from './BgMesh.svelte';
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 
 	const context = getContext();
@@ -14,6 +15,17 @@
 	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame' && !isHoldAndSpin);
 
 	let clock = $state(0);
+
+	// "背景太黑" (2026-09-28). Measured: the base plate averages 23.7 of 255 in
+	// luminance, and the vignette over it (Game.svelte, then 0.9) took the screen
+	// to ~14 — the hull read as a black hole behind the board. Each plate is
+	// opened up by its own amount (the feature plate is already the brightest,
+	// 39.4), and stays well under the reels so it never competes with them.
+	const EXPOSURE = {
+		base: { gain: 1.55, lift: 0.03 },
+		feature: { gain: 1.2, lift: 0.02 },
+		hs: { gain: 1.35, lift: 0.03 },
+	};
 
 	// ── slow ken-burns drift over a small overscan, so the still jungle art
 	// breathes instead of sitting dead behind the reels ────────────────────────
@@ -86,18 +98,20 @@
 <Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x0b0a08} zIndex={-3} />
 
 <!-- 金色日出叢林 base-game background -->
+<!-- each plate is a mesh (BgMesh): the cables hanging from the ceiling sway,
+     slow and wide in the free spins where everything floats -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
-	<Sprite key="gbBgBase" {...parallax} />
+	<Container><BgMesh textureKey="gbBgBase" {...parallax} {clock} sway={4} floating={false} exposure={EXPOSURE.base} /></Container>
 </FadeContainer>
 
 <!-- 烈日突擊 free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
-	<Sprite key="gbBgFeature" {...parallax} />
+	<Container><BgMesh textureKey="gbBgFeature" {...parallax} {clock} sway={10} floating planet exposure={EXPOSURE.feature} /></Container>
 </FadeContainer>
 
 <!-- 地底金庫 hold-and-spin background -->
 <FadeContainer show={isHoldAndSpin} duration={SECOND} zIndex={-1}>
-	<Sprite key="gbBgHoldAndSpin" {...parallax} />
+	<Container><BgMesh textureKey="gbBgHoldAndSpin" {...parallax} {clock} sway={3} floating={false} exposure={EXPOSURE.hs} /></Container>
 </FadeContainer>
 
 <!-- ambient bokeh drifting in front of whichever scene is showing -->

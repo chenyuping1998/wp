@@ -2,9 +2,13 @@
  * L1-L5 — THE LETTER TILES, A K Q J 10.
  *
  * Each letter is recessed into a pale stone tile bolted down at its four
- * corners, so there is nothing to cut out: PANEL mode (meshRig.panelParts). The
- * rim of the tile and the four bolts stay put, the stone inside is one mesh, and
- * the plain stone round each letter soaks up the stretch.
+ * corners. They were PANEL meshes — the whole stone face inside the bolts was
+ * the mesh — so on a win the stone, cracks and all, moved with the letter and
+ * the TILE read as wobbling. Asked for 2026-10-03: "必須是圖案本身動起來而不是
+ * 整個板子動". So the letter is CUT off its tile (design/cut_letters.py): the
+ * letter is the mesh (CUT mode), and the tile — left with the socket the letter
+ * was carved into — is drawn under it as a still plate (spec.plate). When a
+ * letter lifts, its empty slot shows beneath it; at rest the two make the tile.
  *
  * Low pays win on most spins, so they get a lighter, shorter beat than the high
  * pays — a small float off the tile, which suits a zero-g game — and each letter
@@ -16,7 +20,6 @@
 import {
 	bump,
 	flick,
-	panelParts,
 	polygon,
 	polyline,
 	ramp,
@@ -28,37 +31,32 @@ import {
 	type PartSpec,
 	type Point,
 	type Pose,
-	type Rect,
 	type Rig,
 } from './meshRig';
 
-// the tile's bevelled rim is ~10px; everything inside it is the panel
-const INNER: Rect = [12, 12, 244, 244];
-// the four hex bolts in the corners
-const PINS = [
-	{ c: [23, 23] as Point, r: 13 },
-	{ c: [233, 23] as Point, r: 13 },
-	{ c: [23, 233] as Point, r: 13 },
-	{ c: [233, 233] as Point, r: 13 },
-];
+// where the letters stand: their feet are at ~211 of the 256 canvas
+const FEET_Y = 212;
 // Short enough to finish inside WinWays' first pass (950ms), so a letter is
 // not still acting under the scrim when the next symbol's pass begins.
 const T = { crouch: 90, rise: 260, fall: 640, land: 760, done: 900 };
 const GRID = { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 };
 
-/** the beat every letter shares: squat, float off the tile, hang, settle */
+/** the beat every letter shares: squat, float up out of its slot, hang, settle.
+ *  The whole letter moves as one (the rigid move, so a bigger win's lift and
+ *  swell apply — meshRig.WIN_LEVELS); its limbs act on top of it. */
 const letterBeat = (rig: Rig, t: number): Pose => {
 	const pose = restPose(rig);
 	const air = track(t, [[0, 0], [T.crouch, 0], [T.rise, 1, 'back'], [T.fall, 1], [T.land, 0, 'in']]);
-	const panel = pose.bones[rig.bones.findIndex((b) => b.name === 'panel')];
-	// the panel's axis is UP, so `along` is the letter's height. These letters
-	// reach within 33px of the tile's top edge, so the stretch stays at 1.03.
-	panel.along = track(t, [[0, 1], [T.crouch, 0.94, 'out'], [180, 1.03, 'out'], [T.rise, 1], [T.land - 20, 1], [T.land + 40, 0.96, 'out'], [T.done, 1, 'out']]);
-	panel.across = track(t, [[0, 1], [T.crouch, 1.035, 'out'], [180, 0.975, 'out'], [T.rise, 1], [T.land - 20, 1], [T.land + 40, 1.025, 'out'], [T.done, 1, 'out']]);
 	// while it floats it bobs, so the hold is not a freeze
 	const hover = ramp(t, 230, 330) * (1 - ramp(t, 560, 650));
-	// 8px, not 4: asked for a bigger hop (2026-09-27); the tile stays nailed down
-	panel.dy = -8 * air - 3 * hover * Math.sin((2 * Math.PI * (t - T.rise)) / 420);
+	pose.rigid = {
+		sx: track(t, [[0, 1], [T.crouch, 1.05, 'out'], [180, 0.965, 'out'], [T.rise, 1], [T.land - 20, 1], [T.land + 40, 1.04, 'out'], [T.done, 1, 'out']]),
+		sy: track(t, [[0, 1], [T.crouch, 0.92, 'out'], [180, 1.05, 'out'], [T.rise, 1], [T.land - 20, 1], [T.land + 40, 0.94, 'out'], [T.done, 1, 'out']]),
+		rot: 0,
+		pop: 1 + 0.02 * air,
+		dx: 0,
+		dy: -8 * air - 3 * hover * Math.sin((2 * Math.PI * (t - T.rise)) / 420),
+	};
 	pose.air = Math.max(0, Math.min(1, air));
 	pose.flash = 0.3 * track(t, [[T.crouch, 0], [170, 1, 'out'], [480, 0, 'in']]);
 	pose.sheen = t >= 280 && t <= 700 ? (t - 280) / 420 : -1;
@@ -76,7 +74,7 @@ const stroke = (name: string, path: Point[], half: number, rampPx = 16): PartSpe
 	const [tx, ty] = path[path.length - 1];
 	return {
 		name,
-		parent: 'panel',
+		parent: 'body',
 		pivot: path[0],
 		axis: [tx - px, ty - py],
 		priority: 3,
@@ -94,16 +92,32 @@ const letter = (
 ): MeshWinSpec => ({
 	symbol,
 	key: `gb${symbol}`,
-	sprite: `gb${symbol}`,
-	mode: 'panel',
+	// the letter cut off its tile, acting over the tile it came from
+	sprite: `gb${symbol}Letter`,
+	art: `${symbol.toLowerCase()}_letter.png`,
+	plate: `gb${symbol}Plate`,
+	mode: 'cut',
 	dust: true,
-	feetY: INNER[3],
+	feetY: FEET_Y,
 	durationMs: T.done,
 	landMs: T.land,
 	hitMs: 170,
-	inked: (p) => inked(p) === 0,
-	rig: { grid: GRID, soft: 4, parts: [...panelParts(INNER, 16, PINS), ...parts] },
-	limits: { panel: { pos: 2.5, neg: 2.5 }, ...limits },
+	// a letter landing is a carved piece settling back into its slot: a short
+	// squash, not a body landing on its feet
+	landDepth: 0.07,
+	landSpread: 0.05,
+	landRebound: 0.03,
+	rig: {
+		grid: GRID,
+		soft: 4,
+		parts: [
+			// the whole letter: the air round it reads as far, so it does not drag
+			// the letter's edges
+			{ name: 'body', pivot: [128, FEET_Y], dist: (p) => Math.min(14, inked(p)) },
+			...parts,
+		],
+	},
+	limits: { body: { pos: 2.5, neg: 2.5 }, ...limits },
 	pose: (rig, t) => {
 		const pose = letterBeat(rig, t);
 		act(rig, pose, t);
@@ -150,7 +164,7 @@ export const L3: MeshWinSpec = {
 		[
 			{
 				name: 'tail',
-				parent: 'panel',
+				parent: 'body',
 				pivot: [128, 150],
 				axis: [78, 52],
 				priority: 3,
@@ -161,10 +175,9 @@ export const L3: MeshWinSpec = {
 		{ tail: { pos: 6, neg: 6 } },
 		(rig, pose, t) => {
 			bone(rig, pose, 'tail').angle = 6 * flick(t, 300, 2.8, 2.8) - 2.5 * flick(t, T.land, 3, 5);
-			bone(rig, pose, 'panel').angle = 1.8 * Math.sin((2 * Math.PI * (t - T.rise)) / 460) * ramp(t, 220, 320) * (1 - ramp(t, 560, 700));
+			bone(rig, pose, 'body').angle = 1.8 * Math.sin((2 * Math.PI * (t - T.rise)) / 460) * ramp(t, 220, 320) * (1 - ramp(t, 560, 700));
 		},
 	),
-	landDepth: 0.05,
 };
 
 // ---- J: the hook swings like a pendulum from the stem ------------------------
@@ -174,7 +187,7 @@ export const L4 = letter(
 	[
 		{
 			name: 'hook',
-			parent: 'panel',
+			parent: 'body',
 			pivot: [176, 112],
 			axis: [0, 1],
 			priority: 3,
@@ -196,7 +209,7 @@ export const L5 = letter(
 	[
 		{
 			name: 'one',
-			parent: 'panel',
+			parent: 'body',
 			pivot: [80, 208],
 			axis: [0, -1],
 			priority: 3,
@@ -204,7 +217,7 @@ export const L5 = letter(
 		},
 		{
 			name: 'zero',
-			parent: 'panel',
+			parent: 'body',
 			pivot: [164, 210],
 			axis: [0, -1],
 			priority: 3,

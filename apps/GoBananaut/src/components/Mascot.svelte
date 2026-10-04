@@ -19,7 +19,10 @@
 	import { Container, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
-	import { onDestroy } from 'svelte';
+	import { onDestroy, untrack } from 'svelte';
+
+	import ThrusterPuff from './ThrusterPuff.svelte';
+	import MascotPhysicsFeed from './MascotPhysicsFeed.svelte';
 
 	import { getContext } from '../game/context';
 	import { FRAME_SCALE } from '../game/constants';
@@ -536,6 +539,42 @@
 	// `*_eye` layer by pattern — it was head_1_eye last delivery and head_3_eye in
 	// this one, and a hard-coded box would have put the glow on his chin.
 	const GOGGLE = { x: -12, y: 837, halfWidth: 117, halfHeight: 88 };
+	// the backpack's thruster, skeleton units, y up (generate_monkey_spine.mjs
+	// prints it as NOZZLE)
+	const NOZZLE = { x: -205, y: 764 };
+
+	// ── THE THRUSTER (2026-10-02) ─────────────────────────────────────────────
+	// In the free spins the pack fires a puff each time his drift turns toward
+	// the right — out of its left wall, so it reads as what pushed him
+	// (ThrusterPuff, a plume mesh). It comes off the nozzle where it is at that
+	// instant and stays in the world, so he drifts away from his own exhaust.
+	let puffs = $state<{ id: number; x: number; y: number; angle: number; length: number }[]>([]);
+	let puffId = 0;
+	let lastSwayV = 0;
+	$effect(() => {
+		const t = floatClock;
+		const xf = floatXf;
+		if (!xf || floatEase < 0.6 || !inFreeGame) {
+			lastSwayV = 0;
+			return;
+		}
+		const v = Math.cos((t / SWAY_MS) * Math.PI * 2 + 1.7);
+		if (lastSwayV < 0 && v >= 0) {
+			const lx = NOZZLE.x * xf.scale;
+			const ly = xf.midY - NOZZLE.y * xf.scale;
+			const c = Math.cos(xf.rotation), s = Math.sin(xf.rotation);
+			const puff = {
+				id: puffId++,
+				x: xf.x + lx * c - ly * s,
+				y: xf.y + lx * s + ly * c,
+				// out to the left and a little up
+				angle: Math.PI + 0.25 + xf.rotation,
+				length: ART.height * 0.17 * xf.scale,
+			};
+			untrack(() => (puffs = [...puffs, puff]));
+		}
+		lastSwayV = v;
+	});
 	const GOGGLE_GREEN = 0x63ff9c;
 	// Slow in, hold, slow out. A visor that snaps on is a fault light; one that
 	// warms up is a machine noticing something.
@@ -655,15 +694,18 @@
 		clearInterval(breakTimer);
 		cancelAnimationFrame(flipRaf);
 	});
-	const rest = () => (inFreeGame ? 'spacewalk' : 'idle');
+	// in the free spins: ZERO-G (2026-10-02) — the neutral body posture, arms
+	// floating, knees drawn, the suit breathing — rather than the spacewalk's
+	// stride; a body with nothing under it does not walk
+	const rest = () => (inFreeGame ? 'zerog' : 'idle');
 
 	// ...and following the game in and out of the feature while he is at rest.
 	// Only from rest: if the switch lands mid-gesture (the throw that carries the
 	// scene into the feature, a cheer on the last spin), that gesture ends in
 	// rest() and picks the right one then.
 	$effect(() => {
-		if (inFreeGame && animationName === 'idle') play('spacewalk', true);
-		else if (!inFreeGame && animationName === 'spacewalk') play('idle', true);
+		if (inFreeGame && animationName === 'idle') play('zerog', true);
+		else if (!inFreeGame && animationName === 'zerog') play('idle', true);
 	});
 
 	// He makes a noise for two things, and stays quiet for everything else.
@@ -711,7 +753,7 @@
 		// throw or a flip is not interrupted for it.
 		growMarkersLift: () => {
 			if (!placement) return;
-			if (animationName !== 'idle' && animationName !== 'spacewalk') return;
+			if (animationName !== 'idle' && animationName !== 'zerog') return;
 			play('push', false);
 		},
 		// The gorilla, for the biggest way into the feature. Deliberately not the
@@ -773,6 +815,18 @@
 		zIndex moves out here with it: it is the wrapper that is now the sibling
 		BoardFrame and the rest are sorted against.
 	-->
+	<!-- the thruster's puffs, just under him -->
+	{#each puffs as puff (puff.id)}
+		<Container zIndex={-1.5}>
+			<ThrusterPuff
+				x={puff.x}
+				y={puff.y}
+				angle={puff.angle}
+				length={puff.length}
+				oncomplete={() => (puffs = puffs.filter((p) => p.id !== puff.id))}
+			/>
+		</Container>
+	{/each}
 	<Container
 		x={floatXf.x}
 		y={floatXf.y}
@@ -785,6 +839,8 @@
 		y={floatXf.midY}
 		scale={floatXf.scale}
 	>
+		<!-- the float, handed to the skeleton's physics (everything loose trails it) -->
+		<MascotPhysicsFeed xf={() => floatXf} pivotY={-ART.height / 2} />
 		<SpineTrack
 			trackIndex={0}
 			{animationName}

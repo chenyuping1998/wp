@@ -1,41 +1,23 @@
-/**
- * H1 — THE RINGED PLANET. A ball has nothing loose to hang secondary motion on,
- * so two things carry it:
- *
- *   - a SPIN. The surface inside the rim slides along the bands while the rim
- *     itself stays put, so the storm and the stripes travel across the face the
- *     way a turning planet's do. The slide runs along the ring's own direction:
- *     the bands and the ring's front arc both lie in the equator, so a slide
- *     along them keeps the ring straight instead of kinking it.
- *   - a jelly BOUNCE, all rigid: a squash, a pop off the cell, a wobble at the
- *     top and a squash on the way back, with the ring's two free tips flapping
- *     after it on springs.
- */
+/** H1 — golden astronaut helmet. The visor highlight slides under the rigid
+ * protective rim, the side fittings wobble on landing, and the whole helmet
+ * bounces with a soft squash. The legacy bone names are retained for the mesh
+ * animation data, but their regions now belong to helmet details. */
 import { circle, flick, polyline, ramp, bump, restPose, smoothstep, track, type MeshWinSpec, type Rig, type Point, boneOf, landFlick } from './meshRig';
 
 const T = { crouch: 110, rise: 300, fall: 620, land: 800, done: 1000 };
 const C: Point = [126, 128];
 const R = 85;
-// the slide direction: along the ring, left-low to right-high
+// Diagonal visor reflection, inside the protective rim.
 const SLIDE: Point = [0.908, -0.42];
 
-// from where each tip leaves the disc to its end (the disc's rim is at x 52 on
-// the left and x 200 on the right at these heights)
+// Side fittings at either end of the helmet rim.
 const RING_L = polyline([[56, 168], [24, 187]], 10);
 const RING_R = polyline([[200, 101], [231, 80]], 8);
 
-// THE STORM: the spiral under the ring's front arc (the drawing's great red
-// spot), an ellipse ~22x15 round (128,163). Rotating it with its weight fading
-// toward its edge is a TWIST — the middle turns further than the rim — which is
-// what a vortex looks like.
+// A small reflected patch low on the visor twists under the larger sheen.
 const STORM: Point = [128, 163];
 const stormR = (p: Point) => Math.hypot((p[0] - STORM[0]) / 24, (p[1] - STORM[1]) / 16);
-// THE NORTHERN BANDS (above the bright equator, y < ~112) slide further than
-// the rest while it spins: a planet's latitudes turn at different speeds, and
-// bands shearing past each other is the tell that it is a ball of gas.
-// Its weight fades toward the rim on the SAME curve as the surface's own keep:
-// a child's kept weight rides its parent's whole move, so a band that faded on
-// a curve of its own tore a cliff against the rim (15% at (170,86)).
+// Upper visor highlight travels a little ahead of the main reflection.
 const northKeep = (p: Point) =>
 	smoothstep((112 - p[1]) / 16) * smoothstep((82 - Math.hypot(p[0] - C[0], p[1] - C[1])) / 30);
 
@@ -43,20 +25,18 @@ export const H1: MeshWinSpec = {
 	symbol: 'H1',
 	key: 'gbH1',
 	sprite: 'gbH1',
-	feetY: 214,
+	feetY: 240,
 	durationMs: T.done,
 	landMs: T.land,
 	hitMs: 220,
 	rig: {
-		// finer than the others: the ring's free tips are only ~30x10px each, and
-		// at 4.4px a cell the left one owned 11 inked vertices (the gate wants 12)
-		grid: { x0: 22, y0: 36, x1: 234, y1: 220, cols: 60, rows: 52 },
+		// Full canvas keeps the oversized helmet and both side fittings visible.
+		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 64, rows: 64 },
 		soft: 4,
 		parts: [
 			{ name: 'core', pivot: C, dist: (p) => Math.min(14, circle(C, R)(p)) },
 			{
-				// the face inside the rim: fully free at 52px from the centre, handing
-				// back to the rim by 82
+				// Visor reflection moves inside the fixed metal rim.
 				name: 'surface',
 				parent: 'core',
 				pivot: C,
@@ -112,7 +92,7 @@ export const H1: MeshWinSpec = {
 		storm: { pos: 24, neg: 24 },
 		north: { pos: 0.5, neg: 0.5 },
 	},
-	// landing: the ring's free tips flap as the planet hits
+	// Side fittings wobble as the helmet lands.
 	land: (rig, t, k, pose) => {
 		const f = 4 * k * landFlick(t);
 		boneOf(rig, pose, 'ring_l').angle = -f;
@@ -134,25 +114,22 @@ export const H1: MeshWinSpec = {
 			dy: -7 * air,
 		};
 
-		// the spin: out along the bands and most of the way back, on a spring
+		// A restrained slide of the visor reflection, then spring back.
 		// 4.5px: 7 folded the fade band to 41% (check_mesh_wins)
 		const spin = 4.5 * ramp(t, 140, 520) - 4.5 * ramp(t, 560, 900) + 0.8 * flick(t, 520, 2.2, 4);
 		const surface = b('surface');
 		surface.dx = spin * SLIDE[0];
 		surface.dy = spin * SLIDE[1];
 
-		// the storm winds up as the planet spins and unwinds after — twisting the
-		// same way the bands slide (- is anticlockwise on screen)
+		// The lower reflected patch twists and unwinds.
 		b('storm').angle = -18 * ramp(t, 120, 560) + 18 * ramp(t, 600, 940) - 3 * flick(t, 560, 2.4, 3.4);
-		// the northern bands run ahead of the rest
+		// The upper visor highlight runs ahead of the rest.
 		// 1.6px: 3 folded the strip between them and the fixed rim to 40%
 		const shear = 1.6 * ramp(t, 160, 520) - 1.6 * ramp(t, 580, 920);
 		b('north').dx = shear * SLIDE[0];
 		b('north').dy = shear * SLIDE[1];
 
-		// the tips trail the bounce: down when it rises, up when it lands — and
-		// the right tip a beat after the left, so the flap RUNS round the ring as a
-		// wave instead of both ends flapping as one
+		// The side fittings settle a beat apart.
 		const flapAt = (lag: number) => 6 * flick(t, T.crouch + 40 + lag, 2.4, 3) - 5 * flick(t, T.land + lag, 3, 4.5);
 		b('ring_l').angle = -flapAt(0);
 		b('ring_r').angle = flapAt(130);

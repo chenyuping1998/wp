@@ -2,13 +2,17 @@
 	export type EmitterEventBoardFrame =
 		| { type: 'boardFrameGlowShow' }
 		| { type: 'boardFrameGlowHide' }
-		// something slammed into the frame — kick it and flash the brass
-		| { type: 'boardFrameImpact'; strength?: number };
+		// something slammed into the frame — kick it and flash the brass. With a
+		// `reel`, the housing also DENTS over that column (FrameMesh); `out` bows
+		// it outward instead (a reel growing into it), with no kick at all.
+		| { type: 'boardFrameImpact'; strength?: number; reel?: number; out?: boolean };
 </script>
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Graphics, Sprite, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, SpineProvider, SpineTrack } from 'pixi-svelte';
+
+	import FrameMesh, { type FrameDent } from './FrameMesh.svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBet } from 'state-shared';
 
@@ -47,6 +51,18 @@
 	// wild explode (1) or a transition slam (1.4) can overlap one, and without
 	// this the small request would cancel the big recoil mid-swing.
 	let impactEnergy = 0;
+
+	// ── the shell giving where it is hit (FrameMesh) ──────────────────────────
+	let dents = $state<FrameDent[]>([]);
+	let breathAt = $state(0);
+	const DENT_KEEP_MS = 700;
+	// a reel's column in the frame texture: the frame is FRAME_SCALE.x times the
+	// board's width, centred on it, and the board is five equal columns
+	const reelU = (reel: number) => 0.5 + ((reel - 2) * 0.2) / FRAME_SCALE.x;
+	const dent = (d: Omit<FrameDent, 't0'>) => {
+		const now = performance.now();
+		dents = [...dents.filter((x) => now - x.t0 < DENT_KEEP_MS), { ...d, t0: now }];
+	};
 
 	const runImpact = (strength: number) => {
 		if (strength < impactEnergy) return;
@@ -108,7 +124,26 @@
 		boardFrameGlowHide: () => {
 			if (animationName) animationName = 'reelhouse_glow_exit';
 		},
-		boardFrameImpact: ({ strength }) => runImpact(strength ?? 1),
+		boardFrameImpact: ({ strength, reel, out }) => {
+			if (reel !== undefined) {
+				const s = strength ?? 1;
+				dent({ kind: 'column', at: reelU(reel), depth: out ? 5 : 4 + 10 * Math.min(1, s), out });
+				// the hit is taken by the dent now; the whole housing only shivers
+				if (!out) runImpact(s * 0.4);
+				return;
+			}
+			runImpact(strength ?? 1);
+		},
+		// each fist of the chest beat lands on the rail beside him — the same
+		// timings as the skeleton (generate_monkey_spine.mjs BEAT_START / BEAT_GAP)
+		mascotChestBeat: () => {
+			if (!context.stateGame.mascotThrowOrigin) return;
+			for (let i = 0; i < 6; i += 1)
+				setTimeout(() => dent({ kind: 'side', at: 0.35 + 0.08 * (i % 2), depth: 7 + i }), 480 + 300 * i);
+		},
+		winUpdate: ({ winLevelData }) => {
+			if (winLevelData.type === 'big') breathAt = performance.now();
+		},
 	});
 </script>
 
@@ -155,25 +190,18 @@
 	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE.y}
 />
 
-<Sprite
-	key="gbFrameEdge"
-	anchor={0.5}
-	x={context.stateGameDerived.boardLayout().x + impact.x}
-	y={context.stateGameDerived.boardLayout().y + impact.y}
-	width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE.x}
-	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE.y}
-/>
-
-{#if impact.flash > 0}
-	<!-- additive copy of the brass edge = the whole housing rings white-hot -->
-	<Sprite
-		key="gbFrameEdge"
-		anchor={0.5}
+<!-- the housing's edge as a mesh, with its additive flash copy on the same
+     geometry: it dents where it is hit rather than only jumping as one piece.
+     Its own container, so the mesh keeps this slot when it attaches. -->
+<Container>
+	<FrameMesh
+		textureKey="gbFrameEdge"
 		x={context.stateGameDerived.boardLayout().x + impact.x}
 		y={context.stateGameDerived.boardLayout().y + impact.y}
 		width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE.x}
 		height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE.y}
-		blendMode="add"
-		alpha={impact.flash}
+		{dents}
+		{breathAt}
+		flash={impact.flash}
 	/>
-{/if}
+</Container>

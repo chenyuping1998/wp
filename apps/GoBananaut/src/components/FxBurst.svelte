@@ -12,8 +12,9 @@
 		// overall size multiplier — 1 fits one symbol cell
 		scale?: number;
 		delay?: number;
-		// 'gold' celebration vs 'jungle' (leaf shards mixed in) for blasts
-		flavour?: 'gold' | 'jungle';
+		// 'gold' celebration vs 'jungle' (leaf shards mixed in) for blasts;
+		// 'space' is ice and white, no leaves — the airlock's (EntryReveal)
+		flavour?: 'gold' | 'jungle' | 'space';
 		oncomplete?: () => void;
 	};
 
@@ -22,6 +23,7 @@
 	const DURATION = 850;
 	const GOLD = [0xffd75e, 0xfff7d1, 0xffb04a, 0xffe98a];
 	const JUNGLE = [0xffd75e, 0xfff7d1, 0x8fbf4a, 0xffb04a];
+	const SPACE = [0xc4f1ff, 0xffffff, 0x8fe4ff, 0x3fb2d4];
 
 	type Spark = {
 		angle: number;
@@ -40,7 +42,7 @@
 		speed: 150 + Math.random() * 130,
 		size: 26 + Math.random() * 26,
 		life: 0.55 + Math.random() * 0.3,
-		color: (props.flavour === 'jungle' ? JUNGLE : GOLD)[i % 4],
+		color: (props.flavour === 'jungle' ? JUNGLE : props.flavour === 'space' ? SPACE : GOLD)[i % 4],
 		spin: (Math.random() - 0.5) * 6,
 		leaf: props.flavour === 'jungle' && i % 3 === 0,
 		delay: Math.random() * 0.09,

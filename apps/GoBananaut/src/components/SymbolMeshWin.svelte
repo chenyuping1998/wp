@@ -181,7 +181,7 @@
 						const now = performance.now();
 						if (now - lastKnock > 150) {
 							lastKnock = now;
-							context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.25 + 0.35 * leap.slam * leapK });
+							context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.25 + 0.35 * leap.slam * leapK, reel: props.reel });
 						}
 						dust = true;
 					},
@@ -216,6 +216,11 @@
 		const sheenUvs = new Float32Array(rig.uvs.length);
 		const sheenGeometry = new MeshGeometry({ positions: sheenPositions, uvs: sheenUvs, indices: rig.indices });
 
+		// the tile a cut subject came off (the letters): drawn under it and never
+		// moved — counter-scaled below against the root's knock
+		const plateTex = spec.plate ? tex(spec.plate) : undefined;
+		const plate = plateTex ? new Sprite(plateTex) : null;
+		if (plate) plate.setSize(CANVAS, CANVAS);
 		const shadow = shadowTex ? new Sprite(shadowTex) : null;
 		if (shadow) shadow.alpha = 0;
 		const subject = new Mesh({ geometry, texture: subjectTex });
@@ -264,7 +269,7 @@
 			trail.alpha = 0;
 			trail.tint = TRAIL_TINT;
 		}
-		const layers = landing ? [subject] : [shadow, trail, subject, feature, flash, sheen, ...sparks.map((k) => k.s)];
+		const layers = landing ? [plate, subject] : [plate, shadow, trail, subject, feature, flash, sheen, ...sparks.map((k) => k.s)];
 		for (const layer of layers) if (layer) content.addChild(layer);
 		root.addChild(content);
 		const baseX = props.x ?? 0, baseY = props.y ?? 0;
@@ -317,6 +322,12 @@
 				inY = Math.max(0, -room - y0 * fitIn) - Math.max(0, y1 * fitIn - room);
 			}
 			root.scale.set(fit * pose.plateHit * fitIn);
+			// the plate holds still whatever the subject's knock does
+			if (plate) {
+				const s = 1 / (pose.plateHit * fitIn);
+				plate.scale.set((CANVAS / plate.texture.width) * s, (CANVAS / plate.texture.height) * s);
+				plate.position.set((CANVAS * (1 - s)) / 2, (CANVAS * (1 - s)) / 2);
+			}
 			root.rotation = rot;
 			if (inked) root.position.set(baseX + inX * fit, baseY + inY * fit);
 

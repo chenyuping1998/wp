@@ -217,9 +217,22 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_sheen.png', import.meta.url).href,
 		preload: true,
 	},
-	gbL1Glow: {
+	// the letter cut off its tile (design/cut_letters.py), the tile left with
+	// the letter's socket, and the letter's drop shadow: the win moves the
+	// letter, never the tile
+	gbL1Letter: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_letter.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL1Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_shadow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL1Sheen: {
@@ -227,9 +240,22 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_sheen.png', import.meta.url).href,
 		preload: true,
 	},
-	gbL2Glow: {
+	// the letter cut off its tile (design/cut_letters.py), the tile left with
+	// the letter's socket, and the letter's drop shadow: the win moves the
+	// letter, never the tile
+	gbL2Letter: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_letter.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_shadow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL2Sheen: {
@@ -237,9 +263,22 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_sheen.png', import.meta.url).href,
 		preload: true,
 	},
-	gbL3Glow: {
+	// the letter cut off its tile (design/cut_letters.py), the tile left with
+	// the letter's socket, and the letter's drop shadow: the win moves the
+	// letter, never the tile
+	gbL3Letter: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_letter.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_shadow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL3Sheen: {
@@ -247,9 +286,22 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_sheen.png', import.meta.url).href,
 		preload: true,
 	},
-	gbL4Glow: {
+	// the letter cut off its tile (design/cut_letters.py), the tile left with
+	// the letter's socket, and the letter's drop shadow: the win moves the
+	// letter, never the tile
+	gbL4Letter: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_letter.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_shadow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL4Sheen: {
@@ -257,9 +309,22 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_sheen.png', import.meta.url).href,
 		preload: true,
 	},
-	gbL5Glow: {
+	// the letter cut off its tile (design/cut_letters.py), the tile left with
+	// the letter's socket, and the letter's drop shadow: the win moves the
+	// letter, never the tile
+	gbL5Letter: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_letter.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Plate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5Shadow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_shadow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL5Sheen: {

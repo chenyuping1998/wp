@@ -226,7 +226,7 @@ for (const spec of Object.values(MESH_WINS)) {
 	if (baked.has(spec.key)) continue;
 	baked.add(spec.key);
 	const name = spec.symbol.toLowerCase();
-	const art = readCanvas(`${name}.png`);
+	const art = readCanvas(spec.art ?? `${name}.png`);
 	const W = art.width, H = art.height, N = W * H;
 
 	if (spec.mode === 'panel') {

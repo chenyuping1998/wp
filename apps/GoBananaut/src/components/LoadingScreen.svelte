@@ -11,6 +11,8 @@
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import FeatureIntro from './FeatureIntro.svelte';
+	import BgMesh from './BgMesh.svelte';
+	import ZeroGTitle from './ZeroGTitle.svelte';
 
 	type Props = {
 		onloaded: () => void;
@@ -31,6 +33,7 @@
 
 	let loadingType = $state<'start' | 'transition'>('start');
 	let pulseTick = $state(0);
+
 
 	// A FULL board's ways — 6^5 = 7,776 — for the strapline and the tip that
 	// quote it. It cannot come from numRows: that array is the BASELINE and never
@@ -188,6 +191,13 @@
 		dropShadow: { color: 0x000000, alpha: 0.55, blur: 6, angle: Math.PI / 2, distance: 4 },
 	};
 
+	// whether the display face is in yet (pulseTick re-checks it), so the title
+	// can be laid out again with the real letter widths
+	const fontReady = $derived.by(() => {
+		pulseTick;
+		return typeof document !== 'undefined' && document.fonts.check(`${TITLE_SIZE}px ${GAME_FONT}`);
+	});
+
 	const titleMetrics = $derived.by(() => {
 		pulseTick; // re-measure once the display face has loaded
 		const name = CanvasTextMetrics.measureText(TITLE_MAIN, new TextStyle(titleStyle)).width;
@@ -199,15 +209,21 @@
 <!-- Go Bananaut branded loading screen -->
 <FadeContainer show={loadingType === 'start'}>
 	<MainContainer>
-		<!-- Background image (山水 theme) -->
-		<Sprite
-			key="gbBgBase"
-			anchor={0.5}
-			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.5}
-			width={context.stateLayoutDerived.mainLayout().width}
-			height={context.stateLayoutDerived.mainLayout().height}
-		/>
+		<!-- the hull, as in the game: a mesh (BgMesh), its ceiling cables swaying,
+		     opened up the same amount as the base game's plate -->
+		<Container>
+			<BgMesh
+				textureKey="gbBgBase"
+				x={0}
+				y={0}
+				width={context.stateLayoutDerived.mainLayout().width}
+				height={context.stateLayoutDerived.mainLayout().height}
+				clock={pulseTick * 0.032}
+				sway={4}
+				floating={false}
+				exposure={{ gain: 1.55, lift: 0.03 }}
+			/>
+		</Container>
 
 		<!-- Dark overlay for readability -->
 		<Graphics
@@ -215,7 +231,8 @@
 				const w = context.stateLayoutDerived.mainLayout().width;
 				const h = context.stateLayoutDerived.mainLayout().height;
 				g.clear();
-				g.beginFill(0x1a0505, 0.68);
+				// lighter than it was (0.68): the hull behind is a moving thing now
+				g.beginFill(0x1a0505, 0.55);
 				g.drawRect(0, 0, w, h);
 				g.endFill();
 
@@ -264,20 +281,19 @@
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.155}
 		>
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2}
-				style={titleStyle}
-				text={TITLE_MAIN}
-			/>
-
-
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2 + titleMetrics.name + TITLE_GAP}
-				style={accentStyle}
-				text={TITLE_ACCENT}
-			/>
+			<!-- the letters float in and dock, and drift on (ZeroGTitle). Re-laid
+			     out once the display face has loaded: the letters are measured one
+			     at a time, and the fallback face's widths would stick -->
+			{#key fontReady}
+				<ZeroGTitle
+					segments={[
+						{ text: TITLE_MAIN, style: titleStyle },
+						{ text: TITLE_ACCENT, style: accentStyle },
+					]}
+					gap={TITLE_GAP}
+					delay={250}
+				/>
+			{/key}
 		</Container>
 	</MainContainer>
 </FadeContainer>

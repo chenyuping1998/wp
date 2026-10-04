@@ -1,11 +1,10 @@
 /**
  * S — THE BEACON. The Scatter is a caged warning lamp, so it does what a
  * beacon does: it charges (a squeeze), FLARES (the globe swells and flashes
- * hot orange, twice, like a pulse), and the loose parts round it react — the
- * blue hood flaps open off the globe and the coiled cable swings.
+ * red-orange, twice, like a pulse), and the loose parts round it react — the
+ * blue steel hood lifts off the globe and the coiled cable swings.
  *
- * The flash is orange, not gold: hot orange is the Scatter's colour and no one
- * else's in this game (src/game/palette.ts).
+ * The signal is red-orange, distinct from H1's golden visor.
  *
  * The bulb BREATHES: the glass inside the cage swells with each flare while the
  * cage's outer ring holds, so the bars bow outward with it — a lamp under
@@ -14,52 +13,51 @@
 import { bump, circle, flick, polygon, polyline, ramp, restPose, smoothstep, track, type MeshWinSpec, type Point, type Rig, boneOf, landFlick } from './meshRig';
 
 const T = { charge: 130, flare: 290, flare2: 560, done: 1000 };
-const GLOBE: Point = [160, 118];
-const HINGE: Point = [110, 72];
-const CABLE = polyline([[52, 140], [44, 196]], 11);
+const GLOBE: Point = [153, 120];
+const HINGE: Point = [61, 95];
+const CABLE = polyline([[43, 128], [25, 164], [30, 198], [62, 221]], 12);
 
 export const S: MeshWinSpec = {
 	symbol: 'S',
 	key: 'gbS',
 	sprite: 'gbS',
-	flashTint: 0xff9a3c,
-	feetY: 226,
+	flashTint: 0xff6136,
+	feetY: 242,
 	durationMs: T.done,
 	landMs: T.flare2,
 	hitMs: T.flare,
 	rig: {
-		grid: { x0: 26, y0: 20, x1: 230, y1: 234, cols: 46, rows: 48 },
+		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 56, rows: 56 },
 		soft: 4,
 		parts: [
-			{ name: 'core', pivot: GLOBE, dist: (p) => Math.min(14, circle(GLOBE, 64)(p)) },
+			{ name: 'core', pivot: GLOBE, dist: (p) => Math.min(14, circle(GLOBE, 82)(p)) },
 			{
 				name: 'hood',
 				parent: 'core',
 				pivot: HINGE,
 				axis: [-1, -0.4],
 				priority: 1,
-				dist: polygon([[28, 18], [120, 18], [112, 66], [100, 136], [36, 136]]),
-				// fading at the bottom too, where the hood meets the cable
-				keep: (p) => smoothstep((Math.hypot(p[0] - HINGE[0], p[1] - HINGE[1]) - 8) / 20) * smoothstep((134 - p[1]) / 26),
+				dist: polygon([[0, 0], [155, 0], [164, 35], [120, 69], [69, 111], [0, 104]]),
+				// The hinge and the cable connection stay on the rigid housing.
+				keep: (p) => smoothstep((Math.hypot(p[0] - HINGE[0], p[1] - HINGE[1]) - 8) / 20) * smoothstep((108 - p[1]) / 24),
 			},
 			{
 				name: 'cable',
 				parent: 'core',
-				pivot: [52, 140],
-				axis: [-8, 56],
+				pivot: [43, 128],
+				axis: [-8, 60],
 				priority: 2,
 				dist: CABLE.dist,
 				keep: (p) => smoothstep((CABLE.along(p) - 2) / 14),
 			},
 			{
-				// the glass and the bars over it, free in the middle and handing back
-				// to the cage's rim (r 64) over the last 18px
+				// The glass breathes inside the cage; the rigid bars take less motion.
 				name: 'bulb',
 				parent: 'core',
 				pivot: GLOBE,
 				priority: 2,
-				dist: (p) => Math.max(circle(GLOBE, 50)(p), Math.max(0, 108 - p[0])),
-				keep: (p) => smoothstep((62 - Math.hypot(p[0] - GLOBE[0], p[1] - GLOBE[1])) / 18),
+				dist: (p) => Math.max(circle(GLOBE, 64)(p), Math.max(0, 80 - p[0])),
+				keep: (p) => smoothstep((80 - Math.hypot(p[0] - GLOBE[0], p[1] - GLOBE[1])) / 20),
 			},
 		],
 	},
@@ -72,8 +70,12 @@ export const S: MeshWinSpec = {
 	// landing: the hood rattles, the cable swings — both harder with each
 	// Scatter the spin has shown (k climbs to 1.6, see ReelSymbol)
 	land: (rig, t, k, pose) => {
+		const press = Math.max(0, track(t, [[0, 0], [70, 1, 'out'], [155, 0, 'out']]));
+		const bulb = boneOf(rig, pose, 'bulb');
+		bulb.along = 1 - 0.03 * press * k;
+		bulb.across = 1 + 0.02 * press * k;
 		boneOf(rig, pose, 'hood').angle = -2.6 * k * landFlick(t, 30);
-		boneOf(rig, pose, 'cable').angle = 8 * k * landFlick(t, 40);
+		boneOf(rig, pose, 'cable').angle = 4 * k * landFlick(t, 40);
 	},
 	pose: (rig: Rig, t: number) => {
 		const pose = restPose(rig);
@@ -93,9 +95,9 @@ export const S: MeshWinSpec = {
 		// the hood lifts off the globe on each flare (- opens it up and out)
 		b('hood').angle = -4 * Math.max(0, flick(t, T.charge + 60, 2.2, 2.6)) - 2.6 * Math.max(0, flick(t, T.flare2 - 40, 2.4, 3.2)) + 1.2 * flick(t, 800, 2.6, 5);
 		// the cable swings, lagging the body
-		b('cable').angle = 12 * flick(t, T.flare, 1.8, 2.4);
+		b('cable').angle = 6 * flick(t, T.flare, 1.8, 2.4);
 		// the bulb swells with each flare, a hair behind it
-		b('bulb').along = b('bulb').across = 1 + 0.07 * (bump(t, T.charge + 40, T.flare + 240) + 0.6 * bump(t, T.flare2 - 20, T.flare2 + 220));
+		b('bulb').along = b('bulb').across = 1 + 0.05 * (bump(t, T.charge + 40, T.flare + 240) + 0.6 * bump(t, T.flare2 - 20, T.flare2 + 220));
 
 		pose.air = 0.6 * pulse;
 		// the flare itself: brighter than anyone else's flash, it is the Scatter
@@ -146,11 +148,11 @@ export const S_TRIGGER: MeshWinSpec = {
 
 		// the hood lifts on every pulse, higher each time, and flaps shut after the flare
 		let hood = 0;
-		PULSES.forEach(([t0, k]) => (hood -= Math.min(1, k) * 4.2 * Math.max(0, flick(t, t0 - 60, 2.4, 3.2))));
-		b('hood').angle = Math.max(-4.4, hood) + 1.4 * flick(t, TT.flare + 380, 2.6, 5);
-		b('cable').angle = 6 * flick(t, TT.p1, 1.8, 2.4) + 7 * flick(t, TT.flare, 1.6, 2.2);
+		PULSES.forEach(([t0, k]) => (hood -= Math.min(1, k) * 3.5 * Math.max(0, flick(t, t0 - 60, 2.4, 3.2))));
+		b('hood').angle = Math.max(-3.5, hood) + 1.4 * flick(t, TT.flare + 380, 2.6, 5);
+		b('cable').angle = 4 * flick(t, TT.p1, 1.8, 2.4) + 4 * flick(t, TT.flare, 1.6, 2.2);
 		// the bulb breathes with every pulse, deepest on the flare
-		b('bulb').along = b('bulb').across = 1 + 0.06 * Math.min(1.4, swell);
+		b('bulb').along = b('bulb').across = 1 + 0.04 * Math.min(1.4, swell);
 
 		pose.air = Math.min(1, 0.5 * swell);
 		pose.flash = Math.min(

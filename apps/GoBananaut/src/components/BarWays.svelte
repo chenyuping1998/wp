@@ -111,20 +111,36 @@
 	let flare = $state(0);
 	let flareRaf = 0;
 	let last = untrack(() => ways);
+	// THE CLIMB AS JELLY (2026-10-02): the window wobbles — taller and narrower,
+	// then wider and flatter, settling — and on the mini board the cell the reel
+	// just gained pops up from nothing, overshoots and settles. `climbMs` is the
+	// time since the climb (-1: none), `climbReel` the reel that grew.
+	let climbMs = $state(-1);
+	let climbReel = $state(-1);
+	let lastRows = untrack(() => [...rows]);
+	const jelly = $derived(climbMs >= 0 && climbMs < 700 ? Math.exp(-climbMs / 160) * Math.sin(climbMs / 45) : 0);
+	const cellPop = (reel: number, k: number) => {
+		if (reel !== climbReel || k !== rows[reel] - 1 || climbMs < 0 || climbMs > 500) return 1;
+		return Math.max(0, 1 - Math.exp(-climbMs / 90) * Math.cos(climbMs / 40));
+	};
 	$effect(() => {
 		const w = ways;
 		if (w > last) {
 			shown.set(w);
 			flare = 1;
+			climbReel = untrack(() => rows.findIndex((r, i) => r > (lastRows[i] ?? r)));
 			cancelAnimationFrame(flareRaf);
 			const t0 = performance.now();
 			const step = (now: number) => {
 				flare = Math.max(0, 1 - (now - t0) / 900);
+				climbMs = now - t0;
 				if (flare > 0) flareRaf = requestAnimationFrame(step);
+				else climbMs = -1;
 			};
 			flareRaf = requestAnimationFrame(step);
 		} else if (w < last) shown.set(w, { duration: 0 });
 		last = w;
+		lastRows = untrack(() => [...rows]);
 	});
 	onDestroy(() => cancelAnimationFrame(flareRaf));
 	const text = $derived(Math.round(shown.current).toLocaleString('en-US'));
@@ -161,8 +177,10 @@
 			const tall = rows[reel];
 			const lit = mults[reel] > 1;
 			for (let k = 0; k < maxRows; k++) {
-				const sy = floor - (k + 1) * slotH + 1.5;
-				const h = slotH - 3;
+				const pop = k < tall ? cellPop(reel, k) : 1;
+				const h = (slotH - 3) * pop;
+				// a popping cell grows up off the one below it
+				const sy = floor - k * slotH - 1.5 - h;
 				if (k < tall) {
 					g.roundRect(cx, sy, COL_W, h, 1.5);
 					g.fill({ color: lit ? ICE_EDGE : 0x3a4d5e, alpha: 1 });
@@ -202,7 +220,7 @@
 {#if visible}
 	<MainContainer standard>
 		<FadeContainer persistent show={barShown}>
-			<Container x={cellCenter} y={barMid}>
+			<Container x={cellCenter} y={barMid} scale={{ x: 1 + 0.06 * jelly, y: 1 - 0.08 * jelly }}>
 				<Graphics draw={drawWindow} />
 				<!-- each doubling reel's x2, over its column -->
 				{#each mults as m, reel (reel)}

@@ -125,12 +125,12 @@ One saturated accent each, and they must not collide:
 
 | | hue |
 |---|---|
-| H1 gas giant | warm amber / ochre |
-| H2 comet | ice-cyan |
-| H3 boot | silver-green |
-| H4 life-support pack | violet |
+| H1 astronaut helmet | golden yellow / amber |
+| H2 suit thruster | ice-cyan / electric teal |
+| H3 magnetic boot | lime / chartreuse |
+| H4 life-support pack | royal purple / violet |
 | W helmet | brass / gold |
-| S beacon | hot orange, used by nothing else |
+| S distress beacon | signal red-orange with blue-steel hood |
 | P token | warm brass |
 | X clamp | desaturated gunmetal, deliberately dull |
 | L1–L5 | none at all |
@@ -150,7 +150,7 @@ Hand-painted digital illustration for a video slot symbol. Painterly rendering
 with visible brushwork and softly blended form shadows. Not a photoreal render,
 not a 3D render, not flat vector art, not cel shading with hard bands.
 
-Single subject, centred, square composition, filling about 80% of the frame with
+Single subject, centred, square composition, filling about 90% of the frame with
 clear margin on every side and never touching an edge.
 
 Chunky stylised proportions with big simple masses and one or two oversized hero
@@ -212,85 +212,58 @@ Repeat with `"K"`, `"Q"`, `"J"`, `"10"` in place of `"A"`.
 
 ## H1–H4 — the high symbols
 
-Four images, one pass, shared scale. **No plate on any of them.** Target
-luminance 70–88, and keep the boot off the bottom of that band.
+Four oversized pieces of astronaut equipment, each with its own silhouette and
+dominant hue. **No plate on any of them.** On the 0.88-cell game scale, their
+painted bounds occupy about 82–88% of the cell. Keep every piece readable at
+100px and retain the near-white highlight and deep shadow within the object.
 
-Two glow (H1, H2) and two are lit metal (H3, H4). That split keeps the tier from
-turning into a wall of light and gives the highs an internal ranking of their
-own. The two lit ones are the gorilla's own suit gear, which is what keeps them
-from reading as more space hardware next to H1 and H2.
-
-H3 and H4 must not share a silhouette. One lies along the frame, one stands up
-it — that is what separates them at 100px, not their surface detail.
-
-## H1 — gas giant (top pay, glowing)
+## H1 — golden astronaut helmet (top pay)
 
 ```
-A banded gas giant planet, filling the frame. Its cloud belts are painted as a
-few thick confident bands in warm amber and ochre — bold graphic shapes, not fine
-atmospheric detail — with one great swirling storm as the hero feature, oversized
-and placed low and centre. Softly self-luminous so the planet is the brightest
-thing in the set after the stone slabs, with a hot near-white core to the storm
-and a deep near-black band shadow along its lower-right limb. A thin bright ring
-system cuts across at a low angle, catching the light, kept close to the planet
-and not reaching the frame edge. Cold rim light along the upper-left limb.
-Isolated on a fully transparent background — no plate, no frame, no backing card,
-nothing behind the planet.
+A single golden astronaut exploration helmet with a large spherical honey-gold
+visor, thick dark bronze protective rim, and chunky side fittings. Strong round
+silhouette, generous near-white reflection and deep amber-black core shadow.
+Painterly 2D game art with simple bold hardware. It fills nearly 90% of its
+square transparent canvas, with every part inside the edge. No face, person,
+backing plate, frame, text or extra objects.
 ```
 
-## H2 — comet (glowing)
+## H2 — cyan suit thruster (glowing)
 
 ```
-A comet nucleus wrapped in a glowing coma, filling the frame. The nucleus is a
-chunky faceted dirty-ice boulder with a few big exaggerated craters, painted with
-near-white lit faces and near-black shadowed ones. Thick confident jets vent from
-its sunward face. Ice-cyan and pale white, self-luminous. Two tails sweep up and
-back as broad simplified ribbons that fade out before the frame edge rather than
-running off it. Cold rim light along the upper-left of the nucleus. Isolated on a
-fully transparent background — no plate, no frame, no backing card, nothing
-behind the comet.
+A compact suit-mounted rocket thruster on an upper-right to lower-left diagonal.
+The chunky navy metal engine has large icy cyan vents and a broad electric teal
+plume extending toward the lower-left corner. The flame has a near-white core
+and deep blue edge. Big readable masses, a few bold mechanical details, no
+tiny clutter. The complete unit fills nearly 90% of a transparent square,
+without a frame, plate, text, sparks or extra objects.
 ```
 
-## H3 — magnetic boot (lit metal, not glowing)
+## H3 — lime magnetic boot
 
-The gorilla's own kit, and the joke is that it is the thing holding him DOWN in a
-game about drifting up. Side-on: a long low L, nothing like the helmet.
+The gorilla's own kit, a tall L-shaped silhouette that differs from the round
+helmet, diagonal thruster and rectangular pack.
 
 ```
-A single heavy magnetic space boot from a gorilla's pressure suit, seen in
-three-quarter side profile, filling the frame and lying along it. Hugely
-oversized and wide to fit an ape's foot, with cartoonishly exaggerated
-proportions — a massively thick ribbed sole with chunky magnetic clamp pads
-underneath, far bigger than the boot needs, as the hero feature. A stubby padded
-shaft in scuffed silver-green suit fabric, two big oversized buckle straps with
-brass hardware, a blunt reinforced steel toe cap and a fat ribbed ankle joint.
-Scratched, scuffed and worn in, with a bright near-white specular along the toe
-cap and the clamp pads and near-black shadow under the sole. It is LIT, not
-glowing — cold blue-white key from the upper left, deep shadow lower right,
-bright rim light down its upper-left contour, dark painterly contour all around.
-Small silver-green indicator lamps on the ankle cuff only. Isolated on a fully
-transparent background — no plate, no frame, no backing card.
+A single massive magnetic astronaut boot, viewed three-quarter side on. Vivid
+lime-green and chartreuse armour, dark forest-green padded ankle, graphite sole
+and silver buckles. Oversized thick sole with a few glowing green magnetic pads
+is the hero feature. Keep near-white specular highlights and deep near-black
+shadows for readability. Painterly 2D game art, nearly filling a square
+transparent canvas. No person, plate, frame, text or extra objects.
 ```
 
-## H4 — life-support pack (lit metal, not glowing)
+## H4 — violet life-support pack
 
 Worn kit again, but a standing rectangle against H3's lying L.
 
 ```
-A gorilla-sized life-support backpack from a pressure suit, seen three-quarters
-on, standing upright and filling the frame. A fat rounded rectangular housing
-with exaggeratedly soft heavy corners, in dull titanium wrapped with a
-violet-tinted thermal blanket quilted into a few big bold panels rather than fine
-quilting. One oversized round analogue pressure gauge dominates the front face as
-the hero feature, its glass carrying a bright near-white specular, with a small
-bank of chunky valves beside it. Two thick ribbed oxygen hoses curve out of the
-top and away in confident arcs, stopping before the frame edge. Broad padded
-shoulder straps hang at the sides. Scuffed and used, with near-black shadow down
-its lower-right side. It is LIT, not glowing — cold blue-white key from the upper
-left, bright rim light down its upper-left contour, dark painterly contour all
-around. Small violet indicator lamps beside the gauge only. No text or numbers on
-the gauge face. Isolated on a fully transparent background — no plate, no frame,
-no backing card.
+A chunky upright astronaut life-support backpack in royal purple and violet,
+with two strong side oxygen canisters, a large luminous central circular dial,
+solid top handle, a few bold clasps, and small magenta status lights. Dark indigo
+depth and near-white highlights make the pack readable at 100px. Painterly 2D
+game art filling nearly 90% of a transparent square. No person, plate, frame,
+text, numbers or extra objects.
 ```
 
 ---
@@ -317,16 +290,14 @@ transparent background — no plate, no frame, no backing card.
 ## S — scatter (emergency beacon)
 
 ```
-A rotating emergency beacon floating in space. The HOUSING fills the frame — a
-stout heavy industrial lamp body in scorched steel, squat and chunky, with an
-exaggeratedly large caged hot-orange lens as the hero feature, a stubby mounting
-foot and a thick coiled cable below. The lens is fiercely self-luminous in hot
-orange, a hue used by nothing else in the set, with a near-white hot core. Short
-light beams and a soft flare hug the lens closely and must NOT extend to the
-frame edge — the metal housing is the subject and the thing that has to be
-recognisable at 100 pixels. Cold rim light along the upper-left of the housing,
-dark painterly contour all around. Isolated on a fully transparent background —
-no plate, no frame, no backing card.
+A single oversized emergency space distress beacon. A huge spherical
+signal-red and coral-orange glass globe sits at centre-right inside a thick
+dark gunmetal safety cage. A blue-steel hinged protective hood is raised at
+upper-left; one short coiled cable hangs along the left side into a sturdy base.
+The globe has a near-white hot core and deep red shadows, distinctly redder
+than H1's golden visor. Large simple painterly masses read at 100 pixels.
+The complete object fills nearly 90% of a square transparent canvas. No plate,
+frame, card, text, beams, sparks or extra objects.
 ```
 
 ---

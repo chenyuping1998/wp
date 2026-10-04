@@ -134,7 +134,7 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 				stateGame.gameType === 'holdandspin' ||
 				stateGame.gameType === 'freegame'
 			) {
-				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
+				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12, reel: reelIndex });
 			}
 		},
 		onSymbolLand: ({ rawSymbol, symbolIndex }) => onSymbolLand({ rawSymbol, reelIndex, symbolIndex }),

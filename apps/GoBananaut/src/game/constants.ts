@@ -332,10 +332,10 @@ export const isBigPrize = (prize: number) => prize >= BIG_PRIZE_FROM;
 export const BIG_PRIZE_FILL = [0xfff0c0, 0xffa93a, 0xd44a12];
 export const BIG_PRIZE_STROKE = 0x5a1f06;
 
-// The board's own cell colour, sampled from frame_bg.png (#1c270d at centre).
-// Held hold and spin cells are filled with this so they read as an ordinary empty
-// cell rather than a coloured plate laid over the reel.
-export const BOARD_CELL_COLOR = 0x1e290e;
+// Shared backing for the visible grid and held hold-and-spin cells. Match the
+// current blue-black capsule interior so a held coin does not change the cell's
+// material when it covers the reel beneath it.
+export const BOARD_CELL_COLOR = 0x0b151e;
 
 
 

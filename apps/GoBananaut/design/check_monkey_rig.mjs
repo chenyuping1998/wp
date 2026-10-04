@@ -102,14 +102,48 @@ const flutters = noFlutter ? [null] : ['flutter', 'flutter_float'].filter((f) =>
 for (const [name, flutter] of anims.flatMap((n) => flutters.map((f) => [n, f]))) {
 	const s = new core.Skeleton(data);
 	const state = new core.AnimationState(new core.AnimationStateData(data));
-	state.setAnimation(0, name, name === 'idle' || name === 'spacewalk');
+	state.setAnimation(0, name, name === 'idle' || name === 'spacewalk' || name === 'zerog');
 	if (flutter) state.setAnimation(1, flutter, true);
 	s.setToSetupPose();
 	s.updateWorldTransform(core.Physics.reset);
 	const dur = data.findAnimation(name).duration + 1;
 	const dt = 1 / 60;
 	let lo = Infinity, hi = -Infinity, flips = 0, worst = '';
+	// THE FLOAT, FED TO THE PHYSICS (2026-10-02): in the free spins Mascot.svelte
+	// moves the container the skeleton sits in — lift, bob, sway, roll, and on a
+	// tuck a full zero-g flip — and MascotPhysicsFeed hands each frame's move to
+	// the physics. Under flutter_float the same is done here, with the same
+	// numbers, so a fling the feed causes fails the gate instead of the game.
+	// Mirrors Mascot.svelte (FLOAT_*, *_MS) and MascotPhysicsFeed (FEED, TURN_*).
+	const floating = flutter === 'flutter_float';
+	const FLOAT = { lift: 100, bob: 52, sway: 20, roll: 0.045, bobMs: 3700, swayMs: 5300, rollMs: 6700 };
+	// this check runs spine-core y-UP (the game's spine-pixi sets yDown): the
+	// lift is +y here and the body's middle is above the feet
+	const FEED = 1.8, TURN_FEED = 0.4, MAX_TURN_DEG = 1.5, PIVOT_Y = 462;
+	const floatAt = (t) => {
+		const ms = t * 1000;
+		let rot = FLOAT.roll * Math.sin((ms / FLOAT.rollMs) * Math.PI * 2 + 0.6);
+		// the tuck's flip: a full turn over 1.15s, eased (Mascot flipCurve, near enough)
+		if (name === 'tuck' && t < 1.15) {
+			const u = t / 1.15, e = u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2;
+			rot -= Math.PI * 2 * e;
+		}
+		return {
+			x: FLOAT.sway * Math.sin((ms / FLOAT.swayMs) * Math.PI * 2 + 1.7),
+			y: FLOAT.lift + FLOAT.bob * Math.sin((ms / FLOAT.bobMs) * Math.PI * 2),
+			rot,
+		};
+	};
+	let lastFloat = floatAt(0);
 	for (let t = 0; t <= dur; t += dt) {
+		if (floating) {
+			const f = floatAt(t + dt);
+			s.physicsTranslate((f.x - lastFloat.x) * FEED, (f.y - lastFloat.y) * FEED);
+			// a screen-clockwise turn is negative degrees in a y-up skeleton
+			const turn = -Math.max(-MAX_TURN_DEG, Math.min(MAX_TURN_DEG, ((f.rot - lastFloat.rot) * 180) / Math.PI)) * TURN_FEED;
+			s.physicsRotate(0, PIVOT_Y, turn);
+			lastFloat = f;
+		}
 		state.update(dt);
 		state.apply(s);
 		s.update(dt);
