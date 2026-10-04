@@ -90,7 +90,19 @@ def finish(rel, tier, rng):
     t = np.clip((np.arange(h)[:, None] - y0) / max(1, y1 - y0), 0, 1) * np.ones((1, w))
     cov = np.clip((t - 0.45) / 0.55, 0, 1) ** 1.4 * 0.38
     dots = halftone(h, w, max(5.0, w / 150), cov) & solid & ~ink
-    out[dots] = out[dots] * 0.8
+    if tier != "bg":
+        out[dots] = out[dots] * 0.8
+
+    # backdrops are KNOCKED BACK toward the paper instead: 25% everywhere,
+    # easing up to 45% across the right third where the cast stands. On the
+    # full-strength backdrop the Bandit's red and green were the sun's and the
+    # warehouse's own inks and he disappeared into them; halftone dots made it
+    # worse, and a pale panel behind him read as a white slab (user,
+    # 2026-10-04). A gradient has no edge to see.
+    if tier == "bg":
+        xg = np.linspace(0, 1, w)[None, :, None]
+        kb = 0.25 + 0.20 * np.clip((xg - 0.55) / 0.3, 0, 1) ** 1.5
+        out = out * (1 - kb) + np.array((242, 232, 208), float) * kb
 
     # 3. the tier sunburst: halftone rays fanning from above the plate, in the
     #    paper only, denser each tier
