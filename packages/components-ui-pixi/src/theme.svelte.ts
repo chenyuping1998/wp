@@ -248,6 +248,8 @@ export const uiTheme = $state({
 	// scenery, and the one moment it matters that it is a control is the moment the
 	// reels stop. Off by default; a game opts in.
 	buyBonusIdleGlow: false,
+	/** Optional art-shaped light laid over the plate while it is ready. */
+	buyBonusIdleSprite: undefined as string | undefined,
 
 	// Tint for the plate at REST.
 	//

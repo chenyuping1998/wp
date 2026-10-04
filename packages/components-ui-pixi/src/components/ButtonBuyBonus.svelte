@@ -44,7 +44,7 @@
 	// nothing else on screen is moving, which is exactly when it is needed.
 	let idlePulse = $state(0);
 	$effect(() => {
-		if (!uiTheme.buyBonusIdleGlow) return;
+		if (!uiTheme.buyBonusIdleGlow || disabled || active) return;
 		let phase = 0;
 		const id = setInterval(() => {
 			phase += 0.045;
@@ -156,7 +156,7 @@
 			/>
 		{/if}
 
-		{#if idleLit}
+		{#if idleLit && !uiTheme.buyBonusIdleSprite}
 			<!--
 				The "you can press this" light, under the plate.
 				Stacked low-alpha rings, the same construction as the spin button's
@@ -234,6 +234,18 @@
 					}
 				: {}}
 		/>
+
+		{#if idleLit && uiTheme.buyBonusIdleSprite}
+			<UiSprite
+				key={uiTheme.buyBonusIdleSprite}
+				{...center}
+				anchor={0.5}
+				width={plate.width}
+				height={plate.height}
+				alpha={0.08 + 0.2 * idlePulse}
+				blendMode="add"
+			/>
+		{/if}
 
 		{#if uiTheme.buyBonusHoverStyle === 'outline' && hovered && !disabled}
 			<Graphics

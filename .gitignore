@@ -73,3 +73,13 @@ upload/
 dist/
 apps/*/dist/
 
+
+# Jaguar Sun is Hot Miami reskinned, and its design/ carries the same art
+# pipeline's intermediates — the same rules, for the same reasons as above.
+apps/JaguarSun/design/_backup_pre_rebuild/
+apps/JaguarSun/design/_contact/
+apps/JaguarSun/design/_painted/
+apps/JaguarSun/design/_plated/
+apps/JaguarSun/design/_review/
+apps/JaguarSun/design/_rejected/
+apps/JaguarSun/design/_bg/

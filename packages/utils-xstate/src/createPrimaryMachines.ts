@@ -1,12 +1,23 @@
 import { fromPromise } from 'xstate';
 
 import { API_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
-import { stateBet, stateUrlDerived, stateModal } from 'state-shared';
+import { stateBet, stateBetDerived, stateUrlDerived, stateModal } from 'state-shared';
 import { requestBet, requestEndRound } from 'rgs-requests';
 
 import type { BaseBet } from './types';
 
+const requireAffordablePlay = () => {
+	if (stateBetDerived.isBetCostAvailable()) return;
+	stateBet.isSpaceHold = false;
+	stateBet.autoSpinsCounter = 0;
+	stateModal.modal = { name: 'message', message: 'insufficientFunds' };
+	throw new Error('Insufficient balance for selected play mode');
+};
+
 const handleRequestBet = async ({ onError }: { onError: () => void }) => {
+	// Recheck after the pre-spin animation too: this is the last synchronous
+	// decision before the wallet request is sent.
+	requireAffordablePlay();
 	try {
 		const data = await requestBet({
 			rgsUrl: stateUrlDerived.rgsUrl(),
@@ -138,6 +149,10 @@ function createPrimaryMachines<TBet extends BaseBet>(options: Options<TBet>) {
 
 	// newGame
 	const newGame = fromPromise(async () => {
+		// Every entry path (spin button, held Space, autoplay and feature confirm)
+		// converges here. Check immediately before the request, using the selected
+		// mode's full multiplier, so an unaffordable round never reaches /wallet/play.
+		requireAffordablePlay();
 		await onNewGameStart();
 
 		const data = await handleRequestBet({ onError: onNewGameError });
@@ -192,6 +207,19 @@ function createPrimaryMachines<TBet extends BaseBet>(options: Options<TBet>) {
 			if (targetBet) {
 				const betType = getBetType({ bet: targetBet });
 				await BET_TYPE_METHODS_MAP[betType].endGame();
+			}
+			// A BOUGHT round is one round. Bought through the feature menu's confirm,
+			// the mode was set and `bet` broadcast, and nothing set it back — the spin
+			// button and autoplay reset a buy mode, the confirm path never did. So
+			// after the round the bar's Bet readout (betAmount x the active mode's
+			// cost) kept showing the purchase: 200 where the stake was 2 (Stake
+			// review 2026-10-04, Go Bananas Boat). Reset here, at the END of the
+			// round, not when the request is sent: games read the active mode during
+			// the round they bought (Boat's hold-and-spin scenery). Activate modes
+			// stay on — they are meant to. Replays keep theirs: the URL sets it and a
+			// replay can be run again.
+			if (!stateUrlDerived.replay() && stateBetDerived.activeBetMode()?.type === 'buy') {
+				stateBet.activeBetModeKey = 'BASE';
 			}
 		},
 	);
