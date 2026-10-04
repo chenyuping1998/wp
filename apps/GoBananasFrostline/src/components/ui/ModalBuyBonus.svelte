@@ -301,5 +301,29 @@
 		ul { font-size: 11px; margin: 5px 0; }
 		.price { font-size: 30px; }
 	}
+	/* ── THE SMALLEST VIEWS (Stake review 2026-10-04 on Go Bananas Boat: "Popout S"
+	   and "Mobile S"). Last, so they win over the rules above. */
+	/* A narrow phone upright: one column already; the scenes shorter so the three
+	   cards scroll less. */
+	@media (max-width: 520px) and (orientation: portrait) {
+		.scene { min-height: 150px; }
+	}
+	/* A SHORT WINDOW (Popout S): under 720 wide the cards stack one per row at
+	   ~205px each, so a window a couple of hundred px tall showed one card and a
+	   sliver. Three across again, with only what choosing needs — the name, the
+	   price, the button; the scene and the bullets are all in the confirmation. */
+	@media (max-height: 420px) {
+		.frost-buy-menu { padding: 8px 10px; max-height: calc(100dvh - 8px); }
+		.head p, .scene, .metric, ul, footer { display: none; }
+		h2 { font-size: 18px; }
+		.cards { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; gap: 6px; margin-top: 6px; }
+		.card { grid-template-columns: 1fr; grid-template-rows: auto; }
+		.body { grid-template-rows: auto auto auto; padding: 6px; }
+		h3 { min-height: 0; font-size: 12px; margin: 0; }
+		.price { font-size: 22px; }
+		.price small { font-size: 14px; }
+		button { font-size: 11px; padding: 5px 4px; }
+		button span { font-size: 10px; }
+	}
 	@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
 </style>

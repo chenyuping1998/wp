@@ -79,6 +79,12 @@
 	);
 
 	const fmtMult = (value: number) => `${Number(value.toFixed(4))}x`;
+	// FULL PRECISION (Stake review 2026-10-04, Go Bananas Boat): the money lines
+	// used the 2-decimal default, so a $0.01 stake x 125.9 read "$1.26" — not
+	// what the stake times the multiplier comes to ($1.259). Up to 6 decimals;
+	// Intl still prints the fewest that are exact, never fewer than 2.
+	const FULL = 6;
+	const fmtMoney = (value: number) => numberToCurrencyString(Number(value.toFixed(FULL)), FULL);
 </script>
 
 <!-- above the paytable/info layer: the round must not start behind an open panel -->
@@ -95,7 +101,7 @@
 
 			<div class="row spacer">
 				<dt>{L.baseBet}</dt>
-				<dd class="accent">{numberToCurrencyString(baseBet)}</dd>
+				<dd class="accent">{fmtMoney(baseBet)}</dd>
 			</div>
 			<div class="row">
 				<dt>{L.costMultiplier}</dt>
@@ -103,7 +109,7 @@
 			</div>
 			<div class="row highlight">
 				<dt>{L.totalCost}</dt>
-				<dd class="accent big">{numberToCurrencyString(totalCost)}</dd>
+				<dd class="accent big">{fmtMoney(totalCost)}</dd>
 			</div>
 
 			<div class="row spacer">
@@ -112,7 +118,7 @@
 			</div>
 			<div class="row highlight">
 				<dt>{L.totalWin}</dt>
-				<dd class="win big">{numberToCurrencyString(totalWin)}</dd>
+				<dd class="win big">{fmtMoney(totalWin)}</dd>
 			</div>
 		</dl>
 
