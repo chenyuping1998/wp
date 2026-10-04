@@ -26,6 +26,7 @@
 	import EnableGameActor from './EnableGameActor.svelte';
 	import ResumeBet from './ResumeBet.svelte';
 	import Sound from './Sound.svelte';
+	import BarMessage from './BarMessage.svelte';
 	import Background from './Background.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './BoardFrame.svelte';
@@ -148,6 +149,7 @@
 				{/if}
 			{/snippet}
 		</UI>
+		<BarMessage />
 		<Win />
 		<FreeSpinIntro />
 		<FreeSpinCounter />

@@ -630,6 +630,13 @@ export const uiTheme = $state({
 	// giving up its palette, or vice versa.
 	barStyle: 'framed' as 'framed' | 'flat',
 
+	// compactBottom 'flank' only — a one-line status message drawn in the span
+	// between the Win cell and the − stepper ("PLACE YOUR BET", "GOOD LUCK!"),
+	// the line most bars carry there. A game sets it at run time; empty (the
+	// default) draws nothing, so every other game is unchanged.
+	barMessage: '',
+	barMessageFill: 0xffffff,
+
 	// compactBottom only — how far in from each END of uiTheme.sprites.bar the
 	// artwork stops being a cap and starts being stretchable middle, measured in
 	// the SOURCE texture's own pixels.

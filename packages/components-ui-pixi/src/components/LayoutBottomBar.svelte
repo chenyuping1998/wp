@@ -197,6 +197,20 @@
 	const MENU_PITCH = 130;
 	const menuItemY = $derived((i: number) => barTop - 110 - MENU_PITCH * i);
 
+	// uiTheme.barMessage, centred in the Win→stepper span
+	const messageX = $derived((DIV_3 + MINUS_X - STEP_R) * 0.5);
+	const messageWidth = $derived(Math.max(0, MINUS_X - STEP_R - DIV_3 - 48));
+	const messageStyle = $derived({
+		fontFamily: uiTheme.fontFamily,
+		fontWeight: uiTheme.fontWeight,
+		fontSize: UI_BASE_FONT_SIZE * 0.6,
+		fill: uiTheme.barMessageFill,
+		align: 'center' as const,
+		wordWrap: true,
+		wordWrapWidth: messageWidth,
+		lineHeight: UI_BASE_FONT_SIZE * 0.66,
+	});
+
 	// Drawn strip artwork, if the game supplies any. Undefined for every game, so
 	// the vector casing below is unchanged unless one opts in.
 	const barSpriteKey = $derived(uiTheme.sprites.bar);
@@ -388,6 +402,9 @@
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
 	{:else}
+		{#if flank && uiTheme.barMessage && messageWidth > 60}
+			<Text anchor={0.5} x={messageX} y={barMid} text={uiTheme.barMessage} style={messageStyle} />
+		{/if}
 		{#if flank}
 			<Container x={MINUS_X} y={barMid} scale={STEP_SCALE}>
 				{@render props.buttonDecrease({ anchor: 0.5 })}

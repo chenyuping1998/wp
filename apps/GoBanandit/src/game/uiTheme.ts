@@ -198,7 +198,10 @@ setUiTheme({
 //
 // Nothing above this line is edited by the swap, so 'boomana' is byte-for-byte
 // the look that shipped before it.
-const DEFAULT_SKIN: 'platform' | 'boomana' = 'platform';
+// 'print' (2026-10-04) is this game's own: the first submission went out on
+// 'platform' and came back "Poor bet UI bar" + "Reused assets" — that casing is
+// Hot Miami's, and 'boomana' is Go Boomana's. Both stay switchable.
+const DEFAULT_SKIN: 'print' | 'platform' | 'boomana' = 'print';
 
 export const uiSkin =
 	(typeof localStorage !== 'undefined' && localStorage.getItem('uiSkin')) || DEFAULT_SKIN;
@@ -214,12 +217,14 @@ export const uiSkin =
 // Guarded for the prerender pass, where this module is evaluated with no
 // document. Nothing needs it there — the attribute is only read by CSS.
 if (typeof document !== 'undefined') {
-	document.documentElement.dataset.uiSkin = uiSkin;
+	// 'print' re-dresses only the canvas bar; the DOM pop-ups keep the
+	// platform rules (Modals.svelte), so it publishes as 'platform' there
+	document.documentElement.dataset.uiSkin = uiSkin === 'print' ? 'platform' : uiSkin;
 }
 
 const skin = uiSkin;
 
-if (skin === 'platform') {
+if (skin === 'platform' || skin === 'print') {
 	setUiTheme({
 		// the strip: flat casing — in the mine's warm dark iron rather than their
 		// neutral grey, so the bar belongs to the same game as the reel frame,
@@ -415,6 +420,75 @@ if (skin === 'platform') {
 			autoSpin: 'gbIconMonoAutoSpin',
 			replay: 'gbIconMonoReplay',
 		},
+	});
+}
+
+// ── 'print': the bar as a piece of the poster ────────────────────────────────
+//
+// Layered on top of the platform values above (same geometry, same behaviour —
+// the Buy Bonus slab, hover rules, the counter), and then re-dressed in this
+// game's materials: the strip is printed paper with an ink edge, a green
+// halftone rising from its foot and the red misregistered shadow every card in
+// the game has; the round controls are the same paper discs; the caps carry the
+// Bandit's sweater stripes. Ink on paper, so every colour that was light-on-dark
+// is turned round. Art: design/build_print_bar.py.
+if (skin === 'print') {
+	setUiTheme({
+		// the framed casing's rules (not 'flat', whose dividers are white at 15%
+		// and vanish on paper); the art itself is the fill and edge
+		barStyle: 'framed',
+		panelBorder: 0x1e1b1a,
+		// portrait has no strip: its readouts are free-standing panels, so they
+		// become paper slips too (dark panels made the ink readouts vanish)
+		panelFill: 0xf2e8d0,
+		sprites: {
+			bar: 'gbUiBarStrip',
+			button: 'gbUiButtonPrint',
+			buttonActive: 'gbUiButtonPrintOn',
+			buyBonus: 'gbUiBuyBonusStone',
+			buyBonusGlyph: 'gbUiBuyBonusStoneLit',
+		},
+		barSpriteSlice: 96,
+
+		// readouts in ink; Win alone in the red, as the poster's alarm colour
+		labelFill: 0x1f5c4a,
+		balanceLabelFill: 0x1f5c4a,
+		winAccent: { border: 0xd24a2c, label: 0xd24a2c },
+		betAccent: { border: 0x1e1b1a, label: 0x1f5c4a },
+		valueFill: 0x1e1b1a,
+		valueStroke: 0xf2e8d0,
+		valueShadow: 0xf2e8d0,
+		winFlashTint: 0xd24a2c,
+
+		// round controls: green ink icons on the paper discs
+		buttonFill: 0xf2e8d0,
+		buttonFillDisabled: 0xb9ae94,
+		buttonFillActive: 0xf2e8d0,
+		buttonBorder: 0x1e1b1a,
+		buttonIconFill: 0x1f5c4a,
+		buttonIconStroke: 0xf2e8d0,
+		// the disc art already has its ring; ON is drawn by button_print_on
+		buttonBorderWidth: 0,
+		icons: {
+			menu: 'gbIconMenu',
+			menuExit: 'gbIconMenuExit',
+			settings: 'gbIconSettings',
+			info: 'gbIconInfo',
+			payTable: 'gbIconPayTable',
+			soundOn: 'gbIconSoundOn',
+			soundOff: 'gbIconSoundOff',
+			autoSpin: 'gbIconAutoSpin',
+			replay: 'gbIconReplay',
+		},
+
+		// spin: the one solid red thing on the strip, edged in ink like the cards
+		betFill: 0xd24a2c,
+		betBorder: 0x1e1b1a,
+
+		autoSpinsCounterFill: 0xf2e8d0,
+		autoSpinsCounterBorder: 0xd24a2c,
+		autoSpinsCounterLabel: 0x1e1b1a,
+		autoSpinsCounterLabelStroke: 0xf2e8d0,
 	});
 }
 

@@ -44,6 +44,22 @@ export default {
 		src: new URL('../../assets/sprites/bananditUi/ticker_plate.png', import.meta.url).href,
 		preload: true,
 	},
+	// the printed bet bar (design/build_print_bar.py) — the 'print' skin
+	gbUiBarStrip: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/bananditUi/bar_strip.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiButtonPrint: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/bananditUi/button_print.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiButtonPrintOn: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/bananditUi/button_print_on.png', import.meta.url).href,
+		preload: true,
+	},
 	gbUiBuyBonus: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/bananditUi/buybonus_plate.png', import.meta.url).href,

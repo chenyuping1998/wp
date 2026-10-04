@@ -127,12 +127,15 @@
 			{...center}
 			key={litPlate ? 'buttonActive' : 'button'}
 			anchor={0.5}
-			{...plate && buttonProps.disabled
+			{...plate
 				? {
 						// tint multiplies, so it can only darken — which is the right
 						// direction for "unavailable" and the wrong one for "ON". ON is
-						// the ring below.
-						tint: 0x6b6b6b,
+						// the ring below. White when enabled, never omitted: a prop that
+						// drops out of the spread is not reset, so a control disabled on
+						// the first frame (every stepper while the game loads) kept the
+						// grey for the whole session.
+						tint: buttonProps.disabled ? 0x6b6b6b : 0xffffff,
 					}
 				: {}}
 			{...held
