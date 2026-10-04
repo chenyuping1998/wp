@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, Text, getContextApp } from 'pixi-svelte';
+	import { onMount } from 'svelte';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
 	import { CanvasTextMetrics, TextStyle } from 'pixi.js';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { MainContainer } from 'components-layout';
@@ -241,9 +243,52 @@
 		g.closePath();
 	};
 
-	const drawPanelChrome = (g: PixiGraphics) => {
+	// ── THE CARDS HANG AND THE ART ACTS (2026-10-02) ────────────────────────
+	//
+	// The three cards drop in one after another and are caught short, a little
+	// past their place, as if hung — a bounce, then each sways on its own slow
+	// clock about the middle of its top edge. And the art on them is the game's
+	// own acting: the Scatter on the first card plays its win every few
+	// seconds; the second card carries a crate whose tarp heaves the way every
+	// crate does before a Full Shipment unload (mReveal.ts M_HEAVE).
+	const app = getContextApp();
+	let t = $state(0);
+	let cycle = $state(0);
+	onMount(() => {
+		const ticker = app.stateApp.pixiApplication?.ticker;
+		const t0 = performance.now();
+		const tick = () => (t = performance.now() - t0);
+		ticker?.add(tick);
+		// the art's own clock: a fresh act every 2.8s, first one once the cards are in
+		const first = setTimeout(() => (cycle = 1), 900);
+		const loop = setInterval(() => (cycle += 1), 2800);
+		return () => {
+			ticker?.remove(tick);
+			clearTimeout(first);
+			clearInterval(loop);
+		};
+	});
+	const DROP_MS = 380;
+	const DROP_GAP = 130;
+	const hang = (i: number) => {
+		const h = boxes[i]?.h ?? 0;
+		const local = t - i * DROP_GAP;
+		if (local < DROP_MS) {
+			const p = Math.max(0, local) / DROP_MS;
+			return { dy: -layout.height * 0.9 * (1 - p * p) + h * 0.04 * p * p, rot: 0, alpha: local < 0 ? 0 : 1 };
+		}
+		const c = local - DROP_MS;
+		return {
+			dy: h * 0.04 * Math.exp(-c / 120) * Math.cos((2 * Math.PI * c) / 260),
+			rot: 0.022 * Math.exp(-c / 900) * Math.sin((2 * Math.PI * c) / 1400) + 0.0045 * Math.sin((2 * Math.PI * c) / (3100 + i * 470) + i),
+			alpha: 1,
+		};
+	};
+
+	const drawCardChrome = (g: PixiGraphics, i: number) => {
 		g.clear();
-		boxes.forEach((box, i) => {
+		{
+			const box = boxes[i];
 			const accent = panels[i].accent;
 			const c = Math.min(box.w, box.h) * 0.07;
 			chamfer(g, box.x, box.y, box.w, box.h, c);
@@ -252,7 +297,7 @@
 			g.stroke({ width: 3, color: accent, alpha: 0.85 });
 			g.roundRect(box.x + box.w * 0.07, box.y + box.h * 0.045, box.w * 0.86, 4, 2);
 			g.fill({ color: accent, alpha: 0.9 });
-		});
+		}
 	};
 
 	// The hero uses the side-by-side arrangement even in the wide layout, because
@@ -318,22 +363,42 @@
 </script>
 
 <MainContainer>
-	<Graphics draw={drawPanelChrome} />
-
 	{#each panels as panel, i (i)}
 		{@const box = boxes[i]}
 		{@const slot = slots[i]}
+		{@const hung = hang(i)}
+		{@const art = Math.min(slot.art.w, slot.art.h) * 0.44}
+		<!-- hung by the middle of its top edge: turned about it, everything
+		     inside still laid out in the menu's own coordinates -->
+		<Container x={box.x + box.w / 2} y={box.y + hung.dy} rotation={hung.rot} alpha={hung.alpha}>
+		<Container x={-(box.x + box.w / 2)} y={-box.y}>
+		<Graphics draw={(g) => drawCardChrome(g, i)} />
 		<Container x={slot.art.x} y={slot.art.y}>
 			<Graphics draw={(g) => panel.art(g, slot.art.w, slot.art.h)} />
 			{#if panel.symbolKey}
-				<Sprite
-					key={panel.symbolKey}
-					anchor={0.5}
-					x={slot.art.w / 2}
-					y={slot.art.h / 2}
-					width={Math.min(slot.art.w, slot.art.h) * 0.44}
-					height={Math.min(slot.art.w, slot.art.h) * 0.44}
-				/>
+				<!-- the Scatter, acting its win on the art's clock -->
+				<Container x={slot.art.w / 2} y={slot.art.h / 2}>
+					{#if cycle === 0}
+						<Sprite key={panel.symbolKey} anchor={0.5} width={art} height={art} />
+					{:else}
+						{#key cycle}
+							<SymbolMeshWin symbolName="S" width={art} height={art} />
+						{/key}
+					{/if}
+				</Container>
+			{/if}
+			{#if panel.hero}
+				<!-- a crate, heaving like the cargo is shoving under it -->
+				<Container x={slot.art.w / 2} y={slot.art.h / 2}>
+					<Sprite key="gbM" anchor={0.5} width={art * 0.9} height={art * 0.9} />
+					{#if cycle > 0}
+						{#key cycle}
+							<Container>
+								<SymbolMeshWin heave symbolName="M" width={art * 0.9} height={art * 0.9} />
+							</Container>
+						{/key}
+					{/if}
+				</Container>
 			{/if}
 			{#if panel.panelKey}
 				<!-- 1:5 art: driven off the slot height, width follows the ratio. -->
@@ -394,5 +459,7 @@
 				lineHeight: bodySize * 1.42,
 			}}
 		/>
+		</Container>
+		</Container>
 	{/each}
 </MainContainer>

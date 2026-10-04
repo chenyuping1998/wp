@@ -91,3 +91,33 @@ export const M: MeshWinSpec = {
 		return pose;
 	},
 };
+
+/**
+ * THE HEAVE — Full Shipment only (MysteryReveal, 2026-10-02). Before a board
+ * that is ALL crates is unloaded, every tarp heaves twice, as if the cargo
+ * under it were shoving to get out: the bundle swells, the canvas above the
+ * shoulders is pushed up taut, the crate hops a hair and comes down. Played
+ * on every crate with a small delay per reel, so it rolls across the board as
+ * one wave — then the column pulls begin. Starts and ends on the drawing.
+ */
+export const HEAVE_MS = 620;
+export const M_HEAVE: MeshWinSpec = {
+	...M,
+	symbol: 'M',
+	durationMs: HEAVE_MS,
+	endsAway: false,
+	plateUntilMs: undefined,
+	pose: (rig: Rig, t: number) => {
+		const pose = restPose(rig);
+		const top = pose.bones[rig.bones.findIndex((b) => b.name === 'top')];
+		const crate = pose.bones[rig.bones.findIndex((b) => b.name === 'crate')];
+		const bump = (a: number, b: number) => (t <= a || t >= b ? 0 : Math.sin((Math.PI * (t - a)) / (b - a)) ** 2);
+		const h = bump(0, 280) + 0.75 * bump(300, HEAVE_MS);
+		crate.across = 1 + 0.045 * h;
+		crate.along = 1 + 0.02 * h;
+		top.along = 1 + 0.1 * h;
+		top.across = 1 - 0.025 * h;
+		pose.rigid = { ...restRigid(), dy: -3.5 * h, sx: 1 + 0.015 * h, sy: 1 + 0.02 * h };
+		return pose;
+	},
+};

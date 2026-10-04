@@ -1,20 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Graphics } from 'pixi-svelte';
-	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { CanvasSizeRectangle, MainContainer } from 'components-layout';
 
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import FxBurst from './FxBurst.svelte';
+	import TarpPeel from './TarpPeel.svelte';
+	import { Container } from 'pixi-svelte';
 
 	// Entry reveal, played once when the loading screen hands over: a quick
 	// white pop and a gold burst over the board, then the five reels uncover
 	// left→right in a wave.
-	const COLUMN_DELAY = 0.08;
-	const COLUMN_FADE = 0.24;
-	const FIRST_COLUMN_AT = 0.12;
-	const T_TOTAL = 1.1;
+	// the board opens under a tarp that is yanked off (TarpPeel, 2026-10-03):
+	// it strains for 0.26s and is gone by ~1.0s; the burst goes with the yank
+	const T_TOTAL = 1.15;
+	const YANK_AT = 0.26;
 
 	const context = getContext();
 
@@ -35,33 +34,21 @@
 
 	const flashAlpha = $derived(t < 0.16 ? 0.45 * (1 - t / 0.16) : 0);
 
-	const drawCovers = (g: PixiGraphics) => {
-		const board = context.stateGameDerived.boardLayout();
-		const left = board.x - board.width * 0.5;
-		const top = board.y - board.height * 0.5;
-		g.clear();
-		for (let column = 0; column < BOARD_DIMENSIONS.x; column++) {
-			const begin = FIRST_COLUMN_AT + column * COLUMN_DELAY;
-			const alpha = 0.9 * (1 - Math.min(1, Math.max(0, (t - begin) / COLUMN_FADE)));
-			if (alpha <= 0.01) continue;
-			// the hold with the lights off, not the jungle floor: 0x0A1508 was a
-			// dark green carried over with the rest of this component
-			// PIXI v8 API, and this one mattered more than most: every column here
-			// is the SAME colour at a DIFFERENT alpha, which is what makes the
-			// covers lift one after another. The v7 shim resolves a Graphics with
-			// the last fill applied throughout, so all four columns were drawn at
-			// the last column's alpha and the stagger this component exists for
-			// never reached the screen — the board simply faded up as one block.
-			g.rect(left + column * SYMBOL_SIZE, top, SYMBOL_SIZE, board.height);
-			g.fill({ color: 0x080f14, alpha });
-		}
-	};
 </script>
 
 {#if t < T_TOTAL}
 	<MainContainer>
-		<Graphics draw={drawCovers} />
-		{#if t > 0.03}
+		<!-- own container: TarpPeel adds itself at its parent's end -->
+		<Container>
+			<TarpPeel
+				x={context.stateGameDerived.boardLayout().x}
+				y={context.stateGameDerived.boardLayout().y}
+				width={context.stateGameDerived.boardLayout().width * 1.05}
+				height={context.stateGameDerived.boardLayout().height * 1.05}
+				t={t * 1000}
+			/>
+		</Container>
+		{#if t > YANK_AT}
 			<FxBurst
 				x={context.stateGameDerived.boardLayout().x}
 				y={context.stateGameDerived.boardLayout().y}

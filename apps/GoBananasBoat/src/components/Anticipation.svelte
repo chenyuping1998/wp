@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Graphics, Sprite } from 'pixi-svelte';
+	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
@@ -7,6 +7,7 @@
 	import { SYMBOL_SIZE, BOARD_SIZES } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
+	import AnticipationRopes from './AnticipationRopes.svelte';
 
 	type Props = {
 		reel: Reel;
@@ -17,6 +18,7 @@
 	const context = getContext();
 
 	let pulse = $state(0);
+	let tension = $state(0);
 	let finished = $state(false);
 
 	// Drawn entirely here rather than through the old `anticipation` spine: that
@@ -27,12 +29,14 @@
 	const LEFT = $derived(x - SYMBOL_SIZE / 2);
 
 	onMount(() => {
+		const started = Date.now();
 		// offset per reel: when several reels tease at once, a shared phase makes
 		// them strobe as one block instead of shimmering along the board
 		const phase = props.reel.reelIndex * 0.9;
 		const rate = 145 + props.reel.reelIndex * 11;
 		const id = setInterval(() => {
 			pulse = 0.5 + 0.5 * Math.sin(Date.now() / rate + phase);
+			tension = Math.min(1, (Date.now() - started) / 900);
 		}, 24);
 
 		return () => clearInterval(id);
@@ -64,7 +68,7 @@
 			// were all coming out as one 4px `0xffd75e` line. Which is also why the
 			// tease read flat. Each shape now closes its own stroke.
 			g.roundRect(LEFT + 3, 3, SYMBOL_SIZE - 6, h - 6, 12);
-			g.fill({ color: 0xff9c2e, alpha: 0.1 + 0.12 * pulse });
+			g.fill({ color: 0xff9c2e, alpha: 0.025 + 0.055 * pulse });
 
 			// full-height frame: three nested strokes so the edge reads as lit metal
 			g.roundRect(LEFT + 2, 2, SYMBOL_SIZE - 4, h - 4, 13);
@@ -93,6 +97,9 @@
 			g.stroke({ width: 4, color: 0xffd75e, alpha: 0.5 + 0.4 * pulse });
 		}}
 	/>
+	<Container>
+		<AnticipationRopes left={LEFT} width={SYMBOL_SIZE} height={BOARD_SIZES.height} {tension} {pulse} />
+	</Container>
 
 	<!-- additive glow hugging each rail, so the tease has depth over the art -->
 	{#each [0, BOARD_SIZES.height] as railY (railY)}

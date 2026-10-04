@@ -20,6 +20,7 @@
 	import BigWinFx from './BigWinFx.svelte';
 	import FxBurst from './FxBurst.svelte';
 	import WinBannerLetters from './WinBannerLetters.svelte';
+	import WinBannerMesh from './WinBannerMesh.svelte';
 	import GoldText from './GoldText.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
@@ -262,8 +263,10 @@
 									height={bh * 1.8}
 									alpha={bannerPose.glow}
 								/>
-								<!-- the plaque WITHOUT its name: the name is WinBannerLetters' -->
-								<Sprite key={`${bannerKey}Plate`} anchor={0.5} width={bw} height={bh} />
+								<!-- The brass rim briefly yields on impact; the dark amount well stays flat. -->
+								<Container>
+									<WinBannerMesh assetKey={`${bannerKey}Plate`} width={bw} height={bh} time={fxNow} amountImpact={landFlare} />
+								</Container>
 								<!-- additive self-copy = the whole plaque flares. Always mounted
 								     (alpha 0 between flares), so it stays under the letters. -->
 								<Sprite

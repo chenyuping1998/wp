@@ -41,6 +41,7 @@ import CargoPick from './CargoPick.svelte';
 	import Win from './Win.svelte';
 	import FreeSpinIntro from './FreeSpinIntro.svelte';
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
+	import IdleDirector from './IdleDirector.svelte';
 	import FreeSpinMultiplier from './FreeSpinMultiplier.svelte';
 	import FreeSpinOutro from './FreeSpinOutro.svelte';
 	import Transition from './Transition.svelte';
@@ -146,6 +147,8 @@ import CameraShake from './CameraShake.svelte';
 
 			<MainContainer>
 				<Board />
+				<!-- the settled board's little idle acts (game/idleDirector.ts) -->
+				<IdleDirector />
 				<ReelDust />
 				<MysteryReveal />
 				<FullShipment />

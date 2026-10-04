@@ -10,7 +10,9 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
-	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, Text, getContextApp } from 'pixi-svelte';
+	import { onMount } from 'svelte';
+	import PlaqueMesh from './PlaqueMesh.svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBet } from 'state-shared';
 
@@ -50,6 +52,98 @@
 					y: context.stateLayoutDerived.mainLayout().height * 0.05,
 				},
 	);
+
+	// ── IT HANGS (2026-09-27) ────────────────────────────────────────────────
+	//
+	// The plaque was screwed to nothing — a plate floating beside the board. It
+	// now hangs from a hook on a short chain, two chains in a V down to its top
+	// rivets, and it is a PENDULUM: every spin spent knocks it and it swings
+	// and settles; spins added hit it hard, it swings wide and the plate
+	// squashes on its chains. Between knocks it sways a little in the wind off
+	// the water, so it is never dead still through a feature.
+	//
+	// The swing is rigid (the whole assembly turns about the top of the chain);
+	// the plate's lower edge LAGS the swing through a mesh (PlaqueMesh) — the
+	// plate turns a touch more at the bottom than at the top while it moves.
+	//
+	// Plate-local coordinates: the texture's box, (0,0) at its top-left. The
+	// rivets are at (108, 155) and (1172, 155) of the 1280x966 art.
+	const RIVET = { x: 108 / 1280, y: 155 / 966 };
+	const hookY = $derived(-panelSizes.height * 0.1);
+	// how far above the plate the chain is fixed: in landscape, the top of the
+	// screen (the plaque is pinned near it); in portrait, a short drop
+	const lift = $derived(isPortrait ? panelSizes.height * 0.34 : Math.max(position.y + 12, panelSizes.height * 0.2));
+
+	// the pendulum, in radians; and the squash spring
+	let angle = $state(0);
+	let bend = $state(0);
+	let squash = $state(0);
+	let omega = 0;
+	let squashV = 0;
+	let side = 1;
+	const SWING_HZ = 0.85;
+	const K = (2 * Math.PI * SWING_HZ) ** 2;
+	const C = 2 * 0.1 * Math.sqrt(K);
+	const SQ_K = (2 * Math.PI * 4.5) ** 2;
+	const SQ_C = 2 * 0.22 * Math.sqrt(SQ_K);
+	const kick = (strength: number) => {
+		// alternate sides, so a run of spins does not always push it one way
+		side = -side;
+		omega += side * (strength > 0.5 ? 0.85 : 0.3);
+		if (strength > 0.5) squashV += 7;
+	};
+
+	const app = getContextApp();
+	onMount(() => {
+		const ticker = app.stateApp.pixiApplication?.ticker;
+		let t = 0;
+		const tick = () => {
+			const dt = Math.min(0.05, (ticker?.deltaMS ?? 16) / 1000);
+			t += dt;
+			// a slow sway it is always being pushed toward: wind, not a clock
+			const target = 0.013 * Math.sin((2 * Math.PI * t) / 3.4) + 0.006 * Math.sin((2 * Math.PI * t) / 1.9);
+			omega += (-K * (angle - target) - C * omega) * dt;
+			angle += omega * dt;
+			squashV += (-SQ_K * squash - SQ_C * squashV) * dt;
+			squash += squashV * dt;
+			// the bottom lags what the top is doing
+			bend = Math.max(-0.06, Math.min(0.06, -omega * 0.11));
+		};
+		ticker?.add(tick);
+		return () => ticker?.remove(tick);
+	});
+
+	// the chains: a hook-to-rivet V and the drop from the fixing to the hook,
+	// drawn as links, alternately face-on and edge-on
+	const drawChains = (g: PixiGraphics) => {
+		g.clear();
+		const w = panelSizes.width, h = panelSizes.height;
+		const hook = { x: w / 2, y: hookY };
+		const link = Math.max(6, w * 0.045);
+		const chain = (ax: number, ay: number, bx: number, by: number) => {
+			const len = Math.hypot(bx - ax, by - ay);
+			const n = Math.max(2, Math.round(len / (link * 0.72)));
+			const ux = (bx - ax) / len, uy = (by - ay) / len;
+			for (let i = 0; i < n; i++) {
+				const cx = ax + ux * (i + 0.5) * (len / n), cy = ay + uy * (i + 0.5) * (len / n);
+				const along = link * 0.55, across = i % 2 ? link * 0.12 : link * 0.3;
+				const pts: number[] = [];
+				for (let k = 0; k < 14; k++) {
+					const a = (k / 14) * Math.PI * 2;
+					const ex = Math.cos(a) * along, ey = Math.sin(a) * across;
+					pts.push(cx + ex * ux - ey * uy, cy + ex * uy + ey * ux);
+				}
+				g.poly(pts);
+				g.stroke({ width: Math.max(2, link * 0.16), color: i % 2 ? 0x8a5a1c : 0xd8a334, alpha: 1 });
+			}
+		};
+		chain(w / 2, -lift, hook.x, hook.y);
+		chain(hook.x, hook.y, w * RIVET.x, h * RIVET.y);
+		chain(hook.x, hook.y, w * (1 - RIVET.x), h * RIVET.y);
+		// the hook itself: a brass ring
+		g.circle(hook.x, hook.y, link * 0.45);
+		g.stroke({ width: Math.max(3, link * 0.22), color: 0xffd75e, alpha: 1 });
+	};
 
 	let show = $state(false);
 	// `current` = spins USED + 1 (set by the updateFreeSpin handler); `total` = window size
@@ -109,8 +203,13 @@
 			const spent = emitterEvent.current !== undefined && emitterEvent.current !== current;
 			if (emitterEvent.current !== undefined) current = emitterEvent.current;
 			if (emitterEvent.total !== undefined) total = emitterEvent.total;
-			if (gained) knock(1);
-			else if (spent) knock(0.38);
+			if (gained) {
+				knock(1);
+				kick(1);
+			} else if (spent) {
+				knock(0.38);
+				kick(0.38);
+			}
 		},
 	});
 
@@ -138,8 +237,25 @@
 </script>
 
 <MainContainer>
-	<FadeContainer {show} {...position}>
-		<Sprite key="gbFsPanel" {...panelSizes} />
+	<!-- hung from the top of its chain: everything below turns about it -->
+	<FadeContainer {show} x={position.x + panelSizes.width / 2} y={position.y - lift}>
+		<Container rotation={angle}>
+		<!-- squashes about the plate's top edge, where the chains take it -->
+		<Container y={lift} scale={{ x: 1 + 0.3 * squash, y: 1 - 0.3 * squash }}>
+		<Container x={-panelSizes.width / 2}>
+		<Graphics draw={drawChains} />
+		<!-- its own container: PlaqueMesh adds to its parent's end, and it must
+		     draw under the title and the count -->
+		<Container>
+			<PlaqueMesh
+				key="gbFsPanel"
+				width={panelSizes.width}
+				height={panelSizes.height}
+				pivotX={panelSizes.width / 2}
+				pivotY={-lift}
+				{bend}
+			/>
+		</Container>
 
 		<!-- title on the upper plank area, auto-shrunk for long locales -->
 		<Text
@@ -194,5 +310,8 @@
 				/>
 			</Container>
 		{/if}
+		</Container>
+		</Container>
+		</Container>
 	</FadeContainer>
 </MainContainer>

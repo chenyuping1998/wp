@@ -914,4 +914,87 @@
 			font-size: 30px;
 		}
 	}
+
+	/* ── THE SMALLEST VIEWS (Stake review 2026-10-04: "Popout S" and "Mobile S").
+	   Last in the sheet so they win over everything above. */
+
+	/* A NARROW PHONE UPRIGHT (Mobile S, ~320 wide): four columns came out ~70px
+	   each — titles broken mid-word, prices cut ("10(", "20("). Two by two
+	   instead, and each card drops what the confirmation repeats anyway (the
+	   bullets, the meter's caption). */
+	@media (max-width: 520px) and (orientation: portrait) {
+		.cards {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 8px;
+		}
+		.scene {
+			max-height: 70px;
+		}
+		ul,
+		.meterlabel,
+		.foot,
+		.sub {
+			display: none;
+		}
+		h3 {
+			font-size: 14px;
+		}
+		.cost {
+			font-size: 28px;
+		}
+	}
+
+	/* A SHORT WINDOW (Popout S, a couple of hundred px tall): the cards were cut
+	   off at the top — the menu showed prices and buttons under a sliver of
+	   text. Only what choosing needs: the name, the price, the button. The scene
+	   art, the meter and the bullets go; it is all in the confirmation. */
+	@media (max-height: 420px) {
+		.menu {
+			padding: 8px 10px 8px;
+			max-height: calc(100vh - 8px);
+		}
+		.menu::before,
+		.menu::after,
+		.sub,
+		.scene,
+		.meter,
+		.meterlabel,
+		ul,
+		.foot {
+			display: none;
+		}
+		h2 {
+			font-size: 18px;
+		}
+		.head {
+			gap: 4px 14px;
+		}
+		.cards {
+			grid-template-columns: repeat(4, 1fr);
+			gap: 6px;
+			margin-top: 6px;
+		}
+		.body {
+			padding: 6px 6px 6px;
+		}
+		h3 {
+			min-height: 0;
+			margin-bottom: 2px;
+			font-size: 12px;
+		}
+		.cost {
+			font-size: 22px;
+		}
+		.cost small {
+			font-size: 14px;
+		}
+		.buy {
+			margin-top: 4px;
+			padding: 5px 4px;
+			font-size: 11px;
+		}
+		.buy span {
+			font-size: 10px;
+		}
+	}
 </style>

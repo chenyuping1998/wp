@@ -7,6 +7,7 @@
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import HopTitle from './HopTitle.svelte';
 	import config from '../game/config';
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
@@ -116,7 +117,6 @@
 	// words in front of it made the first two read as a prefix stuck on.
 	const TITLE_SIZE = 58;
 	const ACCENT_SIZE = TITLE_SIZE;
-	const TITLE_GAP = 20;
 
 	// Colours. The first pass put a red blur under gold lettering, which is what
 	// made the whole headline look soft: a coloured glow behind warm type on a warm
@@ -174,12 +174,18 @@
 		dropShadow: { color: 0x000000, alpha: 0.55, blur: 6, angle: Math.PI / 2, distance: 4 },
 	};
 
-	const titleMetrics = $derived.by(() => {
-		pulseTick; // re-measure once the display face has loaded
-		const name = CanvasTextMetrics.measureText(TITLE_MAIN, new TextStyle(titleStyle)).width;
-		const accent = CanvasTextMetrics.measureText(TITLE_ACCENT, new TextStyle(accentStyle)).width;
-		return { name, accent, total: name + TITLE_GAP + accent };
+	// THE TITLE HOPS (2026-10-03): its letters crouch, spring and land in a
+	// wave, the way the free-spin sign's title and the big-win plaques' names
+	// do (HopTitle) — the first thing the player sees moves like the rest of
+	// the game. One line now ("GO BANANAS BOAT" — the two halves already shared
+	// a colour and a size). HopTitle measures its letters once, so it is
+	// re-laid out once the display face has actually loaded; before that it
+	// would keep the fallback face's spacing.
+	const fontReady = $derived.by(() => {
+		pulseTick;
+		return typeof document !== 'undefined' && document.fonts.check(`${TITLE_SIZE}px ${GAME_FONT}`);
 	});
+
 </script>
 
 <!-- Go Bananas jungle-commando branded loading screen -->
@@ -247,20 +253,10 @@
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.155}
 		>
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2}
-				style={titleStyle}
-				text={TITLE_MAIN}
-			/>
-
-
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2 + titleMetrics.name + TITLE_GAP}
-				style={accentStyle}
-				text={TITLE_ACCENT}
-			/>
+			{#key fontReady}
+				<!-- y: HopTitle stands each letter on its foot; the line used to be centred -->
+				<HopTitle text={`${TITLE_MAIN} ${TITLE_ACCENT}`} style={accentStyle} y={TITLE_SIZE * 0.5} delay={350} />
+			{/key}
 		</Container>
 	</MainContainer>
 </FadeContainer>

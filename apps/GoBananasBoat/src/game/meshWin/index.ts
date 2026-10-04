@@ -16,9 +16,10 @@ import { L1, L2, L3, L4, L5 } from './lowLetters';
 import { W } from './wCaptain';
 import { S } from './sScatter';
 import { LANDS } from './lands';
-import { M } from './mReveal';
+import { M, M_HEAVE } from './mReveal';
 import { BG_PATCHES } from './bgPatches';
 import { withLeap } from './leaps';
+import { IDLES } from './idles';
 
 // every win blends home at the end, so the swap back to the static tile is
 // seamless (meshRig.settled)
@@ -32,6 +33,16 @@ export const MESH_WINS: Record<string, MeshWinSpec> = Object.fromEntries(
 export const MESH_LANDS: Record<string, MeshWinSpec> = Object.fromEntries(
 	Object.entries(LANDS).map(([k, spec]) => [k, settled(spec)]),
 );
+
+/** the idle acts between spins (idles.ts), by symbol id */
+export const MESH_IDLES: Record<string, MeshWinSpec> = Object.fromEntries(
+	Object.entries(IDLES).map(([k, spec]) => [k, settled(spec)]),
+);
+export { IDLE_WEIGHT } from './idles';
+
+/** Full Shipment: every tarp heaving before the unload (mReveal.ts) */
+export const MESH_HEAVE: MeshWinSpec = settled(M_HEAVE);
+export { HEAVE_MS } from './mReveal';
 
 /** the tarp coming off a crate (mReveal.ts) — not settled: it ends gone */
 export const MESH_REVEAL: MeshWinSpec = M;

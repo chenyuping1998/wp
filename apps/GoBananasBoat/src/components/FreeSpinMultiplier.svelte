@@ -16,7 +16,8 @@
 </script>
 
 <script lang="ts">
-	import { Container, Graphics } from 'pixi-svelte';
+	import { Container, Graphics, getContextApp } from 'pixi-svelte';
+	import { onMount } from 'svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
@@ -54,6 +55,39 @@
 	const size = $derived(placed.size);
 	const position = $derived({ x: placed.x, y: placed.y });
 
+	// ── THE BADGE IS SOFT (2026-09-27) ───────────────────────────────────────
+	//
+	// A jelly spring on the whole badge: it lands when the wheel sets the
+	// round's multiplier (a big squash-and-wobble, it has just been handed
+	// something), and it RECOILS every time MultiplierStrike launches a copy of
+	// it at the board — the kick of the throw, before the copy lands. + is
+	// wider and shorter, - taller and narrower; about the badge's centre.
+	let jelly = $state(0);
+	let jellyV = 0;
+	const J_K = (2 * Math.PI * 3.6) ** 2;
+	const J_C = 2 * 0.16 * Math.sqrt(J_K);
+	const app = getContextApp();
+	onMount(() => {
+		const ticker = app.stateApp.pixiApplication?.ticker;
+		const tick = () => {
+			const dt = Math.min(0.05, (ticker?.deltaMS ?? 16) / 1000);
+			jellyV += (-J_K * jelly - J_C * jellyV) * dt;
+			jelly += jellyV * dt;
+		};
+		ticker?.add(tick);
+		return () => ticker?.remove(tick);
+	});
+	let lastMultiplier: number | null = null;
+	$effect(() => {
+		const m = multiplier;
+		if (m !== null && m !== lastMultiplier) jellyV += 5.5;
+		lastMultiplier = m;
+	});
+	context.eventEmitter.subscribeOnMount({
+		// the throw pulls it tall, then it wobbles back
+		multiplierStrike: () => (jellyV -= 4),
+	});
+
 	const draw = (g: PixiGraphics) => {
 		const w = size;
 		const r = 12;
@@ -85,6 +119,8 @@
 	     `multiplier !== null` is the whole condition: it is set when the wheel
 	     lands and cleared when the round hands back to the base game. -->
 	<FadeContainer show={multiplier !== null} {...position}>
+		<Container x={size / 2} y={size / 2} scale={{ x: 1 + 0.22 * jelly, y: 1 - 0.22 * jelly }}>
+		<Container x={-size / 2} y={-size / 2}>
 		<Graphics {draw} />
 		<GoldText
 			x={size / 2}
@@ -101,6 +137,8 @@
 				maxWidth={size * 0.86}
 				letterSpacing={1}
 			/>
+		</Container>
+		</Container>
 		</Container>
 	</FadeContainer>
 </MainContainer>

@@ -12,8 +12,11 @@
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { MULTIPLIER_TIERS, MULTIPLIER_LIT } from '../game/multiplierTiers';
+	import { wheelSchedule, wheelPositionAt } from '../game/wheelSchedule';
 	import BoardContainer from './BoardContainer.svelte';
+	import FlapperMesh from './FlapperMesh.svelte';
 	import GoldText from './GoldText.svelte';
+	import MultiplierPlateMesh from './MultiplierPlateMesh.svelte';
 
 	// THE SECOND WHEEL: what every win in this round will be worth.
 	//
@@ -42,8 +45,8 @@
 	// ceremony into a wait.
 	const LEAD_MS = 450;
 	const LEAD_MS_TURBO = 350;
-	const SPIN_MS = 2400;
-	const SPIN_MS_TURBO = 1800;
+	const SPIN_MS = 2800;
+	const SPIN_MS_TURBO = 2600;
 	const HOLD_MS = 1000;
 	const HOLD_MS_TURBO = 700;
 	const TRAVEL = 18;
@@ -65,7 +68,7 @@
 	// 0.6 — each approach cell takes about 1.67x the previous one. Lower and the
 	// wind-down is abrupt; higher and the last cells are all much the same speed,
 	// which is the flat feel this replaced.
-	const RATIO = 0.6;
+	const RATIO = 0.48;
 
 	// A HORIZONTAL WHEEL: the values slide LEFT TO RIGHT across a window three
 	// cells wide, and the centre cell is the pick.
@@ -92,6 +95,9 @@
 	let pos = $state(0);
 	let phase = $state<Phase>('lead');
 	let raf = 0;
+	let lockTimer = 0;
+	let lockStarted = $state(0);
+	let lockClock = $state(0);
 	// The frame loop stops in a backgrounded tab, so it cannot be what ends this —
 	// same rule as CargoPick. The timer owns the ending; rAF only interpolates.
 	let killTimer = 0;
@@ -99,48 +105,11 @@
 	onDestroy(() => {
 		cancelAnimationFrame(raf);
 		clearTimeout(killTimer);
+		clearInterval(lockTimer);
 		context.eventEmitter.broadcast({ type: 'soundCargoRoll', phase: 'stop' });
 	});
 
 	// The schedule: how long the strip rests on each cell on its way to the stop.
-	// Cruise cells all take one unit; the last APPROACH_CELLS grow geometrically.
-	const buildSchedule = (spanCells: number, ms: number) => {
-		const grow = 1 / RATIO;
-		const approach = Array.from({ length: APPROACH_CELLS }, (_, i) => grow ** i);
-		const cruiseCells = Math.max(0, spanCells - APPROACH_CELLS);
-		const units = cruiseCells + approach.reduce((a, b) => a + b, 0);
-		const unit = ms / units;
-		const dwell = [
-			...Array.from({ length: cruiseCells }, () => unit),
-			...approach.map((a) => a * unit),
-		];
-		const times = [0];
-		for (const d of dwell) times.push(times[times.length - 1] + d);
-		// Speed at each cell boundary, in cells per ms. An interior boundary takes
-		// the harmonic mean of the two cells it joins, so the strip does not change
-		// pace in a step as it crosses one; the last boundary is 0, which is the
-		// wheel coming to rest rather than being switched off.
-		const vel = dwell.map((d, i) => (i === 0 ? 1 / d : 2 / (dwell[i - 1] + d)));
-		vel.push(0);
-		return { dwell, times, vel, cruiseCells };
-	};
-
-	// Position at time t, as a cubic Hermite through the schedule's knots. Monotone
-	// by construction here (every knot slope is at most 2 cells per cell), so the
-	// strip can never back up — which on a wheel reads as a glitch, not a bounce.
-	const positionAt = (t: number, s: ReturnType<typeof buildSchedule>) => {
-		const n = s.dwell.length;
-		let i = 0;
-		while (i < n - 1 && t >= s.times[i + 1]) i++;
-		const h = s.dwell[i];
-		const u = Math.min(1, Math.max(0, (t - s.times[i]) / h));
-		const m0 = s.vel[i] * h;
-		const m1 = s.vel[i + 1] * h;
-		const u2 = u * u;
-		const u3 = u2 * u;
-		return (2 * u3 - 3 * u2 + 1) * i + (u3 - 2 * u2 + u) * m0 + (-2 * u3 + 3 * u2) * (i + 1) + (u3 - u2) * m1;
-	};
-
 	// Laid out so the TARGET sits at index TRAVEL with one filler either side of
 	// it at the end — the window is three wide, so the landed value needs a
 	// neighbour on each side or the stop shows an empty cell. The strip starts
@@ -154,8 +123,8 @@
 
 	// when the wind-down begins, for the cues that have to start with it
 	const windDownMs = (ms: number) => {
-		const s = buildSchedule(TRAVEL - 1, ms);
-		return s.times[s.cruiseCells];
+		const s = wheelSchedule(TRAVEL - 1, ms, APPROACH_CELLS, RATIO);
+		return s.times[s.cruise];
 	};
 
 	const spin = (ms: number) => {
@@ -165,12 +134,12 @@
 		phase = 'turning';
 		// the target's index: see buildStrip
 		const last = TRAVEL;
-		const schedule = buildSchedule(last - 1, ms);
-		const windDownAt = schedule.times[schedule.cruiseCells];
+		const schedule = wheelSchedule(last - 1, ms, APPROACH_CELLS, RATIO);
+		const windDownAt = schedule.times[schedule.cruise];
 		const t0 = performance.now();
 		const step = (now: number) => {
 			const t = now - t0;
-			pos = 1 + positionAt(Math.min(t, ms), schedule);
+			pos = 1 + wheelPositionAt(Math.min(t, ms), schedule);
 			if (t >= windDownAt && phase === 'turning') phase = 'approach';
 			if (t >= ms) {
 				pos = last;
@@ -292,6 +261,13 @@
 			// one result that changes nothing, and would leave no bigger hit for an
 			// x5. So the scene shake runs 0.35 at x1 up to 1.0 at x5.
 			const k = (event.multiplier - 1) / 4;
+			clearInterval(lockTimer);
+			lockStarted = Date.now();
+			lockClock = lockStarted;
+			lockTimer = setInterval(() => {
+				lockClock = Date.now();
+				if (lockClock - lockStarted >= 700) clearInterval(lockTimer);
+			}, 16) as unknown as number;
 			context.eventEmitter.broadcast({ type: 'soundCargoLock' });
 			context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.5 + 0.5 * k });
 			context.eventEmitter.broadcast({ type: 'cameraShake', strength: 0.35 + 0.65 * k });
@@ -362,6 +338,19 @@
 			<!-- the pick's frame on top of everything, so a value sliding through is
 			     seen to pass UNDER it -->
 			<Graphics draw={drawPick} />
+			{#if phase === 'landed'}
+				<Container>
+					<MultiplierPlateMesh value={strip[TRAVEL]} size={CELL} elapsed={lockClock - lockStarted} />
+				</Container>
+				<GoldText text={`x${strip[TRAVEL]}`} fontSize={CELL * 0.42} />
+			{/if}
+			<!-- Above the landed plate as well: the broad triangle must remain visible
+			     at the exact selected value, not disappear behind its mesh. -->
+			{#key phase === 'landed'}
+				<Container>
+					<FlapperMesh x={0} y={-CELL * 0.62} rotation={0} length={CELL * 0.26} {pos} dir={1} />
+				</Container>
+			{/key}
 		</Container>
 	</BoardContainer>
 {/if}

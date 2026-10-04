@@ -14,8 +14,17 @@
  * and no knock of the tile — those belong to the win, and the board's own mask
  * would swallow additive light here anyway.
  *
- * The letters keep the sprite squash: they land on every spin, and a light
- * press of paint is all they need.
+ * THE LETTERS TOO (2026-09-27). They kept the sprite squash for a while — they
+ * land on every spin, and the squash seemed enough — but it pressed the steel
+ * flat along with the paint, the "sticker" this file exists to get rid of,
+ * on the symbols a player sees land most. So the steel stays put and the
+ * paint lands, lighter than a high pay, each letter reacting through its own
+ * shape: the A's legs splay, the K kicks, the Q's tail flicks, the J's hook
+ * swings, the 1 and the 0 thud one after the other.
+ *
+ * Cost, measured (design: skinperf): ~70-95us to pose a letter's mesh on a
+ * desktop CPU; the reels stop one after another, so a stop lands 4 cells at a
+ * time, not 20 — well inside a frame even at four times that on a phone.
  *
  * `k` is the cell's impact (ReelSymbol): the Scatter and the Wild land harder.
  */
@@ -26,6 +35,8 @@ import { H3 } from './h3Lantern';
 import { H4 } from './h4Flags';
 import { W } from './wCaptain';
 import { S } from './sScatter';
+import { L1, L2, L3, L4, L5 } from './lowLetters';
+import { M } from './mReveal';
 
 /** how long the act runs; the reel reports "landed" at 240ms as it always did */
 export const LAND_MS = 480;
@@ -86,6 +97,43 @@ export const LANDS: Record<string, MeshWinSpec> = {
 		bone(rig, pose, 'bunch').angle = 2 * k * flick(t, 20, 1.8, 3.5);
 		bone(rig, pose, 'bunch').along = 1 + 0.03 * k * Math.max(0, flick(t, 40, 2.6, 4));
 		bone(rig, pose, 'loose').angle = -2.5 * k * flick(t, 90, 2.4, 4);
+	}),
+	// the letters: a lighter thump, and each one's own limb
+	L1: land(L1, (rig, pose, t, k) => {
+		thump(pose, t, 0.8 * k);
+		const splay = flick(t, 40, 3.2, 6);
+		bone(rig, pose, 'leg_l').angle = 2.4 * k * splay;
+		bone(rig, pose, 'leg_r').angle = -2.4 * k * splay;
+	}),
+	L2: land(L2, (rig, pose, t, k) => {
+		thump(pose, t, 0.8 * k);
+		bone(rig, pose, 'arm').angle = -3 * k * flick(t, 40, 3.2, 6);
+		bone(rig, pose, 'leg').angle = 2.6 * k * flick(t, 80, 3.2, 6);
+	}),
+	L3: land(L3, (rig, pose, t, k) => {
+		thump(pose, t, 0.9 * k);
+		bone(rig, pose, 'tail').angle = 4.5 * k * flick(t, 60, 2.8, 5);
+	}),
+	L4: land(L4, (rig, pose, t, k) => {
+		thump(pose, t, 0.75 * k);
+		bone(rig, pose, 'hook').angle = 3 * k * flick(t, 60, 2.6, 5);
+	}),
+	// the 1 and the 0 thud in turn: the rigid squash, then each digit dips
+	L5: land(L5, (rig, pose, t, k) => {
+		thump(pose, t, 0.8 * k);
+		bone(rig, pose, 'one').dy = 1.4 * k * bump(t, 30, 170);
+		bone(rig, pose, 'zero').dy = 1.4 * k * bump(t, 90, 240);
+	}),
+	// THE CRATE (2026-10-03): it lands on most free spins, and stood stiff while
+	// everything round it acted. Now the bundle is set down hard: it squats, the
+	// canvas over its shoulders slumps and springs back up taut, the ropes take
+	// it. Its own rig is the tarp's (mReveal.ts) — not the reveal: it stays put
+	// and keeps its plate.
+	M: land({ ...M, endsAway: false, plateUntilMs: undefined }, (rig, pose, t, k) => {
+		thump(pose, t, 1.1 * k);
+		bone(rig, pose, 'crate').across = 1 + 0.045 * k * Math.max(0, flick(t, 30, 2.6, 6));
+		bone(rig, pose, 'top').along = 1 - 0.07 * k * flick(t, 40, 3, 5);
+		bone(rig, pose, 'top').angle = 2.2 * k * flick(t, 90, 2.4, 5);
 	}),
 	// behind glass: the panel (not the rigid move, which would move the frame)
 	// takes the bob, and he nods

@@ -63,8 +63,8 @@
 	import { onMount } from 'svelte';
 
 	import { CANVAS, skin } from '../game/meshWin/meshRig';
-	import { MESH_WINS, MESH_LANDS, MESH_REVEAL } from '../game/meshWin';
-	import { FxRunner, FX_TEXTURES, MESH_FX, IMPACT, IMPACT_MS, fxEndMs } from '../game/meshWin/fx';
+	import { MESH_WINS, MESH_LANDS, MESH_IDLES, MESH_REVEAL, MESH_HEAVE } from '../game/meshWin';
+	import { FxRunner, FX_TEXTURES, MESH_FX, MESH_IDLE_FX, IMPACT, IMPACT_MS, fxEndMs } from '../game/meshWin/fx';
 	import ImpactDust from './ImpactDust.svelte';
 
 	type Props = {
@@ -79,6 +79,12 @@
 		delay?: number;
 		/** play the symbol's LANDING (game/meshWin/lands.ts) instead of its win */
 		land?: boolean;
+		/** play its IDLE act (game/meshWin/idles.ts): on the board, under its
+		 *  mask, so no light — its effects are MESH_IDLE_FX, all normal blend */
+		idle?: boolean;
+		/** Full Shipment's heave of a tarp before the unload (mReveal.ts
+		 *  M_HEAVE): the tarp only, like `reveal` */
+		heave?: boolean;
 		/** the landing's weight — the cell's impact */
 		amp?: number;
 		/** the tarp coming off a crate (game/meshWin/mReveal.ts): draws the
@@ -93,7 +99,7 @@
 	const props: Props = $props();
 	const app = getContextApp();
 	const parent = getContextParent();
-	const spec = props.reveal ? MESH_REVEAL : (props.land ? MESH_LANDS : MESH_WINS)[props.symbolName];
+	const spec = props.heave ? MESH_HEAVE : props.reveal ? MESH_REVEAL : (props.idle ? MESH_IDLES : props.land ? MESH_LANDS : MESH_WINS)[props.symbolName];
 
 	// must match make_symbol_layers.mjs (the atlas) and render_mesh_wins.py
 	const SHEEN_FRAMES = 24, SHEEN_COLS = 6, SHEEN_CELL = 128;
@@ -117,14 +123,15 @@
 		const assets = app.stateApp.loadedAssets ?? {};
 		const tex = (key: string) => assets[key] as Texture | undefined;
 		const panelMode = spec.mode === 'panel';
-		const subjectOnly = !!props.reveal;
+		const subjectOnly = !!props.reveal || !!props.heave;
 		const plateTex = panelMode ? undefined : tex(`${spec.key}Plate`);
 		const shadowTex = panelMode || subjectOnly ? undefined : tex(`${spec.key}Shadow`);
 		const subjectTex = panelMode ? tex(spec.sprite ?? spec.key) : tex(`${spec.key}Subject`);
 		const flashTex = panelMode ? tex(`${spec.key}Glow`) : subjectTex;
 		const sheenTex = tex(`${spec.key}Sheen`);
 		const starTex = assets.fxStar as Texture | undefined;
-		if (!subjectTex || !flashTex || !sheenTex || (!panelMode && (!plateTex || (!subjectOnly && !shadowTex)))) {
+		// the shadow is optional: the crate (M) has none — it lands, it never leaps
+		if (!subjectTex || !flashTex || !sheenTex || (!panelMode && !plateTex)) {
 			console.error(`SymbolMeshWin: ${spec.key} layers not loaded`);
 			return () => clearTimeout(land);
 		}
@@ -167,7 +174,7 @@
 		// edge, over its neighbours — and on a line win that was a gold spray
 		// across the board. Five, half the reach, white: they read as a glint off
 		// the subject rather than confetti.
-		const sparks = Array.from({ length: starTex ? 5 : 0 }, (_, i) => {
+		const sparks = Array.from({ length: starTex && !props.idle && !props.heave ? 5 : 0 }, (_, i) => {
 			const s = new Sprite(starTex);
 			s.anchor.set(0.5);
 			s.blendMode = 'add';
@@ -182,7 +189,10 @@
 		// THE EFFECTS: on a win only (not a landing, not the tarp), and not on the
 		// plate half of a leaper — they belong to the subject. Pooled sprites,
 		// handed the runner's list every frame.
-		const fxItems = props.land || props.reveal || part_() === 'plate' ? [] : (MESH_FX[props.symbolName] ?? []);
+		const fxItems =
+			props.land || props.reveal || props.heave || part_() === 'plate'
+				? []
+				: ((props.idle ? MESH_IDLE_FX : MESH_FX)[props.symbolName] ?? []);
 		const scratch = new Float32Array(rig.rest.length);
 		const fx = new FxRunner(rig, fxItems, (ms) => {
 			skin(rig, spec.pose(rig, ms, props.amp), spec.feetY, scratch);
@@ -217,7 +227,7 @@
 			for (const layer of ['under', 'over'] as const)
 				for (let i = used[layer]; i < pool[layer].length; i++) pool[layer][i].visible = false;
 		};
-		const impact = props.land || props.reveal ? 0 : (IMPACT[props.symbolName] ?? 0);
+		const impact = props.land || props.reveal || props.heave || props.idle ? 0 : (IMPACT[props.symbolName] ?? 0);
 		const flashTint = spec.flashTint ?? GOLD;
 		// keep posing until the last particle is gone, not just the act
 		const endMs = Math.max(spec.durationMs, fxEndMs(fxItems));

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { stateModal } from 'state-shared';
+	import { stateModal, LEGAL_NOTICE } from 'state-shared';
 
 	import { base } from '$app/paths';
 
@@ -137,6 +137,42 @@
 		};
 	});
 
+
+	// EVERY MODE DESCRIBED, WITH ITS COST (Stake review 2026-10-04: "the Game
+	// Info contains a description for each available game mode"). The table
+	// above says what each mode costs and returns; this says what each one IS.
+	// Costs read from config. "Cost" is itself restricted in social play, so its
+	// label comes through the social vocabulary like every other such word.
+	const costLabel = T.cost.charAt(0).toUpperCase() + T.cost.slice(1);
+	const modeCost = (key: keyof typeof config.betModes) =>
+		`${(config.betModes[key] as BetMode | undefined)?.cost ?? 1}× ${T.bet}`;
+	const modeDescriptions = [
+		{
+			name: 'Base game',
+			key: 'base',
+			text: `The standard game. Wins are counted on ${T.ways} across 5 reels of 4. Cargo crates on a board all open on one and the same symbol, and 3, 4 or 5 Scatters trigger Free Spins.`,
+		},
+		{
+			name: 'Free Spins',
+			key: 'bonus100',
+			text: `Direct entry into 8 Free Spins, with an x1 to x5 multiplier drawn for the round and one shipment shared by every crate in it.`,
+		},
+		{
+			name: 'Super Free Spins',
+			key: 'bonus200',
+			text: `The same 8 Free Spins with more crates on the reels and a higher chance of a Full Shipment than Free Spins.`,
+		},
+		{
+			name: 'Max Free Spins',
+			key: 'bonus300',
+			text: `The same 8 Free Spins with the most crates on the reels and the highest chance of a Full Shipment.`,
+		},
+		{
+			name: 'Hold and Spin',
+			key: 'holdandspin',
+			text: `A separate prize board. It starts with 3 respins; every Coin that lands sticks and resets them to 3, and when none remain all the Coin values are added up and ${T.paid}.`,
+		},
+	] as const;
 </script>
 
 {#if stateModal.modal?.name === 'gameRules'}
@@ -234,6 +270,16 @@
 				</p>
 			</section>
 
+			<section class="wp-card">
+				<h3><span class="wp-accent-bar"></span>Game modes</h3>
+				<dl class="wp-modelist">
+					{#each modeDescriptions as mode (mode.key)}
+						<dt>{mode.name} <span class="wp-modecost">{costLabel}: {modeCost(mode.key)}</span></dt>
+						<dd>{mode.text}</dd>
+					{/each}
+				</dl>
+			</section>
+
 			<!-- The signature mechanic gets its own section above Wild and Scatter,
 			     because it is the thing the game is built around and the only rule
 			     a player of other ways games will not already know. -->
@@ -244,7 +290,7 @@
 					uncovered at once and they all hold
 					<strong>one and the same symbol</strong>. A stack of crates down one reel therefore
 					becomes a run of matching symbols, and because {T.ways} multiply across reels, a
-					board with no combination at all can open into a paying one.
+					board with no combination at all can open into a winning one.
 				</p>
 				<p>
 					A crate never {T.pays} as itself &mdash; by the time the board is read there are
@@ -343,8 +389,8 @@
 					<h3><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
 					<p>
 						Instead of waiting for Scatters, you can {T.buy} direct entry into Free Spins. Three
-						rounds are available. All three play the same number of spins; what a dearer round
-						buys is <strong>more crates on the reels and a higher chance of a Full
+						rounds are available. All three play the same number of spins; the higher the
+						round, the <strong>more crates on the reels and the higher the chance of a Full
 						Shipment</strong>:
 					</p>
 					<ul class="wp-tiers">
@@ -381,14 +427,10 @@
 			</section>
 
 			<div class="wp-divider"></div>
-			<p class="wp-foot">
-				Malfunction voids all wins and plays. A consistent internet connection is required. In
-				the event of a disconnection, reload the game to finish any uncompleted rounds. The
-				expected return is calculated over many plays. The game display is not representative of
-				any physical device and is for illustrative purposes only. Winnings are settled according
-				to the amount received from the Remote Game Server and not from events within the web
-				browser. TM and &copy; 2026 Stake Engine.
-			</p>
+			<!-- the official general disclaimer, word for word (studio.engine.io/docs/
+			     approval-guidelines/general-disclaimer); this copy said "Stake
+			     Engine" — Stake review 2026-10-04 -->
+			<p class="wp-foot">{LEGAL_NOTICE}</p>
 		</div>
 	</Popup>
 {/if}
@@ -668,6 +710,25 @@
 		background: linear-gradient(90deg, transparent, rgba(255, 215, 94, 0.3), rgba(255, 233, 138, 0.2), transparent);
 	}
 
+	.wp-modelist {
+		margin: 0;
+	}
+	.wp-modelist dt {
+		margin-top: 0.7em;
+		font-weight: 700;
+	}
+	.wp-modelist dt:first-child {
+		margin-top: 0;
+	}
+	.wp-modelist dd {
+		margin: 0.2em 0 0;
+	}
+	.wp-modecost {
+		margin-left: 0.4em;
+		font-weight: 600;
+		opacity: 0.8;
+		white-space: nowrap;
+	}
 	.wp-foot {
 		margin: 0;
 		font-size: 0.75rem;

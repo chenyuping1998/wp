@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Container, ParticleEmitter } from 'pixi-svelte';
+	import { Container } from 'pixi-svelte';
+	import BananaFountain from './BananaFountain.svelte';
 	import { MainContainer } from 'components-layout';
-	import { fountain as baseConfig } from 'constants-shared/particleConfig';
 	import { LEVEL_PARTICLE_BANANA_MAP } from '../game/particleBananaMap';
 
 	import { getContext } from '../game/context';
@@ -17,16 +17,20 @@
 	const extraConfig = $derived(
 		props?.levelAlias ? LEVEL_PARTICLE_BANANA_MAP[props.levelAlias] : null,
 	);
-	const config = $derived({ ...baseConfig, ...extraConfig });
+	// the tier's rate, speed and spread; the fountain itself (gravity, life,
+	// cap, the tumble) is BananaFountain's — a mesh per banana, not the shared
+	// particle emitter (2026-10-03)
 </script>
 
-{#if config}
+{#if extraConfig}
 	<MainContainer>
 		<Container
 			x={context.stateGameDerived.boardLayout().x}
 			y={context.stateGameDerived.boardLayout().y}
 		>
-			<ParticleEmitter {config} key="winBananas" emit={props.emit} />
+			<Container>
+				<BananaFountain emit={!!props.emit} tier={extraConfig} />
+			</Container>
 		</Container>
 	</MainContainer>
 {/if}

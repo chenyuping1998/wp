@@ -24,6 +24,8 @@
 		// lands (see ReelSymbol, which knows both the reel motion and the tier)
 		blur?: number;
 		impact?: number;
+		/** may do an idle act (ReelSymbol: a visible, settled cell) */
+		idleable?: boolean;
 	};
 
 	const props: Props = $props();
@@ -47,6 +49,7 @@
 			blur={props.state === 'spin' ? (props.blur ?? 1) : 0}
 			landing={props.state === 'land'}
 			impact={props.impact}
+			idleable={props.idleable}
 			{oncomplete}
 		/>
 	{:else}

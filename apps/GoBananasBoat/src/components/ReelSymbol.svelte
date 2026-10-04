@@ -4,6 +4,7 @@
 	import { getSymbolInfo, getSymbolX } from '../game/utils';
 	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
 	import type { SymbolState } from '../game/types';
+	import { BOARD_DIMENSIONS } from '../game/constants';
 
 	type Props = {
 		reelIndex: number;
@@ -68,6 +69,18 @@
 		if (forState === 'land') props.reelSymbol.symbolState = 'static';
 	};
 
+	// may it do an idle act (game/idleDirector.ts)? Only on a visible row — the
+	// padding rows above and below the board are under its mask — and only
+	// while it is simply sitting there
+	const idleable = $derived(
+		props.reelSymbol.symbolIndex >= 1 &&
+			props.reelSymbol.symbolIndex <= BOARD_DIMENSIONS.y &&
+			props.reelSymbol.symbolState !== 'win' &&
+			props.reelSymbol.symbolState !== 'land' &&
+			reelMotion !== 'spinning' &&
+			reelMotion !== 'bouncing',
+	);
+
 	const isHeldDuplicate = $derived(
 		props.reelSymbol.symbolState !== 'win' &&
 			stateGame.board[props.reelIndex]?.reelState.motion !== 'spinning' &&
@@ -93,6 +106,7 @@
 			rawSymbol={props.reelSymbol.rawSymbol}
 			{blur}
 			impact={landingImpact}
+			{idleable}
 			{oncomplete}
 		/>
 	</SymbolWrap>

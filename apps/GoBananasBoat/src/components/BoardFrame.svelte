@@ -8,7 +8,8 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Graphics, Sprite, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import FrameMesh from './FrameMesh.svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBet } from 'state-shared';
 
@@ -40,7 +41,10 @@
 
 	// ── frame impact: a short recoil plus a hot flash along the brass, so a
 	// wild slamming into the housing is felt and not just seen ────────────────
-	let impact = $state({ x: 0, y: 0, flash: 0 });
+	// `ring`: the brass edge VIBRATES on the knock (FrameMesh, 2026-10-02) — the
+	// sides bow out and in against the top and bottom, ~9Hz, dying with the
+	// shake. Px at the middle of a side, up to ~7 at the hardest hit.
+	let impact = $state({ x: 0, y: 0, flash: 0, ring: 0 });
 	let impactRaf = 0;
 	const IMPACT_MS = 420;
 
@@ -58,7 +62,7 @@
 		const step = (now: number) => {
 			const p = (now - start) / IMPACT_MS;
 			if (p >= 1) {
-				impact = { x: 0, y: 0, flash: 0 };
+				impact = { x: 0, y: 0, flash: 0, ring: 0 };
 				impactEnergy = 0;
 				return;
 			}
@@ -72,6 +76,7 @@
 				x: Math.sin(p * 46) * amp * 0.45,
 				y: Math.sin(p * 38 + 1.1) * amp,
 				flash: 0.55 * strength * (1 - p) ** 3,
+				ring: 5 * strength * (1 - p) ** 1.6 * Math.cos((2 * Math.PI * p * IMPACT_MS) / 110),
 			};
 			impactRaf = requestAnimationFrame(step);
 		};
@@ -161,25 +166,31 @@
 	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
 />
 
-<Sprite
-	key="gbFrameEdge"
-	anchor={0.5}
-	x={context.stateGameDerived.boardLayout().x + impact.x}
-	y={context.stateGameDerived.boardLayout().y + impact.y}
-	width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-/>
-
-{#if impact.flash > 0}
-	<!-- additive copy of the brass edge = the whole housing rings white-hot -->
-	<Sprite
+<!-- the brass edge, through a mesh so it can ring (own container: FrameMesh
+     adds itself at its parent's end, and must stay under the flash) -->
+<Container>
+	<FrameMesh
 		key="gbFrameEdge"
-		anchor={0.5}
 		x={context.stateGameDerived.boardLayout().x + impact.x}
 		y={context.stateGameDerived.boardLayout().y + impact.y}
 		width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
 		height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-		blendMode="add"
-		alpha={impact.flash}
+		ring={impact.ring}
 	/>
+</Container>
+
+{#if impact.flash > 0}
+	<!-- additive copy of the brass edge = the whole housing rings white-hot -->
+	<Container>
+		<FrameMesh
+			key="gbFrameEdge"
+			x={context.stateGameDerived.boardLayout().x + impact.x}
+			y={context.stateGameDerived.boardLayout().y + impact.y}
+			width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
+			height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
+			ring={impact.ring}
+			blendMode="add"
+			alpha={impact.flash}
+		/>
+	</Container>
 {/if}

@@ -2,8 +2,10 @@
  * THE BACKGROUND, MOVING — small mesh patches laid over the three 1920x1080
  * plates (Background.svelte), each making one painted thing move:
  *
- *   base game     the crane's hook swings slowly on its cable over the dusk sky
- *   free spins    the two tarps on the container stacks flap in the storm
+ *   base game     the crane's hook swings slowly on its cable over the dusk sky,
+ *                 and the ship's mooring line sways between hull and bollard
+ *   free spins    the tarps on the container stacks flap in the storm — the two
+ *                 big ones up top, and two more on the right-hand stacks
  *   hold & spin   the caged lamp over the stairs sways on its cable
  *
  * A patch is a rectangle of the plate itself, drawn through a mesh on top of
@@ -146,6 +148,8 @@ const tarp = (
 	side: 1 | -1,
 	phase: number,
 	chain: Point[],
+	/** how far below the tied edge the hem starts, px — less on a short tarp */
+	hemDepth = 40,
 ) => {
 	// THE CHAIN LASHED OVER THE TARP IS PINNED. It is drawn in front of the
 	// cloth and runs on past the hem onto the container, so while the cloth
@@ -162,7 +166,7 @@ const tarp = (
 	const down = ny >= 0 ? [nx, ny] : [-nx, -ny];
 	const below = (p: Point) => (p[0] - a[0]) * down[0] + (p[1] - a[1]) * down[1];
 	const mid: Point = [(a[0] + e[0]) / 2, (a[1] + e[1]) / 2];
-	const hemPivot: Point = [mid[0] + down[0] * 45, mid[1] + down[1] * 45];
+	const hemPivot: Point = [mid[0] + down[0] * (hemDepth + 5), mid[1] + down[1] * (hemDepth + 5)];
 	return patch(
 		id,
 		'gbBgFeature',
@@ -190,7 +194,7 @@ const tarp = (
 				axis: [0, 1],
 				priority: 2,
 				dist: shape,
-				keep: inside(rect, 16, (p) => smoothstep((below(p) - 40) / 30) * unlashed(p)),
+				keep: inside(rect, 16, (p) => smoothstep((below(p) - hemDepth) / (hemDepth * 0.75)) * unlashed(p)),
 			},
 		],
 		(p) => shape(p) === 0,
@@ -240,6 +244,74 @@ export const BG_TARP_R = tarp(
 	[[1580, 250], [1524, 380]],
 );
 
+// Two more on the right-hand stacks (2026-09-27): a small one draped over the
+// corner of the near stack, and the big one torn half off the far stack at the
+// plate's right edge, pinned at its low corner by a lashing chain. The left
+// stack's small tarp is not done: it sits against the board's edge, under
+// where the captain stands.
+export const BG_TARP_R2 = tarp(
+	'BG_TARP_R2',
+	[1316, 490, 1462, 594],
+	[[1332, 508], [1370, 503], [1410, 505], [1436, 512], [1446, 528], [1444, 548], [1430, 562], [1400, 570], [1370, 562], [1345, 552], [1332, 535]],
+	[[1336, 508], [1432, 512]],
+	-1,
+	0.8,
+	// no chain over this one: a stub far from the cloth
+	[[1318, 492], [1320, 494]],
+	// it hangs only ~55px: the hem starts halfway down
+	24,
+);
+export const BG_TARP_R3 = tarp(
+	'BG_TARP_R3',
+	[1792, 530, 1920, 680],
+	[[1828, 545], [1880, 550], [1918, 560], [1918, 662], [1880, 652], [1850, 650], [1822, 646], [1812, 620], [1820, 590]],
+	[[1832, 548], [1916, 562]],
+	-1,
+	3.1,
+	// the lashing chain that pins its low corner
+	[[1824, 638], [1796, 680]],
+);
+
+// ---- base game: the mooring line ---------------------------------------------
+// The ship's hawser runs from the hawse hole at (1838, 282) down across the
+// hull to its knot at the bollard (1722, 598). Both ends are fast; the slack
+// between them SWAYS, most at the middle, with the ship's slow roll — so the
+// weight along the line is a half sine, 0 at each end. The hull under it is
+// riveted and rust-streaked, so the frame hugs the rope (`hug`) and the sway
+// stays a few px: a heavy wet line moving, not a skipping rope.
+const ROPE_PATH: Point[] = [[1838, 284], [1826, 330], [1812, 390], [1798, 450], [1782, 500], [1764, 545], [1742, 578], [1722, 598]];
+const ROPE_RECT: Rect = [1682, 262, 1872, 640];
+const ROPE = polyline(ROPE_PATH, 9);
+const ROPE_LEN = ROPE_PATH.slice(1).reduce((a, q, i) => a + Math.hypot(q[0] - ROPE_PATH[i][0], q[1] - ROPE_PATH[i][1]), 0);
+const ROPE_LOOP = 8000;
+
+export const BG_ROPE = patch(
+	'BG_ROPE',
+	'gbBgBase',
+	ROPE_RECT,
+	ROPE_LOOP,
+	[
+		{
+			name: 'rope',
+			parent: 'frame',
+			pivot: [1790, 440],
+			axis: [0, 1],
+			dist: ROPE.dist,
+			keep: inside(ROPE_RECT, 16, (p) => Math.sin(Math.PI * Math.max(0, Math.min(1, ROPE.along(p) / ROPE_LEN)))),
+		},
+	],
+	(p) => ROPE.dist(p) === 0,
+	{ rope: { pos: 0.5, neg: 0.5 } },
+	(rig, b, t) => {
+		// the roll: out and back once a loop, a smaller sway through it, and the
+		// sag breathing as the line takes and gives up the strain
+		b('rope').dx = 3.4 * cyc(t, ROPE_LOOP, 1) + 0.8 * cyc(t, ROPE_LOOP, 3, 0.7);
+		b('rope').dy = 1.4 * cyc(t, ROPE_LOOP, 2, 1.3);
+	},
+	6,
+	ROPE.dist,
+);
+
 // ---- hold & spin: the caged lamp -------------------------------------------------
 // It hangs on a short cable from the beam at the top of the plate; the cage
 // runs y 90-225 over a lit steel wall. The wall has straight lines, so the
@@ -272,7 +344,29 @@ export const BG_LAMP = patch(
 
 /** by plate key: the patches drawn over each background */
 export const BG_PATCHES: Record<string, MeshWinSpec[]> = {
-	gbBgBase: [BG_HOOK],
-	gbBgFeature: [BG_TARP_L, BG_TARP_R],
+	gbBgBase: [BG_HOOK, BG_ROPE],
+	gbBgFeature: [BG_TARP_L, BG_TARP_R, BG_TARP_R2, BG_TARP_R3],
 	gbBgHoldAndSpin: [BG_LAMP],
+};
+
+// ---- hold & spin: the hold ROLLS ------------------------------------------------
+// (2026-10-03) The whole hold leans with the sea: a slow roll and a little
+// heave, with DEPTH — the far end of the hold (its vanishing point, at the
+// back of the gangway behind the board) barely moves and the near walls,
+// crates and pipes at the plate's edges move most, so it reads as a room
+// rocking round the viewer rather than a picture being turned. The plate is
+// drawn through a mesh for it (BgRollPlate) and every patch on it (the lamp)
+// is warped by the same function at the same instant, so nothing on it
+// slides against it. Plate px in, plate px out; the plate's overscan (1.14,
+// Background.svelte) covers the ~12px the corners travel.
+export const HOLD_ROLL_LOOP = 7600;
+const HOLD_VANISH: Point = [960, 470];
+export const holdRoll = (x: number, y: number, t: number): Point => {
+	const p = (TAU * t) / HOLD_ROLL_LOOP;
+	const deg = 0.55 * Math.sin(p) + 0.12 * Math.sin(3 * p + 1);
+	const dx = x - HOLD_VANISH[0], dy = y - HOLD_VANISH[1];
+	const depth = Math.min(1, Math.hypot(dx, dy) / 950) ** 1.2;
+	const a = (deg * Math.PI) / 180 * depth;
+	const c = Math.cos(a), s = Math.sin(a);
+	return [HOLD_VANISH[0] + dx * c - dy * s, HOLD_VANISH[1] + dx * s + dy * c + 4 * depth * Math.sin(p + 0.6)];
 };

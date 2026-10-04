@@ -495,3 +495,56 @@ export const MESH_FX: Record<string, FxItem[]> = { H1, H2, H3, H4, W, S, L1: pai
  */
 export const IMPACT_MS = 45;
 export const IMPACT: Record<string, number> = { H1: 0.85, H2: 0.9, H3: 0.75, H4: 0.8, W: 0.6, S: 0.7, L1: 0.45, L2: 0.45, L3: 0.45, L4: 0.45, L5: 0.45 };
+
+/**
+ * THE IDLE ACTS' EFFECTS (idles.ts): a few, small, and all NORMAL blend — the
+ * idle plays on the board itself, under its mask, where additive light draws
+ * nothing. Matter, not light: bubbles, embers as warm dots, a glint as a
+ * white star.
+ */
+export const MESH_IDLE_FX: Record<string, FxItem[]> = {
+	// two bubbles escape the valve as the helmet peeks
+	H1: [
+		{
+			kind: 'emit',
+			tex: 'bubble',
+			at: [124, 40],
+			from: 380,
+			to: 980,
+			count: 3,
+			life: [500, 700],
+			speed: [24, 40],
+			dir: -90,
+			spread: 30,
+			gravity: -60,
+			size: [7, 12],
+			alpha: 0.9,
+			wobble: [3, 3],
+			tint: 0xd8f6ff,
+			blend: 'normal',
+		},
+	],
+	H3: [
+		{
+			kind: 'emit',
+			tex: 'glow',
+			at: [128, 44],
+			from: 150,
+			to: 900,
+			count: 5,
+			life: [450, 650],
+			speed: [20, 40],
+			dir: -90,
+			spread: 40,
+			gravity: -30,
+			size: [7, 3],
+			alpha: 0.95,
+			wobble: [5, 1.6],
+			tint: [0xffc34a, 0xffe08a],
+			blend: 'normal',
+		},
+	],
+	// a glint off a horn as it swings
+	H2: [{ ...glint([170, 66], 520, 30), blend: 'normal' }],
+	S: [{ ...glint([102, 128], 420, 30, 0xfff6c8), blend: 'normal' }],
+};

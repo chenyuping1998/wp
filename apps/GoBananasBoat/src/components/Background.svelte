@@ -9,6 +9,7 @@
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 	import { MESH_BG } from '../game/meshWin';
 	import BackgroundMeshPatch from './BackgroundMeshPatch.svelte';
+	import BgRollPlate from './BgRollPlate.svelte';
 
 	// THE PLATES MOVE IN PLACES (game/meshWin/bgPatches.ts): the crane hook
 	// swings on the dock, the tarps on the container stacks flap in the storm,
@@ -127,9 +128,12 @@
 
 <!-- 地底金庫 hold-and-spin background -->
 <FadeContainer show={isHoldAndSpin} duration={SECOND} zIndex={-1}>
-	<Sprite key="gbBgHoldAndSpin" {...parallax} />
+	<!-- the hold rolls with the sea (BgRollPlate), and its lamp with it -->
+	<Container>
+		<BgRollPlate key="gbBgHoldAndSpin" {...parallax} />
+	</Container>
 	{#each MESH_BG.gbBgHoldAndSpin as spec (spec.symbol)}
-		<BackgroundMeshPatch {spec} {...parallax} />
+		<BackgroundMeshPatch {spec} {...parallax} roll />
 	{/each}
 </FadeContainer>
 

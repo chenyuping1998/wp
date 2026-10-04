@@ -3,6 +3,7 @@
 	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getContext } from '../game/context';
+	import MineMesh from './MineMesh.svelte';
 
 	// Dockside transition: the captain pitches a naval mine into
 	// the middle of the screen — two red ticks — BOOM. The cut to the next scene
@@ -128,7 +129,7 @@
 		drift: (Math.random() - 0.5) * 0.24,
 	}));
 
-	let elapsed = 0;
+	let elapsed = $state(0);
 	let rafId = 0;
 	let completed = false;
 	let boomFired = false;
@@ -141,6 +142,22 @@
 	let mineTint = $state(0xffffff);
 	let mineAlpha = $state(1);
 	let mineSpin = $state(0);
+	// ── THE MINE IS SOFT (2026-09-28): MineMesh ────────────────────────────────
+	// In flight it STRETCHES along its path and its chain trails the tumble; it
+	// SQUASHES when it arrives mid-screen; on each red tick it SWELLS, and in the
+	// instant before the blast it balloons — the cartoon beat of a thing about
+	// to pop. heading/stretch are the path's, in screen space; the chain is a
+	// damped spring chasing a lag proportional to the spin rate.
+	let heading = $state(0);
+	let stretch = $state(0);
+	let bulge = $state(0);
+	let chain = $state(0);
+	let chainV = 0;
+	let arrivedAt = -1;
+	let prevX = 0;
+	let prevY = 0;
+	let prevSpin = 0;
+	let wasVisible = false;
 	// fraction of the boom over which the mine is consumed by its own blast
 	const GRENADE_BURN = 0.16;
 	let boomT = $state(-1);
@@ -173,6 +190,7 @@
 
 			const h = context.stateLayoutDerived.canvasSizes().height;
 
+			const dts = Math.max(0.001, dt / 1000);
 			if (thrown && elapsed < THROW_RELEASE_MS) {
 				// still in his hand — nothing to draw yet
 				mineVisible = false;
@@ -256,6 +274,39 @@
 					props.oncover?.();
 				}
 			}
+
+			// the path: which way it is going and how fast, for the stretch
+			// (not on the frame it appears: its last position is the hand's, not a
+			// point on the path)
+			const fresh = mineVisible && !wasVisible;
+			wasVisible = mineVisible;
+			const vx = fresh ? 0 : (mineX - prevX) / dts, vy = fresh ? 0 : (mineY - prevY) / dts;
+			const speed = Math.hypot(vx, vy);
+			if (elapsed < ENTRY_MS && speed > 1) {
+				heading = Math.atan2(vy, vx);
+				stretch = Math.min(0.32, speed / (h * 9));
+			} else {
+				if (arrivedAt < 0 && elapsed >= ENTRY_MS) arrivedAt = elapsed;
+				// the arrival: flat along the path, then back
+				const since = elapsed - arrivedAt;
+				stretch = arrivedAt < 0 ? 0 : -0.28 * Math.exp(-since / 70) * Math.cos((2 * Math.PI * since) / 190);
+			}
+			prevX = mineX;
+			prevY = mineY;
+			// the chain trails the spin
+			const spinRate = fresh ? 0 : (mineSpin - prevSpin) / dts;
+			prevSpin = mineSpin;
+			const want = Math.max(-0.7, Math.min(0.7, -spinRate * 0.035));
+			const CK = (2 * Math.PI * 3) ** 2;
+			chainV += (CK * (want - chain) - 2 * 0.18 * Math.sqrt(CK) * chainV) * Math.min(0.05, dts);
+			chain += chainV * Math.min(0.05, dts);
+			// the swell: the two ticks, then the blast
+			if (elapsed >= ENTRY_MS && elapsed < BOOM_AT) {
+				const p = (elapsed - ENTRY_MS) / TICK_MS;
+				bulge = 0.075 * Math.max(0, Math.sin(p * Math.PI * 4)) ** 2;
+			} else if (elapsed >= BOOM_AT) {
+				bulge = 0.22 * easeOutCubic(Math.min(1, (elapsed - BOOM_AT) / (BOOM_MS * GRENADE_BURN)));
+			} else bulge = 0;
 
 			if (elapsed >= TOTAL_MS) {
 				if (!completed) {
@@ -438,17 +489,14 @@
 			artwork is; only one dimension may be chosen.
 		-->
 		{@const gh = context.stateLayoutDerived.canvasSizes().height * 0.26 * mineScale}
-		<Sprite
-			key="gbMine"
-			anchor={0.5}
-			x={mineX}
-			y={mineY}
-			width={gh * MINE_ASPECT}
-			height={gh}
-			rotation={mineSpin}
-			tint={mineTint}
-			alpha={mineAlpha}
-		/>
+		<!-- turned onto the path, stretched along it, turned back and spun -->
+		<Container x={mineX} y={mineY} alpha={mineAlpha} rotation={heading}>
+			<Container scale={{ x: 1 + stretch, y: 1 - stretch * 0.5 }}>
+				<Container rotation={mineSpin - heading}>
+					<MineMesh width={gh * MINE_ASPECT} height={gh} tint={mineTint} {bulge} {chain} time={elapsed} />
+				</Container>
+			</Container>
+		</Container>
 	{/if}
 
 	<!--

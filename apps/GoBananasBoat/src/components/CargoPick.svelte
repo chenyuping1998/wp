@@ -17,6 +17,9 @@
 	import GoldText from './GoldText.svelte';
 	import SymbolMeshWin from './SymbolMeshWin.svelte';
 	import { MESH_WINS, MESH_LANDS, AMP_MAX } from '../game/meshWin';
+	import { wheelSchedule, wheelPositionAt } from '../game/wheelSchedule';
+	import ReelLatchMesh from './ReelLatchMesh.svelte';
+	import FlapperMesh from './FlapperMesh.svelte';
 
 	// READING THE MANIFEST — which cargo this run is carrying.
 	//
@@ -62,8 +65,8 @@
 	// slot was found in.
 	const LEAD_MS = 750;
 	const LEAD_MS_TURBO = 550;
-	const SPIN_MS = 3000;
-	const SPIN_MS_TURBO = 2300;
+	const SPIN_MS = 3200;
+	const SPIN_MS_TURBO = 2800;
 	const HOLD_MS = 900;
 	const HOLD_MS_TURBO = 650;
 	// How many symbols pass before the target. Enough that the landing is not
@@ -80,7 +83,8 @@
 	//
 	// 0.55 of the clock covers thirteen cells; the remaining 0.45 covers one. At
 	// 2400ms that is a little over a second on the final symbol alone.
-	const APPROACH_SHARE = 0.55;
+	const APPROACH_CELLS = 4;
+	const RATIO = 0.45;
 
 	// Bigger than a board cell. This is one symbol being presented, not a cell of
 	// a board, and at cell size it read as a stray reel left running.
@@ -103,6 +107,9 @@
 	type Phase = 'lead' | 'turning' | 'approach' | 'landed';
 	let phase = $state<Phase>('lead');
 	let raf = 0;
+	let latchTimer = 0;
+	let latchStarted = $state(0);
+	let latchClock = $state(0);
 	// The frame loop stops in a backgrounded tab, so it cannot be what ends this —
 	// same rule as FullShipment. The timer owns the ending; rAF only interpolates.
 	let killTimer = 0;
@@ -110,6 +117,7 @@
 	onDestroy(() => {
 		cancelAnimationFrame(raf);
 		clearTimeout(killTimer);
+		clearInterval(latchTimer);
 		// A LOOP, so it has to be stopped by something that always runs. The happy
 		// path stops it when the reel lands; this is for the round being torn down
 		// mid-spin, which would otherwise leave a hoist running under the free
@@ -117,23 +125,10 @@
 		context.eventEmitter.broadcast({ type: 'soundCargoRoll', phase: 'stop' });
 	});
 
-	// Cubic ease-out for the approach: fast off the mark, losing momentum all the
-	// way, arriving at the cell before the cargo with almost nothing left. Quartic
-	// was too front-loaded — it spent its middle already crawling, so by the time
-	// the last cell came round there was no contrast left to make it mean
-	// anything.
-	const easeOutCubic = (p: number) => 1 - (1 - p) ** 3;
-	// ...and a smoothstep for the final cell, so it eases OUT of the near-stop as
-	// well as into the landing. A linear last cell reads as the reel being dragged
-	// by hand; this reads as it having just enough left to turn over once more.
-	const smoothstep = (p: number) => p * p * (3 - 2 * p);
-
-	// `pos` in cells at a given point through the spin. Split in two - see
-	// APPROACH_SHARE.
-	const positionAt = (p: number, last: number) =>
-		p < APPROACH_SHARE
-			? easeOutCubic(p / APPROACH_SHARE) * (last - 1)
-			: last - 1 + smoothstep((p - APPROACH_SHARE) / (1 - APPROACH_SHARE));
+	const windDownMs = (ms: number) => {
+		const schedule = wheelSchedule(TRAVEL, ms, APPROACH_CELLS, RATIO);
+		return schedule.times[schedule.cruise];
+	};
 
 	// the symbol that landed, and when — keys the act on the lock
 	const landedName = $derived(strip.length ? String(strip[strip.length - 1]) : '');
@@ -160,12 +155,14 @@
 		pos = 0;
 		phase = 'turning';
 		const last = strip.length - 1;
+		const schedule = wheelSchedule(last, ms, APPROACH_CELLS, RATIO);
+		const windDownAt = schedule.times[schedule.cruise];
 		const t0 = performance.now();
 		const step = (now: number) => {
-			const p = Math.min(1, (now - t0) / ms);
-			pos = positionAt(p, last);
-			if (p >= APPROACH_SHARE && phase === 'turning') phase = 'approach';
-			if (p >= 1) {
+			const t = now - t0;
+			pos = wheelPositionAt(Math.min(t, ms), schedule);
+			if (t >= windDownAt && phase === 'turning') phase = 'approach';
+			if (t >= ms) {
 				phase = 'landed';
 				return;
 			}
@@ -210,6 +207,8 @@
 			// is parked on its first symbol — which is filler, not the cargo, so the
 			// pause gives nothing away.
 			phase = 'lead';
+			clearInterval(latchTimer);
+			latchClock = 0;
 			pos = 0;
 			strip = buildStrip(event.symbol);
 			show = true;
@@ -229,7 +228,7 @@
 			// Hand over to the anticipation loop for the final cell — the same
 			// tremolo the reels use when a scatter is one reel away, which is the
 			// cue this game has already taught the player to read as "wait".
-			await waitForTimeout(ms * APPROACH_SHARE);
+			await waitForTimeout(windDownMs(ms));
 			// Louder than the board's own anticipation (0.8). There, this plays under
 			// four reels still spinning; here it is the only thing happening, and the
 			// moment it marks decides every crate in the round.
@@ -243,7 +242,7 @@
 			// start left him back at rest for the half of it that matters — and the
 			// approach is the beat the whole thing is built around.
 			context.eventEmitter.broadcast({ type: 'mascotCargo', phase: 'watch' });
-			await waitForTimeout(ms * (1 - APPROACH_SHARE));
+			await waitForTimeout(ms - windDownMs(ms));
 			context.eventEmitter.broadcast({ type: 'soundReelTensionStop' });
 			context.eventEmitter.broadcast({ type: 'soundCargoRoll', phase: 'stop' });
 			// THE LOCK.
@@ -259,6 +258,12 @@
 			// at full, and the WHOLE SCENE thrown. This is the only place the scene
 			// shake is spent at strength 1.
 			context.eventEmitter.broadcast({ type: 'soundCargoLock' });
+			latchStarted = Date.now();
+			latchClock = latchStarted;
+			latchTimer = setInterval(() => {
+				latchClock = Date.now();
+				if (latchClock - latchStarted >= 700) clearInterval(latchTimer);
+			}, 16) as unknown as number;
 			context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1 });
 			context.eventEmitter.broadcast({ type: 'cameraShake', strength: 1 });
 			context.eventEmitter.broadcast({ type: 'mascotCargo', phase: 'reveal' });
@@ -348,6 +353,16 @@
 					/>
 				{/key}
 			{/if}
+			<Container>
+				<ReelLatchMesh width={CELL} {phase} elapsed={phase === 'landed' ? latchClock - latchStarted : 0} />
+			</Container>
+			<!-- Reinsert above the symbol mesh when it lands. The mesh is attached
+			     imperatively on stop and otherwise paints over this pointer. -->
+			{#key phase === 'landed'}
+				<Container>
+					<FlapperMesh x={-CELL * 0.56} y={0} rotation={-Math.PI / 2} length={CELL * 0.24} {pos} dir={1} />
+				</Container>
+			{/key}
 		</Container>
 	</BoardContainer>
 {/if}

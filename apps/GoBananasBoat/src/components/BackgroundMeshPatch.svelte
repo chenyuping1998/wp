@@ -27,6 +27,7 @@
 	import { onMount } from 'svelte';
 
 	import { skin } from '../game/meshWin/meshRig';
+	import { holdRoll, HOLD_ROLL_LOOP } from '../game/meshWin/bgPatches';
 
 	type Props = {
 		spec: MeshWinSpec;
@@ -34,6 +35,8 @@
 		y: number;
 		width: number;
 		height: number;
+		/** the plate under it rolls (BgRollPlate): warp this patch the same way */
+		roll?: boolean;
 	};
 
 	const props: Props = $props();
@@ -68,6 +71,14 @@
 		const tick = () => {
 			const t = performance.now() % spec.durationMs;
 			skin(rig, spec.pose(rig, t), spec.feetY, positions);
+			if (props.roll) {
+				const rt = performance.now() % HOLD_ROLL_LOOP;
+				for (let i = 0; i < positions.length; i += 2) {
+					const [x, y] = holdRoll(positions[i], positions[i + 1], rt);
+					positions[i] = x;
+					positions[i + 1] = y;
+				}
+			}
 			geometry.getBuffer('aPosition').update();
 		};
 		const ticker = app.stateApp.pixiApplication?.ticker;

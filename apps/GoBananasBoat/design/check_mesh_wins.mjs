@@ -63,14 +63,17 @@ const { PNG } = require('pngjs');
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const core = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/meshRig.ts')).href);
-const { MESH_WINS: WINS, MESH_LANDS, MESH_REVEAL, MESH_BG, AMP_MAX } = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/index.ts')).href);
+const { MESH_WINS: WINS, MESH_LANDS, MESH_IDLES, MESH_REVEAL, MESH_HEAVE, MESH_BG, AMP_MAX } = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/index.ts')).href);
 // BOAT: the landings (lands.ts) are gated too, as H1_land etc., posed at the
 // heaviest impact a cell can ask for
 // and the tarp coming off the crate, as M_reveal
 const MESH_WINS = {
 	...WINS,
 	...Object.fromEntries(Object.entries(MESH_LANDS).map(([k, v]) => [`${k}_land`, v])),
+	// the idle acts between spins (idles.ts), as H1_idle etc.
+	...Object.fromEntries(Object.entries(MESH_IDLES).map(([k, v]) => [`${k}_idle`, v])),
 	M_reveal: MESH_REVEAL,
+	M_heave: MESH_HEAVE,
 	// and the moving background patches, by their own ids (BG_HOOK ...)
 	...Object.fromEntries(Object.values(MESH_BG).flat().map((spec) => [spec.symbol, spec])),
 };

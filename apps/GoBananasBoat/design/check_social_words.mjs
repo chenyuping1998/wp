@@ -73,6 +73,29 @@ const RESTRICTED = {
 	payline: 'playline',
 	paylines: 'playlines',
 	paytable: 'play table',
+	// THE OTHER FORMS OF THE SAME WORDS (2026-10-04). The match is whole-word, so
+	// the table above never saw "buys": Boat's rules said "what a dearer round
+	// buys is more crates" in both modes and certification flagged it with this
+	// guard green. Every restricted verb/noun needs its inflections listed.
+	buys: 'plays',
+	buying: 'playing',
+	purchases: 'plays',
+	purchased: 'played',
+	purchasing: 'playing',
+	costs: 'totals',
+	costing: 'totalling',
+	paying: 'winning',
+	payouts: 'wins',
+	bettor: 'player',
+	stakes: 'play amounts',
+	staked: 'played',
+	wagers: 'plays',
+	wagered: 'played',
+	wagering: 'playing',
+	gambling: 'playing',
+	deposits: 'get coins',
+	withdrawal: 'redemption',
+	credits: 'balance',
 };
 
 // longest first so "total bet" is reported rather than the bare "bet" inside it

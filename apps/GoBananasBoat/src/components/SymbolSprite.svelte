@@ -1,13 +1,15 @@
 <script lang="ts">
-	import { Sprite } from 'pixi-svelte';
+	import { Container, Sprite } from 'pixi-svelte';
 	import { Tween } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
 	import { stateBet } from 'state-shared';
 
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
-	import { MESH_LANDS, AMP_MAX } from '../game/meshWin';
+	import { MESH_LANDS, MESH_IDLES, AMP_MAX } from '../game/meshWin';
+	import { idleCells } from '../game/idleDirector';
 	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import CoinLand from './CoinLand.svelte';
 
 	type Props = {
 		x?: number;
@@ -27,6 +29,8 @@
 		/** the maths' symbol id: the high pays, the Scatter and the Wild land
 		 *  through their mesh (game/meshWin/lands.ts) rather than the squash */
 		symbolName?: string;
+		/** a visible, settled board cell: it may do an idle act */
+		idleable?: boolean;
 		oncomplete?: () => void;
 	};
 
@@ -82,7 +86,66 @@
 		props.oncomplete?.();
 	};
 
+	// THE IDLE ACT (game/meshWin/idles.ts). While this cell stands still and its
+	// symbol has one, it is on the idle director's register; the director calls
+	// `play` when it is this cell's turn. It stays registered while it acts (it
+	// just says it is busy), so an act does not reset the board's quiet clock.
+	let idleAct = $state<{ id: number } | null>(null);
+	let idleId = 0;
+	let idleTimer: ReturnType<typeof setTimeout> | undefined;
+	$effect(() => {
+		const name = props.symbolName;
+		const spec = name ? MESH_IDLES[name] : undefined;
+		const still = !!props.idleable && blur <= 0.01 && !props.landing && !meshLand;
+		if (!spec || !still || !name) {
+			idleAct = null;
+			return;
+		}
+		const off = idleCells.add({
+			name,
+			play: () => {
+				if (idleAct || meshLand || destroyed) return false;
+				const mine = ++idleId;
+				idleAct = { id: mine };
+				clearTimeout(idleTimer);
+				idleTimer = setTimeout(() => {
+					if (idleAct?.id === mine) idleAct = null;
+				}, spec.durationMs + 60);
+				return true;
+			},
+		});
+		return () => {
+			off();
+			clearTimeout(idleTimer);
+		};
+	});
+
+	// THE PRIZE COIN LANDS LIKE A COIN (CoinLand, 2026-10-03): it hits its plate
+	// and wobbles round its rim until it lies flat, instead of the whole tile
+	// squashing. Same contract as the mesh landing: "landed" at LANDED_MS.
+	const COIN_LAND_MS = 600;
+	let coinLand = $state<{ id: number; speed: number; amp: number } | null>(null);
+	let coinLandId = 0;
+	let coinLandTimer: ReturnType<typeof setTimeout> | undefined;
+	$effect(() => () => clearTimeout(coinLandTimer));
+	const runCoinLand = async () => {
+		if (squashing) return;
+		squashing = true;
+		const speed = stateBet.isTurbo ? 2 : 1;
+		coinLand = { id: ++coinLandId, speed, amp: Math.max(0.4, Math.min(AMP_MAX, props.impact ?? 1)) };
+		clearTimeout(coinLandTimer);
+		const mine = coinLandId;
+		coinLandTimer = setTimeout(() => {
+			if (coinLand?.id === mine) coinLand = null;
+		}, COIN_LAND_MS / speed + 40);
+		await new Promise((resolve) => setTimeout(resolve, LANDED_MS));
+		squashing = false;
+		if (destroyed) return;
+		props.oncomplete?.();
+	};
+
 	const runSquash = async () => {
+		if (props.symbolName === 'P') return runCoinLand();
 		const meshSpec = props.symbolName ? MESH_LANDS[props.symbolName] : undefined;
 		if (meshSpec) return runMeshLand(meshSpec);
 		if (squashing) return;
@@ -165,6 +228,16 @@
 			speed={meshLand.speed}
 			amp={meshLand.amp}
 		/>
+	{/key}
+{:else if coinLand && blur <= 0.01}
+	{#key coinLand.id}
+		<Container x={props.x ?? 0} y={props.y ?? 0}>
+			<CoinLand {width} {height} amp={coinLand.amp} speed={coinLand.speed} />
+		</Container>
+	{/key}
+{:else if idleAct && blur <= 0.01 && props.symbolName}
+	{#key idleAct.id}
+		<SymbolMeshWin idle symbolName={props.symbolName} {width} {height} />
 	{/key}
 {:else}
 	<Sprite

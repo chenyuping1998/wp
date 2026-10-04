@@ -26,6 +26,7 @@
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
+	import CoinMesh from './CoinMesh.svelte';
 
 	type PrizeEntry = {
 		reel: number;
@@ -33,6 +34,29 @@
 		prize: number;
 		scale: Tween<number>;
 		landedAt: number;
+		/** the toss (CoinMesh): when it started, how many whole turns, how long */
+		tossAt: number;
+		turns: number;
+		tossMs: number;
+	};
+
+	// ── THE COIN IS TOSSED (2026-09-28) ─────────────────────────────────────────
+	//
+	// A coin that sticks used to pop in as a flat picture scaling up. Now it is
+	// flipped in: it goes up off its plate, turns over twice in perspective
+	// (CoinMesh), and comes down face-up with the pop's bounce — its value
+	// appears once it has landed. At the tally every winning coin turns over
+	// once more, as it pulses. Ends on whole turns, so it always stops face-up.
+	const TOSS_MS = 560;
+	const flipOf = (e: PrizeEntry) => {
+		const p = tossProgress(e);
+		return e.turns * Math.PI * 2 * (1 - (1 - p) ** 3);
+	};
+	const tossProgress = (e: PrizeEntry) => (e.tossAt === 0 ? 1 : Math.max(0, Math.min(1, (clock - e.tossAt) / e.tossMs)));
+	// up and down once over the toss, a third of a cell at the top
+	const hopOf = (e: PrizeEntry) => {
+		const p = tossProgress(e);
+		return e.turns > 1 ? -SYMBOL_SIZE * 0.34 * Math.sin(Math.PI * p) : 0;
 	};
 
 	const context = getContext();
@@ -64,7 +88,7 @@
 		shakeRunning = true;
 		const step = (now: number) => {
 			clock = now;
-			if (prizes.some((entry) => now - entry.landedAt < SHAKE_MS)) {
+			if (prizes.some((entry) => now - entry.landedAt < SHAKE_MS || now - entry.tossAt < entry.tossMs)) {
 				rafId = requestAnimationFrame(step);
 			} else {
 				shakeRunning = false;
@@ -95,12 +119,21 @@
 		// New coins landed and stuck: pop each in with a bounce (hold and spin
 		// "hold em" — every new coin also resets the remaining spins).
 		stickyPrizesNew: async ({ prizes: incoming }) => {
-			const fresh = incoming.map((p) => ({ ...p, scale: new Tween(0), landedAt: performance.now() }));
+			const fresh = incoming.map((p) => ({
+				...p,
+				scale: new Tween(0),
+				landedAt: performance.now(),
+				tossAt: performance.now(),
+				turns: 2,
+				tossMs: TOSS_MS,
+			}));
 			prizes = [...prizes.filter((p) => !incoming.some((n) => keyOf(n) === keyOf(p))), ...fresh];
-			startShake();
 			for (const entry of fresh) {
-				entry.landedAt = performance.now();
+				entry.tossAt = performance.now();
+				// the rattle is the LANDING's, so it starts when the toss comes down
+				entry.landedAt = entry.tossAt + TOSS_MS * 0.85;
 				entry.scale.set(1, { duration: 420, easing: backOut });
+				startShake();
 				await waitForTimeout(140);
 			}
 			await waitForTimeout(360);
@@ -111,14 +144,18 @@
 			for (const entry of prizes) {
 				if (!winningKeys.has(keyOf(entry))) continue;
 				entry.scale.set(1.35, { duration: 260, easing: cubicOut });
+				entry.tossAt = performance.now();
+				entry.turns = 1;
+				entry.tossMs = 420;
 			}
+			startShake();
 			await waitForTimeout(420);
 			for (const entry of prizes) entry.scale.set(1, { duration: 260, easing: cubicOut });
 			await waitForTimeout(300);
 		},
 		// Bet resume: rebuild instantly, no animation.
 		stickyPrizesRestore: ({ prizes: restored }) => {
-			prizes = restored.map((p) => ({ ...p, scale: new Tween(1), landedAt: 0 }));
+			prizes = restored.map((p) => ({ ...p, scale: new Tween(1), landedAt: 0, tossAt: 0, turns: 0, tossMs: 1 }));
 		},
 		stickyPrizesClear: () => {
 			prizes = [];
@@ -158,14 +195,21 @@
 			}}
 		/>
 		{@const shake = shakeOffset(entry)}
+		{@const hop = hopOf(entry)}
+		{@const settled = tossProgress(entry)}
+		<!-- the plate stays; the coin turns over it (its own container: CoinMesh
+		     adds itself at its parent's end, and must draw under the value) -->
 		<Sprite
-			key="gbP"
+			key="gbPPlate"
 			anchor={0.5}
 			x={x + shake.x}
 			y={y + shake.y}
-			width={SYMBOL_SIZE * entry.scale.current}
-			height={SYMBOL_SIZE * entry.scale.current}
+			width={SYMBOL_SIZE * Math.min(1, entry.scale.current)}
+			height={SYMBOL_SIZE * Math.min(1, entry.scale.current)}
 		/>
+		<Container>
+			<CoinMesh x={x + shake.x} y={y + shake.y + hop} size={SYMBOL_SIZE} flip={flipOf(entry)} scale={entry.scale.current} />
+		</Container>
 		{#if isBig(entry.prize)}
 			<!-- high-value coins get a hot rim so they separate from the $1s at a glance -->
 			<Sprite
@@ -180,7 +224,12 @@
 				alpha={0.22 + 0.18 * Math.min(1, entry.scale.current)}
 			/>
 		{/if}
-		<Container x={x + shake.x} y={y + shake.y} scale={entry.scale.current}>
+		<Container
+			x={x + shake.x}
+			y={y + shake.y + hop}
+			scale={entry.scale.current}
+			alpha={entry.turns > 1 ? Math.max(0, (settled - 0.8) / 0.2) : 1}
+		>
 			<GoldText
 				text={bookEventAmountToCurrencyString(entry.prize)}
 				fontSize={28}

@@ -24,7 +24,7 @@
 	import BoardContainer from './BoardContainer.svelte';
 	import ImpactDust from './ImpactDust.svelte';
 	import SymbolMeshWin from './SymbolMeshWin.svelte';
-	import { REVEAL_MS, RATTLE_END as MESH_RATTLE_END } from '../game/meshWin/mReveal';
+	import { REVEAL_MS, RATTLE_END as MESH_RATTLE_END, HEAVE_MS } from '../game/meshWin/mReveal';
 
 	// The tarps come off, and every crate is the same cargo.
 	//
@@ -131,6 +131,21 @@
 	const ROW_LAG_TURBO = 22;
 	const RATTLE_END = MESH_RATTLE_END;
 
+	// ── FULL SHIPMENT: THE HEAVE, THEN A CRESCENDO (2026-10-02) ───────────────
+	//
+	// When the board that stops is ALL crates (FullShipment's beat fires first,
+	// while the reels are still spinning), the unload does not start straight
+	// away. Every tarp HEAVES twice first (mReveal.ts M_HEAVE) — the cargo
+	// shoving under the cloth — rolling across the board a reel at a time; then
+	// the columns are pulled with the gap SHRINKING each time, so five pulls
+	// read as one accelerating phrase rather than five equal beats.
+	const HEAVE_WAVE = 55;
+	const FULL_GAPS = [150, 122, 96, 74];
+	let fullNext = false;
+	const speed_ = () => (stateBet.isTurbo ? 0.78 : 1);
+	type Heave = { reel: number; row: number; bornAt: number };
+	let heaves = $state<Heave[]>([]);
+
 	// NO WIN-STYLE HIGHLIGHT WHEN THE CARGO IS NAMED.
 	//
 	// There was a pass here that lit the opened cells with a warm band travelling
@@ -221,9 +236,14 @@
 
 
 	context.eventEmitter.subscribeOnMount({
+		fullShipment: () => {
+			fullNext = true;
+		},
 		mysteryReveal: async (event) => {
 			if (event.positions.length === 0) return;
 			pendingSymbol = event.symbol;
+			const full = fullNext;
+			fullNext = false;
 
 			const durationMs = stateBet.isTurbo ? DURATION_TURBO : DURATION;
 
@@ -256,6 +276,25 @@
 				strength: 0.15 + 0.17 * columns.length,
 			});
 
+			// the heave first, on a full board
+			const speed = speed_();
+			if (full) {
+				const h0 = performance.now();
+				heaves = columns.flatMap((column, index) =>
+					column.rows.map((row) => ({ reel: column.reel, row, bornAt: h0 + index * HEAVE_WAVE * speed })),
+				);
+				context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.5 });
+				await waitForTimeout((HEAVE_MS + (columns.length - 1) * HEAVE_WAVE) * speed);
+				heaves = [];
+			}
+
+			// when each column is pulled: an even beat, or on a full board the
+			// shrinking gaps
+			const gapBefore = (i: number) =>
+				i === 0 ? 0 : full ? FULL_GAPS[Math.min(i - 1, FULL_GAPS.length - 1)] * speed : stagger;
+			const columnAt: number[] = [];
+			for (let i = 0, at = 0; i < columns.length; i++) columnAt.push((at += gapBefore(i)));
+
 			const start = performance.now();
 			entries = [
 				...entries,
@@ -263,7 +302,7 @@
 					column.rows.map((row, rowIndex) => ({
 						reel: column.reel,
 						row,
-						bornAt: start + index * stagger + rowIndex * rowLag,
+						bornAt: start + columnAt[index] + rowIndex * rowLag,
 						durationMs,
 						swapped: false,
 					})),
@@ -275,7 +314,7 @@
 				// One pull per COLUMN, on its own beat. Pitched by its place in the
 				// run, so a five-reel board is a rising phrase — which is the one
 				// thing that tells a big unload from a small one by ear.
-				await waitForTimeout(i === 0 ? 0 : stagger);
+				await waitForTimeout(gapBefore(i));
 				context.eventEmitter.broadcast({ type: 'soundTarpPull', step: i });
 			}
 
@@ -287,7 +326,7 @@
 			const lastColumn = columns[columns.length - 1];
 			const tail = (lastColumn.rows.length - 1) * rowLag;
 			await waitForTimeout(
-				Math.max(0, durationMs + tail - (columns.length - 1) * stagger),
+				Math.max(0, durationMs + tail - columnAt[columns.length - 1]),
 			);
 
 		},
@@ -295,6 +334,19 @@
 </script>
 
 <BoardContainer>
+	<!-- Full Shipment: the heave, on every crate, before the pulls -->
+	{#each heaves as heave (`h${heave.reel},${heave.row}`)}
+		<Container x={getSymbolX(heave.reel)} y={rowCenterY(heave.row)}>
+			<SymbolMeshWin
+				heave
+				symbolName="M"
+				width={SYMBOL_SIZE * SPECIAL_SYMBOL_SIZE}
+				height={SYMBOL_SIZE * SPECIAL_SYMBOL_SIZE}
+				speed={1 / speed_()}
+				delay={Math.max(0, heave.bornAt - performance.now())}
+			/>
+		</Container>
+	{/each}
 	{#each entries as entry (`${entry.reel},${entry.row}`)}
 		{@const s = crateState(entry)}
 		{#if s.alpha > 0.01}

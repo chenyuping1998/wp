@@ -58,6 +58,13 @@
 		src: new URL('../../assets/sprites/goBananasFx/fx_drop.png', import.meta.url).href,
 		preload: true,
 	},
+	// the tarp over the whole board at the start, yanked off (EntryReveal's
+	// TarpPeel; design: generated in-session 2026-10-03, see TarpPeel)
+	gbEntryTarp: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasFx/entry_tarp.png', import.meta.url).href,
+		preload: true,
+	},
 	fxVignette: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasFx/fx_vignette.png', import.meta.url).href,
@@ -360,6 +367,13 @@
 	gbP: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/p.png', import.meta.url).href,
+		preload: true,
+	},
+	// the prize coin's steel plate with the coin taken out (a round socket), so
+	// the coin can flip over it (CoinMesh, StickyPrizes)
+	gbPPlate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/p_plate.png', import.meta.url).href,
 		preload: true,
 	},
 	// The tarped cargo crate. Until this existed M was pointed at gbX, the

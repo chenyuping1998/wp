@@ -222,7 +222,7 @@
 				Every <strong>Cargo Crate</strong> on the board opens as one and the same symbol, drawn
 				once after the reels stop. Crates arrive stacked, so a reel carrying them can end up
 				several rows of that symbol deep &mdash; and because {T.ways} multiply across reels,
-				that can turn a board with no combination at all into a paying one. In Free Spins the
+				that can turn a board with no combination at all into a winning one. In Free Spins the
 				whole round shares one shipment, and a crate that has opened stays open.
 			</p>
 
