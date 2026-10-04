@@ -449,6 +449,9 @@ if (skin === 'print') {
 			buyBonusGlyph: 'gbUiBuyBonusStoneLit',
 		},
 		barSpriteSlice: 96,
+		// the frame runs on 20 units further right than the template's, so the
+		// turbo disc sits on the paper and not on the end stripes (2026-10-04)
+		barFrameRightInset: 4,
 
 		// readouts in ink; Win alone in the red, as the poster's alarm colour
 		labelFill: 0x1f5c4a,

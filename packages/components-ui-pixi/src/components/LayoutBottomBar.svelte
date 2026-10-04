@@ -67,7 +67,7 @@
 
 	// Frame inset from the canvas edges.
 	const FRAME_X = 24;
-	const frameW = $derived(box.width - FRAME_X * 2);
+	const frameW = $derived(box.width - FRAME_X - (uiTheme.barFrameRightInset ?? FRAME_X));
 	const innerRight = $derived(box.width - FRAME_X - 14);
 
 	// Right cluster, spaced by even edge-to-edge gaps rather than even centres —

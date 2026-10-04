@@ -515,9 +515,11 @@
 {#if placement}
 	{#key cast.key}
 	<Container>
-		<!-- A single flat paper spotlight keeps the figure readable on the
-		     backdrop without drawing a contour around it — the Lookout on the
-		     green warehouse wall, the Bandit on the red sun and sheds. -->
+	{#if context.stateGame.gameType === 'freegame'}
+		<!-- A single flat paper spotlight keeps the green Lookout readable on the
+		     green warehouse wall without drawing a contour around the figure.
+		     Not behind the Bandit: on him it read as a pale panel stuck on the
+		     backdrop (user, 2026-10-04) — the ink shadow separates him. -->
 		<Container x={placement.x} y={placement.y} scale={placement.scale} zIndex={-2}>
 			<Graphics draw={(g) => {
 				g.clear();
@@ -525,6 +527,7 @@
 				g.fill({ color: 0xf2e8d0, alpha: 0.42 });
 			}} />
 		</Container>
+	{/if}
 	<Container zIndex={-1} filters={castShadow}>
 	<SpineProvider
 		key={cast.key}

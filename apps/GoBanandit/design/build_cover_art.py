@@ -2,8 +2,10 @@
 
     python3 design/build_cover_art.py
 
-Writes design/cover/GoBanandit-Cover.png (1920x1080) and a preview with the
-dashboard's overlays drawn on (_preview_overlays.png).
+Writes design/cover/GoBanandit-Cover-BG.png (opaque backdrop) and
+GoBanandit-Cover-FG.png (cast + sacks on transparency), both 1920x1080 — the
+same BG/FG split as the thumbnail — and a preview of the two together with
+the dashboard's overlays drawn on (_preview_overlays.png).
 
 Every game needs one (user, 2026-10-04); it used to be whatever was at hand.
 The page lays two things over it, so the composition keeps them clear:
@@ -43,14 +45,9 @@ def figure(path, height):
 
 
 def place_figure(canvas, fig, x, y, shadow=(12, 10)):
-    """x,y = top-left. Paper spotlight behind, ink silhouette offset."""
+    """x,y = top-left. Ink silhouette offset behind (no paper spotlight: it
+    read as a pale panel on the backdrop — user, 2026-10-04)."""
     a = fig.split()[3]
-    spot = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
-    ImageDraw.Draw(spot).polygon(
-        [(x + fig.width * 0.08, y - 30), (x + fig.width * 0.92, y - 30), (x + fig.width * 1.06, y + fig.height), (x - fig.width * 0.06, y + fig.height)],
-        fill=PAPER[:3] + (110,),
-    )
-    canvas.alpha_composite(spot)
     sil = Image.new("RGBA", fig.size, INK)
     sil.putalpha(a.point(lambda v: int(v * 0.75)))
     canvas.alpha_composite(sil, (x + shadow[0], y + shadow[1]))
@@ -66,45 +63,36 @@ def printed_text(canvas, xy, text, size, fill, shadow=RED, stroke=10, offset=(9,
 
 
 def main():
+    # BG: the backdrop alone (opaque)
     bg = Image.open(os.path.join(APP, "static", "assets", "sprites", "bananditBackground", "bg_base.png")).convert("RGBA")
-    canvas = bg.resize((W, H), Image.LANCZOS)
+    bg = bg.resize((W, H), Image.LANCZOS)
 
-    # the Lookout, further back and to the right, keeping watch
+    # FG: everything that stands in front, on transparency — the same split
+    # as the thumbnail (GoBanandit-BG / -FG), and like the thumbnail's FG it
+    # carries no title (the page sets the game's name itself)
+    fg = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     look = figure(os.path.join(D, "cast_delivery", "fg_full_source.png"), 760)
-    place_figure(canvas, look, 1360, 300, shadow=(9, 8))
-    # the Bandit, the star, centre-right and in front
+    place_figure(fg, look, 1360, 300, shadow=(9, 8))
     band = figure(os.path.join(D, "cast_delivery", "mg_full_source.png"), 940)
-    place_figure(canvas, band, 860, 150)
-
-    # the haul at his feet: Banana Sacks (the P symbol art)
-    sack = Image.open(os.path.join(APP, "static", "assets", "sprites", "bananditSymbols", "P.png")).convert("RGBA") if os.path.exists(
-        os.path.join(APP, "static", "assets", "sprites", "bananditSymbols", "P.png")) else Image.open(os.path.join(D, "style_frame", "P.png")).convert("RGBA")
+    place_figure(fg, band, 860, 150)
+    sack = Image.open(os.path.join(APP, "static", "assets", "sprites", "bananditSymbols", "p.png")).convert("RGBA")
     sack = sack.crop(sack.getbbox())
     for (sx, sy, sz) in ((700, 820, 230), (1715, 905, 170), (800, 900, 170)):
-        s = sack.resize((sz, round(sack.height * sz / sack.width)), Image.LANCZOS)
-        sil = Image.new("RGBA", s.size, INK)
-        sil.putalpha(s.split()[3].point(lambda v: int(v * 0.7)))
-        canvas.alpha_composite(sil, (sx + 8, sy + 7))
-        canvas.alpha_composite(s, (sx, sy))
+        sk = sack.resize((sz, round(sack.height * sz / sack.width)), Image.LANCZOS)
+        sil = Image.new("RGBA", sk.size, INK)
+        sil.putalpha(sk.split()[3].point(lambda v: int(v * 0.7)))
+        fg.alpha_composite(sil, (sx + 8, sy + 7))
+        fg.alpha_composite(sk, (sx, sy))
 
-    # the title, top-left — clear of the rating pill and the thumbnail tile
-    printed_text(canvas, (90, 110), "GO", 150, PAPER)
-    printed_text(canvas, (90, 262), "BANANDIT", 150, (244, 194, 27, 255))
-    # the hook, one line, on an ink tag
-    f = ImageFont.truetype(FONT, 46)
-    tag = "EVERY BANDIT COLLECTS EVERY SACK"
-    tw = ImageDraw.Draw(canvas).textlength(tag, font=f)
-    d = ImageDraw.Draw(canvas)
-    d.rectangle((96 + 8, 488 + 8, 96 + tw + 48 + 8, 488 + 78 + 8), fill=RED)
-    d.rectangle((96, 488, 96 + tw + 48, 488 + 78), fill=INK)
-    d.text((96 + 24, 488 + 39), tag, font=f, fill=PAPER, anchor="lm")
+    bg.convert("RGB").save(os.path.join(OUT, "GoBanandit-Cover-BG.png"), optimize=True)
+    fg.save(os.path.join(OUT, "GoBanandit-Cover-FG.png"), optimize=True)
+    comp = bg.copy()
+    comp.alpha_composite(fg)
+    for n in ("GoBanandit-Cover-BG.png", "GoBanandit-Cover-FG.png"):
+        print("wrote", n, os.path.getsize(os.path.join(OUT, n)) // 1024, "KB")
 
-    out = os.path.join(OUT, "GoBanandit-Cover.png")
-    canvas.convert("RGB").save(out, optimize=True)
-    print("wrote", os.path.relpath(out, APP), canvas.size, os.path.getsize(out) // 1024, "KB")
-
-    # preview with the page's overlays, to check nothing important is under them
-    pv = canvas.copy()
+    # preview: the two layers together, with the page's overlays drawn on
+    pv = comp.copy()
     o = ImageDraw.Draw(pv, "RGBA")
     o.rounded_rectangle((W - 0.16 * W, 0.05 * H, W - 0.03 * W, 0.15 * H), 40, fill=(40, 40, 40, 200))
     o.rounded_rectangle((0.06 * W, H - 0.34 * H, 0.27 * W, H + 40), 30, fill=(242, 232, 208, 230))

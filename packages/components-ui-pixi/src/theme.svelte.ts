@@ -635,6 +635,13 @@ export const uiTheme = $state({
 	// the line most bars carry there. A game sets it at run time; empty (the
 	// default) draws nothing, so every other game is unchanged.
 	barMessage: '',
+
+	// compactBottom only — how far the strip's frame stops short of the canvas's
+	// RIGHT edge, in layout units. Undefined keeps the left inset (24) — the
+	// symmetric frame every other game has. Only the frame moves; the controls
+	// keep their positions, so a smaller value gives the last control (turbo)
+	// more strip to sit on.
+	barFrameRightInset: undefined as number | undefined,
 	barMessageFill: 0xffffff,
 
 	// compactBottom only — how far in from each END of uiTheme.sprites.bar the
