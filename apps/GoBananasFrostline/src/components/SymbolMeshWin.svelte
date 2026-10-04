@@ -53,7 +53,7 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
 	import { CANVAS, skin } from '../game/meshWin/meshRig';
-	import { MESH_WINS, MESH_LANDS, MESH_IDLES, MESH_TEASES, teasePose } from '../game/meshWin';
+	import { MESH_WINS, MESH_LANDS, MESH_IDLES, MESH_TEASES, MESH_FREEZES, MESH_ROARS, teasePose } from '../game/meshWin';
 	import ImpactDust from './ImpactDust.svelte';
 
 	type Props = {
@@ -79,6 +79,9 @@
 		 *  is still undecided. Loops while `teaseOn`; once that drops it blends
 		 *  home over TEASE_HOME_MS — SymbolSprite takes the cell back after. */
 		tease?: boolean;
+		/** the free game's freeze takeover (game/meshWin/freezes.ts): 'freeze' as
+		 *  the frost reaches the cell, 'roar' on the Wild that landed. Quiet. */
+		freeze?: 'freeze' | 'roar';
 		teaseOn?: boolean;
 		/** its weight (teaseWeight: harder with each Scatter down) */
 		teaseK?: number;
@@ -90,10 +93,12 @@
 	const parent = getContextParent();
 	// a landing and an idle act are both QUIET: inside the cell, no light, no
 	// sparks, no dust, no frame, no pop, no completion of their own
-	const landing = !!props.land || !!props.idle || !!props.tease;
+	const landing = !!props.land || !!props.idle || !!props.tease || !!props.freeze;
 	const teaseSpec = props.tease ? MESH_TEASES[props.symbolName] : undefined;
 	const spec = teaseSpec
 		? teaseSpec
+		: props.freeze
+		? (props.freeze === 'roar' ? MESH_ROARS : MESH_FREEZES)[props.symbolName]
 		: props.idle
 		? MESH_IDLES[props.symbolName]
 		: props.land
@@ -117,7 +122,8 @@
 	onMount(() => {
 		// a tease runs on the wall clock: it lasts as long as the reels take,
 		// and turbo already shortens that
-		const speed = teaseSpec ? 1 : stateBetDerived.timeScale();
+		// the takeover's frost runs on unscaled timers, so the freeze must too
+		const speed = teaseSpec || props.freeze ? 1 : stateBetDerived.timeScale();
 		const started = performance.now();
 		// WinLines already starts each reel as the runner reaches it. React at
 		// that moment instead of delaying the picture a second time.

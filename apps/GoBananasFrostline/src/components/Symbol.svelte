@@ -26,6 +26,8 @@
 		reel?: number;
 		/** may it do an idle act between spins (see ReelSymbol) */
 		idleable?: boolean;
+		/** the cell's row (1..rows visible), for the freeze takeover */
+		row?: number;
 	};
 
 	const props: Props = $props();
@@ -61,6 +63,8 @@
 		impact={props.impact}
 		symbolName={props.rawSymbol.name}
 		idleable={props.idleable}
+		reel={props.reel}
+		row={props.row}
 		oncomplete={props.oncomplete}
 	/>
 {:else}

@@ -10,6 +10,8 @@
 	import { MESH_LANDS, MESH_IDLES, MESH_TEASES, AMP_MAX, TEASE_HOME_MS, teaseWeight } from '../game/meshWin';
 	import { stateGame } from '../game/stateGame.svelte';
 	import { idleCells } from '../game/idleDirector';
+	import { freezeCells, type FreezeKind } from '../game/freezeCells';
+	import { MESH_FREEZES, MESH_ROARS } from '../game/meshWin';
 	import SymbolMeshWin from './SymbolMeshWin.svelte';
 
 	type Props = {
@@ -32,6 +34,9 @@
 		/** may it do an idle act between spins (ReelSymbol: a visible row, simply
 		 *  sitting there) */
 		idleable?: boolean;
+		/** where the cell is, for the freeze takeover (game/freezeCells.ts) */
+		reel?: number;
+		row?: number;
 		oncomplete?: () => void;
 	};
 
@@ -110,7 +115,7 @@
 		const off = idleCells.add({
 			name,
 			play: () => {
-				if (idleAct || meshLand || teasing || destroyed) return false;
+				if (idleAct || meshLand || teasing || freezeAct || destroyed) return false;
 				const mine = ++idleId;
 				idleAct = { id: mine };
 				clearTimeout(idleTimer);
@@ -161,6 +166,37 @@
 			if (teasing?.id === mine) teasing = null;
 		}, TEASE_HOME_MS + 60);
 		return () => clearTimeout(home);
+	});
+
+	// THE FREEZE (game/meshWin/freezes.ts). While this cell is settled it is on
+	// the freeze register under its reel and row; ExpandingWilds' takeover plays
+	// it as the frost front reaches the cell ('freeze'), or on the Wild that
+	// landed ('roar'). It takes the cell over from whatever quiet act is on it.
+	let freezeAct = $state<{ id: number; kind: FreezeKind } | null>(null);
+	let freezeId = 0;
+	let freezeTimer: ReturnType<typeof setTimeout> | undefined;
+	$effect(() => () => clearTimeout(freezeTimer));
+	$effect(() => {
+		const name = props.symbolName;
+		const reel = props.reel;
+		const row = props.row;
+		const settledCell = blur <= 0.01 && !props.landing;
+		if (!settledCell) freezeAct = null;
+		if (!name || reel === undefined || row === undefined || !settledCell) return;
+		return freezeCells.add(reel, row, {
+			play: (kind) => {
+				const spec = (kind === 'roar' ? MESH_ROARS : MESH_FREEZES)[name];
+				if (!spec || destroyed) return false;
+				const mine = ++freezeId;
+				freezeAct = { id: mine, kind };
+				idleAct = null;
+				clearTimeout(freezeTimer);
+				freezeTimer = setTimeout(() => {
+					if (freezeAct?.id === mine) freezeAct = null;
+				}, spec.durationMs + 60);
+				return true;
+			},
+		});
 	});
 
 	const runSquash = async () => {
@@ -241,6 +277,16 @@
 		<SymbolMeshWin
 			land
 			amp={meshLand.amp}
+			symbolInfo={props.symbolInfo}
+			symbolName={props.symbolName}
+			x={props.x}
+			y={props.y}
+		/>
+	{/key}
+{:else if freezeAct && blur <= 0.01 && props.symbolName}
+	{#key freezeAct.id}
+		<SymbolMeshWin
+			freeze={freezeAct.kind}
 			symbolInfo={props.symbolInfo}
 			symbolName={props.symbolName}
 			x={props.x}

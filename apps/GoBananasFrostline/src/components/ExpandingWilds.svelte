@@ -15,6 +15,7 @@
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import { getContext } from '../game/context';
+	import { freezeCells } from '../game/freezeCells';
 	import { SYMBOL_SIZE, BOARD_SIZES, BOARD_DIMENSIONS } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
@@ -30,6 +31,7 @@
 		rimeAt,
 		slabAt,
 		clarifyAt,
+		cellFrostStartMs,
 	} from '../game/frostTakeover';
 	import { ICE_BRIGHT, ICE_HIGHLIGHT } from '../game/palette';
 	import { PILLAR } from '../game/meshWin';
@@ -568,6 +570,22 @@
 	 * of the wrong material.
 	 */
 	const runFreezeTakeover = async (entry: WildEntry, x: number) => {
+		// THE REEL TAKES PART (game/meshWin/freezes.ts, via game/freezeCells.ts):
+		// the Wild that landed ROARS as the takeover opens, and every other
+		// symbol on the reel FLINCHES, chatters with cold and stiffens the
+		// instant the frost front reaches its cell — the same moment its
+		// frost_creep tick sounds — so the frost visibly takes each one.
+		freezeCells.play(entry.reel, entry.row, 'roar');
+		const reach = frostSpan(entry);
+		for (const row of visibleRows) {
+			const d = Math.abs(row - entry.row);
+			if (d === 0) continue;
+			waitForTimeout(cellFrostStartMs(d, reach)).then(() => {
+				if (entry.phase !== 'infect') return;
+				freezeCells.play(entry.reel, row, 'freeze');
+			});
+		}
+
 		// 1 ── FROST
 		//
 		// Ticks are placed at the moment each cell's own frosting STARTS, not on a

@@ -15,6 +15,7 @@ import { settled, type MeshWinSpec } from './meshRig';
 import { LANDS } from './lands';
 import { hopped } from './winHop';
 import { IDLES } from './idles';
+import { FREEZES, ROARS } from './freezes';
 import { H1 } from './h1Ushanka';
 import { H2 } from './h2Flare';
 import { H3 } from './h3Sled';
@@ -45,6 +46,15 @@ export const MESH_IDLES: Record<string, MeshWinSpec> = Object.fromEntries(
 	Object.entries(IDLES).map(([k, spec]) => [k, settled(spec)]),
 );
 export { IDLE_WEIGHT } from './idles';
+
+// the reel freezing over in the free game (freezes.ts): each symbol flinches,
+// chatters and stiffens as the frost reaches it, and the landed Wild roars
+export const MESH_FREEZES: Record<string, MeshWinSpec> = Object.fromEntries(
+	Object.entries(FREEZES).map(([k, spec]) => [k, settled(spec)]),
+);
+export const MESH_ROARS: Record<string, MeshWinSpec> = Object.fromEntries(
+	Object.entries(ROARS).map(([k, spec]) => [k, settled(spec)]),
+);
 
 // the Scatter's sway while the spin is still undecided (teases.ts). Not
 // `settled`: it has no fixed end — teasePose blends it home when told to stop.

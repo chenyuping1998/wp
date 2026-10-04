@@ -73,6 +73,15 @@ export const cellFrost = (t: number, distance: number, span: number) => {
 	return Math.min(1, (front - start) / CELL_FROST_FRACTION);
 };
 
+/** When, ms into the frost beat, a cell `distance` from the landed one starts
+ *  frosting — the inverse of cellFrost's start, so a symbol's flinch (the
+ *  freeze act, meshWin/freezes.ts) lands exactly as the frost reaches it. */
+export const cellFrostStartMs = (distance: number, span: number) => {
+	const start = span <= 0 ? 0 : (distance / span) * (1 - CELL_FROST_FRACTION);
+	// frostFront(t) = 1 - (1 - u)^2.2 with u = t / frostMs, solved for t
+	return FROST_TIMING.frostMs * (1 - (1 - start) ** (1 / 2.2));
+};
+
 /**
  * One frost crystal: a six-armed dendrite growing on the cell's surface.
  *
