@@ -25,6 +25,8 @@
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
+	import { BOOK_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
+	import { winLevelMap, type WinLevelAlias } from '../game/winLevelMap';
 
 	const context = getContext();
 
@@ -51,21 +53,74 @@
 	let show = $state(false);
 	let amount = $state(0);
 	let winLevelData = $state<WinLevelData>();
+
+	// ── THE PLAQUE CLIMBS THE LADDER AS THE FIGURE DOES (from Go Bananubis) ──
+	//
+	// A big win used to open on its FINAL plaque: a super win was "SUPER" from
+	// the first frame, and the count-up ran to a result the plaque had already
+	// given away. Now it opens on BIG, and as the rolling figure crosses each
+	// tier's threshold the next plaque slams in over it — flash, shake, burst,
+	// that tier's music — so the player watches it climb and wonders whether
+	// it will go once more. MAX is reached only by the full amount.
+	//
+	// The thresholds are the maths' own, in multiples of the bet: math-sdk
+	// src/config/config.py get_win_level("standard") — 6 big [15,30), 7 super
+	// [30,50), 8 mega [50,100), 9 epic [100, wincap), 10 max at the wincap.
+	// winUpdate only ever carries a "standard" level (setWin, and the superspin
+	// cap's 'max'); the feature total (endFeature, far higher bands) goes to
+	// the free-game outro instead, which does not use this.
+	const LADDER: WinLevelAlias[] = ['big', 'superwin', 'mega', 'epic', 'max'];
+	const TIER_FROM: Partial<Record<WinLevelAlias, number>> = { big: 15, superwin: 30, mega: 50, epic: 100 };
+	let tierAlias = $state<WinLevelAlias>('big');
+	let tierSteps = 0;
+	const tierOf = (countUp: number): WinLevelAlias => {
+		const final = winLevelData?.alias;
+		if (!final) return 'big';
+		const top = LADDER.indexOf(final);
+		if (top < 0) return final;
+		const x = countUp / BOOK_AMOUNT_MULTIPLIER;
+		const finalX = amount / BOOK_AMOUNT_MULTIPLIER;
+		let at = 0;
+		for (let k = 1; k <= top; k++) {
+			const from = LADDER[k] === 'max' ? finalX : (TIER_FROM[LADDER[k]] ?? Infinity);
+			if (x >= from - 1e-9) at = k;
+		}
+		// the count-up has finished (or was skipped): whatever the thresholds
+		// say, it is the final tier now
+		if (x >= finalX - 1e-9) at = top;
+		return LADDER[at];
+	};
+	const tierMusic = (alias: WinLevelAlias) =>
+		Object.values(winLevelMap).find((level) => level.alias === alias)?.sound.bgm;
+	const onTier = (alias: WinLevelAlias) => {
+		if (alias === tierAlias) return;
+		const up = LADDER.indexOf(alias) > LADDER.indexOf(tierAlias);
+		tierAlias = alias;
+		if (!up) return;
+		tierSteps++;
+		startShake(520, 9 + 2 * tierSteps);
+		startImpact();
+		// the new plaque comes in on its own entrance (the FX clock restarts)
+		startBannerFx();
+		context.eventEmitter.broadcast({ type: 'soundBigWinBlast' });
+		const bgm = tierMusic(alias);
+		if (bgm) context.eventEmitter.broadcast({ type: 'soundMusic', name: bgm });
+	};
 	let oncomplete = $state(() => {});
 	let onCountUpComplete = $state(() => {});
 
 	// camera shake as the presentation slams in
 	let shake = $state({ x: 0, y: 0 });
-	const startShake = () => {
+	const startShake = (ms = 700, peak = 11) => {
 		const start = Date.now();
 		const id = setInterval(() => {
-			const p = (Date.now() - start) / 700;
+			const p = (Date.now() - start) / ms;
 			if (p >= 1) {
 				shake = { x: 0, y: 0 };
 				clearInterval(id);
 				return;
 			}
-			const amp = 11 * (1 - p) ** 2;
+			const amp = peak * (1 - p) ** 2;
 			shake = { x: (Math.random() - 0.5) * 2 * amp, y: (Math.random() - 0.5) * 2 * amp };
 		}, 16);
 	};
@@ -109,7 +164,7 @@
 		const start = performance.now();
 		const tick = (now: number) => {
 			fxNow = (now - start) / 1000;
-			const mult = winLevelData ? (TIER_FX[winLevelData.alias]?.mult ?? 1) : 1;
+			const mult = TIER_FX[tierAlias]?.mult ?? 1;
 			if (fxNow >= nextTwinkleAt) {
 				twinkles = [
 					...twinkles.filter(({ born }) => fxNow - born < 0.7),
@@ -166,6 +221,14 @@
 		winUpdate: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
+			tierAlias = LADDER.includes(emitterEvent.winLevelData.alias) ? 'big' : emitterEvent.winLevelData.alias;
+			tierSteps = 0;
+			// the round's sounds started the FINAL tier's music (winLevelSoundsPlay);
+			// the plaque opens on BIG, so the music does too and climbs with it
+			if (emitterEvent.winLevelData.type === 'big' && tierAlias === 'big') {
+				const bgm = tierMusic('big');
+				if (bgm) context.eventEmitter.broadcast({ type: 'soundMusic', name: bgm });
+			}
 			if (emitterEvent.winLevelData.type === 'big') {
 				startShake();
 				startImpact();
@@ -198,7 +261,12 @@
 				/>
 
 				{#if isBigWin}
-					{@const fx = TIER_FX[winLevelData.alias] ?? TIER_FX.big}
+					<!-- the plaque the figure has reached (see LADDER) -->
+					{@const reached = tierOf(countUpAmount)}
+					{#key reached}
+						<OnMount onmount={() => onTier(reached)} />
+					{/key}
+					{@const fx = TIER_FX[tierAlias] ?? TIER_FX.big}
 					<MainContainer>
 						<BigWinFx
 							x={context.stateGameDerived.boardLayout().x + shake.x * 0.4}
@@ -215,7 +283,7 @@
 						scale={punch}
 					>
 						{#if isBigWin}
-							{@const alias = winLevelData.alias}
+							{@const alias = tierAlias}
 							{@const fx = TIER_FX[alias] ?? TIER_FX.big}
 							{@const bannerKey = BANNER_KEY[alias] ?? BANNER_KEY.big}
 							{@const bw = SYMBOL_SIZE * 5.2}
@@ -286,7 +354,7 @@
 					</Container>
 				</MainContainer>
 
-				<WinCoins emit={!countUpCompleted} levelAlias={winLevelData?.alias} />
+				<WinCoins emit={!countUpCompleted} levelAlias={isBigWin ? tierAlias : winLevelData?.alias} />
 
 				{#if flash > 0}
 					<CanvasSizeRectangle backgroundColor={0xffffff} backgroundAlpha={flash} />

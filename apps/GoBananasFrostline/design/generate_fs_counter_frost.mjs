@@ -1,3 +1,8 @@
+// NOT SHIPPED (2026-10-04): the snow-capped counter and sign this draws were
+// asked to go; the game uses the plain recoloured plates again (restored from
+// git: fs_counter_panel.png from 095ba62, fs_sign.png from before 1d2a7ed).
+// Running this OVERWRITES them — don't, unless the snow is wanted back.
+
 // The free-spin counter's plate: an ice-framed slate panel with a snowdrift on
 // its top edge and icicles hanging off the bottom.
 //

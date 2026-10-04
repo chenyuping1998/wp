@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import { onMount } from 'svelte';
 
-	import { Container, type Sizes } from 'pixi-svelte';
+	import { Container, Sprite, type Sizes } from 'pixi-svelte';
 	import { MainContainer } from 'components-layout';
 	import { Tween } from 'svelte/motion';
 	import { backOut, cubicOut } from 'svelte/easing';
@@ -10,7 +10,6 @@
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { SIGN } from '../game/meshWin';
-	import PropMesh from './PropMesh.svelte';
 
 	// The snow-capped free-game board (gbFsSign, drawn by
 	// design/generate_fs_counter_frost.mjs --sign) that drops in from the top and
@@ -64,7 +63,10 @@
 		y={context.stateGameDerived.boardLayout().y + dropY.current}
 		rotation={swing.current}
 	>
-		<PropMesh spec={SIGN} env={{ t: signT }} anchor={0.5} {...SIGN_SIZES} />
+		<!-- back to the plain plate, on request: no snow cap, no icicles, and so
+		     no mesh either (fsSign.ts bent exactly those) — it drops and swings
+		     on its container as before -->
+		<Sprite key="gbFsSign" anchor={0.5} {...SIGN_SIZES} />
 		<!-- children sit centered on the plank area (slightly below the emblem) -->
 		<Container y={SIGN_SIZES.height * 0.06}>
 			{@render props.children({ sizes: TEXT_AREA })}

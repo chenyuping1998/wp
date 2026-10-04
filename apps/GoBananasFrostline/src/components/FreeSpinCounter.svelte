@@ -9,7 +9,7 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
-	import { Container, Graphics, Text } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBet } from 'state-shared';
 	import { onDestroy } from 'svelte';
@@ -19,14 +19,12 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { gameText } from '../game/i18nText';
 	import GoldText from './GoldText.svelte';
-	import PropMesh from './PropMesh.svelte';
-	import { COUNTER } from '../game/meshWin';
 
 	const context = getContext();
 
-	// the ice-framed counter plate left of the board, snow on top and icicles
-	// under it (fs_counter_panel.png, drawn by design/generate_fs_counter_frost.mjs;
-	// the canvas keeps the old 824:622 ratio, so every fraction below still holds)
+	// the plain ice-rimmed counter plate left of the board (fs_counter_panel.png,
+	// the original recoloured plate restored from 095ba62 — the snow-capped one
+	// from generate_fs_counter_frost.mjs was asked to go; 824:622 ratio)
 	const PANEL_RATIO = 824 / 622;
 	const panelWidth = $derived(SYMBOL_SIZE * 2.1);
 	const panelSizes = $derived({ width: panelWidth, height: panelWidth / PANEL_RATIO });
@@ -129,7 +127,9 @@
 
 <MainContainer>
 	<FadeContainer {show} {...position}>
-		<PropMesh spec={COUNTER} env={{ updateT: meshClock, reset: meshReset }} {...panelSizes} />
+		<!-- the plain ice-rimmed plate again, on request (no snow cap to flex, so
+		     no mesh: counterPanel.ts bent the cap) -->
+		<Sprite key="gbFsPanel" {...panelSizes} />
 
 		<!-- title on the upper plank area, auto-shrunk for long locales -->
 		<Text

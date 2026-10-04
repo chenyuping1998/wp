@@ -268,6 +268,20 @@
 		color: #09202e;
 		font: 400 14px var(--gb-display-font, 'Titan One');
 		cursor: pointer;
+		transition: box-shadow .16s ease;
+	}
+	/* The BUY box's own rim catches a little light under the pointer — a thin
+	   pale ring and a soft halo in the card's accent, nothing on its face, so
+	   the price and the word stay as they are. Hover-capable pointers only:
+	   on touch a :hover sticks after the tap. */
+	@media (hover: hover) {
+		button:hover {
+			box-shadow:
+				0 3px 0 color-mix(in srgb, var(--accent) 40%, #000),
+				inset 0 1px 0 #fff8,
+				0 0 0 2px color-mix(in srgb, var(--accent) 45%, #fff),
+				0 0 12px var(--glow);
+		}
 	}
 	button span { white-space: nowrap; font: 700 14px 'Segoe UI', Arial, sans-serif; }
 	button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }

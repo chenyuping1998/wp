@@ -47,7 +47,7 @@ const BASELINE = {
 	'node_modules\\components-ui-html\\node_modules\\envs\\src\\envs.svelte.ts': 1,
 	// deprecated pixi v7 Graphics/TextStyle API — see the 85 remaining uses
 	'src\\components\\GoldText.svelte': 3,
-	'src\\components\\Win.svelte': 2,
+	'src\\components\\Win.svelte': 0,
 	'src\\components\\FreeSpinIntro.svelte': 2,
 	'src\\components\\ui\\ModalPayTable.svelte': 1,
 	'src\\components\\SymbolSpineMain.svelte': 1,
