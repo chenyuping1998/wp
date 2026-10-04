@@ -8,8 +8,6 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
-	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
@@ -21,7 +19,8 @@
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import WinCoins from './WinCoins.svelte';
-	import GoldText from './GoldText.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { FROST_AMOUNT_ACT, FROST_BANNER_ACT } from '../game/meshWin/textMesh';
 
 	const context = getContext();
 
@@ -29,6 +28,11 @@
 	let amount = $state(0);
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
+	// TextMesh kicks: the title lands as the plate comes up, the total rolls
+	// while it counts and squashes as it lands
+	let shownAt = $state(-1);
+	let rollAt = $state(-1);
+	let landAt = $state(-1);
 
 	// Silence the coin loop the moment the total stops counting.
 	//
@@ -50,6 +54,9 @@
 		freeSpinOutroCountUp: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
+			shownAt = Date.now();
+			rollAt = -1;
+			landAt = -1;
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
 	});
@@ -60,35 +67,38 @@
 		{@const duration = winLevelData.presentDuration}
 		<WinCountUpProvider {amount} {duration} oncomplete={() => onCountUpComplete()}>
 			{#snippet children({ countUpAmount, startCountUp, finishCountUp, countUpCompleted })}
-				<OnMount onmount={() => startCountUp()} />
+				<OnMount
+					onmount={() => {
+						rollAt = Date.now();
+						startCountUp();
+					}}
+				/>
+				{#if countUpCompleted}
+					<OnMount onmount={() => (landAt = Date.now())} />
+				{/if}
 
 				<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
 
 				<FreeSpinAnimation>
 					{#snippet children({ sizes })}
-						<Text
-							anchor={0.5}
+						<TextMesh
 							y={-sizes.height * 0.26}
 							text={title}
-							style={{
-								fontFamily: GAME_FONT,
-								fontSize: Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
-								fontWeight: GAME_FONT_WEIGHT,
-								letterSpacing: 6,
-								fill: [0xfff3bd, 0xffd75e, 0xc9821a],
-								stroke: 0x54330a,
-								strokeThickness: 6,
-								dropShadow: true,
-								dropShadowColor: 0x000000,
-								dropShadowBlur: 10,
-								dropShadowDistance: 3,
-							}}
+							fontSize={Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length)}
+							letterSpacing={6}
+							strokeWidth={6}
+							shadow={{ blur: 10, distance: 3 }}
+							at={{ land: shownAt }}
+							act={FROST_BANNER_ACT}
 						/>
-						<GoldText
+						<TextMesh
 							y={sizes.height * 0.12}
 							fontSize={sizes.width * 0.15}
 							text={bookEventAmountToCurrencyString(countUpAmount)}
 							maxWidth={sizes.width * 0.9}
+							bevel
+							at={{ roll: rollAt, land: landAt }}
+							act={FROST_AMOUNT_ACT}
 						/>
 					{/snippet}
 				</FreeSpinAnimation>

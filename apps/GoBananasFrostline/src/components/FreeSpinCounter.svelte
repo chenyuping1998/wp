@@ -18,7 +18,8 @@
 	import { GOLD, GOLD_PALE, ICE_PLATE, INK } from '../game/palette';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { gameText } from '../game/i18nText';
-	import GoldText from './GoldText.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { COUNT_ACT } from '../game/meshWin/textMesh';
 
 	const context = getContext();
 
@@ -59,6 +60,8 @@
 	let current = $state(1);
 	let total = $state(0);
 	let meshClock = $state(-1);
+	let spinAt = $state(-1);
+	let retrigAt = $state(-1);
 	let meshReset = $state(false);
 	let meshRaf = 0;
 	const startMeshPulse = (reset: boolean) => {
@@ -92,7 +95,11 @@
 			const previousRemaining = Math.max(0, total - (current - 1));
 			if (emitterEvent.current !== undefined) current = emitterEvent.current;
 			if (emitterEvent.total !== undefined) total = emitterEvent.total;
-			startMeshPulse(total > previousTotal || (isSuperspin && remaining > previousRemaining));
+			const grew = total > previousTotal || (isSuperspin && remaining > previousRemaining);
+			startMeshPulse(grew);
+			// TextMesh: a spin used up hops the digits in turn; more spins boing
+			if (grew && previousTotal > 0) retrigAt = Date.now();
+			else spinAt = Date.now();
 		},
 	});
 	const numberScale = $derived(meshClock < 0 ? 1 : 1 + 0.1 * Math.sin(Math.PI * Math.min(1, meshClock / 380)));
@@ -152,16 +159,19 @@
 		{#if isSuperspin}
 			<!-- big remaining-respins number (the hold'n'spin heartbeat) -->
 			<Container x={panelSizes.width * 0.5} y={panelSizes.height * 0.55} scale={numberScale}>
-				<GoldText text={remaining} fontSize={panelSizes.width * 0.3} />
+				<TextMesh text={remaining} fontSize={panelSizes.width * 0.3} bevel at={{ spin: spinAt, retrig: retrigAt }} act={COUNT_ACT} />
 			</Container>
 			<Graphics draw={drawPips} />
 		{:else}
 			<!-- free game: current spin of total -->
 			<Container x={panelSizes.width * 0.5} y={panelSizes.height * 0.58} scale={numberScale}>
-				<GoldText
+				<TextMesh
 					text={`${Math.min(current, total)} / ${total}`}
 					fontSize={panelSizes.width * 0.19}
 					maxWidth={panelSizes.width * 0.72}
+					bevel
+					at={{ spin: spinAt, retrig: retrigAt }}
+					act={COUNT_ACT}
 				/>
 			</Container>
 		{/if}

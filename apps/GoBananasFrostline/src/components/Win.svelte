@@ -19,7 +19,8 @@
 	import WinCoins from './WinCoins.svelte';
 	import BigWinFx from './BigWinFx.svelte';
 	import FxBurst from './FxBurst.svelte';
-	import GoldText from './GoldText.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { FROST_AMOUNT_ACT } from '../game/meshWin/textMesh';
 	import PropMesh from './PropMesh.svelte';
 	import { bannerMesh } from '../game/meshWin/banner';
 	import PressToContinue from './PressToContinue.svelte';
@@ -40,6 +41,8 @@
 		max: 'gbWinBannerMax',
 	};
 	const BANNER_RATIO = 560 / 1000;
+	// a small win is gone in a second: it rolls and lands, no shiver
+	const SMALL_AMOUNT_ACT = { ...FROST_AMOUNT_ACT, shiver: 0 };
 	const BANNER_MESH = Object.fromEntries(Object.values(BANNER_KEY).map((key) => [key, bannerMesh(key)]));
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
@@ -108,6 +111,10 @@
 	};
 	let oncomplete = $state(() => {});
 	let onCountUpComplete = $state(() => {});
+	// the amount's mesh kicks (TextMesh): it bobs while it rolls, squashes as
+	// it lands, and shivers while the plaque holds
+	let rollAt = $state(-1);
+	let landAt = $state(-1);
 
 	// camera shake as the presentation slams in
 	let shake = $state({ x: 0, y: 0 });
@@ -221,6 +228,8 @@
 		winUpdate: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
+			rollAt = -1;
+			landAt = -1;
 			tierAlias = LADDER.includes(emitterEvent.winLevelData.alias) ? 'big' : emitterEvent.winLevelData.alias;
 			tierSteps = 0;
 			// the round's sounds started the FINAL tier's music (winLevelSoundsPlay);
@@ -254,6 +263,7 @@
 						// impact hold: freeze a few frames under the white flash before
 						// the numbers start rolling
 						if (isBigWin) await waitForTimeout(90);
+						rollAt = Date.now();
 						await startCountUp();
 						await waitForTimeout(isBigWin ? 1300 : 300);
 						oncomplete();
@@ -332,11 +342,14 @@
 									/>
 								{/each}
 								<!-- amount rolls inside the plaque's dark centre well -->
-								<GoldText
+								<TextMesh
 									y={bh * 0.16}
 									maxWidth={bw * 0.68}
 									text={bookEventAmountToCurrencyString(countUpAmount)}
 									fontSize={bh * 0.24}
+									bevel
+									at={{ roll: rollAt, land: landAt }}
+									act={FROST_AMOUNT_ACT}
 								/>
 							</Container>
 							{#if burstShown}
@@ -344,15 +357,22 @@
 							{/if}
 						{:else}
 							<!-- small wins: just the rolling amount over the board -->
-							<GoldText
+							<TextMesh
 								maxWidth={context.stateLayoutDerived.canvasSizes().width /
 									context.stateLayoutDerived.mainLayout().scale}
 								text={bookEventAmountToCurrencyString(countUpAmount)}
 								fontSize={SYMBOL_SIZE}
+								bevel
+								at={{ roll: rollAt, land: landAt }}
+								act={SMALL_AMOUNT_ACT}
 							/>
 						{/if}
 					</Container>
 				</MainContainer>
+
+				{#if countUpCompleted}
+					<OnMount onmount={() => (landAt = Date.now())} />
+				{/if}
 
 				<WinCoins emit={!countUpCompleted} levelAlias={isBigWin ? tierAlias : winLevelData?.alias} />
 

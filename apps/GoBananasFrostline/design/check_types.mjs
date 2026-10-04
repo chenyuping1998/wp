@@ -48,11 +48,11 @@ const BASELINE = {
 	// deprecated pixi v7 Graphics/TextStyle API — see the 85 remaining uses
 	'src\\components\\GoldText.svelte': 3,
 	'src\\components\\Win.svelte': 0,
-	'src\\components\\FreeSpinIntro.svelte': 2,
+	'src\\components\\FreeSpinIntro.svelte': 1,
 	'src\\components\\ui\\ModalPayTable.svelte': 1,
 	'src\\components\\SymbolSpineMain.svelte': 1,
 	'src\\components\\PressToContinue.svelte': 1,
-	'src\\components\\FreeSpinOutro.svelte': 1,
+	'src\\components\\FreeSpinOutro.svelte': 0,
 	'src\\components\\FreeSpinCounter.svelte': 1,
 	// the padding-reel board literals are typed as { name: string }[][]
 	'src\\game\\bookEventHandlerMap.ts': 2,
