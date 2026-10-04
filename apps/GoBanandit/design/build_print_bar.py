@@ -118,9 +118,11 @@ def bar_strip():
     out[..., :3] = out[..., :3] * (1 - rule * 0.85) + np.array(GREEN) * rule * 0.85
 
     # 5. the caps: bandit-sweater stripes on a narrow band at each end
-    band = 34
+    # narrow: the turbo disc's edge is only 14 layout units (28px here) in from
+    # the frame, and a wider band ran under it (2026-10-04)
+    band = 14
     yy, xx = np.mgrid[0:H, 0:W]
-    stripe = ((xx + yy) // 14) % 2 == 0
+    stripe = ((xx + yy) // 8) % 2 == 0
     for x0, x1 in ((edge, edge + band), (W - pad - 1 - edge - band, W - pad - 1 - edge)):
         m = (xx >= x0) & (xx < x1) & (ki[..., 0] > 0.5)
         sel = m & stripe

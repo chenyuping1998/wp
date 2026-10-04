@@ -15,6 +15,7 @@
 <script lang="ts">
 	import { Container, Graphics, SpineProvider, SpineTrack, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { DropShadowFilter } from 'pixi-filters';
 
 	import { onDestroy } from 'svelte';
 
@@ -60,6 +61,15 @@
 			tease: { x: -12, y: 843, halfWidth: 62, halfHeight: 25 },
 		},
 	} as const;
+
+	// Printed off the backdrop rather than outlined: the figure's own silhouette
+	// in ink, set a few pixels low and right like the misregistered plate under
+	// every card. The Bandit's red sweater and green trousers are the backdrop's
+	// own two inks, and without this he melted into the sun and the warehouse
+	// (2026-10-04). Hard (no blur) — a soft shadow is a different medium.
+	const castShadow = [
+		new DropShadowFilter({ offset: { x: 7, y: 6 }, color: 0x1e1b1a, alpha: 0.72, blur: 0, quality: 1 }),
+	];
 
 	const cast = $derived(context.stateGame.gameType === 'freegame' ? CASTS.freegame : CASTS.basegame);
 	const ART = $derived(cast.art);
@@ -505,9 +515,9 @@
 {#if placement}
 	{#key cast.key}
 	<Container>
-	{#if context.stateGame.gameType === 'freegame'}
-		<!-- A single flat paper spotlight keeps the green Lookout readable on the
-		     green warehouse wall without drawing a contour around the figure. -->
+		<!-- A single flat paper spotlight keeps the figure readable on the
+		     backdrop without drawing a contour around it — the Lookout on the
+		     green warehouse wall, the Bandit on the red sun and sheds. -->
 		<Container x={placement.x} y={placement.y} scale={placement.scale} zIndex={-2}>
 			<Graphics draw={(g) => {
 				g.clear();
@@ -515,13 +525,12 @@
 				g.fill({ color: 0xf2e8d0, alpha: 0.42 });
 			}} />
 		</Container>
-	{/if}
+	<Container zIndex={-1} filters={castShadow}>
 	<SpineProvider
 		key={cast.key}
 		x={placement.x}
 		y={placement.y}
 		scale={placement.scale}
-		zIndex={-1}
 	>
 		<SpineTrack
 			trackIndex={0}
@@ -554,6 +563,7 @@
 		     banana, the helmet and the tube adds the follow-through. -->
 		<SpineTrack trackIndex={1} animationName="flutter" loop />
 	</SpineProvider>
+	</Container>
 	</Container>
 	{/key}
 

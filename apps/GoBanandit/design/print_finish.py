@@ -36,7 +36,7 @@ TIERS = ["big", "superwin", "mega", "epic", "max"]
 TARGETS = [(f"bananditWinBanners/{t}.png", i) for i, t in enumerate(TIERS)] + [
     ("bananditScene/fs_plate.png", None),
     ("bananditScene/shutter.png", None),
-    ("bananditUi/buybonus_plate.png", None),
+    ("bananditUi/buybonus_plate.png", "card"),
     # full-screen backdrops: mottle only (no per-pixel fibre, which would make
     # a 1920x1080 PNG several MB), quantised so it still compresses
     ("bananditBackground/bg_base.png", "bg"),
@@ -113,6 +113,21 @@ def finish(rel, tier, rng):
     out[pin] = out[pin] * 0.4 + np.array((242, 232, 208)) * 0.6
 
     res = np.dstack([out.clip(0, 255), a]).astype("uint8")
+
+    # "card": printed like every other card in the game — an ink edge and the
+    # red plate printed low and right. The sack was paper on a paper-and-green
+    # backdrop and melted into it (2026-10-04).
+    if tier == "card":
+        from PIL import ImageFilter
+        body = Image.fromarray(res)
+        m = body.split()[3].point(lambda v: 255 if v > 100 else 0)
+        edge = m.filter(ImageFilter.MaxFilter(9))
+        canvas = Image.new("RGBA", body.size, (0, 0, 0, 0))
+        red = Image.new("RGBA", body.size, (210, 74, 44, 255))
+        canvas.paste(red, (7, 7), edge)
+        canvas.paste(Image.new("RGBA", body.size, (30, 27, 26, 255)), (0, 0), edge)
+        canvas.alpha_composite(body)
+        res = np.asarray(canvas)
     Image.fromarray(res).save(dst, optimize=True)
     n = len(np.unique(res[solid][:, :3], axis=0))
     print(f"{rel:40s} colours {n:6d}  {os.path.getsize(dst) // 1024} KB")
