@@ -58,6 +58,7 @@
 	import { WIN_FX, spawn, particleAt, haloAt, beamAt } from '../game/meshWin/winFx';
 	import { HIGH_JUMP, highJump } from '../game/meshWin/highJump';
 	import { getContext } from '../game/context';
+	import { winTimeScale } from '../game/timeScale';
 	import ImpactDust from './ImpactDust.svelte';
 
 	type Props = {
@@ -156,7 +157,9 @@
 	const root = new Container();
 
 	onMount(() => {
-		const speed = stateBetDerived.timeScale();
+		// the free game's wins are the payoff: turbo shortens them to ~74%, not
+		// half (game/timeScale.ts)
+		const speed = props.spec ? stateBetDerived.timeScale() : winTimeScale();
 		const started = performance.now();
 		// No cascade delay of its own here. GoBananubis staggers its line 60ms a
 		// reel in this component; in this game WinWays already lights the win

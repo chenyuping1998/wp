@@ -53,9 +53,11 @@ const RESTRICTED = {
 	payer: 'winner',
 	pay: 'win',
 	pays: 'wins',
+	paying: 'winning',
 	paid: 'won',
 	money: 'coins',
 	buy: 'play',
+	buys: 'adds',
 	bought: 'instantly triggered',
 	purchase: 'play',
 	credit: 'balance',
@@ -77,7 +79,7 @@ const RESTRICTED = {
 
 // longest first so "total bet" is reported rather than the bare "bet" inside it
 const terms = Object.keys(RESTRICTED).sort((a, b) => b.length - a.length);
-const pattern = new RegExp(`(?<![\\w-])(${terms.map((t) => t.replace(/ /g, '\\s+')).join('|')})(?![\\w-])`, 'gi');
+const pattern = new RegExp(`(?<![\\w])(${terms.map((t) => t.replace(/ /g, '\\s+')).join('|')})(?![\\w])`, 'gi');
 
 // NOTHING is exempt any more. This used to drop "Stake Engine" before scanning,
 // on the reasoning that the platform's own name is not a wagering term — and

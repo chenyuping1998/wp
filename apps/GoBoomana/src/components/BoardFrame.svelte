@@ -13,6 +13,9 @@
 	import { stateBet } from 'state-shared';
 
 	import { getContext } from '../game/context';
+	import { FRAME } from '../game/meshWin';
+	import { REELS, type FrameEnv } from '../game/meshWin/frameEdge';
+	import PropMesh from './PropMesh.svelte';
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 
 	const context = getContext();
@@ -124,7 +127,41 @@
 			if (animationName) animationName = 'reelhouse_glow_exit';
 		},
 		boardFrameImpact: ({ strength }) => runImpact(strength ?? 1),
+		// the rails bow out over every reel that goes up (meshWin/frameEdge.ts),
+		// on the bang itself: ReelBlast's CHARGE beat comes first
+		reelBlast: ({ reels, full }) => {
+			const at = performance.now() + BLAST_CHARGE_MS;
+			for (const r of reels) {
+				blastAt[r] = at;
+				blastStrength[r] = full ? 1.6 : 1;
+			}
+			runBow();
+		},
 	});
+
+	// ── the rails' bow ──────────────────────────────────────────────────────────
+	// ReelBlast's CHARGE_MS (fixed, turbo too): the tiles swell for this long
+	// before the bang
+	const BLAST_CHARGE_MS = 380;
+	const BOW_MS = 900;
+	const blastAt: number[] = Array(REELS).fill(-Infinity);
+	const blastStrength: number[] = Array(REELS).fill(1);
+	let frameEnv = $state<FrameEnv>({ blastT: Array(REELS).fill(-1), strength: Array(REELS).fill(1) });
+	let bowTimer: ReturnType<typeof setInterval> | undefined;
+	// only ticks while a bow is playing; setInterval, not rAF, like the meshes
+	const runBow = () => {
+		if (bowTimer) return;
+		bowTimer = setInterval(() => {
+			const now = performance.now();
+			const blastT = blastAt.map((at) => (now - at <= BOW_MS ? now - at : -1));
+			frameEnv = { blastT, strength: [...blastStrength] };
+			if (blastAt.every((at) => now - at > BOW_MS)) {
+				clearInterval(bowTimer);
+				bowTimer = undefined;
+			}
+		}, 16);
+	};
+	onMount(() => () => clearInterval(bowTimer));
 </script>
 
 <Graphics zIndex={-2} draw={drawAmbience} />
@@ -170,8 +207,11 @@
 	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
 />
 
-<Sprite
-	key="gbFrameEdge"
+<!-- drawn through its mesh (game/meshWin/frameEdge.ts), same box: the rails
+     bow out over each blasted reel -->
+<PropMesh
+	spec={FRAME}
+	env={frameEnv}
 	anchor={0.5}
 	x={context.stateGameDerived.boardLayout().x + impact.x}
 	y={context.stateGameDerived.boardLayout().y + impact.y}

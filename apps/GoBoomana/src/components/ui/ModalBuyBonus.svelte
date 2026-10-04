@@ -26,6 +26,7 @@
 	import type { EmitterEventModal } from 'components-ui-html/src/types';
 	import { numberToCurrencyString } from 'utils-shared/amount';
 	import { base } from '$app/paths';
+	import config from '../../game/config';
 
 	const { eventEmitter } = getContextEventEmitter<EmitterEventModal>();
 
@@ -229,7 +230,7 @@
 					{/if}
 				{/each}
 			</div>
-			<div class="foot">All features play at 96% RTP · Max win 10,000×</div>
+			<div class="foot">All features play at {(config.rtp * 100).toFixed(0)}% RTP · Max win 10,000×</div>
 		</div>
 	</Popup>
 {/if}
@@ -242,9 +243,10 @@
 		--muted: #b3a488;
 		position: relative;
 		z-index: 3;
-		width: min(1040px, calc(100vw - 32px));
-		max-height: calc(100vh - 24px);
-		overflow: auto;
+		width: min(1040px, calc(100dvw - 16px));
+		max-height: calc(100dvh - 16px);
+		overflow-x: hidden;
+		overflow-y: auto;
 		padding: 24px 24px 20px;
 		box-sizing: border-box;
 		background: linear-gradient(180deg, #1c150e 0%, #120e0a 100%);
@@ -592,6 +594,7 @@
 		margin-top: 2px;
 		font: 600 12px 'Segoe UI', Arial, sans-serif;
 		opacity: 0.8;
+		overflow-wrap: anywhere;
 	}
 	.foot {
 		margin-top: 14px;
@@ -729,6 +732,7 @@
 			font-size: 26px;
 		}
 		.cards {
+			grid-template-columns: minmax(0, 1fr);
 			gap: 8px;
 			margin-top: 12px;
 		}
@@ -778,6 +782,37 @@
 		}
 		.cost {
 			font-size: 30px;
+		}
+	}
+	@media (max-width: 520px) and (max-height: 300px) {
+		.menu {
+			padding: 8px 10px;
+		}
+		.head {
+			justify-content: space-between;
+		}
+		h2 {
+			font-size: 20px;
+		}
+		.cards {
+			margin-top: 6px;
+		}
+		.scene,
+		ul {
+			display: none;
+		}
+		.body {
+			padding: 8px;
+		}
+		.meter {
+			min-height: 26px;
+			margin-bottom: 2px;
+		}
+		.cost {
+			font-size: 25px;
+		}
+		.buy {
+			margin-top: 3px;
 		}
 	}
 </style>

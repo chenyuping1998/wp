@@ -196,7 +196,7 @@
 					Scroll wrapper, and the unit lifted out of every row into the header.
 
 					Three of this table's four columns are white-space: nowrap, so they
-					cannot shrink: "Hold and Spin", "96.00%" and "10,000× amount" need
+					cannot shrink: "Hold and Spin", the RTP value and "10,000× amount" need
 					roughly 270px between them before the "How to enter" column gets a
 					single pixel. The modal is width: min(36rem, 90vw), which on a
 					360px-wide phone leaves 268px inside the padding — so the table was
@@ -244,9 +244,9 @@
 					A Dynamite can land on any reel, and <strong>at most one per reel</strong>. After the
 					reels stop it detonates: every position on that reel becomes
 					<strong>one and the same symbol</strong> &mdash; the
-					<strong>highest-paying symbol already standing on it</strong>. A reel of four
+					<strong>highest-value symbol already standing on it</strong>. A reel of four
 					matching symbols contributes 4 to the {T.ways}, and because {T.ways} multiply
-					across reels, it can turn a board with no combination at all into a paying one.
+					across reels, it can turn a board with no combination at all into a winning one.
 				</p>
 				<p>
 					The Dynamite is consumed by its own blast and does not {T.pay}. A Scatter caught in
@@ -319,8 +319,8 @@
 					<h3><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
 					<p>
 						Instead of waiting for Scatters, you can {T.buy} direct entry into Free Spins. Three
-						rounds are available. All three play the same number of spins; what a dearer round
-						buys is a <strong>blast meter that starts further along</strong>:
+						rounds are available. All three play the same number of spins; each higher tier
+						adds is a <strong>blast meter that starts further along</strong>:
 					</p>
 					<ul class="wp-tiers">
 						{#each buyTiers as tier (tier.key)}

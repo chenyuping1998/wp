@@ -3,7 +3,7 @@
 		| {
 				type: 'reelBlast';
 				reels: number[];
-				symbol: SymbolName;
+				symbols: SymbolName[];
 				level: number;
 				maxLevel: number;
 				/** the whole board went up — the thing the feature is a chase for */
@@ -522,8 +522,10 @@
 	};
 
 	/** Rewrite the covered cells. This is what actually applies the blast. */
-	const fillReels = (covered: number[], symbol: SymbolName) => {
-		for (const reel of covered) {
+	const fillReels = (covered: number[], fills: SymbolName[]) => {
+		for (const [index, reel] of covered.entries()) {
+			const symbol = fills[index];
+			if (!symbol) continue;
 			const symbols = stateGame.board[reel]?.reelState.symbols;
 			if (!symbols) continue;
 			for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
@@ -548,7 +550,7 @@
 	};
 
 	context.eventEmitter.subscribeOnMount({
-		reelBlast: async ({ reels: covered, symbol, full: isFull }) => {
+		reelBlast: async ({ reels: covered, symbols, full: isFull }) => {
 			const mine = ++generation;
 			reels = covered;
 			origins = findDynamite(covered);
@@ -588,7 +590,7 @@
 			if (mine !== generation) return;
 
 			// Fully hidden. Swap here and the player never sees it happen.
-			fillReels(covered, symbol);
+			fillReels(covered, symbols);
 			await waitForTimeout(beats.hold);
 			if (mine !== generation) return;
 

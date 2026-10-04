@@ -5,7 +5,8 @@
 	import SymbolSprite from './SymbolSprite.svelte';
 	import SymbolWinAnim from './SymbolWinAnim.svelte';
 	import SymbolMeshWin from './SymbolMeshWin.svelte';
-	import { MESH_WINS, MESH_LANDS } from '../game/meshWin';
+	import { MESH_WINS, MESH_LANDS, S_LANDS } from '../game/meshWin';
+	import { untrack } from 'svelte';
 	import { getSymbolInfo } from '../game/utils';
 	import type { SymbolState, RawSymbol } from '../game/types';
 	import { getContext } from '../game/context';
@@ -26,6 +27,10 @@
 		// lands (see ReelSymbol, which knows both the reel motion and the tier)
 		blur?: number;
 		impact?: number;
+		/** the padded row on its reel — the idle breath's phase needs the cell */
+		row?: number;
+		/** the reel is teasing: lift this symbol out of the board */
+		focus?: { scale: number; bloom: number };
 	};
 
 	const props: Props = $props();
@@ -40,6 +45,16 @@
 	// and squashes, the fuse whips and fizzes. SymbolMeshWin plays any spec;
 	// this one reports the land complete instead of a win.
 	const isMeshLand = $derived(props.state === 'land' && props.rawSymbol.name in MESH_LANDS);
+	// The Scatter lands harder with each one this spin (meshWin/landS.ts). The
+	// count is read ONCE, as the landing starts: stateGame.scatterCounter has
+	// already been raised for this one by the landing hook, and the ones that
+	// land after it must not re-pick this one's tier mid-thud.
+	const landSpec = $derived.by(() => {
+		if (!isMeshLand) return undefined;
+		if (props.rawSymbol.name !== 'S') return MESH_LANDS[props.rawSymbol.name];
+		const n = untrack(() => context.stateGame.scatterCounter);
+		return S_LANDS[n >= 3 ? 3 : n === 2 ? 2 : 1];
+	});
 
 </script>
 
@@ -48,7 +63,7 @@
 		<SymbolMeshWin
 			{symbolInfo}
 			symbolName={props.rawSymbol.name}
-			spec={MESH_LANDS[props.rawSymbol.name]}
+			spec={landSpec}
 			showWinFrame={false}
 			x={0}
 			y={0}
@@ -75,6 +90,9 @@
 			blur={props.state === 'spin' ? (props.blur ?? 1) : 0}
 			landing={props.state === 'land'}
 			impact={props.impact}
+			symbolName={props.rawSymbol.name}
+			cell={props.reelIndex !== undefined && props.row !== undefined ? { reel: props.reelIndex, row: props.row } : undefined}
+			focus={props.focus}
 			{oncomplete}
 		/>
 	{:else}

@@ -26,13 +26,17 @@
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
-
+	import PropMesh from './PropMesh.svelte';
+	import { COIN } from '../game/meshWin';
+	import { coinFaceSwell, coinLift, type CoinEnv } from '../game/meshWin/coinP';
 	type PrizeEntry = {
 		reel: number;
 		row: number;
 		prize: number;
 		scale: Tween<number>;
 		landedAt: number;
+		/** when the held coins were told to hop (a new coin landed), or -1 */
+		hopAt: number;
 	};
 
 	const context = getContext();
@@ -55,16 +59,18 @@
 		return SYMBOL_SIZE * (0.05 + 0.055 * decades);
 	};
 
+	// One clock for every held coin. It runs while ANY coin is on the board, not
+	// only through a landing shake: the coins are meshes now (meshWin/coinP.ts)
+	// and the big ones breathe the whole time they are held.
 	let clock = $state(0);
 	let rafId = 0;
 	let shakeRunning = false;
-
 	const startShake = () => {
 		if (shakeRunning) return;
 		shakeRunning = true;
 		const step = (now: number) => {
 			clock = now;
-			if (prizes.some((entry) => now - entry.landedAt < SHAKE_MS)) {
+			if (prizes.length > 0) {
 				rafId = requestAnimationFrame(step);
 			} else {
 				shakeRunning = false;
@@ -72,6 +78,16 @@
 		};
 		rafId = requestAnimationFrame(step);
 	};
+
+	// what the coin's mesh is told this frame
+	const coinEnv = (entry: PrizeEntry): CoinEnv => ({
+		t: clock,
+		stickT: entry.landedAt > 0 ? clock - entry.landedAt : -1,
+		hopT: entry.hopAt > 0 && clock >= entry.hopAt ? clock - entry.hopAt : -1,
+		big: isBig(entry.prize),
+	});
+	// the mesh is drawn in 256-unit art space; the text on top is in board px
+	const ART_PX = SYMBOL_SIZE / 256;
 
 	const shakeOffset = (entry: PrizeEntry) => {
 		const amp = shakeAmplitude(entry.prize);
@@ -95,7 +111,16 @@
 		// New coins landed and stuck: pop each in with a bounce (hold and spin
 		// "hold em" — every new coin also resets the remaining spins).
 		stickyPrizesNew: async ({ prizes: incoming }) => {
-			const fresh = incoming.map((p) => ({ ...p, scale: new Tween(0), landedAt: performance.now() }));
+			const fresh = incoming.map((p) => ({ ...p, scale: new Tween(0), landedAt: performance.now(), hopAt: -1 }));
+			// The coins already held hop as the new ones land — the respins reset
+			// — in a wave outward from the first new coin, 45ms a cell.
+			const now = performance.now();
+			const origin = incoming[0];
+			for (const held of prizes) {
+				if (incoming.some((n) => keyOf(n) === keyOf(held)) || !origin) continue;
+				const cells = Math.hypot(held.reel - origin.reel, held.row - origin.row);
+				held.hopAt = now + 120 + cells * 45;
+			}
 			prizes = [...prizes.filter((p) => !incoming.some((n) => keyOf(n) === keyOf(p))), ...fresh];
 			startShake();
 			for (const entry of fresh) {
@@ -118,7 +143,8 @@
 		},
 		// Bet resume: rebuild instantly, no animation.
 		stickyPrizesRestore: ({ prizes: restored }) => {
-			prizes = restored.map((p) => ({ ...p, scale: new Tween(1), landedAt: 0 }));
+			prizes = restored.map((p) => ({ ...p, scale: new Tween(1), landedAt: 0, hopAt: -1 }));
+			startShake();
 		},
 		stickyPrizesClear: () => {
 			prizes = [];
@@ -157,8 +183,12 @@
 			}}
 		/>
 		{@const shake = shakeOffset(entry)}
-		<Sprite
-			key="gbP"
+		{@const env = coinEnv(entry)}
+		<!-- the coin through its mesh (meshWin/coinP.ts): pressed in as it
+		     sticks, hopping when a new coin lands, the big ones breathing -->
+		<PropMesh
+			spec={COIN}
+			{env}
 			anchor={0.5}
 			x={x + shake.x}
 			y={y + shake.y}
@@ -179,7 +209,13 @@
 				alpha={0.22 + 0.18 * Math.min(1, entry.scale.current)}
 			/>
 		{/if}
-		<Container x={x + shake.x} y={y + shake.y} scale={entry.scale.current}>
+		<!-- the value rides the coin's face: it lifts with the hop and swells
+		     with the dome -->
+		<Container
+			x={x + shake.x}
+			y={y + shake.y - coinLift(env) * ART_PX * entry.scale.current}
+			scale={entry.scale.current * (1 + 0.6 * coinFaceSwell(env))}
+		>
 			<GoldText
 				text={bookEventAmountToCurrencyString(entry.prize)}
 				fontSize={28}

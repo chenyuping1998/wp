@@ -248,6 +248,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// It runs during the 3s bell hold, which is the only stretch of the trigger
 		// long enough to watch him do it; the animation is 2.68s and fits.
 		eventEmitter.broadcast({ type: 'mascotChestBeat' });
+		// GB100's monkey call over the strikes, cut to start and stop with them
+		eventEmitter.broadcast({ type: 'soundChestHoot' });
 		// ...and the mine answers him: the scene jolts on each strike and the roof
 		// sheds grit and rocks (game/caveQuake). Trigger only — see there for why
 		// the big-win chest beat does not shake the room.
@@ -322,7 +324,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await eventEmitter.broadcastAsync({
 			type: 'reelBlast',
 			reels: bookEvent.reels,
-			symbol: bookEvent.symbol,
+			symbols: bookEvent.symbols ?? bookEvent.reels.map(() => bookEvent.symbol!),
 			level: bookEvent.level,
 			maxLevel: bookEvent.maxLevel,
 			full,

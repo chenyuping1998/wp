@@ -87,9 +87,9 @@ type BookEventWinInfo = {
 	}[];
 };
 
-// A Dynamite landed and detonated. Every cell on the covered reels becomes one
-// symbol — the highest-paying one that was already standing on the reel the
-// dynamite was on.
+// Each Dynamite chooses the highest-paying symbol on its own reel. A wider
+// feature blast carries it onto neighbouring reels; overlapping blasts use the
+// higher-paying origin. `symbols[i]` is the final fill of `reels[i]`.
 //
 // Emitted AFTER the reveal, which carries the board the reels stopped on. That
 // order is what lets the client animate one board into the other; it also means
@@ -103,8 +103,10 @@ type BookEventBlastReels = {
 	type: 'blastReels';
 	/** Reels the detonation covered. Always the full set, never a delta. */
 	reels: number[];
-	/** The single symbol every covered cell became. */
-	symbol: SymbolName;
+	/** Final fill for each reel, in the same order as `reels`. */
+	symbols?: SymbolName[];
+	/** Earlier books used one shared symbol. Kept for resumed rounds. */
+	symbol?: SymbolName;
 	/** Rung of the ladder this blast was fired at, 1..maxLevel. */
 	level: number;
 	maxLevel: number;

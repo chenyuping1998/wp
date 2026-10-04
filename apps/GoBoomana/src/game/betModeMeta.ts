@@ -57,7 +57,7 @@ const MAX_WIN = '10,000×';
 // A full board is every cell the same symbol, so every reel contributes all four
 // of its rows: 4^5. Derived, because the board size lives in the maths config.
 const WAYS = (config.numRows ?? []).reduce((a: number, b: number) => a * b, 1).toLocaleString();
-const RTP = '96%';
+const RTP = `${(config.rtp * 100).toFixed(0)}%`;
 
 export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 	BASE: {

@@ -26,6 +26,7 @@
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
 	import { getContext } from '../game/context';
+	import { featureTimeScale } from '../game/timeScale';
 	import { stateGame } from '../game/stateGame.svelte';
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS, BOARD_SIZES } from '../game/constants';
@@ -188,12 +189,17 @@
 			// round moves on. animatedKeys makes it a no-op for everything already lit.
 			animatePositions(usable.flatMap((w) => w.positions));
 
-			// Turbo opts out of the extended hold: there the player asked for speed
-			// and a clipped win animation is the trade they made.
+			// Turbo opts out of the extended hold in the base game: there the player
+			// asked for speed and a clipped win animation is the trade they made.
+			// NOT in the free game, where the wins are the payoff: there the hold
+			// is shortened by the feature's gentler scale (game/timeScale.ts) —
+			// long enough for the mesh wins, which run at that same scale, to play.
 			const elapsed = (lastReel + 1) * stagger;
-			const hold = stateBet.isTurbo
-				? HOLD_AFTER_MS
-				: Math.max(HOLD_AFTER_MS, WIN_ANIM_VISIBLE_MS - elapsed);
+			const hold = !stateBet.isTurbo
+				? Math.max(HOLD_AFTER_MS, WIN_ANIM_VISIBLE_MS - elapsed)
+				: context.stateGame.gameType === 'freegame'
+					? Math.max(HOLD_AFTER_MS, WIN_ANIM_VISIBLE_MS / featureTimeScale() - elapsed)
+					: HOLD_AFTER_MS;
 			await waitForTimeout(hold);
 			if (mine !== generation) return;
 		},

@@ -139,7 +139,13 @@ const RIG = [
 	{ name: 'hip', parent: 'root', at: [280, 498], match: null },
 	{ name: 'torso', parent: 'hip', at: [280, 470], match: /^torso_(?!2_decoration)/ },
 	// The neck, just under the jaw: the head nods and turns about this.
-	{ name: 'head', parent: 'torso', at: [283, 296], match: /^head_(?!4_hat|5_decoration)/ },
+	{ name: 'head', parent: 'torso', at: [283, 296], match: /^head_(?!1_hair|4_hat|5_decoration)/ },
+	// THE JAW (2026-09-27). head_1_hair is not hair: it is his lower lip and
+	// chin, drawn under the face. It rides this bone whole, and the FACE is a
+	// weighted mesh that hands the part below the mouth to it (see "THE FACE
+	// MOVES"), so when he chews the chin and the cheeks move with the banana
+	// instead of the banana wagging in a mouth that never opens.
+	{ name: 'jaw', parent: 'head', at: [305, 222], match: /^head_1_hair$/ },
 
 	// THE THINGS THAT HANG OFF HIM (see "THE ACCESSORIES MOVE ON THEIR OWN" at
 	// the bottom): each is its own layer in the PSD, so each gets its own bone,
@@ -149,7 +155,7 @@ const RIG = [
 	//   banana   gripped in his teeth at (290,226), its tip down at (214,302)
 	//   pocket   the tube standing up out of his chest pocket
 	{ name: 'helmet', parent: 'head', at: [296, 150], dir: [279, 21], match: /^head_4_hat$/ },
-	{ name: 'banana', parent: 'head', at: [290, 226], dir: [214, 302], match: /^head_5_decoration$/ },
+	{ name: 'banana', parent: 'jaw', at: [290, 226], dir: [214, 302], match: /^head_5_decoration$/ },
 	{ name: 'pocket', parent: 'torso', at: [265, 380], dir: [263, 327], match: /^torso_2_decoration$/ },
 	// NOT the vials in his left chest pocket (torso_4_decoration). Tried
 	// 2026-09-27 and taken out: the pocket and all three vials are painted on
@@ -371,6 +377,29 @@ for (const c of process.env.RIGID_CLOTH ? [] : CLOTH) {
 		return { [c.body]: 1 - onLimb, [c.limb]: onLimb * (1 - onHem), [c.hem]: onLimb * onHem };
 	});
 	console.log(`mesh    ${c.piece}: ${c.body} -> ${c.limb} -> ${c.hem}`);
+}
+
+// ── THE FACE MOVES ──────────────────────────────────────────────────────────
+//
+// His face is one PSD layer (head_2_face: goggles, nose, mouth, cheeks), so it
+// is a weighted mesh on two bones: the head everywhere, and below the line of
+// the mouth — between the two corners — the JAW, blended in over a few pixels
+// so the lip line and the cheeks stretch rather than split. The chin piece
+// (head_1_hair) and the banana ride the jaw outright.
+//
+// The mouth line runs y 222..232 from the banana side (x~252) to the right
+// corner (x~372); the chin reaches y~275. Measured on the PSD, 2026-09-27.
+{
+	const layer = piece('head_2_face');
+	const MOUTH_Y = 226;
+	const LEFT = 250, RIGHT = 378;
+	attachments[layer.name][layer.name] = meshAttachment(layer, 14, 16, (x, y) => {
+		const below = smoothW((y - MOUTH_Y) / 12);
+		const between = smoothW((x - LEFT) / 16) * smoothW((RIGHT - x) / 16);
+		const jaw = below * between;
+		return { head: 1 - jaw, jaw };
+	});
+	console.log(`mesh    ${layer.name}: head -> jaw below y ${MOUTH_Y}`);
 }
 
 // The copy points at the ORIGINAL's atlas region via `path`, so it costs a slot
@@ -1678,6 +1707,16 @@ const flinch = {
 				{ time: FLINCH_END, x: 1, y: 1 },
 			],
 		},
+		// his mouth drops open on the bang, and shuts as he lands
+		jaw: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: FLINCH_BANG, x: 0, y: 0 },
+				{ time: FLINCH_BANG + 0.06, x: 0, y: -6 },
+				{ time: LAND + 0.08, x: 0, y: -1 },
+				{ time: FLINCH_END, x: 0, y: 0 },
+			],
+		},
 		head: {
 			// the jerk back, then a nod as he lands
 			rotate: [
@@ -1952,9 +1991,23 @@ const chew = (() => {
 	}
 	return keys;
 })();
+// the jaw drops on the same two bites (Spine y is up: down is negative)
+const jawChew = (() => {
+	const keys = [];
+	for (let i = 0; i <= 48; i++) {
+		const t = (FLUTTER_LOOP * i) / 48;
+		const bite = (t0) => {
+			const u = (t - t0) / 0.22;
+			return u > 0 && u < 1 ? Math.sin(Math.PI * u) : 0;
+		};
+		keys.push({ time: +t.toFixed(4), x: 0, y: +(-4 * (bite(0.6) + 0.8 * bite(0.95))).toFixed(3) });
+	}
+	return keys;
+})();
 const flutter = {
 	bones: {
 		banana: { rotate: chew },
+		jaw: { translate: jawChew },
 		// the tube rocks in its pocket, out of step with the chew
 		pocket: { rotate: flutterKeys(4, 2, 1.1) },
 		// and the cloth drifts, each piece on its own phase so nothing moves in

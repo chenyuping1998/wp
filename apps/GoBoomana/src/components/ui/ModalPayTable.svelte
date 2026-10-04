@@ -205,10 +205,11 @@
 			</div>
 
 			<p class="wp-note">
-				A <strong>Dynamite</strong> fills its whole reel with the highest-paying symbol already
-				standing on it, so every row of that reel counts. Because {T.ways} multiply across reels,
-				a blasted reel can turn a board with no combination at all into a paying one. In Free
-				Spins each Dynamite widens the next blast, up to all five reels at once.
+				Each <strong>Dynamite</strong> chooses the highest-value symbol already on its own reel
+				and fills that reel with it, so every row counts. Because {T.ways} multiply across reels,
+				a blasted reel can turn a board with no combination at all into a winning one. In Free
+				Spins the blast widens, carrying its chosen symbol onto neighbouring reels. Where blasts
+				overlap, the higher-value source symbol wins. A blast can cover all five reels.
 			</p>
 
 			<p class="wp-note">

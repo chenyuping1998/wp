@@ -4,6 +4,7 @@
 	import { getSymbolInfo, getSymbolX } from '../game/utils';
 	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
 	import type { SymbolState } from '../game/types';
+	import { symbolFocus, tierOf } from '../game/anticipationFocus';
 
 	type Props = {
 		reelIndex: number;
@@ -55,6 +56,15 @@
 	};
 	const landingImpact = $derived(LANDING_IMPACT[props.reelSymbol.rawSymbol.name] ?? 0.9);
 
+	// A teasing reel is brought forward: its symbols a little larger and
+	// brighter than the dead reels' (game/anticipationFocus.ts), harder when the
+	// fourth Scatter is already down.
+	const focus = $derived(
+		stateGame.board[props.reelIndex]?.reelState.anticipating
+			? symbolFocus(tierOf(stateGame.scatterCounter))
+			: undefined,
+	);
+
 	// Built by a function so `forState` is a real argument — a plain value copied
 	// at call time — rather than a reference into the template's reactive scope.
 	// The version this replaced read a {@const}, which is recomputed whenever
@@ -93,6 +103,8 @@
 			rawSymbol={props.reelSymbol.rawSymbol}
 			{blur}
 			impact={landingImpact}
+			row={props.reelSymbol.symbolIndex}
+			{focus}
 			{oncomplete}
 		/>
 	</SymbolWrap>

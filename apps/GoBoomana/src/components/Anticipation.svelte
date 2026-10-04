@@ -7,6 +7,7 @@
 	import { SYMBOL_SIZE, BOARD_SIZES } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
+	import { beamAt, pulseRateMs, tierIntensity, tierOf } from '../game/anticipationFocus';
 
 	type Props = {
 		reel: Reel;
@@ -17,6 +18,11 @@
 	const context = getContext();
 
 	let pulse = $state(0);
+	let beamT = $state(0);
+	// how hard this tease leans in: harder once the fourth Scatter is down
+	const tier = $derived(tierOf(context.stateGame.scatterCounter));
+	const intensity = $derived(tierIntensity(tier));
+	const beam = $derived(beamAt(beamT, tier));
 	let finished = $state(false);
 
 	// Drawn entirely here rather than through the old `anticipation` spine: that
@@ -30,9 +36,14 @@
 		// offset per reel: when several reels tease at once, a shared phase makes
 		// them strobe as one block instead of shimmering along the board
 		const phase = props.reel.reelIndex * 0.9;
-		const rate = 145 + props.reel.reelIndex * 11;
+		// FASTER towards the right (game/anticipationFocus.ts). This was
+		// 145 + reel * 11 — slower to the right, so the tension drained exactly
+		// as the payoff approached.
+		const started = Date.now();
 		const id = setInterval(() => {
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / rate + phase);
+			const now = Date.now();
+			pulse = 0.5 + 0.5 * Math.sin(now / pulseRateMs(props.reel.reelIndex, tier) + phase);
+			beamT = now - started;
 		}, 24);
 
 		return () => clearInterval(id);
@@ -53,12 +64,12 @@
 		draw={(g) => {
 			const h = BOARD_SIZES.height;
 			g.clear();
-			g.beginFill(0xff9c2e, 0.1 + 0.12 * pulse);
+			g.beginFill(0xff9c2e, (0.1 + 0.12 * pulse) * intensity);
 			g.drawRoundedRect(LEFT + 3, 3, SYMBOL_SIZE - 6, h - 6, 12);
 			g.endFill();
 
 			// full-height frame: three nested strokes so the edge reads as lit metal
-			g.lineStyle(7, 0xffd75e, 0.3 + 0.34 * pulse);
+			g.lineStyle(7, 0xffd75e, (0.3 + 0.34 * pulse) * intensity);
 			g.drawRoundedRect(LEFT + 2, 2, SYMBOL_SIZE - 4, h - 4, 13);
 			g.lineStyle(3, 0xffe98a, 0.45 + 0.4 * pulse);
 			g.drawRoundedRect(LEFT + 6, 6, SYMBOL_SIZE - 12, h - 12, 10);
@@ -83,6 +94,20 @@
 			g.lineTo(x, h + chev);
 			g.lineTo(x + SYMBOL_SIZE * 0.12, h + chev + 10);
 		}}
+	/>
+
+	<!-- the shaft of light travelling down the column, so it reads as lit from
+	     somewhere rather than as a static wash (game/anticipationFocus.ts) -->
+	<Sprite
+		key="fxGlow"
+		anchor={0.5}
+		{x}
+		y={beam.y * BOARD_SIZES.height}
+		width={SYMBOL_SIZE * 1.05}
+		height={beam.height * BOARD_SIZES.height}
+		tint={0xffd27a}
+		blendMode="add"
+		alpha={beam.alpha * intensity}
 	/>
 
 	<!-- additive glow hugging each rail, so the tease has depth over the art -->

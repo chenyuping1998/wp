@@ -40,7 +40,7 @@ export const boardAfterLastBlast = (bookEvents: Bet['state']) => {
 	) as BookEventOfType<'blastReels'> | undefined;
 	if (!blast) return board;
 
-	for (const reel of blast.reels) {
+	for (const [index, reel] of blast.reels.entries()) {
 		const column = board[reel];
 		if (!column) continue;
 		// Visible rows only: index 0 and the last entry are the padding cells the
@@ -48,7 +48,7 @@ export const boardAfterLastBlast = (bookEvents: Bet['state']) => {
 		for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
 			// The scatter survives a blast in the maths, so it survives here too.
 			if (!column[row] || column[row].name === 'S') continue;
-			column[row] = { ...column[row], name: blast.symbol };
+			column[row] = { ...column[row], name: blast.symbols?.[index] ?? blast.symbol! };
 		}
 	}
 	return board;
