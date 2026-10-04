@@ -112,6 +112,11 @@
 			// bet bar, which on a short layout the frame's own foot reaches into.
 			y: Math.min(board.y + frameHalfHeight, layout.height - barHeight - 6),
 			scale: height / ART.height,
+			// the strip he may perform in, in skeleton units about his origin:
+			// anything he draws (the laugh's HA!s) stays inside it, so no part of
+			// a performance ever lands on the board (user rule, 2026-10-04)
+			minX: (gapLeft + 16 - (gapLeft + gapWidth / 2)) / (height / ART.height),
+			maxX: (layout.width - 10 - (gapLeft + gapWidth / 2)) / (height / ART.height),
 		};
 	});
 
@@ -233,12 +238,19 @@
 			const t = (impactClock - (BEAT_START_MS + i * BEAT_GAP_MS)) / HA_LIFE_MS;
 			if (t < 0 || t > 1) continue;
 			const side = i % 2 === 0 ? 1 : -1;
+			const scale = (t < 0.15 ? 0.6 + 0.6 * (t / 0.15) : 1.2 - 0.2 * Math.min(1, (t - 0.15) / 0.3)) * (1 + 0.06 * i);
+			// Bungee "HA!" at 92px is ~250 wide; keep the whole word, at its
+			// largest, inside the strip beside the board — never over it
+			const halfW = 125 * 1.4 * (1 + 0.06 * i);
+			const lo = (placement?.minX ?? -Infinity) + halfW;
+			const hi = (placement?.maxX ?? Infinity) - halfW;
+			const want = side * (150 + 14 * i) - 20;
 			pops.push({
 				i,
-				x: side * (150 + 14 * i) - 20,
+				x: lo > hi ? (lo + hi) / 2 : Math.min(hi, Math.max(lo, want)),
 				// pixi y is down; above his shoulders, rising as it fades
 				y: -(ART.height * 0.84 + 20 * i) - 60 * t,
-				scale: (t < 0.15 ? 0.6 + 0.6 * (t / 0.15) : 1.2 - 0.2 * Math.min(1, (t - 0.15) / 0.3)) * (1 + 0.06 * i),
+				scale,
 				rotation: side * (0.18 + 0.03 * i),
 				alpha: t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4,
 			});
