@@ -1,0 +1,224 @@
+{
+  "canvas": [
+    560,
+    912
+  ],
+  "layers": [
+    {
+      "z": 0,
+      "name": "torso_1_decoration",
+      "file": "torso_1_decoration.png",
+      "x": 148,
+      "y": 137,
+      "w": 270,
+      "h": 262
+    },
+    {
+      "z": 1,
+      "name": "torso_4_decoration",
+      "file": "torso_4_decoration.png",
+      "x": 196,
+      "y": 327,
+      "w": 232,
+      "h": 62
+    },
+    {
+      "z": 2,
+      "name": "torso_0_trunk",
+      "file": "torso_0_trunk.png",
+      "x": 69,
+      "y": 146,
+      "w": 361,
+      "h": 441
+    },
+    {
+      "z": 3,
+      "name": "torso_2_decoration",
+      "file": "torso_2_decoration.png",
+      "x": 16,
+      "y": 103,
+      "w": 264,
+      "h": 290
+    },
+    {
+      "z": 4,
+      "name": "torso_3_decoration",
+      "file": "torso_3_decoration.png",
+      "x": 414,
+      "y": 354,
+      "w": 21,
+      "h": 27
+    },
+    {
+      "z": 5,
+      "name": "torso_5_decoration",
+      "file": "torso_5_decoration.png",
+      "x": 413,
+      "y": 312,
+      "w": 25,
+      "h": 34
+    },
+    {
+      "z": 6,
+      "name": "left_leg_0_thigh",
+      "file": "left_leg_0_thigh.png",
+      "x": 140,
+      "y": 466,
+      "w": 153,
+      "h": 214
+    },
+    {
+      "z": 7,
+      "name": "left_leg_1_calf",
+      "file": "left_leg_1_calf.png",
+      "x": 105,
+      "y": 616,
+      "w": 142,
+      "h": 215
+    },
+    {
+      "z": 8,
+      "name": "left_leg_2_foot",
+      "file": "left_leg_2_foot.png",
+      "x": 75,
+      "y": 735,
+      "w": 170,
+      "h": 167
+    },
+    {
+      "z": 9,
+      "name": "right_leg_0_thigh",
+      "file": "right_leg_0_thigh.png",
+      "x": 295,
+      "y": 471,
+      "w": 146,
+      "h": 204
+    },
+    {
+      "z": 10,
+      "name": "right_leg_1_calf",
+      "file": "right_leg_1_calf.png",
+      "x": 323,
+      "y": 612,
+      "w": 126,
+      "h": 200
+    },
+    {
+      "z": 11,
+      "name": "right_leg_2_foot",
+      "file": "right_leg_2_foot.png",
+      "x": 315,
+      "y": 735,
+      "w": 245,
+      "h": 167
+    },
+    {
+      "z": 12,
+      "name": "left_arm_1_forearm",
+      "file": "left_arm_1_forearm.png",
+      "x": 23,
+      "y": 383,
+      "w": 129,
+      "h": 91
+    },
+    {
+      "z": 13,
+      "name": "left_arm_0_upper_arm",
+      "file": "left_arm_0_upper_arm.png",
+      "x": 25,
+      "y": 224,
+      "w": 161,
+      "h": 240
+    },
+    {
+      "z": 14,
+      "name": "left_arm_2_hand",
+      "file": "left_arm_2_hand.png",
+      "x": 22,
+      "y": 379,
+      "w": 156,
+      "h": 238
+    },
+    {
+      "z": 15,
+      "name": "right_arm_1_forearm",
+      "file": "right_arm_1_forearm.png",
+      "x": 411,
+      "y": 346,
+      "w": 120,
+      "h": 159
+    },
+    {
+      "z": 16,
+      "name": "right_arm_2_hand",
+      "file": "right_arm_2_hand.png",
+      "x": 415,
+      "y": 337,
+      "w": 122,
+      "h": 257
+    },
+    {
+      "z": 17,
+      "name": "head_0_hair",
+      "file": "head_0_hair.png",
+      "x": 241,
+      "y": 145,
+      "w": 168,
+      "h": 156
+    },
+    {
+      "z": 18,
+      "name": "right_arm_0_upper_arm",
+      "file": "right_arm_0_upper_arm.png",
+      "x": 397,
+      "y": 201,
+      "w": 108,
+      "h": 209
+    },
+    {
+      "z": 19,
+      "name": "head_1_hair",
+      "file": "head_1_hair.png",
+      "x": 266,
+      "y": 224,
+      "w": 109,
+      "h": 53
+    },
+    {
+      "z": 20,
+      "name": "head_3_ear",
+      "file": "head_3_ear.png",
+      "x": 152,
+      "y": 121,
+      "w": 84,
+      "h": 126
+    },
+    {
+      "z": 21,
+      "name": "head_2_face",
+      "file": "head_2_face.png",
+      "x": 134,
+      "y": 0,
+      "w": 242,
+      "h": 274
+    },
+    {
+      "z": 22,
+      "name": "head_4_hat",
+      "file": "head_4_hat.png",
+      "x": 179,
+      "y": 20,
+      "w": 236,
+      "h": 177
+    },
+    {
+      "z": 23,
+      "name": "head_5_decoration",
+      "file": "head_5_decoration.png",
+      "x": 134,
+      "y": 0,
+      "w": 169,
+      "h": 309
+    }
+  ]
+}
