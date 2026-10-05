@@ -7,6 +7,7 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
 	import { getContext } from '../game/context';
 	import config from '../game/config';
+	import { gameText } from '../game/i18nText';
 
 	// The three-panel feature card shown once loading reaches 100%.
 	//
@@ -172,18 +173,23 @@
 	const panels: Panel[] = [
 		{
 			accent: PAPER,
-			title: 'FREE SPINS',
-			body: `Land 3, 4 or 5 Scatters anywhere to open ${Object.values(config.scatterSpins ?? {}).join(', ')} Free Spins.`,
+			title: gameText('freeSpins'),
+			body: gameText('introFreeSpinsBody', { spins: Object.values(config.scatterSpins ?? {}).join(', ') }),
 			figure: '3-5',
 			art: drawScatterGrid,
 			symbolKey: 'gbS',
 		},
 		{
 			accent: RED,
-			title: 'THE BANDIT',
+			title: gameText('introBanditTitle'),
 			// The figure is the top of the meter: the multiplier the whole free-spin
 			// chase climbs towards.
-			body: `Every Bandit collects every Banana Sack. In Free Spins ${config.banditMeter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Bandits each add ${config.banditMeter.spinsAdded} spins and raise collections.`,
+			body: gameText('introBanditBody', {
+				t1: config.banditMeter.thresholds[0],
+				t2: config.banditMeter.thresholds[1],
+				t3: config.banditMeter.thresholds[2],
+				add: config.banditMeter.spinsAdded,
+			}),
 			figure: `X${(config.banditMeter.mults as number[]).at(-1)}`,
 			art: drawBlast,
 			symbolKey: 'gbW',
@@ -191,8 +197,8 @@
 		},
 		{
 			accent: PAPER,
-			title: 'MAX WIN',
-			body: 'The cap on a single round. Reach it and the round ends there and then.',
+			title: gameText('introMaxWinTitle'),
+			body: gameText('introMaxWinBody'),
 			figure: `${(config.betModes?.base?.max_win ?? 10000).toLocaleString()}X`,
 			art: drawWaysGrow,
 		},
@@ -280,6 +286,27 @@
 	// through its second line. There is no constant that is right for both, so
 	// each panel now reserves exactly what its own title occupies at its own
 	// column width.
+	// Per card, the largest title size at which its longest WORD fits the
+	// column: a single long word cannot wrap ("ILMAISKIERROKSET", "БЕСПЛАТНЫЕ")
+	// and ran to the card's edge at the shared size.
+	const titleSizes = $derived(
+		panels.map((panel, i) => {
+			let size = titleSize;
+			const widest = (sz: number) =>
+				Math.max(
+					...panel.title.split(/\s+/).map(
+						(word) =>
+							CanvasTextMetrics.measureText(
+								word,
+								new TextStyle({ fontFamily: GAME_FONT, fontSize: sz, fontWeight: GAME_FONT_WEIGHT, letterSpacing: 1 }),
+							).width,
+					),
+				);
+			while (size > titleSize * 0.6 && widest(size) > slots[i].text.w) size = Math.floor(size * 0.93);
+			return size;
+		}),
+	);
+
 	const titleHeights = $derived(
 		panels.map((panel, i) => {
 			const slot = slots[i];
@@ -287,7 +314,7 @@
 				panel.title,
 				new TextStyle({
 					fontFamily: GAME_FONT,
-					fontSize: titleSize,
+					fontSize: titleSizes[i],
 					fontWeight: GAME_FONT_WEIGHT,
 					letterSpacing: 1,
 					wordWrap: true,
@@ -300,6 +327,32 @@
 			// narrower metrics would report one line where Titan One needs two.
 			const floor = panel.hero ? titleSize * 2.4 : titleSize * 1.2;
 			return Math.max(measured, floor) + bodySize * 0.5;
+		}),
+	);
+
+	// Each card's body at the largest size that fits what is left of the card.
+	// The English copy was sized by eye; German, Russian and Finnish run 20-40%
+	// longer and printed off the bottom of the card.
+	const bodyStyle = (size: number, i: number) =>
+		new TextStyle({
+			fontFamily: BODY_FONT,
+			fontSize: size,
+			fontWeight: '600',
+			align: slots[i].centred ? 'center' : 'left',
+			wordWrap: true,
+			breakWords: true,
+			wordWrapWidth: slots[i].text.w,
+			lineHeight: size * 1.42,
+		});
+	const bodySizes = $derived(
+		panels.map((panel, i) => {
+			const box = boxes[i];
+			const room = box.y + box.h * 0.95 - (slots[i].text.titleY + titleHeights[i]);
+			let size = bodySize;
+			while (size > bodySize * 0.6 && CanvasTextMetrics.measureText(panel.body, bodyStyle(size, i)).height > room) {
+				size = Math.floor(size * 0.93);
+			}
+			return size;
 		}),
 	);
 </script>
@@ -359,7 +412,7 @@
 			y={slot.text.titleY}
 			style={{
 				fontFamily: GAME_FONT,
-				fontSize: titleSize,
+				fontSize: titleSizes[i],
 				fontWeight: GAME_FONT_WEIGHT,
 				letterSpacing: 1,
 				fill: panel.accent,
@@ -376,13 +429,14 @@
 			y={slot.text.titleY + titleHeights[i]}
 			style={{
 				fontFamily: BODY_FONT,
-				fontSize: bodySize,
+				fontSize: bodySizes[i],
 				fontWeight: '600',
 				fill: BODY_FILL,
 				align: slot.centred ? 'center' : 'left',
 				wordWrap: true,
+				breakWords: true,
 				wordWrapWidth: slot.text.w,
-				lineHeight: bodySize * 1.42,
+				lineHeight: bodySizes[i] * 1.42,
 			}}
 		/>
 	{/each}
