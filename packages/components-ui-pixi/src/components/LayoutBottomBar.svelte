@@ -8,6 +8,7 @@
 	import ButtonReplay from './ButtonReplay.svelte';
 	import LabelReplayMultiplier from './LabelReplayMultiplier.svelte';
 	import UiBarStrip from './UiBarStrip.svelte';
+	import UiLabel from './UiLabel.svelte';
 	import { getContext } from '../context';
 	import { uiTheme } from '../theme.svelte';
 	import { UI_BASE_FONT_SIZE, UI_BASE_SIZE } from '../constants';
@@ -171,6 +172,35 @@
 		GAP_CENTER - (REPLAY_RADIUS * 2 + 12 + REPLAY_CAPTION_WIDTH) * 0.5 + REPLAY_RADIUS,
 	);
 
+	// Replay with a summary (stateReplay.summary, written by the game): the strip
+	// carries every row of the replay start card, so nothing the card said is
+	// lost once it closes. Stake review, 2026-10-04 (Deadwood Express): "When the
+	// replay finishes, some of the information are not included in the bet bar
+	// next to the Replay button". Replay + caption move to the right end beside
+	// turbo; the rows share the span from the menu rule to it in equal cells.
+	const replaySummary = $derived(stateReplay.enabled ? stateReplay.summary : []);
+	const hasReplaySummary = $derived(replaySummary.length > 0);
+	const SUMMARY_TURBO_R = (UI_BASE_SIZE * 0.5) / 2;
+	const SUMMARY_REPLAY_X = $derived(
+		TURBO_X - SUMMARY_TURBO_R - 40 - REPLAY_CAPTION_WIDTH - 12 - REPLAY_RADIUS,
+	);
+	const SUMMARY_END = $derived(SUMMARY_REPLAY_X - REPLAY_RADIUS - 34);
+	const summaryCellW = $derived((SUMMARY_END - DIV_1) / Math.max(1, replaySummary.length));
+	const summaryX = $derived((i: number) => DIV_1 + summaryCellW * (i + 0.5));
+	const summaryMaxW = $derived(cellWidth(0, summaryCellW));
+	// one caption size for the whole row: the scale the longest caption needs
+	let summaryLabelWidths = $state<number[]>([]);
+	const summaryLabelScale = $derived(
+		Math.min(1, ...summaryLabelWidths.filter((w) => w > 0).map((w) => summaryMaxW / w)),
+	);
+	const ruleXs = $derived(
+		hasReplaySummary
+			? replaySummary.map((_, i) => DIV_1 + summaryCellW * i).concat(SUMMARY_END)
+			: flank
+				? [DIV_1, DIV_2, DIV_3]
+				: [DIV_1, DIV_2, DIV_3, dividerBeforeBet],
+	);
+
 	const replayCaptionStyle = $derived({
 		fontFamily: uiTheme.fontFamily,
 		fontWeight: uiTheme.fontWeight,
@@ -282,7 +312,7 @@
 				}
 				const topF = barTop + DIV_INSET;
 				const botF = barTop + h - DIV_INSET;
-				for (const x of flank ? [DIV_1, DIV_2, DIV_3] : [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
+				for (const x of ruleXs) {
 					g.moveTo(x, topF);
 					g.lineTo(x, botF);
 					g.stroke({ width: 1, color: 0xffffff, alpha: 0.15 });
@@ -311,7 +341,7 @@
 			// Vertical rules do the opposite — they separate.
 			const top = barTop + DIV_INSET;
 			const bot = barTop + h - DIV_INSET;
-			for (const x of flank ? [DIV_1, DIV_2, DIV_3] : [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
+			for (const x of ruleXs) {
 				g.moveTo(x, top);
 				g.lineTo(x, bot);
 				g.stroke({ width: 2, color: uiTheme.panelBorder, alpha: 0.55 });
@@ -328,7 +358,7 @@
 			// to sit around so it reads as designed space rather than a gap. Not a
 			// section rule: it separates nothing, it just breathes.
 			// flank fills that span, so there is no emptiness to give a centre to
-			if (!flank) {
+			if (!flank && !hasReplaySummary) {
 				const midY = barTop + h * 0.5;
 				const half = (h - DIV_INSET * 2) * 0.28;
 				g.moveTo(GAP_CENTER, midY - half);
@@ -345,6 +375,37 @@
 		</Container>
 	{/if}
 
+	{#if hasReplaySummary}
+		{#each replaySummary as row, i (row.label)}
+			<Container x={summaryX(i)} y={readoutTop} scale={READOUT_SCALE}>
+				<UiLabel
+					tiled={false}
+					stacked
+					label={row.label.toUpperCase()}
+					value={row.value}
+					maxWidth={summaryMaxW}
+					labelScale={summaryLabelScale}
+					onlabelwidth={(w) => (summaryLabelWidths[i] = w)}
+					accent={row.tone === 'win'
+						? uiTheme.winAccent
+						: { border: uiTheme.panelBorder, label: uiTheme.balanceLabelFill }}
+				/>
+			</Container>
+		{/each}
+		<Container x={SUMMARY_REPLAY_X} y={barMid} scale={REPLAY_SCALE}>
+			<ButtonReplay anchor={0.5} />
+		</Container>
+		<Text
+			anchor={{ x: 0, y: 0.5 }}
+			x={SUMMARY_REPLAY_X + REPLAY_RADIUS + 12}
+			y={barMid}
+			text={i18nDerived.replay()}
+			style={replayCaptionStyle}
+		/>
+		<Container x={TURBO_X} y={barMid} scale={0.5}>
+			{@render props.buttonTurbo({ anchor: 0.5 })}
+		</Container>
+	{:else}
 	<Container x={BALANCE_X} y={readoutTop} scale={READOUT_SCALE}>
 		{#if stateReplay.enabled}
 			<LabelReplayMultiplier stacked tiled={false} />
@@ -454,6 +515,7 @@
 				{@render props.buttonBuyBonus({ anchor: 0.5 })}
 			</Container>
 		{/if}
+	{/if}
 	{/if}
 </MainContainer>
 

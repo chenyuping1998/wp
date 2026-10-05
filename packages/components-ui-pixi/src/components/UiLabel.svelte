@@ -32,6 +32,13 @@
 		 * unchanged.
 		 */
 		maxWidth?: number;
+		/**
+		 * Force the caption's scale, for a row of readouts that must share one
+		 * caption size (the replay summary). Reported back through onlabelwidth.
+		 * Undefined: the caption is bounded by maxWidth like the value.
+		 */
+		labelScale?: number;
+		onlabelwidth?: (width: number) => void;
 		/** 0..1: how far into its swell the value is (uiTheme.valuePop). 0 = rest */
 		pop?: number;
 		/** tint on the value text, for a flash. Undefined = none */
@@ -51,6 +58,13 @@
 	// measuring it feeds the measurement back into the thing being measured, and
 	// the two chase each other. Wrapping keeps the reported width the natural one.
 	let valueWidth = $state(0);
+	let labelWidth = $state(0);
+	// the caption obeys the same bound; it never fired until the replay summary
+	// put six captions side by side (Deadwood review, 2026-10-04)
+	const labelScale = $derived(
+		props.labelScale ??
+			(props.maxWidth && labelWidth > props.maxWidth ? props.maxWidth / labelWidth : 1),
+	);
 	const valueScale = $derived(
 		props.maxWidth && valueWidth > props.maxWidth ? props.maxWidth / valueWidth : 1,
 	);
@@ -99,7 +113,17 @@
 			borderWidth={5}
 		/>
 	{/if}
-	<Text anchor={{ x: 0.5, y: 0 }} text={props.label} style={labelStyle} />
+	<Container scale={labelScale}>
+		<Text
+			anchor={{ x: 0.5, y: 0 }}
+			text={props.label}
+			style={labelStyle}
+			onresize={({ width }) => {
+				labelWidth = width;
+				props.onlabelwidth?.(width);
+			}}
+		/>
+	</Container>
 	<!--
 		Scaled rather than truncated or wrapped. This is a money figure: an ellipsis
 		or a fold turns "9,999,652,000" into something that reads as a different

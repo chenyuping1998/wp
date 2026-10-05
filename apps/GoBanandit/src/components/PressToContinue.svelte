@@ -65,4 +65,8 @@
 </MainContainer>
 {/if}
 <OnHotkey hotkey="Space" onpress={() => props.onpress()} />
+<!-- Enter too: Stake asked Deadwood Express (2026-10-04) for click-anywhere /
+     Enter on every press-to-continue screen, after an intro that could not be
+     passed in a small pop-out window -->
+<OnHotkey hotkey="Enter" onpress={() => props.onpress()} />
 <OnPressFullScreen onpress={() => props.onpress()} />

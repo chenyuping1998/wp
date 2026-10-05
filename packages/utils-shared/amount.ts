@@ -5,29 +5,80 @@ import { stateBet } from 'state-shared';
 // See numberToCurrencyString for why.
 const CURRENCY_LOCALE = 'en-US';
 
-// Social currencies are shown as their own symbol, never routed through Intl —
-// which is what keeps a "$" off them. XEC is Stake EU's sweeps currency and
-// displays as SC, the same as XSC.
-const NO_LOCALISATION_CURRENCY_MAP: Record<string, string> = {
-	XGC: 'GC',
-	XSC: 'SC',
-	XEC: 'SC',
+// Every currency is displayed the way Stake's RGS documentation lists it
+// (stake-engine.com/docs/rgs, "Supported Currencies"): its own display symbol,
+// before or after the amount as the table says.
+//
+// Stake review, 2026-10-04 (Deadwood Express): "Please ensure that either
+// currency abbreviations are displayed for all currencies or currency symbols
+// are displayed for all currencies, rather than mixing the two formats" —
+// Intl at en-US had a symbol for USD/EUR but fell back to the ISO code for RUB,
+// UGX, XOF and many others, so one game showed "$1.00" and "RUB 1.00". The
+// table below is the platform's own, so every currency now shows its symbol.
+// "XEC, XSC, XGC must have their Display Currency, regardless if the
+// abbreviation is used by other": XGC → GC, XSC → SC, XEC → SC (yes, both SC).
+//
+// `decimals` is the currency's standard precision and the minimum shown; wins
+// may still extend past it (see numberToCurrencyString).
+type CurrencyMeta = { symbol: string; decimals: number; symbolAfter?: boolean };
+const CURRENCY_META: Record<string, CurrencyMeta> = {
+	USD: { symbol: '$', decimals: 2 },
+	CAD: { symbol: 'CA$', decimals: 2 },
+	JPY: { symbol: '¥', decimals: 0 },
+	EUR: { symbol: '€', decimals: 2 },
+	RUB: { symbol: '₽', decimals: 2 },
+	CNY: { symbol: 'CN¥', decimals: 2 },
+	PHP: { symbol: '₱', decimals: 2 },
+	INR: { symbol: '₹', decimals: 2 },
+	IDR: { symbol: 'Rp', decimals: 0 },
+	KRW: { symbol: '₩', decimals: 0 },
+	BRL: { symbol: 'R$', decimals: 2 },
+	MXN: { symbol: 'MX$', decimals: 2 },
+	DKK: { symbol: 'KR', decimals: 2, symbolAfter: true },
+	PLN: { symbol: 'zł', decimals: 2, symbolAfter: true },
+	VND: { symbol: '₫', decimals: 0, symbolAfter: true },
+	TRY: { symbol: '₺', decimals: 2 },
+	CLP: { symbol: 'CLP', decimals: 0, symbolAfter: true },
+	ARS: { symbol: 'ARS', decimals: 2, symbolAfter: true },
+	PEN: { symbol: 'S/', decimals: 2, symbolAfter: true },
+	NGN: { symbol: '₦', decimals: 2 },
+	SAR: { symbol: 'SAR', decimals: 2, symbolAfter: true },
+	ILS: { symbol: '₪', decimals: 2 },
+	AED: { symbol: 'AED', decimals: 2, symbolAfter: true },
+	TWD: { symbol: 'NT$', decimals: 2 },
+	NOK: { symbol: 'kr', decimals: 2, symbolAfter: true },
+	KWD: { symbol: 'KD', decimals: 3 },
+	JOD: { symbol: 'JD', decimals: 3 },
+	CRC: { symbol: '₡', decimals: 2 },
+	TND: { symbol: 'TND', decimals: 3, symbolAfter: true },
+	SGD: { symbol: 'SG$', decimals: 2 },
+	MYR: { symbol: 'RM', decimals: 2 },
+	OMR: { symbol: 'OMR', decimals: 3, symbolAfter: true },
+	QAR: { symbol: 'QAR', decimals: 2, symbolAfter: true },
+	BHD: { symbol: 'BD', decimals: 3 },
+	PKR: { symbol: '₨', decimals: 2 },
+	EGP: { symbol: 'ج.م', decimals: 2 },
+	NZD: { symbol: 'NZ$', decimals: 2 },
+	BOB: { symbol: 'Bs', decimals: 2 },
+	GHS: { symbol: 'GH₵', decimals: 2 },
+	KES: { symbol: 'KSh', decimals: 2 },
+	MAD: { symbol: 'MAD', decimals: 2, symbolAfter: true },
+	BAM: { symbol: 'KM', decimals: 2 },
+	ISK: { symbol: 'kr', decimals: 0, symbolAfter: true },
+	TZS: { symbol: 'TSh', decimals: 2 },
+	UGX: { symbol: 'USh', decimals: 0 },
+	XOF: { symbol: 'CFA', decimals: 0, symbolAfter: true },
+	// The docs' example reads "10.00 GC", so Gold Coins keep 2 decimals here
+	// (its code table says 0, but GC stakes and wins run fractional).
+	XGC: { symbol: 'GC', decimals: 2, symbolAfter: true },
+	XSC: { symbol: 'SC', decimals: 2, symbolAfter: true },
+	XEC: { symbol: 'SC', decimals: 2, symbolAfter: true },
 };
 
-// Currencies whose en-US "symbol" is a WORD rather than a symbol, so they show
-// their ISO code instead.
-//
-// Intl renders XOF as "F CFA 1,234.50" — Stake review rejected exactly that on
-// 2026-09-04, asking for "XOF or CFA, not F CFA". Sweeping all three CFA francs
-// in rather than only the one that was reported: XAF gives "FCFA" and XPF gives
-// "CFPF" from the same table, and there is no reason to make the reviewer find
-// the other two.
-//
-// These stay on Intl rather than joining the map above, because that branch
-// formats with toFixed and loses the thousands separators — and these are
-// exactly the currencies that need them (XOF has no minor unit in practice, so
-// ordinary amounts run to five figures).
-const CODE_DISPLAY_CURRENCIES = new Set(['XOF', 'XAF', 'XPF']);
+// A currency the table does not list shows its code after the amount — the
+// docs' own fallback.
+const currencyMeta = (currency: string): CurrencyMeta =>
+	CURRENCY_META[currency.toUpperCase()] ?? { symbol: currency, decimals: 2, symbolAfter: true };
 
 // bookEventAmount: is the amount or win numbers in the events of books, e.g. the amount in setTotalWin bookEvent
 // {
@@ -59,49 +110,40 @@ export const numberToFloat = (value: number) => Number.parseFloat(`${value}`);
 // `maximumFractionDigits` is a maximum, not a fixed width: with a minimum of 2 a
 // small win reads "$0.002" and a large one still reads "$331.60", rather than
 // padding everything to "$331.6000".
-// Smallest number of decimals (never below 2) that still represents the value
-// exactly at `maximumFractionDigits`. Only the non-localised branch needs this —
-// Intl applies minimum/maximumFractionDigits itself.
-const decimalsNeeded = (value: number, maximumFractionDigits: number) => {
+// Smallest number of decimals (never below `minimum`) that still represents
+// the value exactly at `maximumFractionDigits`.
+const decimalsNeeded = (value: number, maximumFractionDigits: number, minimum = 2) => {
 	const target = Number(value.toFixed(maximumFractionDigits));
-	for (let digits = 2; digits < maximumFractionDigits; digits++) {
+	for (let digits = minimum; digits < maximumFractionDigits; digits++) {
 		if (Number(value.toFixed(digits)) === target) return digits;
 	}
-	return maximumFractionDigits;
+	return Math.max(minimum, maximumFractionDigits);
 };
 
 export const numberToCurrencyString = (value: number, maximumFractionDigits = 2) => {
-	if (stateBet.currency in NO_LOCALISATION_CURRENCY_MAP) {
-		// This branch bypasses Intl, so it has to apply the same rule itself —
-		// it used to be hardcoded to 2 decimals, which broke small wins in XGC/XSC
-		// while every other currency was fine.
-		const symbol = NO_LOCALISATION_CURRENCY_MAP[stateBet.currency];
-		const amount = numberToFloat(value);
-		return `${symbol} ${amount.toFixed(decimalsNeeded(amount, maximumFractionDigits))}`;
-	}
+	const meta = currencyMeta(stateBet.currency);
+	const amount = numberToFloat(value);
 
-	// Formatted against a fixed locale, NOT the interface language.
-	//
-	// This used to go through the i18n instance, which formats with whatever
-	// locale is active — so switching the game to French turned "$1,000.00" into
-	// "1 000,00 $US". The amount is the same money either way; only its
-	// presentation moved, which makes the balance look like it changed and puts a
-	// currency suffix where the symbol belongs.
-	//
-	// `symbol`, NOT `narrowSymbol`. Narrow is defined as the symbol with its
-	// disambiguating prefix removed, which is precisely the thing that keeps two
-	// currencies apart: at en-US it renders USD, CAD, AUD, MXN, SGD, HKD and NZD
-	// all as "$", and JPY and CNY both as "¥". A player who switched to Canadian
-	// dollars still saw "$1.00" and had no way to tell which money they were
-	// looking at. `symbol` gives CA$, A$, MX$, HK$, NZ$, CN¥ and so on, and has
-	// no collisions across the currencies the platform offers.
-	return new Intl.NumberFormat(CURRENCY_LOCALE, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits,
-		style: 'currency',
-		currency: stateBet.currency,
-		currencyDisplay: CODE_DISPLAY_CURRENCIES.has(stateBet.currency) ? 'code' : 'symbol',
-	}).format(value);
+	// The currency's own precision is the floor; a win may run past it up to
+	// `maximumFractionDigits` so a sub-cent payout still matches the server's
+	// JSON. A 0-decimal currency (JPY, UGX, XOF…) shows whole amounts unless the
+	// value genuinely has a fraction.
+	const digits = decimalsNeeded(
+		amount,
+		Math.max(meta.decimals, maximumFractionDigits),
+		meta.decimals,
+	);
+
+	// Grouping only — formatted against a fixed locale, NOT the interface
+	// language, so switching the game to French does not turn "$1,000.00" into
+	// "1 000,00 $US". The symbol is placed by hand from the table above.
+	const number = new Intl.NumberFormat(CURRENCY_LOCALE, {
+		minimumFractionDigits: digits,
+		maximumFractionDigits: digits,
+	}).format(Math.abs(amount));
+	const sign = amount < 0 && number.replace(/[^1-9]/g, '') !== '' ? '-' : '';
+
+	return meta.symbolAfter ? `${sign}${number} ${meta.symbol}` : `${sign}${meta.symbol}${number}`;
 };
 
 // Book-event amounts are win figures — setTotalWin, prize values, the count-up on

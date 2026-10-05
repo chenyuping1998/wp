@@ -6,13 +6,14 @@
 	import { BLACK } from 'constants-shared/colors';
 	import { FadeContainer } from 'components-pixi';
 	import { MainContainer } from 'components-layout';
-	import { Container, Rectangle, Text } from 'pixi-svelte';
+	import { Container, Graphics, Rectangle, Text } from 'pixi-svelte';
 	import { waitForResolve } from 'utils-shared/wait';
 
 	import LabelFreeSpinCounter from './LabelFreeSpinCounter.svelte';
 	import ButtonDrawer from './ButtonDrawer.svelte';
 	import ButtonReplay from './ButtonReplay.svelte';
 	import LabelReplayMultiplier from './LabelReplayMultiplier.svelte';
+	import UiLabel from './UiLabel.svelte';
 	import type { LayoutUiProps } from '../types';
 	import { getContext } from '../context';
 	import { uiTheme } from '../theme.svelte';
@@ -21,6 +22,22 @@
 
 	const props: LayoutUiProps = $props();
 	const context = getContext();
+
+	// Replay summary (stateReplay.summary): every row of the replay start card,
+	// kept on screen as a 3 × 2 panel under the replay button. See the same
+	// branch in LayoutBottomBar (Deadwood review, 2026-10-04).
+	const replaySummary = $derived(stateReplay.enabled ? stateReplay.summary : []);
+	const hasReplaySummary = $derived(replaySummary.length > 0);
+	const SUMMARY_COLS = 3;
+	const SUMMARY_COL_W = 330;
+	const SUMMARY_ROW_H = 104;
+	const SUMMARY_SCALE = 0.62;
+	const SUMMARY_TOP = 258; // above the bottom of the standard box; clears the REPLAY caption
+	const summaryMaxW = (SUMMARY_COL_W - 30) / SUMMARY_SCALE;
+	let summaryLabelWidths = $state<number[]>([]);
+	const summaryLabelScale = $derived(
+		Math.min(1, ...summaryLabelWidths.filter((w) => w > 0).map((w) => summaryMaxW / w)),
+	);
 
 	const DRAWER_Y = {
 		unfold: 0,
@@ -167,6 +184,40 @@
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
 
+		{#if hasReplaySummary}
+			{@const W = context.stateLayoutDerived.mainLayoutStandard().width}
+			{@const H = context.stateLayoutDerived.mainLayoutStandard().height}
+			{@const rows = Math.ceil(replaySummary.length / SUMMARY_COLS)}
+			<Graphics
+				draw={(g) => {
+					const w = SUMMARY_COL_W * SUMMARY_COLS + 30;
+					g.clear();
+					g.roundRect(W / 2 - w / 2, H - SUMMARY_TOP - 18, w, SUMMARY_ROW_H * rows + 26, 22);
+					g.fill({ color: uiTheme.panelFill, alpha: 0.88 });
+					g.stroke({ width: 4, color: uiTheme.panelBorder, alpha: 0.9 });
+				}}
+			/>
+			{#each replaySummary as row, i (row.label)}
+				<Container
+					x={W / 2 + SUMMARY_COL_W * ((i % SUMMARY_COLS) - (SUMMARY_COLS - 1) / 2)}
+					y={H - SUMMARY_TOP + SUMMARY_ROW_H * Math.floor(i / SUMMARY_COLS)}
+					scale={SUMMARY_SCALE}
+				>
+					<UiLabel
+						tiled={false}
+						stacked
+						label={row.label.toUpperCase()}
+						value={row.value}
+						maxWidth={summaryMaxW}
+						labelScale={summaryLabelScale}
+						onlabelwidth={(w) => (summaryLabelWidths[i] = w)}
+						accent={row.tone === 'win'
+							? uiTheme.winAccent
+							: { border: uiTheme.panelBorder, label: uiTheme.balanceLabelFill }}
+					/>
+				</Container>
+			{/each}
+		{:else}
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 240}
@@ -178,6 +229,7 @@
 				{@render props.amountBalance({ stacked: true })}
 			{/if}
 		</Container>
+		{/if}
 	</Container>
 
 	<Container y={Math.min(drawerTween.current, 350)}>
@@ -192,7 +244,17 @@
 </MainContainer>
 
 <MainContainer standard alignVertical="bottom">
-	{#if stateUi.freeSpinCounterShow}
+	{#if hasReplaySummary}
+		<!-- the summary panel owns the foot of the screen; the counter moves up -->
+		{#if stateUi.freeSpinCounterShow}
+			<Container
+				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
+				y={context.stateLayoutDerived.mainLayoutStandard().height - 560}
+			>
+				<LabelFreeSpinCounter stacked />
+			</Container>
+		{/if}
+	{:else if stateUi.freeSpinCounterShow}
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 130}

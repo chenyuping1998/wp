@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { everyFrame } from '../game/frameLoop';
 	import { Container, Sprite, Graphics, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { onMount } from 'svelte';
@@ -50,18 +51,28 @@
 	const move = $derived(winMoveOf(props.symbolName));
 	let t = $state(0);
 
+	// The pose is sampled once per DISPLAY frame (everyFrame), so the motion is
+	// frame-locked instead of stepping on a 16ms interval that drifts against the
+	// screen (the stutter Stake's "Poor animations" tag describes). Completion is
+	// a separate timeout, which still fires in a hidden tab where rAF stops.
 	onMount(() => {
 		const start = Date.now();
 		let done = false;
-		const id = setInterval(() => {
+		const finish = () => {
+			if (done) return;
+			done = true;
+			t = WIN_MOVE_MS / 1000;
+			props.oncomplete?.();
+		};
+		const stopFrames = everyFrame(() => {
 			t = Math.min(WIN_MOVE_MS, Date.now() - start) / 1000;
-			if (!done && t * 1000 >= WIN_MOVE_MS) {
-				done = true;
-				clearInterval(id);
-				props.oncomplete?.();
-			}
-		}, TICK_MS);
-		return () => clearInterval(id);
+			if (t * 1000 >= WIN_MOVE_MS) finish();
+		});
+		const timeout = setTimeout(finish, WIN_MOVE_MS + TICK_MS);
+		return () => {
+			stopFrames();
+			clearTimeout(timeout);
+		};
 	});
 
 	// linear between keys, as every curve in the source was

@@ -101,6 +101,13 @@
 		})
 		.filter((t) => t.cost !== undefined && t.spins !== undefined);
 
+	// The most Free Spins a round can reach: its opening spins plus every meter
+	// mark still above where it starts (each adds spinsAdded once). Stake asked
+	// Deadwood Express (2026-10-04) to state the maximum, or say there is none.
+	const maxSpinsFrom = (spins: number, start: number) =>
+		spins + meter.spinsAdded * (meter.thresholds.length - levelAt(start));
+	const maxScatterSpins = maxSpinsFrom(Math.max(...Object.values(config.scatterSpins ?? { 5: 15 }).map(Number)), 0);
+
 	// Per-mode RTP and max win, read straight out of the maths config. Certification
 	// asks for both to be clearly stated for every mode available.
 	type BetMode = { cost?: number; rtp?: number; max_win?: number };
@@ -283,6 +290,13 @@
 					reels during the feature. Extra spins come only from the Bandit meter, as described
 					above. This applies to Free Spins entered by landing Scatters and to every round
 					{T.bought} from the {T.betMenu}.
+				</p>
+				<p>
+					<strong>Maximum Free Spins.</strong> The meter has {meter.thresholds.length} marks and each
+					adds spins once, so a feature can reach at most <strong>{maxScatterSpins} Free Spins</strong>
+					when opened by Scatters{#each buyTiers as tier (tier.key)}, {maxSpinsFrom(tier.spins ?? 0, tier.start)}
+						in the {tier.cost}&times; round{/each}. The feature ends when its spins run out or the
+					maximum win is reached.
 				</p>
 			</section>
 

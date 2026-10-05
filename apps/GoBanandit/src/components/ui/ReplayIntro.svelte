@@ -79,6 +79,20 @@
 	);
 
 	const fmtMult = (value: number) => `${Number(value.toFixed(4))}x`;
+
+	// The same six rows, handed to the bar so they are still on screen after the
+	// card is dismissed and after every run (stateReplay.summary). Stake review on
+	// Deadwood Express, 2026-10-04: the bar next to Replay lacked the card's info.
+	$effect(() => {
+		stateReplay.summary = [
+			{ label: L.mode, value: modeLabel },
+			{ label: L.baseBet, value: numberToCurrencyString(baseBet) },
+			{ label: L.costMultiplier, value: fmtMult(costMultiplier) },
+			{ label: L.totalCost, value: numberToCurrencyString(totalCost) },
+			{ label: L.payoutMultiplier, value: fmtMult(payoutMultiplier), tone: 'win' },
+			{ label: L.totalWin, value: numberToCurrencyString(totalWin), tone: 'win' },
+		];
+	});
 </script>
 
 <!-- above the paytable/info layer: the round must not start behind an open panel -->

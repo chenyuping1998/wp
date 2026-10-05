@@ -67,11 +67,13 @@ export const createBetRepeat = (step: () => void) => {
 		timer = null;
 	};
 
+	// Stake review, 2026-10-04 (Deadwood Express): "Player must only be able to
+	// increase the bet by clicks" — holding + or − walked the stake up or down
+	// without a deliberate press per step. Hold-to-repeat is therefore off for
+	// every game, whatever `betRepeatMs` its theme still carries; one press is
+	// one step.
 	const start = () => {
-		const ux = platformUx();
-		if (!ux || ux.betRepeatMs <= 0) return;
 		stop();
-		timer = setInterval(step, ux.betRepeatMs);
 	};
 
 	return { start, stop };

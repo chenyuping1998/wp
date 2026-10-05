@@ -132,7 +132,11 @@
 				<!-- The same name again, top right. Not in portrait: on a phone's
 				     width it ran into the clock-and-name on the left and the two
 				     printed over each other as one unreadable line. -->
-				{#if context.stateLayoutDerived.layoutType() !== 'portrait'}
+				<!-- ...nor in a small pop-out window: both names are fixed-size text,
+				     and below ~760px they ran together as "GO BANANDITGO BANANDIT"
+				     (Stake flagged the same on Deadwood Express, 2026-10-04). The
+				     clock-and-name on the left still says it. -->
+				{#if context.stateLayoutDerived.layoutType() !== 'portrait' && context.stateLayoutDerived.canvasSizes().width >= 760}
 					<Text
 						anchor={{ x: 1, y: 0 }}
 						text="GO BANANDIT"

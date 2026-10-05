@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { everyFrame } from '../game/frameLoop';
 	import { onMount } from 'svelte';
 	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
@@ -37,11 +38,16 @@
 	}));
 
 	onMount(() => {
-		const spinId = setInterval(() => {
-			rotation += 0.0045;
-			moteDrift += 0.0016;
+		// per display frame, from the clock: the old 16ms interval added a fixed
+		// step per tick, so the rays turned at whatever rate the timer managed
+		// and stuttered against the screen
+		const t0 = performance.now();
+		const stopFrames = everyFrame(() => {
+			const ticks = (performance.now() - t0) / 16;
+			rotation = 0.0045 * ticks;
+			moteDrift = 0.0016 * ticks;
 			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 420);
-		}, 16);
+		});
 		const burstId = setInterval(() => {
 			bursts = [
 				...bursts.slice(-5),
@@ -54,7 +60,7 @@
 			];
 		}, 700 / intensity);
 		return () => {
-			clearInterval(spinId);
+			stopFrames();
 			clearInterval(burstId);
 		};
 	});
