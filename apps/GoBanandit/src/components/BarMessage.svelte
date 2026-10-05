@@ -5,6 +5,7 @@
 	// during a round it wishes luck; in the free game it says the heist is on.
 	import { onMount } from 'svelte';
 	import { uiTheme } from 'components-ui-pixi';
+	import { stateUrlDerived } from 'state-shared';
 
 	import { getContext } from '../game/context';
 	import { gameText } from '../game/i18nText';
@@ -28,6 +29,8 @@
 		uiTheme.barMessageFill = 0x1f5c4a;
 		if (context.stateGame.gameType === 'freegame') uiTheme.barMessage = gameText('heistOn');
 		else if (!context.stateXstateDerived.isIdle()) uiTheme.barMessage = gameText('goodLuck');
-		else uiTheme.barMessage = gameText(tick % 2 ? 'collectTip' : 'placeBet');
+		// social play may not say "bet" (restricted-word table)
+		else if (tick % 2) uiTheme.barMessage = gameText('collectTip');
+		else uiTheme.barMessage = gameText(stateUrlDerived.social() ? 'comePlay' : 'placeBet');
 	});
 </script>

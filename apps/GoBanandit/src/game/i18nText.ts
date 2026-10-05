@@ -155,6 +155,26 @@ const TEXTS = {
 		fi: 'ASETA PANOKSESI',
 		hi: 'अपना दांव लगाएँ',
 	},
+	// social play: "bet" is a restricted word — Stake's table suggests
+	// "come and play" for "place your bets"
+	comePlay: {
+		ar: 'تعال والعب',
+		de: 'KOMM UND SPIEL',
+		en: 'COME AND PLAY',
+		es: 'VEN A JUGAR',
+		fr: 'VENEZ JOUER',
+		id: 'AYO BERMAIN',
+		ja: 'さあ、遊ぼう',
+		ko: '어서 플레이하세요',
+		pl: 'CHODŹ ZAGRAĆ',
+		pt: 'VENHA JOGAR',
+		ru: 'ДАВАЙТЕ ИГРАТЬ',
+		tr: 'GEL VE OYNA',
+		vi: 'HÃY CÙNG CHƠI',
+		zh: '快來玩',
+		fi: 'TULE PELAAMAAN',
+		hi: 'आइए खेलें',
+	},
 	collectTip: {
 		ar: 'كل لص يجمع كل كيس',
 		de: 'JEDER BANDIT SAMMELT JEDEN SACK',
