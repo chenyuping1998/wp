@@ -318,7 +318,8 @@ if (skin === 'platform' || skin === 'print') {
 		// A SLOT name, not an asset key: UiSprite resolves through uiTheme.sprites,
 		// and an asset key here silently falls back to a rounded rect.
 		buyBonusHoverSprite: 'buyBonusGlyph',
-		buyBonusHoverSpriteTint: 0xf2e8d0,
+		// white = untinted: the lit art carries its own red (cream tint flattened it)
+		buyBonusHoverSpriteTint: 0xffffff,
 		// NORMAL, not the default additive. Additive light can only brighten, and
 		// on this near-white slab a bright line is invisible - the cracks would not
 		// show at all. The split has to be DARK to read, which only a normal blend

@@ -72,9 +72,10 @@ export default {
 		src: new URL('../../assets/sprites/bananditUi/buybonus_plate.png', import.meta.url).href,
 		preload: true,
 	},
+	// hover: same slab, green ink re-inked red (design/build_buybonus_lit.py)
 	gbUiBuyBonusStoneLit: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/bananditUi/buybonus_plate.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/bananditUi/buybonus_plate_lit.png', import.meta.url).href,
 		preload: true,
 	},
 	// brass win-tier plaques (design/generate_win_banners.mjs)
