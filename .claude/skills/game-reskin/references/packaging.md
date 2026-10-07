@@ -101,6 +101,27 @@ game's `design/export_upload_art.mjs` or equivalent) rather than copying from
 `build/`. Tell-tale that you got this wrong: `cmp` reports every PNG in
 `assets/<game>/` as changed when you only touched code.
 
+## 6b. Cover art — every game ships one
+
+The game's Stake Engine page shows a wide **cover art** banner ("Change cover
+art" in the dashboard). It is separate from the square thumbnail and every game
+needs its own (user, 2026-10-04 — it used to be whatever image was at hand).
+The docs give no size; make it **1920×1080**, delivered as TWO layers like the
+thumbnail: `<Game>-Cover-BG.png` (opaque backdrop) and `<Game>-Cover-FG.png`
+(cast + props on transparency, no title — the page sets the name). Keep clear
+what the page draws over it:
+
+- top-right ~16% × 14%: the star-rating pill
+- bottom-left ~24% × 34%: the square game thumbnail tile
+
+Compose it from the game's own finished art (backdrop, BOTH cast figures,
+a feature symbol, the title in the game's display face) and separate the figures from the
+backdrop with a hard ink offset shadow — NOT a pale spotlight panel, which the
+user rejected on Go Banandit as a white slab behind the character. Reference implementation:
+`wp-banandit/apps/GoBanandit/design/build_cover_art.py` (writes
+`design/cover/<Game>-Cover-BG.png`, `-FG.png` + `_preview_overlays.png` with the
+two overlays drawn on — check that preview). Stage both as `upload/<Game>/cover/`.
+
 ## 7. Sanity checks BEFORE zipping — these are the actual gate, not the zip step
 
 ```bash

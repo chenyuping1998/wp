@@ -711,6 +711,40 @@ posed frames instead of using the mesh rig; Nolimit's Brick Snake 2000, Space
 Donkey and The Cage), claymation or 3D toy (reliable, but it reads close to the default),
 blueprint line, and cut paper.
 
+### 20. Art Deco poster (geometric, stepped values): Art Deco 海報
+
+- **Technique:** forms built only from circles, arcs, straight lines and evenly
+  spaced parallel lines; symmetrical; flat fills with hard-edged stepped tonal
+  bands (three values per form at most); no outlines; sunburst, ziggurat and
+  streamline parallel-line ornament, never floral curls (that is Art Nouveau).
+- **Fits:** 1920s–30s mob, speakeasy, jazz, ocean liners, skyscrapers, casinos,
+  vaults. The 1930s mob theme's own poster language.
+- **Palettes that work:** jade + gold + ink + ivory (colour), or the same shapes
+  re-inked black / two greys / paper with one accent (the noir variant, entry 2's
+  accent rule). Capo Nostra shipped the noir variant: red only on the vault
+  multiplier frames, two greys allowed (Deco's stepped bands need them).
+- **Reel:** strong. Big shapes, few values.
+- **Rig:** good. Keep the stepped bands on head and torso; limbs flat.
+- **Generation:** reliable once the prompt names the geometry and the stepped
+  bands. Gold comes back with a speckled seam between gold and dark gold; give
+  the palette a deep-gold ink (#574311) or the quantiser maps gold's shadow to
+  the nearest dark hue, and quantise in Lab, not RGB. Generated in colour and
+  re-inked to greys ink-by-ink, shapes survive exactly
+  (`apps/CapoNostra/design/build_style_compare.py`).
+- **Measured (Capo style frame, 512 px):** symbols colors95 8–10, soft 11–17%;
+  cast head colors95 6, soft 8%; small red frame with rivets colors95 35,
+  soft 28% (thin features read as soft at 256 px; gate frames separately).
+- **Fonts:** Limelight or Poiret One for titles, Josefin Sans for numbers.
+- **Prompt:** `Art Deco poster illustration, 1930s, geometric stylisation built
+  only from circles, arcs, straight lines and evenly spaced parallel lines,
+  symmetrical composition, large flat shapes, stepped tonal bands with hard edges
+  (at most three values per form), no outlines, single light from top-left,
+  limited palette of {hexes}, crisp vector-like edges`
+- **brief.py key:** none yet; use `noir` for the black-and-white variant (then
+  correct its "one grey" rule in the generated README) or `flat` for colour.
+- **Hacksaw / Nolimit:** no Deco-geometry titles in either catalogue on
+  2026-10-03 (The Bowery Boys only has a vintage gold plate). Open lane.
+
 ## Why art reads as AI-generated: the tells and the fix for each
 
 Review every delivered asset against this list at 180 px and 70 px, not only

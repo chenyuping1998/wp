@@ -1,7 +1,11 @@
 # Hacksaw style atlas: what 183 shipped slots use, and what transfers
 
 Read this alongside `art-direction.md` when shortlisting styles (step 2 of its
-procedure). The catalogue there says what each medium is and what it costs in
+procedure). For everything a game shows besides its lobby art and reels
+(loading, intro splash, FG panels, transitions, timing, win ladder, sound,
+fonts, measured palette per family, asset inventory), read
+`hacksaw-style-transcripts.md`: the whole-game transcription of 140 of these
+titles, read out of their own files. The catalogue there says what each medium is and what it costs in
 this engine. This file says which real, shipped games use it, how they carry it
 onto the reels, and which lanes nobody in that lobby occupies yet.
 
@@ -215,8 +219,25 @@ neon-tube signs on dark silhouettes.
 
 ### Print media (`screenprint`, `inkwash`): 5 titles
 
-- **Toshi Ways Club**: a maneki-neko line drawing in orange and black on cream
-  paper, with rising-sun rays. A Showa-era print.
+- **Toshi Ways Club** (game 1971; user's favorite reference): a Showa-era
+  underground video-club world rendered as beige paper, charcoal linework,
+  halftone and ember orange. The palette keeps orange for valuable symbols and
+  rewards, while blue and pink identify mechanics in progress. Symbols use
+  consistent bold outlines and one dominant ink; the orange dragon, mecha and
+  Wild carry value through color, while the octopus swap symbols use blue or
+  pink. Its interface extends the world with stacked Windows 95 title-bar
+  windows. Scene changes use one four-channel post-processing chain
+  (pixel corruption, low-resolution glitch, VHS noise and chromatic shift),
+  with the scene swap hidden at peak interference. Background motion is very
+  slow, with occasional blinks or color glitches; reel starts and stops are
+  short to leave time for the Flash Frame chain. Bonus tiers distinguish
+  themselves with pink scanlines or an orange error-window takeover. This is a
+  useful reference for coordinated palette, interface, transitions and timing,
+  rather than a symbol-art reference alone. These notes are from static-CDN
+  bundle inspection and manual image interpretation; the live demo layout and
+  loading screen still need screenshot confirmation. Its key-art anchor is a
+  maneki-neko line drawing in orange and black on cream paper, with rising-sun
+  rays.
 - **Toshi Video Club**: a halftone black-and-white robot on cream paper.
 - **The Bowery Boys**: black gangster silhouettes on olive, with a gold
   vintage title plate. A duotone film poster.
@@ -368,7 +389,18 @@ python3 scripts/hacksaw_styles.py list --key noir               # titles for one
 python3 scripts/hacksaw_styles.py list --theme western
 python3 scripts/hacksaw_styles.py sheet --key rubberhose --kind screen --out /tmp/rubberhose.jpg
 python3 scripts/hacksaw_styles.py refresh [--write]             # new releases since the survey
+
+# whole-game transcription (hacksaw-style-transcripts.md / .json, 140 titles)
+python3 scripts/hacksaw_styles.py game "pray for three"          # one title: splash, FG, flow, reel, tiers, spine, sound, palette
+python3 scripts/hacksaw_styles.py norms --key noir               # family norms (timing, ladder, text sizes, sound, palette)
+python3 scripts/hacksaw_styles.py find --anim sus_scratch        # who uses a cue / font / anim / skeleton / atlas
+python3 scripts/hacksaw_styles.py shots --key rubberhose --kind splash --out /tmp/rh_splash.jpg
 ```
+
+`shots` reads the local research library (outside the repo, see
+`hacksaw-style-transcripts.md`): `--kind splash` is the intro-panel screen,
+`base_late` the board mid-session, `mobile_base` portrait, `palette` the
+colour-share strip. It covers 140 titles where `sheet --kind screen` covers 69.
 
 - **When shortlisting**, run `list --theme <theme>` and read the takeaway
   row above. The candidate that lands in an open lane scores highest on lobby
