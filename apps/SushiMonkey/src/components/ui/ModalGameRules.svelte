@@ -1,27 +1,33 @@
 <script lang="ts">
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { stateModal, LEGAL_NOTICE } from 'state-shared';
+	import { stateModal, stateUrlDerived, LEGAL_NOTICE } from 'state-shared';
 
 	import { base } from '$app/paths';
 
 	import config from '../../game/config';
 	import { removedLabelAtLevel, removedLabelsAtLevel } from '../../game/chefMeter';
 	import { getSocialTerms } from '../../game/socialTerms';
+	import { MODE_NAMES } from '../../game/betModeMeta';
 
 	// Shared with the pay table — the two panels describe the same game and must
 	// use the same words for it. See socialTerms.ts.
 	const T = getSocialTerms();
+	const social = stateUrlDerived.social();
 
 	// Controls guide. Each row shows the actual button art from the bet bar, so a
 	// player matches what they read to what they see rather than decoding a name.
 	// Icons come from static/, not the pixi asset pipeline — this panel is DOM.
 	const ICONS = `${base}/assets/sprites/sushiIcons`;
 	// `icons` is a list because a control can be a pair — the stepper is two keys,
-	// and showing only one of them would misrepresent it. Buy Bonus has none: on
-	// the bar it is a labelled plate rather than a glyph, so there is no icon that
-	// would actually match what the player sees.
-	const controls = [
+	// and showing only one of them would misrepresent it. Two controls are not
+	// glyphs on the bar, so they are drawn as what the player sees instead: Buy
+	// Bonus is the lettered hanging plate (`sign`), and the bet readout is its
+	// caption with the chevron that opens the menu (`readout`). Engine guideline
+	// 235 fails a guide that leaves out any pressable control — the readout,
+	// Info and Settings were missing.
+	type Control = { icons: string[]; name: string; text: string; sign?: string; readout?: string };
+	const controls: Control[] = [
 		{
 			icons: ['spin'],
 			name: 'Spin',
@@ -34,6 +40,15 @@
 		},
 		{
 			icons: [],
+			// the bar's readout: caption, amount and the chevron that says it opens
+			readout: social ? 'AMOUNT' : 'BET',
+			name: social ? 'Amount' : 'Bet amount',
+			text: `Shows the current ${T.bet}. Tap it to open the ${T.betMenu} and choose any of the available ${T.betLevels} directly.`,
+		},
+		{
+			icons: [],
+			// the bar's own hanging plate, lettered as the bar letters it
+			sign: T.buyBonusName.toUpperCase(),
 			name: T.buyBonusName,
 			text: `Opens the feature menu, where either Free Spins round can be ${T.bought} outright for the stated multiple of your ${T.bet}. The ${T.cost} is shown before you confirm.`,
 		},
@@ -51,6 +66,16 @@
 			icons: ['menu'],
 			name: 'Menu',
 			text: `Opens the ${T.payTable}, these rules, and the sound and settings controls.`,
+		},
+		{
+			icons: ['info'],
+			name: 'Info',
+			text: 'Opens these game rules.',
+		},
+		{
+			icons: ['settings'],
+			name: 'Settings',
+			text: 'Opens the volume controls: master volume, music and sound effects, each set separately.',
 		},
 		{
 			icons: ['payTable'],
@@ -98,7 +123,7 @@
 		.map((key) => {
 			const mode = config.betModes[key] as BuyMode | undefined;
 			const start = mode?.start_meter ?? 0;
-			return { key, cost: mode?.cost, spins: mode?.spins, start, startMult: meter.mults[levelAt(start)] };
+			return { key, name: key === 'bonus' ? MODE_NAMES.BONUS : MODE_NAMES.SUPERBONUS, cost: mode?.cost, spins: mode?.spins, start, startMult: meter.mults[levelAt(start)] };
 		})
 		.filter((t) => t.cost !== undefined && t.spins !== undefined);
 
@@ -115,8 +140,8 @@
 	const modeRows = (
 		[
 			['Base game', 'base'],
-			['Free Spins', 'bonus'],
-			['Super Free Spins', 'superbonus'],
+			[MODE_NAMES.BONUS, 'bonus'],
+			[MODE_NAMES.SUPERBONUS, 'superbonus'],
 		] as const
 	).map(([label, key]) => {
 		const mode = config.betModes?.[key] as BetMode | undefined;
@@ -161,8 +186,14 @@
 				<h3 style="color: #b87b60 !important"><span class="wp-accent-bar"></span>Controls</h3>
 				<ul class="wp-controls">
 					{#each controls as control (control.name)}
-						<li class:no-icon={control.icons.length === 0}>
-							{#if control.icons.length}
+						<li class:no-icon={control.icons.length === 0 && !control.sign && !control.readout}>
+							{#if control.sign}
+								<span class="wp-control-icons"><span class="wp-sign" style:background-image={`url('${base}/assets/sprites/sushiUi/buybonus_plate.png')`}>{control.sign}</span></span>
+							{:else if control.readout}
+								<span class="wp-control-icons" aria-hidden="true">
+									<span class="wp-readout">{control.readout}<svg viewBox="0 0 12 8"><polyline points="1.5,1.5 6,6 10.5,1.5" /></svg></span>
+								</span>
+							{:else if control.icons.length}
 								<span class="wp-control-icons">
 									{#each control.icons as name (name)}
 										<img src={`${ICONS}/${name}.png`} alt="" aria-hidden="true" />
@@ -294,7 +325,7 @@
 					<strong>Maximum Free Spins.</strong> The meter has {meter.thresholds.length} marks and each
 					adds spins once, so a feature can reach at most <strong>{maxScatterSpins} Free Spins</strong>
 					when opened by Scatters{#each buyTiers as tier (tier.key)}, {maxSpinsFrom(tier.spins ?? 0, tier.start)}
-						in the {tier.cost}&times; round{/each}. The feature ends when its spins run out or the
+						in {tier.name}{/each}. The feature ends when its spins run out or the
 					maximum win is reached.
 				</p>
 			</section>
@@ -309,7 +340,7 @@
 					<ul class="wp-tiers">
 						{#each buyTiers as tier (tier.key)}
 							<li>
-								<strong>{tier.cost}&times; {T.bet}</strong> &mdash; {tier.spins} Free Spins,
+								<strong>{tier.name}</strong>, {tier.cost}&times; {T.bet} &mdash; {tier.spins} Free Spins,
 								{#if tier.start > 0}
 									the Chef meter starts at {tier.start}; all {removedLabelsAtLevel(levelAt(tier.start))} symbols are already Sushi Plates
 								{:else}
@@ -451,6 +482,41 @@
 	   show, the text takes the whole row rather than leaving a gap. */
 	.wp-controls li.no-icon {
 		grid-template-columns: 1fr;
+	}
+
+	/* Buy Bonus: the bar's hanging plate in miniature, cropped to the board */
+	.wp-sign {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 4.4rem;
+		height: 1.9rem;
+		background-size: 4.6rem auto;
+		background-position: center 52%;
+		background-repeat: no-repeat;
+		color: #1e1b1a;
+		font: 400 0.62rem var(--gb-display-font, sans-serif);
+		letter-spacing: 0.04em;
+		white-space: nowrap;
+	}
+
+	/* the bet readout: caption plus the chevron the bar draws beside it */
+	.wp-readout {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.2rem 0.45rem;
+		border: 2px solid #4a4846;
+		background: #efeadc;
+		color: #1e1b1a;
+		font: 400 0.7rem var(--gb-display-font, sans-serif);
+	}
+	.wp-readout svg {
+		width: 0.7rem;
+		height: 0.5rem;
+		fill: none;
+		stroke: #1e1b1a;
+		stroke-width: 2;
 	}
 
 	.wp-control-icons {

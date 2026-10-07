@@ -40,6 +40,16 @@ const emptyAssets = {
 // are HTML, not canvas.
 const cardArt = (name: string) => `${base}/assets/sprites/sushiUi/card_${name}.png`;
 
+// One name per buy mode, used by every surface that names it — the menu card,
+// its confirmation, the rules table and tiers, and the replay card. Engine
+// guideline 225 wants a mode called the same thing everywhere; these used to
+// read DINNER RUSH on the menu and Free Spins on the rules and replay. "Rush"
+// is also on Stake's restricted-title list, so it is gone from both.
+export const MODE_NAMES = {
+	BONUS: 'Dinner Service',
+	SUPERBONUS: 'Omakase Course',
+} as const;
+
 const MAX_WIN = '10,000×';
 // from the synced math config, never typed: it was a literal '96%' and would
 // have gone on saying so after the RTP moved
@@ -80,7 +90,7 @@ export const SUSHI_MONKEY_BET_MODE_META: Record<string, BetModeData> = {
 		assets: { ...emptyAssets, dialogImage: cardArt('bonus') },
 		text: {
 			get title() {
-				return pick('DINNER RUSH', 'DINNER RUSH');
+				return MODE_NAMES.BONUS.toUpperCase();
 			},
 			get dialog() {
 				return pick(
@@ -117,7 +127,7 @@ export const SUSHI_MONKEY_BET_MODE_META: Record<string, BetModeData> = {
 		assets: { ...emptyAssets, dialogImage: cardArt('superbonus') },
 		text: {
 			get title() {
-				return pick('OMAKASE RUSH', 'OMAKASE RUSH');
+				return MODE_NAMES.SUPERBONUS.toUpperCase();
 			},
 			get dialog() {
 				return pick(

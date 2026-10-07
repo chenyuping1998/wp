@@ -4,7 +4,8 @@
 	import { zIndex } from 'constants-shared/zIndex';
 	import { numberToCurrencyString } from 'utils-shared/amount';
 
-	import { SUSHI_MONKEY_BET_MODE_META } from '../../game/betModeMeta';
+	import { SUSHI_MONKEY_BET_MODE_META, MODE_NAMES } from '../../game/betModeMeta';
+	import { gameText } from '../../game/i18nText';
 
 	// Replay start card.
 	//
@@ -29,29 +30,42 @@
 
 	const social = stateUrlDerived.social();
 
-	const L = {
-		badge: 'REPLAY',
-		title: social ? 'Play Replay' : 'Bet Replay',
-		mode: 'Mode',
-		baseBet: social ? 'Base Play' : 'Base Bet',
-		costMultiplier: social ? 'Feature Multiplier' : 'Cost Multiplier',
-		// "Total Play Cost" would still carry the restricted word "cost"
-		totalCost: social ? 'Total Play Amount' : 'Total Bet Cost',
-		payoutMultiplier: social ? 'Final Multiplier' : 'Payout Multiplier',
-		totalWin: 'Total Win',
-		start: 'Start Replay',
-		foot: social
-			? 'This is a replay of a previous round. No plays will be placed.'
-			: 'This is a replay of a previous bet round. No bets will be placed.',
-	};
+	// Engine guideline 172: the replay applies ?lang=. Social play stays English
+	// (platform rule) with its own wording; everything else reads gameText.
+	const L = social
+		? {
+				badge: 'REPLAY',
+				title: 'Play Replay',
+				mode: 'Mode',
+				baseBet: 'Base Play',
+				costMultiplier: 'Feature Multiplier',
+				// "Total Play Cost" would still carry the restricted word "cost"
+				totalCost: 'Total Play Amount',
+				payoutMultiplier: 'Final Multiplier',
+				totalWin: 'Total Win',
+				start: 'Start Replay',
+				foot: 'This is a replay of a previous round. No plays will be placed.',
+			}
+		: {
+				badge: gameText('replayBadge'),
+				title: gameText('replayTitle'),
+				mode: gameText('replayMode'),
+				baseBet: gameText('replayBaseBet'),
+				costMultiplier: gameText('replayCostMult'),
+				totalCost: gameText('replayTotalCost'),
+				payoutMultiplier: gameText('replayPayoutMult'),
+				totalWin: gameText('replayTotalWin'),
+				start: gameText('replayStart'),
+				foot: gameText('replayFoot'),
+			};
 
 	// The mode label has to read the way the game itself names the mode. The raw
 	// key ("SUPERSPIN") and the buy-card caption ("BUY FREE SPINS") are both wrong
 	// here — one is machine naming, the other is a call to action.
 	const MODE_LABELS: Record<string, string> = {
-		BASE: 'Base Game',
-		BONUS: 'Free Spins',
-		SUPERBONUS: 'Super Free Spins',
+		BASE: social ? 'Base Game' : gameText('replayBaseGame'),
+		BONUS: MODE_NAMES.BONUS,
+		SUPERBONUS: MODE_NAMES.SUPERBONUS,
 	};
 
 	const modeKey = $derived(`${stateBet.activeBetModeKey || 'BASE'}`.toUpperCase());
@@ -265,5 +279,57 @@
 		margin: 0.7rem 0 0;
 		font-size: 0.7rem;
 		opacity: 0.6;
+	}
+
+	/* Short landscape windows — Engine guideline 243 opens replays in the 400×225
+	   popout, where the stacked card ran 328px tall in a 195px box and Start
+	   Replay sat below the fold. The six rows go into two columns of three (cost
+	   group | win group), the badge and footnote drop, and everything tightens,
+	   so the whole card and its button fit without scrolling. */
+	@media (max-height: 420px) and (orientation: landscape) {
+		.replay-backdrop {
+			padding: 0.5rem;
+		}
+		.replay-card {
+			width: min(34rem, 100%);
+			padding: 0.6rem 0.8rem;
+			box-shadow: 4px 4px 0 #b87b60;
+		}
+		.replay-badge,
+		.replay-foot {
+			display: none;
+		}
+		h2 {
+			margin: 0 0 0.4rem;
+			font-size: 1rem;
+		}
+		.replay-rows {
+			display: grid;
+			grid-template-rows: repeat(3, auto);
+			grid-auto-flow: column;
+			column-gap: 0.9rem;
+			padding: 0.35rem 0.55rem;
+		}
+		.row {
+			padding: 0.12rem 0;
+			font-size: 0.68rem;
+			gap: 0.5rem;
+		}
+		.row.spacer {
+			margin-top: 0;
+		}
+		.row.highlight {
+			margin-top: 0;
+			padding: 0.15rem 0.35rem;
+		}
+		.big {
+			font-size: 0.78rem;
+		}
+		.replay-start {
+			margin-top: 0.45rem;
+			padding: 0.4rem 0.8rem;
+			font-size: 0.85rem;
+			box-shadow: 3px 3px 0 #1e1b1a;
+		}
 	}
 </style>

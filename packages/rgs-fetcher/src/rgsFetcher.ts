@@ -27,6 +27,17 @@ const parseJson = async (response: Response, endpoint: string, status: number) =
 	}
 };
 
+// The platform passes rgs_url as a bare host ("rgs.example.com"), but Engine's
+// guideline 181 allows it to arrive with its scheme too. Prefixing https://
+// unconditionally turned "https://rgs.example.com" into "https://https://…",
+// and no request ever left. Add the scheme only when it is missing, and drop a
+// trailing slash so the path joins cleanly. A bare host — every launch so far —
+// produces exactly the URL it always did.
+const rgsEndpoint = (rgsUrl: string, url: string) => {
+	const base = (/^https?:\/\//i.test(rgsUrl) ? rgsUrl : `https://${rgsUrl}`).replace(/\/+$/, '');
+	return `${base}${url}`;
+};
+
 export const rgsFetcher = {
 	post: async function post<
 		T extends keyof paths,
@@ -39,7 +50,7 @@ export const rgsFetcher = {
 		const response = await fetcher({
 			method: 'POST',
 			variables: options.variables,
-			endpoint: `https://${options.rgsUrl}${options.url}`,
+			endpoint: rgsEndpoint(options.rgsUrl, options.url),
 		});
 
 		if (response.status !== 200) console.error('error', response);
@@ -52,7 +63,7 @@ export const rgsFetcher = {
 	>(options: { url: T; rgsUrl: string }): Promise<TResponse> {
 		const response = await fetcher({
 			method: 'GET',
-			endpoint: `https://${options.rgsUrl}${options.url}`,
+			endpoint: rgsEndpoint(options.rgsUrl, options.url),
 		});
 
 		if (response.status !== 200) console.error('error', response);

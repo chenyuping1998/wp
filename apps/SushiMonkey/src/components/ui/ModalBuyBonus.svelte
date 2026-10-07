@@ -30,6 +30,7 @@
 
 	const art = (file: string) => `${base}/assets/sprites/${file}`;
 	import config from '../../game/config';
+	import { MODE_NAMES } from '../../game/betModeMeta';
 
 	type Hero = { src: string; w: number; x: number; y: number; r?: number };
 	type Card = {
@@ -54,7 +55,7 @@
 	const PLATE = art('sushiSymbols/p.png');
 	const CARDS: Record<string, Card> = {
 		BONUS: {
-			title: 'DINNER RUSH',
+			title: MODE_NAMES.BONUS.toUpperCase(),
 			accent: '#4a4846',
 			tag: 'FREE SPINS',
 			scene: art('sushiBackground/bg_base.png'),
@@ -64,7 +65,7 @@
 			points: [`${spins('bonus')} free spins`, `${meter.thresholds.join(' / ')} Chefs: +${meter.spinsAdded} spins; 10 / J / Q become Plates`],
 		},
 		SUPERBONUS: {
-			title: 'OMAKASE RUSH',
+			title: MODE_NAMES.SUPERBONUS.toUpperCase(),
 			accent: '#b87b60',
 			tag: 'SUPER',
 			scene: art('sushiBackground/bg_feature.png'),

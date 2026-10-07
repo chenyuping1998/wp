@@ -275,7 +275,9 @@
 
 	let audioCtx: AudioContext | null = null;
 	const loopBuffers: Partial<Record<CnSfxName, AudioBuffer>> = {};
-	const loopNodes: Partial<Record<CnSfxName, { src: AudioBufferSourceNode; gain: GainNode }>> = {};
+	const loopNodes: Partial<Record<CnSfxName, { src: AudioBufferSourceNode; gain: GainNode; scale: number }>> = {};
+	// the element fallback's own scale, for the same reason
+	const loopElementScale: Partial<Record<CnSfxName, number>> = {};
 
 	const getAudioCtx = () => {
 		if (typeof window === 'undefined') return null;
@@ -297,6 +299,7 @@
 		if (!ctx) {
 			const audio = getCnSfx(name);
 			audio.loop = true;
+			loopElementScale[name] = volumeScale;
 			audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
 			if (!audio.paused && !audio.ended) return;
 			audio.currentTime = 0;
@@ -329,8 +332,27 @@
 		src.loop = true;
 		src.connect(gain).connect(ctx.destination);
 		src.start();
-		loopNodes[name] = { src, gain };
+		loopNodes[name] = { src, gain, scale: volumeScale };
 	}
+
+	// A loop's gain was set once, when it started. Muting (or turning effects
+	// down) during a big win left coin_shimmer and friends playing at the old
+	// level until the plaque closed — Engine guideline 107 wants every sound to
+	// follow the setting immediately. Follow it here, without a ramp: a mute
+	// should be a mute.
+	$effect(() => {
+		const vol = stateSoundDerived.volumeSoundEffect();
+		const ctx = audioCtx;
+		for (const node of Object.values(loopNodes)) {
+			if (!node || !ctx) continue;
+			node.gain.gain.cancelScheduledValues(ctx.currentTime);
+			node.gain.gain.setValueAtTime(Math.min(1, vol * node.scale), ctx.currentTime);
+		}
+		for (const [name, scale] of Object.entries(loopElementScale)) {
+			const audio = cnSfxAudio[name as CnSfxName];
+			if (audio?.loop) audio.volume = Math.min(1, vol * (scale ?? 1));
+		}
+	});
 
 	function stopCnLoop(name: CnSfxName) {
 		const node = loopNodes[name];

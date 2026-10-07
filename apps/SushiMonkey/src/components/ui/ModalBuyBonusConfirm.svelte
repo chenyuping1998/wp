@@ -24,6 +24,14 @@
 	const accent = $derived(stateBonus.selectedBetModeKey === 'SUPERBONUS' ? '#b87b60' : '#4a4846');
 
 	const back = () => (stateModal.modal = { name: 'buyBonus' });
+	// The real cost of this mode, not the base stake: a 100× buy on a $1 stake
+	// is $100. isBetCostAvailable() cannot answer this — it reads the ACTIVE
+	// mode, which is still BASE until confirm() switches it.
+	const cost = $derived(stateBet.betAmount * mode.costMultiplier);
+	// Engine guideline 222: an unaffordable buy must not reach /wallet/play.
+	// This path broadcasts 'bet' straight to the game actor, past the bet
+	// button's own balance guard, so it needs one of its own.
+	const affordable = () => cost > 0 && cost <= stateBet.balanceAmount;
 	const confirm = () => {
 		stateBet.activeBetModeKey = stateBonus.selectedBetModeKey;
 
@@ -45,12 +53,17 @@
 			<p>{mode.text.dialog}</p>
 			<div class="price">
 				{mode.costMultiplier}<small>×</small>
-				<span>{numberToCurrencyString(stateBet.betAmount * mode.costMultiplier)}</span>
+				<span>{numberToCurrencyString(cost)}</span>
 			</div>
 			<button
 				class="ok"
 				data-test="confirm-button"
 				onclick={() => {
+					if (!affordable()) {
+						// same notice the bet button raises
+						stateModal.modal = { name: 'message', message: 'insufficientFunds' };
+						return;
+					}
 					confirm();
 					eventEmitter.broadcast({ type: 'soundPressGeneral' });
 					stateModal.modal = null;
