@@ -1,0 +1,312 @@
+<title>待機晃動實驗室</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;700&family=Literata:opsz,wght@7..72,400;7..72,600&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root{
+  --ground:#f7f4ef; --surface:#fffdfa; --line:#ddd5c8;
+  --ink:#1b1d2a; --ink-dim:#5f6070; --ink-faint:#8d8b98;
+  --coral:#e0405f; --teal:#0d9488; --amber:#c2820b; --violet:#6d5bd0;
+  --grid:#e6e0d5;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#12131d; --surface:#1a1c28; --line:#2f3244;
+  --ink:#eceaf2; --ink-dim:#a3a3b4; --ink-faint:#71718a;
+  --coral:#ff6b85; --teal:#2dd4bf; --amber:#e8b13c; --violet:#9b8cf5;
+  --grid:#24263a;
+}}
+:root[data-theme="dark"]{
+  --ground:#12131d; --surface:#1a1c28; --line:#2f3244;
+  --ink:#eceaf2; --ink-dim:#a3a3b4; --ink-faint:#71718a;
+  --coral:#ff6b85; --teal:#2dd4bf; --amber:#e8b13c; --violet:#9b8cf5;
+  --grid:#24263a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font:400 16px/1.65 Literata,Georgia,serif;
+  padding:0 20px 80px}
+.wrap{max-width:940px;margin:0 auto}
+h1{font:700 clamp(30px,5vw,46px)/1.08 "Familjen Grotesk",system-ui,sans-serif;
+  letter-spacing:-.02em;text-wrap:balance;margin:52px 0 10px}
+h2{font:700 24px/1.2 "Familjen Grotesk",system-ui,sans-serif;
+  letter-spacing:-.01em;margin:0 0 4px;text-wrap:balance}
+h3{font:500 15px/1.3 "Familjen Grotesk",system-ui,sans-serif;margin:0 0 6px}
+p{margin:8px 0;max-width:66ch;color:var(--ink-dim)}
+p.lede{font-size:18px;color:var(--ink);max-width:62ch}
+b,strong{color:var(--ink);font-weight:600}
+.eyebrow{font:700 11px/1 "JetBrains Mono",ui-monospace,monospace;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--coral);margin-bottom:12px}
+section{margin-top:56px;padding-top:32px;border-top:1px solid var(--line)}
+.step{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+.step .n{font:700 13px/1 "JetBrains Mono",monospace;color:var(--ink-faint);
+  border:1px solid var(--line);border-radius:99px;padding:6px 9px;flex:0 0 auto}
+canvas{display:block;width:100%;background:var(--surface);
+  border:1px solid var(--line);border-radius:5px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:5px;
+  padding:16px 18px;margin:16px 0}
+.ctl{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin:14px 0 2px}
+label{font:500 12.5px/1 "Familjen Grotesk",sans-serif;color:var(--ink-dim);
+  display:flex;align-items:center;gap:8px}
+input[type=range]{width:132px;accent-color:var(--coral)}
+input[type=checkbox]{accent-color:var(--coral);width:15px;height:15px}
+button{font:500 13px/1 "Familjen Grotesk",sans-serif;color:var(--ink);
+  background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  padding:8px 13px;cursor:pointer}
+button[aria-pressed=true]{background:var(--coral);border-color:var(--coral);color:#fff}
+button:focus-visible,input:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+.val{font:700 12.5px/1 "JetBrains Mono",monospace;color:var(--coral);
+  font-variant-numeric:tabular-nums;min-width:52px}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left}
+th{font:500 12px/1.2 "Familjen Grotesk",sans-serif;color:var(--ink-faint);
+  text-transform:uppercase;letter-spacing:.07em}
+td.n{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:13px;white-space:nowrap}
+.hi{color:var(--coral);font-weight:700}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:680px){.two{grid-template-columns:1fr}}
+code{font:400 13.5px "JetBrains Mono",monospace;background:var(--grid);
+  padding:1px 5px;border-radius:3px}
+.foot{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:13.5px;color:var(--ink-faint)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+
+<div class="wrap">
+
+<div class="eyebrow">Miami Mayhem · 1824 / 1.23.2</div>
+<h1>待機晃動實驗室</h1>
+<p class="lede">拆解 Hacksaw <i>Miami Mayhem</i> 背景五個角色「一直在動」的做法。
+每一節都能自己撥動參數，看差別在哪。所有數字量自遊戲的 spine 骨架檔。</p>
+
+<!-- ── 1 ── -->
+<section>
+<div class="step"><span class="n">01</span><div>
+<h2>循環長度不要一樣</h2>
+<p>五個角色的 idle 循環是 <b>3.33 / 5 / 6.67 / 8 / 8 秒</b>。
+刻意選成不好整除 —— 全部同時回到起點要 <b class="hi">40 秒</b>。
+玩家看到的永遠是不同組合。</p>
+</div></div>
+
+<canvas id="c1" height="200"></canvas>
+<div class="ctl">
+  <button id="b1" aria-pressed="false">改成全部 5 秒</button>
+  <span class="val" id="t1">0.0s</span>
+  <span style="font-size:12.5px;color:var(--ink-faint)">↑ 白線 = 該角色回到起點</span>
+</div>
+<p>按下按鈕把五個都設成同一長度，就會看到它們鎖在一起、整片背景同時「跳」一下 —— 那就是廉價感的來源。</p>
+</section>
+
+<!-- ── 2 ── -->
+<section>
+<div class="step"><span class="n">02</span><div>
+<h2>本體幾乎不動，附屬物才大幅度</h2>
+<p>身體骨最大只有 <b>1～3 度</b>，鬍子尖端接近 <b>14 度</b>，頭髮末端到 <b class="hi">27.5 度</b>。
+生命感全押在沒有骨頭的東西上 —— 頭髮、布料、飾品、煙。</p>
+</div></div>
+
+<div class="two">
+  <div><h3 style="color:var(--ink-faint)">本體大幅度（錯誤示範）</h3><canvas id="c2a" height="230"></canvas></div>
+  <div><h3 style="color:var(--coral)">本體小＋末端大（Miami 做法）</h3><canvas id="c2b" height="230"></canvas></div>
+</div>
+<div class="ctl">
+  <label>本體幅度 <input type="range" id="s2" min="1" max="20" value="3"><span class="val" id="v2">3°</span></label>
+</div>
+
+<table>
+<tr><th>角色</th><th>本體最大</th><th>附屬物最大</th><th>部位</th></tr>
+<tr><td>green_guy</td><td class="n">3.3°</td><td class="n hi">13.9°</td><td>鬍子尖端</td></tr>
+<tr><td>main_girl</td><td class="n">9.7°</td><td class="n hi">27.5°</td><td>髮絲末端</td></tr>
+<tr><td>bikinigirl</td><td class="n">6.7°</td><td class="n hi">20.2°</td><td>後髮</td></tr>
+<tr><td>main_guy</td><td class="n">3.2°</td><td class="n hi">10.5°</td><td>面具</td></tr>
+<tr><td>boss</td><td class="n">—</td><td class="n hi">25.9°</td><td>雪茄煙（＋縮放）</td></tr>
+</table>
+</section>
+
+<!-- ── 3 ── -->
+<section>
+<div class="step"><span class="n">03</span><div>
+<h2>跟隨鏈：每節放大約兩倍、相位落後</h2>
+<p>green_guy 的鬍子只有兩節：<code>beard</code> 6.9° → <code>beard_tip</code> 13.9°。
+main_girl 的頭髮是五節控制骨，一路放大到 27.5°。
+<b>越靠末端幅度越大、時間越晚</b> —— 慣性的視覺化。</p>
+</div></div>
+
+<canvas id="c3" height="220"></canvas>
+<div class="ctl">
+  <label>節數 <input type="range" id="s3n" min="2" max="7" value="5"><span class="val" id="v3n">5</span></label>
+  <label>每節放大 <input type="range" id="s3g" min="100" max="250" value="190"><span class="val" id="v3g">1.90×</span></label>
+  <label>每節延遲 <input type="range" id="s3d" min="0" max="30" value="14"><span class="val" id="v3d">0.14s</span></label>
+</div>
+<p>把「每節延遲」歸零，整條鏈會像一根硬棒子一起擺 —— 立刻失去重量感。</p>
+</section>
+
+<!-- ── 4 ── -->
+<section>
+<div class="step"><span class="n">04</span><div>
+<h2>在長循環裡藏一次不規則抖動</h2>
+<p>green_guy 的 <code>spine2</code> 在 8 秒循環的第 3.73～4.57 秒之間，
+有一段 <b>±0.5 度、5 個不等距關鍵幀</b>的快速小抖，整個循環只出現一次。</p>
+<p>基礎是規律的 1 秒週期，如果從頭規律到尾，看兩輪就會被察覺。
+中間插一次不對稱的抖動，感知上就變成「他剛剛動了一下」。</p>
+</div></div>
+
+<canvas id="c4" height="180"></canvas>
+<div class="ctl">
+  <button id="b4" aria-pressed="true">抖動：開</button>
+  <span class="val" id="t4">0.0s</span>
+  <span style="font-size:12.5px;color:var(--ink-faint)">↑ 珊瑚色區段 = 抖動視窗</span>
+</div>
+<p>成本極低：在循環中段挑一根骨，加四五個小幅度、不等距的關鍵幀就好。</p>
+</section>
+
+<!-- ── 5 ── -->
+<section>
+<div class="step"><span class="n">05</span><div>
+<h2>照著做的最小步驟</h2>
+</div></div>
+<div class="panel">
+<table>
+<tr><th style="width:34px">#</th><th>做什麼</th><th>參考值</th></tr>
+<tr><td class="n">1</td><td>切素材：身體、頭、頭髮分節（至少兩節）、飾品各自獨立</td><td class="n">—</td></tr>
+<tr><td class="n">2</td><td>建骨：本體 ＋ 一根呼吸／透視底層骨 ＋ 附屬物跟隨鏈</td><td class="n">15–46 根</td></tr>
+<tr><td class="n">3</td><td>每個角色給不同且不好整除的循環長度</td><td class="n">3.33 / 5 / 6.67 / 8</td></tr>
+<tr><td class="n">4</td><td>底層骨做位移＋縱向縮放，週期取循環的 1/4</td><td class="n">scale y 1→1.35</td></tr>
+<tr><td class="n">5</td><td>本體：頭 3°、頸 3°、肩 1°、手臂 2°</td><td class="n hi">不超過 5°</td></tr>
+<tr><td class="n">6</td><td>跟隨鏈每節幅度 ×2、相位往後推</td><td class="n">0.1–0.2s</td></tr>
+<tr><td class="n">7</td><td>循環中段插一次不規則抖動</td><td class="n">±0.5°、4–5 幀</td></tr>
+<tr><td class="n">8</td><td>主要動作用「慢起快到」的貝茲，不要線性</td><td class="n">[.5,0,.86,3.3]</td></tr>
+</table>
+</div>
+</section>
+
+<div class="foot">
+數值量自 <code>character_*.json</code> 五個 spine 骨架。
+完整拆解見 <code>background-idle-technique.md</code>。<br>
+抄下來的美術與骨架是原廠著作權 —— 這頁是方法示範，素材不要進產品。
+</div>
+</div>
+
+<script>
+const R = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+function fit(c){const d=devicePixelRatio||1,w=c.clientWidth;c.width=w*d;c.height=c.clientHeight*d;
+  const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return x;}
+
+/* ── 01 循環長度 ── */
+const CH=[['bikinigirl',3.333],['main_girl',5],['boss',6.667],['green_guy',8],['main_guy',8]];
+const c1=document.getElementById('c1'),b1=document.getElementById('b1'),t1=document.getElementById('t1');
+let sync=false;
+b1.onclick=()=>{sync=!sync;b1.setAttribute('aria-pressed',sync);
+  b1.textContent=sync?'改回原本長度':'改成全部 5 秒';};
+function d1(t){const x=fit(c1),W=c1.clientWidth,H=c1.clientHeight,L=96,pad=14;
+  x.clearRect(0,0,W,H);
+  const span=40,uw=(W-L-pad)/span;
+  x.strokeStyle=css('--grid');x.lineWidth=1;
+  for(let s=0;s<=span;s+=5){const px=L+s*uw;x.beginPath();x.moveTo(px,8);x.lineTo(px,H-18);x.stroke();
+    x.fillStyle=css('--ink-faint');x.font='11px "JetBrains Mono",monospace';x.textAlign='center';
+    x.fillText(s+'s',px,H-5);}
+  CH.forEach(([nm,per],i)=>{const p=sync?5:per,y=20+i*32;
+    x.fillStyle=css('--ink-dim');x.font='12px "Familjen Grotesk",sans-serif';x.textAlign='right';
+    x.fillText(nm,L-10,y+4);
+    x.fillStyle=css('--grid');x.fillRect(L,y-7,W-L-pad,14);
+    for(let k=0;k*p<=span;k++){const px=L+k*p*uw;
+      x.fillStyle=css('--ink');x.fillRect(px-.5,y-9,1.4,18);}
+    const ph=(t%p)/p,px=L+((t%span))*uw;
+    x.fillStyle=css('--coral');
+    const cx=L+(t%span)*uw;x.beginPath();x.arc(cx,y,4.5,0,7);x.fill();
+    x.globalAlpha=.30;x.fillRect(L,y-7,(t%span)*uw,14);x.globalAlpha=1;});
+  const cx=L+(t%span)*uw;x.strokeStyle=css('--violet');x.lineWidth=1.5;
+  x.beginPath();x.moveTo(cx,8);x.lineTo(cx,H-18);x.stroke();
+  t1.textContent=(t%span).toFixed(1)+'s';}
+
+/* ── 02 幅度分配 ── */
+const c2a=document.getElementById('c2a'),c2b=document.getElementById('c2b'),
+      s2=document.getElementById('s2'),v2=document.getElementById('v2');
+function figure(x,W,H,t,bodyDeg,tipMul){
+  const cxp=W/2,base=H-24,rad=d=>d*Math.PI/180;
+  const w=Math.sin(t*2*Math.PI/2);           // 2 秒基礎週期
+  const body=rad(bodyDeg)*w;
+  x.strokeStyle=css('--ink');x.lineWidth=6;x.lineCap='round';
+  // 軀幹
+  const hipY=base,chestY=base-70;
+  const cxTop=cxp+Math.sin(body)*70;
+  x.beginPath();x.moveTo(cxp,hipY);x.lineTo(cxTop,chestY);x.stroke();
+  // 頭
+  const hd=body*1.2,hx=cxTop+Math.sin(hd)*34,hy=chestY-34;
+  x.beginPath();x.moveTo(cxTop,chestY);x.lineTo(hx,hy);x.stroke();
+  x.fillStyle=css('--ink');x.beginPath();x.arc(hx,hy-13,15,0,7);x.fill();
+  // 手臂
+  [-1,1].forEach(s=>{const a=body*0.7*s;
+    x.beginPath();x.moveTo(cxTop,chestY+8);
+    x.lineTo(cxTop+s*30+Math.sin(a)*16,chestY+50);x.stroke();});
+  // 頭髮跟隨鏈（末端放大）
+  let px=hx,py=hy-22,amp=rad(bodyDeg)*tipMul;
+  x.strokeStyle=css('--coral');x.lineWidth=4.5;
+  for(let i=0;i<4;i++){
+    const ph=t-(i+1)*0.13, a=Math.sin(ph*2*Math.PI/2)*amp*(1+i*0.55);
+    const nx=px+Math.sin(a)*17+6, ny=py+16;
+    x.beginPath();x.moveTo(px,py);x.lineTo(nx,ny);x.stroke();
+    px=nx;py=ny;}
+}
+function d2(t){const bd=+s2.value;v2.textContent=bd+'°';
+  const A=fit(c2a);A.clearRect(0,0,c2a.clientWidth,c2a.clientHeight);
+  figure(A,c2a.clientWidth,c2a.clientHeight,t,bd*4,0.15);
+  const B=fit(c2b);B.clearRect(0,0,c2b.clientWidth,c2b.clientHeight);
+  figure(B,c2b.clientWidth,c2b.clientHeight,t,bd,2.6);}
+
+/* ── 03 跟隨鏈 ── */
+const c3=document.getElementById('c3'),s3n=document.getElementById('s3n'),
+      s3g=document.getElementById('s3g'),s3d=document.getElementById('s3d'),
+      v3n=document.getElementById('v3n'),v3g=document.getElementById('v3g'),v3d=document.getElementById('v3d');
+function d3(t){const n=+s3n.value,g=+s3g.value/100,dl=+s3d.value/100;
+  v3n.textContent=n;v3g.textContent=g.toFixed(2)+'×';v3d.textContent=dl.toFixed(2)+'s';
+  const x=fit(c3),W=c3.clientWidth,H=c3.clientHeight;x.clearRect(0,0,W,H);
+  let px=W/2,py=26,amp=3*Math.PI/180;
+  x.lineCap='round';
+  for(let i=0;i<n;i++){
+    const a=Math.sin((t-i*dl)*2*Math.PI/2)*amp*Math.pow(g,i);
+    const len=(H-60)/n, nx=px+Math.sin(a)*len, ny=py+Math.cos(a)*len;
+    const mix=i/(n-1||1);
+    x.strokeStyle=i===0?css('--ink'):css('--coral');
+    x.globalAlpha=i===0?1:0.45+0.55*mix;
+    x.lineWidth=8-mix*4.5;
+    x.beginPath();x.moveTo(px,py);x.lineTo(nx,ny);x.stroke();
+    x.globalAlpha=1;
+    x.fillStyle=css('--ink-faint');x.font='10px "JetBrains Mono",monospace';x.textAlign='left';
+    x.fillText((3*Math.pow(g,i)).toFixed(1)+'°',nx+9,ny+3);
+    px=nx;py=ny;}
+  x.fillStyle=css('--ink-faint');x.font='11px "Familjen Grotesk",sans-serif';x.textAlign='center';
+  x.fillText('根部 3° → 末端放大',W/2,H-12);}
+
+/* ── 04 抖動 ── */
+const c4=document.getElementById('c4'),b4=document.getElementById('b4'),t4=document.getElementById('t4');
+let jit=true;
+b4.onclick=()=>{jit=!jit;b4.setAttribute('aria-pressed',jit);b4.textContent='抖動：'+(jit?'開':'關');};
+const JF=[[3.7333,0],[3.9333,-0.54],[4.0667,0.12],[4.2,-0.37],[4.3333,0.21],[4.5667,0]];
+function jitter(tt){if(!jit)return 0;
+  if(tt<JF[0][0]||tt>JF[JF.length-1][0])return 0;
+  for(let i=0;i<JF.length-1;i++){const[a,va]=JF[i],[b,vb]=JF[i+1];
+    if(tt>=a&&tt<=b){const u=(tt-a)/(b-a),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;return va+(vb-va)*e;}}
+  return 0;}
+function d4(t){const x=fit(c4),W=c4.clientWidth,H=c4.clientHeight,L=8,pad=8;
+  x.clearRect(0,0,W,H);const span=8,uw=(W-L-pad)/span,mid=H/2;
+  x.fillStyle=css('--coral');x.globalAlpha=.13;
+  x.fillRect(L+3.7333*uw,6,(4.5667-3.7333)*uw,H-26);x.globalAlpha=1;
+  x.strokeStyle=css('--grid');x.beginPath();x.moveTo(L,mid);x.lineTo(W-pad,mid);x.stroke();
+  x.strokeStyle=css('--teal');x.lineWidth=2;x.beginPath();
+  for(let s=0;s<=span;s+=0.02){const v=Math.sin(s*2*Math.PI/2)*1.0+jitter(s);
+    const px=L+s*uw,py=mid-v*26;s?x.lineTo(px,py):x.moveTo(px,py);}
+  x.stroke();
+  const tt=t%span,v=Math.sin(tt*2*Math.PI/2)*1.0+jitter(tt);
+  const cx=L+tt*uw;
+  x.strokeStyle=css('--violet');x.lineWidth=1.5;x.beginPath();x.moveTo(cx,6);x.lineTo(cx,H-20);x.stroke();
+  x.fillStyle=css('--coral');x.beginPath();x.arc(cx,mid-v*26,5,0,7);x.fill();
+  x.fillStyle=css('--ink-faint');x.font='11px "JetBrains Mono",monospace';x.textAlign='center';
+  x.fillText('3.73s',L+3.7333*uw,H-6);x.fillText('4.57s',L+4.5667*uw,H-6);
+  t4.textContent=tt.toFixed(1)+'s';}
+
+let t0=performance.now();
+function loop(now){const t=R?4.1:(now-t0)/1000;
+  d1(t);d2(t);d3(t);d4(t);requestAnimationFrame(loop);}
+addEventListener('resize',()=>{});
+requestAnimationFrame(loop);
+</script>

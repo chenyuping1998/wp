@@ -1,0 +1,6170 @@
+[
+ {
+  "index": 1,
+  "id": "miami_boss",
+  "title": "白西裝老大",
+  "game": "Miami Mayhem",
+  "look": "毛領白西裝、手指夾菸、雙手垂在身側",
+  "route": "image",
+  "fidelity": {
+   "image": 0.997,
+   "parts": 0.9976,
+   "layers": 0.9966
+  },
+  "bones": 60,
+  "parts": 8,
+  "animations": [
+   {
+    "name": "full_screen/idle",
+    "gif": "miami_boss/full_screen__idle.gif",
+    "seconds": 6.67,
+    "frames": 100
+   },
+   {
+    "name": "mobile/idle",
+    "gif": "miami_boss/mobile__idle.gif",
+    "seconds": 6.67,
+    "frames": 100
+   }
+  ]
+ },
+ {
+  "index": 2,
+  "id": "miami_main_guy",
+  "title": "扛球棒男",
+  "game": "Miami Mayhem",
+  "look": "蒙面頭巾、球棒扛在右肩",
+  "route": "image",
+  "fidelity": {
+   "image": 0.9969,
+   "parts": 0.9978,
+   "layers": 0.9932
+  },
+  "bones": 49,
+  "parts": 10,
+  "animations": [
+   {
+    "name": "full_screen/idle",
+    "gif": "miami_main_guy/full_screen__idle.gif",
+    "seconds": 8,
+    "frames": 120
+   },
+   {
+    "name": "full_screen/reaction",
+    "gif": "miami_main_guy/full_screen__reaction.gif",
+    "seconds": 1,
+    "frames": 15
+   },
+   {
+    "name": "mobile/idle",
+    "gif": "miami_main_guy/mobile__idle.gif",
+    "seconds": 8,
+    "frames": 120
+   },
+   {
+    "name": "mobile/reaction",
+    "gif": "miami_main_guy/mobile__reaction.gif",
+    "seconds": 1,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 3,
+  "id": "miami_main_girl",
+  "title": "扛球棒女",
+  "game": "Miami Mayhem",
+  "look": "粉紅丸子頭、球棒扛在肩上、耳環會晃",
+  "route": "image",
+  "fidelity": {
+   "image": 0.9898,
+   "parts": 0.9984,
+   "layers": 0.9885
+  },
+  "bones": 59,
+  "parts": 15,
+  "animations": [
+   {
+    "name": "full_screen/idle",
+    "gif": "miami_main_girl/full_screen__idle.gif",
+    "seconds": 5,
+    "frames": 75
+   },
+   {
+    "name": "full_screen/reaction",
+    "gif": "miami_main_girl/full_screen__reaction.gif",
+    "seconds": 1,
+    "frames": 15
+   },
+   {
+    "name": "mobile/idle",
+    "gif": "miami_main_girl/mobile__idle.gif",
+    "seconds": 5,
+    "frames": 75
+   },
+   {
+    "name": "mobile/reaction",
+    "gif": "miami_main_girl/mobile__reaction.gif",
+    "seconds": 1,
+    "frames": 15
+   },
+   {
+    "name": "reaction_win",
+    "gif": "miami_main_girl/reaction_win.gif",
+    "seconds": 1,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 4,
+  "id": "miami_bikinigirl",
+  "title": "比基尼女",
+  "game": "Miami Mayhem",
+  "look": "頭巾墨鏡、雙手握拳站姿",
+  "route": "image",
+  "fidelity": {
+   "image": 0.9966,
+   "parts": 0.9981,
+   "layers": 0.9952
+  },
+  "bones": 42,
+  "parts": 8,
+  "animations": [
+   {
+    "name": "full_screen/idle",
+    "gif": "miami_bikinigirl/full_screen__idle.gif",
+    "seconds": 3.33,
+    "frames": 50
+   },
+   {
+    "name": "full_screen/reaction",
+    "gif": "miami_bikinigirl/full_screen__reaction.gif",
+    "seconds": 1.07,
+    "frames": 16
+   },
+   {
+    "name": "mobile/idle",
+    "gif": "miami_bikinigirl/mobile__idle.gif",
+    "seconds": 3.33,
+    "frames": 50
+   },
+   {
+    "name": "mobile/reaction",
+    "gif": "miami_bikinigirl/mobile__reaction.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 5,
+  "id": "miami_green_guy",
+  "title": "綠背心壯漢",
+  "game": "Miami Mayhem",
+  "look": "白鬍子、纏繃帶的手臂、雙拳相抵",
+  "route": "image",
+  "fidelity": {
+   "image": 0.9963,
+   "parts": 0.9991,
+   "layers": 0.9976
+  },
+  "bones": 24,
+  "parts": 6,
+  "animations": [
+   {
+    "name": "full_screen/idle",
+    "gif": "miami_green_guy/full_screen__idle.gif",
+    "seconds": 8,
+    "frames": 120
+   },
+   {
+    "name": "full_screen/reaction",
+    "gif": "miami_green_guy/full_screen__reaction.gif",
+    "seconds": 0.7,
+    "frames": 10
+   },
+   {
+    "name": "mobile/idle",
+    "gif": "miami_green_guy/mobile__idle.gif",
+    "seconds": 8,
+    "frames": 120
+   },
+   {
+    "name": "mobile/reaction",
+    "gif": "miami_green_guy/mobile__reaction.gif",
+    "seconds": 0.7,
+    "frames": 10
+   }
+  ]
+ },
+ {
+  "index": 6,
+  "id": "le_bandit_raccoon",
+  "title": "浣熊大盜",
+  "game": "Le Bandit",
+  "look": "撬棍、貝雷帽、八字鬍；會換臉、冒對話框、丟帽子",
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7743,
+   "parts": 0.9989,
+   "layers": 0.9998
+  },
+  "bones": 36,
+  "parts": 38,
+  "animations": [
+   {
+    "name": "big_win",
+    "gif": "le_bandit_raccoon/big_win.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "big_win_incroyable",
+    "gif": "le_bandit_raccoon/big_win_incroyable.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "big_win_mondieu",
+    "gif": "le_bandit_raccoon/big_win_mondieu.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "bread_win",
+    "gif": "le_bandit_raccoon/bread_win.gif",
+    "seconds": 1.97,
+    "frames": 30
+   },
+   {
+    "name": "idle",
+    "gif": "le_bandit_raccoon/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   },
+   {
+    "name": "idle_path_test",
+    "gif": "le_bandit_raccoon/idle_path_test.gif",
+    "seconds": 1.43,
+    "frames": 21
+   },
+   {
+    "name": "leprechaun_hat_on",
+    "gif": "le_bandit_raccoon/leprechaun_hat_on.gif",
+    "seconds": 3.33,
+    "frames": 50
+   },
+   {
+    "name": "leprechaun_idle",
+    "gif": "le_bandit_raccoon/leprechaun_idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   },
+   {
+    "name": "leprechaun_loosing_1",
+    "gif": "le_bandit_raccoon/leprechaun_loosing_1.gif",
+    "seconds": 2.83,
+    "frames": 42
+   },
+   {
+    "name": "leprechaun_loosing_2",
+    "gif": "le_bandit_raccoon/leprechaun_loosing_2.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "leprechaun_scratch",
+    "gif": "le_bandit_raccoon/leprechaun_scratch.gif",
+    "seconds": 2.73,
+    "frames": 41
+   },
+   {
+    "name": "leprechaun_win",
+    "gif": "le_bandit_raccoon/leprechaun_win.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "leprechaun_win_incroyable",
+    "gif": "le_bandit_raccoon/leprechaun_win_incroyable.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "leprechaun_win_mondieu",
+    "gif": "le_bandit_raccoon/leprechaun_win_mondieu.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "loosing_1_stomp",
+    "gif": "le_bandit_raccoon/loosing_1_stomp.gif",
+    "seconds": 2.83,
+    "frames": 42
+   },
+   {
+    "name": "loosing_2__hat_toss",
+    "gif": "le_bandit_raccoon/loosing_2__hat_toss.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "loosing_3_stomp_on_hat",
+    "gif": "le_bandit_raccoon/loosing_3_stomp_on_hat.gif",
+    "seconds": 5.43,
+    "frames": 81
+   },
+   {
+    "name": "lost_mustache",
+    "gif": "le_bandit_raccoon/lost_mustache.gif",
+    "seconds": 7.43,
+    "frames": 111
+   },
+   {
+    "name": "small_win",
+    "gif": "le_bandit_raccoon/small_win.gif",
+    "seconds": 2.07,
+    "frames": 31
+   },
+   {
+    "name": "sus_scratch",
+    "gif": "le_bandit_raccoon/sus_scratch.gif",
+    "seconds": 2.73,
+    "frames": 41
+   },
+   {
+    "name": "welcome",
+    "gif": "le_bandit_raccoon/welcome.gif",
+    "seconds": 2.07,
+    "frames": 31
+   }
+  ]
+ },
+ {
+  "index": 7,
+  "id": "le_bandit_hw_smokey",
+  "title": "浣熊大盜（新版）",
+  "game": "Le Bandit Hold & Win",
+  "look": "同一隻浣熊重畫：扁帽、撬棍；換臉、法文對話框、變身妖精",
+  "all_animations": 18,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.773,
+   "parts": 0.9991,
+   "layers": 0.9998
+  },
+  "bones": 36,
+  "parts": 37,
+  "animations": [
+   {
+    "name": "bread_win",
+    "gif": "le_bandit_hw_smokey/bread_win.gif",
+    "seconds": 1.97,
+    "frames": 30
+   },
+   {
+    "name": "idle",
+    "gif": "le_bandit_hw_smokey/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   },
+   {
+    "name": "leprechaun_hat_off",
+    "gif": "le_bandit_hw_smokey/leprechaun_hat_off.gif",
+    "seconds": 1.67,
+    "frames": 25
+   },
+   {
+    "name": "leprechaun_hat_on",
+    "gif": "le_bandit_hw_smokey/leprechaun_hat_on.gif",
+    "seconds": 3.33,
+    "frames": 50
+   },
+   {
+    "name": "leprechaun_hat_toss",
+    "gif": "le_bandit_hw_smokey/leprechaun_hat_toss.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "leprechaun_idle",
+    "gif": "le_bandit_hw_smokey/leprechaun_idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   },
+   {
+    "name": "leprechaun_loosing_1",
+    "gif": "le_bandit_hw_smokey/leprechaun_loosing_1.gif",
+    "seconds": 2.83,
+    "frames": 42
+   },
+   {
+    "name": "leprechaun_scratch",
+    "gif": "le_bandit_hw_smokey/leprechaun_scratch.gif",
+    "seconds": 2.73,
+    "frames": 41
+   },
+   {
+    "name": "leprechaun_win_1",
+    "gif": "le_bandit_hw_smokey/leprechaun_win_1.gif",
+    "seconds": 2.07,
+    "frames": 31
+   },
+   {
+    "name": "leprechaun_win_2",
+    "gif": "le_bandit_hw_smokey/leprechaun_win_2.gif",
+    "seconds": 3,
+    "frames": 45
+   },
+   {
+    "name": "loosing_1",
+    "gif": "le_bandit_hw_smokey/loosing_1.gif",
+    "seconds": 2.83,
+    "frames": 42
+   },
+   {
+    "name": "loosing_2",
+    "gif": "le_bandit_hw_smokey/loosing_2.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "loosing_3_stomp_on_hat",
+    "gif": "le_bandit_hw_smokey/loosing_3_stomp_on_hat.gif",
+    "seconds": 5.43,
+    "frames": 81
+   },
+   {
+    "name": "lost_mustache",
+    "gif": "le_bandit_hw_smokey/lost_mustache.gif",
+    "seconds": 7.43,
+    "frames": 111
+   },
+   {
+    "name": "sus_scratch",
+    "gif": "le_bandit_hw_smokey/sus_scratch.gif",
+    "seconds": 2.73,
+    "frames": 41
+   },
+   {
+    "name": "welcome",
+    "gif": "le_bandit_hw_smokey/welcome.gif",
+    "seconds": 2.07,
+    "frames": 31
+   },
+   {
+    "name": "win_1",
+    "gif": "le_bandit_hw_smokey/win_1.gif",
+    "seconds": 2.07,
+    "frames": 31
+   },
+   {
+    "name": "win_2",
+    "gif": "le_bandit_hw_smokey/win_2.gif",
+    "seconds": 3,
+    "frames": 45
+   }
+  ]
+ },
+ {
+  "index": 8,
+  "id": "le_prechaun_smokey",
+  "title": "妖精浣熊",
+  "game": "Le Prechaun",
+  "look": "綠色妖精帽與外套、橘鬍子；會跳舞，bonus 有整套獨立動作",
+  "all_animations": 39,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8047,
+   "parts": 0.99,
+   "layers": 0.9993
+  },
+  "bones": 57,
+  "parts": 43,
+  "animations": [
+   {
+    "name": "bonus/dance_end_1",
+    "gif": "le_prechaun_smokey/bonus__dance_end_1.gif",
+    "seconds": 0.53,
+    "frames": 8
+   },
+   {
+    "name": "bonus/dance_end_2",
+    "gif": "le_prechaun_smokey/bonus__dance_end_2.gif",
+    "seconds": 1.87,
+    "frames": 28
+   },
+   {
+    "name": "bonus/dance_idle_1",
+    "gif": "le_prechaun_smokey/bonus__dance_idle_1.gif",
+    "seconds": 1,
+    "frames": 15
+   },
+   {
+    "name": "bonus/dance_idle_1_long",
+    "gif": "le_prechaun_smokey/bonus__dance_idle_1_long.gif",
+    "seconds": 3,
+    "frames": 45
+   },
+   {
+    "name": "bonus/dance_idle_2",
+    "gif": "le_prechaun_smokey/bonus__dance_idle_2.gif",
+    "seconds": 1,
+    "frames": 15
+   },
+   {
+    "name": "bonus/dance_start_1",
+    "gif": "le_prechaun_smokey/bonus__dance_start_1.gif",
+    "seconds": 0.5,
+    "frames": 8
+   },
+   {
+    "name": "bonus/dance_start_2",
+    "gif": "le_prechaun_smokey/bonus__dance_start_2.gif",
+    "seconds": 2,
+    "frames": 30
+   },
+   {
+    "name": "bonus/hat_on",
+    "gif": "le_prechaun_smokey/bonus__hat_on.gif",
+    "seconds": 3.33,
+    "frames": 50
+   },
+   {
+    "name": "bonus/hat_toss",
+    "gif": "le_prechaun_smokey/bonus__hat_toss.gif",
+    "seconds": 2.4,
+    "frames": 36
+   },
+   {
+    "name": "bonus/idle",
+    "gif": "le_prechaun_smokey/bonus__idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   },
+   {
+    "name": "bonus/lost_mustache",
+    "gif": "le_prechaun_smokey/bonus__lost_mustache.gif",
+    "seconds": 7.43,
+    "frames": 111
+   },
+   {
+    "name": "bonus/reel_highlight",
+    "gif": "le_prechaun_smokey/bonus__reel_highlight.gif",
+    "seconds": 1.97,
+    "frames": 30
+   },
+   {
+    "name": "bonus/scratch",
+    "gif": "le_prechaun_smokey/bonus__scratch.gif",
+    "seconds": 2.73,
+    "frames": 41
+   },
+   {
+    "name": "bonus/win_1",
+    "gif": "le_prechaun_smokey/bonus__win_1.gif",
+    "seconds": 2.07,
+    "frames": 31
+   },
+   {
+    "name": "bonus/win_2",
+    "gif": "le_prechaun_smokey/bonus__win_2.gif",
+    "seconds": 2.33,
+    "frames": 35
+   },
+   {
+    "name": "bonus/win_3",
+    "gif": "le_prechaun_smokey/bonus__win_3.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "bonus/win_bread",
+    "gif": "le_prechaun_smokey/bonus__win_bread.gif",
+    "seconds": 1.97,
+    "frames": 30
+   },
+   {
+    "name": "dance_end_1",
+    "gif": "le_prechaun_smokey/dance_end_1.gif",
+    "seconds": 0.53,
+    "frames": 8
+   },
+   {
+    "name": "dance_end_2",
+    "gif": "le_prechaun_smokey/dance_end_2.gif",
+    "seconds": 1.87,
+    "frames": 28
+   },
+   {
+    "name": "dance_idle_1",
+    "gif": "le_prechaun_smokey/dance_idle_1.gif",
+    "seconds": 1,
+    "frames": 15
+   },
+   {
+    "name": "dance_idle_1_long",
+    "gif": "le_prechaun_smokey/dance_idle_1_long.gif",
+    "seconds": 3,
+    "frames": 45
+   },
+   {
+    "name": "dance_idle_2",
+    "gif": "le_prechaun_smokey/dance_idle_2.gif",
+    "seconds": 0.83,
+    "frames": 12
+   },
+   {
+    "name": "dance_start_1",
+    "gif": "le_prechaun_smokey/dance_start_1.gif",
+    "seconds": 0.5,
+    "frames": 8
+   },
+   {
+    "name": "dance_start_2",
+    "gif": "le_prechaun_smokey/dance_start_2.gif",
+    "seconds": 2,
+    "frames": 30
+   },
+   {
+    "name": "idle",
+    "gif": "le_prechaun_smokey/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   },
+   {
+    "name": "loosing_1",
+    "gif": "le_prechaun_smokey/loosing_1.gif",
+    "seconds": 2.6,
+    "frames": 39
+   },
+   {
+    "name": "loosing_2",
+    "gif": "le_prechaun_smokey/loosing_2.gif",
+    "seconds": 2.77,
+    "frames": 42
+   },
+   {
+    "name": "loosing_3",
+    "gif": "le_prechaun_smokey/loosing_3.gif",
+    "seconds": 2,
+    "frames": 30
+   },
+   {
+    "name": "loosing_3_stomp_on_hat",
+    "gif": "le_prechaun_smokey/loosing_3_stomp_on_hat.gif",
+    "seconds": 5.43,
+    "frames": 81
+   },
+   {
+    "name": "lost_mustache",
+    "gif": "le_prechaun_smokey/lost_mustache.gif",
+    "seconds": 7.43,
+    "frames": 111
+   },
+   {
+    "name": "platform/bg_1",
+    "gif": "le_prechaun_smokey/platform__bg_1.gif",
+    "seconds": 1.0,
+    "frames": 15
+   },
+   {
+    "name": "platform/bg_2",
+    "gif": "le_prechaun_smokey/platform__bg_2.gif",
+    "seconds": 1.0,
+    "frames": 15
+   },
+   {
+    "name": "reel_highlight",
+    "gif": "le_prechaun_smokey/reel_highlight.gif",
+    "seconds": 1.97,
+    "frames": 30
+   },
+   {
+    "name": "sus_scratch",
+    "gif": "le_prechaun_smokey/sus_scratch.gif",
+    "seconds": 2.73,
+    "frames": 41
+   },
+   {
+    "name": "welcome",
+    "gif": "le_prechaun_smokey/welcome.gif",
+    "seconds": 2.07,
+    "frames": 31
+   },
+   {
+    "name": "win_1",
+    "gif": "le_prechaun_smokey/win_1.gif",
+    "seconds": 2.07,
+    "frames": 31
+   },
+   {
+    "name": "win_2",
+    "gif": "le_prechaun_smokey/win_2.gif",
+    "seconds": 2.33,
+    "frames": 35
+   },
+   {
+    "name": "win_3",
+    "gif": "le_prechaun_smokey/win_3.gif",
+    "seconds": 2.53,
+    "frames": 38
+   },
+   {
+    "name": "win_bread",
+    "gif": "le_prechaun_smokey/win_bread.gif",
+    "seconds": 1.97,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 9,
+  "id": "2_wild_2_die__cowgirl",
+  "title": "cowgirl",
+  "game": "2 Wild 2 Die",
+  "look": "",
+  "all_animations": 41,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8634,
+   "parts": 0.9696,
+   "layers": 0.9988
+  },
+  "bones": 181,
+  "parts": 43,
+  "animations": [
+   {
+    "name": "animation10_idle",
+    "gif": "2_wild_2_die__cowgirl/animation10_idle.gif",
+    "seconds": 2.1,
+    "frames": 32
+   }
+  ]
+ },
+ {
+  "index": 10,
+  "id": "3_cursed_chests_hold_win__character",
+  "title": "character",
+  "game": "3 Cursed Chests Hold Win",
+  "look": "",
+  "all_animations": 5,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9921,
+   "layers": 0.9995
+  },
+  "bones": 133,
+  "parts": 52,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "3_cursed_chests_hold_win__character/idle.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 11,
+  "id": "3_cursed_chests_hold_win__character_bonus",
+  "title": "character bonus",
+  "game": "3 Cursed Chests Hold Win",
+  "look": "",
+  "all_animations": 5,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9975,
+   "layers": 0.9978
+  },
+  "bones": 79,
+  "parts": 33,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "3_cursed_chests_hold_win__character_bonus/idle.gif",
+    "seconds": 2.33,
+    "frames": 35
+   }
+  ]
+ },
+ {
+  "index": 12,
+  "id": "aiko_and_the_wind_spirit__character",
+  "title": "character",
+  "game": "Aiko And The Wind Spirit",
+  "look": "",
+  "all_animations": 40,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.0,
+   "layers": 0.9978
+  },
+  "bones": 338,
+  "parts": 167,
+  "animations": [
+   {
+    "name": "main_game/aiko/flute_idle",
+    "gif": "aiko_and_the_wind_spirit__character/main_game__aiko__flute_idle.gif",
+    "seconds": 2.33,
+    "frames": 35
+   }
+  ]
+ },
+ {
+  "index": 13,
+  "id": "aiko_and_the_wind_spirit__character_bonus_1",
+  "title": "character bonus 1",
+  "game": "Aiko And The Wind Spirit",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.8532,
+   "layers": 0.9994
+  },
+  "bones": 214,
+  "parts": 78,
+  "animations": [
+   {
+    "name": "aiko/idle",
+    "gif": "aiko_and_the_wind_spirit__character_bonus_1/aiko__idle.gif",
+    "seconds": 2.87,
+    "frames": 43
+   }
+  ]
+ },
+ {
+  "index": 14,
+  "id": "aiko_and_the_wind_spirit__character_bonus_2",
+  "title": "character bonus 2",
+  "game": "Aiko And The Wind Spirit",
+  "look": "",
+  "all_animations": 4,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9645,
+   "layers": 0.9988
+  },
+  "bones": 92,
+  "parts": 27,
+  "animations": [
+   {
+    "name": "aiko/idle",
+    "gif": "aiko_and_the_wind_spirit__character_bonus_2/aiko__idle.gif",
+    "seconds": 4.53,
+    "frames": 68
+   }
+  ]
+ },
+ {
+  "index": 15,
+  "id": "aiko_and_the_wind_spirit__character_epic_bonus",
+  "title": "character epic bonus",
+  "game": "Aiko And The Wind Spirit",
+  "look": "",
+  "all_animations": 4,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.8631,
+   "layers": 1.0
+  },
+  "bones": 240,
+  "parts": 70,
+  "animations": [
+   {
+    "name": "wind_spirit/idle",
+    "gif": "aiko_and_the_wind_spirit__character_epic_bonus/wind_spirit__idle.gif",
+    "seconds": 2.9,
+    "frames": 44
+   }
+  ]
+ },
+ {
+  "index": 16,
+  "id": "arizona_james_and_the_lost_relics__character__epic_bonus",
+  "title": "character  epic bonus",
+  "game": "Arizona James And The Lost Relics",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9322,
+   "parts": 0.9807,
+   "layers": 0.9994
+  },
+  "bones": 110,
+  "parts": 50,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "arizona_james_and_the_lost_relics__character__epic_bonus/idle.gif",
+    "seconds": 2.13,
+    "frames": 32
+   }
+  ]
+ },
+ {
+  "index": 17,
+  "id": "arizona_james_and_the_lost_relics__character__main_game",
+  "title": "character  main game",
+  "game": "Arizona James And The Lost Relics",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9322,
+   "parts": 0.9809,
+   "layers": 0.9995
+  },
+  "bones": 110,
+  "parts": 53,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "arizona_james_and_the_lost_relics__character__main_game/idle.gif",
+    "seconds": 2.13,
+    "frames": 32
+   }
+  ]
+ },
+ {
+  "index": 18,
+  "id": "army_of_ares__character",
+  "title": "character",
+  "game": "Army Of Ares",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.7714,
+   "layers": 0.9643
+  },
+  "bones": 106,
+  "parts": 57,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "army_of_ares__character/idle.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 19,
+  "id": "army_of_ares__character_bonus_1",
+  "title": "character bonus 1",
+  "game": "Army Of Ares",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.8,
+   "layers": 0.9959
+  },
+  "bones": 106,
+  "parts": 58,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "army_of_ares__character_bonus_1/idle.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 20,
+  "id": "army_of_ares__character_bonus_2",
+  "title": "character bonus 2",
+  "game": "Army Of Ares",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.7607,
+   "layers": 0.9896
+  },
+  "bones": 160,
+  "parts": 58,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "army_of_ares__character_bonus_2/idle.gif",
+    "seconds": 1.5,
+    "frames": 22
+   }
+  ]
+ },
+ {
+  "index": 21,
+  "id": "army_of_ares__character_bonus_3",
+  "title": "character bonus 3",
+  "game": "Army Of Ares",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.6585,
+   "layers": 0.9957
+  },
+  "bones": 106,
+  "parts": 57,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "army_of_ares__character_bonus_3/idle.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 22,
+  "id": "bash_bros__bear",
+  "title": "bear",
+  "game": "Bash Bros",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8794,
+   "parts": 0.9977,
+   "layers": 0.9861
+  },
+  "bones": 87,
+  "parts": 39,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "bash_bros__bear/idle.gif",
+    "seconds": 1.67,
+    "frames": 25
+   }
+  ]
+ },
+ {
+  "index": 23,
+  "id": "bash_bros__dog",
+  "title": "dog",
+  "game": "Bash Bros",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8899,
+   "parts": 0.9835,
+   "layers": 0.9757
+  },
+  "bones": 123,
+  "parts": 33,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "bash_bros__dog/idle.gif",
+    "seconds": 1.67,
+    "frames": 25
+   }
+  ]
+ },
+ {
+  "index": 24,
+  "id": "beam_boys__cat_boy",
+  "title": "cat boy",
+  "game": "Beam Boys",
+  "look": "",
+  "all_animations": 32,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.1683,
+   "parts": 0.9888,
+   "layers": 0.9626
+  },
+  "bones": 110,
+  "parts": 16,
+  "animations": [
+   {
+    "name": "cat_thunder_active_idle",
+    "gif": "beam_boys__cat_boy/cat_thunder_active_idle.gif",
+    "seconds": 0.67,
+    "frames": 10
+   }
+  ]
+ },
+ {
+  "index": 25,
+  "id": "beam_boys__cat_character",
+  "title": "cat character",
+  "game": "Beam Boys",
+  "look": "",
+  "all_animations": 21,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8131,
+   "parts": 0.9619,
+   "layers": 0.9426
+  },
+  "bones": 148,
+  "parts": 24,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "beam_boys__cat_character/idle.gif",
+    "seconds": 3.33,
+    "frames": 50
+   }
+  ]
+ },
+ {
+  "index": 26,
+  "id": "beam_boys__cat_character_mobile_head",
+  "title": "cat character mobile head",
+  "game": "Beam Boys",
+  "look": "",
+  "all_animations": 38,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.4622,
+   "layers": 0.9664
+  },
+  "bones": 129,
+  "parts": 9,
+  "animations": [
+   {
+    "name": "cat_portrait_doubleHead_idle",
+    "gif": "beam_boys__cat_character_mobile_head/cat_portrait_doubleHead_idle.gif",
+    "seconds": 3.33,
+    "frames": 50
+   }
+  ]
+ },
+ {
+  "index": 27,
+  "id": "beast_below__diver_full_expend",
+  "title": "diver full expend",
+  "game": "Beast Below",
+  "look": "",
+  "all_animations": 7,
+  "route": "image",
+  "fidelity": {
+   "image": 1.0,
+   "parts": 1.0,
+   "layers": 1.0
+  },
+  "bones": 69,
+  "parts": 42,
+  "animations": [
+   {
+    "name": "diver_idle_0",
+    "gif": "beast_below__diver_full_expend/diver_idle_0.gif",
+    "seconds": 3.37,
+    "frames": 51
+   }
+  ]
+ },
+ {
+  "index": 28,
+  "id": "beast_below__siren_epic",
+  "title": "siren epic",
+  "game": "Beast Below",
+  "look": "",
+  "all_animations": 17,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9917,
+   "parts": 0.9936,
+   "layers": 1.0
+  },
+  "bones": 153,
+  "parts": 49,
+  "animations": [
+   {
+    "name": "shrink_0_idle",
+    "gif": "beast_below__siren_epic/shrink_0_idle.gif",
+    "seconds": 1.0,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 29,
+  "id": "beast_below__siren_nonconsistent",
+  "title": "siren nonconsistent",
+  "game": "Beast Below",
+  "look": "",
+  "all_animations": 17,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.5743,
+   "parts": 0.4811,
+   "layers": 0.9157
+  },
+  "bones": 150,
+  "parts": 37,
+  "animations": [
+   {
+    "name": "shrink_0_idle",
+    "gif": "beast_below__siren_nonconsistent/shrink_0_idle.gif",
+    "seconds": 1.0,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 30,
+  "id": "booze_bash__barkeeper",
+  "title": "barkeeper",
+  "game": "Booze Bash",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9698,
+   "parts": 0.9984,
+   "layers": 0.9594
+  },
+  "bones": 140,
+  "parts": 68,
+  "animations": [
+   {
+    "name": "idle1_main_green",
+    "gif": "booze_bash__barkeeper/idle1_main_green.gif",
+    "seconds": 1.5,
+    "frames": 22
+   }
+  ]
+ },
+ {
+  "index": 31,
+  "id": "bouncy_bombs__character_portrait",
+  "title": "character portrait",
+  "game": "Bouncy Bombs",
+  "look": "",
+  "all_animations": 5,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9963,
+   "parts": 0.9963,
+   "layers": 0.9987
+  },
+  "bones": 22,
+  "parts": 11,
+  "animations": [
+   {
+    "name": "eyes",
+    "gif": "bouncy_bombs__character_portrait/eyes.gif",
+    "seconds": 1.1,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 32,
+  "id": "bouncy_bombs__left_character",
+  "title": "left character",
+  "game": "Bouncy Bombs",
+  "look": "",
+  "all_animations": 3,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9903,
+   "parts": 0.9935,
+   "layers": 0.9951
+  },
+  "bones": 31,
+  "parts": 11,
+  "animations": [
+   {
+    "name": "standing",
+    "gif": "bouncy_bombs__left_character/standing.gif",
+    "seconds": 1.0,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 33,
+  "id": "bouncy_bombs__right_character",
+  "title": "right character",
+  "game": "Bouncy Bombs",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9809,
+   "parts": 0.9975,
+   "layers": 0.9924
+  },
+  "bones": 47,
+  "parts": 22,
+  "animations": [
+   {
+    "name": "butt",
+    "gif": "bouncy_bombs__right_character/butt.gif",
+    "seconds": 4.3,
+    "frames": 64
+   }
+  ]
+ },
+ {
+  "index": 34,
+  "id": "bullets_and_bounty__bounty",
+  "title": "bounty",
+  "game": "Bullets And Bounty",
+  "look": "",
+  "all_animations": 24,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.0,
+   "layers": 0.0
+  },
+  "bones": 248,
+  "parts": 96,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "bullets_and_bounty__bounty/idle.gif",
+    "seconds": 2.33,
+    "frames": 35
+   }
+  ]
+ },
+ {
+  "index": 35,
+  "id": "bullets_and_bounty__epic_bonus_girl",
+  "title": "epic bonus girl",
+  "game": "Bullets And Bounty",
+  "look": "",
+  "all_animations": 10,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8445,
+   "parts": 0.9346,
+   "layers": 0.9788
+  },
+  "bones": 312,
+  "parts": 36,
+  "animations": [
+   {
+    "name": "track0_idle",
+    "gif": "bullets_and_bounty__epic_bonus_girl/track0_idle.gif",
+    "seconds": 2.33,
+    "frames": 35
+   }
+  ]
+ },
+ {
+  "index": 36,
+  "id": "bullets_and_bounty__girl_maingame",
+  "title": "girl maingame",
+  "game": "Bullets And Bounty",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9778,
+   "parts": 0.999,
+   "layers": 0.9813
+  },
+  "bones": 134,
+  "parts": 53,
+  "animations": [
+   {
+    "name": "track0_idle",
+    "gif": "bullets_and_bounty__girl_maingame/track0_idle.gif",
+    "seconds": 3.2,
+    "frames": 48
+   }
+  ]
+ },
+ {
+  "index": 37,
+  "id": "cash_crew__red_robber",
+  "title": "red robber",
+  "game": "Cash Crew",
+  "look": "",
+  "all_animations": 7,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9322,
+   "parts": 0.9992,
+   "layers": 0.9808
+  },
+  "bones": 40,
+  "parts": 10,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "cash_crew__red_robber/idle.gif",
+    "seconds": 3.33,
+    "frames": 50
+   }
+  ]
+ },
+ {
+  "index": 38,
+  "id": "cash_crew__yellow_robber",
+  "title": "yellow robber",
+  "game": "Cash Crew",
+  "look": "",
+  "all_animations": 5,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9864,
+   "parts": 0.9944,
+   "layers": 0.9872
+  },
+  "bones": 58,
+  "parts": 13,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "cash_crew__yellow_robber/idle.gif",
+    "seconds": 3.67,
+    "frames": 55
+   }
+  ]
+ },
+ {
+  "index": 39,
+  "id": "chaos_crew_2__cat",
+  "title": "cat",
+  "game": "Chaos Crew 2",
+  "look": "",
+  "all_animations": 24,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.6677,
+   "parts": 0.9105,
+   "layers": 0.9978
+  },
+  "bones": 35,
+  "parts": 39,
+  "animations": [
+   {
+    "name": "glitch_mult_sticky",
+    "gif": "chaos_crew_2__cat/glitch_mult_sticky.gif",
+    "seconds": 1.43,
+    "frames": 21
+   }
+  ]
+ },
+ {
+  "index": 40,
+  "id": "chaos_crew_2__cranky",
+  "title": "cranky",
+  "game": "Chaos Crew 2",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9459,
+   "parts": 0.9975,
+   "layers": 0.997
+  },
+  "bones": 79,
+  "parts": 30,
+  "animations": [
+   {
+    "name": "idle_simple",
+    "gif": "chaos_crew_2__cranky/idle_simple.gif",
+    "seconds": 1.2,
+    "frames": 18
+   }
+  ]
+ },
+ {
+  "index": 41,
+  "id": "chaos_crew_2__sketchy",
+  "title": "sketchy",
+  "game": "Chaos Crew 2",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8721,
+   "parts": 0.9913,
+   "layers": 0.9929
+  },
+  "bones": 124,
+  "parts": 62,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "chaos_crew_2__sketchy/idle.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 42,
+  "id": "chaos_crew_2__skull",
+  "title": "skull",
+  "game": "Chaos Crew 2",
+  "look": "",
+  "all_animations": 24,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.6718,
+   "parts": 0.9612,
+   "layers": 0.9999
+  },
+  "bones": 26,
+  "parts": 43,
+  "animations": [
+   {
+    "name": "add",
+    "gif": "chaos_crew_2__skull/add.gif",
+    "seconds": 0.77,
+    "frames": 12
+   }
+  ]
+ },
+ {
+  "index": 43,
+  "id": "chaos_crew_3__cranky",
+  "title": "cranky",
+  "game": "Chaos Crew 3",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9773,
+   "parts": 0.9972,
+   "layers": 0.9969
+  },
+  "bones": 96,
+  "parts": 34,
+  "animations": [
+   {
+    "name": "idle_simple",
+    "gif": "chaos_crew_3__cranky/idle_simple.gif",
+    "seconds": 1.2,
+    "frames": 18
+   }
+  ]
+ },
+ {
+  "index": 44,
+  "id": "chaos_crew_3__dog",
+  "title": "dog",
+  "game": "Chaos Crew 3",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8888,
+   "parts": 0.9937,
+   "layers": 0.9891
+  },
+  "bones": 57,
+  "parts": 49,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "chaos_crew_3__dog/idle.gif",
+    "seconds": 1.73,
+    "frames": 26
+   }
+  ]
+ },
+ {
+  "index": 45,
+  "id": "chaos_crew_3__dog_cat_skull",
+  "title": "dog cat skull",
+  "game": "Chaos Crew 3",
+  "look": "",
+  "all_animations": 43,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.6474,
+   "parts": 0.9562,
+   "layers": 0.863
+  },
+  "bones": 53,
+  "parts": 119,
+  "animations": [
+   {
+    "name": "holo_idle_cat_green",
+    "gif": "chaos_crew_3__dog_cat_skull/holo_idle_cat_green.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 46,
+  "id": "chaos_crew_3__sketchy",
+  "title": "sketchy",
+  "game": "Chaos Crew 3",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9839,
+   "parts": 0.9945,
+   "layers": 0.9976
+  },
+  "bones": 79,
+  "parts": 53,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "chaos_crew_3__sketchy/idle.gif",
+    "seconds": 1.67,
+    "frames": 25
+   }
+  ]
+ },
+ {
+  "index": 47,
+  "id": "circle_of_life__hand_statue",
+  "title": "hand statue",
+  "game": "Circle Of Life",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9821,
+   "parts": 0.9953,
+   "layers": 0.9999
+  },
+  "bones": 56,
+  "parts": 20,
+  "animations": [
+   {
+    "name": "idle1",
+    "gif": "circle_of_life__hand_statue/idle1.gif",
+    "seconds": 31.27,
+    "frames": 150
+   }
+  ]
+ },
+ {
+  "index": 48,
+  "id": "cloud_princess__characters",
+  "title": "characters",
+  "game": "Cloud Princess",
+  "look": "",
+  "all_animations": 17,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.2986,
+   "layers": 0.9977
+  },
+  "bones": 556,
+  "parts": 110,
+  "animations": [
+   {
+    "name": "bonus_character/idle",
+    "gif": "cloud_princess__characters/bonus_character__idle.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 49,
+  "id": "cursed_crypt__tutan",
+  "title": "tutan",
+  "game": "Cursed Crypt",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9264,
+   "parts": 0.9982,
+   "layers": 0.9663
+  },
+  "bones": 139,
+  "parts": 62,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "cursed_crypt__tutan/idle.gif",
+    "seconds": 6.67,
+    "frames": 100
+   }
+  ]
+ },
+ {
+  "index": 50,
+  "id": "cursed_crypt__tutan_epicwin",
+  "title": "tutan epicwin",
+  "game": "Cursed Crypt",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9273,
+   "parts": 0.9982,
+   "layers": 0.9673
+  },
+  "bones": 139,
+  "parts": 62,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "cursed_crypt__tutan_epicwin/idle.gif",
+    "seconds": 6.67,
+    "frames": 100
+   }
+  ]
+ },
+ {
+  "index": 51,
+  "id": "danny_dollar__danny_character",
+  "title": "danny character",
+  "game": "Danny Dollar",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.935,
+   "parts": 0.9946,
+   "layers": 0.9892
+  },
+  "bones": 200,
+  "parts": 36,
+  "animations": [
+   {
+    "name": "idle_1",
+    "gif": "danny_dollar__danny_character/idle_1.gif",
+    "seconds": 3.67,
+    "frames": 55
+   }
+  ]
+ },
+ {
+  "index": 52,
+  "id": "dark_spiral__bonus_1_character",
+  "title": "bonus 1 character",
+  "game": "Dark Spiral",
+  "look": "",
+  "all_animations": 13,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.6338,
+   "layers": 0.9988
+  },
+  "bones": 116,
+  "parts": 50,
+  "animations": [
+   {
+    "name": "character/idle",
+    "gif": "dark_spiral__bonus_1_character/character__idle.gif",
+    "seconds": 3.83,
+    "frames": 57
+   }
+  ]
+ },
+ {
+  "index": 53,
+  "id": "dark_spiral__bonus_3_character",
+  "title": "bonus 3 character",
+  "game": "Dark Spiral",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9657,
+   "layers": 0.9581
+  },
+  "bones": 107,
+  "parts": 36,
+  "animations": [
+   {
+    "name": "idle/idle",
+    "gif": "dark_spiral__bonus_3_character/idle__idle.gif",
+    "seconds": 4.5,
+    "frames": 68
+   }
+  ]
+ },
+ {
+  "index": 54,
+  "id": "dark_summoning__demon",
+  "title": "demon",
+  "game": "Dark Summoning",
+  "look": "",
+  "all_animations": 7,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9469,
+   "parts": 0.9684,
+   "layers": 0.9867
+  },
+  "bones": 253,
+  "parts": 72,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dark_summoning__demon/idle.gif",
+    "seconds": 5.27,
+    "frames": 79
+   }
+  ]
+ },
+ {
+  "index": 55,
+  "id": "dark_summoning__priest",
+  "title": "priest",
+  "game": "Dark Summoning",
+  "look": "",
+  "all_animations": 24,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.4503,
+   "parts": 0.5644,
+   "layers": 0.9994
+  },
+  "bones": 146,
+  "parts": 106,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dark_summoning__priest/idle.gif",
+    "seconds": 3.1,
+    "frames": 46
+   }
+  ]
+ },
+ {
+  "index": 56,
+  "id": "dawn_of_kings__anubis",
+  "title": "anubis",
+  "game": "Dawn Of Kings",
+  "look": "",
+  "all_animations": 10,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9958,
+   "parts": 0.9979,
+   "layers": 0.9998
+  },
+  "bones": 22,
+  "parts": 24,
+  "animations": [
+   {
+    "name": "anubis_idle_chosen",
+    "gif": "dawn_of_kings__anubis/anubis_idle_chosen.gif",
+    "seconds": 3.5,
+    "frames": 52
+   }
+  ]
+ },
+ {
+  "index": 57,
+  "id": "dawn_of_kings__bastet",
+  "title": "bastet",
+  "game": "Dawn Of Kings",
+  "look": "",
+  "all_animations": 11,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9898,
+   "parts": 0.9987,
+   "layers": 1.0
+  },
+  "bones": 56,
+  "parts": 31,
+  "animations": [
+   {
+    "name": "frame_idle_chosen",
+    "gif": "dawn_of_kings__bastet/frame_idle_chosen.gif",
+    "seconds": 3.5,
+    "frames": 52
+   }
+  ]
+ },
+ {
+  "index": 58,
+  "id": "dawn_of_kings__character",
+  "title": "character",
+  "game": "Dawn Of Kings",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.913,
+   "parts": 0.999,
+   "layers": 0.9988
+  },
+  "bones": 83,
+  "parts": 75,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dawn_of_kings__character/idle.gif",
+    "seconds": 3.67,
+    "frames": 55
+   }
+  ]
+ },
+ {
+  "index": 59,
+  "id": "dawn_of_kings__girl",
+  "title": "girl",
+  "game": "Dawn Of Kings",
+  "look": "",
+  "all_animations": 10,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.5583,
+   "parts": 0.9569,
+   "layers": 1.0
+  },
+  "bones": 59,
+  "parts": 39,
+  "animations": [
+   {
+    "name": "girl_idle_chosen",
+    "gif": "dawn_of_kings__girl/girl_idle_chosen.gif",
+    "seconds": 3.5,
+    "frames": 52
+   }
+  ]
+ },
+ {
+  "index": 60,
+  "id": "deal_with_death__character",
+  "title": "character",
+  "game": "Deal With Death",
+  "look": "",
+  "all_animations": 47,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9257,
+   "layers": 0.9891
+  },
+  "bones": 49,
+  "parts": 31,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "deal_with_death__character/idle.gif",
+    "seconds": 2.5,
+    "frames": 38
+   }
+  ]
+ },
+ {
+  "index": 61,
+  "id": "deal_with_death__character_bonus",
+  "title": "character bonus",
+  "game": "Deal With Death",
+  "look": "",
+  "all_animations": 49,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9389,
+   "layers": 0.9985
+  },
+  "bones": 49,
+  "parts": 39,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "deal_with_death__character_bonus/idle.gif",
+    "seconds": 2.5,
+    "frames": 38
+   }
+  ]
+ },
+ {
+  "index": 62,
+  "id": "death_becomes_you__character",
+  "title": "character",
+  "game": "Death Becomes You",
+  "look": "",
+  "all_animations": 27,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.8231,
+   "layers": 0.9995
+  },
+  "bones": 67,
+  "parts": 29,
+  "animations": [
+   {
+    "name": "idle_1",
+    "gif": "death_becomes_you__character/idle_1.gif",
+    "seconds": 5,
+    "frames": 75
+   }
+  ]
+ },
+ {
+  "index": 63,
+  "id": "divine_drop__cerberus",
+  "title": "cerberus",
+  "game": "Divine Drop",
+  "look": "",
+  "all_animations": 2,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.954,
+   "parts": 0.9974,
+   "layers": 0.9997
+  },
+  "bones": 45,
+  "parts": 24,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "divine_drop__cerberus/idle.gif",
+    "seconds": 1.5,
+    "frames": 22
+   }
+  ]
+ },
+ {
+  "index": 64,
+  "id": "divine_drop__hades",
+  "title": "hades",
+  "game": "Divine Drop",
+  "look": "",
+  "all_animations": 4,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9791,
+   "parts": 0.9977,
+   "layers": 0.9971
+  },
+  "bones": 38,
+  "parts": 22,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "divine_drop__hades/idle.gif",
+    "seconds": 2.33,
+    "frames": 35
+   }
+  ]
+ },
+ {
+  "index": 65,
+  "id": "divine_drop__hera",
+  "title": "hera",
+  "game": "Divine Drop",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9547,
+   "parts": 0.9943,
+   "layers": 0.9995
+  },
+  "bones": 51,
+  "parts": 23,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "divine_drop__hera/idle.gif",
+    "seconds": 1.67,
+    "frames": 25
+   }
+  ]
+ },
+ {
+  "index": 66,
+  "id": "divine_drop__zeus",
+  "title": "zeus",
+  "game": "Divine Drop",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.93,
+   "parts": 0.988,
+   "layers": 0.9932
+  },
+  "bones": 35,
+  "parts": 18,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "divine_drop__zeus/idle.gif",
+    "seconds": 1.83,
+    "frames": 27
+   }
+  ]
+ },
+ {
+  "index": 67,
+  "id": "donny_and_danny__dnny__danny",
+  "title": "dnny  danny",
+  "game": "Donny And Danny",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9316,
+   "parts": 0.9646,
+   "layers": 0.9519
+  },
+  "bones": 153,
+  "parts": 36,
+  "animations": [
+   {
+    "name": "idle/1",
+    "gif": "donny_and_danny__dnny__danny/idle__1.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 68,
+  "id": "donny_and_danny__dnny__danny_king",
+  "title": "dnny  danny king",
+  "game": "Donny And Danny",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.945,
+   "parts": 0.959,
+   "layers": 0.9962
+  },
+  "bones": 153,
+  "parts": 35,
+  "animations": [
+   {
+    "name": "idle/1",
+    "gif": "donny_and_danny__dnny__danny_king/idle__1.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 69,
+  "id": "donny_and_danny__dnny__donny",
+  "title": "dnny  donny",
+  "game": "Donny And Danny",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9326,
+   "parts": 0.9964,
+   "layers": 0.9997
+  },
+  "bones": 153,
+  "parts": 22,
+  "animations": [
+   {
+    "name": "idle/1",
+    "gif": "donny_and_danny__dnny__donny/idle__1.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 70,
+  "id": "donny_and_danny__dnny__donny_king",
+  "title": "dnny  donny king",
+  "game": "Donny And Danny",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9647,
+   "parts": 0.9946,
+   "layers": 0.9988
+  },
+  "bones": 153,
+  "parts": 22,
+  "animations": [
+   {
+    "name": "idle/1",
+    "gif": "donny_and_danny__dnny__donny_king/idle__1.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 67,
+  "id": "donny_and_danny__donny_takeover",
+  "title": "donny takeover",
+  "game": "Donny And Danny",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.2368,
+   "parts": 0.6581,
+   "layers": 1.0
+  },
+  "bones": 25,
+  "parts": 14,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "donny_and_danny__donny_takeover/idle.gif",
+    "seconds": 1,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 68,
+  "id": "donny_dough__bonus_hands",
+  "title": "bonus hands",
+  "game": "Donny Dough",
+  "look": "",
+  "all_animations": 6,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9975,
+   "parts": 0.9988,
+   "layers": 0.975
+  },
+  "bones": 64,
+  "parts": 5,
+  "animations": [
+   {
+    "name": "idle_1",
+    "gif": "donny_dough__bonus_hands/idle_1.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 69,
+  "id": "donny_dough__character",
+  "title": "character",
+  "game": "Donny Dough",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.1878,
+   "layers": 0.9965
+  },
+  "bones": 110,
+  "parts": 27,
+  "animations": [
+   {
+    "name": "base/idle",
+    "gif": "donny_dough__character/base__idle.gif",
+    "seconds": 4,
+    "frames": 60
+   }
+  ]
+ },
+ {
+  "index": 70,
+  "id": "donut_division__character",
+  "title": "character",
+  "game": "Donut Division",
+  "look": "",
+  "all_animations": 81,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.0,
+   "layers": 0.3675
+  },
+  "bones": 503,
+  "parts": 96,
+  "animations": [
+   {
+    "name": "bonus_game/character_1/idle",
+    "gif": "donut_division__character/bonus_game__character_1__idle.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 71,
+  "id": "dorks_of_the_deep__crab_bonus2_spine",
+  "title": "crab bonus2 spine",
+  "game": "Dorks Of The Deep",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8229,
+   "parts": 0.9972,
+   "layers": 0.9946
+  },
+  "bones": 49,
+  "parts": 27,
+  "animations": [
+   {
+    "name": "track0_idle",
+    "gif": "dorks_of_the_deep__crab_bonus2_spine/track0_idle.gif",
+    "seconds": 1.27,
+    "frames": 19
+   }
+  ]
+ },
+ {
+  "index": 72,
+  "id": "dorks_of_the_deep__mermaid_bonus2_spine",
+  "title": "mermaid bonus2 spine",
+  "game": "Dorks Of The Deep",
+  "look": "",
+  "all_animations": 5,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9903,
+   "parts": 0.9994,
+   "layers": 0.9998
+  },
+  "bones": 40,
+  "parts": 37,
+  "animations": [
+   {
+    "name": "track0_idle",
+    "gif": "dorks_of_the_deep__mermaid_bonus2_spine/track0_idle.gif",
+    "seconds": 2.73,
+    "frames": 41
+   }
+  ]
+ },
+ {
+  "index": 73,
+  "id": "dorks_of_the_deep__neptune_bonus3",
+  "title": "neptune bonus3",
+  "game": "Dorks Of The Deep",
+  "look": "",
+  "all_animations": 7,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9851,
+   "parts": 0.9994,
+   "layers": 1.0
+  },
+  "bones": 70,
+  "parts": 51,
+  "animations": [
+   {
+    "name": "track0_idle",
+    "gif": "dorks_of_the_deep__neptune_bonus3/track0_idle.gif",
+    "seconds": 3.13,
+    "frames": 47
+   }
+  ]
+ },
+ {
+  "index": 74,
+  "id": "dorks_of_the_deep__neptune_maingame",
+  "title": "neptune maingame",
+  "game": "Dorks Of The Deep",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9804,
+   "parts": 0.999,
+   "layers": 0.9971
+  },
+  "bones": 72,
+  "parts": 47,
+  "animations": [
+   {
+    "name": "track0_idle_main",
+    "gif": "dorks_of_the_deep__neptune_maingame/track0_idle_main.gif",
+    "seconds": 1.47,
+    "frames": 22
+   }
+  ]
+ },
+ {
+  "index": 75,
+  "id": "dorks_of_the_deep__octopus_bonus3",
+  "title": "octopus bonus3",
+  "game": "Dorks Of The Deep",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9726,
+   "parts": 0.9997,
+   "layers": 1.0
+  },
+  "bones": 84,
+  "parts": 57,
+  "animations": [
+   {
+    "name": "track1_octopus_idle",
+    "gif": "dorks_of_the_deep__octopus_bonus3/track1_octopus_idle.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 76,
+  "id": "dorks_of_the_deep__octopus_main",
+  "title": "octopus main",
+  "game": "Dorks Of The Deep",
+  "look": "",
+  "all_animations": 6,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9866,
+   "parts": 0.9987,
+   "layers": 0.9984
+  },
+  "bones": 72,
+  "parts": 26,
+  "animations": [
+   {
+    "name": "idle_bubble",
+    "gif": "dorks_of_the_deep__octopus_main/idle_bubble.gif",
+    "seconds": 2.27,
+    "frames": 34
+   }
+  ]
+ },
+ {
+  "index": 77,
+  "id": "dr_zappo__eye",
+  "title": "eye",
+  "game": "Dr Zappo",
+  "look": "",
+  "all_animations": 24,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.4686,
+   "parts": 0.8955,
+   "layers": 1.0
+  },
+  "bones": 55,
+  "parts": 52,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dr_zappo__eye/idle.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 78,
+  "id": "dr_zappo__mr_brain",
+  "title": "mr brain",
+  "game": "Dr Zappo",
+  "look": "",
+  "all_animations": 3,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9948,
+   "parts": 0.9977,
+   "layers": 0.9907
+  },
+  "bones": 49,
+  "parts": 20,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dr_zappo__mr_brain/idle.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 79,
+  "id": "dr_zappo__mr_eye",
+  "title": "mr eye",
+  "game": "Dr Zappo",
+  "look": "",
+  "all_animations": 2,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9769,
+   "parts": 0.9993,
+   "layers": 0.9992
+  },
+  "bones": 48,
+  "parts": 15,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dr_zappo__mr_eye/idle.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 80,
+  "id": "dr_zappo__zappo_and_monkey__zappo_with_monkey",
+  "title": "zappo and monkey  zappo with monkey",
+  "game": "Dr Zappo",
+  "look": "",
+  "all_animations": 2,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9941,
+   "parts": 0.9986,
+   "layers": 0.9994
+  },
+  "bones": 74,
+  "parts": 44,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dr_zappo__zappo_and_monkey__zappo_with_monkey/idle.gif",
+    "seconds": 4.67,
+    "frames": 70
+   }
+  ]
+ },
+ {
+  "index": 81,
+  "id": "dr_zappo__zappo_and_monkey__zappo_without_monkey",
+  "title": "zappo and monkey  zappo without monkey",
+  "game": "Dr Zappo",
+  "look": "",
+  "all_animations": 2,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9952,
+   "parts": 0.9987,
+   "layers": 0.9993
+  },
+  "bones": 74,
+  "parts": 34,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dr_zappo__zappo_and_monkey__zappo_without_monkey/idle.gif",
+    "seconds": 4.67,
+    "frames": 70
+   }
+  ]
+ },
+ {
+  "index": 82,
+  "id": "dragons_domain__dragon",
+  "title": "dragon",
+  "game": "Dragons Domain",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8988,
+   "parts": 0.9971,
+   "layers": 0.9936
+  },
+  "bones": 37,
+  "parts": 53,
+  "animations": [
+   {
+    "name": "track2_eyes_idle",
+    "gif": "dragons_domain__dragon/track2_eyes_idle.gif",
+    "seconds": 1.0,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 83,
+  "id": "dragons_domain__dragons",
+  "title": "dragons",
+  "game": "Dragons Domain",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.6251,
+   "parts": 0.839,
+   "layers": 0.6441
+  },
+  "bones": 31,
+  "parts": 62,
+  "animations": [
+   {
+    "name": "land_red",
+    "gif": "dragons_domain__dragons/land_red.gif",
+    "seconds": 0.77,
+    "frames": 12
+   }
+  ]
+ },
+ {
+  "index": 84,
+  "id": "dragons_domain__knight",
+  "title": "knight",
+  "game": "Dragons Domain",
+  "look": "",
+  "all_animations": 5,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9324,
+   "parts": 0.9969,
+   "layers": 0.9994
+  },
+  "bones": 96,
+  "parts": 31,
+  "animations": [
+   {
+    "name": "track1_knight_look_front",
+    "gif": "dragons_domain__knight/track1_knight_look_front.gif",
+    "seconds": 5.67,
+    "frames": 85
+   }
+  ]
+ },
+ {
+  "index": 85,
+  "id": "dragons_domain__small_dragons",
+  "title": "small dragons",
+  "game": "Dragons Domain",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.2447,
+   "layers": 0.9961
+  },
+  "bones": 90,
+  "parts": 38,
+  "animations": [
+   {
+    "name": "bonus_A",
+    "gif": "dragons_domain__small_dragons/bonus_A.gif",
+    "seconds": 23.47,
+    "frames": 150
+   }
+  ]
+ },
+ {
+  "index": 86,
+  "id": "drop_em__canny",
+  "title": "canny",
+  "game": "Drop Em",
+  "look": "",
+  "all_animations": 22,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.5726,
+   "parts": 0.9731,
+   "layers": 0.9921
+  },
+  "bones": 139,
+  "parts": 20,
+  "animations": [
+   {
+    "name": "c_idle_foot",
+    "gif": "drop_em__canny/c_idle_foot.gif",
+    "seconds": 0.5,
+    "frames": 8
+   }
+  ]
+ },
+ {
+  "index": 87,
+  "id": "drop_em__mona_left",
+  "title": "mona left",
+  "game": "Drop Em",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.1508,
+   "parts": 0.9364,
+   "layers": 0.9129
+  },
+  "bones": 159,
+  "parts": 18,
+  "animations": [
+   {
+    "name": "m_idle1",
+    "gif": "drop_em__mona_left/m_idle1.gif",
+    "seconds": 0.53,
+    "frames": 8
+   }
+  ]
+ },
+ {
+  "index": 88,
+  "id": "drop_em__mona_right",
+  "title": "mona right",
+  "game": "Drop Em",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.0,
+   "layers": 0.9297
+  },
+  "bones": 159,
+  "parts": 18,
+  "animations": [
+   {
+    "name": "m_idle1",
+    "gif": "drop_em__mona_right/m_idle1.gif",
+    "seconds": 0.53,
+    "frames": 8
+   }
+  ]
+ },
+ {
+  "index": 89,
+  "id": "duel_at_dawn__character",
+  "title": "character",
+  "game": "Duel At Dawn",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9963,
+   "layers": 0.9967
+  },
+  "bones": 33,
+  "parts": 22,
+  "animations": [
+   {
+    "name": "idle_1",
+    "gif": "duel_at_dawn__character/idle_1.gif",
+    "seconds": 5.33,
+    "frames": 80
+   }
+  ]
+ },
+ {
+  "index": 90,
+  "id": "dusk_princess__character",
+  "title": "character",
+  "game": "Dusk Princess",
+  "look": "",
+  "all_animations": 18,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.2668,
+   "layers": 0.9989
+  },
+  "bones": 199,
+  "parts": 67,
+  "animations": [
+   {
+    "name": "main_game/idle",
+    "gif": "dusk_princess__character/main_game__idle.gif",
+    "seconds": 3.33,
+    "frames": 50
+   }
+  ]
+ },
+ {
+  "index": 91,
+  "id": "dynasty_of_death__cerberus",
+  "title": "cerberus",
+  "game": "Dynasty Of Death",
+  "look": "",
+  "all_animations": 4,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9957,
+   "parts": 0.9969,
+   "layers": 0.9846
+  },
+  "bones": 73,
+  "parts": 38,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dynasty_of_death__cerberus/idle.gif",
+    "seconds": 4,
+    "frames": 60
+   }
+  ]
+ },
+ {
+  "index": 92,
+  "id": "dynasty_of_death__hades_base",
+  "title": "hades base",
+  "game": "Dynasty Of Death",
+  "look": "",
+  "all_animations": 17,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.805,
+   "parts": 0.8011,
+   "layers": 0.9932
+  },
+  "bones": 60,
+  "parts": 38,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dynasty_of_death__hades_base/idle.gif",
+    "seconds": 6.67,
+    "frames": 100
+   }
+  ]
+ },
+ {
+  "index": 93,
+  "id": "dynasty_of_death__hades_bonus",
+  "title": "hades bonus",
+  "game": "Dynasty Of Death",
+  "look": "",
+  "all_animations": 4,
+  "route": "image",
+  "fidelity": {
+   "image": 0.991,
+   "parts": 0.9973,
+   "layers": 0.99
+  },
+  "bones": 36,
+  "parts": 22,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dynasty_of_death__hades_bonus/idle.gif",
+    "seconds": 13.33,
+    "frames": 150
+   }
+  ]
+ },
+ {
+  "index": 94,
+  "id": "dynasty_of_death__persephone_base",
+  "title": "persephone base",
+  "game": "Dynasty Of Death",
+  "look": "",
+  "all_animations": 17,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8362,
+   "parts": 0.9949,
+   "layers": 0.9991
+  },
+  "bones": 100,
+  "parts": 53,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dynasty_of_death__persephone_base/idle.gif",
+    "seconds": 6.63,
+    "frames": 99
+   }
+  ]
+ },
+ {
+  "index": 95,
+  "id": "dynasty_of_death__persephone_bonus",
+  "title": "persephone bonus",
+  "game": "Dynasty Of Death",
+  "look": "",
+  "all_animations": 4,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9642,
+   "parts": 0.9989,
+   "layers": 0.9934
+  },
+  "bones": 84,
+  "parts": 48,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "dynasty_of_death__persephone_bonus/idle.gif",
+    "seconds": 6.67,
+    "frames": 100
+   }
+  ]
+ },
+ {
+  "index": 96,
+  "id": "epic_bullets_and_bounty__bounty",
+  "title": "bounty",
+  "game": "Epic Bullets And Bounty",
+  "look": "",
+  "all_animations": 24,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.0,
+   "layers": 0.0
+  },
+  "bones": 248,
+  "parts": 96,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "epic_bullets_and_bounty__bounty/idle.gif",
+    "seconds": 2.33,
+    "frames": 35
+   }
+  ]
+ },
+ {
+  "index": 97,
+  "id": "epic_bullets_and_bounty__epic_bonus_girl",
+  "title": "epic bonus girl",
+  "game": "Epic Bullets And Bounty",
+  "look": "",
+  "all_animations": 10,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8445,
+   "parts": 0.9346,
+   "layers": 0.9788
+  },
+  "bones": 312,
+  "parts": 36,
+  "animations": [
+   {
+    "name": "track0_idle",
+    "gif": "epic_bullets_and_bounty__epic_bonus_girl/track0_idle.gif",
+    "seconds": 2.33,
+    "frames": 35
+   }
+  ]
+ },
+ {
+  "index": 98,
+  "id": "epic_bullets_and_bounty__girl_maingame",
+  "title": "girl maingame",
+  "game": "Epic Bullets And Bounty",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9778,
+   "parts": 0.999,
+   "layers": 0.9813
+  },
+  "bones": 134,
+  "parts": 53,
+  "animations": [
+   {
+    "name": "track0_idle",
+    "gif": "epic_bullets_and_bounty__girl_maingame/track0_idle.gif",
+    "seconds": 3.2,
+    "frames": 48
+   }
+  ]
+ },
+ {
+  "index": 99,
+  "id": "epic_ze_zeus__zeus",
+  "title": "zeus",
+  "game": "Epic Ze Zeus",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9068,
+   "parts": 0.9674,
+   "layers": 0.9432
+  },
+  "bones": 177,
+  "parts": 106,
+  "animations": [
+   {
+    "name": "idle_look_right",
+    "gif": "epic_ze_zeus__zeus/idle_look_right.gif",
+    "seconds": 2.87,
+    "frames": 43
+   }
+  ]
+ },
+ {
+  "index": 100,
+  "id": "epic_ze_zeus__zeus_mobile",
+  "title": "zeus mobile",
+  "game": "Epic Ze Zeus",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.6687,
+   "parts": 0.9599,
+   "layers": 0.9365
+  },
+  "bones": 177,
+  "parts": 106,
+  "animations": [
+   {
+    "name": "idle_look_right",
+    "gif": "epic_ze_zeus__zeus_mobile/idle_look_right.gif",
+    "seconds": 2.87,
+    "frames": 43
+   }
+  ]
+ },
+ {
+  "index": 101,
+  "id": "eternal_duel__hades_bonus_1",
+  "title": "hades bonus 1",
+  "game": "Eternal Duel",
+  "look": "",
+  "all_animations": 2,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8823,
+   "parts": 0.9282,
+   "layers": 0.9997
+  },
+  "bones": 187,
+  "parts": 36,
+  "animations": [
+   {
+    "name": "idle_track0",
+    "gif": "eternal_duel__hades_bonus_1/idle_track0.gif",
+    "seconds": 4.67,
+    "frames": 70
+   }
+  ]
+ },
+ {
+  "index": 102,
+  "id": "eternal_duel__hades_maingame",
+  "title": "hades maingame",
+  "game": "Eternal Duel",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9438,
+   "parts": 0.9974,
+   "layers": 0.9999
+  },
+  "bones": 70,
+  "parts": 35,
+  "animations": [
+   {
+    "name": "idle_track0",
+    "gif": "eternal_duel__hades_maingame/idle_track0.gif",
+    "seconds": 4.67,
+    "frames": 70
+   }
+  ]
+ },
+ {
+  "index": 103,
+  "id": "eternal_duel__zeus_bonus_2",
+  "title": "zeus bonus 2",
+  "game": "Eternal Duel",
+  "look": "",
+  "all_animations": 2,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8979,
+   "parts": 0.968,
+   "layers": 1.0
+  },
+  "bones": 87,
+  "parts": 44,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "eternal_duel__zeus_bonus_2/idle.gif",
+    "seconds": 4.67,
+    "frames": 70
+   }
+  ]
+ },
+ {
+  "index": 104,
+  "id": "eternal_duel__zeus_maingame",
+  "title": "zeus maingame",
+  "game": "Eternal Duel",
+  "look": "",
+  "all_animations": 2,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8864,
+   "parts": 0.9968,
+   "layers": 0.9998
+  },
+  "bones": 99,
+  "parts": 58,
+  "animations": [
+   {
+    "name": "idle_track0",
+    "gif": "eternal_duel__zeus_maingame/idle_track0.gif",
+    "seconds": 4.67,
+    "frames": 70
+   }
+  ]
+ },
+ {
+  "index": 105,
+  "id": "evil_eyes__evil_eye",
+  "title": "evil eye",
+  "game": "Evil Eyes",
+  "look": "",
+  "all_animations": 44,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9698,
+   "layers": 0.9997
+  },
+  "bones": 54,
+  "parts": 31,
+  "animations": [
+   {
+    "name": "eye/add/100x",
+    "gif": "evil_eyes__evil_eye/eye__add__100x.gif",
+    "seconds": 1,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 106,
+  "id": "evil_eyes__spooky",
+  "title": "spooky",
+  "game": "Evil Eyes",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.984,
+   "parts": 0.9966,
+   "layers": 0.995
+  },
+  "bones": 107,
+  "parts": 23,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "evil_eyes__spooky/idle.gif",
+    "seconds": 5.07,
+    "frames": 76
+   }
+  ]
+ },
+ {
+  "index": 107,
+  "id": "evil_eyes__spooky_grey",
+  "title": "spooky grey",
+  "game": "Evil Eyes",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9843,
+   "parts": 0.9965,
+   "layers": 0.9947
+  },
+  "bones": 107,
+  "parts": 23,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "evil_eyes__spooky_grey/idle.gif",
+    "seconds": 5.07,
+    "frames": 76
+   }
+  ]
+ },
+ {
+  "index": 108,
+  "id": "eye_of_medusa__character_knight",
+  "title": "character knight",
+  "game": "Eye Of Medusa",
+  "look": "",
+  "all_animations": 5,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9831,
+   "layers": 0.993
+  },
+  "bones": 89,
+  "parts": 71,
+  "animations": [
+   {
+    "name": "idle2_bonus1",
+    "gif": "eye_of_medusa__character_knight/idle2_bonus1.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 109,
+  "id": "eye_of_medusa__character_medusa",
+  "title": "character medusa",
+  "game": "Eye Of Medusa",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9299,
+   "layers": 0.9912
+  },
+  "bones": 146,
+  "parts": 54,
+  "animations": [
+   {
+    "name": "medusa_idle_base_game",
+    "gif": "eye_of_medusa__character_medusa/medusa_idle_base_game.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 110,
+  "id": "eye_of_the_panda__panda",
+  "title": "panda",
+  "game": "Eye Of The Panda",
+  "look": "",
+  "all_animations": 10,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9923,
+   "parts": 0.9992,
+   "layers": 0.9964
+  },
+  "bones": 57,
+  "parts": 32,
+  "animations": [
+   {
+    "name": "idle_1",
+    "gif": "eye_of_the_panda__panda/idle_1.gif",
+    "seconds": 3.33,
+    "frames": 50
+   }
+  ]
+ },
+ {
+  "index": 111,
+  "id": "feel_the_beat__blue_shuffle",
+  "title": "blue shuffle",
+  "game": "Feel The Beat",
+  "look": "",
+  "all_animations": 10,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.957,
+   "parts": 0.9971,
+   "layers": 0.9999
+  },
+  "bones": 24,
+  "parts": 24,
+  "animations": [
+   {
+    "name": "idle1_1bar",
+    "gif": "feel_the_beat__blue_shuffle/idle1_1bar.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 112,
+  "id": "feel_the_beat__pink_shuffle",
+  "title": "pink shuffle",
+  "game": "Feel The Beat",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9359,
+   "parts": 0.997,
+   "layers": 0.9998
+  },
+  "bones": 21,
+  "parts": 23,
+  "animations": [
+   {
+    "name": "idle1_1bar",
+    "gif": "feel_the_beat__pink_shuffle/idle1_1bar.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 113,
+  "id": "fighter_pit__team_green",
+  "title": "team green",
+  "game": "Fighter Pit",
+  "look": "",
+  "all_animations": 31,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.0,
+   "layers": 0.8927
+  },
+  "bones": 161,
+  "parts": 82,
+  "animations": [
+   {
+    "name": "character_1/idle1",
+    "gif": "fighter_pit__team_green/character_1__idle1.gif",
+    "seconds": 1,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 114,
+  "id": "fighter_pit__team_green_p",
+  "title": "team green p",
+  "game": "Fighter Pit",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9302,
+   "layers": 0.991
+  },
+  "bones": 161,
+  "parts": 41,
+  "animations": [
+   {
+    "name": "character_1/idle1",
+    "gif": "fighter_pit__team_green_p/character_1__idle1.gif",
+    "seconds": 1,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 115,
+  "id": "fighter_pit__team_red",
+  "title": "team red",
+  "game": "Fighter Pit",
+  "look": "",
+  "all_animations": 31,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.0,
+   "layers": 1.0
+  },
+  "bones": 163,
+  "parts": 79,
+  "animations": [
+   {
+    "name": "character_1/idle1",
+    "gif": "fighter_pit__team_red/character_1__idle1.gif",
+    "seconds": 1,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 116,
+  "id": "fighter_pit__team_red_p",
+  "title": "team red p",
+  "game": "Fighter Pit",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.7452,
+   "layers": 0.9763
+  },
+  "bones": 163,
+  "parts": 45,
+  "animations": [
+   {
+    "name": "character_1/idle1",
+    "gif": "fighter_pit__team_red_p/character_1__idle1.gif",
+    "seconds": 1,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 117,
+  "id": "fire_my_laser__aliens",
+  "title": "aliens",
+  "game": "Fire My Laser",
+  "look": "",
+  "all_animations": 7,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9634,
+   "layers": 0.2916
+  },
+  "bones": 66,
+  "parts": 29,
+  "animations": [
+   {
+    "name": "alien/idle_1",
+    "gif": "fire_my_laser__aliens/alien__idle_1.gif",
+    "seconds": 3.33,
+    "frames": 50
+   }
+  ]
+ },
+ {
+  "index": 118,
+  "id": "fire_my_laser__space_marine",
+  "title": "space marine",
+  "game": "Fire My Laser",
+  "look": "",
+  "all_animations": 62,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9837,
+   "parts": 0.9893,
+   "layers": 0.9958
+  },
+  "bones": 196,
+  "parts": 75,
+  "animations": [
+   {
+    "name": "idle_1",
+    "gif": "fire_my_laser__space_marine/idle_1.gif",
+    "seconds": 3.17,
+    "frames": 48
+   }
+  ]
+ },
+ {
+  "index": 119,
+  "id": "fist_of_destruction_megamultiplier__characters_blue_team",
+  "title": "characters blue team",
+  "game": "Fist Of Destruction Megamultiplier",
+  "look": "",
+  "all_animations": 23,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.0,
+   "layers": 0.9117
+  },
+  "bones": 331,
+  "parts": 134,
+  "animations": [
+   {
+    "name": "high_2_idle_1",
+    "gif": "fist_of_destruction_megamultiplier__characters_blue_team/high_2_idle_1.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 120,
+  "id": "fist_of_destruction_megamultiplier__characters_red_team",
+  "title": "characters red team",
+  "game": "Fist Of Destruction Megamultiplier",
+  "look": "",
+  "all_animations": 24,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.0448,
+   "layers": 0.9004
+  },
+  "bones": 202,
+  "parts": 139,
+  "animations": [
+   {
+    "name": "high_1_idle_1",
+    "gif": "fist_of_destruction_megamultiplier__characters_red_team/high_1_idle_1.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 121,
+  "id": "fist_of_destruction_megamultiplier__portrait_blue_team",
+  "title": "portrait blue team",
+  "game": "Fist Of Destruction Megamultiplier",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8644,
+   "parts": 0.8269,
+   "layers": 0.9999
+  },
+  "bones": 64,
+  "parts": 24,
+  "animations": [
+   {
+    "name": "portrait_high_2_idle_1",
+    "gif": "fist_of_destruction_megamultiplier__portrait_blue_team/portrait_high_2_idle_1.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 122,
+  "id": "fist_of_destruction_megamultiplier__portrait_red_team",
+  "title": "portrait red team",
+  "game": "Fist Of Destruction Megamultiplier",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.6881,
+   "parts": 0.8741,
+   "layers": 1.0
+  },
+  "bones": 80,
+  "parts": 44,
+  "animations": [
+   {
+    "name": "portrait_high_1_idle_1",
+    "gif": "fist_of_destruction_megamultiplier__portrait_red_team/portrait_high_1_idle_1.gif",
+    "seconds": 3,
+    "frames": 45
+   }
+  ]
+ },
+ {
+  "index": 123,
+  "id": "freds_food_truck__fred",
+  "title": "fred",
+  "game": "Freds Food Truck",
+  "look": "",
+  "all_animations": 22,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9675,
+   "parts": 0.9981,
+   "layers": 0.9992
+  },
+  "bones": 43,
+  "parts": 37,
+  "animations": [
+   {
+    "name": "idle1",
+    "gif": "freds_food_truck__fred/idle1.gif",
+    "seconds": 0.47,
+    "frames": 7
+   }
+  ]
+ },
+ {
+  "index": 124,
+  "id": "frkn_bananas__bananaman",
+  "title": "bananaman",
+  "game": "Frkn Bananas",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9395,
+   "parts": 0.9967,
+   "layers": 0.9834
+  },
+  "bones": 81,
+  "parts": 27,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "frkn_bananas__bananaman/idle.gif",
+    "seconds": 2.33,
+    "frames": 35
+   }
+  ]
+ },
+ {
+  "index": 125,
+  "id": "frkn_bananas__peelman",
+  "title": "peelman",
+  "game": "Frkn Bananas",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9529,
+   "parts": 0.9913,
+   "layers": 0.9898
+  },
+  "bones": 42,
+  "parts": 11,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "frkn_bananas__peelman/idle.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 126,
+  "id": "get_the_cheese__bird",
+  "title": "bird",
+  "game": "Get The Cheese",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9724,
+   "layers": 0.9897
+  },
+  "bones": 87,
+  "parts": 19,
+  "animations": [
+   {
+    "name": "bird/idle",
+    "gif": "get_the_cheese__bird/bird__idle.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 127,
+  "id": "get_the_cheese__mouse",
+  "title": "mouse",
+  "game": "Get The Cheese",
+  "look": "",
+  "all_animations": 20,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.839,
+   "layers": 0.998
+  },
+  "bones": 143,
+  "parts": 69,
+  "animations": [
+   {
+    "name": "mouse/idle",
+    "gif": "get_the_cheese__mouse/mouse__idle.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 128,
+  "id": "great_game_rockies__character_spine",
+  "title": "character spine",
+  "game": "Great Game Rockies",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9528,
+   "parts": 0.9992,
+   "layers": 0.9977
+  },
+  "bones": 57,
+  "parts": 18,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "great_game_rockies__character_spine/idle.gif",
+    "seconds": 4.67,
+    "frames": 70
+   }
+  ]
+ },
+ {
+  "index": 129,
+  "id": "great_game_serengeti__character",
+  "title": "character",
+  "game": "Great Game Serengeti",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9512,
+   "parts": 0.9967,
+   "layers": 0.9976
+  },
+  "bones": 58,
+  "parts": 18,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "great_game_serengeti__character/idle.gif",
+    "seconds": 4.67,
+    "frames": 70
+   }
+  ]
+ },
+ {
+  "index": 130,
+  "id": "grug_make_fire__character_neander",
+  "title": "character neander",
+  "game": "Grug Make Fire",
+  "look": "",
+  "all_animations": 8,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9977,
+   "parts": 0.9995,
+   "layers": 0.9991
+  },
+  "bones": 81,
+  "parts": 43,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "grug_make_fire__character_neander/idle.gif",
+    "seconds": 4.8,
+    "frames": 72
+   }
+  ]
+ },
+ {
+  "index": 131,
+  "id": "hot_ross__hot_ross",
+  "title": "hot ross",
+  "game": "Hot Ross",
+  "look": "",
+  "all_animations": 25,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7999,
+   "parts": 0.9776,
+   "layers": 0.9423
+  },
+  "bones": 173,
+  "parts": 107,
+  "animations": [
+   {
+    "name": "looking_reels_idle1",
+    "gif": "hot_ross__hot_ross/looking_reels_idle1.gif",
+    "seconds": 1.1,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 132,
+  "id": "hounds_of_hell__hound",
+  "title": "hound",
+  "game": "Hounds Of Hell",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9675,
+   "parts": 0.9981,
+   "layers": 0.9936
+  },
+  "bones": 43,
+  "parts": 37,
+  "animations": [
+   {
+    "name": "idle1_main",
+    "gif": "hounds_of_hell__hound/idle1_main.gif",
+    "seconds": 2.53,
+    "frames": 38
+   }
+  ]
+ },
+ {
+  "index": 133,
+  "id": "immortal_desire__vamp_1",
+  "title": "vamp 1",
+  "game": "Immortal Desire",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8478,
+   "parts": 0.9047,
+   "layers": 0.9896
+  },
+  "bones": 88,
+  "parts": 41,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "immortal_desire__vamp_1/idle.gif",
+    "seconds": 0.03,
+    "frames": 2
+   }
+  ]
+ },
+ {
+  "index": 134,
+  "id": "immortal_desire__vamp_2",
+  "title": "vamp 2",
+  "game": "Immortal Desire",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8874,
+   "parts": 0.9605,
+   "layers": 0.9208
+  },
+  "bones": 69,
+  "parts": 31,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "immortal_desire__vamp_2/idle.gif",
+    "seconds": 0.03,
+    "frames": 2
+   }
+  ]
+ },
+ {
+  "index": 135,
+  "id": "immortal_desire__vamp_3",
+  "title": "vamp 3",
+  "game": "Immortal Desire",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9081,
+   "parts": 0.9578,
+   "layers": 0.9508
+  },
+  "bones": 64,
+  "parts": 26,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "immortal_desire__vamp_3/idle.gif",
+    "seconds": 1.0,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 136,
+  "id": "immortal_desire__vamp_4",
+  "title": "vamp 4",
+  "game": "Immortal Desire",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8957,
+   "parts": 0.9983,
+   "layers": 0.9418
+  },
+  "bones": 68,
+  "parts": 34,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "immortal_desire__vamp_4/idle.gif",
+    "seconds": 1.0,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 137,
+  "id": "invictus__statue_1",
+  "title": "statue 1",
+  "game": "Invictus",
+  "look": "",
+  "all_animations": 10,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9437,
+   "layers": 0.9815
+  },
+  "bones": 64,
+  "parts": 29,
+  "animations": [
+   {
+    "name": "bonus_idle",
+    "gif": "invictus__statue_1/bonus_idle.gif",
+    "seconds": 6.67,
+    "frames": 100
+   }
+  ]
+ },
+ {
+  "index": 138,
+  "id": "invictus__statue_2",
+  "title": "statue 2",
+  "game": "Invictus",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9697,
+   "layers": 0.9485
+  },
+  "bones": 69,
+  "parts": 35,
+  "animations": [
+   {
+    "name": "bonus_idle",
+    "gif": "invictus__statue_2/bonus_idle.gif",
+    "seconds": 6.67,
+    "frames": 100
+   }
+  ]
+ },
+ {
+  "index": 139,
+  "id": "jaws_of_justice__character",
+  "title": "character",
+  "game": "Jaws Of Justice",
+  "look": "",
+  "all_animations": 20,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9355,
+   "layers": 0.9995
+  },
+  "bones": 191,
+  "parts": 77,
+  "animations": [
+   {
+    "name": "shark_left/reactor_track/idle",
+    "gif": "jaws_of_justice__character/shark_left__reactor_track__idle.gif",
+    "seconds": 1.67,
+    "frames": 25
+   }
+  ]
+ },
+ {
+  "index": 140,
+  "id": "jelly_slice__character",
+  "title": "character",
+  "game": "Jelly Slice",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9364,
+   "parts": 0.996,
+   "layers": 0.9992
+  },
+  "bones": 73,
+  "parts": 44,
+  "animations": [
+   {
+    "name": "bonus_idle",
+    "gif": "jelly_slice__character/bonus_idle.gif",
+    "seconds": 2.53,
+    "frames": 38
+   }
+  ]
+ },
+ {
+  "index": 141,
+  "id": "keep_em__canny",
+  "title": "canny",
+  "game": "Keep Em",
+  "look": "",
+  "all_animations": 22,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8972,
+   "parts": 0.9419,
+   "layers": 0.9877
+  },
+  "bones": 169,
+  "parts": 37,
+  "animations": [
+   {
+    "name": "c_idle_foot",
+    "gif": "keep_em__canny/c_idle_foot.gif",
+    "seconds": 0.5,
+    "frames": 8
+   }
+  ]
+ },
+ {
+  "index": 142,
+  "id": "keep_em__fogel_bird",
+  "title": "fogel bird",
+  "game": "Keep Em",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9767,
+   "parts": 0.9868,
+   "layers": 0.9954
+  },
+  "bones": 91,
+  "parts": 27,
+  "animations": [
+   {
+    "name": "bird_idle_1",
+    "gif": "keep_em__fogel_bird/bird_idle_1.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 143,
+  "id": "klowns__clown",
+  "title": "clown",
+  "game": "Klowns",
+  "look": "",
+  "all_animations": 26,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.1559,
+   "parts": 0.9333,
+   "layers": 0.9901
+  },
+  "bones": 100,
+  "parts": 61,
+  "animations": [
+   {
+    "name": "bite",
+    "gif": "klowns__clown/bite.gif",
+    "seconds": 1.97,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 144,
+  "id": "le_bunny__raccoon",
+  "title": "raccoon",
+  "game": "Le Bunny",
+  "look": "",
+  "all_animations": 30,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7962,
+   "parts": 0.9969,
+   "layers": 0.9997
+  },
+  "bones": 67,
+  "parts": 55,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_bunny__raccoon/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 145,
+  "id": "le_cowboy__smokey",
+  "title": "smokey",
+  "game": "Le Cowboy",
+  "look": "",
+  "all_animations": 46,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.798,
+   "parts": 0.9611,
+   "layers": 0.9819
+  },
+  "bones": 71,
+  "parts": 60,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_cowboy__smokey/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 150,
+  "id": "le_digger__smokey__epic_game",
+  "title": "smokey  epic game",
+  "game": "Le Digger",
+  "look": "",
+  "all_animations": 30,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.8058,
+   "layers": 0.9983
+  },
+  "bones": 85,
+  "parts": 63,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_digger__smokey__epic_game/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 151,
+  "id": "le_digger__smokey__main_game",
+  "title": "smokey  main game",
+  "game": "Le Digger",
+  "look": "",
+  "all_animations": 30,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.8058,
+   "layers": 0.9983
+  },
+  "bones": 85,
+  "parts": 67,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_digger__smokey__main_game/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 146,
+  "id": "le_fisherman__smokey__base",
+  "title": "smokey  base",
+  "game": "Le Fisherman",
+  "look": "",
+  "all_animations": 19,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8154,
+   "parts": 0.9965,
+   "layers": 0.9995
+  },
+  "bones": 69,
+  "parts": 43,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_fisherman__smokey__base/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 147,
+  "id": "le_fisherman__smokey__bonus",
+  "title": "smokey  bonus",
+  "game": "Le Fisherman",
+  "look": "",
+  "all_animations": 19,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8154,
+   "parts": 0.9964,
+   "layers": 0.9995
+  },
+  "bones": 69,
+  "parts": 46,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_fisherman__smokey__bonus/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 148,
+  "id": "le_fisherman__smokey__epic_bonus",
+  "title": "smokey  epic bonus",
+  "game": "Le Fisherman",
+  "look": "",
+  "all_animations": 19,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7957,
+   "parts": 0.961,
+   "layers": 0.9973
+  },
+  "bones": 69,
+  "parts": 25,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_fisherman__smokey__epic_bonus/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 149,
+  "id": "le_football_fan__raccoon",
+  "title": "raccoon",
+  "game": "Le Football Fan",
+  "look": "",
+  "all_animations": 37,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7972,
+   "parts": 0.9941,
+   "layers": 0.979
+  },
+  "bones": 54,
+  "parts": 48,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_football_fan__raccoon/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 150,
+  "id": "le_king__raccoon",
+  "title": "raccoon",
+  "game": "Le King",
+  "look": "",
+  "all_animations": 37,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.822,
+   "parts": 0.9973,
+   "layers": 0.9985
+  },
+  "bones": 57,
+  "parts": 58,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_king__raccoon/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 151,
+  "id": "le_pharaoh__raccoon",
+  "title": "raccoon",
+  "game": "Le Pharaoh",
+  "look": "",
+  "all_animations": 33,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7591,
+   "parts": 0.9878,
+   "layers": 0.9996
+  },
+  "bones": 44,
+  "parts": 48,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_pharaoh__raccoon/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 152,
+  "id": "le_santa__raccoon",
+  "title": "raccoon",
+  "game": "Le Santa",
+  "look": "",
+  "all_animations": 50,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7082,
+   "parts": 0.9958,
+   "layers": 0.9888
+  },
+  "bones": 51,
+  "parts": 58,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_santa__raccoon/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 153,
+  "id": "le_sortudo__smokey",
+  "title": "smokey",
+  "game": "Le Sortudo",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7194,
+   "parts": 0.9988,
+   "layers": 0.5154
+  },
+  "bones": 41,
+  "parts": 34,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_sortudo__smokey/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 154,
+  "id": "le_viking__smokey",
+  "title": "smokey",
+  "game": "Le Viking",
+  "look": "",
+  "all_animations": 22,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7306,
+   "parts": 0.9909,
+   "layers": 0.9994
+  },
+  "bones": 53,
+  "parts": 58,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_viking__smokey/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 155,
+  "id": "le_zeus__smokey",
+  "title": "smokey",
+  "game": "Le Zeus",
+  "look": "",
+  "all_animations": 34,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8152,
+   "parts": 0.9964,
+   "layers": 0.9983
+  },
+  "bones": 71,
+  "parts": 54,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "le_zeus__smokey/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 156,
+  "id": "magic_piggy_og__piggy_running",
+  "title": "piggy running",
+  "game": "Magic Piggy Og",
+  "look": "",
+  "all_animations": 7,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.422,
+   "parts": 0.9961,
+   "layers": 0.9828
+  },
+  "bones": 58,
+  "parts": 21,
+  "animations": [
+   {
+    "name": "animation",
+    "gif": "magic_piggy_og__piggy_running/animation.gif",
+    "seconds": 0.5,
+    "frames": 8
+   }
+  ]
+ },
+ {
+  "index": 157,
+  "id": "marlin_masters_atlantis__kraken__kraken",
+  "title": "kraken  kraken",
+  "game": "Marlin Masters Atlantis",
+  "look": "",
+  "all_animations": 4,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.8958,
+   "layers": 1.0
+  },
+  "bones": 122,
+  "parts": 49,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "marlin_masters_atlantis__kraken__kraken/idle.gif",
+    "seconds": 2.33,
+    "frames": 35
+   }
+  ]
+ },
+ {
+  "index": 158,
+  "id": "marlin_masters_atlantis__statue",
+  "title": "statue",
+  "game": "Marlin Masters Atlantis",
+  "look": "",
+  "all_animations": 13,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.5099,
+   "parts": 0.9928,
+   "layers": 0.9947
+  },
+  "bones": 32,
+  "parts": 17,
+  "animations": [
+   {
+    "name": "pour/idle",
+    "gif": "marlin_masters_atlantis__statue/pour__idle.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 159,
+  "id": "mayan_stackways__monster",
+  "title": "monster",
+  "game": "Mayan Stackways",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9053,
+   "parts": 0.9829,
+   "layers": 0.9761
+  },
+  "bones": 155,
+  "parts": 49,
+  "animations": [
+   {
+    "name": "track1_idle1",
+    "gif": "mayan_stackways__monster/track1_idle1.gif",
+    "seconds": 3.33,
+    "frames": 50
+   }
+  ]
+ },
+ {
+  "index": 160,
+  "id": "minted_mike__mike",
+  "title": "mike",
+  "game": "Minted Mike",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8592,
+   "parts": 0.999,
+   "layers": 0.9999
+  },
+  "bones": 96,
+  "parts": 69,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "minted_mike__mike/idle.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 161,
+  "id": "minted_mike__police",
+  "title": "police",
+  "game": "Minted Mike",
+  "look": "",
+  "all_animations": 5,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9893,
+   "parts": 0.9994,
+   "layers": 1.0
+  },
+  "bones": 57,
+  "parts": 44,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "minted_mike__police/idle.gif",
+    "seconds": 1.17,
+    "frames": 18
+   }
+  ]
+ },
+ {
+  "index": 162,
+  "id": "munchy_milo__character",
+  "title": "character",
+  "game": "Munchy Milo",
+  "look": "",
+  "all_animations": 18,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.8933,
+   "layers": 0.9997
+  },
+  "bones": 130,
+  "parts": 65,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "munchy_milo__character/idle.gif",
+    "seconds": 3,
+    "frames": 45
+   }
+  ]
+ },
+ {
+  "index": 169,
+  "id": "nitro_nights__car",
+  "title": "car",
+  "game": "Nitro Nights",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.0,
+   "layers": 0.9972
+  },
+  "bones": 44,
+  "parts": 21,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "nitro_nights__car/idle.gif",
+    "seconds": 5.33,
+    "frames": 80
+   }
+  ]
+ },
+ {
+  "index": 163,
+  "id": "octo_attack__octopus",
+  "title": "octopus",
+  "game": "Octo Attack",
+  "look": "",
+  "all_animations": 17,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.3706,
+   "parts": 0.9721,
+   "layers": 0.9755
+  },
+  "bones": 252,
+  "parts": 24,
+  "animations": [
+   {
+    "name": "desktop_idle",
+    "gif": "octo_attack__octopus/desktop_idle.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 164,
+  "id": "orb_of_destiny__fortune_teller",
+  "title": "fortune teller",
+  "game": "Orb Of Destiny",
+  "look": "",
+  "all_animations": 20,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.303,
+   "parts": 0.7903,
+   "layers": 0.9998
+  },
+  "bones": 101,
+  "parts": 94,
+  "animations": [
+   {
+    "name": "ft_landed",
+    "gif": "orb_of_destiny__fortune_teller/ft_landed.gif",
+    "seconds": 1,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 165,
+  "id": "phoenix_duelreels__dragon_bonus1",
+  "title": "dragon bonus1",
+  "game": "Phoenix Duelreels",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.6497,
+   "parts": 0.9974,
+   "layers": 0.9721
+  },
+  "bones": 93,
+  "parts": 25,
+  "animations": [
+   {
+    "name": "track1_idle2_hands",
+    "gif": "phoenix_duelreels__dragon_bonus1/track1_idle2_hands.gif",
+    "seconds": 3.7,
+    "frames": 56
+   }
+  ]
+ },
+ {
+  "index": 166,
+  "id": "phoenix_duelreels__dragon_maingame",
+  "title": "dragon maingame",
+  "game": "Phoenix Duelreels",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9278,
+   "parts": 0.9982,
+   "layers": 0.9989
+  },
+  "bones": 124,
+  "parts": 33,
+  "animations": [
+   {
+    "name": "all_for_video",
+    "gif": "phoenix_duelreels__dragon_maingame/all_for_video.gif",
+    "seconds": 13.73,
+    "frames": 150
+   }
+  ]
+ },
+ {
+  "index": 167,
+  "id": "phoenix_duelreels__phoenix_bonus2",
+  "title": "phoenix bonus2",
+  "game": "Phoenix Duelreels",
+  "look": "",
+  "all_animations": 7,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.984,
+   "parts": 0.9977,
+   "layers": 0.9994
+  },
+  "bones": 53,
+  "parts": 19,
+  "animations": [
+   {
+    "name": "track1_idle1_maim",
+    "gif": "phoenix_duelreels__phoenix_bonus2/track1_idle1_maim.gif",
+    "seconds": 3.6,
+    "frames": 54
+   }
+  ]
+ },
+ {
+  "index": 168,
+  "id": "phoenix_duelreels__phoenix_maingame",
+  "title": "phoenix maingame",
+  "game": "Phoenix Duelreels",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7791,
+   "parts": 0.9719,
+   "layers": 0.9601
+  },
+  "bones": 83,
+  "parts": 29,
+  "animations": [
+   {
+    "name": "track1_idle1",
+    "gif": "phoenix_duelreels__phoenix_maingame/track1_idle1.gif",
+    "seconds": 3,
+    "frames": 45
+   }
+  ]
+ },
+ {
+  "index": 169,
+  "id": "phoenix_duelreels__resurrection",
+  "title": "resurrection",
+  "game": "Phoenix Duelreels",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.2225,
+   "parts": 0.9781,
+   "layers": 0.9999
+  },
+  "bones": 91,
+  "parts": 24,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "phoenix_duelreels__resurrection/idle.gif",
+    "seconds": 1.0,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 170,
+  "id": "pray_for_six__bossdevil",
+  "title": "bossdevil",
+  "game": "Pray For Six",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7761,
+   "parts": 0.997,
+   "layers": 0.9834
+  },
+  "bones": 106,
+  "parts": 25,
+  "animations": [
+   {
+    "name": "landscape_idle",
+    "gif": "pray_for_six__bossdevil/landscape_idle.gif",
+    "seconds": 3.33,
+    "frames": 50
+   }
+  ]
+ },
+ {
+  "index": 171,
+  "id": "pray_for_six__devils_baby",
+  "title": "devils baby",
+  "game": "Pray For Six",
+  "look": "",
+  "all_animations": 4,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.876,
+   "parts": 0.9963,
+   "layers": 0.9992
+  },
+  "bones": 85,
+  "parts": 53,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "pray_for_six__devils_baby/idle.gif",
+    "seconds": 4.83,
+    "frames": 72
+   }
+  ]
+ },
+ {
+  "index": 172,
+  "id": "pray_for_six__dog",
+  "title": "dog",
+  "game": "Pray For Six",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8803,
+   "parts": 0.9922,
+   "layers": 0.9938
+  },
+  "bones": 59,
+  "parts": 34,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "pray_for_six__dog/idle.gif",
+    "seconds": 0.87,
+    "frames": 13
+   }
+  ]
+ },
+ {
+  "index": 173,
+  "id": "pray_for_three__left_girl",
+  "title": "left girl",
+  "game": "Pray For Three",
+  "look": "",
+  "all_animations": 5,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9823,
+   "parts": 0.9945,
+   "layers": 0.993
+  },
+  "bones": 68,
+  "parts": 23,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "pray_for_three__left_girl/idle.gif",
+    "seconds": 3.1,
+    "frames": 46
+   }
+  ]
+ },
+ {
+  "index": 174,
+  "id": "pray_for_three__right_girl",
+  "title": "right girl",
+  "game": "Pray For Three",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9704,
+   "parts": 0.9943,
+   "layers": 0.9978
+  },
+  "bones": 99,
+  "parts": 39,
+  "animations": [
+   {
+    "name": "example_idle",
+    "gif": "pray_for_three__right_girl/example_idle.gif",
+    "seconds": 1.67,
+    "frames": 25
+   }
+  ]
+ },
+ {
+  "index": 175,
+  "id": "rad_maxx__maxx",
+  "title": "maxx",
+  "game": "Rad Maxx",
+  "look": "",
+  "all_animations": 18,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9251,
+   "parts": 0.9723,
+   "layers": 0.9823
+  },
+  "bones": 115,
+  "parts": 66,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "rad_maxx__maxx/idle.gif",
+    "seconds": 0.57,
+    "frames": 9
+   }
+  ]
+ },
+ {
+  "index": 176,
+  "id": "rainbow_princess__character",
+  "title": "character",
+  "game": "Rainbow Princess",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9376,
+   "layers": 0.7203
+  },
+  "bones": 333,
+  "parts": 90,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "rainbow_princess__character/idle.gif",
+    "seconds": 3,
+    "frames": 45
+   }
+  ]
+ },
+ {
+  "index": 177,
+  "id": "rainbow_princess__character_epic_bonus",
+  "title": "character epic bonus",
+  "game": "Rainbow Princess",
+  "look": "",
+  "all_animations": 5,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9894,
+   "layers": 0.9976
+  },
+  "bones": 96,
+  "parts": 28,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "rainbow_princess__character_epic_bonus/idle.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 178,
+  "id": "red_rascal__character",
+  "title": "character",
+  "game": "Red Rascal",
+  "look": "",
+  "all_animations": 6,
+  "route": "image",
+  "fidelity": {
+   "image": 0.996,
+   "parts": 0.9984,
+   "layers": 0.9899
+  },
+  "bones": 130,
+  "parts": 37,
+  "animations": [
+   {
+    "name": "idles/cloud",
+    "gif": "red_rascal__character/idles__cloud.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 179,
+  "id": "reign_of_rome__character",
+  "title": "character",
+  "game": "Reign Of Rome",
+  "look": "",
+  "all_animations": 10,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9898,
+   "parts": 0.9976,
+   "layers": 0.9975
+  },
+  "bones": 77,
+  "parts": 24,
+  "animations": [
+   {
+    "name": "left/idle_1",
+    "gif": "reign_of_rome__character/left__idle_1.gif",
+    "seconds": 4,
+    "frames": 60
+   }
+  ]
+ },
+ {
+  "index": 180,
+  "id": "rip_city__maxx",
+  "title": "maxx",
+  "game": "Rip City",
+  "look": "",
+  "all_animations": 17,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9256,
+   "parts": 0.973,
+   "layers": 0.983
+  },
+  "bones": 115,
+  "parts": 66,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "rip_city__maxx/idle.gif",
+    "seconds": 0.57,
+    "frames": 9
+   }
+  ]
+ },
+ {
+  "index": 181,
+  "id": "rip_city__ross",
+  "title": "ross",
+  "game": "Rip City",
+  "look": "",
+  "all_animations": 17,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8227,
+   "parts": 0.9764,
+   "layers": 0.9336
+  },
+  "bones": 163,
+  "parts": 94,
+  "animations": [
+   {
+    "name": "animation_eyes",
+    "gif": "rip_city__ross/animation_eyes.gif",
+    "seconds": 1.03,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 182,
+  "id": "rise_of_fortuna__character",
+  "title": "character",
+  "game": "Rise Of Fortuna",
+  "look": "",
+  "all_animations": 21,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.475,
+   "layers": 0.9971
+  },
+  "bones": 269,
+  "parts": 100,
+  "animations": [
+   {
+    "name": "mc_idle",
+    "gif": "rise_of_fortuna__character/mc_idle.gif",
+    "seconds": 4.67,
+    "frames": 70
+   }
+  ]
+ },
+ {
+  "index": 183,
+  "id": "rise_of_ymir__fg1",
+  "title": "fg1",
+  "game": "Rise Of Ymir",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.6221,
+   "layers": 0.9997
+  },
+  "bones": 80,
+  "parts": 13,
+  "animations": [
+   {
+    "name": "basegame_desktop_setup",
+    "gif": "rise_of_ymir__fg1/basegame_desktop_setup.gif",
+    "seconds": 6.67,
+    "frames": 100
+   }
+  ]
+ },
+ {
+  "index": 184,
+  "id": "rise_of_ymir__fg2",
+  "title": "fg2",
+  "game": "Rise Of Ymir",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9861,
+   "layers": 1.0
+  },
+  "bones": 86,
+  "parts": 30,
+  "animations": [
+   {
+    "name": "basegame_desktop_setup",
+    "gif": "rise_of_ymir__fg2/basegame_desktop_setup.gif",
+    "seconds": 6.7,
+    "frames": 100
+   }
+  ]
+ },
+ {
+  "index": 185,
+  "id": "rise_of_ymir__ymir",
+  "title": "ymir",
+  "game": "Rise Of Ymir",
+  "look": "",
+  "all_animations": 15,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9507,
+   "parts": 0.9917,
+   "layers": 0.9734
+  },
+  "bones": 105,
+  "parts": 12,
+  "animations": [
+   {
+    "name": "maingame_idle",
+    "gif": "rise_of_ymir__ymir/maingame_idle.gif",
+    "seconds": 6.67,
+    "frames": 100
+   }
+  ]
+ },
+ {
+  "index": 186,
+  "id": "ronin_stackways__ghost_monkey",
+  "title": "ghost monkey",
+  "game": "Ronin Stackways",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9715,
+   "parts": 0.9958,
+   "layers": 0.998
+  },
+  "bones": 51,
+  "parts": 28,
+  "animations": [
+   {
+    "name": "track1_eyes_idle",
+    "gif": "ronin_stackways__ghost_monkey/track1_eyes_idle.gif",
+    "seconds": 1.0,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 187,
+  "id": "rusty_and_curly__curly",
+  "title": "curly",
+  "game": "Rusty And Curly",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7967,
+   "parts": 0.9901,
+   "layers": 0.9987
+  },
+  "bones": 41,
+  "parts": 20,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "rusty_and_curly__curly/idle.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 188,
+  "id": "rusty_and_curly__curly_big",
+  "title": "curly big",
+  "game": "Rusty And Curly",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8698,
+   "parts": 0.8905,
+   "layers": 0.9999
+  },
+  "bones": 39,
+  "parts": 20,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "rusty_and_curly__curly_big/idle.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 189,
+  "id": "rusty_and_curly__rooster",
+  "title": "rooster",
+  "game": "Rusty And Curly",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9283,
+   "parts": 0.9757,
+   "layers": 0.9991
+  },
+  "bones": 23,
+  "parts": 14,
+  "animations": [
+   {
+    "name": "idle_1",
+    "gif": "rusty_and_curly__rooster/idle_1.gif",
+    "seconds": 4.6,
+    "frames": 69
+   }
+  ]
+ },
+ {
+  "index": 190,
+  "id": "rusty_and_curly__rusty",
+  "title": "rusty",
+  "game": "Rusty And Curly",
+  "look": "",
+  "all_animations": 10,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.8442,
+   "parts": 0.9872,
+   "layers": 0.9993
+  },
+  "bones": 38,
+  "parts": 29,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "rusty_and_curly__rusty/idle.gif",
+    "seconds": 2.03,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 191,
+  "id": "sand_and_ashes__mummy",
+  "title": "mummy",
+  "game": "Sand And Ashes",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9777,
+   "parts": 0.9962,
+   "layers": 0.9959
+  },
+  "bones": 89,
+  "parts": 41,
+  "animations": [
+   {
+    "name": "base_idle",
+    "gif": "sand_and_ashes__mummy/base_idle.gif",
+    "seconds": 4.67,
+    "frames": 70
+   }
+  ]
+ },
+ {
+  "index": 192,
+  "id": "shaolin_master__character_1",
+  "title": "character 1",
+  "game": "Shaolin Master",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9842,
+   "parts": 0.9966,
+   "layers": 0.9939
+  },
+  "bones": 69,
+  "parts": 31,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "shaolin_master__character_1/idle.gif",
+    "seconds": 4,
+    "frames": 60
+   }
+  ]
+ },
+ {
+  "index": 193,
+  "id": "shaolin_master__character_2",
+  "title": "character 2",
+  "game": "Shaolin Master",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9639,
+   "parts": 0.9926,
+   "layers": 0.9809
+  },
+  "bones": 89,
+  "parts": 30,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "shaolin_master__character_2/idle.gif",
+    "seconds": 4,
+    "frames": 60
+   }
+  ]
+ },
+ {
+  "index": 194,
+  "id": "sixsixsix__boss_devil",
+  "title": "boss devil",
+  "game": "Sixsixsix",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7769,
+   "parts": 0.9973,
+   "layers": 0.9829
+  },
+  "bones": 106,
+  "parts": 25,
+  "animations": [
+   {
+    "name": "landscape_idle",
+    "gif": "sixsixsix__boss_devil/landscape_idle.gif",
+    "seconds": 3.33,
+    "frames": 50
+   }
+  ]
+ },
+ {
+  "index": 195,
+  "id": "sixsixsix__left_devil",
+  "title": "left devil",
+  "game": "Sixsixsix",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9813,
+   "parts": 0.9964,
+   "layers": 0.9971
+  },
+  "bones": 49,
+  "parts": 20,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "sixsixsix__left_devil/idle.gif",
+    "seconds": 3.33,
+    "frames": 50
+   }
+  ]
+ },
+ {
+  "index": 196,
+  "id": "sixsixsix__right_devil",
+  "title": "right devil",
+  "game": "Sixsixsix",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.926,
+   "parts": 0.9966,
+   "layers": 0.9969
+  },
+  "bones": 67,
+  "parts": 16,
+  "animations": [
+   {
+    "name": "balance",
+    "gif": "sixsixsix__right_devil/balance.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 197,
+  "id": "slayers_inc__characters",
+  "title": "characters",
+  "game": "Slayers Inc",
+  "look": "",
+  "all_animations": 49,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.7765,
+   "layers": 0.9851
+  },
+  "bones": 104,
+  "parts": 54,
+  "animations": [
+   {
+    "name": "character_1/base/idle_1",
+    "gif": "slayers_inc__characters/character_1__base__idle_1.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 198,
+  "id": "slots__smokey",
+  "title": "smokey",
+  "game": "Slots",
+  "look": "",
+  "all_animations": 23,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.5067,
+   "parts": 0.9799,
+   "layers": 0.9907
+  },
+  "bones": 75,
+  "parts": 50,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "slots__smokey/idle.gif",
+    "seconds": 1.07,
+    "frames": 16
+   }
+  ]
+ },
+ {
+  "index": 199,
+  "id": "smoking_dragon__character",
+  "title": "character",
+  "game": "Smoking Dragon",
+  "look": "",
+  "all_animations": 13,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.8442,
+   "layers": 0.9853
+  },
+  "bones": 912,
+  "parts": 129,
+  "animations": [
+   {
+    "name": "base/idle",
+    "gif": "smoking_dragon__character/base__idle.gif",
+    "seconds": 6.33,
+    "frames": 95
+   }
+  ]
+ },
+ {
+  "index": 200,
+  "id": "snow_slingers__rupert",
+  "title": "rupert",
+  "game": "Snow Slingers",
+  "look": "",
+  "all_animations": 4,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9707,
+   "parts": 0.999,
+   "layers": 0.9998
+  },
+  "bones": 37,
+  "parts": 17,
+  "animations": [
+   {
+    "name": "idle_1",
+    "gif": "snow_slingers__rupert/idle_1.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 201,
+  "id": "snow_slingers__ruth",
+  "title": "ruth",
+  "game": "Snow Slingers",
+  "look": "",
+  "all_animations": 4,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7436,
+   "parts": 0.7436,
+   "layers": 1.0
+  },
+  "bones": 22,
+  "parts": 18,
+  "animations": [
+   {
+    "name": "idle_1",
+    "gif": "snow_slingers__ruth/idle_1.gif",
+    "seconds": 1,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 202,
+  "id": "spear_of_athena__athena_bonus",
+  "title": "athena bonus",
+  "game": "Spear Of Athena",
+  "look": "",
+  "all_animations": 12,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.938,
+   "parts": 0.9962,
+   "layers": 0.9899
+  },
+  "bones": 197,
+  "parts": 57,
+  "animations": [
+   {
+    "name": "bonus1_idle",
+    "gif": "spear_of_athena__athena_bonus/bonus1_idle.gif",
+    "seconds": 3,
+    "frames": 45
+   }
+  ]
+ },
+ {
+  "index": 203,
+  "id": "spear_of_athena__character",
+  "title": "character",
+  "game": "Spear Of Athena",
+  "look": "",
+  "all_animations": 10,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.7378,
+   "parts": 0.9198,
+   "layers": 0.7676
+  },
+  "bones": 290,
+  "parts": 62,
+  "animations": [
+   {
+    "name": "global/idle",
+    "gif": "spear_of_athena__character/global__idle.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 204,
+  "id": "spear_of_athena__owl",
+  "title": "owl",
+  "game": "Spear Of Athena",
+  "look": "",
+  "all_animations": 5,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9682,
+   "parts": 0.9984,
+   "layers": 0.9997
+  },
+  "bones": 27,
+  "parts": 8,
+  "animations": [
+   {
+    "name": "idle_1",
+    "gif": "spear_of_athena__owl/idle_1.gif",
+    "seconds": 3,
+    "frames": 45
+   }
+  ]
+ },
+ {
+  "index": 205,
+  "id": "steamrunners__characters",
+  "title": "characters",
+  "game": "Steamrunners",
+  "look": "",
+  "all_animations": 24,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.2521,
+   "layers": 0.8322
+  },
+  "bones": 184,
+  "parts": 245,
+  "animations": [
+   {
+    "name": "airship/idle",
+    "gif": "steamrunners__characters/airship__idle.gif",
+    "seconds": 1.67,
+    "frames": 25
+   }
+  ]
+ },
+ {
+  "index": 206,
+  "id": "stormborn__character",
+  "title": "character",
+  "game": "Stormborn",
+  "look": "",
+  "all_animations": 10,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.2558,
+   "layers": 0.9995
+  },
+  "bones": 100,
+  "parts": 70,
+  "animations": [
+   {
+    "name": "hammer_track/lightning_idle_1",
+    "gif": "stormborn__character/hammer_track__lightning_idle_1.gif",
+    "seconds": 1.2,
+    "frames": 18
+   }
+  ]
+ },
+ {
+  "index": 207,
+  "id": "strength_of_hercules__character",
+  "title": "character",
+  "game": "Strength Of Hercules",
+  "look": "",
+  "all_animations": 28,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.7561,
+   "layers": 0.9601
+  },
+  "bones": 233,
+  "parts": 135,
+  "animations": [
+   {
+    "name": "desktop_setup/admire",
+    "gif": "strength_of_hercules__character/desktop_setup__admire.gif",
+    "seconds": 2.73,
+    "frames": 41
+   }
+  ]
+ },
+ {
+  "index": 208,
+  "id": "strength_of_hercules__snake",
+  "title": "snake",
+  "game": "Strength Of Hercules",
+  "look": "",
+  "all_animations": 6,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9507,
+   "layers": 0.9971
+  },
+  "bones": 55,
+  "parts": 15,
+  "animations": [
+   {
+    "name": "snake/idle",
+    "gif": "strength_of_hercules__snake/snake__idle.gif",
+    "seconds": 4,
+    "frames": 60
+   }
+  ]
+ },
+ {
+  "index": 209,
+  "id": "sun_princess__character",
+  "title": "character",
+  "game": "Sun Princess",
+  "look": "",
+  "all_animations": 9,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.751,
+   "layers": 0.9978
+  },
+  "bones": 187,
+  "parts": 52,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "sun_princess__character/idle.gif",
+    "seconds": 3,
+    "frames": 45
+   }
+  ]
+ },
+ {
+  "index": 210,
+  "id": "sun_princess__epic_character",
+  "title": "epic character",
+  "game": "Sun Princess",
+  "look": "",
+  "all_animations": 4,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9501,
+   "layers": 0.9999
+  },
+  "bones": 67,
+  "parts": 24,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "sun_princess__epic_character/idle.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 211,
+  "id": "supreme_zeus__zeus",
+  "title": "zeus",
+  "game": "Supreme Zeus",
+  "look": "",
+  "all_animations": 10,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.6297,
+   "parts": 0.6385,
+   "layers": 0.7695
+  },
+  "bones": 224,
+  "parts": 101,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "supreme_zeus__zeus/idle.gif",
+    "seconds": 5.33,
+    "frames": 80
+   }
+  ]
+ },
+ {
+  "index": 212,
+  "id": "temple_of_torment__anubis",
+  "title": "anubis",
+  "game": "Temple Of Torment",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.6227,
+   "parts": 0.995,
+   "layers": 0.9957
+  },
+  "bones": 33,
+  "parts": 19,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "temple_of_torment__anubis/idle.gif",
+    "seconds": 2.4,
+    "frames": 36
+   }
+  ]
+ },
+ {
+  "index": 213,
+  "id": "temple_of_torment__ra",
+  "title": "ra",
+  "game": "Temple Of Torment",
+  "look": "",
+  "all_animations": 4,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9672,
+   "parts": 0.9983,
+   "layers": 0.9998
+  },
+  "bones": 35,
+  "parts": 9,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "temple_of_torment__ra/idle.gif",
+    "seconds": 2.9,
+    "frames": 44
+   }
+  ]
+ },
+ {
+  "index": 214,
+  "id": "the_count__character_count",
+  "title": "character count",
+  "game": "The Count",
+  "look": "",
+  "all_animations": 11,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.0,
+   "layers": 0.9315
+  },
+  "bones": 121,
+  "parts": 96,
+  "animations": [
+   {
+    "name": "idle_blink",
+    "gif": "the_count__character_count/idle_blink.gif",
+    "seconds": 6.67,
+    "frames": 100
+   }
+  ]
+ },
+ {
+  "index": 215,
+  "id": "the_wildwood_curse__monster",
+  "title": "monster",
+  "game": "The Wildwood Curse",
+  "look": "",
+  "all_animations": 2,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9979,
+   "parts": 0.9979,
+   "layers": 0.9997
+  },
+  "bones": 50,
+  "parts": 12,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "the_wildwood_curse__monster/idle.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 216,
+  "id": "the_wildwood_curse__psycho",
+  "title": "psycho",
+  "game": "The Wildwood Curse",
+  "look": "",
+  "all_animations": 14,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9668,
+   "parts": 0.9993,
+   "layers": 0.9999
+  },
+  "bones": 24,
+  "parts": 21,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "the_wildwood_curse__psycho/idle.gif",
+    "seconds": 4,
+    "frames": 60
+   }
+  ]
+ },
+ {
+  "index": 217,
+  "id": "tiger_legends__character",
+  "title": "character",
+  "game": "Tiger Legends",
+  "look": "",
+  "all_animations": 2,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9617,
+   "parts": 0.9988,
+   "layers": 0.9744
+  },
+  "bones": 63,
+  "parts": 39,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "tiger_legends__character/idle.gif",
+    "seconds": 3.33,
+    "frames": 50
+   }
+  ]
+ },
+ {
+  "index": 218,
+  "id": "twisted_lab__alchemist",
+  "title": "alchemist",
+  "game": "Twisted Lab",
+  "look": "",
+  "all_animations": 5,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9011,
+   "parts": 0.9949,
+   "layers": 0.9793
+  },
+  "bones": 37,
+  "parts": 25,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "twisted_lab__alchemist/idle.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 219,
+  "id": "twisted_lab__rat",
+  "title": "rat",
+  "game": "Twisted Lab",
+  "look": "",
+  "all_animations": 6,
+  "route": "image",
+  "fidelity": {
+   "image": 0.997,
+   "parts": 0.9974,
+   "layers": 0.98
+  },
+  "bones": 28,
+  "parts": 17,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "twisted_lab__rat/idle.gif",
+    "seconds": 1.33,
+    "frames": 20
+   }
+  ]
+ },
+ {
+  "index": 220,
+  "id": "ultimate_slot_of_america__eagle",
+  "title": "eagle",
+  "game": "Ultimate Slot Of America",
+  "look": "",
+  "all_animations": 3,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9972,
+   "parts": 0.9977,
+   "layers": 0.9821
+  },
+  "bones": 79,
+  "parts": 12,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "ultimate_slot_of_america__eagle/idle.gif",
+    "seconds": 2.67,
+    "frames": 40
+   }
+  ]
+ },
+ {
+  "index": 221,
+  "id": "wanted_dead_or_a_wild__mascot_anim",
+  "title": "mascot anim",
+  "game": "Wanted Dead Or A Wild",
+  "look": "",
+  "all_animations": 3,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9609,
+   "parts": 0.9803,
+   "layers": 0.9621
+  },
+  "bones": 53,
+  "parts": 17,
+  "animations": [
+   {
+    "name": "pose1",
+    "gif": "wanted_dead_or_a_wild__mascot_anim/pose1.gif",
+    "seconds": 4,
+    "frames": 60
+   }
+  ]
+ },
+ {
+  "index": 222,
+  "id": "wings_of_horus__bonus2_character",
+  "title": "bonus2 character",
+  "game": "Wings Of Horus",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9502,
+   "parts": 0.9973,
+   "layers": 0.9995
+  },
+  "bones": 47,
+  "parts": 13,
+  "animations": [
+   {
+    "name": "eye_glow_dark",
+    "gif": "wings_of_horus__bonus2_character/eye_glow_dark.gif",
+    "seconds": 1.0,
+    "frames": 15
+   }
+  ]
+ },
+ {
+  "index": 223,
+  "id": "wings_of_horus__character",
+  "title": "character",
+  "game": "Wings Of Horus",
+  "look": "",
+  "all_animations": 14,
+  "route": "image",
+  "fidelity": {
+   "image": 0.9912,
+   "parts": 0.9939,
+   "layers": 0.9764
+  },
+  "bones": 59,
+  "parts": 12,
+  "animations": [
+   {
+    "name": "track0_guy_idle1",
+    "gif": "wings_of_horus__character/track0_guy_idle1.gif",
+    "seconds": 6.83,
+    "frames": 102
+   }
+  ]
+ },
+ {
+  "index": 224,
+  "id": "wishbringer__character_genie",
+  "title": "character genie",
+  "game": "Wishbringer",
+  "look": "",
+  "all_animations": 7,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.2654,
+   "parts": 0.2654,
+   "layers": 0.8571
+  },
+  "bones": 64,
+  "parts": 22,
+  "animations": [
+   {
+    "name": "character_djinn_idle",
+    "gif": "wishbringer__character_genie/character_djinn_idle.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 225,
+  "id": "xmas_drop__santa",
+  "title": "santa",
+  "game": "Xmas Drop",
+  "look": "",
+  "all_animations": 4,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9841,
+   "parts": 0.9978,
+   "layers": 0.9999
+  },
+  "bones": 22,
+  "parts": 20,
+  "animations": [
+   {
+    "name": "idle",
+    "gif": "xmas_drop__santa/idle.gif",
+    "seconds": 1.57,
+    "frames": 24
+   }
+  ]
+ },
+ {
+  "index": 226,
+  "id": "xmas_drop__santa_head",
+  "title": "santa head",
+  "game": "Xmas Drop",
+  "look": "",
+  "all_animations": 8,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.2929,
+   "parts": 0.9855,
+   "layers": 0.9999
+  },
+  "bones": 22,
+  "parts": 23,
+  "animations": [
+   {
+    "name": "drop_1",
+    "gif": "xmas_drop__santa_head/drop_1.gif",
+    "seconds": 0.9,
+    "frames": 14
+   }
+  ]
+ },
+ {
+  "index": 227,
+  "id": "zeus_ze_zecond__character__landscape",
+  "title": "character  landscape",
+  "game": "Zeus Ze Zecond",
+  "look": "",
+  "all_animations": 10,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.9258,
+   "parts": 0.9905,
+   "layers": 0.9966
+  },
+  "bones": 62,
+  "parts": 69,
+  "animations": [
+   {
+    "name": "idles/idle_1",
+    "gif": "zeus_ze_zecond__character__landscape/idles__idle_1.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ },
+ {
+  "index": 228,
+  "id": "zeus_ze_zecond__character__portrait",
+  "title": "character  portrait",
+  "game": "Zeus Ze Zecond",
+  "look": "",
+  "all_animations": 10,
+  "route": "layers",
+  "fidelity": {
+   "image": 0.0,
+   "parts": 0.9752,
+   "layers": 0.9822
+  },
+  "bones": 62,
+  "parts": 68,
+  "animations": [
+   {
+    "name": "idles/idle_1",
+    "gif": "zeus_ze_zecond__character__portrait/idles__idle_1.gif",
+    "seconds": 2,
+    "frames": 30
+   }
+  ]
+ }
+]

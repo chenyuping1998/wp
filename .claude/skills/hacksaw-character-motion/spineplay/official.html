@@ -1,0 +1,142 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>spine 3.8 official reference render</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+<canvas id="cv"></canvas>
+<script src="spine-webgl-3.8.js"></script>
+<script>
+// 官方 spine-ts 3.8 的參考算圖。相機設定成跟 spine.py 的 render() 完全一樣的
+// 正交投影，這樣兩邊的畫面可以直接逐像素相減，不用事後對位。
+//
+// spine.py 的對應關係：
+//   screen_x = world_x * scale + ox,  ox = -skel.x * scale + pad
+//   screen_y = oy - world_y * scale,  oy = (skel.y + h) * scale + pad
+//   W = w * scale + 2*pad,  H = h * scale + 2*pad
+window.RENDER_ERROR = null;
+window.RENDER_DONE = false;
+
+async function main(params) {
+  const { skeleton, anim, time, scale, pad } = params;
+  const gl = document.getElementById('cv').getContext('webgl', {
+    alpha: true, premultipliedAlpha: false, preserveDrawingBuffer: true,
+  });
+  if (!gl) throw new Error('no webgl');
+
+  const base = skeleton.replace(/\/[^/]+$/, '');
+  const jsonName = skeleton.split('/').pop();
+  const stem = jsonName.replace(/\.json$/, '');
+
+  const assetManager = new spine.webgl.AssetManager(gl, base + '/');
+  assetManager.loadText(jsonName);
+  assetManager.loadTextureAtlas(stem + '.atlas');
+  await new Promise((res, rej) => {
+    const t0 = Date.now();
+    (function poll() {
+      if (assetManager.isLoadingComplete()) return res();
+      if (assetManager.hasErrors()) return rej(new Error(
+        'asset errors: ' + JSON.stringify(assetManager.getErrors())));
+      if (Date.now() - t0 > 30000) return rej(new Error('asset load timeout'));
+      setTimeout(poll, 50);
+    })();
+  });
+
+  const atlas = assetManager.get(stem + '.atlas');
+  const loader = new spine.AtlasAttachmentLoader(atlas);
+  const skelJson = new spine.SkeletonJson(loader);
+  const data = skelJson.readSkeletonData(assetManager.get(jsonName));
+  const skel = new spine.Skeleton(data);
+
+  // 畫布尺寸與 spine.py 一致
+  const W = Math.floor(data.width * scale) + pad * 2;
+  const H = Math.floor(data.height * scale) + pad * 2;
+  const cv = document.getElementById('cv');
+  cv.width = W; cv.height = H;
+  gl.viewport(0, 0, W, H);
+
+  const ox = -data.x * scale + pad;
+  const oy = (data.y + data.height) * scale + pad;
+
+  const renderer = new spine.webgl.SceneRenderer(cv, gl);
+  // 讓世界座標 → 畫面的映射跟 spine.py 一模一樣
+  renderer.camera.viewportWidth = W / scale;
+  renderer.camera.viewportHeight = H / scale;
+  renderer.camera.position.x = (W / 2 - ox) / scale;
+  renderer.camera.position.y = (oy - H / 2) / scale;
+
+  const state = new spine.AnimationState(new spine.AnimationStateData(data));
+  state.setAnimation(0, anim, false);
+  // 直接跳到指定時間：先 update(0) 建立 track，再把 trackTime 設死
+  state.update(0);
+  state.tracks[0].trackTime = time;
+  state.apply(skel);
+  skel.updateWorldTransform();
+
+  // 暖機：swiftshader 上第一次 draw 會是空的（貼圖上傳／shader 編譯還沒完成），
+  // 所以先畫一次丟掉，等一個 frame 再畫真正要用的那張。
+  for (let warm = 0; warm < 2; warm++) {
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    renderer.begin();
+    renderer.drawSkeleton(skel, false);
+    renderer.end();
+    gl.finish();
+    if (warm === 0) await new Promise(r => requestAnimationFrame(() => r()));
+  }
+
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  renderer.begin();
+  // 我們的 PNG 是 straight alpha（ktx2png.mjs 轉檔時已還原預乘），
+  // 所以這裡要傳 false，傳 true 會讓半透明邊緣偏暗
+  renderer.drawSkeleton(skel, false);
+  renderer.end();
+  gl.finish();
+
+  // 診斷：把骨架實際算出來的包圍盒也回報，才知道是相機問題還是沒畫
+  const off = new spine.Vector2(), sz = new spine.Vector2();
+  skel.getBounds(off, sz, []);
+  // toDataURL 在這個 headless 環境會回傳空白，直接 readPixels 才可靠。
+  // GL 的原點在左下，所以交給 Python 時要上下翻。
+  const px = new Uint8Array(W * H * 4);
+  gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, px);
+  let nonzero = 0;
+  for (let i = 3; i < px.length; i += 4) if (px[i] > 8) nonzero++;
+  let bin = '';
+  for (let i = 0; i < px.length; i += 8192) {
+    bin += String.fromCharCode.apply(null, px.subarray(i, Math.min(i + 8192, px.length)));
+  }
+  window.RENDER_PIXELS = btoa(bin);
+
+  // 骨骼世界矩陣 —— 比像素精準得多的比對依據
+  const bones = {};
+  for (const bn of skel.bones) {
+    bones[bn.data.name] = [bn.a, bn.b, bn.c, bn.d, bn.worldX, bn.worldY];
+  }
+  window.RENDER_BONES = bones;
+  // 本地（applied）值 —— 對 IK／transform 約束除錯時比世界矩陣好用
+  const applied = {};
+  for (const bn of skel.bones) {
+    applied[bn.data.name] = [bn.arotation, bn.ax, bn.ay, bn.ascaleX,
+                             bn.ascaleY, bn.ashearX, bn.ashearY];
+  }
+  window.RENDER_APPLIED = applied;
+  window.RENDER_INFO = { W: W, H: H, ox: ox, oy: oy,
+                         skelW: data.width, skelH: data.height,
+                         skelX: data.x, skelY: data.y,
+                         boundsOff: [off.x, off.y], boundsSize: [sz.x, sz.y],
+                         camPos: [renderer.camera.position.x, renderer.camera.position.y],
+                         camView: [renderer.camera.viewportWidth, renderer.camera.viewportHeight],
+                         slots: skel.slots.length,
+                         glVendor: gl.getParameter(gl.VENDOR),
+                         glRenderer: gl.getParameter(gl.RENDERER),
+                         nonzeroAlphaPixels: nonzero };
+  window.RENDER_DONE = true;
+}
+
+window.runRender = function (params) {
+  return main(params).catch(function (e) {
+    window.RENDER_ERROR = String(e && e.stack || e);
+    window.RENDER_DONE = true;
+  });
+};
+</script>

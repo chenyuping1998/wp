@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>香蕉猴動作</title>
+<style>
+  :root { --bg:#f2e8d0; --ink:#1e1b1a; --red:#d24a2c; --green:#1f5c4a; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui, sans-serif; }
+  header { padding:14px 16px 4px; }
+  h1 { margin:0; font-size:20px; }
+  p { margin:4px 0; }
+  #bar { display:flex; flex-wrap:wrap; gap:6px; padding:8px 16px; }
+  button { font:inherit; padding:6px 12px; border:2px solid var(--ink); background:#fff8e6; border-radius:6px; cursor:pointer; }
+  button.on { background:var(--red); color:#fff; }
+  #info { padding:0 16px 8px; min-height:3em; }
+  #stage { display:block; width:100%; max-width:1240px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>香蕉猴（Go Bananas 切件 Spine）動作</h1>
+  <p>左：MG 大盜猴（bananditBandit）　右：FG 把風猩猩（bananditLookout）。同一副骨架、同一組動作；flutter 永遠疊在 track 1。</p>
+</header>
+<div id="bar"></div>
+<div id="info"></div>
+<canvas id="stage"></canvas>
+<script src="gallery/vendor/pixi.min.js"></script>
+<script src="gallery/vendor/spine-pixi-v8.min.js"></script>
+<script>
+const NOTES = {
+  idle: '待機循環 5.4s：髖部 5px 小晃、胸口呼吸（torso scaleY 1.022）、頭 ±2°、雙臂錯開週期擺 ±2°。',
+  cheer: '大勝（big/super）跳起 2.05s：先蹲 26px → 跳 48px，雙臂往外上舉 32°，前臂 ±21°，落地壓扁 0.8。',
+  chestbeat: '搥胸 2.68s：FG 觸發、收集、mega 以上大獎。0.48s 起每 0.30s 一拳共六拳，左右交替；前臂收到 37°/26°，每拳髖部下沉。',
+  nod: '一般贏分點頭 1.0s：幾乎沒動作，頭 6°、髖部 7px。主遊戲才用、只在待機時觸發。',
+  throwit: '丟袋子 1.2s：0.2s 道具出現在手上、拉弓 34°、0.52–0.58s 出手。轉場要等它播完才換場。',
+  flinch: '受驚 1.0s：0.38s 爆點、0.48s 跳到最高、0.62s 落地。（香蕉大盜沒有爆炸，保留給有爆炸的作品）',
+  alert: '提高警覺 1.35s：FG 計數器升級時。0.45–1.0s 前傾停住看盤面。',
+  glance: '看盤面 1.6s：待機裡隨機觸發（主遊戲 8–12.8s 一次，FG 隨計數器升級越來越頻繁）。',
+  flutter: '配件循環 4.8s（只動配件骨）：袖口、褲管、帽子、香蕉、口袋，加上物理的跟隨。',
+};
+(async () => {
+  const W = 1240, H = 620;
+  const app = new PIXI.Application();
+  await app.init({ canvas: document.getElementById('stage'), width: W, height: H, background: 0xf2e8d0, antialias: true, preserveDrawingBuffer: true });
+  const casts = [['bananditBandit', 400], ['bananditLookout', 900]];
+  const figs = [];
+  for (const [key, x] of casts) {
+    PIXI.Assets.add({ alias: key + 'Data', src: `spines/${key}/monkey.json` });
+    PIXI.Assets.add({ alias: key + 'Atlas', src: `spines/${key}/monkey.atlas` });
+    await PIXI.Assets.load([key + 'Data', key + 'Atlas']);
+    const s = spine.Spine.from({ skeleton: key + 'Data', atlas: key + 'Atlas', scale: 0.62 });
+    s.x = x; s.y = H - 30;
+    s.state.data.defaultMix = 0.16;
+    s.state.setAnimation(0, 'idle', true);
+    s.state.setAnimation(1, 'flutter', true);
+    s.state.addListener({ complete: (e) => { if (e.trackIndex === 0 && e.animation.name !== 'idle') s.state.setAnimation(0, 'idle', true); } });
+    app.stage.addChild(s); figs.push(s);
+  }
+  const names = Object.keys(NOTES).filter((n) => n !== 'flutter');
+  const bar = document.getElementById('bar'), info = document.getElementById('info');
+  const play = (n) => {
+    for (const s of figs) s.state.setAnimation(0, n, n === 'idle');
+    [...bar.children].forEach((b) => b.classList.toggle('on', b.dataset.n === n));
+    info.textContent = NOTES[n];
+  };
+  for (const n of names) {
+    const b = document.createElement('button'); b.textContent = n; b.dataset.n = n;
+    b.onclick = () => play(n); bar.appendChild(b);
+  }
+  play('idle');
+  window.__play = play; window.__app = app; window.__figs = figs;
+})();
+</script>
+</body>
+</html>

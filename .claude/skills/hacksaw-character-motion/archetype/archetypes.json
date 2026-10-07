@@ -1,0 +1,283 @@
+{
+ "about": "Pose archetypes offered when reskinning a game's cast figure. `bones` maps each game-skeleton role to the pack bone that plays it (used to MEASURE timing/amplitude/ratio and joint positions only). Side names here are the PACK's names; tools report which one is on screen-left. Nothing in this file is artwork.",
+ "archetypes": [
+  {
+   "number": 1,
+   "id": "miami_boss",
+   "bones": {
+    "hips": "body_root",
+    "waist": "boss_spine1",
+    "chest": "boss_spine2",
+    "neck": "boss_neck",
+    "head": "boss_head",
+    "arm_l": "boss_arm_l",
+    "fore_l": "boss_arm2_l",
+    "arm_r": "boss_arm_r",
+    "fore_r": "boss_arm2_r"
+   },
+   "props": [
+    {
+     "layer": "prop_cigar",
+     "bone": "boss_cigg"
+    }
+   ],
+   "dangles": [
+    {
+     "layer": "dangle_smoke",
+     "bone": "smoke_ctrl"
+    }
+   ],
+   "name_zh": "白西裝老大",
+   "pose_zh": "站姿，雙手自然垂在身側（可以穿長大衣、披圍巾）；雪茄叼在嘴上，煙往上飄。",
+   "arms": {
+    "screen_left": "hanging",
+    "screen_right": "hanging"
+   },
+   "has_reaction": false,
+   "order": [
+    "arm:screen_right",
+    "body",
+    "head",
+    "prop_cigar",
+    "dangle_smoke",
+    "arm:screen_left"
+   ],
+   "props_zh": {
+    "prop_cigar": "雪茄／菸斗（叼在嘴上）"
+   },
+   "dangles_zh": {
+    "dangle_smoke": "從雪茄往上飄的煙（一條，懸空）"
+   },
+   "note_zh": "參考裡這隻**沒有反應動畫**，只有待機。遊戲的中獎反應要另外設計（可用其他角色的節奏）。"
+  },
+  {
+   "number": 2,
+   "id": "miami_main_guy",
+   "bones": {
+    "hips": "guy_root_pelvis",
+    "waist": "spine",
+    "chest": "spine2",
+    "neck": "neck",
+    "head": "head",
+    "arm_l": "arm_l",
+    "fore_l": "arm_l_2",
+    "arm_r": "arm_r",
+    "fore_r": "arm_r_2"
+   },
+   "props": [
+    {
+     "layer": "prop_bat",
+     "bone": "bat"
+    }
+   ],
+   "dangles": [
+    {
+     "layer": "dangle_chain",
+     "bone": "chain_control"
+    },
+    {
+     "layer": "dangle_mask",
+     "bone": "mask"
+    }
+   ],
+   "name_zh": "扛球棒男",
+   "pose_zh": "站姿，畫面左側的手舉到肩膀、把球棒扛在肩上（棒子從肩後往外斜出）；畫面右側的手自然垂下、手肘微彎。脖子掛鍊子，臉上的面罩／頭巾有一截會晃。",
+   "arms": {
+    "screen_left": "raised_prop",
+    "screen_right": "hanging"
+   },
+   "has_reaction": true,
+   "order": [
+    "arm:screen_left",
+    "prop_bat",
+    "body",
+    "arm:screen_right",
+    "dangle_chain",
+    "head",
+    "dangle_mask",
+    "fingers:screen_left"
+   ],
+   "props_zh": {
+    "prop_bat": "球棒（扛在肩上，只碰握棒那隻手）"
+   },
+   "dangles_zh": {
+    "dangle_chain": "頸鍊（掛在胸前，懸空的一段）",
+    "dangle_mask": "面罩／頭巾垂下的尾端"
+   },
+   "note_zh": "反應的力道在「垂下那隻手的上臂鼓起、扛棒那隻手的前臂收緊」，加上軀幹往前推（視差）。"
+  },
+  {
+   "number": 3,
+   "id": "miami_main_girl",
+   "bones": {
+    "hips": "girl_root_pelvis",
+    "waist": "girl_spine",
+    "chest": "girl_spine2",
+    "neck": "girl_neck",
+    "head": "girl_head",
+    "arm_l": "girl_arm_L",
+    "fore_l": "girl_arm_L_2",
+    "arm_r": "girl_arm_R",
+    "fore_r": "girl_arm_R_2"
+   },
+   "props": [
+    {
+     "layer": "prop_bat",
+     "bone": "girl_bat"
+    }
+   ],
+   "dangles": [
+    {
+     "layer": "dangle_ponytail",
+     "bone": "ponytail"
+    },
+    {
+     "layer": "dangle_earring_l",
+     "bone": "ear_L"
+    },
+    {
+     "layer": "dangle_earring_r",
+     "bone": "girl_ear_R"
+    }
+   ],
+   "name_zh": "扛球棒女",
+   "pose_zh": "站姿，畫面右側的手舉起握住球棒、棒子扛在同側肩上；畫面左側的手自然垂下。綁馬尾、戴耳環。",
+   "arms": {
+    "screen_left": "hanging",
+    "screen_right": "raised_prop"
+   },
+   "has_reaction": true,
+   "order": [
+    "arm:screen_right",
+    "prop_bat",
+    "fingers:screen_right",
+    "body",
+    "arm:screen_left",
+    "dangle_ponytail",
+    "head",
+    "dangle_earring_l",
+    "dangle_earring_r"
+   ],
+   "props_zh": {
+    "prop_bat": "球棒（扛在肩上，只碰握棒那隻手）"
+   },
+   "dangles_zh": {
+    "dangle_ponytail": "馬尾（從後腦垂下、懸空）",
+    "dangle_earring_l": "耳環（畫面右側）",
+    "dangle_earring_r": "耳環（畫面左側）"
+   },
+   "note_zh": "頭髮、耳環是待機生命感的主力（馬尾最大幅度約 15°）。"
+  },
+  {
+   "number": 4,
+   "id": "miami_bikinigirl",
+   "bones": {
+    "hips": "root",
+    "waist": "ch4_spine",
+    "chest": "ch4_spine2",
+    "neck": "ch4_neck",
+    "head": "ch4_head",
+    "arm_l": "ch4_arm_l",
+    "fore_l": "ch4_arm2_l",
+    "arm_r": "ch4_arm_r",
+    "fore_r": "ch4_arm_2_r"
+   },
+   "props": [],
+   "dangles": [
+    {
+     "layer": "dangle_hair",
+     "bone": "ch4_hair_back2"
+    }
+   ],
+   "name_zh": "比基尼女",
+   "pose_zh": "站姿，雙手自然垂下；長髮披在背後，有一束會晃。",
+   "arms": {
+    "screen_left": "hanging",
+    "screen_right": "hanging"
+   },
+   "has_reaction": true,
+   "order": [
+    "dangle_hair",
+    "arm:screen_left",
+    "body",
+    "arm:screen_right",
+    "head"
+   ],
+   "props_zh": {},
+   "dangles_zh": {
+    "dangle_hair": "背後的長髮（懸空的一束）"
+   },
+   "note_zh": "參考裡其中一隻手是畫在身體那張圖裡；這條流程一律要求兩隻手臂都獨立一層。"
+  },
+  {
+   "number": 5,
+   "id": "miami_green_guy",
+   "bones": {
+    "hips": "character_0_scale_bone",
+    "waist": "character_0_spine1",
+    "chest": "character_0_spine2",
+    "neck": "character_0_neck",
+    "head": "character_0_head",
+    "arm_l": "character_0_arm_top_l",
+    "fore_l": "character_0_arm_l",
+    "arm_r": "character_0_arm_top_r",
+    "fore_r": "ch0_arm_r"
+   },
+   "props": [],
+   "dangles": [
+    {
+     "layer": "dangle_beard",
+     "bone": "character_0_beard"
+    }
+   ],
+   "name_zh": "綠背心壯漢",
+   "pose_zh": "站姿，雙臂交叉在胸前；下巴有鬍子（或其他從下巴垂下的東西）。",
+   "arms": {
+    "screen_left": "crossed",
+    "screen_right": "crossed"
+   },
+   "has_reaction": true,
+   "order": [
+    "body",
+    "arm:screen_left",
+    "arm:screen_right",
+    "head",
+    "dangle_beard"
+   ],
+   "props_zh": {},
+   "dangles_zh": {
+    "dangle_beard": "鬍子（從下巴垂下，兩節會晃）"
+   },
+   "note_zh": "反應只有 0.7 秒、幾乎沒有停頓，讀起來像「抖一下」。雙臂交叉擋住胸口，胸口仍要完整補畫。"
+  },
+  {
+   "number": 6,
+   "id": "le_bandit_raccoon",
+   "layered": false,
+   "bones": {
+    "hips": "hip_bone",
+    "waist": "hip_bone",
+    "chest": "chest_bone",
+    "neck": "chest_bone",
+    "head": "head_bone",
+    "arm_l": "L_sholder_bone",
+    "fore_l": "L_elbow_bone",
+    "arm_r": "R_sholder_bone",
+    "fore_r": "R_elbow_bone"
+   },
+   "props": [],
+   "dangles": [],
+   "name_zh": "浣熊大盜",
+   "pose_zh": "蹲姿、卡通比例，會換臉、冒對話框、丟帽子。",
+   "arms": {
+    "screen_left": "other",
+    "screen_right": "other"
+   },
+   "has_reaction": true,
+   "order": [],
+   "props_zh": {},
+   "dangles_zh": {},
+   "note_zh": "這隻走「每個零件一張圖」（38 張），分層需求單不適用；用 spineplay/motionlib.py -c 6 --guide 研究，但輪廓範本就是原作外形，不能拿去出貨。"
+  }
+ ]
+}

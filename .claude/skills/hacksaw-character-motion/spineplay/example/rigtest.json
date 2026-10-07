@@ -1,0 +1,567 @@
+{
+ "skeleton": {
+  "hash": "rigtest",
+  "spine": "4.0.64",
+  "x": -260,
+  "y": -260,
+  "width": 520,
+  "height": 520
+ },
+ "bones": [
+  {
+   "name": "root"
+  },
+  {
+   "name": "upper",
+   "parent": "root",
+   "length": 80,
+   "rotation": 20
+  },
+  {
+   "name": "lower",
+   "parent": "upper",
+   "length": 60,
+   "rotation": -30,
+   "x": 80
+  },
+  {
+   "name": "ik_target",
+   "parent": "root",
+   "x": 110,
+   "y": 60
+  },
+  {
+   "name": "solo",
+   "parent": "root",
+   "length": 50,
+   "x": -120,
+   "y": 40
+  },
+  {
+   "name": "solo_target",
+   "parent": "root",
+   "x": -40,
+   "y": 95
+  },
+  {
+   "name": "src",
+   "parent": "root",
+   "rotation": 35,
+   "x": 30,
+   "y": -90,
+   "scaleX": 1.3,
+   "scaleY": 0.8,
+   "shearY": 12
+  },
+  {
+   "name": "dst_world",
+   "parent": "root",
+   "rotation": -10,
+   "x": -30,
+   "y": -90
+  },
+  {
+   "name": "dst_wrel",
+   "parent": "root",
+   "rotation": -10,
+   "x": -60,
+   "y": -120
+  },
+  {
+   "name": "dst_local",
+   "parent": "root",
+   "rotation": -10,
+   "x": -90,
+   "y": -150
+  },
+  {
+   "name": "dst_lrel",
+   "parent": "root",
+   "rotation": -10,
+   "x": -120,
+   "y": -170
+  },
+  {
+   "name": "spin",
+   "parent": "root",
+   "rotation": 48,
+   "x": 60,
+   "y": 120,
+   "scaleX": 1.4,
+   "scaleY": 0.7
+  },
+  {
+   "name": "nrr",
+   "parent": "spin",
+   "length": 40,
+   "x": 20,
+   "transform": "noRotationOrReflection"
+  },
+  {
+   "name": "nrr_target",
+   "parent": "root",
+   "x": 140,
+   "y": 150
+  },
+  {
+   "name": "nsc",
+   "parent": "spin",
+   "length": 40,
+   "x": 20,
+   "y": 40,
+   "transform": "noScale"
+  },
+  {
+   "name": "nsc_target",
+   "parent": "root",
+   "x": 150,
+   "y": 60
+  },
+  {
+   "name": "p1",
+   "parent": "root",
+   "length": 40,
+   "x": -160,
+   "y": 150
+  },
+  {
+   "name": "p2",
+   "parent": "p1",
+   "length": 40,
+   "x": 40
+  },
+  {
+   "name": "p3",
+   "parent": "p2",
+   "length": 40,
+   "x": 40
+  }
+ ],
+ "slots": [
+  {
+   "name": "blob",
+   "bone": "lower",
+   "attachment": "blob"
+  },
+  {
+   "name": "curve",
+   "bone": "root",
+   "attachment": "curve"
+  }
+ ],
+ "ik": [
+  {
+   "name": "ik2",
+   "order": 0,
+   "bones": [
+    "upper",
+    "lower"
+   ],
+   "target": "ik_target",
+   "bendPositive": true,
+   "stretch": true,
+   "uniform": true,
+   "softness": 8
+  },
+  {
+   "name": "ik1",
+   "order": 1,
+   "bones": [
+    "solo"
+   ],
+   "target": "solo_target",
+   "compress": true,
+   "stretch": true,
+   "uniform": true
+  },
+  {
+   "name": "ik_nrr",
+   "order": 2,
+   "bones": [
+    "nrr"
+   ],
+   "target": "nrr_target"
+  },
+  {
+   "name": "ik_nsc",
+   "order": 3,
+   "bones": [
+    "nsc"
+   ],
+   "target": "nsc_target",
+   "compress": true,
+   "stretch": true
+  }
+ ],
+ "transform": [
+  {
+   "name": "tw",
+   "order": 4,
+   "bones": [
+    "dst_world"
+   ],
+   "target": "src",
+   "rotation": 15,
+   "x": 10,
+   "y": -5,
+   "scaleX": 0.2,
+   "scaleY": -0.1,
+   "shearY": 7,
+   "mixRotate": 0.7,
+   "mixX": 0.4,
+   "mixY": 0.9,
+   "mixScaleX": 0.5,
+   "mixScaleY": 0.3,
+   "mixShearY": 0.6
+  },
+  {
+   "name": "twr",
+   "order": 5,
+   "bones": [
+    "dst_wrel"
+   ],
+   "target": "src",
+   "relative": true,
+   "rotation": 15,
+   "x": 10,
+   "y": -5,
+   "scaleX": 0.2,
+   "mixRotate": 0.7,
+   "mixX": 0.4,
+   "mixScaleX": 0.5,
+   "mixShearY": 0.6
+  },
+  {
+   "name": "tl",
+   "order": 6,
+   "bones": [
+    "dst_local"
+   ],
+   "target": "src",
+   "local": true,
+   "rotation": 15,
+   "x": 10,
+   "y": -5,
+   "scaleX": 0.2,
+   "mixRotate": 0.7,
+   "mixX": 0.4,
+   "mixY": 0.9,
+   "mixScaleX": 0.5,
+   "mixShearY": 0.6
+  },
+  {
+   "name": "tlr",
+   "order": 7,
+   "bones": [
+    "dst_lrel"
+   ],
+   "target": "src",
+   "local": true,
+   "relative": true,
+   "rotation": 15,
+   "x": 10,
+   "mixRotate": 0.7,
+   "mixX": 0.4,
+   "mixScaleX": 0.5,
+   "mixShearY": 0.6
+  }
+ ],
+ "path": [
+  {
+   "name": "pc",
+   "order": 8,
+   "bones": [
+    "p1",
+    "p2",
+    "p3"
+   ],
+   "target": "curve",
+   "positionMode": "percent",
+   "spacingMode": "proportional",
+   "rotateMode": "chainScale",
+   "spacing": 1,
+   "position": 0.15,
+   "mixRotate": 1,
+   "mixX": 1,
+   "mixY": 0.8
+  }
+ ],
+ "skins": [
+  {
+   "name": "default",
+   "attachments": {
+    "blob": {
+     "blob": {
+      "type": "mesh",
+      "uvs": [
+       0,
+       0,
+       1,
+       0,
+       1,
+       1,
+       0,
+       1
+      ],
+      "triangles": [
+       0,
+       1,
+       2,
+       0,
+       2,
+       3
+      ],
+      "vertices": [
+       0,
+       0,
+       40,
+       0,
+       40,
+       40,
+       0,
+       40
+      ],
+      "hull": 4
+     }
+    },
+    "curve": {
+     "curve": {
+      "type": "path",
+      "closed": false,
+      "constantSpeed": true,
+      "lengths": [
+       140.0,
+       300.0,
+       420.0,
+       500.0
+      ],
+      "vertexCount": 12,
+      "vertices": [
+       -190,
+       120,
+       -160,
+       200,
+       -90,
+       60,
+       -40,
+       190,
+       20,
+       60,
+       70,
+       200,
+       120,
+       70,
+       150,
+       190,
+       180,
+       100,
+       200,
+       160,
+       230,
+       90,
+       250,
+       170
+      ]
+     }
+    }
+   }
+  }
+ ],
+ "animations": {
+  "move": {
+   "bones": {
+    "ik_target": {
+     "translatex": [
+      {
+       "time": 0,
+       "value": 0
+      },
+      {
+       "time": 0.5,
+       "value": -70,
+       "curve": [
+        0.1,
+        0,
+        0.4,
+        -70
+       ]
+      },
+      {
+       "time": 1.0,
+       "value": 40
+      }
+     ],
+     "translatey": [
+      {
+       "time": 0,
+       "value": 0
+      },
+      {
+       "time": 0.6,
+       "value": -110
+      },
+      {
+       "time": 1.0,
+       "value": 20
+      }
+     ]
+    },
+    "solo_target": {
+     "translate": [
+      {
+       "time": 0,
+       "x": 0,
+       "y": 0
+      },
+      {
+       "time": 0.7,
+       "x": -90,
+       "y": -60,
+       "curve": [
+        0.2,
+        0,
+        0.5,
+        -90,
+        0.2,
+        0,
+        0.5,
+        -60
+       ]
+      },
+      {
+       "time": 1.0,
+       "x": 30,
+       "y": 40
+      }
+     ]
+    },
+    "src": {
+     "rotate": [
+      {
+       "time": 0,
+       "value": 0
+      },
+      {
+       "time": 0.5,
+       "value": 140
+      },
+      {
+       "time": 1.0,
+       "value": -60
+      }
+     ],
+     "scalex": [
+      {
+       "time": 0,
+       "value": 1
+      },
+      {
+       "time": 0.5,
+       "value": 0.4
+      },
+      {
+       "time": 1.0,
+       "value": 1.7
+      }
+     ]
+    },
+    "spin": {
+     "rotate": [
+      {
+       "time": 0,
+       "value": 0
+      },
+      {
+       "time": 1.0,
+       "value": 300
+      }
+     ]
+    }
+   },
+   "ik": {
+    "ik2": [
+     {
+      "time": 0,
+      "mix": 1,
+      "softness": 8
+     },
+     {
+      "time": 0.5,
+      "mix": 0.35,
+      "softness": 40,
+      "bendPositive": false
+     },
+     {
+      "time": 1.0,
+      "mix": 1,
+      "softness": 0
+     }
+    ]
+   },
+   "transform": {
+    "tw": [
+     {
+      "time": 0,
+      "mixRotate": 0.7,
+      "mixX": 0.4,
+      "mixY": 0.9,
+      "mixScaleX": 0.5,
+      "mixShearY": 0.6
+     },
+     {
+      "time": 0.5,
+      "mixRotate": 0.1,
+      "mixX": 0.9,
+      "mixScaleX": 0.2,
+      "mixShearY": 0.1
+     },
+     {
+      "time": 1.0,
+      "mixRotate": 1,
+      "mixX": 0.3,
+      "mixY": 0.2,
+      "mixScaleX": 1,
+      "mixShearY": 1
+     }
+    ]
+   },
+   "path": {
+    "pc": {
+     "position": [
+      {
+       "time": 0,
+       "value": 0.05
+      },
+      {
+       "time": 1.0,
+       "value": 0.8
+      }
+     ],
+     "spacing": [
+      {
+       "time": 0,
+       "value": 1
+      },
+      {
+       "time": 1.0,
+       "value": 1.6
+      }
+     ],
+     "mix": [
+      {
+       "time": 0,
+       "mixRotate": 1,
+       "mixX": 1,
+       "mixY": 0.8
+      },
+      {
+       "time": 1.0,
+       "mixRotate": 0.3,
+       "mixX": 0.5
+      }
+     ]
+    }
+   }
+  }
+ }
+}

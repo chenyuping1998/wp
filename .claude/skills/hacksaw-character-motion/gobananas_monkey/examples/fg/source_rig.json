@@ -1,0 +1,112 @@
+{
+ "_note": "Go Banandit FG (the Lookout): joints with no piece edge to read, on the 560x912 canvas. Measured on design/cast_cut/fg_grid.png.",
+ "out": "bananditLookout",
+ "root": [
+  260,
+  893
+ ],
+ "hip": [
+  260,
+  480
+ ],
+ "waist": [
+  260,
+  450
+ ],
+ "neck": [
+  265,
+  205
+ ],
+ "helmet": {
+  "at": [
+   260,
+   60
+  ],
+  "dir": [
+   260,
+   10
+  ]
+ },
+ "banana": {
+  "at": [
+   190,
+   150
+  ],
+  "dir": [
+   180,
+   170
+  ]
+ },
+ "pocket": {
+  "at": [
+   260,
+   330
+  ],
+  "dir": [
+   260,
+   300
+  ]
+ },
+ "bubble": {
+  "at": [
+   202,
+   150
+  ],
+  "dir": [
+   178,
+   150
+  ]
+ },
+ "cuffR": {
+  "at": [
+   425,
+   300
+  ],
+  "dir": [
+   440,
+   400
+  ]
+ },
+ "handR": [
+  445,
+  560
+ ],
+ "prop": [
+  100,
+  578
+ ],
+ "cuffL": {
+  "at": [
+   120,
+   300
+  ],
+  "dir": [
+   108,
+   400
+  ]
+ },
+ "handL": [
+  95,
+  560
+ ],
+ "pantR": {
+  "at": [
+   340,
+   610
+  ],
+  "dir": [
+   345,
+   665
+  ]
+ },
+ "pantL": {
+  "at": [
+   175,
+   610
+  ],
+  "dir": [
+   170,
+   665
+  ]
+ }
+}

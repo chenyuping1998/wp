@@ -1,0 +1,9 @@
+{
+ "_note": "Go Banandit MG (the Bandit): joints with no piece edge to read, on the 560x912 canvas. Measured on design/cast_cut/mg_grid.png.",
+ "out": "bananditBandit",
+ "root": [290, 886], "hip": [290, 500], "waist": [290, 470], "neck": [305, 255],
+ "helmet": {"at": [300, 90], "dir": [290, 30]}, "banana": {"at": [300, 200], "dir": [300, 260]}, "pocket": {"at": [280, 380], "dir": [280, 330]},
+ "cuffL": {"at": [95, 360], "dir": [80, 465]}, "handL": [95, 560], "prop": [100, 578],
+ "cuffR": {"at": [465, 360], "dir": [490, 465]}, "handR": [480, 560],
+ "pantL": {"at": [210, 600], "dir": [205, 655]}, "pantR": {"at": [385, 600], "dir": [390, 655]}
+}
