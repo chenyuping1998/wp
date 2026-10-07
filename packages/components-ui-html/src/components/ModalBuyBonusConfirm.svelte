@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button, Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { stateBet, stateModal, stateUi, INFINITY_MARK } from 'state-shared';
+	import { stateBet, stateBetDerived, stateModal, stateUi, INFINITY_MARK } from 'state-shared';
 	import { getContextEventEmitter } from 'utils-event-emitter';
 
 	import BaseIcon from './BaseIcon.svelte';
@@ -17,7 +17,13 @@
 	const { eventEmitter } = getContextEventEmitter<EmitterEventModal>();
 
 	const confirm = () => {
+		const previousMode = stateBet.activeBetModeKey;
 		stateBet.activeBetModeKey = stateBonus.selectedBetModeKey;
+		if (!stateBetDerived.isBetCostAvailable()) {
+			stateBet.activeBetModeKey = previousMode;
+			stateModal.modal = { name: 'message', message: 'insufficientFunds' };
+			return;
+		}
 
 		if (stateBonusDerived.selectedBetModeData().type === 'buy') {
 			eventEmitter.broadcast({ type: 'bet' });
@@ -27,6 +33,7 @@
 			stateUi.autoSpinsLossLimitText = INFINITY_MARK;
 			stateUi.autoSpinsSingleWinLimitText = INFINITY_MARK;
 		}
+		stateModal.modal = null;
 	};
 </script>
 
@@ -45,7 +52,6 @@
 					onclick={() => {
 						confirm();
 						eventEmitter.broadcast({ type: 'soundPressGeneral' });
-						stateModal.modal = null;
 					}}
 				>
 					<BaseIcon width="100%" height="3rem" />

@@ -1,0 +1,56 @@
+{
+  "skeleton": {
+    "hash": "guy-coherent-elbow-v1",
+    "spine": "4.2.74",
+    "x": -102.5,
+    "y": 0,
+    "width": 205,
+    "height": 512
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "elbow",
+      "parent": "root",
+      "x": 49.96345425013536,
+      "y": 333.2019491066594
+    }
+  ],
+  "slots": [
+    {
+      "name": "guy_base",
+      "bone": "root",
+      "attachment": "guy_base"
+    },
+    {
+      "name": "guy_forearm",
+      "bone": "elbow",
+      "attachment": "guy_forearm"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "guy_base": {
+          "guy_base": {
+            "y": 256.0,
+            "width": 205,
+            "height": 512
+          }
+        },
+        "guy_forearm": {
+          "guy_forearm": {
+            "x": -49.96345425013536,
+            "y": -77.20194910665941,
+            "width": 205,
+            "height": 512
+          }
+        }
+      }
+    }
+  ],
+  "animations": {}
+}

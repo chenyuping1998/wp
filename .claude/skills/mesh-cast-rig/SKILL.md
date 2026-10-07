@@ -560,3 +560,149 @@ arm mappings side by side were all renders; the hands-by-thighs cap came from a
 sweep over the posed mesh, settled on renders. The one that was about the rig's
 weights was proved by MEASURING ownership over inked vertices — **still not by
 reading the rig.**
+
+## The same method on reel SYMBOLS (GoBananubis, every winning symbol, 2026-09-25)
+
+A symbol is not a cast figure: an opaque plate with the subject painted on,
+drawn ~118px, animating only while it is a winning cell. `apps/GoBananubis`
+runs all four high pays this way:
+
+| file | job |
+| :- | :- |
+| `design/make_symbol_layers.mjs` | cut each `h{n}.png` into plate / subject / soft drop shadow / 24-frame light-sweep atlas |
+| `src/game/meshWin/meshRig.ts` | import-free core: parts → grid + weights, pose, skin, keyed tracks, springs |
+| `src/game/meshWin/h{1-4}*.ts` | per symbol: the drawing traced as parts, measured limits, the acting |
+| `src/components/SymbolMeshWin.svelte` | renderer (plate, shadow, mesh, additive flash, sheen mesh, sparks, dust) |
+| `design/check_mesh_wins.mjs` | gate + `--limits` + `--dump`; runs in `pnpm build` (pngjs from `E:/stake/tools/gen`) |
+| `design/render_mesh_wins.py` | offline render of exactly what the component draws, plus deformation-only zooms |
+
+What was different from a cast figure, each found by a failing gate, a render
+or a probe:
+
+1. **Split the plate first**, and cut the subject from the plate itself so the
+   layers recompose it (mean diff < 1). Keep the plate's contact shadow.
+   Colour tests per subject; reject the plate's bronze by a hard 38px edge band
+   (h3's frame bars joined into an L whose CENTROID was inside), close small
+   gaps (h3's dark chest interior, h4's grey collar), and send a large enclosed
+   hole back to the plate when it is plate-bright (h4's loop window — filled,
+   a disc of stone rode along with the hop). An existing cut-out can be
+   missing parts: the old `scarab.png` had no hind legs.
+2. **Air follows the nearest part** (soft-min over distance). A root whose
+   distance is a small constant pins the air around moving parts — give the
+   root real polygons for the strokes it owns and read as FAR (14px) elsewhere.
+   Nested parts (pupil in eye) need `priority`, or they split 50/50.
+3. **Limits per direction**, drive limbs open-and-back. Touching neighbours
+   must move together: tripod gait tore h1's leg gap; separate hops tore the
+   banana lying between two bunches — a parent GROUP bone does the main move
+   and children add a little each. A wag belongs to the smallest part that
+   wags (h3's standing banana), not the bunch it grows from.
+4. **Joint blends need length.** A 9px rim fade let a 4.5px hop stretch 1.7x;
+   14px holds. A blink collapses toward the LOWER lid (the upper lid travels)
+   and the brow presses down with it to share the stretch.
+5. **Divide the rigid factor out of the area gate** (pop/squash scale every
+   triangle alike), and **detect pops, not speed**: a step > 1px and > 3x its
+   neighbours at 1ms sampling. A spring started at +1 (`spring`) instead of 0
+   (`flick`) made h4's loop jump 10% in one frame; nothing else saw it. The
+   detector was proved by re-injecting that bug.
+6. **WebGPU: a mesh ignores its texture's frame.** pixi 8.8.1's
+   GpuMeshAdapter never updates `uTextureMatrix`, so an atlas sub-texture draws
+   the whole atlas. The sheen uses a second geometry whose UVs are rewritten
+   into the current cell. The game defaults to WebGPU
+   (`localStorage.pixiPreference` switches it for debugging).
+7. **Cascade a line** (60ms a reel) or three copies act as one object. The reel
+   must come in as a PROP: the parent container's x reads 0 at mount.
+8. **Verify in the replay harness, window visible.** `make_replay_harness.mjs`
+   + patch a round in `build-replaytest/replay-mock-data.json` so H1-H4 win,
+   serve it (`gobananubis-replay` in `.claude/launch.json`), probe the scene by
+   duck-typed meshes. A hidden window stops rAF: the round never plays, and
+   pumping the ticker by hand crashed the GPU process. Do not run `pnpm build`
+   while the dev server watches `build/` (EBUSY kills it).
+
+9. **PANEL mode, for a subject that cannot be cut off its plate** (letters
+   carved into the stone, a head painted on a slate panel). `panelParts(inner)`
+   gives a fixed `frame` root and a `panel` bone that fades into it; the
+   whole art is the mesh and the plain stone/parchment absorbs the stretch.
+   The gate checks the frame never moves and the rigid move stays at rest, and
+   judges fold/stretch only inside the spec's `inked` region. Two traps:
+   a CHILD part's weight does not fade with the panel — W's crown sat 8px
+   under the frame, rode the full lift and folded to 40% until the head got
+   its own fade; and a subject that fills its panel cannot LIFT at all (W now
+   ducks down and acts with ears/cobra/jaw). The flash and sweep need a mask
+   that follows the drawing: a polygon lit a straight-edged patch of
+   parchment on S until `inkColor` narrowed it to the coloured pixels.
+10. **Review how it READS, not just whether it breaks**
+    (`design/review_mesh_wins.mjs`). The first review pass found four things
+    the gate could not: (a) every win ended up to 1px (board) off the drawing,
+    because springs never reach zero — a visible jump when the static sprite
+    takes over; `meshRig.settled` now blends the last 180ms home, and the gate
+    fails any win that does not END at rest. (b) holds that read as freezes
+    (S dead still for 470ms, the A for 330ms) — give every hang a slow bob.
+    (c) the Wild moving least of all (2.9px), because it cannot lift — give a
+    subject that cannot move its body a bigger cell knock and flash instead.
+    (d) a carving snapping its whole body with each pupil dart — the body
+    follows the gaze on its own slower, later curve. Then LOOK at all symbols
+    side by side at the same beats: at the hit the letters and the ankh were
+    touching the top frame bar, which reads as cramped. Measure the subject's
+    top against the bar (every upward move stacks at the hit) and keep a gap.
+
+### On a TEXTURED plate (GoBananasBoat, corrugated steel, 2026-09-25)
+
+Bubis's plate is plain basalt; Boat's is corrugated steel with rust. Every
+difference below came from that, found by a render or a residue map:
+
+1. **Cut the letters too.** A panel mesh bends whatever surrounds the subject,
+   and ribs are straight lines — any bend shows. Stencilled paint cuts cleanly
+   (lum > 150, chroma < 60). Keep panel mode for art painted INTO its window
+   (Boat's porthole portrait: `panelDiscParts`, a round frame).
+2. **Rebuild the plate per column, from the column's MEDIAN.** The ribs are
+   vertical, so a column looks the same all the way down. Seeding from the
+   pixels next to the hole striped every column with the subject's glow;
+   a plain median still went brown where a net covered most of a column. Median
+   only plate-coloured pixels, borrow neighbours' when too few, and blend the
+   hole's ends over ~6px.
+3. **Find the subject by its INK, not its colour.** Rust, the lantern's wall
+   glow and the flags' blue all overlap the subject colours. A hand hull,
+   GROWN (never trust it to be outside the ink), and a flood from outside that
+   stops at ink AND at walls. Chroma alone leaked through brass in shadow; a
+   "looks like the plate" test pulled rib shadows along. What held: chroma > 45
+   OR warm (r - b > 8) on grey steel; warmth alone on a TEAL plate; and for the
+   net and the flags the body IS that colour (`bodyIsWall`).
+4. **Shed only dark scraps that TOUCH the outside** (painted drop shadows).
+   Two over-eager versions punched holes: the helmet's porthole glass (small
+   cool panes between brass bars) and a mine horn's lit tip.
+5. **Blend a swinging part RADIALLY round its pivot**, not by a y threshold.
+   A y band is a seam across the whole object: the mine's limit went 4° -> 7°,
+   the net's 5° -> 39°, the lantern's 1.5° -> 12°.
+6. **Where the presentation is torn down on a timer, the hold must cover the
+   act**, or the subject is cut off mid-hop and snaps back. Size it to the
+   longest act ON THE BOARD.
+7. Strip RGB under zero alpha in the subject layers (4.0 MB -> 1.6 MB) and
+   store the blurred shadow at a quarter size.
+11. **Beyond the win: the landing and a walk cycle.** `landPose` gives every
+    symbol its own 240ms landing (fixed, not turbo-scaled — the reels must
+    settle together), gated at three weights like the win. A subject whose top
+    reaches into the frame band (W's ears) needs its own `landDepth`: the squash
+    pivots on the bottom, so the top moves most. A weight that follows live
+    state (the Scatter count) must be read ONCE at mount. `spec.walk` +
+    `MeshWalker.svelte` turn a cut subject into a prop that travels: gait phase
+    from distance covered (no skating), stride from speed. A component that
+    mounts when it first shows gets added ON TOP of siblings declared after it
+    — insert at the bottom when it must sit under them (`bottom`).
+12. **Inside Spine: rigid plates -> weighted meshes.** A cut-out Spine rig
+    whose budget is set by rigid pieces (GoBananubis's Anubis: the collar,
+    the kilt, the nemes) can keep its bones and turn just those pieces into
+    weighted mesh attachments written by the generator: grid in the piece's
+    pixels, hull ring first, each vertex stored per bone in that bone's setup
+    space (world minus bone, when setup bones are unrotated). A derived
+    follow-through bone (the kilt: torso turn 0.1s late, opposed) needs no
+    hand keys. Then re-measure every budget on renders — the preview must draw
+    meshes, or it shows the seams they removed — and re-print anything
+    positioned from the rig (the throw release, the fists). Prove the runtime
+    reads the JSON: load it with spine-core, pose it, and compare the mesh's
+    world vertices with the weighted sum.
+
+## Spine physics on hanging pieces (added 2026-09-26, GoBananubis mascot)
+
+- **Give each physics constraint its own `order`.** If they all share order 0, only the first one runs, and nothing errors or warns. Go Bananas Boat's captain had it too (fixed 2026-09-26). Re-measure after fixing: settings tuned while only one constraint ran will be far too loose once all of them do (Boat's right tail went to 32°).
+- **Physics can tear a mesh even when every keyed pose looks fine.** The offline preview doesn't simulate physics, so the gate has to step the real spine-core with `Physics.update` at 60fps. It plays each animation on track 0 with the flutter loop on track 1 and checks every inked triangle's area. See `apps/GoBananubis/design/check_anubis_rig.mjs`.
+- **Ears and other thin long tips need stiff physics.** At inertia 0.45 / strength 120, the ear tips swung 75px and the ear mesh stretched to 178%. What passes is 0.25/350/0.9 for the ears and 0.12/600/0.95 for the cobra. Let the keyed flutter carry the liveliness, and keep physics as a small follow-through on top.

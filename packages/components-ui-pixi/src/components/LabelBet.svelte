@@ -30,6 +30,25 @@
 	const disabled = $derived(stateReplay.enabled || !context.stateXstateDerived.isIdle());
 	let hovered = $state(false);
 
+	// uiTheme.valuePop: the figure swells when the stake moves, so a +/- press
+	// is acknowledged where the player is looking. Off (0) for every game that
+	// does not set it.
+	let pop = $state(0);
+	let prevCost: number | null = null;
+	$effect(() => {
+		const cost = stateBetDerived.betCost();
+		if (prevCost !== null && cost !== prevCost && uiTheme.valuePop > 0) {
+			pop = 1;
+			const start = performance.now();
+			const step = (now: number) => {
+				pop = Math.max(0, 1 - (now - start) / 300);
+				if (pop > 0) requestAnimationFrame(step);
+			};
+			requestAnimationFrame(step);
+		}
+		prevCost = cost;
+	});
+
 	const onpress = () => {
 		if (disabled) return;
 		context.eventEmitter.broadcast({ type: 'soundPressGeneral' });
@@ -59,5 +78,6 @@
 		stacked={props.stacked}
 		accent={uiTheme.betAccent}
 		maxWidth={props.maxWidth}
+		{pop}
 	/>
 </Container>

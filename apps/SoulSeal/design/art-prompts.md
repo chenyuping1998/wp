@@ -244,3 +244,97 @@ Tall rectangular proportions, roughly 2:3 width to height, centred.
 而且封面有 Stake 的構圖要求（角色要在框內、四邊留白、背景才出血，
 見 `wp/.claude/skills/stake-engine-slot/references/review-log.md` 第六輪）。
 等符號齊了、遊戲能跑起來，再對著實際畫面做。
+
+---
+
+## 7. 過場的主角（取代 S 印記）
+
+過場中央原本掉下來的是 S 的印記符（`mcS`），現在改成 **W 的半身**——
+跟預中同一個角色、同一件衣服，但**不同的動作**。
+
+這一張是**新的一張圖**，不是拿預中那張來用。兩張會在同一局裡先後出現
+（預中在轉輪還在跑的時候、過場在觸發之後），所以它們必須看得出是同一個人
+的兩個瞬間，而不是同一張圖播兩次。
+
+### 兩張的差別要拉開
+
+| | 預中（已交付） | 過場（這一張） |
+|---|---|---|
+| 手上 | **一張**符咒，貼近胸口 | **三張**符咒，浮在攤開的掌心上方 |
+| 視線 | 低頭看著手上的符 | 抬頭看向前方 |
+| 姿態 | 凝神、還在準備 | 已經備好、正要出手 |
+
+**三張符咒是這張圖的重點。** 它們不是握在手裡，是**浮著**——
+呈扇形或三角排開、微微傾斜、彼此不平行，像被托在氣流上。
+這是「已經備好，下一秒就丟出去」的狀態，而過場接著就是符咒炸開四散，
+所以這三張必須看起來**隨時會離開她的手**。
+
+### 提示詞
+
+先貼 §1 的 STYLE 區塊，然後：
+
+```
+SUBJECT: A young female Taoist exorcist, half body from the waist up,
+three-quarter view, chin lifted and looking forward past the viewer with a
+focused, decisive expression — the instant before she acts, not during.
+
+Same character as the delivered priestess portrait: long pale
+lavender-white hair falling past her shoulders, tall ceremonial hat in
+crimson and purple with gold trim and a jewelled centre, crimson and deep
+purple silk robe with gold-thread cloud patterns and wide ceremonial
+sleeves.
+
+Her right arm is raised and extended, palm open and turned upward, fingers
+relaxed. THREE paper talismans float in the air just above her open palm —
+not held, not touching her hand. They are arranged in a loose fan, each at
+a slightly different angle and height, tilted out of parallel with each
+other as if suspended on rising air. Each talisman is pale gold paper with
+abstract vermilion brush strokes on it and a faint warm glow along its
+edges.
+
+Wisps of warm golden spirit-light rise from her palm and curl around the
+three talismans.
+
+Composition: the figure is centred and occupies the middle of the frame with
+generous empty black space on all four sides — especially a wide clear
+margin around the talismans and above her raised hand. Nothing crops at any
+edge.
+
+Portrait orientation, taller than wide, roughly 3:4.
+
+PURE BLACK background (#000000), completely flat, no vignette, no fog, no
+floor, no scenery, no frame, no torii gate, no circular border.
+
+The brush marks on the talismans must be ABSTRACT decorative strokes only —
+not readable Chinese, Japanese or Korean characters, and not any real
+script. No text anywhere in the image.
+```
+
+### 為什麼要求這些
+
+**純黑底、四邊留白。** `design/import_cover.mjs` 從黑底 flood 找 matte 再還原
+alpha，靠的是「離 matte 多遠」而不是亮度——一縷微光靠近底色、一道暗褶深在人物
+內部。任何漸層底、霧、地板都會讓它失去參考點。已交付的預中立繪就是黑底，
+去背結果乾淨。
+
+**手部上方要特別空。** 程式會在她周圍畫**環繞的魔法粒子**——就是 active 投注鍵
+和符咒觸發用的那組（呼吸光環＋環繞光點）。那是畫上去的、不在圖裡，所以圖裡
+那個區域必須是空的黑，否則粒子會疊在畫好的光暈上變成一團。
+
+**不要鳥居框。** W 在盤面上是**框在鳥居裡的肖像**，那是它跟 C（無框全身）的
+辨識點。過場這張是同一個人走出畫框，有框就變回符號了。
+
+**符咒上不能有真字。** `design/check_no_cjk_art.mjs` 會擋——這款出十二個語系，
+畫進圖裡的字跟不了語系；而且真的符文有它自己的問題。抽象筆觸就好。
+
+### 拿到之後
+
+存成 `design/source/cover/transition_priestess.png`（或 .jpg），跑：
+
+```bash
+node design/import_cover.mjs ../../../tools/gen
+```
+
+去背後我會接到過場的中央位置、換掉現在掉下來的 `mcS`，
+並把環繞粒子的顏色與半徑對著實際圖的手部位置調好。
+符咒炸開四散那一段不動。

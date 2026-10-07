@@ -115,6 +115,17 @@ setUiTheme({
 	// highlight has nothing to clear and can sit almost on it.
 	buyBonusHighlightPad: 0.012,
 
+	// Hovering lifts the plate with a translucent panel - the shared default.
+	//
+	// Two other ideas were tried and both were worse: lighting the incantation
+	// additively, which washed out the middle of the paper AND the label sitting
+	// on it, and a stroked outline, which was clean but read as a frame drawn
+	// round the object rather than the object responding. The panel is quiet and
+	// it is what the rest of the bar does.
+	//
+	// buyBonusPlateInset above is what sizes it, so it hugs the talisman rather
+	// than boxing the empty square the button occupies.
+
 	// No idle glow.
 	//
 	// This was added, then made visible - the first attempt drew it in the LABEL's

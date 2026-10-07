@@ -89,12 +89,10 @@ const activeBetMode = () => stateMeta.betModeMeta?.[stateBet.activeBetModeKey.to
 	?? null;
 const isContinuousBet = () => stateBet.autoSpinsCounter > 1 || stateBet.isSpaceHold;
 const timeScale = () => (stateBet.isTurbo ? 2 : 1);
-const betCostMultiplier = () =>
-	stateBetDerived.activeBetMode().type === 'activate'
-		? stateBetDerived.activeBetMode().costMultiplier
-		: 1;
+const betCostMultiplier = () => stateBetDerived.activeBetMode()?.costMultiplier ?? 1;
 const betCost = () => stateBet.betAmount * betCostMultiplier();
-const isBetCostAvailable = () => betCost() > 0 && betCost() <= stateBet.balanceAmount;
+const isBetCostAvailable = () =>
+	Number.isFinite(betCost()) && betCost() > 0 && betCost() <= stateBet.balanceAmount;
 const hasAutoBetCounter = () => stateBet.autoSpinsCounter !== 0;
 
 export const stateBetDerived = {

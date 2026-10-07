@@ -53,6 +53,63 @@ const SAFE = CELL - MARGIN * 2;
 // is not perfectly flat.
 const FLOOD_TOLERANCE = 42;
 
+// ── enclosed counters ───────────────────────────────────────────────────────
+//
+// The flood starts at the image border, so it can only reach background that the
+// artwork does not enclose. A letterform encloses plenty: measured on J, the
+// counter inside its hook came out fully opaque, a dark red blob sitting in a
+// hole that should be empty.
+//
+// Two separate things kept it. The flood could not REACH it, and the colour
+// there is outside the tolerance anyway - the artist's red glow has nowhere to
+// fade to inside a closed counter, so it pools:
+//
+//     image border          rgb   0,  0,  0     dist  0
+//     counter, edges        rgb  38,  0,  0     dist 38   within tolerance
+//     counter, middle       rgb  55,  0,  4     dist 55   outside it
+//     the letter's own face rgb 101, 34, 20     dist 101
+//
+// So an enclosed region is flooded on its own pass and at a WIDER tolerance, and
+// the two numbers say something different about the picture. Outside the
+// silhouette the glow is ART - it is the symbol's aura and the alpha recovery
+// below gives it a soft edge. Inside a counter there is nothing to preserve: a
+// counter is a hole by definition, and anything pooling in it is spill.
+//
+// The gap between 55 and 101 is what makes this safe. It is checked per symbol
+// when the script runs - see the per-file report - so a symbol whose counter
+// really does hold artwork would show up as a large clear rather than a small one.
+// ── enclosed counters, for the symbols that ask for it ──────────────────────
+//
+// The flood starts at the image border, so it can only reach background the
+// artwork does not enclose. J encloses some: the counter inside its hook came out
+// a solid dark-red blob sitting in a hole that should be empty, because the flood
+// could not get to it and the artist's glow had pooled there.
+//
+// This is NOT applied to every symbol, and the list below is the whole of it.
+// Three general rules were tried and each one damaged artwork that is legitimately
+// enclosed and legitimately dark:
+//
+//   flood enclosed regions at a wider tolerance  the fox mask lost the disc it is
+//                                                painted on (-33%)
+//   ...at the border's own tolerance             the same, and Q lost 23%
+//   ...plus a size cap                           better, still -17% on the fox
+//
+// The reason no threshold works is measurable. Against its own matte, Q's counter
+// reads 52 and the darkest pixels of Q's own FACE read 28 - the hole is lighter
+// than parts of the letter around it. And h1's matte is rgb(55,3,5), a red, with
+// the fox painted on a disc that is within tolerance of it by design.
+//
+// So this is a property of individual pieces of art, not of the pipeline, and it
+// is named per file rather than guessed at. Adding a symbol here means looking at
+// it first.
+const ENCLOSED_COUNTERS = new Set(['l4.png']);
+// How big an enclosed region may be, as a share of the image, and how big an
+// island may be as a share of the symbol's own mass. Both are small on purpose:
+// a counter is a fragment, and anything approaching the size of the picture is
+// the picture.
+const COUNTER_MAX_SHARE = 0.04;
+const ISLAND_MAX_SHARE_OF_SYMBOL = 0.06;
+
 // ── the carrier's spirit aura ───────────────────────────────────────────────
 //
 // M is the only symbol that gets one, and it is here rather than in the art
@@ -153,7 +210,7 @@ const dist = (png, i, bg) =>
 	);
 
 /** Mark every pixel reachable from the border that is still near `bg`. */
-const floodBackground = (png, bg) => {
+const floodBackground = (png, bg, clearCounters) => {
 	const seen = new Uint8Array(png.width * png.height);
 	const stack = [];
 	const push = (x, y) => {
@@ -180,7 +237,124 @@ const floodBackground = (png, bg) => {
 		push(x, y + 1);
 		push(x, y - 1);
 	}
-	return seen;
+
+	// ── the second pass: background the border could not reach ───────────────
+	//
+	// Only for the files named in ENCLOSED_COUNTERS - see the note there.
+	if (!clearCounters) return { seen, enclosedCount: 0 };
+
+	//
+	// Every pixel still unseen is either the symbol or a counter enclosed by it.
+	// A counter is found the same way the outside was - by flooding - only seeded
+	// from the pixels themselves and judged at COUNTER_TOLERANCE. A component is
+	// only cleared if EVERY pixel in it passed, so a region that is background at
+	// its edges and artwork in the middle is left alone entire.
+	const enclosed = [];
+	const region = new Int32Array(png.width * png.height);
+	for (let y0 = 0; y0 < png.height; y0++) {
+		for (let x0 = 0; x0 < png.width; x0++) {
+			const start = png.width * y0 + x0;
+			if (seen[start] || region[start]) continue;
+			if (dist(png, start * 4, bg) > FLOOD_TOLERANCE) continue;
+			// walk this component, collecting it
+			const members = [];
+			const work = [x0, y0];
+			region[start] = 1;
+			let touchesEdge = false;
+			while (work.length) {
+				const y = work.pop();
+				const x = work.pop();
+				members.push(png.width * y + x);
+				if (x === 0 || y === 0 || x === png.width - 1 || y === png.height - 1) touchesEdge = true;
+				for (const [dx, dy] of [
+					[1, 0],
+					[-1, 0],
+					[0, 1],
+					[0, -1],
+				]) {
+					const nx = x + dx;
+					const ny = y + dy;
+					if (nx < 0 || ny < 0 || nx >= png.width || ny >= png.height) continue;
+					const n = png.width * ny + nx;
+					if (seen[n] || region[n]) continue;
+					if (dist(png, n * 4, bg) > FLOOD_TOLERANCE) continue;
+					region[n] = 1;
+					work.push(nx, ny);
+				}
+			}
+			// A component reaching the edge is not enclosed - the border flood
+			// already judged it at the narrower tolerance and decided to keep it.
+			// SMALL enclosed regions only.
+			//
+			// "Enclosed and the colour of the matte" is not by itself a hole. The
+			// fox mask is painted on a dark disc that sits within tolerance of its
+			// own matte, and the priestess has a filled frame: clearing every
+			// enclosed match took a third of the fox away. What a counter has that
+			// those do not is that it is SMALL - J's is 2% of its image where the
+			// fox's disc is 28% of its own.
+			if (!touchesEdge && members.length <= png.width * png.height * COUNTER_MAX_SHARE) {
+				enclosed.push(...members);
+			}
+		}
+	}
+	for (const idx of enclosed) seen[idx] = 1;
+
+	// ── islands ──────────────────────────────────────────────────────────────
+	//
+	// What is left opaque is the symbol plus anything the symbol encloses that the
+	// floods above could not judge - the core of a counter, where the artist's
+	// glow pooled too far from the matte colour to be recognised as background.
+	//
+	// The symbol is the LARGEST connected mass. Everything else that does not
+	// reach the image border is enclosed by the symbol and is not it.
+	const island = new Uint8Array(png.width * png.height);
+	const components = [];
+	for (let y0 = 0; y0 < png.height; y0++) {
+		for (let x0 = 0; x0 < png.width; x0++) {
+			const start = png.width * y0 + x0;
+			if (seen[start] || island[start]) continue;
+			const members = [];
+			const work = [x0, y0];
+			island[start] = 1;
+			let touchesEdge = false;
+			while (work.length) {
+				const y = work.pop();
+				const x = work.pop();
+				members.push(png.width * y + x);
+				if (x === 0 || y === 0 || x === png.width - 1 || y === png.height - 1) touchesEdge = true;
+				for (const [dx, dy] of [
+					[1, 0],
+					[-1, 0],
+					[0, 1],
+					[0, -1],
+				]) {
+					const nx = x + dx;
+					const ny = y + dy;
+					if (nx < 0 || ny < 0 || nx >= png.width || ny >= png.height) continue;
+					const n = png.width * ny + nx;
+					if (seen[n] || island[n]) continue;
+					island[n] = 1;
+					work.push(nx, ny);
+				}
+			}
+			components.push({ members, touchesEdge });
+		}
+	}
+	// Islands are removed only when they are SMALL. The symbol is the largest mass
+	// and everything enclosed by it is a fragment; capping the size is what stops
+	// this from eating a symbol that the flood happened to split in two, which is
+	// how the fox mask lost its disc and Q lost its face on the way here.
+	let biggest = 0;
+	for (const c of components) biggest = Math.max(biggest, c.members.length);
+	let islandCount = 0;
+	for (const c of components) {
+		if (c.touchesEdge || c.members.length === biggest) continue;
+		if (c.members.length > biggest * ISLAND_MAX_SHARE_OF_SYMBOL) continue;
+		for (const idx of c.members) seen[idx] = 1;
+		islandCount += c.members.length;
+	}
+
+	return { seen, enclosedCount: enclosed.length + islandCount };
 };
 
 /** Nearest-neighbour resample of an RGBA buffer region into a CELLxCELL canvas. */
@@ -231,7 +405,7 @@ for (const file of files) {
 		return Math.round((vals[1] + vals[2]) / 2);
 	});
 
-	const isBg = floodBackground(png, bg);
+	const { seen: isBg, enclosedCount } = floodBackground(png, bg, ENCLOSED_COUNTERS.has(file));
 
 	let x0 = png.width;
 	let y0 = png.height;
@@ -301,6 +475,7 @@ for (const file of files) {
 	console.log(
 		`${file.padEnd(8)} ${png.width}x${png.height} matte rgb(${bg}) ` +
 			`-> content ${w}x${h} -> ${CELL}x${CELL} @ ${scale.toFixed(2)}x` +
+			(enclosedCount ? ` + ${enclosedCount.toLocaleString()}px of enclosed counter` : '') +
 			(aura ? ' + spirit aura' : ''),
 	);
 }

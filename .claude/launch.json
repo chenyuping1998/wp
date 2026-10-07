@@ -82,6 +82,21 @@
 			"port": 3005
 		},
 		{
+			"name": "cleo-dev",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": [
+				"--dir",
+				"apps/Cleo",
+				"exec",
+				"vite",
+				"dev",
+				"--host",
+				"--port",
+				"3009"
+			],
+			"port": 3009
+		},
+		{
 			"name": "turfwar-dev",
 			"runtimeExecutable": "pnpm",
 			"runtimeArgs": [

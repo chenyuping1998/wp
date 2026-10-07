@@ -323,6 +323,26 @@ URL parameters the game receives (`stateUrlDerived`):
 
 - `social=true` forces English and forbids betting terminology everywhere the
   player can read.
+- **The info page's legal notice lives in `state-shared/src/legal.ts` as
+  `LEGAL_NOTICE`.** It is the same paragraph in every game, so a game renders
+  `<p class="wp-foot">{LEGAL_NOTICE}</p>` and never retypes it. The trademark
+  line is `TM and © 2026 Engine.` — certification asked for "Stake" out of the
+  disclaimer, so `2026 Stake Engine` is wrong. The wording also avoids wagering
+  terms throughout ("wins/plays/rounds", not "pays/bets/spins") because the
+  paragraph is player-facing in the social build too.
+
+  Older apps still hold their own literal copy. That is deliberate — they are
+  shipped, and correcting them is a separate decision — but a new game imports
+  the constant.
+
+  This hid for several games because `check_social_words.mjs` was doing two
+  things wrong: it exempted the phrase "Stake Engine" as a proper noun, and
+  rules 1-3 could not see the text at all once it moved into a `.ts` constant
+  (rule 1 walks `.svelte` only; rules 2-3 look for `pick()` and social
+  ternaries). Rule 4 now scans plain copy constants. **Every one of those gaps
+  was found by injecting the bad string and checking for a non-zero exit** — the
+  checker reported a clean pass in all three broken states. A guard that has
+  never been seen to fail is not evidence of anything.
 - Replay is a GET to `/bet/replay/{game}/{version}/{mode}/{event}`; nothing is
   wagered and `endRound` is skipped, so a round can be replayed repeatedly.
 - Book amounts and `payoutMultiplier` are quoted against the **base** stake, not
@@ -331,6 +351,33 @@ URL parameters the game receives (`stateUrlDerived`):
   switching to French must not turn `$1,000.00` into `1 000,00 $US`.
 - Amounts in URL parameters are in API units: 1,000,000 = 1 coin. A launcher
   `balance=100000000` seeds 100 coins, not 100 million.
+
+## The optimiser is stochastic, and the noise is bigger than the knob
+
+Measured on Go Boomana: **four runs of one unchanged config** put bonus200's
+break-even band anywhere between 14.9% and 29.1%, and "lost more than half the
+stake" between 42% and 60%. RTP was 0.9600 in all four. The optimiser nails its
+target and then lands the *shape* nearly at random inside a wide band.
+
+- **A single before/after pair proves nothing about a scaling change.** Two
+  conclusions were drawn that way during this work and both were noise, including
+  one that blamed a tier's structure for what was a bad draw.
+- **`scale_factor` has to be big to do anything.** The optimiser injects its own
+  corrective factors of `150.0` and `0.0001` (`optimization_program/src/main.rs`),
+  so values like 1.2 or 0.8 are rounding error next to them.
+- **Select, do not tune.** Run the optimiser N times and keep the best draw —
+  every draw is a valid weighting of real books at exactly the right RTP.
+  `games/GoBoomana/optimise_best_of.py` does this, **per tier**: each mode is its
+  own lookUpTable, and the verification sidecars hash the *books* (which
+  optimisation never rewrites), not the weights, so tables from different runs
+  mix safely. Scoring the three tiers as one sum instead lets a great bonus300
+  drag a mediocre bonus200 along with it.
+- **Book supply is what makes a reshape safe.** Raising the bought tiers to 1e5
+  sims took bonus100's break-even band from 178 books to 1,708 and its commonest
+  book from 1-in-492 to 1-in-1,666. Only then can the band carry 25-40% of the
+  weight without the same round coming back visibly often.
+- Budget the time: one optimisation pass over three tiers is ~4 minutes on 8
+  cores at `num_show`/`num_per_fence` 5000, so a best-of-10 is ~40 minutes.
 
 ## Shipping a new game
 

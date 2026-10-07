@@ -172,6 +172,16 @@
 		preload: true,
 	},
 
+	// The exorcist at the centre of the TRANSITION, three talismans floating over
+	// her open palm. A different pose from mcPriestess, which is the trigger tease:
+	// that one is still holding one talisman and looking down at it, this one has
+	// three and is looking up. The two play seconds apart in the same round, so
+	// they have to read as two moments rather than as one picture used twice.
+	mcTransitionPriestess: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/soulSealUi/transition_priestess.png', import.meta.url).href,
+		preload: true,
+	},
 	mcPriestess: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/soulSealUi/priestess.png', import.meta.url).href,
@@ -269,10 +279,5 @@
 	talismans: {
 		type: 'spriteSheet',
 		src: new URL('../../assets/sprites/talisman/talisman.json', import.meta.url).href,
-	},
-	sound: {
-		type: 'audio',
-		src: new URL('../../assets/audio/sounds.json', import.meta.url).href,
-		preload: true,
 	},
 } as const;

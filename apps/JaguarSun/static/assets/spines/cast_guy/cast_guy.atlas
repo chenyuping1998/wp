@@ -1,0 +1,13 @@
+cast_guy.png
+size: 744,3700
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+guy_base
+bounds: 2,2,740,1847
+offsets: 0,0,740,1847
+index: -1
+guy_forearm
+bounds: 2,1851,740,1847
+offsets: 0,0,740,1847
+index: -1

@@ -44,7 +44,7 @@
 	// nothing else on screen is moving, which is exactly when it is needed.
 	let idlePulse = $state(0);
 	$effect(() => {
-		if (!uiTheme.buyBonusIdleGlow) return;
+		if (!uiTheme.buyBonusIdleGlow || disabled || active) return;
 		let phase = 0;
 		const id = setInterval(() => {
 			phase += 0.045;
@@ -53,6 +53,47 @@
 		return () => clearInterval(id);
 	});
 	const idleLit = $derived(uiTheme.buyBonusIdleGlow && !disabled && !active);
+
+	// ── the plate turning under the pointer ──────────────────────────────────
+	//
+	// ONE CLOCK, AND THE ANGLE IS PASSED DOWN. The plate and the lit hover overlay
+	// are two sprites of the same object, so they have to be at the same angle on
+	// every frame; two independent timers would drift apart and the glow would
+	// come off the thing it is supposed to be glowing on.
+	//
+	// Hover reaches script scope through Button's `onhover` rather than through
+	// the children snippet, because a snippet argument cannot be read from an
+	// effect — see the note on that prop.
+	let hovering = $state(false);
+	let spin = $state(0); // radians
+	let spinSpeed = $state(0); // radians/second
+
+	$effect(() => {
+		if (!uiTheme.buyBonusHoverRotate) return;
+		let last = Date.now();
+		// A timer, not requestAnimationFrame: rAF does not run at all in a
+		// backgrounded tab, and a wheel left mid-spin would still be at that angle
+		// when the player came back.
+		const id = setInterval(() => {
+			const now = Date.now();
+			// clamped, so a stalled tab resumes rather than jumping a whole turn
+			const dt = Math.min(0.1, (now - last) / 1000);
+			last = now;
+			const want =
+				hovering && !disabled ? (uiTheme.buyBonusHoverRotate * Math.PI) / 180 : 0;
+			// Takes hold quickly, lets go slowly. The asymmetry is the whole feel of
+			// it: a wheel answers a hand at once and then carries its own momentum.
+			const k = want > spinSpeed ? 7 : 1.8;
+			spinSpeed += (want - spinSpeed) * Math.min(1, k * dt);
+			if (want === 0 && Math.abs(spinSpeed) < 0.004) {
+				spinSpeed = 0;
+				return;
+			}
+			// wrapped, so the angle cannot drift off into float noise in a long session
+			spin = (spin + spinSpeed * dt) % (Math.PI * 2);
+		}, 32);
+		return () => clearInterval(id);
+	});
 
 	const openModal = () => (stateModal.modal = { name: 'buyBonus' });
 	const disableActiveBetMode = () => (stateBet.activeBetModeKey = 'BASE');
@@ -88,7 +129,7 @@
 	};
 </script>
 
-<Button {...props} {sizes} {disabled} {onpress}>
+<Button {...props} {sizes} {disabled} {onpress} onhover={(value) => (hovering = value)}>
 	{#snippet children({ center, hovered, pressed })}
 		{@const state = getState({
 			active,
@@ -115,7 +156,7 @@
 			/>
 		{/if}
 
-		{#if idleLit}
+		{#if idleLit && !uiTheme.buyBonusIdleSprite}
 			<!--
 				The "you can press this" light, under the plate.
 				Stacked low-alpha rings, the same construction as the spin button's
@@ -150,6 +191,7 @@
 			key="buyBonus"
 			{...center}
 			anchor={0.5}
+			rotation={spin}
 			width={plate.width}
 			height={plate.height}
 			{...uiTheme.buyBonusPlateChrome
@@ -175,13 +217,13 @@
 							// disappear, and the faded caption already carries most of
 							// that signal. This and labelAlpha above are the two numbers
 							// to move if it needs to go further either way.
-							tint: 0x767670,
-							backgroundColor: 0x1a2208,
+							tint: uiTheme.buyBonusDisabledTint ?? 0x767670,
+							backgroundColor: uiTheme.buyBonusDisabledFill,
 						}
 					: {
 							backgroundColor: 0xaaaaaa,
 							// plate art ignores fills, so grey it down with tint instead
-							tint: 0x8a8a8a,
+							tint: uiTheme.buyBonusDisabledTint ?? 0x8a8a8a,
 						}
 				: {}}
 			{...active
@@ -192,6 +234,18 @@
 					}
 				: {}}
 		/>
+
+		{#if idleLit && uiTheme.buyBonusIdleSprite}
+			<UiSprite
+				key={uiTheme.buyBonusIdleSprite}
+				{...center}
+				anchor={0.5}
+				width={plate.width}
+				height={plate.height}
+				alpha={0.08 + 0.2 * idlePulse}
+				blendMode="add"
+			/>
+		{/if}
 
 		{#if uiTheme.buyBonusHoverStyle === 'outline' && hovered && !disabled}
 			<Graphics
@@ -227,10 +281,11 @@
 				key={uiTheme.buyBonusHoverSprite}
 				{...center}
 				anchor={0.5}
+				rotation={spin}
 				width={plate.width}
 				height={plate.height}
 				tint={uiTheme.buyBonusHoverSpriteTint}
-				blendMode="add"
+				blendMode={uiTheme.buyBonusHoverSpriteBlend}
 			/>
 		{:else if uiTheme.hoverHighlight && hovered && !disabled}
 			<!-- same subtle lift as the rail buttons; this one is assembled by hand
@@ -264,29 +319,49 @@
 			/>
 		{/if}
 
-		<Text
-			{...center}
-			x={center.x + sizes.width * uiTheme.buyBonusLabelOffsetX}
-			y={center.y + sizes.height * uiTheme.buyBonusLabelOffsetY}
-			anchor={0.5}
-			alpha={labelAlpha}
-			text={active ? i18nDerived.disable() : i18nDerived.buyBonus()}
-			style={{
-				align: 'center',
-				wordWrap: true,
-				// Keep the wrap box inside the plate, not just inside the button. The
-				// default is the 150px button minus its 7px border; a game whose plate
-				// is an object rather than a panel narrows it - see the theme.
-				wordWrapWidth: uiTheme.buyBonusLabelWrapWidth * labelScale,
-				lineHeight: UI_BASE_FONT_SIZE * (uiTheme.buyBonusLabelSizeRatio + 0.04) * labelScale,
-				fontFamily: uiTheme.fontFamily,
-				fontWeight: uiTheme.fontWeight,
-				fontSize: UI_BASE_FONT_SIZE * uiTheme.buyBonusLabelSizeRatio * labelScale,
-				// themed, not hardcoded white: on GoBananas' olive plate the white
-				// read as a different game's button sitting on the board. Defaults to
-				// white, so Wild Party is unchanged.
-				fill: uiTheme.buyBonusLabelFill,
-			}}
-		/>
+		<!--
+			THE CAPTION IS RE-MOUNTED WHENEVER THE HOVER STATE FLIPS, and that is the
+			whole of this block's wrapper.
+
+			pixi-svelte stacks children by MOUNT ORDER — Container.addChild is called as
+			each node mounts — and ignores where a node sits in the template. The hover
+			overlays above are conditional, so they mount AFTER the caption and land on
+			top of it, whatever this file's order says. The comments on those overlays
+			describe the caption as drawn after them; it was not.
+
+			It was invisible while every hover overlay was ADDITIVE: light over dark type
+			still leaves the type readable. An opaque overlay — a game painting the lit
+			state over the plate rather than adding to it — covered the words entirely.
+
+			Keying the caption on the same condition tears it down and mounts it again
+			after the overlay, which puts it back on top. One small Text per hover, and
+			the stacking now matches what the comments already claimed.
+		-->
+		{#key hovered && !disabled}
+			<Text
+				{...center}
+				x={center.x + sizes.width * uiTheme.buyBonusLabelOffsetX}
+				y={center.y + sizes.height * uiTheme.buyBonusLabelOffsetY}
+				anchor={0.5}
+				alpha={labelAlpha}
+				text={active ? i18nDerived.disable() : i18nDerived.buyBonus()}
+				style={{
+					align: 'center',
+					wordWrap: true,
+					// Keep the wrap box inside the plate, not just inside the button. The
+					// default is the 150px button minus its 7px border; a game whose plate
+					// is an object rather than a panel narrows it - see the theme.
+					wordWrapWidth: uiTheme.buyBonusLabelWrapWidth * labelScale,
+					lineHeight: UI_BASE_FONT_SIZE * (uiTheme.buyBonusLabelSizeRatio + 0.04) * labelScale,
+					fontFamily: uiTheme.fontFamily,
+					fontWeight: uiTheme.fontWeight,
+					fontSize: UI_BASE_FONT_SIZE * uiTheme.buyBonusLabelSizeRatio * labelScale,
+					// themed, not hardcoded white: on GoBananas' olive plate the white
+					// read as a different game's button sitting on the board. Defaults to
+					// white, so Wild Party is unchanged.
+					fill: uiTheme.buyBonusLabelFill,
+				}}
+			/>
+		{/key}
 	{/snippet}
 </Button>

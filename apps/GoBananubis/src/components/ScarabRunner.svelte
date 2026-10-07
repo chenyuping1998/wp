@@ -1,0 +1,239 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import { Graphics, Sprite } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import MeshWalker from './MeshWalker.svelte';
+
+	// One scarab WALKING along one payline, left to right — H1's own beetle, all
+	// six legs, through its mesh (MeshWalker, h1Scarab.walk). It used to be a
+	// picture spun like a ball, which read as rolling, not as a beetle going
+	// somewhere. Deliberately quiet:
+	// no blast on arrival — the job is to draw the eye along the line so the
+	// player can read which symbols paid, not to put on a show.
+	type Point = { x: number; y: number };
+
+	type Props = {
+		points: Point[];
+		color: number;
+		// ms before this runner starts (volley stagger)
+		delay?: number;
+		// shrinks when many lines run at once so the board stays readable
+		scale?: number;
+		entryMs?: number;
+		travelMs?: number;
+		settleMs?: number;
+		// fired as the scarab crosses each reel, so symbols light up in its wake
+		onreel?: (reelIndex: number) => void;
+		// every frame: how far along the line it is, 0..1 (the ribbon follows it)
+		ontravel?: (travel: number) => void;
+		oncomplete?: () => void;
+	};
+
+	const props: Props = $props();
+
+	const entryMs = $derived(props.entryMs ?? 80);
+	const travelMs = $derived(props.travelMs ?? 540);
+	const settleMs = $derived(props.settleMs ?? 140);
+	// 92, not the grenade's 46: scarab.png is padded — the beetle fills under
+	// half its texture — so at 46 it rolled along the line at about a ninth of a
+	// cell, a red speck the eye could not follow. At 92 it is a third of a cell.
+	const size = $derived(92 * (props.scale ?? 1));
+
+	let t = $state(-1); // ms since this runner's own start; < 0 while delayed
+	let lastReel = -1;
+
+	// Emit every reel between the last one reported and `reel`. Back-filling
+	// matters on a dropped frame: the scarab can jump two reels in one tick and
+	// the skipped reel's symbols would otherwise never light up.
+	const reportReelsUpTo = (reel: number) => {
+		for (let r = lastReel + 1; r <= reel; r++) props.onreel?.(r);
+		if (reel > lastReel) lastReel = reel;
+	};
+
+	onMount(() => {
+		let raf = 0;
+		let start = 0;
+		const total = entryMs + travelMs + settleMs;
+		const tick = (now: number) => {
+			if (!start) start = now + (props.delay ?? 0);
+			t = now - start;
+			if (t >= entryMs) reportReelsUpTo(reelAt(travelAt(t)));
+			props.ontravel?.(t < 0 ? 0 : travelAt(t));
+			if (t >= total) {
+				// guarantee the far end reported before handing back
+				reportReelsUpTo(props.points.length - 1);
+				props.oncomplete?.();
+				return;
+			}
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
+	});
+
+	const easeOutCubic = (p: number) => 1 - (1 - Math.min(Math.max(p, 0), 1)) ** 3;
+
+	// cumulative segment lengths, so travel is at constant speed regardless of
+	// how steep each hop between reels is
+	const segments = $derived.by(() => {
+		const lengths = props.points
+			.slice(1)
+			.map((pt, i) => Math.hypot(pt.x - props.points[i].x, pt.y - props.points[i].y));
+		const total = lengths.reduce((sum, l) => sum + l, 0) || 1;
+		return { lengths, total };
+	});
+
+	// 0 → 1 along the whole path, on a trapezoid velocity profile: the scarab
+	// picks up speed after the toss, rolls at pace, then leans into a stop at
+	// the last reel. Constant speed with hard ends is what makes this kind of
+	// motion read as machine-driven.
+	const ACC = 0.18; // fraction of the run spent accelerating
+	const DEC = 0.26; // ...and decelerating (longer, so it arrives with weight)
+	const AREA = 1 - ACC / 2 - DEC / 2;
+	const distanceAt = (p: number) => {
+		if (p <= 0) return 0;
+		if (p >= 1) return 1;
+		if (p < ACC) return p * p / (2 * ACC) / AREA;
+		if (p <= 1 - DEC) return (ACC / 2 + (p - ACC)) / AREA;
+		const q = p - (1 - DEC);
+		return (ACC / 2 + (1 - DEC - ACC) + q - (q * q) / (2 * DEC)) / AREA;
+	};
+	const travelAt = (ms: number) => {
+		if (ms < entryMs) return 0;
+		if (ms >= entryMs + travelMs) return 1;
+		return distanceAt((ms - entryMs) / travelMs);
+	};
+	const travel = $derived(t < 0 ? 0 : travelAt(t));
+
+	// which reel the scarab is over at a given travel fraction
+	const reelAt = (p: number) => {
+		const { lengths, total } = segments;
+		let want = total * p;
+		let index = 0;
+		while (index < lengths.length && want > lengths[index]) {
+			want -= lengths[index];
+			index++;
+		}
+		const f = lengths[index] ? want / lengths[index] : 0;
+		return Math.min(props.points.length - 1, Math.round(index + f));
+	};
+
+	const poseAt = (p: number) => {
+		const { lengths, total } = segments;
+		let want = total * Math.min(1, Math.max(0, p));
+		let index = 0;
+		while (index < lengths.length && want > lengths[index]) {
+			want -= lengths[index];
+			index++;
+		}
+		const a = props.points[Math.min(index, props.points.length - 1)];
+		const b = props.points[Math.min(index + 1, props.points.length - 1)];
+		const f = lengths[index] ? want / lengths[index] : 0;
+		return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f };
+	};
+	const pose = $derived(poseAt(travel));
+
+	// entry: drops in from the left of reel 1 and settles onto the start point
+	const entryOffset = $derived(t < entryMs ? -(1 - easeOutCubic(Math.max(0, t) / entryMs)) * size * 2.2 : 0);
+
+	// WALKING. It faces where it is going (the art faces up, hence +90deg), the
+	// gait's phase follows distance covered so the feet never skate, and how
+	// hard it strides follows its speed on the run's own profile — it picks up,
+	// scuttles, and slows into the last reel. Dropping in, its legs are splayed.
+	const heading = $derived.by(() => {
+		const a = poseAt(Math.max(0, travel - 0.01));
+		const b = poseAt(Math.min(1, travel + 0.01));
+		return Math.atan2(b.y - a.y, b.x - a.x) + Math.PI / 2;
+	});
+	const STRIDE = 0.45; // body sizes per gait cycle
+	const phase = $derived(((travel * segments.total) / (size * STRIDE)) * 2 * Math.PI);
+	const speedAt = (ms: number) => {
+		if (ms < entryMs || ms >= entryMs + travelMs) return 0;
+		const p = (ms - entryMs) / travelMs;
+		if (p < ACC) return p / ACC;
+		if (p <= 1 - DEC) return 1;
+		return 1 - (p - (1 - DEC)) / DEC;
+	};
+
+	// after arriving it fades out and leaves the finished line behind
+	const alpha = $derived.by(() => {
+		if (t < 0) return 0;
+		const arriveAt = entryMs + travelMs;
+		if (t < arriveAt) return 1;
+		return Math.max(0, 1 - (t - arriveAt) / settleMs);
+	});
+
+
+	// ── THE SAND IT KICKS UP ─────────────────────────────────────────────────
+	//
+	// A scarab rolling along a line used to leave nothing behind it but the line.
+	// Now it trails a short wake of gold sand: grains laid at the points it has
+	// just passed, each settling a little lower and fading the further back it
+	// is, so the eye reads a direction and a speed and not just a moving dot.
+	// Short on purpose — the line itself is the record of where it went.
+	const TRAIL = 12;
+	const TRAIL_SPAN = 0.24; // how far back along the run the wake reaches
+	// fixed per-grain scatter, so the wake shimmers with the motion, not per frame
+	const scatter = Array.from({ length: TRAIL }, (_, k) => {
+		const h = Math.sin((k + 1) * 78.233) * 43758.5453;
+		return h - Math.floor(h) - 0.5;
+	});
+	const SAND = [0xffe08a, 0xf2cf7a, 0xffd75e];
+
+	const drawTrail = (g: PixiGraphics) => {
+		g.clear();
+		if (t < 0 || alpha <= 0 || travel <= 0) return;
+		for (let k = 1; k <= TRAIL; k++) {
+			const back = travel - (k / TRAIL) * TRAIL_SPAN;
+			if (back <= 0) break;
+			const q = k / TRAIL;
+			const at = poseAt(back);
+			g.circle(
+				at.x + scatter[k - 1] * size * 0.18,
+				at.y + size * 0.16 + q * size * 0.12 + scatter[(k * 7) % TRAIL] * size * 0.12,
+				size * 0.11 * (1 - q * 0.5),
+			).fill({ color: SAND[k % 3], alpha: alpha * 0.85 * (1 - q) });
+		}
+	};
+
+	// ── ARRIVAL ──────────────────────────────────────────────────────────────
+	// At the last reel it hops, and its halo flares out, so the end of each line
+	// is marked rather than the scarab simply dissolving where it stopped.
+	const arrival = $derived.by(() => {
+		const arriveAt = entryMs + travelMs;
+		if (t < arriveAt) return 0;
+		return Math.min(1, (t - arriveAt) / Math.max(1, settleMs));
+	});
+	const hop = $derived(arrival > 0 ? 1 + 0.4 * Math.sin(Math.PI * arrival) : 1);
+	// how hard it strides: its speed on the run's profile; splayed while it
+	// drops in, and a last few steps dying away as it arrives
+	const stride = $derived(t < 0 ? 0 : t < entryMs ? 0.6 : Math.max(speedAt(t), 0.25 * (1 - arrival)));
+</script>
+
+{#if t >= 0 && alpha > 0}
+	<Graphics draw={drawTrail} />
+	<!-- soft coloured halo so each scarab stays tied to its own line colour;
+	     it flares out on arrival -->
+	<Sprite
+		key="fxGlow"
+		anchor={0.5}
+		x={pose.x + entryOffset}
+		y={pose.y}
+		tint={props.color}
+		blendMode="add"
+		width={size * (1.2 + 1.6 * arrival)}
+		height={size * (1.2 + 1.6 * arrival)}
+		alpha={arrival > 0 ? 0.9 * (1 - arrival) : alpha * 0.5}
+	/>
+	<MeshWalker
+		symbolName="H1"
+		x={pose.x + entryOffset}
+		y={pose.y}
+		{size}
+		scale={hop}
+		rotation={heading}
+		{phase}
+		amount={stride}
+		{alpha}
+	/>
+{/if}

@@ -1,0 +1,616 @@
+<script lang="ts" module>
+	import { sound, type MusicName, type SoundEffectName, type SoundName } from '../game/sound';
+	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
+
+	// What the mascot can say. One clip per animation — see
+	// design/generate_voice.mjs, which synthesizes them.
+	export type MascotVoice = 'roar' | 'effort';
+
+	export type EmitterEventSound =
+		| { type: 'soundMusic'; name: MusicName }
+		| { type: 'soundOnce'; name: SoundEffectName; forcePlay?: boolean }
+		| { type: 'soundLoop'; name: SoundEffectName }
+		| { type: 'soundStop'; name: SoundName }
+		| { type: 'soundFade'; name: SoundName; from: number; to: number; duration: number }
+		| { type: 'soundFreeGameBell' }
+		| { type: 'soundBigWinBlast' }
+		| { type: 'soundMineBlast' }
+		// The crate reveal. `step` is which crate in the batch this is (0-based);
+		// see playTarpPull for what it does with it.
+		| { type: 'soundCrateStrain' }
+		// The full shipment's horn. Its own event rather than a `soundOnce`,
+		// because it is not in the vendor sprite sheet's name list at all.
+		| { type: 'soundShipHorn' }
+		| { type: 'soundTarpPull'; step: number }
+		| { type: 'soundMonkeyExpand' }
+		| { type: 'soundMascotVoice'; name: MascotVoice }
+		// `gain` because this loop has two callers with different jobs: on the board
+		// it plays UNDER four reels still spinning, on the manifest reel it is the
+		// only thing happening. One level cannot be right for both.
+		| { type: 'soundReelTensionStart'; gain?: number }
+		| { type: 'soundReelTensionStop' }
+		| { type: 'soundScatterCounterIncrease' }
+		| { type: 'soundCargoRoll'; phase: 'start' | 'swell' | 'stop' }
+		| { type: 'soundCargoLock' }
+		| { type: 'soundDockSplash' }
+		| { type: 'soundChestHoot' }
+		| { type: 'soundScatterCounterClear' };
+</script>
+
+<script lang="ts">
+	import { onMount } from 'svelte';
+
+	import { waitForTimeout } from 'utils-shared/wait';
+	import { SECOND } from 'constants-shared/time';
+	import { stateBet, stateSoundDerived } from 'state-shared';
+	import { base } from '$app/paths';
+
+	import { getContext } from '../game/context';
+	import { strikeAt, SPLASH_BEATS } from '../game/dockSplash.svelte';
+
+	const context = getContext();
+
+	// ─── jungle-commando sound set (synthesized — see design/generate_audio_jungle.mjs) ───
+	// Standalone HTML5 Audio; the howler sprite (sounds.json) stays as a
+	// fallback for anything not mapped here (e.g. win-level bgm stingers).
+	type CnSfxName =
+		| 'gong_feature'
+		| 'bigwin_blast'
+		| 'reel_tension'
+		| 'reel_stop'
+		| 'btn'
+		| 'spin'
+		| 'scatter_1'
+		| 'scatter_2'
+		| 'scatter_3'
+		| 'scatter_4'
+		| 'scatter_5'
+		| 'pluck_low'
+		| 'win_gliss'
+		| 'win_gliss_big'
+		| 'fs_intro'
+		| 'coin_shimmer'
+		| 'wild_expand'
+		| 'mult_update'
+		| 'rope_strain'
+		| 'cargo_roll'
+		| 'cargo_lock'
+		| 'dock_splash'
+		| 'ship_horn'
+		| 'tarp_pull'
+		| 'grenade_blast'
+		| 'monkey_expand'
+		| 'voice_roar'
+		| 'voice_effort';
+
+	const CN_SFX_FILES: Record<CnSfxName, string> = {
+		gong_feature: 'jungle/gong_feature.wav',
+		bigwin_blast: 'jungle/bigwin_blast.wav',
+		reel_tension: 'jungle/reel_tension.wav',
+		reel_stop: 'jungle/reel_stop.wav',
+		btn: 'jungle/btn.wav',
+		spin: 'jungle/spin.wav',
+		scatter_1: 'jungle/scatter_1.wav',
+		scatter_2: 'jungle/scatter_2.wav',
+		scatter_3: 'jungle/scatter_3.wav',
+		scatter_4: 'jungle/scatter_4.wav',
+		scatter_5: 'jungle/scatter_5.wav',
+		pluck_low: 'jungle/pluck_low.wav',
+		win_gliss: 'jungle/win_gliss.wav',
+		win_gliss_big: 'jungle/win_gliss_big.wav',
+		fs_intro: 'jungle/fs_intro.wav',
+		coin_shimmer: 'jungle/coin_shimmer.wav',
+		wild_expand: 'jungle/wild_expand.wav',
+		mult_update: 'jungle/mult_update.wav',
+		rope_strain: 'jungle/rope_strain.wav',
+		cargo_roll: 'jungle/cargo_roll.wav',
+		cargo_lock: 'jungle/cargo_lock.wav',
+		// the harbour answering the chest beat on a trigger, timed to game/dockSplash
+		dock_splash: 'jungle/dock_splash.wav',
+		ship_horn: 'jungle/ship_horn.wav',
+		tarp_pull: 'jungle/tarp_pull.wav',
+		grenade_blast: 'jungle/grenade_blast.wav',
+		// player-supplied monkey hoot, mp3 rather than the synthesized wav set
+		monkey_expand: 'jungle/monkey_expand.mp3',
+		voice_roar: 'jungle/voice_roar.wav',
+		voice_effort: 'jungle/voice_effort.wav',
+	};
+
+	// He is a character in the scene, not the interface, so he sits UNDER
+	// everything the game says with a sound of its own. Per clip, because they
+	// were levelled against each other and not against the rest of the set: the
+	// chirp plays on most paying spins and has to disappear into the mix, the
+	// chest-beat roar is the loudest thing he ever does.
+	// Louder than the first pass. These play UNDER a big-win blast, a coin
+	// shimmer and the fast free-game bed, and at 0.6 the cheer was mixed low
+	// enough to be arguable whether it was there at all — which is not a level,
+	// it is an absence with a volume control on it.
+	const MASCOT_VOICE_GAIN: Record<MascotVoice, number> = {
+		roar: 1,
+		effort: 0.8,
+	};
+
+	// Sprite sound names re-routed to the Chinese set.
+	//
+	// `rate` sets playbackRate, which on a short percussive sample reads as pitch.
+	// The five reel stops share one file and used to be indistinguishable — worse,
+	// only _1 was ever played, so every reel landed on the identical click. They
+	// now rise reel by reel, which is what gives a spin its sense of building
+	// toward the last reel.
+	const SPRITE_TO_CN: Partial<
+		Record<SoundEffectName, { name: CnSfxName; volume?: number; rate?: number }>
+	> = {
+		sfx_btn_general: { name: 'btn', volume: 0.7 },
+		sfx_btn_spin: { name: 'spin', volume: 0.9 },
+		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.92 },
+		sfx_reel_stop_2: { name: 'reel_stop', rate: 1.0 },
+		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.09 },
+		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.19 },
+		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.3 },
+		sfx_scatter_stop_1: { name: 'scatter_1' },
+		sfx_scatter_stop_2: { name: 'scatter_2' },
+		sfx_scatter_stop_3: { name: 'scatter_3' },
+		sfx_scatter_stop_4: { name: 'scatter_4' },
+		sfx_scatter_stop_5: { name: 'scatter_5' },
+		sfx_multiplier_landing: { name: 'pluck_low' },
+		sfx_winlevel_small: { name: 'win_gliss' },
+		sfx_scatter_win: { name: 'win_gliss' },
+		sfx_scatter_win_v2: { name: 'win_gliss_big' },
+		sfx_superfreespin: { name: 'win_gliss_big', volume: 0.8 },
+		jng_intro_fs: { name: 'fs_intro' },
+		sfx_wild_explode: { name: 'wild_expand' },
+		sfx_multiplier_update: { name: 'mult_update' },
+		sfx_anticipation_start: { name: 'mult_update', volume: 0.5 },
+		sfx_symbols_landing: { name: 'reel_stop', volume: 0.6 },
+		sfx_royals_landing: { name: 'reel_stop', volume: 0.6 },
+	};
+
+	const cnSfxAudio: Partial<Record<CnSfxName, HTMLAudioElement>> = {};
+
+	function getCnSfx(name: CnSfxName) {
+		let audio = cnSfxAudio[name];
+		if (!audio) {
+			audio = new Audio(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
+			audio.preload = 'auto';
+			cnSfxAudio[name] = audio;
+		}
+		return audio;
+	}
+
+	function playCnSfx(name: CnSfxName, volumeScale = 1, rate = 1) {
+		const audio = getCnSfx(name);
+		audio.loop = false;
+		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+		// Always assign, never skip when rate is 1: getCnSfx caches one element per
+		// file, so a rate left over from the previous caller would carry into every
+		// later play of the same sample. reel_stop is shared with symbol/royal
+		// landings, which would otherwise inherit the fifth reel's pitch.
+		audio.playbackRate = rate;
+		audio.currentTime = 0;
+		audio.play().catch(() => {});
+	}
+
+	// The monkey hoot the player supplied is ~5s, but it needs to track the wild
+	// expansion — which lasts about 1.5s — and then get out of the way. Play it
+	// from the top, hold, then fade to silence so it covers the grow and settles
+	// as the panel locks, instead of hanging on under the next spin.
+	let monkeyFadeTimers: ReturnType<typeof setTimeout>[] = [];
+	// The crates come off left to right and the cue rises with them, so a board of
+	// four reads as one gesture arriving somewhere rather than as four identical
+	// clicks. Steps beyond the fourth hold at the top: a full board would run the
+	// sample into a chipmunk squeak, and by then the run has made its point.
+	const TARP_RATES = [0.94, 1.06, 1.19, 1.33];
+	function playTarpPull(step: number) {
+		const rate = TARP_RATES[Math.min(step, TARP_RATES.length - 1)];
+		playCnSfx('tarp_pull', 0.85, rate);
+	}
+
+	// THE HOOT OVER THE CHEST BEAT: GB100's expanding-wild monkey call, laid over
+	// the six strikes so it starts and stops with them.
+	//
+	// Measured on the clip (10ms RMS windows), not guessed:
+	//   · the first hoot starts 40ms in, so playback starts 40ms BEFORE strike 1
+	//     and the first hoot lands on it
+	//   · from there, the clip has a hoot burst at 1.50-1.59s, which lands on
+	//     strike 6 (the six strikes span 1.5s), and then 90ms of silence
+	//     (-37dB) at 1.60-1.69s before the next hoot
+	// so it is cut at 1.62s, inside that silence: it stops with the last strike
+	// and there is nothing left ringing to click off. The cut watches the clip's
+	// own position rather than a wall-clock timer, so a slow start to playback
+	// cannot move it into the next hoot; a timer backs it up in case the clip
+	// never starts at all.
+	//
+	// Change the strike clock (game/dockSplash) and these two numbers need
+	// measuring again.
+	const HOOT_ONSET_S = 0.04;
+	const HOOT_CUT_S = 1.62;
+	let hootTimers: ReturnType<typeof setTimeout>[] = [];
+	let hootWatch: ReturnType<typeof setInterval> | null = null;
+	const stopHoot = (audio: HTMLAudioElement) => {
+		if (hootWatch !== null) clearInterval(hootWatch);
+		hootWatch = null;
+		hootTimers.forEach(clearTimeout);
+		hootTimers = [];
+		audio.pause();
+	};
+	function playChestHoot() {
+		const audio = getCnSfx('monkey_expand');
+		stopHoot(audio);
+		const beatsMs = strikeAt(SPLASH_BEATS - 1) - strikeAt(0);
+		hootTimers.push(
+			setTimeout(
+				() => {
+					audio.loop = false;
+					audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * 0.9);
+					audio.playbackRate = 1;
+					audio.currentTime = 0;
+					audio.play().catch(() => {});
+					hootWatch = setInterval(() => {
+						if (audio.currentTime >= HOOT_CUT_S) stopHoot(audio);
+					}, 10);
+					hootTimers.push(setTimeout(() => stopHoot(audio), beatsMs + 600));
+				},
+				Math.max(0, strikeAt(0) - HOOT_ONSET_S * 1000),
+			),
+		);
+	}
+
+	function playMonkeyExpand() {
+		const audio = getCnSfx('monkey_expand');
+		monkeyFadeTimers.forEach(clearTimeout);
+		monkeyFadeTimers = [];
+		audio.loop = false;
+		const vol = Math.min(1, stateSoundDerived.volumeSoundEffect());
+		audio.volume = vol;
+		audio.playbackRate = 1;
+		audio.currentTime = 0;
+		audio.play().catch(() => {});
+		// hold at full to ~2s, fade over 600ms, stop by ~2.6s
+		const HOLD_MS = 2000;
+		const FADE_MS = 600;
+		const STEPS = 12;
+		for (let s = 1; s <= STEPS; s++) {
+			monkeyFadeTimers.push(
+				setTimeout(
+					() => {
+						audio.volume = Math.max(0, vol * (1 - s / STEPS));
+						if (s === STEPS) audio.pause();
+					},
+					HOLD_MS + (FADE_MS / STEPS) * s,
+				),
+			);
+		}
+	}
+
+	// ─── looping sfx: Web Audio, not <audio loop> ───
+	//
+	// An HTMLAudioElement with loop = true is NOT gapless. The browser tears down
+	// and restarts playback at the wrap, and the silence either side of that is
+	// plainly audible — on coin_shimmer, a 2.4s clip with a recognisable attack,
+	// it lands as the clip visibly stopping and starting again roughly every two
+	// seconds. On the hold-and-spin result plaque, which stays up until the player
+	// presses, that repeats for as long as they look at it.
+	//
+	// Guarding against re-triggering (the previous attempt) removed one cause of
+	// choppiness — winLevelSoundsPlay fires up to three times in a hold-and-spin round
+	// and each call was resetting currentTime — but not this one, because this one
+	// happens without anyone asking. An AudioBufferSourceNode with loop = true
+	// loops inside the audio thread and has no seam at all.
+	//
+	// Gain is ramped rather than switched, so the loop also fades in and out
+	// instead of appearing and vanishing.
+	const LOOP_FADE_IN = 0.12;
+	const LOOP_FADE_OUT = 0.25;
+
+	let audioCtx: AudioContext | null = null;
+	const loopBuffers: Partial<Record<CnSfxName, AudioBuffer>> = {};
+	const loopNodes: Partial<Record<CnSfxName, { src: AudioBufferSourceNode; gain: GainNode }>> = {};
+
+	const getAudioCtx = () => {
+		if (typeof window === 'undefined') return null;
+		if (!audioCtx) {
+			const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+			if (!Ctor) return null;
+			audioCtx = new Ctor();
+		}
+		// The context starts suspended until a gesture; the game always has one by
+		// the time anything loops (the loading screen is dismissed by a press).
+		if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+		return audioCtx;
+	};
+
+	async function playCnLoop(name: CnSfxName, volumeScale = 1) {
+		const ctx = getAudioCtx();
+		// No Web Audio (very old browser): fall back to the element, seam and all —
+		// a slightly choppy loop beats silence.
+		if (!ctx) {
+			const audio = getCnSfx(name);
+			audio.loop = true;
+			audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+			if (!audio.paused && !audio.ended) return;
+			audio.currentTime = 0;
+			audio.play().catch(() => {});
+			return;
+		}
+
+		if (loopNodes[name]) return; // already running — never restart it
+
+		let buffer = loopBuffers[name];
+		if (!buffer) {
+			try {
+				const res = await fetch(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
+				buffer = await ctx.decodeAudioData(await res.arrayBuffer());
+				loopBuffers[name] = buffer;
+			} catch {
+				return;
+			}
+		}
+		// Awaiting the decode above means a stop() could have arrived in the
+		// meantime, and a second play() could have won the race.
+		if (loopNodes[name]) return;
+
+		const target = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+		const gain = ctx.createGain();
+		gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+		gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, target), ctx.currentTime + LOOP_FADE_IN);
+		const src = ctx.createBufferSource();
+		src.buffer = buffer;
+		src.loop = true;
+		src.connect(gain).connect(ctx.destination);
+		src.start();
+		loopNodes[name] = { src, gain };
+	}
+
+		// Change a running loop's level and SPEED without restarting it.
+	//
+	// The speed half is the point. A reel that only gets louder as it slows is a
+	// volume knob; a reel whose ticks get further apart is a thing losing
+	// momentum, and playbackRate on the buffer source is the whole of it.
+	//
+	// The retry exists because playCnLoop awaits a fetch and a decode on the first
+	// play of a clip, so a ramp scheduled shortly after the start can arrive
+	// before there is a node to ramp. Rather than block the presentation on the
+	// decode, this waits for the node to show up and gives up quietly if it never
+	// does — a reel that swells late is worse than one that does not, but both are
+	// better than a spin that stalls waiting for audio.
+	function rampCnLoop(
+		name: CnSfxName,
+		{ volumeScale = 1, rate, seconds = 0.4 }: { volumeScale?: number; rate?: number; seconds?: number },
+		tries = 6,
+	) {
+		const node = loopNodes[name];
+		const ctx = audioCtx;
+		if (!node || !ctx) {
+			if (tries > 0) setTimeout(() => rampCnLoop(name, { volumeScale, rate, seconds }, tries - 1), 120);
+			return;
+		}
+		const end = ctx.currentTime + seconds;
+		const target = Math.max(0.0001, Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale));
+		node.gain.gain.cancelScheduledValues(ctx.currentTime);
+		node.gain.gain.setValueAtTime(Math.max(0.0001, node.gain.gain.value), ctx.currentTime);
+		node.gain.gain.exponentialRampToValueAtTime(target, end);
+		if (rate !== undefined) {
+			node.src.playbackRate.cancelScheduledValues(ctx.currentTime);
+			node.src.playbackRate.setValueAtTime(node.src.playbackRate.value, ctx.currentTime);
+			node.src.playbackRate.linearRampToValueAtTime(rate, end);
+		}
+	}
+
+	function stopCnLoop(name: CnSfxName) {
+		const node = loopNodes[name];
+		if (!node) return;
+		delete loopNodes[name];
+		const ctx = audioCtx;
+		if (!ctx) {
+			node.src.stop();
+			return;
+		}
+		const end = ctx.currentTime + LOOP_FADE_OUT;
+		node.gain.gain.cancelScheduledValues(ctx.currentTime);
+		node.gain.gain.setValueAtTime(Math.max(0.0001, node.gain.gain.value), ctx.currentTime);
+		node.gain.gain.exponentialRampToValueAtTime(0.0001, end);
+		node.src.stop(end);
+	}
+
+	function stopCnSfx(name: CnSfxName) {
+		const audio = cnSfxAudio[name];
+		if (audio) {
+			audio.pause();
+			audio.currentTime = 0;
+		}
+	}
+
+	// ─── BGM (both loops are standalone HTML5 Audio) ───
+	let bgmAudio: HTMLAudioElement | null = null;
+	let currentBgm: 'base' | 'freespin' | null = null;
+	const BGM_FILES = {
+		base: 'jungle/bgm_main.wav',
+		freespin: 'jungle/bgm_freespin.wav',
+	} as const;
+
+	function playBgm(type: 'base' | 'freespin') {
+		if (currentBgm === type && bgmAudio && !bgmAudio.paused) return;
+		if (bgmAudio) {
+			bgmAudio.pause();
+			bgmAudio = null;
+		}
+		bgmAudio = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
+		bgmAudio.loop = true;
+		bgmAudio.volume = stateSoundDerived.volumeMusic();
+		bgmAudio.play().catch(() => {});
+		currentBgm = type;
+	}
+
+	function stopBgm() {
+		if (bgmAudio) {
+			bgmAudio.pause();
+			bgmAudio.currentTime = 0;
+		}
+		currentBgm = null;
+	}
+
+	// Keep volume in sync with settings
+	$effect(() => {
+		const vol = stateSoundDerived.volumeMusic();
+		if (bgmAudio) bgmAudio.volume = vol;
+	});
+
+	context.eventEmitter.subscribeOnMount({
+		// ui
+		soundBetMode: async ({ betModeKey }) => {
+			if (betModeKey === HOLD_AND_SPIN_MODE_KEY) {
+				playCnSfx('win_gliss_big', 0.7);
+				await waitForTimeout(SECOND);
+				playBgm('freespin');
+			} else {
+				playBgm('base');
+			}
+		},
+		soundPressGeneral: () => playCnSfx('btn', 0.7),
+		soundPressBet: () => playCnSfx('spin', 0.9),
+		// scatterCounter
+		soundScatterCounterIncrease: () => (context.stateGame.scatterCounter = context.stateGame.scatterCounter + 1), // prettier-ignore
+		soundScatterCounterClear: () => (context.stateGame.scatterCounter = 0),
+		// game
+		soundMusic: ({ name }) => {
+			if (name === 'bgm_main') {
+				playBgm('base');
+			} else if (name === 'bgm_freespin') {
+				playBgm('freespin');
+			} else {
+				// Other music (win levels etc) — pause bgm, play via sprite
+				if (bgmAudio) bgmAudio.pause();
+				currentBgm = null;
+				sound.players.music.play({ name });
+			}
+		},
+		soundLoop: ({ name }) => {
+			if (name === 'sfx_bigwin_coinloop') {
+				// Deliberately a ONE-SHOT despite the event name, the same way
+				// sfx_anticipation is deliberately a no-op here: this is where a logical
+				// sound name is turned into what actually happens, and the caller should
+				// not have to know which clips can bear repeating.
+				//
+				// coin_shimmer is a 2.4s chime with a clear attack. Looping it under a
+				// win count-up — on a plaque that stays up until the player presses —
+				// rang that chime over and over, which is what came back as "a bell
+				// repeating while the score counts". Making the loop gapless (playCnLoop,
+				// now Web Audio) fixed the seam but not the repetition, and repetition
+				// was the complaint. One pass accents the start of the count-up and then
+				// leaves it alone. A continuous bed needs a longer, flatter clip, not
+				// this one on repeat.
+				playCnSfx('coin_shimmer', 0.8);
+			} else if (name === 'sfx_anticipation') {
+				// covered by the reel_tension tremolo loop (soundReelTensionStart)
+			} else {
+				sound.players.loop.play({ name });
+			}
+		},
+		soundOnce: ({ name, forcePlay }) => {
+			const mapped = SPRITE_TO_CN[name];
+			if (mapped) {
+				playCnSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
+			} else {
+				sound.players.once.play({ name, forcePlay });
+			}
+		},
+		soundFreeGameBell: () => playCnSfx('gong_feature'),
+		soundBigWinBlast: () => playCnSfx('bigwin_blast'),
+		// The EVENT is named for the prop, the CUE is named for the file on disk.
+		// jungle/grenade_blast.wav is carried over from gen-1 and renaming a wav
+		// would break the audio manifest for no gain.
+		soundMineBlast: () => playCnSfx('grenade_blast'),
+		soundCrateStrain: () => playCnSfx('rope_strain', 0.7),
+		// The manifest reel arriving at its stop. Loud, and the second-loudest cue
+		// in the set after the ship's horn — it is the moment that settles what
+		// every crate in the round will open as.
+		soundCargoLock: () => playCnSfx('cargo_lock', 1),
+		// Under the roar, not over it: he is the event and the water is the room
+		// reacting to him.
+		soundDockSplash: () => playCnSfx('dock_splash', 0.7),
+		soundChestHoot: () => playChestHoot(),
+		// Loud on purpose, and the only cue in the set that is. It marks the
+		// biggest board this game makes.
+		soundShipHorn: () => playCnSfx('ship_horn', 1),
+		soundTarpPull: ({ step }) => playTarpPull(step),
+		soundMonkeyExpand: () => playMonkeyExpand(),
+		// Deliberately NOT forced through the turbo gate that silences ordinary
+		// one-shots: these are tied to animations that play at their own length
+		// whatever the spin speed, so a dropped one is a character opening his
+		// mouth in silence.
+		soundMascotVoice: ({ name }) =>
+			playCnSfx(`voice_${name}` as CnSfxName, MASCOT_VOICE_GAIN[name]),
+		// THE MANIFEST REEL TURNING.
+		//
+		// 'start' is the reel under way, 'swell' is it arriving at the last cell.
+		// The swell is louder AND SLOWER — 0.72x playback, so the chain ticks
+		// further apart — because the reel really is slowing there (see
+		// APPROACH_SHARE in CargoPick, which spends nearly half the clock on that
+		// one cell) and a roll that kept its speed while the picture slowed would
+		// come apart.
+		soundCargoRoll: ({ phase }) => {
+			if (phase === 'start') {
+				playCnLoop('cargo_roll', 0.85);
+			} else if (phase === 'swell') {
+				rampCnLoop('cargo_roll', { volumeScale: 1, rate: 0.72, seconds: 0.5 });
+			} else {
+				stopCnLoop('cargo_roll');
+			}
+		},
+		soundReelTensionStart: ({ gain }) => playCnLoop('reel_tension', gain ?? 0.8),
+		// stopCnLoop, not stopCnSfx: playCnLoop moved this to Web Audio, and the
+		// element-based stopper would leave the buffer source looping forever.
+		soundReelTensionStop: () => {
+			stopCnLoop('reel_tension');
+			stopCnSfx('reel_tension');
+		},
+		soundStop: ({ name }) => {
+			if (name === 'bgm_main' || name === 'bgm_freespin') {
+				stopBgm();
+			} else if (name === 'sfx_bigwin_coinloop') {
+				// both, because the fallback path above may have used the element
+				stopCnLoop('coin_shimmer');
+				stopCnSfx('coin_shimmer');
+			} else if (name === 'sfx_anticipation') {
+				stopCnLoop('reel_tension');
+				stopCnSfx('reel_tension');
+				sound.stop({ name });
+			} else {
+				sound.stop({ name });
+			}
+		},
+		soundFade: async ({ name, duration, from, to }) => await sound.fade({ name, duration, from, to }), // prettier-ignore
+	});
+
+	onMount(() => {
+		// Fetch the one-shot sfx up front so the first play is in sync
+		// (an Audio element created lazily would stall on its first fetch).
+		(Object.keys(CN_SFX_FILES) as CnSfxName[]).forEach(getCnSfx);
+
+		if (stateBet.activeBetModeKey === HOLD_AND_SPIN_MODE_KEY) {
+			playBgm('freespin');
+		} else {
+			playBgm('base');
+		}
+
+		return () => {
+			if (bgmAudio) {
+				bgmAudio.pause();
+				bgmAudio.src = '';
+				bgmAudio = null;
+			}
+			for (const name of Object.keys(cnSfxAudio) as CnSfxName[]) {
+				const audio = cnSfxAudio[name];
+				if (audio) {
+					audio.pause();
+					audio.src = '';
+					delete cnSfxAudio[name];
+				}
+			}
+			// Web Audio loops outlive the DOM unless they are stopped explicitly.
+			for (const name of Object.keys(loopNodes) as CnSfxName[]) stopCnLoop(name);
+			audioCtx?.close().catch(() => {});
+			audioCtx = null;
+		};
+	});
+</script>

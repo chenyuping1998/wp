@@ -133,6 +133,16 @@
 			// total was reached, and a sweep shown taking a carrier it did not take
 			// is indistinguishable from a payout bug.
 			for (const next of sweeps) {
+				// NO VOICE HERE for now.
+				//
+				// A synthesized chant fired once per sweep - see `voice` in
+				// design/generate_audio_terminal.mjs - and is being replaced with a
+				// recording. The cue, the file and the wiring in Sound.svelte all
+				// still exist; this is the one line that fired it, and putting the
+				// voice back is putting this line back.
+				//
+				// Once per SWEEP and not once per collect, when it returns: two wilds
+				// is two sweeps and the player should hear both.
 				await playSweep(next);
 				runningTotal += next.award;
 			}
@@ -302,37 +312,22 @@
 		// something a line win does to any other symbol, so an M line looked like a
 		// different and more important kind of win than it is. The flame leaving
 		// the symbol is the whole effect now.
-		sweep.carriers.forEach((carrier, i) => {
-			const cx = getSymbolX(carrier.reel);
-			const cy = getSymbolY(carrier.row);
-			const takenAt = LEAD_MS + i * CARRIER_MS;
-			const t = (elapsed - takenAt) / FLIGHT_MS;
-			if (t < 0 || t >= 1) return;
-
-			const lineSlot = lineCells.findIndex(
-				(cell) => cell.reel === carrier.reel && cell.row === carrier.row,
-			);
-			const route =
-				lineSlot >= 0
-					? [{ x: cx, y: cy }, ...linePath.slice(lineSlot + 1), lineEnd]
-					: [{ x: cx, y: cy }, lineEnd];
-			const e = easeOut(t);
-			const span = route.length - 1;
-			const at = Math.min(span - 1e-6, e * span);
-			const leg = Math.floor(at);
-			const within = at - leg;
-			const from = route[leg];
-			const to = route[leg + 1];
-			const tx = from.x + (to.x - from.x) * within;
-			const ty = from.y + (to.y - from.y) * within;
-
-			const size = SYMBOL_SIZE * 0.15 * (1 - e * 0.3);
-			g.roundRect(tx - size * 0.6, ty - size, size * 1.2, size * 2, size * 0.2);
-			g.fill({ color: TALISMAN, alpha: 0.95 });
-			g.moveTo(tx, ty - size * 0.55);
-			g.lineTo(tx, ty + size * 0.55);
-			g.stroke({ width: 2, color: CINNABAR, alpha: 0.9 });
-		});
+		// NOTHING FLIES.
+		//
+		// Each carrier's value used to leave as a small yellow talisman with a
+		// cinnabar stripe down it, travelling along the rest of the payline to a
+		// gathering point. It is the third thing this cue has tried and the third
+		// that was too much for what it is.
+		//
+		// A base-game collect is a LINE WIN. Three spirits on a payline paying what
+		// is written on them - and no other line win in this game sends an object
+		// across the board. The line draws, the paying symbols light, everything
+		// else steps back, and the WIN field counts. That is the whole vocabulary
+		// the game uses for a win, and the collect now uses it too.
+		//
+		// The FEATURE sweep is a different picture and keeps its flames: there, a
+		// wild really is taking the board, the value really does travel to it, and
+		// the wild is the actor - see drawStorm's counterpart below.
 	};
 
 	// ── the wild does the collecting, visibly ─────────────────────────────────

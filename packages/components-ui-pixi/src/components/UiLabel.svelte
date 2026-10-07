@@ -32,9 +32,14 @@
 		 * unchanged.
 		 */
 		maxWidth?: number;
+		/** 0..1: how far into its swell the value is (uiTheme.valuePop). 0 = rest */
+		pop?: number;
+		/** tint on the value text, for a flash. Undefined = none */
+		valueTint?: number;
 	};
 
 	const props: Props = $props();
+	const popScale = $derived(1 + uiTheme.valuePop * (props.pop ?? 0));
 
 	// Measured, not estimated. pixi reports a Text's width once it has laid the
 	// glyphs out, so the only honest way to know whether a string fits is to draw
@@ -100,11 +105,12 @@
 		or a fold turns "9,999,652,000" into something that reads as a different
 		number, and a smaller but complete one does not.
 	-->
-	<Container y={UI_BASE_FONT_SIZE} scale={valueScale}>
+	<Container y={UI_BASE_FONT_SIZE} scale={valueScale * popScale}>
 		<Text
 			anchor={{ x: 0.5, y: 0 }}
 			text={props.value}
 			style={valueStyle}
+			tint={props.valueTint ?? 0xffffff}
 			onresize={({ width }) => (valueWidth = width)}
 		/>
 	</Container>
@@ -205,5 +211,7 @@
 		text={props.value}
 		style={valueStyle}
 		x={UI_BASE_FONT_SIZE * 10}
+		scale={popScale}
+		tint={props.valueTint ?? 0xffffff}
 	/>
 {/if}

@@ -24,6 +24,20 @@
 	export type Props = Omit<ContainerProps, ContainerPropsToOmit> & {
 		sizes: Sizes;
 		onpress: () => void;
+		/**
+		 * Called whenever the hovered state changes.
+		 *
+		 * `hovered` is already handed to the children snippet, which is enough for
+		 * anything drawn from it. This exists for the other case: a button whose
+		 * PARENT has to run something while the pointer is over it — an animation
+		 * clock, a sound — where the state is needed in script scope rather than in
+		 * markup, and a snippet argument cannot reach.
+		 *
+		 * Fires on leave as well as enter, and fires with false when the button
+		 * becomes disabled underneath the pointer, so a caller can always trust the
+		 * last value it was given.
+		 */
+		onhover?: (hovered: boolean) => void;
 		// Optional, and absent by default so nothing that does not pass them can
 		// change behaviour. They exist for hold-to-repeat controls (the stake
 		// steppers): `onpress` still fires once on release, exactly as before, and
@@ -52,6 +66,7 @@
 		anchor,
 		disabled,
 		onpress,
+		onhover,
 		onpressstart,
 		onpressend,
 		debug,
@@ -65,9 +80,15 @@
 	let hovered = $state(false);
 	let pressed = $state(false);
 
+	const setHovered = (value: boolean) => {
+		if (hovered === value) return;
+		hovered = value;
+		onhover?.(value);
+	};
+
 	$effect(() => {
 		if (disabled) {
-			hovered = false;
+			setHovered(false);
 			pressed = false;
 		}
 	});
@@ -84,11 +105,11 @@
 		// was last tapped — the Bet panel stayed lit after every tap. Stake review
 		// scored that as poor UI (Deadwood Express, 2026-09-23).
 		if (disabled || event.pointerType === 'touch') return;
-		hovered = true;
+		setHovered(true);
 	}}
 	onpointerout={() => {
 		if (disabled) return;
-		hovered = false;
+		setHovered(false);
 	}}
 	onpointerdown={() => {
 		if (disabled) return;
@@ -97,7 +118,7 @@
 	}}
 	onpointerup={(event) => {
 		if (disabled) return;
-		if (event.pointerType === 'touch') hovered = false;
+		if (event.pointerType === 'touch') setHovered(false);
 		pressed = false;
 		onpressend?.();
 		onpress();

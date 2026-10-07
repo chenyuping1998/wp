@@ -108,9 +108,17 @@ const board = _.range(NUM_REELS).map((reelIndex) => {
 				name: REEL_STOP_SOUNDS[reelIndex] ?? 'sfx_reel_stop_1',
 				forcePlay: !stateBet.isTurbo,
 			});
-			if (!stateBet.isTurbo) {
-				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
-			}
+			// NO FRAME IMPACT ON A REEL STOP.
+			//
+			// It fired at strength 0.12, which BoardFrame turns into an amplitude of
+			// 9 * 0.12 = 1.08px wobbling at about 40 radians - and a one-pixel
+			// oscillation on a sprite that size is the worst of both: too small to
+			// read as the board being struck, large enough to smear its edges into
+			// sub-pixel blur. Five reels a spin, every spin, all session.
+			//
+			// The effect itself stays for things that really do hit the board - the
+			// transition slam comes in at 1.4, which is a whole twelve pixels and
+			// reads as one.
 		},
 		onSymbolLand: ({ rawSymbol, symbolIndex }) => onSymbolLand({ rawSymbol, symbolIndex, reelIndex }),
 	});

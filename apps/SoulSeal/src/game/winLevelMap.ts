@@ -52,7 +52,10 @@ export const winLevelMap = {
 		type: 'big',
 		text: 'BIG WIN',
 		presentDuration: 6 * SECOND,
-		sound: { sfx: undefined, bgm: 'bgm_winlevel_big' },
+		// The tier's own cue. `bgm` used to name a track in the howler sprite,
+		// which this game never loaded and has now removed - so every one of the
+		// five loudest moments was silent. See winTier in the audio generator.
+		sound: { sfx: 'win_tier_1', bgm: undefined },
 		animation: { intro: 'big_win_intro', idle: 'big_win_idle', outro: 'big_win_exit' },
 	},
 	7: {
@@ -61,7 +64,10 @@ export const winLevelMap = {
 		type: 'big',
 		text: 'SUPER WIN',
 		presentDuration: 18 * SECOND,
-		sound: { sfx: undefined, bgm: 'bgm_winlevel_superwin' },
+		// The tier's own cue. `bgm` used to name a track in the howler sprite,
+		// which this game never loaded and has now removed - so every one of the
+		// five loudest moments was silent. See winTier in the audio generator.
+		sound: { sfx: 'win_tier_2', bgm: undefined },
 		animation: { intro: 'super_win_intro', idle: 'super_win_idle', outro: 'super_win_exit' },
 	},
 	8: {
@@ -70,7 +76,10 @@ export const winLevelMap = {
 		type: 'big',
 		text: 'MEGA WIN',
 		presentDuration: 20 * SECOND,
-		sound: { sfx: undefined, bgm: 'bgm_winlevel_mega' },
+		// The tier's own cue. `bgm` used to name a track in the howler sprite,
+		// which this game never loaded and has now removed - so every one of the
+		// five loudest moments was silent. See winTier in the audio generator.
+		sound: { sfx: 'win_tier_3', bgm: undefined },
 		animation: { intro: 'mega_win_intro', idle: 'mega_win_idle', outro: 'mega_win_exit' },
 	},
 	9: {
@@ -79,7 +88,10 @@ export const winLevelMap = {
 		type: 'big',
 		text: 'EPIC WIN!',
 		presentDuration: 26 * SECOND,
-		sound: { sfx: undefined, bgm: 'bgm_winlevel_epic' },
+		// The tier's own cue. `bgm` used to name a track in the howler sprite,
+		// which this game never loaded and has now removed - so every one of the
+		// five loudest moments was silent. See winTier in the audio generator.
+		sound: { sfx: 'win_tier_4', bgm: undefined },
 		animation: { intro: 'epic_win_intro', idle: 'epic_win_idle', outro: 'epic_win_exit' },
 	},
 	10: {
@@ -88,7 +100,10 @@ export const winLevelMap = {
 		type: 'big',
 		text: 'MAX WIN',
 		presentDuration: 32 * SECOND,
-		sound: { sfx: undefined, bgm: 'bgm_winlevel_max' },
+		// The tier's own cue. `bgm` used to name a track in the howler sprite,
+		// which this game never loaded and has now removed - so every one of the
+		// five loudest moments was silent. See winTier in the audio generator.
+		sound: { sfx: 'win_tier_5', bgm: undefined },
 		animation: { intro: 'max_win_intro', idle: 'max_win_idle', outro: 'max_win_exit' },
 	},
 } as const;

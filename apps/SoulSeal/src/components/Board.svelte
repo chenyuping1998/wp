@@ -12,11 +12,12 @@
 </script>
 
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { waitForResolve } from 'utils-shared/wait';
 	import { BoardContext } from 'components-shared';
 
 	import { getContext } from '../game/context';
-	import { getHighlightGeneration } from '../game/bookEventHandlerMap';
+	import { baseIdleBoard, getHighlightGeneration } from '../game/bookEventHandlerMap';
 	import BoardContainer from './BoardContainer.svelte';
 	import BoardMask from './BoardMask.svelte';
 	import BoardBase from './BoardBase.svelte';
@@ -24,6 +25,24 @@
 	const context = getContext();
 
 	let show = $state(true);
+
+	// ── the reels are never empty ────────────────────────────────────────────
+	//
+	// Nothing filled them on a cold start. `settle()` runs when a bet is resumed
+	// or when a round produces a reveal, and a player opening the game for the
+	// first time has neither - so the reels held no symbols at all until the first
+	// spin arrived and put some there.
+	//
+	// It is visible, and it is what the opening transition was being blamed for:
+	// captured at 10fps, the frame after the talismans scatter has the frame, the
+	// brick wall, the rail and the whole bar in place and a BLANK RECTANGLE where
+	// the symbols go, for about four frames. The transition had already opened
+	// correctly onto a board that was not finished.
+	//
+	// Seeded from the padding strips, which is what the idle board is made of
+	// everywhere else in this game - see baseIdleBoard. Whatever the first real
+	// reveal contains replaces it.
+	onMount(() => context.stateGameDerived.enhancedBoard.settle(baseIdleBoard()));
 
 	context.eventEmitter.subscribeOnMount({
 		stopButtonClick: () => context.stateGameDerived.enhancedBoard.stop(),

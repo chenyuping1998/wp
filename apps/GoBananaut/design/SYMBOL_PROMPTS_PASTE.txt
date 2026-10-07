@@ -1,0 +1,270 @@
+GO BANANAUT — SLOT SYMBOL SET (16 images)
+
+Generate all of these as one consistent set, in a single pass if possible.
+They must share one style, one light direction and one level of detail.
+
+=== SHARED STYLE — applies to every image below ===
+
+Hand-painted digital illustration for a video slot symbol. Painterly rendering
+with visible brushwork and softly blended form shadows. Not a photoreal render,
+not a 3D render, not flat vector art, not cel shading with hard bands.
+
+Each image is 1024x1024 square, a single subject, centred, filling about 80% of
+the frame with clear margin on every side, never touching an edge.
+
+Chunky stylised proportions with big simple masses and one or two oversized hero
+features, but real materials with real wear — scratched painted steel, scuffed
+fabric, dented brass. Objects look heavy and used.
+
+NOT cute: no faces on inanimate objects, no eyes, no blush marks, no hearts, no
+stars, no sparkles, no sticker outlines, no pastel candy colours, no toy plastic
+surfaces, no mascot styling on hardware. Think a well-built animated feature's
+prop design, not a mobile-game icon set.
+
+VALUE STRUCTURE — this is what keeps them readable when shrunk to 100 pixels.
+Every subject must contain, inside its own form, BOTH a near-white specular
+highlight AND a near-black core shadow, plus a dark painterly contour around its
+outer edge and a bright cold rim light along its upper-left contour.
+
+LIGHTING: cold blue-white key from the upper left, warm bounce filling the lower
+right, deep space setting.
+
+COLOUR: exactly one saturated accent hue per object; everything else in that
+object stays muted. The accent hues are assigned per symbol below and must not
+be swapped or shared.
+
+Any glow, beam, flare, tail or vapour must hug its source and fade out well
+before the frame edge. Nothing may bleed to the border.
+
+No text, no numbers, no logos, no watermarks, no UI, no border, no frame, no
+backing plate, no card, no drop shadow cast outside the subject.
+
+Transparent background on every image EXCEPT L1-L5.
+
+
+=== L1-L5 — THE FIVE CARD ROYALS ===
+
+These five are the only images with a plate, and the plate fills the whole
+square edge to edge with no transparent margin. Generate all five together or
+you will get five different typefaces. They are identical except the character.
+
+L1 = "A"   L2 = "K"   L3 = "Q"   L4 = "J"   L5 = "10"
+
+Prompt:
+
+The single character "A" carved deeply INTO a pale stone slab. The slab fills
+the entire square frame edge to edge with no margin and no background visible
+around it, with a thin dark border and one dark countersunk bolt inset at each
+of the four corners. The stone is bone-grey lunar regolith, colour #C6C2B4,
+entirely colourless — no rust, no paint, no tint, no hue anywhere. Its face
+carries a network of hairline cracks, is powdered with fine dust, and is chipped
+and knocked about along its edges. Chunky and heavy. The character is a deep
+clean recess: near-black in the bottom of the cut, a bright lit bevel along its
+upper-left edge, and soft shadow pooling inside the recess on the lower right,
+so it reads unmistakably as carved and not printed. Heavy industrial sans-serif,
+very thick even strokes, chunky and oversized, filling most of the slab. Cracks,
+dust, pitting and chips appear ONLY on the slab face and NEVER cross the
+character's strokes — the letterform must stay a crisp unbroken silhouette. The
+slab is the brightest thing in the entire symbol set.
+
+Repeat with "K", "Q", "J" and "10" in place of "A".
+
+
+=== H1-H4 — THE FOUR HIGH SYMBOLS ===
+
+No plate on any of these — transparent background, subject cut out.
+Generate all four together so they share a scale.
+Two of them glow (H1, H2) and two are lit metal that does not glow (H3, H4).
+H3 lies along the frame; H4 stands up it. They must not share a silhouette.
+
+
+H1 — GAS GIANT — accent hue: warm amber / ochre — GLOWING
+
+A banded gas giant planet, filling the frame. Its cloud belts are painted as a
+few thick confident bands in warm amber and ochre — bold graphic shapes, not
+fine atmospheric detail — with one great swirling storm as the hero feature,
+oversized and placed low and centre. Softly self-luminous so the planet is the
+brightest thing in the set after the stone slabs, with a hot near-white core to
+the storm and a deep near-black band shadow along its lower-right limb. A thin
+bright ring system cuts across at a low angle, catching the light, kept close to
+the planet and not reaching the frame edge. Cold rim light along the upper-left
+limb. Isolated on a fully transparent background — no plate, no frame, no
+backing card, nothing behind the planet.
+
+
+H2 — COMET — accent hue: ice-cyan — GLOWING
+
+A comet nucleus wrapped in a glowing coma, filling the frame. The nucleus is a
+chunky faceted dirty-ice boulder with a few big exaggerated craters, painted
+with near-white lit faces and near-black shadowed ones. Thick confident jets
+vent from its sunward face. Ice-cyan and pale white, self-luminous. Two tails
+sweep up and back as broad simplified ribbons that fade out before the frame
+edge rather than running off it. Cold rim light along the upper-left of the
+nucleus. Isolated on a fully transparent background — no plate, no frame, no
+backing card, nothing behind the comet.
+
+
+H3 — MAGNETIC BOOT — accent hue: silver-green — LIT METAL, NOT GLOWING
+
+A single heavy magnetic space boot from a gorilla's pressure suit, seen in
+three-quarter side profile, filling the frame and lying along it. Hugely
+oversized and wide to fit an ape's foot, with cartoonishly exaggerated
+proportions — a massively thick ribbed sole with chunky magnetic clamp pads
+underneath, far bigger than the boot needs, as the hero feature. A stubby padded
+shaft in scuffed silver-green suit fabric, two big oversized buckle straps with
+brass hardware, a blunt reinforced steel toe cap and a fat ribbed ankle joint.
+Scratched, scuffed and worn in, with a bright near-white specular along the toe
+cap and the clamp pads and near-black shadow under the sole. It is LIT, not
+glowing — cold blue-white key from the upper left, deep shadow lower right,
+bright rim light down its upper-left contour, dark painterly contour all around.
+Small silver-green indicator lamps on the ankle cuff only. Isolated on a fully
+transparent background — no plate, no frame, no backing card.
+
+
+H4 — LIFE-SUPPORT PACK — accent hue: violet — LIT METAL, NOT GLOWING
+
+A gorilla-sized life-support backpack from a pressure suit, seen three-quarters
+on, standing upright and filling the frame. A fat rounded rectangular housing
+with exaggeratedly soft heavy corners, in dull titanium wrapped with a
+violet-tinted thermal blanket quilted into a few big bold panels rather than
+fine quilting. One oversized round analogue pressure gauge dominates the front
+face as the hero feature, its glass carrying a bright near-white specular, with
+a small bank of chunky valves beside it. Two thick ribbed oxygen hoses curve out
+of the top and away in confident arcs, stopping before the frame edge. Broad
+padded shoulder straps hang at the sides. Scuffed and used, with near-black
+shadow down its lower-right side. It is LIT, not glowing — cold blue-white key
+from the upper left, bright rim light down its upper-left contour, dark
+painterly contour all around. Small violet indicator lamps beside the gauge
+only. No text or numbers on the gauge face. Isolated on a fully transparent
+background — no plate, no frame, no backing card.
+
+
+=== W AND S — WILD AND SCATTER ===
+
+No plate. Transparent background.
+These two must be the most distinctive shapes in the whole set.
+
+
+W — WILD, ASTRONAUT HELMET — accent hue: brass / gold
+
+A gorilla astronaut's helmet floating in space, filling the frame, seen slightly
+from below so it reads as heroic. An oversized chunky hard shell in scuffed
+white and brass, exaggeratedly round and heavy, with a thick brass neck ring
+below and a broad curved gold visor taking up most of the front. A strong
+near-white specular sweep across the upper-left of the visor glass, and a bright
+polished highlight along the brass ring. Inside the visor, dim and low-contrast,
+a gorilla's face lit from within by console light — a real ape face, never a
+cartoon character face, and never bright enough to become the subject. The visor
+glows faintly; the shell is lit, not glowing. Bright cold rim light along the
+upper-left of the shell, dark painterly contour all around. Keep this one bright
+— it must not be one of the darker tiles in the set. Isolated on a fully
+transparent background — no plate, no frame, no backing card.
+
+
+S — SCATTER, EMERGENCY BEACON — accent hue: hot orange, used by nothing else
+
+A rotating emergency beacon floating in space. The HOUSING fills the frame — a
+stout heavy industrial lamp body in scorched steel, squat and chunky, with an
+exaggeratedly large caged hot-orange lens as the hero feature, a stubby mounting
+foot and a thick coiled cable below. The lens is fiercely self-luminous in hot
+orange, a hue used by nothing else in the set, with a near-white hot core. Short
+light beams and a soft flare hug the lens closely and must NOT extend to the
+frame edge — the metal housing is the subject and the thing that has to be
+recognisable at 100 pixels. Cold rim light along the upper-left of the housing,
+dark painterly contour all around. Isolated on a fully transparent background —
+no plate, no frame, no backing card.
+
+
+=== P AND X — THE HOLD-AND-SPIN PAIR ===
+
+No plate. Transparent background.
+P must look valuable. X must look like nothing at all.
+
+
+P — PRIZE TOKEN — accent hue: warm brass
+
+A thick chunky circular credit token floating in space, filling the frame, face
+on and tipped very slightly so its depth reads. Exaggeratedly deep, like a heavy
+coin. A broad brushed brass rim with a rope-knurled edge, and a deeply recessed
+blank centre field, entirely empty and smooth with no text, symbol or engraving
+of any kind — a number is drawn over it later by the game. Warm brass with a
+bright near-white specular sweeping the upper-left rim and near-black shadow in
+the recess on the lower right. Isolated on a fully transparent background — no
+plate, no frame, no backing card.
+
+
+X — EMPTY CLAMP — desaturated gunmetal, deliberately dull
+
+An empty cargo clamp, filling the frame. Big blunt open steel jaws with nothing
+held in them and a vacant socket behind, cold and unlit. Desaturated gunmetal,
+very low contrast, deliberately dull and uninteresting — this is a miss and must
+read instantly as nothing. Keep it simple, flat and boring next to the rest of
+the set: no specular highlights, no indicator lamps, no glow, no accent hue.
+Isolated on a fully transparent background — no plate, no frame, no backing
+card.
+
+
+=== THE GROW MARKER — THREE IMAGES OF ONE OBJECT ===
+
+This is the game's mechanic symbol. It is LIT METAL, NOT A GLOWING BODY — that
+is what keeps it from being confused with H1 and H2, which are the only glowing
+things in the set. The banana curve is its silhouette.
+
+
+MARKER 1 — THE THROWN PROP (1024x1024)
+
+A pressurised gas canister shaped like a banana, floating in space, filling the
+frame, seen three-quarters on. A fat curved tapering steel vessel with an
+exaggerated banana bend and three big raised band hoops around its waist. A
+chunky brass valve assembly and one oversized round pressure gauge at the thick
+end as the hero feature, bold stencilled hazard chevrons in worn paint across
+its belly, a stubby carry lug at the thin end. Scuffed brushed steel with pale
+yellow painted panels showing through the wear, a bright near-white specular
+running along its upper-left length and near-black shadow beneath. Thick wisps
+of white vapour venting from the valve, kept close to the valve and not reaching
+the frame edge. It is LIT, not glowing — cold blue-white key from the upper
+left, dark painterly contour all around. No text or numbers on the gauge or the
+body. Isolated on a fully transparent background.
+
+
+MARKER 2 — THE CORNER BADGE (256x256)
+
+This one is laid ON TOP of the other symbols, so it cannot use colour to
+separate itself — it has to stay legible over amber, cyan, silver-green, violet,
+brass and hot orange alike.
+
+The same banana-shaped pressure canister, reduced to a bold simple badge for use
+at 30 pixels. Three-quarter view, one strong silhouette, the banana curve and
+the three band hoops exaggerated and every small detail dropped — no gauge, no
+chevrons, no vapour. Bright warm steel and pale yellow body with a hard dark
+outline contour around the whole shape and a bright hot near-white core along
+its upper-left edge, so it stays legible laid over any colour underneath. Very
+high contrast, minimal internal detail, no text. Transparent background.
+
+
+MARKER 3 — THE BURST (1024x1024, or an 8-frame sheet)
+
+The silhouette is an explosion but the behaviour is a LIFT — everything the wave
+passes drifts upward out of frame instead of being blown sideways.
+
+A pressurised canister rupturing in vacuum: an expanding ring of pale cyan light
+racing outward, thin vapour sheets peeling off it. No fire, no orange, no smoke
+plume. The shockwave silhouette is a clean widening ring rather than a ball,
+painted boldly and graphically rather than as fine simulation detail. Motes and
+debris drift UPWARD out of the ring rather than being flung outward in all
+directions. Cold cyan and white only. Transparent background.
+
+
+=== FINAL CHECK BEFORE DELIVERY ===
+
+Shrink the whole set to 100 pixels tall and lay them in a row on a dark
+background. Anything you cannot name at 100 pixels has failed and needs
+regenerating. Source resolution is not the test — legibility when small is.
+
+No two symbols may share both a silhouette and a colour. Check the Scatter
+hardest of all.
+
+No symbol may depend on its top-left corner to be identified — a badge is
+clamped over that corner in game. Keep every identifying feature (a sole, a
+gauge, a visor, a storm, a letterform) in the lower two thirds and toward the
+centre.

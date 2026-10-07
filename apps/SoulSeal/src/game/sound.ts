@@ -11,6 +11,12 @@ export type MusicName =
 
 export type SoundEffectName =
 	| 'jng_intro_fs'
+	// The five win tiers, named by winLevelMap and played through soundOnce.
+	| 'win_tier_1'
+	| 'win_tier_2'
+	| 'win_tier_3'
+	| 'win_tier_4'
+	| 'win_tier_5'
 	| 'sfx_anticipation'
 	| 'sfx_anticipation_start'
 	| 'sfx_bigwin_coinloop'

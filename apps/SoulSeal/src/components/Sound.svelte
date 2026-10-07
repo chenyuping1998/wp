@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import { sound, type MusicName, type SoundEffectName, type SoundName } from '../game/sound';
+	import type { MusicName, SoundEffectName, SoundName } from '../game/sound';
 
 	export type EmitterEventSound =
 		| { type: 'soundMusic'; name: MusicName }
@@ -11,6 +11,8 @@
 		| { type: 'soundBigWinBlast' }
 		| { type: 'soundSlam' }
 		| { type: 'soundAlarm' }
+		| { type: 'soundChantCollect' }
+		| { type: 'soundChantTease' }
 		| { type: 'soundReelTensionStart' }
 		| { type: 'soundReelTensionStop' }
 		| { type: 'soundScatterCounterIncrease' }
@@ -55,7 +57,14 @@
 		| 'spin_charge_5'
 		| 'spin_charge_10'
 		| 'tension'
-		| 'shimmer';
+		| 'shimmer'
+		| 'chant_collect'
+		| 'chant_tease'
+		| 'win_tier_1'
+		| 'win_tier_2'
+		| 'win_tier_3'
+		| 'win_tier_4'
+		| 'win_tier_5';
 
 	const SFX_FILES: Record<SfxName, string> = {
 		ui_click: 'terminal/ui_click.wav',
@@ -78,6 +87,18 @@
 		feature_intro: 'terminal/feature_intro.wav',
 		tension: 'terminal/tension.wav',
 		shimmer: 'terminal/shimmer.wav',
+		// The voice. Wordless on purpose - this game ships in twelve languages and
+		// a phrase baked into a sample cannot follow them. See `voice` in
+		// design/generate_audio_terminal.mjs.
+		chant_collect: 'terminal/chant_collect.wav',
+		chant_tease: 'terminal/chant_tease.wav',
+		// The five win tiers, each adding an instrument to the one below it. See
+		// winTier in design/generate_audio_terminal.mjs.
+		win_tier_1: 'terminal/win_tier_1.wav',
+		win_tier_2: 'terminal/win_tier_2.wav',
+		win_tier_3: 'terminal/win_tier_3.wav',
+		win_tier_4: 'terminal/win_tier_4.wav',
+		win_tier_5: 'terminal/win_tier_5.wav',
 	};
 
 	// Sprite sound names re-routed to the synthesized set.
@@ -105,8 +126,8 @@
 		// shortens the sample as well as raising it, so reel 5 at 1.6x carries a
 		// bit over half the energy of reel 1 at 0.8x - a flat volume would make the
 		// last reel, the one that matters most, the quietest of the five.
-		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.8, volume: 0.9 },
-		sfx_reel_stop_2: { name: 'reel_stop', rate: 0.95, volume: 0.95 },
+		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.8, volume: 1 },
+		sfx_reel_stop_2: { name: 'reel_stop', rate: 0.95, volume: 1 },
 		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.12, volume: 1.05 },
 		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.33, volume: 1.15 },
 		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.6, volume: 1.3 },
@@ -133,6 +154,13 @@
 		// on. Loud enough to be the event it is.
 		sfx_multiplier_update: { name: 'meter_tick', volume: 1.1 },
 		sfx_winlevel_small: { name: 'win_small' },
+		// The five tiers are named directly by winLevelMap and play through the
+		// same soundOnce path.
+		win_tier_1: { name: 'win_tier_1' },
+		win_tier_2: { name: 'win_tier_2' },
+		win_tier_3: { name: 'win_tier_3' },
+		win_tier_4: { name: 'win_tier_4' },
+		win_tier_5: { name: 'win_tier_5' },
 		sfx_winlevel_end: { name: 'blast', volume: 0.85 },
 		sfx_scatter_win: { name: 'win_small' },
 		sfx_scatter_win_v2: { name: 'win_big' },
@@ -306,21 +334,29 @@
 				playBgm('base');
 			} else if (name === 'bgm_freespin') {
 				playBgm('freespin');
-			} else {
-				// Other music (win levels etc) — pause bgm, play via sprite
-				if (bgmAudio) bgmAudio.pause();
-				currentBgm = null;
-				sound.players.music.play({ name });
 			}
+			// There is no third branch. It used to fall through to the howler
+			// sprite for win-level music, and that branch was unreachable: every
+			// `soundMusic` broadcast in this game is bgm_main or bgm_freespin, and
+			// winLevelMap's `sound.bgm` is never read by anything. The sprite it
+			// reached for was 17MB of a DIFFERENT game's audio - its keys are
+			// tumble_win_1..5 and sfx_royals_landing, from the tumble game this one
+			// was scaffolded from - preloaded on every session and never once
+			// played.
 		},
+		// The wild taking the board. One per SWEEP, not one per collect: two wilds
+		// is two sweeps and the player should hear both.
+		soundChantCollect: () => playSfx('chant_collect', 0.85),
+		// The priestess, under the tease. Fired with the tease rather than with the
+		// scatter that follows it, so the voice arrives BEFORE the news.
+		soundChantTease: () => playSfx('chant_tease', 0.9),
 		soundLoop: ({ name }) => {
 			if (name === 'sfx_bigwin_coinloop') {
 				playLoop('shimmer', 0.8);
-			} else if (name === 'sfx_anticipation') {
-				// covered by the tension tremolo loop (soundReelTensionStart)
-			} else {
-				sound.players.loop.play({ name });
 			}
+			// sfx_anticipation is covered by the tension tremolo loop
+			// (soundReelTensionStart), and there is no third case: those two are the
+			// only names any part of this game broadcasts as a loop.
 		},
 		soundOnce: ({ name }) => {
 			const mapped = SPRITE_TO_SFX[name];
@@ -348,12 +384,12 @@
 				stopSfx('shimmer');
 			} else if (name === 'sfx_anticipation') {
 				stopSfx('tension');
-				sound.stop({ name });
-			} else {
-				sound.stop({ name });
 			}
 		},
-		soundFade: async ({ name, duration, from, to }) => await sound.fade({ name, duration, from, to }), // prettier-ignore
+		// Fading is a no-op. The only thing this game ever asks to fade is
+		// sfx_anticipation, which is not played - the tension loop stands in for it
+		// - so there has never been anything on the other end of it.
+		soundFade: async () => {},
 	});
 
 	onMount(() => {

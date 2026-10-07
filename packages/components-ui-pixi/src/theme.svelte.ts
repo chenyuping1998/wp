@@ -144,6 +144,32 @@ export const uiTheme = $state({
 	// True by default, so every other game keeps the chrome it has.
 	buyBonusPlateChrome: true,
 
+	// The plate colour under a DIMMED disabled Buy Bonus.
+	//
+	// This was 0x1a2208 written into ButtonBuyBonus — GoBananas' olive, in a
+	// package shared by fifteen games. It only shows when a game opts into
+	// buyBonusDisabledStyle 'dim', which is why it went unnoticed: every other
+	// game takes the 'grey' branch. GoBananas takes 'dim', so its own colour was
+	// both correct and invisible as a bug — until the same game grew a second
+	// skin, where a flat grey CTA turned olive the moment it was disabled.
+	//
+	// The default is that same 0x1a2208, so nothing anywhere changes until a
+	// theme sets it.
+	buyBonusDisabledFill: 0x1a2208,
+
+	// ── the auto-spins counter ────────────────────────────────────────────────
+	// The badge drawn over the spin button while an auto run is counting down.
+	//
+	// All four were hardcoded in ButtonBetAutoSpinsCounter, and one of them was
+	// wrong for every game in the workspace: the numeral's outline was 0x6d2692,
+	// the TEMPLATE's plum. No game here is plum. Border and stroke default to null,
+	// which falls back to the game's buttonBorder / valueStroke — so a game that
+	// themes its bet bar gets a matching badge without naming these at all.
+	autoSpinsCounterFill: 0x000000,
+	autoSpinsCounterBorder: null as number | null,
+	autoSpinsCounterLabel: 0xffffff,
+	autoSpinsCounterLabelStroke: null as number | null,
+
 	// Wrap width and size of the label drawn over that plate, in the shared UI's
 	// base font units. Defaults are the numbers that were hardcoded.
 	//
@@ -222,6 +248,8 @@ export const uiTheme = $state({
 	// scenery, and the one moment it matters that it is a control is the moment the
 	// reels stop. Off by default; a game opts in.
 	buyBonusIdleGlow: false,
+	/** Optional art-shaped light laid over the plate while it is ready. */
+	buyBonusIdleSprite: undefined as string | undefined,
 
 	// Tint for the plate at REST.
 	//
@@ -279,8 +307,47 @@ export const uiTheme = $state({
 	// The sprite is expected to be white on transparent and the same size as the
 	// plate, so it registers without any positioning of its own. Undefined keeps
 	// the rectangle, which is what every other game gets.
+	/**
+	 * Degrees per second the buy-bonus plate turns while the pointer is over it.
+	 * 0 — the default — means it never turns, so no game that does not ask for
+	 * this changes at all.
+	 *
+	 * It exists because a plate whose art is a WHEEL has an obvious thing to do on
+	 * hover, and a static highlight on one is a missed open goal. The caption is
+	 * drawn separately and stays upright, so only the plate moves.
+	 *
+	 * The button spins up quickly and coasts down slowly — see ButtonBuyBonus —
+	 * because that is what something with mass does, and a plate that stops dead
+	 * the instant the pointer leaves reads as a video being paused.
+	 *
+	 * NOT buyBonusHoverSpin, which is the ring of rays BEHIND the plate. This one
+	 * turns the plate itself, so it is only for art that is radially symmetric and
+	 * carries no type; on a panel with a word on it, it puts the word upside down.
+	 * The two used to share one name, and every game that set it got both.
+	 */
+	buyBonusHoverRotate: 0,
+
 	buyBonusHoverSprite: undefined as string | undefined,
 	buyBonusHoverSpriteTint: 0xffd98a,
+	/**
+	 * How buyBonusHoverSprite is composited over the plate.
+	 *
+	 * 'add' (the default, and every game's behaviour before this existed) makes
+	 * the glyph read as the plate catching light - right for a lit rune on dark
+	 * stone. It can only ever BRIGHTEN, though, and on a pale plate a bright line
+	 * is close to invisible: additive light on a near-white ground just reaches
+	 * white. 'normal' lets the hover layer carry dark detail as well - cracks, a
+	 * shadow, an engraving - composited by its own alpha.
+	 */
+	buyBonusHoverSpriteBlend: 'add' as 'add' | 'normal',
+	/**
+	 * The multiply applied to a DISABLED plate. Undefined keeps the fixed value
+	 * each buyBonusDisabledStyle has always used (0x767670 for 'dim', 0x8a8a8a for
+	 * 'grey'), so nothing changes for a game that does not set it. Those values
+	 * were tuned on dark plates; on a pale one they turn it into dark rock for the
+	 * whole of every spin, and a lighter multiply still reads as off.
+	 */
+	buyBonusDisabledTint: undefined as number | undefined,
 
 	// HOVER SPIN: a ring of rays behind the plate that lights when the cursor
 	// arrives and turns while it stays.
@@ -328,6 +395,15 @@ export const uiTheme = $state({
 	// acknowledgement at all until whatever it triggered began, which on a slow
 	// connection is long enough to press again. Off by default, like hoverHighlight.
 	pressFeedback: false,
+
+	// The readout VALUE answers a change: the Win figure when a win lands, the
+	// Bet figure when the stake moves. It swells by this fraction and settles
+	// over ~0.3s (LabelWin / LabelBet drive it, UiLabel draws it). 0 = off,
+	// which is what every game had.
+	valuePop: 0,
+	// The Win figure's colour at the moment a win lands, easing back to the
+	// ordinary value colour (as a tint on it). Undefined = off.
+	winFlashTint: undefined as number | undefined,
 
 	// Breathing halo behind the spin button's rotating mark — idle invitation,
 	// brighter while the reels run. Off by default.
@@ -459,6 +535,12 @@ export const uiTheme = $state({
 	// next to it - so its portrait scale is separate. Defaults preserve every game.
 	portraitSideButtonX: 470,
 	portraitBuyBonusScale: 1,
+	// Portrait spin row: scale of the bet -/+ pair either side of the spin
+	// button (they sit at ±170). 0.5 of a 150 box is a 75-unit disc, about 27 CSS
+	// px on a 390-wide phone — well under a comfortable touch target. Up to ~0.72
+	// clears both the spin button and the autospin/turbo pair at ±285. Default
+	// preserves every game.
+	portraitStepButtonScale: 0.5,
 
 	// ── Platform UX conventions ──────────────────────────────────────────────
 	//

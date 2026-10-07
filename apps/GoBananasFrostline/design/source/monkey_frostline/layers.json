@@ -1,0 +1,135 @@
+{
+  "canvas": [
+    573,
+    860
+  ],
+  "source": "design\\source\\character_concepts\\frostline_monkey_fullbody_cutout_v2.png",
+  "layers": [
+    {
+      "z": 0,
+      "name": "left_leg_0_thigh",
+      "file": "left_leg_0_thigh.png",
+      "x": 121,
+      "y": 566,
+      "w": 172,
+      "h": 121
+    },
+    {
+      "z": 1,
+      "name": "left_leg_1_calf",
+      "file": "left_leg_1_calf.png",
+      "x": 119,
+      "y": 667,
+      "w": 148,
+      "h": 92
+    },
+    {
+      "z": 2,
+      "name": "left_leg_2_foot",
+      "file": "left_leg_2_foot.png",
+      "x": 83,
+      "y": 743,
+      "w": 151,
+      "h": 95
+    },
+    {
+      "z": 3,
+      "name": "right_leg_0_thigh",
+      "file": "right_leg_0_thigh.png",
+      "x": 282,
+      "y": 566,
+      "w": 178,
+      "h": 121
+    },
+    {
+      "z": 4,
+      "name": "right_leg_1_calf",
+      "file": "right_leg_1_calf.png",
+      "x": 319,
+      "y": 667,
+      "w": 144,
+      "h": 92
+    },
+    {
+      "z": 5,
+      "name": "right_leg_2_foot",
+      "file": "right_leg_2_foot.png",
+      "x": 336,
+      "y": 743,
+      "w": 172,
+      "h": 93
+    },
+    {
+      "z": 6,
+      "name": "torso_1_coat",
+      "file": "torso_1_coat.png",
+      "x": 137,
+      "y": 163,
+      "w": 315,
+      "h": 440
+    },
+    {
+      "z": 7,
+      "name": "right_arm_0_upper_arm",
+      "file": "right_arm_0_upper_arm.png",
+      "x": 377,
+      "y": 169,
+      "w": 139,
+      "h": 196
+    },
+    {
+      "z": 8,
+      "name": "right_arm_1_forearm",
+      "file": "right_arm_1_forearm.png",
+      "x": 413,
+      "y": 348,
+      "w": 146,
+      "h": 137
+    },
+    {
+      "z": 9,
+      "name": "right_arm_2_hand",
+      "file": "right_arm_2_hand.png",
+      "x": 443,
+      "y": 468,
+      "w": 116,
+      "h": 127
+    },
+    {
+      "z": 10,
+      "name": "left_arm_0_upper_arm",
+      "file": "left_arm_0_upper_arm.png",
+      "x": 51,
+      "y": 169,
+      "w": 144,
+      "h": 196
+    },
+    {
+      "z": 11,
+      "name": "left_arm_1_forearm",
+      "file": "left_arm_1_forearm.png",
+      "x": 21,
+      "y": 348,
+      "w": 157,
+      "h": 137
+    },
+    {
+      "z": 12,
+      "name": "left_arm_2_hand",
+      "file": "left_arm_2_hand.png",
+      "x": 21,
+      "y": 468,
+      "w": 125,
+      "h": 129
+    },
+    {
+      "z": 13,
+      "name": "head_0_face",
+      "file": "head_0_face.png",
+      "x": 203,
+      "y": 15,
+      "w": 188,
+      "h": 240
+    }
+  ]
+}

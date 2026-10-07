@@ -191,17 +191,16 @@
 
 				// a milestone flare washes the whole beam, not just the slot -
 				// what changed is the run, not one square
-				if (flareT > 0) {
-					const pulse = Math.sin(flareT * Math.PI) ** 2;
-					g.roundRect(
-						leftEdge - slotSize * 0.2,
-						beamY - slotSize * 0.3,
-						boardWidth + slotSize * 0.4,
-						slotSize * 1.4,
-						slotSize * 0.2,
-					);
-					g.fill({ color: TALISMAN, alpha: 0.35 * pulse });
-				}
+				// NO WASH ACROSS THE RAIL.
+				//
+				// A milestone used to fill a talisman-yellow rectangle the full width
+				// of the beam, a slab standing behind all twelve sockets at once. It
+				// says the wrong thing twice over: the milestone happened at ONE
+				// socket, not along the whole rail, and the RailMilestone plaque is
+				// already on screen announcing it in words.
+				//
+				// What is left is local - see the slot loop, where the socket that was
+				// just reached brightens on its own.
 
 				// ── the slots ──────────────────────────────────────────────────
 				for (let i = 0; i < RAIL_TOTAL; i++) {
@@ -216,9 +215,30 @@
 					const w = slotSize * 0.62 * scale;
 					const h = slotSize * 0.9 * scale;
 
+					// The socket that just completed a milestone lights up, and only
+					// that one. A ring on the thing that happened, in the rail's own
+					// brass, rather than a colour wash over everything beside it.
+					const flaring = flareT > 0 && isMilestone && i === stampingSlot;
+					const pulse = flaring ? Math.sin(flareT * Math.PI) ** 2 : 0;
+
 					// the empty socket
 					g.roundRect(x - half * 0.66, beamY - half * 0.95, half * 1.32, half * 1.9, 3);
-					g.stroke({ width: 2, color: isMilestone ? BRASS_HI : BRASS, alpha: filled ? 0.35 : 0.7 });
+					g.stroke({
+						width: flaring ? 2 + 2 * pulse : 2,
+						color: isMilestone ? BRASS_HI : BRASS,
+						alpha: flaring ? 0.7 + 0.3 * pulse : filled ? 0.35 : 0.7,
+					});
+
+					if (flaring) {
+						// One soft ring outside the socket, so the light has somewhere to
+						// fall off. Its width is bounded by the SLOT SPACING and not
+						// chosen: twelve sockets across the board leaves 43.3px a slot,
+						// and a ring at half * 1.8 is 51.5px - it would overlap the
+						// sockets either side and light three where one was reached.
+						const grow = Math.min(half * 0.9, step * 0.46);
+						g.roundRect(x - grow, beamY - half * 1.25, grow * 2, half * 2.5, 4);
+						g.stroke({ width: 3, color: BRASS_HI, alpha: 0.3 * pulse });
+					}
 
 					if (!filled) continue;
 

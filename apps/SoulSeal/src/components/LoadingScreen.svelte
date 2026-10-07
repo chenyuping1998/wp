@@ -8,12 +8,14 @@
 	import config from '../game/config';
 	import { WORDMARK_ASPECT } from '../game/constants';
 	import { getContext } from '../game/context';
-	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import FeatureIntro from './FeatureIntro.svelte';
 
 	type Props = {
 		onloaded: () => void;
+		// Fired when the player presses to start. The transition itself is NOT run
+		// here any more - see the note where it used to be.
+		onstart: () => void;
 	};
 
 	const props: Props = $props();
@@ -31,7 +33,6 @@
 		),
 	);
 
-	let loadingType = $state<'start' | 'transition'>('start');
 	let pulseTick = $state(0);
 
 	// Board size is written ROWS x REELS - "3x5", the way players and the rest of
@@ -123,7 +124,7 @@
 </script>
 
 <!-- Soul Seal branded loading screen -->
-<FadeContainer show={loadingType === 'start'}>
+<FadeContainer show={true}>
 	<MainContainer>
 		<!-- the trading floor, held under a dark overlay for readability -->
 		<Sprite
@@ -179,7 +180,7 @@
 </FadeContainer>
 
 <!-- loading column: retires the moment the assets are in -->
-<FadeContainer show={loadingType === 'start' && !context.stateApp.loaded}>
+<FadeContainer show={!context.stateApp.loaded}>
 	<MainContainer>
 		<!--
 			Strapline. Lives with the progress bar rather than with the title,
@@ -271,29 +272,30 @@
 </FadeContainer>
 
 <!-- feature card: takes the screen once the bar fills -->
-<FadeContainer show={loadingType === 'start' && context.stateApp.loaded}>
+<FadeContainer show={context.stateApp.loaded}>
 	<FeatureIntro />
 </FadeContainer>
 
 <!-- press to continue -->
-<FadeContainer show={loadingType === 'start' && context.stateApp.loaded}>
-	<PressToContinue onpress={() => (loadingType = 'transition')} />
+<FadeContainer show={context.stateApp.loaded}>
+	<PressToContinue onpress={props.onstart} />
 </FadeContainer>
 
 <!--
-	Transition between the loading screen and the game.
+	THE TRANSITION IS NOT HERE ANY MORE. It is owned by Game.svelte.
 
-	The handover is on `oncover`, not `oncomplete`: that is the frame the
-	circuit-breaker shutters are shut, so the loading screen is torn down and the
-	game put up behind a screen that is showing nothing. Handing over on
-	`oncomplete` instead would play the shutters retracting to reveal... the
-	loading screen again, and only then cut to the game.
+	It used to be mounted in this file, and could not work from here. Game renders
+	either the loading screen or the game and never both, so handing over on
+	`oncover` destroyed this whole tree - and the transition inside it - at the
+	exact moment the shutters closed. The reveal was never played: the game
+	appeared out of a hold on black, which is the "very obvious black" the opening
+	was reported for.
 
-	Unmounting here takes the animation with it, so the retract is never seen on
-	this one - the game simply appears from black. That is the intended shape:
-	in-game transitions get the full open because the scene behind them is ready,
-	and this one is a handover between two different trees.
+	Handing over on `oncomplete` instead is worse, not better. That plays the
+	shutters retracting to reveal the LOADING SCREEN again, and only then cuts.
+
+	Neither works from inside a tree that the handover unmounts. So the transition
+	moved one level up, where it outlives the swap: it covers, the trees are
+	exchanged behind it, and it opens onto a game that is already there - which is
+	exactly what the in-game transitions do.
 -->
-<FadeContainer show={loadingType === 'transition'}>
-	<TransitionAnimation oncover={props.onloaded} oncomplete={props.onloaded} />
-</FadeContainer>
