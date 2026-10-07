@@ -1,0 +1,51 @@
+{
+  "status": "LOCAL_REVIEW",
+  "checks": {
+    "assets": 61,
+    "audio_cues": 36,
+    "published_books": 200000,
+    "book_mechanic_assertions": "passed",
+    "new_type_issues": 0,
+    "template_type_baseline": 17,
+    "weighted_cast_vertices": {
+      "sushiMaster": 3242,
+      "sushiApprentice": 3242
+    }
+  },
+  "browser": {
+    "viewport": [
+      "1366x768",
+      "390x844"
+    ],
+    "observed": [
+      "base collection",
+      "4 scatters / 12 free spins",
+      "mode cast swap",
+      "chef upgrades to 22 and 32 total spins",
+      "10 / J replacement feedback",
+      "super win",
+      "32-spin total / return to base",
+      "CRT on/off",
+      "shared paper frames on high symbols",
+      "chef cut-in and diagonal slash",
+      "masked paper/text halves and fragments",
+      "resume after slash to 18/20 spins",
+      "Superbonus opening 10-to-Plate cut before first reveal, first-spin caption, total remains 10"
+    ],
+    "console_errors": 0
+  },
+  "platform_updated": false,
+  "zips_created": false,
+  "presentation_update": {
+    "one_level_duration_ms": 3570,
+    "sequential_crossed_thresholds": true,
+    "effect_applies_next_spin": true,
+    "cutin_style": {
+      "colors95": 65,
+      "soft_pct": 47.2,
+      "chroma_non_accent": 9.6,
+      "palette_fit_pct": 65.5
+    },
+    "console_errors": 0
+  }
+}
