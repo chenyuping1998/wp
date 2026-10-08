@@ -12,6 +12,7 @@
 	import LayoutSideRail from './LayoutSideRail.svelte';
 	import LayoutBottomBar from './LayoutBottomBar.svelte';
 	import { uiTheme } from '../theme.svelte';
+	import { stateUi } from 'state-shared';
 	import LabelBalance from './LabelBalance.svelte';
 	import LabelWin from './LabelWin.svelte';
 	import LabelBet from './LabelBet.svelte';
@@ -108,7 +109,11 @@
 		{/snippet}
 
 		{#snippet buttonBuyBonus(buttonProps)}
-			<ButtonBuyBonus {...buttonProps} />
+			<!-- uiTheme.buyBonusHideInFreeSpins: gone for the length of the feature,
+			     in every layout, since this snippet is the one place they all draw it -->
+			{#if !(uiTheme.buyBonusHideInFreeSpins && stateUi.freeSpinCounterShow)}
+				<ButtonBuyBonus {...buttonProps} />
+			{/if}
 		{/snippet}
 
 		{#snippet buttonBet(buttonProps)}

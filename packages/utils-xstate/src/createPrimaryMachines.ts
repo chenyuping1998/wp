@@ -99,24 +99,26 @@ function createPrimaryMachines<TBet extends BaseBet>(options: Options<TBet>) {
 		checkIsBonusGame,
 	} = options;
 
-	let balanceAmountFromApiHolder: null | number = null;
-
 	const BET_TYPE_METHODS_MAP = {
 		noWin: {
 			newGame: async () => undefined,
 			endGame: async () => undefined,
 		},
+		// A winning base round is closed when its presentation ends, the same as
+		// a bonus round. It used to be closed the instant the play response
+		// arrived, before a single reel moved — so a player who reloaded mid-win
+		// came back to no active round, and the stake fell back to
+		// defaultBetLevel. Stake review, 2026-10-04 (Deadwood Express): "Active
+		// rounds restore the bet amount from the authenticate response ... not an
+		// issue while the bonus is active ... but for a base spin it is." Keeping
+		// the round open until the win has played out lets /authenticate hand it
+		// back, stake and all. Zero-win rounds still send no end-round.
 		singleRoundWin: {
-			newGame: async () => {
-				const endRoundData = await handleRequestEndRound();
-				if (endRoundData?.balance) {
-					balanceAmountFromApiHolder = endRoundData.balance.amount;
-				}
-			},
+			newGame: async () => undefined,
 			endGame: async () => {
-				if (balanceAmountFromApiHolder !== null) {
-					handleUpdateBalance({ balanceAmountFromApi: balanceAmountFromApiHolder });
-					balanceAmountFromApiHolder = null;
+				const data = await handleRequestEndRound();
+				if (data?.balance) {
+					handleUpdateBalance({ balanceAmountFromApi: data.balance.amount });
 				}
 			},
 		},
@@ -126,7 +128,6 @@ function createPrimaryMachines<TBet extends BaseBet>(options: Options<TBet>) {
 				const data = await handleRequestEndRound();
 				if (data?.balance) {
 					handleUpdateBalance({ balanceAmountFromApi: data.balance.amount });
-					balanceAmountFromApiHolder = null;
 				}
 			},
 		},
@@ -179,6 +180,15 @@ function createPrimaryMachines<TBet extends BaseBet>(options: Options<TBet>) {
 		if (betToResume && betToResume.active) {
 			// Optional chaining doesn't work here with build-node. 🤷‍♂️
 			stateBet.betToResume = null;
+
+			// The resumed round's stake is the one to show, whatever opened the
+			// session — Authenticate sets it too, but a resumed round is already
+			// committed money, so it is pinned again here as the round starts.
+			const resumedAmount = Number(betToResume.amount) / API_AMOUNT_MULTIPLIER;
+			if (resumedAmount > 0) {
+				stateBet.betAmount = resumedAmount;
+				stateBet.wageredBetAmount = resumedAmount;
+			}
 
 			//End Round resumed active bet
 			const bet = betToResume as TBet;

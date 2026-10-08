@@ -34,27 +34,21 @@ const correctBetAmount = (value: number) => {
 	if (stateConfig.maxBet > 0) corrected = Math.min(corrected, stateConfig.maxBet);
 	if (stateConfig.minBet > 0) corrected = Math.max(corrected, stateConfig.minBet);
 
-	// Affordability last, so a player short of the minimum is held to what they
-	// actually have rather than to a stake they cannot place.
+	// No affordability clamp. Stake review, 2026-10-04: "The available bet
+	// levels should not be restricted or hardcoded based on the player's current
+	// balance ... the balance check should only occur when they attempt to place
+	// the bet." Every server level stays selectable; the bet button, autoplay and
+	// buy-bonus paths refuse a stake the player cannot cover (isBetCostAvailable)
+	// and explain why.
 	//
-	// Snapped DOWN to a level the server offers, never to the balance itself.
-	// `Math.min(corrected, affordable)` returned the raw balance whenever the
-	// balance was the smaller number, so a player holding 1,120 GC who pressed
-	// Max Bet got a stake of exactly 1,120 GC — a level `betLevels` never
-	// contained. Certification reported it as a bet level not provided by the RGS.
-	//
-	// Every selectable stake has to be one of the server's, so affordability may
-	// only ever pick a lower rung of the server's own ladder. If the player cannot
-	// afford even the lowest rung, the lowest rung is still what is shown: the
-	// insufficient-balance path then refuses the spin, which is the correct
-	// outcome, whereas inventing a stake they can afford is not ours to do.
-	const affordable = stateBet.balanceAmount / costMultiplier;
-	const ceiling = Math.min(corrected, affordable);
+	// Still snapped DOWN to a level the server offers — a stake that is not in
+	// `betLevels` is one certification reports as not provided by the RGS.
+	const ceiling = corrected;
 
 	const levels = stateConfig.betAmountOptions;
 	if (!levels.length) {
 		// No discrete ladder — the game steps by stepBet, and there is no rung to
-		// snap to. Clamping to the ceiling is all that can be done here.
+		// snap to. Clamping to the server's limits is all that can be done here.
 		return ceiling;
 	}
 

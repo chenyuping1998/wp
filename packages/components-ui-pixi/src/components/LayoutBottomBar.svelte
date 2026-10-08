@@ -8,6 +8,7 @@
 	import ButtonReplay from './ButtonReplay.svelte';
 	import LabelReplayMultiplier from './LabelReplayMultiplier.svelte';
 	import UiBarStrip from './UiBarStrip.svelte';
+	import UiLabel from './UiLabel.svelte';
 	import { getContext } from '../context';
 	import { uiTheme } from '../theme.svelte';
 	import { UI_BASE_FONT_SIZE, UI_BASE_SIZE } from '../constants';
@@ -67,7 +68,7 @@
 
 	// Frame inset from the canvas edges.
 	const FRAME_X = 24;
-	const frameW = $derived(box.width - FRAME_X * 2);
+	const frameW = $derived(box.width - FRAME_X - (uiTheme.barFrameRightInset ?? FRAME_X));
 	const innerRight = $derived(box.width - FRAME_X - 14);
 
 	// Right cluster, spaced by even edge-to-edge gaps rather than even centres —
@@ -109,6 +110,19 @@
 	const DIV_3 = 656;
 	const dividerBeforeBet = $derived(BET_X - 118);
 
+	// uiTheme.stepperLayout 'flank': −  BET  + in one row. The − sits 40 of air
+	// in from the Win rule, the + keeps the stacked pair's x beside the spin pod,
+	// and the readout centres between them; the empty Win→Bet cell (and its
+	// closing rule and breather tick) is what the pair takes up.
+	const flank = $derived(uiTheme.stepperLayout === 'flank');
+	const STEP_R = $derived((UI_BASE_SIZE * STEP_SCALE) / 2);
+	// the pair closes in on the readout when the span allows: at the full width
+	// the − sat far from the amount it changes and read as a separate control
+	const FLANK_SPREAD = 210;
+	const PLUS_X = $derived(STEP_X);
+	const MINUS_X = $derived(Math.max(DIV_3 + 40 + STEP_R, PLUS_X - FLANK_SPREAD * 2));
+	const betReadoutX = $derived(flank ? (MINUS_X + PLUS_X) * 0.5 : BET_X);
+
 	// How wide a readout may draw, in ITS OWN units — the cell it sits in, less a
 	// little air, divided by the scale the container applies.
 	//
@@ -127,7 +141,9 @@
 	const winMaxWidth = $derived(cellWidth(DIV_2, DIV_3));
 	// The Bet cell is bounded by its own rule on the left and the stepper on the
 	// right, and it also has to leave room for the chevron the affordance draws.
-	const betMaxWidth = $derived(cellWidth(dividerBeforeBet, STEP_X - 24));
+	const betMaxWidth = $derived(
+		flank ? cellWidth(MINUS_X + STEP_R, PLUS_X - STEP_R) : cellWidth(dividerBeforeBet, STEP_X - 24),
+	);
 	// centre of the empty Win→Bet span, for the breather tick
 	const GAP_CENTER = $derived((DIV_3 + BET_X - 118) * 0.5);
 
@@ -156,6 +172,35 @@
 		GAP_CENTER - (REPLAY_RADIUS * 2 + 12 + REPLAY_CAPTION_WIDTH) * 0.5 + REPLAY_RADIUS,
 	);
 
+	// Replay with a summary (stateReplay.summary, written by the game): the strip
+	// carries every row of the replay start card, so nothing the card said is
+	// lost once it closes. Stake review, 2026-10-04 (Deadwood Express): "When the
+	// replay finishes, some of the information are not included in the bet bar
+	// next to the Replay button". Replay + caption move to the right end beside
+	// turbo; the rows share the span from the menu rule to it in equal cells.
+	const replaySummary = $derived(stateReplay.enabled ? stateReplay.summary : []);
+	const hasReplaySummary = $derived(replaySummary.length > 0);
+	const SUMMARY_TURBO_R = (UI_BASE_SIZE * 0.5) / 2;
+	const SUMMARY_REPLAY_X = $derived(
+		TURBO_X - SUMMARY_TURBO_R - 40 - REPLAY_CAPTION_WIDTH - 12 - REPLAY_RADIUS,
+	);
+	const SUMMARY_END = $derived(SUMMARY_REPLAY_X - REPLAY_RADIUS - 34);
+	const summaryCellW = $derived((SUMMARY_END - DIV_1) / Math.max(1, replaySummary.length));
+	const summaryX = $derived((i: number) => DIV_1 + summaryCellW * (i + 0.5));
+	const summaryMaxW = $derived(cellWidth(0, summaryCellW));
+	// one caption size for the whole row: the scale the longest caption needs
+	let summaryLabelWidths = $state<number[]>([]);
+	const summaryLabelScale = $derived(
+		Math.min(1, ...summaryLabelWidths.filter((w) => w > 0).map((w) => summaryMaxW / w)),
+	);
+	const ruleXs = $derived(
+		hasReplaySummary
+			? replaySummary.map((_, i) => DIV_1 + summaryCellW * i).concat(SUMMARY_END)
+			: flank
+				? [DIV_1, DIV_2, DIV_3]
+				: [DIV_1, DIV_2, DIV_3, dividerBeforeBet],
+	);
+
 	const replayCaptionStyle = $derived({
 		fontFamily: uiTheme.fontFamily,
 		fontWeight: uiTheme.fontWeight,
@@ -181,6 +226,20 @@
 	// now sits 110 above the frame, leaving ~60 between caption and close button.
 	const MENU_PITCH = 130;
 	const menuItemY = $derived((i: number) => barTop - 110 - MENU_PITCH * i);
+
+	// uiTheme.barMessage, centred in the Win→stepper span
+	const messageX = $derived((DIV_3 + MINUS_X - STEP_R) * 0.5);
+	const messageWidth = $derived(Math.max(0, MINUS_X - STEP_R - DIV_3 - 48));
+	const messageStyle = $derived({
+		fontFamily: uiTheme.fontFamily,
+		fontWeight: uiTheme.fontWeight,
+		fontSize: UI_BASE_FONT_SIZE * 0.6,
+		fill: uiTheme.barMessageFill,
+		align: 'center' as const,
+		wordWrap: true,
+		wordWrapWidth: messageWidth,
+		lineHeight: UI_BASE_FONT_SIZE * 0.66,
+	});
 
 	// Drawn strip artwork, if the game supplies any. Undefined for every game, so
 	// the vector casing below is unchanged unless one opts in.
@@ -253,7 +312,7 @@
 				}
 				const topF = barTop + DIV_INSET;
 				const botF = barTop + h - DIV_INSET;
-				for (const x of [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
+				for (const x of ruleXs) {
 					g.moveTo(x, topF);
 					g.lineTo(x, botF);
 					g.stroke({ width: 1, color: 0xffffff, alpha: 0.15 });
@@ -282,7 +341,7 @@
 			// Vertical rules do the opposite — they separate.
 			const top = barTop + DIV_INSET;
 			const bot = barTop + h - DIV_INSET;
-			for (const x of [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
+			for (const x of ruleXs) {
 				g.moveTo(x, top);
 				g.lineTo(x, bot);
 				g.stroke({ width: 2, color: uiTheme.panelBorder, alpha: 0.55 });
@@ -298,11 +357,14 @@
 			// the middle third of the frame's height — gives that emptiness a centre
 			// to sit around so it reads as designed space rather than a gap. Not a
 			// section rule: it separates nothing, it just breathes.
-			const midY = barTop + h * 0.5;
-			const half = (h - DIV_INSET * 2) * 0.28;
-			g.moveTo(GAP_CENTER, midY - half);
-			g.lineTo(GAP_CENTER, midY + half);
-			g.stroke({ width: 2, color: uiTheme.panelBorder, alpha: 0.3 });
+			// flank fills that span, so there is no emptiness to give a centre to
+			if (!flank && !hasReplaySummary) {
+				const midY = barTop + h * 0.5;
+				const half = (h - DIV_INSET * 2) * 0.28;
+				g.moveTo(GAP_CENTER, midY - half);
+				g.lineTo(GAP_CENTER, midY + half);
+				g.stroke({ width: 2, color: uiTheme.panelBorder, alpha: 0.3 });
+			}
 		}}
 	/>
 
@@ -313,6 +375,37 @@
 		</Container>
 	{/if}
 
+	{#if hasReplaySummary}
+		{#each replaySummary as row, i (row.label)}
+			<Container x={summaryX(i)} y={readoutTop} scale={READOUT_SCALE}>
+				<UiLabel
+					tiled={false}
+					stacked
+					label={row.label.toUpperCase()}
+					value={row.value}
+					maxWidth={summaryMaxW}
+					labelScale={summaryLabelScale}
+					onlabelwidth={(w) => (summaryLabelWidths[i] = w)}
+					accent={row.tone === 'win'
+						? uiTheme.winAccent
+						: { border: uiTheme.panelBorder, label: uiTheme.balanceLabelFill }}
+				/>
+			</Container>
+		{/each}
+		<Container x={SUMMARY_REPLAY_X} y={barMid} scale={REPLAY_SCALE}>
+			<ButtonReplay anchor={0.5} />
+		</Container>
+		<Text
+			anchor={{ x: 0, y: 0.5 }}
+			x={SUMMARY_REPLAY_X + REPLAY_RADIUS + 12}
+			y={barMid}
+			text={i18nDerived.replay()}
+			style={replayCaptionStyle}
+		/>
+		<Container x={TURBO_X} y={barMid} scale={0.5}>
+			{@render props.buttonTurbo({ anchor: 0.5 })}
+		</Container>
+	{:else}
 	<Container x={BALANCE_X} y={readoutTop} scale={READOUT_SCALE}>
 		{#if stateReplay.enabled}
 			<LabelReplayMultiplier stacked tiled={false} />
@@ -326,7 +419,7 @@
 	</Container>
 
 	<!-- ── right: bet, stepper, spin, autospin, turbo ─────────────────────── -->
-	<Container x={BET_X} y={readoutTop} scale={READOUT_SCALE}>
+	<Container x={betReadoutX} y={readoutTop} scale={READOUT_SCALE}>
 		{@render props.amountBet({ stacked: true, tiled: false, maxWidth: betMaxWidth })}
 	</Container>
 
@@ -370,12 +463,24 @@
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
 	{:else}
-		<Container x={STEP_X} y={barMid - STEP_DY} scale={STEP_SCALE}>
-			{@render props.buttonIncrease({ anchor: 0.5 })}
-		</Container>
-		<Container x={STEP_X} y={barMid + STEP_DY} scale={STEP_SCALE}>
-			{@render props.buttonDecrease({ anchor: 0.5 })}
-		</Container>
+		{#if flank && uiTheme.barMessage && messageWidth > 60}
+			<Text anchor={0.5} x={messageX} y={barMid} text={uiTheme.barMessage} style={messageStyle} />
+		{/if}
+		{#if flank}
+			<Container x={MINUS_X} y={barMid} scale={STEP_SCALE}>
+				{@render props.buttonDecrease({ anchor: 0.5 })}
+			</Container>
+			<Container x={PLUS_X} y={barMid} scale={STEP_SCALE}>
+				{@render props.buttonIncrease({ anchor: 0.5 })}
+			</Container>
+		{:else}
+			<Container x={STEP_X} y={barMid - STEP_DY} scale={STEP_SCALE}>
+				{@render props.buttonIncrease({ anchor: 0.5 })}
+			</Container>
+			<Container x={STEP_X} y={barMid + STEP_DY} scale={STEP_SCALE}>
+				{@render props.buttonDecrease({ anchor: 0.5 })}
+			</Container>
+		{/if}
 
 		<!-- Spin is the largest thing on the strip and overhangs it top and bottom,
 		     which is what makes it read as the primary action without a caption. -->
@@ -410,6 +515,7 @@
 				{@render props.buttonBuyBonus({ anchor: 0.5 })}
 			</Container>
 		{/if}
+	{/if}
 	{/if}
 </MainContainer>
 

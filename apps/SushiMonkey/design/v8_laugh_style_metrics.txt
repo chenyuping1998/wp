@@ -1,0 +1,4 @@
+design/source/mg/head_2_face_half.png: colors95=57 soft=41.9% accent#B87B60=5.3% accent#BD8267=5.4% accent#A86E56=5.0% chroma=11.2 fit=74.3% PASS
+design/source/mg/head_2_face_open.png: colors95=57 soft=42.1% accent#B87B60=6.3% accent#BD8267=6.5% accent#A86E56=6.0% chroma=10.1 fit=77.4% PASS
+design/source/fg/head_2_face_half.png: colors95=54 soft=45.7% accent#B87B60=3.3% accent#BD8267=3.5% accent#A86E56=3.2% chroma=10.5 fit=76.0% PASS
+design/source/fg/head_2_face_open.png: colors95=54 soft=46.0% accent#B87B60=4.1% accent#BD8267=4.3% accent#A86E56=4.0% chroma=10.3 fit=76.4% PASS

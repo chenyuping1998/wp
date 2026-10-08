@@ -390,6 +390,13 @@ export const uiTheme = $state({
 	// that never had hover feedback keep their existing look.
 	hoverHighlight: false,
 
+	// How hoverHighlight draws. Unset: the white overlay it always drew. Set to a
+	// colour: a round button with a plate sprite redraws that plate ADDITIVE in
+	// this tint; a flat drawn disc gets a lit rim in it; the Bet readout gets a
+	// lit underline instead of a box. Hover must never grey a control out
+	// (user rule, 2026-10-01 — ported from the main wp checkout).
+	hoverPlateLight: undefined as number | undefined,
+
 	// Push a control in while it is held down. `pressed` has always been handed to
 	// UiButton by Button, and nothing has ever drawn it — so a tap produced no
 	// acknowledgement at all until whatever it triggered began, which on a slow
@@ -484,6 +491,18 @@ export const uiTheme = $state({
 	// Raise the gap WITH the scale, or the two plates overlap.
 	stepButtonScale: 0.28,
 	stepButtonGap: 22,
+
+	// compactBottom only — how the +/- stepper sits against the Bet readout.
+	//   'stacked'  + over −, right of the readout (the original arrangement)
+	//   'flank'    −  BET  +  in one row, so the stepper can be as large as
+	//              autospin/turbo; the pair takes the empty Win→Bet cell and the
+	//              readout centres between them.
+	// Default 'stacked' — every game that names nothing is unchanged.
+	stepperLayout: 'stacked' as 'stacked' | 'flank',
+	// Hide Buy Bonus while a free-spin feature runs (stateUi.freeSpinCounterShow).
+	// It cannot be pressed then anyway, and drawn beside the feature it reads as
+	// an offer. Default off.
+	buyBonusHideInFreeSpins: false,
 
 	// What the spin button should look like while a given bet mode is ACTIVE.
 	//
@@ -612,6 +631,20 @@ export const uiTheme = $state({
 	// key only changes the SHAPES, so a game can take the flat casing without
 	// giving up its palette, or vice versa.
 	barStyle: 'framed' as 'framed' | 'flat',
+
+	// compactBottom 'flank' only — a one-line status message drawn in the span
+	// between the Win cell and the − stepper ("PLACE YOUR BET", "GOOD LUCK!"),
+	// the line most bars carry there. A game sets it at run time; empty (the
+	// default) draws nothing, so every other game is unchanged.
+	barMessage: '',
+
+	// compactBottom only — how far the strip's frame stops short of the canvas's
+	// RIGHT edge, in layout units. Undefined keeps the left inset (24) — the
+	// symmetric frame every other game has. Only the frame moves; the controls
+	// keep their positions, so a smaller value gives the last control (turbo)
+	// more strip to sit on.
+	barFrameRightInset: undefined as number | undefined,
+	barMessageFill: 0xffffff,
 
 	// compactBottom only — how far in from each END of uiTheme.sprites.bar the
 	// artwork stops being a cap and starts being stretchable middle, measured in

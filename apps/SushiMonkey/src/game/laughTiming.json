@@ -1,0 +1,7 @@
+{
+  "startMs": 480,
+  "gapMs": 280,
+  "beats": 10,
+  "endMs": 3650,
+  "faceStates": ["inhale", "half", "rising", "open", "peak", "settle"]
+}

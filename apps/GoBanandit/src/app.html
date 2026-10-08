@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
+		<link rel="preload" href="%sveltekit.assets%/fonts/banandit/Bungee-Regular.ttf" as="font" type="font/ttf" crossorigin />
+		<link rel="preload" href="%sveltekit.assets%/fonts/banandit/Anton-Regular.ttf" as="font" type="font/ttf" crossorigin />
+		<style>
+			@font-face { font-family: 'Bungee'; src: url('%sveltekit.assets%/fonts/banandit/Bungee-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+			@font-face { font-family: 'Anton'; src: url('%sveltekit.assets%/fonts/banandit/Anton-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
+			/* Cyrillic for every face above: none of the three has it, so Russian
+			   fell back to the system's thin sans. Bold Oswald, Cyrillic only
+			   (design note: subset of TurfWar's OFL Oswald at wght 700). */
+			@font-face { font-family: 'OswaldCyr'; src: url('%sveltekit.assets%/fonts/banandit/OswaldCyr-Bold.ttf') format('truetype'); font-weight: 100 900; unicode-range: U+0400-052F, U+2116, U+20A9; font-display: block; }
+			@font-face { font-family: 'Archivo'; src: url('%sveltekit.assets%/fonts/banandit/Archivo-variable.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
+		</style>
+		<meta name="viewport" content="width=device-width" />
+		%sveltekit.head%
+	</head>
+	<body style="margin: 0; padding: 0; overflow: hidden; background-color: #1F5C4A">
+		<div>%sveltekit.body%</div>
+	</body>
+</html>
