@@ -1,0 +1,118 @@
+{
+    "workingName": "Capo Nostra",
+    "frontendConfig": {
+        "file": "fe_config.json",
+        "sha256": "eadd83c84e2970306a3fe1d2a98528913460c56a592ae04eb9ea92432d3222bd"
+    },
+    "gameID": "capo_nostra",
+    "rtp": 0.9618,
+    "betDenomination": 1000,
+    "minDenomination": 10,
+    "providerNumber": 0,
+    "standardForceFile": {
+        "file": "force.json",
+        "sha256": "343f1939dfaf567bce2185c72193a28d93a650fa748f00dee475beda38cf0da4"
+    },
+    "bookShelfConfig": [
+        {
+            "name": "base",
+            "tables": [
+                {
+                    "file": "lookUpTable_base_0.csv",
+                    "sha256": "7fb66f8b4d1bcaa786f68422fc689a39dcb1a3615c90ca7df811e5c67847a0c3"
+                }
+            ],
+            "cost": 1.0,
+            "rtp": 0.9618,
+            "std": 15.0,
+            "bookLength": 40000,
+            "feature": true,
+            "autoEndRoundDisabled": false,
+            "buyBonus": false,
+            "maxWin": 20000.0,
+            "booksFile": {
+                "file": "books_base.jsonl.zst",
+                "sha256": "8c041e54f66fd8d78455af1d134f5f84684b98c981ffc0c13a64936a3f81f97b"
+            },
+            "forceFile": {
+                "file": "force_record_base.json",
+                "sha256": "726c95c7107187c1dc0b8929d4b838317db937f42dfd3edfe1cf8b26b4e5a561"
+            }
+        },
+        {
+            "name": "bonus",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_0.csv",
+                    "sha256": "9993a2825f30c553012a09b2f68b503e42e420f959ea1ef2cd8df7043f024a3d"
+                }
+            ],
+            "cost": 100.0,
+            "rtp": 0.9623,
+            "std": 1.91,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 20000.0,
+            "booksFile": {
+                "file": "books_bonus.jsonl.zst",
+                "sha256": "097943a1d683ea7a67ec7cc43c244e2a9b5e80f43a595fbc600bcedc30892901"
+            },
+            "forceFile": {
+                "file": "force_record_bonus.json",
+                "sha256": "156e556b992ec00585cf2487f2b951a62e5bffbb539a1c0ef0d38c4c80afa0b9"
+            }
+        },
+        {
+            "name": "bonus_hits",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_hits_0.csv",
+                    "sha256": "9f6251f3d4bbea30dccbd4a734bb6b37e6615f6e0bcbd73b1015a3a89f276cc2"
+                }
+            ],
+            "cost": 500.0,
+            "rtp": 0.9627,
+            "std": 1.34,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 20000.0,
+            "booksFile": {
+                "file": "books_bonus_hits.jsonl.zst",
+                "sha256": "03b770809a97a61b298ac835316a056eba55861c1f9da0c4dfee1bc6f1be20dc"
+            },
+            "forceFile": {
+                "file": "force_record_bonus_hits.json",
+                "sha256": "5a5e67d4f59b79dde37e3a3f3aef8933e8e32faf57118cb044070699e946eee4"
+            }
+        },
+        {
+            "name": "bonus_epic",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_epic_0.csv",
+                    "sha256": "4fdc248248ac25140adbc1e58023fd5d1e812663ce8f1c3b9ebfbfc2a5441ae6"
+                }
+            ],
+            "cost": 1000.0,
+            "rtp": 0.9638,
+            "std": 1.3,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 20000.0,
+            "booksFile": {
+                "file": "books_bonus_epic.jsonl.zst",
+                "sha256": "6b5d647af733c9bbb7ea844f533183b183120e8575b37726790da416fcd66cc7"
+            },
+            "forceFile": {
+                "file": "force_record_bonus_epic.json",
+                "sha256": "17fb7682486158a7304741806b6b7ca002aab04abba47a994f8b017a46bc0abb"
+            }
+        }
+    ]
+}

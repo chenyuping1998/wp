@@ -1,0 +1,227 @@
+{
+    "game_id": "GoBanandit",
+    "bet_modes": [
+        {
+            "bet_mode": "base",
+            "cost": 1.0,
+            "rtp": 0.9612,
+            "max_win": 10000
+        },
+        {
+            "bet_mode": "bonus",
+            "cost": 100.0,
+            "rtp": 0.9612,
+            "max_win": 10000
+        },
+        {
+            "bet_mode": "superbonus",
+            "cost": 150.0,
+            "rtp": 0.9612,
+            "max_win": 10000
+        }
+    ],
+    "fences": [
+        {
+            "bet_mode": "base",
+            "fences": [
+                {
+                    "name": "wincap",
+                    "avg_win": "10000",
+                    "rtp": "0.01",
+                    "identity_condition": {
+                        "search": [],
+                        "win_range_start": 10000,
+                        "win_range_end": 10000,
+                        "opposite": false
+                    }
+                },
+                {
+                    "name": "0",
+                    "avg_win": "0",
+                    "rtp": "0",
+                    "identity_condition": {
+                        "search": [],
+                        "win_range_start": 0,
+                        "win_range_end": 0,
+                        "opposite": false
+                    }
+                },
+                {
+                    "name": "freegame",
+                    "hr": "276",
+                    "rtp": "0.355",
+                    "identity_condition": {
+                        "search": [
+                            {
+                                "name": "symbol",
+                                "value": "scatter"
+                            }
+                        ],
+                        "win_range_start": -1,
+                        "win_range_end": -1,
+                        "opposite": false
+                    }
+                },
+                {
+                    "name": "basegame",
+                    "hr": "3.5",
+                    "rtp": "0.58",
+                    "identity_condition": {
+                        "search": [],
+                        "win_range_start": -1,
+                        "win_range_end": -1,
+                        "opposite": false
+                    }
+                }
+            ]
+        },
+        {
+            "bet_mode": "bonus",
+            "fences": [
+                {
+                    "name": "wincap",
+                    "avg_win": "10000",
+                    "rtp": "0.005",
+                    "identity_condition": {
+                        "search": [],
+                        "win_range_start": 10000,
+                        "win_range_end": 10000,
+                        "opposite": false
+                    }
+                },
+                {
+                    "name": "freegame",
+                    "hr": "x",
+                    "rtp": "0.94",
+                    "identity_condition": {
+                        "search": [],
+                        "win_range_start": -1,
+                        "win_range_end": -1,
+                        "opposite": false
+                    }
+                }
+            ]
+        },
+        {
+            "bet_mode": "superbonus",
+            "fences": [
+                {
+                    "name": "wincap",
+                    "avg_win": "10000",
+                    "rtp": "0.005",
+                    "identity_condition": {
+                        "search": [],
+                        "win_range_start": 10000,
+                        "win_range_end": 10000,
+                        "opposite": false
+                    }
+                },
+                {
+                    "name": "freegame",
+                    "hr": "x",
+                    "rtp": "0.94",
+                    "identity_condition": {
+                        "search": [],
+                        "win_range_start": -1,
+                        "win_range_end": -1,
+                        "opposite": false
+                    }
+                }
+            ]
+        }
+    ],
+    "dresses": [
+        {
+            "bet_mode": "base",
+            "dresses": [
+                {
+                    "fence": "basegame",
+                    "scale_factor": "1.6",
+                    "identity_condition_win_range": [
+                        1,
+                        5
+                    ],
+                    "prob": 1.0
+                },
+                {
+                    "fence": "basegame",
+                    "scale_factor": "0.8",
+                    "identity_condition_win_range": [
+                        0.1,
+                        0.9
+                    ],
+                    "prob": 1.0
+                }
+            ]
+        },
+        {
+            "bet_mode": "bonus",
+            "dresses": [
+                {
+                    "fence": "freegame",
+                    "scale_factor": "1.3",
+                    "identity_condition_win_range": [
+                        3000,
+                        9999
+                    ],
+                    "prob": 1.0
+                }
+            ]
+        },
+        {
+            "bet_mode": "superbonus",
+            "dresses": [
+                {
+                    "fence": "freegame",
+                    "scale_factor": "1.3",
+                    "identity_condition_win_range": [
+                        3000,
+                        9999
+                    ],
+                    "prob": 1.0
+                }
+            ]
+        }
+    ],
+    "bias": [
+        {
+            "bet_mode": "base",
+            "bias": [
+                {
+                    "criteria": "basegame",
+                    "range": [
+                        1.5,
+                        3.5
+                    ],
+                    "prob": 0.4
+                }
+            ]
+        },
+        {
+            "bet_mode": "bonus",
+            "bias": [
+                {
+                    "criteria": "",
+                    "range": [
+                        0.0,
+                        0.0
+                    ],
+                    "prob": 0.0
+                }
+            ]
+        },
+        {
+            "bet_mode": "superbonus",
+            "bias": [
+                {
+                    "criteria": "",
+                    "range": [
+                        0.0,
+                        0.0
+                    ],
+                    "prob": 0.0
+                }
+            ]
+        }
+    ]
+}

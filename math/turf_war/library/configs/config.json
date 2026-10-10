@@ -1,0 +1,118 @@
+{
+    "workingName": "Turf War",
+    "frontendConfig": {
+        "file": "fe_config.json",
+        "sha256": "64ea78aa862f37760c02344a7d94e2263bbf6026136560c8b8d0d6893891c2d1"
+    },
+    "gameID": "turf_war",
+    "rtp": 0.9604,
+    "betDenomination": 1000,
+    "minDenomination": 10,
+    "providerNumber": 0,
+    "standardForceFile": {
+        "file": "force.json",
+        "sha256": "9d90c8df69dec9d024d3a3dbf2999720fd8df7bebb658c5b15e98ff09a879fe9"
+    },
+    "bookShelfConfig": [
+        {
+            "name": "base",
+            "tables": [
+                {
+                    "file": "lookUpTable_base_0.csv",
+                    "sha256": "8b91a047f921f8c6a06e9c746732b736c2f174ab72fbf7b2620fdca10df29ca3"
+                }
+            ],
+            "cost": 1.0,
+            "rtp": 0.9604,
+            "std": 18.09,
+            "bookLength": 40000,
+            "feature": true,
+            "autoEndRoundDisabled": false,
+            "buyBonus": false,
+            "maxWin": 20000.0,
+            "booksFile": {
+                "file": "books_base.jsonl.zst",
+                "sha256": "481e319c83f1e25701f96463da00b5683cfb7f96631cc84229cb01368db82a01"
+            },
+            "forceFile": {
+                "file": "force_record_base.json",
+                "sha256": "580dbfa9e856365ed9f3695e8f098e127de2fb2ef5af19de361e16d10a4e3d94"
+            }
+        },
+        {
+            "name": "bonus",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_0.csv",
+                    "sha256": "8323bb12f02997b812e6a6ea9032da086d7fe56064c14bb751c553382fccd096"
+                }
+            ],
+            "cost": 100.0,
+            "rtp": 0.9609,
+            "std": 1.44,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 20000.0,
+            "booksFile": {
+                "file": "books_bonus.jsonl.zst",
+                "sha256": "df76702d9ad9d5cbb3736faae60f28c817f028206c992efba681f9b93bc332f8"
+            },
+            "forceFile": {
+                "file": "force_record_bonus.json",
+                "sha256": "aeab9e94ec4785377964e2bb8e612c2d32cf7858499602f0c0443df0f538e842"
+            }
+        },
+        {
+            "name": "bonus_hits",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_hits_0.csv",
+                    "sha256": "ef9fd2086210887395162cd6659f36b733f9cd784ea75d324155c5341eb852a1"
+                }
+            ],
+            "cost": 500.0,
+            "rtp": 0.9613,
+            "std": 1.26,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 20000.0,
+            "booksFile": {
+                "file": "books_bonus_hits.jsonl.zst",
+                "sha256": "736695e5c4c40234c6698103976fdb3fd782b26e8983d9bdd04a3df59790e846"
+            },
+            "forceFile": {
+                "file": "force_record_bonus_hits.json",
+                "sha256": "ed273c6ab04c6a03b78d06aca5f2bd3cbe929fc17602e1a73c57bd7be2249deb"
+            }
+        },
+        {
+            "name": "bonus_epic",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_epic_0.csv",
+                    "sha256": "980edb2de30786c2ab8cddfa1bf03c44df3bdb6281c7c93cb15c7272f6f0b086"
+                }
+            ],
+            "cost": 1000.0,
+            "rtp": 0.9624,
+            "std": 1.05,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 20000.0,
+            "booksFile": {
+                "file": "books_bonus_epic.jsonl.zst",
+                "sha256": "3fedef7d221ceffc3aa26208c242e598fcbcd7ed99d62e03c8488abbcf00cd4a"
+            },
+            "forceFile": {
+                "file": "force_record_bonus_epic.json",
+                "sha256": "c1e763389e4509c6c5251219a57d48875b4a4cbda1267aea68f5ca784d12d012"
+            }
+        }
+    ]
+}

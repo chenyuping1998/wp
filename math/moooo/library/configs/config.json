@@ -1,0 +1,93 @@
+{
+    "workingName": "Moooo",
+    "frontendConfig": {
+        "file": "fe_config.json",
+        "sha256": "0ec19a2069709b88f38eb7cdb123b314e6a40ee988311a09de5fa7a1a72f64fa"
+    },
+    "gameID": "moooo",
+    "rtp": 94.5,
+    "betDenomination": 1000,
+    "minDenomination": 10,
+    "providerNumber": 0,
+    "standardForceFile": {
+        "file": "force.json",
+        "sha256": "b5a244c2af775139a622321ba07cbc6dc4baf21646cc325d2236f5713e7146ab"
+    },
+    "bookShelfConfig": [
+        {
+            "name": "base",
+            "tables": [
+                {
+                    "file": "lookUpTable_base_0.csv",
+                    "sha256": "4477630b1b0ac7627053819b1ce75bd7dc62724242884eac20eb959f53e11f03"
+                }
+            ],
+            "cost": 1.0,
+            "rtp": 0.945,
+            "std": 11.15,
+            "bookLength": 40000,
+            "feature": true,
+            "autoEndRoundDisabled": false,
+            "buyBonus": false,
+            "maxWin": 10000.0,
+            "booksFile": {
+                "file": "books_base.jsonl.zst",
+                "sha256": "682c4a96cd55564a07b0a0ebda02a41555d629f3eddf96a94085a5682df1014e"
+            },
+            "forceFile": {
+                "file": "force_record_base.json",
+                "sha256": "1df61cd8d9b24c4378550bfdbd8c7b785bd9f9f7921cb6e5706baeb6cf975082"
+            }
+        },
+        {
+            "name": "bonus",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_0.csv",
+                    "sha256": "de8c3b09ef9615bc4eed09ddf678d8962129bd720af12d0d7d0b19340eaf5847"
+                }
+            ],
+            "cost": 100.0,
+            "rtp": 0.9483,
+            "std": 1.74,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 10000.0,
+            "booksFile": {
+                "file": "books_bonus.jsonl.zst",
+                "sha256": "f31b415afa1e055c9c070aeb7b22562a4555e5b914b7c52aaef713882cc204ca"
+            },
+            "forceFile": {
+                "file": "force_record_bonus.json",
+                "sha256": "77cea4cd06749c0ac1a06169c1a9924077993427bef28964ffa29c8b3c45f81e"
+            }
+        },
+        {
+            "name": "super",
+            "tables": [
+                {
+                    "file": "lookUpTable_super_0.csv",
+                    "sha256": "b831a9377876ce915b08c85f59b81010da2e947befba4909fe912d7e04c52ac4"
+                }
+            ],
+            "cost": 250.0,
+            "rtp": 0.9489,
+            "std": 1.2,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 10000.0,
+            "booksFile": {
+                "file": "books_super.jsonl.zst",
+                "sha256": "0ce1ac2a79ddc2f8345ac3da502f68a9c88d3767aa97f410b3abe8f105f51f89"
+            },
+            "forceFile": {
+                "file": "force_record_super.json",
+                "sha256": "e5ce4b08aaecbf554f08cab6d8470d79db0aed150931ae519729afe59cdf9b45"
+            }
+        }
+    ]
+}

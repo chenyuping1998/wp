@@ -1,0 +1,93 @@
+{
+    "workingName": "Go Banandit",
+    "frontendConfig": {
+        "file": "fe_config.json",
+        "sha256": "9286f3c230bee1e6035dcc5c986940ffc0a9f940ed0166b74667527311ee4dd8"
+    },
+    "gameID": "GoBanandit",
+    "rtp": 0.9612,
+    "betDenomination": 1000,
+    "minDenomination": 10,
+    "providerNumber": 0,
+    "standardForceFile": {
+        "file": "force.json",
+        "sha256": "a401822f6fa40163e206f218b654cfab7fbcff9bec9734fa9dcda77f511af623"
+    },
+    "bookShelfConfig": [
+        {
+            "name": "base",
+            "tables": [
+                {
+                    "file": "lookUpTable_base_0.csv",
+                    "sha256": "5cafb3e54a269d36ef5bcd797f3842fbc5f299049b69a07fe432fe54550a0d6d"
+                }
+            ],
+            "cost": 1.0,
+            "rtp": 0.9612,
+            "std": 12.44,
+            "bookLength": 100000,
+            "feature": true,
+            "autoEndRoundDisabled": false,
+            "buyBonus": false,
+            "maxWin": 10000,
+            "booksFile": {
+                "file": "books_base.jsonl.zst",
+                "sha256": "2fcf3544ef94ada1748f579e03ca6b2d7d0f4cc81aeae19f52548125d86cf929"
+            },
+            "forceFile": {
+                "file": "force_record_base.json",
+                "sha256": "6bf01f3cdc538130abb6821500fac632c87039c01900d1c1881f41fc965e9bcf"
+            }
+        },
+        {
+            "name": "bonus",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_0.csv",
+                    "sha256": "362d57efc0b184f0cd513ca184cf49e22b5c6d985e55f082c0aa4b8be88c0698"
+                }
+            ],
+            "cost": 100.0,
+            "rtp": 0.9612,
+            "std": 2.1,
+            "bookLength": 50000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 10000,
+            "booksFile": {
+                "file": "books_bonus.jsonl.zst",
+                "sha256": "cd14178f16a5a0cdbbf24fa88b52b388cf1fcd50576da764a1c107add4a4442d"
+            },
+            "forceFile": {
+                "file": "force_record_bonus.json",
+                "sha256": "74b3a24ecb751b023d600179a2a492c37d8857c7955ddef3ed0a1fb0c386004d"
+            }
+        },
+        {
+            "name": "superbonus",
+            "tables": [
+                {
+                    "file": "lookUpTable_superbonus_0.csv",
+                    "sha256": "bcdeda3223651888c45db0758cf0a18a85326f3e7d7eb6dfcdb7f91e953edca7"
+                }
+            ],
+            "cost": 150.0,
+            "rtp": 0.9612,
+            "std": 1.54,
+            "bookLength": 50000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 10000,
+            "booksFile": {
+                "file": "books_superbonus.jsonl.zst",
+                "sha256": "29dcb052f4da6710fd5eada65e7397209c9a34ab7ad5f8c8b14830f0e5fac65a"
+            },
+            "forceFile": {
+                "file": "force_record_superbonus.json",
+                "sha256": "6c057815204a70cfc7089e62206efa8c8e9c0b5c738f644ecd8831b45c35770c"
+            }
+        }
+    ]
+}

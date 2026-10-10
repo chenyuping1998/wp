@@ -1,0 +1,93 @@
+{
+    "workingName": "Sushi Monkey",
+    "frontendConfig": {
+        "file": "fe_config.json",
+        "sha256": "6009cada99fac4cabbcfd2fddd264fb7c9005248aa40908b075f3cdbc36a9fa9"
+    },
+    "gameID": "SushiMonkey",
+    "rtp": 0.9655,
+    "betDenomination": 1000,
+    "minDenomination": 10,
+    "providerNumber": 0,
+    "standardForceFile": {
+        "file": "force.json",
+        "sha256": "d4372e69952444cd864a64a47fcbbfad63bd7e7ce7d84b432780bd00a0032d96"
+    },
+    "bookShelfConfig": [
+        {
+            "name": "base",
+            "tables": [
+                {
+                    "file": "lookUpTable_base_0.csv",
+                    "sha256": "1e99cfed8facb0caa599c4817d9f36895149d90b12424300c3f37024e88b3ebe"
+                }
+            ],
+            "cost": 1.0,
+            "rtp": 0.9655,
+            "std": 13.01,
+            "bookLength": 100000,
+            "feature": true,
+            "autoEndRoundDisabled": false,
+            "buyBonus": false,
+            "maxWin": 10000,
+            "booksFile": {
+                "file": "books_base.jsonl.zst",
+                "sha256": "23c0a772841168c3393c3c98e6365bef0d6843b52d21b0688c5792e3191aa9b7"
+            },
+            "forceFile": {
+                "file": "force_record_base.json",
+                "sha256": "7c7f1cd1bbcc7927e91f1e12467459627c93328a93f3799c2fa2137190ef4b5d"
+            }
+        },
+        {
+            "name": "bonus",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_0.csv",
+                    "sha256": "d3c50145793fa5f812a72328ea9881c18e8697ad175787b7d179ceb943b1b33f"
+                }
+            ],
+            "cost": 100.0,
+            "rtp": 0.9655,
+            "std": 1.45,
+            "bookLength": 50000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 10000,
+            "booksFile": {
+                "file": "books_bonus.jsonl.zst",
+                "sha256": "37305a2bc1bfee04aacd6e9afdd6df9521892bbdd4932f83a6d0835f5937fb4c"
+            },
+            "forceFile": {
+                "file": "force_record_bonus.json",
+                "sha256": "5e42682e2d59d6f955be3355ac60eb9124afe76923be2f4e4c0e8eab56246dd3"
+            }
+        },
+        {
+            "name": "superbonus",
+            "tables": [
+                {
+                    "file": "lookUpTable_superbonus_0.csv",
+                    "sha256": "6d51544ae9a7913c9b00d7a57504959eaaf4b55cda9bf0a6a0d55a788634b092"
+                }
+            ],
+            "cost": 150.0,
+            "rtp": 0.9655,
+            "std": 1.18,
+            "bookLength": 50000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 10000,
+            "booksFile": {
+                "file": "books_superbonus.jsonl.zst",
+                "sha256": "b02a1e325c40ef612d6473ba7a09a8edcde7e162672d9b0c119da29aba9f98cd"
+            },
+            "forceFile": {
+                "file": "force_record_superbonus.json",
+                "sha256": "b02cf0de53332bfe4ae6182c71e3e8a5efbd0ea8e91d2649a03dc75cb3a95c73"
+            }
+        }
+    ]
+}

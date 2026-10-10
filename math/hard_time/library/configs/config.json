@@ -1,0 +1,118 @@
+{
+    "workingName": "Hard Time",
+    "frontendConfig": {
+        "file": "fe_config.json",
+        "sha256": "4ae1ff73b3467094635cc15d23565fb5c17f36e8fdfed0469c48b7b9ca8d73b3"
+    },
+    "gameID": "hard_time",
+    "rtp": 0.9641,
+    "betDenomination": 1000,
+    "minDenomination": 10,
+    "providerNumber": 0,
+    "standardForceFile": {
+        "file": "force.json",
+        "sha256": "c6a83ea6fe1091c73bc1a6cffefb0ca789825ee278fc538334e3baa5ab8d9afe"
+    },
+    "bookShelfConfig": [
+        {
+            "name": "base",
+            "tables": [
+                {
+                    "file": "lookUpTable_base_0.csv",
+                    "sha256": "c34685e1399783e8cf86fddc6a239e772ac19f84f42ae4be4060ce691377653e"
+                }
+            ],
+            "cost": 1.0,
+            "rtp": 0.9641,
+            "std": 16.81,
+            "bookLength": 40000,
+            "feature": true,
+            "autoEndRoundDisabled": false,
+            "buyBonus": false,
+            "maxWin": 12000.0,
+            "booksFile": {
+                "file": "books_base.jsonl.zst",
+                "sha256": "a6e057d8554c739d6ba54b07172ca479d6b291d1eeac1e029a06204a3c2319a0"
+            },
+            "forceFile": {
+                "file": "force_record_base.json",
+                "sha256": "51d12eb461b7345e9a94eace96982d076b7f327b2725560636b0652414961d2d"
+            }
+        },
+        {
+            "name": "bonus",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_0.csv",
+                    "sha256": "a40c72aebdd4325021b0e33b4ed7baaba6cf146c5605e3aeca3e8d3f8516006b"
+                }
+            ],
+            "cost": 100.0,
+            "rtp": 0.9646,
+            "std": 1.68,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 12000.0,
+            "booksFile": {
+                "file": "books_bonus.jsonl.zst",
+                "sha256": "30a4bc23ca43b7f370394e85e17f80bb42af049d5dc3f937a8f970c8748ce63f"
+            },
+            "forceFile": {
+                "file": "force_record_bonus.json",
+                "sha256": "8778c54671a1b25cbb01ac70ab90d12b837ac6671cb44a4afe04f6f247b6c8e3"
+            }
+        },
+        {
+            "name": "bonus_hits",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_hits_0.csv",
+                    "sha256": "2c2f3041eef13a36d57468611d865caf8f86d5feb515a93a5580a3da0d4d07f6"
+                }
+            ],
+            "cost": 300.0,
+            "rtp": 0.965,
+            "std": 1.46,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 12000.0,
+            "booksFile": {
+                "file": "books_bonus_hits.jsonl.zst",
+                "sha256": "83eb04d12304db9fa80ef2c921702bf6532e57901d90cb576993c4872a82d96d"
+            },
+            "forceFile": {
+                "file": "force_record_bonus_hits.json",
+                "sha256": "118a6f2652ff7234e547e40ddb87f4db36f58433323b593b254645a2eaf6f3e4"
+            }
+        },
+        {
+            "name": "bonus_epic",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_epic_0.csv",
+                    "sha256": "7095ad8b92e5eeeca487cf177bb116c2ac47f98fd1f27bad4b4444bf918be09b"
+                }
+            ],
+            "cost": 600.0,
+            "rtp": 0.9661,
+            "std": 1.21,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 12000.0,
+            "booksFile": {
+                "file": "books_bonus_epic.jsonl.zst",
+                "sha256": "c035e576be5b5a7d4742329d933cc79854653093678a29acd4dfea366549ba5b"
+            },
+            "forceFile": {
+                "file": "force_record_bonus_epic.json",
+                "sha256": "ccb700c38fc6cfd5a86d9745c5345ae31dc2462c295556e0efa08a5ea3a774e6"
+            }
+        }
+    ]
+}

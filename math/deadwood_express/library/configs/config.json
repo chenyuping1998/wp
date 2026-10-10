@@ -1,0 +1,93 @@
+{
+    "workingName": "Deadwood Express",
+    "frontendConfig": {
+        "file": "fe_config.json",
+        "sha256": "9762d39cb348ce6ab901fdb20357bf044e52acee578b874f0c6f63d56059f762"
+    },
+    "gameID": "deadwood_express",
+    "rtp": 0.963,
+    "betDenomination": 1000,
+    "minDenomination": 10,
+    "providerNumber": 0,
+    "standardForceFile": {
+        "file": "force.json",
+        "sha256": "2133b04893370ea6d9bf06812773790dd1ef05052776723f5e60f2b852df3377"
+    },
+    "bookShelfConfig": [
+        {
+            "name": "base",
+            "tables": [
+                {
+                    "file": "lookUpTable_base_0.csv",
+                    "sha256": "9fee0e71f910290bfc2b072083c64d04e3f4e68faa25f099e058d5503313757b"
+                }
+            ],
+            "cost": 1.0,
+            "rtp": 0.963,
+            "std": 14.8,
+            "bookLength": 40000,
+            "feature": true,
+            "autoEndRoundDisabled": false,
+            "buyBonus": false,
+            "maxWin": 20000.0,
+            "booksFile": {
+                "file": "books_base.jsonl.zst",
+                "sha256": "c60e0c575ecd6ad8a4f55b0b91f96b472f76616bfd9e5cae8bb65e7c6a7ce9e7"
+            },
+            "forceFile": {
+                "file": "force_record_base.json",
+                "sha256": "f71735443607d4f490fbcc5f3adb48894db70eb0ed75adad55cf0d8545deed18"
+            }
+        },
+        {
+            "name": "bonus",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_0.csv",
+                    "sha256": "3090ce0429505204ca0f77dda03d7f27928a26e46ccc2454765125839fcfce31"
+                }
+            ],
+            "cost": 100.0,
+            "rtp": 0.963,
+            "std": 1.64,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 20000.0,
+            "booksFile": {
+                "file": "books_bonus.jsonl.zst",
+                "sha256": "cedc32f901716e93ab18a1d1cf27d019389a8eec60e5afa0edc242e94a8d7bf2"
+            },
+            "forceFile": {
+                "file": "force_record_bonus.json",
+                "sha256": "93dbb630361d73a71f9aae7f47e106745788d1c2f8053ac83c74b132b089512c"
+            }
+        },
+        {
+            "name": "bonus_hits",
+            "tables": [
+                {
+                    "file": "lookUpTable_bonus_hits_0.csv",
+                    "sha256": "5edd398f3e729caf09564cb91a14bfd2541073c8ff976f8edcdb8a4ef6f3a0dd"
+                }
+            ],
+            "cost": 250.0,
+            "rtp": 0.963,
+            "std": 1.76,
+            "bookLength": 20000,
+            "feature": false,
+            "autoEndRoundDisabled": false,
+            "buyBonus": true,
+            "maxWin": 20000.0,
+            "booksFile": {
+                "file": "books_bonus_hits.jsonl.zst",
+                "sha256": "ca4fa5b3bc2d34a786aba22b60900106c116e4371ea468fe99799690e6677841"
+            },
+            "forceFile": {
+                "file": "force_record_bonus_hits.json",
+                "sha256": "152187eaf0939c25dd616d91509f74d384e859f07af5f9053f7282a685f6bc62"
+            }
+        }
+    ]
+}
