@@ -340,6 +340,12 @@ upload-and-wait cycle, and almost all of them are cheaper to build in than to
 retrofit. The case log underneath explains what each reviewer comment actually
 meant, which is rarely what it says.
 
+**RTP is a house rule, not a per-game choice:** every mode of every game sits
+between 96.00% and 96.10% (Stone, 2026-10-11), with figures no other game
+uses. Values already taken, how to pick new ones, and how to move a built game
+without re-simulating are in the game-reskin skill
+(`references/math-retarget.md`, "The house RTP band").
+
 The two items that generalise beyond the checklist:
 
 - **Whatever the animation shows as covering the board is what the maths must

@@ -40,6 +40,50 @@ Run this (with the correct math-sdk Python — see `stake-engine-slot` skill for
 which interpreter actually works on this machine) EVERY time `game_config.py`
 or `game_optimization.py` changes, before launching `run.py`.
 
+## The house RTP band: 96.00–96.10%
+
+Stone's standing rule (2026-10-11): every mode of every game, the existing ones
+and every future one, sits between **96.00% and 96.10%**, and games don't share
+the same figures. Set `game_config.py`'s `rtp=` targets inside the band from the
+start of a reskin; the source game's RTP never carries over. (It was 96.0–96.7
+for one day, then tightened. All six games were moved on 2026-10-10/11.)
+
+## Moving RTP without re-simulating: re-weight the lookup tables
+
+When only the RTP has to move and the books are fine, don't re-run the
+optimizer. `scripts/reweight_lut.py` tilts the published lookup-table weights:
+books paying above the mode's own mean gain `×(1+x)`, books below shrink so the
+total weight is unchanged, and `x` is solved exactly for the target. Books,
+payouts and max win are untouched, so nothing in the frontend, the books or the
+stub needs rebuilding beyond the RTP figures it prints.
+
+    scripts/reweight_lut.py <game>/library/publish_files /tmp/out base=0.9604 bonus=0.9605 ...
+
+Cost: every tail probability moves by about `x` relative. Taking all six games
+from 94.x to 96.0x needed x = 1.7–3.7%: Capo's 1000× buy max-win odds went
+1/20000 → ~1/19600. The `>=10x` and max-win lines the script prints are the
+volatility check — read them before you install the tables. The above-mean
+share (高均率) rises by the same `x`.
+
+Rules that came out of doing it:
+- **Reweight from the ORIGINAL optimizer tables**, not from an earlier reweight,
+  so each table carries one tilt. Back them up first
+  (`_upload_backups/LUT-pre-rtp96-1010.tgz` holds the six games' 94.x originals).
+- **Update every copy of the figure, not just the LUT**: `game_config.py` `rtp=`
+  values (so a later `run.py` targets the same number);
+  `library/configs/{config,config_fe_<game>,math_config}.json` (the
+  `config_fe` file is what `sync_math_config` writes into `src/game/config.ts`,
+  so ship.sh step 1 silently REVERTS a hand-edited config.ts if you skip it;
+  `math_config.json` keys its modes as `bet_mode`, not `name`); the frontend
+  `config.ts` for apps with no sync step (Deadwood); the upload README / the
+  `UPLOAD_README.md` it is copied from.
+- The rules modal and buy menu read `config.betModes[*].rtp`, so a rebuild is
+  enough there. Verify the BUILT bundle: `grep -oE 'rtp:\.9[0-9]+'
+  upload/<Game>/frontend/index.html`.
+- The books don't change, so `SKIP_STUB=1 ./design/ship.sh` skips the
+  memory-heavy stub rebuild; the local playtest just samples with the old
+  weights.
+
 ## Retargeting RTP by a flat amount
 
 If every mode needs to move by the same absolute amount (e.g. "lower every

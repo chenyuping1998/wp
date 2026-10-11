@@ -129,6 +129,15 @@ the whole pipeline, so starting it late just makes it the critical path later.
 
 - Write the new game's mechanic changes into `game_config.py` and
   `game_executables.py`/`game_events.py` as needed.
+- **House RTP band (Stone, 2026-10-11): every mode of every game sits
+  between 96.00% and 96.10%**, and no two games share the same figures.
+  The source game's RTP does not carry over — Capo Nostra was 94.58%, Turf
+  War 93.58%; both now sit in the 96.0x band. Pick values no other game
+  uses (taken so far: Turf 96.01–96.05, Sushi 96.02, Deadwood 96.03, Capo
+  96.04–96.08, Hard Time 96.05–96.09, GoBanandit 96.07), and keep each
+  game's mode spread inside the band. To move a game that is already built
+  without re-simulating, use `scripts/reweight_lut.py`
+  (`references/math-retarget.md`, "Moving RTP without re-simulating").
 - Set per-mode RTP targets and retarget `game_optimization.py`'s slices to
   match — see `references/math-retarget.md` for the exact discipline
   (verify the assertion locally BEFORE launching the real, multi-minute run;
@@ -570,7 +579,7 @@ Every tier can also be entered directly via Buy Bonus at 100×, 500×, or 1000×
 
 RTP & Max Win
 
-RTP ranges from 93.58% (base) to 93.78% (Kingpin buy mode), with a spread of 0.20% across all four modes. Max Win is capped at 20,000× total bet in every mode.
+RTP ranges from 96.01% (base) to 96.05% (Kingpin buy mode), with a spread of 0.04% across all four modes. Max Win is capped at 20,000× total bet in every mode.
 ```
 
 ## Cross-cutting principles
