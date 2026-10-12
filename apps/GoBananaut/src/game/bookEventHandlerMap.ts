@@ -8,6 +8,7 @@ import { waitForTimeout } from 'utils-shared/wait';
 import { eventEmitter } from './eventEmitter';
 import { playBookEvent, boardAfterLastGrowth, rowsAfterLastGrowth } from './utils';
 import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
+import { featureTotal } from './featureTotal';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
 import type { Position } from './types';
@@ -531,7 +532,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateUi.freeSpinCounterTotal = bookEvent.totalFs;
 	},
 	freeSpinEnd: async (bookEvent: BookEventOfType<'freeSpinEnd'>) => {
-		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
+		// the plaque shows the WHOLE round, trigger spin included — amount AND its
+		// win level (featureTotal; Stake review 2026-10-04 on Go Bananas Boat)
+		const total = featureTotal(bookEvent.amount, bookEvent.winLevel);
+		const winLevelData = winLevelMap[total.winLevel as WinLevel];
 
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		// gameType is NOT reset here — it moves to the transition's cover below.
@@ -551,7 +555,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		winLevelSoundsPlay({ winLevelData });
 		await eventEmitter.broadcastAsync({
 			type: 'freeSpinOutroCountUp',
-			amount: bookEvent.amount,
+			amount: total.amount,
 			winLevelData,
 		});
 		winLevelSoundsStop();

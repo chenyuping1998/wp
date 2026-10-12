@@ -14,6 +14,7 @@ import type { Position } from './types';
 import { BOARD_DIMENSIONS, HOLD_AND_SPIN_MODE_KEY } from './constants';
 import config from './config';
 import { startDockSplash } from './dockSplash.svelte';
+import { featureTotal } from './featureTotal';
 
 // The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
 // a value of 1 means the tease starts on the *second* scatter. Free spins need
@@ -469,7 +470,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateUi.freeSpinCounterTotal = bookEvent.totalFs;
 	},
 	freeSpinEnd: async (bookEvent: BookEventOfType<'freeSpinEnd'>) => {
-		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
+		// the plaque shows the WHOLE round, trigger spin included (featureTotal)
+		const total = featureTotal(bookEvent.amount, bookEvent.winLevel);
+		const winLevelData = winLevelMap[total.winLevel as WinLevel];
 
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		// gameType is NOT reset here — it moves to the transition's cover instead.
@@ -484,7 +487,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		winLevelSoundsPlay({ winLevelData });
 		await eventEmitter.broadcastAsync({
 			type: 'freeSpinOutroCountUp',
-			amount: bookEvent.amount,
+			amount: total.amount,
 			winLevelData,
 		});
 		winLevelSoundsStop();
