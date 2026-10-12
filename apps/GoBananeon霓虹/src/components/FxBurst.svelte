@@ -12,8 +12,8 @@
 		// overall size multiplier — 1 fits one symbol cell
 		scale?: number;
 		delay?: number;
-		// 'gold' celebration vs 'jungle' (leaf shards mixed in) for blasts
-		flavour?: 'gold' | 'jungle';
+		// Scatters keep gold; scene and win accents use the neon sign palette.
+		flavour?: 'gold' | 'jungle' | 'neon';
 		oncomplete?: () => void;
 	};
 
@@ -22,6 +22,8 @@
 	const DURATION = 850;
 	const GOLD = [0xffd75e, 0xfff7d1, 0xffb04a, 0xffe98a];
 	const JUNGLE = [0xffd75e, 0xfff7d1, 0x8fbf4a, 0xffb04a];
+	const NEON = [0x59e3ff, 0xff3fd0, 0xb143ec, 0xe8fbff];
+	const palette = props.flavour === 'neon' ? NEON : props.flavour === 'jungle' ? JUNGLE : GOLD;
 
 	type Spark = {
 		angle: number;
@@ -31,6 +33,7 @@
 		color: number;
 		spin: number;
 		leaf: boolean;
+		streak: boolean;
 		// per-spark stagger breaks the mechanical all-at-once look
 		delay: number;
 	};
@@ -40,9 +43,10 @@
 		speed: 150 + Math.random() * 130,
 		size: 26 + Math.random() * 26,
 		life: 0.55 + Math.random() * 0.3,
-		color: (props.flavour === 'jungle' ? JUNGLE : GOLD)[i % 4],
+		color: palette[i % 4],
 		spin: (Math.random() - 0.5) * 6,
 		leaf: props.flavour === 'jungle' && i % 3 === 0,
+		streak: props.flavour === 'neon' && i % 3 === 0,
 		delay: Math.random() * 0.09,
 	}));
 
@@ -94,7 +98,7 @@
 		] as const) {
 			const p = (t - delayP) / (1 - delayP);
 			if (p <= 0 || p >= 1) continue;
-			g.lineStyle(width * s * (1 - p), 0xffe08a, (1 - p) * 0.7);
+			g.lineStyle(width * s * (1 - p), props.flavour === 'neon' ? 0x59e3ff : 0xffe08a, (1 - p) * 0.7);
 			g.drawCircle(0, 0, (18 + 68 * easeOut(p)) * s);
 		}
 		g.lineStyle(0);
@@ -107,7 +111,7 @@
 		<Sprite
 			key="fxGlow"
 			anchor={0.5}
-			tint={0xffe9a8}
+			tint={props.flavour === 'neon' ? 0xd8f7ff : 0xffe9a8}
 			blendMode="add"
 			width={150 * (props.scale ?? 1) * easeOut(Math.min(1, t * 3))}
 			height={150 * (props.scale ?? 1) * easeOut(Math.min(1, t * 3))}
@@ -118,7 +122,7 @@
 			{@const state = sparkState(spark, t)}
 			{#if state}
 				<Sprite
-					key={spark.leaf ? 'fxLeaf' : 'fxStar'}
+					key={spark.leaf ? 'fxLeaf' : spark.streak ? 'fxStreak' : 'fxStar'}
 					anchor={0.5}
 					x={state.x}
 					y={state.y}
@@ -126,7 +130,7 @@
 					tint={spark.color}
 					blendMode={spark.leaf ? 'normal' : 'add'}
 					width={state.size}
-					height={state.size}
+					height={spark.streak ? state.size * 0.34 : state.size}
 					alpha={state.alpha}
 				/>
 			{/if}

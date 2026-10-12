@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
+	import { BODY_FONT } from '../game/fonts';
 	import { Container, Graphics, Text, Sprite } from 'pixi-svelte';
-	import { CanvasTextMetrics, TextStyle } from 'pixi.js';
 	import { FadeContainer } from 'components-pixi';
 	import { MainContainer } from 'components-layout';
 	import { onMount } from 'svelte';
@@ -11,6 +10,8 @@
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import FeatureIntro from './FeatureIntro.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { TITLE_IDLE_ACT } from '../game/meshWin/textMesh';
 
 	type Props = {
 		onloaded: () => void;
@@ -94,17 +95,6 @@
 	const TITLE_MAIN = 'GO';
 	const TITLE_ACCENT = 'BANANEON';
 
-	// ── title layout ──────────────────────────────────────────────────────────
-	// "GO BANANAS" and "DELTA" are two Texts because only the second is orange, but
-	// they have to read as one centred headline — so the pair is measured and
-	// laid out from its combined width rather than each being centred on its own.
-	//
-	// Measurement is re-derived off pulseTick, not taken once. Titan One is a
-	// self-hosted face that finishes loading *after* this screen is already up;
-	// measuring once would bake in the fallback stack's metrics and leave the two
-	// halves permanently mis-spaced. Re-deriving costs two measureText calls per
-	// 32ms tick on a screen that exists for a few seconds, and it self-corrects
-	// the moment the real face lands.
 	// ONE SIZE FOR THE WHOLE TITLE.
 	//
 	// The accent word used to run a third larger, which was right when the title
@@ -115,8 +105,6 @@
 	// Raised from 46 rather than shrinking BOOMANA to match: the headline should
 	// not get smaller just because the two halves agree.
 	const TITLE_SIZE = 58;
-	const ACCENT_SIZE = TITLE_SIZE;
-	const TITLE_GAP = 20;
 
 	// Colours. The first pass put a red blur under gold lettering, which is what
 	// made the whole headline look soft: a coloured glow behind warm type on a warm
@@ -132,7 +120,6 @@
 	// The orange is the one the feature card's hero panel uses, so the title and
 	// the card the player sees straight after it agree.
 	const TITLE_FILL = 0xff4fd8;
-	const ACCENT_FILL = 0xff4fd8;
 	const OUTLINE = 0x140a30;
 
 	// The accent glow is GREEN, and the word it sits behind stays orange.
@@ -154,31 +141,22 @@
 	// step against the name beside it, and neither needs help. The drop shadow
 	// below is plain black for depth, not colour.
 
-	// v8 TextStyle shapes. The old `stroke: colour` + `strokeThickness: n` pair is
-	// deprecated and was logging a warning on every Text built here; it also capped
-	// out thin, which is exactly the outline weight this needed more of.
-	const titleStyle = {
-		fontFamily: GAME_FONT,
-		fontSize: TITLE_SIZE,
-		fontWeight: GAME_FONT_WEIGHT,
-		letterSpacing: 6,
-		fill: TITLE_FILL,
-		stroke: { color: OUTLINE, width: 6, join: 'round' as const },
-		dropShadow: { color: 0x000000, alpha: 0.5, blur: 5, angle: Math.PI / 2, distance: 4 },
-	};
-	const accentStyle = {
-		...titleStyle,
-		fontSize: ACCENT_SIZE,
-		fill: ACCENT_FILL,
-		stroke: { color: OUTLINE, width: 7, join: 'round' as const },
-		dropShadow: { color: 0x000000, alpha: 0.55, blur: 6, angle: Math.PI / 2, distance: 4 },
-	};
-
-	const titleMetrics = $derived.by(() => {
-		pulseTick; // re-measure once the display face has loaded
-		const name = CanvasTextMetrics.measureText(TITLE_MAIN, new TextStyle(titleStyle)).width;
-		const accent = CanvasTextMetrics.measureText(TITLE_ACCENT, new TextStyle(accentStyle)).width;
-		return { name, accent, total: name + TITLE_GAP + accent };
+	// The wordmark as ONE mesh (TextMesh): both halves are the same face, size
+	// and colour now, so the pair is one string. It is a mesh rendered from a
+	// texture, so the late display face is handled in TextMesh (it rebuilds on
+	// the fonts' loadingdone), not by re-measuring here. A neon wave runs through it while the game loads, and it boings
+	// as it appears and again when loading completes.
+	const TITLE = `${TITLE_MAIN} ${TITLE_ACCENT}`;
+	let titleKickAt = $state(-1);
+	onMount(() => {
+		titleKickAt = Date.now();
+	});
+	let kickedLoaded = false;
+	$effect(() => {
+		if (context.stateApp.loaded && !kickedLoaded) {
+			kickedLoaded = true;
+			titleKickAt = Date.now();
+		}
 	});
 
 	// the 16:9 plate fills the screen at its own aspect, cropped about the centre
@@ -254,19 +232,17 @@
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.155}
 		>
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2}
-				style={titleStyle}
-				text={TITLE_MAIN}
-			/>
-
-
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2 + titleMetrics.name + TITLE_GAP}
-				style={accentStyle}
-				text={TITLE_ACCENT}
+			<TextMesh
+				text={TITLE}
+				fontSize={TITLE_SIZE}
+				letterSpacing={6}
+				fill={[TITLE_FILL, TITLE_FILL, TITLE_FILL]}
+				stroke={OUTLINE}
+				strokeWidth={7}
+				shadow={{ blur: 6, distance: 4 }}
+				maxWidth={context.stateLayoutDerived.mainLayout().width * 0.92}
+				at={{ retrig: titleKickAt }}
+				act={TITLE_IDLE_ACT}
 			/>
 		</Container>
 	</MainContainer>

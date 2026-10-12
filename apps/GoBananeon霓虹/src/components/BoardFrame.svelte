@@ -16,6 +16,7 @@
 	import { FRAME } from '../game/meshWin';
 	import { REELS, type FrameEnv } from '../game/meshWin/frameEdge';
 	import PropMesh from './PropMesh.svelte';
+	import { pulseRateMs, tierIntensity, tierOf } from '../game/anticipationFocus';
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 
 	const context = getContext();
@@ -148,19 +149,47 @@
 	const blastStrength: number[] = Array(REELS).fill(1);
 	let frameEnv = $state<FrameEnv>({ blastT: Array(REELS).fill(-1), strength: Array(REELS).fill(1) });
 	let bowTimer: ReturnType<typeof setInterval> | undefined;
-	// only ticks while a bow is playing; setInterval, not rAF, like the meshes
+
+	// ── the tease's strain: the rails over a teasing reel throb outward with
+	// the column's pulse (meshWin/frameEdge.ts). Eased in and out per reel so
+	// the rails are at rest when the tease starts and when the reel stops.
+	const STRAIN_EASE_MS = 140;
+	const strainAmp: number[] = Array(REELS).fill(0);
+	const teasing = () => context.stateGame.board.some((reel) => reel.reelState.anticipating);
+	let lastTick = 0;
+
+	// only ticks while a bow or a strain is playing; setInterval, not rAF, like
+	// the meshes
 	const runBow = () => {
 		if (bowTimer) return;
+		lastTick = performance.now();
 		bowTimer = setInterval(() => {
 			const now = performance.now();
+			const dt = now - lastTick;
+			lastTick = now;
 			const blastT = blastAt.map((at) => (now - at <= BOW_MS ? now - at : -1));
-			frameEnv = { blastT, strength: [...blastStrength] };
-			if (blastAt.every((at) => now - at > BOW_MS)) {
+			// the column pulse is Anticipation.svelte's own sine, on the same
+			// wall clock and phase, so the rails throb with the light
+			const wall = Date.now();
+			const tier = tierOf(context.stateGame.scatterCounter);
+			const k = 1 - Math.exp(-dt / STRAIN_EASE_MS);
+			const strain = strainAmp.map((amp, i) => {
+				const target = context.stateGame.board[i]?.reelState.anticipating ? tierIntensity(tier) : 0;
+				strainAmp[i] = amp + (target - amp) * k;
+				if (strainAmp[i] < 0.002 && target === 0) strainAmp[i] = 0;
+				const pulse = 0.5 + 0.5 * Math.sin(wall / pulseRateMs(i, tier) + i * 0.9);
+				return strainAmp[i] * (0.45 + 0.55 * pulse);
+			});
+			frameEnv = { blastT, strength: [...blastStrength], strain };
+			if (blastAt.every((at) => now - at > BOW_MS) && strainAmp.every((a) => a === 0) && !teasing()) {
 				clearInterval(bowTimer);
 				bowTimer = undefined;
 			}
 		}, 16);
 	};
+	$effect(() => {
+		if (teasing()) runBow();
+	});
 	onMount(() => () => clearInterval(bowTimer));
 </script>
 

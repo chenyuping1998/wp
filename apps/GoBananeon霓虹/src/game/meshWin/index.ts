@@ -17,6 +17,8 @@ export type { MeshWinSpec } from './meshRig';
 // The dynamite's LANDING (its win is unreachable: it is consumed by its own
 // blast). Symbol.svelte routes a landing B here.
 import { B_LAND } from './landB';
+// …and the hold-and-spin coin's (coinP.ts), before StickyPrizes holds it
+import { P_LAND } from './coinP';
 // …and the Scatter's (landS.ts), which lands harder with each one in the spin:
 // MESH_LANDS.S is the first; Symbol.svelte picks the tier from S_LANDS.
 import { S_LANDS as S_LANDS_RAW } from './landS';
@@ -25,7 +27,7 @@ export const S_LANDS: Record<1 | 2 | 3, MeshWinSpec> = {
 	2: settled(S_LANDS_RAW[2]),
 	3: settled(S_LANDS_RAW[3]),
 };
-export const MESH_LANDS: Record<string, MeshWinSpec> = { B: settled(B_LAND), S: S_LANDS[1] };
+export const MESH_LANDS: Record<string, MeshWinSpec> = { B: settled(B_LAND), S: S_LANDS[1], P: settled(P_LAND) };
 
 // The swell every covered tile makes during a blast's CHARGE (BlastSwell.svelte),
 // by symbol id. One generic rig; the dynamite's own cell trembles hardest.
@@ -40,8 +42,8 @@ import { bannerSpec } from './banner';
 export { bannerSpec };
 
 // The props hanging in the backgrounds (BgProps.svelte).
-import { BG_BASE, BG_FEATURE, BG_FEATURE_R } from './bgProps';
-export { BG_BASE, BG_FEATURE, BG_FEATURE_R };
+import { BG_BASE, BG_FEATURE, BG_FEATURE_R, BG_HS_L, BG_HS_R, BG_HS_TOP } from './bgProps';
+export { BG_BASE, BG_FEATURE, BG_FEATURE_R, BG_HS_L, BG_HS_R, BG_HS_TOP };
 
 // The transition's dynamite (DynamiteMesh.svelte), the free-game sign
 // (SignMesh.svelte) and the free-spin counter's plate (CounterMesh.svelte).
@@ -71,6 +73,7 @@ export { IDLE_WEIGHT };
 export const MESH_ALL: Record<string, MeshWinSpec> = {
 	...MESH_WINS,
 	'B:land': MESH_LANDS.B,
+	'P:land': MESH_LANDS.P,
 	'S:land1': S_LANDS[1],
 	'S:land2': S_LANDS[2],
 	'S:land3': S_LANDS[3],
@@ -80,6 +83,9 @@ export const MESH_ALL: Record<string, MeshWinSpec> = {
 	'bg:base': settled(BG_BASE),
 	'bg:feature': settled(BG_FEATURE),
 	'bg:featureR': settled(BG_FEATURE_R),
+	'bg:hsL': settled(BG_HS_L),
+	'bg:hsR': settled(BG_HS_R),
+	'bg:hsTop': settled(BG_HS_TOP),
 	banner: settled(bannerSpec('gbWinBannerEpic')),
 	dynamite: settled(DYNAMITE),
 	'dynamite:thrown': settled(DYNAMITE_THROWN),

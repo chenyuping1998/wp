@@ -235,3 +235,178 @@ export const BG_FEATURE_R: BgPropSpec = {
 // set from the measured limits
 const LANTERN_KICK = 5;
 const VINE_KICK = 3.5;
+
+// ---------------------------------------------------------------------------
+// hold and spin (the vault): the coins on the shelves
+//
+// The vault is all chrome coin stacks on brass shelves — nothing in it hangs
+// or sways, so nothing idles but a faint settle. What moves it is the GAME:
+// every new coin that sticks on the board (stickyPrizesNew, fed in as
+// blastT by BgProps.svelte) jolts the shelves, the coins leaning on them hop
+// and rock back and the stack on the right bounces on its base.
+//
+// Only what stands clear of the plate's edges: the stacks running off the
+// left and right of the plate would be pinned by the rectangle's border along
+// their cut edge and shear, so they stay painted.
+//
+// Measured on bg_holdandspin.png (1920 x 1080), 2026-10-04.
+
+const HS_L_RECT: Rect = [5, 3, 33, 108];
+// leaning coins, top to bottom: each rests on the shelf at its lower right
+const COIN_U = polygon([[19, 13], [22, 10.5], [26, 11], [28, 14], [27.5, 19], [25, 22], [21.5, 22], [19, 19]]);
+const COIN_M = polygon([[16, 40], [19, 38.5], [23, 40], [26.5, 44], [27.5, 48], [26, 51], [22.5, 51], [18.5, 48], [16, 44]]);
+const COIN_B = polygon([[10.5, 82], [13, 80], [17, 80.5], [22, 84], [26.5, 89], [28, 94], [27, 98.5], [23, 99.5], [18, 97], [13, 92], [10.5, 87]]);
+
+const HS_R_RECT: Rect = [219, 3, 254, 56];
+const COIN_R1 = polygon([[223.5, 19], [226, 15], [230, 14], [232.5, 16], [232, 21], [229, 24.5], [225.5, 25.5], [223.5, 23.5]]);
+const COIN_R2 = polygon([[233.5, 14], [236.5, 10], [240, 8], [243.5, 8.5], [244, 12], [242, 16], [238, 19], [235, 19.5], [233.5, 17]]);
+// the stepped stacks on the middle shelf
+const STACK_R = polygon([[224, 43.5], [230.5, 43.5], [230.5, 38], [239.5, 38], [239.5, 32], [248.5, 31.5], [248.5, 47.5], [224, 51.5]]);
+
+/** a coin's jolt: it hops off the shelf, comes down and rocks to a stop */
+const jolt = (blastT: number, delay: number) => {
+	if (blastT < 0) return { hop: 0, rock: 0 };
+	const t = blastT - delay;
+	return { hop: bump01(t, 0, 200), rock: flick(blastT, delay + 170, 3.2, 3.4) };
+};
+/** 0 -> 1 -> 0 over [a, b], a half sine */
+const bump01 = (t: number, a: number, b: number) => (t <= a || t >= b ? 0 : Math.sin((Math.PI * (t - a)) / (b - a)));
+
+const HOP = 1.8;
+const ROCK = 3;
+
+/** a leaning coin's idle: a faint settle, out of step with its neighbours */
+const coinIdle = (t: number, period: number) => 0.35 * easeIn(t) * wave(t, period);
+
+const coin = (rect: Rect, name: string, foot: Point, shape: (p: Point) => number): PartSpec => ({
+	...prop(rect, name, foot, shape),
+	axis: [0, -1],
+});
+
+export const BG_HS_L: BgPropSpec = {
+	symbol: 'bgHsL',
+	key: 'gbBgHoldAndSpin',
+	sprite: 'gbBgHoldAndSpin',
+	mode: 'panel',
+	feetY: 108,
+	durationMs: 2600,
+	landMs: 99999,
+	hitMs: 99999,
+	rect: HS_L_RECT,
+	inked: (p) => COIN_U(p) === 0 || COIN_M(p) === 0 || COIN_B(p) === 0,
+	rig: {
+		canvas: BG_CANVAS,
+		grid: { x0: HS_L_RECT[0], y0: HS_L_RECT[1], x1: HS_L_RECT[2], y1: HS_L_RECT[3], cols: 56, rows: 210 },
+		soft: 2.5,
+		parts: [
+			frame(),
+			coin(HS_L_RECT, 'coinU', [25, 22], COIN_U),
+			coin(HS_L_RECT, 'coinM', [24, 51], COIN_M),
+			coin(HS_L_RECT, 'coinB', [24, 99], COIN_B),
+		],
+	},
+	limits: { coinU: { pos: 6, neg: 6 }, coinM: { pos: 6, neg: 6 }, coinB: { pos: 6, neg: 6 } },
+	drive: (rig, env) => {
+		const pose = restPose(rig);
+		// the jolt reaches each shelf a beat apart, top down
+		([['coinU', 0, 3100], ['coinM', 50, 3700], ['coinB', 100, 4300]] as const).forEach(([name, delay, period], i) => {
+			const j = jolt(env.blastT, delay);
+			const b = bone(rig, pose, name);
+			b.dy = -HOP * j.hop;
+			b.angle = coinIdle(env.t, period) + ROCK * (1 - 0.25 * i) * j.rock;
+		});
+		return pose;
+	},
+	pose: (rig, t) => BG_HS_L.drive(rig, { t, level: 1, quakeT: -1, blastT: t }),
+};
+
+export const BG_HS_R: BgPropSpec = {
+	symbol: 'bgHsR',
+	key: 'gbBgHoldAndSpin',
+	sprite: 'gbBgHoldAndSpin',
+	mode: 'panel',
+	feetY: 56,
+	durationMs: 2600,
+	landMs: 99999,
+	hitMs: 99999,
+	rect: HS_R_RECT,
+	inked: (p) => COIN_R1(p) === 0 || COIN_R2(p) === 0 || STACK_R(p) === 0,
+	rig: {
+		canvas: BG_CANVAS,
+		grid: { x0: HS_R_RECT[0], y0: HS_R_RECT[1], x1: HS_R_RECT[2], y1: HS_R_RECT[3], cols: 70, rows: 106 },
+		soft: 2.5,
+		parts: [
+			frame(),
+			coin(HS_R_RECT, 'coinR1', [226, 25], COIN_R1),
+			coin(HS_R_RECT, 'coinR2', [236, 19.2], COIN_R2),
+			coin(HS_R_RECT, 'stackR', [236, 50], STACK_R),
+		],
+	},
+	limits: { coinR1: { pos: 6, neg: 6 }, coinR2: { pos: 6, neg: 6 }, stackR: { pos: 1, neg: 1 } },
+	drive: (rig, env) => {
+		const pose = restPose(rig);
+		for (const [name, delay, period, sign] of [['coinR1', 30, 3400, 1], ['coinR2', 0, 2900, -1]] as const) {
+			const j = jolt(env.blastT, delay);
+			const b = bone(rig, pose, name);
+			b.dy = -HOP * j.hop;
+			b.angle = coinIdle(env.t, period) + sign * ROCK * j.rock;
+		}
+		// the stack is heavy: a short hop and a squash on its base as it lands
+		const j = jolt(env.blastT, 80);
+		const s = bone(rig, pose, 'stackR');
+		s.dy = -HOP * j.hop;
+		s.along = 1 - 0.035 * (env.blastT < 0 ? 0 : flick(env.blastT, 280, 4, 5));
+		return pose;
+	},
+	pose: (rig, t) => BG_HS_R.drive(rig, { t, level: 1, quakeT: -1, blastT: t }),
+};
+
+// The shelf over the vault's arch, across the TOP of the plate: the one part
+// of this scene a PORTRAIT screen shows (it keeps only the middle third of
+// the plate, so the side strips above are cropped away). The same jolt, run
+// left to right along the shelf as a wave. The tall stack at the right end
+// and the two tall ones that come within 4 units of the plate's top edge stay
+// painted: the edge is pinned, and a hop folded their tops against it.
+const HS_TOP_RECT: Rect = [78, 0, 182, 21];
+const TOP_PROPS: [string, (p: Point) => number, Point][] = [
+	['coinT', polygon([[83.5, 10], [85, 8], [88, 7.5], [91.5, 8], [93, 10], [92.5, 12.5], [90, 14], [86, 14], [84, 12.5]]), [88, 14]],
+	['stackT2', polygon([[104, 8.5], [109.5, 8.5], [110, 16], [104, 16]]), [107, 16]],
+	['stackT3', polygon([[110.5, 12], [120, 12], [123, 14.5], [122, 16.5], [110.5, 16.5]]), [115, 16.5]],
+	['stackT4', polygon([[134, 10], [143, 10], [143, 16.5], [134, 16.5]]), [138, 16.5]],
+	['stackT5', polygon([[143.5, 11], [151.5, 11], [151.5, 16], [143.5, 16]]), [147, 16]],
+	['stackT7', polygon([[162.5, 8], [170, 8], [170, 14.5], [162.5, 14.5]]), [166, 14.5]],
+];
+
+export const BG_HS_TOP: BgPropSpec = {
+	symbol: 'bgHsTop',
+	key: 'gbBgHoldAndSpin',
+	sprite: 'gbBgHoldAndSpin',
+	mode: 'panel',
+	feetY: 21,
+	durationMs: 2600,
+	landMs: 99999,
+	hitMs: 99999,
+	rect: HS_TOP_RECT,
+	inked: (p) => TOP_PROPS.some(([, shape]) => shape(p) === 0),
+	rig: {
+		canvas: BG_CANVAS,
+		grid: { x0: HS_TOP_RECT[0], y0: HS_TOP_RECT[1], x1: HS_TOP_RECT[2], y1: HS_TOP_RECT[3], cols: 208, rows: 42 },
+		soft: 2.5,
+		parts: [frame(), ...TOP_PROPS.map(([name, shape, foot]) => coin(HS_TOP_RECT, name, foot, shape))],
+	},
+	limits: Object.fromEntries(TOP_PROPS.map(([name]) => [name, { pos: 4, neg: 4 }])),
+	drive: (rig, env) => {
+		const pose = restPose(rig);
+		TOP_PROPS.forEach(([name, , foot], i) => {
+			// the wave crosses the shelf in ~250ms
+			const j = jolt(env.blastT, ((foot[0] - 80) / 90) * 250);
+			const b = bone(rig, pose, name);
+			b.dy = -HOP * j.hop;
+			// the coin rocks; the stacks only settle, squashing on their base
+			if (name === 'coinT') b.angle = coinIdle(env.t, 3300) + ROCK * j.rock;
+			else b.along = 1 - 0.035 * (env.blastT < 0 ? 0 : flick(env.blastT, ((foot[0] - 80) / 90) * 250 + 200, 4, 5)) * (i % 2 ? 1 : 0.8);
+		});
+		return pose;
+	},
+	pose: (rig, t) => BG_HS_TOP.drive(rig, { t, level: 1, quakeT: -1, blastT: t }),
+};

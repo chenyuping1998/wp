@@ -1,12 +1,16 @@
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 	import { MainContainer, OnPressFullScreen } from 'components-layout';
 	import { OnHotkey } from 'components-shared';
-	import { Text } from 'pixi-svelte';
+	import { Container } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
 	import { gameText } from '../game/i18nText';
+	import TextMesh from './TextMesh.svelte';
+
+	// a slow wave running through the letters, under the breathing alpha
+	const PROMPT_ACT = { hop: 0, boing: 0, wiggle: 0, wave: 0.6 };
+	const FILL = 0xf5e3c3;
 
 	type Props = {
 		onpress: () => void;
@@ -38,26 +42,21 @@
 </script>
 
 <MainContainer alignVertical="bottom">
-	<Text
-		text={label}
-		anchor={{ x: 0.5, y: 1 }}
-		x={context.stateLayoutDerived.mainLayout().width * 0.5}
-		y={yPosition}
-		alpha={pulse}
-		style={{
-			fontFamily: GAME_FONT,
-			fontSize: 28,
-			fontWeight: GAME_FONT_WEIGHT,
-			letterSpacing: 4,
-			fill: 0xf5e3c3,
-			stroke: 0x2c1c08,
-			strokeThickness: 4,
-			dropShadow: true,
-			dropShadowColor: 0x000000,
-			dropShadowBlur: 8,
-			dropShadowDistance: 2,
-		}}
-	/>
+	<Container alpha={pulse}>
+		<TextMesh
+			text={label}
+			anchor={{ x: 0.5, y: 1 }}
+			x={context.stateLayoutDerived.mainLayout().width * 0.5}
+			y={yPosition}
+			fontSize={28}
+			letterSpacing={4}
+			fill={[FILL, FILL, FILL]}
+			stroke={0x2c1c08}
+			strokeWidth={4}
+			shadow={{ blur: 8, distance: 2 }}
+			act={PROMPT_ACT}
+		/>
+	</Container>
 </MainContainer>
 <OnHotkey hotkey="Space" onpress={() => props.onpress()} />
 <OnPressFullScreen onpress={() => props.onpress()} />

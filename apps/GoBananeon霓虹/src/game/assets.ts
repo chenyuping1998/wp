@@ -248,6 +248,17 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/b_sheen.png', import.meta.url).href,
 		preload: true,
 	},
+	// the hold-and-spin coin's landing mesh (meshWin/coinP.ts P_LAND)
+	gbPGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/p_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	gbPSheen: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasSymbolsV3/p_sheen.png', import.meta.url).href,
+		preload: true,
+	},
 	gbH1: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1.png', import.meta.url).href,

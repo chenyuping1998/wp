@@ -14,8 +14,14 @@
  * 28 + 40i .. 68 + 40i. The art is stretched to the board's aspect in the game;
  * the rig does not care.
  *
+ * THE TEASE STRAINS IT TOO. While a reel teases the Scatter (anticipation),
+ * its top and bottom rail segments push outward in time with the column's own
+ * pulse (Anticipation.svelte's sine), as if the housing were holding something
+ * back — harder once the fourth Scatter is down. BoardFrame.svelte eases the
+ * strain in and out, so the rails are at rest before and after.
+ *
  * Panel mode: the rest of the frame is `frame`, nailed down. BoardFrame.svelte
- * draws it through PropMesh and feeds the blast times.
+ * draws it through PropMesh and feeds the blast times and the strain.
  */
 import {
 	polygon,
@@ -39,6 +45,9 @@ export type FrameEnv = {
 	blastT: number[];
 	/** how hard, per reel (1 = one ordinary blast; the full board is more) */
 	strength: number[];
+	/** the anticipation strain per reel, 0..1, eased in and out and already
+	 *  carrying the pulse — 0 or absent when the reel is not teasing */
+	strain?: number[];
 };
 
 export type FrameSpec = MeshWinSpec & { drive: (rig: Rig, env: FrameEnv) => Pose };
@@ -74,6 +83,8 @@ const bow = (t: number) => {
 
 // canvas units of bow at strength 1: about 10 screen px on a 700px board
 const BOW = 4;
+// canvas units of push at full strain: a throb, well under a blast
+const STRAIN = 1.6;
 
 export const FRAME: FrameSpec = (() => {
 	const spec: FrameSpec = {
@@ -105,19 +116,23 @@ export const FRAME: FrameSpec = (() => {
 		drive: (rig, env) => {
 			const pose = restPose(rig);
 			for (let i = 0; i < REELS; i++) {
-				const push = BOW * (env.strength[i] ?? 1) * bow(env.blastT[i] ?? -1);
+				const push = BOW * (env.strength[i] ?? 1) * bow(env.blastT[i] ?? -1) + STRAIN * (env.strain?.[i] ?? 0);
 				bone(rig, pose, `top${i}`).dy = -push;
 				bone(rig, pose, `bot${i}`).dy = push;
 			}
 			return pose;
 		},
 		// for the gate: reel 1 goes up at 0, reels 2-3 at 400 (a level-2 blast),
-		// and the whole board at 800, harder
-		pose: (rig, t) =>
-			spec.drive(rig, {
+		// and the whole board at 800, harder; and reel 4 teases from 0 to 1150,
+		// throbbing as BoardFrame feeds it
+		pose: (rig, t) => {
+			const on = smoothstep(t / 300) * (1 - smoothstep((t - 1000) / 250));
+			return spec.drive(rig, {
 				blastT: [t - 800, t, t - 400, t - 400, t - 800],
 				strength: [1.6, 1, 1, 1, 1.6],
-			}),
+				strain: [0, 0, 0, 0, on * (0.45 + 0.55 * (0.5 + 0.5 * Math.sin(t / 104)))],
+			});
+		},
 	};
 	return spec;
 })();

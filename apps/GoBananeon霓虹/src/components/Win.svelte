@@ -20,7 +20,8 @@
 	import WinCoins from './WinCoins.svelte';
 	import BigWinFx from './BigWinFx.svelte';
 	import FxBurst from './FxBurst.svelte';
-	import GoldText from './GoldText.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { AMOUNT_ACT } from '../game/meshWin/textMesh';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
@@ -51,6 +52,9 @@
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
 	let onCountUpComplete = $state(() => {});
+	// the amount's mesh kicks (TextMesh): it bobs while it rolls, squashes as it lands
+	let rollAt = $state(-1);
+	let landAt = $state(-1);
 
 	// camera shake as the presentation slams in
 	let shake = $state({ x: 0, y: 0 });
@@ -162,6 +166,8 @@
 		winUpdate: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
+			rollAt = -1;
+			landAt = -1;
 			if (emitterEvent.winLevelData.type === 'big') {
 				startShake();
 				startImpact();
@@ -187,6 +193,7 @@
 						// impact hold: freeze a few frames under the white flash before
 						// the numbers start rolling
 						if (isBigWin) await waitForTimeout(90);
+						rollAt = Date.now();
 						await startCountUp();
 						await waitForTimeout(isBigWin ? 1300 : 300);
 						oncomplete();
@@ -248,27 +255,37 @@
 									/>
 								{/each}
 								<!-- amount rolls inside the plaque's dark centre well -->
-								<GoldText
+								<TextMesh
 									y={bh * 0.16}
 									maxWidth={bw * 0.68}
 									text={bookEventAmountToCurrencyString(countUpAmount)}
 									fontSize={bh * 0.24}
+									bevel
+									at={{ roll: rollAt, land: landAt }}
+									act={AMOUNT_ACT}
 								/>
 							</Container>
 							{#if burstShown}
-								<FxBurst scale={1.7} flavour="jungle" oncomplete={() => (burstShown = false)} />
+								<FxBurst scale={1.7} flavour="neon" oncomplete={() => (burstShown = false)} />
 							{/if}
 						{:else}
 							<!-- small wins: just the rolling amount over the board -->
-							<GoldText
+							<TextMesh
 								maxWidth={context.stateLayoutDerived.canvasSizes().width /
 									context.stateLayoutDerived.mainLayout().scale}
 								text={bookEventAmountToCurrencyString(countUpAmount)}
 								fontSize={SYMBOL_SIZE}
+								bevel
+								at={{ roll: rollAt, land: landAt }}
+								act={AMOUNT_ACT}
 							/>
 						{/if}
 					</Container>
 				</MainContainer>
+
+				{#if countUpCompleted}
+					<OnMount onmount={() => (landAt = Date.now())} />
+				{/if}
 
 				<WinCoins emit={!countUpCompleted} levelAlias={winLevelData?.alias} />
 

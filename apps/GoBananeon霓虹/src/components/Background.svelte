@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Container, Rectangle, Sprite } from 'pixi-svelte';
+	import { Container, Graphics, Rectangle, Sprite } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { FadeContainer } from 'components-pixi';
 	import { SECOND } from 'constants-shared/time';
 	import { stateBet } from 'state-shared';
@@ -7,7 +8,7 @@
 
 	import { getContext } from '../game/context';
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
-	import { BG_BASE, BG_FEATURE, BG_FEATURE_R } from '../game/meshWin';
+	import { BG_BASE, BG_FEATURE, BG_FEATURE_R, BG_HS_L, BG_HS_R, BG_HS_TOP } from '../game/meshWin';
 	import BgProps from './BgProps.svelte';
 
 	const context = getContext();
@@ -43,20 +44,37 @@
 		};
 	});
 
-	// ── floating neon bokeh drifting up with a gentle sway.
-	// Soft textured motes (fxGlow), never hard vector circles ──────────────────
-	const MOTE_COLORS = [0x42eaff, 0xff46d3, 0x915cff, 0xffd548];
-	const NIGHT_COLORS = [0xff46d3, 0x48e8ff, 0x9b76ff, 0xffd548];
-	const motes = Array.from({ length: 22 }, (_, i) => ({
+	// Scene-specific air. Rain belongs to the wet street, distant electrical
+	// motes to the rooftop; the enclosed vault has neither. The old 22-colour
+	// bokeh overlay followed the player into every scene and looked like a
+	// generic particle preset rather than something in the pictured place.
+	const MOTE_COLORS = [0x42eaff, 0xff46d3, 0x915cff];
+	const motes = Array.from({ length: 9 }, (_, i) => ({
 		seedX: Math.random(),
 		seedY: Math.random(),
-		size: 12 + Math.random() * 46,
-		colorIndex: i % 4,
+		size: 8 + Math.random() * 20,
+		colorIndex: i % MOTE_COLORS.length,
 		phase: Math.random() * Math.PI * 2,
-		riseSpeed: 0.012 + Math.random() * 0.022,
-		swayAmp: 18 + Math.random() * 46,
-		alpha: 0.1 + Math.random() * 0.22,
+		riseSpeed: 0.008 + Math.random() * 0.012,
+		swayAmp: 8 + Math.random() * 20,
+		alpha: 0.08 + Math.random() * 0.12,
 	}));
+	const rain = Array.from({ length: 24 }, (_, i) => ({
+		x: (i * 0.61803398875) % 1,
+		y: (i * 0.41421356237) % 1,
+		speed: 0.5 + (i % 5) * 0.09,
+		length: 10 + (i % 4) * 5,
+	}));
+	const drawRain = (g: PixiGraphics) => {
+		g.clear();
+		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		for (const drop of rain) {
+			const y = ((drop.y + clock * drop.speed) % 1.12) * height - height * 0.06;
+			const x = ((drop.x * width - clock * 5) % (width + 20) + width + 20) % (width + 20) - 10;
+			g.moveTo(x, y).lineTo(x - 3, y + drop.length)
+				.stroke({ width: 1.2, color: 0x9ceeff, alpha: 0.1 });
+		}
+	};
 
 	const moteState = (mote: (typeof motes)[number]) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
@@ -69,22 +87,6 @@
 			alpha: mote.alpha * Math.sin(progress * Math.PI) ** 0.6,
 		};
 	};
-
-	// THE SUN SHAFTS ARE GONE, DELIBERATELY.
-	//
-	// They were two pale polygons sweeping down from the top of the screen —
-	// sunlight through a rainforest canopy, which is what the previous three
-	// generations were set in. There is no sky in a mine, so on these plates they
-	// read as a rendering fault rather than as light.
-	//
-	// Every background now carries its own source, painted in: the lantern on the
-	// timber in the base game, the glowing seam in the feature, the caged lamp in
-	// the strongroom. A second animated light on top would fight all three — the
-	// same reason design/BACKGROUND_PROMPTS.md puts "lantern" and "torch" in the
-	// negative prompt for the cover plate.
-	//
-	// The drifting motes stay. Dust hanging in lamplight is right for a mine, and
-	// they are the only thing keeping the plate from sitting perfectly still.
 
 	onMount(() => {
 		const id = setInterval(() => {
@@ -102,6 +104,7 @@
 	<!-- the paper lanterns and the blossom branch (meshWin/bgProps.ts), handed
 	     the same rect so they stay pinned to the art as it drifts -->
 	<BgProps spec={BG_BASE} {...parallax} />
+	<Graphics draw={drawRain} />
 </FadeContainer>
 
 <!-- 烈日突擊 free-game background -->
@@ -115,10 +118,17 @@
 <!-- 地底金庫 hold-and-spin background -->
 <FadeContainer show={isHoldAndSpin} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgHoldAndSpin" {...parallax} />
+	<!-- the leaning coins and the stack on the shelves: they jump every time a
+	     new coin sticks on the board -->
+	<BgProps spec={BG_HS_L} {...parallax} />
+	<BgProps spec={BG_HS_R} {...parallax} />
+	<!-- the shelf over the arch: the part a portrait screen sees -->
+	<BgProps spec={BG_HS_TOP} {...parallax} />
 </FadeContainer>
 
-<!-- ambient bokeh drifting in front of whichever scene is showing -->
-<Container zIndex={-1}>
+<!-- a few distant electrical motes above the rooftop -->
+<FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
+	<Container>
 	{#each motes as mote, index (index)}
 		{@const state = moteState(mote)}
 		<Sprite
@@ -126,11 +136,12 @@
 			anchor={0.5}
 			x={state.x}
 			y={state.y}
-			tint={(isHoldAndSpin ? NIGHT_COLORS : MOTE_COLORS)[mote.colorIndex]}
+			tint={MOTE_COLORS[mote.colorIndex]}
 			blendMode="add"
 			width={mote.size}
 			height={mote.size}
 			alpha={state.alpha}
 		/>
 	{/each}
-</Container>
+	</Container>
+</FadeContainer>

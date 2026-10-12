@@ -20,10 +20,20 @@
 
 	import BoardContainer from './BoardContainer.svelte';
 	import BlastSwell from './BlastSwell.svelte';
+	import BlastFx, { type BlastPlan } from './BlastFx.svelte';
+	import {
+		CHARGE_MS,
+		COLUMN_FLASH_DELAY_MS,
+		blastLook,
+		copyArriveAt,
+		phasesAt,
+		pillarAt,
+		type BlastLook,
+	} from '../game/blastTimeline';
 	import { getContext } from '../game/context';
 	import { stateGame } from '../game/stateGame.svelte';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
-	import { getSymbolX } from '../game/utils';
+	import { getSymbolX, getSymbolInfo } from '../game/utils';
 	import type { SymbolName } from '../game/types';
 
 	const context = getContext();
@@ -63,7 +73,7 @@
 	// These are the beats AT FULL SIZE. Everything after the fuse is then scaled
 	// to how many reels actually went up — see AFTERMATH_SCALE.
 	// BlastSwell's tiles swell for exactly this long (meshWin/swell.ts SWELL_MS)
-	const CHARGE_MS = 380;
+	// CHARGE_MS lives in game/blastTimeline.ts (BlastFx reads the same clock)
 	const SHATTER_MS = 340;
 	const PUFF_MS = 240;
 	const HOLD_MS = 200;
@@ -137,6 +147,20 @@
 
 	let reels = $state<number[]>([]);
 	let clock = $state(-1);
+	// what this blast shows on BlastFx's sprite layer, and its rung's look
+	let plan = $state<BlastPlan | null>(null);
+	let look = $state<BlastLook>(blastLook(1, false));
+	let planId = 0;
+	// cells the blast leaves standing (the Scatter): no void over them, no shards
+	let survivors = $state<Set<string>>(new Set());
+	// when each refilled cell's copy lands, by cellKey: its void clears then
+	let arrivals = new Map<string, number>();
+	const cellKey = (reel: number, row: number) => reel + ':' + row;
+	let landTimers: ReturnType<typeof setTimeout>[] = [];
+	const clearLandTimers = () => {
+		for (const id of landTimers) clearTimeout(id);
+		landTimers = [];
+	};
 	let raf = 0;
 
 	// A cleared blast must not be able to write to the board afterwards.
@@ -151,7 +175,10 @@
 	// construction rather than waited for.
 	let generation = 0;
 
-	onDestroy(() => cancelAnimationFrame(raf));
+	onDestroy(() => {
+		cancelAnimationFrame(raf);
+		clearLandTimers();
+	});
 
 	const TOP = 0;
 	const HEIGHT = SYMBOL_SIZE * BOARD_DIMENSIONS.y;
@@ -218,6 +245,7 @@
 		strike: number,
 		seed: number,
 		alpha: number,
+		outer: number = VIOLET,
 	) => {
 		if (alpha <= 0.01) return;
 		const n = 7;
@@ -231,7 +259,7 @@
 			pts.push(ax + (bx - ax) * u + nx * jag, ay + (by - ay) * u + ny * jag);
 		}
 		for (const [w, color, al] of [
-			[9, VIOLET, 0.3],
+			[9, outer, 0.3],
 			[4, 0xd98bff, 0.65],
 			[1.6, 0xffffff, 0.95],
 		] as const) {
@@ -279,12 +307,7 @@
 		if (clock < 0 || reels.length === 0) return;
 
 		const t = clock;
-		const charge = Math.min(1, t / CHARGE_MS);
-		const shatter = t < CHARGE_MS ? 0 : Math.min(1, (t - CHARGE_MS) / beats.shatter);
-		const PUFF_AT = CHARGE_MS + beats.shatter;
-		const puff = t < PUFF_AT ? 0 : Math.min(1, (t - PUFF_AT) / beats.puff);
-		const DISPERSE_AT = PUFF_AT + beats.puff + beats.hold;
-		const disperse = t < DISPERSE_AT ? 0 : Math.min(1, (t - DISPERSE_AT) / beats.disperse);
+		const { charge, shatter, puff, disperse, PUFF_AT } = phasesAt(t, beats);
 		const strike = Math.floor(t / 50);
 
 		for (const reel of reels) {
@@ -307,14 +330,27 @@
 			}
 
 			// the void, opaque from SHATTER until the pillar starts to collapse
-			if (shatter > 0 && disperse === 0) {
-				g.rect(left, TOP, SYMBOL_SIZE, HEIGHT).fill({ color: NIGHT, alpha: Math.min(1, shatter * 1.6) });
+			// per cell, so the Scatter — which survives a blast — stays in view.
+			// Each refilled cell stays dark until ITS copy lands (BlastFx), then
+			// clears in a blink: the new symbols arrive one by one rather than
+			// all showing at once as the pillar thins.
+			if (shatter > 0) {
+				for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
+					const key = cellKey(reel, row);
+					if (survivors.has(key)) continue;
+					const lift = arrivals.get(key) ?? phasesAt(0, beats).DISPERSE_AT;
+					const cleared = t < lift ? 0 : Math.min(1, (t - lift) / 70);
+					const a = Math.min(1, shatter * 1.6) * (1 - cleared);
+					if (a <= 0.01) continue;
+					g.rect(left, TOP + SYMBOL_SIZE * (row - 1), SYMBOL_SIZE, SYMBOL_SIZE).fill({ color: NIGHT, alpha: a });
+				}
 			}
 
 			// SHATTER: every cell glitches into flying pixels
 			if (shatter > 0 && shatter < 1) {
 				const tile = SYMBOL_SIZE / PIX;
 				for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
+					if (survivors.has(cellKey(reel, row))) continue;
 					const cy = TOP + SYMBOL_SIZE * (row - 0.5);
 					for (const px of pixelsOf(reel, row)) {
 						const u = Math.max(0, Math.min(1, (shatter - px.lag) / (1 - px.lag)));
@@ -322,7 +358,8 @@
 						const fly = 1 - (1 - u) ** 2;
 						const x = cx + px.ox * SYMBOL_SIZE + Math.cos(px.dir) * px.speed * SYMBOL_SIZE * fly;
 						const y = cy + px.oy * SYMBOL_SIZE + Math.sin(px.dir) * px.speed * SYMBOL_SIZE * fly;
-						const size = tile * (0.92 - 0.6 * u);
+						// small glitch bits now: the real art's shards are BlastFx's
+						const size = tile * 0.32 * (1 - 0.6 * u);
 						const alpha = (1 - u) ** 1.3;
 						if (alpha <= 0.01) continue;
 						g.rect(x - size, y - size, size * 2, size * 2).fill({ color: px.color, alpha: 0.18 * alpha });
@@ -333,34 +370,25 @@
 
 			// PUFF -> HOLD -> DISPERSE: the plasma pillar
 			if (puff > 0) {
-				// bursts out past the reel, holds, then collapses to a line
-				const open = 1 - (1 - puff) ** 3;
-				const collapse =
-					disperse < 0.55 ? 1 - (disperse / 0.55) ** 2 * 0.96 : 0.04 * (1 - (disperse - 0.55) / 0.45);
-				const half = (SYMBOL_SIZE / 2) * (0.35 + 0.85 * open) * collapse;
-				// the CRT line also shrinks to its middle at the very end
-				const vEnd = disperse < 0.55 ? 1 : 1 - (disperse - 0.55) / 0.45;
-				const top = TOP + (HEIGHT / 2) * (1 - vEnd);
-				const h = HEIGHT * vEnd;
-				const alpha = disperse < 0.85 ? 1 : 1 - (disperse - 0.85) / 0.15;
+				// bursts out past the reel, holds, then collapses to a line and
+				// shrinks to its middle (game/blastTimeline.ts pillarAt). The glow
+				// itself is soft additive light in BlastFx; drawn here is only the
+				// crisp hot spine, the scanlines and the lightning.
+				const { half, top, h, alpha } = pillarAt(puff, disperse, SYMBOL_SIZE, HEIGHT);
 				if (alpha > 0 && h > 0) {
-					// sheath, sheath, core, hot spine
-					g.rect(cx - half * 1.5, top, half * 3, h).fill({ color: VIOLET, alpha: 0.28 * alpha });
-					g.rect(cx - half, top, half * 2, h).fill({ color: PINK, alpha: 0.55 * alpha });
-					g.rect(cx - half * 0.55, top, half * 1.1, h).fill({ color: 0xf2d8ff, alpha: 0.85 * alpha });
-					g.rect(cx - half * 0.18, top, half * 0.36, h).fill({ color: 0xffffff, alpha });
+					g.rect(cx - half * 0.12, TOP + top, half * 0.24, h).fill({ color: 0xffffff, alpha: 0.85 * alpha });
 					// scanlines racing upward
 					if (disperse < 0.55) {
 						for (let k = 0; k < 9; k++) {
 							const y = TOP + HEIGHT - ((t / 600 + k / 9) % 1) * HEIGHT;
-							g.rect(cx - half * 1.4, y, half * 2.8, 2.5).fill({ color: CYAN, alpha: 0.5 * alpha });
+							g.rect(cx - half * 1.4, y, half * 2.8, 2.5).fill({ color: CYAN, alpha: 0.4 * alpha });
 						}
 					}
 					// lightning crawling up the outside of the pillar
 					if (disperse < 0.4) {
 						for (const side of [-1, 1]) {
 							const x = cx + side * half * 1.2;
-							bolt(g, x, TOP, x, TOP + HEIGHT, strike, reel * 7 + side, 0.8 * (1 - disperse / 0.4));
+							bolt(g, x, TOP, x, TOP + HEIGHT, strike, reel * 7 + side, 0.8 * (1 - disperse / 0.4), look.bolt);
 						}
 					}
 				}
@@ -387,15 +415,21 @@
 				let n = 0;
 				for (const reel of reels) {
 					for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
-						if (n > 10) return;
+						if (n > 7 + 3 * look.level) return;
 						if (hash(strikeFast, reel * 10 + row, oi) > 0.25 + 0.5 * charge) continue;
 						const tx = getSymbolX(reel) + (hash(strikeFast, row, 2) - 0.5) * SYMBOL_SIZE * 0.6;
 						const ty = TOP + SYMBOL_SIZE * (row - 0.5) + (hash(strikeFast, reel, 3) - 0.5) * SYMBOL_SIZE * 0.6;
-						bolt(g, o.x, o.y, tx, ty, strikeFast, reel * 31 + row + oi, 0.35 + 0.65 * charge);
+						bolt(g, o.x, o.y, tx, ty, strikeFast, reel * 31 + row + oi, 0.35 + 0.65 * charge, look.bolt);
 						n++;
 					}
 				}
 			});
+			// the bomb reaching for the symbol it will spread: one steady bolt to
+			// each source, re-struck fast
+			for (const [oi, o] of origins.entries())
+				for (const [si, src] of (plan?.sources ?? []).entries())
+					if (Math.hypot(src.x - o.x, src.y - o.y) > SYMBOL_SIZE * 0.5)
+						bolt(g, o.x, o.y, src.x, src.y, strikeFast, 900 + oi * 7 + si, 0.5 + 0.5 * charge, look.bolt);
 			// the bomb's own cell swells with light
 			for (const o of origins) {
 				const r = SYMBOL_SIZE * (0.35 + 0.25 * charge);
@@ -404,13 +438,48 @@
 			}
 		}
 
-		// the bang: a white-violet ring out of each bomb
+		// The first 150ms must read as a detonation even on a single reel. A
+		// jagged compression front and a brief hot core lead the round shockwave;
+		// the contour is seeded per bomb, so it does not boil between frames.
 		if (shatter > 0 && shatter < 1) {
-			for (const o of origins) {
-				const r = SYMBOL_SIZE * (0.3 + 2.2 * (1 - (1 - shatter) ** 3));
+			for (const [oi, o] of origins.entries()) {
+				const hit = Math.max(0, 1 - (t - CHARGE_MS) / 150);
+				if (hit > 0) {
+					const hot = hit * hit;
+					g.circle(o.x, o.y, SYMBOL_SIZE * (0.2 + 0.48 * (1 - hit)))
+						.fill({ color: 0xffffff, alpha: 0.8 * hot });
+					g.circle(o.x, o.y, SYMBOL_SIZE * (0.4 + 0.75 * (1 - hit)))
+						.fill({ color: look.sheath, alpha: 0.32 * hot });
+				}
+				const r = SYMBOL_SIZE * (0.3 + 2.2 * look.power * (1 - (1 - shatter) ** 3));
 				const a = (1 - shatter) ** 1.5;
-				g.circle(o.x, o.y, r).stroke({ width: 14, color: VIOLET, alpha: 0.3 * a });
-				g.circle(o.x, o.y, r).stroke({ width: 4, color: 0xffffff, alpha: 0.9 * a });
+				const points = 24;
+				for (let k = 0; k <= points; k++) {
+					const angle = (k / points) * Math.PI * 2;
+					const jag = k === points ? hash(oi + 1, 0, 11) : hash(oi + 1, k, 11);
+					const radius = r * (0.9 + 0.2 * jag);
+					const x = o.x + Math.cos(angle) * radius;
+					const y = o.y + Math.sin(angle) * radius;
+					if (k === 0) g.moveTo(x, y);
+					else g.lineTo(x, y);
+				}
+				g.stroke({ width: 15 * look.power, color: look.outer, alpha: 0.27 * a, cap: 'round', join: 'round' });
+				for (let k = 0; k <= points; k++) {
+					const angle = (k / points) * Math.PI * 2;
+					const jag = k === points ? hash(oi + 1, 0, 11) : hash(oi + 1, k, 11);
+					const radius = r * (0.9 + 0.2 * jag);
+					const x = o.x + Math.cos(angle) * radius;
+					const y = o.y + Math.sin(angle) * radius;
+					if (k === 0) g.moveTo(x, y);
+					else g.lineTo(x, y);
+				}
+				g.stroke({ width: 3.5, color: 0xffffff, alpha: 0.85 * a, cap: 'round', join: 'round' });
+				// a second, later ring from rung 3 up
+				const s2 = (shatter - 0.15) / 0.85;
+				if (look.level >= 3 && s2 > 0) {
+					const r2 = SYMBOL_SIZE * (0.2 + 1.6 * look.power * (1 - (1 - s2) ** 3));
+					g.circle(o.x, o.y, r2).stroke({ width: 3, color: look.sheath, alpha: 0.8 * (1 - s2) ** 1.5 });
+				}
 			}
 		}
 
@@ -435,6 +504,69 @@
 		}
 	};
 
+	/**
+	 * What BlastFx draws for this blast: the cells that break (their art), the
+	 * cells holding the fill (the source each copy flies out of) and, per
+	 * refilled cell, when its copy lands. Read off the board BEFORE the swap.
+	 *
+	 * The source: the bomb picks the best symbol on its OWN reel, so the copy
+	 * comes from a cell on a bomb's reel holding the fill; failing that (a
+	 * resumed blast), any covered cell holding it; failing that, it drops in
+	 * from above the reel.
+	 */
+	const artOf = (name: SymbolName) => {
+		const info = getSymbolInfo({ rawSymbol: { name } as never, state: 'static' });
+		return { key: info.assetKey, size: SYMBOL_SIZE * info.sizeRatios.height };
+	};
+	const buildPlan = (covered: number[], fills: SymbolName[]): BlastPlan => {
+		const at = (reel: number, row: number) => ({ x: getSymbolX(reel), y: TOP + SYMBOL_SIZE * (row - 0.5) });
+		const nameAt = (reel: number, row: number) => stateGame.board[reel]?.reelState.symbols[row]?.rawSymbol?.name;
+		const bombReels: number[] = [];
+		const keep = new Set<string>();
+		const shardCells: BlastPlan['shardCells'] = [];
+		for (let reel = 0; reel < BOARD_DIMENSIONS.x; reel++)
+			for (let row = 1; row <= BOARD_DIMENSIONS.y; row++)
+				if (nameAt(reel, row) === 'B' && !bombReels.includes(reel)) bombReels.push(reel);
+		for (const reel of covered)
+			for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
+				const name = nameAt(reel, row);
+				if (!name) continue;
+				if (name === 'S') {
+					keep.add(cellKey(reel, row));
+					continue;
+				}
+				shardCells.push({ ...at(reel, row), ...artOf(name as SymbolName) });
+			}
+		survivors = keep;
+		arrivals = new Map();
+		const sourceOf = (fill: SymbolName) => {
+			for (const pool of [bombReels, covered])
+				for (const reel of pool)
+					for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) if (nameAt(reel, row) === fill) return at(reel, row);
+			return null;
+		};
+		const sources: BlastPlan['sources'] = [];
+		const copies: BlastPlan['copies'] = [];
+		const reelDone: Record<number, number> = {};
+		const { DISPERSE_AT } = phasesAt(0, beats);
+		covered.forEach((reel, order) => {
+			const fill = fills[order];
+			if (!fill) return;
+			const src = sourceOf(fill);
+			const art = artOf(fill);
+			if (src && !sources.some((s) => s.x === src.x && s.y === src.y)) sources.push({ ...src, ...art });
+			for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
+				if (keep.has(cellKey(reel, row))) continue;
+				const to = at(reel, row);
+				const arriveAt = copyArriveAt(DISPERSE_AT, beats.disperse, order, row);
+				copies.push({ from: src ?? { x: to.x, y: TOP - SYMBOL_SIZE * 0.8 }, to, ...art, arriveAt, reel, row });
+				arrivals.set(cellKey(reel, row), arriveAt);
+				reelDone[reel] = Math.max(reelDone[reel] ?? 0, arriveAt + COLUMN_FLASH_DELAY_MS);
+			}
+		});
+		return { id: ++planId, look, reels: covered, origins, shardCells, sources, copies, reelDone };
+	};
+
 	/** Rewrite the covered cells. This is what actually applies the blast. */
 	const fillReels = (covered: number[], fills: SymbolName[]) => {
 		for (const [index, reel] of covered.entries()) {
@@ -453,25 +585,55 @@
 		}
 	};
 
-	const runClock = () => {
+	const runClock = (until: number) => {
 		cancelAnimationFrame(raf);
 		const t0 = performance.now();
 		const step = (now: number) => {
 			clock = now - t0;
-			if (clock < beats.total) raf = requestAnimationFrame(step);
+			if (clock < until) raf = requestAnimationFrame(step);
+			else plan = null;
 		};
 		raf = requestAnimationFrame(step);
 	};
 
 	context.eventEmitter.subscribeOnMount({
-		reelBlast: async ({ reels: covered, symbols, full: isFull }) => {
+		reelBlast: async ({ reels: covered, symbols, full: isFull, level }) => {
 			const mine = ++generation;
 			reels = covered;
 			origins = findDynamite(covered);
 			// sized before the clock starts, because draw() reads these
 			beats = beatsFor(covered.length);
+			look = blastLook(level, isFull);
+			clearLandTimers();
+			const built = buildPlan(covered, symbols);
+			plan = built;
 			clock = 0;
-			runClock();
+			const flashEnd = Math.max(0, ...Object.values(built.reelDone)) + 440;
+			runClock(Math.max(beats.total + beats.settle, flashEnd));
+			// THE REFILL LANDS. Each refilled cell plays its own landing
+			// (Symbol -> SymbolSprite's landMotion) the moment its copy arrives, so
+			// the new symbols slam in one after another instead of simply being
+			// there when the light goes. Board state, so guarded like the fill.
+			for (const c of built.copies) {
+				landTimers.push(
+					setTimeout(() => {
+						if (mine !== generation) return;
+						const cell = stateGame.board[c.reel]?.reelState.symbols[c.row];
+						if (cell && cell.rawSymbol?.name !== 'S') cell.symbolState = 'land' as typeof cell.symbolState;
+					}, c.arriveAt),
+				);
+			}
+			// Mark the completion of each column, not every cell: the visual
+			// copies already arrive in a cascade, while a note per cell would turn
+			// the reveal into a noisy trill. This follows the same reelDone clock as
+			// BlastFx's column flash.
+			const finished = Object.entries(built.reelDone).sort((a, b) => a[1] - b[1]);
+			finished.forEach(([, at], order) => {
+				landTimers.push(setTimeout(() => {
+					if (mine === generation)
+						context.eventEmitter.broadcast({ type: 'soundBlastColumn', order, total: finished.length });
+				}, at));
+			});
 
 			// The fuse burns for exactly the CHARGE beat, so it runs out on the bang.
 			context.eventEmitter.broadcast({ type: 'soundBlastFuse' });
@@ -491,6 +653,8 @@
 			// different time: the bang belongs to the breakage, and the cloud now has
 			// a soft puff of its own below.
 			context.eventEmitter.broadcast({ type: 'soundBlastDetonate', full: isFull });
+			// the housing takes the bang, harder up the ladder
+			context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: look.impact });
 			context.eventEmitter.broadcast({ type: 'soundBlastShatter' });
 			await waitForTimeout(beats.shatter);
 			if (mine !== generation) return;
@@ -520,12 +684,16 @@
 			// nothing, which is the point of it.
 			await waitForTimeout(beats.settle);
 			if (mine !== generation) return;
+			context.eventEmitter.broadcast({ type: 'soundBlastEnd' });
 		},
 		reelBlastClear: () => {
 			generation += 1;
 			cancelAnimationFrame(raf);
+			clearLandTimers();
 			reels = [];
 			clock = -1;
+			plan = null;
+			context.eventEmitter.broadcast({ type: 'soundBlastEnd' });
 		},
 	});
 </script>
@@ -535,5 +703,8 @@
 	<BlastSwell />
 	<Container>
 		<Graphics {draw} />
+		<!-- the sprites over it: real-art shards, the soft pillar, the source
+		     lock and the copies flying into the refilled cells -->
+		<BlastFx {plan} {clock} {beats} />
 	</Container>
 </BoardContainer>

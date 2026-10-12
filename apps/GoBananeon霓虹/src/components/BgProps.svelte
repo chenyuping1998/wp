@@ -39,6 +39,11 @@
 		reelBlast: () => {
 			blastAt = Date.now();
 		},
+		// hold and spin: every new coin that sticks jolts the vault's shelves
+		// (bgProps BG_HS_*); the other scenes never see this event
+		stickyPrizesNew: () => {
+			blastAt = Date.now();
+		},
 	});
 
 	// added in sibling order, straight after the background's sprite

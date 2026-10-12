@@ -87,7 +87,7 @@
 	// would otherwise swap the scene while the flash was still ramping.
 	const COVER_AT_BOOM_T = (FLASH_IN + FLASH_HOLD) / 2;
 
-	const FRAG_COUNT = 30;
+	const FRAG_COUNT = 18;
 	type Frag = { a: number; speed: number; r: number; spin: number };
 	const frags: Frag[] = Array.from({ length: FRAG_COUNT }, (_, i) => ({
 		a: (i / FRAG_COUNT) * Math.PI * 2 + Math.random() * 0.4,
@@ -99,7 +99,7 @@
 	// Plasma blooms, as soft round puffs rather than Graphics circles: fxGlow is
 	// a radial falloff texture. They spread flat and burn out fast — light, not
 	// smoke, so they do not rise or linger.
-	const SMOKE_COUNT = 16;
+	const SMOKE_COUNT = 8;
 	type Puff = { a: number; dist: number; size: number; rise: number; delay: number; drift: number };
 	const puffs: Puff[] = Array.from({ length: SMOKE_COUNT }, (_, i) => ({
 		// biased to the sides and slightly upward, the way a ground burst throws it
@@ -393,6 +393,27 @@
 		// violet-white: the plasma's light, not a lamp's
 		g.rect(-width, -height, width * 2, height * 2).fill({ color: 0xf1e4ff, alpha: flashAlpha });
 	};
+	// Once the scene has swapped under the white peak, five dark glass shutters
+	// clear in reel order. This gives the reveal the same left-to-right grammar as
+	// a spin, while the alternating exits keep the cut from looking like a wipe
+	// preset. They are covered by the flash when first placed on screen.
+	const drawReelReveal = (g: PixiGraphics) => {
+		g.clear();
+		if (boomT < COVER_AT_BOOM_T) return;
+		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		const column = width / 5;
+		for (let reel = 0; reel < 5; reel++) {
+			const travel = smoothstep(0.47 + reel * 0.035, 0.76 + reel * 0.035, boomT);
+			if (travel >= 1) continue;
+			const up = reel % 2 === 0;
+			const x = -width / 2 + reel * column;
+			const y = -height / 2 + (up ? -1 : 1) * height * travel;
+			g.rect(x, y, column + 2, height).fill({ color: 0x100b29, alpha: 0.98 });
+			const edge = up ? y + height : y;
+			g.moveTo(x, edge).lineTo(x + column, edge)
+				.stroke({ width: 8, color: reel % 2 ? 0xff3fd0 : 0x59e3ff, alpha: (1 - travel) * 0.38 });
+		}
+	};
 	// Width / height of assets/sprites/goBananasSymbolsV3/dynamite.png. Stated here
 	// rather than read at runtime because the Sprite needs it on its first frame,
 	// before the texture has necessarily resolved — a fallback of 1 would flash a
@@ -462,5 +483,6 @@
 	{/if}
 
 	<Graphics draw={drawBoom} />
+	<Graphics draw={drawReelReveal} />
 	<Graphics draw={drawFlash} />
 </Container>

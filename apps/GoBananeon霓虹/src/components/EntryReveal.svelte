@@ -9,7 +9,7 @@
 	import FxBurst from './FxBurst.svelte';
 
 	// Entry reveal, played once when the loading screen hands over: a quick
-	// white pop and a gold burst over the board, then the five reels uncover
+	// white pop and a neon discharge over the board, then the five reels uncover
 	// left→right in a wave.
 	const COLUMN_DELAY = 0.08;
 	const COLUMN_FADE = 0.24;
@@ -59,7 +59,7 @@
 				x={context.stateGameDerived.boardLayout().x}
 				y={context.stateGameDerived.boardLayout().y}
 				scale={1.4}
-				flavour="jungle"
+				flavour="neon"
 			/>
 		{/if}
 	</MainContainer>

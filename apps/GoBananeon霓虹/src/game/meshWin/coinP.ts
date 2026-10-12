@@ -117,3 +117,37 @@ export const COIN: CoinSpec = (() => {
 	};
 	return spec;
 })();
+
+/**
+ * P LANDING ON THE REEL — the coin arriving, before it is held.
+ *
+ * Not the stick (that is StickyPrizes' press, a beat later, once the coin is
+ * claimed): this is metal hitting the board. The whole coin squashes flat and
+ * rings back, quicker and stiffer than the press, and the face chimes — a
+ * fast shiver of the dome that dies within a quarter second. Same rig as the
+ * held coin, routed through Symbol.svelte's mesh landing like B and S.
+ */
+export const P_LAND: MeshWinSpec = {
+	...COIN,
+	symbol: 'P',
+	key: 'gbP',
+	sprite: 'gbP',
+	durationMs: 460,
+	landMs: 0,
+	hitMs: 30,
+	flashTint: 0xffd75e,
+	pose: (rig, t) => {
+		const pose = restPose(rig);
+		const coin = bone(rig, pose, 'coin');
+		const hit = flick(t, 0, 5.2, 9);
+		coin.along = 1 - 0.08 * Math.max(0, hit) + 0.035 * Math.max(0, -hit);
+		coin.across = 1 + 0.05 * Math.max(0, hit);
+		const face = bone(rig, pose, 'face');
+		const chime = 0.04 * flick(t, 20, 9, 12);
+		face.along = 1 + chime;
+		face.across = 1 + chime;
+		// a touch of gold on the hit
+		pose.flash = 0.45 * bump(t, 0, 160);
+		return pose;
+	},
+};

@@ -17,19 +17,24 @@
 </script>
 
 <script lang="ts">
-	import { Container } from 'pixi-svelte';
+	import { Container, Graphics } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { onMount } from 'svelte';
 	import { stateBet } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import { Sprite } from 'pixi-svelte';
 
 	import BoardContainer from './BoardContainer.svelte';
-	import GoldText from './GoldText.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { LABEL_ACT } from '../game/meshWin/textMesh';
 	import { getContext } from '../game/context';
 	import { featureTimeScale } from '../game/timeScale';
 	import { stateGame } from '../game/stateGame.svelte';
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS, BOARD_SIZES } from '../game/constants';
+	import { REEL_PADDING } from '../game/constants';
+	import { MESH_WINS } from '../game/meshWin';
 	import type { SymbolName } from '../game/types';
 
 	const context = getContext();
@@ -87,6 +92,8 @@
 					state: 'static',
 				}).assetKey,
 				ways: w.ways,
+				positions: w.positions,
+				tint: MESH_WINS[w.symbol]?.flashTint ?? 0xff4fd8,
 			})),
 	);
 
@@ -98,26 +105,49 @@
 	// under the board is a wall of numbers nobody reads — it also grows downward
 	// into whatever is beneath it, which is a layout that breaks on the spin that
 	// happens to pay the most. Cycling keeps the strip one line tall whatever
-	// happens, and puts the biggest win in front of the player first.
-	const CYCLE_MS = 1100;
+	// happens, and puts the biggest win in front of the player first. The show
+	// handler advances this index explicitly so every badge actually gets time
+	// on screen; a free-running timer outlived most normal win presentations.
 	let cycle = $state(0);
-	let cycleTimer: ReturnType<typeof setInterval> | null = null;
-
-	$effect(() => {
-		if (cycleTimer !== null) clearInterval(cycleTimer);
-		cycleTimer = null;
-		cycle = 0;
-		if (rows.length < 2) return;
-		cycleTimer = setInterval(() => {
-			cycle = (cycle + 1) % rows.length;
-		}, CYCLE_MS);
-		return () => {
-			if (cycleTimer !== null) clearInterval(cycleTimer);
-			cycleTimer = null;
-		};
+	let focusing = $state(false);
+	let focusAt = $state(0);
+	let cueClock = $state(0);
+	onMount(() => {
+		const timer = setInterval(() => {
+			if (focusing) cueClock = performance.now();
+		}, 33);
+		return () => clearInterval(timer);
 	});
 
 	const current = $derived(rows.length ? rows[cycle % rows.length] : undefined);
+	const drawFocus = (g: PixiGraphics) => {
+		g.clear();
+		if (!focusing || !current) return;
+		const age = Math.max(0, cueClock - focusAt);
+		const alpha = 0.2 + 0.62 * Math.exp(-age / 210);
+		const inset = SYMBOL_SIZE * 0.075;
+		const reach = SYMBOL_SIZE * 0.14;
+		for (const p of current.positions) {
+			if (p.reel < 0 || p.reel >= BOARD_DIMENSIONS.x || p.row < 1 || p.row > BOARD_DIMENSIONS.y) continue;
+			const left = SYMBOL_SIZE * (p.reel + REEL_PADDING) - SYMBOL_SIZE / 2 + inset;
+			const top = (p.row - 1) * SYMBOL_SIZE + inset;
+			const right = left + SYMBOL_SIZE - inset * 2;
+			const bottom = top + SYMBOL_SIZE - inset * 2;
+			g.moveTo(left, top + reach).lineTo(left, top).lineTo(left + reach, top)
+				.stroke({ width: 3, color: current.tint, alpha, cap: 'round', join: 'round' });
+			g.moveTo(right - reach, bottom).lineTo(right, bottom).lineTo(right, bottom - reach)
+				.stroke({ width: 3, color: current.tint, alpha, cap: 'round', join: 'round' });
+		}
+	};
+	// the label hops, letter after letter, each time it moves on to the next
+	// winning symbol (TextMesh)
+	let labelAt = $state(-1);
+	$effect(() => {
+		// keyed on the symbol shown, not the object: rows can be rebuilt with
+		// the same content
+		void [cycle, current?.assetKey];
+		labelAt = Date.now();
+	});
 
 	// Every winning cell across every winning symbol, deduped — two symbols can
 	// share a cell only via a Wild, but that is enough to double-draw a frame.
@@ -161,6 +191,8 @@
 			const mine = ++generation;
 			animatedKeys = new Set();
 			revealedReels = 0;
+			cycle = 0;
+			focusing = false;
 
 			const usable = incoming.filter((w) => w.positions.length > 0);
 			if (usable.length === 0) return;
@@ -200,12 +232,25 @@
 				: context.stateGame.gameType === 'freegame'
 					? Math.max(HOLD_AFTER_MS, WIN_ANIM_VISIBLE_MS / featureTimeScale() - elapsed)
 					: HOLD_AFTER_MS;
-			await waitForTimeout(hold);
+			const focusCount = usable.filter((w) => w.ways > 0).length;
+			const focusMs = fast || stateBet.isTurbo ? 240 : 390;
+			if (focusCount > 0) {
+				focusing = true;
+				focusAt = cueClock = performance.now();
+			}
+			await waitForTimeout(Math.max(160, hold - Math.max(0, focusCount - 1) * focusMs));
 			if (mine !== generation) return;
+			for (let i = 1; i < focusCount; i++) {
+				cycle = i;
+				focusAt = cueClock = performance.now();
+				await waitForTimeout(focusMs);
+				if (mine !== generation) return;
+			}
 		},
 		winLinesHide: () => {
 			generation += 1;
 			show = false;
+			focusing = false;
 			wins = [];
 			revealedReels = 0;
 		},
@@ -221,12 +266,14 @@
 		boardWinAnimCancel: () => {
 			generation += 1;
 			show = false;
+			focusing = false;
 			wins = [];
 			revealedReels = 0;
 		},
 		winLinesClear: () => {
 			generation += 1;
 			wins = [];
+			focusing = false;
 			revealedReels = 0;
 		},
 	});
@@ -250,6 +297,7 @@
 {#if show && wins.length > 0}
 	<BoardContainer>
 		<Container zIndex={10}>
+			<Graphics draw={drawFocus} />
 			{#if revealedReels > 0 && current}
 				{@const y = BOARD_SIZES.height + SYMBOL_SIZE * 0.3}
 				<!-- icon then count, as one centred pair: the icon is anchored on its
@@ -263,7 +311,7 @@
 					width={ICON}
 					height={ICON}
 				/>
-				<GoldText
+				<TextMesh
 					text={`${current.ways.toLocaleString()} WAYS`}
 					fontSize={SYMBOL_SIZE * 0.22}
 					x={BOARD_SIZES.width / 2 + SYMBOL_SIZE * 0.07}
@@ -271,6 +319,9 @@
 					anchor={{ x: 0, y: 0.5 }}
 					maxWidth={BOARD_SIZES.width * 0.4}
 					letterSpacing={1}
+					bevel
+					at={{ spin: labelAt }}
+					act={LABEL_ACT}
 				/>
 			{/if}
 		</Container>

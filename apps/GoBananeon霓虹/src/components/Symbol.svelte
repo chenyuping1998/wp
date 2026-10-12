@@ -84,6 +84,8 @@
 		const name = props.rawSymbol.name;
 		const off = idleCells.add({
 			name,
+			reel: props.reelIndex!,
+			row: props.row!,
 			play: () => {
 				if (untrack(() => idleAct) !== null) return false;
 				const mine = ++idleId;

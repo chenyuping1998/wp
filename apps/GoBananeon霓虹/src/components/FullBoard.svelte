@@ -9,7 +9,8 @@
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import BoardContainer from './BoardContainer.svelte';
-	import GoldText from './GoldText.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { STAMP_ACT } from '../game/meshWin/textMesh';
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
@@ -63,6 +64,9 @@
 	const CY = HEIGHT / 2;
 
 	let phase = $state<'none' | 'tease' | 'stamp'>('none');
+	// the word's own slam (TextMesh): it squashes into the board as the scale
+	// below hits its floor, and a ripple runs out from the middle
+	let stampAt = $state(-1);
 	let clock = $state(0);
 	let timer: ReturnType<typeof setInterval> | undefined;
 	// a clear mid-beat must not let an old beat keep drawing, or wake a new one
@@ -186,6 +190,7 @@
 		fullBoardStamp: async () => {
 			const mine = ++generation;
 			phase = 'stamp';
+			stampAt = Date.now();
 			startClock(STAMP_MS);
 			context.eventEmitter.broadcast({ type: 'soundFullBoardStamp' });
 			await waitForTimeout(STAMP_MS);
@@ -203,11 +208,14 @@
 	<Graphics {draw} />
 	{#if phase === 'stamp'}
 		<Container x={CX} y={CY} scale={stampScale} alpha={stampAlpha} rotation={-0.07}>
-			<GoldText
+			<TextMesh
 				text="OVERDRIVE!"
 				fontSize={SYMBOL_SIZE * 0.68}
 				fill={[0xf4eaff, 0xd98bff, 0x8a2ad0]}
 				stroke={0x140a30}
+				bevel
+				at={{ stamp: stampAt }}
+				act={STAMP_ACT}
 			/>
 		</Container>
 	{/if}

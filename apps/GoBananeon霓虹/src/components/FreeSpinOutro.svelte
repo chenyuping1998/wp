@@ -8,9 +8,6 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
-	import { verticalFill } from '../game/gradientFill';
-	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
@@ -21,8 +18,8 @@
 	import { gameText } from '../game/i18nText';
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
-	import WinCoins from './WinCoins.svelte';
-	import GoldText from './GoldText.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { AMOUNT_ACT, BANNER_ACT } from '../game/meshWin/textMesh';
 
 	const context = getContext();
 
@@ -30,6 +27,11 @@
 	let amount = $state(0);
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
+	// TextMesh kicks: the title lands as the screen shows, the total rolls and lands
+	let shownAt = $state(-1);
+	let landAt = $state(-1);
+	let countStarted = $state(false);
+	let displayToken = 0;
 
 	// Silence the coin loop the moment the total stops counting.
 	//
@@ -47,10 +49,16 @@
 
 	context.eventEmitter.subscribeOnMount({
 		freeSpinOutroShow: () => (show = true),
-		freeSpinOutroHide: async () => (show = false),
+		freeSpinOutroHide: async () => {
+			displayToken += 1;
+			show = false;
+		},
 		freeSpinOutroCountUp: async (emitterEvent) => {
+			displayToken += 1;
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
+			landAt = -1;
+			countStarted = false;
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
 	});
@@ -61,47 +69,65 @@
 		{@const duration = winLevelData.presentDuration}
 		<WinCountUpProvider {amount} {duration} oncomplete={() => onCountUpComplete()}>
 			{#snippet children({ countUpAmount, startCountUp, finishCountUp, countUpCompleted })}
-				<OnMount onmount={() => startCountUp()} />
+				<OnMount
+					onmount={() => {
+							const mine = displayToken;
+						shownAt = Date.now();
+							// Let the sign land and light its first rail before the
+							// total starts rolling. A quick press can finish the count
+							// early; the token prevents a late restart after dismissal.
+							setTimeout(() => {
+								if (mine === displayToken && show && !countStarted && !countUpCompleted) {
+									countStarted = true;
+									startCountUp();
+								}
+							}, 480);
+					}}
+				/>
+				{#if countUpCompleted}
+					<OnMount onmount={() => (landAt = Date.now())} />
+				{/if}
 
 				<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
 
-				<FreeSpinAnimation>
+				<FreeSpinAnimation counting={!countUpCompleted} finishAt={landAt}>
 					{#snippet children({ sizes })}
-						<Text
-							anchor={0.5}
+						<TextMesh
 							y={-sizes.height * 0.26}
 							text={title}
-							style={{
-								fontFamily: GAME_FONT,
-								fontSize: Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
-								fontWeight: GAME_FONT_WEIGHT,
-								letterSpacing: 6,
-								fill: verticalFill(
-									[0xffffff, 0xffb8ef, 0xff3fd0],
-									Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
-								),
-								stroke: 0x140a30,
-								strokeThickness: 6,
-								dropShadow: true,
-								dropShadowColor: 0x000000,
-								dropShadowBlur: 10,
-								dropShadowDistance: 3,
-							}}
+							fontSize={Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length)}
+							letterSpacing={6}
+							fill={[0xffffff, 0xffb8ef, 0xff3fd0]}
+							stroke={0x140a30}
+							strokeWidth={6}
+							shadow={{ blur: 10, distance: 3 }}
+							at={{ land: shownAt }}
+							act={BANNER_ACT}
 						/>
-						<GoldText
+						<TextMesh
 							y={sizes.height * 0.12}
 							fontSize={sizes.width * 0.15}
 							text={bookEventAmountToCurrencyString(countUpAmount)}
 							maxWidth={sizes.width * 0.9}
+							bevel
+							at={{ roll: shownAt, land: landAt }}
+							act={AMOUNT_ACT}
 						/>
 					{/snippet}
 				</FreeSpinAnimation>
 
-				<WinCoins emit={!countUpCompleted} levelAlias={winLevelData?.alias} />
-
 				<PressToContinue
 					position="betweenBoardAndBottom"
-					onpress={() => (countUpCompleted ? oncomplete() : finishCountUp())}
+						onpress={() => {
+						if (countUpCompleted) oncomplete();
+						else {
+							if (!countStarted) {
+								countStarted = true;
+								startCountUp();
+							}
+							finishCountUp();
+						}
+						}}
 				/>
 			{/snippet}
 		</WinCountUpProvider>

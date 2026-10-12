@@ -7,6 +7,8 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
 	import { getContext } from '../game/context';
 	import config from '../game/config';
+	import FeatureSymbolMesh from './FeatureSymbolMesh.svelte';
+	import { MESH_LANDS } from '../game/meshWin';
 
 	// The three-panel feature card shown once loading reaches 100%.
 	//
@@ -153,8 +155,16 @@
 		body: string;
 		figure: string;
 		art: (g: PixiGraphics, w: number, h: number) => void;
-		/** square symbol art, centred in the slot */
-		symbolKey?: string;
+		/** a symbol in the slot playing its board mesh on a loop
+		 *  (FeatureSymbolMesh): which, what, how big and where in the slot */
+		symbol?: {
+			id: string;
+			spec?: import('../game/meshWin').MeshWinSpec;
+			size: (w: number, h: number) => number;
+			/** centre, as fractions of the slot */
+			at?: [number, number];
+			gap?: number;
+		};
 		/** 1:5 panel art, sized off the slot height and pushed to the left of it */
 		panelKey?: string;
 		hero?: boolean;
@@ -176,7 +186,8 @@
 			body: 'Land 3, 4 or 5 Scatters anywhere to open 8, 10 or 12 Free Spins.',
 			figure: '3-5',
 			art: drawScatterGrid,
-			symbolKey: 'gbS',
+			// the Scatter's own win, on a loop
+			symbol: { id: 'S', size: (w, h) => Math.min(w, h) * 0.44, gap: 1600 },
 		},
 		{
 			accent: HOT,
@@ -184,9 +195,17 @@
 			// The figure is the DREAM, not the average: five reels of one symbol is
 			// what the whole feature climbs towards, and it is a count the player can
 			// verify on the board the first time it happens.
-			body: `Blows up its whole reel and fills it with the best symbol standing on it. In Free Spins each Neon Bomb widens the next blast: 1 reel, then 2, 3, 4, 5.`,
+			body: `Blows up its whole reel and fills it with the best symbol standing on it. In Free Spins each Pulse Bomb widens the next blast: 1 reel, then 2, 3, 4, 5.`,
 			figure: BASE_WAYS.toLocaleString(),
 			art: drawBlast,
+			// the bomb slamming down onto the lit column — its board landing
+			symbol: {
+				id: 'B',
+				spec: MESH_LANDS.B,
+				size: (w, h) => Math.min(w * 0.27, h * 0.3),
+				at: [0.5, 0.5],
+				gap: 1100,
+			},
 			hero: true,
 		},
 		{
@@ -312,14 +331,15 @@
 		{@const slot = slots[i]}
 		<Container x={slot.art.x} y={slot.art.y}>
 			<Graphics draw={(g) => panel.art(g, slot.art.w, slot.art.h)} />
-			{#if panel.symbolKey}
-				<Sprite
-					key={panel.symbolKey}
-					anchor={0.5}
-					x={slot.art.w / 2}
-					y={slot.art.h / 2}
-					width={Math.min(slot.art.w, slot.art.h) * 0.44}
-					height={Math.min(slot.art.w, slot.art.h) * 0.44}
+			{#if panel.symbol}
+				<FeatureSymbolMesh
+					symbol={panel.symbol.id}
+					spec={panel.symbol.spec}
+					x={slot.art.w * (panel.symbol.at?.[0] ?? 0.5)}
+					y={slot.art.h * (panel.symbol.at?.[1] ?? 0.5)}
+					size={panel.symbol.size(slot.art.w, slot.art.h)}
+					delay={500 + i * 350}
+					gap={panel.symbol.gap}
 				/>
 			{/if}
 			{#if panel.panelKey}

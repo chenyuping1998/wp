@@ -10,10 +10,10 @@
  * The director waits for the board to have been quiet for QUIET_MS — nothing
  * joining or leaving the register, no win presentation running — then every
  * GAP_MS (randomised) picks one cell, weighted toward the specials, never the
- * same cell twice running; and now and then a second cell straight after, so
- * it reads as one symbol setting off another rather than as a timer.
+ * same cell twice running; and now and then a nearby cell answers, so the
+ * motion travels across the board instead of appearing at unrelated spots.
  */
-type Cell = { name: string; play: () => boolean };
+type Cell = { name: string; reel: number; row: number; play: () => boolean };
 
 const QUIET_MS = 1600;
 const GAP_MS: [number, number] = [1900, 4200];
@@ -45,13 +45,22 @@ export const idleCells = {
 	},
 };
 
-const pick = (weights: Record<string, number>, not: Cell | null) => {
-	const pool = [...cells].filter((c) => c !== not && (weights[c.name] ?? 0) > 0);
+const pick = (weights: Record<string, number>, not: Cell | null, neighbourOf?: Cell) => {
+	const pool = [...cells].filter((c) => {
+		if (c === not || (weights[c.name] ?? 0) <= 0) return false;
+		if (!neighbourOf) return true;
+		const distance = Math.abs(c.reel - neighbourOf.reel) + Math.abs(c.row - neighbourOf.row);
+		return distance > 0 && distance <= 2;
+	});
 	let total = 0;
-	for (const c of pool) total += weights[c.name];
+	const weightOf = (c: Cell) => {
+		const distance = neighbourOf ? Math.abs(c.reel - neighbourOf.reel) + Math.abs(c.row - neighbourOf.row) : 0;
+		return weights[c.name] / (distance || 1);
+	};
+	for (const c of pool) total += weightOf(c);
 	let r = Math.random() * total;
 	for (const c of pool) {
-		r -= weights[c.name];
+		r -= weightOf(c);
 		if (r <= 0) return c;
 	}
 	return pool[pool.length - 1] ?? null;
@@ -61,8 +70,8 @@ const pick = (weights: Record<string, number>, not: Cell | null) => {
 export const startIdleDirector = (weights: Record<string, number>) => {
 	let timer: ReturnType<typeof setTimeout> | undefined;
 	let stopped = false;
-	const play = (not: Cell | null) => {
-		const cell = pick(weights, not);
+	const play = (not: Cell | null, neighbourOf?: Cell) => {
+		const cell = pick(weights, not, neighbourOf);
 		if (cell && cell.play()) last = cell;
 		return cell;
 	};
@@ -73,7 +82,7 @@ export const startIdleDirector = (weights: Record<string, number>) => {
 			const first = play(last);
 			if (first && Math.random() < ECHO_CHANCE) {
 				setTimeout(() => {
-					if (!stopped && !presenting) play(first);
+					if (!stopped && !presenting && now() - changedAt > QUIET_MS) play(first, first);
 				}, between(ECHO_MS));
 			}
 		}

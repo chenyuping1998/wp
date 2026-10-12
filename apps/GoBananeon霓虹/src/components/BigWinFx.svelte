@@ -3,15 +3,14 @@
 	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
-	import FxBurst from './FxBurst.svelte';
-
-	// Ambient bed under a big-win presentation: slowly turning sun rays, drifting
-	// bokeh and celebration bursts popping around the plaque.
+	// The banner owns the slam and sparks. Behind it, a sign-shaped rim chases
+	// around the edge; the old rotating sunburst and random bokeh made every
+	// win look like the same generic celebration preset.
 	type Props = {
 		x?: number;
 		y?: number;
 		radius?: number;
-		// higher tiers burst more often and glow hotter
+		// higher tiers glow hotter
 		intensity?: number;
 	};
 
@@ -19,95 +18,48 @@
 	const radius = $derived(props.radius ?? 520);
 	const intensity = $derived(props.intensity ?? 1);
 
-	let rotation = $state(0);
-	let pulse = $state(0);
-	let moteDrift = $state(0);
-	let bursts = $state<{ id: number; x: number; y: number; scale: number }[]>([]);
-	let nextBurstId = 0;
-
-	// jungle-gold bokeh reusing the glow texture, tinted per mote
-	const BOKEH_COLORS = [0x59e3ff, 0xf4eaff, 0x9ff4ff, 0xff6ae0];
-	const motes = Array.from({ length: 14 }, (_, i) => ({
-		x: (Math.random() - 0.5) * 1200,
-		y: (Math.random() - 0.6) * 880,
-		size: 46 + Math.random() * 110,
-		color: BOKEH_COLORS[i % BOKEH_COLORS.length],
-		phase: Math.random() * Math.PI * 2,
-		speed: 0.6 + Math.random() * 0.5,
-	}));
+	let clock = $state(0);
 
 	onMount(() => {
-		const spinId = setInterval(() => {
-			rotation += 0.0045;
-			moteDrift += 0.0016;
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 420);
-		}, 16);
-		const burstId = setInterval(() => {
-			bursts = [
-				...bursts.slice(-5),
-				{
-					id: nextBurstId++,
-					x: (Math.random() - 0.5) * radius * 1.1,
-					y: (Math.random() - 0.55) * radius * 0.75,
-					scale: 0.55 + Math.random() * 0.5,
-				},
-			];
-		}, 700 / intensity);
-		return () => {
-			clearInterval(spinId);
-			clearInterval(burstId);
-		};
+		const started = performance.now();
+		const timer = setInterval(() => (clock = (performance.now() - started) / 1000), 33);
+		return () => clearInterval(timer);
 	});
 
-	// 12 golden wedges radiating from the centre, alternating length
-	const drawRays = (g: PixiGraphics) => {
+	const drawMarquee = (g: PixiGraphics) => {
 		g.clear();
-		const rayCount = 12;
-		const alpha = (0.14 + 0.08 * pulse) * intensity;
-		for (let i = 0; i < rayCount; i++) {
-			const angle = (i / rayCount) * Math.PI * 2;
-			const reach = radius * (i % 2 === 0 ? 1 : 0.78);
-			const halfWidth = Math.PI / rayCount / 1.9;
-			g.beginFill(i % 2 === 0 ? 0x59e3ff : 0xff6ae0, alpha);
-			g.drawPolygon([
-				0,
-				0,
-				Math.cos(angle - halfWidth) * reach,
-				Math.sin(angle - halfWidth) * reach,
-				Math.cos(angle + halfWidth) * reach,
-				Math.sin(angle + halfWidth) * reach,
-			]);
-			g.endFill();
+		const rx = radius * 0.98;
+		const ry = radius * 0.6;
+		g.roundRect(-rx, -ry, rx * 2, ry * 2, radius * 0.09)
+			.stroke({ width: 3, color: 0x59e3ff, alpha: 0.17 * intensity });
+		const segments = 20;
+		const chase = Math.floor(clock * 7) % segments;
+		for (let i = 0; i < segments; i++) {
+			// Six lamps across each long edge, four on each short edge.
+			// Keep them on the actual sign rim rather than an ellipse inside it.
+			const top = i < 6;
+			const right = i >= 6 && i < 10;
+			const bottom = i >= 10 && i < 16;
+			const edgeIndex = top ? i : right ? i - 6 : bottom ? i - 10 : i - 16;
+			const fraction = top || bottom ? (edgeIndex + 0.5) / 6 : (edgeIndex + 0.5) / 4;
+			const x = top ? -rx * 0.83 + fraction * rx * 1.66 : right ? rx : bottom ? rx * 0.83 - fraction * rx * 1.66 : -rx;
+			const y = top ? -ry : right ? -ry * 0.72 + fraction * ry * 1.44 : bottom ? ry : ry * 0.72 - fraction * ry * 1.44;
+			const tx = top ? 1 : right ? 0 : bottom ? -1 : 0;
+			const ty = top ? 0 : right ? 1 : bottom ? 0 : -1;
+			const length = radius * (i % 5 === 0 ? 0.065 : 0.045);
+			const distance = (i - chase + segments) % segments;
+			const alpha = distance === 0 ? 0.9 : distance <= 2 ? 0.35 : 0.12;
+			g.moveTo(x - tx * length, y - ty * length)
+				.lineTo(x + tx * length, y + ty * length)
+				.stroke({ width: distance === 0 ? 5 : 2.5, color: i % 2 ? 0xff3fd0 : 0x59e3ff, alpha: alpha * intensity, cap: 'round' });
 		}
-		// warm core so the rays melt into the count-up area
-		g.beginFill(0xe6c8ff, (0.14 + 0.1 * pulse) * intensity);
-		g.drawCircle(0, 0, radius * 0.34);
-		g.endFill();
 	};
 </script>
 
 <Container x={props.x ?? 0} y={props.y ?? 0}>
 	<!-- vignette first: deepens the edges so the plaque reads with more depth -->
-	<Sprite key="fxVignette" anchor={0.5} width={radius * 3.4} height={radius * 3.4} alpha={0.85} />
-	<Container rotation={moteDrift}>
-		{#each motes as mote, index (index)}
-			<Sprite
-				key="fxGlow"
-				anchor={0.5}
-				x={mote.x}
-				y={mote.y}
-				tint={mote.color}
-				blendMode="add"
-				width={mote.size}
-				height={mote.size}
-				alpha={0.12 + 0.1 * Math.sin(pulse * 6 * mote.speed + mote.phase)}
-			/>
-		{/each}
-	</Container>
-	<Container {rotation}>
-		<Graphics draw={drawRays} />
-	</Container>
-	{#each bursts as burst (burst.id)}
-		<FxBurst x={burst.x} y={burst.y} scale={burst.scale} />
-	{/each}
+	<Sprite key="fxVignette" anchor={0.5} width={radius * 3.4} height={radius * 3.4} alpha={0.8} />
+	<Sprite key="fxGlow" anchor={0.5} x={-radius * 0.72} y={-radius * 0.12} tint={0x59e3ff} blendMode="add" width={radius * 0.7} height={radius * 0.7} alpha={0.16} />
+	<Sprite key="fxGlow" anchor={0.5} x={radius * 0.72} y={radius * 0.12} tint={0xff3fd0} blendMode="add" width={radius * 0.7} height={radius * 0.7} alpha={0.16} />
+	<Graphics draw={drawMarquee} />
 </Container>

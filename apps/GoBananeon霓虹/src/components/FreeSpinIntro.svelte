@@ -7,7 +7,6 @@
 
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
-	import { verticalFill } from '../game/gradientFill';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { waitForResolve } from 'utils-shared/wait';
@@ -17,13 +16,16 @@
 	import { gameText } from '../game/i18nText';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
-	import GoldText from './GoldText.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { BANNER_ACT, POP_ACT } from '../game/meshWin/textMesh';
 
 	const context = getContext();
 
 	let show = $state(false);
 	let freeSpinsFromEvent = $state(0);
 	let oncomplete = $state(() => {});
+	// the title lands and then waves, the count is slammed on (TextMesh)
+	let shownAt = $state(-1);
 
 	const title = gameText('freeSpins');
 	const subtitle = gameText('spinsAwarded');
@@ -33,6 +35,7 @@
 		freeSpinIntroHide: () => (show = false),
 		freeSpinIntroUpdate: async (emitterEvent) => {
 			freeSpinsFromEvent = emitterEvent.extraSpins ?? emitterEvent.totalFreeSpins;
+			shownAt = Date.now();
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
 	});
@@ -43,34 +46,28 @@
 
 	<FreeSpinAnimation>
 		{#snippet children({ sizes })}
-			<Text
-				anchor={0.5}
+			<!-- the mine's palette; see FreeSpinCounter for the note -->
+			<TextMesh
 				y={-sizes.height * 0.26}
 				text={title}
-				style={{
-					fontFamily: GAME_FONT,
-					fontSize: Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length),
-					fontWeight: GAME_FONT_WEIGHT,
-					letterSpacing: 6,
-					// the mine's palette; see FreeSpinCounter for the note
-					fill: verticalFill(
-						[0xffffff, 0xffb8ef, 0xff3fd0],
-						Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length),
-					),
-					stroke: 0x140a30,
-					strokeThickness: 6,
-					dropShadow: true,
-					dropShadowColor: 0x000000,
-					dropShadowBlur: 10,
-					dropShadowDistance: 3,
-				}}
+				fontSize={Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length)}
+				letterSpacing={6}
+				fill={[0xffffff, 0xffb8ef, 0xff3fd0]}
+				stroke={0x140a30}
+				strokeWidth={6}
+				shadow={{ blur: 10, distance: 3 }}
+				at={{ land: shownAt }}
+				act={BANNER_ACT}
 			/>
-			<GoldText
+			<TextMesh
 				y={sizes.height * 0.08}
 				text={freeSpinsFromEvent}
 				fontSize={sizes.width * 0.24}
 				fill={[0xffffff, 0xffb8ef, 0xff3fd0]}
 				stroke={0x140a30}
+				bevel
+				at={{ stamp: shownAt }}
+				act={POP_ACT}
 			/>
 			<Text
 				anchor={0.5}

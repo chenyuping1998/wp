@@ -25,6 +25,8 @@
 		| { type: 'soundBlastShatter' }
 		| { type: 'soundBlastSmoke' }
 		| { type: 'soundBlastReveal' }
+		| { type: 'soundBlastColumn'; order: number; total: number }
+		| { type: 'soundBlastEnd' }
 		| { type: 'soundMonkeyExpand' }
 		| { type: 'soundMascotVoice'; name: MascotVoice }
 		| { type: 'soundChestHoot' }
@@ -46,9 +48,9 @@
 
 	const context = getContext();
 
-	// ─── jungle-commando sound set (synthesized — see design/generate_audio_jungle.mjs) ───
-	// Standalone HTML5 Audio; the howler sprite (sounds.json) stays as a
-	// fallback for anything not mapped here (e.g. win-level bgm stingers).
+	// ─── neon sound set ───
+	// Short cues use a small voice pool so fast reels and overlapping hits keep
+	// their tails. The howler sprite remains a fallback for unmapped names.
 	type CnSfxName =
 		| 'gong_feature'
 		| 'bigwin_blast'
@@ -170,11 +172,11 @@
 	> = {
 		sfx_btn_general: { name: 'btn', volume: 0.7 },
 		sfx_btn_spin: { name: 'spin', volume: 0.9 },
-		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.92 },
-		sfx_reel_stop_2: { name: 'reel_stop', rate: 1.0 },
-		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.09 },
-		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.19 },
-		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.3 },
+		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.92, volume: 0.66 },
+		sfx_reel_stop_2: { name: 'reel_stop', rate: 1.0, volume: 0.7 },
+		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.09, volume: 0.74 },
+		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.19, volume: 0.79 },
+		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.3, volume: 0.86 },
 		sfx_scatter_stop_1: { name: 'scatter_1' },
 		sfx_scatter_stop_2: { name: 'scatter_2' },
 		sfx_scatter_stop_3: { name: 'scatter_3' },
@@ -200,6 +202,9 @@
 	};
 
 	const cnSfxAudio: Partial<Record<CnSfxName, HTMLAudioElement>> = {};
+	const cnSfxVoices: Partial<Record<CnSfxName, HTMLAudioElement[]>> = {};
+	const voiceStarted = new WeakMap<HTMLAudioElement, number>();
+	const MAX_VOICES = 4;
 
 	function getCnSfx(name: CnSfxName) {
 		let audio = cnSfxAudio[name];
@@ -212,9 +217,24 @@
 	}
 
 	function playCnSfx(name: CnSfxName, volumeScale = 1, rate = 1) {
-		const audio = getCnSfx(name);
+		const primary = getCnSfx(name);
+		const voices = (cnSfxVoices[name] ??= [primary]);
+		let audio = voices.find((voice) => voice.paused || voice.ended);
+		if (!audio && voices.length < MAX_VOICES) {
+			audio = new Audio(primary.src);
+			audio.preload = 'auto';
+			voices.push(audio);
+		}
+		// Only steal a voice when every one is busy. Reel stops, reveal notes and
+		// quick win hits can now overlap without cutting off each other's tails.
+		if (!audio) {
+			audio = voices.reduce((oldest, voice) =>
+				(voiceStarted.get(voice) ?? 0) < (voiceStarted.get(oldest) ?? 0) ? voice : oldest,
+			);
+		}
 		audio.loop = false;
 		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+		voiceStarted.set(audio, performance.now());
 		// Always assign, never skip when rate is 1: getCnSfx caches one element per
 		// file, so a rate left over from the previous caller would carry into every
 		// later play of the same sample. reel_stop is shared with symbol/royal
@@ -407,8 +427,7 @@
 	}
 
 	function stopCnSfx(name: CnSfxName) {
-		const audio = cnSfxAudio[name];
-		if (audio) {
+		for (const audio of cnSfxVoices[name] ?? (cnSfxAudio[name] ? [cnSfxAudio[name]!] : [])) {
 			audio.pause();
 			audio.currentTime = 0;
 		}
@@ -417,36 +436,76 @@
 	// ─── BGM (both loops are standalone HTML5 Audio) ───
 	let bgmAudio: HTMLAudioElement | null = null;
 	let currentBgm: 'base' | 'freespin' | null = null;
+	let bgmDuck = 1;
+	let bgmFadeTimer: ReturnType<typeof setInterval> | undefined;
+	let bgmTransitionTimer: ReturnType<typeof setInterval> | undefined;
+	let transitionAudio: HTMLAudioElement | null = null;
+	let blastReleaseTimer: ReturnType<typeof setTimeout> | undefined;
 	const BGM_FILES = {
 		base: 'neon/bgm_main.wav',
 		freespin: 'neon/bgm_freespin.wav',
 	} as const;
 
+	function fadeBgmDuck(to: number, duration: number) {
+		clearInterval(bgmFadeTimer);
+		const from = bgmDuck;
+		const started = performance.now();
+		bgmFadeTimer = setInterval(() => {
+			const p = Math.min(1, (performance.now() - started) / duration);
+			const eased = p * p * (3 - 2 * p);
+			bgmDuck = from + (to - from) * eased;
+			if (bgmAudio) bgmAudio.volume = Math.min(1, stateSoundDerived.volumeMusic() * bgmDuck);
+			if (p === 1) clearInterval(bgmFadeTimer);
+		}, 25);
+	}
+
+	function releaseBlastBgm() {
+		clearTimeout(blastReleaseTimer);
+		fadeBgmDuck(1, 420);
+	}
+
 	function playBgm(type: 'base' | 'freespin') {
 		if (currentBgm === type && bgmAudio && !bgmAudio.paused) return;
-		if (bgmAudio) {
-			bgmAudio.pause();
-			bgmAudio = null;
-		}
-		bgmAudio = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
-		bgmAudio.loop = true;
-		bgmAudio.volume = stateSoundDerived.volumeMusic();
-		bgmAudio.play().catch(() => {});
+		clearInterval(bgmTransitionTimer);
+		const previous = bgmAudio;
+		const next = new Audio(`${base}/assets/audio/${BGM_FILES[type]}`);
+		next.loop = true;
+		next.volume = 0;
+		bgmAudio = next;
+		next.play().catch(() => {});
+		if (transitionAudio && transitionAudio !== previous) transitionAudio.pause();
+		transitionAudio = previous;
+		const started = performance.now();
+		const initial = previous?.volume ?? 0;
+		bgmTransitionTimer = setInterval(() => {
+			const p = Math.min(1, (performance.now() - started) / 450);
+			const target = Math.min(1, stateSoundDerived.volumeMusic() * bgmDuck);
+			next.volume = target * p;
+			if (previous) previous.volume = initial * (1 - p);
+			if (p === 1) {
+				clearInterval(bgmTransitionTimer);
+				previous?.pause();
+				if (transitionAudio === previous) transitionAudio = null;
+			}
+		}, 25);
 		currentBgm = type;
 	}
 
 	function stopBgm() {
+		clearInterval(bgmTransitionTimer);
 		if (bgmAudio) {
 			bgmAudio.pause();
 			bgmAudio.currentTime = 0;
 		}
+		transitionAudio?.pause();
+		transitionAudio = null;
 		currentBgm = null;
 	}
 
 	// Keep volume in sync with settings
 	$effect(() => {
 		const vol = stateSoundDerived.volumeMusic();
-		if (bgmAudio) bgmAudio.volume = vol;
+		if (bgmAudio) bgmAudio.volume = Math.min(1, vol * bgmDuck);
 	});
 
 	context.eventEmitter.subscribeOnMount({
@@ -553,8 +612,16 @@
 		// held in a variable is not checked.
 		// The full board: the fuses catching on each reel in turn, and the stamp
 		// after the blast. Both are timed to FullBoard.svelte's constants.
-		soundFullBoardChain: () => playCnSfx('fullboard_chain', 0.85),
-		soundFullBoardStamp: () => playCnSfx('fullboard_stamp', 0.9),
+		soundFullBoardChain: () => {
+			fadeBgmDuck(0.62, 180);
+			playCnSfx('fullboard_chain', 0.85);
+		},
+		soundFullBoardStamp: () => {
+			fadeBgmDuck(0.55, 100);
+			playCnSfx('fullboard_stamp', 0.9);
+			clearTimeout(blastReleaseTimer);
+			blastReleaseTimer = setTimeout(releaseBlastBgm, 1100);
+		},
 		// Under the roar and the bell: it is the room, not the event, so it sits
 		// back in the mix and is felt more than heard.
 		soundCaveQuake: () => playCnSfx('cave_quake', 0.6),
@@ -571,12 +638,21 @@
 		// The EVENT is named for the prop, the CUE is named for the file on disk.
 		// jungle/grenade_blast.wav is carried over from gen-1 and renaming a wav
 		// would break the audio manifest for no gain.
-		soundDynamiteBlast: () => playCnSfx('grenade_blast'),
+		soundDynamiteBlast: () => {
+			fadeBgmDuck(0.55, 80);
+			playCnSfx('grenade_blast');
+			clearTimeout(blastReleaseTimer);
+			blastReleaseTimer = setTimeout(releaseBlastBgm, 650);
+		},
 		// The reel blast. Like the mascot's voice these sit outside the turbo gate
 		// that drops ordinary one-shots — ReelBlast runs at its full length
 		// whatever the spin speed, so a silenced blast would be a smoke cloud with
 		// nothing behind it.
-		soundBlastFuse: () => playCnSfx('fuse_sizzle', 0.75),
+		soundBlastFuse: () => {
+			clearTimeout(blastReleaseTimer);
+			fadeBgmDuck(0.58, 180);
+			playCnSfx('fuse_sizzle', 0.75);
+		},
 		soundBlastDetonate: ({ full }) =>
 			playCnSfx(full ? 'dynamite_blast_big' : 'dynamite_blast'),
 		// Under the bang on purpose: it is the same event heard from closer in, so
@@ -591,7 +667,12 @@
 		// The cloud's own sound, small on purpose: the air the explosion pushed,
 		// heard under the tail of the bang rather than as a second event.
 		soundBlastSmoke: () => playCnSfx('smoke_puff', 0.55),
-		soundBlastReveal: () => playCnSfx('symbol_reveal', 0.8),
+		soundBlastReveal: () => playCnSfx('symbol_reveal', 0.64),
+		// A quiet rising cadence marks completed columns. One note per reel,
+		// after its final cell lands, leaves room for the reveal's longer tail.
+		soundBlastColumn: ({ order, total }) =>
+			playCnSfx('mult_update', 0.22 + 0.08 * (order / Math.max(1, total - 1)), 0.9 + order * 0.1),
+		soundBlastEnd: releaseBlastBgm,
 		soundMonkeyExpand: () => playMonkeyExpand(),
 		// Deliberately NOT forced through the turbo gate that silences ordinary
 		// one-shots: these are tied to animations that play at their own length
@@ -629,6 +710,15 @@
 		// Fetch the one-shot sfx up front so the first play is in sync
 		// (an Audio element created lazily would stall on its first fetch).
 		(Object.keys(CN_SFX_FILES) as CnSfxName[]).forEach(getCnSfx);
+		for (const name of ['reel_stop', 'mult_update'] as const) {
+			const primary = getCnSfx(name);
+			cnSfxVoices[name] = [primary];
+			for (let i = 1; i < MAX_VOICES; i++) {
+				const voice = new Audio(primary.src);
+				voice.preload = 'auto';
+				cnSfxVoices[name]!.push(voice);
+			}
+		}
 
 		if (stateBet.activeBetModeKey === HOLD_AND_SPIN_MODE_KEY) {
 			playBgm('freespin');
@@ -637,18 +727,23 @@
 		}
 
 		return () => {
+			clearInterval(bgmFadeTimer);
+			clearInterval(bgmTransitionTimer);
+			clearTimeout(blastReleaseTimer);
 			if (bgmAudio) {
 				bgmAudio.pause();
 				bgmAudio.src = '';
 				bgmAudio = null;
 			}
+			transitionAudio?.pause();
+			transitionAudio = null;
 			for (const name of Object.keys(cnSfxAudio) as CnSfxName[]) {
-				const audio = cnSfxAudio[name];
-				if (audio) {
+				for (const audio of cnSfxVoices[name] ?? (cnSfxAudio[name] ? [cnSfxAudio[name]!] : [])) {
 					audio.pause();
 					audio.src = '';
-					delete cnSfxAudio[name];
 				}
+				delete cnSfxVoices[name];
+				delete cnSfxAudio[name];
 			}
 			// Web Audio loops outlive the DOM unless they are stopped explicitly.
 			for (const name of Object.keys(loopNodes) as CnSfxName[]) stopCnLoop(name);
