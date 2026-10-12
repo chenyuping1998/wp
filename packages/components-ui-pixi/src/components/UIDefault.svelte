@@ -66,14 +66,25 @@
 	const requested = $derived(
 		override && override in WIDE_LAYOUT_MAP ? override : uiTheme.betBarLayout,
 	);
+	// The 1920-unit compact strip becomes too small to read or hit in a popout.
+	// Use the controls designed for a short landscape view at those sizes.
+	const compactFits = $derived.by(() => {
+		const { width, height } = stateLayoutDerived.canvasSizes();
+		return width >= 960 && height >= 540;
+	});
 
 	// Portrait keeps the full bottom bar whatever the theme asks for — there is no
 	// horizontal room for rails or a compact strip on a 1080x1920 box.
-	const LayoutComponent = $derived(
-		stateLayoutDerived.layoutType() !== 'portrait' && requested in WIDE_LAYOUT_MAP
+	const LayoutComponent = $derived.by(() => {
+		const type = stateLayoutDerived.layoutType();
+		if (type === 'portrait') return LayoutPortrait;
+		if (requested === 'compactBottom' && uiTheme.compactBottomSmallFallback && !compactFits) {
+			return type === 'tablet' ? LayoutTablet : LayoutLandscape;
+		}
+		return requested in WIDE_LAYOUT_MAP
 			? WIDE_LAYOUT_MAP[requested as keyof typeof WIDE_LAYOUT_MAP]
-			: LAYOUT_COMPONENT_MAP[stateLayoutDerived.layoutType()],
-	);
+			: LAYOUT_COMPONENT_MAP[type];
+	});
 </script>
 
 <EnableSpaceHold />

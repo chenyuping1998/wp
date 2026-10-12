@@ -17,7 +17,9 @@
 	// button that is smaller and a button that merely looks smaller while still
 	// swallowing presses across its old footprint.
 	const box = $derived(UI_BASE_SIZE * uiTheme.buyBonusButtonScale);
-	const sizes = $derived({ width: box, height: box });
+	// uiTheme.buyBonusBoxAspect (height / width, default 1: the square every
+	// game had) lets a game's plate be a tall card with a hit area to match.
+	const sizes = $derived({ width: box, height: box * uiTheme.buyBonusBoxAspect });
 	const disabled = $derived(!stateXstateDerived.isIdle());
 	const active = $derived(stateBetDerived.activeBetMode()?.type === 'activate');
 
@@ -65,6 +67,26 @@
 	// the children snippet, because a snippet argument cannot be read from an
 	// effect — see the note on that prop.
 	let hovering = $state(false);
+	let hoverFrame = $state(0);
+	$effect(() => {
+		const frames = uiTheme.buyBonusHoverFrames;
+		if (!hovering || disabled || !frames?.length) {
+			hoverFrame = 0;
+			return;
+		}
+		hoverFrame = 0;
+		const id = setInterval(() => {
+			if (hoverFrame >= frames.length - 1) {
+				clearInterval(id);
+				return;
+			}
+			hoverFrame += 1;
+		}, uiTheme.buyBonusHoverFrameMs);
+		return () => clearInterval(id);
+	});
+	const hoverSprite = $derived(
+		uiTheme.buyBonusHoverFrames?.[hoverFrame] ?? uiTheme.buyBonusHoverSprite,
+	);
 	let spin = $state(0); // radians
 	let spinSpeed = $state(0); // radians/second
 
@@ -270,7 +292,7 @@
 					});
 				}}
 			/>
-		{:else if uiTheme.buyBonusHoverSprite && hovered && !disabled}
+		{:else if hoverSprite && hovered && !disabled}
 			<!--
 				The plate's own incantation, lit. Additive, so it reads as the paper
 				catching light rather than as something laid on top of it - a normal
@@ -278,7 +300,7 @@
 				the same object brighter.
 			-->
 			<UiSprite
-				key={uiTheme.buyBonusHoverSprite}
+				key={hoverSprite}
 				{...center}
 				anchor={0.5}
 				rotation={spin}

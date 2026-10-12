@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { stateReplay, stateUi } from 'state-shared';
 	import { BLACK } from 'constants-shared/colors';
 	import { MainContainer } from 'components-layout';
@@ -61,7 +62,9 @@
 	// "$10,000.00" win 177 (Win cell usable ~210), a "$100.00" bet 130 clearing the
 	// chevron — all inside their cells. Going higher risks the largest wins
 	// touching the Win rule.
-	const READOUT_SCALE = 0.68;
+	// A theme key now (uiTheme.readoutScale, default 0.68 — this value), for a
+	// game whose face is condensed (Bangers) and reads small at 0.68.
+	const READOUT_SCALE = $derived(uiTheme.readoutScale);
 	// UiLabel stacks label at y=0 and value at y=UI_BASE_FONT_SIZE, so the block is
 	// two lines tall; lift it by half of that to sit centred on the bar.
 	const readoutTop = $derived(barMid - UI_BASE_FONT_SIZE * READOUT_SCALE);
@@ -230,15 +233,46 @@
 	// uiTheme.barMessage, centred in the Win→stepper span
 	const messageX = $derived((DIV_3 + MINUS_X - STEP_R) * 0.5);
 	const messageWidth = $derived(Math.max(0, MINUS_X - STEP_R - DIV_3 - 48));
+	let messageTextWidth = $state(0);
+	let messageOffset = $state(0);
+	let messageStart = 0;
+	const messageOverflow = $derived(messageTextWidth > messageWidth - 6);
+	const MESSAGE_SPEED = 54; // canvas pixels per second
+	const MESSAGE_GAP = 52;
+	const MESSAGE_HOLD_MS = 900;
+	$effect(() => {
+		uiTheme.barMessage;
+		messageWidth;
+		messageStart = performance.now();
+		messageOffset = 0;
+	});
+	onMount(() => {
+		let frame = 0;
+		const advance = (now: number) => {
+			if (messageOverflow) {
+				const travel = messageTextWidth + MESSAGE_GAP;
+				const cycle = MESSAGE_HOLD_MS + travel / MESSAGE_SPEED * 1000;
+				const elapsed = (now - messageStart) % cycle;
+				messageOffset = Math.max(0, (elapsed - MESSAGE_HOLD_MS) * MESSAGE_SPEED / 1000);
+			} else if (messageOffset !== 0) {
+				messageOffset = 0;
+			}
+			frame = requestAnimationFrame(advance);
+		};
+		frame = requestAnimationFrame(advance);
+		return () => cancelAnimationFrame(frame);
+	});
 	const messageStyle = $derived({
 		fontFamily: uiTheme.fontFamily,
 		fontWeight: uiTheme.fontWeight,
-		fontSize: UI_BASE_FONT_SIZE * 0.6,
+		fontSize: UI_BASE_FONT_SIZE * uiTheme.barMessageScale,
 		fill: uiTheme.barMessageFill,
 		align: 'center' as const,
-		wordWrap: true,
-		wordWrapWidth: messageWidth,
-		lineHeight: UI_BASE_FONT_SIZE * 0.66,
+		wordWrap: false,
+		// uiTheme.barMessageStroke: undefined (the default) draws no keyline
+		...(uiTheme.barMessageStroke !== undefined
+			? { stroke: { color: uiTheme.barMessageStroke, width: 3, join: 'round' as const } }
+			: {}),
 	});
 
 	// Drawn strip artwork, if the game supplies any. Undefined for every game, so
@@ -464,7 +498,30 @@
 		</Container>
 	{:else}
 		{#if flank && uiTheme.barMessage && messageWidth > 60}
-			<Text anchor={0.5} x={messageX} y={barMid} text={uiTheme.barMessage} style={messageStyle} />
+			<Container x={messageX} y={barMid}>
+				<Graphics
+					isMask
+					draw={(g) => {
+						g.rect(-messageWidth / 2, -27, messageWidth, 54);
+						g.fill(0xffffff);
+					}}
+				/>
+				<Text
+					anchor={{ x: messageOverflow ? 0 : 0.5, y: 0.5 }}
+					x={messageOverflow ? -messageWidth / 2 - messageOffset : 0}
+					text={uiTheme.barMessage}
+					style={messageStyle}
+					onresize={({ width }) => (messageTextWidth = width)}
+				/>
+				{#if messageOverflow}
+					<Text
+						anchor={{ x: 0, y: 0.5 }}
+						x={-messageWidth / 2 + messageTextWidth + MESSAGE_GAP - messageOffset}
+						text={uiTheme.barMessage}
+						style={messageStyle}
+					/>
+				{/if}
+			</Container>
 		{/if}
 		{#if flank}
 			<Container x={MINUS_X} y={barMid} scale={STEP_SCALE}>

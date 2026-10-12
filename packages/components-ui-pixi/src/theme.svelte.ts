@@ -103,6 +103,8 @@ export const uiTheme = $state({
 			| 'base_ticker'
 			| 'buyBonus'
 			| 'buyBonusGlyph'
+			| 'buyBonusRoll1'
+			| 'buyBonusRoll2'
 			| 'bet'
 			| 'base_mobile_drawer'
 			| 'button'
@@ -328,6 +330,10 @@ export const uiTheme = $state({
 	buyBonusHoverRotate: 0,
 
 	buyBonusHoverSprite: undefined as string | undefined,
+	// Optional short, one-shot hover sequence. The last frame remains visible
+	// while hovered; games without frames keep their existing hover treatment.
+	buyBonusHoverFrames: undefined as string[] | undefined,
+	buyBonusHoverFrameMs: 85,
 	buyBonusHoverSpriteTint: 0xffd98a,
 	/**
 	 * How buyBonusHoverSprite is composited over the plate.
@@ -546,6 +552,8 @@ export const uiTheme = $state({
 	// Wide layouts only; portrait has no horizontal room for rails or a compact
 	// strip and always falls back to the full bottom bar.
 	betBarLayout: 'bottom' as 'bottom' | 'sideRail' | 'compactBottom',
+	// Opt in to landscape controls when a compact strip is too small in a popout.
+	compactBottomSmallFallback: false,
 
 	// Portrait spin row: menu and Buy Bonus sit this far either side of centre
 	// (main-layout units). 470 was sized for the original round buttons; a larger
@@ -645,6 +653,16 @@ export const uiTheme = $state({
 	// more strip to sit on.
 	barFrameRightInset: undefined as number | undefined,
 	barMessageFill: 0xffffff,
+	// Buy Bonus box's height / width. 1 (every game) is square; a tall menu card
+	// plate sets more, and the hit area grows with it
+	buyBonusBoxAspect: 1,
+	// the status line's size as a fraction of UI_BASE_FONT_SIZE, and an optional
+	// keyline colour for it; 0.6 / none is what every game had
+	barMessageScale: 0.6,
+	barMessageStroke: undefined as number | undefined,
+	// compactBottom only — the Balance / Win / Bet readouts' scale; 0.68 is what
+	// every game had
+	readoutScale: 0.68,
 
 	// compactBottom only — how far in from each END of uiTheme.sprites.bar the
 	// artwork stops being a cap and starts being stretchable middle, measured in

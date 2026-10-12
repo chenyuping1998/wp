@@ -204,7 +204,7 @@
 				width={buttonProps.sizes.width}
 				height={buttonProps.sizes.height}
 				tint={uiTheme.hoverPlateLight}
-				blendMode="add"
+				plateBlend="add"
 			/>
 		{:else if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover && uiTheme.hoverPlateLight !== undefined}
 			<!-- flat drawn disc: a lit rim and a faint lift of the face, never a

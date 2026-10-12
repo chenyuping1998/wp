@@ -9,6 +9,13 @@
 		// put a tilted box in the layout. Defaults to 0, so nothing that does not
 		// ask for it moves.
 		rotation?: number;
+		// the themed plate's blend. `blendMode` never reached it (it is dropped
+		// here, and ButtonBuyBonus's callers have always rendered normal because
+		// of that — so it stays dropped, for them). UiButton's hover plate, meant
+		// to be ADDITIVE light, drew as an opaque tinted copy of the plate on top
+		// of the icon, and the icon vanished under the cursor (Strike Monkey,
+		// 2026-10-10); it passes this instead. Undefined: normal, as before.
+		plateBlend?: import('pixi.js').BLEND_MODES;
 	};
 </script>
 
@@ -42,6 +49,7 @@
 		alpha={props.alpha}
 		tint={props.tint}
 		rotation={props.rotation ?? 0}
+		blendMode={props.plateBlend}
 	/>
 {:else}
 	<Rectangle
