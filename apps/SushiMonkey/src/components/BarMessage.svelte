@@ -12,14 +12,20 @@
 	import { uiSkin } from '../game/uiTheme';
 
 	const context = getContext();
-	const IDLE_SWAP_MS = 4000;
+	const IDLE_PROMPT_MS = 6500;
+	const IDLE_RULE_MS = 20000;
 
 	let tick = $state(0);
 	onMount(() => {
 		if (uiSkin !== 'print') return;
-		const id = setInterval(() => (tick += 1), IDLE_SWAP_MS);
+		let timer: ReturnType<typeof setTimeout>;
+		const swap = () => {
+			tick += 1;
+			timer = setTimeout(swap, tick % 2 ? IDLE_RULE_MS : IDLE_PROMPT_MS);
+		};
+		timer = setTimeout(swap, IDLE_PROMPT_MS);
 		return () => {
-			clearInterval(id);
+			clearTimeout(timer);
 			uiTheme.barMessage = '';
 		};
 	});
