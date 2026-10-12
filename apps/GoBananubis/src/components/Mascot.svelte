@@ -17,7 +17,7 @@
 </script>
 
 <script lang="ts">
-	import { Container, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import { Container, Graphics, SpineProvider, SpineTrack, Sprite } from 'pixi-svelte';
 	import MascotGaze from './MascotGaze.svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
@@ -256,15 +256,47 @@
 	// was dropped.
 	let animationName = $state('idle');
 	let loop = $state(true);
-	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'alert', 'throwit', 'idlebreak', 'sigh', 'ready', 'pray'];
+	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'alert', 'throwit', 'idlebreak', 'sigh', 'ready', 'pray', 'wink', 'dustoff', 'yawn', 'tapfoot', 'pump', 'bow'];
 	// the ready is small but it would still be a tic on every spin of a fast
 	// session: never two within READY_GAP_MS
 	const READY_GAP_MS = 4500;
+	// the free game's spin count as he last saw it, to tell a retrigger
+	let knownTotal = 0;
+	// the offering: a coin from the bottom of the screen into his hands
+	const OFFER_MS = 520;
+	let offerAt = $state(0);
+	let offerNow = $state(0);
+	let offerClock = 0;
 	let readyAt = -Infinity;
 
 	const play = (name: string, loops: boolean) => {
 		animationName = name;
 		loop = loops;
+		// the idle moves are him passing the time, not something happening
+		if (!IDLE_MOVES.includes(name) && name !== 'idle') lastHappened = performance.now();
+	};
+	// ── WHAT HE DOES WHEN NOTHING HAPPENS ──────────────────────────────────
+	// Not one idle break on a loop: a few, never the same twice running — a
+	// look round (idlebreak), a wink out at the player, sand brushed off the
+	// kilt — and the longer nobody spins, the more it shows: a yawn after
+	// ~30s, then the foot tapping from ~60s, again every break after that.
+	const IDLE_MOVES = ['idlebreak', 'wink', 'dustoff', 'yawn', 'tapfoot'];
+	const VARIETY = ['idlebreak', 'wink', 'dustoff'];
+	const BORED_MS = 30000;
+	const IMPATIENT_MS = 60000;
+	let lastHappened = performance.now();
+	let lastIdleMove = '';
+	let yawned = false;
+	const nextIdleMove = () => {
+		const quiet = performance.now() - lastHappened;
+		if (quiet < BORED_MS) yawned = false;
+		if (quiet >= IMPATIENT_MS && yawned) return 'tapfoot';
+		if (quiet >= BORED_MS && !yawned) {
+			yawned = true;
+			return 'yawn';
+		}
+		const pool = VARIETY.filter((name) => name !== lastIdleMove);
+		return pool[Math.floor(Math.random() * pool.length)];
 	};
 
 	// ── THE VICTORY STOMP ────────────────────────────────────────────────────
@@ -309,7 +341,10 @@
 			() => {
 				// anything at all going on — a win, a trigger, a feature intro — and
 				// he simply keeps breathing; the break waits for the next window
-				if (animationName === 'idle') play('idlebreak', false);
+				if (animationName === 'idle') {
+					lastIdleMove = nextIdleMove();
+					play(lastIdleMove, false);
+				}
 				armIdleBreak();
 			},
 			BREAK_MIN_MS + Math.random() * BREAK_SPREAD_MS,
@@ -470,6 +505,13 @@
 		// player is thinking on the spin everything rides on.
 		freeSpinCounterUpdate: ({ current, total }) => {
 			if (context.stateGame.gameType !== 'freegame') return;
+			// a RETRIGGER: more spins than he knew of — the chest beat again
+			if (total !== undefined && knownTotal > 0 && total > knownTotal && context.stateGame.gameType === 'freegame') {
+				knownTotal = total;
+				context.eventEmitter.broadcast({ type: 'mascotChestBeat', voice: true });
+				return;
+			}
+			if (total !== undefined) knownTotal = total;
 			if (current === undefined || total === undefined || total <= 1 || current !== total) return;
 			if (animationName !== 'idle' && animationName !== 'alert') return;
 			play('pray', false);
@@ -487,6 +529,38 @@
 
 		// The reels have been sent off: he sets his weight (`ready`). Base game,
 		// from idle, and never two close together.
+		// The big-win plaque has climbed a tier (Win LADDER): a fist on each
+		// step, then back into the stomp (see the complete handler).
+		winTierUp: () => {
+			if (performance.now() >= celebrateUntil) return;
+			play('pump', false);
+		},
+
+		// A tablet opens in the free game: what it opens to shows on him. A
+		// Wild or one of the two top pays gets the fist; the lower pays a nod;
+		// a letter, nothing — so his reaction tells the player how good it was.
+		mysteryReveal: ({ symbol, positions }) => {
+			if (context.stateGame.gameType !== 'freegame' || positions.length === 0) return;
+			if (animationName !== 'idle' && animationName !== 'alert') return;
+			const pick = ['W', 'H1', 'H2'].includes(symbol) ? 'pump' : ['H3', 'H4'].includes(symbol) ? 'nod' : '';
+			if (!pick) return;
+			// on the seal giving way, not on the strain before it
+			setTimeout(() => {
+				if (animationName === 'idle' || animationName === 'alert') play(pick, false);
+			}, 260);
+		},
+
+		// A feature has been BOUGHT: the coin flies to him and he bows over it.
+		mascotOffering: () => {
+			play('bow', false);
+			offerAt = Date.now();
+			clearInterval(offerClock);
+			offerClock = setInterval(() => {
+				offerNow = Date.now();
+				if (offerNow - offerAt > OFFER_MS + 600) clearInterval(offerClock);
+			}, 16) as unknown as number;
+		},
+
 		spinLaunch: () => {
 			if (context.stateGame.gameType !== 'basegame') return;
 			if (animationName !== 'idle') return;
@@ -558,8 +632,8 @@
 					const celebrating = performance.now() < celebrateUntil;
 					// the cheer, and each bar of the stomp, go on to another bar
 					// while the win is still counting up
-					if ((finished === 'cheer' || finished === 'dance') && celebrating) {
-						if (finished === 'cheer') play('dance', true);
+					if ((finished === 'cheer' || finished === 'dance' || finished === 'pump') && celebrating) {
+						if (finished === 'cheer' || finished === 'pump') play('dance', true);
 					} else if (finished === 'dance' || ONE_SHOTS.includes(finished)) {
 						play('idle', true);
 					}
@@ -589,5 +663,38 @@
 	-->
 	<Container x={placement.x} y={placement.y} scale={placement.scale}>
 		<Graphics draw={drawImpacts} />
+		<!-- the offering: from the bottom of the screen, arcing up into his
+		     fists at the chest, spinning; a flash as he takes it -->
+		{#if offerAt && offerNow - offerAt < OFFER_MS + 260}
+			{@const p = Math.min(1, (offerNow - offerAt) / OFFER_MS)}
+			{@const e = 1 - (1 - p) ** 2}
+			{@const fromX = (context.stateLayoutDerived.mainLayout().width / 2 - placement.x) / placement.scale}
+			{@const fromY = (context.stateLayoutDerived.mainLayout().height - placement.y) / placement.scale}
+			{@const toX = 0}
+			{@const toY = -520}
+			{#if p < 1}
+				<Sprite
+					key="fxCoin"
+					anchor={0.5}
+					x={fromX + (toX - fromX) * e}
+					y={fromY + (toY - fromY) * e - Math.sin(Math.PI * p) * 260}
+					width={96 * Math.max(0.1, Math.abs(Math.cos(p * Math.PI * 5)))}
+					height={96}
+				/>
+			{:else}
+				{@const f = Math.min(1, (offerNow - offerAt - OFFER_MS) / 260)}
+				<Sprite
+					key="fxStar"
+					anchor={0.5}
+					x={toX}
+					y={toY}
+					width={260 * Math.sin(Math.PI * f)}
+					height={260 * Math.sin(Math.PI * f)}
+					tint={0xffd75e}
+					blendMode="add"
+					alpha={1 - f}
+				/>
+			{/if}
+		{/if}
 	</Container>
 {/if}

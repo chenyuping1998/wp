@@ -251,7 +251,7 @@
 				<p>
 					The Wild substitutes for every symbol except the Scatter and a sealed Tablet, and
 					also {T.pays} as its own symbol on 3, 4 or 5 of a kind. It behaves the same way in
-					the base game and in Free Spins &mdash; it does not expand and it does not stick.
+					the base game and in Free Spins.
 				</p>
 			</section>
 

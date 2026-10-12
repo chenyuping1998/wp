@@ -1817,6 +1817,332 @@ const pray = {
 	},
 };
 
+// ── MORE OF HIM: idles that are not the same idle, boredom, a fist, a bow ──
+//
+// The idle break used to be the only thing he did between spins, so a session
+// was the same weight shift every fifteen seconds. Now Mascot picks among
+// several (idlebreak, wink, dustoff), and the longer nobody spins the more he
+// shows it (yawn at ~30s, tapfoot at ~60s). The fist answers a good tablet in
+// the free game; the bow takes the player's offering when a feature is bought.
+
+// wink: he looks out at the PLAYER, away from the board, and winks. Negative
+// head turn is away from the board (alert's turn is positive, toward it).
+const wink = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.3, x: 5, y: -2 },
+				{ time: 1.15, x: 5, y: -2 },
+				{ time: 1.6, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.32, value: -3 },
+				{ time: 1.15, value: -3 },
+				{ time: 1.6, value: 0 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.3, value: -6 },
+				{ time: 0.62, value: -8 }, // the chin comes up a little on the wink
+				{ time: 1.15, value: -6 },
+				{ time: 1.6, value: 0 },
+			],
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.3, x: 5, y: 1 },
+				{ time: 1.15, x: 5, y: 1 },
+				{ time: 1.6, x: 0, y: 0 },
+			],
+		},
+	},
+};
+
+// dustoff: he looks down and brushes the sand off his kilt, three quick
+// strokes of the right forearm, then straightens.
+const DUST_STROKES = [0.42, 0.62, 0.82];
+const dustoff = {
+	bones: {
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.3, value: 3 },
+				{ time: 1.05, value: 3 },
+				{ time: 1.5, value: 0 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.3, value: 10 },
+				{ time: 1.05, value: 10 },
+				{ time: 1.5, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.3, value: -8 },
+				{ time: 1.0, value: -8 },
+				{ time: 1.45, value: 0 },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.34, value: -12 },
+				...DUST_STROKES.flatMap((t) => [
+					{ time: t, value: 6 },
+					{ time: t + 0.1, value: -12 },
+				]),
+				{ time: 1.45, value: 0 },
+			],
+		},
+		armR_hand: {
+			rotate: [
+				{ time: 0, value: 0 },
+				...DUST_STROKES.flatMap((t) => [
+					{ time: t + 0.03, value: 8 },
+					{ time: t + 0.13, value: -6 },
+				]),
+				{ time: 1.45, value: 0 },
+			],
+		},
+	},
+};
+
+// yawn: ~30s with nobody spinning. Shoulders up, head back, the jaw wide,
+// eyes screwed shut; let go; a small shake of the head after.
+const YAWN_TOP = 0.75;
+const YAWN_END = 2.3;
+const yawn = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: YAWN_TOP, x: 0, y: 5 },
+				{ time: 1.45, x: 0, y: 4 },
+				{ time: 1.75, x: 0, y: -3 },
+				{ time: YAWN_END, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: YAWN_TOP, x: 0.99, y: 1.02 },
+				{ time: 1.45, x: 0.99, y: 1.018 },
+				{ time: 1.75, x: 1.01, y: 0.985 },
+				{ time: YAWN_END, x: 1, y: 1 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: YAWN_TOP, value: -7 },
+				{ time: 1.45, value: -6 },
+				{ time: 1.7, value: 3 },
+				{ time: 1.86, value: -2 },
+				{ time: 2.0, value: 1.5 },
+				{ time: YAWN_END, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: YAWN_TOP, value: -7 },
+				{ time: 1.45, value: -6 },
+				{ time: 1.8, value: 2 },
+				{ time: YAWN_END, value: 0 },
+			],
+		},
+		armL: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: YAWN_TOP + LEAD, value: 7 },
+				{ time: 1.45, value: 6 },
+				{ time: 1.8 + LEAD, value: -2 },
+				{ time: YAWN_END, value: 0 },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: YAWN_TOP + DRAG, value: hang(-7) },
+				{ time: 1.8 + DRAG, value: hang(2) },
+				{ time: YAWN_END, value: 0 },
+			],
+		},
+		armL_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: YAWN_TOP + DRAG + LEAD, value: hang(7) },
+				{ time: 1.8 + DRAG + LEAD, value: hang(-2) },
+				{ time: YAWN_END, value: 0 },
+			],
+		},
+	},
+};
+
+// tapfoot: ~60s with nobody spinning. Weight onto the left leg, the right foot
+// taps four times, the head cocked out at the player: "well?"
+const TAPS = [0.45, 0.75, 1.05, 1.35];
+const tapfoot = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.35, x: 7, y: -2 },
+				{ time: 1.6, x: 7, y: -2 },
+				{ time: 2.0, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.35, value: -2.5 },
+				{ time: 1.6, value: -2.5 },
+				{ time: 2.0, value: 0 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.4, value: -7 },
+				...TAPS.map((t, i) => ({ time: t + 0.06, value: i % 2 ? -7 : -5.5 })),
+				{ time: 1.6, value: -7 },
+				{ time: 2.0, value: 0 },
+			],
+		},
+		legR_foot: {
+			rotate: [
+				{ time: 0, value: 0 },
+				...TAPS.flatMap((t) => [
+					{ time: t - 0.12, value: 9 },
+					{ time: t, value: 0 },
+				]),
+				{ time: 2.0, value: 0 },
+			],
+		},
+	},
+};
+
+// pump: a tablet in the free game has opened on something good. One fist up
+// and pulled down twice — "yes!" — the cheer's raised arm, on one side.
+const PUMP_R = Math.round(OUT_R * 0.8);
+const pump = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.16, x: 0, y: -6 },
+				{ time: 0.42, x: 0, y: 2 },
+				{ time: 0.7, x: 0, y: -5 },
+				{ time: 1.3, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.3, value: -2 },
+				{ time: 1.3, value: 0 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.3, value: -5 },
+				{ time: 0.62, value: 3 },
+				{ time: 0.9, value: -3 },
+				{ time: 1.3, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.28, value: PUMP_R },
+				{ time: 0.5, value: PUMP_R - 12 },
+				{ time: 0.66, value: PUMP_R },
+				{ time: 0.84, value: PUMP_R - 14 },
+				{ time: 1.3, value: 0 },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.28 + DRAG, value: FIST_UP },
+				{ time: 0.5 + DRAG, value: FIST_UP - 10 },
+				{ time: 0.66 + DRAG, value: FIST_UP },
+				{ time: 0.84 + DRAG, value: FIST_UP - 12 },
+				{ time: 1.3, value: 0 },
+			],
+		},
+		armR_hand: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.3 + DRAG, value: 8 },
+				{ time: 0.52 + DRAG, value: -4 },
+				{ time: 0.86 + DRAG, value: 6 },
+				{ time: 1.3, value: 0 },
+			],
+		},
+	},
+};
+
+// bow: a feature has been BOUGHT. He takes the offering — the coin flies to
+// him (Mascot draws it) — the fists come in toward the chest and he bows over
+// them, then straightens. Held long enough to be seen before the round goes.
+const bow = {
+	bones: {
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.4, x: -3, y: -9 },
+				{ time: 0.9, x: -3, y: -9 },
+				{ time: 1.35, x: 0, y: 0 },
+			],
+		},
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.4, value: 6 },
+				{ time: 0.9, value: 6 },
+				{ time: 1.35, value: 0 },
+			],
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.4, x: 1.01, y: 0.975 },
+				{ time: 0.9, x: 1.01, y: 0.975 },
+				{ time: 1.35, x: 1, y: 1 },
+			],
+		},
+		head: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.42, value: 14 },
+				{ time: 0.9, value: 14 },
+				{ time: 1.35, value: 0 },
+			],
+		},
+		armR: {
+			rotate: [{ time: 0, value: 0 }, { time: 0.36, value: Math.round(BEAT_IN_R * 0.7) }, { time: 0.92, value: Math.round(BEAT_IN_R * 0.7) }, { time: 1.35, value: 0 }],
+		},
+		armL: {
+			rotate: [{ time: 0, value: 0 }, { time: 0.36 + LEAD, value: Math.round(BEAT_IN_L * 0.7) }, { time: 0.92, value: Math.round(BEAT_IN_L * 0.7) }, { time: 1.35, value: 0 }],
+		},
+		armR_fore: {
+			rotate: [{ time: 0, value: 0 }, { time: 0.36 + DRAG, value: Math.round(BEAT_FORE_R * 0.8) }, { time: 0.92, value: Math.round(BEAT_FORE_R * 0.8) }, { time: 1.35, value: 0 }],
+		},
+		armL_fore: {
+			rotate: [{ time: 0, value: 0 }, { time: 0.36 + DRAG + LEAD, value: Math.round(BEAT_FORE_L * 0.8) }, { time: 0.92, value: Math.round(BEAT_FORE_L * 0.8) }, { time: 1.35, value: 0 }],
+		},
+	},
+};
+
 // alert: the second Scatter has landed and he has noticed.
 //
 // WHY THIS EXISTS
@@ -2829,6 +3155,17 @@ sigh.slots = lids('_hold', [{ at: SIGH_OUT - 0.1, hold: SIGH_HOLD - SIGH_OUT + 0
 pray.slots = lids('_hold', [{ at: PRAY_IN, hold: PRAY_OUT - PRAY_IN - 0.1 }]);
 // the ready: a blink as he sets
 ready.slots = lids('_hold', [{ at: 0.12 }]);
+// the wink: the eye away from the board, held a beat
+wink.slots = lids('_hold', [{ at: 0.6, hold: 0.22 }], 'r');
+// the dust-off: a blink as he looks down
+dustoff.slots = lids('_hold', [{ at: 0.24 }]);
+// the yawn: screwed shut through it, a blink after
+yawn.slots = lids('_hold', [{ at: 0.45, hold: 0.95 }, { at: 1.9 }]);
+Object.assign(yawn.bones, jawKeys([{ at: 0.4, open: 4, hold: 0.6, close: 0.4 }], YAWN_END));
+// the fist: a shout on the first pump
+Object.assign(pump.bones, jawKeys([{ at: 0.26, open: 5, hold: 0.12, close: 0.25 }], 1.3));
+// the bow: eyes shut over the fists
+bow.slots = lids('_hold', [{ at: 0.36, hold: 0.5 }]);
 // the sigh: the mouth falls open a little on the breath out - 'haah'
 Object.assign(sigh.bones, jawKeys([{ at: SIGH_IN + 0.08, open: 3, hold: 0.3, close: 0.4 }], SIGH_END));
 
@@ -2882,6 +3219,12 @@ const skeleton = {
 				sigh,
 				ready,
 				pray,
+				wink,
+				dustoff,
+				yawn,
+				tapfoot,
+				pump,
+				bow,
 				dance,
 				flutter,
 				glints,

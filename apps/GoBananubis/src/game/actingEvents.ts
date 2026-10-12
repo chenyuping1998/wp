@@ -1,3 +1,5 @@
+import type { WinLevelAlias } from './winLevelMap';
+
 /**
  * Events for the board's ACTING — the moments that make it feel like a place
  * and a character rather than fifteen cells running their own clips:
@@ -17,4 +19,8 @@ export type EmitterEventActing =
 	| { type: 'cellKnock'; reel: number; row: number; strength: number }
 	| { type: 'scatterNearMiss' }
 	| { type: 'mascotGaze'; reel: number; row: number }
-	| { type: 'spinLaunch' };
+	| { type: 'spinLaunch' }
+	// the big-win plaque has climbed a tier (Win.svelte LADDER)
+	| { type: 'winTierUp'; alias: WinLevelAlias }
+	// a buy has been confirmed: the offering (Mascot)
+	| { type: 'mascotOffering' };

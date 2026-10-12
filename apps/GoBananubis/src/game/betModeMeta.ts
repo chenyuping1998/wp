@@ -137,8 +137,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy direct entry into FREE SPINS for ${config.betModes.bonus100.cost}× your bet, at the same 95% RTP as base play. The round opens on a real ${ENTRY_100.scatters}-Scatter board — the board the base game triggers on — and plays the ${ENTRY_100.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus100')}× your bet.`,
-					`Enter FREE SPINS directly for ${config.betModes.bonus100.cost}× your amount, at the same 95% RTP as normal play. The round opens on a real ${ENTRY_100.scatters}-Scatter board — the board normal play triggers on — and plays the ${ENTRY_100.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus100')}× your amount.`,
+					`Buy direct entry into FREE SPINS for ${config.betModes.bonus100.cost}× your bet, at the same ${BUY_FACTS.rtpPercent}% RTP as base play. The round opens on a real ${ENTRY_100.scatters}-Scatter board — the board the base game triggers on — and plays the ${ENTRY_100.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus100')}× your bet.`,
+					`Enter FREE SPINS directly for ${config.betModes.bonus100.cost}× your amount, at the same ${BUY_FACTS.rtpPercent}% RTP as normal play. The round opens on a real ${ENTRY_100.scatters}-Scatter board — the board normal play triggers on — and plays the ${ENTRY_100.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus100')}× your amount.`,
 				);
 			},
 			get description() {
@@ -177,8 +177,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy direct entry into FREE SPINS for ${config.betModes.bonus.cost}× your bet, at the same 95% RTP as base play. The round opens on a real ${BONUS_ENTRY.scatters}-Scatter board and plays the ${BONUS_ENTRY.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus')}× your bet.`,
-					`Enter FREE SPINS directly for ${config.betModes.bonus.cost}× your amount, at the same 95% RTP as normal play. The round opens on a real ${BONUS_ENTRY.scatters}-Scatter board and plays the ${BONUS_ENTRY.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus')}× your amount.`,
+					`Buy direct entry into FREE SPINS for ${config.betModes.bonus.cost}× your bet, at the same ${BUY_FACTS.rtpPercent}% RTP as base play. The round opens on a real ${BONUS_ENTRY.scatters}-Scatter board and plays the ${BONUS_ENTRY.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus')}× your bet.`,
+					`Enter FREE SPINS directly for ${config.betModes.bonus.cost}× your amount, at the same ${BUY_FACTS.rtpPercent}% RTP as normal play. The round opens on a real ${BONUS_ENTRY.scatters}-Scatter board and plays the ${BONUS_ENTRY.spins} spins that board is worth. Every Sealed Tablet on a spin opens to the same symbol, opened Tablets stay on the board for the rest of the round, and each carries a 2×–50× multiplier redrawn every spin. Multipliers on the same line add together. Maximum win: ${capX('bonus')}× your amount.`,
 				);
 			},
 			get description() {
@@ -221,7 +221,7 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 	// so: it beats the cheaper tier in every absolute band and is six times likelier
 	// to cap. What it does NOT do is return more per unit staked — the median is
 	// 0.21x its own cost against 0.35x — so do not write copy implying better value,
-	// only a bigger outcome. Both modes run at 0.95 RTP; the difference is shape.
+	// only a bigger outcome. Both modes run at 0.96 RTP; the difference is shape.
 	SUPERBONUS: {
 		mode: 'SUPERBONUS',
 		costMultiplier: config.betModes.superbonus.cost,
@@ -238,8 +238,8 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy the strongest entry into FREE SPINS for ${config.betModes.superbonus.cost}× your bet, at the same 95% RTP as base play. Guarantees a full ${SUPER_ENTRY.scatters}-Scatter board — ${SUPER_ENTRY.spins} spins, the most the game awards — and Sealed Tablets open on the high symbols far more often. Maximum win: ${capX('superbonus')}× your bet.`,
-					`Enter SUPER FREE SPINS for ${config.betModes.superbonus.cost}× your amount, at the same 95% RTP as normal play. Guarantees a full ${SUPER_ENTRY.scatters}-Scatter board — ${SUPER_ENTRY.spins} spins, the most the game awards — and Sealed Tablets open on the high symbols far more often. Maximum win: ${capX('superbonus')}× your amount.`,
+					`Buy the strongest entry into FREE SPINS for ${config.betModes.superbonus.cost}× your bet, at the same ${BUY_FACTS.rtpPercent}% RTP as base play. Guarantees a full ${SUPER_ENTRY.scatters}-Scatter board — ${SUPER_ENTRY.spins} spins, the most the game awards — and Sealed Tablets open on the high symbols far more often. Maximum win: ${capX('superbonus')}× your bet.`,
+					`Enter SUPER FREE SPINS for ${config.betModes.superbonus.cost}× your amount, at the same ${BUY_FACTS.rtpPercent}% RTP as normal play. Guarantees a full ${SUPER_ENTRY.scatters}-Scatter board — ${SUPER_ENTRY.spins} spins, the most the game awards — and Sealed Tablets open on the high symbols far more often. Maximum win: ${capX('superbonus')}× your amount.`,
 				);
 			},
 			get description() {

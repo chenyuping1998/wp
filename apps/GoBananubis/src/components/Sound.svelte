@@ -17,6 +17,9 @@
 		// The tablet reveal. `step` is which tablet in the batch this is (0-based);
 		// see playStoneCrack for what it does with it.
 		| { type: 'soundSealStrain' }
+		// a held tablet's re-roll landing (MultiplierRoll): `step` counts the
+		// rises in this re-roll, `dir` which way it went, `big` a 25X/50X
+		| { type: 'soundMultiplierLand'; step: number; dir: number; big: boolean }
 		// the opening's board rising out of the sand (EntryReveal) — sand only
 		| { type: 'soundSandPour' }
 		| { type: 'soundStoneCrack'; step: number }
@@ -353,6 +356,58 @@
 		loopNodes[name] = { src, gain };
 	}
 
+	// ── ONE-SHOTS THAT CAN OVERLAP ───────────────────────────────────────────
+	// playCnSfx has ONE element per file and restarts it, so the same cue fired
+	// a beat apart cuts itself off — five tablets landing 0.1s apart were five
+	// clipped starts of the same note, which is the rattle the re-roll made.
+	// Through Web Audio each play is its own voice and rings out under the next.
+	async function playCnShot(name: CnSfxName, volumeScale = 1, rate = 1) {
+		const ctx = getAudioCtx();
+		if (!ctx) {
+			playCnSfx(name, volumeScale, rate);
+			return;
+		}
+		let buffer = loopBuffers[name];
+		if (!buffer) {
+			try {
+				const res = await fetch(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
+				buffer = await ctx.decodeAudioData(await res.arrayBuffer());
+				loopBuffers[name] = buffer;
+			} catch {
+				return;
+			}
+		}
+		const gain = ctx.createGain();
+		gain.gain.value = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+		const src = ctx.createBufferSource();
+		src.buffer = buffer;
+		src.playbackRate.value = rate;
+		src.connect(gain).connect(ctx.destination);
+		src.start();
+	}
+
+	// THE RE-ROLL AS A PHRASE. Each tablet that rises sounds one step higher
+	// than the one before (a major pentatonic run), so a board of re-rolls is
+	// a little climbing figure, not the same note five times. One that lands
+	// on 25X or 50X is accented. A drop is silent — a run of tablets falling
+	// should not sound like anything is happening — and a tablet that drew the
+	// value it already had gets a soft, low tap.
+	const MULT_STEPS = [1, 1.122, 1.26, 1.498, 1.682, 2];
+	let lastMultLand = 0;
+	function playMultiplierLand(step: number, dir: number, big: boolean) {
+		if (dir < 0) return;
+		const now = performance.now();
+		// two in the same instant would double the level, not the note
+		const crowd = now - lastMultLand < 60 ? 0.6 : 1;
+		lastMultLand = now;
+		if (dir === 0) {
+			playCnShot('mult_update', 0.28 * crowd, 0.84);
+			return;
+		}
+		const rate = MULT_STEPS[Math.min(step, MULT_STEPS.length - 1)];
+		playCnShot('mult_update', (big ? 0.85 : 0.55) * crowd, rate);
+	}
+
 	function stopCnLoop(name: CnSfxName) {
 		const node = loopNodes[name];
 		if (!node) return;
@@ -475,6 +530,7 @@
 		soundBigWinBlast: () => playCnSfx('bigwin_blast'),
 		soundScarabBlast: () => playCnSfx('scarab_blast'),
 		soundSealStrain: () => playCnSfx('seal_strain', 0.7),
+		soundMultiplierLand: ({ step, dir, big }) => playMultiplierLand(step, dir, big),
 		soundSandPour: () => playCnSfx('sand_pour', 0.8),
 		soundStoneCrack: ({ step }) => playStoneCrack(step),
 		soundMonkeyExpand: () => playMonkeyExpand(),

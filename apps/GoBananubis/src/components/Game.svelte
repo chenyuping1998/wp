@@ -159,9 +159,12 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name="GO BANANUBIS" />
+				{#if context.stateLayoutDerived.canvasSizes().width >= 960 && context.stateLayoutDerived.canvasSizes().height >= 540}
+					<UiGameName name="GO BANANUBIS" />
+				{/if}
 			{/snippet}
 			{#snippet logo()}
+				{#if context.stateLayoutDerived.canvasSizes().width >= 960 && context.stateLayoutDerived.canvasSizes().height >= 540}
 				<Text
 					anchor={{ x: 1, y: 0 }}
 					text="GO BANANUBIS"
@@ -173,6 +176,7 @@
 						fill: 0xffffff,
 					}}
 				/>
+				{/if}
 			{/snippet}
 		</UI>
 		<Win />

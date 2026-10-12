@@ -83,6 +83,8 @@
 	//
 	// It costs nothing in time: it plays inside the hold the roll already has.
 	const CUE_MS = 700;
+	// how many tablets have risen so far in this re-roll: the note each one plays
+	let risesSoFar = 0;
 	const dirOf = (roll: Roll) => Math.sign(roll.to - roll.from);
 	const jumpOf = (roll: Roll) => {
 		const hi = Math.max(roll.to, roll.from);
@@ -182,7 +184,15 @@
 		roll.stepMs = 150;
 		roll.landed = true;
 		roll.landedAt = Date.now();
-		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
+		// one note of the re-roll's phrase (Sound playMultiplierLand): rises
+		// climb, a repeat taps, a drop is silent
+		const dir = dirOf(roll);
+		context.eventEmitter.broadcast({
+			type: 'soundMultiplierLand',
+			step: dir > 0 ? risesSoFar++ : risesSoFar,
+			dir,
+			big: dir > 0 && roll.to >= 25,
+		});
 		// he watched it spin (Mascot: multiplierRoll); he answers what it gives
 		context.eventEmitter.broadcast({ type: 'mascotMultiplier', value: roll.to });
 		// ...and so does the symbol in the tablet (HeldTablets)
@@ -202,6 +212,7 @@
 			if (event.cells.length === 0) return;
 
 			const scale = stateBet.isTurbo ? TURBO_SCALE : 1;
+			risesSoFar = 0;
 			// reading order, as everywhere else on this board
 			const ordered = [...event.cells].sort((a, b) => a.reel - b.reel || a.row - b.row);
 			rolls = ordered.map((cell) => ({

@@ -228,7 +228,16 @@ const BOARD_SHRINK = 0.89;
 
 const boardLayout = () => {
 	const layout = stateLayoutDerived.mainLayout();
-	const usesBar = uiTheme.betBarLayout === 'compactBottom';
+	const { width, height } = stateLayoutDerived.canvasSizes();
+	const compactSmall =
+		uiTheme.betBarLayout === 'compactBottom' &&
+		uiTheme.compactBottomSmallFallback &&
+		stateLayoutDerived.layoutType() !== 'portrait' &&
+		(width < 960 || height < 540);
+	const usesBar =
+		uiTheme.betBarLayout === 'compactBottom' &&
+		stateLayoutDerived.layoutType() !== 'portrait' &&
+		!compactSmall;
 	// Derived from the bar's own height rather than duplicated, so the two cannot
 	// drift apart: the game box and the standard box cover the same screen, so the
 	// strip occupies the same fraction of each.
@@ -238,8 +247,8 @@ const boardLayout = () => {
 	return {
 		x: layout.width * 0.5,
 		// centred in the area above the strip, not in the whole box
-		y: layout.height * (0.5 - barFraction * 0.5) + stateGame.boardLift,
-		scale: usesBar ? BOARD_SHRINK : 1,
+		y: layout.height * (compactSmall ? 0.39 : 0.5 - barFraction * 0.5) + stateGame.boardLift,
+		scale: compactSmall ? 0.8 : usesBar ? BOARD_SHRINK : 1,
 		anchor: { x: 0.5, y: 0.5 },
 		pivot: { x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 },
 		...BOARD_SIZES,

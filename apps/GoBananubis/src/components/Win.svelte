@@ -24,6 +24,8 @@
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
+	import { BOOK_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
+	import type { WinLevelAlias } from '../game/winLevelMap';
 
 	const context = getContext();
 
@@ -47,6 +49,75 @@
 		mega: { mult: 1.3, glowTint: 0xff7a4a },
 		epic: { mult: 1.5, glowTint: 0xffd75e },
 		max: { mult: 1.8, glowTint: 0xfff3c4 },
+	};
+
+	// ── THE PLAQUE CLIMBS THE LADDER AS THE FIGURE DOES ─────────────────────
+	//
+	// A big win used to open on its FINAL plaque: an epic was "EPIC" from the
+	// first frame, and the count-up was a number running to a result the plaque
+	// had already given away. Now it opens on BIG, and as the rolling figure
+	// crosses each tier's threshold (the maths' own ladder, in multiples of the
+	// bet — math-sdk config get_win_level "standard") the next plaque slams in
+	// over it: the flash, the camera, a burst, the treasure gushing again and
+	// the gorilla going again (winTierUp). The player watches it climb and
+	// wonders whether it will go once more — the oldest trick a slot has, and
+	// the one this one was missing. MAX is reached only by the full amount.
+	const LADDER: WinLevelAlias[] = ['big', 'superwin', 'mega', 'epic', 'max'];
+	const TIER_FROM: Partial<Record<WinLevelAlias, number>> = { big: 15, superwin: 30, mega: 50, epic: 100 };
+	let tierAlias = $state<WinLevelAlias>('big');
+	let tierSteps = $state(0);
+	// THE FIGURE CLIMBS IN STAGES, NOT IN ONE STRAIGHT LINE.
+	//
+	// The count-up runs linearly from 0 to the amount over the whole
+	// presentation, so on a 3,000x win the 15/30/50/100x thresholds all went
+	// by in its first second: the plaque was EPIC almost at once while the
+	// figure was still near nothing. Each plaque now gets its own stretch of
+	// the time — the provider's progress is split into one leg per tier, the
+	// last (the money above the final threshold) twice as long — and the
+	// figure runs leg to leg, easing off as it nears the next threshold so the
+	// step up lands on a figure the player can see arrive. The plaque and the
+	// number can no longer disagree: both come from the same leg.
+	const staged = (countUp: number): { value: number; tier: WinLevelAlias } => {
+		const final = winLevelData?.alias;
+		const top = final ? LADDER.indexOf(final) : -1;
+		if (!final || top < 0 || amount <= 0) return { value: countUp, tier: final ?? 'big' };
+		const p = Math.min(1, countUp / amount);
+		if (p >= 1) return { value: amount, tier: final };
+		// the legs: big .. the last tier below MAX (MAX is only the full amount)
+		const lastLeg = final === 'max' ? top - 1 : top;
+		const bounds = [0];
+		for (let k = 1; k <= lastLeg; k++) {
+			const from = (TIER_FROM[LADDER[k]] ?? 0) * BOOK_AMOUNT_MULTIPLIER;
+			bounds.push(Math.min(amount, Math.max(bounds[k - 1], from)));
+		}
+		bounds.push(amount);
+		const weights = bounds.slice(1).map((_, k, all) => (k === all.length - 1 ? 2 : 1));
+		const sum = weights.reduce((x, y) => x + y, 0);
+		let acc = 0;
+		for (let k = 0; k < weights.length; k++) {
+			const share = weights[k] / sum;
+			if (p < acc + share || k === weights.length - 1) {
+				const local = Math.min(1, (p - acc) / share);
+				const eased = 1 - (1 - local) ** 2;
+				return { value: bounds[k] + (bounds[k + 1] - bounds[k]) * eased, tier: LADDER[k] };
+			}
+			acc += share;
+		}
+		return { value: amount, tier: final };
+	};
+	const onTier = (alias: WinLevelAlias) => {
+		if (alias === tierAlias) return;
+		const up = LADDER.indexOf(alias) > LADDER.indexOf(tierAlias);
+		tierAlias = alias;
+		if (!up) return;
+		tierSteps++;
+		startShake(520, 9 + 2 * tierSteps);
+		startImpact();
+		// the new plaque comes in on its own entrance (the FX clock restarts)
+		startBannerFx();
+		landBurst++;
+		context.eventEmitter.broadcast({ type: 'soundStoneCrack', step: Math.min(3, tierSteps) });
+		context.eventEmitter.broadcast({ type: 'winTierUp', alias });
 	};
 
 	let show = $state(false);
@@ -150,7 +221,7 @@
 		const start = performance.now();
 		const tick = (now: number) => {
 			fxNow = (now - start) / 1000;
-			const mult = winLevelData ? (TIER_FX[winLevelData.alias]?.mult ?? 1) : 1;
+			const mult = TIER_FX[tierAlias]?.mult ?? 1;
 			if (fxNow >= nextTwinkleAt) {
 				twinkles = [
 					...twinkles.filter(({ born }) => fxNow - born < 0.7),
@@ -209,6 +280,8 @@
 		winUpdate: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
+			tierAlias = LADDER.includes(emitterEvent.winLevelData.alias) ? 'big' : emitterEvent.winLevelData.alias;
+			tierSteps = 0;
 			if (emitterEvent.winLevelData.type === 'big') {
 				startShake();
 				startImpact();
@@ -241,7 +314,12 @@
 				/>
 
 				{#if isBigWin}
-					{@const fx = TIER_FX[winLevelData.alias] ?? TIER_FX.big}
+					<!-- the plaque the figure has reached (see LADDER) -->
+					{@const reached = staged(countUpAmount).tier}
+					{#key reached}
+						<OnMount onmount={() => onTier(reached)} />
+					{/key}
+					{@const fx = TIER_FX[tierAlias] ?? TIER_FX.big}
 					<MainContainer>
 						<BigWinFx
 							x={context.stateGameDerived.boardLayout().x + shake.x * 0.4}
@@ -257,7 +335,7 @@
 				<MainContainer>
 					<TreasureFall
 						emit={!countUpCompleted}
-						levelAlias={winLevelData?.alias}
+						levelAlias={isBigWin ? tierAlias : winLevelData?.alias}
 						burst={landBurst}
 						gushY={context.stateGameDerived.boardLayout().y +
 							SYMBOL_SIZE * 5.2 * BANNER_RATIO * 0.16}
@@ -271,7 +349,7 @@
 						scale={punch}
 					>
 						{#if isBigWin}
-							{@const alias = winLevelData.alias}
+							{@const alias = tierAlias}
 							{@const fx = TIER_FX[alias] ?? TIER_FX.big}
 							{@const bannerKey = BANNER_KEY[alias] ?? BANNER_KEY.big}
 							{@const bw = SYMBOL_SIZE * 5.2}
@@ -323,7 +401,7 @@
 								<Container y={bh * 0.16} scale={landPunch}>
 									<GoldText
 										maxWidth={bw * 0.68}
-										text={bookEventAmountToCurrencyString(Math.round(countUpAmount))}
+										text={bookEventAmountToCurrencyString(Math.round(staged(countUpAmount).value))}
 										fontSize={bh * 0.24}
 									/>
 								</Container>

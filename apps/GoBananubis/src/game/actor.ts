@@ -36,6 +36,12 @@ const primaryMachines = createPrimaryMachines<Bet>({
 		// next spin is what sweeps them away
 		if (stateGame.gameType === 'basegame') {
 		}
+		// A BOUGHT FEATURE is an offering: the coin flies to him and he bows over
+		// it (Mascot) before the round goes — held a second so it is seen.
+		if (String(stateBet.activeBetModeKey).toUpperCase() !== 'BASE' && stateGame.gameType === 'basegame') {
+			eventEmitter.broadcast({ type: 'mascotOffering' });
+			await new Promise((resolve) => setTimeout(resolve, 900));
+		}
 		if (stateBet.isSpaceHold) return;
 
 		// Superspin is excluded alongside freegame. Skipping the pre-spin dropped the

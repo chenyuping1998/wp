@@ -19,6 +19,7 @@
 	import BoardContainer from './BoardContainer.svelte';
 	import ScarabRunner from './ScarabRunner.svelte';
 	import WinLineRibbon from './WinLineRibbon.svelte';
+	import { nextVolley } from '../game/meshWin/takes';
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, REEL_PADDING, BOARD_DIMENSIONS } from '../game/constants';
 	import config from '../game/config';
@@ -131,6 +132,8 @@
 	context.eventEmitter.subscribeOnMount({
 		winLinesShow: async ({ wins, fast }) => {
 			const generation = ++showGeneration;
+			// a new volley: each symbol may play its other take (meshWin/takes)
+			nextVolley();
 			animatedKeys = new Set();
 			travels = {};
 			timing = fast || stateBet.isTurbo ? FAST : NORMAL;

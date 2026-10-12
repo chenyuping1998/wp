@@ -57,6 +57,7 @@
 	import ImpactDust from './ImpactDust.svelte';
 	import { getContext } from '../game/context';
 	import { applyLeap, leapState, SUBJECT_BOX } from '../game/meshWin/leap';
+	import { takeOf } from '../game/meshWin/takes';
 	import { BOARD_DIMENSIONS } from '../game/constants';
 
 	type Props = {
@@ -273,6 +274,13 @@
 		// no leap on a reveal: it is the act at half size, in its own place
 		const leap = !landing && !revealing && spec.symbol in SUBJECT_BOX;
 		const leapS = leapState();
+		// THE TAKE (meshWin/takes.ts): take 1 turns a leaper round in the air,
+		// and shakes the tile of a Wild or a Scatter. Wins only — not a reveal,
+		// not a landing.
+		const take = props.beat === undefined || props.beat === 'win' ? takeOf(spec.symbol) : 0;
+		const TURN_MS = 420;
+		let turn = 0;
+		let turnT = 0;
 		let knocked = false;
 
 		const rows = Math.ceil(SHEEN_FRAMES / SHEEN_COLS);
@@ -302,6 +310,15 @@
 				props.oncomplete?.();
 			}
 			if (leap) applyLeap(spec, pose, t, leapS);
+			// take 1, a leaper: one full turn about its upright while it is off
+			// the plate — the width runs 1 -> 0 -> -1 -> 0 -> 1, the back of it
+			// showing mirrored halfway — and it always finishes before it lands
+			if (leap && take === 1) {
+				const dt = Math.max(0, t - turnT);
+				turnT = t;
+				if ((pose.air > 0.25 || turn > 0) && turn < 1) turn = Math.min(1, turn + dt / (pose.air > 0.25 ? TURN_MS : TURN_MS / 3));
+				pose.rigid.sx *= Math.cos(2 * Math.PI * turn);
+			}
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();
 			// the reveal's burst: up fast, a small second swell, home
@@ -346,6 +363,10 @@
 				const knock = 1 + TILE_KNOCK * (pose.plateHit - 1);
 				root.scale.set(fit * knock * (1 + TILE_POP * pose.air));
 				root.position.y = (props.y ?? 0) - TILE_HOP * SYMBOL_SIZE * pose.air;
+				// take 1, the Wild or the Scatter: the tile shakes as it goes up,
+				// a fast wiggle that rides the hop and dies with it
+				const wiggle = take === 1 && rank !== RANK.low ? 7 * pose.air * Math.sin((2 * Math.PI * t) / 170) : 0;
+				root.rotation = (wiggle * Math.PI) / 180;
 			}
 
 			if (shadow) {

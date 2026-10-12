@@ -73,6 +73,7 @@ setUiTheme({
 	// this one word is the whole revert. It can also be overridden at run time
 	// without rebuilding — see the localStorage note in UIDefault.svelte.
 	betBarLayout: 'compactBottom',
+	compactBottomSmallFallback: true,
 
 	// Buy Bonus stays left of the board at its old size rather than joining the
 	// strip: buying the feature is an occasional, expensive, deliberate action and
