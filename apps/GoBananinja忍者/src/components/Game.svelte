@@ -6,6 +6,7 @@
 	import { EnableHotkey } from 'components-shared';
 	import { MainContainer } from 'components-layout';
 	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
+	import type { ColorMatrixFilter } from 'pixi.js';
 	import { stateModal } from 'state-shared';
 
 	import { UI, UiGameName } from 'components-ui-pixi';
@@ -15,6 +16,7 @@
 	import { stateReplay } from 'state-shared';
 
 	import { getContext } from '../game/context';
+	import { makeSymbolLighting } from '../game/sceneLighting';
 	// side-effect import: paints the shared bet bar in the jungle palette
 	import '../game/uiTheme';
 	import EnableSound from './EnableSound.svelte';
@@ -33,6 +35,7 @@
 	import StickyPrizes from './StickyPrizes.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import WinWays from './WinWays.svelte';
+	import IdleDirector from './IdleDirector.svelte';
 	import Win from './Win.svelte';
 	import FreeSpinIntro from './FreeSpinIntro.svelte';
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
@@ -40,6 +43,12 @@
 	import Transition from './Transition.svelte';
 
 	const context = getContext();
+	let reelLighting = $state.raw<ColorMatrixFilter[]>([]);
+	onMount(() => {
+		const filter = makeSymbolLighting();
+		reelLighting = [filter];
+		return () => filter.destroy();
+	});
 
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
@@ -60,12 +69,12 @@
 	<Container>
 		<Background />
 	</Container>
-	<!-- Corner vignette keeps the sharp night scene behind the board. -->
+	<!-- Keep the corners shaded while letting the village and treasure room show. -->
 	<Sprite
 		key="fxVignette"
 		width={context.stateLayoutDerived.canvasSizes().width}
 		height={context.stateLayoutDerived.canvasSizes().height}
-		alpha={0.9}
+		alpha={0.48}
 	/>
 
 	{#if context.stateLayout.showLoadingScreen}
@@ -87,13 +96,17 @@
 		</MainContainer>
 
 		<MainContainer>
-			<Board />
-			<ReelDust />
-			<ReelSplits />
-			<StickyPrizes />
-			<Anticipations />
-			<ScatterBurst />
-			<WinWays />
+			<Container filters={reelLighting}>
+				<Board />
+				<ReelDust />
+				<ReelSplits />
+				<StickyPrizes />
+				<Anticipations />
+				<ScatterBurst />
+				<WinWays />
+				<!-- the settled board's idle acts (game/idleDirector.ts); draws nothing -->
+				<IdleDirector />
+			</Container>
 		</MainContainer>
 
 		<EntryReveal />

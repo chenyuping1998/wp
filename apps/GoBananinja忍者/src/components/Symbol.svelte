@@ -24,6 +24,8 @@
 		// lands (see ReelSymbol, which knows both the reel motion and the tier)
 		blur?: number;
 		impact?: number;
+		/** may do an idle act (ReelSymbol: a visible, settled cell) */
+		idleable?: boolean;
 	};
 
 	const props: Props = $props();
@@ -79,6 +81,8 @@
 			impact={props.impact}
 			split={isSplit}
 			splitFromAssetKey={baseSymbolInfo.assetKey}
+			symbolName={props.rawSymbol.name}
+			idleable={props.idleable}
 			{oncomplete}
 		/>
 	{:else}

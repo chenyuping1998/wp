@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { verticalFill } from '../game/gradientFill';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { Container, Text } from 'pixi-svelte';
 
@@ -71,7 +72,8 @@
 		onresize={(sizes) => (measuredWidth = sizes.width)}
 		style={{
 			...base,
-			fill: props.fill ?? [0xfff3bd, 0xffd75e, 0xc9821a],
+			// a real v8 gradient — an array here renders WHITE, see game/gradientFill
+			fill: verticalFill(props.fill ?? [0xfff3bd, 0xffd75e, 0xc9821a], props.fontSize),
 			stroke: props.stroke ?? 0x54330a,
 			strokeThickness: Math.max(2, props.fontSize * 0.1),
 			dropShadow: true,
@@ -87,7 +89,7 @@
 		text={String(props.text)}
 		style={{
 			...base,
-			fill: [0xffffff, 0xfff3bd, 0xfff3bd],
+			fill: verticalFill([0xffffff, 0xfff3bd, 0xfff3bd], props.fontSize),
 			stroke: 0x000000,
 			strokeThickness: 0,
 		}}

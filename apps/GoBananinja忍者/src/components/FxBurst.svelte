@@ -94,10 +94,10 @@
 		] as const) {
 			const p = (t - delayP) / (1 - delayP);
 			if (p <= 0 || p >= 1) continue;
-			g.lineStyle(width * s * (1 - p), 0xffe08a, (1 - p) * 0.7);
-			g.drawCircle(0, 0, (18 + 68 * easeOut(p)) * s);
+			// PIXI v8 API: under the v7 lineStyle shim both rings took the last
+			// width and alpha
+			g.circle(0, 0, (18 + 68 * easeOut(p)) * s).stroke({ width: width * s * (1 - p), color: 0xffe08a, alpha: (1 - p) * 0.7 });
 		}
-		g.lineStyle(0);
 	};
 </script>
 

@@ -200,7 +200,7 @@
 				// Interpolated, not a binary flip. Switching hard between white and red on
 				// the sign of a sine reads as a strobe; easing between them reads as
 				// something heating up.
-				grenadeTint = mixColor(0xffffff, 0xff5a3a, 0.5 + 0.5 * Math.sin(p * Math.PI * 4));
+				grenadeTint = mixColor(0xffffff, 0xd27aff, 0.5 + 0.5 * Math.sin(p * Math.PI * 4));
 				grenadeAlpha = 1;
 			} else {
 				// BOOM
@@ -221,7 +221,7 @@
 				const burn = Math.min(1, boomT / GRENADE_BURN);
 				grenadeVisible = burn < 1;
 				grenadeScale = 1.2 + 1.15 * easeOutCubic(burn);
-				grenadeTint = mixColor(0xffe2b0, 0xffffff, burn);
+				grenadeTint = mixColor(0xf0d0ff, 0xffffff, burn);
 				grenadeAlpha = (1 - burn) ** 1.6;
 				// Both ends eased. A linear ramp to white lands hard — its rate of change
 				// is constant right up to the instant it saturates — and a linear fade
@@ -256,8 +256,11 @@
 	// thrown and cools as it expands, so the tint runs from a hot ember colour to
 	// cold ash — a puff that stayed one grey the whole way reads as a decal rather
 	// than as something the explosion just made.
-	const EMBER = [0xff, 0xb0, 0x66];
-	const ASH = [0x4a, 0x44, 0x3c];
+	// A SMOKE BOMB (2026-10-04): it bursts into the violet smoke it carries,
+	// lit hot pink by the flash and settling to a deep dusk violet — not the
+	// grenade's ember-to-ash.
+	const EMBER = [0xff, 0x9c, 0xf0];
+	const ASH = [0x3a, 0x1c, 0x5a];
 	const puffState = (puff: Puff) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		const reach = Math.max(width, height);
@@ -294,48 +297,34 @@
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		// reach past the long edge so the blast genuinely engulfs the screen
 		const maxR = Math.max(width, height) * 0.95;
-		// shockwave rings — a third, slowest ring gives the blast visible depth
+		// shockwave rings — white, then the smoke's own violet, the slowest last.
+		// pixi v8 calls throughout: under the v7 beginFill/lineStyle shim every
+		// shape in one Graphics took the LAST style (pixi-v8 gotchas).
 		for (const [delay, color, weight] of [
-			[0, 0xfff7d6, 30],
-			[0.14, 0xfff2c0, 24],
-			[0.3, 0xff9c3a, 18],
+			[0, 0xfff4ff, 30],
+			[0.14, 0xe2b8ff, 24],
+			[0.3, 0xa24dff, 18],
 		] as [number, number, number][]) {
 			const t = (boomT - delay) / (1 - delay);
 			if (t < 0 || t > 1) continue;
-			// Eased rather than linear: a ring that thins at a constant rate reads as a
-			// line being erased, one that holds and then lets go reads as energy
-			// dissipating.
-			g.lineStyle(weight * (1 - t) ** 1.4 + 3, color, 0.85 * (1 - t) ** 1.8);
-			g.drawCircle(0, 0, maxR * easeOutCubic(t));
+			g.circle(0, 0, maxR * easeOutCubic(t));
+			g.stroke({ width: weight * (1 - t) ** 1.4 + 3, color, alpha: 0.85 * (1 - t) ** 1.8 });
 		}
-		// hot core — expands most of the way across the screen before fading
-		// Radius is eased, not linear. A fireball expanding at constant speed for its
-		// whole life looks mechanical; a real one throws hardest at the front and
-		// decelerates, which is what easeOutCubic gives for free.
+		// the burst: a white core inside a violet cloud, thrown hardest at the front
 		const coreGrow = easeOutCubic(boomT);
-		g.lineStyle(0);
-		g.beginFill(0xfff7d6, 0.9 * (1 - boomT) ** 1.5);
-		g.drawCircle(0, 0, height * 0.34 * (0.4 + coreGrow * 1.5));
-		g.endFill();
-		g.beginFill(0xffb347, 0.55 * (1 - boomT) ** 1.3);
-		g.drawCircle(0, 0, height * 0.5 * (0.35 + coreGrow * 1.7));
-		g.endFill();
-		// leaf/shrapnel fragments — thrown the full blast radius
+		g.circle(0, 0, height * 0.5 * (0.35 + coreGrow * 1.7));
+		g.fill({ color: 0xa24dff, alpha: 0.55 * (1 - boomT) ** 1.3 });
+		g.circle(0, 0, height * 0.34 * (0.4 + coreGrow * 1.5));
+		g.fill({ color: 0xfff4ff, alpha: 0.9 * (1 - boomT) ** 1.5 });
+		// sparks and shards of the shell — thrown the full blast radius, arcing
+		// down and tumbling
 		for (const f of frags) {
 			const d = f.speed * easeOutCubic(boomT) * maxR * 1.1;
 			const x = Math.cos(f.a) * d;
-			// arcs downward as it flies: debris thrown dead flat in every direction
-			// reads as a starburst decal rather than as things with weight
 			const y = Math.sin(f.a) * d + maxR * 0.16 * boomT * boomT;
-			// and tumbles while it travels, each at its own rate
 			const spin = f.spin + boomT * f.speed * 7;
-			g.beginFill(f.r > 13 ? 0x35521a : 0xffd75e, 0.9 * (1 - boomT) ** 1.6);
-			g.drawPolygon([
-				x, y - f.r,
-				x + f.r * Math.cos(spin), y + f.r * Math.sin(spin),
-				x - f.r * Math.cos(spin), y + f.r * 0.6,
-			]);
-			g.endFill();
+			g.poly([x, y - f.r, x + f.r * Math.cos(spin), y + f.r * Math.sin(spin), x - f.r * Math.cos(spin), y + f.r * 0.6]);
+			g.fill({ color: f.r > 13 ? 0x2a1238 : 0xffd36a, alpha: 0.9 * (1 - boomT) ** 1.6 });
 		}
 	};
 
@@ -343,15 +332,14 @@
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		g.clear();
 		if (flashAlpha <= 0) return;
-		g.beginFill(0xfff2c0, flashAlpha);
-		g.drawRect(-width, -height, width * 2, height * 2);
-		g.endFill();
+		g.rect(-width, -height, width * 2, height * 2);
+		g.fill({ color: 0xfbf0ff, alpha: flashAlpha });
 	};
-	// Width / height of assets/sprites/goBananasSymbolsV3/grenade.png. Stated here
+	// Width / height of goBananinjaMesh/bomb_prop.png (the smoke bomb). Stated here
 	// rather than read at runtime because the Sprite needs it on its first frame,
 	// before the texture has necessarily resolved — a fallback of 1 would flash a
 	// square grenade for a frame on a cold load.
-	const GRENADE_ASPECT = 651 / 1000;
+	const GRENADE_ASPECT = 1164 / 1111;
 </script>
 
 <Container

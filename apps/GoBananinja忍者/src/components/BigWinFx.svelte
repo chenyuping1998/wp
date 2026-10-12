@@ -68,8 +68,9 @@
 			const angle = (i / rayCount) * Math.PI * 2;
 			const reach = radius * (i % 2 === 0 ? 1 : 0.78);
 			const halfWidth = Math.PI / rayCount / 1.9;
-			g.beginFill(i % 2 === 0 ? 0xffd75e : 0xffb64d, alpha);
-			g.drawPolygon([
+			// PIXI v8 API: under the v7 shim every ray took the last fill, so the
+			// alternating gold / amber came out one colour
+			g.poly([
 				0,
 				0,
 				Math.cos(angle - halfWidth) * reach,
@@ -77,12 +78,10 @@
 				Math.cos(angle + halfWidth) * reach,
 				Math.sin(angle + halfWidth) * reach,
 			]);
-			g.endFill();
+			g.fill({ color: i % 2 === 0 ? 0xffd75e : 0xffb64d, alpha });
 		}
 		// warm core so the rays melt into the count-up area
-		g.beginFill(0xffe9a8, (0.14 + 0.1 * pulse) * intensity);
-		g.drawCircle(0, 0, radius * 0.34);
-		g.endFill();
+		g.circle(0, 0, radius * 0.34).fill({ color: 0xffe9a8, alpha: (0.14 + 0.1 * pulse) * intensity });
 	};
 </script>
 

@@ -8,6 +8,7 @@ import { waitForTimeout } from 'utils-shared/wait';
 import { eventEmitter } from './eventEmitter';
 import { playBookEvent } from './utils';
 import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
+import { featureTotal } from './featureTotal';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEvent';
 import type { Position } from './types';
@@ -414,7 +415,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateUi.freeSpinCounterTotal = bookEvent.totalFs;
 	},
 	freeSpinEnd: async (bookEvent: BookEventOfType<'freeSpinEnd'>) => {
-		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
+		// the plaque shows the WHOLE round, trigger spin included — amount AND its
+		// win level (featureTotal; Stake review 2026-10-04 on Go Bananas Boat)
+		const total = featureTotal(bookEvent.amount, bookEvent.winLevel);
+		const winLevelData = winLevelMap[total.winLevel as WinLevel];
 
 		// The plaque says TOTAL WIN, so it must show what the ROUND paid.
 		//
@@ -432,7 +436,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// modes — always equals finalWin at this point. The max() is a floor, not
 		// arithmetic: a resumed round that somehow reached here without a
 		// setTotalWin must still not show less than the feature paid.
-		const roundTotalAmount = Math.max(bookEvent.amount, stateBet.winBookEventAmount);
 
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		// gameType is NOT reset here — it moves to the transition's cover below.
@@ -451,7 +454,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		winLevelSoundsPlay({ winLevelData });
 		await eventEmitter.broadcastAsync({
 			type: 'freeSpinOutroCountUp',
-			amount: roundTotalAmount,
+			amount: total.amount,
 			winLevelData,
 		});
 		winLevelSoundsStop();

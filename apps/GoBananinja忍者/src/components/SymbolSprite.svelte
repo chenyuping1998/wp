@@ -2,9 +2,13 @@
 	import { Sprite, Graphics } from 'pixi-svelte';
 	import { Tween } from 'svelte/motion';
 	import { cubicIn, cubicOut, backOut } from 'svelte/easing';
+	import { stateBet } from 'state-shared';
 
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
+	import { MESH_LANDS, MESH_IDLES, AMP_MAX } from '../game/meshWin';
+	import { idleCells } from '../game/idleDirector';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
 
 	type Props = {
 		x?: number;
@@ -25,6 +29,11 @@
 		// On a restored split reel this starts true and remains static.
 		split?: boolean;
 		splitFromAssetKey?: string;
+		/** the maths' symbol id: symbols with a mesh landing land through it
+		 *  (game/meshWin/lands.ts) rather than the squash */
+		symbolName?: string;
+		/** a visible, settled board cell: it may do an idle act */
+		idleable?: boolean;
 		oncomplete?: () => void;
 	};
 
@@ -74,7 +83,72 @@
 	$effect(() => () => {
 		destroyed = true;
 	});
+	// THE LANDING, ACTED (GoBananasBoat's). For the symbols with a mesh landing
+	// the slate stays put and the subject takes the weight (lands.ts), instead
+	// of the whole tile — slate and all — being squashed like a sticker.
+	//
+	// The act runs ~480ms, longer than the squash; "landed" is still reported at
+	// 240ms, exactly when the squash reported it, so the reel's stop sequence is
+	// unchanged and the act finishes over the settled board. A cut (split) cell
+	// shows its twin-motif tile, which has no rig: it keeps the squash.
+	const LANDED_MS = 240;
+	const meshName = $derived(props.split ? undefined : props.symbolName);
+	let meshLand = $state<{ id: number; speed: number; amp: number } | null>(null);
+	let meshLandId = 0;
+	let meshLandTimer: ReturnType<typeof setTimeout> | undefined;
+	$effect(() => () => clearTimeout(meshLandTimer));
+	const runMeshLand = async (spec: (typeof MESH_LANDS)[string]) => {
+		if (squashing) return;
+		squashing = true;
+		const speed = stateBet.isTurbo ? 2 : 1;
+		const amp = Math.max(0, Math.min(AMP_MAX, props.impact ?? 1));
+		meshLand = { id: ++meshLandId, speed, amp };
+		clearTimeout(meshLandTimer);
+		const mine = meshLandId;
+		meshLandTimer = setTimeout(() => {
+			if (meshLand?.id === mine) meshLand = null;
+		}, spec.durationMs / speed + 40);
+		await new Promise((resolve) => setTimeout(resolve, LANDED_MS));
+		squashing = false;
+		if (destroyed) return;
+		props.oncomplete?.();
+	};
+
+	// THE IDLE ACT (game/meshWin/idles.ts): while this cell sits settled it is on
+	// the idle director's register, and plays when it is picked.
+	let idleAct = $state<{ id: number } | null>(null);
+	let idleId = 0;
+	let idleTimer: ReturnType<typeof setTimeout> | undefined;
+	$effect(() => {
+		const name = meshName;
+		const spec = name ? MESH_IDLES[name] : undefined;
+		const still = !!props.idleable && blur <= 0.01 && !props.landing && !meshLand && splitFace === 'idle';
+		if (!spec || !still || !name) {
+			idleAct = null;
+			return;
+		}
+		const off = idleCells.add({
+			name,
+			play: () => {
+				if (idleAct || meshLand || destroyed) return false;
+				const mine = ++idleId;
+				idleAct = { id: mine };
+				clearTimeout(idleTimer);
+				idleTimer = setTimeout(() => {
+					if (idleAct?.id === mine) idleAct = null;
+				}, spec.durationMs + 60);
+				return true;
+			},
+		});
+		return () => {
+			off();
+			clearTimeout(idleTimer);
+		};
+	});
+
 	const runSquash = async () => {
+		const meshSpec = meshName ? MESH_LANDS[meshName] : undefined;
+		if (meshSpec) return runMeshLand(meshSpec);
 		if (squashing) return;
 		squashing = true;
 		// Ceiling is 1.5, not 1: the point of the tier is that Scatter and Wild hit
@@ -145,15 +219,25 @@
 	/>
 {/if}
 
-<Sprite
-	x={props.x}
-	y={props.y}
-	anchor={0.5}
-	key={splitFace === 'old' ? (props.splitFromAssetKey ?? props.symbolInfo.assetKey) : props.symbolInfo.assetKey}
-	width={width * sx.current * splitX.current}
-	height={blur > 0.01 ? height * (1 + 0.3 * blur) : height * sy.current}
-	alpha={1 - 0.15 * blur}
-/>
+{#if meshLand && blur <= 0.01 && meshName}
+	{#key meshLand.id}
+		<SymbolMeshWin land symbolName={meshName} {width} {height} speed={meshLand.speed} amp={meshLand.amp} />
+	{/key}
+{:else if idleAct && blur <= 0.01 && meshName}
+	{#key idleAct.id}
+		<SymbolMeshWin idle symbolName={meshName} {width} {height} />
+	{/key}
+{:else}
+	<Sprite
+		x={props.x}
+		y={props.y}
+		anchor={0.5}
+		key={splitFace === 'old' ? (props.splitFromAssetKey ?? props.symbolInfo.assetKey) : props.symbolInfo.assetKey}
+		width={width * sx.current * splitX.current}
+		height={blur > 0.01 ? height * (1 + 0.3 * blur) : height * sy.current}
+		alpha={1 - 0.15 * blur}
+	/>
+{/if}
 
 {#if splitFace === 'new'}
 	<!-- A brief red seal breaks into two glints exactly where the twin motifs

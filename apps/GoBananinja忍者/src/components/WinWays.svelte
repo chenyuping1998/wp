@@ -30,6 +30,9 @@
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE, REEL_PADDING, BOARD_DIMENSIONS, BOARD_SIZES } from '../game/constants';
 	import type { SymbolName } from '../game/types';
+	import { stateGame } from '../game/stateGame.svelte';
+	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import { MESH_WINS, MESH_SPLIT } from '../game/meshWin';
 
 	const context = getContext();
 
@@ -62,7 +65,47 @@
 
 	const SCRIM = 0x05070a;
 	const SCRIM_ALPHA = 0.62;
-	const FRAME = 0xffd75e;
+
+	// ── THE SYMBOLS ACT (game/meshWin, SymbolMeshWin) ──────────────────────
+	//
+	// GoBananasBoat's presentation, ported. Every symbol that can win has a mesh
+	// win: the subject is cut off its slate and performs — the kabuto flips and
+	// its horns twang, the shuriken spins, the bomb counts down and hops, the fan
+	// snaps open, the ninja's headband tails stream, the letters hop out of their
+	// engraving. It is drawn in a COPY of the cell, above the scrim: the board's
+	// own cells are opaque tiles packed in a masked layer, where a tile that grows
+	// slides under its neighbours and into the dimming. The copy sits above all of
+	// that, so it can come forward. The board's own win state carries on beneath
+	// it, fully covered.
+	//
+	//   · THE HOLD COVERS THE ACT. The presentation is torn down the moment
+	//     winLinesShow returns, so a hold shorter than the act cuts the subject off
+	//     mid-leap. It is sized to the longest act ON THE BOARD.
+	//   · The acts play 1.35x in the fast presentations (free game, idle replay)
+	//     and 2x in turbo.
+	//   · A CUT cell (the katana's split) acts too: its twin-motif tile has its
+	//     own rig, the symbol's rig twice (game/meshWin/splitRig.ts).
+	const MESH_LIFT = 0.09;
+	const POP = 0.1;
+	const ACT_SPEED_FAST = 1.35;
+	const actSpeed = (fast: boolean) => (stateBet.isTurbo ? 2 : 1) * (fast ? ACT_SPEED_FAST : 1);
+	let presentSpeed = $state(1);
+	const PULSE_RATE_MS = 225;
+	const ARRIVE_MS = 160;
+	const SCRIM_FADE_MS = 200;
+	const TICK_MS = 32;
+	const cellNoise = (reel: number, row: number) => {
+		const n = Math.sin(reel * 127.1 + row * 311.7) * 43758.5453;
+		return n - Math.floor(n);
+	};
+	let clock = $state(0);
+	let reelBornAt = $state<number[]>([]);
+	let showBornAt = 0;
+	const SPLIT_ASSET_KEY: Record<string, string> = {
+		H1: 'gbH1Split', H2: 'gbH2Split', H3: 'gbH3Split', H4: 'gbH4Split',
+		L1: 'gbL1Split', L2: 'gbL2Split', L3: 'gbL3Split', L4: 'gbL4Split', L5: 'gbL5Split',
+		W: 'gbWSplit',
+	};
 
 	let wins = $state<WinWayData[]>([]);
 	// Reels revealed so far: the wake runs left to right, which is the direction
@@ -152,6 +195,20 @@
 	// keep animating a board that has already started spinning again.
 	let generation = 0;
 
+	$effect(() => {
+		if (!show) return;
+		const id = setInterval(() => {
+			clock = performance.now();
+		}, TICK_MS);
+		return () => clearInterval(id);
+	});
+
+	// is this cell showing its cut (twin-motif) tile? Symbol.svelte's own test
+	const isSplitCell = (reel: number, row: number) => {
+		const raw = context.stateGame.board[reel]?.reelState.symbols[row]?.rawSymbol;
+		return !!raw && raw.multiplier === 2 && stateGame.splitCutReels.includes(reel);
+	};
+
 	const animatePositions = (positions: { reel: number; row: number }[]) => {
 		const fresh = positions.filter(
 			(p) =>
@@ -173,8 +230,25 @@
 			const usable = incoming.filter((w) => w.positions.length > 0);
 			if (usable.length === 0) return;
 
+			showBornAt = performance.now();
+			reelBornAt = [];
+			clock = showBornAt;
 			wins = usable;
 			show = true;
+			presentSpeed = actSpeed(!!fast);
+			// the longest act among the cells that will light, at this speed
+			const actMs = Math.max(
+				0,
+				...usable.flatMap((w) =>
+					w.positions
+						.filter((p) => p.row >= 1 && p.row <= BOARD_DIMENSIONS.y)
+						.map((p) => {
+							const name = context.stateGame.board[p.reel]?.reelState.symbols[p.row]?.rawSymbol.name;
+							const set = isSplitCell(p.reel, p.row) ? MESH_SPLIT : MESH_WINS;
+							return name && set[name] ? set[name].durationMs / presentSpeed : 0;
+						}),
+				),
+			);
 			context.eventEmitter.broadcast({ type: 'boardShow' });
 
 			const stagger = fast || stateBet.isTurbo ? REVEAL_STAGGER.fast : REVEAL_STAGGER.normal;
@@ -186,6 +260,7 @@
 
 			for (let reel = 0; reel <= lastReel; reel++) {
 				revealedReels = reel + 1;
+				reelBornAt[reel] = performance.now();
 				animatePositions(usable.flatMap((w) => w.positions.filter((p) => p.reel === reel)));
 				await waitForTimeout(stagger);
 				if (mine !== generation) return;
@@ -200,9 +275,13 @@
 			// Turbo opts out of the extended hold: there the player asked for speed
 			// and a clipped win animation is the trade they made.
 			const elapsed = (lastReel + 1) * stagger;
-			const hold = stateBet.isTurbo
+			const flatHold = stateBet.isTurbo
 				? HOLD_AFTER_MS
 				: Math.max(HOLD_AFTER_MS, WIN_ANIM_VISIBLE_MS - elapsed);
+			// The last reel's cells started acting one stagger ago; hold until
+			// their act is done — turbo too: an act cut off mid-leap snaps the tile
+			// back, which reads as a glitch rather than as speed.
+			const hold = Math.max(flatHold, actMs - stagger);
 			await waitForTimeout(hold);
 			if (mine !== generation) return;
 		},
@@ -234,9 +313,90 @@
 		},
 	});
 
+	const easeOutCubic = (p: number) => 1 - (1 - p) ** 3;
+
+	// Every lit cell as something drawable, re-derived on the tick
+	const popCells = $derived.by(() => {
+		const now = clock;
+		const out: {
+			key: string;
+			cx: number;
+			cy: number;
+			assetKey: string;
+			symbol: string;
+			mesh: boolean;
+			split: boolean;
+			w: number;
+			h: number;
+			pulse: number;
+			arrive: number;
+			snap: number;
+			flare: number;
+		}[] = [];
+		for (const key of litCells) {
+			const [reel, row] = key.split(',').map(Number);
+			const reelSymbol = context.stateGame.board[reel]?.reelState.symbols[row];
+			if (!reelSymbol) continue;
+			const info = getSymbolInfo({ rawSymbol: reelSymbol.rawSymbol, state: 'win' });
+			if (info.type !== 'sprite') continue;
+			const name = reelSymbol.rawSymbol.name;
+			const split = isSplitCell(reel, row);
+			const noise = cellNoise(reel, row);
+			const rate = PULSE_RATE_MS * (0.9 + noise * 0.2);
+			const age = Math.max(0, now - (reelBornAt[reel] ?? now));
+			out.push({
+				key,
+				cx: cellX(reel) + SYMBOL_SIZE / 2,
+				cy: cellY(row) + SYMBOL_SIZE / 2,
+				assetKey: split ? (SPLIT_ASSET_KEY[name] ?? info.assetKey) : info.assetKey,
+				symbol: name,
+				mesh: name in (split ? MESH_SPLIT : MESH_WINS),
+				split,
+				w: SYMBOL_SIZE * info.sizeRatios.width,
+				h: SYMBOL_SIZE * info.sizeRatios.height,
+				pulse: 0.5 + 0.5 * Math.sin(age / rate + noise * Math.PI * 2),
+				arrive: easeOutCubic(Math.min(1, age / ARRIVE_MS)),
+				snap: 1 + 0.08 * (1 - easeOutCubic(Math.min(1, age / ARRIVE_MS))),
+				flare: Math.max(0, 1 - age / 260) ** 2,
+			});
+		}
+		return out;
+	});
+
+	// THE FRAME AND THE SHADOW (Boat's): a tile wins the way a card is picked
+	// up — a soft dark shadow under it and a crisp frame on its own edge that
+	// snaps in as the wake reaches the reel and flashes white once. Drawn in
+	// three passes — every shadow, then every tile, then every frame — so no
+	// cell's shadow or frame can land on a neighbour's tile.
+	const FRAME_R = SYMBOL_SIZE * 0.065;
+	const drawShadow = (g: PixiGraphics, half: number, arrive: number) => {
+		g.clear();
+		for (const [grow, a] of [
+			[10, 0.08],
+			[6, 0.12],
+			[3, 0.16],
+			[0, 0.2],
+		] as [number, number][]) {
+			g.roundRect(-half - grow, -half - grow + 5, (half + grow) * 2, (half + grow) * 2, FRAME_R + grow);
+			g.fill({ color: 0x000000, alpha: a * arrive });
+		}
+	};
+	const drawFrame = (g: PixiGraphics, half: number, arrive: number, flare: number) => {
+		g.clear();
+		g.roundRect(-half, -half, half * 2, half * 2, FRAME_R);
+		g.stroke({ width: 5, color: 0x0a0804, alpha: 0.85 * arrive, alignment: 1 });
+		g.roundRect(-half + 1, -half + 1, half * 2 - 2, half * 2 - 2, FRAME_R - 1);
+		g.stroke({ width: 2.5, color: flare > 0.01 ? 0xffffff : 0xffd05a, alpha: arrive });
+		g.roundRect(-half + 4, -half + 4, half * 2 - 8, half * 2 - 8, FRAME_R - 3);
+		g.stroke({ width: 1, color: 0xfff6d6, alpha: (0.4 + 0.6 * flare) * arrive });
+	};
+
 	const draw = (g: PixiGraphics) => {
 		g.clear();
 		if (!show || wins.length === 0) return;
+		const now = clock;
+		// the board goes down over 200ms, not on one frame
+		const scrim = SCRIM_ALPHA * Math.min(1, (now - showBornAt) / SCRIM_FADE_MS);
 
 		// Dim every cell that is not part of a win. Reels the wake has not reached
 		// yet are dimmed whole, so the board darkens ahead of the reveal and the
@@ -247,22 +407,7 @@
 				g.rect(cellX(reel), cellY(row), SYMBOL_SIZE, SYMBOL_SIZE);
 			}
 		}
-		g.fill({ color: SCRIM, alpha: SCRIM_ALPHA });
-
-		// A frame around each winning cell. Drawn after the scrim so it sits over
-		// the boundary between a lit cell and a dimmed neighbour, which is where
-		// the eye looks for the edge of a win.
-		const inset = 3;
-		for (const key of litCells) {
-			const [reel, row] = key.split(',').map(Number);
-			g.rect(
-				cellX(reel) + inset,
-				cellY(row) + inset,
-				SYMBOL_SIZE - inset * 2,
-				SYMBOL_SIZE - inset * 2,
-			);
-		}
-		g.stroke({ width: 3, color: FRAME, alpha: 0.9 });
+		g.fill({ color: SCRIM, alpha: scrim });
 	};
 </script>
 
@@ -270,6 +415,51 @@
 	<BoardContainer>
 		<Container zIndex={10}>
 			<Graphics {draw} />
+
+			<!-- the winning symbols, popped above the scrim (see THE SYMBOLS ACT).
+			     Three passes: shadows, tiles, frames. -->
+			{#each popCells as cell (cell.key)}
+				{@const lift = 1 + (cell.mesh ? MESH_LIFT : POP * cell.pulse) * cell.arrive}
+				<Graphics x={cell.cx} y={cell.cy} draw={(g) => drawShadow(g, (cell.w * lift) / 2, cell.arrive)} />
+			{/each}
+			{#each popCells as cell (cell.key)}
+				<Container x={cell.cx} y={cell.cy} scale={1 + (cell.mesh ? MESH_LIFT : POP * cell.pulse) * cell.arrive}>
+					{#if cell.mesh}
+						<!-- the symbol acting (SymbolMeshWin draws into this container).
+						     A leaping one leaves only its plate here: its subject is drawn
+						     in the last pass, above everything -->
+						<Container zIndex={1}>
+							<SymbolMeshWin
+								symbolName={cell.symbol}
+								split={cell.split}
+								width={cell.w}
+								height={cell.h}
+								speed={presentSpeed}
+								part={!cell.split && MESH_WINS[cell.symbol].leaps ? 'plate' : 'all'}
+							/>
+						</Container>
+					{:else}
+						<Sprite key={cell.assetKey} anchor={0.5} width={cell.w} height={cell.h} zIndex={1} />
+					{/if}
+				</Container>
+			{/each}
+			{#each popCells as cell (cell.key)}
+				{@const lift = 1 + (cell.mesh ? MESH_LIFT : POP * cell.pulse) * cell.arrive}
+				<Graphics
+					x={cell.cx}
+					y={cell.cy}
+					scale={cell.snap}
+					draw={(g) => drawFrame(g, (cell.w * lift) / 2, cell.arrive, cell.flare)}
+				/>
+			{/each}
+			<!-- THE LEAPERS: the subjects that jump out of their cells, above every
+			     cell and frame, so they cross their neighbours rather than vanish
+			     under them (game/meshWin/leaps.ts) -->
+			{#each popCells.filter((c) => c.mesh && !c.split && MESH_WINS[c.symbol].leaps) as cell (cell.key)}
+				<Container x={cell.cx} y={cell.cy} scale={1 + MESH_LIFT * cell.arrive}>
+					<SymbolMeshWin symbolName={cell.symbol} width={cell.w} height={cell.h} speed={presentSpeed} part="subject" />
+				</Container>
+			{/each}
 			{#if revealedReels > 0 && current}
 				{@const y = BOARD_SIZES.height + SYMBOL_SIZE * 0.3}
 				<!-- icon then count, as one centred pair: the icon is anchored on its

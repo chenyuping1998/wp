@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import runpy
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -21,6 +22,15 @@ DEST.mkdir(parents=True, exist_ok=True)
 
 source = Image.open(SOURCE).convert('RGBA')
 body_source = Image.open(BODY).convert('RGBA')
+
+# THE FLOWING ACCESSORIES (design/ninja_flow.py): the headband tails, the sash
+# end, the braided cord and the banana charm come off the body sheet as their
+# own meshes on bone chains with physics; the apron under the hanging ones is
+# repainted so a swing uncovers cloth.
+sys.path.insert(0, str(ROOT / 'design'))
+import ninja_flow  # noqa: E402
+
+body_source, flow_parts = ninja_flow.cut(body_source)
 
 # The body is continuous from head to feet, including shoulders and upper
 # arms.  Only the lower forearms move, so the shoulder/waist seams cannot open.
@@ -42,7 +52,15 @@ for name, box in regions.items():
         alpha[:6] = 0
     if name == 'armR_fore':
         alpha[:6] = 0
+    if name in ('armL_fore', 'armR_fore'):
+        # one piece only: the right forearm's crop caught a gold fleck of the
+        # neighbouring part on the sheet, which rode under its hand (2026-10-04)
+        largest = ninja_flow._components(alpha > 0)
+        if largest is not None:
+            alpha[~largest] = 0
     part.putalpha(Image.fromarray(alpha))
+    parts[name] = part
+for name, (part, _box) in flow_parts.items():
     parts[name] = part
 
 # Shelf pack into one texture page.  The atlas keeps original width and height
@@ -102,6 +120,16 @@ bones = [
     {'name': 'sheathBone', 'parent': 'hip', 'x': -117, 'y': 235, 'rotation': -30},
 ]
 
+
+# the accessories' chains and the apron's hem bones, placed on the sheet, each
+# pointing along what it carries (ninja_flow: physics needs a direction)
+for fb in ninja_flow.FLOW_BONES:
+    wx, wy = ninja_flow.to_world(*fb['px'])
+    lx, ly = ninja_flow.to_local(bones, fb['parent'], wx, wy)
+    pr = ninja_flow.bone_world(bones, fb['parent'])[2]
+    bones.append({'name': fb['name'], 'parent': fb['parent'], 'x': round(lx, 3), 'y': round(ly, 3),
+                  'rotation': round(fb['angle'] - pr, 3), 'length': round(fb['length'], 2)})
+
 slot_bones = [
     ('sheath', 'sheathBone', 'sheath'),
     ('body', 'torso', 'body'),
@@ -112,6 +140,11 @@ slot_bones = [
     ('armL_fore', 'armL_fore', 'armL_fore'),
     ('katana', 'prop', None),
 ]
+# the accessories draw over the body, before the grip and the forearms
+FLOW_SLOT_BONES = {'band_tails': 'head', 'charm': 'charm', 'sash_end': 'hip', 'cord_end': 'hip'}
+at = [n for n, _, _ in slot_bones].index('body') + 1
+for name in reversed(ninja_flow.SLOTS):
+    slot_bones.insert(at, (name, FLOW_SLOT_BONES[name], name))
 slots = []
 for name, bone, attachment in slot_bones:
     slot = {'name': name, 'bone': bone}
@@ -127,6 +160,8 @@ bone_pixel = {
 }
 attachments = {}
 for name, bone, _ in slot_bones:
+    if name in FLOW_SLOT_BONES:
+        continue  # ninja_flow.add writes their meshes
     if name == 'katana':
         # All three views share the same top edge (y=170). At pickup the prop
         # bone is aligned with the scabbard mouth and rotated to the same -30°.
@@ -244,22 +279,42 @@ scatter = {
 }
 # Anubis's load → leap → landing → small second hop, within this body's
 # stricter deformation budget. The victory pose resolves back to neutral.
+# THE BIG-WIN CHEER, REDONE (2026-10-04, "大獎時人物手臂動作很不自然").
+#
+# The forearms are separate attachments hinged at the elbow, but the UPPER arms
+# are part of the one-piece body mesh and do not move. The first cheer swung
+# the forearms out 55-62 degrees: with the upper arm standing still, that reads
+# as two broken elbows — wings sticking out sideways. An elbow on this rig can
+# only bend a little before the joint shows (mesh-cast-rig §4: on a mesh the
+# arms act through shape, the size comes from the root lift).
+#
+# So the celebration now comes from the BODY: the crouch and the leap (hip),
+# the chest swelling on the way up (torso scale), the head thrown back with
+# the leap and nodding on the landing, and everything that hangs off him —
+# headband tails, sash, cord, charm — flung by the physics. The forearms only
+# pump: out to 16 degrees at most, a short snap on each beat.
 cheer = {'bones': {
-    'hip': {'translate': move([(0,0,0),(.18,0,-10),(.42,0,30),(.66,0,0),(.78,0,-5),(1.03,0,13),(1.28,0,0),(2.05,0,0)])},
+    'hip': {'translate': move([(0,0,0),(.18,0,-12),(.42,0,34),(.66,0,0),(.78,0,-6),(1.03,0,14),(1.28,0,0),(2.05,0,0)])},
     'torso': {
-        'scale': scale([(0,1,1),(.18,1.012,.982),(.42,.991,1.018),(.66,1.005,.995),(1.03,.996,1.008),(1.28,1,1),(2.05,1,1)]),
+        'scale': scale([(0,1,1),(.18,1.014,.98),(.42,.99,1.022),(.66,1.006,.994),(1.03,.995,1.01),(1.28,1,1),(2.05,1,1)]),
         'rotate': rotation([(0,0),(.18,2),(.42,-3),(.9,2),(1.28,0),(2.05,0)]),
     },
-    'armL_fore': {'rotate': rotation([(0,0),(.16,14),(.42,-55),(.66,-48),(1.02,-62),(1.34,-38),(2.05,0)])},
-    'armR_fore': {'rotate': rotation([(0,0),(.16,-14),(.42,55),(.66,48),(1.02,62),(1.34,38),(2.05,0)])},
+    'head': {'rotate': rotation([(0,0),(.18,-2),(.42,4),(.66,-1.5),(1.03,3),(1.34,0),(2.05,0)])},
+    'armL_fore': {'rotate': rotation([(0,0),(.16,5),(.42,-14),(.58,-8),(.78,-12),(1.02,-16),(1.34,-6),(2.05,0)])},
+    'armR_fore': {'rotate': rotation([(0,0),(.16,-5),(.42,14),(.58,8),(.78,12),(1.02,16),(1.34,6),(2.05,0)])},
 }}
 # Low-amplitude celebration under a long big-win count-up; unlike the cheer it
-# can loop without carrying a jump pose indefinitely.
+# can loop without carrying a jump pose indefinitely. A bounce and a sway of
+# the shoulders, the head bobbing on the beat; the forearms only ride along.
 dance = {'bones': {
-    'hip': {'translate': move([(0,0,0),(.6,0,7),(1.2,0,0),(1.8,0,5),(2.4,0,0)], True)},
-    'torso': {'scale': scale([(0,1,1),(.6,.998,1.008),(1.2,1,1),(1.8,.998,1.006),(2.4,1,1)], True)},
-    'armL_fore': {'rotate': rotation([(0,0),(.6,-24),(1.2,-6),(1.8,-18),(2.4,0)], True)},
-    'armR_fore': {'rotate': rotation([(0,0),(.6,18),(1.2,4),(1.8,26),(2.4,0)], True)},
+    'hip': {'translate': move([(0,0,0),(.6,0,9),(1.2,0,0),(1.8,0,7),(2.4,0,0)], True)},
+    'torso': {
+        'scale': scale([(0,1,1),(.6,.997,1.01),(1.2,1,1),(1.8,.997,1.008),(2.4,1,1)], True),
+        'rotate': rotation([(0,0),(.6,1.6),(1.2,0),(1.8,-1.6),(2.4,0)], True),
+    },
+    'head': {'rotate': rotation([(0,0),(.3,-1.5),(.6,1.5),(.9,-1.5),(1.2,0),(1.5,-1.5),(1.8,1.5),(2.1,-1.5),(2.4,0)], True)},
+    'armL_fore': {'rotate': rotation([(0,0),(.6,-8),(1.2,-3),(1.8,-6),(2.4,0)], True)},
+    'armR_fore': {'rotate': rotation([(0,0),(.6,6),(1.2,2),(1.8,8),(2.4,0)], True)},
 }}
 nod = {'bones': {
     'torso': {'scale': scale([(0,1,1),(.3,1.002,1.007),(.6,1,1),(1,1,1)])},
@@ -279,6 +334,7 @@ rig = {
     'animations': {'idle': idle, 'slash': slash, 'scatter_slash': scatter,
                    'cheer': cheer, 'dance': dance, 'nod': nod, 'throwit': throwit},
 }
+ninja_flow.add(rig)
 (DEST / 'ninja.json').write_text(json.dumps(rig, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 runpy.run_path(str(ROOT / 'design/add_ninja_body_mesh.py'))
 print('Wrote', DEST / 'ninja.json', 'and', DEST / 'ninja.png')

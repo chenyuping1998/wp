@@ -40,6 +40,12 @@
 		src: new URL('../../assets/sprites/goBananasFx/fx_leaf.png', import.meta.url).href,
 		preload: true,
 	},
+	// matter, not light (meshWin/fx.ts): bubbles, spray, smoke, grit — copied
+	// from GoBananasBoat's set
+	fxBubble: { type: 'sprite', src: new URL('../../assets/sprites/goBananasFx/fx_bubble.png', import.meta.url).href, preload: true },
+	fxDrop: { type: 'sprite', src: new URL('../../assets/sprites/goBananasFx/fx_drop.png', import.meta.url).href, preload: true },
+	fxPuff: { type: 'sprite', src: new URL('../../assets/sprites/goBananasFx/fx_puff.png', import.meta.url).href, preload: true },
+	fxScrap: { type: 'sprite', src: new URL('../../assets/sprites/goBananasFx/fx_scrap.png', import.meta.url).href, preload: true },
 	fxVignette: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasFx/fx_vignette.png', import.meta.url).href,
@@ -113,7 +119,9 @@
 	// and rivets. See design/generate_symbols_gen2.mjs for where this is cut.
 	gbGrenade: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/grenade.png', import.meta.url).href,
+		// the ninja's SMOKE BOMB (design/make_bomb_prop.py), not the inherited
+		// pineapple grenade; the key keeps its old name so its users need no change
+		src: new URL('../../assets/sprites/goBananinjaMesh/bomb_prop.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH3: {
@@ -168,6 +176,93 @@
 	gbL5Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_split.png', import.meta.url).href, preload: true },
 	gbWSplit: { type: 'sprite', src: new URL('../../assets/sprites/goBananasSymbolsV3/w_split.png', import.meta.url).href, preload: true },
 
+	// THE MESH WINS' LAYERS (design/make_symbol_layers.py): each winning symbol
+	// split into the slate with the subject lifted off it, the subject, its soft
+	// shadow and a baked light sweep; the Wild (panel mode) only needs its glow
+	// and sweep. Preloaded: a symbol's win, landing and idle all draw from them.
+	gbH1Plate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h1_plate.png', import.meta.url).href, preload: true },
+	gbH1Subject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h1_subject.png', import.meta.url).href, preload: true },
+	gbH1Shadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h1_shadow.png', import.meta.url).href, preload: true },
+	gbH1Sheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h1_sheen.png', import.meta.url).href, preload: true },
+	gbH2Plate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h2_plate.png', import.meta.url).href, preload: true },
+	gbH2Subject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h2_subject.png', import.meta.url).href, preload: true },
+	gbH2Shadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h2_shadow.png', import.meta.url).href, preload: true },
+	gbH2Sheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h2_sheen.png', import.meta.url).href, preload: true },
+	gbH3Plate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h3_plate.png', import.meta.url).href, preload: true },
+	gbH3Subject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h3_subject.png', import.meta.url).href, preload: true },
+	gbH3Shadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h3_shadow.png', import.meta.url).href, preload: true },
+	gbH3Sheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h3_sheen.png', import.meta.url).href, preload: true },
+	gbH4Plate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h4_plate.png', import.meta.url).href, preload: true },
+	gbH4Subject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h4_subject.png', import.meta.url).href, preload: true },
+	gbH4Shadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h4_shadow.png', import.meta.url).href, preload: true },
+	gbH4Sheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h4_sheen.png', import.meta.url).href, preload: true },
+	gbSPlate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/s_plate.png', import.meta.url).href, preload: true },
+	gbSSubject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/s_subject.png', import.meta.url).href, preload: true },
+	gbSShadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/s_shadow.png', import.meta.url).href, preload: true },
+	gbSSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/s_sheen.png', import.meta.url).href, preload: true },
+	gbL1Plate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l1_plate.png', import.meta.url).href, preload: true },
+	gbL1Subject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l1_subject.png', import.meta.url).href, preload: true },
+	gbL1Shadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l1_shadow.png', import.meta.url).href, preload: true },
+	gbL1Sheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l1_sheen.png', import.meta.url).href, preload: true },
+	gbL2Plate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l2_plate.png', import.meta.url).href, preload: true },
+	gbL2Subject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l2_subject.png', import.meta.url).href, preload: true },
+	gbL2Shadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l2_shadow.png', import.meta.url).href, preload: true },
+	gbL2Sheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l2_sheen.png', import.meta.url).href, preload: true },
+	gbL3Plate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l3_plate.png', import.meta.url).href, preload: true },
+	gbL3Subject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l3_subject.png', import.meta.url).href, preload: true },
+	gbL3Shadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l3_shadow.png', import.meta.url).href, preload: true },
+	gbL3Sheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l3_sheen.png', import.meta.url).href, preload: true },
+	gbL4Plate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l4_plate.png', import.meta.url).href, preload: true },
+	gbL4Subject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l4_subject.png', import.meta.url).href, preload: true },
+	gbL4Shadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l4_shadow.png', import.meta.url).href, preload: true },
+	gbL4Sheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l4_sheen.png', import.meta.url).href, preload: true },
+	gbL5Plate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l5_plate.png', import.meta.url).href, preload: true },
+	gbL5Subject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l5_subject.png', import.meta.url).href, preload: true },
+	gbL5Shadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l5_shadow.png', import.meta.url).href, preload: true },
+	gbL5Sheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l5_sheen.png', import.meta.url).href, preload: true },
+	gbWGlow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/w_glow.png', import.meta.url).href, preload: true },
+	gbWSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/w_sheen.png', import.meta.url).href, preload: true },
+
+	// the split tiles' layers (the katana's cut cell, splitRig.ts)
+	gbH1SPlate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h1s_plate.png', import.meta.url).href, preload: true },
+	gbH1SSubject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h1s_subject.png', import.meta.url).href, preload: true },
+	gbH1SShadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h1s_shadow.png', import.meta.url).href, preload: true },
+	gbH1SSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h1s_sheen.png', import.meta.url).href, preload: true },
+	gbH2SPlate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h2s_plate.png', import.meta.url).href, preload: true },
+	gbH2SSubject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h2s_subject.png', import.meta.url).href, preload: true },
+	gbH2SShadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h2s_shadow.png', import.meta.url).href, preload: true },
+	gbH2SSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h2s_sheen.png', import.meta.url).href, preload: true },
+	gbH3SPlate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h3s_plate.png', import.meta.url).href, preload: true },
+	gbH3SSubject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h3s_subject.png', import.meta.url).href, preload: true },
+	gbH3SShadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h3s_shadow.png', import.meta.url).href, preload: true },
+	gbH3SSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h3s_sheen.png', import.meta.url).href, preload: true },
+	gbH4SPlate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h4s_plate.png', import.meta.url).href, preload: true },
+	gbH4SSubject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h4s_subject.png', import.meta.url).href, preload: true },
+	gbH4SShadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h4s_shadow.png', import.meta.url).href, preload: true },
+	gbH4SSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/h4s_sheen.png', import.meta.url).href, preload: true },
+	gbL1SPlate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l1s_plate.png', import.meta.url).href, preload: true },
+	gbL1SSubject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l1s_subject.png', import.meta.url).href, preload: true },
+	gbL1SShadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l1s_shadow.png', import.meta.url).href, preload: true },
+	gbL1SSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l1s_sheen.png', import.meta.url).href, preload: true },
+	gbL2SPlate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l2s_plate.png', import.meta.url).href, preload: true },
+	gbL2SSubject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l2s_subject.png', import.meta.url).href, preload: true },
+	gbL2SShadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l2s_shadow.png', import.meta.url).href, preload: true },
+	gbL2SSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l2s_sheen.png', import.meta.url).href, preload: true },
+	gbL3SPlate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l3s_plate.png', import.meta.url).href, preload: true },
+	gbL3SSubject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l3s_subject.png', import.meta.url).href, preload: true },
+	gbL3SShadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l3s_shadow.png', import.meta.url).href, preload: true },
+	gbL3SSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l3s_sheen.png', import.meta.url).href, preload: true },
+	gbL4SPlate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l4s_plate.png', import.meta.url).href, preload: true },
+	gbL4SSubject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l4s_subject.png', import.meta.url).href, preload: true },
+	gbL4SShadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l4s_shadow.png', import.meta.url).href, preload: true },
+	gbL4SSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l4s_sheen.png', import.meta.url).href, preload: true },
+	gbL5SPlate: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l5s_plate.png', import.meta.url).href, preload: true },
+	gbL5SSubject: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l5s_subject.png', import.meta.url).href, preload: true },
+	gbL5SShadow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l5s_shadow.png', import.meta.url).href, preload: true },
+	gbL5SSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/l5s_sheen.png', import.meta.url).href, preload: true },
+	gbWSGlow: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/ws_glow.png', import.meta.url).href, preload: true },
+	gbWSSheen: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaMesh/ws_sheen.png', import.meta.url).href, preload: true },
+
 	// bet-bar button icons (design/generate_ui_icons.mjs) — brass drawn icons
 	// replacing the template's text/emoji glyphs
 	gbIconMenu: {
@@ -217,6 +312,19 @@
 		src: new URL('../../assets/sprites/goBananasUiIcons/replay.png', import.meta.url).href,
 		preload: true,
 	},
+
+	// the PLATFORM bar's icons (GoBananasBoat / GoBananubis): flat white with a
+	// thin dark contour, the same shapes as the brass set — so every button on
+	// the bar, Auto Spin included, matches the rest of the family
+	gbIconMonoMenu: { type: 'sprite', src: new URL('../../assets/sprites/goBananasUiIconsMono/menu.png', import.meta.url).href, preload: true },
+	gbIconMonoMenuExit: { type: 'sprite', src: new URL('../../assets/sprites/goBananasUiIconsMono/menuExit.png', import.meta.url).href, preload: true },
+	gbIconMonoSettings: { type: 'sprite', src: new URL('../../assets/sprites/goBananasUiIconsMono/settings.png', import.meta.url).href, preload: true },
+	gbIconMonoInfo: { type: 'sprite', src: new URL('../../assets/sprites/goBananasUiIconsMono/info.png', import.meta.url).href, preload: true },
+	gbIconMonoPayTable: { type: 'sprite', src: new URL('../../assets/sprites/goBananasUiIconsMono/payTable.png', import.meta.url).href, preload: true },
+	gbIconMonoSoundOn: { type: 'sprite', src: new URL('../../assets/sprites/goBananasUiIconsMono/soundOn.png', import.meta.url).href, preload: true },
+	gbIconMonoSoundOff: { type: 'sprite', src: new URL('../../assets/sprites/goBananasUiIconsMono/soundOff.png', import.meta.url).href, preload: true },
+	gbIconMonoAutoSpin: { type: 'sprite', src: new URL('../../assets/sprites/goBananasUiIconsMono/autoSpin.png', import.meta.url).href, preload: true },
+	gbIconMonoReplay: { type: 'sprite', src: new URL('../../assets/sprites/goBananasUiIconsMono/replay.png', import.meta.url).href, preload: true },
 
 	gbS: {
 		type: 'sprite',

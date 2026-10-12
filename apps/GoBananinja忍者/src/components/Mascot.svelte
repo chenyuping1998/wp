@@ -139,6 +139,11 @@
 				},
 			}}
 		/>
+		<!-- TRACK 1, ALWAYS: the headband tails, sash end, braided cord, banana
+		     charm and apron hem (design/ninja_flow.py). It keys only those bones,
+		     so it plays under every action on track 0; Spine physics adds the
+		     follow-through when the body moves. -->
+		<SpineTrack trackIndex={1} animationName="flutter" loop />
 	</SpineProvider>
 	<Container x={placement.x} y={placement.y} scale={placement.scale}>
 		<Graphics draw={drawTease} blendMode="add" />

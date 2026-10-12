@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { Container, Mesh, MeshGeometry, type Texture } from 'pixi.js';
 	import { getContextApp, getContextParent } from 'pixi-svelte';
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { makeGrid, poseBackground, poseSymbol } from '../game/gridMotion';
+	import { makeBackgroundLighting } from '../game/sceneLighting';
 
 	type Props = {
 		assetKey: string;
@@ -24,6 +25,15 @@
 	let builtKey = '';
 	let grid: ReturnType<typeof makeGrid> | undefined;
 	let positions: Float32Array | undefined;
+	onMount(() => {
+		if (props.kind !== 'background') return;
+		const filter = makeBackgroundLighting();
+		root.filters = [filter];
+		return () => {
+			root.filters = [];
+			filter.destroy();
+		};
+	});
 
 	$effect(() => {
 		const assetKey = props.assetKey;

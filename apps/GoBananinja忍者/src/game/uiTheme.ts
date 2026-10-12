@@ -28,7 +28,9 @@ setUiTheme({
 	buttonBorder: 0x667e87,
 	buttonBorderWidth: 2,
 	buttonBorderWidthActive: 5,
-	buttonIconFill: 0xf5e8cc,
+	// white, as on Boat's and Bananubis's platform bars: it reaches the vector
+	// turbo bolt; every other icon is the white mono set below
+	buttonIconFill: 0xffffff,
 	buttonIconStroke: 0x09141b,
 
 	betFill: 0x962e38,
@@ -114,8 +116,9 @@ setUiTheme({
 	hoverHighlight: true,
 	pressFeedback: true,
 
-	// 旋轉鍵的呼吸光暈
-	spinButtonGlow: true,
+	// The platform bar's spin button has no halo (Boat, Bananubis): their
+	// .CircleButton has :hover and :active states and a 125ms transition only.
+	spinButtonGlow: false,
 
 	// The readouts use Boat's clean flat casing. The rare feature-buy action
 	// keeps its own ninja crest and a matching lit hover layer.
@@ -124,17 +127,22 @@ setUiTheme({
 		buyBonusGlyph: 'gbUiBuyBonusLit',
 	},
 
-	// drawn brass icons in place of the template's text/emoji button glyphs
+	// THE SAME ICONS AS THE REST OF THE FAMILY (2026-10-04, asked for: the Auto
+	// Spin button and the bar have to match Anubis and Boat). Boat and Bananubis
+	// ship the platform skin, whose icons are the flat white mono set; this bar
+	// still drew the brass set, so its Auto Spin, menu and sound buttons were the
+	// odd ones out. UiButton draws these as untinted sprites, so they have to be
+	// SWAPPED — recolouring buttonIconFill reaches only the turbo bolt.
 	icons: {
-		menu: 'gbIconMenu',
-		menuExit: 'gbIconMenuExit',
-		settings: 'gbIconSettings',
-		info: 'gbIconInfo',
-		payTable: 'gbIconPayTable',
-		soundOn: 'gbIconSoundOn',
-		soundOff: 'gbIconSoundOff',
-		autoSpin: 'gbIconAutoSpin',
-		replay: 'gbIconReplay',
+		menu: 'gbIconMonoMenu',
+		menuExit: 'gbIconMonoMenuExit',
+		settings: 'gbIconMonoSettings',
+		info: 'gbIconMonoInfo',
+		payTable: 'gbIconMonoPayTable',
+		soundOn: 'gbIconMonoSoundOn',
+		soundOff: 'gbIconMonoSoundOff',
+		autoSpin: 'gbIconMonoAutoSpin',
+		replay: 'gbIconMonoReplay',
 		// turbo deliberately omitted: UiButton draws it as a vector bolt so it can
 		// be hollow when off and fill in when active — a static sprite can't toggle
 	},

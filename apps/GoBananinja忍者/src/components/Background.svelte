@@ -70,8 +70,7 @@
 		g.clear();
 
 		// Keep beams very subtle and in the upper area so they don't distract from reels.
-		g.beginFill(0xfff0b8, 0.05);
-		g.drawPolygon([
+		g.poly([
 			centerX - width * 0.018,
 			0,
 			centerX + width * 0.018,
@@ -80,11 +79,9 @@
 			beamReachY,
 			centerX - width * 0.22,
 			beamReachY,
-		]);
-		g.endFill();
+		]).fill({ color: 0xfff0b8, alpha: 0.05 });
 
-		g.beginFill(0xffd43b, 0.035);
-		g.drawPolygon([
+		g.poly([
 			centerX + width * 0.11,
 			0,
 			centerX + width * 0.135,
@@ -93,8 +90,7 @@
 			beamReachY * 0.9,
 			centerX + width * 0.26,
 			beamReachY * 0.9,
-		]);
-		g.endFill();
+		]).fill({ color: 0xffd43b, alpha: 0.035 });
 	};
 
 	onMount(() => {

@@ -153,13 +153,9 @@
 				const w = context.stateLayoutDerived.mainLayout().width;
 				const h = context.stateLayoutDerived.mainLayout().height;
 				g.clear();
-				g.beginFill(0x0b1525, 0.72);
-				g.drawRect(0, 0, w, h);
-				g.endFill();
+				g.rect(0, 0, w, h).fill({ color: 0x0b1525, alpha: 0.72 });
 
-				g.beginFill(0x000000, 0.22);
-				g.drawRect(0, h * 0.72, w, h * 0.28);
-				g.endFill();
+				g.rect(0, h * 0.72, w, h * 0.28).fill({ color: 0x000000, alpha: 0.22 });
 			}}
 		/>
 
@@ -226,15 +222,11 @@
 					const barHeight = 4;
 					g.clear();
 					// Background track
-					g.beginFill(0x38221c, 0.82);
-					g.drawRoundedRect(-barWidth / 2, -barHeight / 2, barWidth, barHeight, 2);
-					g.endFill();
+					g.roundRect(-barWidth / 2, -barHeight / 2, barWidth, barHeight, 2).fill({ color: 0x38221c, alpha: 0.82 });
 					// Progress fill
 					const fillWidth = (barWidth * animatedProgress) / 100;
 					if (fillWidth > 0) {
-						g.beginFill(0xffd43b, 0.94);
-						g.drawRoundedRect(-barWidth / 2, -barHeight / 2, fillWidth, barHeight, 2);
-						g.endFill();
+						g.roundRect(-barWidth / 2, -barHeight / 2, fillWidth, barHeight, 2).fill({ color: 0xffd43b, alpha: 0.94 });
 					}
 				}}
 			/>
