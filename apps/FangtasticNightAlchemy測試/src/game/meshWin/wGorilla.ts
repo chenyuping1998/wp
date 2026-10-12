@@ -1,0 +1,149 @@
+/**
+ * W — THE ALCHEMIST GORILLA. A character, so it acts like one: ducks on the
+ * wind-up, comes up with its goggles jolting up off its brow and rattling
+ * back down, chomps the banana twice with the banana wagging on each bite,
+ * and gives one last chomp as it settles.
+ *
+ * PANEL mode, and the head fills the tile — the fur reaches y 5 and the
+ * jacket runs off the left, right and bottom edges — so, like GoBananubis's
+ * Wild, it cannot lift. The head bobs a few px about its neck and hands its
+ * weight back to the panel toward every edge; the size of the win is in the
+ * jaw, the banana and the goggles.
+ *
+ * NO LIGHT (2026-10-04).
+ *
+ * Coordinates are the 256 canvas (goBanalchemySymbols/w.png, 2026-10-04):
+ * goggles L (141,40) r~20 and R (188,48) r~19, strap (50,64)->(122,38),
+ * lips (110,135)->(190,150), banana from the mouth (136,144) down-left to
+ * (77,197), chin to y ~185.
+ */
+import {
+	bump,
+	circle,
+	flick,
+	panelParts,
+	polygon,
+	polyline,
+	ramp,
+	restPose,
+	smoothstep,
+	track,
+	union,
+	type MeshWinSpec,
+	type Rect,
+	type Rig,
+} from './meshRig';
+
+const INNER: Rect = [8, 8, 248, 248];
+const T = { crouch: 120, rise: 320, bite1: 420, bite2: 700, land: 1180, done: 1500 };
+
+const HEAD = polygon([[46, 112], [48, 72], [70, 40], [100, 14], [150, 5], [204, 18], [224, 52], [226, 104], [212, 142], [202, 172], [180, 192], [120, 194], [80, 176], [58, 144]]);
+const GOGGLES = union(circle([141, 40], 23), circle([188, 48], 22), polyline([[164, 42], [168, 46]], 8).dist);
+const JAW = polygon([[116, 142], [196, 142], [202, 176], [160, 190], [116, 180]]);
+const BANANA = polyline([[138, 146], [112, 156], [90, 172], [78, 198]], 14);
+// the whole drawing matters: the gorilla fills the tile
+const BODY = polygon([[10, 120], [46, 70], [100, 10], [150, 4], [210, 16], [236, 60], [246, 130], [246, 246], [10, 246]]);
+const edgeDepth = (p: [number, number]) => Math.min(p[0] - 4, p[1] - 2, 252 - p[0], 252 - p[1]);
+
+export const W: MeshWinSpec = {
+	symbol: 'W',
+	key: 'gbW',
+	sprite: 'gbW',
+	mode: 'panel',
+	feetY: INNER[3],
+	durationMs: T.done,
+	landMs: T.land,
+	hitMs: 300,
+	sparkAt: [164, 44],
+	inked: (p) => BODY(p) === 0,
+	rig: {
+		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 },
+		soft: 4,
+		parts: [
+			...panelParts(INNER),
+			{
+				name: 'head',
+				parent: 'panel',
+				// scaled about its neck; every edge hands back to the panel
+				pivot: [140, 190],
+				axis: [0, -1],
+				priority: 1,
+				dist: HEAD,
+				keep: (p) => smoothstep(edgeDepth(p) / 22),
+			},
+			{
+				name: 'goggles',
+				parent: 'head',
+				// they sit on the brow and jolt UP off it
+				pivot: [164, 66],
+				axis: [0, -1],
+				priority: 4,
+				dist: GOGGLES,
+				keep: (p) => smoothstep((p[1] - 6) / 14) * smoothstep((70 - p[1]) / 8),
+			},
+			{
+				name: 'jaw',
+				parent: 'head',
+				pivot: [156, 142],
+				axis: [0, 1],
+				priority: 3,
+				dist: JAW,
+				keep: (p) => smoothstep((p[1] - 138) / 14) * smoothstep(edgeDepth(p) / 16),
+			},
+			{
+				name: 'banana',
+				parent: 'jaw',
+				pivot: [138, 146],
+				axis: [-1, 0.9],
+				priority: 5,
+				dist: BANANA.dist,
+				keep: (p) => smoothstep((BANANA.along(p) - 6) / 16) * smoothstep(edgeDepth(p) / 14),
+			},
+		],
+	},
+	// geometric (check_mesh_wins.mjs W --limits, 2026-10-04) — see the gate
+	limits: {
+		panel: { pos: 0.5, neg: 0.5 },
+		head: { pos: 1.2, neg: 1.2 },
+		goggles: { pos: 3, neg: 3 },
+		jaw: { pos: 1, neg: 1 },
+		banana: { pos: 5, neg: 5 },
+	},
+	pose: (rig: Rig, t: number) => {
+		const pose = restPose(rig);
+		const b = (name: string) => pose.bones[rig.bones.findIndex((x) => x.name === name)];
+
+		// the head: ducks, comes up, a small bob and tilt while it chews
+		const head = b('head');
+		const chew = ramp(t, T.bite1 - 60, T.bite1) * (1 - ramp(t, T.bite2 + 240, T.bite2 + 360));
+		head.dy = track(t, [[0, 0], [T.crouch, 1.5, 'out'], [T.rise, -1.2, 'back'], [T.bite1, 0]]) + 1.2 * chew * Math.sin((2 * Math.PI * (t - T.bite1)) / 280);
+		head.along = track(t, [[0, 1], [T.crouch, 0.985, 'out'], [T.rise, 1.01, 'out'], [T.bite1 + 60, 1], [T.land - 20, 1], [T.land + 50, 0.985, 'out'], [T.done, 1, 'out']]);
+		head.across = track(t, [[0, 1], [T.crouch, 1.02, 'out'], [T.rise, 0.99, 'out'], [T.bite1 + 60, 1]]);
+		head.angle = HEAD_DEG * flick(t, T.rise, 1.4, 2.2);
+
+		// the goggles: jolted up off the brow on the rise, rattle back down
+		const goggles = b('goggles');
+		goggles.dy = -GOGGLE_LIFT * Math.max(0, bump(t, T.crouch + 60, T.rise + 120)) - 1.2 * flick(t, T.rise + 120, 4.2, 5) - 0.8 * flick(t, T.land, 4.5, 6);
+		goggles.angle = 2.2 * flick(t, T.rise, 2.6, 3.4) - 1.2 * flick(t, T.land, 3, 5);
+		goggles.across = 1 + 0.03 * bump(t, T.crouch + 60, T.rise + 120);
+
+		// two bites and a last one on the landing: the jaw closes (shorter) and
+		// the banana kicks with each
+		const bite = (t0: number) => bump(t, t0, t0 + 150);
+		const bites = bite(T.bite1) + bite(T.bite2) + 0.6 * bite(T.land);
+		const jaw = b('jaw');
+		jaw.along = 1 - 0.05 * bites;
+		jaw.dy = -2 * bites;
+		b('banana').angle =
+			BANANA_DEG * (flick(t, T.bite1, 3, 3.2) + 0.8 * flick(t, T.bite2, 3, 3.2) + 0.5 * flick(t, T.land, 3.4, 4.5));
+
+		pose.air = 0;
+		// no plate knock: the cell never moves (2026-10-04)
+		return pose;
+	},
+};
+
+// set from the measured limits
+const HEAD_DEG = 1;
+const GOGGLE_LIFT = 3;
+const BANANA_DEG = 3.5;

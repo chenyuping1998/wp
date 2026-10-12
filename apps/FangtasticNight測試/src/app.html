@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="%sveltekit.assets%/favicon.svg" />
+    <link rel="preload" as="image" href="%sveltekit.assets%/assets/loading-reference.webp" />
+    <link rel="preload" as="font" href="%sveltekit.assets%/fonts/Nunito.ttf" type="font/ttf" crossorigin />
+    <style>
+      @font-face { font-family: 'Nunito'; src: url('%sveltekit.assets%/fonts/Nunito.ttf') format('truetype'); font-weight: 200 1000; font-display: block; }
+      #boot-loader { position: fixed; inset: 0; z-index: 999; display: grid; place-items: center; background: #080514; color: #f0d0ff; font: 900 24px 'Nunito', system-ui, sans-serif; }
+      #boot-loader img { width: 72px; height: 72px; }
+    </style>
+    %sveltekit.head%
+  </head>
+  <body style="margin:0;overflow:hidden;background:#080514">
+    <div id="boot-loader"><img src="%sveltekit.assets%/loader.gif" alt="Loading" /></div>
+    <div>%sveltekit.body%</div>
+    <script>
+      window.setTimeout(() => {
+        const loader = document.getElementById('boot-loader');
+        if (loader) loader.innerHTML = '<div style="text-align:center;padding:24px"><p>Loading failed</p><button onclick="location.reload()" style="font:inherit;padding:8px 22px;cursor:pointer">Retry</button></div>';
+      }, 15000);
+    </script>
+  </body>
+</html>
