@@ -1,0 +1,60 @@
+{
+  "canvas": [
+    560,
+    912
+  ],
+  "layers": [
+    "head_0_hair",
+    "head_1_hair",
+    "head_2_face",
+    "head_3_ear",
+    "head_4_hat",
+    "head_5_decoration",
+    "torso_0_trunk",
+    "torso_1_decoration",
+    "torso_2_decoration",
+    "torso_3_decoration",
+    "torso_4_decoration",
+    "torso_5_decoration",
+    "left_arm_0_upper_arm",
+    "left_arm_1_forearm",
+    "left_arm_2_hand",
+    "right_arm_0_upper_arm",
+    "right_arm_1_forearm",
+    "right_arm_2_hand",
+    "left_leg_0_thigh",
+    "left_leg_1_calf",
+    "left_leg_2_foot",
+    "right_leg_0_thigh",
+    "right_leg_1_calf",
+    "right_leg_2_foot"
+  ],
+  "nonempty": [
+    "head_0_hair",
+    "head_1_hair",
+    "head_2_face",
+    "head_3_ear",
+    "head_4_hat",
+    "head_5_decoration",
+    "torso_0_trunk",
+    "torso_3_decoration",
+    "left_arm_0_upper_arm",
+    "left_arm_1_forearm",
+    "left_arm_2_hand",
+    "right_arm_0_upper_arm",
+    "right_arm_1_forearm",
+    "right_arm_2_hand",
+    "left_leg_0_thigh",
+    "left_leg_1_calf",
+    "left_leg_2_foot",
+    "right_leg_0_thigh",
+    "right_leg_1_calf",
+    "right_leg_2_foot"
+  ],
+  "empty_decorations": [
+    "torso_1_decoration",
+    "torso_2_decoration",
+    "torso_4_decoration",
+    "torso_5_decoration"
+  ]
+}

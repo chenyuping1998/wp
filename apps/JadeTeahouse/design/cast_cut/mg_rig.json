@@ -1,0 +1,465 @@
+{
+ "_note": "Jade Teahouse master: body re-cut on its own painting 2026-10-10 (Claude); head cut, neck, waist and hip kept as tuned.",
+ "out": "sushiMaster",
+ "root": [
+  280,
+  895
+ ],
+ "hip": [
+  285,
+  455
+ ],
+ "waist": [
+  285,
+  409
+ ],
+ "neck": [
+  280,
+  207
+ ],
+ "helmet": {
+  "at": [
+   285,
+   80
+  ],
+  "dir": [
+   285,
+   20
+  ]
+ },
+ "banana": {
+  "at": [
+   265,
+   160
+  ],
+  "dir": [
+   265,
+   205
+  ]
+ },
+ "pocket": {
+  "at": [
+   285,
+   460
+  ],
+  "dir": [
+   285,
+   410
+  ]
+ },
+ "cuffL": {
+  "at": [
+   130,
+   314
+  ],
+  "dir": [
+   124,
+   394
+  ]
+ },
+ "cuffR": {
+  "at": [
+   434,
+   327
+  ],
+  "dir": [
+   443,
+   403
+  ]
+ },
+ "handL": [
+  118,
+  558
+ ],
+ "handR": [
+  459,
+  565
+ ],
+ "prop": [
+  123,
+  576
+ ],
+ "pantL": {
+  "at": [
+   207,
+   650
+  ],
+  "dir": [
+   190,
+   748
+  ]
+ },
+ "pantR": {
+  "at": [
+   355,
+   650
+  ],
+  "dir": [
+   354,
+   750
+  ]
+ },
+ "flow": [
+  {
+   "name": "sash",
+   "parent": "torso",
+   "piece": "torso_0_trunk",
+   "at": [
+    372,
+    440
+   ],
+   "dir": [
+    394,
+    618
+   ],
+   "links": 2,
+   "poly": [
+    [
+     356,
+     422
+    ],
+    [
+     392,
+     422
+    ],
+    [
+     405,
+     470
+    ],
+    [
+     412,
+     545
+    ],
+    [
+     414,
+     590
+    ],
+    [
+     402,
+     624
+    ],
+    [
+     378,
+     624
+    ],
+    [
+     366,
+     580
+    ],
+    [
+     361,
+     520
+    ],
+    [
+     357,
+     470
+    ]
+   ],
+   "fadeFrom": 8,
+   "fadeOver": 40,
+   "physics": {
+    "inertia": 0.2,
+    "strength": 350,
+    "damping": 0.9
+   },
+   "flutter": {
+    "amp": 1.22,
+    "phase": 0.4,
+    "base": 3.5
+   },
+   "margin": 30
+  },
+  {
+   "name": "pendant",
+   "parent": "torso",
+   "piece": "torso_0_trunk",
+   "at": [
+    342,
+    438
+   ],
+   "dir": [
+    346,
+    572
+   ],
+   "poly": [
+    [
+     333,
+     438
+    ],
+    [
+     352,
+     438
+    ],
+    [
+     362,
+     450
+    ],
+    [
+     362,
+     480
+    ],
+    [
+     357,
+     500
+    ],
+    [
+     360,
+     574
+    ],
+    [
+     331,
+     574
+    ],
+    [
+     334,
+     500
+    ],
+    [
+     322,
+     480
+    ],
+    [
+     322,
+     450
+    ]
+   ],
+   "fadeFrom": 6,
+   "fadeOver": 26,
+   "margin": 16,
+   "physics": {
+    "inertia": 0.15,
+    "strength": 500.0,
+    "damping": 0.92
+   },
+   "flutter": {
+    "amp": 0.56,
+    "phase": 0.9,
+    "base": 1.6
+   },
+   "parentFlow": "sash"
+  },
+  {
+   "name": "robeHem",
+   "parent": "torso",
+   "piece": "torso_0_trunk",
+   "at": [
+    268,
+    470
+   ],
+   "dir": [
+    268,
+    546
+   ],
+   "poly": [
+    [
+     160,
+     470
+    ],
+    [
+     306,
+     470
+    ],
+    [
+     308,
+     548
+    ],
+    [
+     205,
+     548
+    ],
+    [
+     160,
+     535
+    ]
+   ],
+   "fadeFrom": 10,
+   "fadeOver": 50,
+   "margin": 18,
+   "share": 0.8,
+   "physics": {
+    "inertia": 0.15,
+    "strength": 500.0,
+    "damping": 0.92
+   },
+   "flutter": {
+    "amp": 1.57,
+    "phase": 3.1,
+    "base": 4.5
+   }
+  },
+  {
+   "name": "scarf",
+   "parent": "head",
+   "piece": "head_2_face",
+   "at": [
+    352,
+    52
+   ],
+   "dir": [
+    390,
+    106
+   ],
+   "poly": [
+    [
+     345,
+     36
+    ],
+    [
+     372,
+     40
+    ],
+    [
+     392,
+     66
+    ],
+    [
+     398,
+     104
+    ],
+    [
+     384,
+     112
+    ],
+    [
+     362,
+     92
+    ],
+    [
+     346,
+     66
+    ]
+   ],
+   "fadeFrom": 6,
+   "fadeOver": 40,
+   "margin": 14,
+   "physics": {
+    "inertia": 0.15,
+    "strength": 500.0,
+    "damping": 0.92
+   },
+   "flutter": {
+    "amp": 1.05,
+    "phase": 4.2,
+    "base": 3.0
+   }
+  }
+ ],
+ "robeOutline": {
+  "left": [
+   [
+    198,
+    255
+   ],
+   [
+    200,
+    330
+   ],
+   [
+    205,
+    400
+   ],
+   [
+    204,
+    455
+   ],
+   [
+    182,
+    495
+   ]
+  ],
+  "right": [
+   [
+    383,
+    250
+   ],
+   [
+    385,
+    370
+   ],
+   [
+    388,
+    470
+   ],
+   [
+    398,
+    560
+   ],
+   [
+    405,
+    615
+   ]
+  ]
+ },
+ "joints": {
+  "armL": [
+   190,
+   245
+  ],
+  "armL_fore": [
+   120,
+   385
+  ],
+  "armR": [
+   395,
+   245
+  ],
+  "armR_fore": [
+   445,
+   410
+  ],
+  "legL": [
+   225,
+   562
+  ],
+  "legL_calf": [
+   205,
+   742
+  ],
+  "legL_foot": [
+   190,
+   822
+  ],
+  "legR": [
+   355,
+   566
+  ],
+  "legR_calf": [
+   380,
+   742
+  ],
+  "legR_foot": [
+   395,
+   822
+  ]
+ },
+ "gussetCx": 285,
+ "underlay": {
+  "fur": [
+   249,
+   240,
+   216
+  ],
+  "ink": [
+   30,
+   26,
+   22
+  ],
+  "band": 10,
+  "edge": 3,
+  "smooth": 3,
+  "headBand": 12,
+  "stray": 6,
+  "strayMax": 400,
+  "bandUnder": [
+   "left_arm_0_upper_arm",
+   "right_arm_0_upper_arm"
+  ],
+  "hidden": [],
+  "legBand": 12
+ },
+ "gusset": {
+  "from": 0.2,
+  "to": 1.0,
+  "max": 0.4
+ }
+}

@@ -1,0 +1,393 @@
+{
+ "_note": "Jade Teahouse apprentice: body re-cut on its own painting 2026-10-10 (Claude); head cut, neck, waist and hip kept as tuned.",
+ "out": "sushiApprentice",
+ "root": [
+  280,
+  895
+ ],
+ "hip": [
+  285,
+  455
+ ],
+ "waist": [
+  285,
+  409
+ ],
+ "neck": [
+  280,
+  224
+ ],
+ "helmet": {
+  "at": [
+   285,
+   80
+  ],
+  "dir": [
+   285,
+   20
+  ]
+ },
+ "banana": {
+  "at": [
+   265,
+   160
+  ],
+  "dir": [
+   265,
+   205
+  ]
+ },
+ "pocket": {
+  "at": [
+   285,
+   460
+  ],
+  "dir": [
+   285,
+   410
+  ]
+ },
+ "cuffL": {
+  "at": [
+   160,
+   310
+  ],
+  "dir": [
+   153,
+   363
+  ]
+ },
+ "cuffR": {
+  "at": [
+   389,
+   313
+  ],
+  "dir": [
+   397,
+   375
+  ]
+ },
+ "handL": [
+  130,
+  556
+ ],
+ "handR": [
+  438,
+  555
+ ],
+ "prop": [
+  135,
+  574
+ ],
+ "pantL": {
+  "at": [
+   207,
+   650
+  ],
+  "dir": [
+   190,
+   748
+  ]
+ },
+ "pantR": {
+  "at": [
+   355,
+   650
+  ],
+  "dir": [
+   354,
+   750
+  ]
+ },
+ "flow": [
+  {
+   "name": "ribbon",
+   "parent": "torso",
+   "piece": "torso_0_trunk",
+   "at": [
+    322,
+    424
+   ],
+   "dir": [
+    364,
+    626
+   ],
+   "links": 2,
+   "poly": [
+    [
+     300,
+     420
+    ],
+    [
+     335,
+     414
+    ],
+    [
+     370,
+     438
+    ],
+    [
+     402,
+     558
+    ],
+    [
+     398,
+     582
+    ],
+    [
+     382,
+     632
+    ],
+    [
+     350,
+     632
+    ],
+    [
+     331,
+     582
+    ],
+    [
+     308,
+     522
+    ],
+    [
+     300,
+     470
+    ]
+   ],
+   "fadeFrom": 10,
+   "fadeOver": 46,
+   "physics": {
+    "inertia": 0.15,
+    "strength": 500.0,
+    "damping": 0.92
+   },
+   "flutter": {
+    "amp": 2.24,
+    "phase": 0.8,
+    "base": 3.2
+   },
+   "margin": 34
+  },
+  {
+   "name": "robeHem",
+   "parent": "torso",
+   "piece": "torso_0_trunk",
+   "at": [
+    250,
+    470
+   ],
+   "dir": [
+    252,
+    566
+   ],
+   "poly": [
+    [
+     176,
+     440
+    ],
+    [
+     282,
+     440
+    ],
+    [
+     286,
+     566
+    ],
+    [
+     250,
+     566
+    ],
+    [
+     176,
+     540
+    ]
+   ],
+   "fadeFrom": 12,
+   "fadeOver": 50,
+   "margin": 18,
+   "share": 0.8,
+   "physics": {
+    "inertia": 0.15,
+    "strength": 500.0,
+    "damping": 0.92
+   },
+   "flutter": {
+    "amp": 1.26,
+    "phase": 2.6,
+    "base": 1.8
+   }
+  },
+  {
+   "name": "hairpin",
+   "parent": "head",
+   "piece": "head_2_face",
+   "at": [
+    377,
+    86
+   ],
+   "dir": [
+    381,
+    150
+   ],
+   "poly": [
+    [
+     369,
+     84
+    ],
+    [
+     387,
+     84
+    ],
+    [
+     393,
+     110
+    ],
+    [
+     395,
+     152
+    ],
+    [
+     371,
+     152
+    ],
+    [
+     367,
+     110
+    ]
+   ],
+   "fadeFrom": 4,
+   "fadeOver": 24,
+   "margin": 18,
+   "physics": {
+    "inertia": 0.12,
+    "strength": 550,
+    "damping": 0.92
+   },
+   "flutter": {
+    "amp": 4.2,
+    "n": 2,
+    "phase": 5.0,
+    "base": 6.0
+   }
+  }
+ ],
+ "robeOutline": {
+  "left": [
+   [
+    230,
+    262
+   ],
+   [
+    227,
+    350
+   ],
+   [
+    221,
+    400
+   ],
+   [
+    210,
+    450
+   ],
+   [
+    194,
+    495
+   ]
+  ],
+  "right": [
+   [
+    340,
+    250
+   ],
+   [
+    345,
+    340
+   ],
+   [
+    345,
+    440
+   ],
+   [
+    350,
+    520
+   ],
+   [
+    352,
+    610
+   ]
+  ]
+ },
+ "joints": {
+  "armL": [
+   210,
+   255
+  ],
+  "armL_fore": [
+   160,
+   372
+  ],
+  "armR": [
+   362,
+   258
+  ],
+  "armR_fore": [
+   400,
+   402
+  ],
+  "legL": [
+   235,
+   548
+  ],
+  "legL_calf": [
+   205,
+   722
+  ],
+  "legL_foot": [
+   180,
+   820
+  ],
+  "legR": [
+   340,
+   582
+  ],
+  "legR_calf": [
+   350,
+   722
+  ],
+  "legR_foot": [
+   345,
+   820
+  ]
+ },
+ "gussetCx": 290,
+ "gusset": {
+  "from": 0.2,
+  "to": 1.0,
+  "max": 0.4
+ },
+ "underlay": {
+  "fur": [
+   248,
+   238,
+   215
+  ],
+  "ink": [
+   30,
+   26,
+   22
+  ],
+  "band": 10,
+  "edge": 3,
+  "smooth": 3,
+  "headBand": 12,
+  "legBand": 12,
+  "stray": 6,
+  "strayMax": 400,
+  "bandUnder": [
+   "left_arm_0_upper_arm",
+   "right_arm_0_upper_arm"
+  ],
+  "hidden": []
+ }
+}
