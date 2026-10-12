@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="466" viewBox="0 0 900 466">
+  <defs>
+    <!-- filter: drop-shadow(0 0 10px rgba(255,255,255,.25)) -->
+    <filter id="starGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#ffffff" flood-opacity="0.25"/>
+    </filter>
+    <!-- text-shadow: 0 0 16px rgba(255,255,255,.28) -->
+    <filter id="textGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#ffffff" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#starGlow)" transform="translate(330 40) scale(2.4)">
+    <polygon points="50,7 61,38 94,38 67,57 77,89 50,70 23,89 33,57 6,38 39,38"
+             fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linejoin="round"/>
+    <text x="50" y="60.671" text-anchor="middle"
+          font-family="Arial" font-weight="bold" font-size="18" fill="#ffffff">777</text>
+  </g>
+
+  <g filter="url(#textGlow)" font-family="Arial" font-weight="bold" font-size="64"
+     letter-spacing="7.68" fill="#ffffff" text-anchor="middle">
+    <text x="450" y="348.512">SILVERSTARS</text>
+    <text x="450" y="416.512">STUDIO</text>
+  </g>
+</svg>

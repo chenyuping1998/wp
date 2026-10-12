@@ -1,0 +1,4 @@
+Diner Monkey thumbnail, 200x200 (2026-10-09)
+BG: mean 161.6; P10 91.0; pixels below 35 = 1.2% — PASS
+Composite: mean 150.5; P10 42.0; pixels below 35 = 7.2% — PASS
+Targets: mean >=80; P10 >=35; dark pixels <=30%.

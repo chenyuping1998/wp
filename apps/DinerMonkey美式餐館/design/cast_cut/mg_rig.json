@@ -1,0 +1,281 @@
+{
+ "_note": "Diner Monkey chef: body re-cut on its own painting 2026-10-10 (Claude); the head cut is the old one, the laugh faces are aligned to it.",
+ "out": "sushiMaster",
+ "root": [
+  280,
+  895
+ ],
+ "hip": [
+  285,
+  655
+ ],
+ "waist": [
+  285,
+  400
+ ],
+ "neck": [
+  290,
+  205
+ ],
+ "helmet": {
+  "at": [
+   285,
+   80
+  ],
+  "dir": [
+   285,
+   20
+  ]
+ },
+ "banana": {
+  "at": [
+   265,
+   160
+  ],
+  "dir": [
+   265,
+   205
+  ]
+ },
+ "pocket": {
+  "at": [
+   285,
+   460
+  ],
+  "dir": [
+   285,
+   410
+  ]
+ },
+ "cuffL": {
+  "at": [
+   140,
+   318
+  ],
+  "dir": [
+   130,
+   390
+  ]
+ },
+ "cuffR": {
+  "at": [
+   428,
+   352
+  ],
+  "dir": [
+   440,
+   420
+  ]
+ },
+ "handL": [
+  105,
+  560
+ ],
+ "handR": [
+  470,
+  565
+ ],
+ "prop": [
+  110,
+  575
+ ],
+ "pantL": {
+  "at": [
+   210,
+   700
+  ],
+  "dir": [
+   212,
+   740
+  ]
+ },
+ "pantR": {
+  "at": [
+   365,
+   700
+  ],
+  "dir": [
+   370,
+   740
+  ]
+ },
+ "flow": [
+  {
+   "name": "sash",
+   "parent": "torso",
+   "piece": "torso_0_trunk",
+   "at": [
+    350,
+    412
+   ],
+   "dir": [
+    384,
+    562
+   ],
+   "links": 2,
+   "poly": [
+    [
+     336,
+     410
+    ],
+    [
+     364,
+     406
+    ],
+    [
+     380,
+     420
+    ],
+    [
+     399,
+     470
+    ],
+    [
+     401,
+     560
+    ],
+    [
+     372,
+     568
+    ],
+    [
+     358,
+     522
+    ],
+    [
+     336,
+     526
+    ],
+    [
+     331,
+     462
+    ]
+   ],
+   "fadeFrom": 8,
+   "fadeOver": 40,
+   "margin": 6,
+   "physics": {
+    "inertia": 0.2,
+    "strength": 350,
+    "damping": 0.9
+   },
+   "flutter": {
+    "amp": 0.63,
+    "phase": 0.4,
+    "base": 2.45
+   }
+  },
+  {
+   "name": "apronHem",
+   "parent": "torso",
+   "piece": "torso_0_trunk",
+   "at": [
+    296,
+    500
+   ],
+   "dir": [
+    296,
+    640
+   ],
+   "poly": [
+    [
+     168,
+     530
+    ],
+    [
+     428,
+     530
+    ],
+    [
+     446,
+     642
+    ],
+    [
+     148,
+     642
+    ]
+   ],
+   "fadeFrom": 10,
+   "fadeOver": 50,
+   "margin": 16,
+   "share": 0.8,
+   "physics": {
+    "inertia": 0.15,
+    "strength": 500,
+    "damping": 0.92
+   },
+   "flutter": {
+    "amp": 0.98,
+    "phase": 3.1,
+    "base": 2.8
+   },
+   "\"parent\"": "hip"
+  }
+ ],
+ "sleeveHem": false,
+ "joints": {
+  "armL": [
+   150,
+   265
+  ],
+  "armL_fore": [
+   140,
+   318
+  ],
+  "armR": [
+   418,
+   268
+  ],
+  "armR_fore": [
+   428,
+   352
+  ],
+  "legL": [
+   210,
+   672
+  ],
+  "legL_calf": [
+   215,
+   746
+  ],
+  "legL_foot": [
+   205,
+   800
+  ],
+  "legR": [
+   365,
+   672
+  ],
+  "legR_calf": [
+   372,
+   746
+  ],
+  "legR_foot": [
+   390,
+   808
+  ]
+ },
+ "underlay": {
+  "fur": [
+   249,
+   240,
+   224
+  ],
+  "ink": [
+   27,
+   27,
+   27
+  ],
+  "band": 14,
+  "edge": 3,
+  "smooth": 3,
+  "headBand": 12,
+  "stray": 6,
+  "strayMax": 400,
+  "bandUnder": [
+   "left_arm_0_upper_arm",
+   "right_arm_0_upper_arm"
+  ],
+  "hidden": []
+ }
+}

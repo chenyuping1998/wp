@@ -1,0 +1,6 @@
+{
+  "src/components/Mascot.svelte": "1a784063c7ee039bde713b7c6bf1976e1d5d505dfe6930896d30bab0876e0d0a",
+  "design/generate_monkey_spine.mjs": "ec40a98f7a2839499f4ee238cb880cd7e310f876e27cc4fa43cfde1be157e25e",
+  "static/assets/spines/sushiMaster/monkey.json": "85419dd66a93fc88eccd5b2a67c9f4b38683f960f0d0f1f97898ccd0fbe173fa",
+  "static/assets/spines/sushiApprentice/monkey.json": "c002d51fc7a6300e9f65cd16ef855513d11be1ea17043746a44bb311abcce0e3"
+}

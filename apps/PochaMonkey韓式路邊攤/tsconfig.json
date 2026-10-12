@@ -1,0 +1,16 @@
+{
+	"extends": "config-ts/base.json",
+	"include": ["."],
+	"compilerOptions": { "resolveJsonModule": true },
+	// Everything here is either a build OUTPUT or a standalone Node script, and
+	// none of it is part of the bundle:
+	//
+	//   design/           asset generators, loose .mjs, never type-checked
+	//   static/           asset helpers
+	//   build-replaytest/ a checked-in build output — 15,573 of the 15,655
+	//                     errors this file's first version reported came from one
+	//                     minified bundle in there
+	//
+	// Excluding them is what makes `check:types` a usable gate on src/.
+	"exclude": ["dist", "build", "build-replaytest", "node_modules", "design", "static"]
+}

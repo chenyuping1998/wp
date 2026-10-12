@@ -1,0 +1,335 @@
+{
+ "_note": "Strike Monkey pinsetter, measured on its own painting 2026-10-10 (Claude): left arm held out, legs crossed mid-step, tail behind the right glove.",
+ "out": "sushiApprentice",
+ "root": [
+  280,
+  895
+ ],
+ "hip": [
+  295,
+  556
+ ],
+ "waist": [
+  290,
+  390
+ ],
+ "neck": [
+  262,
+  254
+ ],
+ "helmet": {
+  "at": [
+   285,
+   80
+  ],
+  "dir": [
+   285,
+   20
+  ]
+ },
+ "banana": {
+  "at": [
+   265,
+   160
+  ],
+  "dir": [
+   265,
+   205
+  ]
+ },
+ "pocket": {
+  "at": [
+   285,
+   460
+  ],
+  "dir": [
+   285,
+   410
+  ]
+ },
+ "cuffL": {
+  "at": [
+   192,
+   334
+  ],
+  "dir": [
+   150,
+   380
+  ]
+ },
+ "cuffR": {
+  "at": [
+   342,
+   378
+  ],
+  "dir": [
+   385,
+   430
+  ]
+ },
+ "handL": [
+  100,
+  395
+ ],
+ "handR": [
+  440,
+  470
+ ],
+ "prop": [
+  95,
+  390
+ ],
+ "pantL": {
+  "at": [
+   250,
+   600
+  ],
+  "dir": [
+   240,
+   640
+  ]
+ },
+ "pantR": {
+  "at": [
+   325,
+   600
+  ],
+  "dir": [
+   340,
+   640
+  ]
+ },
+ "sleeveHem": false,
+ "gussetCx": 290,
+ "gusset": {
+  "from": 0.9,
+  "to": 1.4,
+  "max": 0
+ },
+ "joints": {
+  "armL": [
+   232,
+   300
+  ],
+  "armL_fore": [
+   192,
+   334
+  ],
+  "armR": [
+   318,
+   300
+  ],
+  "armR_fore": [
+   342,
+   378
+  ],
+  "legL": [
+   270,
+   565
+  ],
+  "legL_calf": [
+   248,
+   645
+  ],
+  "legL_foot": [
+   220,
+   724
+  ],
+  "legR": [
+   322,
+   565
+  ],
+  "legR_calf": [
+   345,
+   645
+  ],
+  "legR_foot": [
+   392,
+   766
+  ]
+ },
+ "underlay": {
+  "fur": [
+   51,
+   75,
+   80
+  ],
+  "ink": [
+   18,
+   30,
+   36
+  ],
+  "band": 10,
+  "edge": 3,
+  "smooth": 3,
+  "headBand": 12,
+  "legBand": 12,
+  "stray": 6,
+  "strayMax": 400,
+  "bandUnder": [
+   "left_arm_0_upper_arm",
+   "right_arm_0_upper_arm"
+  ],
+  "hidden": [
+   {
+    "_": "tail behind the right glove",
+    "path": [
+     [
+      476,
+      466
+     ],
+     [
+      472,
+      486
+     ],
+     [
+      462,
+      502
+     ],
+     [
+      452,
+      514
+     ]
+    ],
+    "width": 20,
+    "fill": [
+     126,
+     59,
+     23
+    ],
+    "over": 4
+   }
+  ]
+ },
+ "legBlend": {
+  "from": 560,
+  "over": 80
+ },
+ "kneeBlend": 50,
+ "flow": [
+  {
+   "name": "tail",
+   "parent": "torso",
+   "piece": "torso_0_trunk",
+   "at": [
+    400,
+    588
+   ],
+   "dir": [
+    540,
+    400
+   ],
+   "poly": [
+    [
+     380,
+     533
+    ],
+    [
+     456,
+     363
+    ],
+    [
+     462,
+     351
+    ],
+    [
+     463,
+     350
+    ],
+    [
+     548,
+     350
+    ],
+    [
+     550,
+     355
+    ],
+    [
+     552,
+     362
+    ],
+    [
+     553,
+     366
+    ],
+    [
+     554,
+     373
+    ],
+    [
+     554,
+     379
+    ],
+    [
+     553,
+     385
+    ],
+    [
+     552,
+     388
+    ],
+    [
+     459,
+     535
+    ],
+    [
+     451,
+     545
+    ],
+    [
+     444,
+     551
+    ],
+    [
+     440,
+     554
+    ],
+    [
+     435,
+     557
+    ],
+    [
+     431,
+     559
+    ],
+    [
+     426,
+     561
+    ],
+    [
+     423,
+     562
+    ],
+    [
+     415,
+     564
+    ],
+    [
+     397,
+     564
+    ],
+    [
+     392,
+     563
+    ],
+    [
+     380,
+     559
+    ]
+   ],
+   "fadeFrom": 10,
+   "fadeOver": 110,
+   "margin": 8,
+   "physics": {
+    "inertia": 0.16,
+    "strength": 437.5,
+    "damping": 0.92
+   },
+   "flutter": {
+    "amp": 0.8,
+    "phase": 0.5,
+    "base": 2.5
+   }
+  }
+ ]
+}
