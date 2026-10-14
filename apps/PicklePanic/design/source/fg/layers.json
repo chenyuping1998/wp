@@ -1,0 +1,116 @@
+{
+ "canvas": [
+  560,
+  912
+ ],
+ "layers": [
+  {
+   "z": 2,
+   "name": "torso_0_trunk",
+   "file": "torso_0_trunk.png",
+   "x": 136,
+   "y": 260,
+   "w": 271,
+   "h": 361
+  },
+  {
+   "z": 10,
+   "name": "left_leg_0_thigh",
+   "file": "left_leg_0_thigh.png",
+   "x": 196,
+   "y": 595,
+   "w": 130,
+   "h": 91
+  },
+  {
+   "z": 11,
+   "name": "left_leg_1_calf",
+   "file": "left_leg_1_calf.png",
+   "x": 192,
+   "y": 660,
+   "w": 73,
+   "h": 122
+  },
+  {
+   "z": 12,
+   "name": "left_leg_2_foot",
+   "file": "left_leg_2_foot.png",
+   "x": 107,
+   "y": 756,
+   "w": 162,
+   "h": 126
+  },
+  {
+   "z": 14,
+   "name": "right_leg_0_thigh",
+   "file": "right_leg_0_thigh.png",
+   "x": 300,
+   "y": 595,
+   "w": 86,
+   "h": 91
+  },
+  {
+   "z": 15,
+   "name": "right_leg_1_calf",
+   "file": "right_leg_1_calf.png",
+   "x": 322,
+   "y": 660,
+   "w": 91,
+   "h": 122
+  },
+  {
+   "z": 16,
+   "name": "right_leg_2_foot",
+   "file": "right_leg_2_foot.png",
+   "x": 338,
+   "y": 756,
+   "w": 155,
+   "h": 127
+  },
+  {
+   "z": 20,
+   "name": "left_arm_2_hand",
+   "file": "left_arm_2_hand.png",
+   "x": 110,
+   "y": 387,
+   "w": 90,
+   "h": 216
+  },
+  {
+   "z": 22,
+   "name": "left_arm_0_upper_arm",
+   "file": "left_arm_0_upper_arm.png",
+   "x": 156,
+   "y": 260,
+   "w": 108,
+   "h": 179
+  },
+  {
+   "z": 24,
+   "name": "right_arm_2_hand",
+   "file": "right_arm_2_hand.png",
+   "x": 378,
+   "y": 407,
+   "w": 95,
+   "h": 196
+  },
+  {
+   "z": 26,
+   "name": "right_arm_0_upper_arm",
+   "file": "right_arm_0_upper_arm.png",
+   "x": 310,
+   "y": 259,
+   "w": 115,
+   "h": 186
+  },
+  {
+   "z": 30,
+   "name": "head_2_face",
+   "file": "head_2_face.png",
+   "x": 197,
+   "y": 27,
+   "w": 248,
+   "h": 260
+  }
+ ]
+}

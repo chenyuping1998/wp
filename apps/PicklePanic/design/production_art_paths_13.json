@@ -1,0 +1,50 @@
+{
+  "bg_base": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-c2a08253-1e4c-4390-8721-275d4db4797c.png"
+  },
+  "mg": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-edf6b487-d26d-47fa-9499-f2d3ae5c0802.png"
+  },
+  "fg": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-75b9b564-09a4-4e8e-9fcf-a64bec5428d5.png"
+  },
+  "h1": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-a100f07b-bd38-4ebb-8027-addafaf9d178.png"
+  },
+  "h2": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-7b6c068f-93a3-492e-a47a-ede221baf287.png"
+  },
+  "h3": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-5b42149d-9261-45e9-8ebb-8e7593905d51.png"
+  },
+  "h4": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-cdc55baf-2362-4f0b-9e4a-a5021af1526b.png"
+  },
+  "w": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-48eb74a9-0424-4886-a0a4-d8f0a7dbadca.png"
+  },
+  "p": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-fa2c7111-4b97-4b98-8642-48471070d589.png"
+  },
+  "s": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-8a50cb99-99e1-4a8d-88f4-f8fe9ff922be.png"
+  },
+  "bg_feature": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-a362246b-5614-4052-97a5-de0ebae20e97.png"
+  },
+  "thumbnail_bg": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-24d46e92-1dd6-4a1e-87ef-190aa05b04d9.png"
+  },
+  "cover_bg": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-b2253298-1c0a-4be8-8714-c7426192363a.png"
+  },
+  "frame": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-91701458-8146-4ceb-aaa9-8b0f2566e396.png"
+  },
+  "panel": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-373de772-fc30-4143-8a27-574a28507256.png"
+  },
+  "upgrade_cutin": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-daadf4e7-b9a6-4594-bb1b-e586221ecb74.png"
+  }
+}

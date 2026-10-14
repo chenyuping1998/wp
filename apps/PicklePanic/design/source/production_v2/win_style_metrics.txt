@@ -1,0 +1,5 @@
+static/assets/pickle/win_big_base.png: colors95=122 soft=22.1% chroma=28.5 fit=79.1% PASS
+static/assets/pickle/win_super_base.png: colors95=47 soft=20.6% chroma=22.9 fit=92.4% PASS
+static/assets/pickle/win_mega_base.png: colors95=109 soft=21.4% chroma=26.4 fit=73.7% PASS
+static/assets/pickle/win_epic_base.png: colors95=56 soft=28.8% chroma=25.5 fit=84.3% PASS
+static/assets/pickle/win_max_base.png: colors95=90 soft=20.3% chroma=26.9 fit=87.6% PASS

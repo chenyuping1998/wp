@@ -1,0 +1,110 @@
+{
+  "big": [
+    {
+      "file": "win_big_decor_01.png",
+      "runtimeKey": "gbS",
+      "pivot": "image center",
+      "delay_ms": 70,
+      "side": 1
+    }
+  ],
+  "super": [
+    {
+      "file": "win_super_decor_01.png",
+      "runtimeKey": "gbS",
+      "pivot": "image center",
+      "delay_ms": 70,
+      "side": 1
+    },
+    {
+      "file": "win_super_decor_02.png",
+      "runtimeKey": "gbFxV2_3",
+      "pivot": "image center",
+      "delay_ms": 110,
+      "side": -1
+    }
+  ],
+  "mega": [
+    {
+      "file": "win_mega_decor_01.png",
+      "runtimeKey": "gbP",
+      "pivot": "image center",
+      "delay_ms": 70,
+      "side": 1
+    },
+    {
+      "file": "win_mega_decor_02.png",
+      "runtimeKey": "gbFxV2_4",
+      "pivot": "image center",
+      "delay_ms": 110,
+      "side": -1
+    },
+    {
+      "file": "win_mega_decor_03.png",
+      "runtimeKey": "gbFxV2_5",
+      "pivot": "image center",
+      "delay_ms": 150,
+      "side": 1
+    }
+  ],
+  "epic": [
+    {
+      "file": "win_epic_decor_01.png",
+      "runtimeKey": "gbFxV2_9",
+      "pivot": "image center",
+      "delay_ms": 70,
+      "side": 1
+    },
+    {
+      "file": "win_epic_decor_02.png",
+      "runtimeKey": "gbFxV2_10",
+      "pivot": "image center",
+      "delay_ms": 110,
+      "side": -1
+    },
+    {
+      "file": "win_epic_decor_03.png",
+      "runtimeKey": "gbFxV2_6",
+      "pivot": "image center",
+      "delay_ms": 150,
+      "side": 1
+    },
+    {
+      "file": "win_epic_decor_04.png",
+      "runtimeKey": "gbFxV2_7",
+      "pivot": "image center",
+      "delay_ms": 190,
+      "side": -1
+    }
+  ],
+  "max": [
+    {
+      "file": "win_max_decor_01.png",
+      "runtimeKey": "gbFxV2_4",
+      "pivot": "image center",
+      "delay_ms": 70,
+      "side": 1
+    },
+    {
+      "file": "win_max_decor_02.png",
+      "runtimeKey": "gbFxV2_5",
+      "pivot": "image center",
+      "delay_ms": 110,
+      "side": -1
+    },
+    {
+      "file": "win_max_decor_03.png",
+      "runtimeKey": "gbFxV2_7",
+      "pivot": "image center",
+      "delay_ms": 150,
+      "side": 1
+    },
+    {
+      "file": "win_max_decor_04.png",
+      "runtimeKey": "gbFxV2_8",
+      "pivot": "image center",
+      "delay_ms": 190,
+      "side": -1
+    }
+  ]
+}

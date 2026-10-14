@@ -1,0 +1,45 @@
+{
+  "status": "v3_approved_production",
+  "name": "Pickle Panic",
+  "style": "rugged American underground sci-fi comic, broad brush ink and flat spot colors",
+  "cast_archetypes": {
+    "mg": "own #7",
+    "fg": "own #7"
+  },
+  "review_files": [
+    "style_concept_v3.png"
+  ],
+  "art_source": "design/source/pickle_style",
+  "remaining": [
+    "concept direction approval, then separate asset tests on real board",
+    "all high-pay and special symbols",
+    "FG cast",
+    "MG and FG rig and motion",
+    "new UI, transition and audio",
+    "thumbnail and cover",
+    "full QA and staging"
+  ],
+  "platform_updated": false,
+  "background_direction": "psychedelic retro science-fiction fermentation station with Americana accents",
+  "background_palette": [
+    "D8D2ED",
+    "C6DFEA",
+    "8583B5",
+    "514567",
+    "D78F92",
+    "252735"
+  ],
+  "separation_rule": "Green cast against bright quiet icy-blue/lavender right area; dense scenery left/top; no green tanks or pipes behind cast",
+  "review_artifact_type": "generated art-direction concept, not runtime screenshot",
+  "rough_style_rules": [
+    "fat variable contours about 3% symbol canvas",
+    "large asymmetrical black spot shadows",
+    "maximum two color tones plus black per form",
+    "purposeful crooked shapes and exaggerated character",
+    "few dry brush edge breaks, no uniform grain",
+    "no gloss, airbrush gradients, cute polished vector or dense microdetails",
+    "cool pale quiet cast backdrop; dense props left/top"
+  ],
+  "approved_reference": "design/style_concept_v3.png",
+  "approved_by_user": "2026-10-12: \u9019\u7248\u5230\u4f4d\uff0c\u7167\u6b64\u65b9\u5411\u91cd\u756b\u5be6\u6a5f\u7d20\u6750"
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "name": "ui_button_hover_solid_v2",
+    "size": [
+      256,
+      256
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-9af628b5-391c-43a8-b091-10d83ca87de2.png",
+    "prompt": "Make a warm HOVER state of this ORIGINAL hand-drawn round riveted button. Change ONLY the cream disk in its center to a brighter warm yellowcream #F8D987. The center must remain a completely SOLID OPAQUE FLAT FILLED DISK just as it is in the source. No hole at all. Do NOT remove the center. Do NOT create dark ring shading, recessed gradients, glow or blurredalpha. Preserve the outerrim,rivets,inkchips,canvasposition,size andouteralphashape EXACTLY. Outer background remains transparent; EVERY pixel inside the innercircle staysopaque. No icon, words or otherobjects."
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "name": "door_l_base_flat_v2",
+    "size": [
+      1100,
+      1080
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-d027009e-ef27-4e84-8bba-3bfe6f586833.png",
+    "prompt": "Edit only paint technique of this original Pickle Panic left blast-door. Preserve geometry, silhouette, all positions, porthole, halfbadge, alpha. Replace every soft gradient and uniformfinegrain by entirely flat opaque lilac #8583B5, one hardedge nearblack #20231D shadow facet and sparse purposeful largebrushchips. Make rivets flat creamcircle withblack half shadow, no shinyhighlight. No softreflection, no bloom. Keep fatuneven inkline and mustardflat hazard. No text. Outputgenuinealpha."
+  },
+  {
+    "name": "door_r_base_flat_v2",
+    "size": [
+      1100,
+      1080
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-4ac36fc1-c269-4a2f-924a-dda6b7ca6bd1.png",
+    "prompt": "Edit only paint technique of this original Pickle Panic right blast-door. Preserve geometry, silhouette, all positions, porthole, halfbadge, alpha. Replace every soft gradient and uniformfinegrain by entirely flat opaque lilac #8583B5, one hardedge nearblack #20231D shadow facet and sparse purposeful largebrushchips. Make rivets flat creamcircle withblack half shadow, no shinyhighlight. No softreflection, no bloom. Keep fatuneven inkline and mustardflat hazard. No text. Outputgenuinealpha."
+  },
+  {
+    "name": "door_steam_flat_v2",
+    "size": [
+      1536,
+      1024
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-130d1b63-5261-4da6-8c87-7db94f6d240f.png",
+    "prompt": "Correct this original six-frame animation sheet. REMOVE all the diffuse glow and haze outside the inkoutlined steam silhouettes. Outside every steamblob must be genuine alpha0, not darkgrey/paintedcheckerboard. Preserve the six distinct shapes and their exact regular3column2rowcellpositions. Insideeachshape usepureflatcream #FFF0CF,blackuneveninkoutline #20231D, absolutelyno gradient,no glow,no antialiasedhalo. 1536x1024landscape."
+  }
+]

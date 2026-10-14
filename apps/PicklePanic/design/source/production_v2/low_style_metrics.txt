@@ -1,0 +1,5 @@
+static/assets/pickle/l1_a.png: colors95=29 soft=26.0% chroma=47.2 fit=83.9% PASS
+static/assets/pickle/l2_k.png: colors95=27 soft=29.9% chroma=43.0 fit=90.7% PASS
+static/assets/pickle/l3_q.png: colors95=53 soft=25.4% chroma=24.5 fit=83.7% PASS
+static/assets/pickle/l4_j.png: colors95=33 soft=29.0% chroma=31.5 fit=79.9% PASS
+static/assets/pickle/l5_10.png: colors95=51 soft=31.7% chroma=24.4 fit=69.9% PASS

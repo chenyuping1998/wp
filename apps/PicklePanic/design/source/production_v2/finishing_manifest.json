@@ -1,0 +1,29 @@
+[
+  {
+    "name": "logo_letters_hard_v2",
+    "size": [
+      1600,
+      600
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-ee7c2114-0c9b-4a5f-912c-b153388997fb.png",
+    "prompt": "Correct paint technique only of this ORIGINAL wordmark. Preserve EXACT text PICKLE PANIC, eleven glyphs, one-line layout, letter shapes andpositions. Separate first P and I by a 6px genuinealpha gap; do notconnect anyletters. ALL fills must be flat opaqueolive #6A9F35 and oneflatshadow #31572C, mustard #E9B83E onlyas hardfacet, nearblack #20231D verythickuneveninkoutline. Remove ALL softshading,gradient,glow,halos,tinyblurredhighlights. Bigger bluntbrushstrokeedges,sparsehardblacknotches. Outsideglyphs alphazero. No base or otherobjects."
+  },
+  {
+    "name": "door_r_clean_v2",
+    "size": [
+      1100,
+      1080
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-9fc21921-031b-49c2-9c64-177f546afa86.png",
+    "prompt": "Remove ONLY the diffuse cream-white smear on this original rightblast-door, replacing that smear with flatlilac matchingthesteelface. Preserveallother geometry, porthole,rivets,hazardbars,halfbadge,paintchips andgenuinealpha. No softpaint,no glow,gradient,letters."
+  },
+  {
+    "name": "logo_panic_lines_v2",
+    "size": [
+      512,
+      256
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-4b040c2e-a46a-40ae-89d9-95ef1944ac7d.png",
+    "prompt": "Original Pickle Panic rough underground comic: ONE isolated groupof FIVE nearblack #20231D hand-brushed panic emphasis ticks arranged as a small arc, shortfatcrookedstrokes and one longexclamation slash, alphaemptyallaround, no words,numbers,letters,objects or fillbackdrop. Roughuneveninkedges,no softglow."
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "door_latch_v2",
+    "size": [
+      512,
+      256
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-74e58dce-b43c-4f68-889d-3aaaf639f483.png",
+    "prompt": "Original rough American underground sci-fi comic, hand brushed with blunt ink brush and fat black marker, purposeful asymmetric silhouette, thick uneven contour twice the interior stroke, solid black spot shadows, flat opaque 2-tone fills. Sparse purposeful corner ink chips, no fine uniform grain, no dense scratches, no glossy 3D, gradients, glow or soft rendered shading. Palette olive #6A9F35, shadow #31572C, paper #FFF0CF, mustard #E9B83E, brick #C84A36, lilac #8583B5, ink #20231D. Genuine transparent RGBA, clean alpha outside the drawing. No card, square backing, border, UI labels or watermark.  Single isolated horizontal locking bolt for a fermentation-lab blast-door, olive/cream rectangular steel bolt with big lilac handle and two black-edged mounting bands, front orthographic view, broad simple blunt shapes. No background door, no lettering."
+  },
+  {
+    "name": "door_liquid_v2",
+    "size": [
+      256,
+      256
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-4532e80a-9711-4d92-ad9c-3cbfaacc6a45.png",
+    "prompt": "Original rough American underground sci-fi comic, hand brushed with blunt ink brush and fat black marker, purposeful asymmetric silhouette, thick uneven contour twice the interior stroke, solid black spot shadows, flat opaque 2-tone fills. Sparse purposeful corner ink chips, no fine uniform grain, no dense scratches, no glossy 3D, gradients, glow or soft rendered shading. Palette olive #6A9F35, shadow #31572C, paper #FFF0CF, mustard #E9B83E, brick #C84A36, lilac #8583B5, ink #20231D. Genuine transparent RGBA, clean alpha outside the drawing. No card, square backing, border, UI labels or watermark.  Single round circular porthole interior filled lower 65% with olive pickle brine, black upper half, four cream bubbles, irregular simple wave at top of liquid. No surrounding rim. Flat opaque solid black circular shape, alpha outside circle, no lettering."
+  },
+  {
+    "name": "door_steam_sheet_v2",
+    "size": [
+      1536,
+      1024
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-1d5431e4-1c33-42c3-b572-bd82f0d6f028.png",
+    "prompt": "Original rough American underground sci-fi comic, hand brushed with blunt ink brush and fat black marker, purposeful asymmetric silhouette, thick uneven contour twice the interior stroke, solid black spot shadows, flat opaque 2-tone fills. Sparse purposeful corner ink chips, no fine uniform grain, no dense scratches, no glossy 3D, gradients, glow or soft rendered shading. Palette olive #6A9F35, shadow #31572C, paper #FFF0CF, mustard #E9B83E, brick #C84A36, lilac #8583B5, ink #20231D. Genuine transparent RGBA, clean alpha outside the drawing. No card, square backing, border, UI labels or watermark.  One animation sheet of a white/cream puff of kitchen steam expanding and dissolving, SIX FRAMES in strictly regular 3 columns by 2 rows, each cell512 square, each distinct silhouette centered within cell leaving 12% safety margin. Frame1 smallthreecurl puff; frame2 spreadingcurl; frame3 peaklargespray; frame4 two curlingarms;frame5 three separatedfloating wisps;frame6 tiny brokenwisps. Thick uneven ink contour and cream flat inside, no gray, no lettering/numbers/grid lines, genuine alpha in empty canvas."
+  },
+  {
+    "name": "door_hazard_v2",
+    "size": [
+      1920,
+      180
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-47f7de4c-eafe-491d-8373-0c4ea512ac3c.png",
+    "prompt": "Original rough American underground sci-fi comic, hand brushed with blunt ink brush and fat black marker, purposeful asymmetric silhouette, thick uneven contour twice the interior stroke, solid black spot shadows, flat opaque 2-tone fills. Sparse purposeful corner ink chips, no fine uniform grain, no dense scratches, no glossy 3D, gradients, glow or soft rendered shading. Palette olive #6A9F35, shadow #31572C, paper #FFF0CF, mustard #E9B83E, brick #C84A36, lilac #8583B5, ink #20231D. Genuine transparent RGBA, clean alpha outside the drawing. No card, square backing, border, UI labels or watermark.  One isolated wide horizontal lab lintel hazard strip, 1920:180 proportions, 10 bold diagonal mustard and nearblack blocks enclosed in fat jagged steel-lilac rim with small rivets at outerends. No words, no centralemblem, no otherobjects. Hand-brushedflatpaint."
+  }
+]

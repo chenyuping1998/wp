@@ -1,0 +1,20 @@
+[
+  {
+    "name": "ui_button_hover_flat_v2",
+    "size": [
+      256,
+      256
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-ce879f15-6042-4138-ba4e-f6753c58e4fa.png",
+    "prompt": "Correct ONLY central paint of this original Pickle Panic hoverbutton. Preserveexactcircle,rim,rivets,inkchips,canvasalignmentandalphaoutside. Fill entirecentralface with ONE uniform opaque flat mustard #E9B83E. Remove ALL gradients, darkrecess shading, softblackcenter andtransparentcenterhole. Entireinsidebutton opaque warmflatmustard withhardblackoutline, onehardedgeblackshadow ONLY atbottomrim. No glow/highlights/lettering/icon."
+  },
+  {
+    "name": "bg_feature_flat_v2",
+    "size": [
+      1920,
+      1080
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-fe7705e7-a0c5-437a-b72d-b0a9fde0e23a.png",
+    "prompt": "Repaint flat INKS ONLY of this ORIGINAL Pickle Panic feature scene. Preserveexactcomposition,sizes andpositions of ruptured tankleft,brinespraysleft,hugecloseUFOupperleft,pipes,alarmredcapsandquietRIGHT26%lightbluewall. Nocharacters,noletters. Crucialprintconstraint: EXACTLY ten uniform spot inks: lightblue #C8DFE6, lilac #9D8DB7,plumshadow #57465E,mutedsalmon #D58983,cream #F5E6BE, nearblack #171C1A,olivegreen #6A9F35,darkgreen #31572C,mustard #E9B83E,brickred #C84A36. Eachobjecthas ONE perfectlyuniformflatfill andONE solidblackshadowshape. Removeall finecolorvariation, gradients,uniformgrain,softshading,softreflection andtinyflecks. No new colors at all. Broadhand-brushedunevenblackcontours andsparsepurposefuldryinknotches remain. RoughAmericanundergroundcomiccreenprintposter, not a render. Rightwalllargeplain lightblue. OPAQUE landscape16:9."
+  }
+]

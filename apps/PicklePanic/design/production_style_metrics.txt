@@ -1,0 +1,8 @@
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/static/assets/pickle/h1.png: colors95=58 soft=24.9% chroma=41.0 fit=73.0% PASS
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/static/assets/pickle/h2.png: colors95=78 soft=29.8% chroma=39.3 fit=78.4% PASS
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/static/assets/pickle/h3.png: colors95=123 soft=34.8% chroma=36.2 fit=73.6% PASS
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/static/assets/pickle/h4.png: colors95=59 soft=31.5% chroma=36.3 fit=63.3% PASS
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/static/assets/pickle/w.png: colors95=74 soft=26.2% chroma=33.0 fit=77.0% PASS
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/static/assets/pickle/p.png: colors95=78 soft=24.9% chroma=26.9 fit=78.8% PASS
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/static/assets/pickle/s.png: colors95=54 soft=22.9% chroma=33.5 fit=88.8% PASS
+sheet: /Users/stone/stake-engine/wp-banandit/apps/PicklePanic/design/production_readability.png

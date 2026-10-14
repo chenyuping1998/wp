@@ -1,0 +1,2 @@
+seen: {'trigger': 110100, 'draw at level 0': 549864, 'collect': 489020, 'reach level 1': 22258, 'draw at level 1': 683714, 'reach level 2': 30366, 'draw at level 2': 316269, 'reach level 3': 17550, 'draw at level 3': 257330}
+OK: every rule holds in every book

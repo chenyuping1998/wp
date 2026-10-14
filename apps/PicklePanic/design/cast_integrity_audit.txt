@@ -1,0 +1,2 @@
+pickleBoss: 24 bones; 3242 weighted vertices, max weight error 0.0000000100; all expected motions exist.
+picklePepper: 24 bones; 3242 weighted vertices, max weight error 0.0000000100; all expected motions exist.

@@ -1,0 +1,34 @@
+{
+  "game": "PicklePanic",
+  "source": "SushiMonkey",
+  "original_weights": "_upload_backups/LUT-pre-rtp96-1010.tgz",
+  "modes": {
+    "base": {
+      "cost": 1,
+      "books": 100000,
+      "rtp": 0.9600000002396396,
+      "max_win": 10000.0,
+      "p5000": 1.0177886089782106e-06,
+      "p10000": 1.0177886089782106e-06,
+      "books_sha256": "23c0a772841168c3393c3c98e6365bef0d6843b52d21b0688c5792e3191aa9b7"
+    },
+    "bonus": {
+      "cost": 100,
+      "books": 50000,
+      "rtp": 0.9599999999997415,
+      "max_win": 10000.0,
+      "p5000": 5.1291781312263375e-05,
+      "p10000": 5.1291781312263375e-05,
+      "books_sha256": "37305a2bc1bfee04aacd6e9afdd6df9521892bbdd4932f83a6d0835f5937fb4c"
+    },
+    "superbonus": {
+      "cost": 150,
+      "books": 50000,
+      "rtp": 0.9599999999993862,
+      "max_win": 10000.0,
+      "p5000": 7.687132828232396e-05,
+      "p10000": 7.687132828232396e-05,
+      "books_sha256": "b02a1e325c40ef612d6473ba7a09a8edcde7e162672d9b0c119da29aba9f98cd"
+    }
+  }
+}

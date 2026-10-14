@@ -1,0 +1,8 @@
+{
+  "cast_backdrop_right_26_percent": {
+    "mean_luminance": 212.85097341102033,
+    "green_share": 0.0,
+    "dark_under_32_share": 0.0
+  },
+  "method": "source background RGB; right 26 percent; green means G>R+12 and G>B+12; actual composite also inspected in browser"
+}

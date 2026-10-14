@@ -1,0 +1,12 @@
+static/assets/pickle/ui_spin_disabled.png: colors95=55 soft=16.9% chroma=28.4 fit=83.4% PASS
+static/assets/pickle/ui_spin_hover.png: colors95=52 soft=18.1% chroma=52.8 fit=91.5% PASS
+static/assets/pickle/ui_spin_press.png: colors95=61 soft=16.6% chroma=37.2 fit=63.0% PASS
+static/assets/pickle/ui_spin_rest.png: colors95=60 soft=17.2% chroma=33.6 fit=92.2% PASS
+static/assets/pickle/ui_button_hover.png: colors95=34 soft=38.8% chroma=48.6 fit=81.2% FAIL: soft 38.8% > 38.0%
+static/assets/pickle/ui_button_press.png: colors95=44 soft=14.2% chroma=30.0 fit=90.0% PASS
+static/assets/pickle/ui_button_rest.png: colors95=40 soft=14.4% chroma=29.3 fit=90.9% PASS
+static/assets/pickle/ui_buybonus_hover.png: colors95=55 soft=18.1% chroma=54.8 fit=91.3% PASS
+static/assets/pickle/ui_buybonus_rest.png: colors95=58 soft=15.7% chroma=24.7 fit=90.8% PASS
+static/assets/pickle/bg_feature_v2.webp: colors95=328 soft=21.1% chroma=19.8 fit=35.8% FAIL: fit 35.8% < 60.0%; colors95 328 > 140
+static/assets/pickle/win_big_base.png: colors95=24 soft=10.8% chroma=19.6 fit=94.8% PASS
+static/assets/pickle/logo_letters_v2.png: colors95=44 soft=36.5% chroma=36.3 fit=84.5% PASS

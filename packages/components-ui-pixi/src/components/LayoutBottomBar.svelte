@@ -225,6 +225,16 @@
 	// top of the X. Measured against a 0.4-scale button (30 radius), the first item
 	// now sits 110 above the frame, leaving ~60 between caption and close button.
 	const MENU_PITCH = 130;
+	// Menu captions are centred on the menu buttons, MENU_X in from the box's left
+	// edge, so anything wider than twice that runs off the screen. German did:
+	// EINSTELLUNGEN and GEWINNTABELLE started left of x = 0 (2026-10-12). One
+	// shared shrink for the column — the longest caption decides — so the four
+	// stay one size. English fits at 1, so no game changes in English.
+	const MENU_CAPTION_MAX = MENU_X * 2 - 16;
+	let menuCaptionWidths = $state([0, 0, 0, 0]);
+	const menuCaptionScale = $derived(
+		Math.min(1, ...menuCaptionWidths.filter((w) => w > 0).map((w) => MENU_CAPTION_MAX / w)),
+	);
 	const menuItemY = $derived((i: number) => barTop - 110 - MENU_PITCH * i);
 
 	// uiTheme.barMessage, centred in the Win→stepper span
@@ -542,46 +552,50 @@
 		<Container x={MENU_X} y={menuItemY(0)} scale={0.4}>
 			{@render props.buttonSoundSwitch({ anchor: 0.5 })}
 		</Container>
-		<Text
-			anchor={{ x: 0.5, y: 0 }}
-			x={MENU_X}
-			y={menuItemY(0) + 46}
-			text={i18nDerived.soundOn()}
-			style={captionStyle}
-		/>
+		<Container x={MENU_X} y={menuItemY(0) + 46} scale={menuCaptionScale}>
+			<Text
+				anchor={{ x: 0.5, y: 0 }}
+				text={i18nDerived.soundOn()}
+				style={captionStyle}
+				onresize={({ width }) => (menuCaptionWidths[0] = width)}
+			/>
+		</Container>
 
 		<Container x={MENU_X} y={menuItemY(1)} scale={0.4}>
 			{@render props.buttonSettings({ anchor: 0.5 })}
 		</Container>
-		<Text
-			anchor={{ x: 0.5, y: 0 }}
-			x={MENU_X}
-			y={menuItemY(1) + 46}
-			text={i18nDerived.settings()}
-			style={captionStyle}
-		/>
+		<Container x={MENU_X} y={menuItemY(1) + 46} scale={menuCaptionScale}>
+			<Text
+				anchor={{ x: 0.5, y: 0 }}
+				text={i18nDerived.settings()}
+				style={captionStyle}
+				onresize={({ width }) => (menuCaptionWidths[1] = width)}
+			/>
+		</Container>
 
 		<Container x={MENU_X} y={menuItemY(2)} scale={0.4}>
 			{@render props.buttonGameRules({ anchor: 0.5 })}
 		</Container>
-		<Text
-			anchor={{ x: 0.5, y: 0 }}
-			x={MENU_X}
-			y={menuItemY(2) + 46}
-			text={i18nDerived.info()}
-			style={captionStyle}
-		/>
+		<Container x={MENU_X} y={menuItemY(2) + 46} scale={menuCaptionScale}>
+			<Text
+				anchor={{ x: 0.5, y: 0 }}
+				text={i18nDerived.info()}
+				style={captionStyle}
+				onresize={({ width }) => (menuCaptionWidths[2] = width)}
+			/>
+		</Container>
 
 		<Container x={MENU_X} y={menuItemY(3)} scale={0.4}>
 			{@render props.buttonPayTable({ anchor: 0.5 })}
 		</Container>
-		<Text
-			anchor={{ x: 0.5, y: 0 }}
-			x={MENU_X}
-			y={menuItemY(3) + 46}
-			text={i18nDerived.payTable()}
-			style={captionStyle}
-		/>
+		<Container x={MENU_X} y={menuItemY(3) + 46} scale={menuCaptionScale}>
+			<Text
+				anchor={{ x: 0.5, y: 0 }}
+				text={i18nDerived.payTable()}
+				style={captionStyle}
+				onresize={({ width }) => (menuCaptionWidths[3] = width)}
+			/>
+		</Container>
 
 		<!-- close sits where the menu button was, so it does not move under the
 		     cursor that just opened it -->

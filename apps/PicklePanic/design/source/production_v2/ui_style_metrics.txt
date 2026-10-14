@@ -1,0 +1,3 @@
+static/assets/pickle/ui_spin_rest.png: colors95=60 soft=17.2% chroma=33.6 fit=92.2% PASS
+static/assets/pickle/ui_button_rest.png: colors95=40 soft=14.4% chroma=29.3 fit=90.9% PASS
+static/assets/pickle/ui_buybonus_rest.png: colors95=58 soft=15.7% chroma=24.7 fit=90.8% PASS

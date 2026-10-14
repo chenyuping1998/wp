@@ -255,9 +255,13 @@
 			</Container>
 		{/if}
 	{:else if stateUi.freeSpinCounterShow}
+		<!-- Same 0.81 as the bet readout it replaces. At 1 the stacked counter is
+		     taller than that slot and its top edge printed over the Balance panel
+		     (Pickle Panic, 2026-10-13). -->
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 130}
+			scale={0.81}
 		>
 			<LabelFreeSpinCounter stacked />
 		</Container>

@@ -37,3 +37,7 @@ Laugh caption moved above the head and reduced to 76px so HA does not obscure th
 2026-10-07 V9: replaces the previous six-beat laugh with seven aligned expressions per chef, ten beats at 280ms intervals, beginning at 480ms and ending at 3.65s. New expressions and rig timings are included in both cast atlases/JSON. Native illustrated sushi doors and four-panel noren replace the transition prototypes at exactly 1400×1080 and 1920×420. Sources/prompts retained; both art gates PASS. Transition timing and audio retained; right door uses a fixed mirrored parent container instead of negative width, preventing alternating flips on reactive updates. JSON imports enabled in the local TypeScript config for the shared laugh timing data. Thumbnail and cover are included. Platform NOT updated; no ZIP produced.
 
 V9 opening composition: initial display board rebalanced to five H1 and three H2 visible symbols; full 1280×720 opening screenshot measures 6.0% warm accent (#B87B60), compared with the previous 4.0% using the same measurement. This is an opening presentation measurement, not an average over random outcomes. Published math/RTP/weights unchanged. Half-closed and fully-closed transition screenshots retained for 16:9, 4:3 and portrait under design/qa/v9/transition. Final build passed with 172 assets, 39 audio cues, and no new type issues above the existing 15-issue baseline.
+
+## RTP update 2026-10-11
+
+Lookup-table weights rebalanced (books, payouts and max win unchanged). Per-mode RTP: base 96.02% / bonus 96.02% / superbonus 96.02%.

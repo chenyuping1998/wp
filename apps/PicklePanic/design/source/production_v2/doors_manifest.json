@@ -1,0 +1,29 @@
+[
+  {
+    "name": "door_l_base_v2",
+    "size": [
+      1100,
+      1080
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-2caa03da-d8c1-4e09-a04f-2de8dd29fe8a.png",
+    "prompt": "Original rough American underground sci-fi comic, hand brushed with blunt ink brush and fat black marker, purposeful asymmetric silhouette, thick uneven contour twice the interior stroke, solid black spot shadows, flat opaque 2-tone fills. Sparse purposeful corner ink chips, no fine uniform grain, no dense scratches, no glossy 3D, gradients, glow or soft rendered shading. Palette olive #6A9F35, shadow #31572C, paper #FFF0CF, mustard #E9B83E, brick #C84A36, lilac #8583B5, ink #20231D. Genuine transparent RGBA, clean alpha outside the drawing. No card, square backing, border, UI labels or watermark.  One LEFT half fermentation-laboratory blast-door base for an animated game. Almost square 1100:1080 canvas, thick flat lilac painted steel, sparse rivets, diagonal mustard/black hazard blocks at upper/lower corner. Inner meeting edge at RIGHT is straight flat steel without cast shadow. Solid opaque steel fills entire door silhouette, to occlude scene completely. Round black porthole rim at (70% width,35% height), opaque dark interior. A simple HALF pickle badge clipped to right inner meeting edge at middle height; the other half is not shown. No wheel, latch, steam or lettering: those are separate animation layers. Front orthographic view, straight edges, door fills canvas with minimal 1% alpha margin. Purposeful broad unrendered paint shapes."
+  },
+  {
+    "name": "door_r_base_v2",
+    "size": [
+      1100,
+      1080
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-aa0b181c-8866-4ed5-adfa-62beb6e9b5a0.png",
+    "prompt": "Original rough American underground sci-fi comic, hand brushed with blunt ink brush and fat black marker, purposeful asymmetric silhouette, thick uneven contour twice the interior stroke, solid black spot shadows, flat opaque 2-tone fills. Sparse purposeful corner ink chips, no fine uniform grain, no dense scratches, no glossy 3D, gradients, glow or soft rendered shading. Palette olive #6A9F35, shadow #31572C, paper #FFF0CF, mustard #E9B83E, brick #C84A36, lilac #8583B5, ink #20231D. Genuine transparent RGBA, clean alpha outside the drawing. No card, square backing, border, UI labels or watermark.  One RIGHT half fermentation-laboratory blast-door base for an animated game. Almost square 1100:1080 canvas, thick flat lilac painted steel, sparse rivets, diagonal mustard/black hazard blocks at upper/lower corner. Inner meeting edge at LEFT is straight flat steel without cast shadow. Solid opaque steel fills entire door silhouette, to occlude scene completely. Round black porthole rim at (30% width,35% height), opaque dark interior. A simple HALF pickle badge clipped to left inner meeting edge at middle height; the other half is not shown. No wheel, latch, steam or lettering: those are separate animation layers. Front orthographic view, straight edges, door fills canvas with minimal 1% alpha margin. Purposeful broad unrendered paint shapes."
+  },
+  {
+    "name": "door_wheel_v2",
+    "size": [
+      256,
+      256
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-f6e9e8bb-618d-441a-a11d-f2f1cf39c0ad.png",
+    "prompt": "Original rough American underground sci-fi comic, hand brushed with blunt ink brush and fat black marker, purposeful asymmetric silhouette, thick uneven contour twice the interior stroke, solid black spot shadows, flat opaque 2-tone fills. Sparse purposeful corner ink chips, no fine uniform grain, no dense scratches, no glossy 3D, gradients, glow or soft rendered shading. Palette olive #6A9F35, shadow #31572C, paper #FFF0CF, mustard #E9B83E, brick #C84A36, lilac #8583B5, ink #20231D. Genuine transparent RGBA, clean alpha outside the drawing. No card, square backing, border, UI labels or watermark.  A single isolated front-facing six-spoke pressure handwheel for a lilac fermentation blast-door. Mustard steel rim and spokes, fat irregular ink edges, cream flat small center hub, asymmetrical black shadow. Symmetric working circle centered in square, no door or other objects, no lettering."
+  }
+]

@@ -1,0 +1,4 @@
+wp-banandit/apps/PicklePanic/design/source/pickle_style/h1.png: colors95=161 soft=30.4% chroma=40.6 fit=65.3% PASS
+wp-banandit/apps/PicklePanic/design/source/pickle_style/w.png: colors95=48 soft=21.6% chroma=29.4 fit=92.6% PASS
+wp-banandit/apps/PicklePanic/design/source/pickle_style/mg.png: colors95=57 soft=23.6% chroma=37.7 fit=90.2% PASS
+sheet: wp-banandit/apps/PicklePanic/design/style_test_readability.png

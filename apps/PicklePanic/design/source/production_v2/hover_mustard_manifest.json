@@ -1,0 +1,11 @@
+[
+  {
+    "name": "ui_button_hover_mustard_v2",
+    "size": [
+      256,
+      256
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-ee9e7c98-cf38-44e6-acb0-adda8d5cb63a.png",
+    "prompt": "Edit ONLY the central yellow disk of this original Pickle Panic hover button: replace its current pale yellow with EXACT opaque flat mustard #E9B83E across the entire disk. Keep every other pixel, contour, rivet, outer alpha and button size/alignment unchanged. The central disk MUST remain fully OPAQUE, no transparenthole. Uniformflatspotink, no gradient/glow/shading or new details. Transparent ONLY outside the existing outer rim."
+  }
+]

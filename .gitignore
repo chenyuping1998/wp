@@ -73,3 +73,14 @@ upload/
 dist/
 apps/*/dist/
 
+
+# Design source files and archives — kept on disk, never pushed (2026-10-14).
+# Layered PSDs, backup tarballs, delivery zips and raw WAV stems in design/
+# (Pickle Panic's alone are ~300MB). The game's shipped audio lives in static/
+# and is not affected. Files tracked before this rule stay tracked.
+*.psd
+apps/**/design/_incoming/
+apps/**/design/_legacy_assets/
+apps/**/*.zip
+apps/**/*.tgz
+apps/**/design/**/*.wav

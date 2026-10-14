@@ -1,0 +1,2 @@
+thumbnail BG design/thumbnail/PicklePanic-BG.png: mean=155.7 p10=24.0 dark<32=12.5% WARN — 10th percentile under 35 — deliberate black shapes?
+thumbnail FG transparent=80.0%; COMPOSITE mean=137.3 p10=18.0 dark<32=17.0% (visual inspection still required)

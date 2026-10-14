@@ -1,0 +1,29 @@
+
+== Low quality assets: 20 finding(s)
+  WARN static/assets/pickle/bar_strip.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/button.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/button_on.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/buybonus.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/buybonus_hover.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/chip.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/door.png  flat-fill art (5 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/frame_bg.png  flat-fill art (1 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/low_label.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/ray.png  flat-fill art (1 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/stamp.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/star.png  flat-fill art (1 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/streak.png  flat-fill art (1 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/ticker.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/pickle/warning_bar.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/sprites/sushiFrame/frame_bg.png  flat-fill art (1 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/sprites/sushiSymbols/low_label.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/sprites/sushiUi/bar_strip.png  flat-fill art (2 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/sprites/sushiV8/ray.png  flat-fill art (1 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+  WARN static/assets/sprites/sushiV8/stamp.png  flat-fill art (1 fill colours) — reads as vector/placeholder next to painted art; texture it from the game's own painted material or regenerate
+
+== Poor animations: 0 finding(s)
+
+== Poor bet UI bar: 1 finding(s)
+  WARN src/game/uiTheme.ts  portrait spin row at template sizes (menu 1.0 > autospin 0.7 > ± 0.5) — check the hierarchy, portraitMenuScale/portraitStepScale
+
+0 FAIL, 21 WARN

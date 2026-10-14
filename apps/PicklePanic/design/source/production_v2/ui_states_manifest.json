@@ -1,0 +1,26 @@
+{
+  "ui_spin_hover": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-4811ba5c-ae26-473e-8a13-74a3a73e6c39.png",
+    "prompt": "Edit ONLY the button's blank circular face and a few rim accents to warm mustard-yellow #E9B83E so this exact hand-drawn bell button visibly lights up on HOVER. Keep every contour, pusher, bolt, object position, hard shadow, alpha border and square canvas IDENTICAL. No glow or gradient. Center remains blank for runtime arrow. Flat warm fill, not grey."
+  },
+  "ui_spin_press": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-9dda783c-45f0-441d-a9c4-86060ac6d5ee.png",
+    "prompt": "PRESS state of this EXACT hand-drawn bell button. Compress the red bell pusher vertically to70% of its present height, shorten the hard lower-right black shadow to HALF its current extension, keep face the same cream as rest. Do not darken. Keep the base disk, rivets, canvas, alpha margin and center fixed, no new glyphs. Crisp brushink, flat fills, no glow or gradient."
+  },
+  "ui_spin_disabled": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-a80d966e-675a-438c-87fe-444dc27ca8d6.png",
+    "prompt": "DISABLED state of this EXACT bell button: use pale subdued dusty-lilac for the small red pusher and muted cream for the face, unchanged strong readable black edges. Remove only the tiny bright white gleam on top of the pusher. Keep every shape/position, bolts, center, hard shadow, alpha border and canvas identical. No blur or grey wash, no symbols or text. A visibly unarmed pressure button, still readable."
+  },
+  "ui_button_hover": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-096a5780-47d8-4c5e-92e3-9fb70fbe34b3.png",
+    "prompt": "HOVER state of this EXACT small riveted comic metal disk. Change ONLY its central blank cream face to warm mustard-yellow #E9B83E. Keep ink outlines, uneven edge, rivets, hard shadow and alpha border/canvas completely identical. No glyph/text. No glow, gradients or grey wash."
+  },
+  "ui_button_press": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-cc6889ed-80db-4391-8df4-7ddb0d371f09.png",
+    "prompt": "PRESS state of this EXACT small riveted metal disk. Keep central face cream, keep all shapes and rivets fixed, shorten the hard black lower-right shadow extension by HALF so it feels pushed against the surface. Do not darken any fill. Keep alpha margins and center/canvas identical. No new objects, glyphs, gradients, glow."
+  },
+  "ui_buybonus_hover": {
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-c7f4c7b0-1c38-4487-8aa7-29221fa38813.png",
+    "prompt": "HOVER state of this EXACT hanging diner sign. Change ONLY its large blank cream face to a flat warm mustard-yellow #E9B83E, while keeping the chains, rivets, pickle mascot, ink contour, shadow, object positions, padding, alpha and square canvas IDENTICAL. It lights warmly without any glow, gradient or grey. No letters, words or numbers."
+  }
+}

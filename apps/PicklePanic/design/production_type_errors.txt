@@ -1,0 +1,129 @@
+The following Vite config options will be overridden by SvelteKit:
+  - base
+The following Vite config options will be overridden by SvelteKit:
+  - base
+Loading svelte-check in workspace: /Users/stone/stake-engine/wp-banandit/apps/PicklePanic
+Getting Svelte diagnostics...
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/node_modules/utils-xstate/node_modules/rgs-requests/node_modules/rgs-fetcher/src/rgsFetcher.ts:62:15
+Error: Type '"get"' cannot be used to index type 'paths[T]'. 
+		T extends keyof paths,
+		TResponse = paths[T]['get']['responses'][200]['content']['application/json'],
+	>(options: { url: T; rgsUrl: string }): Promise<TResponse> {
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/node_modules/utils-xstate/node_modules/rgs-requests/node_modules/rgs-fetcher/src/rgsFetcher.ts:62:15
+Error: Type '"responses"' cannot be used to index type 'paths[T]["get"]'. 
+		T extends keyof paths,
+		TResponse = paths[T]['get']['responses'][200]['content']['application/json'],
+	>(options: { url: T; rgsUrl: string }): Promise<TResponse> {
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/node_modules/utils-xstate/node_modules/rgs-requests/node_modules/rgs-fetcher/src/rgsFetcher.ts:62:15
+Error: Type '200' cannot be used to index type 'paths[T]["get"]["responses"]'. 
+		T extends keyof paths,
+		TResponse = paths[T]['get']['responses'][200]['content']['application/json'],
+	>(options: { url: T; rgsUrl: string }): Promise<TResponse> {
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/node_modules/utils-xstate/node_modules/rgs-requests/node_modules/rgs-fetcher/src/rgsFetcher.ts:62:15
+Error: Type '"content"' cannot be used to index type 'paths[T]["get"]["responses"][200]'. 
+		T extends keyof paths,
+		TResponse = paths[T]['get']['responses'][200]['content']['application/json'],
+	>(options: { url: T; rgsUrl: string }): Promise<TResponse> {
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/node_modules/utils-xstate/node_modules/rgs-requests/node_modules/rgs-fetcher/src/rgsFetcher.ts:62:15
+Error: Type '"application/json"' cannot be used to index type 'paths[T]["get"]["responses"][200]["content"]'. 
+		T extends keyof paths,
+		TResponse = paths[T]['get']['responses'][200]['content']['application/json'],
+	>(options: { url: T; rgsUrl: string }): Promise<TResponse> {
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/node_modules/components-ui-html/node_modules/envs/src/envs.svelte.ts:1:34
+Error: Cannot find module '$env/static/public' or its corresponding type declarations. 
+import * as envStaticPublic from '$env/static/public';
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/node_modules/utils-slots/src/createReelForCascading.svelte.ts:165:88
+Error: Property 'symbolIndex' does not exist on type '{ rawSymbol: TRawSymbol; symbolIndexOfBoard: number; symbolY: Tween<number>; symbolState: TSymbolState; oncomplete: () => void; }'. 
+			reelSymbol.symbolState = 'land' as TSymbolState;
+			reelOptions.onSymbolLand({ rawSymbol: reelSymbol.rawSymbol, symbolIndex: reelSymbol.symbolIndex });
+			if (reelSymbol.symbolIndexOfBoard === reelLengthInBoard - 1) {
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/src/game/bookEventHandlerMap.ts:141:4
+Error: Type '{ name: string; }[][] | { name: string; }[][]' is not assignable to type 'RawSymbol[][] | undefined'.
+  Type '{ name: string; }[][]' is not assignable to type 'RawSymbol[][]'.
+    Type '{ name: string; }[]' is not assignable to type 'RawSymbol[]'.
+      Type '{ name: string; }' is not assignable to type 'RawSymbol'.
+        Types of property 'name' are incompatible.
+          Type 'string' is not assignable to type '"L1" | "L5" | "H2" | "S" | "L4" | "H4" | "P" | "H3" | "L3" | "H1" | "L2" | "W"'. 
+			revealEvent: { ...bookEvent, anticipation: gateAnticipation(bookEvent.anticipation, bookEvent.board) },
+			paddingBoard: config.paddingReels[bookEvent.gameType],
+			// Turbo does not apply to the free game's reels. It still applies to
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/src/components/SymbolSpineMain.svelte:28:35
+Error: Property 'animationName' does not exist on type '{ type: "sprite"; assetKey: string; sizeRatios: { width: number; height: number; }; }'. (ts)
+		trackIndex={0}
+		animationName={props.symbolInfo.animationName}
+		timeScale={stateBetDerived.timeScale()}
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/src/components/PressToContinue.svelte:61:4
+Error: Object literal may only specify known properties, and 'strokeThickness' does not exist in type 'TextStyle | TextStyleOptions'. (ts)
+			stroke: 0x171c1a,
+			strokeThickness: 4,
+			dropShadow: false,
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/src/components/Win.svelte:215:27
+Error: 'winLevelData' is possibly 'undefined'. (ts)
+				{#if isBigWin}
+					{@const fx = TIER_FX[winLevelData.alias] ?? TIER_FX.big}
+					<MainContainer>
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/src/components/Win.svelte:232:24
+Error: 'winLevelData' is possibly 'undefined'. (ts)
+						{#if isBigWin}
+							{@const alias = winLevelData.alias}
+							{@const fx = TIER_FX[alias] ?? TIER_FX.big}
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/src/components/Mascot.svelte:233:26
+Error: This comparison appears to be unintentional because the types '"stars"' and '"laugh"' have no overlap. (ts)
+	const haPops = $derived.by(() => {
+		if (impactClock < 0 || cast.beatFx !== 'laugh') return [];
+		const pops = [];
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/src/game/stateApp.ts:5:41
+Error: Type '{ v8Ray: { type: string; src: string; preload: boolean; }; v8MenuFrame: { type: string; src: string; preload: boolean; }; v8IntroCollect: { type: string; src: string; preload: boolean; }; v8IntroSlice: { type: string; src: string; preload: boolean; }; ... 99 more ...; sound: { ...; }; }' is not assignable to type 'Assets'.
+  Property 'v8Ray' is incompatible with index signature.
+    Type '{ type: string; src: string; preload: boolean; }' is not assignable to type 'Asset'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type 'RawType'. 
+
+export const { stateApp } = createApp({ assets });
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/src/game/actor.ts:42:4
+Error: Type '{ name: string; }[][] | { name: string; }[][]' is not assignable to type 'RawSymbol[][] | undefined'.
+  Type '{ name: string; }[][]' is not assignable to type 'RawSymbol[][]'.
+    Type '{ name: string; }[]' is not assignable to type 'RawSymbol[]'.
+      Type '{ name: string; }' is not assignable to type 'RawSymbol'.
+        Types of property 'name' are incompatible.
+          Type 'string' is not assignable to type '"L1" | "L5" | "H2" | "S" | "L4" | "H4" | "P" | "H3" | "L3" | "H1" | "L2" | "W"'. 
+		await stateGameDerived.enhancedBoard.preSpin({
+			paddingBoard: config.paddingReels[stateGame.gameType],
+			isTurboBeforeAllOverride: forceNormalPreSpin ? false : undefined,
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/src/components/ui/ModalPayTable.svelte:94:19
+Error: Conversion of type '{ W: { paytable: null; special_properties: string[]; }; L2: { paytable: ({ "5": number; "4"?: undefined; "3"?: undefined; } | { "4": number; "5"?: undefined; "3"?: undefined; } | { "3": number; "5"?: undefined; "4"?: undefined; })[]; }; H2: { ...; }; ... 8 more ...; H3: { ...; }; }' to type 'Record<string, { paytable?: { [k: string]: number; }[] | null | undefined; }>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Property '"L2"' is incompatible with index signature.
+    Type '{ paytable: ({ "5": number; "4"?: undefined; "3"?: undefined; } | { "4": number; "5"?: undefined; "3"?: undefined; } | { "3": number; "5"?: undefined; "4"?: undefined; })[]; }' is not comparable to type '{ paytable?: { [k: string]: number; }[] | null | undefined; }'.
+      Types of property 'paytable' are incompatible.
+        Type '({ "5": number; "4"?: undefined; "3"?: undefined; } | { "4": number; "5"?: undefined; "3"?: undefined; } | { "3": number; "5"?: undefined; "4"?: undefined; })[]' is not comparable to type '{ [k: string]: number; }[]'.
+          Type '{ "5": number; "4"?: undefined; "3"?: undefined; } | { "4": number; "5"?: undefined; "3"?: undefined; } | { "3": number; "5"?: undefined; "4"?: undefined; }' is not comparable to type '{ [k: string]: number; }'.
+            Type '{ "3": number; "5"?: undefined; "4"?: undefined; }' is not comparable to type '{ [k: string]: number; }'.
+              Property '"5"' is incompatible with index signature.
+                Type 'undefined' is not comparable to type 'number'. (ts)
+	const rows: PayRow[] = ORDER.filter((name) => name in config.symbols).map((name) => {
+		const symbol = (config.symbols as Record<string, { paytable?: { [k: string]: number }[] | null }>)[
+			name
+
+/Users/stone/stake-engine/wp-banandit/apps/PicklePanic/src/i18n/messagesMap/index.ts:13:40
+Error: Type '{ en: { HOME: string; }; zh: { HOME: string; }; }' is missing the following properties from type 'MessagesMap': ar, de, es, fr, and 10 more. 
+
+const messagesMap = mergeMessagesMaps([messagesMapGame, messagesMapUiPixi, messagesMapUiHtml]);
+
+====================================
+svelte-check found 17 errors and 8 warnings in 13 files

@@ -1,0 +1,29 @@
+[
+  {
+    "name": "door_l_unbadged_v2",
+    "size": [
+      1100,
+      1080
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-e4c0c21f-f8ba-43b2-9aef-f54846b96fa5.png",
+    "prompt": "Remove ONLY the halfyellowcircle/greenpicklebadge atRIGHT edge of this original leftblast-door, paintingthat smallarea with matchingflatlilacsteel/nearblackoutline. Preserveexactdoorgeometry, allrivetpositions,porthole,hazards,inkchips, alphaedges. No newbadge. No soft gradient/glow."
+  },
+  {
+    "name": "door_r_unbadged_v2",
+    "size": [
+      1100,
+      1080
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-32b8ed7c-9728-4c54-abf7-2658e44288b4.png",
+    "prompt": "Remove ONLY the halfyellowcircle/greenpicklebadge atLEFT edge of this original rightblast-door, paintingthat smallarea with matchingflatlilacsteel/nearblackoutline. Preserveexactdoorgeometry, allrivetpositions,porthole,hazards,inkchips, alphaedges. No newbadge. No soft gradient/glow."
+  },
+  {
+    "name": "door_badge_v2",
+    "size": [
+      256,
+      256
+    ],
+    "path": "/Users/stone/.codex/generated_images/01a1305a-536e-7df2-b47c-728d94b2a045/exec-426a50ab-e6b8-40dd-b9bd-c3c236fab7b5.png",
+    "prompt": "ONE isolated originalhandpainted fermentationlab doorbadge: flatcreamroundmetalshield withfatuneven nearblackinkrim, ONEfatcrookedolivegreenpickle verticallycentered, 5largeblackwarts, noface, smallmustardblackshadowfacet. RoughAmericanundergroundcomic bluntbrushandfatmarker, 2tonesplusblackperobject,no finegrain,render,gradient/glow/lettering. Transparent outside shield;shieldinsideopaque. 256squarelarge8%alpha safemargin."
+  }
+]

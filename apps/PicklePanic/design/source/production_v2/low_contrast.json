@@ -1,0 +1,38 @@
+{
+  "h1": {
+    "rms_contrast_on_cream": 0.4568,
+    "luma_sigma": 78.91
+  },
+  "h2": {
+    "rms_contrast_on_cream": 0.2849,
+    "luma_sigma": 59.33
+  },
+  "h3": {
+    "rms_contrast_on_cream": 0.3265,
+    "luma_sigma": 64.49
+  },
+  "h4": {
+    "rms_contrast_on_cream": 0.3656,
+    "luma_sigma": 70.84
+  },
+  "l1_a": {
+    "rms_contrast_on_cream": 0.1939,
+    "luma_sigma": 43.39
+  },
+  "l2_k": {
+    "rms_contrast_on_cream": 0.2442,
+    "luma_sigma": 53.62
+  },
+  "l3_q": {
+    "rms_contrast_on_cream": 0.2348,
+    "luma_sigma": 51.39
+  },
+  "l4_j": {
+    "rms_contrast_on_cream": 0.2451,
+    "luma_sigma": 53.61
+  },
+  "l5_10": {
+    "rms_contrast_on_cream": 0.2597,
+    "luma_sigma": 55.68
+  }
+}

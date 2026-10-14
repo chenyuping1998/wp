@@ -1,0 +1,3 @@
+static/assets/pickle/door_l_base_v2.png: colors95=26 soft=20.4% chroma=27.4 fit=90.8% PASS
+static/assets/pickle/door_r_base_v2.png: colors95=47 soft=23.4% chroma=27.8 fit=88.2% PASS
+static/assets/pickle/door_wheel_v2.png: colors95=58 soft=33.0% chroma=43.4 fit=82.1% PASS
