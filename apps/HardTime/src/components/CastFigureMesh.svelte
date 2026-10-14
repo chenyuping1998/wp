@@ -33,6 +33,12 @@
   const parentContext = props.inline ? getContextParent() : null;
   const context = getContext();
   const std = $derived(context.stateLayoutDerived.mainLayoutStandard());
+  // The warden's free arm was drawn hanging well out from his side, which
+  // reads stiff (same fault as Turf War's FG figure, user 2026-10-14). arm_l
+  // is skinned 100% to its arm bones and the body has no weight on them, so
+  // swinging it in at the shoulder moves only the sleeve. 8° picked from a
+  // 0/5/8/11 comparison; the baton arm is posed by the drawing and untouched.
+  const WARDEN_REST = { arm_l: 8 };
   const isWarden = $derived(stateGame.gameType === "freegame");
   const rigUrl = $derived(isWarden
     ? new URL("../../assets/castLayers/warden/layers.json", import.meta.url).href
@@ -83,7 +89,7 @@
         const pixiApplication = app.stateApp.pixiApplication;
         if (!pixiApplication)
           throw new Error("Pixi application is unavailable for cast mesh");
-        mountedFigure = new LayeredFigure(rig, mountTextures, tiers);
+        mountedFigure = new LayeredFigure(rig, mountTextures, tiers, isWarden ? WARDEN_REST : undefined);
         figure = mountedFigure;
         update = () => mountedFigure?.update(performance.now());
         if (parentContext) parentContext.parent.addChild(mountedFigure.view);

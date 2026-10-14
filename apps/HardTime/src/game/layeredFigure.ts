@@ -25,7 +25,7 @@ export class LayeredFigure {
   private kind: CastReactionKind = 'win';
   private speed = 1;
 
-  constructor(manifest: LayeredRig, textures: Record<string, Texture>, private readonly tiers: Record<CastReactionKind, ReactionTier> = LAYERED_TIERS) {
+  constructor(manifest: LayeredRig, textures: Record<string, Texture>, private readonly tiers: Record<CastReactionKind, ReactionTier> = LAYERED_TIERS, private readonly rest?: Record<string, number>) {
     if (!manifest.layers.length) throw new Error('Prisoner rig has no layers');
     this.commonRig = manifest.layers[0].rig;
     this.figureBox = manifest.figure_box;
@@ -64,7 +64,7 @@ export class LayeredFigure {
     if (this.start !== null && timeMs - this.start >= durationMs + tail) this.start = null;
     const intensity = composeBoneMatrices(this.commonRig, {
       timeMs, tier, reactionAge: this.start === null ? null : timeMs - this.start,
-      durationMs, speed: this.speed, motionScale: 1,
+      durationMs, speed: this.speed, motionScale: 1, rest: this.rest,
     }, this.matrices, this.chain);
     for (const part of this.parts) {
       skinVertices(part.rest, part.weights, this.matrices, part.positions);
