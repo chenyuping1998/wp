@@ -198,6 +198,33 @@
 			});
 			if (built.length === 0) return;
 
+			// Lines that end on the same cell would put their value plates exactly
+			// on top of one another, so three paying lines read as one. Stake
+			// review of Deadwood Express, 2026-10-04: "When multiple paylines cross
+			// each other, only one winning payline is visually displayed, even
+			// though multiple payline wins are included in the final payout."
+			// Plates sharing a cell are fanned out into a column, clamped inside
+			// the board, so every line's own value is on screen and they visibly
+			// add up to the total. Ported from Deadwood's WinLines (2026-10-14).
+			const groups = new Map<string, ActiveLine[]>();
+			for (const line of built) {
+				if (!line.plate || !line.win) continue;
+				const key = `${line.plate.x},${line.plate.y}`;
+				groups.set(key, [...(groups.get(key) ?? []), line]);
+			}
+			const pitch = PLATE.h + 8;
+			const minY = PLATE.h / 2 + 2;
+			const maxY = SYMBOL_SIZE * BOARD_DIMENSIONS.y - PLATE.h / 2 - 2;
+			for (const group of groups.values()) {
+				if (group.length < 2) continue;
+				const span = pitch * (group.length - 1);
+				const origin = group[0].plate!;
+				const first = Math.min(Math.max(origin.y - span / 2, minY), Math.max(minY, maxY - span));
+				group.forEach((line, i) => {
+					line.plate = { x: origin.x, y: first + pitch * i };
+				});
+			}
+
 			lines = built;
 			show = true;
 			context.eventEmitter.broadcast({ type: 'boardShow' });

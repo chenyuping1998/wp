@@ -431,6 +431,30 @@
 				/>
 			{/if}
 
+		</Container>
+	{/each}
+
+	<!--
+		Multiplier tags, drawn in their own pass AFTER every frame. Stake review of
+		Capo Nostra, 2026-10-14: "In some cases, the Vault Frame multiplier value
+		is not fully visible" — same build. The tag hangs past the frame's corner
+		into the neighbouring cells, so while it was drawn inside its own frame any
+		frame later in `active` (its glow, arrival ring, flash) painted over it.
+		Frames never overlap, so on top of all of them every tag is clear.
+	-->
+	{#each active as frame (keyOf(frame))}
+		{@const weight = weightOf(frame)}
+		{@const tier = tierOf(weight)}
+		{@const tint = tintOf(weight)}
+		{@const pose = entryPose(frame)}
+		{@const glow = pose ? pose.glow : frame.glow.current}
+		{@const span = SYMBOL_SIZE * sizeOf(frame)}
+		<Container
+			x={frameX(frame)}
+			y={frameY(frame)}
+			scale={(pose ? pose.scale : 1) * frame.scale.current}
+			rotation={pose ? pose.rotation : 0}
+		>
 			<!--
 				The multiplier rides a painted tag on the frame's lower-right corner.
 				2026-10-01: it used to be bare text at 0.22 of the span below centre,

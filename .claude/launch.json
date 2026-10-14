@@ -112,6 +112,30 @@
 				"/Users/stone/stake-engine/dist/caponostra-playtest"
 			],
 			"port": 3113
+		},
+		{
+			"name": "turfwar-playtest",
+			"runtimeExecutable": "python3",
+			"runtimeArgs": [
+				"-m",
+				"http.server",
+				"3114",
+				"--directory",
+				"/Users/stone/stake-engine/dist/turfwar-playtest"
+			],
+			"port": 3114
+		},
+		{
+			"name": "hardtime-playtest",
+			"runtimeExecutable": "python3",
+			"runtimeArgs": [
+				"-m",
+				"http.server",
+				"3115",
+				"--directory",
+				"/Users/stone/stake-engine/dist/hardtime-playtest"
+			],
+			"port": 3115
 		}
 	]
 }

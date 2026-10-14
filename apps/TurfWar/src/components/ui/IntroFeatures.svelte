@@ -108,6 +108,35 @@
 
 	let show = $state(true);
 
+	// Fit the stage to the window. Stake review of Capo Nostra, 2026-10-14,
+	// Popout S: "the initial window displayed during game loading is not shown
+	// correctly" — this card is the same build. In a small popout the stacked
+	// panels were taller than the window, and since the card is centred the logo
+	// and the first panel ran off the top. The stage is measured at its natural
+	// size and scaled down to fit.
+	let stage = $state<HTMLElement>();
+	let fit = $state(1);
+	const measure = () => {
+		if (!stage) return;
+		const w = stage.offsetWidth;
+		const h = stage.offsetHeight;
+		if (!w || !h) return;
+		// the card's own padding is clamp(0.8rem, 2.5vh, 2rem) top and bottom
+		const padY = Math.min(32, Math.max(12.8, window.innerHeight * 0.025)) * 2;
+		fit = Math.min(1, (window.innerHeight - padY) / h, (window.innerWidth * 0.98) / w);
+	};
+	$effect(() => {
+		if (!stage) return;
+		measure();
+		const ro = new ResizeObserver(measure);
+		ro.observe(stage);
+		window.addEventListener('resize', measure);
+		return () => {
+			ro.disconnect();
+			window.removeEventListener('resize', measure);
+		};
+	});
+
 	// This card is the ONLY opening screen. The pixi loading screen still runs
 	// underneath it — it is what actually loads the assets and reports progress —
 	// but the player never sees it, because the tap is refused until loading has
@@ -214,7 +243,7 @@
 			/>
 		</div>
 
-		<div class="hm-stage">
+		<div class="hm-stage" bind:this={stage} style:transform={fit < 1 ? `scale(${fit})` : undefined}>
 			<img class="hm-logo" src={`${BRAND}/logo.png`} alt="TURF WAR" />
 
 			<div class="hm-vol">
@@ -543,9 +572,15 @@
 		width: min(58rem, 100%);
 		/* centred now that a figure stands on each side */
 		margin: 0 auto;
+		/* scaled to fit by `fit` above; scale about the middle */
+		flex-shrink: 0;
+		transform-origin: 50% 50%;
 	}
 
-	@media (max-width: 62rem) {
+	/* Narrow AND upright only. A small landscape popout keeps the full width and
+	   the three columns — stacking there tripled the height of a window that is
+	   already short. */
+	@media (max-width: 62rem) and (max-aspect-ratio: 1/1) {
 		.hm-stage {
 			width: min(32rem, 100%);
 		}
@@ -616,7 +651,7 @@
 
 	/* Below the width where three columns can hold readable body text, stack.
 	   The panels are the content, so reflowing beats shrinking. */
-	@media (max-width: 46rem) {
+	@media (max-width: 46rem) and (max-aspect-ratio: 1/1) {
 		.hm-panels {
 			grid-template-columns: 1fr;
 		}
