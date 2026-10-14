@@ -326,6 +326,9 @@ export type PoseState = {
   durationMs: number;
   speed: number;
   motionScale: number;
+  /** Fixed degrees added to a bone's angle on top of idle + reaction — a
+   *  corrected rest pose for a drawing whose own pose reads wrong. */
+  rest?: Record<string, number>;
 };
 
 /** The envelope for everything that carries NO lag — the rigid rise, lean,
@@ -426,7 +429,7 @@ export function composeBoneMatrices(
           Math.sin((reactionAge / period) * Math.PI * 2);
       }
     }
-    const angle = (idle + reaction) * DEG;
+    const angle = ((state.rest?.[bone.name] ?? 0) + idle + reaction) * DEG;
     const cosine = Math.cos(angle);
     const sine = Math.sin(angle);
     let offsetX = 0;

@@ -34,6 +34,13 @@
   const context = getContext();
   const std = $derived(context.stateLayoutDerived.mainLayoutStandard());
   // Swap the complete rig and textures while the FG transition covers the board.
+  // The FG Kingpin was drawn in a rigging A-pose: both arms hang well out
+  // from the coat, which reads stiff and unnatural on screen (user, 2026-10-14:
+  // 「這姿勢不行啊，超不自然」). Both arm layers are skinned 100% to their arm
+  // bones and the body has no weight on them, so swinging the arms in at the
+  // shoulder moves only the sleeves — no coat deformation. 12° was picked from
+  // a 0/8/12/16 comparison: at 16 the far hand tucks behind the coat.
+  const FG_REST = { arm_l: 12, arm_r: -12 };
   const variant = $derived(stateGame.gameType === "freegame" ? "fg" : "base");
   const LAYERS = $derived(variant === "fg"
     ? ["arm_l", "body", "head", "prop_cigar", "dangle_smoke", "arm_r"]
@@ -101,7 +108,7 @@
         throw new Error("Pixi application is unavailable for cast mesh");
       mountedFigure = new LayeredFigure(rig, mountTextures, variant === "fg" ? KINGPIN_TIERS : LAYERED_TIERS, {
         label: `turf-cast-${variant}`,
-        poseState: { pose: "layered" },
+        poseState: variant === "fg" ? { pose: "layered", rest: FG_REST } : { pose: "layered" },
       });
       figure = mountedFigure;
       update = () => mountedFigure?.update(performance.now());
