@@ -5,7 +5,7 @@
         "sha256": "9762d39cb348ce6ab901fdb20357bf044e52acee578b874f0c6f63d56059f762"
     },
     "gameID": "deadwood_express",
-    "rtp": 0.963,
+    "rtp": 0.9603,
     "betDenomination": 1000,
     "minDenomination": 10,
     "providerNumber": 0,
@@ -23,7 +23,7 @@
                 }
             ],
             "cost": 1.0,
-            "rtp": 0.963,
+            "rtp": 0.9603,
             "std": 14.8,
             "bookLength": 40000,
             "feature": true,
@@ -48,7 +48,7 @@
                 }
             ],
             "cost": 100.0,
-            "rtp": 0.963,
+            "rtp": 0.9603,
             "std": 1.64,
             "bookLength": 20000,
             "feature": false,
@@ -73,7 +73,7 @@
                 }
             ],
             "cost": 250.0,
-            "rtp": 0.963,
+            "rtp": 0.9603,
             "std": 1.76,
             "bookLength": 20000,
             "feature": false,

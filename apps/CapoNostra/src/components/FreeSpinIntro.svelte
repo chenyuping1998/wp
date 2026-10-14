@@ -153,6 +153,9 @@
 		};
 	});
 
+	// how long a retrigger's +N plaque stays up before the feature resumes
+	const RETRIGGER_HOLD_MS = 2000;
+
 	context.eventEmitter.subscribeOnMount({
 		freeSpinIntroShow: () => {
 			show = true;
@@ -169,9 +172,24 @@
 			// fires first and cannot tell them apart.
 			stateGame.featureSplashShow = isEntry && tierByBonusTier(stateGame.bonusTier) !== null;
 			freeSpinsFromEvent = emitterEvent.extraSpins ?? emitterEvent.totalFreeSpins;
+			// Arm the resolver BEFORE the slam starts (the oncomplete race: an
+			// animation that finishes between the two statements finds the old,
+			// no-op callback and the feature waits forever).
+			let resolveThis: () => void = () => {};
+			const done = waitForResolve((resolve) => {
+				oncomplete = resolve;
+				resolveThis = resolve;
+			});
 			// retriggers reuse this event, so the slam replays for the +N as well
 			startNumberAnim();
-			await waitForResolve((resolve) => (oncomplete = resolve));
+			// A retrigger plaque is a beat inside the feature, not a stop: it holds
+			// long enough to read the +N and then the feature carries on by itself
+			// (it used to wait for a tap — 28s+ observed, 2026-10-12). A tap still
+			// skips it. The entry card keeps waiting for the player. The timer
+			// resolves THIS showing only, never a later one.
+			const autoContinue = isEntry ? undefined : setTimeout(() => resolveThis(), RETRIGGER_HOLD_MS);
+			await done;
+			clearTimeout(autoContinue);
 		},
 	});
 </script>
@@ -279,9 +297,8 @@
 					fontSize: Math.min(sizes.width * 0.105, (sizes.width * 1.4) / title.length),
 					fontWeight: TITLE_FONT_WEIGHT,
 					letterSpacing: 5,
-					fill: [0xE8D48B, 0xC9A227, 0x8A6D1F],
-					stroke: 0x14100D,
-					strokeThickness: 6,
+					fill: [0xf7f4ec, 0xd4d0c6, 0x8c8c8c],
+					stroke: { color: 0x121212, width: 6 },
 				}}
 			/>
 			<!-- glow bed sits inside the scaled container so it swells with the slam -->
@@ -294,7 +311,7 @@
 				<Sprite
 					key="fxGlow"
 					anchor={0.5}
-					tint={0xC9A227}
+					tint={0xd4d0c6}
 					blendMode="add"
 					width={sizes.width * 0.6}
 					height={sizes.width * 0.6}
@@ -319,14 +336,13 @@
 					fontSize: Math.min(sizes.width * 0.05, (sizes.width * 1.1) / subtitle.length),
 					fontWeight: TITLE_FONT_WEIGHT,
 					letterSpacing: 4,
-					fill: 0xC9A227,
-					stroke: 0x14100D,
-					strokeThickness: 3,
+					fill: 0xd4d0c6,
+					stroke: { color: 0x121212, width: 3 },
 				}}
 			/>
 		{/snippet}
 		</FreeSpinAnimation>
 	{/if}
 
-	<PressToContinue onpress={() => oncomplete()} />
+	<PressToContinue showLabel={isEntry} onpress={() => oncomplete()} />
 </FadeContainer>

@@ -5,7 +5,7 @@
         "sha256": "64ea78aa862f37760c02344a7d94e2263bbf6026136560c8b8d0d6893891c2d1"
     },
     "gameID": "turf_war",
-    "rtp": 0.9604,
+    "rtp": 0.9601,
     "betDenomination": 1000,
     "minDenomination": 10,
     "providerNumber": 0,
@@ -23,7 +23,7 @@
                 }
             ],
             "cost": 1.0,
-            "rtp": 0.9604,
+            "rtp": 0.9601,
             "std": 18.09,
             "bookLength": 40000,
             "feature": true,
@@ -48,7 +48,7 @@
                 }
             ],
             "cost": 100.0,
-            "rtp": 0.9609,
+            "rtp": 0.9602,
             "std": 1.44,
             "bookLength": 20000,
             "feature": false,
@@ -73,7 +73,7 @@
                 }
             ],
             "cost": 500.0,
-            "rtp": 0.9613,
+            "rtp": 0.9603,
             "std": 1.26,
             "bookLength": 20000,
             "feature": false,
@@ -98,7 +98,7 @@
                 }
             ],
             "cost": 1000.0,
-            "rtp": 0.9624,
+            "rtp": 0.9605,
             "std": 1.05,
             "bookLength": 20000,
             "feature": false,

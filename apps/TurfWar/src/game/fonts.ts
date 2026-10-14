@@ -21,12 +21,15 @@ import { setFontKit, setLocalFonts } from 'pixi-svelte';
 // value. Same family as TITLE_FONT, one weight apart — the bar reads as the
 // small print of the same signage, not as a second brand.
 //
-// To go back: '"Titan One", Arial, sans-serif' / '400'. Titan One is still
-// declared and preloaded in app.html, so this is a one-line revert.
+// Titan One was removed from the build on 2026-10-12 (design/_legacy_assets/
+// fonts_retired_20261012/); going back means restoring the file and its @font-face.
 export const GAME_FONT = '"Oswald", "Arial Narrow", Arial, sans-serif';
 export const GAME_FONT_WEIGHT = '700' as const;
-export const DISPLAY_FONT = '"Orbitron", Arial, sans-serif';
-export const DISPLAY_FONT_WEIGHT = '800' as const;
+// 2026-10-12: Orbitron (a square sci-fi face) retired from the numbers — one
+// street-signage family for the whole game, as Hacksaw titles run one display
+// face. Oswald's figures are the same ones the bar already reads.
+export const DISPLAY_FONT = '"Oswald", "Arial Narrow", Arial, sans-serif';
+export const DISPLAY_FONT_WEIGHT = '700' as const;
 export const BODY_FONT = '"Saira", Arial, sans-serif';
 export const TITLE_FONT = '"Oswald", "Arial Narrow", Arial, sans-serif';
 export const TITLE_FONT_WEIGHT = 700;
@@ -39,16 +42,11 @@ if (typeof document !== 'undefined') {
  root.setProperty('--hm-number-font', DISPLAY_FONT);
 }
 setFontKit(null);
-// Oswald is listed at both weights it is asked for: 700 for TITLE_FONT and for
-// GAME_FONT (the bar), 500 for the lighter runs of body-adjacent labels. Titan
-// One stays in the list at its own single weight — it is still declared in
-// app.html and is the documented one-line revert for GAME_FONT, so it has to be
-// resident, not merely referenced.
+// Oswald is listed at both weights it is asked for: 700 for TITLE_FONT, GAME_FONT
+// (the bar) and DISPLAY_FONT (numbers), 500 for the lighter runs of labels.
 setLocalFonts([
  `${GAME_FONT_WEIGHT} 16px "Oswald"`,
- `${DISPLAY_FONT_WEIGHT} 16px "Orbitron"`,
  `${TITLE_FONT_WEIGHT} 16px "Oswald"`,
  '500 16px "Oswald"',
- '400 16px "Titan One"',
  '400 16px "Saira"',
 ]);

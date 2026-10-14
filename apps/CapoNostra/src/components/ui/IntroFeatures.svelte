@@ -9,6 +9,7 @@
 
 	import config from '../../game/config';
 	import { getSocialTerms } from '../../game/socialTerms';
+	import { gameText } from '../../game/i18nText';
 
 	// The whole opening: studio mark, game logo, volatility, what the game does,
 	// and the tap that starts it — one screen.
@@ -46,6 +47,13 @@
 	const props: Props = $props();
 
 	const T = getSocialTerms();
+	// The card follows ?lang= (game/i18nText.ts, 16 locales). Social play keeps
+	// the English below, which is worded through socialTerms; the translations
+	// are written for the real-money wording and are never checked against the
+	// social restricted list.
+	const social = stateUrlDerived.social();
+	const tx = (key: Parameters<typeof gameText>[0], en: string, vars?: Record<string, string | number>) =>
+		social ? en : gameText(key, vars);
 	const SYMBOLS = `${base}/assets/sprites/capoSymbols`;
 	const BRAND = `${base}/assets/sprites/capoBrand`;
 	// The Frame overlay comes from capoFrames/, the art the BOARD actually draws.
@@ -78,27 +86,56 @@
 			// over a symbol because that is the only way it ever appears in play.
 			icons: ['h1'],
 			overlay: 'frame_1x1',
-			title: 'VAULT FRAMES',
-			body: `Frames land carrying <strong>2&times; to 100&times;</strong>, covering <strong>1, 4 or 9 positions</strong>. A Frame multiplies any win whose ${T.payline} crosses it &mdash; a bigger Frame counts once per position crossed &mdash; and where several take part in one win, their values <strong>add together</strong>.`,
+			title: tx('capoFramesTitle', 'VAULT FRAMES'),
+			body: tx('capoFramesBody', `Frames land carrying <strong>2&times; to 100&times;</strong>, covering <strong>1, 4 or 9 positions</strong>. A Frame multiplies any win whose ${T.payline} crosses it &mdash; a bigger Frame counts once per position crossed &mdash; and where several take part in one win, their values <strong>add together</strong>.`),
 		},
 		{
 			// sw.png is still the Collector's old artwork under the new name (ART_BRIEF.md),
 			// and not drawn yet, and this panel is the player's first sight of the
 			// mechanic, so it must not render a broken image.
 			icons: ['sw'],
-			title: 'THE TOMMY GUN',
-			body: `A Tommy Gun fills its <strong>entire reel with Wilds</strong> before any wins are counted. It lands on the three middle reels, and more than one can arrive on the same spin.`,
+			title: tx('capoCaseTitle', 'THE VIOLIN CASE'),
+			body: tx('capoCaseBody', `A Violin Case fills its <strong>entire reel with Wilds</strong> before any wins are counted. It lands on the three middle reels in normal play and on any reel in free spins, and more than one can arrive on the same spin.`),
 		},
 		{
 			// fs.png, not s.png: the registry's hmS points at fs.png and s.png was a
 			// byte-identical duplicate that nothing referenced, so it was removed.
 			icons: ['fs', 'fs', 'fs'],
-			title: 'FREE SPINS',
-			body: `3, 4 or 5 Scatters open <strong>Soldier</strong>, <strong>Capo</strong> or <strong>The Don</strong> &mdash; 10 spins each, more Frames at every tier, and The Don guarantees a Tommy Gun on <strong>every spin</strong>. ${T.entryVerb} in for ${buyCosts[0]}&times;, ${buyCosts[1]}&times; or ${buyCosts[2]}&times;.`,
+			title: tx('freeSpins', 'FREE SPINS'),
+			body: tx('capoFreeSpinsBody', `3, 4 or 5 Scatters open <strong>Soldier</strong>, <strong>Capo</strong> or <strong>The Don</strong> &mdash; 10 spins each, starting with one Frame in Soldier and three in Capo and The Don, and The Don guarantees a Violin Case on <strong>every spin</strong>. ${T.entryVerb} in for ${buyCosts[0]}&times;, ${buyCosts[1]}&times; or ${buyCosts[2]}&times;.`, { a: buyCosts[0] ?? '', b: buyCosts[1] ?? '', c: buyCosts[2] ?? '' }),
 		},
 	];
 
 	let show = $state(true);
+
+	// Fit the stage to the window (Stake review, 2026-10-14, Popout S: "the initial
+	// window displayed during game loading is not shown correctly"). In a small
+	// popout the stacked panels were taller than the window, and since the card is
+	// centred the logo and the first panel ran off the top. The stage is measured
+	// at its natural size and scaled down to fit — the same fix Deadwood Express's
+	// intro got for its 2026-10-04 popout rejection.
+	let stage = $state<HTMLElement>();
+	let fit = $state(1);
+	const measure = () => {
+		if (!stage) return;
+		const w = stage.offsetWidth;
+		const h = stage.offsetHeight;
+		if (!w || !h) return;
+		// the card's own padding is clamp(0.8rem, 2.5vh, 2rem) top and bottom
+		const padY = Math.min(32, Math.max(12.8, window.innerHeight * 0.025)) * 2;
+		fit = Math.min(1, (window.innerHeight - padY) / h, (window.innerWidth * 0.98) / w);
+	};
+	$effect(() => {
+		if (!stage) return;
+		measure();
+		const ro = new ResizeObserver(measure);
+		ro.observe(stage);
+		window.addEventListener('resize', measure);
+		return () => {
+			ro.disconnect();
+			window.removeEventListener('resize', measure);
+		};
+	});
 
 	// This card is the ONLY opening screen. The pixi loading screen still runs
 	// underneath it — it is what actually loads the assets and reports progress —
@@ -142,6 +179,14 @@
 		dismiss();
 	};
 
+	// Enter continues, exactly as the click does and under the same conditions.
+	// Not Space: that is the spin key, and the press would carry on to the board.
+	const onkey = (e: KeyboardEvent) => {
+		if (e.key !== 'Enter' || !show || !armed || !ready) return;
+		e.preventDefault();
+		close();
+	};
+
 	// A short arming delay stops a stray click that was aimed at something else
 	// from dismissing the card before it has finished appearing.
 	let armed = $state(false);
@@ -164,6 +209,8 @@
 		};
 	});
 </script>
+
+<svelte:window onkeydown={onkey} />
 
 {#if show}
 	<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
@@ -194,13 +241,32 @@
 				alt=""
 				aria-hidden="true"
 			/>
+			<svg class="hm-cigar-smoke" viewBox="0 0 872 1599" aria-hidden="true">
+				<defs>
+					<linearGradient id="intro-cigar-fade" x1="0" y1="100%" x2="0" y2="0%">
+						<stop offset="0" stop-color="#ECE8DF" stop-opacity="0.55" />
+						<stop offset="0.6" stop-color="#ECE8DF" stop-opacity="0.23" />
+						<stop offset="1" stop-color="#ECE8DF" stop-opacity="0" />
+					</linearGradient>
+				</defs>
+				<g transform="translate(107 509)" fill="none" stroke="url(#intro-cigar-fade)" stroke-linecap="round">
+					<path stroke-width="6" d="M0 0 C-3 -22 10 -36 1 -52 S-16 -86 -2 -115 S18 -140 4 -160">
+						<animate attributeName="d" dur="5.8s" repeatCount="indefinite"
+							values="M0 0 C-3 -22 10 -36 1 -52 S-16 -86 -2 -115 S18 -140 4 -160;M0 0 C5 -22 -9 -36 -3 -52 S15 -86 7 -115 S-12 -140 -6 -160;M0 0 C-3 -22 10 -36 1 -52 S-16 -86 -2 -115 S18 -140 4 -160" />
+					</path>
+					<path stroke-width="11" opacity="0.35" d="M0 0 C4 -25 -8 -44 -1 -65 S12 -105 -3 -160">
+						<animate attributeName="d" dur="7.3s" repeatCount="indefinite"
+							values="M0 0 C4 -25 -8 -44 -1 -65 S12 -105 -3 -160;M0 0 C-4 -25 9 -44 4 -65 S-15 -105 12 -160;M0 0 C4 -25 -8 -44 -1 -65 S12 -105 -3 -160" />
+					</path>
+				</g>
+			</svg>
 		</div>
 
-		<div class="hm-stage">
+		<div class="hm-stage" bind:this={stage} style:transform={fit < 1 ? `scale(${fit})` : undefined}>
 			<img class="hm-logo" src={`${BRAND}/logo.png`} alt="CAPO NOSTRA" />
 
 			<div class="hm-vol">
-				<span class="hm-vol-label">VOLATILITY</span>
+				<span class="hm-vol-label">{tx('introVolatility', 'VOLATILITY')}</span>
 				<span class="hm-bolts" aria-label={`Volatility ${VOLATILITY} of ${VOLATILITY_MAX}`}>
 					{#each Array(VOLATILITY_MAX) as _, i (i)}
 						<!--
@@ -242,8 +308,8 @@
 								/>
 							{/if}
 						</div>
-						<h2>{panel.title}</h2>
-						<p>{@html panel.body}</p>
+						<h2 dir="auto">{panel.title}</h2>
+						<p dir="auto">{@html panel.body}</p>
 					</section>
 				{/each}
 			</div>
@@ -254,11 +320,11 @@
 				figure there is worse than no figure. The rules panel carries RTP per
 				mode, read live from the maths config, which is where it belongs.
 			-->
-			<p class="hm-stats">
-				{lineCount} {T.paylinesUpper} &nbsp;/&nbsp; MAX WIN {maxWin}&times;
+			<p class="hm-stats" dir="auto">
+				{tx('introPaylines', `${lineCount} ${T.paylinesUpper}`, { lines: lineCount })} &nbsp;/&nbsp; {tx('introMaxWin', `MAX WIN ${maxWin}×`, { max: maxWin })}
 			</p>
-			<p class="hm-cta" class:waiting={!ready}>
-				{ready ? 'TAP TO CONTINUE' : 'LOADING…'}
+			<p class="hm-cta" class:waiting={!ready} dir="auto">
+				{ready ? tx('introTap', 'TAP TO CONTINUE') : tx('introLoading', 'LOADING…')}
 			</p>
 		</div>
 
@@ -410,9 +476,9 @@
 		box-sizing: border-box;
 		cursor: pointer;
 		overflow: hidden;
-		color: #fff;
+		color: #ffffff;
 		font-family: var(--gb-body-font, sans-serif);
-		background: var(--bg) center / cover no-repeat, #1E1813;
+		background: var(--bg) center / cover no-repeat, #1c1c1c;
 		opacity: 0;
 		transition: opacity 0.35s ease;
 	}
@@ -428,8 +494,8 @@
 		position: absolute;
 		inset: 0;
 		background:
-			radial-gradient(ellipse at 42% 52%, rgba(20, 16, 13, 0.9) 0%, rgba(20, 16, 13, 0.55) 45%, rgba(20, 16, 13, 0.82) 100%),
-			linear-gradient(180deg, rgba(20, 16, 13, 0.75) 0%, rgba(20, 16, 13, 0.2) 30%, rgba(20, 16, 13, 0.9) 100%);
+			radial-gradient(ellipse at 42% 52%, rgba(18, 18, 18, 0.9) 0%, rgba(18, 18, 18, 0.55) 45%, rgba(18, 18, 18, 0.82) 100%),
+			linear-gradient(180deg, rgba(18, 18, 18, 0.75) 0%, rgba(18, 18, 18, 0.2) 30%, rgba(18, 18, 18, 0.9) 100%);
 	}
 
 	/* Positioning + the one-shot entrance live here, on the wrapper. See the
@@ -463,7 +529,10 @@
 		   transparent margin. Do not reintroduce padding under the shoes. */
 		left: max(1vw, calc(50vw - 48rem));
 		bottom: -4vh;
-		height: min(104vh, 58rem);
+		/* 96vh, was 104vh: with bottom -4vh that put the image's top edge exactly
+		   on the viewport's, and the 2026-10-04 Art Deco Don's alpha box starts at
+		   his hat (the old cutout had smoke above it), so the hat was cut off. */
+		height: min(96vh, 54rem);
 		transform-origin: 50% 100%;
 		animation: castInLeft 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.1s;
 	}
@@ -478,8 +547,8 @@
 		object-fit: contain;
 		pointer-events: none;
 		filter:
-			drop-shadow(3px 0 0 #14100D) drop-shadow(-3px 0 0 #14100D) drop-shadow(0 3px 0 #14100D)
-			drop-shadow(0 -3px 0 #14100D) drop-shadow(0 12px 26px rgba(0, 0, 0, 0.7));
+			drop-shadow(3px 0 0 #121212) drop-shadow(-3px 0 0 #121212) drop-shadow(0 3px 0 #121212)
+			drop-shadow(0 -3px 0 #121212) drop-shadow(0 12px 26px rgba(0, 0, 0, 0.7));
 	}
 
 	/* The character keeps breathing after walking in — same technique as
@@ -498,6 +567,20 @@
 	   the breath does not begin fighting the entrance for the same pixels
 	   before the walk-in has actually finished. */
 	.hm-cast-left {
+		/* The loading-card Don stands on the left and looks toward its content. */
+		scale: -1 1;
+		/* Suppress only the baked smoke corner; keep the hand/cigar pixels. */
+		clip-path: polygon(17.09% 0, 100% 0, 100% 100%, 0 100%, 0 31.33%, 17.09% 31.33%);
+		transform-origin: 50% 100%;
+		animation: castSwayLeft 8s ease-in-out infinite 0.7s;
+	}
+	.hm-cigar-smoke {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		scale: -1 1;
 		transform-origin: 50% 100%;
 		animation: castSwayLeft 8s ease-in-out infinite 0.7s;
 	}
@@ -531,9 +614,16 @@
 		width: min(58rem, 100%);
 		/* centred now that a figure stands on each side */
 		margin: 0 auto;
+		/* scaled to fit by `fit` above; flex centring keeps the box centred, so
+		   scale about the middle */
+		flex-shrink: 0;
+		transform-origin: 50% 50%;
 	}
 
-	@media (max-width: 62rem) {
+	/* Narrow AND upright only. A small landscape popout keeps the full width and
+	   the three columns — stacking there tripled the height of a window that is
+	   already short. */
+	@media (max-width: 62rem) and (max-aspect-ratio: 1/1) {
 		.hm-stage {
 			width: min(32rem, 100%);
 		}
@@ -557,7 +647,7 @@
 		font-family: var(--hm-title-font, var(--gb-display-font, sans-serif));
 		font-size: clamp(0.68rem, 1.4vw, 0.92rem);
 		letter-spacing: 0.2em;
-		color: #E6DFD1;
+		color: #ece8df;
 	}
 
 	.hm-bolts {
@@ -579,8 +669,8 @@
 	}
 
 	.hm-bolt path {
-		fill: rgba(230, 223, 209, 0.09);
-		stroke: rgba(232, 212, 139, 0.5);
+		fill: rgba(236, 232, 223, 0.09);
+		stroke: rgba(247, 244, 236, 0.5);
 		stroke-width: 1.6;
 		stroke-linejoin: round;
 	}
@@ -588,11 +678,11 @@
 	.hm-bolt.lit path {
 		/* the same magenta-to-gold the wordmark and the frame tiers already use,
 		   so the meter belongs to this game rather than to the OS */
-		fill: #C9A227;
-		stroke: #C9A227;
+		fill: #d4d0c6;
+		stroke: #d4d0c6;
 		stroke-width: 2.2;
-		filter: drop-shadow(0 0 6px rgba(232, 212, 139, 0.9))
-			drop-shadow(0 0 2px rgba(201, 162, 39, 0.9));
+		filter: drop-shadow(0 0 6px rgba(247, 244, 236, 0.9))
+			drop-shadow(0 0 2px rgba(212, 208, 198, 0.9));
 	}
 
 	.hm-panels {
@@ -604,7 +694,7 @@
 
 	/* Below the width where three columns can hold readable body text, stack.
 	   The panels are the content, so reflowing beats shrinking. */
-	@media (max-width: 46rem) {
+	@media (max-width: 46rem) and (max-aspect-ratio: 1/1) {
 		.hm-panels {
 			grid-template-columns: 1fr;
 		}
@@ -632,13 +722,13 @@
 		padding: clamp(0.7rem, 1.6vh, 1.1rem) clamp(0.6rem, 1.4vw, 1rem);
 		box-sizing: border-box;
 		background:
-			linear-gradient(180deg, rgba(58, 26, 28, 0.96) 0%, rgba(30, 24, 19, 0.97) 62%, rgba(46, 28, 26, 0.97) 100%);
-		border: 3px solid #14100D;
+			linear-gradient(180deg, rgba(38, 38, 38, 0.96) 0%, rgba(28, 28, 28, 0.97) 62%, rgba(33, 33, 33, 0.97) 100%);
+		border: 3px solid #121212;
 		clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
 		box-shadow:
-			inset 0 0 0 2px #E8D48B,
-			inset 0 22px 34px -22px rgba(232, 212, 139, 0.5),
-			7px 7px 0 rgba(20, 16, 13, 0.75);
+			inset 0 0 0 2px #f7f4ec,
+			inset 0 22px 34px -22px rgba(247, 244, 236, 0.5),
+			7px 7px 0 rgba(18, 18, 18, 0.75);
 		text-align: center;
 		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 		animation-delay: var(--delay);
@@ -651,7 +741,7 @@
 		position: absolute;
 		inset: 3px 3px auto 3px;
 		height: clamp(3.4rem, 8vh, 5rem);
-		background: linear-gradient(180deg, rgba(201, 162, 39, 0.34) 0%, rgba(201, 162, 39, 0) 100%);
+		background: linear-gradient(180deg, rgba(212, 208, 198, 0.34) 0%, rgba(212, 208, 198, 0) 100%);
 		pointer-events: none;
 	}
 
@@ -664,7 +754,7 @@
 		right: -1px;
 		width: 46px;
 		height: 46px;
-		background: linear-gradient(225deg, #8A6D1F 0%, #8A6D1F 46%, transparent 47%);
+		background: linear-gradient(225deg, #8c8c8c 0%, #8c8c8c 46%, transparent 47%);
 		pointer-events: none;
 	}
 
@@ -689,7 +779,7 @@
 		position: absolute;
 		inset: 0;
 		margin: auto;
-		filter: drop-shadow(0 0 10px rgba(201, 162, 39, 0.6));
+		filter: drop-shadow(0 0 10px rgba(212, 208, 198, 0.6));
 	}
 
 	/* the three Scatters overlap, the way they read when they land together */
@@ -705,14 +795,14 @@
 		font-size: clamp(0.82rem, 1.7vw, 1.08rem);
 		font-weight: 800;
 		letter-spacing: 0.05em;
-		color: #C9A227;
+		color: #d4d0c6;
 		/* heavy keyline on the type, the way signage in this idiom is drawn */
 		text-shadow:
-			2px 0 0 #14100D,
-			-2px 0 0 #14100D,
-			0 2px 0 #14100D,
-			0 -2px 0 #14100D,
-			0 0 16px rgba(201, 162, 39, 0.5);
+			2px 0 0 #121212,
+			-2px 0 0 #121212,
+			0 2px 0 #121212,
+			0 -2px 0 #121212,
+			0 0 16px rgba(212, 208, 198, 0.5);
 	}
 
 	.hm-panel p {
@@ -727,7 +817,7 @@
 		   words carrying the numbers — "2x to 100x", "1, 4 or 9 positions" — and at
 		   12.6px the dark brass measured 3.19:1 against the panel, under the 4.5:1
 		   that normal-size text needs. The bright gold measures 8.9:1. */
-		color: #E8D48B;
+		color: #f7f4ec;
 		font-weight: 700;
 	}
 
@@ -736,7 +826,7 @@
 		font-family: var(--hm-title-font, var(--gb-display-font, sans-serif));
 		font-size: clamp(0.68rem, 1.4vw, 0.9rem);
 		letter-spacing: 0.12em;
-		color: #E8D48B;
+		color: #f7f4ec;
 		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both 0.32s;
 	}
 
@@ -754,10 +844,10 @@
 		font-size: clamp(0.78rem, 1.6vw, 1rem);
 		letter-spacing: 0.22em;
 		text-shadow:
-			2px 0 0 #14100D,
-			-2px 0 0 #14100D,
-			0 2px 0 #14100D,
-			0 -2px 0 #14100D;
+			2px 0 0 #121212,
+			-2px 0 0 #121212,
+			0 2px 0 #121212,
+			0 -2px 0 #121212;
 		animation: ctaPulse 1.7s ease-in-out infinite;
 	}
 

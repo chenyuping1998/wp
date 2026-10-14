@@ -4,7 +4,7 @@ export default {
 	"providerName": "igs",
 	"gameName": "hard_time",
 	"gameID": "HardTime",
-	"rtp": 0.9458,
+	"rtp": 0.9605,
 	"numReels": 5,
 	"numRows": [
 		4,
@@ -18,28 +18,28 @@ export default {
 			"cost": 1.0,
 			"feature": true,
 			"buyBonus": false,
-			"rtp": 0.9458,
+			"rtp": 0.9605,
 			"max_win": 12000.0
 		},
 		"bonus": {
 			"cost": 100.0,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.9463,
+			"rtp": 0.9606,
 			"max_win": 12000.0
 		},
 		"bonus_hits": {
 			"cost": 300.0,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.9467,
+			"rtp": 0.9607,
 			"max_win": 12000.0
 		},
 		"bonus_epic": {
 			"cost": 600.0,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.9478,
+			"rtp": 0.9609,
 			"max_win": 12000.0
 		}
 	},

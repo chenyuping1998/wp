@@ -87,13 +87,9 @@
 								fontSize: Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
 								fontWeight: TITLE_FONT_WEIGHT,
 								letterSpacing: 6,
-								fill: [0xE8D48B, 0xC9A227, 0x8A6D1F],
-								stroke: 0x14100D,
-								strokeThickness: 6,
-								dropShadow: true,
-								dropShadowColor: 0x000000,
-								dropShadowBlur: 12,
-								dropShadowDistance: 3,
+								fill: [0xf7f4ec, 0xd4d0c6, 0x8c8c8c],
+								stroke: { color: 0x121212, width: 6 },
+								dropShadow: { color: 0x000000, blur: 12, distance: 3, angle: Math.PI / 6, alpha: 1 },
 							}}
 						/>
 						<!--

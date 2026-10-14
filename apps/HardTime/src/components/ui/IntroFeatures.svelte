@@ -9,6 +9,7 @@
 
 	import config from '../../game/config';
 	import { getSocialTerms } from '../../game/socialTerms';
+	import { gameText } from '../../game/i18nText';
 
 	// The whole opening: studio mark, game logo, volatility, what the game does,
 	// and the tap that starts it — one screen.
@@ -46,6 +47,13 @@
 	const props: Props = $props();
 
 	const T = getSocialTerms();
+	// The card follows ?lang= (game/i18nText.ts, 16 locales). Social play keeps
+	// the English below, which is worded through socialTerms; the translations
+	// are written for the real-money wording and are never checked against the
+	// social restricted list.
+	const social = stateUrlDerived.social();
+	const tx = (key: Parameters<typeof gameText>[0], en: string, vars?: Record<string, string | number>) =>
+		social ? en : gameText(key, vars);
 	const SYMBOLS = `${base}/assets/sprites/hardTimeSymbols`;
 	const BRAND = `${base}/assets/sprites/hardTimeBrand`;
 	// The Frame overlay comes from capoFrames/, the art the BOARD actually draws.
@@ -78,20 +86,20 @@
 			// it lights whatever the reel dealt.
 			icons: ['h1'],
 			overlay: 'lit_cell_frame',
-			title: 'THE SEARCHLIGHT',
-			body: `A Searchlight lights its reel from where it lands <strong>down to the bottom</strong>, turning those positions <strong>Wild</strong> and giving each one a multiplier of <strong>1&times; to 100&times;</strong>. Any ${T.payline} crossing lit positions <strong>adds</strong> together every multiplier above 1&times;.`,
+			title: tx('htLightTitle', 'THE SEARCHLIGHT'),
+			body: tx('htLightBody', `A Searchlight lights its reel from where it lands <strong>down to the bottom</strong>, turning those positions <strong>Wild</strong> and giving each one a multiplier of <strong>1&times; to 100&times;</strong>. Any ${T.payline} crossing lit positions <strong>adds</strong> together every multiplier above 1&times;.`),
 		},
 		{
 			icons: ['sw'],
-			title: 'OVERLAPPING BEAMS',
-			body: `When a Searchlight lands on a reel that is <strong>already lit</strong>, every position the two beams share has its multiplier <strong>doubled</strong>, up to 100&times;. Positions the new beam reaches for the first time take its own value.`,
+			title: tx('htBeamsTitle', 'OVERLAPPING BEAMS'),
+			body: tx('htBeamsBody', `When a Searchlight lands on a reel that is <strong>already lit</strong>, every position the two beams share has its multiplier <strong>doubled</strong>, up to 100&times;. Positions the new beam reaches for the first time take its own value.`),
 		},
 		{
 			// fs.png, not s.png: the registry's hmS points at fs.png and s.png was a
 			// byte-identical duplicate that nothing referenced, so it was removed.
 			icons: ['fs', 'fs', 'fs'],
-			title: 'FREE SPINS',
-			body: `3, 4 or 5 Scatters open <strong>Lockdown</strong>, <strong>Riot</strong> or <strong>Breakout</strong> &mdash; <strong>8 spins each</strong>, with every beam <strong>staying lit for the whole feature</strong> and more Searchlights landing at every tier. ${T.entryVerb} in for ${buyCosts[0]}&times;, ${buyCosts[1]}&times; or ${buyCosts[2]}&times;.`,
+			title: tx('freeSpins', 'FREE SPINS'),
+			body: tx('htFreeSpinsBody', `3, 4 or 5 Scatters open <strong>Lockdown</strong>, <strong>Riot</strong> or <strong>Breakout</strong> &mdash; <strong>8 spins each</strong>, with every beam <strong>staying lit for the whole feature</strong> and more Searchlights landing at every tier. ${T.entryVerb} in for ${buyCosts[0]}&times;, ${buyCosts[1]}&times; or ${buyCosts[2]}&times;.`, { a: buyCosts[0] ?? '', b: buyCosts[1] ?? '', c: buyCosts[2] ?? '' }),
 		},
 	];
 
@@ -139,6 +147,14 @@
 		dismiss();
 	};
 
+	// Enter continues, exactly as the click does and under the same conditions.
+	// Not Space: that is the spin key, and the press would carry on to the board.
+	const onkey = (e: KeyboardEvent) => {
+		if (e.key !== 'Enter' || !show || !armed || !ready) return;
+		e.preventDefault();
+		close();
+	};
+
 	// A short arming delay stops a stray click that was aimed at something else
 	// from dismissing the card before it has finished appearing.
 	let armed = $state(false);
@@ -161,6 +177,8 @@
 		};
 	});
 </script>
+
+<svelte:window onkeydown={onkey} />
 
 {#if show}
 	<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
@@ -187,7 +205,7 @@
 		<div class="hm-cast-wrap hm-cast-wrap-left">
 			<img
 				class="hm-cast hm-cast-left"
-				src={`${base}/assets/sprites/hardTimeCast/prisoner.png`}
+				src={`${base}/assets/sprites/hardTimeCast/prisoner_crossed_intro.png`}
 				alt=""
 				aria-hidden="true"
 			/>
@@ -197,7 +215,7 @@
 			<img class="hm-logo" src={`${BRAND}/logo.png`} alt="HARD TIME" />
 
 			<div class="hm-vol">
-				<span class="hm-vol-label">VOLATILITY</span>
+				<span class="hm-vol-label">{tx('introVolatility', 'VOLATILITY')}</span>
 				<span class="hm-bolts" aria-label={`Volatility ${VOLATILITY} of ${VOLATILITY_MAX}`}>
 					{#each Array(VOLATILITY_MAX) as _, i (i)}
 						<!--
@@ -239,8 +257,8 @@
 								/>
 							{/if}
 						</div>
-						<h2>{panel.title}</h2>
-						<p>{@html panel.body}</p>
+						<h2 dir="auto">{panel.title}</h2>
+						<p dir="auto">{@html panel.body}</p>
 					</section>
 				{/each}
 			</div>
@@ -251,11 +269,11 @@
 				figure there is worse than no figure. The rules panel carries RTP per
 				mode, read live from the maths config, which is where it belongs.
 			-->
-			<p class="hm-stats">
-				{lineCount} {T.paylinesUpper} &nbsp;/&nbsp; MAX WIN {maxWin}&times;
+			<p class="hm-stats" dir="auto">
+				{tx('introPaylines', `${lineCount} ${T.paylinesUpper}`, { lines: lineCount })} &nbsp;/&nbsp; {tx('introMaxWin', `MAX WIN ${maxWin}×`, { max: maxWin })}
 			</p>
-			<p class="hm-cta" class:waiting={!ready}>
-				{ready ? 'TAP TO CONTINUE' : 'LOADING…'}
+			<p class="hm-cta" class:waiting={!ready} dir="auto">
+				{ready ? tx('introTap', 'TAP TO CONTINUE') : tx('introLoading', 'LOADING…')}
 			</p>
 		</div>
 

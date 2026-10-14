@@ -12,7 +12,7 @@ class GameConfig(Config):
         self.working_name = "Deadwood Express"
         self.wincap = 20000.0
         self.win_type = "lines"
-        self.rtp = 0.963
+        self.rtp = 0.9603
         self.construct_paths()
         self.num_reels = 5
         self.num_rows = [4] * 5

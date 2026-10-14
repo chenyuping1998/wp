@@ -168,6 +168,10 @@ export const stateGame = $state({
 	// near side of the scrim, and two of the same person on screen at once — one
 	// bright, one a dim ghost behind the dimming layer — is worse than either.
 	featureSplashShow: false,
+	// A full-screen card or the transition's black is up. The held-multiplier
+	// readout is DOM, so it draws over the whole canvas; without this it sat on
+	// top of the fade to black and the TOTAL WIN card.
+	fullscreenOverlay: false,
 	// 'win' is an ordinary line win and 'winBig' one worth a fuss — the cast
 	// reacts on about one base spin in 3.5, so the two tiers are what keep a
 	// frequent reaction from reading as a twitch and a rare one from being
@@ -233,6 +237,15 @@ export const stateGame = $state({
 // Content *beside* the reels is what fills that — the backgrounds' edge
 // subjects — not a bigger board.
 const BOARD_SHRINK = 1.12;
+// 2026-09-26, after the second review ("Low quality assets" ×3): measured at
+// 1280×720 the housing left ~18% of the height above the bar unused (35px top,
+// 37px bottom at an 800px-wide capture) — the 1.16 bottom limit above was
+// measured on Hot Miami's thicker frame and no longer holds for Deadwood's.
+// 1.26 was tried first: at 16:9 the housing's top-left corner met the text
+// game name and the conductor had to shrink to ~0.8. Landscape layouts take
+// BOARD_SCALE_WIDE; portrait keeps 1.12 because there the
+// board is width-bound (≈88% of the screen width already).
+const BOARD_SCALE_WIDE = 1.22;
 
 const boardLayout = () => {
 	const layout = stateLayoutDerived.mainLayout();
@@ -247,7 +260,7 @@ const boardLayout = () => {
 		x: layout.width * 0.5,
 		// centred in the area above the strip, not in the whole box
 		y: layout.height * (0.5 - barFraction * 0.5),
-		scale: usesBar ? BOARD_SHRINK : 1,
+		scale: usesBar ? (stateLayoutDerived.isStacked() ? BOARD_SHRINK : BOARD_SCALE_WIDE) : 1,
 		anchor: { x: 0.5, y: 0.5 },
 		pivot: { x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 },
 		...BOARD_SIZES,

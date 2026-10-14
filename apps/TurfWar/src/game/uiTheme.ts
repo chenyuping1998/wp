@@ -128,9 +128,25 @@ setUiTheme({
 
 	// cursor-over feedback on the rail controls
 	hoverHighlight: true,
+	// 2026-10-01 (user: 游標移到按鈕都不要反灰，像 Deadwood 那樣): the round
+	// buttons light their own painted plate — drawn again additive in sodium
+	// dark — instead of the shared 16% white overlay, and the Bet readout gets
+	// a lit underline instead of a 12% white box.
+	hoverPlateLight: 0x9c5a22,
 
-	// 旋轉鍵的呼吸光暈
-	spinButtonGlow: true,
+	// 旋轉鍵的呼吸光暈 — off (2026-09-29). It breathed at idle and flared on
+	// press; Deadwood's first review scored the UI 5/10 and the collaborator's
+	// passing games all ship it off. The press is acknowledged by the icon.
+	spinButtonGlow: false,
+
+	// Buy Bonus hover lights the PLATE itself instead of laying the shared
+	// translucent white box over it (read as greyed-out on Deadwood, 2026-09-29):
+	// the plate is drawn again, additive. 2026-10-01: the tint was the light
+	// concrete grey #5B5F66, and a grey added over the whole plate still read
+	// as greyed-out (反灰); now sodium dark (§0 #9C5A22) like the round
+	// buttons, so the rust and paint warm up the way Deadwood's brass does.
+	buyBonusHoverSprite: 'buyBonusGlyph',
+	buyBonusHoverSpriteTint: 0x9c5a22,
 
 	// Same fix as Capo Nostra, same day: `betIconScale` (components-ui-pixi's
 	// shared default is 0.22, tuned for a flat circle) left the refresh mark
@@ -163,11 +179,29 @@ setUiTheme({
 	// bottlenecked by the tight spin-autoplay gap), so it gets its own bigger
 	// scale on top of railButtonScale. Reused Capo's measured value without
 	// re-deriving — same reasoning as spinScale/railButtonScale above.
-	turboButtonScale: 1.6,
+	// 2026-09-29: back to the same size as autoplay and the ± pair (was 1.6):
+	// next to a 1.15 autoplay the oversized turbo read as a different kind of
+	// control and the row looked unfinished.
+	turboButtonScale: 1.15,
 
-	// +/- enlarged ~29% with the spacing raised to match (ported from Capo Nostra).
-	stepButtonScale: 0.36,
-	stepButtonGap: 33,
+	// −  BET  +  in one row, the stepper the same size as autoplay/turbo
+	// (0.44 × railButtonScale). The stacked pair was small and left the span
+	// between Win and Bet empty, which review reads as unfinished; 'flank'
+	// widens the Balance/Win cells into it (2026-09-29, after Deadwood).
+	stepperLayout: 'flank',
+	stepButtonScale: 0.44,
+
+	// Portrait spin row. At the template sizes the menu plate (1.0 × 1.15) ran
+	// past the left edge and Buy Bonus sat flush on the right; the ± pair was
+	// the smallest control in the row (same fix as Hard Time / Capo Nostra).
+	portraitSideButtonX: 440,
+	portraitMenuScale: 0.72,
+	portraitStepScale: 0.55,
+	portraitStepX: 170,
+	portraitSideClusterX: 290,
+
+	// The plate otherwise stays lit through the whole feature.
+	buyBonusHideInFreeSpins: true,
 
 	// 2026-09-14 icon redraw (ported from Capo Nostra). The delivered set was drawn
 	// with heavy fused shapes (menu's bars one slab, settings a solid flower) and
@@ -226,6 +260,8 @@ setUiTheme({
 	sprites: {
 		base_ticker: 'hmUiTicker',
 		buyBonus: 'hmUiBuyBonus',
+		// same plate, drawn again additive on hover — see buyBonusHoverSprite
+		buyBonusGlyph: 'hmUiBuyBonus',
 		bet: 'turfUiSpinPlate',
 		base_mobile_drawer: 'turfUiDrawerPlate',
 		// 2026-09-15: the strip was bar_strip.png, a rail with 40px of ink in a 240px

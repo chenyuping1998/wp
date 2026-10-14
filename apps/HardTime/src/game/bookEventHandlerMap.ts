@@ -7,7 +7,7 @@ import { waitForTimeout } from 'utils-shared/wait';
 
 import { eventEmitter } from './eventEmitter';
 import { playBookEvent } from './utils';
-import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
+import { winLevelMap, withTenXRung, type WinLevel, type WinLevelData } from './winLevelMap';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext, LitCell } from './typesBookEvent';
 import type { Position } from './types';
@@ -129,7 +129,9 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 	// restarted from the top when it came back. Keeping the running bgm playing
 	// under the blast + coin loop fixes both. (Restore this line only once real
 	// win-level tracks exist in the jungle set.)
-	if (winLevelData?.type === 'big') {
+	// Any count-up, which since 2026-10-12 includes the 10x rung (withTenXRung):
+	// a number rolling in silence reads as a stall.
+	if (winLevelData?.type === 'big' || (winLevelData?.presentDuration ?? 0) > 0) {
 		// The tier-specific one-shot above carries the entrance. Keep only the soft
 		// rhythmic shimmer beneath the count-up; a shared heavy blast made every
 		// award tier sound the same.
@@ -504,11 +506,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
 		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
-		await featurePause(3000);
+		// 3000 -> 1200 (2026-10-12): a retrigger is a beat inside the feature, not a
+		// second trigger. The full stop plus three shake passes plus a plaque that
+		// waited for a tap held the feature for 10s+ on every retrigger.
+		await featurePause(1200);
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		// Three passes of the scatter shake — extended trigger celebration
-		for (let pass = 0; pass < featurePasses(3); pass++) {
+		// One pass of the scatter shake (was three — see the pause above)
+		for (let pass = 0; pass < featurePasses(1); pass++) {
 			await animateSymbols({ positions: bookEvent.positions });
 		}
 		const extraSpins = Math.max(0, bookEvent.totalFs - stateUi.freeSpinCounterTotal);
@@ -581,7 +586,11 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });
 	},
 	setWin: async (bookEvent: BookEventOfType<'setWin'>) => {
-		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
+		// 10-15x counts up for 1.5s instead of appearing at once (winLevelMap.ts).
+		const winLevelData = withTenXRung(
+			winLevelMap[bookEvent.winLevel as WinLevel],
+			bookEvent.amount,
+		);
 
 		// Bring the whole board back up before the banner goes over it.
 		//

@@ -87,12 +87,17 @@ const rest = (over: Partial<SymbolLandFrame> = {}): SymbolLandFrame => ({
 	...over,
 });
 
-/** Matches the win table's neon colours — the same four tubes lighting up. */
+/**
+ * Deadwood's royals are carved stone with bronze edges, not neon tubes: their
+ * landing catches warm brass light. Four close warm tones — the motion, not the
+ * colour, is what tells them apart (the checker measures motion alone).
+ * Was Hot Miami's pink / cyan / yellow / violet until 2026-09-26.
+ */
 const NEON = {
-	L1: 0xff3b8b, // A — pink
-	L2: 0x66f6ff, // K — cyan
-	L3: 0xffd166, // Q — yellow
-	L4: 0xb08cff, // J — violet
+	L1: 0xf0d9a4,
+	L2: 0xe9c98a,
+	L3: 0xf2e3bf,
+	L4: 0xdcc394,
 } as const;
 
 /**
@@ -356,7 +361,7 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 						height: 1.1 + 0.5 * spin,
 						rotation: 0,
 						alpha: 0.45 * spin,
-						tint: 0x4dffa6,
+						tint: 0x5fd6c4, // ghost teal (was Hot Miami green)
 						behind: true,
 					},
 				],

@@ -54,9 +54,9 @@ export const FEATURE_TIERS: FeatureTier[] = [
 		title: 'LOOKOUT',
 		scatters: 3,
 		summary:
-			'10 free spins with one Loot Bag on the grid from the start. All Frames are sticky for the whole feature and are refilled with a new multiplier between spins.',
+			'10 free spins with one Loot Bag on the grid from the start. All Loot Bags are sticky for the whole feature and are refilled with a new multiplier between spins.',
 		splash:
-			'ONE LOOT BAG IS ALREADY ON THE GRID. EVERY FRAME STAYS FOR THE WHOLE FEATURE AND IS REFILLED WITH A NEW MULTIPLIER BETWEEN SPINS.',
+			'ONE LOOT BAG IS ALREADY ON THE GRID. EVERY LOOT BAG STAYS FOR THE WHOLE FEATURE AND IS REFILLED WITH A NEW MULTIPLIER BETWEEN SPINS.',
 		accent: 0xf5893d,
 		titleKey: 'turfTitleLookout',
 	},
@@ -67,9 +67,9 @@ export const FEATURE_TIERS: FeatureTier[] = [
 		title: 'MUSCLE',
 		scatters: 4,
 		summary:
-			'10 free spins starting with three sticky Loot Bags. Frame values persist, and any Frame that takes part in a win doubles before the next spin.',
+			'10 free spins starting with two sticky Loot Bags. Loot Bag values persist, and any Loot Bag that takes part in a win doubles before the next spin.',
 		splash:
-			'THREE STICKY LOOT BAGS TO START. ANY FRAME THAT TAKES PART IN A WIN DOUBLES ITS VALUE BEFORE THE NEXT SPIN.',
+			'TWO STICKY LOOT BAGS TO START. ANY LOOT BAG THAT TAKES PART IN A WIN DOUBLES ITS VALUE BEFORE THE NEXT SPIN.',
 		accent: 0xd9d6ce,
 		titleKey: 'turfTitleMuscle',
 	},
@@ -80,9 +80,9 @@ export const FEATURE_TIERS: FeatureTier[] = [
 		title: 'KINGPIN',
 		scatters: 5,
 		summary:
-			'10 free spins starting with three sticky Loot Bags and keeping the doubling rule. Every reel a Bruiser fills with Wilds then STAYS Wild for the rest of the feature — held Wild columns build up spin after spin.',
+			'10 free spins starting with one sticky Loot Bag and keeping the doubling rule. Every reel a Bruiser fills with Wilds then STAYS Wild for the rest of the feature — held Wild columns build up spin after spin.',
 		splash:
-			'THREE STICKY LOOT BAGS, WINNING FRAMES STILL DOUBLE, AND EVERY BRUISER COLUMN STAYS WILD FOR THE REST OF THE FEATURE.',
+			'ONE STICKY LOOT BAG, WINNING LOOT BAGS STILL DOUBLE, AND EVERY BRUISER COLUMN STAYS WILD FOR THE REST OF THE FEATURE.',
 		accent: 0xb22222,
 		titleKey: 'turfTitleKingpin',
 	},

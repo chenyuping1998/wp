@@ -8,10 +8,9 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT, DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
-	import { Text } from 'pixi-svelte';
+	import { DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
-	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
+	import { bookEventAmountToCountUpString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { OnMount } from 'components-shared';
@@ -45,8 +44,14 @@
 	const title = gameText('totalWin');
 
 	context.eventEmitter.subscribeOnMount({
-		freeSpinOutroShow: () => (show = true),
-		freeSpinOutroHide: async () => (show = false),
+		freeSpinOutroShow: () => {
+			show = true;
+			context.stateGame.fullscreenOverlay = true;
+		},
+		freeSpinOutroHide: async () => {
+			show = false;
+			// the transition that follows takes the flag over and clears it at the end
+		},
 		freeSpinOutroCountUp: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
@@ -66,28 +71,26 @@
 
 				<FreeSpinAnimation>
 					{#snippet children({ sizes })}
-						<Text
-							anchor={0.5}
-							y={-sizes.height * 0.26}
-							text={title}
-							style={{
-								fontFamily: DISPLAY_FONT,
-								fontSize: Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
-								fontWeight: DISPLAY_FONT_WEIGHT,
-								letterSpacing: 6,
-								fill: [0xffe98a, 0xffd75e, 0xff8ede],
-								stroke: 0x2b0a2e,
-								strokeThickness: 6,
-								dropShadow: true,
-								dropShadowColor: 0x000000,
-								dropShadowBlur: 10,
-								dropShadowDistance: 3,
-							}}
-						/>
+						<!-- Cinzel title and Saira numerals, both in the brass bevel the
+						     big-win plaque uses. The title was a yellow→gold→PINK gradient
+						     on a purple stroke: Hot Miami's palette, never re-cut. -->
 						<GoldText
-							y={sizes.height * 0.12}
-							fontSize={sizes.width * 0.15}
-							text={bookEventAmountToCurrencyString(countUpAmount)}
+							y={-sizes.height * 0.25}
+							text={title}
+							fill={0xe9cf95}
+							fontSize={sizes.height * 0.2}
+							maxWidth={sizes.width * 0.86}
+							letterSpacing={5}
+							fontFamily={DISPLAY_FONT}
+							fontWeight={DISPLAY_FONT_WEIGHT}
+						/>
+						<!-- Precision is decided from the FINAL amount and held for every
+						     frame: formatting each frame on its own printed "$48.3293"
+						     part-way through a $134.00 count. -->
+						<GoldText
+							y={sizes.height * 0.16}
+							fontSize={sizes.height * 0.36}
+							text={bookEventAmountToCountUpString(countUpAmount, amount)}
 							maxWidth={sizes.width * 0.9}
 						/>
 					{/snippet}

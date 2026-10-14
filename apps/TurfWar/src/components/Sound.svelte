@@ -48,6 +48,7 @@
 	type CnSfxName =
 		| 'gong_feature'
 		| 'bigwin_blast'
+		| 'big_score_buildup'
 		| 'reel_tension'
 		| 'reel_stop'
 		| 'btn'
@@ -82,6 +83,7 @@
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
 		gong_feature: 'turf/sfx/gong_feature.wav',
 		bigwin_blast: 'turf/sfx/bigwin_blast.wav',
+		big_score_buildup: 'turf/sfx/big_score_buildup.wav',
 		reel_tension: 'turf/sfx/reel_tension.wav',
 		reel_stop: 'turf/sfx/reel_stop.wav',
 		btn: 'turf/sfx/btn.wav',
@@ -138,6 +140,7 @@
 		sfx_scatter_stop_4: { name: 'scatter_4' },
 		sfx_scatter_stop_5: { name: 'scatter_5' },
 		sfx_multiplier_landing: { name: 'pluck_low' },
+		sfx_big_score_buildup: { name: 'big_score_buildup', volume: 0.9 },
 		// The "a line paid" tick, fired on every winInfo.
 		sfx_winlevel_small: { name: 'win_line_tick', volume: 0.72 },
 		// Win-ladder stingers for winLevelMap levels 2-5, fired at setWin once the
@@ -271,7 +274,9 @@
 	// exists in this file for the music duck (routeThroughFilter), so this adds
 	// a decode pass, not a second audio stack.
 	const sfxBuffers: Partial<Record<CnSfxName, AudioBuffer>> = {};
-	const sfxLoops: Partial<Record<CnSfxName, { source: AudioBufferSourceNode; gain: GainNode }>> = {};
+	const sfxLoops: Partial<Record<CnSfxName, { source: AudioBufferSourceNode; gain: GainNode; scale: number }>> = {};
+	// the element fallback's own scale, for the same reason
+	const loopElementScale: Partial<Record<CnSfxName, number>> = {};
 
 	/**
 	 * The shared context, created on demand. Constructing one before a user
@@ -396,6 +401,7 @@
 		if (ctx && buffer) {
 			const running = sfxLoops[name];
 			if (running) {
+				running.scale = volumeScale;
 				running.gain.gain.value = sfxVolume(volumeScale);
 				running.source.playbackRate.value = rate;
 				return;
@@ -409,7 +415,7 @@
 			source.playbackRate.value = rate;
 			source.connect(gain);
 			source.start();
-			sfxLoops[name] = { source, gain };
+			sfxLoops[name] = { source, gain, scale: volumeScale };
 			return;
 		}
 		playCnLoopElement(name, volumeScale, rate);
@@ -454,6 +460,7 @@
 		const audio = getCnSfx(name);
 		const alreadyRunning = audio.loop && !audio.paused;
 		audio.loop = true;
+		loopElementScale[name] = volumeScale;
 		audio.volume = sfxVolume(volumeScale);
 		audio.playbackRate = rate;
 		if (alreadyRunning) return;
@@ -528,8 +535,9 @@
 	// Reproducible, royalty-free period crime-jazz loops: walking bass, brushes,
 	// piano and muted brass. M4A keeps the upload smaller than WAV masters.
 	const BGM_FILES = {
-		base: 'turf/bgm_base.wav',
-		freespin: 'turf/bgm_feature.wav',
+		// AAC like Capo's (2026-10-12): the WAV loops were 4.0 MB of the download
+		base: 'turf/bgm_base.m4a',
+		freespin: 'turf/bgm_feature.m4a',
 	} as const;
 
 	function playBgm(type: 'base' | 'freespin') {
@@ -558,6 +566,24 @@
 	$effect(() => {
 		const vol = stateSoundDerived.volumeMusic();
 		if (bgmAudio) bgmAudio.volume = vol;
+	});
+
+	// A loop's gain was set once, when it started. Muting (or turning effects
+	// down) during a tease or a big win left reel_tension and coin_shimmer
+	// playing at the old level until they stopped — Engine guideline 107 wants
+	// every sound to follow the setting immediately. No ramp: a mute is a mute.
+	$effect(() => {
+		const vol = stateSoundDerived.volumeSoundEffect();
+		for (const node of Object.values(sfxLoops)) {
+			if (!node) continue;
+			const ctx = node.gain.context;
+			node.gain.gain.cancelScheduledValues(ctx.currentTime);
+			node.gain.gain.setValueAtTime(Math.min(1, vol * node.scale), ctx.currentTime);
+		}
+		for (const [name, scale] of Object.entries(loopElementScale)) {
+			const audio = cnSfxAudio[name as CnSfxName];
+			if (audio?.loop) audio.volume = Math.min(1, vol * (scale ?? 1));
+		}
 	});
 
 	context.eventEmitter.subscribeOnMount({

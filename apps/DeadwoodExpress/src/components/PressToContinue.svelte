@@ -18,18 +18,26 @@
 
 	const label = gameText('pressToContinue');
 
-	// soft breathing pulse so the prompt reads as interactive
+	// Soft breathing pulse so the prompt reads as interactive. On the frame clock:
+	// it was a 50 ms interval — 20 steps a second — and visibly stepped.
 	let pulse = $state(1);
 	onMount(() => {
-		const id = setInterval(() => {
-			pulse = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(Date.now() / 480));
-		}, 50);
-		return () => clearInterval(id);
+		let raf = 0;
+		const tick = (now: number) => {
+			pulse = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(now / 480));
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
 	});
+
+	// Clear of the screen's foot. Anchored at the very bottom it sat flush on the
+	// edge, and the drop shadow and descenders were cut off.
+	const BOTTOM_MARGIN = 22;
 
 	const yPosition = $derived.by(() => {
 		if (props.position !== 'betweenBoardAndBottom') {
-			return context.stateLayoutDerived.mainLayout().height;
+			return context.stateLayoutDerived.mainLayout().height - BOTTOM_MARGIN;
 		}
 		const board = context.stateGameDerived.boardLayout();
 		const main = context.stateLayoutDerived.mainLayout();
@@ -49,11 +57,10 @@
 			fontSize: 28,
 			fontWeight: GAME_FONT_WEIGHT,
 			letterSpacing: 4,
-			// Was cream 0xf5e3c3 on a dark BROWN stroke 0x2c1c08 — GoBananas' brass
-			// again, found by reading the live scene graph rather than by grep,
-			// because neither value is in the jungle-colour list anyone searched.
-			fill: 0xffe6f7,
-			stroke: 0x2b0a2e,
+			// Bone on the charcoal the bet strip uses. It was Hot Miami's pink
+			// 0xffe6f7 on a purple 0x2b0a2e stroke.
+			fill: 0xf2ead4,
+			stroke: 0x091713,
 			strokeThickness: 4,
 			dropShadow: true,
 			dropShadowColor: 0x000000,

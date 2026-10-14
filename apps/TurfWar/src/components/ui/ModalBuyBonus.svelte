@@ -4,12 +4,12 @@
 	import { stateModal, stateMetaDerived, stateBet } from 'state-shared';
 	import { getContextEventEmitter } from 'utils-event-emitter';
 	import { numberToCurrencyString } from 'utils-shared/amount';
-	import BetMenuAmountToggle from 'components-ui-html/src/components/BetMenuAmountToggle.svelte';
 	import { stateBonus } from 'components-ui-html/src/stateBonus.svelte';
 	import type { EmitterEventModal } from 'components-ui-html/src/types';
 
 	import assets from '../../game/assets';
 	import { popupGhost } from './popupGhost';
+	import BetStepper from './BetStepper.svelte';
 	import { getSocialTerms } from '../../game/socialTerms';
 
 	/**
@@ -62,6 +62,7 @@
 			framesLabel: string;
 			scatters: number;
 			rank: number;
+			titleKey: string;
 		}
 	> = {
 		BONUS: {
@@ -70,32 +71,37 @@
 			accent: '#465562',
 			glow: 'rgba(138, 109, 31, 0.55)',
 			frames: 1,
-			framesLabel: '1 sticky Frame',
+			framesLabel: '1 sticky Loot Bag, refilled every spin',
 			scatters: 3,
 			rank: 1,
+			titleKey: 'turfTitleLookout',
 		},
 		BONUS_HITS: {
 			backdrop: src('hmBgFeature'),
 			crop: '82% 50%',
 			accent: '#f5893d',
 			glow: 'rgba(156, 90, 34, 0.55)',
-			frames: 3,
-			framesLabel: '3 sticky Frames',
+			frames: 2,
+			framesLabel: '2 sticky Loot Bags that double on a win',
 			scatters: 4,
 			rank: 2,
+			titleKey: 'turfTitleMuscle',
 		},
 		BONUS_EPIC: {
 			backdrop: src('hmBgEpic'),
 			crop: '50% 45%',
 			accent: '#d9d6ce',
 			glow: 'rgba(156, 90, 34, 0.6)',
-			// 3, same as Muscle. What separates Kingpin is that every Bruiser
-			// column it lands stays Wild for the rest of the feature, which the
-			// label says because the Frame row cannot.
-			frames: 3,
-			framesLabel: '3 sticky Frames + sticky Wild columns',
+			// 2026-10-01: this said "3 sticky Frames" on all three cards' worth of
+			// tiers — the Capo Nostra numbers under the old name. The maths seeds
+			// 1 / 2 / 1 (game_config.py tier_seed_frames) and Kingpin's story is
+			// the held Wild columns, which the label says because the bag row
+			// cannot.
+			frames: 1,
+			framesLabel: '1 doubling Loot Bag + sticky Wild columns',
 			scatters: 5,
 			rank: 3,
+			titleKey: 'turfTitleKingpin',
 		},
 	};
 
@@ -112,11 +118,11 @@
 
 {#if stateModal.modal?.name === 'buyBonus'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="hm-buy" use:popupGhost>
+		<div class="hm-buy" use:popupGhost style:--btn-plate={`url("${src('hmUiTicker')}")`}>
 			<header>
 				<h2>{T.featureMenuTitle}</h2>
 				<p class="lede">{T.featureMenuLede}</p>
-				<div class="amount"><BetMenuAmountToggle /></div>
+				<div class="amount"><BetStepper /></div>
 			</header>
 
 			<div class="cards">
@@ -166,7 +172,12 @@
 							</div>
 						</div>
 
-						<h3>{betMode.text.title}</h3>
+						<!-- the tier's own title art, as on its splash and in the rules -->
+						{#if art?.titleKey}
+							<img class="title-art" src={src(art.titleKey)} alt={betMode.text.title} />
+						{:else}
+							<h3>{betMode.text.title}</h3>
+						{/if}
 						<p class="gives">{art?.framesLabel}</p>
 
 						<div class="price">
@@ -188,6 +199,17 @@
 {/if}
 
 <style lang="scss">
+	.title-art {
+		display: block;
+		width: 92%;
+		max-width: 11rem;
+		height: auto;
+		margin: 0.1rem auto 0;
+		position: relative;
+		z-index: 1;
+		filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.8));
+	}
+
 	.hm-buy {
 		/*
 		 * Sit above Popup's full-screen click-to-close layer, which is z-index 2
@@ -271,7 +293,7 @@
 		border-style: solid;
 		border-width: 1.7rem;
 		border-image: var(--card-frame) 96 stretch;
-		background: linear-gradient(180deg, rgba(42, 52, 62, 0.86), rgba(14, 15, 17, 0.94));
+		background: rgba(14, 15, 17, 0.9);
 		background-clip: padding-box;
 		box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
 		animation: cardPulse 3.2s ease-in-out infinite;
@@ -343,10 +365,12 @@
 	.frame {
 		/* The Neon Frame sprite is a hollow border, so it needs size and glow to
 		   read as gold at card scale — at 1.45rem it looked like an empty box. */
-		width: 2rem;
-		height: 2rem;
-		opacity: 0.95;
-		filter: drop-shadow(0 0 5px rgba(156, 90, 34, 0.75));
+		/* 2026-10-01: the Loot Bag art is dark leather and vanished on the
+		   card; lit to the board's frame gold. */
+		width: 2.4rem;
+		height: 2.4rem;
+		opacity: 1;
+		filter: sepia(0.6) saturate(2.2) hue-rotate(-12deg) brightness(1.7) drop-shadow(0 0 5px rgba(156, 90, 34, 0.75));
 		animation: framePulse 2.8s ease-in-out infinite;
 	}
 
@@ -398,15 +422,24 @@
 		position: relative;
 		width: 100%;
 		padding: 0.5rem 0.4rem;
-		border: 0;
-		border-radius: 0.5rem;
+		/* 2026-10-01: the painted ticker plate, the same hardware as the bar —
+		   it was a linear gradient in each tier's accent, so the three buttons
+		   came out iron blue, orange and bone white. */
+		border: 12px solid transparent;
+		border-image: var(--btn-plate) 60 fill / 16px / 0 stretch;
+		background: none;
 		cursor: pointer;
 		font-family: var(--hm-title-font);
-		font-size: 0.85rem;
-		letter-spacing: 0.04em;
-		color: #0e0f11;
-		background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 65%, #000));
-		box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
+		font-size: 0.95rem;
+		letter-spacing: 0.06em;
+		color: #ffc38a;
+		text-shadow: 0 2px 0 #0e0f11, 0 0 8px rgba(245, 137, 61, 0.45);
+		transition: transform 0.12s ease, filter 0.12s ease;
+
+		&:not(:disabled):hover {
+			filter: brightness(1.18);
+			transform: translateY(-1px);
+		}
 
 		&:disabled {
 			cursor: not-allowed;

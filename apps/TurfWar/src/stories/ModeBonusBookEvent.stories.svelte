@@ -17,6 +17,7 @@
 	import Game from '../components/Game.svelte';
 	import { setContext } from '../game/context';
 	import { playBookEvent } from '../game/utils';
+	import { waitForTimeout } from 'utils-shared/wait';
 	import events from './data/bonus_events';
 
 	setContext();
@@ -95,11 +96,6 @@
 	{template}
 />
 
-<!--
-	These four were newExpandingWilds/updateExpandingWilds, which are GoBananas
-	events Hot Miami never emits - the stories fired `undefined`. They now cover
-	this game's own feature events instead.
--->
 <Story
 	name="newFrames"
 	args={templateArgs({
@@ -121,10 +117,24 @@
 />
 
 <Story
-	name="collectorWin"
+	name="stickyFrameReroll"
 	args={templateArgs({
 		skipLoadingScreen: true,
-		data: events.collectorWin,
+		data: { initial: events.newFrames, reroll: events.updateFrames },
+		action: async ({ initial, reroll }) => {
+			await playBookEvent(initial, { bookEvents: [] });
+			await waitForTimeout(450);
+			await playBookEvent(reroll, { bookEvents: [] });
+		},
+	})}
+	{template}
+/>
+
+<Story
+	name="wildExpand"
+	args={templateArgs({
+		skipLoadingScreen: true,
+		data: events.wildExpand,
 		action: async (data) => await playBookEvent(data, { bookEvents: [] }),
 	})}
 	{template}

@@ -1,3 +1,4 @@
+import { BOOK_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
 import { SECOND } from 'constants-shared/time';
 
 // ── 2026-08-25: the whole ladder re-timed against a shipped Hacksaw game ─────
@@ -157,3 +158,20 @@ export type WinLevelMap = typeof winLevelMap;
 export type WinLevel = keyof typeof winLevelMap;
 export type WinLevelData = WinLevelMap[WinLevel];
 export type WinLevelAlias = WinLevelData['alias'];
+
+// ── 2026-10-12: the 10x rung ─────────────────────────────────────────────────
+//
+// Hacksaw counts every win from 10x up for 1.5s, with no big-win art
+// (hacksaw-style-transcripts §5.2, 130 titles: `10 -> 1500ms, count-up only`).
+// This game presented nothing until 15x, and 10-15x is the most common win
+// size that earns a count-up. The maths' level 5 spans 5-15x and the levels
+// are the maths' to set, not ours, so the rung is not a level of its own: it is
+// the top of level 5, read from the amount. Everything else about level 5 (its
+// sound, its light coin fountain, no banner) stays as it was.
+const TEN_X_RUNG_MULTIPLE = 10;
+const TEN_X_RUNG_DURATION = 1.5 * SECOND;
+
+export const withTenXRung = (winLevelData: WinLevelData, bookEventAmount: number): WinLevelData =>
+	winLevelData?.level === 5 && bookEventAmount / BOOK_AMOUNT_MULTIPLIER >= TEN_X_RUNG_MULTIPLE
+		? ({ ...winLevelData, presentDuration: TEN_X_RUNG_DURATION } as WinLevelData)
+		: winLevelData;

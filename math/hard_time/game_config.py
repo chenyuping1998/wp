@@ -109,7 +109,7 @@ class GameConfig(Config):
         # the lookup weights either way. Base 94.58%, buys 94.63 / 94.67 / 94.78,
         # a 0.20% spread against Stake's 0.5% ceiling, with each step up the
         # price ladder reading as a slightly better rate.
-        self.rtp = 0.9641
+        self.rtp = 0.9605
         self.construct_paths()
 
         # ------------------------------------------------------------------
@@ -472,13 +472,13 @@ class GameConfig(Config):
             #
             # Now 100 / 300 / 600 -> 120x / 40x / 20x. The cap stayed where the
             # user set it and the prices moved instead.
-            self._buy_mode("bonus", 100.0, 3, base_mult, wincap_mult, rtp=0.9646),
-            self._buy_mode("bonus_hits", 300.0, 4, base_mult, wincap_mult, rtp=0.9650),
+            self._buy_mode("bonus", 100.0, 3, base_mult, wincap_mult, rtp=0.9606),
+            self._buy_mode("bonus_hits", 300.0, 4, base_mult, wincap_mult, rtp=0.9607),
             # BREAKOUT is priced at 94.78% - the best rate in the game, and the
             # reason to buy the top tier rather than three of the bottom one.
             # Stake requires every mode within 0.5% of the others; base sits at
             # 94.58%, so the spread across all four is 0.20%.
-            self._buy_mode("bonus_epic", 600.0, 5, base_mult, wincap_mult, rtp=0.9661),
+            self._buy_mode("bonus_epic", 600.0, 5, base_mult, wincap_mult, rtp=0.9609),
         ]
 
     def _buy_mode(self, name, cost, scatters, base_mult, wincap_mult, rtp=None):

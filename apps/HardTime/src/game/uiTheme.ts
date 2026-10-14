@@ -192,11 +192,45 @@ setUiTheme({
 	// tell it apart from the static Balance/Win panels
 	labelAffordance: true,
 
+	// −  BET  +  in one row, the stepper the same size as autoplay/turbo
+	// (0.44 × railButtonScale). The stacked pair was small and left the span
+	// between Win and Bet empty, which review reads as unfinished; 'flank'
+	// widens the Balance/Win cells into it (2026-09-29, after Deadwood).
+	stepperLayout: 'flank',
+	stepButtonScale: 0.44,
+
+	// Portrait spin row. At the template sizes the menu plate (1.0 × 1.15) ran
+	// ~16 units past the left edge and Buy Bonus sat flush on the right; the ±
+	// pair was the smallest control in the row. Menu down to the side pair's
+	// size, everything pulled in, gaps ≥ 13 units.
+	portraitSideButtonX: 440,
+	portraitMenuScale: 0.72,
+	portraitStepScale: 0.55,
+	portraitStepX: 170,
+	portraitSideClusterX: 290,
+
+	// The plate otherwise stays lit through the whole feature.
+	buyBonusHideInFreeSpins: true,
+
 	// cursor-over feedback on the rail controls
 	hoverHighlight: true,
 
+	// 2026-10-01 (user rule, every game): hover never greys a control out —
+	// the button's own plate is redrawn additive in a warm palette colour
+	// instead of the shared white overlay (see game-reskin SKILL.md step 4).
+	hoverPlateLight: 0x9a7c4a, // tarnished brass; GOLD_DARK was too faint over the steel plates
+
+	// Buy Bonus hover lights the PLATE itself instead of laying the shared
+	// translucent white box over it (read as greyed-out on Deadwood, 2026-09-29):
+	// the plate is drawn again, additive, at a neutral steel light, so the rusted rim reads as metal catching it.
+	buyBonusHoverSprite: 'buyBonusGlyph',
+	buyBonusHoverSpriteTint: 0x9a7c4a, // 2026-10-01: was steel grey 0x6a6862 — grey added still reads 反灰
+
 	// 旋轉鍵的呼吸光暈
-	spinButtonGlow: true,
+	// Off (2026-09-29). It breathed at idle and flared on press; Deadwood's
+	// first review scored the UI 5/10 and the collaborator's passing games all
+	// ship it off. The press is acknowledged by the icon turning.
+	spinButtonGlow: false,
 
 	// The refresh mark on the spin button, scaled to spin_plate.png's own
 	// recess rather than the shared default (which assumes a flat circle with
@@ -234,7 +268,15 @@ setUiTheme({
 	// this (2026-09-09): ~20 units to autoplay's edge, ~22 to the bar's own
 	// right edge — 1.6 leaves several units of margin on both sides. Verify
 	// via the scene graph if this is ever raised further; do not eyeball it.
-	turboButtonScale: 1.6,
+	// Same size as autoplay and the ± pair (was 1.6): next to a 1.15 autoplay the
+	// oversized turbo read as a different kind of control, and the row looked
+	// unfinished (2026-09-29 audit).
+	turboButtonScale: 1.15,
+
+	// hardTimeUi/button_plate.png is a rounded SQUARE, not a disc: measured
+	// corner radius 0.27 of its width. The ON ring / press shadow / hover lift
+	// follow this, so turbo-ON no longer strokes a circle over a square plate.
+	buttonCornerRadius: 0.26,
 
 	// 2026-09-15 icon REDRAW, ported from Capo Nostra's 2026-09-14 one. This set
 	// was Capo's PRE-redraw heavy icons recoloured to steel, so it had the same
@@ -314,6 +356,8 @@ setUiTheme({
 	// red). `bet` (the spin button) -> capoUiPlates/spin_plate.png, same check.
 	sprites: {
 		buyBonus: 'hmUiBuyBonus',
+		// same plate, drawn again additive on hover — see buyBonusHoverSprite
+		buyBonusGlyph: 'hmUiBuyBonus',
 		button: 'capoUiButton',
 		bet: 'capoUiSpin',
 		base_ticker: 'hmUiTicker',
@@ -532,6 +576,7 @@ if (skin === 'hacksaw') {
 		// (that art has NOT been reskinned).
 		sprites: {
 			buyBonus: 'hmUiBuyBonus',
+			buyBonusGlyph: 'hmUiBuyBonus',
 		},
 
 		// with the plate art gone the CTA falls back to its rounded rect. A light

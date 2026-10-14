@@ -46,7 +46,8 @@ export function shippedTexturePath(appRoot, key = 'hmCastGuyMesh') {
  */
 export function loadCastMesh(appRoot, motion, { rigPath, texturePath } = {}) {
 	const { buildWeightIndex, composeBoneMatrices, skinVertices } = motion;
-	rigPath ??= path.join(appRoot, 'static/assets/meshRigs/cast_guy/guy.rig.json');
+	// design/, not static/: the game never loads the rig, only the gates do (2026-10-10).
+	rigPath ??= path.join(appRoot, 'design/cast_rigs/guy.rig.json');
 	texturePath ??= shippedTexturePath(appRoot);
 	const rig = JSON.parse(fs.readFileSync(rigPath, 'utf8'));
 	const { width: pngW, height: pngH, alpha } = readAlpha(fs.readFileSync(texturePath));

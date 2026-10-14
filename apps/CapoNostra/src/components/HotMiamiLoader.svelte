@@ -59,7 +59,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: #000;
+		background: #000000;
 	}
 
 	.wp-loader-inner {
@@ -83,7 +83,7 @@
 	}
 
 	.wp-star text {
-		fill: #fff;
+		fill: #ffffff;
 		font-size: 18px;
 		font-weight: 900;
 		letter-spacing: 0;
@@ -98,7 +98,7 @@
 		font-size: clamp(2rem, 4.2vw, 4rem);
 		font-weight: 900;
 		letter-spacing: 0.12em;
-		color: #fff;
+		color: #ffffff;
 		text-align: center;
 		line-height: 1;
 		text-shadow: 0 0 16px rgba(255, 255, 255, 0.28);

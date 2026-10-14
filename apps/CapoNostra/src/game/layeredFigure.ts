@@ -1,4 +1,5 @@
 import { Container, Mesh, MeshGeometry, type Texture } from 'pixi.js';
+import { CigarSmoke, withoutBakedSmoke } from './cigarSmoke';
 import {
 	buildWeightIndex,
 	composeBoneMatrices,
@@ -39,7 +40,9 @@ export class LayeredFigure {
 		weights: ReturnType<typeof buildWeightIndex>;
 		mesh: Mesh;
 		glow: Mesh;
+		updateGeometry?: (posed: Float32Array) => void;
 	}[] = [];
+	private smoke: CigarSmoke | null = null;
 	private readonly matrices: Float32Array[];
 	private readonly chain: Float32Array[];
 	private readonly commonRig: MeshRig;
@@ -64,11 +67,13 @@ export class LayeredFigure {
 			const [cx, cy, cw, ch] = part.crop;
 			const rest = new Float32Array(rig.verts.flat());
 			const positions = new Float32Array(rest);
+			const trimmed = name === 'figure' ? withoutBakedSmoke(rig) : null;
 			// Canvas-space vertices, UVs into the cropped texture. A vertex outside
 			// the crop samples past the texture edge, which is transparent padding
 			// in the crop (build_cast_layers_runtime.py pads by 4 px) and clamps.
-			const uvs = new Float32Array(rig.verts.flatMap(([x, y]) => [(x - cx) / cw, (y - cy) / ch]));
-			const geometry = new MeshGeometry({ positions, uvs, indices: new Uint32Array(rig.tris.flat()) });
+			const uvPoints = trimmed ? trimmed.points.map(p => [p.x, p.y]) : rig.verts;
+			const uvs = new Float32Array(uvPoints.flatMap(([x, y]) => [(x - cx) / cw, (y - cy) / ch]));
+			const geometry = new MeshGeometry({ positions: trimmed?.positions ?? positions, uvs, indices: trimmed?.indices ?? new Uint32Array(rig.tris.flat()) });
 			const mesh = new Mesh({ geometry, texture: textures[name] });
 			mesh.label = `cast-${name}`;
 			const glow = new Mesh({ geometry, texture: textures[name] });
@@ -76,8 +81,10 @@ export class LayeredFigure {
 			glow.blendMode = 'add';
 			glow.alpha = 0;
 			this.view.addChild(mesh, glow);
-			this.parts.push({ name, rest, positions, weights: buildWeightIndex(rig), mesh, glow });
+			this.parts.push({ name, rest, positions, weights: buildWeightIndex(rig), mesh, glow, updateGeometry: trimmed?.update });
+			if (trimmed) this.smoke = new CigarSmoke(rig);
 		}
+		if (this.smoke) this.view.addChild(this.smoke.view);
 	}
 
 	/** Swap to another texture set with the same crops (an FG tier variant). */
@@ -116,8 +123,10 @@ export class LayeredFigure {
 		);
 		for (const part of this.parts) {
 			skinVertices(part.rest, part.weights, this.matrices, part.positions);
+			part.updateGeometry?.(part.positions);
 			part.mesh.geometry.getBuffer('aPosition').update();
 			part.glow.alpha = (tier.glow ?? 0) * intensity;
+			if (part.name === 'figure') this.smoke?.update(timeMs, part.positions);
 		}
 	}
 }

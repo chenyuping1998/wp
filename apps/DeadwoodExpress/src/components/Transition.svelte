@@ -25,6 +25,7 @@
 		// the caller does next, and unmounts itself when that finishes.
 		transition: async () => {
 			transitioning = true;
+			context.stateGame.fullscreenOverlay = true;
 			await waitForResolve((resolve) => (onblack = resolve));
 		},
 	});
@@ -33,6 +34,9 @@
 {#if transitioning}
 	<TransitionAnimation
 		onblack={() => onblack()}
-		oncomplete={() => (transitioning = false)}
+		oncomplete={() => {
+			transitioning = false;
+			context.stateGame.fullscreenOverlay = false;
+		}}
 	/>
 {/if}

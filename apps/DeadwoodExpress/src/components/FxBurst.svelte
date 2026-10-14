@@ -25,7 +25,10 @@
 	// fxLeaf sprites. retheme_ui.py recoloured the sprite art and uiTheme.ts took
 	// the vector colours, but this FX layer was missed, so every big win threw
 	// jungle leaves over correct Miami-neon plaque art.
-	const NEON = [0xff2e88, 0x00e5ff, 0xfff7d1, 0x8a3ffc];
+	// Deadwood 2026-09-26: the 'neon' flavour (what Win.svelte's big-win burst
+	// asks for) was still Hot Miami's pink/cyan/violet. Same role, this game's
+	// lights: ghost teal, bone, lantern amber, lilac.
+	const NEON = [0x5fd6c4, 0xf2ead4, 0xf0a040, 0xb08ae0];
 
 	type Spark = {
 		angle: number;

@@ -28,7 +28,7 @@ class GameConfig(Config):
         self.working_name = "Go Banandit"
         self.wincap = 10000
         self.win_type = "ways"
-        self.rtp = 0.9612  # 2026-10-10: user asked for 96.0–96.7 (LUT reweighted)
+        self.rtp = 0.9607  # 2026-10-11: house rule, every game 96.0–96.1 (LUT reweighted)
         self.construct_paths()
 
         self.num_reels = 5

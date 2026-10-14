@@ -116,8 +116,12 @@ export const WIN_REACTION: ReactionTier = fromReference(0.5, {
 });
 
 
-export const MOTION_SCALE: Record<"guy", number> = {
+// guy = the conductor (base game), girl = the veiled passenger (free spins).
+// Both rigs are built by design/deadwood_rig.py and gated by
+// design/deadwood_rig_runtime.mjs at the same scale.
+export const MOTION_SCALE: Record<"guy" | "girl", number> = {
   guy: 1,
+  girl: 1,
 };
 
 export type CastReactionKind = "win" | "winBig" | "trigger";

@@ -1,85 +1,97 @@
 <script lang="ts">
   import type { Texture } from "pixi.js";
-  import { getContextApp } from "pixi-svelte";
+  import { getContextApp, getContextParent } from "pixi-svelte";
   import { stateBetDerived } from "state-shared";
   import { getContext } from "../game/context";
-  import { MOTION_SCALE } from "../game/castMotion";
-  import { SkinnedFigure, type MeshRig } from "../game/skinnedFigure";
+  import { LayeredFigure, type LayeredManifest } from "../game/layeredFigure";
+  import { LAYERED_TIERS, KINGPIN_TIERS } from "../game/layeredCastMotion";
   import { stateGame } from "../game/stateGame.svelte";
   import { featureTimeScale } from "../game/timeScale";
 
   type Props = {
-    who: "guy" | "girl";
+    who: "guy";
     x: number;
     topY: number;
     height: number;
     groundY: number;
     alpha?: number;
     flip?: boolean;
+    /** board ink's outer edge in the caller's container space; the figure's
+     *  ink (plus its motion margin) never crosses it */
+    innerEdge?: number;
+    /**
+     * Draw inside the enclosing pixi container instead of at stage index 2
+     * (behind the housing). The free-game splash needs him IN FRONT of its
+     * scrim and fading with it. Placement is in canvas px either way, so the
+     * enclosing container must be untransformed.
+     */
+    inline?: boolean;
   };
 
   const props: Props = $props();
   const app = getContextApp();
+  const parentContext = props.inline ? getContextParent() : null;
   const context = getContext();
   const std = $derived(context.stateLayoutDerived.mainLayoutStandard());
-  // Turf War draws the man twice — bat planted (base game) and bat over the
-  // shoulder (feature; kingpin shares that redraw's exact silhouette) — and a
-  // rig fits exactly ONE drawing. Texture, rig and motion pose are all picked
-  // from this one value so they cannot disagree: a shoulder texture on the
-  // base rig tears the bat in half. See game/castMotion.ts.
-  const variant = $derived(
-    props.who !== "guy"
-      ? "girl"
-      : stateGame.gameType === "freegame"
-        ? stateGame.bonusTier === "don" ? "kingpin" : "feature"
-        : "base",
-  );
-  const TEXTURE_KEY = {
-    base: "hmCastGuyMesh",
-    feature: "hmCastGuyFeature",
-    kingpin: "hmCastGuyKingpin",
-    girl: "hmCastGirlMesh",
-  } as const;
-  // Literal URLs, one per file, so the bundler can see and copy each of them.
+  // Swap the complete rig and textures while the FG transition covers the board.
+  const variant = $derived(stateGame.gameType === "freegame" ? "fg" : "base");
+  const LAYERS = $derived(variant === "fg"
+    ? ["arm_l", "body", "head", "prop_cigar", "dangle_smoke", "arm_r"]
+    : ["body", "arm_r", "prop_bat", "arm_l", "head", "dangle_chain", "dangle_mask", "fingers_r"]);
   const RIG_URL = {
-    base: new URL("../../assets/meshRigs/cast_guy/guy.rig.json", import.meta.url).href,
-    feature: new URL("../../assets/meshRigs/cast_guy/guy_feature.rig.json", import.meta.url).href,
-    kingpin: new URL("../../assets/meshRigs/cast_guy/guy_kingpin.rig.json", import.meta.url).href,
-    girl: new URL("../../assets/meshRigs/cast_girl/girl.rig.json", import.meta.url).href,
+    base: new URL("../../assets/castLayers/turf/base/layers.manifest.json", import.meta.url).href,
+    fg: new URL("../../assets/castLayers/turf/fg/layers.manifest.json", import.meta.url).href,
   };
-  const texture = $derived(
-    app.stateApp.loadedAssets[TEXTURE_KEY[variant]] as Texture | undefined,
-  );
-  let figure = $state<SkinnedFigure | null>(null);
+  const textures = $derived.by(() => {
+    const selected: Record<string, Texture> = {};
+    for (const layer of LAYERS) {
+      const name = layer.split("_").map((word) => word[0].toUpperCase() + word.slice(1)).join("");
+      const label = variant[0].toUpperCase() + variant.slice(1);
+      const key = `turfLayer${label}${name}` as keyof typeof app.stateApp.loadedAssets;
+      const texture = app.stateApp.loadedAssets[key] as Texture | undefined;
+      if (!texture) return null;
+      selected[layer] = texture;
+    }
+    return selected;
+  });
+  let figure = $state<LayeredFigure | null>(null);
+
+  // Daylight between the figure and the reel housing, in standard-box units,
+  // plus room for the idle sway / reaction swing (fraction of figure height).
+  // figure_box is the texture's alpha bbox (the mesh itself spans the whole
+  // canvas, so its bounds are useless here). The fixed trim below placed the box
+  // centre only, so on narrower screens the sleeve sat on the housing (「人物跟盤面重疊」, 2026-09-25).
+  const BOARD_GAP = 14;
+  // The posed ink stays inside these canvas-space coordinates in all 3 modes.
+  // Leave a little extra for mesh-cell sampling and the additive glow.
+  const LAYERED_X_ENVELOPE = [100, 990] as const;
+  const SCREEN_GAP = 12;
   let seenReactionSeq = stateGame.castReaction.seq;
 
   // Every rig this figure can switch to is fetched up front, so the swap at
   // the start and end of the feature does not leave a gap while one loads.
-  const rigs = new Map<string, Promise<MeshRig>>();
+  const rigs = new Map<string, Promise<LayeredManifest>>();
   const loadRig = (url: string) => {
     let pending = rigs.get(url);
     if (!pending) {
       pending = fetch(url).then((response) => {
         if (!response.ok)
           throw new Error(`Unable to load mesh rig: ${response.status}`);
-        return response.json() as Promise<MeshRig>;
+        return response.json() as Promise<LayeredManifest>;
       });
       rigs.set(url, pending);
     }
     return pending;
   };
-  if (props.who === "guy") {
-    for (const key of ["base", "feature", "kingpin"] as const) void loadRig(RIG_URL[key]);
-  }
+  for (const key of ["base", "fg"] as const) void loadRig(RIG_URL[key]);
 
   // Re-mounts whenever the drawing changes — rig, texture and pose together.
   $effect(() => {
     const url = RIG_URL[variant];
-    const pose = variant === "base" || variant === "girl" ? "base" : "shoulder";
-    const mountTexture = texture;
-    if (!mountTexture) return;
+    const mountTextures = textures;
+    if (!mountTextures) return;
     let disposed = false;
-    let mountedFigure: SkinnedFigure | null = null;
+    let mountedFigure: LayeredFigure | null = null;
     let update: (() => void) | null = null;
 
     void loadRig(url).then((rig) => {
@@ -87,13 +99,18 @@
       const pixiApplication = app.stateApp.pixiApplication;
       if (!pixiApplication)
         throw new Error("Pixi application is unavailable for cast mesh");
-      mountedFigure = new SkinnedFigure(rig, mountTexture, MOTION_SCALE.guy, pose);
+      mountedFigure = new LayeredFigure(rig, mountTextures, variant === "fg" ? KINGPIN_TIERS : LAYERED_TIERS, {
+        label: `turf-cast-${variant}`,
+        poseState: { pose: "layered" },
+      });
       figure = mountedFigure;
       update = () => mountedFigure?.update(performance.now());
-      pixiApplication.stage.addChildAt(
-        mountedFigure.view,
-        Math.min(2, pixiApplication.stage.children.length),
-      );
+      if (parentContext) parentContext.parent.addChild(mountedFigure.view);
+      else
+        pixiApplication.stage.addChildAt(
+          mountedFigure.view,
+          Math.min(2, pixiApplication.stage.children.length),
+        );
       pixiApplication.ticker.add(update);
       mountedFigure.update(performance.now());
     });
@@ -130,16 +147,23 @@
     const [x0, y0, x1, y1] = figure.figureBox;
     const contentHeight = y1 - y0;
     const contentCenterX = (x0 + x1) * 0.5;
-    const drawScale = (props.height / contentHeight) * std.scale * 0.82;
     const direction = props.flip ? -1 : 1;
-    const anchorX = typeof std.anchor === "number" ? std.anchor : std.anchor.x;
-    const anchorY = typeof std.anchor === "number" ? std.anchor : std.anchor.y;
+    const anchorX = std.anchor;
+    const anchorY = std.anchor;
+    const toCanvasX = (x: number) => std.x + (x - std.width * anchorX) * std.scale;
+    const [envLo, envHi] = LAYERED_X_ENVELOPE;
+    const rightLimit = context.stateLayoutDerived.canvasSizes().width - SCREEN_GAP * std.scale;
+    const leftLimit = props.innerEdge === undefined
+      ? -Infinity
+      : toCanvasX(props.innerEdge + BOARD_GAP);
+    const natural = (props.height / contentHeight) * std.scale * 0.82;
+    const drawScale = Math.min(natural, (rightLimit - leftLimit) / (envHi - envLo));
+    const inkLo = Math.min(direction * envLo, direction * envHi) * drawScale;
+    const inkHi = Math.max(direction * envLo, direction * envHi) * drawScale;
 
     figure.view.scale.set(direction * drawScale, drawScale);
-    figure.view.x =
-      std.x +
-      (props.x - 45 - std.width * anchorX) * std.scale +
-      direction * -contentCenterX * drawScale;
+    const wanted = toCanvasX(props.x - 45) - direction * contentCenterX * drawScale;
+    figure.view.x = Math.max(leftLimit - inkLo, Math.min(wanted, rightLimit - inkHi));
     figure.view.y =
       std.y + (props.topY - std.height * anchorY) * std.scale - y0 * drawScale;
     figure.view.alpha = props.alpha ?? 1;

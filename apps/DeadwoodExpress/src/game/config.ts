@@ -4,7 +4,7 @@ export default {
 	"providerName": "igs",
 	"gameName": "deadwood_express",
 	"gameID": "DeadwoodExpress",
-	"rtp": 0.94,
+	"rtp": 0.9603,
 	"numReels": 5,
 	"numRows": [
 		4,
@@ -18,21 +18,21 @@ export default {
 			"cost": 1.0,
 			"feature": true,
 			"buyBonus": false,
-			"rtp": 0.94,
+			"rtp": 0.9603,
 			"max_win": 20000.0
 		},
 		"bonus": {
 			"cost": 100.0,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.94,
+			"rtp": 0.9603,
 			"max_win": 20000.0
 		},
 		"bonus_hits": {
 			"cost": 250.0,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.94,
+			"rtp": 0.9603,
 			"max_win": 20000.0
 		}
 	},

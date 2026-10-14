@@ -36,6 +36,7 @@
 		{height}
 		alpha={props.alpha}
 		tint={props.tint}
+		blendMode={props.blendMode}
 	/>
 {:else}
 	<Rectangle

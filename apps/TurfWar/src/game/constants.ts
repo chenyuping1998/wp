@@ -108,12 +108,22 @@ const SPIN_OPTIONS_SHARED = {
 	// not a wait ("緊張感靠慢下來,不是靠停住等"), and distance alone was all this
 	// had. Ten times the distance at full speed is a reel that blurs past for a
 	// long time; five times at half speed is a reel the player can read.
-	reelPaddingMultiplierAnticipated: 5,
-	// 200ms, from the Hacksaw spec the user supplied (The Luxe `reelDelay` 0.2s).
-	// Was 145. Their stop stagger is 300ms — 1.5x the start — and ours already
-	// measures ~280ms because it falls out of the accumulating padding, so the
-	// only number that was off was the start.
-	reelSpinDelay: 200,
+	// 5 -> 3 (2026-10-12 audit): two teasing reels took ~6s, against Hacksaw's
+	// 1-1.75s per reel (hacksaw-style-transcripts §5.1), on a tease that ends in
+	// free spins only ~14% of the time. Same half-speed slowdown, ~1.8s a reel.
+	reelPaddingMultiplierAnticipated: 3,
+	// 25ms (2026-10-12, user OK). Reels start almost together and stop one by
+	// one: the Hacksaw norm across 54 titles is a 0.025s start stagger against a
+	// 0.2s stop stagger (hacksaw-style-transcripts §5.1). This was 200ms, copied
+	// from The Luxe, one of the few titles that start-stagger.
+	//
+	// The STOP cadence does not come from this number: it falls out of the
+	// accumulating padding (~280ms a reel) and is unchanged. What this number
+	// did control is when the stops could begin, because utils-slots waits for
+	// every reel to finish one pre-spin pass before it lands any of them - so
+	// reel 5's 800ms start delay sat in front of reel 1's stop. 200 -> 25 takes
+	// about 0.7s of dead spin out of every turn and leaves the stops alone.
+	reelSpinDelay: 25,
 	// Half of `reelSpinSpeed` (3 -> 1.5), matching their attentionSpeed/speed
 	// ratio. Applies to every mode: turbo turns anticipation off elsewhere.
 	reelSpinSpeedAnticipated: 1.5,
@@ -145,7 +155,10 @@ export const SPIN_OPTIONS_FAST = {
 	reelPreSpinSpeed: 5,
 	reelSpinSpeed: 5,
 	reelBounceSizeMulti: 0.05,
-	reelSpinDelay: 150,
+	// 150 -> 25 (2026-10-12): Hacksaw's turbo starts together too (reelDelay
+	// 0.025). The stops stay staggered (~170ms) through reelStaggerInTurbo's
+	// accumulating padding, which is where the reel-by-reel landing comes from.
+	reelSpinDelay: 25,
 	reelStaggerInTurbo: true,
 };
 
@@ -159,14 +172,16 @@ export const SPIN_OPTIONS_FAST = {
 // turbo's speeds and gives the reels back their order (utils-slots; the flag is
 // optional and every other app is unaffected by it).
 //
-// reelSpinDelay is 185 rather than the shared 145 because it is now doing real
-// work: at turbo speed the reels overlap far more, so the start offset has to be
-// wider to read as a sequence at all.
+// reelSpinDelay was 185 here, to make the START read as a sequence at turbo
+// speed. Since 2026-10-12 it is 25 like the other two sets: the order the
+// player reads is the STOP order, and reelStaggerInTurbo's accumulating padding
+// keeps that (~225ms a reel at this speed); a wide start offset only pushed
+// every stop later (utils-slots lands no reel until all have started).
 export const SPIN_OPTIONS_FAST_FREEGAME = {
 	...SPIN_OPTIONS_SHARED,
 	reelPreSpinSpeed: 4.2,
 	reelSpinSpeed: 3.8,
-	reelSpinDelay: 185,
+	reelSpinDelay: 25,
 	reelBounceSizeMulti: 0.08,
 	reelStaggerInTurbo: true,
 };
@@ -226,13 +241,14 @@ export const SYMBOL_INFO_MAP = {
 	H3: spriteSymbol('hmH3', HIGH_RATIOS),
 	H4: spriteSymbol('hmH4', HIGH_RATIOS),
 	H5: spriteSymbol('hmH5', HIGH_RATIOS),
-	// A and K carry the least ink of anything on the board (62% of their canvas
-	// against 70% for Q and J), so they are drawn bigger to arrive at the same
-	// size on screen.
-	L1: spriteSymbol('hmL1', { width: 1.13, height: 1.13 }),
-	L2: spriteSymbol('hmL2', { width: 1.13, height: 1.13 }),
+	// Per stencil, from its own ink height (L1 61.5%, L2 62.3%, L3 68.2%, L4 63.1%
+	// of the 512 canvas), so all four stand ~68% of the cell tall. The old
+	// 1.13/1.13/1.0/1.0 were Hot Miami's letter royals and left the lightning (L4)
+	// visibly smaller than the rest (2026-10-12 audit).
+	L1: spriteSymbol('hmL1', { width: 1.11, height: 1.11 }),
+	L2: spriteSymbol('hmL2', { width: 1.09, height: 1.09 }),
 	L3: spriteSymbol('hmL3', { width: 1.0, height: 1.0 }),
-	L4: spriteSymbol('hmL4', { width: 1.0, height: 1.0 }),
+	L4: spriteSymbol('hmL4', { width: 1.08, height: 1.08 }),
 	W: spriteSymbol('hmW', SPECIAL_RATIOS),
 	S: spriteSymbol('hmS', SPECIAL_RATIOS),
 	SW: spriteSymbol('hmSw', SPECIAL_RATIOS),

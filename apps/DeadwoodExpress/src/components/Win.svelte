@@ -22,28 +22,26 @@
 	import GoldText from './GoldText.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { GAME_FONT, GAME_FONT_WEIGHT, DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
+	import { PLATE_BODY, PLATE_INSET, PLATE_KEY } from '../game/plate';
 	import { getContext } from '../game/context';
 
 	const context = getContext();
 
-	// brass tier plaques (design/deadwood_ui_assets.mjs) — 1000×560, the
-	// amount rolls inside the dark centre well
-	const BANNER_KEY: Record<string, string> = {
-		big: 'hmWinBannerBig',
-		superwin: 'hmWinBannerSuperwin',
-		mega: 'hmWinBannerMega',
-		epic: 'hmWinBannerEpic',
-		max: 'hmWinBannerMax',
-	};
-	const BANNER_RATIO = 560 / 1000;
+	// One painted brass plaque for every tier (game/plate.ts). The tiers used to
+	// be five flat SVG octagons with their names set in Georgia inside the file;
+	// now the name is live Cinzel on the plate's dark inset, and the tier reads
+	// from the name, its colour and the size of the light behind it.
+	//
 	// Higher tiers shift from brass light to spectral teal.
-	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
-		big: { mult: 1, glowTint: 0xffd75e },
-		superwin: { mult: 1.15, glowTint: 0xffc14a },
-		mega: { mult: 1.3, glowTint: 0xe0c48b },
-		epic: { mult: 1.5, glowTint: 0x86cbb7 },
-		max: { mult: 1.8, glowTint: 0x9de5d3 },
+	// Title colour is ONE value: pixi 8 takes the first entry of an array fill
+	// and ignores the rest, so a "gradient" here only ever drew its top stop.
+	const TIER_FX: Record<string, { mult: number; glowTint: number; title: string; fill: number }> = {
+		big: { mult: 1, glowTint: 0xffd75e, title: 'BIG WIN', fill: 0xe9cf95 },
+		superwin: { mult: 1.15, glowTint: 0xffc14a, title: 'SUPER WIN', fill: 0xf2c865 },
+		mega: { mult: 1.3, glowTint: 0xe0c48b, title: 'MEGA WIN', fill: 0xffd98a },
+		epic: { mult: 1.5, glowTint: 0x86cbb7, title: 'EPIC WIN', fill: 0x9ff0d6 },
+		max: { mult: 1.8, glowTint: 0x9de5d3, title: 'MAX WIN', fill: 0xc9fff0 },
 	};
 
 	let show = $state(false);
@@ -53,37 +51,44 @@
 	let onCountUpComplete = $state(() => {});
 
 	// camera shake as the presentation slams in
+	// Both run on the display's own frame clock. They were setInterval(16), which
+	// drifts against the refresh — on a 120 Hz screen every other frame repeated
+	// the last offset and the shake stuttered instead of decaying.
+	const onFrames = (ms: number, step: (p: number) => void) => {
+		const start = performance.now();
+		let raf = 0;
+		const tick = (now: number) => {
+			const p = Math.min(1, (now - start) / ms);
+			step(p);
+			if (p < 1) raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
+	};
+
 	let shake = $state({ x: 0, y: 0 });
+	let stopShake = () => {};
 	const startShake = () => {
-		const start = Date.now();
-		const id = setInterval(() => {
-			const p = (Date.now() - start) / 700;
-			if (p >= 1) {
-				shake = { x: 0, y: 0 };
-				clearInterval(id);
-				return;
-			}
+		stopShake();
+		stopShake = onFrames(700, (p) => {
 			const amp = 11 * (1 - p) ** 2;
-			shake = { x: (Math.random() - 0.5) * 2 * amp, y: (Math.random() - 0.5) * 2 * amp };
-		}, 16);
+			shake =
+				p >= 1
+					? { x: 0, y: 0 }
+					: { x: (Math.random() - 0.5) * 2 * amp, y: (Math.random() - 0.5) * 2 * amp };
+		});
 	};
 
 	// hit-stop impact frame: white flash + scale punch on the slam-in
 	let flash = $state(0);
 	let punch = $state(1);
+	let stopImpact = () => {};
 	const startImpact = () => {
-		const start = Date.now();
-		const id = setInterval(() => {
-			const p = (Date.now() - start) / 280;
-			if (p >= 1) {
-				flash = 0;
-				punch = 1;
-				clearInterval(id);
-				return;
-			}
-			flash = Math.max(0, 0.8 * (1 - p * 1.4));
-			punch = 1 + 0.14 * (1 - p) ** 2;
-		}, 16);
+		stopImpact();
+		stopImpact = onFrames(280, (p) => {
+			flash = p >= 1 ? 0 : Math.max(0, 0.8 * (1 - p * 1.4));
+			punch = p >= 1 ? 1 : 1 + 0.14 * (1 - p) ** 2;
+		});
 	};
 
 	// ── plaque FX clock: entrance overshoot, breathing glow, periodic blink,
@@ -127,6 +132,8 @@
 	};
 	const stopBannerFx = () => {
 		cancelAnimationFrame(fxRaf);
+		stopShake();
+		stopImpact();
 		fxNow = -1;
 		twinkles = [];
 	};
@@ -200,6 +207,7 @@
 							x={context.stateGameDerived.boardLayout().x + shake.x * 0.4}
 							y={context.stateGameDerived.boardLayout().y + shake.y * 0.4}
 							intensity={fx.mult}
+							tint={fx.glowTint}
 						/>
 					</MainContainer>
 				{/if}
@@ -213,9 +221,11 @@
 						{#if isBigWin}
 							{@const alias = winLevelData.alias}
 							{@const fx = TIER_FX[alias] ?? TIER_FX.big}
-							{@const bannerKey = BANNER_KEY[alias] ?? BANNER_KEY.big}
-							{@const bw = SYMBOL_SIZE * 5.2}
-							{@const bh = bw * BANNER_RATIO}
+							{@const side = SYMBOL_SIZE * 5.1}
+							{@const bw = side * PLATE_BODY.width}
+							{@const bh = side * PLATE_BODY.height}
+							{@const insetY = side * PLATE_INSET.centerY}
+							{@const insetH = side * PLATE_INSET.height}
 							<Container scale={bannerPose.scale}>
 								<!-- breathing glow bed behind the plaque -->
 								<Sprite
@@ -224,17 +234,17 @@
 									tint={fx.glowTint}
 									blendMode="add"
 									width={bw * 1.45}
-									height={bh * 1.8}
+									height={bh * 2.1}
 									alpha={bannerPose.glow}
 								/>
-								<Sprite key={bannerKey} anchor={0.5} width={bw} height={bh} />
+								<Sprite key={PLATE_KEY} anchor={0.5} width={side} height={side} />
 								<!-- additive self-copy = the whole plaque flares -->
 								{#if bannerPose.blink > 0}
 									<Sprite
-										key={bannerKey}
+										key={PLATE_KEY}
 										anchor={0.5}
-										width={bw}
-										height={bh}
+										width={side}
+										height={side}
 										blendMode="add"
 										alpha={bannerPose.blink}
 									/>
@@ -245,8 +255,8 @@
 									<Sprite
 										key="fxStar"
 										anchor={0.5}
-										x={Math.cos(tw.angle) * bw * 0.46}
-										y={Math.sin(tw.angle) * bh * 0.44}
+										x={Math.cos(tw.angle) * bw * 0.47}
+										y={insetY + Math.sin(tw.angle) * bh * 0.47}
 										rotation={p * 2}
 										tint={0xffffff}
 										blendMode="add"
@@ -255,12 +265,23 @@
 										alpha={Math.sin(p * Math.PI)}
 									/>
 								{/each}
-								<!-- Saira numerals roll beneath the upper title zone. -->
+								<!-- tier name in Cinzel across the top of the inset, the Saira
+								     numerals rolling under it -->
 								<GoldText
-									y={bh * 0.16}
-									maxWidth={bw * 0.68}
+									y={insetY - insetH * 0.24}
+									maxWidth={side * PLATE_INSET.width * 0.84}
+									text={fx.title}
+									fill={fx.fill}
+									letterSpacing={4}
+									fontSize={insetH * 0.26}
+									fontFamily={DISPLAY_FONT}
+									fontWeight={DISPLAY_FONT_WEIGHT}
+								/>
+								<GoldText
+									y={insetY + insetH * 0.17}
+									maxWidth={side * PLATE_INSET.width * 0.84}
 									text={bookEventAmountToCountUpString(countUpAmount, amount)}
-									fontSize={bh * 0.24}
+									fontSize={insetH * 0.36}
 									fontFamily={GAME_FONT}
 									fontWeight={GAME_FONT_WEIGHT}
 								/>

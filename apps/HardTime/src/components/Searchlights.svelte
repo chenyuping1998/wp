@@ -252,10 +252,14 @@
 	// never a tween per frame however many are on the grid.
 	let shine = $state(0);
 	onMount(() => {
-		const id = setInterval(() => {
-			shine = (Date.now() % 2600) / 2600;
-		}, 40);
-		return () => clearInterval(id);
+		// frame clock (was a 40 ms interval: the sweep stepped at 25 fps)
+		let raf = 0;
+		const tick = (now: number) => {
+			shine = (now % 2600) / 2600;
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
 	});
 </script>
 

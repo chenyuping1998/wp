@@ -156,9 +156,11 @@
 		game's asset registry, so the runner drew nothing and every winning line
 		animated with an invisible token. A neon spark suits the theme better than
 		a reel symbol flying down the payline, and it takes the line's own colour.
+		Deadwood 2026-09-26: fxStar -> a tight fxGlow core. The four-point star was
+		Hot Miami's neon sparkle; here the line is led by a lantern-like light.
 	-->
 	<Sprite
-		key="fxStar"
+		key="fxGlow"
 		anchor={0.5}
 		x={pose.x + entryOffset}
 		y={pose.y}

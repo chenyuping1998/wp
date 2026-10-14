@@ -10,78 +10,78 @@
   "sides": "anatomical",
   "mirrored": false,
   "order": [
-    "body",
-    "head",
     "arm_l",
-    "prop_bat",
+    "head",
+    "body",
     "arm_r",
     "dangle_ponytail",
+    "prop_bat",
+    "fingers_l",
     "dangle_earring_l",
-    "dangle_earring_r",
-    "fingers_l"
+    "dangle_earring_r"
   ],
   "joints": {
-    "head_top": [
-      482.804,
-      260.0
-    ],
     "neck": [
-      472.098,
-      530.552
+      490,
+      492
     ],
     "chest": [
-      510.054,
-      613.275
+      546,
+      626
     ],
     "waist": [
-      509.08,
-      786.506
+      552,
+      799
     ],
     "hips": [
-      525.625,
-      1035.647
+      552,
+      973
+    ],
+    "head_top": [
+      473,
+      260
     ],
     "shoulder_r": [
-      357.26,
-      585.052
+      372,
+      523
     ],
     "elbow_r": [
-      305.294,
-      807.391
+      335,
+      782
     ],
     "wrist_r": [
-      226.966,
-      1034.422
+      301,
+      1035
     ],
     "shoulder_l": [
-      605.428,
-      535.418
+      630,
+      518
     ],
     "elbow_l": [
-      719.293,
-      694.051
+      742,
+      686
     ],
     "wrist_l": [
-      750.436,
-      488.704
+      675,
+      492
     ]
   },
   "anchors": {
     "prop_bat": [
-      747.517,
-      484.811
+      677,
+      488
     ],
     "dangle_ponytail": [
-      410.786,
-      302.821
-    ],
-    "dangle_earring_r": [
-      420.518,
-      407.928
+      516,
+      269
     ],
     "dangle_earring_l": [
-      513.946,
-      443.936
+      519,
+      384
+    ],
+    "dangle_earring_r": [
+      427,
+      422
     ]
   },
   "arms": {
@@ -93,19 +93,12 @@
     "don"
   ],
   "style": {
-    "kind": "render",
+    "kind": "noir",
     "source": "../../../ART_BRIEF.md",
     "frames": [
-      "style_frame/h1.png",
-      "style_frame/h2.png",
-      "style_frame/w.png"
+      "style_frame/don_head.png",
+      "style_frame/h1.png"
     ]
   },
-  "source": "full-concept-v1.png + source_generated",
-  "parents": {
-    "prop_bat": "fore_l",
-    "dangle_ponytail": "head",
-    "dangle_earring_l": "head",
-    "dangle_earring_r": "head"
-  }
+  "delivery_status": "art gates passed; runtime rig and motion validation pending"
 }

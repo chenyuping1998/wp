@@ -41,10 +41,10 @@
 	// Only 14 are ever used (config.paylines), but the list is longer so the
 	// modulo below never wraps onto an adjacent index.
 	const LINE_COLORS = [
-		0xe8d48b, 0xf5e6b8, 0xc9a227, 0xd9a441, 0xb8862b,
-		0xa8323c, 0xc85a4a, 0xe0a07a, 0xfff3d0, 0x9aa0a6,
-		0xc3cbd1, 0xd8b24a, 0xefc978, 0xbf7a3c, 0x8f9a7e,
-		0xdcc9a0, 0xa67c52, 0xf0d9a8,
+		0xf7f4ec, 0xe9e5dc, 0xd4d0c6, 0xa9a9a9, 0x8b8b8b,
+		0x565656, 0x797979, 0xafafaf, 0xf7f2e9, 0x9f9f9f,
+		0xcdc9c1, 0xb2b2b2, 0xcecbc3, 0x888888, 0x949494,
+		0xcdcac2, 0x848484, 0xdedad2,
 	];
 
 	// deterministic per-line jitter: same line always moves the same way, but no
@@ -272,7 +272,7 @@
 			};
 			// scorch underlay: reads as a burn mark where the line crosses the
 			// gold expanding-wild panel, and all but disappears over the dark board
-			stroke(11, 0x1a1206, 0.5);
+			stroke(11, 0x131313, 0.5);
 			stroke(7, line.color, 0.22);
 			stroke(3, line.color, 0.95);
 			stroke(1.2, 0xffffff, 0.5);
@@ -316,7 +316,7 @@
 						draw={(g) => {
 							g.clear();
 							g.roundRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
-							g.fill({ color: 0x140a24, alpha: 0.88 });
+							g.fill({ color: 0x101010, alpha: 0.88 });
 							g.roundRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
 							g.stroke({ width: 2, color: line.color, alpha: 0.95 });
 						}}

@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "size": [
+    1024,
+    2048
+  ],
+  "weight_encoding": "uint16 / 65535",
+  "mapping": "inverse destination-to-source rotation blend; see check_motion.py SeamRig.warp",
+  "shared_parent_field": {
+    "prop_bat": "arm_r",
+    "fingers_r": "arm_r"
+  },
+  "after_compositing": "head field applied once to full composite, including collar and shoulders",
+  "head_rigid_border_guard_px": 32,
+  "head_field_falloff_outside_guard_px": 80,
+  "attachment_bands": {
+    "arm_l": [
+      490,
+      600
+    ],
+    "head": [
+      435,
+      500
+    ]
+  },
+  "rigid_regions": {
+    "arm_l": "y >= 600",
+    "head": "head alpha support at y <= 435"
+  },
+  "applies_to": [
+    "base",
+    "feature",
+    "kingpin"
+  ]
+}

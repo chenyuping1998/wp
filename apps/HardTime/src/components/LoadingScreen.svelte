@@ -44,7 +44,7 @@
 	// background art behind them. So the SCRIM does the holding back instead: the
 	// photograph goes down to 0.74 black and the people stay as they are.
 	const castHeight = $derived(layout.height * 0.9);
-	const castWidth = $derived((castHeight * 441) / 1100);
+	const castWidth = $derived((castHeight * 480) / 1100);
 
 	// Their sway runs off the same clock as everywhere else, which is what keeps
 	// the two of them out of step with each other (6500ms and 4000ms) rather than
@@ -162,6 +162,38 @@
 		/>
 
 		<!--
+			Shade under the words (2026-10-12). Replay skips the opening card, so this
+			is the first screen a reviewer sees there, and the tip line ran over a lit
+			pillar and the figure while the prompt sat right on the floor's highlight
+			(read as a strike-through). Feathered bands, drawn under the figure so he
+			stays at full strength; the prompt band is at the foot of the cover.
+		-->
+		<Graphics
+			draw={(g) => {
+				g.clear();
+				const left = layout.width * 0.5 - coverW * 0.5;
+				const feather = (top: number, bottom: number, alpha: number) => {
+					const steps = 6;
+					const edge = (bottom - top) * 0.22;
+					g.rect(left, top + edge, coverW, bottom - top - 2 * edge);
+					g.fill({ color: 0x000000, alpha });
+					for (let i = 0; i < steps; i++) {
+						const a = (alpha * (steps - i)) / (steps + 1);
+						const h = edge / steps;
+						g.rect(left, top + edge - (i + 1) * h, coverW, h);
+						g.fill({ color: 0x000000, alpha: a });
+						g.rect(left, bottom - edge + i * h, coverW, h);
+						g.fill({ color: 0x000000, alpha: a });
+					}
+				};
+				const textTop = layout.height * 0.3 + logoWidth * (LOGO_H / LOGO_W) * 0.38;
+				feather(textTop, layout.height * 0.66 + 110, 0.55);
+				const foot = layout.height * 0.5 + coverH * 0.5;
+				feather(layout.height - 140, foot + 40, 0.8);
+			}}
+		/>
+
+		<!--
 			ONE figure, on the right.
 
 			This drew two — the boss on the left and hmCastGirlMesh on the right,
@@ -175,11 +207,11 @@
 			symmetry that no longer exists.
 		-->
 		<Container
-			x={layout.width - castWidth * 0.72}
+			x={layout.width - castWidth * 0.5}
 			y={layout.height}
 		>
 			<Sprite
-				key="hmCastGuyMesh"
+				key="htLoadingCast"
 				anchor={{ x: 0.5, y: 1 }}
 				width={castWidth}
 				height={castHeight}
@@ -222,8 +254,8 @@
 					const h = 10;
 					g.clear();
 					g.roundRect(-w / 2, -h / 2, w, h, h / 2);
-					g.fill({ color: 0x1b0f3a, alpha: 0.95 });
-					g.stroke({ width: 2, color: 0x5C2126, alpha: 0.65 });
+					g.fill({ color: 0x14100d, alpha: 0.95 });
+					g.stroke({ width: 2, color: 0x6b7278, alpha: 0.65 });
 					const fill = (w - 6) * (animatedProgress / 100);
 					if (fill > 2) {
 						g.roundRect(-w / 2 + 3, -h / 2 + 3, fill, h - 6, (h - 6) / 2);
@@ -264,7 +296,7 @@
 					letterSpacing: 2,
 					align: 'center',
 					wordWrap: true,
-					wordWrapWidth: layout.width * 0.62,
+					wordWrapWidth: layout.width * 0.42,
 				}}
 			/>
 		</Container>

@@ -26,6 +26,11 @@ a short list, then grep the new game's source for them after theming is
 grep -rn "ff8ede\|<old game's other signature hex values>" src/
 ```
 
+Search each value in all three spellings — `0xff8ede`, `#ff8ede` and
+`rgba(255, 142, 222` — Deadwood's last pink was an rgba box-shadow in
+`Modals.svelte`. `scripts/check_review_tags.py --palette` does all three and
+skips components nothing imports.
+
 This catches colours that leaked into SHARED components the new theme's own
 files never touch directly — win-line palettes, symbol-land flash tints,
 splash-panel plate colours, scrollbar gradients, modal backdrop tints. In Capo

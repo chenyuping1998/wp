@@ -1,0 +1,68 @@
+{
+ "version": 1,
+ "archetype": "miami_green_guy",
+ "size": [
+  1024,
+  2048
+ ],
+ "feet_y": 1773,
+ "top_y": 172,
+ "sides": "anatomical",
+ "mirrored": false,
+ "order": [
+  "head",
+  "body"
+ ],
+ "joints": {
+  "head_top": [
+   541,
+   172
+  ],
+  "neck": [
+   541,
+   399
+  ],
+  "chest": [
+   541,
+   525
+  ],
+  "waist": [
+   541,
+   788
+  ],
+  "hips": [
+   541,
+   956
+  ],
+  "shoulder_r": [
+   334,
+   452
+  ],
+  "elbow_r": [
+   281,
+   704
+  ],
+  "wrist_r": [
+   644,
+   588
+  ],
+  "shoulder_l": [
+   749,
+   457
+  ],
+  "elbow_l": [
+   770,
+   704
+  ],
+  "wrist_l": [
+   486,
+   641
+  ]
+ },
+ "anchors": {},
+ "arms": {
+  "r": "crossed",
+  "l": "crossed"
+ },
+ "note": "arms and towel are part of the body layer; see build_crossed_arms_layers.py"
+}

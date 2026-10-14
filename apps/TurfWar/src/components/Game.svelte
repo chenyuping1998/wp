@@ -7,7 +7,7 @@
 	import { EnableHotkey } from 'components-shared';
 	import { MainContainer } from 'components-layout';
 	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
-	import { stateModal, stateReplay } from 'state-shared';
+	import { stateModal, stateReplay, stateUi } from 'state-shared';
 
 	import { UI, UiGameName } from 'components-ui-pixi';
 	import { GameVersion } from 'components-ui-html';
@@ -31,6 +31,7 @@
 	import ScatterBurst from './ScatterBurst.svelte';
 	import NeonFrames from './NeonFrames.svelte';
 	import WildColumns from './WildColumns.svelte';
+	import BigScore from './BigScore.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import WinLines from './WinLines.svelte';
 	import Win from './Win.svelte';
@@ -38,8 +39,32 @@
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
 	import FreeSpinOutro from './FreeSpinOutro.svelte';
 	import Transition from './Transition.svelte';
+	import { castTopStd, cornerLogoScale, nameHitsHousing, portraitBand, portraitLogoBox } from '../game/cornerLogo';
+	import { stateGame } from '../game/stateGame.svelte';
 
 	const context = getContext();
+
+	// The corner logo yields to the housing and the cast's head in a small popout
+	// (game/cornerLogo.ts). turfBrand/logo.png ink runs edge to edge (1%–99%, down
+	// to 97%). Cast.svelte stands the figure's top at 0.145 of the box.
+	const CORNER_LOGO = {
+		width: REM * 11,
+		height: REM * 11 * (520 / 1200),
+		offsetX: 0,
+		inkLeft: 0.013,
+		inkBottom: 0.969,
+	};
+	const logoScale = $derived(
+		cornerLogoScale(context, CORNER_LOGO, stateGame.featureSplashShow ? null : castTopStd(context, 0.145)),
+	);
+	// "13:42 TURF WAR" ends ~215px in
+	// Portrait: the strip above the housing holds the logo (left) and the guy's
+	// upper body (right, Cast.svelte). The corner logo and the typed name stand
+	// down there — the strip's logo carries the title, the clock stays.
+	const portrait = $derived(portraitBand(context));
+	// turfBrand/logo.png ink, fractions of its 1200×520 canvas
+	const LOGO_INK = { left: 0.013, top: 0.029, right: 0.985, bottom: 0.969 };
+	const hideName = $derived(nameHitsHousing(context, 215) || portrait !== null);
 
 	// soft depth-of-field on the jungle scene so the reels read as the subject
 	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
@@ -89,11 +114,19 @@
 			<BoardFrame />
 		</MainContainer>
 
+		<!-- Portrait: the logo in the strip's left half. A running feature's
+		     counter takes that slot (FreeSpinCounter.svelte), so it stands down. -->
+		{#if portrait && !stateUi.freeSpinCounterShow}
+			{@const logo = portraitLogoBox(portrait, LOGO_INK)}
+			<Sprite key="hmLogo" anchor={0.5} x={logo.x} y={logo.y} width={logo.width} height={logo.height} />
+		{/if}
+
 		<MainContainer>
 			<Board />
 			<ReelDust />
 			<WildColumns />
 			<NeonFrames />
+			<BigScore />
 			<Anticipations />
 			<ScatterBurst />
 			<WinLines />
@@ -103,7 +136,7 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name="TURF WAR" />
+				<UiGameName name={hideName ? '' : 'TURF WAR'} />
 			{/snippet}
 			{#snippet logo()}
 				<!--
@@ -120,17 +153,15 @@
 					covers Mobile S at 360. Below it the duplicate is simply not drawn —
 					nothing is lost, the name is still on screen top-left.
 				-->
-				{#if context.stateLayoutDerived.canvasSizes().width >= 480}
-					<Text
+				{#if context.stateLayoutDerived.canvasSizes().width >= 480 && logoScale > 0 && !portrait}
+					<!-- The game's logo art (1200×520, ink edge to edge), not the name
+					     typed in the title font: a plain text title in the corner is one
+					     of the things review's "low quality assets" tag lists. -->
+					<Sprite
+						key="hmLogo"
 						anchor={{ x: 1, y: 0 }}
-						text="TURF WAR"
-						style={{
-							fontFamily: TITLE_FONT,
-							fontSize: REM * 1.5,
-							fontWeight: TITLE_FONT_WEIGHT,
-							lineHeight: REM * 2,
-							fill: 0xffffff,
-						}}
+						width={CORNER_LOGO.width * logoScale}
+						height={CORNER_LOGO.height * logoScale}
 					/>
 				{/if}
 			{/snippet}

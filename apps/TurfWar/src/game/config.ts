@@ -4,7 +4,7 @@ export default {
 	"providerName": "igs",
 	"gameName": "turf_war",
 	"gameID": "TurfWar",
-	"rtp": 0.9358,
+	"rtp": 0.9601,
 	"numReels": 5,
 	"numRows": [
 		4,
@@ -18,28 +18,28 @@ export default {
 			"cost": 1.0,
 			"feature": true,
 			"buyBonus": false,
-			"rtp": 0.9358,
+			"rtp": 0.9601,
 			"max_win": 20000.0
 		},
 		"bonus": {
 			"cost": 100.0,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.9363,
+			"rtp": 0.9602,
 			"max_win": 20000.0
 		},
 		"bonus_hits": {
 			"cost": 500.0,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.9367,
+			"rtp": 0.9603,
 			"max_win": 20000.0
 		},
 		"bonus_epic": {
 			"cost": 1000.0,
 			"feature": false,
 			"buyBonus": true,
-			"rtp": 0.9378,
+			"rtp": 0.9605,
 			"max_win": 20000.0
 		}
 	},

@@ -4,8 +4,7 @@
 		| { type: 'wildColumnClear' }
 		// Kingpin: the full cumulative set of held Wild columns for this feature.
 		| { type: 'stickyWildsHold'; cells: { reel: number; row: number }[]; reels: number[] }
-		| { type: 'stickyWildsClear' }
-		| { type: 'bigScorePlay'; mult: number };
+		| { type: 'stickyWildsClear' };
 </script>
 
 <script lang="ts">
@@ -36,10 +35,10 @@
 	 * which is not.
 	 *
 	 * The dedicated comic-print beam, muzzle flash, shells and impact texture are
-	 * authored under sprites/capoFx and share the Bruiser's signal-red accent.
+	 * authored under sprites/turfFx and share the Bruiser's signal-red accent.
 	 */
 	import { Tween } from 'svelte/motion';
-	import { backOut, cubicOut } from 'svelte/easing';
+	import { backOut, cubicOut, linear } from 'svelte/easing';
 	import { Container, Sprite } from 'pixi-svelte';
 	import { waitForTimeout } from 'utils-shared/wait';
 
@@ -165,12 +164,13 @@
 					// turns Wild as the leading edge reaches it, so the fill is
 					// something the player watches happen rather than a board that
 					// was already different by the time the effect finished.
-					const beam = column.sweep.set(1, { duration: scaled(SWEEP_MS), easing: cubicOut });
 					for (let paddedRow = 1; paddedRow <= ROWS; paddedRow += 1) {
-						await waitForTimeout(scaled(SWEEP_MS / ROWS));
+						await column.sweep.set(paddedRow / ROWS, {
+							duration: scaled(SWEEP_MS / ROWS),
+							easing: linear,
+						});
 						turnWild(column.reel, paddedRow);
 					}
-					await beam;
 
 					await waitForTimeout(scaled(380));
 					await column.lit.set(0, { duration: scaled(260), easing: cubicOut });
@@ -188,9 +188,6 @@
 		stickyWildsClear: async () => {
 			heldReels = [];
 		},
-		// The Big Score's own beat lives elsewhere; this consumer only exists so
-		// the broadcastAsync in the handler resolves.
-		bigScorePlay: async () => {},
 	});
 </script>
 

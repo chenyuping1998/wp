@@ -3,6 +3,7 @@
 
   import { getContext } from "../game/context";
   import { CAST_NATIVE } from "../game/castLayout";
+  import { portraitBand, portraitCast } from "../game/cornerLogo";
   import CastFigureLayered from "./CastFigureLayered.svelte";
 
   import { stateGame } from "../game/stateGame.svelte";
@@ -102,10 +103,8 @@
   const OVERLAP = 10;
   const BLEED = 1.12; // how far past the box edge the figure runs
   const width = $derived((std.width - (boardInkRight - OVERLAP)) * BLEED);
-  // Both figures are DRAWN facing screen-right, and they stand right of the
-  // board, so both are mirrored to face the reels (the user's standing rule:
-  // a figure beside the board faces the board). Checked on screen, not from the
-  // source art — reading the source crop is how this shipped facing away once.
+  // The heavy Don redraw faces screen-left already. The hostess retains her
+  // existing mirrored orientation; verify both beside the reels on screen.
   const MIRROR_TO_FACE_BOARD = true;
 
   // Both figures stand in the old Don's box; CastFigureLayered scales each one's
@@ -142,12 +141,34 @@
   // nothing for them to do.
   const bandFraction = $derived((std.width - boardInkRight) / std.width);
   const hasSideBand = $derived(bandFraction >= 0.15);
+
+  // ── portrait: upper body above the board (2026-10-13, P1-F) ──────────────
+  //
+  // No side band does not mean no room: portrait has the strip above the
+  // housing, and leaving it empty dropped the cast — the mode cue and the
+  // game's personality — from every phone held upright. The figure stands in
+  // the strip's right half with its body running down BEHIND the housing (the
+  // view sits at stage depth 2, under the board), so only head and shoulders to
+  // the hips show and the reels win any overlap. The logo takes the left half
+  // (Game.svelte). Same figure, same facing as beside the board.
+  const portrait = $derived(
+    hasSideBand ? null : (() => {
+      const band = portraitBand(context);
+      return band ? portraitCast(context, band) : null;
+    })(),
+  );
 </script>
 
 {#if !stateGame.featureSplashShow && hasSideBand}
   <MainContainer standard>
     {#key who}
-      <CastFigureLayered figure={who} {x} {topY} {height} {groundY} flip={MIRROR_TO_FACE_BOARD} innerEdge={boardInkRight} />
+      <CastFigureLayered figure={who} {x} {topY} {height} {groundY} flip={who === "don" ? false : MIRROR_TO_FACE_BOARD} innerEdge={boardInkRight} />
+    {/key}
+  </MainContainer>
+{:else if !stateGame.featureSplashShow && portrait}
+  <MainContainer standard>
+    {#key who}
+      <CastFigureLayered figure={who} x={portrait.x} topY={portrait.topY} height={portrait.height} groundY={portrait.groundY} flip={who === "don" ? false : MIRROR_TO_FACE_BOARD} innerEdge={portrait.innerEdge} />
     {/key}
   </MainContainer>
 {/if}

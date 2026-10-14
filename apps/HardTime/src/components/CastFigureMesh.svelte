@@ -1,11 +1,10 @@
 <script lang="ts">
   import type { Texture } from "pixi.js";
-  import { getContextApp } from "pixi-svelte";
-  import { onMount } from "svelte";
+  import { getContextApp, getContextParent } from "pixi-svelte";
   import { stateBetDerived } from "state-shared";
   import { getContext } from "../game/context";
-  import { MOTION_SCALE } from "../game/castMotion";
-  import { SkinnedFigure, type MeshRig } from "../game/skinnedFigure";
+  import { LayeredFigure, type LayeredRig } from "../game/layeredFigure";
+  import { LAYERED_X_ENVELOPE, WARDEN_TIERS } from "../game/layeredCastMotion";
   import { stateGame } from "../game/stateGame.svelte";
   import { featureTimeScale } from "../game/timeScale";
 
@@ -17,59 +16,87 @@
     groundY: number;
     alpha?: number;
     flip?: boolean;
+    /** board ink's outer edge in the caller's container space; the figure's
+     *  swept ink never crosses it */
+    innerEdge?: number;
+    /**
+     * Draw inside the enclosing pixi container instead of at stage index 2
+     * (behind the housing). The free-game splash needs him IN FRONT of its
+     * scrim and fading with it. Placement is in canvas px either way, so the
+     * enclosing container must be untransformed.
+     */
+    inline?: boolean;
   };
 
   const props: Props = $props();
   const app = getContextApp();
+  const parentContext = props.inline ? getContextParent() : null;
   const context = getContext();
   const std = $derived(context.stateLayoutDerived.mainLayoutStandard());
-  // One cast member, always the rig built on the "guy" silhouette — the
-  // prisoner's art is drawn to that body so the proven arm clearance carries
-  // over (ART_AUDIO_BRIEF.md §1). `who` stays in Props only so callers need not
-  // change.
-  //
-  // There used to be a girl branch here too: `new URL(".../cast_girl/girl.rig.json",
-  // import.meta.url)`. Vite bundles every `new URL(..., import.meta.url)` it sees
-  // UNCONDITIONALLY — the ternary never chose it at runtime, but 7.5MB of Hot
-  // Miami's woman shipped in every upload anyway. Removed 2026-09-15.
-  const texture = $derived(app.stateApp.loadedAssets["hmCastGuyMesh"] as Texture);
-  const rigUrl = new URL(
-    "../../assets/meshRigs/cast_guy/guy.rig.json",
-    import.meta.url,
-  ).href;
-  let figure = $state<SkinnedFigure | null>(null);
+  const isWarden = $derived(stateGame.gameType === "freegame");
+  const rigUrl = $derived(isWarden
+    ? new URL("../../assets/castLayers/warden/layers.json", import.meta.url).href
+    : new URL("../../assets/castLayers/prisoner_crossed/layers.json", import.meta.url).href);
+  const textures = $derived.by(() => {
+    if (!isWarden) return {
+      head: app.stateApp.loadedAssets["htCastHead"] as Texture,
+      body: app.stateApp.loadedAssets["htCastBody"] as Texture,
+    };
+    const selected: Record<string, Texture> = {};
+    for (const name of ["arm_r", "prop_bat", "body", "arm_l", "dangle_chain", "head", "dangle_mask", "fingers_r"]) {
+      const suffix = name.split("_").map((part) => part[0].toUpperCase() + part.slice(1)).join("");
+      selected[name] = app.stateApp.loadedAssets[`htWarden${suffix}` as keyof typeof app.stateApp.loadedAssets] as Texture;
+    }
+    return selected;
+  });
+  // Both rigs are ready before the transition reaches its hidden swap beat.
+  const rigCache = new Map<string, Promise<LayeredRig>>();
+  const loadRig = (url: string) => {
+    let pending = rigCache.get(url);
+    if (!pending) {
+      pending = fetch(url).then((response) => {
+        if (!response.ok) throw new Error(`Unable to load cast rig: ${response.status}`);
+        return response.json() as Promise<LayeredRig>;
+      });
+      rigCache.set(url, pending);
+    }
+    return pending;
+  };
+  for (const url of [
+    new URL("../../assets/castLayers/prisoner_crossed/layers.json", import.meta.url).href,
+    new URL("../../assets/castLayers/warden/layers.json", import.meta.url).href,
+  ]) void loadRig(url);
+  let figure = $state<LayeredFigure | null>(null);
   let seenReactionSeq = stateGame.castReaction.seq;
 
-  onMount(() => {
+  $effect(() => {
+    const url = rigUrl;
+    const mountTextures = textures;
+    const tiers = isWarden ? WARDEN_TIERS : undefined;
     let disposed = false;
-    let mountedFigure: SkinnedFigure | null = null;
+    let mountedFigure: LayeredFigure | null = null;
     let update: (() => void) | null = null;
 
-    void fetch(rigUrl)
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(`Unable to load mesh rig: ${response.status}`);
-        return response.json() as Promise<MeshRig>;
-      })
+    void loadRig(url)
       .then((rig) => {
         if (disposed) return;
         const pixiApplication = app.stateApp.pixiApplication;
         if (!pixiApplication)
           throw new Error("Pixi application is unavailable for cast mesh");
-        // Hard Time has exactly ONE cast member — Cast.svelte pins `who` to
-        // "guy" and FreeSpinIntro passes the same, so this is always the prisoner.
-        // His tables in game/castMotion.ts are written against HIS OWN measured
-        // joint limits, hence a scale of 1. A second figure would need its own
-        // MOTION_SCALE entry and its own measured row in check_cast_motion.mjs.
-        mountedFigure = new SkinnedFigure(rig, texture, MOTION_SCALE.guy);
+        mountedFigure = new LayeredFigure(rig, mountTextures, tiers);
         figure = mountedFigure;
         update = () => mountedFigure?.update(performance.now());
-        pixiApplication.stage.addChildAt(
-          mountedFigure.view,
-          Math.min(2, pixiApplication.stage.children.length),
-        );
+        if (parentContext) parentContext.parent.addChild(mountedFigure.view);
+        else
+          pixiApplication.stage.addChildAt(
+            mountedFigure.view,
+            Math.min(2, pixiApplication.stage.children.length),
+          );
         pixiApplication.ticker.add(update);
         mountedFigure.update(performance.now());
+      })
+      .catch((error) => {
+        if (!disposed) console.error("Unable to mount layered prisoner", error);
       });
 
     return () => {
@@ -99,21 +126,51 @@
     figure.react(kind, performance.now(), speed);
   });
 
+  // Daylight between the swept ink and the reel housing / the screen edge, in
+  // standard-box units. Capo's user asked for daylight on 09-20; HT lost it when
+  // the right-edge clamp below pushed the figure left on narrower screens
+  // (16:10: the left sleeve sat on the housing, 2026-09-25).
+  const BOARD_GAP = 14;
+  const SCREEN_GAP = 12;
+
   $effect(() => {
     if (!figure) return;
     const [x0, y0, x1, y1] = figure.figureBox;
     const contentHeight = y1 - y0;
     const contentCenterX = (x0 + x1) * 0.5;
-    const drawScale = (props.height / contentHeight) * std.scale * 0.82;
-    const direction = props.flip ? -1 : 1;
-    const anchorX = typeof std.anchor === "number" ? std.anchor : std.anchor.x;
-    const anchorY = typeof std.anchor === "number" ? std.anchor : std.anchor.y;
+    // `flip` is the prisoner's facing (his art is drawn turned toward the
+    // board). The warden is drawn the other way — head turned to image right —
+    // so the same `flip` would stand him beside the board looking away from it.
+    // Invert it for him; the envelope and clamps below mirror with `direction`.
+    const direction = (isWarden ? !props.flip : props.flip) ? -1 : 1;
+    const anchorX = std.anchor;
+    const anchorY = std.anchor;
+    const toCanvasX = (x: number) => std.x + (x - std.width * anchorX) * std.scale;
+
+    // The validated motion envelope (rig x, trigger peak included) has to fit
+    // between the board and the stage edge. When the band is narrower than the
+    // figure at its natural size, the figure shrinks — it never slides onto
+    // the board to make room.
+    const [envLo, envHi] = isWarden ? [130, 900] : LAYERED_X_ENVELOPE;
+    const rightLimit =
+      context.stateLayoutDerived.canvasSizes().width - SCREEN_GAP * std.scale;
+    const leftLimit =
+      props.innerEdge === undefined
+        ? -Infinity
+        : toCanvasX(props.innerEdge + BOARD_GAP);
+    const natural = (props.height / contentHeight) * std.scale * 0.82;
+    const drawScale = Math.min(natural, (rightLimit - leftLimit) / (envHi - envLo));
+    // canvas x of the envelope's two ends, relative to view.x
+    const inkLo = Math.min(direction * envLo, direction * envHi) * drawScale;
+    const inkHi = Math.max(direction * envLo, direction * envHi) * drawScale;
 
     figure.view.scale.set(direction * drawScale, drawScale);
-    figure.view.x =
-      std.x +
-      (props.x - 45 - std.width * anchorX) * std.scale +
-      direction * -contentCenterX * drawScale;
+    const wanted =
+      toCanvasX(props.x - 45) + direction * -contentCenterX * drawScale;
+    figure.view.x = Math.max(
+      leftLimit - inkLo,
+      Math.min(wanted, rightLimit - inkHi),
+    );
     figure.view.y =
       std.y + (props.topY - std.height * anchorY) * std.scale - y0 * drawScale;
     figure.view.alpha = props.alpha ?? 1;

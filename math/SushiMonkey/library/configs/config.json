@@ -5,7 +5,7 @@
         "sha256": "6009cada99fac4cabbcfd2fddd264fb7c9005248aa40908b075f3cdbc36a9fa9"
     },
     "gameID": "SushiMonkey",
-    "rtp": 0.9655,
+    "rtp": 0.9602,
     "betDenomination": 1000,
     "minDenomination": 10,
     "providerNumber": 0,
@@ -23,7 +23,7 @@
                 }
             ],
             "cost": 1.0,
-            "rtp": 0.9655,
+            "rtp": 0.9602,
             "std": 13.01,
             "bookLength": 100000,
             "feature": true,
@@ -48,7 +48,7 @@
                 }
             ],
             "cost": 100.0,
-            "rtp": 0.9655,
+            "rtp": 0.9602,
             "std": 1.45,
             "bookLength": 50000,
             "feature": false,
@@ -73,7 +73,7 @@
                 }
             ],
             "cost": 150.0,
-            "rtp": 0.9655,
+            "rtp": 0.9602,
             "std": 1.18,
             "bookLength": 50000,
             "feature": false,

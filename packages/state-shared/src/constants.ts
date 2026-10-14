@@ -1,3 +1,5 @@
+import { LEGAL_NOTICE } from './legal';
+
 const DEFAULT_BET_MODE_META = {
 	BASE: {
 		mode: 'BASE',
@@ -333,7 +335,7 @@ const DEFAULT_GAME_RULE_META = {
 			containers: [
 				{
 					title: '',
-					text: 'Malfunction voids all pays and plays. A consistent internet connection is required. In the event of a disconnection, reload the game to finish any uncompleted bets. The theoretical expected return is calculated over many spins. Movement of reels are not representative of any physical device, and is for illustrative purposes only. TM and \u00a9 2023 Twist Gaming.',
+					text: LEGAL_NOTICE,
 					image: '',
 					row: 0,
 					column: 0,

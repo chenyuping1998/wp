@@ -446,39 +446,21 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 		},
 	},
 
-	// S — the vault door. It arrives still TURNING and slows to a stop, same
-	// idea as before — the only rotation of that size on the board, so a
-	// scatter landing is recognisable before the eye has read the art — but
-	// the shape and colour are now the wheel catching, not a starburst: a
-	// metal glint sweeps with it rather than a round halo, and the light is
-	// the amber already painted at the door's hinge (fs.png), not green/cyan.
+	// S — the cell gate. It SLAMS down: drops the last few pixels, squashes on
+	// impact and throws dust — no rotation. Until 2026-09-27 it arrived still
+	// turning (~110°), inherited from Capo's vault wheel; a gate does not turn.
 	S: {
-		spins: true,
 		frame: (t) => {
 			const u = p(t);
-			// Tapered to exactly zero at u=1, not merely small: `ReelSymbol` flips
-			// the symbol to 'static' the instant the landing completes, so a few
-			// degrees of residual lean would snap away in one frame.
-			const spin = Math.exp(-3.6 * u) * (1 - u);
+			const fall = (1 - u) * (1 - u);
+			const impact = hump(u, 0.55);
 			return rest({
-				rotation: 1.9 * spin,
-				scaleX: 1 + 0.07 * spin,
-				scaleY: 1 + 0.07 * spin,
-				bloomAlpha: 0.3 * spin,
-				bloomTint: 0xffb347,
-				overlays: [
-					{
-						key: 'fxStreak',
-						x: 0,
-						y: 0,
-						width: 0.9 + 0.3 * spin,
-						height: 0.07,
-						rotation: 1.9 * spin,
-						alpha: 0.5 * spin,
-						tint: 0xe3d9c6,
-						behind: true,
-					},
-				],
+				dy: -0.1 * fall,
+				scaleX: 1 + 0.06 * impact,
+				scaleY: 1 - 0.08 * impact,
+				bloomAlpha: 0.25 * impact,
+				bloomTint: 0xd8864a,
+				overlays: dust(u, 0.6, 0.5),
 			});
 		},
 	},

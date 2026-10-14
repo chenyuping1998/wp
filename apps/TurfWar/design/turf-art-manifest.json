@@ -381,9 +381,9 @@
   },
   {
     "key": "tile_foreground",
-    "prompt": "Use case: stylized-concept. Turf War production game art, gritty painted street style, no luxury or Art Deco. 1024x1024 transparent store thumbnail foreground: adult slim hooded bandana-masked street thug waist-up centered slightly right carrying wooden baseball bat on shoulder, left foreground battered boombox with large speakers. Sodium orange side light, charcoal streetwear, gritty graphic novel game illustration. No text, title or provider logo, no guns, no red.",
-    "source": "/Users/stone/.codex/generated_images/01a07518-43b2-7671-b251-b8b437e9ba6d/exec-a2cfc4e0-17a7-48db-8d37-699ffd5d3555.png",
-    "installed": "static/assets/sprites/turfBrand/tile_foreground.png",
+    "prompt": "Edit the previous Turf War store foreground using the in-game masked hooded bat carrier and H2 screenprint style as references. Keep transparent background, right-side dark streetwear character with bat on shoulder, battered boombox at lower left, sodium-orange rim light, no text or logo.",
+    "source": "/Users/stone/.codex/generated_images/01a0e620-4565-7601-946e-99905cb4462e/exec-85c6ed27-765e-436d-9240-d889252c8b78.png",
+    "installed": "design/_brand/tile_foreground.png",
     "size": [
       1024,
       1024
@@ -391,9 +391,9 @@
   },
   {
     "key": "tile_background",
-    "prompt": "Use case: lighting-weather. Asset type: 1024x1024 Stake casino lobby thumbnail background layer. Edit the supplied Turf War alley while preserving its composition and gritty painted style. Raise overall exposure and shadow detail so the fence, walls, upper buildings and wet pavement remain clear at 200x200, with broad sodium-vapor illumination and no crushed black regions. Background only; no people, logos, text, red, neon flood or blown highlights.",
-    "source": "/Users/stone/.codex/generated_images/01a07518-43b2-7671-b251-b8b437e9ba6d/exec-e975a0fb-1862-44c5-b5be-80b5d30903de.png",
-    "installed": "static/assets/sprites/turfBrand/tile_background.png",
+    "prompt": "Edit the previous Turf War store background using the in-game night alley as a lighting reference. Preserve the shutter and fence composition, add cool night shadows, sodium streetlight and wet pavement reflections readable at 200px; background only, no people, text or logo.",
+    "source": "/Users/stone/.codex/generated_images/01a0e620-4565-7601-946e-99905cb4462e/exec-7b4d2abc-9626-48cb-a255-0fe96a2e2543.png",
+    "installed": "design/_brand/tile_background.png",
     "size": [
       1024,
       1024

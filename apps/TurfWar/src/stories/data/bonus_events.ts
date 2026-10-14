@@ -6,104 +6,105 @@ export default {
   "board": [
    [
     {
-     "name": "L4"
+     "name": "H2"
+    },
+    {
+     "name": "H2"
+    },
+    {
+     "name": "L2"
     },
     {
      "name": "H3"
     },
     {
-     "name": "H5"
+     "name": "L4"
     },
     {
-     "name": "L1"
-    },
-    {
-     "name": "S",
-     "scatter": true
-    },
-    {
-     "name": "L3"
+     "name": "H3"
     }
    ],
    [
-    {
-     "name": "L3"
-    },
-    {
-     "name": "H2"
-    },
-    {
-     "name": "H5"
-    },
-    {
-     "name": "L1"
-    },
-    {
-     "name": "S",
-     "scatter": true
-    },
-    {
-     "name": "L2"
-    }
-   ],
-   [
-    {
-     "name": "H1"
-    },
     {
      "name": "L4"
     },
     {
-     "name": "L2"
+     "name": "SW",
+     "expandwild": true
+    },
+    {
+     "name": "H5"
     },
     {
      "name": "S",
      "scatter": true
-    },
-    {
-     "name": "L1"
-    },
-    {
-     "name": "H4"
-    }
-   ],
-   [
-    {
-     "name": "L2"
-    },
-    {
-     "name": "H4"
-    },
-    {
-     "name": "L1"
-    },
-    {
-     "name": "H2"
-    },
-    {
-     "name": "L3"
-    },
-    {
-     "name": "L1"
-    }
-   ],
-   [
-    {
-     "name": "C",
-     "collector": true
-    },
-    {
-     "name": "H4"
     },
     {
      "name": "W",
      "wild": true
     },
     {
+     "name": "H5"
+    }
+   ],
+   [
+    {
+     "name": "H5"
+    },
+    {
+     "name": "L2"
+    },
+    {
+     "name": "L1"
+    },
+    {
+     "name": "H5"
+    },
+    {
+     "name": "L3"
+    },
+    {
+     "name": "L2"
+    }
+   ],
+   [
+    {
+     "name": "L1"
+    },
+    {
+     "name": "H3"
+    },
+    {
+     "name": "H2"
+    },
+    {
+     "name": "S",
+     "scatter": true
+    },
+    {
+     "name": "L3"
+    },
+    {
+     "name": "W",
+     "wild": true
+    }
+   ],
+   [
+    {
+     "name": "H5"
+    },
+    {
+     "name": "H2"
+    },
+    {
      "name": "L4"
     },
     {
-     "name": "H4"
+     "name": "S",
+     "scatter": true
+    },
+    {
+     "name": "L2"
     },
     {
      "name": "L4"
@@ -111,112 +112,107 @@ export default {
    ]
   ],
   "paddingPositions": [
-   12,
-   52,
-   23,
-   40,
-   5
+   7,
+   35,
+   4,
+   17,
+   22
   ],
   "gameType": "basegame",
   "anticipation": [
    0,
    0,
-   1,
-   2,
-   3
+   0,
+   0,
+   1
+  ]
+ },
+ "wildExpand": {
+  "index": 1,
+  "type": "wildExpand",
+  "wilds": [
+   {
+    "reel": 1,
+    "row": 1
+   }
+  ],
+  "reels": [
+   1
   ]
  },
  "setTotalWin": {
-  "index": 1,
+  "index": 2,
   "type": "setTotalWin",
   "amount": 0
  },
  "freeSpinTrigger": {
-  "index": 2,
+  "index": 3,
   "type": "freeSpinTrigger",
   "totalFs": 10,
   "positions": [
    {
-    "reel": 0,
-    "row": 4
-   },
-   {
     "reel": 1,
-    "row": 4
+    "row": 3
    },
    {
-    "reel": 2,
+    "reel": 3,
+    "row": 3
+   },
+   {
+    "reel": 4,
     "row": 3
    }
   ]
  },
  "bonusTier": {
-  "index": 3,
+  "index": 4,
   "type": "bonusTier",
-  "tier": "neon_nights",
+  "tier": "soldier",
   "seedFrames": 1
  },
  "updateFreeSpin": {
-  "index": 4,
+  "index": 5,
   "type": "updateFreeSpin",
   "amount": 0,
   "total": 10
  },
  "newFrames": {
-  "index": 6,
+  "index": 7,
   "type": "newFrames",
   "frames": [
    {
-    "reel": 3,
-    "row": 3,
-    "mult": 8
-   },
-   {
-    "reel": 1,
-    "row": 2,
-    "mult": 2
-   },
-   {
-    "reel": 4,
-    "row": 2,
-    "mult": 2
+    "reel": 2,
+    "row": 4,
+    "size": 1,
+    "mult": 3
    }
   ]
  },
  "updateFrames": {
-  "index": 10,
+  "index": 11,
   "type": "updateFrames",
   "frames": [
    {
-    "reel": 3,
-    "row": 3,
-    "mult": 2
-   },
-   {
-    "reel": 1,
-    "row": 2,
-    "mult": 3
-   },
-   {
-    "reel": 4,
-    "row": 2,
-    "mult": 2
+    "reel": 2,
+    "row": 4,
+    "size": 1,
+    "mult": 4
    }
   ]
  },
  "winInfo": {
-  "index": 16,
+  "index": 13,
   "type": "winInfo",
-  "totalWin": 400,
+  "totalWin": 500,
   "wins": [
    {
-    "symbol": "L2",
+    "symbol": "H4",
     "kind": 4,
     "win": 400,
     "positions": [
      {
       "reel": 0,
-      "row": 3
+      "row": 4
      },
      {
       "reel": 1,
@@ -224,7 +220,7 @@ export default {
      },
      {
       "reel": 2,
-      "row": 3
+      "row": 2
      },
      {
       "reel": 3,
@@ -232,82 +228,71 @@ export default {
      }
     ],
     "meta": {
-     "lineIndex": 3,
-     "multiplier": 4,
-     "winWithoutMult": 100,
+     "lineIndex": 7,
+     "multiplier": 1,
+     "winWithoutMult": 400,
      "globalMult": 1,
-     "lineMultiplier": 4
+     "lineMultiplier": 1
+    }
+   },
+   {
+    "symbol": "L2",
+    "kind": 3,
+    "win": 100,
+    "positions": [
+     {
+      "reel": 0,
+      "row": 1
+     },
+     {
+      "reel": 1,
+      "row": 2
+     },
+     {
+      "reel": 2,
+      "row": 2
+     }
+    ],
+    "meta": {
+     "lineIndex": 9,
+     "multiplier": 5,
+     "winWithoutMult": 20,
+     "globalMult": 1,
+     "lineMultiplier": 5
     }
    }
   ]
  },
  "setWin": {
-  "index": 17,
+  "index": 14,
   "type": "setWin",
-  "amount": 400,
+  "amount": 500,
+  "winLevel": 5
+ },
+ "freeSpinEnd": {
+  "index": 58,
+  "type": "freeSpinEnd",
+  "amount": 1220,
   "winLevel": 4
  },
- "collectorWin": {
-  "index": 45,
-  "type": "collectorWin",
-  "position": {
-   "reel": 3,
-   "row": 1
-  },
-  "frames": [
-   {
-    "reel": 3,
-    "row": 3,
-    "mult": 4
-   },
-   {
-    "reel": 1,
-    "row": 2,
-    "mult": 3
-   },
-   {
-    "reel": 4,
-    "row": 2,
-    "mult": 3
-   },
-   {
-    "reel": 1,
-    "row": 1,
-    "mult": 4
-   },
-   {
-    "reel": 1,
-    "row": 3,
-    "mult": 9
-   }
-  ],
-  "totalMultiplier": 23,
-  "amount": 2300
+ "finalWin": {
+  "index": 59,
+  "type": "finalWin",
+  "amount": 1220
  },
  "freeSpinRetrigger": {
-  "index": 57,
+  "index": 53,
   "type": "freeSpinRetrigger",
   "totalFs": 12,
   "positions": [
    {
-    "reel": 0,
-    "row": 3
+    "reel": 2,
+    "row": 1
    },
    {
     "reel": 4,
-    "row": 2
+    "row": 4
    }
   ]
- },
- "freeSpinEnd": {
-  "index": 67,
-  "type": "freeSpinEnd",
-  "amount": 3780,
-  "winLevel": 5
- },
- "finalWin": {
-  "index": 68,
-  "type": "finalWin",
-  "amount": 3780
  }
 };

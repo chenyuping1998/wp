@@ -753,3 +753,122 @@ console 只有 PixiJS 的 deprecation warning，無錯誤。
 
 **未上傳到平台。**
 
+
+## 2026-09-22 — 人物動態改成 Deadwood Express 的寫法
+
+使用者：「turf 人物動態能不能照 deadwood 的」。`src/game/castMotion.ts` 換成
+`apps/DeadwoodExpress/src/game/castMotion.ts` 的內容：idle 表、REFERENCE_ROTATION /
+SCALE / LIFT / FLUTTER、`fromReference`、三檔的比例與時長（1000/880/720ms）、
+以及帶第二組 `chain` 矩陣的 composeBoneMatrices（squash & stretch 不被子骨繼承）。
+`skinnedFigure.ts` 補回 `chain`。舊的 Hot Miami 版備份在
+`design/_legacy_assets/cast_motion_hm_20260920/`。
+
+保留 Turf 自己的兩件事（Deadwood 只有一張圖）：
+- `RIG_POSE`／`HELD_STILL`：base 的 `fore_l` 是立在地上的球棒，不動。
+- **手臂依角色對應（`BY_ROLE`）**：Deadwood 的指揮甩的是右手，所以參考值最大的旋轉
+  與擠壓（arm_r 1.23x）在 arm_r；Turf 的右手插在口袋、釘在臀部。照名字搬量到 trigger
+  摺疊 47%（base）／36%（肩扛）都在口袋手；左右對調（正負號跟著換）後 56%／47%。
+  跟 09-18 的 A/B 結論相同。idle 沒對調（兩側幅度幾乎一樣）。
+
+gate（`design/check_cast_motion.mjs`）改動，每條都有量測依據：
+- rule 3／6／6b（逐骨延遲、前臂 ≥2× 胸口、頭部比例）是 Hot Miami 的旋轉階梯規則，
+  參考動作按定義就不符 —— Deadwood 自己的 gate 同樣報這幾條，而且沒接進它的 build。
+  有 `scale` 的 tier 豁免並在 --report 中註明。
+- base `neck` 上限 3 → 3.4（峰值 3.34；目測量表寫的是 3.5 開始夾）。
+- idle 預算比例 0.6 → 0.8（base 口袋手 arm_r idle 峰值 79%；反應只再加 0.36，rule 1 照樣把總和壓在上限內）。
+- 肩扛 rig 的反應摺疊下限 50% → 45%：最差一格在口袋手（379,452，age 667ms），在同一
+  idle 時間點 render 比對，是手往口袋裡稍微擠窄，沒有撕裂或翻面。idle 與 base 仍是 50%。
+
+打包：`./design/ship.sh`（無 zip）全綠，數學未動。playtest 手動部署到
+`dist/turfwar-playtest/`（stub 重新注入）；4196 是 Capo 的 playtest 在用，另外加了
+launch 設定 `turfwar-playtest-4230`。實機轉四手正常，三個 rig 都有載入。**未上傳、未產生 zip。**
+
+## 2026-09-23 — 手臂改回剛性（Miami 的做法）＋ FG 結算置中
+
+使用者：「turf 的手很怪，很像沒骨頭一樣，參考 miami 或 deadwood」「FG 結束後贏分沒置中」。
+
+**手臂。** 量法：每個手臂骨主導的頂點群，在反應過程中偏離「最佳剛體擬合」的最大距離（純旋轉＝0），
+以身高的千分比表示。Deadwood 版移植後：base／肩扛左臂 23.9‰／24.5‰，Deadwood 自己的列車長最大 8.8‰；
+只看待機也有 4.8‰（Hot Miami 版 1.2‰）。原因有兩個：
+① `BY_ROLE` 把參考裡最大的拉伸（1.23x）交給左臂，而左手不是握著立地的球棒（base）就是扛在肩上 —— 手固定住還拉長手臂，只能彎成弧形；
+② Deadwood 的待機會讓手臂一直擺動（1.6／1.2／1.5／1.1°），手固定的情況下就是永遠彎著。
+改法：`castMotion.ts` 的 `ARM_BONES` 不吃擠壓伸展；待機的四根手臂骨改用之前出貨的 Hot Miami 值（`IDLE_ARMS`，已乘過各姿勢的比例）。
+脊椎、頭、抬升、側移、胸頸擠壓、所有反應角度仍是 Deadwood 的。結果：反應 11.5‰／8.0‰、待機 2.6‰／1.5‰。gate 全綠。
+base 剩下的 11.5‰ 來自胸口旋轉帶動肩膀，而拳頭在 root 上（立地球棒）—— 這是這張圖的結構限制，不是動作表造成的。
+
+**FG 結算。** `FreeSpinOutro.svelte` 的 TOTAL WIN／金額原本放在 0.02／0.28（為了避開舊牌子上印好的 FREE SPINS 字），
+現在的牌子是空白的，整組偏下約 0.18 個牌高。改成 −0.18／0.08（間距不變），在 playtest 用 `__HM_EMIT__` 叫出結算，1280×720 下目測置中。
+
+`./design/ship.sh`（無 zip）全綠，playtest 已重新部署。未上傳、未產生 zip。
+
+## 2026-09-24 — 手臂擠壓改成參考的真實軸向＋分層重繪需求單
+
+使用者給了新版研究包（`hacksaw-motion-kit.zip`，內含 Miami 六隻角色的動作包）。用動作包量出：
+skill `rig/motion.py` 的 REACTION_SCALE **把 Spine 的 scaleX／scaleY 讀反了**（scaleX＝沿骨頭、scaleY＝垂直骨頭）。
+Miami 扛球棒男在反應最高點：上臂 `arm_r` 長度不變（肩→肘 231.09 → 231.09）、**變粗 1.229**；
+支撐側前臂 `arm_l_2` 沿骨頭 1.063、**變細 0.799**。舊表卻是「沿骨頭拉長 1.23」——這正是「手像沒骨頭」的源頭。
+四隻有反應動作的 Miami 角色，沒有一隻的手臂沿骨頭拉長超過 6%。
+
+本款改成：主動臂上臂**垂直骨頭鼓起**（1.00, 1.23）、支撐側前臂（1.06, 0.80），k 與 flutter 沿用。
+量測（仿射殘差，只算真正的彎）：鼓起 ≈ 不擠壓，約是舊拉長版的一半以下。gate 與 `pnpm run build` 全綠。
+在目前的圖上，鼓起幾乎看不出來（手臂貼身）→ 真正的解法是重畫：
+**需求單在 `/Users/stone/stake-engine/docs/cast-layers-brief/README.md`**（三款共用，附標註圖）。
+收到分層圖之後，程式要改成「每個圖層一張網格、共用一副骨架」。
+
+未重新打包：upload/ 仍是上一版，要出貨時跑 `./design/ship.sh`。
+
+## 2026-09-26 — 分層角色需求單（skill 流程產出）
+
+照 `hacksaw-character-motion` 的「換皮選角色」流程：使用者選 **#2 扛球棒男**，而且**一般遊戲、免費遊戲、Kingpin 三張共用這一個姿勢**
+（只換打光與質感）。產出在 `design/cast_brief/`：
+- `README.md` —— 0–7 節由 `archetype/brief.py -c 2 --feet-y 1674 --top-y 176 --center-x 537 --variants base,feature,kingpin` 產生；
+  第 8 節是手寫的 Turf 設定（人設、晃動物對應、三張變化圖的打光）。**重跑產生器會蓋掉第 8 節**，要先備份。
+- `pose_guide.png`（只有關節和骨架線）、`layers.template.json`（圖層順序＋支點）。
+取代：`ART_BRIEF.md` §1 的技術規格與姿勢（已加註）、`ART_BRIEF_CAST_RIG.md`、`docs/cast-layers-brief/` 的 Turf 章節（已加註）。
+收圖後：`check_layered_art.py design/cast_parts/base --variants design/cast_parts/feature design/cast_parts/kingpin` →
+`build_layered_rig.py` → `motion_table.py -c 2 --sides anatomical` → 接 `layeredFigure.ts`（Turf 的 composeBoneMatrices 已支援 chain；
+PoseState 需要 `pose`，用 `poseState`）→ `check_layered_cast.mjs`。
+
+## 2026-09-28 — 視覺與演出整改（原始碼基準）
+
+- Big Score 補上全盤框的蓄力、20× 等倍率的落下、收斂成頂部標記；短版 Storybook event 在 1280×720 實播並正常結束。
+- Bruiser 掃光改成四段等時直線移動，每段光前沿到達一格才換 Wild；獨立 `wildExpand` 故事實播四格完成。Sticky Frame 的舊倍率在轉輪停下時先顯示，新倍率在 re-roll 撞擊點切換，doubling 也延後到撞擊點；新增 `stickyFrameReroll` 故事並實播 3×→4×，action 正常結束。
+- 免費局入口的 PRESS ANYWHERE TO CONTINUE 移到牌子與底欄之間；1280×720 實播可見且點擊後正常進入免費局。
+- Storybook 抽書來源改回 `math-sdk/games/turf_war/library/publish_files`，重建四份資料；`collectorWin` 故事改為本款的 `wildExpand`。產出的 12 本基本局與 12 本免費局沒有 Hot Miami collector event。
+- H1–H5 換成一套夜街網印高價符號，L1 改成灰色噴漆準星，避免與 H1 皇冠同形；原圖在 `design/_legacy_assets/turfSymbols_before_screenprint_20260928/`，L1 向量來源在 `design/source/turf/l1_target.svg`。`check_symbol_weight.py`：H 佔格均值 39.8%，L 13.5%，階級與對比合格。`pnpm build` 全綠。
+- **角色新分層圖尚未接線**：`check_layered_art.py` 報告垂手距身體 15.8px，門檻 48px；若直接驅動會穿模。保留目前已驗證的網格角色。商店 tile 的日景／舊角色與遊戲夜景的差異仍待重做；本輪 imagegen 在低價符號生圖時用盡額度（服務回報 2026-09-28 16:47 CST 重置）。
+
+## 2026-09-28 — 商店縮圖夜景／角色對齊
+
+- 重做 `tile_background.png`：維持原鐵捲門／圍網構圖，改為遊戲同款夜街冷影、鈉燈、濕地反光。
+- 重做 `tile_foreground.png`：人物改為與遊戲一致的黑色連帽蒙面、肩扛球棒；音響保留在左下。兩層於 200px 與 512px 疊圖目檢，人物輪廓、球棒、音響均可辨識。原圖存於 `design/_legacy_assets/turfBrand_before_night_20260928/`。
+- `pnpm build` 通過，包含 `check_turf_art.py` 對 63 張 Turf 輸出圖的透明度、角色對位與畫框檢查。
+- 新分層角色再跑 `check_layered_art.py`，仍在左臂（圖中右側垂手）肘部下方 `x≈784, y≈792` 量到 15.8px，規格要求 48px。收圖時須把垂手前臂與拳頭向身體外側拉開，三款 variant 共用同一 alpha；重跑分層圖檢查與極限姿勢檢查後才能接線。
+
+## 2026-09-28 — 分層角色完成接入（取代上方待修狀態）
+
+- `design/cast_brief/build_cast_parts.py` 將畫面右側垂手由肩端漸進外移 45px；`check_layered_art.py` 實測前臂／手距身體 **55.01px**，三款 alpha 相同，PSD／PNG 圖層吻合。
+- 8 層、13 骨共用骨架已輸出到 `static/assets/castLayers/turf/{base,feature,kingpin}/`；透明像素清空 RGB 後，三款遊戲圖層合計約 5MB。來源 PSD 與舊版圖保留在 `design/cast_parts/`、`design/_legacy_assets/cast_parts_before_clearance_20260928/`。
+- `CastFigureMesh.svelte` 改以 `layeredFigure.ts` 畫每層網格，共用 `layeredCastMotion.ts` 反應。一般局、免費局、Kingpin 共用姿勢，只切換配色；球棒由握棒前臂帶動，垂手可獨立打開。角色置於盤面與螢幕邊緣間，直式側欄不足時仍隱藏。
+- 首次實播發現觸發閃光太白、鞋子離開控制欄；已把全身上移與橫移改為腰部反應，觸發閃光降至 0.12。載入及開場說明圖也換成同一套肩扛球棒角色 `castLayers/turf/loading.png`。
+- 新 `design/check_turf_layered_cast.mjs` 已放進 `pnpm build`：三款各測 **3,544** 個待機／反應／倍速姿勢，翻面 0、面積比 0.639–1.320、最窄畫布邊距 61px、手臂彎曲殘差 6.99／7.26px；全綠。`pnpm build` 全綠，資產路徑檢查涵蓋 103 個引用。
+- Storybook 1280×720 實播 `winInfo` 與 `freeSpinTrigger`，Action 正常結束；免費局人物成功切換。390×720 直式畫面無側欄殘留角色。直接啟動 `pnpm dev` 因沒有遊戲端服務回報 `Failed to fetch`，但開場說明卡視覺已檢查。
+- `pnpm check:types` 仍有專案既有 908 個錯誤（主要是設計腳本缺 Node 型別與其他舊 Svelte 型別問題）；本輪改動檔案無新增 TypeScript 錯誤。
+
+## 2026-10-01 — 送審品質整改（對照 Deadwood 三次退件的標籤）
+
+- **中獎動作放大**：09-27 照抄了 Deadwood 09-26 的「縮小」版（彈跳 1.16/1.07、閃光 .5、VISIBLE_FLOOR 減半），Deadwood 下一次審查就被打 Poor animations ×2。改回 Deadwood 09-30 的值：1.38/1.15、閃光 .85、10 顆較大光點、floor 15°/10%/15%。`check_symbol_motion` 通過。
+- **中獎金額**：GoldText 主體是陣列填色，pixi 8 只畫第一色（骨灰色），所有金額都是灰色。改為鈉燈色 0xffc38a＋加法橙光；其餘三處陣列填色也改單色。小額中獎不再閃出 PRESS ANYWHERE（點擊略過仍有效）。FG 結算金額 0.15→0.2。
+- **Loot Bag**：框加常駐邊光、倍率改放在右下角的手繪圓牌（drawer plate）上，不再壓在符號上。
+- **FG 開場卡**：Graphics 漸層方框 → `PlateSlice.svelte`（Buy Bonus 手繪板九宮格）＋ticker 板標頭；發牌入場、標題落下、落地閃光、每 3.4s 掃光；鐵捲門打開後（0.35s）才開始。
+- **轉場**：鐵捲門改為由上落下（重力加速）→觸地回彈→上捲，不再左右對開。
+- **開場說明卡**：CSS 漸層 → 手繪板 border-image；手機橫式（高 ≤520px）縮框縮字，整頁放得下。
+- **規則頁**：純文字 → Logo＋數據條、各功能配符號圖、Loot Bag 三尺寸圖、三張等級卡（標題圖）、再觸發圖塊、鋼框卡片（原本 panel_edge 的 border-image 被下一行覆蓋，從沒畫出來）。
+- **購買面板**：文案錯誤修正（寫的是 Capo 的「1/3/3 sticky Frames」→ 1/2/1 Loot Bag）；等級名改用標題圖；按鈕改手繪 ticker 板；Loot Bag 圖示提亮。
+- **直式**：盤面上方空白處放 Logo（寬 <480 時右上角 Logo 不畫）。
+- **Kingpin 角色**：產生器的硬遮罩把藍色輪廓光變成斑駁洋紅色 → `design/kingpin_rim_fix.py` 從 base 圖層以軟遮罩重建（alpha 不變，原圖在 `design/_legacy_assets/kingpin_layers_before_rimfix_20261001/`）。
+- **殘留清除**：`meshRigs/cast_girl`、`sprites/capoCast`、capoFx 中未用的 8 張（含槍口火光、彈孔、Capo 金庫門）移到 `design/_legacy_assets/reskin_leftovers_20261001/`。
+- 無頭錄影工具（瀏覽器面板隱藏時 rAF 會停）：scratchpad 的 puppeteer-core + 本機 Chrome，逐格錄 Storybook 故事。
+- `pnpm run build` 全綠；`./design/ship.sh`（無 zip）EXIT 0，備份 `_upload_backups/TurfWar-frontend-1001-0915.tgz`。**未上傳。**
+- **仍未解決**：FG 仍是同一角色換打光，違反「MG／FG 兩個不同角色」規則 —— 需要生圖。
+- **Hover 不反灰（同日，使用者要求「像 Deadwood」）**：共用 `components-ui-pixi` 新增 opt-in 主題鍵 `hoverPlateLight`（預設 undefined＝其他遊戲維持原本白色覆蓋）。設定後圓鈕在 hover 時把自己的板子再畫一次（additive、該色），Bet 讀數改為一條亮底線而非 12% 白框。Turf 設 0x9c5a22；Buy Bonus 的 `buyBonusHoverSpriteTint` 由灰 0x5b5f66 改為同色。無頭 Chrome 逐鈕截圖確認。重新打包（無 zip），備份 `_upload_backups/TurfWar-frontend-1001-2308.tgz`。

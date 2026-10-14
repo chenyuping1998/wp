@@ -1255,3 +1255,63 @@ Capo 版與 Hard Time 版的差別：污染字串清單換成**其他**遊戲的
 驗證：`pnpm run build` 全綠；另外 build 了 GoBananas 確認共用套件沒壞。
 已重新 stage 到 `upload/CapoNostra/`，**依使用者指示沒有打 zip**。
 
+## 14. Buy Bonus：字讓位，中間放金庫轉盤（2026-09-21）
+
+### 14.1 順手修掉共用套件的一個 bug
+
+`ButtonBuyBonus.svelte` 裡**寫死了 `0x1a2208`** —— 那是 GoBananas 的橄欖綠，卡在一個
+十三款遊戲共用的套件裡。它只在 `buyBonusDisabledStyle: 'dim'` 那條分支才顯示，預設是
+`'grey'`，所以一直沒人發現；我們這邊唯一吃 `'dim'` 的是 **GoBananas100**。
+
+抽成 `buyBonusDisabledFill`，**預設值就是原本那個 `0x1a2208`**，所以沒有任何遊戲的現況
+會變。做法是照協作者那邊抄的 —— 他們先發現並修過同一個問題。
+
+### 14.2 字讓位，中間放會轉的東西
+
+協作者把 `buyBonusLabelSizeRatio` 從 0.68 縮到 0.58，**就是為了空出牌子中央給美術**
+（他們放發光的船舵）。Capo 原本「BUY / BONUS」兩行字佔掉牌子中央大部分，沒有中間可用。
+
+**轉的東西不是憑空找的**：Capo 的 Scatter `capoSymbols/fs.png` 是一扇金庫門，門上就是一個
+**八輻轉輪**。買功能＝開金庫，所以那個轉盤不是拿來填空的裝飾，它就是這顆按鈕在做的事。
+
+- **畫成環狀而不是整片**：dial 畫在牌子與字之間，`inner` 半徑要**讓開字**，否則輻條會
+  從字上壓過去。這是 `buyBonusHoverSpinInner` 存在的唯一理由，不是調整值。
+- **8 輻與 45 度/秒是同一個決定**：門上的轉輪有八根，所以圖案每 45 度重複一次，
+  一個視覺輪迴剛好一秒。先前的 38 度/秒是用眼睛挑的，沒有依據。
+  （這條規則也是協作者的：**速度要從美術自己的對稱性推出來**。）
+- 字縮到 `buyBonusLabelSizeRatio: 0.52`、`buyBonusLabelWrapWidth: 96`
+  （縮字不改 wrap 寬度的話，兩個詞會重排成一行，變成寬而不是高）。
+
+共用套件的鍵改名並補齊：`buyBonusHoverSpinRays` → `buyBonusHoverSpinSpokes`，
+新增 `buyBonusHoverSpinInner`、`buyBonusHoverSpinKnob`。預設仍是 `buyBonusHoverSpin: 0`
+（關），其他遊戲不受影響 —— 另外 build 了 GoBananas 與 GoBananas100（就是吃 `dim`
+那條分支的那款）確認。
+
+### 14.3 現況
+
+`pnpm run build` 全綠，`./design/ship.sh` 的 sanity check `all clean`，
+已 stage 到 `upload/CapoNostra/`。**依使用者的指示沒有打 zip**（要的話 `--zip`）。
+
+實機確認：八個握把繞著縮小後的字轉，輻條朝內、文字區乾淨；滑鼠移開後會滑行變暗再消失。
+
+
+## 2026-09-24 — 手臂擠壓改成參考的真實軸向＋分層重繪需求單
+
+使用者給了新版研究包（`hacksaw-motion-kit.zip`，內含 Miami 六隻角色的動作包）。用動作包量出：
+skill `rig/motion.py` 的 REACTION_SCALE **把 Spine 的 scaleX／scaleY 讀反了**（scaleX＝沿骨頭、scaleY＝垂直骨頭）。
+Miami 扛球棒男在反應最高點：上臂 `arm_r` 長度不變（肩→肘 231.09 → 231.09）、**變粗 1.229**；
+支撐側前臂 `arm_l_2` 沿骨頭 1.063、**變細 0.799**。舊表卻是「沿骨頭拉長 1.23」——這正是「手像沒骨頭」的源頭。
+四隻有反應動作的 Miami 角色，沒有一隻的手臂沿骨頭拉長超過 6%。
+
+本款改成：主動臂上臂**垂直骨頭鼓起**（1.00, 1.23）、支撐側前臂（1.06, 0.80），k 與 flutter 沿用。
+量測（仿射殘差，只算真正的彎）：鼓起 ≈ 不擠壓，約是舊拉長版的一半以下。gate 與 `pnpm run build` 全綠。
+在目前的圖上，鼓起幾乎看不出來（手臂貼身）→ 真正的解法是重畫：
+**需求單在 `/Users/stone/stake-engine/docs/cast-layers-brief/README.md`**（三款共用，附標註圖）。
+收到分層圖之後，程式要改成「每個圖層一張網格、共用一副骨架」。
+
+未重新打包：upload/ 仍是上一版，要出貨時跑 `./design/ship.sh`。
+Capo 在 09-20 把擠壓通道整段拿掉了，這次補回（`ReactionTier.scale/flutter`、`boneAxes`、`composeBoneMatrices` 的 `chain`，
+`skinnedFigure.ts` 也加了 `chain`）。主動臂依 09-17 的 B 版：垂下的左臂鼓起、叼雪茄的右臂前臂變細。
+k＝0.42 × 階梯比例（1／0.8／0.4），不吃 MOTION_SCALE 0.18（那是為了控制前臂旋轉摺疊；鼓起的成本由 rule 10 另外量）。
+trigger 摺疊 63%、0 翻面。⚠ `measure_cast_travel.mjs` 回報頭部位移超出預算（18.39%／6.9%），**修改前就是這個數字**，
+而且沒有接進 build，這次沒有處理。

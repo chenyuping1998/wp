@@ -27,9 +27,10 @@
 		src: new URL('../../assets/sprites/capoFx/fx_streak.png', import.meta.url).href,
 		preload: true,
 	},
-	fxLeaf: {
+	// soft light shaft for the big-win sunburst (DeadwoodExpress/design/make_fx_ray.py)
+	fxRay: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/capoFx/fx_leaf.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/capoFx/fx_ray.png', import.meta.url).href,
 		preload: true,
 	},
 	// Side-profile car for the scene transition (design/build_transition_car.py).
@@ -51,6 +52,11 @@
 		type: 'sprite',
 		src: new URL('../../assets/sprites/capoUiPlates/buybonus_plate.png', import.meta.url).href,
 		preload: true,
+	},
+	// the same plate, ornament painted out, nine-sliced for the free-spin card
+	capoCardPlate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/capoUiPlates/card_plate.png', import.meta.url).href,
 	},
 	capoUiButton: {
 		type: 'sprite',
@@ -153,11 +159,6 @@
 		src: new URL('../../assets/sprites/capoSymbols/sw.png', import.meta.url).href,
 		preload: true,
 	},
-	hmFrame: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/capoSymbols/frame.png', import.meta.url).href,
-		preload: true,
-	},
 	hmFrame1x1: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/capoFrames/frame_1x1.png', import.meta.url).href,
@@ -189,14 +190,17 @@
 		type: 'sprite',
 		src: new URL('../../assets/sprites/capoFrames/frame_sticky_seal.svg', import.meta.url).href,
 	},
-	capoSwMuzzle: {
+	// The Violin Case special wild (ART_BRIEF §2.3, §6): the case opening at its
+	// own cell, then a paper-white stepped light column down the reel. These
+	// replace the Tommy Gun's muzzle flash, red beam, shells and bullet holes.
+	capoSwCaseOpen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/capoFx/sw_muzzle_flash.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/capoFx/sw_case_open.png', import.meta.url).href,
 		preload: true,
 	},
 	capoSwBeam: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/capoFx/sw_column_beam.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/capoFx/sw_column_beam_deco.png', import.meta.url).href,
 		preload: true,
 	},
 	// Vault doors for the free-game transition. Two halves plus a dial that turns
@@ -222,14 +226,6 @@
 		type: 'sprite',
 		src: new URL('../../assets/sprites/capoFx/vault_dial.png', import.meta.url).href,
 		preload: true,
-	},
-	capoSwShell: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/capoFx/sw_shell.png', import.meta.url).href,
-	},
-	capoSwBulletHoles: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/capoFx/sw_bullet_holes.png', import.meta.url).href,
 	},
 	hmLogo: {
 		type: 'sprite',
@@ -290,6 +286,11 @@
 	// variants (capo, don) share the base hostess's geometry and alpha. All
 	// preloaded: the hostess is swapped in under the feature intro, the loudest beat
 	// in the game, and a texture that arrives a frame late there is a visible pop.
+	capoCastDon_figure: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/don/figure.png', import.meta.url).href,
+		preload: true,
+	},
 	capoCastDon_head: {
 		type: 'sprite',
 		src: new URL('../../assets/castLayers/don/head.png', import.meta.url).href,

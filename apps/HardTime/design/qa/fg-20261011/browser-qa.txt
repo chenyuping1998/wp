@@ -1,0 +1,73 @@
+body VOLATILITY
+THE SEARCHLIGHT
+
+A Searchlight lights its reel from where it lands down to the bottom, turning those positions Wild and giving each one a multiplier of 1× to 100×. Any payline crossing lit positions adds together every multiplier above 1×.
+
+OVERLAPPING BEAMS
+
+When a Searchlight lands on a reel that is already lit, every position the two beams share has its multiplier doubled, up to 100×. Positions the new beam reaches for the first time take its own value.
+
+FREE SPINS
+
+3, 4 or 5 Scatters open Lockdown, Riot or Breakout — 8 spins each, with every beam staying lit for the whole feature and more Searchlights landing at every tier. Buy in for 100×, 300× or 600×.
+
+14 PAYLINES  /  MAX WIN 12,000×
+
+TAP TO CONTINUE
+
+777
+SILVERSTARS STUDIO
+errors []
+after intro {
+  text: '',
+  game: {
+    gameType: 'basegame',
+    isTurbo: false,
+    betMode: 'BASE',
+    dimmedBy: 0,
+    anticipation: []
+  }
+}
+0 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+1 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+2 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+3 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+4 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+5 {
+  gameType: 'freegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+returned true final errors []

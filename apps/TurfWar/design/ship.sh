@@ -32,11 +32,19 @@ mkdir -p "$REPO/upload/$NAME/math"
 rm -f "$REPO/upload/$NAME/math/"*
 cp "$REPO/math-sdk/games/$GAME/library/publish_files/"* "$REPO/upload/$NAME/math/"
 
-echo "== 3. check math bundle =="
-"$PY" design/check_math_bundle.py "$REPO/upload/$NAME/math"
+# SKIP_MATH_CHECKS=1 when the math has not changed (verify with
+# `diff -rq math-sdk/games/turf_war/library/publish_files upload/TurfWar/math`):
+# check_mechanics.py decompresses whole book files into memory, which on this
+# 8 GB machine is the heaviest step of the run (2026-10-12).
+if [ -n "${SKIP_MATH_CHECKS:-}" ]; then
+  echo "== 3-4. math checks SKIPPED (SKIP_MATH_CHECKS set — math unchanged) =="
+else
+  echo "== 3. check math bundle =="
+  "$PY" design/check_math_bundle.py "$REPO/upload/$NAME/math"
 
-echo "== 4. check mechanics vs Game Info =="
-"$PY" design/check_mechanics.py
+  echo "== 4. check mechanics vs Game Info =="
+  "$PY" design/check_mechanics.py
+fi
 
 echo "== 5. frontend build + guards =="
 pnpm run build

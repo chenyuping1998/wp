@@ -7,6 +7,7 @@
 
 	import ButtonReplay from './ButtonReplay.svelte';
 	import LabelReplayMultiplier from './LabelReplayMultiplier.svelte';
+	import UiLabel from './UiLabel.svelte';
 	import UiBarStrip from './UiBarStrip.svelte';
 	import { getContext } from '../context';
 	import { uiTheme } from '../theme.svelte';
@@ -103,10 +104,34 @@
 	// (33 + 150) / 2. At the old 84 the button sat visibly left of centre.
 	const MENU_X = 92;
 	const DIV_1 = 150;
-	const BALANCE_X = 286;
-	const DIV_2 = 424;
-	const WIN_X = 540;
-	const DIV_3 = 656;
+
+	// uiTheme.stepperLayout 'flank': − BET + in one row. The readout cells take
+	// the span the stacked arrangement leaves empty (Balance and Win each 360
+	// wide instead of 274/232), and the bet group fills DIV_3 → the spin pod.
+	const flank = $derived(uiTheme.stepperLayout === 'flank');
+	const BALANCE_X = $derived(flank ? 330 : 286);
+	const DIV_2 = $derived(flank ? 510 : 424);
+	const WIN_X = $derived(flank ? 690 : 540);
+	const DIV_3 = $derived(flank ? 870 : 656);
+
+	// Flank geometry: each stepper sits 40 of air in from its neighbour — the
+	// DIV_3 rule on the left, the spin button's rim on the right — and the
+	// readout is centred between them.
+	// the stepper button is UI_BASE_SIZE * railButtonScale across before the
+	// container's own scale (ButtonIncrease/Decrease)
+	const STEP_R = $derived((UI_BASE_SIZE * (uiTheme.railButtonScale ?? 1) * uiTheme.stepButtonScale) / 2);
+	// ButtonBet draws UI_BASE_SIZE * 1.12 across before spinScale
+	const SPIN_R = $derived((UI_BASE_SIZE * 1.12 * uiTheme.spinScale) / 2);
+	// The pair closes in on the readout when the span allows: at its full width
+	// the − sat 250 units from the amount it changes and read as a separate
+	// control. 210 either side clears a "$100.00" readout plus its chevron.
+	const FLANK_SPREAD = 210;
+	const flankMin = $derived(DIV_3 + 40 + STEP_R);
+	const flankMax = $derived(SPIN_X - SPIN_R - 44 - STEP_R);
+	const flankMid = $derived((flankMin + flankMax) * 0.5);
+	const MINUS_X = $derived(Math.max(flankMin, flankMid - FLANK_SPREAD));
+	const PLUS_X = $derived(Math.min(flankMax, flankMid + FLANK_SPREAD));
+
 	const dividerBeforeBet = $derived(BET_X - 118);
 
 	// How wide a readout may draw, in ITS OWN units — the cell it sits in, less a
@@ -127,9 +152,24 @@
 	const winMaxWidth = $derived(cellWidth(DIV_2, DIV_3));
 	// The Bet cell is bounded by its own rule on the left and the stepper on the
 	// right, and it also has to leave room for the chevron the affordance draws.
-	const betMaxWidth = $derived(cellWidth(dividerBeforeBet, STEP_X - 24));
+	const betMaxWidth = $derived(
+		flank
+			? stateReplay.enabled
+				? cellWidth(REPLAY_END, SPIN_X - SPIN_R - 40)
+				: cellWidth(MINUS_X + STEP_R, PLUS_X - STEP_R)
+			: cellWidth(dividerBeforeBet, STEP_X - 24),
+	);
 	// centre of the empty Win→Bet span, for the breather tick
 	const GAP_CENTER = $derived((DIV_3 + BET_X - 118) * 0.5);
+	// where the bet readout is drawn: the stacked layout's BET_X, or centred in
+	// the flank group (in replay, centred in what the replay control leaves)
+	const betReadoutX = $derived(
+		flank
+			? stateReplay.enabled
+				? (REPLAY_END + SPIN_X - SPIN_R - 40) * 0.5
+				: (MINUS_X + PLUS_X) * 0.5
+			: BET_X,
+	);
 
 	// Rules stop short of the frame's inner rails at both ends so they read as
 	// separators rather than as structure holding the frame together.
@@ -152,8 +192,40 @@
 	// icon + caption centred as one unit on the cell, rather than the icon alone —
 	// otherwise the pair sits visibly right of the space it occupies.
 	const REPLAY_CAPTION_WIDTH = 120;
+	// Flank has no empty cell, so replay takes the stepper's place at the left of
+	// the bet group and the readout moves over to make room.
 	const REPLAY_X = $derived(
-		GAP_CENTER - (REPLAY_RADIUS * 2 + 12 + REPLAY_CAPTION_WIDTH) * 0.5 + REPLAY_RADIUS,
+		flank
+			? DIV_3 + 40 + REPLAY_RADIUS
+			: GAP_CENTER - (REPLAY_RADIUS * 2 + 12 + REPLAY_CAPTION_WIDTH) * 0.5 + REPLAY_RADIUS,
+	);
+	const REPLAY_END = $derived(REPLAY_X + REPLAY_RADIUS + 12 + REPLAY_CAPTION_WIDTH + 24);
+
+	// Replay with a summary (stateReplay.summary): the strip carries every row
+	// of the replay start card, so nothing the card said is lost once it closes.
+	// Replay + caption move to the right end beside turbo; the rows share the
+	// span from the menu rule to the replay control in equal cells.
+	const replaySummary = $derived(stateReplay.enabled ? stateReplay.summary : []);
+	const hasReplaySummary = $derived(replaySummary.length > 0);
+	const SUMMARY_TURBO_R = (UI_BASE_SIZE * 0.5) / 2;
+	const SUMMARY_REPLAY_X = $derived(
+		TURBO_X - SUMMARY_TURBO_R - 40 - REPLAY_CAPTION_WIDTH - 12 - REPLAY_RADIUS,
+	);
+	const SUMMARY_END = $derived(SUMMARY_REPLAY_X - REPLAY_RADIUS - 34);
+	const summaryCellW = $derived((SUMMARY_END - DIV_1) / Math.max(1, replaySummary.length));
+	const summaryX = $derived((i: number) => DIV_1 + summaryCellW * (i + 0.5));
+	const summaryMaxW = $derived(cellWidth(0, summaryCellW));
+	// one caption size for the whole row: the scale the longest caption needs
+	let summaryLabelWidths = $state<number[]>([]);
+	const summaryLabelScale = $derived(
+		Math.min(1, ...summaryLabelWidths.filter((w) => w > 0).map((w) => summaryMaxW / w)),
+	);
+	const ruleXs = $derived(
+		hasReplaySummary
+			? replaySummary.map((_, i) => DIV_1 + summaryCellW * i).concat(SUMMARY_END)
+			: flank
+				? [DIV_1, DIV_2, DIV_3]
+				: [DIV_1, DIV_2, DIV_3, dividerBeforeBet],
 	);
 
 	const replayCaptionStyle = $derived({
@@ -180,6 +252,16 @@
 	// top of the X. Measured against a 0.4-scale button (30 radius), the first item
 	// now sits 110 above the frame, leaving ~60 between caption and close button.
 	const MENU_PITCH = 130;
+	// Menu captions are centred on the menu buttons, MENU_X in from the box's left
+	// edge, so anything wider than twice that runs off the screen. German did:
+	// EINSTELLUNGEN and GEWINNTABELLE started left of x = 0 (2026-10-12). One
+	// shared shrink for the column — the longest caption decides — so the four
+	// stay one size. English fits at 1, so no game changes in English.
+	const MENU_CAPTION_MAX = MENU_X * 2 - 16;
+	let menuCaptionWidths = $state([0, 0, 0, 0]);
+	const menuCaptionScale = $derived(
+		Math.min(1, ...menuCaptionWidths.filter((w) => w > 0).map((w) => MENU_CAPTION_MAX / w)),
+	);
 	const menuItemY = $derived((i: number) => barTop - 110 - MENU_PITCH * i);
 
 	// Drawn strip artwork, if the game supplies any. Undefined for every game, so
@@ -253,7 +335,7 @@
 				}
 				const topF = barTop + DIV_INSET;
 				const botF = barTop + h - DIV_INSET;
-				for (const x of [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
+				for (const x of ruleXs) {
 					g.moveTo(x, topF);
 					g.lineTo(x, botF);
 					g.stroke({ width: 1, color: 0xffffff, alpha: 0.15 });
@@ -282,7 +364,7 @@
 			// Vertical rules do the opposite — they separate.
 			const top = barTop + DIV_INSET;
 			const bot = barTop + h - DIV_INSET;
-			for (const x of [DIV_1, DIV_2, DIV_3, dividerBeforeBet]) {
+			for (const x of ruleXs) {
 				g.moveTo(x, top);
 				g.lineTo(x, bot);
 				g.stroke({ width: 2, color: uiTheme.panelBorder, alpha: 0.55 });
@@ -298,11 +380,14 @@
 			// the middle third of the frame's height — gives that emptiness a centre
 			// to sit around so it reads as designed space rather than a gap. Not a
 			// section rule: it separates nothing, it just breathes.
-			const midY = barTop + h * 0.5;
-			const half = (h - DIV_INSET * 2) * 0.28;
-			g.moveTo(GAP_CENTER, midY - half);
-			g.lineTo(GAP_CENTER, midY + half);
-			g.stroke({ width: 2, color: uiTheme.panelBorder, alpha: 0.3 });
+			// Flank fills that span, so there is no emptiness to give a centre to.
+			if (!flank && !hasReplaySummary) {
+				const midY = barTop + h * 0.5;
+				const half = (h - DIV_INSET * 2) * 0.28;
+				g.moveTo(GAP_CENTER, midY - half);
+				g.lineTo(GAP_CENTER, midY + half);
+				g.stroke({ width: 2, color: uiTheme.panelBorder, alpha: 0.3 });
+			}
 		}}
 	/>
 
@@ -313,6 +398,37 @@
 		</Container>
 	{/if}
 
+	{#if hasReplaySummary}
+		{#each replaySummary as row, i (row.label)}
+			<Container x={summaryX(i)} y={readoutTop} scale={READOUT_SCALE}>
+				<UiLabel
+					tiled={false}
+					stacked
+					label={row.label.toUpperCase()}
+					value={row.value}
+					maxWidth={summaryMaxW}
+					labelScale={summaryLabelScale}
+					onlabelwidth={(w) => (summaryLabelWidths[i] = w)}
+					accent={row.tone === 'win'
+						? uiTheme.winAccent
+						: { border: uiTheme.panelBorder, label: uiTheme.balanceLabelFill }}
+				/>
+			</Container>
+		{/each}
+		<Container x={SUMMARY_REPLAY_X} y={barMid} scale={REPLAY_SCALE}>
+			<ButtonReplay anchor={0.5} />
+		</Container>
+		<Text
+			anchor={{ x: 0, y: 0.5 }}
+			x={SUMMARY_REPLAY_X + REPLAY_RADIUS + 12}
+			y={barMid}
+			text={i18nDerived.replay()}
+			style={replayCaptionStyle}
+		/>
+		<Container x={TURBO_X} y={barMid} scale={0.5}>
+			{@render props.buttonTurbo({ anchor: 0.5 })}
+		</Container>
+	{:else}
 	<Container x={BALANCE_X} y={readoutTop} scale={READOUT_SCALE}>
 		{#if stateReplay.enabled}
 			<LabelReplayMultiplier stacked tiled={false} />
@@ -326,11 +442,14 @@
 	</Container>
 
 	<!-- ── right: bet, stepper, spin, autospin, turbo ─────────────────────── -->
-	<Container x={BET_X} y={readoutTop} scale={READOUT_SCALE}>
-		{@render props.amountBet({ stacked: true, tiled: false, maxWidth: betMaxWidth })}
+	<Container x={betReadoutX} y={readoutTop} scale={READOUT_SCALE}>
+		{@render props.amountBet({ stacked: true, tiled: false, maxWidth: betMaxWidth, centerGroup: flank })}
 	</Container>
+	{/if}
 
-	{#if stateReplay.enabled}
+	{#if hasReplaySummary}
+		<!-- drawn above -->
+	{:else if stateReplay.enabled}
 		<!--
 			Replay mode. Nothing is wagered, so every control that would place or
 			size a bet is gone: the steppers, the spin button, autospin and Buy
@@ -370,12 +489,21 @@
 			{@render props.buttonTurbo({ anchor: 0.5 })}
 		</Container>
 	{:else}
-		<Container x={STEP_X} y={barMid - STEP_DY} scale={STEP_SCALE}>
-			{@render props.buttonIncrease({ anchor: 0.5 })}
-		</Container>
-		<Container x={STEP_X} y={barMid + STEP_DY} scale={STEP_SCALE}>
-			{@render props.buttonDecrease({ anchor: 0.5 })}
-		</Container>
+		{#if flank}
+			<Container x={MINUS_X} y={barMid} scale={STEP_SCALE}>
+				{@render props.buttonDecrease({ anchor: 0.5 })}
+			</Container>
+			<Container x={PLUS_X} y={barMid} scale={STEP_SCALE}>
+				{@render props.buttonIncrease({ anchor: 0.5 })}
+			</Container>
+		{:else}
+			<Container x={STEP_X} y={barMid - STEP_DY} scale={STEP_SCALE}>
+				{@render props.buttonIncrease({ anchor: 0.5 })}
+			</Container>
+			<Container x={STEP_X} y={barMid + STEP_DY} scale={STEP_SCALE}>
+				{@render props.buttonDecrease({ anchor: 0.5 })}
+			</Container>
+		{/if}
 
 		<!-- Spin is the largest thing on the strip and overhangs it top and bottom,
 		     which is what makes it read as the primary action without a caption. -->
@@ -401,7 +529,7 @@
 			puts a full-screen scrim over everything, so the plate underneath is
 			already unclickable and there is nothing to lose by not drawing it.
 		-->
-		{#if !uiTheme.buyBonusOnRail && !stateUi.menuOpen}
+		{#if !uiTheme.buyBonusOnRail && !stateUi.menuOpen && !(uiTheme.buyBonusHideInFreeSpins && stateUi.freeSpinCounterShow)}
 			<Container
 				x={uiTheme.railWidth * 0.5}
 				y={box.height * 0.46}
@@ -436,46 +564,50 @@
 		<Container x={MENU_X} y={menuItemY(0)} scale={0.4}>
 			{@render props.buttonSoundSwitch({ anchor: 0.5 })}
 		</Container>
-		<Text
-			anchor={{ x: 0.5, y: 0 }}
-			x={MENU_X}
-			y={menuItemY(0) + 46}
-			text={i18nDerived.soundOn()}
-			style={captionStyle}
-		/>
+		<Container x={MENU_X} y={menuItemY(0) + 46} scale={menuCaptionScale}>
+			<Text
+				anchor={{ x: 0.5, y: 0 }}
+				text={i18nDerived.soundOn()}
+				style={captionStyle}
+				onresize={({ width }) => (menuCaptionWidths[0] = width)}
+			/>
+		</Container>
 
 		<Container x={MENU_X} y={menuItemY(1)} scale={0.4}>
 			{@render props.buttonSettings({ anchor: 0.5 })}
 		</Container>
-		<Text
-			anchor={{ x: 0.5, y: 0 }}
-			x={MENU_X}
-			y={menuItemY(1) + 46}
-			text={i18nDerived.settings()}
-			style={captionStyle}
-		/>
+		<Container x={MENU_X} y={menuItemY(1) + 46} scale={menuCaptionScale}>
+			<Text
+				anchor={{ x: 0.5, y: 0 }}
+				text={i18nDerived.settings()}
+				style={captionStyle}
+				onresize={({ width }) => (menuCaptionWidths[1] = width)}
+			/>
+		</Container>
 
 		<Container x={MENU_X} y={menuItemY(2)} scale={0.4}>
 			{@render props.buttonGameRules({ anchor: 0.5 })}
 		</Container>
-		<Text
-			anchor={{ x: 0.5, y: 0 }}
-			x={MENU_X}
-			y={menuItemY(2) + 46}
-			text={i18nDerived.info()}
-			style={captionStyle}
-		/>
+		<Container x={MENU_X} y={menuItemY(2) + 46} scale={menuCaptionScale}>
+			<Text
+				anchor={{ x: 0.5, y: 0 }}
+				text={i18nDerived.info()}
+				style={captionStyle}
+				onresize={({ width }) => (menuCaptionWidths[2] = width)}
+			/>
+		</Container>
 
 		<Container x={MENU_X} y={menuItemY(3)} scale={0.4}>
 			{@render props.buttonPayTable({ anchor: 0.5 })}
 		</Container>
-		<Text
-			anchor={{ x: 0.5, y: 0 }}
-			x={MENU_X}
-			y={menuItemY(3) + 46}
-			text={i18nDerived.payTable()}
-			style={captionStyle}
-		/>
+		<Container x={MENU_X} y={menuItemY(3) + 46} scale={menuCaptionScale}>
+			<Text
+				anchor={{ x: 0.5, y: 0 }}
+				text={i18nDerived.payTable()}
+				style={captionStyle}
+				onresize={({ width }) => (menuCaptionWidths[3] = width)}
+			/>
+		</Container>
 
 		<!-- close sits where the menu button was, so it does not move under the
 		     cursor that just opened it -->

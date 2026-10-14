@@ -97,8 +97,8 @@
 	// motes (fxGlow), never hard vector circles ────────────────────────────────
 	// Was the jungle pollen/firefly set; 0xd9e88a is pale olive and these motes
 	// are on screen on EVERY spin, not just during a feature. Swapped for pink.
-	const MOTE_COLORS = [0xc9a227, 0xe6dfd1, 0x8a6d1f, 0xe8d48b];
-	const NIGHT_COLORS = [0xc9a227, 0xe8d48b, 0x8a6d1f, 0xe6dfd1];
+	const MOTE_COLORS = [0xd4d0c6, 0xece8df, 0x8c8c8c, 0xf7f4ec];
+	const NIGHT_COLORS = [0xd4d0c6, 0xf7f4ec, 0x8c8c8c, 0xece8df];
 	const motes = Array.from({ length: 22 }, (_, i) => ({
 		seedX: Math.random(),
 		seedY: Math.random(),
@@ -134,8 +134,7 @@
 		// old comment as keeping "the still jungle art" breathing. They are now
 		// pink and cyan: over a synthwave sunset a warm shaft reads as daylight
 		// through a canopy, which is the wrong world entirely.
-		g.beginFill(0xc9a227, 0.035);
-		g.drawPolygon([
+		g.poly([
 			centerX - width * 0.018,
 			0,
 			centerX + width * 0.018,
@@ -145,10 +144,9 @@
 			centerX - width * 0.22,
 			beamReachY,
 		]);
-		g.endFill();
+		g.fill({ color: 0xd4d0c6, alpha: 0.035 });
 
-		g.beginFill(0xe6dfd1, 0.022);
-		g.drawPolygon([
+		g.poly([
 			centerX + width * 0.11,
 			0,
 			centerX + width * 0.135,
@@ -158,15 +156,23 @@
 			centerX + width * 0.26,
 			beamReachY * 0.9,
 		]);
-		g.endFill();
+		g.fill({ color: 0xece8df, alpha: 0.022 });
 	};
 
 	onMount(() => {
-		const id = setInterval(() => {
-			beamPhase += 0.004;
-			clock += 0.016;
-		}, 16);
-		return () => clearInterval(id);
+		// frame clock, same rates as the old 16 ms interval (0.004 phase and
+		// 0.016 s per 16 ms), without the stutter an interval gives on 120 Hz
+		let raf = 0;
+		let last = performance.now();
+		const tick = (now: number) => {
+			const dt = Math.min(0.05, (now - last) / 1000);
+			last = now;
+			beamPhase += 0.25 * dt;
+			clock += dt;
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
 	});
 </script>
 
@@ -176,7 +182,7 @@
 	single largest surface in the game still carrying GoBananas' hue. Now the same
 	deep indigo-black uiTheme uses for valueShadow.
 -->
-<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x14100d} zIndex={-3} />
+<Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x121212} zIndex={-3} />
 
 <!-- base-game background: neon sunset -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>

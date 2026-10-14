@@ -1,19 +1,38 @@
 <script lang="ts">
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { stateModal } from 'state-shared';
+	import { stateModal, stateUrlDerived } from 'state-shared';
 
 	import { base } from '$app/paths';
 
 	import config from '../../game/config';
 	import { popupGhost } from './popupGhost';
 	import { getSocialTerms } from '../../game/socialTerms';
+	import {
+		commonText,
+		numberIn,
+		pctIn,
+		rulesLang,
+		type ControlKey,
+		type RulesVars,
+	} from '../../game/rulesCommon';
+	import { gameRulesText } from '../../game/rulesText';
 
 	// Social play forbids betting terminology in player-facing copy, and the rules
 	// page is the densest concentration of it in the game. The vocabulary lives in
 	// one module shared with the pay table — two panels with their own copies
 	// drift, and the drift is what gets flagged.
 	const T = getSocialTerms();
+	const social = stateUrlDerived.social();
+
+	// Every sentence comes from game/rulesCommon.ts (the sections all three games
+	// share) or game/rulesText.ts (this game's own), in the player's language
+	// (2026-10-13 — this page was English-only while the bar and the intro card
+	// followed ?lang=). English is built from T, so social play, which is
+	// English-only, reads word for word what it read before.
+	const lang = rulesLang();
+	const C = commonText(lang, T, social);
+	const G = gameRulesText(lang, T, social);
 
 	// Controls guide. Each row shows the actual button art from the bet bar, so a
 	// player matches what they read to what they see rather than decoding a name.
@@ -30,51 +49,26 @@
 	// and showing only one of them would misrepresent it. Buy Bonus has none: on
 	// the bar it is a labelled plate rather than a glyph, so there is no icon that
 	// would actually match what the player sees.
-	const controls: { icons: string[]; plate?: string; name: string; text: string }[] = [
-		{
-			icons: ['spin'],
-			name: 'Spin',
-			text: `Starts a round for the current ${T.bet}. The space bar does the same thing. While the reels are turning it becomes Stop, which brings them to rest early.`,
-		},
-		{
-			icons: ['decrease', 'increase'],
-			name: 'Decrease / increase',
-			text: `Steps the ${T.bet} up or down through the available ${T.betLevels}.`,
-		},
-		{
-			icons: [],
-			plate: T.buyBonusName,
-			name: T.buyBonusName,
-			text: `Opens the feature menu, where any of the three free-spin features can be ${T.bought} outright for the stated multiple of your ${T.bet}. The ${T.cost} is shown before you confirm.`,
-		},
-		{
-			icons: ['autoSpin'],
-			name: 'Auto Spin',
-			text: 'Plays a chosen number of rounds automatically. Open it to set the count and any stop conditions; press it again to stop early.',
-		},
-		{
-			icons: ['turbo'],
-			name: 'Turbo',
-			text: 'Shortens the spin and win presentations. Lit means turbo is on.',
-		},
-		{
-			icons: ['menu'],
-			name: 'Menu',
-			text: `Opens the ${T.payTableCaps.toLowerCase()}, these rules, and the sound and settings controls.`,
-		},
-		{
-			icons: ['payTable'],
-			name: T.payTableCaps,
-			text: `Lists every symbol and what it ${T.pays} for 3, 4 and 5 of a kind, plus the ${T.paylines}.`,
-		},
-		{
-			icons: ['soundOn'],
-			name: 'Sound',
-			text: 'Mutes and unmutes the game. Volume is adjusted under Settings.',
-		},
+	const CONTROL_ICONS: [ControlKey, string[]][] = [
+		['spin', ['spin']],
+		['stepper', ['decrease', 'increase']],
+		['amount', []],
+		['buy', []],
+		['auto', ['autoSpin']],
+		['turbo', ['turbo']],
+		['menu', ['menu']],
+		['info', ['info']],
+		['settings', ['settings']],
+		['paytable', ['payTable']],
+		['sound', ['soundOn']],
 	];
+	const controls = CONTROL_ICONS.map(([key, icons]) => ({
+		icons,
+		plate: key === 'amount' ? C.amountPlate : key === 'buy' ? C.buyPlate : undefined,
+		name: C.controls[key][0],
+		text: C.controls[key][1],
+	}));
 
-	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
 	// The modes are not all on one number: they climb with the price ladder
 	// (maths game_config.py — 94.58 / 94.63 / 94.67 / 94.78 as of the
 	// 2026-09-03 retarget). Two sentences below used to assert they were
@@ -89,7 +83,9 @@
 		.filter((value): value is number => typeof value === 'number');
 	const rtpLow = modeRtpValues.length ? Math.min(...modeRtpValues) : config.rtp;
 	const rtpHigh = modeRtpValues.length ? Math.max(...modeRtpValues) : config.rtp;
-	const pct = (value: number) => `${(value * 100).toFixed(2)}%`;
+	// Numbers in the player's locale; English keeps exactly the formatting it had.
+	const pct = (value: number) => (lang === 'en' ? `${(value * 100).toFixed(2)}%` : pctIn(lang, value));
+	const num = (value: number) => (lang === 'en' ? value.toLocaleString() : numberIn(lang, value));
 	const rtpRangePct = rtpLow === rtpHigh ? pct(rtpLow) : `${pct(rtpLow)}\u2013${pct(rtpHigh)}`;
 	const lineCount = Object.keys(config.paylines).length;
 	// Fallback 12000, not Capo Nostra's 20000 — it can only be read if the config
@@ -107,66 +103,66 @@
 	// which both fall back to 4.
 	const rowCount = config.numRows?.[0] ?? 4;
 
+	const vars: RulesVars = {
+		game: 'Hard Time',
+		reels: reelCount,
+		rows: rowCount,
+		lines: lineCount,
+		rtpRange: rtpRangePct,
+		rtpLow: pct(rtpLow),
+		rtpHigh: pct(rtpHigh),
+		maxWin: num(maxWin),
+		buyName: C.controls.buy[0],
+	};
+
+	// Feature names stay in English in every language, as on the intro card.
+	const TIERS = [
+		['Lockdown', 3],
+		['Riot', 4],
+		['Breakout', 5],
+	] as const;
+
 	// Per-mode RTP and max win, read straight out of the maths config rather than
 	// written into the prose. Certification asks for both to be clearly stated for
 	// every mode available; spelling them out in one table is harder to miss than
 	// leaving them scattered through the sections, and taking the numbers from
 	// config means they cannot drift away from what the game actually pays.
 	type BetMode = { cost?: number; rtp?: number; max_win?: number };
+	const buyFor = (cost: number | undefined) =>
+		C.buyFor(lang === 'en' || cost === undefined ? String(cost) : num(cost));
 	const modeRows = (
 		[
-			['Base game', 'base', 'Every spin'],
-			// "(N Scatters)", not the old "(N FS)". FS is the Scatter symbol's name
-			// on the reels, but in a table of free-spin modes "3 FS" reads as
-			// "3 free spins" — and every mode awards 8. This wording now matches
-			// the trigger table further down, which already says "3 Scatters".
-			[
-				'Lockdown (3 Scatters)',
-				'bonus',
-				`${T.entryVerb} for ${config.betModes?.bonus?.cost}× ${T.bet}`,
-			],
-			[
-				'Riot (4 Scatters)',
-				'bonus_hits',
-				`${T.entryVerb} for ${config.betModes?.bonus_hits?.cost}× ${T.bet}`,
-			],
-			[
-				'Breakout (5 Scatters)',
-				'bonus_epic',
-				`${T.entryVerb} for ${config.betModes?.bonus_epic?.cost}× ${T.bet}`,
-			],
+			[C.baseGame, 'base', C.everySpin],
+			[`${TIERS[0][0]} (${C.scatters(TIERS[0][1])})`, 'bonus', buyFor(config.betModes?.bonus?.cost)],
+			[`${TIERS[1][0]} (${C.scatters(TIERS[1][1])})`, 'bonus_hits', buyFor(config.betModes?.bonus_hits?.cost)],
+			[`${TIERS[2][0]} (${C.scatters(TIERS[2][1])})`, 'bonus_epic', buyFor(config.betModes?.bonus_epic?.cost)],
 		] as const
 	).map(([label, key, entry]) => {
 		const mode = config.betModes?.[key] as BetMode | undefined;
 		return {
 			label,
 			entry,
-			rtp: mode?.rtp !== undefined ? `${(mode.rtp * 100).toFixed(2)}%` : rtpPct,
-			maxWin: `${(mode?.max_win ?? maxWin).toLocaleString()}×`,
+			rtp: pct(mode?.rtp ?? config.rtp),
+			maxWin: C.maxWinCell(num(mode?.max_win ?? maxWin)),
 		};
 	});
 </script>
 
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="wp-rules" use:popupGhost>
-			<h2>HARD TIME — GAME RULES</h2>
+		<div class="wp-rules" use:popupGhost dir={C.dir}>
+			<h2>HARD TIME — {C.gameRulesCaps}</h2>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>How to play</h3>
-				<p>
-					Hard Time is a {reelCount}&times;{rowCount} video slot with {lineCount} fixed
-					{T.paylines}. {T.combinationDirection}. Only the highest win is {T.paid} per line, and
-					all line wins are added together. The theoretical return to player (RTP) is {rtpRangePct},
-					depending on the mode played &mdash; every mode's figure is listed in the table below.
-				</p>
+				<h3><span class="wp-accent-bar"></span>{C.howTitle}</h3>
+				<p>{C.how(vars)}</p>
 			</section>
 
 			<!-- Certification asked for a user interaction guide in the game
 			     information. Kept as a definition list of the actual on-screen
 			     controls, in the order they sit on the bar. -->
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Controls</h3>
+				<h3><span class="wp-accent-bar"></span>{C.controlsTitle}</h3>
 				<ul class="wp-controls">
 					{#each controls as control (control.name)}
 						<li>
@@ -193,20 +189,17 @@
 						</li>
 					{/each}
 				</ul>
-				<p class="wp-modes-note">
-					Where a win presentation is playing, tapping anywhere skips to the end of it.
-				</p>
+				<p class="wp-modes-note">{C.skipNote}</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>RTP &amp; Max Win by mode</h3>
+				<h3><span class="wp-accent-bar"></span>{C.modesTitle}</h3>
 				<table class="wp-modes">
 					<thead>
 						<tr>
-							<th scope="col">Mode</th>
-							<th scope="col">How to enter</th>
-							<th scope="col">RTP</th>
-							<th scope="col">Max win</th>
+							{#each C.modesHead as head (head)}
+								<th scope="col">{head}</th>
+							{/each}
 						</tr>
 					</thead>
 					<tbody>
@@ -215,116 +208,72 @@
 								<th scope="row">{row.label}</th>
 								<td>{row.entry}</td>
 								<td>{row.rtp}</td>
-								<td>{row.maxWin} {T.bet}</td>
+								<td>{row.maxWin}</td>
 							</tr>
 						{/each}
 					</tbody>
 				</table>
-				<p class="wp-modes-note">
-					Max win is a multiple of the {T.totalBet}. When a round reaches the cap it ends
-					immediately and the capped amount is {T.paid}.
-				</p>
+				<p class="wp-modes-note">{C.modesNote}</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Wild</h3>
-				<p>
-					The Wild substitutes for every symbol except the Scatter and the Searchlight, and
-					{T.pays} as its own symbol on 5 of a kind.
-				</p>
+				<h3><span class="wp-accent-bar"></span>{C.wildTitle}</h3>
+				<p>{G.wild}</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Searchlight</h3>
-				<p>
-					When a Searchlight lands, it lights its reel <strong>from its own position down to
-					the bottom</strong> &mdash; never upward. Every lit position becomes a
-					<strong>Wild</strong> before any wins are evaluated, and carries a multiplier of
-					<strong>1&times; to 100&times;</strong>. A Searchlight landing on the top row lights
-					four positions; one landing on the bottom row lights a single position. Scatters in
-					that reel are not replaced. The Searchlight {T.doesNotPay.toLowerCase()} as a symbol
-					of its own, and more than one can land on the same spin.
-				</p>
-				<p>
-					A lit position counts towards a win when it is part of a winning {T.payline}, and the
-					win is multiplied by its value. Where a {T.payline} crosses more than one lit
-					position, every multiplier above 1&times; is <strong>added together</strong> and the total is applied &mdash; a 1&times; position adds nothing.
-				</p>
+				<h3><span class="wp-accent-bar"></span>{G.lightTitle}</h3>
+				<p>{@html G.light[0]}</p>
+				<p>{@html G.light[1]}</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Overlapping Beams</h3>
-				<p>
-					When a Searchlight lands on a reel that is <strong>already lit</strong>, every
-					position the two beams share has its existing multiplier <strong>doubled</strong>,
-					to a maximum of 100&times;. Positions the new beam reaches for the first time take
-					the new Searchlight's own value instead.
-				</p>
+				<h3><span class="wp-accent-bar"></span>{G.beamsTitle}</h3>
+				<p>{@html G.beams}</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Scatter &amp; Free Spins</h3>
-				<p>
-					The Scatter appears on all five reels in the base game, and on reels 3 to 5 during free spins. {T.noPayOnItsOwn}, and does not
-					need to land on a {T.payline}. The number of Scatters landing together decides which
-					feature opens, and each one awards {baseFreeSpins} free spins. In every feature,
-					<strong>every beam stays lit until the feature ends</strong>, so Searchlights build
-					up across the spins and beams meeting on one reel double where they overlap:
-				</p>
+				<h3><span class="wp-accent-bar"></span>{C.scatterTitle}</h3>
+				<p>{@html G.scatter(baseFreeSpins)}</p>
 				<ul class="wp-controls">
 					<li class="no-icon"><div>
-						<span class="wp-control-name">3 Scatters &mdash; Lockdown</span>
-						<span class="wp-control-text">The feature opens with the grid dark. Every
-						Searchlight that lands stays lit for the rest of the feature.</span>
+						<span class="wp-control-name">{C.scatters(3)} &mdash; Lockdown</span>
+						<span class="wp-control-text">{@html G.tiers[0]}</span>
 					</div></li>
 					<li class="no-icon"><div>
-						<span class="wp-control-name">4 Scatters &mdash; Riot</span>
-						<span class="wp-control-text">The first free spin is guaranteed an extra Searchlight, and Searchlights land more often than in Lockdown.</span>
+						<span class="wp-control-name">{C.scatters(4)} &mdash; Riot</span>
+						<span class="wp-control-text">{@html G.tiers[1]}</span>
 					</div></li>
 					<li class="no-icon"><div>
-						<span class="wp-control-name">5 Scatters &mdash; Breakout</span>
-						<span class="wp-control-text">The first free spin is guaranteed an extra Searchlight, and the feature lands <strong>more Searchlights than any other tier</strong> &mdash; so beams
-						meet on the same reel more often, and every overlap doubles.</span>
+						<span class="wp-control-name">{C.scatters(5)} &mdash; Breakout</span>
+						<span class="wp-control-text">{@html G.tiers[2]}</span>
 					</div></li>
 				</ul>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Retriggers</h3>
-				<p>
-					Landing further Scatters together during a feature awards extra free spins:
-					2 Scatters award +2, 3 Scatters award +4, 4 Scatters award +6 and 5 Scatters
-					award +8. This applies in all three features.
-				</p>
+				<h3><span class="wp-accent-bar"></span>{C.retrigTitle}</h3>
+				<p>{C.retrig}</p>
+				<!-- Stake asked Deadwood Express for this after approval (2026-10-04): "if
+				     there is no limit to the number of free spins, clarify". -->
+				<p>{C.noLimit}</p>
 			</section>
 
 			{#if buyCost}
 				<section class="wp-card">
-					<h3><span class="wp-accent-bar"></span>Feature Entry</h3>
-					<p>
-						Instead of waiting for Scatters, each feature can be {T.bought} directly from the {T.betMenu}
-						for the {T.cost} shown in the table above. Each mode's RTP is shown there alongside its
-						{T.cost}; across all modes it ranges from {pct(rtpLow)} to {pct(rtpHigh)}.
-					</p>
+					<h3><span class="wp-accent-bar"></span>{C.entryTitle}</h3>
+					<p>{C.entry(vars)}</p>
 				</section>
 			{/if}
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Max Win</h3>
-				<p>
-					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}. Once
-					the cap is reached the round ends immediately and the maximum win is awarded.
-				</p>
+				<h3><span class="wp-accent-bar"></span>{C.maxTitle}</h3>
+				<p>{C.max(vars)}</p>
 			</section>
 
 			<div class="wp-divider"></div>
 			<p class="wp-foot">
-				{T.disclaimerOpening} A consistent internet connection is required. In
-				the event of a disconnection, reload the game to finish any uncompleted rounds. The
-				expected return is calculated over many plays. The game display is not representative of
-				any physical device and is for illustrative purposes only. Winnings are settled according
-				to the amount received from the Remote Game Server and not from events within the web
-				browser. TM and &copy; 2026 Engine.
+				{C.foot} TM and &copy; 2026 Engine.
 			</p>
 			<!--
 				"Engine." is DICTATED by review, not chosen. Do not "correct" it to a

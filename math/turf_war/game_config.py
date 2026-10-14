@@ -106,7 +106,7 @@ class GameConfig(Config):
         # base line-win share is cut and the free-spin trigger rate raised (see
         # game_optimization.py slices) — features are meant to be seen more
         # often, the base game to carry less on its own.
-        self.rtp = 0.9604
+        self.rtp = 0.9601
         self.construct_paths()
 
         # ------------------------------------------------------------------
@@ -524,15 +524,15 @@ class GameConfig(Config):
             # being a ceiling the player can aim at and becomes the only outcome
             # that matters. If the price ever needs to rise again, the wincap
             # rises with it.
-            self._buy_mode("bonus", 100.0, 3, base_mult, rich_mult, wincap_mult, rtp=0.9609),
-            self._buy_mode("bonus_hits", 500.0, 4, base_mult, rich_mult, wincap_mult, rtp=0.9613),
+            self._buy_mode("bonus", 100.0, 3, base_mult, rich_mult, wincap_mult, rtp=0.9602),
+            self._buy_mode("bonus_hits", 500.0, 4, base_mult, rich_mult, wincap_mult, rtp=0.9603),
             # Kingpin (bonus_epic) is priced at 93.78% - the best rate in the
             # game, and the reason to buy the top tier rather than three of the
             # bottom one. Stake requires every mode within 0.5% of the others;
             # base sits at 93.58%, so the spread across all four is 0.20%
             # (unchanged - every mode moved down by the same 1.0 point,
             # 2026-09-06).
-            self._buy_mode("bonus_epic", 1000.0, 5, base_mult, rich_mult, wincap_mult, rtp=0.9624),
+            self._buy_mode("bonus_epic", 1000.0, 5, base_mult, rich_mult, wincap_mult, rtp=0.9605),
         ]
 
     def _buy_mode(self, name, cost, scatters, base_mult, rich_mult, wincap_mult, rtp=None):

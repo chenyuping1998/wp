@@ -241,6 +241,8 @@ export type Bone = {
    *  arm bulge reads it (boneAxes), because a folded forearm's direction cannot
    *  be derived from its children. */
   axis?: [number, number];
+  /** Pose-specific idle table, used by the rebuilt Don; absent uses legacy idle. */
+  idle?: MotionSpec;
 };
 
 export type MeshRig = {
@@ -349,7 +351,7 @@ export function composeBoneMatrices(
 
   for (let index = 0; index < rig.bones.length; index += 1) {
     const bone = rig.bones[index];
-    const idle = idleAngle(IDLE[bone.name] ?? [0, 0, 2000, 0], timeMs);
+    const idle = idleAngle(bone.idle ?? IDLE[bone.name] ?? [0, 0, 2000, 0], timeMs);
     // Each bone rides the same envelope, started `lag` ms later, so the pose
     // travels out along the chain instead of arriving all at once.
     let reaction = 0;

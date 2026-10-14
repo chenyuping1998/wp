@@ -88,7 +88,7 @@ mkdir -p $ROOT/upload/$NAME/math
 rsync -a --delete $ROOT/math-sdk/games/$GAME/library/publish_files/ $ROOT/upload/$NAME/math/
 
 say "3. rebuild the playtest stub data (reads step 2's output)"
-$PY design/build_playtest_stub_data.py $ROOT/upload/$NAME/math $PLAYTEST/stub-data.js
+if [[ -n "$SKIP_STUB" ]]; then print "   SKIP_STUB set — stub data left as is (books unchanged)"; else $PY design/build_playtest_stub_data.py $ROOT/upload/$NAME/math $PLAYTEST/stub-data.js; fi
 
 say "4. frontend build + guards"
 cd $ROOT/wp && pnpm --filter hard-time build

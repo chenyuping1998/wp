@@ -2,6 +2,7 @@
   import { MainContainer } from "components-layout";
 
   import { getContext } from "../game/context";
+  import { portraitBand, portraitCast } from "../game/cornerLogo";
   import CastFigure, { CAST_NATIVE } from "./CastFigure.svelte";
   import CastFigureMesh from "./CastFigureMesh.svelte";
 
@@ -136,13 +137,35 @@
   // nothing for them to do.
   const bandFraction = $derived((std.width - boardInkRight) / std.width);
   const hasSideBand = $derived(bandFraction >= 0.15);
+
+  // ── portrait: upper body above the board (2026-10-13, P1-F) ──────────────
+  //
+  // No side band does not mean no room: portrait has the strip above the
+  // housing, and leaving it empty dropped the cast from every phone held
+  // upright. The figure stands in the strip's right half with its body running
+  // down BEHIND the housing (the mesh view sits at stage depth 2, under the
+  // board), so only head and shoulders to the hips show and the reels win any
+  // overlap. The logo takes the left half (Game.svelte). Same facing as beside
+  // the board.
+  const portrait = $derived(
+    hasSideBand ? null : (() => {
+      const band = portraitBand(context);
+      return band ? portraitCast(context, band) : null;
+    })(),
+  );
+  // The figure stands to the RIGHT of the board and must face LEFT, toward it.
+  // The installed art (castLayers/prisoner_crossed) is already drawn that way.
+  const FACES_BOARD_AS_DRAWN = true;
 </script>
 
 {#if !stateGame.featureSplashShow && hasSideBand}
   <MainContainer standard>
     {#if USE_MESH_CAST}
       {#key who}
-        <CastFigureMesh {who} {x} {topY} {height} {groundY} flip={who === "guy"} />
+        <!-- No flip (2026-09-27). The crossed-arms art is DRAWN turned toward the
+             board (screen left); mirroring it turned his body away from the reels.
+             The old A-pose figure was front-on, so the inherited flip never showed. -->
+        <CastFigureMesh {who} {x} {topY} {height} {groundY} flip={FACES_BOARD_AS_DRAWN ? false : who === "guy"} innerEdge={boardInkRight} />
       {/key}
     {:else}
       <CastFigure
@@ -151,9 +174,15 @@
         {topY}
         {height}
         {groundY}
-        flip={who === "guy"}
+        flip={FACES_BOARD_AS_DRAWN ? false : who === "guy"}
         grade={GRADE}
       />
     {/if}
+  </MainContainer>
+{:else if !stateGame.featureSplashShow && portrait && USE_MESH_CAST}
+  <MainContainer standard>
+    {#key who}
+      <CastFigureMesh {who} x={portrait.x} topY={portrait.topY} height={portrait.height} groundY={portrait.groundY} flip={FACES_BOARD_AS_DRAWN ? false : who === "guy"} innerEdge={portrait.innerEdge} />
+    {/key}
   </MainContainer>
 {/if}

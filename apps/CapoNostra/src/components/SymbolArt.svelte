@@ -113,10 +113,10 @@
 	// Sizes are multiples of the symbol's own draw size, not pixels: the car is
 	// 470px of art across and the J is 205, and one pixel value cannot be right
 	// for both. 1.045 is a hair over 2px of edge on a 118px cell.
-	const EDGE_COLOR = 0x12071f;
+	const EDGE_COLOR = 0x0d0d0d;
 	const SHADOW_SCALE = 1.07;
 	const SHADOW_OFFSET = { x: 3, y: 9 };
-	const RIM_COLOR = 0xfff6e8;
+	const RIM_COLOR = 0xfbf7ed;
 
 	// The four lows get the heavier treatment, and it is not decoration.
 	//

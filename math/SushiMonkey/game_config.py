@@ -28,7 +28,7 @@ class GameConfig(Config):
         self.working_name = "Sushi Monkey"
         self.wincap = 10000
         self.win_type = "ways"
-        self.rtp = 0.9655  # 2026-10-10: user asked for 96.0–96.7 (LUT reweighted)
+        self.rtp = 0.9602  # 2026-10-11: house rule, every game 96.0–96.1 (LUT reweighted)
         self.construct_paths()
 
         self.num_reels = 5

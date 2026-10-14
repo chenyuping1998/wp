@@ -1,0 +1,2 @@
+wp/apps/HardTime/design/_incoming/fg/full.png: colors95=51 soft=50.4% chroma=4.5 PASS
+wp/apps/HardTime/design/cast_brief/fg/style_frame/full.png: colors95=51 soft=40.7% chroma=13.1 PASS

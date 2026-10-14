@@ -11,7 +11,7 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT, DISPLAY_FONT, TITLE_FONT, TITLE_FONT_WEIGHT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
 	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
-	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
+	import { bookEventAmountToCountUpString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { OnMount } from 'components-shared';
@@ -43,13 +43,16 @@
 	};
 
 	const title = gameText('totalWin');
-	// The plaque still has FREE SPINS baked into its upper third. Keep every
-	// dynamic summary label below that artwork instead of trying to cover it:
-	// at the old -0.26 position TOTAL WIN crossed the bottom of the gold letters.
-	// These shared ratios also keep long translated labels and the amount as one
-	// vertically balanced summary block on every viewport.
-	const SUMMARY_TITLE_Y = 0.02;
-	const SUMMARY_AMOUNT_Y = 0.28;
+	// Where TOTAL WIN and the amount sit, in fractions of the plank's text area
+	// (FreeSpinAnimation puts this origin 0.06 of the sign's height BELOW its
+	// centre). The plaque used to have FREE SPINS baked into its upper third, so
+	// the pair was pushed down to 0.02 / 0.28 to clear it. The shipped plaque is
+	// blank, and that offset left the block ~0.18 of the sign's height low —
+	// the win read as sitting on the bottom rail (user report 2026-09-23).
+	// Shifted up together so the pair's ink is centred on the plaque; the gap
+	// between them is unchanged.
+	const SUMMARY_TITLE_Y = -0.18;
+	const SUMMARY_AMOUNT_Y = 0.08;
 
 	context.eventEmitter.subscribeOnMount({
 		freeSpinOutroShow: () => (show = true),
@@ -87,19 +90,15 @@
 								fontSize: Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
 								fontWeight: TITLE_FONT_WEIGHT,
 								letterSpacing: 6,
-								fill: [0xd9d6ce, 0xf5893d, 0x465562],
-								stroke: 0x0e0f11,
-								strokeThickness: 6,
-								dropShadow: true,
-								dropShadowColor: 0x000000,
-								dropShadowBlur: 12,
-								dropShadowDistance: 3,
+								fill: 0xd9d6ce,
+								stroke: { color: 0x0e0f11, width: 6 },
+								dropShadow: { color: 0x000000, blur: 12, distance: 3, angle: Math.PI / 6, alpha: 1 },
 							}}
 						/>
 						<GoldText
 							y={sizes.height * SUMMARY_AMOUNT_Y}
-							fontSize={sizes.width * 0.15}
-							text={bookEventAmountToCurrencyString(countUpAmount)}
+							fontSize={sizes.width * 0.2}
+							text={bookEventAmountToCountUpString(countUpAmount, amount)}
 							maxWidth={sizes.width * 0.9}
 						/>
 					{/snippet}

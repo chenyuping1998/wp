@@ -4,12 +4,12 @@
 	import { stateModal, stateMetaDerived, stateBet } from 'state-shared';
 	import { getContextEventEmitter } from 'utils-event-emitter';
 	import { numberToCurrencyString } from 'utils-shared/amount';
-	import BetMenuAmountToggle from 'components-ui-html/src/components/BetMenuAmountToggle.svelte';
 	import { stateBonus } from 'components-ui-html/src/stateBonus.svelte';
 	import type { EmitterEventModal } from 'components-ui-html/src/types';
 
 	import assets from '../../game/assets';
 	import { popupGhost } from './popupGhost';
+	import BetStepper from './BetStepper.svelte';
 	import { getSocialTerms } from '../../game/socialTerms';
 
 	/**
@@ -67,8 +67,8 @@
 		BONUS: {
 			backdrop: src('hmBgFeature'),
 			crop: '18% 50%',
-			accent: '#8A6D1F',
-			glow: 'rgba(138, 109, 31, 0.55)',
+			accent: '#8c8c8c',
+			glow: 'rgba(140, 140, 140, 0.55)',
 			frames: 1,
 			framesLabel: '1 sticky Frame',
 			scatters: 3,
@@ -77,8 +77,8 @@
 		BONUS_HITS: {
 			backdrop: src('hmBgFeature'),
 			crop: '82% 50%',
-			accent: '#C9A227',
-			glow: 'rgba(201, 162, 39, 0.55)',
+			accent: '#d4d0c6',
+			glow: 'rgba(212, 208, 198, 0.55)',
 			frames: 3,
 			framesLabel: '3 sticky Frames',
 			scatters: 4,
@@ -87,13 +87,13 @@
 		BONUS_EPIC: {
 			backdrop: src('hmBgEpic'),
 			crop: '50% 45%',
-			accent: '#E8D48B',
-			glow: 'rgba(201, 162, 39, 0.6)',
+			accent: '#f7f4ec',
+			glow: 'rgba(212, 208, 198, 0.6)',
 			// 3, not 6: the Don seeds the same three Frames as the Capo. What
 			// separates it is the guaranteed Tommy Gun on every spin, which the
 			// label says because the Frame row cannot.
 			frames: 3,
-			framesLabel: '3 sticky Frames + a Tommy Gun every spin',
+			framesLabel: '3 sticky Frames + a Violin Case every spin',
 			scatters: 5,
 			rank: 3,
 		},
@@ -116,7 +116,7 @@
 			<header>
 				<h2>{T.featureMenuTitle}</h2>
 				<p class="lede">{T.featureMenuLede}</p>
-				<div class="amount"><BetMenuAmountToggle /></div>
+				<div class="amount"><BetStepper /></div>
 			</header>
 
 			<div class="cards">
@@ -128,8 +128,8 @@
 						class="card"
 						style:--card-frame={`url("${src('capoBuyCardFrame')}")`}
 						class:top={art?.rank === 3}
-						style:--accent={art?.accent ?? '#8A6D1F'}
-						style:--glow={art?.glow ?? 'rgba(138,109,31,0.5)'}
+						style:--accent={art?.accent ?? '#8c8c8c'}
+						style:--glow={art?.glow ?? 'rgba(140, 140, 140,0.5)'}
 					>
 						<!-- the tier's own sky, dimmed so the type stays legible over it -->
 						<!--
@@ -161,7 +161,7 @@
 							<!-- and what the tier GIVES you -->
 							<div class="frames">
 								{#each Array(art?.frames ?? 1) as _, index (index)}
-									<img class="frame" style:animation-delay={`${index * 0.12}s`} src={src('hmFrame')} alt="" />
+									<img class="frame" style:animation-delay={`${index * 0.12}s`} src={src('hmFrame1x1')} alt="" />
 								{/each}
 							</div>
 						</div>
@@ -206,7 +206,7 @@
 		max-height: 88vh;
 		overflow-y: auto;
 		padding: 1.1rem 1.1rem 1.4rem;
-		color: #E6DFD1;
+		color: #ece8df;
 		font-family: var(--gb-body-font);
 	}
 
@@ -219,7 +219,7 @@
 			font-size: 1.5rem;
 			letter-spacing: 0.06em;
 			margin: 0 0 0.2rem;
-			color: #C9A227;
+			color: #d4d0c6;
 		}
 
 		.lede {
@@ -271,7 +271,7 @@
 		border-style: solid;
 		border-width: 1.7rem;
 		border-image: var(--card-frame) 96 stretch;
-		background: linear-gradient(180deg, rgba(46, 28, 26, 0.86), rgba(20, 16, 13, 0.94));
+		background: linear-gradient(180deg, rgba(33, 33, 33, 0.86), rgba(18, 18, 18, 0.94));
 		background-clip: padding-box;
 		box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
 		animation: cardPulse 3.2s ease-in-out infinite;
@@ -346,7 +346,7 @@
 		width: 2rem;
 		height: 2rem;
 		opacity: 0.95;
-		filter: drop-shadow(0 0 5px rgba(201, 162, 39, 0.75));
+		filter: drop-shadow(0 0 5px rgba(212, 208, 198, 0.75));
 		animation: framePulse 2.8s ease-in-out infinite;
 	}
 
@@ -380,7 +380,7 @@
 			font-family: var(--hm-title-font);
 			font-size: 1.55rem;
 			line-height: 1;
-			color: #fff;
+			color: #ffffff;
 			text-shadow: 0 0 12px var(--glow);
 		}
 
@@ -404,8 +404,8 @@
 		font-family: var(--hm-title-font);
 		font-size: 0.85rem;
 		letter-spacing: 0.04em;
-		color: #14100D;
-		background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 65%, #000));
+		color: #121212;
+		background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 65%, #000000));
 		box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
 
 		&:disabled {
@@ -419,7 +419,7 @@
 		margin: 0.35rem 0 0;
 		font-size: 0.68rem;
 		text-align: center;
-		color: #E8D48B;
+		color: #f7f4ec;
 	}
 
 	@keyframes shine {
@@ -446,11 +446,11 @@
 		0%,
 		100% {
 			opacity: 0.78;
-			filter: drop-shadow(0 0 4px rgba(201, 162, 39, 0.6));
+			filter: drop-shadow(0 0 4px rgba(212, 208, 198, 0.6));
 		}
 		50% {
 			opacity: 1;
-			filter: drop-shadow(0 0 11px rgba(201, 162, 39, 0.95));
+			filter: drop-shadow(0 0 11px rgba(212, 208, 198, 0.95));
 		}
 	}
 

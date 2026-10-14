@@ -1,3 +1,4 @@
+import { DON_DEADWOOD_TIERS } from "./donDeadwoodMotion.ts";
 /**
  * Reaction tables for the two layered cast figures (2026-09-28):
  *   don      MG, archetype #1 — both arms hang free, cigar in mouth
@@ -118,7 +119,7 @@ const tiersFor = (figure: CastFigureId): Record<CastReactionKind, ReactionTier> 
   trigger: tier("trigger", figure),
 });
 
-export const DON_TIERS = tiersFor("don");
+export const DON_TIERS = DON_DEADWOOD_TIERS;
 export const HOSTESS_TIERS = tiersFor("hostess");
 export const LAYERED_TIERS: Record<CastFigureId, Record<CastReactionKind, ReactionTier>> = {
   don: DON_TIERS,

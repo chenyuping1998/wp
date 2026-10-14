@@ -80,6 +80,16 @@ setUiTheme({
   buyBonusHighlightPad: 0.015,
   buyBonusHighlightRadius: 0.13,
 
+  // Hover lights the PLATE, not a box over it. The translucent white panel
+  // (the shared default) laid a grey slab across the brass and past its edges
+  // (user, 2026-09-29: 反灰). Instead the plate itself is drawn again on top,
+  // additive, at a low warm tint: the brass rim and winged crest brighten,
+  // the dark inset stays dark, and the caption keeps its contrast.
+  // (a SLOT name — UiSprite resolves keys through `sprites`, see below; the
+  // raw asset key drew the fallback rounded box instead of the plate)
+  buyBonusHoverSprite: "buyBonusGlyph",
+  buyBonusHoverSpriteTint: 0x74603a,
+
   // Portrait: at the shared ±470 the menu disc ran 9px off the left edge and
   // the 1.25× plate 28px off the right (measured at 375×812). 445 brings the
   // disc in to a 20px margin; the plate draws at 0.85 so it clears the edge
@@ -87,12 +97,36 @@ setUiTheme({
   portraitSideButtonX: 445,
   portraitBuyBonusScale: 0.85,
 
+  // −  BET  +  in one row, the stepper as large as autospin/turbo (0.44).
+  // The stacked pair was 0.28 — about 28px across at 1280×720, half a normal
+  // touch target — and it left the span between Win and Bet empty, which
+  // review read as unfinished. 'flank' widens the Balance/Win cells into it.
+  stepperLayout: "flank",
+  stepButtonScale: 0.44,
+
+  // Portrait spin row: the menu disc was the largest round control after spin
+  // (1.0 against autospin/turbo's 0.7) and the ± pair the smallest (0.5).
+  // Menu comes down to the side pair's size, the stepper goes up, and the side
+  // pair moves out so nothing touches (gaps ≥ 25 units; Buy Bonus keeps ~20).
+  portraitMenuScale: 0.72,
+  portraitStepScale: 0.6,
+  portraitStepX: 172,
+  portraitSideClusterX: 295,
+
+  // The plate stays drawn at full brightness through the feature otherwise.
+  buyBonusHideInFreeSpins: true,
+
   // the Bet panel opens the stake menu when tapped — mark it so players can
   // tell it apart from the static Balance/Win panels
   labelAffordance: true,
 
   // cursor-over feedback on the rail controls
   hoverHighlight: true,
+
+  // 2026-10-01 (user rule, every game): hover never greys a control out —
+  // the disc (flat drawn, no plate art) lights is redrawn additive in a warm palette colour
+  // instead of the shared white overlay (see game-reskin SKILL.md step 4).
+  hoverPlateLight: 0xb08d4a, // brighter brass: on a flat disc it lights the rim, not a plate
 
   // No halo on the spin button. It breathed at idle and flared brighter the
   // moment Spin was pressed; Stake review marked the UI poor (5/10, 2026-09-23)
@@ -132,7 +166,9 @@ setUiTheme({
 
   // framed plate art for the readouts and the Buy Bonus CTA (the other slots
   // keep the themed rounded rect, which suits the round buttons)
-  sprites: { buyBonus: "dwBonusButton" },
+  // `buyBonusGlyph` is the same plate: on hover it is drawn again, additive, so
+  // the brass itself catches the light (buyBonusHoverSprite above).
+  sprites: { buyBonus: "dwBonusButton", buyBonusGlyph: "dwBonusButton" },
 
   // drawn neon icons in place of the template's text/emoji button glyphs
   icons: {
@@ -144,6 +180,8 @@ setUiTheme({
     soundOn: "hmIconSoundOn",
     soundOff: "hmIconSoundOff",
     autoSpin: "hmIconAutoSpin",
+    increase: "hmIconIncrease",
+    decrease: "hmIconDecrease",
     // turbo deliberately omitted: UiButton draws it as a vector bolt so it can
     // be hollow when off and fill in when active — a static sprite can't toggle
   },
@@ -258,7 +296,7 @@ if (skin === "hacksaw") {
 
     // the brass plate art has to go with the brass: a framed plate behind a
     // flat grey strip reads as two different bars stacked
-    sprites: { buyBonus: "dwBonusButton" },
+    sprites: { buyBonus: "dwBonusButton", buyBonusGlyph: "dwBonusButton" },
 
     // with the plate art gone the CTA falls back to its rounded rect, which was
     // black-and-gold to match the brass. Their green marks it as the one

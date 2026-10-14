@@ -20,6 +20,9 @@
 	import { playBet } from '../game/utils';
 	import books from './data/base_books';
 
+	const bigScoreBook = books.find((book) => book.events.some((event) => event.type === 'bigScore'));
+	if (!bigScoreBook) throw new Error('Turf War Storybook sample is missing a Big Score book');
+
 	setContext();
 </script>
 
@@ -47,6 +50,16 @@
 			console.log('Running a book at index', index);
 			await playBet({ ...data, state: data.events });
 		},
+	})}
+	{template}
+/>
+
+<Story
+	name="bigScore"
+	args={templateArgs({
+		skipLoadingScreen: true,
+		data: bigScoreBook,
+		action: async (data) => await playBet({ ...data, state: data.events }),
 	})}
 	{template}
 />

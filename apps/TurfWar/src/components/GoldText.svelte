@@ -32,7 +32,7 @@
 		alpha?: number;
 		// override the gold gradient — used to grade high-value superspin coins
 		// into a hotter amber so they read apart from the common ones
-		fill?: number | number[];
+		fill?: number;
 		stroke?: number;
 		// Opt in to Orbitron (DISPLAY_FONT). Titan One stays the default because
 		// its digits are the legible ones at bet-bar size — see game/fonts.ts —
@@ -79,10 +79,25 @@
 		style={{
 			...base,
 			fill: props.stroke ?? 0x0e0f11,
-			stroke: props.stroke ?? 0x0e0f11,
-			strokeThickness: Math.max(2, props.fontSize * 0.13),
+			stroke: { color: props.stroke ?? 0x0e0f11, width: Math.max(2, props.fontSize * 0.13) },
 		}}
 		alpha={0.85}
+	/>
+
+	<!-- 2026-10-01: sodium glow pass. The body used to be an array fill, and
+	     pixi 8 draws only its FIRST stop — bone grey — so every win amount read
+	     as a grey ghost over the grey royals. -->
+	<Text
+		anchor={props.anchor ?? 0.5}
+		text={String(props.text)}
+		style={{
+			...base,
+			fill: 0xf5893d,
+			stroke: { color: 0xf5893d, width: Math.max(3, props.fontSize * 0.12) },
+			dropShadow: { color: 0xf5893d, blur: Math.max(6, props.fontSize * 0.22), distance: 0, angle: Math.PI / 6, alpha: 1 },
+		}}
+		blendMode="add"
+		alpha={0.32}
 	/>
 
 	<Text
@@ -91,13 +106,9 @@
 		onresize={(sizes) => (measuredWidth = sizes.width)}
 		style={{
 			...base,
-			fill: props.fill ?? [0xd9d6ce, 0xf5893d, 0x465562],
-			stroke: props.stroke ?? 0x0e0f11,
-			strokeThickness: Math.max(2, props.fontSize * 0.1),
-			dropShadow: true,
-			dropShadowColor: 0x000000,
-			dropShadowBlur: Math.max(4, props.fontSize * 0.12),
-			dropShadowDistance: Math.max(1.5, props.fontSize * 0.045),
+			fill: props.fill ?? 0xffc38a,
+			stroke: { color: props.stroke ?? 0x0e0f11, width: Math.max(2, props.fontSize * 0.1) },
+			dropShadow: { color: 0x000000, blur: Math.max(4, props.fontSize * 0.12), distance: Math.max(1.5, props.fontSize * 0.045), angle: Math.PI / 6, alpha: 1 },
 		}}
 	/>
 
@@ -107,9 +118,8 @@
 		text={String(props.text)}
 		style={{
 			...base,
-			fill: [0xffffff, 0xfff3bd, 0xfff3bd],
-			stroke: 0x000000,
-			strokeThickness: 0,
+			fill: 0xffffff,
+			stroke: { color: 0x000000, width: 0 },
 		}}
 		alpha={0.3}
 	/>

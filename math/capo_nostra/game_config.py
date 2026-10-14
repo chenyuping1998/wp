@@ -87,7 +87,7 @@ class GameConfig(Config):
         # fractionally above at 94.63 / 94.67 / 94.78, which keeps the spread at
         # 0.20% against Stake's 0.5% ceiling while making each step up the price
         # ladder read as a slightly better deal.
-        self.rtp = 0.9618
+        self.rtp = 0.9604
         self.construct_paths()
 
         # ------------------------------------------------------------------
@@ -443,14 +443,14 @@ class GameConfig(Config):
             # being a ceiling the player can aim at and becomes the only outcome
             # that matters. If the price ever needs to rise again, the wincap
             # rises with it.
-            self._buy_mode("bonus", 100.0, 3, base_mult, rich_mult, wincap_mult, rtp=0.9623),
-            self._buy_mode("bonus_hits", 500.0, 4, base_mult, rich_mult, wincap_mult, rtp=0.9627),
+            self._buy_mode("bonus", 100.0, 3, base_mult, rich_mult, wincap_mult, rtp=0.9605),
+            self._buy_mode("bonus_hits", 500.0, 4, base_mult, rich_mult, wincap_mult, rtp=0.9606),
             # The Don is priced at 94.78% - the best rate in the game, and the
             # reason to buy the top tier rather than three of the bottom one.
             # Stake requires every mode within 0.5% of the others; base sits at
             # 94.58%, so the spread across all four is still 0.20% (unchanged —
             # every mode moved down by the same 0.5 points, 2026-09-03).
-            self._buy_mode("bonus_epic", 1000.0, 5, base_mult, rich_mult, wincap_mult, rtp=0.9638),
+            self._buy_mode("bonus_epic", 1000.0, 5, base_mult, rich_mult, wincap_mult, rtp=0.9608),
         ]
 
     def _buy_mode(self, name, cost, scatters, base_mult, rich_mult, wincap_mult, rtp=None):

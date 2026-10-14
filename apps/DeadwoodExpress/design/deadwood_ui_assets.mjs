@@ -21,6 +21,11 @@ const icons={
  soundOn:'<path d="M12 25H21L32 16V48L21 39H12Z M40 24Q49 32 40 40 M46 16Q61 32 46 48"/>',
  soundOff:'<path d="M12 25H21L32 16V48L21 39H12Z M42 25L54 39 M54 25L42 39"/>',
  autoSpin:'<path d="M14 27A20 20 0 0 1 49 18 M49 10V20H39 M50 37A20 20 0 0 1 15 46 M15 54V44H25"/><path d="M28 25L39 32L28 39Z"/>',
+ // the bet steppers: same stroke and ink extent as the other rail icons, so the
+ // −/+ read at the same weight as autoplay beside them (they were text glyphs,
+ // a third of the icon size, once the stepper grew to autoplay's size)
+ increase:'<path d="M18 32H46 M32 18V46"/>',
+ decrease:'<path d="M18 32H46"/>',
 };
 for(const [name,body] of Object.entries(icons))save(`icon_${name}`,svg(64,64,`<g fill="none" stroke="#eed6a5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${body}</g>`));
-console.log('Generated 15 original Deadwood UI SVG assets.');
+console.log('Generated 17 original Deadwood UI SVG assets.');

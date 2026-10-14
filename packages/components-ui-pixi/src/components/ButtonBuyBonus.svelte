@@ -99,19 +99,21 @@
 
 		{#if uiTheme.buyBonusHoverSpin && !disabled}
 			<!--
-				Behind everything, so the plate covers the rays' roots and only their
-				tips show past its corners. It draws nothing until the cursor arrives
-				and keeps its own clock, so a button nobody is pointing at costs one
-				`if`.
+				Between the plate and the caption: the dial is let into the plate, and
+				the words sit in the hole at its centre. It draws nothing until the
+				cursor arrives and keeps its own clock, so a button nobody is pointing
+				at costs one `if`.
 			-->
 			<BuyBonusHoverSpin
 				{hovered}
 				{center}
 				{plate}
 				speed={uiTheme.buyBonusHoverSpin}
-				rays={uiTheme.buyBonusHoverSpinRays}
+				spokes={uiTheme.buyBonusHoverSpinSpokes}
 				color={uiTheme.buyBonusHoverSpinColor}
 				radius={uiTheme.buyBonusHoverSpinRadius}
+				inner={uiTheme.buyBonusHoverSpinInner}
+				knob={uiTheme.buyBonusHoverSpinKnob}
 			/>
 		{/if}
 
@@ -176,7 +178,13 @@
 							// that signal. This and labelAlpha above are the two numbers
 							// to move if it needs to go further either way.
 							tint: 0x767670,
-							backgroundColor: 0x1a2208,
+							// Themed, not hardcoded. This was 0x1a2208 written straight
+							// into a package thirteen games share — GoBananas' olive. It
+							// only shows on the 'dim' branch, which is why it went
+							// unnoticed: every other game takes 'grey'. The default IS
+							// that olive, so nothing changes anywhere until a theme sets
+							// it. (Spotted in a sibling project that had already fixed it.)
+							backgroundColor: uiTheme.buyBonusDisabledFill,
 						}
 					: {
 							backgroundColor: 0xaaaaaa,

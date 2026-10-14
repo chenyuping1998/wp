@@ -23,6 +23,7 @@ an entry when you want to know what a reviewer's one-line comment really meant.
 - [Every stake must be one the server named](#every-stake-must-be-one-the-server-named)
 - [A guard that cannot see its target](#a-guard-that-cannot-see-its-target)
 - [The oncomplete race — one shape, five places](#the-oncomplete-race--one-shape-five-places)
+- [Deadwood Express post-approval — ten issues, shared fixes](#deadwood-express-post-approval--ten-issues-shared-fixes)
 - [Production bugs worth recognising again](#production-bugs-worth-recognising-again)
 - [Working with the reviewers](#working-with-the-reviewers)
 
@@ -557,6 +558,30 @@ Two rules:
    one dropped beat, and it is worth having whether or not the race is the cause
    — which matters, because these are intermittent and "no longer observed" is
    not evidence.
+
+## Deadwood Express post-approval — ten issues, shared fixes
+
+Approved 2026-10-04 with open issues. Most were in shared packages, so every
+game picks them up on its next build.
+
+| Reported | Cause | Fix (where) |
+| :-- | :-- | :-- |
+| Active base round does not restore its bet (bonus does) | a winning base round was **end-round'ed the moment the play response arrived**, before any reel moved — reload mid-win found no active round and opened on `defaultBetLevel` | `singleRoundWin` now ends the round in `endGame`, like `bonusWin`; resumeGame re-pins `betAmount` from the round (`utils-xstate/createPrimaryMachines.ts`). Zero-win rounds still send no end-round. |
+| Currency symbols vs codes mixed (RUB/UGX/XOF as codes, USD as `$`) | Intl `currencyDisplay:'symbol'` at en-US only has symbols for a few currencies | Stake's own table (stake-engine.com/docs/rgs → Supported Currencies): symbol + before/after per currency; XGC→GC, XSC→SC, XEC→SC, all suffixed (`utils-shared/amount.ts`) |
+| Bet levels restricted by balance (+ dead at $0) | `correctBetAmount` clamped to what the balance could afford | Clamp removed; only min/max + snap to `betLevels`. Affordability is checked at bet time (`isBetCostAvailable` → insufficient-funds notice, no play request). **This reverses "Every stake must be one the server named"'s affordability rung** — the snap-to-ladder part stands. |
+| Holding +/− keeps stepping | `createBetRepeat` 150ms hold-repeat; Shift+arrow OS auto-repeat | Hold-repeat disabled for all games; arrow shortcuts ignore `event.repeat` (`components-ui-pixi/platformUx.svelte.ts`, `EnableShortcuts.svelte`) |
+| Rules: max free spins, "if there is no limit, clarify" | not stated | One sentence: no limit; ends when spins run out or max win is reached |
+| Popout S/L: intro cannot be passed | intro card laid out in fixed px; button off-screen | card scaled to fit the window; click anywhere / Enter continues |
+| Popout S: logo covers symbols | fixed-REM logo vs scaling board | logo sized to the room beside/above the housing, hidden below 40% |
+| Crossing lines: "only one payline displayed" | value plates sit on the line's last cell; lines ending on the same cell stacked plates exactly | coincident plates fanned into a column; each line full-strength only over its paying reels |
+| Replay end: bar lacks the card's info | bar showed MULTIPLIER / WIN / AMOUNT | game publishes the card rows to `stateReplay.summary`; bottom bar and portrait render all six with the card's labels (`UiLabel` captions now condense to `maxWidth`) |
+| Game borders / thumbnail too dark against the site | α0.9 black corner vignette; roof + coat on the tile's edges | screen-blended edge mist + lit rim; thumbnail BG mist veil + FG dissolve at the edges (`design/build_thumbnail_light_edges.py`), border-ring luminance 90 → 204 |
+
+Testing notes: the playtest stub gained `?resume=<mode>&ramt=<stake>` (an active
+round in /authenticate) and `?bal=<amount>`; neither existed, which is why the
+resume and zero-balance paths were never exercised before submission.
+
+---
 
 ## Production bugs worth recognising again
 

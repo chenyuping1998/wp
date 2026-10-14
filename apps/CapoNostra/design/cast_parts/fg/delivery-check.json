@@ -4,79 +4,79 @@
     2048
   ],
   "order": [
-    "body",
-    "head",
     "arm_l",
-    "prop_bat",
+    "head",
+    "body",
     "arm_r",
     "dangle_ponytail",
+    "prop_bat",
+    "fingers_l",
     "dangle_earring_l",
-    "dangle_earring_r",
-    "fingers_l"
+    "dangle_earring_r"
   ],
   "spec": "delivery spec",
   "composite": "pixel-exact",
-  "psd": "layers match PNGs",
+  "psd": "not checked (pip install psd-tools)",
   "body_holes": 0,
   "arms": {
     "arm_l": {
-      "shoulder_overlap_px": 56,
+      "shoulder_overlap_px": 42,
       "kind": "raised_prop"
     },
     "arm_r": {
-      "shoulder_overlap_px": 53,
+      "shoulder_overlap_px": 43,
       "kind": "hanging",
-      "forearm_clearance_px": 53.14
+      "forearm_clearance_px": 56.3
     }
   },
-  "neck_overlap_px": 50,
+  "neck_overlap_px": 30,
   "figure_box": [
-    195,
-    187,
-    932,
-    1823
+    168,
+    197,
+    870,
+    1822
   ],
-  "margin_px": 92,
+  "margin_px": 154,
   "edges": {
-    "body": {
-      "contour_soft": 1.0,
-      "colours": 45210
-    },
-    "head": {
-      "contour_soft": 0.991,
-      "colours": 21081
-    },
     "arm_l": {
       "contour_soft": 1.0,
-      "colours": 18434
+      "colours": 619
     },
-    "prop_bat": {
-      "contour_soft": 0.993,
-      "colours": 9432
+    "head": {
+      "contour_soft": 1.0,
+      "colours": 1037
+    },
+    "body": {
+      "contour_soft": 1.0,
+      "colours": 1943
     },
     "arm_r": {
       "contour_soft": 1.0,
-      "colours": 22148
+      "colours": 698
     },
     "dangle_ponytail": {
       "contour_soft": 1.0,
-      "colours": 14761
+      "colours": 736
     },
-    "dangle_earring_l": {
-      "contour_soft": 0.981,
-      "colours": 1037
-    },
-    "dangle_earring_r": {
-      "contour_soft": 0.988,
-      "colours": 1813
+    "prop_bat": {
+      "contour_soft": 1.0,
+      "colours": 909
     },
     "fingers_l": {
       "contour_soft": 1.0,
-      "colours": 2799
+      "colours": 326
+    },
+    "dangle_earring_l": {
+      "contour_soft": 1.0,
+      "colours": 237
+    },
+    "dangle_earring_r": {
+      "contour_soft": 1.0,
+      "colours": 241
     }
   },
   "variants": [
-    "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/fg/capo",
-    "/Users/stone/stake-engine/wp/apps/CapoNostra/design/cast_parts/fg/don"
+    "cast_parts/fg/capo",
+    "cast_parts/fg/don"
   ]
 }

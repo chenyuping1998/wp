@@ -19,10 +19,13 @@ install_png "$generated/exec-eeb9e34b-8176-4587-a167-310c803f6b3b.png" "$app/sta
 install_png "$generated/exec-11368421-a2d7-4b2b-9dfc-50b4afa23090.png" "$app/static/assets/sprites/turfFx/sw_locked.png" 256 1024
 
 # Bright early-morning background replaces the rejected dark thumbnail layer.
-install_png "$generated/exec-9fda7a4c-c7a3-42c1-a7a4-db3b61125fd4.png" "$app/static/assets/sprites/turfBrand/tile_background.png" 1024 1024
+install_png "$generated/exec-9fda7a4c-c7a3-42c1-a7a4-db3b61125fd4.png" "$app/design/_brand/tile_background.png" 1024 1024
 install_png "$generated/exec-9fda7a4c-c7a3-42c1-a7a4-db3b61125fd4.png" "$upload/thumbnail/TurfWar-BG.png" 1000 1000
 
 /Applications/anaconda3/envs/math-sdk/bin/python "$app/design/postprocess_art_revision.py"
 
-cp "$app/static/assets/sprites/turfBrand/tile_foreground.png" "$upload/thumbnail/TurfWar-FG.png"
-cp "$app/static/assets/sprites/turfBrand/logo.png" "$upload/thumbnail/Silverstars-Logo.png"
+cp "$app/design/_brand/tile_foreground.png" "$upload/thumbnail/TurfWar-FG.png"
+# The provider slot takes the STUDIO mark. This line used to copy the game title
+# (turfBrand/logo.png) there, which shipped Turf War as its own provider logo
+# until 2026-10-12.
+cp "$app/design/_brand/Silverstars-Logo.png" "$upload/thumbnail/Silverstars-Logo.png"

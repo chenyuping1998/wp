@@ -7,7 +7,7 @@
 	import { EnableHotkey } from 'components-shared';
 	import { MainContainer } from 'components-layout';
 	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
-	import { stateModal, stateReplay } from 'state-shared';
+	import { stateModal, stateReplay, stateUi } from 'state-shared';
 
 	import { UI, UiGameName } from 'components-ui-pixi';
 	import { GameVersion } from 'components-ui-html';
@@ -38,8 +38,32 @@
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
 	import FreeSpinOutro from './FreeSpinOutro.svelte';
 	import Transition from './Transition.svelte';
+	import { castTopStd, cornerLogoScale, nameHitsHousing, portraitBand, portraitLogoBox } from '../game/cornerLogo';
+	import { stateGame } from '../game/stateGame.svelte';
 
 	const context = getContext();
+
+	// The corner logo yields to the housing and the Don's head in a small popout
+	// (game/cornerLogo.ts). Ink measured off capoBrand/logo.png: 15%–85% across,
+	// down to 92%. Cast.svelte stands the figure's top at 0.11 of the box.
+	const CORNER_LOGO = {
+		width: REM * 12,
+		height: REM * 12 * (520 / 1200),
+		offsetX: 0,
+		inkLeft: 0.15,
+		inkBottom: 0.917,
+	};
+	const logoScale = $derived(
+		cornerLogoScale(context, CORNER_LOGO, stateGame.featureSplashShow ? null : castTopStd(context, 0.11)),
+	);
+	// "13:35 CAPO NOSTRA" ends ~265px in
+	// Portrait: the strip above the housing holds the logo (left) and the Don's
+	// upper body (right, Cast.svelte). The corner logo and the typed name stand
+	// down there — the strip's logo carries the title, the clock stays.
+	const portrait = $derived(portraitBand(context));
+	// capoBrand/logo.png ink, fractions of its 1200×520 canvas
+	const LOGO_INK = { left: 0.15, top: 0, right: 0.851, bottom: 0.917 };
+	const hideName = $derived(nameHitsHousing(context, 265) || portrait !== null);
 
 	// soft depth-of-field on the jungle scene so the reels read as the subject
 	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
@@ -89,6 +113,13 @@
 			<BoardFrame />
 		</MainContainer>
 
+		<!-- Portrait: the logo in the strip's left half. A running feature's
+		     counter takes that slot (FreeSpinCounter.svelte), so it stands down. -->
+		{#if portrait && !stateUi.freeSpinCounterShow}
+			{@const logo = portraitLogoBox(portrait, LOGO_INK)}
+			<Sprite key="hmLogo" anchor={0.5} x={logo.x} y={logo.y} width={logo.width} height={logo.height} />
+		{/if}
+
 		<MainContainer>
 			<Board />
 			<ReelDust />
@@ -103,7 +134,7 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name="CAPO NOSTRA" />
+				<UiGameName name={hideName ? '' : 'CAPO NOSTRA'} />
 			{/snippet}
 			{#snippet logo()}
 				<!--
@@ -120,17 +151,15 @@
 					covers Mobile S at 360. Below it the duplicate is simply not drawn —
 					nothing is lost, the name is still on screen top-left.
 				-->
-				{#if context.stateLayoutDerived.canvasSizes().width >= 480}
-					<Text
+				{#if context.stateLayoutDerived.canvasSizes().width >= 480 && logoScale > 0 && !portrait}
+					<!-- The game's logo art (1200×520), not the name typed in the title
+					     font: a plain text title in the corner is one of the things
+					     review's "low quality assets" tag lists (2026-09-29 audit). -->
+					<Sprite
+						key="hmLogo"
 						anchor={{ x: 1, y: 0 }}
-						text="CAPO NOSTRA"
-						style={{
-							fontFamily: TITLE_FONT,
-							fontSize: REM * 1.5,
-							fontWeight: TITLE_FONT_WEIGHT,
-							lineHeight: REM * 2,
-							fill: 0xffffff,
-						}}
+						width={CORNER_LOGO.width * logoScale}
+						height={CORNER_LOGO.height * logoScale}
 					/>
 				{/if}
 			{/snippet}

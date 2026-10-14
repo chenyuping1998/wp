@@ -1,3 +1,13 @@
+> 2026-10-11：已重新驗證現有 Don／女接待 Art Deco 版本、主遊戲與 FG 切換，並更新 root upload/CapoNostra 前端。縮圖與双角色封面保留已完成版本。平台尚未更新。
+
+## 2026-10-04 疊框辨識度
+
+小框重新生成薄邊，opaque 像素比例由47.5%減至20.5%；倍數移到底框暗色牌，亮光僅沿上框走。相同本地 book133 已實機比對，圖案本身未重畫。frontend 已同步 upload/CapoNostra；證據 design/_incoming/frame_legibility_20261004/{before,after}-game.png。
+
+## 2026-10-04 Don 重塑（使用者退回厚重六層版）
+
+已改自然成人比例、灰西裝與 Deadwood conductor 同結構姿勢；新完整人物網格與自製動作接入。更新來源 design/_incoming/don_deadwood_20261004。舊六層比例與PSD已封存。本地 frontend、thumbnail、cover 已重新打包。
+
 # Capo Nostra — 美術盤點
 
 最後更新：2026-09-17
@@ -6,6 +16,10 @@
 設計方向與規格（色票、尺寸、構圖要求）在 [ART_BRIEF.md](ART_BRIEF.md)。
 
 圖例：✅ 已完成並接上　🟡 圖有了但沒接　🔴 還是 Hot Miami 的圖　⬜ 沒有圖
+
+> ⚠ **2026-10-04 全面換畫風完成**：改成 Art Deco 黑白紅版，**所有美術（符號、框、背景、UI、轉場、兩隻角色、縮圖）都已換新**，
+> 進度與檔案見 ART_BRIEF.md §10。下面的清單描述的是**舊的半寫實渲染版**，僅供對照。新需求單：[ART_BRIEF.md](ART_BRIEF.md)；打樣：`design/STYLE_TEST_ARTDECO.md`；
+> 定稿圖：`design/style_frame/`。
 
 ---
 
@@ -564,3 +578,7 @@ hook `AudioBufferSourceNode.prototype.start`，數實際起了幾個 voice、
 最多推遲 200ms 以免聲音落後畫面），但**在我的環境裡驗不出來就退掉了**，
 沒有進 build。如果你要，我可以放回去讓你直接聽 —— 但它只能救「擠在一起」，
 救不了「整手沒觸發」，而目前的證據指向後者。
+
+## 2026-10-05 雪茄煙
+
+Don 原圖固定煙以渲染裁切隱藏，獨立煙霧沿雪茄尖端骨架位置上升、漂移及淡出；開場 SVG 同步。已重建並更新 upload/CapoNostra/frontend。

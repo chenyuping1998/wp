@@ -19,8 +19,8 @@
 	import { stateGame } from '../game/stateGame.svelte';
 	import { tierByBonusTier } from '../game/featureTiers';
 	import FeatureSplashPanel from './FeatureSplashPanel.svelte';
-	import { CAST_NATIVE } from './CastFigure.svelte';
 	import CastFigureMesh from './CastFigureMesh.svelte';
+	import { castPlacement } from '../game/castPlacement';
 	import { MainContainer } from 'components-layout';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation, { SIGN_DROP_MS } from './FreeSpinAnimation.svelte';
@@ -65,7 +65,7 @@
 	// off that point; the user's read was that it sat too high, and it did — the
 	// title above it plus a top-anchored card left the whole lower half empty.
 	const panelCenterY = $derived(layout.height * 0.54);
-	const panelWidth = $derived(Math.min(layout.width * 0.4, 620));
+	const panelWidth = $derived(Math.min(layout.width * 0.46, 680));
 	// Content-driven, with a floor. The reference's card is tall because its copy
 	// runs to seven lines; ours runs to four, and forcing the same proportion left
 	// a third of the card empty under the last line.
@@ -73,15 +73,10 @@
 
 
 	// The character. Cast.svelte stands its own copy down while this is up
-	// (stateGame.featureSplashShow) so there is only ever one of her, and this one
-	// is drawn on the NEAR side of the scrim so the dimming does not touch her.
-	const castHeight = $derived(layout.height * 1.12);
-	const castWidth = $derived((castHeight * CAST_NATIVE.girl.w) / CAST_NATIVE.girl.h);
-	// The RIGHT, as the board's own cast is. Standing her on the left made the two
-	// screens contradict each other: she walks off the right edge of the board and
-	// reappears on the left of the card announcing the feature.
-	const castX = $derived(layout.width - castWidth * 0.44);
-	const castTopY = $derived(layout.height * 0.04);
+	// (stateGame.featureSplashShow) so there is only ever one of him, and this one
+	// is drawn on the NEAR side of the scrim so the dimming does not touch him —
+	// in the same spot the board's copy stands (game/castPlacement.ts).
+	const cast = $derived(castPlacement(context));
 
 	// The number's slam, timed against the plaque's drop.
 	//
@@ -95,6 +90,13 @@
 	// drive the header strip's arrival, so the count still lands rather than
 	// appearing.
 	const LEAD_S = (SIGN_DROP_MS * 0.6) / 1000;
+	// 2026-10-01: the entry card is shown at the shutter's full black, and the
+	// shutter then holds ~0.5s and takes ~0.8s to open. Started at once, the
+	// card's arrival played behind the doors and the player found it already
+	// sitting there. The entry timeline waits for the doors; a retrigger has no
+	// transition and starts at once.
+	const ENTRY_DELAY_S = 0.35;
+	const entryDelay = $derived(isEntry ? ENTRY_DELAY_S : 0);
 	const SLAM_S = 0.3;
 	const SETTLE_S = 0.35;
 
@@ -115,7 +117,7 @@
 		const tick = (now: number) => {
 			animT += ((now - last) / 1000) * featureTimeScale();
 			last = now;
-			if (!impactFired && animT >= LEAD_S + SLAM_S) {
+			if (!impactFired && animT >= entryDelay + CARD_IN_S * 0.6 + LEAD_S + SLAM_S) {
 				impactFired = true;
 				burstShown = true;
 				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
@@ -136,14 +138,16 @@
 		// -1 is "never started" — hold the resting pose so a stray render before
 		// freeSpinIntroUpdate never shows a 3x number.
 		if (animT < 0) return { scale: 1, rotation: 0, glow: 0.45, alpha: 1 };
+		// on entry the count waits for the card to be dealt
+		const local = animT - (isEntry ? entryDelay + CARD_IN_S * 0.6 : 0);
 		// lead: sign still dropping, number withheld entirely
-		if (animT < LEAD_S) return { scale: 3, rotation: 0, glow: 0, alpha: 0 };
-		if (animT < LEAD_S + SLAM_S) {
+		if (local < LEAD_S) return { scale: 3, rotation: 0, glow: 0, alpha: 0 };
+		if (local < LEAD_S + SLAM_S) {
 			// accelerating drop from 3x: the fall, not an ease-in-out settle
-			const p = (animT - LEAD_S) / SLAM_S;
+			const p = (local - LEAD_S) / SLAM_S;
 			return { scale: 3 - 2 * p * p, rotation: 0, glow: 0.18, alpha: 1 };
 		}
-		const t = animT - LEAD_S - SLAM_S;
+		const t = local - LEAD_S - SLAM_S;
 		const settle = t < SETTLE_S ? 1 - 0.14 * Math.sin((t / SETTLE_S) * Math.PI) : 1;
 		return {
 			scale: settle * (1 + 0.03 * Math.sin(t * 2.1)),
@@ -152,6 +156,39 @@
 			alpha: 1,
 		};
 	});
+
+	// The entry card's own arrival: dealt in (0.6 -> 1 with overshoot and a
+	// small turn), the title dropping onto it, then a slow breathe and a light
+	// sweep every few seconds so a screen that waits on the player is alive.
+	const CARD_IN_S = 0.5;
+	const backOut = (p: number) => {
+		const c = 1.9;
+		return 1 + (c + 1) * (p - 1) ** 3 + c * (p - 1) ** 2;
+	};
+	const cardPose = $derived.by(() => {
+		if (animT < 0) return { scale: 1, rotation: 0, alpha: 1, titleY: 0, titleAlpha: 1, sweep: -1, flash: 0 };
+		const t = animT - entryDelay;
+		if (t < 0) return { scale: 0.6, rotation: -0.06, alpha: 0, titleY: -60, titleAlpha: 0, sweep: -1, flash: 0 };
+		const p = Math.min(1, t / CARD_IN_S);
+		const e = backOut(p);
+		const tp = Math.min(1, Math.max(0, (t - 0.12) / 0.4));
+		const settled = Math.max(0, t - CARD_IN_S);
+		const SWEEP_EVERY = 3.4;
+		const sp = settled > 0.4 ? ((settled - 0.4) % SWEEP_EVERY) / 0.9 : 2;
+		return {
+			scale: (0.6 + 0.4 * e) * (1 + 0.006 * Math.sin(settled * 1.8)),
+			rotation: -0.06 * (1 - e),
+			alpha: Math.min(1, p * 2.2),
+			titleY: -60 * (1 - backOut(tp)),
+			titleAlpha: tp,
+			sweep: sp <= 1 ? sp : -1,
+			// a landing flash: an additive self-copy fading out of the moment it settles
+			flash: p >= 1 ? Math.max(0, 0.55 * (1 - (t - CARD_IN_S) / 0.35)) : 0,
+		};
+	});
+
+	// how long a retrigger's +N plaque stays up before the feature resumes
+	const RETRIGGER_HOLD_MS = 2000;
 
 	context.eventEmitter.subscribeOnMount({
 		freeSpinIntroShow: () => {
@@ -169,9 +206,24 @@
 			// fires first and cannot tell them apart.
 			stateGame.featureSplashShow = isEntry && tierByBonusTier(stateGame.bonusTier) !== null;
 			freeSpinsFromEvent = emitterEvent.extraSpins ?? emitterEvent.totalFreeSpins;
+			// Arm the resolver BEFORE the slam starts (the oncomplete race: an
+			// animation that finishes between the two statements finds the old,
+			// no-op callback and the feature waits forever).
+			let resolveThis: () => void = () => {};
+			const done = waitForResolve((resolve) => {
+				oncomplete = resolve;
+				resolveThis = resolve;
+			});
 			// retriggers reuse this event, so the slam replays for the +N as well
 			startNumberAnim();
-			await waitForResolve((resolve) => (oncomplete = resolve));
+			// A retrigger plaque is a beat inside the feature, not a stop: it holds
+			// long enough to read the +N and then the feature carries on by itself
+			// (it used to wait for a tap — 28s+ observed, 2026-10-12). A tap still
+			// skips it. The entry card keeps waiting for the player. The timer
+			// resolves THIS showing only, never a later one.
+			const autoContinue = isEntry ? undefined : setTimeout(() => resolveThis(), RETRIGGER_HOLD_MS);
+			await done;
+			clearTimeout(autoContinue);
 		},
 	});
 </script>
@@ -193,31 +245,26 @@
 			feature's name as the largest thing on screen, one panel under it
 			carrying the spin count and the rules, and the click prompt at the foot.
 		-->
+		{#if cast.hasSideBand}
+			<!-- The masked bat carrier, from the same layered rig that stands beside
+			     the board (it was once Hot Miami's spine woman, then this mesh in the
+			     wrong box under the scrim, so the card had no one on it). Untransformed
+			     container: CastFigureMesh places itself in canvas px. Flipped, as the
+			     board's copy is, so he faces the board. -->
+			<Container>
+				<CastFigureMesh
+					who="guy"
+					inline
+					x={cast.x}
+					topY={cast.topY}
+					height={cast.height}
+					groundY={cast.groundY}
+					flip
+					innerEdge={cast.boardInkRight}
+				/>
+			</Container>
+		{/if}
 		<MainContainer>
-			<!--
-				The BOSS, from the mesh rig — not CastFigureSpine.
-
-				This card drew `who="girl"`: Hot Miami's woman, in a pink-and-cyan
-				dress, holding a neon toy ray gun. It is shown every time a player
-				enters the free game, which is the largest moment the game has, and
-				it had survived every pass because the splash is only reachable on a
-				feature trigger.
-				
-				Switching the same component to "guy" would not have helped — that
-				spine is Miami's man in a Hawaiian shirt with a baseball bat. Both
-				spine figures belong to the other game. The only Turf War
-				character that exists is the mesh rig (meshRigs/cast_guy), which is
-				what stands beside the board, so the splash uses it too and the
-				player meets the same man in both places.
-			-->
-			<CastFigureMesh
-				who="guy"
-				x={castX}
-				topY={castTopY}
-				height={castHeight}
-				groundY={layout.height}
-				flip
-			/>
 
 			<Container x={layout.width * 0.5}>
 				<!--
@@ -243,6 +290,7 @@
 					An additive pool in the tier's colour puts it back on top without
 					touching the art.
 				-->
+				<Container y={cardPose.titleY} alpha={cardPose.titleAlpha}>
 				<Sprite
 					key="fxGlow"
 					anchor={0.5}
@@ -260,16 +308,51 @@
 					width={titleInkWidth / 0.97}
 					height={(titleInkWidth / 0.97) * (360 / 1024)}
 				/>
+				</Container>
 
-				<FeatureSplashPanel
-					{tier}
-					centerY={panelCenterY}
-					width={panelWidth}
-					minHeight={panelMinHeight}
-					header={`${freeSpinsFromEvent} ${title} ${subtitle}`}
-					headerScale={numberPose.scale}
-					headerAlpha={numberPose.alpha}
-				/>
+				<Container
+					y={panelCenterY}
+					scale={cardPose.scale}
+					rotation={cardPose.rotation}
+					alpha={cardPose.alpha}
+				>
+					<Container y={-panelCenterY}>
+					<FeatureSplashPanel
+						{tier}
+						centerY={panelCenterY}
+						width={panelWidth}
+						minHeight={panelMinHeight}
+						header={`${freeSpinsFromEvent} ${title} ${subtitle}`}
+						headerScale={numberPose.scale}
+						headerAlpha={numberPose.alpha}
+					/>
+					</Container>
+					{#if cardPose.flash > 0.01}
+						<Sprite
+							key="fxGlow"
+							anchor={0.5}
+							tint={0xffc38a}
+							blendMode="add"
+							width={panelWidth * 1.3}
+							height={panelMinHeight * 1.6}
+							alpha={cardPose.flash}
+						/>
+					{/if}
+					{#if cardPose.sweep >= 0}
+						<!-- light sweep across the card -->
+						<Sprite
+							key="fxStreak"
+							anchor={0.5}
+							x={(cardPose.sweep - 0.5) * panelWidth * 1.2}
+							rotation={-0.5}
+							tint={0xffc38a}
+							blendMode="add"
+							width={panelWidth * 0.22}
+							height={panelMinHeight * 1.9}
+							alpha={0.45 * Math.sin(Math.PI * cardPose.sweep)}
+						/>
+					{/if}
+				</Container>
 			</Container>
 		</MainContainer>
 	{:else}
@@ -285,9 +368,8 @@
 					fontSize: Math.min(sizes.width * 0.105, (sizes.width * 1.4) / title.length),
 					fontWeight: TITLE_FONT_WEIGHT,
 					letterSpacing: 5,
-					fill: [0xd9d6ce, 0xf5893d, 0x465562],
-					stroke: 0x0e0f11,
-					strokeThickness: 6,
+					fill: 0xd9d6ce,
+					stroke: { color: 0x0e0f11, width: 6 },
 				}}
 			/>
 			<!-- glow bed sits inside the scaled container so it swells with the slam -->
@@ -326,13 +408,12 @@
 					fontWeight: TITLE_FONT_WEIGHT,
 					letterSpacing: 4,
 					fill: 0xf5893d,
-					stroke: 0x0e0f11,
-					strokeThickness: 3,
+					stroke: { color: 0x0e0f11, width: 3 },
 				}}
 			/>
 		{/snippet}
 		</FreeSpinAnimation>
 	{/if}
 
-	<PressToContinue onpress={() => oncomplete()} />
+	<PressToContinue showLabel={isEntry} position="betweenBoardAndBottom" onpress={() => oncomplete()} />
 </FadeContainer>

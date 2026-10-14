@@ -81,12 +81,11 @@
   "base"
  ],
  "style": {
-  "kind": "render",
+  "kind": "noir",
   "source": "../../../ART_BRIEF.md",
   "frames": [
-   "style_frame/h1.png",
-   "style_frame/h2.png",
-   "style_frame/w.png"
+   "style_frame/don_head.png",
+   "style_frame/h1.png"
   ]
  }
 }

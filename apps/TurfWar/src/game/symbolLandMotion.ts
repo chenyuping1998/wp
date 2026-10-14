@@ -332,35 +332,21 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
 		},
 	},
 
-	// S — scatter. It arrives still TURNING and slows to a stop, which is the
-	// only rotation of that size on the board and makes a scatter landing
-	// recognisable before the eye has read the art. The anticipation build hangs
-	// off scatters, so being able to spot one landing is worth a beat of its own.
+	// S — the boombox. It is SET DOWN hard and rocks once on its base, dust
+	// kicking out — no rotation beyond the rock. Until 2026-09-27 it arrived
+	// still turning (~110°), inherited from Hot Miami's starburst scatter.
 	S: {
-		spins: true,
 		frame: (t) => {
 			const u = p(t);
-			// Tapered to exactly zero at u=1, not merely small: `ReelSymbol` flips
-			// the symbol to 'static' the instant the landing completes, so a few
-			// degrees of residual lean would snap away in one frame.
-			const spin = Math.exp(-3.6 * u) * (1 - u);
+			const fall = (1 - u) * (1 - u);
+			const rock = Math.sin(u * Math.PI * 2) * (1 - u);
 			return rest({
-				rotation: 1.9 * spin,
-				scaleX: 1 + 0.1 * spin,
-				scaleY: 1 + 0.1 * spin,
-				overlays: [
-					{
-						key: 'fxGlow',
-						x: 0,
-						y: 0,
-						width: 1.1 + 0.5 * spin,
-						height: 1.1 + 0.5 * spin,
-						rotation: 0,
-						alpha: 0.45 * spin,
-						tint: 0xf5893d,
-						behind: true,
-					},
-				],
+				dy: -0.1 * fall,
+				rotation: 0.09 * rock,
+				scaleY: 1 - 0.06 * hump(u, 0.4),
+				bloomAlpha: 0.25 * hump(u, 0.6),
+				bloomTint: 0xf5893d,
+				overlays: dust(u, 0.6, 0.5),
 			});
 		},
 	},

@@ -125,18 +125,21 @@
 	const upsert = (frames: FrameEntry[], entryScale: number) => {
 		const incoming = new Map(frames.map((frame) => [keyOf(frame), frame]));
 		const kept = active.filter((frame) => !incoming.has(keyOf(frame)));
+		const created: ActiveFrame[] = [];
 		const updated = frames.map((frame) => {
 			const existing = active.find((candidate) => keyOf(candidate) === keyOf(frame));
 			if (existing) {
 				existing.mult = frame.mult;
 				return existing;
 			}
-			return makeFrame(frame, entryScale);
+			const next = makeFrame(frame, entryScale);
+			created.push(next);
+			return next;
 		});
 		active = [...kept, ...updated];
 		// Frames that are ARRIVING run their per-tier motion; the tween is only
 		// still used for the restate/re-roll/doubling punches.
-		updated.forEach((frame) => {
+		created.forEach((frame) => {
 			if (frame.entryT >= 0) {
 				frame.scale.set(1, { duration: 0 });
 				frame.glow.set(1, { duration: 0 });
@@ -144,7 +147,7 @@
 				frame.scale.set(1, { duration: scaled(T.entryMs), easing: backOut });
 			}
 		});
-		if (updated.some((frame) => frame.entryT >= 0)) runEntries();
+		if (created.some((frame) => frame.entryT >= 0)) runEntries();
 	};
 
 	// per-reel reveal: hold the spin's Frames until each one's own reel stops, so
@@ -180,22 +183,36 @@
 			const changed = active.filter((frame) =>
 				frames.some((candidate) => keyOf(candidate) === keyOf(frame) && candidate.mult !== frame.mult),
 			);
+			if (changed.length > 0) {
+				await Promise.all(changed.map((frame) =>
+					frame.scale.set(0.86, { duration: scaled(T.rerollOutMs), easing: cubicOut }),
+				));
+			}
+			// The new number appears at the small impact, then rebounds into view.
 			upsert(frames, 1);
 			if (changed.length === 0) return;
-			await Promise.all(changed.map((frame) => frame.scale.set(1.18, { duration: scaled(T.rerollOutMs), easing: backOut })));
-			await Promise.all(changed.map((frame) => frame.scale.set(1, { duration: scaled(T.rerollInMs), easing: cubicOut })));
+			await Promise.all(changed.map((frame) =>
+				frame.scale.set(1, { duration: scaled(T.rerollInMs), easing: backOut }),
+			));
 		},
 		framesDoubled: async ({ frames }) => {
 			// Punch each doubled frame so the new value is noticed.
 			const touched = active.filter((frame) =>
 				frames.some((candidate) => keyOf(candidate) === keyOf(frame)),
 			);
+			await Promise.all(touched.map((frame) =>
+				frame.scale.set(0.88, { duration: scaled(T.doubleOutMs), easing: cubicOut }),
+			));
 			frames.forEach((frame) => {
 				const target = active.find((candidate) => keyOf(candidate) === keyOf(frame));
 				if (target) target.mult = frame.mult;
 			});
-			await Promise.all(touched.map((frame) => frame.scale.set(1.35, { duration: scaled(T.doubleOutMs), easing: backOut })));
-			await Promise.all(touched.map((frame) => frame.scale.set(1, { duration: scaled(T.doubleInMs), easing: cubicOut })));
+			await Promise.all(touched.map((frame) =>
+				frame.scale.set(1.35, { duration: scaled(T.doubleInMs * 0.45), easing: backOut }),
+			));
+			await Promise.all(touched.map((frame) =>
+				frame.scale.set(1, { duration: scaled(T.doubleInMs * 0.55), easing: cubicOut }),
+			));
 		},
 		bonusTierEnter: async () => {
 			active = [];
@@ -253,10 +270,14 @@
 	// never a tween per frame however many are on the grid.
 	let shine = $state(0);
 	onMount(() => {
-		const id = setInterval(() => {
-			shine = (Date.now() % 2600) / 2600;
-		}, 40);
-		return () => clearInterval(id);
+		// frame clock (was a 40 ms interval: the sweep stepped at 25 fps)
+		let raf = 0;
+		const tick = (now: number) => {
+			shine = (now % 2600) / 2600;
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
 	});
 </script>
 
@@ -337,7 +358,19 @@
 				width={span}
 				height={span}
 				tint={tint}
-				alpha={0.55 + 0.45 * glow}
+				alpha={0.82 + 0.18 * glow}
+			/>
+			<!-- 2026-10-01: a standing rim light. The bag art is dark leather on a
+			     dark board, and at rest a plain frame was close to invisible — the
+			     only sign of the mechanic was a number printed over the symbol. -->
+			<Sprite
+				key={edgeKey}
+				anchor={{ x: 0.5, y: 0.5 }}
+				width={span}
+				height={span}
+				tint={tint}
+				blendMode="add"
+				alpha={0.22 + 0.18 * glow}
 			/>
 
 			<!-- arrival flash: a white copy of the casting, fading out of the hit -->
@@ -398,34 +431,47 @@
 				/>
 			{/if}
 
-			<!-- The multiplier sits at 0.22 of the span below centre, not 0.34.
-			     The plates carry a cleared centre circle of radius ~0.31 x span
-			     (design/soften_frames.py), and 0.34 put the number just OUTSIDE
-			     it — printed over the lower rim, the dial and the rivets, which is
-			     the least legible band on the whole plate. Inside the clear zone
-			     the digits sit on glass. -->
-			<Text
-				text={`${frame.mult}x`}
-				anchor={{ x: 0.5, y: 0.5 }}
-				y={span * 0.22}
-				style={{
-					fontFamily: DISPLAY_FONT,
-					fontWeight: DISPLAY_FONT_WEIGHT,
-					// The number grows with the tier, so the ladder is legible without
-					// actually reading the digits — but it is sized off SYMBOL_SIZE, not
-					// off `span`. A 3x3's label scaled to its footprint would be three
-					// times the height of a 1x1's for a value that is only worth three
-					// times as much through geometry the player can already see; the
-					// footprint IS the size cue, and doubling up on it just makes the
-					// board shout. It gets a modest bump instead.
-					fontSize:
-						SYMBOL_SIZE *
-						(tier === 'elite' ? 0.33 : tier === 'premium' ? 0.28 : 0.24) *
-						(1 + (sizeOf(frame) - 1) * 0.18),
-					fill: tint,
-					stroke: { color: 0x0e0f11, width: SYMBOL_SIZE * 0.045 },
-				}}
-			/>
+			<!--
+				The multiplier rides a painted tag on the frame's lower-right corner.
+				2026-10-01: it used to be bare text at 0.22 of the span below centre,
+				i.e. printed across the symbol it multiplies — over a bottle's label,
+				a chain's crown — with nothing behind it but the symbol art. A tag
+				off the symbol keeps both readable, and a painted plate (the game's
+				own drawer plate) instead of a text label is what makes it read as
+				an object on the board. The tag is sized off SYMBOL_SIZE, with a
+				modest bump per tier and footprint, for the same reason the number
+				always was: the footprint is already the size cue.
+			-->
+			{@const tag =
+				SYMBOL_SIZE *
+				(tier === 'elite' ? 0.56 : tier === 'premium' ? 0.5 : 0.46) *
+				(1 + (sizeOf(frame) - 1) * 0.15)}
+			<Container x={span * 0.5 - tag * 0.42} y={span * 0.5 - tag * 0.42}>
+				{#if tier !== 'plain'}
+					<Sprite
+						key="fxGlow"
+						anchor={0.5}
+						tint={tint}
+						blendMode="add"
+						width={tag * 1.9}
+						height={tag * 1.9}
+						alpha={0.35 * (0.6 + 0.4 * glow)}
+					/>
+				{/if}
+				<Sprite key="turfUiDrawerPlate" anchor={0.5} width={tag} height={tag} />
+				<Text
+					text={`${frame.mult}x`}
+					anchor={{ x: 0.5, y: 0.5 }}
+					y={tag * 0.02}
+					style={{
+						fontFamily: DISPLAY_FONT,
+						fontWeight: DISPLAY_FONT_WEIGHT,
+						fontSize: tag * (String(frame.mult).length > 2 ? 0.3 : String(frame.mult).length > 1 ? 0.36 : 0.44),
+						fill: tint,
+						stroke: { color: 0x0e0f11, width: tag * 0.07 },
+					}}
+				/>
+			</Container>
 		</Container>
 	{/each}
 

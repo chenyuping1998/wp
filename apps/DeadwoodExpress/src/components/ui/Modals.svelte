@@ -65,10 +65,8 @@
 	}
 
 	/* ══════════════════════════════════════════════════════
-	   Hot Miami — neon-sunset modal skin.
-	   Deep olive canvas, brass trim, banana-gold highlights: the same palette as
-	   the reel housing (BoardFrame), the free-spin plaques and the bet bar
-	   (game/uiTheme.ts), so Buy Bonus and every other modal read as one game.
+	   Deadwood modal skin — the bet strip's palette (game/uiTheme.ts), so the
+	   pop-ups read as part of the same game.
 	   Targets the shared component class names:
 	   - .button (components-shared/Button.svelte)
 	   - .rectangle (components-ui-html/BaseIcon.svelte)
@@ -96,10 +94,29 @@
 	:global(.pop-up-wrap h2),
 	:global(.pop-up-wrap h3),
 	:global(.pop-up-wrap h4) {
-		font-family: var(--gb-display-font) !important;
-		/* Titan One is single-weight — a requested bold would only be synthesised */
-		font-weight: 400 !important;
-		letter-spacing: 0.02em;
+		/* Cinzel, the logo's inscription face (game/fonts.ts DISPLAY_FONT) */
+		font-family: var(--hm-title-font) !important;
+		font-weight: 700 !important;
+		letter-spacing: 0.06em;
+	}
+
+	/* Modal titles (BaseTitle) and the stake readout in the bet stepper: the
+	   shared components leave both as plain 1rem body text, so "BET MENU" was
+	   the smallest line on its own panel. */
+	:global(.ui-modal-title-wrap) {
+		font-family: var(--hm-title-font) !important;
+		font-weight: 700 !important;
+		font-size: 1.35rem !important;
+		letter-spacing: 0.08em;
+		color: #e7c98a !important;
+		margin-bottom: 0.35rem;
+	}
+	:global(.toggle-wrap .amount) {
+		font-size: 1.3rem !important;
+		font-weight: 700 !important;
+		color: #f5edda !important;
+		min-width: 6.5rem;
+		text-align: center;
 	}
 
 	/* ── Bonus buy menu sizing (Hot Miami only) ─────────────────────────────
@@ -170,54 +187,60 @@
 		}
 	}
 
+	/* ══════════════════════════════════════════════════════
+	   Deadwood colours (2026-09-29). Everything below was GoBananas' jungle
+	   olive — rgba(38,52,18) plates, a pink hover on the scrollbar — with one
+	   late line repainting a few panels teal on top, so the bet menu, autoplay
+	   and notification pop-ups still came up olive. Now one palette, the bet
+	   strip's: charcoal-teal enamel, aged brass edge, spectral-teal focus.
+	   ══════════════════════════════════════════════════════ */
+
 	/* Button icon background (the rounded rectangle inside buttons) */
 	:global(.rectangle) {
-		background: linear-gradient(
-			160deg,
-			rgba(38, 52, 18, 0.95) 0%,
-			rgba(18, 26, 8, 0.98) 45%,
-			rgba(30, 42, 14, 0.95) 100%
-		) !important;
-		border: 1px solid rgba(216, 163, 52, 0.4) !important;
-		border-radius: 10px !important;
+		background: #123029 !important;
+		border: 1px solid rgba(184, 149, 84, 0.55) !important;
+		border-radius: 8px !important;
 		box-shadow:
-			0 2px 10px rgba(0, 0, 0, 0.45),
-			inset 0 1px 0 rgba(255, 243, 189, 0.07) !important;
-		transition: all 0.2s ease !important;
+			0 2px 8px rgba(0, 0, 0, 0.45),
+			inset 0 1px 0 rgba(231, 201, 138, 0.1) !important;
+		transition: all 0.15s ease !important;
 	}
 
 	:global(.button:hover .rectangle) {
-		border-color: rgba(255, 215, 94, 0.7) !important;
-		box-shadow:
-			0 4px 18px rgba(216, 163, 52, 0.28),
-			inset 0 1px 0 rgba(255, 243, 189, 0.12) !important;
+		background: #1a4238 !important;
+		border-color: rgba(231, 201, 138, 0.9) !important;
 	}
 
 	:global(.button:active .rectangle) {
-		border-color: rgba(255, 233, 138, 0.85) !important;
-		box-shadow:
-			0 1px 6px rgba(216, 163, 52, 0.35),
-			inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+		background: #0c231e !important;
+		border-color: #5fd6c4 !important;
+		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
 		transform: scale(0.97);
 	}
 
 	/* Close button (×) */
 	:global(.close-button) {
-		color: rgba(255, 215, 94, 0.85) !important;
-		transition: color 0.2s ease, text-shadow 0.2s ease !important;
+		color: #e7c98a !important;
+		transition: color 0.15s ease !important;
 	}
 
 	:global(.close-button:hover) {
 		color: #fff !important;
-		text-shadow: 0 0 12px rgba(255, 215, 94, 0.85) !important;
 	}
 
-	/* Modal backdrop — deep jungle shade rather than the template's violet */
+	/* Backdrop: the game stays visible, dimmed, behind every pop-up. The wrap
+	   was painted solid #0b211c, which blacked the whole screen out for a bet
+	   change — nothing on screen said the game was still there. */
 	:global(.blur-layer) {
-		background-color: rgba(4, 12, 6, 0.72) !important;
+		background-color: rgba(2, 10, 9, 0.7) !important;
+		/* 30px turned the board into fog; 6px keeps the reels recognisable */
+		backdrop-filter: blur(6px) !important;
+		-webkit-backdrop-filter: blur(6px) !important;
+	}
+	:global(.pop-up-wrap) {
+		background-color: transparent !important;
 	}
 
-	/* Content wrapper in modals (Buy Bonus, Bet Menu, Auto Spin, Settings…) */
 	/* The buy-bonus layouts position BOTH of their children out of flow
 	   (.bonuses-wrap is absolute, .badge-amount-wrap is fixed), so the content
 	   wrapper has nothing left in normal flow and collapses to just its own
@@ -231,41 +254,31 @@
 		padding: 0 !important;
 	}
 
-	:global(.ui-popup-standard-content-wrap) {
-		background: linear-gradient(
-			180deg,
-			rgba(26, 36, 12, 0.97) 0%,
-			rgba(10, 18, 6, 0.98) 100%
-		) !important;
-		border: 1px solid rgba(216, 163, 52, 0.3) !important;
-		border-radius: 14px !important;
+	/* Content panel in modals (Bet Menu, Auto Spin, Settings, notifications) */
+	:global(.ui-popup-standard-content-wrap),
+	:global(.modal-panel) {
+		background: #0b211c !important;
+		border: 1px solid #b89554 !important;
+		border-radius: 8px !important;
 		padding: 1.5rem !important;
 		box-shadow:
 			0 12px 40px rgba(0, 0, 0, 0.75),
-			0 0 70px rgba(255, 142, 222, 0.07),
-			inset 0 1px 0 rgba(255, 243, 189, 0.06) !important;
+			inset 0 0 0 3px #0b211c,
+			inset 0 0 0 4px rgba(95, 214, 196, 0.35) !important;
 	}
 
-	/* Buy Bonus cards (components-ui-html/BonusCard.svelte → .bonus-card-wrap):
-	   the shared component paints a flat black panel, which read as unfinished
-	   next to the rest of the game. Brass-edged olive plate instead. */
+	/* Buy Bonus cards (components-ui-html/BonusCard.svelte → .bonus-card-wrap) */
 	:global(.bonus-card-wrap) {
-		background: linear-gradient(
-			165deg,
-			rgba(34, 46, 16, 0.95) 0%,
-			rgba(16, 24, 8, 0.97) 100%
-		) !important;
-		border: 1px solid rgba(216, 163, 52, 0.32) !important;
-		border-radius: 12px !important;
-		box-shadow:
-			0 6px 18px rgba(0, 0, 0, 0.5),
-			inset 0 1px 0 rgba(255, 243, 189, 0.06) !important;
-		transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+		background: #0b211c !important;
+		border: 1px solid #b89554 !important;
+		border-radius: 8px !important;
+		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
+		transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 	}
 
 	:global(.bonus-card-wrap:hover) {
-		border-color: rgba(255, 215, 94, 0.65) !important;
-		box-shadow: 0 0 22px rgba(255, 215, 94, 0.18) !important;
+		border-color: #e7c98a !important;
+		box-shadow: 0 0 18px rgba(95, 214, 196, 0.25) !important;
 	}
 
 	/* Buy Bonus cards enlarged 60%. The card's children (.title/.description/
@@ -279,7 +292,6 @@
 		max-width: 288px !important;   /* 180 x 1.6 */
 		padding: 0.8rem !important;
 		gap: 0.8rem !important;
-		border-radius: 16px !important;
 		font-size: 1.6rem !important;
 	}
 
@@ -295,21 +307,19 @@
 		font-size: 1.6rem !important;
 	}
 
-	/* card copy: title in banana gold, price in the brass used on the bet bar */
 	:global(.bonus-card-wrap .title) {
-		color: #ffd75e !important;
+		color: #e7d1a0 !important;
 		font-weight: 800 !important;
 		letter-spacing: 0.04em !important;
 	}
 
 	:global(.bonus-card-wrap .price) {
-		color: #fff7d6 !important;
+		color: #f5edda !important;
 		font-weight: 800 !important;
-		text-shadow: 0 0 10px rgba(216, 163, 52, 0.45) !important;
 	}
 
 	:global(.bonus-card-wrap .description) {
-		color: rgba(255, 247, 214, 0.72) !important;
+		color: #dbebe4 !important;
 	}
 
 	/* Scrollbars */
@@ -317,36 +327,31 @@
 		width: 5px;
 	}
 	:global(::-webkit-scrollbar-track) {
-		background: rgba(8, 16, 4, 0.45);
+		background: rgba(2, 10, 9, 0.45);
 		border-radius: 3px;
 	}
 	:global(::-webkit-scrollbar-thumb) {
-		background: linear-gradient(180deg, rgba(216, 163, 52, 0.55), rgba(120, 88, 24, 0.5));
+		background: #8eab9f;
 		border-radius: 3px;
 	}
 	:global(::-webkit-scrollbar-thumb:hover) {
-		background: linear-gradient(180deg, rgba(255, 215, 94, 0.75), rgba(255, 142, 222, 0.6));
+		background: #b8d4c9;
 	}
 
 	/* Toggle / checkbox / select inputs in modals */
 	:global(.pop-up-wrap input),
 	:global(.pop-up-wrap select) {
-		background: rgba(24, 34, 10, 0.85) !important;
-		border: 1px solid rgba(216, 163, 52, 0.3) !important;
+		background: #102a24 !important;
+		border: 1px solid rgba(184, 149, 84, 0.55) !important;
 		border-radius: 6px !important;
 		color: #fff !important;
-		transition: border-color 0.2s ease !important;
+		transition: border-color 0.15s ease !important;
 	}
 
 	:global(.pop-up-wrap input:focus),
 	:global(.pop-up-wrap select:focus) {
-		border-color: rgba(255, 215, 94, 0.6) !important;
+		border-color: #5fd6c4 !important;
 		outline: none !important;
-		box-shadow: 0 0 8px rgba(216, 163, 52, 0.28) !important;
+		box-shadow: 0 0 6px rgba(95, 214, 196, 0.35) !important;
 	}
-	:global(.pop-up-wrap), :global(.modal-panel) {background-color:#0b211c !important;}
-	:global(.bonus-card-wrap) {background:#0b211c !important;border-color:#b89554 !important;}
-	:global(.bonus-card-wrap .title) {color:#e7d1a0 !important;}
-	:global(.bonus-card-wrap .description) {color:#dbebe4 !important;}
-	:global(::-webkit-scrollbar-thumb) {background:#8eab9f !important;}
 </style>

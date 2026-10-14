@@ -23,4 +23,12 @@ export const stateReplay = $state({
 	running: false,
 	/** set by the start button; the game picks this up and runs the round */
 	startRequested: false,
+	/**
+	 * What the replay start card says about the round, row for row, so the bar
+	 * can keep saying it once the card is gone (Stake review, 2026-10-04: "When
+	 * the replay finishes, some of the information are not included in the bet
+	 * bar next to the Replay button"). Written by the game, which owns the
+	 * wording; empty means the bar keeps its older three-readout replay layout.
+	 */
+	summary: [] as { label: string; value: string; tone?: 'win' }[],
 });

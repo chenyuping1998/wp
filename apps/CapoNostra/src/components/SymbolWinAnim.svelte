@@ -213,7 +213,7 @@
 	// the Frame is a heavy gold plate, so this is a pale gold keyline — brighter
 	// and thinner than the Frame, which is what keeps the two apart now that the
 	// game has one hue family. It was cyan-white against the old magenta glow.
-	const MARK = 0xf2e0a8;
+	const MARK = 0xe3dfd6;
 	const WHITE = 0xffffff;
 
 	// Inset from the 118 cell pitch so two adjacent winning cells read as two

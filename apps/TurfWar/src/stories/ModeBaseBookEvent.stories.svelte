@@ -86,6 +86,18 @@
 />
 
 <Story
+	name="bigScore"
+	args={templateArgs({
+		skipLoadingScreen: true,
+		data: events.bigScore,
+		action: async (data) => await playBookEvent(data, {
+			bookEvents: [data, { ...events.winInfo, index: data.index + 1, totalWin: 100 }],
+		}),
+	})}
+	{template}
+/>
+
+<Story
 	name="setWin"
 	args={templateArgs({
 		skipLoadingScreen: true,

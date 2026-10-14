@@ -5,7 +5,7 @@
 	import { CanvasSizeRectangle, MainContainer } from 'components-layout';
 
 	import { getContext } from '../game/context';
-	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
+	import { BOARD_DIMENSIONS } from '../game/constants';
 	import FxBurst from './FxBurst.svelte';
 
 	// Entry reveal, played once when the loading screen hands over: a quick
@@ -36,17 +36,23 @@
 	const flashAlpha = $derived(t < 0.16 ? 0.45 * (1 - t / 0.16) : 0);
 
 	const drawCovers = (g: PixiGraphics) => {
+		// The board is drawn at boardLayout().scale (1.22 landscape, 1.12
+		// portrait). These covers used the unscaled BOARD_SIZES / SYMBOL_SIZE, so
+		// until 2026-09-30 the "reels uncovering" was a smaller grey box floating
+		// off-centre over the reels — the first thing on screen after loading.
 		const board = context.stateGameDerived.boardLayout();
-		const left = board.x - board.width * 0.5;
-		const top = board.y - board.height * 0.5;
+		const w = board.width * board.scale;
+		const h = board.height * board.scale;
+		const left = board.x - w * 0.5;
+		const top = board.y - h * 0.5;
+		const column = w / BOARD_DIMENSIONS.x;
 		g.clear();
-		for (let column = 0; column < BOARD_DIMENSIONS.x; column++) {
-			const begin = FIRST_COLUMN_AT + column * COLUMN_DELAY;
-			const alpha = 0.9 * (1 - Math.min(1, Math.max(0, (t - begin) / COLUMN_FADE)));
+		for (let c = 0; c < BOARD_DIMENSIONS.x; c++) {
+			const begin = FIRST_COLUMN_AT + c * COLUMN_DELAY;
+			const alpha = 0.95 * (1 - Math.min(1, Math.max(0, (t - begin) / COLUMN_FADE)));
 			if (alpha <= 0.01) continue;
-			g.beginFill(0x0a1508, alpha);
-			g.drawRect(left + column * SYMBOL_SIZE, top, SYMBOL_SIZE, board.height);
-			g.endFill();
+			// the housing's own interior colour (was 0x0a1508, an olive leftover)
+			g.rect(left + c * column, top, column, h).fill({ color: 0x071714, alpha });
 		}
 	};
 </script>

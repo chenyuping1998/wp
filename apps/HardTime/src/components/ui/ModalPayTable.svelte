@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
-	import { stateModal } from 'state-shared';
+	import { stateModal, stateUrlDerived } from 'state-shared';
 
 	import config from '../../game/config';
 	import { popupGhost } from './popupGhost';
 	import { getSocialTerms } from '../../game/socialTerms';
 	import assets from '../../game/assets';
+	import { commonText, numberIn, rulesLang } from '../../game/rulesCommon';
+	import { gameRulesText } from '../../game/rulesText';
 
 	type PayRow = { name: string; img: string; label: string; pays: { count: number; value: number }[] };
 
@@ -45,20 +47,7 @@
 	//
 	// "Cash Case" and "Money Case" are both out: design/check_social_words.mjs
 	// bans `cash` and `money` in player-facing copy.
-	const SYMBOL_LABEL: Record<string, string> = {
-		H1: 'Key Ring',
-		H2: 'Handcuffs',
-		H3: 'Contraband Tin',
-		H4: 'Tin Mug & Spoon',
-		H5: 'Tally Patch',
-		L1: 'Spade',
-		L2: 'Heart',
-		L3: 'Diamond',
-		L4: 'Club',
-		W: 'Prison Cap',
-		S: 'Cell Gate \u2014 Scatter',
-		SW: 'Searchlight',
-	};
+	// The names live in game/rulesText.ts, in every language the UI ships (2026-10-13).
 
 	// keep high -> low ordering for readability
 	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'H5', 'L1', 'L2', 'L3', 'L4', 'S', 'SW'];
@@ -78,6 +67,14 @@
 	// this panel and that one describe the same game, and when each kept its own
 	// copy the two drifted, which is precisely what certification flagged.
 	const T = getSocialTerms();
+	// Same tables as ModalGameRules (game/rulesCommon.ts + game/rulesText.ts):
+	// the player's language, English built from T for English and social play.
+	const lang = rulesLang();
+	const C = commonText(lang, T, stateUrlDerived.social());
+	const G = gameRulesText(lang, T, stateUrlDerived.social());
+	// English keeps exactly the formatting it had (0.4, 20,000).
+	const num = (value: number) => (lang === 'en' ? value.toLocaleString() : numberIn(lang, value));
+	const payValue = (value: number) => (lang === 'en' ? String(value) : numberIn(lang, value));
 
 	// Every tier awards the same number of free spins; the Scatter count selects
 	// which tier is played rather than how long it lasts (maths: freespin_triggers
@@ -112,18 +109,15 @@
 			const [count, value] = Object.entries(entry)[0];
 			return { count: Number(count), value: Number(value) };
 		});
-		return { name, img: imgSrc(name), label: SYMBOL_LABEL[name] ?? name, pays };
+		return { name, img: imgSrc(name), label: G.symbols[name as keyof typeof G.symbols] ?? name, pays };
 	});
 </script>
 
 {#if stateModal.modal?.name === 'payTable'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="wp-paytable" use:popupGhost>
-			<h2>{T.payTableUpper}</h2>
-			<p class="wp-note">
-				{T.paysStart} shown as a multiple of {T.totalBet}. Line wins {T.winsDirection} on
-				{Object.keys(config.paylines).length} fixed {T.paylines}.
-			</p>
+		<div class="wp-paytable" use:popupGhost dir={C.dir}>
+			<h2>{C.payTableTitle}</h2>
+			<p class="wp-note">{C.ptNote(Object.keys(config.paylines).length)}</p>
 
 			<div class="wp-grid">
 				{#each rows as row, i (row.name)}
@@ -138,24 +132,17 @@
 						</div>
 						<div class="wp-pays">
 							{#if row.name === 'S'}
-								<span class="wp-special"
-									>{T.doesNotPay} &mdash; 3, 4 or 5 Scatters award {FREE_SPINS} Free Spins</span
-								>
+								<span class="wp-special">{C.ptScatter(FREE_SPINS)}</span>
 							{:else if row.name === 'SW'}
 								<!-- The Tommy Gun has no paytable entry in config, so without a case of
 								     its own the game's headline mechanic would render as a name and an
 								     empty cell. Wording kept in step with ModalGameRules. It never pays
 								     as itself because it is replaced along with the rest of its reel
 								     before lines are evaluated (game_executables.py, expand_special_wilds). -->
-								<span class="wp-special"
-									>{T.doesNotPayAlone} &mdash; lights its reel from where it lands DOWN to the
-									bottom, turning those positions into Wilds that each carry a multiplier.
-									Scatters in
-									that reel are not replaced.</span
-								>
+								<span class="wp-special">{G.ptSpecial}</span>
 							{:else if row.pays.length}
 								{#each row.pays as pay (pay.count)}
-									<span class="wp-pay-chip"><b>{pay.count}</b> &times; <em>{pay.value}</em></span>
+									<span class="wp-pay-chip"><b>{pay.count}</b> &times; <em>{payValue(pay.value)}</em></span>
 								{/each}
 							{/if}
 						</div>
@@ -163,10 +150,8 @@
 				{/each}
 			</div>
 
-			<h3 class="wp-lines-title">{paylines.length} {T.paylinesUpper}</h3>
-			<p class="wp-note">
-				All {paylines.length} lines are always active. Wins {T.winsDirection} from reel 1.
-			</p>
+			<h3 class="wp-lines-title">{C.ptLinesTitle(paylines.length)}</h3>
+			<p class="wp-note">{C.ptLinesNote(paylines.length)}</p>
 
 			<div class="wp-lines">
 				{#each paylines as line (line.id)}
@@ -183,11 +168,7 @@
 				{/each}
 			</div>
 
-			<p class="wp-note">
-				Wild substitutes for all symbols except the Scatter and the Searchlight, and {T.pays} as its
-				own symbol. Only the highest win is {T.paid} per line. Max win is capped at {maxWin.toLocaleString()}&times;
-				{T.totalBet}.
-			</p>
+			<p class="wp-note">{G.ptFoot(num(maxWin))}</p>
 		</div>
 	</Popup>
 {/if}

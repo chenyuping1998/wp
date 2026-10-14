@@ -4,19 +4,19 @@
         {
             "bet_mode": "base",
             "cost": 1.0,
-            "rtp": 0.963,
+            "rtp": 0.9603,
             "max_win": 20000.0
         },
         {
             "bet_mode": "bonus",
             "cost": 100.0,
-            "rtp": 0.963,
+            "rtp": 0.9603,
             "max_win": 20000.0
         },
         {
             "bet_mode": "bonus_hits",
             "cost": 250.0,
-            "rtp": 0.963,
+            "rtp": 0.9603,
             "max_win": 20000.0
         }
     ],

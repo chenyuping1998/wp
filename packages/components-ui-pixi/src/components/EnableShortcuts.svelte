@@ -110,9 +110,14 @@
 				stateModal.modal = stateModal.modal?.name === 'buyBonus' ? null : { name: 'buyBonus' };
 				break;
 			case 'arrowup':
+				// A held key auto-repeats; the stake may only move one step per
+				// deliberate press (Stake review, 2026-10-04 — same rule as the
+				// on-screen steppers).
+				if (event.repeat) break;
 				if (isIdle) stepBet(1);
 				break;
 			case 'arrowdown':
+				if (event.repeat) break;
 				if (isIdle) stepBet(-1);
 				break;
 			default:

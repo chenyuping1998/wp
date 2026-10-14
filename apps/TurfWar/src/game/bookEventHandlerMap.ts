@@ -7,7 +7,7 @@ import { waitForTimeout } from 'utils-shared/wait';
 
 import { eventEmitter } from './eventEmitter';
 import { playBookEvent } from './utils';
-import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
+import { winLevelMap, withTenXRung, type WinLevel, type WinLevelData } from './winLevelMap';
 import { stateGame, stateGameDerived } from './stateGame.svelte';
 import type { BookEvent, BookEventOfType, BookEventContext, FrameEntry } from './typesBookEvent';
 import type { Position } from './types';
@@ -125,7 +125,9 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 	// restarted from the top when it came back. Keeping the running bgm playing
 	// under the blast + coin loop fixes both. (Restore this line only once real
 	// win-level tracks exist in the jungle set.)
-	if (winLevelData?.type === 'big') {
+	// Any count-up, which since 2026-10-12 includes the 10x rung (withTenXRung):
+	// a number rolling in silence reads as a stall.
+	if (winLevelData?.type === 'big' || (winLevelData?.presentDuration ?? 0) > 0) {
 		// The tier-specific one-shot above carries the entrance. Keep only the soft
 		// rhythmic shimmer beneath the count-up; a shared heavy blast made every
 		// award tier sound the same.
@@ -183,6 +185,11 @@ const animateSymbols = async ({ positions }: { positions: Position[] }) => {
 // Indices of the newFrames/updateFrames events whose Frames were already shown
 // early during `reveal`. Lets those handlers skip their own entry pause.
 let preShownAt = new Set<number>();
+// The displayed value of a sticky Frame belongs to the previous free spin
+// until its re-roll lands. `framesClear` removes the drawing at the spin
+// boundary, but this small ledger lets the next reveal pre-show the old value.
+const stickyFrameMult = new Map<string, number>();
+const frameKey = (frame: { reel: number; row: number }) => `${frame.reel},${frame.row}`;
 
 export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContext> = {
 	reveal: async (bookEvent: BookEventOfType<'reveal'>, { bookEvents }: BookEventContext) => {
@@ -197,6 +204,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// The Big Score is a single spin. Clear last spin's value as the reels
 		// start; the `bigScore` event that follows this reveal (if any) sets it.
 		stateGame.bigScoreMult = 0;
+		eventEmitter.broadcast({ type: 'bigScoreClear' });
 
 		// Base-game frames last exactly one spin: the math clears them in
 		// reset_book and re-lands them per round, so nothing in the stream tells
@@ -207,6 +215,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// they are left alone here - the updateFrames that follows every free-game
 		// reveal re-states the whole set anyway.
 		if (bookEvent.gameType === 'basegame') {
+			stickyFrameMult.clear();
 			stateGame.frames = [];
 			eventEmitter.broadcast({ type: 'framesClear' });
 		}
@@ -249,7 +258,15 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 				event.index < nextRevealIndex &&
 				(event.type === 'newFrames' || event.type === 'updateFrames'),
 		);
-		const merged = upcoming.flatMap((event) => ('frames' in event ? event.frames : []));
+		const merged = upcoming.flatMap((event) =>
+			'frames' in event
+				? event.frames.map((frame) =>
+					event.type === 'updateFrames'
+						? { ...frame, mult: stickyFrameMult.get(frameKey(frame)) ?? frame.mult }
+						: frame,
+				)
+				: [],
+		);
 		if (merged.length > 0 && FRAME_REVEAL !== 'on-stop') {
 			preShownAt = new Set(upcoming.map((event) => event.index));
 			stateGame.frames = [
@@ -446,6 +463,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			),
 			...bookEvent.frames,
 		];
+		for (const frame of bookEvent.frames) stickyFrameMult.set(frameKey(frame), frame.mult);
 		if (preShownAt.has(bookEvent.index)) {
 			preShownAt.delete(bookEvent.index);
 			return;
@@ -455,13 +473,15 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	// Sticky frames carried into this spin; Neon Nights re-rolls their values.
 	updateFrames: async (bookEvent: BookEventOfType<'updateFrames'>) => {
 		if (bookEvent.frames.length === 0) return;
-		const changed = bookEvent.frames.some((frame) =>
-			stateGame.frames.some(
-				(existing) =>
-					existing.reel === frame.reel && existing.row === frame.row && existing.mult !== frame.mult,
-			),
-		);
+		// `updateFreeSpin` clears the rendered set at the previous spin boundary.
+		// The ledger still holds what the player last saw; compare against that
+		// value so a visible re-roll also gets its impact sound.
+		const changed = bookEvent.frames.some((frame) => {
+			const previous = stickyFrameMult.get(frameKey(frame));
+			return previous !== undefined && previous !== frame.mult;
+		});
 		stateGame.frames = bookEvent.frames.map((frame) => ({ ...frame }));
+		for (const frame of bookEvent.frames) stickyFrameMult.set(frameKey(frame), frame.mult);
 		if (changed) eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_update' });
 		await eventEmitter.broadcastAsync({ type: 'framesUpdate', frames: bookEvent.frames });
 	},
@@ -474,6 +494,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			const doubled = bookEvent.frames.find((f) => f.reel === frame.reel && f.row === frame.row);
 			return doubled ? { ...frame, mult: doubled.mult } : frame;
 		});
+		for (const frame of bookEvent.frames) stickyFrameMult.set(frameKey(frame), frame.mult);
 		await eventEmitter.broadcastAsync({ type: 'framesDoubled', frames: bookEvent.frames });
 	},
 	/**
@@ -501,6 +522,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	},
 	// Announces which free-spin tier the round entered.
 	bonusTier: async (bookEvent: BookEventOfType<'bonusTier'>) => {
+		stickyFrameMult.clear();
 		stateGame.bonusTier = bookEvent.tier;
 		stateGame.frames = [];
 		stateGame.expandedWildReels = [];
@@ -540,10 +562,20 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	 * applied it. This handler plays the build-up beat and holds the value for
 	 * the win presentation that follows.
 	 */
-	bigScore: async (bookEvent: BookEventOfType<'bigScore'>) => {
+	bigScore: async (bookEvent: BookEventOfType<'bigScore'>, { bookEvents }: BookEventContext) => {
 		stateGame.bigScoreMult = bookEvent.mult;
-		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_multiplier_landing' });
-		await eventEmitter.broadcastAsync({ type: 'bigScorePlay', mult: bookEvent.mult });
+		const nextReveal = bookEvents.find(
+			(event) => event.index > bookEvent.index && event.type === 'reveal',
+		)?.index ?? Number.POSITIVE_INFINITY;
+		const pays = bookEvents.some(
+			(event) =>
+				event.index > bookEvent.index &&
+				event.index < nextReveal &&
+				event.type === 'winInfo' &&
+				event.totalWin > 0,
+		);
+		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_big_score_buildup' });
+		await eventEmitter.broadcastAsync({ type: 'bigScorePlay', mult: bookEvent.mult, pays });
 	},
 	updateFreeSpin: async (bookEvent: BookEventOfType<'updateFreeSpin'>) => {
 		// updateFreeSpin is the last event of every free spin, so this is where a
@@ -579,11 +611,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
 		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
-		await featurePause(3000);
+		// 3000 -> 1200 (2026-10-12): a retrigger is a beat inside the feature, not a
+		// second trigger. The full stop plus three shake passes plus a plaque that
+		// waited for a tap held the feature for 10s+ on every retrigger.
+		await featurePause(1200);
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		// Three passes of the scatter shake — extended trigger celebration
-		for (let pass = 0; pass < featurePasses(3); pass++) {
+		// One pass of the scatter shake (was three — see the pause above)
+		for (let pass = 0; pass < featurePasses(1); pass++) {
 			await animateSymbols({ positions: bookEvent.positions });
 		}
 		const extraSpins = Math.max(0, bookEvent.totalFs - stateUi.freeSpinCounterTotal);
@@ -607,6 +642,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateUi.freeSpinCounterTotal = bookEvent.totalFs;
 	},
 	freeSpinEnd: async (bookEvent: BookEventOfType<'freeSpinEnd'>) => {
+		stickyFrameMult.clear();
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
 
 		// The outro panel is translucent, so its background is still part of the
@@ -629,6 +665,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// too late, and visibly wrong behind the outro panel.
 		stateGame.frames = [];
 		eventEmitter.broadcast({ type: 'framesClear' });
+		eventEmitter.broadcast({ type: 'bigScoreClear' });
 		eventEmitter.broadcast({ type: 'boardFrameGlowHide' });
 		eventEmitter.broadcast({ type: 'freeSpinOutroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_youwon_panel' });
@@ -663,7 +700,11 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });
 	},
 	setWin: async (bookEvent: BookEventOfType<'setWin'>) => {
-		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
+		// 10-15x counts up for 1.5s instead of appearing at once (winLevelMap.ts).
+		const winLevelData = withTenXRung(
+			winLevelMap[bookEvent.winLevel as WinLevel],
+			bookEvent.amount,
+		);
 
 		// The last asynchronous win-line volley can outlive winInfo. Clear its dim
 		// before the banner adds its own scrim, or framed symbols briefly vanish.

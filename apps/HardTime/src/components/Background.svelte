@@ -139,8 +139,7 @@
 		// old comment as keeping "the still jungle art" breathing. They are now
 		// pink and cyan: over a synthwave sunset a warm shaft reads as daylight
 		// through a canopy, which is the wrong world entirely.
-		g.beginFill(0x8e9499, 0.035);
-		g.drawPolygon([
+		g.poly([
 			centerX - width * 0.018,
 			0,
 			centerX + width * 0.018,
@@ -150,10 +149,9 @@
 			centerX - width * 0.22,
 			beamReachY,
 		]);
-		g.endFill();
+		g.fill({ color: 0x8e9499, alpha: 0.035 });
 
-		g.beginFill(0xe6dfd1, 0.022);
-		g.drawPolygon([
+		g.poly([
 			centerX + width * 0.11,
 			0,
 			centerX + width * 0.135,
@@ -163,15 +161,23 @@
 			centerX + width * 0.26,
 			beamReachY * 0.9,
 		]);
-		g.endFill();
+		g.fill({ color: 0xe6dfd1, alpha: 0.022 });
 	};
 
 	onMount(() => {
-		const id = setInterval(() => {
-			beamPhase += 0.004;
-			clock += 0.016;
-		}, 16);
-		return () => clearInterval(id);
+		// frame clock, same rates as the old 16 ms interval (0.004 phase and
+		// 0.016 s per 16 ms), without the stutter an interval gives on 120 Hz
+		let raf = 0;
+		let last = performance.now();
+		const tick = (now: number) => {
+			const dt = Math.min(0.05, (now - last) / 1000);
+			last = now;
+			beamPhase += 0.25 * dt;
+			clock += dt;
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
 	});
 </script>
 

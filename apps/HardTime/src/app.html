@@ -4,14 +4,7 @@
 		<meta charset="utf-8" />
 		<title>Hard Time</title>
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
-		<!-- Hard Time uses Saira for stamped condensed lettering and Orbitron for numbers. -->
-		<link
-			rel="preload"
-			href="%sveltekit.assets%/fonts/Orbitron.ttf"
-			as="font"
-			type="font/ttf"
-			crossorigin
-		/>
+		<!-- Hard Time uses Saira for stamped condensed lettering and for numbers (Orbitron retired 2026-10-12). -->
 		<link
 			rel="preload"
 			href="%sveltekit.assets%/fonts/Saira-latin.woff2"
@@ -20,13 +13,6 @@
 			crossorigin
 		/>
 		<style>
-			@font-face {
-				font-family: 'Orbitron';
-				src: url('%sveltekit.assets%/fonts/Orbitron.ttf') format('truetype-variations');
-				font-weight: 400 900;
-				font-style: normal;
-				font-display: block;
-			}
 			/*
 				Saira carries the body copy — the feature paragraphs on the opening
 				card, the rules text, the paytable.
@@ -75,7 +61,10 @@
 					U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 			}
 		</style>
-		<meta name="viewport" content="width=device-width" />
+		<!-- Engine guideline 223: no double-tap zoom on mobile. width=device-width
+		     alone still zooms on iOS Safari; the canvas is already touch-action:
+		     none (Pixi), the body rule covers the DOM panels over it. -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 		<!--
 			display:block on the canvas, and overflow:hidden on <html> as well as
 			<body>.
@@ -107,7 +96,7 @@
 		</style>
 		%sveltekit.head%
 	</head>
-	<body style="margin: 0; padding: 0; overflow: hidden; background-color: black">
+	<body style="margin: 0; padding: 0; overflow: hidden; touch-action: manipulation; background-color: black">
 		<div>%sveltekit.body%</div>
 	</body>
 </html>

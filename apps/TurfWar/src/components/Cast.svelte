@@ -2,47 +2,17 @@
   import { MainContainer } from "components-layout";
 
   import { getContext } from "../game/context";
+  import { portraitBand, portraitCast } from "../game/cornerLogo";
   import CastFigure, { CAST_NATIVE } from "./CastFigure.svelte";
   import CastFigureMesh from "./CastFigureMesh.svelte";
 
-  // Both figures use one continuous skinned mesh, so weighted joints bend
-  // without opening the seams that segmented Spine attachments produced.
+  // The live cast uses eight aligned layer meshes and one skeleton. The flat
+  // CastFigure branch remains only as a fallback for the old art.
   const USE_MESH_CAST = true;
   import { stateGame } from "../game/stateGame.svelte";
 
-  /**
-   * Someone standing beside the board.
-   *
-   * The reference this game keeps being measured against (Hacksaw's Miami
-   * Mayhem) puts a full-body character at the edge of the screen in the base
-   * game and a different one in the feature, and it does two things at once:
-   * it tells the player which mode they are in without a caption, and it FILLS
-   * THE SIDE OF THE SCREEN. That second one is not decoration here — this board
-   * is 5x4 inside a 1.78 box, so it is height-bound and can never fill the
-   * width, and no amount of scaling the board changes that. Content beside the
-   * reels is the only thing that ever could.
-   *
-   * ── Which side ───────────────────────────────────────────────────────────
-   *
-   * The right. The left already carries Buy Bonus, drawn at railWidth/2 and
-   * about 200 units across, and a figure there would have the CTA sitting on
-   * its chest. The right side has nothing on it at all — turbo and autospin
-   * live in the strip — so that is where the empty space actually is.
-   *
-   * ── Which figure ─────────────────────────────────────────────────────────
-   *
-   * The guy in the base game, the woman in the feature. Same pair the intro card
-   * introduces, so a player has already met whoever is standing there — and they
-   * are NOT the two portrait symbols: the store tile's cast is a different guy
-   * and a dark-haired woman, which is what makes swapping them worth doing.
-   * Standing the H1 art beside a board with H1 on it would read as a bug.
-   *
-   * ── The motion ───────────────────────────────────────────────────────────
-   *
-   * game/idleSway.ts, CAST_SWAY. These are single flat cut-outs today, so they
-   * sway as a body only and deliberately stay near a degree — see the note
-   * there for why a flat figure has to move LESS than a rigged one, not more.
-   */
+  /** One masked bat carrier stands to the board's right in every mode. The
+   * mode changes its lighting; the character and pose remain recognisable. */
   const context = getContext();
 
   // The SAME container the board's housing is drawn in (BoardFrame uses
@@ -55,11 +25,9 @@
   const box = $derived(context.stateLayoutDerived.mainLayout());
   // The bet strip is drawn in the STANDARD box, the board in the game box, and
   // on a wide canvas those two are not the same rectangle — the standard box is
-  // letterboxed narrower. That is why a figure placed in the game box ran past
-  // the end of the strip and stood in front of its controls
-  // (「人物擋到下 bar 了」): the strip simply was not there to cover her.
+  // letterboxed narrower. Put the figure in the strip's box so its feet align.
   //
-  // So she is placed in the STRIP'S box, and the board's edge is converted into
+  // The figure is placed in the STRIP'S box, and the board's edge is converted into
   // it. Both boxes are centred on the same canvas, so one offset from the centre
   // in canvas pixels converts by the ratio of their scales.
   const std = $derived(context.stateLayoutDerived.mainLayoutStandard());
@@ -82,36 +50,17 @@
     ),
   );
 
-  // ── size and place, from the reference's own proportions ───────────────────
-  //
-  // Measured off the two Miami Mayhem screenshots the user supplied:
-  //
-  //   the band between the board's edge and the screen edge is 23.5% of width
-  //   the figure FILLS that band and is cropped by the screen edge
-  //   the figure's inner edge TOUCHES the board — there is no gap at all
-  //   its head starts about 13% down and its legs run off the bottom
-  //
-  // Filling the band means the figure has to be CROPPED, because our cut-outs
-  // are 1:3.1 and the band is not that tall. That is not a compromise either:
-  // the reference crops both of its characters at the thigh, and the bet strip
-  // covers everything below its own top edge anyway, so the crop happens where
-  // nothing is visible.
+  // Fit the figure into the band between the board and the right screen edge.
+  // CastFigureMesh clamps its swept ink to both edges across idle and reaction.
   const OVERLAP = 10;
-  const BLEED = 1.12; // how far past the box edge the figure runs
+  const BLEED = 1.12; // natural size before the layer envelope fit
   const width = $derived((std.width - (boardInkRight - OVERLAP)) * BLEED);
   const height = $derived((width * CAST_NATIVE[who].h) / CAST_NATIVE[who].w);
-  // 0.11, not 0. In the reference the character's head sits BELOW the top of the
-  // board, not level with it: the board stays the tallest thing on screen and
-  // the figure reads as standing behind it rather than looming over it.
-  const topY = $derived(std.height * 0.11);
-  // Her raygun extends toward the board. Give the feature pose a small extra
-  // gutter so the muzzle and spark stay readable instead of sitting under the
-  // reel housing edge; the base-game man keeps the measured position.
-  // Free game: 2026-09-15 the user read the shoulder-pose man as standing too
-  // close to the board (「FG裡的人物離盤面太近了，右邊一點」). The shoulder
-  // drawing is wider at the top than the planted-bat one, so at the base game's
-  // position its hood and bat arm crowd the housing. The base game keeps its
-  // measured position.
+  // The layered figure is visible down to its shoes. Place those just behind
+  // the bet strip so the character has a ground line rather than floating.
+  const topY = $derived(std.height * 0.145);
+  // Preserve the feature's preferred rightward position; the layer renderer
+  // still clamps the entire motion envelope inside the visible side band.
   const FEATURE_GUTTER = 60;
   const x = $derived(
     boardInkRight - OVERLAP + width * 0.5 +
@@ -145,13 +94,29 @@
   // nothing for them to do.
   const bandFraction = $derived((std.width - boardInkRight) / std.width);
   const hasSideBand = $derived(bandFraction >= 0.15);
+
+  // ── portrait: upper body above the board (2026-10-13, P1-F) ──────────────
+  //
+  // No side band does not mean no room: portrait has the strip above the
+  // housing, and leaving it empty dropped the cast from every phone held
+  // upright. The figure stands in the strip's right half with its body running
+  // down BEHIND the housing (the mesh view sits at stage depth 2, under the
+  // board), so only head and shoulders to the hips show and the reels win any
+  // overlap. The logo takes the left half (Game.svelte). Same facing as beside
+  // the board.
+  const portrait = $derived(
+    hasSideBand ? null : (() => {
+      const band = portraitBand(context);
+      return band ? portraitCast(context, band) : null;
+    })(),
+  );
 </script>
 
 {#if !stateGame.featureSplashShow && hasSideBand}
   <MainContainer standard>
     {#if USE_MESH_CAST}
       {#key who}
-        <CastFigureMesh {who} {x} {topY} {height} {groundY} flip={who === "guy"} />
+        <CastFigureMesh {who} {x} {topY} {height} {groundY} flip={who === "guy"} innerEdge={boardInkRight} />
       {/key}
     {:else}
       <CastFigure
@@ -164,5 +129,11 @@
         grade={GRADE}
       />
     {/if}
+  </MainContainer>
+{:else if !stateGame.featureSplashShow && portrait && USE_MESH_CAST}
+  <MainContainer standard>
+    {#key who}
+      <CastFigureMesh {who} x={portrait.x} topY={portrait.topY} height={portrait.height} groundY={portrait.groundY} flip={who === "guy"} innerEdge={portrait.innerEdge} />
+    {/key}
   </MainContainer>
 {/if}

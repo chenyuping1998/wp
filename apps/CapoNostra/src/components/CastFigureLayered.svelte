@@ -23,7 +23,8 @@
 </script>
 
 <script lang="ts">
-  import type { Texture } from "pixi.js";
+  import { Sprite, type Texture } from "pixi.js";
+  import { BONE } from "../game/palette";
   import { getContextApp } from "pixi-svelte";
   import { onMount } from "svelte";
   import { stateBetDerived } from "state-shared";
@@ -125,6 +126,27 @@
           LAYERED_TIERS[props.figure],
         );
         figure = mountedFigure;
+        // Backlight (Art Deco B, 2026-10-04). Both figures are black silhouettes
+        // in front of a dark scene and, below the scarf and gloves, sank into
+        // it (memory rule: the cast must read off the background). An outline
+        // per layer would draw lines INSIDE the figure where arms cross the
+        // body, so a soft paper key light sits behind the whole figure instead
+        // — the noir answer, the silhouette cut out by the light behind it.
+        // It lives in the figure's own view at index 0, in the rig's canvas
+        // space: the view is inserted near the bottom of the stage, so a glow
+        // drawn by the parent component would land ON TOP of the figure.
+        const glowTexture = app.stateApp.loadedAssets["fxGlow"] as Texture | undefined;
+        if (glowTexture) {
+          const [cw, ch] = rig.size;
+          const backlight = new Sprite({ texture: glowTexture, anchor: 0.5 });
+          backlight.position.set(cw / 2, ch * 0.52);
+          backlight.width = cw * 0.95;
+          backlight.height = ch * 0.9;
+          backlight.tint = BONE;
+          backlight.alpha = 0.16;
+          backlight.blendMode = "add";
+          mountedFigure.view.addChildAt(backlight, 0);
+        }
         update = () => mountedFigure?.update(performance.now());
         if (props.onTop) pixiApplication.stage.addChild(mountedFigure.view);
         else

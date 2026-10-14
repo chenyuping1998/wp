@@ -27,6 +27,12 @@
 		src: new URL('../../assets/sprites/hardTimeFx/fx_streak.png', import.meta.url).href,
 		preload: true,
 	},
+	// soft light shaft for the big-win sunburst (DeadwoodExpress/design/make_fx_ray.py)
+	fxRay: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hardTimeFx/fx_ray.png', import.meta.url).href,
+		preload: true,
+	},
 	// Side-profile car for the scene transition (design/build_transition_car.py).
 	// The car SYMBOL is three-quarter front-on — the angle that reads in a reel
 	// cell — and slid sideways it looks like a car pointing at you being dragged.
@@ -246,6 +252,23 @@
 		src: new URL('../../assets/sprites/hardTimeCast/prisoner.png', import.meta.url).href,
 		preload: true,
 	},
+	// loading screen: the crossed-arms prisoner who stands beside the board
+	// (2026-10-03; it still showed the retired A-pose cut-out)
+	htLoadingCast: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hardTimeCast/prisoner_crossed.png', import.meta.url).href,
+		preload: true,
+	},
+	htCastHead: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/prisoner_crossed/head.png', import.meta.url).href,
+		preload: true,
+	},
+	htCastBody: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/prisoner_crossed/body.png', import.meta.url).href,
+		preload: true,
+	},
 
 	// No Spine cast. The two Spine rigs that sat here (hmCastGuySpine /
 	// hmCastGirlSpine, Hot Miami's man and woman) were registered with
@@ -360,4 +383,12 @@
 		src: new URL('../../assets/audio/sounds.json', import.meta.url).href,
 		preload: true,
 	},
+	htWardenArmR: { type: 'sprite', src: new URL('../../assets/castLayers/warden/arm_r.png', import.meta.url).href, preload: true },
+	htWardenPropBat: { type: 'sprite', src: new URL('../../assets/castLayers/warden/prop_bat.png', import.meta.url).href, preload: true },
+	htWardenBody: { type: 'sprite', src: new URL('../../assets/castLayers/warden/body.png', import.meta.url).href, preload: true },
+	htWardenArmL: { type: 'sprite', src: new URL('../../assets/castLayers/warden/arm_l.png', import.meta.url).href, preload: true },
+	htWardenDangleChain: { type: 'sprite', src: new URL('../../assets/castLayers/warden/dangle_chain.png', import.meta.url).href, preload: true },
+	htWardenHead: { type: 'sprite', src: new URL('../../assets/castLayers/warden/head.png', import.meta.url).href, preload: true },
+	htWardenDangleMask: { type: 'sprite', src: new URL('../../assets/castLayers/warden/dangle_mask.png', import.meta.url).href, preload: true },
+	htWardenFingersR: { type: 'sprite', src: new URL('../../assets/castLayers/warden/fingers_r.png', import.meta.url).href, preload: true },
 } as const;

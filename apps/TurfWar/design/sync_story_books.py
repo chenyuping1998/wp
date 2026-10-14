@@ -1,4 +1,4 @@
-"""Regenerate Storybook fixture books from the Hot Miami math output.
+"""Regenerate Storybook fixture books from the Turf War math output.
 
 The stories replay real book event streams through the renderer. If these
 fixtures come from a different game, the runner awaits a handler that does not
@@ -11,7 +11,7 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-PUBLISH = ROOT.parent / "math-sdk/games/hot_miami/library/publish_files"
+PUBLISH = ROOT.parent / "math-sdk/games/turf_war/library/publish_files"
 OUT = Path(__file__).resolve().parent.parent / "src/stories/data"
 
 SAMPLE_COUNT = 12

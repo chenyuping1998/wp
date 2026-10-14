@@ -7,7 +7,7 @@
 	import { EnableHotkey } from 'components-shared';
 	import { MainContainer } from 'components-layout';
 	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
-	import { stateModal, stateReplay } from 'state-shared';
+	import { stateModal, stateReplay, stateUi } from 'state-shared';
 
 	import { UI, UiGameName } from 'components-ui-pixi';
 	import { GameVersion } from 'components-ui-html';
@@ -38,8 +38,32 @@
 	import FreeSpinCounter from './FreeSpinCounter.svelte';
 	import FreeSpinOutro from './FreeSpinOutro.svelte';
 	import Transition from './Transition.svelte';
+	import { castTopStd, cornerLogoScale, nameHitsHousing, portraitBand, portraitLogoBox } from '../game/cornerLogo';
+	import { stateGame } from '../game/stateGame.svelte';
 
 	const context = getContext();
+
+	// The corner logo yields to the housing and the prisoner's head in a small
+	// popout (game/cornerLogo.ts). hardTimeBrand/logo.png ink: 20%–80% across, down
+	// to 74%; the snippet nudges it REM*2.4 right. Cast.svelte: figure top at 0.11.
+	const CORNER_LOGO = {
+		width: REM * 15,
+		height: REM * 15 * (520 / 1200),
+		offsetX: REM * 2.4,
+		inkLeft: 0.2,
+		inkBottom: 0.744,
+	};
+	const logoScale = $derived(
+		cornerLogoScale(context, CORNER_LOGO, stateGame.featureSplashShow ? null : castTopStd(context, 0.11)),
+	);
+	// "13:42 HARD TIME" ends ~235px in
+	// Portrait: the strip above the housing holds the logo (left) and the prisoner's
+	// upper body (right, Cast.svelte). The corner logo and the typed name stand
+	// down there — the strip's logo carries the title, the clock stays.
+	const portrait = $derived(portraitBand(context));
+	// hardTimeBrand/logo.png ink, fractions of its 1200×520 canvas
+	const LOGO_INK = { left: 0.2, top: 0, right: 0.801, bottom: 0.744 };
+	const hideName = $derived(nameHitsHousing(context, 235) || portrait !== null);
 
 	// soft depth-of-field on the jungle scene so the reels read as the subject
 	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
@@ -89,6 +113,13 @@
 			<BoardFrame />
 		</MainContainer>
 
+		<!-- Portrait: the logo in the strip's left half. A running feature's
+		     counter takes that slot (FreeSpinCounter.svelte), so it stands down. -->
+		{#if portrait && !stateUi.freeSpinCounterShow}
+			{@const logo = portraitLogoBox(portrait, LOGO_INK)}
+			<Sprite key="hmLogo" anchor={0.5} x={logo.x} y={logo.y} width={logo.width} height={logo.height} />
+		{/if}
+
 		<MainContainer>
 			<Board />
 			<ReelDust />
@@ -103,7 +134,7 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name="HARD TIME" />
+				<UiGameName name={hideName ? '' : 'HARD TIME'} />
 			{/snippet}
 			{#snippet logo()}
 				<!--
@@ -121,17 +152,20 @@
 					nothing is lost, the name is still on screen top-left.
 				-->
 				{#if context.stateLayoutDerived.canvasSizes().width >= 480}
-					<Text
-						anchor={{ x: 1, y: 0 }}
-						text="HARD TIME"
-						style={{
-							fontFamily: TITLE_FONT,
-							fontSize: REM * 1.5,
-							fontWeight: TITLE_FONT_WEIGHT,
-							lineHeight: REM * 2,
-							fill: 0xffffff,
-						}}
-					/>
+					<!-- The game's logo art (1200×520), not the name typed in the title
+					     font: a plain text title in the corner is one of the things
+					     review's "low quality assets" tag lists (2026-09-29 audit). -->
+					<!-- ink is only the middle 60% of the 1200×520 canvas, so draw it wider
+					     than Capo's full-bleed logo to land the letters at the same size -->
+					{#if logoScale > 0 && !portrait}
+						<Sprite
+							key="hmLogo"
+							anchor={{ x: 1, y: 0 }}
+							x={CORNER_LOGO.offsetX * logoScale}
+							width={CORNER_LOGO.width * logoScale}
+							height={CORNER_LOGO.height * logoScale}
+						/>
+					{/if}
 				{/if}
 			{/snippet}
 		</UI>

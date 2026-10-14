@@ -1,0 +1,27 @@
+{
+  "canvas": [
+    1024,
+    2048
+  ],
+  "figure_box": [
+    150,
+    172,
+    934,
+    1774
+  ],
+  "baseline_alpha_threshold": 16,
+  "parts": {
+    "arm_l": {
+      "forearm_min_clearance_px": 49.0,
+      "shoulder_max_overlap_width_px": 60
+    },
+    "arm_r": {
+      "forearm_min_clearance_px": 53.23532661682466,
+      "shoulder_max_overlap_width_px": 81
+    }
+  },
+  "neck_overlap_vertical_extent_px": 123,
+  "composite": "pixel-exact",
+  "psd": "four layers, pixel-exact roundtrip",
+  "runtime_assets": "byte-identical"
+}

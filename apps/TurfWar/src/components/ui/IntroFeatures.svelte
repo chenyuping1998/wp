@@ -9,6 +9,7 @@
 
 	import config from '../../game/config';
 	import { getSocialTerms } from '../../game/socialTerms';
+	import { gameText } from '../../game/i18nText';
 
 	// The whole opening: studio mark, game logo, volatility, what the game does,
 	// and the tap that starts it — one screen.
@@ -46,6 +47,13 @@
 	const props: Props = $props();
 
 	const T = getSocialTerms();
+	// The card follows ?lang= (game/i18nText.ts, 16 locales). Social play keeps
+	// the English below, which is worded through socialTerms; the translations
+	// are written for the real-money wording and are never checked against the
+	// social restricted list.
+	const social = stateUrlDerived.social();
+	const tx = (key: Parameters<typeof gameText>[0], en: string, vars?: Record<string, string | number>) =>
+		social ? en : gameText(key, vars);
 	const SYMBOLS = `${base}/assets/sprites/turfSymbols`;
 	const BRAND = `${base}/assets/sprites/turfBrand`;
 	// The Frame overlay comes from capoFrames/, the art the BOARD actually draws.
@@ -78,19 +86,19 @@
 			// over a symbol because that is the only way it ever appears in play.
 			icons: ['h1'],
 			overlay: 'frame_1x1',
-			title: 'LOOT BAGS',
-			body: `Frames land carrying <strong>2&times; to 100&times;</strong>, covering <strong>1, 4 or 9 positions</strong>. A Frame multiplies any win whose ${T.payline} crosses it &mdash; a bigger Frame counts once per position crossed &mdash; and where several take part in one win, their values <strong>add together</strong>.`,
+			title: tx('turfBagsTitle', 'LOOT BAGS'),
+			body: tx('turfBagsBody', `Loot Bags land carrying <strong>2&times; to 100&times;</strong>, covering <strong>1, 4 or 9 positions</strong>. A Loot Bag multiplies any win whose ${T.payline} crosses it &mdash; a bigger Loot Bag counts once per position crossed &mdash; and where several take part in one win, their values <strong>add together</strong>.`),
 		},
 		{
 			icons: ['sw'],
-			title: 'THE BRUISER',
-			body: `A Bruiser fills its <strong>entire reel with Wilds</strong> before any wins are counted. It lands on the three middle reels, and more than one can arrive on the same spin.`,
+			title: tx('turfBruiserTitle', 'THE BRUISER'),
+			body: tx('turfBruiserBody', `A Bruiser fills its <strong>entire reel with Wilds</strong> before any wins are counted. It lands on the three middle reels in normal play and on any reel in free spins, one at a time.`),
 		},
 		{
 			icons: ['h1', 'h2', 'h3'],
 			overlay: 'frame_full',
-			title: 'THE BIG SCORE',
-			body: `On any spin the <strong>whole grid can become one Loot Bag</strong> worth <strong>5&times; to 50&times;</strong>, multiplying every winning ${T.payline} once per position. It can turn up in normal play and in every feature &mdash; and it does not need a win to appear.`,
+			title: tx('turfScoreTitle', 'THE BIG SCORE'),
+			body: tx('turfScoreBody', `On any spin the <strong>whole grid can become one Loot Bag</strong> worth <strong>5&times; to 50&times;</strong>, multiplying every winning ${T.payline} once per position. It can turn up in normal play and in every feature &mdash; and it does not need a win to appear.`),
 		},
 		// Three panels only: the opening card sells the two signature mechanics and
 		// the Big Score. The Free Spins tiers are covered in full in the rules modal
@@ -142,6 +150,14 @@
 		dismiss();
 	};
 
+	// Enter continues, exactly as the click does and under the same conditions.
+	// Not Space: that is the spin key, and the press would carry on to the board.
+	const onkey = (e: KeyboardEvent) => {
+		if (e.key !== 'Enter' || !show || !armed || !ready) return;
+		e.preventDefault();
+		close();
+	};
+
 	// A short arming delay stops a stray click that was aimed at something else
 	// from dismissing the card before it has finished appearing.
 	let armed = $state(false);
@@ -164,6 +180,8 @@
 		};
 	});
 </script>
+
+<svelte:window onkeydown={onkey} />
 
 {#if show}
 	<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
@@ -190,7 +208,7 @@
 		<div class="hm-cast-wrap hm-cast-wrap-left">
 			<img
 				class="hm-cast hm-cast-left"
-				src={`${base}/assets/sprites/turfCast/guy.png`}
+				src={`${base}/assets/castLayers/turf/loading.png`}
 				alt=""
 				aria-hidden="true"
 			/>
@@ -200,7 +218,7 @@
 			<img class="hm-logo" src={`${BRAND}/logo.png`} alt="TURF WAR" />
 
 			<div class="hm-vol">
-				<span class="hm-vol-label">VOLATILITY</span>
+				<span class="hm-vol-label">{tx('introVolatility', 'VOLATILITY')}</span>
 				<span class="hm-bolts" aria-label={`Volatility ${VOLATILITY} of ${VOLATILITY_MAX}`}>
 					{#each Array(VOLATILITY_MAX) as _, i (i)}
 						<!--
@@ -228,7 +246,7 @@
 
 			<div class="hm-panels">
 				{#each panels as panel, i (panel.title)}
-					<section class="hm-panel" style:--delay={`${i * 100}ms`}>
+					<section class="hm-panel" style:--delay={`${i * 100}ms`} style:--plate={`url(${base}/assets/sprites/turfUi/buybonus_plate.png)`}>
 						<div class="hm-panel-icons" class:multi={panel.icons.length > 1}>
 							{#each panel.icons as icon, k (k)}
 								<img src={`${SYMBOLS}/${icon}.png`} alt="" aria-hidden="true" />
@@ -242,8 +260,8 @@
 								/>
 							{/if}
 						</div>
-						<h2>{panel.title}</h2>
-						<p>{@html panel.body}</p>
+						<h2 dir="auto">{panel.title}</h2>
+						<p dir="auto">{@html panel.body}</p>
 					</section>
 				{/each}
 			</div>
@@ -254,11 +272,11 @@
 				figure there is worse than no figure. The rules panel carries RTP per
 				mode, read live from the maths config, which is where it belongs.
 			-->
-			<p class="hm-stats">
-				{lineCount} {T.paylinesUpper} &nbsp;/&nbsp; MAX WIN {maxWin}&times;
+			<p class="hm-stats" dir="auto">
+				{tx('introPaylines', `${lineCount} ${T.paylinesUpper}`, { lines: lineCount })} &nbsp;/&nbsp; {tx('introMaxWin', `MAX WIN ${maxWin}×`, { max: maxWin })}
 			</p>
-			<p class="hm-cta" class:waiting={!ready}>
-				{ready ? 'TAP TO CONTINUE' : 'LOADING…'}
+			<p class="hm-cta" class:waiting={!ready} dir="auto">
+				{ready ? tx('introTap', 'TAP TO CONTINUE') : tx('introLoading', 'LOADING…')}
 			</p>
 		</div>
 
@@ -604,6 +622,7 @@
 		}
 	}
 
+
 	/* Angled corners and a hard keyline instead of a soft neon pill: the card is
 	   meant to read as printed signage in the scene, not as an app dialog. */
 	/*
@@ -625,14 +644,13 @@
 		gap: 0.35rem;
 		padding: clamp(0.7rem, 1.6vh, 1.1rem) clamp(0.6rem, 1.4vw, 1rem);
 		box-sizing: border-box;
-		background:
-			linear-gradient(180deg, rgba(58, 61, 66, 0.96) 0%, rgba(23, 25, 28, 0.97) 62%, rgba(42, 52, 62, 0.97) 100%);
-		border: 3px solid #0e0f11;
-		clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
-		box-shadow:
-			inset 0 0 0 2px #d9d6ce,
-			inset 0 22px 34px -22px rgba(217, 214, 206, 0.5),
-			7px 7px 0 rgba(14, 15, 17, 0.75);
+		/* 2026-10-01: the game's painted Buy Bonus plate, nine-sliced by CSS.
+		   It was a three-stop linear gradient with an inset ring — "gradient
+		   fills" from review's Low quality assets tag, on the first screen a
+		   reviewer sees. Corners keep their drawn size; the well stretches. */
+		border: 30px solid transparent;
+		border-image: var(--plate) 130 fill / 44px / 4px stretch;
+		filter: drop-shadow(6px 8px 0 rgba(14, 15, 17, 0.7));
 		text-align: center;
 		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 		animation-delay: var(--delay);
@@ -645,7 +663,7 @@
 		position: absolute;
 		inset: 3px 3px auto 3px;
 		height: clamp(3.4rem, 8vh, 5rem);
-		background: linear-gradient(180deg, rgba(156, 90, 34, 0.34) 0%, rgba(156, 90, 34, 0) 100%);
+		display: none;
 		pointer-events: none;
 	}
 
@@ -658,7 +676,7 @@
 		right: -1px;
 		width: 46px;
 		height: 46px;
-		background: linear-gradient(225deg, #465562 0%, #465562 46%, transparent 47%);
+		display: none;
 		pointer-events: none;
 	}
 
@@ -792,5 +810,30 @@
 		   star's counter at 26px — 30px restores the optical size it was drawn at. */
 		font-size: 30px;
 		font-weight: 700;
+	}
+
+	/* (kept last so it wins the cascade) Short screens (phone landscape): the painted plate's frame is a fixed
+	   30px, which on a 390px-tall screen ate the copy's room and pushed the
+	   prompt off the bottom. Thinner frame, same art. */
+	@media (max-height: 520px) {
+		.hm-panel {
+			border-width: 14px;
+			border-image-width: 22px;
+			padding: 0.2rem 0.35rem;
+			gap: 0.15rem;
+		}
+		.hm-panel .hm-panel-icons {
+			display: none;
+		}
+		.hm-panels {
+			width: min(100%, 44rem);
+		}
+		.hm-panel h2 {
+			font-size: 0.74rem;
+		}
+		.hm-panel p {
+			font-size: 0.6rem;
+			line-height: 1.25;
+		}
 	}
 </style>

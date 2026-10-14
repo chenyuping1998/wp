@@ -1,0 +1,49 @@
+{
+  "canvas": [
+    1024,
+    2048
+  ],
+  "figure_box": [
+    150,
+    172,
+    934,
+    1774
+  ],
+  "source_tool": "built-in image_gen",
+  "psd_roundtrip": "exact",
+  "normalization": "uniform affine per part; neck underlap extension",
+  "layers": {
+    "head": {
+      "alpha_box": [
+        458,
+        171,
+        614,
+        495
+      ]
+    },
+    "arm_r": {
+      "alpha_box": [
+        149,
+        432,
+        419,
+        1081
+      ]
+    },
+    "arm_l": {
+      "alpha_box": [
+        678,
+        457,
+        935,
+        1074
+      ]
+    },
+    "body": {
+      "alpha_box": [
+        306,
+        369,
+        772,
+        1777
+      ]
+    }
+  }
+}

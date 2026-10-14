@@ -19,8 +19,8 @@
 	import { stateGame } from '../game/stateGame.svelte';
 	import { tierByBonusTier } from '../game/featureTiers';
 	import FeatureSplashPanel from './FeatureSplashPanel.svelte';
-	import { CAST_NATIVE } from './CastFigure.svelte';
 	import CastFigureMesh from './CastFigureMesh.svelte';
+	import { castPlacement } from '../game/castPlacement';
 	import { MainContainer } from 'components-layout';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation, { SIGN_DROP_MS } from './FreeSpinAnimation.svelte';
@@ -73,15 +73,10 @@
 
 
 	// The character. Cast.svelte stands its own copy down while this is up
-	// (stateGame.featureSplashShow) so there is only ever one of her, and this one
-	// is drawn on the NEAR side of the scrim so the dimming does not touch her.
-	const castHeight = $derived(layout.height * 1.12);
-	const castWidth = $derived((castHeight * CAST_NATIVE.girl.w) / CAST_NATIVE.girl.h);
-	// The RIGHT, as the board's own cast is. Standing her on the left made the two
-	// screens contradict each other: she walks off the right edge of the board and
-	// reappears on the left of the card announcing the feature.
-	const castX = $derived(layout.width - castWidth * 0.44);
-	const castTopY = $derived(layout.height * 0.04);
+	// (stateGame.featureSplashShow) so there is only ever one of him, and this one
+	// is drawn on the NEAR side of the scrim so the dimming does not touch him —
+	// in the same spot the board's copy stands (game/castPlacement.ts).
+	const cast = $derived(castPlacement(context));
 
 	// The number's slam, timed against the plaque's drop.
 	//
@@ -153,6 +148,9 @@
 		};
 	});
 
+	// how long a retrigger's +N plaque stays up before the feature resumes
+	const RETRIGGER_HOLD_MS = 2000;
+
 	context.eventEmitter.subscribeOnMount({
 		freeSpinIntroShow: () => {
 			show = true;
@@ -169,9 +167,24 @@
 			// fires first and cannot tell them apart.
 			stateGame.featureSplashShow = isEntry && tierByBonusTier(stateGame.bonusTier) !== null;
 			freeSpinsFromEvent = emitterEvent.extraSpins ?? emitterEvent.totalFreeSpins;
+			// Arm the resolver BEFORE the slam starts (the oncomplete race: an
+			// animation that finishes between the two statements finds the old,
+			// no-op callback and the feature waits forever).
+			let resolveThis: () => void = () => {};
+			const done = waitForResolve((resolve) => {
+				oncomplete = resolve;
+				resolveThis = resolve;
+			});
 			// retriggers reuse this event, so the slam replays for the +N as well
 			startNumberAnim();
-			await waitForResolve((resolve) => (oncomplete = resolve));
+			// A retrigger plaque is a beat inside the feature, not a stop: it holds
+			// long enough to read the +N and then the feature carries on by itself
+			// (it used to wait for a tap — 28s+ observed, 2026-10-12). A tap still
+			// skips it. The entry card keeps waiting for the player. The timer
+			// resolves THIS showing only, never a later one.
+			const autoContinue = isEntry ? undefined : setTimeout(() => resolveThis(), RETRIGGER_HOLD_MS);
+			await done;
+			clearTimeout(autoContinue);
 		},
 	});
 </script>
@@ -193,32 +206,25 @@
 			feature's name as the largest thing on screen, one panel under it
 			carrying the spin count and the rules, and the click prompt at the foot.
 		-->
+		{#if cast.hasSideBand}
+			<!-- The prisoner, from the same layered rig that stands beside the board
+			     (it was once Hot Miami's spine woman, then this mesh in the wrong
+			     box, mirrored, under the scrim). Untransformed container:
+			     CastFigureMesh places itself in canvas px. No flip — the
+			     crossed-arms art is drawn facing the board. -->
+			<Container>
+				<CastFigureMesh
+					who="guy"
+					inline
+					x={cast.x}
+					topY={cast.topY}
+					height={cast.height}
+					groundY={cast.groundY}
+					innerEdge={cast.boardInkRight}
+				/>
+			</Container>
+		{/if}
 		<MainContainer>
-			<!--
-				The BOSS, from the mesh rig — not CastFigureSpine.
-
-				This card drew `who="girl"`: Hot Miami's woman, in a pink-and-cyan
-				dress, holding a neon toy ray gun. It is shown every time a player
-				enters the free game, which is the largest moment the game has, and
-				it had survived every pass because the splash is only reachable on a
-				feature trigger.
-				
-				Switching the same component to "guy" would not have helped — that
-				spine is Miami's man in a Hawaiian shirt with a baseball bat. Both
-				spine figures belong to the other game. The only Capo Nostra
-				character that exists is the mesh rig (meshRigs/cast_guy), which is
-				what stands beside the board, so the splash uses it too and the
-				player meets the same man in both places.
-			-->
-			<CastFigureMesh
-				who="guy"
-				x={castX}
-				topY={castTopY}
-				height={castHeight}
-				groundY={layout.height}
-				flip
-			/>
-
 			<Container x={layout.width * 0.5}>
 				<!--
 					THE TITLE, as drawn art.
@@ -286,8 +292,7 @@
 					fontWeight: TITLE_FONT_WEIGHT,
 					letterSpacing: 5,
 					fill: [0xD6D8D8, 0xB8AD95, 0x76513B],
-					stroke: 0x14100D,
-					strokeThickness: 6,
+					stroke: { color: 0x14100D, width: 6 },
 				}}
 			/>
 			<!-- glow bed sits inside the scaled container so it swells with the slam -->
@@ -326,13 +331,12 @@
 					fontWeight: TITLE_FONT_WEIGHT,
 					letterSpacing: 4,
 					fill: 0xB8AD95,
-					stroke: 0x14100D,
-					strokeThickness: 3,
+					stroke: { color: 0x14100D, width: 3 },
 				}}
 			/>
 		{/snippet}
 		</FreeSpinAnimation>
 	{/if}
 
-	<PressToContinue onpress={() => oncomplete()} />
+	<PressToContinue showLabel={isEntry} onpress={() => oncomplete()} />
 </FadeContainer>

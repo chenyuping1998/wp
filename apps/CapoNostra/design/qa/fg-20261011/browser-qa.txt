@@ -1,0 +1,80 @@
+body VOLATILITY
+VAULT FRAMES
+
+Frames land carrying 2× to 100×, covering 1, 4 or 9 positions. A Frame multiplies any win whose payline crosses it — a bigger Frame counts once per position crossed — and where several take part in one win, their values add together.
+
+THE VIOLIN CASE
+
+A Violin Case fills its entire reel with Wilds before any wins are counted. It lands on the three middle reels in normal play and on any reel in free spins, and more than one can arrive on the same spin.
+
+FREE SPINS
+
+3, 4 or 5 Scatters open Soldier, Capo or The Don — 10 spins each, starting with one Frame in Soldier and three in Capo and The Don, and The Don guarantees a Violin Case on every spin. Buy in for 100×, 500× or 1000×.
+
+14 PAYLINES  /  MAX WIN 20,000×
+
+TAP TO CONTINUE
+
+777
+SILVERSTARS STUDIO
+errors []
+after intro {
+  text: '',
+  game: {
+    gameType: 'basegame',
+    isTurbo: false,
+    betMode: 'BASE',
+    dimmedBy: 0,
+    anticipation: []
+  }
+}
+0 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+1 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+2 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+3 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+4 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+5 {
+  gameType: 'basegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+6 {
+  gameType: 'freegame',
+  isTurbo: false,
+  betMode: 'BASE',
+  dimmedBy: 0,
+  anticipation: [ 0, 0, 0, 1, 2 ]
+}
+returned true final errors []

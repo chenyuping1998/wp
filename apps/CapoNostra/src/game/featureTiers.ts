@@ -57,7 +57,7 @@ export const FEATURE_TIERS: FeatureTier[] = [
 			'10 free spins with one Vault Frame on the grid from the start. All Frames are sticky for the whole feature and are refilled with a new multiplier between spins.',
 		splash:
 			'ONE VAULT FRAME IS ALREADY ON THE GRID. EVERY FRAME STAYS FOR THE WHOLE FEATURE AND IS REFILLED WITH A NEW MULTIPLIER BETWEEN SPINS.',
-		accent: 0xc9a227,
+		accent: 0xd4d0c6,
 		titleKey: 'hmTitleSoldier',
 	},
 	{
@@ -70,7 +70,7 @@ export const FEATURE_TIERS: FeatureTier[] = [
 			'10 free spins starting with three sticky Vault Frames. Frame values persist, and any Frame that takes part in a win doubles before the next spin.',
 		splash:
 			'THREE STICKY VAULT FRAMES TO START. ANY FRAME THAT TAKES PART IN A WIN DOUBLES ITS VALUE BEFORE THE NEXT SPIN.',
-		accent: 0xe8d48b,
+		accent: 0xf7f4ec,
 		titleKey: 'hmTitleCapo',
 	},
 	{
@@ -80,9 +80,9 @@ export const FEATURE_TIERS: FeatureTier[] = [
 		title: 'THE DON',
 		scatters: 5,
 		summary:
-			'10 free spins starting with three sticky Vault Frames, keeping the doubling rule, and every single spin is guaranteed at least one Tommy Gun — so at least one full reel of Wilds lands on every spin of the feature.',
+			'10 free spins starting with three sticky Vault Frames, keeping the doubling rule, and every single spin is guaranteed at least one Violin Case — so at least one full reel of Wilds lands on every spin of the feature.',
 		splash:
-			'THREE STICKY VAULT FRAMES, WINNING FRAMES STILL DOUBLE, AND EVERY SPIN IS GUARANTEED AT LEAST ONE TOMMY GUN.',
+			'THREE STICKY VAULT FRAMES, WINNING FRAMES STILL DOUBLE, AND EVERY SPIN IS GUARANTEED AT LEAST ONE VIOLIN CASE.',
 		// Was 0xc1272d — the exact signal red ART_BRIEF.md §0 reserves for the
 		// Tommy Gun wild ONLY ("別的地方一律不准用這個紅"), found here 2026-09-09
 		// colouring this tier's name on the free-spin splash. Guaranteeing a
@@ -92,7 +92,7 @@ export const FEATURE_TIERS: FeatureTier[] = [
 		// 0xe8d48b bright) one step further into bone white — the top tier
 		// reading as "past gold" rather than borrowing the one colour that has
 		// to stay singular.
-		accent: 0xe6dfd1,
+		accent: 0xece8df,
 		titleKey: 'hmTitleDon',
 	},
 ];

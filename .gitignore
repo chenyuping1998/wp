@@ -50,3 +50,13 @@ upload/
 dist/
 apps/*/dist/
 
+
+# Design source files and archives — kept on disk, never pushed (2026-10-14).
+# Layered PSDs run 50–84MB each and the backup tarballs/delivery zips up to
+# 82MB; together ~1.4GB that would sit in history forever. Files under these
+# paths that were tracked before this rule stay tracked.
+*.psd
+apps/**/design/_incoming/
+apps/**/design/_legacy_assets/
+apps/**/*.zip
+apps/**/*.tgz

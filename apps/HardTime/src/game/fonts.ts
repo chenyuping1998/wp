@@ -28,11 +28,15 @@ export const GAME_FONT = '"Saira", "Arial Narrow", Arial, sans-serif';
 // geometric figures are narrower and harder to read at that size. So: Orbitron
 // for display — titles, the free-spin plaques, big-win callouts — and Titan One
 // everywhere a number has to be read at a glance.
-export const DISPLAY_FONT = '"Orbitron", "Titan One", "Trebuchet MS", Arial, sans-serif';
+// 2026-10-12: Orbitron retired. A square sci-fi face on a 1950s prison board
+// (audit) — numbers now take Saira at its real bold, the same stamped,
+// condensed family as every title and caption in this game.
+export const DISPLAY_FONT = '"Saira", "Arial Narrow", Arial, sans-serif';
 
 // Orbitron ships as a variable font with a 400..900 weight axis, so unlike
 // Titan One a real bold is available rather than a synthesised one.
-export const DISPLAY_FONT_WEIGHT = '800' as const;
+// Saira is variable 300..700: 700 is its heaviest real cut.
+export const DISPLAY_FONT_WEIGHT = '700' as const;
 
 // Titan One is a single-weight family. Asking for 700 makes the browser
 // synthesise a bold by smearing the outline, which on a face this heavy just
@@ -141,7 +145,6 @@ setFontKit(null);
 // Saira is in this list for the same reason as the other two: LoadingScreen sets
 // its subtitle and its rotating tips in BODY_FONT, and those are pixi Texts.
 setLocalFonts([
-	`${DISPLAY_FONT_WEIGHT} 16px "Orbitron"`,
 	'400 16px "Saira"',
 	'700 16px "Saira"',
 ]);

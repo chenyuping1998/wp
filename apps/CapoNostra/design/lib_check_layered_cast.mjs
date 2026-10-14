@@ -63,6 +63,8 @@ function readAlpha(buf) {
 }
 
 const ALLOWED = (name, bones) => {
+  // One continuous whole-body mesh has all roles; keep checking its geometry.
+  if (name === 'figure') return bones.map(b => b.name);
   if (name === 'body') return ['root', 'hips', 'waist', 'chest'];
   if (name === 'head') return ['chest', 'neck', 'head'];
   if (name.startsWith('arm_')) return [name, 'fore_' + name.at(-1)];

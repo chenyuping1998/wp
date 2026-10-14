@@ -1,7 +1,8 @@
 export default {
- hmCastGuyFeature: { type: 'sprite', src: new URL('../../assets/sprites/turfCast/guy_feature.png', import.meta.url).href, preload: true },
- hmCastGuyKingpin: { type: 'sprite', src: new URL('../../assets/sprites/turfCast/guy_kingpin.png', import.meta.url).href, preload: true },
-
+ // Legacy mesh textures stay registered for check_cast_motion.mjs's old-rig
+ // regression gate. The live character uses turfLayer* below.
+ hmCastGuyFeature: { type: 'sprite', src: new URL('../../assets/sprites/turfCast/guy_feature.png', import.meta.url).href, preload: false },
+ hmCastGuyKingpin: { type: 'sprite', src: new URL('../../assets/sprites/turfCast/guy_kingpin.png', import.meta.url).href, preload: false },
  turfFrameFull: { type: 'sprite', src: new URL('../../assets/sprites/turfFrames/frame_full.png', import.meta.url).href },
  turfFrameFullEdge: { type: 'sprite', src: new URL('../../assets/sprites/turfFrames/frame_full_edge.png', import.meta.url).href },
  turfWildLocked: { type: 'sprite', src: new URL('../../assets/sprites/turfFx/sw_locked.png', import.meta.url).href },
@@ -21,17 +22,23 @@ export default {
 	// in the game is one of these, tinted and drawn additively
 	fxGlow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/capoFx/fx_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/turfFx/fx_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	fxStar: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/capoFx/fx_star.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/turfFx/fx_star.png', import.meta.url).href,
 		preload: true,
 	},
 	fxStreak: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/capoFx/fx_streak.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/turfFx/fx_streak.png', import.meta.url).href,
+		preload: true,
+	},
+	// soft light shaft for the big-win sunburst (DeadwoodExpress/design/make_fx_ray.py)
+	fxRay: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/turfFx/fx_ray.png', import.meta.url).href,
 		preload: true,
 	},
 	fxLeaf: {
@@ -44,7 +51,7 @@ export default {
 	// cell — and slid sideways it looks like a car pointing at you being dragged.
 	fxVignette: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/capoFx/fx_vignette.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/turfFx/fx_vignette.png', import.meta.url).href,
 		preload: true,
 	},
 	// bet-bar plates (design/generate_ui_plates.mjs) — brass-framed olive canvas
@@ -314,13 +321,8 @@ export default {
 	// Whole-symbol images, not parts: a pose changes the silhouette, which is the
 	// one thing the rigged stack cannot do.
 
-	// The cast standing beside the board. Split out of the store tile's two-figure
-	// cut-out by design/build_cast_figures.py, using the same measured polygon the
-	// intro card clips with. Not preloaded: they are decoration on a board that is
-	// already playable without them.
-	// Preloaded, unlike most decoration: the LOADING SCREEN draws them, so they
-	// have to be there before the thing that reports them being there. Two small
-	// PNGs (266x819 and 224x775) against a 32MB bundle.
+	// The single loading/intro portrait uses the same bat-on-shoulder art as the
+	// layered runtime cast. The older flat sprite remains for the fallback view.
 	hmCastGuy: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/turfCast/guy.png', import.meta.url).href,
@@ -329,16 +331,20 @@ export default {
 	hmCastGuyMesh: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/turfCast/guy.png', import.meta.url).href,
-		preload: true,
-	},
-	hmCastGirlMesh: {
-		type: 'sprite',
-		src: new URL('../../assets/meshRigs/cast_girl/girl.png', import.meta.url).href,
 		preload: false,
+	},
+	turfCastLoading: {
+		type: 'sprite',
+		src: new URL('../../assets/castLayers/turf/loading.png', import.meta.url).href,
+		preload: true,
 	},
 	hmCastGirl: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/capoCast/girl_spine.png', import.meta.url).href,
+		// 2026-10-01: was Capo Nostra's woman (a reskin leftover, shipped but
+		// unreachable — Cast.svelte only takes the CastFigure branch when the
+		// mesh cast is off, and never as 'girl'). Kept as a key so CastFigure
+		// still type-checks; points at this game's own figure.
+		src: new URL('../../assets/sprites/turfCast/guy.png', import.meta.url).href,
 		preload: false,
 	},
 
@@ -448,6 +454,16 @@ export default {
 		src: new URL('../../assets/sprites/turfBackground/bg_epic.png', import.meta.url).href,
 		preload: true,
 	},
+	// Three aligned looks for the same layered bat carrier. Each cutout has its
+	// own mesh; the shared skeleton and reaction clock are in layeredFigure.ts.
+	turfLayerBaseBody: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/body.png', import.meta.url).href, preload: true },
+	turfLayerBaseArmR: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/arm_r.png', import.meta.url).href, preload: true },
+	turfLayerBasePropBat: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/prop_bat.png', import.meta.url).href, preload: true },
+	turfLayerBaseArmL: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/arm_l.png', import.meta.url).href, preload: true },
+	turfLayerBaseHead: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/head.png', import.meta.url).href, preload: true },
+	turfLayerBaseDangleChain: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/dangle_chain.png', import.meta.url).href, preload: true },
+	turfLayerBaseDangleMask: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/dangle_mask.png', import.meta.url).href, preload: true },
+	turfLayerBaseFingersR: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/fingers_r.png', import.meta.url).href, preload: true },
 	// Drawn by design/build_coin_sheet.py. Replaces SD2_Coin.json/.png, a
 	// TexturePacker sheet carried over from a template — 2.5MB of 684px frames
 	// for a particle a few dozen pixels across, under a filename that names
@@ -461,4 +477,10 @@ export default {
 		src: new URL('../../assets/audio/sounds.json', import.meta.url).href,
 		preload: true,
 	},
+	turfLayerFgArmL: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/arm_l.png', import.meta.url).href, preload: true },
+	turfLayerFgBody: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/body.png', import.meta.url).href, preload: true },
+	turfLayerFgHead: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/head.png', import.meta.url).href, preload: true },
+	turfLayerFgPropCigar: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/prop_cigar.png', import.meta.url).href, preload: true },
+	turfLayerFgDangleSmoke: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/dangle_smoke.png', import.meta.url).href, preload: true },
+	turfLayerFgArmR: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/arm_r.png', import.meta.url).href, preload: true },
 } as const;

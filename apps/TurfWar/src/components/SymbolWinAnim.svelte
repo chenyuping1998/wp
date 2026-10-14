@@ -81,12 +81,16 @@
 	// burst at 132px without turning the cell into confetti; they are laid out on
 	// a fixed ring so two adjacent winning cells do not produce the same pattern
 	// twice by chance.
-	const SPARKS = 6;
-	const sparkAngles = Array.from(
-		{ length: SPARKS },
-		(_, i) => (i / SPARKS) * Math.PI * 2 + Math.random() * 0.5,
-	);
-	const spark = new Tween(0, { duration: fs(420), easing: cubicOut });
+	const SPARKS = 10;
+	// Motes: soft lights that rise out of the cell and fade. They replaced a
+	// burst of four-point stars flung outward — Hot Miami's neon sparkle.
+	const motes = Array.from({ length: SPARKS }, (_, i) => ({
+		x: ((i + 0.5) / SPARKS - 0.5) * 0.8 + (Math.random() - 0.5) * 0.08,
+		y: 0.25 + Math.random() * 0.2,
+		rise: 0.45 + Math.random() * 0.25,
+		size: 0.16 + Math.random() * 0.1,
+	}));
+	const spark = new Tween(0, { duration: fs(820), easing: cubicOut });
 
 	// How long a winning cell stays lit before it reports done.
 	//
@@ -153,11 +157,15 @@
 		// At 1.45/1.18 it is unmistakably the symbol that just paid. Nothing masks
 		// the board, so overflowing the cell is safe — and overflowing is the
 		// point: it lifts the winning cell out of the grid.
-		const overshoot = 1 + (1.45 - 1) * motion.hitScale;
-		const settled = 1 + (1.18 - 1) * motion.hitScale;
+		// 2026-09-27 copied Deadwood's 1.16 / 1.07 cut ("heavy, not a balloon"),
+		// and Deadwood's next review doubled "Poor animations" on exactly that.
+		// 2026-10-01: back to Deadwood's post-review 1.38 / 1.15 — unmistakably
+		// the cell that paid.
+		const overshoot = 1 + (1.38 - 1) * motion.hitScale;
+		const settled = 1 + (1.15 - 1) * motion.hitScale;
 		hit.set(overshoot, { duration: fs(200), easing: backOut });
 		flash.set(0, { duration: fs(320), easing: cubicOut });
-		spark.set(1, { duration: fs(420), easing: cubicOut });
+		spark.set(1, { duration: fs(820), easing: cubicOut });
 		const settle = setTimeout(
 			() => hit.set(settled, { duration: fs(240), easing: cubicOut }),
 			fs(200),
@@ -326,19 +334,18 @@
 		/>
 	{/each}
 
-	<!-- outward spark burst on the hit -->
+	<!-- motes rising out of the cell on the hit -->
 	{#if spark.current < 1}
-		{#each sparkAngles as angle, i (i)}
-			{@const travel = SYMBOL_SIZE * (0.34 + 0.28 * spark.current)}
+		{#each motes as mote, i (i)}
 			<Sprite
 				anchor={0.5}
-				key="fxStar"
-				x={Math.cos(angle) * travel}
-				y={Math.sin(angle) * travel}
-				width={SYMBOL_SIZE * 0.3 * (1 - spark.current)}
-				height={SYMBOL_SIZE * 0.3 * (1 - spark.current)}
-				tint={MARK}
-				alpha={0.9 * (1 - spark.current)}
+				key="fxGlow"
+				x={mote.x * SYMBOL_SIZE}
+				y={(mote.y - mote.rise * spark.current) * SYMBOL_SIZE}
+				width={SYMBOL_SIZE * mote.size * (1 + 0.6 * spark.current)}
+				height={SYMBOL_SIZE * mote.size * (1 + 0.6 * spark.current)}
+				tint={0xffd9b0}
+				alpha={0.8 * Math.sin(Math.PI * spark.current)}
 				blendMode="add"
 			/>
 		{/each}

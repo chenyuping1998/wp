@@ -16,7 +16,11 @@ import { setFontKit, setLocalFonts } from 'pixi-svelte';
 // digits stay legible at bet-bar size and fit inside the 603x135 brass readout
 // plate without crowding — see design/font_candidates.png and font_incontext.png
 // for the comparison this was picked from.
-export const GAME_FONT = '"Titan One", "Trebuchet MS", "Segoe UI", Tahoma, Arial, sans-serif';
+// 2026-10-12: Titan One retired. It was the last rounded bubble face on an Art
+// Deco board — the free-spin counter, the retrigger number and the outro amount
+// were still set in it beside Limelight and Josefin (audit: four faces in one
+// game). GAME_FONT now IS the Josefin Sans number face, at its real bold.
+export const GAME_FONT = '"Josefin Sans", "Trebuchet MS", "Segoe UI", Tahoma, Arial, sans-serif';
 
 // Titan One does the numeric work, but it is a rounded bubble face — the same
 // file the sibling GoBananas app ships — and this game is 80s Miami, whose type
@@ -28,16 +32,16 @@ export const GAME_FONT = '"Titan One", "Trebuchet MS", "Segoe UI", Tahoma, Arial
 // geometric figures are narrower and harder to read at that size. So: Orbitron
 // for display — titles, the free-spin plaques, big-win callouts — and Titan One
 // everywhere a number has to be read at a glance.
-export const DISPLAY_FONT = '"Orbitron", "Titan One", "Trebuchet MS", Arial, sans-serif';
+export const DISPLAY_FONT = '"Josefin Sans", "Trebuchet MS", Arial, sans-serif';
 
 // Orbitron ships as a variable font with a 400..900 weight axis, so unlike
 // Titan One a real bold is available rather than a synthesised one.
-export const DISPLAY_FONT_WEIGHT = '800' as const;
+export const DISPLAY_FONT_WEIGHT = '700' as const;
 
 // Titan One is a single-weight family. Asking for 700 makes the browser
 // synthesise a bold by smearing the outline, which on a face this heavy just
 // turns counters to mud — so anything using GAME_FONT must request 400.
-export const GAME_FONT_WEIGHT = '400' as const;
+export const GAME_FONT_WEIGHT = '700' as const;
 
 // Display faces are for display. The rules and paytable modals carry real
 // paragraphs — the RTP disclaimer, the feature descriptions — and setting body
@@ -77,8 +81,10 @@ export const BODY_FONT = '"Saira", "Trebuchet MS", "Segoe UI", Tahoma, Arial, sa
  * at the sizes the bet bar and the frame multipliers are read at, and a value
  * the player has to read is not the place to spend legibility on unity.
  */
-export const TITLE_FONT = '"Cinzel", "Times New Roman", Georgia, serif';
-export const TITLE_FONT_WEIGHT = 700;
+// 2026-10-04: Limelight replaces Cinzel (ART_BRIEF §7, Art Deco). One weight
+// only, so the title weight is 400; app.html maps every weight to that face.
+export const TITLE_FONT = '"Limelight", "Times New Roman", Georgia, serif';
+export const TITLE_FONT_WEIGHT = 400;
 
 /**
  * BAR_LABEL_FONT / BAR_VALUE_FONT — the bet bar, split the same way.
@@ -113,7 +119,7 @@ export const TITLE_FONT_WEIGHT = 700;
  * these four names.
  */
 export const BAR_LABEL_FONT = TITLE_FONT;
-export const BAR_LABEL_FONT_WEIGHT = '700' as const;
+export const BAR_LABEL_FONT_WEIGHT = '400' as const;
 export const BAR_VALUE_FONT = DISPLAY_FONT;
 export const BAR_VALUE_FONT_WEIGHT = '700' as const;
 
@@ -141,8 +147,7 @@ setFontKit(null);
 // Saira is in this list for the same reason as the other two: LoadingScreen sets
 // its subtitle and its rotating tips in BODY_FONT, and those are pixi Texts.
 setLocalFonts([
-	`${GAME_FONT_WEIGHT} 16px "Titan One"`,
-	`${DISPLAY_FONT_WEIGHT} 16px "Orbitron"`,
-	`${TITLE_FONT_WEIGHT} 16px "Cinzel"`,
+	`${DISPLAY_FONT_WEIGHT} 16px "Josefin Sans"`,
+	`${TITLE_FONT_WEIGHT} 16px "Limelight"`,
 	'400 16px "Saira"',
 ]);

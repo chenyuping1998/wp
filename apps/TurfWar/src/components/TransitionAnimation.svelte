@@ -76,6 +76,7 @@
 	let doorGap = $state(1); // 1 = wide open, 0 = shut
 	let dialSpin = $state(0);
 	let sealAlpha = $state(0);
+	let bounce = $state(0);
 
 	const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
 	const easeOutCubic = (t: number) => 1 - (1 - clamp01(t)) ** 3;
@@ -100,9 +101,10 @@
 			clock = elapsed;
 
 			if (elapsed < LOCK_AT) {
-				// Heavy doors do not ease in gently — they are already moving when
-				// they enter frame and slow only at the very end.
-				doorGap = 1 - easeOutCubic(elapsed / CLOSE_MS);
+				// 2026-10-01: it is a ROLLER SHUTTER — it falls from the top and
+				// accelerates (gravity) into the ground, instead of two halves
+				// sliding in from the sides like a vault door.
+				doorGap = 1 - easeInCubic(elapsed / CLOSE_MS);
 				dialSpin = 0;
 			} else if (elapsed < HOLD_AT) {
 				doorGap = 0;
@@ -120,8 +122,16 @@
 				// before the transition ends, not arriving off-screen on its last
 				// frame — otherwise the final beat still has steel in shot while the
 				// board underneath is what the player is meant to be looking at.
-				doorGap = easeInCubic(clamp01((p - 0.25) / 0.62));
+				// Rolled back up: smoothstep haul after the lock lets go.
+				const q = clamp01((p - 0.25) / 0.62);
+				doorGap = q * q * (3 - 2 * q);
 			}
+			// the slam: the bottom rail bounces off the ground once
+			const sinceSlam = elapsed - LOCK_AT;
+			bounce =
+				sinceSlam >= 0 && sinceSlam < 300
+					? Math.sin((sinceSlam / 300) * Math.PI * 2) * Math.exp(-sinceSlam / 110)
+					: 0;
 
 			// A seam shadow, drawn by us rather than baked into the art — see the
 			// note in ART_BRIEF §4.5 about why the halves must not carry one.
@@ -182,7 +192,10 @@
 	};
 </script>
 
-<Container x={sizes.width * 0.5} y={sizes.height * 0.5}>
+<Container
+	x={sizes.width * 0.5}
+	y={sizes.height * 0.5 - doorGap * ((sizes.height + doorH) / 2) * 1.04 - bounce * sizes.height * 0.03}
+>
 	<!--
 		Anchored at the seam: left door by its right edge, right door by its left.
 		See the header note — this is what keeps the join at x = 0 and the overflow
@@ -191,14 +204,14 @@
 	<Sprite
 		key="capoVaultDoorL"
 		anchor={{ x: 1, y: 0.5 }}
-		x={-doorGap * travel}
+		x={0}
 		width={doorW}
 		height={doorH}
 	/>
 	<Sprite
 		key="capoVaultDoorR"
 		anchor={{ x: 0, y: 0.5 }}
-		x={doorGap * travel}
+		x={0}
 		width={doorW}
 		height={doorH}
 	/>

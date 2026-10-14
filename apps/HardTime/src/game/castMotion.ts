@@ -198,10 +198,14 @@ export const IDLE: Record<string, MotionSpec> = {
   chest: [0.24, 180, 2150, 0.3],
   neck: [0.38, 120, 2650, 0.5],
   head: [0.55, 60, 1750, 0.8],
-  arm_l: [1.6, 0, 2050, 0.4],
-  fore_l: [1.2, 300, 1800, 0.3],
-  arm_r: [1.5, 180, 1500, 0.4],
-  fore_r: [1.1, 360, 1550, 0.3],
+  // ARMS: Hot Miami's rows, not the transcription's 1.6 / 1.2 / 1.5 / 1.1 —
+  // see the note above fromReference.
+  arm_l: [0.88, 0, 2050, 0.4],
+  fore_l: [0.66, 300, 1800, 0.3],
+  arm_r: [0.825, 180, 1500, 0.4],
+  fore_r: [0.605, 360, 1550, 0.3],
+  dangle_chain: [1.6, 140, 2400, 0.3],
+  dangle_mask: [2.0, 200, 2800, 0.3],
 };
 
 /* THE REACTION — verbatim from the transcription (hacksaw-character-motion,
@@ -313,13 +317,16 @@ const REFERENCE_ROTATION: Record<string, number> = {
  *  rather than assumed: trigger fold 71.0% at 0.80 against 76.6% at 0.96. The
  *  reference's number costs five points and still clears the 50% floor by
  *  twenty, so it stays — the compression is half of the gesture. */
+// ⚠ CORRECTED 2026-09-24. The table above this line used to be the skill's
+// motion.py REACTION_SCALE, which read the reference's Spine scales the wrong
+// way round (scaleX is ALONG a Spine bone, scaleY ACROSS). Measured off the
+// Miami motion pack (miami_main_guy, full_screen/reaction, t=0.2): the driving
+// upper arm keeps its length and bulges 1.229 across; the bracing forearm goes
+// 1.063 along / 0.799 across. chest/neck had no source. Mirrored as before:
+// the driving arm here is arm_l.
 const REFERENCE_SCALE: Record<string, [number, number]> = {
-  arm_l: [1.23, 1.1],
-  fore_l: [1.15, 1.05],
-  chest: [1.06, 1.02],
-  neck: [1.04, 1.0],
-  arm_r: [0.97, 1.02],
-  fore_r: [0.8, 1.06],
+  arm_l: [1.0, 1.23],
+  fore_r: [1.06, 0.8],
 };
 
 const REFERENCE_SCALE_K = 0.42;
@@ -341,6 +348,30 @@ const REFERENCE_FLUTTER = { depth: 0.13, periodMs: 66.7 };
  * rungs are the SAME gesture at less size, never a different pose: a big win has
  * to read as "the same man, more of it". So every channel — rotation, lift and
  * stretch — scales by the one fraction, and the shape between bones is untouched.
+ */
+/**
+ * THE ARMS DO NOT STRETCH (2026-09-23, revised 2026-09-24).
+ *
+ * Found on Turf War first (「手很怪，很像沒骨頭一樣，參考 miami 或 deadwood」) and
+ * then checked here on request. Measured as how far the inked vertices inside
+ * each traced arm region (design/cast_guy_arm_regions.json) stray from the best
+ * RIGID fit of themselves — pure rotation scores 0 — as ‰ of figure height:
+ *
+ *                                  before    after
+ *   trigger  left sleeve, upper     10.7      4.5
+ *   trigger  right forearm + hand    7.6      3.1
+ *   idle     left forearm + hand     4.9      2.8
+ *
+ * The squash stretched a whole arm 1.23x along itself, and a long thin region
+ * spread over a 16x40 lattice cannot scale as one piece, so it bows; and the
+ * transcription's arm idle (1.6 / 1.2 / 1.5 / 1.1deg, ~2x Hot Miami's) keeps
+ * that bend going forever. So the idle arm rows are Hot Miami's.
+ *
+ * 2026-09-24: the 1.23x stretch turned out never to be the reference's — its
+ * axes had been read the wrong way round (see REFERENCE_SCALE). The arms squash
+ * again with the real gesture: the driving upper arm bulges ACROSS, the bracing
+ * forearm thins. Spine, head, lift, lean and every reaction angle stay the
+ * transcription's.
  */
 function fromReference(
   fraction: number,

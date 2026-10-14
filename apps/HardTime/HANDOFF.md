@@ -1,5 +1,11 @@
 # Hard Time — 交接文件
 
+## 2026-09-25 角色分層完成
+
+囚犯改用 `CastFigureMesh.svelte` → `LayeredFigure` 四層網格、共用骨架；圖層與 PSD 在 [design/cast_parts/base](design/cast_parts/base/README.md)，遊戲資產在 `static/assets/castLayers/prisoner/`。待機／win／winBig／trigger 已接線，外側手掌在最大動作仍保留螢幕留白。原有 `castMotion.ts` 的並行修改未回退，新手臂幅度及解剖左右適配在 `layeredCastMotion.ts`。
+
+新增 `check_layered_cast.mjs` 已加入 build：3,232 姿勢、1×/2×/4×、翻面 0、面積比 0.862–1.147；PNG／PSD／空隙驗證在 `check_layered_art.py`。正式建置與新角色 TS 模組通過，整個專案的 `check:types` 仍有其他診斷，詳見交付 README。瀏覽器已看過三種反應與完整盤面事件。尚未上傳 Stake。
+
 最後更新：2026-09-15（第一次打包；pre-submission QA 全數完成）
 
 Capo Nostra 的換皮，但**數學核心重寫**：Vault Frame 整個拿掉，改由探照燈（Searchlight）
@@ -222,3 +228,39 @@ rig 重綁、手臂骨真的落在手臂上、規則 11）做完之後沒有重�
 也就是 Capo Nostra 在 2026-09-20 被使用者要求換掉的那一套。這次沒有動它 —— 使用者只
 交代清資產與打包。要不要跟著改成 Hot Miami 的寫法，等使用者決定。
 
+
+## 2026-09-23 — 手臂改剛性＋FG 結算置中（跟 Turf War 同一批問題）
+
+使用者在 Turf War 回報「手很怪，很像沒骨頭一樣，參考 miami 或 deadwood」與「FG 結束後贏分沒置中」，要求檢查 Hard Time。兩項都有。
+
+**手臂。** 量描好的手臂區域（`design/cast_guy_arm_regions.json`）內的頂點，偏離「最佳剛體擬合」的最大距離，以身高的千分比表示：
+反應時左上袖 10.7‰→4.5‰、右前臂＋手 7.6‰→3.1‰；待機時左前臂＋手 4.9‰→2.8‰。
+原因跟 Turf 一樣：抄錄版讓主動臂沿著自己拉長 1.23x（16x40 的格子上整條手臂沒辦法一起縮放，所以會彎）；
+待機手臂 1.6／1.2／1.5／1.1°，大約是 Hot Miami 的兩倍。
+改法：`castMotion.ts` 的 `ARM_BONES` 不吃擠壓伸展（`BODY_SCALE_SHAPE`），待機四根手臂骨改用 Hot Miami 的值（0.88／0.66／0.825／0.605）。
+脊椎、頭、抬升、側移、胸頸擠壓和反應角度仍是抄錄版。
+gate rule 6 原本「要求一定有一隻手臂拉長」，現在**反過來**改成「手臂不得有擠壓伸展」；
+新增 `--motion=` 參數，已驗證舊的動作表會被擋下。修改前的 castMotion 備份在 `design/_legacy_assets/cast_motion_transcription_20260923.ts`。
+
+**FG 結算。** `fs_sign.png` 是空白牌子，TOTAL WIN／金額從 0.02／0.28 改成 −0.18／0.08（跟 Turf 用同一組數值；兩邊的 FreeSpinAnimation 除了一行註解外完全相同）。
+在 playtest 用 `__HM_EMIT__` 叫出結算畫面，確認已置中。
+
+`./design/ship.sh`（無 zip）全綠、playtest 已部署。未上傳。
+
+## 2026-09-24 — 手臂擠壓改成參考的真實軸向＋分層重繪需求單
+
+使用者給了新版研究包（`hacksaw-motion-kit.zip`，內含 Miami 六隻角色的動作包）。用動作包量出：
+skill `rig/motion.py` 的 REACTION_SCALE **把 Spine 的 scaleX／scaleY 讀反了**（scaleX＝沿骨頭、scaleY＝垂直骨頭）。
+Miami 扛球棒男在反應最高點：上臂 `arm_r` 長度不變（肩→肘 231.09 → 231.09）、**變粗 1.229**；
+支撐側前臂 `arm_l_2` 沿骨頭 1.063、**變細 0.799**。舊表卻是「沿骨頭拉長 1.23」——這正是「手像沒骨頭」的源頭。
+四隻有反應動作的 Miami 角色，沒有一隻的手臂沿骨頭拉長超過 6%。
+
+本款改成：主動臂上臂**垂直骨頭鼓起**（1.00, 1.23）、支撐側前臂（1.06, 0.80），k 與 flutter 沿用。
+量測（仿射殘差，只算真正的彎）：鼓起 ≈ 不擠壓，約是舊拉長版的一半以下。gate 與 `pnpm run build` 全綠。
+在目前的圖上，鼓起幾乎看不出來（手臂貼身）→ 真正的解法是重畫：
+**需求單在 `/Users/stone/stake-engine/docs/cast-layers-brief/README.md`**（三款共用，附標註圖）。
+收到分層圖之後，程式要改成「每個圖層一張網格、共用一副骨架」。
+
+未重新打包：upload/ 仍是上一版，要出貨時跑 `./design/ship.sh`。
+gate rule 6 再改：從「手臂不得擠壓」改成「手臂沿骨頭不得超過 ±6.5%，且主動臂要垂直骨頭鼓起 ≥2%」。
+已驗證：舊的抄錄版與 09-23 的不擠壓版都會被擋下。

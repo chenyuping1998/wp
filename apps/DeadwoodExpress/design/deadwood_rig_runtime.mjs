@@ -2,8 +2,11 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import * as motion from '../src/game/castMotion.ts';
-const rig=JSON.parse(fs.readFileSync(new URL('../static/assets/deadwood/conductor.rig.json',import.meta.url)));
-const report=JSON.parse(fs.readFileSync(new URL('./deadwood_rig_report.json',import.meta.url)));
+// Both cast figures (design/deadwood_rig.py FIGURES): the conductor in the base
+// game, the veiled passenger in free spins.
+for (const [figure, suffix, who] of [['conductor','','guy'],['passenger','_passenger','girl']]) {
+const rig=JSON.parse(fs.readFileSync(new URL(`../static/assets/deadwood/${figure}.rig.json`,import.meta.url)));
+const report=JSON.parse(fs.readFileSync(new URL(`./deadwood_rig_report${suffix}.json`,import.meta.url)));
 assert.deepEqual(rig.size,[1024,1536]);
 rig.weights.forEach(w=>assert(Math.abs(w.reduce((a,b)=>a+b,0)-1)<1e-8));
 assert(report.armOwnership.l>=.5&&report.armOwnership.r>=.5);
@@ -24,15 +27,15 @@ for(const [name,tier] of Object.entries(motion.TIERS)){
   let min=1,max=1;
   for(let start=0;start<8000;start+=1000) for(let frame=0;frame<=48;frame++){
     const reactionAge=tier.durationMs*frame/48;
-    motion.composeBoneMatrices(rig,{timeMs:start+reactionAge,tier,reactionAge,durationMs:tier.durationMs,speed:1,motionScale:motion.MOTION_SCALE.guy},matrices,chain);
+    motion.composeBoneMatrices(rig,{timeMs:start+reactionAge,tier,reactionAge,durationMs:tier.durationMs,speed:1,motionScale:motion.MOTION_SCALE[who]},matrices,chain);
     motion.skinVertices(rest,index,matrices,out);
     for(const tri of rig.tris){const ratio=area(out,tri)/area(rest,tri);min=Math.min(min,ratio);max=Math.max(max,ratio);}
   }
   results[name]={min,max};
   assert(min>=.5&&max<=1.6,`${name} mesh area ${min}..${max}`);
 }
-console.log('Production conductor mesh gate PASS',JSON.stringify(results));
-const samples=JSON.parse(fs.readFileSync(new URL('./deadwood_rig_parity.json',import.meta.url)));
+console.log(`Production ${figure} mesh gate PASS`,JSON.stringify(results));
+const samples=JSON.parse(fs.readFileSync(new URL(`./deadwood_rig_parity${suffix}.json`,import.meta.url)));
 let error=0;
 for(const sample of samples){
   const tier=motion.TIERS.trigger;
@@ -41,4 +44,5 @@ for(const sample of samples){
   sample.vertices.flat().forEach((value,i)=>{error=Math.max(error,Math.abs(value-out[i]));});
 }
 assert(error<.001,`Production/Python vertex parity max error ${error}px`);
-console.log('Production/Python parity PASS; max vertex error',error,'px');
+console.log(`Production/Python ${figure} parity PASS; max vertex error`,error,'px');
+}

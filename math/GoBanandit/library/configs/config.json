@@ -5,7 +5,7 @@
         "sha256": "9286f3c230bee1e6035dcc5c986940ffc0a9f940ed0166b74667527311ee4dd8"
     },
     "gameID": "GoBanandit",
-    "rtp": 0.9612,
+    "rtp": 0.9607,
     "betDenomination": 1000,
     "minDenomination": 10,
     "providerNumber": 0,
@@ -23,7 +23,7 @@
                 }
             ],
             "cost": 1.0,
-            "rtp": 0.9612,
+            "rtp": 0.9607,
             "std": 12.44,
             "bookLength": 100000,
             "feature": true,
@@ -48,7 +48,7 @@
                 }
             ],
             "cost": 100.0,
-            "rtp": 0.9612,
+            "rtp": 0.9607,
             "std": 2.1,
             "bookLength": 50000,
             "feature": false,
@@ -73,7 +73,7 @@
                 }
             ],
             "cost": 150.0,
-            "rtp": 0.9612,
+            "rtp": 0.9607,
             "std": 1.54,
             "bookLength": 50000,
             "feature": false,

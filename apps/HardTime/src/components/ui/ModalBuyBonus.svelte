@@ -4,12 +4,12 @@
 	import { stateModal, stateMetaDerived, stateBet } from 'state-shared';
 	import { getContextEventEmitter } from 'utils-event-emitter';
 	import { numberToCurrencyString } from 'utils-shared/amount';
-	import BetMenuAmountToggle from 'components-ui-html/src/components/BetMenuAmountToggle.svelte';
 	import { stateBonus } from 'components-ui-html/src/stateBonus.svelte';
 	import type { EmitterEventModal } from 'components-ui-html/src/types';
 
 	import assets from '../../game/assets';
 	import { popupGhost } from './popupGhost';
+	import BetStepper from './BetStepper.svelte';
 	import { getSocialTerms } from '../../game/socialTerms';
 
 	/**
@@ -118,7 +118,7 @@
 			<header>
 				<h2>{T.featureMenuTitle}</h2>
 				<p class="lede">{T.featureMenuLede}</p>
-				<div class="amount"><BetMenuAmountToggle /></div>
+				<div class="amount"><BetStepper /></div>
 			</header>
 
 			<div class="cards">

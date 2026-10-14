@@ -150,7 +150,7 @@
 			backgroundColor={backgroundColor}
 			borderColor={uiTheme.buttonBorder}
 			borderWidth={active ? uiTheme.buttonBorderWidthActive : uiTheme.buttonBorderWidth}
-			borderRadius={buttonProps.sizes.width * 0.5}
+			borderRadius={buttonProps.sizes.width * uiTheme.buttonCornerRadius}
 			{...active
 				? {
 						alpha: 1,
@@ -169,7 +169,7 @@
 					const w = buttonProps.sizes.width * (held ? 0.93 : 1);
 					const h = buttonProps.sizes.height * (held ? 0.93 : 1);
 					g.clear();
-					g.roundRect(-w / 2, -h / 2, w, h, w * 0.5);
+					g.roundRect(-w / 2, -h / 2, w, h, w * uiTheme.buttonCornerRadius);
 					g.stroke({ width: uiTheme.buttonBorderWidthActive, color: uiTheme.buttonBorder });
 				}}
 			/>
@@ -186,13 +186,43 @@
 					const w = buttonProps.sizes.width * 0.93;
 					const h = buttonProps.sizes.height * 0.93;
 					g.clear();
-					g.roundRect(-w / 2, -h / 2, w, h, w * 0.5);
+					g.roundRect(-w / 2, -h / 2, w, h, w * uiTheme.buttonCornerRadius);
 					g.fill({ color: 0x000000, alpha: 0.28 });
 				}}
 			/>
 		{/if}
 
-		{#if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover}
+		{#if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover && uiTheme.hoverPlateLight !== undefined && plate}
+			<!-- the plate itself, lit: drawn again additive in a warm tint -->
+			<UiSprite
+				{...center}
+				key={litPlate ? 'buttonActive' : 'button'}
+				anchor={0.5}
+				width={buttonProps.sizes.width}
+				height={buttonProps.sizes.height}
+				tint={uiTheme.hoverPlateLight}
+				blendMode="add"
+			/>
+		{:else if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover && uiTheme.hoverPlateLight !== undefined}
+			<!-- no plate art (flat drawn disc): the same warm light, added over the
+			     face and its rim — the disc brightens in the game's own metal
+			     colour instead of under a white film -->
+			<Graphics
+				x={center.x}
+				y={center.y}
+				blendMode="add"
+				draw={(g) => {
+					const w = buttonProps.sizes.width;
+					const h = buttonProps.sizes.height;
+					g.clear();
+					g.roundRect(-w / 2, -h / 2, w, h, w * uiTheme.buttonCornerRadius);
+					// rim only, plus a faint lift of the face: a filled disc of light
+					// over a dark face reads as a pale (grey) button, not a lit one
+					g.fill({ color: uiTheme.hoverPlateLight ?? 0xffffff, alpha: 0.12 });
+					g.stroke({ width: 3, color: uiTheme.hoverPlateLight ?? 0xffffff, alpha: 1 });
+				}}
+			/>
+		{:else if uiTheme.hoverHighlight && hovered && !buttonProps.disabled && !noHover}
 			<!-- subtle lift while the cursor is over the control. A white overlay
 			     rather than a tint: tint multiplies, so it can only darken. -->
 			<Graphics
@@ -202,7 +232,7 @@
 					const w = buttonProps.sizes.width;
 					const h = buttonProps.sizes.height;
 					g.clear();
-					g.roundRect(-w / 2, -h / 2, w, h, w * 0.5);
+					g.roundRect(-w / 2, -h / 2, w, h, w * uiTheme.buttonCornerRadius);
 					g.fill({ color: 0xffffff, alpha: 0.16 });
 				}}
 			/>

@@ -76,6 +76,13 @@ setUiTheme({
 	valueFontFamily: BAR_VALUE_FONT,
 	valueFontWeight: BAR_VALUE_FONT_WEIGHT,
 	labelFontWeight: BAR_LABEL_FONT_WEIGHT,
+	// Portrait's stacked plates (2026-10-12 audit): at that size Limelight's
+	// thin bars vanish ("BET" read as "RFT") and the two lines ran over the Deco
+	// plate's top and bottom rules. Captions there take the number face, and both
+	// lines shrink onto the plate's window.
+	stackedLabelFontFamily: BAR_VALUE_FONT,
+	stackedLabelFontWeight: BAR_VALUE_FONT_WEIGHT,
+	stackedTextScale: 0.78,
 
 	buttonFill: INK,
 	// unused by any control in this workspace (UiButton's 'light' variant is never
@@ -193,23 +200,51 @@ setUiTheme({
 	// back, 1:1 through the arithmetic written out in stateGame.svelte.ts.
 	buyBonusRailScale: 1.35,
 
-	// HOVER: the plate lights and a gold rim turns behind it.
+	// HOVER: THE VAULT DIAL TURNS.
 	//
 	// Asked for 2026-09-20 against a collaborator's button that "glows and then
-	// spins" on hover. Their plate is a ship's wheel, which can turn because it is
-	// round and carries no type; this one is an Art Deco panel with BUY BONUS
-	// written across it, so turning the plate itself would put the label upside
-	// down. The rays turn instead, behind the plate — only their tips clear its
-	// corners, which is the Art Deco sunburst the rest of the game already uses.
+	// spins" on hover. Their plate is a ship's wheel — round, no type on it — so
+	// hovering turns the whole sprite. This plate is an Art Deco panel with BUY
+	// BONUS written across it, and turning that puts the label upside down.
 	//
-	// 38 deg/sec is a little over ten seconds a revolution: clearly moving without
-	// reading as a loading spinner, which would say "wait" on the one control that
-	// means "spend". 14 rays at 1.14 of the plate's half-diagonal puts a tip in
-	// each corner and between them.
-	buyBonusHoverSpin: 38,
-	buyBonusHoverSpinRays: 14,
+	// So the turning part is the game's OWN: the eight-spoke handle off the vault
+	// door, which is `capoSymbols/fs.png`, the Scatter. Buying the feature is
+	// opening the vault, so the dial is not decoration borrowed to fill a hole —
+	// it is the thing the button does. It is drawn as an ANNULUS around the
+	// caption rather than behind it, so no spoke ever crosses a letter.
+	//
+	// 8 SPOKES AND 45 DEG/SEC ARE THE SAME DECISION. The vault door's handle has
+	// eight, so the pattern repeats every 45 degrees and one visual revolution
+	// takes exactly a second. The previous 38 was picked by eye and had nothing
+	// behind it. (The rule is the collaborator's: take the speed from the art's
+	// own symmetry.)
+	//
+	// OFF 2026-09-29 at the user's request: the ring lighting up on touch was
+	// unwanted. 0 skips the dial entirely (ButtonBuyBonus checks it first); the
+	// spoke/radius values below are kept so turning it back on is this one number.
+	buyBonusHoverSpin: 0,
+	buyBonusHoverSpinSpokes: 8,
 	buyBonusHoverSpinColor: GOLD_LIGHT,
-	buyBonusHoverSpinRadius: 1.14,
+	// Measured against the shrunk caption below, not guessed: the inner edge has
+	// to clear the widest word. See buyBonusLabelSizeRatio.
+	buyBonusHoverSpinRadius: 0.86,
+	buyBonusHoverSpinInner: 0.54,
+	buyBonusHoverSpinKnob: 0.1,
+
+	// THE CAPTION SHRINKS TO MAKE ROOM, and that is the whole move.
+	//
+	// The shared default is 0.68 of UI_BASE_FONT_SIZE, which draws BUY / BONUS
+	// across most of the plate — there is no middle left to put anything in. The
+	// collaborator's game hit the same wall and solved it the same way: shrink the
+	// type, and the plate suddenly has a face.
+	//
+	// 0.52 leaves a block the 0.54 inner radius clears with a little air. Dropping
+	// it further would start to hurt the one control that has to be readable at a
+	// glance, and the dial does not need more room than this.
+	buyBonusLabelSizeRatio: 0.52,
+	// Wrapped tighter to match, or the two words re-flow to one line as the type
+	// shrinks and the block goes wide instead of tall.
+	buyBonusLabelWrapWidth: 96,
 
 	// Gold-light on the wine plate, matching every other caption in the game. Was
 	// 0xffd75e, which is GoBananas' banana gold — a full step brighter and more
@@ -224,8 +259,22 @@ setUiTheme({
 	// cursor-over feedback on the rail controls
 	hoverHighlight: true,
 
+	// 2026-10-01 (user rule, every game): hover never greys a control out —
+	// the button's own plate is redrawn additive in a warm palette colour
+	// instead of the shared white overlay (see game-reskin SKILL.md step 4).
+	hoverPlateLight: 0x626262,
+
+	// Buy Bonus hover lights the PLATE itself instead of laying the shared
+	// translucent white box over it (read as greyed-out on Deadwood, 2026-09-29):
+	// the plate is drawn again, additive, at a warm gold light on the brass frame.
+	buyBonusHoverSprite: 'buyBonusGlyph',
+	buyBonusHoverSpriteTint: 0x626262,
+
 	// 旋轉鍵的呼吸光暈
-	spinButtonGlow: true,
+	// Off (2026-09-29). It breathed at idle and flared on press; Deadwood's
+	// first review scored the UI 5/10 and the collaborator's passing games all
+	// ship it off. The press is acknowledged by the icon turning.
+	spinButtonGlow: false,
 
 	// The refresh mark on the spin button, scaled to spin_plate.png's own
 	// recess rather than the shared default (which assumes a flat circle with
@@ -268,7 +317,10 @@ setUiTheme({
 	// this (2026-09-09): ~20 units to autoplay's edge, ~22 to the bar's own
 	// right edge — 1.6 leaves several units of margin on both sides. Verify
 	// via the scene graph if this is ever raised further; do not eyeball it.
-	turboButtonScale: 1.6,
+	// Same size as autoplay and the ± pair (was 1.6): next to a 1.15 autoplay the
+	// oversized turbo read as a different kind of control, and the row looked
+	// unfinished (2026-09-29 audit).
+	turboButtonScale: 1.15,
 
 	// 2026-09-14 overflow pass, then the icon REDRAW the same day. The first pass
 	// shrank four oversized icons (settings 0.57, paytable 0.63, menu 0.68) to keep
@@ -288,11 +340,25 @@ setUiTheme({
 		autoSpin: 0.7,
 	},
 
-	// +/- enlarged ~29% on request, spacing raised with it so the two plates
-	// don't overlap. The bar frame is 152 tall now, so the pair (66 between
-	// centres + one plate) still fits inside it.
-	stepButtonScale: 0.36,
-	stepButtonGap: 33,
+	// −  BET  +  in one row, the stepper the same size as autoplay/turbo
+	// (0.44 × railButtonScale). The stacked pair was small and left the span
+	// between Win and Bet empty, which review reads as unfinished; 'flank'
+	// widens the Balance/Win cells into it (2026-09-29, after Deadwood).
+	stepperLayout: 'flank',
+	stepButtonScale: 0.44,
+
+	// Portrait spin row. At the template sizes the menu plate (1.0 × 1.15) ran
+	// ~16 units past the left edge and Buy Bonus sat flush on the right; the ±
+	// pair was the smallest control in the row. Menu down to the side pair's
+	// size, everything pulled in, gaps ≥ 13 units.
+	portraitSideButtonX: 440,
+	portraitMenuScale: 0.72,
+	portraitStepScale: 0.55,
+	portraitStepX: 170,
+	portraitSideClusterX: 290,
+
+	// The plate otherwise stays lit through the whole feature.
+	buyBonusHideInFreeSpins: true,
 
 	// Platform UX conventions, lifted from Hacksaw's shipped UI bundle. Worth
 	// having precisely BECAUSE they are not one game's design: The Luxe 1.5.1 and
@@ -360,6 +426,8 @@ setUiTheme({
 	// red). `bet` (the spin button) -> capoUiPlates/spin_plate.png, same check.
 	sprites: {
 		buyBonus: 'hmUiBuyBonus',
+		// same plate, drawn again additive on hover — see buyBonusHoverSprite
+		buyBonusGlyph: 'hmUiBuyBonus',
 		button: 'capoUiButton',
 		bet: 'capoUiSpin',
 		base_ticker: 'hmUiTicker',
@@ -458,6 +526,9 @@ if (skin === 'hacksaw') {
 		valueFontFamily: null,
 		valueFontWeight: null,
 		labelFontWeight: null,
+		stackedLabelFontFamily: null,
+		stackedLabelFontWeight: null,
+		stackedTextScale: 1,
 
 		// ── geometry, from ui-appearance.html §1 (measured at 1280x720) ─────────
 		//
@@ -512,10 +583,10 @@ if (skin === 'hacksaw') {
 		// down when ON, and everything else stays dark. That survives a
 		// colour-blind player and a washed-out phone screen, which a green/grey
 		// distinction does not.
-		buttonFillLight: 0x8e9499,
+		buttonFillLight: 0x939393,
 		buttonFillDisabled: 0x3a3a3a,
-		buttonFillActive: 0x6b7278,
-		buttonBorder: 0x565e66,
+		buttonFillActive: 0x717171,
+		buttonBorder: 0x5d5d5d,
 		buttonBorderWidth: 2,
 		buttonBorderWidthActive: 5,
 		buttonIconFill: 0xffffff,
@@ -526,15 +597,15 @@ if (skin === 'hacksaw') {
 		// stopped reading as a control and started reading as a light source.
 		// #8E9499 is still the brightest object on the bar (the icons on it are
 		// pure white) with about half that contrast against the strip.
-		betFill: 0x8e9499,
-		betBorder: 0x343a40,
+		betFill: 0x939393,
+		betBorder: 0x393939,
 
 		// readouts: their disabled grey for labels, plain white for values. No
 		// per-metric accent colours; the platform bar does not tint its readouts.
 		labelFill: 0xbfbfbf,
 		balanceLabelFill: 0xbfbfbf,
-		winAccent: { border: 0x343a40, label: 0xbfbfbf },
-		betAccent: { border: 0x343a40, label: 0xbfbfbf },
+		winAccent: { border: 0x393939, label: 0xbfbfbf },
+		betAccent: { border: 0x393939, label: 0xbfbfbf },
 		valueFill: 0xffffff,
 		valueStroke: 0x0f0f0f,
 		valueShadow: 0x000000,
@@ -562,13 +633,14 @@ if (skin === 'hacksaw') {
 		// (that art has NOT been reskinned).
 		sprites: {
 			buyBonus: 'hmUiBuyBonus',
+			buyBonusGlyph: 'hmUiBuyBonus',
 		},
 
 		// with the plate art gone the CTA falls back to its rounded rect. A light
 		// border marks it as a call to action the same way the spin button does —
 		// by being brighter than the strip, not by being a different colour.
 		buyBonusFill: 0x14171a,
-		buyBonusBorder: 0x7d848a,
+		buyBonusBorder: 0x838383,
 		buyBonusBorderWidth: 4,
 		buyBonusCornerRadius: 8,
 

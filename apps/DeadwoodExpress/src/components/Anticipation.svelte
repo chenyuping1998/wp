@@ -97,21 +97,26 @@
 		for the tube, white for its core (which is how a real neon tube reads:
 		saturated at the edge, blown out in the middle), and cyan only on the full
 		tier so the escalation carries a second hue as well as more light.
+
+		Deadwood, 2026-09-26: magenta -> lantern amber 0xf0a040, cyan -> ghost teal
+		0x5fd6c4. Same roles (tube, full-tier second hue), this game's lights.
+		2026-09-29: the tube's inner line, the cell ticks and the beam were still
+		Miami pink 0xff8ede — now a pale lamp amber, so the tube reads amber → white.
 	-->
 	<Graphics
 		draw={(g) => {
 			const h = BOARD_SIZES.height;
 			g.clear();
-			g.beginFill(0xff2e88, (0.1 + 0.12 * pulse) * intensity);
+			g.beginFill(0xf0a040, (0.1 + 0.12 * pulse) * intensity);
 			g.drawRoundedRect(LEFT + 3, 3, SYMBOL_SIZE - 6, h - 6, 12);
 			g.endFill();
 
 			// full-height frame: nested strokes so the edge reads as a lit tube
 			// Pixi 8 strokes: build path, then stroke. v7's lineStyle renders nothing.
 			g.roundRect(LEFT + 2, 2, SYMBOL_SIZE - 4, h - 4, 13);
-			g.stroke({ width: 7, color: 0xff2e88, alpha: (0.3 + 0.34 * pulse) * intensity });
+			g.stroke({ width: 7, color: 0xf0a040, alpha: (0.3 + 0.34 * pulse) * intensity });
 			g.roundRect(LEFT + 6, 6, SYMBOL_SIZE - 12, h - 12, 10);
-			g.stroke({ width: 3, color: 0xff8ede, alpha: (0.45 + 0.4 * pulse) * intensity });
+			g.stroke({ width: 3, color: 0xffd9a0, alpha: (0.45 + 0.4 * pulse) * intensity });
 			if (fullTier) {
 				// white core — the tier-2 tell that the trigger count is already met
 				g.roundRect(LEFT + 10, 10, SYMBOL_SIZE - 20, h - 20, 8);
@@ -124,7 +129,7 @@
 				g.moveTo(LEFT + 14, y);
 				g.lineTo(LEFT + SYMBOL_SIZE - 14, y);
 			}
-			g.stroke({ width: 1.5, color: 0xff8ede, alpha: (0.16 + 0.2 * pulse) * intensity });
+			g.stroke({ width: 1.5, color: 0xffd9a0, alpha: (0.16 + 0.2 * pulse) * intensity });
 
 			// chevrons converging on the column from above and below — full tier only
 			if (fullTier) {
@@ -135,7 +140,7 @@
 				g.moveTo(x - SYMBOL_SIZE * 0.12, h + chev + 10);
 				g.lineTo(x, h + chev);
 				g.lineTo(x + SYMBOL_SIZE * 0.12, h + chev + 10);
-				g.stroke({ width: 4, color: 0x00e5ff, alpha: 0.5 + 0.4 * pulse });
+				g.stroke({ width: 4, color: 0x5fd6c4, alpha: 0.5 + 0.4 * pulse });
 			}
 		}}
 	/>
@@ -157,7 +162,7 @@
 			y={beam.y * BOARD_SIZES.height}
 			width={SYMBOL_SIZE * 0.92}
 			height={SYMBOL_SIZE * beam.height * 3}
-			tint={fullTier ? 0xffffff : 0xff8ede}
+			tint={fullTier ? 0xffffff : 0xffc877}
 			blendMode="add"
 			alpha={beam.alpha}
 		/>
@@ -172,7 +177,7 @@
 			y={railY}
 			width={SYMBOL_SIZE * (fullTier ? 1.35 : 1.05)}
 			height={SYMBOL_SIZE * (fullTier ? 0.7 : 0.5)}
-			tint={0xff2e88}
+			tint={0xf0a040}
 			blendMode="add"
 			alpha={(0.22 + 0.3 * pulse) * intensity}
 		/>

@@ -56,7 +56,7 @@
 	// win's own impact rather than a separate fade.
 	const DIM_MS = 140;
 	const DIM_ALPHA = 0.38;
-	const DIM_TINT = 0x6a5aa0;
+	const DIM_TINT = 0x676767;
 	let dimAmount = $state(0);
 	$effect(() => {
 		const target = props.dim ? 1 : 0;
@@ -350,7 +350,7 @@
 			key={props.symbolInfo.assetKey}
 			width={width * focusScale}
 			height={(blur > 0.01 ? height * (1 + 0.3 * blur) : height) * focusScale}
-			tint={0xffd6f4}
+			tint={0xe9e6dd}
 			alpha={focusBloom}
 			blendMode="add"
 		/>

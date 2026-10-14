@@ -35,6 +35,9 @@ export class SkinnedFigure {
   private readonly positions: Float32Array;
   private readonly weightIndex: { bones: number[][]; values: number[][] };
   private readonly matrices: Float32Array[];
+  // What each bone's children compose against — rotation and translation, no
+  // squash and stretch. See composeBoneMatrices for why the two are separate.
+  private readonly chain: Float32Array[];
   private reactionStart: number | null = null;
   private reactionTier: ReactionTier;
   // How long past `durationMs` the last-starting bone is still moving. The
@@ -88,6 +91,7 @@ export class SkinnedFigure {
     });
     this.mesh = new Mesh({ geometry, texture });
     this.matrices = rig.bones.map(() => new Float32Array(6));
+    this.chain = rig.bones.map(() => new Float32Array(6));
     this.view.addChild(this.mesh);
 
     // The glow: the SAME texture drawn again over itself with additive
@@ -146,6 +150,7 @@ export class SkinnedFigure {
         motionScale: this.motionScale,
       },
       this.matrices,
+      this.chain,
     );
 
     skinVertices(this.rest, this.weightIndex, this.matrices, this.positions);

@@ -5,7 +5,7 @@
         "sha256": "4ae1ff73b3467094635cc15d23565fb5c17f36e8fdfed0469c48b7b9ca8d73b3"
     },
     "gameID": "hard_time",
-    "rtp": 0.9641,
+    "rtp": 0.9605,
     "betDenomination": 1000,
     "minDenomination": 10,
     "providerNumber": 0,
@@ -23,7 +23,7 @@
                 }
             ],
             "cost": 1.0,
-            "rtp": 0.9641,
+            "rtp": 0.9605,
             "std": 16.81,
             "bookLength": 40000,
             "feature": true,
@@ -48,7 +48,7 @@
                 }
             ],
             "cost": 100.0,
-            "rtp": 0.9646,
+            "rtp": 0.9606,
             "std": 1.68,
             "bookLength": 20000,
             "feature": false,
@@ -73,7 +73,7 @@
                 }
             ],
             "cost": 300.0,
-            "rtp": 0.965,
+            "rtp": 0.9607,
             "std": 1.46,
             "bookLength": 20000,
             "feature": false,
@@ -98,7 +98,7 @@
                 }
             ],
             "cost": 600.0,
-            "rtp": 0.9661,
+            "rtp": 0.9609,
             "std": 1.21,
             "bookLength": 20000,
             "feature": false,
