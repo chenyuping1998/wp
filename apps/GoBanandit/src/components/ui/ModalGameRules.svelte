@@ -151,7 +151,7 @@
 					leftmost, and the number of {T.ways} it {T.pays} is the number of that symbol on each
 					of those reels multiplied together. Only the highest win per symbol is {T.paid}, and
 					wins from different symbols are added together. The theoretical return to player (RTP)
-					is {rtpPct}.
+					of the base game is {rtpPct}; each feature's figure is listed under RTP &amp; Max Win by mode.
 				</p>
 			</section>
 
@@ -320,7 +320,7 @@
 						{/each}
 					</ul>
 					<p>
-						Every round runs at the same {rtpPct} RTP as base play. The meter keeps counting from
+						Each feature has its own RTP, listed under RTP &amp; Max Win by mode. The meter keeps counting from
 						there, exactly as in Free Spins won with Scatters.
 					</p>
 				</section>

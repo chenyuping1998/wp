@@ -14,9 +14,9 @@ Reskin of Go Boomana (chenyuping1998/wp). Same ways engine; mechanic, math and a
 
 | mode | cost | RTP | max win |
 |---|---|---|---|
-| base | 1× | 96.07% | 10,000× |
+| base | 1× | 96.05% | 10,000× |
 | bonus（Free Spins） | 100× | 96.07% | 10,000× |
-| superbonus（Super Free Spins，meter opens at 4, ×2） | 150× | 96.07% | 10,000× |
+| superbonus（Super Free Spins，meter opens at 4, ×2） | 150× | 96.09% | 10,000× |
 
 Custom events: `collect`, `banditMeter`.
 
@@ -42,5 +42,13 @@ Free Spins can be entered directly for 100× the bet, or for 150× with the mete
 
 RTP & Max Win
 
-RTP is 96.07% in all three modes, with a spread of 0.00%. Max Win is capped at 10,000× the bet in every mode.
+RTP is 96.05% in the base game, 96.07% for Free Spins bought at 100× and 96.09% for Super Free Spins bought at 150×, a spread of 0.04%. Max Win is capped at 10,000× the bet in every mode.
 ```
+
+## 2026-10-12 23:55 thumbnail provider logo fix
+
+`thumbnail/Silverstars-Logo.png` was the Turf War title artwork (sha256 3980b490…), copied from `design/thumbnail/` by ship.sh. Replaced with the Silverstars studio logo (sha256 98c28678…, same file as every other game) both here and in the source `design/thumbnail/Silverstars-Logo.png`. Old files kept in `_upload_backups/GoBanandit-thumbnail-1012/`. Frontend, math, cover and the other thumbnail layers untouched. No zip made. Platform NOT updated.
+
+## 2026-10-15 post-approval review fixes
+
+Stake's 4 open issues: (1) game-info RTP vs math — the platform was running front v9 (10-04, 94.50%) against math v3 (96.12%); math now stepped per house rule 96.05 / 96.07 / 96.09 (LUT reweight only, books unchanged) and the info table, buy menu and feature copy read each mode's own figure; (2) holding space with insufficient balance sent play requests — the space-hold loop now checks the balance before every round, and no play request is ever sent when the stake is not covered; (3) buy options grey out and cannot be chosen when the balance does not cover their price; (4) social mode wording ("PLACE YOUR BET") — fixed since 10-05 (COME AND PLAY), the reviewed front predated it.

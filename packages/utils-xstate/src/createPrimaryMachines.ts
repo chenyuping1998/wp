@@ -1,7 +1,7 @@
 import { fromPromise } from 'xstate';
 
 import { API_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
-import { stateBet, stateUrlDerived, stateModal } from 'state-shared';
+import { stateBet, stateBetDerived, stateUrlDerived, stateModal } from 'state-shared';
 import { requestBet, requestEndRound } from 'rgs-requests';
 
 import type { BaseBet } from './types';
@@ -139,6 +139,17 @@ function createPrimaryMachines<TBet extends BaseBet>(options: Options<TBet>) {
 
 	// newGame
 	const newGame = fromPromise(async () => {
+		// Last line of defence: no play request is ever sent for a stake the
+		// balance cannot cover, whatever started the round (bet button, space
+		// hold, autoplay, feature buy). The bet machine's onError ends the round
+		// before onNewGameStart has moved a reel. Stake review 2026-10-15.
+		if (!stateBetDerived.isBetCostAvailable()) {
+			stateBet.autoSpinsCounter = 0;
+			stateBet.isSpaceHold = false;
+			stateModal.modal = { name: 'message', message: 'insufficientFunds' };
+			throw Error('insufficientFunds: play request blocked');
+		}
+
 		await onNewGameStart();
 
 		const data = await handleRequestBet({ onError: onNewGameError });

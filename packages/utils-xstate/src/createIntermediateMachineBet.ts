@@ -1,6 +1,6 @@
 import { setup, fromPromise, assign } from 'xstate';
 
-import { stateBet, stateBetDerived } from 'state-shared';
+import { stateBet, stateBetDerived, stateModal } from 'state-shared';
 
 import { context, type Context } from './machineContext';
 import type { PrimaryMachines } from './types';
@@ -9,7 +9,16 @@ const checkSpaceHold = fromPromise(async () => {
 	if (stateBet.isSpaceHold) {
 		if (stateBetDerived.activeBetMode()?.type === 'buy') {
 			stateBet.activeBetModeKey = 'BASE';
-			return;
+		}
+
+		// Holding space chains rounds without passing the bet button again, so the
+		// balance has to be checked here before the next one. Stake review
+		// 2026-10-15 (Go Banandit): "when holding down the spacebar, the game
+		// incorrectly bypasses this check and triggers invalid play requests".
+		if (!stateBetDerived.isBetCostAvailable()) {
+			stateBet.isSpaceHold = false;
+			stateModal.modal = { name: 'message', message: 'insufficientFunds' };
+			throw Error('end bet with insufficientFunds');
 		}
 
 		return;

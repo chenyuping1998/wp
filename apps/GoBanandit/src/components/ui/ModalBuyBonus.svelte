@@ -83,6 +83,11 @@
 	// social play: no betting words anywhere the player can read
 	const social = $derived(stateUrlDerived.social());
 
+	// Stake review 2026-10-15: a feature the balance cannot cover is greyed out
+	// and cannot be chosen — it never reaches the confirm step or a play request.
+	const affordable = (costMultiplier: number) =>
+		stateBet.betAmount > 0 && stateBet.betAmount * costMultiplier <= stateBet.balanceAmount;
+
 	const close = () => (stateModal.modal = null);
 	const choose = (mode: string) => {
 		stateBonus.selectedBetModeKey = mode;
@@ -115,7 +120,8 @@
 				{#each modes as mode (mode.mode)}
 					{@const card = CARDS[mode.mode]}
 					{#if card}
-						<section class="card" class:hot={card.hot} style:--accent={card.accent}>
+						{@const ok = affordable(mode.costMultiplier)}
+						<section class="card" class:hot={card.hot} class:poor={!ok} style:--accent={card.accent}>
 							<div class="scene" style:background-image={`url('${card.scene}')`} style:background-position={card.focus ?? 'center'}>
 								<div class="light"></div>
 								<div class="heroes">
@@ -144,8 +150,8 @@
 									{#each card.points as p (p)}<li>{p}</li>{/each}
 								</ul>
 								<div class="cost">{mode.costMultiplier}<small>×</small></div>
-								<button class="buy" onclick={() => choose(mode.mode)}>
-									{mode.text.button}
+								<button class="buy" disabled={!ok} aria-disabled={!ok} onclick={() => ok && choose(mode.mode)}>
+									{ok ? mode.text.button : 'INSUFFICIENT BALANCE'}
 									<span>{numberToCurrencyString(stateBet.betAmount * mode.costMultiplier)}</span>
 								</button>
 							</div>
@@ -153,7 +159,7 @@
 					{/if}
 				{/each}
 			</div>
-			<div class="foot">All features play at {(config.rtp * 100).toFixed(2)}% RTP · Max win {(config.betModes.base.max_win ?? 10000).toLocaleString()}×</div>
+			<div class="foot">RTP: Free Spins {(config.betModes.bonus.rtp * 100).toFixed(2)}% · Super Free Spins {(config.betModes.superbonus.rtp * 100).toFixed(2)}% · Max win {(config.betModes.base.max_win ?? 10000).toLocaleString()}×</div>
 		</div>
 	</Popup>
 {/if}
@@ -202,6 +208,8 @@
 	.buy { margin-top: 8px; padding: 10px 8px; border: 0; background: var(--accent); color: var(--paper); cursor: pointer; font: 400 15px var(--gb-display-font, sans-serif); letter-spacing: 1px; }
 	.buy:hover, .buy:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 	.buy:active { transform: translate(2px, 2px); }
+	.card.poor .scene, .card.poor .meter, .card.poor .cost { filter: grayscale(1); opacity: 0.5; }
+	.buy:disabled { background: #8b8578; color: #e6dcc4; cursor: not-allowed; outline: none; transform: none; }
 	.buy span { display: block; margin-top: 2px; font: 700 12px var(--gb-body-font, sans-serif); }
 	.foot { margin-top: 12px; color: var(--green); font-size: 12px; font-weight: 700; }
 	@media (max-height: 700px) { .menu { padding: 12px; } .cards { margin-top: 8px; } .scene { height: 95px; } ul { display: none; } .cost { font-size: 28px; } .foot { display: none; } }
