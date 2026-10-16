@@ -440,6 +440,16 @@ export const uiTheme = $state({
   // typically ends near 0.64. Unset = 0.72 for every game, as before.
   turboIconScale: undefined as number | undefined,
 
+  // Nudge for the stacked caption + value readouts on the bar (Balance, Win,
+  // Bet), in bar units; negative lifts. pixi centres the text BOX, measured on
+  // '|ÉqÅM', so capitals sit ~8-12% of the font size below its middle and a
+  // stack reads low on the strip: Pickle Panic sat 4px low (2026-10-16).
+  // Unset = previous behaviour, for every game.
+  barReadoutOffsetY: undefined as number | undefined,
+  // The same nudge for a stacked caption + value drawn on its own tile (the
+  // portrait Balance / Win / Bet plates), in the label's units. Unset = as before.
+  stackedTileTextOffsetY: undefined as number | undefined,
+
   // Per-icon sprite scale, checked BEFORE UiButton's own per-icon map and the
   // buttonIconScale fallback. Exists because one fallback cannot fit every
   // icon: the drawn icons paint very different fractions of their own square

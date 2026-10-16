@@ -113,9 +113,11 @@
 	});
 	const stackScale = $derived(uiTheme.stackedTextScale ?? 1);
 	const stackShift = $derived(
-		stackScale === 1
+		(stackScale === 1
 			? 0
-			: (props.tiled ? -20 + UI_BASE_FONT_SIZE * 1.5 : UI_BASE_FONT_SIZE) - stackScale * UI_BASE_FONT_SIZE,
+			: (props.tiled ? -20 + UI_BASE_FONT_SIZE * 1.5 : UI_BASE_FONT_SIZE) - stackScale * UI_BASE_FONT_SIZE) +
+			// stacked text lifts inside its own tile only (uiTheme.stackedTileTextOffsetY)
+			(props.tiled ? (uiTheme.stackedTileTextOffsetY ?? 0) : 0),
 	);
 
 	// uniform across Balance / Win / Bet — never tinted by accent

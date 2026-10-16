@@ -28,7 +28,7 @@
 			<Button data-test="down-button" disabled={disabledDown} onclick={toggleDown}>
 				<BaseIcon width={iconSize} height={iconSize} />
 				<BaseButtonContent>
-					<span style="font-size: 2rem;">-</span>
+					<span class="sign" style="font-size: 2rem;" aria-label="-"></span>
 				</BaseButtonContent>
 			</Button>
 
@@ -37,7 +37,7 @@
 			<Button data-test="up-button" disabled={disabledUp} onclick={toggleUp}>
 				<BaseIcon width={iconSize} height={iconSize} />
 				<BaseButtonContent>
-					<span style="font-size: 2rem;">+</span>
+					<span class="sign plus" style="font-size: 2rem;" aria-label="+"></span>
 				</BaseButtonContent>
 			</Button>
 		</div>
@@ -45,6 +45,31 @@
 </OptionsToggle>
 
 <style lang="scss">
+	/* Drawn, not typed: a '+' or '-' glyph sits on the font's math axis, which
+	   is a little below the middle in most faces, so the signs read low in their
+	   square (Pickle Panic 2026-10-16). Two bars are centred whatever the font. */
+	.sign {
+		position: relative;
+		display: block;
+		width: 0.5em;
+		height: 0.5em;
+	}
+	.sign::before,
+	.plus::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 50%;
+		width: 100%;
+		height: 0.09em;
+		transform: translateY(-50%);
+		background: currentColor;
+		border-radius: 0.02em;
+	}
+	.plus::after {
+		transform: translateY(-50%) rotate(90deg);
+	}
+
 	.toggle-wrap {
 		display: flex;
 		flex-direction: row;

@@ -5,12 +5,22 @@
 
 	import { UI_BASE_SIZE } from '../constants';
 	import { uiTheme } from '../theme.svelte';
+	import { inkOffsetY } from '../inkCenter';
 
 	const fontSizeMultiplier = $derived.by(() => {
 		if (stateBet.autoSpinsCounter === Infinity) return 3;
 		if (stateBet.autoSpinsCounter > 99) return 1.5;
 		if (stateBet.autoSpinsCounter > 9) return 2;
 		return 2.5;
+	});
+
+	const label = $derived(stateBet.autoSpinsCounter === Infinity ? '∞' : String(stateBet.autoSpinsCounter));
+	// centred on the ink, not the text box: '∞' falls back to another face and
+	// sat low on the badge (Pickle Panic 2026-10-16)
+	const labelFont = $derived({
+		fontFamily: uiTheme.valueFontFamily ?? uiTheme.fontFamily,
+		fontWeight: uiTheme.valueFontWeight ?? uiTheme.fontWeight,
+		fontSize: fontSizeMultiplier * UI_BASE_SIZE * 0.2,
 	});
 </script>
 
@@ -35,7 +45,8 @@
 	-->
 	<Text
 		anchor={0.5}
-		text={stateBet.autoSpinsCounter === Infinity ? '∞' : stateBet.autoSpinsCounter}
+		y={-inkOffsetY(label, labelFont)}
+		text={label}
 		style={{
 			fontFamily: uiTheme.valueFontFamily ?? uiTheme.fontFamily,
 			fill: WHITE,
