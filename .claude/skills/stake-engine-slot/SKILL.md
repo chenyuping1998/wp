@@ -341,9 +341,11 @@ retrofit. The case log underneath explains what each reviewer comment actually
 meant, which is rarely what it says.
 
 **RTP is a house rule, not a per-game choice:** every mode of every game sits
-between 96.00% and 96.10% (Stone, 2026-10-11), with figures no other game
-uses. Values already taken, how to pick new ones, and how to move a built game
-without re-simulating are in the game-reskin skill
+between 96.00% and 96.10% (Stone, 2026-10-11), and inside one game the modes
+must differ: the base spin is lowest and every buy-bonus mode sits a little
+higher, the pricier buy higher again (Stone, 2026-10-15). Never ship a game with
+one RTP figure on every mode. How to pick the figures and how to move a built
+game without re-simulating are in the game-reskin skill
 (`references/math-retarget.md`, "The house RTP band").
 
 The two items that generalise beyond the checklist:
@@ -357,6 +359,32 @@ The two items that generalise beyond the checklist:
 
 `references/certification.md` holds the requirements themselves — restricted
 words, replay, money, and the presentation notes that keep coming back.
+
+**Before every submission, run Engine's official self-check,
+`references/engine-self-check.md`** (Stone, 2026-10-15: 「以後送審前檢查加入這份標準」).
+It is read-only until asked: walk every guideline, give each a verdict (PASS /
+FAIL / AT RISK / NEEDS A HUMAN / N/A) with `file:line` or quoted-text evidence
+and Engine's guideline number, then offer fixes one at a time. Run it on the
+build that will actually be uploaded, and compare against what is already
+*published* on the platform. Report in its Part 4 format. The file's tail maps the
+checks onto our playtest stub.
+
+**The self-check also runs two house presentation checks** (Stone, 2026-10-16):
+label centring with `scripts/ui_center_audit.js` and cast arm ghosts with the
+game-reskin skill's `scripts/check_cast_underlay.py`. Both are spelled out at the
+end of `engine-self-check.md`. Two facts behind them worth knowing while
+building, not only at submission:
+
+- **pixi's `anchor: 0.5` is not optical centre.** The text box is measured on
+  '|ÉqÅM', so the accent of É sits in it: plain capitals in Bungee/Anton land
+  ~8-12% of the font size below the box centre, and a glyph the face lacks ('∞'
+  in Anton) falls back to another font and sits lower still. Anything that must
+  sit dead-centre on a plate goes through `inkOffsetY` (components-ui-pixi
+  `src/inkCenter.ts`, so far only in the wp-banandit worktree) or a theme offset
+  (`barReadoutOffsetY`, `stackedTileTextOffsetY`, `buyBonusLabelOffsetY`). In
+  HTML, draw '+' / '−' with CSS bars rather than typing them.
+- **A still frame cannot show an arm ghost.** It only exists while the arm is
+  away from its rest pose, so check the motions, not the idle.
 
 `references/approval-guidelines.md` is the 51-item checklist a reviewer ticks
 off on the approval page, transcribed. It is scored **separately from the star
@@ -404,3 +432,35 @@ Two things about the rating worth knowing while planning, not at submission:
 - **Reskinning template spines does not answer "poor animations".** Retexturing
   changes the picture and leaves the motion identical. Budget symbol craft and
   motion as their own workstream rather than as part of a visual overhaul.
+
+## Uploading to the platform (stakecli)
+
+When Stone says 「上傳」, it means push a staged folder to studio.engine.io, using the
+community `stakecli` (github.com/mnemoo/cli, installed at `~/.local/bin/stakecli`).
+It is not the same as 「打包」, which only stages into `upload/<Game>/`. Stone logs
+in personally by running `stakecli` and pasting the `sid` into its login screen,
+which saves it to the macOS keychain. Never ask for, read or pass the SID; if
+`auth_status` says it is invalid, ask Stone to log in again.
+
+`scripts/stakecli_call.py <tool> '<json>'` calls one tool on `stakecli mcp`.
+Team `silver-stars`; slugs come from `list_games {"team":"silver-stars"}`.
+Folders are `upload/<Game>/frontend` (type `front`) and `upload/<Game>/math`
+(type `math`). A game must already exist on the platform before you can upload.
+
+0. The official self-check (`references/engine-self-check.md`) has been run on
+   this build and its FAILs fixed or explicitly accepted by Stone.
+1. `validate_upload_path` → `plan_upload`, both read-only. Show Stone the files
+   it will upload, delete and leave unchanged (and the compliance result for
+   math), and wait for a yes.
+2. `execute_upload` with that exact `plan_id`. This only touches scratch, but it
+   can delete remote files. Run `plan_upload` again and expect 0 actions.
+3. `publish {"confirm":true}` only after a **separate** yes. 「上傳」 alone
+   does not mean publish. Report the version it returns, then check it with
+   `get_game`.
+4. Updating the approval's version (`update_approval_version`) also needs its own
+   yes, and it only works while the approval is open (`get_game` →
+   `detail.approval.open`). When it is closed, the fix is a new submission on
+   the website, which stakecli cannot make.
+
+Check every math mode's RTP offline first:
+`stakecli compliance upload/<Game>/math | grep 'RTP: '`.

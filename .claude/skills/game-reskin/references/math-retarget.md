@@ -43,10 +43,22 @@ or `game_optimization.py` changes, before launching `run.py`.
 ## The house RTP band: 96.00–96.10%
 
 Stone's standing rule (2026-10-11): every mode of every game, the existing ones
-and every future one, sits between **96.00% and 96.10%**, and games don't share
-the same figures. Set `game_config.py`'s `rtp=` targets inside the band from the
-start of a reskin; the source game's RTP never carries over. (It was 96.0–96.7
-for one day, then tightened. All six games were moved on 2026-10-10/11.)
+and every future one, sits between **96.00% and 96.10%**. Set `game_config.py`'s
+`rtp=` targets inside the band from the start of a reskin; the source game's RTP
+never carries over. (It was 96.0–96.7 for one day, then tightened. All six games
+were moved on 2026-10-10/11.)
+
+**Inside one game the modes must differ (Stone, 2026-10-15): the base spin is
+lowest, every buy-bonus mode is a little higher, and a pricier buy is higher
+again.** Steps of 0.01–0.02 points are enough. Capo Nostra is the pattern:
+base 96.04 / bonus (100×) 96.05 / bonus_hits (500×) 96.06 / bonus_epic (1000×)
+96.08. Giving every mode the same figure breaks the rule, and so does a base at
+96.10, because then no buy can sit above it. Different games may use the same
+figures; the rule is about the modes inside one game.
+
+Check it on the staged bundle with the community `stakecli` (mnemoo/cli), which
+prints each mode's exact RTP offline:
+`stakecli compliance upload/<Game>/math | grep 'RTP: '`.
 
 ## Moving RTP without re-simulating: re-weight the lookup tables
 

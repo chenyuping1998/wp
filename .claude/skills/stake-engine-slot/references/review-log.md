@@ -85,6 +85,16 @@ Run this before the first upload. Each line maps to a round that was lost.
 - [ ] Spacebar bound to the bet button.
 - [ ] Every modal tested at the smallest supported size, including the popout.
 - [ ] Stake Engine's splash removed; your own studio logo kept.
+- [ ] **Every label sits optically centred in its button or plate — measured,
+      not eyeballed** (`scripts/ui_center_audit.js`: `html()` per open modal,
+      `glyphs()`, `plate()` per bar/portrait plate; tolerance 1px). Pickle Panic
+      2026-10-16: an '∞' low on the autoplay badge, the autoplay-menu '∞', the
+      bet-menu ± and every Balance/Win/Bet stack 3-4px low — none visible at a
+      glance at 1x, all reported by the user one at a time.
+- [ ] **Cast arms leave no ghost when they move**: trunk underlay must not run
+      down the arm (game-reskin `scripts/check_cast_underlay.py`), and the
+      arm-swing motions are looked at frame by frame in the game, not only the
+      idle loop. Pickle Panic FG 2026-10-16: a smeared second arm beside the body.
 
 **Cover art**
 

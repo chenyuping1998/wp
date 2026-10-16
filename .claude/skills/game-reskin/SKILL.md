@@ -138,12 +138,14 @@ the whole pipeline, so starting it late just makes it the critical path later.
 - Write the new game's mechanic changes into `game_config.py` and
   `game_executables.py`/`game_events.py` as needed.
 - **House RTP band (Stone, 2026-10-11): every mode of every game sits
-  between 96.00% and 96.10%**, and no two games share the same figures.
-  The source game's RTP does not carry over — Capo Nostra was 94.58%, Turf
-  War 93.58%; both now sit in the 96.0x band. Pick values no other game
-  uses (taken so far: Turf 96.01–96.05, Sushi 96.02, Deadwood 96.03, Capo
-  96.04–96.08, Hard Time 96.05–96.09, GoBanandit 96.07), and keep each
-  game's mode spread inside the band. To move a game that is already built
+  between 96.00% and 96.10%**, and **inside one game the modes differ:
+  base spin lowest, every buy-bonus mode a little higher, the pricier buy
+  higher again** (Stone, 2026-10-15) — e.g. Capo base 96.04 / bonus 96.05 /
+  bonus_hits 96.06 / bonus_epic 96.08. One figure on every mode is wrong.
+  Leave room under 96.10 for the buys, so don't put base at the top of the
+  band. Different games may reuse figures. The source game's RTP does not
+  carry over — Capo Nostra was 94.58%, Turf War 93.58%; both now sit in the
+  96.0x band. To move a game that is already built
   without re-simulating, use `scripts/reweight_lut.py`
   (`references/math-retarget.md`, "Moving RTP without re-simulating").
 - Set per-mode RTP targets and retarget `game_optimization.py`'s slices to
@@ -364,6 +366,14 @@ are easiest to leave in by accident. Match the NEW theme in:
   recoloured, base turn about 2.7 s press to idle, FG spin-to-spin about
   3.1 s, 100x buy and 1.25x ante), see `references/pragmatic-play-styles.md`
   Part 2 and `pp_styles.py norms` / `game <title>` / `shots --phase <p>`.
+  For a frameless comic board floating in a lived-in room (Break Studios'
+  Stream Time on Stake: one shared 2 s idle clock, a seated cast who only
+  nods, a rat on a 16 s loop hiding under the HUD, a neon sign that is the
+  mode light, all reels starting together and stopping 0.09 s apart, a
+  scene-only screen shake on heavy landings), see
+  `references/stream-time-transcript.md`; its evidence and the
+  video-measuring tools (no ffmpeg needed) are in
+  `/Users/stone/stake-engine/research/stream-time/`.
 - **Transitions and set-pieces.** Don't reuse the source game's transition
   motif just because the code is already wired — pick one that fits the new
   theme's own imagery (Capo Nostra replaced "a car drives past" with vault
@@ -555,6 +565,35 @@ The same file also covers portrait controls that run off the screen edge
 (§5b) and Deadwood Express's 5/10 "poor UI": controls that stay lit after a
 touch tap, and a spin halo that flares on press. Test those on a touch
 pointer, not just a mouse.
+
+**Measure label centring and cast ghosts** (Stone, 2026-10-16: 「這種以後也要檢查」).
+Pickle Panic went to the platform with an '∞' sitting low on its round badge,
+four more labels 2-4px off-centre and an FG chef who left a smeared second arm
+beside her body whenever she threw. None showed in a 1x screenshot. Run the
+two house checks described at the end of stake-engine-slot's
+`engine-self-check.md`:
+
+    # in the running game (Browser pane javascript_tool): paste
+    # .claude/skills/stake-engine-slot/scripts/ui_center_audit.js, then
+    __centerAudit.glyphs(); __centerAudit.html()   # per open modal
+    __centerAudit.plate(x0, x1, y0, y1)            # per bar / portrait plate
+
+    python3 .claude/skills/game-reskin/scripts/check_cast_underlay.py \
+      apps/<Game>/design/source/mg apps/<Game>/design/source/fg --out /tmp/underlay
+
+The underlay check reads the #7 own-rig cut (`layers.json` + `rig.json`). If it
+FAILs, trim the trunk outside the body line and keep a disc round each shoulder
+pivot — `apps/PicklePanic/design/trim_trunk_smear.py fg|mg` is the worked
+example, with both ways of finding the body's edge: a hand-measured body line
+for arms that hang BESIDE a thin body (the cut copied the arm's own pixels into
+the trunk, so colour cannot tell them apart), and, for arms lying ON a round
+body, the trunk pixels that still match the original drawing closed into a
+silhouette. It patches the atlas rectangle in place, so no repack. After the
+trim a cast whose arms overlap its body may still WARN — that is real body
+under the arm; look at the motion and move on. Then render the
+arm-swing motions frame by frame in the game (stake-engine-slot
+`verification.md`, "Measuring instead of eyeballing") — the script measures the
+cause; only the motion shows whether it reads.
 
 **Then run the presentation-tag checker** — Deadwood's second rejection was on
 exactly these three tags, and every cause it had is mechanical:
