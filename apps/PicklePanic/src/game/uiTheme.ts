@@ -371,8 +371,26 @@ if (skin === 'platform' || skin === 'print') {
 		// label comes back up from the 0.5 it was squeezed to: 0.6 of the base size
 		// is 21.6px on this 120px button. The wrap width keeps BUY / BONUS on two
 		// lines.
-		buyBonusLabelSizeRatio: 0.6,
+		buyBonusLabelSizeRatio: 0.44,
 		buyBonusLabelWrapWidth: 100,
+		// The hanging sign's paper is not the canvas centre: the chains take the top
+		// of the 480px art, so the paper's middle sits at 0.548 of it (measured,
+		// ui_buybonus_rest.png). At plate scale 1.25 that is +0.06 of the button,
+		// and at 0.6 the two lines were taller than the 133px paper and printed
+		// over the top rail (user, 2026-10-15).
+		buyBonusLabelOffsetY: 0.055,
+
+		// The bar's end caps are brass plates of their own (ui_bar_v2.png, rivets
+		// painted out 2026-10-15). At rail size the menu and turbo buttons covered
+		// under half the cap's height and read as coins set down on it; at 1.4
+		// they fill it like a fitted dial. Landscape only (portrait has no caps).
+		barCapButtonScale: 1.4,
+		// Balance / Win / Bet stacks sat 4px under the strip's middle (measured
+		// 2026-10-16: 15px above the text, 7px below); 8 bar units = 4px there.
+		barReadoutOffsetY: -8,
+		// Portrait plates: same faces, same low sit (9px above, 1px below at
+		// 425x812); 11 label units = 3.5px there.
+		stackedTileTextOffsetY: -11,
 		// only the unused 'outline' hover style reads this - set so it is right
 		buyBonusPlateInset: { width: 0.8, height: 0.5 },
 
@@ -444,7 +462,9 @@ if (skin === 'platform' || skin === 'print') {
 // is turned round. Art: design/build_print_bar.py.
 if (skin === 'print') {
 	setUiTheme({
-		buyBonusLabelSizeRatio: 0.5,
+		// 0.44, not 0.5: two lines at 0.5 are taller than the hanging sign's paper
+		// (see buyBonusLabelOffsetY above)
+		buyBonusLabelSizeRatio: 0.44,
 		// the framed casing's rules (not 'flat', whose dividers are white at 15%
 		// and vanish on paper); the art itself is the fill and edge
 		barStyle: 'framed',

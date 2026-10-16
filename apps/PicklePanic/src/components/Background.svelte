@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import BackgroundFx from './BackgroundFx.svelte';
 
 	const context = getContext();
 	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame');
@@ -55,8 +56,10 @@
 
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="gbBgBase" {...parallax} />
+	<BackgroundFx mode="base" x={parallax.x} y={parallax.y} scale={parallax.width / PLATE[0]} />
 </FadeContainer>
 
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgFeature" {...parallax} />
+	<BackgroundFx mode="feature" x={parallax.x} y={parallax.y} scale={parallax.width / PLATE[0]} />
 </FadeContainer>

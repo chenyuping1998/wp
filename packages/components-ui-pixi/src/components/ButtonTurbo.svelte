@@ -10,7 +10,10 @@
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const context = getContext();
 	const sizes = $derived.by(() => {
-		const scale = uiTheme.turboButtonScale ?? uiTheme.railButtonScale;
+		const scale =
+			(context.stateLayoutDerived.layoutType() !== 'portrait' ? uiTheme.barCapButtonScale : undefined) ??
+			uiTheme.turboButtonScale ??
+			uiTheme.railButtonScale;
 		return { width: UI_BASE_SIZE * scale, height: UI_BASE_SIZE * scale };
 	});
 	const active = $derived(stateBet.isTurbo);

@@ -53,6 +53,7 @@
 	.infinity {
 		font-size: 1.5rem;
 		line-height: 1rem;
-		margin-top: 0.3rem;
+		/* no margin nudge: the inline 1rem font-size wins over the 1.5rem above,
+		   so the old 0.3rem push only moved the mark below centre */
 	}
 </style>

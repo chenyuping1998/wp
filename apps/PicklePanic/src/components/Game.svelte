@@ -71,6 +71,28 @@
 		context.stateLayout.showLoadingScreen = true;
 	});
 
+	// Top-right logo: sized to the room beside or above the board housing and
+	// hidden below 40% (Deadwood review 2026-10-04, "Popout S: logo covers
+	// symbols"). At 400x225 a fixed 220px logo sat over the top row.
+	const LOGO_W = 220;
+	const LOGO_H = LOGO_W * 0.375; // PickleLogo's own aspect
+	const LOGO_INSET = 20; // the shared layout parks the logo at canvas.width - 20
+	const FRAME_SCALE = 1.33751306; // BoardFrame's housing around the reels
+	const logoScale = $derived.by(() => {
+		const canvas = context.stateLayoutDerived.canvasSizes();
+		const main = context.stateLayoutDerived.mainLayout();
+		const board = context.stateGameDerived.boardLayout();
+		const halfW = (board.width * board.scale * FRAME_SCALE) / 2;
+		const halfH = (board.height * board.scale * FRAME_SCALE) / 2;
+		const right = main.x + (board.x + halfW - main.width * main.anchor) * main.scale;
+		const top = main.y + (board.y - halfH - main.height * main.anchor) * main.scale;
+		const gap = 6;
+		const besideW = canvas.width - LOGO_INSET - right - gap;
+		const above = top - gap;
+		const s = Math.min(1, Math.max(besideW / LOGO_W, above / LOGO_H));
+		return s < 0.4 ? 0 : s;
+	});
+
 	context.eventEmitter.subscribeOnMount({
 		buyBonusConfirm: () => {
 			stateModal.modal = { name: 'buyBonusConfirm' };
@@ -137,7 +159,7 @@
 			<!-- No logo() snippet: the top-right corner printed "PICKLE PANIC" a
 			     second time beside the clock-and-name (review 2026-10-13). It stays
 			     empty until the drawn logo from the art request arrives. -->
-			{#snippet logo()}<PickleLogo x={-110} y={42} width={220} base={false}/>{/snippet}
+			{#snippet logo()}{#if logoScale > 0}<PickleLogo x={(-LOGO_W / 2) * logoScale} y={(LOGO_H / 2 + 1) * logoScale} width={LOGO_W * logoScale} base={false}/>{/if}{/snippet}
 		</UI>
 		<ScatterDing/>
 		<BarMessage />

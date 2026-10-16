@@ -51,9 +51,9 @@ export const MODE_NAMES = {
 } as const;
 
 const MAX_WIN = `${config.betModes.base.max_win.toLocaleString('en-US')}×`;
-// from the synced math config, never typed: it was a literal '96%' and would
-// have gone on saying so after the RTP moved
-const RTP = `${(config.rtp * 100).toFixed(2)}%`;
+// from the synced math config, never typed. Per mode: base is lowest and each
+// buy sits a little higher (house rule), so a feature's copy quotes its own figure
+const rtpOf = (key: 'bonus' | 'superbonus') => `${(config.betModes[key].rtp * 100).toFixed(2)}%`;
 const meter = config.banditMeter;
 const firstRung = meter.thresholds[0];
 const firstMult = meter.mults[1];
@@ -94,8 +94,8 @@ export const PICKLE_PANIC_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy direct entry into ${config.betModes.bonus.spins} FREE SPINS for ${config.betModes.bonus.cost}× your bet, at the same ${RTP} RTP as base play. Every Cook that lands takes every Pickle Jar on the board, and at ${meter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Cooks ${meter.spinsAdded} spins are added and all 10, then J, then Q symbols become Pickle Jars on subsequent spins; collections remain ×1. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter ${config.betModes.bonus.spins} FREE SPINS directly for ${config.betModes.bonus.cost}× your amount, at the same ${RTP} RTP as normal play. Every Cook that lands takes every Pickle Jar on the board, and at ${meter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Cooks ${meter.spinsAdded} spins are added and all 10, then J, then Q symbols become Pickle Jars on subsequent spins; collections remain ×1. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy direct entry into ${config.betModes.bonus.spins} FREE SPINS for ${config.betModes.bonus.cost}× your bet, at ${rtpOf('bonus')} RTP. Every Cook that lands takes every Pickle Jar on the board, and at ${meter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Cooks ${meter.spinsAdded} spins are added and all 10, then J, then Q symbols become Pickle Jars on subsequent spins; collections remain ×1. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter ${config.betModes.bonus.spins} FREE SPINS directly for ${config.betModes.bonus.cost}× your amount, at ${rtpOf('bonus')} RTP. Every Cook that lands takes every Pickle Jar on the board, and at ${meter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Cooks ${meter.spinsAdded} spins are added and all 10, then J, then Q symbols become Pickle Jars on subsequent spins; collections remain ×1. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {
@@ -131,8 +131,8 @@ export const PICKLE_PANIC_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy entry into ${config.betModes.superbonus.spins} FREE SPINS for ${config.betModes.superbonus.cost}× your bet, at the same ${RTP} RTP as base play. The Cook meter opens at ${firstRung}, so all 10 symbols are already Pickle Jars from the first spin; collections remain ×1. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter ${config.betModes.superbonus.spins} FREE SPINS for ${config.betModes.superbonus.cost}× your amount, at the same ${RTP} RTP as normal play. The Cook meter opens at ${firstRung}, so all 10 symbols are already Pickle Jars from the first spin; collections remain ×1. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy entry into ${config.betModes.superbonus.spins} FREE SPINS for ${config.betModes.superbonus.cost}× your bet, at ${rtpOf('superbonus')} RTP. The Cook meter opens at ${firstRung}, so all 10 symbols are already Pickle Jars from the first spin; collections remain ×1. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter ${config.betModes.superbonus.spins} FREE SPINS for ${config.betModes.superbonus.cost}× your amount, at ${rtpOf('superbonus')} RTP. The Cook meter opens at ${firstRung}, so all 10 symbols are already Pickle Jars from the first spin; collections remain ×1. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {

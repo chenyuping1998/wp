@@ -467,6 +467,23 @@ export const uiTheme = $state({
 	// for turbo exactly as before.
 	turboButtonScale: undefined as number | undefined,
 
+	// Menu (and its close button) and turbo when they sit on the BAR'S END CAPS,
+	// i.e. every layout but portrait, which has no strip. Checked before
+	// turboButtonScale / railButtonScale. For bars whose caps are plates of their
+	// own: a rail-sized button on one reads as a coin set down on a slab (Pickle
+	// Panic, 2026-10-15). Unset = previous behaviour, for every game.
+	barCapButtonScale: undefined as number | undefined,
+	// Nudge for the stacked caption + value readouts on the bar (Balance, Win,
+	// Bet), in bar units; negative lifts. The stack is centred on its text
+	// boxes, and a face whose ink sits low in its box reads low on the strip:
+	// Pickle Panic's Bungee/Anton pair sat 4px under the strip's middle
+	// (2026-10-16). Unset = previous behaviour, for every game.
+	barReadoutOffsetY: undefined as number | undefined,
+	// The same nudge for a stacked caption + value drawn on its own tile (the
+	// portrait Balance / Win / Bet plates), in the label's units; negative lifts.
+	// Unset = previous behaviour, for every game.
+	stackedTileTextOffsetY: undefined as number | undefined,
+
 	// Size of the turbo BOLT relative to its button (UiButton draws it as a
 	// vector, not a sprite). The component's own value is 0.72, tuned for a flat
 	// circle where the whole face is usable. On plate art with a rim, 0.72 puts

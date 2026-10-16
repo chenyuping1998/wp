@@ -51,7 +51,8 @@
     {#if steam}<Sprite key={`gbDoorSteam${steam}V2`} anchor={.5} x={d.port*doorScale} y={-40*doorScale} width={260*doorScale} height={260*doorScale}/>{/if}
    </Container>
   {/each}
-  <Sprite key="gbDoorBadgeV2" anchor={.5} x={half+jolt} y={canvas.height/2-65*doorScale} width={180*doorScale} height={180*doorScale} alpha={clamp((shut-.92)/.08)}/>
+  <!-- badge sits clear above the latch bar (they overlapped at -65; QA 10-14) -->
+  <Sprite key="gbDoorBadgeV2" anchor={.5} x={half+jolt} y={canvas.height/2-150*doorScale} width={180*doorScale} height={180*doorScale} alpha={clamp((shut-.92)/.08)}/>
   <Sprite key="gbDoorLatchV2" anchor={.5} x={half+(1-latch)*200*doorScale+jolt} y={canvas.height/2+40*doorScale} width={420*doorScale} height={210*doorScale} alpha={latch}/>
   <Sprite key="gbDoorHazardV2" anchor={{x:.5,y:0}} x={half+jolt} y={-130*doorScale*(1-shut)} width={canvas.width} height={130*doorScale}/>
  {/if}

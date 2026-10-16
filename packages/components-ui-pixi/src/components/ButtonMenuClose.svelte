@@ -9,9 +9,14 @@
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const context = getContext();
+	// barCapButtonScale only where the bar (and its end caps) exists
+	const scale = $derived(
+		(context.stateLayoutDerived.layoutType() !== 'portrait' ? uiTheme.barCapButtonScale : undefined) ??
+			uiTheme.railButtonScale,
+	);
 	const sizes = $derived({
-		width: UI_BASE_SIZE * uiTheme.railButtonScale,
-		height: UI_BASE_SIZE * uiTheme.railButtonScale,
+		width: UI_BASE_SIZE * scale,
+		height: UI_BASE_SIZE * scale,
 	});
 
 	const onpress = () => {

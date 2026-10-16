@@ -15,3 +15,7 @@ Math unchanged; verified upload remains v1 until v2 QA passes. Platform NOT upda
 - S: main 3 stems, FS 3 stems, >60s loops, 76 unique decoded stereo 48kHz audio files audited, max decoded true peak −1.45 dBTP. Twelve recorded human takes have CC0 provenance. UI hover, steam and outro, repeated hardware variants connected. Offline runtime recorder prepared; complete game recording pending. Unreferenced old BGM mixes archived outside runtime.
 
 Sources/prompts are retained in manifests. This status is an integration inventory, not a claim that all visual QA has passed. WORK_IN_PROGRESS stays until verification and packaging are complete.
+
+## QA close-out 2026-10-14 (Claude)
+
+Built and played in the browser at 1280×720, 1024×768 checks from 10-13 still apply, and 375×812: intro logo, base game, all big-win tiers via qa_win_tier (BIG ticket with its bell prop, MAX with both cast, cap at 10,000×), third-Scatter DING, Extra Dill buy → doors → new FS background → FS intro bells → Cook upgrade cut-in, FS spins with jars. FG motion reach re-measured in the running build (Spine skeleton.getBounds at 60 Hz) and matches the Mascot reach table exactly. Door badge moved from −65 to −150 (doorScale units): it was under the latch's T-handle when shut (offline composite confirms clearance). 46 unreferenced intermediates moved out of static/. No 404s, no new console errors. Audio: 76 files, 0 duplicate hashes, check_audio OK. Not done: listening (no audio output here) and a physical touch device. WORK_IN_PROGRESS removed; staged to upload/PicklePanic.

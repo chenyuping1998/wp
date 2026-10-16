@@ -64,7 +64,7 @@
 	const READOUT_SCALE = 0.68;
 	// UiLabel stacks label at y=0 and value at y=UI_BASE_FONT_SIZE, so the block is
 	// two lines tall; lift it by half of that to sit centred on the bar.
-	const readoutTop = $derived(barMid - UI_BASE_FONT_SIZE * READOUT_SCALE);
+	const readoutTop = $derived(barMid - UI_BASE_FONT_SIZE * READOUT_SCALE + (uiTheme.barReadoutOffsetY ?? 0));
 
 	// Frame inset from the canvas edges.
 	const FRAME_X = 24;
