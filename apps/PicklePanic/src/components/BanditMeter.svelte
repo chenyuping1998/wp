@@ -50,6 +50,45 @@
 	const replacementTextWidth = $derived(CanvasTextMetrics.measureText(replacementLabel,replacementStyle).width);
 	const replacementRowWidth = $derived(replacementTextWidth + W*.025 + W*.11);
 	const resultHeadline = $derived(opening ? gameText('plateUpgrade') : `+${spins} ${gameText('extraSpins')}`);
+
+	// The chef in the cut-in is three layers (design/build_cutin_layers.py) so she
+	// moves while she chops: wind-up, punch, hit, recoil — user 2026-10-16
+	// 「我要 FG 砍圖騰的時候角色也有動態」. Before this the card was one static
+	// drawing that only slid and tilted. Times are ms on the same phase clock as
+	// the chop (CUT is the hit).
+	const CUTIN = 768, SHOULDER = { x: 365, y: 315 }, HIPS = { x: 470, y: 640 };
+	const cutinSize = $derived(W * .58);
+	const px = (v: number) => (v - CUTIN / 2) * cutinSize / CUTIN;
+	const ease = (p: number) => p * p * (3 - 2 * p);
+	// ring-out after the hit: starts at 0 (sin) so nothing jumps on the impact frame
+	const ring = (t: number, amp: number) => (t < 0 ? 0 : amp * Math.exp(-t / 160) * Math.sin(t / 55));
+	const WIND = 200, STRIKE = 110;
+	const chef = $derived.by(() => {
+		const windup = ease(clamp((phase - WIND) / (CUT - STRIKE - WIND)));
+		const strike = ease(clamp((phase - (CUT - STRIKE)) / STRIKE));
+		const after = phase - CUT;
+		const back = after < 0 ? 0 : ease(clamp(after / 380)); // settling back to rest
+		const breathe = Math.sin(elapsed / 260) * .012;
+		const wound = windup * (1 - strike);
+		const hit = strike * (1 - back);
+		// arm: pulls the fist up and back (+rot, smaller), then drives it at the
+		// viewer (-rot, bigger) and rings out
+		const armRot = .14 * wound - .07 * hit + ring(after, .05);
+		const armScale = 1 - .1 * wound + .16 * hit + ring(after, .04);
+		// body: leans back on the wind-up, lunges on the hit; the squash is the
+		// one thing allowed to snap on the impact frame
+		const bodyRot = .035 * wound - .045 * hit + ring(after, .02);
+		const bodyX = (.025 * wound - .03 * hit) * cutinSize;
+		const squash = after < 0 ? 0 : .06 * Math.exp(-after / 120) * Math.cos(after / 50);
+		// shards: hidden until the fist lands, then burst out and settle
+		const spark = after < 0 ? 0 : 1;
+		const sparkScale = after < 0 ? .5 : 1 + .35 * Math.exp(-after / 120);
+		return {
+			armRot, armScale: Math.max(.82, armScale),
+			bodyRot, bodyX, bodySx: 1 + squash + breathe * .5, bodySy: 1 - squash + breathe,
+			spark, sparkScale,
+		};
+	});
 	const rays = (g: PixiGraphics) => {
 		g.clear();
 		for (let i = 0; i < 22; i++) {
@@ -115,8 +154,16 @@
 		<Container x={layout.width/2+shake} y={layout.height*.45} {alpha}>
 			<Graphics draw={rays}/>
 			<NineSliceArt assetKey="gbUiTicketV2" width={W*.96} height={H*.96} x={-W*.48} y={-H*.48} inset={64} top={120} bottom={64}/>
-			<Container x={W*.24+W*.2*(1-clamp(phase/400))-W*.16*Math.sin(Math.PI*clamp((phase-CUT)/400))} y={-H*.05} rotation={.05-.3*Math.sin(Math.PI*clamp((phase-CUT)/400))} alpha={result ? .32 : 1}>
-				<Sprite key="gbCookCutIn" anchor={.5} width={W*.58} height={W*.58}/>
+			<Container x={W*.24+W*.2*(1-clamp(phase/400))-W*.16*Math.sin(Math.PI*clamp((phase-CUT)/400))} y={-H*.05} rotation={.05-.08*Math.sin(Math.PI*clamp((phase-CUT)/400))} alpha={result ? .32 : 1}>
+				<Container x={px(HIPS.x)+chef.bodyX} y={px(HIPS.y)} rotation={chef.bodyRot} scale={{x:chef.bodySx,y:chef.bodySy}}>
+					<Sprite key="gbCookCutInBody" anchor={.5} x={-px(HIPS.x)} y={-px(HIPS.y)} width={cutinSize} height={cutinSize}/>
+					<Container x={px(SHOULDER.x)-px(HIPS.x)} y={px(SHOULDER.y)-px(HIPS.y)} rotation={chef.armRot} scale={chef.armScale}>
+						<Sprite key="gbCookCutInArm" anchor={.5} x={-px(SHOULDER.x)} y={-px(SHOULDER.y)} width={cutinSize} height={cutinSize}/>
+					</Container>
+				</Container>
+				<Container x={px(150)} y={px(680)} scale={chef.sparkScale} alpha={chef.spark}>
+					<Sprite key="gbCookCutInSparks" anchor={.5} x={-px(150)} y={-px(680)} width={cutinSize} height={cutinSize}/>
+				</Container>
 			</Container>
 			<Container x={-W*.16} y={0} scale={.55+.45*back(clamp(phase/450))}>
 				{#each [-1,1] as side (side)}
