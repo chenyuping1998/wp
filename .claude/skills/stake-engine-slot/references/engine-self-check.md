@@ -408,4 +408,8 @@ How this repo maps onto the self-check, so a run doesn't rediscover it:
      own-rig cut; first confirm those layers are what the atlas holds). FAIL
      blocks; WARN means render the arm-swing motions and look (method in
      `verification.md`, "Measuring instead of eyeballing").
+  3. *Still characters at feature beats* — list every overlay/card that shows the
+     cast (grep in game-reskin §5 step 6) and play each beat once: a character
+     that does not move inside the beat is AT RISK ("poor animations"), with the
+     fix being the layered cut-in recipe there (Stone, 2026-10-16).
 

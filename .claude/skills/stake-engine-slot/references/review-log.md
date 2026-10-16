@@ -91,6 +91,10 @@ Run this before the first upload. Each line maps to a round that was lost.
       2026-10-16: an '∞' low on the autoplay badge, the autoplay-menu '∞', the
       bet-menu ± and every Balance/Win/Bet stack 3-4px low — none visible at a
       glance at 1x, all reported by the user one at a time.
+- [ ] **No still picture of a character at a feature beat**: every cut-in,
+      intro/outro card, upgrade overlay or plaque that shows the cast animates
+      it in layers on the beat's clock (game-reskin §5 step 6). Pickle Panic FG
+      chop, 2026-10-16: the chef was one static punch drawing that only slid.
 - [ ] **Cast arms leave no ghost when they move**: trunk underlay must not run
       down the arm (game-reskin `scripts/check_cast_underlay.py`), and the
       arm-swing motions are looked at frame by frame in the game, not only the

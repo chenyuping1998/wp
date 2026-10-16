@@ -530,7 +530,38 @@ Once the user starts generating art:
    mismatched light. Reject and regenerate what fails; post-processing can
    hold a palette but cannot turn a render into the chosen style
    (quantising a render gives a posterised render).
-5. Iterate against concrete, stated feedback each round. If a round's
+6. **A character drawn into a feature beat must move — never a static
+   picture of the cast** (Stone, 2026-10-16: 「我要 FG 砍圖騰的時候角色也有動態」,
+   then 「這種以後也要做」). Pickle Panic's FG chop overlay showed the chef as one
+   punch illustration that only slid and tilted as a whole, and the user saw a
+   still picture at the game's biggest beat. Applies to every cut-in, intro or
+   outro card, upgrade/level-up overlay, win plaque or buy card that shows a
+   character. Find them with
+   `grep -rnE 'key="[^"]*(CutIn|Cutin|Cast|Chef|Boss|Hero|Mascot)' apps/<Game>/src`
+   plus any `<Sprite>` of a character PNG inside an overlay component.
+   - **Split the illustration into layers** — body, the acting limb (pivot at
+     its joint), and any effect drawn into the picture (shards, sparks, speed
+     lines) — on the same canvas so they stack with one anchor. Worked example:
+     `apps/PicklePanic/design/build_cutin_layers.py` (wp-banandit): one seam line
+     for the limb, effects picked by colour, stray islands handed to the effect
+     layer, and the body's underlay kept to the joint only (the cast-ghost rule
+     — below the joint it shows as a dark strip the moment the limb moves).
+   - **Animate on the beat's own clock**, not a free-running tween: anticipation
+     (limb pulls back ~0.14 rad and shrinks ~10%, body leans back), a fast action
+     (~110 ms; limb drives forward and grows ~16%, body lunges and squashes),
+     the effect layer appears only on the hit frame, then a damped ring-out
+     (`amp·e^(-t/160)·sin(t/55)` — sin, so nothing jumps on the hit). Repeat per
+     step when the beat repeats (a multi-level upgrade punches once per level).
+     Shrink any whole-card swing the overlay already had (0.3 → 0.08 rad) so the
+     layers carry the motion. `BanditMeter.svelte`'s `chef` block is the reference.
+   - **Verify twice**: render the layers offline with the same formulas into a
+     contact sheet/GIF (seams, holes, stray bits show at the anticipation and
+     follow-through frames), then record the real beat in the game (an
+     `app.ticker.add` callback that extracts frames while the beat's headline is
+     visible — timers and rAF are throttled in a hidden pane; pixi v8 has no
+     `worldAlpha`, filter on `visible`). A buy that opens with the beat (Pickle's
+     Extra Dill starts the meter at 4) reaches it fastest.
+7. Iterate against concrete, stated feedback each round. If a round's
    feedback implies a broader rule ("too colourful/messy" led to a whole
    palette-consistency pass, not just the one screen mentioned), write that
    rule down in the art brief so the next round of generated art doesn't
