@@ -572,169 +572,71 @@ export const SYMBOL_LAYERS = {
     "underpaint": "h3_underpaint_v2"
   },
   "h4": {
-    "canvas": [
-      512,
-      512
-    ],
-    "rest_max_rgba_error": 0,
-    "layers": [
-      {
-        "name": "body",
-        "key": "layer_h4_body",
-        "pivot": [
-          256,
-          256
-        ],
-        "box": [
-          49,
-          49,
-          463,
-          466
-        ]
-      },
-      {
-        "name": "spear_middle",
-        "key": "layer_h4_spear_middle",
-        "pivot": [
-          242,
-          404
-        ],
-        "box": [
-          176,
-          46,
-          311,
-          421
-        ],
-        "polygon": [
-          [
-            204,
-            34
-          ],
-          [
-            286,
-            42
-          ],
-          [
-            310,
-            168
-          ],
-          [
-            280,
-            314
-          ],
-          [
-            252,
-            420
-          ],
-          [
-            192,
-            404
-          ],
-          [
-            176,
-            292
-          ]
-        ]
-      },
-      {
-        "name": "spear_left",
-        "key": "layer_h4_spear_left",
-        "pivot": [
-          208,
-          408
-        ],
-        "box": [
-          86,
-          102,
-          236,
-          431
-        ],
-        "polygon": [
-          [
-            96,
-            90
-          ],
-          [
-            158,
-            96
-          ],
-          [
-            214,
-            194
-          ],
-          [
-            226,
-            322
-          ],
-          [
-            242,
-            414
-          ],
-          [
-            186,
-            430
-          ],
-          [
-            120,
-            328
-          ],
-          [
-            86,
-            198
-          ]
-        ]
-      },
-      {
-        "name": "spear_right",
-        "key": "layer_h4_spear_right",
-        "pivot": [
-          284,
-          414
-        ],
-        "box": [
-          256,
-          118,
-          463,
-          433
-        ],
-        "polygon": [
-          [
-            366,
-            124
-          ],
-          [
-            424,
-            108
-          ],
-          [
-            478,
-            154
-          ],
-          [
-            438,
-            268
-          ],
-          [
-            386,
-            370
-          ],
-          [
-            302,
-            432
-          ],
-          [
-            256,
-            414
-          ],
-          [
-            330,
-            260
-          ]
-        ]
-      }
-    ],
-    "underpaint": "h4_underpaint_v2"
-  },
+  "canvas": [
+    512,
+    512
+  ],
+  "rest_max_rgba_error": 1,
+  "layers": [
+    {
+      "name": "body",
+      "key": "layer_h4_body",
+      "pivot": [
+        256,
+        330
+      ],
+      "box": [
+        49,
+        185,
+        463,
+        430
+      ]
+    },
+    {
+      "name": "spear_middle",
+      "key": "layer_h4_spear_middle",
+      "pivot": [
+        210,
+        230
+      ],
+      "box": [
+        95,
+        120,
+        320,
+        306
+      ]
+    },
+    {
+      "name": "spear_left",
+      "key": "layer_h4_spear_left",
+      "pivot": [
+        255,
+        265
+      ],
+      "box": [
+        140,
+        155,
+        365,
+        341
+      ]
+    },
+    {
+      "name": "spear_right",
+      "key": "layer_h4_spear_right",
+      "pivot": [
+        300,
+        300
+      ],
+      "box": [
+        185,
+        190,
+        410,
+        376
+      ]
+    }
+  ],
+  "underpaint": null
+},
   "w": {
     "canvas": [
       512,

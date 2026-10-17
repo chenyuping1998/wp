@@ -1,5 +1,9 @@
 # Pickle Panic
 
+Latest local package: 2026-10-17 A–E art revision. H4 now has three independently animated parallel blunt-cut spears in a paper boat; female chef wears a tomato-red high-neck sleeveless chef vest in every runtime illustration and the cover; door panels/hardware/steam are re-inked with a large cast-iron badge; the board uses an olive/plum enamel casing with the original transparent opening; both backgrounds have faint wall details, with background-motion masks regenerated against the final plates. Thumbnail remains the existing single male boss, so it needs no clothing change; the staged cover foreground is updated. All selected imagegen originals, condensed prompts and before-images are retained under design/source/review_1017_ae/. This A–E revision has NOT been uploaded, published or submitted on the platform. Math unchanged.
+
+Validation: production build and asset/audio/reference/social/type-baseline/mesh guards pass (15 existing type diagnostics, no new errors); H4 colors95 74, soft 37.1%, palette fit 61.9%; original frame alpha preserved pixel-for-pixel; cast underlay L/R 0%; desktop and 390×844 / 320×568 local book preview inspected with no browser errors. The three-new-viewer H4 recognition survey and real platform/touch-device verification remain human checks. Evidence: design/qa/review_1017_ae/.
+
 Release staging: /Users/stone/stake-engine/upload/PicklePanic/ (2026-10-13).
 
 - frontend/: static game, original pickle assets and licensed fonts. No offline server stub.

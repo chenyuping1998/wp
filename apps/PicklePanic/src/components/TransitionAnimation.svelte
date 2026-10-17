@@ -20,7 +20,9 @@
  const jolt=$derived(age>=380&&age<470?8*Math.sin((age-380)/9)*(1-(age-380)/90):0);
  const left=$derived(half+doorScale-travel*(1-shut)-rebound+jolt);
  const right=$derived(half+travel*(1-shut)+rebound+jolt);
- const doorSides=$derived([{key:'gbDoorLV2',x:left,anchor:1,port:-330},{key:'gbDoorRV2',x:right,anchor:0,port:330}]);
+ // Liquid positions follow the measured inner portholes of the redrawn panels;
+ // the wheel pivots retain the original motion positions.
+ const doorSides=$derived([{key:'gbDoorLV2',x:left,anchor:1,port:-330,liquidX:-290.5,liquidY:-211,liquidW:174,liquidH:170},{key:'gbDoorRV2',x:right,anchor:0,port:330,liquidX:337.5,liquidY:-177,liquidW:232,liquidH:218}]);
  const wheel=$derived(t>=openAt?-Math.PI*clamp((t-openAt)/220)+Math.PI*1.5:Math.PI*1.5*backOut(clamp((age-500)/200)));
  const latch=$derived(clamp((age-380)/120)*(1-clamp((t-openAt)/220)));
  const steam=$derived(age>=700&&age<1000?Math.min(6,Math.floor((age-700)/50)+1):0);
@@ -47,13 +49,13 @@
   {#each doorSides as d,i}
    <Container x={d.x} y={canvas.height/2}>
     <Sprite key={d.key} anchor={{x:d.anchor,y:.5}} width={w} height={h}/>
-    <Sprite key="gbDoorLiquidV2" anchor={.5} x={d.port*doorScale} y={-172*doorScale} rotation={Math.sin(t/300+i)*.035} width={200*doorScale} height={200*doorScale}/>
+    <Sprite key="gbDoorLiquidV2" anchor={.5} x={d.liquidX*doorScale} y={d.liquidY*doorScale} rotation={Math.sin(t/300+i)*.035} width={d.liquidW*doorScale} height={d.liquidH*doorScale}/>
     <Sprite key="gbDoorWheelV2" anchor={.5} x={d.port*doorScale} y={170*doorScale} rotation={wheel*(i? -1:1)} width={245*doorScale} height={245*doorScale}/>
     {#if steam}<Sprite key={`gbDoorSteam${steam}V2`} anchor={.5} x={d.port*doorScale} y={-40*doorScale} width={260*doorScale} height={260*doorScale}/>{/if}
    </Container>
   {/each}
-  <!-- badge sits clear above the latch bar (they overlapped at -65; QA 10-14) -->
-  <Sprite key="gbDoorBadgeV2" anchor={.5} x={half+jolt} y={canvas.height/2-150*doorScale} width={180*doorScale} height={180*doorScale} alpha={clamp((shut-.92)/.08)}/>
+  <!-- Cast-iron medallion occupies 22% of door height and clears the locking bar. -->
+  <Sprite key="gbDoorBadgeV2" anchor={.5} x={half+jolt} y={canvas.height/2-210*doorScale} width={238*doorScale} height={238*doorScale} alpha={clamp((shut-.92)/.08)}/>
   <Sprite key="gbDoorLatchV2" anchor={.5} x={half+(1-latch)*200*doorScale+jolt} y={canvas.height/2+40*doorScale} width={420*doorScale} height={210*doorScale} alpha={latch}/>
   <Sprite key="gbDoorHazardV2" anchor={{x:.5,y:0}} x={half+jolt} y={-130*doorScale*(1-shut)} width={canvas.width} height={130*doorScale}/>
  {/if}

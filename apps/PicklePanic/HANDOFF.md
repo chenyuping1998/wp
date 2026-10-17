@@ -1,5 +1,7 @@
 # Pickle Panic — release handoff
 
+Latest local revision (2026-10-17): A–E art request implemented and staged in `/Users/stone/stake-engine/upload/PicklePanic/`. New layered parallel H4 spears/boat, FG chef vest in all runtime illustrations and cover, re-inked doors/hardware/steam with large medallion, olive/plum enamel frame and quiet wall details in both backgrounds. Skeleton/motion/math unchanged. Recoverable inputs and selected imagegen sources/prompts: `design/source/review_1017_ae/`; checks and browser evidence: `design/qa/review_1017_ae/`. Production build/guards, exact frame/torso alpha audit and cast-underlay checks pass; 15 preexisting type diagnostics remain. Desktop and 390×844/320×568 local previews checked. Independent three-person H4 recognition test is still a human task. Platform NOT updated by this revision. Full current handoff: `/Users/stone/stake-engine/docs/handoff/PicklePanic.md`; notes below are historical.
+
 Completed 2026-10-13. Source app: wp-banandit/apps/SushiMonkey. New app: wp-banandit/apps/PicklePanic. Math: math-sdk/games/PicklePanic. Stage: upload/PicklePanic.
 
 User approved third style frame (design/style_concept_v3.png): rough American underground sci-fi comic, cold lilac/blue fermentation station and green cast separation. Both MG male boss and FG female spicy chef use own #7 standing pose and motion structure. Original art and prompts saved in design/source/production. No research reference artwork or monkey atlases shipped.

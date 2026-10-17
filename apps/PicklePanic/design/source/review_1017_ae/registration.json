@@ -1,0 +1,68 @@
+{
+  "h4": {
+    "canvas": [
+      512,
+      512
+    ],
+    "rest_max_rgba_error": 1,
+    "layers": [
+      {
+        "name": "body",
+        "key": "layer_h4_body",
+        "pivot": [
+          256,
+          330
+        ],
+        "box": [
+          49,
+          185,
+          463,
+          430
+        ]
+      },
+      {
+        "name": "spear_middle",
+        "key": "layer_h4_spear_middle",
+        "pivot": [
+          210,
+          230
+        ],
+        "box": [
+          95,
+          120,
+          320,
+          306
+        ]
+      },
+      {
+        "name": "spear_left",
+        "key": "layer_h4_spear_left",
+        "pivot": [
+          255,
+          265
+        ],
+        "box": [
+          140,
+          155,
+          365,
+          341
+        ]
+      },
+      {
+        "name": "spear_right",
+        "key": "layer_h4_spear_right",
+        "pivot": [
+          300,
+          300
+        ],
+        "box": [
+          185,
+          190,
+          410,
+          376
+        ]
+      }
+    ],
+    "underpaint": null
+  }
+}

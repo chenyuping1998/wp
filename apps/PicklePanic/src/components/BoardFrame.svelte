@@ -91,14 +91,16 @@
 
 <Graphics zIndex={-2} draw={drawAmbience} />
 
-<Sprite
-	key="gbFrameBg"
-	anchor={0.5}
-	x={context.stateGameDerived.boardLayout().x + impact.x}
-	y={context.stateGameDerived.boardLayout().y + impact.y}
-	width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-	height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-/>
+<!-- The board well fills only the opening. The old opaque square backing
+     extended beyond the enamel housing and hid its drawn outside silhouette. -->
+<Graphics draw={(g) => {
+	g.clear();
+	const layout = context.stateGameDerived.boardLayout();
+	const w = layout.width * layout.scale;
+	const h = layout.height * layout.scale;
+	g.rect(layout.x + impact.x - w / 2, layout.y + impact.y - h / 2, w, h);
+	g.fill(0x20231d);
+}} />
 
 <Sprite
 	key="gbFrameEdge"

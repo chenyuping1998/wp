@@ -1,5 +1,7 @@
 # Pickle Panic — 退件 5.3 後的美術需求單（2026-10-17）
 
+**10-17 A–E 實作交付**：H4 分層重畫、FG 紅色廚師背心（軀幹／買特色／砍牌分層與合成圖／MAX 招牌／封面）、全部門零件與大徽章、搪瓷外框、MG/FG 低對比牆面均已接入。原稿、提詞集與舊檔在 `design/source/review_1017_ae/`；驗證在 `design/qa/review_1017_ae/`。H4 的「三名陌生觀者辨識」尚待真人執行；實作不宣稱此項已完成。這批未上傳或發佈至平台。
+
 審核標籤：**Low quality assets／Inconsistent art style／Poor animations**（截圖 `design/qa/review_1017/reviewer_tags.png`）。
 
 本單只列**要重畫**的東西。程式能處理的動畫與介面問題已在 10-17 改掉（見文末），不用再做。
