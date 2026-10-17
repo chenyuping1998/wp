@@ -31,7 +31,7 @@
 		if (dim.current <= 0.01) return;
 		context.stateGame.board.forEach((reel, i) => {
 			if (reel.reelState.anticipating || reel.reelState.motion !== 'stopped') return;
-			g.beginFill(0x000000, 0.3 * dim.current);
+			g.beginFill(0x252735, 0.3 * dim.current);
 			g.drawRoundedRect(
 				getSymbolX(i) - SYMBOL_SIZE / 2 + 4,
 				4,

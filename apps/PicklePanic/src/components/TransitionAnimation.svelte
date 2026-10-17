@@ -1,6 +1,7 @@
 <script lang="ts">
  import {onMount} from 'svelte';
- import {Container,Sprite,Graphics} from 'pixi-svelte';
+ import {Container,Sprite,Graphics,Text} from 'pixi-svelte';
+ import {GAME_FONT} from '../game/fonts';
  import {MainContainer} from 'components-layout';
  import {getContext} from '../game/context';
  const props:{oncomplete:()=>void;oncover?:()=>void}=$props();
@@ -39,7 +40,7 @@
  });
 </script>
 <Container>
- {#if plate}<MainContainer><Sprite key="gbP" anchor={.5} x={plate.x} y={plate.y} rotation={plate.rotation} width={150} height={150}/></MainContainer>{/if}
+ {#if plate}<MainContainer><Container x={plate.x} y={plate.y} rotation={plate.rotation}><Sprite key="gbP" anchor={.5} width={150} height={150}/><Text text="JAR" anchor={.5} y={17} rotation={-.05} style={{fontFamily:GAME_FONT,fontSize:21,fill:0x20231d,letterSpacing:1}}/></Container></MainContainer>{/if}
  {#if shut>0}
   <!-- Opaque door well closes with the panels; no scene can show through corner cutouts at cover. -->
   <Graphics draw={g=>{g.clear();g.rect(0,0,canvas.width,canvas.height);g.fill({color:0x20231d,alpha:clamp((shut-.85)/.15)});}}/>

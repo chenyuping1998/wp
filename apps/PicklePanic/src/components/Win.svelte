@@ -14,6 +14,7 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT, NUMBER_FONT } from '../game/fonts';
 	import InkNumber from './InkNumber.svelte';
 	import WinTierArt from './WinTierArt.svelte';
+	import OrderStamp from './OrderStamp.svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
 	import { bookEventAmountToCurrencyString, bookEventAmountToCountUpString } from 'utils-shared/amount';
@@ -167,6 +168,25 @@
 		};
 	});
 
+	// small wins: the amount stamps onto the board — in from 0.4 with an
+	// overshoot, a little rotation that settles, then sits still while it rolls
+	let pop = $state({ scale: 1, rotation: 0 });
+	const startPop = () => {
+		const start = Date.now();
+		const id = everyFrame(() => {
+			const t = (Date.now() - start) / 1000;
+			if (t >= 0.42) {
+				pop = { scale: 1, rotation: 0 };
+				id();
+				return;
+			}
+			const p = t / 0.42;
+			// backOut with a strong overshoot, then a damped settle
+			const k = 1 + 2.4 * (p - 1) ** 3 + 1.4 * (p - 1) ** 2;
+			pop = { scale: 0.4 + 0.6 * k, rotation: -0.08 * (1 - p) ** 2 };
+		});
+	};
+
 	context.eventEmitter.subscribeOnMount({
 		winShow: () => (show = true),
 		winHide: () => {
@@ -180,20 +200,25 @@
 				startShake();
 				startImpact();
 				startBannerFx();
+			} else {
+				startPop();
 			}
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
 	});
 </script>
 
-<FadeContainer {show} duration={500}>
+<!-- A small win's whole display is shorter than a 500ms fade: the amount used
+     to peak at 63% opacity and fade out again without ever reading solid
+     (review 10-17). Small wins snap in; the plaques keep the slow fade. -->
+<FadeContainer {show} duration={winLevelData?.type === 'big' ? 500 : 140}>
 	{#if winLevelData}
 		{@const isBigWin = winLevelData.type === 'big'}
 		{@const duration = winLevelData.presentDuration}
 		<WinCountUpProvider {amount} {duration} oncomplete={() => onCountUpComplete()}>
 			{#snippet children({ countUpAmount, startCountUp, finishCountUp, countUpCompleted })}
 				{#if isBigWin}
-					<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
+					<CanvasSizeRectangle backgroundColor={0x252735} backgroundAlpha={0.55} />
 				{/if}
 
 				<OnMount
@@ -202,7 +227,7 @@
 						// the numbers start rolling
 						if (isBigWin) await waitForTimeout(90);
 						await startCountUp();
-						await waitForTimeout(isBigWin ? 1300 : 300);
+						await waitForTimeout(isBigWin ? 1300 : 650);
 						oncomplete();
 					}}
 				/>
@@ -251,18 +276,26 @@
 								<Container y={bh * .10} scale={Math.min(1, (bw * 0.6) / Math.max(1, amountWidth))}>
 									<InkNumber text={bookEventAmountToCountUpString(countUpAmount,amount)} fontSize={bh*.17} maxWidth={bw*.44}/>
 								</Container>
+								{#if alias === 'big'}
+									<!-- on the plaque's seal (measured: 77.6% / 68.4% of the art) -->
+									<OrderStamp x={bw * 0.276} y={bh * 0.184} size={bw * 0.105} />
+								{/if}
 							</WinTierArt>
 							{#if burstShown}
 								
 							{/if}
 						{:else}
-							<!-- small wins: just the rolling amount over the board -->
-							<GoldText
-								maxWidth={context.stateLayoutDerived.canvasSizes().width /
-									context.stateLayoutDerived.mainLayout().scale}
-								text={bookEventAmountToCountUpString(countUpAmount, amount)}
-								fontSize={SYMBOL_SIZE}
-							/>
+							<!-- small wins: the rolling amount stamped over the board, cream
+							     on a heavy ink outline so it reads over the dimmed tiles -->
+							<Container scale={pop.scale} rotation={pop.rotation}>
+								<GoldText
+									maxWidth={SYMBOL_SIZE * 4.4}
+									text={bookEventAmountToCountUpString(countUpAmount, amount)}
+									fontSize={SYMBOL_SIZE * 0.82}
+									fill={0xfff0cf}
+									stroke={0x171c1a}
+								/>
+							</Container>
 						{/if}
 					</Container>
 				</MainContainer>

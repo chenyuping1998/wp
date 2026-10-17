@@ -42,6 +42,7 @@
 	const resultAt = $derived(LEAD + steps.length * STEP);
 	const duration = $derived(resultAt + HOLD + OUT);
 	const alpha = $derived(Math.min(clamp(elapsed / 150), 1 - clamp((elapsed - duration + OUT) / OUT)));
+	const CUT_SYMBOL:Record<string,string>={'10':'gbL5',J:'gbL4',Q:'gbL3'};
 	const cutLabel = $derived(removedLabelAtLevel(steps[index] ?? level));
 	const shake = $derived(phase >= CUT && phase < CUT + 180 ? Math.sin((phase - CUT) * .16) * 11 * (1 - (phase - CUT) / 180) : 0);
 	const result = $derived(elapsed >= resultAt);
@@ -170,13 +171,15 @@
 					<Container x={side*split*card*.7} y={side*split*card*.36} rotation={side*split*.6} alpha={1-split}>
 						<Graphics isMask draw={(g)=>{g.clear();const s=card*.6;g.poly(side===-1?[-s,-s,s,-s,-s,s]:[s,-s,s,s,-s,s]).fill(0xffffff);}}/>
 						<Sprite key="gbSymbolPaper" anchor={.5} width={card} height={card}/>
-						<Text text={cutLabel} anchor={.5} style={{fontFamily:GAME_FONT,fontSize:card*.49,fontWeight:GAME_FONT_WEIGHT,fill:INK}}/>
+						<!-- the real royal being smashed, not type on a blank slip (review 10-17) -->
+						{#if CUT_SYMBOL[cutLabel]}<Sprite key={CUT_SYMBOL[cutLabel]} anchor={.5} width={card*1.02} height={card*1.02}/>{:else}<Text text={cutLabel} anchor={.5} style={{fontFamily:GAME_FONT,fontSize:card*.49,fontWeight:GAME_FONT_WEIGHT,fill:INK}}/>{/if}
 					</Container>
 				{/each}
 				{#if plate>0}
 					<Container y={-H*.065} scale={back(plate)*.86}>
 						<Graphics draw={(g)=>{g.clear();g.circle(0,0,card*.46).stroke({width:5,color:PINK});}}/>
 						<Sprite key="gbP" anchor={.5} width={card*1.08} height={card*1.08}/>
+						<Text text="JAR" anchor={.5} y={card*1.08*.113} rotation={-.05} style={{fontFamily:GAME_FONT,fontSize:card*.15,fill:INK,letterSpacing:1}}/>
 					</Container>
 				{/if}
 			</Container>
@@ -196,6 +199,7 @@
 			{#if result}
 				<Text text={replacementLabel} anchor={{x:0,y:.5}} x={-replacementRowWidth/2} y={H*.22} style={replacementStyle}/>
 				<Sprite key="gbP" anchor={.5} x={replacementRowWidth/2-W*.055} y={H*.22} width={W*.11} height={W*.11}/>
+				<Text text="JAR" anchor={.5} x={replacementRowWidth/2-W*.055} y={H*.22+W*.11*.113} rotation={-.05} style={{fontFamily:GAME_FONT,fontSize:W*.016,fill:INK,letterSpacing:1}}/>
 			{:else if plate>0}
 				<Text text={`${cutLabel} → ${gameText('plateUpgrade')}`} anchor={.5} y={H*.28} style={{fontFamily:GAME_FONT,fontSize:W*.039,fontWeight:GAME_FONT_WEIGHT,fill:PINK}}/>
 			{/if}

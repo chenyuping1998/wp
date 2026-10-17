@@ -18,8 +18,8 @@
 	// Which cells are lit is WinWays' decision (stateGame.winLitCells); this only
 	// draws it. Rendered inside Board's BoardContainer, so it is already in board
 	// coordinates.
-	const SCRIM = 0x05070a;
-	const SCRIM_ALPHA = 0.62;
+	const SCRIM = 0x252735; // the backdrop ink, not black: a 62% black flattened the losing tiles into grey slabs (review 10-17)
+	const SCRIM_ALPHA = 0.5;
 
 	// same formula as getSymbolX in utils.ts
 	const cellX = (reel: number) => SYMBOL_SIZE * (reel + REEL_PADDING) - SYMBOL_SIZE / 2;

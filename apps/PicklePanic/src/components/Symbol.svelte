@@ -6,6 +6,7 @@
 	import SymbolSprite from './SymbolSprite.svelte';
 	import LayeredSymbol from './LayeredSymbol.svelte';
 	import SymbolMeshWin from './SymbolMeshWin.svelte';
+	import WinCellFrame from './WinCellFrame.svelte';
 	import { MESH_LANDS } from '../game/meshWin';
 	import { getSymbolInfo } from '../game/utils';
 	import type { SymbolState, RawSymbol } from '../game/types';
@@ -102,6 +103,9 @@
 		<!-- Shared menu-slip frame remains present in spin/land/win/static states. -->
 		<Sprite key={props.rawSymbol.name==='H1'?'v8BackH1':props.rawSymbol.name==='H2'?'v8BackH2':props.rawSymbol.name==='S'?'v8BackS':'gbSymbolPaper'} anchor={0.5} width={SYMBOL_SIZE * PLATE_SCALE} height={SYMBOL_SIZE * PLATE_SCALE} />
 	{@render body(props.oncomplete)}
+	{#if isWin}
+		<WinCellFrame size={SYMBOL_SIZE * 0.9} />
+	{/if}
 </Container>
 
 {#if props.rawSymbol.prize}

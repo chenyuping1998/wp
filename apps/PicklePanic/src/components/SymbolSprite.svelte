@@ -93,35 +93,13 @@
 	});
 </script>
 
-{#if blur > 0.01}
-	<!-- ghost trail: same art, offset and faded, sells the motion blur. Offset,
-	     opacity and stretch all scale with speed, so the trail shortens and fades
-	     as the reel brakes rather than vanishing in one frame. -->
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) - height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96}
-		height={height * (1 + 0.18 * blur)}
-		alpha={0.22 * blur}
-	/>
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) + height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96}
-		height={height * (1 + 0.18 * blur)}
-		alpha={0.22 * blur}
-	/>
-{/if}
-
+<!-- The smear itself is BoardBase's per-reel BlurFilter (plate and art blur
+     together). Translucent ghost copies here read as see-through cards. A small
+     stretch stays: it gives the blurred strip some speed without fading it. -->
 <Container
 	x={props.x ?? 0}
 	y={props.y ?? 0}
-	scale={{ x: sx.current, y: blur > 0.01 ? 1 + 0.3 * blur : sy.current }}
-	alpha={1 - 0.15 * blur}
+	scale={{ x: sx.current, y: blur > 0.01 ? 1 + 0.08 * blur : sy.current }}
 >
 	<Sprite anchor={0.5} key={props.symbolInfo.assetKey} {width} {height} />
 	{#if props.letter}

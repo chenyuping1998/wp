@@ -32,7 +32,11 @@
   if(name.startsWith('l')&&part!=='body'){dy=-h*.035*pulse(160,1060);rotation=.07*pulse(190,1090);}
   return{dx,dy,rotation,sx,sy};
  };
- const root=$derived.by(()=>{if(props.mode==='land'||t>=1200)return{y:0,x:1,yScale:1};const anticip=t<80?t/80:t<160?1-(t-80)/80:0;const squash=name==='p'?.07*pulse(1000,1200):0;return{y:h*.04*anticip,x:1+squash,yScale:1-squash};});
+ // Win pop (review 10-17, "Poor animations"): the parts moved but the symbol as a
+ // whole never left its tile, so a win read as a twitch. It now swells out of the
+ // plate with an overshoot, holds proud while the parts perform, and settles.
+ const winScale=(ms:number)=>{if(ms<90)return 1-.06*(ms/90);if(ms<260){const p=(ms-90)/170;return .94+.30*Math.sin(p*Math.PI/2);}if(ms<420){const p=(ms-260)/160;return 1.24-.12*p;}if(ms<1000)return 1.12+.015*Math.sin((ms-420)/580*Math.PI*2);const p=Math.min(1,(ms-1000)/200);return 1.12-.12*p*p*(3-2*p);};
+ const root=$derived.by(()=>{if(props.mode==='land'||t>=1200)return{y:0,x:1,yScale:1};const anticip=t<80?t/80:t<160?1-(t-80)/80:0;const squash=name==='p'?.07*pulse(1000,1200):0;const k=winScale(t);return{y:h*.04*anticip,x:(1+squash)*k,yScale:(1-squash)*k};});
  onMount(()=>{let raf=0,prev=performance.now(),done=false;const finish=()=>{if(done)return;done=true;t=duration;props.oncomplete?.();};const tick=(now:number)=>{t=Math.min(duration,t+Math.min(60,now-prev));prev=now;if(t>=duration){finish();return;}raf=requestAnimationFrame(tick);};raf=requestAnimationFrame(tick);const timeout=setTimeout(finish,duration+500);return()=>{cancelAnimationFrame(raf);clearTimeout(timeout);};});
 </script>
 <Container y={root.y} scale={{x:root.x,y:root.yScale}}>

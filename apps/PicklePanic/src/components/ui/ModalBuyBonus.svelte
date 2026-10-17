@@ -32,7 +32,9 @@
 	import config from '../../game/config';
 	import { MODE_NAMES } from '../../game/betModeMeta';
 
-	type Hero = { src: string; w: number; x: number; y: number; r?: number };
+	// label: runtime type on a jar's blank label (values are never baked into
+	// the art; a blank cream box read as an unfinished asset, review 10-17)
+	type Hero = { src: string; w: number; x: number; y: number; r?: number; label?: string };
 	type Card = {
 		/** the meta's titles say BUY (FREE SPINS...), which the button already
 		 *  says; the card is named by what it is */
@@ -56,7 +58,7 @@
 	const CARDS: Record<string, Card> = {
 		BONUS: {
 			title: MODE_NAMES.BONUS.toUpperCase(),
-			accent: '#4a4846',
+			accent: '#31572c',
 			tag: 'FREE SPINS',
 			scene: art('bg_base.webp'),
 			focus: '60% 70%',
@@ -64,21 +66,21 @@
 			// background crop with one jar cut off at its middle (review 2026-10-13).
 			heroes: [
 				{ src: art('buy_boss.png'), w: 34, x: -46, y: 4 },
-				{ src: PLATE, w: 42, x: 4, y: 12 },
+				{ src: PLATE, w: 42, x: 4, y: 12, label: 'JAR' },
 			],
 			meter: { on: 0, of: firstRung, label: 'COOK METER STARTS EMPTY' },
 			points: [`${spins('bonus')} free spins`, `${meter.thresholds.join(' / ')} Cooks: +${meter.spinsAdded} spins; 10 / J / Q become Jars`],
 		},
 		SUPERBONUS: {
 			title: MODE_NAMES.SUPERBONUS.toUpperCase(),
-			accent: '#c45240',
+			accent: '#c84a36',
 			tag: 'SUPER',
 			scene: art('bg_feature.webp'),
 			focus: '50% 60%',
 			heroes: [
 				{ src: art('buy_chef.png'), w: 33, x: -46, y: 4 },
-				{ src: PLATE, w: 34, x: -6, y: 20, r: -10 },
-				{ src: PLATE, w: 34, x: 18, y: 14, r: 8 },
+				{ src: PLATE, w: 34, x: -6, y: 20, r: -10, label: 'JAR' },
+				{ src: PLATE, w: 34, x: 18, y: 14, r: 8, label: 'JAR' },
 			],
 			meter: { on: firstRung, of: firstRung, label: 'ALL 10 SYMBOLS START AS JARS' },
 			points: [`${spins('superbonus')} free spins`, `Cook meter opens at ${firstRung}`],
@@ -117,7 +119,7 @@
 			     fit on a 720px-tall screen -->
 			<div class="head">
 				<div class="titles">
-					<h2 style="color: #171c1a !important">{social ? 'FEATURES' : 'BUY FEATURE'}</h2>
+					<h2 style="color: #20231d !important">{social ? 'FEATURES' : 'BUY FEATURE'}</h2>
 					<div class="sub">CHOOSE YOUR MENU</div>
 				</div>
 				<div class="amount"><BetMenuAmountToggle /></div>
@@ -133,14 +135,16 @@
 								<div class="light"></div>
 								<div class="heroes">
 									{#each card.heroes as h, i (i)}
-										<img
-											src={h.src}
-											alt=""
+										<div
+											class="hero"
 											style:--w={`${h.w}%`}
 											style:--x={`${h.x}%`}
 											style:--y={`${h.y}%`}
 											style:--r={`${h.r ?? 0}deg`}
-										/>
+										>
+											<img src={h.src} alt="" />
+											{#if h.label}<span class="jarlabel">{h.label}</span>{/if}
+										</div>
 									{/each}
 								</div>
 								<span class="tag">{card.tag}</span>
@@ -172,56 +176,68 @@
 {/if}
 
 <style>
+	/* Review 2026-10-17 ("Low quality assets / Inconsistent art style"): the menu
+	   was a flat web panel — thin single-colour borders, grey buttons, sans body
+	   copy. It now uses the game's own print language: paper #FFF0CF, a fat ink
+	   outline with an offset ink shadow (the symbols' drop), cards set slightly
+	   askew like order tickets, and ink-outlined buttons in the palette's
+	   mustard / tomato that warm up on hover instead of greying. */
 	.menu {
-		--paper: #f5e6be;
-		--green: #4a4846;
-		--red: #c45240;
-		--ink: #171c1a;
+		--paper: #fff0cf;
+		--green: #31572c;
+		--red: #c84a36;
+		--mustard: #e9b83e;
+		--ink: #20231d;
 		position: relative;
 		z-index: 3;
 		width: min(900px, calc(100vw - 24px));
 		max-height: calc(100vh - 20px);
 		overflow: auto;
 		box-sizing: border-box;
-		padding: 20px;
+		padding: 20px 22px;
 		background: var(--paper);
-		border: 6px solid var(--green);
+		border: 6px solid var(--ink);
+		border-radius: 10px 14px 9px 16px;
+		box-shadow: 10px 10px 0 var(--ink);
 		color: var(--ink);
-		font-family: var(--gb-body-font), Arial, sans-serif;
+		font-family: var(--gb-display-font, sans-serif);
 		text-align: center;
 	}
 	.head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 	.menu h2 { color: var(--ink) !important; }
-	h2 { margin: 0; font: 400 30px var(--gb-display-font, sans-serif); letter-spacing: 2px; }
-	.sub { color: var(--green); font-size: 13px; font-weight: 800; letter-spacing: 2px; }
-	.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
-	.card { --accent: var(--green); display: flex; flex-direction: column; min-width: 0; overflow: hidden; background: var(--paper); border: 4px solid var(--accent); }
-	.card.hot { border-color: var(--red); }
-	.scene { position: relative; height: 160px; overflow: hidden; background-size: cover; background-position: center; border-bottom: 4px solid var(--accent); }
+	h2 { margin: 0; font: 400 32px var(--gb-display-font, sans-serif); letter-spacing: 2px; text-shadow: 3px 3px 0 var(--mustard); }
+	.sub { color: var(--green); font: 400 13px var(--gb-display-font, sans-serif); letter-spacing: 2px; }
+	.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin-top: 16px; padding: 0 6px 8px 0; }
+	.card { --accent: var(--green); display: flex; flex-direction: column; min-width: 0; overflow: hidden; background: var(--paper); border: 5px solid var(--ink); border-radius: 8px; box-shadow: 7px 7px 0 var(--ink); transform: rotate(-0.7deg); }
+	.card.hot { transform: rotate(0.8deg); }
+	.scene { position: relative; height: 160px; overflow: hidden; background-size: cover; background-position: center; border-bottom: 5px solid var(--ink); }
 	.light { display: none; }
 	.heroes { position: absolute; inset: 0; }
-	.heroes img { position: absolute; width: var(--w); left: calc(50% + var(--x)); top: var(--y); transform: rotate(var(--r)); pointer-events: none; }
-	.tag { position: absolute; top: 10px; left: 10px; padding: 4px 9px; background: var(--paper); color: var(--ink); font: 400 11px var(--gb-display-font, sans-serif); letter-spacing: 1px; }
+	.hero { position: absolute; width: var(--w); left: calc(50% + var(--x)); top: var(--y); transform: rotate(var(--r)); pointer-events: none; }
+	.hero img { display: block; width: 100%; filter: drop-shadow(4px 4px 0 rgba(32, 35, 29, 0.85)); }
+	.jarlabel { position: absolute; left: 50%; top: 61%; transform: translate(-50%, -50%) rotate(-3deg); color: var(--ink); font: 400 clamp(9px, 1.6vw, 15px) var(--gb-display-font, sans-serif); letter-spacing: 1px; }
+	.tag { position: absolute; top: 10px; left: 10px; padding: 4px 10px; background: var(--accent); color: var(--paper); border: 3px solid var(--ink); border-radius: 4px; box-shadow: 3px 3px 0 var(--ink); transform: rotate(-4deg); font: 400 12px var(--gb-display-font, sans-serif); letter-spacing: 1px; }
 	.body { display: flex; flex: 1; flex-direction: column; padding: 12px; background: var(--paper); }
 	.menu h3 { color: var(--accent) !important; }
-	h3 { margin: 0 0 7px; font: 400 19px var(--gb-display-font, sans-serif); letter-spacing: 1px; }
+	h3 { margin: 0 0 7px; font: 400 21px var(--gb-display-font, sans-serif); letter-spacing: 1px; }
 	.meter { display: flex; align-items: center; justify-content: center; gap: 4px; min-height: 28px; }
 	.stick { width: 21px; height: 28px; }
-	.meterlabel { margin-bottom: 7px; color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: 1px; }
-	ul { margin: 0 0 8px; padding: 0; list-style: none; text-align: center; font-size: 13px; line-height: 1.4; }
-	li::before { content: '◆'; margin-right: 6px; color: var(--accent); font-size: 8px; }
-	.cost { margin-top: auto; color: var(--accent); font: 400 40px var(--gb-display-font, sans-serif); }
-	.cost small { font-size: 23px; }
-	.buy { margin-top: 8px; padding: 10px 8px; border: 0; background: var(--accent); color: var(--paper); cursor: pointer; font: 400 15px var(--gb-display-font, sans-serif); letter-spacing: 1px; }
-	.buy:hover, .buy:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
-	.buy:active { transform: translate(2px, 2px); }
+	.meterlabel { margin-bottom: 7px; color: var(--green); font: 400 11px var(--gb-display-font, sans-serif); letter-spacing: 1px; }
+	ul { margin: 0 0 8px; padding: 0; list-style: none; text-align: center; font: 600 13px var(--gb-body-font, sans-serif); line-height: 1.4; }
+	li::before { content: ''; display: inline-block; width: 7px; height: 7px; margin: 0 7px 1px 0; background: var(--accent); border: 2px solid var(--ink); transform: rotate(45deg); }
+	.cost { margin-top: auto; color: var(--accent); font: 400 44px var(--gb-display-font, sans-serif); text-shadow: 3px 3px 0 var(--ink); }
+	.cost small { font-size: 24px; }
+	.buy { margin: 10px 6px 6px 0; padding: 10px 8px; border: 4px solid var(--ink); border-radius: 6px; background: var(--accent); color: var(--paper); box-shadow: 5px 5px 0 var(--ink); cursor: pointer; font: 400 16px var(--gb-display-font, sans-serif); letter-spacing: 1px; transition: transform 90ms ease-out, box-shadow 90ms ease-out; }
+	.card:not(.hot) .buy { background: var(--mustard); color: var(--ink); }
+	.buy:hover, .buy:focus-visible { outline: none; transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--ink); filter: saturate(1.15) brightness(1.08); }
+	.buy:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 var(--ink); }
 	.card.poor .scene, .card.poor .meter, .card.poor .cost { filter: grayscale(1); opacity: 0.5; }
-	.buy:disabled { background: #8b8578; color: #e6dcc4; cursor: not-allowed; outline: none; transform: none; }
+	.buy:disabled, .card:not(.hot) .buy:disabled { background: #b9ae95; color: #f4ead2; cursor: not-allowed; transform: none; box-shadow: 5px 5px 0 var(--ink); filter: none; }
 	.buy span { display: block; margin-top: 2px; font: 700 12px var(--gb-body-font, sans-serif); }
-	.foot { margin-top: 12px; color: var(--green); font-size: 12px; font-weight: 700; }
+	.foot { margin-top: 12px; color: var(--green); font: 600 12px var(--gb-body-font, sans-serif); }
 	@media (max-height: 700px) { .menu { padding: 12px; } .cards { margin-top: 8px; } .scene { height: 95px; } ul { display: none; } .cost { font-size: 28px; } .foot { display: none; } }
 	/* Popout S (400x225): the buy buttons must show without scrolling, so the
 	   scene art and pips give way to name, difference, cost and button. */
-	@media (max-height: 360px) { .menu { padding: 8px; border-width: 4px; } .head { gap: 6px; } .cards { margin-top: 6px; } .scene, .meter { display: none; } .body { padding: 5px 6px; } h3 { margin-bottom: 2px; } .meterlabel { margin-bottom: 2px; } .cost { font-size: 22px; } .cost small { font-size: 14px; } .buy { margin-top: 4px; padding: 5px 4px; } }
-	@media (max-width: 520px) { .menu { padding: 10px; } h2 { font-size: 22px; } .sub { display: none; } .cards { gap: 8px; } .scene { height: 85px; } .body { padding: 6px; } h3 { font-size: 14px; } .meterlabel { font-size: 9px; } .buy { padding: 7px 4px; font-size: 12px; } }
+	@media (max-height: 360px) { .menu { padding: 8px; border-width: 4px; box-shadow: 5px 5px 0 var(--ink); } .head { gap: 6px; } .cards { margin-top: 6px; gap: 10px; } .card { border-width: 3px; box-shadow: 4px 4px 0 var(--ink); } .scene, .meter { display: none; } .body { padding: 5px 6px; } h3 { margin-bottom: 2px; } .meterlabel { margin-bottom: 2px; } .cost { font-size: 22px; text-shadow: 2px 2px 0 var(--ink); } .cost small { font-size: 14px; } .buy { margin-top: 4px; padding: 5px 4px; border-width: 3px; box-shadow: 3px 3px 0 var(--ink); } }
+	@media (max-width: 520px) { .menu { padding: 10px; box-shadow: 6px 6px 0 var(--ink); } h2 { font-size: 22px; } .sub { display: none; } .cards { gap: 10px; } .card { border-width: 3px; box-shadow: 4px 4px 0 var(--ink); } .scene { height: 85px; } .body { padding: 6px; } h3 { font-size: 14px; } .meterlabel { font-size: 9px; } .buy { padding: 7px 4px; font-size: 12px; border-width: 3px; box-shadow: 3px 3px 0 var(--ink); } }
 </style>

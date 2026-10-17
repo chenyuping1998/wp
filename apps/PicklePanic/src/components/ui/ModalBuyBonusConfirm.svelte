@@ -20,8 +20,8 @@
 	const { eventEmitter } = getContextEventEmitter<EmitterEventModal>();
 
 	const mode = $derived(stateBonusDerived.selectedBetModeData());
-	// the tier's accent on the menu card: OMAKASE (super) terracotta, DINNER ink
-	const accent = $derived(stateBonus.selectedBetModeKey === 'SUPERBONUS' ? '#c45240' : '#4a4846');
+	// the tier's accent on the menu card: Extra Dill tomato, Diner Service olive
+	const accent = $derived(stateBonus.selectedBetModeKey === 'SUPERBONUS' ? '#c84a36' : '#31572c');
 
 	const back = () => (stateModal.modal = { name: 'buyBonus' });
 	// The real cost of this mode, not the base stake: a 100× buy on a $1 stake
@@ -77,9 +77,9 @@
 
 <style>
 	.ticket {
-		--paper: #f5e6be;
-		--ink: #171c1a;
-		--accent: #4a4846;
+		--paper: #fff0cf;
+		--ink: #20231d;
+		--accent: #31572c;
 		position: relative;
 		z-index: 3;
 		width: min(500px, calc(100vw - 24px));
@@ -88,9 +88,11 @@
 		box-sizing: border-box;
 		padding: 22px 24px 20px;
 		background: var(--paper);
-		border: 6px solid var(--accent);
+		border: 6px solid var(--ink);
+		border-radius: 10px 14px 9px 16px;
 		/* the ink offset shadow the in-game plates carry */
-		box-shadow: 8px 8px 0 var(--ink);
+		box-shadow: 10px 10px 0 var(--ink);
+		transform: rotate(-0.6deg);
 		color: var(--ink);
 		font-family: var(--gb-body-font), Arial, sans-serif;
 		text-align: center;
@@ -124,15 +126,17 @@
 		width: 100%;
 		margin-top: 14px;
 		padding: 12px 8px;
-		border: 0;
+		border: 4px solid var(--ink);
+		border-radius: 6px;
+		box-shadow: 5px 5px 0 var(--ink);
 		background: var(--accent);
 		color: var(--paper);
 		cursor: pointer;
 		font: 400 17px var(--gb-display-font, sans-serif);
 		letter-spacing: 1px;
 	}
-	.ok:hover, .ok:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
-	.ok:active { transform: translate(2px, 2px); }
+	.ok:hover, .ok:focus-visible { outline: none; transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--ink); filter: saturate(1.15) brightness(1.08); }
+	.ok:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 var(--ink); }
 	@media (max-width: 520px), (max-height: 520px) {
 		.ticket { padding: 14px 14px 12px; }
 		h2 { font-size: 20px; margin-bottom: 8px; }

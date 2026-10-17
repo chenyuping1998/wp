@@ -26,7 +26,15 @@
 		{@const cy = stacked ? layout.height * (0.36 + i * 0.21) : layout.height * 0.53}
 		<Container x={cx} y={cy}>
 			<Sprite key="v8MenuFrame" anchor={0.5} width={cardW} height={cardH} />
-			{#if i===2}<Text text={`${config.betModes.base.max_win.toLocaleString("en-US")}×`} anchor={0.5} x={stacked?-cardW*.27:0} y={stacked?0:-cardH*.15} style={{fontFamily:GAME_FONT,fontSize:cardW*(stacked?.053:.12),fill:0xc45240}}/>{:else}<Sprite key={panel.key} anchor={0.5} x={stacked ? -cardW * 0.27 : 0} y={stacked ? 0 : -cardH * 0.12}
+			{#if i===2}
+				<!-- the MAX plaque (both cooks holding the sign) with the cap set on
+				     it; bare red type here read as an unfinished card (review 10-17) -->
+				{@const pw = stacked ? cardW * 0.4 : cardW * 0.9}
+				{@const px = stacked ? -cardW * 0.27 : 0}
+				{@const py = stacked ? 0 : -cardH * 0.14}
+				<Sprite key="v8WinMax" anchor={0.5} x={px} y={py} width={pw} height={pw * 0.5625} />
+				<Text text={`${config.betModes.base.max_win.toLocaleString("en-US")}×`} anchor={0.5} x={px} y={py + pw * 0.5625 * 0.04} style={{fontFamily:GAME_FONT,fontSize:pw*.105,fill:0xc84a36,stroke:{color:0x20231d,width:pw*.012,join:'round'}}}/>
+			{:else}<Sprite key={panel.key} anchor={0.5} x={stacked ? -cardW * 0.27 : 0} y={stacked ? 0 : -cardH * 0.12}
 				width={stacked ? cardW * 0.32 : cardW * 0.57} height={stacked ? cardW * 0.32 : cardW * 0.57} />{/if}
 			<Text text={panel.title} anchor={0.5} x={stacked ? cardW * 0.13 : 0} y={stacked ? -cardH * 0.24 : cardH * 0.12}
 				style={{ fontFamily: GAME_FONT, fontSize: cardW * (stacked ? 0.042 : 0.065), fill: 0x20231d }} />

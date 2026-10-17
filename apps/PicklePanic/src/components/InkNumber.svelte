@@ -8,10 +8,25 @@
 		x?: number; y?: number; maxWidth?: number;
 		anchor?: number | { x: number; y: number };
 		fill?: number;
+		/** ink outline + offset ink shadow, for amounts set over the board */
+		outline?: boolean;
 		onresize?: (sizes: { width: number; height: number }) => void;
 	};
 	const props: Props = $props();
-	const style = $derived(new TextStyle({ fontFamily: NUMBER_FONT, fontSize: props.fontSize, fill: props.fill ?? 0x171c1a }));
+	const style = $derived(
+		new TextStyle({
+			fontFamily: NUMBER_FONT,
+			fontSize: props.fontSize,
+			fill: props.fill ?? 0x171c1a,
+			...(props.outline
+				? {
+						stroke: { color: 0x171c1a, width: Math.max(4, props.fontSize * 0.14), join: 'round' as const },
+						dropShadow: { color: 0x171c1a, alpha: 1, angle: Math.PI * 0.35, distance: props.fontSize * 0.07, blur: 0 },
+						letterSpacing: props.fontSize * 0.02,
+					}
+				: {}),
+		}),
+	);
 	const measured = $derived(CanvasTextMetrics.measureText(String(props.text), style));
 	const fit = $derived(Math.min(1, (props.maxWidth ?? Infinity) / Math.max(1, measured.width)));
 	$effect(() => { props.onresize?.({ width: measured.width, height: measured.height }); });
