@@ -1,0 +1,20 @@
+{
+  "tool": "built-in imagegen",
+  "generation_requests": [
+    [
+      "low_label",
+      "low_label.png",
+      "Original rough American underground sci-fi diner comic. Thick uneven BRUSH ink perimeter, broad purposeful black shadow wedges, sparse dry-brush nicks at a few edges. Flat opaque two-tone planes, absolutely no gradients, 3D, bloom, glow, soft airbrush or uniform grain. Cream #FFF0CF, ink #20231D, subtle paper shadow #F3E5C6. No baked text, numbers, watermark or UI labels. True RGBA transparency. Edit target is the old square paper tile. Redraw as a handmade diner order slip, roughly square front orthographic, centered with transparent margins. Irregular thick brush contour with slightly rounded four corners, ONE small folded corner or torn notch. Quiet blank cream interior, with just one very subtle angular flat second paper-tone plane descending diagonally; maximum interior luminance variation 6% full scale. No stains, lines, grain, patterns or decorations inside. Slightly varied brush-ink color at perimeter and sparse dry-brush breaks; NOT a pristine smooth vector rectangle. Keep the silhouette at x36..467,y36..468 on a conceptual512-square canvas. Black perimeter only, never mustard. Food symbols will overlay the center, keep it calm."
+    ],
+    [
+      "ticker",
+      "ticker.png",
+      "Original rough American underground sci-fi diner comic. Thick uneven BRUSH ink perimeter, broad purposeful black shadow wedges, sparse dry-brush nicks at a few edges. Flat opaque two-tone planes, absolutely no gradients, 3D, bloom, glow, soft airbrush or uniform grain. Cream #FFF0CF, ink #20231D, subtle paper shadow #F3E5C6. No baked text, numbers, watermark or UI labels. True RGBA transparency. Supporting style reference is our ui_bar_v2. Replace the old thin rectangle with ONE hand-inked diner order-ticket strip, true artwork width:height 4.47:1, front orthographic, cream paper and fat uneven black brush outline, one small old dark-plum steel clip or rivet at EACH end. Center70%width and60%height completely clear for runtime two-line text. Unskewed long horizontal strip, slightly irregular paper corners, tiny dry-brush edge breaks. No mustard endcaps: palette cream, ink, muted gray-purple clips. Artwork meant for894x200 export. If your canvas is taller than4.47:1 leave TRANSPARENT empty space above/below the long strip; preserve correct strip proportions, do not fill a short aspect-ratio rectangle. Transparent margins and no cast shadow outside ink."
+    ],
+    [
+      "ray",
+      "ray.png",
+      "Original rough American underground sci-fi diner comic. Thick uneven BRUSH ink perimeter, broad purposeful black shadow wedges, sparse dry-brush nicks at a few edges. Flat opaque two-tone planes, absolutely no gradients, 3D, bloom, glow, soft airbrush or uniform grain. Cream #FFF0CF, ink #20231D, subtle paper shadow #F3E5C6. No baked text, numbers, watermark or UI labels. True RGBA transparency. Redesign as ONE long narrow comic ink radiation WEDGE, NOT a fork shape or multiple rays. Tip points UP, broad base centered at bottom; conceptual256-square alpha canvas: apex near(128,8), base from(83,255)to(173,255), width about35%canvas. Solid cream fill, thick irregular brush-black perimeter, 1 or2 dry-brush notches at top edge, a narrow flat paper-shadow plane along one edge. Base is FLAT not forked and touches bottom edge at y255, no transparent margin underneath, rotation pivot bottom-center. No detached sparks or extra shapes. Do not rotate diagonally. Thin upright wedge entirely surrounded by transparent background except bottom base. Actual black outline rather than invisible black background."
+    ]
+  ]
+}

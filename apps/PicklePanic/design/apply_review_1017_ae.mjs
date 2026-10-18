@@ -167,3 +167,7 @@ const cast = JSON.parse(fs.readFileSync(path.join(layerDir, 'layers.json')));
 await blank(...cast.canvas).composite(cast.layers.sort((a, b) => a.z - b.z).map(l => ({ input: path.join(layerDir, l.file), left: l.x, top: l.y }))).png().toFile(path.join(dir, 'fg_registered.png'));
 fs.writeFileSync(path.join(dir, 'registration.json'), JSON.stringify(report, null, 2) + '\n');
 console.log('Exported review A–E artwork, original canvas sizes, registered symbol layers and torso atlas.');
+// The later accepted steam/background revisions must survive a full art rebuild.
+if (fs.existsSync(path.join(app, 'design/source/review_1018/generated.json'))) {
+  await import('./apply_review_1018.mjs');
+}

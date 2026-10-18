@@ -474,6 +474,9 @@ if (skin === 'print') {
 		panelFill: 0xf5e6be,
 		sprites: {
 			bar: 'gbUiBarStrip',
+			// Portrait WIN/BALANCE/BET must use the drawn ticket too: this map
+			// replaces the base theme's sprite map instead of merging with it.
+			base_ticker: 'gbUiTicker',
 			button: 'gbUiButtonV2',
 			bet: 'gbUiSpinV2',
 			buttonActive: 'gbUiButtonPrintOn',

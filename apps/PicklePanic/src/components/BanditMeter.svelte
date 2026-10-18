@@ -92,10 +92,13 @@
 	});
 	const rays = (g: PixiGraphics) => {
 		g.clear();
-		for (let i = 0; i < 22; i++) {
-			const a = i * Math.PI * 2 / 22 + .05;
-			const r = W * (.29 + (i % 3) * .025), outer = W * .75;
-			g.poly([Math.cos(a-.014)*r,Math.sin(a-.014)*r,Math.cos(a)*outer,Math.sin(a)*outer,Math.cos(a+.014)*r,Math.sin(a+.014)*r]).fill({color:i%4===0?PINK:INK,alpha:.6});
+		// Comic action burst behind the card: fat ink wedges that stop short of
+		// the screen edge. They were 0.03-rad needles running out to 0.75W, which
+		// crossed the bet bar and read as scratches on the screen (review 10-18).
+		for (let i = 0; i < 18; i++) {
+			const a = i * Math.PI * 2 / 18 + .05;
+			const r = W * (.3 + (i % 3) * .02), outer = W * (.56 + (i % 2) * .05), half = .05 + (i % 3) * .012;
+			g.poly([Math.cos(a-half)*r,Math.sin(a-half)*r,Math.cos(a)*outer,Math.sin(a)*outer,Math.cos(a+half)*r,Math.sin(a+half)*r]).fill({color:i%6===0?PINK:INK,alpha:.42});
 		}
 	};
 	const drawCut = (g: PixiGraphics) => {
@@ -201,7 +204,7 @@
 				<Sprite key="gbP" anchor={.5} x={replacementRowWidth/2-W*.055} y={H*.22} width={W*.11} height={W*.11}/>
 				<Text text="JAR" anchor={.5} x={replacementRowWidth/2-W*.055} y={H*.22+W*.11*.113} rotation={-.05} style={{fontFamily:GAME_FONT,fontSize:W*.016,fill:INK,letterSpacing:1}}/>
 			{:else if plate>0}
-				<Text text={`${cutLabel} → ${gameText('plateUpgrade')}`} anchor={.5} y={H*.28} style={{fontFamily:GAME_FONT,fontSize:W*.039,fontWeight:GAME_FONT_WEIGHT,fill:PINK}}/>
+				<Text text={`${cutLabel} → ${gameText('plateUpgrade')}`} anchor={.5} y={H*.28} style={{fontFamily:GAME_FONT,fontSize:W*.039,fontWeight:GAME_FONT_WEIGHT,fill:PINK,stroke:{color:INK,width:W*.006,join:'round'}}}/>
 			{/if}
 			<Text text={gameText(opening ? 'firstSpin' : 'nextSpins')} anchor={.5} y={H*.39} style={{fontFamily:GAME_FONT,fontSize:W*.029,fontWeight:GAME_FONT_WEIGHT,fill:INK}}/>
 		</Container>

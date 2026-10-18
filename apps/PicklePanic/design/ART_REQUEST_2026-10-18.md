@@ -1,5 +1,9 @@
 # Pickle Panic — 剩餘平塗素材需求單（2026-10-18）
 
+2026-10-18 latest repair: F–H implemented and verified (quiet tile, 894x200 phone tickets, narrow bottom-anchored rays). Print theme now maps base_ticker to the actual ticket sprite. H4 middle spear rotates independently +/-0.22 rad. Steam 1/5/6 soft: 20.7/20.8/29.9%; FG wall peak local contrast: 5.31%; tile inner luminance range: 5.04%. Nine UI/steam style gates pass. Production build passes with 15 existing type diagnostics, no new errors; review tags: 0 FAIL / 8 WARN (7 retired assets and existing portrait sizing reminder). Alpha/atlas audits pass. Local MG/FG, 375x812 tickets, EPIC/MAX and H4 book preview inspected with no observed console errors. Evidence: design/qa/review_1018/. Originals and exact prompts: design/source/review_1018/prompts_full.json. Package: /Users/stone/stake-engine/upload/PicklePanic/, including current 10/17 cover and thumbnail. Math unchanged. Platform NOT updated. Three-unfamiliar-human H4 recognition and real platform/touch-device checks remain outstanding.
+
+Earlier audit/history below is superseded by the repair results above.
+
 接 `ART_REQUEST_2026-10-17.md`（A–E 已交件、已 QA、已打包，commit bd003a8）。
 本單是 10-18 用 `check_review_tags.py` 掃全遊戲，再逐一查程式**實際還在畫面上用**的平塗素材（2 色以內的向量感圖）。審核「Low quality assets」的定義包含「gradient fills / flat vector next to painted art」，這幾張是最後剩下的。
 

@@ -25,7 +25,7 @@
   if(name==='h1'){if(part.startsWith('pickle'))dy=-h*.13*pulse(130+i*50,780+i*50);if(part==='top_bun')dy=-h*.18*pulse(80,900);if(part==='cheese')sy=1+.14*pulse(210,810);}
   if(name==='h2'){if(part==='pickle'){dx=w*.05*Math.sin(clamp((t-100)/950)*Math.PI*2);rotation=.1*Math.sin(clamp((t-100)/950)*Math.PI*2);}if(part==='mustard')sy=1+.10*pulse(170,1050);}
   if(name==='h3'&&part.startsWith('ring')){dy=-h*.15*pulse(120+i*50,780+i*50);rotation=.35*pulse(120+i*50,780+i*50)*(i%2?1:-1);}
-  if(name==='h4'&&part.startsWith('spear'))rotation=(part==='spear_left'?-.22:part==='spear_right'?.22:0)*pulse(140,1000);
+  if(name==='h4'&&part.startsWith('spear'))rotation=part==='spear_middle'?.22*Math.sin(clamp((t-140)/860)*Math.PI*2):(part==='spear_left'?-.22:.22)*pulse(140,1000);
   if(name==='w'){if(part==='head')dy=-h*.03*pulse(160,920);if(part==='glasses'){dy=-h*.03*pulse(200,960);rotation=.04*Math.sin(clamp((t-200)/760)*Math.PI*2);}if(part==='hat'){dy=-h*.045*pulse(230,990);rotation=.07*pulse(230,990);}}
   if(name==='s'){if(part==='clapper')rotation=.384*Math.sin(clamp((t-100)/900)*Math.PI*6)*Math.exp(-clamp((t-100)/900)*1.5);if(part==='flag')rotation=.15*Math.sin(clamp((t-150)/900)*Math.PI*6)*(1-clamp((t-150)/900));if(part==='paper'){dy=-h*.10*pulse(180,1000);rotation=-.13*pulse(180,1000);}}
   if(name==='p'){if(part==='lid')rotation=-.611*pulse(100,1040);if(part.startsWith('pickle'))dy=-h*.1*pulse(180+i*40,860+i*40);if(part==='liquid')sx=1+.04*pulse(200,1000);}

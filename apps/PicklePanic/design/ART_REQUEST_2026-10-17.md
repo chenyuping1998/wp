@@ -1,5 +1,11 @@
 # Pickle Panic — 退件 5.3 後的美術需求單（2026-10-17）
 
+2026-10-18 latest repair: F–H implemented and verified (quiet tile, 894x200 phone tickets, narrow bottom-anchored rays). Print theme now maps base_ticker to the actual ticket sprite. H4 middle spear rotates independently +/-0.22 rad. Steam 1/5/6 soft: 20.7/20.8/29.9%; FG wall peak local contrast: 5.31%; tile inner luminance range: 5.04%. Nine UI/steam style gates pass. Production build passes with 15 existing type diagnostics, no new errors; review tags: 0 FAIL / 8 WARN (7 retired assets and existing portrait sizing reminder). Alpha/atlas audits pass. Local MG/FG, 375x812 tickets, EPIC/MAX and H4 book preview inspected with no observed console errors. Evidence: design/qa/review_1018/. Originals and exact prompts: design/source/review_1018/prompts_full.json. Package: /Users/stone/stake-engine/upload/PicklePanic/, including current 10/17 cover and thumbnail. Math unchanged. Platform NOT updated. Three-unfamiliar-human H4 recognition and real platform/touch-device checks remain outstanding.
+
+Earlier audit/history below is superseded by the repair results above.
+
+**10-18 逐項補查：尚未全部驗收完成。** 素材已接入，但上一輪檢查漏掃蒸氣圖：`door_steam_1/5/6_v2.png` 的 soft 分別為 42.4%／40.0%／47.4%，超過本單 38% 上限。H4 三條已有獨立圖層，但 `LayeredSymbol.svelte` 的 `spear_middle` 旋轉仍為 0，只有左右條擺動；三名陌生觀者的 70px 辨識亦未做。FG 右壁既有局部對比量測峰值 9.09%（25px 平滑參照法），因此不能宣稱 ≤8% 嚴格目標已驗收通過。B 服裝與 D 外框的數值檢查通過；279 個打包檔案 hash 全部正確，27 張／項新素材與來源一致，平台未於本任務更新。下列「實作交付」只表示已接入，不代表以上未通過項目已完成。
+
 **10-17 A–E 實作交付**：H4 分層重畫、FG 紅色廚師背心（軀幹／買特色／砍牌分層與合成圖／MAX 招牌／封面）、全部門零件與大徽章、搪瓷外框、MG/FG 低對比牆面均已接入。原稿、提詞集與舊檔在 `design/source/review_1017_ae/`；驗證在 `design/qa/review_1017_ae/`。H4 的「三名陌生觀者辨識」尚待真人執行；實作不宣稱此項已完成。這批未上傳或發佈至平台。
 
 審核標籤：**Low quality assets／Inconsistent art style／Poor animations**（截圖 `design/qa/review_1017/reviewer_tags.png`）。
