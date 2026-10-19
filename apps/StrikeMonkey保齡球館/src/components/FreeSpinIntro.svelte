@@ -15,7 +15,7 @@
 
 	import { getContext } from '../game/context';
 	import { gameText } from '../game/i18nText';
-	import InkNumber from './InkNumber.svelte';
+	import { letterNudge } from '../game/letterCentre';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
 
@@ -68,6 +68,7 @@
 		}
 	});
 
+
 	context.eventEmitter.subscribeOnMount({
 		freeSpinIntroShow: () => {
 			show = true;
@@ -87,18 +88,27 @@
 
 	<FreeSpinAnimation>
 		{#snippet children({ sizes })}
-			<!-- The transparent lettering sits within the sign's quiet paper center. -->
+			{@const countSize = Math.min(sizes.width * 0.2, sizes.height * 0.4)}
+			{@const countNudge = letterNudge(`${freeSpinsFromEvent}`, countSize)}
+			<!-- Lettered like the logo: red, inked, on the marquee's paper. -->
 			<Container y={-sizes.height * 0.35 + titlePose.y} alpha={titlePose.alpha}>
 				<Text text={title} anchor={.5}
 					style={{ fontFamily: GAME_FONT, fontWeight: GAME_FONT_WEIGHT,
 						fontSize: Math.min(sizes.width * 0.088, sizes.height * 0.15),
-						fill: 0x10222a, stroke: { color: 0xf8e8c6, width: 3 }, letterSpacing: 2 }} />
+						fill: 0xe8502e, stroke: { color: 0x14262e, width: 9, join: 'round' }, letterSpacing: 2 }} />
 			</Container>
-			{#if stampScale > 0}
-				<Container y={sizes.height * 0.025} scale={stampScale} rotation={-0.06}>
-					<InkNumber text={freeSpinsFromEvent} fontSize={Math.min(sizes.width * 0.22, sizes.height * 0.42)} role="fs"/>
-				</Container>
-			{/if}
+			<!-- The count, square on (it was tilted) and lettered like the title: the
+			     sign-painter face in red with an ink keyline and a hard ink shadow set
+			     down-right, the print misregistration every card in the game has.
+			     Always mounted (scale 0 until the stamp) so it stays in this order. -->
+			<Container y={sizes.height * 0.03} scale={stampScale} visible={stampScale > 0}>
+				<Text text={`${freeSpinsFromEvent}`} anchor={.5} x={countSize * 0.05} y={countSize * 0.05 + countNudge}
+					style={{ fontFamily: GAME_FONT, fontWeight: GAME_FONT_WEIGHT, fontSize: countSize,
+						fill: 0x14262e, stroke: { color: 0x14262e, width: countSize * 0.09, join: 'round' }, letterSpacing: countSize * 0.04 }} />
+				<Text text={`${freeSpinsFromEvent}`} anchor={.5} y={countNudge}
+					style={{ fontFamily: GAME_FONT, fontWeight: GAME_FONT_WEIGHT, fontSize: countSize,
+						fill: 0xe8502e, stroke: { color: 0x14262e, width: countSize * 0.09, join: 'round' }, letterSpacing: countSize * 0.04 }} />
+			</Container>
 			<Text
 				anchor={0.5}
 				y={sizes.height * 0.375 + subtitlePose.y}

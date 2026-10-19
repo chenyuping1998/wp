@@ -21,7 +21,8 @@
 	import { stateBet } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
-	import { Sprite, Text } from 'pixi-svelte';
+	import { Sprite, Text, Graphics } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { GAME_FONT } from '../game/fonts';
 
 	import BoardContainer from './BoardContainer.svelte';
@@ -98,6 +99,19 @@
 	);
 
 	const ICON = $derived(SYMBOL_SIZE * 0.3);
+	// A slim hand-inked score slip sits in the frame's lower margin. It gives
+	// the paying symbol and ways a clean reading surface without covering art.
+	const drawWaysPlate = (g: PixiGraphics) => {
+		const w = SYMBOL_SIZE * 2.35, h = SYMBOL_SIZE * 0.26;
+		const PAPER = 0xfff3dc, INK = 0x1d1b1a, ACCENT = 0xd8392c;
+		g.clear();
+		g.poly([-w / 2 + 6, -h / 2, w / 2 - 5, -h / 2 + 1,
+			w / 2, 0, w / 2 - 6, h / 2, -w / 2 + 5, h / 2 - 1, -w / 2, 0])
+			.fill({ color: PAPER, alpha: 0.98 }).stroke({ color: INK, width: 2.5 });
+		g.moveTo(-w / 2 + 28, h / 2 - 5).lineTo(w / 2 - 28, h / 2 - 5)
+			.stroke({ color: ACCENT, width: 2 });
+		for (const x of [-w / 2 + 15, w / 2 - 15]) { g.moveTo(x - 5, -7).lineTo(x + 5, -7).moveTo(x - 5, 7).lineTo(x + 5, 7).stroke({ color: ACCENT, width: 2.5 }); }
+	};
 	const LOW_LETTER: Record<string, string> = { L1: 'A', L2: 'K', L3: 'Q', L4: 'J', L5: '10' };
 
 	// ONE AT A TIME, HIGHEST FIRST.
@@ -254,7 +268,8 @@
 	<BoardContainer>
 		<Container zIndex={10}>
 			{#if revealedReels > 0 && current}
-				{@const y = BOARD_SIZES.height + SYMBOL_SIZE * 0.3}
+				{@const y = BOARD_SIZES.height + SYMBOL_SIZE * 0.12}
+				<Graphics draw={drawWaysPlate} x={BOARD_SIZES.width / 2} {y} />
 				<!-- icon then count, as one centred pair: the icon is anchored on its
 				     right edge and the text on its left, so the pair stays balanced
 				     about the board's centre however long the number is. -->
@@ -281,7 +296,7 @@
 					/>
 				{/if}
 				<GoldText
-					text={`${current.ways.toLocaleString()} WAYS`}
+					text={`${current.ways.toLocaleString()} ${current.ways === 1 ? 'WAY' : 'WAYS'}`}
 					fontSize={SYMBOL_SIZE * 0.22}
 					x={BOARD_SIZES.width / 2 + SYMBOL_SIZE * 0.07}
 					{y}

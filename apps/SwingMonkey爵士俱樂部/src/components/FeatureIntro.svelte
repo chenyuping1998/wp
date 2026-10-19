@@ -3,12 +3,15 @@
 	import { MainContainer } from 'components-layout';
 	import { onMount } from 'svelte';
 	import { getContext } from '../game/context';
+	import PropMesh from './PropMesh.svelte';
+	import { LOGO_BOARD } from '../game/meshWin';
 	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
 
 	const context = getContext();
 	const layout = $derived(context.stateLayoutDerived.mainLayout());
 	const stacked = $derived(layout.width / layout.height < 1.2);
-	const logoWidth = $derived(Math.min(layout.width * 0.82, 680));
+	// the free-standing title (no plate) only fills ~60% of its canvas: drawn wider than the board was
+	const logoWidth = $derived(Math.min(layout.width * 0.92, 880));
 	const cardW = $derived(stacked ? layout.width * 0.87 : Math.min(layout.width * 0.25, 490));
 	const cardH = $derived(stacked ? layout.height * 0.21 : Math.min(layout.height * 0.57, cardW * 1.38));
 	let introMs = $state(0);
@@ -18,6 +21,19 @@
 		const tick = (now: number) => {
 			introMs = Math.min(1100, now - start);
 			if (introMs < 1100) frame = requestAnimationFrame(tick);
+		};
+		frame = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(frame);
+	});
+	// the title board's own clock (game/meshWin/signs.ts): it acts every few
+	// seconds for as long as the intro is up, not only during the entrance
+	let signMs = $state(0);
+	onMount(() => {
+		const start = performance.now();
+		let frame = 0;
+		const tick = (now: number) => {
+			signMs = now - start;
+			frame = requestAnimationFrame(tick);
 		};
 		frame = requestAnimationFrame(tick);
 		return () => cancelAnimationFrame(frame);
@@ -35,7 +51,11 @@
 
 <MainContainer>
 	<Container x={layout.width * 0.5} y={layout.height * (stacked ? 0.115 : 0.15)}>
-		<Sprite key="v8LogoBoard" anchor={0.5} width={logoWidth} height={logoWidth * 0.375} />
+		<!-- the same spotlight pool as the loading page, behind the free-standing title -->
+		<Sprite key="fxSoftGlow" anchor={0.5} blendMode="add" tint={0xffd9a0} alpha={0.26}
+			width={logoWidth * 1.3} height={logoWidth * 0.62} />
+		<!-- the title's letters swing to the band (game/meshWin/signs.ts) -->
+		<PropMesh spec={LOGO_BOARD} env={{ t: signMs, pushT: -1 }} anchor={0.5} width={logoWidth} height={logoWidth * 0.375} />
 	</Container>
 	{#each panels as panel, i}
 		{@const cx = stacked ? layout.width * 0.5 : layout.width * (0.23 + i * 0.27)}

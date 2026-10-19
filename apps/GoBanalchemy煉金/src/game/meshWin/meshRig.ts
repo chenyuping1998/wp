@@ -37,11 +37,14 @@ export const smoothstep = (v: number) => {
  *  first point) the nearest point lies */
 export const polyline = (path: Point[], halfWidth = 0) => {
 	const at = (p: Point) => {
-		let best = Infinity, along = 0, walked = 0;
+		let best = Infinity,
+			along = 0,
+			walked = 0;
 		for (let i = 0; i < path.length - 1; i++) {
 			const [ax, ay] = path[i];
 			const [bx, by] = path[i + 1];
-			const dx = bx - ax, dy = by - ay;
+			const dx = bx - ax,
+				dy = by - ay;
 			const len = Math.hypot(dx, dy);
 			const t = clamp01(((p[0] - ax) * dx + (p[1] - ay) * dy) / (len * len));
 			const d = Math.hypot(ax + t * dx - p[0], ay + t * dy - p[1]);
@@ -61,22 +64,31 @@ export const polygon = (pts: Point[]) => (p: Point) => {
 	let inside = false;
 	let best = Infinity;
 	for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
-		const [xi, yi] = pts[i], [xj, yj] = pts[j];
-		if (yi > p[1] !== yj > p[1] && p[0] < ((xj - xi) * (p[1] - yi)) / (yj - yi) + xi) inside = !inside;
-		const dx = xi - xj, dy = yi - yj;
+		const [xi, yi] = pts[i],
+			[xj, yj] = pts[j];
+		if (yi > p[1] !== yj > p[1] && p[0] < ((xj - xi) * (p[1] - yi)) / (yj - yi) + xi)
+			inside = !inside;
+		const dx = xi - xj,
+			dy = yi - yj;
 		const t = clamp01(((p[0] - xj) * dx + (p[1] - yj) * dy) / (dx * dx + dy * dy));
 		best = Math.min(best, Math.hypot(xj + t * dx - p[0], yj + t * dy - p[1]));
 	}
 	return inside ? 0 : best;
 };
 
-export const circle = (c: Point, r: number) => (p: Point) => Math.max(0, Math.hypot(p[0] - c[0], p[1] - c[1]) - r);
+export const circle = (c: Point, r: number) => (p: Point) =>
+	Math.max(0, Math.hypot(p[0] - c[0], p[1] - c[1]) - r);
 
 /** superellipse |dx/rx|^n + |dy/ry|^n <= 1; distance approximated along rx */
-export const blob = (c: Point, rx: number, ry: number, n = 3) => (p: Point) => {
-	const r = Math.pow(Math.abs((p[0] - c[0]) / rx) ** n + Math.abs((p[1] - c[1]) / ry) ** n, 1 / n);
-	return Math.max(0, r - 1) * Math.min(rx, ry);
-};
+export const blob =
+	(c: Point, rx: number, ry: number, n = 3) =>
+	(p: Point) => {
+		const r = Math.pow(
+			Math.abs((p[0] - c[0]) / rx) ** n + Math.abs((p[1] - c[1]) / ry) ** n,
+			1 / n,
+		);
+		return Math.max(0, r - 1) * Math.min(rx, ry);
+	};
 
 export const union =
 	(...fns: ((p: Point) => number)[]) =>
@@ -106,6 +118,11 @@ export type PartSpec = {
 };
 
 export type RigSpec = {
+	/** Diffuse local joint weights for wider score gestures without hard creases. */
+	weightSmooth?: number;
+	/** Pin all boundary vertices to the frame, blending back over 16px. */
+	fixedBorder?: number;
+	fixedBorderFade?: number;
 	grid: { x0: number; y0: number; x1: number; y1: number; cols: number; rows: number };
 	parts: PartSpec[];
 	/** px width of the soft blend between neighbouring parts. Wider buys joint
@@ -146,7 +163,10 @@ export const buildRig = (spec: RigSpec): Rig => {
 	const indices = new Uint32Array(cols * rows * 6);
 	for (let r = 0, k = 0; r < rows; r++)
 		for (let c = 0; c < cols; c++, k += 6) {
-			const a = r * (cols + 1) + c, b = a + 1, d = a + cols + 1, e = d + 1;
+			const a = r * (cols + 1) + c,
+				b = a + 1,
+				d = a + cols + 1,
+				e = d + 1;
 			indices.set([a, b, e, a, e, d], k);
 		}
 
@@ -155,7 +175,8 @@ export const buildRig = (spec: RigSpec): Rig => {
 		const [ax, ay] = p.axis ?? [0, -1];
 		const len = Math.hypot(ax, ay) || 1;
 		const parent = p.parent === undefined ? -1 : (index.get(p.parent) ?? -1);
-		if (p.parent !== undefined && parent < 0) throw new Error(`part ${p.name}: no parent ${p.parent}`);
+		if (p.parent !== undefined && parent < 0)
+			throw new Error(`part ${p.name}: no parent ${p.parent}`);
 		return { name: p.name, x: p.pivot[0], y: p.pivot[1], axis: [ax / len, ay / len], parent };
 	});
 
@@ -188,7 +209,44 @@ export const buildRig = (spec: RigSpec): Rig => {
 			row[parent] += row[b] * (1 - keep);
 			row[b] *= keep;
 		}
+		if (spec.fixedBorder !== undefined) {
+			const frame = index.get('frame');
+			if (frame === undefined) throw new Error('fixedBorder needs a frame bone');
+			const depth = Math.min(p[0] - x0, x1 - p[0], p[1] - y0, y1 - p[1]);
+			const keep = smoothstep((depth - spec.fixedBorder) / (spec.fixedBorderFade ?? 16));
+			for (let b = 0; b < B; b++)
+				if (b !== frame) {
+					row[frame] += row[b] * (1 - keep);
+					row[b] *= keep;
+				}
+		}
 		for (let b = 0; b < B; b++) weights[v * B + b] = row[b];
+	}
+	for (let pass = 0; pass < (spec.weightSmooth ?? 0); pass++) {
+		const source = weights.slice();
+		for (let y = 0; y <= rows; y++)
+			for (let x = 0; x <= cols; x++) {
+				const v = y * (cols + 1) + x;
+				const neighbours = [v];
+				if (x > 0) neighbours.push(v - 1);
+				if (x < cols) neighbours.push(v + 1);
+				if (y > 0) neighbours.push(v - cols - 1);
+				if (y < rows) neighbours.push(v + cols + 1);
+				for (let b = 0; b < B; b++)
+					weights[v * B + b] =
+						neighbours.reduce((sum, n) => sum + source[n * B + b], 0) / neighbours.length;
+				if (
+					spec.fixedBorder !== undefined &&
+					Math.min(
+						rest[v * 2] - x0,
+						x1 - rest[v * 2],
+						rest[v * 2 + 1] - y0,
+						y1 - rest[v * 2 + 1],
+					) <= spec.fixedBorder
+				) {
+					for (let b = 0; b < B; b++) weights[v * B + b] = b === index.get('frame') ? 1 : 0;
+				}
+			}
 	}
 	return { bones, rest, uvs, indices, weights };
 };
@@ -260,9 +318,11 @@ type Affine = Float64Array; // [a, b, c, d, tx, ty]: x' = a x + c y + tx, y' = b
 
 const localAffine = (bone: Bone, pose: BonePose, out: Affine) => {
 	const th = (pose.angle * Math.PI) / 180;
-	const cos = Math.cos(th), sin = Math.sin(th);
+	const cos = Math.cos(th),
+		sin = Math.sin(th);
 	const [ux, uy] = bone.axis;
-	const nx = -uy, ny = ux;
+	const nx = -uy,
+		ny = ux;
 	const s00 = pose.along * ux * ux + pose.across * nx * nx;
 	const s01 = pose.along * ux * uy + pose.across * nx * ny;
 	const s11 = pose.along * uy * uy + pose.across * ny * ny;
@@ -312,12 +372,16 @@ export const skin = (rig: Rig, pose: Pose, feetY: number, out: Float32Array) => 
 	}
 	const r = pose.rigid;
 	const th = (r.rot * Math.PI) / 180;
-	const cos = Math.cos(th), sin = Math.sin(th);
-	const cx = CANVAS / 2, cy = CANVAS / 2;
+	const cos = Math.cos(th),
+		sin = Math.sin(th);
+	const cx = CANVAS / 2,
+		cy = CANVAS / 2;
 	const V = rig.rest.length / 2;
 	for (let v = 0; v < V; v++) {
-		const x = rig.rest[v * 2], y = rig.rest[v * 2 + 1];
-		let px = 0, py = 0;
+		const x = rig.rest[v * 2],
+			y = rig.rest[v * 2 + 1];
+		let px = 0,
+			py = 0;
 		for (let b = 0; b < B; b++) {
 			const w = rig.weights[v * B + b];
 			if (w === 0) continue;
@@ -328,7 +392,8 @@ export const skin = (rig: Rig, pose: Pose, feetY: number, out: Float32Array) => 
 		// squash on the feet line, turn about the feet, pop about the centre, move
 		let qx = cx + (px - cx) * r.sx;
 		let qy = feetY + (py - feetY) * r.sy;
-		const rx = qx - cx, ry = qy - feetY;
+		const rx = qx - cx,
+			ry = qy - feetY;
 		qx = cx + rx * cos - ry * sin;
 		qy = feetY + rx * sin + ry * cos;
 		out[v * 2] = cx + (qx - cx) * r.pop + r.dx;
@@ -347,7 +412,8 @@ const EASES: Record<Ease, (t: number) => number> = {
 	out: (t) => 1 - (1 - t) ** 3,
 	inOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2),
 	back: (t) => {
-		const s = 1.70158, u = t - 1;
+		const s = 1.70158,
+			u = t - 1;
 		return 1 + u * u * ((s + 1) * u + s);
 	},
 	hold: () => 0,
@@ -528,12 +594,14 @@ export const settled = (spec: MeshWinSpec): MeshWinSpec => ({
 // moves the turn's centre there.
 export const turnAbout = (r: RigidPose, centre: Point, feetY: number) => {
 	const th = (r.rot * Math.PI) / 180;
-	const cos = Math.cos(th), sin = Math.sin(th);
+	const cos = Math.cos(th),
+		sin = Math.sin(th);
 	const cx = CANVAS / 2;
 	// where skin's turn about (cx, feetY) sends the centre, before pop and move
 	const qx = cx + (centre[0] - cx) * r.sx;
 	const qy = feetY + (centre[1] - feetY) * r.sy;
-	const rx = qx - cx, ry = qy - feetY;
+	const rx = qx - cx,
+		ry = qy - feetY;
 	const tx = cx + rx * cos - ry * sin;
 	const ty = feetY + rx * sin + ry * cos;
 	r.dx += (qx - tx) * r.pop;
@@ -545,9 +613,26 @@ export const turnAbout = (r: RigidPose, centre: Point, feetY: number) => {
  *  spring off the plate, hang, land with a squash and a smaller second hop.
  *  Returns the rigid move (without the trick's turn) and how high it is (0..1)
  *  for the drop shadow. Times in ms, height in canvas px. */
-export type LeapBeats = { crouch: number; rise: number; fall: number; land: number; hop2: number; done: number };
-export const leap = (t: number, b: LeapBeats, height: number): { rigid: RigidPose; air: number } => {
-	const up = track(t, [[0, 0], [b.crouch, 0], [b.rise, 1, 'out'], [b.fall, 1], [b.land, 0, 'in']]);
+export type LeapBeats = {
+	crouch: number;
+	rise: number;
+	fall: number;
+	land: number;
+	hop2: number;
+	done: number;
+};
+export const leap = (
+	t: number,
+	b: LeapBeats,
+	height: number,
+): { rigid: RigidPose; air: number } => {
+	const up = track(t, [
+		[0, 0],
+		[b.crouch, 0],
+		[b.rise, 1, 'out'],
+		[b.fall, 1],
+		[b.land, 0, 'in'],
+	]);
 	const hop2 = bump(t, b.land + 40, b.hop2);
 	const air = Math.max(0, Math.min(1, up + 0.3 * hop2));
 	const squash =

@@ -30,18 +30,18 @@
 	};
 
 	const SYMBOL_LABEL: Record<string, string> = {
-		H1: "Miner's Lamp",
-		H2: 'Golden Banana Ore',
-		H3: 'Crossed Pickaxes',
-		H4: 'Ore Cart',
+		H1: 'Elixir Lantern',
+		H2: 'Amethyst Crystal',
+		H3: 'Crucible Tongs',
+		H4: 'Flask Cart',
 		L1: 'A',
 		L2: 'K',
 		L3: 'Q',
 		L4: 'J',
 		L5: '10',
-		W: 'Wild',
+		W: 'Alchemist Wild',
 		S: 'Golden Bananas — Scatter',
-		B: 'Dynamite',
+		B: 'Reagent',
 	};
 
 	// keep high -> low ordering for readability
@@ -109,14 +109,14 @@
 	// factor goes from 2 to 4.
 	const examples: Example[] = [
 		{
-			title: 'Three reels, no Dynamite',
+			title: 'Three reels, no Reagent',
 			lit: LIT,
 			split: [],
 			sum: '2 × 2 × 2',
 			ways: 8,
 		},
 		{
-			title: 'The same board, reel 3 blasted',
+			title: 'The same board, reel 3 transmuted',
 			lit: LIT_BLASTED,
 			split: [2],
 			sum: '2 × 2 × 4',
@@ -142,7 +142,10 @@
 {#if stateModal.modal?.name === 'payTable'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-paytable">
-			<h2>{T.payTableUpper}</h2>
+			<header class="al-head">
+				<span class="al-kicker">Go Banalchemy</span>
+				<h2>{T.payTableUpper}</h2>
+			</header>
 			<p class="wp-note">
 				{T.paysStart} shown as a multiple of {T.totalBet}, per winning way. Wins
 				{T.winsDirection} on adjacent reels, in any position &mdash; there are no fixed lines.
@@ -205,15 +208,16 @@
 			</div>
 
 			<p class="wp-note">
-				Each <strong>Dynamite</strong> chooses the highest-value symbol already on its own reel
+				Each <strong>Reagent</strong> chooses the highest-value symbol already on its own reel
 				and fills that reel with it, so every row counts. Because {T.ways} multiply across reels,
-				a blasted reel can turn a board with no combination at all into a winning one. In Free
-				Spins the blast widens, carrying its chosen symbol onto neighbouring reels. Where blasts
-				overlap, the higher-value source symbol wins. A blast can cover all five reels.
+				a transmuted reel can turn a board with no combination at all into a winning one. In Free
+				Spins the reaction widens, carrying its chosen symbol onto neighbouring reels. Where
+				reactions overlap, the higher-value source symbol wins. A reaction can cover all five
+				reels.
 			</p>
 
 			<p class="wp-note">
-				Wild substitutes for all symbols except Scatter and Dynamite, and does not {T.pay} as a
+				Wild substitutes for all symbols except Scatter and Reagent, and does not {T.pay} as a
 				symbol of its own. Only the highest win per symbol is {T.paid}. Max win is capped at
 				{maxWin.toLocaleString()}&times;
 				{T.totalBet}.
@@ -223,120 +227,191 @@
 {/if}
 
 <style lang="scss">
-	/* ─── entrance animation ─── */
-	@keyframes slideUp {
-		from {
-			opacity: 0;
-			transform: translateY(18px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	@keyframes rowSlideIn {
-		from {
-			opacity: 0;
-			transform: translateX(-12px);
-		}
-		to {
-			opacity: 1;
-			transform: translateX(0);
-		}
-	}
-
-	@keyframes shimmer {
-		0% { background-position: -200% center; }
-		100% { background-position: 200% center; }
-	}
-
+	/* Go Banalchemy's palette (2026-10-17, review: "game info should be more
+	   polished") — the same teal glass, copper trim and cream type as the game
+	   rules and the bet bar. No shimmer, no hover glow: a reference sheet. */
 	.wp-paytable {
-		/* sit above the Popup's full-screen click-to-close layer (z-index 2),
-		   otherwise the overlay swallows wheel/touch events and blocks scrolling */
+		--teal-deep: #0b252b;
+		--teal: #0f3438;
+		--teal-lit: #14454a;
+		--copper: #c58b55;
+		--copper-lit: #e7b47c;
+		--cream: #f4f4df;
+		--mist: #c6e5d3;
+		--mint: #5fd6a8;
+
+		/* above the Popup's click-to-close layer, or it swallows scrolling */
 		position: relative;
 		z-index: 100;
 		display: flex;
 		flex-direction: column;
-		gap: 0.85rem;
-		width: min(36rem, 90vw);
-		max-width: 36rem;
-		max-height: 80vh;
+		gap: 0.8rem;
+		width: min(38rem, 92vw);
+		max-height: 82vh;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 		overscroll-behavior: contain;
-		padding: 1.5rem 1.75rem;
-		color: #fff;
+		padding: 0 0.15rem 0.5rem 0;
+		color: var(--cream);
 		text-align: center;
-		animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+		animation: al-rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 
-		/* custom scrollbar */
 		&::-webkit-scrollbar {
-			width: 5px;
-		}
-		&::-webkit-scrollbar-track {
-			background: rgba(255, 255, 255, 0.04);
-			border-radius: 4px;
+			width: 6px;
 		}
 		&::-webkit-scrollbar-thumb {
-			background: linear-gradient(180deg, #ffd75e 0%, #ffe98a 100%);
-			border-radius: 4px;
+			background: var(--copper);
+			border-radius: 3px;
 		}
 
 		h2 {
-			margin: 0 0 0.25rem;
-			font-size: 1.75rem;
-			font-weight: 800;
-			letter-spacing: 0.1em;
-			background: linear-gradient(135deg, #ffe98a 0%, #ffd75e 50%, #9ec44a 100%);
-			background-size: 200% auto;
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-			animation: shimmer 4s linear infinite;
-			filter: drop-shadow(0 0 18px rgba(255, 215, 94, 0.4));
+			margin: 0.2rem 0 0;
+			font-size: clamp(1.5rem, 4.6vw, 1.95rem);
+			color: var(--cream);
+			text-shadow: 0 2px 0 #4a2e14;
 		}
+	}
+
+	@keyframes al-rise {
+		from {
+			opacity: 0;
+			transform: translateY(12px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	.al-head {
+		padding-bottom: 0.6rem;
+		border-bottom: 2px solid var(--copper);
+	}
+
+	.al-kicker {
+		display: inline-block;
+		padding: 0.18rem 0.7rem;
+		border: 1px solid var(--copper);
+		border-radius: 999px;
+		color: var(--copper-lit);
+		font-size: 0.68rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
 	}
 
 	.wp-note {
 		margin: 0;
 		font-size: 0.82rem;
-		opacity: 0.7;
-		line-height: 1.5;
-		letter-spacing: 0.02em;
+		line-height: 1.55;
+		color: rgba(244, 244, 223, 0.82);
+
+		strong {
+			color: var(--cream);
+		}
 	}
 
+	/* the symbols: two columns of cards, art beside its pays */
 	.wp-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.5rem;
+
+		@media (max-width: 520px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.wp-row {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.55rem 0.7rem;
+		border-radius: 10px;
+		background: linear-gradient(180deg, rgba(20, 69, 74, 0.85), rgba(15, 52, 56, 0.85));
+		border: 1px solid rgba(197, 139, 85, 0.35);
+		text-align: left;
+		animation: al-rise 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+
+	.wp-symbol {
 		display: flex;
 		flex-direction: column;
-		gap: 0.35rem;
+		align-items: center;
+		gap: 0.2rem;
+		width: 4.6rem;
+		flex-shrink: 0;
 	}
 
-	/* ─── payline diagrams: 15 mini 5x5 boards, lit cells in reel gold ─── */
+	.wp-symbol-glow {
+		width: 3.6rem;
+		height: 3.6rem;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: contain;
+			filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.45));
+		}
+	}
+
+	.wp-symbol-name {
+		font-size: 0.68rem;
+		line-height: 1.2;
+		text-align: center;
+		color: var(--copper-lit);
+	}
+
+	.wp-pays {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		flex: 1;
+	}
+
+	.wp-pay-chip {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		padding: 0.16rem 0.55rem;
+		border-radius: 5px;
+		background: rgba(11, 37, 43, 0.75);
+		border: 1px solid rgba(197, 139, 85, 0.25);
+		font-size: 0.8rem;
+		color: var(--mist);
+
+		b {
+			color: var(--cream);
+		}
+
+		em {
+			font-style: normal;
+			font-weight: 700;
+			color: var(--cream);
+		}
+	}
+
+	.wp-special {
+		font-size: 0.78rem;
+		line-height: 1.4;
+		color: var(--mist);
+	}
+
+	/* the ways section */
 	.wp-lines-title {
 		margin: 0.5rem 0 0;
-		font-size: 1.05rem;
-		font-weight: 800;
-		letter-spacing: 0.14em;
-		color: #ffd75e;
+		padding-top: 0.6rem;
+		border-top: 1px solid rgba(197, 139, 85, 0.3);
+		font-size: 1.1rem;
+		letter-spacing: 0.12em;
+		color: var(--copper-lit);
 	}
 
-	.wp-lines {
-		display: grid;
-		/* auto-fit keeps the sheet readable from phone to desktop without
-		   hard-coding a column count */
-		grid-template-columns: repeat(auto-fit, minmax(4.6rem, 1fr));
-		gap: 0.55rem;
-	}
-
-	/* Two worked ways examples, side by side so the blast's effect is a
-	   comparison rather than a claim. Wider than the old payline thumbnails
-	   because each carries a caption with the arithmetic. */
+	/* the same board before and after a reaction, side by side */
 	.wp-ways-examples {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.75rem;
-		margin: 0.7rem 0 0.2rem;
+		gap: 0.7rem;
+		margin: 0.4rem 0 0.2rem;
 	}
 
 	.wp-ways-example {
@@ -345,210 +420,57 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 0.4rem;
-		padding: 0.6rem 0.5rem 0.5rem;
-		border-radius: 0.6rem;
-		background: rgba(255, 255, 255, 0.04);
-		border: 1px solid rgba(255, 255, 255, 0.06);
+		gap: 0.45rem;
+		padding: 0.7rem 0.5rem 0.55rem;
+		border-radius: 10px;
+		background: rgba(15, 52, 56, 0.72);
+		border: 1px solid rgba(197, 139, 85, 0.32);
 
 		figcaption {
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			gap: 0.15rem;
-			text-align: center;
 		}
-	}
 
-	/* The grid's 5 columns are the REELS and stay correct at any row count —
-	   20 cells flow into 5 columns as 4 rows. Only the width needs overriding:
-	   4.2rem was sized for the old payline thumbnails, and these are figures
-	   the player is meant to read. */
-	.wp-ways-example .wp-line-grid {
-		max-width: 7rem;
-	}
-
-	.wp-ways-title {
-		font-size: 0.72rem;
-		opacity: 0.75;
-	}
-
-	.wp-ways-sum {
-		font-size: 0.82rem;
-
-		b {
-			color: #ffd75e;
-		}
-	}
-
-	/* A blasted reel's cells: outlined rather than filled, so the filled reel reads
-	   as a property of the cell instead of a second win. */
-	.wp-cell.split {
-		box-shadow: inset 0 0 0 1px rgba(255, 215, 94, 0.65);
-	}
-
-	.wp-line {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.28rem;
-		padding: 0.45rem 0.3rem 0.35rem;
-		border-radius: 0.6rem;
-		background: rgba(255, 255, 255, 0.04);
-		border: 1px solid rgba(255, 255, 255, 0.06);
-		transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-
-		&:hover {
-			background: rgba(255, 215, 94, 0.1);
-			border-color: rgba(255, 215, 94, 0.24);
+		.wp-line-grid {
+			max-width: 7.5rem;
 		}
 	}
 
 	.wp-line-grid {
 		display: grid;
 		grid-template-columns: repeat(5, 1fr);
-		gap: 2px;
+		gap: 3px;
 		width: 100%;
-		max-width: 4.2rem;
 	}
 
 	.wp-cell {
 		aspect-ratio: 1;
-		border-radius: 2px;
-		background: rgba(255, 255, 255, 0.07);
+		border-radius: 3px;
+		background: rgba(244, 244, 223, 0.1);
 
 		&.lit {
-			background: linear-gradient(160deg, #ffe98a, #ffc93c);
-			box-shadow: 0 0 6px rgba(255, 215, 94, 0.65);
+			background: linear-gradient(180deg, #8ff0c6, var(--mint));
+		}
+
+		/* a transmuted reel: outlined in copper, so the filled reel reads as a
+		   property of the cell rather than a second win */
+		&.split {
+			box-shadow: inset 0 0 0 1.5px var(--copper-lit);
 		}
 	}
 
-	.wp-line-id {
-		font-size: 0.7rem;
-		font-weight: 700;
-		letter-spacing: 0.06em;
-		color: rgba(255, 215, 94, 0.85);
+	.wp-ways-title {
+		font-size: 0.74rem;
+		color: var(--mist);
 	}
 
-	.wp-row {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.75rem;
-		padding: 0.55rem 0.8rem;
-		border-radius: 0.75rem;
-		background: rgba(255, 255, 255, 0.04);
-		backdrop-filter: blur(8px);
-		-webkit-backdrop-filter: blur(8px);
-		border: 1px solid rgba(255, 255, 255, 0.06);
-		transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-		animation: rowSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
-
-		&:hover {
-			background: rgba(255, 215, 94, 0.1);
-			border-color: rgba(255, 215, 94, 0.22);
-			box-shadow: 0 0 20px rgba(255, 215, 94, 0.14),
-			            inset 0 0 20px rgba(255, 215, 94, 0.05);
-			transform: translateX(4px);
-		}
-	}
-
-	.wp-symbol {
-		display: flex;
-		align-items: center;
-		gap: 0.6rem;
-		min-width: 9.5rem;
-	}
-
-	.wp-symbol-glow {
-		position: relative;
-		width: 3.2rem;
-		height: 3.2rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		img {
-			width: 3rem;
-			height: 3rem;
-			object-fit: contain;
-			transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-			            filter 0.3s ease;
-			position: relative;
-			z-index: 1;
-		}
-
-		/* glow ring on hover */
-		&::after {
-			content: '';
-			position: absolute;
-			inset: -3px;
-			border-radius: 50%;
-			background: radial-gradient(circle, rgba(255, 215, 94, 0.3) 0%, transparent 70%);
-			opacity: 0;
-			transition: opacity 0.3s ease;
-		}
-	}
-
-	.wp-row:hover .wp-symbol-glow {
-		img {
-			transform: scale(1.12);
-			filter: drop-shadow(0 0 8px rgba(255, 233, 138, 0.6));
-		}
-		&::after {
-			opacity: 1;
-		}
-	}
-
-	.wp-symbol-name {
-		font-size: 0.95rem;
-		font-weight: 700;
-		letter-spacing: 0.03em;
-		color: rgba(255, 255, 255, 0.92);
-	}
-
-	.wp-pays {
-		display: flex;
-		gap: 0.5rem;
-		flex-wrap: wrap;
-		justify-content: flex-end;
-		font-size: 0.92rem;
-	}
-
-	.wp-pay-chip {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.2rem;
-		padding: 0.2rem 0.55rem;
-		border-radius: 0.5rem;
-		background: rgba(255, 233, 138, 0.07);
-		border: 1px solid rgba(255, 233, 138, 0.12);
-		transition: all 0.25s ease;
+	.wp-ways-sum {
+		font-size: 0.84rem;
 
 		b {
-			color: #ffe98a;
-			font-weight: 800;
+			color: var(--mint);
 		}
-
-		em {
-			font-style: normal;
-			font-weight: 600;
-			background: linear-gradient(135deg, #ffe98a, #d8a334);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-		}
-	}
-
-	.wp-row:hover .wp-pay-chip {
-		background: rgba(255, 233, 138, 0.12);
-		border-color: rgba(255, 233, 138, 0.2);
-		box-shadow: 0 0 8px rgba(255, 233, 138, 0.12);
-	}
-
-	.wp-special {
-		color: #ffd75e;
-		font-weight: 700;
-		text-shadow: 0 0 12px rgba(255, 122, 217, 0.4);
 	}
 </style>

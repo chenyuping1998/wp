@@ -260,6 +260,7 @@
 									maxWidth={bw * 0.68}
 									text={bookEventAmountToCurrencyString(countUpAmount)}
 									fontSize={bh * 0.24}
+									fill={[0xffffff]}
 									bevel
 									at={{ roll: rollAt, land: landAt }}
 									act={AMOUNT_ACT}
@@ -275,6 +276,7 @@
 									context.stateLayoutDerived.mainLayout().scale}
 								text={bookEventAmountToCurrencyString(countUpAmount)}
 								fontSize={SYMBOL_SIZE}
+								fill={[0xffffff]}
 								bevel
 								at={{ roll: rollAt, land: landAt }}
 								act={AMOUNT_ACT}

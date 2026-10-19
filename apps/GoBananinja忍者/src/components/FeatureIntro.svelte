@@ -69,97 +69,37 @@
 		right: layout.width * 0.87,
 	});
 
-	// ── illustrations ─────────────────────────────────────────────────────────
+	// ── illustrations: the game's own symbols (2026-10-16) ─────────────────
+	//
+	// These were vector stand-ins — a grid of flat squares, four boxes with two
+	// red dots each, a bar chart — and they read as placeholder art, which is
+	// what a reviewer files as "low quality asset". Every card now shows the
+	// actual symbols the player will meet: three Scatters fanned like a hand of
+	// cards, the katana beside the twin tile its cut makes, the Wild.
+	//
+	// Positions are fractions of the art slot; size is a fraction of the slot's
+	// shorter side, so the same arrangement works in the wide and stacked
+	// layouts.
+	type Piece = { key: string; x: number; y: number; size: number; rotation?: number };
+	const SCATTER_FAN: Piece[] = [
+		{ key: 'gbS', x: 0.27, y: 0.56, size: 0.66, rotation: -0.16 },
+		{ key: 'gbS', x: 0.73, y: 0.56, size: 0.66, rotation: 0.16 },
+		{ key: 'gbS', x: 0.5, y: 0.5, size: 0.84 },
+	];
+	const SLASH: Piece[] = [
+		{ key: 'gbM', x: 0.25, y: 0.5, size: 0.78 },
+		{ key: 'gbH1Split', x: 0.74, y: 0.5, size: 0.8 },
+	];
+	const WILD: Piece[] = [{ key: 'gbW', x: 0.5, y: 0.5, size: 0.96 }];
 
-	/** Five reels of four rows, with three Scatters lit. */
-	const drawScatterGrid = (g: PixiGraphics, w: number, h: number) => {
+	/** a small brass chevron between the katana and what it makes */
+	const drawArrow = (g: PixiGraphics, w: number, h: number) => {
 		g.clear();
-		const cell = Math.min(w / 6.2, h / 5.2);
-		const gap = cell * 0.16;
-		const spanX = 5 * (cell + gap) - gap;
-		const spanY = 4 * (cell + gap) - gap;
-		const x0 = (w - spanX) / 2;
-		const y0 = (h - spanY) / 2;
-		const lit = new Set(['0,1', '2,3', '4,0']);
-		for (let c = 0; c < 5; c++) {
-			for (let r = 0; r < 4; r++) {
-				const x = x0 + c * (cell + gap);
-				const y = y0 + r * (cell + gap);
-				const on = lit.has(`${c},${r}`);
-				g.roundRect(x, y, cell, cell, cell * 0.16);
-				g.fill({ color: on ? GOLD : 0x2c3a1c, alpha: on ? 0.85 : 0.5 });
-				g.roundRect(x, y, cell, cell, cell * 0.16);
-				g.stroke({ width: 1.5, color: on ? GOLD : 0x4a5c28, alpha: on ? 0.95 : 0.5 });
-			}
-		}
+		const x = w * 0.495, y = h * 0.5, s = Math.min(w, h) * 0.07;
+		g.moveTo(x - s * 0.6, y - s).lineTo(x + s * 0.5, y).lineTo(x - s * 0.6, y + s);
+		g.stroke({ width: Math.max(2, s * 0.32), color: GOLD, alpha: 0.95, cap: 'round', join: 'round' });
 	};
-
-	/**
-	 * Drawn beside the panel copy, which is
-	 * the in-game asset rather than a vector stand-in — the panel the player will
-	 * actually see when a reel locks. It is 1:5, so it is sized off the slot's
-	 * HEIGHT and the arrow takes the width left over.
-	 */
-	/** Each cell resolves into two diagonal motifs, with no permanent divider. */
-	const drawSplit = (g: PixiGraphics, w: number, h: number) => {
-		g.clear();
-		const cx = w * 0.5;
-		const top = h * 0.12;
-		const bottom = h * 0.9;
-		const cellH = (bottom - top) / 4;
-		const cw = w * 0.6;
-
-		for (let i = 0; i < 4; i++) {
-			const y = top + i * cellH;
-			g.roundRect(cx - cw / 2, y + 2, cw, cellH - 4, 3);
-			g.fill({ color: PANEL_INK, alpha: 0.9 });
-			g.roundRect(cx - cw / 2, y + 2, cw, cellH - 4, 3);
-			g.stroke({ width: 1.6, color: GOLD, alpha: 0.65 });
-			for (const [mx, my] of [[cx - cw * 0.18, y + cellH * 0.36], [cx + cw * 0.18, y + cellH * 0.68]]) {
-				g.circle(mx, my, Math.min(cw, cellH) * 0.1);
-				g.fill({ color: HOT, alpha: 0.95 });
-				g.circle(mx, my, Math.min(cw, cellH) * 0.055);
-				g.fill({ color: GOLD, alpha: 0.9 });
-			}
-		}
-	};
-
-	/** Ways multiplying across reels as more of them are cut. */
-	const drawWaysGrow = (g: PixiGraphics, w: number, h: number) => {
-		g.clear();
-		const barW = w * 0.13;
-		const gap = w * 0.055;
-		const baseY = h * 0.86;
-		// 1, 2, 4, 8 — each cut reel DOUBLES the ways, so the steps double too.
-		// The old panel drew four bars rising linearly to say multipliers ADD;
-		// this game multiplies, and a linear ramp would say the wrong thing.
-		const heights = [0.12, 0.24, 0.48, 0.96];
-		const totalW = heights.length * barW + (heights.length - 1) * gap;
-		const x0 = (w - totalW) / 2;
-		heights.forEach((f, i) => {
-			const bh = h * 0.7 * f;
-			const x = x0 + i * (barW + gap);
-			g.roundRect(x, baseY - bh, barW, bh, barW * 0.22);
-			g.fill({ color: JADE, alpha: 0.18 + i * 0.16 });
-			g.roundRect(x, baseY - bh, barW, bh, barW * 0.22);
-			g.stroke({ width: 2, color: JADE, alpha: 0.5 + i * 0.14 });
-		});
-
-		// Multiplication signs between the bars. Built in a second pass on
-		// purpose — fill()/stroke() consume the current path, so interleaving
-		// these with the bars would hand each pending cross to the next bar's
-		// fill() and paint it as a filled blob instead of a stroke.
-		for (let i = 0; i < heights.length - 1; i++) {
-			const px = x0 + i * (barW + gap) + barW + gap / 2;
-			const py = baseY - h * 0.1;
-			const sz = gap * 0.26;
-			g.moveTo(px - sz, py - sz);
-			g.lineTo(px + sz, py + sz);
-			g.moveTo(px + sz, py - sz);
-			g.lineTo(px - sz, py + sz);
-		}
-		g.stroke({ width: 2.5, color: GOLD, alpha: 0.8 });
-	};
+	const noArt = (g: PixiGraphics) => g.clear();
 
 	type Panel = {
 		accent: number;
@@ -167,10 +107,7 @@
 		body: string;
 		figure: string;
 		art: (g: PixiGraphics, w: number, h: number) => void;
-		/** square symbol art, centred in the slot */
-		symbolKey?: string;
-		/** 1:5 panel art, sized off the slot height and pushed to the left of it */
-		panelKey?: string;
+		pieces: Piece[];
 		hero?: boolean;
 	};
 
@@ -189,8 +126,8 @@
 			title: 'FREE SPINS',
 			body: 'Land 3, 4 or 5 Scatters anywhere to open 8, 10 or 12 Free Spins.',
 			figure: '3-5',
-			art: drawScatterGrid,
-			symbolKey: 'gbS',
+			art: noArt,
+			pieces: SCATTER_FAN,
 		},
 		{
 			accent: HOT,
@@ -206,7 +143,8 @@
 			// so the number is anchored rather than floating.
 			body: `The M slash reveals twin symbols. ${BASE_WAYS.toLocaleString()} ways becomes ${SPLIT_WAYS.toLocaleString()} ways on that reel.`,
 			figure: SPLIT_WAYS.toLocaleString(),
-			art: drawSplit,
+			art: drawArrow,
+			pieces: SLASH,
 			hero: true,
 		},
 		{
@@ -214,7 +152,8 @@
 			title: 'MAX WIN',
 			body: 'Ways multiply across reels. In Free Spins, splits stick.',
 			figure: `${(config.betModes?.base?.max_win ?? 10000).toLocaleString()}X`,
-			art: drawWaysGrow,
+			art: noArt,
+			pieces: WILD,
 		},
 	];
 
@@ -267,15 +206,13 @@
 		}
 	};
 
-	// The hero uses the side-by-side arrangement even in the wide layout, because
-	// its art is the real 1:5 WILD panel. Sized to a short, wide art slot that
-	// panel comes out about 24px across — the character in it is unreadable. Given
-	// the full height of the box it is ~60px across and reads properly, and the
-	// copy takes the width instead. Its neighbours keep art-above-text; the hero
-	// already stands proud of them, so the different shape reads as emphasis.
+	// Every card is art above text in the wide layout. (The hero used to put a
+	// tall 1:5 panel beside its copy; with symbol art it is the same shape as
+	// its neighbours, and only stands a little proud of them.) The stacked
+	// layout keeps art beside text, because the rows are short.
 	const slots = $derived(
 		boxes.map((box, i) => {
-			if (stacked || panels[i].hero) {
+			if (stacked) {
 				const artW = box.w * (stacked ? 0.28 : 0.32);
 				const textX = box.x + box.w * (stacked ? 0.34 : 0.4);
 				return {
@@ -285,8 +222,8 @@
 				};
 			}
 			return {
-				art: { x: box.x + box.w * 0.1, y: box.y + box.h * 0.07, w: box.w * 0.8, h: box.h * 0.3 },
-				text: { x: box.x + box.w * 0.08, w: box.w * 0.84, titleY: box.y + box.h * 0.5 },
+				art: { x: box.x + box.w * 0.08, y: box.y + box.h * 0.07, w: box.w * 0.84, h: box.h * 0.31 },
+				text: { x: box.x + box.w * 0.08, w: box.w * 0.84, titleY: box.y + box.h * 0.56 },
 				centred: true,
 			};
 		}),
@@ -323,7 +260,7 @@
 			// Floor at two lines' worth for the hero: its column is the narrow one,
 			// and if this measures before the display face has loaded the fallback's
 			// narrower metrics would report one line where Titan One needs two.
-			const floor = panel.hero ? titleSize * 2.4 : titleSize * 1.2;
+			const floor = panel.hero && stacked ? titleSize * 2.4 : titleSize * 1.2;
 			return Math.max(measured, floor) + bodySize * 0.5;
 		}),
 	);
@@ -339,27 +276,18 @@
 		<Graphics draw={(g) => drawPanelChrome(g, i)} />
 		<Container x={slot.art.x} y={slot.art.y}>
 			<Graphics draw={(g) => panel.art(g, slot.art.w, slot.art.h)} />
-			{#if panel.symbolKey}
+			{#each panel.pieces as piece, k (k)}
+				{@const side = Math.min(slot.art.w, slot.art.h) * piece.size}
 				<Sprite
-					key={panel.symbolKey}
+					key={piece.key}
 					anchor={0.5}
-					x={slot.art.w / 2}
-					y={slot.art.h / 2}
-					width={Math.min(slot.art.w, slot.art.h) * 0.44}
-					height={Math.min(slot.art.w, slot.art.h) * 0.44}
+					x={slot.art.w * piece.x}
+					y={slot.art.h * piece.y}
+					rotation={piece.rotation ?? 0}
+					width={side}
+					height={side}
 				/>
-			{/if}
-			{#if panel.panelKey}
-				<!-- 1:5 art: driven off the slot height, width follows the ratio. -->
-				<Sprite
-					key={panel.panelKey}
-					anchor={0.5}
-					x={slot.art.h / 10 + slot.art.w * 0.04}
-					y={slot.art.h / 2}
-					width={slot.art.h / 5}
-					height={slot.art.h}
-				/>
-			{/if}
+			{/each}
 		</Container>
 
 		<Text

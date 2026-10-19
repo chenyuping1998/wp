@@ -12,7 +12,7 @@
 	import { Container, Sprite } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
-	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
+	import { bookEventAmountToCountUpString } from 'utils-shared/amount';
 	import { CanvasSizeRectangle, MainContainer } from 'components-layout';
 	import { OnMount } from 'components-shared';
 
@@ -38,7 +38,7 @@
 	const BANNER_RATIO = 560 / 1000;
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
-		big: { mult: 1, glowTint: 0x9ec44a },
+		big: { mult: 1, glowTint: 0xe8c478 },
 		superwin: { mult: 1.15, glowTint: 0xffd75e },
 		mega: { mult: 1.3, glowTint: 0xffa347 },
 		epic: { mult: 1.5, glowTint: 0xff7a4a },
@@ -51,40 +51,6 @@
 	let oncomplete = $state(() => {});
 	let onCountUpComplete = $state(() => {});
 
-	// camera shake as the presentation slams in
-	let shake = $state({ x: 0, y: 0 });
-	const startShake = () => {
-		const start = Date.now();
-		const id = setInterval(() => {
-			const p = (Date.now() - start) / 700;
-			if (p >= 1) {
-				shake = { x: 0, y: 0 };
-				clearInterval(id);
-				return;
-			}
-			const amp = 11 * (1 - p) ** 2;
-			shake = { x: (Math.random() - 0.5) * 2 * amp, y: (Math.random() - 0.5) * 2 * amp };
-		}, 16);
-	};
-
-	// hit-stop impact frame: white flash + scale punch on the slam-in
-	let flash = $state(0);
-	let punch = $state(1);
-	const startImpact = () => {
-		const start = Date.now();
-		const id = setInterval(() => {
-			const p = (Date.now() - start) / 280;
-			if (p >= 1) {
-				flash = 0;
-				punch = 1;
-				clearInterval(id);
-				return;
-			}
-			flash = Math.max(0, 0.8 * (1 - p * 1.4));
-			punch = 1 + 0.14 * (1 - p) ** 2;
-		}, 16);
-	};
-
 	// ── plaque FX clock: entrance overshoot, breathing glow, periodic blink,
 	// rim twinkles and repeating bursts on the top tiers ──────────────────────
 	let fxNow = $state(-1);
@@ -93,13 +59,21 @@
 	let nextTwinkleAt = 0;
 	let nextTwinkleId = 0;
 	let burstShown = $state(false);
-	let nextBurstAt = 0;
+	// One cancellable clock drives the entire entrance. A skipped count-up or
+	// new tier cannot leave old shake/flash intervals running over the next one.
+	const shake = $derived.by(() => {
+		if (fxNow < 0 || fxNow >= 0.5) return { x: 0, y: 0 };
+		const amplitude = 8 * (1 - fxNow / 0.5) ** 2;
+		return { x: Math.sin(fxNow * 91) * amplitude, y: Math.sin(fxNow * 117) * amplitude * 0.65 };
+	});
+	const flash = $derived(fxNow >= 0 ? Math.max(0, 0.45 * (1 - fxNow / 0.16)) : 0);
+	const punch = $derived(fxNow >= 0 ? 1 + 0.1 * Math.max(0, 1 - fxNow / 0.28) ** 2 : 1);
 
 	const startBannerFx = () => {
 		cancelAnimationFrame(fxRaf);
+		fxNow = 0;
 		twinkles = [];
 		nextTwinkleAt = 0;
-		nextBurstAt = 0;
 		burstShown = true;
 		const start = performance.now();
 		const tick = (now: number) => {
@@ -110,15 +84,10 @@
 					...twinkles.filter(({ born }) => fxNow - born < 0.7),
 					{ id: nextTwinkleId++, born: fxNow, angle: Math.random() * Math.PI * 2 },
 				];
-				nextTwinkleAt = fxNow + (0.34 - 0.1 * mult) + Math.random() * 0.2;
+				nextTwinkleAt = fxNow + (0.7 - 0.12 * mult) + Math.random() * 0.4;
 			} else {
 				const alive = twinkles.filter(({ born }) => fxNow - born < 0.7);
 				if (alive.length !== twinkles.length) twinkles = alive;
-			}
-			// epic/max keep erupting while the presentation holds
-			if (mult >= 1.5 && fxNow >= nextBurstAt) {
-				burstShown = true;
-				nextBurstAt = fxNow + 1.6;
 			}
 			fxRaf = requestAnimationFrame(tick);
 		};
@@ -128,9 +97,11 @@
 		cancelAnimationFrame(fxRaf);
 		fxNow = -1;
 		twinkles = [];
+		burstShown = false;
 	};
 	onDestroy(stopBannerFx);
 
+	const bump = (t: number, a: number, b: number) => (t <= a || t >= b ? 0 : Math.sin((Math.PI * (t - a)) / (b - a)));
 	const bannerPose = $derived.by(() => {
 		if (fxNow < 0) return { scale: 1, glow: 0.4, blink: 0 };
 		const t = fxNow;
@@ -138,18 +109,15 @@
 		const scale =
 			t < 0.34
 				? 0.42 + 0.78 * (1 - (1 - t / 0.34) ** 3)
-				: 1.2 - 0.2 * Math.min(1, (t - 0.34) / 0.22) + 0.015 * Math.sin(t * 3.2);
-		// periodic blink: a bright additive pulse every ~2.3s + entrance flare
-		const phase = (t + 1.9) % 2.3;
-		const blink = Math.max(
-			t < 0.3 ? 0.55 * (1 - t / 0.3) : 0,
-			phase < 0.32 ? 0.34 * (1 - phase / 0.32) : 0,
-		);
-		return {
-			scale,
-			glow: 0.42 + 0.24 * (0.5 + 0.5 * Math.sin(t * 2.6)),
-			blink,
-		};
+				: 1.2 - 0.2 * Math.min(1, (t - 0.34) / 0.22);
+		// THE ENTRANCE IS THE EVENT, then the plaque holds still (2026-10-16,
+		// review: poor animation). It used to breathe on a sine, swell and
+		// shrink, and flash its whole face every 2.3s for as long as it stayed
+		// up; a plaque that never stops pulsing is the look of a template. One
+		// flare on the slam, one light sweep across the face, then stillness —
+		// the number counting up is the motion.
+		const blink = Math.max(t < 0.3 ? 0.55 * (1 - t / 0.3) : 0, 0.32 * bump(t, 0.75, 1.35));
+		return { scale, glow: 0.5, blink };
 	});
 
 	context.eventEmitter.subscribeOnMount({
@@ -162,10 +130,8 @@
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
 			if (emitterEvent.winLevelData.type === 'big') {
-				startShake();
-				startImpact();
 				startBannerFx();
-			}
+			} else stopBannerFx();
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
 	});
@@ -202,6 +168,10 @@
 						/>
 					</MainContainer>
 				{/if}
+
+				<!-- the bananas fly BEHIND the plaque: in front of it they covered the
+				     amount the whole presentation is about -->
+				<WinCoins emit={!countUpCompleted} levelAlias={winLevelData?.alias} />
 
 				<MainContainer>
 					<Container
@@ -258,26 +228,24 @@
 								<GoldText
 									y={bh * 0.16}
 									maxWidth={bw * 0.68}
-									text={bookEventAmountToCurrencyString(countUpAmount)}
+									text={bookEventAmountToCountUpString(countUpAmount, amount)}
 									fontSize={bh * 0.24}
 								/>
 							</Container>
 							{#if burstShown}
-								<FxBurst scale={1.7} flavour="jungle" oncomplete={() => (burstShown = false)} />
+								<FxBurst scale={1.7} flavour="gold" oncomplete={() => (burstShown = false)} />
 							{/if}
 						{:else}
 							<!-- small wins: just the rolling amount over the board -->
 							<GoldText
 								maxWidth={context.stateLayoutDerived.canvasSizes().width /
 									context.stateLayoutDerived.mainLayout().scale}
-								text={bookEventAmountToCurrencyString(countUpAmount)}
+								text={bookEventAmountToCountUpString(countUpAmount, amount)}
 								fontSize={SYMBOL_SIZE}
 							/>
 						{/if}
 					</Container>
 				</MainContainer>
-
-				<WinCoins emit={!countUpCompleted} levelAlias={winLevelData?.alias} />
 
 				{#if flash > 0}
 					<CanvasSizeRectangle backgroundColor={0xffffff} backgroundAlpha={flash} />

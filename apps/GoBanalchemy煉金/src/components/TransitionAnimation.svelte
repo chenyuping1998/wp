@@ -3,9 +3,11 @@
 	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getContext } from '../game/context';
+	import alchemistCues from '../game/alchemistCues';
 	import { DYNAMITE } from '../game/meshWin';
 	import type { DynamiteEnv } from '../game/meshWin/dynamiteProp';
 	import PropMesh from './PropMesh.svelte';
+	import PotionBoil from './PotionBoil.svelte';
 
 	// Jungle-commando transition: the sergeant pitches a pineapple dynamite into
 	// the middle of the screen — two red ticks — BOOM. The cut to the next scene
@@ -41,7 +43,7 @@
 	// hand at exactly this moment and the transition switches its own copy on, so
 	// if the two drift there is either a frame with two dynamites or a frame with
 	// none.
-	const THROW_RELEASE_MS = 580;
+	const THROW_RELEASE_MS = alchemistCues.releaseMs;
 	const FLIGHT_MS = 340; // hand to the middle of the screen
 	const DROP_MS = 460; // the no-mascot fallback: straight down, face-on
 	const TICK_MS = 260; // armed: two red blinks
@@ -100,7 +102,14 @@
 	// Normal blending, NOT additive — smoke occludes, and additive smoke over a
 	// dark board would be invisible anyway.
 	const SMOKE_COUNT = 16;
-	type Puff = { a: number; dist: number; size: number; rise: number; delay: number; drift: number };
+	type Puff = {
+		a: number;
+		dist: number;
+		size: number;
+		rise: number;
+		delay: number;
+		drift: number;
+	};
 	const puffs: Puff[] = Array.from({ length: SMOKE_COUNT }, (_, i) => ({
 		// biased to the sides and slightly upward, the way a ground burst throws it
 		a: (i / SMOKE_COUNT) * Math.PI * 2 + Math.random() * 0.6,
@@ -134,13 +143,20 @@
 	// arrival, and the bundle squashes, swells with the blinks and the burn.
 	let shownAt = -1;
 	let spinRate = 0; // turns per second, eased so the fuse does not snap
-	let dynamiteEnv = $state<DynamiteEnv>({ t: 0, flying: 1, spin: 0, arriveT: -1, armedT: -1, burn: 0 });
+	let dynamiteEnv = $state<DynamiteEnv>({
+		t: 0,
+		flying: 1,
+		spin: 0,
+		arriveT: -1,
+		armedT: -1,
+		burn: 0,
+	});
 
 	const easeOutCubic = (t: number) => 1 - (1 - Math.min(Math.max(t, 0), 1)) ** 3;
 	const mixColor = (from: number, to: number, t: number) => {
 		const k = Math.max(0, Math.min(1, t));
 		const ch = (shift: number) =>
-			Math.round(((from >> shift) & 255) + ((((to >> shift) & 255) - ((from >> shift) & 255)) * k));
+			Math.round(((from >> shift) & 255) + (((to >> shift) & 255) - ((from >> shift) & 255)) * k);
 		return (ch(16) << 16) | (ch(8) << 8) | ch(0);
 	};
 	const smoothstep = (a: number, b: number, t: number) => {
@@ -220,7 +236,7 @@
 					// max wins). This fires on every opening and free-game transition.
 					context.eventEmitter.broadcast({ type: 'soundDynamiteBlast' });
 					// the shockwave rattles the reel housing as it passes
-					context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 1.4 });
+					// The reagent vents vapor without an explosive housing jolt.
 				}
 				boomT = (elapsed - BOOM_AT) / BOOM_MS;
 				// Consumed by its own blast rather than deleted. It used to vanish on a
@@ -237,7 +253,7 @@
 				// is constant right up to the instant it saturates — and a linear fade
 				// leaves the same edge on the way out.
 				flashAlpha =
-					0.96 *
+					1 *
 					(boomT < FLASH_HOLD
 						? smoothstep(0, FLASH_IN, boomT)
 						: 1 - smoothstep(FLASH_HOLD, FLASH_OUT, boomT));
@@ -284,8 +300,8 @@
 	// thrown and cools as it expands, so the tint runs from a hot ember colour to
 	// cold ash — a puff that stayed one grey the whole way reads as a decal rather
 	// than as something the explosion just made.
-	const EMBER = [0xff, 0xb0, 0x66];
-	const ASH = [0x4a, 0x44, 0x3c];
+	const EMBER = [0x92, 0xc5, 0xa9];
+	const ASH = [0x4c, 0x81, 0x72];
 	const puffState = (puff: Puff) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		const reach = Math.max(width, height);
@@ -318,60 +334,13 @@
 
 	const drawBoom = (g: PixiGraphics) => {
 		g.clear();
-		if (boomT < 0) return;
-		const { width, height } = context.stateLayoutDerived.canvasSizes();
-		// reach past the long edge so the blast genuinely engulfs the screen
-		const maxR = Math.max(width, height) * 0.95;
-		// shockwave rings — a third, slowest ring gives the blast visible depth
-		for (const [delay, color, weight] of [
-			[0, 0xfff7d6, 30],
-			[0.14, 0xfff2c0, 24],
-			[0.3, 0xff9c3a, 18],
-		] as [number, number, number][]) {
-			const t = (boomT - delay) / (1 - delay);
-			if (t < 0 || t > 1) continue;
-			// Eased rather than linear: a ring that thins at a constant rate reads as a
-			// line being erased, one that holds and then lets go reads as energy
-			// dissipating.
-			g.lineStyle(weight * (1 - t) ** 1.4 + 3, color, 0.85 * (1 - t) ** 1.8);
-			g.drawCircle(0, 0, maxR * easeOutCubic(t));
-		}
-		// hot core — expands most of the way across the screen before fading
-		// Radius is eased, not linear. A fireball expanding at constant speed for its
-		// whole life looks mechanical; a real one throws hardest at the front and
-		// decelerates, which is what easeOutCubic gives for free.
-		const coreGrow = easeOutCubic(boomT);
-		g.lineStyle(0);
-		g.beginFill(0xfff7d6, 0.9 * (1 - boomT) ** 1.5);
-		g.drawCircle(0, 0, height * 0.34 * (0.4 + coreGrow * 1.5));
-		g.endFill();
-		g.beginFill(0xffb347, 0.55 * (1 - boomT) ** 1.3);
-		g.drawCircle(0, 0, height * 0.5 * (0.35 + coreGrow * 1.7));
-		g.endFill();
-		// leaf/shrapnel fragments — thrown the full blast radius
-		for (const f of frags) {
-			const d = f.speed * easeOutCubic(boomT) * maxR * 1.1;
-			const x = Math.cos(f.a) * d;
-			// arcs downward as it flies: debris thrown dead flat in every direction
-			// reads as a starburst decal rather than as things with weight
-			const y = Math.sin(f.a) * d + maxR * 0.16 * boomT * boomT;
-			// and tumbles while it travels, each at its own rate
-			const spin = f.spin + boomT * f.speed * 7;
-			g.beginFill(f.r > 13 ? 0x35521a : 0xffd75e, 0.9 * (1 - boomT) ** 1.6);
-			g.drawPolygon([
-				x, y - f.r,
-				x + f.r * Math.cos(spin), y + f.r * Math.sin(spin),
-				x - f.r * Math.cos(spin), y + f.r * 0.6,
-			]);
-			g.endFill();
-		}
 	};
 
 	const drawFlash = (g: PixiGraphics) => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		g.clear();
 		if (flashAlpha <= 0) return;
-		g.beginFill(0xfff2c0, flashAlpha);
+		g.beginFill(0x315e54, flashAlpha);
 		g.drawRect(-width, -height, width * 2, height * 2);
 		g.endFill();
 	};
@@ -416,6 +385,18 @@
 			tint={dynamiteTint}
 			alpha={dynamiteAlpha}
 		/>
+		{#if dynamiteEnv.arriveT >= 0}
+			<PotionBoil
+				variant="prop"
+				x={dynamiteX}
+				y={dynamiteY}
+				width={gh * DYNAMITE_ASPECT}
+				height={gh}
+				rotation={dynamiteSpin}
+				alpha={dynamiteAlpha}
+				intensity={Math.min(1, 0.45 + Math.max(0, dynamiteEnv.armedT) / 450)}
+			/>
+		{/if}
 	{/if}
 
 	<!--
@@ -429,7 +410,7 @@
 			{@const p = puffState(puff)}
 			{#if p.alpha > 0.01}
 				<Sprite
-					key="fxGlow"
+					key="gbPotionVapor"
 					anchor={0.5}
 					x={p.x}
 					y={p.y}

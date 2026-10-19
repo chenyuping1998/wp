@@ -57,6 +57,7 @@ export const W: MeshWinSpec = {
 	sparkAt: [164, 44],
 	inked: (p) => BODY(p) === 0,
 	rig: {
+		fixedBorder: 10,
 		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 },
 		soft: 4,
 		parts: [
@@ -147,3 +148,23 @@ export const W: MeshWinSpec = {
 const HEAD_DEG = 1;
 const GOGGLE_LIFT = 3;
 const BANANA_DEG = 3.5;
+
+/** WHEN THE WILD BLINKS (2026-10-16), ms into each act, by spec symbol. The
+ *  lids are painted overlays on w.png's canvas (design/w_blink.py) drawn on
+ *  the Wild's own mesh by SymbolMeshWin.svelte: a squint on the wind-up and a
+ *  blink as it settles on a win; a blink as it looks round and another as the
+ *  goggles are shoved back up in its idle act. */
+export const W_BLINKS: Record<string, number[]> = {
+	W: [130, T.land - 40],
+	'W:idle': [240, 830],
+};
+
+/** which lid shows `t` ms into an act: none, half or closed */
+export const blinkLid = (t: number, starts: number[]): 'half' | 'closed' | null => {
+	for (const s of starts) {
+		const dt = t - s;
+		if (dt < 0 || dt >= 160) continue;
+		return dt < 45 || dt >= 115 ? 'half' : 'closed';
+	}
+	return null;
+};

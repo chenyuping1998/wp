@@ -118,3 +118,57 @@ E:\stake\tools\node-v22.23.1-win-x64\corepack.cmd pnpm build
 - **人物服飾飄動**：rig.json `flow`（尾巴、帽羽、燕尾、腰帶尾、頭巾尾、圍裙綁帶等，`design/add_flows.py` 依顏色從身體層擷取多邊形）。尾巴用單一骨頭、長距離漸入（兩段骨頭在捲曲處會剪開）；幅度已掃到 check_cast_flow 的極限。
 - 保齡球館／嘉年華的符號中獎骨架改成依本款圖量的 `strikeWins.ts`／`mardiWins.ts`（原本還是 Swing 樂器的座標）。
 - `check_mesh_wins` 對 idle:/land:/:pick 的「動得不夠明顯」規則豁免（同 Diner）。
+
+## 2026-10-18 工具列（Claude，比照 Putt）
+
+- `uiTheme.ts`：`readoutOffsetY: -8`（BALANCE／WIN／BET 上移）、`labelChevronHoverColor: 0x67645c`（BET 右邊下箭頭 hover 反灰；共用鍵在 Putt 那次新增，預設不生效）。本款沒有 COURSE CARD 類背景牌，不適用。
+- `pnpm build` 通過（`design/build_20261018_bar.log`，型別 14 項同基準）；未上機。
+
+## 2026-10-18 使用者五項（Claude）
+
+- **讀取頁標題去底板**：`design/build_swing_wordmark.py` 把字從舊奶油牌上剝下來（原檔 `design/source/_pre_wordmark/logo_board.png`），同畫布同位置，改成獨立字標：紅字自帶墨線＋奶油外框＋墨色外框＋右下墨色投影塊＋柔和暗影。`v8LogoBoard` 檔名不變。`meshWin/signs.ts` 字母框加大（TOP 226／FOOT 374、首尾框外擴、reach 30）讓外框跟著字擺。讀取頁與三格說明頁標題後面加一層暖色聚光（新貼圖 `fxSoftGlow` = `sushiFx/fx_soft_glow.png`；**本款原本的 `fxGlow` 是硬邊白圓**，不能拿來當光暈）。讀取條上移到 logo 下 0.15w。
+- **FG 開場牌／結算牌**：`design/build_swing_fg_sign.py`，改成「演出門票」：上方是遊戲背景裁的舞台窗景（開場＝聚光燈布幕＋低音提琴＋鼓組，結算＝台下桌燈與雞尾酒），下方奶油紙面＋左右半月缺口＋紅色虛線撕線＋紅色內框。decor 全空、重跑 `make_decor_meshes.py`（全 0）。`FreeSpinAnimation.svelte` 換成 Strike 版（halo/rays/落地壓扁）＋開場時一道聚光燈從舞台左側掃到中央後留著微光；PAPER = x90–1510／y526–930。FG 開場/結算文字改紅字墨邊（`FreeSpinIntro/Outro` 從 Strike 移植，顏色換本款）。`LightRays.svelte` 從 Strike 複製，預設色改聚光金＋布幕紅。原圖在 `design/source/_pre_fg_sign/`。
+- **大獎牌**：`design/build_swing_win_plaques.py`，五級都是門票窗景，等級靠取景＋外框印色：big 台下桌燈／米框、super 低音提琴＋鼓／米框紅線、mega 聚光布幕／紅框米線、epic 舞台地板聚光＋樂團／墨框金線、max 整座舞台／金框＋一圈跑馬燈泡。Win.svelte 拿掉 decor PropMesh，等級名在窗景與紙面交界（SEAM_Y -0.025），epic/max 金字、其餘紅字墨邊。
+- **觸發 FG 不再丟東西 → 謝幕鞠躬**：新動作 `bow`（`design/bow_motion.mjs`；`design/add_bow_clip.mjs` 直接寫進兩個 monkey.json，產生器也已 import）：預備小起身 → 下彎（髖下沉、軀幹壓扁、頭低、面盤面那隻手攤開引介、另一手收到肚前）＋閉眼微笑 → 停住 → 起身小回彈。頭部是單一網格（helmet 骨沒有頂點），所以做不了脫帽。踢踏舞猴的右手不收（會撕到尾巴）。`TransitionAnimation.svelte` 拿掉唱片飛行，改送 `mascotBow`，幕在 480ms 開始落、正好落在鞠躬停住時。離場（FG 結束）時踢踏舞猴也鞠躬。check_cast_flow 兩角色 bow 皆 0 翻面；離線姿勢圖用 `design/render_bow.mjs`（借茶樓 `check_cast_motion.mjs` 的光柵器，已複製到本款 design/）。
+- **升級動畫用唱片打破**：`BanditMeter.svelte` 拿掉手杖／斜劈線。踢踏舞猴端著唱片（P 圖）滑進來 → 往後蓄力 → 甩出（RELEASE = CUT-260）→ 唱片低弧旋轉飛到低獎卡 → CUT 撞碎（原有兩半裂開＋碎片、粉色衝擊環＋八道墨色衝擊線）→ 唱片反彈旋轉往左上飛走淡出。音效時間點不變（soundChefSlice 在甩出前、soundChefChop 在撞擊）。舊版在 session scratchpad。
+- **唱片倍率分色**：`SackBadge.svelte` 照 Saucer 乳牛牌的區間：1–3 綠、5–10 藍、15–30 紫、40–50 紅、100+ 金；畫在唱片中央標籤上（實測橢圓 274.4,235.2／90×66／轉 40°，留中心孔），數字奶油色＋該級深色描邊。收集飛行中的數值也同色。
+- 舊產圖腳本保護：`../../tools/build_three_theme_art.py`（swing）與 `design/build_jade_art.py` 不再覆寫 logo_board／fg_*／win_*。
+- `pnpm build` 通過（`design/build_20261018_swing5.log`；型別 14 項同基準）。**未上機**：FG 牌文字位置、聚光燈掃動、唱片飛行路徑、鞠躬與落幕時間都只算過／離線渲染過，沒在瀏覽器看過。
+
+## 2026-10-18 細部巡檢（Claude，第二輪）
+
+- **HA 字幕對齊笑聲**（照 Putt/Strike）：`Mascot.svelte` 的 HA 只在 `chestbeat` 時畫；`play()` 切走就停字幕時鐘；已在笑時不重啟；換角色重置；壽命 420→360ms。
+- **FG 計數牌**：新 `fg_counter.png`（`v8FgCounter`，`build_swing_fg_sign.py` 的 `counter_plate()`）：票面紙＋墨框，表頭是舞台布幔與聚光燈的一條窗景＋紅色細線，取代程式畫的紅色錯位印＋青綠色帶。標題奶油字墨邊，置於表頭中心（H*0.142）。
+- **升級動畫底板**：新 `meter_board.png`（`v8MeterBoard`，1000×770，舞台窗景＋門票紙面，接縫 0.62H），取代程式畫的米色四邊形和兩道黃色光柱。踢踏舞猴改站在舞台邊（DANCER_Y -0.12H），低獎卡懸在舞台上，進度圓點／標籤移到票面內（RUNG_Y 0.28H、標籤 +0.075H），標題改奶油字墨邊（結果時金字）放在布幔上。
+- **讀取頁／說明頁標題放大**：去底板後字只佔畫布約 60%，寬度改 min(0.92w, 880)。離線合成圖確認不壓到三格卡片。
+- **兩段 Turbo**（照 Saucer/Putt/Strike）：`uiTheme.turboTiers 2`、`turboKeylineColor 0x926543`（亮起按鈕的棕色）；`constants.ts` `SPIN_OPTIONS_*_T2`；`BanditCollect.svelte` 改虛擬時鐘，Turbo 1 收分照常速、Turbo 2 收分 1.5 倍；規則頁 Turbo 說明改三段。
+- **guard**：`check_social_words.mjs` 補 pixi `text="…"` 屬性掃描（照 Strike），插入 `text="PAYOUT"` 探針確認會擋、已還原。
+- 檢查過沒動的：笑臉有露牙（主角明顯、踢踏舞猴小）；預期框是跑馬燈泡框，跟主題相符先保留。
+- `pnpm build` 通過（`design/build_20261018_swing_detail.log`，型別 14 項同基準）；**未上機**。
+
+## 2026-10-18 亮光調暗（Claude）
+
+- 使用者：有些牌子的亮光太亮。四處加法光都降：FG 牌後光暈 ×0.7→×0.32（開場閃光峰值約 0.32、留光約 0.14）；開場窗景聚光燈峰值 0.6→0.22、留光 0.3→0.1、色調改暖（0xffcf8a）；結算光芒每道 0.16→0.08（`LightRays.svelte`）；讀取／說明頁標題後暖光 0.42→0.26。牌子美術本身量過沒有過曝像素，未改。
+- `pnpm build` 通過（`design/build_20261018_swing_glow.log`）；未上機。
+
+## 2026-10-18 鞠躬停頓、唱片收分旋轉（Claude）
+
+- **過場**：鞠躬做完（約 1.76s 站直）再停 1 秒才降幕（`TransitionAnimation.svelte` `BOW_DONE_MS 1760 + BOW_PAUSE_MS 1000`，原本 480ms 就開始降、幕落在鞠躬中）。這段停頓中人物會回到 idle（可能偶爾觸發 glance）。
+- **唱片收分時旋轉**：`SackBadge.svelte` 新增 `spin`／`spinAlpha`：在唱片自己的斜面上畫兩組溝紋反光＋標籤上兩段印刷弧和一個點，繞軸轉，像唱片在轉盤上播放。唱片圖本身不轉（圖上的唱片外圈和標籤中心差約 23px，整張轉會晃）。`BanditCollect.svelte`：每張唱片跳完（PICK）後開始轉，380ms 加速到 1.25 轉/秒，一直轉到收分結束，最後的 HOLD 450ms 內淡出；飛行中的複本 2.4 轉/秒。走虛擬時鐘（Turbo 2 時也跟著快 1.5 倍）。
+- `pnpm build` 通過（`design/build_20261018_swing_spin.log`）；未上機。
+
+## 2026-10-18 獎圖動畫加強（Claude）
+
+- **W（樂隊指揮徽章）、S（金麥克風）**：`meshWin/swingWins.ts` 改用 `strongLeap`（照 Putt/Strike：蹲深、上升拉長、頂點放大、落地重壓扁＋小搖），跳高 W 21→28、S 17→24。各自一次性動作：W 在空中兩個搖擺拍（整體傾斜 +7°／−5°）、帽子往上抬 6px 並傾斜（脫帽）、領結抖動；S 像歌手左右搖（−6°／+5°）、兩個音符被吹起來再落回。力道放在 rigid（不會撕網格），配件仍在 5° 上限內。S 左音符上抬會把網格拉到 168%（上限 160%），已縮到 −2.5px（現 159.2%）。P 維持原本的普通跳（收分旋轉由 SackBadge 畫）。
+- **H1–H4 樂器**：`instrumentWins.ts` 開頭的彈出 5%→8%，並新增「跟著自己的拍點彈跳」：薩克斯風每次吹奏、低音提琴每次撥弦、小鼓右手每擊、斑鳩琴每次刷弦，整件樂器先蹲一下再彈起（9／6／5／6px），只用 rigid。
+- 離線渲染（`check_mesh_wins --dump` + `render_mesh_wins.py`）看過 W、S、H1、H2；`pnpm build` 通過（`design/build_20261018_swing_anim.log`，check_mesh_wins 全過）；未上機。
+
+## 2026-10-18 UI bar 去黃線黃點、英文機制說明（Claude）
+
+- `sushiUi/bar_strip.png`：拿掉上緣的金色橫線和一排金色圓點，只留紅邊深色底。改在 `../../tools/build_three_theme_art.py`（swing 不再畫線和點），並只重畫這一張（與舊圖只差上緣 10–49 列）；舊圖在 `design/source/_pre_bar_20261018/`。`design/build_jade_art.py` 也不再覆寫 bar_strip。
+- 英文機制說明（96 字）寫進 `design/GAME_DESCRIPTION.md`「機制說明」一節。
+- `pnpm build` 通過（`design/build_20261018_swing_bar2.log`）；未上機。
+
+## 2026-10-18 笑聲對齊 10 拍 HA!（Claude）
+- 笑臉動畫照 `laughTiming.json` 跑 10 拍（首拍 480ms、每 280ms、3650ms 收），舊 `swing/voice_laugh.wav` 太短（≤1.45s）且無分明音節，第三個 HA! 之後無聲張嘴。比照保齡球猴重做。
+- `design/generate_laugh_voice.py`（從 StrikeMonkey 移植，原創共振峰合成，讀 laughTiming.json）：10 聲各對一拍，每聲個別拉平音量、音高中段最高，尾巴吸氣；3.73s。本款音色：低沉渾厚的「呵哈」（基頻 205Hz、/ɔ-a/、每聲 0.23s）。舊檔備份在 session scratchpad。改 laughTiming 後要重跑。接法未動；未上機聽過。

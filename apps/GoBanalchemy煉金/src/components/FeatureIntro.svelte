@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
+	import FeatureSymbolMesh from './FeatureSymbolMesh.svelte';
+	import { MESH_LANDS, type MeshWinSpec } from '../game/meshWin';
 	import { CanvasTextMetrics, TextStyle } from 'pixi.js';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { MainContainer } from 'components-layout';
@@ -153,8 +155,16 @@
 		body: string;
 		figure: string;
 		art: (g: PixiGraphics, w: number, h: number) => void;
-		/** square symbol art, centred in the slot */
-		symbolKey?: string;
+		/** a symbol playing its board mesh on a loop (FeatureSymbolMesh,
+		 *  2026-10-16): which, what, how big and where in the slot */
+		symbol?: {
+			id: string;
+			spec?: MeshWinSpec;
+			size: (w: number, h: number) => number;
+			/** centre, as fractions of the slot */
+			at?: [number, number];
+			gap?: number;
+		};
 		/** 1:5 panel art, sized off the slot height and pushed to the left of it */
 		panelKey?: string;
 		hero?: boolean;
@@ -176,7 +186,8 @@
 			body: 'Land 3, 4 or 5 Scatters anywhere to open 8, 10 or 12 Free Spins.',
 			figure: '3-5',
 			art: drawScatterGrid,
-			symbolKey: 'gbS',
+			// the seal leaping off its plate, as it does on a win
+			symbol: { id: 'S', size: (w, h) => Math.min(w, h) * 0.44, gap: 1600 },
 		},
 		{
 			accent: HOT,
@@ -187,6 +198,14 @@
 			body: `Transmutes its whole reel into the best symbol standing on it. In Free Spins each Reagent widens the next reaction: 1 reel, then 2, 3, 4, 5.`,
 			figure: BASE_WAYS.toLocaleString(),
 			art: drawBlast,
+			// the reagent landing on the lit column, simmering — its board landing
+			symbol: {
+				id: 'B',
+				spec: MESH_LANDS.B,
+				size: (w, h) => Math.min(w * 0.27, h * 0.3),
+				at: [0.5, 0.5],
+				gap: 1100,
+			},
 			hero: true,
 		},
 		{
@@ -312,14 +331,14 @@
 		{@const slot = slots[i]}
 		<Container x={slot.art.x} y={slot.art.y}>
 			<Graphics draw={(g) => panel.art(g, slot.art.w, slot.art.h)} />
-			{#if panel.symbolKey}
-				<Sprite
-					key={panel.symbolKey}
-					anchor={0.5}
-					x={slot.art.w / 2}
-					y={slot.art.h / 2}
-					width={Math.min(slot.art.w, slot.art.h) * 0.44}
-					height={Math.min(slot.art.w, slot.art.h) * 0.44}
+			{#if panel.symbol}
+				<FeatureSymbolMesh
+					symbol={panel.symbol.id}
+					spec={panel.symbol.spec}
+					x={slot.art.w * (panel.symbol.at?.[0] ?? 0.5)}
+					y={slot.art.h * (panel.symbol.at?.[1] ?? 0.5)}
+					size={panel.symbol.size(slot.art.w, slot.art.h)}
+					gap={panel.symbol.gap}
 				/>
 			{/if}
 			{#if panel.panelKey}

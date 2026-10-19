@@ -8,15 +8,19 @@
 	import { backOut, cubicOut } from 'svelte/easing';
 
 	import { getContext } from '../game/context';
-	import { FG_BOARD_DECOR } from '../game/meshWin';
-	import PropMesh from './PropMesh.svelte';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
+	import LightRays from './LightRays.svelte';
 
-	// Jungle-military plank sign (gbFsSign, 920×720) that drops in from the top
-	// and settles with a swing. Children render at the sign's text area center.
+	// The lane-side marquee (design/build_strike_fg_sign.py, 1600x1000): a
+	// window onto the alley over the Buy Bonus card's paper, dropping in from the
+	// top and settling with a swing. Children render at the paper's centre.
+	// Nothing is pinned on it any more (2026-10-18: the corner icons read as
+	// AI-made, as on Putt Monkey's boards); its decor layer is empty.
 	type Props = {
 		children: Snippet<[{ sizes: Sizes }]>;
 		settlement?: boolean;
+		/** 0..1: light rays fanned out behind the board, turning slowly. */
+		rays?: number;
 	};
 
 	const props: Props = $props();
@@ -30,9 +34,9 @@
 	// 100..820 x 130..670, nudged down 6%), which put "TOTAL WIN" up on the new
 	// board's top beam. Inset past the pins / the clip-on receipt / the cloth.
 	// Re-measure whenever the board art changes.
-	const PAPER = props.settlement
-		? { x0: 260, y0: 300, x1: 1350, y1: 860 }
-		: { x0: 140, y0: 300, x1: 1400, y1: 870 };
+	// 2026-10-18 marquee: window ink rule y 428..447, red stripe to 447, teal
+	// keyline x 56..1544 / y 456..944 — the text stays inside the keyline.
+	const PAPER = { x0: 90, y0: 470, x1: 1510, y1: 930 };
 	const TEXT_AREA = {
 		width: SIGN_SIZES.width * ((PAPER.x1 - PAPER.x0) / 1600),
 		height: SIGN_SIZES.height * ((PAPER.y1 - PAPER.y0) / 1000),
@@ -77,6 +81,14 @@
 </script>
 
 <MainContainer>
+	<!-- The rays, behind the board. ALWAYS MOUNTED, faded by alpha: this was an
+	     {#if} that opened once the light came up, and pixi-svelte adds a block
+	     that mounts late at the END of its parent — so the additive glow landed
+	     ON TOP of the board and washed the whole sign out (user, 2026-10-18).
+	     The warm fxGlow halo is gone with it; the rays carry the moment. -->
+	<Container x={context.stateGameDerived.boardLayout().x} y={context.stateGameDerived.boardLayout().y + dropY.current}>
+		<LightRays radius={SIGN_SIZES.width * 0.95} alpha={props.rays ?? 0} />
+	</Container>
 	<Container
 		x={context.stateGameDerived.boardLayout().x}
 		y={context.stateGameDerived.boardLayout().y + dropY.current}
@@ -84,14 +96,6 @@
 		scale={{ x: 1 + landing * 0.028, y: 1 - landing * 0.032 }}
 	>
 		<Sprite key={props.settlement ? "v8FgTotal" : "v8FgIntro"} anchor={.5} {...SIGN_SIZES}/>
-		<!-- the things on the board are meshes over its decor layer (meshWin/decorMeshes.ts) -->
-		<Container x={Math.sin(signTime / 430) * 5 * Math.min(1, signTime / 500)}
-			y={Math.sin(signTime / 610) * 3 * Math.min(1, signTime / 500)}
-			rotation={Math.sin(signTime / 740) * .009 * Math.min(1, signTime / 500)}>
-			{#each FG_BOARD_DECOR(!!props.settlement) as spec (spec.symbol)}
-				<PropMesh {spec} env={{ t: signTime }} {...SIGN_SIZES} anchor={0.5} />
-			{/each}
-		</Container>
 		<!-- children sit centered on the plank area (slightly below the emblem),
 		     riding the middle plank as it rattles -->
 		<Container x={AREA_CENTER.x} y={AREA_CENTER.y}>

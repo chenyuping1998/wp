@@ -42,7 +42,7 @@ const fail = (message) => {
 };
 
 // ── the map ─────────────────────────────────────────────────────────────────
-const mapBody = src.match(/const CN_SFX_FILES: Record<CnSfxName, string> = \{([\s\S]*?)\n\t\};/);
+const mapBody = src.match(/const CN_SFX_FILES: Record<CnSfxName, string> = \{([\s\S]*?)\n\s*\};/);
 if (!mapBody) {
 	fail('could not find CN_SFX_FILES — has Sound.svelte been restructured?');
 	process.exit(1);
@@ -50,7 +50,7 @@ if (!mapBody) {
 
 const files = new Map();
 for (const line of mapBody[1].split('\n')) {
-	const m = line.match(/^\s*(\w+):\s*'([^']+)'/);
+	const m = line.match(/^\s*(\w+):\s*['"]([^'"]+)['"]/);
 	if (m) files.set(m[1], m[2]);
 }
 if (files.size === 0) fail('CN_SFX_FILES parsed as empty');
@@ -66,7 +66,7 @@ for (const [name, file] of files) {
 // ── the names the code actually plays ───────────────────────────────────────
 const played = new Set();
 const dynamic = new Set();
-for (const call of src.matchAll(/play(?:CnSfx|CnLoop)\(\s*(`[^`]*`|'[^']*')/g)) {
+for (const call of src.matchAll(/play(?:CnSfx|CnLoop)\(\s*(`[^`]*`|'[^']*'|"[^"]*")/g)) {
 	const raw = call[1];
 	if (raw.startsWith('`') && raw.includes('${')) {
 		// e.g. `voice_${name}` — keep the literal prefix and check that at least

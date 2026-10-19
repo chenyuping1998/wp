@@ -28,16 +28,18 @@ import {
 
 const T = { crouch: 150, launch: 230, top: 480, land: 900, rebound: 1160, done: 1450 };
 
-const BODY = polygon([[60, 30], [196, 30], [206, 100], [200, 160], [232, 176], [226, 204], [170, 206], [86, 206], [30, 204], [24, 176], [56, 160], [50, 100]]);
+// Traced on the indigo lacquer repaint (256px); the jade crest is lower and
+// the horn welds meet the bowl at y=100 rather than the old red helmet's y=86.
+const BODY = polygon([[61, 40], [115, 26], [142, 26], [196, 40], [206, 106], [200, 160], [232, 176], [226, 204], [170, 210], [86, 210], [30, 204], [24, 176], [56, 160], [50, 106]]);
 // the crescents, each traced from its root on the crest out to both tips
-const HORN_L_PTS: Point[] = [[8, 22], [42, 16], [72, 22], [102, 4], [114, 26], [110, 64], [120, 84], [100, 96], [74, 86], [50, 60], [26, 40]];
+const HORN_L_PTS: Point[] = [[15, 30], [50, 18], [61, 23], [101, 10], [102, 16], [84, 40], [78, 62], [91, 81], [112, 91], [111, 109], [91, 107], [63, 92], [45, 69], [33, 43]];
 const HORN_L = polygon(HORN_L_PTS);
 const HORN_R = polygon(HORN_L_PTS.map(([x, y]) => [256 - x, y] as Point));
 const GUARD_L = polygon([[2, 92], [40, 84], [66, 96], [66, 150], [52, 196], [4, 190]]);
 const GUARD_R = polygon([[254, 92], [216, 84], [190, 96], [190, 150], [204, 196], [252, 190]]);
 const CORD = polyline([[128, 198], [128, 236]], 30);
-const HORN_ROOT_L: Point = [112, 86];
-const HORN_ROOT_R: Point = [144, 86];
+const HORN_ROOT_L: Point = [110, 100];
+const HORN_ROOT_R: Point = [146, 100];
 
 export const H1: MeshWinSpec = {
 	symbol: 'H1',

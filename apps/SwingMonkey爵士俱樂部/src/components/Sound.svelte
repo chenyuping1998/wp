@@ -36,7 +36,8 @@
 		| { type: 'soundScatterCounterClear' }
 		// a new spin is starting: whatever the last spin's win and collection
 		// left ringing fades out now (bookEventHandlerMap reveal)
-		| { type: 'soundSpinCut' };
+		| { type: 'soundSpinCut' }
+		| { type: 'soundInstrumentPhrase'; symbol: 'H1' | 'H2' | 'H3' | 'H4'; quick: boolean };
 </script>
 
 <script lang="ts">
@@ -103,7 +104,11 @@
 		| 'win_max'
 		| 'win_cap'
 		| 'voice_laugh'
-		| 'voice_hup';
+		| 'voice_hup'
+		| 'instrument_sax'
+		| 'instrument_bass'
+		| 'instrument_snare'
+		| 'instrument_banjo';
 
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
 		btn: 'swing/btn.wav',
@@ -151,6 +156,10 @@
 		win_cap: 'swing/win_cap.wav',
 		voice_laugh: 'swing/voice_laugh.wav',
 		voice_hup: 'swing/voice_hup.wav',
+		instrument_sax: 'swing/instrument_sax.wav',
+		instrument_bass: 'swing/instrument_bass.wav',
+		instrument_snare: 'swing/instrument_snare.wav',
+		instrument_banjo: 'swing/instrument_banjo.wav',
 	};
 
 	// He is a character in the scene, not the interface, so he sits UNDER
@@ -287,6 +296,7 @@
 		'collect_grab', 'coin_in', 'collect_stamp', 'bandit_land', 'sack_land', 'tumbler_up',
 		'voice_laugh', 'voice_hup', 'bill_counter', 'cash_register', 'fs_intro',
 		'win_small', 'win_mid', 'win_big', 'win_super', 'win_mega', 'win_epic', 'win_max', 'win_cap',
+		'instrument_sax', 'instrument_bass', 'instrument_snare', 'instrument_banjo',
 	];
 	const layeredLive = new Set<HTMLAudioElement>();
 	const cutGeneration = new WeakMap<HTMLAudioElement, number>();
@@ -613,6 +623,13 @@
 		soundCoinIn: ({ index }) => playCnSfxLayered('coin_in', 0.7, Math.min(1.6, 1 + 0.07 * index)),
 		soundCollectStamp: () => playCnSfx('collect_stamp', 0.9),
 		soundSpinCut: () => cutSpinSounds(),
+		soundInstrumentPhrase: ({ symbol, quick }) => {
+			const rate = quick ? 1.6 : 1;
+			if (symbol === 'H1') playCnSfxLayered('instrument_sax', 0.43, rate);
+			else if (symbol === 'H2') playCnSfxLayered('instrument_bass', 0.54, rate);
+			else if (symbol === 'H3') playCnSfxLayered('instrument_snare', 0.38, rate);
+			else playCnSfxLayered('instrument_banjo', 0.42, rate);
+		},
 		soundShutterDown: () => playCnSfx('shutter_down', 0.85),
 		soundDoorSlide: () => playCnSfx('door_slide', 0.8),
 		soundDoorClack: () => playCnSfx('door_clack', 1),

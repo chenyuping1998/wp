@@ -59,3 +59,7 @@ E:\stake\tools\node-v22.23.1-win-x64\corepack.cmd pnpm preview:build
 - 流程：`python design/cut_cast_layers.py <mg|fg>` → `python design/fill_cast_underlay.py <mg|fg>` →（Diner mg 另跑 `clean_cast_trunk.py` + `fix_apron_hem.py`）→ `CAST=<mg|fg> node design/generate_monkey_spine.mjs E:/stake/tools/gen`。頭部切線保留（笑臉表情對齊頭框）。
 - 驗證：`check_cast_flow` 全過；離線逐格渲染量「脫離身體的碎片」，各角色最大值降到 ≤300px（原本茶樓 ~470、Diner 31,000、Pocha 11,000、Swing 30,000）。未上機。
 - 原版備份在 session scratchpad（cast_backup/），未進 git。
+
+## 2026-10-18 笑聲對齊 10 拍 HA!（Claude）
+- 笑臉動畫照 `laughTiming.json` 跑 10 拍（首拍 480ms、每 280ms、3650ms 收），舊 `sushi/voice_laugh.wav` 太短（≤1.2s）且無分明音節，第三個 HA! 之後無聲張嘴。比照保齡球猴重做。
+- `design/generate_laugh_voice.py`（從 StrikeMonkey 移植，原創共振峰合成，讀 laughTiming.json）：10 聲各對一拍，每聲個別拉平音量、音高中段最高，尾巴吸氣；3.73s。本款音色：溫和的師傅「呵呵」帶微顫音（基頻 245Hz、/ə-a/、每聲 0.2s）；注意本款路徑叫 sushi/ 但是獨立實體檔，不是連到壽司猴（已核對）。舊檔備份在 session scratchpad。改 laughTiming 後要重跑。接法未動；未上機聽過。

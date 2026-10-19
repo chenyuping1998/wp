@@ -6,6 +6,7 @@
 
 <script lang="ts">
 	import { Container, Text } from 'pixi-svelte';
+	import { stateUrlDerived } from 'state-shared';
 	import { getContext } from '../game/context';
 	import { GAME_FONT, NUMBER_FONT } from '../game/fonts';
 
@@ -29,6 +30,9 @@
 		},
 	});
 
+	// "payout" is restricted in social play (Stake.US); the column reads WIN there
+	const payoutLabel = stateUrlDerived.social() ? 'WIN' : 'PAYOUT';
+
 	const payout = (amount: number) => {
 		const multiple = amount / 100;
 		return `${multiple >= 100 ? multiple.toFixed(0) : multiple >= 10 ? multiple.toFixed(1) : multiple.toFixed(2)}×`;
@@ -42,7 +46,7 @@
 		style={{ fontFamily: GAME_FONT, fontSize: 24, fill: accent, letterSpacing: 2 }} />
 	<Text text="NO." x={608} y={134}
 		style={{ fontFamily: GAME_FONT, fontSize: 14, fill: chalk, letterSpacing: 2 }} />
-	<Text text="PAYOUT" x={768} y={134}
+	<Text text={payoutLabel} x={768} y={134}
 		style={{ fontFamily: GAME_FONT, fontSize: 14, fill: chalk, letterSpacing: 2 }} />
 	{#each [0, 1, 2] as index}
 		{@const order = orders[index]}

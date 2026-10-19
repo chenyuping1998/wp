@@ -60,7 +60,7 @@
 		{
 			icons: ['turbo'],
 			name: 'Turbo',
-			text: 'Shortens the spin and win presentations. Lit means turbo is on.',
+			text: 'Press once for Turbo (one bolt): quicker spins and win presentations. Press again for Turbo 2 (two bolts): the reels stop quicker still and Record collections play faster. A third press turns turbo off.',
 		},
 		{
 			icons: ['menu'],

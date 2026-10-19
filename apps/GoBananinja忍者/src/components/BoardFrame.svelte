@@ -28,16 +28,11 @@
 		isSuperspin ? 0x9fd0ff : context.stateGame.gameType === 'freegame' ? 0xffd75e : null,
 	);
 
-	let pulse = $state(0);
-	onMount(() => {
-		const id = setInterval(() => {
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 620);
-		}, 33);
-		return () => {
-			clearInterval(id);
-			cancelAnimationFrame(impactRaf);
-		};
-	});
+	// A STEADY light (2026-10-16). It used to breathe on a 1.3s sine for the
+	// whole free game; a glow that never stops pulsing is the loop that makes a
+	// screen look automated. The mode change itself is the event.
+	const pulse = 0.5;
+	onMount(() => () => cancelAnimationFrame(impactRaf));
 
 	// ── frame impact: a short recoil plus a hot flash along the brass, so a
 	// wild slamming into the housing is felt and not just seen ────────────────

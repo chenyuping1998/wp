@@ -72,7 +72,7 @@
 			tag: 'REAGENT I',
 			scene: art('buy_art_lab.png'),
 			heroes: [{ src: TNT, w: 56, x: -28, y: 14 }],
-			meter: { kind: 'blast', on: 1, of: 5, label: 'FIRST BLAST · 1 REEL' },
+			meter: { kind: 'blast', on: 1, of: 5, label: 'FIRST REACTION · 1 REEL' },
 			points: ['8 free spins', 'Each reagent widens the next reaction'],
 		},
 		BONUS200: {
@@ -85,8 +85,8 @@
 				{ src: TNT, w: 48, x: -45, y: 22, r: -14 },
 				{ src: TNT, w: 48, x: -4, y: 18, r: 10 },
 			],
-			meter: { kind: 'blast', on: 2, of: 5, label: 'FIRST BLAST · 2 REELS' },
-			points: ['8 free spins', 'The blast opens two reels wide'],
+			meter: { kind: 'blast', on: 2, of: 5, label: 'FIRST REACTION · 2 REELS' },
+			points: ['8 free spins', 'The reaction opens two reels wide'],
 		},
 		BONUS300: {
 			title: 'MAX FREE SPINS',
@@ -99,8 +99,8 @@
 				{ src: TNT, w: 44, x: 5, y: 28, r: 18 },
 				{ src: TNT, w: 52, x: -26, y: 10 },
 			],
-			meter: { kind: 'blast', on: 3, of: 5, label: 'FIRST BLAST · 3 REELS' },
-			points: ['8 free spins', 'The blast opens three reels wide'],
+			meter: { kind: 'blast', on: 3, of: 5, label: 'FIRST REACTION · 3 REELS' },
+			points: ['8 free spins', 'The reaction opens three reels wide'],
 			hot: true,
 		},
 	};

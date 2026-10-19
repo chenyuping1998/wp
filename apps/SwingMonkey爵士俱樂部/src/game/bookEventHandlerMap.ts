@@ -169,7 +169,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// between symbols, which would otherwise hang waiting for a second
 		// completion).
 		const isFreeGame = stateGame.gameType === 'freegame';
-		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins: winLineData, fast: isFreeGame });
+		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins: winLineData, fast: isFreeGame, audible: true });
 
 		eventEmitter.broadcast({ type: 'winLinesHide' });
 

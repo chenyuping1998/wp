@@ -9,7 +9,8 @@
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import BoardContainer from './BoardContainer.svelte';
-	import GoldText from './GoldText.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { STAMP_ACT } from '../game/meshWin/textMesh';
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
@@ -64,6 +65,9 @@
 
 	let phase = $state<'none' | 'tease' | 'stamp'>('none');
 	let clock = $state(0);
+	// the word's own slam (TextMesh, 2026-10-16): it squashes into the board
+	// as the stamp lands, a shock runs out from the middle, a jelly settle
+	let stampAt = $state(-1);
 	let timer: ReturnType<typeof setInterval> | undefined;
 	// a clear mid-beat must not let an old beat keep drawing, or wake a new one
 	let generation = 0;
@@ -86,37 +90,19 @@
 
 	// ── TEASE ──────────────────────────────────────────────────────────────
 	const drawTease = (g: PixiGraphics) => {
-		const t = clock;
-		// 1 through the tease, then down to 0 across the handoff
-		const out = t < TEASE_MS ? 1 : 1 - Math.min(1, (t - TEASE_MS) / HANDOFF_MS);
-		// the last beat: everything alight burns brighter, pulling towards the bang
-		const intake = t < TEASE_MS - 350 ? 0 : Math.min(1, (t - (TEASE_MS - 350)) / 350);
-
-		g.rect(LEFT, 0, WIDTH, HEIGHT).fill({ color: 0x140d05, alpha: 0.42 * Math.min(1, t / 300) * out });
-
-		for (let k = 0; k < REELS; k++) {
-			const lit = t - k * IGNITE_EVERY_MS;
-			if (lit < 0) continue;
-			const x = getSymbolX(k);
-			const burn = easeOut(lit / BURN_MS);
-			const y = HEIGHT * (0.02 + 0.96 * burn);
-			const glow = (0.55 + 0.45 * intake) * out;
-
-			// the burnt length of fuse behind the spark: a soft glow and a hot core
-			g.moveTo(x, HEIGHT * 0.02)
-				.lineTo(x, y)
-				.stroke({ width: SYMBOL_SIZE * 0.16, color: 0xff7a10, alpha: 0.2 * glow, cap: 'round' });
-			g.moveTo(x, HEIGHT * 0.02)
-				.lineTo(x, y)
-				.stroke({ width: SYMBOL_SIZE * 0.035, color: 0xffc45a, alpha: 0.85 * glow, cap: 'round' });
-
-			// the spark, flickering, and flaring as it catches
-			const catchFlare = lit < 160 ? 1 - lit / 160 : 0;
-			const flicker = 0.7 + 0.3 * Math.abs(Math.sin(t * 0.045 + k * 1.9));
-			const r = SYMBOL_SIZE * (0.07 + 0.05 * flicker + 0.12 * catchFlare + 0.05 * intake);
-			g.circle(x, y, r * 2.6).fill({ color: 0xff8a2a, alpha: (0.22 + 0.3 * catchFlare) * out });
-			g.circle(x, y, r).fill({ color: 0xffc45a, alpha: 0.95 * out });
-			g.circle(x, y, r * 0.45).fill({ color: 0xfff6e0, alpha: out });
+		for (let reel = 0; reel < REELS; reel++) {
+			const t = Math.max(0, clock - reel * IGNITE_EVERY_MS);
+			const live =
+				Math.min(1, t / 220) * Math.max(0, 1 - Math.max(0, clock - TEASE_MS) / HANDOFF_MS);
+			for (let i = 0; i < 7; i++) {
+				const cy = HEIGHT * (0.17 + i * 0.11) - t * 0.018;
+				const cx = getSymbolX(reel) + Math.sin(i * 2.1 + t / 600) * SYMBOL_SIZE * 0.15;
+				g.circle(cx, cy, SYMBOL_SIZE * (0.015 + (i % 3) * 0.008)).stroke({
+					width: 1.5,
+					color: 0xa6cfa9,
+					alpha: live * 0.5,
+				});
+			}
 		}
 	};
 
@@ -124,45 +110,23 @@
 	const SPARKS = Array.from({ length: 28 }, (_, i) => {
 		const seed = Math.sin(i * 91.7 + 3.1) * 43758.5453;
 		const rand = seed - Math.floor(seed);
-		return { angle: (i / 28) * Math.PI * 2 + rand * 0.3, reach: 0.55 + 0.5 * rand, size: 0.5 + rand };
+		return {
+			angle: (i / 28) * Math.PI * 2 + rand * 0.3,
+			reach: 0.55 + 0.5 * rand,
+			size: 0.5 + rand,
+		};
 	});
 
 	const drawStamp = (g: PixiGraphics) => {
-		const t = clock;
-		// the flash: warm white, gone in a quarter of a second
-		const flash = Math.max(0, 1 - t / 260);
-		if (flash > 0) g.rect(LEFT, 0, WIDTH, HEIGHT).fill({ color: 0xfff1d6, alpha: 0.55 * flash });
-
-		// the shockwave off the middle of the board, thinning as it goes
-		const wave = Math.min(1, t / 650);
-		if (wave < 1) {
-			const radius = easeOut(wave) * WIDTH * 0.8;
-			g.circle(CX, CY, radius).stroke({ width: SYMBOL_SIZE * 0.22 * (1 - wave), color: 0xffd27a, alpha: 0.8 * (1 - wave) });
-			g.circle(CX, CY, radius * 0.86).stroke({ width: SYMBOL_SIZE * 0.06 * (1 - wave), color: 0xfff6e0, alpha: 0.9 * (1 - wave) });
-		}
-
-		// sparks thrown clear, falling a little as they slow
-		const fly = Math.min(1, t / 900);
-		if (fly < 1) {
-			for (const s of SPARKS) {
-				const d = easeOut(fly) * WIDTH * 0.5 * s.reach;
-				const x = CX + Math.cos(s.angle) * d;
-				const y = CY + Math.sin(s.angle) * d * 0.8 + fly * fly * SYMBOL_SIZE * 0.6;
-				const r = SYMBOL_SIZE * 0.04 * s.size * (1 - fly * 0.6);
-				g.circle(x, y, r * 2.2).fill({ color: 0xff8a2a, alpha: 0.3 * (1 - fly) });
-				g.circle(x, y, r).fill({ color: 0xffe2a0, alpha: 1 - fly });
-			}
-		}
+		const alpha = Math.min(1, clock / 200) * Math.max(0, 1 - Math.max(0, clock - 850) / 650);
+		g.roundRect(CX - WIDTH * 0.39, CY - SYMBOL_SIZE * 0.47, WIDTH * 0.78, SYMBOL_SIZE * 0.94, 14)
+			.fill({ color: 0x102d28, alpha: alpha * 0.92 })
+			.stroke({ width: 2, color: 0xb99d65, alpha: alpha * 0.7 });
 	};
 
 	// BOOM! slams down from 2.4x, overshoots under, and settles, then holds and
 	// fades. A small tilt so it lands like a stamp rather than a caption.
-	const stampScale = $derived.by(() => {
-		const t = clock;
-		if (t < 170) return 2.4 - 1.55 * (t / 170);
-		if (t < 300) return 0.85 + 0.15 * easeOut((t - 170) / 130);
-		return 1;
-	});
+	const stampScale = $derived(0.98 + 0.02 * Math.min(1, clock / 350));
 	const stampAlpha = $derived(
 		clock < 90 ? clock / 90 : clock > STAMP_MS - 320 ? Math.max(0, (STAMP_MS - clock) / 320) : 1,
 	);
@@ -186,6 +150,7 @@
 		fullBoardStamp: async () => {
 			const mine = ++generation;
 			phase = 'stamp';
+			stampAt = Date.now();
 			startClock(STAMP_MS);
 			context.eventEmitter.broadcast({ type: 'soundFullBoardStamp' });
 			await waitForTimeout(STAMP_MS);
@@ -202,12 +167,15 @@
 <BoardContainer>
 	<Graphics {draw} />
 	{#if phase === 'stamp'}
-		<Container x={CX} y={CY} scale={stampScale} alpha={stampAlpha} rotation={-0.07}>
-			<GoldText
-				text="BOOM!"
-				fontSize={SYMBOL_SIZE * 1.15}
+		<Container x={CX} y={CY} scale={stampScale} alpha={stampAlpha} rotation={0}>
+			<TextMesh
+				text="TRANSMUTED"
+				fontSize={SYMBOL_SIZE * 0.48}
 				fill={[0xfff6e0, 0xffc45a, 0xc07a14]}
 				stroke={0x2a2016}
+				bevel
+				at={{ stamp: stampAt }}
+				act={STAMP_ACT}
 			/>
 		</Container>
 	{/if}

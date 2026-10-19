@@ -7,7 +7,6 @@
 
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
-	import { verticalFill } from '../game/gradientFill';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { waitForResolve } from 'utils-shared/wait';
@@ -43,27 +42,14 @@
 
 	<FreeSpinAnimation>
 		{#snippet children({ sizes })}
-			<Text
-				anchor={0.5}
+			<!-- Static cream-gold type over the alchemy enamel plaque. -->
+			<GoldText
 				y={-sizes.height * 0.26}
 				text={title}
-				style={{
-					fontFamily: GAME_FONT,
-					fontSize: Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length),
-					fontWeight: GAME_FONT_WEIGHT,
-					letterSpacing: 6,
-					// the mine's palette; see FreeSpinCounter for the note
-					fill: verticalFill(
-						[0xfff6e0, 0xffc45a, 0xc07a14],
-						Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length),
-					),
-					stroke: 0x2a2016,
-					strokeThickness: 6,
-					dropShadow: true,
-					dropShadowColor: 0x000000,
-					dropShadowBlur: 10,
-					dropShadowDistance: 3,
-				}}
+				fontSize={Math.min(sizes.width * 0.13, (sizes.width * 1.5) / title.length)}
+				letterSpacing={6}
+				fill={[0xfff6e0, 0xffc45a, 0xc07a14]}
+				stroke={0x2a2016}
 			/>
 			<GoldText
 				y={sizes.height * 0.08}

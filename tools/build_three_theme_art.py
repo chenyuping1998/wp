@@ -47,6 +47,11 @@ def make(theme, cfg):
     sprites = app/'static/assets/sprites'; ink=rgba(cfg['ink']); paper=rgba(cfg['paper'])
     accent=rgba(cfg['accent']); secondary=rgba(cfg['secondary']); hi=rgba(cfg['highlight'])
     def save(group, name, im):
+        # Swing's title, FG boards and win plaques have their own builders
+        # since 2026-10-18 (design/build_swing_wordmark.py, build_swing_fg_sign.py,
+        # build_swing_win_plaques.py); don't paint the old ones back over them
+        if theme == 'swing' and group == 'sushiV8' and (name == 'logo_board.png' or name.startswith(('fg_intro', 'fg_total', 'win_'))):
+            return
         p=sprites/group/name; p.parent.mkdir(parents=True, exist_ok=True); im.save(p, optimize=True)
     def art(name, size): return contain(src/'symbols'/f'{name}.png', size)
     # The two hand props are separate in the rig, so FG can throw its own item.
@@ -136,10 +141,10 @@ def make(theme, cfg):
         d.line((72,160,1528,160),fill=hi,width=4)
         for x in (45,1555):
             d.ellipse((x-12,87,x+12,111),fill=accent,outline=ink,width=3)
-    else:
+    elif theme!='swing':
         d.line((30,45,1570,45),fill=hi,width=9)
-    if theme=='swing':
-        for x in range(80,1580,100): d.ellipse((x,10,x+22,32),fill=hi)
+    # Swing: the gold rule and the row of gold studs along the top were taken
+    # off (user, 2026-10-18); the strip is the plain red-edged dark vinyl
     save('sushiUi','bar_strip.png',bar)
     for name,color in [('spin_plate',accent),('button_plate',ink),('button_print',ink),('button_print_on',secondary)]:
         im=blank((256,256));d=ImageDraw.Draw(im)

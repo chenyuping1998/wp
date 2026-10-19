@@ -538,6 +538,11 @@ export type MeshWinSpec = {
 	 *  static sprite, so the gate asks for a seamless loop — the pose at
 	 *  durationMs equal to the pose at 0 — instead of rest at both ends */
 	loops?: boolean;
+	/** NINJA: a PANEL tile that lifts out of its cell whole, on the rigid move
+	 *  (the Wild). Its frame is part of the tile, so it goes with it; under it
+	 *  SymbolMeshWin draws the cell's empty socket so the board's static tile is
+	 *  never uncovered. check_mesh_wins lets such a panel use the rigid move. */
+	lifts?: boolean;
 };
 
 /** BOAT: the heaviest landing a cell can ask for (SymbolSprite clamps impact to it) */

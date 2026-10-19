@@ -18,7 +18,6 @@
 import {
 	bump,
 	flick,
-	leap,
 	polygon,
 	polyline,
 	ramp,
@@ -34,7 +33,6 @@ import {
 } from './meshRig';
 
 const T = { crouch: 100, rise: 290, fall: 620, land: 800, done: 1200 };
-const LEAP = { crouch: 100, rise: 290, fall: 620, land: 800, hop2: 1010, done: 1200 };
 const GRID = { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 };
 const FEET = 200;
 
@@ -43,11 +41,7 @@ const FEET = 200;
  *  freeze — lands with a squash and a small second hop. The tile stays put. */
 const letterBeat = (rig: Rig, t: number): Pose => {
 	const pose = restPose(rig);
-	const { rigid, air } = leap(t, LEAP, 20);
-	const hover = ramp(t, LEAP.rise - 40, LEAP.rise + 60) * (1 - ramp(t, LEAP.fall - 100, LEAP.fall));
-	rigid.dy -= 2.5 * hover * Math.sin((2 * Math.PI * (t - LEAP.rise)) / 460);
-	pose.rigid = rigid;
-	pose.air = air;
+	pose.bones[rig.bones.findIndex((b) => b.name === 'panel')].dy = -1.8 * bump(t, 80, 440);
 	return pose;
 };
 
@@ -78,11 +72,15 @@ const letter = (
 ): MeshWinSpec => ({
 	symbol,
 	key: `gb${symbol}`,
+	sprite: `gb${symbol}`,
+	mode: 'panel',
+	inked: (p) => inked(p) === 0,
 	feetY: FEET,
 	durationMs: T.done,
-	landMs: T.land,
+	landMs: 99999,
 	hitMs: 190,
 	rig: {
+		fixedBorder: 10,
 		grid: GRID,
 		soft: 4,
 		parts: [

@@ -24,15 +24,15 @@
 	import GoldText from './GoldText.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
-	import { WIN_DECOR } from '../game/meshWin';
-	import PropMesh from './PropMesh.svelte';
 	import { getContext } from '../game/context';
 
 	const context = getContext();
 
-	// screenprint tier plaques (design/build_screenprint_ui.py) — 1000×560: a
-	// coloured title band (the tier NAME is runtime type, below) over a paper
-	// well the amount rolls in
+	// lane-side marquee tier plaques (design/build_strike_win_plaques.py,
+	// 2026-10-18) — 1000×560: a window onto the alley over the Buy Bonus card's
+	// paper, the tiers climbing by the view and the printed border (cream → red
+	// → teal → gold). The tier NAME sits on the seam between window and paper,
+	// the amount on the paper.
 	const BANNER_KEY: Record<string, string> = {
 		big: 'v8WinBig',
 		superwin: 'v8WinSuper',
@@ -40,6 +40,10 @@
 		epic: 'v8WinEpic',
 		max: 'v8WinMax',
 	};
+	// the window's bottom rule, printed by build_strike_win_plaques.py
+	const SEAM_Y = -0.025;
+	// the top two tiers letter in gold, the rest in the logo's red
+	const TITLE_FILL: Record<string, number> = { epic: 0xffcf4a, max: 0xffcf4a };
 	const BANNER_RATIO = 560 / 1000;
 	// the tier names, set in the display face on the plaque's title band (never
 	// baked into the art); the yellow MAX band takes ink, the others paper
@@ -181,28 +185,22 @@
 							{@const bh = bw * BANNER_RATIO}
 							<Container x={bannerPose.x} y={bannerPose.y} scale={bannerPose.scale} rotation={bannerPose.rotation}>
 								<Sprite key={bannerKey} anchor={.5} width={bw} height={bh}/>
-								<!-- the things on the plaque are meshes over its decor layer (meshWin/decorMeshes.ts) -->
-								<Container>
-									{#each WIN_DECOR[bannerKey] ?? [] as spec (spec.symbol)}
-										<PropMesh {spec} env={{ t: Math.max(0, fxNow) * 1000 }} width={bw} height={bh} anchor={0.5} />
-									{/each}
-								</Container>
 								<Text
 									anchor={0.5}
-										y={-bh * 0.18}
+									y={bh * SEAM_Y}
 									text={TIER_TITLE[alias] ?? 'BIG WIN'}
 									style={{
 										fontFamily: GAME_FONT,
-										fontSize: bh * 0.16,
+										fontSize: bh * 0.15,
 										fontWeight: GAME_FONT_WEIGHT,
 										letterSpacing: 4,
-										fill: 0xfcf9ef,
-										stroke: { color: 0x14262e, width: 3, join: 'round' as const },
+										fill: TITLE_FILL[alias] ?? 0xe8502e,
+										stroke: { color: 0x14262e, width: bh * 0.028, join: 'round' as const },
 									}}
 								/>
 								<!-- amount rolls inside the plaque's paper well, in ink -->
-								<Container y={bh * 0.19}>
-									<InkNumber text={bookEventAmountToCountUpString(countUpAmount,amount)} fontSize={bh * 0.2} maxWidth={bw * 0.64}/>
+								<Container y={bh * 0.24}>
+									<InkNumber text={bookEventAmountToCountUpString(countUpAmount,amount)} fontSize={bh * 0.2} maxWidth={bw * 0.7}/>
 								</Container>
 							</Container>
 						{:else}

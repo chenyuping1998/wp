@@ -141,3 +141,66 @@ E:\stake\tools\node-v22.23.1-win-x64\corepack.cmd pnpm build
 - `design/cover/game_spec_en.txt`：86 個英文單字的遊戲規格說明，對照現行 5x4、1,024 Ways、W 收 Pin、FG 計量表、96% RTP 與 10,000x 上限。
 - `design/cover/StrikeMonkey-Cover-FG-v2.png`：新封面球王猴動作版，真正 RGBA 去背，1672x941；原 `StrikeMonkey-Cover-FG.png` 保留不覆蓋。
 - 背景沿用已完成的 `design/cover/StrikeMonkey-Cover-BG.png`（1920x1080，RGB），保持與遊戲場景相同的球館風格。`StrikeMonkey-Cover-Preview.html` 可預覽兩層疊合；已在瀏覽器確認人物全身、球、透明邊緣與左側留白。
+
+## 2026-10-18 BET 下箭頭 hover 反灰（Claude，比照 Putt）
+
+- `uiTheme.ts` 加 `labelChevronHoverColor: 0x67645c`（共用鍵，預設不生效）。原本 hover 時箭頭不變色。建置紀錄 `design/build_20261018_chevron.log`；未上機。
+
+## 2026-10-18 優化（Claude，比照 Saucer／Putt／茶樓）
+
+- **笑臉露齒**：`design/whiten_laugh_teeth.py` — 主角的笑臉原本就畫了一排上牙，但顏色跟皮膚一樣（奶油色），遊戲尺寸看起來沒牙。腳本找出「貼著口腔、在口腔上半」的淡色區塊提亮成白色；副手的牙太細，整排平滑下推到 6px。幾乎閉嘴的 laugh_1 不動。原圖在 `design/source/_pre_teeth/`（腳本每次從這裡重做）。重新產 Spine 後 json/atlas 與現有檔相同，只換 `monkey.png`（舊貼圖也備份在 `_pre_teeth/spines/`）。**人物重切／重跑 redraw_cast_build 後要再跑一次這支，再 generate。**
+- **HA 字幕**：照 Putt 修 Mascot.svelte — 只在 `chestbeat` 時畫，`play()` 切走就停；已在笑時不重啟字幕時鐘；換角色重置；HA 壽命 420→360ms。
+- **獎圖網格**：`meshWin/strikeWins.ts` 改成 Putt 的寫法（`strongLeap`：蹲深、上升拉長、頂點放大、落地重壓扁＋小搖），每個獎圖一次性專屬動作：獎盃高舉搖兩下、鞋子踮腳跟走一步、計分卡鉛筆畫 X、汽水乾杯、球王側身耍帥、金球滾一圈、球瓶被撞到搖晃回正。關節上限照 `--limits`（鉛筆只能 7°，所以只用 5.5°）；櫻桃太小頂點不夠，併進奶油配件。
+- **兩段 Turbo**：`uiTheme.turboTiers 2`、`turboKeylineColor 0x3fc4a8`（ON 底色）；`constants.ts` `SPIN_OPTIONS_*_T2`（速度 ×1.2、間隔 ÷1.2）；`BanditCollect.svelte` 改虛擬時鐘，Turbo 1 收分照常速、Turbo 2 收分 1.5 倍（本款收分原本就不吃 Turbo）。規則頁 Turbo 說明改三段。
+- **FG 牌／計數牌／大獎牌**：`design/build_strike_fg_sign.py`、`design/build_strike_win_plaques.py`。拿掉角落小圖，改成「球館橱窗＋購買卡紙面」：上方從遊戲背景裁球館（FG 開場夜場紫光、結算一般燈光），下方奶油紙＋墨框＋青綠細線。大獎五級靠取景（球瓶區／Googie 招牌／整座夜間球館）與外框印色（米→米紅線→紅→青綠金線→金）升級。decor 全空並重跑 `make_decor_meshes.py`（全部 0）。計數牌換 `v8FgCounter`（表頭是計分螢幕）。標題改紅字墨邊。原圖在 `design/source/_pre_fg_sign/`。
+- **升級動畫**：`BanditMeter.svelte` 從 Putt 移植，在 FG 牌上演：牌子落下 → 低獎卡在球道上彈出 → 排瓶猴（cut-in 網格）進場把金保齡球送出 → 撞飛低獎卡（FxBurst＋框震）→ 球瓶從上方落位、壓扁回彈、金色光芒＋金環 → 三顆金球依序點亮。時間點與音效照舊。舊版備份在 session scratchpad。
+- **FG 過場**：新增 `LightRays.svelte`（從茶樓移植，金＋青綠），FreeSpinAnimation 加 `halo`／`rays`：開場蓋章時光暈閃、之後留餘光；結算數分時光芒慢轉，數完閃光＋框震後淡成靜光。
+- **guard**：`check_social_words.mjs` 補上 pixi `text="…"` 屬性掃描（照 Diner），用探針確認會失敗。
+- 數學：確認 10-16 已用 Diner 的方式重跑（每模式 10 萬本、各 20 本不同觸頂局、base 1/200萬、買入 1/10萬、RTP 96%），`check:claims` C1–C9 全過，本次沒動數學。
+- `npm run build` 通過（`design/build_20261018.log`，型別 14 項、低於基準）。**未上機**：升級動畫、FG 牌文字位置、光芒都只算過，沒在瀏覽器看過。
+
+## 2026-10-18 丟保齡球（Claude）
+
+- **讀數縮小**：print skin `readoutScale` 0.85 → 0.8（balance/win/bet 不碰框線）。
+- **新動畫 `bowl`／`airbowl`**（`design/generate_monkey_spine.mjs`，兩個角色共用）：近盤面那隻手做十瓶出手——變出球（BOWL_APPEAR 0.16s，道具 `ball` = 過場青綠球 `design/source/strike/props/ball.png`，136 單位、掛在掌下 40）→ 推出、後擺 54°、滑步下蹲、低位出手（BOWL_RELEASE 0.9s）→ 朝盤面送出、停住看球 → 走回原位（2.0s）。`airbowl` 同動作不拿球，idle 時 30% 機率取代 glance（空氣保齡球）。physics mix 0.45。產生器會印 `bowl ball appears at … released at …`，Mascot.svelte 的 `CASTS.*.bowl` 與 BanditMeter 的常數要跟著改。check_cast_flow 通過。骨架舊版備份在 session scratchpad。
+- **FG 觸發**：`bookEventHandlerMap` 在 uiHide 後 `await mascotBowl` → Mascot 演 `bowl`、變球時畫一圈小爆點（drawPuff），出手時把座標交給新元件 `BowlingBallRoll.svelte`（畫在盤面上層；人物在盤面後面）：球落地小彈一下、沿盤框底線往左加速滾出畫面才 resolve（5 秒保底）。接著 `transition` 帶 `noThrow: true`，不再丟球瓶，巨球直接從左邊滾進來。人物不在畫面（平板/直式）時直接進過場。
+- **FG 升階牌**（BanditMeter.svelte）：拿掉 cut-in 網格排瓶猴，改成真的 FG 角色 Spine（gbLookout）站在橱窗球道右側、每階 `{#key index}` 重播 `bowl`；球從手上落到球道、滾向低獎卡，命中時卡片碎裂（新 `CardShatter.svelte`：卡圖＋字母先烘進 canvas，再切成以撞擊點為中心的放射碎片，單一 Mesh）。CUT 由出手＋滾動距離算出（≈1257ms），STEP = CUT+1250、LEAD 520。音效：出手 effort 語音、落地滾動聲、命中照舊 chop。
+- `npm run build` 通過（`design/build_20261018_bowl.log`）。**未上機**：動作只看過離線 contact sheet，滾球、碎裂、時間點都沒在瀏覽器看過。
+
+### 2026-10-18 追加：空氣丟球手部＋讀取頁標題
+- 使用者反映主遊戲人物空氣丟球手部怪：空手版開頭會「接球」把手舉在前面停住；近側手畫在身體前面，後擺 54° 會橫過肚子到右屁股（像抓癢）；送出後直臂平舉停太久、手肘有接縫。改成：`airbowl` 不做接球、後擺只到 14°（手留在大腿側，靠軀幹後仰 −8° 與下蹲表現力道）、送出 −30°/前臂 −9°、手腕上抬、較早放下。`bowl` 同步（保留接球）。check_cast_flow 面積 78–118%（原 60–135%）。出手座標更新：mg (−191,162)、fg (−329,337)，Mascot/BanditMeter 常數已更新。
+- 讀取頁與「點擊繼續」頁的標題拿掉招牌底板：`design/bake_loading_title.py` 產生 `sushiV8/logo_title.png`（奶油字＋墨色粗描邊＋紅色錯位印），`v8LogoTitle`。FeatureIntro 原本的 LOGO_BOARD 網格改成這張圖，每 5 秒小跳一下。讀取條上移到標題下方。
+- build 通過（`design/build_20261018_bowl2.log`）；未上機。
+
+### 2026-10-18 追加：動畫細節
+- **FG 排瓶猴另有手臂軌跡**：牠待機時手本來就平伸（招呼姿勢），共用角度讓球一直在胸口晃。`bowlClip` 對 `CAST === 'fg'` 改成：平伸 → 往下 36° → 臀側 54° → 低位出手 34°（前臂補彎 14/26/12）→ 抬回平伸（收尾 = 待機姿勢）。肩膀 84°、68° 都會把短袖網格擠到 < 50%（check_cast_flow 擋），54° 是上限。
+- **出手交接無縫**：產生器現在印出手瞬間的球心（掛點偏移已隨骨頭轉）、世界角度、速度（`bowl release angle … ball velocity …`）。Mascot `CASTS.*.bowl` 帶 angle/vel，`BowlingBallRoll` 從手上那顆的角度與速度接著飛，落地後才加速滾；BanditMeter 改用 `laneDist()`（空中保持手速、落地 150ms 加速到滾速），CUT 由此反算（≈1520ms，STEP = CUT+1250）。
+- 升階牌補上變球爆點（drawPuff，同主遊戲）。
+- 現值：mg 出手 (−189,162) 2.2° (−425,−314)/s；fg (−165,249) 58.2° (−503,−202)/s。改動作後要照新印出的值改兩個元件。
+- build 通過（`design/build_20261018_bowl3.log`）；未上機。
+
+### 2026-10-18 追加：低獎字母置中
+- 使用者反映 A/K/J/10 在圓圈裡偏下。圖卡圓圈本身是正中的；原因是 pixi Text anchor 0.5 置中的是整個行框，而 pixi 的字型高度是量 `|ÉqÅ` 的實際外框（重音很高、q 下伸很深），Bowlby One 的大寫字就落在框的下半。
+- 新增 `src/game/letterCentre.ts`：`letterNudge(letter, size)` 以 pixi 自己的字型量測＋canvas 實際字形外框，算出讓字形墨跡中心對準錨點的 y 位移（字型載入後才快取）；`inkBaseline()` 給 canvas 用。套用在 SymbolSprite、SymbolWinAnim、SymbolMeshWin（網格字母貼圖）、WinWays 圖示、BanditMeter 低獎卡、CardShatter。Q 是圖檔不受影響；賠率表是 DOM（用 hhea 度量，本來就幾乎置中）不改。
+- build 通過（`design/build_20261018_letters.log`）；未上機，實際位移量要在畫面上確認。
+
+### 2026-10-18 追加：FG 開場牌、Turbo、球瓶獎圖、進度格
+- **FG 開場牌太亮**：FreeSpinAnimation 的光暈／光芒包在 `{#if halo||rays}` 裡，開場後才掛載 → pixi-svelte 把晚掛載的區塊加在父層**最後**，加亮的 fxGlow 蓋在牌子上面（鋸齒白光）。拿掉 fxGlow，光芒層改成永遠掛載、用 alpha 控制；FreeSpinIntro/Outro 的 halo 一併移除。
+- **FG 張數**：不再歪（原 rotation −0.06），改成 Bowlby One 紅字＋墨色粗描邊＋墨色錯位陰影（取代 v8 數字圖 InkNumber role fs），用 letterNudge 置中，蓋章縮放照舊。
+- **Turbo**：`activeByIconOnly: ['turbo']`（照飛碟），開啟時圓鈕不變青色、只有閃電內部填亮；turbo 2 的切口色改為深色圓鈕 #14262e。
+- **球瓶獎圖**：底板改 `gbPinPaper`（`design/build_pin_plate.py` 把 l1.png 的兩圈圓用紙色填掉）；`SackBadge` 依倍率把球瓶肚子的圓標籤塗色（照飛碟區間：1–4 青綠、5–14 藍、15–39 紫、40–99 紅橘、100+ 金），數字奶油色＋同色系深描邊。
+- **FG 左上進度格**：改畫真正的保齡球瓶輪廓（Catmull-Rom 半寬剖面鏡像），點亮＝奶油瓶身＋兩道紅頸帶＋墨線，未點亮＝淡輪廓。
+- build 通過（`design/build_20261018_fixes.log`）；未上機。
+
+### 2026-10-18 追加：W 收分加強
+- **飛行**（BanditCollect.svelte）：球瓶像被撞飛一樣整圈翻滾著飛向 W（依方向順/逆轉，落地時頭朝上），弧高依距離 0.30–0.62 格；肚子上的倍率標籤跟著轉（SackBadge 加 rotation）。
+- **連鎖節奏**：每支起飛間隔 110ms 起每支 −12ms、最低 55ms，收越多越快；起飛與落地事件排在同一虛擬時鐘上（Turbo 2 仍 1.5 倍）。
+- **命中**：每支落地 → 漫畫撞擊星（大獎金色）＋四片木屑（紅/木色）＋「+N×」往上飄（520ms），計分牌照舊跳。
+- **音效**（`design/generate_pin_collect_audio.py`，原創合成）：`pin_whoosh` 起飛破風（小聲、隨機音高）；`pin_clack` 調音木頭敲擊（C5），每支沿 C 大調五聲音階往上（`soundPinClack step`），收一串會變成一段上行旋律；收 ≥4 支時最後一支接 `bowling_pins` 全倒聲＋框震。取代原本的 coin_in。兩個新音效列入每手截斷清單。
+- **漫畫字**：ComicPop 改在每個 W 的最後一支落地時才跳（新事件 `banditCollectFinale`），原本是收分一開始就跳。
+- 守門腳本全過；未上機，聽感與節奏要實際播放確認。
+
+### 2026-10-18 追加：笑聲重做
+- 使用者反映笑 HA 時笑聲太小或沒有。原因：笑臉動畫照 `laughTiming.json` 跑 10 拍（首拍 480ms、每 280ms、3650ms 收），舊 `voice_laugh.wav` 只有約 1.1 秒聲音且沒有分明音節，第三個 HA! 之後就是無聲張嘴。壽司猴的笑聲能被聽見是因為一聲一聲很分明（0.65 秒 6 個合成短音）。
+- 新 `design/generate_laugh_voice.py`（原創共振峰合成，讀 laughTiming.json）：10 聲「ha」各對準一個 HA! 拍點（氣音 h → 母音 a，F1–F4），音高往中段爬升再落下，每聲先個別拉平音量再套漸強/漸弱，最後一口吸氣；3.73s，峰值 0.92。舊檔備份在 session scratchpad。改 laughTiming 後要重跑。
+- 接法（soundMascotVoice roar → voice_laugh，gain 1）沒動。未上機聽過。

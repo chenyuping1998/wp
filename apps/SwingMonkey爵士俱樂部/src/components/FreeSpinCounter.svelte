@@ -7,7 +7,10 @@
 
 <script lang="ts">
 	// The free-spin ticket keeps spins, collection progress and active
-	// replacements legible between the milestone performances.
+	// replacements legible between the milestone performances. Its plate is the
+	// FG ticket's paper with a strip of the stage for a header (v8FgCounter,
+	// design/build_swing_fg_sign.py, 2026-10-18); the red offset print and flat
+	// teal band it replaced read as program art.
 	//
 	// The meter is the feature's whole chase — each rung adds spins and replaces
 	// one low symbol — so it sits on the same ticket as the spin count
@@ -17,7 +20,7 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT, NUMBER_FONT } from '../game/fonts';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
-	import { Container, Graphics, Text } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	import { getContext } from '../game/context';
@@ -31,7 +34,6 @@
 
 	const PAPER = 0xf3e9d2;
 	const RED = 0xd9342b;
-	const GREEN = 0x3e9fb0;
 	const INK = 0x161412;
 	const UPGRADE = 0xc2185b;
 
@@ -143,15 +145,11 @@
 	});
 	$effect(() => () => cancelAnimationFrame(levelRaf));
 
+	// only the level-up pulse is still drawn
 	const drawTicket = (g: PixiGraphics) => {
 		g.clear();
-		// red offset print under the paper, like a misregistered second pass
-		g.roundRect(6, 6, W, H, 14).fill(RED);
-		g.roundRect(0, 0, W, H, 14).fill(PAPER).stroke({ width: 4, color: INK });
 		const pulse = levelPulseT < 1 ? Math.sin(Math.PI * levelPulseT) : 0;
-		if (pulse > 0) g.roundRect(3, 3, W - 6, H - 6, 11).stroke({ width: 3, color: RED, alpha: pulse });
-		// green band behind the title
-		g.roundRect(10, 10, W - 20, H * 0.22, 8).fill(GREEN);
+		if (pulse > 0) g.roundRect(4, 4, W - 8, H - 8, 13).stroke({ width: 4, color: RED, alpha: pulse });
 	};
 
 	const drawPips = (g: PixiGraphics) => {
@@ -175,11 +173,12 @@
 
 <MainContainer>
 	<FadeContainer {show} {...position}>
+		<Sprite key="v8FgCounter" width={W} height={H} />
 		<Graphics draw={drawTicket} />
 		<Text
 			anchor={0.5}
 			x={W * 0.5}
-			y={10 + H * 0.11}
+			y={H * 0.142}
 			text={title}
 			style={{
 				fontFamily: GAME_FONT,
@@ -187,6 +186,7 @@
 				fontWeight: GAME_FONT_WEIGHT,
 				letterSpacing: 2,
 				fill: PAPER,
+				stroke: { color: INK, width: 5, join: 'round' },
 				wordWrap: false,
 			}}
 		/>

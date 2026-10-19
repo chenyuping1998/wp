@@ -18,11 +18,14 @@
 		textMode?: 'icon' | 'text';
 		noHover?: boolean;
 		text?: string;
+		/** turbo only: 2 draws the second tier's two bolts (uiTheme.turboTiers) */
+		tier?: number;
 	};
 
 	const {
 		icon,
 		active,
+		tier = 1,
 		variant = 'dark',
 		textMode = 'icon',
 		text,
@@ -33,11 +36,15 @@
 		...buttonProps
 	}: Props = $props();
 
+	// uiTheme.activeByIconOnly (default []): controls whose ON state the ICON
+	// carries alone — the plate, fill and ring stay as when off, and the turbo
+	// bolt fills in its own outline colour. Every other control is unchanged.
+	const plateActive = $derived(!!active && !uiTheme.activeByIconOnly.includes(icon));
 	const backgroundColor = $derived.by(() => {
 		if (buttonProps.disabled) return uiTheme.buttonFillDisabled;
 		// an ON toggle (turbo, autoplay) needs to read as ON at a glance; a thicker
 		// border alone was too subtle to register as state
-		if (active && uiTheme.buttonFillActive !== null) return uiTheme.buttonFillActive;
+		if (plateActive && uiTheme.buttonFillActive !== null) return uiTheme.buttonFillActive;
 		if (variant === 'light') return uiTheme.buttonFillLight;
 		return uiTheme.buttonFill;
 	});
@@ -121,7 +128,7 @@
 		     does, the ON state is carried by the art and the ring below is dropped —
 		     a heavy ring stroked over a plate that is already lit is a second frame
 		     nobody asked for. Games with only `button` keep the ring. -->
-		{@const litPlate = active ? uiTheme.sprites.buttonActive : undefined}
+		{@const litPlate = plateActive ? uiTheme.sprites.buttonActive : undefined}
 		{@const plate = litPlate ?? uiTheme.sprites.button}
 		<UiSprite
 			{...center}
@@ -152,16 +159,16 @@
 					}}
 			backgroundColor={backgroundColor}
 			borderColor={uiTheme.buttonBorder}
-			borderWidth={active ? uiTheme.buttonBorderWidthActive : uiTheme.buttonBorderWidth}
+			borderWidth={plateActive ? uiTheme.buttonBorderWidthActive : uiTheme.buttonBorderWidth}
 			borderRadius={buttonProps.sizes.width * 0.5}
-			{...active
+			{...plateActive
 				? {
 						alpha: 1,
 					}
 				: {}}
 		/>
 
-		{#if plate && active && !litPlate}
+		{#if plate && plateActive && !litPlate}
 			<!-- ON state for a control drawn from plate art. The rounded rect draws
 			     this as a thicker border; a sprite has no border, so it is stroked
 			     here instead, in the same colour and at the same width. -->
@@ -272,11 +279,34 @@
 					// 0.72: bolt body fills most of the circle so the hollow
 					// interior reads clearly at UI size; x widened 1.4x so the
 					// interior area reads bigger left-right
-					const s = (buttonProps.sizes.width * (uiTheme.turboIconScale ?? 0.72)) / 96;
-					const sx = s * 1.4;
-					g.poly([10 * sx, -48 * s, -22 * sx, 6 * s, -2 * sx, 6 * s, -12 * sx, 48 * s, 24 * sx, -10 * s, 2 * sx, -10 * s]);
-					if (active) g.fill(0xffffff);
-					g.stroke({ width: buttonProps.sizes.width * 0.04, color: boltColor, join: 'round' });
+					const w = buttonProps.sizes.width;
+					const line = w * 0.04;
+					const bolt = (k: number, dx: number) => {
+						const s = ((w * (uiTheme.turboIconScale ?? 0.72)) / 96) * k;
+						const sx = s * 1.4;
+						const p = [10 * sx, -48 * s, -22 * sx, 6 * s, -2 * sx, 6 * s, -12 * sx, 48 * s, 24 * sx, -10 * s, 2 * sx, -10 * s];
+						return p.map((v, i) => (i % 2 ? v : v + dx * w));
+					};
+					g.clear();
+					if (tier === 2) {
+						// the second tier: two bolts side by side, the right one in
+						// front with a thin gap cut round it in the disc's colour, so
+						// the overlap reads as two bolts rather than one shape
+						const back = bolt(0.66, -0.15);
+						const front = bolt(0.66, 0.13);
+						g.poly(back);
+						if (active) g.fill(plateActive ? 0xffffff : boltColor);
+						g.stroke({ width: line, color: boltColor, join: 'round' });
+						g.poly(front);
+						g.stroke({ width: line + w * 0.05, color: uiTheme.turboKeylineColor ?? uiTheme.buttonFill, join: 'round' });
+						g.poly(front);
+						if (active) g.fill(plateActive ? 0xffffff : boltColor);
+						g.stroke({ width: line, color: boltColor, join: 'round' });
+						return;
+					}
+					g.poly(bolt(1, 0));
+					if (active) g.fill(plateActive ? 0xffffff : boltColor);
+					g.stroke({ width: line, color: boltColor, join: 'round' });
 				}}
 			/>
 		{:else}

@@ -32,8 +32,9 @@
 		return () => interval();
 	});
 
-	// The same bilingual painted sign stays on both loading and feature pages.
-	const logoWidth = $derived(Math.min(context.stateLayoutDerived.mainLayout().width * 0.82, 680));
+	// The same free-standing title stays on both loading and feature pages.
+	// the free-standing title (no plate) only fills ~60% of its canvas: drawn wider than the board was
+	const logoWidth = $derived(Math.min(context.stateLayoutDerived.mainLayout().width * 0.92, 880));
 
 	// the 16:9 plate fills the screen at its own aspect, cropped about the centre
 	// (see Background.svelte) — sized straight to the layout it was squeezed in
@@ -72,6 +73,12 @@
 			}}
 		/>
 
+		<!-- the title stands on the stage by itself (no plate, 2026-10-18): a warm
+		     spotlight pool behind it lifts it off the curtains -->
+		<Sprite key="fxSoftGlow" anchor={0.5} blendMode="add" tint={0xffd9a0} alpha={0.26}
+			x={context.stateLayoutDerived.mainLayout().width * 0.5}
+			y={context.stateLayoutDerived.mainLayout().height * 0.16}
+			width={logoWidth * 1.3} height={logoWidth * 0.62} />
 		<Sprite key="v8LogoBoard" anchor={0.5}
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.16}
@@ -90,7 +97,7 @@
 	<MainContainer>
 		<Graphics
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.16 + logoWidth * 0.24}
+			y={context.stateLayoutDerived.mainLayout().height * 0.16 + logoWidth * 0.15}
 			draw={(g) => {
 				const barWidth = Math.min(400, context.stateLayoutDerived.mainLayout().width * 0.6);
 				const barHeight = Math.max(8, barWidth / 16);

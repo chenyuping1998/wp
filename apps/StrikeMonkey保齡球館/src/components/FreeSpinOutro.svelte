@@ -38,7 +38,32 @@
 	// total, taking a screenshot) therefore heard the 2.4s coin shimmer loop over
 	// and over with nothing else going on. The loop belongs to the count-up, so it
 	// ends with the count-up.
+	//
+	// THE SETTLEMENT IS NOT THE INTRO SHOWN TWICE (as Jade Teahouse's): rays turn
+	// slowly behind the board while the total counts, and the payoff is saved
+	// for the END of the count — the rays flare and the frame takes a hit. Then
+	// they fade down to a still glow.
+	let landed = $state(false);
+	let landedAt = 0;
+	let now = $state(0);
+	let raf = 0;
+	const tick = (time: number) => {
+		now = time;
+		if (!landed || time - landedAt < 1600) raf = requestAnimationFrame(tick);
+	};
+	$effect(() => {
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
+	});
+	const sinceLanded = $derived(landed ? Math.max(0, now - landedAt) : 0);
+	const rays = $derived(landed ? 0.25 + 0.75 * Math.exp(-sinceLanded / 700) : 1);
+
 	const onCountUpComplete = () => {
+		landed = true;
+		landedAt = performance.now();
+		cancelAnimationFrame(raf);
+		raf = requestAnimationFrame(tick);
+		context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.5 });
 		context.eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' });
 	};
 
@@ -50,6 +75,10 @@
 		freeSpinOutroCountUp: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
+			// a fresh settlement: the rays turn again until this total lands
+			landed = false;
+			cancelAnimationFrame(raf);
+			raf = requestAnimationFrame(tick);
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
 	});
@@ -67,14 +96,14 @@
 				<!-- behind the plaque, so the bananas never bury the total -->
 				<WinCoins emit={!countUpCompleted} levelAlias={winLevelData?.alias} />
 
-				<FreeSpinAnimation settlement>
+				<FreeSpinAnimation settlement {rays}>
 					{#snippet children({ sizes })}
-						<!-- Transparent title lettering and the count each use the paper center. -->
+						<!-- Lettered like the logo: red, inked; the count below it on the paper. -->
 						<Container y={-sizes.height * 0.3}>
 							<Text text={title} anchor={.5}
 								style={{ fontFamily: GAME_FONT, fontWeight: GAME_FONT_WEIGHT,
 									fontSize: Math.min(sizes.width * 0.086, sizes.height * 0.14),
-									fill: 0x10222a, stroke: { color: 0xf8e8c6, width: 3 }, letterSpacing: 2 }} />
+									fill: 0xe8502e, stroke: { color: 0x14262e, width: 9, join: 'round' }, letterSpacing: 2 }} />
 						</Container>
 						{@const amountText = bookEventAmountToCountUpString(countUpAmount, amount)}
 						{@const amountSize = Math.min(sizes.height * 0.42, sizes.width * 0.15, (sizes.width * 1.3) / Math.max(1, amountText.length))}

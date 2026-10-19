@@ -24,6 +24,7 @@
 	import FxBurst from './FxBurst.svelte';
 	import GoldText from './GoldText.svelte';
 	import PressToContinue from './PressToContinue.svelte';
+	import LightRays from './LightRays.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
 
@@ -40,6 +41,23 @@
 		max: 'v8WinMax',
 	};
 	const BANNER_RATIO = 560 / 1000;
+	// Carved-jade tier titles (design/build_wordmarks.py, 1024x300) - they were a
+	// line of pixi Text on the plaque's dark panel.
+	const WORDMARK_KEY: Record<string, string> = {
+		big: 'v8WordmarkBig',
+		superwin: 'v8WordmarkSuperwin',
+		mega: 'v8WordmarkMega',
+		epic: 'v8WordmarkEpic',
+		max: 'v8WordmarkMax',
+	};
+	// ray colours per tier, the same families as the hue-shifted plaques
+	const TIER_RAYS: Record<string, [number, number]> = {
+		big: [0xe6c27a, 0x6fae8f],
+		superwin: [0xe6c27a, 0x6aa6d6],
+		mega: [0xf0b070, 0xd9584a],
+		epic: [0xe6c27a, 0xa47ad8],
+		max: [0xffe08a, 0xe6c27a],
+	};
 	// the tier names, set in the display face on the plaque's title band (never
 	// baked into the art); the yellow MAX band takes ink, the others paper
 	const TIER_TITLE: Record<string, string> = {
@@ -119,6 +137,39 @@
 	};
 	onDestroy(stopBannerFx);
 
+	// The title slams onto the plaque just after the plaque lands (380ms), with
+	// leaves thrown off it; the payoff - flare and a second burst - is held for
+	// the moment the amount stops counting.
+	let landBurst = $state(false);
+	let landFired = false;
+	let doneBurst = $state(false);
+	let doneAt = $state(-1);
+	const wordmarkScale = $derived.by(() => {
+		if (fxNow < 0) return 1;
+		const k = (fxNow - 0.34) / 0.26;
+		if (k <= 0) return 0;
+		if (k >= 1) return 1;
+		return 1.7 - 0.7 * (1 - (1 - k) ** 3);
+	});
+	$effect(() => {
+		if (fxNow >= 0.42 && !landFired) {
+			landFired = true;
+			landBurst = true;
+		}
+	});
+	const halo = $derived.by(() => {
+		if (fxNow < 0) return 0;
+		const base = Math.min(0.45, (fxNow / 0.5) * 0.45);
+		if (doneAt < 0) return base;
+		return 0.45 + 0.55 * Math.exp(-(fxNow - doneAt) / 0.3);
+	});
+	const rays = $derived.by(() => {
+		if (fxNow < 0) return 0;
+		const rise = Math.min(1, fxNow / 0.6);
+		if (doneAt < 0) return rise * 0.85;
+		return 0.35 + 0.5 * Math.exp(-(fxNow - doneAt) / 0.8);
+	});
+
 	const bannerPose = $derived.by(() => {
 		if (fxNow < 0) return { x: 0, y: 0, scale: 1, rotation: 0 };
 		const p = Math.min(1, fxNow / .58);
@@ -140,6 +191,10 @@
 		winUpdate: async (emitterEvent) => {
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
+			landBurst = false;
+			landFired = false;
+			doneBurst = false;
+			doneAt = -1;
 			if (emitterEvent.winLevelData.type === 'big') {
 				startShake();
 				startImpact();
@@ -154,7 +209,13 @@
 	{#if winLevelData}
 		{@const isBigWin = winLevelData.type === 'big'}
 		{@const duration = winLevelData.presentDuration}
-		<WinCountUpProvider {amount} {duration} oncomplete={() => onCountUpComplete()}>
+		<WinCountUpProvider {amount} {duration} oncomplete={() => {
+			if (winLevelData?.type === 'big' && doneAt < 0) {
+				doneAt = Math.max(0, fxNow);
+				doneBurst = true;
+			}
+			onCountUpComplete();
+		}}>
 			{#snippet children({ countUpAmount, startCountUp, finishCountUp, countUpCompleted })}
 				{#if isBigWin}
 					<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
@@ -186,6 +247,19 @@
 					</MainContainer>
 				{/if}
 
+				{#if isBigWin}
+					{@const bwFx = SYMBOL_SIZE * 5.2}
+					{@const rayColors = TIER_RAYS[winLevelData?.alias ?? 'big'] ?? TIER_RAYS.big}
+					<MainContainer>
+						<!-- behind the plaque, over the scrim: never under a mask or filter -->
+						<Container x={context.stateGameDerived.boardLayout().x} y={context.stateGameDerived.boardLayout().y}>
+							<LightRays radius={bwFx * 0.95} alpha={rays} colors={rayColors} />
+							<Sprite key="fxGlow" anchor={0.5} blendMode="add" tint={rayColors[0]}
+								width={bwFx * 1.5} height={bwFx * BANNER_RATIO * 1.8} alpha={halo * 0.75} />
+						</Container>
+					</MainContainer>
+				{/if}
+
 				<MainContainer>
 					<Container
 						x={context.stateGameDerived.boardLayout().x + shake.x}
@@ -200,24 +274,24 @@
 							{@const bh = bw * BANNER_RATIO}
 							<Container x={bannerPose.x} y={bannerPose.y} scale={bannerPose.scale} rotation={bannerPose.rotation}>
 								<Sprite key={bannerKey} anchor={.5} width={bw} height={bh}/>
-								<Sprite key={`${bannerKey}Decor`} anchor={.5} width={bw} height={bh} />
-								<Text
-									anchor={0.5}
-										y={-bh * 0.18}
-									text={TIER_TITLE[alias] ?? 'BIG WIN'}
-									style={{
-										fontFamily: GAME_FONT,
-										fontSize: bh * 0.16,
-										fontWeight: GAME_FONT_WEIGHT,
-										letterSpacing: 4,
-										fill: 0xfcf9ef,
-										stroke: { color: 0x203d36, width: 3, join: 'round' as const },
-									}}
-								/>
+								<!-- tier ornaments (design/build_splash_parts.py): a 1000x800 canvas, the
+								     plaque centred in it, so the crown and pendants can overhang -->
+								<Sprite key={`${bannerKey}Decor`} anchor={.5} width={bw} height={bw * 0.8} />
+								{@const wmW = bw * 0.72}
+								<Container y={-bh * 0.19} scale={wordmarkScale}>
+									<Sprite key={WORDMARK_KEY[alias] ?? WORDMARK_KEY.big} anchor={0.5} width={wmW} height={wmW * (300 / 1024)} />
+								</Container>
+								{#if landBurst}
+									<FxBurst flavour="tea" y={-bh * 0.19} scale={1.8} oncomplete={() => (landBurst = false)} />
+								{/if}
 								<!-- amount rolls inside the plaque's paper well, in ink -->
 								<Container y={bh * 0.19}>
 									<InkNumber text={bookEventAmountToCountUpString(countUpAmount,amount)} fontSize={bh * 0.2} maxWidth={bw * 0.64}/>
 								</Container>
+								{#if doneBurst}
+									<FxBurst flavour="tea" y={bh * 0.19} scale={2} oncomplete={() => (doneBurst = false)} />
+									<FxBurst flavour="tea" y={bh * 0.19} scale={2.6} delay={110} />
+								{/if}
 							</Container>
 						{:else}
 							<!-- small wins: just the rolling amount over the board -->

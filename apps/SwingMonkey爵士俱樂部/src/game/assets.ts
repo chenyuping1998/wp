@@ -98,6 +98,8 @@ export default {
 	v8FgIntro: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_intro.png',import.meta.url).href,preload:true},
 	v8FgIntroDecor: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_intro_decor.png',import.meta.url).href,preload:true},
 	v8FgTotal: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_total.png',import.meta.url).href,preload:true},
+	v8FgCounter: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_counter.png',import.meta.url).href,preload:true},
+	v8MeterBoard: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/meter_board.png',import.meta.url).href,preload:true},
 	v8FgTotalDecor: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_total_decor.png',import.meta.url).href,preload:true},
 	v8LogoBoard: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/logo_board.png',import.meta.url).href,preload:true},
 	v8LogoStamp: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/logo_stamp.png',import.meta.url).href,preload:true},
@@ -146,6 +148,13 @@ export default {
 	fxGlow: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/sushiFx/fx_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	// a soft radial falloff (fxGlow is a hard flat disc in the print style):
+	// the FG ticket's halo and its stage spotlight
+	fxSoftGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiFx/fx_soft_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	fxStar: {

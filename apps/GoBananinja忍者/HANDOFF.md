@@ -1347,3 +1347,54 @@ production bundle 裡 `social` 是未定義識別字，元件初始化就丟 Ref
 - [ ] Stake 上架素材（Thumbnail/Foreground）尚未做
 - [ ] 真機確認旋轉／中獎／FG 演繹（測試殼因分頁 hidden、動畫時鐘凍結而無法驗，見 §5.20）
 - [ ] Pixi v8 棄用 API：Graphics 仍在用 `beginFill`/`endFill`/`lineStyle`/`drawRect`/`drawRoundedRect`/`drawEllipse`/`drawPolygon`，主控台每幀噴 deprecation warning。目前可運作，但 v9 會移除
+
+## 2026-10-16 Buy Bonus 手裏劍、人物布料／眨眼、獎圖加大、turbo 切割
+
+- **Buy Bonus**：`design/generate_buy_shuriken.mjs` 產生 `buybonus_shuriken(_lit).png`；uiTheme 用 `gbUiBuyBonusShuriken`，hover 旋轉 180°/s，plateScale 1.25。字的淨空區由 HUB_IN=212 決定，改 `buyBonusLabelSizeRatio` / `buyBonusLabelWrapWidth` 要一起改。
+- **人物布料**：`node design/boost_ninja_flow.mjs`（會自動接著跑 `ninja_blink.py`）。重跑 install/polish 管線後要再跑一次。增益已頂到 `check_ninja_mesh` 的 40% 摺疊門檻。量測：`design/measure_ninja_flow.mjs`。
+- **眨眼**：`lids` slot、`blink` 動畫在 track 2；其他動畫不可 key `lids`。
+- **W**：`lifts: true`，整格彈出＋甩動＋重落，底下畫空槽；其他高分圖跳高 +25%、字母跳 26px。
+- **Turbo**：切割（ReelSplits / SwordSlash / 人物 slash）一律 1x。
+- 以上都只做離線驗證與 build，尚未上機。
+
+## 2026-10-16 審查：poor animation / low quality asset
+
+**清晰度（程式端，沒有重生圖）**
+- 主因：`sceneLighting.ts` 的 ColorMatrixFilter 掛在整個盤面，pixi v8 濾鏡預設 resolution 1 → 手機／Retina 上整盤以 1/2～1/3 解析度繪製再放大。已改 `resolution = 'inherit'`，並把黑位抬升（+0.08）改為增益 1.06＋0.02。
+- `src/game/crispTextures.ts`：所有 ≥192px 的貼圖載入後補 mipmap（Game.svelte）。
+- 高分圖預縮 256 → 512（`design/build_sharp_high_symbols.py`）。
+- 背景 1672 → 2560×1440 JPEG（`design/sharpen_backgrounds.py`，原圖在 `design/source/backgrounds_1672/`）。
+
+**動態節制**
+- 背景：拿掉叢林版的陽光光束與 22 顆大光點，改 9 片飄落櫻花瓣（藏寶室為銀色）。
+- 盤面框：拿掉每輪停的抖動（只剩 Wild／轉場）；FG／超級轉框光不再呼吸。
+- 待機動作：停 2.5 秒後開始，每 5–9 秒一次。
+
+## 2026-10-16 第二輪優化（本機重播台實看後）
+
+本機重播台：scratchpad 的 `harness.mjs`＋`ninja_books.json`（從 math-sdk publish_files 抽的 4 個 base book＋1 個 bonus100 book）；`E:\stake\.claude\launch.json` 的 `ninjareplay`（port 4181，路徑在本次 session 的 scratchpad，換 session 要重做）。注意 node 的 `fs.cpSync` 複製 build 會在 Windows 崩潰（0xC0000409），要用 shell 複製。
+
+- **低分字母上色**：`design/recolor_low_letters.py`，A 朱紅／K 翡翠／Q 紫／J 鋼藍／10 琥珀；靜態格、切割格、網格字層一起改，只改字不改底板。原灰版在 `design/source/low_letters_grey/`。
+- **開場三格**：改用真的獎圖（三張 Scatter 扇形、武士刀→H1 雙圖、Wild），三格同版型。
+- **大獎畫面**：硬邊不透明放射楔形→三層柔邊加亮光束、無脈動；拿掉 14 顆光斑與每 0.7 秒爆炸；牌匾不再呼吸／週期閃，只剩進場閃一下＋一道掃光；香蕉改畫在牌匾後面；跳動金額改用 `bookEventAmountToCountUpString`（不再出現 $104.1904）。
+- **彈窗配色**：Modals.svelte、ReplayIntro.svelte 的叢林橄欖綠改成忍者靛藍＋黃銅＋朱紅。
+- **FG 開場招牌／計數牌（2026-10-17）**：拿掉往上拉出畫面的紅色吊繩（使用者：兩條線很奇怪）。招牌改成落下＋一次小回彈＋兩端彎一下後靜止（不再擺盪）；計數牌只在數字變動時輕擺，沒有持續微晃。
+
+## 2026-10-17 bet bar 收成三色＋Diner 式按鈕
+
+- 配色只剩三色：漆黑靛藍（bar 底、圖示墨色）、黃銅 `#d9b56b`（所有標籤、細線、外圈、開啟狀態）、朱紅（只有 SPIN 和彈窗主按鈕）；數字米白。
+- 圓形按鈕（選單、autoplay、turbo、+/−、音效）改成米白和紙圓盤＋靛藍圖示，開啟時整顆變黃銅：`design/generate_bar_discs.py`（圖示形狀取自 Diner 的 print 圖示，重新上墨色）。
+- 彈窗（autoplay、押注選單、確認）改成 Diner 的平面印刷樣式：平底、墨框＋黃銅錯位陰影、無漸層（Modals.svelte 最後一段）。
+- 本機試玩殼：`E:\stake\.claude\launch.json` 的 `ninjaplay`（:4192，scratchpad 路徑，換 session 要重做）＝ build＋茶樓的 `playtest_stub.js`＋忍者 books。已實看 bar、turbo 開啟、autoplay 面板。
+
+## 2026-10-17 綁帶獨立網格＋肩上手裏劍
+
+- **綁帶**：`design/cut_ninja_straps.py` 把頭帶兩條尾巴、腰側與腰前兩條帶尾、小腿四條綁帶的尾端切成獨立網格（各自掛骨鏈，畫在原部件上方），原位置用周圍顏色補底，原部件網格移除這些骨頭權重。尾端位移：頭帶 7→27px、腰帶 10→26px、小腿 15→26px；`check_ninja_mesh` 改成對已切出的綁帶量它自己的網格（`skeleton.strapsCut`）。
+- **手裏劍**：`design/ninja_shuriken_glint.py`。原本用 549×504 原圖縮 5 倍顯示（Spine 頁面無 mipmap → 顆粒），改成預縮 2 倍的獨立 region；`glint` 動畫（track 3）每 6 秒整顆亮一下＋刀尖星芒。
+- 產生順序（全由 `node design/boost_ninja_flow.mjs` 一次跑完）：boost → cut_ninja_straps → ninja_shuriken_glint → ninja_blink。都從 `design/source/ninja_reskin/` 的原始檔重建，可重跑。
+
+## 2026-10-17 停輪
+
+- 拿掉 ReelDust（每輪停下時輪底的塵土＋地面閃光）。
+- 靜態格改成網格分層合成：`design/build_static_from_layers.py` → `static/assets/sprites/goBananinjaStatic/`（H1–H4、S、L1–L5 與切割版）。轉動、落地動作、待機動作現在是同一張畫面，切換時不再有換圖感。**改了字母顏色或重切分層後要重跑它。** `goBananinjaSharpHigh` 已不再使用。
+- 落地擠壓加大約 2.4 倍（`meshWin/lands.ts` 的 thump：一般衝擊壓到約 78% 高、回彈略高、再小沉一次），只擠主體、底板不動。Wild 是整格繪製，頭頂離框只有 8px，無法擠壓頭部，改為頭帶甩動 1.5 倍。

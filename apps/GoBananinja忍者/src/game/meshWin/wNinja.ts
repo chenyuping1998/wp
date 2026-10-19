@@ -1,5 +1,5 @@
 /**
- * W — THE NINJA. The monkey's portrait fills his tile: head and red headband,
+ * W — THE NINJA. The gorilla's portrait fills his tile: hood and red headband,
  * the band's two long tails streaming off to the left, a navy scarf wrapped
  * round his shoulders with a torn edge.
  *
@@ -24,6 +24,8 @@ import {
 	polygon,
 	restPose,
 	smoothstep,
+	track,
+	turnAbout,
 	type MeshWinSpec,
 	type Point,
 	type Rig,
@@ -31,8 +33,10 @@ import {
 
 const T = { crouch: 120, nod: 300, turn: 560, land: 1150, done: 1500 };
 const INNER: [number, number, number, number] = [8, 8, 248, 248];
-const KNOT: Point = [80, 64];
-const HEAD = polygon([[86, 36], [112, 10], [170, 8], [212, 40], [216, 92], [208, 140], [188, 176], [156, 194], [116, 186], [92, 160], [74, 118], [76, 82]]);
+const KNOT: Point = [78, 65];
+// The adult gorilla has a hood and a longer muzzle than the earlier monkey.
+// Follow the new hood/cheek contour so the nod carries the full face.
+const HEAD = polygon([[82, 43], [110, 14], [150, 10], [186, 29], [207, 61], [214, 89], [211, 137], [206, 179], [190, 208], [151, 215], [113, 196], [88, 165], [77, 126], [74, 82]]);
 const TAIL_UP = polygon([[12, 48], [44, 46], [70, 50], [86, 58], [84, 72], [56, 76], [30, 76], [14, 70]]);
 const TAIL_LO = polygon([[84, 72], [72, 90], [56, 108], [40, 130], [22, 138], [6, 118], [6, 98], [28, 84], [56, 76]]);
 const fromKnot = (p: Point) => Math.hypot(p[0] - KNOT[0], p[1] - KNOT[1]);
@@ -42,6 +46,7 @@ export const W: MeshWinSpec = {
 	key: 'gbW',
 	sprite: 'gbW',
 	mode: 'panel',
+	lifts: true,
 	noDust: true,
 	feetY: 248,
 	durationMs: T.done,
@@ -59,11 +64,11 @@ export const W: MeshWinSpec = {
 			{
 				name: 'head',
 				parent: 'panel',
-				pivot: [146, 196],
+				pivot: [146, 210],
 				axis: [0, -1],
 				priority: 2,
 				dist: HEAD,
-				keep: (p) => smoothstep((196 - p[1]) / 22),
+				keep: (p) => smoothstep((215 - p[1]) / 28),
 			},
 			{
 				name: 'tail_up',
@@ -107,7 +112,7 @@ export const W: MeshWinSpec = {
 				pivot: [60, 160],
 				axis: [-1, 0.8],
 				priority: 1,
-				dist: polygon([[10, 156], [56, 150], [70, 200], [60, 246], [10, 246]]),
+				dist: polygon([[10, 142], [55, 125], [89, 165], [73, 243], [10, 246]]),
 				keep: (p) => smoothstep((70 - p[0]) / 26),
 			},
 		],
@@ -141,11 +146,34 @@ export const W: MeshWinSpec = {
 		// the tails: whipped by the nod, streaming, the tips a beat behind and wider
 		const stream = (t0: number, hz: number) => Math.sin((2 * Math.PI * hz * (t - t0)) / 1000) * smoothstep((t - t0) / 160) * (1 - smoothstep((t - 1150) / 260));
 		b('tail_up').angle = 3.5 * flick(t, T.nod, 2.2, 2.4) + 1.6 * stream(T.nod, 3.1);
-		b('tail_up_tip').angle = 11 * flick(t, T.nod + 70, 2.2, 2.2) + 5.5 * stream(T.nod + 90, 3.1);
+		b('tail_up_tip').angle = 11 * flick(t, T.nod + 70, 2.2, 2.2) + 5.5 * stream(T.nod + 90, 3.1) - 4 * Math.sin((2 * Math.PI * (t - T.nod - 60)) / 230) * bump(t, T.nod, T.land);
 		b('tail_lo').angle = -2.6 * flick(t, T.nod + 40, 2, 2.4) - 1.4 * stream(T.nod + 40, 2.7);
 		b('tail_lo_tip').angle = -8.5 * flick(t, T.nod + 120, 2, 2.2) - 4.5 * stream(T.nod + 140, 2.7);
 		// the torn scarf edge ripples after him
 		b('scarf').angle = -4.5 * flick(t, T.nod + 120, 2.6, 3) + 1.6 * stream(T.nod + 200, 3.5);
+		// THE WHOLE TILE ACTS (2026-10-16, user: 「wild最好動作大一點」). Inside
+		// the panel the head is held to ~2 deg because the tails reach the
+		// frame, so the size comes from the rigid move, which cannot fold a
+		// triangle: a crouch, a pop up out of the cell toward the player (x1.2,
+		// 30px up), a hard shake of the head-and-shoulders while it hangs —
+		// the tails whip with it — and a slam back down with a squash.
+		const up = track(t, [
+			[0, 0],
+			[T.crouch, 0],
+			[T.nod + 40, 1, 'out'],
+			[T.land - 170, 0.9],
+			[T.land, 0, 'in'],
+			[T.land + 120, 0.1, 'out'],
+			[T.done - 80, 0, 'in'],
+		]);
+		const shake = Math.sin((2 * Math.PI * (t - T.nod)) / 230) * bump(t, T.nod - 20, T.land - 120);
+		const rigid = pose.rigid;
+		rigid.sx = track(t, [[0, 1], [T.crouch, 1.08, 'out'], [T.nod, 0.95, 'out'], [T.turn, 1], [T.land - 20, 0.96], [T.land + 40, 1.1, 'out'], [T.land + 160, 0.97, 'out'], [T.done - 80, 1, 'out']]);
+		rigid.sy = track(t, [[0, 1], [T.crouch, 0.9, 'out'], [T.nod, 1.07, 'out'], [T.turn, 1], [T.land - 20, 1.05], [T.land + 40, 0.88, 'out'], [T.land + 160, 1.03, 'out'], [T.done - 80, 1, 'out']]);
+		rigid.rot = 7 * shake;
+		rigid.pop = 1 + 0.2 * up;
+		rigid.dy = -30 * up;
+		turnAbout(rigid, [128, 150], 248);
 		pose.air = 0;
 		pose.flash = 0.42 * bump(t, T.crouch, 560) + 0.2 * bump(t, T.land, T.land + 200);
 		pose.sheen = t >= 420 && t <= 1040 ? (t - 420) / 620 : -1;

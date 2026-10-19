@@ -23,6 +23,12 @@
 		| { type: 'soundSackLand' }
 		| { type: 'soundCollectGrab' }
 		| { type: 'soundCoinIn'; index: number }
+		// the pin collection (BanditCollect): a whoosh as each pin leaves, a tuned
+		// wooden clack as it lands — `step` climbs a pentatonic scale — and the
+		// strike crash under the last pin of a big haul
+		| { type: 'soundPinWhoosh' }
+		| { type: 'soundPinClack'; step: number }
+		| { type: 'soundPinStrike' }
 		| { type: 'soundCollectStamp' }
 		| { type: 'soundShutterDown' }
 		// the transition's sliding shop door (design/generate_door_audio.py)
@@ -68,6 +74,8 @@
 		| 'bandit_land'
 		| 'collect_grab'
 		| 'coin_in'
+		| 'pin_clack'
+		| 'pin_whoosh'
 		| 'collect_stamp'
 		| 'tumbler_up'
 		| 'dial_tick'
@@ -115,6 +123,9 @@
 		bandit_land: 'strike/bandit_land.wav',
 		collect_grab: 'strike/collect_grab.wav',
 		coin_in: 'strike/coin_in.wav',
+		// design/generate_pin_collect_audio.py
+		pin_clack: 'strike/pin_clack.wav',
+		pin_whoosh: 'strike/pin_whoosh.wav',
 		collect_stamp: 'strike/collect_stamp.wav',
 		tumbler_up: 'strike/tumbler_up.wav',
 		dial_tick: 'strike/dial_tick.wav',
@@ -281,7 +292,7 @@
 	// trigger bell, the door) are not on the list.
 	const CUT_FADE_MS = 160;
 	const SPIN_SCOPED: CnSfxName[] = [
-		'collect_grab', 'coin_in', 'collect_stamp', 'bandit_land', 'sack_land', 'tumbler_up',
+		'collect_grab', 'coin_in', 'pin_clack', 'pin_whoosh', 'collect_stamp', 'bandit_land', 'sack_land', 'tumbler_up',
 		'voice_laugh', 'voice_hup', 'bill_counter', 'cash_register', 'fs_intro',
 		'win_small', 'win_mid', 'win_big', 'win_super', 'win_mega', 'win_epic', 'win_max', 'win_cap',
 	];
@@ -641,6 +652,14 @@
 		// each sack into the bag a little higher than the last, so a long
 		// collect climbs instead of repeating
 		soundCoinIn: ({ index }) => playCnSfxLayered('coin_in', 0.7, Math.min(1.6, 1 + 0.07 * index)),
+		// each pin a note higher up C major pentatonic, so a haul plays as a run
+		// rather than one knock repeated; past two octaves it holds the top note
+		soundPinClack: ({ step }) => {
+			const semis = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24];
+			playCnSfxLayered('pin_clack', 0.78, 2 ** (semis[Math.min(step, semis.length - 1)] / 12));
+		},
+		soundPinWhoosh: () => playCnSfxLayered('pin_whoosh', 0.32, 0.94 + Math.random() * 0.14),
+		soundPinStrike: () => playCnSfxLayered('bowling_pins', 0.62),
 		soundCollectStamp: () => playCnSfx('collect_stamp', 0.9),
 		soundSpinCut: () => cutSpinSounds(),
 		soundShutterDown: () => playCnSfx('shutter_down', 0.85),

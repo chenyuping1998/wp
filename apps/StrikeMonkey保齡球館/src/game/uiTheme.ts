@@ -48,6 +48,17 @@ setUiTheme({
 	// this one word is the whole revert. It can also be overridden at run time
 	// without rebuilding — see the localStorage note in UIDefault.svelte.
 	betBarLayout: 'compactBottom',
+	// Two-tier turbo, as Saucer / Putt Monkey (user, 2026-10-18): off -> one
+	// bolt -> two bolts side by side. Turbo 2 lands the reels ~20% quicker
+	// again and runs the pin collection at 1.5x (constants.ts SPIN_OPTIONS_*_T2,
+	// BanditCollect.svelte); turbo 1 leaves the collection at full length.
+	turboTiers: 2,
+	// Turbo ON = the bolts light up white inside, on the same dark disc — no
+	// teal plate (user, 2026-10-18, as Saucer Monkey). Autoplay keeps its lit
+	// plate. The gap cut round the front bolt of turbo 2 is therefore the
+	// unlit disc's ink (button_print.png centre, #14262e).
+	activeByIconOnly: ['turbo'],
+	turboKeylineColor: 0x14262e,
 
 	// Buy Bonus stays left of the board at its old size rather than joining the
 	// strip: buying the feature is an occasional, expensive, deliberate action and
@@ -94,6 +105,9 @@ setUiTheme({
 	// the Bet panel opens the stake menu when tapped — mark it so players can
 	// tell it apart from the static Balance/Win panels
 	labelAffordance: true,
+	// user 2026-10-18 (as Putt / Swing): the chevron right of BET greys while
+	// the cursor is on it — the grey the steppers turn when disabled
+	labelChevronHoverColor: 0x67645c,
 
 	// cursor-over feedback on the rail controls
 	hoverHighlight: true,
@@ -438,7 +452,8 @@ if (skin === 'print') {
 		valueFill: 0xfff4de,
 		valueStroke: 0x14262e,
 		valueShadow: 0x14262e,
-		readoutScale: 0.85,
+		// 0.85 → 0.8 (2026-10-18): the values touched the frame rules
+		readoutScale: 0.8,
 		barMessageScale: 0.74,
 		barMessageStroke: 0x14262e,
 		winFlashTint: 0xc79b58,

@@ -22,6 +22,8 @@
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import WinCoins from './WinCoins.svelte';
+	import FxBurst from './FxBurst.svelte';
+	import SplashMaster from './SplashMaster.svelte';
 
 	const context = getContext();
 
@@ -38,7 +40,35 @@
 	// total, taking a screenshot) therefore heard the 2.4s coin shimmer loop over
 	// and over with nothing else going on. The loop belongs to the count-up, so it
 	// ends with the count-up.
+	// THE SETTLEMENT IS NOT THE INTRO SHOWN TWICE. Same board art, a different
+	// scene: it rises instead of dropping, light rays turn slowly behind it while
+	// the total counts, and the payoff is saved for the END of the count — the
+	// halo flares, the leaves fly off the total and the Master cheers. Then the
+	// rays fade down to a still glow.
+	let landed = $state(false);
+	let landedAt = 0;
+	let now = $state(0);
+	let raf = 0;
+	const tick = (time: number) => {
+		now = time;
+		if (!landed || time - landedAt < 1600) raf = requestAnimationFrame(tick);
+	};
+	$effect(() => {
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
+	});
+	const sinceLanded = $derived(landed ? Math.max(0, now - landedAt) : 0);
+	const halo = $derived(landed ? 0.4 + 0.6 * Math.exp(-sinceLanded / 300) : 0.3);
+	const rays = $derived(landed ? 0.25 + 0.75 * Math.exp(-sinceLanded / 700) : 1);
+	let burst = $state(false);
+
 	const onCountUpComplete = () => {
+		landed = true;
+		landedAt = performance.now();
+		burst = true;
+		cancelAnimationFrame(raf);
+		raf = requestAnimationFrame(tick);
+		context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.5 });
 		context.eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' });
 	};
 
@@ -48,6 +78,8 @@
 		freeSpinOutroShow: () => (show = true),
 		freeSpinOutroHide: async () => (show = false),
 		freeSpinOutroCountUp: async (emitterEvent) => {
+			landed = false;
+			burst = false;
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
 			await waitForResolve((resolve) => (oncomplete = resolve));
@@ -67,7 +99,9 @@
 				<!-- behind the plaque, so the bananas never bury the total -->
 				<WinCoins emit={!countUpCompleted} levelAlias={winLevelData?.alias} />
 
-				<FreeSpinAnimation settlement>
+				<SplashMaster cue="cheer" cueNow={countUpCompleted} enterAt={150} />
+
+				<FreeSpinAnimation settlement {halo} {rays}>
 					{#snippet children({ sizes })}
 						<!-- Transparent title lettering and the count each use the paper center. -->
 						{@const ts = Math.min((sizes.width * 0.82) / 924, (sizes.height * 0.22) / 117)}
@@ -77,6 +111,10 @@
 						<Container y={sizes.height * 0.2}>
 							<InkNumber text={amountText} fontSize={amountSize} maxWidth={sizes.width*.85}/>
 						</Container>
+						{#if burst}
+							<FxBurst flavour="tea" y={sizes.height * 0.2} scale={1.7} oncomplete={() => (burst = false)} />
+							<FxBurst flavour="tea" y={sizes.height * 0.2} scale={2.4} delay={110} />
+						{/if}
 					{/snippet}
 				</FreeSpinAnimation>
 

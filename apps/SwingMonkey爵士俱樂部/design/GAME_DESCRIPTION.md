@@ -15,6 +15,12 @@
 > Two ways straight in: Late Set at 100× for 10 Free Spins, or Big Band Night
 > at 150×, which opens with the meter at 4 and every 10 already a Record.
 
+## 機制說明（英文，100 字內，2026-10-18）
+
+> Swing Monkey is a 5×4, 1,024-ways jazz-club slot with a 10,000× max win. Records land carrying 1× to 50×; whenever a Bandleader Wild lands, every Bandleader collects every Record on the board. Land 3, 4 or 5 Golden Mic Scatters for 10, 12 or 15 Free Spins, where Records reach 250×. During Free Spins, each Bandleader fills the meter: at 4, 8 and 12, you get +10 spins and all 10s, then Js, then Qs become Records. Buy Late Set (100×) for 10 Free Spins, or Big Band Night (150×), which starts with the meter at 4.
+
+（96 字；social 版把 "Buy" 換成 "Play"。）
+
 ## 一句話版
 
 > Every Bandleader collects every Record — and in Free Spins the Bandleader meter turns the

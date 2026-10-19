@@ -1,26 +1,9 @@
-/**
- * H4 — THE MINE CART FULL OF ELIXIR FLASKS. It squats on its axle and rocks on
- * its wheels, the load of flasks JOSTLES — thrown down into the cart, bouncing
- * back up and wobbling a beat behind — and the copper still-coil on the right
- * boings like the spring it is.
- *
- * CUT mode (design/make_alchemy_layers.py, 2026-10-04): the cart, its rails
- * and its load are lifted off the slate and LEAP off it — the tile stays
- * still — rocking nose-up and nose-down in the air like a cart off a ramp, and
- * landing hard with a second bounce. The load jostles through it all.
- *
- * NO LIGHT (2026-10-04).
- *
- * Coordinates are the 256 canvas (goBanalchemySymbols/h4.png, 2026-10-04):
- * flasks (52..212, 18..115), coil (182..212, 34..100), cart box (32..228,
- * 84..196), wheels and rails (40..225, 160..225).
- */
+/** Alchemy v2: fixed plate; independently weighted painted parts perform.
+ * No rigid flip, tile jump, or impact dust. Geometry follows the repaint. */
 import {
 	bump,
 	flick,
-	leap,
 	polygon,
-	turnAbout,
 	restPose,
 	smoothstep,
 	track,
@@ -29,7 +12,6 @@ import {
 } from './meshRig';
 
 const T = { crouch: 110, rise: 300, fall: 700, land: 880, done: 1400 };
-const LEAP = { crouch: 120, rise: 320, fall: 680, land: 880, hop2: 1120, done: 1400 };
 
 const CART = polygon([[30, 88], [228, 82], [226, 108], [206, 172], [140, 198], [62, 176], [36, 108]]);
 const LOAD = polygon([[52, 84], [54, 40], [72, 30], [100, 28], [118, 18], [146, 18], [176, 30], [178, 104], [150, 114], [60, 102]]);
@@ -39,17 +21,22 @@ const ALL = polygon([[28, 86], [54, 36], [118, 16], [146, 16], [212, 30], [230, 
 export const H4: MeshWinSpec = {
 	symbol: 'H4',
 	key: 'gbH4',
+	sprite: 'gbH4',
+	mode: 'panel',
+	inked: (p) => ALL(p) === 0,
 	feetY: 214,
 	durationMs: T.done,
-	landMs: T.land,
+	landMs: 99999,
 	hitMs: 240,
 	sparkAt: [128, 60],
 	rig: {
+		fixedBorder: 10,
 		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 },
 		soft: 4,
 		parts: [
 			// the rails and whatever else is drawn: the root
-			{ name: 'panel', pivot: [136, 214], axis: [0, -1], dist: ALL },
+			{ name: 'frame', pivot: [128, 128], dist: () => 14 },
+			{ name: 'panel', parent: 'frame', pivot: [136, 214], axis: [0, -1], dist: ALL },
 			{
 				name: 'cart',
 				parent: 'panel',
@@ -114,11 +101,6 @@ export const H4: MeshWinSpec = {
 		coil.along = 1 - 0.06 * bump(t, T.crouch, 300) + 0.07 * flick(t, 300, 3.2, 2.2) + 0.04 * flick(t, T.land + 30, 3.4, 3);
 		coil.angle = 2.4 * flick(t, 320, 2.1, 2.2);
 
-		// THE LEAP: off a ramp — nose up on the way up, nose down coming in
-		const { rigid, air } = leap(t, LEAP, 22);
-		rigid.rot = track(t, [[0, 0], [LEAP.crouch, 0], [LEAP.rise, -9, 'out'], [LEAP.fall - 60, 6, 'inOut'], [LEAP.land, 0, 'in']]) + 3 * flick(t, LEAP.land, 2.6, 4);
-		pose.rigid = turnAbout(rigid, [128, 130], 214);
-		pose.air = air;
 		return pose;
 	},
 };

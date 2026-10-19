@@ -75,7 +75,18 @@ const prop = (
 });
 
 const bone = (rig: Rig, pose: Pose, name: string) => pose.bones[rig.bones.findIndex((b) => b.name === name)];
-const wave = (t: number, period: number, phase = 0) => Math.sin((2 * Math.PI * t) / period + phase);
+// Mostly still (user, 2026-10-16: constant wobble reads as generated motion).
+// One swing, eased in and out, then a hold of two periods; each thing on its
+// own timetable through its phase, so the room never sways in unison.
+// The first swing, as the scene appears, is everyone's (settling in); after
+// that each takes its turn.
+const wave = (t: number, period: number, phase = 0) => {
+	const first = t < period ? 1 : t < 1.5 * period ? Math.cos((Math.PI * (t - period)) / period) ** 2 : 0;
+	const cycle = period * 3;
+	const u = ((((t - period + phase * period * 0.47) % cycle) + cycle) % cycle) / period;
+	const later = u < 1 ? Math.sin(Math.PI * u) ** 2 * smoothstep((t - period) / period) : 0;
+	return Math.sin((2 * Math.PI * t) / period + phase) * (first + later);
+};
 /** the gust after a win: a kick that dies away */
 const gust = (env: BgEnv, hz: number, decay: number) => (env.gustT < 0 ? 0 : flick(env.gustT, 0, hz, decay));
 

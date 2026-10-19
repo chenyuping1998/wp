@@ -30,6 +30,21 @@
 		height: sizes.height * uiTheme.buyBonusPlateScale,
 	});
 
+	// Opt-in (uiTheme.buyBonusHitArea): a hit area fitted to the visible plate
+	// rather than the sprite's transparent quad. Local coords, same as `center`.
+	const hitArea = $derived.by(() => {
+		const r = uiTheme.buyBonusHitArea;
+		if (!r) return undefined;
+		const left = sizes.width / 2 - plate.width / 2;
+		const top = sizes.height / 2 - plate.height / 2;
+		const x0 = left + r.x * plate.width;
+		const y0 = top + r.y * plate.height;
+		const x1 = x0 + r.width * plate.width;
+		const y1 = y0 + r.height * plate.height;
+		// any { contains } satisfies Pixi's IHitArea
+		return { contains: (x: number, y: number) => x >= x0 && x <= x1 && y >= y0 && y <= y1 };
+	});
+
 	// The label goes with the button. Left absolute it would keep its full size
 	// inside a shrunken plate, and the wrap width — which is measured against the
 	// plate, not the text — would let it run past the edge.
@@ -151,7 +166,7 @@
 	};
 </script>
 
-<Button {...props} {sizes} {disabled} {onpress} onhover={(value) => (hovering = value)}>
+<Button {...props} {...hitArea ? { hitArea } : {}} {sizes} {disabled} {onpress} onhover={(value) => (hovering = value)}>
 	{#snippet children({ center, hovered, pressed })}
 		{@const state = getState({
 			active,

@@ -167,10 +167,25 @@
 		const fw = Math.max(1, Math.ceil(b.width) + p * 2);
 		const fh = Math.max(1, Math.ceil(b.height) + p * 2);
 		const resolution = Math.max(2, globalThis.devicePixelRatio ?? 1);
-		const tw = Math.ceil(fw / STEP) * STEP;
-		const th = Math.ceil(fh / STEP) * STEP;
-		if (!target) target = RenderTexture.create({ width: tw, height: th, resolution, antialias: true });
-		else if (target.width !== tw || target.height !== th) target.resize(tw, th, resolution);
+		// GROW-ONLY, AND NEVER resize(): shrinking an MSAA render texture with
+		// resize() left its clear not taking on the live build, and a solid block
+		// of stale GPU memory showed behind a count-up that landed on a shorter
+		// value (seen on Go Bananeon). A new, larger, non-antialiased texture
+		// replaces it instead; a shorter value uses less of it via the UVs.
+		const needW = Math.ceil(fw / STEP) * STEP;
+		const needH = Math.ceil(fh / STEP) * STEP;
+		if (!target || target.width < needW || target.height < needH || target.source.resolution !== resolution) {
+			const old = target;
+			target = RenderTexture.create({
+				width: Math.max(needW, old?.width ?? 0),
+				height: Math.max(needH, old?.height ?? 0),
+				resolution,
+			});
+			if (mesh) mesh.texture = target;
+			old?.destroy(true);
+		}
+		const tw = target.width;
+		const th = target.height;
 		renderer.render({
 			container: src,
 			target,

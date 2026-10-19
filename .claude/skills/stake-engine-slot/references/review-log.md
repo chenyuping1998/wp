@@ -513,6 +513,7 @@ failed. Four separate times, and never because the word list was wrong:
 | `"Buy direct entry"`, `"50× BET"`, `"BUY 50×"` in `betModeMeta.ts` | the file *was* scanned, but only for `pick()` and `social ? …` shapes — it contained neither, so there was nothing to inspect |
 | `"pay table"` in a controls guide | prose living in a component's `<script>`, which the template rule strips before scanning |
 | `"PLAY TABLE"` | not a blind spot — the word was gone. The *replacement* was wrong, which no restricted-word check can detect |
+| `text="PAYOUT"` on a pixi `<Text>` (Diner Monkey, found pre-submission 2026-10-16) | rule 1 strips every tag with `<[^>]*>`, so copy living in an attribute is thrown away before scanning. Diner's guard now scans `text="…"` literals; other apps' copies do not yet |
 
 Three rules fall out:
 

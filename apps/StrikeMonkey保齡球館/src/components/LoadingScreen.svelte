@@ -72,10 +72,12 @@
 			}}
 		/>
 
-		<Sprite key="v8LogoBoard" anchor={0.5}
+		<!-- the title on its own, no signboard (user, 2026-10-18); the art is
+		     1480x207 (design/bake_loading_title.py) -->
+		<Sprite key="v8LogoTitle" anchor={0.5}
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.16}
-			width={logoWidth} height={logoWidth * 0.375} />
+			width={logoWidth} height={logoWidth / 7.15} />
 	</MainContainer>
 </FadeContainer>
 
@@ -90,7 +92,7 @@
 	<MainContainer>
 		<Graphics
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.16 + logoWidth * 0.24}
+			y={context.stateLayoutDerived.mainLayout().height * 0.16 + logoWidth * 0.17}
 			draw={(g) => {
 				const barWidth = Math.min(400, context.stateLayoutDerived.mainLayout().width * 0.6);
 				const barHeight = Math.max(8, barWidth / 16);

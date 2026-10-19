@@ -133,7 +133,7 @@
 			const at = performance.now() + BLAST_CHARGE_MS;
 			for (const r of reels) {
 				blastAt[r] = at;
-				blastStrength[r] = full ? 1.6 : 1;
+				blastStrength[r] = 0;
 			}
 			runBow();
 		},

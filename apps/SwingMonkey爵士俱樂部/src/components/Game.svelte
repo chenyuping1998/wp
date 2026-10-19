@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BuyPlateMesh from './BuyPlateMesh.svelte';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 	import { Tween } from 'svelte/motion';
@@ -109,6 +110,9 @@
 			Ref: https://developer.chrome.com/blog/autoplay
 		-->
 		<Sound />
+		<!-- the Buy Bonus plate's picture acts (feeds the shared button a moving
+		     texture; see the component) -->
+		<BuyPlateMesh />
 
 		<Container>
 

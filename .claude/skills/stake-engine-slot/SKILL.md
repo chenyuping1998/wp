@@ -132,6 +132,23 @@ prerendering emits a shell and never evaluates the game modules. A green build
 and three green guards said nothing was wrong while the uploaded game was a
 black screen. Boot the page.
 
+## A Pixi trap: a filter renders at resolution 1
+
+A pixi v8 `Filter` defaults to `resolution: 1`, and FilterSystem takes the
+**minimum** of every filter's resolution and the target's. So any filter put on
+a big container — a ColorMatrixFilter "lighting lift" on the whole board, say —
+makes everything under it render at 1x and get stretched back up on a phone or
+retina screen (devicePixelRatio 2-3). It looks like blurry art; the art is fine.
+Go Bananinja shipped this for weeks and was reviewed "low quality asset".
+
+Set `filter.resolution = 'inherit'` (and `antialias = 'inherit'`) on any filter
+over game content. Background blurs are the one place 1x does not matter.
+
+Two related causes of "soft" symbols, same game: 1254px art drawn ~150px with
+**no mipmaps** (pixi loads without them; set `source.autoGenerateMipmaps` after
+load, see GoBananinja `src/game/crispTextures.ts`), and a "prefiltered" 256px tile
+that a DPR-2 screen then MAGNIFIES. Judge at physical pixels, not CSS pixels.
+
 ## A Pixi trap: additive blending inside a mask draws nothing
 
 `blendMode: 'add'` adds to what is already in the framebuffer. Put it inside a

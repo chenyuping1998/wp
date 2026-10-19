@@ -198,7 +198,7 @@
 		align-items: center;
 		justify-content: center;
 		padding: 1rem;
-		background: rgba(6, 10, 4, 0.82);
+		background: rgba(4, 8, 14, 0.82);
 		backdrop-filter: blur(8px);
 		-webkit-backdrop-filter: blur(8px);
 		/* hidden, not auto: the card is scaled to fit (see `scale` above), so a
@@ -215,9 +215,11 @@
 		transform-origin: center center;
 		padding: 1.25rem;
 		border-radius: 14px;
-		background: linear-gradient(180deg, rgba(26, 36, 12, 0.98) 0%, rgba(10, 18, 6, 0.99) 100%);
-		border: 1px solid rgba(216, 163, 52, 0.35);
-		box-shadow: 0 14px 44px rgba(0, 0, 0, 0.8);
+		background: linear-gradient(180deg, rgba(22, 38, 52, 0.98) 0%, rgba(8, 16, 24, 0.99) 100%);
+		border: 1px solid rgba(232, 196, 120, 0.45);
+		/* the ninja palette (was the jungle game's olive): lacquer navy, a brass
+		   edge and the headband's crimson along the top */
+		box-shadow: inset 0 3px 0 rgba(183, 47, 61, 0.9), 0 14px 44px rgba(0, 0, 0, 0.8);
 		color: #fff;
 		font-family: var(--gb-body-font, sans-serif);
 		text-align: center;
@@ -269,7 +271,7 @@
 		margin-top: 0.15rem;
 		padding: 0.45rem 0.55rem;
 		border-radius: 8px;
-		background: rgba(255, 215, 94, 0.07);
+		background: rgba(232, 196, 120, 0.08);
 	}
 
 	dt {
@@ -285,7 +287,7 @@
 		color: #ffd75e;
 	}
 	.win {
-		color: #9ee27a;
+		color: #f5d994;
 	}
 	.big {
 		font-size: 1.05rem;

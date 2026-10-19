@@ -7,7 +7,18 @@
 
 	import { getContext } from '../game/context';
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
-	import { BG_BASE, BG_BASE_R } from '../game/meshWin';
+	import {
+		BG_BASE,
+		BG_CLOTH,
+		BG_CRYSTALS_FLOOR,
+		BG_CRYSTALS_CORNER,
+		BG_CRYSTALS_RIGHT,
+		BG_COINS,
+	} from '../game/meshWin';
+	import { BG_POTIONS } from '../game/meshWin/potionBoil';
+	import BgBubbles from './BgBubbles.svelte';
+	import { crispPlate } from '../game/crispPlate';
+	import type { Texture } from 'pixi.js';
 	import BgProps from './BgProps.svelte';
 
 	const context = getContext();
@@ -27,7 +38,9 @@
 	// uses the OVERSCAN margin, not the crop, so in portrait it does not slide the
 	// plate sideways across half its width. BgProps is handed the same rect, so
 	// the lantern and ropes stay pinned to the art.
-	const OVERSCAN = 1.08;
+	// 4%, not 8%: the overscan is a GPU enlargement of the whole plate, and the
+	// user wants the scene crisp (2026-10-16). Half the drift, half the stretch.
+	const OVERSCAN = 1.04;
 	const PLATE = [1920, 1080];
 	const parallax = $derived.by(() => {
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
@@ -48,15 +61,17 @@
 	// Soft textured motes (fxGlow), never hard vector circles ──────────────────
 	const MOTE_COLORS = [0xffe98a, 0xfff7d6, 0xd9e88a, 0xffd75e];
 	const NIGHT_COLORS = [0xffd75e, 0xfff2b0, 0x9fd0ff, 0xffe98a];
-	const motes = Array.from({ length: 22 }, (_, i) => ({
+	// Small and few (2026-10-16): 22 soft blobs up to 58px floated in front of
+	// the plate and read as haze over it. Specks of dust now, the scene clear.
+	const motes = Array.from({ length: 14 }, (_, i) => ({
 		seedX: Math.random(),
 		seedY: Math.random(),
-		size: 12 + Math.random() * 46,
+		size: 5 + Math.random() * 9,
 		colorIndex: i % 4,
 		phase: Math.random() * Math.PI * 2,
 		riseSpeed: 0.012 + Math.random() * 0.022,
 		swayAmp: 18 + Math.random() * 46,
-		alpha: 0.1 + Math.random() * 0.22,
+		alpha: 0.25 + Math.random() * 0.3,
 	}));
 
 	const moteState = (mote: (typeof motes)[number]) => {
@@ -90,6 +105,9 @@
 	onMount(() => {
 		const id = setInterval(() => {
 			clock += 0.016;
+			// mip chains for the plates, once each is loaded (game/crispPlate.ts)
+			for (const key of ['gbBgBase', 'gbBgFeature', 'gbBgHoldAndSpin'])
+				crispPlate(context.stateApp.loadedAssets?.[key] as Texture | undefined);
 		}, 16);
 		return () => clearInterval(id);
 	});
@@ -102,17 +120,30 @@
 	<Sprite key="gbBgBase" {...parallax} />
 	<!-- the two lanterns swaying on their chains (meshWin/bgProps.ts) -->
 	<BgProps spec={BG_BASE} {...parallax} />
-	<BgProps spec={BG_BASE_R} {...parallax} />
+	<!-- the cloth over the left table stirs -->
+	<BgProps spec={BG_CLOTH} {...parallax} />
+	<!-- the flasks on the shelves and table simmer (meshWin/potionBoil.ts) -->
+	<BgBubbles potions={BG_POTIONS.base} {...parallax} />
 </FadeContainer>
 
 <!-- 烈日突擊 free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgFeature" {...parallax} />
+	<!-- the crystals standing clear of the brass slowly swell (meshWin/bgProps.ts) -->
+	<BgProps spec={BG_CRYSTALS_FLOOR} {...parallax} />
+	<BgProps spec={BG_CRYSTALS_CORNER} {...parallax} />
+	<BgProps spec={BG_CRYSTALS_RIGHT} {...parallax} />
+	<!-- the crystal vault's glowing tubes bubble -->
+	<BgBubbles potions={BG_POTIONS.feature} {...parallax} />
 </FadeContainer>
 
 <!-- 地底金庫 hold-and-spin background -->
 <FadeContainer show={isHoldAndSpin} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgHoldAndSpin" {...parallax} />
+	<!-- the treasure vault's caged lanterns sway; its flasks simmer -->
+	<!-- the coin pile shudders when new coins land on the board -->
+	<BgProps spec={BG_COINS} {...parallax} />
+	<BgBubbles potions={BG_POTIONS.vault} {...parallax} />
 </FadeContainer>
 
 <!-- ambient bokeh drifting in front of whichever scene is showing -->

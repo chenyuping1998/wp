@@ -60,7 +60,7 @@
 		{
 			icons: ['turbo'],
 			name: 'Turbo',
-			text: 'Shortens the spin and win presentations. Lit means turbo is on.',
+			text: 'Press once for Turbo (one bolt): quicker spins and win presentations. Press again for Turbo 2 (two bolts): the reels stop quicker still and Pin collections play faster. A third press turns turbo off.',
 		},
 		{
 			icons: ['menu'],
@@ -281,7 +281,7 @@
 				<p>
 					The <strong>Bowler</strong> is the Wild. It appears on reels 2 to 5. Whenever at least
 					one Bowler and at least one Pin are on the board after the reels stop,
-					<strong>every Bowler collects the total value of every Record</strong>: two Bowlers
+					<strong>every Bowler collects the total value of every Pin</strong>: two Bowlers
 					collect it twice. The collection is added to any {T.ways} win on the same spin. This
 					happens in the base game as well as in Free Spins.
 				</p>

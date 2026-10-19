@@ -112,6 +112,13 @@
 	};
 
 	const root = new Container();
+	const instrumentBeats: Record<string, number[]> = {
+		H1: [240, 820], H2: [220, 520, 820, 1060],
+		H3: [300, 490, 680, 860, 1050], H4: [220, 500, 780, 1040],
+	};
+	const noteOrigins: Record<string, [number, number]> = {
+		H1: [214, 70], H2: [205, 75], H3: [185, 60], H4: [210, 95],
+	};
 
 	onMount(() => {
 		const speed = props.fixedSpeed ? 1 : stateBetDerived.timeScale();
@@ -146,6 +153,21 @@
 		content.position.set(-CANVAS / 2, -CANVAS / 2);
 		if (shadow) content.addChild(shadow);
 		content.addChild(subject);
+		// Printed ink notes answer the actual instrument hits. They live in the
+		// subject canvas, so every winning copy follows its own cell; idle and land
+		// acts do not emit them. Keep them outside the instrument's main silhouette.
+		const beats = props.spec ? [] : (instrumentBeats[spec.symbol] ?? []);
+		const origin = noteOrigins[spec.symbol] ?? [128, 90];
+		const notes = beats.map((_, i) => {
+			const note = new Text({
+				text: i % 2 ? '♫' : '♪', anchor: 0.5,
+				style: { fontFamily: 'Georgia, serif', fontSize: i % 2 ? 53 : 59,
+					fill: 0x8e2936, stroke: { color: 0xf4e7c8, width: 3 } },
+			});
+			note.alpha = 0;
+			content.addChild(note);
+			return note;
+		});
 		root.addChild(content);
 		root.scale.set(fit);
 		root.position.set(props.x ?? 0, props.y ?? 0);
@@ -158,6 +180,15 @@
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();
 			root.scale.set(fit * pose.plateHit);
+			notes.forEach((note, i) => {
+				const age = (t - beats[i]) / 500;
+				if (age <= 0 || age >= 1) { note.alpha = 0; return; }
+				const rise = 1 - (1 - age) ** 2;
+				note.position.set(origin[0] + i % 2 * 12 + 16 * Math.sin(age * 3.2 + i), origin[1] - 45 * rise - i % 2 * 9);
+				note.rotation = (i % 2 ? 1 : -1) * (0.12 + age * 0.12);
+				note.scale.set(0.65 + 0.35 * Math.sin(Math.PI * Math.min(1, age * 1.2)));
+				note.alpha = Math.min(1, age * 7) * (1 - age) ** 0.7;
+			});
 
 			if (shadow) {
 				const air = pose.air;

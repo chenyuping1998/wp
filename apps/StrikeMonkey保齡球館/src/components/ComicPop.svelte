@@ -149,11 +149,10 @@
 	};
 
 	context.eventEmitter.subscribeOnMount({
-		banditCollect: ({ collectors }) => {
-			// one word per collector, at most two, so a crowded board stays readable
-			for (const c of collectors.slice(0, 2)) {
-				spawn('collect', getSymbolX(c.reel), rowCenterY(c.row) - SYMBOL_SIZE * 0.62);
-			}
+		// the word lands with the LAST pin on each collector — the payoff of the
+		// chain (BanditCollect), not its start (2026-10-18)
+		banditCollectFinale: ({ reel, row }) => {
+			spawn('collect', getSymbolX(reel), rowCenterY(row) - SYMBOL_SIZE * 0.62);
 		},
 		scatterBurst: () => spawn('trigger', BOARD_W / 2, BOARD_H * 0.3),
 		banditLevelUp: () => spawn('levelUp', BOARD_W / 2, BOARD_H * 0.5),

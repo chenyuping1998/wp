@@ -6,15 +6,11 @@
 //
 // Fails on:
 //   1. the body mesh at rest not sitting exactly on the art
-//   2. any ACCESSORY triangle (inked, with the flowing bones holding >= 20% of
-//      its weight) folding under 50% or stretching past 1.6x of its rest area
-//      in any animation — or, where the arm swings already pull the body past
-//      that, folding/stretching worse than the body does (0.9x / 1.25x); and any inked triangle at all INVERTING. The body's
-//      other triangles are only reported: Boom's arm swings (throw, chest beat)
-//      already pulled the coarse first rig to 19% / 184% before any accessory
-//      existed, and that is the arm weights' budget, not this rig's.
+//   2. ANY painted body/accessory triangle outside 50%..160% of its rest area.
 //   3. a flowing accessory that does not visibly move (< 3px of tip travel
 //      against where its parent carries it), or one that flails (> 40px)
+//   4. shoulder/elbow/wrist and hip/knee/ankle segment lengths changing > 5%,
+//      or an elbow exceeding the authored 35-degree rotation envelope.
 // Usage: node design/check_alchemist_mesh.mjs [toolsDir]   (pngjs lives there)
 import fs from 'node:fs';
 import path from 'node:path';
@@ -33,6 +29,10 @@ const { PNG } = require('pngjs');
 const dir = path.join(root, 'static/assets/spines/goBananasMonkey');
 const atlas = new TextureAtlas(fs.readFileSync(path.join(dir, 'monkey.atlas'), 'utf8'));
 const json = JSON.parse(fs.readFileSync(path.join(dir, 'monkey.json'), 'utf8'));
+if(json.skeleton.hash==='gb-alchemist-boom-v3'){
+ await import('./check_alchemist_parts.mjs');
+ process.exit(process.exitCode??0);
+}
 const data = new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(json);
 const skeleton = new Skeleton(data);
 const state = new AnimationState(new AnimationStateData(data));
@@ -57,7 +57,7 @@ for (let i = 0; i < tris.length; i += 3) {
 }
 
 // which triangles the flowing accessories own
-const FLOW_BONES = new Set(['coatL1', 'coatL2', 'coatR1', 'coatR2', 'flask', 'vials', 'goggles', 'banana', 'jaw'].map((n) => data.findBone(n)?.index));
+const FLOW_BONES = new Set(['coatL1', 'coatL2', 'coatR1', 'coatR2', 'flask', 'vials', 'goggles', 'banana', 'jaw', 'flapL', 'skirtR', 'crown', 'furL', 'furR', 'strap', 'furArmL', 'furArmR'].map((n) => data.findBone(n)?.index));
 const flowShare = new Float64Array(mesh.worldVerticesLength / 2);
 {
 	const vs = att.vertices;
@@ -81,6 +81,11 @@ const areas = () => {
 skeleton.setToSetupPose();
 skeleton.updateWorldTransform(Physics.reset);
 const rest = areas();
+const segments = [['armL','armL_fore'],['armL_fore','armL_hand'],['armR','armR_fore'],['armR_fore','armR_hand'],['legL','legL_calf'],['legL_calf','legL_foot'],['legR','legR_calf'],['legR_calf','legR_foot']].map(([a,b])=>{
+	const parent=skeleton.findBone(a),child=skeleton.findBone(b);
+	return {a:parent,b:child,rest:Math.hypot(child.worldX-parent.worldX,child.worldY-parent.worldY)};
+});
+let segmentMin=Infinity,segmentMax=0,maxElbow=0;
 let maxRestError = 0;
 for (let v = 0; v < mesh.worldVerticesLength / 2; v++) {
 	const expectedX = W * att.uvs[v * 2] - W / 2;
@@ -98,7 +103,7 @@ const at = (t) => {
 };
 
 // accessory tips: travel of the tip against where the PARENT carries it rigidly
-const FLOW = ['coatL2', 'coatR2', 'flask', 'vials', 'goggles', 'banana'];
+const FLOW = ['coatL2', 'coatR2', 'flask', 'vials', 'goggles', 'banana', 'flapL', 'skirtR', 'crown', 'furL', 'furR', 'strap', 'furArmL', 'furArmR'];
 const tipOf = (b) => [b.worldX + b.a * b.data.length, b.worldY + b.c * b.data.length];
 const carried = (b) => {
 	// the tip if the bone kept its setup rotation relative to its parent
@@ -127,6 +132,8 @@ for (const animation of data.animations) {
 		skeleton.update(STEP);
 		skeleton.updateWorldTransform(Physics.update);
 		const posed = areas();
+		for(const s of segments){const ratio=Math.hypot(s.b.worldX-s.a.worldX,s.b.worldY-s.a.worldY)/s.rest;segmentMin=Math.min(segmentMin,ratio);segmentMax=Math.max(segmentMax,ratio);}
+		for(const name of ['armL_fore','armR_fore']){const b=skeleton.findBone(name);maxElbow=Math.max(maxElbow,Math.abs(b.rotation-b.data.rotation));}
 		for (let i = 0; i < posed.length; i++) {
 			if (!inked[i]) continue;
 			const ratio = posed[i] / rest[i];
@@ -165,18 +172,57 @@ for (const animation of data.animations) {
 const line = `accessory triangles (${accessory.filter(Boolean).length}) ${Math.round(lo * 100)}%..${Math.round(hi * 100)}% (fold ${loAt}; stretch ${hiAt})`;
 // the accessories may never be the worst thing on the figure: 50% / 1.6x, or
 // no worse than the arm swings already leave the body (see the header)
-const floor = Math.min(0.5, 0.9 * bodyLo), ceil = Math.max(1.6, 1.25 * bodyHi);
+const floor = 0.5, ceil = 1.6;
 if (!(lo >= floor) || hi > ceil) fail(`${line} — limits ${Math.round(floor * 100)}%..${Math.round(ceil * 100)}%`);
 else console.log(`  ok ${line} — limits ${Math.round(floor * 100)}%..${Math.round(ceil * 100)}%`);
 const body = `rest of the body ${Math.round(bodyLo * 100)}%..${Math.round(bodyHi * 100)}% (worst ${bodyAt})`;
-if (!(bodyLo > 0)) fail(`${body} — a triangle inverts`);
-else console.log(`  -- ${body} (reported, see header)`);
+if (bodyLo < 0.5 || bodyHi > 1.6) fail(`${body} — outside anatomical skin limits 50%..160%`);
+else console.log(`  ok ${body} — anatomical skin limits 50%..160%`);
+if(segmentMin<.95||segmentMax>1.05)fail(`limb lengths drift: ${segmentMin.toFixed(3)}..${segmentMax.toFixed(3)}`);
+else console.log(`  ok anatomical chains: ${(segmentMin*100).toFixed(1)}%..${(segmentMax*100).toFixed(1)}% of setup length`);
+if(maxElbow>35)fail(`elbow rotates ${maxElbow.toFixed(1)}deg beyond setup`);
 for (const name of FLOW) {
 	const t = travel[name];
 	const l = `${name} tip travels ${t.toFixed(1)}px off its parent`;
 	if (t < 3) fail(`${l} — does not visibly flow`);
 	else if (t > 40) fail(`${l} — flails`);
 	else console.log(`  ok ${l}`);
+}
+// THE BLINK (design/alchemist_blink.py): the painted lids are a mesh whose
+// every vertex is a COPY of a body vertex, so through every action they must
+// sit exactly where the face under them goes; and the blink loop shows them.
+{
+	const lidsSlot = skeleton.findSlot('lids');
+	const blink = data.findAnimation('blink');
+	if (!lidsSlot || !blink) fail('no lids slot / blink animation');
+	else {
+		const lidAtt = json.skins[0].attachments.lids.lids_closed;
+		// match each lid vertex to the body vertex with the same weight entries
+		const entries = (vs) => { const out = []; for (let i = 0; i < vs.length;) { const n = vs[i]; out.push(vs.slice(i, i + 1 + 4 * n).join(',')); i += 1 + 4 * n; } return out; };
+		const bodyIndex = new Map(entries(att.vertices).map((e, i) => [e, i]));
+		const pairs = entries(lidAtt.vertices).map((e) => bodyIndex.get(e));
+		if (pairs.some((i) => i === undefined)) fail('a lid vertex is not a body vertex');
+		const lidMesh = skeleton.getAttachment(lidsSlot.data.index, 'lids_closed');
+		const lxy = new Float32Array(lidMesh.worldVerticesLength);
+		let worst = 0, shown = 0;
+		for (const anim of data.animations) {
+			if (['blink', 'flutter'].includes(anim.name)) continue;
+			skeleton.setToSetupPose();
+			const st = new AnimationState(new AnimationStateData(data));
+			st.setAnimation(0, anim.name, true);
+			st.setAnimation(2, 'blink', true);
+			for (let f = 0; f * 1 / 30 < Math.max(anim.duration, blink.duration); f++) {
+				st.update(1 / 30); st.apply(skeleton); skeleton.update(1 / 30); skeleton.updateWorldTransform(Physics.update);
+				if (lidsSlot.getAttachment()) shown++;
+				mesh.computeWorldVertices(slot, 0, xy.length, xy, 0, 2);
+				lidMesh.computeWorldVertices(lidsSlot, 0, lxy.length, lxy, 0, 2);
+				pairs.forEach((b, v) => { worst = Math.max(worst, Math.hypot(lxy[v * 2] - xy[b * 2], lxy[v * 2 + 1] - xy[b * 2 + 1])); });
+			}
+		}
+		if (worst > 0.01) fail(`lids drift ${worst.toFixed(3)}px off the face`);
+		else if (!shown) fail('the blink never shows the lids');
+		else console.log(`  ok blink: lids ride the face (${worst.toFixed(4)}px), shown on ${shown} frames, loop ${blink.duration}s`);
+	}
 }
 console.log(`physics: ${skeleton.physicsConstraints.filter((p) => p.active).length}/${skeleton.physicsConstraints.length} constraints active`);
 if (skeleton.physicsConstraints.some((p) => !p.active)) fail('a physics constraint is inactive (each needs its own order)');

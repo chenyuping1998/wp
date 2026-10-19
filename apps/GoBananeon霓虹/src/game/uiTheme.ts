@@ -91,17 +91,19 @@ setUiTheme({
 	spinButtonGlow: true,
 
 	// PHONE PORTRAIT: the menu disc and the Buy Bonus plate sat at ±470 and ran
-	// off both screen edges (the menu lost a third of its disc). ±440 keeps
-	// both inside with ~30 units to spare and still clears turbo/autoplay.
-	portraitSideButtonX: 440,
+	// off both screen edges (the menu lost a third of its disc). ±400 matches
+	// Bowling Monkey and keeps both comfortably inside the phone viewport.
+	portraitSideButtonX: 400,
 	// The bet -/+ were 27 CSS px on a 390-wide phone; 0.68 makes them ~37 and
 	// leaves a visible gap to the spin button and to autoplay/turbo (0.72 all
 	// but touched autoplay, checked in the sandbox 2026-09-27).
 	portraitStepButtonScale: 0.68,
-	// the same pair on the desktop strip: 28px -> 36px, the gap widened with it
-	// so the two plates do not touch
-	stepButtonScale: 0.36,
+	// Match Bowling Monkey's single-row − BET + cluster. The larger step buttons
+	// stay legible beside the stake instead of forming a tiny vertical pair.
+	stepButtonScale: 0.46,
 	stepButtonGap: 28,
+	stepperLayout: 'flank',
+	buyBonusHideInFreeSpins: true,
 
 	// the Win figure swells and flashes gold when a win lands; the Bet figure
 	// swells when the stake moves

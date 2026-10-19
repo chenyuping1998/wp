@@ -6,7 +6,8 @@
 // of thing a certification pass flags as a "poor bet UI bar". These replace them
 // with proper drawn icons.
 //
-// TWO SETS ARE WRITTEN, from one set of shapes:
+// TWO SETS ARE WRITTEN, from one set of shapes except the active skin's Auto
+// Spin icon, which uses Bowling Monkey's simpler circular-arrow asset:
 //
 //   goBananasUiIcons      brass metallic fill, dark outline, top highlight and a
 //                         soft drop shadow, matched to the reel housing so the
@@ -202,6 +203,9 @@ for (const palette of Object.values(PALETTES)) {
 	const out = path.join(appRoot, 'static/assets/sprites', palette.dir);
 	fs.mkdirSync(out, { recursive: true });
 	for (const [name, shape] of Object.entries(shapes)) {
+		// The active neon skin uses Bowling Monkey's simpler circular arrow for
+		// Auto Spin. Keep that shared-house icon when regenerating this set.
+		if (palette === PALETTES.mono && name === 'autoSpin') continue;
 		const svg = icon(typeof shape === 'function' ? shape(palette) : shape, palette);
 		const resvg = new Resvg(svg, {
 			fitTo: { mode: 'width', value: SIZE },

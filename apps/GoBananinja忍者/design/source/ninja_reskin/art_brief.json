@@ -1,0 +1,56 @@
+{
+  "mode": "built-in image_gen",
+  "brief": {
+    "mascot": "Repaint Goboomana PSD atlas clothing as indigo Japanese shinobi outfit, crimson sash and headband, cloth shin wraps and tabi; preserve part layout, gorilla anatomy and exposed arms; replace dynamite with matching jade shuriken.",
+    "H1": "Keep samurai kabuto subject and slate frame; indigo lacquer bowl, red crescent horns, green jade crest and crimson cord.",
+    "Wild": "Replace youthful monkey with mature hooded Goboomana gorilla identity, crimson headband and indigo scarf, preserving frame and left streaming headband tails.",
+    "split_symbols": "Apply the same H1 and Wild designs to both overlapping motifs; mirror foreground Wild to face left.",
+    "head_v2": "Compact broad gorilla head matching Boomana original anatomy and head-to-body proportions, rounded close-fitting indigo hood, narrow crimson band above eyebrows; both eyes fully visible with amber irises, pupils, pale sclera and highlights, referencing Anubis open-face hood. No vertical stretching, no pointed crown, no eye obstruction.",
+    "Wild_v2": "Match corrected compact gorilla head, short broad muzzle and exposed amber eyes in Wild and both mirrored split portraits; preserve slate frames, streaming red headband tails and indigo scarf layout for mesh animation."
+  },
+  "source_psd": "../GoBananeon霓虹/design/source/monkey/boom_original.psd",
+  "bones": "25 Goboomana bones, hierarchy and setup transforms unchanged",
+  "rebuild": "design/install_boom_ninja.py; design/build_sharp_high_symbols.py; design/fit_split_motifs.py H1,W; design/make_symbol_layers.py h1,h1s,w,ws",
+  "head_fit": {
+    "max_bounds": [
+      280,
+      280
+    ],
+    "chin_y": 300,
+    "center_x": 284,
+    "uniform_scale": true
+  },
+  "native_layer_fixes_v3": {
+    "waist": "Torso hem and red sash drawn above thigh attachments to prevent clipped tails.",
+    "banana": "Clean PSD residual alpha, move +18,-17 px to new mouth, bind banana and lip overlay to same head transform.",
+    "shuriken": "Move jade star from hand to armL shoulder; one blade occluded by torso and sleeve; visible throughout all animations."
+  },
+  "motion_v4": {
+    "base_body_bones": 25,
+    "appended_cloth_bones": 5,
+    "cloth": "Continuous weighted jacket mesh, pinned waistband, independent hem and sash chains with physics and seamless 4.8s accessory loop.",
+    "split": "Authored guard, diagonal strike at 0.32s and damped recovery; alternate clip restarts repeated cuts; finale receives stronger accent.",
+    "rare_trigger": "Two strikes at 0.56s and 1.02s synchronized to audio.",
+    "transitions": "Smooth monotone cubic keys, softer return to idle, quiet dance loop; turbo shares reel timing.",
+    "validation": "60fps clip sweep, 120fps mixed transitions, exact rest-art registration and non-inverting inked triangles."
+  },
+  "presentation_v6": {
+    "idle": "2.3s board glance and guard adjustment, spaced 11s apart and interruptible by feature actions.",
+    "reactions": "Queue big-win cheer until slash/throw completion; exit celebration immediately when its presentation closes.",
+    "split_fx": "Red/gold directional fragments, wider finale fan, monotonic reveal fade; reset cancels pending sound cues and stale split continuations.",
+    "big_win": "Single cancellable RAF clock drives plaque, damped shake, scale punch and brief flash; no overlapping timer remnants on skips or tier changes.",
+    "validation": "Additional 120fps watch-to-cut and scatter-to-cheer transition mesh checks."
+  },
+  "sword_energy_v7": {
+    "renderer": "Native additive Pixi geometry outside reel lighting, centred on board; tapered curved silhouette, three bloom layers, white razor core, staggered filaments and ballistic splinters.",
+    "timing": "110ms anticipation hairline, 150-320ms travel, peak contact at 320ms, peel-away recovery to 740ms; same 0.6 Turbo factor as character and reels.",
+    "lifecycle": "One effect per lead reel, latest cut replaces current effect, clear/restore/unmount cancel the RAF; input passes through the layer.",
+    "preview": "sword_slash.gif uses the actual geometry function over representative symbol art; this is an effect review, not a game screenshot."
+  },
+  "all_straps_v5": {
+    "covered": "Both headband tails, both sleeve tails, lateral waist sash, existing front sash tails, both ties on each shin, loose heel tie.",
+    "binding": "Original 25 body joints preserved; new free-end chains append to the skeleton. Knots and wound wraps stay pinned; visible ends receive phase-lagged breeze and inertial physics.",
+    "base_skin": "Fine meshes preserve barycentric weighted local positions so original cuff and shoulder deformations are unchanged.",
+    "checks": "All visible groups own painted vertices and move independently. Source registration, 60fps poses and 120fps mixed/ Turbo transitions checked."
+  }
+}

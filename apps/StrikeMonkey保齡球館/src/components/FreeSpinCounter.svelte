@@ -17,7 +17,7 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT, NUMBER_FONT } from '../game/fonts';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
-	import { Container, Graphics, Text } from 'pixi-svelte';
+	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	import { getContext } from '../game/context';
@@ -31,7 +31,6 @@
 
 	const PAPER = 0xf7ead0;
 	const RED = 0xe8502e;
-	const GREEN = 0x3fc4a8;
 	const INK = 0x14262e;
 	const UPGRADE = 0x8e5bd6;
 
@@ -145,39 +144,90 @@
 
 	const drawTicket = (g: PixiGraphics) => {
 		g.clear();
-		// red offset print under the paper, like a misregistered second pass
-		g.roundRect(6, 6, W, H, 14).fill(RED);
-		g.roundRect(0, 0, W, H, 14).fill(PAPER).stroke({ width: 4, color: INK });
+		// The plate is the card's paper and ink frame with a strip of the alley's
+		// score screens for a header (v8FgCounter, design/build_strike_fg_sign.py,
+		// 2026-10-18) — the red offset print and flat green band it replaced read
+		// as program art. Only the level-up pulse is still drawn.
 		const pulse = levelPulseT < 1 ? Math.sin(Math.PI * levelPulseT) : 0;
-		if (pulse > 0) g.roundRect(3, 3, W - 6, H - 6, 11).stroke({ width: 3, color: RED, alpha: pulse });
-		// green band behind the title
-		g.roundRect(10, 10, W - 20, H * 0.22, 8).fill(GREEN);
+		if (pulse > 0) g.roundRect(4, 4, W - 8, H - 8, 13).stroke({ width: 4, color: RED, alpha: pulse });
+	};
+
+	// THE PIPS ARE BOWLING PINS (user, 2026-10-18; were a five-point trapezoid).
+	// The silhouette is a half-width profile down the pin's height — round head,
+	// thin neck, full belly, flat foot — sampled through a Catmull-Rom curve and
+	// mirrored. Lit: a cream pin with the two red neck stripes, inked. Unlit: the
+	// same pin as a faint empty outline, so the rung's length is always visible.
+	const PIN_PROFILE: [number, number][] = [
+		[0, 0], [0.006, 0.042], [0.025, 0.078], [0.07, 0.106], [0.13, 0.112], [0.2, 0.094], [0.27, 0.062],
+		[0.33, 0.06], [0.42, 0.112], [0.54, 0.178], [0.66, 0.2], [0.78, 0.186], [0.9, 0.142],
+		[0.97, 0.112], [1, 0.104],
+	];
+	const pinWidth = (y: number) => {
+		const P = PIN_PROFILE;
+		let i = 0;
+		while (i < P.length - 2 && y > P[i + 1][0]) i++;
+		const p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)];
+		const t = (y - p1[0]) / (p2[0] - p1[0] || 1);
+		const t2 = t * t, t3 = t2 * t;
+		return 0.5 * (2 * p1[1] + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2
+			+ (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3);
+	};
+	const PIN_STEPS = 28;
+	/** the pin's outline, `h` tall, its foot at (x, foot) */
+	const pinOutline = (x: number, foot: number, h: number) => {
+		const pts: number[] = [];
+		// down the right side, then back up the left
+		for (let i = 0; i <= PIN_STEPS; i++) {
+			const v = i / PIN_STEPS;
+			pts.push(x + Math.max(0, pinWidth(v)) * h, foot - h + v * h);
+		}
+		for (let i = PIN_STEPS; i >= 0; i--) {
+			const v = i / PIN_STEPS;
+			pts.push(x - Math.max(0, pinWidth(v)) * h, foot - h + v * h);
+		}
+		return pts;
+	};
+	/** a stripe across the neck from v0 to v1 of the height */
+	const pinBand = (x: number, foot: number, h: number, v0: number, v1: number) => {
+		const pts: number[] = [];
+		for (const v of [v0, (v0 + v1) / 2, v1]) pts.push(x + pinWidth(v) * h, foot - h + v * h);
+		for (const v of [v1, (v0 + v1) / 2, v0]) pts.push(x - pinWidth(v) * h, foot - h + v * h);
+		return pts;
 	};
 
 	const drawPips = (g: PixiGraphics) => {
 		g.clear();
 		const n = Math.max(1, rungSize);
-		const gap = W * 0.16;
+		const gap = W * 0.15;
 		const startX = W * 0.5 - ((n - 1) * gap) / 2;
-		const y = H * 0.77;
+		// between the count (H .62) and the replacements line (H .93)
+		const foot = H * 0.84;
 		for (let i = 0; i < n; i++) {
 			const lit = i < rungFilled;
-			const k = i === popIndex && popT < 1 ? 1 + 0.6 * Math.sin(popT * Math.PI) : 1;
-			const r = W * 0.055 * k;
+			const k = i === popIndex && popT < 1 ? 1 + 0.45 * Math.sin(popT * Math.PI) : 1;
+			const h = W * 0.13 * k;
 			const x = startX + i * gap;
-			g.poly([x-r*.34,y-r,x+r*.34,y-r,x+r*.23,y-r*.3,x+r*.7,y+r*.82,x-r*.7,y+r*.82,x-r*.23,y-r*.3]).fill(lit ? RED : PAPER).stroke({ width: 2.4, color: INK });
-			g.moveTo(x-r*.28,y-r*.3).lineTo(x+r*.28,y-r*.3).stroke({ width: 2.2, color: lit ? PAPER : INK });
+			if (lit) {
+				g.poly(pinOutline(x, foot, h)).fill(PAPER);
+				g.poly(pinBand(x, foot, h, 0.245, 0.285)).fill(RED);
+				g.poly(pinBand(x, foot, h, 0.31, 0.345)).fill(RED);
+				g.poly(pinOutline(x, foot, h)).stroke({ width: 2.4, color: INK, join: 'round' });
+			} else {
+				g.poly(pinOutline(x, foot, h)).fill({ color: INK, alpha: 0.08 });
+				g.poly(pinOutline(x, foot, h)).stroke({ width: 2, color: INK, alpha: 0.4, join: 'round' });
+			}
 		}
 	};
 </script>
 
 <MainContainer>
 	<FadeContainer {show} {...position}>
+		<Sprite key="v8FgCounter" width={W} height={H} />
 		<Graphics draw={drawTicket} />
 		<Text
 			anchor={0.5}
 			x={W * 0.5}
-			y={10 + H * 0.11}
+			y={H * 0.14}
 			text={title}
 			style={{
 				fontFamily: GAME_FONT,
@@ -185,6 +235,7 @@
 				fontWeight: GAME_FONT_WEIGHT,
 				letterSpacing: 2,
 				fill: PAPER,
+				stroke: { color: INK, width: 5, join: 'round' },
 				wordWrap: false,
 			}}
 		/>

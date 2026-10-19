@@ -1,21 +1,7 @@
-/**
- * H2 — THE CRYSTAL CLUSTER IN ITS BRASS BOWL. The bowl stays put; the crystals
- * CHARGE: the two side clusters flare outward from their roots and spring
- * back, the tall spire in the middle swells, and a second, smaller charge
- * follows — no flash (2026-10-04), the shape change is the hit.
- *
- * CUT mode (design/make_alchemy_layers.py, 2026-10-04): the cluster and its
- * bowl are lifted off the slate and LEAP off it — the tile stays still — and
- * at the top the whole thing turns like a card being flipped, then lands
- * with a squash; the charge plays through it.
- *
- * Coordinates are the 256 canvas (goBanalchemySymbols/h2.png, 2026-10-04):
- * spire (103..148, 10..170), left cluster (40..110, 50..165), right cluster
- * (148..216, 40..165), bowl (56..200, 148..225).
- */
+/** Alchemy v2: fixed plate; independently weighted painted parts perform.
+ * No rigid flip, tile jump, or impact dust. Geometry follows the repaint. */
 import {
 	flick,
-	leap,
 	polygon,
 	ramp,
 	restPose,
@@ -26,7 +12,6 @@ import {
 } from './meshRig';
 
 const T = { crouch: 110, hit: 250, land: 900, done: 1450 };
-const LEAP = { crouch: 120, rise: 320, fall: 700, land: 900, hop2: 1140, done: 1450 };
 
 const SPIRE = polygon([[103, 168], [104, 42], [128, 9], [147, 40], [149, 168]]);
 const LEFT = polygon([[40, 108], [42, 50], [66, 56], [98, 62], [108, 112], [106, 164], [78, 158], [58, 140]]);
@@ -37,17 +22,22 @@ const CLUSTER = (p: [number, number]) => Math.min(polygon([[38, 106], [42, 46], 
 export const H2: MeshWinSpec = {
 	symbol: 'H2',
 	key: 'gbH2',
+	sprite: 'gbH2',
+	mode: 'panel',
+	inked: (p) => CLUSTER(p) === 0,
 	feetY: 226,
 	durationMs: T.done,
-	landMs: T.land,
+	landMs: 99999,
 	hitMs: T.hit,
 	sparkAt: [128, 100],
 	rig: {
+		fixedBorder: 10,
 		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 },
 		soft: 4,
 		parts: [
 			// the bowl, which everything grows from
-			{ name: 'panel', pivot: [128, 226], axis: [0, -1], dist: CLUSTER },
+			{ name: 'frame', pivot: [128, 128], dist: () => 14 },
+			{ name: 'panel', parent: 'frame', pivot: [128, 226], axis: [0, -1], dist: CLUSTER },
 			{
 				name: 'spire',
 				parent: 'panel',
@@ -107,12 +97,6 @@ export const H2: MeshWinSpec = {
 		const panel = b('panel');
 		panel.along = track(t, [[0, 1], [T.crouch, 0.985, 'out'], [T.hit, 1.005, 'out'], [420, 1], [T.land - 20, 1], [T.land + 50, 0.985, 'out'], [T.done, 1, 'out']]);
 
-		// THE LEAP, turning like a card at the top
-		const { rigid, air } = leap(t, LEAP, 24);
-		const turn = smoothstep((t - LEAP.rise + 40) / (LEAP.fall - LEAP.rise + 20));
-		rigid.sx *= Math.max(0.12, Math.abs(Math.cos(Math.PI * turn)));
-		pose.rigid = rigid;
-		pose.air = air;
 		return pose;
 	},
 };

@@ -8,8 +8,8 @@
 	import PropMesh from './PropMesh.svelte';
 
 	// Neon transition: the gorilla pitches a Pulse Bomb into the middle of the
-	// screen — two violet surges — and it discharges: shockwave rings, forked
-	// lightning, plasma blooms. The cut to the next scene lands on the white-hot
+	// screen — two violet surges — and it discharges: a tight shockwave, current
+	// reaching the five reels, and brief plasma blooms. The cut lands on the hot
 	// peak. (The variable names still say "dynamite": this was GoBoomana's.)
 	//
 	// The dynamite comes out of his HAND when he is on screen, and drops in from
@@ -46,9 +46,9 @@
 	const FLIGHT_MS = 340; // hand to the middle of the screen
 	const DROP_MS = 460; // the no-mascot fallback: straight down, face-on
 	const TICK_MS = 260; // armed: two red blinks
-	// Longer than it was (420ms) to make room for the smoke. The blast itself did
-	// not need more time; what it needed was somewhere for the white-out to GO.
-	const BOOM_MS = 700;
+	// The flash covers the scene swap, then clears soon enough for the reel
+	// contacts to read. This beat needs room after the flash, not a longer white-out.
+	const BOOM_MS = 850;
 
 	// Which entrance this run uses is decided ONCE, on mount. Reading the state
 	// every frame would let a resize part-way through swap the dynamite from a
@@ -81,34 +81,39 @@
 	// to is the new scene seen through drifting smoke, which is the whole effect.
 	const FLASH_IN = 0.22; // reaches full here
 	const FLASH_HOLD = 0.46; // stays full until here
-	const FLASH_OUT = 0.86; // gone by here
+	const FLASH_OUT = 0.72; // clear before the reel-by-reel current becomes visible
 	// The swap must happen while the screen is genuinely opaque. Placed inside the
 	// hold rather than at its edge: a frame landing a millisecond before FLASH_IN
 	// would otherwise swap the scene while the flash was still ramping.
 	const COVER_AT_BOOM_T = (FLASH_IN + FLASH_HOLD) / 2;
 
-	const FRAG_COUNT = 18;
+	// Repeatable silhouettes keep the hit readable on every run. Uniform random
+	// positions made the burst change character from one transition to the next.
+	const jitter = (n: number) => {
+		const v = Math.sin(n * 91.37) * 43758.5453;
+		return v - Math.floor(v);
+	};
+	const FRAG_COUNT = 12;
 	type Frag = { a: number; speed: number; r: number; spin: number };
 	const frags: Frag[] = Array.from({ length: FRAG_COUNT }, (_, i) => ({
-		a: (i / FRAG_COUNT) * Math.PI * 2 + Math.random() * 0.4,
-		speed: 0.5 + Math.random() * 0.85,
-		r: 9 + Math.random() * 17,
-		spin: Math.random() * Math.PI,
+		a: (i / FRAG_COUNT) * Math.PI * 2 + (jitter(i + 1) - 0.5) * 0.38,
+		speed: 0.52 + jitter(i + 19) * 0.63,
+		r: 6 + jitter(i + 41) * 11,
+		spin: jitter(i + 73) * Math.PI,
 	}));
 
-	// Plasma blooms, as soft round puffs rather than Graphics circles: fxGlow is
-	// a radial falloff texture. They spread flat and burn out fast — light, not
-	// smoke, so they do not rise or linger.
-	const SMOKE_COUNT = 8;
+	// Plasma blooms use a radial falloff texture. A handful of irregular shapes
+	// leave the new board readable as soon as the flash clears.
+	const SMOKE_COUNT = 5;
 	type Puff = { a: number; dist: number; size: number; rise: number; delay: number; drift: number };
 	const puffs: Puff[] = Array.from({ length: SMOKE_COUNT }, (_, i) => ({
 		// biased to the sides and slightly upward, the way a ground burst throws it
-		a: (i / SMOKE_COUNT) * Math.PI * 2 + Math.random() * 0.6,
-		dist: 0.26 + Math.random() * 0.5,
-		size: 0.4 + Math.random() * 0.62,
-		rise: 0.02 + Math.random() * 0.04,
-		delay: Math.random() * 0.22,
-		drift: (Math.random() - 0.5) * 0.24,
+		a: (i / SMOKE_COUNT) * Math.PI * 2 + jitter(i + 103) * 0.42,
+		dist: 0.22 + jitter(i + 127) * 0.42,
+		size: 0.3 + jitter(i + 151) * 0.44,
+		rise: 0.02 + jitter(i + 179) * 0.04,
+		delay: jitter(i + 199) * 0.16,
+		drift: (jitter(i + 223) - 0.5) * 0.16,
 	}));
 
 	let elapsed = 0;
@@ -305,8 +310,7 @@
 			// rises as it spreads, so the cloud lifts off the blast rather than
 			// sitting on it as a flat ring
 			y: Math.sin(puff.a) * reach * puff.dist * spread * 0.72 - puff.rise * reach * t * t,
-			// 0.5 factor: without it a single puff came out nearly as wide as the
-			// screen, and sixteen of those is not a cloud, it is a wash.
+			// Keep each bloom local: a screen-wide glow hides the reel reveal.
 			size: reach * puff.size * 0.5 * (0.25 + spread * 0.75),
 			tint,
 			// In fast, hold, then out — and the hold is the point. A plain
@@ -319,10 +323,8 @@
 		};
 	};
 
-	// THE PULSE BOMB GOES OFF: no fireball and no smoke — a plasma discharge.
-	// Shockwave rings in the game's four neon colours, a violet-white core,
-	// forked lightning re-striking out of it, and glowing shards flung flat
-	// (light has no weight, so they do not arc down like debris did).
+	// The first impact is tight. Its current then reaches the five reels in
+	// sequence, so the transition has the same left-to-right beat as the board.
 	//
 	// v8 path API throughout: the v7 beginFill/lineStyle shim paints every shape
 	// in one Graphics with the LAST fill set (see the pixi-v8 gotchas).
@@ -332,10 +334,8 @@
 		const { width, height } = context.stateLayoutDerived.canvasSizes();
 		const maxR = Math.max(width, height) * 0.95;
 		for (const [delay, color, weight] of [
-			[0, 0xffffff, 30],
-			[0.12, 0x59e3ff, 24],
-			[0.24, 0xff3fd0, 20],
-			[0.38, 0xb143ec, 16],
+			[0, 0xf6e8ff, 22],
+			[0.16, 0x59e3ff, 11],
 		] as [number, number, number][]) {
 			const t = (boomT - delay) / (1 - delay);
 			if (t < 0 || t > 1) continue;
@@ -344,41 +344,49 @@
 			g.circle(0, 0, r).stroke({ width: (weight * (1 - t) ** 1.4 + 3) * 3, color, alpha: 0.22 * a });
 			g.circle(0, 0, r).stroke({ width: weight * (1 - t) ** 1.4 + 3, color, alpha: 0.85 * a });
 		}
-		const coreGrow = easeOutCubic(boomT);
-		g.circle(0, 0, height * 0.5 * (0.35 + coreGrow * 1.7)).fill({ color: 0xb143ec, alpha: 0.5 * (1 - boomT) ** 1.3 });
-		g.circle(0, 0, height * 0.34 * (0.4 + coreGrow * 1.5)).fill({ color: 0xf6e8ff, alpha: 0.9 * (1 - boomT) ** 1.5 });
+		const coreGrow = easeOutCubic(Math.min(1, boomT * 2.2));
+		g.circle(0, 0, height * (0.15 + coreGrow * 0.55)).fill({ color: 0xb143ec, alpha: 0.42 * (1 - boomT) ** 1.6 });
+		g.circle(0, 0, height * (0.09 + coreGrow * 0.28)).fill({ color: 0xf6e8ff, alpha: 0.82 * (1 - boomT) ** 2 });
 
-		// lightning: seven forks, re-struck every 45ms
-		if (boomT < 0.6) {
-			const strike = Math.floor((boomT * BOOM_MS) / 45);
-			const fade = (1 - boomT / 0.6) ** 1.2;
-			for (let b = 0; b < 7; b++) {
-				const a0 = (b / 7) * Math.PI * 2 + strike * 0.7;
-				const len = maxR * (0.35 + 0.45 * easeOutCubic(boomT * 2.5));
-				const pts: number[] = [];
-				for (let k = 0; k <= 6; k++) {
-					const jag = k === 0 ? 0 : Math.sin(strike * 13.7 + b * 7.1 + k * 3.3) * 0.18;
-					const d = (len * k) / 6;
-					pts.push(Math.cos(a0 + jag) * d, Math.sin(a0 + jag) * d);
-				}
-				for (const [w, color, al] of [[16, 0xb143ec, 0.35], [7, 0xd98bff, 0.7], [2.5, 0xffffff, 0.95]] as const) {
-					g.moveTo(pts[0], pts[1]);
-					for (let k = 2; k < pts.length; k += 2) g.lineTo(pts[k], pts[k + 1]);
-					g.stroke({ width: w, color, alpha: al * fade, cap: 'round', join: 'round' });
-				}
+		// Five short circuits arc to the reel centres. The endpoint lands before
+		// its shutter departs, then leaves a small contact flash on the new scene.
+		for (let reel = 0; reel < 5; reel++) {
+			const start = 0.43 + reel * 0.045;
+			const travel = smoothstep(start, start + 0.16, boomT);
+			if (travel <= 0) continue;
+			const fade = 1 - smoothstep(start + 0.2, start + 0.47, boomT);
+			if (fade <= 0) continue;
+			const targetX = width * (reel - 2) * 0.105;
+			const targetY = height * (reel % 2 ? 0.13 : -0.1);
+			const endX = targetX * travel;
+			const endY = targetY * travel;
+			const bend = height * (reel % 2 ? -0.055 : 0.065);
+			const drawPath = () => {
+				g.moveTo(0, 0)
+					.lineTo(endX * 0.32, endY * 0.27 + bend * travel)
+					.lineTo(endX * 0.67, endY * 0.7 - bend * 0.45 * travel)
+					.lineTo(endX, endY);
+			};
+			drawPath();
+			g.stroke({ width: 12, color: reel % 2 ? 0xff3fd0 : 0x59e3ff, alpha: fade * 0.22, cap: 'round', join: 'round' });
+			drawPath();
+			g.stroke({ width: 2.5, color: 0xf6e8ff, alpha: fade * 0.82, cap: 'round', join: 'round' });
+			if (travel > 0.88) {
+				g.circle(endX, endY, 10 + 14 * fade).fill({ color: reel % 2 ? 0xff3fd0 : 0x59e3ff, alpha: fade * 0.36 });
+				g.circle(endX, endY, 3).fill({ color: 0xffffff, alpha: fade * 0.9 });
 			}
 		}
 
 		// neon shards: small glowing tiles, cyan, pink and white
 		for (const f of frags) {
-			const d = f.speed * easeOutCubic(boomT) * maxR * 1.1;
+			const d = f.speed * easeOutCubic(boomT) * maxR * 0.75;
 			const x = Math.cos(f.a) * d;
 			const y = Math.sin(f.a) * d;
 			const spin = f.spin + boomT * f.speed * 7;
 			const r = f.r * 0.6;
 			const color = f.r > 19 ? 0xff3fd0 : f.r > 13 ? 0x59e3ff : 0xffffff;
 			const a = (1 - boomT) ** 1.6;
-			g.circle(x, y, r * 2).fill({ color, alpha: 0.22 * a });
+			g.circle(x, y, r * 1.6).fill({ color, alpha: 0.12 * a });
 			g.poly([0, 1, 2, 3].flatMap((k) => [x + r * Math.cos(spin + (k * Math.PI) / 2), y + r * Math.sin(spin + (k * Math.PI) / 2)])).fill({
 				color,
 				alpha: 0.95 * a,
@@ -393,23 +401,27 @@
 		// violet-white: the plasma's light, not a lamp's
 		g.rect(-width, -height, width * 2, height * 2).fill({ color: 0xf1e4ff, alpha: flashAlpha });
 	};
-	// Once the scene has swapped under the white peak, five dark glass shutters
-	// clear in reel order. This gives the reveal the same left-to-right grammar as
-	// a spin, while the alternating exits keep the cut from looking like a wipe
-	// preset. They are covered by the flash when first placed on screen.
+	// Cover the board itself, not five full-screen strips. The background can
+	// breathe back first, then the new symbols are uncovered in reel order.
 	const drawReelReveal = (g: PixiGraphics) => {
 		g.clear();
 		if (boomT < COVER_AT_BOOM_T) return;
-		const { width, height } = context.stateLayoutDerived.canvasSizes();
+		const board = context.stateGameDerived.boardLayout();
+		const layout = context.stateLayoutDerived.mainLayout();
+		const width = board.width * board.scale * layout.scale * 1.08;
+		const height = board.height * board.scale * layout.scale * 1.14;
+		const centerY = (board.y - layout.height / 2) * layout.scale;
 		const column = width / 5;
 		for (let reel = 0; reel < 5; reel++) {
 			const travel = smoothstep(0.47 + reel * 0.035, 0.76 + reel * 0.035, boomT);
 			if (travel >= 1) continue;
 			const up = reel % 2 === 0;
 			const x = -width / 2 + reel * column;
-			const y = -height / 2 + (up ? -1 : 1) * height * travel;
-			g.rect(x, y, column + 2, height).fill({ color: 0x100b29, alpha: 0.98 });
-			const edge = up ? y + height : y;
+			const top = centerY - height / 2;
+			const y = up ? top : top + height * travel;
+			const visibleHeight = height * (1 - travel);
+			g.rect(x, y, column + 2, visibleHeight).fill({ color: 0x100b29, alpha: 0.98 });
+			const edge = up ? y + visibleHeight : y;
 			g.moveTo(x, edge).lineTo(x + column, edge)
 				.stroke({ width: 8, color: reel % 2 ? 0xff3fd0 : 0x59e3ff, alpha: (1 - travel) * 0.38 });
 		}

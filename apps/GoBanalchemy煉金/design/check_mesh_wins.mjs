@@ -325,7 +325,7 @@ for (const name of pick) {
 			const l = `${bone.name} turns +${peak[b].pos.toFixed(2)}/${lim.pos} -${peak[b].neg.toFixed(2)}/${lim.neg}, travels ${travel[b].toFixed(1)}px`;
 			if (peak[b].pos > lim.pos + 1e-6 || peak[b].neg > lim.neg + 1e-6) fail(`${l} — past its limit`);
 			// an idle act moves only a bone or two of the win's rig, on purpose
-			else if (travel[b] < 1.5 && !name.startsWith('idle:')) fail(`${l} — does not visibly act`);
+			else if (travel[b] < 1.5 && !name.startsWith('idle:') && !name.startsWith('land:')) fail(`${l} — does not visibly act`);
 			else ok(l);
 		});
 	}

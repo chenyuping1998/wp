@@ -1,32 +1,11 @@
-/**
- * H3 — THE CRUCIBLE TONGS CROSSED OVER THE ORB STAFF. The tongs SNAP: their
- * two claws wind open and clap shut twice, the loop handle squeezes with each
- * clap, and the staff's crystal orb charges — it swells and wobbles on its
- * collar while the jewel on the staff's foot answers a beat later.
- *
- * CUT mode (design/make_alchemy_layers.py, 2026-10-04): the crossed pair is
- * lifted off the slate and LEAPS off it — the tile stays still — spinning a
- * full turn about its crossing at the top, and the claws clap as it comes
- * round. The staff and the tongs cross at (131,125), right beside the hinge,
- * and the half of the staff the tongs hide was never drawn, so the crossing
- * never comes apart: it is the root, and everything that acts is far from
- * it — the claws above the hinge, the loop below it, the orb and the foot.
- *
- * NO LIGHT (2026-10-04): no flash, no sweep, no sparks.
- *
- * Coordinates are the 256 canvas (goBanalchemySymbols/h3.png, 2026-10-04):
- *   staff    orb (52,45) r~22 -> foot jewel (210,205)
- *   tongs    hinge (143,114); claws up to (203,30) and (222,44);
- *            loop handle centred (68,182) r~32
- */
+/** Alchemy v2: fixed plate; independently weighted painted parts perform.
+ * No rigid flip, tile jump, or impact dust. Geometry follows the repaint. */
 import {
 	circle,
 	flick,
-	leap,
 	polygon,
 	polyline,
 	ramp,
-	turnAbout,
 	restPose,
 	smoothstep,
 	track,
@@ -37,7 +16,6 @@ import {
 } from './meshRig';
 
 const T = { crouch: 110, open: 260, clap: 380, open2: 560, clap2: 680, land: 900, done: 1450 };
-const LEAP = { crouch: 120, rise: 320, fall: 700, land: 900, hop2: 1140, done: 1450 };
 const HINGE: Point = [143, 114];
 const fromHinge = (p: Point) => Math.hypot(p[0] - HINGE[0], p[1] - HINGE[1]);
 
@@ -52,17 +30,22 @@ const ALL = union(ORB, FOOT, STAFF.dist, CLAW_A.dist, CLAW_B.dist, LOOP, polygon
 export const H3: MeshWinSpec = {
 	symbol: 'H3',
 	key: 'gbH3',
+	sprite: 'gbH3',
+	mode: 'panel',
+	inked: (p) => CLAW_A.dist(p) === 0 || CLAW_B.dist(p) === 0 || LOOP(p) === 0 || ORB(p) === 0 || FOOT(p) === 0,
 	feetY: 226,
 	durationMs: T.done,
-	landMs: T.land,
+	landMs: 99999,
 	hitMs: T.clap,
 	sparkAt: [205, 40],
 	rig: {
+		fixedBorder: 10,
 		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 },
 		soft: 4,
 		parts: [
 			// the crossing, which never comes apart: the root
-			{ name: 'panel', pivot: [131, 125], axis: [0, -1], dist: ALL },
+			{ name: 'frame', pivot: [128, 128], dist: () => 14 },
+			{ name: 'panel', parent: 'frame', pivot: [131, 125], axis: [0, -1], dist: ALL },
 			{
 				name: 'claw_a',
 				parent: 'panel',
@@ -123,6 +106,7 @@ export const H3: MeshWinSpec = {
 	},
 	pose: (rig: Rig, t: number) => {
 		const pose = restPose(rig);
+		pose.bones[rig.bones.findIndex((x) => x.name === 'panel')].dy = track(t, [[0, 0], [260, -1.8, 'out'], [500, 0, 'out'], [680, -1.5, 'out'], [960, 0, 'out']]);
 		const b = (name: string) => pose.bones[rig.bones.findIndex((x) => x.name === name)];
 
 		// the snap: open, clap shut, open, clap, then a shiver on the landing.
@@ -152,11 +136,6 @@ export const H3: MeshWinSpec = {
 		// the whole tile knocks on each clap
 		b('panel').along = track(t, [[0, 1], [T.crouch, 0.985, 'out'], [T.clap, 1.008, 'out'], [T.clap + 120, 0.99], [T.clap2, 1.006, 'out'], [T.clap2 + 160, 1], [T.land - 20, 1], [T.land + 50, 0.985, 'out'], [T.done, 1, 'out']]);
 
-		// THE LEAP, spinning a full turn about the crossing at the top
-		const { rigid, air } = leap(t, LEAP, 22);
-		rigid.rot = 360 * smoothstep((t - LEAP.rise + 80) / (LEAP.fall - LEAP.rise + 60));
-		pose.rigid = turnAbout(rigid, [131, 125], 226);
-		pose.air = air;
 		return pose;
 	},
 };

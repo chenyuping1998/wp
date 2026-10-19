@@ -1,0 +1,132 @@
+[
+  {
+    "name": "band_upper",
+    "slot": "head_2_face",
+    "parent": "head",
+    "root": [
+      47,
+      62
+    ],
+    "tip": [
+      7,
+      109
+    ]
+  },
+  {
+    "name": "band_lower",
+    "slot": "head_2_face",
+    "parent": "head",
+    "root": [
+      45,
+      67
+    ],
+    "tip": [
+      24,
+      145
+    ]
+  },
+  {
+    "name": "sleeve_outer",
+    "slot": "left_arm_0_upper_arm",
+    "parent": "cuffL",
+    "root": [
+      45,
+      111
+    ],
+    "tip": [
+      7,
+      160
+    ]
+  },
+  {
+    "name": "sleeve_inner",
+    "slot": "left_arm_0_upper_arm",
+    "parent": "cuffL",
+    "root": [
+      45,
+      114
+    ],
+    "tip": [
+      27,
+      170
+    ]
+  },
+  {
+    "name": "sash_side",
+    "slot": "torso_0_trunk",
+    "parent": "torso",
+    "root": [
+      104,
+      315
+    ],
+    "tip": [
+      56,
+      395
+    ]
+  },
+  {
+    "name": "shin_left_outer",
+    "slot": "left_leg_1_calf",
+    "parent": "legL_calf",
+    "root": [
+      28,
+      85
+    ],
+    "tip": [
+      7,
+      143
+    ]
+  },
+  {
+    "name": "shin_left_inner",
+    "slot": "left_leg_1_calf",
+    "parent": "legL_calf",
+    "root": [
+      30,
+      89
+    ],
+    "tip": [
+      23,
+      171
+    ]
+  },
+  {
+    "name": "shin_right_outer",
+    "slot": "right_leg_1_calf",
+    "parent": "legR_calf",
+    "root": [
+      102,
+      96
+    ],
+    "tip": [
+      122,
+      137
+    ]
+  },
+  {
+    "name": "shin_right_inner",
+    "slot": "right_leg_1_calf",
+    "parent": "legR_calf",
+    "root": [
+      100,
+      100
+    ],
+    "tip": [
+      104,
+      149
+    ]
+  },
+  {
+    "name": "heel_right",
+    "slot": "right_leg_2_foot",
+    "parent": "legR_foot",
+    "root": [
+      12,
+      55
+    ],
+    "tip": [
+      12,
+      98
+    ]
+  }
+]

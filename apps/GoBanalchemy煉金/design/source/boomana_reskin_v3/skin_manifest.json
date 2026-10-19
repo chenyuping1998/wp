@@ -1,0 +1,39 @@
+{
+  "version": 3,
+  "source": "GoBoomana",
+  "rigHash": "gb-alchemist-boom-v3",
+  "releaseMs": 380,
+  "parts": [
+    "dynamite",
+    "torso_0_trunk",
+    "head_5_decoration",
+    "torso_2_decoration",
+    "head_2_face",
+    "torso_1_decoration",
+    "right_arm_2_hand",
+    "left_arm_0_upper_arm",
+    "left_arm_2_hand",
+    "left_leg_1_calf",
+    "left_leg_0_thigh",
+    "right_arm_0_upper_arm",
+    "right_leg_0_thigh",
+    "right_leg_1_calf",
+    "head_4_hat",
+    "right_arm_1_forearm",
+    "head_0_hair",
+    "left_leg_2_foot",
+    "head_3_ear",
+    "right_leg_2_foot",
+    "left_arm_1_forearm",
+    "torso_4_decoration",
+    "head_1_hair",
+    "torso_5_decoration",
+    "torso_3_decoration"
+  ],
+  "atlasSize": [
+    1024,
+    1783
+  ],
+  "prompt": "precise-object-edit; fixed Boomana atlas layout; teal/brass alchemist costume, ivory cuffs, brown boots, forehead green goggles; preserve gorilla identity and separate body parts",
+  "generator": "built-in image_gen"
+}

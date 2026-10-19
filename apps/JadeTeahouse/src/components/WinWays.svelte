@@ -98,6 +98,8 @@
 	);
 
 	const ICON = $derived(SYMBOL_SIZE * 0.3);
+	// A slim hand-inked score slip sits in the frame's lower margin. It gives
+	// the paying symbol and ways a clean reading surface without covering art.
 	const LOW_LETTER: Record<string, string> = { L1: 'A', L2: 'K', L3: 'Q', L4: 'J', L5: '10' };
 
 	// ONE AT A TIME, HIGHEST FIRST.
@@ -254,7 +256,10 @@
 	<BoardContainer>
 		<Container zIndex={10}>
 			{#if revealedReels > 0 && current}
-				{@const y = BOARD_SIZES.height + SYMBOL_SIZE * 0.3}
+				{@const y = BOARD_SIZES.height + SYMBOL_SIZE * 0.12}
+				<!-- the logo signboard's top plank (sushiV8/ways_plate.png, 9:1), not
+				     the flat print-style strip it was drawn as -->
+				<Sprite key="v8WaysPlate" anchor={0.5} x={BOARD_SIZES.width / 2} {y} width={SYMBOL_SIZE * 3.24} height={SYMBOL_SIZE * 0.36} />
 				<!-- icon then count, as one centred pair: the icon is anchored on its
 				     right edge and the text on its left, so the pair stays balanced
 				     about the board's centre however long the number is. -->
@@ -281,7 +286,7 @@
 					/>
 				{/if}
 				<GoldText
-					text={`${current.ways.toLocaleString()} WAYS`}
+					text={`${current.ways.toLocaleString()} ${current.ways === 1 ? 'WAY' : 'WAYS'}`}
 					fontSize={SYMBOL_SIZE * 0.22}
 					x={BOARD_SIZES.width / 2 + SYMBOL_SIZE * 0.07}
 					{y}

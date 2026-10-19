@@ -84,12 +84,14 @@
 		<Container>
 			<Background />
 		</Container>
-		<!-- corner vignette seats the scene behind the board -->
+		<!-- corner vignette seats the scene behind the board. 0.4, not 0.9: at
+		     0.9 the corners were ~80% black and the shelves, flasks and lanterns
+		     painted there were lost (user, 2026-10-16: 背景要清晰可見) -->
 		<Sprite
 			key="fxVignette"
 			width={context.stateLayoutDerived.canvasSizes().width}
 			height={context.stateLayoutDerived.canvasSizes().height}
-			alpha={0.9}
+			alpha={0.4}
 		/>
 	</Container>
 

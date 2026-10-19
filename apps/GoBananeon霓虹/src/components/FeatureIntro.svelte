@@ -170,9 +170,8 @@
 		hero?: boolean;
 	};
 
-	// Bodies are one short sentence each. The first pass ran to two and three
-	// sentences and overflowed the panels — the copy is a caption for the art, not
-	// the rules screen, which is one tap away and carries the full wording.
+	// Keep these to a glance: one mechanic per card, with the detailed rules in
+	// the pay table. The middle card needs two short beats to explain the bomb.
 	// 4 rows on 5 reels is 1,024 ways, which is also exactly what a full-board
 	// blast pays on: every cell the same symbol means every reel contributes all
 	// four of its rows. Derived rather than typed, because the board size comes
@@ -183,7 +182,7 @@
 		{
 			accent: GOLD,
 			title: 'FREE SPINS',
-			body: 'Land 3, 4 or 5 Scatters anywhere to open 8, 10 or 12 Free Spins.',
+			body: '3 / 4 / 5 Scatters award 8 / 10 / 12 spins.',
 			figure: '3-5',
 			art: drawScatterGrid,
 			// the Scatter's own win, on a loop
@@ -195,7 +194,7 @@
 			// The figure is the DREAM, not the average: five reels of one symbol is
 			// what the whole feature climbs towards, and it is a count the player can
 			// verify on the board the first time it happens.
-			body: `Blows up its whole reel and fills it with the best symbol standing on it. In Free Spins each Pulse Bomb widens the next blast: 1 reel, then 2, 3, 4, 5.`,
+			body: 'Best symbol fills the reel. Free Spin blasts grow.',
 			figure: BASE_WAYS.toLocaleString(),
 			art: drawBlast,
 			// the bomb slamming down onto the lit column — its board landing
@@ -211,7 +210,7 @@
 		{
 			accent: JADE,
 			title: 'MAX WIN',
-			body: 'The cap on a single round. Reach it and the round ends there and then.',
+			body: 'The round ends when you reach this amount.',
 			figure: `${(config.betModes?.base?.max_win ?? 10000).toLocaleString()}X`,
 			art: drawWaysGrow,
 		},
@@ -287,7 +286,7 @@
 	);
 
 	const titleSize = $derived(Math.round(stacked ? layout.width * 0.03 : layout.width * 0.02));
-	const bodySize = $derived(Math.round(stacked ? layout.width * 0.023 : layout.width * 0.0135));
+	const bodySize = $derived(Math.round(stacked ? layout.width * 0.024 : layout.width * 0.0155));
 	const figureSize = $derived(Math.round(layout.width * 0.028));
 
 	// How far below the title the body starts, MEASURED rather than assumed.

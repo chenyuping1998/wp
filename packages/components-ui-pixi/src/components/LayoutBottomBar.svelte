@@ -67,7 +67,9 @@
 	const READOUT_SCALE = $derived(uiTheme.readoutScale);
 	// UiLabel stacks label at y=0 and value at y=UI_BASE_FONT_SIZE, so the block is
 	// two lines tall; lift it by half of that to sit centred on the bar.
-	const readoutTop = $derived(barMid - UI_BASE_FONT_SIZE * READOUT_SCALE);
+	// uiTheme.readoutOffsetY (default 0) nudges the block for a game whose value
+	// face is taller than the label's and sits on the frame's lower edge.
+	const readoutTop = $derived(barMid - UI_BASE_FONT_SIZE * READOUT_SCALE + uiTheme.readoutOffsetY);
 
 	// Frame inset from the canvas edges.
 	const FRAME_X = 24;

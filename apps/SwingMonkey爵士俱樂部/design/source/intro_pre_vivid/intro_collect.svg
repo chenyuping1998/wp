@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+ <title>Jazz bandleader collecting records</title>
+ <defs><pattern id="dots" width="13" height="13" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.7" fill="#9c333e" opacity=".42"/></pattern></defs>
+ <rect width="512" height="512" rx="34" fill="#f4e7c8"/>
+ <path d="M32 401Q256 463 480 401v78H32Z" fill="#9c333e" stroke="#241d1c" stroke-width="10" stroke-linejoin="round"/>
+ <path d="M34 80Q256 8 478 80M54 102Q256 38 458 102" fill="none" stroke="#241d1c" stroke-width="10" stroke-linecap="round"/>
+ <path d="M74 103V377M438 103V377" stroke="#d6a14f" stroke-width="22"/><path d="M74 103V377M438 103V377" stroke="#241d1c" stroke-width="6"/>
+ <path d="M87 145Q256 100 425 145" fill="none" stroke="#9c333e" stroke-width="18" stroke-linecap="round"/>
+ <rect x="105" y="257" width="302" height="140" rx="18" fill="#d6a14f" stroke="#241d1c" stroke-width="10"/>
+ <rect x="126" y="277" width="260" height="95" rx="10" fill="#f4e7c8" stroke="#241d1c" stroke-width="6"/>
+ <circle cx="238" cy="324" r="66" fill="#241d1c" stroke="#9c333e" stroke-width="9"/>
+ <circle cx="238" cy="324" r="44" fill="none" stroke="#d6a14f" stroke-width="4"/>
+ <circle cx="238" cy="324" r="29" fill="#9c333e" stroke="#f4e7c8" stroke-width="4"/>
+ <circle cx="238" cy="324" r="7" fill="#f4e7c8"/>
+ <path d="M332 289l-46 37" stroke="#241d1c" stroke-width="9" stroke-linecap="round"/><circle cx="339" cy="285" r="13" fill="#9c333e" stroke="#241d1c" stroke-width="5"/>
+ <path d="M113 233c13-40 36-64 72-71M143 237c11-25 24-34 43-38" fill="none" stroke="#241d1c" stroke-width="7" stroke-linecap="round"/>
+ <circle cx="183" cy="150" r="57" fill="#241d1c" stroke="#d6a14f" stroke-width="8"/><circle cx="183" cy="150" r="31" fill="#9c333e" stroke="#f4e7c8" stroke-width="4"/><circle cx="183" cy="150" r="6" fill="#f4e7c8"/>
+ <path d="M334 174q33-21 57-4l-13 25-28 2-17-23Z" fill="#d6a14f" stroke="#241d1c" stroke-width="7" stroke-linejoin="round"/>
+ <path d="M347 195l-67 49-18-18 56-60M282 242l-11 23" fill="none" stroke="#241d1c" stroke-width="10" stroke-linecap="round"/>
+ <path d="M289 139q16-24 31 0v35m-15-32q17-19 30 4v23" fill="none" stroke="#9c333e" stroke-width="8" stroke-linecap="round"/>
+ <path d="M93 422h326" stroke="#f4e7c8" stroke-width="4" stroke-dasharray="12 14"/>
+ <path d="M30 282h53m346 0h53M37 303h39m360 0h39" stroke="#241d1c" stroke-width="6" stroke-linecap="round"/>
+ <path d="M60 120h390v277H60Z" fill="url(#dots)" opacity=".2"/>
+</svg>

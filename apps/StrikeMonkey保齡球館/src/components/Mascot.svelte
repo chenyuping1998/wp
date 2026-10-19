@@ -9,7 +9,11 @@
 		| { type: 'mascotThrow' }
 		// The goggle tease. Fired at the top of a round that is GOING to trigger
 		// the feature — see playBet in src/game/utils.ts, which owns the coin flip.
-		| { type: 'mascotGoggleTease' };
+		| { type: 'mascotGoggleTease' }
+		// FG trigger, before the wipe (2026-10-18): he conjures the teal ball,
+		// bowls it, and this resolves once it has rolled off the left edge
+		// (BowlingBallRoll.svelte). Resolves at once when he is off screen.
+		| { type: 'mascotBowl' };
 </script>
 
 <script lang="ts">
@@ -34,32 +38,44 @@
 	// is fully down — so the swap is never seen happening.
 	//
 	// Per cast, in skeleton units (origin on the ground between the boots):
-	//   art      floor to the top of the head, and the width across
+	//   art      floor to the top of the head, the width across, and the box's
+	//            centre right of the origin (2026-10-16 redraws, measured on
+	//            design/redraw/v1/<cast>_norm.png)
 	//   release  where the sack leaves his hand in 'throwit' (printed by the
 	//            generator as `release hand at`)
 	//   impact   where each fist lands in the chest beat (`beat R/L fist at`)
 	//   tease    the plate that lights for the trigger tell: the Chef's mask,
 	//            the Lookout's flying goggles
 	// Re-print release/impact whenever the rig or the beat angles change.
+	// 'bowl' timing and ball, from design/generate_monkey_spine.mjs
+	// (BOWL_APPEAR / BOWL_RELEASE, the 'ball' prop's size in skeleton units)
+	const BOWL_APPEAR_MS = 160;
+	const BOWL_RELEASE_MS = 900;
+	const BOWL_BALL_SIZE = 136;
 	const CASTS = {
 		basegame: {
 			key: 'gbBandit',
-			art: { height: 882, width: 455 },
-			release: { x: -378, y: 511 },
-			impact: { right: { x: 187, y: 318 }, left: { x: -182, y: 350 } },
+			art: { height: 840, width: 547, cx: 60 },
+			release: { x: -316, y: 432 },
+			impact: { right: { x: 334, y: 339 }, left: { x: -265, y: 319 } },
 			// his 'chestbeat' is a laugh (design/cast_motions.mjs): the beats pop
 			// HA! off his head instead of stars off his fists
 			beatFx: 'laugh',
-			tease: { x: 0, y: 801, halfWidth: 70, halfHeight: 23 },
+			tease: { x: 42, y: 510, halfWidth: 40, halfHeight: 16 },
+			// the ball in 'bowl', printed by the generator (`bowl ball appears at`,
+			// `bowl release angle … ball velocity …`): the rolling copy starts at
+			// the in-hand ball's centre, angle and speed, so nothing jumps
+			bowl: { appear: { x: -276, y: 265 }, release: { x: -189, y: 162 }, angle: 2.2, vel: { x: -425, y: -314 } },
 		},
 		freegame: {
 			key: 'gbLookout',
-			art: { height: 879, width: 395 },
-			release: { x: -343, y: 518 },
-			impact: { right: { x: 214, y: 367 }, left: { x: -208, y: 364 } },
+			art: { height: 735, width: 547, cx: -70 },
+			release: { x: -278, y: 607 },
+			impact: { right: { x: 152, y: 324 }, left: { x: -305, y: 446 } },
 			// Apprentice laughs on the same six voice beats, with her own body motion.
 			beatFx: 'laugh',
-			tease: { x: -6, y: 794, halfWidth: 65, halfHeight: 22 },
+			tease: { x: -67, y: 700, halfWidth: 30, halfHeight: 24 },
+			bowl: { appear: { x: -304, y: 422 }, release: { x: -165, y: 249 }, angle: 58.2, vel: { x: -503, y: -202 } },
 		},
 	} as const;
 
@@ -106,8 +122,11 @@
 		const maxHeight = (layout.height - barHeight) * 0.94;
 		const height = Math.min(maxHeight, (maxWidth * ART.height) / ART.width);
 
+		// `art.cx`: the figure's own centre, right of his origin. The 2026-10-16
+		// redraws present with one arm out, so the box is centred, not the feet.
+		const x = gapLeft + gapWidth / 2 - ART.cx * (height / ART.height);
 		return {
-			x: gapLeft + gapWidth / 2,
+			x,
 			// Standing on the same line the board frame sits on, so he shares its
 			// ground plane instead of floating at his own height. Clamped off the
 			// bet bar, which on a short layout the frame's own foot reaches into.
@@ -116,8 +135,8 @@
 			// the strip he may perform in, in skeleton units about his origin:
 			// anything he draws (the laugh's HA!s) stays inside it, so no part of
 			// a performance ever lands on the board (user rule, 2026-10-04)
-			minX: (gapLeft + 16 - (gapLeft + gapWidth / 2)) / (height / ART.height),
-			maxX: (layout.width - 10 - (gapLeft + gapWidth / 2)) / (height / ART.height),
+			minX: (gapLeft + 16 - x) / (height / ART.height),
+			maxX: (layout.width - 10 - x) / (height / ART.height),
 		};
 	});
 
@@ -201,11 +220,19 @@
 		};
 		impactRaf = requestAnimationFrame(step);
 	};
+	const stopImpacts = () => {
+		cancelAnimationFrame(impactRaf);
+		impactClock = -1;
+	};
 	// The throw's grunt is on a timer (it lands on the release, not on the
 	// wind-up), so it can outlive the component if a resize takes him off screen
 	// mid-throw.
 	let voiceTimer = 0;
+	let bowlTimer = 0;
+	let bowlDone: (() => void) | undefined;
 	onDestroy(() => {
+		clearTimeout(bowlTimer);
+		bowlDone?.();
 		context.stateGame.mascotThrowOrigin = null;
 		cancelAnimationFrame(impactRaf);
 		cancelAnimationFrame(teaseRaf);
@@ -228,9 +255,11 @@
 
 	// The Chef's laugh: one HA! per beat, alternating either side of his head
 	// and climbing, printed red on an ink rim like every other caption.
-	const HA_LIFE_MS = 420;
+	// Shorter than the beat gap plus the settle, so the last HA! is gone before
+	// laughTiming's settle face (endMs - 150) shows.
+	const HA_LIFE_MS = 360;
 	const haPops = $derived.by(() => {
-		if (impactClock < 0 || cast.beatFx !== 'laugh') return [];
+		if (impactClock < 0 || cast.beatFx !== 'laugh' || animationName !== 'chestbeat') return [];
 		const pops = [];
 		for (let i = 0; i < BEATS; i++) {
 			const t = (impactClock - (BEAT_START_MS + i * BEAT_GAP_MS)) / HA_LIFE_MS;
@@ -299,6 +328,48 @@
 			g.poly(inner);
 			g.fill({ color: FLASH, alpha });
 		}
+	};
+
+	// ── the conjured ball's puff ───────────────────────────────────────────
+	//
+	// The ball pops into his hand out of a small ink-and-gold burst: one flash
+	// disc, a ring and eight short strokes, gone in a third of a second. Drawn
+	// at the hand's printed position at BOWL_APPEAR, in skeleton units.
+	const PUFF_MS = 340;
+	let puffClock = $state(-1);
+	let puffRaf = 0;
+	const startPuff = () => {
+		cancelAnimationFrame(puffRaf);
+		const t0 = performance.now();
+		const step = (now: number) => {
+			puffClock = now - t0;
+			if (puffClock >= PUFF_MS) {
+				puffClock = -1;
+				return;
+			}
+			puffRaf = requestAnimationFrame(step);
+		};
+		puffRaf = requestAnimationFrame(step);
+	};
+	onDestroy(() => cancelAnimationFrame(puffRaf));
+	const TEAL = 0x3fc4a8;
+	const drawPuff = (g: PixiGraphics) => {
+		g.clear();
+		if (puffClock < 0) return;
+		const k = puffClock / PUFF_MS;
+		const out = 1 - (1 - k) ** 3;
+		const cx = cast.bowl.appear.x;
+		// the printed point is the ball's centre (the hang is already in it)
+		const cy = -cast.bowl.appear.y;
+		const r = BOWL_BALL_SIZE * (0.45 + 0.75 * out);
+		if (k < 0.45) g.circle(cx, cy, BOWL_BALL_SIZE * 0.62 * (1 - k)).fill({ color: FLASH, alpha: 0.9 * (1 - k / 0.45) });
+		g.circle(cx, cy, r).stroke({ width: 8 * (1 - k), color: TEAL, alpha: 1 - k });
+		for (let i = 0; i < 8; i++) {
+			const a = (i / 8) * Math.PI * 2 + 0.3;
+			const r0 = r * 0.92, r1 = r * (1.18 + 0.12 * (i % 2));
+			g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0).lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
+		}
+		g.stroke({ width: 7 * (1 - k), color: INK, alpha: 1 - k });
 	};
 
 	// ── the goggle tease ───────────────────────────────────────────────────
@@ -391,7 +462,7 @@
 	// was dropped.
 	let animationName = $state('idle');
 	let loop = $state(true);
-	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'flinch', 'alert', 'glance'];
+	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'bowl', 'airbowl', 'flinch', 'alert', 'glance'];
 	// The small reactions (flinch, alert, glance, nod) may interrupt each other
 	// and idle; they never cut into the big three, which each mean something.
 	const INTERRUPTIBLE = ['idle', 'nod', 'glance', 'alert', 'flinch'];
@@ -411,14 +482,29 @@
 		const level = 1 + context.stateGame.banditMeter.level;
 		const base = fg ? Math.max(3500, 7000 - level * 700) : 8000;
 		glanceTimer = setTimeout(() => {
-			if (placement && animationName === 'idle') play('glance', false);
+			// now and then a practice swing instead of a look — an air ball
+			// down an imaginary lane (2026-10-18). Rare, so it stays a flourish.
+			if (placement && animationName === 'idle') play(Math.random() < 0.3 ? 'airbowl' : 'glance', false);
 			scheduleGlance();
 		}, base + Math.random() * base * 0.6) as unknown as number;
 	};
 	scheduleGlance();
 	onDestroy(() => clearTimeout(glanceTimer));
 
+	// The cast swap (inside a transition's cover) remounts the skeleton from
+	// its first frame; a caption clock carried across would no longer match it.
+	$effect(() => {
+		cast.key;
+		stopImpacts();
+		animationName = 'idle';
+		loop = true;
+	});
+
 	const play = (name: string, loops: boolean) => {
+		// The HA!s belong to the laugh, not to a clock: anything that takes him
+		// out of 'chestbeat' (a big-win cheer on the same spin, the clip ending,
+		// the cast swap) takes the captions with it, so no HA! outlives the face.
+		if (name !== 'chestbeat') stopImpacts();
 		animationName = name;
 		loop = loops;
 	};
@@ -442,6 +528,10 @@
 	// inline in the handler because two things raise it: the free-game trigger,
 	// and the top three big-win tiers.
 	const beatChest = () => {
+		// Already laughing: setting the same clip does not restart the Spine
+		// track, so restarting the caption clock here would run it ahead of the
+		// face (HA!s still popping after the laugh has settled).
+		if (animationName === 'chestbeat') return;
 		play('chestbeat', false);
 		// one clip covering all six strikes, so the grunts cannot drift out of
 		// sync with them
@@ -495,6 +585,48 @@
 			if (animationName !== 'idle') return;
 			startTease();
 		},
+
+		mascotBowl: () =>
+			new Promise<void>((resolve) => {
+				const at = placement;
+				if (!at) return resolve();
+				clearTimeout(bowlTimer);
+				bowlDone?.();
+				play('bowl', false);
+				let settled = false;
+				const done = () => {
+					if (settled) return;
+					settled = true;
+					clearTimeout(bowlTimer);
+					bowlDone = undefined;
+					resolve();
+				};
+				bowlDone = done;
+				bowlTimer = setTimeout(() => {
+					startPuff();
+					bowlTimer = setTimeout(() => {
+						say('effort');
+						const release = cast.bowl.release;
+						// the rolling copy is drawn above the board (this layer is
+						// behind it); hand it the release point in layout units
+						void context.eventEmitter
+							.broadcastAsync({
+								type: 'bowlingBallRoll',
+								x: at.x + release.x * at.scale,
+								y: at.y - release.y * at.scale,
+								size: BOWL_BALL_SIZE * at.scale,
+								// spine angles are counter-clockwise, y up; pixi is neither
+								rotation: (-cast.bowl.angle * Math.PI) / 180,
+								vx: cast.bowl.vel.x * at.scale,
+								vy: -cast.bowl.vel.y * at.scale,
+								groundY: at.y,
+							})
+							.then(done);
+						// never hold the feature up on a frame clock that stopped
+						bowlTimer = setTimeout(done, 5000) as unknown as number;
+					}, BOWL_RELEASE_MS - BOWL_APPEAR_MS) as unknown as number;
+				}, BOWL_APPEAR_MS) as unknown as number;
+			}),
 
 		mascotThrow: () => {
 			play('throwit', false);
@@ -578,6 +710,7 @@
 	-->
 	<Container x={placement.x} y={placement.y} scale={placement.scale}>
 		<Graphics draw={drawImpacts} />
+		<Graphics draw={drawPuff} />
 		{#each haPops as pop (pop.i)}
 			<Text
 				anchor={0.5}

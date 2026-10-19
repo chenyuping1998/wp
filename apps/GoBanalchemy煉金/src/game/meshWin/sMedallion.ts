@@ -1,24 +1,8 @@
-/**
- * S — THE BANANA MEDALLION. A round brass seal with a golden bunch inside it.
- * The seal rocks like a coin set down on its edge, the bunch hops up inside
- * the ring, the top banana fans away from the others while it hangs, and it
- * drops back with a squash as the seal settles.
- *
- * CUT mode (2026-10-04): the medallion already stands on transparency, so it
- * is its own subject (design/make_alchemy_layers.py writes an empty plate):
- * it LEAPS, spins twice like a tossed coin at the top, and lands rocking on
- * its edge. `frame` is only the air round it.
- *
- * NO LIGHT (2026-10-04).
- *
- * Coordinates are the 256 canvas (goBanalchemySymbols/s.png, 2026-10-04):
- * seal (128,128) r~123, inner rim r~88, bananas (40..208, 48..190) with the
- * stem at (165..186, 48..62).
- */
+/** Alchemy v2: fixed plate; independently weighted painted parts perform.
+ * No rigid flip, tile jump, or impact dust. Geometry follows the repaint. */
 import {
 	CANVAS,
 	flick,
-	leap,
 	polygon,
 	ramp,
 	restPose,
@@ -30,7 +14,6 @@ import {
 } from './meshRig';
 
 const T = { crouch: 110, rise: 300, fall: 860, land: 1040, done: 1400 };
-const LEAP = { crouch: 120, rise: 320, fall: 720, land: 900, hop2: 1130, done: 1400 };
 const C: Point = [128, 128];
 const R = 123;
 const radius = (p: Point) => Math.hypot(p[0] - C[0], p[1] - C[1]);
@@ -41,12 +24,16 @@ const UPPER = polygon([[40, 100], [100, 88], [150, 58], [168, 62], [160, 84], [1
 export const S: MeshWinSpec = {
 	symbol: 'S',
 	key: 'gbS',
+	sprite: 'gbS',
+	mode: 'panel',
+	inked: (p) => BUNCH(p) === 0,
 	feetY: 250,
 	durationMs: T.done,
-	landMs: T.land,
+	landMs: 99999,
 	hitMs: 220,
 	sparkAt: [128, 110],
 	rig: {
+		fixedBorder: 10,
 		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 },
 		soft: 4,
 		parts: [
@@ -102,9 +89,9 @@ export const S: MeshWinSpec = {
 		const medal = b('medal');
 		const wob = ramp(t, T.crouch, T.rise) * Math.exp(-Math.max(0, t - T.rise) / 520);
 		const phase = (2 * Math.PI * Math.max(0, t - T.crouch)) / 300 + Math.max(0, t - T.crouch) ** 2 / 400000;
-		medal.angle = ROCK_DEG * wob * Math.sin(phase) - 1.2 * flick(t, T.land, 3, 5);
-		medal.along = track(t, [[0, 1], [T.crouch, 0.985, 'out'], [T.rise, 1.012, 'out'], [520, 1], [T.land - 20, 1], [T.land + 40, 0.99, 'out'], [T.done, 1, 'out']]);
-		medal.across = track(t, [[0, 1], [T.crouch, 1.01, 'out'], [T.rise, 0.995, 'out'], [520, 1], [T.land - 20, 1], [T.land + 40, 1.006, 'out'], [T.done, 1, 'out']]);
+		medal.angle = 0;
+		medal.along = 1;
+		medal.across = 1;
 
 		// the bunch hops inside the ring and hangs there, bobbing
 		const air = track(t, [[0, 0], [T.crouch, 0], [T.rise, 1, 'back'], [T.fall, 1], [T.land, 0, 'in']]);
@@ -117,12 +104,6 @@ export const S: MeshWinSpec = {
 		// the top banana fans open and closes
 		b('upper').angle = FAN_DEG * Math.max(0, flick(t, 360, 1.5, 2.2)) - 0.6 * FAN_DEG * Math.max(0, flick(t, T.land, 2.6, 4));
 
-		// THE LEAP, spinning twice like a tossed coin at the top
-		const jump = leap(t, LEAP, 20);
-		const turn = smoothstep((t - LEAP.rise + 60) / (LEAP.fall - LEAP.rise + 40));
-		jump.rigid.sx *= Math.max(0.1, Math.abs(Math.cos(2 * Math.PI * turn)));
-		pose.rigid = jump.rigid;
-		pose.air = Math.max(jump.air, 0.4 * Math.max(0, Math.min(1, air)));
 		return pose;
 	},
 };

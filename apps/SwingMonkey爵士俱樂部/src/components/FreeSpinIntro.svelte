@@ -7,12 +7,11 @@
 
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
-	import { NUMBER_FONT } from '../game/fonts';
 	import { Container } from 'pixi-svelte';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { waitForResolve } from 'utils-shared/wait';
-	import { Sprite, Text } from 'pixi-svelte';
+	import { Text } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
 	import { gameText } from '../game/i18nText';
@@ -69,6 +68,13 @@
 		}
 	});
 
+	// low while the board drops, a flare as the count lands, then a steady glow
+	const halo = $derived.by(() => {
+		const since = t - STAMP_AT - 150;
+		if (since < 0) return Math.min(0.35, Math.max(0, t - 300) / 1200);
+		return 0.45 + 0.55 * Math.exp(-since / 260);
+	});
+
 	context.eventEmitter.subscribeOnMount({
 		freeSpinIntroShow: () => {
 			show = true;
@@ -86,17 +92,14 @@
 <FadeContainer {show}>
 	<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
 
-	<FreeSpinAnimation>
+	<FreeSpinAnimation {halo}>
 		{#snippet children({ sizes })}
-			<!-- The title is lettered straight onto the board's paper. It used to sit on
-			     its own banner plate as wide as the board, which read as a second
-			     board laid across the first (2026-10-10). -->
-			{@const ts = Math.min((sizes.width * 0.82) / 854, (sizes.height * 0.22) / 117)}
-			<Container y={-sizes.height * 0.35 + 0.5 * ts + titlePose.y} alpha={titlePose.alpha}>
+			<!-- Lettered like the logo: red, inked, on the ticket's paper. -->
+			<Container y={-sizes.height * 0.35 + titlePose.y} alpha={titlePose.alpha}>
 				<Text text={title} anchor={.5}
 					style={{ fontFamily: GAME_FONT, fontWeight: GAME_FONT_WEIGHT,
 						fontSize: Math.min(sizes.width * 0.088, sizes.height * 0.15),
-						fill: 0x241d1c, stroke: { color: 0xf8e8c6, width: 3 }, letterSpacing: 2 }} />
+						fill: 0xaa2b38, stroke: { color: 0x241d1c, width: 9, join: 'round' }, letterSpacing: 2 }} />
 			</Container>
 			{#if stampScale > 0}
 				<Container y={sizes.height * 0.025} scale={stampScale} rotation={-0.06}>
@@ -113,7 +116,7 @@
 					fontSize: Math.min(sizes.width * 0.05, sizes.height * 0.14, (sizes.width * 1.1) / subtitle.length),
 					fontWeight: GAME_FONT_WEIGHT,
 					letterSpacing: 4,
-					fill: 0x161412,
+					fill: 0x241d1c,
 				}}
 			/>
 		{/snippet}

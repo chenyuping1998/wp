@@ -51,7 +51,28 @@ const fail = (m) => { console.log(`!! ${m}`); failures++; };
 const meshes = skeleton.slots
 	.map((slot) => ({ slot, mesh: slot.getAttachment() }))
 	.filter(({ mesh }) => mesh?.triangles);
-if (!meshes.find(({ slot }) => slot.data.name === 'body')) throw new Error('Ninja body is not a weighted mesh');
+const boomRig = JSON.parse(fs.readFileSync(path.join(root, '../GoBoomana/static/assets/spines/goBananasMonkey/monkey.json'), 'utf8'));
+if (JSON.stringify(json.bones.slice(0, boomRig.bones.length)) !== JSON.stringify(boomRig.bones)) throw new Error('Ninja reskin changed Boom body joints or setup transforms');
+if (!meshes.length) throw new Error('Boom weighted body parts are missing');
+const shoulder = skeleton.findSlot('shoulder_shuriken');
+if (!shoulder?.getAttachment() || shoulder.bone.data.name !== 'armL') throw new Error('Shuriken must be embedded in the left shoulder');
+if (skeleton.findSlot('dynamite')?.getAttachment()) throw new Error('Old hand-held shuriken is still visible');
+const order = json.slots.map((slot) => slot.name);
+if (order.indexOf('torso_0_trunk') < Math.max(order.indexOf('left_leg_0_thigh'), order.indexOf('right_leg_0_thigh'))) throw new Error('Trouser layers cover the sash hem');
+for (const name of ['head_5_decoration', 'mouth_grip']) {
+	if (skeleton.findSlot(name)?.bone.data.name !== 'head') throw new Error(`${name} must stay registered to the new face`);
+}
+if (order.indexOf('mouth_grip') < order.indexOf('head_5_decoration')) throw new Error('Banana is painted over the biting lip');
+console.log(`ok ${boomRig.bones.length} Boom body bones unchanged; ${json.bones.length - boomRig.bones.length} cloth bones; shoulder shuriken and banana bite registered`);
+const head = json.skins[0].attachments.head_2_face.head_2_face;
+if (head.width > 280 || head.height > 280) throw new Error('Head exceeds Boom proportion envelope');
+const headArt = PNG.sync.read(fs.readFileSync(path.join(root, 'design/source/ninja_reskin/head_2_face.png')));
+if (Math.abs(head.width / head.height - headArt.width / headArt.height) > 0.001) throw new Error('Head attachment stretches the source artwork');
+console.log(`ok compact head ${head.width}x${head.height}; uniform artwork scale`);
+for (const name of ['slash', 'slash_alt', 'split_finale', 'scatter_slash', 'dance']) {
+	if (!data.findAnimation(name)) throw new Error(`Missing authored action ${name}`);
+}
+if (JSON.stringify(json.animations.slash) === JSON.stringify(json.animations.throwit)) throw new Error('Split action is still a copy of the throw');
 
 const world = ({ slot, mesh }) => {
 	const xy = new Float32Array(mesh.worldVerticesLength);
@@ -82,9 +103,68 @@ const inked = meshes.map(({ mesh }) => {
 	return out;
 });
 const restXY = meshes.map((m) => world(m));
+const clothIndex = meshes.findIndex(({ slot }) => slot.data.name === 'torso_0_trunk');
+if (clothIndex < 0) throw new Error('Jacket hem and sash have no weighted mesh');
+const cloth = meshes[clothIndex];
+const uv = cloth.mesh.regionUVs;
+let restError = 0;
+for (let i = 0; i < uv.length; i += 2) {
+	restError = Math.max(restError, Math.hypot(restXY[clothIndex][i] - (69 + 361 * uv[i] - 280), restXY[clothIndex][i + 1] - (884 - 146 - 441 * uv[i + 1])));
+}
+if (restError > 0.02) fail(`cloth mesh shifts source art by ${restError}px`);
+else console.log(`ok cloth rest error ${restError.toFixed(5)}px`);
+const relativeCloth = (xy) => {
+	const torso = skeleton.findBone('torso');
+	const out = [];
+	for (let i = 0; i < xy.length; i += 2) {
+		const p = torso.worldToLocal({ x: xy[i], y: xy[i + 1] });
+		out.push(p.x, p.y);
+	}
+	return out;
+};
+const clothRest = relativeCloth(restXY[clothIndex]);
+let clothTravel = 0;
+const strapManifest = JSON.parse(fs.readFileSync(path.join(root, 'design/source/ninja_reskin/strap_manifest.json'), 'utf8'));
+// A tie cut into its own mesh (design/cut_ninja_straps.py, listed in
+// skeleton.strapsCut) is measured in that mesh rather than in the piece it was
+// painted on — the piece no longer carries its weights at all.
+const strapsCut = new Set(json.skeleton.strapsCut ?? []);
+const straps = strapManifest.map((item) => {
+	const slotName = strapsCut.has(item.name) ? `${item.name}_cut` : item.slot;
+	const k = meshes.findIndex(({ slot }) => slot.data.name === slotName);
+	if (k < 0) throw new Error(`${item.name}: strap is not skinned`);
+	const attachment = json.skins[0].attachments[slotName][slotName];
+	const owned = [], values = attachment.vertices;
+	const boneIndices = [item.name, `${item.name}_tip`].map((name) => json.bones.findIndex((bone) => bone.name === name));
+	let cursor = 0;
+	for (let v = 0; v < attachment.uvs.length / 2; v++) {
+		const count = values[cursor++];
+		let weight = 0;
+		for (let b = 0; b < count; b++) {
+			if (boneIndices.includes(values[cursor])) weight += values[cursor + 3];
+			cursor += 4;
+		}
+		if (weight > .035 && alphaAt(meshes[k].mesh.uvs[v * 2], meshes[k].mesh.uvs[v * 2 + 1]) > 64) owned.push(v);
+	}
+	if (owned.length < 2) throw new Error(`${item.name}: has no visible painted free end`);
+	const parent = skeleton.findBone(item.parent);
+	const local = (xy) => owned.map((v) => parent.worldToLocal({ x: xy[v * 2], y: xy[v * 2 + 1] }));
+	return { ...item, k, owned, local, rest: local(restXY[k]), travel: 0 };
+});
+const sourceParts = JSON.parse(fs.readFileSync(path.join(root, 'design/source/ninja_reskin/layers.json'), 'utf8')).layers;
+for (let k = 0; k < meshes.length; k++) {
+	const part = sourceParts.find((part) => part.name === meshes[k].slot.data.name);
+	if (!part) continue;
+	const uv = meshes[k].mesh.regionUVs;
+	let error = 0;
+	for (let i = 0; i < uv.length; i += 2)
+		error = Math.max(error, Math.hypot(restXY[k][i] - (part.x + part.w * uv[i] - 280), restXY[k][i + 1] - (884 - part.y - part.h * uv[i + 1])));
+	if (error > .02) fail(`${part.name}: new tie mesh shifts the original drawing ${error.toFixed(3)}px`);
+}
 
 // 1. the body at rest is the art
-{
+
+if (meshes.some(({ slot }) => slot.data.name === 'body')) {
 	const body = meshes.find(({ slot }) => slot.data.name === 'body');
 	const xy = world(body);
 	const uvs = json.skins[0].attachments.body.body.uvs;
@@ -122,6 +202,7 @@ for (const animation of data.animations) {
 		state.apply(skeleton);
 		skeleton.update(1 / 60);
 		skeleton.updateWorldTransform(Physics.update);
+		if (!shoulder.getAttachment()) fail(`${animation.name}: shoulder shuriken disappears`);
 		meshes.forEach((m, k) => {
 			const xy = world(m);
 			const a = areas(m, xy);
@@ -131,9 +212,19 @@ for (const animation of data.animations) {
 				if (r < worst[k].r) worst[k] = { r, at: `frame ${frame} triangle ${i}` };
 			}
 			if (animation.name === 'idle') {
+				for (const strap of straps.filter((strap) => strap.k === k)) {
+					const points = strap.local(xy);
+					for (let i = 0; i < points.length; i++)
+						strap.travel = Math.max(strap.travel, Math.hypot(points[i].x - strap.rest[i].x, points[i].y - strap.rest[i].y));
+				}
 				// the last vertex row of a chain mesh is its free end; take the max over all
 				for (let v = 0; v < xy.length; v += 2)
 					travel[k] = Math.max(travel[k], Math.hypot(xy[v] - restXY[k][v], xy[v + 1] - restXY[k][v + 1]));
+				if (k === clothIndex) {
+					const local = relativeCloth(xy);
+					for (let v = 0; v < local.length; v += 2) if (uv[v + 1] > 0.8)
+						clothTravel = Math.max(clothTravel, Math.hypot(local[v] - clothRest[v], local[v + 1] - clothRest[v + 1]));
+				}
 			}
 		});
 	}
@@ -142,11 +233,51 @@ for (const animation of data.animations) {
 	if (bad.length) bad.forEach(([m, w]) => fail(`${animation.name}: ${m.slot.data.name} folds to ${Math.round(w.r * 100)}% at ${w.at}`));
 	else console.log(`ok ${animation.name}: ${line}`);
 }
-for (const name of ['band_tails', 'sash_end', 'cord_end', 'charm']) {
+if (clothTravel < 3) fail(`cloth free ends move only ${clothTravel.toFixed(2)}px relative to the torso`);
+else console.log(`ok cloth free ends move ${clothTravel.toFixed(2)}px relative to torso`);
+for (const strap of straps) {
+	if (strap.travel < 1.25) fail(`${strap.name}: painted free end moves only ${strap.travel.toFixed(2)}px`);
+	else console.log(`ok ${strap.name}: ${strap.owned.length} painted vertices, ${strap.travel.toFixed(2)}px independent flow`);
+}
+for (const name of ['band_tails', 'sash_end', 'cord_end', 'charm'].filter((name) => json.slots.some((slot) => slot.name === name))) {
 	const k = meshes.findIndex((m) => m.slot.data.name === name);
 	if (k < 0) { fail(`${name}: no mesh`); continue; }
 	if (travel[k] < MIN_TIP_PX) fail(`${name}: moves only ${travel[k].toFixed(1)}px in the idle — not flowing`);
 	else console.log(`ok ${name} travels ${travel[k].toFixed(1)}px in the idle`);
+}
+// Exercise the same mixes as Mascot.svelte, including a new cut interrupting
+// recovery and a finale played at Turbo speed. Isolated clips miss these.
+for (const [label, events, duration] of [
+	['cut-to-idle', [[0, 'idle', .18, 1], [.7, 'slash', .055, 1], [1.64, 'idle', .24, 1]], 2.5],
+	['repeated-cut', [[0, 'idle', .18, 1], [.5, 'slash', .055, 1], [.7, 'slash_alt', .055, 1], [1.64, 'idle', .24, 1]], 2.5],
+	['turbo-finale', [[0, 'idle', .18, 1], [.5, 'split_finale', .055, 1 / .6], [1.208, 'idle', .24, 1]], 2],
+	['cheer-to-dance', [[0, 'cheer', .18, 1], [2.05, 'dance', .18, 1]], 3.5],
+	['watch-to-cut', [[0, 'watch', .18, 1], [.8, 'slash', .055, 1], [1.74, 'idle', .24, 1]], 2.6],
+	['scatter-to-cheer', [[0, 'scatter_slash', .055, 1], [1.62, 'cheer', .18, 1]], 3.5],
+]) {
+	skeleton.setToSetupPose();
+	state.clearTracks();
+	state.setAnimation(1, 'flutter', true);
+	skeleton.updateWorldTransform(Physics.reset);
+	let event = 0, worst = 1;
+	for (let frame = 0; frame < duration * 120; frame++) {
+		const t = frame / 120;
+		while (event < events.length && t + 1e-6 >= events[event][0]) {
+			const [, name, mix, speed] = events[event++];
+			const track = state.setAnimation(0, name, name === 'idle' || name === 'dance');
+			track.mixDuration = mix;
+			track.timeScale = speed;
+		}
+		state.update(1 / 120); state.apply(skeleton); skeleton.update(1 / 120);
+		skeleton.updateWorldTransform(Physics.update);
+		meshes.forEach((m, k) => {
+			const a = areas(m, world(m));
+			for (let i = 0; i < a.length; i++) if (inked[k][i] && Math.abs(rest[k][i]) > 1e-6)
+				worst = Math.min(worst, a[i] / rest[k][i]);
+		});
+	}
+	if (!(worst > FOLD)) fail(`${label}: mixed animation folds to ${Math.round(worst * 100)}%`);
+	else console.log(`ok ${label} at 120fps: worst area ${Math.round(worst * 100)}%`);
 }
 if (failures) {
 	console.log(`check_ninja_mesh: ${failures} failure(s)`);

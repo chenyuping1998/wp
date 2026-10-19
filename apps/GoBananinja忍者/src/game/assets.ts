@@ -68,6 +68,41 @@
 		src: new URL('../../assets/sprites/goBananasUi/buybonus_lit.png', import.meta.url).href,
 		preload: true,
 	},
+	// The Buy Bonus is a throwing star that spins under the pointer, and its lit
+	// edges for the additive hover layer (design/generate_buy_shuriken.mjs).
+	// The bar's round controls: washi-paper discs, ON in brass, with Diner
+	// Monkey's ink icon shapes re-inked navy (design/generate_bar_discs.py).
+	gbUiButtonWashi: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/button_washi.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiButtonWashiOn: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/button_washi_on.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconInkMenu: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaUiIconsInk/ink_menu.png', import.meta.url).href, preload: true },
+	gbIconInkMenuExit: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaUiIconsInk/ink_menuExit.png', import.meta.url).href, preload: true },
+	gbIconInkSettings: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaUiIconsInk/ink_settings.png', import.meta.url).href, preload: true },
+	gbIconInkInfo: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaUiIconsInk/ink_info.png', import.meta.url).href, preload: true },
+	gbIconInkPayTable: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaUiIconsInk/ink_payTable.png', import.meta.url).href, preload: true },
+	gbIconInkSoundOn: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaUiIconsInk/ink_soundOn.png', import.meta.url).href, preload: true },
+	gbIconInkSoundOff: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaUiIconsInk/ink_soundOff.png', import.meta.url).href, preload: true },
+	gbIconInkAutoSpin: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaUiIconsInk/ink_autoSpin.png', import.meta.url).href, preload: true },
+	gbIconInkReplay: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaUiIconsInk/ink_replay.png', import.meta.url).href, preload: true },
+	gbIconInkIncrease: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaUiIconsInk/ink_increase.png', import.meta.url).href, preload: true },
+	gbIconInkDecrease: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaUiIconsInk/ink_decrease.png', import.meta.url).href, preload: true },
+	gbUiBuyBonusShuriken: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_shuriken.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyBonusShurikenLit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananasUi/buybonus_shuriken_lit.png', import.meta.url).href,
+		preload: true,
+	},
 	// brass win-tier plaques (design/generate_win_banners.mjs)
 	gbWinBannerBig: {
 		type: 'sprite',
@@ -99,16 +134,18 @@
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasFrame/fs_counter_panel.png', import.meta.url).href,
 	},
-	// Game-size high-pay tiles: prefiltered from the full-resolution art to keep
-	// edges legible on the reel. Source paintings remain in goBananasSymbolsV3.
+	// The reel's static tiles (H1-H4, S, L1-L5 and their split twins) are the
+	// mesh acts' own plate + subject composited (design/build_static_from_layers.py),
+	// so a cell swapping between its sprite and its landing/idle act shows the
+	// same picture. Source paintings remain in goBananasSymbolsV3.
 	gbH1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananinjaSharpHigh/h1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/h1.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananinjaSharpHigh/h2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/h2.png', import.meta.url).href,
 		preload: true,
 	},
 	// The grenade PROP — a transparent cut-out, deliberately not gbH2.
@@ -126,37 +163,37 @@
 	},
 	gbH3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananinjaSharpHigh/h3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/h3.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananinjaSharpHigh/h4.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/h4.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/l1.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/l2.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/l3.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/l4.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL5: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/l5.png', import.meta.url).href,
 		preload: true,
 	},
 	gbW: {
@@ -165,15 +202,15 @@
 		preload: true,
 	},
 	// Each cut cell contains two complete motifs on one tile: upper-left and lower-right.
-	gbH1Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaSharpHigh/h1_split.png', import.meta.url).href, preload: true },
-	gbH2Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaSharpHigh/h2_split.png', import.meta.url).href, preload: true },
-	gbH3Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaSharpHigh/h3_split.png', import.meta.url).href, preload: true },
-	gbH4Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaSharpHigh/h4_split.png', import.meta.url).href, preload: true },
-	gbL1Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_split.png', import.meta.url).href, preload: true },
-	gbL2Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_split.png', import.meta.url).href, preload: true },
-	gbL3Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_split.png', import.meta.url).href, preload: true },
-	gbL4Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_split.png', import.meta.url).href, preload: true },
-	gbL5Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_split.png', import.meta.url).href, preload: true },
+	gbH1Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/h1_split.png', import.meta.url).href, preload: true },
+	gbH2Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/h2_split.png', import.meta.url).href, preload: true },
+	gbH3Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/h3_split.png', import.meta.url).href, preload: true },
+	gbH4Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/h4_split.png', import.meta.url).href, preload: true },
+	gbL1Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/l1_split.png', import.meta.url).href, preload: true },
+	gbL2Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/l2_split.png', import.meta.url).href, preload: true },
+	gbL3Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/l3_split.png', import.meta.url).href, preload: true },
+	gbL4Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/l4_split.png', import.meta.url).href, preload: true },
+	gbL5Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/l5_split.png', import.meta.url).href, preload: true },
 	gbWSplit: { type: 'sprite', src: new URL('../../assets/sprites/goBananasSymbolsV3/w_split.png', import.meta.url).href, preload: true },
 
 	// THE MESH WINS' LAYERS (design/make_symbol_layers.py): each winning symbol
@@ -328,7 +365,7 @@
 
 	gbS: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/s.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/s.png', import.meta.url).href,
 		preload: true,
 	},
 	// The Machete. Delta-only — gen-1 and gen-2 had no such symbol.
@@ -347,7 +384,7 @@
 		src: new URL('../../assets/sprites/goBananasSymbolsV3/p.png', import.meta.url).href,
 		preload: true,
 	},
-	// One articulated ninja puppet, split from the chosen standing design.
+	// Shinobi outfit painted onto Boom's PSD cutouts and original 25-bone rig.
 	gbNinjaPuppet: {
 		type: 'spine',
 		src: {
@@ -360,17 +397,17 @@
 	// Go Bananas jungle backgrounds (SVG-generated ??see design/generate_art.mjs)
 	gbBgBase: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasBackground/bg_base.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasBackground/bg_base.jpg', import.meta.url).href,
 		preload: true,
 	},
 	gbBgFeature: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasBackground/bg_feature.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasBackground/bg_feature.jpg', import.meta.url).href,
 		preload: true,
 	},
 	gbBgSuperspin: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasBackground/bg_superspin.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananasBackground/bg_superspin.jpg', import.meta.url).href,
 		preload: true,
 	},
 	anticipation: {

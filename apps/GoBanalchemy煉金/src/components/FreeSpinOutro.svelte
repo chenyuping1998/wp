@@ -8,9 +8,6 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
-	import { verticalFill } from '../game/gradientFill';
-	import { Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 	import { waitForResolve } from 'utils-shared/wait';
@@ -61,32 +58,21 @@
 		{@const duration = winLevelData.presentDuration}
 		<WinCountUpProvider {amount} {duration} oncomplete={() => onCountUpComplete()}>
 			{#snippet children({ countUpAmount, startCountUp, finishCountUp, countUpCompleted })}
-				<OnMount onmount={() => startCountUp()} />
+				<OnMount
+					onmount={() => {
+						startCountUp();
+					}}
+				/>
 
 				<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
 
 				<FreeSpinAnimation>
 					{#snippet children({ sizes })}
-						<Text
-							anchor={0.5}
+						<GoldText
 							y={-sizes.height * 0.26}
 							text={title}
-							style={{
-								fontFamily: GAME_FONT,
-								fontSize: Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
-								fontWeight: GAME_FONT_WEIGHT,
-								letterSpacing: 6,
-								fill: verticalFill(
-									[0xfff3bd, 0xffd75e, 0xc9821a],
-									Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length),
-								),
-								stroke: 0x54330a,
-								strokeThickness: 6,
-								dropShadow: true,
-								dropShadowColor: 0x000000,
-								dropShadowBlur: 10,
-								dropShadowDistance: 3,
-							}}
+							fontSize={Math.min(sizes.width * 0.12, (sizes.width * 1.5) / title.length)}
+							letterSpacing={6}
 						/>
 						<GoldText
 							y={sizes.height * 0.12}

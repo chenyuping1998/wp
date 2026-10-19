@@ -20,7 +20,17 @@ GOLD = (197, 153, 75, 255)
 INK = (42, 64, 55, 255)
 
 
+# built elsewhere for Swing since 2026-10-18 (build_swing_wordmark.py,
+# build_swing_fg_sign.py, build_swing_win_plaques.py)
+OWNED_ELSEWHERE = {"logo_board.png", "fg_intro.png", "fg_total.png", "fg_intro_decor.png", "fg_total_decor.png",
+                   *(f"win_{t}{d}.png" for t in ("big", "super", "mega", "epic", "max") for d in ("", "_decor"))}
+
+
 def save(image, folder, name):
+    if folder == "sushiV8" and name in OWNED_ELSEWHERE:
+        return
+    if folder == "sushiUi" and name == "bar_strip.png":  # Swing's own strip (tools/build_three_theme_art.py)
+        return
     path = SPRITES / folder / name
     path.parent.mkdir(parents=True, exist_ok=True)
     image.save(path, optimize=True)

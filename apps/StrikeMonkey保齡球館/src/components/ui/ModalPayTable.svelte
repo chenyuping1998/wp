@@ -133,7 +133,7 @@
 									>{T.doesNotPay} &mdash; 3, 4 or 5 Scatters award {scatterSpins} Free Spins</span
 								>
 							{:else if row.name === 'P'}
-								<span class="wp-special">Carries a value; every Bowler collects every Record</span>
+								<span class="wp-special">Carries a value; every Bowler collects every Pin</span>
 							{:else if row.name === 'W'}
 								<span class="wp-special">Substitutes and collects &mdash; reels 2 to 5</span>
 							{:else if row.pays.length}
@@ -177,7 +177,7 @@
 			</div>
 
 			<p class="wp-note">
-				When a <strong>Bowler</strong> and a <strong>Record</strong> are on the board
+				When a <strong>Bowler</strong> and a <strong>Pin</strong> are on the board
 				together, every Bowler collects the value of every Pin. In Free Spins the Bowler meter
 				adds spins and replaces all 10, then J, then Q symbols with Pins on later spins. Collections stay at ×1.
 			</p>

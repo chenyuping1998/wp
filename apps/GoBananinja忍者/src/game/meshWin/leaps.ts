@@ -119,7 +119,8 @@ const leapRigid = (leap: Leap, t: number, feetY: number): { rigid: RigidPose; ai
 		sy,
 		rot: leap.turn(t),
 		// it grows as it comes up toward the player
-		pop: 1 + 0.14 * h,
+		// 0.14 -> 0.2 (2026-10-16: bigger wins)
+		pop: 1 + 0.2 * h,
 		dx: 0,
 		dy: -leap.height * h,
 	};
@@ -158,21 +159,21 @@ const spinUp = (t: number, from: number, to: number) => {
 export const LEAPS: Record<string, Leap> = {
 	// a front flip about its middle; the cord knot under the chin trails it
 	H1: {
-		height: 120,
+		height: 145,
 		pivot: [128, 120],
 		turn: (t) => -360 * ease(t, L.launch, 820),
 		drag: { knot: 3.2, horn_l: 0.8, horn_r: 0.8 },
 	},
 	// thrown up spinning, two full turns, the blades bending back against it
 	H2: {
-		height: 125,
+		height: 150,
 		pivot: [128, 129],
 		turn: (t) => 720 * spinUp(t, L.launch - 30, 880),
 		drag: { blade_tl: 1.6, blade_tr: 1.6, blade_br: 1.6, blade_bl: 1.6 },
 	},
 	// the countdown, then a hop with a shimmy
 	H3: {
-		height: 105,
+		height: 130,
 		pivot: [132, 152],
 		delay: 330,
 		turn: (t) => 12 * Math.sin((2 * Math.PI * (t - L.launch)) / 260) * bump(t, L.launch, L.land),
@@ -180,14 +181,14 @@ export const LEAPS: Record<string, Leap> = {
 	},
 	// a full twirl the other way; the tassels fly out behind
 	H4: {
-		height: 115,
+		height: 140,
 		pivot: [128, 120],
 		turn: (t) => 360 * ease(t, L.launch, 840),
 		drag: { tassel_l: 3, tassel_r: 3 },
 	},
 	// the scatter hops lower, with a rock side to side
 	S: {
-		height: 80,
+		height: 105,
 		pivot: [150, 140],
 		turn: (t) => 8 * Math.sin((2 * Math.PI * (t - L.launch)) / 420) * bump(t, L.launch, L.land),
 		drag: { bow: 2.4, ends: 2.4 },

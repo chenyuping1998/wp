@@ -91,8 +91,8 @@ setUiTheme({
 	// the control lights in the game's own red-orange instead of a white film.
 	hoverPlateLight: 0xe2342b,
 
-	// 旋轉鍵的呼吸光暈
-	spinButtonGlow: true,
+	// 旋轉鍵的呼吸光暈：關掉。按下就變亮的光圈是 Deadwood「poor UI」5/10 的原因之一
+	spinButtonGlow: false,
 
 	// PHONE PORTRAIT: the menu disc and the Buy Bonus plate sat at ±470 and ran
 	// off both screen edges (the menu lost a third of its disc). ±440 keeps

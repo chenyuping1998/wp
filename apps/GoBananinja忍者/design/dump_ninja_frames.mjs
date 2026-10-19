@@ -25,6 +25,8 @@ const [anim, timesArg, out] = process.argv.slice(2);
 const times = timesArg.split(',').map(Number);
 st.setAnimation(0, anim, anim === 'idle' || anim === 'dance');
 if (data.findAnimation('flutter')) st.setAnimation(1, 'flutter', true);
+if (data.findAnimation('blink')) st.setAnimation(2, 'blink', true);
+if (data.findAnimation('glint')) st.setAnimation(3, 'glint', true);
 sk.updateWorldTransform(S.Physics.reset);
 
 const frames = [];
@@ -42,7 +44,7 @@ for (let f = 0; t <= last + 1e-6; f++) {
 		const slots = [];
 		for (const slot of sk.drawOrder) {
 			const a = slot.getAttachment();
-			if (!a) continue;
+			if (!a || slot.color.a < 0.02) continue; // a slot faded out (the shuriken glint at rest)
 			if (a.triangles) {
 				const xy = new Float32Array(a.worldVerticesLength);
 				a.computeWorldVertices(slot, 0, xy.length, xy, 0, 2);

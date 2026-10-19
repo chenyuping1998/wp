@@ -61,7 +61,7 @@
 	 * and a pose frozen mid-hop in a hidden tab is gone with the copy when the
 	 * presentation ends.
 	 */
-	import { Mesh, MeshGeometry, Sprite, Container, type Texture } from 'pixi.js';
+	import { Graphics as PixiGraphics, Mesh, MeshGeometry, Sprite, Container, type Texture } from 'pixi.js';
 	import { getContextApp, getContextParent } from 'pixi-svelte';
 	import { onMount } from 'svelte';
 
@@ -150,6 +150,15 @@
 
 		const plate = plateTex ? new Sprite(plateTex) : null;
 		plate?.setSize(CANVAS, CANVAS);
+		// A LIFTING PANEL (the Wild, spec.lifts) leaves its cell: what shows
+		// under it is the cell's empty socket — a dark recess the size of the
+		// tile — never the board's own static copy of the same symbol.
+		let socket: PixiGraphics | null = null;
+		if (panelMode && spec.lifts && !props.land && !props.idle && !props.split) {
+			socket = new PixiGraphics();
+			socket.roundRect(3, 3, CANVAS - 6, CANVAS - 6, 18).fill({ color: 0x05070a, alpha: 0.94 });
+			socket.roundRect(9, 9, CANVAS - 18, CANVAS - 18, 13).stroke({ color: 0x000000, width: 6, alpha: 0.6 });
+		}
 		const shadow = shadowTex ? new Sprite(shadowTex) : null;
 		if (shadow) shadow.alpha = 0;
 		// THE AFTERIMAGE (spec.smear): copies of the subject at the poses a few
@@ -243,7 +252,7 @@
 		content.position.set(-CANVAS / 2, -CANVAS / 2);
 		const part = part_();
 		const acting = [fxUnder, ...ghosts.map((g) => g.mesh).reverse(), subject, flash, sheen, ...sparks.map((k) => k.s), fxOver];
-		const layers = part === 'plate' ? [plate, shadow] : part === 'subject' ? acting : [plate, shadow, ...acting];
+		const layers = part === 'plate' ? [socket ?? plate, shadow] : part === 'subject' ? acting : [socket ?? plate, shadow, ...acting];
 		for (const layer of layers) if (layer) content.addChild(layer);
 		root.addChild(content);
 		parent.parent.addChild(root);

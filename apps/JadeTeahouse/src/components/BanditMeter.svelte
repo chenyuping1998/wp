@@ -24,7 +24,9 @@
 	import PropMesh from './PropMesh.svelte';
 
 	const context = getContext();
-	const PAPER = 0xefeadc, INK = 0x282828, PINK = 0xbd9393, ORANGE = 0xb87b60;
+	// The jade and gold of the rest of the game. These were Sushi Monkey's pink
+	// and terracotta print inks, the last of them on screen.
+	const PAPER = 0xefeadc, INK = 0x282828, PINK = 0x5f9e83, ORANGE = 0xa8722c;
 	const LEAD = 360, STEP = 2200, CUT = 950, HOLD = 1200, OUT = 380;
 	let active = $state(false), elapsed = $state(0), level = $state(0), spins = $state(0);
 	let steps = $state<number[]>([]);
@@ -110,7 +112,9 @@
 	<MainContainer>
 		<Rectangle width={layout.width} height={layout.height} backgroundColor={INK} alpha={.65*alpha}/>
 		<Container x={layout.width/2+shake} y={layout.height*.45} {alpha}>
-			<Graphics draw={(g)=>{g.clear();g.poly([-W*.48,-H*.48,W*.48,-H*.43,W*.47,H*.47,-W*.47,H*.43]).fill(PAPER).stroke({color:INK,width:5});}}/>
+			<!-- the scroll's paper, gold-bracketed (sushiV8/cutin_paper.png), not a
+			     flat polygon drawn in code -->
+			<Sprite key="v8CutinPaper" anchor={.5} width={W*.97} height={H*.96}/>
 			<Container x={W*.24+W*.2*(1-clamp(phase/400))-W*.16*Math.sin(Math.PI*clamp((phase-CUT)/400))} y={-H*.05} rotation={.05-.3*Math.sin(Math.PI*clamp((phase-CUT)/400))} alpha={result ? .32 : 1}>
 				<!-- her fan, tassels, sleeve and hem answer the slide and the slash
 				     (game/meshWin/cutIn.ts), on this step's own phase clock -->
@@ -126,7 +130,7 @@
 				{/each}
 				{#if plate>0}
 					<Container y={-H*.045*Math.sin(Math.PI*plate)} scale={back(plate)*.76}>
-						<Graphics draw={(g)=>{g.clear();g.circle(0,0,card*.46).stroke({width:5,color:PINK});}}/>
+						<Graphics draw={(g)=>{g.clear();g.circle(0,0,card*.46).stroke({width:5,color:0xc79b58});}}/>
 						<Sprite key="gbP" anchor={.5} width={card*1.08} height={card*1.08}/>
 					</Container>
 				{/if}

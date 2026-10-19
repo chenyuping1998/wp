@@ -1,4 +1,9 @@
 ﻿export default {
+	gbPotionVapor: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyFx/potion_vapor.png', import.meta.url).href,
+		preload: true,
+	},
 	explosion: {
 		type: 'spine',
 		src: {
@@ -52,6 +57,108 @@
 		src: new URL('../../assets/sprites/goBananasUi/ticker_plate.png', import.meta.url).href,
 		preload: true,
 	},
+	// the Buy Bonus plate simmering: frames baked by design/make_bonus_bubbles.py,
+	// cycled through uiTheme.sprites.buyBonus by game/buyBonusBubbles.ts
+	gbUiBonusPlate00: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_00.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate01: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_01.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate02: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_02.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate03: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_03.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate04: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_04.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate05: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_05.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate06: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_06.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate07: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_07.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate08: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_08.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate09: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_09.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate10: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_10.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate11: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_11.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate12: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_12.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate13: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_13.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate14: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_14.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate15: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_15.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate16: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_16.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate17: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_17.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate18: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_18.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBonusPlate19: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/bonus_plate_19.png', import.meta.url).href,
+		preload: true,
+	},
 	gbUiBuyBonus: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasUi/buybonus_plate.png', import.meta.url).href,
@@ -100,6 +207,10 @@
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasFrame/fs_counter_panel.png', import.meta.url).href,
 	},
+	gbFgPlaque: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyUi/fg_plaque.png', import.meta.url).href,
+	},
 	// the blast ladder's dynamite sticks on the counter (design/generate_ladder_sticks.mjs)
 	gbLadderLit: {
 		type: 'sprite',
@@ -114,6 +225,17 @@
 	// CUT symbols carry plate / subject / shadow / sheen; PANEL symbols glow /
 	// sheen over their own sprite.
 	// the cut layers the winning symbols leap from (design/make_alchemy_layers.py)
+	// the Wild gorilla's painted lids, same canvas as w.png (design/w_blink.py)
+	gbWLidHalf: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyMesh/w_lid_half.png', import.meta.url).href,
+		preload: true,
+	},
+	gbWLidClosed: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyMesh/w_lid_closed.png', import.meta.url).href,
+		preload: true,
+	},
 	gbH1Plate: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBanalchemyMesh/h1_plate.png', import.meta.url).href,
@@ -464,17 +586,17 @@
 	// Go Bananas jungle backgrounds (SVG-generated ??see design/generate_art.mjs)
 	gbBgBase: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBanalchemyBackground/bg_base.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBanalchemyBackground/bg_base.jpg', import.meta.url).href,
 		preload: true,
 	},
 	gbBgFeature: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBanalchemyBackground/bg_feature.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBanalchemyBackground/bg_feature.jpg', import.meta.url).href,
 		preload: true,
 	},
 	gbBgHoldAndSpin: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBanalchemyBackground/bg_holdandspin.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBanalchemyBackground/bg_holdandspin.jpg', import.meta.url).href,
 		preload: true,
 	},
 	anticipation: {

@@ -60,8 +60,10 @@
 	}
 
 	/* ══════════════════════════════════════════════════════
-	   GoBananas — jungle-commando modal skin.
-	   Deep olive canvas, brass trim, banana-gold highlights: the same palette as
+	   Go Bananinja modal skin. (The olive greens it inherited from the jungle
+	   game were converted to the ninja's lacquer navy 2026-10-16 — every panel
+	   colour below whose green led its red and blue — keeping each one's value.)
+	   Lacquer navy, brass trim, gold highlights: the same palette as
 	   the reel housing (BoardFrame), the free-spin plaques and the bet bar
 	   (game/uiTheme.ts), so Buy Bonus and every other modal read as one game.
 	   Targets the shared component class names:
@@ -147,9 +149,9 @@
 	:global(.rectangle) {
 		background: linear-gradient(
 			160deg,
-			rgba(38, 52, 18, 0.95) 0%,
-			rgba(18, 26, 8, 0.98) 45%,
-			rgba(30, 42, 14, 0.95) 100%
+			rgba(27, 44, 61, 0.95) 0%,
+			rgba(13, 22, 30, 0.98) 45%,
+			rgba(22, 35, 49, 0.95) 100%
 		) !important;
 		border: 1px solid rgba(216, 163, 52, 0.4) !important;
 		border-radius: 10px !important;
@@ -187,7 +189,7 @@
 
 	/* Modal backdrop — deep jungle shade rather than the template's violet */
 	:global(.blur-layer) {
-		background-color: rgba(4, 12, 6, 0.72) !important;
+		background-color: rgba(3, 9, 15, 0.72) !important;
 	}
 
 	/* Content wrapper in modals (Buy Bonus, Bet Menu, Auto Spin, Settings…) */
@@ -207,15 +209,15 @@
 	:global(.ui-popup-standard-content-wrap) {
 		background: linear-gradient(
 			180deg,
-			rgba(26, 36, 12, 0.97) 0%,
-			rgba(10, 18, 6, 0.98) 100%
+			rgba(19, 30, 42, 0.97) 0%,
+			rgba(8, 15, 22, 0.98) 100%
 		) !important;
 		border: 1px solid rgba(216, 163, 52, 0.3) !important;
 		border-radius: 14px !important;
 		padding: 1.5rem !important;
 		box-shadow:
 			0 12px 40px rgba(0, 0, 0, 0.75),
-			0 0 70px rgba(158, 196, 74, 0.07),
+			0 0 70px rgba(106, 171, 236, 0.07),
 			inset 0 1px 0 rgba(255, 243, 189, 0.06) !important;
 	}
 
@@ -225,8 +227,8 @@
 	:global(.bonus-card-wrap) {
 		background: linear-gradient(
 			165deg,
-			rgba(34, 46, 16, 0.95) 0%,
-			rgba(16, 24, 8, 0.97) 100%
+			rgba(24, 39, 54, 0.95) 0%,
+			rgba(12, 20, 27, 0.97) 100%
 		) !important;
 		border: 1px solid rgba(216, 163, 52, 0.32) !important;
 		border-radius: 12px !important;
@@ -430,7 +432,7 @@
 		width: 5px;
 	}
 	:global(::-webkit-scrollbar-track) {
-		background: rgba(8, 16, 4, 0.45);
+		background: rgba(6, 12, 18, 0.45);
 		border-radius: 3px;
 	}
 	:global(::-webkit-scrollbar-thumb) {
@@ -438,13 +440,13 @@
 		border-radius: 3px;
 	}
 	:global(::-webkit-scrollbar-thumb:hover) {
-		background: linear-gradient(180deg, rgba(255, 215, 94, 0.75), rgba(158, 196, 74, 0.6));
+		background: linear-gradient(180deg, rgba(255, 215, 94, 0.75), rgba(106, 171, 236, 0.6));
 	}
 
 	/* Toggle / checkbox / select inputs in modals */
 	:global(.pop-up-wrap input),
 	:global(.pop-up-wrap select) {
-		background: rgba(24, 34, 10, 0.85) !important;
+		background: rgba(18, 28, 39, 0.85) !important;
 		border: 1px solid rgba(216, 163, 52, 0.3) !important;
 		border-radius: 6px !important;
 		color: #fff !important;
@@ -544,5 +546,98 @@
 	}
 	:global(.pop-up-wrap .close-button:hover) {
 		color: #fff4df !important;
+	}
+
+	/* ── FLAT PRINT, DINER MONKEY'S CONSTRUCTION (2026-10-17) ───────────────
+	   User: autoplay 的按鈕可以參考 diner 的樣式. Diner's Auto Spin, bet menu and
+	   confirm panels are flat print: one flat panel colour on a hard ink rim
+	   with a solid offset shadow, flat chips on a thin edge, the selected chip
+	   in the accent (edge AND number), and the primary action a flat block of
+	   colour on an ink rim with its own offset shadow. No gradients anywhere —
+	   the review lists gradient fills under low-quality assets.
+
+	   In this game's three colours, the same as the bet bar (game/uiTheme.ts):
+	     lacquer navy  #13222c panel, #0a1720 chips, #05090d ink
+	     brass         #d9b56b offset shadow, selected chip, focus
+	     crimson       #962e38 the one primary action
+	   with the text in washi cream #efe4ca. Declared last so it wins over the
+	   earlier lacquer rules at equal specificity. */
+	:global(.pop-up-wrap .ui-popup-standard-content-wrap) {
+		background: #13222c !important;
+		border: 3px solid #05090d !important;
+		border-radius: 12px !important;
+		box-shadow: 6px 6px 0 #d9b56b !important;
+	}
+	:global(.pop-up-wrap .rectangle) {
+		background: #0a1720 !important;
+		border: 1px solid #5b4c2e !important;
+		border-radius: 6px !important;
+		box-shadow: none !important;
+		transition: border-color 0.14s ease, transform 0.1s ease;
+	}
+	:global(.pop-up-wrap .button:hover .rectangle) {
+		background: #0a1720 !important;
+		border-color: #d9b56b !important;
+		box-shadow: none !important;
+	}
+	:global(.pop-up-wrap .button:active .rectangle) {
+		transform: scale(0.97);
+	}
+	:global(.pop-up-wrap .button:has(.selected) .rectangle),
+	:global(.pop-up-wrap .button .rectangle[style*='2px white solid']),
+	:global(.pop-up-wrap .button:has(.selected):hover .rectangle),
+	:global(.pop-up-wrap .button:hover .rectangle[style*='2px white solid']) {
+		background: #0a1720 !important;
+		border: 2px solid #d9b56b !important;
+		box-shadow: none !important;
+	}
+	:global(.pop-up-wrap .button:has(.selected) span),
+	:global(.pop-up-wrap .button:has(.rectangle[style*='2px white solid']) span) {
+		color: #d9b56b !important;
+		text-shadow: none !important;
+	}
+	:global(.pop-up-wrap .ui-modal-button-wrap .button:not(.disabled) .rectangle) {
+		background: #962e38 !important;
+		border: 2px solid #05090d !important;
+		box-shadow: 3px 3px 0 #05090d !important;
+	}
+	:global(.pop-up-wrap .ui-modal-button-wrap .button:not(.disabled):hover .rectangle) {
+		background: #ad3742 !important;
+		border-color: #05090d !important;
+		box-shadow: 3px 3px 0 #05090d !important;
+	}
+	:global(.pop-up-wrap .ui-modal-button-wrap .button:not(.disabled) span) {
+		color: #efe4ca !important;
+		text-shadow: none !important;
+	}
+	:global(.pop-up-wrap h1),
+	:global(.pop-up-wrap h2),
+	:global(.pop-up-wrap h3),
+	:global(.pop-up-wrap h4) {
+		color: #efe4ca !important;
+	}
+	:global(.pop-up-wrap input),
+	:global(.pop-up-wrap select) {
+		background: #0a1720 !important;
+		border: 1px solid #5b4c2e !important;
+		border-radius: 6px !important;
+		color: #efe4ca !important;
+		accent-color: #d9b56b;
+	}
+	:global(.pop-up-wrap input:focus),
+	:global(.pop-up-wrap select:focus) {
+		border-color: #d9b56b !important;
+		box-shadow: none !important;
+	}
+	:global(.pop-up-wrap .close-button) {
+		color: #d9b56b !important;
+	}
+	:global(.pop-up-wrap .close-button:hover) {
+		color: #efe4ca !important;
+		text-shadow: none !important;
+	}
+	:global(::-webkit-scrollbar-thumb),
+	:global(::-webkit-scrollbar-thumb:hover) {
+		background: #5b4c2e !important;
 	}
 </style>

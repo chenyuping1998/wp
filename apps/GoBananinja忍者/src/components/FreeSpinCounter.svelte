@@ -66,9 +66,11 @@
 
 	// ── IT HANGS FROM ITS KNOT (2026-10-04, GoBananasBoat's counter) ─────────
 	//
-	// The plaque hangs on a red cord from the knot on its top edge. Every time
-	// the count changes it is knocked — a swing about the knot that dies away —
-	// and between knocks it never quite stops (a faint sway). Its lower edge
+	// The plaque hangs from the knot on its top edge. Every time the count
+	// changes it is knocked — a swing about the knot that dies away — and then
+	// it is STILL. (2026-10-17: the red cord it hung on, drawn up off the top of
+	// the screen, and the faint sway between knocks were removed; the user
+	// found the line running out of the frame strange.) Its lower edge
 	// lags the swing through a mesh (PlaqueMesh `bend`), which is what makes a
 	// hung sign read as heavy rather than as a card on a pin. A retrigger that
 	// ADDS spins knocks harder than a spin being used.
@@ -86,7 +88,7 @@
 	const swingAt = (now: number) => {
 		const c = now - kickAt;
 		const knock = c < 0 ? 0 : kickSize * Math.exp(-c / 650) * Math.sin((2 * Math.PI * c) / 1100);
-		return knock + 0.006 * Math.sin((2 * Math.PI * now) / 3700);
+		return knock;
 	};
 	const swing = $derived(swingAt(clock));
 	const bend = $derived(-((swingAt(clock) - swingAt(clock - 16)) / 16) * 80);
@@ -108,21 +110,6 @@
 			if (show) knock(total > before && before > 0 ? 0.075 : 0.035);
 		},
 	});
-
-	// the cord from the knot, up off the top of the screen
-	const drawCord = (g: PixiGraphics) => {
-		g.clear();
-		const thick = panelSizes.width * 0.022;
-		const top = -panelSizes.height * 3;
-		g.moveTo(0, 0).lineTo(0, top);
-		g.stroke({ width: thick * 1.7, color: 0x3a0a0a, alpha: 1 });
-		g.moveTo(0, 0).lineTo(0, top);
-		g.stroke({ width: thick, color: 0xc4262a, alpha: 1 });
-		for (let y = -thick, i = 0; y > top; y -= thick * 1.6, i++) {
-			g.moveTo(-thick * 0.5, y).lineTo(thick * 0.5, y - thick * 0.8);
-			g.stroke({ width: Math.max(1, thick * 0.28), color: i % 2 ? 0x7a1214 : 0xff6a5a, alpha: 0.9 });
-		}
-	};
 
 	// superspin pips: one slot per respin in the window, lit while still available
 	const drawPips = (g: PixiGraphics) => {
@@ -148,7 +135,6 @@
 	<FadeContainer {show} {...position}>
 		<!-- hung from the knot: everything below turns about it -->
 		<Container x={panelSizes.width * KNOT.x} y={panelSizes.height * KNOT.y} rotation={swing}>
-		<Graphics draw={drawCord} />
 		<Container x={-panelSizes.width * KNOT.x} y={-panelSizes.height * KNOT.y}>
 		<!-- own container: PlaqueMesh adds itself at its parent's end -->
 		<Container>

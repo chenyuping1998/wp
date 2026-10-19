@@ -138,20 +138,57 @@
 		};
 	});
 
+
+	// ── the polished layout (2026-10-17) ──────────────────────────────────
+	// Review: "game info should be more polished". The rules were a column of
+	// text cards in gen-1's jungle gold. Now: a header with the game's own art,
+	// the four numbers a player looks for first, and every feature shown with
+	// the symbol it is about plus a small diagram of what it does. Same words,
+	// same certified figures (all still read from config).
+	const SYM = `${base}/assets/sprites/goBanalchemySymbols`;
+	const sym = (name: string) => `${SYM}/${name}.png`;
+	const HERO = `${base}/assets/sprites/goBanalchemyUi/buy_art_lab.png`;
+
+	const spinCounts = Object.values(config.scatterSpins ?? { 3: 8, 4: 10, 5: 12 }) as number[];
+	const facts = [
+		{ value: waysCount.toLocaleString(), label: T.ways },
+		{ value: rtpPct, label: 'RTP' },
+		{ value: `${maxWin.toLocaleString()}×`, label: 'Max win' },
+		{ value: `${Math.min(...spinCounts)}–${Math.max(...spinCounts)}`, label: 'Free Spins' },
+	];
+
+	// the Reagent, before and after: a reel holding a 10, the Tongs, a J and the
+	// Reagent becomes four Tongs — the highest-value symbol already on it
+	const reagentBefore = ['l5', 'h3', 'l4', 'b'];
+	const reagentAfter = ['h3', 'h3', 'h3', 'h3'];
+
+	// the reaction meter: how many reels each step covers
+	const meterSteps = [1, 2, 3, 4, 5];
 </script>
 
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="wp-rules">
-			<h2>GO BANALCHEMY — GAME RULES</h2>
+		<div class="al-rules">
+			<header class="al-hero" style={`--hero: url(${HERO})`}>
+				<span class="al-kicker">Game rules</span>
+				<h2>Go Banalchemy</h2>
+				<p class="al-tagline">
+					{rowCount}&times;{reelCount} reels &middot; Reagents transmute whole reels
+				</p>
+			</header>
 
-			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>How to play</h3>
+			<div class="al-facts">
+				{#each facts as fact (fact.label)}
+					<div class="al-fact">
+						<span class="al-fact-value">{fact.value}</span>
+						<span class="al-fact-label">{fact.label}</span>
+					</div>
+				{/each}
+			</div>
+
+			<section class="al-card">
+				<h3>How to play</h3>
 				<p>
-					<!-- Written rows-first ("4x5"), which is how this board is referred
-					     to in the project. config stores it the other way round, as
-					     numReels and numRows, so the order is swapped here rather than
-					     the config being renamed. -->
 					Go Banalchemy is a {rowCount}&times;{reelCount} video slot with
 					<strong>{waysCount.toLocaleString()} {T.ways}</strong>. There are no fixed lines: a
 					symbol counts wherever it lands on a reel. {T.combinationDirection}. A combination
@@ -163,52 +200,155 @@
 				</p>
 			</section>
 
-			<!-- Certification asked for a user interaction guide in the game
-			     information. Kept as a definition list of the actual on-screen
-			     controls, in the order they sit on the bar. -->
-			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Controls</h3>
-				<ul class="wp-controls">
-					{#each controls as control (control.name)}
-						<li class:no-icon={control.icons.length === 0}>
-							{#if control.icons.length}
-								<span class="wp-control-icons">
-									{#each control.icons as name (name)}
-										<img src={`${ICONS}/${name}.png`} alt="" aria-hidden="true" />
-									{/each}
-								</span>
-							{/if}
-							<div>
-								<span class="wp-control-name">{control.name}</span>
-								<span class="wp-control-text">{control.text}</span>
-							</div>
+			<!-- The signature mechanic first, with a picture of what it does. -->
+			<section class="al-card al-feature">
+				<img class="al-feature-icon" src={sym('b')} alt="" aria-hidden="true" />
+				<div class="al-feature-body">
+					<h3>Reagent &mdash; transmuting reels</h3>
+					<p>
+						A Reagent can land on any reel, and <strong>at most one per reel</strong>. After the
+						reels stop it reacts: every position on that reel becomes
+						<strong>one and the same symbol</strong> &mdash; the
+						<strong>highest-value symbol already standing on it</strong>. A reel of four
+						matching symbols contributes 4 to the {T.ways}, and because {T.ways} multiply
+						across reels, it can turn a board with no combination at all into a winning one.
+					</p>
+					<figure class="al-transmute" aria-hidden="true">
+						<div class="al-reel">
+							{#each reagentBefore as name, i (i)}
+								<img src={sym(name)} alt="" />
+							{/each}
+						</div>
+						<span class="al-arrow">&rarr;</span>
+						<div class="al-reel al-reel-lit">
+							{#each reagentAfter as name, i (i)}
+								<img src={sym(name)} alt="" />
+							{/each}
+						</div>
+					</figure>
+					<p>
+						The Reagent is consumed by its own reaction and does not {T.pay}. A Scatter caught
+						in a reaction is left untouched.
+					</p>
+				</div>
+			</section>
+
+			<section class="al-card">
+				<h3>The reaction meter &mdash; Free Spins</h3>
+				<p>
+					In Free Spins every Reagent that lands is <strong>collected</strong>, and the meter
+					widens the reaction as it fills. The reaction covers
+					<strong>1 reel, then 2, 3, 4 and finally all 5</strong>. It never falls back, so a
+					run only ever gets wider.
+				</p>
+				<ol class="al-meter" aria-hidden="true">
+					{#each meterSteps as n (n)}
+						<li>
+							<span class="al-meter-reels">
+								{#each meterSteps as r (r)}
+									<i class:on={r <= n}></i>
+								{/each}
+							</span>
+							<span class="al-meter-label">{n === 5 ? 'All 5' : n}</span>
 						</li>
 					{/each}
-				</ul>
-				<p class="wp-modes-note">
-					Where a win presentation is playing, tapping anywhere skips to the end of it.
+				</ol>
+				<p>
+					<strong>Five reels showing one symbol is {waysCount.toLocaleString()} {T.ways} on a
+					single spin</strong>, and it is what the meter is climbing towards.
 				</p>
 			</section>
 
-			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>RTP &amp; Max Win by mode</h3>
-				<!--
-					Scroll wrapper, and the unit lifted out of every row into the header.
+			<section class="al-card al-feature">
+				<img class="al-feature-icon" src={sym('w')} alt="" aria-hidden="true" />
+				<div class="al-feature-body">
+					<h3>Alchemist Wild</h3>
+					<p>
+						The Alchemist Wild substitutes for every symbol except the Scatter and the Reagent.
+						It does not {T.pay} as a symbol of its own. A Wild caught in a reaction is replaced
+						along with everything else on that reel.
+					</p>
+				</div>
+			</section>
 
-					Three of this table's four columns are white-space: nowrap, so they
-					cannot shrink: "Hold and Spin", the RTP value and "10,000× amount" need
-					roughly 270px between them before the "How to enter" column gets a
-					single pixel. The modal is width: min(36rem, 90vw), which on a
-					360px-wide phone leaves 268px inside the padding — so the table was
-					already over budget on a layout this game supports, and social play
-					was worse than real-money play because "amount" is longer than "bet".
+			<section class="al-card al-feature">
+				<img class="al-feature-icon" src={sym('s')} alt="" aria-hidden="true" />
+				<div class="al-feature-body">
+					<h3>Scatter &mdash; Free Spins</h3>
+					<p>
+						The Golden Bananas Scatter appears on all five reels. It does not {T.pay} on its own
+						and does not need to form a combination &mdash; its only job is to open the feature.
+						Landing 3, 4 or 5 Scatters in a single spin awards {scatterSpins} Free Spins
+						respectively.
+					</p>
+					<!-- Own heading-level statement: certification asked for it to be
+					     clarified, and reviewers scan for it. Verified against the
+					     maths — the freegame strip carries no Scatter, so no book in any
+					     mode can emit a retrigger. -->
+					<p class="al-callout">
+						<strong>Free Spins cannot be retriggered.</strong> Scatters do not appear on the
+						reels during the feature, so no additional free spins can be awarded once it starts:
+						the number granted at the start is the number you play. This applies to Free Spins
+						entered by landing Scatters and to every round {T.bought} from the {T.betMenu}.
+					</p>
+				</div>
+			</section>
 
-					Removing the per-row unit saves the widest of the three and is a
-					content improvement on its own: the note directly under the table
-					already says what the multiple is of, so it was being said six times.
-				-->
-				<div class="wp-modes-scroll">
-					<table class="wp-modes">
+			{#if buyTiers.length}
+				<section class="al-card">
+					<h3>{T.buyBonusName}</h3>
+					<p>
+						Instead of waiting for Scatters, you can {T.buy} direct entry into Free Spins. Three
+						rounds are available. All three play the same number of spins; each higher tier
+						starts the <strong>reaction meter further along</strong>:
+					</p>
+					<div class="al-tiers">
+						{#each buyTiers as tier (tier.key)}
+							<div class="al-tier">
+								<span class="al-tier-cost">{tier.cost}&times;</span>
+								<span class="al-tier-unit">{T.bet}</span>
+								<span class="al-tier-spins">{tier.spins} Free Spins</span>
+								<span class="al-meter-reels al-tier-meter" aria-hidden="true">
+									{#each meterSteps as r (r)}
+										<i class:on={r <= tier.startReels}></i>
+									{/each}
+								</span>
+								<span class="al-tier-note">
+									First reaction covers {tier.startReels}
+									{tier.startReels === 1 ? 'reel' : 'reels'}
+								</span>
+							</div>
+						{/each}
+					</div>
+					<p>
+						Every round runs at the same {rtpPct} RTP as base play. The meter keeps filling from
+						there, exactly as in Free Spins won with Scatters.
+					</p>
+				</section>
+			{/if}
+
+			<section class="al-card al-feature">
+				<img class="al-feature-icon" src={sym('p')} alt="" aria-hidden="true" />
+				<div class="al-feature-body">
+					<h3>Hold and Spin</h3>
+					<p>
+						A separate prize board {T.bought} from the {T.betMenu} for {config.betModes?.holdandspin
+							?.cost}&times; your {T.totalBet}. It does not use {T.ways} or Reagents. You start
+						with 3 respins. Every Coin that lands sticks to the board and resets the respins back
+						to 3. When no respins remain, all stuck Coin values are added up and {T.paid} out.
+						Maximum win: {config.betModes?.holdandspin?.max_win?.toLocaleString()}&times; the
+						{T.totalBet}.
+					</p>
+				</div>
+			</section>
+
+			<section class="al-card">
+				<h3>RTP &amp; Max Win by mode</h3>
+				<!-- Scroll wrapper: three of the four columns cannot shrink, and a
+				     table that scrolls sideways on the narrowest phone is readable
+				     where a clipped one is not. -->
+				<div class="al-modes-scroll">
+					<table class="al-modes">
 						<thead>
 							<tr>
 								<th scope="col">Mode</th>
@@ -229,122 +369,16 @@
 						</tbody>
 					</table>
 				</div>
-				<p class="wp-modes-note">
+				<p class="al-note">
 					Max win is a multiple of the {T.totalBet}. When a round reaches the cap it ends
 					immediately and the capped amount is {T.paid}.
 				</p>
 			</section>
 
-			<!-- The signature mechanic gets its own section above Wild and Scatter,
-			     because it is the thing the game is built around and the only rule
-			     a player of other ways games will not already know. -->
-			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Dynamite &mdash; blasting reels</h3>
-				<p>
-					A Dynamite can land on any reel, and <strong>at most one per reel</strong>. After the
-					reels stop it detonates: every position on that reel becomes
-					<strong>one and the same symbol</strong> &mdash; the
-					<strong>highest-value symbol already standing on it</strong>. A reel of four
-					matching symbols contributes 4 to the {T.ways}, and because {T.ways} multiply
-					across reels, it can turn a board with no combination at all into a winning one.
-				</p>
-				<p>
-					The Dynamite is consumed by its own blast and does not {T.pay}. A Scatter caught in
-					a blast is left untouched.
-				</p>
-			</section>
-
-			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>The blast meter &mdash; Free Spins</h3>
-				<p>
-					In Free Spins every Dynamite that lands is <strong>collected</strong>, and the meter
-					widens the blast as it fills. The blast covers
-					<strong>1 reel, then 2, 3, 4 and finally all 5</strong>. It never falls back, so a
-					run only ever gets wider.
-				</p>
-				<p>
-					<strong>Five reels showing one symbol is {waysCount.toLocaleString()} {T.ways} on a
-					single spin</strong>, and it is what the meter is climbing towards.
-				</p>
-			</section>
-
-			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Wild</h3>
-				<p>
-					The Foreman Wild substitutes for every symbol except the Scatter and the Dynamite.
-					It does not {T.pay} as a symbol of its own. A Wild caught in a blast is replaced along
-					with everything else on that reel.
-				</p>
-			</section>
-
-			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Scatter</h3>
-				<p>
-					The Golden Bananas Scatter appears on all five reels. It does not {T.pay} on its own
-					and does not need to form a combination &mdash; its only job is to open the feature.
-					Landing 3, 4 or 5 Scatters in a single spin awards {scatterSpins} Free Spins
-					respectively.
-				</p>
-			</section>
-
-			<!-- Own section rather than a closing sentence inside Free Spins: the
-			     statement was already there but buried at the end of a paragraph,
-			     and certification asked for it to be clarified. Reviewers scan
-			     headings. Verified against the maths — the freegame strip FR0 carries
-			     no Scatter at all, so no book in any mode can emit a retrigger. -->
-			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Retriggers</h3>
-				<p>
-					<strong>Free Spins cannot be retriggered.</strong> Scatters do not appear on the reels
-					during the feature, so no additional free spins can be awarded once it starts: the
-					number granted at the start is the number you play. This applies to Free Spins entered
-					by landing Scatters and to every round {T.bought} from the {T.betMenu}.
-				</p>
-			</section>
-
-			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Hold and Spin</h3>
-				<p>
-					A separate prize board {T.bought} from the {T.betMenu} for {config.betModes?.holdandspin
-						?.cost}&times; your {T.totalBet}. It does not use {T.ways} or Dynamite. You start
-					with 3 respins. Every Coin that lands sticks to the board and resets the respins back
-					to 3. When no respins remain, all stuck Coin values are added up and {T.paid} out.
-					Maximum win: {config.betModes?.holdandspin?.max_win?.toLocaleString()}&times; the
-					{T.totalBet}.
-				</p>
-			</section>
-
-			{#if buyTiers.length}
-				<section class="wp-card">
-					<h3><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
-					<p>
-						Instead of waiting for Scatters, you can {T.buy} direct entry into Free Spins. Three
-						rounds are available. All three play the same number of spins; each higher tier
-						adds is a <strong>blast meter that starts further along</strong>:
-					</p>
-					<ul class="wp-tiers">
-						{#each buyTiers as tier (tier.key)}
-							<li>
-								<strong>{tier.cost}&times; {T.bet}</strong> &mdash; {tier.spins} Free Spins, first
-								blast covers {tier.startReels}
-								{tier.startReels === 1 ? 'reel' : 'reels'}
-							</li>
-						{/each}
-					</ul>
-					<p>
-						Every round runs at the same {rtpPct} RTP as base play. The meter keeps filling from
-						there, exactly as in Free Spins won with Scatters.
-					</p>
-				</section>
-			{/if}
-
-			<!-- The cap is PER MODE, and gen-2 was sent back by certification for
-			     stating one figure as though it were the game's. It is not: Hold and
-			     Spin caps lower than everything else (config.betModes.holdandspin
-			     .max_win). Both numbers are read from the config so neither can
-			     drift from what the game actually pays. -->
-			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Max Win</h3>
+			<!-- The cap is PER MODE: Hold and Spin caps lower than everything else.
+			     Both numbers come from config. -->
+			<section class="al-card">
+				<h3>Max Win</h3>
 				<p>
 					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}.
 					Once the cap is reached the round ends immediately and the maximum win is awarded.
@@ -357,299 +391,464 @@
 				</p>
 			</section>
 
-			<div class="wp-divider"></div>
-			<!--
-				The legal notice is SHARED — state-shared/src/legal.ts — because it is
-				the same paragraph in every game and the wording has already had to be
-				corrected once across every app that kept its own copy. Render the
-				constant; never retype the text here.
-			-->
-			<p class="wp-foot">{LEGAL_NOTICE}</p>
+			<!-- Certification asked for a user interaction guide. The actual
+			     on-screen controls, in the order they sit on the bar, each with
+			     its own button art. -->
+			<section class="al-card">
+				<h3>Controls</h3>
+				<ul class="al-controls">
+					{#each controls as control (control.name)}
+						<li class:no-icon={control.icons.length === 0}>
+							{#if control.icons.length}
+								<span class="al-control-icons">
+									{#each control.icons as name (name)}
+										<img src={`${ICONS}/${name}.png`} alt="" aria-hidden="true" />
+									{/each}
+								</span>
+							{/if}
+							<div>
+								<span class="al-control-name">{control.name}</span>
+								<span class="al-control-text">{control.text}</span>
+							</div>
+						</li>
+					{/each}
+				</ul>
+				<p class="al-note">
+					Where a win presentation is playing, tapping anywhere skips to the end of it.
+				</p>
+			</section>
+
+			<!-- The legal notice is SHARED (state-shared/src/legal.ts): render the
+			     constant, never retype it. -->
+			<p class="al-foot">{LEGAL_NOTICE}</p>
 		</div>
 	</Popup>
 {/if}
 
 <style lang="scss">
-	@keyframes slideUp {
-		from {
-			opacity: 0;
-			transform: translateY(18px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
+	/* Go Banalchemy's palette — the bet bar's (game/uiTheme.ts): teal glass,
+	   copper trim, cream type, a mint accent. */
+	.al-rules {
+		--teal-deep: #0b252b;
+		--teal: #0f3438;
+		--teal-lit: #14454a;
+		--copper: #c58b55;
+		--copper-lit: #e7b47c;
+		--cream: #f4f4df;
+		--mist: #c6e5d3;
+		--mint: #5fd6a8;
 
-	@keyframes cardFadeIn {
-		from {
-			opacity: 0;
-			transform: translateY(10px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	@keyframes shimmer {
-		0% { background-position: -200% center; }
-		100% { background-position: 200% center; }
-	}
-
-	@keyframes accentPulse {
-		0%, 100% { opacity: 0.7; box-shadow: 0 0 6px rgba(255, 215, 94, 0.3); }
-		50% { opacity: 1; box-shadow: 0 0 12px rgba(255, 215, 94, 0.55); }
-	}
-
-	.wp-rules {
-		/* sit above the Popup's full-screen click-to-close layer (z-index 2),
-		   otherwise the overlay swallows wheel/touch events and blocks scrolling */
+		/* above the Popup's full-screen click-to-close layer (z-index 2), or it
+		   swallows wheel/touch and blocks scrolling */
 		position: relative;
 		z-index: 100;
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
-		width: min(36rem, 90vw);
-		max-width: 36rem;
-		max-height: 80vh;
+		gap: 0.8rem;
+		width: min(38rem, 92vw);
+		max-height: 82vh;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 		overscroll-behavior: contain;
-		padding: 1.5rem 1.75rem;
-		color: #fff;
+		padding: 0 0.15rem 0.5rem 0;
+		color: var(--cream);
 		text-align: left;
-		animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+		animation: al-rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 
-		/* custom scrollbar */
 		&::-webkit-scrollbar {
-			width: 5px;
-		}
-		&::-webkit-scrollbar-track {
-			background: rgba(255, 255, 255, 0.04);
-			border-radius: 4px;
+			width: 6px;
 		}
 		&::-webkit-scrollbar-thumb {
-			background: linear-gradient(180deg, #ffd75e 0%, #ffe98a 100%);
-			border-radius: 4px;
+			background: var(--copper);
+			border-radius: 3px;
 		}
+	}
+
+	@keyframes al-rise {
+		from {
+			opacity: 0;
+			transform: translateY(12px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	/* ── header: the laboratory, the name, the line under it ── */
+	.al-hero {
+		position: relative;
+		margin: 0 0 0.2rem;
+		padding: 2.1rem 1.5rem 1.2rem;
+		border-radius: 10px;
+		background:
+			linear-gradient(180deg, rgba(7, 26, 30, 0.15) 0%, rgba(7, 26, 30, 0.88) 78%, #0b252b 100%),
+			var(--hero) center 35% / cover no-repeat;
+		border-bottom: 2px solid var(--copper);
+		text-align: center;
 
 		h2 {
-			margin: 0 0 0.35rem;
-			text-align: center;
-			font-size: 1.65rem;
-			font-weight: 800;
-			letter-spacing: 0.08em;
-			background: linear-gradient(135deg, #ffe98a 0%, #ffd75e 50%, #9ec44a 100%);
-			background-size: 200% auto;
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-			animation: shimmer 4s linear infinite;
-			filter: drop-shadow(0 0 18px rgba(255, 215, 94, 0.4));
+			margin: 0.15rem 0 0.25rem;
+			font-size: clamp(1.7rem, 5.2vw, 2.3rem);
+			line-height: 1.05;
+			color: var(--cream);
+			text-transform: uppercase;
+			text-shadow:
+				0 2px 0 #4a2e14,
+				0 3px 10px rgba(0, 0, 0, 0.6);
 		}
 	}
 
-	/* Controls guide — each row pairs the button's own art with what it does, so
-	   the guide can be matched against the bar by sight rather than by name. */
-	.wp-controls {
-		list-style: none;
-		margin: 0.5rem 0 0;
-		padding: 0;
+	.al-kicker {
+		display: inline-block;
+		padding: 0.18rem 0.7rem;
+		border: 1px solid var(--copper);
+		border-radius: 999px;
+		background: rgba(11, 37, 43, 0.75);
+		color: var(--copper-lit);
+		font-size: 0.68rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+
+	.al-tagline {
+		margin: 0;
+		color: var(--mist);
+		font-size: 0.86rem;
+	}
+
+	/* ── the four numbers ── */
+	.al-facts {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0.5rem;
+
+		@media (max-width: 460px) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.al-fact {
 		display: flex;
 		flex-direction: column;
-		gap: 0.55rem;
+		align-items: center;
+		gap: 0.15rem;
+		padding: 0.6rem 0.3rem 0.5rem;
+		border: 1px solid rgba(197, 139, 85, 0.55);
+		border-radius: 8px;
+		background: linear-gradient(180deg, var(--teal-lit) 0%, var(--teal) 100%);
 	}
 
-	.wp-controls li {
+	.al-fact-value {
+		font-family: var(--gb-display-font);
+		font-size: 1.15rem;
+		color: var(--cream);
+		white-space: nowrap;
+	}
+
+	.al-fact-label {
+		font-size: 0.66rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--copper-lit);
+	}
+
+	/* ── cards ── */
+	.al-card {
+		padding: 0.95rem 1.05rem;
+		border-radius: 10px;
+		background: rgba(15, 52, 56, 0.72);
+		border: 1px solid rgba(197, 139, 85, 0.32);
+		box-shadow: inset 0 1px 0 rgba(244, 244, 223, 0.05);
+
+		h3 {
+			margin: 0 0 0.45rem;
+			padding-bottom: 0.35rem;
+			font-size: 1.08rem;
+			color: var(--copper-lit);
+			border-bottom: 1px solid rgba(197, 139, 85, 0.25);
+		}
+
+		p {
+			margin: 0 0 0.55rem;
+			font-size: 0.88rem;
+			line-height: 1.58;
+			color: rgba(244, 244, 223, 0.9);
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		strong {
+			color: var(--cream);
+		}
+	}
+
+	/* a feature card: its symbol to the left of the text */
+	.al-feature {
 		display: grid;
-		/* wide enough for the two-key stepper; a single icon sits left-aligned in
-		   the same column so every row's text starts on one line */
-		grid-template-columns: 4.6rem 1fr;
+		grid-template-columns: 4.4rem 1fr;
+		gap: 0.9rem;
 		align-items: start;
-		gap: 0.7rem;
+
+		@media (max-width: 420px) {
+			grid-template-columns: 3.2rem 1fr;
+			gap: 0.65rem;
+		}
 	}
 
-	/* Buy Bonus is a labelled plate on the bar, not a glyph — with no icon to
-	   show, the text takes the whole row rather than leaving a gap. */
-	.wp-controls li.no-icon {
-		grid-template-columns: 1fr;
+	.al-feature-icon {
+		width: 100%;
+		aspect-ratio: 1;
+		object-fit: contain;
+		border-radius: 8px;
+		filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
 	}
 
-	.wp-control-icons {
+	.al-callout {
+		padding: 0.55rem 0.7rem;
+		border-left: 3px solid var(--mint);
+		border-radius: 0 6px 6px 0;
+		background: rgba(95, 214, 168, 0.08);
+	}
+
+	/* the Reagent, before -> after */
+	.al-transmute {
 		display: flex;
 		align-items: center;
+		justify-content: center;
+		gap: 0.9rem;
+		margin: 0.2rem 0 0.7rem;
+	}
+
+	.al-reel {
+		display: grid;
+		grid-template-rows: repeat(4, 2.3rem);
+		gap: 0.2rem;
+		padding: 0.25rem;
+		border-radius: 6px;
+		border: 1px solid rgba(197, 139, 85, 0.45);
+		background: var(--teal-deep);
+
+		img {
+			width: 2.3rem;
+			height: 2.3rem;
+			object-fit: contain;
+		}
+	}
+
+	.al-reel-lit {
+		border-color: var(--mint);
+		box-shadow: 0 0 0 1px rgba(95, 214, 168, 0.35);
+	}
+
+	.al-arrow {
+		font-size: 1.5rem;
+		color: var(--copper-lit);
+	}
+
+	/* the reaction meter: five steps, each a strip of five reels */
+	.al-meter {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
 		gap: 0.4rem;
+		margin: 0.15rem 0 0.7rem;
+		padding: 0;
+		list-style: none;
+
+		li {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 0.3rem;
+		}
 	}
 
-	.wp-controls img {
-		width: 2.1rem;
-		height: 2.1rem;
-		object-fit: contain;
-		/* nudge down so the glyph optically centres on the first line of text */
-		margin-top: -0.15rem;
+	.al-meter-reels {
+		display: flex;
+		gap: 2px;
+
+		i {
+			width: 0.42rem;
+			height: 1.35rem;
+			border-radius: 2px;
+			background: rgba(244, 244, 223, 0.12);
+		}
+
+		i.on {
+			background: linear-gradient(180deg, #8ff0c6, var(--mint));
+		}
 	}
 
-	.wp-control-name {
-		display: block;
-		color: #fff3bd;
+	.al-meter-label {
+		font-size: 0.72rem;
+		color: var(--mist);
+	}
+
+	/* the three bought rounds */
+	.al-tiers {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 0.5rem;
+		margin: 0.2rem 0 0.7rem;
+
+		@media (max-width: 460px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.al-tier {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.2rem;
+		padding: 0.7rem 0.4rem;
+		border-radius: 8px;
+		border: 1px solid rgba(197, 139, 85, 0.5);
+		background: linear-gradient(180deg, var(--teal-lit), var(--teal-deep));
+		text-align: center;
+	}
+
+	.al-tier-cost {
+		font-family: var(--gb-display-font);
+		font-size: 1.45rem;
+		line-height: 1;
+		color: var(--cream);
+	}
+
+	.al-tier-unit {
+		font-size: 0.68rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--copper-lit);
+	}
+
+	.al-tier-spins {
+		margin-top: 0.25rem;
+		font-size: 0.84rem;
 		font-weight: 700;
-		font-size: 0.86rem;
-		line-height: 1.3;
 	}
 
-	.wp-control-text {
-		display: block;
-		font-size: 0.8rem;
-		line-height: 1.35;
-		opacity: 0.88;
+	.al-tier-meter {
+		margin: 0.15rem 0;
+
+		i {
+			height: 0.9rem;
+		}
 	}
 
-	/* Mode comparison table — RTP and max win per mode, as certification asks
-	   these be clearly stated for every mode. Values come from the maths config
-	   (see modeRows), so the table cannot drift from what the game pays. */
-	/* The backstop. Even with the unit gone the four columns can run out of room
-	   on the narrowest supported layout, and a table that scrolls sideways is
-	   readable where a clipped one is not. */
-	.wp-modes-scroll {
+	.al-tier-note {
+		font-size: 0.74rem;
+		color: var(--mist);
+	}
+
+	/* the per-mode figures */
+	.al-modes-scroll {
 		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;
 	}
 
-	.wp-modes {
+	.al-modes {
 		width: 100%;
 		border-collapse: collapse;
 		font-size: 0.82rem;
-		margin-top: 0.35rem;
+
+		th,
+		td {
+			padding: 0.45rem 0.55rem;
+			text-align: left;
+		}
+
+		thead th {
+			color: var(--copper-lit);
+			font-size: 0.7rem;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			border-bottom: 1px solid rgba(197, 139, 85, 0.5);
+		}
+
+		tbody tr:nth-child(odd) {
+			background: rgba(244, 244, 223, 0.035);
+		}
+
+		tbody th {
+			color: var(--cream);
+			white-space: nowrap;
+		}
+
+		/* RTP and max win are the certified figures: never body-copy grey */
+		tbody td:nth-child(3),
+		tbody td:nth-child(4) {
+			color: var(--cream);
+			font-weight: 700;
+			white-space: nowrap;
+		}
 	}
 
-	.wp-modes th,
-	.wp-modes td {
-		padding: 0.42rem 0.5rem;
-		text-align: left;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+	.al-note {
+		margin-top: 0.55rem !important;
+		font-size: 0.76rem !important;
+		color: var(--mist) !important;
 	}
 
-	.wp-modes thead th {
-		color: rgba(255, 215, 94, 0.9);
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-		font-size: 0.72rem;
-		border-bottom-color: rgba(255, 215, 94, 0.35);
+	/* the controls guide: the button's own art beside what it does */
+	.al-controls {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.6rem 1rem;
+		margin: 0.3rem 0 0;
+		padding: 0;
+		list-style: none;
+
+		@media (max-width: 520px) {
+			grid-template-columns: 1fr;
+		}
+
+		li {
+			display: grid;
+			grid-template-columns: 4.4rem 1fr;
+			gap: 0.6rem;
+			align-items: start;
+		}
+
+		li.no-icon {
+			grid-template-columns: 1fr;
+		}
+
+		img {
+			width: 2rem;
+			height: 2rem;
+			object-fit: contain;
+		}
 	}
 
-	.wp-modes tbody th {
-		color: #fff3bd;
-		font-weight: 700;
-		white-space: nowrap;
-	}
-
-	/* RTP and max win are the two numbers being certified — keep them legible
-	   rather than letting them sit in body-copy grey */
-	.wp-modes tbody td:nth-child(3),
-	.wp-modes tbody td:nth-child(4) {
-		color: #ffffff;
-		font-weight: 600;
-		white-space: nowrap;
-	}
-
-	.wp-modes tbody tr:last-child th,
-	.wp-modes tbody tr:last-child td {
-		border-bottom: none;
-	}
-
-	.wp-modes-note {
-		margin-top: 0.5rem;
-		font-size: 0.76rem;
-		opacity: 0.75;
-	}
-
-	/* The three buy tiers. A list rather than a table: each row is one short
-	   sentence, and a four-column table for three rows of prose reads as
-	   scaffolding around nothing. */
-	.wp-tiers {
-		margin: 0.6rem 0 0.6rem;
-		padding-left: 1.1rem;
+	.al-control-icons {
 		display: flex;
-		flex-direction: column;
 		gap: 0.35rem;
 	}
 
-	.wp-tiers li {
+	.al-control-name {
+		display: block;
+		color: var(--cream);
+		font-weight: 700;
 		font-size: 0.85rem;
-		line-height: 1.45;
 	}
 
-	.wp-card {
-		padding: 0.85rem 1rem;
-		border-radius: 0.75rem;
-		background: rgba(255, 255, 255, 0.03);
-		backdrop-filter: blur(6px);
-		-webkit-backdrop-filter: blur(6px);
-		border: 1px solid rgba(255, 255, 255, 0.05);
-		transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-		animation: cardFadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
-
-		&:nth-child(2) { animation-delay: 0.05s; }
-		&:nth-child(3) { animation-delay: 0.1s; }
-		&:nth-child(4) { animation-delay: 0.15s; }
-		&:nth-child(5) { animation-delay: 0.2s; }
-		&:nth-child(6) { animation-delay: 0.25s; }
-		&:nth-child(7) { animation-delay: 0.3s; }
-		&:nth-child(8) { animation-delay: 0.35s; }
-		&:nth-child(9) { animation-delay: 0.4s; }
-		&:nth-child(10) { animation-delay: 0.45s; }
-		&:nth-child(11) { animation-delay: 0.5s; }
-
-		&:hover {
-			background: rgba(255, 215, 94, 0.06);
-			border-color: rgba(255, 215, 94, 0.18);
-			box-shadow: 0 0 16px rgba(255, 215, 94, 0.1);
-		}
-
-		h3 {
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
-			margin: 0 0 0.35rem;
-			font-size: 1.05rem;
-			font-weight: 700;
-			color: #ffd75e;
-		}
-
-		p {
-			margin: 0;
-			font-size: 0.88rem;
-			line-height: 1.55;
-			opacity: 0.88;
-			padding-left: 0.9rem;
-		}
+	.al-control-text {
+		display: block;
+		font-size: 0.78rem;
+		line-height: 1.4;
+		color: rgba(244, 244, 223, 0.8);
 	}
 
-	.wp-accent-bar {
-		display: inline-block;
-		width: 3px;
-		height: 1.1em;
-		border-radius: 2px;
-		background: linear-gradient(180deg, #ffd75e, #9ec44a);
-		flex-shrink: 0;
-		animation: accentPulse 3s ease-in-out infinite;
-	}
-
-	.wp-divider {
-		width: 60%;
-		height: 1px;
-		margin: 0.25rem auto;
-		background: linear-gradient(90deg, transparent, rgba(255, 215, 94, 0.3), rgba(255, 233, 138, 0.2), transparent);
-	}
-
-	.wp-foot {
-		margin: 0;
-		font-size: 0.75rem;
-		opacity: 0.5;
+	.al-foot {
+		margin: 0.2rem 0 0;
+		padding-top: 0.7rem;
+		border-top: 1px solid rgba(197, 139, 85, 0.25);
+		font-size: 0.74rem;
+		line-height: 1.5;
 		text-align: center;
-		line-height: 1.45;
-		letter-spacing: 0.02em;
+		color: rgba(198, 229, 211, 0.65);
 	}
 </style>

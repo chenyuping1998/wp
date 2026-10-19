@@ -250,7 +250,10 @@ def main():
         save(panel((512,512),24,50),"sushiV8",name)
     for name in ("fg_intro_decor.png","fg_total_decor.png"):
         save(Image.new("RGBA",(1600,1000)),"sushiV8",name)
-    for name in ("title_free.png","title_total.png"):
+    # title_free / title_total are built by design/build_wordmarks.py now
+    # (carved-jade wordmarks, 2026-10-16); this flat version is kept out of the
+    # way so a rerun of this script cannot overwrite them.
+    for name in ():
         im=Image.new("RGBA",(1600,500))
         d=ImageDraw.Draw(im)
         d.text((800,252),"FREE SPINS" if name=="title_free.png" else "TOTAL WIN",

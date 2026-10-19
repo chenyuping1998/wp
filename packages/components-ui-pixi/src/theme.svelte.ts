@@ -391,6 +391,10 @@ export const uiTheme = $state({
 	// Only the Bet panel is interactive, and it is otherwise identical to the
 	// Balance/Win panels, so nothing indicates it can be pressed.
 	labelAffordance: false,
+	// The chevron's colour while the cursor is over the Bet panel (labelAffordance
+	// only). Undefined keeps it in the panel's own label colour — every game that
+	// names nothing is unchanged.
+	labelChevronHoverColor: undefined as number | undefined,
 
 	// Brighten a control while the cursor is over it. Off by default so games
 	// that never had hover feedback keep their existing look.
@@ -656,6 +660,12 @@ export const uiTheme = $state({
 	// Buy Bonus box's height / width. 1 (every game) is square; a tall menu card
 	// plate sets more, and the hit area grows with it
 	buyBonusBoxAspect: 1,
+	// The rectangle that takes hover and presses, as fractions of the PLATE ART
+	// (x/y from its top-left). Undefined (every game) leaves Pixi hit-testing the
+	// children, i.e. the plate sprite's whole quad - transparent margin included,
+	// so a plate that is a strip across its canvas lit up well before the cursor
+	// reached it (Jade Teahouse).
+	buyBonusHitArea: undefined as { x: number; y: number; width: number; height: number } | undefined,
 	// the status line's size as a fraction of UI_BASE_FONT_SIZE, and an optional
 	// keyline colour for it; 0.6 / none is what every game had
 	barMessageScale: 0.6,
@@ -663,6 +673,22 @@ export const uiTheme = $state({
 	// compactBottom only — the Balance / Win / Bet readouts' scale; 0.68 is what
 	// every game had
 	readoutScale: 0.68,
+	// compactBottom only — moves the Balance / Win / Bet block up (negative) or
+	// down, in standard-layout units. 0 is what every game had; Saucer Monkey's
+	// Anton values sat on the frame's lower edge (2026-10-17).
+	readoutOffsetY: 0,
+	// Round controls whose ON state is shown by the icon alone (UiButton): the
+	// plate, fill and ring stay as when off, and the turbo bolt fills solid in
+	// its outline colour. Empty is what every game had; Saucer Monkey lists
+	// 'turbo' (2026-10-17) so autoplay keeps its lit plate.
+	activeByIconOnly: [] as string[],
+	// How many turbo tiers the turbo control cycles through (turbo.ts): 1 is
+	// on/off, what every game had. 2 adds a second tier drawn as two bolts side
+	// by side (Saucer Monkey, 2026-10-17); the game decides what it speeds up.
+	turboTiers: 1,
+	// The thin gap cut round the front bolt of the two, so they read as two where
+	// they overlap: the colour of the disc behind them. Undefined = buttonFill.
+	turboKeylineColor: undefined as number | undefined,
 
 	// compactBottom only — how far in from each END of uiTheme.sprites.bar the
 	// artwork stops being a cap and starts being stretchable middle, measured in

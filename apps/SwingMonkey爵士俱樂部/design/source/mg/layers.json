@@ -8,109 +8,109 @@
    "z": 2,
    "name": "torso_0_trunk",
    "file": "torso_0_trunk.png",
-   "x": 104,
-   "y": 222,
-   "w": 448,
-   "h": 424
+   "x": 108,
+   "y": 265,
+   "w": 440,
+   "h": 353
   },
   {
    "z": 10,
    "name": "left_leg_0_thigh",
    "file": "left_leg_0_thigh.png",
-   "x": 151,
+   "x": 130,
    "y": 606,
-   "w": 96,
-   "h": 132
+   "w": 130,
+   "h": 141
   },
   {
    "z": 11,
    "name": "left_leg_1_calf",
    "file": "left_leg_1_calf.png",
-   "x": 152,
-   "y": 704,
-   "w": 111,
-   "h": 134
+   "x": 137,
+   "y": 718,
+   "w": 110,
+   "h": 108
   },
   {
    "z": 12,
    "name": "left_leg_2_foot",
    "file": "left_leg_2_foot.png",
-   "x": 76,
-   "y": 799,
-   "w": 187,
-   "h": 63
+   "x": 50,
+   "y": 800,
+   "w": 200,
+   "h": 76
   },
   {
    "z": 14,
    "name": "right_leg_0_thigh",
    "file": "right_leg_0_thigh.png",
-   "x": 254,
-   "y": 600,
-   "w": 121,
-   "h": 145
+   "x": 233,
+   "y": 606,
+   "w": 140,
+   "h": 140
   },
   {
    "z": 15,
    "name": "right_leg_1_calf",
    "file": "right_leg_1_calf.png",
-   "x": 302,
-   "y": 709,
-   "w": 102,
-   "h": 135
+   "x": 288,
+   "y": 719,
+   "w": 117,
+   "h": 136
   },
   {
    "z": 16,
    "name": "right_leg_2_foot",
    "file": "right_leg_2_foot.png",
-   "x": 285,
-   "y": 818,
-   "w": 125,
-   "h": 78
+   "x": 274,
+   "y": 825,
+   "w": 143,
+   "h": 83
   },
   {
    "z": 20,
    "name": "left_arm_2_hand",
    "file": "left_arm_2_hand.png",
-   "x": 40,
-   "y": 436,
-   "w": 96,
-   "h": 247
+   "x": 13,
+   "y": 429,
+   "w": 109,
+   "h": 265
   },
   {
    "z": 22,
    "name": "left_arm_0_upper_arm",
    "file": "left_arm_0_upper_arm.png",
-   "x": 91,
-   "y": 308,
-   "w": 95,
-   "h": 156
+   "x": 77,
+   "y": 335,
+   "w": 74,
+   "h": 131
   },
   {
    "z": 24,
    "name": "right_arm_2_hand",
    "file": "right_arm_2_hand.png",
-   "x": 344,
-   "y": 428,
-   "w": 115,
-   "h": 269
+   "x": 339,
+   "y": 409,
+   "w": 121,
+   "h": 297
   },
   {
    "z": 26,
    "name": "right_arm_0_upper_arm",
    "file": "right_arm_0_upper_arm.png",
-   "x": 298,
-   "y": 286,
-   "w": 127,
-   "h": 186
+   "x": 295,
+   "y": 288,
+   "w": 109,
+   "h": 166
   },
   {
    "z": 30,
    "name": "head_2_face",
    "file": "head_2_face.png",
-   "x": 109,
-   "y": 14,
-   "w": 254,
-   "h": 274
+   "x": 96,
+   "y": 12,
+   "w": 264,
+   "h": 275
   }
  ]
 }

@@ -16,6 +16,8 @@
 	import { Container, Graphics, Rectangle, Sprite, Text } from 'pixi-svelte';
 	import { CanvasTextMetrics, TextStyle, type Graphics as PixiGraphics } from 'pixi.js';
 	import { getContext } from '../game/context';
+	import PropMesh from './PropMesh.svelte';
+	import { CUTIN } from '../game/meshWin';
 	import { GAME_FONT, GAME_FONT_WEIGHT, NUMBER_FONT } from '../game/fonts';
 	import { gameText } from '../game/i18nText';
 	import { removedLabelAtLevel, removedLabelsAtLevel } from '../game/chefMeter';
@@ -35,6 +37,12 @@
 	const W = $derived(Math.min(layout.width * .92, 870));
 	const H = $derived(Math.min(layout.height * .66, W * .77));
 	const card = $derived(W * .28);
+	// the board (v8MeterBoard, design/build_swing_fg_sign.py, 2026-10-18): a
+	// stage window over the ticket's paper, seam at 0.62 H. The dancer stands on
+	// the stage's edge and the card hangs over the stage; the rungs sit on the
+	// paper inside its keyline (y 542..731 of 770).
+	const DANCER_Y = $derived(-H * .12);
+	const RUNG_Y = $derived(H * .28);
 	const index = $derived(Math.min(steps.length - 1, Math.max(0, Math.floor((elapsed - LEAD) / STEP))));
 	const phase = $derived(Math.max(0, elapsed - LEAD - index * STEP));
 	const split = $derived(clamp((phase - CUT - 65) / 600));
@@ -48,7 +56,55 @@
 	const shake = $derived(phase >= CUT && phase < CUT + 180 ? Math.sin((phase - CUT) * .16) * 11 * (1 - (phase - CUT) / 180) : 0);
 	const tap = (t: number, at: number, width = 165) => Math.max(0, 1 - Math.abs(t - at) / width);
 	const tapBounce = $derived(1 - .1 * tap(phase, 270) - .13 * tap(phase, 490));
-	const dancerSwing = $derived(.07 * Math.sin(phase / 115) - .32 * Math.sin(Math.PI * clamp((phase - CUT + 190) / 430)));
+	// THE RECORD THROW (2026-10-18). The cane that used to poke out and slash the
+	// card read as "a stick suddenly appears" (user); now the dancer slides in
+	// with a record on the open palm, rocks back, and frisbees it into the card:
+	// it spins across on a low arc, smashes the card at CUT and ricochets off,
+	// spinning, up and away — the way the cast used to throw at the board.
+	const RELEASE = CUT - 260;
+	const wind = $derived(Math.sin(Math.PI * .5 * clamp((phase - 420) / (RELEASE - 420))) * (phase < RELEASE ? 1 : 0));
+	const fling = $derived(phase < RELEASE ? 0 : Math.sin(Math.PI * clamp((phase - RELEASE) / 520)) * Math.exp(-Math.max(0, phase - RELEASE) / 900));
+	const dancerSwing = $derived(.05 * Math.sin(phase / 115) * (1 - clamp((phase - 420) / 200)) + .15 * wind - .27 * fling);
+	const dancerX = $derived(W*.24 + W*.2*(1-clamp(phase/400)) + W*.035*wind - W*.07*fling);
+	const dancerY = $derived(DANCER_Y + (1-tapBounce)*H*.12);
+	// the open palm on the cut-in art (chef_cut_in.png 1024², at 240,464),
+	// carried through the figure's swing and bounce: drawn W*.48 wide
+	const hand = (x: number, y: number, rot: number, sc: number) => {
+		const lx = -.2656 * W * .48 * sc, ly = -.0469 * W * .48 * sc;
+		return { x: x + lx * Math.cos(rot) - ly * Math.sin(rot), y: y + lx * Math.sin(rot) + ly * Math.cos(rot) };
+	};
+	const TARGET = $derived({ x: -W*.16, y: -H*.13 });
+	const disc = $derived.by(() => {
+		if (result) return null;
+		const size = card * .62;
+		if (phase < RELEASE) {
+			// on the palm, a little above it, tipped back with the wind-up
+			const p = hand(dancerX, dancerY, dancerSwing, tapBounce);
+			return { x: p.x, y: p.y - size * .3, rotation: .25 + .5 * wind, size, alpha: clamp(phase / 160) };
+		}
+		if (phase < CUT) {
+			const k = (phase - RELEASE) / (CUT - RELEASE);
+			const from = hand(W*.24 + W*.035, DANCER_Y, .15, 1);
+			const e = k * (2 - k) * .35 + k * .65; // quick off the hand, keeps its speed
+			return {
+				x: from.x + (TARGET.x - from.x) * e,
+				y: from.y - size * .3 + (TARGET.y - from.y + size * .3) * e - Math.sin(Math.PI * k) * H * .1,
+				rotation: .75 - k * Math.PI * 3.2,
+				size: size * (1 + .12 * k),
+				alpha: 1,
+			};
+		}
+		// the ricochet: off the card up and back, still spinning, gone in 420ms
+		const k = (phase - CUT) / 420;
+		if (k >= 1) return null;
+		return {
+			x: TARGET.x - W * .2 * k,
+			y: TARGET.y - H * .34 * k + H * .3 * k * k,
+			rotation: .75 - Math.PI * 3.2 - k * Math.PI * 2.4,
+			size: size * 1.12 * (1 - .3 * k),
+			alpha: 1 - k * k,
+		};
+	});
 	const result = $derived(elapsed >= resultAt);
 	const stampAge = $derived(elapsed - resultAt);
 	const currentRung = $derived(steps[index] ?? level);
@@ -58,38 +114,19 @@
 	const replacementTextWidth = $derived(CanvasTextMetrics.measureText(replacementLabel,replacementStyle).width);
 	const replacementRowWidth = $derived(replacementTextWidth + W*.025 + W*.11);
 	const resultHeadline = $derived(opening ? gameText('plateUpgrade') : `+${spins} ${gameText('extraSpins')}`);
-	const drawSpotlights = (g: PixiGraphics) => {
-		g.clear();
-		for (const side of [-1,1]) {
-			const x=side*W*.44;
-			g.poly([x,-H*.72,x+side*W*.08,-H*.72,side*W*.2,H*.45,-side*W*.19,H*.45]).fill({color:0xf2b632,alpha:.15});
-			g.circle(x,-H*.7,W*.05).fill(INK).stroke({color:0xf2b632,width:4});
-		}
-	};
+	// the smash: a ring off the impact and a few short ink strike lines, gone
+	// in under 300ms (the card's two halves and the shards carry the rest)
 	const drawCut = (g: PixiGraphics) => {
 		g.clear();
-		if (phase < CUT - 310 || phase > CUT + 360) return;
-		// Wind up, point the cane at the card, then let its tip follow the
-		// same bottom-left to top-right diagonal as the two card masks.
-		const swing = clamp((phase - CUT + 310) / 310);
-		const hx = W * (.2 - .09 * swing), hy = -H * (.18 - .11 * swing);
-		const tx = W * (.34 - .5 * swing), ty = -H * (.32 - .33 * swing);
-		const caneAlpha = 1 - clamp((phase - CUT - 160) / 200);
-		g.moveTo(hx,hy).lineTo(tx,ty).stroke({width:W*.034,color:INK,alpha:caneAlpha});
-		g.moveTo(hx,hy).lineTo(tx,ty).stroke({width:W*.019,color:PAPER,alpha:caneAlpha});
-		g.circle(hx,hy,W*.025).stroke({color:PINK,width:W*.01,alpha:caneAlpha});
-		g.circle(tx,ty,W*.013).fill({color:ORANGE,alpha:caneAlpha});
-		if (phase >= CUT) {
-			const slash = clamp((phase - CUT) / 175);
-			const size = card * .57;
-			const x1 = -W*.16-size, y1 = -H*.13+size;
-			const x2 = x1 + size*2*slash, y2 = y1 - size*2*slash;
-			const a = 1 - clamp((phase-CUT-150)/190);
-			g.moveTo(x1,y1).lineTo(x2,y2).stroke({color:INK,width:W*.031,alpha:a});
-			g.moveTo(x1,y1).lineTo(x2,y2).stroke({color:PAPER,width:W*.019,alpha:a});
-			g.moveTo(x1,y1).lineTo(x2,y2).stroke({color:PINK,width:W*.006,alpha:a});
-			const ring = clamp((phase-CUT)/290);
-			g.circle(-W*.16,-H*.13,W*(.045+.17*ring)).stroke({color:PINK,width:W*.008,alpha:1-ring});
+		if (phase < CUT || phase > CUT + 300) return;
+		const ring = clamp((phase-CUT)/290);
+		g.circle(TARGET.x,TARGET.y,W*(.045+.17*ring)).stroke({color:PINK,width:W*.008,alpha:1-ring});
+		const burst = clamp((phase-CUT)/200);
+		for (let i = 0; i < 8; i++) {
+			const a = i * Math.PI / 4 + .3;
+			const r0 = card*(.42+.25*burst), r1 = r0 + card*.16*(1-burst);
+			g.moveTo(TARGET.x+Math.cos(a)*r0,TARGET.y+Math.sin(a)*r0).lineTo(TARGET.x+Math.cos(a)*r1,TARGET.y+Math.sin(a)*r1)
+				.stroke({color:INK,width:W*.007,alpha:1-burst});
 		}
 	};
 	const drawFootfalls = (g: PixiGraphics) => {
@@ -98,7 +135,7 @@
 		for (const [i,at] of [270,490, CUT].entries()) {
 			const pulse = tap(phase,at,145);
 			if (pulse <= 0) continue;
-			const x = W*(.1+i*.105), y = H*.21;
+			const x = W*(.1+i*.105), y = H*.13;
 			g.ellipse(x,y,W*.027*(1+.35*pulse),H*.018).fill({color:INK,alpha:.18+.36*pulse});
 			g.moveTo(x-W*.019,y-H*.036).lineTo(x-W*.038,y-H*.064)
 				.stroke({color:PINK,width:W*.006,alpha:pulse});
@@ -108,9 +145,9 @@
 	};
 	const drawRungRail = (g: PixiGraphics) => {
 		g.clear();
-		g.moveTo(-W*.30,H*.20).lineTo(W*.10,H*.20).stroke({width:W*.012,color:INK,alpha:.4});
+		g.moveTo(-W*.30,RUNG_Y).lineTo(W*.10,RUNG_Y).stroke({width:W*.012,color:INK,alpha:.4});
 		const revealed = result ? level : currentRung - 1 + (plate > .75 ? 1 : 0);
-		if(revealed>1) g.moveTo(-W*.30,H*.20).lineTo(-W*.30+W*.20*Math.min(2,revealed-1),H*.20).stroke({width:W*.012,color:PINK});
+		if(revealed>1) g.moveTo(-W*.30,RUNG_Y).lineTo(-W*.30+W*.20*Math.min(2,revealed-1),RUNG_Y).stroke({width:W*.012,color:PINK});
 	};
 	const drawDebris = (g: PixiGraphics) => {
 		g.clear();
@@ -163,10 +200,11 @@
 	<MainContainer>
 		<Rectangle width={layout.width} height={layout.height} backgroundColor={INK} alpha={.65*alpha}/>
 		<Container x={layout.width/2+shake} y={layout.height*.45} {alpha}>
-			<Graphics draw={drawSpotlights}/>
-			<Graphics draw={(g)=>{g.clear();g.poly([-W*.48,-H*.48,W*.48,-H*.43,W*.47,H*.54,-W*.47,H*.52]).fill(PAPER).stroke({color:INK,width:5});}}/>
-			<Container x={W*.24+W*.2*(1-clamp(phase/400))-W*.16*Math.sin(Math.PI*clamp((phase-CUT)/400))} y={H*.03+(1-tapBounce)*H*.12} rotation={dancerSwing} scale={tapBounce} alpha={result ? .32 : 1}>
-				<Sprite key="gbChefCutIn" anchor={.5} width={W*.48} height={W*.48}/>
+			<Sprite key="v8MeterBoard" anchor={.5} width={W} height={H}/>
+			<Container x={dancerX} y={dancerY} rotation={dancerSwing} scale={tapBounce} alpha={result ? .32 : 1}>
+				<!-- what hangs off the figure answers the slide and the hit
+				     (game/meshWin/cutIn.ts), on this step's own phase clock -->
+				<PropMesh spec={CUTIN} env={{ t: phase, pushT: -1 }} anchor={0.5} width={W*.48} height={W*.48}/>
 			</Container>
 			<Graphics draw={drawFootfalls}/>
 			<Container x={-W*.16} y={-H*.13} scale={.55+.45*back(clamp(phase/450))}>
@@ -186,15 +224,20 @@
 			</Container>
 			<Graphics draw={drawDebris}/>
 			<Graphics draw={drawCut}/>
+			{#if disc}
+				<!-- the record (the P art itself), in front of the card it smashes -->
+				<Sprite key="gbP" anchor={.5} x={disc.x} y={disc.y} rotation={disc.rotation} width={disc.size} height={disc.size} alpha={disc.alpha}/>
+			{/if}
 			{#if !result}<Graphics draw={drawRungRail}/>{/if}
 			{#each (result ? [] : [1,2,3]) as rung (rung)}
-				<Container x={(rung-2)*W*.20-W*.10} y={H*.20} scale={rung===currentRung && phase>=CUT && phase<CUT+380 ? 1+.2*Math.sin(Math.PI*clamp((phase-CUT)/380)) : 1}>
+				<Container x={(rung-2)*W*.20-W*.10} y={RUNG_Y} scale={rung===currentRung && phase>=CUT && phase<CUT+380 ? 1+.2*Math.sin(Math.PI*clamp((phase-CUT)/380)) : 1}>
 					<Graphics draw={(g)=>{g.clear();g.circle(0,0,W*.039).fill(rungRevealed(rung)?PINK:PAPER).stroke({color:INK,width:3});g.circle(0,0,W*.026).stroke({color:rungRevealed(rung)?PAPER:INK,width:1});}}/>
 					<Text text={`${config.banditMeter.thresholds[rung-1]}`} anchor={.5} style={{fontFamily:NUMBER_FONT,fontSize:W*.03,fill:rungRevealed(rung)?PAPER:INK}}/>
-					<Text text={`${removedLabelAtLevel(rung)}→P`} anchor={.5} y={H*.10} style={{fontFamily:GAME_FONT,fontSize:W*.03,fontWeight:GAME_FONT_WEIGHT,fill:rungRevealed(rung)?PINK:INK}}/>
+					<Text text={`${removedLabelAtLevel(rung)}→P`} anchor={.5} y={H*.075} style={{fontFamily:GAME_FONT,fontSize:W*.03,fontWeight:GAME_FONT_WEIGHT,fill:rungRevealed(rung)?PINK:INK}}/>
 				</Container>
 			{/each}
-			<Text visible={!result || opening} text={result?resultHeadline:gameText('chefSlice')} anchor={.5} y={-H*.43} scale={result?1+.14*(1-clamp((elapsed-resultAt)/240)):1} style={{fontFamily:GAME_FONT,fontSize:W*.052,fontWeight:GAME_FONT_WEIGHT,fill:result?ORANGE:INK,stroke:{color:PAPER,width:4},letterSpacing:1}}/>
+			<!-- on the stage window's valance: cream (gold for the result) inked -->
+			<Text visible={!result || opening} text={result?resultHeadline:gameText('chefSlice')} anchor={.5} y={-H*.4} scale={result?1+.14*(1-clamp((elapsed-resultAt)/240)):1} style={{fontFamily:GAME_FONT,fontSize:W*.052,fontWeight:GAME_FONT_WEIGHT,fill:result?0xf0c25e:PAPER,stroke:{color:INK,width:W*.009,join:'round'},letterSpacing:1}}/>
 			{#if result && !opening}
 				<Container x={W*.29} y={-H*.04-H*.06*(1-clamp(stampAge/260))} rotation={-.07-.08*(1-clamp(stampAge/260))} scale={back(clamp(stampAge/320))}>
 					<Sprite key="v8Stamp" anchor={.5} width={Math.max(W*.32,200/layout.scale)} height={Math.max(W*.32,200/layout.scale)}/>
@@ -203,10 +246,10 @@
 				</Container>
 			{/if}
 			{#if result}
-				<Text text={replacementLabel} anchor={{x:0,y:.5}} x={-replacementRowWidth/2} y={H*.20} style={replacementStyle}/>
-				<Sprite key="gbP" anchor={.5} x={replacementRowWidth/2-W*.055} y={H*.20} width={W*.11} height={W*.11}/>
+				<Text text={replacementLabel} anchor={{x:0,y:.5}} x={-replacementRowWidth/2} y={RUNG_Y} style={replacementStyle}/>
+				<Sprite key="gbP" anchor={.5} x={replacementRowWidth/2-W*.055} y={RUNG_Y} width={W*.11} height={W*.11}/>
 			{/if}
-			<Text text={gameText(opening ? 'firstSpin' : 'nextSpins')} anchor={.5} y={H*.43} style={{fontFamily:GAME_FONT,fontSize:W*.029,fontWeight:GAME_FONT_WEIGHT,fill:INK}}/>
+			<Text text={gameText(opening ? 'firstSpin' : 'nextSpins')} anchor={.5} y={H*.435} style={{fontFamily:GAME_FONT,fontSize:W*.029,fontWeight:GAME_FONT_WEIGHT,fill:INK}}/>
 		</Container>
 	</MainContainer>
 {/if}

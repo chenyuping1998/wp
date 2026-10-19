@@ -93,13 +93,41 @@ const spec = (
 	limits: { body: { pos: 0, neg: 0 }, ...limits },
 	pose: (rig, t) => {
 		const pose = restPose(rig);
-		// a small pop as the phrase starts, so the win reads at a glance
-		pose.rigid.pop = 1 + 0.05 * bump(t, 0, 320);
-		pose.air = 0.25 * bump(t, 0, 320);
+		// a pop as the phrase starts, so the win reads at a glance
+		pose.rigid.pop = 1 + 0.08 * bump(t, 0, 320);
+		pose.air = 0.3 * bump(t, 0, 320);
 		act(rig, pose, t);
+		// ON THE BEAT (2026-10-18): the whole instrument gives a small bounce on
+		// each of its own hits — squats into it, springs up off it — so the
+		// phrase swings instead of the instrument playing in place. Rigid only
+		// (it cannot tear the mesh); after act(), so the act's own lean stays.
+		const beat = BEAT_HOP[symbol];
+		if (beat) {
+			let hop = 0;
+			let squat = 0;
+			for (const h of beat.at) {
+				hop += bump(t, h - 20, h + 240);
+				squat += bump(t, h - 110, h - 10);
+			}
+			hop = Math.min(1, hop);
+			squat = Math.min(1, squat);
+			pose.rigid.dy -= beat.height * hop;
+			pose.rigid.sx *= 1 + 0.05 * squat - 0.03 * hop;
+			pose.rigid.sy *= 1 - 0.06 * squat + 0.04 * hop;
+			pose.air = Math.max(pose.air, 0.35 * hop);
+		}
 		return pose;
 	},
 });
+
+// each instrument's own hits, for the bounce in spec(); the drum's six come
+// close together, so it only bounces on the right stick and lower
+const BEAT_HOP: Record<string, { at: number[]; height: number }> = {
+	get H1() { return { at: SAX_HONKS, height: 9 }; },
+	get H2() { return { at: BASS_PLUCKS, height: 6 }; },
+	get H3() { return { at: RIGHT_HITS, height: 5 }; },
+	get H4() { return { at: BANJO_STRUMS, height: 6 }; },
+};
 
 // ---------------------------------------------------------------------------
 // H1 — saxophone: two honks; between them the fingers run down the keys

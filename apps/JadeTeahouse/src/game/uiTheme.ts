@@ -359,6 +359,11 @@ if (skin === 'platform' || skin === 'print') {
 		// buyBonusPlateScale scales the PICTURE, not the box, so the slab is as
 		// large on screen as before and the clickable area is unchanged.
 		buyBonusPlateScale: 1.4,
+		// HOVER ONLY ON THE BAMBOO. Without this Pixi hit-tests the plate sprite's
+		// whole 512 quad, and the plate is only a strip across it (bamboo x 4..507,
+		// y 183..357 of 512), so the board lit up while the cursor was still well
+		// above or below it. Ropes left out on purpose.
+		buyBonusHitArea: { x: 0.01, y: 0.355, width: 0.98, height: 0.345 },
 
 		// THE LABEL. With the dynamite gone the slab's whole face is free, so the
 		// label comes back up from the 0.5 it was squeezed to: 0.6 of the base size
@@ -437,8 +442,13 @@ if (skin === 'platform' || skin === 'print') {
 // is turned round. Art: design/build_print_bar.py.
 if (skin === 'print') {
 	setUiTheme({
-		buyBonusLabelSizeRatio: 0.5,
-		buyBonusLabelWrapWidth: 130,
+		// 0.5 put "BUY BONUS" right at the 130 wrap, so it broke onto two lines
+		// that ran over the bamboo (the paper face is only ~46px tall). A touch
+		// smaller and a wider wrap keep it to one line inside the face (~167px);
+		// nudged down because the plate hangs below the canvas centre.
+		buyBonusLabelSizeRatio: 0.44,
+		buyBonusLabelWrapWidth: 160,
+		buyBonusLabelOffsetY: 0.03,
 		// the framed casing's rules (not 'flat', whose dividers are white at 15%
 		// and vanish on paper); the art itself is the fill and edge
 		barStyle: 'framed',

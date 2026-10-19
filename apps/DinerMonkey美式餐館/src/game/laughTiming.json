@@ -3,5 +3,6 @@
   "gapMs": 280,
   "beats": 10,
   "endMs": 3650,
+  "usePaintedLaugh": true,
   "faceStates": ["inhale", "half", "rising", "open", "peak", "settle"]
 }

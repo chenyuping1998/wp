@@ -87,19 +87,12 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 					stateGame.gameType === 'superspin' ||
 					stateGame.gameType === 'freegame',
 			});
-			// The housing takes the hit too — a much lighter version of the win
-			// recoil, so a symbol landing reads as weight arriving in the frame
-			// rather than a sprite appearing. Skipped in turbo, where five recoils
-			// inside half a second would just be noise.
-			// Same reasoning as the reel-stop click above — superspin keeps the weight
-			// in its stops no matter what turbo is set to.
-			if (
-				!stateBet.isTurbo ||
-				stateGame.gameType === 'superspin' ||
-				stateGame.gameType === 'freegame'
-			) {
-				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
-			}
+			// (The housing used to rattle on every reel stop — five small shakes
+			// a spin. Removed 2026-10-16 after the "poor animation" review: a
+			// frame that twitches all the time reads as cheap, and it took the
+			// weight away from the impacts that matter. The frame now moves only
+			// for a Wild hit or the transition slam; a stop's weight is the
+			// symbol's own landing act.)
 		},
 		onSymbolLand: ({ rawSymbol }) => onSymbolLand({ rawSymbol, reelIndex }),
 	});

@@ -8,6 +8,7 @@
 	import { getSymbolInfo } from '../game/utils';
 	import { winMoveOf, WIN_MOVE_MS } from '../game/winMoves';
 	import { GAME_FONT } from '../game/fonts';
+	import { letterNudge } from '../game/letterCentre';
 
 	type Props = {
 		x?: number;
@@ -131,7 +132,7 @@
 		{#if props.letter === 'Q'}
 			<Sprite anchor={0.5} key="gbQGlyph" width={SYMBOL_SIZE} height={SYMBOL_SIZE} />
 		{:else}
-			<Text anchor={0.5} text={props.letter} style={{ fontFamily: GAME_FONT, fontWeight: '400', fontSize: props.letter.length > 1 ? 51 : 62, fill: 0x14262e }} />
+			<Text anchor={0.5} y={letterNudge(props.letter, props.letter.length > 1 ? 51 : 62)} text={props.letter} style={{ fontFamily: GAME_FONT, fontWeight: '400', fontSize: props.letter.length > 1 ? 51 : 62, fill: 0x14262e }} />
 		{/if}
 	{/if}
 	<Graphics draw={drawFrame} />

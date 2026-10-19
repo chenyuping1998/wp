@@ -96,7 +96,7 @@ export const IDLES: Record<string, MeshWinSpec> = {
 	}),
 	S: idle(S, 1600, (rig, pose, t) => {
 		const rock = Math.exp(-Math.max(0, t - 80) / 520) * Math.sin((2 * Math.PI * Math.max(0, t - 80)) / 360);
-		bone(rig, pose, 'medal').angle = 2.6 * rock * Math.min(1, t / 120);
+		bone(rig, pose, 'medal').angle = 0;
 		const bunch = bone(rig, pose, 'bunch');
 		bunch.dy = -2 * bump(t, 200, 900);
 		bone(rig, pose, 'upper').angle = 1.6 * Math.max(0, flick(t, 300, 1.6, 2.4));

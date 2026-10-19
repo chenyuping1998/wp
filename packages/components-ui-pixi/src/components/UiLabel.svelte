@@ -222,7 +222,10 @@
 				g.moveTo(-s, -s * 0.55);
 				g.lineTo(0, s * 0.55);
 				g.lineTo(s, -s * 0.55);
-				g.stroke({ width: UI_BASE_FONT_SIZE * 0.16, color: accent.label, cap: 'round', join: 'round' });
+				const color = props.hovered && uiTheme.labelChevronHoverColor !== undefined
+					? uiTheme.labelChevronHoverColor
+					: accent.label;
+				g.stroke({ width: UI_BASE_FONT_SIZE * 0.16, color, cap: 'round', join: 'round' });
 			}}
 		/>
 	{/if}

@@ -13,12 +13,14 @@
 </script>
 
 <script lang="ts">
-	import { Container, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
+	import { Container, Graphics, SpineProvider, SpineTrack, Text } from 'pixi-svelte';
+	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	import { onDestroy } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import alchemistCues from '../game/alchemistCues';
 
 	const context = getContext();
 
@@ -32,7 +34,7 @@
 	// Where the dynamite leaves his hand, in skeleton units, printed by
 	// design/generate_monkey_spine.mjs when it builds the 'throwit' animation:
 	// the left hand at full extension, at RELEASE_AT = 0.38s.
-	const RELEASE = { x: -349, y: 495 };
+	const RELEASE = alchemistCues.release;
 
 	// Below this there is no room to stand him next to the board without either
 	// overlapping the frame or shrinking him to a thumbnail. Tablet (1000x1000)
@@ -130,13 +132,42 @@
 	// decoration floating on his chest rather than as something he did.
 	//
 	// Re-print these whenever the beat's angles change.
+	//
+	// 2026-10-16, the Boomana-parts rig (v3): design/retarget_boom_chest.mjs now
+	// holds both hands up at the chest and lands each palm exactly on its
+	// target (check_alchemist_mesh: 0px error). Measured palm positions at the
+	// strikes, skeleton units: R (76, 531) on 0.48/1.08/1.68, L (-37, 532) on
+	// 0.78/1.38/1.98.
 	const IMPACT_AT = {
-		right: { x: 60, y: 437 },
-		left: { x: -63, y: 380 },
+		right: { x: 76, y: 531 },
+		left: { x: -37, y: 532 },
 	};
 	// At 96 the star was two-thirds of his body width and stopped being a hit on
 	// his chest — it became an explosion he happened to be standing behind.
-	const IMPACT_R = 76;
+	const IMPACT_R = 62;
+	// a comic sound word on every strike, popped out to the striking side
+	const WORDS = ['BAM!', 'THUD!', 'POW!', 'BAM!', 'THUD!', 'BOOM!'];
+	const impactWords = $derived.by(() => {
+		if (impactClock < 0) return [];
+		const out: { text: string; x: number; y: number; alpha: number; scale: number; rotation: number }[] = [];
+		for (let i = 0; i < BEATS; i++) {
+			const t = (impactClock - (BEAT_START_MS + i * BEAT_GAP_MS)) / (IMPACT_LIFE_MS * 1.5);
+			if (t < 0 || t > 1) continue;
+			const right = i % 2 === 0;
+			const at = right ? IMPACT_AT.right : IMPACT_AT.left;
+			// slams in oversized, settles, drifts up and away from the chest
+			const pop = t < 0.15 ? 1.5 - (t / 0.15) * 0.5 : 1;
+			out.push({
+				text: WORDS[i],
+				x: at.x + (right ? 1 : -1) * (IMPACT_R * 1.5 + t * 30),
+				y: -at.y - IMPACT_R * 0.9 - t * 26,
+				alpha: t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4,
+				scale: pop,
+				rotation: (right ? 1 : -1) * (0.16 + 0.04 * Math.sin(i * 2.3)),
+			});
+		}
+		return out;
+	});
 
 	// Ink and fill of a printed panel: flat colour, hard black line, no gradient.
 	const INK = 0x1a1206;
@@ -174,7 +205,14 @@
 	// A jagged star. `seed` varies the jag so no two hits are the same shape, and
 	// it is derived from the beat index rather than random per frame — a star
 	// that re-jags every frame is a boiling blob, not an impact.
-	const starPoints = (cx: number, cy: number, outer: number, inner: number, spikes: number, seed: number) => {
+	const starPoints = (
+		cx: number,
+		cy: number,
+		outer: number,
+		inner: number,
+		spikes: number,
+		seed: number,
+	) => {
 		const pts: number[] = [];
 		for (let i = 0; i < spikes * 2; i++) {
 			const wobble = Math.sin(seed * 12.9898 + i * 4.1) * 0.5 + 0.5;
@@ -207,7 +245,7 @@
 			for (let k = 0; k < 7; k++) {
 				const a = seed * 0.6 + (k / 7) * Math.PI * 2;
 				const r0 = IMPACT_R * 0.82 * scale;
-				const r1 = r0 + (30 + 26 * ((k * 7919) % 11) / 11) * scale;
+				const r1 = r0 + (30 + (26 * ((k * 7919) % 11)) / 11) * scale;
 				g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0);
 				g.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
 			}
@@ -222,7 +260,14 @@
 			g.poly(outer);
 			g.stroke({ width: 6 * scale, color: INK, alpha });
 
-			const inner = starPoints(cx, cy, IMPACT_R * 0.56 * scale, IMPACT_R * 0.23 * scale, 9, seed + 0.9);
+			const inner = starPoints(
+				cx,
+				cy,
+				IMPACT_R * 0.56 * scale,
+				IMPACT_R * 0.23 * scale,
+				9,
+				seed + 0.9,
+			);
 			g.poly(inner);
 			g.fill({ color: FLASH, alpha });
 		}
@@ -336,10 +381,13 @@
 		const fg = context.stateGame.gameType === 'freegame';
 		const level = Math.max(1, context.stateGame.blastLevel ?? 1);
 		const base = fg ? Math.max(3500, 7000 - level * 700) : 8000;
-		glanceTimer = setTimeout(() => {
-			if (placement && animationName === 'idle') play('glance', false);
-			scheduleGlance();
-		}, base + Math.random() * base * 0.6) as unknown as number;
+		glanceTimer = setTimeout(
+			() => {
+				if (placement && animationName === 'idle') play('glance', false);
+				scheduleGlance();
+			},
+			base + Math.random() * base * 0.6,
+		) as unknown as number;
 	};
 	scheduleGlance();
 	onDestroy(() => clearTimeout(glanceTimer));
@@ -426,7 +474,7 @@
 			play('throwit', false);
 			// on the release, not on the wind-up
 			clearTimeout(voiceTimer);
-			voiceTimer = setTimeout(() => say('effort'), 520) as unknown as number;
+			voiceTimer = setTimeout(() => say('effort'), alchemistCues.releaseMs) as unknown as number;
 		},
 
 		// An ordinary base-game win. This is the common case by a wide margin, so
@@ -454,13 +502,7 @@
 </script>
 
 {#if placement}
-	<SpineProvider
-		key="gbMonkey"
-		x={placement.x}
-		y={placement.y}
-		scale={placement.scale}
-		zIndex={-1}
-	>
+	<SpineProvider key="gbMonkey" x={placement.x} y={placement.y} scale={placement.scale} zIndex={-1}>
 		<SpineTrack
 			trackIndex={0}
 			{animationName}
@@ -491,6 +533,10 @@
 		     bones, so it layers over whatever track 0 plays; the physics on the
 		     banana, the helmet and the tube adds the follow-through. -->
 		<SpineTrack trackIndex={1} animationName="flutter" loop />
+		<!-- TRACK 2, ALWAYS: he blinks (`blink`, design/alchemist_blink.py) — a
+		     single blink, then a double one, on a 5.6s loop that drifts against
+		     the 4.8s flutter. It keys only the painted `lids` slot. -->
+		<SpineTrack trackIndex={2} animationName="blink" loop />
 	</SpineProvider>
 
 	<!--
@@ -498,8 +544,30 @@
 		Same origin and scale as the skeleton, so the impacts are placed in
 		skeleton units and follow him at whatever size the layout gives him.
 	-->
+	<!-- the chest beat's comic hits: a burst on the chest under each palm, and
+	     a sound word thrown out to that side (2026-10-16) -->
 	<Container x={placement.x} y={placement.y} scale={placement.scale}>
 		<Graphics draw={drawImpacts} />
+		{#each impactWords as w, i (i)}
+			<Text
+				text={w.text}
+				anchor={0.5}
+				x={w.x}
+				y={w.y}
+				alpha={w.alpha}
+				scale={w.scale}
+				rotation={w.rotation}
+				style={{
+					fontFamily: GAME_FONT,
+					fontWeight: GAME_FONT_WEIGHT,
+					fontSize: 58,
+					fill: GOLD,
+					stroke: { color: INK, width: 9, join: 'round' },
+					dropShadow: { color: INK, alpha: 1, blur: 0, angle: Math.PI / 3, distance: 6 },
+					letterSpacing: 2,
+				}}
+			/>
+		{/each}
 	</Container>
 
 	<!--

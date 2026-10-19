@@ -11,14 +11,18 @@
 	//
 	// The meter is the feature's whole chase — each rung adds spins and raises
 	// the collect multiplier — so it sits on the same ticket as the spin count
-	// rather than somewhere the eye has to go looking for it. Drawn as a flat
-	// screenprint ticket (paper, red offset print, ink border): no gradients, no
-	// glow, matching ART_BRIEF.md §0.
+	// rather than somewhere the eye has to go looking for it.
+	//
+	// It hangs in one bay of the logo signboard's carved rail (sushiV8/
+	// counter_plate.png, design/build_splash_parts.py). It used to be a flat
+	// ticket drawn in code in Sushi Monkey's print style — red offset, pink
+	// rule — the one thing left on screen in another game's language. The count
+	// is set in the game's own digit art (InkNumber), and the meter's pips are
+	// jade cups that light up as Tea Masters land.
 	import { GAME_FONT, GAME_FONT_WEIGHT, NUMBER_FONT } from '../game/fonts';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
-	import { Container, Graphics, Text } from 'pixi-svelte';
-	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { Container, Sprite, Text } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
 	import { stateGame } from '../game/stateGame.svelte';
@@ -26,14 +30,13 @@
 	import { gameText } from '../game/i18nText';
 	import config from '../game/config';
 	import { removedLabelsAtLevel } from '../game/chefMeter';
+	import InkNumber from './InkNumber.svelte';
 
 	const context = getContext();
 
-	const PAPER = 0xefeadc;
-	const RED = 0xbd9393;
-	const GREEN = 0x4a4846;
-	const INK = 0x282828;
-	const YELLOW = 0xbd9393;
+	const INK = 0x2a4037;
+	const DARK_JADE = 0x2c5c4d;
+	const GOLD = 0xb07d34;
 
 	const W = SYMBOL_SIZE * 2.0;
 	const H = SYMBOL_SIZE * 1.6;
@@ -143,78 +146,65 @@
 	});
 	$effect(() => () => cancelAnimationFrame(levelRaf));
 
-	const drawTicket = (g: PixiGraphics) => {
-		g.clear();
-		// red offset print under the paper, like a misregistered second pass
-		g.roundRect(6, 6, W, H, 14).fill(RED);
-		g.roundRect(0, 0, W, H, 14).fill(PAPER).stroke({ width: 4, color: INK });
-		const pulse = levelPulseT < 1 ? Math.sin(Math.PI * levelPulseT) : 0;
-		if (pulse > 0) g.roundRect(3, 3, W - 6, H - 6, 11).stroke({ width: 3, color: RED, alpha: pulse });
-		// green band behind the title
-		g.roundRect(10, 10, W - 20, H * 0.22, 8).fill(GREEN);
-	};
-
-	const drawPips = (g: PixiGraphics) => {
-		g.clear();
+	// the paper inside the bay, as fractions of the plate (measured on the art)
+	const PAPER_TOP = 0.19;
+	const pips = $derived.by(() => {
 		const n = Math.max(1, rungSize);
-		const gap = W * 0.16;
+		const gap = W * 0.15;
 		const startX = W * 0.5 - ((n - 1) * gap) / 2;
-		const y = H * 0.72;
-		for (let i = 0; i < n; i++) {
-			const lit = i < rungFilled;
-			const k = i === popIndex && popT < 1 ? 1 + 0.6 * Math.sin(popT * Math.PI) : 1;
-			const r = W * 0.055 * k;
-			const x = startX + i * gap;
-			g.ellipse(x + 2, y + 3, r, r * .68).fill(INK);
-			g.ellipse(x, y, r, r * .68).fill(lit ? RED : PAPER).stroke({ width: 2.5, color: INK });
-			g.ellipse(x, y, r * .48, r * .31).stroke({ width: 1.5, color: lit ? PAPER : INK });
-		}
-	};
+		return Array.from({ length: n }, (_, i) => ({
+			x: startX + i * gap,
+			lit: i < rungFilled,
+			scale: i === popIndex && popT < 1 ? 1 + 0.45 * Math.sin(popT * Math.PI) : 1,
+		}));
+	});
+	const levelPulse = $derived(levelPulseT < 1 ? Math.sin(Math.PI * levelPulseT) : 0);
+	const topRung = $derived(meter.level >= config.banditMeter.thresholds.length);
 </script>
 
 <MainContainer>
 	<FadeContainer {show} {...position}>
-		<Graphics draw={drawTicket} />
+		{#if topRung || levelPulse > 0}
+			<!-- a warm light behind the board: on each new rung, and held at the top
+			     one (additive, a direct sibling, nothing masked) -->
+			<Sprite key="fxGlow" anchor={0.5} x={W * 0.5} y={H * 0.45} blendMode="add" tint={0xe6c27a}
+				width={W * 1.6} height={H * 1.5} alpha={Math.max(topRung ? 0.35 : 0, levelPulse * 0.7)} />
+		{/if}
+		<Sprite key="v8CounterPlate" width={W} height={H} />
 		<Text
 			anchor={0.5}
 			x={W * 0.5}
-			y={10 + H * 0.11}
+			y={H * (PAPER_TOP + 0.065)}
 			text={title}
 			style={{
 				fontFamily: GAME_FONT,
 				fontSize: titleSize,
 				fontWeight: GAME_FONT_WEIGHT,
 				letterSpacing: 2,
-				fill: PAPER,
+				fill: DARK_JADE,
 				wordWrap: false,
 			}}
 		/>
-		<Text anchor={.5} x={W*.5} y={H*.44} text={`${Math.min(current,total)} / ${total}`} style={{fontFamily:NUMBER_FONT,fontSize:W*.19,fontWeight:'900',fill:INK,stroke:{color:PAPER,width:2}}}/>
-		<Text anchor={.5} x={W*.5} y={H*.62} text={`${Math.min(meter.count,thresholds[thresholds.length-1])} / ${meter.nextAt ?? thresholds[thresholds.length-1]}`} style={{fontFamily:NUMBER_FONT,fontSize:W*.074,fill:INK,fontWeight:'900'}}/>
-		<Graphics draw={drawPips} />
-		<!-- the multiplier every collection is getting now -->
-		<Container x={W * 0.5} y={H * 0.9} scale={1 + (levelPulseT < 1 ? .1 * Math.sin(Math.PI * levelPulseT) : 0)}>
+		<InkNumber text={`${Math.min(current, total)}/${total}`} role="fs" x={W * 0.5} y={H * 0.43} fontSize={H * 0.19} maxWidth={W * 0.7} />
+		{#each pips as pip, i (i)}
+			<Sprite key="gbP" anchor={0.5} x={pip.x} y={H * 0.6} width={W * 0.1 * pip.scale} height={W * 0.1 * pip.scale}
+				alpha={pip.lit ? 1 : 0.32} tint={pip.lit ? 0xffffff : 0x9aa59f} />
+		{/each}
+		<Text anchor={0.5} x={W * 0.5} y={H * 0.7} text={`${Math.min(meter.count, thresholds[thresholds.length - 1])} / ${meter.nextAt ?? thresholds[thresholds.length - 1]}`}
+			style={{ fontFamily: NUMBER_FONT, fontSize: W * 0.055, fill: INK, fontWeight: '900' }} />
+		<!-- which low symbols have become Jade Cups so far -->
+		<Container x={W * 0.5} y={H * 0.772} scale={1 + 0.1 * levelPulse}>
 			<Text
 				anchor={0.5}
 				text={meter.level ? `${removedLabelsAtLevel(meter.level)} → P` : gameText('chefMeter')}
 				style={{
 					fontFamily: GAME_FONT,
-					fontSize: W * 0.075,
+					fontSize: W * 0.062,
 					fontWeight: GAME_FONT_WEIGHT,
 					letterSpacing: 1,
-					fill: meter.level > 0 ? RED : INK,
+					fill: meter.level > 0 ? GOLD : INK,
 				}}
 			/>
 		</Container>
-		{#if meter.level >= config.banditMeter.thresholds.length}
-			<!-- top rung: the banana yellow is reserved for the collection, and the
-			     top multiplier IS the collection at its biggest -->
-			<Graphics
-				draw={(g) => {
-					g.clear();
-					g.roundRect(-4, -4, W + 8, H + 8, 18).stroke({ width: 5, color: YELLOW });
-				}}
-			/>
-		{/if}
 	</FadeContainer>
 </MainContainer>

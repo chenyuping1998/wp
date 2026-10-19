@@ -4,10 +4,10 @@
 	import { MainContainer } from 'components-layout';
 	import { getContext } from '../game/context';
 
-	type Props = { oncomplete: () => void; oncover?: () => void };
+	type Props = { oncomplete: () => void; oncover?: () => void; noThrow?: boolean };
 	const props: Props = $props();
 	const context = getContext();
-	const origin = context.stateGame.mascotThrowOrigin;
+	const origin = props.noThrow ? null : context.stateGame.mascotThrowOrigin;
 	const LEAD = origin ? 580 : 0;
 	const IN = 900, HOLD = 380, OUT = 850;
 	const COVER_AT = Math.max(LEAD + IN + 80, origin ? 1400 : 0);

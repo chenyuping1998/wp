@@ -3,14 +3,12 @@
 	import { Container, Sprite } from 'pixi-svelte';
 	import { MainContainer } from 'components-layout';
 	import { getContext } from '../game/context';
-	import { NOREN } from '../game/meshWin';
-	import PropMesh from './PropMesh.svelte';
 
 	// Sushi Monkey's transition (2026-10-07, user request: "like Banandit, the
 	// sushi shop's door closing and opening"): Go Banandit's roller-shutter
 	// rhythm with the shop's own front. The two lattice doors slide in from the
-	// screen edges and clack together, the noren drops from the lintel over
-	// them, the scene swaps behind the shut doors, and they slide back open.
+	// screen edges and clack together (the noren that used to drop over them is
+	// gone), the scene swaps behind the shut doors, and they slide back open.
 	// Art: design/build_sushi_door.py. It replaces the order-terminal glitch.
 	//
 	// Its mechanical job is the one every transition here has: hide a scene swap.
@@ -70,22 +68,6 @@
 		return 1 - k * k * (3 - 2 * k);
 	});
 
-	// the noren drops in just behind the doors and lifts first on the way out
-	const norenDrop = $derived.by(() => {
-		const t = elapsed - LEAD_MS;
-		if (t < 0) return 0;
-		if (t < SHUT_MS) return Math.min(1, t / (SHUT_MS * 0.8)) ** 2;
-		if (t < SHUT_MS + HOLD_MS) return 1;
-		const k = Math.min(1, (t - SHUT_MS - HOLD_MS) / (OPEN_MS * 0.7));
-		return 1 - k * k;
-	});
-	// and swings after the clack
-	const norenSwing = $derived.by(() => {
-		const t = elapsed - LEAD_MS - SHUT_MS * CLACK_AT;
-		if (t < 0 || t > 900) return 0;
-		return Math.sin(t / 95) * 0.012 * (1 - t / 900);
-	});
-
 	let slid = false;
 	let clacked = false;
 	let opened = false;
@@ -120,16 +102,6 @@
 	const travel = $derived(half + 24);
 	const leftEdge = $derived(half - travel * (1 - shut) + jolt);
 	const rightEdge = $derived(half + travel * (1 - shut) + jolt);
-
-	// the curtain's clock: since it started to drop, and since the clack
-	const norenEnv = $derived({
-		dropT: elapsed - LEAD_MS,
-		clackT: elapsed - LEAD_MS - SHUT_MS * CLACK_AT,
-	});
-	const noren = $derived.by(() => {
-		const scale = Math.max(canvas.width / 1920, (canvas.height * 0.3) / 420);
-		return { width: 1920 * scale, height: 420 * scale };
-	});
 
 	// The plate, in main-layout coordinates: from his hand to the board's centre
 	// on a high arc, spinning, read off the same clock as the doors.
@@ -195,17 +167,7 @@
 			<Sprite key="smDoor" anchor={{ x: 1, y: 0.5 }} width={door.width} height={door.height} />
 		</Container>
 	{/if}
-	{#if norenDrop > 0}
-		<!-- cloth, not a card (game/meshWin/noren.ts): the hem ripples on the
-		     drop's stop and the clack, and every tassel swings on its own -->
-		<PropMesh
-			spec={NOREN}
-			env={norenEnv}
-			x={canvas.width / 2 + jolt * 0.4 - noren.width / 2}
-			y={-noren.height * (1 - norenDrop)}
-			rotation={norenSwing * 0.5}
-			width={noren.width}
-			height={noren.height}
-		/>
-	{/if}
+	<!-- The noren that dropped over the shut doors is gone (user, 2026-10-10:
+	     a flat strip of colour that read as AI art; Pocha and Swing lost theirs
+	     the same day). The doors alone carry the transition. -->
 </Container>

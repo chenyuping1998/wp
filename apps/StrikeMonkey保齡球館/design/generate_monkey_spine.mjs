@@ -59,9 +59,9 @@ const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 // (design/cut_cast_layers.py -> design/source/<cast>/) and its own rig.json
 // for the joints that have no piece edge to read them off.
 const CAST = process.env.CAST || 'mg';
-const SRC = path.join(appRoot, 'design/source', CAST);
+const SRC = process.env.CAST_SOURCE_DIR || path.join(appRoot, 'design/source', CAST);
 const RIGPTS = JSON.parse(fs.readFileSync(path.join(SRC, 'rig.json'), 'utf8'));
-const OUT = path.join(appRoot, 'static/assets/spines', RIGPTS.out);
+const OUT = process.env.CAST_OUTPUT_DIR || path.join(appRoot, 'static/assets/spines', RIGPTS.out);
 fs.mkdirSync(OUT, { recursive: true });
 
 // One image that is not a body part: the dynamite he throws. Packed into this
@@ -79,6 +79,19 @@ const PROPS = [
 		// little squat in the hand. That is deliberate: a bundle held in a fist is
 		// mostly foreshortened, and the throw's release only lasts a few frames.
 		size: 168,
+	},
+	// The bowling ball he conjures for 'bowl' (2026-10-18): the transition's
+	// own teal ball (sushiScene/transition_wipe.png, cropped), so the ball he
+	// rolls off screen is the one that comes back as the wipe. Same bone.
+	// BOWL_BALL_SIZE is read by Mascot.svelte / BanditMeter.svelte to draw the
+	// rolling copy at the same size.
+	{
+		name: 'ball',
+		file: path.join(appRoot, 'design/source/strike/props', 'ball.png'),
+		bone: 'prop',
+		size: 136,
+		// hangs under the palm, fingers in the holes, rather than centred on it
+		offset: { x: 0, y: -40 },
 	},
 ];
 
@@ -336,7 +349,8 @@ for (const b of RIG) {
 const drawOrder = [...meta.layers].sort((a, b) => a.z - b.z);
 const slots = drawOrder
 	.filter((l) => boneOf[l.name])
-	.map((l) => ({ name: l.name, bone: boneOf[l.name], attachment: l.name }));
+	.map((l) => ({ name: l.name, bone: boneOf[l.name],
+		attachment: l.name === 'head_2_face' ? 'head_2_face_rest' : l.name }));
 
 // The front copies go after the body and before the props, on the same bones as
 // the originals, with no attachment until an animation asks for one.
@@ -592,13 +606,16 @@ for (const name of FRONT_COPIES) {
 
 for (const prop of PROPS) {
 	attachments[prop.name] = {
-		[prop.name]: { x: 0, y: 0, width: prop.size, height: prop.size },
+		[prop.name]: { x: prop.offset?.x ?? 0, y: prop.offset?.y ?? 0, width: prop.size, height: prop.size },
 	};
 }
 
 // Expression replacements keep the original weighted head mesh, including its
 // neck/collar blend. Only the atlas region changes; no jaw bone stretch.
-const FACE_STATES = LAUGH.faceStates;
+const FACE_STATES = [...new Set([...LAUGH.faceStates, 'rest', 'blink',
+ 'laugh_1', 'laugh_2', 'laugh_3', 'laugh_4',
+ 'laugh_3_blink', 'laugh_4_blink', 'talk_open', 'talk_closed'
+ ])];
 const faceLayer = piece('head_2_face');
 const faceImages = FACE_STATES.map((state) => {
  const name = `head_2_face_${state}`;
@@ -1592,6 +1609,247 @@ const throwit = {
 	},
 };
 
+// bowl / airbowl (2026-10-18): a ten-pin delivery with the near arm.
+//
+// 'bowl' conjures the teal ball into his hand (BOWL_APPEAR), pushes it away,
+// swings it back, slides into the release low and in front (BOWL_RELEASE —
+// Mascot.svelte and BanditMeter.svelte spawn their rolling copy there, at the
+// point printed below), follows through toward the board, watches it go, and
+// walks back to his mark. 'airbowl' is the same delivery with nothing in his
+// hand — a practice swing, played now and then as idle variety.
+//
+// Sign conventions on this rig (he faces -x, the board): an arm angle > 0
+// swings the hand away from the board, < 0 toward it; torso > 0 leans toward it.
+// Like the throw, the swing passes its extremes in a few frames; only the
+// follow-through is held, and that stays inside the throw's budget.
+const BOWL_APPEAR = 0.16;
+const BOWL_RELEASE = 0.9;
+const BOWL_END = 2.0;
+const bowlClip = (withBall) => ({
+	...(withBall
+		? {
+				slots: {
+					ball: {
+						attachment: [
+							{ time: 0, name: null },
+							{ time: BOWL_APPEAR, name: 'ball' },
+							{ time: BOWL_RELEASE, name: null },
+						],
+					},
+				},
+			}
+		: {}),
+	bones: {
+		...(withBall
+			? {
+					// the ball pops into the cupped hand: from nothing, a little
+					// overshoot, settles — as the throw's dynamite does
+					prop: {
+						scale: [
+							{ time: 0, x: 1, y: 1 },
+							{ time: BOWL_APPEAR, x: 0.15, y: 0.15 },
+							{ time: BOWL_APPEAR + 0.12, x: 1.2, y: 1.2 },
+							{ time: BOWL_APPEAR + 0.24, x: 1, y: 1 },
+						],
+					},
+				}
+			: {}),
+		// the approach: settle at the mark, then slide two short steps toward
+		// the board, sinking into the release; rise, hold, walk back
+		hip: {
+			translate: [
+				{ time: 0, x: 0, y: 0 },
+				{ time: 0.3, x: 2, y: -6 },
+				{ time: 0.7, x: -12, y: -8 },
+				{ time: BOWL_RELEASE, x: -36, y: -32 },
+				{ time: 1.12, x: -38, y: -26 },
+				{ time: 1.42, x: -36, y: -16 },
+				{ time: 1.72, x: -12, y: -4 },
+				{ time: BOWL_END, x: 0, y: 0 },
+			],
+		},
+		legL: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.62, x: 1, y: 0.985 },
+				{ time: BOWL_RELEASE, x: 1.02, y: 0.955 }, // the slide leg takes him
+				{ time: 1.42, x: 1.01, y: 0.975 },
+				{ time: BOWL_END, x: 1, y: 1 },
+			],
+		},
+		legR: {
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.62, x: 1, y: 0.99 },
+				{ time: BOWL_RELEASE, x: 0.99, y: 1.02 }, // trailing leg long
+				{ time: 1.42, x: 1, y: 1.01 },
+				{ time: BOWL_END, x: 1, y: 1 },
+			],
+		},
+		torso: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.3, value: 2 },
+				{ time: 0.7, value: -8 }, // opens up, rocking back, as the arm lifts
+				{ time: BOWL_RELEASE, value: 13 }, // down over the release
+				{ time: 1.12, value: 11 },
+				{ time: 1.42, value: 7 },
+				{ time: BOWL_END, value: 0 },
+			],
+			scale: [
+				{ time: 0, x: 1, y: 1 },
+				{ time: 0.3, x: 1.01, y: 0.99 },
+				{ time: 0.66, x: 0.985, y: 1.025 },
+				{ time: BOWL_RELEASE, x: 1.04, y: 0.96 },
+				{ time: 1.2, x: 1.01, y: 0.99 },
+				{ time: BOWL_END, x: 1, y: 1 },
+			],
+		},
+		head: {
+			// eyes on the hand, then down the lane after the ball
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: BOWL_APPEAR + 0.08, value: 6 },
+				{ time: 0.66, value: 2 },
+				{ time: BOWL_RELEASE + 0.06, value: 8 },
+				{ time: 1.42, value: 6 },
+				{ time: BOWL_END, value: 0 },
+			],
+		},
+		// The near arm is drawn IN FRONT of the body, so a true backswing would
+		// carry the hand across his belly to the far hip (it read as scratching).
+		// The swing stays on his near side instead: a short back-lift beside the
+		// hip, with the torso and hip selling the load. The air version has no
+		// ball to take, so it skips the cradle and starts from the push-away.
+		// The follow-through rises with a lifted wrist and a soft elbow, and is
+		// let down sooner — a straight held arm was a plank with a seam.
+		// THE PINSETTER (fg) rests with that arm already held out level — a
+		// "this way" presenting pose — so the Bowler's angles left the ball
+		// bobbing at chest height. His swing starts from level, drops through
+		// the bottom, goes back past the hip, comes through low for the release
+		// and rises back to level, which is his own rest pose: the follow-
+		// through ends where he started.
+		...(CAST === 'fg'
+			? {
+					armL: {
+						rotate: [
+							{ time: 0, value: 0 },
+							{ time: BOWL_APPEAR, value: -4 },
+							{ time: 0.34, value: 6 }, // push-away
+							{ time: 0.52, value: 36 }, // dropping through
+							{ time: 0.72, value: 54 }, // down past the hip (84, then 68, crushed the sleeve)
+							{ time: BOWL_RELEASE, value: 34 }, // low and forward
+							{ time: 1.08, value: 4 }, // up to level
+							{ time: 1.32, value: -4 },
+							{ time: 1.62, value: 0 },
+							{ time: BOWL_END, value: 0 },
+						],
+					},
+					armL_fore: {
+						rotate: [
+							{ time: 0, value: 0 },
+							{ time: BOWL_APPEAR, value: -10 },
+							{ time: 0.34, value: -4 },
+							{ time: 0.52 + DRAG, value: 14 },
+							{ time: 0.72 + DRAG * 0.5, value: 26 },
+							{ time: BOWL_RELEASE, value: 12 },
+							{ time: 1.08 + DRAG, value: -6 },
+							{ time: 1.32, value: -4 },
+							{ time: BOWL_END, value: 0 },
+						],
+					},
+				}
+			: {
+		armL: {
+			rotate: withBall
+				? [
+						{ time: 0, value: 0 },
+						{ time: BOWL_APPEAR, value: -12 }, // hand up in front to take it
+						{ time: 0.34, value: -14 }, // push-away
+						{ time: 0.5, value: 2 },
+						{ time: 0.7, value: 14 }, // back-lift, beside the thigh
+						{ time: BOWL_RELEASE, value: -8 }, // low, just ahead of the slide foot
+						{ time: 1.06, value: -30 }, // follow-through
+						{ time: 1.3, value: -26 },
+						{ time: 1.62, value: -6 },
+						{ time: BOWL_END, value: 0 },
+					]
+				: [
+						{ time: 0, value: 0 },
+						{ time: 0.32, value: -8 }, // push-away, a small one
+						{ time: 0.5, value: 2 },
+						{ time: 0.7, value: 14 },
+						{ time: BOWL_RELEASE, value: -8 },
+						{ time: 1.06, value: -30 },
+						{ time: 1.3, value: -26 },
+						{ time: 1.62, value: -6 },
+						{ time: BOWL_END, value: 0 },
+					],
+		},
+		armL_fore: {
+			rotate: withBall
+				? [
+						{ time: 0, value: 0 },
+						{ time: BOWL_APPEAR, value: -22 }, // cradling it
+						{ time: 0.34, value: -12 },
+						{ time: 0.5 + DRAG, value: 2 },
+						{ time: 0.7 + DRAG * 0.5, value: 3 },
+						{ time: BOWL_RELEASE, value: -2 },
+						{ time: 1.06 + DRAG, value: -9 },
+						{ time: 1.3, value: -7 },
+						{ time: 1.62, value: -2 },
+						{ time: BOWL_END, value: 0 },
+					]
+				: [
+						{ time: 0, value: 0 },
+						{ time: 0.32, value: -8 },
+						{ time: 0.5 + DRAG, value: 2 },
+						{ time: 0.7 + DRAG * 0.5, value: 3 },
+						{ time: BOWL_RELEASE, value: -2 },
+						{ time: 1.06 + DRAG, value: -9 },
+						{ time: 1.3, value: -7 },
+						{ time: 1.62, value: -2 },
+						{ time: BOWL_END, value: 0 },
+					],
+		},
+				}),
+		armL_hand: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.3, value: -6 },
+				{ time: 0.7, value: 12 }, // wrist cocked behind
+				{ time: BOWL_RELEASE + 0.04, value: -16 }, // the lift
+				{ time: 1.3, value: -12 },
+				{ time: 1.62, value: -3 },
+				{ time: BOWL_END, value: 0 },
+			],
+		},
+		// the other arm goes out behind him for balance through the release
+		armR: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.34, value: -6 },
+				{ time: 0.68, value: -12 },
+				{ time: BOWL_RELEASE, value: 24 },
+				{ time: 1.42, value: 20 },
+				{ time: 1.74, value: 4 },
+				{ time: BOWL_END, value: 0 },
+			],
+		},
+		armR_fore: {
+			rotate: [
+				{ time: 0, value: 0 },
+				{ time: 0.68 + DRAG, value: -6 },
+				{ time: BOWL_RELEASE + DRAG, value: 12 },
+				{ time: 1.42, value: 10 },
+				{ time: BOWL_END, value: 0 },
+			],
+		},
+	},
+});
+const bowl = bowlClip(true);
+const airbowl = bowlClip(false);
+
 // ── interpolation ───────────────────────────────────────────────────────────
 //
 // THIS IS WHERE THE JERK CAME FROM, NOT THE KEYFRAME VALUES
@@ -2135,6 +2393,8 @@ const glance = {
 // a small, late wobble; nothing keys it.
 const FLUTTER_LOOP = 4.8;
 const THROW_FLOW_MIX = 0.2;
+// the delivery is slower than the throw; the cloth may trail it further
+const BOWL_FLOW_MIX = 0.45;
 
 // EVERY CONSTRAINT NEEDS ITS OWN `order`. Spine builds its update cache by
 // walking order 0, 1, 2 ... and placing the ONE constraint whose order matches
@@ -2233,7 +2493,7 @@ const flowFlutter = Object.fromEntries(
 // above by name — the inherited set is only the fallback now (throwit, and the
 // sweeps). See that file for why.
 const own = castMotions({ CAST, hang, TOWARD_X, BEAT_START, BEAT_GAP, RIGPTS });
-const allAnims = { idle, cheer, chestbeat, nod, throwit, flinch, alert, glance, flutter, ...sweeps, ...own.anims };
+const allAnims = { idle, cheer, chestbeat, nod, throwit, bowl, airbowl, flinch, alert, glance, flutter, ...sweeps, ...own.anims };
 if (own.flutterBones) allAnims.flutter = { bones: { ...allAnims.flutter.bones, ...own.flutterBones } };
 allAnims.flutter = { ...allAnims.flutter, bones: { ...allAnims.flutter.bones, ...flowFlutter } };
 if ((own.loops?.flutter ?? FLUTTER_LOOP) !== FLUTTER_LOOP) throw new Error('costume flutter keys assume a FLUTTER_LOOP-long flutter');
@@ -2247,7 +2507,7 @@ if ((own.loops?.flutter ?? FLUTTER_LOOP) !== FLUTTER_LOOP) throw new Error('cost
 if (FLOW.length) {
 	for (const [name, anim] of Object.entries(allAnims)) {
 		if (name === 'flutter') continue;
-		const value = name === 'throwit' ? THROW_FLOW_MIX : 1;
+		const value = name === 'throwit' ? THROW_FLOW_MIX : name === 'bowl' || name === 'airbowl' ? BOWL_FLOW_MIX : 1;
 		anim.physics = Object.fromEntries(FLOW.flatMap((f) => f.names.map((bone) => [`${bone}_phys`, { mix: [{ time: 0, value }] }])));
 	}
 }
@@ -2262,6 +2522,18 @@ for (const [name, animation] of Object.entries(allAnims)) {
 	const angleLimit = name === 'idle' ? 3.2 : 9;
 	if (head.rotate) head.rotate = head.rotate.map((k) => ({ ...k, value: Math.max(-angleLimit, Math.min(angleLimit, k.value)) }));
 	if (head.translate) head.translate = head.translate.map((k) => ({ ...k, x: (k.x ?? 0)*.55, y: (k.y ?? 0)*.55 }));
+}
+// Keep the new painted sleeves within their seam allowance during broad gestures.
+if (process.env.REDRAW_SAFE_ARMS) for (const animation of Object.values(allAnims)) {
+	for (const bone of ['armL', 'armR', 'armL_fore', 'armR_fore']) {
+		const keys = animation.bones?.[bone]?.rotate;
+		if (!keys) continue;
+		const limit = bone.endsWith('_fore') ? 26 : 18;
+		animation.bones[bone].rotate = keys.map((key) => ({ ...key,
+			value: Math.max(-limit, Math.min(limit, key.value)),
+			curve: Array.isArray(key.curve) ? key.curve.map((n, i) => i % 2 ? Math.max(-limit, Math.min(limit, n)) : n) : key.curve,
+		}));
+	}
 }
 const LOOPS = { idle: own.loops?.idle ?? IDLE_LOOP, flutter: own.loops?.flutter ?? FLUTTER_LOOP };
 
@@ -2339,6 +2611,28 @@ fs.writeFileSync(path.join(OUT, 'monkey.json'), JSON.stringify(skeleton, null, 2
 
 	const at = (p) => `(${p.x.toFixed(0)}, ${p.y.toFixed(0)})`;
 	console.log(`release  hand at ${at(worldAt('armL_hand', skeleton.animations.throwit, RELEASE_AT))} at t=${RELEASE_AT}`);
+	// The bowl: where the ball appears and where it leaves his hand (the prop
+	// bone, plus the attachment's hang), for Mascot.svelte / BanditMeter.svelte.
+	{
+		const ballProp = PROPS.find((p) => p.name === 'ball');
+		// the prop's world angle: every rotation down the chain, summed
+		const angleAt = (t) => {
+			let deg = 0;
+			for (let b = 'prop'; b && b !== 'root'; b = parentOf[b]) deg += evalTrack(skeleton.animations.bowl.bones?.[b]?.rotate, t) || 0;
+			return deg;
+		};
+		const ballAt = (t) => {
+			const p = worldAt('prop', skeleton.animations.bowl, t);
+			// the hang offset is in the prop bone's frame, so it turns with it
+			const r = (angleAt(t) * Math.PI) / 180;
+			const ox = ballProp.offset?.x ?? 0, oy = ballProp.offset?.y ?? 0;
+			return { x: p.x + ox * Math.cos(r) - oy * Math.sin(r), y: p.y + ox * Math.sin(r) + oy * Math.cos(r) };
+		};
+		const dt = 1 / 60;
+		const a = ballAt(BOWL_RELEASE - dt), b = ballAt(BOWL_RELEASE);
+		console.log(`bowl     release angle ${angleAt(BOWL_RELEASE).toFixed(1)} deg (spine, ccw), ball velocity (${((b.x - a.x) / dt).toFixed(0)}, ${((b.y - a.y) / dt).toFixed(0)}) units/s`);
+		console.log(`bowl     ball appears at ${at(ballAt(BOWL_APPEAR))} at t=${BOWL_APPEAR}, released at ${at(ballAt(BOWL_RELEASE))} at t=${BOWL_RELEASE}, size ${ballProp.size}`);
+	}
 	// Where each fist is at the top of its own strike, for the impact art.
 	const beatAnim = skeleton.animations.chestbeat;
 	// armR_hand and armL_hand are the WRISTS. armR_fore is the elbow, which is

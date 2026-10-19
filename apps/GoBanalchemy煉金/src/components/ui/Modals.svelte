@@ -959,4 +959,71 @@
 		color: #c7ffd8 !important;
 	}
 
+	/* The rest of the chrome still wore the mine (2026-10-17, review: "game info
+	   should be more polished"): a near-black shade, stone-grey fields and
+	   scrollbars, an amber close button, slate buy cards and a dynamite-red buy
+	   button. All of it now in the laboratory's teal glass and copper; the buy
+	   button keeps a stronger colour of its own — warm copper — because it is
+	   the one press that spends 100x or more. */
+	:global(html[data-ui-skin='platform'] .blur-layer) {
+		background-color: rgba(3, 16, 20, 0.76) !important;
+	}
+	:global(html[data-ui-skin='platform'] .close-button) {
+		color: #c6e5d3 !important;
+	}
+	:global(html[data-ui-skin='platform'] .close-button:hover) {
+		color: #e7b47c !important;
+	}
+	:global(html[data-ui-skin='platform'] .pop-up-wrap input),
+	:global(html[data-ui-skin='platform'] .pop-up-wrap select) {
+		background: #0b252b !important;
+		border: 1px solid #956c4d !important;
+		color: #f4f4df !important;
+	}
+	:global(html[data-ui-skin='platform'] .pop-up-wrap input:focus),
+	:global(html[data-ui-skin='platform'] .pop-up-wrap select:focus) {
+		border-color: #6fe0ac !important;
+		box-shadow: 0 0 8px rgba(57, 201, 150, 0.35) !important;
+	}
+	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-track) {
+		background: #0b252b;
+	}
+	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-thumb) {
+		background: #956c4d;
+	}
+	:global(html[data-ui-skin='platform'] ::-webkit-scrollbar-thumb:hover) {
+		background: #c58b55;
+	}
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap) {
+		background: linear-gradient(180deg, #14454a 0%, #0b252b 100%) !important;
+		border: 2px solid #956c4d !important;
+	}
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap:hover) {
+		border-color: #6fe0ac !important;
+		box-shadow:
+			0 4px 12px rgba(0, 0, 0, 0.45),
+			inset 0 0 0 1px rgba(111, 224, 172, 0.45) !important;
+	}
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .title) {
+		color: #f4f4df !important;
+	}
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .price) {
+		color: #e7b47c !important;
+	}
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .description) {
+		color: #c6e5d3 !important;
+	}
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .rectangle) {
+		background: linear-gradient(180deg, #d39a5e 0%, #8a5428 100%) !important;
+		border: 1px solid #4a2e14 !important;
+		box-shadow: inset 0 1px 0 rgba(255, 228, 190, 0.4) !important;
+	}
+	:global(html[data-ui-skin='platform'] .bonus-card-wrap .button:hover .rectangle) {
+		background: linear-gradient(180deg, #e4ad70 0%, #9a6030 100%) !important;
+		border-color: #f4f4df !important;
+		box-shadow:
+			inset 0 1px 0 rgba(255, 236, 205, 0.5),
+			0 0 12px rgba(231, 180, 124, 0.45) !important;
+	}
+
 </style>

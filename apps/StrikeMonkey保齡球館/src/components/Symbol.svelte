@@ -159,7 +159,7 @@
 <Container x={props.x ?? 0} y={props.y ?? 0}>
 	{#if !lowLetter}
 		<!-- Shared menu-slip frame remains present in spin/land/win/static states. -->
-		<Sprite key={props.rawSymbol.name==='H1'?'v8BackH1':props.rawSymbol.name==='H2'?'v8BackH2':props.rawSymbol.name==='S'?'v8BackS':'gbSymbolPaper'} anchor={0.5} width={SYMBOL_SIZE} height={SYMBOL_SIZE} />
+		<Sprite key={props.rawSymbol.name==='H1'?'v8BackH1':props.rawSymbol.name==='H2'?'v8BackH2':props.rawSymbol.name==='S'?'v8BackS':props.rawSymbol.name==='P'?'gbPinPaper':'gbSymbolPaper'} anchor={0.5} width={SYMBOL_SIZE} height={SYMBOL_SIZE} />
 	{/if}
 	{@render body(props.oncomplete)}
 </Container>

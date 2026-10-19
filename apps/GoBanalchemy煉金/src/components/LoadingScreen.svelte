@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
 	import { Container, Graphics, Text, Sprite } from 'pixi-svelte';
-	import { CanvasTextMetrics, TextStyle } from 'pixi.js';
 	import { FadeContainer } from 'components-pixi';
 	import { MainContainer } from 'components-layout';
 	import { onMount } from 'svelte';
@@ -11,6 +10,12 @@
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import FeatureIntro from './FeatureIntro.svelte';
+	import BgProps from './BgProps.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { TITLE_IDLE_ACT } from '../game/meshWin/textMesh';
+	import BgBubbles from './BgBubbles.svelte';
+	import { BG_BASE, BG_CLOTH } from '../game/meshWin';
+	import { BG_POTIONS } from '../game/meshWin/potionBoil';
 
 	type Props = {
 		onloaded: () => void;
@@ -157,28 +162,24 @@
 	// v8 TextStyle shapes. The old `stroke: colour` + `strokeThickness: n` pair is
 	// deprecated and was logging a warning on every Text built here; it also capped
 	// out thin, which is exactly the outline weight this needed more of.
-	const titleStyle = {
-		fontFamily: GAME_FONT,
-		fontSize: TITLE_SIZE,
-		fontWeight: GAME_FONT_WEIGHT,
-		letterSpacing: 6,
-		fill: TITLE_FILL,
-		stroke: { color: OUTLINE, width: 6, join: 'round' as const },
-		dropShadow: { color: 0x000000, alpha: 0.5, blur: 5, angle: Math.PI / 2, distance: 4 },
-	};
-	const accentStyle = {
-		...titleStyle,
-		fontSize: ACCENT_SIZE,
-		fill: ACCENT_FILL,
-		stroke: { color: OUTLINE, width: 7, join: 'round' as const },
-		dropShadow: { color: 0x000000, alpha: 0.55, blur: 6, angle: Math.PI / 2, distance: 4 },
-	};
 
-	const titleMetrics = $derived.by(() => {
-		pulseTick; // re-measure once the display face has loaded
-		const name = CanvasTextMetrics.measureText(TITLE_MAIN, new TextStyle(titleStyle)).width;
-		const accent = CanvasTextMetrics.measureText(TITLE_ACCENT, new TextStyle(accentStyle)).width;
-		return { name, accent, total: name + TITLE_GAP + accent };
+	// The wordmark as ONE mesh (TextMesh, 2026-10-16, after GoBananeon): both
+	// halves are the same face, size and colour, so the pair is one string. A
+	// slow wave runs through the letters while the game loads — floating, as if
+	// in one of the flasks behind it — and it boings as it appears and again
+	// when loading completes. The late display face is handled in TextMesh (it
+	// rebuilds on the fonts' loadingdone), not by re-measuring here.
+	const TITLE = `${TITLE_MAIN} ${TITLE_ACCENT}`;
+	let titleKickAt = $state(-1);
+	onMount(() => {
+		titleKickAt = Date.now();
+	});
+	let kickedLoaded = false;
+	$effect(() => {
+		if (context.stateApp.loaded && !kickedLoaded) {
+			kickedLoaded = true;
+			titleKickAt = Date.now();
+		}
 	});
 
 	// the 16:9 plate fills the screen at its own aspect, cropped about the centre
@@ -187,6 +188,12 @@
 	const bgCover = $derived(
 		Math.max(context.stateLayoutDerived.mainLayout().width / 1920, context.stateLayoutDerived.mainLayout().height / 1080),
 	);
+	const loadingPlate = $derived({
+		x: context.stateLayoutDerived.mainLayout().width * 0.5 - (1920 * bgCover) / 2,
+		y: context.stateLayoutDerived.mainLayout().height * 0.5 - (1080 * bgCover) / 2,
+		width: 1920 * bgCover,
+		height: 1080 * bgCover,
+	});
 </script>
 
 <!-- Go Bananas jungle-commando branded loading screen -->
@@ -201,6 +208,12 @@
 			width={1920 * bgCover}
 			height={1080 * bgCover}
 		/>
+		<!-- the laboratory is alive while it loads, as it is in the game: the
+		     lanterns and the vine sway, the cloth stirs, the flasks simmer
+		     (2026-10-16). Same plate box as the sprite above, top-left based. -->
+		<BgProps spec={BG_BASE} {...loadingPlate} />
+		<BgProps spec={BG_CLOTH} {...loadingPlate} />
+		<BgBubbles potions={BG_POTIONS.base} {...loadingPlate} />
 
 		<!-- Dark overlay for readability -->
 		<Graphics
@@ -208,7 +221,10 @@
 				const w = context.stateLayoutDerived.mainLayout().width;
 				const h = context.stateLayoutDerived.mainLayout().height;
 				g.clear();
-				g.beginFill(0x061b22, 0.68);
+				// 0.42, not 0.68: the room should be SEEN behind the title (user,
+				// 2026-10-16: 背景要清晰可見); the title has its own dark outline
+				// and the column below keeps the darker band
+				g.beginFill(0x061b22, 0.42);
 				g.drawRect(0, 0, w, h);
 				g.endFill();
 
@@ -254,19 +270,17 @@
 			x={context.stateLayoutDerived.mainLayout().width * 0.5}
 			y={context.stateLayoutDerived.mainLayout().height * 0.155}
 		>
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2}
-				style={titleStyle}
-				text={TITLE_MAIN}
-			/>
-
-
-			<Text
-				anchor={{ x: 0, y: 0.5 }}
-				x={-titleMetrics.total / 2 + titleMetrics.name + TITLE_GAP}
-				style={accentStyle}
-				text={TITLE_ACCENT}
+			<TextMesh
+				text={TITLE}
+				fontSize={TITLE_SIZE}
+				letterSpacing={6}
+				fill={[TITLE_FILL, TITLE_FILL, TITLE_FILL]}
+				stroke={OUTLINE}
+				strokeWidth={7}
+				shadow={{ blur: 6, distance: 4 }}
+				maxWidth={context.stateLayoutDerived.mainLayout().width * 0.92}
+				at={{ retrig: titleKickAt }}
+				act={TITLE_IDLE_ACT}
 			/>
 		</Container>
 	</MainContainer>

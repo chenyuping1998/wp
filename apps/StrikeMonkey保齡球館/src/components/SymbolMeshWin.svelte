@@ -38,6 +38,7 @@
 
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { GAME_FONT } from '../game/fonts';
+	import { letterNudge } from '../game/letterCentre';
 	import { getSymbolInfo } from '../game/utils';
 	import { CANVAS, skin } from '../game/meshWin/meshRig';
 	import { MESH_WINS } from '../game/meshWin';
@@ -98,7 +99,8 @@
 			anchor: 0.5,
 			style: { fontFamily: GAME_FONT, fontWeight: '400', fontSize: letter.length > 1 ? 51 : 62, fill: 0x14262e },
 		});
-		text.position.set(box / 2, box / 2);
+		// the glyph's ink on the box centre, as the label shows it (letterCentre.ts)
+		text.position.set(box / 2, box / 2 + letterNudge(letter, letter.length > 1 ? 51 : 62));
 		holder.addChild(text);
 		const texture = renderer.generateTexture({
 			target: holder,

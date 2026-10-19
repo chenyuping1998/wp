@@ -98,8 +98,13 @@ export default {
 	v8FgIntro: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_intro.png',import.meta.url).href,preload:true},
 	v8FgIntroDecor: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_intro_decor.png',import.meta.url).href,preload:true},
 	v8FgTotal: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_total.png',import.meta.url).href,preload:true},
+	v8FgCounter: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_counter.png',import.meta.url).href,preload:true},
 	v8FgTotalDecor: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_total_decor.png',import.meta.url).href,preload:true},
 	v8LogoBoard: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/logo_board.png',import.meta.url).href,preload:true},
+	// the title baked onto the board, so it can act through the mesh (design/bake_logo_title.py)
+	v8LogoBoardTitled: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/logo_board_titled.png',import.meta.url).href,preload:true},
+	// the loading page's title alone, no sign (design/bake_loading_title.py)
+	v8LogoTitle: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/logo_title.png',import.meta.url).href,preload:true},
 	v8LogoStamp: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/logo_stamp.png',import.meta.url).href,preload:true},
 	v8TitleFree: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/title_free.png',import.meta.url).href,preload:true},
 	v8TitleTotal: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/title_total.png',import.meta.url).href,preload:true},
@@ -128,6 +133,12 @@ export default {
 	gbSymbolPaper: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/sushiSymbols/l1.png', import.meta.url).href,
+		preload: true,
+	},
+	// the Pin's card with the royals' rings painted out (design/build_pin_plate.py)
+	gbPinPaper: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiSymbols/p_back.png', import.meta.url).href,
 		preload: true,
 	},
 	// jungle-military riveted reel frame (SVG-generated ??see design/generate_theme_jungle.mjs)

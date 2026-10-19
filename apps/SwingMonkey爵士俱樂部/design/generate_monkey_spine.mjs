@@ -42,6 +42,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { castMotions } from './cast_motions.mjs';
+import { bowClip } from './bow_motion.mjs';
 import { applyThemeCast } from './theme_cast_motions.mjs';
 import { LAUGH, applyLaughV9 } from './laugh_motion_v9.mjs';
 
@@ -59,9 +60,9 @@ const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 // (design/cut_cast_layers.py -> design/source/<cast>/) and its own rig.json
 // for the joints that have no piece edge to read them off.
 const CAST = process.env.CAST || 'mg';
-const SRC = path.join(appRoot, 'design/source', CAST);
+const SRC = process.env.CAST_SOURCE_DIR || path.join(appRoot, 'design/source', CAST);
 const RIGPTS = JSON.parse(fs.readFileSync(path.join(SRC, 'rig.json'), 'utf8'));
-const OUT = path.join(appRoot, 'static/assets/spines', RIGPTS.out);
+const OUT = process.env.CAST_OUTPUT_DIR || path.join(appRoot, 'static/assets/spines', RIGPTS.out);
 fs.mkdirSync(OUT, { recursive: true });
 
 // One image that is not a body part: the dynamite he throws. Packed into this
@@ -336,7 +337,8 @@ for (const b of RIG) {
 const drawOrder = [...meta.layers].sort((a, b) => a.z - b.z);
 const slots = drawOrder
 	.filter((l) => boneOf[l.name])
-	.map((l) => ({ name: l.name, bone: boneOf[l.name], attachment: l.name }));
+	.map((l) => ({ name: l.name, bone: boneOf[l.name],
+		attachment: l.name === 'head_2_face' ? 'head_2_face_rest' : l.name }));
 
 // The front copies go after the body and before the props, on the same bones as
 // the originals, with no attachment until an animation asks for one.
@@ -598,7 +600,10 @@ for (const prop of PROPS) {
 
 // Expression replacements keep the original weighted head mesh, including its
 // neck/collar blend. Only the atlas region changes; no jaw bone stretch.
-const FACE_STATES = LAUGH.faceStates;
+const FACE_STATES = [...new Set([...LAUGH.faceStates, 'rest', 'blink',
+ 'laugh_1', 'laugh_2', 'laugh_3', 'laugh_4',
+ 'laugh_3_blink', 'laugh_4_blink', 'talk_open', 'talk_closed'
+ ])];
 const faceLayer = piece('head_2_face');
 const faceImages = FACE_STATES.map((state) => {
  const name = `head_2_face_${state}`;
@@ -2289,6 +2294,10 @@ const skeleton = {
 		),
 };
 
+// the bow both casts take as the curtain comes down (design/bow_motion.mjs),
+// laid on after the passes above: it is written at their factors already and
+// carries its own face and physics keys (add_bow_clip.mjs does the same)
+skeleton.animations.bow = bowClip(skeleton.animations.cheer.physics, CAST === 'mg');
 fs.writeFileSync(path.join(OUT, 'monkey.json'), JSON.stringify(skeleton, null, 2) + '\n');
 
 // The hand's position at RELEASE_AT, in skeleton units. TransitionAnimation

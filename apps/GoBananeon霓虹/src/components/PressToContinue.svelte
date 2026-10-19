@@ -50,7 +50,7 @@
 			y={yPosition}
 			fontSize={28}
 			letterSpacing={4}
-			fill={[FILL, FILL, FILL]}
+			fill={[FILL]}
 			stroke={0x2c1c08}
 			strokeWidth={4}
 			shadow={{ blur: 8, distance: 2 }}

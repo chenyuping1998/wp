@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Container, Sprite } from 'pixi-svelte';
-	import { MainContainer } from 'components-layout';
 	import { getContext } from '../game/context';
 
 	// The stage curtain lowers as a single illustrated object. The scene changes
-	// while it covers the viewport, then the same object rises. Keep the throw
-	// and cover timing together so the cast does not change during the throw.
+	// while it covers the viewport, then the same object rises.
+	//
+	// 2026-10-18: nobody throws anything any more (the user's note). The cast on
+	// screen takes a bow, as a band does when the number ends. They finish it,
+	// stand a beat (a second, user 2026-10-18), and then the curtain comes down.
 	type Props = {
 		oncomplete: () => void;
 		// Fired while the doors are fully shut. Swap scenes here.
@@ -16,18 +18,19 @@
 	const props: Props = $props();
 	const context = getContext();
 
-	// the skeleton's 'throwit' (design/generate_monkey_spine.mjs): the plate
-	// leaves his hand at ~0.58s and the clip and its mix back end by ~1.4s
-	const THROW_RELEASE_MS = 580;
-	const THROW_DONE_MS = 1400;
-	const FLIGHT_MS = 520;
+	// the skeletons' 'bow' (design/bow_motion.mjs): straight and settled again
+	// at ~1.76s; then a one-second pause before the curtain starts down
+	const BOW_DONE_MS = 1760;
+	const BOW_PAUSE_MS = 1000;
+	const BOW_LEAD_MS = BOW_DONE_MS + BOW_PAUSE_MS;
 
-	const throwing = context.stateGame.mascotThrowOrigin !== null;
-	const LEAD_MS = throwing ? THROW_RELEASE_MS : 0;
+	// mascotThrowOrigin is only the "is a cast member on screen" test now
+	const bowing = context.stateGame.mascotThrowOrigin !== null;
+	const LEAD_MS = bowing ? BOW_LEAD_MS : 0;
 	const SHUT_MS = 560; // doors sliding in
 	const HOLD_MIN_MS = 380; // shut: the swap happens in here
 	const OPEN_MS = 620;
-	const COVER_AT = Math.max(LEAD_MS + SHUT_MS + HOLD_MIN_MS * 0.4, throwing ? THROW_DONE_MS : 0);
+	const COVER_AT = LEAD_MS + SHUT_MS + HOLD_MIN_MS * 0.4;
 	const HOLD_MS = Math.max(HOLD_MIN_MS, COVER_AT + HOLD_MIN_MS * 0.6 - LEAD_MS - SHUT_MS);
 	const TOTAL_MS = LEAD_MS + SHUT_MS + HOLD_MS + OPEN_MS;
 	// the landing sound and small rebound near the end of the drop
@@ -88,22 +91,9 @@
 	const door = $derived({ width: 1400 * doorScale, height: 1080 * doorScale });
 	const doorY = $derived(canvas.height / 2 - (1 - shut) * (canvas.height / 2 + door.height / 2 + 24));
 
-	// The plate, in main-layout coordinates: from his hand to the board's centre
-	// on a high arc, spinning, read off the same clock as the doors.
-	const origin = context.stateGame.mascotThrowOrigin;
-	const plate = $derived.by(() => {
-		if (!origin) return null;
-		const k = (elapsed - THROW_RELEASE_MS) / FLIGHT_MS;
-		if (k < 0 || k > 1) return null;
-		const board = context.stateGameDerived.boardLayout();
-		const x = origin.x + (board.x - origin.x) * k;
-		const y = origin.y + (board.y - origin.y) * k - Math.sin(k * Math.PI) * 220;
-		return { x, y, rotation: -k * Math.PI * 2.2, scale: 0.9 + 0.5 * k };
-	});
-
 	onMount(() => {
-		if (throwing) context.eventEmitter.broadcast({ type: 'mascotThrow' });
-		if (throwing) context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
+		if (bowing) context.eventEmitter.broadcast({ type: 'mascotBow' });
+		if (bowing) context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		// A CAPPED clock, not wall time (see Go Banandit's copy): a texture hitch
 		// on the way out of the feature must not let the doors arrive already shut.
 		let prev = performance.now();
@@ -130,20 +120,6 @@
 </script>
 
 <Container>
-	<!-- The falling front covers the mascot throw. -->
-	{#if plate}
-		<MainContainer>
-			<Sprite
-				key="gbP"
-				anchor={0.5}
-				x={plate.x}
-				y={plate.y}
-				rotation={plate.rotation}
-				width={150 * plate.scale}
-				height={150 * plate.scale}
-			/>
-		</MainContainer>
-	{/if}
 	{#if shut > 0}
 		<Sprite key="smDoor" anchor={0.5} x={canvas.width / 2 + jolt * 0.18}
 			y={doorY} width={door.width} height={door.height} />

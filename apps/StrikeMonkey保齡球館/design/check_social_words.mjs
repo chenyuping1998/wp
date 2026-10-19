@@ -172,6 +172,14 @@ for (const file of svelteFiles(path.join(appRoot, 'src'))) {
 		const hits = line.match(pattern);
 		if (hits) report(file, 'literal template text', line, hits);
 	}
+
+	// pixi <Text text="…"> puts its copy in an ATTRIBUTE, which the tag strip
+	// above throws away. DinerOrderBoard's text="PAYOUT" sat on screen in social
+	// play with this gate green (2026-10-16; ported here 2026-10-18).
+	for (const m of markup.matchAll(/\btext="([^"{]*)"/g)) {
+		const hits = m[1].match(pattern);
+		if (hits) report(file, 'literal text= attribute', m[1], hits);
+	}
 }
 
 // ── rules 2 and 3: social branches ───────────────────────────────────────────

@@ -1,6 +1,7 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
 import { stateConfig } from 'state-shared';
+import './buyBonusBubbles';
 
 // Jungle-commando bet bar: deep olive-canvas buttons with the same brass trim
 // as the reel frame and the free-spin plaques, plus the game's sans typeface.
@@ -428,7 +429,8 @@ setUiTheme({
 	buyBonusIdleTint: 0xffffff,
 	buyBonusHoverSprite: 'buyBonus',
 	buyBonusHoverSpriteTint: 0x9affd1,
-	sprites: { base_ticker: 'gbUiTicker', buyBonus: 'gbUiBuyBonus' },
+	// the plate simmers: buyBonusBubbles.ts steps this slot through the frames
+	sprites: { base_ticker: 'gbUiTicker', buyBonus: 'gbUiBonusPlate00' },
 });
 
 // A player who cannot afford the bet is TOLD SO, on every route into a bet —

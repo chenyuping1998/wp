@@ -1,4 +1,6 @@
 <script lang="ts">
+	import BuyPlateMesh from './BuyPlateMesh.svelte';
+	import BowlingBallRoll from './BowlingBallRoll.svelte';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 	import { Tween } from 'svelte/motion';
@@ -115,6 +117,9 @@
 			Ref: https://developer.chrome.com/blog/autoplay
 		-->
 		<Sound />
+		<!-- the Buy Bonus plate's picture acts (feeds the shared button a moving
+		     texture; see the component) -->
+		<BuyPlateMesh />
 
 		<Container>
 
@@ -135,6 +140,8 @@
 			<!-- comic sound-effect words over the board (game/comicPop.ts) -->
 			<ComicPop />
 		</MainContainer>
+		<!-- the ball he bowls before the FG wipe, above the board (he is behind it) -->
+		<BowlingBallRoll />
 
 		</Container>
 

@@ -12,10 +12,10 @@
 
 <script lang="ts">
 	import { Tween } from 'svelte/motion';
-	import { cubicOut, backOut, quintOut } from 'svelte/easing';
+	import { cubicOut, quintOut } from 'svelte/easing';
+	import { onDestroy } from 'svelte';
 	import { Graphics, Container } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
-	import { stateBet } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import BoardContainer from './BoardContainer.svelte';
@@ -39,14 +39,13 @@
 	const DOWN_MS = 170;
 	const SETTLE_MS = 260;
 
-	// Turbo shortens the chop but never removes it.
+	// Turbo does NOT touch the chop (2026-10-16, user: 「turbo模式下，切割的效果不要加快」).
+	// The cut is the game's one mechanic; everything around it may be skipped,
+	// the cut itself plays at full length. The mascot's slash (Mascot.svelte) and
+	// the blade ribbon (SwordSlash.svelte) are held at 1x too, so all three still
+	// meet on the same frame.
 	//
-	// Everything else in turbo is allowed to be instant because it is a spin the
-	// player has chosen to skip. The cut is not that: it is the moment the game's
-	// one mechanic happens, and a split reel that simply appears already split
-	// tells the player nothing about why. 0.6 keeps it around 290ms end to end —
-	// brisk, and still a chop.
-	const FAST = 0.6;
+	// (It used to shorten to 0.6x, ~290ms end to end; that read as rushed.)
 
 	// A cut made in the free game STAYS for the rest of the feature. That is a
 	// different event from a base-game cut, which is gone next spin, and it was
@@ -73,6 +72,14 @@
 	};
 
 	let splits = $state<Split[]>([]);
+	let generation = 0;
+	const cueTimers = new Set<number>();
+	const resetCues = () => {
+		generation++;
+		for (const id of cueTimers) clearTimeout(id);
+		cueTimers.clear();
+	};
+	onDestroy(resetCues);
 
 	// A frame ticker, read by draw() so the Graphics repaints while the blade
 	// moves. The win-line renderer this file replaces needed the same thing; a
@@ -97,7 +104,7 @@
 		return () => cancelAnimationFrame(raf);
 	});
 
-	const scale = () => (stateBet.isTurbo ? FAST : 1);
+	const scale = () => 1;
 	const upMs = () => UP_MS * scale();
 	const downMs = () => DOWN_MS * scale();
 	const settleMs = () => SETTLE_MS * scale();
@@ -131,7 +138,7 @@
 			sticky: instant,
 			up: new Tween(instant ? 1 : 0, { duration: upMs(), easing: cubicOut }),
 			down: new Tween(instant ? 1 : 0, { duration: downMs(), easing: quintOut }),
-			settle: new Tween(instant ? 1 : 0, { duration: settleMs(), easing: backOut }),
+			settle: new Tween(instant ? 1 : 0, { duration: settleMs(), easing: cubicOut }),
 			finale,
 		};
 		splits = [...splits, split];
@@ -140,6 +147,8 @@
 
 	context.eventEmitter.subscribeOnMount({
 		reelSplit: async ({ reel, finale, lead }) => {
+			const currentGeneration = generation;
+			const active = () => generation === currentGeneration;
 			// The cue is raised BEFORE the early return, not after it.
 			//
 			// `lead` names one reel out of the batch as the one carrying the audio,
@@ -149,13 +158,17 @@
 			// split goes silent. That state is not supposed to happen, but "not
 			// supposed to happen" is exactly the case that reaches a player.
 			if (lead) {
-				context.eventEmitter.broadcast({ type: 'mascotSlash' });
-				// The hand reaches the hilt before the blade starts moving. Keep the
-				// draw cue on that extraction beat (including Turbo's 0.6x timing).
-				window.setTimeout(
-					() => context.eventEmitter.broadcast({ type: 'soundBladeDraw', finale }),
+				context.eventEmitter.broadcast({ type: 'mascotSlash', finale });
+				// The ninja winds up, then cuts on the 320ms reveal beat. The draw
+				// cue marks the end of the guard, including Turbo's 0.6x timing.
+				const id = window.setTimeout(
+					() => {
+						cueTimers.delete(id);
+						if (active()) context.eventEmitter.broadcast({ type: 'soundBladeDraw', finale });
+					},
 					170 * scale(),
 				);
+				cueTimers.add(id);
 			}
 			const split = add(reel, finale);
 			if (!split) return;
@@ -168,13 +181,15 @@
 			// back. One tween across all three would make every part of it a lie.
 			split.up.set(1, { duration: upMs(), easing: cubicOut });
 			await waitForTimeout(upMs());
+			if (!active()) return;
 			split.down.set(1, { duration: downMs(), easing: quintOut });
 			await waitForTimeout(downMs());
+			if (!active()) return;
 			// The blade is through: NOW the cell may show itself as two.
 			stateGame.splitCutReels = [...new Set([...stateGame.splitCutReels, reel])];
 			// The hit lands when the artwork changes into the split symbol.
 			if (lead) context.eventEmitter.broadcast({ type: 'soundBladeHit', finale });
-			split.settle.set(1, { duration: settleMs(), easing: backOut });
+			split.settle.set(1, { duration: settleMs(), easing: cubicOut });
 			await waitForTimeout(settleMs() * (permanent ? 1 : 0.6));
 			if (permanent) await waitForTimeout(STICKY_DWELL_MS * scale());
 		},
@@ -182,6 +197,7 @@
 		// fully settled rather than animating in. A restored state that plays its
 		// entrance reads as "this just happened", which is the one thing it did not.
 		reelSplitRestore: ({ reels }) => {
+			resetCues();
 			splits = [];
 			for (const reel of reels) add(reel, false, true);
 			stateGame.splitCutReels = [...reels];
@@ -193,6 +209,7 @@
 			for (const split of splits) split.sticky = true;
 		},
 		reelSplitClear: () => {
+			resetCues();
 			splits = [];
 			stateGame.splitCutReels = [];
 		},
@@ -263,6 +280,19 @@
 						g.stroke({ width: 2 * strength, color: SPARK, alpha });
 						g.circle(cx, cy, 2 * strength);
 						g.fill({ color: BLADE, alpha });
+					}
+					// Fine, directional fragments make the contact readable; the
+					// finale throws a wider fan while keeping the symbol centre clear.
+					const p = Math.max(0, Math.min(1, settle));
+					const count = split.finale ? 10 : 6;
+					for (let i = 0; i < count; i++) {
+						const angle = i * 2.39996 + split.reel * 0.7 + row;
+						const distance = SYMBOL_SIZE * (0.1 + p * (0.24 + (i % 3) * 0.035)) * strength;
+						const px = x + Math.cos(angle) * distance;
+						const py = y0 + SYMBOL_SIZE * 0.5 + Math.sin(angle) * distance * 0.65 + p * p * 8;
+						g.moveTo(px, py);
+						g.lineTo(px - Math.cos(angle) * (3 + 7 * (1 - p)), py - Math.sin(angle) * 4);
+						g.stroke({ width: i % 2 ? 1.4 : 2.3, color: i % 3 ? SPARK : INK_RED, alpha });
 					}
 				}
 			}

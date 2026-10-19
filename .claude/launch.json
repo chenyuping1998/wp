@@ -12,16 +12,6 @@
 			"port": 3002
 		},
 		{
-			"name": "emberforge-dev",
-			"runtimeExecutable": "pnpm",
-			"runtimeArgs": [
-				"--dir",
-				"apps/EmberForge",
-				"dev"
-			],
-			"port": 3003
-		},
-		{
 			"name": "margincall-dev",
 			"runtimeExecutable": "pnpm",
 			"runtimeArgs": [
@@ -70,31 +60,6 @@
 				"3015"
 			],
 			"port": 3015
-		},
-		{
-			"name": "soulseal-dev",
-			"runtimeExecutable": "pnpm",
-			"runtimeArgs": [
-				"--dir",
-				"apps/SoulSeal",
-				"dev"
-			],
-			"port": 3005
-		},
-		{
-			"name": "cleo-dev",
-			"runtimeExecutable": "pnpm",
-			"runtimeArgs": [
-				"--dir",
-				"apps/Cleo",
-				"exec",
-				"vite",
-				"dev",
-				"--host",
-				"--port",
-				"3009"
-			],
-			"port": 3009
 		},
 		{
 			"name": "turfwar-dev",

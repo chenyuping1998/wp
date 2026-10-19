@@ -133,6 +133,20 @@ export const SPIN_OPTIONS_TURBO_FREEGAME = {
 	reelBounceSizeMulti: 0.18,
 };
 
+// TURBO 2 (user, 2026-10-18, as Saucer / Putt Monkey): the same profiles a
+// little quicker again — speeds x1.2, the reel-to-reel gap /1.2 — so the reels
+// still land one after another. Picked in stateGame.spinOptions by
+// stateBet.turboLevel.
+const quicker = <T extends typeof SPIN_OPTIONS_FAST>(o: T): T => ({
+	...o,
+	reelPreSpinSpeed: o.reelPreSpinSpeed * 1.2,
+	reelSpinSpeed: o.reelSpinSpeed * 1.2,
+	reelSpinSpeedBeforeBounce: o.reelSpinSpeedBeforeBounce * 1.2,
+	reelSpinDelay: Math.round(o.reelSpinDelay / 1.2),
+});
+export const SPIN_OPTIONS_FAST_T2 = quicker(SPIN_OPTIONS_FAST);
+export const SPIN_OPTIONS_TURBO_FREEGAME_T2 = quicker(SPIN_OPTIONS_TURBO_FREEGAME);
+
 // Superspin (the 50x hold-and-spin) gets its own profile, and it is the only
 // mode that never takes a fast one — see stateGame.spinOptions.
 //

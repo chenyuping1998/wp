@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { everyFrame } from '../game/frameLoop';
-	import { Graphics } from 'pixi-svelte';
+	import { Graphics, Sprite } from 'pixi-svelte';
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
@@ -49,27 +49,29 @@
 </script>
 
 <BoardContainer>
-	<!-- Edge lighting leaves the moving symbol art in its original colours. -->
+	<!-- a column of warm light down the held reel, under the rim: additive, a
+	     plain sibling of the rim (nothing masked), so it lifts the symbols
+	     instead of tinting them -->
+	<Sprite key="fxGlow" anchor={0.5} x={x} y={BOARD_SIZES.height / 2} blendMode="add" tint={0xe6c27a}
+		width={SYMBOL_SIZE * 1.5} height={BOARD_SIZES.height * 1.15} alpha={0.22 + 0.16 * pulse} />
+	<!-- Edge lighting leaves the moving symbol art in its original colours.
+	     Gold and jade like the board frame (it was Sushi Monkey's terracotta),
+	     and drawn with the v8 API: the lineStyle/drawRoundedRect shim is the one
+	     that bleeds colours between calls. -->
 	<Graphics
 		draw={(g) => {
 			const h = BOARD_SIZES.height;
 			g.clear();
-			// The held reel stays clear; the border and themed marks carry the tease.
-			g.lineStyle(5, 0xb87b60, 0.65 + 0.25 * pulse);
-			g.drawRoundedRect(LEFT + 2, 2, SYMBOL_SIZE - 4, h - 4, 13);
-			g.lineStyle(2, 0xefeadc, 0.8);
-			g.drawRoundedRect(LEFT + 6, 6, SYMBOL_SIZE - 12, h - 12, 10);
-
+			// The held reel stays clear; the border and the marks carry the tease.
+			g.roundRect(LEFT + 2, 2, SYMBOL_SIZE - 4, h - 4, 13).stroke({ width: 6, color: 0x1e1b1a, alpha: 0.7 });
+			g.roundRect(LEFT + 2, 2, SYMBOL_SIZE - 4, h - 4, 13).stroke({ width: 4, color: 0xd6aa54, alpha: 0.7 + 0.25 * pulse });
+			g.roundRect(LEFT + 7, 7, SYMBOL_SIZE - 14, h - 14, 10).stroke({ width: 2, color: 0x9fd3bd, alpha: 0.75 });
 			// chevrons converging on the column from above and below
 			const chev = 14 + 6 * pulse;
-			g.lineStyle(4, 0xb87b60, 0.6 + 0.3 * pulse);
-			g.moveTo(x - SYMBOL_SIZE * 0.12, -chev - 10);
-			g.lineTo(x, -chev);
-			g.lineTo(x + SYMBOL_SIZE * 0.12, -chev - 10);
-			g.moveTo(x - SYMBOL_SIZE * 0.12, h + chev + 10);
-			g.lineTo(x, h + chev);
-			g.lineTo(x + SYMBOL_SIZE * 0.12, h + chev + 10);
+			for (const [tip, dir] of [[-chev, -1], [h + chev, 1]] as const) {
+				g.moveTo(x - SYMBOL_SIZE * 0.12, tip + dir * 10).lineTo(x, tip).lineTo(x + SYMBOL_SIZE * 0.12, tip + dir * 10);
+				g.stroke({ width: 4, color: 0xd6aa54, alpha: 0.6 + 0.3 * pulse, cap: 'round', join: 'round' });
+			}
 		}}
 	/>
-
 </BoardContainer>

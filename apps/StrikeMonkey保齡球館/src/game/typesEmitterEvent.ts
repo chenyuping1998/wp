@@ -11,6 +11,7 @@ import type { EmitterEventBanditCollect } from '../components/BanditCollect.svel
 import type { EmitterEventBanditMeter } from '../components/BanditMeter.svelte';
 import type { EmitterEventScatterBurst } from '../components/ScatterBurst.svelte';
 import type { EmitterEventMascot } from '../components/Mascot.svelte';
+import type { EmitterEventBowlingBallRoll } from '../components/BowlingBallRoll.svelte';
 import type { EmitterEventBowlingScoreboards } from '../components/BowlingScoreboards.svelte';
 
 export type EmitterEventGame =
@@ -27,4 +28,5 @@ export type EmitterEventGame =
 	| EmitterEventBanditMeter
 	| EmitterEventScatterBurst
 	| EmitterEventMascot
+	| EmitterEventBowlingBallRoll
 	| EmitterEventBowlingScoreboards;

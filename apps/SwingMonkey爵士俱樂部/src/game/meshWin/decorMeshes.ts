@@ -20,218 +20,31 @@ type Layer = { kind: 'board' | 'plaque'; things: Thing[] };
 const DATA: Record<string, Layer> = {
 	"v8FgIntroDecor": {
 		"kind": "board",
-		"things": [
-			{
-				"rect": [
-					68.0,
-					41.0,
-					309.0,
-					285.0
-				],
-				"ink": [
-					102.0,
-					75.0,
-					275.0,
-					251.0
-				],
-				"pivot": [
-					264.0,
-					206.0
-				],
-				"area": 23337.0,
-				"frame": false
-			},
-			{
-				"rect": [
-					1292.0,
-					701.0,
-					1531.0,
-					925.0
-				],
-				"ink": [
-					1326.0,
-					735.0,
-					1497.0,
-					891.0
-				],
-				"pivot": [
-					1336.0,
-					765.0
-				],
-				"area": 20111.0,
-				"frame": false
-			}
-		]
+		"things": []
 	},
 	"v8FgTotalDecor": {
 		"kind": "board",
-		"things": [
-			{
-				"rect": [
-					1293.0,
-					41.0,
-					1534.0,
-					285.0
-				],
-				"ink": [
-					1327.0,
-					75.0,
-					1500.0,
-					251.0
-				],
-				"pivot": [
-					1338.0,
-					207.0
-				],
-				"area": 23337.0,
-				"frame": false
-			},
-			{
-				"rect": [
-					62.0,
-					716.0,
-					301.0,
-					940.0
-				],
-				"ink": [
-					96.0,
-					750.0,
-					267.0,
-					906.0
-				],
-				"pivot": [
-					264.0,
-					779.0
-				],
-				"area": 20111.0,
-				"frame": false
-			}
-		]
+		"things": []
 	},
 	"v8WinBigDecor": {
 		"kind": "plaque",
-		"things": [
-			{
-				"rect": [
-					5.0,
-					227.0,
-					218.0,
-					435.0
-				],
-				"ink": [
-					39.0,
-					261.0,
-					184.0,
-					401.0
-				],
-				"pivot": [
-					181.0,
-					306.0
-				],
-				"area": 8185.0,
-				"frame": false
-			}
-		]
+		"things": []
 	},
 	"v8WinSuperDecor": {
 		"kind": "plaque",
-		"things": [
-			{
-				"rect": [
-					13.0,
-					207.0,
-					249.0,
-					452.0
-				],
-				"ink": [
-					47.0,
-					241.0,
-					215.0,
-					418.0
-				],
-				"pivot": [
-					214.0,
-					314.0
-				],
-				"area": 14781.0,
-				"frame": false
-			}
-		]
+		"things": []
 	},
 	"v8WinMegaDecor": {
 		"kind": "plaque",
-		"things": [
-			{
-				"rect": [
-					14.0,
-					199.0,
-					280.0,
-					447.0
-				],
-				"ink": [
-					48.0,
-					233.0,
-					246.0,
-					413.0
-				],
-				"pivot": [
-					245.0,
-					280.0
-				],
-				"area": 27025.0,
-				"frame": false
-			}
-		]
+		"things": []
 	},
 	"v8WinEpicDecor": {
 		"kind": "plaque",
-		"things": [
-			{
-				"rect": [
-					17.0,
-					167.0,
-					318.0,
-					471.0
-				],
-				"ink": [
-					51.0,
-					201.0,
-					284.0,
-					437.0
-				],
-				"pivot": [
-					282.0,
-					310.0
-				],
-				"area": 42148.0,
-				"frame": false
-			}
-		]
+		"things": []
 	},
 	"v8WinMaxDecor": {
 		"kind": "plaque",
-		"things": [
-			{
-				"rect": [
-					19.0,
-					148.0,
-					352.0,
-					485.0
-				],
-				"ink": [
-					53.0,
-					182.0,
-					318.0,
-					451.0
-				],
-				"pivot": [
-					317.0,
-					308.0
-				],
-				"area": 54762.0,
-				"frame": false
-			}
-		]
+		"things": []
 	}
 };
 

@@ -7,6 +7,7 @@
 	import { MainContainer } from 'components-layout';
 	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
 	import type { ColorMatrixFilter } from 'pixi.js';
+	import { crispAll } from '../game/crispTextures';
 	import { stateModal } from 'state-shared';
 
 	import { UI, UiGameName } from 'components-ui-pixi';
@@ -28,10 +29,10 @@
 	import BoardFrame from './BoardFrame.svelte';
 	import Mascot from './Mascot.svelte';
 	import Board from './Board.svelte';
-	import ReelDust from './ReelDust.svelte';
 	import EntryReveal from './EntryReveal.svelte';
 	import ScatterBurst from './ScatterBurst.svelte';
 	import ReelSplits from './ReelSplits.svelte';
+	import SwordSlash from './SwordSlash.svelte';
 	import StickyPrizes from './StickyPrizes.svelte';
 	import Anticipations from './Anticipations.svelte';
 	import WinWays from './WinWays.svelte';
@@ -52,6 +53,9 @@
 
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
+
+	// mip chains for every sprite as it loads (game/crispTextures.ts)
+	$effect(() => crispAll(context.stateApp.loadedAssets));
 
 	context.eventEmitter.subscribeOnMount({
 		buyBonusConfirm: () => {
@@ -98,7 +102,9 @@
 		<MainContainer>
 			<Container filters={reelLighting}>
 				<Board />
-				<ReelDust />
+				<!-- (ReelDust — a dust cone and floor flash at the foot of every reel as
+				     it stopped — removed 2026-10-17: the user wants no small sparkles on
+				     the reels when they stop; the landing is the symbols' own squash) -->
 				<ReelSplits />
 				<StickyPrizes />
 				<Anticipations />
@@ -110,6 +116,9 @@
 		</MainContainer>
 
 		<EntryReveal />
+		<MainContainer>
+			<SwordSlash />
+		</MainContainer>
 
 		<UI>
 			{#snippet gameName()}

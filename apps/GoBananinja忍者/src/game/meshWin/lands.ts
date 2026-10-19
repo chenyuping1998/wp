@@ -33,12 +33,21 @@ export const LAND_MS = 480;
 
 const bone = (rig: Rig, pose: Pose, name: string) => pose.bones[rig.bones.findIndex((b) => b.name === name)];
 
-/** the thump every cut subject shares: pressed down onto the slate, rebound, rest */
+/**
+ * The thump every cut subject shares: pressed down onto the slate, rebound,
+ * a smaller second settle, rest. The SUBJECT squashes (about its feet line);
+ * the slate under it does not move.
+ *
+ * 2026-10-17 (user: 停輪可以做擠壓效果(圖形本身)，停輪效果可以再加大): ~2.4x
+ * deeper than it was (sy 0.91 -> 0.78 at the hit) with a rebound that stands
+ * it a little taller than rest and a second, smaller settle, so the landing
+ * reads as rubbery weight rather than a flicker.
+ */
 const thump = (pose: Pose, t: number, k: number) => {
 	pose.rigid = {
 		...restRigid(),
-		sx: 1 + k * track(t, [[0, 0], [60, 0.05, 'out'], [170, -0.015, 'out'], [300, 0, 'out']]),
-		sy: 1 + k * track(t, [[0, 0], [60, -0.09, 'out'], [170, 0.03, 'out'], [300, 0, 'out']]),
+		sx: 1 + k * track(t, [[0, 0], [70, 0.13, 'out'], [180, -0.045, 'out'], [270, 0.02, 'out'], [360, 0, 'out']]),
+		sy: 1 + k * track(t, [[0, 0], [70, -0.22, 'out'], [180, 0.09, 'out'], [270, -0.03, 'out'], [360, 0, 'out']]),
 	};
 };
 
@@ -124,9 +133,12 @@ export const LANDS: Record<string, MeshWinSpec> = {
 	// the frame) takes a small bob, and his headband tails flick
 	W: land(W, (rig, pose, t, k) => {
 		bone(rig, pose, 'panel').dy = 1.2 * k * track(t, [[0, 0], [60, 1, 'out'], [170, -0.3, 'out'], [300, 0, 'out']]);
-		bone(rig, pose, 'tail_up').angle = 2.4 * k * flick(t, 40, 2.6, 4);
-		bone(rig, pose, 'tail_up_tip').angle = 5 * k * flick(t, 90, 2.6, 4);
-		bone(rig, pose, 'tail_lo').angle = -1.8 * k * flick(t, 60, 2.4, 4);
-		bone(rig, pose, 'tail_lo_tip').angle = -4.5 * k * flick(t, 110, 2.4, 4);
+		// (no squash of his face: the top of his hood sits 8px under the frame,
+		// so any scale of the head stretches that strip past the gate's 1.6x —
+		// the tails carry the landing instead, 1.5x what they did)
+		bone(rig, pose, 'tail_up').angle = 3.6 * k * flick(t, 40, 2.6, 4);
+		bone(rig, pose, 'tail_up_tip').angle = 7.5 * k * flick(t, 90, 2.6, 4);
+		bone(rig, pose, 'tail_lo').angle = -2.7 * k * flick(t, 60, 2.4, 4);
+		bone(rig, pose, 'tail_lo_tip').angle = -6.7 * k * flick(t, 110, 2.4, 4);
 	}),
 };

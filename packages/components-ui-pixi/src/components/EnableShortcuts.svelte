@@ -4,6 +4,7 @@
 
 	import { getContext } from '../context';
 	import { markBetChanged, platformUx } from '../platformUx.svelte';
+	import { cycleTurbo } from '../turbo';
 
 	/**
 	 * Shift-gated keyboard shortcuts.
@@ -80,8 +81,9 @@
 
 		switch (key) {
 			case 't':
-				// Two states here, not Hacksaw's three — there is no Super Turbo.
-				stateBetDerived.updateIsTurbo(!stateBet.isTurbo, { persistent: true });
+				// Two states, or three where the game offers a second tier
+				// (uiTheme.turboTiers) — the same cycle as the button.
+				cycleTurbo();
 				break;
 			case 's':
 				stateSound.volumeValueMaster = stateSound.volumeValueMaster === 0 ? 50 : 0;

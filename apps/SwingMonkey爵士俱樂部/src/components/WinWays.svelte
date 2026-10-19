@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	export type EmitterEventWinWays =
-		| { type: 'winLinesShow'; wins: WinWayData[]; fast?: boolean }
+		| { type: 'winLinesShow'; wins: WinWayData[]; fast?: boolean; audible?: boolean }
 		| { type: 'winLinesHide' }
 		| { type: 'winLinesClear' };
 
@@ -21,7 +21,8 @@
 	import { stateBet } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
-	import { Sprite, Text } from 'pixi-svelte';
+	import { Sprite, Text, Graphics } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { GAME_FONT } from '../game/fonts';
 
 	import BoardContainer from './BoardContainer.svelte';
@@ -98,6 +99,19 @@
 	);
 
 	const ICON = $derived(SYMBOL_SIZE * 0.3);
+	// A slim hand-inked score slip sits in the frame's lower margin. It gives
+	// the paying symbol and ways a clean reading surface without covering art.
+	const drawWaysPlate = (g: PixiGraphics) => {
+		const w = SYMBOL_SIZE * 2.35, h = SYMBOL_SIZE * 0.26;
+		const PAPER = 0xf4e7c8, INK = 0x241d1c, ACCENT = 0x9c333e;
+		g.clear();
+		g.poly([-w / 2 + 6, -h / 2, w / 2 - 5, -h / 2 + 1,
+			w / 2, 0, w / 2 - 6, h / 2, -w / 2 + 5, h / 2 - 1, -w / 2, 0])
+			.fill({ color: PAPER, alpha: 0.98 }).stroke({ color: INK, width: 2.5 });
+		g.moveTo(-w / 2 + 28, h / 2 - 5).lineTo(w / 2 - 28, h / 2 - 5)
+			.stroke({ color: ACCENT, width: 2 });
+		for (const x of [-w / 2 + 18, w / 2 - 18]) { g.moveTo(x - 7, -6).lineTo(x + 7, -6).moveTo(x - 7, 0).lineTo(x + 7, 0).moveTo(x - 7, 6).lineTo(x + 7, 6).stroke({ color: ACCENT, width: 1.5 }); }
+	};
 	const LOW_LETTER: Record<string, string> = { L1: 'A', L2: 'K', L3: 'Q', L4: 'J', L5: '10' };
 
 	// ONE AT A TIME, HIGHEST FIRST.
@@ -165,7 +179,7 @@
 	};
 
 	context.eventEmitter.subscribeOnMount({
-		winLinesShow: async ({ wins: incoming, fast }) => {
+		winLinesShow: async ({ wins: incoming, fast, audible }) => {
 			const mine = ++generation;
 			animatedKeys = new Set();
 			revealedReels = 0;
@@ -183,10 +197,21 @@
 			// nothing, so stopping there keeps a 3-of-a-kind from waiting out two
 			// empty steps.
 			const lastReel = Math.max(...usable.flatMap((w) => w.positions.map((p) => p.reel)));
+			const heard = new Set<string>();
 
 			for (let reel = 0; reel <= lastReel; reel++) {
 				revealedReels = reel + 1;
 				animatePositions(usable.flatMap((w) => w.positions.filter((p) => p.reel === reel)));
+				// The first lit copy starts each instrument's phrase. Further copies
+				// play visibly in their own cells without stacking the same audio.
+				if (audible) for (const win of usable) {
+					const symbol = win.symbol;
+					if (!win.positions.some((p) => p.reel === reel) || heard.has(symbol)) continue;
+					if (symbol === 'H1' || symbol === 'H2' || symbol === 'H3' || symbol === 'H4') {
+						heard.add(symbol);
+						context.eventEmitter.broadcast({ type: 'soundInstrumentPhrase', symbol, quick: stateBet.isTurbo });
+					}
+				}
 				await waitForTimeout(stagger);
 				if (mine !== generation) return;
 			}
@@ -254,7 +279,8 @@
 	<BoardContainer>
 		<Container zIndex={10}>
 			{#if revealedReels > 0 && current}
-				{@const y = BOARD_SIZES.height + SYMBOL_SIZE * 0.3}
+				{@const y = BOARD_SIZES.height + SYMBOL_SIZE * 0.12}
+				<Graphics draw={drawWaysPlate} x={BOARD_SIZES.width / 2} {y} />
 				<!-- icon then count, as one centred pair: the icon is anchored on its
 				     right edge and the text on its left, so the pair stays balanced
 				     about the board's centre however long the number is. -->
@@ -281,7 +307,7 @@
 					/>
 				{/if}
 				<GoldText
-					text={`${current.ways.toLocaleString()} WAYS`}
+					text={`${current.ways.toLocaleString()} ${current.ways === 1 ? 'WAY' : 'WAYS'}`}
 					fontSize={SYMBOL_SIZE * 0.22}
 					x={BOARD_SIZES.width / 2 + SYMBOL_SIZE * 0.07}
 					{y}

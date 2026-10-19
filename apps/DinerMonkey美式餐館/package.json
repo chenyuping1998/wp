@@ -10,6 +10,7 @@
 		"dev": "vite dev --host --port 3033",
 		"check:refs": "node design/check_undefined_refs.mjs",
 		"check:social": "node design/check_social_words.mjs",
+		"check:claims": "E:/stake/math-sdk/env/Scripts/python.exe -I design/check_copy_claims.py",
 		"replay:harness": "node design/make_replay_harness.mjs",
 		"build": "node design/sync_math_config.mjs && node design/check_assets.mjs && node design/check_audio.mjs && node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_types.mjs && node design/check_mesh_wins.mjs && node design/check_cast_flow.mjs && vite build && node ../../tools/minify_spine_json.mjs",
 		"check:meshwins": "node design/check_mesh_wins.mjs",

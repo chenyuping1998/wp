@@ -6,6 +6,7 @@
 	import { UI_BASE_SIZE } from '../constants';
 	import { getContext } from '../context';
 	import { uiTheme } from '../theme.svelte';
+	import { cycleTurbo } from '../turbo';
 
 	const props: Partial<Omit<ButtonProps, 'children'>> = $props();
 	const context = getContext();
@@ -18,8 +19,10 @@
 
 	const onpress = () => {
 		context.eventEmitter.broadcast({ type: 'soundPressGeneral' });
-		stateBetDerived.updateIsTurbo(!stateBet.isTurbo, { persistent: true });
+		cycleTurbo();
 	};
+	// the second tier's icon, only where a game offers one (uiTheme.turboTiers)
+	const tier = $derived(active && uiTheme.turboTiers > 1 ? stateBet.turboLevel : 1);
 
 	context.eventEmitter.subscribeOnMount({
 		stopButtonClick: () => stateBetDerived.updateIsTurbo(true, { persistent: false }),
@@ -27,4 +30,4 @@
 	});
 </script>
 
-<UiButton {...props} {sizes} {active} {onpress} {disabled} icon="turbo" />
+<UiButton {...props} {sizes} {active} {onpress} {disabled} {tier} icon="turbo" />

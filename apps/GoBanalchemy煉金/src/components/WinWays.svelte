@@ -24,7 +24,8 @@
 	import { Sprite } from 'pixi-svelte';
 
 	import BoardContainer from './BoardContainer.svelte';
-	import GoldText from './GoldText.svelte';
+	import TextMesh from './TextMesh.svelte';
+	import { LABEL_ACT } from '../game/meshWin/textMesh';
 	import { getContext } from '../game/context';
 	import { featureTimeScale } from '../game/timeScale';
 	import { stateGame } from '../game/stateGame.svelte';
@@ -118,6 +119,13 @@
 	});
 
 	const current = $derived(rows.length ? rows[cycle % rows.length] : undefined);
+	// the label hops, letter after letter, each time it moves on to the next
+	// winning symbol (TextMesh, 2026-10-16)
+	let labelAt = $state(-1);
+	$effect(() => {
+		void [cycle, current?.assetKey];
+		labelAt = Date.now();
+	});
 
 	// Every winning cell across every winning symbol, deduped — two symbols can
 	// share a cell only via a Wild, but that is enough to double-draw a frame.
@@ -263,7 +271,7 @@
 					width={ICON}
 					height={ICON}
 				/>
-				<GoldText
+				<TextMesh
 					text={`${current.ways.toLocaleString()} WAYS`}
 					fontSize={SYMBOL_SIZE * 0.22}
 					x={BOARD_SIZES.width / 2 + SYMBOL_SIZE * 0.07}
@@ -271,6 +279,9 @@
 					anchor={{ x: 0, y: 0.5 }}
 					maxWidth={BOARD_SIZES.width * 0.4}
 					letterSpacing={1}
+					bevel
+					at={{ spin: labelAt }}
+					act={LABEL_ACT}
 				/>
 			{/if}
 		</Container>

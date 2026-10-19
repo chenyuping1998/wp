@@ -18,33 +18,44 @@ setUiTheme({
 	// Titan One is single-weight; 700 would only get a synthesised bold
 	fontWeight: GAME_FONT_WEIGHT,
 
+	// THREE COLOURS (2026-10-17, user: 「uibar 改得更順眼一點，顏色可以不用太
+	// 多種」). The bar had grown six: navy, crimson, gold, a steel-grey border,
+	// teal-grey labels and cream values, with each readout given its own accent.
+	// Now:
+	//   lacquer navy  the strip, the ink of every icon and keyline
+	//   brass         every label, every rule, the rims, an ON toggle
+	//   crimson       the spin button only — the one thing on the bar to press
+	// with the values in the washi paper's cream. Round controls are washi
+	// discs (Diner Monkey's construction, design/generate_bar_discs.py).
 	barStyle: 'flat',
 	barFill: 0x0a1720,
 	barAlpha: 1,
-	buttonFill: 0x0b1922,
-	buttonFillLight: 0xe8c478,
-	buttonFillDisabled: 0x3a3030,
-	buttonFillActive: 0x962e38,
-	buttonBorder: 0x667e87,
-	buttonBorderWidth: 2,
-	buttonBorderWidthActive: 5,
-	// white, as on Boat's and Bananubis's platform bars: it reaches the vector
-	// turbo bolt; every other icon is the white mono set below
-	buttonIconFill: 0xffffff,
-	buttonIconStroke: 0x09141b,
+	// fallbacks for a disc that has not loaded; the art carries the real look
+	buttonFill: 0xefe4ca,
+	buttonFillLight: 0xd9b56b,
+	buttonFillDisabled: 0x3a4248,
+	buttonFillActive: 0xd9b56b,
+	buttonBorder: 0x13222c,
+	// the disc art has its own rim and ring; ON is the brass disc itself
+	buttonBorderWidth: 0,
+	buttonBorderWidthActive: 0,
+	// navy ink: reaches the vector turbo bolt, the only icon not drawn as a sprite
+	buttonIconFill: 0x13222c,
+	buttonIconStroke: 0xefe4ca,
+	// a warm lift of the disc under the pointer, not a white film
+	hoverPlateLight: 0x5a4628,
 
 	betFill: 0x962e38,
-	betBorder: 0xe8c478,
+	betBorder: 0xd9b56b,
 
 	panelFill: 0x11232c,
-	panelBorder: 0x667e87,
-	labelFill: 0xb2c5c8,
-	balanceLabelFill: 0xb2c5c8,
-	// win reads in jungle green, bet in a cooler brass so the three readouts
-	// stay tellable apart without leaving the palette
-	winAccent: { border: 0xe8c478, label: 0xf5d994 },
-	betAccent: { border: 0x435e69, label: 0xb2c5c8 },
-	valueFill: 0xf5e8d1,
+	panelBorder: 0x3b4a4f,
+	labelFill: 0xd9b56b,
+	balanceLabelFill: 0xd9b56b,
+	// every readout the same: brass label over a cream value, one quiet rule
+	winAccent: { border: 0x3b4a4f, label: 0xd9b56b },
+	betAccent: { border: 0x3b4a4f, label: 0xd9b56b },
+	valueFill: 0xf5ecd8,
 	valueStroke: 0x09141b,
 	valueShadow: 0x050a0e,
 	valuePop: 0.18,
@@ -73,29 +84,38 @@ setUiTheme({
 	// Keep the lacquer and red cord recognisable even while a spin disables it.
 	buyBonusDisabledStyle: 'dim',
 
-	// The hover highlight is sized and shaped to the PLATE ART, so it stays inside
-	// the button instead of drawing a lighter square around it.
+	// THE BUY BONUS IS A THROWING STAR (2026-10-16, to Boat's and Boomana's
+	// standard: the button is an object from the game, the caption is painted on
+	// it, the art is larger than the box, and the hover does the object's own
+	// thing). design/generate_buy_shuriken.mjs draws it; its comment has the
+	// caption clear-zone arithmetic these numbers belong to.
 	//
-	// Measured from design/generate_ui_plates.mjs: the plate body is drawn at
-	// x=10 on a 640 canvas with a 7px stroke, so its outer edge sits at 98.1% of
-	// the sprite, and its corners are rx=66 — 10.3% of the sprite width, which is
-	// 10.7% of the highlight's own height at this inset.
-	//
-	// The defaults are a 1.0 inset plus a 3% outward pad, i.e. 6% WIDER than the
-	// sprite and squarer than it: that is a highlight bigger than the thing it
-	// highlights on all four sides and at every corner.
-	buyBonusPlateInset: { width: 0.96, height: 0.96 },
+	// Four swept blades, so it SPINS under the pointer — buyBonusHoverRotate
+	// turns the plate and the lit layer on one clock while the words stay level.
+	// 180 deg/s: the star repeats every 90 deg, so that is two visual turns a
+	// second, quick enough to read as thrown and slow enough not to strobe.
+	buyBonusHoverRotate: 180,
+	// The 800 canvas holds the star with margin for its shadow and the hover
+	// bloom; 1.25 draws it at 640/800 of the art per box, so the hub and words
+	// are the size they were and the blades reach toward the box's corners.
+	// The PICTURE grows, not the hit area.
+	buyBonusPlateScale: 1.25,
+	// only the unused 'outline' hover style reads these - set so they are right
+	buyBonusPlateInset: { width: 0.94, height: 0.94 },
 	buyBonusHighlightPad: 0,
-	buyBonusHighlightRadius: 0.107,
+	buyBonusHighlightRadius: 0.5,
 
-
-	// gold on the olive plate, matching every other caption in the game
+	// brass-gold on the lacquer hub, matching every other caption in the game
 	buyBonusLabelFill: 0xf5d994,
 	buyBonusIdleTint: 0xffffff,
-	buyBonusDisabledTint: 0xc5cbd0,
+	// steel stays steel when off: light enough that it is still the same star,
+	// with the caption's 55% fade carrying most of "not now"
+	buyBonusDisabledTint: 0xaab3ba,
 	buyBonusDisabledFill: 0x0b1922,
+	// KEEP IN STEP with HUB_IN in design/generate_buy_shuriken.mjs
 	buyBonusLabelSizeRatio: 0.58,
-	buyBonusLabelWrapWidth: 96,
+	buyBonusLabelWrapWidth: 94,
+	// a SLOT name (resolved through sprites below), drawn additively
 	buyBonusHoverSprite: 'buyBonusGlyph',
 	buyBonusHoverSpriteTint: 0xffffff,
 	buyBonusHoverSpriteBlend: 'add',
@@ -103,10 +123,11 @@ setUiTheme({
 	buyBonusBorder: 0xe8c478,
 	buyBonusBorderWidth: 4,
 	buyBonusCornerRadius: 8,
-	autoSpinsCounterFill: 0x0b1922,
-	autoSpinsCounterBorder: 0xe8c478,
-	autoSpinsCounterLabel: 0xf5e8d1,
-	autoSpinsCounterLabelStroke: 0x09141b,
+	// the remaining-spins badge on the spin button: washi with a brass edge
+	autoSpinsCounterFill: 0xefe4ca,
+	autoSpinsCounterBorder: 0xd9b56b,
+	autoSpinsCounterLabel: 0x13222c,
+	autoSpinsCounterLabelStroke: 0xefe4ca,
 
 	// the Bet panel opens the stake menu when tapped — mark it so players can
 	// tell it apart from the static Balance/Win panels
@@ -123,29 +144,34 @@ setUiTheme({
 	// The readouts use Boat's clean flat casing. The rare feature-buy action
 	// keeps its own ninja crest and a matching lit hover layer.
 	sprites: {
-		buyBonus: 'gbUiBuyBonus',
-		buyBonusGlyph: 'gbUiBuyBonusLit',
+		button: 'gbUiButtonWashi',
+		buttonActive: 'gbUiButtonWashiOn',
+		buyBonus: 'gbUiBuyBonusShuriken',
+		buyBonusGlyph: 'gbUiBuyBonusShurikenLit',
 	},
 
-	// THE SAME ICONS AS THE REST OF THE FAMILY (2026-10-04, asked for: the Auto
-	// Spin button and the bar have to match Anubis and Boat). Boat and Bananubis
-	// ship the platform skin, whose icons are the flat white mono set; this bar
-	// still drew the brass set, so its Auto Spin, menu and sound buttons were the
-	// odd ones out. UiButton draws these as untinted sprites, so they have to be
-	// SWAPPED — recolouring buttonIconFill reaches only the turbo bolt.
+	// (2026-10-04 these were swapped to the family's white mono set to match
+	// Anubis and Boat; 2026-10-17 they became ink on washi with the discs.)
+	// UiButton draws these as untinted sprites, so they are SWAPPED, not tinted.
+	// navy ink on the washi discs (Diner's print icon shapes, re-inked).
+	// turbo deliberately omitted: UiButton draws it as a vector bolt so it can
+	// be hollow when off and fill in when active — a static sprite can't toggle
 	icons: {
-		menu: 'gbIconMonoMenu',
-		menuExit: 'gbIconMonoMenuExit',
-		settings: 'gbIconMonoSettings',
-		info: 'gbIconMonoInfo',
-		payTable: 'gbIconMonoPayTable',
-		soundOn: 'gbIconMonoSoundOn',
-		soundOff: 'gbIconMonoSoundOff',
-		autoSpin: 'gbIconMonoAutoSpin',
-		replay: 'gbIconMonoReplay',
-		// turbo deliberately omitted: UiButton draws it as a vector bolt so it can
-		// be hollow when off and fill in when active — a static sprite can't toggle
+		menu: 'gbIconInkMenu',
+		menuExit: 'gbIconInkMenuExit',
+		settings: 'gbIconInkSettings',
+		info: 'gbIconInkInfo',
+		payTable: 'gbIconInkPayTable',
+		soundOn: 'gbIconInkSoundOn',
+		soundOff: 'gbIconInkSoundOff',
+		autoSpin: 'gbIconInkAutoSpin',
+		replay: 'gbIconInkReplay',
+		increase: 'gbIconInkIncrease',
+		decrease: 'gbIconInkDecrease',
 	},
+	// the − / + bars span 55% of their canvas: 0.78 makes them 43% of the disc
+	iconScales: { increase: 0.78, decrease: 0.78 },
+
 });
 
 // A player who cannot afford the bet is TOLD SO, on every route into a bet —

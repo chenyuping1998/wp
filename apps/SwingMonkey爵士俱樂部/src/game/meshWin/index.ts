@@ -42,6 +42,15 @@ export { SIGN };
 import { FG_BOARD_DECOR, WIN_DECOR, DECOR_ALL } from './decorMeshes';
 export { FG_BOARD_DECOR, WIN_DECOR };
 
+// The intro's title board and the Buy Bonus plate (signs.ts; FeatureIntro.svelte,
+// BuyPlateMesh.svelte).
+import { LOGO_BOARD, BUY_PLATE, BUY_PLATE_KEYS, BUY_PLATE_CANVAS } from './signs';
+export { LOGO_BOARD, BUY_PLATE, BUY_PLATE_KEYS, BUY_PLATE_CANVAS };
+
+// The free-spin helper's cut-in in the meter's level-up (BanditMeter.svelte).
+import { CUTIN } from './cutIn';
+export { CUTIN };
+
 /** Every mesh in the game, for design/check_mesh_wins.mjs: the gate holds all
  *  of them to the same rules, not just the wins. */
 export const MESH_ALL: Record<string, MeshWinSpec> = {
@@ -54,4 +63,7 @@ export const MESH_ALL: Record<string, MeshWinSpec> = {
 	...Object.fromEntries(BG_PROPS.map((spec) => [spec.symbol, settled(spec)])),
 	banner: settled(bannerSpec('gbWinBannerEpic')),
 	fsSign: settled(SIGN),
+	logoBoard: settled(LOGO_BOARD),
+	cutIn: settled(CUTIN),
+	...Object.fromEntries(BUY_PLATE_KEYS.map((k) => [`buyPlate:${k}`, settled(BUY_PLATE(k))])),
 };

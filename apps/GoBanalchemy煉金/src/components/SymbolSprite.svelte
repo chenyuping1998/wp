@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { Sprite } from 'pixi-svelte';
+	import PotionBoil from './PotionBoil.svelte';
 
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { LAND_MS, REST, landFrame, type LandFrame } from '../game/landMotion';
-	import { idlePhase, idleScale } from '../game/idleBreathe';
-	import { idleClock, useIdleClock } from '../game/idleClock.svelte';
 
 	type Props = {
 		x?: number;
@@ -110,12 +109,8 @@
 	// About 1% of scale, each cell on its own phase so the board never pulses as
 	// one block. Not while the reel moves (it would fight the blur) and not while
 	// landing (the landing owns the symbol for those 240ms).
-	const idling = $derived(!props.landing && blur <= 0.01 && !!props.cell);
-	const breath = $derived(idling && props.cell ? idleScale(idleClock.t, idlePhase(props.cell.reel, props.cell.row)) : 1);
-	$effect(() => {
-		if (!idling) return;
-		return useIdleClock();
-	});
+	// Ambient acting belongs to each subject's mesh (IdleDirector), not the tile.
+	const breath = 1;
 
 	// the teasing reel's lift (game/anticipationFocus.ts)
 	const focusScale = $derived(props.focus?.scale ?? 1);
@@ -189,5 +184,15 @@
 		tint={bloomTint}
 		blendMode="add"
 		alpha={bloomAlpha * (1 - 0.15 * blur)}
+	/>
+{/if}
+
+{#if props.symbolName === 'B' && blur <= 0.01 && !props.landing}
+	<PotionBoil
+		x={props.x ?? 0}
+		y={props.y ?? 0}
+		width={width * k}
+		height={height * k}
+		intensity={0.35}
 	/>
 {/if}

@@ -255,6 +255,16 @@
 					Max win is a multiple of the {T.totalBet}. When a round reaches the cap it ends
 					immediately and the capped amount is {T.paid}.
 				</p>
+				<!-- The math opens every direct-entry round with a set-up board that only places
+				     the Scatters; it is not evaluated. On 22.9% of those boards a ways line is
+				     visible and on 4.8% a Wild sits beside a collect symbol, none of it paid.
+				     The player is not short-changed, so the copy says so rather than the maths
+				     changing (design/check_copy_claims.py, 2026-10-09). -->
+				<p class="wp-modes-note">
+					When Free Spins are entered directly from the menu, the opening board only lands the
+					Scatters that start the feature. Nothing else on that board is evaluated: it gives no
+					ways wins and no collections.
+				</p>
 			</section>
 
 			<!-- The signature mechanic gets its own section above Wild and Scatter,

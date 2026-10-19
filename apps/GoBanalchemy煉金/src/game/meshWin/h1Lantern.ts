@@ -1,26 +1,9 @@
-/**
- * H1 — THE ALCHEMIST'S LANTERN. It swings from its top ring like a lantern
- * someone has just lifted, the green elixir in the glass sloshes the other
- * way, and the little golden banana floating in it bobs and turns.
- *
- * CUT mode (design/make_alchemy_layers.py, 2026-10-04): the lantern is lifted
- * off its slate, so the TILE stays still and the lantern itself leaps off it,
- * turns a full backflip in the air, lands with a squash and a small second
- * hop — the user asked for the picture to jump, not the cell. Inside it the
- * elixir sloshes and the banana turns as before.
- *
- * NO LIGHT (2026-10-04): no flash and no light sweep — the acting carries it.
- *
- * Coordinates are the 256 canvas (goBanalchemySymbols/h1.png, 2026-10-04):
- * cap (97..158, 13..36), guard (58..198, 42..186), glass (82..172, 84..166),
- * floating banana (110..148, 105..148), base (75..180, 172..232).
- */
+/** Alchemy v2: fixed plate; independently weighted painted parts perform.
+ * No rigid flip, tile jump, or impact dust. Geometry follows the repaint. */
 import {
 	blob,
 	flick,
-	leap,
 	polygon,
-	turnAbout,
 	ramp,
 	restPose,
 	smoothstep,
@@ -30,7 +13,6 @@ import {
 } from './meshRig';
 
 const T = { crouch: 110, hit: 260, land: 900, done: 1450 };
-const LEAP = { crouch: 120, rise: 330, fall: 720, land: 900, hop2: 1140, done: 1450 };
 
 const LANTERN = polygon([[98, 12], [158, 12], [160, 30], [178, 40], [198, 44], [202, 186], [184, 190], [182, 236], [74, 236], [72, 190], [54, 186], [58, 44], [78, 40], [96, 30]]);
 const GLASS = blob([127, 125], 44, 41, 2.6);
@@ -39,20 +21,25 @@ const BANANA = blob([129, 127], 22, 26, 2.2);
 export const H1: MeshWinSpec = {
 	symbol: 'H1',
 	key: 'gbH1',
+	sprite: 'gbH1',
+	mode: 'panel',
+	inked: (p) => LANTERN(p) === 0,
 	feetY: 234,
 	durationMs: T.done,
-	landMs: T.land,
+	landMs: 99999,
 	hitMs: T.hit,
 	sparkAt: [128, 126],
 	rig: {
+		fixedBorder: 10,
+		fixedBorderFade: 6,
 		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 },
 		soft: 4,
 		parts: [
 			// the air round it: transparent in the subject layer
-			{ name: 'root', pivot: [128, 234], dist: () => 14 },
+			{ name: 'frame', pivot: [128, 234], dist: () => 14 },
 			{
 				name: 'body',
-				parent: 'root',
+				parent: 'frame',
 				// hung from the top ring
 				pivot: [128, 26],
 				axis: [0, 1],
@@ -115,11 +102,6 @@ export const H1: MeshWinSpec = {
 		banana.along = 1 + 0.06 * Math.max(0, swell);
 		banana.across = 1 + 0.06 * Math.max(0, swell);
 
-		// THE LEAP, and a backflip at the top of it, about the lantern's middle
-		const { rigid, air } = leap(t, LEAP, 26);
-		rigid.rot = -360 * smoothstep((t - LEAP.rise + 60) / (LEAP.fall - LEAP.rise + 40));
-		pose.rigid = turnAbout(rigid, [128, 128], 234);
-		pose.air = air;
 		return pose;
 	},
 };

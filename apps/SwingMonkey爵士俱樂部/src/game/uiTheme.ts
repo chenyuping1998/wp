@@ -90,6 +90,18 @@ setUiTheme({
 	// the Bet panel opens the stake menu when tapped — mark it so players can
 	// tell it apart from the static Balance/Win panels
 	labelAffordance: true,
+	// user 2026-10-18 (as Putt): the chevron right of BET greys while the
+	// cursor is on it — the grey the steppers turn when disabled
+	labelChevronHoverColor: 0x67645c,
+	// user 2026-10-18 (as Putt / Saucer): Balance / Win / Bet up a touch
+	readoutOffsetY: -8,
+	// Two-tier turbo, as Saucer / Putt / Strike (2026-10-18): off -> one bolt ->
+	// two bolts side by side. Turbo 2 lands the reels ~20% quicker again and
+	// runs the record collection at 1.5x (constants.ts SPIN_OPTIONS_*_T2,
+	// BanditCollect.svelte); turbo 1 leaves the collection at full length. The
+	// gap cut round the front bolt is the lit plate's brown (button_print_on).
+	turboTiers: 2,
+	turboKeylineColor: 0x926543,
 
 	// cursor-over feedback on the rail controls
 	hoverHighlight: true,

@@ -15,8 +15,10 @@
  */
 type Cell = { name: string; play: () => boolean };
 
-const QUIET_MS = 1600;
-const GAP_MS: [number, number] = [1900, 4200];
+// 2026-10-16 (review: poor animation): rarer — one act, then a long stillness.
+// An act every 2-4s kept the board permanently twitching.
+const QUIET_MS = 2500;
+const GAP_MS: [number, number] = [5000, 9000];
 const ECHO_CHANCE = 0.35;
 const ECHO_MS: [number, number] = [260, 520];
 

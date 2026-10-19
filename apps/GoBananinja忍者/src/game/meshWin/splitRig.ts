@@ -63,15 +63,17 @@ export const splitOf = (raw: MeshWinSpec): MeshWinSpec | undefined => {
 	const own = (name: string) => panel && (name === 'frame' || name === 'panel');
 	const parts: PartSpec[] = raw.rig.parts.filter((p) => own(p.name));
 	motifs.forEach(([s, x, y], m) => {
-		const to = (p: Point): Point => [(p[0] - x) / s, (p[1] - y) / s];
+		// The foreground gorilla faces left; its band tails stream right.
+		const mirror = raw.symbol === 'W' && m === 1;
+		const to = (p: Point): Point => [mirror ? 256 - (p[0] - x) / s : (p[0] - x) / s, (p[1] - y) / s];
 		for (const P of raw.rig.parts) {
 			if (own(P.name) || skip(m, P.name)) continue;
 			const keep = P.keep;
 			parts.push({
 				name: PREFIX[m] + P.name,
 				parent: P.parent === undefined ? undefined : own(P.parent) ? P.parent : PREFIX[m] + P.parent,
-				pivot: [x + s * P.pivot[0], y + s * P.pivot[1]],
-				axis: P.axis,
+				pivot: [x + s * (mirror ? 256 - P.pivot[0] : P.pivot[0]), y + s * P.pivot[1]],
+				axis: mirror && P.axis ? [-P.axis[0], P.axis[1]] : P.axis,
 				dist: (p) => P.dist(to(p)) * s,
 				keep: keep ? (p) => keep(to(p)) : undefined,
 				priority: (P.priority ?? 0) * s + (m === 1 ? 4 : 0),
@@ -83,7 +85,7 @@ export const splitOf = (raw: MeshWinSpec): MeshWinSpec | undefined => {
 		const bare = part.name.replace(/^[bf]_/, '');
 		const lim = raw.limits[bare];
 		if (!lim) continue;
-		limits[part.name] = lim;
+		limits[part.name] = raw.symbol === 'W' && part.name.startsWith('f_') ? { ...lim, pos: lim.neg, neg: lim.pos } : lim;
 	}
 
 	let baseRig: Rig | undefined;
@@ -116,6 +118,7 @@ export const splitOf = (raw: MeshWinSpec): MeshWinSpec | undefined => {
 			const idx = motifBones(rig, baseRig);
 			let flash = 0, sheen = -1, plateHit = 1;
 			motifs.forEach(([s], m) => {
+				const sign = raw.symbol === 'W' && m === 1 ? -1 : 1;
 				const bp = base.pose(baseRig!, Math.max(0, t - m * delay), amp);
 				baseRig!.bones.forEach((b, i) => {
 					const j = idx[m][i];
@@ -129,10 +132,10 @@ export const splitOf = (raw: MeshWinSpec): MeshWinSpec | undefined => {
 						return;
 					}
 					const dst = pose.bones[j];
-					dst.angle = src.angle * damp;
+					dst.angle = src.angle * damp * sign;
 					dst.along = 1 + (src.along - 1) * damp;
 					dst.across = 1 + (src.across - 1) * damp;
-					dst.dx = src.dx * s * damp;
+					dst.dx = src.dx * s * damp * sign;
 					dst.dy = src.dy * s * damp;
 					// a copy's own rigid move (a letter's hop) is NOT moved onto its
 					// root: two roots hopping out of step tore the gap between the

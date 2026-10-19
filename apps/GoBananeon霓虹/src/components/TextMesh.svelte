@@ -163,10 +163,28 @@
 		const fw = Math.max(1, Math.ceil(b.width) + p * 2);
 		const fh = Math.max(1, Math.ceil(b.height) + p * 2);
 		const resolution = Math.max(2, globalThis.devicePixelRatio ?? 1);
-		const tw = Math.ceil(fw / STEP) * STEP;
-		const th = Math.ceil(fh / STEP) * STEP;
-		if (!target) target = RenderTexture.create({ width: tw, height: th, resolution, antialias: true });
-		else if (target.width !== tw || target.height !== th) target.resize(tw, th, resolution);
+		// GROW-ONLY, AND NEVER resize(). A count-up that landed on a SHORTER
+		// value ("$0.3707" -> "$0.40") shrank the texture with resize(), and on
+		// the live build the clear after that resize did not take (MSAA target):
+		// the text was drawn over whatever the GPU memory held, and a solid green
+		// block showed behind the landed amount. Now a texture only ever gets
+		// replaced by a NEW, larger one, never antialiased (the text is already a
+		// smooth canvas texture), and a shorter value just uses less of it via
+		// the UVs.
+		const needW = Math.ceil(fw / STEP) * STEP;
+		const needH = Math.ceil(fh / STEP) * STEP;
+		if (!target || target.width < needW || target.height < needH || target.source.resolution !== resolution) {
+			const old = target;
+			target = RenderTexture.create({
+				width: Math.max(needW, old?.width ?? 0),
+				height: Math.max(needH, old?.height ?? 0),
+				resolution,
+			});
+			if (mesh) mesh.texture = target;
+			old?.destroy(true);
+		}
+		const tw = target.width;
+		const th = target.height;
 		renderer.render({
 			container: src,
 			target,

@@ -34,7 +34,7 @@ from scipy import ndimage
 
 APP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CANVAS = (560, 912)
-UNDERLAY = 26
+UNDERLAY = 3
 # Both drawings face screen-RIGHT, and the cast stands to the RIGHT of the board,
 # so as delivered they turn their backs on it ("cast faces the board"). Mirror
 # at cut time rather than flipping the skeleton: a flipped skeleton would also
@@ -49,6 +49,20 @@ ALPHA_FLOOR = 24
 # z decides the draw order AND which neighbour hides which: the hand sits UNDER
 # its sleeve (the cuff is drawn over the fur), legs and arms over the trunk.
 CUTS = {'mg': [('head_2_face', 30, [(100, 0), (445, 0), (445, 210), (360, 270), (285, 305), (200, 305), (105, 270), (90, 210)], None), ('left_arm_0_upper_arm', 22, [(90, 330), (138, 304), (160, 300), (168, 318), (166, 340), (166, 370), (166, 400), (162, 408), (130, 412), (100, 420), (80, 400)], None), ('left_arm_2_hand', 20, [(80, 400), (100, 420), (130, 412), (162, 408), (156, 425), (146, 438), (138, 452), (134, 465), (130, 478), (130, 495), (131, 532), (126, 538), (122, 545), (116, 560), (120, 600), (132, 615), (140, 640), (130, 700), (20, 700), (20, 420)], None), ('right_arm_0_upper_arm', 26, [(318, 322), (345, 305), (372, 330), (396, 370), (390, 374), (352, 400), (338, 412), (326, 408), (318, 400), (314, 380), (312, 360), (312, 340)], None), ('right_arm_2_hand', 24, [(396, 370), (390, 374), (352, 400), (338, 412), (334, 420), (346, 428), (352, 436), (358, 445), (366, 460), (376, 480), (383, 500), (390, 520), (392, 532), (384, 540), (380, 560), (372, 578), (366, 600), (358, 618), (348, 640), (350, 700), (470, 700), (466, 610), (452, 600), (452, 560), (445, 530), (440, 450)], None), ('left_leg_2_foot', 12, [(40, 788), (150, 788), (262, 786), (278, 800), (278, 912), (40, 912)], None), ('right_leg_2_foot', 16, [(278, 800), (320, 803), (400, 798), (530, 800), (530, 912), (278, 912)], None), ('left_leg_1_calf', 11, [(140, 715), (246, 715), (262, 786), (150, 788), (140, 760)], None), ('right_leg_1_calf', 15, [(270, 715), (380, 715), (400, 798), (320, 803), (300, 760)], None), ('left_leg_0_thigh', 10, [(140, 555), (160, 567), (180, 578), (200, 584), (220, 584), (246, 580), (246, 640), (246, 715), (140, 715), (150, 600)], None), ('right_leg_0_thigh', 14, [(246, 580), (260, 574), (280, 567), (300, 557), (320, 548), (342, 548), (344, 600), (342, 640), (350, 690), (380, 715), (270, 715), (246, 640)], None)], 'fg': [('head_2_face', 30, [(141, 0), (438, 0), (438, 237), (356, 226), (330, 236), (306, 246), (290, 254), (262, 256), (240, 256), (224, 252), (190, 240), (141, 190)], None), ('left_arm_0_upper_arm', 22, [(186, 262), (246, 262), (250, 280), (250, 300), (244, 330), (232, 350), (220, 362), (214, 358), (205, 350), (196, 338), (186, 324), (172, 316), (168, 305), (178, 290)], None), ('left_arm_2_hand', 20, [(172, 316), (186, 324), (196, 338), (205, 350), (214, 358), (204, 368), (190, 378), (160, 392), (130, 410), (100, 450), (0, 460), (0, 320), (160, 296)], None), ('right_arm_0_upper_arm', 26, [(312, 282), (332, 282), (368, 326), (372, 360), (366, 368), (354, 372), (342, 378), (330, 382), (322, 382), (324, 368), (324, 350), (318, 330), (312, 310)], None), ('right_arm_2_hand', 24, [(366, 368), (354, 372), (342, 378), (330, 382), (340, 392), (346, 400), (352, 410), (358, 420), (364, 430), (372, 440), (384, 448), (396, 456), (404, 462), (406, 474), (416, 484), (430, 492), (442, 498), (450, 504), (458, 510), (461, 520), (461, 540), (470, 556), (530, 556), (530, 486), (500, 488), (486, 488), (474, 478), (470, 470), (460, 462), (450, 446), (430, 430), (395, 395)], None), ('left_leg_2_foot', 12, [(140, 722), (180, 722), (204, 728), (234, 728), (250, 716), (300, 722), (356, 760), (356, 880), (140, 880)], None), ('right_leg_2_foot', 16, [(356, 760), (360, 748), (380, 768), (404, 768), (424, 748), (560, 748), (560, 912), (356, 912)], None), ('left_leg_1_calf', 11, [(218, 645), (278, 645), (262, 690), (250, 716), (234, 728), (204, 728), (196, 700)], None), ('right_leg_1_calf', 15, [(316, 645), (372, 645), (392, 690), (404, 716), (424, 748), (404, 768), (380, 768), (360, 748), (342, 700)], None), ('left_leg_0_thigh', 10, [(236, 556), (297, 556), (297, 600), (278, 645), (218, 645), (230, 600)], None), ('right_leg_0_thigh', 14, [(297, 556), (345, 556), (352, 580), (362, 620), (372, 645), (316, 645), (300, 600)], None)]}
+# Redrawn MG art places the camera-left sleeve farther right than the old cut.
+_REDRAW_MG = {
+    'left_arm_0_upper_arm': [(170, 300), (220, 302), (236, 344), (225, 378), (202, 413), (174, 413), (165, 382)],
+    'left_arm_2_hand': [(165, 382), (202, 413), (195, 455), (188, 494), (184, 530), (193, 572), (195, 700), (75, 700), (80, 500), (120, 475), (142, 435)],
+    # The tail is behind this forearm in the new painting; leave it on the body.
+    'right_arm_2_hand': [(385, 372), (414, 404), (429, 458), (430, 507), (439, 548), (460, 580), (460, 700), (348, 700), (345, 540), (349, 420)],
+}
+CUTS['mg'] = [(n, z, _REDRAW_MG.get(n, poly), kind) for n, z, poly, kind in CUTS['mg']]
+# 2026-10-16 redraw: measured cuts for the redrawn paintings (wp/tools/redraw_cast_spec.py),
+# on the uniformly scaled canvas design/redraw/v1/<cast>_norm.png
+for _cast in ('mg', 'fg'):
+    _p = os.path.join(APP, 'design', 'cast_cut', f'{_cast}_cuts.json')
+    if os.path.exists(_p):  # redraw_cuts
+        CUTS[_cast] = [(n, z, [tuple(pt) for pt in poly], kind) for n, z, poly, kind in json.load(open(_p))]
 TRUNK = ("torso_0_trunk", 2)
 
 
@@ -100,9 +114,10 @@ def colour_ok(kind, rgb):
     return np.ones(rgb.shape[:2], bool)
 
 
-def main(cast):
-    src = os.path.join(APP, "design", "cast_delivery", f"{cast}_full_source.png")
-    out = os.path.join(APP, "design", "source", cast)
+def main(cast, src=None, out=None):
+    _norm = os.path.join(APP, "design", "redraw", "v1", f"{cast}_norm.png")
+    src = src or (_norm if os.path.exists(_norm) else os.path.join(APP, "design", "cast_delivery", f"{cast}_full_source.png"))
+    out = out or os.path.join(APP, "design", "source", cast)
     os.makedirs(out, exist_ok=True)
     for name in os.listdir(out):
         if name.endswith(".png") and not name.startswith("head_2_face_"):
@@ -213,7 +228,8 @@ def main(cast):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], *(sys.argv[2:4]))
+
 
 
 

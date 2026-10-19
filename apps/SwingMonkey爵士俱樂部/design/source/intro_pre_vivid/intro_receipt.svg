@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+ <title>Jazz club show bill with maximum win</title>
+ <rect width="512" height="512" rx="34" fill="#f4e7c8"/>
+ <path d="M31 64q55 70 56 195-1 128-56 187V64Zm450 0q-55 70-56 195 1 128 56 187V64Z" fill="#9c333e" stroke="#241d1c" stroke-width="9"/>
+ <path d="M37 85q37 58 39 154M475 85q-37 58-39 154" fill="none" stroke="#d6a14f" stroke-width="5"/>
+ <path d="M105 57q151 41 302 0l-12 361q-139 45-279 0Z" fill="#fff7e5" stroke="#241d1c" stroke-width="10" stroke-linejoin="round"/>
+ <path d="M123 83q130 25 266 0" fill="none" stroke="#9c333e" stroke-width="12"/>
+ <path d="M146 120h220M142 355h228" stroke="#241d1c" stroke-width="6" stroke-linecap="round"/>
+ <text x="256" y="180" font-family="Georgia,serif" font-weight="900" font-size="36" text-anchor="middle" fill="#241d1c" letter-spacing="2">SWING CLUB</text>
+ <path d="M154 191h204" stroke="#d6a14f" stroke-width="6"/>
+ <text x="256" y="279" font-family="Georgia,serif" font-weight="900" font-size="77" text-anchor="middle" fill="#9c333e" stroke="#241d1c" stroke-width="2" paint-order="stroke">10,000×</text>
+ <text x="256" y="325" font-family="Georgia,serif" font-style="italic" font-weight="bold" font-size="34" text-anchor="middle" fill="#241d1c">TOP BILLING</text>
+ <path d="M149 375q39-25 78 0 39 24 78 0 32-18 58 0" fill="none" stroke="#d6a14f" stroke-width="8" stroke-linecap="round"/>
+ <path d="M168 396h176" stroke="#241d1c" stroke-width="5" stroke-linecap="round"/>
+ <circle cx="410" cy="382" r="49" fill="#241d1c" stroke="#d6a14f" stroke-width="7"/><circle cx="410" cy="382" r="31" fill="none" stroke="#f4e7c8" stroke-width="3"/><circle cx="410" cy="382" r="16" fill="#9c333e"/><circle cx="410" cy="382" r="5" fill="#f4e7c8"/>
+ <path d="M58 457h396" stroke="#241d1c" stroke-width="8" stroke-linecap="round"/>
+</svg>

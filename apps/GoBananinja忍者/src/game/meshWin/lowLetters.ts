@@ -67,13 +67,15 @@ const letterBeat = (rig: Rig, t: number, ch: Character): Pose => {
 	pose.rigid = {
 		sx: track(t, [[0, 1], [T.crouch, 1 + 0.05 * q, 'out'], [T.crouch + ch.rise / 2, 1 - 0.03 * q, 'out'], [riseAt, 1], [T.land - 20, 1], [T.land + 40, 1 + 0.04 * q, 'out'], [T.done, 1, 'out']]),
 		sy: track(t, [[0, 1], [T.crouch, 1 - 0.08 * q, 'out'], [T.crouch + ch.rise / 2, 1 + 0.04 * q, 'out'], [riseAt, 1], [T.land - 20, 1], [T.land + 40, 1 - 0.06 * q, 'out'], [T.done, 1, 'out']]),
-		rot: ch.lean * air,
+		rot: 2 * ch.lean * air,
 		// BIGGER JUMP (2026-09-27, asked for): 6 -> 10px and a bigger pop; the
 		// rigid move costs nothing against the mesh. The copy is drawn above its
 		// neighbours, so a top rising past the tile's edge now reads as a leap.
-		pop: 1 + 0.07 * air,
+		// BIGGER AGAIN (2026-10-16, user: 獎圖網格動態不夠大): 10 -> 26px, pop
+		// 0.07 -> 0.14, twice the lean. Still the rigid move only.
+		pop: 1 + 0.14 * air,
 		dx: 0,
-		dy: -10 * ch.lift * air - 1.6 * hover * Math.sin((2 * Math.PI * (t - riseAt)) / ch.bob),
+		dy: -26 * ch.lift * air - 1.6 * hover * Math.sin((2 * Math.PI * (t - riseAt)) / ch.bob),
 	};
 	pose.air = Math.max(0, Math.min(1, air));
 	pose.flash = 0.3 * track(t, [[T.crouch, 0], [T.crouch + 90, 1, 'out'], [560, 0, 'in']]);

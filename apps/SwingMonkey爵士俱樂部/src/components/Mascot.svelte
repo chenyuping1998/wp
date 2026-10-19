@@ -5,8 +5,13 @@
 	export type EmitterEventMascot =
 		| { type: 'mascotChestBeat' }
 		// Raised by the transition as it begins, so the wind-up happens before the
-		// dynamite exists. See THROW_RELEASE_MS there.
+		// dynamite exists. See THROW_RELEASE_MS there. (No longer raised: the
+		// free-spin trigger takes a bow instead, 2026-10-18.)
 		| { type: 'mascotThrow' }
+		// The Bandleader's bow as the number ends: raised by the transition into
+		// free spins, which drops the curtain while he is held in it
+		// (design/bow_motion.mjs, BOW_* in TransitionAnimation).
+		| { type: 'mascotBow' }
 		// The goggle tease. Fired at the top of a round that is GOING to trigger
 		// the feature — see playBet in src/game/utils.ts, which owns the coin flip.
 		| { type: 'mascotGoggleTease' };
@@ -34,7 +39,9 @@
 	// is fully down — so the swap is never seen happening.
 	//
 	// Per cast, in skeleton units (origin on the ground between the boots):
-	//   art      floor to the top of the head, and the width across
+	//   art      floor to the top of the head, the width across, and the box's
+	//            centre right of the origin (2026-10-16 redraws, measured on
+	//            design/redraw/v1/<cast>_norm.png)
 	//   release  where the sack leaves his hand in 'throwit' (printed by the
 	//            generator as `release hand at`)
 	//   impact   where each fist lands in the chest beat (`beat R/L fist at`)
@@ -44,22 +51,22 @@
 	const CASTS = {
 		basegame: {
 			key: 'gbBandit',
-			art: { height: 882, width: 455 },
-			release: { x: -378, y: 511 },
-			impact: { right: { x: 187, y: 318 }, left: { x: -182, y: 350 } },
+			art: { height: 888, width: 534, cx: 40 },
+			release: { x: -314, y: 467 },
+			impact: { right: { x: 93, y: 279 }, left: { x: -186, y: 310 } },
 			// his 'chestbeat' is a laugh (design/cast_motions.mjs): the beats pop
 			// HA! off his head instead of stars off his fists
 			beatFx: 'laugh',
-			tease: { x: 0, y: 801, halfWidth: 70, halfHeight: 23 },
+			tease: { x: 35, y: 825, halfWidth: 55, halfHeight: 18 },
 		},
 		freegame: {
 			key: 'gbLookout',
-			art: { height: 879, width: 395 },
-			release: { x: -343, y: 518 },
-			impact: { right: { x: 214, y: 367 }, left: { x: -208, y: 364 } },
+			art: { height: 844, width: 547, cx: -50 },
+			release: { x: -248, y: 649 },
+			impact: { right: { x: 198, y: 415 }, left: { x: -232, y: 451 } },
 			// Apprentice laughs on the same six voice beats, with her own body motion.
 			beatFx: 'laugh',
-			tease: { x: -6, y: 794, halfWidth: 65, halfHeight: 22 },
+			tease: { x: -38, y: 740, halfWidth: 55, halfHeight: 16 },
 		},
 	} as const;
 
@@ -106,8 +113,11 @@
 		const maxHeight = (layout.height - barHeight) * 0.94;
 		const height = Math.min(maxHeight, (maxWidth * ART.height) / ART.width);
 
+		// `art.cx`: the figure's own centre, right of his origin. The 2026-10-16
+		// redraws present with one arm out, so the box is centred, not the feet.
+		const x = gapLeft + gapWidth / 2 - ART.cx * (height / ART.height);
 		return {
-			x: gapLeft + gapWidth / 2,
+			x,
 			// Standing on the same line the board frame sits on, so he shares its
 			// ground plane instead of floating at his own height. Clamped off the
 			// bet bar, which on a short layout the frame's own foot reaches into.
@@ -116,8 +126,8 @@
 			// the strip he may perform in, in skeleton units about his origin:
 			// anything he draws (the laugh's HA!s) stays inside it, so no part of
 			// a performance ever lands on the board (user rule, 2026-10-04)
-			minX: (gapLeft + 16 - (gapLeft + gapWidth / 2)) / (height / ART.height),
-			maxX: (layout.width - 10 - (gapLeft + gapWidth / 2)) / (height / ART.height),
+			minX: (gapLeft + 16 - x) / (height / ART.height),
+			maxX: (layout.width - 10 - x) / (height / ART.height),
 		};
 	});
 
@@ -201,6 +211,10 @@
 		};
 		impactRaf = requestAnimationFrame(step);
 	};
+	const stopImpacts = () => {
+		cancelAnimationFrame(impactRaf);
+		impactClock = -1;
+	};
 	// The throw's grunt is on a timer (it lands on the release, not on the
 	// wind-up), so it can outlive the component if a resize takes him off screen
 	// mid-throw.
@@ -228,9 +242,12 @@
 
 	// The Chef's laugh: one HA! per beat, alternating either side of his head
 	// and climbing, printed red on an ink rim like every other caption.
-	const HA_LIFE_MS = 420;
+	// Shorter than the beat gap plus the settle, so the last HA! is gone before
+	// laughTiming's settle face (endMs - 150) shows. (Ported from Putt/Strike
+	// 2026-10-18: only while the laugh itself is playing.)
+	const HA_LIFE_MS = 360;
 	const haPops = $derived.by(() => {
-		if (impactClock < 0 || cast.beatFx !== 'laugh') return [];
+		if (impactClock < 0 || cast.beatFx !== 'laugh' || animationName !== 'chestbeat') return [];
 		const pops = [];
 		for (let i = 0; i < BEATS; i++) {
 			const t = (impactClock - (BEAT_START_MS + i * BEAT_GAP_MS)) / HA_LIFE_MS;
@@ -391,7 +408,7 @@
 	// was dropped.
 	let animationName = $state('idle');
 	let loop = $state(true);
-	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'flinch', 'alert', 'glance'];
+	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'bow', 'flinch', 'alert', 'glance'];
 	// The small reactions (flinch, alert, glance, nod) may interrupt each other
 	// and idle; they never cut into the big three, which each mean something.
 	const INTERRUPTIBLE = ['idle', 'nod', 'glance', 'alert', 'flinch'];
@@ -418,7 +435,20 @@
 	scheduleGlance();
 	onDestroy(() => clearTimeout(glanceTimer));
 
+	// The cast swap (inside a transition's cover) remounts the skeleton from
+	// its first frame; a caption clock carried across would no longer match it.
+	$effect(() => {
+		cast.key;
+		stopImpacts();
+		animationName = 'idle';
+		loop = true;
+	});
+
 	const play = (name: string, loops: boolean) => {
+		// The HA!s belong to the laugh, not to a clock: anything that takes him
+		// out of 'chestbeat' (a big-win cheer on the same spin, the clip ending,
+		// the cast swap) takes the captions with it, so no HA! outlives the face.
+		if (name !== 'chestbeat') stopImpacts();
 		animationName = name;
 		loop = loops;
 	};
@@ -442,6 +472,10 @@
 	// inline in the handler because two things raise it: the free-game trigger,
 	// and the top three big-win tiers.
 	const beatChest = () => {
+		// Already laughing: setting the same clip does not restart the Spine
+		// track, so restarting the caption clock here would run it ahead of the
+		// face (HA!s still popping after the laugh has settled).
+		if (animationName === 'chestbeat') return;
 		play('chestbeat', false);
 		// one clip covering all six strikes, so the grunts cannot drift out of
 		// sync with them
@@ -494,6 +528,13 @@
 			if (!placement) return;
 			if (animationName !== 'idle') return;
 			startTease();
+		},
+
+		// Like the throw it replaced, it interrupts whatever he was doing: the
+		// curtain is coming down on it. Silent — the trigger's own sting plays.
+		mascotBow: () => {
+			clearTimeout(voiceTimer);
+			play('bow', false);
 		},
 
 		mascotThrow: () => {

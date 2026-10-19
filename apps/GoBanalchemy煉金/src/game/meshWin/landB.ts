@@ -53,6 +53,7 @@ export const B_LAND: MeshWinSpec = {
 	flashTint: 0xffc45a,
 	inked: (p) => BUNDLE(p) === 0 || FUSE_LINE.dist(p) === 0,
 	rig: {
+		fixedBorder: 10,
 		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 },
 		soft: 4,
 		parts: [

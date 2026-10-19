@@ -3,22 +3,23 @@
 		| { type: 'mascotScatterSlash' }
 		| { type: 'mascotThrow' }
 		| { type: 'mascotGoggleTease' }
-		| { type: 'mascotSlash' };
+		| { type: 'mascotSlash'; finale?: boolean };
 </script>
 
 <script lang="ts">
 	import { Container, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { onMount, onDestroy } from 'svelte';
-	import { stateBet } from 'state-shared';
 	import { getContext } from '../game/context';
 
 	const context = getContext();
-	const ART = { width: 564, height: 846 };
-	const PUPPET_HEIGHT = 1510;
+	const ART = { width: 560, height: 884 };
+	const PUPPET_HEIGHT = 884;
 	const MIN_GAP = 260;
-	const RELEASE = { x: -215, y: 385 };
-	const ONE_SHOTS = ['cheer', 'nod', 'throwit', 'slash', 'scatter_slash'];
+	const RELEASE = { x: -180, y: 350 };
+	const SPLIT_ACTIONS = ['slash', 'slash_alt', 'split_finale'];
+	const ONE_SHOTS = ['cheer', 'nod', 'throwit', 'watch', ...SPLIT_ACTIONS, 'scatter_slash'];
+	const isAction = () => [...SPLIT_ACTIONS, 'scatter_slash', 'throwit'].includes(animationName);
 
 	const placement = $derived.by(() => {
 		const layout = context.stateLayoutDerived.mainLayout();
@@ -53,18 +54,34 @@
 	// A big win starts with a cheer, then a quiet looping celebration while its
 	// count-up is active (the same rhythm as Anubis). A later action can interrupt.
 	let celebrateUntil = 0;
+	let pendingCheer = false;
 	const celebrate = (duration: number) => {
 		celebrateUntil = performance.now() + duration + 1300;
-		play('cheer', false);
+		pendingCheer = isAction();
+		if (!pendingCheer) play('cheer', false);
+	};
+	const endCelebration = () => {
+		celebrateUntil = 0;
+		pendingCheer = false;
+		if (animationName === 'dance' || animationName === 'cheer') play('idle', true);
 	};
 	let clock = $state(0);
 	let teaseUntil = $state(0);
 	let raf = 0;
+	let nextWatchAt = 0;
 	const timers: number[] = [];
 	const later = (delay: number, fn: () => void) => timers.push(window.setTimeout(fn, delay));
 	const clearTimers = () => { for (const id of timers) clearTimeout(id); timers.length = 0; };
 	onMount(() => {
-		const step = (now: number) => { clock = now; raf = requestAnimationFrame(step); };
+		nextWatchAt = performance.now() + 8000;
+		const step = (now: number) => {
+			clock = now;
+			if (now >= nextWatchAt) {
+				nextWatchAt = now + 11000;
+				if (placement && animationName === 'idle' && now >= celebrateUntil) play('watch', false);
+			}
+			raf = requestAnimationFrame(step);
+		};
 		raf = requestAnimationFrame(step);
 		return () => cancelAnimationFrame(raf);
 	});
@@ -72,7 +89,11 @@
 
 	const play = (name: string, loops: boolean) => {
 		clearTimers();
-		animationName = name;
+		teaseUntil = 0;
+		nextWatchAt = performance.now() + 11000;
+		// SpineTrack reacts to a name change. Alternate the identical split
+		// clips so a second cut can restart the gesture while the first recovers.
+		animationName = name === 'slash' && animationName === 'slash' ? 'slash_alt' : name;
 		loop = loops;
 	};
 	const say = (name: 'roar' | 'effort') =>
@@ -82,9 +103,9 @@
 		if (clock >= teaseUntil || !placement) return;
 		const life = Math.max(0, Math.min(1, (teaseUntil - clock) / 1200));
 		const alpha = Math.sin(Math.PI * life) * 0.24;
-		for (const x of [50, 130]) {
-			g.circle(x, -1300, 28).fill({ color: 0xff4d36, alpha: alpha * 0.3 });
-			g.circle(x, -1300, 7).fill({ color: 0xffda93, alpha });
+		for (const x of [30, 85]) {
+			g.circle(x, -741, 16).fill({ color: 0xff4d36, alpha: alpha * 0.3 });
+			g.circle(x, -741, 4).fill({ color: 0xffda93, alpha });
 		}
 	};
 
@@ -92,12 +113,12 @@
 		winUpdate: ({ winLevelData }) => {
 			if (winLevelData.type === 'big') celebrate(winLevelData.presentDuration);
 		},
-		winHide: () => { celebrateUntil = 0; },
-		freeSpinOutroHide: () => { celebrateUntil = 0; },
+		winHide: endCelebration,
+		freeSpinOutroHide: endCelebration,
 		freeSpinOutroCountUp: ({ amount, winLevelData }) => {
 			if (amount <= 0) return;
 			if (winLevelData.type === 'big') celebrate(winLevelData.presentDuration);
-			else play('nod', false);
+			else if (!isAction()) play('nod', false);
 		},
 		mascotScatterSlash: () => {
 			if (!placement) return;
@@ -108,13 +129,16 @@
 			say('roar');
 		},
 		mascotGoggleTease: () => {
-			if (placement && animationName === 'idle') teaseUntil = performance.now() + 1200;
+			if (placement && (animationName === 'idle' || animationName === 'watch')) {
+				play('watch', false);
+				teaseUntil = performance.now() + 1200;
+			}
 		},
 		mascotThrow: () => {
 			play('throwit', false);
 			later(520, () => say('effort'));
 		},
-		mascotSlash: () => { if (placement) play('slash', false); },
+		mascotSlash: ({ finale }) => { if (placement) play(finale ? 'split_finale' : 'slash', false); },
 		winLinesShow: () => {
 			if (context.stateGame.gameType === 'basegame' && animationName === 'idle') play('nod', false);
 		},
@@ -127,23 +151,28 @@
 			trackIndex={0}
 			{animationName}
 			{loop}
-			mixDuration={animationName === 'slash' || animationName === 'scatter_slash' ? 0.08 : 0.16}
-			timeScale={animationName === 'slash' && stateBet.isTurbo ? 1 / 0.6 : 1}
+			mixDuration={SPLIT_ACTIONS.includes(animationName) ? 0.055 : animationName === 'idle' ? 0.24 : 0.18}
+			timeScale={1}
 			listener={{
 				complete: (entry) => {
 					const finished = entry.animation?.name;
 					if (!finished || finished !== animationName) return;
-					if (finished === 'cheer' && performance.now() < celebrateUntil) play('dance', true);
+					if (pendingCheer && performance.now() < celebrateUntil) {
+						pendingCheer = false;
+						play('cheer', false);
+					}
+					else if (finished === 'cheer' && performance.now() < celebrateUntil) play('dance', true);
 					else if (finished === 'dance' && performance.now() >= celebrateUntil) play('idle', true);
 					else if (ONE_SHOTS.includes(finished)) play('idle', true);
 				},
 			}}
 		/>
-		<!-- TRACK 1, ALWAYS: the headband tails, sash end, braided cord, banana
-		     charm and apron hem (design/ninja_flow.py). It keys only those bones,
-		     so it plays under every action on track 0; Spine physics adds the
-		     follow-through when the body moves. -->
+		<!-- Accessory loop and cloth physics stay active through every gesture. -->
 		<SpineTrack trackIndex={1} animationName="flutter" loop />
+		<!-- Painted lids on the `lids` slot (design/ninja_blink.py); nothing else keys it. -->
+		<SpineTrack trackIndex={2} animationName="blink" loop />
+		<!-- the shoulder shuriken catches the light every 6s (design/ninja_shuriken_glint.py) -->
+		<SpineTrack trackIndex={3} animationName="glint" loop />
 	</SpineProvider>
 	<Container x={placement.x} y={placement.y} scale={placement.scale}>
 		<Graphics draw={drawTease} blendMode="add" />

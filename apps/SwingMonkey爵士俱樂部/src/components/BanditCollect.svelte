@@ -38,6 +38,7 @@
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import SackBadge from './SackBadge.svelte';
+	import { stateBet } from 'state-shared';
 	import PropMesh from './PropMesh.svelte';
 	import { P_PICK, pPickLift } from '../game/meshWin';
 	import { CANVAS } from '../game/meshWin/meshRig';
@@ -76,14 +77,25 @@
 
 	let raf = 0;
 	let running = false;
+	// The collection is this game's centrepiece: it plays at full length under
+	// turbo too (turbo shortens the reels and the win acts, not this). Only
+	// turbo 2 (two bolts, uiTheme.turboTiers) quickens it, and only to 1.5x —
+	// so everything here runs on a virtual clock, `vt`, that the loop advances
+	// by real time times that pace (as Strike / Putt, 2026-10-18).
+	const pace = () => (stateBet.isTurbo && stateBet.turboLevel === 2 ? 1.5 : 1);
+	let vt = 0;
+	let previous = 0;
 	const loop = (now: number) => {
-		clock = now;
+		vt += Math.min(80, Math.max(0, now - previous)) * pace();
+		previous = now;
+		clock = vt;
 		raf = requestAnimationFrame(loop);
 	};
 	const startClock = () => {
 		if (running) return;
 		running = true;
-		clock = performance.now();
+		previous = performance.now();
+		clock = vt;
 		raf = requestAnimationFrame(loop);
 	};
 	const stopClock = () => {
@@ -92,12 +104,12 @@
 	};
 	onDestroy(stopClock);
 
-	// Wait on the rAF clock, so a hidden tab pauses the collection rather than
-	// letting timers race ahead of what is drawn.
+	// Wait on the (virtual) rAF clock, so a hidden tab pauses the collection
+	// rather than letting timers race ahead of what is drawn.
 	const waitMs = (ms: number) =>
 		new Promise<void>((resolve) => {
-			const until = performance.now() + ms;
-			const check = (now: number) => (now >= until ? resolve() : requestAnimationFrame(check));
+			const until = vt + ms;
+			const check = () => (vt >= until ? resolve() : requestAnimationFrame(check));
 			requestAnimationFrame(check);
 		});
 
@@ -111,6 +123,29 @@
 		return t > 0 && t < PICK_MS ? t : -1;
 	};
 	const CUP_SIZE = SYMBOL_SIZE * 0.88;
+
+	// THE RECORDS PLAY while they are collected (user, 2026-10-18): once a
+	// record's hop is over it starts turning like a record on a turntable —
+	// spun up over SPIN_UP_MS to SPIN_RPS — and keeps playing until the
+	// collection is put away; the copies in flight turn faster (FLY_RPS).
+	// SackBadge draws the turning (groove glints, label print), on the virtual
+	// clock, so turbo 2 spins them a touch faster too.
+	const SPIN_RPS = 1.25;
+	const FLY_RPS = 2.4;
+	const SPIN_UP_MS = 380;
+	// set when the last hold begins: the records wind down (fade) through it
+	let spinEndAt = $state(-1);
+	const playing = (i: number) => {
+		if (pickStart < 0) return null;
+		const fade = spinEndAt < 0 ? 1 : Math.max(0, 1 - (clock - spinEndAt) / HOLD_MS);
+		if (fade <= 0) return null;
+		const t = clock - pickStart - i * 40 - PICK_MS;
+		if (t <= 0) return null;
+		const w = 2 * Math.PI * SPIN_RPS / 1000;
+		// eased spin-up: angle of a constant acceleration to full speed, then linear
+		const angle = t < SPIN_UP_MS ? (w * t * t) / (2 * SPIN_UP_MS) : w * (t - SPIN_UP_MS / 2);
+		return { angle, alpha: Math.min(1, t / 160) * fade };
+	};
 
 	const flightPoint = (f: Flyer, t: number) => {
 		const e = easeInOut(t);
@@ -162,14 +197,14 @@
 			}));
 			flyers = [];
 
-			pickStart = performance.now();
+			pickStart = vt;
 			await waitMs(PICK_MS + sacks.length * 40);
 
 			// one Chef at a time: with two or three collecting at once, every Plate
 			// flying everywhere at the same moment is unreadable
 			for (let b = 0; b < tags.length; b++) {
 				const tag = tags[b];
-				const base = performance.now();
+				const base = vt;
 				flyers = sacks.map((s, i) => ({
 					fromX: s.x,
 					fromY: s.y,
@@ -183,7 +218,7 @@
 					await waitMs(i === 0 ? FLY_MS : STAGGER_MS);
 					context.eventEmitter.broadcast({ type: 'soundCoinIn', index: i });
 					tag.shown += sacks[i].value;
-					tag.pop = performance.now();
+					tag.pop = vt;
 					tag.catchAt = tag.pop;
 				}
 				await waitMs(120);
@@ -191,18 +226,20 @@
 			}
 
 			if (mult > 1) {
-				stampStart = performance.now();
+				stampStart = vt;
 				await waitMs(STAMP_MS * 0.35);
 				context.eventEmitter.broadcast({ type: 'soundCollectStamp' });
 				for (const tag of tags) {
 					tag.stamped = true;
 					tag.shown = event.perCollector * mult;
-					tag.pop = performance.now();
+					tag.pop = vt;
 				}
 				await waitMs(STAMP_MS * 0.65);
 			}
+			spinEndAt = vt;
 			await waitMs(HOLD_MS);
 			pickStart = -1;
+			spinEndAt = -1;
 			collected = true;
 			stopClock();
 		},
@@ -232,6 +269,7 @@
 			flyers = [];
 			stampStart = -1;
 			pickStart = -1;
+			spinEndAt = -1;
 			stopClock();
 		},
 	});
@@ -265,6 +303,15 @@
 		{/if}
 	{/each}
 
+	<!-- 1b. after the hop, each record on the reel plays (turns in its own
+	     plane) until the collection is put away -->
+	{#each sacks as sack, i (i)}
+		{@const play = playing(i)}
+		{#if play}
+			<SackBadge prize={sack.value / 100} x={sack.x} y={sack.y} spin={play.angle} spinAlpha={play.alpha} />
+		{/if}
+	{/each}
+
 	<!-- 2. copies in flight -->
 	{#each flyers as flyer, i (i)}
 		{@const p = flyerPos(flyer)}
@@ -284,6 +331,7 @@
 				x={p.x}
 				y={p.y}
 				scale={p.scale / 0.88}
+				spin={(clock - flyer.start) * 2 * Math.PI * FLY_RPS / 1000}
 			/>
 		{/if}
 	{/each}

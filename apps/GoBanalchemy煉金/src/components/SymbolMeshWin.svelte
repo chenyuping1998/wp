@@ -40,7 +40,7 @@
 	 * shadow: the mesh draws the symbol's own sprite, the frame held still by
 	 * the rig.
 	 */
-	import { Mesh, MeshGeometry, Sprite, Container, Texture } from 'pixi.js';
+	import { Mesh, MeshGeometry, Sprite, Container, Texture, Graphics as BoilGraphics } from 'pixi.js';
 	import { Graphics, getContextApp, getContextParent } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBetDerived } from 'state-shared';
@@ -49,9 +49,11 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
 	import { CANVAS, skin } from '../game/meshWin/meshRig';
-	import { MESH_WINS } from '../game/meshWin';
+	import { MESH_WINS, W_BLINKS, blinkLid } from '../game/meshWin';
 	import { winTimeScale } from '../game/timeScale';
+	import { POTIONS, boilAt, chamberOutline, warp } from '../game/meshWin/potionBoil';
 	import ImpactDust from './ImpactDust.svelte';
+	import PotionBoil from './PotionBoil.svelte';
 
 	type Props = {
 		x?: number;
@@ -72,7 +74,9 @@
 	const parent = getContextParent();
 	const spec = props.spec ?? MESH_WINS[props.symbolName];
 
-	const SHADOW_ALPHA = 0.55, SHADOW_SPREAD = 0.12, SHADOW_DROP = 3;
+	const SHADOW_ALPHA = 0.55,
+		SHADOW_SPREAD = 0.12,
+		SHADOW_DROP = 3;
 	const GOLD = 0xffd75e;
 
 	const fit = (SYMBOL_SIZE * props.symbolInfo.sizeRatios.height) / CANVAS;
@@ -88,7 +92,13 @@
 		g.clear();
 		const half = (SYMBOL_SIZE * props.symbolInfo.sizeRatios.height) / 2;
 		const inset = SYMBOL_SIZE * 0.02;
-		g.roundRect(-half + inset, -half + inset, (half - inset) * 2, (half - inset) * 2, SYMBOL_SIZE * 0.05).stroke({
+		g.roundRect(
+			-half + inset,
+			-half + inset,
+			(half - inset) * 2,
+			(half - inset) * 2,
+			SYMBOL_SIZE * 0.05,
+		).stroke({
 			width: SYMBOL_SIZE * 0.03,
 			color: GOLD,
 			alpha: 0.9,
@@ -131,7 +141,11 @@
 
 		const rig = rigFor(spec);
 		const positions = new Float32Array(rig.rest);
-		const geometry = new MeshGeometry({ positions, uvs: rig.uvs, indices: rig.indices });
+		const geometry = new MeshGeometry({
+			positions,
+			uvs: rig.uvs,
+			indices: rig.indices,
+		});
 
 		const plate = plateTex ? new Sprite(plateTex) : null;
 		plate?.setSize(CANVAS, CANVAS);
@@ -144,7 +158,54 @@
 
 		const content = new Container();
 		content.position.set(-CANVAS / 2, -CANVAS / 2);
-		for (const layer of panelMode ? [subject] : [plate, shadow, subject]) if (layer) content.addChild(layer);
+		for (const layer of panelMode ? [subject] : [plate, shadow, subject])
+			if (layer) content.addChild(layer);
+		// the potions boil inside their glass, riding the mesh (potionBoil.ts):
+		// hard on a win, a simmer on a landing or an idle act
+		const potion = POTIONS[spec.symbol.split(':')[0]];
+		const heat = props.spec ? 0.45 : 1;
+		const bubbles = potion ? new BoilGraphics() : null;
+		const glassMask = potion ? new BoilGraphics() : null;
+		if (bubbles && glassMask) {
+			content.addChild(bubbles, glassMask);
+			bubbles.mask = glassMask;
+		}
+		const outlines = potion ? potion.chambers.map((c) => chamberOutline(c)) : [];
+		const drawBoil = (t: number) => {
+			if (!potion || !bubbles || !glassMask) return;
+			const at = (x: number, y: number) => warp(spec.rig.grid, positions, x, y);
+			glassMask.clear();
+			for (const pts of outlines) glassMask.poly(pts.flatMap(([x, y]) => at(x, y))).fill(0xffffff);
+			// boiling comes up to heat over the first beat
+			const k = heat * Math.min(1, t / 160);
+			bubbles.clear();
+			for (const b of boilAt(potion, t, k)) {
+				const [x, y] = at(b.x, b.y);
+				if (b.pop > 0) {
+					bubbles.ellipse(x, y, b.r * 1.7, b.r * 0.45).stroke({ width: 0.7, color: potion.rim, alpha: b.alpha });
+					continue;
+				}
+				bubbles.circle(x, y, b.r).fill({ color: potion.body, alpha: b.alpha * 0.3 });
+				bubbles.circle(x, y, b.r).stroke({ width: 0.7, color: potion.rim, alpha: b.alpha * 0.85 });
+				bubbles.circle(x - b.r * 0.32, y - b.r * 0.36, b.r * 0.3).fill({ color: potion.glint, alpha: b.alpha * 0.8 });
+			}
+		};
+		// the Wild blinks: painted lids on the SAME geometry, so they bend with
+		// the face (wGorilla.ts W_BLINKS, design/w_blink.py)
+		const blinks = W_BLINKS[spec.symbol];
+		const lidHalf = blinks ? tex('gbWLidHalf') : undefined;
+		const lidClosed = blinks ? tex('gbWLidClosed') : undefined;
+		const lids = blinks && lidHalf && lidClosed ? new Mesh({ geometry, texture: lidHalf }) : null;
+		if (lids) {
+			lids.visible = false;
+			content.addChild(lids);
+		}
+		const drawLids = (t: number) => {
+			if (!lids || !blinks) return;
+			const lid = blinkLid(t, blinks);
+			lids.visible = lid !== null;
+			if (lid) lids.texture = lid === 'half' ? lidHalf! : lidClosed!;
+		};
 		root.addChild(content);
 		root.position.set(props.x ?? 0, props.y ?? 0);
 		// A win's subject leaps out past its cell, so it goes on TOP of the cells
@@ -157,7 +218,9 @@
 			const pose = spec.pose(rig, t);
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();
-			root.scale.set(fit * pose.plateHit);
+			drawBoil(t);
+			drawLids(t);
+			root.scale.set(fit);
 			root.position.set(props.x ?? 0, props.y ?? 0);
 
 			if (shadow) {
@@ -186,6 +249,16 @@
 		};
 	});
 </script>
+
+{#if props.symbolName === 'B'}
+	<PotionBoil
+		x={props.x ?? 0}
+		y={props.y ?? 0}
+		width={CANVAS * fit}
+		height={CANVAS * fit}
+		intensity={0.5}
+	/>
+{/if}
 
 {#if props.showWinFrame ?? true}
 	<!-- The gold pay frame round the cell. GoBananubis draws the template's

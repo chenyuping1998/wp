@@ -10,7 +10,9 @@
 				mult: number;
 				amount: number;
 		  }
-		| { type: 'banditCollectClear' };
+		| { type: 'banditCollectClear' }
+		// the last pin has landed on a collector (ComicPop puts its word there)
+		| { type: 'banditCollectFinale'; reel: number; row: number; pins: number };
 </script>
 
 <script lang="ts">
@@ -33,6 +35,7 @@
 	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 
+	import { stateBet } from 'state-shared';
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, isBigPrize } from '../game/constants';
 	import { getSymbolX } from '../game/utils';
@@ -42,6 +45,7 @@
 	import { P_PICK, pPickLift } from '../game/meshWin';
 	import { CANVAS } from '../game/meshWin/meshRig';
 	import { NUMBER_FONT } from '../game/fonts';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
 
 	const context = getContext();
 
@@ -51,7 +55,13 @@
 
 	const PICK_MS = 420;
 	const FLY_MS = 460;
-	const STAGGER_MS = 90;
+	// THE PINS GO AS A CHAIN (2026-10-18, user: make the collection fun): each
+	// one leaves a little sooner after the last, 110ms down to 55, so a big haul
+	// gathers pace like pins going down in a strike, and the clacks climb a
+	// scale with it (soundPinClack). Four pins or more end on the strike crash.
+	const staggerAt = (i: number) => Math.max(55, 110 - 12 * i);
+	const STRIKE_PINS = 4;
+	const IMPACT_MS = 520;
 	const STAMP_MS = 520;
 	const HOLD_MS = 450;
 
@@ -60,7 +70,10 @@
 	const cellX = (reel: number) => getSymbolX(reel);
 
 	type Tag = { x: number; y: number; shown: number; stamped: boolean; pop: number; catchAt: number };
-	type Flyer = { fromX: number; fromY: number; toX: number; toY: number; start: number; done: boolean };
+	type Flyer = { fromX: number; fromY: number; toX: number; toY: number; start: number; done: boolean; spin: number; lift: number };
+	// a pin landing on the Bowler: a comic hit, wood chips and its value
+	type Impact = { x: number; y: number; at: number; label: string; seed: number; big: boolean };
+	let impacts = $state<Impact[]>([]);
 
 	let sacks = $state<{ x: number; y: number; value: number; side: number }[]>([]);
 	let tags = $state<Tag[]>([]);
@@ -74,16 +87,27 @@
 	let collected = false;
 	const TAG_FADE_MS = 320;
 
+	// The collection is this game's centrepiece: it plays at full length under
+	// turbo too (turbo shortens the reels and the win acts, not this). Only
+	// turbo 2 (two bolts, uiTheme.turboTiers) quickens it, and only to 1.5x —
+	// so everything here runs on a virtual clock, `vt`, that the loop advances
+	// by real time times that pace.
+	const pace = () => (stateBet.isTurbo && stateBet.turboLevel === 2 ? 1.5 : 1);
+	let vt = 0;
+	let previous = 0;
 	let raf = 0;
 	let running = false;
 	const loop = (now: number) => {
-		clock = now;
+		vt += Math.min(80, Math.max(0, now - previous)) * pace();
+		previous = now;
+		clock = vt;
 		raf = requestAnimationFrame(loop);
 	};
 	const startClock = () => {
 		if (running) return;
 		running = true;
-		clock = performance.now();
+		previous = performance.now();
+		clock = vt;
 		raf = requestAnimationFrame(loop);
 	};
 	const stopClock = () => {
@@ -92,12 +116,12 @@
 	};
 	onDestroy(stopClock);
 
-	// Wait on the rAF clock, so a hidden tab pauses the collection rather than
-	// letting timers race ahead of what is drawn.
+	// Wait on the (virtual) rAF clock, so a hidden tab pauses the collection
+	// rather than letting timers race ahead of what is drawn.
 	const waitMs = (ms: number) =>
 		new Promise<void>((resolve) => {
-			const until = performance.now() + ms;
-			const check = (now: number) => (now >= until ? resolve() : requestAnimationFrame(check));
+			const until = vt + ms;
+			const check = () => (vt >= until ? resolve() : requestAnimationFrame(check));
 			requestAnimationFrame(check);
 		});
 
@@ -112,9 +136,11 @@
 	};
 	const CUP_SIZE = SYMBOL_SIZE * 0.88;
 
+	// a knocked pin's flight: higher the farther it goes, tumbling end over
+	// end one full turn toward the Bowler so it arrives head up
 	const flightPoint = (f: Flyer, t: number) => {
 		const e = easeInOut(t);
-		const lift = Math.sin(t * Math.PI) * SYMBOL_SIZE * 0.32;
+		const lift = Math.sin(t * Math.PI) * f.lift;
 		return { x: f.fromX + (f.toX - f.fromX) * e, y: f.fromY + (f.toY - f.fromY) * e - lift };
 	};
 	const flyerPos = (f: Flyer) => {
@@ -125,6 +151,7 @@
 			...point, prevX: prev.x, prevY: prev.y,
 			trailAlpha: Math.min(1, t * 7) * (1 - t) * .55,
 			scale: 0.42 + 0.18 * Math.sin(t * Math.PI),
+			rotation: f.spin * Math.PI * 2 * easeInOut(t),
 			visible: t > 0 && t < 1,
 		};
 	};
@@ -161,42 +188,74 @@
 			}));
 			flyers = [];
 
-			pickStart = performance.now();
+			pickStart = vt;
 			await waitMs(PICK_MS + sacks.length * 40);
 
 			// one Chef at a time: with two or three collecting at once, every Plate
 			// flying everywhere at the same moment is unreadable
 			for (let b = 0; b < tags.length; b++) {
 				const tag = tags[b];
-				const base = performance.now();
-				flyers = sacks.map((s, i) => ({
-					fromX: s.x,
-					fromY: s.y,
-					toX: tag.x,
-					toY: tag.y + SYMBOL_SIZE * 0.36,
-					start: base + i * STAGGER_MS,
-					done: false,
-				}));
+				const base = vt;
+				const catchX = tag.x, catchY = tag.y + SYMBOL_SIZE * 0.36;
+				let launch = 0;
+				flyers = sacks.map((s, i) => {
+					if (i > 0) launch += staggerAt(i - 1);
+					const dist = Math.hypot(catchX - s.x, catchY - s.y);
+					return {
+						fromX: s.x,
+						fromY: s.y,
+						toX: catchX,
+						toY: catchY,
+						start: base + launch,
+						done: false,
+						spin: catchX < s.x ? -1 : 1,
+						lift: SYMBOL_SIZE * (0.3 + 0.32 * Math.min(1, dist / (SYMBOL_SIZE * 4))),
+					};
+				});
 				context.eventEmitter.broadcast({ type: 'soundCollectGrab' });
-				for (let i = 0; i < sacks.length; i++) {
-					await waitMs(i === 0 ? FLY_MS : STAGGER_MS);
-					context.eventEmitter.broadcast({ type: 'soundCoinIn', index: i });
+				// a whoosh as each pin takes off, a clack as each lands, on the clock
+				const beats = flyers
+					.flatMap((f, i) => [
+						{ at: f.start, i, land: false },
+						{ at: f.start + FLY_MS, i, land: true },
+					])
+					.sort((a, c) => a.at - c.at);
+				for (const beat of beats) {
+					if (beat.at > vt) await waitMs(beat.at - vt);
+					if (!beat.land) {
+						context.eventEmitter.broadcast({ type: 'soundPinWhoosh' });
+						continue;
+					}
+					const i = beat.i;
+					context.eventEmitter.broadcast({ type: 'soundPinClack', step: i });
 					tag.shown += sacks[i].value;
-					tag.pop = performance.now();
+					tag.pop = vt;
 					tag.catchAt = tag.pop;
+					impacts = [
+						...impacts.filter((m) => vt - m.at < IMPACT_MS),
+						{ x: catchX, y: catchY, at: vt, seed: b * 7 + i, label: `+${sacks[i].value / 100}x`, big: isBigPrize(sacks[i].value) },
+					];
+					if (i === sacks.length - 1) {
+						const c = event.collectors[b];
+						context.eventEmitter.broadcast({ type: 'banditCollectFinale', reel: c.reel, row: c.row, pins: sacks.length });
+						if (sacks.length >= STRIKE_PINS) {
+							context.eventEmitter.broadcast({ type: 'soundPinStrike' });
+							context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.7 });
+						}
+					}
 				}
 				await waitMs(120);
 				flyers = [];
 			}
 
 			if (mult > 1) {
-				stampStart = performance.now();
+				stampStart = vt;
 				await waitMs(STAMP_MS * 0.35);
 				context.eventEmitter.broadcast({ type: 'soundCollectStamp' });
 				for (const tag of tags) {
 					tag.stamped = true;
 					tag.shown = event.perCollector * mult;
-					tag.pop = performance.now();
+					tag.pop = vt;
 				}
 				await waitMs(STAMP_MS * 0.65);
 			}
@@ -229,11 +288,51 @@
 			sacks = [];
 			tags = [];
 			flyers = [];
+			impacts = [];
 			stampStart = -1;
 			pickStart = -1;
 			stopClock();
 		},
 	});
+
+	// the hit: a jagged comic star that snaps out and goes, four wood chips
+	// flung off it, and the pin's value floating up off the Bowler
+	const drawImpacts = (g: PixiGraphics) => {
+		g.clear();
+		for (const m of impacts) {
+			const k = (clock - m.at) / IMPACT_MS;
+			if (k < 0 || k > 1) continue;
+			const star = Math.min(1, k / 0.35);
+			if (star < 1) {
+				const r = SYMBOL_SIZE * (0.2 + 0.14 * star) * (m.big ? 1.25 : 1);
+				const pts: number[] = [];
+				for (let j = 0; j < 18; j++) {
+					const jag = j % 2 === 0 ? 1 : 0.5 + 0.12 * Math.sin(m.seed * 3.1 + j);
+					const a = (j / 18) * Math.PI * 2 + m.seed;
+					pts.push(m.x + Math.cos(a) * r * jag, m.y + Math.sin(a) * r * jag);
+				}
+				const alpha = 1 - star;
+				g.poly(pts).fill({ color: m.big ? 0xffcf4a : PAPER, alpha }).stroke({ width: 3, color: INK, alpha });
+			}
+			for (let j = 0; j < 4; j++) {
+				const a = -Math.PI / 2 + (j - 1.5) * 0.7 + Math.sin(m.seed + j) * 0.25;
+				const d = SYMBOL_SIZE * (0.22 + 0.5 * k);
+				const cx = m.x + Math.cos(a) * d;
+				const cy = m.y + Math.sin(a) * d + SYMBOL_SIZE * 0.9 * k * k;
+				const rot = a + k * 8 * (j % 2 ? 1 : -1);
+				const w = SYMBOL_SIZE * 0.06, h = SYMBOL_SIZE * 0.025;
+				const c = Math.cos(rot), sn = Math.sin(rot);
+				g.poly([
+					cx - w * c + h * sn, cy - w * sn - h * c,
+					cx + w * c + h * sn, cy + w * sn - h * c,
+					cx + w * c - h * sn, cy + w * sn + h * c,
+					cx - w * c - h * sn, cy - w * sn + h * c,
+				])
+					.fill({ color: j % 2 ? 0xf2d9a8 : RED, alpha: 1 - k })
+					.stroke({ width: 1.5, color: INK, alpha: 1 - k });
+			}
+		}
+	};
 
 	const tagPop = (tag: Tag) => {
 		const t = (clock - tag.pop) / 220;
@@ -274,6 +373,7 @@
 				anchor={0.5}
 				x={p.x}
 				y={p.y}
+				rotation={p.rotation}
 				width={SYMBOL_SIZE * p.scale}
 				height={SYMBOL_SIZE * p.scale}
 			/>
@@ -282,6 +382,7 @@
 				prize={(sacks[i]?.value ?? 0) / 100}
 				x={p.x}
 				y={p.y}
+				rotation={p.rotation}
 				scale={p.scale / 0.88}
 			/>
 		{/if}
@@ -325,4 +426,26 @@
 		{/if}
 	{/each}
 	</Container>
+
+	<!-- 4. the hits, over the tags (always mounted, so it stays on top) -->
+	<Graphics draw={drawImpacts} />
+	{#each impacts as m (m.at)}
+		{@const k = Math.min(1, Math.max(0, (clock - m.at) / IMPACT_MS))}
+		{#if k < 1}
+			<Text
+				anchor={0.5}
+				x={m.x + SYMBOL_SIZE * 0.32}
+				y={m.y - SYMBOL_SIZE * (0.3 + 0.45 * easeOutCubic(k))}
+				alpha={k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3}
+				scale={k < 0.15 ? 0.6 + 0.6 * (k / 0.15) : 1.2 - 0.2 * Math.min(1, (k - 0.15) / 0.2)}
+				text={m.label}
+				style={{
+					fontFamily: NUMBER_FONT,
+					fontSize: SYMBOL_SIZE * 0.2,
+					fill: m.big ? 0xffcf4a : PAPER,
+					stroke: { color: INK, width: SYMBOL_SIZE * 0.035, join: 'round' },
+				}}
+			/>
+		{/if}
+	{/each}
 </BoardContainer>

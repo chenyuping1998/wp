@@ -3,10 +3,8 @@
 	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
-	import FxBurst from './FxBurst.svelte';
 
-	// Ambient bed under a big-win presentation: slowly turning sun rays, drifting
-	// bokeh and celebration bursts popping around the plaque.
+	// Ambient bed under a big-win presentation: soft, slowly turning rays.
 	type Props = {
 		x?: number;
 		y?: number;
@@ -19,94 +17,42 @@
 	const radius = $derived(props.radius ?? 520);
 	const intensity = $derived(props.intensity ?? 1);
 
+	// 2026-10-16 (review: poor animation): calmer. This drew 12 hard-edged
+	// opaque wedges spinning and pulsing, 14 big bokeh blobs and a burst every
+	// 0.7s for as long as the plaque was up — the busiest, cheapest-looking
+	// layer in the game. Now: soft rays (each one three nested wedges, so it
+	// has a bright core and feathered edges), additive and faint, turning
+	// slowly, with no pulse; no blobs; bursts only on the entrance (Win.svelte).
 	let rotation = $state(0);
-	let pulse = $state(0);
-	let moteDrift = $state(0);
-	let bursts = $state<{ id: number; x: number; y: number; scale: number }[]>([]);
-	let nextBurstId = 0;
-
-	// jungle-gold bokeh reusing the glow texture, tinted per mote
-	const BOKEH_COLORS = [0xffd75e, 0xfff7d1, 0xd9e88a, 0xffb04a];
-	const motes = Array.from({ length: 14 }, (_, i) => ({
-		x: (Math.random() - 0.5) * 1200,
-		y: (Math.random() - 0.6) * 880,
-		size: 46 + Math.random() * 110,
-		color: BOKEH_COLORS[i % BOKEH_COLORS.length],
-		phase: Math.random() * Math.PI * 2,
-		speed: 0.6 + Math.random() * 0.5,
-	}));
-
 	onMount(() => {
-		const spinId = setInterval(() => {
-			rotation += 0.0045;
-			moteDrift += 0.0016;
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / 420);
-		}, 16);
-		const burstId = setInterval(() => {
-			bursts = [
-				...bursts.slice(-5),
-				{
-					id: nextBurstId++,
-					x: (Math.random() - 0.5) * radius * 1.1,
-					y: (Math.random() - 0.55) * radius * 0.75,
-					scale: 0.55 + Math.random() * 0.5,
-				},
-			];
-		}, 700 / intensity);
-		return () => {
-			clearInterval(spinId);
-			clearInterval(burstId);
-		};
+		const spinId = setInterval(() => (rotation += 0.0016), 16);
+		return () => clearInterval(spinId);
 	});
 
-	// 12 golden wedges radiating from the centre, alternating length
+	const RAYS = 14;
 	const drawRays = (g: PixiGraphics) => {
 		g.clear();
-		const rayCount = 12;
-		const alpha = (0.14 + 0.08 * pulse) * intensity;
-		for (let i = 0; i < rayCount; i++) {
-			const angle = (i / rayCount) * Math.PI * 2;
-			const reach = radius * (i % 2 === 0 ? 1 : 0.78);
-			const halfWidth = Math.PI / rayCount / 1.9;
-			// PIXI v8 API: under the v7 shim every ray took the last fill, so the
-			// alternating gold / amber came out one colour
-			g.poly([
-				0,
-				0,
-				Math.cos(angle - halfWidth) * reach,
-				Math.sin(angle - halfWidth) * reach,
-				Math.cos(angle + halfWidth) * reach,
-				Math.sin(angle + halfWidth) * reach,
-			]);
-			g.fill({ color: i % 2 === 0 ? 0xffd75e : 0xffb64d, alpha });
+		for (let i = 0; i < RAYS; i++) {
+			const angle = (i / RAYS) * Math.PI * 2;
+			const reach = radius * (i % 2 === 0 ? 1.05 : 0.8);
+			for (const [spread, alpha] of [[1, 0.035], [0.6, 0.045], [0.28, 0.06]] as [number, number][]) {
+				const half = (Math.PI / RAYS) * 0.55 * spread;
+				g.poly([
+					0, 0,
+					Math.cos(angle - half) * reach, Math.sin(angle - half) * reach,
+					Math.cos(angle + half) * reach, Math.sin(angle + half) * reach,
+				]).fill({ color: 0xffe2a0, alpha: alpha * Math.min(1.4, intensity) });
+			}
 		}
-		// warm core so the rays melt into the count-up area
-		g.circle(0, 0, radius * 0.34).fill({ color: 0xffe9a8, alpha: (0.14 + 0.1 * pulse) * intensity });
 	};
 </script>
 
 <Container x={props.x ?? 0} y={props.y ?? 0}>
 	<!-- vignette first: deepens the edges so the plaque reads with more depth -->
 	<Sprite key="fxVignette" anchor={0.5} width={radius * 3.4} height={radius * 3.4} alpha={0.85} />
-	<Container rotation={moteDrift}>
-		{#each motes as mote, index (index)}
-			<Sprite
-				key="fxGlow"
-				anchor={0.5}
-				x={mote.x}
-				y={mote.y}
-				tint={mote.color}
-				blendMode="add"
-				width={mote.size}
-				height={mote.size}
-				alpha={0.12 + 0.1 * Math.sin(pulse * 6 * mote.speed + mote.phase)}
-			/>
-		{/each}
-	</Container>
 	<Container {rotation}>
-		<Graphics draw={drawRays} />
+		<Graphics draw={drawRays} blendMode="add" />
 	</Container>
-	{#each bursts as burst (burst.id)}
-		<FxBurst x={burst.x} y={burst.y} scale={burst.scale} />
-	{/each}
+	<!-- a soft core so the rays melt into the plaque instead of meeting at a point -->
+	<Sprite key="fxGlow" anchor={0.5} width={radius * 1.3} height={radius * 1.3} tint={0xffd890} alpha={0.22} blendMode="add" />
 </Container>

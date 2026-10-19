@@ -225,6 +225,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// (sfx_superfreespin is the shutter's own — it played here too, twice on
 		// the same frame)
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
+		// He conjures the teal ball, bowls it, and it rolls off the left edge;
+		// the wipe is that ball coming back huge (2026-10-18). Resolves at once
+		// when he is not on screen (tablet / portrait).
+		await eventEmitter.broadcastAsync({ type: 'mascotBowl' });
 		// Enter the feature inside the blast's white-out. The swap used to happen
 		// after the intro plaque had already counted up, which meant the blast
 		// cleared onto the BASE scene and the background only changed later, hidden
@@ -232,6 +236,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// reveals the free game — which is what the transition is for.
 		await eventEmitter.broadcastAsync({
 			type: 'transition',
+			noThrow: true,
 			cover: () => {
 				stateGame.gameType = 'freegame';
 				// The meter opens where the mode says: superbonus starts at the first

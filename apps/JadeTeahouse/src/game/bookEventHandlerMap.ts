@@ -379,6 +379,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			type: 'transition',
 			cover: () => {
 				stateGame.gameType = 'basegame';
+				// back on the base scene, back to its music. Nothing else switches
+				// it: winLevelSoundsStop above still saw the feature scene and kept
+				// the free-game bed, which then looped on through the base game.
+				eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
 			},
 		});
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
@@ -408,6 +412,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 
 		if (stateGame.gameType !== 'basegame') {
 			stateGame.gameType = 'basegame';
+			eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
 		}
 	},
 	wincap: async (bookEvent: BookEventOfType<'wincap'>) => {

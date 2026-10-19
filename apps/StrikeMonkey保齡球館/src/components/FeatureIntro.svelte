@@ -3,7 +3,6 @@
 	import { MainContainer } from 'components-layout';
 	import { onMount } from 'svelte';
 	import { getContext } from '../game/context';
-	import InkNumber from './InkNumber.svelte';
 	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
 
 	const context = getContext();
@@ -23,6 +22,27 @@
 		frame = requestAnimationFrame(tick);
 		return () => cancelAnimationFrame(frame);
 	});
+	// the title's own clock: a small hop every few seconds for as long as the
+	// intro is up, then it holds still
+	let signMs = $state(0);
+	onMount(() => {
+		const start = performance.now();
+		let frame = 0;
+		const tick = (now: number) => {
+			signMs = now - start;
+			frame = requestAnimationFrame(tick);
+		};
+		frame = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(frame);
+	});
+	// the hop: up, a little over, settled — 420 ms out of every 5 s
+	const titleHop = $derived.by(() => {
+		const t = (signMs - 1400) % 5000;
+		if (signMs < 1400 || t > 420) return { y: 0, s: 1, r: 0 };
+		const k = t / 420;
+		const lift = Math.sin(Math.PI * k);
+		return { y: -logoWidth * 0.03 * lift, s: 1 + 0.05 * lift, r: -0.02 * Math.sin(2 * Math.PI * k) };
+	});
 	const entryTail = (index: number) => {
 		const progress = Math.max(0, Math.min(1, (introMs - index * 105) / 480));
 		return (1 - progress) ** 2;
@@ -36,11 +56,11 @@
 
 <MainContainer>
 	<Container x={layout.width * 0.5} y={layout.height * (stacked ? 0.115 : 0.15)}>
-		<Sprite key="v8LogoBoard" anchor={0.5} width={logoWidth} height={logoWidth * 0.375} />
-		<Text text="STRIKE MONKEY" anchor={0.5}
-			style={{ fontFamily: GAME_FONT, fontWeight: GAME_FONT_WEIGHT,
-				fontSize: logoWidth * 0.095, fill: 0x14262e,
-				stroke: { color: 0xfff4de, width: 3, join: 'round' } }} />
+		<!-- the title alone, no signboard (user, 2026-10-18; was the LOGO_BOARD
+		     mesh on sushiV8/logo_board_titled.png) — design/bake_loading_title.py -->
+		<Container y={titleHop.y} scale={titleHop.s} rotation={titleHop.r}>
+			<Sprite key="v8LogoTitle" anchor={0.5} width={logoWidth} height={logoWidth / 7.15} />
+		</Container>
 	</Container>
 	{#each panels as panel, i}
 		{@const cx = stacked ? layout.width * 0.5 : layout.width * (0.23 + i * 0.27)}
@@ -52,18 +72,6 @@
 				x={stacked ? -cardW * 0.25 : 0} y={stacked ? 0 : -cardH * 0.16}
 				width={stacked ? cardW * 0.38 : cardW * 0.79}
 				height={stacked ? cardW * 0.2375 : cardW * 0.49375} />
-			{#if i === 2}
-				<!-- typeset on the MAX WIN paper's clear band: centred at (600, 290) of
-				     the 1024 x 640 scene, tilted 5° with it
-				     (design/build_intro_scenes.py CHECK_CENTRE / CHECK_TILT) -->
-				{@const pw = stacked ? cardW * 0.38 : cardW * 0.79}
-				<Container
-					x={(stacked ? -cardW * 0.25 : 0) + pw * (600 / 1024 - 0.5)}
-					y={(stacked ? 0 : -cardH * 0.16) + pw * 0.625 * (290 / 640 - 0.5)}
-					rotation={0.087}>
-					<InkNumber text="10,000×" role="count" fontSize={pw * 0.11} maxWidth={pw * 0.42} />
-				</Container>
-			{/if}
 			<Text text={panel.title} anchor={0.5}
 				x={stacked ? cardW * 0.20 : 0} y={stacked ? -cardH * 0.28 : cardH * 0.12}
 				style={{ fontFamily: GAME_FONT, fontWeight: GAME_FONT_WEIGHT,

@@ -20,6 +20,11 @@ export const stateBet = $state({
 	autoSpinsSingleWinLimitAmount: Infinity,
 	isSpaceHold: false,
 	isTurbo: false,
+	// Which turbo while isTurbo is on: 1 for every game, 2 only where the UI
+	// offers a second tier (components-ui-pixi uiTheme.turboTiers). isTurbo stays
+	// the one switch everything else reads, so a game that never sets this is
+	// unchanged.
+	turboLevel: 1 as 1 | 2,
 });
 
 const correctBetAmount = (value: number) => {
@@ -76,6 +81,8 @@ const updateIsTurbo = (value: boolean, options: { persistent: boolean }) => {
 	if (persistent) isTurboLocked = value;
 
 	stateBet.isTurbo = value;
+	// off is off: the next time turbo comes on it starts from the first tier
+	if (!value) stateBet.turboLevel = 1;
 };
 
 const activeBetMode = () => stateMeta.betModeMeta?.[stateBet.activeBetModeKey.toUpperCase()]

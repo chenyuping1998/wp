@@ -35,9 +35,14 @@
 	const parent = getContextParent();
 
 	let blastAt = -1;
+	let coinAt = -1;
 	context.eventEmitter.subscribeOnMount({
 		reelBlast: () => {
 			blastAt = Date.now();
+		},
+		// hold and spin: new coins stuck on the board (the vault's coin pile)
+		stickyPrizesNew: () => {
+			coinAt = Date.now();
 		},
 	});
 
@@ -68,6 +73,7 @@
 				level: stateGame.blastLevel,
 				quakeT: caveQuake.clock,
 				blastT: blastAt < 0 ? -1 : now - blastAt,
+				coinT: coinAt < 0 ? -1 : now - coinAt,
 			});
 			skin(rig, pose, props.spec.feetY, positions);
 			geometry!.getBuffer('aPosition').update();

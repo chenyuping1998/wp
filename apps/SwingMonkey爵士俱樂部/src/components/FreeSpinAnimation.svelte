@@ -8,18 +8,26 @@
 	import { backOut, cubicOut } from 'svelte/easing';
 
 	import { getContext } from '../game/context';
-	import { FG_BOARD_DECOR } from '../game/meshWin';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
-	import { SIGN } from '../game/meshWin';
-	import { SIGN_CANVAS, signTextOffset, type SignEnv } from '../game/meshWin/fsSign';
-	import type { Pose, Rig } from '../game/meshWin/meshRig';
-	import PropMesh from './PropMesh.svelte';
+	import LightRays from './LightRays.svelte';
 
-	// Jungle-military plank sign (gbFsSign, 920×720) that drops in from the top
-	// and settles with a swing. Children render at the sign's text area center.
+	// The gig ticket (design/build_swing_fg_sign.py, 1600x1000): a window onto
+	// the stage over the ticket's paper, dropping in from the top and settling
+	// with a swing. Children render at the paper's centre. Nothing is pinned on
+	// it any more (2026-10-18: the corner badge and record read as AI-made, as
+	// on Putt / Strike); its decor layer is empty. On the intro the stage's
+	// spotlight swings across the window once and comes to rest centre stage.
 	type Props = {
 		children: Snippet<[{ sizes: Sizes }]>;
 		settlement?: boolean;
+		/**
+		 * 0..1: a warm light pooled BEHIND the board, over the dark scrim (never on
+		 * the paper, where additive light on cream is invisible). The intro flares
+		 * it when the count lands; the settlement when the total stops.
+		 */
+		halo?: number;
+		/** 0..1: light rays fanned out behind the board, turning slowly. */
+		rays?: number;
 	};
 
 	const props: Props = $props();
@@ -33,9 +41,11 @@
 	// 100..820 x 130..670, nudged down 6%), which put "TOTAL WIN" up on the new
 	// board's top beam. Inset past the pins / the clip-on receipt / the cloth.
 	// Re-measure whenever the board art changes.
-	const PAPER = props.settlement
-		? { x0: 260, y0: 300, x1: 1350, y1: 860 }
-		: { x0: 200, y0: 300, x1: 1400, y1: 870 };
+	// 2026-10-18 ticket: window y 30..420, ink rule + red stripe to 437,
+	// perforation y 482, red keyline x 56..1544 / y 512..944 — the text stays
+	// inside the keyline.
+	const PAPER = { x0: 90, y0: 526, x1: 1510, y1: 930 };
+	const UNIT = SIGN_SIZES.width / 1600;
 	const TEXT_AREA = {
 		width: SIGN_SIZES.width * ((PAPER.x1 - PAPER.x0) / 1600),
 		height: SIGN_SIZES.height * ((PAPER.y1 - PAPER.y0) / 1000),
@@ -48,26 +58,35 @@
 	const dropY = new Tween(-SIGN_SIZES.height * 1.2);
 	const swing = new Tween(0);
 
-	// The sign's MESH (game/meshWin/fsSign.ts): it lands — the board squashes,
-	// the planks rattle top to bottom — then breathes. Its clock starts with
-	// the drop, which fsSign.SIGN_LAND_MS is timed against. Driven by rAF (the
-	// review checker flags interval-stepped animation).
-	let signEnv = $state<SignEnv>({ t: 0 });
-	// the text rides the middle plank
-	let textOffset = $state({ x: 0, y: 0 });
-	const UNIT = SIGN_SIZES.width / SIGN_CANVAS[0];
-	const onpose = (rig: Rig, pose: Pose) => {
-		const [x, y] = signTextOffset(rig, pose);
-		textOffset = { x: x * UNIT, y: y * UNIT };
-	};
+	// The board and lettering land as one object, then settle together.
+	let signTime = $state(0);
+	const landing = $derived.by(() => {
+		const t = signTime - 700;
+		return t < 0 || t > 1200 ? 0 : Math.sin(t / 72) * Math.exp(-t / 260);
+	});
+	// The intro's spotlight (board px): it finds the stage from the wings as the
+	// board lands — in from stage left, a touch past centre, back — then holds,
+	// dimmed. Additive over the window's painted stage only; it is an ellipse
+	// kept inside the window (y 30..420) so it never lights the frame or paper.
+	const spot = $derived.by(() => {
+		const u = (signTime - 760) / 1100;
+		if (props.settlement || u <= 0) return null;
+		const k = Math.min(1, u);
+		const ease = 1 - (1 - k) ** 3;
+		const x = 330 + 470 * ease + 46 * Math.sin(Math.PI * k) * (1 - k);
+		// additive over an already-lit cream curtain: kept low or it blows out to
+		// white (user, 2026-10-18: "too bright")
+		const alpha = u < 0.2 ? u / 0.2 * 0.22 : Math.max(0.1, 0.22 - 0.12 * Math.max(0, u - 1) / 0.6);
+		return { x, alpha };
+	});
 
 	onMount(() => {
 		const started = performance.now();
 		let clock = 0;
 		let payoutPlayed = false;
 		const tick = (now: number) => {
-			signEnv = { t: now - started };
-			if (props.settlement && !payoutPlayed && signEnv.t >= 700) {
+			signTime = now - started;
+			if (props.settlement && !payoutPlayed && signTime >= 700) {
 				payoutPlayed = true;
 				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_youwon_panel' });
 			}
@@ -86,22 +105,44 @@
 </script>
 
 <MainContainer>
+	{#if (props.halo ?? 0) > 0.001 || (props.rays ?? 0) > 0.001}
+		<!-- behind the board, as siblings of nothing masked or filtered, so the
+		     additive light really adds to the scrim (as Jade Teahouse's) -->
+		<Container x={context.stateGameDerived.boardLayout().x} y={context.stateGameDerived.boardLayout().y + dropY.current}>
+			<LightRays radius={SIGN_SIZES.width * 0.95} alpha={props.rays ?? 0} />
+			<Sprite
+				key="fxSoftGlow"
+				anchor={0.5}
+				blendMode="add"
+				tint={0xffd27a}
+				width={SIGN_SIZES.width * 1.55}
+				height={SIGN_SIZES.height * 1.7}
+				alpha={(props.halo ?? 0) * 0.32}
+			/>
+		</Container>
+	{/if}
 	<Container
 		x={context.stateGameDerived.boardLayout().x}
 		y={context.stateGameDerived.boardLayout().y + dropY.current}
-		rotation={swing.current + Math.sin(signEnv.t / 2000 * Math.PI * 2) * 0.012}
+		rotation={swing.current}
+		scale={{ x: 1 + landing * 0.028, y: 1 - landing * 0.032 }}
 	>
-		<!-- drawn through its mesh (game/meshWin/fsSign.ts), same box -->
 		<Sprite key={props.settlement ? "v8FgTotal" : "v8FgIntro"} anchor={.5} {...SIGN_SIZES}/>
-		<!-- the things on the board are meshes over its decor layer (meshWin/decorMeshes.ts) -->
-		<Container>
-			{#each FG_BOARD_DECOR(!!props.settlement) as spec (spec.symbol)}
-				<PropMesh {spec} env={{ t: signEnv.t }} {...SIGN_SIZES} anchor={0.5} />
-			{/each}
-		</Container>
-		<!-- children sit centered on the plank area (slightly below the emblem),
-		     riding the middle plank as it rattles -->
-		<Container x={AREA_CENTER.x + textOffset.x} y={AREA_CENTER.y + textOffset.y}>
+		{#if spot}
+			<Sprite
+				key="fxSoftGlow"
+				anchor={0.5}
+				blendMode="add"
+				tint={0xffcf8a}
+				x={(spot.x - 800) * UNIT}
+				y={(222 - 500) * UNIT}
+				width={500 * UNIT}
+				height={360 * UNIT}
+				alpha={spot.alpha}
+			/>
+		{/if}
+		<!-- children sit centred on the ticket's paper -->
+		<Container x={AREA_CENTER.x} y={AREA_CENTER.y}>
 			{@render props.children({ sizes: TEXT_AREA })}
 		</Container>
 	</Container>

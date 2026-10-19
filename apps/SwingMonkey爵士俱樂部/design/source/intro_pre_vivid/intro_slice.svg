@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+ <title>Jazz free spins turn card symbols into records</title>
+ <rect width="512" height="512" rx="34" fill="#f4e7c8"/>
+ <path d="M42 92Q256 24 470 92M43 111Q256 43 469 111" fill="none" stroke="#241d1c" stroke-width="9" stroke-linecap="round"/>
+ <path d="M60 376Q256 432 452 376" fill="none" stroke="#9c333e" stroke-width="20" stroke-linecap="round"/>
+ <path d="M67 389Q256 453 445 389" fill="none" stroke="#241d1c" stroke-width="7"/>
+ <g stroke="#241d1c" stroke-width="7" stroke-linejoin="round">
+  <path d="M53 165l90-22 22 145-91 19Z" fill="#fff7e5"/><path d="M145 137l90-7 9 149-88 11Z" fill="#fff7e5"/><path d="M241 130l91 10-12 149-90-9Z" fill="#fff7e5"/>
+ </g>
+ <g fill="#9c333e" font-family="Georgia,serif" font-weight="900" font-size="86" text-anchor="middle"><text x="110" y="259" transform="rotate(-13 110 240)">10</text><text x="190" y="248" transform="rotate(-5 190 240)">J</text><text x="279" y="253" transform="rotate(7 279 240)">Q</text></g>
+ <path d="M326 226c39 6 48 16 59 33m-58-7c25 4 36 12 44 26" fill="none" stroke="#241d1c" stroke-width="7" stroke-linecap="round"/>
+ <path d="M359 165l27-27 11 24 35-10-10 31 24 18-34 11-5 29-26-21-27 10 6-30-20-17Z" fill="#d6a14f" stroke="#241d1c" stroke-width="8" stroke-linejoin="round"/>
+ <circle cx="391" cy="188" r="16" fill="#9c333e" stroke="#241d1c" stroke-width="5"/>
+ <circle cx="388" cy="326" r="62" fill="#241d1c" stroke="#d6a14f" stroke-width="8"/><circle cx="388" cy="326" r="43" fill="none" stroke="#f4e7c8" stroke-width="4"/><circle cx="388" cy="326" r="25" fill="#9c333e" stroke="#f4e7c8" stroke-width="3"/><circle cx="388" cy="326" r="6" fill="#f4e7c8"/>
+ <path d="M100 335q29-20 52 0v46q-26-17-52 1Zm82 13q27-14 49 2v34q-26-13-49 2Z" fill="#d6a14f" stroke="#241d1c" stroke-width="7"/>
+ <path d="M75 427h362" stroke="#d6a14f" stroke-width="7" stroke-linecap="round"/>
+ <path d="M90 445h330" stroke="#241d1c" stroke-width="4" stroke-dasharray="16 12"/>
+ <path d="M92 95l-6 43m354-46 6 45" stroke="#9c333e" stroke-width="9" stroke-linecap="round"/>
+</svg>

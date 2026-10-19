@@ -40,7 +40,8 @@ from scipy import ndimage as ndi
 
 APP = Path(__file__).resolve().parents[1]
 SRC = APP / 'static/assets/sprites/goBanalchemySymbols'
-OUT = APP / 'static/assets/sprites/goBanalchemyMesh'
+import os
+OUT = Path(os.environ['LAYERS_OUT']) if os.environ.get('LAYERS_OUT') else APP / 'static/assets/sprites/goBanalchemyMesh'
 OUT.mkdir(parents=True, exist_ok=True)
 
 SIZE = 512
@@ -58,6 +59,11 @@ HULLS = {
     'l4': [(52, 42), (204, 42), (204, 202), (52, 202)],
     'l5': [(44, 42), (212, 42), (212, 202), (44, 202)],
 }
+# regions where the subject is SOLID: the repaint (2026-10-15) fills the
+# lantern's glass with dark swirls the slate test reads as background pockets,
+# which left holes in the elixir. Holes inside these ellipses go back to the
+# subject. (cx, cy, rx, ry) in the 256 canvas.
+SOLID = {'h1': (130, 123, 47, 44)}
 SLATE = ['h1', 'h2', 'h3', 'h4']
 LETTERS = ['l1', 'l2', 'l3', 'l4', 'l5']
 INNER = 10 * K   # the copper frame and its rim never belong to a subject
@@ -146,6 +152,11 @@ def highpass(rgb):
 def build(group, finder):
     arts = {n: read(n) for n in group}
     masks = {n: finder(arts[n][..., :3], hull_mask(HULLS[n])) for n in group}
+    yy, xx = np.mgrid[0:SIZE, 0:SIZE] / K
+    for n, (cx, cy, rx, ry) in SOLID.items():
+        if n in masks:
+            inside = ((xx - cx) / rx) ** 2 + ((yy - cy) / ry) ** 2 <= 1
+            masks[n] = masks[n] | (ndi.binary_fill_holes(masks[n]) & inside)
     # donors also include the dynamite tile for the slate (same slate)
     donors = dict(arts)
     dmask = dict(masks)
@@ -183,7 +194,9 @@ def build(group, finder):
         for d, art in donors.items():
             if d == n:
                 continue
-            use = hole & ~filled & ~grow(dmask[d], 3)
+            # a letter's bevel shade reaches well past its ink: keep a wider
+            # berth, or the donor's letter shows as a ghost on the plate
+            use = hole & ~filled & ~grow(dmask[d], 3 if group is SLATE else 14)
             hf[use] = highpass(art[..., :3])[use]
             filled |= use
         plate = rgb.copy()

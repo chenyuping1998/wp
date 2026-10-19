@@ -108,6 +108,7 @@
 							y={sizes.height * 0.12}
 							fontSize={sizes.width * 0.15}
 							text={bookEventAmountToCurrencyString(countUpAmount)}
+							fill={[0xffffff]}
 							maxWidth={sizes.width * 0.9}
 							bevel
 							at={{ roll: shownAt, land: landAt }}

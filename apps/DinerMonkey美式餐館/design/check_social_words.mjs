@@ -72,7 +72,30 @@ const RESTRICTED = {
 	payout: 'win',
 	payline: 'playline',
 	paylines: 'playlines',
-	paytable: 'play table',
+	paytable: 'win table',
+	// THE OTHER FORMS OF THE SAME WORDS (2026-10-04). The match is whole-word, so
+	// the table above never saw "buys": Boat's rules said "what a dearer round
+	// buys is more crates" in both modes and certification flagged it with this
+	// guard green. Every restricted verb/noun needs its inflections listed.
+	buys: 'plays',
+	buying: 'playing',
+	purchases: 'plays',
+	purchased: 'played',
+	purchasing: 'playing',
+	costs: 'totals',
+	costing: 'totalling',
+	paying: 'winning',
+	payouts: 'wins',
+	bettor: 'player',
+	stakes: 'play amounts',
+	staked: 'played',
+	wagers: 'plays',
+	wagered: 'played',
+	wagering: 'playing',
+	gambling: 'playing',
+	deposits: 'get coins',
+	withdrawal: 'redemption',
+	credits: 'balance',
 };
 
 // longest first so "total bet" is reported rather than the bare "bet" inside it
@@ -147,6 +170,14 @@ for (const file of svelteFiles(path.join(appRoot, 'src'))) {
 	for (const line of text.split('\n')) {
 		const hits = line.match(pattern);
 		if (hits) report(file, 'literal template text', line, hits);
+	}
+
+	// pixi <Text text="…"> puts its copy in an ATTRIBUTE, which the tag strip
+	// above throws away. DinerOrderBoard's text="PAYOUT" sat on screen in social
+	// play with this gate green (2026-10-16).
+	for (const m of markup.matchAll(/\btext="([^"{]*)"/g)) {
+		const hits = m[1].match(pattern);
+		if (hits) report(file, 'literal text= attribute', m[1], hits);
 	}
 }
 

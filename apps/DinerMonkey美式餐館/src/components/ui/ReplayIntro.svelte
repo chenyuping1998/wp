@@ -93,6 +93,11 @@
 	);
 
 	const fmtMult = (value: number) => `${Number(value.toFixed(4))}x`;
+	// FULL PRECISION (Stake review 2026-10-04): a $0.01 stake x 125.9 must read
+	// $1.259, not the 2-decimal $1.26. Up to 6 decimals; Intl still prints the
+	// fewest that are exact, never fewer than 2.
+	const FULL = 6;
+	const fmtMoney = (value: number) => numberToCurrencyString(Number(value.toFixed(FULL)), FULL);
 
 	// The same six rows, handed to the bar so they are still on screen after the
 	// card is dismissed and after every run (stateReplay.summary). Stake review on
@@ -100,11 +105,11 @@
 	$effect(() => {
 		stateReplay.summary = [
 			{ label: L.mode, value: modeLabel },
-			{ label: L.baseBet, value: numberToCurrencyString(baseBet) },
+			{ label: L.baseBet, value: fmtMoney(baseBet) },
 			{ label: L.costMultiplier, value: fmtMult(costMultiplier) },
-			{ label: L.totalCost, value: numberToCurrencyString(totalCost) },
+			{ label: L.totalCost, value: fmtMoney(totalCost) },
 			{ label: L.payoutMultiplier, value: fmtMult(payoutMultiplier), tone: 'win' },
-			{ label: L.totalWin, value: numberToCurrencyString(totalWin), tone: 'win' },
+			{ label: L.totalWin, value: fmtMoney(totalWin), tone: 'win' },
 		];
 	});
 </script>
@@ -123,7 +128,7 @@
 
 			<div class="row spacer">
 				<dt>{L.baseBet}</dt>
-				<dd class="accent">{numberToCurrencyString(baseBet)}</dd>
+				<dd class="accent">{fmtMoney(baseBet)}</dd>
 			</div>
 			<div class="row">
 				<dt>{L.costMultiplier}</dt>
@@ -131,7 +136,7 @@
 			</div>
 			<div class="row highlight">
 				<dt>{L.totalCost}</dt>
-				<dd class="accent big">{numberToCurrencyString(totalCost)}</dd>
+				<dd class="accent big">{fmtMoney(totalCost)}</dd>
 			</div>
 
 			<div class="row spacer">
@@ -140,7 +145,7 @@
 			</div>
 			<div class="row highlight">
 				<dt>{L.totalWin}</dt>
-				<dd class="win big">{numberToCurrencyString(totalWin)}</dd>
+				<dd class="win big">{fmtMoney(totalWin)}</dd>
 			</div>
 		</dl>
 

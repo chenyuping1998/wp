@@ -224,4 +224,15 @@
 	}
 	@media (max-height: 700px) { .menu { padding: 12px; } .cards { margin-top: 8px; } .scene { height: 95px; } .cost { font-size: 28px; } .foot { display: none; } }
 	@media (max-width: 520px) { .menu { padding: 10px; } h2 { font-size: 22px; } .sub { display: none; } .cards { gap: 8px; } .scene { height: 85px; } .body { padding: 6px; } h3 { font-size: 14px; } .meterlabel { font-size: 9px; } .buy { padding: 7px 4px; font-size: 12px; } }
+	/* Popout S (400×225) and other short windows: name, price and button only
+	   (Stake review 2026-10-04 — the cards ran off the bottom of the popout). */
+	@media (max-height: 420px) {
+		.menu { padding: 8px; max-height: calc(100vh - 8px); }
+		.head { gap: 6px; } h2 { font-size: 18px; } .sub { display: none; }
+		.cards { gap: 8px; margin-top: 6px; }
+		.scene, .meter, .meterlabel, ul, .foot { display: none; }
+		.body { padding: 6px; } h3 { font-size: 14px; margin-bottom: 2px; }
+		.cost { font-size: 22px; } .cost small { font-size: 14px; }
+		.buy { margin-top: 4px; padding: 6px 4px; font-size: 12px; }
+	}
 </style>

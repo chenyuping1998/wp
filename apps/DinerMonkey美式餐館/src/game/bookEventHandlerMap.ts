@@ -13,6 +13,7 @@ import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEv
 import type { Position } from './types';
 import { BOARD_DIMENSIONS } from './constants';
 import config from './config';
+import { featureTotal } from './featureTotal';
 
 // Scatters needed for the feature (game_config freespin_triggers: 3/4/5).
 const SCATTERS_TO_TRIGGER = 3;
@@ -350,7 +351,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	// 'Missing bookEventHandler' for an unhandled event, so it fails loudly in the
 	// console rather than silently skipping the round.
 	freeSpinEnd: async (bookEvent: BookEventOfType<'freeSpinEnd'>) => {
-		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
+		// the plaque shows the WHOLE round, trigger spin included (featureTotal):
+		// 245 of 1,000 base-triggered features read short without it (books, 2026-10-09)
+		const total = featureTotal(bookEvent.amount, bookEvent.winLevel);
+		const winLevelData = winLevelMap[total.winLevel as WinLevel];
 
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
 		// gameType is NOT reset here — it moves to the transition's cover below.
@@ -364,7 +368,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		winLevelSoundsPlay({ winLevelData });
 		await eventEmitter.broadcastAsync({
 			type: 'freeSpinOutroCountUp',
-			amount: bookEvent.amount,
+			amount: total.amount,
 			winLevelData,
 		});
 		winLevelSoundsStop();

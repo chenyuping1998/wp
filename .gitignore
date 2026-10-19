@@ -83,3 +83,12 @@ apps/JaguarSun/design/_plated/
 apps/JaguarSun/design/_review/
 apps/JaguarSun/design/_rejected/
 apps/JaguarSun/design/_bg/
+
+# Local English junction for the Treasure Monkey source directory.
+/apps/TreasureMonkey/
+
+# Scratch space (vendored Python deps, before/after snapshots)
+/tmp/
+
+# Local env files; commit .env.example instead
+.env

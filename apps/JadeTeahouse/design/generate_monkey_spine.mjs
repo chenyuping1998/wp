@@ -42,6 +42,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { castMotions } from './cast_motions.mjs';
+import { pourClip } from './pour_motion.mjs';
+import { applyThemeCast } from './theme_cast_motions.mjs';
 import { LAUGH, applyLaughV9 } from './laugh_motion_v9.mjs';
 
 const toolDir = process.argv[2];
@@ -335,7 +337,8 @@ for (const b of RIG) {
 const drawOrder = [...meta.layers].sort((a, b) => a.z - b.z);
 const slots = drawOrder
 	.filter((l) => boneOf[l.name])
-	.map((l) => ({ name: l.name, bone: boneOf[l.name], attachment: l.name }));
+	.map((l) => ({ name: l.name, bone: boneOf[l.name],
+		attachment: l.name === 'head_2_face' ? 'head_2_face_rest' : l.name }));
 
 // The front copies go after the body and before the props, on the same bones as
 // the originals, with no attachment until an animation asks for one.
@@ -573,7 +576,10 @@ for (const prop of PROPS) {
 
 // Expression replacements keep the original weighted head mesh, including its
 // neck/collar blend. Only the atlas region changes; no jaw bone stretch.
-const FACE_STATES = LAUGH.faceStates;
+const FACE_STATES = [...new Set([...LAUGH.faceStates, 'rest', 'blink',
+ 'laugh_1', 'laugh_2', 'laugh_3', 'laugh_4',
+ 'laugh_3_blink', 'laugh_4_blink', 'talk_open', 'talk_closed'
+ ])];
 const faceLayer = piece('head_2_face');
 const faceImages = FACE_STATES.map((state) => {
  const name = `head_2_face_${state}`;
@@ -2208,7 +2214,8 @@ const flowFlutter = Object.fromEntries(
 // above by name — the inherited set is only the fallback now (throwit, and the
 // sweeps). See that file for why.
 const own = castMotions({ CAST, hang, TOWARD_X, BEAT_START, BEAT_GAP, RIGPTS });
-const allAnims = { idle, cheer, chestbeat, nod, throwit, flinch, alert, glance, flutter, ...sweeps, ...own.anims };
+// the Master's pour for the free-spin splash (SplashMaster.svelte); mg only
+const allAnims = { idle, cheer, chestbeat, nod, throwit, flinch, alert, glance, flutter, ...sweeps, ...own.anims, ...(CAST === 'mg' ? { pour: pourClip() } : {}) };
 if (own.flutterBones) allAnims.flutter = { bones: { ...allAnims.flutter.bones, ...own.flutterBones } };
 allAnims.flutter = { ...allAnims.flutter, bones: { ...allAnims.flutter.bones, ...flowFlutter } };
 if ((own.loops?.flutter ?? FLUTTER_LOOP) !== FLUTTER_LOOP) throw new Error('costume flutter keys assume a FLUTTER_LOOP-long flutter');
@@ -2228,6 +2235,7 @@ if (FLOW.length) {
 }
 // Seven expression poses and ten progressively stronger laugh pulses.
 applyLaughV9(allAnims);
+applyThemeCast(allAnims, CAST);
 // The new drawings have a short neck: reserve the bigger motion for the body
 // and hands, while the head stays inside its continuous collar blend.
 for (const [name, animation] of Object.entries(allAnims)) {
