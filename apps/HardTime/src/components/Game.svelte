@@ -120,7 +120,9 @@
 			<Sprite key="hmLogo" anchor={0.5} x={logo.x} y={logo.y} width={logo.width} height={logo.height} />
 		{/if}
 
-		<MainContainer>
+		<!-- label: CastSpine puts the warden's striking forearm directly above
+		     this layer (over the symbols, under the UI and the win banners) -->
+		<MainContainer label="ht-board">
 			<Board />
 			<ReelDust />
 			<WildColumns />

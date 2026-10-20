@@ -1,0 +1,18 @@
+{
+  "prisoner": {
+    "rigHash": "prisoner-6846aa172ee0870a",
+    "frames": 363,
+    "maxAnkleError": 2.4200213553522193e-13,
+    "minTriangleRatio": 0.6808071373312594,
+    "maxTriangleRatio": 1.211054587148888,
+    "flips": 0
+  },
+  "warden": {
+    "rigHash": "warden-c65e67978c159435",
+    "frames": 363,
+    "maxAnkleError": 2.5579538487363607e-13,
+    "minTriangleRatio": 0.7258224325396849,
+    "maxTriangleRatio": 1.3648268792888285,
+    "flips": 0
+  }
+}

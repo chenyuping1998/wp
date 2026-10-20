@@ -1,0 +1,128 @@
+{
+  "canvas": [
+    1024,
+    2048
+  ],
+  "layers": [
+    {
+      "name": "thigh_r",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/thigh_r.png",
+      "x": 123,
+      "y": 1045,
+      "w": 424,
+      "h": 366
+    },
+    {
+      "name": "thigh_l",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/thigh_l.png",
+      "x": 547,
+      "y": 1045,
+      "w": 340,
+      "h": 366
+    },
+    {
+      "name": "shin_r",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/shin_r.png",
+      "x": 206,
+      "y": 1330,
+      "w": 307,
+      "h": 366
+    },
+    {
+      "name": "shin_l",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/shin_l.png",
+      "x": 580,
+      "y": 1330,
+      "w": 208,
+      "h": 366
+    },
+    {
+      "name": "shoe_r",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/shoe_r.png",
+      "x": 286,
+      "y": 1640,
+      "w": 218,
+      "h": 235
+    },
+    {
+      "name": "shoe_l",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/shoe_l.png",
+      "x": 592,
+      "y": 1640,
+      "w": 217,
+      "h": 172
+    },
+    {
+      "name": "pelvis",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/pelvis.png",
+      "x": 331,
+      "y": 895,
+      "w": 393,
+      "h": 221
+    },
+    {
+      "name": "trunk",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/torso.png",
+      "x": 337,
+      "y": 361,
+      "w": 385,
+      "h": 601
+    },
+    {
+      "name": "right_arm_upper",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/upper_arm_r.png",
+      "x": 273,
+      "y": 438,
+      "w": 133,
+      "h": 312
+    },
+    {
+      "name": "left_arm_upper",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/upper_arm_l.png",
+      "x": 671,
+      "y": 426,
+      "w": 107,
+      "h": 275
+    },
+    {
+      "name": "right_arm_fore",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/forearm_under.png",
+      "x": 276,
+      "y": 550,
+      "w": 444,
+      "h": 203
+    },
+    {
+      "name": "left_arm_fore",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/forearm_over.png",
+      "x": 385,
+      "y": 589,
+      "w": 394,
+      "h": 166
+    },
+    {
+      "name": "towel",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/towel.png",
+      "x": 615,
+      "y": 376,
+      "w": 175,
+      "h": 469
+    },
+    {
+      "name": "head",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/head.png",
+      "x": 455,
+      "y": 169,
+      "w": 169,
+      "h": 271
+    },
+    {
+      "name": "blink",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/blink.png",
+      "x": 457,
+      "y": 246,
+      "w": 96,
+      "h": 39
+    }
+  ]
+}

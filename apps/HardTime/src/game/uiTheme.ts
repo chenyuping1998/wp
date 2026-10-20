@@ -182,6 +182,11 @@ setUiTheme({
 	// back, 1:1 through the arithmetic written out in stateGame.svelte.ts.
 	buyBonusRailScale: 1.35,
 
+	// Lower than the shared 0.46 (2026-10-20): the warden now stands in the left
+	// band beside the board (Cast.svelte USE_SPINE_CAST), and at 0.46 the plate sat
+	// on his chest. 0.70 puts it over his legs and still clears the bet strip.
+	buyBonusYFraction: 0.7,
+
 	// Gold-light on the wine plate, matching every other caption in the game. Was
 	// 0xffd75e, which is GoBananas' banana gold — a full step brighter and more
 	// yellow than this game's own #E8D48B, and the same stray value the modals

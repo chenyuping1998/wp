@@ -1,0 +1,8 @@
+design/source/spine_v2/underlay/prisoner: FAIL
+  L: underlay behind 86.5% of the arm below the elbow (29780 px hidden past the joint)  FAIL
+  R: underlay behind 81.1% of the arm below the elbow (34052 px hidden past the joint)  FAIL
+  overlay: design/source/spine_v2/qa/source_spine_v2_underlay_prisoner_underlay.png
+design/source/spine_v2/underlay/warden: PASS
+  L: underlay behind 0.0% of the arm below the elbow (362 px hidden past the joint)  PASS
+  R: underlay behind 0.0% of the arm below the elbow (10221 px hidden past the joint)  PASS
+  overlay: design/source/spine_v2/qa/source_spine_v2_underlay_warden_underlay.png

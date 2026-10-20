@@ -1,0 +1,108 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Hard Time cast (Spine)</title>
+<style>body{margin:0;background:#2a2622;color:#eee;font:13px sans-serif}#ui{position:fixed;left:8px;top:8px;z-index:2}button{margin:2px}</style></head>
+<body><div id="ui">
+<button onclick="react('warden','react')">warden react</button><button onclick="react('warden','reactBig')">warden big</button>
+<button onclick="react('prisoner','react')">prisoner react</button><button onclick="react('prisoner','reactBig')">prisoner big</button>
+<button onclick="runQA()">Run motion QA</button><button onclick="blinkAll()">Blink both</button>
+speed <input id="spd" type="range" min="0.1" max="1" step="0.05" value="1" oninput="speed=+this.value"> <span id="t"></span>
+</div>
+<script src="vendor/pixi.min.js"></script>
+<script src="vendor/spine-pixi-v8.min.js"></script>
+<script>
+let speed = 1, clock = 0; const figs = {}; window.figs = figs;
+const IDLE = 2.0, PHASE = { prisoner: 0, warden: 1.0 };
+(async () => {
+  const app = new PIXI.Application();
+  await app.init({ resizeTo: window, background: 0x2a2622, antialias: true, preserveDrawingBuffer: true });
+  document.body.appendChild(app.canvas);
+  // board stand-in
+  const board = new PIXI.Graphics().rect(-260, -300, 520, 600).fill(0x3c3833).stroke({ width: 6, color: 0x77706a });
+  app.stage.addChild(board);
+  for (const who of ['warden', 'prisoner']) {
+    PIXI.Assets.add({ alias: who + 'D', src: `/static/assets/spines/htCast/${who}.json` });
+    PIXI.Assets.add({ alias: who + 'A', src: `/static/assets/spines/htCast/${who}.atlas` });
+    await PIXI.Assets.load([who + 'D', who + 'A']);
+    const s = spine.Spine.from({ skeleton: who + 'D', atlas: who + 'A', autoUpdate: false });
+    s.state.addListener({ complete: () => {} });
+    s.state.data.defaultMix = 0.2;
+    s.state.setAnimation(0, 'idle', true);
+    app.stage.addChild(s); figs[who] = s;
+  }
+  const layout = () => {
+    const W = app.screen.width, H = app.screen.height, sc = H / 2000;
+    board.position.set(W / 2, H * 0.45); board.scale.set(H / 900);
+    figs.warden.scale.set(-sc,sc); figs.warden.position.set(W / 2 - 520 * H / 900, H * 1.02);
+    figs.prisoner.scale.set(sc); figs.prisoner.position.set(W / 2 + 500 * H / 900, H * 1.02);
+  };
+  layout(); window.addEventListener('resize', layout);
+  app.ticker.add((tk) => {
+    const dt = Math.min(0.1, tk.deltaMS / 1000) * speed; clock += dt;
+    for (const [who, s] of Object.entries(figs)) {
+      const e = s.state.getCurrent(0); if (e) e.trackTime = (clock + PHASE[who]) % IDLE;
+      s.update(dt);
+    }
+    document.getElementById('t').textContent = (clock % IDLE).toFixed(2);
+  });
+
+  // Deterministic capture: fixed 1/60 steps (physics needs history), each
+  // figure alone, cropped, POSTed to the local sink (design tooling only).
+  window.capture = async (who, { react = null, reactAt = 0, from = 0, to = 2, every = 0.1, warm = 2, tag = '' } = {}) => {
+    speed = 0;
+    const s = figs[who], other = figs[who === 'warden' ? 'prisoner' : 'warden'];
+    const keep = { x: s.x, y: s.y, sx: s.scale.x, sy:s.scale.y }; other.visible = false; board.visible = false;
+    const H = app.screen.height; s.scale.set((who==='warden'?-1:1)*H * 0.95 / 2000,H * 0.95 / 2000); s.position.set(app.screen.width / 2, H * 0.985);
+    s.skeleton.setToSetupPose(); s.state.clearTracks(); s.state.setAnimation(0, 'idle', true);
+    const dt = 1 / 60; let t = from - warm, fired = !react, n = 0, next = from;
+    const off = document.createElement('canvas'); const W = Math.round(H * 0.5); off.width = W; off.height = H;
+    const ctx = off.getContext('2d');
+    while (t <= to + 1e-6) {
+      if (!fired && t >= reactAt) { s.state.setEmptyAnimation(1, 0); const en = s.state.addAnimation(1, react, false, 0); en.mixDuration = 0.2; s.state.addEmptyAnimation(1, 0.2, 0); fired = true; }
+      const e = s.state.getCurrent(0); if (e) e.trackTime = (((t + PHASE[who]) % IDLE) + IDLE) % IDLE;
+      s.update(dt);
+      if (t >= next - 1e-6) {
+        app.renderer.render(app.stage);
+        ctx.clearRect(0, 0, W, H); ctx.drawImage(app.canvas, (app.screen.width - W) / 2, 0, W, H, 0, 0, W, H);
+        await fetch('http://127.0.0.1:4242/', { method: 'POST', body: JSON.stringify({ name: `${who}${tag}_${String(n).padStart(3, '0')}.png`, data: off.toDataURL('image/png') }) });
+        n++; next += every;
+      }
+      t += dt;
+    }
+    other.visible = true; board.visible = true; s.scale.set(keep.sx,keep.sy); s.position.set(keep.x, keep.y); speed = 1;
+    return n;
+  };
+  window.react = (who, anim) => { const st = figs[who].state; st.setEmptyAnimation(1, 0); const e = st.addAnimation(1, anim, false, 0); e.mixDuration = 0.2; st.addEmptyAnimation(1, 0.2, 0); };
+  window.freeze = (t) => { speed = 0; clock = t; };
+  window.blinkAll=()=>{for(const s of Object.values(figs)){s.state.setAnimation(2,'blink',false);s.state.addEmptyAnimation(2,0,0);}};
+  window.runQA=async()=>{
+    const result={};speed=0;
+    for(const who of ['prisoner','warden']){
+      const s=figs[who];const row={rigHash:s.skeleton.data.hash,frames:0,maxAnkleError:0,minTriangleRatio:Infinity,maxTriangleRatio:0,flips:0};
+      for(const anim of ['idle','react','reactBig']){
+        s.skeleton.setToSetupPose();s.state.clearTracks();s.state.setAnimation(0,'idle',true);
+        s.skeleton.updateWorldTransform(spine.Physics.reset);
+        const rest=new Map();
+        for(const slot of s.skeleton.slots){const a=slot.getAttachment();if(!a?.triangles)continue;
+          const v=new Float32Array(a.worldVerticesLength);a.computeWorldVertices(slot,0,v.length,v,0,2);
+          rest.set(slot.data.name,{v,tri:a.triangles});}
+        for(let f=-120;f<=120;f++){
+          const t=f/60;if(f===24&&anim!=='idle')window.react(who,anim);
+          s.state.getCurrent(0).trackTime=((t+PHASE[who])%IDLE+IDLE)%IDLE;s.update(1/60);
+          if(f<0)continue;row.frames++;
+          for(const side of ['l','r']){const b=s.skeleton.findBone('shin_'+side),foot=s.skeleton.findBone('foot_'+side);
+            row.maxAnkleError=Math.max(row.maxAnkleError,Math.hypot(b.worldX+b.a*b.data.length-foot.worldX,b.worldY+b.c*b.data.length-foot.worldY));}
+          for(const slot of s.skeleton.slots){const base=rest.get(slot.data.name),a=slot.getAttachment();if(!base||!a?.triangles)continue;
+            const v=new Float32Array(a.worldVerticesLength);a.computeWorldVertices(slot,0,v.length,v,0,2);
+            const area=(p,i,j,k)=>(p[j*2]-p[i*2])*(p[k*2+1]-p[i*2+1])-(p[j*2+1]-p[i*2+1])*(p[k*2]-p[i*2]);
+            for(let i=0;i<base.tri.length;i+=3){const [x,y,z]=base.tri.slice(i,i+3),before=area(base.v,x,y,z);if(Math.abs(before)<0.01)continue;
+              const ratio=area(v,x,y,z)/before;row.minTriangleRatio=Math.min(row.minTriangleRatio,ratio);row.maxTriangleRatio=Math.max(row.maxTriangleRatio,ratio);if(ratio<=0)row.flips++;}}
+        }
+        await window.capture(who,{react:anim==='idle'?null:anim,reactAt:.4,from:0,to:2,every:.05,tag:'_'+anim});speed=0;
+      }
+      result[who]=row;
+    }
+    const pre=document.createElement('pre');pre.id='qa-result';pre.textContent=JSON.stringify(result,null,2);document.getElementById('ui').appendChild(pre);
+    await fetch('http://127.0.0.1:4242/',{method:'POST',body:JSON.stringify({name:'motion-check.json',report:result})});speed=1;
+  };
+})();
+</script></body></html>

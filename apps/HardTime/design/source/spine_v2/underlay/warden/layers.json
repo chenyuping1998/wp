@@ -1,0 +1,168 @@
+{
+  "canvas": [
+    1024,
+    2048
+  ],
+  "layers": [
+    {
+      "name": "thigh_r",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/thigh_r.png",
+      "x": 305,
+      "y": 910,
+      "w": 186,
+      "h": 541
+    },
+    {
+      "name": "thigh_l",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/thigh_l.png",
+      "x": 491,
+      "y": 910,
+      "w": 225,
+      "h": 541
+    },
+    {
+      "name": "shin_r",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/shin_r.png",
+      "x": 277,
+      "y": 1370,
+      "w": 181,
+      "h": 396
+    },
+    {
+      "name": "shin_l",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/shin_l.png",
+      "x": 548,
+      "y": 1370,
+      "w": 194,
+      "h": 396
+    },
+    {
+      "name": "shoe_r",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/shoe_r.png",
+      "x": 256,
+      "y": 1710,
+      "w": 188,
+      "h": 135
+    },
+    {
+      "name": "shoe_l",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/shoe_l.png",
+      "x": 594,
+      "y": 1710,
+      "w": 186,
+      "h": 167
+    },
+    {
+      "name": "right_arm_upper",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/upper_arm_r.png",
+      "x": 230,
+      "y": 348,
+      "w": 177,
+      "h": 336
+    },
+    {
+      "name": "baton",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/baton.png",
+      "x": 206,
+      "y": 246,
+      "w": 232,
+      "h": 207
+    },
+    {
+      "name": "trunk",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/torso.png",
+      "x": 230,
+      "y": 291,
+      "w": 453,
+      "h": 498
+    },
+    {
+      "name": "pelvis",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/pelvis.png",
+      "x": 307,
+      "y": 735,
+      "w": 369,
+      "h": 256
+    },
+    {
+      "name": "keys",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/keys.png",
+      "x": 337,
+      "y": 798,
+      "w": 69,
+      "h": 139
+    },
+    {
+      "name": "whistle",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/whistle.png",
+      "x": 465,
+      "y": 528,
+      "w": 47,
+      "h": 137
+    },
+    {
+      "name": "left_arm_upper",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/upper_arm_l.png",
+      "x": 617,
+      "y": 374,
+      "w": 210,
+      "h": 439
+    },
+    {
+      "name": "left_arm_fore",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/forearm_l.png",
+      "x": 701,
+      "y": 732,
+      "w": 138,
+      "h": 208
+    },
+    {
+      "name": "hand_l",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/hand_l.png",
+      "x": 735,
+      "y": 919,
+      "w": 95,
+      "h": 163
+    },
+    {
+      "name": "radio_cord",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/radio_cord.png",
+      "x": 581,
+      "y": 356,
+      "w": 91,
+      "h": 393
+    },
+    {
+      "name": "right_arm_fore",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/forearm_r.png",
+      "x": 180,
+      "y": 346,
+      "w": 199,
+      "h": 336
+    },
+    {
+      "name": "fingers_r",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/fingers_r.png",
+      "x": 285,
+      "y": 344,
+      "w": 89,
+      "h": 100
+    },
+    {
+      "name": "head",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/head.png",
+      "x": 385,
+      "y": 68,
+      "w": 212,
+      "h": 341
+    },
+    {
+      "name": "blink",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/blink.png",
+      "x": 408,
+      "y": 196,
+      "w": 77,
+      "h": 38
+    }
+  ]
+}

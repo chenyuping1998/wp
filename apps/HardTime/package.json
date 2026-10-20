@@ -9,7 +9,7 @@
     "storybook": "PUBLIC_CHROMATIC=true storybook dev -p 6017 public",
     "dev": "vite dev --host --port 3017",
     "check:refs": "node design/check_undefined_refs.mjs",
-    "build": "node design/check_fg_cast.mjs && node design/check_undefined_refs.mjs && node design/check_assets_exist.mjs && node design/check_sprite_keys.mjs && node design/check_feature_titles.mjs && /Applications/anaconda3/envs/math-sdk/bin/python design/check_symbol_weight.py && node design/check_social_words.mjs && node design/check_symbol_motion.mjs && node design/check_anticipation.mjs && node design/check_frame_beat.mjs && node design/check_idle_breathe.mjs && node design/check_idle_sway.mjs && node design/check_cast_motion.mjs && node design/check_layered_cast.mjs && python3 design/check_source_art.py && node design/check_sounds.mjs && node design/check_reel_stop_sound.mjs && /Applications/anaconda3/envs/math-sdk/bin/python design/check_hard_time_win_audio.py && node design/check_ui_palette.mjs && vite build",
+    "build": "/Applications/anaconda3/envs/math-sdk/bin/python design/check_cast_spine_v2.py && node design/check_fg_cast.mjs && node design/check_undefined_refs.mjs && node design/check_assets_exist.mjs && node design/check_sprite_keys.mjs && node design/check_feature_titles.mjs && /Applications/anaconda3/envs/math-sdk/bin/python design/check_symbol_weight.py && node design/check_social_words.mjs && node design/check_symbol_motion.mjs && node design/check_anticipation.mjs && node design/check_frame_beat.mjs && node design/check_idle_breathe.mjs && node design/check_idle_sway.mjs && node design/check_cast_motion.mjs && node design/check_layered_cast.mjs && python3 design/check_source_art.py && node design/check_sounds.mjs && node design/check_reel_stop_sound.mjs && /Applications/anaconda3/envs/math-sdk/bin/python design/check_hard_time_win_audio.py && node design/check_ui_palette.mjs && vite build",
     "preview": "vite preview",
     "check:assets": "node design/check_assets_exist.mjs",
     "check:keys": "node design/check_sprite_keys.mjs",
@@ -34,7 +34,8 @@
     "check:types": "node ../../node_modules/.pnpm/svelte-check@4.7.6_picomatch@4.0.4_svelte@5.20.5_typescript@5.9.3/node_modules/svelte-check/bin/svelte-check --threshold error --output human",
     "check:titles": "node design/check_feature_titles.mjs",
     "check:weight": "/Applications/anaconda3/envs/math-sdk/bin/python design/check_symbol_weight.py",
-    "check:cast-layers": "node design/check_layered_cast.mjs"
+    "check:cast-layers": "node design/check_layered_cast.mjs",
+    "check:cast-spine": "/Applications/anaconda3/envs/math-sdk/bin/python design/check_cast_spine_v2.py --runtime"
   },
   "type": "module",
   "devDependencies": {

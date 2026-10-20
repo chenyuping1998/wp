@@ -674,6 +674,11 @@ export const uiTheme = $state({
   // sideRail only.
   railPanelScale: 0.62,
   buyBonusRailScale: 2.4,
+
+  // compactBottom only: vertical centre of the off-strip Buy Bonus plate, as a
+  // fraction of the standard box height. A game with a cast member standing in
+  // the left band moves it down over the figure's legs instead of its chest.
+  buyBonusYFraction: 0.46,
 });
 
 export type UiTheme = typeof uiTheme;

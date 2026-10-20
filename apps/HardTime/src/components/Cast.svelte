@@ -9,6 +9,12 @@
   // Both figures use one continuous skinned mesh, so weighted joints bend
   // without opening the seams that segmented Spine attachments produced.
   const USE_MESH_CAST = true;
+  // Spine cast (2026-10-20, the Iron Jaw recipe): BOTH figures on screen at
+  // once, warden left of the board and prisoner right, on one shared idle clock
+  // half a cycle apart, each reacting to its own board event. false = the
+  // single layered-mesh figure that swaps between modes, as before.
+  const USE_SPINE_CAST = true;
+  import CastSpine from "./CastSpine.svelte";
   import { stateGame } from "../game/stateGame.svelte";
 
   /**
@@ -80,6 +86,12 @@
   const boardInkRight = $derived(
     toStandard(
       layout.x + layout.width * layout.scale * FRAME_SCALE * 0.5 * FRAME_INK,
+    ),
+  );
+  // mirror of boardInkRight, for the figure standing left of the board
+  const boardInkLeft = $derived(
+    toStandard(
+      layout.x - layout.width * layout.scale * FRAME_SCALE * 0.5 * FRAME_INK,
     ),
   );
 
@@ -158,7 +170,12 @@
   const FACES_BOARD_AS_DRAWN = true;
 </script>
 
-{#if !stateGame.featureSplashShow && hasSideBand}
+{#if !stateGame.featureSplashShow && hasSideBand && USE_SPINE_CAST}
+  <CastSpine who="prisoner" side="right" {x} {topY} {height} innerEdge={boardInkRight} />
+  <CastSpine who="warden" side="left" x={boardInkLeft + OVERLAP - width * 0.5} {topY} {height} innerEdge={boardInkLeft} />
+{:else if !stateGame.featureSplashShow && portrait && USE_SPINE_CAST}
+  <CastSpine who="prisoner" side="right" x={portrait.x} topY={portrait.topY} height={portrait.height} innerEdge={portrait.innerEdge} />
+{:else if !stateGame.featureSplashShow && hasSideBand}
   <MainContainer standard>
     {#if USE_MESH_CAST}
       {#key who}

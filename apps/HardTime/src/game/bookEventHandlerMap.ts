@@ -423,6 +423,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			// apart without reading the numbers — same board, different event.
 			const doubles = light.cells.some((cell) => cell.doubled);
 			eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_light_land' });
+			stateGame.wardenReaction = { seq: stateGame.wardenReaction.seq + 1 };
 			const beamLength = Math.max(1, Math.min(4, light.cells.length)) as 1 | 2 | 3 | 4;
 			eventEmitter.broadcast({ type: 'soundOnce', name: `sfx_light_sweep_${beamLength}` });
 			if (doubles) eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_light_double' });

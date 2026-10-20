@@ -1,5 +1,23 @@
 # Hard Time — 交接文件
 
+## 2026-10-20 — Spine v2 重切、補畫及動作接入
+
+依 `design/cast_brief/spine_v2/README.md`：內建 imagegen 產出 P1–P4、W1–W4 及獨立的 P2_under，
+保存在 `design/_incoming/spine_v2/`。囚犯 15 層、典獄長 20 層，來源切件與 atlas 均可重建。
+兩節腿以四個 IK 約束固定腳踝；雙臂、手掌、毛巾及配件獨立；3–6 秒隨機眨眼。
+保留先前兩人在盤面兩側與共用待機時鐘的工作，典獄長修正為朝盤面；警棍前臂在軀幹前，
+反應時只將該前臂、棍與手指疊到盤框前，與本體共用已解算矩陣，不會整個人蓋住盤面。
+
+修掉把全身圖裁成褲子時、誤把垂下手掌留在大腿切片的殘影；guard 會檢查這個區域。
+`pnpm build` 與 `pnpm check:cast-spine` 通過；實際 runtime 每人 363 格、零翻面、腳踝誤差 < 1e-6 art px。
+4:3／16:10／16:9 都已看反應峰值，眨眼已看；本機 stub 轉一局完成且 console 零 error。
+完整型別檢查仍有既有 design／共享套件診斷，新 CastSpine 元件沒有型別錯誤。
+
+殘影複查（同日晚）：囚犯軀幹接縫、左上臂裡的右手手指、毛巾殘條三處會在手臂收緊／毛巾晃動時露出，已修；
+典獄長警棍改到軀幹後、前景副本只疊在轉輪層之上。`design/check_cast_spine_holes.py` 量靜止時與原圖一致（0 破洞）。
+詳細重建步驟、提示詞、標準 underlay audit 對交叉手臂的誤報說明、六組 GIF 及盤面截圖：
+`design/source/spine_v2/README.md`。本機 playtest 已更新；**未重新打包、未上傳或發布平台版本**。
+
 ## 2026-09-25 角色分層完成
 
 囚犯改用 `CastFigureMesh.svelte` → `LayeredFigure` 四層網格、共用骨架；圖層與 PSD 在 [design/cast_parts/base](design/cast_parts/base/README.md)，遊戲資產在 `static/assets/castLayers/prisoner/`。待機／win／winBig／trigger 已接線，外側手掌在最大動作仍保留螢幕留白。原有 `castMotion.ts` 的並行修改未回退，新手臂幅度及解剖左右適配在 `layeredCastMotion.ts`。

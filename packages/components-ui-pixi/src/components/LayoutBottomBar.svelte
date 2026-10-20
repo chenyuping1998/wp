@@ -532,7 +532,7 @@
 		{#if !uiTheme.buyBonusOnRail && !stateUi.menuOpen && !(uiTheme.buyBonusHideInFreeSpins && stateUi.freeSpinCounterShow)}
 			<Container
 				x={uiTheme.railWidth * 0.5}
-				y={box.height * 0.46}
+				y={box.height * uiTheme.buyBonusYFraction}
 				scale={uiTheme.buyBonusRailScale}
 			>
 				{@render props.buttonBuyBonus({ anchor: 0.5 })}

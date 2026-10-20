@@ -270,7 +270,31 @@
 		preload: true,
 	},
 
-	// No Spine cast. The two Spine rigs that sat here (hmCastGuySpine /
+	// Spine cast (2026-10-20): both figures on screen at once, warden left of
+	// the board and prisoner right, on one shared idle clock. Built by
+	// design/build_cast_spine.py from the castLayers art above (weighted
+	// meshes, leg IK with the feet pinned, physics on the towel / whistle /
+	// radio cord / keys) - the Iron Jaw recipe, see Cast.svelte USE_SPINE_CAST.
+	htPrisonerSpine: {
+		type: 'spine',
+		src: {
+			atlas: new URL('../../assets/spines/htCast/prisoner.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/htCast/prisoner.json', import.meta.url).href,
+			scale: 1,
+		},
+		preload: true,
+	},
+	htWardenSpine: {
+		type: 'spine',
+		src: {
+			atlas: new URL('../../assets/spines/htCast/warden.atlas', import.meta.url).href,
+			skeleton: new URL('../../assets/spines/htCast/warden.json', import.meta.url).href,
+			scale: 1,
+		},
+		preload: true,
+	},
+
+	// (Historical) No Spine cast. The two Spine rigs that sat here (hmCastGuySpine /
 	// hmCastGirlSpine, Hot Miami's man and woman) were registered with
 	// `preload: true` and loaded on every boot, but nothing mounted
 	// CastFigureSpine — Cast.svelte renders the mesh rig (USE_MESH_CAST). 5.4MB
