@@ -371,7 +371,11 @@ checks onto our playtest stub.
 
 **The self-check also runs two house presentation checks** (Stone, 2026-10-16):
 label centring with `scripts/ui_center_audit.js` and cast arm ghosts with the
-game-reskin skill's `scripts/check_cast_underlay.py`. Both are spelled out at the
+game-reskin skill's `scripts/check_cast_underlay.py`.
+Since 2026-10-20 it also runs `scripts/social_text_audit.js` (restricted words
+and K/M amounts read off the live screen, pixi text included) and a legibility
+read of every value a symbol carries — the two things Sushi Monkey's reviews
+caught that no static guard could. Both are spelled out at the
 end of `engine-self-check.md`. Two facts behind them worth knowing while
 building, not only at submission:
 

@@ -597,6 +597,20 @@ The same file also covers portrait controls that run off the screen edge
 touch tap, and a spin halo that flares on press. Test those on a touch
 pointer, not just a mouse.
 
+**Run the runtime text audit and read every symbol value** (Sushi Monkey,
+2026-10-20 — two review rounds in one day, every static guard green). In the
+running game paste `.claude/skills/stake-engine-slot/scripts/social_text_audit.js`
+and `__textAudit.scan()` on every screen at `?social=true&currency=GC` (restricted
+words, including ones pixi draws from `<script>` literals) and in any mode for K/M
+amounts — open the bet menu with the stub ladder swapped to reach 750,000. Then
+force a book with the value-carrying symbol (plate/sack/coin) and read each value
+tier from a native-resolution canvas grab: Sushi's copper digits on a copper
+badge showed nothing at all. While building: whenever you pick a digit set for a
+badge, check its glyph colour against the badge fill, and the info/pay table
+must list every value the maths prize table can produce and show the symbol as
+it lands. Details: stake-engine-slot `engine-self-check.md` house notes and
+`review-log.md` → "Sushi Monkey 2026-10-20".
+
 **Measure label centring and cast ghosts** (Stone, 2026-10-16: 「這種以後也要檢查」).
 Pickle Panic went to the platform with an '∞' sitting low on its round badge,
 four more labels 2-4px off-centre and an FG chef who left a smeared second arm

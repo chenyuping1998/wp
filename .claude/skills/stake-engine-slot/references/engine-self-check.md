@@ -392,7 +392,23 @@ How this repo maps onto the self-check, so a run doesn't rediscover it:
   upload/<Game>/math | grep 'RTP: '` AND against what is *published* (`get_game`
   versions) — the 10-15 finding was a stale published front against newer math.
 - **Social wording**: use the restricted-word table in `certification.md`; static
-  guard `design/check_social_words.mjs`, then look at `?social=true` in the browser.
+  guard `design/check_social_words.mjs`, then the **runtime audit**: open
+  `?social=true&currency=GC`, paste `scripts/social_text_audit.js`, run
+  `__textAudit.scan()` on every screen (splash, base, bet menu, buy menu +
+  confirm, autoplay ADVANCED, settings, rules scrolled, pay table, FS intro/outro,
+  big win, replay card, low-balance notice); `__textAudit.all()` for the report.
+  It reads pixi `Text` too — the static guard missed a splash card's "your bet"
+  (Sushi Monkey 2026-10-20). `EMPTY` means the screen had not rendered; rescan.
+- **No K / M amounts** (same review): the same audit reports `abbreviated` hits in
+  any mode. The playtest ladder stops at 100 — swap the dist `stub.js` ladder for
+  `[1, 5, 10, 50, 100, 500, 1000, 2000, 10000, 50000, 120000, 500000, 750000, 1000000]`
+  before opening the bet menu, then restore the copy of record.
+- **Value-carrying symbols** (same review, "the Sushi Plate mechanic is unclear"):
+  force a book with them on the board (`?forceBook=`), grab the canvas at native
+  resolution (rAF `drawImage` → sink, see `verification.md`) and read every value
+  tier — a digit set the same colour as its badge is invisible. The info must name
+  the symbol's look, say where the value shows, list every value per mode from
+  the maths prize table, and its icon must match the reel (badge included).
 - **Presentation checks the official list does not have, run with it every time**
   (Stone, 2026-10-16: 「這種以後也要檢查」). Reviewers score "poor UI" and "poor
   animations" from exactly these, and the user catches them by eye:

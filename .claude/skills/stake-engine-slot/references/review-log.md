@@ -24,6 +24,7 @@ an entry when you want to know what a reviewer's one-line comment really meant.
 - [A guard that cannot see its target](#a-guard-that-cannot-see-its-target)
 - [The oncomplete race — one shape, five places](#the-oncomplete-race--one-shape-five-places)
 - [Deadwood Express post-approval — ten issues, shared fixes](#deadwood-express-post-approval--ten-issues-shared-fixes)
+- [Sushi Monkey 2026-10-20 — three things every guard passed](#sushi-monkey-2026-10-20--three-things-every-guard-passed)
 - [Production bugs worth recognising again](#production-bugs-worth-recognising-again)
 - [Working with the reviewers](#working-with-the-reviewers)
 
@@ -56,6 +57,10 @@ Run this before the first upload. Each line maps to a round that was lost.
       $0.01 stake renders `$0.00` and stops matching the server's JSON.
 - [ ] Amount parameters are in API units — 1,000,000 = 1 coin. A launcher
       `balance=100000000` is 100 coins, not 100 million.
+- [ ] **No K / M abbreviations anywhere** — bet menu chips included: 1,000.00,
+      never 1.00K (Sushi Monkey 2026-10-20). Check the bet menu with a ladder that
+      reaches 750,000 (the playtest stub stops at 100) and run
+      `scripts/social_text_audit.js` on it.
 
 **Social mode (`?social=true`)**
 
@@ -65,6 +70,11 @@ Run this before the first upload. Each line maps to a round that was lost.
 - [ ] Check the quiet surfaces too: the spin ticker, feature-buy dialogs, the
       insufficient-balance message, the replay panel.
 - [ ] A static guard runs on build.
+- [ ] …and a **runtime** pass: `scripts/social_text_audit.js` pasted into the page
+      at `?social=true&currency=GC`, `__textAudit.scan()` on every screen (splash
+      first). The static guard cannot see a string literal in a `<script>` array
+      that pixi draws — that is how "capped at 10,000× your bet" reached review
+      on Sushi Monkey's splash card.
 
 **Game information**
 
@@ -74,8 +84,18 @@ Run this before the first upload. Each line maps to a round that was lost.
       prose.
 - [ ] Every feature the maths implements — retriggers included.
 - [ ] The max-win cap and what happens when a round hits it.
+- [ ] A symbol that **carries a value** (plate, sack, coin, frame): the info names
+      what it looks like, says how the value is shown, and **lists every value it
+      can carry** (from the maths config's prize table, per mode). The info icon
+      matches what lands on the reel — badge included.
 
 **Presentation**
+
+- [ ] **Every value printed on a symbol is legible on the reel**: glyph colour vs
+      its backing measured, not assumed — capture at native resolution (pixi
+      extract / rAF canvas grab) for each value tier (1×, 10×, 100×…). Sushi
+      Monkey's copper digit PNGs sat on a copper disc: no value visible, the
+      blank disc read as a coin (review 2026-10-20).
 
 - [ ] Bet bar in the conventional arrangement; occasional expensive actions
       (feature buy) kept away from the control pressed every few seconds.
@@ -596,6 +616,20 @@ round in /authenticate) and `?bal=<amount>`; neither existed, which is why the
 resume and zero-balance paths were never exercised before submission.
 
 ---
+
+## Sushi Monkey 2026-10-20 — three things every guard passed
+
+Two review rounds in one day. Each finding passed the build and every static
+guard, and each was obvious the moment someone looked at the running game.
+
+| Reported | Cause | Fix | Check that now catches it |
+| :-- | :-- | :-- | :-- |
+| "The Sushi Plate mechanic is unclear": no value on any plate, the plate looks like "a copper coin or cookie", possible values not in the info | `SackBadge` drew the `plate` digit set — solid copper PNGs — on a copper disc. Same colour on same colour; the disc also covered the two maki that identify the symbol | Paper chit on the plate's rim under the maki; copper digits on paper < 10×, charcoal on copper ≥ 10×. Info lists 1–50× (+100×/250× in FS) and shows the chit on the icon | Presentation: value legibility per tier at native resolution; Game information: value-carrying symbols list every value |
+| Restricted words in social mode — the splash's MAX WIN card | `body:'The total win is capped at 10,000× your bet.'` in a `<script>` array rendered by pixi `Text`. `check_social_words.mjs` reads templates and `pick()`/ternary branches only, so it printed OK | `getSocialTerms().bet` ("amount" in social) | `scripts/social_text_audit.js` — reads pixi `Text` under `__PIXI_APP__.stage` and the DOM |
+| "All values displayed fully without K or M" — bet menu 1.00K … 750.00K | shared `BetMenuAmountGrid.svelte` (and Capo/HT/Turf's own `ModalBetMenu.svelte`) abbreviated above 999 | `toLocaleString('en-US', 2 decimals)`; long labels step the font down to keep three per row | same audit script (`abbreviated` hits) with a 750,000 ladder in the stub |
+
+Already-live games are not patched for findings like these (Stone, 2026-10-20) —
+port to games still in review only.
 
 ## Production bugs worth recognising again
 
