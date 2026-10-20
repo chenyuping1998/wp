@@ -1,4 +1,5 @@
 <script lang="ts">
+	import MaxPlaque from './MaxPlaque.svelte';
 	import config from '../game/config';
 	import PickleLogo from './PickleLogo.svelte';
 	import { getSocialTerms } from '../game/socialTerms';
@@ -32,8 +33,11 @@
 				{@const pw = stacked ? cardW * 0.4 : cardW * 0.9}
 				{@const px = stacked ? -cardW * 0.27 : 0}
 				{@const py = stacked ? 0 : -cardH * 0.14}
-				<Sprite key="v8WinMax" anchor={0.5} x={px} y={py} width={pw} height={pw * 0.5625} />
-				<Text text={`${config.betModes.base.max_win.toLocaleString("en-US")}×`} anchor={0.5} x={px} y={py + pw * 0.5625 * 0.04} style={{fontFamily:GAME_FONT,fontSize:pw*.105,fill:0xc84a36,stroke:{color:0x20231d,width:pw*.012,join:'round'}}}/>
+				<Container x={px} y={py}>
+					<MaxPlaque width={pw} height={pw * 0.5625}>
+						<Text text={`${config.betModes.base.max_win.toLocaleString("en-US")}×`} anchor={0.5} y={pw * 0.5625 * 0.04} style={{fontFamily:GAME_FONT,fontSize:pw*.105,fill:0xc84a36,stroke:{color:0x20231d,width:pw*.012,join:'round'}}}/>
+					</MaxPlaque>
+				</Container>
 			{:else}<Sprite key={panel.key} anchor={0.5} x={stacked ? -cardW * 0.27 : 0} y={stacked ? 0 : -cardH * 0.12}
 				width={stacked ? cardW * 0.32 : cardW * 0.57} height={stacked ? cardW * 0.32 : cardW * 0.57} />{/if}
 			<Text text={panel.title} anchor={0.5} x={stacked ? cardW * 0.13 : 0} y={stacked ? -cardH * 0.24 : cardH * 0.12}

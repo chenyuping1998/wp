@@ -216,6 +216,10 @@ export default {
 	v8WinEpic: { type: 'sprite', src: new URL('../../assets/pickle/win_epic_base.png', import.meta.url).href, preload: true },
 	v8WinEpicDecor: { type: 'sprite', src: new URL('../../assets/pickle/clear.png', import.meta.url).href, preload: true },
 	v8WinMax: { type: 'sprite', src: new URL('../../assets/pickle/win_max_base.png', import.meta.url).href, preload: true },
+	// MAX plaque cut into three layers (design/build_max_layers.py) so the cooks move
+	v8WinMaxSign: { type: 'sprite', src: new URL('../../assets/pickle/win_max_sign.png', import.meta.url).href, preload: true },
+	v8WinMaxMg: { type: 'sprite', src: new URL('../../assets/pickle/win_max_mg.png', import.meta.url).href, preload: true },
+	v8WinMaxFg: { type: 'sprite', src: new URL('../../assets/pickle/win_max_fg.png', import.meta.url).href, preload: true },
 	v8WinMaxDecor: { type: 'sprite', src: new URL('../../assets/pickle/clear.png', import.meta.url).href, preload: true },
 	v8FgIntro: { type: 'sprite', src: new URL('../../assets/pickle/panel.png', import.meta.url).href, preload: true },
 	v8FgIntroDecor: { type: 'sprite', src: new URL('../../assets/pickle/clear.png', import.meta.url).href, preload: true },

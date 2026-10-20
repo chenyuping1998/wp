@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import type { Snippet } from 'svelte';
 	import { Container, Sprite } from 'pixi-svelte';
+	import MaxPlaque from './MaxPlaque.svelte';
 	type Props = { tier:string; width:number; height:number; closing:boolean; children:Snippet };
 	const props:Props=$props();
 	const tiers:Record<string,{key:string;intensity:number;props:string[]}>={
@@ -50,12 +51,13 @@
 {/if}
 <Container y={pose.y} scale={{x:pose.x,y:pose.sy}} alpha={pose.alpha}>
 	{#if spec.intensity>=1.3}<Sprite key="gbWinBurstV2" anchor={.5} rotation={time/1000*Math.PI/15} width={props.width*spec.intensity*.83} height={props.width*spec.intensity*.83} alpha={.55}/>{/if}
-	<Sprite key={spec.key} anchor={.5} width={props.width} height={props.height}/>
+	{#if props.tier!=='max'}<Sprite key={spec.key} anchor={.5} width={props.width} height={props.height}/>{/if}
 	{#each spec.props as key,i (`${key}-${i}`)}
 		{@const p=flying(i)}
 		<Container x={p.x} y={p.y} rotation={p.rotation} scale={p.scale} alpha={p.alpha}>
 			<Sprite {key} anchor={.5} width={props.width*(key==='gbS'?.17:.14)} height={props.width*(key==='gbS'?.17:.14)}/>
 		</Container>
 	{/each}
-	{@render props.children()}
+	<!-- MAX: the cooks heave the sign and the title/amount ride on it -->
+	{#if props.tier==='max'}<MaxPlaque width={props.width} height={props.height}>{@render props.children()}</MaxPlaque>{:else}{@render props.children()}{/if}
 </Container>
