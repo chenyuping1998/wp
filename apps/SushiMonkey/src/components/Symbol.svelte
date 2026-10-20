@@ -110,5 +110,5 @@
 	<!-- Sushi Plate value, in BET MULTIPLES as the maths sends it (5 = 5x bet).
 	     The user asked for it to read at a glance (袋子的倍數太不明顯), so it is a
 	     stamp, not loose type — see SackBadge. -->
-	<SackBadge prize={props.rawSymbol.prize} x={props.x ?? 0} y={(props.y ?? 0) - SYMBOL_SIZE * 0.1} />
+	<SackBadge prize={props.rawSymbol.prize} x={props.x ?? 0} y={(props.y ?? 0) + SYMBOL_SIZE * 0.14} />
 {/if}

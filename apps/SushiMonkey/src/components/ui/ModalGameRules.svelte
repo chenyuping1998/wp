@@ -164,6 +164,22 @@
 			<h2>SUSHI MONKEY — GAME RULES</h2>
 
 			<section class="wp-card">
+				<h3 style="color: #b87b60 !important"><span class="wp-accent-bar"></span>RTP &amp; Maximum Win</h3>
+				<table class="wp-modes">
+					<thead><tr><th scope="col">Mode</th><th scope="col">RTP</th><th scope="col">Max win</th></tr></thead>
+					<tbody>
+						{#each modeRows as row (row.label)}
+							<tr><th scope="row">{row.label}</th><td>{row.rtp}</td><td>{row.maxWin}</td></tr>
+						{/each}
+					</tbody>
+				</table>
+				<p class="wp-modes-note">
+					RTP means theoretical return to player. Maximum wins are multiples of the base {T.bet},
+					excluding feature entry multipliers. A round ends immediately when its maximum win is reached.
+				</p>
+			</section>
+
+			<section class="wp-card">
 				<h3 style="color: #b87b60 !important"><span class="wp-accent-bar"></span>How to play</h3>
 				<p>
 					<!-- Reels × rows ("5×4"), the order players and the industry use,
@@ -174,7 +190,7 @@
 					{T.pays} when the same symbol appears on 3 or more adjacent reels starting from the
 					leftmost, and the number of {T.ways} it {T.pays} is the number of that symbol on each
 					of those reels multiplied together. Only the highest win per symbol is {T.paid}, and
-					wins from different symbols are added together. The theoretical return to player (RTP)
+					wins from different symbols are added together. The base game’s theoretical return to player (RTP)
 					is {rtpPct}.
 				</p>
 			</section>
@@ -212,60 +228,17 @@
 				</p>
 			</section>
 
-			<section class="wp-card">
-				<h3 style="color: #b87b60 !important"><span class="wp-accent-bar"></span>RTP &amp; Max Win by mode</h3>
-				<!--
-					Scroll wrapper, and the unit lifted out of every row into the header.
-
-					Three of this table's four columns are white-space: nowrap, so they
-					cannot shrink: "Hold and Spin", "96.00%" and "10,000× amount" need
-					roughly 270px between them before the "How to enter" column gets a
-					single pixel. The modal is width: min(36rem, 90vw), which on a
-					360px-wide phone leaves 268px inside the padding — so the table was
-					already over budget on a layout this game supports, and social play
-					was worse than real-money play because "amount" is longer than "bet".
-
-					Removing the per-row unit saves the widest of the three and is a
-					content improvement on its own: the note directly under the table
-					already says what the multiple is of, so it was being said six times.
-				-->
-				<div class="wp-modes-scroll">
-					<table class="wp-modes">
-						<thead>
-							<tr>
-								<th scope="col">Mode</th>
-								<th scope="col">How to enter</th>
-								<th scope="col">RTP</th>
-								<th scope="col">Max win<br />(&times; {T.totalBet})</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each modeRows as row (row.label)}
-								<tr>
-									<th scope="row">{row.label}</th>
-									<td>{row.entry}</td>
-									<td>{row.rtp}</td>
-									<td>{row.maxWin}</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-				<p class="wp-modes-note">
-					Max win is a multiple of the {T.totalBet}. When a round reaches the cap it ends
-					immediately and the capped amount is {T.paid}.
-				</p>
-			</section>
-
 			<!-- The signature mechanic gets its own section above Wild and Scatter,
 			     because it is the thing the game is built around and the only rule
 			     a player of other ways games will not already know. -->
 			<section class="wp-card">
 				<h3 style="color: #b87b60 !important"><span class="wp-accent-bar"></span>Sushi Plates &amp; the Chef</h3>
 				<p>
-					<strong>Sushi Plates</strong> land carrying a value from 1&times; to 50&times; the
-					{T.bet} (up to 250&times; in Free Spins), printed on the plate. A Plate does not form combinations and does not {T.pay} on
-					its own.
+					Every <strong>Sushi Plate</strong> (the plate with two tuna maki) lands with its value
+					shown on a tag on the plate, as a multiple of the {T.bet}. Possible values are
+					1&times;, 2&times;, 3&times;, 4&times;, 5&times;, 10&times;, 15&times;, 20&times;, 25&times;
+					and 50&times;; in Free Spins a Plate can also show 100&times; or 250&times;. A Plate does
+					not form combinations and does not {T.pay} on its own.
 				</p>
 				<p>
 					The <strong>Chef</strong> is the Wild. It appears on reels 2 to 5. Whenever at least
@@ -350,7 +323,7 @@
 						{/each}
 					</ul>
 					<p>
-						Every round runs at the same {rtpPct} RTP as base play. The meter keeps counting from
+						Each mode’s RTP is listed above. The meter keeps counting from
 						there, exactly as in Free Spins won with Scatters.
 					</p>
 				</section>
@@ -359,7 +332,7 @@
 			<section class="wp-card">
 				<h3 style="color: #b87b60 !important"><span class="wp-accent-bar"></span>Max Win</h3>
 				<p>
-					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}
+					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the base {T.bet}
 					in every mode. Once the cap is reached the round ends immediately and the maximum win
 					is awarded.
 				</p>
@@ -548,16 +521,7 @@
 		opacity: 0.88;
 	}
 
-	/* Mode comparison table — RTP and max win per mode, as certification asks
-	   these be clearly stated for every mode. Values come from the maths config
-	   (see modeRows), so the table cannot drift from what the game pays. */
-	/* The backstop. Even with the unit gone the four columns can run out of room
-	   on the narrowest supported layout, and a table that scrolls sideways is
-	   readable where a clipped one is not. */
-	.wp-modes-scroll {
-		overflow-x: auto;
-		-webkit-overflow-scrolling: touch;
-	}
+	/* Three columns keep every mode’s RTP and maximum visible on phones. */
 
 	.wp-modes {
 		width: 100%;
@@ -585,14 +549,14 @@
 	.wp-modes tbody th {
 		color: #fff3bd;
 		font-weight: 700;
-		white-space: nowrap;
+		overflow-wrap: anywhere;
 	}
 
 	/* RTP and max win are the two numbers being certified — keep them legible
 	   rather than letting them sit in body-copy grey */
-	.wp-modes tbody td:nth-child(3),
-	.wp-modes tbody td:nth-child(4) {
-		color: #ffffff;
+	.wp-modes tbody td:nth-child(2),
+	.wp-modes tbody td:nth-child(3) {
+		color: #1e1b1a;
 		font-weight: 600;
 		white-space: nowrap;
 	}
@@ -694,7 +658,7 @@
 	.wp-card, .wp-card:hover { background: #efeadc; border: 2px solid #4a4846; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
 	.wp-card h3, .wp-modes thead th { color: #b87b60; }
 	.wp-accent-bar, .wp-divider { background: #b87b60; animation: none; box-shadow: none; }
-	.wp-control-name, .wp-modes tbody th, .wp-modes tbody td:nth-child(3), .wp-modes tbody td:nth-child(4) { color: #1e1b1a; }
+	.wp-control-name, .wp-modes tbody th, .wp-modes tbody td { color: #1e1b1a; }
 	.wp-modes th, .wp-modes td { border-bottom-color: #4a4846; }
 
 	.wp-foot {

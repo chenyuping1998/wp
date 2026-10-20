@@ -53,7 +53,7 @@ export const MODE_NAMES = {
 const MAX_WIN = '10,000×';
 // from the synced math config, never typed: it was a literal '96%' and would
 // have gone on saying so after the RTP moved
-const RTP = `${(config.rtp * 100).toFixed(2)}%`;
+const modeRtp = (key: 'bonus' | 'superbonus') => `${(config.betModes[key].rtp * 100).toFixed(2)}%`;
 const meter = config.banditMeter;
 const firstRung = meter.thresholds[0];
 const firstMult = meter.mults[1];
@@ -94,8 +94,8 @@ export const SUSHI_MONKEY_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy direct entry into ${config.betModes.bonus.spins} FREE SPINS for ${config.betModes.bonus.cost}× your bet, at the same ${RTP} RTP as base play. Every Chef that lands takes every Sushi Plate on the board, and at ${meter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Chefs ${meter.spinsAdded} spins are added and all 10, then J, then Q symbols become Sushi Plates on subsequent spins; collections remain ×1. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter ${config.betModes.bonus.spins} FREE SPINS directly for ${config.betModes.bonus.cost}× your amount, at the same ${RTP} RTP as normal play. Every Chef that lands takes every Sushi Plate on the board, and at ${meter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Chefs ${meter.spinsAdded} spins are added and all 10, then J, then Q symbols become Sushi Plates on subsequent spins; collections remain ×1. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy direct entry into ${config.betModes.bonus.spins} FREE SPINS for ${config.betModes.bonus.cost}× your bet, at ${modeRtp('bonus')} RTP. Every Chef that lands takes every Sushi Plate on the board, and at ${meter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Chefs ${meter.spinsAdded} spins are added and all 10, then J, then Q symbols become Sushi Plates on subsequent spins; collections remain ×1. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter ${config.betModes.bonus.spins} FREE SPINS directly for ${config.betModes.bonus.cost}× your amount, at ${modeRtp('bonus')} RTP. Every Chef that lands takes every Sushi Plate on the board, and at ${meter.thresholds.join(', ').replace(/, (\d+)$/, ' and $1')} Chefs ${meter.spinsAdded} spins are added and all 10, then J, then Q symbols become Sushi Plates on subsequent spins; collections remain ×1. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {
@@ -131,8 +131,8 @@ export const SUSHI_MONKEY_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy entry into ${config.betModes.superbonus.spins} FREE SPINS for ${config.betModes.superbonus.cost}× your bet, at the same ${RTP} RTP as base play. The Chef meter opens at ${firstRung}, so all 10 symbols are already Sushi Plates from the first spin; collections remain ×1. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter ${config.betModes.superbonus.spins} FREE SPINS for ${config.betModes.superbonus.cost}× your amount, at the same ${RTP} RTP as normal play. The Chef meter opens at ${firstRung}, so all 10 symbols are already Sushi Plates from the first spin; collections remain ×1. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy entry into ${config.betModes.superbonus.spins} FREE SPINS for ${config.betModes.superbonus.cost}× your bet, at ${modeRtp('superbonus')} RTP. The Chef meter opens at ${firstRung}, so all 10 symbols are already Sushi Plates from the first spin; collections remain ×1. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter ${config.betModes.superbonus.spins} FREE SPINS for ${config.betModes.superbonus.cost}× your amount, at ${modeRtp('superbonus')} RTP. The Chef meter opens at ${firstRung}, so all 10 symbols are already Sushi Plates from the first spin; collections remain ×1. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {

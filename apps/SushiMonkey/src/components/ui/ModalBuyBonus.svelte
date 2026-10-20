@@ -154,7 +154,7 @@
 					{/if}
 				{/each}
 			</div>
-			<div class="foot">All features play at {(config.rtp * 100).toFixed(2)}% RTP · Max win {(config.betModes.base.max_win ?? 10000).toLocaleString()}×</div>
+			<div class="foot">{MODE_NAMES.BONUS}: {(config.betModes.bonus.rtp * 100).toFixed(2)}% RTP · {MODE_NAMES.SUPERBONUS}: {(config.betModes.superbonus.rtp * 100).toFixed(2)}% RTP · Max win {(config.betModes.base.max_win ?? 10000).toLocaleString()}×</div>
 		</div>
 	</Popup>
 {/if}

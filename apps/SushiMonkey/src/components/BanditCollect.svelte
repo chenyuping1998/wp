@@ -250,7 +250,7 @@
 			<SackBadge
 				prize={sack.value / 100}
 				x={sack.x}
-				y={sack.y - hop * SYMBOL_SIZE * 0.12 - SYMBOL_SIZE * 0.1 * (1 + hop * 0.12)}
+				y={sack.y - hop * SYMBOL_SIZE * 0.12 + SYMBOL_SIZE * 0.14 * (1 + hop * 0.12)}
 				scale={1 + hop * 0.12}
 			/>
 		{/if}
@@ -272,7 +272,7 @@
 			<SackBadge
 				prize={(sacks[i]?.value ?? 0) / 100}
 				x={p.x}
-				y={p.y - SYMBOL_SIZE * 0.1 * (p.scale / 0.88)}
+				y={p.y + SYMBOL_SIZE * 0.14 * (p.scale / 0.88)}
 				scale={p.scale / 0.88}
 			/>
 		{/if}

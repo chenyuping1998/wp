@@ -1,3 +1,13 @@
+## Current local package — 2026-10-20 RTP retarget
+
+Base 96.02% / Dinner Service (100×) 96.05% / Omakase Course (150×) 96.08%. Maximum win remains 10,000× base bet in every mode. Reweighted from archived original optimizer LUTs; books and per-event payouts unchanged.
+
+Backup and rollback: /Users/stone/stake-engine/_upload_backups/SushiMonkey-rtp9655-20261020-092440/README.md. The complete prior package, source configurations and frontend sources are SHA-256 verified (266 files). restore.py defaults to a dry run; --apply restores local files and preserves the displaced package. Platform rollback requires uploading/publishing the restored math and frontend together.
+
+Platform UPDATED: frontend v10 / math v3 published and confirmed; approval references frontend v10 / math v3. Both post-upload plans have 0 actions. Prior frontend v9 / math v2 (96.55%) preserved in the rollback snapshot. Existing thumbnail/cover layers retained. No new art requested; no ZIP produced. Compliance: PASS, zero failures/warnings. Optimizer target/slice assertions and build guards passed; existing type baseline 15, no new errors.
+
+The entries below are historical.
+
 # Sushi Monkey — staged bundle
 
 2026-10-07. Package destination: /Users/stone/stake-engine/upload/SushiMonkey/.
@@ -41,3 +51,10 @@ V9 opening composition: initial display board rebalanced to five H1 and three H2
 ## RTP update 2026-10-11
 
 Lookup-table weights rebalanced (books, payouts and max win unchanged). Per-mode RTP: base 96.02% / bonus 96.02% / superbonus 96.02%.
+
+
+## 2026-10-20 rules correction
+
+Rules now start with a compact three-mode RTP / maximum-win table, readable on the paper theme; max win explicitly uses the base bet. Correct platform math v2 is 96.55% in every mode, 10,000× max, costs 1× / 100× / 150×. Earlier 96.02% local weights were never uploaded; restored the staged/source math files to MD5-identical platform scratch v2. Math remains unchanged on platform. Thumbnail and cover retained, no new art requested. Frontend upload/publish status is recorded after completion below.
+
+2026-10-20: Platform UPDATED — frontend v9 successfully published; get_game confirms v9 and approval conversation references frontend v9 / math v2. Post-upload plan: 0 actions. Approved math v2 retained (96.55%, 10,000× in all three modes). No reviewer reply was sent; issue closure remains with platform review.

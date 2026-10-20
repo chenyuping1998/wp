@@ -85,6 +85,10 @@
 			ways: 8,
 		},
 	];
+	// Every value a Plate can carry, as the maths draws them (game_config.py
+	// base_prizes / fg_prizes) — the review asked for the list in the info.
+	const plateBase = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50];
+	const plateFs = [100, 250];
 	const scatterSpins = Object.values(config.scatterSpins ?? {}).join(', ');
 
 	const isLit = (cells: [number, number][], reel: number, row: number) =>
@@ -123,6 +127,10 @@
 									{#if /^L\d$/.test(row.name)}
 										<span class="wp-letter" aria-hidden="true">{row.label}</span>
 									{/if}
+									<!-- the plate as it lands: the value chit sits on its rim -->
+									{#if row.name === 'P'}
+										<span class="wp-plate-chit" aria-hidden="true">5×</span>
+									{/if}
 								</div>
 							{/if}
 							<span class="wp-symbol-name">{row.label}</span>
@@ -133,7 +141,11 @@
 									>{T.doesNotPay} &mdash; 3, 4 or 5 Scatters award {scatterSpins} Free Spins</span
 								>
 							{:else if row.name === 'P'}
-								<span class="wp-special">Carries a value; every Chef on the board collects every Plate</span>
+								<span class="wp-special"
+									>Every Plate shows its value on the plate, as a multiple of the {T.totalBet}:
+									{plateBase.join('×, ')}× (Free Spins also {plateFs.join('× and ')}×). When a Chef is on
+									the board, every Chef collects the value of every Plate</span
+								>
 							{:else if row.name === 'W'}
 								<span class="wp-special">Substitutes and collects &mdash; reels 2 to 5</span>
 							{:else if row.pays.length}
@@ -527,6 +539,25 @@
 		background: rgba(255, 233, 138, 0.12);
 		border-color: rgba(255, 233, 138, 0.2);
 		box-shadow: 0 0 8px rgba(255, 233, 138, 0.12);
+	}
+
+	/* Paper value chit on the Sushi Plate icon, matching SackBadge on the reels */
+	.wp-plate-chit {
+		position: absolute;
+		left: 50%;
+		top: 64%;
+		transform: translate(-50%, -50%);
+		padding: 0 0.35em;
+		min-width: 2.2em;
+		border: 2px solid #1e1b1a;
+		border-radius: 999px;
+		background: #efeadc;
+		box-shadow: 2px 2px 0 #1e1b1a;
+		color: #a86e56;
+		font: 700 0.6rem/1.25 'Bungee', sans-serif;
+		text-align: center;
+		pointer-events: none;
+		z-index: 2;
 	}
 
 	/* Screenprint modal: keep pay values legible without gradients or halos. */
