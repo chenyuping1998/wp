@@ -64,11 +64,19 @@
 						housingHalfWidth -
 						panelSizes.width -
 						SYMBOL_SIZE * 0.1,
-					// Pinned near the top of the screen rather than to the board's top
-					// edge. With the side-rail UI the Buy Bonus button is centred in
-					// the left rail, and the board now fills 94% of the height — the
-					// old board-relative position put this plaque straight through it.
-					y: context.stateLayoutDerived.mainLayout().height * 0.05,
+					// Down at the housing's bottom edge (2026-10-21): the warden now
+					// stands in the left band, and up at the top this plaque sat on his
+					// head (user: 頭被擋住). Buy Bonus, which lives low in this band,
+					// is hidden during free spins, so the plaque takes its place over
+					// his legs.
+					y:
+						context.stateGameDerived.boardLayout().y +
+						context.stateGameDerived.boardLayout().height *
+							context.stateGameDerived.boardLayout().scale *
+							FRAME_SCALE *
+							0.5 -
+						panelSizes.height -
+						SYMBOL_SIZE * 0.25,
 				}),
 	);
 

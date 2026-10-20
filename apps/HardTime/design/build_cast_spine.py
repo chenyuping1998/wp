@@ -47,7 +47,7 @@ IDLE = 2.0  # seconds, shared clock (Iron Jaw: 2.00)
 FPS = 30  # key density for sampled timelines
 LAG = 0.067  # per chain segment (Iron Jaw: body .167 -> upper arm .233 -> fore .3)
 CELL = 22  # mesh grid cell, art px
-BOB = 10  # idle hip drop, art px
+BOB = 16  # idle hip drop, art px (10 read stiff next to Iron Jaw's 18, 2026-10-21)
 
 
 def smooth(e0, e1, v):
@@ -393,20 +393,59 @@ def wave(t, peak, period=IDLE):
 
 
 def sample(fn, duration, loop):
+    """Keys every 1/FPS with the exact slope at each key, emitted below as
+    Spine bezier curves (cubic Hermite). The first version wrote dense LINEAR
+    keys at 30 fps: velocity then changed every other frame on a 60 Hz screen,
+    and the user saw the figures twitch (2026-10-21). With slopes the motion is
+    C1-smooth at any frame rate."""
     n = int(round(duration * FPS))
+    e = 1e-3
+
+    def at(t):
+        if loop:
+            t = t % duration
+        return fn(min(max(t, 0.0), duration))
+
+    def slope(t):
+        lo, hi = (t - e, t + e) if loop else (max(0.0, t - e), min(duration, t + e))
+        a, b = at(lo), at(hi)
+        if isinstance(a, tuple):
+            return tuple((y - x) / (hi - lo) for x, y in zip(a, b))
+        return (b - a) / (hi - lo)
+
     keys = []
     for i in range(n + 1):
         t = i / FPS
-        keys.append((round(t, 4), fn(t if not loop or i < n else 0.0)))
+        tt = 0.0 if (loop and i == n) else t
+        keys.append((round(t, 4), at(tt), slope(tt)))
     return keys
 
 
+def _bez(t0, v0, m0, t1, v1, m1):
+    h = t1 - t0
+    return [round(t0 + h / 3, 4), round(v0 + m0 * h / 3, 3), round(t1 - h / 3, 4), round(v1 - m1 * h / 3, 3)]
+
+
 def rot_track(keys):
-    return [{"time": t, "value": round(v, 3)} for t, v in keys]
+    out = []
+    for i, (t, v, m) in enumerate(keys):
+        k = {"time": t, "value": round(v, 3)}
+        if i + 1 < len(keys):
+            t1, v1, m1 = keys[i + 1]
+            k["curve"] = _bez(t, v, m, t1, v1, m1)
+        out.append(k)
+    return out
 
 
 def tr_track(keys):
-    return [{"time": t, "x": round(v[0], 2), "y": round(v[1], 2)} for t, v in keys]
+    out = []
+    for i, (t, v, m) in enumerate(keys):
+        k = {"time": t, "x": round(v[0], 2), "y": round(v[1], 2)}
+        if i + 1 < len(keys):
+            t1, v1, m1 = keys[i + 1]
+            k["curve"] = _bez(t, v[0], m[0], t1, v1[0], m1[0]) + _bez(t, v[1], m[1], t1, v1[1], m1[1])
+        out.append(k)
+    return out
 
 
 def idle_anim(cfg):
@@ -417,15 +456,16 @@ def idle_anim(cfg):
         # ours stand straight, so less) and lean toward the board
         "hips": {
             "translate": tr_track(sample(lambda t: (0.0, -BOB * lean(t)), IDLE, True)),
-            "rotate": rot_track(sample(lambda t: -d * 2.3 * lean(t), IDLE, True)),
+            "rotate": rot_track(sample(lambda t: -d * 3.2 * lean(t), IDLE, True)),
         },
         # chest swings toward the board one segment later
         "chest": {
-            "translate": tr_track(sample(lambda t: (d * 9 * (lean(t, LAG) - 0.5), 0.0), IDLE, True)),
-            "rotate": rot_track(sample(lambda t: -d * 0.9 * lean(t, 2 * LAG), IDLE, True)),
+            "translate": tr_track(sample(lambda t: (d * 14 * (lean(t, LAG) - 0.5), 0.0), IDLE, True)),
+            "rotate": rot_track(sample(lambda t: -d * 1.6 * lean(t, 2 * LAG), IDLE, True)),
         },
         # head counter-rotates (eyes stay on the board), two segments late
-        "head": {"rotate": rot_track(sample(lambda t: d * 3.4 * (lean(t, 3 * LAG) - 0.5), IDLE, True))},
+        # plus a small nod at twice the rate, so the head is not a plain pendulum
+        "head": {"rotate": rot_track(sample(lambda t: d * 5.0 * (lean(t, 3 * LAG) - 0.5) + 1.1 * (wave(t, 0.35, IDLE / 2) - 0.5), IDLE, True))},
     }
     if cfg["name"] == "prisoner" and 'knee_targets' not in cfg:
         bones["arms"] = {
@@ -434,14 +474,14 @@ def idle_anim(cfg):
         }
     else:
         # free arm hangs and trails; baton arm barely moves (it carries weight)
-        bones["arm_l"] = {"rotate": rot_track(sample(lambda t: -d * 3.0 * (lean(t, 3 * LAG) - 0.5), IDLE, True))}
-        bones["fore_l"] = {"rotate": rot_track(sample(lambda t: -d * 4.5 * (lean(t, 4 * LAG) - 0.5), IDLE, True))}
-        bones["arm_r"] = {"rotate": rot_track(sample(lambda t: 1.6 * (lean(t, 3 * LAG) - 0.5), IDLE, True))}
-        bones["fore_r"] = {"rotate": rot_track(sample(lambda t: -2.2 * (lean(t, 4 * LAG) - 0.5), IDLE, True))}
+        bones["arm_l"] = {"rotate": rot_track(sample(lambda t: -d * 4.5 * (lean(t, 3 * LAG) - 0.5), IDLE, True))}
+        bones["fore_l"] = {"rotate": rot_track(sample(lambda t: -d * 6.5 * (lean(t, 4 * LAG) - 0.5), IDLE, True))}
+        bones["arm_r"] = {"rotate": rot_track(sample(lambda t: 2.4 * (lean(t, 3 * LAG) - 0.5), IDLE, True))}
+        bones["fore_r"] = {"rotate": rot_track(sample(lambda t: -3.2 * (lean(t, 4 * LAG) - 0.5), IDLE, True))}
     if 'knee_targets' in cfg:
         if cfg['name'] == 'prisoner':
             # Each forearm now moves on its own; keep the crossed hands close.
-            for name, amount in [('arm_r',0.5),('arm_l',-0.5),('fore_r',-0.7),('fore_l',0.7)]:
+            for name, amount in [('arm_r',1.0),('arm_l',-1.0),('fore_r',-1.4),('fore_l',1.4)]:
                 bones[name] = {'rotate': rot_track(sample(lambda t,a=amount: a*(lean(t,3*LAG)-0.5), IDLE, True))}
         for target in cfg['knee_targets'].values():
             bones[target] = {'translate':tr_track(sample(lambda t:(0,-BOB*0.5*lean(t)),IDLE,True))}
@@ -449,22 +489,49 @@ def idle_anim(cfg):
 
 
 def pose_track(poses, duration=1.0):
-    """poses: list of (time, value) with smoothstep easing between keys, except
-    segments flagged 'snap' use a sharp ease-out."""
+    """poses: (time, value, ease). Each segment is written as ONE exact bezier:
+    smoothstep is the cubic Hermite with zero end slopes, and the 'snap'
+    ease-out 1-(1-u)^3 is the Hermite starting at slope 3*dv/h and landing at
+    zero - so the strike keeps its shape without dense keys."""
+    keys = []
+    for i, (t, v, ease) in enumerate(poses):
+        keys.append((t, v))
+    out = []
+    for i in range(len(poses)):
+        t0, v0, _ = poses[i]
+        if i + 1 == len(poses):
+            out.append((t0, v0, None))
+            break
+        t1, v1, ease = poses[i + 1]
+        out.append((t0, v0, (t1, v1, ease)))
+    return out
 
-    def fn(t):
-        for i in range(len(poses) - 1):
-            t0, v0, _ = poses[i]
-            t1, v1, ease = poses[i + 1]
-            if t0 <= t <= t1:
-                u = (t - t0) / (t1 - t0)
-                e = 1 - (1 - u) ** 3 if ease == "snap" else u * u * (3 - 2 * u)
-                if isinstance(v0, tuple):
-                    return tuple(a + (b - a) * e for a, b in zip(v0, v1))
-                return v0 + (v1 - v0) * e
-        return poses[-1][1]
 
-    return sample(fn, duration, False)
+def _pose_curve(t0, a, t1, b, ease):
+    h = t1 - t0
+    m0 = 3 * (b - a) / h if ease == "snap" else 0.0
+    return [round(t0 + h / 3, 4), round(a + m0 * h / 3, 3), round(t1 - h / 3, 4), round(b, 3)]
+
+
+def pose_rot(poses):
+    out = []
+    for t0, v0, nxt in pose_track(poses):
+        k = {"time": round(t0, 4), "value": round(v0, 3)}
+        if nxt:
+            k["curve"] = _pose_curve(t0, v0, *nxt[:2], nxt[2])
+        out.append(k)
+    return out
+
+
+def pose_tr(poses):
+    out = []
+    for t0, v0, nxt in pose_track(poses):
+        k = {"time": round(t0, 4), "x": round(v0[0], 2), "y": round(v0[1], 2)}
+        if nxt:
+            t1, v1, ease = nxt
+            k["curve"] = _pose_curve(t0, v0[0], t1, v1[0], ease) + _pose_curve(t0, v0[1], t1, v1[1], ease)
+        out.append(k)
+    return out
 
 
 # Reaction timing, Iron Jaw `active`: 0.333 wind-up, 0.1 strike, hold to .667,
@@ -483,16 +550,16 @@ def react_anim(cfg, big=False):
 
     b = {}
     b["hips"] = {
-        "translate": tr_track(pose_track(keys((-d * 8 * k, -8), (d * 30 * k, -16), (d * 27 * k, -15)))),
-        "rotate": rot_track(pose_track(keys(d * 1.8 * k, -d * 4.2 * k, -d * 3.8 * k))),
+        "translate": pose_tr(keys((-d * 8 * k, -8), (d * 30 * k, -16), (d * 27 * k, -15))),
+        "rotate": pose_rot(keys(d * 1.8 * k, -d * 4.2 * k, -d * 3.8 * k)),
     }
-    b["chest"] = {"rotate": rot_track(pose_track(keys(d * 1.5 * k, -d * 2.8 * k, -d * 2.4 * k)))}
-    b["head"] = {"rotate": rot_track(pose_track(keys(d * 6 * k, -d * 7 * k, -d * 6 * k)))}
+    b["chest"] = {"rotate": pose_rot(keys(d * 1.5 * k, -d * 2.8 * k, -d * 2.4 * k))}
+    b["head"] = {"rotate": pose_rot(keys(d * 6 * k, -d * 7 * k, -d * 6 * k))}
     if cfg["name"] == "prisoner" and 'knee_targets' not in cfg:
         # crossed arms: chest out on the wind-up, a hard shrug into the stare
-        b["arms"] = {"rotate": rot_track(pose_track(keys(d * 1.5, -d * 2.5 * k, -d * 2.0 * k))),
-                     "translate": tr_track(pose_track(keys((0.0, 4.0), (0.0, 9.0 * k), (0.0, 7.0 * k))))}
-        b["neck"] = {"rotate": rot_track(pose_track(keys(d * 2.0, -d * 3.0 * k, -d * 2.5 * k)))}
+        b["arms"] = {"rotate": pose_rot(keys(d * 1.5, -d * 2.5 * k, -d * 2.0 * k)),
+                     "translate": pose_tr(keys((0.0, 4.0), (0.0, 9.0 * k), (0.0, 7.0 * k)))}
+        b["neck"] = {"rotate": pose_rot(keys(d * 2.0, -d * 3.0 * k, -d * 2.5 * k))}
     elif cfg['name'] == 'warden':
         # The baton arm is drawn BEHIND the body, so a chop toward the board
         # disappears behind his chest (tried 10-20). Instead the baton lifts
@@ -500,27 +567,27 @@ def react_anim(cfg, big=False):
         # the board side, drawn in front - points at the reels.
         # (positive = counter-clockwise; the free arm hangs down-right, so
         # raising it toward the board is counter-clockwise)
-        b["arm_r"] = {"rotate": rot_track(pose_track(keys(2 * k, -2 * k, -1 * k)))}
-        b["fore_r"] = {"rotate": rot_track(pose_track(keys(4 * k, -3 * k, -2 * k)))}
-        b["bat"] = {"rotate": rot_track(pose_track(keys(7 * k, -5 * k, -3 * k)))}
-        b["arm_l"] = {"rotate": rot_track(pose_track(keys(-d * 6, d * 36 * k, d * 32 * k)))}
-        b["fore_l"] = {"rotate": rot_track(pose_track(keys(-d * 6, d * 16 * k, d * 13 * k)))}
+        b["arm_r"] = {"rotate": pose_rot(keys(2 * k, -2 * k, -1 * k))}
+        b["fore_r"] = {"rotate": pose_rot(keys(4 * k, -3 * k, -2 * k))}
+        b["bat"] = {"rotate": pose_rot(keys(7 * k, -5 * k, -3 * k))}
+        b["arm_l"] = {"rotate": pose_rot(keys(-d * 6, d * 36 * k, d * 32 * k))}
+        b["fore_l"] = {"rotate": pose_rot(keys(-d * 6, d * 16 * k, d * 13 * k))}
     if 'knee_targets' in cfg:
         if cfg['name'] == 'prisoner':
             # Tighten, release, settle. Separate bones avoid stretching sleeves.
             for name,sign in [('arm_r',1),('arm_l',-1),('fore_r',-1),('fore_l',1)]:
-                b[name] = {'rotate':rot_track(pose_track(keys(-sign*0.7,sign*2*k,sign*1.4*k)))}
+                b[name] = {'rotate':pose_rot(keys(-sign*0.7,sign*2*k,sign*1.4*k))}
         else:
             # Forearm, hand and baton are in FRONT of the chest in v2.
             # Clockwise from the raised shoulder pose is a real downward chop.
-            b['arm_r'] = {'rotate':rot_track(pose_track(keys(-7*k,12*k,9*k)))}
-            b['fore_r'] = {'rotate':rot_track(pose_track(keys(-12*k,42*k,35*k)))}
-            b['bat'] = {'rotate':rot_track(pose_track(keys(-8*k,22*k,16*k)))}
-            b['arm_l'] = {'rotate':rot_track(pose_track(keys(-2,8*k,6*k)))}
-            b['fore_l'] = {'rotate':rot_track(pose_track(keys(-2,5*k,3*k)))}
-            b['hand_l'] = {'rotate':rot_track(pose_track(keys(2,-7*k,-4*k)))}
+            b['arm_r'] = {'rotate':pose_rot(keys(-7*k,12*k,9*k))}
+            b['fore_r'] = {'rotate':pose_rot(keys(-12*k,42*k,35*k))}
+            b['bat'] = {'rotate':pose_rot(keys(-8*k,22*k,16*k))}
+            b['arm_l'] = {'rotate':pose_rot(keys(-2,8*k,6*k))}
+            b['fore_l'] = {'rotate':pose_rot(keys(-2,5*k,3*k))}
+            b['hand_l'] = {'rotate':pose_rot(keys(2,-7*k,-4*k))}
         for target in cfg['knee_targets'].values():
-            b[target] = {'translate':tr_track(pose_track(keys((-d*4*k,-4),(d*15*k,-8),(d*13.5*k,-7.5))))}
+            b[target] = {'translate':pose_tr(keys((-d*4*k,-4),(d*15*k,-8),(d*13.5*k,-7.5)))}
     return {"bones": b}
 
 

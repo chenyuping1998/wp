@@ -24,7 +24,7 @@
 
   type Props = {
     who: CastWho;
-    /** standard-box x the figure is centred on (before clamping) */
+    /** kept for callers; the figure is centred in its side band (see placement) */
     x: number;
     topY: number;
     /** standard-box height of the figure's art box */
@@ -51,7 +51,8 @@
     warden: { root: [495, 1875], box: [180, 71, 836, 1875], env: [180, 900], key: "htWardenSpine" },
   } as const;
 
-  const BOARD_GAP = 14;
+  // 14 had both figures touching the housing (user, 2026-10-21: 離盤面太近).
+  const BOARD_GAP = 64;
   const SCREEN_GAP = 12;
   const MIX = 0.2; // Iron Jaw's reaction fades back in ~0.17-0.2 s
 
@@ -173,12 +174,23 @@
     if (props.who === "warden") play("react");
   });
 
-  // ── placement (same arithmetic as CastFigureMesh, both sides) ─────────────
+  // ── placement: symmetric (user, 2026-10-21: 位子怪、不對稱、離盤面太近) ──
+  //
+  // Both figures share ONE art scale (the prisoner's box height is the
+  // reference, so the warden in his cap simply stands taller, as drawn), stand
+  // on one floor line, and are centred in their own side band - the band
+  // between the board ink (+ BOARD_GAP) and the screen edge. The bands are the
+  // same width because the board is centred, so the two read as a pair. The
+  // fit uses the wider of the two rest boxes for both, so neither is shrunk
+  // more than the other.
+  const REF_HEIGHT = RIG.prisoner.box[3] - RIG.prisoner.box[1];
+  const REF_TOP_TO_FEET = RIG.prisoner.root[1] - RIG.prisoner.box[1];
+  const WIDEST = Math.max(...Object.values(RIG).map((r) => r.box[2] - r.box[0])) * 1.06; // + idle sway
   $effect(() => {
     if (!spine) return;
     const rig = RIG[props.who];
-    const [bx0, by0, bx1, by1] = rig.box;
-    const [rootX, rootY] = rig.root;
+    const [bx0, , bx1] = rig.box;
+    const [rootX] = rig.root;
     const mirror = props.who === "warden";
     const toCanvasX = (x: number) => std.x + (x - std.width * std.anchor) * std.scale;
     const canvasWidth = context.stateLayoutDerived.canvasSizes().width;
@@ -187,19 +199,12 @@
       props.side === "right"
         ? [toCanvasX(props.innerEdge + BOARD_GAP), canvasWidth - SCREEN_GAP * std.scale]
         : [SCREEN_GAP * std.scale, toCanvasX(props.innerEdge - BOARD_GAP)];
-    const [envLo, envHi] = mirror
-      ? [2 * rootX - rig.env[1], 2 * rootX - rig.env[0]]
-      : rig.env;
-    const natural = (props.height / (by1 - by0)) * std.scale * 0.82;
-    const s = Math.min(natural, (rightLimit - leftLimit) / (envHi - envLo));
+    const natural = (props.height / REF_HEIGHT) * std.scale * 0.82;
+    const s = Math.max(0, Math.min(natural, (rightLimit - leftLimit) / WIDEST));
 
-    const nudge = props.side === "right" ? -45 : 45;
     const centre = ((bx0 + bx1) * 0.5 - rootX) * (mirror ? -1 : 1);
-    const wanted = toCanvasX(props.x + nudge) - centre * s;
-    const inkLo = (envLo - rootX) * s;
-    const inkHi = (envHi - rootX) * s;
     spine.scale.set(mirror ? -s : s, s);
-    spine.x = Math.max(leftLimit - inkLo, Math.min(wanted, rightLimit - inkHi));
-    spine.y = std.y + (props.topY - std.height * std.anchor) * std.scale + (rootY - by0) * s;
+    spine.x = (leftLimit + rightLimit) * 0.5 - centre * s;
+    spine.y = std.y + (props.topY - std.height * std.anchor) * std.scale + REF_TOP_TO_FEET * s;
   });
 </script>
