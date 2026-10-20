@@ -374,6 +374,15 @@ are easiest to leave in by accident. Match the NEW theme in:
   `references/stream-time-transcript.md`; its evidence and the
   video-measuring tools (no ffmpeg needed) are in
   `/Users/stone/stake-engine/research/stream-time/`.
+  For a cast that moves like film (Xposed Studios' Iron Jaw on Stake, rated
+  3 stars: two boxers flanking the board on one shared 2.00 s idle clock in
+  opposite phase, Spine 4.2 with 45-59 bones, 15-19 weighted meshes, leg IK
+  pinning the feet and 10-18 physics chains, only 9-13 bones keyed in idle, a 0.8-0.9 s punch fired by that fighter's
+  own wild reel with a 0.2 s hold and a 0.2 s crossfade back into the
+  running idle phase; reels lift 0.25 s, stop 0.23 s apart with an ease-out
+  and a 0.1-cell rebound, 1.55 s lift to last stop), see
+  `references/iron-jaw-transcript.md`; evidence and the point-tracking tools
+  are in `/Users/stone/stake-engine/research/drive-3star/`.
 - **Transitions and set-pieces.** Don't reuse the source game's transition
   motif just because the code is already wired — pick one that fits the new
   theme's own imagery (Capo Nostra replaced "a car drives past" with vault
