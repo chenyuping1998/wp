@@ -7,6 +7,7 @@
  import config from '../game/config';
  import { gameText } from '../game/i18nText';
  import InkNumber from './InkNumber.svelte';
+ import { getSocialTerms } from '../game/socialTerms';
  const context=getContext();
  const layout=$derived(context.stateLayoutDerived.mainLayout());
  const stacked=$derived(layout.width/layout.height<1.2);
@@ -15,7 +16,7 @@
  const panels=[
   {key:'v8IntroCollect',title:'THE CHEF',body:'Every Chef collects every Sushi Plate at ×1.'},
   {key:'v8IntroSlice',title:'FREE SPINS',body:'4 / 8 / 12 Chefs: +10 spins and all 10, then J, then Q become Plates.'},
-  {key:'v8IntroReceipt',title:'MAX WIN',body:'The total win is capped at 10,000× your bet.'}
+  {key:'v8IntroReceipt',title:'MAX WIN',body:`The total win is capped at 10,000× your ${getSocialTerms().bet}.`}
  ];
  let t=$state(0);onMount(()=>{const start=performance.now();let raf=0;const tick=(now:number)=>{t=now-start;raf=requestAnimationFrame(tick);};raf=requestAnimationFrame(tick);return()=>cancelAnimationFrame(raf);});
  const volatility=(config as unknown as {volatility?:number}).volatility;
