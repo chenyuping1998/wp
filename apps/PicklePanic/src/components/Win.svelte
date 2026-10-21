@@ -51,6 +51,26 @@
 		epic: 'EPIC WIN',
 		max: 'MAX WIN',
 	};
+	// WHERE THE WORDS GO ON EACH PLAQUE (fractions of the 1600x900 art).
+	// The five plaques were laid out with one shared position (title -9.5%,
+	// amount +10% of the height), which only fits the ticket-shaped ones. EPIC is
+	// a brine splash whose cream band is ~15% of the art's height, so its amount
+	// overflowed (user, 2026-10-21). Each tier now uses its own measured cream
+	// area (design/PLAN_2026-10-21.md):
+	//   big   x 249-1346 y 318-678 (amount kept clear of the UP! stamp at 77.6%)
+	//   super x 296-1312 y 310-683     mega x 341-1310 y 301-670
+	//   epic  diamond band, y 400-552 mid / x 415-1317 at y 420-520: the amount
+	//         alone fills it and the title sits above the splash, cream on ink
+	//   max   sign x 361-1240 y 223-753 (cooks' hands at the top corners)
+	type TextLayout = { cx: number; titleY: number; titleSize: number; titleW: number; titleOnArt?: boolean; amountY: number; amountSize: number; amountW: number };
+	const TEXT_LAYOUT: Record<string, TextLayout> = {
+		big: { cx: 0.5, titleY: 0.44, titleSize: 0.11, titleW: 0.5, amountY: 0.61, amountSize: 0.16, amountW: 0.44 },
+		superwin: { cx: 0.505, titleY: 0.44, titleSize: 0.11, titleW: 0.56, amountY: 0.61, amountSize: 0.16, amountW: 0.56 },
+		mega: { cx: 0.512, titleY: 0.43, titleSize: 0.11, titleW: 0.54, amountY: 0.6, amountSize: 0.16, amountW: 0.54 },
+		epic: { cx: 0.541, titleY: 0.2, titleSize: 0.1, titleW: 0.5, titleOnArt: true, amountY: 0.53, amountSize: 0.12, amountW: 0.48 },
+		max: { cx: 0.5, titleY: 0.43, titleSize: 0.11, titleW: 0.48, amountY: 0.61, amountSize: 0.16, amountW: 0.48 },
+	};
+
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
 		big: { mult: 1, glowTint: 0xf5e6be },
@@ -61,7 +81,6 @@
 	};
 
 	let show = $state(false);
-	let amountWidth = $state(0);
 	let amount = $state(0);
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
@@ -260,21 +279,27 @@
 							{@const bw = SYMBOL_SIZE * 5.2}
 							{@const bh = bw * BANNER_RATIO}
 							<WinTierArt tier={alias} width={bw} height={bh} closing={!show}>
+								{@const L = TEXT_LAYOUT[alias] ?? TEXT_LAYOUT.big}
+								{@const title = TIER_TITLE[alias] ?? 'BIG WIN'}
+								{@const titleSize = L.titleSize * bh}
 								<Text
 									anchor={0.5}
-									y={bh * -.095}
-									text={TIER_TITLE[alias] ?? 'BIG WIN'}
+									x={(L.cx - 0.5) * bw}
+									y={(L.titleY - 0.5) * bh}
+									text={title}
 									style={{
 										fontFamily: GAME_FONT,
-										fontSize: Math.min(bh*.12,bw*.40/((TIER_TITLE[alias]??"BIG WIN").length*.85)),
+										fontSize: Math.min(titleSize, (L.titleW * bw) / (title.length * 0.85)),
 										fontWeight: GAME_FONT_WEIGHT,
 										letterSpacing: 4,
-										fill: 0x171c1a,
+										fill: L.titleOnArt ? 0xfff0cf : 0x171c1a,
+										...(L.titleOnArt ? { stroke: { color: 0x171c1a, width: titleSize * 0.16, join: 'round' as const } } : {}),
 									}}
 								/>
-								<!-- amount rolls inside the plaque's paper well, in ink -->
-								<Container y={bh * .10} scale={Math.min(1, (bw * 0.6) / Math.max(1, amountWidth))}>
-									<InkNumber text={bookEventAmountToCountUpString(countUpAmount,amount)} fontSize={bh*.17} maxWidth={bw*.44}/>
+								<!-- amount rolls inside the plaque's paper well, in ink, fitted to
+								     that plaque's own measured cream area (TEXT_LAYOUT) -->
+								<Container x={(L.cx - 0.5) * bw} y={(L.amountY - 0.5) * bh}>
+									<InkNumber text={bookEventAmountToCountUpString(countUpAmount,amount)} fontSize={L.amountSize * bh} maxWidth={L.amountW * bw}/>
 								</Container>
 								{#if alias === 'big'}
 									<!-- on the plaque's seal (measured: 77.6% / 68.4% of the art) -->
