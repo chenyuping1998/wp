@@ -9,7 +9,7 @@ THUMB=APP/'design/thumbnail';COVER=APP/'design/cover'
 THUMB.mkdir(exist_ok=True);COVER.mkdir(exist_ok=True)
 
 def character(name,height):
-    source = APP/'design/source/review_1017_ae/fg_registered.png' if name == 'fg' else SRC/f'{name}.png'
+    source = APP/'design/source/review_1021/fg_registered.png' if name == 'fg' else SRC/f'{name}.png'
     im=Image.open(source).convert('RGBA');im=im.crop(im.getchannel('A').getbbox())
     return im.resize((round(im.width*height/im.height),height),Image.Resampling.LANCZOS)
 

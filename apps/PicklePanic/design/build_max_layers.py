@@ -15,7 +15,7 @@ parts hidden behind the sign stay hidden as long as the cooks move vertically
 (their cut seam runs along the sign's vertical edges) - the runtime motion is
 designed around that.
 
-Re-runs from the backup taken on the first run.
+Reads current production art; the first-run backup remains recoverable.
 """
 from pathlib import Path
 import shutil
@@ -32,7 +32,7 @@ orig = BK / 'win_max_base_original.png'
 if not orig.exists():
     shutil.copy2(SRC, orig)
 
-a = np.array(Image.open(orig).convert('RGBA'))
+a = np.array(Image.open(SRC).convert('RGBA'))
 r, g, b, al = [a[..., i].astype(int) for i in range(4)]
 H, W = al.shape
 opaque = al > 8

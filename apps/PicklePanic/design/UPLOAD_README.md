@@ -34,3 +34,6 @@ Store BG luminance: thumbnail mean 155.7, cover mean 145.0; dark fractions 12.5%
 2026-10-15 UI: Buy Bonus label centred on the hanging sign's paper (offset + size 0.44); bet bar end-cap rivets painted out (original kept as design/source/production_v2/ui_bar_v2_with_rivets_backup.png) and the menu/turbo buttons enlarged 1.4x in landscape so they sit on the caps.
 
 Platform: math v1 + front v1 published 2026-10-15 00:35 via stakecli; this UI update is published as the next front version. No ZIP files were requested or produced.
+
+
+2026-10-21 chef revision: fuller red-vest FG chef, waist indentation removed; synchronized rig/atlas, buy card, animated cut-in, MAX plaque layers and cover foreground. Existing single-boss thumbnail included. See design/ART_REQUEST_2026-10-21.md and design/qa/review_1021/. Local staged package only; platform NOT updated.

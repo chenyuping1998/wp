@@ -1,0 +1,3 @@
+BG mean=223.8 p10=190.6 dark<32=0.5% PASS
+FG mode=RGBA transparent=73.9% PASS (manually confirm hero-only/no text)
+COMPOSITE mean=196.2 p10=63.4 dark<32=3.9% (visual inspection still required)

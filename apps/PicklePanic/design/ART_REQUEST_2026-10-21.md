@@ -1,3 +1,15 @@
+## 2026-10-21 Codex 交件
+
+已更新 FG 九個軀幹／手臂／腿圖層、picklePepper atlas 與 mesh 尺寸、buy_chef、切入 body／arm／sparks／合成圖、MAX base 與三個動畫層、封面 FG。原圖保存在各圖層 *_pre1021.png 與 design/source/review_1021/before/；runtime 備份存於 review_1021/backup_named/，不出貨。
+
+alpha>8 的水平外接盒：軀幹 258px（目標約260）；上臂左146／右155px；前臂手掌左122／右128px；大腿149／99px；小腿87／104px。軀幹逐列量測胸174px、腰最小174px，腰胸比1.00。尺寸是實際可見墨跡，非檔案畫布寬度；逐列寬度及原／新對照見 design/qa/review_1021/registration_audit.json。
+
+骨架、關節座標、動畫、物理與 mesh 權重／拓樸全數保留；只重新對位圖層、更新 mesh 頂點與 atlas 區塊。頭、頭巾、鞋與封面店長保留原像素。手臂向外加粗，殘影閘門左右0.0% PASS。全部13項新圖／組裝檢查通過 colors95≤140、soft≤38%、brief六色 palette-fit≥60%。MAX 建層腳本改讀當前 production 圖，避免永遠重切舊備份；封面建圖腳本改用新組裝角色。
+
+建置與所有既有 guards PASS（既有15項型別問題，無新增）。已更新本機 upload/PicklePanic/，新版封面與既有單店長縮圖都包含；平台尚未上傳或更新。瀏覽器驗收記錄見 docs/handoff/PicklePanic.md 最新段落。
+
+---
+
 # Pickle Panic — FG 女廚師身形重畫需求單（2026-10-21）
 
 使用者 10-21 回報（截圖 `design/qa/review_1021_user_fg_thin.png`）：
