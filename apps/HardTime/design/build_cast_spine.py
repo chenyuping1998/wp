@@ -47,7 +47,7 @@ IDLE = 2.0  # seconds, shared clock (Iron Jaw: 2.00)
 FPS = 30  # key density for sampled timelines
 LAG = 0.067  # per chain segment (Iron Jaw: body .167 -> upper arm .233 -> fore .3)
 CELL = 22  # mesh grid cell, art px
-BOB = 16  # idle hip drop, art px (10 read stiff next to Iron Jaw's 18, 2026-10-21)
+BOB = 11  # idle hip drop, art px (10 read stiff, 16 breathed too hard - user 2026-10-21)
 
 
 def smooth(e0, e1, v):
@@ -456,16 +456,16 @@ def idle_anim(cfg):
         # ours stand straight, so less) and lean toward the board
         "hips": {
             "translate": tr_track(sample(lambda t: (0.0, -BOB * lean(t)), IDLE, True)),
-            "rotate": rot_track(sample(lambda t: -d * 3.2 * lean(t), IDLE, True)),
+            "rotate": rot_track(sample(lambda t: -d * 2.4 * lean(t), IDLE, True)),
         },
         # chest swings toward the board one segment later
         "chest": {
-            "translate": tr_track(sample(lambda t: (d * 14 * (lean(t, LAG) - 0.5), 0.0), IDLE, True)),
-            "rotate": rot_track(sample(lambda t: -d * 1.6 * lean(t, 2 * LAG), IDLE, True)),
+            "translate": tr_track(sample(lambda t: (d * 10 * (lean(t, LAG) - 0.5), 0.0), IDLE, True)),
+            "rotate": rot_track(sample(lambda t: -d * 1.1 * lean(t, 2 * LAG), IDLE, True)),
         },
         # head counter-rotates (eyes stay on the board), two segments late
         # plus a small nod at twice the rate, so the head is not a plain pendulum
-        "head": {"rotate": rot_track(sample(lambda t: d * 5.0 * (lean(t, 3 * LAG) - 0.5) + 1.1 * (wave(t, 0.35, IDLE / 2) - 0.5), IDLE, True))},
+        "head": {"rotate": rot_track(sample(lambda t: d * 3.8 * (lean(t, 3 * LAG) - 0.5) + 0.7 * (wave(t, 0.35, IDLE / 2) - 0.5), IDLE, True))},
     }
     if cfg["name"] == "prisoner" and 'knee_targets' not in cfg:
         bones["arms"] = {
@@ -474,14 +474,14 @@ def idle_anim(cfg):
         }
     else:
         # free arm hangs and trails; baton arm barely moves (it carries weight)
-        bones["arm_l"] = {"rotate": rot_track(sample(lambda t: -d * 4.5 * (lean(t, 3 * LAG) - 0.5), IDLE, True))}
-        bones["fore_l"] = {"rotate": rot_track(sample(lambda t: -d * 6.5 * (lean(t, 4 * LAG) - 0.5), IDLE, True))}
-        bones["arm_r"] = {"rotate": rot_track(sample(lambda t: 2.4 * (lean(t, 3 * LAG) - 0.5), IDLE, True))}
-        bones["fore_r"] = {"rotate": rot_track(sample(lambda t: -3.2 * (lean(t, 4 * LAG) - 0.5), IDLE, True))}
+        bones["arm_l"] = {"rotate": rot_track(sample(lambda t: -d * 3.4 * (lean(t, 3 * LAG) - 0.5), IDLE, True))}
+        bones["fore_l"] = {"rotate": rot_track(sample(lambda t: -d * 5.0 * (lean(t, 4 * LAG) - 0.5), IDLE, True))}
+        bones["arm_r"] = {"rotate": rot_track(sample(lambda t: 1.8 * (lean(t, 3 * LAG) - 0.5), IDLE, True))}
+        bones["fore_r"] = {"rotate": rot_track(sample(lambda t: -2.5 * (lean(t, 4 * LAG) - 0.5), IDLE, True))}
     if 'knee_targets' in cfg:
         if cfg['name'] == 'prisoner':
             # Each forearm now moves on its own; keep the crossed hands close.
-            for name, amount in [('arm_r',1.0),('arm_l',-1.0),('fore_r',-1.4),('fore_l',1.4)]:
+            for name, amount in [('arm_r',0.7),('arm_l',-0.7),('fore_r',-1.0),('fore_l',1.0)]:
                 bones[name] = {'rotate': rot_track(sample(lambda t,a=amount: a*(lean(t,3*LAG)-0.5), IDLE, True))}
         for target in cfg['knee_targets'].values():
             bones[target] = {'translate':tr_track(sample(lambda t:(0,-BOB*0.5*lean(t)),IDLE,True))}

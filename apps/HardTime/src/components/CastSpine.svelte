@@ -185,7 +185,12 @@
   // more than the other.
   const REF_HEIGHT = RIG.prisoner.box[3] - RIG.prisoner.box[1];
   const REF_TOP_TO_FEET = RIG.prisoner.root[1] - RIG.prisoner.box[1];
-  const WIDEST = Math.max(...Object.values(RIG).map((r) => r.box[2] - r.box[0])) * 1.06; // + idle sway
+  // Same HEIGHT on screen (user, 2026-10-21: 兩個人物不一樣高): each figure is
+  // scaled by its own box height, so the warden's cap top lines up with the
+  // prisoner's head and both stand on one floor line. Widths are compared after
+  // that rescale.
+  const heightRatio = (who: CastWho) => REF_HEIGHT / (RIG[who].box[3] - RIG[who].box[1]);
+  const WIDEST = Math.max(...(Object.keys(RIG) as CastWho[]).map((w) => (RIG[w].box[2] - RIG[w].box[0]) * heightRatio(w))) * 1.06; // + idle sway
   $effect(() => {
     if (!spine) return;
     const rig = RIG[props.who];
@@ -200,11 +205,12 @@
         ? [toCanvasX(props.innerEdge + BOARD_GAP), canvasWidth - SCREEN_GAP * std.scale]
         : [SCREEN_GAP * std.scale, toCanvasX(props.innerEdge - BOARD_GAP)];
     const natural = (props.height / REF_HEIGHT) * std.scale * 0.82;
-    const s = Math.max(0, Math.min(natural, (rightLimit - leftLimit) / WIDEST));
+    const sRef = Math.max(0, Math.min(natural, (rightLimit - leftLimit) / WIDEST));
+    const s = sRef * heightRatio(props.who);
 
     const centre = ((bx0 + bx1) * 0.5 - rootX) * (mirror ? -1 : 1);
     spine.scale.set(mirror ? -s : s, s);
     spine.x = (leftLimit + rightLimit) * 0.5 - centre * s;
-    spine.y = std.y + (props.topY - std.height * std.anchor) * std.scale + REF_TOP_TO_FEET * s;
+    spine.y = std.y + (props.topY - std.height * std.anchor) * std.scale + REF_TOP_TO_FEET * sRef;
   });
 </script>
