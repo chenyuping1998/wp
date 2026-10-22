@@ -100,14 +100,19 @@ const SPIN_OPTIONS_SHARED = {
 	// reels 4 and 5 held the round for nearly six seconds. 4 is ~1.1s a reel —
 	// long enough to lean in, short enough not to drag.
 	reelPaddingMultiplierAnticipated: 4,
-	reelSpinDelay: 145,
+	// 25, not 145 (review 2026-10-22): Iron Jaw (3★) lifts every reel on one
+	// frame. utils-slots lands no reel before all have done a pre-spin pass, so
+	// this delay gated the FIRST STOP; the stop cadence itself comes from the
+	// accumulating padding (~0.25 s a reel), which is what the eye reads.
+	reelSpinDelay: 25,
 };
 
 export const SPIN_OPTIONS_DEFAULT = {
 	...SPIN_OPTIONS_SHARED,
 	reelPreSpinSpeed: 2,
 	reelSpinSpeed: 3,
-	reelBounceSizeMulti: 0.3,
+	// 0.12 cell, Iron Jaw's measured rebound (0.10-0.12); 0.3 read as rubber
+	reelBounceSizeMulti: 0.12,
 };
 
 export const SPIN_OPTIONS_FAST = {
@@ -137,8 +142,8 @@ export const SPIN_OPTIONS_TURBO_FREEGAME = {
 	reelSpinSpeed: 4.6,
 	reelSpinSpeedBeforeBounce: 5.5,
 	reelBounceBackSpeed: 0.2,
-	reelSpinDelay: 90,
-	reelBounceSizeMulti: 0.18,
+	reelSpinDelay: 25,
+	reelBounceSizeMulti: 0.1,
 };
 
 // Superspin (the 50x hold-and-spin) gets its own profile, and it is the only

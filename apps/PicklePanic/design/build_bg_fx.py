@@ -77,6 +77,13 @@ meta['tanks'] = {'x': int(x0), 'y': int(y0), 'w': int(x1 - x0), 'h': int(y1 - y0
 # tank columns, for spawning bubbles where the glass actually is
 cols = pink.sum(0)
 meta['tankSpan'] = [int(xs.min()), int(xs.max())]
+# per 8px column: liquid top and bottom inside the glass, so bubbles rise from
+# the bottom of THEIR column and pop at its surface (2026-10-22)
+cols = []
+for c0 in range(0, x1 - x0, 8):
+    rows = pink[y0:y1, x0 + c0:x0 + c0 + 8].any(1).nonzero()[0]
+    cols.append([int(rows.min()), int(rows.max())] if len(rows) and rows.max() - rows.min() > 120 else None)
+meta['tankCols'] = {'step': 8, 'cols': cols}
 
 # ── stars in the MG sky ────────────────────────────────────────────────────
 bright = (base.min(-1) > 0.82) & (base[..., 2] > 0.6)

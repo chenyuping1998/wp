@@ -13,6 +13,7 @@
 	import { getContext } from '../game/context';
 	import { stateGame } from '../game/stateGame.svelte';
 	import { SYMBOL_SIZE, PLATE_SCALE, JAR_LABEL_Y } from '../game/constants';
+	import { idleLife, registerIdle, fidgetDone, FIDGET_NAMES } from '../game/idleLife.svelte';
 
 	type Props = {
 		x?: number;
@@ -43,6 +44,17 @@
 	// this one reports the land complete instead of a win.
 	const isMeshLand = $derived(props.state === 'land' && props.rawSymbol.name in MESH_LANDS);
 
+	// Settled-board fidget (idleLife.svelte.ts): premiums and specials at rest put
+	// themselves forward; the shared scheduler picks one at a time.
+	const idleId = `s${Math.random().toString(36).slice(2)}`;
+	const canFidget = $derived(
+		(props.state === 'static' || props.state === 'postWinStatic') && isSprite && FIDGET_NAMES.has(props.rawSymbol.name),
+	);
+	$effect(() => {
+		if (canFidget) return registerIdle(idleId);
+	});
+	const fidgeting = $derived(canFidget && idleLife.featured === idleId);
+
 </script>
 
 {#snippet body(oncomplete: (() => void) | undefined)}
@@ -71,6 +83,10 @@
 		<LayeredSymbol {symbolInfo} symbolName={props.rawSymbol.name} mode="win" {oncomplete}/>
 	{:else if isSprite && props.state === 'land'}
 		<LayeredSymbol {symbolInfo} symbolName={props.rawSymbol.name} mode="land" impact={props.impact} {oncomplete}/>
+	{:else if fidgeting}
+		{#key idleId}
+			<LayeredSymbol {symbolInfo} symbolName={props.rawSymbol.name} mode="idle" oncomplete={() => fidgetDone(idleId)} />
+		{/key}
 	{:else if isSprite}
 		<SymbolSprite
 			{symbolInfo}

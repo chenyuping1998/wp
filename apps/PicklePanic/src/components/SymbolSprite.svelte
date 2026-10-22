@@ -6,6 +6,7 @@
 
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
+	import { idleLife, IDLE_PERIOD } from '../game/idleLife.svelte';
 
 	type Props = {
 		x?: number;
@@ -27,6 +28,14 @@
 	};
 
 	const props: Props = $props();
+
+	// Resting breath (idleLife.svelte.ts): ~1% on the shared 2 s clock, phase
+	// picked per instance so neighbouring cells never swell together. Only when
+	// the symbol is truly at rest — not spinning, not landing.
+	const phase = Math.random() * Math.PI * 2;
+	const breath = $derived(
+		props.blur || props.landing ? 0 : Math.sin((idleLife.t / IDLE_PERIOD) * Math.PI * 2 + phase),
+	);
 
 	const width = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.width);
 	const height = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.height);
@@ -99,7 +108,7 @@
 <Container
 	x={props.x ?? 0}
 	y={props.y ?? 0}
-	scale={{ x: sx.current, y: blur > 0.01 ? 1 + 0.08 * blur : sy.current }}
+	scale={{ x: sx.current * (1 - 0.004 * breath), y: blur > 0.01 ? 1 + 0.08 * blur : sy.current * (1 + 0.011 * breath) }}
 >
 	<Sprite anchor={0.5} key={props.symbolInfo.assetKey} {width} {height} />
 	{#if props.letter}

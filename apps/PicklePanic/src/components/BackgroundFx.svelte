@@ -191,28 +191,86 @@
 			mask.position.set(meta.tanks.x, meta.tanks.y);
 			layer.mask = mask;
 			root.addChild(mask, layer);
-			const bottom = meta.tanks.y + meta.tanks.h;
-			type B = { g: PIXI.Graphics; x: number; y: number; v: number; r: number; ph: number };
+			// GAS IN LIQUID, not discs on glass (review 2026-10-22, "Low quality
+			// assets": the first pass drew opaque cream balls with black rims and
+			// they read as ping-pong balls stuck on the tank). Now: rings in the
+			// tank's own dark ink over a lighter wash of its own pink, a single
+			// glint, rising in a few fixed streams from the bottom of each column,
+			// growing and speeding up as they climb, and popping into a ripple at
+			// that column's surface (bg_fx_meta.json tankCols).
+			const TANK_INK = 0x5a2618;
+			const TANK_LIGHT = 0xf3a088;
+			const cols = meta.tankCols.cols as ([number, number] | null)[];
+			const step = meta.tankCols.step as number;
+			const usable = cols.map((c, i) => (c ? i : -1)).filter((i) => i >= 0);
+			// 7 streams, spread over the usable columns
+			const streams = Array.from({ length: 7 }, (_, k) => usable[Math.floor(((k + 0.5) / 7) * usable.length)]);
+			type B = { g: PIXI.Graphics; x: number; y: number; v: number; r0: number; ph: number; top: number; bottom: number; life: number };
+			type Pop = { g: PIXI.Graphics; age: number };
 			const bubbles: B[] = [];
-			const spawn = (y?: number) => {
-				const r = rand(6, 20);
-				const g = new PIXI.Graphics()
-					.circle(0, 0, r)
-					.fill({ color: PAPER, alpha: 0.85 })
-					.stroke({ width: 3, color: INK });
-				g.circle(-r * 0.35, -r * 0.35, r * 0.25).fill(0xffffff);
-				layer.addChild(g);
-				bubbles.push({ g, x: rand(meta.tankSpan[0] + 20, meta.tankSpan[1] - 20), y: y ?? bottom + r, v: rand(35, 95), r, ph: rand(0, 6) });
+			const pops: Pop[] = [];
+			const draw = (g: PIXI.Graphics, r: number) => {
+				g.clear()
+					.ellipse(0, 0, r * 1.06, r * 0.94)
+					.fill({ color: TANK_LIGHT, alpha: 0.38 })
+					.stroke({ width: Math.max(1.5, r * 0.16), color: TANK_INK, alpha: 0.85 });
+				g.ellipse(-r * 0.38, -r * 0.4, r * 0.3, r * 0.18).fill({ color: 0xffffff, alpha: 0.9 });
 			};
-			for (let k = 0; k < 22; k++) spawn(rand(meta.tanks.y, bottom));
+			const spawn = (fresh: boolean) => {
+				const col = streams[Math.floor(Math.random() * streams.length)];
+				const [top, bot] = cols[col]!;
+				const g = new PIXI.Graphics();
+				layer.addChild(g);
+				const b: B = {
+					g,
+					x: meta.tanks.x + col * step + 4 + rand(-6, 6),
+					y: meta.tanks.y + (fresh ? bot - 6 : rand(top + 20, bot)),
+					v: rand(28, 48),
+					r0: Math.random() < 0.75 ? rand(3, 7) : rand(8, 13),
+					ph: rand(0, 6),
+					top: meta.tanks.y + top + 10,
+					bottom: meta.tanks.y + bot,
+					life: 0,
+				};
+				bubbles.push(b);
+			};
+			for (let k = 0; k < 26; k++) spawn(false);
+			let spawnClock = 0;
 			steps.push((t, dt) => {
-				for (const b of bubbles) {
-					b.y -= b.v * dt;
-					if (b.y < meta.tanks.y - 20) {
-						b.y = bottom + b.r;
-						b.x = rand(meta.tankSpan[0] + 20, meta.tankSpan[1] - 20);
+				spawnClock += dt;
+				while (spawnClock > 0.16 && bubbles.length < 34) {
+					spawnClock -= 0.16;
+					spawn(true);
+				}
+				for (let i = bubbles.length - 1; i >= 0; i--) {
+					const b = bubbles[i];
+					const climb = Math.max(0, Math.min(1, (b.bottom - b.y) / Math.max(1, b.bottom - b.top)));
+					// buoyancy: faster and a little bigger the higher it gets
+					b.y -= b.v * (1 + 1.2 * climb) * dt;
+					const r = b.r0 * (1 + 0.35 * climb);
+					draw(b.g, r);
+					b.g.position.set(b.x + Math.sin(t * 3.1 + b.ph) * (1.5 + r * 0.25), b.y);
+					if (b.y <= b.top) {
+						const ring = new PIXI.Graphics();
+						ring.position.set(b.x, b.top);
+						layer.addChild(ring);
+						pops.push({ g: ring, age: 0 });
+						layer.removeChild(b.g);
+						b.g.destroy();
+						bubbles.splice(i, 1);
 					}
-					b.g.position.set(b.x + Math.sin(t * 2.2 + b.ph) * 4, b.y);
+				}
+				for (let i = pops.length - 1; i >= 0; i--) {
+					const p = pops[i];
+					p.age += dt;
+					const k = p.age / 0.35;
+					if (k >= 1) {
+						layer.removeChild(p.g);
+						p.g.destroy();
+						pops.splice(i, 1);
+						continue;
+					}
+					p.g.clear().ellipse(0, 0, 4 + 14 * k, (4 + 14 * k) * 0.35).stroke({ width: 2, color: TANK_INK, alpha: 0.8 * (1 - k) });
 				}
 			});
 		}
