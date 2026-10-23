@@ -1,15 +1,17 @@
 <script lang="ts">
+ import StreetLabel from './StreetLabel.svelte';
 	import { GAME_FONT, TITLE_FONT, TITLE_FONT_WEIGHT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 
-	import { BlurFilter } from 'pixi.js';
+
 	import { EnablePixiExtension } from 'components-pixi';
 	import { EnableHotkey } from 'components-shared';
 	import { MainContainer } from 'components-layout';
 	import { App, Container, Sprite, Text, REM } from 'pixi-svelte';
 	import { stateModal, stateReplay, stateUi } from 'state-shared';
 
-	import { UI, UiGameName } from 'components-ui-pixi';
+	import { UI as SharedUI, UiGameName } from 'components-ui-pixi';
+	import TurfUI from './TurfUI.svelte';
 	import { GameVersion } from 'components-ui-html';
 	import Modals from './ui/Modals.svelte';
 	import ReplayIntro from './ui/ReplayIntro.svelte';
@@ -43,6 +45,7 @@
 	import { stateGame } from '../game/stateGame.svelte';
 
 	const context = getContext();
+	const UI = $derived(stateReplay.enabled ? SharedUI : TurfUI);
 
 	// The corner logo yields to the housing and the cast's head in a small popout
 	// (game/cornerLogo.ts). turfBrand/logo.png ink runs edge to edge (1%–99%, down
@@ -67,7 +70,7 @@
 	const hideName = $derived(nameHitsHousing(context, 215) || portrait !== null);
 
 	// soft depth-of-field on the jungle scene so the reels read as the subject
-	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
+
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
 
@@ -84,16 +87,7 @@
 	<EnableGameActor />
 	<EnablePixiExtension />
 
-	<Container filters={backgroundBlur}>
-		<Background />
-	</Container>
-	<!-- corner vignette seats the blurred scene behind the board -->
-	<Sprite
-		key="fxVignette"
-		width={context.stateLayoutDerived.canvasSizes().width}
-		height={context.stateLayoutDerived.canvasSizes().height}
-		alpha={0.9}
-	/>
+	<Background />
 
 	{#if context.stateLayout.showLoadingScreen}
 		<LoadingScreen onloaded={() => (context.stateLayout.showLoadingScreen = false)} />
@@ -118,7 +112,7 @@
 		     counter takes that slot (FreeSpinCounter.svelte), so it stands down. -->
 		{#if portrait && !stateUi.freeSpinCounterShow}
 			{@const logo = portraitLogoBox(portrait, LOGO_INK)}
-			<Sprite key="hmLogo" anchor={0.5} x={logo.x} y={logo.y} width={logo.width} height={logo.height} />
+			<StreetLabel text="TURF WAR" artKey="hmLogo" anchor={0.5} x={logo.x} y={logo.y} width={logo.width} height={logo.height} />
 		{/if}
 
 		<MainContainer>
@@ -136,7 +130,7 @@
 
 		<UI>
 			{#snippet gameName()}
-				<UiGameName name={hideName ? '' : 'TURF WAR'} />
+				<Container tint={0x121212}><UiGameName name={hideName ? '' : 'TURF WAR'} /></Container>
 			{/snippet}
 			{#snippet logo()}
 				<!--
@@ -157,8 +151,7 @@
 					<!-- The game's logo art (1200×520, ink edge to edge), not the name
 					     typed in the title font: a plain text title in the corner is one
 					     of the things review's "low quality assets" tag lists. -->
-					<Sprite
-						key="hmLogo"
+					<StreetLabel text="TURF WAR" artKey="hmLogo"
 						anchor={{ x: 1, y: 0 }}
 						width={CORNER_LOGO.width * logoScale}
 						height={CORNER_LOGO.height * logoScale}

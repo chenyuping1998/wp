@@ -1,0 +1,771 @@
+{
+  "fps": 30,
+  "facing": -1,
+  "size": 2.57,
+  "roles": {
+    "hip": "waist",
+    "chest": "chest",
+    "head": "head"
+  },
+  "animations": [
+    {
+      "name": "idle",
+      "preset": "breathe",
+      "params": {
+        "period": 3.6,
+        "intensity": 0.48
+      },
+      "tracks": [
+        {
+          "bone": "waist",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": 0.4,
+          "period": 3.6,
+          "peakAt": 1.4400000000000002
+        },
+        {
+          "bone": "neck",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": -0.35,
+          "period": 3.6,
+          "peakAt": 1.836
+        },
+        {
+          "bone": "dangle_chain",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": 1.8,
+          "period": 3.6,
+          "peakAt": 2.232
+        },
+        {
+          "bone": "dangle_mask",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": 2.6,
+          "period": 3.6,
+          "peakAt": 2.4120000000000004
+        }
+      ]
+    },
+    {
+      "name": "win",
+      "duration": 0.9,
+      "tracks": [
+        {
+          "bone": "waist",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.12,
+              "value": 0.08819999999999999,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.256,
+              "value": -0.48999999999999994,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.45599999999999996,
+              "value": -0.26949999999999996,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.8,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "chest",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.12,
+              "value": -0.2268,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.256,
+              "value": 1.26,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.45599999999999996,
+              "value": 0.6930000000000001,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.8,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "chest",
+          "channel": "y",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.12,
+              "value": -0.8819999999999999,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.256,
+              "value": 4.8999999999999995,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.45599999999999996,
+              "value": 2.695,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.8,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "neck",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.035,
+              "value": 0
+            },
+            {
+              "time": 0.155,
+              "value": 0.0756,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.29100000000000004,
+              "value": -0.42,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.491,
+              "value": -0.231,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.8350000000000001,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "head",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.07,
+              "value": 0
+            },
+            {
+              "time": 0.19,
+              "value": 0.3024,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.326,
+              "value": -1.68,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.526,
+              "value": -0.924,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.8700000000000001,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "dangle_chain",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1,
+              "value": 0
+            },
+            {
+              "time": 0.22,
+              "value": -1.008,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.356,
+              "value": 5.6,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.5559999999999999,
+              "value": 3.08,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.9,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "dangle_mask",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1,
+              "value": 0
+            },
+            {
+              "time": 0.22,
+              "value": -1.26,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.356,
+              "value": 7,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.5559999999999999,
+              "value": 3.8500000000000005,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.9,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "winBig",
+      "duration": 1.1500000000000001,
+      "tracks": [
+        {
+          "bone": "waist",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1575,
+              "value": 0.1323,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.336,
+              "value": -0.735,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.5984999999999999,
+              "value": -0.40425,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.05,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "chest",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1575,
+              "value": -0.3402,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.336,
+              "value": 1.8900000000000001,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.5984999999999999,
+              "value": 1.0395,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.05,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "chest",
+          "channel": "y",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1575,
+              "value": -1.323,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.336,
+              "value": 7.3500000000000005,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.5984999999999999,
+              "value": 4.0425,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.05,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "neck",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.035,
+              "value": 0
+            },
+            {
+              "time": 0.1925,
+              "value": 0.1134,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.371,
+              "value": -0.63,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.6335,
+              "value": -0.34650000000000003,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.085,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "head",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.07,
+              "value": 0
+            },
+            {
+              "time": 0.2275,
+              "value": 0.4536,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.406,
+              "value": -2.52,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.6684999999999999,
+              "value": -1.3860000000000001,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.12,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "dangle_chain",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1,
+              "value": 0
+            },
+            {
+              "time": 0.2575,
+              "value": -1.512,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.43600000000000005,
+              "value": 8.4,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.6984999999999999,
+              "value": 4.620000000000001,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.1500000000000001,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "dangle_mask",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1,
+              "value": 0
+            },
+            {
+              "time": 0.2575,
+              "value": -1.89,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.43600000000000005,
+              "value": 10.5,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.6984999999999999,
+              "value": 5.775,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.1500000000000001,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "trigger",
+      "duration": 1.35,
+      "tracks": [
+        {
+          "bone": "waist",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1875,
+              "value": 0.16379999999999997,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.4,
+              "value": -0.9099999999999999,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.7124999999999999,
+              "value": -0.5005,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.25,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "chest",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1875,
+              "value": -0.4212,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.4,
+              "value": 2.3400000000000003,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.7124999999999999,
+              "value": 1.2870000000000004,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.25,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "chest",
+          "channel": "y",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1875,
+              "value": -1.638,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.4,
+              "value": 9.1,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.7124999999999999,
+              "value": 5.005,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.25,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "neck",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.035,
+              "value": 0
+            },
+            {
+              "time": 0.2225,
+              "value": 0.1404,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.43500000000000005,
+              "value": -0.78,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.7474999999999999,
+              "value": -0.42900000000000005,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.285,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "head",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.07,
+              "value": 0
+            },
+            {
+              "time": 0.2575,
+              "value": 0.5616,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.47000000000000003,
+              "value": -3.12,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.7825,
+              "value": -1.7160000000000002,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.32,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "dangle_chain",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1,
+              "value": 0
+            },
+            {
+              "time": 0.2875,
+              "value": -1.8719999999999999,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.5,
+              "value": 10.4,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.8124999999999999,
+              "value": 5.720000000000001,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.35,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        },
+        {
+          "bone": "dangle_mask",
+          "channel": "rotate",
+          "type": "poses",
+          "points": [
+            {
+              "time": 0,
+              "value": 0
+            },
+            {
+              "time": 0.1,
+              "value": 0
+            },
+            {
+              "time": 0.2875,
+              "value": -2.34,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 0.5,
+              "value": 13,
+              "ease": "cubicInOut"
+            },
+            {
+              "time": 0.8124999999999999,
+              "value": 7.15,
+              "ease": "sineInOut"
+            },
+            {
+              "time": 1.35,
+              "value": 0,
+              "ease": "sineInOut"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -15,7 +15,7 @@
 	import { onMount } from 'svelte';
 	import { Tween } from 'svelte/motion';
 	import { backOut, cubicOut } from 'svelte/easing';
-	import { Container, Sprite, Text } from 'pixi-svelte';
+	import { Container, Sprite, Text, Graphics } from 'pixi-svelte';
 	import { stateBetDerived } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
 
@@ -28,7 +28,7 @@
 	// sit better inside a square frame than Titan One's rounded bubble digits.
 	// fontSize steps down a little because Orbitron sets wider per glyph, so
 	// "100x" still clears the cell.
-	import { DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
+	import { TAG_FONT as DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
 	import { getSymbolX } from '../game/utils';
 	import { FRAME_TIMING as T } from '../game/frameTiming';
 	import { frameEntry, ENTRY_MS, tierOf as beatTierOf } from '../game/frameBeat';
@@ -309,114 +309,18 @@
 			scale={(pose ? pose.scale : 1) * frame.scale.current}
 			rotation={pose ? pose.rotation : 0}
 		>
-			<!-- arrival shock ring: premium throws a small one, elite a big one,
-			     plain none at all — see game/frameBeat.ts -->
-			{#if pose && pose.ringAlpha > 0.01}
-				<Sprite
-					key="fxGlow"
-					anchor={{ x: 0.5, y: 0.5 }}
-					tint={tint}
-					blendMode="add"
-					width={SYMBOL_SIZE * pose.ring * (1 + (sizeOf(frame) - 1) * 0.25)}
-					height={SYMBOL_SIZE * pose.ring * (1 + (sizeOf(frame) - 1) * 0.25)}
-					alpha={pose.ringAlpha}
-				/>
-			{/if}
-			<!-- halo: nothing on a plain 2x-9x, a warm bloom on premium, bigger and
-			     brighter on elite -->
-			<!--
-				The halo is sized off ONE CELL, not off the frame's footprint.
-
-				It used to be `span * halo`, which was invisible while every frame was
-				1x1 and became the loudest thing on the board once big frames landed:
-				an elite 3x3 is 354px, so `span * 2.4` put an 850px additive bloom over
-				the middle of a 472px-tall board and washed the symbols underneath it
-				to white. A halo says "this frame is valuable"; a frame's footprint
-				already says how much board it covers. Scaling one by the other states
-				the same fact twice and blows out the cells the frame exists to
-				multiply.
-
-				A modest bump with size keeps a big elite frame from looking
-				under-lit next to a small one, without the area growing with span².
-			-->
-			{#if halo > 0}
-				{@const haloSpan = SYMBOL_SIZE * halo * (1 + (sizeOf(frame) - 1) * 0.25)}
-				<Sprite
-					key="fxGlow"
-					anchor={{ x: 0.5, y: 0.5 }}
-					tint={tint}
-					blendMode="add"
-					width={haloSpan}
-					height={haloSpan}
-					alpha={(tier === 'elite' ? 0.4 : 0.24) * (0.6 + 0.4 * glow)}
-				/>
-			{/if}
-
-			<Sprite
-				key={artKey}
-				anchor={{ x: 0.5, y: 0.5 }}
-				width={span}
-				height={span}
-				tint={tint}
-				alpha={0.82 + 0.18 * glow}
-			/>
-			<!-- 2026-10-01: a standing rim light. The bag art is dark leather on a
-			     dark board, and at rest a plain frame was close to invisible — the
-			     only sign of the mechanic was a number printed over the symbol. -->
-			<Sprite
-				key={edgeKey}
-				anchor={{ x: 0.5, y: 0.5 }}
-				width={span}
-				height={span}
-				tint={tint}
-				blendMode="add"
-				alpha={0.22 + 0.18 * glow}
-			/>
-
-			<!-- arrival flash: a white copy of the casting, fading out of the hit -->
-			{#if pose && pose.flash > 0.01}
-				<Sprite
-					key={edgeKey}
-					anchor={{ x: 0.5, y: 0.5 }}
-					width={span}
-					height={span}
-					tint={0xffffff}
-					blendMode="add"
-					alpha={pose.flash}
-				/>
-			{/if}
-
-			<!-- second, slightly larger casting on an elite: reads as heavier metal
-			     rather than as a different shape -->
-			{#if tier === 'elite'}
-				<Sprite
-					key={edgeKey}
-					anchor={{ x: 0.5, y: 0.5 }}
-					width={span * 1.06}
-					height={span * 1.06}
-					tint={ELITE}
-					blendMode="add"
-					alpha={0.28 * (0.5 + 0.5 * glow)}
-				/>
-			{/if}
-
-			<!-- travelling shine, premium and elite only. A streak crossing the frame
-			     is what makes gold read as metal rather than as yellow. -->
-			{#if tier !== 'plain'}
-				{@const t = (shine * (tier === 'elite' ? 2 : 1)) % 1}
-				<Sprite
-					key="fxStreak"
-					anchor={{ x: 0.5, y: 0.5 }}
-					x={(t - 0.5) * span * 1.5}
-					y={(0.5 - t) * span * 0.5}
-					rotation={-0.6}
-					tint={0xffffff}
-					blendMode="add"
-					width={span * 0.42}
-					height={span * 1.15}
-					alpha={(tier === 'elite' ? 0.5 : 0.3) * Math.sin(Math.PI * t)}
-				/>
-			{/if}
+            {#if frame.entryT >= 0}
+             <Graphics draw={(g)=>{
+              g.clear(); const half=span/2; const progress=frame.entryT/ENTRY_MS[frame.entryTier]*4;
+              const sides=[[-half,-half,half,-half],[half,-half,half,half],[half,half,-half,half],[-half,half,-half,-half]];
+              sides.forEach(([x,y,xx,yy],i)=>{const t=Math.max(0,Math.min(1,progress-i));if(t<=0)return;
+               g.moveTo(x,y);g.lineTo(x+(xx-x)*t,y+(yy-y)*t);g.stroke({color:0xf7f5f0,width:5});
+               g.moveTo(x,y);g.lineTo(x+(xx-x)*t,y+(yy-y)*t);g.stroke({color:0x121212,width:3.5});
+               g.moveTo(x,y);g.lineTo(x+(xx-x)*t,y+(yy-y)*t);g.stroke({color:0xf5893d,width:2});});
+             }} />
+            {:else}
+             <Sprite key={artKey} anchor={.5} width={span} height={span} />
+            {/if}
 
 			{#if context.stateGame.gameType === 'freegame'}
 				<!-- One fixed-size wax lock on the corner: sticky is a state, not a
@@ -468,15 +372,17 @@
 			-->
 			{@const tag =
 				SYMBOL_SIZE *
-				(tier === 'elite' ? 0.56 : tier === 'premium' ? 0.5 : 0.46) *
+				// 2026-10-15: +35% — on the sticker board a 0.46 tag read as a corner dot
+				// ("9x" at ~16px on a 1280 screen). The tag now sits half off the cell.
+				(tier === 'elite' ? 0.76 : tier === 'premium' ? 0.68 : 0.62) *
 				(1 + (sizeOf(frame) - 1) * 0.15)}
-			<Container x={span * 0.5 - tag * 0.42} y={span * 0.5 - tag * 0.42}>
+			<Container x={span * 0.5 - tag * 0.36} y={span * 0.5 - tag * 0.36}>
 				{#if tier !== 'plain'}
 					<Sprite
 						key="fxGlow"
 						anchor={0.5}
 						tint={tint}
-						blendMode="add"
+						blendMode="normal"
 						width={tag * 1.9}
 						height={tag * 1.9}
 						alpha={0.35 * (0.6 + 0.4 * glow)}

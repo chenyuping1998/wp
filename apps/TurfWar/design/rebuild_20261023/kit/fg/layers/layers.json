@@ -1,0 +1,17 @@
+{
+ "order": [
+  "arm_front_upper.png",
+  "arm_front_lower.png",
+  "fist_front.png",
+  "leg_back_upper.png",
+  "leg_back_lower.png",
+  "pelvis.png",
+  "leg_front_upper.png",
+  "leg_front_lower.png",
+  "torso.png",
+  "head.png",
+  "arm_back_upper.png",
+  "arm_back_lower.png",
+  "fist_back.png"
+ ]
+}

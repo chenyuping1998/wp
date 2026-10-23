@@ -259,7 +259,7 @@
 			rotation={overlay.rotation}
 			alpha={overlay.alpha}
 			tint={overlay.tint}
-			blendMode="add"
+			blendMode="normal"
 		/>
 	{/each}
 
@@ -330,7 +330,7 @@
 			rotation={overlay.rotation}
 			alpha={overlay.alpha}
 			tint={overlay.tint}
-			blendMode="add"
+			blendMode="normal"
 		/>
 	{/each}
 
@@ -346,7 +346,7 @@
 				height={SYMBOL_SIZE * mote.size * (1 + 0.6 * spark.current)}
 				tint={0xffd9b0}
 				alpha={0.8 * Math.sin(Math.PI * spark.current)}
-				blendMode="add"
+				blendMode="normal"
 			/>
 		{/each}
 	{/if}

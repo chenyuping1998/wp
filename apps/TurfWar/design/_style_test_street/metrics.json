@@ -1,0 +1,56 @@
+{
+  "h1": {
+    "size": [
+      512,
+      512
+    ],
+    "sha256": "25c245e3dfabb72b12df97a5857beecf0f74ba2341226784d4dfe7a5b0fc296e",
+    "opaque_share": 0.40935516357421875,
+    "mean_luminance": 56.46026178283693
+  },
+  "l1": {
+    "size": [
+      512,
+      512
+    ],
+    "sha256": "970f2708ba544cb04317165426914d18a2cdf6f338a0e1dfb31f5339b190cee2",
+    "opaque_share": 0.11346054077148438,
+    "mean_luminance": 19.523281852722164
+  },
+  "w": {
+    "size": [
+      512,
+      512
+    ],
+    "sha256": "0e6822b95738101fb6af46b5e1d15f6db41ffc6786ca3230ee3f7605dfb938be",
+    "opaque_share": 0.3769111633300781,
+    "mean_luminance": 53.48298296279909
+  },
+  "sw": {
+    "size": [
+      512,
+      512
+    ],
+    "sha256": "81465f3fd615119e3fb3496b748cc57713d516f68f831e452e00d6d98efda17d",
+    "opaque_share": 0.5727424621582031,
+    "mean_luminance": 54.97445062255859
+  },
+  "bg_crop": {
+    "size": [
+      1920,
+      1080
+    ],
+    "sha256": "107223d4c121adb79cf953649bc0ed1bdd40206f51c951b6eb1fcb64c0085297",
+    "opaque_share": 1.0,
+    "mean_luminance": 196.6804178722027
+  },
+  "cast_head": {
+    "size": [
+      512,
+      512
+    ],
+    "sha256": "da157740764a73b857bd6a19cdaced1dcc9e5c853060a517577f99f9ac001add",
+    "opaque_share": 0.6269989013671875,
+    "mean_luminance": 50.04954891510009
+  }
+}

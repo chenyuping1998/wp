@@ -80,13 +80,18 @@ const parts = manifest.layers.map((l) => {
   const rig = l.rig;
   assert.deepEqual(rig.bones, common.bones, `${l.name}: does not share the skeleton`);
   const tex = readAlpha(fs.readFileSync(path.join(dir, l.texture)));
-  assert.deepEqual([tex.width, tex.height], [W, H], `${l.name}.png is not ${W}x${H}`);
+  const [cx, cy, cw, ch] = l.crop ?? [0, 0, W, H];
+  assert.ok(cx >= 0 && cy >= 0 && cx + cw <= W && cy + ch <= H, `${l.name}: invalid texture crop`);
+  assert.deepEqual([tex.width, tex.height], [cw, ch], `${l.name}.png differs from its declared UV crop`);
   const allowed = ALLOWED(l.name, rig.bones);
   rig.weights.forEach((w, i) => {
     assert.ok(Math.abs(w.reduce((a, b) => a + b, 0) - 1) < 1e-5, `${l.name}: vertex ${i} weights do not sum to 1`);
     w.forEach((v, b) => { if (v > 0) assert.ok(allowed.includes(rig.bones[b].name), `${l.name} is weighted to ${rig.bones[b].name}; a ${l.name.split('_')[0]} layer may only use ${allowed.join('/')}`); });
   });
-  const aAt = (x, y) => tex.alpha[Math.min(H - 1, Math.max(0, Math.round(y))) * W + Math.min(W - 1, Math.max(0, Math.round(x)))];
+  const aAt = (x, y) => {
+    const tx = Math.round(x) - cx, ty = Math.round(y) - cy;
+    return tx < 0 || ty < 0 || tx >= cw || ty >= ch ? 0 : tex.alpha[ty * cw + tx];
+  };
   const ink = rig.tris.map((t) => { const v = t.map((i) => rig.verts[i]); const c = [(v[0][0] + v[1][0] + v[2][0]) / 3, (v[0][1] + v[1][1] + v[2][1]) / 3]; return [...v, c].some((p) => aAt(...p) > 16); });
   const inkV = rig.verts.map((p) => aAt(...p) > 16);
   const rest = new Float32Array(rig.verts.flat());

@@ -253,7 +253,7 @@
 				rotation={overlay.rotation}
 				alpha={overlay.alpha * Math.min(1, weight)}
 				tint={overlay.tint}
-				blendMode="add"
+				blendMode="normal"
 			/>
 		{/each}
 		<!--
@@ -300,7 +300,7 @@
 				rotation={overlay.rotation}
 				alpha={overlay.alpha * Math.min(1, weight)}
 				tint={overlay.tint}
-				blendMode="add"
+				blendMode="normal"
 			/>
 		{/each}
 	</Container>
@@ -344,7 +344,7 @@
 			height={(blur > 0.01 ? height * (1 + 0.3 * blur) : height) * focusScale}
 			tint={0xd9d6ce}
 			alpha={focusBloom}
-			blendMode="add"
+			blendMode="normal"
 		/>
 	{/if}
 {/if}

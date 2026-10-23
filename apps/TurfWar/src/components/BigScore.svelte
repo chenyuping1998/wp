@@ -7,7 +7,7 @@
 <script lang="ts">
 	import { Tween } from 'svelte/motion';
 	import { backOut, cubicOut } from 'svelte/easing';
-	import { Container, Sprite, Text } from 'pixi-svelte';
+	import { Container, Sprite, Text, Graphics } from 'pixi-svelte';
 	import { waitForTimeout } from 'utils-shared/wait';
 
 	import { getContext } from '../game/context';
@@ -76,14 +76,15 @@
 {#if visible}
 	<BoardContainer>
 		<Container x={BOARD_SIZES.width / 2} y={BOARD_SIZES.height / 2}>
-			<Sprite
-				key="turfFrameFullEdge"
-				anchor={0.5}
-				width={BOARD_SIZES.width}
-				height={BOARD_SIZES.height}
-				alpha={0.52 * charge.current}
-				blendMode="screen"
-			/>
+            <Graphics draw={(g)=>{
+             g.clear(); const w=BOARD_SIZES.width; const h=BOARD_SIZES.height;
+             const sides=[[-w/2,-h/2,w,-h/2], [w/2,-h/2,w/2,h/2], [w/2,h/2,-w/2,h/2], [-w/2,h/2,-w/2,-h/2]];
+             sides[0]=[-w/2,-h/2,w/2,-h/2];
+             sides.forEach(([x,y,xx,yy],i)=>{const t=Math.max(0,Math.min(1,charge.current*4-i));if(t<=0)return;
+              g.moveTo(x,y);g.lineTo(x+(xx-x)*t,y+(yy-y)*t);g.stroke({color:0xf7f5f0,width:13});
+              g.moveTo(x,y);g.lineTo(x+(xx-x)*t,y+(yy-y)*t);g.stroke({color:0x121212,width:9});
+              g.moveTo(x,y);g.lineTo(x+(xx-x)*t,y+(yy-y)*t);g.stroke({color:0xf5893d,width:5});});
+            }} />
 			<Sprite
 				key="turfFrameFull"
 				anchor={0.5}

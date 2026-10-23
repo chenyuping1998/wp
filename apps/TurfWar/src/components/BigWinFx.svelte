@@ -94,7 +94,7 @@
 				x={mote.x}
 				y={mote.y}
 				tint={mote.color}
-				blendMode="add"
+				blendMode="normal"
 				width={mote.size}
 				height={mote.size}
 				alpha={0.12 + 0.1 * Math.sin(pulse * 6 * mote.speed + mote.phase)}
@@ -110,7 +110,7 @@
 				width={radius * (ray.long ? 1.25 : 0.95)}
 				height={radius * (ray.long ? 0.42 : 0.3)}
 				tint={ray.long ? 0xffc38a : 0xffb64d}
-				blendMode="add"
+				blendMode="normal"
 				alpha={Math.min(0.7, (0.24 + 0.1 * pulse) * intensity)}
 			/>
 		{/each}
@@ -122,7 +122,7 @@
 		width={radius * 1.1}
 		height={radius * 1.1}
 		tint={0xffe9a8}
-		blendMode="add"
+		blendMode="normal"
 		alpha={Math.min(0.55, (0.2 + 0.1 * pulse) * intensity)}
 	/>
 	{#each bursts as burst (burst.id)}

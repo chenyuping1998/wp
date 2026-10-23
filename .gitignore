@@ -60,3 +60,12 @@ apps/**/design/_incoming/
 apps/**/design/_legacy_assets/
 apps/**/*.zip
 apps/**/*.tgz
+
+# Turf War 10-23 rebuild: QA renders / previews / pre-rebuild backup stay local (regenerable)
+apps/TurfWar/design/rebuild_20261023/before/
+apps/TurfWar/design/rebuild_20261023/qa/
+apps/TurfWar/design/rebuild_20261023/qa_kit/
+apps/TurfWar/design/rebuild_20261023/__pycache__/
+apps/TurfWar/design/rebuild_20261023/kit/*.gif
+apps/TurfWar/design/rebuild_20261023/kit/*/spine/預覽.*
+apps/TurfWar/design/spine_motion_cast/qa/

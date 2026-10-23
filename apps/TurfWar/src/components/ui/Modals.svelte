@@ -49,14 +49,14 @@
 	   the rest of this file and game/uiTheme.ts use: sodium orange on asphalt,
 	   burnt orange (buttonFillActive) where Capo has wine. */
 	:global(:root) {
-		--turf-ink-deep: #0e0f11;
-		--turf-ink: #17191c;
-		--turf-wine-deep: #17191c;
+		--turf-ink-deep: #121212;
+		--turf-ink: #3a3d42;
+		--turf-wine-deep: #3a3d42;
 		--turf-wine: #9c5a22;
 		--turf-gold-dark: #9c5a22;
 		--turf-gold: #f5893d;
 		--turf-gold-light: #ffc38a;
-		--turf-bone: #d9d6ce;
+		--turf-bone: #f7f5f0;
 		--turf-gold-rgb: 245, 137, 61;
 		--turf-gold-light-rgb: 255, 195, 138;
 		--turf-gold-dark-rgb: 156, 90, 34;
@@ -214,12 +214,7 @@
 
 	/* Button icon background (the rounded rectangle inside buttons) */
 	:global(.rectangle) {
-		background: linear-gradient(
-			160deg,
-			rgba(58, 61, 66, 0.95) 0%,
-			rgba(23, 25, 28, 0.98) 45%,
-			rgba(42, 52, 62, 0.95) 100%
-		) !important;
+		background: #3a3d42;
 		border: 1px solid rgba(245, 137, 61, 0.4) !important;
 		border-radius: 10px !important;
 		box-shadow:
@@ -254,7 +249,7 @@
 	   selected look is keyed off it. Attribute + class outranks the plain class
 	   rule, !important against !important. */
 	:global(.rectangle[style*='white solid']) {
-		background: linear-gradient(180deg, var(--turf-wine) 0%, var(--turf-wine-deep) 100%) !important;
+		background: #3a3d42;
 		border: 2px solid var(--turf-gold) !important;
 		box-shadow:
 			0 0 14px rgba(var(--turf-gold-rgb), 0.4),
@@ -294,7 +289,7 @@
 	/* The full-width action under a panel (START AUTOPLAY): the same wine plate,
 	   edge and title-face caps as the Bet menu's CONFIRM. */
 	:global(.ui-modal-button-wrap .rectangle) {
-		background: linear-gradient(180deg, var(--turf-wine) 0%, var(--turf-wine-deep) 100%) !important;
+		background: #3a3d42;
 		border: 2px solid var(--turf-gold) !important;
 	}
 
@@ -321,11 +316,7 @@
 		padding: 0 !important;
 		border-radius: 50% !important;
 		border: 2px solid rgba(var(--turf-gold-rgb), 0.75) !important;
-		background: radial-gradient(
-			circle at 50% 35%,
-			rgba(var(--turf-wine-rgb), 0.95) 0%,
-			rgba(var(--turf-ink-deep-rgb), 1) 78%
-		) !important;
+		background: #3a3d42;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
 		transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 	}
@@ -376,11 +367,7 @@
 	}
 
 	:global(.ui-popup-standard-content-wrap) {
-		background: linear-gradient(
-			180deg,
-			rgba(42, 52, 62, 0.97) 0%,
-			rgba(14, 15, 17, 0.98) 100%
-		) !important;
+		background: #3a3d42;
 		border: 1px solid rgba(245, 137, 61, 0.3) !important;
 		border-radius: 14px !important;
 		padding: 1.5rem !important;
@@ -394,11 +381,7 @@
 	   the shared component paints a flat black panel, which read as unfinished
 	   next to the rest of the game. Gold-edged dark plate instead. */
 	:global(.bonus-card-wrap) {
-		background: linear-gradient(
-			165deg,
-			rgba(58, 61, 66, 0.95) 0%,
-			rgba(23, 25, 28, 0.97) 100%
-		) !important;
+		background: #3a3d42;
 		border: 18px solid transparent !important;
 		border-image: url('/assets/sprites/turfUi/modal_frame.png') 64 stretch !important;
 		border-radius: 12px !important;
@@ -449,7 +432,7 @@
 	}
 
 	:global(.bonus-card-wrap .price) {
-		color: #d9d6ce !important;
+		color: #f7f5f0 !important;
 		font-weight: 800 !important;
 		text-shadow: 0 0 10px rgba(245, 137, 61, 0.45) !important;
 	}
@@ -467,11 +450,11 @@
 		border-radius: 3px;
 	}
 	:global(::-webkit-scrollbar-thumb) {
-		background: linear-gradient(180deg, rgba(245, 137, 61, 0.55), rgba(70, 85, 98, 0.5));
+		background: #3a3d42;
 		border-radius: 3px;
 	}
 	:global(::-webkit-scrollbar-thumb:hover) {
-		background: linear-gradient(180deg, rgba(255, 195, 138, 0.75), rgba(156, 90, 34, 0.7));
+		background: #3a3d42;
 	}
 
 	/* Toggle / checkbox / select inputs in modals */
@@ -484,7 +467,7 @@
 		background: rgba(42, 52, 62, 0.85) !important;
 		border: 1px solid rgba(245, 137, 61, 0.3) !important;
 		border-radius: 6px !important;
-		color: #d9d6ce !important;
+		color: #f7f5f0 !important;
 		transition: border-color 0.2s ease !important;
 	}
 

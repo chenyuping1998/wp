@@ -1,0 +1,26 @@
+{
+  "uniform_scale_only": true,
+  "source": "/Users/stone/stake-engine/wp/apps/TurfWar/design/rebuild_20261023/source",
+  "transforms": {
+    "body": [
+      1,
+      0,
+      0
+    ],
+    "head": [
+      0.4,
+      340,
+      -50
+    ],
+    "arm_l": [
+      0.52,
+      130,
+      115
+    ],
+    "arm_r": [
+      0.5,
+      455,
+      145
+    ]
+  }
+}

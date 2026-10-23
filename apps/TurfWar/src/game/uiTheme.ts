@@ -23,35 +23,35 @@ setUiTheme({
 	fontFamily: GAME_FONT,
 	fontWeight: GAME_FONT_WEIGHT,
 
-	buttonFill: 0x17191c,
+	buttonFill: 0x3a3d42,
 	buttonFillLight: 0x3a3d42,
-	buttonFillDisabled: 0x2a343e,
+	buttonFillDisabled: 0x55585d,
 	// sodium-orange-lit so an ON toggle (turbo / autoplay) reads as ON at a
 	// glance under the bone-white icon art
 	buttonFillActive: 0x9c5a22,
 	buttonBorder: 0xf5893d,
-	buttonIconFill: 0xd9d6ce,
-	buttonIconStroke: 0x0e0f11,
+	buttonIconFill: 0xf7f5f0,
+	buttonIconStroke: 0x121212,
 
-	betFill: 0x17191c,
-	betBorder: 0xd9d6ce,
+	betFill: 0x3a3d42,
+	betBorder: 0xf7f5f0,
 
-	panelFill: 0x0e0f11,
+	panelFill: 0x121212,
 	panelBorder: 0x3a3d42,
 	labelFill: 0xffc38a,
 	balanceLabelFill: 0xffc38a,
 	// win reads in sodium orange, bet in cool steel so the three readouts stay
 	// tellable apart without leaving the palette
 	winAccent: { border: 0xf5893d, label: 0xffc38a },
-	betAccent: { border: 0x465562, label: 0xd9d6ce },
-	// Bone white, not pure white. §0 gives 骨白 #D9D6CE as the text colour and
-	// nothing in this game is pure white — a #FFFFFF figure on a #0E0F11 plate is
+	betAccent: { border: 0x9a9ca0, label: 0xf7f5f0 },
+	// Bone white, not pure white. §0 gives 骨白 #F7F5F0 as the text colour and
+	// nothing in this game is pure white — a #FFFFFF figure on a #121212 plate is
 	// the one object on the bar lit by something other than the sodium lamp
 	// everything else is lit by. It is still ~14:1 against the plate, so no
 	// legibility is traded for the palette.
-	valueFill: 0xd9d6ce,
-	valueStroke: 0x0e0f11,
-	valueShadow: 0x0e0f11,
+	valueFill: 0xf7f5f0,
+	valueStroke: 0x121212,
+	valueShadow: 0x121212,
 
 	// One slim strip along the foot, the arrangement players arrive already
 	// knowing. The side-rail version it replaces maximised board size — the rails
@@ -99,7 +99,7 @@ setUiTheme({
 	// the platform-chrome block below overwrote it before anyone saw it; the
 	// moment this game's own skin became the default, the strip under the
 	// concrete plates would have been dark green.
-	barFill: 0x17191c,
+	barFill: 0x3a3d42,
 	barAlpha: 0.94,
 
 	// Buy Bonus stays left of the board at its old size rather than joining the
@@ -142,7 +142,7 @@ setUiTheme({
 	// Buy Bonus hover lights the PLATE itself instead of laying the shared
 	// translucent white box over it (read as greyed-out on Deadwood, 2026-09-29):
 	// the plate is drawn again, additive. 2026-10-01: the tint was the light
-	// concrete grey #5B5F66, and a grey added over the whole plate still read
+	// concrete grey #55585D, and a grey added over the whole plate still read
 	// as greyed-out (反灰); now sodium dark (§0 #9C5A22) like the round
 	// buttons, so the rust and paint warm up the way Deadwood's brass does.
 	buyBonusHoverSprite: 'buyBonusGlyph',
@@ -183,6 +183,11 @@ setUiTheme({
 	// next to a 1.15 autoplay the oversized turbo read as a different kind of
 	// control and the row looked unfinished.
 	turboButtonScale: 1.15,
+	// 2026-10-18: at the default 33 the 1.15 bolt's ring rode over the bar
+	// plate's orange rail (「按鈕超出bar匡」). The rail's inner edge is 16 units in
+	// from the frame (29 of bar_plate.png's 270 px over a 152-unit frame); the
+	// ring has a 38 radius, so 54 leaves ~14 of plate between them.
+	barTurboInset: 54,
 
 	// −  BET  +  in one row, the stepper the same size as autoplay/turbo
 	// (0.44 × railButtonScale). The stacked pair was small and left the span

@@ -146,7 +146,7 @@
 		x={pose.x + entryOffset}
 		y={pose.y}
 		tint={props.color}
-		blendMode="add"
+		blendMode="normal"
 		width={size * 1.9}
 		height={size * 1.9}
 		alpha={alpha * 0.5}
@@ -163,7 +163,7 @@
 		x={pose.x + entryOffset}
 		y={pose.y}
 		tint={props.color}
-		blendMode="add"
+		blendMode="normal"
 		{rotation}
 		width={size}
 		height={size}

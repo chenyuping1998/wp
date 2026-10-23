@@ -3,23 +3,7 @@
 	import { Container, Text } from 'pixi-svelte';
 
 
-	// House numerals/labels (replaces the MM template 'gold' bitmap font): warm
-	// gradient face, dark stroke, soft drop shadow. Being a canvas Text it
-	// renders every script (CJK/Arabic/Devanagari), unlike the old latin-only
-	// bitmap font.
-	//
-	// The ramp is the Miami one, not GoBananas' brass. Gold itself is deliberate
-	// and stays — it is the money colour, and it is what uiTheme already uses for
-	// balanceLabelFill/buyBonusLabelFill and what NeonFrames sets its multipliers
-	// in. What was inherited and is now gone is the BROWN either side of it: the
-	// bottom gradient stop 0xc9821a (bronze) and the two strokes 0x3a2205 /
-	// 0x54330a (dark brown), which are jungle-commando leather, not neon. The
-	// ramp now runs cream → gold → hot pink, the same three stops the modal
-	// headings already ship (255,233,138 → 255,215,94 → 255,142,222), over the
-	// deep-plum stroke NeonFrames uses.
-	//
-	// No call site passes `fill` or `stroke` except Symbol.svelte's superspin
-	// coin grading, so these defaults are every number a player reads.
+	// Flat ink figures: one readable face, one hard keyline, no bevel or glow.
 	type Props = {
 		text: string | number;
 		fontSize: number;
@@ -50,77 +34,10 @@
 	);
 </script>
 
-<!--
-	Three stacked passes instead of one gradient-filled Text. A single gradient
-	fill with a stroke is exactly the "gradient fill" look flagged in review; a
-	bevel needs light and shade on opposite sides of the same glyph, which one
-	Text node cannot express.
-
-	  1. shadow pass  offset down, dark, no fill gradient — the cast shadow
-	  2. body pass    the gold gradient and the outline (the readable layer)
-	  3. sheen pass   offset up by a hair, clipped to the top of the glyph by a
-	                  short gradient, so the letter looks lit from above
-
-	The font is unchanged; this is purely how it is rendered.
--->
 <Container x={props.x ?? 0} y={props.y ?? 0} scale={fitScale} alpha={props.alpha ?? 1}>
-	{@const bevel = Math.max(1, props.fontSize * 0.05)}
-	{@const base = {
-		fontFamily: props.fontFamily ?? GAME_FONT,
-		fontSize: props.fontSize,
-		fontWeight: props.fontWeight ?? GAME_FONT_WEIGHT,
-		letterSpacing: props.letterSpacing ?? 1,
-	}}
-
-	<Text
-		anchor={props.anchor ?? 0.5}
-		y={bevel}
-		text={String(props.text)}
-		style={{
-			...base,
-			fill: props.stroke ?? 0x0e0f11,
-			stroke: { color: props.stroke ?? 0x0e0f11, width: Math.max(2, props.fontSize * 0.13) },
-		}}
-		alpha={0.85}
-	/>
-
-	<!-- 2026-10-01: sodium glow pass. The body used to be an array fill, and
-	     pixi 8 draws only its FIRST stop — bone grey — so every win amount read
-	     as a grey ghost over the grey royals. -->
-	<Text
-		anchor={props.anchor ?? 0.5}
-		text={String(props.text)}
-		style={{
-			...base,
-			fill: 0xf5893d,
-			stroke: { color: 0xf5893d, width: Math.max(3, props.fontSize * 0.12) },
-			dropShadow: { color: 0xf5893d, blur: Math.max(6, props.fontSize * 0.22), distance: 0, angle: Math.PI / 6, alpha: 1 },
-		}}
-		blendMode="add"
-		alpha={0.32}
-	/>
-
-	<Text
-		anchor={props.anchor ?? 0.5}
-		text={String(props.text)}
-		onresize={(sizes) => (measuredWidth = sizes.width)}
-		style={{
-			...base,
-			fill: props.fill ?? 0xffc38a,
-			stroke: { color: props.stroke ?? 0x0e0f11, width: Math.max(2, props.fontSize * 0.1) },
-			dropShadow: { color: 0x000000, blur: Math.max(4, props.fontSize * 0.12), distance: Math.max(1.5, props.fontSize * 0.045), angle: Math.PI / 6, alpha: 1 },
-		}}
-	/>
-
-	<Text
-		anchor={props.anchor ?? 0.5}
-		y={-bevel * 0.55}
-		text={String(props.text)}
-		style={{
-			...base,
-			fill: 0xffffff,
-			stroke: { color: 0x000000, width: 0 },
-		}}
-		alpha={0.3}
-	/>
+ <Text anchor={props.anchor ?? 0.5} text={String(props.text)}
+  onresize={(bounds) => (measuredWidth = bounds.width)}
+  style={{fontFamily: props.fontFamily ?? GAME_FONT, fontSize: props.fontSize,
+    fontWeight: props.fontWeight ?? GAME_FONT_WEIGHT, letterSpacing: props.letterSpacing ?? 1,
+    fill: props.fill ?? 0xffc38a, stroke: {color: props.stroke ?? 0x121212, width: Math.max(2, props.fontSize * 0.07)}}} />
 </Container>

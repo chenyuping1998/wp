@@ -6,13 +6,12 @@
   import CastFigure, { CAST_NATIVE } from "./CastFigure.svelte";
   import CastFigureMesh from "./CastFigureMesh.svelte";
 
-  // The live cast uses eight aligned layer meshes and one skeleton. The flat
+  // The live cast uses independent aligned layer meshes and one skeleton. The flat
   // CastFigure branch remains only as a fallback for the old art.
   const USE_MESH_CAST = true;
   import { stateGame } from "../game/stateGame.svelte";
 
-  /** One masked bat carrier stands to the board's right in every mode. The
-   * mode changes its lighting; the character and pose remain recognisable. */
+  /** Main-game masked enforcer swaps to the distinct Kingpin in free games. */
   const context = getContext();
 
   // The SAME container the board's housing is drawn in (BoardFrame uses
@@ -34,8 +33,7 @@
   const toStandard = (xInGameBox: number) =>
     std.width * 0.5 + ((xInGameBox - box.width * 0.5) * box.scale) / std.scale;
 
-  // Turf War uses one Don in every mode; mode is communicated by lighting
-  // and the room, never by swapping back to Miami's female cast member.
+  // The mesh component selects the appropriate MG/FG character rig.
   const who = $derived<"guy">("guy");
 
   // mirrors BoardFrame's own constant
@@ -66,12 +64,8 @@
     boardInkRight - OVERLAP + width * 0.5 +
       (stateGame.gameType === "freegame" ? FEATURE_GUTTER : 0),
   );
-  // A person sways about the ground under them. The feet are off-screen at this
-  // size, so the pivot is the bottom of the box instead — the nearest thing to a
-  // ground line that is actually on screen. Pivoting at the real feet, hundreds
-  // of pixels below the canvas, would swing the head twice as far for the same
-  // angle.
-  const groundY = $derived(std.height);
+  // Keep the complete new figure above the control strip, shoes included.
+  const groundY = $derived(std.height * 0.84);
 
   // Grading them into the night street. See CastFigure's `grade` note for why
   // this is a value problem before it is a colour one. The tint is a violet-grey
@@ -116,7 +110,7 @@
   <MainContainer standard>
     {#if USE_MESH_CAST}
       {#key who}
-        <CastFigureMesh {who} {x} {topY} {height} {groundY} flip={who === "guy"} innerEdge={boardInkRight} />
+        <CastFigureMesh {who} {x} {topY} {height} {groundY} innerEdge={boardInkRight} fitToGround />
       {/key}
     {:else}
       <CastFigure
@@ -133,7 +127,7 @@
 {:else if !stateGame.featureSplashShow && portrait && USE_MESH_CAST}
   <MainContainer standard>
     {#key who}
-      <CastFigureMesh {who} x={portrait.x} topY={portrait.topY} height={portrait.height} groundY={portrait.groundY} flip={who === "guy"} innerEdge={portrait.innerEdge} />
+      <CastFigureMesh {who} x={portrait.x} topY={portrait.topY} height={portrait.height} groundY={portrait.groundY} innerEdge={portrait.innerEdge} />
     {/key}
   </MainContainer>
 {/if}

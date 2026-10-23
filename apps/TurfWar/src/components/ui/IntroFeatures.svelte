@@ -80,7 +80,7 @@
 	const VOLATILITY = 4;
 	const VOLATILITY_MAX = 5;
 
-	const panels: { icons: string[]; overlay?: string; title: string; body: string }[] = [
+	const panels: { icons: string[]; overlay?: string; grid?: boolean; badge?: string; title: string; body: string }[] = [
 		{
 			// The Frame is a hollow border — alone it reads as an empty box. Drawn
 			// over a symbol because that is the only way it ever appears in play.
@@ -95,8 +95,12 @@
 			body: tx('turfBruiserBody', `A Bruiser fills its <strong>entire reel with Wilds</strong> before any wins are counted. It lands on the three middle reels in normal play and on any reel in free spins, one at a time.`),
 		},
 		{
-			icons: ['h1', 'h2', 'h3'],
+			// A mini 3×2 board with ONE frame round all of it: the frame shrunk onto
+			// a single symbol read as a stray dashed box (「loading頁面不知道是啥」 2026-10-23).
+			icons: ['h1', 'h2', 'h3', 'h4', 'h5', 'h1'],
 			overlay: 'frame_full',
+			grid: true,
+			badge: '50×',
 			title: tx('turfScoreTitle', 'THE BIG SCORE'),
 			body: tx('turfScoreBody', `On any spin the <strong>whole grid can become one Loot Bag</strong> worth <strong>5&times; to 50&times;</strong>, multiplying every winning ${T.payline} once per position. It can turn up in normal play and in every feature &mdash; and it does not need a win to appear.`),
 		},
@@ -244,7 +248,7 @@
 		</div>
 
 		<div class="hm-stage" bind:this={stage} style:transform={fit < 1 ? `scale(${fit})` : undefined}>
-			<img class="hm-logo" src={`${BRAND}/logo.png`} alt="TURF WAR" />
+			<div class="hm-logo street-wordmark">TURF WAR</div>
 
 			<div class="hm-vol">
 				<span class="hm-vol-label">{tx('introVolatility', 'VOLATILITY')}</span>
@@ -276,7 +280,7 @@
 			<div class="hm-panels">
 				{#each panels as panel, i (panel.title)}
 					<section class="hm-panel" style:--delay={`${i * 100}ms`} style:--plate={`url(${base}/assets/sprites/turfUi/buybonus_plate.png)`}>
-						<div class="hm-panel-icons" class:multi={panel.icons.length > 1}>
+						<div class="hm-panel-icons" class:multi={panel.icons.length > 1 && !panel.grid} class:grid={panel.grid}>
 							{#each panel.icons as icon, k (k)}
 								<img src={`${SYMBOLS}/${icon}.png`} alt="" aria-hidden="true" />
 							{/each}
@@ -288,6 +292,7 @@
 									aria-hidden="true"
 								/>
 							{/if}
+							{#if panel.badge}<span class="hm-panel-badge" aria-hidden="true">{panel.badge}</span>{/if}
 						</div>
 						<h2 dir="auto">{panel.title}</h2>
 						<p dir="auto">{@html panel.body}</p>
@@ -331,6 +336,7 @@
 {/if}
 
 <style lang="scss">
+ .hm-logo.street-wordmark {width:auto;white-space:nowrap;line-height:1.1;font-family:Bungee,sans-serif;font-size:clamp(30px,5vw,64px);color:#F5893D;-webkit-text-stroke:2px #121212;paint-order:stroke fill;filter:drop-shadow(3px 3px 0 #F7F5F0);transform:rotate(-2deg);}
 	@keyframes riseIn {
 		from {
 			opacity: 0;
@@ -457,9 +463,9 @@
 		box-sizing: border-box;
 		cursor: pointer;
 		overflow: hidden;
-		color: #d9d6ce;
+		color: #f7f5f0;
 		font-family: var(--gb-body-font, sans-serif);
-		background: var(--bg) center / cover no-repeat, #17191c;
+		background: var(--bg) center / cover no-repeat, #3a3d42;
 		opacity: 0;
 		transition: opacity 0.35s ease;
 	}
@@ -474,9 +480,7 @@
 	.hm-scrim {
 		position: absolute;
 		inset: 0;
-		background:
-			radial-gradient(ellipse at 42% 52%, rgba(14, 15, 17, 0.9) 0%, rgba(14, 15, 17, 0.55) 45%, rgba(14, 15, 17, 0.82) 100%),
-			linear-gradient(180deg, rgba(14, 15, 17, 0.75) 0%, rgba(14, 15, 17, 0.2) 30%, rgba(14, 15, 17, 0.9) 100%);
+		background: rgba(18,18,18,.12);
 	}
 
 	/* Positioning + the one-shot entrance live here, on the wrapper. See the
@@ -519,8 +523,8 @@
 		object-fit: contain;
 		pointer-events: none;
 		filter:
-			drop-shadow(3px 0 0 #0e0f11) drop-shadow(-3px 0 0 #0e0f11) drop-shadow(0 3px 0 #0e0f11)
-			drop-shadow(0 -3px 0 #0e0f11) drop-shadow(0 12px 26px rgba(0, 0, 0, 0.7));
+			drop-shadow(3px 0 0 #121212) drop-shadow(-3px 0 0 #121212) drop-shadow(0 3px 0 #121212)
+			drop-shadow(0 -3px 0 #121212) drop-shadow(0 12px 26px rgba(0, 0, 0, 0.7));
 	}
 
 	/* The character keeps breathing after walking in — same technique as
@@ -587,6 +591,7 @@
 	}
 
 	.hm-logo {
+ height: auto; min-height: 1.1em;
 		width: clamp(12rem, 26vw, 22rem);
 		height: auto;
 		filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.8));
@@ -604,7 +609,7 @@
 		font-family: var(--hm-title-font, var(--gb-display-font, sans-serif));
 		font-size: clamp(0.68rem, 1.4vw, 0.92rem);
 		letter-spacing: 0.2em;
-		color: #d9d6ce;
+		color: #f7f5f0;
 	}
 
 	.hm-bolts {
@@ -739,6 +744,39 @@
 		filter: drop-shadow(0 0 10px rgba(156, 90, 34, 0.6));
 	}
 
+	/* the Big Score: a small board, one frame stretched round all of it */
+	.hm-panel-icons.grid {
+		display: grid;
+		grid-template-columns: repeat(3, auto);
+		gap: 0.1rem 0.25rem;
+		width: fit-content;
+		margin-inline: auto;
+		padding: 0.35rem 0.55rem;
+	}
+	.hm-panel-icons.grid img:not(.hm-panel-overlay) {
+		width: clamp(2.1rem, 4.6vh, 2.8rem);
+		height: clamp(2.1rem, 4.6vh, 2.8rem);
+	}
+	.hm-panel-icons.grid .hm-panel-overlay {
+		width: 100%;
+		height: 100%;
+		object-fit: fill;
+	}
+	.hm-panel-badge {
+		position: absolute;
+		right: -0.9rem;
+		bottom: -0.55rem;
+		z-index: 2;
+		padding: 0.05rem 0.35rem;
+		font-family: 'Permanent Marker', var(--hm-title-font, sans-serif);
+		font-size: clamp(0.95rem, 1.9vw, 1.2rem);
+		color: #121212;
+		background: #f5893d;
+		border: 2px solid #121212;
+		border-radius: 4px;
+		transform: rotate(-6deg);
+	}
+
 	/* the three Scatters overlap, the way they read when they land together */
 	.hm-panel-icons.multi img:not(:first-child) {
 		margin-left: -0.95rem;
@@ -755,10 +793,10 @@
 		color: #f5893d;
 		/* heavy keyline on the type, the way signage in this idiom is drawn */
 		text-shadow:
-			2px 0 0 #0e0f11,
-			-2px 0 0 #0e0f11,
-			0 2px 0 #0e0f11,
-			0 -2px 0 #0e0f11,
+			2px 0 0 #121212,
+			-2px 0 0 #121212,
+			0 2px 0 #121212,
+			0 -2px 0 #121212,
 			0 0 16px rgba(156, 90, 34, 0.5);
 	}
 
@@ -770,11 +808,11 @@
 	}
 
 	.hm-panel :global(strong) {
-		/* #d9d6ce, not the darker #465562 this was first retimed to. These are the
+		/* #f7f5f0, not the darker #9a9ca0 this was first retimed to. These are the
 		   words carrying the numbers — "2x to 100x", "1, 4 or 9 positions" — and at
 		   12.6px the dark brass measured 3.19:1 against the panel, under the 4.5:1
 		   that normal-size text needs. The bright gold measures 8.9:1. */
-		color: #d9d6ce;
+		color: #f7f5f0;
 		font-weight: 700;
 	}
 
@@ -783,7 +821,7 @@
 		font-family: var(--hm-title-font, var(--gb-display-font, sans-serif));
 		font-size: clamp(0.68rem, 1.4vw, 0.9rem);
 		letter-spacing: 0.12em;
-		color: #d9d6ce;
+		color: #f7f5f0;
 		animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both 0.32s;
 	}
 
@@ -801,14 +839,15 @@
 		font-size: clamp(0.78rem, 1.6vw, 1rem);
 		letter-spacing: 0.22em;
 		text-shadow:
-			2px 0 0 #0e0f11,
-			-2px 0 0 #0e0f11,
-			0 2px 0 #0e0f11,
-			0 -2px 0 #0e0f11;
+			2px 0 0 #121212,
+			-2px 0 0 #121212,
+			0 2px 0 #121212,
+			0 -2px 0 #121212;
 		animation: ctaPulse 1.7s ease-in-out infinite;
 	}
 
 	.hm-studio {
+ background:#121212; padding:6px 10px; border:2px solid #f7f5f0; border-radius:6px;
 		position: absolute;
 		left: clamp(0.8rem, 2vw, 1.6rem);
 		bottom: clamp(0.7rem, 2vh, 1.3rem);
@@ -846,6 +885,15 @@
 		font-size: 30px;
 		font-weight: 700;
 	}
+
+ @media (max-width: 620px) and (max-aspect-ratio: 1/1) {
+  /* Shared mobile rem is 12px: explicit px preserve readable body copy. */
+  .hm-panel {border-width:16px;border-image-width:26px;padding:10px 8px;gap:4px;}
+  .hm-panel p {font-size:11px;line-height:1.35;}
+  .hm-panel h2 {font-size:13px;}
+  .hm-panel-icons {min-height:32px;}
+  .hm-panel-icons img {width:32px;height:32px;}
+ }
 
 	/* (kept last so it wins the cascade) Short screens (phone landscape): the painted plate's frame is a fixed
 	   30px, which on a 390px-tall screen ate the copy's room and pushed the

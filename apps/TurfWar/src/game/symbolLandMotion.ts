@@ -409,10 +409,10 @@ const BASE_LAND_MOTION: Record<string, SymbolLandMotion> = {
  */
 export const LAND_FLOOR = {
 	/** ~11.5 degrees */
-	rotation: 0.2,
+	rotation: 0.08,
 	/** cell fractions: 0.085 is ~10px */
-	offset: 0.085,
-	scale: 0.14,
+	offset: 0.03,
+	scale: 0.08,
 };
 
 /**
@@ -476,8 +476,23 @@ const boostToFloor = (motion: SymbolLandMotion, windowMs: number): SymbolLandMot
 	};
 };
 
+// ART_BRIEF v2: paper slap .92 -> 1.06 -> 1, with each object's own
+// directional gesture retained at a small fraction of the old heavy bounce.
 export const SYMBOL_LAND_MOTION: Record<string, SymbolLandMotion> = Object.fromEntries(
-	Object.entries(BASE_LAND_MOTION).map(([name, motion]) => [name, boostToFloor(motion, LAND_MS)]),
+ Object.entries(BASE_LAND_MOTION).map(([name, motion]) => {
+  const subject = boostToFloor(motion, LAND_MS);
+  return [name, {frame: (t: number) => {
+   const f=subject.frame(t); const u=Math.max(0,Math.min(1,t/LAND_MS));
+   const slap=u<.3 ? .92+.14*Math.sin(u/.3*Math.PI/2) : 1+.06*Math.cos((u-.3)/.7*Math.PI/2);
+   if(name==='H4') return {...f,scaleX:slap,scaleY:slap,dx:-.06*Math.sin(u*Math.PI*2)*(1-u),dy:0,rotation:.18*Math.sin(u*Math.PI*2)*(1-u),bloomAlpha:0};
+   if(name==='L2') return {...f,scaleX:slap,scaleY:slap,dx:0,dy:.03*Math.sin(u*Math.PI*5)*(1-u),rotation:.18*Math.sin(u*Math.PI*5)*(1-u),bloomAlpha:0};
+   if(name==='H5') return {...f,scaleX:slap,scaleY:1+.09*Math.sin(u*Math.PI*3)*(1-u),dx:0,dy:-.12*Math.sin(u*Math.PI),rotation:.08*Math.sin(u*Math.PI),bloomAlpha:0};
+   if(name==='L4') return {...f,scaleX:slap,scaleY:slap,dx:0,dy:.10*Math.sin(u*Math.PI*4)*(1-u),rotation:.08*Math.sin(u*Math.PI*3)*(1-u),bloomAlpha:0};
+   if(name==='S') return {...f,scaleX:1+.14*Math.sin(u*Math.PI*4)*(1-u),scaleY:1-.15*Math.sin(u*Math.PI*4)*(1-u),dx:0,dy:.04*Math.sin(u*Math.PI*4)*(1-u),rotation:0,bloomAlpha:0};
+   if(name==='W') return {...f,scaleX:slap,scaleY:slap,dx:.1*Math.sin(u*Math.PI)*(1-u),dy:0,rotation:.16*Math.sin(u*Math.PI*2)*(1-u),bloomAlpha:0};
+   return {...f,scaleX:slap+(f.scaleX-1)*.65,scaleY:slap+(f.scaleY-1)*.65};
+  }}];
+ }),
 );
 
 export const getSymbolLandMotion = (name: string): SymbolLandMotion =>

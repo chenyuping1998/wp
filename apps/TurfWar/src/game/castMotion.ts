@@ -194,10 +194,11 @@ const IDLE_ARMS: Record<CastPose, Record<string, MotionSpec>> = {
     fore_r: [0.2057, 360, 1550, 0.3],
   },
   layered: {
-    arm_l: [0.8, 0, 2050, 0.4],
-    fore_l: [0.55, 300, 1800, 0.3],
-    arm_r: [0.5, 180, 1500, 0.4],
-    fore_r: [0.4, 360, 1550, 0.3],
+    // Folded arms breathe together; independent wide swings break the grip.
+    arm_l: [0, 0, 2400, 0.3],
+    fore_l: [0, 0, 2400, 0.3],
+    arm_r: [0, 0, 2400, 0.3],
+    fore_r: [0, 0, 2400, 0.3],
     dangle_chain: [1.4, 420, 2200, 0.25],
     dangle_mask: [2.6, 530, 2000, 0.2],
   },

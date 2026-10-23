@@ -1,0 +1,61 @@
+{
+  "archetype": "turf_original_open_guard_v3",
+  "size": [
+    1024,
+    1536
+  ],
+  "order": [
+    "arm_r",
+    "body",
+    "head",
+    "arm_l"
+  ],
+  "joints": {
+    "hips": [
+      490,
+      770
+    ],
+    "waist": [
+      500,
+      650
+    ],
+    "chest": [
+      505,
+      445
+    ],
+    "neck": [
+      548,
+      325
+    ],
+    "head_top": [
+      565,
+      28
+    ],
+    "shoulder_l": [
+      300,
+      290
+    ],
+    "elbow_l": [
+      210,
+      480
+    ],
+    "wrist_l": [
+      440,
+      420
+    ],
+    "shoulder_r": [
+      605,
+      352
+    ],
+    "elbow_r": [
+      735,
+      545
+    ],
+    "wrist_r": [
+      840,
+      425
+    ]
+  },
+  "feet_y": 1492,
+  "anchors": {}
+}

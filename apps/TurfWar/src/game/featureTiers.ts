@@ -83,7 +83,7 @@ export const FEATURE_TIERS: FeatureTier[] = [
 			'10 free spins starting with one sticky Loot Bag and keeping the doubling rule. Every reel a Bruiser fills with Wilds then STAYS Wild for the rest of the feature — held Wild columns build up spin after spin.',
 		splash:
 			'ONE STICKY LOOT BAG, WINNING LOOT BAGS STILL DOUBLE, AND EVERY BRUISER COLUMN STAYS WILD FOR THE REST OF THE FEATURE.',
-		accent: 0xb22222,
+		accent: 0x9bd437,
 		titleKey: 'turfTitleKingpin',
 	},
 ];

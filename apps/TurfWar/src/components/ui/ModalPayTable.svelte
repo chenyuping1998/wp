@@ -201,7 +201,7 @@
 		-webkit-overflow-scrolling: touch;
 		overscroll-behavior: contain;
 		padding: 1.5rem 1.75rem;
-		color: #d9d6ce;
+		color: #f7f5f0;
 		/* Stated, not inherited. This panel is not inside `.pop-up-wrap`, so the
 		   body-face override in Modals.svelte never reached it, and every symbol
 		   name and pay chip in the table was rendering in `proxima-nova` — the
@@ -217,11 +217,11 @@
 			width: 5px;
 		}
 		&::-webkit-scrollbar-track {
-			background: #17191c;
+			background: #3a3d42;
 			border-radius: 4px;
 		}
 		&::-webkit-scrollbar-thumb {
-			background: linear-gradient(180deg, #f5893d 0%, #9c5a22 100%);
+			background: #3a3d42;
 			border-radius: 4px;
 		}
 
@@ -233,7 +233,7 @@
 			/* Cinzel, same as the Buy Bonus card and the tier titles. The panel
 			   headings were the last player-facing text still in the body face. */
 			font-family: var(--hm-title-font);
-			background: linear-gradient(135deg, #ffc38a 0%, #f5893d 50%, #9c5a22 100%);
+			background: #3a3d42;
 			background-size: 200% auto;
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
@@ -289,12 +289,12 @@
 		border: 5px solid transparent;
 		border-image: url('/assets/sprites/turfUi/panel_edge.png') 64 stretch;
 		border-radius: 0.2rem;
-		background: #17191c;
+		background: #3a3d42;
 		border: 1px solid #3a3d42;
 		transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 
 		&:hover {
-			background: #2a343e;
+			background: #55585d;
 			border-color: rgba(245, 137, 61, 0.5);
 		}
 	}
@@ -313,7 +313,7 @@
 		background: #3a3d42;
 
 		&.lit {
-			background: linear-gradient(160deg, #ffc38a, #f5893d);
+			background: #3a3d42;
 			box-shadow: 0 0 6px rgba(255, 195, 138, 0.65);
 		}
 	}
@@ -337,14 +337,14 @@
 		   frosted-glass row this replaces was the source game's material and is
 		   not in §0's texture language. */
 		border-radius: 0.25rem;
-		background: #17191c;
+		background: #3a3d42;
 		border: 1px solid #3a3d42;
 		box-shadow: inset 0 1px 0 rgba(91, 95, 102, 0.55);
 		transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 		animation: rowSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 
 		&:hover {
-			background: #2a343e;
+			background: #55585d;
 			border-color: rgba(245, 137, 61, 0.5);
 			box-shadow:
 				inset 0 1px 0 rgba(91, 95, 102, 0.55),
@@ -367,8 +367,7 @@
 		/* 2026-09-14 (ported from Capo Nostra): a soft round light behind each
 		   thumbnail, so dark symbol art does not sink into the dark row card. */
 		border-radius: 50%;
-		background: radial-gradient(circle, rgba(217, 214, 206, 0.2) 0%,
-			rgba(217, 214, 206, 0.07) 55%, transparent 72%);
+		background: #3a3d42;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -389,7 +388,7 @@
 			position: absolute;
 			inset: -3px;
 			border-radius: 50%;
-			background: radial-gradient(circle, rgba(255, 195, 138, 0.3) 0%, transparent 70%);
+			background: #3a3d42;
 			opacity: 0;
 			transition: opacity 0.3s ease;
 		}
@@ -409,7 +408,7 @@
 		font-size: 0.95rem;
 		font-weight: 700;
 		letter-spacing: 0.03em;
-		color: #d9d6ce;
+		color: #f7f5f0;
 	}
 
 	.wp-pays {
@@ -438,7 +437,7 @@
 		em {
 			font-style: normal;
 			font-weight: 600;
-			background: linear-gradient(135deg, #ffc38a, #f5893d);
+			background: #3a3d42;
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
 			background-clip: text;

@@ -1,0 +1,55 @@
+{
+ "fps": 30,
+ "facing": 1,
+ "size": 2.46,
+ "roles": {
+  "root": "root",
+  "hip": "hip",
+  "chest": "chest",
+  "head": "head",
+  "body": "hip",
+  "fists": [
+   "ik-fist-front",
+   "ik-fist-back"
+  ],
+  "fist": "ik-fist-front",
+  "fistFront": "ik-fist-front",
+  "fistBack": "ik-fist-back",
+  "feet": [
+   "ik-foot-back",
+   "ik-foot-front"
+  ],
+  "shoulders": [
+   "upperArmB",
+   "upperArmF"
+  ],
+  "shoulderBack": "upperArmB"
+ },
+ "animations": [
+  {
+   "name": "idle",
+   "preset": "fighter-idle-bounce",
+   "params": {}
+  },
+  {
+   "name": "idle_weave",
+   "preset": "fighter-idle-weave",
+   "params": {}
+  },
+  {
+   "name": "punch",
+   "preset": "punch",
+   "params": {}
+  },
+  {
+   "name": "hit",
+   "preset": "hit-react",
+   "params": {}
+  },
+  {
+   "name": "jump",
+   "preset": "jump",
+   "params": {}
+  }
+ ]
+}

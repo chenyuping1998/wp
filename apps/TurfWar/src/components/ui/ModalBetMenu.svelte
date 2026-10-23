@@ -39,13 +39,13 @@
 
 	const isMax = (value: number) => value === options[options.length - 1];
 
-	// As the shared grid formats: bare amounts, K / M above a thousand.
-	const format = (value: number) => {
-		const abs = Math.abs(value);
-		if (abs > 999999) return `${(abs / 1000000).toFixed(2)}M`;
-		if (abs > 999) return `${(abs / 1000).toFixed(2)}K`;
-		return abs.toFixed(2);
-	};
+	// Stake review, 2026-10-20 (Sushi Monkey): values in full, never K / M
+	// abbreviations — 1,000.00, not 1.00K. Long labels step the type down so
+	// they still fit their chip.
+	const format = (value: number) =>
+		Math.abs(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+	const chipLabel = (value: number) => (isMax(value) ? i18nDerived.max() : format(value));
+	const labelSize = (text: string) => (text.length > 10 ? '0.7em' : text.length > 8 ? '0.82em' : undefined);
 
 	const choose = (value: number) => {
 		stateBetDerived.setBetAmount(value);
@@ -74,7 +74,7 @@
 							aria-pressed={option === stateBet.betAmount}
 							onclick={() => choose(option)}
 						>
-							<span class="label">{isMax(option) ? i18nDerived.max() : format(option)}</span>
+							<span class="label" style:font-size={labelSize(chipLabel(option))}>{chipLabel(option)}</span>
 						</button>
 					{/each}
 				</div>
@@ -121,12 +121,7 @@
 		width: 60%;
 		height: 1px;
 		margin-top: -0.4rem;
-		background: linear-gradient(
-			90deg,
-			transparent,
-			rgba(var(--turf-gold-rgb), 0.8) 50%,
-			transparent
-		);
+		background: #3a3d42;
 
 		&::after {
 			content: '';
@@ -201,11 +196,7 @@
 		height: 2.6rem;
 		border-radius: 8px;
 		border: 1px solid rgba(var(--turf-gold-rgb), 0.35);
-		background: linear-gradient(
-			180deg,
-			rgba(var(--turf-ink-rgb), 0.95) 0%,
-			rgba(var(--turf-ink-deep-rgb), 1) 100%
-		);
+		background: #3a3d42;
 		box-shadow: inset 0 1px 0 rgba(var(--turf-bone-rgb), 0.06);
 		color: var(--turf-bone);
 		font-size: 0.95rem;
@@ -228,11 +219,7 @@
 		// not a gold fill — §0 keeps gold to edges and marks, never fields.
 		&.selected {
 			border: 2px solid var(--turf-gold);
-			background: linear-gradient(
-				180deg,
-				var(--turf-wine) 0%,
-				var(--turf-wine-deep) 100%
-			);
+			background: #3a3d42;
 			color: var(--turf-gold-light);
 			box-shadow:
 				0 0 14px rgba(var(--turf-gold-rgb), 0.4),
@@ -248,11 +235,7 @@
 		margin-top: 0.3rem;
 		border-radius: 10px;
 		border: 2px solid var(--turf-gold);
-		background: linear-gradient(
-			180deg,
-			var(--turf-wine) 0%,
-			var(--turf-wine-deep) 100%
-		);
+		background: #3a3d42;
 		box-shadow:
 			0 4px 14px rgba(0, 0, 0, 0.5),
 			inset 0 1px 0 rgba(var(--turf-gold-light-rgb), 0.25);

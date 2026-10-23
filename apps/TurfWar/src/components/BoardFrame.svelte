@@ -170,7 +170,7 @@
 	});
 </script>
 
-<Graphics zIndex={-2} draw={drawAmbience} />
+<!-- Flat sticker housing: no ambient light halo on the line-art scene. -->
 
 
 <Sprite
@@ -200,7 +200,7 @@
 		y={context.stateGameDerived.boardLayout().y + impact.y}
 		width={context.stateGameDerived.boardLayout().width * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
 		height={context.stateGameDerived.boardLayout().height * context.stateGameDerived.boardLayout().scale * FRAME_SCALE}
-		blendMode="add"
+		blendMode="normal"
 		alpha={impact.flash}
 	/>
 {/if}

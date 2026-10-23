@@ -38,7 +38,7 @@
 	<button
 		class="sign"
 		data-test="down-button"
-		aria-label="Decrease bet"
+		aria-label="Decrease amount"
 		disabled={downDisabled}
 		onclick={() => step(-1)}
 	>
@@ -50,7 +50,7 @@
 	<button
 		class="sign"
 		data-test="up-button"
-		aria-label="Increase bet"
+		aria-label="Increase amount"
 		disabled={upDisabled}
 		onclick={() => step(1)}
 	>
@@ -89,11 +89,7 @@
 		padding: 0;
 		border-radius: 50%;
 		border: 2px solid rgba(var(--turf-gold-rgb), 0.75);
-		background: radial-gradient(
-			circle at 50% 35%,
-			rgba(var(--turf-wine-rgb), 0.95) 0%,
-			rgba(var(--turf-ink-deep-rgb), 1) 78%
-		);
+		background: #3a3d42;
 		box-shadow:
 			0 2px 8px rgba(0, 0, 0, 0.5),
 			inset 0 1px 0 rgba(var(--turf-gold-light-rgb), 0.18);

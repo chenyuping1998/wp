@@ -245,10 +245,10 @@ export const SYMBOL_INFO_MAP = {
 	// of the 512 canvas), so all four stand ~68% of the cell tall. The old
 	// 1.13/1.13/1.0/1.0 were Hot Miami's letter royals and left the lightning (L4)
 	// visibly smaller than the rest (2026-10-12 audit).
-	L1: spriteSymbol('hmL1', { width: 1.11, height: 1.11 }),
-	L2: spriteSymbol('hmL2', { width: 1.09, height: 1.09 }),
-	L3: spriteSymbol('hmL3', { width: 1.0, height: 1.0 }),
-	L4: spriteSymbol('hmL4', { width: 1.08, height: 1.08 }),
+	L1: spriteSymbol('hmL1', { width: .80, height: .80 }),
+	L2: spriteSymbol('hmL2', { width: .80, height: .80 }),
+	L3: spriteSymbol('hmL3', { width: .80, height: .80 }),
+	L4: spriteSymbol('hmL4', { width: .80, height: .80 }),
 	W: spriteSymbol('hmW', SPECIAL_RATIOS),
 	S: spriteSymbol('hmS', SPECIAL_RATIOS),
 	SW: spriteSymbol('hmSw', SPECIAL_RATIOS),

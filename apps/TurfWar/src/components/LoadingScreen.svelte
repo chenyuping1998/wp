@@ -1,4 +1,5 @@
 <script lang="ts">
+ import StreetLabel from './StreetLabel.svelte';
 	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT, DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
 	import { Container, Graphics, Text, Sprite } from 'pixi-svelte';
 	import { FadeContainer } from 'components-pixi';
@@ -44,7 +45,7 @@
 	// background art behind them. So the SCRIM does the holding back instead: the
 	// photograph goes down to 0.74 black and the people stay as they are.
 	const castHeight = $derived(layout.height * 0.9);
-	const castWidth = $derived(castHeight * 0.5);
+	const castWidth = $derived(castHeight * (512 / 768));
 
 	// Their sway runs off the same clock as everywhere else, which is what keeps
 	// the two of them out of step with each other (6500ms and 4000ms) rather than
@@ -220,8 +221,7 @@
 		</Container>
 
 		<!-- The real logo, not a typeset stand-in for it -->
-		<Sprite
-			key="hmLogo"
+		<StreetLabel text="TURF WAR" artKey="hmLogo"
 			anchor={0.5}
 			x={layout.width * 0.5}
 			y={layout.height * 0.3}

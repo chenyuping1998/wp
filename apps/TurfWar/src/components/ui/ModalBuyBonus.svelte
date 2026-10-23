@@ -68,7 +68,7 @@
 		BONUS: {
 			backdrop: src('hmBgFeature'),
 			crop: '18% 50%',
-			accent: '#465562',
+			accent: '#9a9ca0',
 			glow: 'rgba(138, 109, 31, 0.55)',
 			frames: 1,
 			framesLabel: '1 sticky Loot Bag, refilled every spin',
@@ -90,7 +90,7 @@
 		BONUS_EPIC: {
 			backdrop: src('hmBgEpic'),
 			crop: '50% 45%',
-			accent: '#d9d6ce',
+			accent: '#f7f5f0',
 			glow: 'rgba(156, 90, 34, 0.6)',
 			// 2026-10-01: this said "3 sticky Frames" on all three cards' worth of
 			// tiers — the Capo Nostra numbers under the old name. The maths seeds
@@ -134,7 +134,7 @@
 						class="card"
 						style:--card-frame={`url("${src('capoBuyCardFrame')}")`}
 						class:top={art?.rank === 3}
-						style:--accent={art?.accent ?? '#465562'}
+						style:--accent={art?.accent ?? '#9a9ca0'}
 						style:--glow={art?.glow ?? 'rgba(138,109,31,0.5)'}
 					>
 						<!-- the tier's own sky, dimmed so the type stays legible over it -->
@@ -174,7 +174,7 @@
 
 						<!-- the tier's own title art, as on its splash and in the rules -->
 						{#if art?.titleKey}
-							<img class="title-art" src={src(art.titleKey)} alt={betMode.text.title} />
+							<h3 class="title-art" style="font-family:Bungee,sans-serif">{betMode.text.title}</h3>
 						{:else}
 							<h3>{betMode.text.title}</h3>
 						{/if}
@@ -228,7 +228,7 @@
 		max-height: 88vh;
 		overflow-y: auto;
 		padding: 1.1rem 1.1rem 1.4rem;
-		color: #d9d6ce;
+		color: #f7f5f0;
 		font-family: var(--gb-body-font);
 	}
 
@@ -327,7 +327,7 @@
 		width: 45%;
 		height: 220%;
 		transform: rotate(18deg);
-		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+		background: #3a3d42;
 		animation: shine 5.6s ease-in-out infinite;
 		pointer-events: none;
 	}
@@ -404,7 +404,7 @@
 			font-family: var(--hm-title-font);
 			font-size: 1.55rem;
 			line-height: 1;
-			color: #d9d6ce;
+			color: #f7f5f0;
 			text-shadow: 0 0 12px var(--glow);
 		}
 
@@ -433,7 +433,7 @@
 		font-size: 0.95rem;
 		letter-spacing: 0.06em;
 		color: #ffc38a;
-		text-shadow: 0 2px 0 #0e0f11, 0 0 8px rgba(245, 137, 61, 0.45);
+		text-shadow: 0 2px 0 #121212, 0 0 8px rgba(245, 137, 61, 0.45);
 		transition: transform 0.12s ease, filter 0.12s ease;
 
 		&:not(:disabled):hover {
@@ -452,7 +452,7 @@
 		margin: 0.35rem 0 0;
 		font-size: 0.68rem;
 		text-align: center;
-		color: #d9d6ce;
+		color: #f7f5f0;
 	}
 
 	@keyframes shine {

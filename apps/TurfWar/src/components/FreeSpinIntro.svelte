@@ -6,6 +6,7 @@
 </script>
 
 <script lang="ts">
+ import StreetLabel from './StreetLabel.svelte';
 	import { onDestroy } from 'svelte';
 	import { GAME_FONT, TITLE_FONT, TITLE_FONT_WEIGHT, GAME_FONT_WEIGHT, DISPLAY_FONT, DISPLAY_FONT_WEIGHT } from '../game/fonts';
 	import { featureTimeScale } from '../game/timeScale';
@@ -65,7 +66,7 @@
 	// off that point; the user's read was that it sat too high, and it did — the
 	// title above it plus a top-anchored card left the whole lower half empty.
 	const panelCenterY = $derived(layout.height * 0.54);
-	const panelWidth = $derived(Math.min(layout.width * 0.46, 680));
+	const panelWidth = $derived(Math.min(layout.width * (context.stateLayoutDerived.canvasSizes().width < 600 ? .86 : .46), 680));
 	// Content-driven, with a floor. The reference's card is tall because its copy
 	// runs to seven lines; ours runs to four, and forcing the same proportion left
 	// a third of the card empty under the last line.
@@ -255,11 +256,12 @@
 				<CastFigureMesh
 					who="guy"
 					inline
+					fitToGround
 					x={cast.x}
 					topY={cast.topY}
 					height={cast.height}
 					groundY={cast.groundY}
-					flip
+					flip={true}
 					innerEdge={cast.boardInkRight}
 				/>
 			</Container>
@@ -291,18 +293,9 @@
 					touching the art.
 				-->
 				<Container y={cardPose.titleY} alpha={cardPose.titleAlpha}>
-				<Sprite
-					key="fxGlow"
-					anchor={0.5}
-					y={titleY}
-					tint={tier.accent}
-					blendMode="add"
-					width={titleInkWidth * 1.15}
-					height={titleInkWidth * 0.34}
-					alpha={0.3}
-				/>
-				<Sprite
-					key={tier.titleKey}
+				
+				<StreetLabel text={tier.title}
+					artKey={tier.titleKey}
 					anchor={0.5}
 					y={titleY}
 					width={titleInkWidth / 0.97}
@@ -328,15 +321,7 @@
 					/>
 					</Container>
 					{#if cardPose.flash > 0.01}
-						<Sprite
-							key="fxGlow"
-							anchor={0.5}
-							tint={0xffc38a}
-							blendMode="add"
-							width={panelWidth * 1.3}
-							height={panelMinHeight * 1.6}
-							alpha={cardPose.flash}
-						/>
+						
 					{/if}
 					{#if cardPose.sweep >= 0}
 						<!-- light sweep across the card -->
@@ -346,7 +331,7 @@
 							x={(cardPose.sweep - 0.5) * panelWidth * 1.2}
 							rotation={-0.5}
 							tint={0xffc38a}
-							blendMode="add"
+							blendMode="normal"
 							width={panelWidth * 0.22}
 							height={panelMinHeight * 1.9}
 							alpha={0.45 * Math.sin(Math.PI * cardPose.sweep)}
@@ -379,15 +364,7 @@
 				rotation={numberPose.rotation}
 				alpha={numberPose.alpha}
 			>
-				<Sprite
-					key="fxGlow"
-					anchor={0.5}
-					tint={0xf5893d}
-					blendMode="add"
-					width={sizes.width * 0.6}
-					height={sizes.width * 0.6}
-					alpha={numberPose.glow}
-				/>
+				
 				<GoldText text={freeSpinsFromEvent} fontSize={sizes.width * 0.24} />
 			</Container>
 			{#if burstShown}

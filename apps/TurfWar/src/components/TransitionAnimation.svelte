@@ -96,7 +96,7 @@
 		let last = 0;
 		const tick = (now: number) => {
 			if (!last) last = now;
-			elapsed += now - last;
+			elapsed += Math.min(100, Math.max(0, now - last));
 			last = now;
 			clock = elapsed;
 
@@ -194,7 +194,7 @@
 
 <Container
 	x={sizes.width * 0.5}
-	y={sizes.height * 0.5 - doorGap * ((sizes.height + doorH) / 2) * 1.04 - bounce * sizes.height * 0.03}
+	y={sizes.height * 0.5 - (elapsed < OPEN_AT ? doorGap * ((sizes.height + doorH) / 2) * 1.04 : 0) - bounce * sizes.height * 0.03}
 >
 	<!--
 		Anchored at the seam: left door by its right edge, right door by its left.
@@ -204,14 +204,16 @@
 	<Sprite
 		key="capoVaultDoorL"
 		anchor={{ x: 1, y: 0.5 }}
-		x={0}
+		x={elapsed >= OPEN_AT ? -travel * doorGap : 0}
+		rotation={elapsed >= OPEN_AT ? -doorGap * .12 : 0}
 		width={doorW}
 		height={doorH}
 	/>
 	<Sprite
 		key="capoVaultDoorR"
 		anchor={{ x: 0, y: 0.5 }}
-		x={0}
+		x={elapsed >= OPEN_AT ? travel * doorGap : 0}
+		rotation={elapsed >= OPEN_AT ? doorGap * .12 : 0}
 		width={doorW}
 		height={doorH}
 	/>

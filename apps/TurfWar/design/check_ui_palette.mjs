@@ -25,19 +25,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 // ART_BRIEF.md §0. Keep this table and that one in step.
 const PALETTE = {
-	'0e0f11': 'ink / deepest',
-	'17191c': 'panel ground',
-	'3a3d42': 'concrete mid',
-	'5b5f66': 'concrete lit',
-	'9c5a22': 'sodium dark',
-	f5893d: 'sodium main',
-	ffc38a: 'sodium highlight',
-	d9d6ce: 'bone white',
-	'2a343e': 'iron blue dark',
-	'465562': 'iron blue',
-	e0338a: 'graffiti magenta',
-	'2ec4c6': 'graffiti cyan',
-	'9bd437': 'graffiti acid green',
+ '121212': 'ink', 'f7f5f0': 'sticker white', 'd8d6d1': 'paper',
+ '9a9ca0': 'wall mid', '55585d': 'wall dark', '3a3d42': 'board',
+ '9c5a22': 'orange shadow', 'f5893d': 'orange', 'ffc38a': 'orange highlight',
+ 'e0338a': 'magenta', '2ec4c6': 'cyan', '9bd437': 'acid green',
 };
 
 // Achromatics. Pure black and white are not swatches but are legitimate for

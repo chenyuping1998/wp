@@ -1,5 +1,12 @@
 {
 	"extends": "config-ts/base.json",
-	"include": ["."],
-	"exclude": ["dist", "build", "node_modules"]
+	"include": [
+		"."
+	],
+	"exclude": [
+		"dist",
+		"build",
+		"node_modules",
+		"design/rebuild_20261023/before"
+	]
 }

@@ -157,7 +157,7 @@
 			width={SYMBOL_SIZE * 0.92}
 			height={SYMBOL_SIZE * beam.height * 3}
 			tint={fullTier ? 0xffffff : 0xffc38a}
-			blendMode="add"
+			blendMode="normal"
 			alpha={beam.alpha}
 		/>
 	{/if}
@@ -172,7 +172,7 @@
 			width={SYMBOL_SIZE * (fullTier ? 1.35 : 1.05)}
 			height={SYMBOL_SIZE * (fullTier ? 0.7 : 0.5)}
 			tint={0xf5893d}
-			blendMode="add"
+			blendMode="normal"
 			alpha={(0.22 + 0.3 * pulse) * intensity}
 		/>
 	{/each}

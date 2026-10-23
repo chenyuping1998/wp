@@ -8,6 +8,7 @@
 </script>
 
 <script lang="ts">
+ import StreetLabel from './StreetLabel.svelte';
 	import { onDestroy } from 'svelte';
 	import { Container, Sprite } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
@@ -272,23 +273,22 @@
 									key="fxGlow"
 									anchor={0.5}
 									tint={fx.glowTint}
-									blendMode="add"
+									blendMode="normal"
 									width={bw * 1.45}
 									height={bh * 1.8}
 									alpha={bannerPose.glow}
 								/>
-								<Sprite key={bannerKey} anchor={0.5} width={bw} height={bh} />
-								<!-- additive self-copy = the whole plaque flares -->
-								{#if bannerPose.blink > 0}
-									<Sprite
-										key={bannerKey}
-										anchor={0.5}
-										width={bw}
-										height={bh}
-										blendMode="add"
-										alpha={bannerPose.blink}
-									/>
-								{/if}
+								<Container>
+{#each ['big','superwin','mega','epic','max'].slice(0, Math.max(0, ['big','superwin','mega','epic','max'].indexOf(alias))+1) as previous, i}
+ {@const stamp = Math.max(0,Math.min(1,(fxNow-i*.09)/.13))}
+ {#if stamp>0}
+ <Container scale={1+.15*(1-stamp)} alpha={stamp} x={-6*i} y={6*i} rotation={-.018*i}>
+  <Sprite key={BANNER_KEY[previous]} anchor={0.5} width={bw} height={bh} />
+  <StreetLabel text={previous === 'max' ? 'MAX WIN' : previous === 'superwin' ? 'SUPER WIN' : `${previous.toUpperCase()} WIN`} width={bw*.9} height={bh*.30} anchor={.5} y={-bh*.23} />
+ </Container>
+ {/if}
+ {/each}
+</Container>
 								<!-- twinkles running the riveted rim -->
 								{#each twinkles as tw (tw.id)}
 									{@const p = Math.min(1, (fxNow - tw.born) / 0.7)}
@@ -299,7 +299,7 @@
 										y={Math.sin(tw.angle) * bh * 0.44}
 										rotation={p * 2}
 										tint={0xffffff}
-										blendMode="add"
+										blendMode="normal"
 										width={SYMBOL_SIZE * 0.5 * Math.sin(p * Math.PI)}
 										height={SYMBOL_SIZE * 0.5 * Math.sin(p * Math.PI)}
 										alpha={Math.sin(p * Math.PI)}

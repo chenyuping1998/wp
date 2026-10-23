@@ -1,5 +1,70 @@
 # Turf War — 交接文件
 
+## 2026-10-16 — 打手收手握棒修正
+
+已實作 `design/cast_brief_street/mg/REARM_REQUEST.md`：原生 imagegen 重畫右臂、球棒、
+手指三層，右肘改 (305,770)、握點改 (395,615)，其餘五層像素及 Kingpin 保留。
+重建三模式 MG 骨架、載入圖／單人物縮圖／雙人物 cover；完整 build 與全部 guard 通過。
+正式資料夾 `/Users/stone/stake-engine/upload/TurfWar/` 已更新前端及縮圖／封面，
+math 不變、未產生 ZIP、平台尚未更新。驗證數據／原圖／提示詞／備份與重跑方式：
+`design/MG_REARM_STATUS.md`。本段取代下方「upload 未更新」的歷史狀態。
+
+## 2026-10-16 — 剩餘美術接線
+
+依 `design/ART_REQUEST_REMAINING.md` 補生並接入兩位不同的街頭角色（MG 8 層、FG 6 層）、
+四款錢袋框角、三張近景線稿，以及新版載入人物／縮圖／cover。原生 imagegen 原圖與提示詞
+均留在 `_incoming/street_cast/`，可重跑的註冊、裁切、骨架與合成流程見
+`design/STREET_REMAINING_STATUS.md`。本輪取代下方「角色／框角仍待交付」的狀態。
+
+角色已朝盤面，不再 flip；FG 移除舊 ±12° A-pose 補償，整套角色關閉光暈。
+兩位圖層驗收通過；MG／FG colors95 = 45／40，soft = 24.8%／26.1%。
+裁切 UV 與 motion guard 已對齊；完整 build／全部 guard 通過。桌機 Lookout／Muscle、
+390×844 手機 Kingpin 都已結算並返回一般局，遊戲 console error 為零；詳見 status。
+新素材留在 app／design 與本地 dist；**math、upload/TurfWar、zip 與平台都未更新**。
+
+## 2026-10-15 — v2 正式接線（取代下方「等待風格定稿」狀態）
+
+`ART_BRIEF.md` v2 已明確記錄打樣通過。本輪直接實作程式端並補生第一批八張符號、
+倉庫／頂樓兩張場景與商店背景，未再要求風格確認。詳細範圍、過渡素材與重跑方式：
+`design/STREET_V2_STATUS.md`；原圖／處理輸出在 `_incoming/street_batch{1,3}`、`_street/`。
+
+已接：白邊貼紙盤面／UI、Bungee 即時 Logo／標題、Permanent Marker 倍數、WILD 文字、
+平塗金額、落地拍貼、貼紙翹角／小圖重描、Bruiser 噴漆與紅膠帶黏住標記、四邊 Bag／
+Big Score 貼帶、大獎逐張疊貼、鐵捲門鎖住後踹開。移除背景 blur／vignette／環境光束、
+小圖浮雕邊、數字 glow。MG／FG 仍為兩人，暫以保留原 alpha 的灰階圖層沿用已驗證骨架。
+
+本地實播抓到並修掉：後加入獎牌蓋住金額（獎牌獨立容器）、重描／貼帶動態 mask 銷毀後
+Pixi GPU context uid 為 null（改平面揭露，不再使用動態 mask）、手機入口 rem 字級僅 7.92px
+（固定 11px）、手機 FG 說明卡過窄（portrait 寬度 86%）。
+
+完整 build／全部 guard 綠；12 組 win／land 差異檢查維持門檻 0.9，最近距離 1.02／0.93。
+第一批圖通過 v2 colors95／soft／chroma 限制，H3 過多色階已處理、H4 改正為洋紅主色。
+review-tags：0 FAIL、24 WARN；平塗 UI 是 v2 明定語言，角色 WARN 保留為未完成正式分層圖。
+桌機本地 BASE book 1 Bruiser 正常；book 11 Lookout（再觸發至 12 手）／29 Muscle 皆回到一般局，
+總回報 $22.00／$259.90 與 fixture 相符。手機 Kingpin book 50 與修正後 GPU 檢查見 status 文件。
+
+本地預覽 `dist/turfwar-street-v2/`，`design/stage_street_playtest.py` 僅在 dist 加 stub／QA 工具。
+舊圖完整備份 `design/_legacy_assets/pre_street_v2/`。**框角落插畫、新角色分層與最終商店 FG／cover
+仍待交付；不是最終美術版。math、upload/TurfWar 與平台均未更新，沒有產生 zip。**
+
+## 2026-10-15 — 街頭貼紙六件打樣與本地接線
+
+依 `design/STYLE_TEST_STREET.md` 完成 H1、L1、W、SW、灰階後巷、角色頭像六件打樣。
+原始生成圖在 `design/_incoming/style_test_street/`；色票量化、去藍幕與 512px 輸出在
+`design/_style_test_street/`，附提示詞、70/96px 檢視、200px 大廳研究圖、hash/量測及 README。
+重跑：`design/build_street_style_test.py --stage-playtest`（math-sdk Python）。
+
+本地預覽：`dist/turfwar-street-test/`，以既有遊戲編譯結果測試四個新符號與 MG 線稿背景。
+1280×720 實播一般局與固定 BASE book 1（Bruiser），正常回到待機，四格新指虎顯示正常，
+該段 console error 0。這仍混用舊框、UI、其他符號和人物，不能當成整套完成。
+另實播 Lookout：retrigger 10→14 手、14/14 結算 $56.70，點擊返回，console error 0。
+H1/W/SW colors95 舊 210/201/252 → 新 30/32/24；背景平均亮度 196.68/255（77.13%）。
+
+整套接線須處理 `Game.svelte` 的背景 blur/vignette、`SymbolArt.svelte` 小圖舊 rim/shadow，
+並補 runtime WILD 字樣。新角色只有風格頭像，未冒充新人物 rig。動畫仍是原版；貼紙拍落／
+翹角、噴漆 Bruiser、撕貼 Big Score、貼牆 FG 轉場尚待風格定稿後整套實作。
+已向使用者呈現實際樣品並詢問是否以此展開整套。正式 static、math、upload 與平台均未更新。
+
 最後更新：2026-09-06（scaffold 完成：從 CapoNostra 複製 app + math game，改 game_id /
 working_name / package 名 / dev port，dev server 開起來 canvas 有 mount、無 ReferenceError、
 只剩沒帶 RGS session 的預期 fetch 失敗）。
@@ -872,3 +937,53 @@ PoseState 需要 `pose`，用 `poseState`）→ `check_layered_cast.mjs`。
 - `pnpm run build` 全綠；`./design/ship.sh`（無 zip）EXIT 0，備份 `_upload_backups/TurfWar-frontend-1001-0915.tgz`。**未上傳。**
 - **仍未解決**：FG 仍是同一角色換打光，違反「MG／FG 兩個不同角色」規則 —— 需要生圖。
 - **Hover 不反灰（同日，使用者要求「像 Deadwood」）**：共用 `components-ui-pixi` 新增 opt-in 主題鍵 `hoverPlateLight`（預設 undefined＝其他遊戲維持原本白色覆蓋）。設定後圓鈕在 hover 時把自己的板子再畫一次（additive、該色），Bet 讀數改為一條亮底線而非 12% 白框。Turf 設 0x9c5a22；Buy Bonus 的 `buyBonusHoverSpriteTint` 由灰 0x5b5f66 改為同色。無頭 Chrome 逐鈕截圖確認。重新打包（無 zip），備份 `_upload_backups/TurfWar-frontend-1001-2308.tgz`。
+
+## 2026-10-20 — 交叉雙臂重畫與接入
+
+已實作 `design/cast_brief_crossed/REQUEST.md`：兩隻獨立新角色、7／6 分層、700ms 抖肩、舊 REST 歸零，球棒改背部綁定。側欄全身高度限制、手機上方半身；載入圖、縮圖、封面一併重做。完整 build 與動作閘門通過，MG／FG 與三種畫面比例已本機 fixture 實播。詳見 `design/CROSSED_CAST_STATUS.md`。已打包至 `upload/TurfWar/`，平台未更新。
+
+## 2026-10-20 — 比例修正 v2（取代本日上一版）
+
+使用者指出人物比例完全錯誤。主因是各層獨立縮放，身體橫向壓窄 MG 28%／FG 24%。重畫完整人物、改為單一等比註冊後原位切層；新 `build_master_cast.py`、舊入口轉送新版。`check_cast_proportions.py` 已納入 build：實際 runtime 合成與定稿輪廓100%一致／RGBA誤差0，並已證明會攔截上一版。重新建骨架、全部閘門與 build 通過，商店／封面／loading 跟同一組圖層重做。詳見 `design/CROSSED_CAST_STATUS.md` 最上方 v2。
+
+
+## 2026-10-20 平台發佈 v20
+
+交叉雙臂人物比例修正 v2 已上傳並發佈為 front v20，math 維持 v7；遠端與本地176檔一致、同步動作0。actor.ts 新增每局請求前餘額檢查；21秒長按空白鍵測試只送出2筆可負擔請求。商店新版縮圖／封面已打包，平台商店圖未同步，等使用者完成網頁條款和登入；審核版本未變更。收據及自檢風險：upload/TurfWar/RELEASE-{RECEIPT,SELF-CHECK}-20261020.*。
+
+## 2026-10-23 — 使用 spine-motion-kit 更新 MG／FG 動作
+
+使用者要求直接用新工具改 Turf 人物，可自行重畫、不要提問。現有分層可用，保留定稿外觀；將既有骨架與加權網格轉成 Spine 4.3.13，所有動畫由工具配方產生。新增呼吸、抖肩、抬下巴與配件延遲，反應疊在持續待機之上。主遊戲、免費遊戲和 FG 開場卡均接入官方 4.3 runtime，既有符號 4.2 runtime 保留。完整 build PASS，兩隻各 8,641 姿勢無翻面、鞋底位移 <0.001px；三種比例 MG／FG 本機 fixture 已實播，未驗完整十次免費遊戲的回程。全專案型別檢查仍有既有錯誤，本次修改的遊戲檔無錯誤。來源、Import Data 交件、配方、動作 GIF 和完整驗證界線在 `design/spine_motion_cast/README.md`。本機 upload 套件更新；平台未更新。
+
+## 2026-10-23 平台發佈 front v21
+
+回應 10-23 退件（動畫差×3／素材品質低／下注列差）的整套重畫（rebuild_20261023：寫實漫畫風新人物 v3＋Spine 4.3 動作、符號、背景、UI）已上傳並發佈 front v21：上傳 49、刪 36（舊人物圖層／bundle）、再規劃 0 動作；math 維持 v7。審核單 closed，需在網站重新送審；商店縮圖／cover 需在 studio 手動換。
+
+## 2026-10-23 平台發佈 front v22 — 下注列／BB 修正＋spine-motion-kit 格鬥動作
+
+使用者回報 v21「UI 整個壞了、BB 變超小、按鈕超框、人物沒套新動作」。
+- `TurfConsole.svelte`：BB 0.64 → 1.35（stateGame 算好的尺寸）；橫式選單／自動／閃電／旋轉鈕全部收進 bar_plate 斜角端蓋（約 42 單位）內；直式把自動＋閃電移到下注列上方右側、主列重排。16:9、4:3、390×844 實看。
+- 人物：v3 只有 4 層、動作只是呼吸。`rebuild_20261023/split_kit_layers.py` 依最近骨段把 4 層切成 kit 拳擊模板 13 層（疊回與原圖 alpha 0 差異）→ `spine-motion character`（`kit/<who>/spine`，報告.md）→ `install_kit_cast.py`（裁圖＋region 位移）→ `measure_kit_cast.mjs`（包圍框、反應對照）。runtime `spineCastFigure.ts` 支援 region 附件與整身反應：待機 idle_weave（彈跳型 IK 頓挫 60/70 分不用）、win→punch、winBig/trigger→celebrate（jump 離地 290px 會出框，不用）。後手腕接縫警告是關節點在剪影邊緣的誤報。
+- upload 移除不再引用的 v3 圖層；math v7 不變；備份 `_upload_backups/TurfWar-frontend-pre-v22-20261023-1024.tgz`。審核單 closed，需網站重送。
+
+## 2026-10-23 平台發佈 front v23 — 脖子分離／手肘撕裂修正
+
+- 切層 `split_kit_layers.py` 改 `chain()`：關節上方那層只留自身粗細的管＋以關節為圓心的圓蓋，袖口／手肘肉歸下層；前手改為伸出的遠手（刺拳），近手為後手、layers.json 仍疊在上。頭支點下移到頸根。
+- `install_kit_cast.py`：頭部 translate ×0.25、rotate ×0.45。`rigid_arms_kit.mjs`（新）：手臂 IK 換算成肩膀整臂轉角、關 IK，手肘／手腕維持原畫。
+- 動作改用 `kit/<who>/recipe.json`（`spine-motion generate`）：idle_weave、punch（reach 42）、punch_big（reach 62）；win→punch，winBig/trigger→punch_big；不用 celebrate（近手前臂必過臉）與 jump。
+- QA：`dump_kit_poses.mjs` + `render_kit_poses.py` 全解析度渲染（qa_kit/）。math v7 不變；審核單需網站重送。
+
+## 2026-10-23 v5 加權網格人物 — 平台發佈 front v24（math v7）
+
+v23 回報：腳殘影、動作不像產生器（rigid 手臂把出拳／慶祝弄沒了）、BB 太低、脖子仍分離。
+- 換做法：`build_mesh_cast.py` 把 4 張原圖（arm_r/body/head/arm_l）各做成一片 16px 格網，依到 kit 骨段的距離加權（chest 另含肩線、shin 含腳、hand 含拳）；`mesh_to_spine.mjs` 轉成 Spine 加權網格 → `static/.../turf/v5/`，並量包圍框、檢查綁定（0.12px）。頭下緣綁脖子／胸口 → 不再分離；身體單片 → 腳無殘影。
+- 動作全用產生器預設：idle（彈跳）、punch、celebrate；celebrate 用 `recipe_celebrate.json` 只舉前手（近手舉起必擋臉）。win→punch、winBig/trigger→celebrate。
+- BB 橫式 top-125→top-245、直式 top-140→top-175。
+- v4 區塊切層腳本（split_kit_layers/install_kit_cast/rigid_arms_kit）保留但已不用；kit 骨架仍由 split_kit_layers 的關節產生。
+
+## 2026-10-23 平台發佈 front v25
+
+v24 回報：loading 看不懂、手分離、脖子分離、動作太快像抽動。
+- IntroFeatures Big Score：迷你 3×2 盤面＋frame_full 整圈包住＋50× 標籤（原本外框縮成單格只框住鏈子）。
+- build_mesh_cast.py：手臂不綁 hand 骨（拳頭隨前臂剛性移動）；頭部 sigma 30→48。mesh_to_spine.mjs：頭部 translate ×0.2、rotate ×0.5；punch/celebrate 時 arm-back IK mix 0（護臉手跟胸口走，不被壓扁）；turf.speed {idle .7, punch .6, celebrate .7}，spineCastFigure 套用 timeScale、mix 0.15/0.35。
+- QA 工具：dump_mesh_poses.mjs + render_mesh_poses.py。math v7 不變；審核單需網站重送。

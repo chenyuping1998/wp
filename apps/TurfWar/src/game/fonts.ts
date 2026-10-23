@@ -31,8 +31,9 @@ export const GAME_FONT_WEIGHT = '700' as const;
 export const DISPLAY_FONT = '"Oswald", "Arial Narrow", Arial, sans-serif';
 export const DISPLAY_FONT_WEIGHT = '700' as const;
 export const BODY_FONT = '"Saira", Arial, sans-serif';
-export const TITLE_FONT = '"Oswald", "Arial Narrow", Arial, sans-serif';
-export const TITLE_FONT_WEIGHT = 700;
+export const TITLE_FONT = '"Bungee", "Saira", sans-serif';
+export const TITLE_FONT_WEIGHT = '400' as const;
+export const TAG_FONT = '"Permanent Marker", "Saira", sans-serif';
 
 if (typeof document !== 'undefined') {
  const root = document.documentElement.style;
@@ -46,7 +47,8 @@ setFontKit(null);
 // (the bar) and DISPLAY_FONT (numbers), 500 for the lighter runs of labels.
 setLocalFonts([
  `${GAME_FONT_WEIGHT} 16px "Oswald"`,
- `${TITLE_FONT_WEIGHT} 16px "Oswald"`,
+ '400 16px "Bungee"',
+ '400 16px "Permanent Marker"',
  '500 16px "Oswald"',
  '400 16px "Saira"',
 ]);

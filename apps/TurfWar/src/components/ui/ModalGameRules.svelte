@@ -162,7 +162,7 @@
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-rules" use:popupGhost dir={C.dir} style:--wp-plate={`url(${UI}/buybonus_plate.png)`} style:--wp-edge={`url(${UI}/panel_edge.png)`}>
 			<header class="wp-head">
-				<img class="wp-logo" src={LOGO} alt="Turf War" />
+				<div class="wp-logo" style="font-family:Bungee,sans-serif;font-size:2rem;color:#F5893D">TURF WAR</div>
 				<h2>{C.gameRulesTitle}</h2>
 				<ul class="wp-facts">
 					<li><b>{reelCount}&times;{rowCount}</b><span>{C.factGrid}</span></li>
@@ -437,7 +437,7 @@
 		display: block;
 		width: calc(2.1rem * var(--n));
 		height: calc(2.1rem * var(--n));
-		background: #0e0f11;
+		background: #121212;
 		border-radius: 3px;
 	}
 	.wp-bag img {
@@ -472,7 +472,7 @@
 		place-items: center;
 		width: 4.6rem;
 		height: 4.6rem;
-		background: #0e0f11;
+		background: #121212;
 		border-radius: 3px;
 	}
 	.wp-bigscore img {
@@ -486,7 +486,7 @@
 		color: #ffc38a;
 		font-family: var(--hm-title-font, sans-serif);
 		font-size: 0.78rem;
-		text-shadow: 0 0 6px #0e0f11, 0 0 2px #0e0f11;
+		text-shadow: 0 0 6px #121212, 0 0 2px #121212;
 	}
 	.wp-tiers {
 		list-style: none;
@@ -620,7 +620,7 @@
 		-webkit-overflow-scrolling: touch;
 		overscroll-behavior: contain;
 		padding: 1.5rem 1.75rem;
-		color: #d9d6ce;
+		color: #f7f5f0;
 		/* Stated, not inherited — see the note in ModalPayTable.svelte. This panel
 		   sits outside `.pop-up-wrap` too, so its whole body was in the
 		   template's never-loading `proxima-nova` and fell back to the system
@@ -634,7 +634,7 @@
 			width: 5px;
 		}
 		&::-webkit-scrollbar-track {
-			background: #17191c;
+			background: #3a3d42;
 			border-radius: 4px;
 		}
 		&::-webkit-scrollbar-thumb {
@@ -649,7 +649,7 @@
 			font-weight: 800;
 			letter-spacing: 0.08em;
 			font-family: var(--hm-title-font);
-			color: #d9d6ce;
+			color: #f7f5f0;
 			font-size: 1.05rem;
 			letter-spacing: 0.3em;
 			text-transform: uppercase;
@@ -698,7 +698,7 @@
 		border: 1px solid rgba(217, 214, 206, 0.45);
 		border-radius: 4px;
 		background: #14171a;
-		color: #d9d6ce;
+		color: #f7f5f0;
 		/* 0.5rem (8px) -> 0.72rem, ported from Capo Nostra: the only text on the
 		   page under 10px, and certification has flagged tiny text before. */
 		font-size: 0.72rem;
@@ -725,7 +725,7 @@
 
 	.wp-control-name {
 		display: block;
-		color: #d9d6ce;
+		color: #f7f5f0;
 		font-weight: 700;
 		font-size: 0.86rem;
 		line-height: 1.3;
@@ -765,7 +765,7 @@
 	}
 
 	.wp-modes tbody th {
-		color: #d9d6ce;
+		color: #f7f5f0;
 		font-weight: 700;
 		white-space: nowrap;
 	}
@@ -774,7 +774,7 @@
 	   rather than letting them sit in body-copy grey */
 	.wp-modes tbody td:nth-child(3),
 	.wp-modes tbody td:nth-child(4) {
-		color: #d9d6ce;
+		color: #f7f5f0;
 		font-weight: 600;
 		white-space: nowrap;
 	}
@@ -803,7 +803,7 @@
 		   overridden by a 1px grey border two lines later, so it never drew. */
 		border: 12px solid transparent;
 		border-image: var(--wp-edge) 40 / 12px stretch;
-		background: #17191c padding-box;
+		background: #3a3d42 padding-box;
 		/* the lit top edge of a slab under a street lamp */
 		box-shadow: inset 0 1px 0 rgba(91, 95, 102, 0.55);
 		transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
@@ -821,7 +821,7 @@
 		&:nth-child(11) { animation-delay: 0.5s; }
 
 		&:hover {
-			background: #2a343e padding-box;
+			background: #55585d padding-box;
 		}
 
 		h3 {

@@ -110,17 +110,7 @@
 		word for word. The tier still tells itself apart before a word is read: a
 		bloom in its accent behind the plate, and the strip's rule in its accent.
 	-->
-	<Sprite
-		key="fxGlow"
-		anchor={0.5}
-		x={0}
-		y={contentHeight / 2}
-		tint={props.tier.accent}
-		blendMode="add"
-		width={props.width * 1.5}
-		height={contentHeight * 1.5}
-		alpha={0.32}
-	/>
+	
 	<PlateSlice key="hmUiBuyBonus" border={130} x={-props.width / 2} y={0} width={props.width} height={contentHeight} />
 	<PlateSlice
 		key="hmUiTicker"

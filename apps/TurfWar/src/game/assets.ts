@@ -1,8 +1,11 @@
 export default {
- // Legacy mesh textures stay registered for check_cast_motion.mjs's old-rig
- // regression gate. The live character uses turfLayer* below.
+ // Retained legacy-regression textures required by check_cast_motion.mjs.
  hmCastGuyFeature: { type: 'sprite', src: new URL('../../assets/sprites/turfCast/guy_feature.png', import.meta.url).href, preload: false },
  hmCastGuyKingpin: { type: 'sprite', src: new URL('../../assets/sprites/turfCast/guy_kingpin.png', import.meta.url).href, preload: false },
+ // Legacy mesh textures stay registered for check_cast_motion.mjs's old-rig
+ // regression gate. The live character uses turfLayer* below.
+
+
  turfFrameFull: { type: 'sprite', src: new URL('../../assets/sprites/turfFrames/frame_full.png', import.meta.url).href },
  turfFrameFullEdge: { type: 'sprite', src: new URL('../../assets/sprites/turfFrames/frame_full_edge.png', import.meta.url).href },
  turfWildLocked: { type: 'sprite', src: new URL('../../assets/sprites/turfFx/sw_locked.png', import.meta.url).href },
@@ -456,14 +459,13 @@ export default {
 	},
 	// Three aligned looks for the same layered bat carrier. Each cutout has its
 	// own mesh; the shared skeleton and reaction clock are in layeredFigure.ts.
-	turfLayerBaseBody: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/body.png', import.meta.url).href, preload: true },
-	turfLayerBaseArmR: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/arm_r.png', import.meta.url).href, preload: true },
-	turfLayerBasePropBat: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/prop_bat.png', import.meta.url).href, preload: true },
-	turfLayerBaseArmL: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/arm_l.png', import.meta.url).href, preload: true },
-	turfLayerBaseHead: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/head.png', import.meta.url).href, preload: true },
-	turfLayerBaseDangleChain: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/dangle_chain.png', import.meta.url).href, preload: true },
-	turfLayerBaseDangleMask: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/dangle_mask.png', import.meta.url).href, preload: true },
-	turfLayerBaseFingersR: { type: 'sprite', src: new URL('../../assets/castLayers/turf/base/fingers_r.png', import.meta.url).href, preload: true },
+
+
+
+
+
+
+
 	// Drawn by design/build_coin_sheet.py. Replaces SD2_Coin.json/.png, a
 	// TexturePacker sheet carried over from a template — 2.5MB of 684px frames
 	// for a particle a few dozen pixels across, under a filename that names
@@ -471,16 +473,28 @@ export default {
 	coins: {
 		type: 'spriteSheet',
 		src: new URL('../../assets/sprites/turfCoin/coin.json', import.meta.url).href,
+		preload: true,
 	},
 	sound: {
 		type: 'audio',
 		src: new URL('../../assets/audio/sounds.json', import.meta.url).href,
 		preload: true,
 	},
-	turfLayerFgArmL: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/arm_l.png', import.meta.url).href, preload: true },
-	turfLayerFgBody: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/body.png', import.meta.url).href, preload: true },
-	turfLayerFgHead: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/head.png', import.meta.url).href, preload: true },
-	turfLayerFgPropCigar: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/prop_cigar.png', import.meta.url).href, preload: true },
-	turfLayerFgDangleSmoke: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/dangle_smoke.png', import.meta.url).href, preload: true },
-	turfLayerFgArmR: { type: 'sprite', src: new URL('../../assets/castLayers/turf/fg/arm_r.png', import.meta.url).href, preload: true },
+
+
+
+
+
+
+ // spine-motion-kit skeleton + one weighted mesh per drawing (v5, build_mesh_cast.py).
+ turfV5BaseArmFar: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/base/arm_far.png', import.meta.url).href, preload: true },
+ turfV5BaseBody: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/base/body.png', import.meta.url).href, preload: true },
+ turfV5BaseHead: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/base/head.png', import.meta.url).href, preload: true },
+ turfV5BaseArmNear: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/base/arm_near.png', import.meta.url).href, preload: true },
+ turfV5FgArmFar: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/fg/arm_far.png', import.meta.url).href, preload: true },
+ turfV5FgBody: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/fg/body.png', import.meta.url).href, preload: true },
+ turfV5FgHead: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/fg/head.png', import.meta.url).href, preload: true },
+ turfV5FgArmNear: { type: 'sprite', src: new URL('../../assets/castLayers/turf/v5/fg/arm_near.png', import.meta.url).href, preload: true },
+
+
 } as const;

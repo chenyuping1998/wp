@@ -1,0 +1,314 @@
+[
+  {
+    "path": "static/assets/sprites/turfSymbols/h1.png",
+    "status": "approved style frame"
+  },
+  {
+    "path": "static/assets/sprites/turfSymbols/w.png",
+    "status": "approved style frame"
+  },
+  {
+    "path": "static/assets/sprites/turfSymbols/sw.png",
+    "status": "approved style frame"
+  },
+  {
+    "path": "static/assets/sprites/turfSymbols/l1.png",
+    "status": "approved style frame"
+  },
+  {
+    "path": "static/assets/sprites/turfSymbols/h2.png",
+    "status": "street batch1 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfSymbols/h3.png",
+    "status": "street batch1 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfSymbols/h4.png",
+    "status": "street batch1 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfSymbols/h5.png",
+    "status": "street batch1 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfSymbols/fs.png",
+    "status": "street batch1 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfSymbols/l2.png",
+    "status": "street batch1 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfSymbols/l3.png",
+    "status": "street batch1 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfSymbols/l4.png",
+    "status": "street batch1 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfUi/drawer_plate.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUi/button_plate_active.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUi/spin_plate.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUi/modal_frame.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUi/ticker_plate.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUi/buybonus_plate.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUi/bar_strip.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUi/bar_plate.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUi/buy_card_frame.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUi/panel_edge.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUi/button_plate.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfBoardFrame/fs_sign.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfBoardFrame/frame_edge.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfBoardFrame/frame_bg.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfBoardFrame/fs_counter_panel.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFrames/frame_sticky.png",
+    "status": "interim tape frame; bag-corner artwork pending"
+  },
+  {
+    "path": "static/assets/sprites/turfFrames/frame_edge_3x3.png",
+    "status": "edge alpha derived from delivered Bag"
+  },
+  {
+    "path": "static/assets/sprites/turfFrames/frame_edge_1x1.png",
+    "status": "edge alpha derived from delivered Bag"
+  },
+  {
+    "path": "static/assets/sprites/turfFrames/frame_3x3.png",
+    "status": "street batch2 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfFrames/frame_1x1.png",
+    "status": "street batch2 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfFrames/frame_full_edge.png",
+    "status": "edge alpha derived from delivered Bag"
+  },
+  {
+    "path": "static/assets/sprites/turfFrames/frame_2x2.png",
+    "status": "street batch2 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfFrames/frame_edge_2x2.png",
+    "status": "edge alpha derived from delivered Bag"
+  },
+  {
+    "path": "static/assets/sprites/turfFrames/frame_full.png",
+    "status": "street batch2 delivered"
+  },
+  {
+    "path": "static/assets/sprites/turfWinBanners/mega.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfWinBanners/superwin.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfWinBanners/big.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfWinBanners/epic.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfWinBanners/max.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfSplash/title_kingpin.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfSplash/title_lookout.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfSplash/title_muscle.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfBrand/logo.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfBackground/bg_base.png",
+    "status": "approved MG line city"
+  },
+  {
+    "path": "static/assets/sprites/turfBackground/bg_base_near.png",
+    "status": "delivered separate line foreground"
+  },
+  {
+    "path": "static/assets/sprites/turfBackground/bg_feature.png",
+    "status": "delivered mode line scene"
+  },
+  {
+    "path": "static/assets/sprites/turfBackground/bg_feature_near.png",
+    "status": "delivered separate line foreground"
+  },
+  {
+    "path": "static/assets/sprites/turfBackground/bg_epic.png",
+    "status": "delivered mode line scene"
+  },
+  {
+    "path": "static/assets/sprites/turfBackground/bg_epic_near.png",
+    "status": "delivered separate line foreground"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/sw_locked.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/lock.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/fx_glow.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/shutter_l.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/fx_vignette.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/sw_debris.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/sw_column_beam.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/shutter_r.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/fx_ray.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/sw_cracks.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/sw_bat_swing.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/fx_streak.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfFx/fx_star.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/info.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/soundOff.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/decrease.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/settings.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/increase.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/turbo.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/menu.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/menuExit.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/soundOn.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/autoSpin.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/spin.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfUiIcons/payTable.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfCoin/coin.png",
+    "status": "program graphic"
+  },
+  {
+    "path": "static/assets/sprites/turfCoin/coin_sheet.png",
+    "status": "program graphic"
+  }
+]

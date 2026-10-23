@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Container, ParticleEmitter } from 'pixi-svelte';
+	import { Container, ParticleEmitter, getContextApp } from 'pixi-svelte';
 	import { MainContainer } from 'components-layout';
 	import { fountain as baseConfig } from 'constants-shared/particleConfig';
 	import { LEVEL_PARTICLE_COIN_MAP } from 'constants-shared/particleCoin';
@@ -14,13 +14,15 @@
 
 	const props: Props = $props();
 	const context = getContext();
+	const app = getContextApp();
+	const coinsReady = $derived(Array.isArray(app.stateApp.loadedAssets?.coins) && app.stateApp.loadedAssets.coins.length > 0);
 	const extraConfig = $derived(
 		props?.levelAlias ? LEVEL_PARTICLE_COIN_MAP[props.levelAlias] : null,
 	);
 	const config = $derived({ ...baseConfig, ...extraConfig });
 </script>
 
-{#if config}
+{#if config && coinsReady}
 	<MainContainer>
 		<!-- Two-depth coin rain. Scaling the container rather than the particle
 		     config shrinks size AND screen velocity together, so the far layer

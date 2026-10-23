@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { stateBet } from 'state-shared';
+import { stateBet, stateBetDerived, stateModal } from 'state-shared';
 import { checkIsMultipleRevealEvents } from 'utils-book';
 import { createPrimaryMachines, createIntermediateMachines, createGameActor } from 'utils-xstate';
 
@@ -22,6 +22,13 @@ const primaryMachines = createPrimaryMachines<Bet>({
 		if (lastRevealEvent) stateGameDerived.enhancedBoard.settle(lastRevealEvent.board);
 	},
 	onNewGameStart: async () => {
+		// Re-check every round, including space-hold loops that bypass the button.
+		if (!stateBetDerived.isBetCostAvailable()) {
+			stateBet.isSpaceHold = false;
+			stateBet.autoSpinsCounter = 0;
+			stateModal.modal = { name: 'autoSpinMessage', message: 'insufficientFunds' };
+			throw new Error('Insufficient balance for the next round');
+		}
 		// FIRST, before anything else and before the early returns below: the idle
 		// win-line replay is showing last round's lines on a loop, and the reels
 		// are about to move. playBet stops it too, but playBet does not run until

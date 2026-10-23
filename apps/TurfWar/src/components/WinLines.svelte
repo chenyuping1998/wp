@@ -68,6 +68,8 @@
 		win?: number;
 		multiplier?: number;
 		plate?: Point;
+		/** < 1 when a reel's column of value plates had to shrink to fit the board */
+		plateScale?: number;
 	};
 
 	// volley timings — every winning line runs at once, staggered just enough
@@ -206,22 +208,32 @@
 			// Plates sharing a cell are fanned out into a column, clamped inside
 			// the board, so every line's own value is on screen and they visibly
 			// add up to the total. Ported from Deadwood's WinLines (2026-10-14).
-			const groups = new Map<string, ActiveLine[]>();
+			//
+			// 2026-10-15: grouped by REEL, not by exact cell. Lines ending on
+			// different rows of one reel made separate groups, each fanned round
+			// its own cell, and the fans collided — a free spin with a held Wild
+			// column showed a dozen plates piled into one unreadable strip. One
+			// column per reel, in the lines' own top-to-bottom order, scaled down
+			// as a whole when it is taller than the board.
+			const groups = new Map<number, ActiveLine[]>();
 			for (const line of built) {
 				if (!line.plate || !line.win) continue;
-				const key = `${line.plate.x},${line.plate.y}`;
-				groups.set(key, [...(groups.get(key) ?? []), line]);
+				groups.set(line.plate.x, [...(groups.get(line.plate.x) ?? []), line]);
 			}
-			const pitch = PLATE.h + 8;
-			const minY = PLATE.h / 2 + 2;
-			const maxY = SYMBOL_SIZE * BOARD_DIMENSIONS.y - PLATE.h / 2 - 2;
+			const boardH = SYMBOL_SIZE * BOARD_DIMENSIONS.y;
 			for (const group of groups.values()) {
 				if (group.length < 2) continue;
+				group.sort((a, b) => a.plate!.y - b.plate!.y);
+				const scale = Math.min(1, (boardH - 4) / (group.length * (PLATE.h + 8)));
+				const pitch = (PLATE.h + 8) * scale;
 				const span = pitch * (group.length - 1);
-				const origin = group[0].plate!;
-				const first = Math.min(Math.max(origin.y - span / 2, minY), Math.max(minY, maxY - span));
+				const minY = (PLATE.h * scale) / 2 + 2;
+				const maxY = boardH - (PLATE.h * scale) / 2 - 2;
+				const mid = group.reduce((sum, line) => sum + line.plate!.y, 0) / group.length;
+				const first = Math.min(Math.max(mid - span / 2, minY), Math.max(minY, maxY - span));
 				group.forEach((line, i) => {
-					line.plate = { x: origin.x, y: first + pitch * i };
+					line.plate = { x: line.plate!.x, y: first + pitch * i };
+					line.plateScale = scale;
 				});
 			}
 
@@ -338,13 +350,19 @@
 				the one number a player cannot derive from the pay table.
 			-->
 			{#each lines.filter((line) => line.done && line.win && line.plate) as line (`v${line.lineIndex}`)}
-				<Container x={line.plate!.x} y={line.plate!.y} zIndex={20}>
+				<Container x={line.plate!.x} y={line.plate!.y} scale={line.plateScale ?? 1} zIndex={20}>
 					<Graphics
 						draw={(g) => {
 							g.clear();
-							g.roundRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
-							g.fill({ color: 0x17191c, alpha: 0.88 });
-							g.roundRect(-PLATE.w / 2, -PLATE.h / 2, PLATE.w, PLATE.h, PLATE.r);
+							// sticker plate (ART_BRIEF v2): white rim, ink line, slab, and
+							// the line's own colour as an inner keyline so lines stay tellable
+							g.roundRect(-PLATE.w / 2 - 4, -PLATE.h / 2 - 4, PLATE.w + 8, PLATE.h + 8, PLATE.r + 4);
+							g.fill({ color: 0xf7f5f0 });
+							g.roundRect(-PLATE.w / 2 - 1, -PLATE.h / 2 - 1, PLATE.w + 2, PLATE.h + 2, PLATE.r + 1);
+							g.fill({ color: 0x121212 });
+							g.roundRect(-PLATE.w / 2 + 1, -PLATE.h / 2 + 1, PLATE.w - 2, PLATE.h - 2, PLATE.r);
+							g.fill({ color: 0x2b2e33 });
+							g.roundRect(-PLATE.w / 2 + 3, -PLATE.h / 2 + 3, PLATE.w - 6, PLATE.h - 6, PLATE.r - 2);
 							g.stroke({ width: 2, color: line.color, alpha: 0.95 });
 						}}
 					/>
