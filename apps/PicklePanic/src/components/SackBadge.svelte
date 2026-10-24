@@ -8,10 +8,12 @@
 	// be bare sacks laid over the real one, so the value blinked out for the
 	// hop and the sacks crossed the board with no number on them.
 	//
-	// Heavy type on the jar's paper label: ink outline + offset ink shadow, so
-	// it reads bold, and the fill steps through colours with the value so a big
-	// jar is spotted before it is read (user 10-24: 「FG 倍數有點不明顯，粗體…
-	// 倍數可以分階段顏色不同」). Every tier stays dark enough for the cream label.
+	// Big type on the jar's paper label with a thin cream rim, and the fill steps
+	// through colours with the value so a big jar is spotted before it is read
+	// (user 10-24: 「FG 倍數有點不明顯，粗體…倍數可以分階段顏色不同」).
+	// NOT an ink outline: ink stroke + ink shadow filled the digits' counters
+	// and the ink tier read as a black blob (user 10-25: 「太粗了都看不清楚」).
+	// Every tier stays dark enough for the cream label.
 	type Props = { prize: number; x?: number; y?: number; scale?: number; alpha?: number };
 	const props: Props = $props();
 
@@ -28,5 +30,5 @@
 </script>
 
 <Container x={props.x ?? 0} y={props.y ?? 0} scale={props.scale ?? 1} alpha={props.alpha ?? 1}>
-	<InkNumber text={label} role="plate" fontSize={label.length > 3 ? 36 : 44} maxWidth={SYMBOL_SIZE * JAR_LABEL_W * 0.92} {fill} outline />
+	<InkNumber text={label} role="plate" fontSize={label.length > 3 ? 40 : 48} maxWidth={SYMBOL_SIZE * JAR_LABEL_W * 0.9} {fill} halo={0xf5e6be} />
 </Container>

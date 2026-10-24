@@ -10,6 +10,8 @@
 		fill?: number;
 		/** ink outline + offset ink shadow, for amounts set over the board */
 		outline?: boolean;
+		/** thin light rim (colour) that keeps the counters open — for dark type on busy art */
+		halo?: number;
 		onresize?: (sizes: { width: number; height: number }) => void;
 	};
 	const props: Props = $props();
@@ -24,7 +26,9 @@
 						dropShadow: { color: 0x171c1a, alpha: 1, angle: Math.PI * 0.35, distance: props.fontSize * 0.07, blur: 0 },
 						letterSpacing: props.fontSize * 0.02,
 					}
-				: {}),
+				: props.halo !== undefined
+					? { stroke: { color: props.halo, width: Math.max(2, props.fontSize * 0.1), join: 'round' as const } }
+					: {}),
 		}),
 	);
 	const measured = $derived(CanvasTextMetrics.measureText(String(props.text), style));
