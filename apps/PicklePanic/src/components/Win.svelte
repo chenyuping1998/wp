@@ -60,14 +60,15 @@
 	//   big   x 249-1346 y 318-678 (amount kept clear of the UP! stamp at 77.6%)
 	//   super x 296-1312 y 310-683     mega x 341-1310 y 301-670
 	//   epic  diamond band, y 400-552 mid / x 415-1317 at y 420-520: the amount
-	//         alone fills it and the title sits above the splash, cream on ink
+	//         alone fills it and the title sits above the splash, cream on ink;
+	//         centred between the two cuffs at 0.5 (0.541 read off-centre, user 10-24)
 	//   max   sign x 361-1240 y 223-753 (cooks' hands at the top corners)
 	type TextLayout = { cx: number; titleY: number; titleSize: number; titleW: number; titleOnArt?: boolean; amountY: number; amountSize: number; amountW: number };
 	const TEXT_LAYOUT: Record<string, TextLayout> = {
 		big: { cx: 0.5, titleY: 0.44, titleSize: 0.11, titleW: 0.5, amountY: 0.61, amountSize: 0.16, amountW: 0.44 },
 		superwin: { cx: 0.505, titleY: 0.44, titleSize: 0.11, titleW: 0.56, amountY: 0.61, amountSize: 0.16, amountW: 0.56 },
 		mega: { cx: 0.512, titleY: 0.43, titleSize: 0.11, titleW: 0.54, amountY: 0.6, amountSize: 0.16, amountW: 0.54 },
-		epic: { cx: 0.541, titleY: 0.2, titleSize: 0.1, titleW: 0.5, titleOnArt: true, amountY: 0.53, amountSize: 0.12, amountW: 0.48 },
+		epic: { cx: 0.5, titleY: 0.2, titleSize: 0.1, titleW: 0.5, titleOnArt: true, amountY: 0.53, amountSize: 0.12, amountW: 0.48 },
 		max: { cx: 0.5, titleY: 0.43, titleSize: 0.11, titleW: 0.48, amountY: 0.61, amountSize: 0.16, amountW: 0.48 },
 	};
 
