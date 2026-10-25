@@ -1,0 +1,628 @@
+{
+  "canvas": [
+    1024,
+    2048
+  ],
+  "ground": [
+    512,
+    2000
+  ],
+  "order": [
+    "tail",
+    "hair_back",
+    "arm_back",
+    "hand_back",
+    "arm_front",
+    "body",
+    "chain_left",
+    "chain_right",
+    "skirt_left",
+    "skirt_front",
+    "skirt_right",
+    "face_idle",
+    "snake_1",
+    "snake_2",
+    "snake_3",
+    "snake_4",
+    "snake_5",
+    "snake_6",
+    "snake_7",
+    "snake_8",
+    "snake_9",
+    "forearm_front",
+    "glasses",
+    "hand_front_open"
+  ],
+  "layers": {
+    "tail": {
+      "bone": "tail_anchor",
+      "chain": "tail",
+      "box": [
+        64,
+        1110,
+        902,
+        890
+      ]
+    },
+    "hair_back": {
+      "bone": "head",
+      "chain": null,
+      "box": [
+        115,
+        51,
+        800,
+        768
+      ]
+    },
+    "arm_back": {
+      "bone": "upper_back",
+      "chain": "arm_back"
+    },
+    "arm_front": {
+      "bone": "upper_front",
+      "chain": "arm_front"
+    },
+    "body": {
+      "bone": "chest",
+      "chain": null,
+      "box": [
+        332,
+        602,
+        400,
+        639
+      ]
+    },
+    "chain_left": {
+      "bone": "chain_left",
+      "chain": null,
+      "box": [
+        350,
+        1210,
+        150,
+        70
+      ]
+    },
+    "chain_right": {
+      "bone": "chain_right",
+      "chain": null,
+      "box": [
+        575,
+        1206,
+        150,
+        77
+      ]
+    },
+    "skirt_left": {
+      "bone": "skirt_left",
+      "chain": null,
+      "box": [
+        265,
+        1200,
+        230,
+        271
+      ]
+    },
+    "skirt_front": {
+      "bone": "skirt_front",
+      "chain": null,
+      "box": [
+        400,
+        1238,
+        245,
+        293
+      ]
+    },
+    "skirt_right": {
+      "bone": "skirt_right",
+      "chain": null,
+      "box": [
+        620,
+        1212,
+        205,
+        245
+      ]
+    },
+    "face_idle": {
+      "bone": "head",
+      "chain": null,
+      "box": [
+        340,
+        268,
+        355,
+        403
+      ]
+    },
+    "face_smug": {
+      "bone": "head",
+      "chain": null,
+      "registration": "sapphire landmark; uniform scale and translation only"
+    },
+    "face_peek": {
+      "bone": "head",
+      "chain": null,
+      "registration": "sapphire landmark; uniform scale and translation only"
+    },
+    "face_gaze": {
+      "bone": "head",
+      "chain": null,
+      "registration": "sapphire landmark; uniform scale and translation only"
+    },
+    "face_annoyed": {
+      "bone": "head",
+      "chain": null,
+      "registration": "sapphire landmark; uniform scale and translation only"
+    },
+    "face_shock": {
+      "bone": "head",
+      "chain": null,
+      "registration": "sapphire landmark; uniform scale and translation only"
+    },
+    "face_laugh": {
+      "bone": "head",
+      "chain": null,
+      "registration": "sapphire landmark; uniform scale and translation only"
+    },
+    "face_cry_happy": {
+      "bone": "head",
+      "chain": null,
+      "registration": "sapphire landmark; uniform scale and translation only"
+    },
+    "face_blink": {
+      "bone": "head",
+      "chain": null,
+      "registration": "sapphire landmark; uniform scale and translation only"
+    },
+    "face_talk": {
+      "bone": "head",
+      "chain": null,
+      "registration": "sapphire landmark; uniform scale and translation only"
+    },
+    "snake_1": {
+      "bone": "snake_1_root",
+      "chain": "snake_1",
+      "box": [
+        420,
+        47,
+        180,
+        241
+      ]
+    },
+    "snake_2": {
+      "bone": "snake_2_root",
+      "chain": "snake_2",
+      "box": [
+        240,
+        108,
+        185,
+        290
+      ]
+    },
+    "snake_3": {
+      "bone": "snake_3_root",
+      "chain": "snake_3",
+      "box": [
+        610,
+        128,
+        195,
+        258
+      ]
+    },
+    "snake_4": {
+      "bone": "snake_4_root",
+      "chain": "snake_4",
+      "box": [
+        105,
+        281,
+        185,
+        238
+      ]
+    },
+    "snake_5": {
+      "bone": "snake_5_root",
+      "chain": "snake_5",
+      "box": [
+        765,
+        291,
+        185,
+        253
+      ]
+    },
+    "snake_6": {
+      "bone": "snake_6_root",
+      "chain": "snake_6",
+      "box": [
+        165,
+        443,
+        165,
+        244
+      ]
+    },
+    "snake_7": {
+      "bone": "snake_7_root",
+      "chain": "snake_7",
+      "box": [
+        665,
+        428,
+        180,
+        245
+      ]
+    },
+    "snake_8": {
+      "bone": "snake_8_root",
+      "chain": "snake_8",
+      "box": [
+        245,
+        555,
+        150,
+        235
+      ]
+    },
+    "snake_9": {
+      "bone": "snake_9_root",
+      "chain": "snake_9",
+      "box": [
+        720,
+        562,
+        160,
+        237
+      ]
+    },
+    "glasses": {
+      "bone": "glasses",
+      "chain": null,
+      "box": [
+        305,
+        401,
+        400,
+        118
+      ]
+    },
+    "hand_front_open": {
+      "bone": "hand_front",
+      "chain": null,
+      "box": [
+        116,
+        1027,
+        232,
+        1118
+      ]
+    },
+    "hand_front_point": {
+      "bone": "hand_front",
+      "chain": null,
+      "box": [
+        106,
+        1002,
+        230,
+        1063
+      ]
+    },
+    "hand_front_pinch": {
+      "bone": "hand_front",
+      "chain": null,
+      "box": [
+        101,
+        974,
+        225,
+        1059
+      ]
+    },
+    "hand_back": {
+      "bone": "hand_back",
+      "chain": null
+    },
+    "forearm_front": {
+      "bone": "upper_front",
+      "chain": "arm_front"
+    },
+    "hand_front_thumb": {
+      "bone": "hand_front",
+      "chain": null
+    }
+  },
+  "joints": {
+    "ground": [
+      512,
+      2000
+    ],
+    "hips": [
+      520,
+      1190
+    ],
+    "chest": [
+      520,
+      800
+    ],
+    "neck": [
+      520,
+      640
+    ],
+    "head": [
+      510,
+      630
+    ],
+    "eyes": [
+      475,
+      480
+    ],
+    "arm_front": [
+      [
+        385.0,
+        760.0
+      ],
+      [
+        325.0,
+        907.5
+      ],
+      [
+        222.5,
+        1040.0
+      ]
+    ],
+    "arm_back": [
+      [
+        660.0,
+        790.0
+      ],
+      [
+        722.5,
+        937.5
+      ],
+      [
+        822.5,
+        1075.0
+      ]
+    ],
+    "tail": [
+      [
+        540,
+        1190
+      ],
+      [
+        560,
+        1430
+      ],
+      [
+        590,
+        1660
+      ],
+      [
+        720,
+        1850
+      ],
+      [
+        900,
+        1535
+      ]
+    ],
+    "glasses": [
+      500,
+      460
+    ],
+    "grip": [
+      347,
+      493
+    ],
+    "pinchOffset": [
+      -84.6,
+      -49.5
+    ],
+    "gazeEyes": [
+      [
+        403.7238689547582,
+        488.4180967238689
+      ],
+      [
+        501.8715025906736,
+        476.60103626943004
+      ]
+    ],
+    "snakes": {
+      "1": [
+        [
+          513.6,
+          273.53999999999996
+        ],
+        [
+          506.4,
+          220.51999999999998
+        ],
+        [
+          528.0,
+          162.68
+        ],
+        [
+          528.0,
+          114.48
+        ],
+        [
+          506.4,
+          90.38
+        ]
+      ],
+      "2": [
+        [
+          336.2,
+          380.59999999999997
+        ],
+        [
+          328.8,
+          316.79999999999995
+        ],
+        [
+          351.0,
+          247.2
+        ],
+        [
+          351.0,
+          189.2
+        ],
+        [
+          328.8,
+          160.2
+        ]
+      ],
+      "3": [
+        [
+          711.4,
+          370.52
+        ],
+        [
+          703.6,
+          313.76
+        ],
+        [
+          727.0,
+          251.83999999999997
+        ],
+        [
+          727.0,
+          200.24
+        ],
+        [
+          703.6,
+          174.44
+        ]
+      ],
+      "4": [
+        [
+          201.2,
+          504.72
+        ],
+        [
+          193.8,
+          452.36
+        ],
+        [
+          216.0,
+          395.24
+        ],
+        [
+          216.0,
+          347.64
+        ],
+        [
+          193.8,
+          323.84
+        ]
+      ],
+      "5": [
+        [
+          861.2,
+          528.8199999999999
+        ],
+        [
+          853.8,
+          473.15999999999997
+        ],
+        [
+          876.0,
+          412.44
+        ],
+        [
+          876.0,
+          361.84000000000003
+        ],
+        [
+          853.8,
+          336.54
+        ]
+      ],
+      "6": [
+        [
+          250.8,
+          672.36
+        ],
+        [
+          244.2,
+          618.6800000000001
+        ],
+        [
+          264.0,
+          560.12
+        ],
+        [
+          264.0,
+          511.32
+        ],
+        [
+          244.2,
+          486.92
+        ]
+      ],
+      "7": [
+        [
+          758.6,
+          658.3
+        ],
+        [
+          751.4,
+          604.4
+        ],
+        [
+          773.0,
+          545.6
+        ],
+        [
+          773.0,
+          496.6
+        ],
+        [
+          751.4,
+          472.1
+        ]
+      ],
+      "8": [
+        [
+          323.0,
+          775.9
+        ],
+        [
+          317.0,
+          724.2
+        ],
+        [
+          335.0,
+          667.8
+        ],
+        [
+          335.0,
+          620.8
+        ],
+        [
+          317.0,
+          597.3
+        ]
+      ],
+      "9": [
+        [
+          803.2,
+          784.78
+        ],
+        [
+          796.8,
+          732.64
+        ],
+        [
+          816.0,
+          675.76
+        ],
+        [
+          816.0,
+          628.36
+        ],
+        [
+          796.8,
+          604.66
+        ]
+      ]
+    }
+  },
+  "source": "built-in image_gen; originals preserved; crop/registration only",
+  "frontSnakes": 9,
+  "mouths": {
+    "open": 5,
+    "closed": 4
+  },
+  "schema": "custom 3/4-left snake-tail Medusa, not front mascot template"
+}

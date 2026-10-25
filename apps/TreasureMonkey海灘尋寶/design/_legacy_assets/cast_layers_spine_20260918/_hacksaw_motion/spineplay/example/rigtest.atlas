@@ -1,0 +1,6 @@
+rigtest.png
+size:64,64
+filter:Linear,Linear
+blob
+bounds:0,0,32,32
+offsets:0,0,32,32

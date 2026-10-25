@@ -1,0 +1,10 @@
+{
+ "date":"2026-10-22",
+ "generator":"Built-in ImageGen, transparent output; original generated pixels copied unchanged",
+ "reference":"static/assets/treasure/w.png",
+ "frames":[
+  {"file":"static/assets/treasure/attachments/monkey_blink_closed_v4.png","request":"Change only both eyes to relaxed fully closed curved eyelids. Preserve all original head, hat, nose, muzzle, shirt, badge, pose, scale, framing and colors."},
+  {"file":"static/assets/treasure/attachments/monkey_blink_half_v4.png","request":"Half-closed blink in-between. Upper lids cover about55 percent of both eyes, small visible lower pupils. Closed frame is an eyelid-style reference. Preserve exact original composition and all features outside the eyes. No squeezed sockets or translucent pupils."}
+ ],
+ "runtime":"Only the feathered eye-socket region is drawn over the original skin. Discrete open/half/closed attachment sequence; no whole-image swap, pupil crossfade or eye-mesh compression. No new pixel files are composited offline."
+}

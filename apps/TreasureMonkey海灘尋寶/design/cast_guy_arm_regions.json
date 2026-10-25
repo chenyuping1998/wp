@@ -1,0 +1,15 @@
+{
+  "about": "Where the Don's arms are, traced off guy.png (512x1024, the same frame as the rig, so rig px = texture px) from its silhouette runs and, where an arm is merged with the jacket or the scarf, from the seam line itself (a dark 1px stitch: x~180 beside the hanging arm down to y341, x=320 beside the cigar arm from y300 to y354; the cigar sleeve then borders the scarf's right strand, 320@360 -> 328@398). guy_feature.png and guy_don.png share this alpha exactly, so these hold for all three. Read by design/build_cast_guy_rig.py (--report, and it refuses to write a rig under own_floor) and by design/check_cast_motion.mjs rule 11. Belongs to the DRAWING: redraw the Don and these must be re-traced. Arm polygons contain only sleeve, cuff and hand: they stop at the seams, at the scarf, and at the fist's knuckles (the cigar's ash end and the smoke are left out). Both upper-arm polygons start where build_cast_guy_rig.py's shoulder fade-in ends (arc length reach_up x figure height = 0.10 x 799 = 80px below the shoulder joint: y322 hanging, y327 cigar), because above that the rig deliberately shares the shoulder with the spine. The upper/fore split is Capo's old report() boxes: y450 on the hanging arm, x350 on the cigar arm (the elbow crease). The spill strips are scarf beside each arm, which should stay on the spine; they are reported, not gated.",
+  "texture": "meshRigs/cast_guy/guy.png",
+  "own_floor": 0.5,
+  "arms": [
+    { "label": "hanging arm, upper", "side": "l", "poly": [[138, 322], [181, 322], [181, 342], [178, 350], [158, 400], [139, 450], [96, 450], [108, 400], [113, 380]] },
+    { "label": "hanging arm, fore + hand", "side": "l", "poly": [[96, 450], [139, 450], [134, 475], [132, 500], [132, 535], [123, 558], [112, 562], [98, 546], [90, 520], [89, 470]] },
+    { "label": "cigar arm, upper", "side": "r", "poly": [[320, 327], [340, 327], [350, 350], [350, 413], [336, 413], [328, 398], [320, 360]] },
+    { "label": "cigar arm, fore + fist", "side": "r", "poly": [[350, 350], [371, 347], [378, 338], [383, 326], [396, 330], [408, 337], [410, 352], [405, 370], [394, 386], [390, 402], [372, 404], [358, 413], [350, 413]] }
+  ],
+  "spill": [
+    { "label": "scarf, left strand", "side": "l", "poly": [[206, 265], [228, 265], [229, 475], [224, 512], [192, 512], [196, 460], [201, 400], [204, 300]] },
+    { "label": "scarf beside cigar arm", "side": "r", "poly": [[305, 358], [319, 358], [324, 386], [330, 410], [335, 430], [318, 430]] }
+  ]
+}

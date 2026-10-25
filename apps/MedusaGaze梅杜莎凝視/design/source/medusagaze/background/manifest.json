@@ -1,0 +1,99 @@
+{
+  "tool": "built-in image_gen",
+  "prompts": "BACKGROUND_PROMPTS.md",
+  "styleReference": "../style_ref.png",
+  "files": [
+    {
+      "name": "bg_base.jpg",
+      "size": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "original": "day_original.png",
+      "bytes": 808987,
+      "sha256": "bc168a5927cf54691cac6f3fb52e7f7ff765a3f83e18b3c6b51b94496f94cd59"
+    },
+    {
+      "name": "bg_free.jpg",
+      "size": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "original": "night_original.png",
+      "bytes": 758432,
+      "sha256": "e6c4de6246104d59d08c558dd1ddeebfbd71fa29af9cb84119c843d840b98608"
+    },
+    {
+      "name": "cloud.png",
+      "size": [
+        1024,
+        342
+      ],
+      "mode": "RGBA",
+      "original": "cloud_original.png",
+      "bytes": 168841,
+      "sha256": "e7ecaa4f42f997d5fe08041defb2870d1092a2c007bb0609996aa26dff5fa9cb"
+    },
+    {
+      "name": "statue_tourist.png",
+      "size": [
+        512,
+        1024
+      ],
+      "mode": "RGBA",
+      "original": "tourist_original.png",
+      "bytes": 550180,
+      "sha256": "96849d92276508a887aa72e408ec57e8ff4d03e2ff24b5068153427787a963f8"
+    },
+    {
+      "name": "statue_icecream.png",
+      "size": [
+        512,
+        1024
+      ],
+      "mode": "RGBA",
+      "original": "icecream_original.png",
+      "bytes": 544744,
+      "sha256": "83e9ea98ae52ffcff79b7f90845ae413a06629924ec3d6abf6b6114ba7f9b761"
+    },
+    {
+      "name": "flame.png",
+      "size": [
+        256,
+        384
+      ],
+      "mode": "RGBA",
+      "original": "flame_original.png",
+      "bytes": 68553,
+      "sha256": "6065bfeaef76dfe5acf903773403fcb2b52d8bb4b18f426e49bca6c75ac594a7"
+    }
+  ],
+  "runtimeBytes": 2899737,
+  "processing": "Canvas fit/downsample and JPEG/PNG compression only. Generated originals retained.",
+  "motion": "Only clouds, free-game fire and one 1.2s statue fracture/rebuild at each big-win presentation. Architecture is static.",
+  "integration": {
+    "component": "src/components/Background.svelte",
+    "renderer": "src/game/backgroundScene.ts",
+    "curves": "src/game/backgroundMotion.ts",
+    "dayNightTransitionSeconds": 1,
+    "statueSeconds": 1.2,
+    "soundCue": "sfx_statues_crack",
+    "soundVolume": 0.6,
+    "backgroundTargetUpdateHz": 60,
+    "statueFragmentsPerStatue": 12,
+    "crackStages": 3,
+    "statueAssembly": "bottom-to-top, one overshoot settle",
+    "flameGrid": {
+      "columns": 18,
+      "rows": 28
+    },
+    "flameAction": "root-locked traveling curl and internal UV flow, independent seeds",
+    "hiddenPage": "paused without catch-up",
+    "reducedMotion": "clouds/fire freeze; statue action disabled",
+    "scope": "App-owned only; wp/packages unchanged",
+    "buildImagesMatch": true
+  },
+  "animationVersion": 2
+}

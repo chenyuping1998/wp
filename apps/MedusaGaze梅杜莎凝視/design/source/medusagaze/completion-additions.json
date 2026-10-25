@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-25",
+  "gaze": {
+    "prompt": "From the reference expression sheet, extract and finish ONLY the fourth face, the BOTTOM LEFT intense Medusa gaze expression. This is a precise replacement for that ONE bald head portrait: same original yellow flat cartoon female face, same three-quarter LEFT direction, same gold diadem/circlet with central blue sapphire, same complete rounded ear, same neck cut, same red lips and lowered teal eyebrows. Important eye change: both eye WHITES become flat luminous AMBER ORANGE #FF9A2E, and both pupils are thin vertical LIME GREEN slits #B8FF5A, a tiny crisp green inner highlight. Comedically fierce eyes, not realistic. Do not change identity, proportions, crown, head silhouette or neckline. No sunglasses, NO hair, NO snakes, no body, no extra face. Enlarge this single isolated complete head to fill 80% portrait canvas; preserve the exact same line quality and flat coloring of original fourth face. TRUE transparent background, no glow fog or halo outside the silhouette, no labels, no extra objects.",
+    "originalFilename": "exec-86d89706-6f42-40e4-849b-b4f8b75f01c4.png"
+  },
+  "referenceFinalFiles": [
+    {
+      "key": "turnaround",
+      "originalFilename": "exec-e8fad17d-fff6-479f-ad31-780edfb96a7d.png"
+    },
+    {
+      "key": "tileForeground",
+      "originalFilename": "exec-3b0cfdc4-e496-4b24-8143-51bc03fd5a31.png"
+    },
+    {
+      "key": "favicon",
+      "originalFilename": "exec-bea79725-4739-417e-9f33-6a4c18d704f7.png"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "status": "deferred_user_selected_program_animation",
+  "purpose": "AI-generated FG opening trial; no generated video exists yet",
+  "durationSeconds": 5,
+  "aspectRatio": "16:9",
+  "styleReferences": [
+    "design/source/treasure/style_test_v2.png",
+    "design/source/treasure/background.png",
+    "design/source/treasure/wave_surf_v2.png"
+  ],
+  "beats": [
+    {"seconds": [0, 1.4], "action": "Monkey detectorist notices the turquoise controller pulsing; looks down before turning the wrist."},
+    {"seconds": [1.4, 3.4], "action": "One grounded detector sweep reveals warm treasure light under sand; small sand grains follow the coil."},
+    {"seconds": [3.4, 5], "action": "Monkey reacts with delighted restraint; an irregular turquoise surf crest with broken white foam fills the frame."}
+  ],
+  "constraints": [
+    "Preserve cream field shirt, khaki utility vest, bucket hat, closed shoes and continuous detector shaft.",
+    "Thick dark brown outlines, flat sunny colors and one-step shadows; match existing game art.",
+    "Keep face, hands and detector inside central 55 percent for responsive presentation.",
+    "No generated lettering, numbers, reel grid, logos, payouts or gameplay claims.",
+    "Author FG title and actual awarded spin count in the game after the clip.",
+    "Video completion must not determine math or consume a spin.",
+    "Provide skip and a static reduced-motion fallback when implementing playback.",
+    "Playback completion, skip and media failure must converge on one completion callback.",
+    "Keep current WaveWipe until an actual generated clip has been reviewed."
+  ],
+  "review": ["Character identity and clothing", "Hand and detector geometry", "Natural anticipation and follow-through", "Sand contact", "Irregular white foam matching background", "Mobile crop", "Last-frame transition"]
+}

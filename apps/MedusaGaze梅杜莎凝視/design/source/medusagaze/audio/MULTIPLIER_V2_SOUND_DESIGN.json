@@ -1,0 +1,277 @@
+{
+  "version": 2,
+  "seed": 2026102502,
+  "provenance": "Original deterministic material synthesis; no downloaded samples, models, third-party recordings or voices.",
+  "formats": "Mono PCM16 44.1k runtime; PCM24 48k masters; editable float stems",
+  "cues": [
+    {
+      "cue": "sfx_glasses_slide",
+      "file": "sfx_glasses_slide.wav",
+      "duration": 0.22,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 19482,
+      "loop": false,
+      "description": "Dry eyewear hinge rub, first finger contact, short rim settle; no voice or whistle",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -27.54,
+      "true_peak_db": -12.97,
+      "design_version": 2,
+      "layers": [
+        "hinge_friction",
+        "rim_tick",
+        "frame_settle"
+      ]
+    },
+    {
+      "cue": "sfx_glasses_on",
+      "file": "sfx_glasses_on.wav",
+      "duration": 0.12,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 10662,
+      "loop": false,
+      "description": "Small plastic/gold frame click matching the return pose",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -30.31,
+      "true_peak_db": -13.96,
+      "design_version": 2,
+      "layers": [
+        "frame_click",
+        "finger_release"
+      ]
+    },
+    {
+      "cue": "sfx_gaze_charge",
+      "file": "sfx_gaze_charge.wav",
+      "duration": 0.28,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 24774,
+      "loop": false,
+      "description": "Restrained airy anticipation with warm material resonance, followed by deliberate quiet hold",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -27.74,
+      "true_peak_db": -13.95,
+      "design_version": 2,
+      "layers": [
+        "serpent_air",
+        "warm_resonance",
+        "prism_grain"
+      ]
+    },
+    {
+      "cue": "sfx_gaze_beam",
+      "file": "sfx_gaze_beam.wav",
+      "duration": 0.28,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 24774,
+      "loop": false,
+      "description": "Sharp focus ignition, glass edge and short textured energy shear",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -27.7,
+      "true_peak_db": -10.86,
+      "design_version": 2,
+      "layers": [
+        "focus_snap",
+        "glass_resonance",
+        "energy_shear"
+      ]
+    },
+    {
+      "cue": "sfx_orb_fly",
+      "file": "sfx_orb_fly.wav",
+      "duration": 0.45,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 39768,
+      "loop": false,
+      "description": "Accelerating granular air and rotating glass texture; panned in Web Audio along the actual flight",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -25.54,
+      "true_peak_db": -13.0,
+      "design_version": 2,
+      "layers": [
+        "air_body",
+        "air_edge",
+        "spinning_prism"
+      ]
+    },
+    {
+      "cue": "sfx_orb_hit_s",
+      "file": "sfx_orb_hit_s.wav",
+      "duration": 0.42,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 37122,
+      "loop": false,
+      "description": "Immediate contact bite, short marble body, inharmonic crystal ring, descending micro-sparkles; s intensity",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -26.0,
+      "true_peak_db": -10.99,
+      "design_version": 2,
+      "layers": [
+        "contact_bite",
+        "marble_body",
+        "crystal_ring",
+        "falling_sparkles"
+      ]
+    },
+    {
+      "cue": "sfx_orb_hit_m",
+      "file": "sfx_orb_hit_m.wav",
+      "duration": 0.5,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 44178,
+      "loop": false,
+      "description": "Immediate contact bite, short marble body, inharmonic crystal ring, descending micro-sparkles; m intensity",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -26.89,
+      "true_peak_db": -10.0,
+      "design_version": 2,
+      "layers": [
+        "contact_bite",
+        "marble_body",
+        "crystal_ring",
+        "falling_sparkles"
+      ]
+    },
+    {
+      "cue": "sfx_orb_hit_l",
+      "file": "sfx_orb_hit_l.wav",
+      "duration": 0.58,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 51234,
+      "loop": false,
+      "description": "Immediate contact bite, short marble body, inharmonic crystal ring, descending micro-sparkles; l intensity",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -26.25,
+      "true_peak_db": -8.98,
+      "design_version": 2,
+      "layers": [
+        "contact_bite",
+        "marble_body",
+        "crystal_ring",
+        "falling_sparkles"
+      ]
+    },
+    {
+      "cue": "sfx_orb_crack",
+      "file": "sfx_orb_crack.wav",
+      "duration": 0.48,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 42414,
+      "loop": false,
+      "description": "Dry brittle fracture, staggered falling stone chips; no cartoon wah or low boom",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -34.22,
+      "true_peak_db": -11.95,
+      "design_version": 2,
+      "layers": [
+        "fracture_snap",
+        "stone_stress",
+        "chip_1",
+        "chip_2",
+        "chip_3",
+        "chip_4",
+        "chip_5",
+        "chip_6"
+      ]
+    },
+    {
+      "cue": "sfx_orb_crack_2",
+      "file": "sfx_orb_crack_2.wav",
+      "duration": 0.48,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 42414,
+      "loop": false,
+      "description": "Dry brittle fracture, staggered falling stone chips; no cartoon wah or low boom",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -32.36,
+      "true_peak_db": -12.0,
+      "design_version": 2,
+      "layers": [
+        "fracture_snap",
+        "stone_stress",
+        "chip_1",
+        "chip_2",
+        "chip_3",
+        "chip_4",
+        "chip_5",
+        "chip_6"
+      ]
+    },
+    {
+      "cue": "sfx_total_mult_up",
+      "file": "sfx_total_mult_up.wav",
+      "duration": 0.42,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 37122,
+      "loop": false,
+      "description": "Five restrained gold-inlay ticks follow the 400 ms cumulative count",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -26.66,
+      "true_peak_db": -13.0,
+      "design_version": 2,
+      "layers": [
+        "inlay_taps",
+        "gold_shimmer"
+      ]
+    },
+    {
+      "cue": "sfx_total_to_win",
+      "file": "sfx_total_to_win.wav",
+      "duration": 0.28,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 24774,
+      "loop": false,
+      "description": "Short plate-to-score release and a precise score seal, without a long electronic sweep",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -25.65,
+      "true_peak_db": -12.0,
+      "design_version": 2,
+      "layers": [
+        "release_air",
+        "score_seal"
+      ]
+    },
+    {
+      "cue": "sfx_mult_count",
+      "file": "sfx_mult_count.wav",
+      "duration": 0.24,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 21246,
+      "loop": true,
+      "description": "Quiet fine-grained counting texture; leaves amount and impact readable",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -38.72,
+      "true_peak_db": -22.0,
+      "design_version": 2,
+      "layers": [
+        "fine_ticking",
+        "soft_grain"
+      ]
+    }
+  ]
+}

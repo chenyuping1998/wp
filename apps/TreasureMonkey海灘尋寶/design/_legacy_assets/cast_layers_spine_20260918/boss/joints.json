@@ -1,0 +1,181 @@
+{
+  "Cigg": {
+    "origin": [
+      410,
+      361
+    ],
+    "tip": [
+      1714,
+      361
+    ]
+  },
+  "ch3_body/ch3_body2": {
+    "origin": [
+      553.4,
+      426.1
+    ],
+    "tip": [
+      576.3,
+      -370.9
+    ],
+    "resolved_by": "resolve_joints.py",
+    "sign": [
+      1,
+      -1
+    ],
+    "err": 0.163,
+    "second": 0.3219
+  },
+  "ch3_arm_l": {
+    "origin": [
+      386.0,
+      735.3
+    ],
+    "tip": [
+      638.5,
+      1234.7
+    ],
+    "resolved_by": "resolve_joints.py",
+    "sign": [
+      -1,
+      1
+    ],
+    "err": 0.5745,
+    "second": 0.9055
+  },
+  "ch3_arm_r": {
+    "origin": [
+      466.9,
+      597.7
+    ],
+    "tip": [
+      575.7,
+      1285.2
+    ],
+    "resolved_by": "resolve_joints.py",
+    "sign": [
+      -1,
+      -1
+    ],
+    "err": 0.4716,
+    "second": 0.4849
+  },
+  "ch3_head": {
+    "origin": [
+      488.7,
+      1230.0
+    ],
+    "tip": [
+      511.6,
+      625.3
+    ],
+    "resolved_by": "resolve_joints.py",
+    "sign": [
+      1,
+      1
+    ],
+    "err": 0.2224,
+    "second": 0.2318
+  },
+  "ch3_pocket/ch3_body2": {
+    "origin": [
+      1006.9,
+      717.4
+    ],
+    "tip": [
+      2603.9,
+      112.3
+    ],
+    "resolved_by": "eye",
+    "sign": [
+      1,
+      1
+    ],
+    "note": "四個正負向的幾何誤差都 >0.5 倍骨長（最佳 0.579 / 次佳 0.688，分不開），改用眼睛在髖部選：這個讓口袋落在手旁邊而不是蓋住手。這一層的圖本身 --checkart 0.209 對門檻 0.025，要重畫。"
+  },
+  "smoke_part_2/smoke2": {
+    "origin": [
+      551.4,
+      307.7
+    ],
+    "tip": [
+      1114.1,
+      70.8
+    ],
+    "resolved_by": "resolve_joints.py",
+    "sign": [
+      1,
+      -1
+    ],
+    "err": 0.8095,
+    "second": 1.8238
+  },
+  "smoke_part_7/smoke2": {
+    "origin": [
+      551.4,
+      307.7
+    ],
+    "tip": [
+      1114.1,
+      70.8
+    ],
+    "resolved_by": "resolve_joints.py",
+    "sign": [
+      1,
+      -1
+    ],
+    "err": 0.8095,
+    "second": 1.8238
+  },
+  "smoke_part_5/smoke2": {
+    "origin": [
+      551.4,
+      307.7
+    ],
+    "tip": [
+      1114.1,
+      70.8
+    ],
+    "resolved_by": "resolve_joints.py",
+    "sign": [
+      1,
+      -1
+    ],
+    "err": 0.8095,
+    "second": 1.8238
+  },
+  "smoke_part_3/smoke2": {
+    "origin": [
+      590.3,
+      200.6
+    ],
+    "tip": [
+      1173.7,
+      -446.7
+    ],
+    "resolved_by": "resolve_joints.py",
+    "sign": [
+      1,
+      -1
+    ],
+    "err": 0.6477,
+    "second": 1.5241
+  },
+  "smoke_part_4/smoke2": {
+    "origin": [
+      590.3,
+      200.6
+    ],
+    "tip": [
+      1173.7,
+      -446.7
+    ],
+    "resolved_by": "resolve_joints.py",
+    "sign": [
+      1,
+      -1
+    ],
+    "err": 0.6477,
+    "second": 1.5241
+  }
+}

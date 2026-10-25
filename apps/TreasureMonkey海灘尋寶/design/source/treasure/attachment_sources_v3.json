@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-22",
+  "generator": "Built-in ImageGen, transparent output; original generated pixels preserved",
+  "runtimeIndex": "design/index_treasure_attachments.py reads alpha bounds only; Pixi uses subtexture frames, no bitmap extraction or repainting",
+  "assets": [
+    {"file":"static/assets/treasure/attachments/low_boards_v3.png","reference":"static/assets/treasure/l1.png","request":"Four blank wooden beach plaques in a 2x2 atlas. Remove the letter and reconstruct uninterrupted wood. Preserve honey planks, thick dark ink, rope posts and beach shells. Red, teal, brown and blue ropes. No lettering or grid, transparent background. Separate letters are rendered and animated in code."},
+    {"file":"static/assets/treasure/attachments/scroll_parts_v3.png","reference":"static/assets/treasure/s.png","request":"Three separate animation attachments: flat axis-aligned map paper alone, left parchment roll alone, right parchment roll alone. Preserve palm trees, blue river, dashed path, red X, golden paper and dark outlines. No labels or background. Paper reconstructed behind removed rolls."},
+    {"file":"static/assets/treasure/attachments/coconut_parts_v3.png","reference":"static/assets/treasure/h4.png","request":"Two separate attachments: coconut drink with umbrella, flower and leaves but no straw, and complete bent red-white straw alone. Repaint continuous white rim/liquid beneath removed straw. Transparent background, original beach illustration style. Intended to pivot at the straw's lower end."}
+  ]
+}

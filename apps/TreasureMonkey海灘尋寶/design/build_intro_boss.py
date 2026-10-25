@@ -1,0 +1,90 @@
+"""
+The opening screen's Don, cut from the same drawing as the board's.
+
+    python3 design/build_intro_boss.py [--report]
+
+IntroFeatures.svelte stands a full-height cutout of the boss on the left of the
+opening card. It was `intro_boss_v1.png`, generated 2026-09-02, and it went
+stale the moment the board's figure became v3: the man beside the reels grew a
+white silk scarf, a watch chain and a lit cigar, and the man on the first screen
+the player ever sees still had his arms at his sides. Same game, two different
+bosses, and the mismatch is on the screen that sets every expectation.
+
+So the intro cutout is not drawn either — it is CUT from the v3 master, the
+1024x2048 render that `guy.png` itself was downsampled from. One drawing, three
+graded mesh states (design/build_cast_guy_states.py) and this. When the art
+changes again, re-running both scripts is the whole migration.
+
+WHY A TIGHT CROP
+
+The CSS is height-driven (`.hm-cast { height: 100%; width: auto }`) inside a
+wrapper pinned with `bottom: -4vh`. That framing assumes the figure reaches the
+BOTTOM EDGE of its own image, which is how v1 was built — its alpha runs to row
+1536 of 1536. Leave transparent padding under the shoes and the same rule floats
+him above the floor line by exactly that much.
+
+Cropping to the alpha bounding box is what reproduces the assumption, so the
+existing CSS keeps working untouched. The aspect changes (v3 is a narrower
+figure than v1 was) and that is fine: `width: auto` means a narrower boss simply
+takes less of the card, which leaves more room for the stage rather than less.
+"""
+import argparse
+import sys
+from pathlib import Path
+
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parent.parent
+MASTER = ROOT / 'design/source/cast/v3/guy_v3_master_compact64_test.png'
+TARGET = ROOT / 'static/assets/sprites/capoCast/intro_boss_v3.png'
+# The board's own sheet, only to prove the two come from the same drawing.
+SHIPPED = ROOT / 'static/assets/meshRigs/cast_guy/guy.png'
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--report', action='store_true')
+    args = parser.parse_args()
+
+    if not MASTER.exists():
+        print(f'missing master: {MASTER}', file=sys.stderr)
+        return 1
+
+    master = Image.open(MASTER).convert('RGBA')
+    box = master.getchannel('A').getbbox()
+    cut = master.crop(box)
+
+    # Same silhouette as the board figure? Downsample both to a common height and
+    # compare coverage. This is the check that catches the next stale intro: if
+    # someone reships guy.png from a different master, these stop agreeing.
+    shipped = Image.open(SHIPPED).convert('RGBA')
+    shipped_cut = shipped.crop(shipped.getchannel('A').getbbox())
+    size = (200, 400)
+    a = cut.getchannel('A').resize(size, Image.Resampling.LANCZOS).point(lambda v: 255 if v > 8 else 0)
+    b = shipped_cut.getchannel('A').resize(size, Image.Resampling.LANCZOS).point(lambda v: 255 if v > 8 else 0)
+    apx = set(i for i, v in enumerate(a.getdata()) if v)
+    bpx = set(i for i, v in enumerate(b.getdata()) if v)
+    iou = len(apx & bpx) / max(len(apx | bpx), 1)
+
+    TARGET.parent.mkdir(parents=True, exist_ok=True)
+    cut.save(TARGET, optimize=True)
+
+    if args.report:
+        print(f'master     {MASTER.name}  {master.size}')
+        print(f'alpha box  {box}  -> cut {cut.size} (aspect {cut.size[1] / cut.size[0]:.2f})')
+        print(f'silhouette IoU against the shipped board figure: {iou:.3f}')
+        print(f'bottom row opaque: {any(p[3] > 8 for p in list(cut.getdata())[-cut.size[0]:])}')
+        print(f'wrote      {TARGET.relative_to(ROOT)}  {TARGET.stat().st_size // 1024} KB')
+
+    if iou < 0.97:
+        print(f'\nbuild_intro_boss FAILED', file=sys.stderr)
+        print(f'  !! the intro cutout and the board figure are not the same drawing '
+              f'(silhouette IoU {iou:.3f}, expected >= 0.97) — check that MASTER is the '
+              f'render guy.png was downsampled from', file=sys.stderr)
+        return 1
+    print(f'\nbuild_intro_boss ok (cut from {MASTER.name}, silhouette IoU {iou:.3f})')
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

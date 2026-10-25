@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-25",
+  "scope": "Local browser with mock RGS only, not Stake Engine",
+  "renderer": "Exact same createBackgroundScene used by game and review",
+  "preview": {
+    "sequence": "day, dusk/fire, statue burst, fire inspection, statue inspection, day",
+    "durationSeconds": 15.9,
+    "errors": 0,
+    "recording": "MedusaGaze_background_v2.webm",
+    "mp4": "MedusaGaze_background_v2.mp4",
+    "inspectionCrops": "Review only; production camera fixed"
+  },
+  "game": {
+    "desktopViewport": [1280, 720],
+    "baseThrow": "Completed; win 12.50 shown and Spin ready; error logs empty",
+    "bonusBigTotal": "Completed all 15 free spins; reached TOTAL WIN 198.90, cumulative multiplier x110, statues restored; continue returned to daytime with Spin ready",
+    "dayDuskSwitch": "Observed in actual game, with free-game braziers lit",
+    "backgroundRenderExceptions": 0,
+    "knownDevNotices": [
+      "freeSpinTrigger 15-second watchdog while deliberately waiting on its click-to-continue panel",
+      "freeSpinEnd 15-second watchdog while deliberately waiting on its click-to-continue panel"
+    ],
+    "noticeResolution": "Both panels progressed normally when clicked. These are existing generic development watchdog messages, not background renderer failures."
+  }
+}

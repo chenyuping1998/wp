@@ -1,0 +1,57 @@
+{
+  "scope": "Actual background scene responsive layout",
+  "statueToMedusaHeight": 0.2,
+  "cases": [
+    {
+      "width": 1792,
+      "height": 771,
+      "medusaHeight": 455,
+      "statueHeights": [
+        91,
+        91
+      ],
+      "groundY": 600
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "medusaHeight": 430,
+      "statueHeights": [
+        86,
+        86
+      ],
+      "groundY": 568
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "medusaHeight": 320,
+      "statueHeights": [
+        64,
+        64
+      ],
+      "groundY": 420
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "medusaHeight": 245,
+      "statueHeights": [
+        48.99999999999999,
+        48.99999999999999
+      ],
+      "groundY": 650
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "medusaHeight": 201,
+      "statueHeights": [
+        40.2,
+        40.2
+      ],
+      "groundY": 455
+    }
+  ],
+  "passed": true
+}

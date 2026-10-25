@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "scope": "Offline deterministic motion/geometry checks; browser and game integration checked separately.",
+  "cloudsPerMinuteScenePixels": 384,
+  "cloudsPerMinuteSceneWidthFraction": 0.2,
+  "cloudMaskEdgePop": false,
+  "statueDurationSeconds": 1.2,
+  "statueFragmentsPerStatue": 12,
+  "statuePartitionArea": 1,
+  "statueRestoresExactly": true,
+  "statueStaggeredSettle": true,
+  "flameBaseAnchored": true,
+  "flameUVBaseAnchored": true,
+  "flameGrid": {
+    "columns": 18,
+    "rows": 28
+  },
+  "invertedFlameTriangles": 0,
+  "minFlameAreaRatio": 0.4228154286468087,
+  "architectureMotion": false,
+  "backgroundCameraMotion": false
+}

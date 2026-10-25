@@ -1,0 +1,19 @@
+{
+  "video": "MedusaGaze_background_v2.webm",
+  "mp4": "MedusaGaze_background_v2.mp4",
+  "durationSeconds": 15.9,
+  "bytes": 15378570,
+  "mp4Bytes": 3891465,
+  "source": "Browser canvas recording of the exact game Pixi renderer. Review crops at 7-14s only; game camera remains fixed. Not Stake Engine footage.",
+  "mp4Audio": "Existing original sfx_statues_crack at 4s and 11.5s, volume 0.6; WebM is silent.",
+  "contact": "../_sheets/background_animation_v2_contact.jpg",
+  "frames": [
+    "frames_v2/01_0.80.jpg",
+    "frames_v2/02_3.30.jpg",
+    "frames_v2/03_4.40.jpg",
+    "frames_v2/04_7.80.jpg",
+    "frames_v2/05_11.90.jpg",
+    "frames_v2/06_12.80.jpg"
+  ],
+  "gif": "MedusaGaze_background_v2_preview.gif"
+}

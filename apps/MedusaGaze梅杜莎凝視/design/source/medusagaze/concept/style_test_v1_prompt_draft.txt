@@ -1,0 +1,58 @@
+STYLE: playful semi-realistic premium slot-game art. Hand-painted glossy
+rendering with soft volume and smooth shading, mirror-polished gold, faceted gems
+with bright highlights, polished marble with subtle veining, light from the upper
+left, an occasional cyan (#5FF2E4) or warm-white rim light to separate objects.
+Thin dark outline (#2A1F24, 2-3px at 1024px, may break on lit edges). Shapes are
+exaggerated and fun: chubbier, rounder, shorter than realistic, rounded corners,
+toy-like chunky proportions, and every object carries one big readable visual
+gag. Bright, clean, saturated, cheerful; sunny small-town ancient Greek temple
+plaza. Not scary, not gritty.
+PALETTE: gold #F2B632, marble #EFE8D8 (shade #D5CCB6), stone grey #A9A39A,
+sky #7FC6E6, board teal #1E4950, gaze glow lime #B8FF5A (ONLY for Medusa's eyes
+and her orbs). Wherever Medusa's face appears small (a shield relief, an icon,
+a cameo), it is a yellow #FFD83A sitcom-cartoon face with teal snake hair.
+CHARACTER STYLE: a hybrid character. BODY, ARMOR, JEWELRY, SNAKE HAIR AND SNAKE
+TAIL are rendered like a premium slot-game character: glossy semi-realistic
+painting, soft volumetric light from the upper left, mirror-polished gold metal,
+faceted blue gems with highlights, shiny scales, a cyan rim light (#5FF2E4) only
+on the snake hair and tail edges. HER HEAD AND FACE are a 1990s American
+primetime family-sitcom cartoon face: flat yellow skin #FFD83A with at most one
+light shade #E3B520, thick uniform dark outline #2A1F24, big bulging round eyes
+with white sclera and tiny black dot pupils, the two eyes touching, two or three
+upper eyelashes, flat teal eyeshadow #2BB3A0, thin arched eyebrows, a small round
+nose, a wide mouth with red lipstick #C42F3D and a prominent upper lip. Slightly
+long oval face with a pointed chin. Her neck, arms and midriff are the SAME yellow
+but softly shaded in two tones (#FFE57A light, #E3B520 shade), no realistic
+muscles. Five fingers, long gold nails. The face must NOT have realistic
+highlights, blush gradients or a sculpted nose; the body must NOT be flat.
+The join under the chin is seamless: the chin shadow continues into the neck.
+PALETTE: snake hair #19B5AE (light #3FE0D0, shade #0B6F86, deepest #0A2F5A),
+snake mouths #B8232E, snake eyes amber #FFB13B; gold #F2C14E (light #FFE6A0,
+shade #B07A1A); gems #1F7FD6; armor plates teal #138FA0 fading to deep blue
+#123E7A; snake tail #1FB3B0 with pale belly scales #7FE3D6; gold cat-eye
+sunglasses with dark lenses #1A1420.
+
+A 16:9 slot-game screen mockup. Center: a 6x6 grid of game symbols on a deep teal
+(#1E4950) board inside a white marble frame with Ionic volute capitals at the four
+corners. Right of the board: MEDUSA (drawn in the CHARACTER STYLE: a glossy
+slot-game snake queen body with a yellow sitcom-cartoon face), three-quarter view
+facing left toward the board, a long teal snake tail instead of legs coiling behind
+her, one arm out to the side palm down, the other hand pulling her gold cat-eye
+sunglasses down her nose, peeking over them with bulging cartoon eyes. Wide messy
+teal snake hair with snake heads, gold diadem with a blue gem, gold collar, teal and
+gold breastplate, gold arm bands and bracers, teal armored skirt plates. A glowing
+lime-green snake-eye orb is flying from her eyes toward the board.
+On the board: gold serpent crown, stone helmet with startled eyes peeking out, golden
+lyre with one snapped string, terracotta amphora, laurel wreath, four gemstones with
+embossed Greek letter shapes (Omega red round, Sigma blue square, Phi teal diamond,
+Psi amber teardrop), two golden Aegis shields with a sunglasses-wearing Medusa face
+embossed. One group of matching symbols is turning to grey stone with cartoon cracks.
+Background: sunny small-town Greek temple plaza, chunky round white clouds, marble
+columns, a temple on a hill, two funny petrified tourist statues (one mid-selfie, one
+holding an ice cream cone). A slim dark bar of round marble buttons along the bottom.
+
+NEGATIVE: no text, no letters, no numbers, no logo, no watermark, no signature;
+no existing cartoon characters or look-alikes; no tall
+cylindrical beehive hairdo; no spiky zigzag hair; no blood, no gore, no horror,
+no dripping fangs or venom, no red glowing eyes; no photorealism, no gritty or
+dirty textures, no rust, no dark moody grading, no lens flare, no paper texture.

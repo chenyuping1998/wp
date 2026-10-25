@@ -1,0 +1,150 @@
+{
+  "digger": {
+    "head": {
+      "x": 236,
+      "y": 260,
+      "w": 245,
+      "h": 240,
+      "ax": 0.5,
+      "ay": 1,
+      "path": "treasure/digger_head.png"
+    },
+    "body": {
+      "x": 240,
+      "y": 229,
+      "w": 227,
+      "h": 218,
+      "ax": 0.5,
+      "ay": 0,
+      "path": "treasure/digger_body.png"
+    },
+    "arm_l": {
+      "x": 151,
+      "y": 265,
+      "w": 180,
+      "h": 192,
+      "ax": 0.54,
+      "ay": 0.08,
+      "path": "treasure/digger_arm_l.png"
+    },
+    "arm_r": {
+      "x": 330,
+      "y": 268,
+      "w": 142,
+      "h": 186,
+      "ax": 0.22,
+      "ay": 0.05,
+      "path": "treasure/digger_arm_r.png"
+    },
+    "legs": {
+      "x": 240,
+      "y": 438,
+      "w": 236,
+      "h": 235,
+      "ax": 0.5,
+      "ay": 0,
+      "path": "treasure/digger_legs.png"
+    },
+    "tail": {
+      "x": 315,
+      "y": 465,
+      "w": 155,
+      "h": 155,
+      "ax": 0.13,
+      "ay": 0.75,
+      "path": "treasure/digger_tail.png"
+    },
+    "tool": {
+      "x": 168,
+      "y": 423,
+      "w": 180,
+      "h": 245,
+      "ax": 0.76,
+      "ay": 0,
+      "path": "treasure/digger_tool.png"
+    },
+    "belt": {
+      "x": 254,
+      "y": 444,
+      "w": 117,
+      "h": 72,
+      "ax": 0.5,
+      "ay": 0.5,
+      "path": "treasure/digger_belt.png"
+    }
+  },
+  "lifeguard": {
+    "head": {
+      "x": 236,
+      "y": 260,
+      "w": 245,
+      "h": 240,
+      "ax": 0.5,
+      "ay": 1,
+      "path": "treasure/lifeguard_head.png"
+    },
+    "body": {
+      "x": 240,
+      "y": 229,
+      "w": 227,
+      "h": 218,
+      "ax": 0.5,
+      "ay": 0,
+      "path": "treasure/lifeguard_body.png"
+    },
+    "arm_l": {
+      "x": 145,
+      "y": 280,
+      "w": 180,
+      "h": 192,
+      "ax": 0.23,
+      "ay": 0.23,
+      "path": "treasure/lifeguard_arm_l.png"
+    },
+    "arm_r": {
+      "x": 330,
+      "y": 275,
+      "w": 142,
+      "h": 186,
+      "ax": 0.15,
+      "ay": 0.4,
+      "path": "treasure/lifeguard_arm_r.png"
+    },
+    "legs": {
+      "x": 240,
+      "y": 438,
+      "w": 236,
+      "h": 235,
+      "ax": 0.5,
+      "ay": 0,
+      "path": "treasure/lifeguard_legs.png"
+    },
+    "tail": {
+      "x": 315,
+      "y": 465,
+      "w": 155,
+      "h": 155,
+      "ax": 0.13,
+      "ay": 0.75,
+      "path": "treasure/lifeguard_tail.png"
+    },
+    "tool": {
+      "x": 188,
+      "y": 400,
+      "w": 180,
+      "h": 280,
+      "ax": 0.76,
+      "ay": 0,
+      "path": "treasure/lifeguard_tool.png"
+    },
+    "belt": {
+      "x": 254,
+      "y": 444,
+      "w": 117,
+      "h": 72,
+      "ax": 0.5,
+      "ay": 0.5,
+      "path": "treasure/lifeguard_belt.png"
+    }
+  }
+}

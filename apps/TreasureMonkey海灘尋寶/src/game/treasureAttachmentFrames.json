@@ -1,0 +1,83 @@
+{
+  "lowL1": {
+    "atlas": "treasureLowBoards",
+    "rect": [
+      44,
+      49,
+      554,
+      531
+    ]
+  },
+  "lowL2": {
+    "atlas": "treasureLowBoards",
+    "rect": [
+      657,
+      51,
+      535,
+      529
+    ]
+  },
+  "lowL3": {
+    "atlas": "treasureLowBoards",
+    "rect": [
+      49,
+      653,
+      549,
+      526
+    ]
+  },
+  "lowL4": {
+    "atlas": "treasureLowBoards",
+    "rect": [
+      653,
+      655,
+      543,
+      527
+    ]
+  },
+  "mapPaper": {
+    "atlas": "treasureScrollParts",
+    "rect": [
+      93,
+      47,
+      855,
+      623
+    ]
+  },
+  "mapRollLeft": {
+    "atlas": "treasureScrollParts",
+    "rect": [
+      1167,
+      23,
+      208,
+      664
+    ]
+  },
+  "mapRollRight": {
+    "atlas": "treasureScrollParts",
+    "rect": [
+      1795,
+      22,
+      203,
+      663
+    ]
+  },
+  "coconutBase": {
+    "atlas": "treasureCoconutParts",
+    "rect": [
+      146,
+      25,
+      820,
+      823
+    ]
+  },
+  "coconutStraw": {
+    "atlas": "treasureCoconutParts",
+    "rect": [
+      1172,
+      131,
+      471,
+      677
+    ]
+  }
+}

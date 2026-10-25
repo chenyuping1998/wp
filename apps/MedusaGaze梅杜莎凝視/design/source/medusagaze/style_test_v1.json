@@ -1,0 +1,19 @@
+{
+  "asset": "style_test_v1",
+  "tool": "built-in image_gen",
+  "original": "concept\\style_test_v1_original.png",
+  "originalSize": [
+    1672,
+    941
+  ],
+  "originalMode": "RGB",
+  "reviewSize": [
+    1920,
+    1080
+  ],
+  "approval": "approved_by_user",
+  "approvalEvidence": "風格樣張沒問題；獎圖要像樣張那樣子（2026-10-24）",
+  "styleReference": "style_ref.png",
+  "productionInstalled": false,
+  "processing": "Canvas normalization only; full generated original retained."
+}

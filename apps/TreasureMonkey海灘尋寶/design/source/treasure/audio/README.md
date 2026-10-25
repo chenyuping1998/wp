@@ -1,0 +1,1 @@
+Original deterministic synthesis by build_treasure_audio.py. No sampled recordings, no borrowed melody. Main 112 BPM and feature 132 BPM, D major, 16 two-beat bars. Accordion-like reeds, plucked guitar, upright-bass-like sine body, cajon noise and whistle. SFX 44.1 kHz mono PCM16, BGM MP3 stereo 192 kbps; masters 48 kHz PCM24. Subject to listening and final mix review.

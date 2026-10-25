@@ -1,0 +1,15 @@
+{
+  "scope": "Offline geometry, published book data and timing only; no Stake Engine recording.",
+  "exhaustiveColumnPatterns": 63,
+  "publishedWinningPositions": 721,
+  "fracturePieces": 5,
+  "fractureArea": 1,
+  "landingFootFixed": true,
+  "independentColumnLandings": true,
+  "eightLinkTimingBudgetMs": 9135,
+  "meshGrid": 32,
+  "invertedTriangles": 0,
+  "minMeshAreaRatio": 0.3384164908928961,
+  "reference": "User confirmed Gates of Olympus (Pragmatic Play). Original app-owned motion; no competitor keyframes or assets shipped.",
+  "art": "Ten polished production symbols installed; local mesh guides remeasured from these originals. Layered character and Spine 4.3 are integrated and verified by check_medusa43.mjs."
+}

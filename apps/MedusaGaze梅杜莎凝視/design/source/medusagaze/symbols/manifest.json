@@ -1,0 +1,411 @@
+{
+  "tool": "built-in image_gen",
+  "approvalEvidence": "風格樣張沒問題；獎圖要像樣張那樣子",
+  "reference": "../style_ref.png",
+  "prompts": "SYMBOL_PROMPTS.md",
+  "files": [
+    {
+      "name": "s",
+      "original": "s_original.png",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "sourceAlphaBounds": [
+        0,
+        8,
+        1238,
+        1214
+      ],
+      "sizingAlphaBounds": [
+        56,
+        55,
+        1199,
+        1194
+      ],
+      "runtimeSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        52,
+        52,
+        461,
+        460
+      ],
+      "scale": 0.3569553805774278,
+      "offset": [
+        32,
+        33
+      ],
+      "opaqueMeanLuminance": 133.39,
+      "bytes": 335169,
+      "sha256": "9f20747eca33c35c62a4bf4b4760fdac8eccae9935a30929bdb0f026b97418bd",
+      "processing": "Proportional downsample and transparent canvas placement from visible alpha bounds (>=32). Full generated source retained; no artwork painting or colour correction."
+    },
+    {
+      "name": "h1",
+      "original": "h1_original.png",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "sourceAlphaBounds": [
+        41,
+        93,
+        1222,
+        1238
+      ],
+      "sizingAlphaBounds": [
+        60,
+        134,
+        1201,
+        1138
+      ],
+      "runtimeSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        46,
+        71,
+        467,
+        442
+      ],
+      "scale": 0.36809815950920244,
+      "offset": [
+        24,
+        22
+      ],
+      "opaqueMeanLuminance": 147.64,
+      "bytes": 276900,
+      "sha256": "0bc8588b1dcd3fd855356734360a8b65bb4240f423d7f2f7fa75ce407cc91b2a",
+      "processing": "Proportional downsample and transparent canvas placement from visible alpha bounds (>=32). Full generated source retained; no artwork painting or colour correction."
+    },
+    {
+      "name": "h2",
+      "original": "h2_original.png",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "sourceAlphaBounds": [
+        49,
+        0,
+        1156,
+        1225
+      ],
+      "sizingAlphaBounds": [
+        135,
+        49,
+        1149,
+        1214
+      ],
+      "runtimeSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        73,
+        45,
+        439,
+        466
+      ],
+      "scale": 0.3605150214592275,
+      "offset": [
+        25,
+        28
+      ],
+      "opaqueMeanLuminance": 151.52,
+      "bytes": 245931,
+      "sha256": "38c1628c82dd115fcf64efc64e5caa7c4e0e37739f2a97ebdafad9d50f4bc3f0",
+      "processing": "Proportional downsample and transparent canvas placement from visible alpha bounds (>=32). Full generated source retained; no artwork painting or colour correction."
+    },
+    {
+      "name": "h3",
+      "original": "h3_original.png",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "sourceAlphaBounds": [
+        0,
+        15,
+        1236,
+        1254
+      ],
+      "sizingAlphaBounds": [
+        76,
+        82,
+        1179,
+        1175
+      ],
+      "runtimeSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        46,
+        48,
+        466,
+        464
+      ],
+      "scale": 0.38077969174977333,
+      "offset": [
+        17,
+        17
+      ],
+      "opaqueMeanLuminance": 157.71,
+      "bytes": 239083,
+      "sha256": "8fba436a75891dafa3a97721cf5b7d3f1ee5a95bf4d062b698f8ebffc7a4ddaf",
+      "processing": "Proportional downsample and transparent canvas placement from visible alpha bounds (>=32). Full generated source retained; no artwork painting or colour correction."
+    },
+    {
+      "name": "h4",
+      "original": "h4_original.png",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "sourceAlphaBounds": [
+        0,
+        19,
+        1222,
+        1222
+      ],
+      "sizingAlphaBounds": [
+        108,
+        55,
+        1157,
+        1212
+      ],
+      "runtimeSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        65,
+        46,
+        446,
+        466
+      ],
+      "scale": 0.3630077787381158,
+      "offset": [
+        26,
+        26
+      ],
+      "opaqueMeanLuminance": 108.49,
+      "bytes": 223041,
+      "sha256": "0ff155651535d54e9d510ed71d6e272a51ac5908c4d2406210dbb352fe09df0a",
+      "processing": "Proportional downsample and transparent canvas placement from visible alpha bounds (>=32). Full generated source retained; no artwork painting or colour correction."
+    },
+    {
+      "name": "h5",
+      "original": "h5_original.png",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "sourceAlphaBounds": [
+        0,
+        9,
+        1253,
+        1254
+      ],
+      "sizingAlphaBounds": [
+        78,
+        80,
+        1174,
+        1172
+      ],
+      "runtimeSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        46,
+        46,
+        467,
+        466
+      ],
+      "scale": 0.38321167883211676,
+      "offset": [
+        16,
+        16
+      ],
+      "opaqueMeanLuminance": 130.61,
+      "bytes": 248313,
+      "sha256": "33a2d7371a234cefe391a015e7a4467076ce0ecda230e5404ef5c1b49c85ed1d",
+      "processing": "Proportional downsample and transparent canvas placement from visible alpha bounds (>=32). Full generated source retained; no artwork painting or colour correction."
+    },
+    {
+      "name": "l1",
+      "original": "l1_original.png",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "sourceAlphaBounds": [
+        0,
+        15,
+        1222,
+        1254
+      ],
+      "sizingAlphaBounds": [
+        78,
+        73,
+        1175,
+        1157
+      ],
+      "runtimeSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        60,
+        62,
+        452,
+        450
+      ],
+      "scale": 0.35733819507748404,
+      "offset": [
+        32,
+        36
+      ],
+      "opaqueMeanLuminance": 102.51,
+      "bytes": 235505,
+      "sha256": "b27a12edb38a043e1fc29ee6956353bdebf0c8fbe95fe83bf9eccb9ec6805d56",
+      "processing": "Proportional downsample and transparent canvas placement from visible alpha bounds (>=32). Full generated source retained; no artwork painting or colour correction."
+    },
+    {
+      "name": "l2",
+      "original": "l2_original.png",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "sourceAlphaBounds": [
+        0,
+        0,
+        1216,
+        1254
+      ],
+      "sizingAlphaBounds": [
+        129,
+        142,
+        1123,
+        1101
+      ],
+      "runtimeSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        60,
+        67,
+        453,
+        446
+      ],
+      "scale": 0.39436619718309857,
+      "offset": [
+        9,
+        11
+      ],
+      "opaqueMeanLuminance": 101.99,
+      "bytes": 217616,
+      "sha256": "4d818a800cd9fb24d225c4b2aeec1d44ecfd9da5dd44ff31e50b30591fceaaf1",
+      "processing": "Proportional downsample and transparent canvas placement from visible alpha bounds (>=32). Full generated source retained; no artwork painting or colour correction."
+    },
+    {
+      "name": "l3",
+      "original": "l3_original.png",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "sourceAlphaBounds": [
+        0,
+        37,
+        1224,
+        1254
+      ],
+      "sizingAlphaBounds": [
+        80,
+        79,
+        1173,
+        1175
+      ],
+      "runtimeSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        60,
+        60,
+        452,
+        453
+      ],
+      "scale": 0.35766423357664234,
+      "offset": [
+        32,
+        32
+      ],
+      "opaqueMeanLuminance": 143.86,
+      "bytes": 184504,
+      "sha256": "a0b28495724f721b937f1c0eddf514666b0708abe0a0e32ba6a9755e179c11cf",
+      "processing": "Proportional downsample and transparent canvas placement from visible alpha bounds (>=32). Full generated source retained; no artwork painting or colour correction."
+    },
+    {
+      "name": "l4",
+      "original": "l4_original.png",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "sourceAlphaBounds": [
+        146,
+        9,
+        1200,
+        1254
+      ],
+      "sizingAlphaBounds": [
+        153,
+        74,
+        1100,
+        1163
+      ],
+      "runtimeSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        85,
+        59,
+        426,
+        451
+      ],
+      "scale": 0.35996326905417814,
+      "offset": [
+        30,
+        33
+      ],
+      "opaqueMeanLuminance": 150.42,
+      "bytes": 200089,
+      "sha256": "26a78d985bde07a80841d902a4e29c385e0a0940a52cbd49f60f1f26f3ccd1e7",
+      "processing": "Proportional downsample and transparent canvas placement from visible alpha bounds (>=32). Full generated source retained; no artwork painting or colour correction."
+    }
+  ],
+  "runtimeBytes": 2406151,
+  "contactSheet": "../_sheets/symbols_v2_contact.jpg",
+  "boardCheck": "../_sheets/symbols_v2_board_98px.jpg",
+  "remaining": "Final character art, separate character snake layers and Spine 4.3 are separate deliverables.",
+  "validation": {
+    "runtimeAndBuildImagesMatch": true,
+    "transparentRGBAImages": 10,
+    "visualReview": "Codex inspected all ten on game teal and magenta, at detail and 98px size. Final user asset review remains available.",
+    "meshGrid": 32,
+    "invertedTriangles": 0,
+    "minMeshAreaRatio": 0.3384164908928961,
+    "layeredActing": "in_progress"
+  }
+}

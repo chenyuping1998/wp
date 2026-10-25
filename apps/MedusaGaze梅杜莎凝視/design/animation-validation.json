@@ -1,0 +1,248 @@
+{
+  "verification": "Offline timings and exported book data only; no rendered recording or Stake Engine run.",
+  "checkedThrows": 33,
+  "noThrowWins": 18,
+  "eightLinkChainMs": {
+    "normal": 9135,
+    "turbo": 4567.5,
+    "turbo2": 3653.9999999999995
+  },
+  "cases": {
+    "fg_throw_win": {
+      "category": "baseTrigger",
+      "bookId": 19,
+      "eventIndex": 13,
+      "multipliers": [
+        8
+      ],
+      "baseWin": 130,
+      "totalWin": 1040,
+      "priorTotal": 0,
+      "newTotal": 8,
+      "normal": {
+        "animation": "fg_gaze",
+        "actionMs": 1200,
+        "releaseMs": 350,
+        "flightMs": 450,
+        "staggerMs": 150,
+        "shatterMs": 250,
+        "landMs": 120,
+        "plateCountMs": 400,
+        "beamMs": 150,
+        "countMs": 870.926996097583,
+        "firstArrivalMs": 800,
+        "lastArrivalMs": 800,
+        "plateCountStartMs": 920,
+        "scoreStartMs": 1470,
+        "endMs": 2340.926996097583
+      },
+      "turbo": {
+        "animation": "fg_gaze_turbo",
+        "actionMs": 900,
+        "releaseMs": 210,
+        "flightMs": 270,
+        "staggerMs": 90,
+        "shatterMs": 150,
+        "landMs": 80,
+        "plateCountMs": 240,
+        "beamMs": 90,
+        "countMs": 522.5561976585498,
+        "firstArrivalMs": 480,
+        "lastArrivalMs": 480,
+        "plateCountStartMs": 560,
+        "scoreStartMs": 890,
+        "endMs": 1412.5561976585498
+      },
+      "stages": [
+        "fg_gaze",
+        "orb:fly",
+        "plate:impact",
+        "plate:count",
+        "plate:level",
+        "plate:beam",
+        "score:count"
+      ]
+    },
+    "fg_no_throw_win": {
+      "category": "baseTrigger",
+      "bookId": 19,
+      "revealIndex": 18,
+      "baseWin": 150,
+      "priorTotal": 8,
+      "newTotal": 8,
+      "totalWin": 150,
+      "stages": [
+        "score:base"
+      ]
+    },
+    "base_throw_win": {
+      "category": "baseThrow",
+      "bookId": 36,
+      "eventIndex": 4,
+      "multipliers": [
+        25
+      ],
+      "baseWin": 50,
+      "totalWin": 1250,
+      "priorTotal": 0,
+      "newTotal": 0,
+      "normal": {
+        "animation": "gaze",
+        "actionMs": 1600,
+        "releaseMs": 750,
+        "flightMs": 450,
+        "staggerMs": 150,
+        "shatterMs": 300,
+        "landMs": 120,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 1019.3820026016112,
+        "firstArrivalMs": 1200,
+        "lastArrivalMs": 1200,
+        "plateCountStartMs": 1320,
+        "scoreStartMs": 1320,
+        "endMs": 2339.382002601611
+      },
+      "turbo": {
+        "animation": "gaze_turbo",
+        "actionMs": 900,
+        "releaseMs": 350,
+        "flightMs": 270,
+        "staggerMs": 90,
+        "shatterMs": 150,
+        "landMs": 80,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 611.6292015609667,
+        "firstArrivalMs": 620,
+        "lastArrivalMs": 620,
+        "plateCountStartMs": 700,
+        "scoreStartMs": 700,
+        "endMs": 1311.6292015609667
+      },
+      "stages": [
+        "gaze",
+        "orb:fly",
+        "score:impact",
+        "score:count"
+      ]
+    },
+    "base_throw_dud": {
+      "category": "baseThrowWasted",
+      "bookId": 4,
+      "eventIndex": 1,
+      "multipliers": [
+        3
+      ],
+      "baseWin": 0,
+      "totalWin": 0,
+      "priorTotal": 0,
+      "newTotal": 0,
+      "normal": {
+        "animation": "gaze",
+        "actionMs": 1600,
+        "releaseMs": 350,
+        "flightMs": 450,
+        "staggerMs": 150,
+        "shatterMs": 300,
+        "landMs": 120,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 0,
+        "firstArrivalMs": 800,
+        "lastArrivalMs": 800,
+        "plateCountStartMs": 920,
+        "scoreStartMs": 920,
+        "endMs": 1100
+      },
+      "turbo": {
+        "animation": "gaze_turbo",
+        "actionMs": 900,
+        "releaseMs": 175,
+        "flightMs": 270,
+        "staggerMs": 90,
+        "shatterMs": 150,
+        "landMs": 80,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 0,
+        "firstArrivalMs": 445,
+        "lastArrivalMs": 445,
+        "plateCountStartMs": 525,
+        "scoreStartMs": 525,
+        "endMs": 595
+      },
+      "stages": [
+        "gaze",
+        "orb:fly",
+        "orb:grey",
+        "orb:crack",
+        "orb:rubble",
+        "gaze_dud"
+      ]
+    },
+    "fg_throw_dud": {
+      "category": "bonusPlain",
+      "bookId": 0,
+      "eventIndex": 7,
+      "multipliers": [
+        3,
+        2
+      ],
+      "baseWin": 0,
+      "totalWin": 0,
+      "priorTotal": 0,
+      "newTotal": 0,
+      "normal": {
+        "animation": "fg_gaze",
+        "actionMs": 1200,
+        "releaseMs": 200,
+        "flightMs": 450,
+        "staggerMs": 150,
+        "shatterMs": 250,
+        "landMs": 120,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 0,
+        "firstArrivalMs": 650,
+        "lastArrivalMs": 800,
+        "plateCountStartMs": 920,
+        "scoreStartMs": 920,
+        "endMs": 1050
+      },
+      "turbo": {
+        "animation": "fg_gaze_turbo",
+        "actionMs": 900,
+        "releaseMs": 140,
+        "flightMs": 270,
+        "staggerMs": 90,
+        "shatterMs": 150,
+        "landMs": 80,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 0,
+        "firstArrivalMs": 410,
+        "lastArrivalMs": 500,
+        "plateCountStartMs": 580,
+        "scoreStartMs": 580,
+        "endMs": 650
+      },
+      "stages": [
+        "gaze",
+        "orb:fly",
+        "orb:grey",
+        "orb:crack",
+        "orb:rubble",
+        "gaze_dud"
+      ]
+    }
+  },
+  "pending": [
+    "Approved character art and Spine 4.2.74 rig",
+    "Frame-by-frame hand/sunglasses and snake checks",
+    "60s idle recording",
+    "8-link cascade recording",
+    "Five multiplier scenario recordings",
+    "User upload and validation in Stake Engine"
+  ]
+}

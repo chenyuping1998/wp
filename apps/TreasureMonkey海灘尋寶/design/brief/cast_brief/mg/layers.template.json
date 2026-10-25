@@ -1,0 +1,90 @@
+{
+ "version": 1,
+ "archetype": "le_fisherman__smokey__base",
+ "size": [
+  1024,
+  2048
+ ],
+ "feet_y": 1774,
+ "top_y": 172,
+ "sides": "anatomical",
+ "mirrored": false,
+ "order": [
+  "dangle_tail",
+  "arm_r",
+  "body",
+  "arm_l",
+  "prop_tool",
+  "fingers_l",
+  "dangle_strap",
+  "head"
+ ],
+ "joints": {
+  "neck": [
+   377,
+   575
+  ],
+  "chest": [
+   492,
+   801
+  ],
+  "hips": [
+   512,
+   941
+  ],
+  "head_top": [
+   377,
+   172
+  ],
+  "shoulder_r": [
+   333,
+   680
+  ],
+  "elbow_r": [
+   197,
+   720
+  ],
+  "wrist_r": [
+   207,
+   779
+  ],
+  "shoulder_l": [
+   569,
+   605
+  ],
+  "elbow_l": [
+   696,
+   527
+  ],
+  "wrist_l": [
+   733,
+   578
+  ]
+ },
+ "anchors": {
+  "prop_tool": [
+   749,
+   764
+  ],
+  "dangle_tail": [
+   638,
+   887
+  ],
+  "dangle_strap": [
+   357,
+   783
+  ]
+ },
+ "arms": {
+  "r": "akimbo",
+  "l": "raised_prop"
+ },
+ "variants": [
+  "base"
+ ],
+ "style": {
+  "kind": "cartoon",
+  "source": "..\\..\\ART_BRIEF.md",
+  "frames": []
+ }
+}
