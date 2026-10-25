@@ -395,6 +395,10 @@ export const uiTheme = $state({
 	// only). Undefined keeps it in the panel's own label colour — every game that
 	// names nothing is unchanged.
 	labelChevronHoverColor: undefined as number | undefined,
+	// The caption's colour (the word "BET") while the cursor is over the Bet
+	// panel. Undefined keeps the panel's own label colour — every game that names
+	// nothing is unchanged. Pairs with labelChevronHoverColor.
+	labelHoverColor: undefined as number | undefined,
 
 	// Brighten a control while the cursor is over it. Off by default so games
 	// that never had hover feedback keep their existing look.

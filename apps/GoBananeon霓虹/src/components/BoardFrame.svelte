@@ -28,8 +28,9 @@
 	// moonlight in hold and spin; the base game stays clean
 	const isSuperspin = $derived(stateBet.activeBetModeKey === HOLD_AND_SPIN_MODE_KEY);
 	const ambienceColor = $derived(
-		isSuperspin ? 0x9fd0ff : context.stateGame.gameType === 'freegame' ? 0xff4fd8 : null,
+		isSuperspin ? 0x9fd0ff : context.stateGame.gameType === 'freegame' ? 0xff4fd8 : 0x39dfff,
 	);
+	const ambienceGain = $derived(!isSuperspin && context.stateGame.gameType === 'basegame' ? 0.3 : 1);
 
 	let pulse = $state(0);
 	onMount(() => {
@@ -96,7 +97,7 @@
 			[10, 0.14 + 0.12 * pulse],
 		];
 		for (const [width, alpha] of layers) {
-			g.lineStyle(width, ambienceColor, alpha);
+			g.lineStyle(width, ambienceColor, alpha * ambienceGain);
 			g.drawRoundedRect(x, y, w, h, 40);
 		}
 	};

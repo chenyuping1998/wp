@@ -1,4 +1,4 @@
-﻿export default {
+export default {
 	explosion: {
 		type: 'spine',
 		src: {
@@ -120,153 +120,153 @@
 	// sheen over their own sprite.
 	gbH3Glow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h3_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH3Subject: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_subject.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h3_subject.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH3Shadow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_shadow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h3_shadow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH3Sheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h3_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL1Glow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l1_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL1Sheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l1_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL2Glow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l2_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL2Sheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l2_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL3Glow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l3_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL3Sheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l3_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL4Glow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l4_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL4Sheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l4_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL5Glow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l5_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL5Sheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l5_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH1Glow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h1_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH1Sheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h1_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH2Glow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h2_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH2Sheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h2_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH4Glow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h4_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH4Sheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h4_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbWGlow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/w_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbWSheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/w_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/w_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbSGlow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/s_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbSSheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/s_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/s_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbBGlow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/b_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/b_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbBSheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/b_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/b_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	// the hold-and-spin coin's landing mesh (meshWin/coinP.ts P_LAND)
 	gbPGlow: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/p_glow.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/p_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	gbPSheen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/p_sheen.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/p_sheen.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h1.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h2.png', import.meta.url).href,
 		preload: true,
 	},
 	// The dynamite PROP — a transparent cut-out, deliberately not gbH2.
@@ -277,47 +277,47 @@
 	// and rivets. See design/generate_symbols_gen2.mjs for where this is cut.
 	gbDynamite: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/dynamite.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/dynamite.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h3.png', import.meta.url).href,
 		preload: true,
 	},
 	gbH4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/h4.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/h4.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l1.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l2.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l3.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l4.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l4.png', import.meta.url).href,
 		preload: true,
 	},
 	gbL5: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/l5.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/l5.png', import.meta.url).href,
 		preload: true,
 	},
 	gbW: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/w.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/w.png', import.meta.url).href,
 		preload: true,
 	},
 
@@ -423,7 +423,7 @@
 
 	gbS: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/s.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/s.png', import.meta.url).href,
 		preload: true,
 	},
 	// The Dynamite: a bundle of sticks bound short with a lit fuse arcing out of
@@ -432,17 +432,17 @@
 	// golden-banana Scatter at 140px.
 	gbB: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/b.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/b.png', import.meta.url).href,
 		preload: true,
 	},
 	gbX: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/x.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/x.png', import.meta.url).href,
 		preload: true,
 	},
 	gbP: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/p.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonSymbolsV4/p.png', import.meta.url).href,
 		preload: true,
 	},
 	// The sergeant standing beside the board. Built from the supplied character
@@ -451,7 +451,7 @@
 		type: 'spine',
 		src: {
 			atlas: new URL('../../assets/spines/goBananasMonkey/monkey.atlas', import.meta.url).href,
-			skeleton: new URL('../../assets/spines/goBananasMonkey/monkey.json', import.meta.url).href,
+			skeleton: `${new URL('../../assets/spines/goBananasMonkey/monkey.json', import.meta.url).href}?v=club-motion-v1`,
 			scale: 1,
 		},
 	},
@@ -489,16 +489,16 @@
 		},
 	},
 	// Win-spray particles. The emitter is handed this whole sheet and gives each
-	// particle one random frame out of it, so the ten frames are ten viewing
-	// angles of the same banana rather than an animation — see
-	// design/pack_banana_particles.mjs.
+	// particle one random frame out of it, so the ten frames are ten notes
+	// rather than an animation.
 	//
-	// It replaces `coins`, which was SD2_Coin: a Japanese five-yen piece with a
-	// Shiba Inu on it, left over from the template this game started from and
-	// about as far from a jungle-commando theme as an asset can get.
-	winBananas: {
+	// Neon-tube music notes (2026-10-25, design/pack_note_particles.mjs): the
+	// boombox's music in the four high symbols' colours, glow baked in. The
+	// bananas (goBananasWinBananas) are still on disk: point this key back at
+	// them to undo.
+	winNotes: {
 		type: 'spriteSheet',
-		src: new URL('../../assets/sprites/goBananasWinBananas/bananas.json', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananeonWinNotes/notes.json', import.meta.url).href,
 	},
 	sound: {
 		type: 'audio',

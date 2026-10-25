@@ -1,0 +1,8 @@
+<script lang="ts">
+ import {Popup} from 'components-shared';import {zIndex} from 'constants-shared/zIndex';import {stateModal,stateUrlDerived} from 'state-shared';
+ import config from '../../game/config';import {socialTerms} from '../../game/socialTerms';
+ const T=socialTerms(),zh=stateUrlDerived.lang()==='zh';
+ const labels:Record<string,string>={H1:zh?'金色黑膠唱片':'Gold Record',H2:zh?'戴耳機的三角帽':'Headphone Hat',H3:zh?'望遠鏡':'Spyglass',H4:zh?'椰子':'Coconut',L1:zh?'八分音符':'Eighth Note',L2:zh?'四分音符':'Quarter Note',L3:zh?'高音譜號':'Treble Clef',L4:zh?'休止符':'Rest'};
+ const names=Object.keys(labels);const value=(name:string,count:number)=>{const s=(config.symbols as unknown as Record<string,{paytable:Record<string,number>[]|null}>)[name];return s.paytable?.find(p=>String(count) in p)?.[count]??0;};
+</script>
+{#if stateModal.modal?.name==='payTable'}<Popup zIndex={zIndex.modal} onclose={()=>stateModal.modal=null}>{#snippet children()}<article style="max-width:900px;padding:20px;color:#173448;background:#f6f1e6;line-height:1.6"><h2>PARROT RADIO</h2><p>{zh?'任意位置相同圖案數量；顯示為押注倍數。':`Matching symbols anywhere. Values are multiples of your ${T.bet}.`}</p><table style="width:100%"><thead><tr><th>{zh?'圖案':'SYMBOL'}</th><th>8–9</th><th>10–11</th><th>12+</th></tr></thead><tbody>{#each names as name}<tr><td>{labels[name]}</td><td>{value(name,8)}×</td><td>{value(name,10)}×</td><td>{value(name,12)}×</td></tr>{/each}</tbody></table><p>{zh?'S 麥克風本身不付分，只觸發免費遊戲。':'S microphones trigger free spins and have no separate win value.'}</p><p>{zh?'4 支以上 → 12 次免費遊戲；免費遊戲 3 支以上 → 加 5 次。':'4+ microphones → 12 free spins; 3+ during the feature → 5 more.'}</p></article>{/snippet}</Popup>{/if}

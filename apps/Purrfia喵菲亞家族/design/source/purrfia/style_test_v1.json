@@ -1,0 +1,18 @@
+{
+  "game": "Purrfia",
+  "tool": "built-in image_gen",
+  "original": "concept/style_test_v1_original.png",
+  "originalSize": [
+    1672,
+    941
+  ],
+  "reviewSize": [
+    1920,
+    1080
+  ],
+  "approval": "pending_user_review",
+  "productionInstalled": false,
+  "processing": "Canvas normalization only. Full generated original retained.",
+  "approvalSource": "PURRFIA_美術需求單.md section 1",
+  "uncertainty": "老大的毛質與胖度是否符合你要的蠢萌感；量產仍須逐件確認縮小辨識度。"
+}

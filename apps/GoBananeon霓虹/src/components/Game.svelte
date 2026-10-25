@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../game/gpuAddBlend';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 	import { Tween } from 'svelte/motion';
@@ -28,6 +29,7 @@
 	import Sound from './Sound.svelte';
 	import Background from './Background.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
+	import RenderQuality from './RenderQuality.svelte';
 	import BoardFrame from './BoardFrame.svelte';
 	import Mascot from './Mascot.svelte';
 	import Board from './Board.svelte';
@@ -77,8 +79,8 @@
 	//                       named base and FG only; this follows base)
 	// One filter, eased to the new strength over the same second the plates
 	// crossfade in (Background.svelte), so the switch is not a jump in focus.
-	const BLUR_BASE = 0.6;
-	const BLUR_FEATURE = 1.0;
+	const BLUR_BASE = 0.35;
+	const BLUR_FEATURE = 0.6;
 	const blur = new BlurFilter({ strength: BLUR_BASE, quality: 3 });
 	const backgroundBlur = [blur];
 	const blurTarget = $derived(
@@ -104,6 +106,7 @@
 </script>
 
 <App>
+	<RenderQuality />
 	<EnableSound />
 	<EnableHotkey />
 	<EnableGameActor />
@@ -118,7 +121,7 @@
 			key="fxVignette"
 			width={context.stateLayoutDerived.canvasSizes().width}
 			height={context.stateLayoutDerived.canvasSizes().height}
-			alpha={0.9}
+			alpha={0.72}
 		/>
 	</Container>
 

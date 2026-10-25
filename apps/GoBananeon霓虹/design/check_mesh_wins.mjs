@@ -35,6 +35,9 @@
 //   node design/check_mesh_wins.mjs [toolsDir] [H1,H2]              gate
 //   node design/check_mesh_wins.mjs [toolsDir] H2 --limits          joint sweep
 //   node design/check_mesh_wins.mjs [toolsDir] H2 --dump out.json [ms,ms,...]
+//   node design/check_mesh_wins.mjs H1,H2 --source-alpha --sprites-dir=STAGE
+// The latter checks the actual transparent premium silhouettes rather than
+// only the legacy hand-measured plate regions, including pixels outside them.
 // toolsDir is where pngjs lives (default E:/stake/tools/gen).
 
 import { createRequire, register } from 'module';
@@ -55,11 +58,17 @@ register(
 );
 
 const args = process.argv.slice(2);
+const alphaFlag = args.indexOf('--source-alpha');
+const sourceAlpha = alphaFlag >= 0;
+if (sourceAlpha) args.splice(alphaFlag, 1);
+const spritesFlag = args.findIndex((v) => v.startsWith('--sprites-dir='));
+const spritesOverride = spritesFlag >= 0 ? args.splice(spritesFlag, 1)[0].slice('--sprites-dir='.length) : null;
 const toolsDir = args[0] && /[\\/]/.test(args[0]) ? args.shift() : 'E:/stake/tools/gen';
 const require = createRequire(path.join(toolsDir, 'noop.js'));
 const { PNG } = require('pngjs');
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const spritesDir = spritesOverride ? path.resolve(spritesOverride) : path.join(appRoot, 'static/assets/sprites/goBananeonSymbolsV4');
 const core = await import(pathToFileURL(path.join(appRoot, 'src/game/meshWin/meshRig.ts')).href);
 // every mesh in the game — wins, the dynamite's landing, the blast swell —
 // not only the wins (MESH_ALL, src/game/meshWin/index.ts)
@@ -74,10 +83,11 @@ const load = (spec) => {
 	// where the drawing matters: the cut subject's alpha, or a panel symbol's
 	// own `inked` region (its subject is painted on the stone, not cut off it)
 	let inkAt;
-	if (spec.mode === 'panel') {
+	if (spec.mode === 'panel' && !sourceAlpha) {
 		inkAt = (x, y) => spec.inked([x, y]);
 	} else {
-		const file = path.join(appRoot, 'static/assets/sprites/goBananasSymbolsV3', `${spec.symbol.toLowerCase()}_subject.png`);
+		const stem = sourceAlpha ? (spec.sprite ?? spec.key).replace(/^gb/, '').toLowerCase() : `${spec.symbol.toLowerCase()}_subject`;
+		const file = path.join(spritesDir, `${stem}.png`);
 		const png = PNG.sync.read(fs.readFileSync(file));
 		// the art is 820px; the rig speaks the 256 canvas
 		const K = png.width / core.CANVAS;
@@ -313,7 +323,12 @@ for (const name of pick) {
 
 		const ownedBy = new Int32Array(B);
 		for (let v = 0; v < V; v++) if (S.inkAt(rig.rest[v * 2], rig.rest[v * 2 + 1])) ownedBy[S.dominant[v]]++;
-		S.isGroup = (b) => ownedBy[b] < 12 && rig.bones.some((x) => x.parent === b);
+		// With transparent art the empty fixed panel can own a few antialiased
+		// edge pixels. It remains a structural parent, not an intended actor;
+		// requiring it to travel would force a stationary mount to wobble.
+		// All named subject bones still need real ink and visible deformation.
+		S.isGroup = (b) => rig.bones.some((x) => x.parent === b) &&
+			(ownedBy[b] < 12 || sourceAlpha && ['frame', 'panel'].includes(rig.bones[b].name));
 		rig.bones.forEach((bone, b) => {
 			if (bone.parent < 0) return;
 			const lim = spec.limits[bone.name];

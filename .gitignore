@@ -92,3 +92,6 @@ apps/JaguarSun/design/_bg/
 
 # Local env files; commit .env.example instead
 .env
+
+# Delivery packages are re-zipped from design/source and the build; regenerable, and too big for GitHub (282 MB)
+**/design/delivery/*.zip

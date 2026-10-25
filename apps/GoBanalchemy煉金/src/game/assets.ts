@@ -599,6 +599,124 @@
 		src: new URL('../../assets/sprites/goBanalchemyBackground/bg_holdandspin.jpg', import.meta.url).href,
 		preload: true,
 	},
+	// The backgrounds' light, fog and glints (design/build_bg_light.py,
+	// drawn by BgLight.svelte). Preloaded with the plates: a missing key
+	// would throw inside an effect and freeze the game.
+	bgFog0: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/fog_0.png', import.meta.url).href,
+		preload: true,
+	},
+	bgFog1: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/fog_1.png', import.meta.url).href,
+		preload: true,
+	},
+	bgFog2: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/fog_2.png', import.meta.url).href,
+		preload: true,
+	},
+	bgGlint: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/glint.png', import.meta.url).href,
+		preload: true,
+	},
+	light_base_bottleL: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_base_bottleL.png', import.meta.url).href,
+		preload: true,
+	},
+	light_base_candles: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_base_candles.png', import.meta.url).href,
+		preload: true,
+	},
+	light_base_elixirL: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_base_elixirL.png', import.meta.url).href,
+		preload: true,
+	},
+	light_base_flaskR: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_base_flaskR.png', import.meta.url).href,
+		preload: true,
+	},
+	light_base_lanternL: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_base_lanternL.png', import.meta.url).href,
+		preload: true,
+	},
+	light_base_lanternR: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_base_lanternR.png', import.meta.url).href,
+		preload: true,
+	},
+	light_base_stillR: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_base_stillR.png', import.meta.url).href,
+		preload: true,
+	},
+	light_feature_bankL: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_feature_bankL.png', import.meta.url).href,
+		preload: true,
+	},
+	light_feature_bankR: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_feature_bankR.png', import.meta.url).href,
+		preload: true,
+	},
+	light_holdandspin_bottleL: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_holdandspin_bottleL.png', import.meta.url).href,
+		preload: true,
+	},
+	light_holdandspin_crystalBowl: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_holdandspin_crystalBowl.png', import.meta.url).href,
+		preload: true,
+	},
+	light_holdandspin_crystalJar: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_holdandspin_crystalJar.png', import.meta.url).href,
+		preload: true,
+	},
+	light_holdandspin_crystalsR: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_holdandspin_crystalsR.png', import.meta.url).href,
+		preload: true,
+	},
+	light_holdandspin_flaskL: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_holdandspin_flaskL.png', import.meta.url).href,
+		preload: true,
+	},
+	light_holdandspin_furnace: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_holdandspin_furnace.png', import.meta.url).href,
+		preload: true,
+	},
+	light_holdandspin_jarR: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_holdandspin_jarR.png', import.meta.url).href,
+		preload: true,
+	},
+	light_holdandspin_lamp: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_holdandspin_lamp.png', import.meta.url).href,
+		preload: true,
+	},
+	light_holdandspin_lanternL: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_holdandspin_lanternL.png', import.meta.url).href,
+		preload: true,
+	},
+	light_holdandspin_lanternR: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBanalchemyLight/light_holdandspin_lanternR.png', import.meta.url).href,
+		preload: true,
+	},
 	anticipation: {
 		type: 'spine',
 		src: {
@@ -616,16 +734,17 @@
 		},
 	},
 	// Win-spray particles. The emitter is handed this whole sheet and gives each
-	// particle one random frame out of it, so the ten frames are ten viewing
-	// angles of the same banana rather than an animation — see
-	// design/pack_banana_particles.mjs.
+	// particle one random frame out of it, so the ten frames are ten views of
+	// the same object rather than an animation.
 	//
-	// It replaces `coins`, which was SD2_Coin: a Japanese five-yen piece with a
-	// Shiba Inu on it, left over from the template this game started from and
-	// about as far from a jungle-commando theme as an asset can get.
-	winBananas: {
+	// Crystal clusters (2026-10-23, design/pack_crystal_particles.py): the H2
+	// amethyst broken off its copper stand, some turned to the lantern's green
+	// and the flasks' amber — what an alchemist's win throws out. The bananas
+	// (goBananasWinBananas) are still on disk: point this key back at them to
+	// undo.
+	winCrystals: {
 		type: 'spriteSheet',
-		src: new URL('../../assets/sprites/goBananasWinBananas/bananas.json', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBanalchemyWinCrystals/crystals.json', import.meta.url).href,
 	},
 	sound: {
 		type: 'audio',

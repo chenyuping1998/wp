@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../game/gpuAddBlend';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 	import { Tween } from 'svelte/motion';

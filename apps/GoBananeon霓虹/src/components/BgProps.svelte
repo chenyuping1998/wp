@@ -7,13 +7,12 @@
 	 * plate: the rectangle's border is pinned, so there is nothing to see where
 	 * the two meet.
 	 *
-	 * Driven by setInterval, not the frame loop, like the background's own drift:
-	 * it has to keep time in a hidden tab, and it waits for the texture, which
-	 * may not be loaded when the background first mounts.
+	 * Reads the background's shared monotonic visible-time clock. Its meshes,
+	 * painted plate and light anchors stay together across stalls/tab resumes.
 	 */
 	import { Mesh, MeshGeometry, Container, type Texture } from 'pixi.js';
 	import { getContextApp, getContextParent } from 'pixi-svelte';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 
 	import { getContext } from '../game/context';
 	import { stateGame } from '../game/stateGame.svelte';
@@ -28,6 +27,7 @@
 		y: number;
 		width: number;
 		height: number;
+		timeMs: number;
 	};
 	const props: Props = $props();
 	const context = getContext();
@@ -35,14 +35,15 @@
 	const parent = getContextParent();
 
 	let blastAt = -1;
+	const sceneStart = props.timeMs;
 	context.eventEmitter.subscribeOnMount({
 		reelBlast: () => {
-			blastAt = Date.now();
+			if (!document.hidden) blastAt = props.timeMs;
 		},
 		// hold and spin: every new coin that sticks jolts the vault's shelves
 		// (bgProps BG_HS_*); the other scenes never see this event
 		stickyPrizesNew: () => {
-			blastAt = Date.now();
+			if (!document.hidden) blastAt = props.timeMs;
 		},
 	});
 
@@ -52,14 +53,11 @@
 	root.label = `bgProps ${props.spec.symbol}`;
 	parent.addToParent(root);
 
-	onMount(() => {
-		const rig = buildRig(props.spec.rig);
-		const positions = new Float32Array(rig.rest);
-		let geometry: MeshGeometry | null = null;
-		let mesh: Mesh | null = null;
-		const started = Date.now();
-
-		const id = setInterval(() => {
+	const rig = buildRig(props.spec.rig);
+	const positions = new Float32Array(rig.rest);
+	let geometry: MeshGeometry | null = null;
+	let mesh: Mesh | null = null;
+	$effect(() => {
 			if (!mesh) {
 				const texture = app.stateApp.loadedAssets?.[props.spec.sprite ?? props.spec.key] as Texture | undefined;
 				if (!texture) return;
@@ -67,22 +65,21 @@
 				mesh = new Mesh({ geometry, texture });
 				root.addChild(mesh);
 			}
-			const now = Date.now();
 			const pose = props.spec.drive(rig, {
-				t: now - started,
+				t: props.timeMs - sceneStart,
 				level: stateGame.blastLevel,
 				quakeT: caveQuake.clock,
-				blastT: blastAt < 0 ? -1 : now - blastAt,
+				blastT: blastAt < 0 ? -1 : props.timeMs - blastAt,
 			});
 			skin(rig, pose, props.spec.feetY, positions);
 			geometry!.getBuffer('aPosition').update();
 			root.position.set(props.x, props.y);
 			root.scale.set(props.width / BG_CANVAS[0], props.height / BG_CANVAS[1]);
-		}, 16);
-
-		return () => {
-			clearInterval(id);
-			geometry?.destroy();
-		};
 	});
+	onMount(() => {
+		const clearHidden = () => { if (document.hidden) blastAt = -1; };
+		document.addEventListener('visibilitychange', clearHidden);
+		return () => document.removeEventListener('visibilitychange', clearHidden);
+	});
+	onDestroy(() => geometry?.destroy());
 </script>

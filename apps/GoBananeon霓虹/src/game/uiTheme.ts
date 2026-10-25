@@ -159,15 +159,23 @@ setUiTheme({
   panelBorder: 0x319bd1,
   buttonFill: 0x101b35,
   buttonFillLight: 0x4be5fa,
-  buttonFillDisabled: 0x303954,
-  buttonFillActive: 0x692fb2,
+  // ONE ACCENT FOR "PRESS / ON" (2026-10-25, user: 「bet 按鈕跟 turbo 的顏色
+  //配置要再一致一點」). The spin button was orange-gold (and gold belongs to
+  // the Scatter alone in this game) while an ON turbo / autoplay went violet:
+  // two colours for what Boat's bar treats as one idea — an engaged toggle
+  // takes the spin button's own colour, so "this is on" and "this is the
+  // button" read as the same kind of thing. Both are neon magenta now (the
+  // H1 boombox's pink, deepened so the white arrow and icons on it stay
+  // legible); idle controls keep the navy disc and cyan tube ring.
+  buttonFillDisabled: 0x2e2340, // unlit magenta toward the navy: every disabled disc uses it, not only spin
+  buttonFillActive: 0xc4249d,
   buttonBorder: 0x42d9f2,
   buttonBorderWidth: 2,
   buttonBorderWidthActive: 4,
   buttonIconFill: 0xf8fcff,
   buttonIconStroke: 0x10152b,
-  betFill: 0xf7a832,
-  betBorder: 0xffd35f,
+  betFill: 0xc4249d,
+  betBorder: 0xff7ae0,
   labelFill: 0xb5eafa,
   balanceLabelFill: 0xb5eafa,
   winAccent: { border: 0xff4fd5, label: 0xffa5ec },

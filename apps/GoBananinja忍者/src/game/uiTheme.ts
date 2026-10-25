@@ -19,42 +19,46 @@ setUiTheme({
 	fontWeight: GAME_FONT_WEIGHT,
 
 	// THREE COLOURS (2026-10-17, user: 「uibar 改得更順眼一點，顏色可以不用太
-	// 多種」). The bar had grown six: navy, crimson, gold, a steel-grey border,
-	// teal-grey labels and cream values, with each readout given its own accent.
-	// Now:
-	//   lacquer navy  the strip, the ink of every icon and keyline
-	//   brass         every label, every rule, the rims, an ON toggle
-	//   crimson       the spin button only — the one thing on the bar to press
-	// with the values in the washi paper's cream. Round controls are washi
-	// discs (Diner Monkey's construction, design/generate_bar_discs.py).
+	// 多種」): lacquer navy for everything structural, brass for the labels and
+	// rules, crimson for the spin button.
+	//
+	// BOAT'S CONSTRUCTION (2026-10-23, user: 「uibar 的按鈕顏色參照 boat 那款的
+	// 構造來重新配色」). The round controls were washi-paper discs with navy ink
+	// icons (Diner's print look); now they are built the way Go Bananas Boat's
+	// platform bar builds them, in this game's three colours:
+	//   - a disc DARKER than the strip, so it separates on its own
+	//   - a thin cool ring round it (2 units, about a third of a CSS pixel)
+	//   - white mono icons with a dark contour (the family's gbIconMono set)
+	//   - an ON toggle (turbo / autoplay) takes the SPIN BUTTON'S colour and a
+	//     thicker ring, so "this is on" and "this is the button" read as the
+	//     same kind of thing; an idle toggle stays navy with the furniture
+	//   - the spin button: the one colour on the bar, on a polished brass rim
+	// Boat's numbers, Boat's reasons: palette.ts and uiTheme.ts there.
 	barStyle: 'flat',
-	barFill: 0x0a1720,
+	barFill: 0x13222c,
 	barAlpha: 1,
-	// fallbacks for a disc that has not loaded; the art carries the real look
-	buttonFill: 0xefe4ca,
+	buttonFill: 0x08121a,
 	buttonFillLight: 0xd9b56b,
-	buttonFillDisabled: 0x3a4248,
-	buttonFillActive: 0xd9b56b,
-	buttonBorder: 0x13222c,
-	// the disc art has its own rim and ring; ON is the brass disc itself
-	buttonBorderWidth: 0,
-	buttonBorderWidthActive: 0,
-	// navy ink: reaches the vector turbo bolt, the only icon not drawn as a sprite
-	buttonIconFill: 0x13222c,
-	buttonIconStroke: 0xefe4ca,
-	// a warm lift of the disc under the pointer, not a white film
-	hoverPlateLight: 0x5a4628,
+	// the spin button when it cannot be pressed: the same crimson, unlit
+	buttonFillDisabled: 0x45181e,
+	buttonFillActive: 0x962e38,
+	buttonBorder: 0x4f6878,
+	buttonBorderWidth: 2,
+	buttonBorderWidthActive: 5,
+	// white on the navy disc; reaches the vector turbo bolt and the − / + glyphs
+	buttonIconFill: 0xffffff,
+	buttonIconStroke: 0x05090d,
 
 	betFill: 0x962e38,
 	betBorder: 0xd9b56b,
 
 	panelFill: 0x11232c,
-	panelBorder: 0x3b4a4f,
+	panelBorder: 0x4f6878,
 	labelFill: 0xd9b56b,
 	balanceLabelFill: 0xd9b56b,
 	// every readout the same: brass label over a cream value, one quiet rule
-	winAccent: { border: 0x3b4a4f, label: 0xd9b56b },
-	betAccent: { border: 0x3b4a4f, label: 0xd9b56b },
+	winAccent: { border: 0x4f6878, label: 0xd9b56b },
+	betAccent: { border: 0x4f6878, label: 0xd9b56b },
 	valueFill: 0xf5ecd8,
 	valueStroke: 0x09141b,
 	valueShadow: 0x050a0e,
@@ -123,15 +127,19 @@ setUiTheme({
 	buyBonusBorder: 0xe8c478,
 	buyBonusBorderWidth: 4,
 	buyBonusCornerRadius: 8,
-	// the remaining-spins badge on the spin button: washi with a brass edge
-	autoSpinsCounterFill: 0xefe4ca,
+	// the remaining-spins badge on the spin button: a navy disc on a brass ring (Boat's)
+	autoSpinsCounterFill: 0x08121a,
 	autoSpinsCounterBorder: 0xd9b56b,
-	autoSpinsCounterLabel: 0x13222c,
-	autoSpinsCounterLabelStroke: 0xefe4ca,
+	autoSpinsCounterLabel: 0xf5ecd8,
+	autoSpinsCounterLabelStroke: 0x05090d,
 
 	// the Bet panel opens the stake menu when tapped — mark it so players can
 	// tell it apart from the static Balance/Win panels
 	labelAffordance: true,
+	// ...and it greys under the cursor, the caption and its chevron both
+	// (user, 2026-10-23), in the grey the steppers turn when disabled
+	labelHoverColor: 0x67645c,
+	labelChevronHoverColor: 0x67645c,
 
 	// cursor-over feedback on the rail controls
 	hoverHighlight: true,
@@ -144,33 +152,26 @@ setUiTheme({
 	// The readouts use Boat's clean flat casing. The rare feature-buy action
 	// keeps its own ninja crest and a matching lit hover layer.
 	sprites: {
-		button: 'gbUiButtonWashi',
-		buttonActive: 'gbUiButtonWashiOn',
 		buyBonus: 'gbUiBuyBonusShuriken',
 		buyBonusGlyph: 'gbUiBuyBonusShurikenLit',
 	},
 
-	// (2026-10-04 these were swapped to the family's white mono set to match
-	// Anubis and Boat; 2026-10-17 they became ink on washi with the discs.)
-	// UiButton draws these as untinted sprites, so they are SWAPPED, not tinted.
-	// navy ink on the washi discs (Diner's print icon shapes, re-inked).
-	// turbo deliberately omitted: UiButton draws it as a vector bolt so it can
-	// be hollow when off and fill in when active — a static sprite can't toggle
+	// The family's white mono set, as Boat and Anubis (2026-10-04 the first time;
+	// 2026-10-17 to 10-23 it was navy ink on the washi discs). UiButton draws
+	// these as untinted sprites, so they are SWAPPED, not tinted. − / + and
+	// turbo are not in the set: they are drawn in buttonIconFill (turbo as a
+	// vector bolt that fills in when ON, which a static sprite can't do).
 	icons: {
-		menu: 'gbIconInkMenu',
-		menuExit: 'gbIconInkMenuExit',
-		settings: 'gbIconInkSettings',
-		info: 'gbIconInkInfo',
-		payTable: 'gbIconInkPayTable',
-		soundOn: 'gbIconInkSoundOn',
-		soundOff: 'gbIconInkSoundOff',
-		autoSpin: 'gbIconInkAutoSpin',
-		replay: 'gbIconInkReplay',
-		increase: 'gbIconInkIncrease',
-		decrease: 'gbIconInkDecrease',
+		menu: 'gbIconMonoMenu',
+		menuExit: 'gbIconMonoMenuExit',
+		settings: 'gbIconMonoSettings',
+		info: 'gbIconMonoInfo',
+		payTable: 'gbIconMonoPayTable',
+		soundOn: 'gbIconMonoSoundOn',
+		soundOff: 'gbIconMonoSoundOff',
+		autoSpin: 'gbIconMonoAutoSpin',
+		replay: 'gbIconMonoReplay',
 	},
-	// the − / + bars span 55% of their canvas: 0.78 makes them 43% of the disc
-	iconScales: { increase: 0.78, decrease: 0.78 },
 
 });
 

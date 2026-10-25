@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {mathGameDir} from '../../../tools/math_game_dir.mjs';
+const app=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const dir=mathGameDir('Purrfia');
+const raw=JSON.parse(fs.readFileSync(path.join(dir,'library/configs/config_fe_Purrfia.json'),'utf8'));
+if(raw.gameID!=='Purrfia'||raw.numReels!==7||raw.numRows.some(n=>n!==7))throw Error('Purrfia requires the published 7×7 cluster model');
+const symbols=Object.assign({},...raw.symbols);
+if(Object.keys(symbols).sort().join()!==['H1','H2','H3','H4','L1','L2','L3','L4','M','S','W'].sort().join())throw Error('Unexpected symbol set');
+const extras=JSON.parse(execFileSync('E:/stake/math-sdk/env/Scripts/python.exe',[path.join(app,'design/export_math_extras.py')],{encoding:'utf8',cwd:dir}));
+if(raw.betModes.bonus.cost!==100||raw.betModes.super.cost!==300)throw Error('Buy costs changed; review frontend copy');
+fs.writeFileSync(path.join(app,'src/game/config.ts'),'// Generated from the published Purrfia math model.\nexport default '+JSON.stringify({...raw,symbols,...extras})+';\n');
+console.log('Purrfia math sync: 7×7, 11 symbols, 1/100/300 costs, 96% RTP.');

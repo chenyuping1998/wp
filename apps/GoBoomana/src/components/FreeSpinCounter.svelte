@@ -111,11 +111,8 @@
 	// earn are slate, the plaque's own colour, so they read as empty slots and
 	// not as a second, dimmer kind of dynamite.
 	//
-	// Only the level, not progress towards the next rung: the book event carries
-	// the rung but not the dynamite count, and a bought tier's banked dynamite
-	// arrives inside its first event, so the client cannot count it either.
-	// Adding it would mean changing the maths' events and republishing books for
-	// a smaller thing than the rung itself.
+	// The tier supplies the opening level; blastReels events supply later levels.
+	// The meter shows width per Dynamite, not the union of several blasts.
 	const level = $derived(Math.max(1, Math.min(stateGame.blastLevel, stateGame.blastMaxLevel)));
 	const maxLevel = $derived(Math.max(1, stateGame.blastMaxLevel));
 	const isFullBoard = $derived(level >= maxLevel);

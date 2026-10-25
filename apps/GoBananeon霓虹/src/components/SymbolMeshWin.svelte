@@ -388,7 +388,8 @@
 				);
 			}
 
-			flash.alpha = pose.flash;
+			// The mesh keeps its original high-resolution texture; light must not wash it out.
+			flash.alpha = Math.min(0.38, pose.flash * 0.72);
 
 			sheen.visible = pose.sheen >= 0;
 			if (sheen.visible) {

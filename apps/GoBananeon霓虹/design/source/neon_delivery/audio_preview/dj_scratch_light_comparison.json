@@ -1,0 +1,20 @@
+{
+  "before": {
+    "duration": 3.2,
+    "rmsDbFS": -21.69,
+    "peakDbFS": -3.48,
+    "lowBelow250Pct": 15.165,
+    "lowBelow500Pct": 37.556
+  },
+  "after": {
+    "duration": 3.2,
+    "rmsDbFS": -24.97,
+    "peakDbFS": -6.02,
+    "lowBelow250Pct": 0.001,
+    "lowBelow500Pct": 7.232
+  },
+  "fileRmsChangeDb": -3.28,
+  "runtimeGainBefore": 0.76,
+  "runtimeGainAfter": 0.52,
+  "runtimeRmsChangeDb": -6.58
+}

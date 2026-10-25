@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../game/gpuAddBlend';
 	import { onMount } from 'svelte';
 
 	import { BlurFilter } from 'pixi.js';

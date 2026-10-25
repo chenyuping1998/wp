@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "symbols": {
+    "h1": {
+      "artSha256": "d30a595a90cafb3f0a64eab78c6996808f10d8095b8b031ae5c2f73c1c66d460",
+      "glowSha256": "1165b33b361ff1f6dfdf8f4ab840ed275b12d6e427ef299d7efae242714f0d7c",
+      "sheenSha256": "23b5c9b7ebdf77e1ab2948220e6f31336833c8fa6c48dfd33e13b9a038638b1c",
+      "maskMode": "source-alpha",
+      "canvas": [
+        1254,
+        1254
+      ],
+      "input": {
+        "source": "E:\\stake\\wp\\apps\\GoBananeon霓虹\\design\\source\\neon_premium\\symbols\\h1.png",
+        "sourceSha256": "d30a595a90cafb3f0a64eab78c6996808f10d8095b8b031ae5c2f73c1c66d460",
+        "canvas": [
+          1254,
+          1254
+        ],
+        "opaqueBounds": [
+          2,
+          103,
+          1252,
+          1114
+        ],
+        "transparentFraction": 0.29825133734728293
+      }
+    },
+    "h2": {
+      "artSha256": "0d9123d9248a2226f513114078b745df3bb072cd520ae5f568f215655d3583d9",
+      "glowSha256": "9b0b8860807c301daf5788bd1876403524c4848896ef6263f6dabf4f771c31c9",
+      "sheenSha256": "b1496c1872fea0001578110d2301c78fc2cfc733a42b440e8ecda75a000f29fa",
+      "maskMode": "source-alpha",
+      "canvas": [
+        1254,
+        1254
+      ],
+      "input": {
+        "source": "E:\\stake\\wp\\apps\\GoBananeon霓虹\\design\\source\\neon_premium\\symbols\\h2.png",
+        "sourceSha256": "0d9123d9248a2226f513114078b745df3bb072cd520ae5f568f215655d3583d9",
+        "canvas": [
+          1254,
+          1254
+        ],
+        "opaqueBounds": [
+          82,
+          48,
+          1194,
+          1201
+        ],
+        "transparentFraction": 0.3592656608899369
+      }
+    },
+    "l1": {
+      "artSha256": "ecfd8f400ba34b5dc54fc6daff7648765faadb02a9518aa02d73d638c9f206b0",
+      "glowSha256": "cd6ba30e5a20c309274a20f87d1ad0d02ef677875511add26acb807177da39bd",
+      "sheenSha256": "5939aacb9eaddc89a52cfa53a70510e823c91fae6245182b55462d512cde236d",
+      "maskMode": "source-alpha",
+      "canvas": [
+        1024,
+        1024
+      ],
+      "input": {
+        "source": "E:\\stake\\wp\\apps\\GoBananeon霓虹\\design\\source\\neon_premium\\symbols\\l1.png",
+        "sourceSha256": "ecfd8f400ba34b5dc54fc6daff7648765faadb02a9518aa02d73d638c9f206b0",
+        "canvas": [
+          1024,
+          1024
+        ],
+        "opaqueBounds": [
+          279,
+          298,
+          745,
+          792
+        ],
+        "transparentFraction": 0.8345041275024414
+      }
+    },
+    "l2": {
+      "artSha256": "ef4c1cabd69bfb642adb5ee08209b8b4c741b7f96e492be8aaa009b69718631b",
+      "glowSha256": "6022c7c92a621abc44d3703657ac6f2084f72ffe18c849ea9428c8c74f990e51",
+      "sheenSha256": "0f3dca54f0f34a2ec802e2f4ad647337a831649695d184cc0b15f47d6272d78c",
+      "maskMode": "source-alpha",
+      "canvas": [
+        1024,
+        1024
+      ],
+      "input": {
+        "source": "E:\\stake\\wp\\apps\\GoBananeon霓虹\\design\\source\\neon_premium\\symbols\\l2.png",
+        "sourceSha256": "ef4c1cabd69bfb642adb5ee08209b8b4c741b7f96e492be8aaa009b69718631b",
+        "canvas": [
+          1024,
+          1024
+        ],
+        "opaqueBounds": [
+          306,
+          292,
+          733,
+          797
+        ],
+        "transparentFraction": 0.8193960189819336
+      }
+    },
+    "l3": {
+      "artSha256": "720071fcc0dceb69e126a6fb13ec6b0314fb0a3deffaf7b9f483bcab461f2802",
+      "glowSha256": "7314149c4e9345ce70ba327296ecefd183114661eb3ffabe73b6ec7bb4d30d8b",
+      "sheenSha256": "9625608ca9d77e0925f1db9b6a093f68aea3d99ea3b81a0c50922c4c0fa17013",
+      "maskMode": "source-alpha",
+      "canvas": [
+        1024,
+        1024
+      ],
+      "input": {
+        "source": "E:\\stake\\wp\\apps\\GoBananeon霓虹\\design\\source\\neon_premium\\symbols\\l3.png",
+        "sourceSha256": "720071fcc0dceb69e126a6fb13ec6b0314fb0a3deffaf7b9f483bcab461f2802",
+        "canvas": [
+          1024,
+          1024
+        ],
+        "opaqueBounds": [
+          283,
+          292,
+          741,
+          872
+        ],
+        "transparentFraction": 0.8025808334350586
+      }
+    },
+    "l4": {
+      "artSha256": "7504432974a1f8fe9681673303a4d0e7f4a80443cfd5f4f23a26960eb993795b",
+      "glowSha256": "08985f06cab8a689513cedd07140f75839e22293ae7a376015eb40b58ee78cc9",
+      "sheenSha256": "362a1be321027ebe2ac7c97df6e09020cca76f459889bebb5f1c4ebe5cb06979",
+      "maskMode": "source-alpha",
+      "canvas": [
+        1024,
+        1024
+      ],
+      "input": {
+        "source": "E:\\stake\\wp\\apps\\GoBananeon霓虹\\design\\source\\neon_premium\\symbols\\l4.png",
+        "sourceSha256": "7504432974a1f8fe9681673303a4d0e7f4a80443cfd5f4f23a26960eb993795b",
+        "canvas": [
+          1024,
+          1024
+        ],
+        "opaqueBounds": [
+          376,
+          298,
+          630,
+          872
+        ],
+        "transparentFraction": 0.885523796081543
+      }
+    },
+    "l5": {
+      "artSha256": "f5a912d64c0f870445ffd77a38c2fcc928e6edd1065a157c75fb7c74a6be311c",
+      "glowSha256": "a811b34e4abe4cc9e5adfc2920a6976e7cb81700b157d44f95338269eaf96b66",
+      "sheenSha256": "e44f35f17f54723c30205ef9b1fe7d30db0176b5ea0b5ccb3a523cd878e6230e",
+      "maskMode": "source-alpha",
+      "canvas": [
+        1024,
+        1024
+      ],
+      "input": {
+        "source": "E:\\stake\\wp\\apps\\GoBananeon霓虹\\design\\source\\neon_premium\\symbols\\l5.png",
+        "sourceSha256": "f5a912d64c0f870445ffd77a38c2fcc928e6edd1065a157c75fb7c74a6be311c",
+        "canvas": [
+          1024,
+          1024
+        ],
+        "opaqueBounds": [
+          247,
+          363,
+          771,
+          764
+        ],
+        "transparentFraction": 0.8271112442016602
+      }
+    }
+  },
+  "generatorSha256": "d9e7c93c310731321cfc63a12a4ca9803d01bdc8258180aaf7968a67e6af2d87",
+  "rigFingerprint": "ea53fabc548be079257433a82236ab0db326fa59d5712762cde65d3868d8a893"
+}

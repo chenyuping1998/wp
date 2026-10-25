@@ -159,6 +159,8 @@ def build_parts(s):
     for side in 'LR':
         lg = s['legs'][side]
         parts.append((f'leg{side}', Chain(lg, [s['legs']['hw']] * 4, [f'leg{side}', f'shin{side}', 'root'], [30, 26]), 0))
+        if side in s.get('ik_arms', ()):
+            continue  # this arm is separate pieces on IK (Cut below), not part of the mesh
         ar = s['arms'][side]
         hwa = s['arms']['hw']
         parts.append((f'arm{side}', Chain(ar, [hwa + 2, hwa, hwa - 2, hwa - 6], [f'arm{side}', f'fore{side}', f'fore{side}'], [24, 30]), 4))
@@ -268,10 +270,16 @@ def motions(s, cast, theme):
 
     G = s.get('laugh_gain', 1.0)
 
+    gap = LAUGH['gapMs'] / 1000
+    # a laugh whose first HA comes early (Putt: a recorded laugh, 2026-10-19)
+    # must already be on by then, and a fast one's humps must not merge into
+    # a blur; at Saucer's 480/280 timing both are the original numbers
+    on_from = min(0.25, beats[0] - 0.2)
+
     def chestbeat(t):
         d = base()
-        on = smooth((t - 0.25) / 0.25) * (1 - smooth((t - laugh_end + 0.25) / 0.45))
-        bounce = sum(hump(t, b - 0.02, 0.24) for b in beats)
+        on = smooth((t - on_from) / 0.25) * (1 - smooth((t - laugh_end + 0.25) / 0.45))
+        bounce = sum(hump(t, b - 0.02, min(0.24, gap)) for b in beats)
         # a belly laugh shakes the whole body: each HA heaves the shoulders up
         # and drops them, the trunk rocks side to side every other beat
         squash(d, 0.3 * G * bounce * on)
@@ -344,16 +352,24 @@ def motions(s, cast, theme):
     }
 
 
-def face_keys(name, dur, teeth=False):
+def face_keys(name, dur, teeth=False, teeth_hold=False):
     seq = [(0, 'neutral')]
     if name == 'idle':
         seq += [(2.1, 'blink'), (2.24, 'neutral'), (4.0, 'blink'), (4.15, 'neutral')]
     elif name == 'chestbeat':
         beats = [(LAUGH['startMs'] + i * LAUGH['gapMs']) / 1000 for i in range(LAUGH['beats'])]
-        seq += [(0.2, 'laugh_inhale')]
-        for i, b in enumerate(beats):
-            seq += [(b, 'laugh_teeth' if teeth else 'laugh_peak'), (b + 0.15, 'laugh_rising')]
-        seq += [(LAUGH['endMs'] / 1000 - 0.15, 'laugh_settle')]
+        seq += [(min(0.2, beats[0] - 0.1), 'laugh_inhale')]
+        hold = min(0.15, LAUGH['gapMs'] / 1000 * 0.6)
+        if teeth and teeth_hold:
+            # the grin stays bared from the first HA until the last has
+            # faded (Mascot.svelte's HA_LIFE_MS), so no caption is ever up
+            # over a closed mouth (Saucer, user 2026-10-23)
+            seq += [(beats[0], 'laugh_teeth')]
+            seq += [(max(LAUGH['endMs'] / 1000 - 0.15, beats[-1] + 0.42), 'laugh_settle')]
+        else:
+            for i, b in enumerate(beats):
+                seq += [(b, 'laugh_teeth' if teeth else 'laugh_peak'), (b + hold, 'laugh_rising')]
+            seq += [(LAUGH['endMs'] / 1000 - 0.15, 'laugh_settle')]
     elif name == 'cheer':
         seq += [(0.12, 'grin'), (0.45, 'laugh_rising'), (0.6, 'laugh_peak'), (1.2, 'laugh_settle'), (1.5, 'grin')]
     elif name in ('alert', 'flinch'):
@@ -370,6 +386,114 @@ def to_spine(p):
     return (p[0] - ROOT[0], ROOT[1] - p[1])
 
 
+# -- cut pieces (2026-10-23, Putt's golfer) ------------------------------------
+class Cut:
+    """Arms and props cut off the drawing (the app's design/swing/
+    cut_golfer_arms.py) and hung on their own bones in front of the mesh:
+    two-bone IK arms reaching for `tgtL`/`tgtR` (children of the torso), a hand
+    on each forearm, the putter in the left hand, a ball on the root. Their
+    motion is written afterwards by the app's design/swing/build_golfer_swing.mjs."""
+
+    def __init__(self, folder):
+        self.folder = folder
+        self.meta = json.loads((folder / 'cut.json').read_text(encoding='utf-8'))
+        self.j = {k: tuple(v) for k, v in self.meta['joints'].items()}
+        self.boxes = self.meta['boxes']
+        self.order = self.meta['order']
+        # arms cut off whole and hung on IK; the default is the golfer's two
+        self.ik_arms = self.meta.get('ik_arms', ['L', 'R'])
+
+    @staticmethod
+    def ang(a, b):
+        """world angle of a->b in Spine's frame (y up), degrees"""
+        return math.degrees(math.atan2(-(b[1] - a[1]), b[0] - a[0]))
+
+    def rig_bones(self, bones, piv):
+        j = self.j
+        by = {b['name']: b for b in bones}
+        world = {}  # name -> (canvas pivot, world angle)
+        self.bend = {}
+
+        def local(name, parent, p, a, length=None):
+            pp, pa = world[parent] if parent in world else (piv[parent], 0.0)
+            dx, dy = to_spine(p)[0] - to_spine(pp)[0], to_spine(p)[1] - to_spine(pp)[1]
+            c, s_ = math.cos(math.radians(-pa)), math.sin(math.radians(-pa))
+            b = by.get(name) or {'name': name}
+            b.update(parent=parent, x=round(dx * c - dy * s_, 3), y=round(dx * s_ + dy * c, 3))
+            r = (a - pa + 540) % 360 - 180
+            b.pop('rotation', None)
+            if abs(r) > 1e-6:
+                b['rotation'] = round(r, 3)
+            if length:
+                b['length'] = round(length, 2)
+            if name not in by:
+                bones.append(b)
+                by[name] = b
+            world[name] = (p, a)
+
+        if 'rig' in self.meta:
+            # pieces on the mesh's own bones, as cut.json lists them
+            for b in self.meta['rig']['bones']:
+                local(b['name'], b['parent'], tuple(b['at']), b['angle'], b.get('length'))
+            self.world = world
+            return
+        for side in 'LR':
+            S, E, Wr = j[f'shoulder{side}'], j[f'elbow{side}'], j[f'wrist{side}']
+            local(f'arm{side}', 'torso', S, self.ang(S, E), math.dist(S, E))
+            local(f'fore{side}', f'arm{side}', E, self.ang(E, Wr), math.dist(E, Wr))
+        # the left hand points down the putter, so turning it turns the club
+        local('handL', 'foreL', j['wristL'], self.ang(j['grip'], j['head']), math.dist(j['wristL'], j['grip']))
+        local('club', 'handL', j['grip'], self.ang(j['grip'], j['head']), math.dist(j['grip'], j['head']))
+        local('handR', 'foreR', j['wristR'], self.ang(j['wristR'], (472, 640)), 80)
+        for side in 'LR':
+            local(f'tgt{side}', 'torso', j[f'wrist{side}'], 0.0)
+        # the ball sits on the ground in front of him until a swing sends it
+        local('ball', 'root', (250, 876), 0.0)
+        # an empty bone for the second track (see build_golfer_swing.mjs)
+        local('beat', 'root', piv['root'], 0.0)
+        self.world = world
+        # bend each elbow the way it is drawn
+        self.bend = {side: ((self.ang(j[f'elbow{side}'], j[f'wrist{side}']) - self.ang(j[f'shoulder{side}'], j[f'elbow{side}']) + 540) % 360 - 180) > 0 for side in 'LR'}
+
+    def row_height(self):
+        return max(h for _, _, _, h in self.boxes.values()) + 4
+
+    def pack(self, page, y0):
+        txt = ''
+        x = 2
+        for name in self.order:
+            img = Image.open(self.folder / 'parts' / f'{name}.png').convert('RGBA')
+            page.alpha_composite(img, (x, y0 + 2))
+            txt += f'part_{name}\nbounds:{x},{y0 + 2},{img.width},{img.height}\nindex:-1\n'
+            x += img.width + 4
+        assert x <= page.width, 'the cut pieces do not fit one row of the atlas'
+        return txt
+
+    def rig_slots(self, rig):
+        skin = rig['skins'][0]['attachments']
+        for name in self.order:
+            p, a = self.world[name]
+            bx, by_, w, h = self.boxes[name]
+            # each piece where it was cut from; the ball centred on its bone
+            cx, cy = p if name == 'ball' else (bx + w / 2, by_ + h / 2)
+            dx, dy = to_spine((cx, cy))[0] - to_spine(p)[0], to_spine((cx, cy))[1] - to_spine(p)[1]
+            c, s_ = math.cos(math.radians(-a)), math.sin(math.radians(-a))
+            slot = {'name': name, 'bone': name}
+            if name != 'ball':  # hidden until a swing shows it
+                slot['attachment'] = f'part_{name}'
+            rig['slots'].append(slot)
+            att = {'x': round(dx * c - dy * s_, 3), 'y': round(dx * s_ + dy * c, 3), 'width': w, 'height': h}
+            if abs(a) > 1e-6:
+                att['rotation'] = round(-a, 3)
+            skin[name] = {f'part_{name}': att}
+        if not self.ik_arms:
+            return
+        rig['ik'] = [
+            {'name': f'ik{side}', 'order': i, 'bones': [f'arm{side}', f'fore{side}'], 'target': f'tgt{side}', 'bendPositive': self.bend[side], 'softness': 2}
+            for i, side in enumerate(self.ik_arms)
+        ]
+
+
 def build(game, cast):
     global LAUGH
     app = next(APPS.glob(f'{game}Monkey*'))
@@ -377,17 +501,21 @@ def build(game, cast):
     s = SPEC[(theme, cast)]
     LAUGH = json.loads((app / 'src/game/laughTiming.json').read_text(encoding='utf-8'))
     folder = app / 'design/source' / theme / 'cast' / cast
-    full = Image.open(folder / 'normalized.png').convert('RGBA')
+    cut = Cut(folder / s['cut']) if s.get('cut') else None
+    if cut:
+        s = dict(s, ik_arms=cut.ik_arms)
+    cels = folder / s['cut'] / 'cels' if cut else folder / 'registered'
+    full = Image.open(cels / 'neutral.png' if cut else folder / 'normalized.png').convert('RGBA')
     expr = EXPR
     if 'teeth_split' in s:
         # the toothy laugh: laugh_peak's squeezed eyes over grin's bared teeth,
         # crossfaded over 8px below the nose (the cels are registered)
-        peak = np.asarray(Image.open(folder / 'registered/laugh_peak.png').convert('RGBA'), float)
-        grin = np.asarray(Image.open(folder / 'registered/grin.png').convert('RGBA'), float)
+        peak = np.asarray(Image.open(cels / 'laugh_peak.png').convert('RGBA'), float)
+        grin = np.asarray(Image.open(cels / 'grin.png').convert('RGBA'), float)
         y = np.arange(H, dtype=float)[:, None, None]
         k = np.clip((y - (s['teeth_split'] - 4)) / 8, 0, 1)
         k = k * k * (3 - 2 * k)
-        Image.fromarray((peak * (1 - k) + grin * k).round().astype(np.uint8)).save(folder / 'registered/laugh_teeth.png')
+        Image.fromarray((peak * (1 - k) + grin * k).round().astype(np.uint8)).save(cels / 'laugh_teeth.png')
         expr = EXPR + ('laugh_teeth',)
     sp = [p for p, _, _ in s['spine']]
 
@@ -396,6 +524,8 @@ def build(game, cast):
     par = {'hip': 'root', 'torso': 'hip', 'head': 'torso'}
     for side in 'LR':
         lg, ar = s['legs'][side], s['arms'][side]
+        if side in s.get('ik_arms', ()):
+            ar = [cut.j[f'shoulder{side}'], cut.j[f'elbow{side}']]
         piv[f'leg{side}'], par[f'leg{side}'] = lg[0], 'hip'
         piv[f'shin{side}'], par[f'shin{side}'] = lg[1], f'leg{side}'
         piv[f'arm{side}'], par[f'arm{side}'] = ar[0], 'torso'
@@ -414,6 +544,8 @@ def build(game, cast):
         if a:
             b['length'] = round(math.dist(a['pivot'], a['tip']), 2)
         bones.append(b)
+    if cut:
+        cut.rig_bones(bones, piv)
     idx = {n: i for i, n in enumerate(order)}
 
     # mesh
@@ -445,16 +577,18 @@ def build(game, cast):
     mesh = dict(type='mesh', uvs=uvs, triangles=tris, vertices=verts, hull=(COLS + ROWS) * 2, width=W, height=H)
 
     # atlas: the eight face cels
-    page = Image.new('RGBA', ((W + 4) * 4, (H + 4) * math.ceil(len(expr) / 4)))
+    page = Image.new('RGBA', ((W + 4) * 4, (H + 4) * math.ceil(len(expr) / 4) + (cut.row_height() if cut else 0)))
     atlas = f'monkey.png\nsize:{page.width},{page.height}\nfilter:Linear,Linear\npma:false\n'
     atts = {}
     for i, e in enumerate(expr):
-        cel = Image.open(folder / 'registered' / f'{e}.png').convert('RGBA')
+        cel = Image.open(cels / f'{e}.png').convert('RGBA')
         x, y = (i % 4) * (W + 4) + 2, (i // 4) * (H + 4) + 2
         page.alpha_composite(cel, (x, y))
         region = 'figure' if e == 'neutral' else 'figure_' + e
         atlas += f'{region}\nbounds:{x},{y},{W},{H}\noffsets:0,0,{W},{H}\nindex:-1\n'
         atts[region] = dict(mesh, path=region)
+    if cut:
+        atlas += cut.pack(page, (H + 4) * math.ceil(len(expr) / 4))
 
     # ── the mesh budget: pose with the same skinning Spine does and measure
     # every inked triangle (rest area, >= 0.55x, <= 1.55x, no flips)
@@ -614,14 +748,19 @@ def build(game, cast):
                 keep['scale'] = chs['scale']
             if keep:
                 out[b] = keep
+        if cut:
+            # the IK arms' motion is the app's design/swing/ script's
+            out = {b: v for b, v in out.items() if not (b[-1] in cut.ik_arms and b[:-1] in ('arm', 'fore'))}
         anim = {'bones': out}
         if name != 'flutter':
-            anim['slots'] = {'figure': {'attachment': face_keys(name, dur, 'laugh_teeth' in expr)}}
+            anim['slots'] = {'figure': {'attachment': face_keys(name, dur, 'laugh_teeth' in expr, s.get('teeth_hold', False))}}
         anims[name] = anim
 
     rig = {'skeleton': {'spine': '4.2.40', 'width': W, 'height': H, 'x': -280, 'y': 0},
            'bones': bones, 'slots': [{'name': 'figure', 'bone': 'root', 'attachment': 'figure'}],
            'skins': [{'name': 'default', 'attachments': {'figure': atts}}], 'animations': anims}
+    if cut:
+        cut.rig_slots(rig)
     out = app / 'static/assets/spines' / ('sushiMaster' if cast == 'mg' else 'sushiApprentice')
     page.save(out / 'monkey.png')
     (out / 'monkey.atlas').write_text(atlas)

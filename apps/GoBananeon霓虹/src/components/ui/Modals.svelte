@@ -660,17 +660,19 @@
 
 	/* the shade behind a modal: mine-dark, not jungle shade */
 	:global(html[data-ui-skin='neon'] .blur-layer) {
-		background-color: rgba(8, 8, 10, 0.74) !important;
+		background-color: rgba(5, 8, 24, 0.78) !important;
+		backdrop-filter: blur(5px);
 	}
 
 	/* the panel: slate in a stone edge, lit along its top like every object here */
 	:global(html[data-ui-skin='neon'] .ui-popup-standard-content-wrap) {
-		background: linear-gradient(160deg, #182345 0%, #101830 100%) !important;
-		border: 3px solid #39c7ed !important;
-		border-radius: 12px !important;
+		background: radial-gradient(ellipse at 15% 0%, #242657 0%, transparent 65%), linear-gradient(160deg, #141e3c 0%, #0b122b 100%) !important;
+		border: 1px solid #4da5c7 !important;
+		border-radius: 18px !important;
 		box-shadow:
 			0 12px 40px rgba(0, 0, 0, 0.7),
-			inset 0 1px 0 rgba(239, 225, 197, 0.18) !important;
+			0 0 36px rgba(66, 121, 210, 0.1),
+			inset 0 1px 0 rgba(151, 230, 255, 0.2) !important;
 	}
 
 	/* Every button plate in a modal: the Auto Spin round chips, the settings

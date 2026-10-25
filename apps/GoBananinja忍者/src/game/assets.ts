@@ -427,16 +427,16 @@
 		},
 	},
 	// Win-spray particles. The emitter is handed this whole sheet and gives each
-	// particle one random frame out of it, so the ten frames are ten viewing
-	// angles of the same banana rather than an animation — see
-	// design/pack_banana_particles.mjs.
+	// particle one random frame out of it, so the ten frames are ten views of
+	// the same object rather than an animation.
 	//
-	// It replaces `coins`, which was SD2_Coin: a Japanese five-yen piece with a
-	// Shiba Inu on it, left over from the template this game started from and
-	// about as far from a jungle-commando theme as an asset can get.
-	winBananas: {
+	// Black throwing stars (2026-10-23, design/pack_shuriken_particles.py): the
+	// H2 symbol's star, blackened, in the banana sheet's format and cell size.
+	// The bananas (goBananasWinBananas, design/pack_banana_particles.mjs) are
+	// still on disk if they are ever wanted back: point this key at them.
+	winShuriken: {
 		type: 'spriteSheet',
-		src: new URL('../../assets/sprites/goBananasWinBananas/bananas.json', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaWinShuriken/shuriken.json', import.meta.url).href,
 	},
 	sound: {
 		type: 'audio',

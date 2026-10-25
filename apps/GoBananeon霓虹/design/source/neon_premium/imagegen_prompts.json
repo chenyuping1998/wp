@@ -1,0 +1,49 @@
+{
+  "tool": "OpenAI built-in image_gen",
+  "intent": "Original premium replacements for NEON game; old art supplied for identity/layout reference.",
+  "sharedPrompt": "Produce a completely refreshed premium 2D slot game symbol for our original NEON street-DJ game, using the attached old symbol ONLY as identity and layout reference. Square 1024x1024 RGBA transparent background. Remove the entire square panel, tile border, corner screws and background. One clean isolated sculptural object, fully inside canvas, 6% transparent margin; tasteful cyan rim light from left and warm-magenta rim from right, strong readable silhouette at 110px. Rich painted materials and controlled specular highlights, subtle contact shading painted on object only, crisp edges, professional hand-polished game art rather than generic glossy plastic. Greater material separation and less blown-out white than the reference. No unrelated objects, no writing, no logo, no watermark. Do not add any ground plane, card or frame. Preserve supplied essential component positions to fit an existing deformation rig. ",
+  "assets": [
+    {
+      "key": "h1",
+      "prompt": "A deep hot-pink lacquer and dark gunmetal retro DJ BOOMBOX. Front view, low body with two dark graphite subwoofer cones with luminous hot-pink rings (not white disks), brushed titanium handle, small cyan equalizer display and tactile controls. Speaker centers at normalized (.24,.64) and (.73,.64), radius .16, handle spans x.26..73 y.13, body bottom y.87. Keep horizontal symmetry. Make it weighty, expensive and cool.",
+      "savedFile": "symbols/h1.png",
+      "outputHint": "Generated images are saved to C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e as C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e\\exec-51959e3d-c27b-4dfa-a120-fff3554dab9f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "key": "h2",
+      "prompt": "A futuristic full-face MOTORCYCLE HELMET in pearl-white ceramic, dark gunmetal, and vivid icy-cyan enamel. Three-quarter view facing LEFT. Large deep teal iridescent reflective visor occupies x.08..73/y.18..52 with rich gradients, hinge at (.79,.39). Helmet silhouette x.07..93 y.06..90. Premium sculpted shell, subtle carbon fiber vents; cyan as distinct pay color. Not an astronaut helmet.",
+      "savedFile": "symbols/h2.png",
+      "outputHint": "Generated images are saved to C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e as C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e\\exec-c0d158c6-b881-4885-8049-466345c6440c.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "key": "h3",
+      "prompt": "A lime-green GRAFFITI SPRAY CAN with brushed steel collar and nozzle. Tall cylinder tilted diagonally from nozzle at (.33,.14) down to base(.66,.87), width .28. A restrained, beautifully shaped lime paint mist sprays to upper right, within x.44..92 y.07..42; a few well-placed droplets. Distinct black graphic bands WITHOUT lettering. Satin anodized aluminum and wet paint drips, strong acid-lime identity; silver highlights controlled. Keep nozzle and body as one connected object.",
+      "savedFile": "symbols/h3.png",
+      "outputHint": "Generated images are saved to C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e as C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e\\exec-b85c616f-66cf-44e0-85a0-cbcd7075dd80.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "key": "h4",
+      "prompt": "A premium tangerine-orange high-top STREET SNEAKER, heel on LEFT, toe pointing to lower RIGHT. Hand-painted leather and technical fabric, tactile white laces, restrained cyan light strip in sole, warm amber highlights. Main silhouette x.08..92 y.09..89, toe around(.81,.66), heel loop(.18,.25), sole y.82. Laces clearly readable. Deliberate sculptural proportions, chunky stylish sole and believable seams. No shoe company logos.",
+      "savedFile": "symbols/h4.png",
+      "outputHint": "Generated images are saved to C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e as C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e\\exec-4ef72374-b50f-4c4e-8314-ea1e9b47f8b6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "key": "w",
+      "prompt": "A charismatic dark-furred GORILLA DJ bust wearing magenta/cyan shutter sunglasses, yellow banana-shaped headphones around neck and an iridescent silver streetwear bomber jacket. Same recognizable mascot as reference. Broad confident grin with a few large readable teeth, handsome stylized features, detailed directional fur. Right side of image has face centered(.55,.36), head x.32..79 y.11..62; left side has a raised hand in rock-horns pose centered(.22,.29), wrist(.27,.49). Lower body/jacket x.08..92 y.56..94. EXACTLY five anatomically coherent fingers on the raised hand: index and little finger up, middle and ring folded with thumb over them. Keep all hair/hand inside transparent safety margin. Premium character painting, clear expressive silhouette. No WILD text.",
+      "savedFile": "symbols/w.png",
+      "outputHint": "Generated images are saved to C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e as C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e\\exec-d01af806-6703-4964-8ae3-77c92d91a817.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "key": "s",
+      "prompt": "A luxurious bunch of four sculpted GOLDEN BANANAS with subtle inlaid cyan circuit traces, curved fruit fans toward LEFT, main stem joined at upper RIGHT around(.75,.12), tips toward upper LEFT(.10,.23), bunch silhouette x.08..91 y.07..90. Rich amber creases and warm gold midtones, restrained champagne highlights. Clearly recognizable bananas and a distinct golden scatter identity. Elegant polished metal with fine brushed detail and very few sharp glints. No text or badge.",
+      "savedFile": "symbols/s.png",
+      "outputHint": "Generated images are saved to C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e as C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e\\exec-cde8db22-1ff3-47d0-b5be-25023e664f96.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "key": "b",
+      "prompt": "An original futuristic PULSE BOMB: a heavy dark-gunmetal spherical shell with a violet glass energy chamber, glowing contained purple plasma core, titanium segmented rim and short curved cable fuse with a small hot-pink spark. Sphere centered(.44,.59), radius .35; fuse cap(.55,.18); curved fuse arches through(.54,.12),(.67,.05),(.75,.09), ends with spark(.88,.28). Readable round silhouette. Energy bright at center but mostly richly saturated purple, not a white blob. Industrial detail and tactile worn metal, the distinctive hero object for a spectacular electric explosion. No extra loose particles beyond small fuse spark.",
+      "savedFile": "symbols/b.png",
+      "outputHint": "Generated images are saved to C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e as C:\\Users\\cheny\\.codex\\generated_images\\01a15930-9ec1-7080-be1c-2a9a995d659e\\exec-1ee6871a-3fec-4232-81f2-41bd230046bb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    }
+  ]
+}

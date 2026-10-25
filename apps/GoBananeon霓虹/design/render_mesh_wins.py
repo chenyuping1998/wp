@@ -22,7 +22,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 APP = Path(__file__).resolve().parents[1]
-SPRITES = APP / 'static/assets/sprites/goBananasSymbolsV3'
+SPRITES = APP / 'static/assets/sprites/goBananeonSymbolsV4'
 SCALE = 3
 GOLD = np.array([0xff, 0xd7, 0x5e], float) / 255
 # must match make_symbol_layers.mjs
@@ -32,13 +32,13 @@ SHADOW_ALPHA, SHADOW_SPREAD, SHADOW_DROP = 0.55, 0.12, 3
 
 # the parts that bend, per symbol, in canvas px
 CROPS = {
-    'H3': [('upper tips', (84, 10, 172, 60)), ('left head', (8, 40, 100, 150)), ('right head', (156, 40, 248, 150))],
-    'H1': [('flame', (90, 80, 170, 180)), ('lantern', (56, 16, 200, 232))],
-    'H2': [('crystals', (56, 8, 212, 210))],
-    'H4': [('load', (16, 14, 240, 110)), ('cart', (16, 70, 240, 240))],
-    'W': [('face + banana', (40, 120, 240, 250)), ('lamp', (130, 14, 230, 100))],
-    'S': [('bunch', (16, 20, 220, 190))],
-    'B': [('bundle + fuse', (30, 20, 240, 230))],
+    'H3': [('nozzle + mist', (54, 6, 248, 140)), ('can body', (60, 55, 220, 238))],
+    'H1': [('speakers', (12, 105, 244, 224)), ('handle', (48, 10, 208, 66))],
+    'H2': [('visor + hinge', (12, 38, 232, 154))],
+    'H4': [('laces + tab', (12, 12, 220, 144)), ('toe + sole', (150, 126, 250, 232))],
+    'W': [('horns hand', (8, 8, 104, 142)), ('face', (76, 20, 208, 170))],
+    'S': [('bunch + stem', (12, 10, 244, 240))],
+    'B': [('ball + plasma', (16, 52, 218, 244)), ('hose + spark', (118, 0, 256, 108))],
     'L1': [('A', (24, 22, 232, 232))],
     'L2': [('K', (24, 22, 232, 232))],
     'L3': [('Q', (24, 22, 232, 232))],

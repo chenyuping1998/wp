@@ -79,7 +79,9 @@
 		fontFamily: uiTheme.fontFamily,
 		...(uiTheme.labelFontWeight ? { fontWeight: uiTheme.labelFontWeight } : {}),
 		fontSize: UI_BASE_FONT_SIZE,
-		fill: accent.label,
+		// uiTheme.labelHoverColor: the caption's colour under the cursor
+		// (interactive panels only, i.e. Bet). Undefined keeps accent.label.
+		fill: props.hovered && uiTheme.labelHoverColor !== undefined ? uiTheme.labelHoverColor : accent.label,
 		stroke: uiTheme.valueStroke,
 		strokeThickness: 3,
 	});

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256">
+	<defs>
+	<linearGradient id="face" x1="0" y1="0" x2="0.15" y2="1"><stop stop-color="#d7b7ff"/><stop offset=".42" stop-color="#9064d2"/><stop offset=".47" stop-color="#d7b7ff"/><stop offset="1" stop-color="#9064d2"/></linearGradient>
+	<linearGradient id="edge" x2=".6" y2="1"><stop stop-color="#d7b7ff"/><stop offset=".44" stop-color="#9064d2"/><stop offset="1" stop-color="#39275d"/></linearGradient>
+	<clipPath id="letter"><text x="128" y="176" text-anchor="middle" font-family="Titan One" font-size="112" letter-spacing="-6">10</text></clipPath>
+	</defs>
+	<g stroke-linejoin="round">
+	<g transform="translate(0 9)" fill="#39275d" stroke="#080e24" stroke-width="10"><text x="128" y="176" text-anchor="middle" font-family="Titan One" font-size="112" letter-spacing="-6">10</text></g>
+	<g fill="url(#edge)" stroke="#0b142b" stroke-width="9"><text x="128" y="176" text-anchor="middle" font-family="Titan One" font-size="112" letter-spacing="-6">10</text></g>
+	<g fill="url(#edge)" stroke="url(#edge)" stroke-width="4"><text x="128" y="176" text-anchor="middle" font-family="Titan One" font-size="112" letter-spacing="-6">10</text></g>
+	<g fill="url(#face)" stroke="#d7b7ff" stroke-width=".7"><text x="128" y="176" text-anchor="middle" font-family="Titan One" font-size="112" letter-spacing="-6">10</text></g>
+	</g>
+	<g clip-path="url(#letter)" fill="#ffffff" opacity=".15"><path d="M22 63L216 38L226 66L20 97Z"/><path d="M20 102L233 73L233 78L20 109Z"/></g>
+	</svg>

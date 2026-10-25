@@ -11,7 +11,7 @@
 	 *
 	 * The tiers are told apart at a glance by how much dynamite is on the card
 	 * (one bundle, two, three) and by the blast ladder under the title: how many
-	 * reels the FIRST blast covers. Those are the levels the maths opens each
+	 * reels each Dynamite covers before the current spin is collected. Those are the levels the maths opens each
 	 * buy at (buy_start_banked 0 / 2 / 4 -> levels 1 / 2 / 3, game_config.py).
 	 *
 	 * Choosing a card hands over to the shared ModalBuyBonusConfirm, exactly as
@@ -27,6 +27,7 @@
 	import { numberToCurrencyString } from 'utils-shared/amount';
 	import { base } from '$app/paths';
 	import config from '../../game/config';
+	import { startingBlastLevel } from '../../game/blastRules';
 
 	const { eventEmitter } = getContextEventEmitter<EmitterEventModal>();
 
@@ -43,7 +44,7 @@
 		/** background-position of the scene */
 		focus?: string;
 		heroes: Hero[];
-		/** the row under the title: coin pips (respins) or dynamite sticks (first blast) */
+		/** the row under the title: coin pips (respins) or dynamite sticks (starting width per Dynamite) */
 		meter: { kind: 'coins' | 'blast'; on: number; of: number; label: string };
 		points: string[];
 		hot?: boolean;
@@ -72,8 +73,8 @@
 			tag: 'FREE SPINS',
 			scene: art('buy_art_mine.jpg'),
 			heroes: [{ src: TNT, w: 56, x: -28, y: 14 }],
-			meter: { kind: 'blast', on: 1, of: 5, label: 'FIRST BLAST · 1 REEL' },
-			points: ['8 free spins', 'Every Dynamite widens the next blast'],
+			meter: { kind: 'blast', on: startingBlastLevel('bonus100'), of: 5, label: `START WIDTH · ${startingBlastLevel('bonus100')} REEL/TNT` },
+			points: ['8 free spins', 'Collect Dynamite to reach wider levels'],
 		},
 		BONUS200: {
 			title: 'SUPER FREE SPINS',
@@ -85,8 +86,8 @@
 				{ src: TNT, w: 48, x: -45, y: 22, r: -14 },
 				{ src: TNT, w: 48, x: -4, y: 18, r: 10 },
 			],
-			meter: { kind: 'blast', on: 2, of: 5, label: 'FIRST BLAST · 2 REELS' },
-			points: ['8 free spins', 'The blast opens two reels wide'],
+			meter: { kind: 'blast', on: startingBlastLevel('bonus200'), of: 5, label: `START WIDTH · ${startingBlastLevel('bonus200')} REELS/TNT` },
+			points: ['8 free spins', '2 collected; upgrades apply this spin'],
 		},
 		BONUS300: {
 			title: 'MAX FREE SPINS',
@@ -99,8 +100,8 @@
 				{ src: TNT, w: 44, x: 5, y: 28, r: 18 },
 				{ src: TNT, w: 52, x: -26, y: 10 },
 			],
-			meter: { kind: 'blast', on: 3, of: 5, label: 'FIRST BLAST · 3 REELS' },
-			points: ['8 free spins', 'The blast opens three reels wide'],
+			meter: { kind: 'blast', on: startingBlastLevel('bonus300'), of: 5, label: `START WIDTH · ${startingBlastLevel('bonus300')} REELS/TNT` },
+			points: ['8 free spins', '4 collected; upgrades apply this spin'],
 			hot: true,
 		},
 	};
@@ -230,7 +231,11 @@
 					{/if}
 				{/each}
 			</div>
-			<div class="foot">All features play at {(config.rtp * 100).toFixed(0)}% RTP · Max win 10,000×</div>
+			<div class="foot">
+				Starting width is per Dynamite before collection. Upgrades apply immediately;
+				multiple blasts can cover all five reels.<br />
+				All features play at {(config.rtp * 100).toFixed(0)}% RTP · Max win 10,000×
+			</div>
 		</div>
 	</Popup>
 {/if}

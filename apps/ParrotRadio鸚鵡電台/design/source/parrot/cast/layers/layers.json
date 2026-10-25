@@ -1,0 +1,390 @@
+{
+  "canvas": [
+    1024,
+    1536
+  ],
+  "ground": [
+    512,
+    1450
+  ],
+  "joints": {
+    "root": [
+      512,
+      1450
+    ],
+    "hips": [
+      510,
+      1060
+    ],
+    "chest": [
+      510,
+      780
+    ],
+    "neck": [
+      500,
+      650
+    ],
+    "head": [
+      500,
+      430
+    ],
+    "crest": [
+      465,
+      190
+    ],
+    "headphones": [
+      500,
+      370
+    ],
+    "eyepatch": [
+      625,
+      410
+    ],
+    "monocle": [
+      625,
+      445
+    ],
+    "chain": [
+      535,
+      740
+    ],
+    "tie": [
+      480,
+      750
+    ],
+    "rose": [
+      610,
+      785
+    ],
+    "catnip": [
+      400,
+      510
+    ],
+    "upper_front": [
+      355,
+      720
+    ],
+    "fore_front": [
+      300,
+      900
+    ],
+    "hand_front": [
+      280,
+      1060
+    ],
+    "upper_back": [
+      690,
+      730
+    ],
+    "fore_back": [
+      770,
+      880
+    ],
+    "hand_back": [
+      800,
+      1040
+    ],
+    "tail_1": [
+      730,
+      1110
+    ],
+    "tail_2": [
+      780,
+      1210
+    ],
+    "tail_3": [
+      815,
+      1310
+    ],
+    "tail_4": [
+      835,
+      1390
+    ],
+    "whiskers_left": [
+      415,
+      490
+    ],
+    "whiskers_right": [
+      565,
+      490
+    ],
+    "turntable_left": [
+      310,
+      1205
+    ],
+    "turntable_right": [
+      720,
+      1205
+    ]
+  },
+  "layers": {
+    "tail": {
+      "bone": "tail_1",
+      "rect": [
+        550,
+        1020,
+        875,
+        1510
+      ],
+      "slot": "tail",
+      "visible": true
+    },
+    "wing_back_upper": {
+      "bone": "upper_back",
+      "rect": [
+        665,
+        710,
+        900,
+        995
+      ],
+      "slot": "wing_back_upper",
+      "visible": true
+    },
+    "wing_back_tip": {
+      "bone": "fore_back",
+      "rect": [
+        730,
+        895,
+        980,
+        1180
+      ],
+      "slot": "wing_back_tip",
+      "visible": true
+    },
+    "body": {
+      "bone": "chest",
+      "rect": [
+        270,
+        620,
+        750,
+        1135
+      ],
+      "slot": "body",
+      "visible": true
+    },
+    "chain": {
+      "bone": "chain",
+      "rect": [
+        340,
+        700,
+        690,
+        995
+      ],
+      "slot": "chain",
+      "visible": true
+    },
+    "face_idle": {
+      "bone": "head",
+      "rect": [
+        165,
+        160,
+        840,
+        750
+      ],
+      "slot": "face",
+      "visible": true
+    },
+    "face_hype": {
+      "bone": "head",
+      "rect": [
+        165,
+        160,
+        840,
+        750
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_smug": {
+      "bone": "head",
+      "rect": [
+        165,
+        160,
+        840,
+        750
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_awkward": {
+      "bone": "head",
+      "rect": [
+        165,
+        160,
+        840,
+        750
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_shock": {
+      "bone": "head",
+      "rect": [
+        165,
+        160,
+        840,
+        750
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_party": {
+      "bone": "head",
+      "rect": [
+        165,
+        160,
+        840,
+        750
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_blink": {
+      "bone": "head",
+      "rect": [
+        165,
+        160,
+        840,
+        750
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_squawk": {
+      "bone": "head",
+      "rect": [
+        165,
+        160,
+        840,
+        750
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "crest": {
+      "bone": "crest",
+      "rect": [
+        325,
+        55,
+        625,
+        285
+      ],
+      "slot": "crest",
+      "visible": true
+    },
+    "headphones": {
+      "bone": "headphones",
+      "rect": [
+        120,
+        120,
+        900,
+        725
+      ],
+      "slot": "headphones",
+      "visible": true
+    },
+    "eyepatch": {
+      "bone": "eyepatch",
+      "rect": [
+        520,
+        335,
+        735,
+        545
+      ],
+      "slot": "eyepatch",
+      "visible": true
+    },
+    "wing_front_upper": {
+      "bone": "upper_front",
+      "rect": [
+        155,
+        700,
+        425,
+        1000
+      ],
+      "slot": "wing_front_upper",
+      "visible": true
+    },
+    "wing_front_mid": {
+      "bone": "fore_front",
+      "rect": [
+        125,
+        855,
+        405,
+        1120
+      ],
+      "slot": "wing_front_mid",
+      "visible": true
+    },
+    "wing_front_tip_scratch": {
+      "bone": "hand_front",
+      "rect": [
+        110,
+        990,
+        400,
+        1185
+      ],
+      "slot": "hand_front",
+      "visible": true
+    },
+    "wing_front_tip_point": {
+      "bone": "hand_front",
+      "rect": [
+        110,
+        990,
+        400,
+        1185
+      ],
+      "slot": "hand_front",
+      "visible": false
+    },
+    "wing_front_tip_up": {
+      "bone": "hand_front",
+      "rect": [
+        110,
+        990,
+        400,
+        1185
+      ],
+      "slot": "hand_front",
+      "visible": false
+    },
+    "wing_front_tip_hold": {
+      "bone": "hand_front",
+      "rect": [
+        110,
+        990,
+        400,
+        1185
+      ],
+      "slot": "hand_front",
+      "visible": false
+    },
+    "booth": {
+      "bone": "root",
+      "rect": [
+        65,
+        1070,
+        970,
+        1510
+      ],
+      "slot": "booth",
+      "visible": true
+    }
+  },
+  "order": [
+    "tail",
+    "wing_back_upper",
+    "wing_back_tip",
+    "body",
+    "chain",
+    "headphones",
+    "face_idle",
+    "crest",
+    "eyepatch",
+    "wing_front_upper",
+    "wing_front_mid",
+    "wing_front_tip_scratch",
+    "booth"
+  ]
+}

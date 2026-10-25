@@ -791,7 +791,7 @@ const cheer = {
 			translate: [
 				{ time: 0, x: 0, y: 0 },
 				{ time: 0.18, x: 0, y: -26 }, // load
-				{ time: 0.42, x: 0, y: 48 }, // off the ground
+				{ time: 0.42, x: 0, y: 64 }, // off the ground
 				{ time: 0.66, x: 0, y: 4 }, // land, and take the weight
 				{ time: 0.78, x: 0, y: -8 },
 				{ time: 1.02, x: 0, y: 18 }, // second, smaller hop
@@ -1740,7 +1740,7 @@ const FLINCH_END = 1.0;
 // this mascot, so it goes up twice as high and hangs a little longer.
 const UP = FLINCH_BANG + 0.12; // top of the hop
 const LAND = FLINCH_BANG + 0.28;
-const HOP = 46;
+const HOP = 62;
 const flinch = {
 	bones: {
 		// The legs hang from the hip, so the hip carries the whole body. On the
@@ -2120,7 +2120,7 @@ const flutter = {
 // hang from it, and the feet would leave the floor — and NOT the chest beat or
 // the throw: Mascot.svelte places the impact stars on the fists and the prop
 // leaves the hand at positions measured off those two.
-const AMPLIFY = { idle: 1.5, cheer: 1.3, nod: 1.4, alert: 1.35, glance: 1.45, flinch: 1.2 };
+const AMPLIFY = { idle: 1.6, cheer: 1.55, nod: 1.6, alert: 1.6, glance: 1.65, flinch: 1.45 };
 const ARM_CAP = { armL: MAX_SHOULDER, armR: MAX_SHOULDER, armL_fore: MAX_ELBOW, armR_fore: MAX_ELBOW };
 const amplify = (animation, k) => {
 	const armK = 1 + (k - 1) * 0.5;
@@ -2173,6 +2173,9 @@ const skeleton = {
 		),
 };
 
+// Rebuilding the art must retain the measured Iron Jaw motion adaptation.
+const { applyIronIdle } = await import('./adapt_iron_idle.mjs');
+applyIronIdle(skeleton);
 fs.writeFileSync(path.join(OUT, 'monkey.json'), JSON.stringify(skeleton, null, 2) + '\n');
 
 // The hand's position at RELEASE_AT, in skeleton units. TransitionAnimation

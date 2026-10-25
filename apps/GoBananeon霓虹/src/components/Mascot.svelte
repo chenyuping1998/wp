@@ -3,6 +3,9 @@
 	// four scatters is something only the book knows, and a component that had to
 	// go and find that out would be reaching across the game to do it.
 	export type EmitterEventMascot =
+		| { type: 'mascotDjPreview' }
+		| { type: 'mascotPunchPreview' }
+		| { type: 'mascotIdlePreview'; animation: 'club_idle' | 'idle_original' | 'iron_idle_weave' | 'iron_idle_bounce' }
 		| { type: 'mascotChestBeat' }
 		// Raised by the transition as it begins, so the wind-up happens before the
 		// dynamite exists. See THROW_RELEASE_MS there.
@@ -16,9 +19,12 @@
 	import { Container, Graphics, SpineProvider, SpineTrack } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
+	import { stateBet, stateModal } from 'state-shared';
 
 	import { getContext } from '../game/context';
+	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
+	import { MascotIdleDirector, type MascotIdleGesture } from '../game/mascotDirector';
 
 	const context = getContext();
 
@@ -55,6 +61,13 @@
 
 		const gapLeft = board.x + frameHalfWidth;
 		const gapWidth = layout.width - gapLeft;
+		// A tall phone has a clear stage above the reels. Keep the DJ visible
+		// there at a useful size, with his feet just above the housing.
+		if (context.stateLayoutDerived.layoutType() === 'portrait') {
+			const top = board.y - frameHalfHeight;
+			const height = Math.min(340, top - 70);
+			if (height >= 220) return { x: layout.width * 0.76, y: top - 12, scale: height / ART.height };
+		}
 		if (gapWidth < MIN_GAP) return null;
 
 		// One scale, not a width and a height: setting both on a pixi container
@@ -316,39 +329,65 @@
 	// Transitions run off the track's own complete callback rather than timers, so
 	// a one-shot cannot be cut short or leave him stuck in a pose because a frame
 	// was dropped.
-	let animationName = $state('idle');
+	let idleName = $state('club_idle');
+	let animationName = $state('club_idle');
 	let loop = $state(true);
-	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'flinch', 'alert', 'glance'];
+	const clubRate = $derived((context.stateGame.gameType === 'basegame' && stateBet.activeBetModeKey !== HOLD_AND_SPIN_MODE_KEY ? 105 : 128) / 125);
+	const idleRate = $derived(animationName === 'club_idle' || (animationName === 'idle' && idleName === 'club_idle') ? clubRate : 1);
+	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'flinch', 'alert', 'glance', 'iron_punch', 'dj_scratch'];
 	// The small reactions (flinch, alert, glance, nod) may interrupt each other
 	// and idle; they never cut into the big three, which each mean something.
-	const INTERRUPTIBLE = ['idle', 'nod', 'glance', 'alert', 'flinch'];
+	const INTERRUPTIBLE = ['idle', 'club_idle', 'idle_original', 'iron_idle_weave', 'iron_idle_bounce', 'nod', 'glance', 'alert', 'flinch'];
 	const react = (name: string) => {
 		if (!INTERRUPTIBLE.includes(animationName)) return;
 		play(name, false);
 	};
 
-	// GLANCE: idle variety. The idle loop plays for as long as the player sits
-	// there; every so often he looks over at the board and back. Sooner in the
-	// free game, and sooner still as the blast level climbs, so the tension shows
-	// on him too.
-	let glanceTimer = 0;
-	const scheduleGlance = () => {
-		clearTimeout(glanceTimer);
-		const fg = context.stateGame.gameType === 'freegame';
-		const level = Math.max(1, context.stateGame.blastLevel ?? 1);
-		const base = fg ? Math.max(3500, 7000 - level * 700) : 8000;
-		glanceTimer = setTimeout(() => {
-			if (placement && animationName === 'idle') play('glance', false);
-			scheduleGlance();
-		}, base + Math.random() * base * 0.6) as unknown as number;
-	};
-	scheduleGlance();
-	onDestroy(() => clearTimeout(glanceTimer));
-
-	const play = (name: string, loops: boolean) => {
+	let directedGesture: MascotIdleGesture | null = null;
+	let stageVisible = true;
+	const play = (name: string, loops: boolean, directed = false) => {
+		directedGesture = directed ? name as MascotIdleGesture : null;
+		if (name !== 'throwit') clearTimeout(voiceTimer);
+		if (animationName === 'dj_scratch' && name !== 'dj_scratch') {
+			context.eventEmitter.broadcast({ type: 'soundDjScratchStop' });
+		}
+		if (name === 'dj_scratch' && animationName !== 'dj_scratch') {
+			context.eventEmitter.broadcast({ type: 'soundDjScratch' });
+		}
 		animationName = name;
 		loop = loops;
 	};
+	onDestroy(() => context.eventEmitter.broadcast({ type: 'soundDjScratchStop' }));
+
+	// The continuous beat has occasional small acts and one sparse DJ phrase.
+	// Busy reels, presentations, menus and hidden tabs never bank gestures.
+	onMount(() => {
+		const director = new MascotIdleDirector({ random: Math.random });
+		const manualReview = import.meta.env.DEV && new URL(window.location.href).searchParams.get('artReview') === '1';
+		const timer = setInterval(() => {
+			const gesture = director.tick(performance.now(), {
+				enabled: !manualReview,
+				visible: !document.hidden,
+				onStage: placement !== null && stageVisible,
+				idle: animationName === idleName,
+				boardSettled: context.stateGame.board.every((reel) => reel.reelState.motion === 'stopped'),
+				winActive: context.stateGame.winLitCells !== null,
+				modalOpen: stateModal.modal !== null,
+				activeGesture: directedGesture,
+			});
+			if (gesture) play(gesture, false, true);
+		}, 200);
+		const onVisibility = () => {
+			director.reset();
+			if (document.hidden && (animationName === 'dj_scratch' || directedGesture)) play(idleName, true);
+		};
+		document.addEventListener('visibilitychange', onVisibility);
+		return () => {
+			clearInterval(timer);
+			director.stop();
+			document.removeEventListener('visibilitychange', onVisibility);
+		};
+	});
 
 	// He makes a noise for two things, and stays quiet for everything else.
 	//
@@ -378,6 +417,19 @@
 	};
 
 	context.eventEmitter.subscribeOnMount({
+		boardHide: () => { stageVisible = false; if (directedGesture) play(idleName, true); },
+		boardShow: () => { stageVisible = true; },
+		mascotDjPreview: () => {
+			if (import.meta.env.DEV && INTERRUPTIBLE.includes(animationName)) play('dj_scratch', false);
+		},
+		mascotPunchPreview: () => {
+			if (import.meta.env.DEV && INTERRUPTIBLE.includes(animationName)) play('iron_punch', false);
+		},
+		mascotIdlePreview: ({ animation }) => {
+			if (!import.meta.env.DEV) return;
+			idleName = animation;
+			if (INTERRUPTIBLE.includes(animationName)) play(idleName, true);
+		},
 		winUpdate: ({ winLevelData }) => {
 			// Only for a win the game is itself making a fuss about. Reacting to
 			// every paying spin would have him bouncing through most of an 18-spin
@@ -419,7 +471,7 @@
 		// mid-air where his head used to be.
 		mascotGoggleTease: () => {
 			if (!placement) return;
-			if (animationName !== 'idle') return;
+			if (animationName !== idleName) return;
 			startTease();
 		},
 
@@ -427,7 +479,7 @@
 			play('throwit', false);
 			// on the release, not on the wind-up
 			clearTimeout(voiceTimer);
-			voiceTimer = setTimeout(() => say('effort'), 520) as unknown as number;
+			voiceTimer = setTimeout(() => say('effort'), 580) as unknown as number;
 		},
 
 		// An ordinary base-game win. This is the common case by a wide margin, so
@@ -440,7 +492,7 @@
 		// win would be near-continuous and would stop meaning anything.
 		winLinesShow: () => {
 			if (context.stateGame.gameType !== 'basegame') return;
-			if (animationName !== 'idle') return;
+			if (animationName !== idleName) return;
 			play('nod', false);
 		},
 
@@ -466,6 +518,7 @@
 			trackIndex={0}
 			{animationName}
 			{loop}
+			timeScale={idleRate}
 			{...{
 				/*
 				 * Cross-fade instead of cut. Every change of animation used to be a
@@ -476,19 +529,21 @@
 				 * a third of a second has missed the thing it was reacting to — so it
 				 * is just long enough to cover the pop.
 				 */
-				mixDuration: 0.16,
+				mixDuration: animationName === 'flinch' ? 0.07 : animationName === 'throwit' ? 0.09 : animationName === 'dj_scratch' || animationName === idleName ? 0.2 : 0.14,
 			}}
 			listener={{
 				complete: (entry) => {
 					const finished = entry.animation?.name;
 					// idle loops, so complete fires on every pass — only the
 					// one-shots have anywhere to go from here.
-					if (finished && ONE_SHOTS.includes(finished)) play('idle', true);
+					// A fading-out action can complete after a throw has interrupted it.
+					// Only the active action may hand control back to idle.
+					if (finished === animationName && finished && ONE_SHOTS.includes(finished)) play(idleName, true);
 				},
 			}}
 		/>
-		<!-- The original PSD accessory motion remains on track 1. -->
-		<SpineTrack trackIndex={1} animationName="flutter" loop />
+		<!-- Accessories share the room's beat; action strokes keep their own timing. -->
+		<SpineTrack trackIndex={1} animationName="club_flutter" loop timeScale={animationName === 'dj_scratch' ? 1 : clubRate} />
 	</SpineProvider>
 
 	<!--

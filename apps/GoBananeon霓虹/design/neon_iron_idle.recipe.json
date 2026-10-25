@@ -1,0 +1,142 @@
+{
+  "fps": 60,
+  "facing": -1,
+  "characterHeight": 884,
+  "maxSegment": 0.12,
+  "roles": {
+    "hip": "torso",
+    "head": "head"
+  },
+  "animations": [
+    {
+      "name": "iron_idle_weave",
+      "preset": "fighter-idle-weave",
+      "params": {
+        "period": 1.99,
+        "intensity": 0.55,
+        "hair": "none"
+      },
+      "tracks": [
+        {
+          "bone": "torso",
+          "channel": "scaleX",
+          "type": "wave",
+          "amplitude": 0.004,
+          "period": 1.99,
+          "peakAt": 0.8358,
+          "offset": 1
+        },
+        {
+          "bone": "torso",
+          "channel": "scaleY",
+          "type": "wave",
+          "amplitude": 0.009,
+          "period": 1.99,
+          "peakAt": 0.8358,
+          "offset": 1
+        },
+        {
+          "bone": "armL",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": 1.3,
+          "period": 1.99,
+          "peakAt": 0.199,
+          "offset": 0
+        },
+        {
+          "bone": "armR",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": 1.1,
+          "period": 1.99,
+          "peakAt": 1.194,
+          "offset": 0
+        },
+        {
+          "bone": "armL_fore",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": 1.5,
+          "period": 1.99,
+          "peakAt": 0.35819999999999996,
+          "offset": 0
+        },
+        {
+          "bone": "armR_fore",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": 1.3,
+          "period": 1.99,
+          "peakAt": 1.3532000000000002,
+          "offset": 0
+        }
+      ]
+    },
+    {
+      "name": "iron_idle_bounce",
+      "preset": "fighter-idle-bounce",
+      "params": {
+        "period": 1.99,
+        "intensity": 0.38,
+        "hair": "none"
+      },
+      "tracks": [
+        {
+          "bone": "torso",
+          "channel": "scaleX",
+          "type": "wave",
+          "amplitude": 0.004,
+          "period": 1.99,
+          "peakAt": 0.8358,
+          "offset": 1
+        },
+        {
+          "bone": "torso",
+          "channel": "scaleY",
+          "type": "wave",
+          "amplitude": 0.009,
+          "period": 1.99,
+          "peakAt": 0.8358,
+          "offset": 1
+        },
+        {
+          "bone": "armL",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": 1.3,
+          "period": 1.99,
+          "peakAt": 0.199,
+          "offset": 0
+        },
+        {
+          "bone": "armR",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": 1.1,
+          "period": 1.99,
+          "peakAt": 1.194,
+          "offset": 0
+        },
+        {
+          "bone": "armL_fore",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": 1.5,
+          "period": 1.99,
+          "peakAt": 0.35819999999999996,
+          "offset": 0
+        },
+        {
+          "bone": "armR_fore",
+          "channel": "rotate",
+          "type": "wave",
+          "amplitude": 1.3,
+          "period": 1.99,
+          "peakAt": 1.3532000000000002,
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}

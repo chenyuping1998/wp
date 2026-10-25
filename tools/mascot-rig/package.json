@@ -1,0 +1,12 @@
+{
+  "name": "mascot-rig",
+  "private": true,
+  "description": "Front-facing mascot: layers → weighted-mesh Spine rig, motion library, checks, preview, Spine 4.2 export. Not a workspace package (tools/* is outside pnpm-workspace); this file only makes Node treat the .ts files as ES modules.",
+  "type": "module",
+  "engines": { "node": ">=22.18.0" },
+  "scripts": {
+    "mannequin": "node mascot.ts mannequin",
+    "build": "node mascot.ts build",
+    "brief": "node mascot.ts brief"
+  }
+}

@@ -93,9 +93,14 @@ const SPIN_OPTIONS_SHARED = {
 
 export const SPIN_OPTIONS_DEFAULT = {
 	...SPIN_OPTIONS_SHARED,
-	reelPreSpinSpeed: 2,
-	reelSpinSpeed: 3,
-	reelBounceSizeMulti: 0.3,
+	// Fast sweep, sequential stops, then a short mechanical settle.
+	reelBounceBackSpeed: 0.22,
+	reelSpinSpeedBeforeBounce: 2.8,
+	reelPaddingMultiplierNormal: 1,
+	reelSpinDelay: 100,
+	reelPreSpinSpeed: 2.8,
+	reelSpinSpeed: 4.2,
+	reelBounceSizeMulti: 0.12,
 };
 
 export const SPIN_OPTIONS_FAST = {

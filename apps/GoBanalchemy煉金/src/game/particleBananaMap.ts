@@ -27,30 +27,41 @@ import { LEVEL_PARTICLE_COIN_MAP } from 'constants-shared/particleCoin';
  * which for a max win is the intent. Raise maxParticles rather than the rate if
  * the top end ever needs to last longer.
  */
+// The spray is crystal clusters since 2026-10-23 (WinCoins.svelte,
+// `winCrystals`): a stone tumbles a little faster than a banana did (the
+// fountain's ±90 deg/s), both ways, so the facets keep catching the light.
+const TUMBLE = { rotationSpeed: { min: -160, max: 160 } };
+
 export const LEVEL_PARTICLE_BANANA_MAP = {
 	...LEVEL_PARTICLE_COIN_MAP,
 	substantial: {
 		...LEVEL_PARTICLE_COIN_MAP.substantial,
+		...TUMBLE,
 		frequency: 0.26, // ~4/s
 	},
 	big: {
 		...LEVEL_PARTICLE_COIN_MAP.big,
+		...TUMBLE,
 		frequency: 0.17, // ~6/s
 	},
 	superwin: {
 		...LEVEL_PARTICLE_COIN_MAP.superwin,
+		...TUMBLE,
 		frequency: 0.11, // ~9/s
 	},
 	mega: {
 		...LEVEL_PARTICLE_COIN_MAP.mega,
+		...TUMBLE,
 		frequency: 0.075, // ~13/s
 	},
 	epic: {
 		...LEVEL_PARTICLE_COIN_MAP.epic,
+		...TUMBLE,
 		frequency: 0.052, // ~19/s
 	},
 	max: {
 		...LEVEL_PARTICLE_COIN_MAP.max,
+		...TUMBLE,
 		frequency: 0.038, // ~26/s
 	},
 } as const;

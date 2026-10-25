@@ -25,6 +25,10 @@
 		CHARGE_MS,
 		COLUMN_FLASH_DELAY_MS,
 		blastLook,
+		blastBeats,
+		blastEndAt,
+		cellRevealAt,
+		impactAt,
 		copyArriveAt,
 		phasesAt,
 		pillarAt,
@@ -70,80 +74,9 @@
 	// transparent for most of its life — the change was visible happening, which
 	// makes it read as a graphic replacing another graphic rather than as an
 	// explosion leaving something behind.
-	// These are the beats AT FULL SIZE. Everything after the fuse is then scaled
-	// to how many reels actually went up — see AFTERMATH_SCALE.
-	// BlastSwell's tiles swell for exactly this long (meshWin/swell.ts SWELL_MS)
-	// CHARGE_MS lives in game/blastTimeline.ts (BlastFx reads the same clock)
-	const SHATTER_MS = 340;
-	const PUFF_MS = 240;
-	const HOLD_MS = 200;
-	const DISPERSE_MS = 700;
-	const SETTLE_MS = 420;
-
-	// A full board used to be held 700ms longer here and was otherwise the same
-	// blast. It now gets its own beats either side instead — the chain of fuses
-	// before and the stamp after — in FullBoard.svelte, so no hold is needed here.
-
-	// THE CEREMONY IS SIZED TO THE BLAST. Indexed by reels covered, 1-5.
-	//
-	// Every blast used to take the same 2.28s whatever it did, and measured on the
-	// published books that is the wrong shape twice over:
-	//
-	//   66% of base blasts and 50% of bonus100's cover ONE reel — the smallest
-	//   thing the feature can do was getting the payoff's full ceremony;
-	//
-	//   54% of a feature's blasts are repeats within the same round (#2, #3, #4),
-	//   so a four-blast feature spent ~9s on the identical animation.
-	//
-	// The feature's whole escalation is the ladder widening 1 -> 5 reels, and at
-	// one fixed length that escalation was invisible: the one-reel opener and the
-	// five-reel payoff took exactly as long. Now a full board runs nearly twice
-	// the length of a single reel, which is the difference the player is chasing.
-	//
-	// THE FUSE IS NOT SCALED. It is the same fuse every time, it is the
-	// anticipation rather than the event, and fuse_sizzle.wav is exactly 380ms so
-	// that it runs out ON the bang — scaling CHARGE would either cut the cue off
-	// or leave a gap of silence before the explosion.
-	const AFTERMATH_SCALE = [0, 0.62, 0.75, 0.88, 1, 1];
-
-	// TURBO DOES NOT SHORTEN THIS. There is no turbo branch anywhere below — the
-	// waits are absolute, so every number here applies at both speeds.
-	//
-	// Every other part of a turbo spin is the player skipping something they have
-	// already understood. This is the one moment that is not routine, and it is
-	// the moment the game is named after — a detonation the player cannot see
-	// happen is a detonation that did not happen. Turbo still skips the pre-spin,
-	// the win-line volley and the reel wind-up, so a turbo round is still much
-	// faster; it just does not take this away.
-
-	// The beats this blast is actually running, set from its width before the
-	// clock starts. draw() reads these, not the constants above.
-	let beats = $state({
-		shatter: SHATTER_MS,
-		puff: PUFF_MS,
-		hold: HOLD_MS,
-		disperse: DISPERSE_MS,
-		settle: SETTLE_MS,
-		total: CHARGE_MS + SHATTER_MS + PUFF_MS + HOLD_MS + DISPERSE_MS,
-	});
-
-	const beatsFor = (width: number) => {
-		const k = AFTERMATH_SCALE[Math.min(Math.max(1, width), 5)];
-		// HOLD has a floor: it is the window the symbols are swapped in, unseen,
-		// and it must stay long enough to cover a dropped frame or two.
-		const hold = Math.max(120, Math.round(HOLD_MS * k));
-		const shatter = Math.round(SHATTER_MS * k);
-		const puff = Math.round(PUFF_MS * k);
-		const disperse = Math.round(DISPERSE_MS * k);
-		return {
-			shatter,
-			puff,
-			hold,
-			disperse,
-			settle: Math.round(SETTLE_MS * k),
-			total: CHARGE_MS + shatter + puff + hold + disperse,
-		};
-	};
+	// The shared timeline also drives sprite release and the audio cues. Keeping
+	// one-reel hits shorter lets the widening feature earn its larger ceremony.
+	let beats = $state(blastBeats(5));
 
 	let reels = $state<number[]>([]);
 	let clock = $state(-1);
@@ -176,6 +109,7 @@
 	let generation = 0;
 
 	onDestroy(() => {
+		generation += 1;
 		cancelAnimationFrame(raf);
 		clearLandTimers();
 	});
@@ -183,9 +117,8 @@
 	const TOP = 0;
 	const HEIGHT = SYMBOL_SIZE * BOARD_DIMENSIONS.y;
 
-	// THE PULSE BOMB'S DISCHARGE, IN NEON. (GoBoomana drew a painted smoke
-	// cloud and chips of rock here; this game's bomb is a plasma orb, so the
-	// blast is light and electricity, not smoke and stone.)
+	// A neon plasma discharge: fast pressure fronts and real symbol debris,
+	// followed by soft illuminated vapour and a controlled result reveal.
 	//
 	//   CHARGE    the reel dims to night-violet and lightning crawls out of the
 	//             bomb across the covered cells, faster as it builds
@@ -214,8 +147,12 @@
 	// Each cell breaks into a PIXEL GRID (4 x 4 tiles). Hashed from
 	// (reel, row, index), so a cell's pixels are identical on every frame.
 	const PIX = 4;
-	const pixelsOf = (reel: number, row: number) =>
-		Array.from({ length: PIX * PIX }, (_, i) => {
+	const pixelCache = new Map<string, { ox: number; oy: number; dir: number; speed: number; lag: number; color: number }[]>();
+	const pixelsOf = (reel: number, row: number) => {
+		const key = cellKey(reel, row);
+		const cached = pixelCache.get(key);
+		if (cached) return cached;
+		const pixels = Array.from({ length: PIX * PIX }, (_, i) => {
 			const gx = i % PIX;
 			const gy = Math.floor(i / PIX);
 			const r1 = hash(reel + 1, row + 1, i + 1);
@@ -234,6 +171,9 @@
 				color: NEONS[Math.floor(r2 * NEONS.length) % NEONS.length],
 			};
 		});
+		pixelCache.set(key, pixels);
+		return pixels;
+	};
 
 	/** a jagged bolt from a to b, re-struck with `strike` */
 	const bolt = (
@@ -272,13 +212,19 @@
 	// SPARKS OUT OF THE BOMB: streaks of light thrown from the bomb's cell at the
 	// bang, fading by the swap. A burst with a source, not a shower.
 	const SPARKS_PER_BOMB = 22;
-	const sparksOf = (origin: number) =>
-		Array.from({ length: SPARKS_PER_BOMB }, (_, i) => ({
+	const sparkCache = new Map<number, { dir: number; speed: number; lag: number; color: number }[]>();
+	const sparksOf = (origin: number) => {
+		const cached = sparkCache.get(origin);
+		if (cached) return cached;
+		const sparks = Array.from({ length: SPARKS_PER_BOMB }, (_, i) => ({
 			dir: hash(origin + 3.1, i + 7.7, 1) * Math.PI * 2,
 			speed: 2.6 + 3.4 * hash(origin + 8.2, i + 2.3, 2),
 			lag: 50 * hash(origin + 5.5, i + 9.9, 3),
 			color: NEONS[i % NEONS.length],
 		}));
+		sparkCache.set(origin, sparks);
+		return sparks;
+	};
 
 	// where the bomb(s) are, captured when the blast starts - by the swap the
 	// board no longer has them. In board coordinates, centre of the cell.
@@ -310,6 +256,24 @@
 		const { charge, shatter, puff, disperse, PUFF_AT } = phasesAt(t, beats);
 		const strike = Math.floor(t / 50);
 
+		// Pressure draws inward before the hit; the fast outward front below
+		// then reads as a release of stored energy rather than another glow.
+		if (t < CHARGE_MS) {
+			const q = Math.max(0, t / CHARGE_MS);
+			for (const o of origins) {
+				const radius = SYMBOL_SIZE * (1.05 - 0.83 * q * q);
+				g.circle(o.x, o.y, radius).stroke({ width: 2 + 2 * q, color: look.sheath, alpha: 0.65 * q });
+				for (let i = 0; i < 8; i++) {
+					const angle = i * Math.PI / 4 + q * 0.8;
+					const inner = radius + SYMBOL_SIZE * 0.08;
+					const outer = inner + SYMBOL_SIZE * (0.08 + 0.12 * q);
+					g.moveTo(o.x + Math.cos(angle) * inner, o.y + Math.sin(angle) * inner)
+						.lineTo(o.x + Math.cos(angle) * outer, o.y + Math.sin(angle) * outer)
+						.stroke({ width: 2, color: CYAN, alpha: q * 0.72, cap: 'round' });
+				}
+			}
+		}
+
 		for (const reel of reels) {
 			const cx = getSymbolX(reel);
 			const left = cx - SYMBOL_SIZE / 2;
@@ -339,10 +303,18 @@
 					const key = cellKey(reel, row);
 					if (survivors.has(key)) continue;
 					const lift = arrivals.get(key) ?? phasesAt(0, beats).DISPERSE_AT;
-					const cleared = t < lift ? 0 : Math.min(1, (t - lift) / 70);
-					const a = Math.min(1, shatter * 1.6) * (1 - cleared);
-					if (a <= 0.01) continue;
-					g.rect(left, TOP + SYMBOL_SIZE * (row - 1), SYMBOL_SIZE, SYMBOL_SIZE).fill({ color: NIGHT, alpha: a });
+					const cleared = cellRevealAt(t, lift);
+					const a = Math.min(1, shatter * 2.4);
+					const y = TOP + SYMBOL_SIZE * (row - 1) + SYMBOL_SIZE * cleared;
+					if (cleared < 1)
+						g.rect(left, y, SYMBOL_SIZE, SYMBOL_SIZE * (1 - cleared)).fill({ color: NIGHT, alpha: a });
+					if (cleared > 0 && cleared < 1) {
+						// A bright leading edge makes the reveal deliberate; it never
+						// uncovers any part of a cell before its copy has landed.
+						const edge = Math.sin(Math.PI * cleared);
+						g.rect(left + 3, y - 6, SYMBOL_SIZE - 6, 12).fill({ color: look.sheath, alpha: 0.3 * edge });
+						g.rect(left + 3, y - 1, SYMBOL_SIZE - 6, 2).fill({ color: 0xffffff, alpha: 0.9 * edge });
+					}
 				}
 			}
 
@@ -435,50 +407,50 @@
 				const r = SYMBOL_SIZE * (0.35 + 0.25 * charge);
 				g.circle(o.x, o.y, r * 1.6).fill({ color: VIOLET, alpha: 0.25 * charge });
 				g.circle(o.x, o.y, r).fill({ color: 0xe6c8ff, alpha: 0.35 * charge });
+				for (let band = 0; band < 2; band++) {
+					const pull = Math.min(1, Math.max(0, (charge - band * 0.15) / 0.85));
+					const radius = SYMBOL_SIZE * (1.3 - 1.02 * pull ** 2);
+					g.ellipse(o.x, o.y, radius, radius * 0.8).stroke({
+						width: 1.3 + 1.8 * pull,
+						color: band ? look.core : look.sheath,
+						alpha: Math.sin(Math.PI * pull) * (band ? 0.45 : 0.7),
+					});
+				}
 			}
 		}
 
-		// The first 150ms must read as a detonation even on a single reel. A
-		// jagged compression front and a brief hot core lead the round shockwave;
-		// the contour is seeded per bomb, so it does not boil between frames.
-		if (shatter > 0 && shatter < 1) {
+		// The compression front holds for a few frames before release. Three
+		// staggered fronts separate the initial crack, the pressure wave and the
+		// softer air ring. The full-board hit also lifts the whole stage briefly.
+		const hitAge = t - CHARGE_MS;
+		const hit = impactAt(hitAge, look.hitStop);
+		if (hitAge >= 0 && hitAge < 760) {
+			if (reels.length === BOARD_DIMENSIONS.x && hit.flash > 0)
+				g.rect(0, TOP, SYMBOL_SIZE * BOARD_DIMENSIONS.x, HEIGHT).fill({ color: look.core, alpha: 0.09 * hit.flash });
 			for (const [oi, o] of origins.entries()) {
-				const hit = Math.max(0, 1 - (t - CHARGE_MS) / 150);
-				if (hit > 0) {
-					const hot = hit * hit;
-					g.circle(o.x, o.y, SYMBOL_SIZE * (0.2 + 0.48 * (1 - hit)))
-						.fill({ color: 0xffffff, alpha: 0.8 * hot });
-					g.circle(o.x, o.y, SYMBOL_SIZE * (0.4 + 0.75 * (1 - hit)))
-						.fill({ color: look.sheath, alpha: 0.32 * hot });
+				if (hit.flash > 0) {
+					g.ellipse(o.x, o.y, SYMBOL_SIZE * (0.34 + 0.4 * hit.expand), SYMBOL_SIZE * (0.24 + 0.3 * hit.expand))
+						.fill({ color: 0xffffff, alpha: 0.92 * hit.flash });
+					g.rect(o.x - SYMBOL_SIZE * 1.3, o.y - 2, SYMBOL_SIZE * 2.6, 4)
+						.fill({ color: look.core, alpha: 0.85 * hit.flash });
 				}
-				const r = SYMBOL_SIZE * (0.3 + 2.2 * look.power * (1 - (1 - shatter) ** 3));
-				const a = (1 - shatter) ** 1.5;
-				const points = 24;
-				for (let k = 0; k <= points; k++) {
-					const angle = (k / points) * Math.PI * 2;
-					const jag = k === points ? hash(oi + 1, 0, 11) : hash(oi + 1, k, 11);
-					const radius = r * (0.9 + 0.2 * jag);
-					const x = o.x + Math.cos(angle) * radius;
-					const y = o.y + Math.sin(angle) * radius;
-					if (k === 0) g.moveTo(x, y);
-					else g.lineTo(x, y);
-				}
-				g.stroke({ width: 15 * look.power, color: look.outer, alpha: 0.27 * a, cap: 'round', join: 'round' });
-				for (let k = 0; k <= points; k++) {
-					const angle = (k / points) * Math.PI * 2;
-					const jag = k === points ? hash(oi + 1, 0, 11) : hash(oi + 1, k, 11);
-					const radius = r * (0.9 + 0.2 * jag);
-					const x = o.x + Math.cos(angle) * radius;
-					const y = o.y + Math.sin(angle) * radius;
-					if (k === 0) g.moveTo(x, y);
-					else g.lineTo(x, y);
-				}
-				g.stroke({ width: 3.5, color: 0xffffff, alpha: 0.85 * a, cap: 'round', join: 'round' });
-				// a second, later ring from rung 3 up
-				const s2 = (shatter - 0.15) / 0.85;
-				if (look.level >= 3 && s2 > 0) {
-					const r2 = SYMBOL_SIZE * (0.2 + 1.6 * look.power * (1 - (1 - s2) ** 3));
-					g.circle(o.x, o.y, r2).stroke({ width: 3, color: look.sheath, alpha: 0.8 * (1 - s2) ** 1.5 });
+				for (let layer = 0; layer < 3; layer++) {
+					const ringAge = hitAge - layer * (look.level >= 4 ? 66 : 48);
+					const ring = impactAt(ringAge, look.hitStop * (layer === 0 ? 1 : 0.35));
+					if (ringAge < 0 || ring.shock < 0.005) continue;
+					const r = SYMBOL_SIZE * (0.22 + (2.1 - layer * 0.24) * look.power * ring.expand);
+					const color = layer === 1 ? look.sheath : look.outer;
+					// A stable broken contour has more force than a perfect vector circle.
+					for (const [width, alpha] of [[12 - layer * 2, 0.24], [2.5 - layer * 0.4, 0.78]]) {
+						for (let k = 0; k <= 32; k++) {
+							const a = (k % 32) / 32 * Math.PI * 2;
+							const jag = 0.95 + 0.1 * hash(oi + 1, k % 32, layer + 11);
+							const x = o.x + Math.cos(a) * r * jag;
+							const y = o.y + Math.sin(a) * r * jag * (0.78 + layer * 0.08);
+							if (k === 0) g.moveTo(x, y); else g.lineTo(x, y);
+						}
+						g.stroke({ width, color: width < 3 ? look.core : color, alpha: alpha * ring.shock, join: 'round' });
+					}
 				}
 			}
 		}
@@ -492,10 +464,10 @@
 				for (const e of sparksOf(oi)) {
 					const tau = (t - CHARGE_MS - e.lag) / 1000;
 					if (tau <= 0) continue;
-					const d = (e.speed * SYMBOL_SIZE * (1 - Math.exp(-tau * 3))) / 3;
+					const d = (e.speed * SYMBOL_SIZE * look.power * (1 - Math.exp(-tau * 3))) / 3;
 					const x = o.x + Math.cos(e.dir) * d;
 					const y = o.y + Math.sin(e.dir) * d;
-					const tail = SYMBOL_SIZE * 0.25 * Math.exp(-tau * 4);
+					const tail = SYMBOL_SIZE * 0.25 * look.power * Math.exp(-tau * 4);
 					g.moveTo(x - Math.cos(e.dir) * tail, y - Math.sin(e.dir) * tail)
 						.lineTo(x, y)
 						.stroke({ width: 3, color: e.color, alpha: 0.9 * fadeOut * Math.exp(-tau * 1.5), cap: 'round' });
@@ -602,14 +574,14 @@
 			reels = covered;
 			origins = findDynamite(covered);
 			// sized before the clock starts, because draw() reads these
-			beats = beatsFor(covered.length);
+			beats = blastBeats(covered.length);
 			look = blastLook(level, isFull);
 			clearLandTimers();
 			const built = buildPlan(covered, symbols);
 			plan = built;
 			clock = 0;
-			const flashEnd = Math.max(0, ...Object.values(built.reelDone)) + 440;
-			runClock(Math.max(beats.total + beats.settle, flashEnd));
+			const finishAt = blastEndAt(beats, Object.values(built.reelDone));
+			runClock(finishAt);
 			// THE REFILL LANDS. Each refilled cell plays its own landing
 			// (Symbol -> SymbolSprite's landMotion) the moment its copy arrives, so
 			// the new symbols slam in one after another instead of simply being
@@ -644,15 +616,9 @@
 			// THE BANG LANDS WHERE THE CRACKS GIVE WAY - the first frame of
 			// SHATTER, when the crazed symbols burst and the pieces start to fly -
 			// and the fuse, which burns for exactly CHARGE_MS, runs out on it.
-			//
-			// This has moved twice, and both moves are worth keeping in mind before
-			// moving it a third time. It began here, and the smoke then arrived 340ms
-			// later in silence, which read as the sound being early. So it was moved
-			// to the cloud - and then the stone broke silently for 340ms, which read
-			// as the sound being late. The fix for both was a second sound, not a
-			// different time: the bang belongs to the breakage, and the cloud now has
-			// a soft puff of its own below.
-			context.eventEmitter.broadcast({ type: 'soundBlastDetonate', full: isFull });
+			// The separate smoke cue belongs to the expanding pillar below;
+			// moving the impact sound there would leave the fracture silent.
+			context.eventEmitter.broadcast({ type: 'soundBlastDetonate', full: isFull, width: covered.length });
 			// the housing takes the bang, harder up the ladder
 			context.eventEmitter.broadcast({ type: 'boardFrameImpact', strength: look.impact });
 			context.eventEmitter.broadcast({ type: 'soundBlastShatter' });
@@ -679,10 +645,9 @@
 			await waitForTimeout(beats.disperse);
 			if (mine !== generation) return;
 
-			// The smoke is gone and the new board is standing there. Hold it before
-			// the win evaluation starts moving things again — this wait draws
-			// nothing, which is the point of it.
-			await waitForTimeout(beats.settle);
+			// Let every column frame finish, then hold the readable result before
+			// the next win evaluation can animate those symbols.
+			await waitForTimeout(finishAt - beats.total);
 			if (mine !== generation) return;
 			context.eventEmitter.broadcast({ type: 'soundBlastEnd' });
 		},

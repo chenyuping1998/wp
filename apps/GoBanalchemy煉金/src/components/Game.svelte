@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../game/gpuAddBlend';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 
@@ -84,14 +85,15 @@
 		<Container>
 			<Background />
 		</Container>
-		<!-- corner vignette seats the scene behind the board. 0.4, not 0.9: at
+		<!-- corner vignette seats the scene behind the board. 0.25, not 0.9: at
 		     0.9 the corners were ~80% black and the shelves, flasks and lanterns
-		     painted there were lost (user, 2026-10-16: 背景要清晰可見) -->
+		     painted there were lost (user, 2026-10-16: 背景要清晰可見); 0.4 -> 0.25
+		     with the plates' brightness lift (2026-10-24: 背景要調亮) -->
 		<Sprite
 			key="fxVignette"
 			width={context.stateLayoutDerived.canvasSizes().width}
 			height={context.stateLayoutDerived.canvasSizes().height}
-			alpha={0.4}
+			alpha={0.25}
 		/>
 	</Container>
 

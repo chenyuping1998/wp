@@ -80,6 +80,28 @@
 				"dev"
 			],
 			"port": 3013
-		}
-	]
+		},
+{
+  "name": "purrfia-dev",
+  "runtimeExecutable": "E:/stake/tools/node-v22.23.1-win-x64/corepack.cmd",
+  "runtimeArgs": [
+    "pnpm",
+    "--dir",
+    "E:/stake/wp/apps/Purrfia喵菲亞家族",
+    "dev"
+  ],
+  "port": 3046
+},
+{
+  "name": "parrotradio-dev",
+  "runtimeExecutable": "E:/stake/tools/node-v22.23.1-win-x64/corepack.cmd",
+  "runtimeArgs": [
+    "pnpm",
+    "--dir",
+    "E:/stake/wp/apps/ParrotRadio鸚鵡電台",
+    "dev"
+  ],
+  "port": 3047
+}
+]
 }

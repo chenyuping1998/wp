@@ -55,7 +55,9 @@ const boomRig = JSON.parse(fs.readFileSync(path.join(root, '../GoBoomana/static/
 if (JSON.stringify(json.bones.slice(0, boomRig.bones.length)) !== JSON.stringify(boomRig.bones)) throw new Error('Ninja reskin changed Boom body joints or setup transforms');
 if (!meshes.length) throw new Error('Boom weighted body parts are missing');
 const shoulder = skeleton.findSlot('shoulder_shuriken');
-if (!shoulder?.getAttachment() || shoulder.bone.data.name !== 'armL') throw new Error('Shuriken must be embedded in the left shoulder');
+// on its own spring bones since 2026-10-23 (design/spine43/build_ninja_acting.mjs), still under armL
+const underArmL = (bone) => !!bone && (bone.data.name === 'armL' || underArmL(bone.parent));
+if (!shoulder?.getAttachment() || !underArmL(shoulder.bone)) throw new Error('Shuriken must be embedded in the left shoulder');
 if (skeleton.findSlot('dynamite')?.getAttachment()) throw new Error('Old hand-held shuriken is still visible');
 const order = json.slots.map((slot) => slot.name);
 if (order.indexOf('torso_0_trunk') < Math.max(order.indexOf('left_leg_0_thigh'), order.indexOf('right_leg_0_thigh'))) throw new Error('Trouser layers cover the sash hem');
@@ -259,7 +261,7 @@ for (const [label, events, duration] of [
 	state.clearTracks();
 	state.setAnimation(1, 'flutter', true);
 	skeleton.updateWorldTransform(Physics.reset);
-	let event = 0, worst = 1;
+	let event = 0, worst = 1, where = '';
 	for (let frame = 0; frame < duration * 120; frame++) {
 		const t = frame / 120;
 		while (event < events.length && t + 1e-6 >= events[event][0]) {
@@ -273,10 +275,10 @@ for (const [label, events, duration] of [
 		meshes.forEach((m, k) => {
 			const a = areas(m, world(m));
 			for (let i = 0; i < a.length; i++) if (inked[k][i] && Math.abs(rest[k][i]) > 1e-6)
-				worst = Math.min(worst, a[i] / rest[k][i]);
+				if (a[i] / rest[k][i] < worst) { worst = a[i] / rest[k][i]; where = `${m.slot.data.name} at ${t.toFixed(2)}s`; }
 		});
 	}
-	if (!(worst > FOLD)) fail(`${label}: mixed animation folds to ${Math.round(worst * 100)}%`);
+	if (!(worst > FOLD)) fail(`${label}: mixed animation folds to ${Math.round(worst * 100)}% (${where})`);
 	else console.log(`ok ${label} at 120fps: worst area ${Math.round(worst * 100)}%`);
 }
 if (failures) {

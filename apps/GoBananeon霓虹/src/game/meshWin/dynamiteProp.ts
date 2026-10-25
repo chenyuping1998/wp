@@ -67,7 +67,10 @@ const FUSE1: Point[] = [[142, 46], [138, 30], [146, 18]];
 const FUSE2: Point[] = [[146, 18], [160, 10], [178, 10], [192, 18]];
 const FUSE3: Point[] = [[192, 18], [202, 32], [210, 50], [216, 62]];
 const SPARK_AT: Point = [226, 72];
-const SPARK_R = 26;
+// V4's plasma flare has long petals up to (250,30). The former 26px
+// circle pinned those painted tips to `frame` while its centre travelled,
+// folding the mesh. Its full silhouette must follow the spark bone.
+const SPARK_R = 44;
 
 const bundleDist = union(BALL, CAP);
 const fuse1 = polyline(FUSE1, 7);
@@ -97,14 +100,15 @@ export const DYNAMITE: DynamiteSpec = (() => {
 		rig: {
 			canvas: DYNAMITE_CANVAS,
 			grid: { x0: 0, y0: 0, x1: 256, y1: DYNAMITE_CANVAS[1], cols: 64, rows: 64 },
-			soft: 3,
+			soft: 7,
 			parts: [
-				// the transparent air round the prop: fixed, free to stretch
-				// 12 units off everything near the art, and a much stronger claim
-				// further out (dist falls below zero past 16 units), so the air well
-				// away from the fuse is truly nailed down and its big swings do not
-				// tug on it
-				{ name: 'frame', pivot: [128, 128], dist: (p) => 12 - Math.min(40, 3 * Math.max(0, inkDist(p) - 16)) },
+				// The fixed air starts well outside the painted subject. The
+				// native square V4 image has a wider cap and much longer plasma
+				// petals, so the former sharp 16-unit cutoff crossed visible ink.
+				// Keep the fixed-air transition beyond the entire V4 silhouette.
+				// Its gentler falloff also keeps the metal cap's antialiased rim
+				// moving with the ball while the prop swells before the blast.
+				{ name: 'frame', pivot: [128, 128], dist: (p) => 24 - Math.min(60, Math.max(0, inkDist(p) - 30)) },
 				{ name: 'bundle', parent: 'frame', pivot: [118, 200], axis: [0, -1], dist: bundleDist },
 				{ name: 'fuse1', parent: 'bundle', pivot: FUSE1[0], axis: [4, -28], dist: fuse1.dist, priority: 1 },
 				{ name: 'fuse2', parent: 'fuse1', pivot: FUSE2[0], axis: [46, 0], dist: fuse2.dist, priority: 1 },
@@ -151,9 +155,10 @@ export const DYNAMITE: DynamiteSpec = (() => {
 				arrive < delay ? 0 : spring(arrive, delay, 3.4, 4.5) - Math.exp((-40 * (arrive - delay)) / 1000);
 			const live = 1 - smoothstep(env.burn * 3);
 			const idle = (1 - env.flying) * live * on;
-			// the hose is longer than the old fuse and its spark sits right by the
-			// ball, so it swings to 60% of the old angles
-			const HOSE = 0.6;
+			// The long V4 plasma petals nearly touch the ball. Keep the hose's
+			// secondary bend restrained; the outer flight transform supplies the
+			// large tumble while this continuous mesh preserves the metal edge.
+			const HOSE = 0.16;
 			const f1 = bone(rig, pose, 'fuse1');
 			const f2 = bone(rig, pose, 'fuse2');
 			const f3 = bone(rig, pose, 'fuse3');
@@ -163,11 +168,11 @@ export const DYNAMITE: DynamiteSpec = (() => {
 
 			// SPARK: fizzing always, flaring with each blink and in the burn
 			const s = bone(rig, pose, 'spark');
-			const fizz = on * (0.06 * Math.sin(t / 23) + 0.04 * Math.sin(t / 11 + 1.3));
-			const flare = 0.06 * blink + 0.07 * env.burn;
+			const fizz = on * (0.02 * Math.sin(t / 23) + 0.015 * Math.sin(t / 11 + 1.3));
+			const flare = 0.02 * blink + 0.025 * env.burn;
 			s.along = 1 + fizz + flare;
 			s.across = 1 - fizz * 0.6 + flare;
-			s.angle = 6 * on * Math.sin(t / 37);
+			s.angle = 2 * on * Math.sin(t / 37);
 			return pose;
 		},
 		// for the gate: a drop (no spin) that arrives at 460ms, arms at 460 and

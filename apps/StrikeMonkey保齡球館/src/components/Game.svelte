@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../game/gpuAddBlend';
 	import BuyPlateMesh from './BuyPlateMesh.svelte';
 	import BowlingBallRoll from './BowlingBallRoll.svelte';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';

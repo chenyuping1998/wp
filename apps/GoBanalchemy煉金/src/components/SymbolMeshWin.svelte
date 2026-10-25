@@ -54,6 +54,8 @@
 	import { POTIONS, boilAt, chamberOutline, warp } from '../game/meshWin/potionBoil';
 	import ImpactDust from './ImpactDust.svelte';
 	import PotionBoil from './PotionBoil.svelte';
+	import { LEAP_STYLES } from '../game/meshWin/leapWin';
+	import { makeWinFx } from '../game/winFx';
 
 	type Props = {
 		x?: number;
@@ -206,6 +208,28 @@
 			lids.visible = lid !== null;
 			if (lid) lids.texture = lid === 'half' ? lidHalf! : lidClosed!;
 		};
+		// a WIN's vapor and crystal chips (game/winFx.ts) - not a landing's or
+		// an idle act's: those stay small and in their cell
+		const beats = LEAP_STYLES[spec.symbol]?.beats;
+		const fx = props.spec
+			? null
+			: makeWinFx({
+					symbol: spec.symbol,
+					feetY: spec.feetY,
+					crouchMs: beats?.crouch ?? 100,
+					peakMs: beats ? beats.rise + 60 : spec.hitMs,
+					landMs: beats?.land ?? spec.landMs,
+					fog: ['bgFog0', 'bgFog1', 'bgFog2'].map(tex).filter((x): x is Texture => !!x),
+					crystals: assets.winCrystals as Texture[] | undefined,
+					seed: (props.reel ?? 0) * 7919 + Math.round(started),
+					panel: panelMode,
+				});
+		if (fx) {
+			// the sigil and the shards under the subject, the vapor over it
+			if (panelMode) content.addChild(fx.behind);
+			else content.addChildAt(fx.behind, content.getChildIndex(subject));
+			content.addChild(fx.front);
+		}
 		root.addChild(content);
 		root.position.set(props.x ?? 0, props.y ?? 0);
 		// A win's subject leaps out past its cell, so it goes on TOP of the cells
@@ -220,6 +244,7 @@
 			geometry.getBuffer('aPosition').update();
 			drawBoil(t);
 			drawLids(t);
+			fx?.update(t, pose.rigid.dy);
 			root.scale.set(fit);
 			root.position.set(props.x ?? 0, props.y ?? 0);
 

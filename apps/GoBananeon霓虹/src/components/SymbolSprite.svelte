@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Sprite } from 'pixi-svelte';
+	import { Tween } from 'svelte/motion';
 
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
@@ -11,10 +12,8 @@
 		x?: number;
 		y?: number;
 		symbolInfo: ReturnType<typeof getSymbolInfo>;
-		// How fast the reel is travelling, 0..1, driving a cheap motion blur
-		// (vertical stretch + ghosts). Continuous rather than a boolean so the
-		// blur eases off through the bounce instead of snapping away the instant
-		// the reel changes state.
+		// Reel motion amount: suppress idle movement while the strip travels.
+		// Directional blur is applied once per reel by ReelMotion.
 		blur?: number;
 		// symbol just landed: impact squash before settling to static
 		landing?: boolean;
@@ -111,7 +110,9 @@
 	// one block. Not while the reel moves (it would fight the blur) and not while
 	// landing (the landing owns the symbol for those 240ms).
 	const idling = $derived(!props.landing && blur <= 0.01 && !!props.cell);
-	const breath = $derived(idling && props.cell ? idleScale(idleClock.t, idlePhase(props.cell.reel, props.cell.row)) : 1);
+	const idleBlend = new Tween(0, { duration: 180 });
+	$effect(() => { idleBlend.set(idling ? 1 : 0, { duration: idling ? 180 : 0 }); });
+	const breath = $derived(props.cell ? 1 + (idleScale(idleClock.t, idlePhase(props.cell.reel, props.cell.row)) - 1) * idleBlend.current : 1);
 	$effect(() => {
 		if (!idling) return;
 		return useIdleClock();
@@ -120,35 +121,13 @@
 	// the teasing reel's lift (game/anticipationFocus.ts)
 	const focusScale = $derived(props.focus?.scale ?? 1);
 	const focusBloom = $derived(props.focus?.bloom ?? 0);
-	const bloomAlpha = $derived(Math.min(1, land.bloom + focusBloom));
+	// Keep the painted edges readable under additive light, especially on white royals.
+	const bloomAlpha = $derived(Math.min(0.38, land.bloom * 0.65 + focusBloom * 0.5));
 	const bloomTint = $derived(land.bloom > 0 ? land.bloomTint : 0xffffff);
 	const k = $derived(breath * focusScale);
 </script>
 
-{#if blur > 0.01}
-	<!-- ghost trail: same art, offset and faded, sells the motion blur. Offset,
-	     opacity and stretch all scale with speed, so the trail shortens and fades
-	     as the reel brakes rather than vanishing in one frame. -->
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) - height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96}
-		height={height * (1 + 0.18 * blur)}
-		alpha={0.22 * blur}
-	/>
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) + height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96}
-		height={height * (1 + 0.18 * blur)}
-		alpha={0.22 * blur}
-	/>
-{/if}
-
+<!-- Moving reels are blurred once by ReelMotion. Keep a single tile silhouette. -->
 {#if land.dust > 0.01}
 	<!-- a splash of light at the cell's floor (GoBoomana: dust), behind the
 	     tile, spreading as it fades -->
@@ -173,9 +152,9 @@
 	anchor={0.5}
 	key={props.symbolInfo.assetKey}
 	width={width * land.sx * k}
-	height={blur > 0.01 ? height * (1 + 0.3 * blur) * focusScale : height * land.sy * k}
+	height={height * land.sy * k}
 	rotation={land.rot}
-	alpha={1 - 0.15 * blur}
+	alpha={1}
 />
 
 {#if bloomAlpha > 0.01}
@@ -186,10 +165,10 @@
 		anchor={0.5}
 		key={props.symbolInfo.assetKey}
 		width={width * land.sx * k}
-		height={blur > 0.01 ? height * (1 + 0.3 * blur) * focusScale : height * land.sy * k}
+		height={height * land.sy * k}
 		rotation={land.rot}
 		tint={bloomTint}
 		blendMode="add"
-		alpha={bloomAlpha * (1 - 0.15 * blur)}
+		alpha={bloomAlpha}
 	/>
 {/if}

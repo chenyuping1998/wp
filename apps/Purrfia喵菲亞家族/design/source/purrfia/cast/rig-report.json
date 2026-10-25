@@ -1,0 +1,31 @@
+{
+  "character": "Don Whiskers",
+  "spine": "4.3.13",
+  "bones": 27,
+  "layers": 28,
+  "clips": [
+    "idle",
+    "fg_idle",
+    "push_monocle",
+    "push_monocle_short",
+    "stamp",
+    "stamp_short",
+    "claim_turf",
+    "catch_stamp",
+    "lick_paw",
+    "react_small",
+    "react_good",
+    "react_chain",
+    "react_none",
+    "idle_bored",
+    "fg_trigger",
+    "fg_end",
+    "win_big",
+    "win_max",
+    "win_big_loop",
+    "win_max_loop"
+  ],
+  "pages": 2,
+  "customTopology": "seated Persian cat",
+  "sourcePSD": "E:\\stake\\wp\\apps\\Purrfia喵菲亞家族\\design\\source\\purrfia\\cast\\don_whiskers.psd"
+}

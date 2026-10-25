@@ -267,7 +267,7 @@
 								/>
 							</Container>
 							{#if burstShown}
-								<FxBurst scale={1.7} flavour="jungle" oncomplete={() => (burstShown = false)} />
+								<FxBurst scale={1.7} flavour="alchemy" oncomplete={() => (burstShown = false)} />
 							{/if}
 						{:else}
 							<!-- small wins: just the rolling amount over the board -->

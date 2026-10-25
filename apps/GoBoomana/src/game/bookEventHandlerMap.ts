@@ -13,6 +13,7 @@ import type { BookEvent, BookEventOfType, BookEventContext } from './typesBookEv
 import type { Position } from './types';
 import { BOARD_DIMENSIONS, HOLD_AND_SPIN_MODE_KEY } from './constants';
 import config from './config';
+import { startingBlastLevel } from './blastRules';
 import { startCaveQuake } from './caveQuake.svelte';
 
 // The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
@@ -273,11 +274,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			type: 'transition',
 			cover: () => {
 				stateGame.gameType = 'freegame';
-				// Splits do not carry in from the base game — the maths resets them
-				// at the top of run_freespin for the same reason. A bought tier's
-				// the tier's banked dynamite arrives as the feature's first blastReels event.
+				// The feature starts at its tier's banked level, before any blast.
+				// Subsequent levels come directly from the maths' blastReels events.
 				stateGame.blastReels = [];
-				stateGame.blastLevel = 1;
+				stateGame.blastLevel = startingBlastLevel(stateBet.activeBetModeKey);
 				eventEmitter.broadcast({ type: 'reelBlastClear' });
 			},
 		});

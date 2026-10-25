@@ -1,0 +1,353 @@
+{
+  "btn": {
+    "duration": 0.065,
+    "peakDbFS": -6.74,
+    "rmsDbFS": -18.94,
+    "tail50msDbFS": -29.87,
+    "phoneBandEnergyPct": 98.4,
+    "sha256": "8f13e0c60b710159b0c15ac72be94a5908e302514f156ade301f65dc0f9e1fdb"
+  },
+  "spin": {
+    "duration": 0.42,
+    "peakDbFS": -4.29,
+    "rmsDbFS": -17.62,
+    "tail50msDbFS": -86.77,
+    "phoneBandEnergyPct": 98.2,
+    "sha256": "f40f89edb66c1c7eeead0120312cef07d8904db3912d4c48e60db19b2b86c4e6"
+  },
+  "reel_stop": {
+    "duration": 0.145,
+    "peakDbFS": -4.15,
+    "rmsDbFS": -16.84,
+    "tail50msDbFS": -40.18,
+    "phoneBandEnergyPct": 88.8,
+    "sha256": "c655803b5dd323f0760e44c9c70be1f328109c2bbc3a982374f2d5eb453102f6"
+  },
+  "reel_tension": {
+    "duration": 2.0,
+    "peakDbFS": -6.94,
+    "rmsDbFS": -14.08,
+    "tail50msDbFS": -18.02,
+    "phoneBandEnergyPct": 100.0,
+    "sha256": "292d12bd6bf5c725cfc3a20b238ad9c21e305554bf4ab91d76e9046f403b66e2"
+  },
+  "pluck_low": {
+    "duration": 0.75,
+    "peakDbFS": -6.38,
+    "rmsDbFS": -18.0,
+    "tail50msDbFS": -66.19,
+    "phoneBandEnergyPct": 99.7,
+    "sha256": "c6dc8762b28da664bb2b335732cc1eb921b237211344d57253c3cee568a99060"
+  },
+  "scatter_1": {
+    "duration": 0.9,
+    "peakDbFS": -3.93,
+    "rmsDbFS": -16.9,
+    "tail50msDbFS": -56.15,
+    "phoneBandEnergyPct": 100.0,
+    "sha256": "c1c52a5b4b56ae96ea8604da743aaeff41711bd9c2527c6d166507bed6b331c5"
+  },
+  "scatter_2": {
+    "duration": 0.9,
+    "peakDbFS": -3.72,
+    "rmsDbFS": -16.6,
+    "tail50msDbFS": -55.54,
+    "phoneBandEnergyPct": 99.9,
+    "sha256": "cf0d17e877142ce65e7b3e5f5a2f9cf0f70373f60e51f4007463603d680ddb01"
+  },
+  "scatter_3": {
+    "duration": 0.9,
+    "peakDbFS": -3.5,
+    "rmsDbFS": -16.62,
+    "tail50msDbFS": -56.76,
+    "phoneBandEnergyPct": 99.9,
+    "sha256": "a2fbde3b5454d0deb81c16a88b11080dc9a718bbdba03c6c445a3ebcb6d67f77"
+  },
+  "scatter_4": {
+    "duration": 0.9,
+    "peakDbFS": -3.3,
+    "rmsDbFS": -16.44,
+    "tail50msDbFS": -56.54,
+    "phoneBandEnergyPct": 99.9,
+    "sha256": "32cf3a526e7d2ed896fbba4a137eb68b7ca918712c1af58653578e7eaa7eba75"
+  },
+  "scatter_5": {
+    "duration": 0.9,
+    "peakDbFS": -3.1,
+    "rmsDbFS": -16.16,
+    "tail50msDbFS": -55.48,
+    "phoneBandEnergyPct": 99.5,
+    "sha256": "67996875ea0486af867c809a73bfd15643475e9a39e4465f4a5d78f9e58f1169"
+  },
+  "fuse_sizzle": {
+    "duration": 0.38,
+    "peakDbFS": -6.56,
+    "rmsDbFS": -21.06,
+    "tail50msDbFS": -21.77,
+    "phoneBandEnergyPct": 87.6,
+    "sha256": "afbf450526ce3963e0c10a0b826fcfe9bfcf013af09974879738b84689d4c9ff"
+  },
+  "dynamite_blast": {
+    "duration": 1.1,
+    "peakDbFS": -2.16,
+    "rmsDbFS": -21.25,
+    "tail50msDbFS": -59.24,
+    "phoneBandEnergyPct": 43.7,
+    "sha256": "76b7377e58f3cc617519db04d4f7f3f0a9f3aef9b996addab19d2a5b4f817b78"
+  },
+  "dynamite_blast_big": {
+    "duration": 1.34,
+    "peakDbFS": -1.62,
+    "rmsDbFS": -20.28,
+    "tail50msDbFS": -51.61,
+    "phoneBandEnergyPct": 37.4,
+    "sha256": "2d60da580cb19066c68f21ff06bfb7b6a7607821542fa3f0442f124388b6f36b"
+  },
+  "symbol_shatter": {
+    "duration": 0.7,
+    "peakDbFS": -3.88,
+    "rmsDbFS": -19.9,
+    "tail50msDbFS": -92.46,
+    "phoneBandEnergyPct": 96.9,
+    "sha256": "e5fcbf295f950e7e4f77bdb8b5129d8b4847c7a49d66e452b22b59b220150753"
+  },
+  "smoke_puff": {
+    "duration": 0.9,
+    "peakDbFS": -7.33,
+    "rmsDbFS": -26.13,
+    "tail50msDbFS": -68.36,
+    "phoneBandEnergyPct": 70.5,
+    "sha256": "4f137eab4959706da91f004078f0a40a855c5f215dc458a11ee9ff9e4d186d16"
+  },
+  "press_blast": {
+    "duration": 0.58,
+    "peakDbFS": -3.48,
+    "rmsDbFS": -18.52,
+    "tail50msDbFS": -50.58,
+    "phoneBandEnergyPct": 45.5,
+    "sha256": "31ab92570b97e6c4f609c71bf637bb941ec5b8cfac03be233df4898c11b181aa"
+  },
+  "grenade_blast": {
+    "duration": 0.64,
+    "peakDbFS": -3.1,
+    "rmsDbFS": -18.51,
+    "tail50msDbFS": -52.97,
+    "phoneBandEnergyPct": 45.5,
+    "sha256": "81c686f6d9c3432da814b88fe1cab1cdd38f38de9fdbf8f123f9b33583829f51"
+  },
+  "symbol_reveal": {
+    "duration": 1.03,
+    "peakDbFS": -4.73,
+    "rmsDbFS": -21.67,
+    "tail50msDbFS": -84.33,
+    "phoneBandEnergyPct": 99.7,
+    "sha256": "60c8b935a8542be53e47872e895e4e1c67f6ef042f40abefc285e8d6e4a64b13"
+  },
+  "symbol_land": {
+    "duration": 0.21,
+    "peakDbFS": -5.68,
+    "rmsDbFS": -20.06,
+    "tail50msDbFS": -56.79,
+    "phoneBandEnergyPct": 99.8,
+    "sha256": "f9ebf9b5704533bcf1be84bd3c6c901b2b656bd53765f9b47a938d8866a4f138"
+  },
+  "ladder_up": {
+    "duration": 0.94,
+    "peakDbFS": -3.88,
+    "rmsDbFS": -15.75,
+    "tail50msDbFS": -63.86,
+    "phoneBandEnergyPct": 99.7,
+    "sha256": "7f11b92ec2d4c38f4d179de1bd4bb95062c5b3310e9341784f2e7a84412d65b4"
+  },
+  "fullboard_chain": {
+    "duration": 1.2,
+    "peakDbFS": -3.22,
+    "rmsDbFS": -15.56,
+    "tail50msDbFS": -61.01,
+    "phoneBandEnergyPct": 92.8,
+    "sha256": "ce57a3964a21ed02af4c7ec4183a45466df3261ea75bc4fb78e969241da44221"
+  },
+  "fullboard_stamp": {
+    "duration": 1.88,
+    "peakDbFS": -1.94,
+    "rmsDbFS": -20.27,
+    "tail50msDbFS": -54.27,
+    "phoneBandEnergyPct": 57.2,
+    "sha256": "ede09cbcaf8afda26ac893594e432661a68927090bfb408ddf74c0e43443ad9a"
+  },
+  "gong_feature": {
+    "duration": 2.65,
+    "peakDbFS": -2.05,
+    "rmsDbFS": -21.78,
+    "tail50msDbFS": -64.18,
+    "phoneBandEnergyPct": 89.5,
+    "sha256": "d2aab264e87a16eeb594dd77409739c22aaafa5db8e8ee3940c9967d13f15f27"
+  },
+  "fs_intro": {
+    "duration": 2.2,
+    "peakDbFS": -2.85,
+    "rmsDbFS": -14.2,
+    "tail50msDbFS": -66.96,
+    "phoneBandEnergyPct": 99.7,
+    "sha256": "ebc8e1933a7aa350c482a0a316c2c8834c68bded160d6673462b0469eaee5656"
+  },
+  "cave_quake": {
+    "duration": 3.0,
+    "peakDbFS": -3.88,
+    "rmsDbFS": -15.25,
+    "tail50msDbFS": -49.66,
+    "phoneBandEnergyPct": 2.6,
+    "sha256": "6818288f1b4f2507f6218f02ea177683d253a52e0f081afdd84c936d776f3811"
+  },
+  "win_gliss": {
+    "duration": 1.12,
+    "peakDbFS": -3.61,
+    "rmsDbFS": -15.1,
+    "tail50msDbFS": -60.65,
+    "phoneBandEnergyPct": 99.8,
+    "sha256": "7fcc15c0fca351e3757d25dea387a0928d5bf02d3b79e8d7ba2daf09e26a2229"
+  },
+  "win_gliss_big": {
+    "duration": 2.6,
+    "peakDbFS": -3.61,
+    "rmsDbFS": -15.43,
+    "tail50msDbFS": -62.13,
+    "phoneBandEnergyPct": 99.9,
+    "sha256": "636a1dcfc81e82c9b16d10c216e3c8184a28d8806699adc8452c37e16ec83bae"
+  },
+  "coin_shimmer": {
+    "duration": 2.15,
+    "peakDbFS": -4.44,
+    "rmsDbFS": -14.74,
+    "tail50msDbFS": -58.14,
+    "phoneBandEnergyPct": 99.9,
+    "sha256": "bb925e0be4e32d2a746da0c0d39eedf54d9cb86d138a63b0cff2529edfb0a9d1"
+  },
+  "win_panel": {
+    "duration": 1.78,
+    "peakDbFS": -3.61,
+    "rmsDbFS": -19.44,
+    "tail50msDbFS": -75.7,
+    "phoneBandEnergyPct": 99.5,
+    "sha256": "c3fc55bad7d42764cbaa887c2461e3bf0906cc7efe0f251efdd89794a241f0b6"
+  },
+  "win_big": {
+    "duration": 2.45,
+    "peakDbFS": -3.06,
+    "rmsDbFS": -14.53,
+    "tail50msDbFS": -62.65,
+    "phoneBandEnergyPct": 99.7,
+    "sha256": "bdee19ce5e83bdec716c22a46ddf89968a94af3bb3260d6198a0603d924a7baf"
+  },
+  "win_super": {
+    "duration": 3.05,
+    "peakDbFS": -2.78,
+    "rmsDbFS": -15.27,
+    "tail50msDbFS": -68.12,
+    "phoneBandEnergyPct": 99.7,
+    "sha256": "9f1324e724267489119910c77fb8a64aa140f175e44587fe3b97fe00603fdaee"
+  },
+  "win_mega": {
+    "duration": 3.6,
+    "peakDbFS": -2.51,
+    "rmsDbFS": -15.3,
+    "tail50msDbFS": -62.63,
+    "phoneBandEnergyPct": 99.7,
+    "sha256": "4abbedbf8f899f6174957d33ebdc7ddc20ecadc484a92466d75b1622c66392ba"
+  },
+  "win_epic": {
+    "duration": 4.2,
+    "peakDbFS": -2.25,
+    "rmsDbFS": -15.58,
+    "tail50msDbFS": -69.5,
+    "phoneBandEnergyPct": 99.7,
+    "sha256": "f2669b18a26e46023167b69cd6399d75285a18eb76decdd4bb83d8dfb321f3a6"
+  },
+  "win_max": {
+    "duration": 4.8,
+    "peakDbFS": -1.99,
+    "rmsDbFS": -15.76,
+    "tail50msDbFS": -76.33,
+    "phoneBandEnergyPct": 98.9,
+    "sha256": "1e5b31bd6f89d5b98e5a26491f3acecd88c5361efb48b75e7980d41259ea0004"
+  },
+  "win_cap": {
+    "duration": 3.5,
+    "peakDbFS": -1.94,
+    "rmsDbFS": -14.51,
+    "tail50msDbFS": -57.6,
+    "phoneBandEnergyPct": 98.9,
+    "sha256": "08d9c0ddd6b7b57efbf3ecfbc9eb7b999619ba6c3dfd0bb94af9af877883de6b"
+  },
+  "bigwin_blast": {
+    "duration": 2.05,
+    "peakDbFS": -2.38,
+    "rmsDbFS": -19.51,
+    "tail50msDbFS": -56.9,
+    "phoneBandEnergyPct": 64.1,
+    "sha256": "a9a709b2831b82dd570e06176ad5237088543bed2fa5f46e2f522b54fecd1aa3"
+  },
+  "wild_expand": {
+    "duration": 2.25,
+    "peakDbFS": -3.35,
+    "rmsDbFS": -17.08,
+    "tail50msDbFS": -74.05,
+    "phoneBandEnergyPct": 97.7,
+    "sha256": "b8a90d402ff843c0a6f480098256b3ef9798ecaa204ad4a1cc431f5a1472ec8e"
+  },
+  "mult_update": {
+    "duration": 0.58,
+    "peakDbFS": -5.04,
+    "rmsDbFS": -16.78,
+    "tail50msDbFS": -62.77,
+    "phoneBandEnergyPct": 100.0,
+    "sha256": "2b829bfb9c3abcadbf983c90b9446e1d24cb9a89532b7e963131f5715813c27b"
+  },
+  "dj_scratch": {
+    "duration": 3.2,
+    "peakDbFS": -6.02,
+    "rmsDbFS": -24.97,
+    "tail50msDbFS": -123.11,
+    "phoneBandEnergyPct": 98.6,
+    "sha256": "535928e9a8e930f2e0bbf7e882e9cbc98807c4fb65f105d00527360c42382962"
+  },
+  "bgm_main": {
+    "duration": 36.571,
+    "peakDbFS": -5.68,
+    "rmsDbFS": -22.14,
+    "tail50msDbFS": -29.4,
+    "phoneBandEnergyPct": 40.0,
+    "sha256": "ac3e2a71fb4418ccde3a74ca43d2dd0f8e146c4f69b736c226c0d0bbed259be6"
+  },
+  "bgm_freespin": {
+    "duration": 30.0,
+    "peakDbFS": -5.04,
+    "rmsDbFS": -21.32,
+    "tail50msDbFS": -30.07,
+    "phoneBandEnergyPct": 34.1,
+    "sha256": "54cd480baf3074cd6ca877cb8c2096d8c0ed1269970bf96769cc6912a0c3592c"
+  },
+  "preview_blast_1": {
+    "rawMixPeakDbFS": -3.06,
+    "duration": 2.55,
+    "detonateAt": 0.38,
+    "revealAt": 0.81
+  },
+  "preview_blast_5": {
+    "rawMixPeakDbFS": -2.48,
+    "duration": 3.2,
+    "detonateAt": 0.38,
+    "revealAt": 1.06
+  },
+  "dj_gesture": {
+    "cycleSeconds": 0.48,
+    "brushStarts": [
+      0.6,
+      1.08,
+      1.56,
+      2.04
+    ],
+    "brushEnd": 2.48,
+    "duration": 3.2
+  }
+}

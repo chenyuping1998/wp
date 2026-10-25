@@ -396,6 +396,12 @@ target and then lands the *shape* nearly at random inside a wide band.
 - Budget the time: one optimisation pass over three tiers is ~4 minutes on 8
   cores at `num_show`/`num_per_fence` 5000, so a best-of-10 is ~40 minutes.
 
+## Characters
+
+Making a character that moves (a mascot, a fighter): use the `character-pipeline` skill. It asks the user whether the
+pose is front-facing or side-facing, then routes to `tools/mascot-rig` (front: weighted-mesh rig, mascot moves, Spine
+4.2 export with a replay check) or spine-generator's `spine-motion character` (side).
+
 ## Shipping a new game
 
 Start from `references/review-log.md`. It opens with a pre-submission checklist

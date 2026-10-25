@@ -1,0 +1,359 @@
+{
+  "name": "front-mascot",
+  "description": "正面站姿吉祥物模板：一張畫布、每個部件一張同尺寸透明 PNG（部件留在原位）。L／R 指畫面的左／右（不是角色自己的左右）。",
+  "canvas": [
+    1024,
+    1536
+  ],
+  "joints": [
+    {
+      "id": "ground",
+      "label": "地面（兩腳中間的地板點）",
+      "xy": [
+        512,
+        1456
+      ],
+      "required": true
+    },
+    {
+      "id": "hip",
+      "label": "骨盆中心",
+      "xy": [
+        512,
+        905
+      ],
+      "required": true
+    },
+    {
+      "id": "belly",
+      "label": "腰（肚臍高度）",
+      "xy": [
+        512,
+        830
+      ],
+      "required": true
+    },
+    {
+      "id": "chest",
+      "label": "胸口中間",
+      "xy": [
+        512,
+        700
+      ],
+      "required": true
+    },
+    {
+      "id": "neckBase",
+      "label": "脖子底（兩肩連線中點）",
+      "xy": [
+        512,
+        560
+      ],
+      "required": true
+    },
+    {
+      "id": "headBase",
+      "label": "下巴後方（頭頸交界）",
+      "xy": [
+        512,
+        500
+      ],
+      "required": true
+    },
+    {
+      "id": "headTop",
+      "label": "頭頂（含頭髮、帽子）",
+      "xy": [
+        512,
+        205
+      ],
+      "required": true
+    },
+    {
+      "id": "shoulderL",
+      "label": "畫面左・肩關節（肩膀圓頭的圓心）",
+      "xy": [
+        388,
+        600
+      ],
+      "required": true
+    },
+    {
+      "id": "elbowL",
+      "label": "畫面左・手肘",
+      "xy": [
+        312,
+        785
+      ],
+      "required": true
+    },
+    {
+      "id": "wristL",
+      "label": "畫面左・手腕",
+      "xy": [
+        282,
+        980
+      ],
+      "required": true
+    },
+    {
+      "id": "handTipL",
+      "label": "畫面左・指尖",
+      "xy": [
+        270,
+        1059
+      ],
+      "required": true
+    },
+    {
+      "id": "shoulderR",
+      "label": "畫面右・肩關節（肩膀圓頭的圓心）",
+      "xy": [
+        636,
+        600
+      ],
+      "required": true
+    },
+    {
+      "id": "elbowR",
+      "label": "畫面右・手肘",
+      "xy": [
+        712,
+        785
+      ],
+      "required": true
+    },
+    {
+      "id": "wristR",
+      "label": "畫面右・手腕",
+      "xy": [
+        742,
+        980
+      ],
+      "required": true
+    },
+    {
+      "id": "handTipR",
+      "label": "畫面右・指尖",
+      "xy": [
+        754,
+        1059
+      ],
+      "required": true
+    },
+    {
+      "id": "hipL",
+      "label": "畫面左・腿根",
+      "xy": [
+        452,
+        920
+      ],
+      "required": true
+    },
+    {
+      "id": "kneeL",
+      "label": "畫面左・膝蓋",
+      "xy": [
+        399,
+        1165
+      ],
+      "required": true
+    },
+    {
+      "id": "ankleL",
+      "label": "畫面左・腳踝",
+      "xy": [
+        422,
+        1398
+      ],
+      "required": true
+    },
+    {
+      "id": "toeL",
+      "label": "畫面左・腳尖",
+      "xy": [
+        362,
+        1428
+      ],
+      "required": true
+    },
+    {
+      "id": "hipR",
+      "label": "畫面右・腿根",
+      "xy": [
+        572,
+        920
+      ],
+      "required": true
+    },
+    {
+      "id": "kneeR",
+      "label": "畫面右・膝蓋",
+      "xy": [
+        625,
+        1165
+      ],
+      "required": true
+    },
+    {
+      "id": "ankleR",
+      "label": "畫面右・腳踝",
+      "xy": [
+        602,
+        1398
+      ],
+      "required": true
+    },
+    {
+      "id": "toeR",
+      "label": "畫面右・腳尖",
+      "xy": [
+        662,
+        1428
+      ],
+      "required": true
+    },
+    {
+      "id": "earLroot",
+      "label": "畫面左・耳根",
+      "xy": [
+        420,
+        372
+      ],
+      "required": false
+    },
+    {
+      "id": "earLtip",
+      "label": "畫面左・耳尖",
+      "xy": [
+        318,
+        370
+      ],
+      "required": false
+    },
+    {
+      "id": "earRroot",
+      "label": "畫面右・耳根",
+      "xy": [
+        604,
+        372
+      ],
+      "required": false
+    },
+    {
+      "id": "earRtip",
+      "label": "畫面右・耳尖",
+      "xy": [
+        706,
+        370
+      ],
+      "required": false
+    }
+  ],
+  "tail": {
+    "label": "尾巴中心線，從根部（骨盆後面）到尾端，3–8 個點（每兩點一根骨）",
+    "points": [
+      [
+        548,
+        930
+      ],
+      [
+        622,
+        1012
+      ],
+      [
+        700,
+        1076
+      ],
+      [
+        776,
+        1090
+      ],
+      [
+        836,
+        1046
+      ],
+      [
+        858,
+        972
+      ],
+      [
+        842,
+        900
+      ]
+    ]
+  },
+  "layers": [
+    {
+      "name": "tail",
+      "label": "尾巴",
+      "required": false,
+      "paint": "一整條連續畫完（不要分節）；根部多畫進骨盆後面"
+    },
+    {
+      "name": "ear_l",
+      "label": "畫面左・耳朵",
+      "required": false,
+      "paint": "耳根多畫進頭的後面（會被頭蓋住）"
+    },
+    {
+      "name": "ear_r",
+      "label": "畫面右・耳朵",
+      "required": false,
+      "paint": "耳根多畫進頭的後面（會被頭蓋住）"
+    },
+    {
+      "name": "leg_l",
+      "label": "畫面左・整條腿（含腳掌）",
+      "required": true,
+      "paint": "大腿到腳掌一整條，膝蓋不要畫圓頭；大腿上端多畫 40px 藏進短褲；膝蓋往外微彎 15–20°"
+    },
+    {
+      "name": "leg_r",
+      "label": "畫面右・整條腿（含腳掌）",
+      "required": true,
+      "paint": "同左腿"
+    },
+    {
+      "name": "pelvis",
+      "label": "骨盆／短褲",
+      "required": true,
+      "paint": "上緣多畫藏進軀幹下面，兩個腿洞（大腿根）要畫滿"
+    },
+    {
+      "name": "neck",
+      "label": "脖子",
+      "required": false,
+      "paint": "上端伸進頭裡，下端藏進衣領（軀幹）後面"
+    },
+    {
+      "name": "torso",
+      "label": "軀幹（胸、腹）",
+      "required": true,
+      "paint": "兩肩、腋下、被手臂擋住的胸側全部畫完（舉手時會露出來）"
+    },
+    {
+      "name": "arm_l",
+      "label": "畫面左・整條手臂（含手）",
+      "required": true,
+      "paint": "肩到手一整條：肩膀頂端畫成以肩關節為圓心的圓（半徑＝手臂半寬），手肘不要畫圓頭；手肘微彎 10–20°"
+    },
+    {
+      "name": "arm_r",
+      "label": "畫面右・整條手臂（含手）",
+      "required": true,
+      "paint": "同左手"
+    },
+    {
+      "name": "head",
+      "label": "頭（臉）",
+      "required": true,
+      "paint": "下巴下面多畫一點蓋住脖子上端"
+    }
+  ],
+  "proportions": {
+    "armReachOverHead": "肩關節到手腕的長度（上臂＋前臂）至少要等於肩關節到頭頂的高度，舉手才舉得過頭（少於 1.0 會蓋在頭上）",
+    "elbowBend": "手肘畫成微彎 10–20°（太直的手臂一呼吸 IK 就會啪一下）",
+    "kneeBend": "膝蓋往外微彎約 15–20°、兩腳打開與骨盆同寬，腳掌平貼地面（腿畫直的話，骨盆一傾斜腳就會離地）"
+  }
+}

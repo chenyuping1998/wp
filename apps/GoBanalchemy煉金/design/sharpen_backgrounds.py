@@ -19,6 +19,7 @@ Usage: python design/sharpen_backgrounds.py
 """
 from pathlib import Path
 
+import numpy as np
 from PIL import Image, ImageFilter
 
 APP = Path(__file__).resolve().parents[1]
@@ -26,8 +27,28 @@ SRC = APP / 'design/source/backgrounds_1672'
 OUT = APP / 'static/assets/sprites/goBanalchemyBackground'
 SIZE = (2560, 1440)
 
+# BRIGHTER (2026-10-24, user: 煉金的背景要調亮). The paintings are night scenes
+# and were shipping at a median brightness of 12/255 (base) — most of the room
+# read as black behind the board. A gamma lift on the VALUE channel only, so a
+# copper flask stays copper and the green fog stays green rather than greying
+# out; the gain is a small exposure push before it. The feature plate is
+# already lit by its crystals and gets the least.
+#   name: (gamma, gain)       median after: base 41, feature 49, vault 52
+LIFT = {'bg_base': (0.62, 1.15), 'bg_feature': (0.76, 1.08), 'bg_holdandspin': (0.75, 1.10)}
+
+
+def lift(im, gamma, gain):
+    a = np.asarray(im, float) / 255
+    v = a.max(-1)
+    k = np.where(v > 1e-4, np.clip(gain * v, 0, 1) ** gamma / np.maximum(v, 1e-4), 0)
+    out = np.clip(a * k[..., None], 0, 1)
+    # a faint floor: true black reads as a hole in the picture, not as shadow
+    out = out * 0.97 + 0.03 * np.array([0.06, 0.07, 0.06])
+    return Image.fromarray((out * 255).round().astype(np.uint8))
+
+
 for name in ('bg_base', 'bg_feature', 'bg_holdandspin'):
-    im = Image.open(SRC / f'{name}.png').convert('RGB').resize(SIZE, Image.LANCZOS)
+    im = lift(Image.open(SRC / f'{name}.png').convert('RGB'), *LIFT[name]).resize(SIZE, Image.LANCZOS)
     im = im.filter(ImageFilter.UnsharpMask(radius=24, percent=18, threshold=0))  # local contrast
     im = im.filter(ImageFilter.UnsharpMask(radius=1.6, percent=85, threshold=2))  # edges
     im.save(OUT / f'{name}.jpg', quality=94, subsampling=0, optimize=True)

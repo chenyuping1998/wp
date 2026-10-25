@@ -20,6 +20,7 @@
 	import { crispPlate } from '../game/crispPlate';
 	import type { Texture } from 'pixi.js';
 	import BgProps from './BgProps.svelte';
+	import BgLight from './BgLight.svelte';
 
 	const context = getContext();
 	const isHoldAndSpin = $derived(stateBet.activeBetModeKey === HOLD_AND_SPIN_MODE_KEY);
@@ -124,6 +125,8 @@
 	<BgProps spec={BG_CLOTH} {...parallax} />
 	<!-- the flasks on the shelves and table simmer (meshWin/potionBoil.ts) -->
 	<BgBubbles potions={BG_POTIONS.base} {...parallax} />
+	<!-- lantern flames flicker, elixirs breathe, the fog drifts (BgLight) -->
+	<BgLight scene="base" {...parallax} />
 </FadeContainer>
 
 <!-- 烈日突擊 free-game background -->
@@ -135,6 +138,8 @@
 	<BgProps spec={BG_CRYSTALS_RIGHT} {...parallax} />
 	<!-- the crystal vault's glowing tubes bubble -->
 	<BgBubbles potions={BG_POTIONS.feature} {...parallax} />
+	<!-- the crystal banks pulse, fog rolls along their feet -->
+	<BgLight scene="feature" {...parallax} />
 </FadeContainer>
 
 <!-- 地底金庫 hold-and-spin background -->
@@ -144,6 +149,8 @@
 	<!-- the coin pile shudders when new coins land on the board -->
 	<BgProps spec={BG_COINS} {...parallax} />
 	<BgBubbles potions={BG_POTIONS.vault} {...parallax} />
+	<!-- lanterns and furnace flicker, crystals breathe, coins glint -->
+	<BgLight scene="vault" {...parallax} />
 </FadeContainer>
 
 <!-- ambient bokeh drifting in front of whichever scene is showing -->

@@ -4,6 +4,7 @@ import { stateUrlDerived } from 'state-shared';
 import { base } from '$app/paths';
 
 import config from './config';
+import { BLAST_PROGRESSION, startingBlastLevel } from './blastRules';
 
 // Go Boomana ships five math modes: base play, the 50x hold and spin, and
 // three free-spin buys at 100x / 200x / 300x. The keys here are the math mode
@@ -54,9 +55,6 @@ const cardArt = (name: string) => `${base}/assets/sprites/goBananasUi/card_${nam
 // Repeated in every dialog; kept in one place so the figure cannot drift between
 // cards the way it did in gen-2.
 const MAX_WIN = '10,000×';
-// A full board is every cell the same symbol, so every reel contributes all four
-// of its rows: 4^5. Derived, because the board size lives in the maths config.
-const WAYS = (config.numRows ?? []).reduce((a: number, b: number) => a * b, 1).toLocaleString();
 const RTP = `${(config.rtp * 100).toFixed(0)}%`;
 
 export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
@@ -131,14 +129,14 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy direct entry into ${config.betModes.bonus100.spins} FREE SPINS for 100× your bet, at the same ${RTP} RTP as base play. Every Dynamite that lands fills its reel with the best symbol on it, and widens the next blast. Five reels of one symbol is 1,024 ways at once. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter ${config.betModes.bonus100.spins} FREE SPINS directly for 100× your amount, at the same ${RTP} RTP as normal play. Every Dynamite that lands fills its reel with the best symbol on it, and widens the next blast. Five reels of one symbol is 1,024 ways at once. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy direct entry into ${config.betModes.bonus100.spins} FREE SPINS for 100× your bet, at the same ${RTP} RTP as base play. The blast meter starts with 0 Dynamites collected and a width of ${startingBlastLevel('bonus100')} reel per Dynamite. ${BLAST_PROGRESSION} Five reels of one symbol is 1,024 ways at once. Maximum win: ${MAX_WIN} your bet.`,
+					`Enter ${config.betModes.bonus100.spins} FREE SPINS directly for 100× your amount, at the same ${RTP} RTP as normal play. The blast meter starts with 0 Dynamites collected and a width of ${startingBlastLevel('bonus100')} reel per Dynamite. ${BLAST_PROGRESSION} Five reels of one symbol is 1,024 ways at once. Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {
 				return pick(
-					`100× BET → ${config.betModes.bonus100.spins} FREE SPINS, opening with the blast meter empty: the first Dynamite blows one reel`,
-					`100× AMOUNT → ${config.betModes.bonus100.spins} FREE SPINS, opening with the blast meter empty: the first Dynamite blows one reel`,
+					`100× BET → ${config.betModes.bonus100.spins} FREE SPINS, 0 Dynamites already collected; starting width ${startingBlastLevel('bonus100')} reel per Dynamite before this spin's collection; combined coverage may be wider`,
+					`100× AMOUNT → ${config.betModes.bonus100.spins} FREE SPINS, 0 Dynamites already collected; starting width ${startingBlastLevel('bonus100')} reel per Dynamite before this spin's collection; combined coverage may be wider`,
 				);
 			},
 			get button() {
@@ -168,14 +166,14 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy entry into ${config.betModes.bonus200.spins} FREE SPINS for 200× your bet, at the same ${RTP} RTP as base play. The blast meter opens half-filled, so the first Dynamite already blows two reels. Every Dynamite widens the next blast, and five reels of one symbol is ${WAYS} ways at once. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter ${config.betModes.bonus200.spins} FREE SPINS for 200× your amount, at the same ${RTP} RTP as normal play. The blast meter opens half-filled, so the first Dynamite already blows two reels. Every Dynamite widens the next blast, and five reels of one symbol is ${WAYS} ways at once. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy entry into ${config.betModes.bonus200.spins} FREE SPINS for 200× your bet, at the same ${RTP} RTP as base play. The blast meter starts with 2 Dynamites collected and a width of ${startingBlastLevel('bonus200')} reels per Dynamite. ${BLAST_PROGRESSION} Maximum win: ${MAX_WIN} your bet.`,
+					`Enter ${config.betModes.bonus200.spins} FREE SPINS for 200× your amount, at the same ${RTP} RTP as normal play. The blast meter starts with 2 Dynamites collected and a width of ${startingBlastLevel('bonus200')} reels per Dynamite. ${BLAST_PROGRESSION} Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {
 				return pick(
-					`200× BET → ${config.betModes.bonus200.spins} FREE SPINS, opening with the blast meter half-filled: the first Dynamite blows two reels`,
-					`200× AMOUNT → ${config.betModes.bonus200.spins} FREE SPINS, opening with the blast meter half-filled: the first Dynamite blows two reels`,
+					`200× BET → ${config.betModes.bonus200.spins} FREE SPINS, 2 Dynamites already collected; starting width ${startingBlastLevel('bonus200')} reels per Dynamite before this spin's collection; combined coverage may be wider`,
+					`200× AMOUNT → ${config.betModes.bonus200.spins} FREE SPINS, 2 Dynamites already collected; starting width ${startingBlastLevel('bonus200')} reels per Dynamite before this spin's collection; combined coverage may be wider`,
 				);
 			},
 			get button() {
@@ -209,14 +207,14 @@ export const GO_BANANAS_BET_MODE_META: Record<string, BetModeData> = {
 			},
 			get dialog() {
 				return pick(
-					`Buy the strongest entry for 300× your bet, at the same ${RTP} RTP as base play: ${config.betModes.bonus300.spins} FREE SPINS opening with the blast meter nearly full, so the first Dynamite already blows three reels. Every Dynamite widens the next blast, and five reels of one symbol is ${WAYS} ways at once. Maximum win: ${MAX_WIN} your bet.`,
-					`Enter the strongest round for 300× your amount, at the same ${RTP} RTP as normal play: ${config.betModes.bonus300.spins} FREE SPINS opening with the blast meter nearly full, so the first Dynamite already blows three reels. Every Dynamite widens the next blast, and five reels of one symbol is ${WAYS} ways at once. Maximum win: ${MAX_WIN} your amount.`,
+					`Buy the strongest entry for 300× your bet, at the same ${RTP} RTP as base play: ${config.betModes.bonus300.spins} FREE SPINS with 4 Dynamites already collected and a starting width of ${startingBlastLevel('bonus300')} reels per Dynamite. ${BLAST_PROGRESSION} Maximum win: ${MAX_WIN} your bet.`,
+					`Enter the strongest round for 300× your amount, at the same ${RTP} RTP as normal play: ${config.betModes.bonus300.spins} FREE SPINS with 4 Dynamites already collected and a starting width of ${startingBlastLevel('bonus300')} reels per Dynamite. ${BLAST_PROGRESSION} Maximum win: ${MAX_WIN} your amount.`,
 				);
 			},
 			get description() {
 				return pick(
-					`300× BET → ${config.betModes.bonus300.spins} FREE SPINS, opening with the blast meter nearly full: the first Dynamite blows three reels`,
-					`300× AMOUNT → ${config.betModes.bonus300.spins} FREE SPINS, opening with the blast meter nearly full: the first Dynamite blows three reels`,
+					`300× BET → ${config.betModes.bonus300.spins} FREE SPINS, 4 Dynamites already collected; starting width ${startingBlastLevel('bonus300')} reels per Dynamite before this spin's collection; combined coverage may be wider`,
+					`300× AMOUNT → ${config.betModes.bonus300.spins} FREE SPINS, 4 Dynamites already collected; starting width ${startingBlastLevel('bonus300')} reels per Dynamite before this spin's collection; combined coverage may be wider`,
 				);
 			},
 			get button() {

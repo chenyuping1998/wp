@@ -27,30 +27,42 @@ import { LEVEL_PARTICLE_COIN_MAP } from 'constants-shared/particleCoin';
  * which for a max win is the intent. Raise maxParticles rather than the rate if
  * the top end ever needs to last longer.
  */
+// The spray is thrown stars since 2026-10-23 (WinCoins.svelte, `winShuriken`):
+// a star spins hard in flight where a banana tumbled (the fountain's ±90 deg/s).
+// One direction, 420-840 deg/s: the star repeats every 90 deg, so that is
+// 4.7-9.3 visual turns a second — a blur of blades, never a strobe.
+const THROWN = { rotationSpeed: { min: 420, max: 840 } };
+
 export const LEVEL_PARTICLE_BANANA_MAP = {
 	...LEVEL_PARTICLE_COIN_MAP,
 	substantial: {
 		...LEVEL_PARTICLE_COIN_MAP.substantial,
+		...THROWN,
 		frequency: 0.26, // ~4/s
 	},
 	big: {
 		...LEVEL_PARTICLE_COIN_MAP.big,
+		...THROWN,
 		frequency: 0.17, // ~6/s
 	},
 	superwin: {
 		...LEVEL_PARTICLE_COIN_MAP.superwin,
+		...THROWN,
 		frequency: 0.11, // ~9/s
 	},
 	mega: {
 		...LEVEL_PARTICLE_COIN_MAP.mega,
+		...THROWN,
 		frequency: 0.075, // ~13/s
 	},
 	epic: {
 		...LEVEL_PARTICLE_COIN_MAP.epic,
+		...THROWN,
 		frequency: 0.052, // ~19/s
 	},
 	max: {
 		...LEVEL_PARTICLE_COIN_MAP.max,
+		...THROWN,
 		frequency: 0.038, // ~26/s
 	},
 } as const;

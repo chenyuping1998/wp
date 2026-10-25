@@ -34,11 +34,15 @@
 // gate checks.
 //
 // Usage: node design/make_symbol_layers.mjs E:\stake\tools\gen [h3,l1,...]
+//   [--output-dir=STAGED_SPRITES] [--alpha-mask=h1,h2,...]
+// Transparent premium sprites use --alpha-mask: their silhouettes replace the
+// legacy painted-panel geometry/colour mask, while keeping the same mesh UVs.
 
 import { createRequire, register } from 'module';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
+import { createHash } from 'crypto';
 
 // the meshWin modules import each other without an extension, as vite expects
 register(
@@ -51,14 +55,26 @@ register(
 		}`),
 );
 
-const toolsDir = process.argv[2];
+const args = process.argv.slice(2);
+const toolsDir = args.shift();
 if (!toolsDir) throw new Error('pass the tools dir (where pngjs lives) as the first argument');
-const only = process.argv[3] ? new Set(process.argv[3].toLowerCase().split(',')) : null;
+const onlyArg = args.find((v) => !v.startsWith('--'));
+const only = onlyArg ? new Set(onlyArg.toLowerCase().split(',')) : null;
+const outputArg = args.find((v) => v.startsWith('--output-dir='));
+const alphaArg = args.find((v) => v.startsWith('--alpha-mask='));
+const alphaSymbols = new Set((alphaArg?.slice('--alpha-mask='.length) ?? '').toLowerCase().split(',').filter(Boolean));
 const require = createRequire(path.join(toolsDir, 'noop.js'));
 const { PNG } = require('pngjs');
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const DIR = path.join(appRoot, 'static/assets/sprites/goBananasSymbolsV3');
+// An installer can bake into a staging directory, verify every layer, then
+// install the complete set. Never leave live sprites paired with old glows.
+const DIR = outputArg ? path.resolve(outputArg.slice('--output-dir='.length)) : path.join(appRoot, 'static/assets/sprites/goBananeonSymbolsV4');
+const sha = (file) => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const manifestFile = path.join(DIR, '_layers_manifest.json');
+const manifest = fs.existsSync(manifestFile) ? JSON.parse(fs.readFileSync(manifestFile, 'utf8')) : { version: 1, symbols: {} };
+manifest.generatorSha256 = sha(fileURLToPath(import.meta.url));
+manifest.rigFingerprint = createHash('sha256').update(fs.readdirSync(path.join(appRoot, 'src/game/meshWin')).filter((n) => n.endsWith('.ts')).sort().map((n) => `${n}:${sha(path.join(appRoot, 'src/game/meshWin', n))}`).join('\n')).digest('hex');
 const read = (name) => PNG.sync.read(fs.readFileSync(path.join(DIR, name)));
 const write = (name, w, h, data) => {
 	const png = new PNG({ width: w, height: h });
@@ -480,14 +496,20 @@ for (const name of Object.keys(SUBJECTS)) {
 		if (only && !only.has(name)) continue;
 		const art = read(`${name}.png`);
 		const W = art.width, H = art.height, N = W * H, K = W / CANVAS;
+		if (W !== H) throw new Error(`${name}: symbol canvas must be square, received ${W}x${H}`);
+		const alphaMask = alphaSymbols.has(name) || alphaSymbols.has('*');
 		const hard = new Float32Array(N);
 		for (let i = 0; i < N; i++) {
 			// the spec speaks the 256 canvas
-			const inside = spec.inked([((i % W) + 0.5) / K, (((i / W) | 0) + 0.5) / K]);
-			const coloured = !spec.inkColor || spec.inkColor(art.data[i * 4], art.data[i * 4 + 1], art.data[i * 4 + 2]);
-			hard[i] = inside && coloured ? 1 : 0;
+			const inside = alphaMask || spec.inked([((i % W) + 0.5) / K, (((i / W) | 0) + 0.5) / K]);
+			const coloured = alphaMask || !spec.inkColor || spec.inkColor(art.data[i * 4], art.data[i * 4 + 1], art.data[i * 4 + 2]);
+			// Transparent symbols already carry their own exact silhouette. The
+			// old plate masks are retained for opaque legacy art, and BOTH paths
+			// respect source alpha (RGB under transparent pixels is arbitrary).
+			hard[i] = (alphaMask || inside && coloured) ? art.data[i * 4 + 3] / 255 : 0;
 		}
 		const mask = blur(hard, W, H, Math.round(3 * K));
+		for (let i = 0; i < N; i++) mask[i] *= art.data[i * 4 + 3] / 255;
 
 		// The glow is a soft additive flash at ~30%, so it ships at GLOW px, not
 		// the art's 820-1024: at full size the ten of them were 13MB. The mesh
@@ -506,6 +528,14 @@ for (const name of Object.keys(SUBJECTS)) {
 
 		const sheen = sheenFor(art, mask);
 		write(`${name}_sheen.png`, sheen.width, sheen.height, sheen.atlas);
+		manifest.symbols[name] = {
+			artSha256: sha(path.join(DIR, `${name}.png`)),
+			glowSha256: sha(path.join(DIR, `${name}_glow.png`)),
+			sheenSha256: sha(path.join(DIR, `${name}_sheen.png`)),
+			maskMode: alphaMask ? 'source-alpha' : 'rig-and-colour',
+			canvas: [W, H],
+		};
 		console.log(`${name}: panel -> ${name}_{glow,sheen}.png`);
 	}
 }
+fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);

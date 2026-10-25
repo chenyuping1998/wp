@@ -429,3 +429,7 @@ if __name__ == "__main__":
     make_music()
     make_sfx()
     preserve_voice()
+    # The current sound direction supersedes the original arcade draft while
+    # retaining the measured six-hoots character performance.
+    from build_neon_audio_v2 import refresh
+    refresh()

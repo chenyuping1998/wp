@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "symbols": {
+    "h1": {
+      "artSha256": "5cfbfef31d062b2696cc550debc5a900e7f36d044bd61e5c14390d3d2c6e7468",
+      "glowSha256": "f8734321ea1f3620c4528574a61aca2a50b9c91675f9c567adb94d258585a3e4",
+      "sheenSha256": "be046ab1b8ffb2389f2bca2e727a80867c330283ec8b4f88610ced80ab4c1265",
+      "maskMode": "source-alpha",
+      "canvas": [
+        1024,
+        1024
+      ],
+      "input": {
+        "source": "E:\\stake\\wp\\apps\\GoBananeon霓虹\\design\\source\\neon_premium\\_pipeline_fixture\\h1.png",
+        "sourceSha256": "5cfbfef31d062b2696cc550debc5a900e7f36d044bd61e5c14390d3d2c6e7468",
+        "canvas": [
+          1024,
+          1024
+        ],
+        "opaqueBounds": [
+          112,
+          75,
+          921,
+          871
+        ],
+        "transparentFraction": 0.5571660995483398
+      }
+    }
+  },
+  "generatorSha256": "d9e7c93c310731321cfc63a12a4ca9803d01bdc8258180aaf7968a67e6af2d87",
+  "rigFingerprint": "ea53fabc548be079257433a82236ab0db326fa59d5712762cde65d3868d8a893"
+}

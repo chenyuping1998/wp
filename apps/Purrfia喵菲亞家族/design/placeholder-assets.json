@@ -1,0 +1,307 @@
+[
+  {
+    "key": "mgLoader",
+    "path": "assets/sprites/purrfiaBrand/loader.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "fxGlow",
+    "path": "assets/sprites/purrfiaFx/fx_glow.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "fxStar",
+    "path": "assets/sprites/purrfiaFx/fx_star.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "fxStreak",
+    "path": "assets/sprites/purrfiaFx/fx_streak.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "fxVignette",
+    "path": "assets/sprites/purrfiaFx/fx_vignette.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "fxRubble",
+    "path": "assets/sprites/purrfiaFx/fx_rubble.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "fxCrack1",
+    "path": "assets/sprites/purrfiaFx/fx_crack_1.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "fxCrack2",
+    "path": "assets/sprites/purrfiaFx/fx_crack_2.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "fxCrack3",
+    "path": "assets/sprites/purrfiaFx/fx_crack_3.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgBgBase",
+    "path": "assets/sprites/purrfiaBackground/bg_base.jpg",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgBgFree",
+    "path": "assets/sprites/purrfiaBackground/bg_free.jpg",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgBgCloud",
+    "path": "assets/sprites/purrfiaBackground/cloud.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgBgTourist",
+    "path": "assets/sprites/purrfiaBackground/statue_tourist.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgBgIcecream",
+    "path": "assets/sprites/purrfiaBackground/statue_icecream.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgBgFlame",
+    "path": "assets/sprites/purrfiaBackground/flame.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgIntro1",
+    "path": "assets/sprites/purrfiaIntro/intro_1.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgIntro2",
+    "path": "assets/sprites/purrfiaIntro/intro_2.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgIntro3",
+    "path": "assets/sprites/purrfiaIntro/intro_3.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgLogo",
+    "path": "assets/sprites/purrfiaBrand/logo.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgUiTicker",
+    "path": "assets/sprites/purrfiaUi/ticker_plate.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgUiBuyBonus",
+    "path": "assets/sprites/purrfiaUi/buybonus_plate.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgUiBuyBonusLit",
+    "path": "assets/sprites/purrfiaUi/buybonus_plate_lit.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgUiBarStrip",
+    "path": "assets/sprites/purrfiaUi/bar_strip.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgUiButton",
+    "path": "assets/sprites/purrfiaUi/button_disc.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgUiButtonOn",
+    "path": "assets/sprites/purrfiaUi/button_disc_on.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgTotalPlate",
+    "path": "assets/sprites/purrfiaUi/total_plate.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgTotalPlateMid",
+    "path": "assets/sprites/purrfiaUi/total_plate_mid.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgTotalPlateHigh",
+    "path": "assets/sprites/purrfiaUi/total_plate_high.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgFrameCapital",
+    "path": "assets/sprites/purrfiaFrame/capital.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgFrameLintel",
+    "path": "assets/sprites/purrfiaFrame/lintel.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgFrameColumn",
+    "path": "assets/sprites/purrfiaFrame/column.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgFsSign",
+    "path": "assets/sprites/purrfiaUi/fs_sign.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgFsPanel",
+    "path": "assets/sprites/purrfiaUi/fs_counter_panel.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgOrbGreen",
+    "path": "assets/sprites/purrfiaOrbs/orb_green.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgOrbPurple",
+    "path": "assets/sprites/purrfiaOrbs/orb_purple.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgOrbGold",
+    "path": "assets/sprites/purrfiaOrbs/orb_gold.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgWinBannerBig",
+    "path": "assets/sprites/purrfiaWinBanners/big.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgWinBannerSuperwin",
+    "path": "assets/sprites/purrfiaWinBanners/superwin.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgWinBannerMega",
+    "path": "assets/sprites/purrfiaWinBanners/mega.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgWinBannerEpic",
+    "path": "assets/sprites/purrfiaWinBanners/epic.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgWinBannerMax",
+    "path": "assets/sprites/purrfiaWinBanners/max.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgS",
+    "path": "assets/sprites/purrfiaSymbols/s.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgH1",
+    "path": "assets/sprites/purrfiaSymbols/h1.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgH2",
+    "path": "assets/sprites/purrfiaSymbols/h2.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgH3",
+    "path": "assets/sprites/purrfiaSymbols/h3.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgH4",
+    "path": "assets/sprites/purrfiaSymbols/h4.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgH5",
+    "path": "assets/sprites/purrfiaSymbols/h5.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgL1",
+    "path": "assets/sprites/purrfiaSymbols/l1.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgL2",
+    "path": "assets/sprites/purrfiaSymbols/l2.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgL3",
+    "path": "assets/sprites/purrfiaSymbols/l3.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgL4",
+    "path": "assets/sprites/purrfiaSymbols/l4.png",
+    "status": "neutral_mechanics_placeholder"
+  },
+  {
+    "key": "mgIconMenu",
+    "path": "assets/sprites/purrfiaUiIcons/menu.png",
+    "status": "shared_generic_icon"
+  },
+  {
+    "key": "mgIconMenuExit",
+    "path": "assets/sprites/purrfiaUiIcons/menuExit.png",
+    "status": "shared_generic_icon"
+  },
+  {
+    "key": "mgIconSettings",
+    "path": "assets/sprites/purrfiaUiIcons/settings.png",
+    "status": "shared_generic_icon"
+  },
+  {
+    "key": "mgIconInfo",
+    "path": "assets/sprites/purrfiaUiIcons/info.png",
+    "status": "shared_generic_icon"
+  },
+  {
+    "key": "mgIconPayTable",
+    "path": "assets/sprites/purrfiaUiIcons/payTable.png",
+    "status": "shared_generic_icon"
+  },
+  {
+    "key": "mgIconSoundOn",
+    "path": "assets/sprites/purrfiaUiIcons/soundOn.png",
+    "status": "shared_generic_icon"
+  },
+  {
+    "key": "mgIconSoundOff",
+    "path": "assets/sprites/purrfiaUiIcons/soundOff.png",
+    "status": "shared_generic_icon"
+  },
+  {
+    "key": "mgIconIncrease",
+    "path": "assets/sprites/purrfiaUiIcons/increase.png",
+    "status": "shared_generic_icon"
+  },
+  {
+    "key": "mgIconDecrease",
+    "path": "assets/sprites/purrfiaUiIcons/decrease.png",
+    "status": "shared_generic_icon"
+  },
+  {
+    "key": "mgIconAutoSpin",
+    "path": "assets/sprites/purrfiaUiIcons/autoSpin.png",
+    "status": "shared_generic_icon"
+  }
+]

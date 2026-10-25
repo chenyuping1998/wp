@@ -179,7 +179,10 @@ export const BG_CLOTH: BgPropSpec = (() => {
 		rig: {
 			canvas: BG_CANVAS,
 			grid: { x0: rect[0], y0: rect[1], x1: rect[2], y1: rect[3], cols: 36, rows: 60 },
-			soft: 1.5,
+			// tight: the carved table leg stands ~2 units right of the hem, and
+			// a 1.5 halo dragged it along — the leg smeared wide as the cloth
+			// swung out (offline render, 2026-10-24)
+			soft: 0.6,
 			parts: [
 				frame(),
 				// hangs from the table top: the fold over the edge stays put
@@ -194,8 +197,8 @@ export const BG_CLOTH: BgPropSpec = (() => {
 			const c = bone(rig, pose, 'cloth');
 			// lopsided: a positive turn carries the hem LEFT, into the pinned
 			// plate edge, where it folds — so it swings out into the room more
-			const sway = 3.4 * wave(env.t, 3900) + 0.9 * wave(env.t, 1700) + 1.2 * quakeKick(env.quakeT, 1.1, 1.2);
-			c.angle = sway > 0 ? 0.7 * sway : 1.9 * sway;
+			const sway = 3.6 * wave(env.t, 3900) + 0.9 * wave(env.t, 1700) + 1.3 * quakeKick(env.quakeT, 1.1, 1.2);
+			c.angle = sway > 0 ? 0.8 * sway : 1.55 * sway;
 			c.across = 1 + 0.02 * wave(env.t, 2900);
 			return pose;
 		},

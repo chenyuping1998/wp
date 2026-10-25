@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Graphics, Sprite } from 'pixi-svelte';
+	import { Graphics } from 'pixi-svelte';
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
@@ -16,7 +16,12 @@
 	const props: Props = $props();
 	const context = getContext();
 
-	let pulse = $state(0);
+	// 2026-10-23: the tease in the game's flat print (navy / brass / crimson,
+	// as the bet bar and the plaques) instead of a gold glow strobing on a sine.
+	// The frame CLOSES IN on the reel (inset 26px -> 0 on a quick ease with an
+	// overshoot, spine-generator's strike), then the tension is a heartbeat:
+	// two beats close together, a rest, the rest shortening while it spins.
+	let t = $state(0);
 	let finished = $state(false);
 
 	// Drawn entirely here rather than through the old `anticipation` spine: that
@@ -26,16 +31,33 @@
 	const x = $derived(getSymbolX(props.reel.reelIndex));
 	const LEFT = $derived(x - SYMBOL_SIZE / 2);
 
-	onMount(() => {
-		// offset per reel: when several reels tease at once, a shared phase makes
-		// them strobe as one block instead of shimmering along the board
-		const phase = props.reel.reelIndex * 0.9;
-		const rate = 145 + props.reel.reelIndex * 11;
-		const id = setInterval(() => {
-			pulse = 0.5 + 0.5 * Math.sin(Date.now() / rate + phase);
-		}, 24);
+	const IN = 0.16;
+	/** the frame's inset: slams in, overshoots past the cell, settles */
+	const inset = $derived(
+		t < IN
+			? 26 * (1 - (t / IN) ** 2)
+			: -5 * Math.exp(-0.45 * 2 * Math.PI * 5 * (t - IN)) * Math.sin(2 * Math.PI * 5 * 0.89 * (t - IN)) / 0.6,
+	);
+	/** 0..1: lub-dub, a beat every 0.9s tightening to 0.6s */
+	const beat = $derived.by(() => {
+		if (t < IN) return 0;
+		const u = t - IN;
+		const period = Math.max(0.6, 0.9 - u * 0.12);
+		const p = (u % period) / period;
+		const thump = (c: number, w: number) => Math.max(0, 1 - Math.abs(p - c) / w) ** 2;
+		return Math.max(thump(0.06, 0.08), 0.6 * thump(0.24, 0.08));
+	});
 
-		return () => clearInterval(id);
+	onMount(() => {
+		// offset per reel: two reels teasing at once beat a little apart
+		const start = performance.now() - props.reel.reelIndex * 70;
+		let raf = 0;
+		const tick = (now: number) => {
+			t = Math.max(0, (now - start) / 1000);
+			raf = requestAnimationFrame(tick);
+		};
+		raf = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(raf);
 	});
 
 	$effect(() => {
@@ -48,54 +70,33 @@
 </script>
 
 <BoardContainer>
-	<!-- amber wash over the whole teasing column, brightest at the rails -->
 	<Graphics
 		draw={(g) => {
-			// PIXI v8 API. Written with the v7 beginFill/lineStyle shim, every shape in
-			// this one Graphics took the LAST style set — the amber wash, the three
-			// frame strokes, the ticks and the chevrons all came out the chevrons'
-			// colour (the trap that turned Go Bananubis's slate one colour).
+			// PIXI v8 API (fill/stroke after each shape): the v7 beginFill shim
+			// gives every shape the LAST style set.
 			const h = BOARD_SIZES.height;
+			const i = inset;
 			g.clear();
-			g.roundRect(LEFT + 3, 3, SYMBOL_SIZE - 6, h - 6, 12).fill({ color: 0xff9c2e, alpha: 0.1 + 0.12 * pulse });
+			// crimson wash, swelling on each beat
+			g.roundRect(LEFT + 4, 4, SYMBOL_SIZE - 8, h - 8, 10).fill({ color: 0x962e38, alpha: 0.1 + 0.16 * beat });
+			// the frame: ink, brass, crimson hairline — flat, no glow
+			g.roundRect(LEFT + 2 - i, 2 - i, SYMBOL_SIZE - 4 + 2 * i, h - 4 + 2 * i, 12).stroke({ width: 9, color: 0x05090d, alpha: 0.85 });
+			g.roundRect(LEFT + 2 - i, 2 - i, SYMBOL_SIZE - 4 + 2 * i, h - 4 + 2 * i, 12).stroke({ width: 5, color: 0xd9b56b, alpha: 0.85 + 0.15 * beat });
+			g.roundRect(LEFT + 9 - i, 9 - i, SYMBOL_SIZE - 18 + 2 * i, h - 18 + 2 * i, 7).stroke({ width: 2, color: 0x962e38, alpha: 0.7 + 0.3 * beat });
 
-			// full-height frame: three nested strokes so the edge reads as lit metal
-			g.roundRect(LEFT + 2, 2, SYMBOL_SIZE - 4, h - 4, 13).stroke({ width: 7, color: 0xffd75e, alpha: 0.3 + 0.34 * pulse });
-			g.roundRect(LEFT + 6, 6, SYMBOL_SIZE - 12, h - 12, 10).stroke({ width: 3, color: 0xffe98a, alpha: 0.45 + 0.4 * pulse });
-			g.roundRect(LEFT + 10, 10, SYMBOL_SIZE - 20, h - 20, 8).stroke({ width: 1.4, color: 0xffffff, alpha: 0.25 + 0.4 * pulse });
-
-			// cell ticks down the column so the frame reads as five slots, not a tube
+			// cell ticks so the frame reads as five slots, not a tube
 			for (let row = 1; row < BOARD_SIZES.height / SYMBOL_SIZE; row++) {
 				const y = row * SYMBOL_SIZE;
-				g.moveTo(LEFT + 14, y);
-				g.lineTo(LEFT + SYMBOL_SIZE - 14, y);
+				g.moveTo(LEFT + 16, y);
+				g.lineTo(LEFT + SYMBOL_SIZE - 16, y);
 			}
-			g.stroke({ width: 1.5, color: 0xffe98a, alpha: 0.16 + 0.2 * pulse });
+			g.stroke({ width: 1.5, color: 0xd9b56b, alpha: 0.25 });
 
-			// chevrons converging on the column from above and below
-			const chev = 14 + 6 * pulse;
-			g.moveTo(x - SYMBOL_SIZE * 0.12, -chev - 10);
-			g.lineTo(x, -chev);
-			g.lineTo(x + SYMBOL_SIZE * 0.12, -chev - 10);
-			g.moveTo(x - SYMBOL_SIZE * 0.12, h + chev + 10);
-			g.lineTo(x, h + chev);
-			g.lineTo(x + SYMBOL_SIZE * 0.12, h + chev + 10);
-			g.stroke({ width: 4, color: 0xffd75e, alpha: 0.5 + 0.4 * pulse });
+			// two brass kunai points aimed at the column, pressing in on the beat
+			const gap = 12 + i - 7 * beat;
+			for (const [tipY, dir] of [[-gap, -1], [h + gap, 1]] as const) {
+				g.poly([x, tipY, x - 13, tipY + dir * 26, x + 13, tipY + dir * 26]).fill({ color: 0xd9b56b }).stroke({ width: 3, color: 0x05090d });
+			}
 		}}
 	/>
-
-	<!-- additive glow hugging each rail, so the tease has depth over the art -->
-	{#each [0, BOARD_SIZES.height] as railY (railY)}
-		<Sprite
-			key="fxGlow"
-			anchor={0.5}
-			{x}
-			y={railY}
-			width={SYMBOL_SIZE * 1.35}
-			height={SYMBOL_SIZE * 0.7}
-			tint={0xffc65e}
-			blendMode="add"
-			alpha={0.22 + 0.3 * pulse}
-		/>
-	{/each}
 </BoardContainer>

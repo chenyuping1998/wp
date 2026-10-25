@@ -103,3 +103,13 @@ torso_3_decoration
 bounds:374,2135,21,27
 offsets:0,0,21,27
 index:-1
+
+dj_hand.png
+size:512,768
+format:RGBA8888
+filter:Linear,Linear
+repeat:none
+dj_hand
+bounds:0,0,512,768
+offsets:0,0,512,768
+index:-1

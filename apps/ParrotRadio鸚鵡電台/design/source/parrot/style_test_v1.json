@@ -1,0 +1,18 @@
+{
+  "game": "Parrot Radio",
+  "tool": "built-in image_gen",
+  "original": "concept/style_test_v1_original.png",
+  "originalSize": [
+    1672,
+    941
+  ],
+  "reviewSize": [
+    1920,
+    1080
+  ],
+  "approval": "pending_user_review",
+  "productionInstalled": false,
+  "processing": "Canvas normalization only. Full generated original retained.",
+  "approvalSource": "PARROT_美術需求單.md section 1",
+  "uncertainty": "Squawk 的紅羽飽和度與大耳機比例是否合適；量產時旋鈕的 20 格 LED 會依程式座標精確定位。"
+}

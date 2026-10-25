@@ -1,0 +1,449 @@
+{
+  "canvas": [
+    1024,
+    1536
+  ],
+  "ground": [
+    512,
+    1450
+  ],
+  "joints": {
+    "root": [
+      512,
+      1450
+    ],
+    "hips": [
+      510,
+      1060
+    ],
+    "chest": [
+      510,
+      780
+    ],
+    "neck": [
+      500,
+      650
+    ],
+    "head": [
+      500,
+      430
+    ],
+    "crest": [
+      465,
+      190
+    ],
+    "headphones": [
+      500,
+      370
+    ],
+    "eyepatch": [
+      625,
+      410
+    ],
+    "monocle": [
+      625,
+      445
+    ],
+    "chain": [
+      535,
+      740
+    ],
+    "tie": [
+      480,
+      750
+    ],
+    "rose": [
+      610,
+      785
+    ],
+    "catnip": [
+      400,
+      510
+    ],
+    "upper_front": [
+      340,
+      790
+    ],
+    "fore_front": [
+      280,
+      990
+    ],
+    "hand_front": [
+      420,
+      1110
+    ],
+    "upper_back": [
+      710,
+      785
+    ],
+    "fore_back": [
+      790,
+      940
+    ],
+    "hand_back": [
+      815,
+      1070
+    ],
+    "tail_1": [
+      730,
+      1110
+    ],
+    "tail_2": [
+      780,
+      1210
+    ],
+    "tail_3": [
+      815,
+      1310
+    ],
+    "tail_4": [
+      835,
+      1390
+    ],
+    "whiskers_left": [
+      415,
+      490
+    ],
+    "whiskers_right": [
+      565,
+      490
+    ],
+    "turntable_left": [
+      310,
+      1205
+    ],
+    "turntable_right": [
+      720,
+      1205
+    ]
+  },
+  "layers": {
+    "sofa_back": {
+      "bone": "root",
+      "rect": [
+        30,
+        430,
+        1000,
+        1460
+      ],
+      "slot": "sofa_back",
+      "visible": true
+    },
+    "tail": {
+      "bone": "tail_1",
+      "rect": [
+        680,
+        870,
+        1010,
+        1450
+      ],
+      "slot": "tail",
+      "visible": true
+    },
+    "body": {
+      "bone": "chest",
+      "rect": [
+        200,
+        620,
+        815,
+        1430
+      ],
+      "slot": "body",
+      "visible": true
+    },
+    "arm_back": {
+      "bone": "upper_back",
+      "rect": [
+        660,
+        750,
+        870,
+        1070
+      ],
+      "slot": "arm_back",
+      "visible": true
+    },
+    "paw_back": {
+      "bone": "hand_back",
+      "rect": [
+        730,
+        1010,
+        930,
+        1160
+      ],
+      "slot": "paw_back",
+      "visible": true
+    },
+    "tie": {
+      "bone": "tie",
+      "rect": [
+        440,
+        705,
+        520,
+        845
+      ],
+      "slot": "tie",
+      "visible": false
+    },
+    "rose": {
+      "bone": "rose",
+      "rect": [
+        585,
+        725,
+        650,
+        795
+      ],
+      "slot": "rose",
+      "visible": false
+    },
+    "arm_front_upper": {
+      "bone": "upper_front",
+      "rect": [
+        150,
+        765,
+        365,
+        1055
+      ],
+      "slot": "arm_front_upper",
+      "visible": true
+    },
+    "arm_front_fore": {
+      "bone": "fore_front",
+      "rect": [
+        200,
+        930,
+        435,
+        1165
+      ],
+      "slot": "arm_front_fore",
+      "visible": true
+    },
+    "paw_front_rest": {
+      "bone": "hand_front",
+      "rect": [
+        320,
+        1045,
+        535,
+        1230
+      ],
+      "slot": "hand_front",
+      "visible": true
+    },
+    "paw_front_push": {
+      "bone": "hand_front",
+      "rect": [
+        320,
+        1045,
+        535,
+        1230
+      ],
+      "slot": "hand_front",
+      "visible": false
+    },
+    "paw_front_stamp": {
+      "bone": "hand_front",
+      "rect": [
+        320,
+        1045,
+        535,
+        1230
+      ],
+      "slot": "hand_front",
+      "visible": false
+    },
+    "stamp_held": {
+      "bone": "hand_front",
+      "rect": [
+        325,
+        940,
+        485,
+        1150
+      ],
+      "slot": "stamp_held",
+      "visible": false
+    },
+    "face_idle": {
+      "bone": "head",
+      "rect": [
+        155,
+        125,
+        855,
+        735
+      ],
+      "slot": "face",
+      "visible": true
+    },
+    "face_monocle": {
+      "bone": "head",
+      "rect": [
+        155,
+        125,
+        855,
+        735
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_smug": {
+      "bone": "head",
+      "rect": [
+        155,
+        125,
+        855,
+        735
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_annoyed": {
+      "bone": "head",
+      "rect": [
+        155,
+        125,
+        855,
+        735
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_shock": {
+      "bone": "head",
+      "rect": [
+        155,
+        125,
+        855,
+        735
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_stamp": {
+      "bone": "head",
+      "rect": [
+        155,
+        125,
+        855,
+        735
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_laugh": {
+      "bone": "head",
+      "rect": [
+        155,
+        125,
+        855,
+        735
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_purr": {
+      "bone": "head",
+      "rect": [
+        155,
+        125,
+        855,
+        735
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_blink": {
+      "bone": "head",
+      "rect": [
+        155,
+        125,
+        855,
+        735
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "face_yawn": {
+      "bone": "head",
+      "rect": [
+        155,
+        125,
+        855,
+        735
+      ],
+      "slot": "face",
+      "visible": false
+    },
+    "whiskers_left": {
+      "bone": "whiskers_left",
+      "rect": [
+        230,
+        460,
+        445,
+        570
+      ],
+      "slot": "whiskers_left",
+      "visible": true
+    },
+    "whiskers_right": {
+      "bone": "whiskers_right",
+      "rect": [
+        570,
+        470,
+        790,
+        580
+      ],
+      "slot": "whiskers_right",
+      "visible": true
+    },
+    "monocle": {
+      "bone": "monocle",
+      "rect": [
+        550,
+        380,
+        700,
+        535
+      ],
+      "slot": "monocle",
+      "visible": true
+    },
+    "monocle_chain": {
+      "bone": "monocle",
+      "rect": [
+        620,
+        500,
+        700,
+        730
+      ],
+      "slot": "monocle_chain",
+      "visible": true
+    },
+    "catnip": {
+      "bone": "catnip",
+      "rect": [
+        330,
+        480,
+        470,
+        560
+      ],
+      "slot": "catnip",
+      "visible": false
+    }
+  },
+  "order": [
+    "sofa_back",
+    "tail",
+    "body",
+    "arm_back",
+    "paw_back",
+    "tie",
+    "rose",
+    "arm_front_upper",
+    "arm_front_fore",
+    "paw_front_rest",
+    "stamp_held",
+    "face_idle",
+    "whiskers_left",
+    "whiskers_right",
+    "monocle_chain",
+    "monocle",
+    "catnip"
+  ]
+}

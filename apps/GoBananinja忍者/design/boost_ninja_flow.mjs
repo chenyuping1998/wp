@@ -219,3 +219,5 @@ console.log(`flutter: ${boosted} bones boosted; physics: ${softened} constraints
 execFileSync('E:/stake/math-sdk/env/Scripts/python.exe', [path.join(root, 'design/cut_ninja_straps.py')], { stdio: 'inherit' });
 execFileSync('E:/stake/math-sdk/env/Scripts/python.exe', [path.join(root, 'design/ninja_shuriken_glint.py')], { stdio: 'inherit' });
 execFileSync('E:/stake/math-sdk/env/Scripts/python.exe', [path.join(root, 'design/ninja_blink.py')], { stdio: 'inherit' });
+// The acting (2026-10-23, spine-generator): staggered cuts, throw and cheer.
+execFileSync(process.execPath, [path.join(root, 'design/spine43/build_ninja_acting.mjs')], { stdio: 'inherit' });

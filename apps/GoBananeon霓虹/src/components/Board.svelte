@@ -21,6 +21,7 @@
 	import WinScrim from './WinScrim.svelte';
 	import BoardMask from './BoardMask.svelte';
 	import BoardBase from './BoardBase.svelte';
+	import ReelCellBeds from './ReelCellBeds.svelte';
 
 	const context = getContext();
 
@@ -119,6 +120,7 @@
 {#if show}
 	<BoardContext animate={false}>
 		<BoardContainer>
+			<ReelCellBeds />
 			<BoardMask />
 			<BoardBase />
 		</BoardContainer>

@@ -26,7 +26,7 @@
 			x={context.stateGameDerived.boardLayout().x}
 			y={context.stateGameDerived.boardLayout().y}
 		>
-			<ParticleEmitter {config} key="winBananas" emit={props.emit} />
+			<ParticleEmitter {config} key="winNotes" emit={props.emit} />
 		</Container>
 	</MainContainer>
 {/if}

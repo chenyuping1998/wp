@@ -27,30 +27,43 @@ import { LEVEL_PARTICLE_COIN_MAP } from 'constants-shared/particleCoin';
  * which for a max win is the intent. Raise maxParticles rather than the rate if
  * the top end ever needs to last longer.
  */
+// The spray is neon music notes since 2026-10-25 (WinCoins.svelte,
+// `winNotes`). A note on its side or upside down stops reading as a note, so
+// they fly UPRIGHT: no spin (rotationSpeed 0 keeps the emitter's rotation
+// behaviour out) and noRotation, which resets the sprite to 0 after the
+// launch angle has already set its direction.
+const UPRIGHT = { rotationSpeed: { min: 0, max: 0 }, noRotation: true };
+
 export const LEVEL_PARTICLE_BANANA_MAP = {
 	...LEVEL_PARTICLE_COIN_MAP,
 	substantial: {
 		...LEVEL_PARTICLE_COIN_MAP.substantial,
+		...UPRIGHT,
 		frequency: 0.26, // ~4/s
 	},
 	big: {
 		...LEVEL_PARTICLE_COIN_MAP.big,
+		...UPRIGHT,
 		frequency: 0.17, // ~6/s
 	},
 	superwin: {
 		...LEVEL_PARTICLE_COIN_MAP.superwin,
+		...UPRIGHT,
 		frequency: 0.11, // ~9/s
 	},
 	mega: {
 		...LEVEL_PARTICLE_COIN_MAP.mega,
+		...UPRIGHT,
 		frequency: 0.075, // ~13/s
 	},
 	epic: {
 		...LEVEL_PARTICLE_COIN_MAP.epic,
+		...UPRIGHT,
 		frequency: 0.052, // ~19/s
 	},
 	max: {
 		...LEVEL_PARTICLE_COIN_MAP.max,
+		...UPRIGHT,
 		frequency: 0.038, // ~26/s
 	},
 } as const;

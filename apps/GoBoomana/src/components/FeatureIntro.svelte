@@ -184,7 +184,7 @@
 			// The figure is the DREAM, not the average: five reels of one symbol is
 			// what the whole feature climbs towards, and it is a count the player can
 			// verify on the board the first time it happens.
-			body: `Blows up its whole reel and fills it with the best symbol standing on it. In Free Spins each Dynamite widens the next blast: 1 reel, then 2, 3, 4, 5.`,
+			body: `Fills covered reels with the best symbol on its own reel. In Free Spins, Dynamites are collected before exploding. Reaching a threshold widens that spin's blasts; multiple blasts combine their coverage.`,
 			figure: BASE_WAYS.toLocaleString(),
 			art: drawBlast,
 			hero: true,

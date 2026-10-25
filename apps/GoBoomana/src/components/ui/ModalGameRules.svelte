@@ -6,6 +6,7 @@
 	import { base } from '$app/paths';
 
 	import config from '../../game/config';
+	import { startingBlastLevel, BLAST_PROGRESSION } from '../../game/blastRules';
 	import { getSocialTerms } from '../../game/socialTerms';
 
 	// Shared with the pay table — the two panels describe the same game and must
@@ -99,15 +100,8 @@
 	const buyTiers = (['bonus100', 'bonus200', 'bonus300'] as const)
 		.map((key) => {
 			const mode = config.betModes[key] as BuyMode | undefined;
-			// How wide the FIRST blast is, derived from the tier's banked dynamite
-			// against the ladder — the rules screen must not carry a second copy of
-			// the rungs, or it will drift from the maths the first time they move.
 			const banked = mode?.start_banked ?? 0;
-			let startReels = 1;
-			for (const [level, needed] of Object.entries(config.blastLadder ?? {})) {
-				if (banked >= (needed as number)) startReels = Number(level) + 1;
-			}
-			return { key, cost: mode?.cost, spins: mode?.spins, startReels };
+			return { key, cost: mode?.cost, spins: mode?.spins, banked, startReels: startingBlastLevel(key) };
 		})
 		.filter((t) => t.cost !== undefined && t.spins !== undefined);
 
@@ -257,10 +251,17 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>The blast meter &mdash; Free Spins</h3>
 				<p>
-					In Free Spins every Dynamite that lands is <strong>collected</strong>, and the meter
-					widens the blast as it fills. The blast covers
-					<strong>1 reel, then 2, 3, 4 and finally all 5</strong>. It never falls back, so a
-					run only ever gets wider.
+					In Free Spins every Dynamite that lands is <strong>collected before detonation</strong>.
+					The cumulative totals needed for a width of 2, 3, 4 and 5 reels per Dynamite are
+					<strong>{Object.values(config.blastLadder).join(', ')} Dynamites</strong>, respectively.
+					The level never falls back. {BLAST_PROGRESSION}
+				</p>
+				<p>
+					Each blast extends to the right from its Dynamite, shifting left only as needed to
+					fit on the board. Where blasts overlap, the higher-value source symbol wins.
+					For example, the 200&times; tier starts with 2 Dynamites collected. If two more land
+					on the first spin, the total reaches 4: each blast immediately covers 3 reels,
+					and their combined coverage can affect all 5 reels.
 				</p>
 				<p>
 					<strong>Five reels showing one symbol is {waysCount.toLocaleString()} {T.ways} on a
@@ -325,9 +326,10 @@
 					<ul class="wp-tiers">
 						{#each buyTiers as tier (tier.key)}
 							<li>
-								<strong>{tier.cost}&times; {T.bet}</strong> &mdash; {tier.spins} Free Spins, first
-								blast covers {tier.startReels}
-								{tier.startReels === 1 ? 'reel' : 'reels'}
+								<strong>{tier.cost}&times; {T.bet}</strong> &mdash; {tier.spins} Free Spins,
+								{tier.banked} Dynamites already collected; starting width:
+								{tier.startReels} {tier.startReels === 1 ? 'reel' : 'reels'} per Dynamite,
+								before collecting the current spin's Dynamites
 							</li>
 						{/each}
 					</ul>

@@ -28,10 +28,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { mathGameDir } from '../../../tools/math_game_dir.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const appRoot = path.resolve(here, '..');
-const MATH_DIR = path.resolve(appRoot, '../../../math-sdk/games/GoBananasBoat');
+// the folder may carry a suffix after the id: no junction needed (wp/tools/math_game_dir.mjs)
+const MATH_DIR = mathGameDir('GoBananasBoat');
 const MATH_CONFIG = path.join(MATH_DIR, 'library/configs/config_fe_GoBananasBoat.json');
 const OUT = path.join(appRoot, 'src/game/config.ts');
 

@@ -26,8 +26,8 @@
 
 	const context = getContext();
 
-	// brass tier plaques (design/generate_win_banners.mjs) — 1000×560, the
-	// amount rolls inside the dark centre well
+	// flat-print tier plaques (design/generate_win_banners.mjs) — 1000×560,
+	// the amount rolls inside the dark centre well
 	const BANNER_KEY: Record<string, string> = {
 		big: 'gbWinBannerBig',
 		superwin: 'gbWinBannerSuperwin',
@@ -51,13 +51,9 @@
 	let oncomplete = $state(() => {});
 	let onCountUpComplete = $state(() => {});
 
-	// ── plaque FX clock: entrance overshoot, breathing glow, periodic blink,
-	// rim twinkles and repeating bursts on the top tiers ──────────────────────
+	// ── plaque FX clock: the entrance slam, its flash and shake ──────────────
 	let fxNow = $state(-1);
 	let fxRaf = 0;
-	let twinkles = $state<{ id: number; born: number; angle: number }[]>([]);
-	let nextTwinkleAt = 0;
-	let nextTwinkleId = 0;
 	let burstShown = $state(false);
 	// One cancellable clock drives the entire entrance. A skipped count-up or
 	// new tier cannot leave old shake/flash intervals running over the next one.
@@ -72,51 +68,43 @@
 	const startBannerFx = () => {
 		cancelAnimationFrame(fxRaf);
 		fxNow = 0;
-		twinkles = [];
-		nextTwinkleAt = 0;
 		burstShown = true;
 		const start = performance.now();
+		// the clock only has work while the entrance plays; after that the
+		// plaque is still and the count-up is the motion
 		const tick = (now: number) => {
 			fxNow = (now - start) / 1000;
-			const mult = winLevelData ? (TIER_FX[winLevelData.alias]?.mult ?? 1) : 1;
-			if (fxNow >= nextTwinkleAt) {
-				twinkles = [
-					...twinkles.filter(({ born }) => fxNow - born < 0.7),
-					{ id: nextTwinkleId++, born: fxNow, angle: Math.random() * Math.PI * 2 },
-				];
-				nextTwinkleAt = fxNow + (0.7 - 0.12 * mult) + Math.random() * 0.4;
-			} else {
-				const alive = twinkles.filter(({ born }) => fxNow - born < 0.7);
-				if (alive.length !== twinkles.length) twinkles = alive;
-			}
-			fxRaf = requestAnimationFrame(tick);
+			if (fxNow < 1.2) fxRaf = requestAnimationFrame(tick);
 		};
 		fxRaf = requestAnimationFrame(tick);
 	};
 	const stopBannerFx = () => {
 		cancelAnimationFrame(fxRaf);
 		fxNow = -1;
-		twinkles = [];
 		burstShown = false;
 	};
 	onDestroy(stopBannerFx);
 
-	const bump = (t: number, a: number, b: number) => (t <= a || t >= b ? 0 : Math.sin((Math.PI * (t - a)) / (b - a)));
 	const bannerPose = $derived.by(() => {
 		if (fxNow < 0) return { scale: 1, glow: 0.4, blink: 0 };
 		const t = fxNow;
-		// entrance: overshoot slam matching the hit-stop flash
+		// entrance (2026-10-23, spine-generator's strike/spring): slams in from
+		// 0.42 on an ease-in, overshoots, and rings out on a damped spring
+		// (4.5Hz, damping 0.42) instead of the old straight-line settle, whose
+		// corner at 0.34s read as a stop
+		const SLAM = 0.16;
 		const scale =
-			t < 0.34
-				? 0.42 + 0.78 * (1 - (1 - t / 0.34) ** 3)
-				: 1.2 - 0.2 * Math.min(1, (t - 0.34) / 0.22);
+			t < SLAM
+				? 0.42 + 0.58 * (t / SLAM) ** 2
+				: 1 + 0.2 * Math.exp(-0.42 * 2 * Math.PI * 4.5 * (t - SLAM)) * Math.sin(2 * Math.PI * 4.5 * Math.sqrt(1 - 0.42 ** 2) * (t - SLAM)) / 0.62;
 		// THE ENTRANCE IS THE EVENT, then the plaque holds still (2026-10-16,
 		// review: poor animation). It used to breathe on a sine, swell and
 		// shrink, and flash its whole face every 2.3s for as long as it stayed
 		// up; a plaque that never stops pulsing is the look of a template. One
-		// flare on the slam, one light sweep across the face, then stillness —
-		// the number counting up is the motion.
-		const blink = Math.max(t < 0.3 ? 0.55 * (1 - t / 0.3) : 0, 0.32 * bump(t, 0.75, 1.35));
+		// flare on the slam, then stillness — the number counting up is the
+		// motion. (The light sweep across the face went with the brass plate:
+		// a flat-print panel has no sheen to catch it.)
+		const blink = t < 0.3 ? 0.4 * (1 - t / 0.3) : 0;
 		return { scale, glow: 0.5, blink };
 	});
 
@@ -208,22 +196,6 @@
 										alpha={bannerPose.blink}
 									/>
 								{/if}
-								<!-- twinkles running the riveted rim -->
-								{#each twinkles as tw (tw.id)}
-									{@const p = Math.min(1, (fxNow - tw.born) / 0.7)}
-									<Sprite
-										key="fxStar"
-										anchor={0.5}
-										x={Math.cos(tw.angle) * bw * 0.46}
-										y={Math.sin(tw.angle) * bh * 0.44}
-										rotation={p * 2}
-										tint={0xffffff}
-										blendMode="add"
-										width={SYMBOL_SIZE * 0.5 * Math.sin(p * Math.PI)}
-										height={SYMBOL_SIZE * 0.5 * Math.sin(p * Math.PI)}
-										alpha={Math.sin(p * Math.PI)}
-									/>
-								{/each}
 								<!-- amount rolls inside the plaque's dark centre well -->
 								<GoldText
 									y={bh * 0.16}

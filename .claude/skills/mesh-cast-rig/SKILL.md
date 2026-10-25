@@ -1,6 +1,14 @@
 ---
 name: mesh-cast-rig
-description: Animating a full-body character from ONE flat illustration, using a skinned mesh instead of cut-out parts — the pipeline behind Hot Miami's board-side cast. Use this whenever a character needs to move and the art arrives as a single image: a mascot beside the reels, a figure on an intro card, anything that has to breathe or react to a win. Use it especially INSTEAD of cutting the figure into Spine parts, because the seams that approach produces are the reason this pipeline exists. Covers building the rig from the image, painting weights, the motion tables, the measured limits on how far it can move, and the verification without which none of it can be trusted.
+description: >-
+  Animating a full-body character from ONE flat illustration, using a skinned mesh instead of cut-out parts — the
+  pipeline behind Hot Miami's board-side cast. Use this whenever a character needs to move and the art arrives as a
+  single image: a mascot beside the reels, a figure on an intro card, anything that has to breathe or react to a win.
+  Use it especially INSTEAD of cutting the figure into Spine parts, because the seams that approach produces are the
+  reason this pipeline exists. Covers building the rig from the image, painting weights, the motion tables, the
+  measured limits on how far it can move, and the verification without which none of it can be trusted. For a NEW
+  character (no art yet, or art that can be redrawn in layers), start with character-pipeline instead, which asks
+  front or side and routes to tools/mascot-rig, whose layered rig moves much further.
 ---
 
 # One image, one mesh, a character that moves

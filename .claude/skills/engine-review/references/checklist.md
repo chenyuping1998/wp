@@ -220,7 +220,7 @@ Per app (`apps/<Game>/`):
 - Rules, paytable, buy-mode copy: `src/components/ui/ModalGameRules.svelte`, `ModalPayTable.svelte`, `ModalBuyBonus*.svelte`, `src/game/betModeMeta.ts`, `src/game/i18nText.ts`, `src/i18n/messagesMap/`.
 - Static gates that already cover part of this checklist (run them, but a green gate is not a PASS — see the stake-engine-slot skill on their blind spots): `design/check_social_words.mjs` (#77/#225/#188), `design/check_assets.mjs`, `design/check_undefined_refs.mjs`, and where present `design/check_copy_claims.py` (`pnpm check:claims`, rules text vs books).
 - HTML entry: `src/app.html` (viewport meta for #223, body CSS for #227).
-- Math (#25/#27/#266, max win, mode count): `math-sdk/games/<game_id>/library/publish_files/` (`index.json`, `lookUpTable_*.csv`, `books_*.jsonl.zst`). Chinese-named app folders reach math through a junction `games/<game_id>`.
+- Math (#25/#27/#266, max win, mode count): `math-sdk/games/<game_id>/library/publish_files/` (`index.json`, `lookUpTable_*.csv`, `books_*.jsonl.zst`). A math folder may carry a suffix after the id (`games/PuttMonkey迷你高爾夫`): the SDK (`src/config/paths.py` `game_dir`) and the apps (`wp/tools/math_game_dir.mjs`) find it by prefix — no junction (user, 2026-10-23: junctions clutter the folder).
 
 History worth re-checking on every game (details in `../stake-engine-slot/references/review-log.md`, `approval-guidelines.md`, `certification.md`):
 

@@ -1,0 +1,31 @@
+{
+  "character": "Squawk",
+  "spine": "4.3.13",
+  "bones": 27,
+  "layers": 23,
+  "clips": [
+    "idle",
+    "fg_idle",
+    "react_small",
+    "react_good",
+    "idle_mimic",
+    "idle_bored",
+    "encore_build",
+    "encore_call",
+    "encore_success",
+    "encore_fail",
+    "turn_knob",
+    "fg_trigger",
+    "fg_end",
+    "win_big",
+    "win_max",
+    "record_pull",
+    "record_hit",
+    "record_miss",
+    "win_big_loop",
+    "win_max_loop"
+  ],
+  "pages": 1,
+  "customTopology": "three-quarter macaw DJ",
+  "sourcePSD": "E:\\stake\\wp\\apps\\ParrotRadio鸚鵡電台\\design\\source\\parrot\\cast\\squawk.psd"
+}
