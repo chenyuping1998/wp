@@ -1,0 +1,25 @@
+{
+  "mode": "built-in imagegen",
+  "assets": [
+    {
+      "key": "saucer-fg",
+      "app": "SaucerMonkey飛碟農場",
+      "file": "SaucerMonkey-Cover-Character-v2.png",
+      "transparent": true,
+      "ref": "E:/stake/wp/apps/SaucerMonkey飛碟農場/design/cover/SaucerMonkey-Cover-FG.png",
+      "prompt": "Use case: stylized-concept. Asset type: professional slot game cover character, transparent PNG, portrait 2:3.\nInput image 1 is the established character identity and print-art style reference. Generate a new polished full-body cover pose of this same friendly confident astronaut monkey. Preserve its recognizable face, brown fur, clear bubble helmet with spring antenna and red tip, ivory silver retro space suit, red cape, red cuffs, curled tail, and handheld retro remote. Three-quarter view, appealing confident smile, one hand holding the remote slightly outward. Strong readable silhouette, anatomically clean hands, both feet fully visible, antenna and cape fully visible, generous clear margin. Precise ink outlines, controlled mid-century screenprinted halftone shading, restrained intentional grain, flat shaped highlights, premium hand-illustrated finish. Bright ivory, red and blue accents, clear facial expression. Isolated single character on a genuinely transparent background, including inside gaps around arms and tail. No floor, no backdrop, no scene, no text, no logo, no watermark, no cast shadow rectangle, no glow, no blurry painterly or glossy 3D rendering.",
+      "source": "C:\\Users\\cheny\\.codex\\generated_images\\01a1443a-a768-72c1-a72a-14cc07eb4b0d\\exec-7c90906b-9278-4b81-b4af-0536018b0441.png",
+      "initialSource": "C:\\Users\\cheny\\.codex\\generated_images\\01a1443a-a768-72c1-a72a-14cc07eb4b0d\\exec-e1840cd2-d3e5-4b23-985c-7b4c425e70f2.png",
+      "refinementPrompt": "Use case: background-extraction. Image 1 is the edit target. Preserve this exact character, identity, pose, face, costume, colors, linework and all accessories. Remove ALL of the colored glow, dark haze, vignette and shadow around the silhouette. Deliver a CLEAN production character cutout with a genuinely transparent background, alpha exactly zero outside the crisp ink outline, no soft ambient cloud, no halo, no ground shadow. All gaps between limbs, club/remote, tail and body must be completely transparent too. Keep character interiors opaque. Fit the entire uncut subject inside the canvas with a clear 4 percent transparent margin on every side, including head tip and feet. Do not redraw the pose. No checkerboard baked into pixels. Transparent PNG."
+    },
+    {
+      "key": "saucer-bg",
+      "app": "SaucerMonkey飛碟農場",
+      "file": "SaucerMonkey-Cover-BG-Bright-v2.png",
+      "transparent": false,
+      "ref": "E:/stake/wp/apps/SaucerMonkey飛碟農場/design/cover/SaucerMonkey-Cover-BG.png",
+      "prompt": "Use case: stylized-concept. Asset type: standalone landscape game cover background, wide 16:9.\nInput image 1 is a style and world reference only. Generate a NEW brighter daylight background for the same Saucer Monkey alien farm game, maintaining its 1950s science fiction screenprinted poster style and crisp deliberate ink shapes. This MUST be a bright cheerful daytime scene: pale turquoise and clear sky blue sky, warm ivory clouds, sunlit golden cornfields, fresh green foliage, a red barn and small water tower to one side. A clearly silhouetted silver flying saucer in the upper sky shines a light mint tractor beam onto a distant field. Layered farm perspective, rolling crop rows, golden yellow accents, open uncluttered middle area suitable for placing a separate large character and title later. Full bleed polished illustration, controlled halftone texture, authored shape design, clean readable edges, professional game key art, harmonious bright palette. No giant moon, no purple night sky, no darkness, no people, no monkeys, no foreground character, no text, no logo, no UI, no frame, no watermark. Deliver landscape 16:9.",
+      "source": "C:\\Users\\cheny\\.codex\\generated_images\\01a1443a-a768-72c1-a72a-14cc07eb4b0d\\exec-d0740d77-6d55-4840-8b2c-7efb1193a26f.png"
+    }
+  ]
+}

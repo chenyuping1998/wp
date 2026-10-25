@@ -1,0 +1,12 @@
+{
+  "theme": "putt",
+  "description": "Periodic turf roll, putter contact and hollow cup drop; original synthesis.",
+  "sampleRate": 44100,
+  "format": "mono PCM16 WAV",
+  "externalSamples": false,
+  "files": [
+    "putt_roll_loop.wav",
+    "putt_sink.wav",
+    "putt_tap.wav"
+  ]
+}

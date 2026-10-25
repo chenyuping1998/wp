@@ -1,0 +1,40 @@
+[
+  {
+    "file": "bgm_main.mp3",
+    "bpm": 104,
+    "bars": 16,
+    "samples": 1772308,
+    "sampleRate": 48000,
+    "sourceLoudness": {
+      "input_i": "-17.33",
+      "input_tp": "-2.65",
+      "input_lra": "0.60",
+      "input_thresh": "-27.33",
+      "output_i": "-18.04",
+      "output_tp": "-3.39",
+      "output_lra": "0.50",
+      "output_thresh": "-28.04",
+      "normalization_type": "dynamic",
+      "target_offset": "0.04"
+    }
+  },
+  {
+    "file": "bgm_freespin.mp3",
+    "bpm": 136,
+    "bars": 16,
+    "samples": 1355294,
+    "sampleRate": 48000,
+    "sourceLoudness": {
+      "input_i": "-16.37",
+      "input_tp": "-3.09",
+      "input_lra": "0.50",
+      "input_thresh": "-26.37",
+      "output_i": "-18.04",
+      "output_tp": "-4.79",
+      "output_lra": "0.50",
+      "output_thresh": "-28.04",
+      "normalization_type": "dynamic",
+      "target_offset": "0.04"
+    }
+  }
+]

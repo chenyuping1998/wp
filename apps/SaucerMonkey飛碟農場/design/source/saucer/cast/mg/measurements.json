@@ -1,0 +1,87 @@
+{
+  "_note": "New continuous mesh measured on the approved theme master; no Strike cuts.",
+  "out": "sushiMaster",
+  "root": [
+    280,
+    904
+  ],
+  "hip": [
+    260,
+    550
+  ],
+  "neck": [
+    270,
+    340
+  ],
+  "flow": [
+    {
+      "name": "antenna",
+      "links": 1
+    },
+    {
+      "name": "cape",
+      "links": 1
+    },
+    {
+      "name": "tail",
+      "links": 1
+    }
+  ],
+  "source": "E:\\stake\\wp\\apps\\SaucerMonkey\u98db\u789f\u8fb2\u5834\\design\\source\\saucer\\cast\\mg.png",
+  "canvas": [
+    560,
+    912
+  ],
+  "face": [
+    210,
+    190,
+    345,
+    305
+  ],
+  "bones": {
+    "root": [
+      280,
+      904
+    ],
+    "hip": [
+      260,
+      550
+    ],
+    "torso": [
+      260,
+      460
+    ],
+    "head": [
+      270,
+      340
+    ],
+    "armL": [
+      175,
+      370
+    ],
+    "forearmL": [
+      135,
+      470
+    ],
+    "armR": [
+      350,
+      380
+    ],
+    "forearmR": [
+      405,
+      495
+    ],
+    "antenna": [
+      235,
+      135
+    ],
+    "cape": [
+      370,
+      370
+    ],
+    "tail": [
+      340,
+      630
+    ]
+  }
+}

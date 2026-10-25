@@ -1,0 +1,68 @@
+{
+ "_note": "design/swing/cut_caddie_flag.py, 2026-10-23: the caddie's flag hand and pennant as pieces on his mesh forearm.",
+ "joints": {
+  "wrist": [
+   102,
+   494
+  ],
+  "poleTop": [
+   52,
+   300
+  ],
+  "poleLow": [
+   70,
+   560
+  ],
+  "pennantRoot": [
+   66,
+   372
+  ],
+  "pennantTip": [
+   160,
+   370
+  ]
+ },
+ "boxes": {
+  "pennant": [
+   62,
+   314,
+   104,
+   121
+  ],
+  "handL": [
+   32,
+   289,
+   77,
+   279
+  ]
+ },
+ "order": [
+  "pennant",
+  "handL"
+ ],
+ "ik_arms": [],
+ "rig": {
+  "bones": [
+   {
+    "name": "handL",
+    "parent": "foreL",
+    "at": [
+     102,
+     494
+    ],
+    "angle": 93.9603118304584,
+    "length": 60
+   },
+   {
+    "name": "pennant",
+    "parent": "handL",
+    "at": [
+     66,
+     372
+    ],
+    "angle": 1.2188752351312977,
+    "length": 94.02
+   }
+  ]
+ }
+}

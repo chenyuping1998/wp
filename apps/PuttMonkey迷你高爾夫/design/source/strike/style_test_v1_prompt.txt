@@ -1,0 +1,7 @@
+Use case: stylized-concept. 16:9 full gameplay style approval mockup for Strike Monkey, with a five-column, four-row reel grid.
+
+Original 1950s Googie bowling alley cartoon: bold geometric flat colors, simple limited-animation shapes, cream and slate teal setting, blank score monitors, bowling lanes and ball return. Place a confident chunky monkey Bowler in a two-color bowling shirt to the right and a blank control bar below.
+
+Grid symbols: red and teal trophy, two-tone bowling shoe, blank score card and pencil, cherry soda, monkey-face wild in red circular badge, cream pin with red neck band and blank belly plaque, golden ball with three finger holes. Keep every symbol alone on a plain cream tile. No rays, stars, sparkles, glints, halos, particles, speed lines, bursts or decorative effects on any award symbol. Background pendant stars can sit outside the grid. Gold is reserved for the scatter ball.
+
+Palette: #FFF4DE, #2E4A52, #14262E, #E8502E; gold #F5B83D for scatter only. No letters, numbers, words, brand marks, watermarks, alcohol, smoking, humans or faces on the pin.

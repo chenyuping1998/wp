@@ -1,0 +1,87 @@
+{
+  "_note": "New continuous mesh measured on the approved theme master; no Strike cuts.",
+  "out": "sushiMaster",
+  "root": [
+    280,
+    904
+  ],
+  "hip": [
+    275,
+    560
+  ],
+  "neck": [
+    272,
+    316
+  ],
+  "flow": [
+    {
+      "name": "pompom",
+      "links": 1
+    },
+    {
+      "name": "towel",
+      "links": 1
+    },
+    {
+      "name": "tail",
+      "links": 1
+    }
+  ],
+  "source": "E:\\stake\\wp\\apps\\PuttMonkey\u8ff7\u4f60\u9ad8\u723e\u592b\\design\\source\\putt\\cast\\mg.png",
+  "canvas": [
+    560,
+    912
+  ],
+  "face": [
+    190,
+    180,
+    342,
+    298
+  ],
+  "bones": {
+    "root": [
+      280,
+      904
+    ],
+    "hip": [
+      275,
+      560
+    ],
+    "torso": [
+      275,
+      460
+    ],
+    "head": [
+      272,
+      316
+    ],
+    "armL": [
+      170,
+      350
+    ],
+    "forearmL": [
+      126,
+      470
+    ],
+    "armR": [
+      383,
+      352
+    ],
+    "forearmR": [
+      432,
+      475
+    ],
+    "pompom": [
+      230,
+      128
+    ],
+    "towel": [
+      367,
+      490
+    ],
+    "tail": [
+      420,
+      550
+    ]
+  }
+}

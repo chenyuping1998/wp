@@ -1,0 +1,25 @@
+harness written to E:\stake\wp\apps\SaucerMonkey飛碟農場\build-replaytest (books: base=6 bonus=3 superbonus=2)
+
+serve it, then open:
+  base x20.2
+    http://localhost:4174/?replay=true&rgs_url=mock.local&game=SaucerMonkey&version=1&mode=base&event=0&amount=1000000&currency=USD&language=en
+  base x0
+    http://localhost:4174/?replay=true&rgs_url=mock.local&game=SaucerMonkey&version=1&mode=base&event=1&amount=1000000&currency=USD&language=en
+  base x4
+    http://localhost:4174/?replay=true&rgs_url=mock.local&game=SaucerMonkey&version=1&mode=base&event=2&amount=1000000&currency=USD&language=en
+  base x1
+    http://localhost:4174/?replay=true&rgs_url=mock.local&game=SaucerMonkey&version=1&mode=base&event=3&amount=1000000&currency=USD&language=en
+  base x32
+    http://localhost:4174/?replay=true&rgs_url=mock.local&game=SaucerMonkey&version=1&mode=base&event=4&amount=1000000&currency=USD&language=en
+  base x88
+    http://localhost:4174/?replay=true&rgs_url=mock.local&game=SaucerMonkey&version=1&mode=base&event=5&amount=1000000&currency=USD&language=en
+  bonus x48.8
+    http://localhost:4174/?replay=true&rgs_url=mock.local&game=SaucerMonkey&version=1&mode=bonus&event=0&amount=1000000&currency=USD&language=en
+  bonus x36.2
+    http://localhost:4174/?replay=true&rgs_url=mock.local&game=SaucerMonkey&version=1&mode=bonus&event=1&amount=1000000&currency=USD&language=en
+  bonus x29.4
+    http://localhost:4174/?replay=true&rgs_url=mock.local&game=SaucerMonkey&version=1&mode=bonus&event=2&amount=1000000&currency=USD&language=en
+  superbonus x235.3
+    http://localhost:4174/?replay=true&rgs_url=mock.local&game=SaucerMonkey&version=1&mode=superbonus&event=0&amount=1000000&currency=USD&language=en
+  superbonus x0.8
+    http://localhost:4174/?replay=true&rgs_url=mock.local&game=SaucerMonkey&version=1&mode=superbonus&event=1&amount=1000000&currency=USD&language=en

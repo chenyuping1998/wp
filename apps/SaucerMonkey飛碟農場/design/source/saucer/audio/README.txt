@@ -1,0 +1,1 @@
+Original procedural synthesis by this project. No external recordings, samples, voices, or quoted melodies. Music masters: 48kHz stereo 24-bit WAV. Runtime: 192kbps gapless MP3, measured -18 LUFS normalization. Foley: mono 44.1kHz 16-bit WAV. Animal/character calls are synthesized, not recordings.

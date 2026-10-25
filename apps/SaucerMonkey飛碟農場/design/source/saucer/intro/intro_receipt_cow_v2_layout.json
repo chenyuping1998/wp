@@ -1,0 +1,16 @@
+{
+  "status": "approved and integrated into runtime",
+  "master": "intro_receipt_cow_v2.png",
+  "value": "10,000×",
+  "valueCenterNormalized": [
+    0.669,
+    0.657
+  ],
+  "valueMaxWidthNormalized": 0.45,
+  "rotationDegrees": -1.5,
+  "font": "Anton",
+  "sourcePrompt": "../prompts/intro_receipt_cow_v2.txt",
+  "preview": "../../../qa/maxwin_cow_v2_preview.jpg",
+  "runtime": "static/assets/sprites/sushiV8/intro_receipt_cow_v2.png",
+  "component": "src/components/FeatureIntro.svelte"
+}

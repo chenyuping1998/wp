@@ -1,0 +1,87 @@
+{
+  "_note": "New continuous mesh measured on the approved theme master; no Strike cuts.",
+  "out": "sushiApprentice",
+  "root": [
+    280,
+    904
+  ],
+  "hip": [
+    270,
+    550
+  ],
+  "neck": [
+    244,
+    362
+  ],
+  "flow": [
+    {
+      "name": "visor",
+      "links": 1
+    },
+    {
+      "name": "towel",
+      "links": 1
+    },
+    {
+      "name": "tail",
+      "links": 1
+    }
+  ],
+  "source": "E:\\stake\\wp\\apps\\PuttMonkey\u8ff7\u4f60\u9ad8\u723e\u592b\\design\\source\\putt\\cast\\fg.png",
+  "canvas": [
+    560,
+    912
+  ],
+  "face": [
+    150,
+    205,
+    270,
+    335
+  ],
+  "bones": {
+    "root": [
+      280,
+      904
+    ],
+    "hip": [
+      270,
+      550
+    ],
+    "torso": [
+      270,
+      460
+    ],
+    "head": [
+      244,
+      362
+    ],
+    "armL": [
+      194,
+      400
+    ],
+    "forearmL": [
+      165,
+      500
+    ],
+    "armR": [
+      340,
+      395
+    ],
+    "forearmR": [
+      365,
+      515
+    ],
+    "visor": [
+      240,
+      160
+    ],
+    "towel": [
+      430,
+      350
+    ],
+    "tail": [
+      365,
+      640
+    ]
+  }
+}

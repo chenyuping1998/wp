@@ -1,0 +1,10 @@
+{
+  "theme": "saucer",
+  "description": "Periodic saucer motor, pulsing tractor beam and filtered air; collection only.",
+  "sampleRate": 44100,
+  "format": "mono PCM16 WAV",
+  "externalSamples": false,
+  "files": [
+    "tractor_loop.wav"
+  ]
+}

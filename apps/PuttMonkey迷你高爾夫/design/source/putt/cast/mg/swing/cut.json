@@ -1,0 +1,105 @@
+{
+ "_note": "design/swing/cut_golfer_arms.py, 2026-10-23: the golfer's arms and putter as pieces over the arm-less body mesh.",
+ "joints": {
+  "shoulderL": [
+   180,
+   342
+  ],
+  "elbowL": [
+   142,
+   456
+  ],
+  "wristL": [
+   112,
+   510
+  ],
+  "shoulderR": [
+   388,
+   345
+  ],
+  "elbowR": [
+   430,
+   478
+  ],
+  "wristR": [
+   464,
+   556
+  ],
+  "gripTop": [
+   107,
+   516
+  ],
+  "grip": [
+   100,
+   562
+  ],
+  "gripLow": [
+   94,
+   612
+  ],
+  "head": [
+   62,
+   846
+  ]
+ },
+ "boxes": {
+  "armL": [
+   109,
+   309,
+   79,
+   159
+  ],
+  "foreL": [
+   77,
+   408,
+   107,
+   139
+  ],
+  "handL": [
+   54,
+   496,
+   76,
+   111
+  ],
+  "armR": [
+   351,
+   292,
+   132,
+   195
+  ],
+  "foreR": [
+   397,
+   430,
+   103,
+   163
+  ],
+  "handR": [
+   430,
+   541,
+   78,
+   102
+  ],
+  "club": [
+   19,
+   510,
+   95,
+   368
+  ],
+  "ball": [
+   0,
+   0,
+   46,
+   46
+  ]
+ },
+ "order": [
+  "foreR",
+  "armR",
+  "club",
+  "foreL",
+  "armL",
+  "handL",
+  "handR",
+  "ball"
+ ]
+}

@@ -1,0 +1,25 @@
+{
+  "mode": "built-in imagegen",
+  "assets": [
+    {
+      "key": "putt-fg",
+      "app": "PuttMonkey迷你高爾夫",
+      "file": "PuttMonkey-Cover-Character-v2.png",
+      "transparent": true,
+      "ref": "E:/stake/wp/apps/PuttMonkey迷你高爾夫/design/cover/PuttMonkey-Cover-FG.png",
+      "prompt": "Use case: stylized-concept. Asset type: professional slot game cover character, transparent PNG, portrait 2:3.\nInput image 1 is the exact established character identity and screenprint illustration style reference. Generate a NEW polished full-body cover pose of this same cheeky friendly mini-golf monkey. Preserve recognizable face and brown fur, red tartan pom-pom golf cap, green cream red argyle sweater vest over cream short-sleeve polo, red tartan shorts, cream knee socks with red stripes, green cream golf shoes, sky-blue towel and curled tail. Confident jaunty three-quarter pose, one eye playfully winking, relaxed smile, hands anatomically clean, holding a clean metal putter whose complete head and shaft are visible. Include one small realistic WHITE dimpled golf ball beside a shoe, no red stripe on ball. Entire hat, shoes, putter, tail within frame with clear margins. Crisp dark green ink outlines, flat rich color shapes, controlled halftone shading and intentional screenprint grain, bright warm daylight, premium 1960s holiday postcard finish. Strong readable silhouette. Isolated single character and ball on genuinely transparent background, transparent gaps between limbs and club. No floor, no scenery, no backdrop, no grass platform, no text, no logo, no watermark, no glow, no glossy 3D, no blurry painterly finish.",
+      "source": "C:\\Users\\cheny\\.codex\\generated_images\\01a1443a-a768-72c1-a72a-14cc07eb4b0d\\exec-6fb5de5b-29b7-4b2f-8980-3484c53dcbd8.png",
+      "initialSource": "C:\\Users\\cheny\\.codex\\generated_images\\01a1443a-a768-72c1-a72a-14cc07eb4b0d\\exec-fbebfbc1-fd85-4824-9e18-1285844a2671.png",
+      "refinementPrompt": "Use case: background-extraction. Image 1 is the edit target. Preserve this exact character, identity, pose, face, costume, colors, linework and all accessories. Remove ALL of the colored glow, dark haze, vignette and shadow around the silhouette. Deliver a CLEAN production character cutout with a genuinely transparent background, alpha exactly zero outside the crisp ink outline, no soft ambient cloud, no halo, no ground shadow. All gaps between limbs, club/remote, tail and body must be completely transparent too. Keep character interiors opaque. Fit the entire uncut subject inside the canvas with a clear 4 percent transparent margin on every side, including head tip and feet. Do not redraw the pose. No checkerboard baked into pixels. Transparent PNG."
+    },
+    {
+      "key": "putt-bg",
+      "app": "PuttMonkey迷你高爾夫",
+      "file": "PuttMonkey-Cover-BG-v2.png",
+      "transparent": false,
+      "ref": "E:/stake/wp/apps/PuttMonkey迷你高爾夫/design/cover/PuttMonkey-Cover-BG.png",
+      "prompt": "Use case: stylized-concept. Asset type: standalone landscape game cover background, wide 16:9.\nInput image 1 is the existing world's identity and style reference. Generate a new polished mini-golf leisure park background consistent with this Putt Monkey game: 1960s summer holiday postcard screenprint illustration, clean dark-green contour lines, controlled halftone shading and restrained printed grain. Bright blue sky, warm cream clouds and golden sun, vivid manicured green putting courses with curved cream curbs, charming red windmill obstacle on the left middle distance, playful green crocodile-mouth mini-golf tunnel on the right middle distance, palms, white picket fence and red hibiscus. A small golden flag and cup on a right foreground green. Broad simple central lawn and clear upper sky area allow a separate character and title to be composed later. Coherent perspective and strong large shapes, professional finished background illustration. No people, no monkeys, no foreground character, no typography, no numbers, no UI, no logo, no watermark, no border. No glossy 3D, photorealism, smeary overdetail or random artifacts. Deliver full bleed landscape 16:9.",
+      "source": "C:\\Users\\cheny\\.codex\\generated_images\\01a1443a-a768-72c1-a72a-14cc07eb4b0d\\exec-0ee5764b-9147-4936-82c1-7e00a00ea0f5.png"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+Use case: stylized-concept. Asset type: standalone landscape game cover background, wide 16:9.
+Input image 1 is a style and world reference only. Generate a NEW brighter daylight background for the same Saucer Monkey alien farm game, maintaining its 1950s science fiction screenprinted poster style and crisp deliberate ink shapes. This MUST be a bright cheerful daytime scene: pale turquoise and clear sky blue sky, warm ivory clouds, sunlit golden cornfields, fresh green foliage, a red barn and small water tower to one side. A clearly silhouetted silver flying saucer in the upper sky shines a light mint tractor beam onto a distant field. Layered farm perspective, rolling crop rows, golden yellow accents, open uncluttered middle area suitable for placing a separate large character and title later. Full bleed polished illustration, controlled halftone texture, authored shape design, clean readable edges, professional game key art, harmonious bright palette. No giant moon, no purple night sky, no darkness, no people, no monkeys, no foreground character, no text, no logo, no UI, no frame, no watermark. Deliver landscape 16:9.
+
+Refinement pass:
+None

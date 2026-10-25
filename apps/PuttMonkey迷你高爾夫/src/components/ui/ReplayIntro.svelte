@@ -1,0 +1,343 @@
+<script lang="ts">
+	import { stateBet, stateReplay, stateUrlDerived } from 'state-shared';
+	import { API_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
+	import { zIndex } from 'constants-shared/zIndex';
+	import { numberToCurrencyString } from 'utils-shared/amount';
+
+	import { PUTT_MONKEY_BET_MODE_META, MODE_NAMES } from '../../game/betModeMeta';
+	import { gameText } from '../../game/i18nText';
+
+	// Replay start card.
+	//
+	// A replay used to begin the instant the data arrived, with nothing said about
+	// what was being replayed. Certification asks that the cost, the multiplier and
+	// the final amount are all visible before it runs, so the round is gated behind
+	// this panel.
+	//
+	// It is shown ONCE, before the first run. Re-running is the bar's replay button
+	// instead — a panel that covered the board every time the round ended got in
+	// the way of watching it.
+	//
+	// Stake.us naming: "Base Bet" / "Cost Multiplier" / "Payout Multiplier" are
+	// restricted in social play and become "Base Play" / "Feature Multiplier" /
+	// "Final Multiplier".
+
+	type Props = {
+		onstart: () => void;
+	};
+
+	const props: Props = $props();
+
+	const social = stateUrlDerived.social();
+
+	// Engine guideline 172: the replay applies ?lang=. Social play stays English
+	// (platform rule) with its own wording; everything else reads gameText.
+	const L = social
+		? {
+				badge: 'REPLAY',
+				title: 'Play Replay',
+				mode: 'Mode',
+				baseBet: 'Base Play',
+				costMultiplier: 'Feature Multiplier',
+				// "Total Play Cost" would still carry the restricted word "cost"
+				totalCost: 'Total Play Amount',
+				payoutMultiplier: 'Final Multiplier',
+				totalWin: 'Total Win',
+				start: 'Start Replay',
+				foot: 'This is a replay of a previous round. No plays will be placed.',
+			}
+		: {
+				badge: gameText('replayBadge'),
+				title: gameText('replayTitle'),
+				mode: gameText('replayMode'),
+				baseBet: gameText('replayBaseBet'),
+				costMultiplier: gameText('replayCostMult'),
+				totalCost: gameText('replayTotalCost'),
+				payoutMultiplier: gameText('replayPayoutMult'),
+				totalWin: gameText('replayTotalWin'),
+				start: gameText('replayStart'),
+				foot: gameText('replayFoot'),
+			};
+
+	// The mode label has to read the way the game itself names the mode. The raw
+	// key ("SUPERSPIN") and the buy-card caption ("BUY FREE SPINS") are both wrong
+	// here — one is machine naming, the other is a call to action.
+	const MODE_LABELS: Record<string, string> = {
+		BASE: social ? 'Base Game' : gameText('replayBaseGame'),
+		BONUS: MODE_NAMES.BONUS,
+		SUPERBONUS: MODE_NAMES.SUPERBONUS,
+	};
+
+	const modeKey = $derived(`${stateBet.activeBetModeKey || 'BASE'}`.toUpperCase());
+	const modeLabel = $derived(MODE_LABELS[modeKey] ?? modeKey);
+	const costMultiplier = $derived(PUTT_MONKEY_BET_MODE_META[modeKey]?.costMultiplier ?? 1);
+
+	// stateBet.betAmount is the base stake the replay was recorded at; the total
+	// cost is that stake times the mode's cost multiplier.
+	const baseBet = $derived(stateBet.betAmount);
+	const totalCost = $derived(baseBet * costMultiplier);
+
+	// stateReplay.round, not stateBet.betToResume — the latter is cleared the
+	// moment the round starts, and this card is shown again afterwards.
+	const round = $derived(
+		stateReplay.round as unknown as { payoutMultiplier?: number; payout?: number } | null,
+	);
+	const payoutMultiplier = $derived(round?.payoutMultiplier ?? 0);
+	// `payout` is authoritative and comes back in API units. The multiplier is the
+	// fallback: like every book amount it is quoted against the base stake, not
+	// against the total cost.
+	const totalWin = $derived(
+		typeof round?.payout === 'number'
+			? round.payout / API_AMOUNT_MULTIPLIER
+			: baseBet * payoutMultiplier,
+	);
+
+	const fmtMult = (value: number) => `${Number(value.toFixed(4))}x`;
+	// FULL PRECISION (Stake review 2026-10-04): a $0.01 stake x 125.9 must read
+	// $1.259, not the 2-decimal $1.26. Up to 6 decimals; Intl still prints the
+	// fewest that are exact, never fewer than 2.
+	const FULL = 6;
+	const fmtMoney = (value: number) => numberToCurrencyString(Number(value.toFixed(FULL)), FULL);
+
+	// The same six rows, handed to the bar so they are still on screen after the
+	// card is dismissed and after every run (stateReplay.summary). Stake review on
+	// Deadwood Express, 2026-10-04: the bar next to Replay lacked the card's info.
+	$effect(() => {
+		// Six full captions squeeze below legible size in a narrow replay strip.
+		// The opening card above keeps the complete names and figures.
+		const compact = typeof window !== 'undefined' && window.innerWidth < 760 && /^mode$/i.test(L.mode);
+		stateReplay.summary = [
+			{ label: compact ? 'Mode' : L.mode, value: modeLabel },
+			{ label: compact ? 'Bet' : L.baseBet, value: fmtMoney(baseBet) },
+			{ label: compact ? 'Cost ×' : L.costMultiplier, value: fmtMult(costMultiplier) },
+			{ label: compact ? 'Bet Cost' : L.totalCost, value: fmtMoney(totalCost) },
+			{ label: compact ? 'Payout ×' : L.payoutMultiplier, value: fmtMult(payoutMultiplier), tone: 'win' },
+			{ label: compact ? 'Win' : L.totalWin, value: fmtMoney(totalWin), tone: 'win' },
+		];
+	});
+</script>
+
+<!-- above the paytable/info layer: the round must not start behind an open panel -->
+<div class="replay-backdrop" style:z-index={zIndex.info + 10}>
+	<div class="replay-card">
+		<span class="replay-badge">{L.badge}</span>
+		<h2>{L.title}</h2>
+
+		<dl class="replay-rows">
+			<div class="row">
+				<dt>{L.mode}</dt>
+				<dd class="accent">{modeLabel}</dd>
+			</div>
+
+			<div class="row spacer">
+				<dt>{L.baseBet}</dt>
+				<dd class="accent">{fmtMoney(baseBet)}</dd>
+			</div>
+			<div class="row">
+				<dt>{L.costMultiplier}</dt>
+				<dd class="accent">{fmtMult(costMultiplier)}</dd>
+			</div>
+			<div class="row highlight">
+				<dt>{L.totalCost}</dt>
+				<dd class="accent big">{fmtMoney(totalCost)}</dd>
+			</div>
+
+			<div class="row spacer">
+				<dt>{L.payoutMultiplier}</dt>
+				<dd class="win">{fmtMult(payoutMultiplier)}</dd>
+			</div>
+			<div class="row highlight">
+				<dt>{L.totalWin}</dt>
+				<dd class="win big">{fmtMoney(totalWin)}</dd>
+			</div>
+		</dl>
+
+		<button class="replay-start" onclick={props.onstart}>
+			▶ {L.start}
+		</button>
+
+		<p class="replay-foot">{L.foot}</p>
+	</div>
+</div>
+
+<style lang="scss">
+	.replay-backdrop {
+		position: fixed;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+		background: rgba(30, 27, 26, 0.78);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		overflow-y: auto;
+	}
+
+	.replay-card {
+		width: min(24rem, 100%);
+		max-height: 100%;
+		overflow-y: auto;
+		box-sizing: border-box;
+		padding: 1.25rem;
+		border-radius: 14px;
+		/* the game's screenprint plate: paper on a hard ink rim, red offset print */
+		background: #f4eacb;
+		border: 3px solid #1b2a22;
+		box-shadow: 6px 6px 0 #e5432f;
+		color: #1b2a22;
+		font-family: var(--gb-body-font, sans-serif);
+		text-align: center;
+	}
+
+	.replay-badge {
+		display: inline-block;
+		padding: 0.2rem 0.7rem;
+		border-radius: 999px;
+		background: #3e7a45;
+		color: #f4eacb;
+		font-weight: 800;
+		font-size: 0.7rem;
+		letter-spacing: 0.08em;
+	}
+
+	h2 {
+		margin: 0.55rem 0 1rem;
+		font-family: var(--gb-display-font, sans-serif);
+		font-weight: 400;
+		font-size: 1.5rem;
+	}
+
+	.replay-rows {
+		margin: 0;
+		padding: 0.85rem;
+		border-radius: 10px;
+		background: rgba(30, 27, 26, 0.06);
+		border: 2px solid #1b2a22;
+		text-align: left;
+	}
+
+	.row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.32rem 0;
+		font-size: 0.85rem;
+	}
+
+	/* a blank line between the cost group and the win group, so the two read as
+	   separate halves rather than one long list */
+	.row.spacer {
+		margin-top: 0.7rem;
+	}
+
+	.row.highlight {
+		margin-top: 0.15rem;
+		padding: 0.45rem 0.55rem;
+		border-radius: 8px;
+		background: rgba(31, 92, 74, 0.12);
+	}
+
+	dt {
+		opacity: 0.75;
+	}
+
+	dd {
+		margin: 0;
+		font-weight: 700;
+	}
+
+	.accent {
+		color: #e5432f;
+	}
+	.win {
+		color: #3e7a45;
+	}
+	.big {
+		font-size: 1.05rem;
+	}
+
+	.replay-start {
+		display: block;
+		width: 100%;
+		margin-top: 1rem;
+		padding: 0.8rem 1rem;
+		border: none;
+		border-radius: 10px;
+		background: #e5432f;
+		color: #f4eacb;
+		border: 3px solid #1b2a22;
+		box-shadow: 4px 4px 0 #1b2a22;
+		font-family: var(--gb-display-font, sans-serif);
+		font-size: 1.05rem;
+		font-weight: 700;
+		cursor: pointer;
+		transition: filter 0.2s ease, transform 0.1s ease;
+	}
+
+	.replay-start:hover {
+		filter: brightness(1.08);
+	}
+	.replay-start:active {
+		transform: scale(0.985);
+	}
+
+	.replay-foot {
+		margin: 0.7rem 0 0;
+		font-size: 0.7rem;
+		opacity: 0.6;
+	}
+
+	/* Short landscape windows — Engine guideline 243 opens replays in the 400×225
+	   popout, where the stacked card ran 328px tall in a 195px box and Start
+	   Replay sat below the fold. The six rows go into two columns of three (cost
+	   group | win group), the badge and footnote drop, and everything tightens,
+	   so the whole card and its button fit without scrolling. */
+	@media (max-height: 420px) and (orientation: landscape) {
+		.replay-backdrop {
+			padding: 0.5rem;
+		}
+		.replay-card {
+			width: min(34rem, 100%);
+			padding: 0.6rem 0.8rem;
+			box-shadow: 4px 4px 0 #e5432f;
+		}
+		.replay-badge,
+		.replay-foot {
+			display: none;
+		}
+		h2 {
+			margin: 0 0 0.4rem;
+			font-size: 1rem;
+		}
+		.replay-rows {
+			display: grid;
+			grid-template-rows: repeat(3, auto);
+			grid-auto-flow: column;
+			column-gap: 0.9rem;
+			padding: 0.35rem 0.55rem;
+		}
+		.row {
+			padding: 0.12rem 0;
+			font-size: 0.68rem;
+			gap: 0.5rem;
+		}
+		.row.spacer {
+			margin-top: 0;
+		}
+		.row.highlight {
+			margin-top: 0;
+			padding: 0.15rem 0.35rem;
+		}
+		.big {
+			font-size: 0.78rem;
+		}
+		.replay-start {
+			margin-top: 0.45rem;
+			padding: 0.4rem 0.8rem;
+			font-size: 0.85rem;
+			box-shadow: 3px 3px 0 #1b2a22;
+		}
+	}
+</style>

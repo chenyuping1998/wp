@@ -1,0 +1,8 @@
+Use case: precise-object-edit
+Asset type: transparent slot-game prize symbol P for existing Putt Monkey mini golf game.
+Input image 1 is the edit target and style reference.
+Primary request: replace the cream ball with bold red band and giant blank front badge with an unmistakable classic small WHITE GOLF BALL.
+Subject: ONE perfectly circular white golf ball with many SMALL, evenly spaced shallow circular dimples over its ENTIRE visible surface, no large dimples and no smooth blank label patch. Mostly bright clean white, very subtle cool pale grey shadow along lower-right edge and small cream reflected light. No red stripe, no paint band, no seam, no border circle on the face, no printed lettering, no number, no logo, no badge, no pedestal, no grass, no tee.
+Style: preserve the existing 1960s illustrated screenprint game's confident hand-inked outline, restrained halftone shading, crisp low-AI silhouette, professionally art-directed polished slot icon. Refine the exaggerated cratered texture into fine true golf-ball dimples; avoid a moon, tennis ball, baseball, foam ball or yellow ball. The dark green contour should be thin relative to the ball diameter.
+Composition: square 1024x1024, centered near frontal sphere, outer circle occupies about 84% of canvas with transparent margin on all sides; alpha transparent exterior. No cast shadow outside the circular silhouette. Recognizable as a small white golf ball at 70px.
+Constraints: change only the ball design, preserve original illustration language; no text anywhere; true transparent background.

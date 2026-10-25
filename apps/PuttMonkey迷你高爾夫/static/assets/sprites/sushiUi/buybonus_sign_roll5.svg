@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- sails behind everything: only their outer halves show -->
+  <g transform="translate(256 172) rotate(120)">
+    <path d="M-5 -6 V-142" stroke="#1b2a22" stroke-width="12" stroke-linecap="round"/>
+    <rect x="-22" y="-142" width="44" height="120" rx="9"
+          fill="#fff6df" stroke="#1b2a22" stroke-width="8"/>
+    <path d="M0 -136 V-26" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/>
+    <path d="M-18 -56 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/><path d="M-18 -84 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/><path d="M-18 -112 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/>
+  </g><g transform="translate(256 172) rotate(210)">
+    <path d="M-5 -6 V-142" stroke="#1b2a22" stroke-width="12" stroke-linecap="round"/>
+    <rect x="-22" y="-142" width="44" height="120" rx="9"
+          fill="#fff6df" stroke="#1b2a22" stroke-width="8"/>
+    <path d="M0 -136 V-26" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/>
+    <path d="M-18 -56 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/><path d="M-18 -84 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/><path d="M-18 -112 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/>
+  </g><g transform="translate(256 172) rotate(300)">
+    <path d="M-5 -6 V-142" stroke="#1b2a22" stroke-width="12" stroke-linecap="round"/>
+    <rect x="-22" y="-142" width="44" height="120" rx="9"
+          fill="#fff6df" stroke="#1b2a22" stroke-width="8"/>
+    <path d="M0 -136 V-26" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/>
+    <path d="M-18 -56 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/><path d="M-18 -84 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/><path d="M-18 -112 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/>
+  </g><g transform="translate(256 172) rotate(390)">
+    <path d="M-5 -6 V-142" stroke="#1b2a22" stroke-width="12" stroke-linecap="round"/>
+    <rect x="-22" y="-142" width="44" height="120" rx="9"
+          fill="#fff6df" stroke="#1b2a22" stroke-width="8"/>
+    <path d="M0 -136 V-26" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/>
+    <path d="M-18 -56 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/><path d="M-18 -84 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/><path d="M-18 -112 H18" stroke="#1b2a22" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <!-- the putting green under the cottage -->
+  <rect x="34" y="430" width="444" height="44" rx="22" fill="#3e7a45" stroke="#1b2a22" stroke-width="10"/>
+  <path d="M74 452 H160 M196 452 H230 M290 452 H330 M366 452 H440" stroke="#7fb06a"
+        stroke-width="6" stroke-linecap="round"/>
+  <!-- the cottage front is the caption face -->
+  <path d="M74 214 Q74 196 94 196 H418 Q438 196 438 214 L452 446 H60 Z" fill="#fff6df" stroke="#1b2a22" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M90 216 Q90 210 98 210 H414 Q422 210 422 216 L434 430" fill="none" stroke="#f4eacb"
+        stroke-width="4" stroke-linecap="round" opacity=".8"/>
+  <path d="M90 216 L78 430" fill="none" stroke="#f4eacb" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+  <!-- the red cap with its wave hem -->
+  <path d="M84 214 C92 176 168 160 256 160 C344 160 420 176 428 214
+           Q411 232 394 214 Q377 232 360 214 Q343 232 326 214 Q309 232 292 214 Q275 232 258 214 Q241 232 224 214 Q207 232 190 214 Q173 232 156 214 Q139 232 122 214 Q105 232 88 214 Z"
+        fill="#e5432f" stroke="#1b2a22" stroke-width="10" stroke-linejoin="round"/>
+  <!-- the hole: an arched door at the foot -->
+  <path d="M224 440 V418 A32 32 0 0 1 288 418 V440 Z"
+        fill="#1b2a22" stroke="#1b2a22" stroke-width="8" stroke-linejoin="round"/>
+  
+  
+  <path d="M180.45 404.6 Q188.5 389.65 196.55 404.6Z" fill="#7fb06a" stroke="#1b2a22" stroke-width="3" stroke-linejoin="round"/><circle cx="208.5" cy="374" r="5.75" fill="#fff6df" stroke="#1b2a22" stroke-width="4"/><path d="M297.95 382.6 Q306.0 367.65 314.05 382.6Z" fill="#7fb06a" stroke="#1b2a22" stroke-width="3" stroke-linejoin="round"/><circle cx="326.0" cy="404" r="5.75" fill="#fff6df" stroke="#1b2a22" stroke-width="4"/><path d="M247.95 350.6 Q256.0 335.65 264.05 350.6Z" fill="#7fb06a" stroke="#1b2a22" stroke-width="3" stroke-linejoin="round"/>
+  <!-- the hub, on top of the cap -->
+  <circle cx="256" cy="172" r="20" fill="#fff6df" stroke="#1b2a22" stroke-width="8"/>
+  <circle cx="256" cy="172" r="7" fill="#1b2a22"/>
+</svg>

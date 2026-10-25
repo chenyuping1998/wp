@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <path d="M82 33 424 33 Q455 33 463 66 L486 166 466 416
+           Q462 470 412 475 H100 Q50 470 46 416 L26 166 49 66 Q57 33 82 33Z"
+        fill="#14262e"/>
+  <path d="M88 53 H418 Q439 53 445 78 L465 168 447 411
+           Q444 450 406 454 H106 Q68 450 65 411 L47 168 67 78 Q73 53 88 53Z"
+        fill="#e8502e"/>
+  <path d="M91 70 H415 Q429 70 433 88 L451 170 441 215 H71
+           L61 170 79 88 Q83 70 91 70Z" fill="#e8502e"/>
+  <!-- The pins have no faces: they stay bowling equipment, not characters. -->
+  <path d="M76 105h57 M61 137h56 M72 169h52" fill="none"
+      stroke="#fff4de" stroke-width="8" stroke-linecap="round"/>
+  <path d="M85 209 Q168 235 239 198"
+        fill="none" stroke="#fff4de" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="150" cy="151" r="58" fill="#14262e" stroke="#fff4de" stroke-width="7"/>
+  <circle cx="132" cy="137" r="8" fill="#fff4de"/>
+  <circle cx="157" cy="126" r="8" fill="#fff4de"/>
+  <circle cx="165" cy="152" r="8" fill="#fff4de"/>
+  <g transform="translate(306 144) rotate(-7)">
+      <path d="M-16 38 C-20 29-19 18-13 7 Q-8-2-9-13 L-11-31
+               Q-11-41 0-42 Q11-41 11-31 L9-13 Q8-2 13 7
+               C19 18 20 29 16 38 Q0 47-16 38Z"
+            fill="#fff4de" stroke="#14262e" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M-9-16 Q0-12 9-16" fill="none" stroke="#e8502e" stroke-width="8" stroke-linecap="round"/>
+    </g><g transform="translate(358 139) rotate(5)">
+      <path d="M-16 38 C-20 29-19 18-13 7 Q-8-2-9-13 L-11-31
+               Q-11-41 0-42 Q11-41 11-31 L9-13 Q8-2 13 7
+               C19 18 20 29 16 38 Q0 47-16 38Z"
+            fill="#fff4de" stroke="#14262e" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M-9-16 Q0-12 9-16" fill="none" stroke="#e8502e" stroke-width="8" stroke-linecap="round"/>
+    </g><g transform="translate(405 148) rotate(12)">
+      <path d="M-16 38 C-20 29-19 18-13 7 Q-8-2-9-13 L-11-31
+               Q-11-41 0-42 Q11-41 11-31 L9-13 Q8-2 13 7
+               C19 18 20 29 16 38 Q0 47-16 38Z"
+            fill="#fff4de" stroke="#14262e" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M-9-16 Q0-12 9-16" fill="none" stroke="#e8502e" stroke-width="8" stroke-linecap="round"/>
+    </g>
+  <!-- A single scorecard face stays empty for the runtime caption. -->
+  <path d="M72 217 H440 L445 408 Q444 438 409 439 H103
+           Q68 438 67 408Z" fill="#24383f" stroke="#14262e" stroke-width="9"/>
+  <path d="M103 421 H409" fill="none" stroke="#fff4de" stroke-width="5"
+        stroke-linecap="round" opacity=".7"/>
+</svg>

@@ -1,0 +1,88 @@
+{
+  "_note": "Continuous mesh, weights from measured chains (wp/tools/build_cast_mesh.py, cast_mesh_spec.py), 2026-10-17.",
+  "out": "sushiApprentice",
+  "root": [
+    280,
+    904
+  ],
+  "flow": [
+    {
+      "name": "clubs",
+      "links": 1
+    },
+    {
+      "name": "towel",
+      "links": 1
+    },
+    {
+      "name": "tail",
+      "links": 1
+    }
+  ],
+  "canvas": [
+    560,
+    912
+  ],
+  "bones": {
+    "root": [
+      280,
+      904
+    ],
+    "hip": [
+      260,
+      520
+    ],
+    "torso": [
+      260,
+      520
+    ],
+    "head": [
+      242,
+      330
+    ],
+    "armL": [
+      178,
+      420
+    ],
+    "foreL": [
+      130,
+      470
+    ],
+    "armR": [
+      352,
+      400
+    ],
+    "foreR": [
+      372,
+      500
+    ],
+    "legL": [
+      222,
+      600
+    ],
+    "shinL": [
+      225,
+      700
+    ],
+    "legR": [
+      300,
+      600
+    ],
+    "shinR": [
+      322,
+      700
+    ],
+    "clubs": [
+      420,
+      325
+    ],
+    "towel": [
+      450,
+      360
+    ],
+    "tail": [
+      396,
+      615
+    ]
+  }
+}

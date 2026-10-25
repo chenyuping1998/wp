@@ -1,0 +1,34 @@
+
+  cels=facial_cels(full,folder,c)
+  attachments={}
+  atlas_page=Image.new("RGBA",((W+4)*4,(H+4)*2))
+  atlas_text=f"monkey.png\nsize:{atlas_page.width},{atlas_page.height}\nfilter:Linear,Linear\npma:false\n"
+  for ci,(expression,cel) in enumerate(cels.items()):
+   region="figure" if expression=="neutral" else "figure_"+expression
+   x=(ci%4)*(W+4)+2;y=(ci//4)*(H+4)+2
+   atlas_page.alpha_composite(cel,(x,y))
+   attachments[region]=dict(mesh,path=region)
+   atlas_text+=f"{region}\nbounds:{x},{y},{W},{H}\noffsets:0,0,{W},{H}\nindex:-1\n"
+  rig["skins"][0]["attachments"]["figure"]=attachments
+  def expression_keys(seq):
+   return [{"time":t,"name":"figure" if e=="neutral" else "figure_"+e}for t,e in seq]
+  for name,animation in animations.items():
+   if name=="flutter":continue
+   seq=[(0,"neutral")]
+   duration=max(k["time"]for b in animation["bones"].values()for channel in b.values()for k in channel)
+   if name=="idle":
+    seq+=[(2.1,"blink"),(2.24,"neutral"),(4.0,"blink"),(4.15,"neutral")]
+   elif name=="chestbeat":
+    for beat in range(6):
+     at=.2+beat*1.12
+     seq += [(at,"laugh_inhale"),(at+.15,"laugh_rising"),(at+.32,"laugh_peak"),(at+.7,"laugh_settle")]
+   elif name=="cheer":
+    seq += [(.12,"grin"),(.55,"laugh_rising"),(.85,"laugh_peak"),(1.3,"laugh_settle")]
+   elif name in ("alert","flinch"):
+    seq += [(.08,"shock"),(duration*.75,"blink")]
+   elif name in ("nod","throwit"):
+    seq += [(.13,"grin")]
+   seq += [(duration,"neutral")]
+   animation["slots"]={"figure":{"attachment":expression_keys(seq)}}
+  atlas_page.save(out/"monkey.png")
+  (out/"monkey.atlas").write_text(atlas_text)
