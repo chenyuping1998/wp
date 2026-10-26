@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/png" href="%sveltekit.assets%/favicon.png" />
+		<!--
+			Self-hosted display face, so there is no third-party font request to fail.
+			Titan One is SIL Open Font Licence (static/fonts/TitanOne-OFL.txt), which
+			permits commercial use and embedding.
+
+			Preloaded because Pixi measures glyphs when it builds a Text, and a face
+			that arrives late leaves the first frame laid out for the fallback metrics.
+			game/fonts.ts additionally blocks startup on document.fonts.
+		-->
+		<link
+			rel="preload"
+			href="%sveltekit.assets%/fonts/TitanOne.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin
+		/>
+		<style>
+			@font-face {
+				font-family: 'Titan One';
+				src: url('%sveltekit.assets%/fonts/TitanOne.ttf') format('truetype');
+				font-weight: 400;
+				font-style: normal;
+				font-display: block;
+			}
+		</style>
+		<meta name="viewport" content="width=device-width" />
+		%sveltekit.head%
+	</head>
+	<body style="margin: 0; padding: 0; overflow: hidden; background-color: black">
+		<div>%sveltekit.body%</div>
+	</body>
+</html>

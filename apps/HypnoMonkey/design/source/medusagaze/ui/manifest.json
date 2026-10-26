@@ -1,0 +1,276 @@
+{
+  "tool": "built-in image_gen",
+  "preparation": "Preserved true alpha, crop/proportional registration, no procedural replacement painting",
+  "files": [
+    {
+      "runtime": "static/assets/sprites/medusaFrame/capital.png",
+      "source": "capital_original.png",
+      "size": [
+        256,
+        249
+      ],
+      "bytes": 87554,
+      "sha256": "4b578def758e11a2665b1660fb09f13df291d8b1ed084f675d01aa0a34a5490c"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaFrame/lintel.png",
+      "source": "lintel_original.png",
+      "size": [
+        512,
+        49
+      ],
+      "bytes": 41310,
+      "sha256": "092f522af205b696e5e24fa5cf855594dfa40a1952df9efc0ac34830334556cc"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaFrame/column.png",
+      "source": "column_original.png",
+      "size": [
+        77,
+        512
+      ],
+      "bytes": 60884,
+      "sha256": "147df678a0e211e8d52411fe537b81bcda09873d1830a5054489027317b08174"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaUi/button_disc.png",
+      "source": "disc_states.png",
+      "size": [
+        256,
+        256
+      ],
+      "bytes": 105136,
+      "sha256": "41c2f0c93e30fbe8854807439357a4517b4e29db9c74654e25f3a288b18b1059"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaUi/button_disc_on.png",
+      "source": "disc_states.png",
+      "size": [
+        256,
+        256
+      ],
+      "bytes": 106552,
+      "sha256": "5df071aa8ce884bc9d9f0bf8fc199e85404e7979a297cced8e7abd066daaefac"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaUi/buybonus_plate.png",
+      "source": "buy_shield.png",
+      "size": [
+        640,
+        640
+      ],
+      "bytes": 587169,
+      "sha256": "35c8dd2a5434d3aad2fad5631be1b296f1c894a1a3fde80825d7ff6638147344"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaUi/buybonus_plate_lit.png",
+      "source": "buy_shield.png",
+      "size": [
+        640,
+        640
+      ],
+      "bytes": 587169,
+      "sha256": "35c8dd2a5434d3aad2fad5631be1b296f1c894a1a3fde80825d7ff6638147344"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaUi/total_plate.png",
+      "source": "total_states.png",
+      "size": [
+        512,
+        320
+      ],
+      "bytes": 156728,
+      "sha256": "071afca8c4f56e85e9bd2e19e0810b44a327d14124f7a5e0187befce0a709527"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaUi/total_plate_mid.png",
+      "source": "total_states.png",
+      "size": [
+        512,
+        320
+      ],
+      "bytes": 178032,
+      "sha256": "2142b89fc2b821fbc02502203fd0c2da3ebb0915f80d29834fca0e321c21fda1"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaUi/total_plate_high.png",
+      "source": "total_states.png",
+      "size": [
+        512,
+        320
+      ],
+      "bytes": 168562,
+      "sha256": "1e6a65866a09dcdfed485c27e649b955dfe682b023531ec2002b8ce79b1d2cdb"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaUi/fs_sign.png",
+      "source": "scroll.png",
+      "size": [
+        1706,
+        922
+      ],
+      "bytes": 1595821,
+      "sha256": "c91474858242b32f31d543db56700fca1f4b82f4eaf36e61c99579833cce28ee"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaUi/fs_counter_panel.png",
+      "source": "scroll.png",
+      "size": [
+        512,
+        320
+      ],
+      "bytes": 168200,
+      "sha256": "a016d5343da50d425f0f39029b7c6e5c861601f0ea9b3da74bf3b61f24201185"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaUi/ticker_plate.png",
+      "source": "scroll.png",
+      "size": [
+        652,
+        146
+      ],
+      "bytes": 90165,
+      "sha256": "cc6e90bc1e80fe745d6151b3bcdce2661954227aa3528f13417bb73d60156976"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaUi/bar_strip.png",
+      "source": "bar.png",
+      "size": [
+        1600,
+        200
+      ],
+      "bytes": 370381,
+      "sha256": "13e38df89a68f94bc46991dfac464a165cfe3ea1ba245473ecc05b70726e42dd"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaBrand/logo.png",
+      "source": "logo.png",
+      "size": [
+        1600,
+        600
+      ],
+      "bytes": 1225731,
+      "sha256": "3991699a0bf4765e5c5ffeb9e83f5127c6544b3b5ac1a581ff92443ef8589c94"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaBrand/loader.png",
+      "source": "loader.png",
+      "size": [
+        384,
+        384
+      ],
+      "bytes": 144741,
+      "sha256": "5246ee5d1ebc2fe19237a98c4813ba6789b86c8b2cd78049e2f688977167ae16"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaWinBanners/big.png",
+      "source": "win_big.png",
+      "size": [
+        1500,
+        462
+      ],
+      "bytes": 977227,
+      "sha256": "05a6e010f44f963b269effdffdf3ddc11aa80bc69ccf51eefbbd074acd548234"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaWinBanners/superwin.png",
+      "source": "win_superwin.png",
+      "size": [
+        1500,
+        543
+      ],
+      "bytes": 1144793,
+      "sha256": "af9076c31dfeafd5c5f785471d0169b3579ad88a00c3a6ed687027a590963751"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaWinBanners/mega.png",
+      "source": "win_mega.png",
+      "size": [
+        1500,
+        468
+      ],
+      "bytes": 1160280,
+      "sha256": "6484339d63d8f6a3b3c13db94a74a31f305e12466b80384087f566fc9ddd81b1"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaWinBanners/epic.png",
+      "source": "win_epic.png",
+      "size": [
+        1500,
+        486
+      ],
+      "bytes": 1218151,
+      "sha256": "7bd5faf8e3788e9df9d62f826ddf03b0fb6080de7f8fba2c0455cf3fcfd2f068"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaWinBanners/max.png",
+      "source": "win_max.png",
+      "size": [
+        1500,
+        624
+      ],
+      "bytes": 1426122,
+      "sha256": "b6465805952a589695b876af94f9fdcd38bdb384cc45028bfc4c0e6289adf6af"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaOrbs/orb_green.png",
+      "source": "orb_green.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 349768,
+      "sha256": "ee54df60a92c2ef61054036b7bbdaba4e65f546909187e29dba7a5aab4bb56aa"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaOrbs/orb_purple.png",
+      "source": "orb_purple.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 334560,
+      "sha256": "c65152d94b3f4153dfe869f66daf7685c9b7686451057b585c5e2d1dd9d63264"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaOrbs/orb_gold.png",
+      "source": "orb_gold.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 342496,
+      "sha256": "b7b9a1b05e56c4ebdbaebb9c251d3fbd9a2e3d568af3053747a00d45d082b2e0"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaIntro/intro_1.png",
+      "source": "intro_1.png",
+      "size": [
+        960,
+        720
+      ],
+      "bytes": 1304176,
+      "sha256": "077dc24f1eb55d0d3989cc703abc345cf44439fc5d05c13015c924014d711b5f"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaIntro/intro_2.png",
+      "source": "intro_2.png",
+      "size": [
+        960,
+        720
+      ],
+      "bytes": 1379383,
+      "sha256": "f0605023523447ae0ff5c77b54db58d6b0537503a24bdfda39fa7e80d2a5edc1"
+    },
+    {
+      "runtime": "static/assets/sprites/medusaIntro/intro_3.png",
+      "source": "intro_3.png",
+      "size": [
+        960,
+        720
+      ],
+      "bytes": 1407336,
+      "sha256": "9915d81c67d7b8233ee6fc96ef674b603745789f9a332458289d25574a5644a0"
+    }
+  ]
+}

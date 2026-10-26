@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-25",
+  "scope": "Local development mock playback and shared-renderer frame inspection; no Stake Engine or live RGS validation",
+  "signatureVersion": 3,
+  "baseGame": {"book": "baseThrow", "orbValues": [25], "baseWinBookAmount": 50, "finalWinBookAmount": 1250, "completedAndReturnedToSpin": true},
+  "wastedMultiplier": {"book": "baseThrowWasted", "trueGrayscaleMaterial": true, "completedAndReturnedToSpin": true, "runtimeErrors": 0},
+  "freeGame": {"book": "bonusBigTotal", "spins": 15, "cumulativeMultiplier": 110, "outro": "$198.90", "returnedToMainGame": true},
+  "layouts": ["1280x720", "390x844", "320x568"],
+  "frameInspection": ["Pupil-registered green focus and twin beams", "Travelling mineral front", "Three upright multiplier labels and cumulative plaque", "Turbo x100", "Score-frame contact flash", "True grayscale stone fragments and dud reaction", "Large multiplier, multiplication equation and final amount"],
+  "unexpectedRuntimeErrors": 0,
+  "existingDiagnostics": "Two 15-second watchdog messages while the manual free-spin entry and exit panels waited for a click; both panels continued normally. Existing Pixi deprecation warnings remain.",
+  "screenshots": ["_sheets/multiplier_v3_gaze.png", "_sheets/multiplier_v3_readout.png", "_sheets/multiplier_v3_mobile_feature.png", "_sheets/multiplier_v3_mobile_return.png"],
+  "passed": true
+}

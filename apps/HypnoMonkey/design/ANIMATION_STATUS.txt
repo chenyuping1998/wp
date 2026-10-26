@@ -1,0 +1,41 @@
+Medusa Gaze 動畫實作與離線驗證（2026-10-24）
+
+本輪完成
+- 全部中獎格同時標出、其餘格暗40%；石化真正去飽和，裂紋1/2/3，卡通碎石。
+- 消除、掉落、補位與落地壓縮共用 animationTimeline.ts。第4連消起×0.8，Turbo×0.5、Turbo2額外×0.8；各原始階段維持需求單±15%範圍。
+- 六輪補位左至右27ms錯開，移動後的舊圖案與新圖案都小幅壓縮；Scatter不石化、不被消除，依原數學補位規則重力下落。
+- 原模板 explosion Spine 不再顯示；盤框不位移、大獎無全畫面白閃/抖動、背景轉場改一秒白天黃昏交叉淡入，局部凝視光不遮滿畫面。
+- 主遊戲寶珠到得分框；FG同一次fg_gaze連射多顆，落牌後0.4秒跳至數學事件的累積值，更新亮度，再光束至得分框後跳數。
+- 沒得分的寶珠灰化、3格裂開、碎石；FG累積值與亮度不動。有得分沒丟時沿原得分結算，累積牌不動不閃。
+- Turbo保留每顆寶珠到達、倍率數字與至少80ms撞擊；人物招牌動作時間表為gaze1600ms/Turbo900ms、fg_gaze1200ms。
+- 已接peek/charge/beam/orbFly/orbHit（含倍率值）/plateCount/plateBeam/glassesOn；落地每輪一次sfx_symbols_landing，得分跳數soundLoop/soundStop sfx_multiplier_update。
+- 補回免費遊戲結束bgm_main；新轉開始前清理舊暫態聲音。
+- 卸載清理動畫timer/RAF及音效count loop，隱藏分頁的Svelte落地Tween有timer完成備援。
+
+人物交付界線
+Medusa.svelte仍是既有佔位姿勢切換；不是11個完整動畫，不是正式人物成品。
+medusaAction提供idle、idle_fidget、react_small、gaze、gaze_dud、fg_trigger、fg_idle、fg_gaze、win_big、win_max、fg_end具名時序；另含gaze/fg_gaze的Turbo配置。
+現有pose切換只在待機/peek/gaze/annoyed/shock/laugh間做有限的單次姿勢變化。idle眨眼、每3循環單蛇、蛇髮跟隨、蛇尾、手捏墨鏡、正式Spine均未製作。
+樣張核准後才可製作正式分件與Spine；專案runtime為4.2.74，不採用未確認相容的4.3 kit。
+丟空採緊湊的佔位反應hold，與碎石結束對齊，避免annoyed跨入下一轉；未以此聲稱完成正式gaze_dud角色表演。
+
+驗證結果（離線）
+指定Node：E:/stake/tools/node-v22.23.1-win-x64/node.exe
+check_animation.mjs通過：33筆實際匯出數學倍率事件、18筆FG有得分沒丟；五種情境全部覆蓋，原倍率/分數/累積規則一致。
+check_tumble_rule.mjs 1500通過：255492個中獎位置，補位與數學一致。
+8連消純時序預算：一般9135ms、Turbo4567.5ms、Turbo2約3654ms。此為時間模型，含列錯開與落地等待；尚非錄影實測，不含瀏覽器實際排程延遲。
+完整svelte-check仍會遇到既有design腳本缺Node型別、static範本與共用套件錯誤，未聲稱全案型別檢查通過。build由整合流程另行執行。
+
+五情境樣例（book amount原始單位，非顯示貨幣）
+fg_throw_win: book=baseTrigger/19, baseWin=130, totalWin=1040, cumulative=0 -> 8
+fg_no_throw_win: book=baseTrigger/19, baseWin=150, totalWin=150, cumulative=8 -> 8
+base_throw_win: book=baseThrow/36, baseWin=50, totalWin=1250, cumulative=0 -> 0
+base_throw_dud: book=baseThrowWasted/4, baseWin=0, totalWin=0, cumulative=0 -> 0
+fg_throw_dud: book=bonusPlain/0, baseWin=0, totalWin=0, cumulative=0 -> 0
+
+尚未完成／不得冒稱已驗收
+- 正式人物與Spine；拉墨鏡接觸、蛇跟隨、穿模逐格截圖。
+- 60秒待機錄影與蛇動作次數檢查。
+- 一般速度8連消錄影、五情境各一次錄影、Turbo倍率閱讀性實測。
+- 高分圖案細節小動作、完整大獎分件演技與背景石像笑點，待核准正式分件。
+- 最終Stake Engine實機驗證由使用者上傳，這輪只完成離線程式/資料驗證。

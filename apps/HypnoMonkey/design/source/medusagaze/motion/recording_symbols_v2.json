@@ -1,0 +1,15 @@
+{
+  "video": "MedusaGaze_symbols_v2_motion.webm",
+  "durationSeconds": 9.19,
+  "bytes": 9797836,
+  "source": "Browser canvas recording using shared motion curves, polished symbols and real book data; not Stake Engine footage.",
+  "frames": [
+    "motion/frames_symbols_v2/01_0.10.jpg",
+    "motion/frames_symbols_v2/02_0.32.jpg",
+    "motion/frames_symbols_v2/03_0.44.jpg",
+    "motion/frames_symbols_v2/04_0.63.jpg",
+    "motion/frames_symbols_v2/05_0.98.jpg",
+    "motion/frames_symbols_v2/06_1.20.jpg"
+  ],
+  "contact": "_sheets/symbols_v2_motion_contact.jpg"
+}

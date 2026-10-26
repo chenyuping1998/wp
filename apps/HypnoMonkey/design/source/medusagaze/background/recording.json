@@ -1,0 +1,15 @@
+{
+  "video": "MedusaGaze_background_v1.webm",
+  "durationSeconds": 11.89,
+  "bytes": 12254376,
+  "source": "Browser canvas recording, exact same Pixi background renderer as game; not Stake Engine footage.",
+  "contact": "../_sheets/background_motion_contact.jpg",
+  "frames": [
+    "frames/01_0.80.jpg",
+    "frames/02_3.50.jpg",
+    "frames/03_4.60.jpg",
+    "frames/04_5.13.jpg",
+    "frames/05_5.48.jpg",
+    "frames/06_6.30.jpg"
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "spine": "4.3.13",
+  "scope": "Official 4.3 core replay of game JSON/atlas. Visual performance and hand-painted contact require browser review too.",
+  "bones": 74,
+  "independentSnakeChains": 9,
+  "clips": [
+    {
+      "animation": "idle",
+      "seconds": 6,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.9546116767171711
+    },
+    {
+      "animation": "fg_idle",
+      "seconds": 6,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.9546116767171711
+    },
+    {
+      "animation": "gaze",
+      "seconds": 1.600000023841858,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.11633120212704437
+    },
+    {
+      "animation": "gaze_turbo",
+      "seconds": 0.8999999761581421,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.11633120212704437
+    },
+    {
+      "animation": "fg_gaze",
+      "seconds": 1.2000000476837158,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.5679084259621426
+    },
+    {
+      "animation": "fg_gaze_turbo",
+      "seconds": 0.8999999761581421,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.5679091324980372
+    },
+    {
+      "animation": "gaze_dud",
+      "seconds": 1.2000000476837158,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.8181223225520609
+    },
+    {
+      "animation": "react_small",
+      "seconds": 0.800000011920929,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.6592188983812187
+    },
+    {
+      "animation": "fg_trigger",
+      "seconds": 2,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.17577465350397947
+    },
+    {
+      "animation": "win_big",
+      "seconds": 2.4000000953674316,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.5927366479223479
+    },
+    {
+      "animation": "win_big_loop",
+      "seconds": 2,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.7865187775075891
+    },
+    {
+      "animation": "win_max",
+      "seconds": 3,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.5017439716252314
+    },
+    {
+      "animation": "win_max_loop",
+      "seconds": 2,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.7865187775075891
+    },
+    {
+      "animation": "fg_end",
+      "seconds": 1.5,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.334666798459932
+    },
+    {
+      "animation": "idle_fidget",
+      "seconds": 1.5,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.3346231217360606
+    },
+    {
+      "animation": "snake_fidget_1",
+      "seconds": 0.8999999761581421,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.8238354741284658
+    },
+    {
+      "animation": "snake_fidget_2",
+      "seconds": 0.8999999761581421,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.8639561682482669
+    },
+    {
+      "animation": "snake_fidget_3",
+      "seconds": 0.8999999761581421,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.795208968377148
+    },
+    {
+      "animation": "snake_fidget_4",
+      "seconds": 0.8999999761581421,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.8346803226279182
+    },
+    {
+      "animation": "snake_fidget_5",
+      "seconds": 0.8999999761581421,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.8029383521385641
+    },
+    {
+      "animation": "snake_fidget_6",
+      "seconds": 0.8999999761581421,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.8264376998905607
+    },
+    {
+      "animation": "snake_fidget_7",
+      "seconds": 0.8999999761581421,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.8272289642445765
+    },
+    {
+      "animation": "snake_fidget_8",
+      "seconds": 0.8999999761581421,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.8469762585277651
+    },
+    {
+      "animation": "snake_fidget_9",
+      "seconds": 0.8999999761581421,
+      "foldedInkedTriangles": 0,
+      "minimumAreaRatio": 0.8396696880083737
+    }
+  ],
+  "meshFailures": [],
+  "pinchContacts": [
+    {
+      "time": 0.35,
+      "distancePx": 0.00001408685019988101
+    },
+    {
+      "time": 0.45,
+      "distancePx": 0.00001408685019988101
+    },
+    {
+      "time": 0.6,
+      "distancePx": 0.00001408685019988101
+    },
+    {
+      "time": 0.75,
+      "distancePx": 0.00001408685019988101
+    },
+    {
+      "time": 1,
+      "distancePx": 0.00001408685019988101
+    }
+  ],
+  "breathing": [
+    {
+      "mode": "MG",
+      "ribcageLiftRigPixels": 10,
+      "pelvisFixed": true,
+      "loopSeamClosed": true
+    },
+    {
+      "mode": "FG",
+      "ribcageLiftRigPixels": 10,
+      "pelvisFixed": true,
+      "loopSeamClosed": true
+    }
+  ],
+  "idle60sSnakeActions": 3,
+  "modeTransitions": "passed: accelerated gaze, queued FG idle, max hold loop, FG end to MG, reduced motion reset",
+  "passed": true
+}
