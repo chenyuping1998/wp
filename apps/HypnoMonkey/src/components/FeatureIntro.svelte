@@ -45,7 +45,7 @@
 		return (1 - progress) ** 2;
 	};
 
-	const maxFree = Math.max(...config.medusa.freeValues);
+	const maxFree = Math.max(...config.hypno.freeValues);
 	const panels = [
 		{
 			key: 'mgIntro1',

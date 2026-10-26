@@ -96,7 +96,7 @@
 	const rowCount = config.numRows?.[0] ?? 6;
 	const minPayingCount = 8;
 	const fs = config.freeSpins;
-	const medusa = config.medusa;
+	const medusa = config.hypno;
 	const freeOnly = medusa.freeValues.filter((v: number) => !medusa.baseValues.includes(v));
 	const scatterPays = Object.entries(config.scatterPays)
 		.map(([count, value]) => ({ count: Number(count), value: Number(value) }))

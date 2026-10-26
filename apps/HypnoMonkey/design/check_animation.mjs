@@ -59,7 +59,7 @@ for (const [category, entries] of Object.entries(books)) {
 			if (event.type === 'winInfo') spin.baseWin += event.totalWin;
 			if (event.type === 'scatterWin') spin.scatterWin = true;
 			if (event.type === 'setWin') spin.finalWin = event.amount;
-			if (event.type !== 'medusaThrow') continue;
+			if (event.type !== 'hypnoThrow') continue;
 			spin.thrown = true;
 			checkedThrows += 1;
 			const freegame = spin.mode === 'freegame';

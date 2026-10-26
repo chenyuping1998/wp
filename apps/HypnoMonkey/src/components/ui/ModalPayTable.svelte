@@ -186,9 +186,9 @@
 				Winning symbols turn to stone and crumble, and the symbols above fall to replace them; the
 				chain continues until nothing more {T.pays}. When it ends, Medusa may throw a multiplier. It
 				only counts if that spin had a win: base game values are
-				{config.medusa.baseValues.join('×, ')}×, and the whole spin's win is multiplied by it. In Free
-				Spins she can throw up to {config.medusa.freeMaxThrows} at once, values up to
-				{Math.max(...config.medusa.freeValues)}×; they are added to a running total that multiplies
+				{config.hypno.baseValues.join('×, ')}×, and the whole spin's win is multiplied by it. In Free
+				Spins she can throw up to {config.hypno.freeMaxThrows} at once, values up to
+				{Math.max(...config.hypno.freeValues)}×; they are added to a running total that multiplies
 				the spin. Aegis {T.payout}s are never multiplied. Max win is capped at
 				{maxWin.toLocaleString()}&times; {T.totalBet}.
 			</p>

@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { mathGameDir } from '../../../tools/math_game_dir.mjs';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const LIB = path.join(mathGameDir('MedusaGaze'), 'library', 'publish_files');
+const LIB = path.join(mathGameDir('hypno_monkey'), 'library', 'publish_files');
 const OUT = path.join(appRoot, 'src/dev/devBooks.json');
 
 const BIG_TOTAL = 100; // a running total worth watching build
@@ -67,7 +67,7 @@ const selection = {
 	// A plain base win, so the very first spin exercises the tumble path.
 	baseWin: pick(
 		base,
-		(b) => b.payoutMultiplier > 0 && !types(b).has('freeSpinTrigger') && !types(b).has('medusaThrow'),
+		(b) => b.payoutMultiplier > 0 && !types(b).has('freeSpinTrigger') && !types(b).has('hypnoThrow'),
 		'base win, no feature',
 	),
 	// The feature opening from the base game, effectively unreachable by playing.
@@ -79,13 +79,13 @@ const selection = {
 	// Medusa's base-game throw landing on a win.
 	baseThrow: pick(
 		base,
-		(b) => eventsOf(b, 'medusaThrow').some((e) => e.applied) && !types(b).has('freeSpinTrigger'),
+		(b) => eventsOf(b, 'hypnoThrow').some((e) => e.applied) && !types(b).has('freeSpinTrigger'),
 		'base throw applied',
 	),
 	// ...and wasted on a spin with no tumble win.
 	baseThrowWasted: pick(
 		base,
-		(b) => eventsOf(b, 'medusaThrow').some((e) => !e.applied) && !types(b).has('freeSpinTrigger'),
+		(b) => eventsOf(b, 'hypnoThrow').some((e) => !e.applied) && !types(b).has('freeSpinTrigger'),
 		'base throw wasted',
 	),
 	// A bought feature, the ordinary case.
@@ -93,7 +93,7 @@ const selection = {
 	// A feature whose running total climbs high: multi-orb throws into the plate.
 	bonusBigTotal: pick(
 		bonus,
-		(b) => eventsOf(b, 'medusaThrow').some((e) => e.applied && e.mult >= BIG_TOTAL),
+		(b) => eventsOf(b, 'hypnoThrow').some((e) => e.applied && e.mult >= BIG_TOTAL),
 		`bonus with running total >= ${BIG_TOTAL}`,
 	),
 	// A retrigger: the running total has to carry across the extra award.
@@ -109,7 +109,7 @@ console.log(`\nwrote ${path.relative(appRoot, OUT)} (${kb} KB)`);
 for (const [key, value] of Object.entries(books)) {
 	const book = value[0];
 	const total = book.state
-		.filter((e) => e.type === 'medusaThrow')
+		.filter((e) => e.type === 'hypnoThrow')
 		.reduce((max, e) => Math.max(max, e.mult), 0);
 	console.log(
 		`  ${key.padEnd(15)} id=${String(book.id).padEnd(6)} ${String(book.payoutMultiplier / 100 + 'x').padEnd(10)} events=${String(book.state.length).padEnd(5)} medusa=${total || '-'}`,

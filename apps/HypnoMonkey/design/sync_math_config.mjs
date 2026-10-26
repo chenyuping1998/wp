@@ -1,9 +1,9 @@
 /**
  * Regenerate src/game/config.ts from the math SDK's generated frontend config.
  *
- * The math build writes library/configs/config_fe_MedusaGaze.json; this copies it
+ * The math build writes library/configs/config_fe_hypno_monkey.json; this copies it
  * across verbatim so the two can never drift by hand-editing, and merges in the
- * rules the SDK file does not carry (Medusa's multiplier values, the Aegis pays,
+ * rules the SDK file does not carry (the hypnotist's watch values, the S pays,
  * free-spin counts) from the maths' own export_fe_extras.py. Re-run after every
  * math change:
  *
@@ -23,10 +23,10 @@ import { mathGameDir } from '../../../tools/math_game_dir.mjs';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const appRoot = path.resolve(here, '..');
 
-const GAME_ID = 'MedusaGaze';
+const GAME_ID = 'hypno_monkey';
 const MATH_DIR = mathGameDir(GAME_ID);
 const MATH_CONFIG = path.join(MATH_DIR, 'library', 'configs', `config_fe_${GAME_ID}.json`);
-const PYTHON = path.resolve(appRoot, '../../../math-sdk/env/Scripts/python.exe');
+const PYTHON = process.env.MATH_PYTHON || '/Applications/anaconda3/envs/math-sdk/bin/python';
 const OUT = path.join(appRoot, 'src/game/config.ts');
 
 if (!fs.existsSync(MATH_CONFIG)) {
@@ -69,8 +69,8 @@ for (const name of actualSymbols) {
 		problems.push(`unexpected symbol ${name} — needs art, SYMBOL_INFO_MAP and paytable entries`);
 	}
 }
-if (!extras.medusa?.baseValues?.length || !extras.medusa?.freeValues?.length) {
-	problems.push('export_fe_extras.py returned no Medusa multiplier values');
+if (!extras.hypno?.baseValues?.length || !extras.hypno?.freeValues?.length) {
+	problems.push('export_fe_extras.py returned no hypno watch values');
 }
 if (problems.length) {
 	console.error('Math config failed validation:');
@@ -89,7 +89,7 @@ const config = { ...raw, symbols, ...extras };
 
 const header = `// GENERATED FILE - do not edit by hand.
 // Source: math-sdk/games/${path.basename(MATH_DIR)}/library/configs/config_fe_${GAME_ID}.json
-//       + export_fe_extras.py (Medusa values, Aegis pays, free-spin counts)
+//       + export_fe_extras.py (watch values, S pays, free-spin counts)
 // Regenerate with: node design/sync_math_config.mjs
 `;
 
@@ -101,4 +101,4 @@ console.log(`  reels ${config.numReels} x ${config.numRows[0]}`);
 console.log(`  symbols: ${Object.keys(symbols).sort().join(', ')}`);
 console.log(`  bet modes: ${Object.keys(config.betModes).join(', ')}`);
 console.log(`  rtp ${config.rtp}  max win ${config.betModes.base.max_win}x`);
-console.log(`  medusa base ${config.medusa.baseValues.join('/')}  free ${config.medusa.freeValues.join('/')}`);
+console.log(`  watches base ${config.hypno.baseValues.join('/')}  free ${config.hypno.freeValues.join('/')}`);

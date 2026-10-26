@@ -95,15 +95,15 @@ export const playBet = async (bet: Bet) => {
 
 // resume bet
 //
-// medusaThrow is reserved because Medusa's running total is cumulative across
+// hypnoThrow is reserved because Medusa's running total is cumulative across
 // a whole feature — resuming mid-bonus without it would put the plate back at ×0
 // and every later spin would pay visibly more than the plate explains. Only the
-// last one is needed: a free-game medusaThrow carries the full running total.
+// last one is needed: a free-game hypnoThrow carries the full running total.
 const BOOK_EVENT_TYPES_TO_RESERVE_FOR_SNAPSHOT = [
 	'freeSpinTrigger',
 	'updateFreeSpin',
 	'setTotalWin',
-	'medusaThrow',
+	'hypnoThrow',
 ];
 
 export const convertTorResumableBet = (betToResume: Bet) => {

@@ -175,10 +175,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	 * so the orb has to land before it does or the payout jumps with nothing on
 	 * screen to explain it.
 	 */
-	medusaThrow: async (bookEvent: BookEventOfType<'medusaThrow'>) => {
+	hypnoThrow: async (bookEvent: BookEventOfType<'hypnoThrow'>) => {
 		const isFree = stateGame.gameType === 'freegame';
 		await eventEmitter.broadcastAsync({
-			type: 'medusaThrow',
+			type: 'hypnoThrow',
 			multipliers: bookEvent.multipliers,
 			applied: bookEvent.applied,
 			mult: bookEvent.mult,
@@ -387,14 +387,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		const lastFreeSpinTriggerEvent = findLastBookEvent('freeSpinTrigger' as const);
 		const lastUpdateFreeSpinEvent = findLastBookEvent('updateFreeSpin' as const);
 		const lastSetTotalWinEvent = findLastBookEvent('setTotalWin' as const);
-		const lastMedusaThrowEvent = findLastBookEvent('medusaThrow' as const);
+		const lastMedusaThrowEvent = findLastBookEvent('hypnoThrow' as const);
 
 		if (lastFreeSpinTriggerEvent) await playBookEvent(lastFreeSpinTriggerEvent, { bookEvents });
 		if (lastUpdateFreeSpinEvent) playBookEvent(lastUpdateFreeSpinEvent, { bookEvents });
 		if (lastSetTotalWinEvent) playBookEvent(lastSetTotalWinEvent, { bookEvents });
 
 		// Restore the running total without replaying every throw that built it. A
-		// free-game medusaThrow carries the total either way (applied: the new one;
+		// free-game hypnoThrow carries the total either way (applied: the new one;
 		// wasted: the unchanged one), so the last one after the trigger is enough.
 		if (lastFreeSpinTriggerEvent) {
 			stateGame.medusaTotal =

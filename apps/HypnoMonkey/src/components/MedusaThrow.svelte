@@ -3,7 +3,7 @@
 
 	export type EmitterEventMedusaThrow =
 		| {
-				type: 'medusaThrow';
+				type: 'hypnoThrow';
 				multipliers: number[];
 				applied: boolean;
 				/** base: the value applied (1 when wasted); free: the running total after */
@@ -220,7 +220,7 @@
 			totalEnter = 0;
 			plateLevel = 0;
 		},
-		medusaThrow: async ({ multipliers, applied, mult, baseWin, totalWin, toTotal, pace }) => {
+		hypnoThrow: async ({ multipliers, applied, mult, baseWin, totalWin, toTotal, pace }) => {
 			if (multipliers.length === 0) return;
 			const fast = pace === 'turbo' || pace === 'turboFreegame';
 			const plan = throwTiming({

@@ -16,10 +16,10 @@ import type { SymbolName, RawSymbol, GameType, Position } from './types';
 //     positions.length, and the positions are scattered over the whole board.
 //
 //  3. meta.globalMult and meta.clusterMult are always 1. Medusa's multiplier is
-//     not applied per win; it arrives once per spin in medusaThrow, after the
+//     not applied per win; it arrives once per spin in hypnoThrow, after the
 //     tumbling has finished.
 //
-//  4. A spin's tumble sequence closes with medusaThrow (if she threw),
+//  4. A spin's tumble sequence closes with hypnoThrow (if she threw),
 //     scatterWin (if 4+ Aegis are on the board), setWin (if the spin paid) and
 //     setTotalWin. All of them fire per spin, not per round.
 // ---------------------------------------------------------------------------
@@ -140,7 +140,7 @@ type BookEventTumbleBoard = {
  */
 type BookEventMedusaThrow = {
 	index: number;
-	type: 'medusaThrow';
+	type: 'hypnoThrow';
 	multipliers: number[];
 	applied: boolean;
 	mult: number;
