@@ -1,39 +1,27 @@
 ---
 name: game-reskin
 description: >-
-  Turning an existing Stake Engine slot in this `wp` monorepo into a new,
-  uploadable game — new theme, new mechanics, new art, same proven engine. Use
-  this whenever a user wants to reskin/fork an existing app under `wp/apps/*`
-  into a new one, from the first "what should we call it" through the final
-  upload zips. Covers the whole pipeline in order: confirming the source and
-  theme, spec changes, scaffolding, math, choosing the art style WITH the user
-  (a scored shortlist — American comic, noir black-and-white plus one accent,
-  woodcut, engraving, screenprint, ink wash, rubber-hose, manga, street
-  sticker-bomb, TV-cartoon mascot, grotesque caricature, grime and more, each
-  checked against atlases of what Hacksaw's 183, Nolimit City's 143 and
-  Pragmatic Play's 669 shipped slots use — asked before any prompt is
-  written), Pragmatic Play's 11 flagship games captured frame by frame (intro
-  slide, FG wipe and CONGRATULATIONS panels, spin and FG timing, buy/ante/max
-  win economy — PP 抄錄), Hacksaw's
-  whole-game transcription of 140 titles (loading, intro splash, FG panels,
-  transitions, reel timing, win ladder, animation lengths, sound set, fonts,
-  palette, asset inventory — 開場、轉場、節奏、音效、字型 norms), the art brief and its anti-"AI look" rules, frontend build and
-  theming, wiring in art the user generates, fine-tuning, pre-submission QA,
-  thumbnail, and packaging. Also use it when generated art looks too
-  AI-made, when a game's style needs choosing or changing, or on 畫風 / 美術風格
-  / 風格 / AI 感 / 太像 AI / 美式漫畫 / 黑白 / 版畫 / 橡皮管 / 日漫 / 塗鴉 /
-  貼紙 / 參考 Hacksaw、Nolimit 或 PP（Pragmatic Play）畫風. Built from shipping Capo Nostra out of Hot Miami,
-  then extended with the six findings from the Stake review that passed Hot
-  Miami — five of which are generic to this codebase and will be raised against
-  any reskin unless fixed first, and with Deadwood Express's 5/10 "poor UI"
-  review (controls that stay lit after a touch tap, portrait controls off the
-  screen edge) and its restaging trap, then its second rejection on the three
-  presentation tags — Low quality assets / Poor animations / Poor bet UI bar
-  (系統字型、漸層、素材品質、動畫、開場、下注列) — with a static checker for
-  them. Every gotcha in here cost real turns the first time.
+  Reskin or fork a Stake Engine slot under wp/apps into a new uploadable game. Covers source/theme selection, mechanics and math, art direction, briefs, frontend integration, character visual acceptance, QA, thumbnails and packaging. Use for 換皮、畫風、美術風格、AI 感 and Hacksaw, Nolimit City or Pragmatic Play visual references; includes manga, comic, caricature, grime, collage, cartoon, rubber-hose and street styles.
 ---
 
 # Reskinning a Stake Engine slot
+
+## 角色美術與動作：零可見缺陷交付門檻（Stone，2026-10-25）
+
+只要交付角色美術、rig、動作或含角色的遊戲，就適用以下硬性驗收。**殘影、毛邊／白邊、碎片、肢體分離、接縫露底、破口或錯誤輪廓任一仍可見，即為未完成；修好前不得回報完成、交件或打包。**
+
+- 逐層在亮底、暗底與原生解析度檢查。分層肢體必須是完整連續的部件，補齊被遮住的解剖與關節重疊；軀幹不得夾手臂殘影、拳套不得夾臉／胸口或袖口外的毛、服裝不得夾腿部碎片。網格角色也須檢查輪廓拉裂與貼圖殘影。
+- Stone 補充（2026-10-26，相撲猴前臂修正）：粗壯角色仍須有連續、自然收窄的上下臂輪廓；前臂與肘部不得出現非設計需要的腫塊、圓球堆疊或香腸式分節。先辨別來源畫稿與動作變形，連同上臂末端及袖口銜接一起檢查；修來源後用原動作幅度驗證彎肘、伸展與轉場，不能只修靜態或靠縮小動作掩蓋。
+- 逐一檢查**所有交付動作**（spine-motion 預設六動作也須全看），包含起終格、過渡／中間格、最大彎曲與伸展。重點看肩、肘、頸、髖、膝、腕；靜態疊圖、檢查器 PASS 或流暢度 100 都不能代替實際渲染。檢查器不支援此 rig 格式時不得當作通過。
+- 先修造成缺陷的來源拆層、遮擋區補繪、權重或 rig。不得靠縮小動作／角色、加遮擋或挑好看的靜態格掩蓋；修正後重看受影響動作。合理動作預算仍須通過完整表演驗收。
+- 已整合遊戲須在桌機與直式手機實際試玩，包含 MG／FG、角色反應、轉場與 feature cut-in，檢查破口、殘影、裁切與接縫；保留實際截圖、動作預覽及新舊對照。
+- 交件前核對來源層、實際合成 full、Spine images、runtime 裁圖與座標、烘焙動作、預覽及 upload 包皆為同一最終版本。母圖若與合成有差異須如實留對照，不得冒稱零差異；不得拿舊預覽證明新版正常。
+
+## 角色工具路由（現行預設優先於下文舊流程）
+
+- 新的角色動作、Spine 動畫、圖層套動作，預設使用 `spine-character`／`spine-motion-kit`。先讀 `/Users/stone/tools/spine-generator/skills/spine-character/SKILL.md`；有圖層用 `spine-motion character`，已有 Spine4.3 骨架則用 `init`／`generate`。
+- 需求單、姿勢、畫風或交件已由使用者決定時直接沿用，不重走原型選擇或重新索取同一確認。`character` 的自動骨架僅適用其支援的拳擊架式；不得硬套不相容姿勢或自行換姿勢。
+- 下文 `archetype/`、#7、自製動作表與單圖網格路線僅用於維護採用該架構的既有遊戲，或使用者明確選用的路線。不要無故重寫可用 rig，也不要讓這些歷史流程蓋過新工具的預設。
 
 A reskin is not a copy with new colours. It is a new game that happens to start
 from a proven engine, and every phase below exists because skipping it produced
@@ -49,13 +37,13 @@ re-derived:
 - **`stake-engine-slot`** — the build commands, the static guards, the Svelte 5
   traps, and the certification/pre-submission checklist. Load it for anything
   about *how this codebase builds and gets reviewed*, independent of reskinning.
-- **`hacksaw-character-motion`** (user scope) — the cast character. Its
-  `archetype/` flow is the default for a reskin: the user PICKS a pose
-  archetype from a numbered gallery, that choice becomes the character's art
-  brief directly (layers, cut lines, pose, joint guide), the delivered layers
-  are rigged one mesh per layer on a shared skeleton and gated, and the game
-  gets its OWN motion table measured from the archetype. Its research-only
-  motion packs replay the reference exactly for comparison and never ship.
+- **`spine-character`** — default new cast motion workflow: the official
+  spine-motion-kit CLI, painted full-canvas layers, Spine4.3, reports and previews.
+  Read its capability limits and integration/version checks before building.
+- **`hacksaw-character-motion`** (user scope) — art briefs, anatomical layer
+  acceptance, existing archetype/mesh rigs and reference-motion research. Its
+  historical archetype route is conditional on retaining/selecting that rig;
+  research-only motion packs never ship.
 - **`mesh-cast-rig`** — the older one-flat-illustration skinned mesh. Still
   what Capo Nostra / Turf War run today; use it only when a game keeps a
   single-image figure.
@@ -269,12 +257,36 @@ Two requirements that are easy to state and easy to drop by the last art pass:
   - **Neither is a pay-symbol portrait** (standing the H1 art beside a board
     that shows H1 reads as a bug; see Capo's `Cast.svelte` note). The store
     tile still shows one character (`review-findings.md`).
-  - **Both go through the archetype flow below**, one brief each, and each
+  - **Both follow the selected supported rig workflow**, one brief each, and each
     may take a different archetype. Each figure is rigged and gated on its
     own; they can share the game's motion table only if both pass its gates.
+- **Step 0: decide the motions first, then the pose to generate (Stone,
+  2026-10-27: 「以後開始製程就要考慮到動作才方便生圖的姿勢」).** For every new
+  figure, before writing the brief or generating anything (never generate
+  first and think about motion afterwards):
+  1. List the motions this figure must perform, MG and FG separately: the
+     spine-motion default six (idle, idle_weave, punch, hit, jump, celebrate)
+     plus this game's reactions, feature cut-ins, intro cards and any other
+     beat that shows the character.
+  2. Using the motion → pose table in "第 0 步" of
+     `~/tools/spine-generator/docs/生圖交付規格.md`, write each motion's pose
+     requirement at the top of the brief. For example: a punch needs a drawn
+     fist, never an open palm; celebrate needs long enough arms, with the
+     area under the shoulder, the armpit and the chest painted complete; leave
+     a gap between the limbs and the body; elbows and knees slightly bent; the
+     rear hand tucked by the cheek, elbow not flared; paint one complete
+     full-body figure first and split it, never assemble a parts atlas.
+  3. Confirm the spine-motion template can do it (today: one right-facing,
+     side-on boxing guard only). Front-facing, quadruped, long skirt/cape or
+     turning motions: tell Stone a new template is needed first. Do not force
+     the template or swap the pose on your own.
+  4. Put the split rules in the brief: paint what is hidden; both sides of a
+     joint overlap, with no outline on the overlapping part, and the extra
+     paint stays inside the neighbouring part's silhouette; never cut a joint
+     flat.
 - **A moving character is not optional — and the user chooses its pose.**
-  In this step, run `hacksaw-character-motion`'s archetype flow once for the
-  MG figure and once for the FG figure: show
+  For an existing/explicitly selected archetype rig only, run
+  `hacksaw-character-motion` once per figure: show
   `gallery/overview.gif`, ask which archetype (AskUserQuestion, two questions:
   hanging arms / carrying a prop / arms crossed, then which one), then
   `python archetype/brief.py -c N --game <Name> --out design/cast_brief/
@@ -327,7 +339,8 @@ are easiest to leave in by accident. Match the NEW theme in:
   Redraw them with the source game's icon drawer instead of recolouring, and
   check the source for a later redraw before copying any asset set. Full rules
   and the script are in `references/art-brief-template.md` §6.
-- **Character.** Built via `hacksaw-character-motion`'s `archetype/layered/`
+- **Character.** Default: `spine-character` with the spine-motion-kit CLI.
+  For a retained/explicit archetype rig, use `hacksaw-character-motion`'s `archetype/layered/`
   (check_layered_art → build_layered_rig → layeredFigure.ts → the game's
   motion table from `archetype/motion_table.py` → check_layered_cast), or via
   `mesh-cast-rig` for a single-image figure. It has to actually move — see
@@ -345,6 +358,48 @@ are easiest to leave in by accident. Match the NEW theme in:
   spine in two `OutlineFilter`s (pixi-filters; ink 2.5px inside, paper 4px
   outside — a screenprint keyline). Darkening or blurring the plate behind
   the figure is the alternative when a keyline is off-style.
+- **The background lives — EVERY new game (user rule, 2026-10-20).** A still
+  plate with a slow pan is not enough: both the MG and the FG backdrop need
+  things in them that move on their own, the way Pickle Panic and Static
+  Shift do. Copy those two, they are the reference:
+  - Pickle Panic `src/components/BackgroundFx.svelte` + `design/build_bg_fx.py`
+    (worktree `wp-banandit/apps/PicklePanic/`). MG: bubbles rise inside the
+    two fermentation tanks (clipped by a tank mask cut from the plate), sky
+    stars pop a hard four-point glint now and then. FG: the brine gush flows
+    (a displacement filter over the gush's own cut-out, with a scrolling
+    streak map and a breathing strength so it surges), drops swell on the pipe
+    lip, fall, splash and ring the puddle. Each layer can be switched with
+    `?bgfx=flow,drip,bubbles,stars|all|none`, so they can be judged one at a time.
+  - Static Shift `src/components/StudioLife.svelte`: a pigeon walks the floor
+    on a 16.2 s loop (walks in, stands, steps up, walks back, turning to
+    face its way), and the studio sign is the mode light (STATIC / 89.4 FM,
+    flickers on a 6 s cycle in MG; ON AIR / AFTER HOURS in FG).
+
+  How to do it:
+  - **Pick from the plate's own world.** Liquid flows and drips, tanks
+    bubble, sky glints, a sign flickers, a small animal crosses. Pick
+    2–3 things per mode, and make MG and FG different from each other.
+  - **Cut the moving pieces from the approved plates** (masks, cut-outs,
+    measured positions into a `bg_fx_meta.json`), so nothing new has to be
+    painted and the motion sits in the plate's exact pixels. All coordinates
+    are in plate pixels; Background.svelte hands in the plate's on-screen
+    position and scale, so the effects stay pinned when the plate crops.
+  - **House style holds:** flat inks, hard edges, ink outline like the
+    plate, no glow, no blur, no floating motes or light shafts unless the
+    style already has them.
+  - **Keep it where it can be seen.** Nothing may sit behind the board at
+    16:9 (Pickle's rotating-beacon trial was dropped because both lamps were
+    covered), and nothing busy behind the cast (see "It must read off its
+    background" above). Hide an element when the layout leaves it no room
+    (StudioLife draws only above 1.3 aspect).
+  - **Mostly ambient, with a few events:** steady loops (bubbles, flow) plus
+    occasional ones on their own random timers (drips 1–3 s apart, glints a
+    few seconds apart), so the scene does not loop visibly.
+  - **One rAF clock with dt capped at 100 ms**, never setInterval (the
+    review checker flags interval animation, and a tab coming back must not
+    flood the scene with backlog drops). Destroy the particles you spawn.
+  - Verify in the browser at 16:9, 16:10, 4:3 and portrait, in both modes,
+    and check that each moving part is actually visible and on its mark.
 - **Presentation norms: check against the transcription, not memory.**
   `references/hacksaw-style-transcripts.md` gives the shipped numbers for
   every beat outside the reels, read out of 140 Hacksaw games' own files:
@@ -589,6 +644,8 @@ Two passes, and they check different things:
   nothing may grey out, and every one must visibly change — a Buy Bonus that
   looks identical at rest and hovered is the hover-layer-is-the-plate trap
   (step 4, "Buy Bonus hover must actually LIGHT").
+  Watch the MG and FG backgrounds for a few seconds each: something in each
+  must move on its own, not just pan (step 4, "The background lives").
 - **`stake-compliance`**: the certification-shaped checks — restricted words
   (re-run this even if it was checked at naming time; copy drifts), the
   server-contract checklist, replay mode, RTP disclosure matching the actual

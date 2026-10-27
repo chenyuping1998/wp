@@ -779,6 +779,7 @@ at full size.
 | 12 | Cinematic depth of field or bokeh in backgrounds | Ban it. Backgrounds need big, sharp value masses | Regenerate |
 | 13 | Two styles in one reel (rendered highs, flat low-pay glyphs) | §0 applies to every symbol, royals included. Draw the low pays in the world's own medium (graffiti tags, carved stone, Greek letters: `hacksaw-style-atlas.md` rule 3; theme props with no letters, or another layer of the world such as an x-ray scan: `nolimit-city-styles.md`, What transfers, rule 3), set from a font and treated in code | `check_style.py` on the whole set: every symbol inside the style frame's range |
 | 14 | Keying fringe: a halo of the key colour, or a white or grey fringe on dark art | Choose the key colour by the palette (below) | Check the alpha edge on a contrasting background |
+| 15 | Real products drawn in by default: the model's "sneaker" is a Converse All Star (round ankle patch), its trainers carry Adidas three stripes, its combat boots Dr. Martens' yellow welt stitch, its headphones a real logo shape. Both a tell and an Engine #253 resemblance risk | Name the generic version and ban the marks: "plain canvas high-top, no round patch, no stripes", "black work boots, black welt" | Local retouch is often enough (Static Shift 2026-10-19, `apps/StaticShift/design/retouch_brand_details.py`: stripes refilled with the shoe's own leather, stitch recoloured, patch turned tonal). Check every shoe, bag and device in the cast and symbols at full size |
 
 ## Things the image model must never make
 

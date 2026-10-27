@@ -55,6 +55,15 @@ games already share.
 
 ## 1. Character
 
+- **Motion list + each motion's pose requirement (Step 0, Stone 2026-10-27) —
+  fill this in first, per figure (MG and FG).** List every motion the figure
+  performs (spine-motion's six: idle, idle_weave, punch, hit, jump, celebrate,
+  plus this game's reactions, cut-ins and intro cards), and under each the pose
+  it needs from the art, taken from "第 0 步" in
+  `~/tools/spine-generator/docs/生圖交付規格.md` (fist not open palm for a
+  punch, arms long enough and shoulder/armpit/chest painted for celebrate,
+  gaps between limbs and body, elbows and knees slightly bent, rear hand by the
+  cheek). Confirm the spine-motion template supports the pose before briefing.
 - Pose and cropping against the actual layout math (how much of the side band
   it needs to fill at the reference viewport — measure the source game's own
   proportions if there's a design reference, don't guess a percentage).
@@ -191,6 +200,14 @@ games already share.
 - One per mode/tier the mechanic actually uses; name them by what they need
   to communicate (base vs. each feature tier) rather than assuming the source
   game's tier count.
+- Plan what will MOVE in each plate before it is drawn (every new game,
+  SKILL.md step 4 "The background lives"): 2–3 things per mode that animate
+  naturally — liquid, bubbles, a sign, sky glints, a small animal — placed
+  in the side margins or upper sky, not behind the board at 16:9 and not
+  behind the cast. Ask for them as clean, separable shapes (a tank with a
+  clear inside, a sign with an empty face, a pipe mouth with a puddle under
+  it) so code can mask or cut them out of the plate, as Pickle Panic's
+  `design/build_bg_fx.py` does.
 
 ## 8. Lettering vs. system-font audit
 
