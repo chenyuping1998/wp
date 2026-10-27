@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import type { WinPace } from './ScatterWins.svelte';
+	import type { MedusaAnimation } from '../game/animationTimeline';
 
 	export type EmitterEventMedusaThrow =
 		| {
@@ -14,8 +15,19 @@
 				toTotal: boolean;
 				pace: WinPace;
 		  }
+		| {
+				/** watches riding the last refill of a winning spin (TumbleLayer) */
+				type: 'hypnoWatchDrop';
+				animation: MedusaAnimation;
+				releaseMs: number;
+				pace: WinPace;
+				drops: WatchDrop[];
+		  }
+		| { type: 'hypnoWatchClear' }
 		| { type: 'medusaTotalShow' }
 		| { type: 'medusaTotalHide' };
+
+	export type WatchDrop = { value: number; x: number; fromY: number; toY: number; delayMs: number; durationMs: number };
 </script>
 
 <script lang="ts">
@@ -32,7 +44,9 @@
 		orbKeyFor,
 		totalPlateLevel,
 	} from '../game/constants';
-	import { throwTiming, medusaAnimations } from '../game/animationTimeline';
+	import { throwTiming, medusaAnimations, multiplierCountMs } from '../game/animationTimeline';
+	import { watchCollectTiming } from '../game/hypnoWatchTiming';
+	import { gravityProgress } from '../game/symbolMotion';
 	import MultiplierFx from './MultiplierFx.svelte';
 	import type { MultiplierFxController } from '../game/multiplierFxScene';
 	import { flightPose,impactPose,gazePose,recoil,ORB_CHARGE_DISTANCE,type OrbVisual } from '../game/multiplierPerformance';
@@ -68,7 +82,11 @@
 		if (alive) context.eventEmitter.broadcast(event);
 	};
 
-	type Orb = OrbVisual;
+	/** `cell`: a watch resting on the board until the chain-end settlement */
+	type Orb = OrbVisual & { cell?: boolean };
+	// A watch on a cell sits a little inside the symbol frame.
+	const CELL_SCALE = 0.8;
+	let watchesLanded: Promise<unknown> = Promise.resolve();
 	let fx=$state.raw<MultiplierFxController>();
 	let reducedMotion=$state(false);
 	onMount(()=>{const media=matchMedia('(prefers-reduced-motion: reduce)');const change=()=>reducedMotion=media.matches;change();media.addEventListener('change',change);return()=>media.removeEventListener('change',change);});
@@ -79,6 +97,8 @@
 	let baseAmount=$state('');
 	let pop = $state<{ text: string; scale: number; alpha: number } | null>(null);
 	let amount = $state<{ text: string; alpha: number } | null>(null);
+	/** the readout's sum line gets its "=" only once every value is in */
+	let formulaDone = $state(true);
 
 	let totalShown = $state(false);
 	let totalValue = $state(0);
@@ -199,6 +219,142 @@
 		orbs = orbs.filter((orb) => orb.id !== id);
 	};
 
+	/** Fly an existing orb between two board points (the settlement, not a throw). */
+	const flyBetween = async (id: number, from: { x: number; y: number }, to: { x: number; y: number }, ms: number) => {
+		broadcast({ type:'soundMedusa',cue:'orbFly',speed:450/ms,panFrom:Math.max(-.85,Math.min(.85,(from.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)),panTo:Math.max(-.85,Math.min(.85,(to.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)) });
+		await tween(ms, (t) => update(id, { ...flightPose(from, to, reducedMotion ? 1 : t), alpha: 1 }));
+	};
+
+	/** The hypnotist charges in the hole and points; each watch rides its column's refill. */
+	const dropWatches = async ({ drops, animation, releaseMs, pace }: { drops: WatchDrop[]; animation: MedusaAnimation; releaseMs: number; pace: WinPace }) => {
+		const fast = pace === 'turbo' || pace === 'turboFreegame';
+		const action = medusaAnimations[animation];
+		broadcast({ type: 'medusaAction', animation, releaseMs });
+		broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
+		const landAt = (drop: WatchDrop) => drop.delayMs + drop.durationMs;
+		const lastLand = Math.max(...drops.map(landAt));
+		const lead = drops.reduce((a, b) => (landAt(a) <= landAt(b) ? a : b));
+		gazeProgress = -1;
+		beamTarget = { x: lead.x, y: lead.fromY };
+		// The beam locks on the leading watch and follows it down its column.
+		const beam = (async () => {
+			await wait(action.beamAtMs);
+			broadcast({ type: 'soundMedusa', cue: 'gazeBeam', speed: fast ? 1.5 : 1 });
+			await tween(Math.max(120, lastLand + (fast ? 80 : 160) - action.beamAtMs), (t) => {
+				gazeProgress = t;
+				gaze = gazePose(t).intensity;
+			});
+			gaze = 0;
+			gazeProgress = -1;
+		})();
+		await Promise.all(
+			drops.map(async (drop) => {
+				await wait(drop.delayMs);
+				const id = nextId++;
+				orbs = [...orbs, { id, value: drop.value, x: drop.x, y: drop.fromY, scale: CELL_SCALE, alpha: 0, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [], cell: true }];
+				await tween(drop.durationMs, (t) => {
+					const y = drop.fromY + (drop.toY - drop.fromY) * gravityProgress(t);
+					// fades in as it crosses the top edge of the board
+					update(id, { y, alpha: Math.max(0, Math.min(1, (y + 20) / 60)), sx: 1 - 0.06 * t, sy: 1 + 0.12 * t });
+					if (drop === lead) beamTarget = { x: drop.x, y };
+				});
+				fx?.impact({ x: drop.x, y: drop.toY }, drop.value, 'orb');
+				broadcast({ type: 'soundMedusa', cue: 'orbHit', value: drop.value, speed: fast ? 1.25 : 1 });
+				await tween(fast ? 90 : 160, (t) => {
+					const squash = Math.sin(Math.PI * t);
+					update(id, { y: drop.toY, alpha: 1, sx: 1 + 0.14 * squash, sy: 1 - 0.16 * squash });
+				});
+			}),
+		);
+		await beam;
+	};
+
+	/**
+	 * Chain-end settlement of watches already on the board: the running total
+	 * flies in first (free game), then each watch pulses and sends its value, the
+	 * readout holds "win ×N" and only then pays.
+	 */
+	const collectWatches = async ({ mult, baseWin, totalWin, toTotal, fast }: { mult: number; baseWin: number; totalWin: number; toTotal: boolean; fast: boolean }) => {
+		const watches = orbs.filter((orb) => orb.cell);
+		const previous = toTotal ? totalValue : 0;
+		const plan = watchCollectTiming({ turbo: fast, watchCount: watches.length, carriesTotal: toTotal && previous > 0 });
+		const readout = { x: center.x, y: center.y - 37 };
+		baseAmount = bookEventAmountToCurrencyString(baseWin);
+		formulaDone = false;
+		broadcast({ type: 'medusaAction', animation: 'react_small' });
+		pop = { text: '', scale: 1, alpha: 0 };
+		amount = { text: baseAmount, alpha: 0 };
+		await tween(plan.openMs, (t) => {
+			if (pop) pop = { ...pop, alpha: t };
+			if (amount) amount = { ...amount, alpha: t };
+		});
+		let shown = 0;
+		const arrive = (value: number) => {
+			shown = value;
+			pop = { text: `×${shown}`, scale: 1, alpha: 1 };
+			// the sum line now carries the base win; the paid amount comes after
+			amount = null;
+			void tween(fast ? 120 : 200, (t) => {
+				scoreBump = recoil(t);
+				if (pop) pop = { ...pop, scale: 1 + 0.12 * recoil(t) };
+			});
+		};
+		if (plan.totalFlyMs) {
+			const id = nextId++;
+			orbs = [...orbs, { id, value: previous, ...plateValue, scale: 0.7, alpha: 1, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [] }];
+			totalBump = 1;
+			await flyBetween(id, plateValue, readout, plan.totalFlyMs);
+			fx?.impact(readout, previous, 'score');
+			orbs = orbs.filter((orb) => orb.id !== id);
+			totalBump = 0;
+			arrive(previous);
+		}
+		for (const [index, watch] of watches.entries()) {
+			if (index > 0) await wait(Math.max(0, plan.staggerMs - plan.pulseMs));
+			const from = { x: watch.x, y: watch.y };
+			await tween(plan.pulseMs, (t) => update(watch.id, { scale: CELL_SCALE * (1 + 0.18 * Math.sin(Math.PI * t)) }));
+			await flyBetween(watch.id, from, readout, plan.flyMs);
+			fx?.impact(readout, watch.value, 'score');
+			broadcast({ type: 'soundMedusa', cue: 'orbHit', value: watch.value, speed: fast ? 1.25 : 1 });
+			orbs = orbs.filter((orb) => orb.id !== watch.id);
+			arrive(shown + watch.value);
+		}
+		// The book is authoritative for the multiplier that pays.
+		if (shown !== mult) arrive(mult);
+		await wait(plan.holdMs);
+		formulaDone = true;
+		amount = { text: baseAmount, alpha: 1 };
+		broadcast({ type: 'soundLoop', name: 'sfx_multiplier_update' });
+		try {
+			await Promise.all([
+				countUp(baseWin, totalWin, multiplierCountMs(mult, fast)),
+				(async () => {
+					if (!toTotal) return;
+					const from = totalValue;
+					broadcast({ type: 'soundMedusa', cue: 'totalUp' });
+					await tween(plan.collapseMs * 2, (t) => {
+						totalValue = Math.round(from + (mult - from) * easeOut(t));
+						totalBump = 1 - t;
+					});
+					totalValue = mult;
+					plateLevel = totalPlateLevel(mult);
+				})(),
+			]);
+		} finally {
+			broadcast({ type: 'soundStop', name: 'sfx_multiplier_update' });
+		}
+		scoreBump = 0;
+		totalBump = 0;
+		broadcast({ type: 'medusaPose', pose: 'idle' });
+		await wait(fast ? 120 : 360);
+		await tween(plan.collapseMs, (t) => {
+			if (pop) pop = { ...pop, alpha: 1 - t };
+			if (amount) amount = { ...amount, alpha: 1 - t };
+		});
+		pop = null;
+		amount = null;
+	};
+
 	const countUp = async (from: number, to: number, ms: number) => {
 		await tween(ms, (t) => {
 			amount = {
@@ -220,9 +376,21 @@
 			totalEnter = 0;
 			plateLevel = 0;
 		},
+		hypnoWatchDrop: (event) => {
+			watchesLanded = dropWatches(event);
+		},
+		hypnoWatchClear: () => {
+			orbs = orbs.filter((orb) => !orb.cell);
+		},
 		hypnoThrow: async ({ multipliers, applied, mult, baseWin, totalWin, toTotal, pace }) => {
 			if (multipliers.length === 0) return;
 			const fast = pace === 'turbo' || pace === 'turboFreegame';
+			await watchesLanded;
+			if (applied && orbs.some((orb) => orb.cell)) {
+				await collectWatches({ mult, baseWin, totalWin, toTotal, fast });
+				return;
+			}
+			orbs = orbs.filter((orb) => !orb.cell);
 			const plan = throwTiming({
 				freegame: toTotal,
 				turbo: fast,
@@ -371,6 +539,47 @@
 		</Container>
 	{/if}
 
+	<Container x={center.x} y={center.y} pivot={center} scale={1 + 0.1 * scoreBump}>
+		<Graphics x={center.x} y={center.y} draw={drawReadoutBack} />
+		{#if pop}
+			<Text anchor={0.5} x={center.x} y={center.y-88} alpha={pop.alpha} text={pop.text?'MULTIPLIER':'BASE WIN'} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:23,fill:0xc3d5b6,stroke:{color:0x10272d,width:3}}}/>
+			<Text
+				anchor={0.5}
+				x={center.x}
+				y={center.y - 37}
+				scale={pop.scale}
+				alpha={pop.alpha}
+				text={pop.text}
+				style={{
+					fontFamily: GAME_FONT,
+					fontWeight: GAME_FONT_WEIGHT,
+					fontSize: pop.text.length>5?66:80,
+					fill: 0xb8ff5a,
+					stroke: { color: 0x2a1f24, width: 8 },
+				}}
+			/>
+			{#if pop.text}
+				<Text anchor={0.5} x={center.x} y={center.y+25} alpha={pop.alpha} text={`${baseAmount} ${pop.text}${formulaDone ? ' =' : ''}`} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:baseAmount.length>10?22:27,fill:0xf0ead2,stroke:{color:0x10272d,width:3}}}/>
+			{/if}
+		{/if}
+		{#if amount}
+			<Text
+				anchor={0.5}
+				x={center.x}
+				y={center.y + (pop?.text?77:5)}
+				alpha={amount.alpha}
+				text={amount.text}
+				style={{
+					fontFamily: GAME_FONT,
+					fontWeight: GAME_FONT_WEIGHT,
+					fontSize: amount.text.length>13?34:48,
+					fill: 0xffe08a,
+					stroke: { color: 0x2a1f24, width: 6 },
+				}}
+			/>
+		{/if}
+	</Container>
+	<!-- over the readout: watches rest on the top row, clear of its text, and fly into it -->
 	{#each orbs as orb (orb.id)}
 		<Container x={orb.x} y={orb.y} alpha={orb.alpha}>
 		<Container rotation={orb.angle} scale={{x:orb.scale*orb.sx,y:orb.scale*orb.sy}}>
@@ -405,45 +614,4 @@
 			/>
 		</Container>
 	{/each}
-
-	<Container x={center.x} y={center.y} pivot={center} scale={1 + 0.1 * scoreBump}>
-		<Graphics x={center.x} y={center.y} draw={drawReadoutBack} />
-		{#if pop}
-			<Text anchor={0.5} x={center.x} y={center.y-88} alpha={pop.alpha} text={pop.text?'MULTIPLIER':'BASE WIN'} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:23,fill:0xc3d5b6,stroke:{color:0x10272d,width:3}}}/>
-			<Text
-				anchor={0.5}
-				x={center.x}
-				y={center.y - 37}
-				scale={pop.scale}
-				alpha={pop.alpha}
-				text={pop.text}
-				style={{
-					fontFamily: GAME_FONT,
-					fontWeight: GAME_FONT_WEIGHT,
-					fontSize: pop.text.length>5?66:80,
-					fill: 0xb8ff5a,
-					stroke: { color: 0x2a1f24, width: 8 },
-				}}
-			/>
-			{#if pop.text}
-				<Text anchor={0.5} x={center.x} y={center.y+25} alpha={pop.alpha} text={`${baseAmount} ${pop.text} =`} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:baseAmount.length>10?22:27,fill:0xf0ead2,stroke:{color:0x10272d,width:3}}}/>
-			{/if}
-		{/if}
-		{#if amount}
-			<Text
-				anchor={0.5}
-				x={center.x}
-				y={center.y + (pop?.text?77:5)}
-				alpha={amount.alpha}
-				text={amount.text}
-				style={{
-					fontFamily: GAME_FONT,
-					fontWeight: GAME_FONT_WEIGHT,
-					fontSize: amount.text.length>13?34:48,
-					fill: 0xffe08a,
-					stroke: { color: 0x2a1f24, width: 6 },
-				}}
-			/>
-		{/if}
-	</Container>
 </BoardContainer>

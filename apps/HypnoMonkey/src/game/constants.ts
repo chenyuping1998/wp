@@ -1,14 +1,13 @@
 import type { RawSymbol, SymbolState } from './types';
 
-// 6x6 board. 588px wide (98px cells) and square, so the frame and the layout
-// maths scale the same way in both axes.
+// 6 reels x 5 rows (Stone: 5列6行). 588 x 490px with 98px cells.
 export const SYMBOL_SIZE = 98;
 
 export const REEL_PADDING = 0.53;
 
-// Initial board — 6 visible rows padded top and bottom (8 symbols per reel).
+// Initial board — 5 visible rows padded top and bottom (7 symbols per reel).
 // Only ever seen before the first spin, so no symbol appears eight times among
-// the visible 36: a pay-anywhere board that pays on load would play its win
+// the visible 30: a pay-anywhere board that pays on load would play its win
 // animation against a round that never happened.
 export const INITIAL_BOARD: RawSymbol[][] = [
 	[
@@ -18,7 +17,6 @@ export const INITIAL_BOARD: RawSymbol[][] = [
 		{ name: 'L2' },
 		{ name: 'H1' },
 		{ name: 'L3' },
-		{ name: 'H5' },
 		{ name: 'H2' },
 	],
 	[
@@ -28,7 +26,6 @@ export const INITIAL_BOARD: RawSymbol[][] = [
 		{ name: 'L1' },
 		{ name: 'L3' },
 		{ name: 'H2' },
-		{ name: 'L4' },
 		{ name: 'H5' },
 	],
 	[
@@ -38,7 +35,6 @@ export const INITIAL_BOARD: RawSymbol[][] = [
 		{ name: 'H5' },
 		{ name: 'L4' },
 		{ name: 'L2' },
-		{ name: 'H3' },
 		{ name: 'H4' },
 	],
 	[
@@ -48,7 +44,6 @@ export const INITIAL_BOARD: RawSymbol[][] = [
 		{ name: 'L4' },
 		{ name: 'S' },
 		{ name: 'H1' },
-		{ name: 'L2' },
 		{ name: 'L1' },
 	],
 	[
@@ -58,8 +53,16 @@ export const INITIAL_BOARD: RawSymbol[][] = [
 		{ name: 'L1' },
 		{ name: 'H4' },
 		{ name: 'L3' },
-		{ name: 'H3' },
 		{ name: 'L2' },
+	],
+	[
+		{ name: 'L1' },
+		{ name: 'H4' },
+		{ name: 'L2' },
+		{ name: 'H2' },
+		{ name: 'L1' },
+		{ name: 'H3' },
+		{ name: 'H1' },
 	],
 ];
 

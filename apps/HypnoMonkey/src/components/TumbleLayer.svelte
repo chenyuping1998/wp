@@ -1,6 +1,14 @@
 <script lang="ts" module>
 	import type { RawSymbol, Position } from '../game/types';
-	export type EmitterEventTumble = { type: 'tumbleRun'; explodingSymbols: Position[]; newSymbols: RawSymbol[][] };
+	import type { WinPace } from './ScatterWins.svelte';
+	export type EmitterEventTumble = {
+		type: 'tumbleRun';
+		explodingSymbols: Position[];
+		newSymbols: RawSymbol[][];
+		/** an applied throw's multipliers: this refill carries the watches in */
+		watches?: number[];
+		pace?: WinPace;
+	};
 </script>
 
 <script lang="ts">
@@ -11,6 +19,7 @@
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { tumbleTiming } from '../game/animationTimeline';
+	import { watchDropTiming } from '../game/hypnoWatchTiming';
 	import { planCascadeColumn, gravityProgress, fallDuration, recordSymbolTravel } from '../game/symbolMotion';
 	import { getSymbolX, getSymbolInfo } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
@@ -35,7 +44,26 @@
 	const stoneFilter = new ColorMatrixFilter(); stoneFilter.desaturate(); stoneFilter.brightness(0.96, true);
 	const stoneFilters = [stoneFilter];
 
-	const runTumble = async ({ explodingSymbols, newSymbols }: { explodingSymbols: Position[]; newSymbols: RawSymbol[][] }) => {
+	/**
+	 * Cells for the watches: the top fresh cell of a refilled column (above the
+	 * settlement readout, which covers the middle rows), never a scatter, spread
+	 * across the columns. All or nothing: with too few cells the throw falls
+	 * back to flying from the hypnotist at chain end.
+	 */
+	const watchCells = (removed: Map<number, number[]>, newSymbols: RawSymbol[][], count: number) => {
+		const board = context.stateGame.board;
+		const candidates: { reel: number; row: number; rows: number }[] = [];
+		for (const [reel, rows] of [...removed].sort((a, b) => a[0] - b[0])) {
+			const plan = planCascadeColumn(board[reel].reelState.symbols.map((s) => s.rawSymbol), rows, newSymbols[reel] ?? [], BOARD_DIMENSIONS.y);
+			for (let row = 1; row <= rows.length; row++) {
+				if (plan.column[row].name !== 'S') { candidates.push({ reel, row, rows: rows.length }); break; }
+			}
+		}
+		if (candidates.length < count) return [];
+		return Array.from({ length: count }, (_, i) => candidates[Math.round(((i + 0.5) * candidates.length) / count - 0.5)]);
+	};
+
+	const runTumble = async ({ explodingSymbols, newSymbols, watches = [], pace = 'normal' }: { explodingSymbols: Position[]; newSymbols: RawSymbol[][]; watches?: number[]; pace?: WinPace }) => {
 		const run = ++generation, current = () => alive && run === generation;
 		const timing = tumbleTiming({ chain: context.stateGame.tumbleChain, turbo: stateBet.isTurbo, turboLevel: stateBet.turboLevel });
 		const board = context.stateGame.board;
@@ -51,8 +79,39 @@
 				assetKey: info.assetKey, width: SYMBOL_SIZE * info.sizeRatios.width, height: SYMBOL_SIZE * info.sizeRatios.height, seed: pos.reel * 13 + pos.row * 7 };
 		});
 		for (const pos of explodingSymbols) board[pos.reel].reelState.symbols[pos.row].symbolState = 'explosion';
+		const cells = watches.length ? watchCells(removed, newSymbols, watches.length) : [];
+		let gapMs = 0;
+		if (cells.length) {
+			const fall = (cell: (typeof cells)[number]) => fallDuration(cell.rows, timing.dropMs);
+			const first = cells.reduce((a, b) => (a.reel * timing.columnStaggerMs + fall(a) <= b.reel * timing.columnStaggerMs + fall(b) ? a : b));
+			const drop = watchDropTiming({
+				freegame: pace === 'freegame' || pace === 'turboFreegame',
+				turbo: pace === 'turbo' || pace === 'turboFreegame',
+				crumbleMs: timing.crumbleMs,
+				fallMs: fall(first),
+				columnDelayMs: first.reel * timing.columnStaggerMs,
+			});
+			gapMs = drop.gapMs;
+			// Same start, path and gravity as the fresh symbol it rides on.
+			context.eventEmitter.broadcast({
+				type: 'hypnoWatchDrop',
+				animation: drop.animation,
+				releaseMs: drop.releaseMs,
+				pace,
+				drops: cells.map((cell, i) => ({
+					value: watches[i],
+					x: getSymbolX(cell.reel),
+					fromY: slotY(cell.row - cell.rows),
+					toY: slotY(cell.row),
+					delayMs: timing.crumbleMs + gapMs + cell.reel * timing.columnStaggerMs,
+					durationMs: fall(cell),
+				})),
+			});
+		}
 		await sleep(timing.crumbleMs);
 		if (!current()) return;
+		// The hole stays open only while the hypnotist charges.
+		if (gapMs > 0) { await sleep(gapMs); if (!current()) return; }
 
 		await Promise.all(board.map(async (reel, reelIndex) => {
 			const rows = removed.get(reelIndex); if (!rows?.length) return;

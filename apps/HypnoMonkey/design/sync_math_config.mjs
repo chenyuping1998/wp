@@ -44,9 +44,9 @@ const extras = JSON.parse(
 // change that breaks one would otherwise surface as a blank board.
 const problems = [];
 if (raw.gameID !== GAME_ID) problems.push(`gameID is "${raw.gameID}", expected "${GAME_ID}"`);
-if (raw.numReels !== 5) problems.push(`numReels is ${raw.numReels}, expected 5`);
-if (!Array.isArray(raw.numRows) || raw.numRows.some((n) => n !== 6)) {
-	problems.push(`numRows is ${JSON.stringify(raw.numRows)}, expected five 6s`);
+if (raw.numReels !== 6) problems.push(`numReels is ${raw.numReels}, expected 6`);
+if (!Array.isArray(raw.numRows) || raw.numRows.some((n) => n !== 5)) {
+	problems.push(`numRows is ${JSON.stringify(raw.numRows)}, expected six 5s`);
 }
 for (const gameType of ['basegame', 'freegame']) {
 	const strips = raw.paddingReels?.[gameType];

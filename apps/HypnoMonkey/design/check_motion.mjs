@@ -5,17 +5,18 @@ import { planCascadeColumn, symbolPoint, symbolPose, landingPose, gravityProgres
 import { tumbleTiming } from '../src/game/animationTimeline.ts';
 
 let plans = 0, positions = 0, minMeshAreaRatio = 1;
-for (let mask = 1; mask < 64; mask++) {
-  const column = Array.from({ length: 8 }, (_, i) => ({ name: 'cell' + i }));
-  const removed = Array.from({ length: 6 }, (_, i) => i + 1).filter(row => mask & (1 << (row - 1)));
+const ROWS = 5; // 6 reels x 5 rows (Stone: 5列6行)
+for (let mask = 1; mask < 1 << ROWS; mask++) {
+  const column = Array.from({ length: ROWS + 2 }, (_, i) => ({ name: 'cell' + i }));
+  const removed = Array.from({ length: ROWS }, (_, i) => i + 1).filter(row => mask & (1 << (row - 1)));
   const incoming = removed.map((_, i) => ({ name: 'new' + i }));
-  const result = planCascadeColumn(column, removed, incoming);
-  assert.equal(result.column.length, 8);
+  const result = planCascadeColumn(column, removed, incoming, ROWS);
+  assert.equal(result.column.length, ROWS + 2);
   assert.deepEqual(result.column[0], incoming[0]);
-  assert.deepEqual(result.column[7], column[7]);
+  assert.deepEqual(result.column[ROWS + 1], column[ROWS + 1]);
   const slots = result.moves.map(move => move.to).sort((a, b) => a - b);
-  assert.deepEqual(slots, [1, 2, 3, 4, 5, 6]);
-  assert.equal(new Set(result.moves.map(move => move.carrier)).size, 6);
+  assert.deepEqual(slots, Array.from({ length: ROWS }, (_, i) => i + 1));
+  assert.equal(new Set(result.moves.map(move => move.carrier)).size, ROWS);
   for (const move of result.moves) {
     assert.deepEqual(move.rawSymbol, result.column[move.to]);
     assert.ok(move.from <= move.to);
@@ -44,7 +45,7 @@ for (const entries of Object.values(books)) for (const book of entries) {
     for (let reel = 0; reel < board.length; reel++) {
       const removed = event.explodingSymbols.filter(p => p.reel === reel).map(p => p.row);
       assert.ok(removed.every(row => board[reel][row].name !== 'S'));
-      board[reel] = planCascadeColumn(board[reel], removed, event.newSymbols[reel]).column;
+      board[reel] = planCascadeColumn(board[reel], removed, event.newSymbols[reel], board[reel].length - 2).column;
     }
   }
 }

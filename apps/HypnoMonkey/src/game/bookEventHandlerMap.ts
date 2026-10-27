@@ -73,6 +73,24 @@ const winLevelSoundsStop = () => {
 	eventEmitter.broadcastAsync({ type: 'uiShow' });
 };
 
+/**
+ * The multipliers of the applied throw that this tumble is the last refill
+ * before. hypnoThrow only arrives once the chain is over, but the watches are
+ * shown riding this refill (research/goo1000_rhythm), so read ahead in the book.
+ */
+const watchesForLastRefill = (
+	bookEvent: BookEventOfType<'tumbleBoard'>,
+	bookEvents: BookEvent[],
+): number[] => {
+	const start = bookEvents.findIndex((event) => event.index === bookEvent.index);
+	if (start < 0) return [];
+	for (const next of bookEvents.slice(start + 1)) {
+		if (next.type === 'tumbleBoard' || next.type === 'reveal') return [];
+		if (next.type === 'hypnoThrow') return next.applied ? next.multipliers : [];
+	}
+	return [];
+};
+
 const animateSymbols = async ({ positions }: { positions: Position[] }) => {
 	// Only animate symbols in visible rows (1..numRows) — padding rows (0 and
 	// numRows+1) have no oncomplete callback and would freeze the game forever.
@@ -110,6 +128,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateGame.tumbleWin = 0;
 		stateGame.tumbleChain = 0;
 		eventEmitter.broadcast({ type: 'medusaPose', pose: 'idle' });
+		eventEmitter.broadcast({ type: 'hypnoWatchClear' });
 
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 		await stateGameDerived.enhancedBoard.spin({
@@ -156,18 +175,22 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	 * above. The marks are dropped first: they belong to symbols that are about to
 	 * stop existing.
 	 */
-	tumbleBoard: async (bookEvent: BookEventOfType<'tumbleBoard'>) => {
+	tumbleBoard: async (bookEvent: BookEventOfType<'tumbleBoard'>, { bookEvents }: BookEventContext) => {
 		eventEmitter.broadcast({ type: 'scatterWinsHide' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
 		await eventEmitter.broadcastAsync({
 			type: 'tumbleRun',
 			explodingSymbols: bookEvent.explodingSymbols,
 			newSymbols: bookEvent.newSymbols,
+			watches: watchesForLastRefill(bookEvent, bookEvents),
+			pace: currentPace(),
 		});
 	},
 
 	/**
-	 * Medusa's throw, after the tumbling has finished (SPEC 3).
+	 * Medusa's throw, after the tumbling has finished (SPEC 3). On a winning spin
+	 * the watches already rode the last refill onto the board (tumbleBoard), so
+	 * this settles them: the readout builds "win × N" and then pays.
 	 *
 	 * Applied only when the spin had a tumble win; otherwise every orb shatters.
 	 * In the free game `mult` is the running total after this throw, so it is
