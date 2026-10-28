@@ -129,10 +129,10 @@
 	const PLATE_WIDTH = 200;
 	const PLATE_HEIGHT = PLATE_WIDTH * (320 / 512);
 	// Landscape: left of the board, below the free-spin counter. Portrait: above
-	// the board's left corner, clear of the counter centred above it.
+	// the wordmark on the frame's top-left, clear of the counter centred above it.
 	const plate = $derived(
 		portrait
-			? { x: PLATE_WIDTH * 0.45, y: -PLATE_HEIGHT * 0.72 }
+			? { x: PLATE_WIDTH * 0.2, y: -PLATE_HEIGHT * 1.35 }
 			: { x: -PLATE_WIDTH * 0.62, y: BOARD_SIZES.height * 0.45 },
 	);
 	// the ×N sits on the right-hand two thirds; the cameo is on the left
