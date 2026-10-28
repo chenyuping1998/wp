@@ -45,22 +45,25 @@
 	const stoneFilters = [stoneFilter];
 
 	/**
-	 * Cells for the watches: the top fresh cell of a refilled column (above the
-	 * settlement readout, which covers the middle rows), never a scatter, spread
-	 * across the columns. All or nothing: with too few cells the throw falls
-	 * back to flying from the hypnotist at chain end.
+	 * Cells for the watches: the highest fresh cell of a refilled column that is
+	 * not a scatter, spread across the columns. Top-row cells come first: the
+	 * settlement readout covers the middle rows. All or nothing: with too few
+	 * cells the throw falls back to flying from the hypnotist at chain end.
 	 */
 	const watchCells = (removed: Map<number, number[]>, newSymbols: RawSymbol[][], count: number) => {
 		const board = context.stateGame.board;
-		const candidates: { reel: number; row: number; rows: number }[] = [];
+		const top: { reel: number; row: number; rows: number }[] = [];
+		const lower: typeof top = [];
 		for (const [reel, rows] of [...removed].sort((a, b) => a[0] - b[0])) {
 			const plan = planCascadeColumn(board[reel].reelState.symbols.map((s) => s.rawSymbol), rows, newSymbols[reel] ?? [], BOARD_DIMENSIONS.y);
 			for (let row = 1; row <= rows.length; row++) {
-				if (plan.column[row].name !== 'S') { candidates.push({ reel, row, rows: rows.length }); break; }
+				if (plan.column[row].name !== 'S') { (row === 1 ? top : lower).push({ reel, row, rows: rows.length }); break; }
 			}
 		}
-		if (candidates.length < count) return [];
-		return Array.from({ length: count }, (_, i) => candidates[Math.round(((i + 0.5) * candidates.length) / count - 0.5)]);
+		// Top-row cells first; a lower one only when there are not enough.
+		const pool = top.length >= count ? top : [...top, ...lower];
+		if (pool.length < count) return [];
+		return Array.from({ length: count }, (_, i) => pool[Math.round(((i + 0.5) * pool.length) / count - 0.5)]);
 	};
 
 	const runTumble = async ({ explodingSymbols, newSymbols, watches = [], pace = 'normal' }: { explodingSymbols: Position[]; newSymbols: RawSymbol[][]; watches?: number[]; pace?: WinPace }) => {

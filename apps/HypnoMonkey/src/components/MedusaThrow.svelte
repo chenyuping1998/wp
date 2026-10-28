@@ -115,6 +115,10 @@
 	const origin = $derived(medusaAnchors.ready?medusaAnchors.center:medusaEyes(portrait, BOARD_SIZES.width, BOARD_SIZES.height));
 	const eyePoints=$derived(medusaAnchors.ready?[medusaAnchors.left,medusaAnchors.right]:[{x:origin.x-7,y:origin.y},{x:origin.x+7,y:origin.y}]);
 	const center = { x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 };
+	// drawMultiplierReadout's plaque: 416 x 238 around the board centre
+	const READOUT_TOP = center.y - 119;
+	const READOUT_HALF_WIDTH = 208;
+	const READOUT_HEIGHT = 238;
 
 	const PLATE_WIDTH = 200;
 	const PLATE_HEIGHT = PLATE_WIDTH * (320 / 512);
@@ -284,10 +288,16 @@
 		broadcast({ type: 'medusaAction', animation: 'react_small' });
 		pop = { text: '', scale: 1, alpha: 0 };
 		amount = { text: baseAmount, alpha: 0 };
+		// A watch resting where the readout opens steps up above it first, so it
+		// never sits on the readout's lettering.
+		const covered = watches.filter((watch) => watch.y > READOUT_TOP - 44 && watch.y < READOUT_TOP + READOUT_HEIGHT + 44 && Math.abs(watch.x - center.x) < READOUT_HALF_WIDTH + 40);
+		const lifts = covered.map((watch) => ({ id: watch.id, from: watch.y }));
 		await tween(plan.openMs, (t) => {
 			if (pop) pop = { ...pop, alpha: t };
 			if (amount) amount = { ...amount, alpha: t };
+			for (const lift of lifts) update(lift.id, { y: lift.from + (READOUT_TOP - 44 - lift.from) * easeOut(t) });
 		});
+		for (const watch of covered) watch.y = READOUT_TOP - 44;
 		let shown = 0;
 		const arrive = (value: number) => {
 			shown = value;
