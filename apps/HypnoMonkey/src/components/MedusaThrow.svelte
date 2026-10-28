@@ -47,9 +47,10 @@
 	import { throwTiming, medusaAnimations, multiplierCountMs } from '../game/animationTimeline';
 	import { watchCollectTiming } from '../game/hypnoWatchTiming';
 	import { gravityProgress } from '../game/symbolMotion';
+	import { shakeBoard } from '../game/boardShake.svelte';
 	import MultiplierFx from './MultiplierFx.svelte';
 	import type { MultiplierFxController } from '../game/multiplierFxScene';
-	import { flightPose,impactPose,gazePose,recoil,ORB_CHARGE_DISTANCE,type OrbVisual } from '../game/multiplierPerformance';
+	import { flightPose,impactPose,gazePose,recoil,orbColor,ORB_CHARGE_DISTANCE,type OrbVisual } from '../game/multiplierPerformance';
 	import { drawMultiplierReadout } from '../game/multiplierReadout';
 	import { medusaAnchors } from '../game/medusaAnchors.svelte';
 	import BoardContainer from './BoardContainer.svelte';
@@ -87,6 +88,10 @@
 	// A watch on a cell sits a little inside the symbol frame.
 	const CELL_SCALE = 0.8;
 	let watchesLanded: Promise<unknown> = Promise.resolve();
+	// ×100 and up land like a thunderclap: a bolt rides the watch down its
+	// column, then a flash, a shock ring and a board shake (ATG 戰神賽特 study).
+	const HEAVY = 100;
+	let heavy = $state<{ x: number; y: number; bolt: number; ring: number; flash: number; dim: number; color: number; seed: number } | null>(null);
 	let fx=$state.raw<MultiplierFxController>();
 	let reducedMotion=$state(false);
 	onMount(()=>{const media=matchMedia('(prefers-reduced-motion: reduce)');const change=()=>reducedMotion=media.matches;change();media.addEventListener('change',change);return()=>media.removeEventListener('change',change);});
@@ -256,16 +261,26 @@
 				await wait(drop.delayMs);
 				const id = nextId++;
 				orbs = [...orbs, { id, value: drop.value, x: drop.x, y: drop.fromY, scale: CELL_SCALE, alpha: 0, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [], cell: true }];
+				const big = drop.value >= HEAVY;
+				const color = orbColor(drop.value);
 				await tween(drop.durationMs, (t) => {
 					const y = drop.fromY + (drop.toY - drop.fromY) * gravityProgress(t);
 					// fades in as it crosses the top edge of the board
 					update(id, { y, alpha: Math.max(0, Math.min(1, (y + 20) / 60)), sx: 1 - 0.06 * t, sy: 1 + 0.12 * t });
 					if (drop === lead) beamTarget = { x: drop.x, y };
+					if (big) heavy = { x: drop.x, y, bolt: Math.min(1, t * 4), ring: 0, flash: 0, dim: Math.min(1, t * 3), color, seed: Math.random() * 100 };
 				});
 				fx?.impact({ x: drop.x, y: drop.toY }, drop.value, 'orb');
 				broadcast({ type: 'soundMedusa', cue: 'orbHit', value: drop.value, speed: fast ? 1.25 : 1 });
-				await tween(fast ? 90 : 160, (t) => {
-					const squash = Math.sin(Math.PI * t);
+				if (big) {
+					broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
+					shakeBoard(drop.value >= 250 ? 1.8 : 1.3, fast ? 420 : 700);
+					void tween(fast ? 300 : 560, (t) => {
+						heavy = { x: drop.x, y: drop.toY, bolt: Math.max(0, 1 - t * 2.4), ring: t, flash: Math.max(0, 1 - t * 2.2), dim: 0, color, seed: Math.random() * 100 };
+					}).then(() => (heavy = null));
+				}
+				await tween(big ? (fast ? 160 : 300) : fast ? 90 : 160, (t) => {
+					const squash = Math.sin(Math.PI * t) * (big ? 1.5 : 1);
 					update(id, { y: drop.toY, alpha: 1, sx: 1 + 0.14 * squash, sy: 1 - 0.16 * squash });
 				});
 			}),
@@ -326,6 +341,7 @@
 			await flyBetween(watch.id, from, readout, plan.flyMs);
 			fx?.impact(readout, watch.value, 'score');
 			broadcast({ type: 'soundMedusa', cue: 'orbHit', value: watch.value, speed: fast ? 1.25 : 1 });
+			if (watch.value >= HEAVY) shakeBoard(0.6, fast ? 260 : 380);
 			orbs = orbs.filter((orb) => orb.id !== watch.id);
 			arrive(shown + watch.value);
 		}
@@ -516,6 +532,34 @@
 			amount = null;
 		},
 	});
+
+	const drawHeavy = (g: PixiGraphics) => {
+		g.clear();
+		if (!heavy) return;
+		const { x, y, bolt, ring, flash, dim, color, seed } = heavy;
+		const all = () => g.rect(-80, -80, BOARD_SIZES.width + 160, BOARD_SIZES.height + 160);
+		// the board darkens while the bolt comes down, then whites out on impact
+		if (dim > 0) all().fill({ color: 0x0b0710, alpha: 0.38 * dim });
+		if (flash > 0) all().fill({ color: 0xfff6dc, alpha: 0.7 * flash });
+		if (bolt > 0) {
+			const top = -460;
+			g.rect(x - 52, top, 104, y - top).fill({ color, alpha: 0.28 * bolt });
+			g.rect(x - 20, top, 40, y - top).fill({ color: 0xffffff, alpha: 0.3 * bolt });
+			const path = (k: number, spread: number) => {
+				g.moveTo(x, top);
+				for (let i = 1; i <= 12; i++) g.lineTo(i < 12 ? x + Math.sin(seed * k + i * 2.3) * spread : x, top + ((y - top) * i) / 12);
+			};
+			path(13.7, 30); g.stroke({ color, width: 26, alpha: 0.6 * bolt });
+			path(13.7, 30); g.stroke({ color: 0xffffff, width: 9, alpha: bolt });
+			path(7.1, 46); g.stroke({ color: 0xffffff, width: 3, alpha: 0.7 * bolt });
+		}
+		if (ring > 0 && ring < 1) {
+			const ease = 1 - (1 - ring) ** 2;
+			g.circle(x, y, 60 + 420 * ease).stroke({ color, width: 6 + 22 * (1 - ring), alpha: 1 - ring });
+			g.circle(x, y, 40 + 260 * ease).stroke({ color: 0xffffff, width: 3 + 8 * (1 - ring), alpha: 0.9 * (1 - ring) });
+			g.circle(x, y, 90 * (1 - ring) + 20).fill({ color: 0xffffff, alpha: 0.85 * (1 - ring) ** 2 });
+		}
+	};
 
 	const drawReadoutBack = (g: PixiGraphics) => {
 		drawMultiplierReadout(g,pop?.alpha??0,reducedMotion?-1:gazeProgress);

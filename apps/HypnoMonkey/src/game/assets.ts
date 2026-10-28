@@ -185,20 +185,48 @@ export default {
 		src: new URL('../../assets/sprites/medusaUi/fs_counter_panel.png', import.meta.url).href,
 	},
 
-	// Medusa's thrown multiplier, coloured by value (MEDUSA_美術需求單 4-1)
+	// Hypno pocket watches: bronze / silver / gold; retain internal keys for FX compatibility.
 	mgOrbGreen: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaOrbs/orb_green.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoWatches/watch-bronze.png', import.meta.url).href,
 		preload: true,
 	},
 	mgOrbPurple: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaOrbs/orb_purple.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoWatches/watch-silver.png', import.meta.url).href,
 		preload: true,
 	},
 	mgOrbGold: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaOrbs/orb_gold.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoWatches/watch-gold.png', import.meta.url).href,
+		preload: true,
+	},
+
+	// Five watch tiers drawn on the board, one metal colour per multiplier band
+	// (design/watch_art/build_tiers.py): bronze, emerald, violet, crimson, gold.
+	watchT1: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hypnoWatches/watch-t1.png', import.meta.url).href,
+		preload: true,
+	},
+	watchT2: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hypnoWatches/watch-t2.png', import.meta.url).href,
+		preload: true,
+	},
+	watchT3: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hypnoWatches/watch-t3.png', import.meta.url).href,
+		preload: true,
+	},
+	watchT4: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hypnoWatches/watch-t4.png', import.meta.url).href,
+		preload: true,
+	},
+	watchT5: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/hypnoWatches/watch-t5.png', import.meta.url).href,
 		preload: true,
 	},
 

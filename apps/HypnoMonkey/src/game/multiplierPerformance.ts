@@ -8,7 +8,8 @@ export function gazePose(progress:number){
  const t=clamp(progress),attack=clamp(t/.11),release=1-clamp((t-.68)/.32);
  return{intensity:Math.min(attack,release),reach:1-(1-clamp(t/.26))**3,focus:(1-clamp(t/.28))**2,stone:clamp((t-.17)/.55)};
 }
-export const orbColor=(value:number)=>value>=100?0xffc64d:value>=15?0xc795ff:0xb8ff5a;
+/** FX colour per watch tier (constants.watchTier): bronze, emerald, violet, crimson, gold. */
+export const orbColor=(value:number)=>value>=250?0xffcc55:value>=100?0xff4a52:value>=15?0xb46bff:value>=8?0x4fd17c:0xd9935a;
 export function flightPose(from:Point,to:Point,progress:number){
  const t=clamp(progress),u=t*t*(2-t),dx=to.x-from.x,dy=to.y-from.y;
  const lift=Math.min(122,Math.abs(dx)*.105+26),a={x:from.x+dx*.25,y:from.y+dy*.22-lift},b={x:to.x-dx*.20,y:to.y-dy*.12-lift*.68};

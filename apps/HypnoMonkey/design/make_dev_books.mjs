@@ -59,7 +59,7 @@ const pick = (books, predicate, label) => {
 };
 
 console.log('reading base books…');
-const base = readBooks('base', 6000);
+const base = readBooks('base', 40000);
 console.log('reading bonus books…');
 const bonus = readBooks('bonus', 2500);
 
@@ -98,6 +98,17 @@ const selection = {
 	),
 	// A retrigger: the running total has to carry across the extra award.
 	bonusRetrigger: pick(bonus, (b) => types(b).has('freeSpinRetrigger'), 'bonus with a retrigger'),
+	// Heavy watches: a ×100 lands in the base game, a ×250+ in the feature (bolt, shock ring, board shake).
+	baseThrowHeavy: pick(
+		base,
+		(b) => eventsOf(b, 'hypnoThrow').some((e) => e.applied && e.multipliers.some((v) => v >= 100)) && !types(b).has('freeSpinTrigger'),
+		'base throw applied with a ×100 watch',
+	),
+	bonusThrowHeavy: pick(
+		bonus,
+		(b) => eventsOf(b, 'hypnoThrow').some((e) => e.applied && e.multipliers.some((v) => v >= 250)) && !types(b).has('wincap'),
+		'bonus throw applied with a ×250+ watch',
+	),
 };
 
 const books = {};

@@ -4,6 +4,7 @@
 	import { Container } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
+	import { boardShake } from '../game/boardShake.svelte';
 
 	type Props = {
 		children: Snippet;
@@ -20,9 +21,9 @@
 	point they all share, rather than each of them having to know about it.
 -->
 <Container
-	x={context.stateGameDerived.boardLayout().x}
-	y={context.stateGameDerived.boardLayout().y}
-	scale={context.stateGameDerived.boardLayout().scale}
+	x={context.stateGameDerived.boardLayout().x + boardShake.x * context.stateGameDerived.boardLayout().scale}
+	y={context.stateGameDerived.boardLayout().y + boardShake.y * context.stateGameDerived.boardLayout().scale}
+	scale={context.stateGameDerived.boardLayout().scale * boardShake.scale}
 	pivot={context.stateGameDerived.boardLayout().pivot}
 >
 	{@render props.children()}

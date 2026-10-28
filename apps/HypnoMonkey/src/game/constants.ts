@@ -199,9 +199,9 @@ export const ROUND_END_HOLD_MS_FAST = 300;
 // spin.
 // ---------------------------------------------------------------------------
 
-/** Orb colour by value: green 2–10, purple 15–50, gold 100+ (美術需求單 4-1). */
-export const orbKeyFor = (value: number) =>
-	value >= 100 ? 'mgOrbGold' : value >= 15 ? 'mgOrbPurple' : 'mgOrbGreen';
+/** Pocket watch tier, one metal per band: bronze 2–5, emerald 8–10, violet 15–50, crimson 100, gold 250+. */
+export const watchTier = (value: number) => (value >= 250 ? 5 : value >= 100 ? 4 : value >= 15 ? 3 : value >= 8 ? 2 : 1);
+export const orbKeyFor = (value: number) => `watchT${watchTier(value)}` as const;
 
 /** Running-total plate brightness steps (three plate levels in the art brief). */
 export const totalPlateLevel = (total: number) => (total >= 100 ? 2 : total >= 20 ? 1 : 0);
