@@ -1,10 +1,12 @@
 # Hypno Monkey
 
-First package, staged 2026-10-28. **Platform NOT updated**: nothing uploaded or published.
+Package v2, staged 2026-10-29 (v1 staged 2026-10-28 was never uploaded).
 
-Circus reskin of Medusa Gaze. 6 reels x 5 rows, scatter pays (8+ of a symbol anywhere), tumbles. On a winning spin the hypnotist may drop pocket-watch multipliers (x2-x500, five watch colours by tier) that ride the last refill and multiply the spin. Free Spins: watch multipliers add to a total that never resets. Max win 15,000x bet.
+v2: base spins with no win throw more watches, about 4 in 10 of them x100+ (wasted, so they pay nothing but land with the full thunderclap and board shake; a x100+ watch shows about 1 in 28 base spins); new Super Free Spins buy at 400x where every watch is x10+; bigger watch numbers with a tier-colour glow; both casts' cheer poses fixed (no bent-back wrist, open hand seated on the cuff).
 
-- `math/`: base (cost 1) and bonus buy (cost 100) books + LUTs + index.json. RTP base 96.03%, bonus 96.06%. `stakecli compliance` PASS, 2-star and 3-star.
+Circus reskin of Medusa Gaze. 6 reels x 5 rows, scatter pays (8+ of a symbol anywhere), tumbles. The hypnotist may throw pocket-watch multipliers (x2-x500, five watch colours by tier); on a winning spin they ride the last refill and multiply the spin, on a spin with no win they shatter. Free Spins: watch multipliers add to a total that never resets. Max win 15,000x bet.
+
+- `math/`: base (cost 1), bonus buy (cost 100) and super buy (cost 400) books + LUTs + index.json. RTP base 96.03%, bonus 96.06%, super 96.08%. `stakecli compliance` PASS, 2-star and 3-star.
 - `frontend/`: static build. Medusa-only art folders the game no longer loads are removed (see `design/ship.sh`). Internal `medusa*` folder and code names remain for generic FX, UI icons and shared audio; no Medusa text, art or voice is visible or audible.
 - `thumbnail/`: 1024x1024 BG (circus plaza, no text), transparent hypnotist FG, separate Silverstars logo. `*-PREVIEW-only.png` is a review composite, do not upload.
 - `cover/`: 1920x1080 BG and transparent FG with both casts (MG hypnotist, FG assistant). Top-right and bottom-left kept clear.

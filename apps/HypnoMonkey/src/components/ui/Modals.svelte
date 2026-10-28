@@ -124,8 +124,11 @@
 			width: 100% !important;
 		}
 
+		/* border-box: with padding and border on top of 100% the card spilled
+		   20px past the scroll row and its right edge was cut off */
 		:global(.bonus-card-wrap) {
 			width: 100% !important;
+			box-sizing: border-box !important;
 		}
 	}
 

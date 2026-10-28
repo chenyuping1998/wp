@@ -62,6 +62,8 @@ console.log('reading base books…');
 const base = readBooks('base', 40000);
 console.log('reading bonus books…');
 const bonus = readBooks('bonus', 2500);
+console.log('reading super books…');
+const superBuy = readBooks('super', 1500);
 
 const selection = {
 	// A plain base win, so the very first spin exercises the tumble path.
@@ -104,6 +106,14 @@ const selection = {
 		(b) => eventsOf(b, 'hypnoThrow').some((e) => e.applied && e.multipliers.some((v) => v >= 100)) && !types(b).has('freeSpinTrigger'),
 		'base throw applied with a ×100 watch',
 	),
+	// A base spin with no win where the wasted watch is ×100+: thunderclap, then it cracks.
+	baseDeadHeavy: pick(
+		base,
+		(b) => b.payoutMultiplier === 0 && eventsOf(b, 'hypnoThrow').some((e) => !e.applied && e.multipliers.some((v) => v >= 100)),
+		'base dead spin with a wasted ×100+ watch',
+	),
+	// The super buy: every watch ×10 or more.
+	superBuy: pick(superBuy, (b) => b.payoutMultiplier > 0 && !types(b).has('wincap'), 'super buy'),
 	bonusThrowHeavy: pick(
 		bonus,
 		(b) => eventsOf(b, 'hypnoThrow').some((e) => e.applied && e.multipliers.some((v) => v >= 250)) && !types(b).has('wincap'),

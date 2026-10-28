@@ -87,6 +87,27 @@
 	// A watch on a cell sits a little inside the symbol frame.
 	const CELL_SCALE = 0.8;
 	let watchesLanded: Promise<unknown> = Promise.resolve();
+	// Legibility (Stone 2026-10-28): a bigger watch, its number sized to fill the
+	// cream dial (half the sprite's width), and a glow in the tier colour behind
+	// it so the watch reads off any symbol. Ink fill, thin cream edge: a thick
+	// dark stroke would close the digits' counters.
+	const WATCH_SIZE = 132;
+	const DIAL_TEXT_WIDTH = WATCH_SIZE * 0.5;
+	const numberSizes = new Map<number, number>();
+	const numberSize = (value: number) => {
+		let size = numberSizes.get(value);
+		if (size) return size;
+		const ctx = document.createElement('canvas').getContext('2d');
+		let width = 0.62 * 100 * `×${value}`.length;
+		if (ctx) {
+			ctx.font = `${GAME_FONT_WEIGHT} 100px ${GAME_FONT}`;
+			width = ctx.measureText(`×${value}`).width;
+		}
+		size = Math.min(50, (100 * DIAL_TEXT_WIDTH) / width);
+		// measured before the font loaded: do not cache the fallback width
+		if (document.fonts?.check?.(`100px "Titan One"`)) numberSizes.set(value, size);
+		return size;
+	};
 	// ×100 and up land like a thunderclap: a bolt rides the watch down its
 	// column, then a flash, a shock ring and a board shake (ATG 戰神賽特 study).
 	const HEAVY = 100;
@@ -238,6 +259,16 @@
 	/** The hypnotist charges in the hole and points; each watch rides its column's refill. */
 	const dropWatches = async ({ drops, animation, releaseMs, pace }: { drops: WatchDrop[]; animation: MedusaAnimation; releaseMs: number; pace: WinPace }) => {
 		const fast = pace === 'turbo' || pace === 'turboFreegame';
+	/** x100+ impact: thunderclap, flash, rings and a board shake (also on a wasted watch). */
+	const strike = (x: number, y: number, value: number, fast: boolean) => {
+		const color = orbColor(value);
+		broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
+		shakeBoard(value >= 250 ? 1.8 : 1.3, fast ? 420 : 700);
+		return tween(fast ? 300 : 560, (t) => {
+			heavy = { x, y, bolt: Math.max(0, 1 - t * 2.4), ring: t, flash: Math.max(0, 1 - t * 2.2), dim: 0, color, seed: Math.random() * 100 };
+		}).then(() => (heavy = null));
+	};
+
 		const action = medusaAnimations[animation];
 		broadcast({ type: 'medusaAction', animation, releaseMs });
 		broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
@@ -273,13 +304,7 @@
 				});
 				fx?.impact({ x: drop.x, y: drop.toY }, drop.value, 'orb');
 				broadcast({ type: 'soundMedusa', cue: 'orbHit', value: drop.value, speed: fast ? 1.25 : 1 });
-				if (big) {
-					broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
-					shakeBoard(drop.value >= 250 ? 1.8 : 1.3, fast ? 420 : 700);
-					void tween(fast ? 300 : 560, (t) => {
-						heavy = { x: drop.x, y: drop.toY, bolt: Math.max(0, 1 - t * 2.4), ring: t, flash: Math.max(0, 1 - t * 2.2), dim: 0, color, seed: Math.random() * 100 };
-					}).then(() => (heavy = null));
-				}
+				if (big) void strike(drop.x, drop.toY, drop.value, fast);
 				await tween(big ? (fast ? 160 : 300) : fast ? 90 : 160, (t) => {
 					const squash = Math.sin(Math.PI * t) * (big ? 1.5 : 1);
 					update(id, { y: drop.toY, alpha: 1, sx: 1 + 0.14 * squash, sy: 1 - 0.16 * squash });
@@ -472,6 +497,12 @@
 						broadcast({ type: 'soundMedusa', cue: 'orbCrack',speed:fast?1.5:1 });
 						if (!dudReacted) {
 							dudReacted = true;
+						// A wasted x100+ still lands with the full thunderclap before it cracks.
+						const orb = orbs.find((item) => item.id === id);
+						if (orb && value >= HEAVY) {
+							heavy = { x: orb.x, y: orb.y, bolt: 1, ring: 0, flash: 0, dim: 1, color: orbColor(value), seed: Math.random() * 100 };
+							await strike(orb.x, orb.y, value, fast);
+						}
 							broadcast({
 								type: 'medusaAction',
 								animation: 'gaze_dud',
@@ -641,8 +672,19 @@
 			<Sprite
 				key={orbKeyFor(orb.value)}
 				anchor={{x:0.5,y:300/512}}
-				width={112}
-				height={112}
+			{#if orb.stone === 0}
+				<Sprite
+					key="fxGlow"
+					anchor={0.5}
+					width={WATCH_SIZE * (orb.value >= HEAVY ? 2.1 : 1.75)}
+					height={WATCH_SIZE * (orb.value >= HEAVY ? 2.1 : 1.75)}
+					tint={orbColor(orb.value)}
+					alpha={orb.value >= HEAVY ? 0.95 : 0.75}
+					blendMode="add"
+				/>
+			{/if}
+				width={WATCH_SIZE}
+				height={WATCH_SIZE}
 				tint={orb.stone > 0 ? DUD_TINT : 0xffffff}
 				filters={orb.stone>0?[stoneMaterial]:[]}
 			/>
@@ -650,8 +692,8 @@
 				<Sprite
 					key={orb.crack < 1 / 3 ? 'fxCrack1' : orb.crack < 2 / 3 ? 'fxCrack2' : 'fxCrack3'}
 					anchor={0.5}
-					width={92}
-					height={92}
+					width={WATCH_SIZE * 0.82}
+					height={WATCH_SIZE * 0.82}
 				/>
 			{/if}
 		</Container>
@@ -662,9 +704,9 @@
 				style={{
 					fontFamily: GAME_FONT,
 					fontWeight: GAME_FONT_WEIGHT,
-					fontSize: orb.value >= 100 ? 26 : 32,
-					fill: 0xffffff,
-					stroke: { color: 0x2a1f24, width: 5 },
+					fontSize: numberSize(orb.value),
+					fill: 0x1a100c,
+					stroke: { color: 0xfff6e2, width: 2 },
 				}}
 			/>
 		</Container>

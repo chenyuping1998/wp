@@ -98,7 +98,6 @@
 	const minPayingCount = 8;
 	const fs = config.freeSpins;
 	const medusa = config.hypno;
-	const freeOnly = medusa.freeValues.filter((v: number) => !medusa.baseValues.includes(v));
 	const scatterPays = Object.entries(config.scatterPays)
 		.map(([count, value]) => ({ count: Number(count), value: Number(value) }))
 		.sort((a, b) => a.count - b.count);
@@ -117,6 +116,11 @@
 			price: `${config.betModes?.bonus?.cost}× ${T.bet}`,
 			text: MEDUSA_GAZE_BET_MODE_META.BONUS.text.dialog,
 		},
+		{
+			name: 'Super Free Spins',
+			price: `${config.betModes?.super?.cost}× ${T.bet}`,
+			text: MEDUSA_GAZE_BET_MODE_META.SUPER.text.dialog,
+		},
 	];
 
 	// Per-mode RTP and max win: certification asks for both, clearly, for every mode.
@@ -125,6 +129,7 @@
 		[
 			['Base game', 'base', `Every spin — or land ${fs.trigger} or more Hypno Spirals`],
 			['Free Spins', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}×`],
+			['Super Free Spins', 'super', `${entryVerb} for ${config.betModes?.super?.cost}×`],
 		] as const
 	).map(([label, key, entry]) => {
 		const mode = config.betModes?.[key] as BetMode | undefined;
@@ -240,7 +245,8 @@
 				<h3><span class="wp-accent-bar"></span>Free Spins &mdash; the running total</h3>
 				<p>
 					In Free Spins he can add up to {medusa.freeMaxThrows} watches on one spin, worth
-					{medusa.baseValues.join('×, ')}× or {freeOnly.join('×, ')}×. Every watch added on a spin
+					{medusa.freeValues.join('×, ')}×; in Super Free Spins every watch is worth
+					{medusa.superValues.join('×, ')}×. Every watch added on a spin
 					with a win is <strong>added to a running total</strong>, and that spin's chain win is
 					multiplied by the new total.
 				</p>
