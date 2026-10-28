@@ -96,22 +96,22 @@ export default {
 	// the three loading-screen feature cards (MEDUSA_美術需求單 §6)
 	mgIntro1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaIntro/intro_1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoInterim/intro_1.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIntro2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaIntro/intro_2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoInterim/intro_2.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIntro3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaIntro/intro_3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoInterim/intro_3.png', import.meta.url).href,
 		preload: true,
 	},
 	mgLogo: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaBrand/logo.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoInterim/logo.png', import.meta.url).href,
 		preload: true,
 	},
 

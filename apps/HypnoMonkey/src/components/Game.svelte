@@ -94,7 +94,7 @@
 
 		<UI>
 			{#snippet gameName()}
-				<Container scale={0.62}><UiGameName name="MEDUSA GAZE" /></Container>
+				<Container scale={0.62}><UiGameName name="HYPNO MONKEY" /></Container>
 			{/snippet}
 			{#snippet logo()}
 				<!-- The painted wordmark is mounted on the fixed board frame. -->

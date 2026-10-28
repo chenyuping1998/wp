@@ -24,24 +24,24 @@ export function createMultiplierFxScene(textures:{green:Texture;purple:Texture;g
    const pose=gazePose(state.gazeProgress??.4),strength=state.gaze;
    for(const eye of state.eyes){
     // Compact bloom and a single focus flare, registered to each moving pupil.
-    for(let k=3;k>0;k--)eyes.ellipse(eye.x,eye.y,7+k*5,3+k*3).fill({color:k===3?0x4db93c:0xb5ff63,alpha:(.028+(3-k)*.02)*strength});
-    eyes.ellipse(eye.x,eye.y,7,3.6).fill({color:0xb8ff5a,alpha:.95*strength});eyes.ellipse(eye.x,eye.y,3,2).fill({color:0xffffe1,alpha:strength});
-    eyes.moveTo(eye.x-18-pose.focus*12,eye.y).lineTo(eye.x+18+pose.focus*12,eye.y).stroke({color:0xc8ff89,width:1,alpha:.5*strength*pose.focus});
+    for(let k=3;k>0;k--)eyes.ellipse(eye.x,eye.y,7+k*5,3+k*3).fill({color:k===3?0x6a2bc2:0xcf9cff,alpha:(.028+(3-k)*.02)*strength});
+    eyes.ellipse(eye.x,eye.y,7,3.6).fill({color:0xb98aff,alpha:.95*strength});eyes.ellipse(eye.x,eye.y,3,2).fill({color:0xffffe1,alpha:strength});
+    eyes.moveTo(eye.x-18-pose.focus*12,eye.y).lineTo(eye.x+18+pose.focus*12,eye.y).stroke({color:0xd9b8ff,width:1,alpha:.5*strength*pose.focus});
     const dx=state.target.x-eye.x,dy=state.target.y-eye.y,L=Math.hypot(dx,dy)||1,nx=-dy/L,ny=dx/L,tx=eye.x+dx*pose.reach,ty=eye.y+dy*pose.reach;
-    for(const [width,endWidth,color,opacity] of [[9,4,0x55da44,.09],[4,1.8,0xa4ff60,.29],[.9,.5,0xf2ffd5,.60]]){
+    for(const [width,endWidth,color,opacity] of [[9,4,0x7f3be0,.09],[4,1.8,0xc28bff,.29],[.9,.5,0xf6eeff,.60]]){
      eyes.poly([eye.x+nx*width,eye.y+ny*width,tx+nx*endWidth,ty+ny*endWidth,tx-nx*endWidth,ty-ny*endWidth,eye.x-nx*width,eye.y-ny*width]).fill({color,alpha:opacity*strength});
     }
     // Two fine energy packets travel once down each beam instead of flickering.
-    for(let k=0;k<2;k++){const p=Math.min(1,Math.max(0,((state.gazeProgress??.4)-k*.19)*2.3));if(p<=0||p>=1)continue;const end=Math.min(pose.reach,p),start=Math.max(0,end-.055);eyes.moveTo(eye.x+dx*start,eye.y+dy*start).lineTo(eye.x+dx*end,eye.y+dy*end).stroke({color:0xf5ffd8,width:2,alpha:.8*strength});}
+    for(let k=0;k<2;k++){const p=Math.min(1,Math.max(0,((state.gazeProgress??.4)-k*.19)*2.3));if(p<=0||p>=1)continue;const end=Math.min(pose.reach,p),start=Math.max(0,end-.055);eyes.moveTo(eye.x+dx*start,eye.y+dy*start).lineTo(eye.x+dx*end,eye.y+dy*end).stroke({color:0xf8f0ff,width:2,alpha:.8*strength});}
    }
    // The arriving gaze carves a local mineral seal; it never suggests extra wins.
    if(pose.reach>.97){const a=strength*.55,r=32+pose.stone*52;
-    eyes.ellipse(state.target.x,state.target.y,r,r*.58).stroke({color:0xb8ff5a,width:2,alpha:a});
-    eyes.ellipse(state.target.x,state.target.y,r+10,(r+10)*.58).stroke({color:0x66dc71,width:5,alpha:a*.12});
-    for(let k=0;k<8;k++){const angle=k*Math.PI/4+.12,rr=r+9;eyes.moveTo(state.target.x+Math.cos(angle)*rr,state.target.y+Math.sin(angle)*rr*.58).lineTo(state.target.x+Math.cos(angle)*(rr+10),state.target.y+Math.sin(angle)*(rr+10)*.58).stroke({color:0xe3ffd0,width:1.6,alpha:a});}
+    eyes.ellipse(state.target.x,state.target.y,r,r*.58).stroke({color:0xb98aff,width:2,alpha:a});
+    eyes.ellipse(state.target.x,state.target.y,r+10,(r+10)*.58).stroke({color:0x8b4cf0,width:5,alpha:a*.12});
+    for(let k=0;k<8;k++){const angle=k*Math.PI/4+.12,rr=r+9;eyes.moveTo(state.target.x+Math.cos(angle)*rr,state.target.y+Math.sin(angle)*rr*.58).lineTo(state.target.x+Math.cos(angle)*(rr+10),state.target.y+Math.sin(angle)*(rr+10)*.58).stroke({color:0xf0e4ff,width:1.6,alpha:a});}
    }
   }
-  if(state.transfer>0){trails.moveTo(state.plate.x,state.plate.y).lineTo(state.score.x,state.score.y).stroke({width:9,color:0xb8ff5a,alpha:.15*state.transfer});trails.moveTo(state.plate.x,state.plate.y).lineTo(state.score.x,state.score.y).stroke({width:2,color:0xfff2a0,alpha:state.transfer});}
+  if(state.transfer>0){trails.moveTo(state.plate.x,state.plate.y).lineTo(state.score.x,state.score.y).stroke({width:9,color:0xb98aff,alpha:.15*state.transfer});trails.moveTo(state.plate.x,state.plate.y).lineTo(state.score.x,state.score.y).stroke({width:2,color:0xfff2a0,alpha:state.transfer});}
   for(const burst of bursts){const p=burst.age/.36,s=burst.strength;
    if(burst.frame==='score'){
     const grow=4+28*(1-(1-p)**3),a=(1-p)**2;
@@ -67,7 +67,7 @@ export function createMultiplierFxScene(textures:{green:Texture;purple:Texture;g
   shatter(at:Point,value:number){
    if(reduced)return;const texture=value>=100?textures.gold:value>=15?textures.purple:textures.green;
    for(let k=0;k<8;k++){const aa=k*Math.PI/4,bb=(k+1)*Math.PI/4,r=47,vertices=[0,0,Math.cos(aa)*r,Math.sin(aa)*r,Math.cos(bb)*r,Math.sin(bb)*r],cx=(vertices[2]+vertices[4])/3,cy=(vertices[3]+vertices[5])/3;
-    const geometry=new MeshGeometry({positions:new Float32Array(vertices.map((v,i)=>v-(i%2?cy:cx))),uvs:new Float32Array(vertices.map(v=>v/94+.5)),indices:new Uint32Array([0,1,2])});const mesh=new Mesh({geometry,texture});mesh.tint=0xaaa99a;pieces.addChild(mesh);
+    const geometry=new MeshGeometry({positions:new Float32Array(vertices.map((v,i)=>v-(i%2?cy:cx))),uvs:new Float32Array(vertices.map(v=>v/94+.5)),indices:new Uint32Array([0,1,2])});const mesh=new Mesh({geometry,texture});mesh.tint=0xb3a8c4;pieces.addChild(mesh);
     mesh.position.set(at.x+cx,at.y+cy);const angle=(aa+bb)/2;shards.push({mesh,geometry,x:at.x+cx,y:at.y+cy,vx:Math.cos(angle)*115,vy:Math.sin(angle)*75-105,spin:(k%2?1:-1)*(1.8+k*.25),age:0,life:.32});
    }
   },

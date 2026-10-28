@@ -68,7 +68,6 @@
   let currentAmbience = "";
   let musicRequest = 0;
   let activeTier = 1;
-  let laughVariant = 0;
   let crackVariant = 0;
 
   function getEngine() {
@@ -250,11 +249,13 @@
   }
 
   type Mapping = { cue: string; rate?: number; volume?: number };
+  // Medusa-only sounds (snakes, stone, statues) with no circus replacement yet.
+  const SILENT: Mapping = { cue: "", volume: 0 };
   const SPRITE_TO_CUE: Record<SoundEffectName, Mapping> = {
-    sfx_snake_yawn: { cue: "sfx_snake_yawn", volume: 0.5 },
+    sfx_snake_yawn: SILENT,
     sfx_buybonus_hover: { cue: "sfx_buybonus_hover", volume: 0.45 },
     sfx_buybonus_confirm: { cue: "sfx_buybonus_confirm", volume: 0.7 },
-    sfx_statues_crack: { cue: "sfx_statues_crack", volume: 0.6 },
+    sfx_statues_crack: SILENT,
     sfx_btn_general: { cue: "sfx_button", volume: 0.7 },
     sfx_btn_spin: { cue: "sfx_spin" },
     sfx_reel_stop_1: { cue: "sfx_reel_stop", rate: 0.92 },
@@ -295,10 +296,10 @@
     sfx_winlevel_small: { cue: "sfx_win_mark" },
     sfx_winlevel_standard: { cue: "sfx_win_mark" },
     sfx_winlevel_substantial: { cue: "sfx_win_mark" },
-    tumble_win_1: { cue: "sfx_petrify_1" },
-    tumble_win_2: { cue: "sfx_petrify_2" },
-    tumble_win_3: { cue: "sfx_petrify_3" },
-    tumble_win_4: { cue: "sfx_petrify_4" },
+    tumble_win_1: SILENT,
+    tumble_win_2: SILENT,
+    tumble_win_3: SILENT,
+    tumble_win_4: SILENT,
   };
 
   function mappedCue(name: SoundEffectName): Mapping {
@@ -311,7 +312,6 @@
     switch (cue) {
       case "gaze":
         void playCue("sfx_gaze_charge",.8,speed);
-        void playCue("sfx_snakes_hiss", 0.32,speed);
         break;
       case "gazeBeam":
         void playCue("sfx_gaze_beam",.75,speed);
@@ -339,25 +339,12 @@
       case "plateBeam":
         void playCue("sfx_total_to_win");
         break;
+      // Medusa's voice and snakes are retired; these stay silent until the
+      // hypnotist's and the assistant's own takes arrive (ART_REQUEST_DEMEDUSA.md).
       case "hmm":
-        void playCue("vo_medusa_hmm", 0.65);
-        break;
       case "annoyed":
-        void playCue("vo_medusa_annoyed", 0.65);
-        break;
       case "gasp":
-        void playCue("vo_medusa_gasp", 0.65);
-        break;
       case "laugh":
-        void playCue(
-          activeTier === 5
-            ? "vo_medusa_cry_happy"
-            : ++laughVariant % 2
-              ? "vo_medusa_laugh"
-              : "vo_medusa_laugh_2",
-          0.7,
-        );
-        void playCue("sfx_snakes_laugh", 0.35);
         break;
     }
   }
@@ -412,9 +399,8 @@
     soundEntryReveal: () => {
       void playCue("sfx_gaze_charge", 0.7);
     },
-    soundTumbleHit: ({ chain }) => {
-      void playCue(`sfx_petrify_${Math.max(1, Math.min(chain, 5))}`);
-    },
+    // The stone-crack ladder belonged to petrification; the paper-tear ladder is requested.
+    soundTumbleHit: () => {},
     soundReelTensionStart: () => {
       void playCue("sfx_scatter_tease", 0.5, 1, true);
     },

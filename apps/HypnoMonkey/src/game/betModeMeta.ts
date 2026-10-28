@@ -3,7 +3,7 @@ import { stateUrlDerived } from 'state-shared';
 
 import config from './config';
 
-// Medusa Gaze ships two math modes: base play and the free-spins buy. The shared
+// Hypno Monkey ships two math modes: base play and the free-spins buy. The shared
 // library ships a template default (ANTE / SUPER ANTE / …) with no backing math
 // here, so the meta is overridden with exactly what the math supports.
 //
@@ -18,7 +18,7 @@ const pick = (normal: string, socialText: string) =>
 	stateUrlDerived.social() ? socialText : normal;
 
 const cost = config.betModes.bonus.cost;
-const rtp = `${(config.rtp * 100).toFixed(2)}%`;
+const rtp = `${(config.betModes.bonus.rtp * 100).toFixed(2)}%`;
 const maxWin = config.betModes.bonus.max_win.toLocaleString();
 const fsSpins = config.freeSpins.spins;
 
@@ -68,14 +68,14 @@ export const MEDUSA_GAZE_BET_MODE_META: Record<string, BetModeData> = {
 			// spending, so it must not drift from the maths.
 			get dialog() {
 				return pick(
-					`Buy direct entry into FREE SPINS for ${cost}× your bet, at the same ${rtp} RTP as base play. ${fsSpins} free spins. Every multiplier Medusa throws on a spin with a win is added to a running total that never resets during the feature, and that total multiplies the spin. Maximum win: ${maxWin}× your bet.`,
-					`Enter FREE SPINS directly for ${cost}× your amount, at the same ${rtp} RTP as normal play. ${fsSpins} free spins. Every multiplier Medusa throws on a spin with a win is added to a running total that never resets during the feature, and that total multiplies the spin. Maximum win: ${maxWin}× your amount.`,
+					`Buy direct entry into FREE SPINS for ${cost}× your bet, at ${rtp} RTP. ${fsSpins} free spins. Every pocket-watch multiplier the Hypnotist adds on a spin with a win joins a running total that never resets during the feature, and that total multiplies the spin. Maximum win: ${maxWin}× your bet.`,
+					`Enter FREE SPINS directly for ${cost}× your amount, at ${rtp} RTP. ${fsSpins} free spins. Every pocket-watch multiplier the Hypnotist adds on a spin with a win joins a running total that never resets during the feature, and that total multiplies the spin. Maximum win: ${maxWin}× your amount.`,
 				);
 			},
 			get description() {
 				return pick(
-					`${cost}× BET → FREE SPINS with a running Medusa multiplier`,
-					`${cost}× AMOUNT → FREE SPINS with a running Medusa multiplier`,
+					`${cost}× BET → FREE SPINS with a running watch multiplier`,
+					`${cost}× AMOUNT → FREE SPINS with a running watch multiplier`,
 				);
 			},
 			get button() {

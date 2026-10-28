@@ -40,7 +40,6 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import {
 		BOARD_SIZES,
-		STONE_COLOR,
 		orbKeyFor,
 		totalPlateLevel,
 	} from '../game/constants';
@@ -70,7 +69,7 @@
 	 * own poses are driven from here through `medusaPose` events.
 	 */
 	const context = getContext();
-	const stoneMaterial=new ColorMatrixFilter();stoneMaterial.saturate(-1);
+	const stoneMaterial=new ColorMatrixFilter();stoneMaterial.saturate(-.6);
 	let alive = true;
 	const cancellations = new Set<() => void>();
 	onDestroy(() => {
@@ -91,6 +90,8 @@
 	// ×100 and up land like a thunderclap: a bolt rides the watch down its
 	// column, then a flash, a shock ring and a board shake (ATG 戰神賽特 study).
 	const HEAVY = 100;
+	// a wasted watch dulls to a cold lavender-grey before its glass cracks
+	const DUD_TINT = 0xa79cbc;
 	let heavy = $state<{ x: number; y: number; bolt: number; ring: number; flash: number; dim: number; color: number; seed: number } | null>(null);
 	let fx=$state.raw<MultiplierFxController>();
 	let reducedMotion=$state(false);
@@ -596,7 +597,7 @@
 	<Container x={center.x} y={center.y} pivot={center} scale={1 + 0.1 * scoreBump}>
 		<Graphics x={center.x} y={center.y} draw={drawReadoutBack} />
 		{#if pop}
-			<Text anchor={0.5} x={center.x} y={center.y-88} alpha={pop.alpha} text={pop.text?'MULTIPLIER':'BASE WIN'} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:23,fill:0xc3d5b6,stroke:{color:0x10272d,width:3}}}/>
+			<Text anchor={0.5} x={center.x} y={center.y-88} alpha={pop.alpha} text={pop.text?'MULTIPLIER':'BASE WIN'} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:23,fill:0xe7d9ff,stroke:{color:0x241632,width:3}}}/>
 			<Text
 				anchor={0.5}
 				x={center.x}
@@ -608,12 +609,12 @@
 					fontFamily: GAME_FONT,
 					fontWeight: GAME_FONT_WEIGHT,
 					fontSize: pop.text.length>5?66:80,
-					fill: 0xb8ff5a,
+					fill: 0xffd36b,
 					stroke: { color: 0x2a1f24, width: 8 },
 				}}
 			/>
 			{#if pop.text}
-				<Text anchor={0.5} x={center.x} y={center.y+25} alpha={pop.alpha} text={`${baseAmount} ${pop.text}${formulaDone ? ' =' : ''}`} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:baseAmount.length>10?22:27,fill:0xf0ead2,stroke:{color:0x10272d,width:3}}}/>
+				<Text anchor={0.5} x={center.x} y={center.y+25} alpha={pop.alpha} text={`${baseAmount} ${pop.text}${formulaDone ? ' =' : ''}`} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:baseAmount.length>10?22:27,fill:0xf0ead2,stroke:{color:0x241632,width:3}}}/>
 			{/if}
 		{/if}
 		{#if amount}
@@ -639,10 +640,10 @@
 		<Container rotation={orb.angle} scale={{x:orb.scale*orb.sx,y:orb.scale*orb.sy}}>
 			<Sprite
 				key={orbKeyFor(orb.value)}
-				anchor={0.5}
-				width={92}
-				height={92}
-				tint={orb.stone > 0 ? STONE_COLOR : 0xffffff}
+				anchor={{x:0.5,y:300/512}}
+				width={112}
+				height={112}
+				tint={orb.stone > 0 ? DUD_TINT : 0xffffff}
 				filters={orb.stone>0?[stoneMaterial]:[]}
 			/>
 			{#if orb.crack > 0}

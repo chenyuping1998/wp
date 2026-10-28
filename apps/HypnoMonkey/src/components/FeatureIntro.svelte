@@ -10,9 +10,9 @@
 	import config from '../game/config';
 
 	/**
-	 * The loading-screen feature cards (MEDUSA_美術需求單 §6): the title wordmark
-	 * and three illustrated cards — petrify and tumble, Medusa's throw, the
-	 * free-game running total. Side by side in landscape, stacked in portrait.
+	 * The loading-screen feature cards: the title wordmark and three illustrated
+	 * cards — the hypnotised tumble, the Hypnotist's pocket watch, the free-game
+	 * running total. Side by side in landscape, stacked in portrait.
 	 * The pictures carry no text; every figure on the cards comes from config.
 	 */
 	const context = getContext();
@@ -49,18 +49,18 @@
 	const panels = [
 		{
 			key: 'mgIntro1',
-			title: 'TURN TO STONE',
-			body: `8+ of a symbol anywhere ${T.pays}. Winners crumble and new symbols drop in.`,
+			title: 'HYPNO TUMBLE',
+			body: `8+ of a symbol anywhere ${T.pays}. Winners are hypnotised away and new symbols drop in.`,
 		},
 		{
 			key: 'mgIntro2',
-			title: "MEDUSA'S GAZE",
-			body: `On a spin with a win, her multiplier scales the whole spin.`,
+			title: 'HYPNO WATCH',
+			body: `On a spin with a win, his pocket watch multiplies the whole spin.`,
 		},
 		{
 			key: 'mgIntro3',
 			title: 'FREE SPINS',
-			body: `Her multipliers, up to ${maxFree}×, add to a total that never resets.`,
+			body: `Watch multipliers, up to ${maxFree}×, add to a total that never resets.`,
 		},
 	];
 

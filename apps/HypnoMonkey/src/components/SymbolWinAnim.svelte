@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { Container, Sprite } from 'pixi-svelte';
+	import { Container, Graphics, Sprite } from 'pixi-svelte';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { onMount } from 'svelte';
 	import { stateBet } from 'state-shared';
 	import { ColorMatrixFilter } from 'pixi.js';
-	import { SYMBOL_SIZE, STONE_COLOR } from '../game/constants';
+	import { SYMBOL_SIZE, HYPNO_TINT } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
 	import { getContext } from '../game/context';
 	import { tumbleTiming } from '../game/animationTimeline';
@@ -28,13 +29,25 @@
 	const action = $derived(clamp01(elapsed / (props.petrify === false ? duration : timing.highlightMs)));
 	const stone = $derived(props.petrify === false ? 0 : clamp01((elapsed - timing.highlightMs) / timing.stoneMs));
 	const crackProgress = $derived(props.petrify === false ? 0 : clamp01((elapsed - timing.highlightMs - timing.stoneMs) / timing.crackMs));
-	const crack = $derived(crackProgress <= 0 ? 0 : crackProgress < 1 / 3 ? 1 : crackProgress < 2 / 3 ? 2 : 3);
+	// Hypnotised, not petrified: the symbol washes toward lavender and a violet
+	// spiral winds up over it before the tumble tears it away.
 	const tint = $derived(
-		(Math.round(255 + (((STONE_COLOR >> 16) & 255) - 255) * stone) << 16)
-		| (Math.round(255 + (((STONE_COLOR >> 8) & 255) - 255) * stone) << 8)
-		| Math.round(255 + ((STONE_COLOR & 255) - 255) * stone),
+		(Math.round(255 + (((HYPNO_TINT >> 16) & 255) - 255) * stone) << 16)
+		| (Math.round(255 + (((HYPNO_TINT >> 8) & 255) - 255) * stone) << 8)
+		| Math.round(255 + ((HYPNO_TINT & 255) - 255) * stone),
 	);
-	$effect(() => { stoneFilter.saturate(-stone, false); stoneFilter.brightness(1 - 0.04 * stone, true); });
+	$effect(() => { stoneFilter.saturate(-0.45 * stone, false); stoneFilter.brightness(1 + 0.06 * stone, true); });
+	const drawSpiral = (g: PixiGraphics) => {
+		g.clear();
+		const turns = 3, steps = 90, r = Math.min(width, height) * 0.5;
+		const reach = stone * (0.55 + 0.45 * crackProgress);
+		g.moveTo(0, 0);
+		for (let i = 1; i <= steps * reach; i++) {
+			const a = (i / steps) * turns * Math.PI * 2;
+			g.lineTo(Math.cos(a) * r * (i / steps), Math.sin(a) * r * (i / steps));
+		}
+		g.stroke({ color: 0x9b3df5, width: 5, alpha: 0.85 * stone, cap: 'round' });
+	};
 	const width = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.width);
 	const height = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.height);
 </script>
@@ -43,10 +56,10 @@
 	<Container filters={stoneFilters}>
 		<SymbolArtMesh name={props.name} assetKey={props.symbolInfo.assetKey} progress={action} {width} {height} {tint} />
 	</Container>
-	{#if crack > 0}
+	{#if stone > 0}
 		<Container>
 			<Sprite isMask anchor={0.5} key={props.symbolInfo.assetKey} {width} {height} />
-			<Sprite anchor={0.5} key={crack === 1 ? 'fxCrack1' : crack === 2 ? 'fxCrack2' : 'fxCrack3'} {width} {height} />
+			<Graphics draw={drawSpiral} rotation={-(stone + crackProgress) * Math.PI * 1.6} />
 		</Container>
 	{/if}
 </Container>

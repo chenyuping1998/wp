@@ -41,8 +41,9 @@
 	const slotY = (slot: number) => (slot - 0.5) * SYMBOL_SIZE;
 	type Break = { id: number; x: number; y: number; durationMs: number; assetKey: string; width: number; height: number; seed: number };
 	let crumbles = $state<Break[]>([]), contacts = $state<{ id: number; x: number; y: number; durationMs: number }[]>([]);
-	const stoneFilter = new ColorMatrixFilter(); stoneFilter.desaturate(); stoneFilter.brightness(0.96, true);
-	const stoneFilters = [stoneFilter];
+	// Torn pieces keep the symbol's own colours, a little washed out by the spell.
+	const tornFilter = new ColorMatrixFilter(); tornFilter.saturate(-0.35, false); tornFilter.brightness(1.05, true);
+	const tornFilters = [tornFilter];
 
 	/**
 	 * Cells for the watches: the highest fresh cell of a refilled column that is
@@ -154,7 +155,7 @@
 </script>
 
 <BoardContainer>
-	<Container filters={stoneFilters}>
+	<Container filters={tornFilters}>
 		{#each crumbles as piece (piece.id)}
 			<Crumble {...piece} oncomplete={() => { if (alive) crumbles = crumbles.filter((p) => p.id !== piece.id); }} />
 		{/each}

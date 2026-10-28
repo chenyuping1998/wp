@@ -42,7 +42,7 @@
 			icons: [],
 			sign: true,
 			name: T.buyBonusName,
-			text: `The Aegis shield beside the board. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm. It is unlit while a round is playing and hidden during Free Spins.`,
+			text: `The ticket-booth sign beside the board. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm. It is unlit while a round is playing and hidden during Free Spins.`,
 		},
 		{
 			icons: ['autoSpin'],
@@ -52,7 +52,7 @@
 		{
 			icons: ['turbo'],
 			name: 'Turbo',
-			text: "Press once for Turbo (one solid bolt): quicker drops and win presentations. Press again for Turbo 2 (two bolts): the board drops quicker still and each chain step is shorter. A third press turns turbo off. Medusa's multiplier is always shown at a readable speed.",
+			text: "Press once for Turbo (one solid bolt): quicker drops and win presentations. Press again for Turbo 2 (two bolts): the board drops quicker still and each chain step is shorter. A third press turns turbo off. The Hypnotist's watches are always shown at a readable speed.",
 		},
 		{
 			icons: ['menu'],
@@ -90,7 +90,8 @@
 	// Every figure is read from the maths config (design/sync_math_config.mjs),
 	// never typed in, so the rules cannot drift from what the game pays.
 	const entryVerb = social ? 'Play' : 'Buy';
-	const rtpPct = `${(config.rtp * 100).toFixed(2)}%`;
+	const rtpPct = `${(config.betModes.base.rtp * 100).toFixed(2)}%`;
+	const bonusRtpPct = `${(config.betModes.bonus.rtp * 100).toFixed(2)}%`;
 	const maxWin = config.betModes?.base?.max_win ?? 15000;
 	const reelCount = config.numReels;
 	const rowCount = config.numRows?.[0] ?? 6;
@@ -109,7 +110,7 @@
 		{
 			name: 'Base game',
 			price: `1× ${T.bet}`,
-			text: `Every spin. ${minPayingCount}+ of a symbol anywhere ${T.pays}, chains continue until nothing more does, Medusa may multiply a winning spin, and ${fs.trigger}+ Aegis award ${fs.spins} Free Spins.`,
+			text: `Every spin. ${minPayingCount}+ of a symbol anywhere ${T.pays}, chains continue until nothing more does, the Hypnotist may multiply a winning spin, and ${fs.trigger}+ Hypno Spirals award ${fs.spins} Free Spins.`,
 		},
 		{
 			name: 'Free Spins',
@@ -122,7 +123,7 @@
 	type BetMode = { cost?: number; rtp?: number; max_win?: number };
 	const modeRows = (
 		[
-			['Base game', 'base', `Every spin — or land ${fs.trigger} or more Aegis`],
+			['Base game', 'base', `Every spin — or land ${fs.trigger} or more Hypno Spirals`],
 			['Free Spins', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}×`],
 		] as const
 	).map(([label, key, entry]) => {
@@ -139,15 +140,15 @@
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-rules">
-			<h2>MEDUSA GAZE — GAME RULES</h2>
+			<h2>HYPNO MONKEY — GAME RULES</h2>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>How to play</h3>
 				<p>
-					Medusa Gaze is a {reelCount}&times;{rowCount} {T.payAnywhere} video slot. There are no
+					Hypno Monkey is a {reelCount}&times;{rowCount} {T.payAnywhere} video slot. There are no
 					{T.paylines} and symbols do not need to touch: if {minPayingCount} or more of the same symbol
 					are anywhere on the board, they {T.pay}. The more of that symbol there are, the higher the
-					{T.payValue}. Winning symbols then turn to stone and crumble, the symbols above them fall,
+					{T.payValue}. Winning symbols are then hypnotised away, the symbols above them fall,
 					and new ones drop in from the top &mdash; if that leaves {minPayingCount} or more of a symbol
 					again it {T.pays} too, and the chain continues until nothing more {T.pays}. Wins from
 					different symbols are added together. The theoretical return to player (RTP) is {rtpPct}.
@@ -223,14 +224,14 @@
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Medusa's multiplier</h3>
+				<h3><span class="wp-accent-bar"></span>The Hypnotist's watch</h3>
 				<p>
-					When a spin's chain has finished, Medusa may lower her sunglasses and throw a multiplier.
+					When a spin's chain has finished, the Hypnotist may add a pocket-watch multiplier.
 					<strong>It only counts if that spin had a win from the chain.</strong> If the spin had no
-					win, the throw shatters and nothing changes.
+					win, the watch shatters and nothing changes.
 				</p>
 				<p>
-					In the base game she throws one multiplier, worth {medusa.baseValues.join('×, ')}×, and the
+					In the base game he adds one watch, worth {medusa.baseValues.join('×, ')}×, and the
 					spin's whole chain win is multiplied by it.
 				</p>
 			</section>
@@ -238,27 +239,27 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Free Spins &mdash; the running total</h3>
 				<p>
-					In Free Spins Medusa can throw up to {medusa.freeMaxThrows} multipliers on one spin, worth
-					{medusa.baseValues.join('×, ')}× or {freeOnly.join('×, ')}×. Every multiplier thrown on a spin
+					In Free Spins he can add up to {medusa.freeMaxThrows} watches on one spin, worth
+					{medusa.baseValues.join('×, ')}× or {freeOnly.join('×, ')}×. Every watch added on a spin
 					with a win is <strong>added to a running total</strong>, and that spin's chain win is
 					multiplied by the new total.
 				</p>
 				<ul class="wp-tiers">
-					<li>A spin with a win and a throw: the throw is added, then the win is multiplied by the total.</li>
-					<li>A spin with a win and no throw: the win is {T.paid} as it is, &times;1. The total is kept.</li>
-					<li>A throw on a spin with no win shatters and is not added.</li>
+					<li>A spin with a win and a watch: the watch is added, then the win is multiplied by the total.</li>
+					<li>A spin with a win and no watch: the win is {T.paid} as it is, &times;1. The total is kept.</li>
+					<li>A watch on a spin with no win shatters and is not added.</li>
 				</ul>
 				<p>The running total starts at 0, never goes down during the feature, and resets when the feature ends.</p>
 			</section>
 
 			<section class="wp-card">
-				<h3><span class="wp-accent-bar"></span>Aegis &mdash; Scatter</h3>
+				<h3><span class="wp-accent-bar"></span>Hypno Spiral &mdash; Scatter</h3>
 				<p>
-					The Aegis shield can land anywhere and is never removed by a chain. If {scatterPays[0]?.count ?? 4}
+					The Hypno Spiral can land anywhere and is never removed by a chain. If {scatterPays[0]?.count ?? 4}
 					or more are on the board when the chain ends they {T.pay}
 					{#each scatterPays as pay, i (pay.count)}{i > 0 ? (i === scatterPays.length - 1 ? ' or ' : ', ') : ''}{pay.value}&times;
 						for {pay.count === topScatter ? `${pay.count} or more` : pay.count}{/each}
-					the {T.totalBet}. This {T.payout} is never multiplied by Medusa. {fs.trigger} or more Aegis in
+					the {T.totalBet}. This {T.payout} is never multiplied by a watch. {fs.trigger} or more Hypno Spirals in
 					the base game award <strong>{fs.spins} Free Spins</strong>.
 				</p>
 			</section>
@@ -266,20 +267,20 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Retriggers</h3>
 				<p>
-					During Free Spins, {fs.retrigger} or more Aegis on the board when a chain ends add
+					During Free Spins, {fs.retrigger} or more Hypno Spirals on the board when a chain ends add
 					<strong>{fs.retriggerSpins} more Free Spins</strong>. There is no maximum number of Free
 					Spins; the feature ends when its spins run out or the maximum win is reached. This applies to
-					Free Spins won with Aegis and to rounds {T.bought} from the menu.
+					Free Spins won with Hypno Spirals and to rounds {T.bought} from the menu.
 				</p>
 			</section>
 
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
 				<p>
-					Instead of waiting for the Aegis, you can {T.buy} direct entry into Free Spins for
+					Instead of waiting for the Hypno Spirals, you can {T.buy} direct entry into Free Spins for
 					{config.betModes?.bonus?.cost}&times; your {T.bet}. The round opens with {fs.trigger} or more
-					Aegis on the board and plays exactly like Free Spins won in the base game, at the same
-					{rtpPct} RTP.
+					Hypno Spirals on the board and plays exactly like Free Spins won in the base game, at
+					{bonusRtpPct} RTP.
 				</p>
 			</section>
 

@@ -208,11 +208,12 @@ export const totalPlateLevel = (total: number) => (total >= 100 ? 2 : total >= 2
 
 /** The gaze colour — reserved for Medusa's eyes and her orbs. */
 export const GAZE_COLOR = 0xb8ff5a;
-export const STONE_COLOR = 0xa9a39a;
+/** A hypnotised symbol's wash (SymbolWinAnim): pale lavender, the theme's reserved violet family. */
+export const HYPNO_TINT = 0xd9c9ff;
 
 // The board's own cell colour, used anywhere an opaque occluder is needed.
 // Deep teal rather than white: a pale board reads badly under 36 symbols.
-export const BOARD_CELL_COLOR = 0x1e4950;
+export const BOARD_CELL_COLOR = 0xb8b1a4;
 
 export const zIndexes = {
 	background: {
