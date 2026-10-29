@@ -13,7 +13,7 @@
 	import { BOARD_SIZES } from '../game/constants';
 	import { medusaAnimations } from '../game/animationTimeline';
 	import BoardContainer from './BoardContainer.svelte';
-	import MedusaRigView from './MedusaRigView.svelte';
+	import HypnoCastView from './HypnoCastView.svelte';
 	const context=getContext();
 	const portrait=$derived(context.stateLayoutDerived.layoutType()==='portrait');
 	const eyes=$derived(medusaEyes(portrait,BOARD_SIZES.width,BOARD_SIZES.height));
@@ -34,4 +34,10 @@
 	});
 </script>
 
-<BoardContainer><MedusaRigView {portrait} {eyes} figureHeight={BOARD_SIZES.height*.98} {action}/></BoardContainer>
+<BoardContainer>
+	{#if context.stateGame.gameType==='freegame'}
+		<HypnoCastView mode="fg" {portrait} {eyes} figureHeight={BOARD_SIZES.height*.98} {action}/>
+	{:else}
+		<HypnoCastView {portrait} {eyes} figureHeight={BOARD_SIZES.height*.98} {action}/>
+	{/if}
+</BoardContainer>

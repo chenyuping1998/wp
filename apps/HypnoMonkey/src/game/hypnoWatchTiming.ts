@@ -1,5 +1,11 @@
 import { medusaAnimations, type MedusaAnimation } from './animationTimeline';
 
+/** Both stand34 casts release at 620ms in source time; preserve each book beat. */
+export const castReleaseRate = (request: string) => {
+ const rates:Record<string,number>={gaze_turbo:620/350,fg_gaze:620/350,fg_gaze_turbo:620/210};
+ return rates[request]??1;
+};
+
 /**
  * The pocket watch rides the last refill of a winning spin (Gates of Olympus 1000
  * study, research/goo1000_rhythm): the burst leaves a hole, the hypnotist charges
