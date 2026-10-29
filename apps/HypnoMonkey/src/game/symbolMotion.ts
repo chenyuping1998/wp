@@ -79,8 +79,15 @@ export const landingPose = (time: number, weight = 1) => {
 	return { sx, sy, y: (1 - sy) * 0.5 };
 };
 
-export const gravityProgress = (time: number) => { const t = clamp01(time); return t * t * (0.82 + 0.18 * t); };
-export const fallDuration = (rows: number, budgetMs: number) => rows <= 0 ? 0 : budgetMs * (0.72 + 0.28 * Math.sqrt(Math.min(6, rows) / 6));
+/** Near-constant speed with a whisper of ease-in: GoO 1000 refills at 0.37 -> 0.41
+ * cell/frame and gets its weight from the landing overshoot, not from gravity. */
+export const gravityProgress = (time: number) => { const t = clamp01(time); return t * (0.88 + 0.12 * t); };
+/** Distance-proportional: 0.39 cell/frame (42.7 ms a row) when budgetMs is the
+ * normal 550 ms refill, scaled with it in turbo, never longer than the budget. */
+export const fallDuration = (rows: number, budgetMs: number) => rows <= 0 ? 0 : Math.min(budgetMs, rows * budgetMs * (42.7 / 550));
+/** GoO landing: overshoot 0.12 cell, peak at 3 frames, back at rest by frame 9. */
+export const LANDING_OVERSHOOT = 0.12;
+export const landingOvershoot = (time: number) => { const t = clamp01(time); return t < 1 / 3 ? Math.sin((t * 3 * Math.PI) / 2) : Math.cos(((t - 1 / 3) * 1.5 * Math.PI) / 2) ** 2; };
 const travels = new WeakMap<object, { from: number; to: number }>();
 export const recordSymbolTravel = (carrier: object, from: number, to: number) => travels.set(carrier, { from, to });
 export const symbolTravelBlur = (carrier: object, y: number) => {

@@ -121,15 +121,24 @@ const CASCADE_SHARED = {
 	symbolFallInBounceSizeMulti: 0.08,
 };
 
+// Normal speed follows the GoO 1000 transcription (research/goo1000_motion, 60 fps
+// frames, 98 px cell): reels fall out 6 f apart, bottom row first 1.2 f apart,
+// at 0.35 cell/f; new symbols enter 8.6 f apart per reel (reelFallInDelay x
+// (1.2c + 0.2) on top of the fall-out stagger), bottom first, at a near-constant
+// 0.39 cell/f, and overshoot 0.12 cell before settling in 6 f. GoO spawns 5 f
+// apart but upper symbols fall shorter, so they LAND 2-3 f apart; ours all fall
+// the same distance, so the interval is that landing gap (40 ms): a reel lands
+// in 0.52 s, GoO 0.53 s.
 export const SPIN_OPTIONS_DEFAULT = {
 	...CASCADE_SHARED,
-	symbolFallInSpeed: 1.65,
-	symbolFallInInterval: 34,
-	symbolFallInBounceSpeed: 0.27,
-	symbolFallOutSpeed: 2.25,
-	symbolFallOutInterval: 27,
-	reelFallInDelay: 76,
-	reelFallOutDelay: 55,
+	symbolFallInSpeed: 2.29,
+	symbolFallInInterval: 40,
+	symbolFallInBounceSpeed: 0.118,
+	symbolFallInBounceSizeMulti: 0.12,
+	symbolFallOutSpeed: 2.06,
+	symbolFallOutInterval: 20,
+	reelFallInDelay: 36,
+	reelFallOutDelay: 100,
 };
 
 // A teasing reel drops slower than a normal one, so the extra padding reads as
@@ -145,15 +154,19 @@ export const SPIN_OPTIONS_ANTICIPATED = {
 	reelFallOutDelay: 55,
 };
 
+// Turbo (GoO Quick/Turbo): no reel or row stagger, the whole reel drops as one
+// block at 0.47 cell/f and lands together, overshooting 0.15 cell; one spin
+// about 0.6 s (GoO 0.70 s, of which 0.15 s is an empty board hiding latency).
 export const SPIN_OPTIONS_FAST = {
 	...CASCADE_SHARED,
-	symbolFallInSpeed: 3.1,
-	symbolFallInInterval: 15,
-	symbolFallInBounceSpeed: 0.58,
-	symbolFallOutSpeed: 4.2,
-	symbolFallOutInterval: 13,
-	reelFallInDelay: 30,
-	reelFallOutDelay: 21,
+	symbolFallInSpeed: 2.76,
+	symbolFallInInterval: 0,
+	symbolFallInBounceSpeed: 0.088,
+	symbolFallInBounceSizeMulti: 0.15,
+	symbolFallOutSpeed: 4.5,
+	symbolFallOutInterval: 0,
+	reelFallInDelay: 0,
+	reelFallOutDelay: 0,
 };
 
 export const SPIN_OPTIONS_FAST_FREEGAME = {

@@ -70,8 +70,13 @@ for (let i = 0; i <= 120; i++) {
 const area = points => Math.abs(points.reduce((sum, p, i) => { const q = points[(i + 1) % points.length]; return sum + p[0] * q[1] - p[1] * q[0]; }, 0)) / 2;
 assert.ok(Math.abs(FRACTURE_PIECES.reduce((sum, points) => sum + area(points), 0) - 1) < 1e-10, 'Fracture must preserve the full original texture at frame zero');
 assert.equal(new Set(['H1', 'H2', 'H3', 'H4', 'H5'].map(name => JSON.stringify(symbolPose(name, 0.42)))).size, 5);
+// GoO 1000 clock (research/goo1000_motion): one link no longer than its 2.9 s
+// step, eight links inside its ~24 s, and turbo eight links inside 10 s.
 const eightLinkMs = Array.from({ length: 8 }, (_, i) => tumbleTiming({ chain: i + 1 }).totalMs).reduce((a, b) => a + b, 0);
-assert.ok(eightLinkMs < 10000);
+const eightLinkTurboMs = Array.from({ length: 8 }, (_, i) => tumbleTiming({ chain: i + 1, turbo: true }).totalMs).reduce((a, b) => a + b, 0);
+assert.ok(tumbleTiming({ chain: 1 }).totalMs <= 2900);
+assert.ok(eightLinkMs < 24000);
+assert.ok(eightLinkTurboMs < 10000);
 const report = { scope: 'Offline geometry, published book data and timing only; no Stake Engine recording.', exhaustiveColumnPatterns: plans, publishedWinningPositions: positions,
   fracturePieces: 5, fractureArea: 1, landingFootFixed: true, independentColumnLandings: true, eightLinkTimingBudgetMs: eightLinkMs,
   meshGrid: 32, invertedTriangles: 0, minMeshAreaRatio,

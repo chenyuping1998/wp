@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-	import { Container } from 'pixi-svelte';
+	import { Container, Graphics } from 'pixi-svelte';
 	import { ColorMatrixFilter } from 'pixi.js';
 	import { onDestroy } from 'svelte';
 	import { stateBet } from 'state-shared';
@@ -20,7 +20,8 @@
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { tumbleTiming } from '../game/animationTimeline';
 	import { watchDropTiming } from '../game/hypnoWatchTiming';
-	import { planCascadeColumn, gravityProgress, fallDuration, recordSymbolTravel } from '../game/symbolMotion';
+	import { planCascadeColumn, gravityProgress, fallDuration, recordSymbolTravel, LANDING_OVERSHOOT, landingOvershoot } from '../game/symbolMotion';
+	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getSymbolX, getSymbolInfo } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import Crumble from './Crumble.svelte';
@@ -41,6 +42,13 @@
 	const slotY = (slot: number) => (slot - 0.5) * SYMBOL_SIZE;
 	type Break = { id: number; x: number; y: number; durationMs: number; assetKey: string; width: number; height: number; seed: number };
 	let crumbles = $state<Break[]>([]), contacts = $state<{ id: number; x: number; y: number; durationMs: number }[]>([]);
+	// GoO 1000: the winners go white for two frames before they burst
+	let flash = $state<{ cells: { x: number; y: number }[]; alpha: number } | null>(null);
+	const drawFlash = (g: PixiGraphics) => {
+		g.clear();
+		if (!flash) return;
+		for (const cell of flash.cells) g.roundRect(cell.x - SYMBOL_SIZE * 0.46, cell.y - SYMBOL_SIZE * 0.46, SYMBOL_SIZE * 0.92, SYMBOL_SIZE * 0.92, 14).fill({ color: 0xffffff, alpha: flash.alpha });
+	};
 	// Torn pieces keep the symbol's own colours, a little washed out by the spell.
 	const tornFilter = new ColorMatrixFilter(); tornFilter.saturate(-0.35, false); tornFilter.brightness(1.05, true);
 	const tornFilters = [tornFilter];
@@ -53,12 +61,13 @@
 	 */
 	const watchCells = (removed: Map<number, number[]>, newSymbols: RawSymbol[][], count: number) => {
 		const board = context.stateGame.board;
-		const top: { reel: number; row: number; rows: number }[] = [];
+		const top: { reel: number; row: number; rows: number; rank: number }[] = [];
 		const lower: typeof top = [];
 		for (const [reel, rows] of [...removed].sort((a, b) => a[0] - b[0])) {
 			const plan = planCascadeColumn(board[reel].reelState.symbols.map((s) => s.rawSymbol), rows, newSymbols[reel] ?? [], BOARD_DIMENSIONS.y);
 			for (let row = 1; row <= rows.length; row++) {
-				if (plan.column[row].name !== 'S') { (row === 1 ? top : lower).push({ reel, row, rows: rows.length }); break; }
+				const rank = plan.moves.filter((move) => move.from !== move.to && move.to > row).length;
+				if (plan.column[row].name !== 'S') { (row === 1 ? top : lower).push({ reel, row, rows: rows.length, rank }); break; }
 			}
 		}
 		// Top-row cells first; a lower one only when there are not enough.
@@ -76,14 +85,15 @@
 			if (!removed.has(pos.reel)) removed.set(pos.reel, []);
 			removed.get(pos.reel)!.push(pos.row);
 		}
-		crumbles = explodingSymbols.map((pos) => {
+		const pieces = explodingSymbols.map((pos) => {
 			const raw = board[pos.reel].reelState.symbols[pos.row].rawSymbol;
 			const info = getSymbolInfo({ rawSymbol: raw, state: 'static' });
 			return { id: nextId++, x: getSymbolX(pos.reel), y: slotY(pos.row), durationMs: timing.crumbleMs,
 				assetKey: info.assetKey, width: SYMBOL_SIZE * info.sizeRatios.width, height: SYMBOL_SIZE * info.sizeRatios.height, seed: pos.reel * 13 + pos.row * 7 };
 		});
-		for (const pos of explodingSymbols) board[pos.reel].reelState.symbols[pos.row].symbolState = 'explosion';
 		const cells = watches.length ? watchCells(removed, newSymbols, watches.length) : [];
+		// landings 2-3 frames apart, bottom first (GoO 1000 refill)
+		const spawnGapMs = 40 * (timing.dropMs / 550);
 		let gapMs = 0;
 		if (cells.length) {
 			const fall = (cell: (typeof cells)[number]) => fallDuration(cell.rows, timing.dropMs);
@@ -91,7 +101,7 @@
 			const drop = watchDropTiming({
 				freegame: pace === 'freegame' || pace === 'turboFreegame',
 				turbo: pace === 'turbo' || pace === 'turboFreegame',
-				crumbleMs: timing.crumbleMs,
+				crumbleMs: timing.clearMs,
 				fallMs: fall(first),
 				columnDelayMs: first.reel * timing.columnStaggerMs,
 			});
@@ -107,12 +117,23 @@
 					x: getSymbolX(cell.reel),
 					fromY: slotY(cell.row - cell.rows),
 					toY: slotY(cell.row),
-					delayMs: timing.crumbleMs + gapMs + cell.reel * timing.columnStaggerMs,
+					delayMs: timing.clearMs + gapMs + cell.reel * timing.columnStaggerMs + cell.rank * spawnGapMs,
 					durationMs: fall(cell),
 				})),
 			});
 		}
+		// silent beat, then a two-frame white flash, then the burst
+		if (timing.restMs > 0) { await sleep(timing.restMs); if (!current()) return; }
+		flash = { cells: explodingSymbols.map((pos) => ({ x: getSymbolX(pos.reel), y: slotY(pos.row) })), alpha: 1 };
+		await sleep(timing.flashMs);
+		if (!current()) return;
+		for (const pos of explodingSymbols) board[pos.reel].reelState.symbols[pos.row].symbolState = 'explosion';
+		crumbles = pieces;
+		void (async () => { for (let i = 1; i <= 4 && flash; i++) { await sleep(20); if (flash) flash = { ...flash, alpha: 1 - i / 4 }; } flash = null; })();
 		await sleep(timing.crumbleMs);
+		if (!current()) return;
+		// a look at the empty cells before anything falls into them
+		await sleep(timing.emptyMs);
 		if (!current()) return;
 		// The hole stays open only while the hypnotist charges.
 		if (gapMs > 0) { await sleep(gapMs); if (!current()) return; }
@@ -127,11 +148,17 @@
 				if (move.incoming) { symbol.rawSymbol = move.rawSymbol; void symbol.symbolY.set(slotY(move.from), { duration: 0 }); }
 				if (move.from !== move.to) { recordSymbolTravel(symbol, slotY(move.from), slotY(move.to)); symbol.symbolState = 'spin'; }
 			}
-			await Promise.all(plan.moves.map(async (move) => {
-				if (move.from === move.to) return;
+			// bottom first, one spawn gap apart; each overshoots 0.12 cell and settles
+			const order = plan.moves.filter((move) => move.from !== move.to).sort((a, b) => b.to - a.to);
+			await Promise.all(order.map(async (move, rank) => {
 				const symbol = symbols[move.carrier], to = slotY(move.to);
 				const duration = fallDuration(move.to - move.from, timing.dropMs);
+				if (rank) await sleep(rank * spawnGapMs);
+				if (!current()) return;
 				await Promise.race([symbol.symbolY.set(to, { duration, easing: gravityProgress }), sleep(duration + 80)]);
+				if (!current()) return;
+				const bounce = LANDING_OVERSHOOT * SYMBOL_SIZE;
+				await Promise.race([symbol.symbolY.set(to + bounce, { duration: 150, easing: (t: number) => landingOvershoot(t) }), sleep(230)]);
 				if (current()) await symbol.symbolY.set(to, { duration: 0 });
 			}));
 			if (!current()) return;
@@ -155,6 +182,7 @@
 </script>
 
 <BoardContainer>
+	<Graphics draw={drawFlash} />
 	<Container filters={tornFilters}>
 		{#each crumbles as piece (piece.id)}
 			<Crumble {...piece} oncomplete={() => { if (alive) crumbles = crumbles.filter((p) => p.id !== piece.id); }} />

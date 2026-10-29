@@ -46,28 +46,41 @@ export const medusaAnimations = {
 
 export type MedusaAnimation = keyof typeof medusaAnimations;
 
+/**
+ * One tumble link on a fixed clock, whatever the win size (GoO 1000
+ * transcription, research/goo1000_motion): the winners glow and take the spell
+ * (mark), a silent beat, a two-frame white flash, the burst, a short look at the
+ * empty cells, then the refill. Turbo drops the mark to a flick and the beat,
+ * as GoO Turbo does, but keeps the burst whole.
+ */
 export const tumbleTiming = ({ chain = 1, turbo = false, turboLevel = 1 } = {}) => {
-	const scale = (chain >= 4 ? 0.8 : 1) * (turbo ? 0.5 : 1) * (turbo && turboLevel === 2 ? 0.8 : 1);
-	// Each stage stays within the brief's ±15%. Leave frame-scheduling margin
-	// below ten seconds for an eight-link chain, including all column offsets.
-	const highlightMs = 270 * scale;
-	const stoneMs = 135 * scale;
-	const crackMs = 108 * scale;
-	const crumbleMs = 270 * scale;
-	const dropMs = 252 * scale;
+	const scale = (chain >= 4 ? 0.85 : 1) * (turbo ? 0.6 : 1) * (turbo && turboLevel === 2 ? 0.8 : 1);
+	const highlightMs = (turbo ? 120 : 620) * (turbo ? 1 : scale);
+	const stoneMs = (turbo ? 60 : 200) * (turbo ? 1 : scale);
+	const crackMs = (turbo ? 60 : 130) * (turbo ? 1 : scale);
+	const restMs = turbo ? 0 : 170 * scale;
+	const flashMs = 33;
+	const crumbleMs = 350 * (turbo ? 1 : scale);
+	const emptyMs = (turbo ? 60 : 120) * (turbo ? 1 : scale);
+	const dropMs = 550 * scale;
 	const columnStaggerMs = 27 * scale;
-	const settleMs = 135 * scale;
+	const settleMs = 150 * scale;
 	return {
 		scale,
 		highlightMs,
 		stoneMs,
 		crackMs,
 		markMs: highlightMs + stoneMs + crackMs,
+		restMs,
+		flashMs,
 		crumbleMs,
+		emptyMs,
+		/** tumble start -> refill start */
+		clearMs: restMs + flashMs + crumbleMs + emptyMs,
 		dropMs,
 		columnStaggerMs,
 		settleMs,
-		totalMs: highlightMs + stoneMs + crackMs + crumbleMs + dropMs + columnStaggerMs * 5 + settleMs,
+		totalMs: highlightMs + stoneMs + crackMs + restMs + flashMs + crumbleMs + emptyMs + dropMs + columnStaggerMs * 5 + settleMs,
 	};
 };
 

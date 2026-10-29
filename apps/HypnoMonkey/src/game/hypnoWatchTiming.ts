@@ -63,13 +63,15 @@ export const watchCollectTiming = ({
 	/** free game with a total already on the plate */
 	carriesTotal: boolean;
 }) => {
+	// GoO 1000: each orb charges 0.4 s and flies 0.17 s, strictly one after
+	// another; the formula then holds 0.7 s before it turns into the result.
 	const s = turbo ? 0.55 : 1;
 	const openMs = 220 * s;
 	const totalFlyMs = carriesTotal ? 450 * s : 0;
-	const pulseMs = 260 * s;
-	const flyMs = 520 * s;
-	const staggerMs = 380 * s;
-	const holdMs = 350 * s;
+	const pulseMs = 400 * s;
+	const flyMs = 200 * s;
+	const staggerMs = 600 * s;
+	const holdMs = 700 * s;
 	const collapseMs = 220 * s;
 	const watchesMs = watchCount > 0 ? pulseMs + flyMs + (watchCount - 1) * staggerMs : 0;
 	return {
