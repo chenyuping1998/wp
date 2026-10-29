@@ -1,6 +1,8 @@
 # Hypno Monkey
 
-Front v4, staged 2026-10-29 (math unchanged, still v1). Front v4: cast cheer motions no longer twitch (bezier handles fixed); a pocket watch holds its own cell (no symbol under it, stays in the cell after settling or breaking, falls out with the board on the next spin).
+Front v5, staged 2026-10-29 (math unchanged, still v1). Front v5: both casts' cheer is a plain raise (IK off on the raised arm, elbow leads, no 200-degree forearm swing).
+
+Front v4, published 2026-10-29 (math unchanged, still v1). Front v4: cast cheer motions no longer twitch (bezier handles fixed); a pocket watch holds its own cell (no symbol under it, stays in the cell after settling or breaking, falls out with the board on the next spin).
 
 Front v3, published 2026-10-29 (math unchanged, still v1). Front v3: spin and tumble rhythm from the frame-exact GoO 1000 transcription (reel stagger, near-constant fall with 0.12-cell landing overshoot, fixed tumble clock with a silent beat and white flash, bottom-first refill, watches settled one by one with a held formula).
 
