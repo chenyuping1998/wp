@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import { releaseCells } from './watchCells.svelte';
 import { recordBookEvent, checkIsMultipleRevealEvents, type BookEventHandlerMap } from 'utils-book';
 import { stateBet, stateUi } from 'state-shared';
 import { waitForTimeout } from 'utils-shared/wait';
@@ -138,6 +139,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			},
 			paddingBoard: config.paddingReels[bookEvent.gameType] as RawSymbol[][],
 		});
+		// the previous spin's watches have fallen out with the board
+		releaseCells();
 	},
 
 	/**

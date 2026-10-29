@@ -20,6 +20,7 @@
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { tumbleTiming } from '../game/animationTimeline';
 	import { watchDropTiming } from '../game/hypnoWatchTiming';
+	import { coverCell, uncoverCell } from '../game/watchCells.svelte';
 	import { planCascadeColumn, gravityProgress, fallDuration, recordSymbolTravel, LANDING_OVERSHOOT, landingOvershoot } from '../game/symbolMotion';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getSymbolX, getSymbolInfo } from '../game/utils';
@@ -143,6 +144,10 @@
 			await sleep(reelIndex * timing.columnStaggerMs); if (!current()) return;
 			const symbols = reel.reelState.symbols;
 			const plan = planCascadeColumn(symbols.map((s) => s.rawSymbol), rows, newSymbols[reelIndex] ?? [], BOARD_DIMENSIONS.y);
+			// the watch rides this column's refill as the symbol that lands in its cell
+			const watchCell = cells.find((cell) => cell.reel === reelIndex);
+			const watchMove = watchCell && plan.moves.find((move) => move.to === watchCell.row);
+			if (watchMove) coverCell(reelIndex, watchMove.carrier);
 			for (const move of plan.moves) {
 				const symbol = symbols[move.carrier];
 				if (move.incoming) { symbol.rawSymbol = move.rawSymbol; void symbol.symbolY.set(slotY(move.from), { duration: 0 }); }
@@ -165,6 +170,7 @@
 			// Settle THIS column when it arrives. Waiting for all six columns made
 			// every landing squash start together and removed the staggered impact.
 			reel.setSymbolsWithRawSymbols(plan.column);
+			if (watchCell && watchMove) { uncoverCell(reelIndex, watchMove.carrier); coverCell(reelIndex, watchCell.row); }
 			reel.reelState.symbols.forEach((symbol, slot) => { void symbol.symbolY.set(slotY(slot), { duration: 0 }); });
 			const landed = plan.moves.filter((move) => move.from !== move.to);
 			for (const move of landed) {

@@ -24,11 +24,23 @@ if 'handB' in A['win_big_loop'].get('bones', {}):
 def ik(anim):
     return A[anim]['bones']['ik-fist-back']
 
+
+def remap(keys, f):
+    """Apply f to every key value AND to its bezier handles: Spine 4.3 stores the
+    handles' values absolutely ([t1, v1, t2, v2]), so changing only 'value'
+    leaves each segment swinging back to the old pose between keys (a twitch)."""
+    for k in keys:
+        k['value'] = f(k.get('value', 0))
+        c = k.get('curve')
+        if isinstance(c, list):
+            for i in range(1, len(c), 2):
+                c[i] = f(c[i])
+
 for anim in ('win_big', 'win_big_end'):
-    for k in ik(anim)['translatex']: k['value'] = k.get('value', 0) * NEW[0] / OLD[0]
-    for k in ik(anim)['translatey']: k['value'] = k.get('value', 0) * NEW[1] / OLD[1]
-for k in ik('win_big_loop')['translatex']: k['value'] = k.get('value', 0) + NEW[0] - OLD[0]
-for k in ik('win_big_loop')['translatey']: k['value'] = k.get('value', 0) + NEW[1] - OLD[1]
+    remap(ik(anim)['translatex'], lambda v: v * NEW[0] / OLD[0])
+    remap(ik(anim)['translatey'], lambda v: v * NEW[1] / OLD[1])
+remap(ik('win_big_loop')['translatex'], lambda v: v + NEW[0] - OLD[0])
+remap(ik('win_big_loop')['translatey'], lambda v: v + NEW[1] - OLD[1])
 
 # seat the open hand on the cuff for exactly as long as it is drawn
 A['win_big']['bones']['handB'] = {

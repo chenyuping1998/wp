@@ -34,6 +34,9 @@ const primaryMachines = createPrimaryMachines<Bet>({
 		}
 		stateGame.tumbleWin = 0;
 		stateGame.tumbleChain = 0;
+		// The board drops out here, before the round's book arrives: last spin's
+		// watches leave with it (MedusaThrow follows each one's cell).
+		eventEmitter.broadcast({ type: 'hypnoWatchClear' });
 		if (stateBet.isSpaceHold) return;
 
 		const skipPreSpinInTurboAutoBet =

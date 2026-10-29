@@ -5,6 +5,7 @@
 	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
 	import type { SymbolState } from '../game/types';
 	import { symbolTravelBlur } from '../game/symbolMotion';
+	import { isCovered } from '../game/watchCells.svelte';
 
 	type Props = {
 		reelIndex: number;
@@ -50,6 +51,11 @@
 	};
 	const landingImpact = $derived(LANDING_IMPACT[props.reelSymbol.rawSymbol.name] ?? 0.9);
 
+	// A pocket watch holds this cell (watchCells): draw nothing under it. A new
+	// spin's symbols arriving in the cell are never covered.
+	const slotIndex = $derived(stateGame.board[props.reelIndex]?.reelState.symbols.indexOf(props.reelSymbol) ?? -1);
+	const covered = $derived(reelMotion !== 'hanging' && reelMotion !== 'fallingIn' && isCovered(props.reelIndex, slotIndex));
+
 </script>
 
 <!--
@@ -87,4 +93,6 @@
 	</SymbolWrap>
 {/snippet}
 
-{@render symbolAt(props.reelSymbol.symbolState)}
+{#if !covered}
+	{@render symbolAt(props.reelSymbol.symbolState)}
+{/if}

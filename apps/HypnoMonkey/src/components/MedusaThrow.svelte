@@ -40,6 +40,8 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import {
 		BOARD_SIZES,
+		REEL_PADDING,
+		SYMBOL_SIZE,
 		orbKeyFor,
 		totalPlateLevel,
 	} from '../game/constants';
@@ -48,6 +50,7 @@
 	import { gravityProgress } from '../game/symbolMotion';
 	import { shakeBoard, zoomBoard } from '../game/boardShake.svelte';
 	import { getSymbolX, getSymbolY } from '../game/utils';
+	import { coverCell } from '../game/watchCells.svelte';
 	import MultiplierFx from './MultiplierFx.svelte';
 	import type { MultiplierFxController } from '../game/multiplierFxScene';
 	import { flightPose,impactPose,gazePose,recoil,orbColor,ORB_CHARGE_DISTANCE,type OrbVisual } from '../game/multiplierPerformance';
@@ -260,6 +263,14 @@
 		await wait(ms * 0.55);
 	};
 
+	/** A wasted watch breaks where it lies and keeps its cell until the next spin. */
+	const crackInPlace = async (id: number, ms: number) => {
+		await tween(ms * 0.45, (t) => update(id, { stone: t, crack: t }));
+		const orb = orbs.find((item) => item.id === id);
+		if (orb) fx?.shatter(orb, orb.value);
+		await wait(ms * 0.55);
+	};
+
 	const land = async (id: number, ms: number,toTotal:boolean) => {
 		if(!toTotal&&amount)amount={...amount,alpha:0};
 		const orb=orbs.find(item=>item.id===id);if(orb)fx?.impact(orb,orb.value,toTotal?'plate':'score');
@@ -384,11 +395,15 @@
 			if (index > 0) await wait(Math.max(0, plan.staggerMs - plan.pulseMs));
 			const from = { x: watch.x, y: watch.y };
 			await tween(plan.pulseMs, (t) => update(watch.id, { scale: CELL_SCALE * (1 + 0.18 * Math.sin(Math.PI * t)) }));
-			await flyBetween(watch.id, from, readout, plan.flyMs);
+			// its value flies to the readout; the watch itself keeps its cell, spent
+			const copy = nextId++;
+			orbs = [...orbs, { id: copy, value: watch.value, ...from, scale: CELL_SCALE, alpha: 1, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [] }];
+			update(watch.id, { alpha: 0.5 });
+			await flyBetween(copy, from, readout, plan.flyMs);
 			fx?.impact(readout, watch.value, 'score');
 			broadcast({ type: 'soundMedusa', cue: 'orbHit', value: watch.value, speed: fast ? 1.25 : 1 });
 			if (watch.value >= HEAVY) shakeBoard(0.6, fast ? 260 : 380);
-			orbs = orbs.filter((orb) => orb.id !== watch.id);
+			orbs = orbs.filter((orb) => orb.id !== copy);
 			arrive(shown + watch.value);
 		}
 		// The book is authoritative for the multiplier that pays.
@@ -422,6 +437,8 @@
 		await tween(plan.collapseMs, (t) => {
 			if (pop) pop = { ...pop, alpha: 1 - t };
 			if (amount) amount = { ...amount, alpha: 1 - t };
+			// a watch lifted clear of the readout settles back into its own cell
+			for (const lift of lifts) update(lift.id, { y: READOUT_TOP - 44 + (lift.from - (READOUT_TOP - 44)) * easeOut(t) });
 		});
 		pop = null;
 		amount = null;
@@ -451,8 +468,32 @@
 		hypnoWatchDrop: (event) => {
 			watchesLanded = dropWatches(event);
 		},
+		// The watches fall out with the board on the next spin, left reel first
+		// like the symbols (GoO 1000 drop-out); their cells stay covered until
+		// the new symbols land (bookEventHandlerMap releases them).
+		// The watches leave with the board on the next spin (actor preSpin, or the
+		// reveal inside a feature): each rides its cell's symbol as it falls out,
+		// same frame and curve, and goes once that reel has emptied. The reveal
+		// handler releases the covered cells after the new board has landed.
 		hypnoWatchClear: () => {
-			orbs = orbs.filter((orb) => !orb.cell);
+			const leaving = orbs.filter((orb) => orb.cell).map((orb) => ({
+				id: orb.id,
+				reel: Math.round(orb.x / SYMBOL_SIZE - REEL_PADDING),
+				slot: Math.round(orb.y / SYMBOL_SIZE + 0.5),
+			}));
+			if (!leaving.length) return;
+			const follow = () => {
+				const gone = new Set<number>();
+				for (const watch of leaving) {
+					const reel = context.stateGame.board[watch.reel]?.reelState;
+					const symbol = reel?.symbols[watch.slot];
+					if (!reel || !symbol || reel.motion === 'hanging' || reel.motion === 'fallingIn') gone.add(watch.id);
+					else update(watch.id, { y: symbol.symbolY.current });
+				}
+				if (gone.size) orbs = orbs.filter((orb) => !gone.has(orb.id));
+				if (orbs.some((orb) => orb.cell)) requestAnimationFrame(follow);
+			};
+			requestAnimationFrame(follow);
 		},
 		hypnoThrow: async ({ multipliers, applied, mult, baseWin, totalWin, toTotal, pace }) => {
 			if (multipliers.length === 0) return;
@@ -474,10 +515,14 @@
 			const target = toTotal ? plateValue : center;
 			// A wasted watch lands ON a cell of the board (Stone 2026-10-29), not
 			// between cells or short of the plate; several spread over the middle.
+			// Each in its own cell, never on a Hypno Spiral (it would hide a scatter).
+			const used = new Set<string>();
 			const dudCell = (index: number) => {
-				const reel = [2, 3, 1, 4, 2, 3][(index + multipliers.length) % 6];
-				const row = [2, 1, 3, 2][(index + (multipliers[index] ?? 0)) % 4];
-				return { x: getSymbolX(reel), y: getSymbolY(row) };
+				const candidates: [number, number][] = [];
+				for (let k = 0; k < 24; k++) candidates.push([[2, 3, 1, 4, 0, 5][(index + k + multipliers.length) % 6], [2, 1, 3, 0, 4][(index * 2 + k + (multipliers[index] ?? 0)) % 5]]);
+				const free = candidates.find(([reel, row]) => !used.has(`${reel}:${row}`) && context.stateGame.board[reel]?.reelState.symbols[row + 1]?.rawSymbol.name !== 'S') ?? candidates[0];
+				used.add(`${free[0]}:${free[1]}`);
+				return { x: getSymbolX(free[0]), y: getSymbolY(free[1]), reel: free[0], slot: free[1] + 1 };
 			};
 			baseAmount=bookEventAmountToCurrencyString(baseWin);
 			gazeProgress=-1;
@@ -513,7 +558,10 @@
 			await Promise.all(
 				multipliers.map(async (value, index) => {
 					await wait(index * plan.staggerMs);
-					const id = await fly(value, applied ? target : dudCell(index), plan.flightMs, false, chargeMs);
+					const cell = applied ? undefined : dudCell(index);
+					const id = await fly(value, cell ?? target, plan.flightMs, false, chargeMs);
+					// a wasted watch takes its cell: the symbol under it is not drawn
+					if (cell) { coverCell(cell.reel, cell.slot); orbs = orbs.map((orb) => (orb.id === id ? { ...orb, cell: true } : orb)); }
 					if (applied) {
 						broadcast({ type: 'soundMedusa', cue: 'orbHit', value,speed:fast?1.25:1 });
 						if (toTotal) totalBump = 1;
@@ -537,7 +585,7 @@
 							});
 							broadcast({ type: 'soundMedusa', cue: 'annoyed' });
 						}
-						await shatter(id, plan.shatterMs);
+						await crackInPlace(id, plan.shatterMs);
 					}
 				}),
 			);
