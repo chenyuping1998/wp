@@ -46,7 +46,8 @@
 	import { throwTiming, medusaAnimations, multiplierCountMs } from '../game/animationTimeline';
 	import { watchCollectTiming } from '../game/hypnoWatchTiming';
 	import { gravityProgress } from '../game/symbolMotion';
-	import { shakeBoard } from '../game/boardShake.svelte';
+	import { shakeBoard, zoomBoard } from '../game/boardShake.svelte';
+	import { getSymbolX, getSymbolY } from '../game/utils';
 	import MultiplierFx from './MultiplierFx.svelte';
 	import type { MultiplierFxController } from '../game/multiplierFxScene';
 	import { flightPose,impactPose,gazePose,recoil,orbColor,ORB_CHARGE_DISTANCE,type OrbVisual } from '../game/multiplierPerformance';
@@ -86,28 +87,44 @@
 	type Orb = OrbVisual & { cell?: boolean };
 	// A watch on a cell sits a little inside the symbol frame.
 	const CELL_SCALE = 0.8;
-	let watchesLanded: Promise<unknown> = Promise.resolve();
-	// Legibility (Stone 2026-10-28): a bigger watch, its number sized to fill the
-	// cream dial (half the sprite's width), and a glow in the tier colour behind
-	// it so the watch reads off any symbol. Ink fill, thin cream edge: a thick
-	// dark stroke would close the digits' counters.
+	// Legibility (Stone 2026-10-29, ref. GoO 1000 orbs): a big gold "100x" laid
+	// over the lower half of the watch, wider than the dial, and a halo in the
+	// tier colour behind it so the watch reads off any symbol. The halo is a plain
+	// blend: added light on the pale board bleached a gold watch to a bare ring.
+	// Brown edge 5px: enough to hold the gold off the art without closing the
+	// digits' counters.
 	const WATCH_SIZE = 132;
-	const DIAL_TEXT_WIDTH = WATCH_SIZE * 0.5;
+	const NUMBER_Y = WATCH_SIZE * 0.3;
+	const label = (value: number) => `${value}x`;
 	const numberSizes = new Map<number, number>();
 	const numberSize = (value: number) => {
 		let size = numberSizes.get(value);
 		if (size) return size;
 		const ctx = document.createElement('canvas').getContext('2d');
-		let width = 0.62 * 100 * `×${value}`.length;
+		let width = 0.62 * 100 * label(value).length;
 		if (ctx) {
 			ctx.font = `${GAME_FONT_WEIGHT} 100px ${GAME_FONT}`;
-			width = ctx.measureText(`×${value}`).width;
+			width = ctx.measureText(label(value)).width;
 		}
-		size = Math.min(50, (100 * DIAL_TEXT_WIDTH) / width);
+		size = Math.min(value >= HEAVY ? 62 : 58, (100 * WATCH_SIZE * (value >= HEAVY ? 1.12 : 0.98)) / width);
 		// measured before the font loaded: do not cache the fallback width
 		if (document.fonts?.check?.(`100px "Titan One"`)) numberSizes.set(value, size);
 		return size;
 	};
+	// dial: centre at the sprite anchor, radius 135/512 of the sprite
+	const DIAL_R = WATCH_SIZE * (135 / 512) * 0.96;
+	const shade = (color: number, k: number) => {
+		const ch = (shift: number) => Math.max(0, Math.min(255, Math.round(((color >> shift) & 255) * k)));
+		return (ch(16) << 16) | (ch(8) << 8) | ch(0);
+	};
+	const drawGem = (g: PixiGraphics, color: number) => {
+		g.clear();
+		g.circle(0, 0, DIAL_R).fill(shade(color, 0.62));
+		g.circle(-DIAL_R * 0.08, -DIAL_R * 0.1, DIAL_R * 0.8).fill(color);
+		g.circle(-DIAL_R * 0.18, -DIAL_R * 0.22, DIAL_R * 0.48).fill({ color: shade(color, 1.35), alpha: 0.85 });
+		g.ellipse(-DIAL_R * 0.34, -DIAL_R * 0.46, DIAL_R * 0.24, DIAL_R * 0.13).fill({ color: 0xffffff, alpha: 0.8 });
+	};
+	let watchesLanded: Promise<unknown> = Promise.resolve();
 	// ×100 and up land like a thunderclap: a bolt rides the watch down its
 	// column, then a flash, a shock ring and a board shake (ATG 戰神賽特 study).
 	const HEAVY = 100;
@@ -256,19 +273,22 @@
 		await tween(ms, (t) => update(id, { ...flightPose(from, to, reducedMotion ? 1 : t), alpha: 1 }));
 	};
 
-	/** The hypnotist charges in the hole and points; each watch rides its column's refill. */
-	const dropWatches = async ({ drops, animation, releaseMs, pace }: { drops: WatchDrop[]; animation: MedusaAnimation; releaseMs: number; pace: WinPace }) => {
-		const fast = pace === 'turbo' || pace === 'turboFreegame';
 	/** x100+ impact: thunderclap, flash, rings and a board shake (also on a wasted watch). */
 	const strike = (x: number, y: number, value: number, fast: boolean) => {
 		const color = orbColor(value);
 		broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
-		shakeBoard(value >= 250 ? 1.8 : 1.3, fast ? 420 : 700);
-		return tween(fast ? 300 : 560, (t) => {
+		// ATG 戰神賽特: the camera lunges at the impact while the board shakes
+		zoomBoard({ x, y }, value >= 250 ? 0.2 : 0.15, fast ? 520 : 1050);
+		shakeBoard(value >= 250 ? 2.3 : 1.7, fast ? 480 : 820);
+		fx?.impact({ x, y }, value, 'orb');
+		return tween(fast ? 340 : 640, (t) => {
 			heavy = { x, y, bolt: Math.max(0, 1 - t * 2.4), ring: t, flash: Math.max(0, 1 - t * 2.2), dim: 0, color, seed: Math.random() * 100 };
 		}).then(() => (heavy = null));
 	};
 
+	/** The hypnotist charges in the hole and points; each watch rides its column's refill. */
+	const dropWatches = async ({ drops, animation, releaseMs, pace }: { drops: WatchDrop[]; animation: MedusaAnimation; releaseMs: number; pace: WinPace }) => {
+		const fast = pace === 'turbo' || pace === 'turboFreegame';
 		const action = medusaAnimations[animation];
 		broadcast({ type: 'medusaAction', animation, releaseMs });
 		broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
@@ -452,6 +472,13 @@
 			});
 			const action = medusaAnimations[plan.animation];
 			const target = toTotal ? plateValue : center;
+			// A wasted watch lands ON a cell of the board (Stone 2026-10-29), not
+			// between cells or short of the plate; several spread over the middle.
+			const dudCell = (index: number) => {
+				const reel = [2, 3, 1, 4, 2, 3][(index + multipliers.length) % 6];
+				const row = [2, 1, 3, 2][(index + (multipliers[index] ?? 0)) % 4];
+				return { x: getSymbolX(reel), y: getSymbolY(row) };
+			};
 			baseAmount=bookEventAmountToCurrencyString(baseWin);
 			gazeProgress=-1;
 			beamTarget = target;
@@ -486,23 +513,22 @@
 			await Promise.all(
 				multipliers.map(async (value, index) => {
 					await wait(index * plan.staggerMs);
-					// A base dud reaches board centre; a feature dud stops before the plate.
-					const id = await fly(value, target, plan.flightMs, !applied && toTotal,chargeMs);
+					const id = await fly(value, applied ? target : dudCell(index), plan.flightMs, false, chargeMs);
 					if (applied) {
 						broadcast({ type: 'soundMedusa', cue: 'orbHit', value,speed:fast?1.25:1 });
 						if (toTotal) totalBump = 1;
 						else scoreBump = 1;
 						await land(id, plan.landMs,toTotal);
 					} else {
-						broadcast({ type: 'soundMedusa', cue: 'orbCrack',speed:fast?1.5:1 });
-						if (!dudReacted) {
-							dudReacted = true;
 						// A wasted x100+ still lands with the full thunderclap before it cracks.
 						const orb = orbs.find((item) => item.id === id);
 						if (orb && value >= HEAVY) {
 							heavy = { x: orb.x, y: orb.y, bolt: 1, ring: 0, flash: 0, dim: 1, color: orbColor(value), seed: Math.random() * 100 };
 							await strike(orb.x, orb.y, value, fast);
 						}
+						broadcast({ type: 'soundMedusa', cue: 'orbCrack',speed:fast?1.5:1 });
+						if (!dudReacted) {
+							dudReacted = true;
 							broadcast({
 								type: 'medusaAction',
 								animation: 'gaze_dud',
@@ -669,9 +695,6 @@
 	{#each orbs as orb (orb.id)}
 		<Container x={orb.x} y={orb.y} alpha={orb.alpha}>
 		<Container rotation={orb.angle} scale={{x:orb.scale*orb.sx,y:orb.scale*orb.sy}}>
-			<Sprite
-				key={orbKeyFor(orb.value)}
-				anchor={{x:0.5,y:300/512}}
 			{#if orb.stone === 0}
 				<Sprite
 					key="fxGlow"
@@ -679,15 +702,19 @@
 					width={WATCH_SIZE * (orb.value >= HEAVY ? 2.1 : 1.75)}
 					height={WATCH_SIZE * (orb.value >= HEAVY ? 2.1 : 1.75)}
 					tint={orbColor(orb.value)}
-					alpha={orb.value >= HEAVY ? 0.95 : 0.75}
-					blendMode="add"
+					alpha={orb.value >= HEAVY ? 0.9 : 0.6}
 				/>
 			{/if}
+			<Sprite
+				key={orbKeyFor(orb.value)}
+				anchor={{x:0.5,y:300/512}}
 				width={WATCH_SIZE}
 				height={WATCH_SIZE}
 				tint={orb.stone > 0 ? DUD_TINT : 0xffffff}
 				filters={orb.stone>0?[stoneMaterial]:[]}
 			/>
+			<!-- the dial as a coloured gem in the gold bezel (ref. GoO 1000 orbs) -->
+			<Graphics draw={(g) => drawGem(g, orb.stone > 0 ? DUD_TINT : orbColor(orb.value))} />
 			{#if orb.crack > 0}
 				<Sprite
 					key={orb.crack < 1 / 3 ? 'fxCrack1' : orb.crack < 2 / 3 ? 'fxCrack2' : 'fxCrack3'}
@@ -699,16 +726,20 @@
 		</Container>
 			<Text
 				anchor={0.5}
+				y={NUMBER_Y * orb.scale}
 				scale={orb.scale}
-				text={`×${orb.value}`}
+				alpha={orb.stone > 0 ? 1 - orb.stone * 0.6 : 1}
+				text={label(orb.value)}
 				style={{
 					fontFamily: GAME_FONT,
 					fontWeight: GAME_FONT_WEIGHT,
 					fontSize: numberSize(orb.value),
-					fill: 0x1a100c,
-					stroke: { color: 0xfff6e2, width: 2 },
+					fill: orb.value >= HEAVY ? 0xffe066 : 0xffcf3a,
+					stroke: { color: 0x4a2205, width: 5 },
+					dropShadow: { color: 0x2a1206, alpha: 0.85, angle: Math.PI / 2, distance: 3, blur: 0 },
 				}}
 			/>
 		</Container>
 	{/each}
+	<Graphics draw={drawHeavy} />
 </BoardContainer>

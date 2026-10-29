@@ -30,8 +30,9 @@ setUiTheme({
 	buttonBorderWidth: 0,
 	buttonIconFill: 0x071f2b,
 	buttonIconStroke: 0x071f2b,
-	// the gap cut round the front bolt of turbo 2, in the disc's own colour
-	turboKeylineColor: 0xffe8a0,
+	// the gap cut round the front bolt of turbo 2, in the disc's own red (sampled
+	// from button_disc / _on): cream merged the two white bolts into one blob
+	turboKeylineColor: 0x8a010e,
 	turboButtonScale: 1.16,
 	turboIconScale: 0.58,
 	railButtonScale: 1.10,

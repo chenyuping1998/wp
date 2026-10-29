@@ -29,6 +29,8 @@
 			<Sprite key="mgUiBuyBonus" anchor={.5} width={plate} height={plate} tint={disabled?0x8e9695:0xffffff}/>
 			{#if shine>0}<Sprite key="fxStreak" anchor={.5} x={-plate*.015} y={-plate*.22} width={plate*.27} height={plate*.025} rotation={-.25} alpha={shine*.8} blendMode="add"/>{/if}
 		</Container>
-		<Text x={center.x} y={center.y+plate*.22} anchor={.5} text={active?i18nDerived.disable():i18nDerived.buyBonus()} alpha={disabled?.6:1} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:18,lineHeight:21,wordWrap:true,wordWrapWidth:90,align:'center',fill:0x173a40}}/>
+		<!-- inside the booth window (x 108-532, y 255-425 of the 640 plate): two lines
+		     must fit its 27% height, or BONUS sits on the counter -->
+		<Text x={center.x} y={center.y+plate*.031} anchor={.5} text={active?i18nDerived.disable():i18nDerived.buyBonus()} alpha={disabled?.6:1} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:15,lineHeight:16,wordWrap:true,wordWrapWidth:plate*.58,align:'center',fill:0x173a40}}/>
 	{/snippet}
 </Button>

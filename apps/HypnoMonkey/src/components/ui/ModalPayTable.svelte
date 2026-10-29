@@ -123,7 +123,7 @@
 			<h2>{T.payTableTitle}</h2>
 			<p class="wp-note">
 				Values shown as a multiple of the {T.totalBet}. 8 or more of the same symbol anywhere on the
-				6&times;6 board {T.pay} &mdash; they do not have to touch, and position does not matter.
+				{config.numReels}-reel, {config.numRows[0]}-row board {T.pay} &mdash; they do not have to touch, and position does not matter.
 			</p>
 
 			<div class="wp-grid">

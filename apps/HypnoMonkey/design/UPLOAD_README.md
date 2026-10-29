@@ -1,6 +1,8 @@
 # Hypno Monkey
 
-Package v2, staged 2026-10-29 (v1 staged 2026-10-28 was never uploaded).
+Front v2, staged 2026-10-29 (math unchanged, still v1). Front v2: Buy Bonus label fitted inside the booth window; a wasted watch lands on a board cell; x100+ watches push the camera in on the impact with a stronger shake; watches show a coloured gem dial with a big gold "100x" over the lower half (ref. GoO 1000 orbs); turbo tier 2 bolts separated by a disc-red keyline; pay table says 6-reel, 5-row.
+
+Front v1 + math v1 published 2026-10-29.
 
 v2: base spins with no win throw more watches, about 4 in 10 of them x100+ (wasted, so they pay nothing but land with the full thunderclap and board shake; a x100+ watch shows about 1 in 28 base spins); new Super Free Spins buy at 400x where every watch is x10+; bigger watch numbers with a tier-colour glow; both casts' cheer poses fixed (no bent-back wrist, open hand seated on the cuff).
 
