@@ -1,0 +1,12 @@
+V6 / 2026-10-31
+motion.gif: 292 frames at 20fps, exported from shipped createCharacterPlayer.
+Independent respiration, configured smooth crossfades, completion listeners,
+held celebration loops and returns to idle remain active during capture.
+contact.png: selected frames from the same continuous sequence.
+all-actions.png: every action plus breath at 0 / 27 / 54 / 85 percent.
+Official Spine 4.3 runtime: 11266 frames at 60Hz;
+360 action pairs; normal and turbo actual-player sequences.
+273080 alpha-contact samples; 0 inverted triangles;
+0 failed contact samples. Contact patches: {'front cuff': 5, 'rear cuff': 5, 'collar': 5, 'front shoulder': 4, 'rear shoulder': 5, 'stamp grip': 1}.
+V5 comparison: held return peak wrist speed reduced 53.5%.
+Numerical coverage is sampled; see browser-validation.json for current game QA.

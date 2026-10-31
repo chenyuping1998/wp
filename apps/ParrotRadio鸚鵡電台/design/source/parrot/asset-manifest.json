@@ -1,0 +1,1302 @@
+[
+  {
+    "path": "assets/audio/parrot/bgm_base.ogg",
+    "bytes": 709178,
+    "sha256": "ae30830b06448493a6df56ccad1acae06e760285baace00e3adb645408162e73"
+  },
+  {
+    "path": "assets/audio/parrot/bgm_feature_l1.ogg",
+    "bytes": 489893,
+    "sha256": "5738af9ed11c4a57978fdf83b5fa8d22fd589bfe85d0f86e87c9a3eb2cf01e71"
+  },
+  {
+    "path": "assets/audio/parrot/bgm_feature_l2.ogg",
+    "bytes": 409175,
+    "sha256": "b71a8d11b18dbc4b812c3591f5b61ba8a20c6db9c5db72022ef8ec43a84ff20b"
+  },
+  {
+    "path": "assets/audio/parrot/bgm_feature_l3.ogg",
+    "bytes": 255499,
+    "sha256": "245ff9c6083abc5aea59b9941fa8b7527b7bd16697f294f0cf7c98c7f03ff9cd"
+  },
+  {
+    "path": "assets/audio/parrot/bgm_feature_l4.ogg",
+    "bytes": 36164,
+    "sha256": "79df02e28fdd44c60aa256a802cf0ff85b82ed0097087770c341b06ec494f352"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_bigwin_1.wav",
+    "bytes": 282318,
+    "sha256": "396f0e8fc64d8857d37513bf5b808a80d52306c108a922dc394a95243e4443c7"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_bigwin_1_loop.wav",
+    "bytes": 176478,
+    "sha256": "e4d9b0b040a301c765c9b6e301d966a7302b82788e14c705b56ff3ae4b7d5161"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_bigwin_2.wav",
+    "bytes": 282318,
+    "sha256": "b151c567f4065650b2f5fe414210a8cbbfec4decef7f2c315e38ee4a5f8a7787"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_bigwin_2_loop.wav",
+    "bytes": 176478,
+    "sha256": "8203b26a2b5415bafe4636d0bf7d6ca4a698f1a31e1a14acac324089cd6af4cc"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_bigwin_3.wav",
+    "bytes": 282318,
+    "sha256": "1ad5d0c0375e04ffc7723f028fe74ffd8fa4ad8eceba9172a313682b8949fecc"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_bigwin_3_loop.wav",
+    "bytes": 176478,
+    "sha256": "c64168e48ad0e23d5bb02083c30419dbf1634f9dd3b322c2730a192de927b534"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_bigwin_4.wav",
+    "bytes": 282318,
+    "sha256": "2070791249685328355f38a88327948cafc1da807c08faa632210f607637d3b6"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_bigwin_4_loop.wav",
+    "bytes": 176478,
+    "sha256": "732480322887ce0d325a2f7c5e3bd5bf2c93cd8bda1e2915768739ae7cea47ba"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_bigwin_5.wav",
+    "bytes": 282318,
+    "sha256": "1f2706d71c8178ff1c49d402585a4d108c2be4869943f2b5657ea6103e06c3e6"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_bigwin_5_loop.wav",
+    "bytes": 176478,
+    "sha256": "c365848d048331ace8723b1fbcb5540394d6758802aff1d8294c7ea356e0af13"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_bigwin_end.wav",
+    "bytes": 282318,
+    "sha256": "675f2183e0c834140ddc731417b3d3ecc25e5e079b24b5d03b1607185b37337b"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_button.wav",
+    "bytes": 22128,
+    "sha256": "f414dc28c9688b3f8543c6501661f9b6fc207e496664770faf4e788ec70eec23"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_buy_card_hover_super.wav",
+    "bytes": 22128,
+    "sha256": "5dcde01d9723cf36f8b9df850382e3d0f119d87fdce9821b7e16951557c7984e"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_buybonus_confirm.wav",
+    "bytes": 22128,
+    "sha256": "1b77c769880fa3aa052d6c3b1c54b59d486fec737e719b9d50a39fa7d7cc7e43"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_buybonus_confirm_super.wav",
+    "bytes": 22128,
+    "sha256": "4dbf555fe19bfe9418516833e663b2ec341e8dab6215ab1a459de228d98b0074"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_buybonus_hover.wav",
+    "bytes": 22128,
+    "sha256": "469aafabacffd41a92e01a8c58d3bbde573a597b32bd18cb2732751f5871ce4c"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_drop.wav",
+    "bytes": 22128,
+    "sha256": "c836cd9f061551fbf7e71cbb4e45db9af46f2c834d292e19aa0adfac1e6e92a0"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_encore_hit.wav",
+    "bytes": 52998,
+    "sha256": "7b42281f47873fc949703c1fedad73596adcf51f90b6944d6b6788b1a84cc283"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_encore_hold.wav",
+    "bytes": 22128,
+    "sha256": "baf37547a301870445bdb7be20b2b70c11349f79c491cf90571ec343f5d21193"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_encore_miss.wav",
+    "bytes": 33594,
+    "sha256": "3e76e5d684597c437c202518870cf68e691b005526a5072b31de6130877250cd"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_encore_neon.wav",
+    "bytes": 22128,
+    "sha256": "bd0f89dd5ccaf25614a1323bc108b543656d5d55143d7edd116cdd2952987f3c"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_feather_puff.wav",
+    "bytes": 22128,
+    "sha256": "a72322c74fd6b9984e4fa973d0bc6e366aa132aa263fc42d68db7a14278c52d3"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_fg_plus5.wav",
+    "bytes": 22128,
+    "sha256": "b4e2f6b58fd80d5ae520d349dc5c61d3100f6fe5994bd104cd8c203a493c737d"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_firework.wav",
+    "bytes": 22128,
+    "sha256": "ab21114ce5e715f2c05bbff9181667e4eede0b2f0f0f57f655bd29997d92469b"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_1.wav",
+    "bytes": 22128,
+    "sha256": "c05b52c692195a9d07337858ae957e2140ba51b245a68ab4de2999a228b6795b"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_10.wav",
+    "bytes": 22128,
+    "sha256": "251b0b82681e500aa89ed0aef6bc3fb34b8ae8938e53a2901beb9496a05d0764"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_11.wav",
+    "bytes": 22128,
+    "sha256": "836b75540372bf2c5f577f002a5866448cd25c041bd9201e864ab47119bc3ea4"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_12.wav",
+    "bytes": 22128,
+    "sha256": "10bf77302eb2f29c81ef1bb824439b7b2f6dc5cf92ff701ae9338858e2c4fc23"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_13.wav",
+    "bytes": 22128,
+    "sha256": "2abec4db67e42109597800040556d55bdd60b3cd00aa49875c4949c965359264"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_14.wav",
+    "bytes": 22128,
+    "sha256": "a38fd0b5ab0361c80769378a8c9aab7149d1b75d2195e4e13c76269ec772702d"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_15.wav",
+    "bytes": 22128,
+    "sha256": "cd3e3925cca6d1e1fde12da3aa15c21f7fea52b8b68698eb52813da3b0bca725"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_16.wav",
+    "bytes": 22128,
+    "sha256": "d93fda416089587fb271e5fe87ed11e1b7e7a5ac28096a1cdab0468a88b5112b"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_17.wav",
+    "bytes": 22128,
+    "sha256": "b767f4cb9f68b472290a650f89bf2c618adf8a01bff39c4b29e2d48bcd72f3b7"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_18.wav",
+    "bytes": 22128,
+    "sha256": "fa347082291c66c094655262b13efd38f15d55238e9e46b314739c6522b3ac68"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_2.wav",
+    "bytes": 22128,
+    "sha256": "db5fd3a24eb2ba729f92ec1a66364b526b7f8d55e35284607287ead32cd9d9ff"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_3.wav",
+    "bytes": 22128,
+    "sha256": "7ebc0717f28f17f8078c42b0bfd6d48c281e25c038735f621639ffa387fe6e20"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_4.wav",
+    "bytes": 22128,
+    "sha256": "8da7949801c5a8dc024d9be111c075c44d614eaebe4bcec8892f397031a09e5d"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_5.wav",
+    "bytes": 22128,
+    "sha256": "f80a165d1df05cdc1835633873d2edc10ba069e92cfd7bd9312296b9e9542a52"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_6.wav",
+    "bytes": 22128,
+    "sha256": "a5eb92e2aa0ab480a93e93472ec63e40e7560be7a7e90a2fd58a2fd86068ecce"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_7.wav",
+    "bytes": 22128,
+    "sha256": "fb1a82f97b247b05c8d53b899b9acf514106b744515ba4c5acf7ff73d888fecb"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_8.wav",
+    "bytes": 22128,
+    "sha256": "4b6143aefd9dc1d23c3091a0f02ca87667ab3a78318dd82b96876352d47fb0fc"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_flip_9.wav",
+    "bytes": 22128,
+    "sha256": "8fc63733658b7b1545e7d4bd9d41ca1fd87ecc4f0a91a222ba2e71986eaca0c2"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_click.wav",
+    "bytes": 22128,
+    "sha256": "1a6e73f973cd8b0170f358e6cc33d5fe1c8210dfb3d4f94236b40d46e8dc9066"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_1.wav",
+    "bytes": 22128,
+    "sha256": "fb47bfc62c0488781b6cef774bfc2e338e1c63a58fca01cfd3319d9a5380c1d1"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_10.wav",
+    "bytes": 22128,
+    "sha256": "dbefb7e180e6a059979dbccde79467a0d950cf3307c8a64b28fa5f5b2d10a8d7"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_11.wav",
+    "bytes": 22128,
+    "sha256": "ee592e9a2818c84922fc5be2ebf14b399821575d65bd4020a37f1be18d52ab3c"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_12.wav",
+    "bytes": 22128,
+    "sha256": "012a47cf8c2f27562c65132bad8063135bcbdbdde183fa902ad2ecb0c860614c"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_13.wav",
+    "bytes": 22128,
+    "sha256": "8d312311603337158a612ab1d8fe23090642e399b1c2d95bdda912a99c9acefd"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_14.wav",
+    "bytes": 22128,
+    "sha256": "de3081666ef40c3da108723ddb0a4ede33925db225b0592066c18903b7f8b265"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_15.wav",
+    "bytes": 22128,
+    "sha256": "6dc39f3aa8373cf07ab6485682b7cecab9593eac4ae37c7ce9a10fe4e3a5c4f1"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_16.wav",
+    "bytes": 22128,
+    "sha256": "16afcbfbdb6780f02d4f9ccddcbf43cd380d7c69dfb3ec85ac8effe9174f91ab"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_17.wav",
+    "bytes": 22128,
+    "sha256": "64af21719c2b07c18d70d508dd58d9caba7e08e923535a87d34d8cb40ab4167e"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_18.wav",
+    "bytes": 22128,
+    "sha256": "0626630824e6346ca27f6083544f4c6057bf423d7c2f75feb597feb844ddd14d"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_19.wav",
+    "bytes": 22128,
+    "sha256": "c1670dc662020300857c3a23b07185f03f5f53ee07d829dd9c6b572820424a21"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_2.wav",
+    "bytes": 22128,
+    "sha256": "638b373b1d3d927f2cf114bd3cdb0eca30d96e1472a0596e69d9c04ac49ed66a"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_20.wav",
+    "bytes": 22128,
+    "sha256": "0ebefd98ba206e1d4887164eb47f22aa94a736dd3462e0930bf0742899bb90a4"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_3.wav",
+    "bytes": 22128,
+    "sha256": "d9506da2160df107231ec8a4191fc6df84dc6c58fd290aa64f3a3487a02fc488"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_4.wav",
+    "bytes": 22128,
+    "sha256": "5dbdd791552a58ac4baf2f17c3bd3fe03a0bd834f38cd34bb0065d32254f1edc"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_5.wav",
+    "bytes": 22128,
+    "sha256": "61c73a5d86bc9b641798a052d9edd4205100b5d024e7ed7e03e7d87f26a098eb"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_6.wav",
+    "bytes": 22128,
+    "sha256": "f104682b96fd0b4a35fca15d7607ae4f7bce3f71d4d6f443288895856172eb6d"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_7.wav",
+    "bytes": 22128,
+    "sha256": "d1f0e237718e16b9a3f40e3ca2cef6e5609c96244bdbbb751d02cedebdac9c77"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_8.wav",
+    "bytes": 22128,
+    "sha256": "9dbac235c95516ea6954ee86f6bc3077168c261ef8d8db18bc213eabf2ece3d4"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_led_9.wav",
+    "bytes": 22128,
+    "sha256": "0e772a3f451c82bbb95b97415d5dc798ed9e956cf614e8cc8473a5efc705b729"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_max.wav",
+    "bytes": 52998,
+    "sha256": "7b42281f47873fc949703c1fedad73596adcf51f90b6944d6b6788b1a84cc283"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_shake_l.wav",
+    "bytes": 22128,
+    "sha256": "f4400427c8802b871307feaf603d4e4188de42c15e0da213c8105a89c809b485"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_shake_m.wav",
+    "bytes": 22128,
+    "sha256": "567a19c58c10465d13695ee426e1213691a36ad888f0ef551df83481fb7b5644"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_knob_shake_s.wav",
+    "bytes": 22128,
+    "sha256": "3549ea25c205e105ec590029095e544a8b39b31617a4b4f8ea5e1e50e731faba"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_lights_on.wav",
+    "bytes": 22128,
+    "sha256": "0d07ffef300f4ecc5f997847e9cb747467509caab8cece0d7bf975cf5f3367f2"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_mic_land.wav",
+    "bytes": 22128,
+    "sha256": "e6866eaac0a243d46b4971797af78437e944cb1e3f215f069cfa8821d2a52aed"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_mic_tease.wav",
+    "bytes": 22128,
+    "sha256": "73a99dc0922757c3409e49d2fe39195f2e26d609ed2c898babdb63c8bc30640c"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_mic_trigger.wav",
+    "bytes": 52998,
+    "sha256": "7b42281f47873fc949703c1fedad73596adcf51f90b6944d6b6788b1a84cc283"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_mult_apply.wav",
+    "bytes": 22128,
+    "sha256": "8ee6eaa7a793166f8570bb7409aed5b7e2530578fd4adac7386c10168f9002f6"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_mult_count.wav",
+    "bytes": 22128,
+    "sha256": "b2dfedbd25b8afd2b8757048851460dcc088787931d90bbe3e835fda66897b8f"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_neon_off.wav",
+    "bytes": 22128,
+    "sha256": "a7ca61df857d65212816ba9fed81fc39fb5487ab637a988430ca69e9aedc800a"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_note_fly.wav",
+    "bytes": 33594,
+    "sha256": "46e8031c6a9c0590392363593dcfc2f11207da109620edadf40e86ccbe4ea5e9"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_record_hit.wav",
+    "bytes": 52998,
+    "sha256": "7b42281f47873fc949703c1fedad73596adcf51f90b6944d6b6788b1a84cc283"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_record_miss.wav",
+    "bytes": 33594,
+    "sha256": "d2bac20291bf8d3d5e176d70804098771bb394107c7d5e614ce350fdac6fa415"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_record_reveal_t1.wav",
+    "bytes": 22128,
+    "sha256": "7feee09c4158965a2a0f0983dde3dea69c98bfe08e044c9b6b6bd26d4ecbe223"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_record_reveal_t2.wav",
+    "bytes": 22128,
+    "sha256": "3dc6f1f1755a21fd70b516a0d674194e387c19d711e43f2b302104d6bb475969"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_record_reveal_t3.wav",
+    "bytes": 22128,
+    "sha256": "d9a7f189c29dde07214867b9a7a5bb162c807c391b5f14c5463c7760e595664e"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_record_reveal_t4.wav",
+    "bytes": 22128,
+    "sha256": "812d8e8c88295fd2b221cfdfc7513700770813c7aec69bd4dc37fa113035f2d2"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_record_rise.wav",
+    "bytes": 22128,
+    "sha256": "381441aec704530e987a1edf4b2d39520cf25f0f30cb7a8cc0a15efb5f545ad3"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_record_sleeve.wav",
+    "bytes": 33594,
+    "sha256": "e083d249c8d0c202acc8a3ae9bb6b9edd832121d033d95057bd5caf0836157e4"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_record_spin.wav",
+    "bytes": 22128,
+    "sha256": "f88256204499c0d85f842670a1eeede6e7a0cce3742144a8b3a156efe4480f7c"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_record_toss.wav",
+    "bytes": 22128,
+    "sha256": "c1fa7a899ceac1c4e221150faaa1cad205d0a8196236598e7271921912a95fd3"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_scratch_build.wav",
+    "bytes": 33594,
+    "sha256": "85a752f400b7dfd519c61f2437c61c7f705879f7f27fa3360806a2e6f7c4ded2"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_seagull.wav",
+    "bytes": 22128,
+    "sha256": "e319d2b0ceecffdf83cc486b5b6ec3dcfe350024e62b8bc887d23cc5c29ccdd8"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_spin.wav",
+    "bytes": 22128,
+    "sha256": "483d645451dc16ec3ccd26b1c82ce0efe6b34c0dc2aa494212db2401f3f8fed3"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_spotlight.wav",
+    "bytes": 22128,
+    "sha256": "b5b1c292af47f9800448ccddee9f17d080a8d33baf7fffd280057bdbf432430a"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_ticket.wav",
+    "bytes": 22128,
+    "sha256": "e98c788524836b3f934955e93f34fc59d947dc9800e1631e2f1b8f7a21b9884f"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_win_1.wav",
+    "bytes": 22128,
+    "sha256": "a29626f87a95961a24dbafa31ef042ed3f7c9099cb59797554dd2690dd159863"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_win_2.wav",
+    "bytes": 22128,
+    "sha256": "28696717d1035f0074eba3552c52e5e441ac5d15700d6a412ef293f62c120a63"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_win_3.wav",
+    "bytes": 22128,
+    "sha256": "512a81e168aa95da4c355316eefba18f670dc471f0df0a4b62529bed968b2eb1"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_win_4.wav",
+    "bytes": 22128,
+    "sha256": "ca4eb6cbd47fcc6611494b2b90f1dba0f48a8f936d7ff7e97b91220fc34b503c"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_win_5.wav",
+    "bytes": 22128,
+    "sha256": "5b9b184a8561d22fe77f78d10f22055a66515fb7204f3e6a1614bb038e7bb0c2"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_win_6.wav",
+    "bytes": 22128,
+    "sha256": "bf34c5a431340ce26cc6857c243e7fefca369f89c5152ee7d56c36100f154f52"
+  },
+  {
+    "path": "assets/audio/parrot/sfx_win_to_ticker.wav",
+    "bytes": 22128,
+    "sha256": "d1fb1f9b6659e51d385c6ae91baef9d95194c566843cb07e4a1a637376c4e550"
+  },
+  {
+    "path": "assets/audio/parrot/stinger_fg_intro.wav",
+    "bytes": 282318,
+    "sha256": "a6534eeac1a5b8987a43480c42889aab372116b44ca78b006bbc2a5740ccb480"
+  },
+  {
+    "path": "assets/audio/parrot/stinger_fg_outro.wav",
+    "bytes": 282318,
+    "sha256": "2c4cdc42b50d3311f4cef27ab225dd1ffaf65e19f5d8557c1607d8397a272b9a"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_awkward.wav",
+    "bytes": 66228,
+    "sha256": "48a6c0266b5189fa41a52d3db7b47ba930979e1813396d5b7e4dc936135c2857"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_call.wav",
+    "bytes": 66228,
+    "sha256": "48a6c0266b5189fa41a52d3db7b47ba930979e1813396d5b7e4dc936135c2857"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_call_2.wav",
+    "bytes": 66228,
+    "sha256": "48a6c0266b5189fa41a52d3db7b47ba930979e1813396d5b7e4dc936135c2857"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_good.wav",
+    "bytes": 66228,
+    "sha256": "48a6c0266b5189fa41a52d3db7b47ba930979e1813396d5b7e4dc936135c2857"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_hmm.wav",
+    "bytes": 66228,
+    "sha256": "48a6c0266b5189fa41a52d3db7b47ba930979e1813396d5b7e4dc936135c2857"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_mimic_1.wav",
+    "bytes": 66228,
+    "sha256": "48a6c0266b5189fa41a52d3db7b47ba930979e1813396d5b7e4dc936135c2857"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_mimic_2.wav",
+    "bytes": 66228,
+    "sha256": "48a6c0266b5189fa41a52d3db7b47ba930979e1813396d5b7e4dc936135c2857"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_mimic_3.wav",
+    "bytes": 66228,
+    "sha256": "48a6c0266b5189fa41a52d3db7b47ba930979e1813396d5b7e4dc936135c2857"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_party.wav",
+    "bytes": 150018,
+    "sha256": "7dfefc4f2524348caeeb5a94bbc16897bf766a10ebfb1454a1d5a83ea931adb4"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_party_2.wav",
+    "bytes": 150018,
+    "sha256": "7dfefc4f2524348caeeb5a94bbc16897bf766a10ebfb1454a1d5a83ea931adb4"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_shock.wav",
+    "bytes": 66228,
+    "sha256": "48a6c0266b5189fa41a52d3db7b47ba930979e1813396d5b7e4dc936135c2857"
+  },
+  {
+    "path": "assets/audio/parrot/vo_squawk_success.wav",
+    "bytes": 66228,
+    "sha256": "48a6c0266b5189fa41a52d3db7b47ba930979e1813396d5b7e4dc936135c2857"
+  },
+  {
+    "path": "assets/spines/squawk43/character.atlas",
+    "bytes": 1030,
+    "sha256": "afea93c15ee466b7c1618769a64141029fb08b7bb1213a5ed28de086fc1319ce"
+  },
+  {
+    "path": "assets/spines/squawk43/character.json",
+    "bytes": 3052428,
+    "sha256": "e54448b6684623cc7ffd2881f34073fff095b9509e5306254180110f6e4667f8"
+  },
+  {
+    "path": "assets/spines/squawk43/character.png",
+    "bytes": 4257627,
+    "sha256": "7d5fef915c605f0ae9d2a1a91b8e70079390c4c1a4455ab520701426b99b5d2e",
+    "size": [
+      2048,
+      2048
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotBackground/bg_base.jpg",
+    "bytes": 891501,
+    "sha256": "f7feddf7d5097cfa9d0abdfac6108911491091760f686e4478353eca0a2abfd3",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGB"
+  },
+  {
+    "path": "assets/sprites/parrotBackground/bg_free.jpg",
+    "bytes": 828028,
+    "sha256": "68d14691bf92a650cb71ab00cade59151b54b5218281b26cc7e0332b32616ee4",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGB"
+  },
+  {
+    "path": "assets/sprites/parrotBrand/loader.png",
+    "bytes": 56856,
+    "sha256": "32d73a7b6cf537f10084672c27709d5ad0717d9699a1c1d7d7e60f8ee946585f",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotBrand/logo.png",
+    "bytes": 1432663,
+    "sha256": "12b082958a9a14a67eb7ba95acfb2eb8790291b3ceba20ff09e600eb0c4a251f",
+    "size": [
+      1600,
+      600
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotCast/character_master.png",
+    "bytes": 1274644,
+    "sha256": "9f1344eedb981f32cea17382ebb9dd3a1b1b8908669bdae76362908e143381a3",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotIntro/intro_1.png",
+    "bytes": 1207460,
+    "sha256": "bdaae5a3c1350b6aa8e5a273a837fcb07cc3f1e0e52526129f2f50a4301332db",
+    "size": [
+      960,
+      720
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotIntro/intro_2.png",
+    "bytes": 1279385,
+    "sha256": "39b88d145bad3f01096f1401dd6e064a41bd377825b969a2de2791d167380768",
+    "size": [
+      960,
+      720
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotIntro/intro_3.png",
+    "bytes": 1326317,
+    "sha256": "cf956ab65a718f30262759863ccee365b893095d34a197597b93429c3848bfbd",
+    "size": [
+      960,
+      720
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/knob_base.png",
+    "bytes": 233903,
+    "sha256": "2472b7fb793c163236257e1c490dd7ea13e238d0b40820ec8bd513583d649ca7",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/knob_cap.png",
+    "bytes": 161168,
+    "sha256": "b4c49cfc5155848fe0f40d9872b2b85ed4c26401801a9c4337e7e95a843576c4",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/knob_led.png",
+    "bytes": 69639,
+    "sha256": "2bb84ee4b9ef99ee4ab45d18bc3b45cdaabc50f98956e1f7c6896ce984a629ba",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/knob_plate.png",
+    "bytes": 108805,
+    "sha256": "78ad75de24c5310b5df95c57043df79ff9cc5f3cbec3acdf95a39091ff1bc0cd",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/platinum_disc.png",
+    "bytes": 229580,
+    "sha256": "038826756b51c1c11c4c23297e78677a95e85162fe19b7156711a3359d1cf30e",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/platinum_label_t1.png",
+    "bytes": 196975,
+    "sha256": "708bc5de1741a5bdae18bc819cf0f17167f2fc8e7e58e71b0dc38e5351b9bbf8",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/platinum_label_t2.png",
+    "bytes": 208439,
+    "sha256": "3fbcd94dfa5af02ae3f80caec67fc487bcf23fff6f634a23a89f116683b5b18c",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/platinum_label_t3.png",
+    "bytes": 203846,
+    "sha256": "369d21a415c28ea1c48fe963a24afc5060e873eac0a11b3463bbb5250f33d263",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/platinum_label_t4.png",
+    "bytes": 217863,
+    "sha256": "cad6f744a141dc2c15fec52f7dfbb8caf39ead2bd0c0565ba7d009571d25c2bc",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/platinum_scratch.png",
+    "bytes": 73824,
+    "sha256": "b31e01b3a43607dc8825dee2283af7fe25a53bdb817d6492cf9cbf07dc5177ff",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/platinum_shine.png",
+    "bytes": 178345,
+    "sha256": "24bc1f618bff81ab164d18d1850c8e4f101dc618e23f81b1dbfed494f24adbbc",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotMechanics/platinum_sleeve.png",
+    "bytes": 262398,
+    "sha256": "2e79e6bb7d2c20b090c7b5b3d98234fa1203b63cbb31233988caff4ebb37613b",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h1.png",
+    "bytes": 214459,
+    "sha256": "e88865910d54456e4d7848c2b52d412ef41ab87e6d97df0867143ca0c7b34706",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h1_disc.png",
+    "bytes": 206213,
+    "sha256": "c5748d0d2e9fe87c471ba6579b81e893a2e424ffe58cf6e62de15a8acbd3c7b4",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h1_label.png",
+    "bytes": 105276,
+    "sha256": "5d3b025e4b9793bd2feb79514cde8092c0297af71ac747f8ecf349c706c97f38",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h2.png",
+    "bytes": 245873,
+    "sha256": "e50fa6639286ec4e05ea7e72152bcdd20977da04c0ac7ae7b68515f0bb0fe459",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h2_cord.png",
+    "bytes": 143666,
+    "sha256": "39f0b6944c4cda3627bbd9c0166aa1fedee9c782168abbb3901ebbfc9e901fe2",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h2_hat.png",
+    "bytes": 205562,
+    "sha256": "a282b29030d5f1341caa202064e3581c7ee94292ada026cd810d23af163f1dfe",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h3.png",
+    "bytes": 188799,
+    "sha256": "0709aef1521ad8773b8ab0eee96a4851e2b4fe3a15512593c20202d5fc803ed2",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h3_eye.png",
+    "bytes": 112942,
+    "sha256": "51f4c5133bcb1a524567a3c323e4fb2499c91e0129e792d983591c6c42c95f0b",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h3_scope.png",
+    "bytes": 170490,
+    "sha256": "8db53eae3e290b3f3fdb58efa477662f28eaab2fc8ee9409b96d3cd2d0b69ed5",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h4.png",
+    "bytes": 248806,
+    "sha256": "c69ba1a295f1884da70ad975318c31c2607fd64e6fb5f402b7747c4b90e510a1",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h4_coconut.png",
+    "bytes": 215152,
+    "sha256": "e8279b2d40539cf05a19164a266e54b98cbaa1765464341147075605accea15a",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h4_straw.png",
+    "bytes": 68656,
+    "sha256": "128a3c3f8a03cc8bb1076f01715a2c39a61db89ebd048630ed7ff798e7854550",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/h4_umbrella.png",
+    "bytes": 81454,
+    "sha256": "a6c88e54e54ff7d11c1d50297f7c823958b3cfbeae7ee20b326a01f1f1b78e15",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/l1.png",
+    "bytes": 139968,
+    "sha256": "db7dc88cea37cc5c17721e9c1bf60538900edd5b77571e497d2eb06f3ade433c",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/l2.png",
+    "bytes": 107151,
+    "sha256": "83cfeb37c32c7a0009ddb1e4cca77c6f6de352822b324f7be9386adb245c6589",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/l3.png",
+    "bytes": 139549,
+    "sha256": "b4f2291da1ddba6cd163d397a97110796d5cf6f595eda3b64c5ea727a69b4279",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/l4.png",
+    "bytes": 98398,
+    "sha256": "7819822327674415384c9b1be49122e59f6bb286e17eca0b5fe2266d2fa781ff",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/s.png",
+    "bytes": 243870,
+    "sha256": "4e7efb3865f8574eff5f7ed2b7494f821ca6bc4eb4fd90f3d6bf4a461e58a205",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/s_charm.png",
+    "bytes": 95266,
+    "sha256": "ed228243fdf5a1f1e0e1f2177af8b10f9018823afe768a114718530781a9fb20",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/s_feather.png",
+    "bytes": 120925,
+    "sha256": "6274aabf1733ba5b7d7d1f8f97c303ba89461d8c34f3263eaa23b582e135e228",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotSymbols/s_mic.png",
+    "bytes": 167779,
+    "sha256": "532c30ebb5c6876a3668387948c0e079bc167b821a9d70ef2405bca0533dfb79",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/bar_strip.png",
+    "bytes": 233126,
+    "sha256": "fc142777ecdc66c91b17a0535a409a833127d5fc6b7d5787ca249f41b951670f",
+    "size": [
+      1600,
+      200
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/button_disc.png",
+    "bytes": 70451,
+    "sha256": "a321921e267bd2d08a313a63b82b381bcb47f5f95bed99d478ad5812c9418059",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/button_disc_on.png",
+    "bytes": 74576,
+    "sha256": "ec8a6e2766ff65d5c5b4df68eec2f07d623d97821bc97eb92a22bb1a0dd96305",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/buy_card_bonus.png",
+    "bytes": 191392,
+    "sha256": "fa76f77538bccbf3bbfc330ef37476874712f55f2aec6108e19f326dbbe5342f",
+    "size": [
+      640,
+      800
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/buy_card_bonus_hover.png",
+    "bytes": 200803,
+    "sha256": "219f1685dab6912e438120b91ca2685a1dc171a51c596c20d50ebf8fa8c8bb09",
+    "size": [
+      640,
+      800
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/buy_card_super.png",
+    "bytes": 182663,
+    "sha256": "7c61d97117b64b8b2354183d133ad426ce5fd454cef40a47a40f9591895f91e3",
+    "size": [
+      640,
+      800
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/buy_card_super_hover.png",
+    "bytes": 228011,
+    "sha256": "0f0a3ee65438df60db0f20fa82643c4b37b8e66d57aeb881afe278d941163ec2",
+    "size": [
+      640,
+      800
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/buybonus_plate.png",
+    "bytes": 154197,
+    "sha256": "17a266dc3afb6fdcbf379711268b242aff4f8da7e0424b82a8c40a26c932f844",
+    "size": [
+      640,
+      640
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/buybonus_plate_lit.png",
+    "bytes": 185681,
+    "sha256": "3416b5c3cd52962166714e132b64ad001d0175258388454ab859f706afe774cf",
+    "size": [
+      640,
+      640
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/frame_corner.png",
+    "bytes": 68774,
+    "sha256": "81fcb831862366634b820105cd913ccd04b867c4d72f2595b3b8ab3bdf7ec8a1",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/frame_edge_h.png",
+    "bytes": 51993,
+    "sha256": "e80b7ae619be8933cfabdca991899e7fcf46ae15eae4df58c184d4565a6299bb",
+    "size": [
+      512,
+      96
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/frame_edge_v.png",
+    "bytes": 46755,
+    "sha256": "268b3bfbc45e8ee3abfe620a426a28d33821542973ea48fabfb9b8a12f63c749",
+    "size": [
+      96,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/fs_counter_panel.png",
+    "bytes": 66811,
+    "sha256": "f81e31e91729fdc94581ea4424fab914d363ce2ca480da137dc6513f7a114cf7",
+    "size": [
+      512,
+      320
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUi/fs_sign.png",
+    "bytes": 123976,
+    "sha256": "a9587d85c66a4acc282118d64e0c4773b9c4945f6d8466ea2ef0c05a73e49b31",
+    "size": [
+      1706,
+      922
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUiIcons/autoSpin.png",
+    "bytes": 7751,
+    "sha256": "27b77b9245ef00037da994064d9697c786d92245cbb498a441e291b68082e33a",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUiIcons/decrease.png",
+    "bytes": 1044,
+    "sha256": "1254c887d9338d550a8f36d2181ab480312a12df201d25f69be841e1a52cfb9e",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUiIcons/increase.png",
+    "bytes": 2063,
+    "sha256": "abfa26fc7d6e8c8d0cf4ac37d5f525be89c08fab4f5551a4a3aa8f7f1ecc3c8f",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUiIcons/info.png",
+    "bytes": 2119,
+    "sha256": "8b7e8537561811a4ee226a67f4b197253a345f9b69447db8c5763ea984f03af8",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUiIcons/menu.png",
+    "bytes": 2564,
+    "sha256": "9661678a237b7446c4de13d07233b9f7e6bd4bb048b4c8f3cf51104ef2f6edc3",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUiIcons/menuExit.png",
+    "bytes": 1720,
+    "sha256": "bb931fcbe988ace7d7e42f67b0dbb96fc4a8bcf3ecc92c5696ac4bf330876a8b",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUiIcons/payTable.png",
+    "bytes": 4219,
+    "sha256": "c619688d55d46e166002d97b01595e5d9c70984b53a234ad98cdba94c226bc37",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUiIcons/settings.png",
+    "bytes": 7473,
+    "sha256": "87d013bc171ed8d976864f511354ad692a11a4186d93fd5be31bb9d0fdfa5579",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUiIcons/soundOff.png",
+    "bytes": 3603,
+    "sha256": "818df934b8493e2d5f97969a9935e79738651e393fa3a55409a90c1b698dd889",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotUiIcons/soundOn.png",
+    "bytes": 4774,
+    "sha256": "1c97015d0b266a838734bd968798177590e9a59f2a23f9cfd08f3e2d57d07669",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotWinBanners/big.png",
+    "bytes": 379014,
+    "sha256": "b2ea7031527d80768c8b15890d48833572ebdb2741a69e31aa5ac6bc688cd4b3",
+    "size": [
+      1352,
+      194
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotWinBanners/epic.png",
+    "bytes": 376030,
+    "sha256": "26e94ab96943992b88fc8802370ebbd410df01c6bd735677e3b76202007df83c",
+    "size": [
+      1352,
+      194
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotWinBanners/max.png",
+    "bytes": 439051,
+    "sha256": "b384511197ab317e68b61d7b5cb8ac88d1baee5edd4e6abe6f88475a5b0c3f2c",
+    "size": [
+      1352,
+      194
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotWinBanners/mega.png",
+    "bytes": 419203,
+    "sha256": "026fd7d01f41ace5417a35c5328d448fe49145f83c1e6e7db31c02d9d1f28d02",
+    "size": [
+      1352,
+      194
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/parrotWinBanners/superwin.png",
+    "bytes": 395189,
+    "sha256": "c9781acc3035f1406cd89c9f99ee3e94cd7f61f02c0c670b5ae8aa42120ec181",
+    "size": [
+      1352,
+      194
+    ],
+    "mode": "RGBA"
+  }
+]

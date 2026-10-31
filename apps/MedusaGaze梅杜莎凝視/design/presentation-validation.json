@@ -1,5 +1,5 @@
 {
-  "scope": "Actual background scene responsive layout",
+  "scope": "Actual background scene responsive layout; GPU-only cloud blur is checked in browser",
   "statueToMedusaHeight": 0.2,
   "cases": [
     {

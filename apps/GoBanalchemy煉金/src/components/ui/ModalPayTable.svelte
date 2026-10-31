@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Popup } from 'components-shared';
+	import Popup from './InfoPopup.svelte';
+	import InfoShell from './InfoShell.svelte';
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal } from 'state-shared';
 
@@ -141,7 +142,8 @@
 
 {#if stateModal.modal?.name === 'payTable'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="wp-paytable">
+		<div class="wp-paytable info-page">
+			<InfoShell kind="paytable">
 			<header class="al-head">
 				<span class="al-kicker">Go Banalchemy</span>
 				<h2>{T.payTableUpper}</h2>
@@ -222,6 +224,7 @@
 				{maxWin.toLocaleString()}&times;
 				{T.totalBet}.
 			</p>
+			</InfoShell>
 		</div>
 	</Popup>
 {/if}

@@ -39,6 +39,7 @@
 	import BoardContainer from './BoardContainer.svelte';
 	import SackBadge from './SackBadge.svelte';
 	import PropMesh from './PropMesh.svelte';
+	import { stateBet } from 'state-shared';
 	import { NUMBER_FONT } from '../game/fonts';
 	import { P_PICK, pPickLift } from '../game/meshWin';
 	import { CANVAS } from '../game/meshWin/meshRig';
@@ -76,14 +77,25 @@
 
 	let raf = 0;
 	let running = false;
+	// The collection is this game's centrepiece: it plays at full length under
+	// turbo too (turbo shortens the reels and the win acts, not this). Only
+	// turbo 2 (two bolts, uiTheme.turboTiers) quickens it, and only to 1.5x —
+	// so everything here runs on a virtual clock, `vt`, that the loop advances
+	// by real time times that pace (as Strike / Putt / Swing, 2026-10-18).
+	const pace = () => (stateBet.isTurbo && stateBet.turboLevel === 2 ? 1.5 : 1);
+	let vt = 0;
+	let previous = 0;
 	const loop = (now: number) => {
-		clock = now;
+		vt += Math.min(80, Math.max(0, now - previous)) * pace();
+		previous = now;
+		clock = vt;
 		raf = requestAnimationFrame(loop);
 	};
 	const startClock = () => {
 		if (running) return;
 		running = true;
-		clock = performance.now();
+		previous = performance.now();
+		clock = vt;
 		raf = requestAnimationFrame(loop);
 	};
 	const stopClock = () => {
@@ -92,12 +104,12 @@
 	};
 	onDestroy(stopClock);
 
-	// Wait on the rAF clock, so a hidden tab pauses the collection rather than
-	// letting timers race ahead of what is drawn.
+	// Wait on the (virtual) rAF clock, so a hidden tab pauses the collection
+	// rather than letting timers race ahead of what is drawn.
 	const waitMs = (ms: number) =>
 		new Promise<void>((resolve) => {
-			const until = performance.now() + ms;
-			const check = (now: number) => (now >= until ? resolve() : requestAnimationFrame(check));
+			const until = vt + ms;
+			const check = () => (vt >= until ? resolve() : requestAnimationFrame(check));
 			requestAnimationFrame(check);
 		});
 
@@ -162,14 +174,14 @@
 			}));
 			flyers = [];
 
-			pickStart = performance.now();
+			pickStart = vt;
 			await waitMs(PICK_MS + sacks.length * 40);
 
 			// one Chef at a time: with two or three collecting at once, every Plate
 			// flying everywhere at the same moment is unreadable
 			for (let b = 0; b < tags.length; b++) {
 				const tag = tags[b];
-				const base = performance.now();
+				const base = vt;
 				flyers = sacks.map((s, i) => ({
 					fromX: s.x,
 					fromY: s.y,
@@ -183,7 +195,7 @@
 					await waitMs(i === 0 ? FLY_MS : STAGGER_MS);
 					context.eventEmitter.broadcast({ type: 'soundCoinIn', index: i });
 					tag.shown += sacks[i].value;
-					tag.pop = performance.now();
+					tag.pop = vt;
 					tag.catchAt = tag.pop;
 				}
 				await waitMs(120);
@@ -191,13 +203,13 @@
 			}
 
 			if (mult > 1) {
-				stampStart = performance.now();
+				stampStart = vt;
 				context.eventEmitter.broadcast({ type: 'soundCollectStamp' });
 				await waitMs(STAMP_MS * 0.35);
 				for (const tag of tags) {
 					tag.stamped = true;
 					tag.shown = event.perCollector * mult;
-					tag.pop = performance.now();
+					tag.pop = vt;
 				}
 				await waitMs(STAMP_MS * 0.65);
 			}

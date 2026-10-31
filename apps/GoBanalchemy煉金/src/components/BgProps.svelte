@@ -7,9 +7,8 @@
 	 * plate: the rectangle's border is pinned, so there is nothing to see where
 	 * the two meet.
 	 *
-	 * Driven by setInterval, not the frame loop, like the background's own drift:
-	 * it has to keep time in a hidden tab, and it waits for the texture, which
-	 * may not be loaded when the background first mounts.
+	 * Driven by requestAnimationFrame. Hidden tabs skip mesh work, and missing
+	 * textures are retried on the next frame without creating another timer.
 	 */
 	import { Mesh, MeshGeometry, Container, type Texture } from 'pixi.js';
 	import { getContextApp, getContextParent } from 'pixi-svelte';
@@ -59,7 +58,10 @@
 		let mesh: Mesh | null = null;
 		const started = Date.now();
 
-		const id = setInterval(() => {
+		let raf = 0;
+		const tick = () => {
+			raf = requestAnimationFrame(tick);
+			if (document.hidden) return;
 			if (!mesh) {
 				const texture = app.stateApp.loadedAssets?.[props.spec.sprite ?? props.spec.key] as Texture | undefined;
 				if (!texture) return;
@@ -79,10 +81,11 @@
 			geometry!.getBuffer('aPosition').update();
 			root.position.set(props.x, props.y);
 			root.scale.set(props.width / BG_CANVAS[0], props.height / BG_CANVAS[1]);
-		}, 16);
+		};
+		raf = requestAnimationFrame(tick);
 
 		return () => {
-			clearInterval(id);
+			cancelAnimationFrame(raf);
 			geometry?.destroy();
 		};
 	});

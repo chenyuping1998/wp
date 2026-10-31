@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-29",
+  "passed": true,
+  "scope": "Native drawing preview and local normal/TURBO 2 mock rounds",
+  "contactsPerColumnMaximum": 2,
+  "selection": "Bottom contact plus longest actual drop, deduplicated",
+  "strength": "Weighted by actual fall distance",
+  "effect": "Foot-anchored pressure ellipse, outgoing gold arcs, two tiny stone flecks",
+  "allTurboTiersRetainContact": true,
+  "minimumVisualLifetimeMs": 90,
+  "noExtraTumbleWait": true,
+  "multiplierImpact": "Delayed soft wave within the existing contact window",
+  "characterFollowThrough": "Two coils carry the impulse into a tail-tip flick; back wrist follows",
+  "eightLinkTimingBudgetMs": 9135,
+  "geometryContractPatterns": 63,
+  "browser": {
+    "35Percent": "Visible contact and rebound",
+    "100Percent": "No remaining contact/shard/dust accents",
+    "proofs": [
+      "_sheets/landing_20261029_contact.png",
+      "_sheets/landing_20261029_cleared.png"
+    ]
+  }
+}

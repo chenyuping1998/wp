@@ -1,8 +1,9 @@
 {
   "character": "Don Whiskers",
   "spine": "4.3.13",
-  "bones": 27,
-  "layers": 28,
+  "skinVersion": 6,
+  "bones": 54,
+  "layers": 92,
   "clips": [
     "idle",
     "fg_idle",
@@ -23,9 +24,20 @@
     "win_big",
     "win_max",
     "win_big_loop",
-    "win_max_loop"
+    "win_max_loop",
+    "breath"
   ],
   "pages": 2,
+  "softSkin": [
+    "torso",
+    "face",
+    "ears",
+    "limbs",
+    "chain",
+    "crest",
+    "tail"
+  ],
+  "articulation": "native jacket shoulder facings over sleeve roots, registered cuffs, collar-pinned lower ruff and neckline pivot",
   "customTopology": "seated Persian cat",
   "sourcePSD": "E:\\stake\\wp\\apps\\Purrfia喵菲亞家族\\design\\source\\purrfia\\cast\\don_whiskers.psd"
 }

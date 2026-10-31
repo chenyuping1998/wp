@@ -1,4 +1,4 @@
-import { makeGrid, poseBackground, poseSymbol } from '../src/game/gridMotion.ts';
+import { BG_GRID, makeGrid, poseBackground, poseSymbol } from '../src/game/gridMotion.ts';
 
 const check = (kind, name, width, height, cols, rows, times) => {
 	const grid = makeGrid(width, height, cols, rows);
@@ -30,4 +30,4 @@ for (const name of ['H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'W', '
 	check('symbol', name, 512, 512, 12, 12, symbolTimes);
 const backgroundTimes = Array.from({ length: 80 }, (_, i) => i * 0.25);
 for (const name of ['base', 'feature', 'superspin'])
-	check('background', name, 1920, 1080, 40, 24, backgroundTimes);
+	check('background', name, 1920, 1080, BG_GRID.cols, BG_GRID.rows, backgroundTimes);

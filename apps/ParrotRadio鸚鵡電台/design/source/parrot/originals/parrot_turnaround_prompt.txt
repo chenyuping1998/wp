@@ -1,0 +1,3 @@
+Use case: identity-preserve. Production character turnaround reference sheet, exactly three complete views side by side on transparent RGBA landscape: front, left-facing three-quarter, left profile. The same red scarlet macaw DJ, yellow blue wings, gold headphones, black eyepatch with gold note, gold chain vinyl pendant, behind wooden twin turntable booth in the reference. Keep exact face, colors and proportions across all three views. Clean complete silhouettes with empty gutters, no text, labels, watermark or background.
+Reference: cast/assembled.png
+Tool: built-in image_gen

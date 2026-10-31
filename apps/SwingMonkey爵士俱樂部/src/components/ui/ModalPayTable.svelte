@@ -6,6 +6,7 @@
 	import config from '../../game/config';
 	import assets from '../../game/assets';
 	import { getSocialTerms } from '../../game/socialTerms';
+	import JazzGuide from './JazzGuide.svelte';
 
 	// Social play forbids betting terminology, and this panel is titled with it.
 	// Shared with the game rules page so the two cannot describe the same rule in
@@ -106,6 +107,7 @@
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-paytable">
 			<h2>{T.payTableUpper}</h2>
+			<JazzGuide />
 			<p class="wp-note">
 				{T.paysStart} shown as a multiple of {T.totalBet}, per winning way. Wins
 				{T.winsDirection} on adjacent reels, in any position &mdash; there are no fixed lines.
@@ -533,6 +535,8 @@
 	.wp-paytable { background: #f3e9d2; border: 5px solid #4a4038; color: #161412; }
 	.wp-paytable h2 { background: none; -webkit-text-fill-color: #4a4038; color: #4a4038; animation: none; filter: none; }
 	.wp-paytable::-webkit-scrollbar-thumb { background: #4a4038; }
+	.wp-paytable { font-family: var(--gb-body-font, sans-serif); }
+	.wp-paytable h2 { font: 400 1.9rem/1.2 var(--gb-display-font, serif); letter-spacing: -.015em; -webkit-text-fill-color: #ad2933; color: #ad2933; text-shadow: 2px 2px 0 #fff8e9; }
 	.wp-row, .wp-row:hover, .wp-ways-example { background: #f3e9d2; border: 2px solid #4a4038; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; transform: none; }
 	.wp-cell { background: #d9d7c8; }
 	.wp-cell.lit { background: #d9342b; box-shadow: none; }

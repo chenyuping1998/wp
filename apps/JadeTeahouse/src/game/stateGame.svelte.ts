@@ -19,6 +19,8 @@ import {
 	SPIN_OPTIONS_DEFAULT,
 	SPIN_OPTIONS_FAST,
 	SPIN_OPTIONS_TURBO_FREEGAME,
+	SPIN_OPTIONS_FAST_T2,
+	SPIN_OPTIONS_TURBO_FREEGAME_T2,
 	INITIAL_SYMBOL_STATE,
 	SCATTER_LAND_SOUND_MAP,
 } from './constants';
@@ -102,9 +104,10 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 		// NORMAL spin even in turbo (see the reveal handler), so keying its profile
 		// off spinType would have handed it the base-game timings — turbo would
 		// have had no effect in the feature at all rather than too much.
-		if (stateGame.gameType === 'freegame' && stateBet.isTurbo) return SPIN_OPTIONS_TURBO_FREEGAME;
+		const turbo2 = stateBet.isTurbo && stateBet.turboLevel === 2;
+		if (stateGame.gameType === 'freegame' && stateBet.isTurbo) return turbo2 ? SPIN_OPTIONS_TURBO_FREEGAME_T2 : SPIN_OPTIONS_TURBO_FREEGAME;
 		if (reel.reelState.spinType !== 'fast') return SPIN_OPTIONS_DEFAULT;
-		return SPIN_OPTIONS_FAST;
+		return turbo2 ? SPIN_OPTIONS_FAST_T2 : SPIN_OPTIONS_FAST;
 	};
 
 	return reel;

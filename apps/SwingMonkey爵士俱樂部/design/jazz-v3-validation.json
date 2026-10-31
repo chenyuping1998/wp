@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-29",
+  "scope": "Background and winning-symbol motion",
+  "changes": [
+    "Two velvet curtain patches with three delayed fold bands and pinned borders",
+    "Cymbal, tassel, palm and curtain rigs respond to actual instrument attack envelopes",
+    "Independent table-lamp breathing and a floor reflection share the baked light texture",
+    "Concurrent instrument phrases mix into the background response rather than replacing one another",
+    "Every played note adds a bounded rigid lift and pop to H1-H4",
+    "Notes and ink effects follow the exact rigid transform used by the skinned art",
+    "Scatter microphone wave fronts and Wild hat-tip marks replace generic impact rays",
+    "Offline Band scenario presents all four instruments together"
+  ],
+  "checks": {
+    "types": { "new_errors": 0, "existing_baseline_errors": 14 },
+    "production_build": "passed",
+    "asset_paths": { "status": "passed", "count": 191 },
+    "template_references": "passed",
+    "mesh_gate": {
+      "status": "passed",
+      "subjects": ["H1", "H2", "H3", "H4", "velvetR", "velvetL", "tassel", "cymbal", "clubPalm", "valanceL", "valanceC"],
+      "inverted_triangles": 0,
+      "continuity": "passed",
+      "boundary_pins": "passed"
+    },
+    "background_cycle": {
+      "status": "passed",
+      "duration_ms": 24000,
+      "sample_step_ms": 50,
+      "includes": ["idle", "win gusts", "instrument attacks"],
+      "velvetR_area_ratio": [0.927, 1.073],
+      "velvetL_area_ratio": [0.728, 1.272],
+      "all_edges_pinned": true
+    },
+    "effect_attachment": "passed: affine results agree with actual skin output across rotation, squash, lift and two feet pivots",
+    "phrase_lifetimes": "passed at normal and turbo speeds"
+  },
+  "preview": {
+    "url": "http://127.0.0.1:4199/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en",
+    "offline_mock_only": true,
+    "band_scene": "20 high-symbol winners; four instrument phrases in one round",
+    "observed_console_errors": 0,
+    "capture": "E:/stake/tmp/jazz-v3-background-symbols.jpg",
+    "browser_scenarios": ["base game Band round completes with all 20 winners", "free-game background switch", "mobile feature intro and continue"],
+    "viewports": ["1366x768", "390x844"],
+    "performance_note": "No device FPS guarantee. The embedded preview can throttle animation when occluded or in the background."
+  },
+  "published": false
+}

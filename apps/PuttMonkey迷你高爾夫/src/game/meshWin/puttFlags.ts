@@ -197,35 +197,107 @@ const base = (index: number, symbol: string, durationMs: number) => ({
  * the extra size lives in the RIGID move, which bends nothing: a dip, a hop
  * that leans downwind, a squash on the turf and a small settle. The low pays
  * are the wins the player sees most; they were the stillest on the board.
+ * `t` is from the hop's own start; the beats are 0.8 of the 10-25 ones, so
+ * the putt in front of it still ends with the high pays (1440ms).
  */
-const HOP = { crouch: 90, up: 300, down: 560, land: 640 };
+const HOP = { crouch: 72, up: 240, down: 450, land: 512 };
 const hopRigid = (t: number) => {
 	const air = track(t, [[0, 0], [HOP.crouch, 0], [HOP.up, 1, 'out'], [HOP.down, 0.75], [HOP.land, 0, 'in']]);
-	const squash = 0.12 * hump(t, 0, HOP.crouch + 70) + 0.16 * impact(t, HOP.land, 4, 0.5);
-	const stretch = 0.08 * hump(t, HOP.crouch - 10, HOP.up + 40);
+	const squash = 0.12 * hump(t, 0, HOP.crouch + 56) + 0.16 * impact(t, HOP.land, 4, 0.5);
+	const stretch = 0.08 * hump(t, HOP.crouch - 8, HOP.up + 32);
 	return {
 		air,
 		rigid: {
 			sx: 1 + squash * 0.8 - stretch * 0.5,
 			sy: 1 - squash + stretch,
 			// leans downwind (toward the point) in the air, and rocks back as it lands
-			rot: track(t, [[0, 0], [HOP.crouch, -1.5], [HOP.up, 5, 'out'], [HOP.down, 3], [HOP.land, -2, 'in'], [HOP.land + 160, 0.8], [HOP.land + 320, 0, 'inOut']]),
+			rot: track(t, [[0, 0], [HOP.crouch, -1.5], [HOP.up, 5, 'out'], [HOP.down, 3], [HOP.land, -2, 'in'], [HOP.land + 128, 0.8], [HOP.land + 256, 0, 'inOut']]),
 			pop: 1 + 0.06 * air,
 			dx: 0,
-			dy: -16 * air + 3 * hump(t, 0, HOP.crouch + 60),
+			dy: -16 * air + 3 * hump(t, 0, HOP.crouch + 48),
 		},
 	};
 };
 
-/** the win: a gust and a smaller one after it, dying away to hang still */
+/**
+ * THE PUTT (2026-10-31, user: when a low pay scores, roll its ball into the
+ * hole). The ball is cut off the art (design/build_flag_ball.py) and drawn on
+ * top as the spec's `roller`; the pennant under it is the art without it.
+ *
+ *   address  0..80     the ball rocks back a hair, as if lined up
+ *   roll     80..500   left along the turf to the cup, slowing like a putt,
+ *                      shrinking into the distance (the cup is small) and
+ *                      skipping twice; it turns as far as it rolls
+ *   lip      500..580  it hangs on the cup's edge and wobbles
+ *   drop     580..680  down into the cup, hidden below its front lip
+ *   cheer    560..     the pennant's hop and gust (the 10-25 act), started by
+ *                      the ball going in
+ *   re-tee   900..1060 while the pennant is in the air the ball drops back
+ *                      onto its tee, riding the hop, so all lands together
+ *
+ * Canvas px (the 256 art). The cup's white ring is x 37..83, y 190..209 with
+ * the pole standing in its left half, so the ball finishes in the right half,
+ * small enough to fit.
+ */
+const BALL_REST: Point = [177.75, 184.5];
+const BALL_R = 24; // canvas px with its ink, at rest
+const BALL_SIZE = 64; // flag_ball.png (128px of the 512 art) on the canvas
+const CUP: Point = [71, 205.5]; // where the ball's bottom sits on the cup's edge
+const LIP_Y = 204; // the cup's front lip: what drops below it is in the hole
+const PUTT = { address: 80, roll: 500, lip: 580, drop: 680, cheer: 560, retee: 900, rest: 1060 };
+const SINK = 0.5; // the ball's scale at the cup
+const rollRot = (x: number, s: number) => (-(BALL_REST[0] - x) / (BALL_R * (1 - 0.25 * s))) * (180 / Math.PI);
+
+const putt = (t: number) => {
+	const restBall = { x: BALL_REST[0], y: BALL_REST[1], rot: 0, scale: 1, alpha: 1 };
+	if (t < PUTT.address) return { ...restBall, x: BALL_REST[0] + 1.6 * hump(t, 0, PUTT.address), rot: 3 * hump(t, 0, PUTT.address) };
+	if (t < PUTT.lip) {
+		// slowing like a putt: fast off the face, creeping up to the cup
+		const s = 1 - (1 - Math.min(1, (t - PUTT.address) / (PUTT.roll - PUTT.address))) ** 2.2;
+		const scale = 1 - (1 - SINK) * s;
+		let x = BALL_REST[0] + (CUP[0] - BALL_REST[0]) * s;
+		// hanging on the lip: a wobble that dies away
+		let wob = 0;
+		if (t >= PUTT.roll) {
+			const k = (t - PUTT.roll) / (PUTT.lip - PUTT.roll);
+			wob = Math.sin(k * Math.PI * 3) * (1 - k);
+			x += 1.6 * wob;
+		}
+		const bottom = BALL_REST[1] + BALL_R + (CUP[1] - BALL_REST[1] - BALL_R) * s;
+		const skip = 3.2 * hump(t, 130, 240) + 1.4 * hump(t, 240, 320);
+		return { x, y: bottom - BALL_R * scale - skip, rot: rollRot(x, s) + 14 * wob, scale, alpha: 1, clipY: t >= PUTT.roll ? LIP_Y : undefined };
+	}
+	if (t < PUTT.drop) {
+		const k = (t - PUTT.lip) / (PUTT.drop - PUTT.lip);
+		const scale = SINK * (1 - 0.15 * k);
+		return { x: CUP[0] - 1.5 * k, y: CUP[1] - BALL_R * SINK + 26 * k * k, rot: rollRot(CUP[0], 1) - 40 * k, scale, alpha: 1, clipY: LIP_Y };
+	}
+	if (t < PUTT.retee) return { ...restBall, alpha: 0 };
+	if (t < PUTT.rest) {
+		// dropped back onto the tee from a little above: falls, a small bounce
+		const k = (t - PUTT.retee) / (PUTT.rest - PUTT.retee);
+		const fall = track(t, [[PUTT.retee, -18], [PUTT.retee + 100, 0, 'in'], [PUTT.retee + 130, -3, 'out'], [PUTT.rest, 0, 'in']]);
+		return { ...restBall, y: BALL_REST[1] + fall, alpha: Math.min(1, k * 4), scale: 1 + 0.08 * impact(t, PUTT.retee + 100, 4, 0.45) };
+	}
+	return restBall;
+};
+
+/** the win: the putt, then the pennant cheers it in — a hop and a gust and a
+ *  smaller one after it, dying away to hang still */
 const flag = (index: number): MeshWinSpec => ({
-	...base(index, `L${index}`, 1180),
-	landMs: HOP.land,
-	// 0: the crouch starts the act on purpose — a dip, not a fault
-	events: [0, 60, 500, HOP.land],
+	...base(index, `L${index}`, 1400),
+	sprite: `gbL${index}NoBall`,
+	roller: { key: 'gbFlagBall', size: BALL_SIZE, at: putt },
+	landMs: PUTT.cheer + HOP.land,
+	// sharp on purpose: the putt struck, the crouch the ball sets off, the
+	// letters' two pops, the landing
+	events: [0, PUTT.address, PUTT.cheer, PUTT.cheer + 60, PUTT.cheer + 380, PUTT.cheer + HOP.land],
 	pose: (r, t) => {
-		const pose = letter(r, blow(r, restPose(r), t, Math.min(1, hump(t, 0, 760) ** 0.7 + 0.6 * hump(t, 420, 1120) ** 0.7)), t, 1, [60, 500]);
-		const { rigid, air } = hopRigid(t);
+		const c = t - PUTT.cheer;
+		// a breath of air while the ball rolls; the gusts come with the cheer
+		const g = Math.min(1, 0.22 * hump(t, 0, PUTT.cheer + 200) + hump(c, 0, 700) ** 0.7 + 0.6 * hump(c, 380, 840) ** 0.7);
+		const pose = letter(r, blow(r, restPose(r), t, g), t, 1, [PUTT.cheer + 60, PUTT.cheer + 380]);
+		const { rigid, air } = hopRigid(Math.max(0, c));
 		// turned about the foot of the pole, where it stands on the turf
 		pose.rigid = turnAbout(rigid, [POLE_X, 200], 220);
 		pose.air = air;

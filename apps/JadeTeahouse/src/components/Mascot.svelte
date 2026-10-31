@@ -7,6 +7,9 @@
 		// Raised by the transition as it begins, so the wind-up happens before the
 		// dynamite exists. See THROW_RELEASE_MS there.
 		| { type: 'mascotThrow' }
+		// the free-spin trigger's gesture (2026-10-31): he offers the cup toward
+		// the board as the doors close, instead of throwing a Jade Cup at it
+		| { type: 'mascotOffer' }
 		// The goggle tease. Fired at the top of a round that is GOING to trigger
 		// the feature — see playBet in src/game/utils.ts, which owns the coin flip.
 		| { type: 'mascotGoggleTease' };
@@ -205,6 +208,10 @@
 	// wind-up), so it can outlive the component if a resize takes him off screen
 	// mid-throw.
 	let voiceTimer = 0;
+	const stopImpacts = () => {
+		cancelAnimationFrame(impactRaf);
+		impactClock = -1;
+	};
 	onDestroy(() => {
 		context.stateGame.mascotThrowOrigin = null;
 		cancelAnimationFrame(impactRaf);
@@ -228,9 +235,12 @@
 
 	// The Chef's laugh: one HA! per beat, alternating either side of his head
 	// and climbing, printed red on an ink rim like every other caption.
-	const HA_LIFE_MS = 420;
+	// Shorter than the beat gap plus the settle, so the last HA! is gone before
+	// the settle face shows; and only while the laugh itself is playing
+	// (ported from Putt / Strike / Swing, 2026-10-18).
+	const HA_LIFE_MS = Math.min(360, BEAT_GAP_MS * 1.5);
 	const haPops = $derived.by(() => {
-		if (impactClock < 0 || cast.beatFx !== 'laugh') return [];
+		if (impactClock < 0 || cast.beatFx !== 'laugh' || animationName !== 'chestbeat') return [];
 		const pops = [];
 		for (let i = 0; i < BEATS; i++) {
 			const t = (impactClock - (BEAT_START_MS + i * BEAT_GAP_MS)) / HA_LIFE_MS;
@@ -418,7 +428,24 @@
 	scheduleGlance();
 	onDestroy(() => clearTimeout(glanceTimer));
 
+	// The cast swap (inside a transition's cover) remounts the skeleton from
+	// its first frame; a caption clock carried across would no longer match it.
+	$effect(() => {
+		cast.key;
+		clearTimeout(voiceTimer);
+		stopImpacts();
+		animationName = 'idle';
+		loop = true;
+	});
+
 	const play = (name: string, loops: boolean) => {
+		// The HA!s belong to the laugh, not to a clock: anything that takes him
+		// out of 'chestbeat' (a big-win cheer on the same spin, the clip ending,
+		// the cast swap) takes the captions with it, so no HA! outlives the face.
+		if (name !== 'chestbeat') {
+			stopImpacts();
+			clearTimeout(voiceTimer);
+		}
 		animationName = name;
 		loop = loops;
 	};
@@ -442,6 +469,10 @@
 	// inline in the handler because two things raise it: the free-game trigger,
 	// and the top three big-win tiers.
 	const beatChest = () => {
+		// Already laughing: setting the same clip does not restart the Spine
+		// track, so restarting the caption clock here would run it ahead of the
+		// face (HA!s still popping after the laugh has settled).
+		if (animationName === 'chestbeat') return;
 		play('chestbeat', false);
 		// one clip covering all six strikes, so the grunts cannot drift out of
 		// sync with them
@@ -496,6 +527,10 @@
 			startTease();
 		},
 
+		mascotOffer: () => {
+			clearTimeout(voiceTimer);
+			play('cheer', false);
+		},
 		mascotThrow: () => {
 			play('throwit', false);
 			// on the release, not on the wind-up

@@ -1,0 +1,3 @@
+{ "beat": "monkey_all", "frame": "frame", "spine": ["land3", "land4", "land5"], "head": "head", "look": "3d", "jaw": "land13",
+  "earL": ["land9", "land10"], "earR": ["land11", "land12"], "armL": ["land14", "land15", "land16"], "armR": ["land17", "land18", "land19"],
+  "hair": ["land20", "land21"], "hair2": ["land22", "land23"], "hair3": ["land24", "land25"] }

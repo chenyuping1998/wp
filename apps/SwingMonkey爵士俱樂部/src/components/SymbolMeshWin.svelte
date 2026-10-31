@@ -30,7 +30,7 @@
 	 *
 	 * No light: a screenprint has none (ART_BRIEF.md §0).
 	 */
-	import { Mesh, MeshGeometry, Sprite, Container, Rectangle, Text, Texture } from 'pixi.js';
+	import { Mesh, MeshGeometry, Sprite, Container, Rectangle, Text, Texture, Matrix, Graphics as InkGraphics } from 'pixi.js';
 	import { Graphics, getContextApp, getContextParent } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBetDerived } from 'state-shared';
@@ -41,6 +41,9 @@
 	import { getSymbolInfo } from '../game/utils';
 	import { CANVAS, skin } from '../game/meshWin/meshRig';
 	import { MESH_WINS } from '../game/meshWin';
+	import { JAZZ_HITS, noteProgress } from '../game/meshWin/phrase';
+	import { drawInstrumentAccents } from '../game/meshWin/instrumentAccents';
+	import { writePerformanceAffine } from '../game/meshWin/performanceAffine';
 	import ImpactDust from './ImpactDust.svelte';
 
 	type Props = {
@@ -112,22 +115,19 @@
 	};
 
 	const root = new Container();
-	const instrumentBeats: Record<string, number[]> = {
-		H1: [240, 820], H2: [220, 520, 820, 1060],
-		H3: [300, 490, 680, 860, 1050], H4: [220, 500, 780, 1040],
-	};
 	const noteOrigins: Record<string, [number, number]> = {
 		H1: [214, 70], H2: [205, 75], H3: [185, 60], H4: [210, 95],
 	};
 
 	onMount(() => {
 		const speed = props.fixedSpeed ? 1 : stateBetDerived.timeScale();
+		const playingInstrument = ['H1', 'H2', 'H3', 'H4'].includes(spec.symbol);
 		const started = performance.now();
 		root.label = `meshWin ${spec.symbol} reel ${props.reel ?? '?'}`;
 		// completion and the landing are on TIMERS, not the frame loop: rAF stops
 		// in a hidden tab, and the board awaits the completion to move on
 		const done = setTimeout(() => props.oncomplete?.(), spec.durationMs / speed);
-		const land = setTimeout(() => (dust = !props.spec), spec.landMs / speed);
+		const land = setTimeout(() => (dust = !props.spec && !playingInstrument), spec.landMs / speed);
 		const clearTimers = () => {
 			clearTimeout(done);
 			clearTimeout(land);
@@ -152,20 +152,24 @@
 		const content = new Container();
 		content.position.set(-CANVAS / 2, -CANVAS / 2);
 		if (shadow) content.addChild(shadow);
-		content.addChild(subject);
+		const ink = new InkGraphics();
+		const effects = new Container();
+		effects.addChild(ink);
+		content.addChild(subject, effects);
+		const affine = new Float64Array(6), effectMatrix = new Matrix();
 		// Printed ink notes answer the actual instrument hits. They live in the
 		// subject canvas, so every winning copy follows its own cell; idle and land
 		// acts do not emit them. Keep them outside the instrument's main silhouette.
-		const beats = props.spec ? [] : (instrumentBeats[spec.symbol] ?? []);
+		const beats = props.spec ? [] : (JAZZ_HITS[spec.symbol] ?? []);
 		const origin = noteOrigins[spec.symbol] ?? [128, 90];
 		const notes = beats.map((_, i) => {
 			const note = new Text({
 				text: i % 2 ? '♫' : '♪', anchor: 0.5,
-				style: { fontFamily: 'Georgia, serif', fontSize: i % 2 ? 53 : 59,
+				style: { fontFamily: 'Georgia, serif', fontSize: i % 2 ? 39 : 45,
 					fill: 0x8e2936, stroke: { color: 0xf4e7c8, width: 3 } },
 			});
 			note.alpha = 0;
-			content.addChild(note);
+			effects.addChild(note);
 			return note;
 		});
 		root.addChild(content);
@@ -174,20 +178,27 @@
 		// on top of the card Symbol.svelte draws in the same container
 		parent.parent.addChild(root);
 
+		let finalFrameDrawn = false;
 		const tick = () => {
-			const t = Math.max(0, performance.now() - started) * speed;
+			if (finalFrameDrawn) return;
+			const t = Math.min(spec.durationMs, Math.max(0, performance.now() - started) * speed);
 			const pose = spec.pose(rig, t);
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();
 			root.scale.set(fit * pose.plateHit);
+			writePerformanceAffine(pose.rigid, spec.feetY, affine);
+			effectMatrix.set(affine[0], affine[1], affine[2], affine[3], affine[4], affine[5]);
+			effects.setFromMatrix(effectMatrix);
+			ink.clear();
+			if (!props.spec) drawInstrumentAccents(ink, spec.symbol, t);
 			notes.forEach((note, i) => {
-				const age = (t - beats[i]) / 500;
-				if (age <= 0 || age >= 1) { note.alpha = 0; return; }
+				const age = noteProgress(t, beats[i], spec.durationMs);
+				if (age === null) { note.alpha = 0; return; }
 				const rise = 1 - (1 - age) ** 2;
 				note.position.set(origin[0] + i % 2 * 12 + 16 * Math.sin(age * 3.2 + i), origin[1] - 45 * rise - i % 2 * 9);
 				note.rotation = (i % 2 ? 1 : -1) * (0.12 + age * 0.12);
 				note.scale.set(0.65 + 0.35 * Math.sin(Math.PI * Math.min(1, age * 1.2)));
-				note.alpha = Math.min(1, age * 7) * (1 - age) ** 0.7;
+				note.alpha = Math.min(1, age * 7) * (1 - age) ** 0.7 * (playingInstrument ? 0.7 : 1);
 			});
 
 			if (shadow) {
@@ -200,6 +211,7 @@
 					spec.feetY - spec.feetY * spread + SHADOW_DROP * air,
 				);
 			}
+			finalFrameDrawn = t >= spec.durationMs;
 		};
 		tick();
 		const ticker = app.stateApp.pixiApplication?.ticker;

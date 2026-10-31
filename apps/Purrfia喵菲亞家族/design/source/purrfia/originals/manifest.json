@@ -1,0 +1,168 @@
+{
+  "tool": "built-in image_gen",
+  "edits": "Sheet cell registration, canvas normalization and alpha-preserving aligned assembly. Original outputs retained.",
+  "images": [
+    {
+      "file": "purrfia_arm_front_full_v3.png",
+      "bytes": 1129349,
+      "sha256": "936a8e6372a5fd51db1743e91641b08f806a372114de70a823ee53548b1f962f",
+      "prompt": "purrfia_arm_front_full_v3_prompt.txt"
+    },
+    {
+      "file": "purrfia_arm_front_full_v3_alpha_variant.png",
+      "bytes": 1824284,
+      "sha256": "0579aea05b50aae30fdfda3351e31164091eed632822e1719a36d22df5d8c912",
+      "prompt": "purrfia_arm_front_full_v3_alpha_variant_prompt.txt"
+    },
+    {
+      "file": "purrfia_banners.png",
+      "bytes": 2486065,
+      "sha256": "db45be8e88efc99cf8af1568e01a6125a4ee45090b76656e3c593a3c23102603",
+      "prompt": "purrfia_banners_prompt.txt"
+    },
+    {
+      "file": "purrfia_base_art_v2.png",
+      "bytes": 2142964,
+      "sha256": "329690e6d1527e02ee272bf1b1cc40227d029a71e3ba4838d0c4f38d035cd517",
+      "prompt": "purrfia_base_art_v2_prompt.txt"
+    },
+    {
+      "file": "purrfia_bg_base.png",
+      "bytes": 1949193,
+      "sha256": "f54165147be735f0cfe60aacfb6d9ea2d97010bdbef39d8cee2d6f49dc0699d1",
+      "prompt": "purrfia_bg_base_prompt.txt"
+    },
+    {
+      "file": "purrfia_bg_base_bright.png",
+      "bytes": 2226245,
+      "sha256": "00536cc408b02db6103cfb628fa1179f5c51ec2e5561dbac9836d1d2206bfec1",
+      "prompt": "purrfia_bg_base_bright_prompt.txt"
+    },
+    {
+      "file": "purrfia_bg_free.png",
+      "bytes": 2537034,
+      "sha256": "b30c7d96e1023730fb6291555c26b1949f950afbf5a9297839232a2a07c24731",
+      "prompt": "purrfia_bg_free_prompt.txt"
+    },
+    {
+      "file": "purrfia_bg_free_bright.png",
+      "bytes": 2919644,
+      "sha256": "bc56cbe88aec78392f94d109bbbdb1defb8d71a47348da424a8222145bec333b",
+      "prompt": "purrfia_bg_free_bright_prompt.txt"
+    },
+    {
+      "file": "purrfia_character.png",
+      "bytes": 2154168,
+      "sha256": "333a6f52e5efc5571290097881eeedf95e6f6924059a7d8c05a672234be6f8f1",
+      "prompt": "purrfia_character_prompt.txt"
+    },
+    {
+      "file": "purrfia_cover.png",
+      "bytes": 2407592,
+      "sha256": "78775f2ec332107d8d62603ab3539032479ae081bc70cc6f763272438035d59d",
+      "prompt": "purrfia_cover_prompt.txt"
+    },
+    {
+      "file": "purrfia_face_laugh_v6.png",
+      "bytes": 644114,
+      "sha256": "3fab20a62df8037f8f94233b00deffd40f980a38846cabc634c4025138c398b4",
+      "prompt": "purrfia_face_laugh_v6_prompt.txt"
+    },
+    {
+      "file": "purrfia_face_purr_v6.png",
+      "bytes": 685684,
+      "sha256": "f9029d2f20bf3fbe015a392a98a003e8da19ea583f9d0297b8864207956caaf7",
+      "prompt": "purrfia_face_purr_v6_prompt.txt"
+    },
+    {
+      "file": "purrfia_face_shock_v2.png",
+      "bytes": 833118,
+      "sha256": "f48f0cf81a7be27d265a29d817ab2bfe51c07ff77384ca090822651868f864fe",
+      "prompt": "purrfia_face_shock_v2_prompt.txt"
+    },
+    {
+      "file": "purrfia_face_smug_v6.png",
+      "bytes": 488344,
+      "sha256": "a40d91f442aacd1fc3687e16560514a4130c6b7032267808486548f846b81f56",
+      "prompt": "purrfia_face_smug_v6_prompt.txt"
+    },
+    {
+      "file": "purrfia_face_stamp_v2.png",
+      "bytes": 1334876,
+      "sha256": "913348c3bf67519de67feed8d63dbb4364b9d296198ecd654ccb28bf7ba560c4",
+      "prompt": "purrfia_face_stamp_v2_prompt.txt"
+    },
+    {
+      "file": "purrfia_face_yawn_v6.png",
+      "bytes": 890960,
+      "sha256": "faa6aad2f12dea19ff31a4c0305b714262ce55201c95caa6ade4b5c8e2e377bf",
+      "prompt": "purrfia_face_yawn_v6_prompt.txt"
+    },
+    {
+      "file": "purrfia_faces.png",
+      "bytes": 1817985,
+      "sha256": "fe49b732349c02cdacfc1a5461c4de8788c2934e7fff154654ded19af94c72e0",
+      "prompt": "purrfia_faces_prompt.txt"
+    },
+    {
+      "file": "purrfia_free_art_v2.png",
+      "bytes": 2627277,
+      "sha256": "606fe9ff193af8228ed421338a640fc67551337f2ddf48127dc8630f5ce6cd9d",
+      "prompt": "purrfia_free_art_v2_prompt.txt"
+    },
+    {
+      "file": "purrfia_intro.png",
+      "bytes": 2845480,
+      "sha256": "5ec8a04db8b7f92a8d434e5aa3bdf0d9c3c8a8f1797db669ba6578c6c1cbf21c",
+      "prompt": "purrfia_intro_prompt.txt"
+    },
+    {
+      "file": "purrfia_logo.png",
+      "bytes": 1876376,
+      "sha256": "950a87ebae28e2b382e1e38c022cddddb02c0cd35fe248341f0232e684f8519b",
+      "prompt": "purrfia_logo_prompt.txt"
+    },
+    {
+      "file": "purrfia_mechanics.png",
+      "bytes": 2551613,
+      "sha256": "908def8ff2d386d0820239f6e15ba2974b8811cce9b92e0bf892a61111a426d7",
+      "prompt": "purrfia_mechanics_prompt.txt"
+    },
+    {
+      "file": "purrfia_parts.png",
+      "bytes": 1687358,
+      "sha256": "26e26ca8a4e650d761c02e2e253e920894c350eb72fdf00f61a2888d2eb48672",
+      "prompt": "purrfia_parts_prompt.txt"
+    },
+    {
+      "file": "purrfia_symbol_parts.png",
+      "bytes": 1893292,
+      "sha256": "af49b17d9e359771998fb56539c330152bd50b1041b87fd9a39bbd43cf5d2814",
+      "prompt": "purrfia_symbol_parts_prompt.txt"
+    },
+    {
+      "file": "purrfia_symbols.png",
+      "bytes": 2320257,
+      "sha256": "2a7a00ba6c09a2a1061fa3543e66a32154ccf73ff9de965e7b1cc1de5bf0cf2d",
+      "prompt": "purrfia_symbols_prompt.txt"
+    },
+    {
+      "file": "purrfia_tile_fg.png",
+      "bytes": 1797048,
+      "sha256": "05ab93c778ef624fd66d13fc4cab17cda3d985d3c16a671b686f04f84ec76bab",
+      "prompt": "purrfia_tile_fg_prompt.txt"
+    },
+    {
+      "file": "purrfia_turnaround.png",
+      "bytes": 2001530,
+      "sha256": "467cbf15f719e70e8e71b0e40f18b389fc0d0dc53dec3f0a702eb952c2f05c52",
+      "prompt": "purrfia_turnaround_prompt.txt"
+    },
+    {
+      "file": "purrfia_ui.png",
+      "bytes": 1943978,
+      "sha256": "52f1765884ed77c899fc6299dbc52f109cf93753ba581c6d9732342a669d471c",
+      "prompt": "purrfia_ui_prompt.txt"
+    }
+  ]
+}

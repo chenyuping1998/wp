@@ -1,0 +1,1247 @@
+[
+  {
+    "path": "assets/audio/purrfia/bgm_base.ogg",
+    "bytes": 880298,
+    "sha256": "43f4fe5f96f97b868a5f26ad6eebb00935f107a327f3520569a3386285f9ca27"
+  },
+  {
+    "path": "assets/audio/purrfia/bgm_feature.ogg",
+    "bytes": 775208,
+    "sha256": "2ad90e976ec45df27254906ff6b2100e5bedf804c6aa37033556fb123fb0f4b3"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_bigwin_1.wav",
+    "bytes": 282318,
+    "sha256": "b90118b09e6750eebaa6f63dd187539235de26a8879b8f714e651bfa6317cb74"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_bigwin_1_loop.wav",
+    "bytes": 176478,
+    "sha256": "be0d5f30a14c6bb9701283627fcd150591561385b04f538b1764fb786af244d8"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_bigwin_2.wav",
+    "bytes": 282318,
+    "sha256": "e516ed2e93bb84782d7006f0c35d2d03dce23966d6ccd35ece83df5ef7c91155"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_bigwin_2_loop.wav",
+    "bytes": 176478,
+    "sha256": "4d95487d27510d7eb87d49f23d5d0f262a2a1f6d7e5760f860dd394ae67b5527"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_bigwin_3.wav",
+    "bytes": 282318,
+    "sha256": "7339695ac4701a6f2f2ee97f11f5af68d36579201e562713f27a2c5bd57ed10c"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_bigwin_3_loop.wav",
+    "bytes": 176478,
+    "sha256": "9a50dcfa765c893cd5063a829972b1393689d7ba73535d50bb615cf9416a54bd"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_bigwin_4.wav",
+    "bytes": 282318,
+    "sha256": "7c6cd47dca84669bd6a9d9effa6b507325b389f3a26af696a2eff5ca6f950c2d"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_bigwin_4_loop.wav",
+    "bytes": 176478,
+    "sha256": "1d5ef6a3d2342abb7d459872378048d5773d47d123678085e4ca0e7049b20b61"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_bigwin_5.wav",
+    "bytes": 282318,
+    "sha256": "b368306c9a19171f32f1d9799989052411da1ff6c275a99583667f1736444808"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_bigwin_5_loop.wav",
+    "bytes": 176478,
+    "sha256": "0331e5ee6d3a50b68d8b934af0b64b235d15f887cf1881582aaecbb84551765b"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_bigwin_end.wav",
+    "bytes": 282318,
+    "sha256": "e4bf2983a79fb317797f0c9e68c0ada0b58be8c5600f341912d04b9690fda5fc"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_box_connect.wav",
+    "bytes": 52998,
+    "sha256": "bf655b85a38d8bfea01f5f74d9fb0128aab0c62fd0b51e48695172d59ac62625"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_box_land.wav",
+    "bytes": 22128,
+    "sha256": "e52db255d9d2e14383b957f3cbbba3c827c78f4a69c8444ba4788202a2854c9b"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_box_open.wav",
+    "bytes": 33594,
+    "sha256": "7f47e6e126f31d2b36e5bf8dc277884ff9e924351b62c0e78f74aa85ff995cce"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_box_open_more.wav",
+    "bytes": 33594,
+    "sha256": "d115fb6811761131a350495b226a2937f5c9f48ca7620cb8e86665a7e240fd4c"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_box_peek.wav",
+    "bytes": 22128,
+    "sha256": "867eae1a43821726f42f9ea8168088235d75acde2e28010da6b9fc12077a5cda"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_box_reveal.wav",
+    "bytes": 22128,
+    "sha256": "588ac3c0b4c8feb0122cb405f6210f4dd2af6fea2488a71efd035baeb310b738"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_button.wav",
+    "bytes": 22128,
+    "sha256": "c53eb17e8cb442adbe4e480b919dda2179e69e589cf7ea4c18181e47985da352"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_buy_card_hover_super.wav",
+    "bytes": 22128,
+    "sha256": "45a2e5bed4a8e14ceffec17dd1f0d992ad1a077f762489346dc9a67a5bf790d8"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_buybonus_confirm.wav",
+    "bytes": 22128,
+    "sha256": "74b64a4b8bedcb13271c7ca8928d9ae7fbe29c56b63cb8eb5bacfc387b9fd48d"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_buybonus_confirm_super.wav",
+    "bytes": 22128,
+    "sha256": "b3adfaf25e0867a1ecc4ea9bf2b17d366dfcdb63734a64fc98a88fb4e4ece87a"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_buybonus_hover.wav",
+    "bytes": 22128,
+    "sha256": "221a3f42569f1b396a58d9b22d57b221499f016e6f7cb153f95bb3c2e48401e8"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_catnip_drop.wav",
+    "bytes": 22128,
+    "sha256": "614673e5eb3fde3ccbfdcbfc3789f559c5d8767950712f128b7c0e87fc3d0fc9"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cell_beam.wav",
+    "bytes": 22128,
+    "sha256": "184b9c0d82f948912af39165fbc65dd9c9170978b5fe4dd64528c507a13b88a6"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cell_max.wav",
+    "bytes": 52998,
+    "sha256": "bf655b85a38d8bfea01f5f74d9fb0128aab0c62fd0b51e48695172d59ac62625"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cell_tier.wav",
+    "bytes": 22128,
+    "sha256": "6a1268484514fee6f67be3579de4a57d2710eeac6375168772e17c0ebc1eb8b4"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cell_up.wav",
+    "bytes": 22128,
+    "sha256": "c870374b72fa95aa899476451371400c55869a9a5879ddf96a22de0e0afd14c5"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cells_clear.wav",
+    "bytes": 22128,
+    "sha256": "39b75c3f02c11df43282f0e9c7b88e30dff95c6766be44811a5740a8df91922e"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_chain_fill.wav",
+    "bytes": 22128,
+    "sha256": "c1865354355e160103a5a369afd703b6862fbeabad9f5439e66cc63a1944af06"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cluster_1.wav",
+    "bytes": 22128,
+    "sha256": "6202cc0a76fc7dfbf5c42866db5edd157814ae87b1ec87d7b12b95db264f223c"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cluster_2.wav",
+    "bytes": 22128,
+    "sha256": "ca2dbcc2b3e93e9cfe1d6c29e7e6fde6f9e1107008854dbffeb61f9428e1db26"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cluster_3.wav",
+    "bytes": 22128,
+    "sha256": "03f87dddf9c4230edcf04734b011993580f862ec8cdd7735ff72b36cfd1ad35a"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cluster_4.wav",
+    "bytes": 22128,
+    "sha256": "f35f9b6dd747dd04d4973881c17e1168811918be7884e277aec2eaba1e20abb4"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cluster_5.wav",
+    "bytes": 22128,
+    "sha256": "99e483146ad57ded9952653d43e3299f18dfdf01c5909d0fd3fea3327133ae67"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cluster_6.wav",
+    "bytes": 22128,
+    "sha256": "97f677e3e4c6df486818376e3f63df3dedb0fe3fceffb8691ba25bd20c719c41"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_cluster_outline.wav",
+    "bytes": 22128,
+    "sha256": "e8f30a88c141562c3a68a57ed1ff46181974161ff0f3610e8b1d4732a15a6a64"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_drop.wav",
+    "bytes": 22128,
+    "sha256": "4c7ff7611dd51e641f49d3aa1b663249154a9bfbf0d131b436c68eea5c7e6ed1"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_fg_plus5.wav",
+    "bytes": 22128,
+    "sha256": "02065a94f692bef93e74e04e6d47d5286dd18ea984d454917d2ee2df5c12e45a"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_lamp_off.wav",
+    "bytes": 22128,
+    "sha256": "24b06d534f7436083cb324155a060d4cf51a740ef59ea3df2d16223a04eb4192"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_mark.wav",
+    "bytes": 22128,
+    "sha256": "b454acf95a6917e096680aa0be31546702c2ff0d3813443a2096b644323ba46c"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_monocle_glint.wav",
+    "bytes": 22128,
+    "sha256": "1bf843dd5bba3cc932c35bf422b1d98bdcf4526c2383a45809e466c3d1741b57"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_monocle_push.wav",
+    "bytes": 22128,
+    "sha256": "4d03892651e0932743de99823eb983f61f13bee56e66d34892a8f2823209b70b"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_mult_count.wav",
+    "bytes": 22128,
+    "sha256": "7f15bbca528e75bdf73ad5d70ccd47e96302dfbfc9004777078af3ed0aa664f2"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_mult_sum.wav",
+    "bytes": 22128,
+    "sha256": "0b5dc220a2fec3c21875508e6051a945da2a82178d053da107e060ee5c7d3d5c"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_neon_off.wav",
+    "bytes": 22128,
+    "sha256": "7a9493674d564b40c51dc8d053a8173b41fdfde53a3dbc61e9ad445478c24dd7"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_neon_on.wav",
+    "bytes": 22128,
+    "sha256": "a51669a7ee61261a0c237ad0355875408980b0a60eea38eabf2601fdfdae3273"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_page_turn.wav",
+    "bytes": 22128,
+    "sha256": "24170085e2166b7559561a1bb994fa9227957fe114c3b3ab1dc88de05329839f"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_ring_land.wav",
+    "bytes": 22128,
+    "sha256": "ee61ceaea7f9a4e11105fc234d4b7bf7f373207d178d1622a38a8aaec8cb6ceb"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_ring_tease.wav",
+    "bytes": 22128,
+    "sha256": "a4be7488be9f98ef75dd2eec4f93b890c7145089ac73e967cfdc2d24200ff45e"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_ring_trigger.wav",
+    "bytes": 52998,
+    "sha256": "bf655b85a38d8bfea01f5f74d9fb0128aab0c62fd0b51e48695172d59ac62625"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_spin.wav",
+    "bytes": 22128,
+    "sha256": "c571e54c938dc695ac5e537fd78b7942eb169a415b11cd90dff71fd64ff9509f"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_stamp_beam.wav",
+    "bytes": 22128,
+    "sha256": "ff3b6e61badd69227dce735970a5166cb6e0e8b5d87a93022c26c7a242e5bdd5"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_stamp_big.wav",
+    "bytes": 52998,
+    "sha256": "bf655b85a38d8bfea01f5f74d9fb0128aab0c62fd0b51e48695172d59ac62625"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_stamp_catch.wav",
+    "bytes": 22128,
+    "sha256": "1733f7bcb5867e609697fca610aa92e260f84b971fb70b083d8a9ec51ad01a23"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_stamp_fade.wav",
+    "bytes": 22128,
+    "sha256": "a29d4b95fed1e3303b66e33d497c838a112289f85c091ab1b40904ff1bc4e185"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_stamp_raise.wav",
+    "bytes": 22128,
+    "sha256": "4821261ffa844ab3cca8fb4eef9ef014da74bd70d6e6c8f78a64cd4b95c1f8ef"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_stamp_return.wav",
+    "bytes": 22128,
+    "sha256": "68ebc22871b19efda3ae0d6d22748c2d67195c664810a60c6d6f00695053b8f3"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_stamp_slam.wav",
+    "bytes": 52998,
+    "sha256": "bf655b85a38d8bfea01f5f74d9fb0128aab0c62fd0b51e48695172d59ac62625"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_stamp_value.wav",
+    "bytes": 22128,
+    "sha256": "7e2e1461f4f97bfdd91f0dbf377e9921547f61d1cc36c077aaec50b858337b73"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_swipe.wav",
+    "bytes": 33594,
+    "sha256": "301073c8286e1e69e0b55df2c163c96e0572001533ff67ff0b456892be629ab5"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_treat_push.wav",
+    "bytes": 22128,
+    "sha256": "51745ee57f2613f7a0a58cf9e0dad9e136890fcd3a5397dab61d4f21a49896c4"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_turf_claim.wav",
+    "bytes": 97098,
+    "sha256": "31cde4e5d15dcfbbaeacefae00441dc3c900faa5a222ea5761e3353e58718a51"
+  },
+  {
+    "path": "assets/audio/purrfia/sfx_win_to_ticker.wav",
+    "bytes": 22128,
+    "sha256": "a848f2a744dd2b94570589a8b19c5f20694a06ff071ba7347f5f4183764bf061"
+  },
+  {
+    "path": "assets/audio/purrfia/stinger_fg_intro.wav",
+    "bytes": 282318,
+    "sha256": "87451dc1ccbc8667cb16c994a32040b8bc059a43b8f493fb04f938985054c028"
+  },
+  {
+    "path": "assets/audio/purrfia/stinger_fg_outro.wav",
+    "bytes": 282318,
+    "sha256": "07952abc4b0295a0442f2c6640354faff3173e3cb6e6aa9ecbf7ad8ca8527c71"
+  },
+  {
+    "path": "assets/audio/purrfia/vo_boss_growl.wav",
+    "bytes": 66228,
+    "sha256": "dc747f918dad6a7b6c46ee269c0507d985824e3a5a51ceac7796e3fa2e82d098"
+  },
+  {
+    "path": "assets/audio/purrfia/vo_boss_hiss.wav",
+    "bytes": 66228,
+    "sha256": "dc747f918dad6a7b6c46ee269c0507d985824e3a5a51ceac7796e3fa2e82d098"
+  },
+  {
+    "path": "assets/audio/purrfia/vo_boss_hmm.wav",
+    "bytes": 66228,
+    "sha256": "dc747f918dad6a7b6c46ee269c0507d985824e3a5a51ceac7796e3fa2e82d098"
+  },
+  {
+    "path": "assets/audio/purrfia/vo_boss_hmm_2.wav",
+    "bytes": 66228,
+    "sha256": "dc747f918dad6a7b6c46ee269c0507d985824e3a5a51ceac7796e3fa2e82d098"
+  },
+  {
+    "path": "assets/audio/purrfia/vo_boss_laugh.wav",
+    "bytes": 150018,
+    "sha256": "b3628894e0430eae749ef986a81b9830d99b14d5068970ef561aa86769153e0b"
+  },
+  {
+    "path": "assets/audio/purrfia/vo_boss_laugh_2.wav",
+    "bytes": 150018,
+    "sha256": "b3628894e0430eae749ef986a81b9830d99b14d5068970ef561aa86769153e0b"
+  },
+  {
+    "path": "assets/audio/purrfia/vo_boss_proud.wav",
+    "bytes": 66228,
+    "sha256": "dc747f918dad6a7b6c46ee269c0507d985824e3a5a51ceac7796e3fa2e82d098"
+  },
+  {
+    "path": "assets/audio/purrfia/vo_boss_purr.wav",
+    "bytes": 150018,
+    "sha256": "b3628894e0430eae749ef986a81b9830d99b14d5068970ef561aa86769153e0b"
+  },
+  {
+    "path": "assets/audio/purrfia/vo_boss_shock.wav",
+    "bytes": 66228,
+    "sha256": "dc747f918dad6a7b6c46ee269c0507d985824e3a5a51ceac7796e3fa2e82d098"
+  },
+  {
+    "path": "assets/audio/purrfia/vo_boss_yawn.wav",
+    "bytes": 66228,
+    "sha256": "dc747f918dad6a7b6c46ee269c0507d985824e3a5a51ceac7796e3fa2e82d098"
+  },
+  {
+    "path": "assets/spines/donWhiskers43/character.atlas",
+    "bytes": 4031,
+    "sha256": "0726d41534a254596163df06a2ff7bca944f4bfb08c266e62c44cc9dde7c9801"
+  },
+  {
+    "path": "assets/spines/donWhiskers43/character.json",
+    "bytes": 3394946,
+    "sha256": "977e144ded990149af0e648526c28530614c23bde8a297e53f8c3496f0219667"
+  },
+  {
+    "path": "assets/spines/donWhiskers43/character.png",
+    "bytes": 4713488,
+    "sha256": "0765056ab8287735fc98ce64d77bae7026b59e928b64d3b7088242b4f8ec4f9e",
+    "size": [
+      2048,
+      2048
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/spines/donWhiskers43/character_2.png",
+    "bytes": 174943,
+    "sha256": "a764d4cf3ad24bec09f12c6174f667cb5a41db4012dc7a677357e1275232aa4b",
+    "size": [
+      2048,
+      128
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaBackground/bg_base.jpg",
+    "bytes": 793941,
+    "sha256": "44d73d3636d6663341071878fb3eaa130e9f15bbab3c35b8bfd17913aca98a73",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGB"
+  },
+  {
+    "path": "assets/sprites/purrfiaBackground/bg_free.jpg",
+    "bytes": 1107635,
+    "sha256": "d2eb28933668b982f661f3c9b8b9feb8fa160ea5a0d1887d83080fc85cdd3065",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGB"
+  },
+  {
+    "path": "assets/sprites/purrfiaBrand/loader.png",
+    "bytes": 61021,
+    "sha256": "bc664be9c8cb2248054d49a4c3f285b22436f5037d94fb95e6fac5797f980670",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaBrand/logo.png",
+    "bytes": 847787,
+    "sha256": "95fc195fadbfb8043eba45358f8a10a54a507c8f6707c3c8f9ae4b10f62ea159",
+    "size": [
+      1600,
+      600
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaCast/character_master.png",
+    "bytes": 1292829,
+    "sha256": "4111d296a9ae2a7d0dc8917c24a34af82717c2223c4df0eef96df8e0d04e07e3",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaFx/fx_glow.png",
+    "bytes": 514,
+    "sha256": "e135445a01ebc183e8289035452697d42bcdf06d29362e9b655106939d107186",
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaFx/fx_rubble.png",
+    "bytes": 263,
+    "sha256": "4fbdb08577b9cf371538b77ab5a862767f039540532c84f25e3aeb57e3f38b92",
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaFx/fx_star.png",
+    "bytes": 514,
+    "sha256": "e135445a01ebc183e8289035452697d42bcdf06d29362e9b655106939d107186",
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaFx/fx_streak.png",
+    "bytes": 514,
+    "sha256": "e135445a01ebc183e8289035452697d42bcdf06d29362e9b655106939d107186",
+    "size": [
+      128,
+      128
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaFx/fx_vignette.png",
+    "bytes": 1085,
+    "sha256": "5be8fb8739b554e0daa88f3ab09341a92e7b4344d9b443fc67a3f5013352c422",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaIntro/intro_1.png",
+    "bytes": 1252942,
+    "sha256": "b7b6af08329fe6aa450933b1141da6f22dec24b24be0899e6d067003ff5e0b57",
+    "size": [
+      960,
+      720
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaIntro/intro_2.png",
+    "bytes": 1219033,
+    "sha256": "e11baecdd143f99c5fec5193aea6a283b9cab70bf1de5888aa1823ec31838556",
+    "size": [
+      960,
+      720
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaIntro/intro_3.png",
+    "bytes": 1261792,
+    "sha256": "f2b227b6e15dc371722234836d31765d5ff9c0cb9ebc3b53e02ffa606f63e3d5",
+    "size": [
+      960,
+      720
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/box_closed.png",
+    "bytes": 128318,
+    "sha256": "f613f2e0f5523cb327a6e889a237452bae2e17ec4b44a347cf4f4787a24bfab8",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/box_open_1.png",
+    "bytes": 126456,
+    "sha256": "4fadf8c2acfd2f7aee8ad44637e72df1f299cc07b386cd51e92a48bcfac77e03",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/box_open_2.png",
+    "bytes": 191865,
+    "sha256": "17dbd4d7dabe65405d0c2073fdcb99d564c58935126075f196b3e68248a88b6e",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/box_open_3.png",
+    "bytes": 159359,
+    "sha256": "8070fa1765a8295c1416ba39893c13dc94e5eb54de86b650a3d3053a5a67d822",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/box_open_4.png",
+    "bytes": 86271,
+    "sha256": "6915ce98b63a189916dc69122a5ff5884fdb4e2e3d9e0f5c553dba1bd96c03b1",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/box_peek_1.png",
+    "bytes": 115304,
+    "sha256": "0f92feadf7aeaabf3b09be04dc628474562a0a2c1f0b8547e51778a4a24ca843",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/box_peek_2.png",
+    "bytes": 120695,
+    "sha256": "227851cae84e8684b629f4349c4c29495c61bd27ab8b39c240fc6ad0ce42198f",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/cat_paw.png",
+    "bytes": 66619,
+    "sha256": "89ac411faf8b18e0da9263b2e94b2dab2be3ca669a95663de1da30260dd18530",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/stamp_ink.png",
+    "bytes": 128004,
+    "sha256": "bf20b5c6c70b9ab9d570fdbbc1f5ca147ead528c3bdab30a717742fd4765ac50",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/stamp_side.png",
+    "bytes": 133183,
+    "sha256": "543aa8479e166d5f83c3715d0db5181367f5548afd5d280b7a8633bb66e68fa3",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/stamp_x10.png",
+    "bytes": 164626,
+    "sha256": "05e2dc1ec016bda0b386c0c7dc896e69d42030d4b0e3e7b62417ea54aeb5991f",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/stamp_x100.png",
+    "bytes": 211275,
+    "sha256": "7db99c9a28633096867eab01ea1c6f815e14a176fe3d8317731d0a08ebb832da",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/stamp_x2.png",
+    "bytes": 169732,
+    "sha256": "8cddaf85d5d7d008b894946b719c557591918c73f794f0d81df6ec459282f836",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/stamp_x25.png",
+    "bytes": 193750,
+    "sha256": "27238feaeb21f45b70eefc20280cbab6ff70b7d6953614c117015e255e0da804",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/stamp_x3.png",
+    "bytes": 188414,
+    "sha256": "43682ca5cd59f16a8c21e79519f383ad3912f8eacbbc0b37b112ee31516676a0",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/stamp_x5.png",
+    "bytes": 194573,
+    "sha256": "1b791bca2ddf17799a2b61d3fd02a82ae73392b8552434215e0998b4275347e9",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaMechanics/stamp_x50.png",
+    "bytes": 205463,
+    "sha256": "9d9940ee3e67f2f604c10a70482b2942b51cd8e54127d772424d8d3b65c0bc79",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h1.png",
+    "bytes": 271321,
+    "sha256": "721baacfbadfc75a60543925df99acaa902107e9ce710bceeca527cf7764485a",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h1_bowl.png",
+    "bytes": 206081,
+    "sha256": "536a101741f9dbba64582564636e3f4a0cc6ccf2ed6f4a02a27f96296a86d07a",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h1_fish.png",
+    "bytes": 154703,
+    "sha256": "40d54b198a63257d8d607836257c91c3a5d8872f24007b28586e9828b0ae4340",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h1_water.png",
+    "bytes": 76203,
+    "sha256": "a4a870c71d0c896234cbbe5e0381c927f683c7539998a3c3d2d3fd4ee730ebe4",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h2.png",
+    "bytes": 233347,
+    "sha256": "930b0b2d506fdf20ea13e36c505e61825f98c501e1f9505be348766fb81da77a",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h2_can.png",
+    "bytes": 169397,
+    "sha256": "700e0d48d48323294a3cce44634ec9d3c4f69d832399e45b2423a81dfddfaf8a",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h2_lid.png",
+    "bytes": 158394,
+    "sha256": "41b6c89b6cea1f05ef7417991c625eee49081155da89bc1f0f630f8fc1108974",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h2_tail.png",
+    "bytes": 72147,
+    "sha256": "21bf2075ad5dc2651bf0b139099c743ffa01c85ad62a19e1046debbaa1a009d6",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h3.png",
+    "bytes": 278914,
+    "sha256": "76df75c88322639731c8c267b6edc1b8f4df10337fc4bf8e66f0351b0fa38352",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h3_ball.png",
+    "bytes": 217254,
+    "sha256": "a543149bc6b3416499dc6f925af0ab107a7495efec8fcf82e191b1ebde8c3e9a",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h3_thread.png",
+    "bytes": 161953,
+    "sha256": "5b7e7d3f3947a7c210975a48029a50853db11f83c23ed838cbeeab0a33b924ad",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h4.png",
+    "bytes": 265460,
+    "sha256": "0bdbca684f0709dd76bf3f20b1c236069d83d3f7d04951fdb40557bda5d055dc",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h4_leaves.png",
+    "bytes": 171584,
+    "sha256": "117327128e45181bbcebadcd66d1d0e52dd0b55bd0c4571bd521ec9064a7ea04",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/h4_pot.png",
+    "bytes": 151921,
+    "sha256": "6db4a3c856375790ec1e3a555e4d8d84da70de2e9d83054a3f79666ef73a1204",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/l1.png",
+    "bytes": 243708,
+    "sha256": "9dc1889c4a787b227740e8fe10436634716e289433c87d665e06a15dd7383d89",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/l2.png",
+    "bytes": 231440,
+    "sha256": "af3df14ca6159ea2a061680691f7f2fa8d82b0914240c788cb2582c1c410ee46",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/l3.png",
+    "bytes": 251971,
+    "sha256": "6d675fbee021e5bbec15859fe4e20982d7904d02828cbf3994d09e6463954c2f",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/l4.png",
+    "bytes": 230551,
+    "sha256": "498324797584664985698a99268c3aa9f495feee60164438b76444a3bd9eb7df",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/m.png",
+    "bytes": 128318,
+    "sha256": "f613f2e0f5523cb327a6e889a237452bae2e17ec4b44a347cf4f4787a24bfab8",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/s.png",
+    "bytes": 267643,
+    "sha256": "99ef4475d1a76df82afaca2cf05dedd7627db5e398784b5270c456441d4c74dd",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/s_gem.png",
+    "bytes": 112751,
+    "sha256": "9289bd7b788122641751167b9e12c55cb035d587622b8d6e6da6094950c678dd",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/s_ring.png",
+    "bytes": 198877,
+    "sha256": "6f66aab1691fdbb572ae62eff34dd2e574a785cd5d5c807f5815d30ba358849e",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaSymbols/w.png",
+    "bytes": 169732,
+    "sha256": "8cddaf85d5d7d008b894946b719c557591918c73f794f0d81df6ec459282f836",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/bar_strip.png",
+    "bytes": 288189,
+    "sha256": "3afd562a9ddc713b14b80aa9a5dab36ee7942dbe09203c3c35958502f4155838",
+    "size": [
+      1600,
+      200
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/button_disc.png",
+    "bytes": 68272,
+    "sha256": "a155cc9bb02f2951490b5fb73140c6c59b14370382eab44774bcc429d4cb8055",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/button_disc_on.png",
+    "bytes": 71936,
+    "sha256": "cac61adb62731f8a83e769a6536e2d71ad1a830b11956928bca158dec9480a99",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/buy_card_bonus.png",
+    "bytes": 171505,
+    "sha256": "7475cc98c0e6c90092d635382bf71eb959289af205fc1c0bc149e8bc188d5e0a",
+    "size": [
+      640,
+      800
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/buy_card_bonus_hover.png",
+    "bytes": 173126,
+    "sha256": "d9bcacb5ee95aeba10d140e93be4ce1f86bad295931122fd542a4caa4c0c4694",
+    "size": [
+      640,
+      800
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/buy_card_super.png",
+    "bytes": 160837,
+    "sha256": "f0cb3387ee862eaf31f95a7065f8a7034f8642139ca291118b5199c249957677",
+    "size": [
+      640,
+      800
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/buy_card_super_hover.png",
+    "bytes": 181181,
+    "sha256": "c55305221d195322bc8415e768bb1660fffdcf9d14faf9aa6e0fbcf46953c4ce",
+    "size": [
+      640,
+      800
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/buybonus_plate.png",
+    "bytes": 136561,
+    "sha256": "dc83537499988b0bfab2364d1e689873c88ce4a60419c8ae874fb9f510289463",
+    "size": [
+      640,
+      640
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/buybonus_plate_lit.png",
+    "bytes": 136209,
+    "sha256": "c2ec3edae1c06edbfcb31f75dfb5e5307fbd75c9ecaf5e1bc63be85483f6426e",
+    "size": [
+      640,
+      640
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/frame_corner.png",
+    "bytes": 46940,
+    "sha256": "d99ff7366f0976f8757643c86e2e4976dc6b61d0fa98e9ede576ea6882e3fbaf",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/frame_edge_h.png",
+    "bytes": 53179,
+    "sha256": "95c95003c3f0801227e3308ae10fc549c577c07e351dc3e9fd78bb063fe9916a",
+    "size": [
+      512,
+      96
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/frame_edge_v.png",
+    "bytes": 40971,
+    "sha256": "3e4b20c8e90b57ea7d61bc131338fbcea3a6a8b214a78f480ccf2bc4ec3d3549",
+    "size": [
+      96,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/fs_counter_panel.png",
+    "bytes": 86089,
+    "sha256": "8c9a4cd2d92310547bd01f4ad6de51f4513b4ebdf3e75117ff4cc9aac21bd39d",
+    "size": [
+      512,
+      320
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/fs_sign.png",
+    "bytes": 172845,
+    "sha256": "d05c1f144e9ddf8140fea4c117f709baa67cd90f74d2110c2ef14b3707decded",
+    "size": [
+      1706,
+      922
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUi/ticker_plate.png",
+    "bytes": 1046,
+    "sha256": "095817d77963db4fd8409f675f9079ae786497cce24e8ec65e6231cf69684ba6",
+    "size": [
+      652,
+      146
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUiIcons/autoSpin.png",
+    "bytes": 7751,
+    "sha256": "27b77b9245ef00037da994064d9697c786d92245cbb498a441e291b68082e33a",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUiIcons/decrease.png",
+    "bytes": 1044,
+    "sha256": "1254c887d9338d550a8f36d2181ab480312a12df201d25f69be841e1a52cfb9e",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUiIcons/increase.png",
+    "bytes": 2063,
+    "sha256": "abfa26fc7d6e8c8d0cf4ac37d5f525be89c08fab4f5551a4a3aa8f7f1ecc3c8f",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUiIcons/info.png",
+    "bytes": 2119,
+    "sha256": "8b7e8537561811a4ee226a67f4b197253a345f9b69447db8c5763ea984f03af8",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUiIcons/menu.png",
+    "bytes": 2564,
+    "sha256": "9661678a237b7446c4de13d07233b9f7e6bd4bb048b4c8f3cf51104ef2f6edc3",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUiIcons/menuExit.png",
+    "bytes": 1720,
+    "sha256": "bb931fcbe988ace7d7e42f67b0dbb96fc4a8bcf3ecc92c5696ac4bf330876a8b",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUiIcons/payTable.png",
+    "bytes": 4219,
+    "sha256": "c619688d55d46e166002d97b01595e5d9c70984b53a234ad98cdba94c226bc37",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUiIcons/settings.png",
+    "bytes": 7473,
+    "sha256": "87d013bc171ed8d976864f511354ad692a11a4186d93fd5be31bb9d0fdfa5579",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUiIcons/soundOff.png",
+    "bytes": 3603,
+    "sha256": "818df934b8493e2d5f97969a9935e79738651e393fa3a55409a90c1b698dd889",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaUiIcons/soundOn.png",
+    "bytes": 4774,
+    "sha256": "1c97015d0b266a838734bd968798177590e9a59f2a23f9cfd08f3e2d57d07669",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaWinBanners/big.png",
+    "bytes": 356605,
+    "sha256": "97566f73e060025745e6a78acc56bb11e74fb367b728fe6a6ab380d877e2285a",
+    "size": [
+      1352,
+      194
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaWinBanners/epic.png",
+    "bytes": 371339,
+    "sha256": "cd39af0f8811f6ed10a26b9e47f1a15e632dd367b83827918d8c8ef9cecc3345",
+    "size": [
+      1352,
+      194
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaWinBanners/max.png",
+    "bytes": 388609,
+    "sha256": "244e70ebb900a452c82c23edb1994fd9978f461e30420d3536fbbe9ad2437e3f",
+    "size": [
+      1352,
+      194
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaWinBanners/mega.png",
+    "bytes": 385939,
+    "sha256": "3e05ddc9311ea275146a4683a529e5590abeb93103f84a98b0c6cbe8b4b20e02",
+    "size": [
+      1352,
+      194
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "path": "assets/sprites/purrfiaWinBanners/superwin.png",
+    "bytes": 367360,
+    "sha256": "df53466e37522ccc3b20f5dcf33aa6e12853fbe15fd68a8cbebca80f216d25b2",
+    "size": [
+      1352,
+      194
+    ],
+    "mode": "RGBA"
+  }
+]

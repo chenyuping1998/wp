@@ -15,16 +15,17 @@
  const context=getContext();let cue=$state(''),showRecord=$state(false),recordAngle=$state(0),amount=$state(0),mult=$state(1);
  const wait=(normal:number,fast:number)=>waitForTimeout(stateBet.isTurbo?fast:normal);
  context.eventEmitter.subscribeOnMount({
-  parrotVolumeStart:async()=>{await wait(450,200);},
+  parrotVolumeStart:async()=>{context.eventEmitter.broadcast({type:'castPlay',name:'turn_knob',rate:stateBet.isTurbo?2.67:1});await wait(450,200);},
   parrotEncore:async e=>{
-   context.eventEmitter.broadcast({type:'castPlay',name:'encore_build',rate:stateBet.isTurbo?2:1});context.eventEmitter.broadcast({type:'soundCue',cue:'sfx_scratch_build',priority:2});
+   context.eventEmitter.broadcast({type:'castPlay',name:'encore_build',rate:stateBet.isTurbo?2.86:1});context.eventEmitter.broadcast({type:'soundCue',cue:'sfx_scratch_build',priority:2});
    cue=parrotText('encore');mult=e.mult;await wait(1000,350);
    context.eventEmitter.broadcast({type:'castPlay',name:'encore_call'});context.eventEmitter.broadcast({type:'soundCue',cue:'vo_squawk_call',priority:2});
+   if(context.stateGame.gameType==='freegame'){context.eventEmitter.broadcast({type:'soundCue',cue:'sfx_knob_click'});context.eventEmitter.broadcast({type:'soundCue',cue:'sfx_knob_led_'+context.stateGame.volume});}
    for(const [index,p] of e.positions.entries()){const symbol=context.stateGame.board[p.reel]?.reelState.symbols[p.row];if(!symbol)continue;symbol.rawSymbol={name:e.symbol};symbol.symbolState='land';context.eventEmitter.broadcast({type:'soundCue',cue:'sfx_flip_'+Math.min(18,index+1)});await wait(70,30);}
-   await wait(350,150);context.eventEmitter.broadcast({type:'castPlay',name:e.success?'encore_success':'encore_fail'});context.eventEmitter.broadcast({type:'soundCue',cue:e.success?'sfx_encore_hit':'sfx_encore_miss',priority:e.success?1:2});if(!e.success){cue=parrotText('miss');await wait(650,350);}cue='';
+   await wait(350,150);if(context.stateGame.gameType==='freegame'){context.eventEmitter.broadcast({type:'castPlay',name:'turn_knob',rate:stateBet.isTurbo?2.67:1});await wait(400,150);}context.eventEmitter.broadcast({type:'castPlay',name:e.success?'encore_success':'encore_fail'});context.eventEmitter.broadcast({type:'soundCue',cue:e.success?'sfx_encore_hit':'sfx_encore_miss',priority:e.success?1:2});if(!e.success){cue=parrotText('miss');await wait(650,350);}cue='';
   },
   parrotRecord:async e=>{
-   context.eventEmitter.broadcast({type:'castPlay',name:'record_pull'});context.eventEmitter.broadcast({type:'soundCue',cue:'sfx_record_sleeve',priority:2});
+   context.eventEmitter.broadcast({type:'castPlay',name:'record_pull',rate:stateBet.isTurbo?2.5:1});context.eventEmitter.broadcast({type:'soundCue',cue:'sfx_record_sleeve',priority:2});
    showRecord=true;mult=e.mult;amount=e.baseWin;cue=parrotText('record');await wait(900,400);
    for(let frame=0;frame<10;frame++){recordAngle+=(10-frame)*.17;await waitForTimeout(stateBet.isTurbo?30:40);}recordAngle=0;
    cue=`${parrotText('record')} ×${e.mult}`;context.eventEmitter.broadcast({type:'soundCue',cue:'sfx_record_reveal_t'+(e.mult>=250?4:e.mult>=50?3:e.mult>=10?2:1),priority:1});await wait(200,150);

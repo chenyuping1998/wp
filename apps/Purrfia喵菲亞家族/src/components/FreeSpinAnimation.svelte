@@ -19,7 +19,7 @@
 	const props: Props = $props();
 
 	const context = getContext();
-	// Inner marble measured on the installed transparent 1706x922 scroll.
+	// Inner text well on the installed transparent 1706x922 scroll.
 	const SIGN_SOURCE = { width: 1706, height: 922 };
 	const SIGN_RATIO = SIGN_SOURCE.width / SIGN_SOURCE.height;
 	const SIGN_WIDTH = SYMBOL_SIZE * BOARD_DIMENSIONS.x * 1.06;

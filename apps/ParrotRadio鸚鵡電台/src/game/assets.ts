@@ -1,5 +1,7 @@
 // Original production artwork; prompts and source layers are preserved in design/source.
 export default {
+ mgUiTicker:{type:'sprite',src:new URL('../../assets/sprites/parrotUi/bar_strip.png',import.meta.url).href,preload:true},
+ mgLoader:{type:'sprite',src:new URL('../../assets/sprites/parrotBrand/loader.png',import.meta.url).href,preload:true},
  mgBgBase: {type:'sprite',src:new URL('../../assets/sprites/parrotBackground/bg_base.jpg',import.meta.url).href,preload:true},
  mgBgFree: {type:'sprite',src:new URL('../../assets/sprites/parrotBackground/bg_free.jpg',import.meta.url).href,preload:true},
  mgS: {type:'sprite',src:new URL('../../assets/sprites/parrotSymbols/s.png',import.meta.url).href,preload:true},
@@ -56,7 +58,7 @@ export default {
  part_s_charm: {type:'sprite',src:new URL('../../assets/sprites/parrotSymbols/s_charm.png',import.meta.url).href,preload:true},
  part_s_feather: {type:'sprite',src:new URL('../../assets/sprites/parrotSymbols/s_feather.png',import.meta.url).href,preload:true},
  part_s_mic: {type:'sprite',src:new URL('../../assets/sprites/parrotSymbols/s_mic.png',import.meta.url).href,preload:true},
- castAtlas0: {type:'sprite',src:new URL('../../assets/spines/squawk43/character.png',import.meta.url).href,preload:true},
+ castAtlas0: {type:'sprite',src:new URL('../../assets/spines/squawk43/character.png',import.meta.url).href+'?v=e54448b66846',preload:true},
  mgIconMenu: {type:'sprite',src:new URL('../../assets/sprites/parrotUiIcons/menu.png',import.meta.url).href,preload:true},
  mgIconMenuExit: {type:'sprite',src:new URL('../../assets/sprites/parrotUiIcons/menuExit.png',import.meta.url).href,preload:true},
  mgIconSettings: {type:'sprite',src:new URL('../../assets/sprites/parrotUiIcons/settings.png',import.meta.url).href,preload:true},

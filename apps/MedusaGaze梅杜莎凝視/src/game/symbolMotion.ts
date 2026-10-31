@@ -1,23 +1,31 @@
-/** Original app-owned motion. No competitor pixels, rigs or keyframes. */
+/** Medusa's original painted artwork, using the local PP motion vocabulary. */
+import { ppTrack,beatPulse,lagged,lookAround,glowPulse,LOCAL_ACT_KEYS } from './ppMotion.ts';
 export const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 export const smooth = (x: number) => { const t = clamp01(x); return t * t * (3 - 2 * t); };
 export const windowPulse = (t: number) => Math.sin(Math.PI * clamp01(t));
+/** Lower whole-icon lift leaves room for upper-body/terminal acting. */
+export const winHopPose = (time:number, name = '') => {
+ const t=clamp01(time),heavy=name==='H2'||name==='H4',light=name==='H3'||name==='H5';
+ const high=name.startsWith('H')||name==='S';
+ const beat=high?beatPulse(t*1500):ppTrack(t*1500,[[0,0],[200,-.3],[533,1],[833,0],[1100,.3],[1400,0],[1500,0]]);
+ const lift=heavy?.84:light?1.1:1,pop=1+Math.max(0,beat)*.035;
+ const sx=1+(beat<0?-.065:-.025)*beat,sy=1/sx;
+ return{y:beat===0?0:-beat*.062*lift,sx:sx*pop,sy:sy*pop};
+};
+/** A continuous stone boundary, outside the painted bounds at both endpoints. */
+export const stoneFront = (u: number, progress: number) => {
+	const s = clamp01(progress);
+	return -.68 + 1.36 * s + .08 * Math.sin(u * 5.5 + 1.1) * Math.sin(Math.PI * s);
+};
 const local = (x: number, y: number, cx: number, cy: number, rx: number, ry: number) =>
 	Math.exp(-(((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2));
 
 export const symbolPose = (name: string, time: number) => {
-	const t = clamp01(time), hit = windowPulse(t), recoil = Math.sin(t * Math.PI * 3) * hit;
-	const pose = { x: 0, y: 0, rotation: 0, sx: 1, sy: 1, glint: hit ** 3 * 0.28 };
-	if (name === 'H1') { pose.y = -0.045 * hit; pose.rotation = -0.035 * recoil; }
-	else if (name === 'H2') { pose.y = -0.023 * hit; pose.rotation = 0.045 * recoil; }
-	else if (name === 'H3') { pose.rotation = -0.065 * hit; pose.y = -0.015 * hit; }
-	else if (name === 'H4') { pose.rotation = 0.115 * recoil; pose.y = -0.02 * hit; }
-	else if (name === 'H5') { pose.y = -0.025 * hit; pose.rotation = 0.025 * recoil; }
-	else if (name === 'S') { pose.sx = 1 + 0.055 * hit; pose.sy = 1 + 0.055 * hit; }
-	else { pose.sx = 1 - 0.12 * hit; pose.rotation = (name === 'L2' || name === 'L4' ? -1 : 1) * 0.055 * hit; pose.y = -0.025 * hit; }
-	return pose;
+ const t=clamp01(time),lookValue=lookAround(t*1500,1);
+ const high=name.startsWith('H')||name==='S';
+ return{x:0,y:0,rotation:(name==='H4'?.028:name==='H3'?-.018:name==='H2'?.011:name==='H5'?-.006:high?.008:.016)*lookValue,
+  sx:1,sy:1,glint:glowPulse(t*1500)};
 };
-
 /** Guides measured from 1254px originals and transformed into the 512px canvas. */
 export const SYMBOL_ART_GUIDES = {
 	H1: { head: [0.3057, 0.2587], neck: [0.4926, 0.3270] },
@@ -27,39 +35,51 @@ export const SYMBOL_ART_GUIDES = {
 	H5: { leaf: [0.8134, 0.8134] },
 } as const;
 
-/** Preserve the painted texture during local acting. No flat eyes or leaves
- * cover the polished artwork. These modest actions are not a layered Spine rig. */
+type Acting={time:number;body:number;chest:number;head:number;tip:number;look:number;pluck:number};
+const actingCache=new Map<string,Acting>();
+const acting=(name:string,time:number)=>{
+ const prior=actingCache.get(name);if(prior?.time===time)return prior;
+ const ms=clamp01(time)*1500,at={time,body:lagged(ms,LOCAL_ACT_KEYS,0,80),chest:lagged(ms,LOCAL_ACT_KEYS,1,80),head:lagged(ms,LOCAL_ACT_KEYS,2,80),tip:lagged(ms,LOCAL_ACT_KEYS,3,80),look:lookAround(ms,1),pluck:Math.sin(ms/1500*Math.PI*14)*Math.sin(Math.PI*clamp01(time))};actingCache.set(name,at);return at;
+};
+/** Weighted original texture: planted base, torso/chest/head lag, terminal
+ * shear and a Gaussian depth turn. No flat replacements cover the artwork. */
 export const symbolPoint = (name: string, u: number, v: number, time: number) => {
-	const t = clamp01(time), hit = windowPulse(t), lag = Math.sin(t * Math.PI * 3) * hit;
-	let x = u - 0.5, y = v - 0.5;
-	if (name === 'H1') {
-		const head = local(u, v, ...SYMBOL_ART_GUIDES.H1.head, 0.17, 0.12);
-		const neck = local(u, v, ...SYMBOL_ART_GUIDES.H1.neck, 0.14, 0.13);
-		x += head * 0.016 * lag + neck * 0.009 * lag;
-		y -= head * 0.032 * hit + neck * 0.010 * hit;
-	} else if (name === 'H2') {
-		x += local(u, v, ...SYMBOL_ART_GUIDES.H2.crest, 0.23, 0.15) * 0.030 * lag;
-		for (const eye of [SYMBOL_ART_GUIDES.H2.eyeL, SYMBOL_ART_GUIDES.H2.eyeR]) {
-			const weight = local(u, v, eye[0], eye[1], 0.065, 0.075);
-			x += (u - eye[0]) * weight * 0.12 * hit;
-			y += (v - eye[1]) * weight * 0.12 * hit;
-		}
-	} else if (name === 'H3') {
-		const string = local(u, v, ...SYMBOL_ART_GUIDES.H3.strings, 0.11, 0.22);
-		const broken = local(u, v, ...SYMBOL_ART_GUIDES.H3.broken, 0.08, 0.12);
-		x += string * 0.012 * Math.sin(t * Math.PI * 10) * hit;
-		y += broken * 0.022 * lag;
-	} else if (name === 'H4') {
-		const guide = u < 0.5 ? SYMBOL_ART_GUIDES.H4.handleL : SYMBOL_ART_GUIDES.H4.handleR;
-		const handle = local(u, v, guide[0], guide[1], 0.09, 0.14);
-		y += handle * 0.016 * lag * (u < 0.5 ? 1 : -1);
-	} else if (name === 'H5') {
-		const leaf = local(u, v, ...SYMBOL_ART_GUIDES.H5.leaf, 0.10, 0.10);
-		x += (u - 0.5) * 0.06 * hit * Math.max(0, 1 - v) + leaf * 0.040 * hit;
-		y -= Math.abs(u - 0.5) * 0.020 * lag;
-		y += leaf * 0.060 * hit;
-	}
-	return { x, y };
+ const t=clamp01(time);let x=u-.5,y=v-.5;
+ if(t===0||t===1||(!name.startsWith('H')&&name!=='S'))return{x,y};
+ const a=acting(name,t);
+ if(name==='H1'){
+  const neck=local(u,v,...SYMBOL_ART_GUIDES.H1.neck,.15,.15),headWeight=local(u,v,...SYMBOL_ART_GUIDES.H1.head,.18,.13);
+  const depth=local(u,v,.31,.265,.12,.10);
+  x+=neck*.011*a.chest+headWeight*.023*a.head+depth*.024*a.look;
+  y-=neck*.023*a.chest+headWeight*.061*a.head;
+ }else if(name==='H2'){
+  const crest=local(u,v,...SYMBOL_ART_GUIDES.H2.crest,.23,.15),mask=local(u,v,.37,.60,.23,.22);
+  x+=crest*.040*a.tip+mask*.022*a.look;
+  y-=crest*.033*a.head;
+  // Near and far eye openings receive different depth shares, not new eyes.
+  for(const [i,eye] of [SYMBOL_ART_GUIDES.H2.eyeL,SYMBOL_ART_GUIDES.H2.eyeR].entries()){
+   const w=local(u,v,eye[0],eye[1],.065,.075);x+=w*.009*a.look*(i?-.3:1);
+  }
+ }else if(name==='H3'){
+  const strings=local(u,v,...SYMBOL_ART_GUIDES.H3.strings,.11,.22),tip=local(u,v,...SYMBOL_ART_GUIDES.H3.broken,.08,.12);
+  x+=strings*.010*a.pluck+tip*.017*a.tip;
+  y-=tip*.031*a.tip+local(u,v,.5,.25,.27,.19)*.018*a.head;
+ }else if(name==='H4'){
+  const mask=local(u,v,.5,.46,.25,.31);x+=mask*.015*a.look;
+  for(const [i,g] of [SYMBOL_ART_GUIDES.H4.handleL,SYMBOL_ART_GUIDES.H4.handleR].entries()){
+   const w=local(u,v,g[0],g[1],.09,.14);x+=(u-g[0])*w*.08*a.chest;y-=w*.013*a.tip*(i?-1:1);
+  }
+ }else if(name==='H5'){
+  const stem=smooth((.94-v)/.8);
+  // Opposed, delayed leaf fans act through a shear field; the tied base stays.
+  x+=(u-.5)*.067*a.chest*stem;y-=(.5-Math.abs(u-.5))*.021*a.head*stem;
+  const leaf=local(u,v,...SYMBOL_ART_GUIDES.H5.leaf,.10,.10);x+=leaf*.017*a.tip;y+=leaf*.022*a.tip;
+ }else if(name==='S'){
+  const radius=Math.hypot(u-.5,v-.5),rim=1-smooth((radius-.28)/.12);
+  const face=local(u,v,.50,.55,.23,.24)*rim,back=local(u,v,.51,.30,.27,.16)*rim;
+  x+=face*.028*a.look-back*.009*a.look;y-=face*.014*a.head;
+ }
+ return{x,y};
 };
 
 export type Accent = { type: 'ellipse' | 'polygon' | 'line'; x?: number; y?: number; rx?: number; ry?: number; points?: number[]; color: number; alpha: number; width?: number };
@@ -79,8 +99,9 @@ export const landingPose = (time: number, weight = 1) => {
 	return { sx, sy, y: (1 - sy) * 0.5 };
 };
 
-export const gravityProgress = (time: number) => { const t = clamp01(time); return t * t * (0.82 + 0.18 * t); };
-export const fallDuration = (rows: number, budgetMs: number) => rows <= 0 ? 0 : budgetMs * (0.72 + 0.28 * Math.sqrt(Math.min(6, rows) / 6));
+/** Shared contact curve: first contact, then two diminishing rebounds. */
+export const gravityProgress = (time: number) => ppTrack(clamp01(time),[[0,0],[.6,1],[.725,.95],[.85,1],[.925,.98],[1,1]]);
+export const fallDuration = (rows: number, budgetMs: number) => rows <= 0 ? 0 : budgetMs;
 const travels = new WeakMap<object, { from: number; to: number }>();
 export const recordSymbolTravel = (carrier: object, from: number, to: number) => travels.set(carrier, { from, to });
 export const symbolTravelBlur = (carrier: object, y: number) => {
@@ -108,18 +129,34 @@ export const planCascadeColumn = <T>(column: T[], removed: number[], incoming: T
 	return { column: [incoming[0], ...falling, ...survivors.map((row) => column[row]), column[visibleRows + 1]], moves };
 };
 
-// Five irregular, gap-free pieces. UVs remain on the original symbol texture.
-export const FRACTURE_PIECES = [
-	[[-0.025, -0.015], [-0.5, -0.5], [0.10, -0.5]],
-	[[-0.025, -0.015], [0.10, -0.5], [0.5, -0.5], [0.5, 0.12]],
-	[[-0.025, -0.015], [0.5, 0.12], [0.5, 0.5], [0.05, 0.5]],
-	[[-0.025, -0.015], [0.05, 0.5], [-0.5, 0.5], [-0.5, 0.06]],
-	[[-0.025, -0.015], [-0.5, 0.06], [-0.5, -0.5]],
-] as const;
+// Convex, unequal stone cells replace the radial "sliced sticker" silhouette.
+// Clip once at module load; shared edges preserve every original painted UV.
+const fractureSeeds = [[-.28,-.33],[.06,-.35],[.34,-.12],[.29,.29],[-.04,.32],[-.34,.13],[-.02,-.03],[-.31,-.11]];
+export const FRACTURE_PIECES = fractureSeeds.map((site,index) => {
+ let polygon=[[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]];
+ fractureSeeds.forEach((other,j)=>{
+  if(index===j)return;
+  const nx=other[0]-site[0],ny=other[1]-site[1],limit=(other[0]**2+other[1]**2-site[0]**2-site[1]**2)/2;
+  const clipped:number[][]=[];
+  polygon.forEach((point,k)=>{
+   const next=polygon[(k+1)%polygon.length],distance=point[0]*nx+point[1]*ny-limit,nextDistance=next[0]*nx+next[1]*ny-limit;
+   if(distance<=1e-12)clipped.push(point);
+   if((distance<0)!==(nextDistance<0)){
+    const at=distance/(distance-nextDistance);clipped.push([point[0]+(next[0]-point[0])*at,point[1]+(next[1]-point[1])*at]);
+   }
+  });polygon=clipped;
+ });return polygon;
+});
 export const fragmentPose = (index: number, time: number, seed = 0) => {
-	const t = clamp01(time), angle = [-2.15, -0.78, 0.36, 1.45, 2.95][index];
-	const burst = 0.35 + (index % 3) * 0.085 + (seed % 7) * 0.006;
-	return { x: Math.cos(angle) * burst * t, y: Math.sin(angle) * burst * t - 0.18 * t + 0.83 * t * t,
-		rotation: (index % 2 ? 1 : -1) * (0.55 + index * 0.16) * t,
-		scale: 1 - 0.20 * t, alpha: 1 - smooth((t - 0.4) / 0.6) };
+	const t = clamp01(time), points = FRACTURE_PIECES[index];
+	const angle = Math.atan2(points.reduce((s,p)=>s+p[1],0), points.reduce((s,p)=>s+p[0],0))+(seed%5-2)*.045;
+	// A brief contact hold lets the stone read before the force travels through
+	// the pieces. Different launch times stay inside the existing crumble budget.
+	const launch=.08+(index%3)*.012,flight=clamp01((t-launch)/(1-launch));
+	const burst = 0.46 + (index % 3) * 0.10 + (seed % 7) * 0.006;
+	const expansion = 1 - (1 - flight) ** 2;
+	return { x: Math.cos(angle) * burst * expansion, y: Math.sin(angle) * burst * expansion - 0.26 * flight + 1.0 * flight * flight,
+		rotation: (index % 2 ? 1 : -1) * (0.55 + index * 0.16) * flight,
+		sx: 1 - .5 * Math.sin(flight * Math.PI * (.8 + (index % 3) * .2)) ** 2,
+		depth: Math.sin(flight * Math.PI), scale: 1 - 0.20 * flight, alpha: 1 - smooth((t - 0.4) / 0.6) };
 };

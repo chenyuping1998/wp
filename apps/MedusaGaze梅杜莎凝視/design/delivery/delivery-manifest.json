@@ -1,15 +1,15 @@
 {
-  "date": "2026-10-25",
+  "date": "2026-10-31",
   "archives": [
     {
-      "name": "MedusaGaze_frontend_20261025.zip",
-      "bytes": 42937657,
-      "sha256": "a48a508e65ee6e65b09c3e1343175e78744c3fef7f0038b26d596eabf8197d29"
+      "name": "MedusaGaze_frontend_20261031.zip",
+      "bytes": 45025544,
+      "sha256": "d4762e3ce433036807b2ad603fc5edff67f5feb3fa2b5685fed02a602849f725"
     },
     {
-      "name": "MedusaGaze_sources_20261025.zip",
-      "bytes": 282704646,
-      "sha256": "ff7128dc2b9001d9e3a54c246981bb19e2630a5dc430db406233e937e5980a9d"
+      "name": "MedusaGaze_sources_20261031.zip",
+      "bytes": 308944191,
+      "sha256": "539b425c05771af280d297333e0017a6b5fe5c369faa814c151e1b1314f34b16"
     }
   ],
   "contents": [
@@ -19,24 +19,24 @@
       "sha256": "3c588b75cde522990022a70ade17b3a6db7068f685ac4cb8b31a104f7e258706"
     },
     {
-      "path": "_app/immutable/assets/style.ChO2SnI3.css",
-      "bytes": 20396,
-      "sha256": "c2223fc1c39b5e4604da00ad778ce809e47443bb52d0331852fb41c985a00d97"
+      "path": "_app/immutable/assets/style.B-bMyLcv.css",
+      "bytes": 39471,
+      "sha256": "f5f4c892e8986e4d5d8fea032ffd6ae1b0154f9f149cddaf4551e078b7105002"
     },
     {
-      "path": "_app/immutable/assets/style.nCcc6DQR.css",
-      "bytes": 20506,
-      "sha256": "7530896d055478180acafec8bd8511dd0ebb3d675a75dd49e614a36971fc253c"
+      "path": "_app/immutable/assets/style.BS2hYELX.css",
+      "bytes": 39283,
+      "sha256": "e486c6bd57c2d941328aed65b2597c8205491c0232796ca1d1715f5e41aa80ac"
     },
     {
-      "path": "_app/immutable/bundle.BmF9JuCw.js",
-      "bytes": 3740150,
-      "sha256": "d9b91c0f0d7da5d0758827e322b7f964e3047a4b2cae11efad004ac645698092"
+      "path": "_app/immutable/bundle.N7jtmJcP.js",
+      "bytes": 7463671,
+      "sha256": "8dd2c032ae40bc8db0f1cb0450313ada63ca97daabe42a996ded5edb303241d3"
     },
     {
       "path": "_app/version.json",
       "bytes": 27,
-      "sha256": "e8622b631fc1d17e7628b1a0c8ac34252b5764ed9dc70ef79f96f6639aa794c1"
+      "sha256": "dfe61e172de4617c904a754acfaeb3a5a460769f528e826c83fdab3ee521d6e7"
     },
     {
       "path": "assets/audio/medusa/.gitkeep",
@@ -145,8 +145,8 @@
     },
     {
       "path": "assets/audio/medusa/sfx_gaze_beam.wav",
-      "bytes": 24774,
-      "sha256": "50357a68d03572932b3df7cb0c6e11fd8e1a1586c8f4674da427788f6b0a9b03"
+      "bytes": 67110,
+      "sha256": "d331c6a294f764cd5afe4599d29d78ef6c0e4451d65eba58f7c8e6dcb31d85c0"
     },
     {
       "path": "assets/audio/medusa/sfx_gaze_charge.wav",
@@ -164,39 +164,69 @@
       "sha256": "39cc85acdba4bf0009d97b9da0cd7c09d4981ca916f256bb233d2f6e6841aa40"
     },
     {
+      "path": "assets/audio/medusa/sfx_medusa_gather.wav",
+      "bytes": 24774,
+      "sha256": "356e9b88c370f332c19b980f64eb04fcb400278d8137d5cc255e64498f7d34b1"
+    },
+    {
+      "path": "assets/audio/medusa/sfx_medusa_jewel.wav",
+      "bytes": 19482,
+      "sha256": "824cb46d04aaa8022be4ba5f0a904f0bd4bfdb7dd192ae2c8021ad199e02157e"
+    },
+    {
+      "path": "assets/audio/medusa/sfx_medusa_tail.wav",
+      "bytes": 28302,
+      "sha256": "613ab8c28dcc04e6da7b5b235b937a6280046eea997dbec8544ae88f4a933a7c"
+    },
+    {
+      "path": "assets/audio/medusa/sfx_medusa_wrist.wav",
+      "bytes": 12426,
+      "sha256": "0b1e3505f9701f730bd7a3aa52e0bbcf691eba44d0b42d1db7cc588843942415"
+    },
+    {
       "path": "assets/audio/medusa/sfx_mult_count.wav",
       "bytes": 21246,
-      "sha256": "fe6ed04e7dde8a1b7985261fc4742ac97840282e6a1731c17912b8820d541034"
+      "sha256": "0b25b1b318e96c4200b14c7e168e377dcf56c823fd9c4231df4150528ed4d7f1"
+    },
+    {
+      "path": "assets/audio/medusa/sfx_orb_charge.wav",
+      "bytes": 30948,
+      "sha256": "568354ae15954adabc778cc9bb7759095a7e0547c2ad24bd7be90a568c0497a4"
     },
     {
       "path": "assets/audio/medusa/sfx_orb_crack.wav",
       "bytes": 42414,
-      "sha256": "222fb27d0ef052cbba75091b869d9037ef2389d1c8e043d51c3e4e4eaf1f6912"
+      "sha256": "4ea65815b6ce7069f002e6843938a80e442a3a873ee6c3ebe95a27922db1448b"
     },
     {
       "path": "assets/audio/medusa/sfx_orb_crack_2.wav",
       "bytes": 42414,
-      "sha256": "c7e70fa653d0d6d34cc412ba9e8f6d981aca308611f328f0284212401531d0b1"
+      "sha256": "b7fa3e11cca6502767a8b162392575f04b5c5067de98153c5f6e69229f77d22f"
     },
     {
       "path": "assets/audio/medusa/sfx_orb_fly.wav",
-      "bytes": 39768,
-      "sha256": "c33596d9133d5bb23cce08889478bb765720f93af24ac17b7048bb4aa99c6865"
+      "bytes": 52998,
+      "sha256": "79a4b5c9f5fb81dc789cd1cd1be9f18255bacb3db967bc59893a40e392b17232"
     },
     {
       "path": "assets/audio/medusa/sfx_orb_hit_l.wav",
       "bytes": 51234,
-      "sha256": "c076013ac0c17f65fb2c969f706e21fb9cefd39ae2c8a0e215f0580463416ca3"
+      "sha256": "0f9bf12947fb5110a1bba89d267a51fee8c8a30075c34d06267d4de9b54b7759"
     },
     {
       "path": "assets/audio/medusa/sfx_orb_hit_m.wav",
       "bytes": 44178,
-      "sha256": "73c77b9bd75ec2f57b4117caee28d7a52ac0db4b84210a9516584d40cc4e1f94"
+      "sha256": "431fcf62391fbe8c6736e850099bf25d212ff336383da56ebeb146a8624b5a7d"
     },
     {
       "path": "assets/audio/medusa/sfx_orb_hit_s.wav",
       "bytes": 37122,
-      "sha256": "c920c0f5cee7482b2e0d9ebafe0992a6cf4099d783a55401be7b596dc1f92db9"
+      "sha256": "1eac7f91eac1a2450468150a17319f04126619603ad3f8a37a227d166c1a652a"
+    },
+    {
+      "path": "assets/audio/medusa/sfx_orb_release.wav",
+      "bytes": 14190,
+      "sha256": "2fcc56e2ed6205996b86ca48aa95d56c21ed9b007c3dd03600de8258580743ac"
     },
     {
       "path": "assets/audio/medusa/sfx_petrify_1.wav",
@@ -244,6 +274,11 @@
       "sha256": "55e1783944f0d9781af5a6ab6373656aba433f655ca985f81ac2a9cbfc6e518f"
     },
     {
+      "path": "assets/audio/medusa/sfx_snake_snap.wav",
+      "bytes": 10662,
+      "sha256": "73bea2388dfca71211ca6ac8a49e87d1067d3ebbaabe0fc2c0702b26c2c45354"
+    },
+    {
       "path": "assets/audio/medusa/sfx_snake_yawn.wav",
       "bytes": 67110,
       "sha256": "3a03763c84cdaeb8d128cfce9b2fb56c8d4644aff4fcd2d0fe5a5bd266d09b48"
@@ -271,12 +306,12 @@
     {
       "path": "assets/audio/medusa/sfx_total_mult_up.wav",
       "bytes": 37122,
-      "sha256": "719e5fc62845ba78d0ee08c78a8f9297bf7cf67c25d3e3e2983d2d48f1b9c84a"
+      "sha256": "65de7ce8e7722375a8717fa15d69d749abf35b4144d1aa8f28ff5407c50cab93"
     },
     {
       "path": "assets/audio/medusa/sfx_total_to_win.wav",
       "bytes": 24774,
-      "sha256": "4ef2e4fccff8653143bed6730842ddf3526b1bcc71cf39e138f26602e4df51c9"
+      "sha256": "94b314e28d1a148bdb11553e312678c5b739735757d523b7fc2d920017fe57a0"
     },
     {
       "path": "assets/audio/medusa/sfx_win_mark.wav",
@@ -297,6 +332,11 @@
       "path": "assets/audio/medusa/vo_medusa_annoyed.wav",
       "bytes": 48588,
       "sha256": "48522ce961aba4e4cc85df9325989a338a617e7a93245d4b5d88c4688107f183"
+    },
+    {
+      "path": "assets/audio/medusa/vo_medusa_cast.wav",
+      "bytes": 40650,
+      "sha256": "4b439b7f5d1f7893f1b962bd224e2e692d940723e0bf8fa9f7ef5d4f2db0309c"
     },
     {
       "path": "assets/audio/medusa/vo_medusa_cry_happy.wav",
@@ -405,8 +445,8 @@
     },
     {
       "path": "assets/spines/medusa43/medusa.json",
-      "bytes": 2239630,
-      "sha256": "8e7ddc31d8475034cbad714839bea49db987578fefafe0a4cdce3edd85408815"
+      "bytes": 6033027,
+      "sha256": "3b3e5a650c6dc579c9509ad12ece017211a32110be6f842bce6410b402c9a4c4"
     },
     {
       "path": "assets/spines/medusa43/medusa.png",
@@ -725,53 +765,53 @@
     },
     {
       "path": "assets/sprites/medusaUiIcons/autoSpin.png",
-      "bytes": 7751,
-      "sha256": "27b77b9245ef00037da994064d9697c786d92245cbb498a441e291b68082e33a"
+      "bytes": 11572,
+      "sha256": "ed18e8eecdf2bb3a85d7f620e63b2c72578066a99aa7492661d18cbe02fdea9e"
     },
     {
       "path": "assets/sprites/medusaUiIcons/decrease.png",
-      "bytes": 1044,
-      "sha256": "1254c887d9338d550a8f36d2181ab480312a12df201d25f69be841e1a52cfb9e"
+      "bytes": 1309,
+      "sha256": "b114b1903d521c74a16fbafc76542d8c91f49b1375c69cbc0f015df3b4c22926"
     },
     {
       "path": "assets/sprites/medusaUiIcons/increase.png",
-      "bytes": 2063,
-      "sha256": "abfa26fc7d6e8c8d0cf4ac37d5f525be89c08fab4f5551a4a3aa8f7f1ecc3c8f"
+      "bytes": 2674,
+      "sha256": "1577565eabcdd5c41064eeab35f00ec3e82cec6392b71ef6465c3881ea1be964"
     },
     {
       "path": "assets/sprites/medusaUiIcons/info.png",
-      "bytes": 2119,
-      "sha256": "8b7e8537561811a4ee226a67f4b197253a345f9b69447db8c5763ea984f03af8"
+      "bytes": 2968,
+      "sha256": "e11d92474a101617d36350d094950d9ec977a40522467919b00ffce0b5c4c18f"
     },
     {
       "path": "assets/sprites/medusaUiIcons/menu.png",
-      "bytes": 2564,
-      "sha256": "9661678a237b7446c4de13d07233b9f7e6bd4bb048b4c8f3cf51104ef2f6edc3"
+      "bytes": 3340,
+      "sha256": "777faffa8f34a3f84e8cb27744a0b390723c380771ab3b57217f01319b993bd3"
     },
     {
       "path": "assets/sprites/medusaUiIcons/menuExit.png",
-      "bytes": 1720,
-      "sha256": "bb931fcbe988ace7d7e42f67b0dbb96fc4a8bcf3ecc92c5696ac4bf330876a8b"
+      "bytes": 2423,
+      "sha256": "112d08828bd8f8b0908ecfae2034a59014fd1d917c4f3afce13f98a213b90a2f"
     },
     {
       "path": "assets/sprites/medusaUiIcons/payTable.png",
-      "bytes": 4219,
-      "sha256": "c619688d55d46e166002d97b01595e5d9c70984b53a234ad98cdba94c226bc37"
+      "bytes": 5808,
+      "sha256": "2e837477cb14848370a6a3cbb7ddf410c0ab637cd3320600cd34822168f943e8"
     },
     {
       "path": "assets/sprites/medusaUiIcons/settings.png",
-      "bytes": 7473,
-      "sha256": "87d013bc171ed8d976864f511354ad692a11a4186d93fd5be31bb9d0fdfa5579"
+      "bytes": 10679,
+      "sha256": "571676af50a22df9e06ac3da1f144e5aa2a19c637b6dd1702737800d7dcc8324"
     },
     {
       "path": "assets/sprites/medusaUiIcons/soundOff.png",
-      "bytes": 3603,
-      "sha256": "818df934b8493e2d5f97969a9935e79738651e393fa3a55409a90c1b698dd889"
+      "bytes": 4548,
+      "sha256": "d1538aea08d691c2db326ac961f90071e523f3562ece2082ee4fa2312faccbc3"
     },
     {
       "path": "assets/sprites/medusaUiIcons/soundOn.png",
-      "bytes": 4774,
-      "sha256": "1c97015d0b266a838734bd968798177590e9a59f2a23f9cfd08f3e2d57d07669"
+      "bytes": 6020,
+      "sha256": "9404cdeed14c9a8f4a4b57fc2f76e0726c3c84012a9f6acb0acff273442232c4"
     },
     {
       "path": "assets/sprites/medusaUiIcons/spin.png",
@@ -880,8 +920,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 3761965,
-      "sha256": "6699863be7bf02896079dda00a9aff100f4bbe609151ab427ba09e5e4cf3f0ef"
+      "bytes": 7504449,
+      "sha256": "29c4ed37dbefc48fc34b9edac37b77c9761cf93b8224cd5dfd2c4160926a6415"
     },
     {
       "path": "licenses/Spine-Runtimes.txt",
@@ -915,8 +955,8 @@
     },
     {
       "path": "src/components/Background.svelte",
-      "bytes": 2795,
-      "sha256": "69d98e3f08a2153f1b5e39b632d00b1a6696be67501749aa4cd610a7280b4f4c"
+      "bytes": 3254,
+      "sha256": "cf455b6b5aedf319dec48243414a60d5f5ea7e8bf051a6f7df6aba04022172d8"
     },
     {
       "path": "src/components/BarMessage.svelte",
@@ -925,8 +965,8 @@
     },
     {
       "path": "src/components/BetLabelDim.svelte",
-      "bytes": 1089,
-      "sha256": "231052d781b970ae5936523a6f167a0032eaa8ab30086377e11dd737ff19edb6"
+      "bytes": 1901,
+      "sha256": "0f5ed02f536e3446cbec6e19a378dc13b96047752e5021535b371561c8921206"
     },
     {
       "path": "src/components/BigWinFx.svelte",
@@ -1015,8 +1055,8 @@
     },
     {
       "path": "src/components/Game.svelte",
-      "bytes": 3756,
-      "sha256": "081d254d11f2a2844425dfcd4ba8c52d1f912ebba9eaf91fac5509c34f82317e"
+      "bytes": 3666,
+      "sha256": "886c490c58c523914fbc1b58f613be10aa83ecc4f9fff9577390d3aa0165d49e"
     },
     {
       "path": "src/components/GoldText.svelte",
@@ -1025,8 +1065,8 @@
     },
     {
       "path": "src/components/ImpactDust.svelte",
-      "bytes": 1258,
-      "sha256": "2a8b0a68021c1b2125932b7680c0ec2279368ceadf06fc6b6321557cc69af118"
+      "bytes": 1124,
+      "sha256": "4b280eb1f115ac9bed8a5a1d4f0d5025204f1af7a8f79144616c5bac6c2fd728"
     },
     {
       "path": "src/components/LoadingScreen.svelte",
@@ -1040,13 +1080,13 @@
     },
     {
       "path": "src/components/MedusaBuyBonusButton.svelte",
-      "bytes": 2585,
-      "sha256": "88dbf407c2961b8bfcde2556a9ff7bc6d9cd10df75f01f69cce9398ff3c9b798"
+      "bytes": 2575,
+      "sha256": "5568daf9b6569a0fbefb23c8841cfb039c4ebcf489d3eef33b6f6d47fde698c7"
     },
     {
       "path": "src/components/MedusaRigView.svelte",
-      "bytes": 2419,
-      "sha256": "0fe8b270c4a31cfa0413efd53c92d5b540d0b091a28c612fa5708709e6b16e22"
+      "bytes": 2407,
+      "sha256": "9260875cd33a345e018519da6941003b3209754a12ab8320ad82761c21ce6912"
     },
     {
       "path": "src/components/MedusaSpinGlyph.svelte",
@@ -1055,13 +1095,13 @@
     },
     {
       "path": "src/components/MedusaThrow.svelte",
-      "bytes": 16051,
-      "sha256": "90ea0079c6ad6f7b8110bf9add2f88264db3d809c73192aa0466bff188db8fb4"
+      "bytes": 18143,
+      "sha256": "2958696807b9253a2ef6cbd31bc7b5ea1bdb1632254a829a052868ff04298eee"
     },
     {
       "path": "src/components/MultiplierFx.svelte",
-      "bytes": 1898,
-      "sha256": "994f96a0867f4724319c8695ffa33e697c474eae116d06e3a66db31861eb6452"
+      "bytes": 1945,
+      "sha256": "68a7ca27d61c5ba815ad98ede17dd23925f92d8d85d7ad3e02a9f2397ddad1a7"
     },
     {
       "path": "src/components/PressToContinue.svelte",
@@ -1090,13 +1130,13 @@
     },
     {
       "path": "src/components/ScatterWins.svelte",
-      "bytes": 3549,
-      "sha256": "1e26f700cb519cbbacbe6469f4ee7afe98b3b9468c0b9aa289f4693e5da405a8"
+      "bytes": 4080,
+      "sha256": "0eadca73d46d67bf56dfbede0236cb3713306d20f754fb56a45f25c6efb47bbe"
     },
     {
       "path": "src/components/Sound.svelte",
-      "bytes": 16079,
-      "sha256": "c152322588a57cb62692e631e417aa50fd8fee5d37b4724d1620afeb7225ed5d"
+      "bytes": 18802,
+      "sha256": "fd794c3a881f4aae8e495e5c48aed52552cfb6426f14e43bd8e7a39c0fb0a014"
     },
     {
       "path": "src/components/Symbol.svelte",
@@ -1105,13 +1145,13 @@
     },
     {
       "path": "src/components/SymbolArtMesh.svelte",
-      "bytes": 3013,
-      "sha256": "3b420d55d61055ec7b62efce73db28231c385d44d5768b2b5821f9ca8f7ab5de"
+      "bytes": 4361,
+      "sha256": "152309e97df6d399cc917551c50687e4e22953965c5c78031a033ad18caad7b9"
     },
     {
       "path": "src/components/SymbolFragments.svelte",
-      "bytes": 2205,
-      "sha256": "441dff3cc60e92ff3f898bec45bc496ca9cee36f3ad24094f326e6ab0d767365"
+      "bytes": 3527,
+      "sha256": "0dcbbac33980f2ab776d20537f7efeb2f4005c23fcdb0962949a183cba37ed0a"
     },
     {
       "path": "src/components/SymbolSpine.svelte",
@@ -1130,8 +1170,8 @@
     },
     {
       "path": "src/components/SymbolWinAnim.svelte",
-      "bytes": 3052,
-      "sha256": "fb97963df9b51f25f7d043f170d12280c9f9a959cf98376d3ede1436c81b7b43"
+      "bytes": 2749,
+      "sha256": "803982092b0c4e3f60515dc12dcf4fee2faf58703fc131d7507a2218527d3917"
     },
     {
       "path": "src/components/SymbolWrap.svelte",
@@ -1150,23 +1190,48 @@
     },
     {
       "path": "src/components/TumbleLayer.svelte",
-      "bytes": 5858,
-      "sha256": "bad01569021d78bbd3b8bfff61f4c3d3d0e5a079d2d33e7c23bef123f2fa9185"
+      "bytes": 6166,
+      "sha256": "5b2e9b732b30bc1651da95696a4647f549b151c8947511020fd51a5c28fcbcc6"
+    },
+    {
+      "path": "src/components/ui/MedusaChoiceGrid.svelte",
+      "bytes": 1884,
+      "sha256": "70a0ca022f2ec9127069467123cd88472cf79c4c2f363dac7c664d4db997f04f"
+    },
+    {
+      "path": "src/components/ui/ModalAutoSpin.svelte",
+      "bytes": 2108,
+      "sha256": "6ff5786815da3c41bbdbb09e967643f858f87c9dbef2bcd19f684abf8e2ae2c0"
+    },
+    {
+      "path": "src/components/ui/ModalBetMenu.svelte",
+      "bytes": 1970,
+      "sha256": "511a278876f16ccd78f564be86c1b523c093b3354a6b13c091c3095a3bf27505"
     },
     {
       "path": "src/components/ui/ModalGameRules.svelte",
-      "bytes": 17876,
-      "sha256": "7a1b31360fb1b8240bae704c7e55ace4ef4de974af41717a0ff93e613091d62c"
+      "bytes": 20294,
+      "sha256": "ab852188f48699acbb27a393a677af3849429f106c96ec281fe264ee36451340"
     },
     {
       "path": "src/components/ui/ModalPayTable.svelte",
-      "bytes": 10995,
-      "sha256": "ffa47401d90322b3807ccee71d2322d4f04ed0cd6a902de18dfdde45519a9f32"
+      "bytes": 13964,
+      "sha256": "15029f2b7ae0df6fe8a0974785accbfbd4868376bdaf082ea19a75004144a3c0"
     },
     {
       "path": "src/components/ui/Modals.svelte",
-      "bytes": 9082,
-      "sha256": "d644fc88d631af87d064d6dda7bf88a7bc7ea2e934658e7ebdbb51817f32ca63"
+      "bytes": 10220,
+      "sha256": "7028d28b5448251977ad0c788d7e8af2db6bc1974323d611fc20d71682972a8a"
+    },
+    {
+      "path": "src/components/ui/TempleGuide.svelte",
+      "bytes": 5713,
+      "sha256": "94d8995879fee7d1a6e60cef74713739bab95ca379ed6f83195d0de974229f62"
+    },
+    {
+      "path": "src/components/ui/TempleInfoShell.svelte",
+      "bytes": 7459,
+      "sha256": "835120adabe8a4f99dede0034a4b5ace0d588d77361820bb6af390024244d6c4"
     },
     {
       "path": "src/components/WildPartyLoader.svelte",
@@ -1200,8 +1265,8 @@
     },
     {
       "path": "src/game/animationTimeline.ts",
-      "bytes": 4130,
-      "sha256": "5242af7bf7a590a53f6a81fd9dd8f9c6e95a4a83dd330f0cd37f82e49cd6c7e5"
+      "bytes": 4203,
+      "sha256": "7b8e62d34f8bc086feb5ea6dc676c0775a979b042fffdcfd6f01cea308f0f16f"
     },
     {
       "path": "src/game/assets.ts",
@@ -1210,18 +1275,18 @@
     },
     {
       "path": "src/game/audioManifest.ts",
-      "bytes": 2579,
-      "sha256": "dc802f072ce0794d1113024cd4df25412e9113d8cdc954021759047221a819ea"
+      "bytes": 2925,
+      "sha256": "3b662895e41f57de7f8c9cffbb026d94dad848bb879e6cb75586497da8c22a99"
     },
     {
       "path": "src/game/backgroundMotion.ts",
-      "bytes": 5201,
-      "sha256": "ef54440bb13dedbf6f7a9597b6ab3de326f528fd446d3831a23059408641ae0c"
+      "bytes": 6296,
+      "sha256": "7fd6456e487695b2427566ffdd821c39cce9409843e92013efd61d9d0c060e0e"
     },
     {
       "path": "src/game/backgroundScene.ts",
-      "bytes": 8228,
-      "sha256": "e948ceaf8903ac8454c20312cbe19a06e8d6e09df60517ca5d1468dfc8ab9428"
+      "bytes": 11051,
+      "sha256": "fb79f37b887ec327db84b65905b73c8fce1dcfbe3fdd13ccd60526692a0b4dc4"
     },
     {
       "path": "src/game/barText.ts",
@@ -1240,8 +1305,18 @@
     },
     {
       "path": "src/game/bookEventHandlerMap.ts",
-      "bytes": 16678,
-      "sha256": "53ceccb34a605b0e4752dbb80b6749a8a071b6aea04de9afbb3283fd6e47c3f1"
+      "bytes": 17237,
+      "sha256": "8f75606dc90456b49fc484001e9a5d2250e72e9b031610800379656260853b9f"
+    },
+    {
+      "path": "src/game/castingSoundDesign.ts",
+      "bytes": 2262,
+      "sha256": "375184e73279fe1e2ead2e5af0e63a1b92ddcb2d8d3737c7015300b984bcd49c"
+    },
+    {
+      "path": "src/game/characterSoundDesign.ts",
+      "bytes": 1811,
+      "sha256": "64acaef84b47ca37312119ca3c73cff6c8a2e9477c9dfc08e9b89840f2696041"
     },
     {
       "path": "src/game/config.ts",
@@ -1274,14 +1349,29 @@
       "sha256": "6d4c391c848bafbabbb2bf4151279b7ff53da4a0b6a1c982310e202bf4f3a9d3"
     },
     {
+      "path": "src/game/flameField.ts",
+      "bytes": 3421,
+      "sha256": "368dfcad162613454570d357b74ed0537e1678da6315b0766406eebd1147979b"
+    },
+    {
       "path": "src/game/fonts.ts",
       "bytes": 2167,
       "sha256": "115b7f9cffdfeb88d9429165bf4bcd84880d9695f8fa6485693d1afa838d112a"
     },
     {
+      "path": "src/game/gpuAddBlend.ts",
+      "bytes": 828,
+      "sha256": "9f691fb0498e3516dfc5d6f79b5eff0da70018232b727b6465acd28e0d185eb4"
+    },
+    {
       "path": "src/game/i18nText.ts",
       "bytes": 3472,
       "sha256": "d2b1b173f9b4c39b19547fcfad4a7d708c6af2dd3af15d4536ae2f04d187636a"
+    },
+    {
+      "path": "src/game/interfaceSoundDesign.ts",
+      "bytes": 404,
+      "sha256": "fb728a2aa1980d03391bdc24fe108d4f82a86859c0f8f82e4c3e7ed3f972bbf7"
     },
     {
       "path": "src/game/medusaAnchors.svelte.ts",
@@ -1300,33 +1390,63 @@
     },
     {
       "path": "src/game/medusaRigCore.ts",
-      "bytes": 3632,
-      "sha256": "370cc318011d46dc63735d97a79f1c42adbf97b1f33f3537e4048dbba1135b82"
+      "bytes": 5264,
+      "sha256": "ec26dcfc1f3a6c7e8ebd0dce3c24fdb99b5cc271b27e45629ceacfc3171e8ac4"
     },
     {
       "path": "src/game/medusaRigData.json",
-      "bytes": 2239630,
-      "sha256": "8e7ddc31d8475034cbad714839bea49db987578fefafe0a4cdce3edd85408815"
+      "bytes": 6033027,
+      "sha256": "3b3e5a650c6dc579c9509ad12ece017211a32110be6f842bce6410b402c9a4c4"
     },
     {
       "path": "src/game/medusaRigScene.ts",
-      "bytes": 4059,
-      "sha256": "9301d829418303b3a7889f5698fbf18d469a943d9c773c254707ad2b7bc3b242"
+      "bytes": 4217,
+      "sha256": "cee954e1f14c57c519fc7f8da1c8f53b391db85c6b4d9275cae97c44acaeb060"
+    },
+    {
+      "path": "src/game/multiplierCollision.ts",
+      "bytes": 1323,
+      "sha256": "7c3e6c90cdf6e48be48aae2c5b1e7857529ea6826c390d3525893f260492bed8"
     },
     {
       "path": "src/game/multiplierFxScene.ts",
-      "bytes": 7749,
-      "sha256": "0f7f3d7be97775b1ebd36159c7647d8bea359b47ce559242205c2cbf1d513b25"
+      "bytes": 14336,
+      "sha256": "716d8fbec944c2d3c526e1b796451571c1234ee5c54e627f395dc3bc7cd0d1dd"
     },
     {
       "path": "src/game/multiplierPerformance.ts",
-      "bytes": 2080,
-      "sha256": "5638ae1938dbfc45896646f313313f58be937ae28f444528751a4533f1cdff1d"
+      "bytes": 5487,
+      "sha256": "ad51d0fa2f8b67aca2a3f6e8005c157632f58d8e16ab1acbf7063d4cb0e9a42e"
     },
     {
       "path": "src/game/multiplierReadout.ts",
       "bytes": 1705,
       "sha256": "509b8ef000c5a9aa39d713ce967c300b34c5696761419e3ca0ea10bcd2f5152f"
+    },
+    {
+      "path": "src/game/orbPower.ts",
+      "bytes": 1032,
+      "sha256": "c08484a3d0731e8e257687a1560dc26dd8badd59f30c600f48dee3eea4c3c921"
+    },
+    {
+      "path": "src/game/orbPowerFx.ts",
+      "bytes": 3386,
+      "sha256": "db24270f22f1906de91a91359a20063b6c83d9b84503901c88e14a7997405fe3"
+    },
+    {
+      "path": "src/game/ppMotion.ts",
+      "bytes": 6593,
+      "sha256": "029460e58e8ba4773f4500f4e2087516df959211b83688e0b52ba62933802c40"
+    },
+    {
+      "path": "src/game/presentationFx.ts",
+      "bytes": 3795,
+      "sha256": "0698a92e1303900e460b2a96140ffa95ef5314472903a13c9dbb9c89d6a37bbf"
+    },
+    {
+      "path": "src/game/presentationMotion.ts",
+      "bytes": 2797,
+      "sha256": "76c05c7de475ee1ae7419401aa2215d2f868d1f9fb47a87a1f2ab21817347798"
     },
     {
       "path": "src/game/socialTerms.ts",
@@ -1345,8 +1465,8 @@
     },
     {
       "path": "src/game/stateGame.svelte.ts",
-      "bytes": 5299,
-      "sha256": "9f08e3a4a659ff06821400103123b7ff35d68e784272e404f1cf4820398dd096"
+      "bytes": 5494,
+      "sha256": "90afa8cfe7f8916ce6f7ab5eaf6b645128d4a933b47a9d61572295e0ac2002de"
     },
     {
       "path": "src/game/stateLayout.ts",
@@ -1360,8 +1480,8 @@
     },
     {
       "path": "src/game/symbolMotion.ts",
-      "bytes": 7380,
-      "sha256": "dd875dc5d27876f2173481921964e04082bdd5722149608917842b578a071501"
+      "bytes": 10068,
+      "sha256": "5ab6ebb366d2aa1d6d8caee63631fecbb7a1025156c4fe559ea16abda04f14fc"
     },
     {
       "path": "src/game/types.ts",
@@ -1380,8 +1500,8 @@
     },
     {
       "path": "src/game/uiTheme.ts",
-      "bytes": 6093,
-      "sha256": "2812dd0670b1062839b5916d4077f3d9ca60adba7fb307f6113765b2a15aaef7"
+      "bytes": 6397,
+      "sha256": "8d6467487ba28ca2e9242814351a3773a3fb65b5cc032ecde56a138b7c5097ff"
     },
     {
       "path": "src/game/utils.ts",
@@ -1540,8 +1660,8 @@
     },
     {
       "path": "static/assets/audio/medusa/sfx_gaze_beam.wav",
-      "bytes": 24774,
-      "sha256": "50357a68d03572932b3df7cb0c6e11fd8e1a1586c8f4674da427788f6b0a9b03"
+      "bytes": 67110,
+      "sha256": "d331c6a294f764cd5afe4599d29d78ef6c0e4451d65eba58f7c8e6dcb31d85c0"
     },
     {
       "path": "static/assets/audio/medusa/sfx_gaze_charge.wav",
@@ -1559,39 +1679,69 @@
       "sha256": "39cc85acdba4bf0009d97b9da0cd7c09d4981ca916f256bb233d2f6e6841aa40"
     },
     {
+      "path": "static/assets/audio/medusa/sfx_medusa_gather.wav",
+      "bytes": 24774,
+      "sha256": "356e9b88c370f332c19b980f64eb04fcb400278d8137d5cc255e64498f7d34b1"
+    },
+    {
+      "path": "static/assets/audio/medusa/sfx_medusa_jewel.wav",
+      "bytes": 19482,
+      "sha256": "824cb46d04aaa8022be4ba5f0a904f0bd4bfdb7dd192ae2c8021ad199e02157e"
+    },
+    {
+      "path": "static/assets/audio/medusa/sfx_medusa_tail.wav",
+      "bytes": 28302,
+      "sha256": "613ab8c28dcc04e6da7b5b235b937a6280046eea997dbec8544ae88f4a933a7c"
+    },
+    {
+      "path": "static/assets/audio/medusa/sfx_medusa_wrist.wav",
+      "bytes": 12426,
+      "sha256": "0b1e3505f9701f730bd7a3aa52e0bbcf691eba44d0b42d1db7cc588843942415"
+    },
+    {
       "path": "static/assets/audio/medusa/sfx_mult_count.wav",
       "bytes": 21246,
-      "sha256": "fe6ed04e7dde8a1b7985261fc4742ac97840282e6a1731c17912b8820d541034"
+      "sha256": "0b25b1b318e96c4200b14c7e168e377dcf56c823fd9c4231df4150528ed4d7f1"
+    },
+    {
+      "path": "static/assets/audio/medusa/sfx_orb_charge.wav",
+      "bytes": 30948,
+      "sha256": "568354ae15954adabc778cc9bb7759095a7e0547c2ad24bd7be90a568c0497a4"
     },
     {
       "path": "static/assets/audio/medusa/sfx_orb_crack.wav",
       "bytes": 42414,
-      "sha256": "222fb27d0ef052cbba75091b869d9037ef2389d1c8e043d51c3e4e4eaf1f6912"
+      "sha256": "4ea65815b6ce7069f002e6843938a80e442a3a873ee6c3ebe95a27922db1448b"
     },
     {
       "path": "static/assets/audio/medusa/sfx_orb_crack_2.wav",
       "bytes": 42414,
-      "sha256": "c7e70fa653d0d6d34cc412ba9e8f6d981aca308611f328f0284212401531d0b1"
+      "sha256": "b7fa3e11cca6502767a8b162392575f04b5c5067de98153c5f6e69229f77d22f"
     },
     {
       "path": "static/assets/audio/medusa/sfx_orb_fly.wav",
-      "bytes": 39768,
-      "sha256": "c33596d9133d5bb23cce08889478bb765720f93af24ac17b7048bb4aa99c6865"
+      "bytes": 52998,
+      "sha256": "79a4b5c9f5fb81dc789cd1cd1be9f18255bacb3db967bc59893a40e392b17232"
     },
     {
       "path": "static/assets/audio/medusa/sfx_orb_hit_l.wav",
       "bytes": 51234,
-      "sha256": "c076013ac0c17f65fb2c969f706e21fb9cefd39ae2c8a0e215f0580463416ca3"
+      "sha256": "0f9bf12947fb5110a1bba89d267a51fee8c8a30075c34d06267d4de9b54b7759"
     },
     {
       "path": "static/assets/audio/medusa/sfx_orb_hit_m.wav",
       "bytes": 44178,
-      "sha256": "73c77b9bd75ec2f57b4117caee28d7a52ac0db4b84210a9516584d40cc4e1f94"
+      "sha256": "431fcf62391fbe8c6736e850099bf25d212ff336383da56ebeb146a8624b5a7d"
     },
     {
       "path": "static/assets/audio/medusa/sfx_orb_hit_s.wav",
       "bytes": 37122,
-      "sha256": "c920c0f5cee7482b2e0d9ebafe0992a6cf4099d783a55401be7b596dc1f92db9"
+      "sha256": "1eac7f91eac1a2450468150a17319f04126619603ad3f8a37a227d166c1a652a"
+    },
+    {
+      "path": "static/assets/audio/medusa/sfx_orb_release.wav",
+      "bytes": 14190,
+      "sha256": "2fcc56e2ed6205996b86ca48aa95d56c21ed9b007c3dd03600de8258580743ac"
     },
     {
       "path": "static/assets/audio/medusa/sfx_petrify_1.wav",
@@ -1639,6 +1789,11 @@
       "sha256": "55e1783944f0d9781af5a6ab6373656aba433f655ca985f81ac2a9cbfc6e518f"
     },
     {
+      "path": "static/assets/audio/medusa/sfx_snake_snap.wav",
+      "bytes": 10662,
+      "sha256": "73bea2388dfca71211ca6ac8a49e87d1067d3ebbaabe0fc2c0702b26c2c45354"
+    },
+    {
       "path": "static/assets/audio/medusa/sfx_snake_yawn.wav",
       "bytes": 67110,
       "sha256": "3a03763c84cdaeb8d128cfce9b2fb56c8d4644aff4fcd2d0fe5a5bd266d09b48"
@@ -1666,12 +1821,12 @@
     {
       "path": "static/assets/audio/medusa/sfx_total_mult_up.wav",
       "bytes": 37122,
-      "sha256": "719e5fc62845ba78d0ee08c78a8f9297bf7cf67c25d3e3e2983d2d48f1b9c84a"
+      "sha256": "65de7ce8e7722375a8717fa15d69d749abf35b4144d1aa8f28ff5407c50cab93"
     },
     {
       "path": "static/assets/audio/medusa/sfx_total_to_win.wav",
       "bytes": 24774,
-      "sha256": "4ef2e4fccff8653143bed6730842ddf3526b1bcc71cf39e138f26602e4df51c9"
+      "sha256": "94b314e28d1a148bdb11553e312678c5b739735757d523b7fc2d920017fe57a0"
     },
     {
       "path": "static/assets/audio/medusa/sfx_win_mark.wav",
@@ -1692,6 +1847,11 @@
       "path": "static/assets/audio/medusa/vo_medusa_annoyed.wav",
       "bytes": 48588,
       "sha256": "48522ce961aba4e4cc85df9325989a338a617e7a93245d4b5d88c4688107f183"
+    },
+    {
+      "path": "static/assets/audio/medusa/vo_medusa_cast.wav",
+      "bytes": 40650,
+      "sha256": "4b439b7f5d1f7893f1b962bd224e2e692d940723e0bf8fa9f7ef5d4f2db0309c"
     },
     {
       "path": "static/assets/audio/medusa/vo_medusa_cry_happy.wav",
@@ -1800,8 +1960,8 @@
     },
     {
       "path": "static/assets/spines/medusa43/medusa.json",
-      "bytes": 2239630,
-      "sha256": "8e7ddc31d8475034cbad714839bea49db987578fefafe0a4cdce3edd85408815"
+      "bytes": 6033027,
+      "sha256": "3b3e5a650c6dc579c9509ad12ece017211a32110be6f842bce6410b402c9a4c4"
     },
     {
       "path": "static/assets/spines/medusa43/medusa.png",
@@ -2120,53 +2280,53 @@
     },
     {
       "path": "static/assets/sprites/medusaUiIcons/autoSpin.png",
-      "bytes": 7751,
-      "sha256": "27b77b9245ef00037da994064d9697c786d92245cbb498a441e291b68082e33a"
+      "bytes": 11572,
+      "sha256": "ed18e8eecdf2bb3a85d7f620e63b2c72578066a99aa7492661d18cbe02fdea9e"
     },
     {
       "path": "static/assets/sprites/medusaUiIcons/decrease.png",
-      "bytes": 1044,
-      "sha256": "1254c887d9338d550a8f36d2181ab480312a12df201d25f69be841e1a52cfb9e"
+      "bytes": 1309,
+      "sha256": "b114b1903d521c74a16fbafc76542d8c91f49b1375c69cbc0f015df3b4c22926"
     },
     {
       "path": "static/assets/sprites/medusaUiIcons/increase.png",
-      "bytes": 2063,
-      "sha256": "abfa26fc7d6e8c8d0cf4ac37d5f525be89c08fab4f5551a4a3aa8f7f1ecc3c8f"
+      "bytes": 2674,
+      "sha256": "1577565eabcdd5c41064eeab35f00ec3e82cec6392b71ef6465c3881ea1be964"
     },
     {
       "path": "static/assets/sprites/medusaUiIcons/info.png",
-      "bytes": 2119,
-      "sha256": "8b7e8537561811a4ee226a67f4b197253a345f9b69447db8c5763ea984f03af8"
+      "bytes": 2968,
+      "sha256": "e11d92474a101617d36350d094950d9ec977a40522467919b00ffce0b5c4c18f"
     },
     {
       "path": "static/assets/sprites/medusaUiIcons/menu.png",
-      "bytes": 2564,
-      "sha256": "9661678a237b7446c4de13d07233b9f7e6bd4bb048b4c8f3cf51104ef2f6edc3"
+      "bytes": 3340,
+      "sha256": "777faffa8f34a3f84e8cb27744a0b390723c380771ab3b57217f01319b993bd3"
     },
     {
       "path": "static/assets/sprites/medusaUiIcons/menuExit.png",
-      "bytes": 1720,
-      "sha256": "bb931fcbe988ace7d7e42f67b0dbb96fc4a8bcf3ecc92c5696ac4bf330876a8b"
+      "bytes": 2423,
+      "sha256": "112d08828bd8f8b0908ecfae2034a59014fd1d917c4f3afce13f98a213b90a2f"
     },
     {
       "path": "static/assets/sprites/medusaUiIcons/payTable.png",
-      "bytes": 4219,
-      "sha256": "c619688d55d46e166002d97b01595e5d9c70984b53a234ad98cdba94c226bc37"
+      "bytes": 5808,
+      "sha256": "2e837477cb14848370a6a3cbb7ddf410c0ab637cd3320600cd34822168f943e8"
     },
     {
       "path": "static/assets/sprites/medusaUiIcons/settings.png",
-      "bytes": 7473,
-      "sha256": "87d013bc171ed8d976864f511354ad692a11a4186d93fd5be31bb9d0fdfa5579"
+      "bytes": 10679,
+      "sha256": "571676af50a22df9e06ac3da1f144e5aa2a19c637b6dd1702737800d7dcc8324"
     },
     {
       "path": "static/assets/sprites/medusaUiIcons/soundOff.png",
-      "bytes": 3603,
-      "sha256": "818df934b8493e2d5f97969a9935e79738651e393fa3a55409a90c1b698dd889"
+      "bytes": 4548,
+      "sha256": "d1538aea08d691c2db326ac961f90071e523f3562ece2082ee4fa2312faccbc3"
     },
     {
       "path": "static/assets/sprites/medusaUiIcons/soundOn.png",
-      "bytes": 4774,
-      "sha256": "1c97015d0b266a838734bd968798177590e9a59f2a23f9cfd08f3e2d57d07669"
+      "bytes": 6020,
+      "sha256": "9404cdeed14c9a8f4a4b57fc2f76e0726c3c84012a9f6acb0acff273442232c4"
     },
     {
       "path": "static/assets/sprites/medusaUiIcons/spin.png",
@@ -2294,9 +2454,184 @@
       "sha256": "e96b90788c785543ae3f008b3f750ef7a8a705a5215d15d1ff27d8950eed2cce"
     },
     {
+      "path": "design/source/medusagaze/_sheets/breath_20261026_inhale.png",
+      "bytes": 128394,
+      "sha256": "243bcfd9d539d8d80125119658e86666b8010968060a2338a15784557b6e3217"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/breath_20261026_rest.png",
+      "bytes": 126778,
+      "sha256": "931195df62291fad310b51cce5ccc62af2110fce61ed8e4756e586912ed06375"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v7_20261028_charge.png",
+      "bytes": 70032,
+      "sha256": "b503942c959a71c15d6cf68f9b7e82ebe128f10ea15c00c29a6c280d350449da"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v7_20261028_fg_three.png",
+      "bytes": 72567,
+      "sha256": "e148609d78afa2d46b1e424dc59d81b78eaa2900b79fe0477adc6b37bfa7d56c"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v7_20261028_flight.png",
+      "bytes": 72413,
+      "sha256": "386b58dd7b8f8fcc7d585f14d333f5988d385fd887daa1c3689f32795bfe9313"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v7_20261029_fg_fan.png",
+      "bytes": 73664,
+      "sha256": "fd28219214e780b334cc6b1b72153f4b2d4d3db40d64752b6b0f1e53e7127506"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v7_20261029_fg_result.png",
+      "bytes": 79317,
+      "sha256": "5e60bdb219cf76c74c81352a3992cc62c1c79578aae52fbc2168b7720b9aaad5"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v7_20261029_flight.png",
+      "bytes": 72413,
+      "sha256": "386b58dd7b8f8fcc7d585f14d333f5988d385fd887daa1c3689f32795bfe9313"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v7_20261029_game_result.png",
+      "bytes": 242828,
+      "sha256": "6c060f0d22545cb3b0d0b3f1911d3e4213ad88a7da3bab9c7faa5ac44fc86c02"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v7_20261029_turbo2_ready.png",
+      "bytes": 242039,
+      "sha256": "78d409f7c1337920c0584b5bb23366be50e6895363a98ab34e9be0b15ab29fa1"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v7_20261029_turbo2_result.png",
+      "bytes": 242980,
+      "sha256": "a0a553d46a2ecf6028a3015263efe7fef8255a2be35f1e2a1a6256e3b7a4b4a5"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v8_20261030_fg_flight.png",
+      "bytes": 74784,
+      "sha256": "c8d160988cc9e1561257983e519d442ec86e436161bab95c98fe2dc414816ebc"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v8_20261030_fg_result.png",
+      "bytes": 79167,
+      "sha256": "bb12a77b090b43157036801beaa0346983cd82e9853c9803ade61247cc0144ce"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v8_20261030_flight.png",
+      "bytes": 71550,
+      "sha256": "35f7c4ab10eb679a05617cf5287be6b50d067a068a4eef62a2a7489967c33095"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v8_20261030_game_normal.png",
+      "bytes": 242632,
+      "sha256": "7cd764ac0c9299d802d8bb8a979e1866e24c8f1e752a8844e5a56ccf751420ea"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v8_20261030_game_turbo2.png",
+      "bytes": 243341,
+      "sha256": "1690b5146bfb4fc3284735b5a50bbeee516d54834444e3da65d160901de4ed5a"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v8_20261030_release.png",
+      "bytes": 70205,
+      "sha256": "118835cbc8da197750aed380efc5ef91aa5991d2a2a1ae9c3771c3dfd77a70d6"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/casting_v8_20261030_turbo2_ready.png",
+      "bytes": 243458,
+      "sha256": "6dc11a88d10d09bb1884353e4802071a24b093f5fe130f1757ae25c798024479"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/character_sound_20261031_fg_result.png",
+      "bytes": 77287,
+      "sha256": "6321985eb6d797d73eb6678c1b455b2b3ff8c0331c3702273673cc5ec6984a07"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/character_sound_20261031_fg_voice_pose.png",
+      "bytes": 73022,
+      "sha256": "e0e6756f6a98eb4f2f7355e0a46cc3496d38662f4a3e830160533fba7b97c608"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/character_sound_20261031_mg_result.png",
+      "bytes": 87729,
+      "sha256": "4424cf981c577e00a6411088a2a60b10dcbf8c9a1439a0d25e7f2065ea2470e1"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/character_sound_20261031_off_result.png",
+      "bytes": 243586,
+      "sha256": "116b8f94b377e4751a80fae0b4f70d59d8788e0b7b5090b7ebc7f509df0210c3"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/character_sound_20261031_smug.png",
+      "bytes": 101962,
+      "sha256": "13b0a328b3c77ca4450e45a72549ddd4aa166d6b546f6004781a4650daaa6f71"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/character_sound_20261031_turbo2_result.png",
+      "bytes": 243696,
+      "sha256": "74fbf05e2c05faa4a5a81e33decb70d23df15bc21c354b15cda0752108848091"
+    },
+    {
       "path": "design/source/medusagaze/_sheets/completion_ui_contact.jpg",
       "bytes": 928983,
       "sha256": "5ba0d8898af8c3d4a003ca1b2b628017943abd638b19dbb0a9c67e6f015e7a25"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/dynamics_20261027_accents.png",
+      "bytes": 57844,
+      "sha256": "97755159fc11f6985c7e730fd4bc4fcf4a20289d651a8112967b950735d84512"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/dynamics_20261027_debris_cleared.png",
+      "bytes": 51959,
+      "sha256": "7e62d69cc878e075013bb2193c010ebed938b4635ba35f19a116d6c8f2713260"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/dynamics_20261027_debris_fade.png",
+      "bytes": 55996,
+      "sha256": "6d54d232d583c32d44355ad7908b51d127cdb73510b34fa670aacccd4286d175"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/dynamics_20261027_fg_idle.png",
+      "bytes": 104046,
+      "sha256": "ae80357db5519eb1104096e7b7cb08ac383704db0bbd4c5e682645c7084e85fa"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/dynamics_20261027_idle_glance.png",
+      "bytes": 103079,
+      "sha256": "b3800d1b0a8c9780064321e945eaf419b6799dd38f3d781155eb0d58410722ee"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/dynamics_20261027_normal_result.png",
+      "bytes": 243814,
+      "sha256": "157c6010a34ee0ae8e31c2dec39fb89ae336e0be6afb6dffea87350cfdf31524"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/dynamics_20261027_turbo2_ready.png",
+      "bytes": 243001,
+      "sha256": "2c4981f4ec72f546bedc90d23da2e24c4fb59cf75b3f789376c7ae5db26d042f"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/dynamics_20261027_turbo2_result.png",
+      "bytes": 242832,
+      "sha256": "a189c000b1c9b8a66dc3e587b40b20edb66671c2aaae545de02e8891ebc2831e"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/fluency_20261030_fg.png",
+      "bytes": 73636,
+      "sha256": "83bc502086b1bbe478d5038e25e44dc52ce4a8432556c4beb8d799f6059ecec9"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/fluency_20261030_gather.png",
+      "bytes": 70035,
+      "sha256": "55b9d1aa4114b6a878b0298ceb4c803ae93fe8588bdc3e6fb5ef97610249b617"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/fluency_20261030_recovery.png",
+      "bytes": 71411,
+      "sha256": "49c78103eb85c682cb99f30a775aa4c047f8b7514dfcf61ca971f508a366b7e4"
     },
     {
       "path": "design/source/medusagaze/_sheets/game_desktop.png",
@@ -2307,6 +2642,66 @@
       "path": "design/source/medusagaze/_sheets/game_mobile_320.png",
       "bytes": 44999,
       "sha256": "423f72eb3c4943cc4f4584f669b0055c7d1b27e7b3efdd3e61bc75ecd49d48f5"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/hand_windup_20261030_coil.png",
+      "bytes": 69954,
+      "sha256": "23dc10db0fe1c76e4d6d2219e9d298ceff3e681a515cfb102f8dcfc9c31f2cc6"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/hand_windup_20261030_release.png",
+      "bytes": 70005,
+      "sha256": "9c36a0845e7b32e438e35a46446e073514b44efef86b0de2a8725d5ddcaa2bb4"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/hand_windup_20261031_fg_coil.png",
+      "bytes": 68795,
+      "sha256": "0460d36183501bf5e1efe4b12102b5b3e681b7f93cd7770bfa6797236c0c6759"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/hand_windup_20261031_fg_result.png",
+      "bytes": 79136,
+      "sha256": "629035bbaf01a16817a7442cd73038c9bd7e83023699f490469de319306224a7"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/hand_windup_20261031_mg_coil.png",
+      "bytes": 69986,
+      "sha256": "44e9c5061fce5bb381cd9532071d18e0b8eb0fc23d23d1da587cbc71d7cc5aff"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/hand_windup_20261031_mg_release.png",
+      "bytes": 70042,
+      "sha256": "c4027f9ccca438b2419b3203347ba949e2ec25b5afbc67ec565b2f48d7b356b9"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/hand_windup_20261031_mg_result.png",
+      "bytes": 72400,
+      "sha256": "92b4199d0e359f3edae8feca5cc98e1d3ad9ed812009bf6af8a3db59767a6d98"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/landing_20261028_contact.png",
+      "bytes": 58350,
+      "sha256": "04d95ca069820ba162c646c791a817179291abc26b4be4965c7af11816887ca1"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/landing_20261029_cleared.png",
+      "bytes": 54795,
+      "sha256": "cb4c2228e5cff845005ec6b967226505c01ac8de7d12c3e4c1c6ed5cfe85bda2"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/landing_20261029_contact.png",
+      "bytes": 58350,
+      "sha256": "04d95ca069820ba162c646c791a817179291abc26b4be4965c7af11816887ca1"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/left_sky_20261027_desktop.png",
+      "bytes": 242806,
+      "sha256": "620554515c0f87134cf70a88b71f42d35d8e2986ba80bba6f423480d8811d3d9"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/left_sky_20261027_wide.png",
+      "bytes": 326737,
+      "sha256": "79952011afadd85cb453be9f45829657afd82ae61b5874150efa3ad346f42120"
     },
     {
       "path": "design/source/medusagaze/_sheets/motion_v2_contact.jpg",
@@ -2334,6 +2729,381 @@
       "sha256": "c923331e48a1f97e8847e43cf4d9c9e9308c2bdb6863f9f80cf30e249d4bb04a"
     },
     {
+      "path": "design/source/medusagaze/_sheets/orb_power_20261031_high_charge.png",
+      "bytes": 133581,
+      "sha256": "d9826450f54fc9cb753e8f55a910d7b0a353e89a3e5ac18d67dd4fb3b3c7b6b3"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/orb_power_20261031_high_flight.png",
+      "bytes": 138979,
+      "sha256": "711a87809e220d81b5cdffeb6082bed66f725fbe9c52cfd565f01a068c12ed5c"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/orb_power_20261031_high_impact.png",
+      "bytes": 137558,
+      "sha256": "8854df5e54b2799a79152581977216dde4bc260a8c902e5644aa13d32a03e665"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/orb_power_20261031_low_flight.png",
+      "bytes": 137223,
+      "sha256": "ef8f02e7b8fb0ea4ff855ebe962a138ce11787eb24c94d91c282945c62a86290"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/orb_power_20261031_off_result.png",
+      "bytes": 243620,
+      "sha256": "c5bc69804c14fbee15d008a5d1eb3e4f28c93ecc6c5743cb795da2954ac32704"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/orb_power_20261031_three_orbs.png",
+      "bytes": 146795,
+      "sha256": "3e3166038b2a76791f42ceeb648d59b6f9a7f2a788599466539d6a3353584354"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/orb_power_20261031_three_result.png",
+      "bytes": 146397,
+      "sha256": "a52e3b834adb8c763e6fb25daaa886bc121f5ee419d6a13073a27442a5571dc7"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/orb_power_20261031_turbo2_result.png",
+      "bytes": 243561,
+      "sha256": "b854afc2b1e2652dc8ef8193b8eb95e5c0c621df0800cb6d130c58bc10c0d419"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/overall_refine_20261031_contact_hold.png",
+      "bytes": 59217,
+      "sha256": "95a440e1944434cf62de8bd85a1473591b1810f679a6aef561121d20e095fb45"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/overall_refine_20261031_dud_result.png",
+      "bytes": 243381,
+      "sha256": "240120ef6a553c304fb380f89c9bbaed9b7105a24ced281f03295aaa26d5d143"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/overall_refine_20261031_fg_middle.png",
+      "bytes": 230118,
+      "sha256": "b749809e9609a3eb00ada4c1d22c761f185cfc5a492ca72e14e21669aff84b8f"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/overall_refine_20261031_fg_outro.png",
+      "bytes": 166324,
+      "sha256": "3a359fdf8230701843d86051f01dc137f2c365f44f737fc5576a99c23c22c57b"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/overall_refine_20261031_fg_start.png",
+      "bytes": 240725,
+      "sha256": "b1c74f46bd2b40b7a96c7a2c3ab545b27ecd70c8885566fa7b70d48158ff8d76"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/overall_refine_20261031_fracture.png",
+      "bytes": 57797,
+      "sha256": "dbbcec957a3419aec1b30f55789c4be17a8755cca8ebf90063bce1c0e61e2d29"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/overall_refine_20261031_night.png",
+      "bytes": 138281,
+      "sha256": "81c8cf378e26b89b7a307eaea261b9d6ebd28625135e3cccac1d1f2e0e39f58b"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/overall_refine_20261031_return_mg.png",
+      "bytes": 240670,
+      "sha256": "f6a89edb840db63affcc16621a290364dfe5e167f175320deb4b9a80292b59f4"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/polish_20261027_cast_mg_release.png",
+      "bytes": 100297,
+      "sha256": "fe27c01b6df12de6ff5606a27b8765da84027f57ac75ffdb074397357b46f7e8"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/polish_20261027_cast_recovery.png",
+      "bytes": 101994,
+      "sha256": "71e3512843a5e893198fc551e99536ecc44546b3daca733fc6a8116b91158e8d"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/polish_20261027_cast_release.png",
+      "bytes": 102233,
+      "sha256": "cd03e3fca630edc585b9585cdd6891c60578d277366959f98b3fb3dff6e76848"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/polish_20261027_fragments.png",
+      "bytes": 85380,
+      "sha256": "94d3a928d09f357936b62235360300ead944ad5c2b10e9c31f5dffb71a5ecbd4"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/polish_20261027_game_result.png",
+      "bytes": 243510,
+      "sha256": "f685f709d4af1d1d43746adc31a1de08bb8c01bebf34feab708a624b80070955"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/polish_20261027_stone_front.png",
+      "bytes": 84829,
+      "sha256": "a0b369e3820461193495467fec43b0b99bb646bdc99d6427954636f715cdfb1e"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/pp_motion_20261031_character.png",
+      "bytes": 159397,
+      "sha256": "4d8eb36d93724a14fb6b9f1b5de5887e7616d6bf29d6d3c17ed8a3ba5774152b"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/pp_motion_20261031_drop.png",
+      "bytes": 146337,
+      "sha256": "74956b812327bc3acc797f5bd9f3c0f05471533e403c4efab922dfcde0611b44"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/pp_motion_20261031_fg_result.png",
+      "bytes": 77270,
+      "sha256": "eab26111a0d0d26323dfafb92e9a21bee65afeb8137cc431e055b4af5e757237"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/pp_motion_20261031_high.png",
+      "bytes": 110800,
+      "sha256": "951f99556430da634cb2864261a4060ffa2c55ba2d4093c45d8b657dbc428c59"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/pp_motion_20261031_low.png",
+      "bytes": 106920,
+      "sha256": "afdb62ca7efcc6a785f0390351f4e80fc1014356d90fbc5f7563f3ad4604c74b"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/pp_motion_20261031_off_result.png",
+      "bytes": 242216,
+      "sha256": "a2fb8f417383253165960e2602b4722c6a4e18c98a787d3ef167469510a97b5c"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/pp_motion_20261031_turbo2_result.png",
+      "bytes": 242707,
+      "sha256": "9ef59145e047d883d1cfaa72175f051b86dffa337a45435ebf8cd1d530c0ebdb"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/presentation_20261026_desktop.png",
+      "bytes": 303803,
+      "sha256": "c276b831d9274dd313a35adf106558ad8185eaaa7fba2443dd9dc8f6f731c085"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/presentation_20261026_mobile320.png",
+      "bytes": 45647,
+      "sha256": "b6ccb413f168cfc5342dd58dbe8719903a0ccb6fa918d5da1b7c666d802f8f0e"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/presentation_20261026_mobile390.png",
+      "bytes": 68411,
+      "sha256": "93ef8a4571fe3c550b34bc1390f5ea85e278971b2aa44f9a8140c422c22017cf"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/presentation_20261026_turbo2.png",
+      "bytes": 303152,
+      "sha256": "e58ddb2066d6c0e25f06466c3816058553b574ece0d10950f77b62e9b4f5dd66"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/refinement_auto_selected.png",
+      "bytes": 38729,
+      "sha256": "125ede6ea549ea13cd0f555520df445ffa48a720e54e61fdc259e559e5623766"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/refinement_bet_hover.png",
+      "bytes": 243794,
+      "sha256": "2994236cc4903ca34475c1999981ba4c06a83a97ae7eb26b2b88687e6d74bc4a"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/refinement_bet_mobile320.png",
+      "bytes": 18960,
+      "sha256": "24907c73c56bdfc2115acca88964b6510909f82d711adf9af5b198837f4ff2dc"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/refinement_bet_selected.png",
+      "bytes": 39060,
+      "sha256": "dd4b0f614f4ba331c1cbe6c957371558a24ad53c14e5efdb4ebf07bee92482c1"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/refinement_breath_inhale.png",
+      "bytes": 129732,
+      "sha256": "f926f43b19c145e54fa51bece1394140254781a2fcfc74da940b5efb0aa96770"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/refinement_breath_rest.png",
+      "bytes": 126778,
+      "sha256": "931195df62291fad310b51cce5ccc62af2110fce61ed8e4756e586912ed06375"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/refinement_info_close.png",
+      "bytes": 87367,
+      "sha256": "2ea762fee626941094eee1eebcc386e9e354c50f8d6bf79d24ebb24f40e673e0"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/refinement_mobile320.png",
+      "bytes": 45665,
+      "sha256": "a1390efc0116736a16e2d3e560f1f02093fcf74f52061e81f1d0444b53fc6473"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/refinement_mobile390.png",
+      "bytes": 68151,
+      "sha256": "c4bc5b1379952acffa155f5d5efe133c89fa3f5971c7dd24cc7b0c40ecd1353c"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/refinement_settings.png",
+      "bytes": 27042,
+      "sha256": "acde1c9aae690401235a55488c3ef371db35ec9e6a261c02ddd5fcb57bcdd950"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/refinement_snake_strike.png",
+      "bytes": 129412,
+      "sha256": "e3c25308eed421cda45db6acce94bb0f73dddf3d59f4b3169d06232fae6493af"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision5_fg_collision.png",
+      "bytes": 80955,
+      "sha256": "dc48591bfd74384ec8a38da701788e188106b08dc03b4a7c45f55ca3e5541636"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision5_fg_glasses_winmax.png",
+      "bytes": 151620,
+      "sha256": "5e8470b7681a981597ad3afe21f0992ddcdf2c9067d6f03643d7c2745a523170"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision5_fg_number_fly.png",
+      "bytes": 81379,
+      "sha256": "068cfeaabc08eb10d4c44161ab577029bf75231f00b056352588f8449e838c87"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision5_fg_result.png",
+      "bytes": 85355,
+      "sha256": "1d02dcee48ec2c776dfee9389a06e457a7e7720de6c51396a5ed139b5a1f6fdc"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision5_game_result.png",
+      "bytes": 242139,
+      "sha256": "654d9afe96ec5cf475103f5fa9ce3f766ddb616c2cfef10dfe685ac686716a7a"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision5_mg_collision.png",
+      "bytes": 79260,
+      "sha256": "4211a776bdeb6ce7d68f7ad37cd2b8b26222a6521f1d20cb72c021e050cdf21e"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision5_mg_number_fly.png",
+      "bytes": 79346,
+      "sha256": "c62d0d3656b691c5345c6d56642e68d95b8c0e8d6a7779b2c82844837a51a98f"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision5_snake1_snap.png",
+      "bytes": 156597,
+      "sha256": "1da2cec6bb5fc5e69063bd02c02f9a00c48d2317462399ef13d3a3cfa987f780"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision5_snake6_mouth.png",
+      "bytes": 157025,
+      "sha256": "a327607dc39665eda406d09472f664038a548e01c676c35d34a9b5ff67ef70fd"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision5_snake9_mouth.png",
+      "bytes": 151540,
+      "sha256": "dfbad7c91708556474fd90511c239aa71ec7de874440213a2c38aa3056360075"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision5_statue_clearance.png",
+      "bytes": 241252,
+      "sha256": "3cc37dd592dca5b18773b77921abc966e674cfc1c8d867f6da8917e1e3b98ddd"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision6_auto_advanced.png",
+      "bytes": 39300,
+      "sha256": "0092d605e309701315341474f8c12cb6b5c4f35e74bb0237c7cff8a3220854a7"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision6_breath_inhale.png",
+      "bytes": 104299,
+      "sha256": "9cf4e6b67591d4ef3b1253864cb977e4c084b9861ed0473e4b24124fcf7933cc"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision6_breath_rest.png",
+      "bytes": 101210,
+      "sha256": "a7095115a6df4e010db3547848dbc698c626e914020638e1652ace800a1fe8e4"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision6_buy_amount.png",
+      "bytes": 30110,
+      "sha256": "772df4a46c114b1c1c07f633bcb2aea41f08a6a8b77875a90a4ccb244f2e31c1"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision6_fire_detail.png",
+      "bytes": 115041,
+      "sha256": "b15b00fef992ac7eb93b1324dfbd11e87a8ad8680e00c4b26de4a6be2e3f1f91"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision6_game_final.png",
+      "bytes": 239551,
+      "sha256": "4350c5ca1a235caf14a126eb8c2c3ee50de3e7df2c0b0931f56a9df835e8a48d"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision6_game_result.png",
+      "bytes": 242254,
+      "sha256": "912e7f8491266fde3e7165a62784d8f3b34e36d6db0f6ca127a13846d32c145c"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision6_multiplier_fly.png",
+      "bytes": 79413,
+      "sha256": "001a9b3711fe3e87fab958fc52bc420882987a106e51b1e90631bf7d4f8acffa"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision6_spin_start.png",
+      "bytes": 219815,
+      "sha256": "ea1b13c410f18867ac9d5a81cf992f55a77ad1d34649b7fb143350aa4728207e"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision6_tail_left.png",
+      "bytes": 97368,
+      "sha256": "bb1d3d1f61598190e55c28084f861f285ac190da594c85bba5a7686cec5c762c"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/revision6_tail_right.png",
+      "bytes": 97565,
+      "sha256": "0e5148467f28bd27725db4b509d5f16f3ff0efca83ba38915dad395dc8722299"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/signature_v4_game_turbo1.png",
+      "bytes": 242091,
+      "sha256": "22409e966d354b81f08fe999dc7837dfaa73636dbfc0c89d529c508c009ecdbf"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/signature_v4_orb.png",
+      "bytes": 107442,
+      "sha256": "1d6db0d243d818103ac66874ca9d1f51c6b1f967e8b51c864671d661011e962c"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/signature_v4_radiance.png",
+      "bytes": 106363,
+      "sha256": "ae6cc0cd6fb1a5c2fc5530511931493906c63017982420fab3ea555768acec90"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/signature_v4_result.png",
+      "bytes": 111321,
+      "sha256": "d95139d6abf54942fc6435e6854b364a47164d657a860af1802e293fc1634afd"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/signature_v4_turbo2_orb.png",
+      "bytes": 108312,
+      "sha256": "7a33e1825d8904436f629c24b94ed41a671e4893aa0187f4bb1ee4c88e84e067"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/snakes_20261030_cast.png",
+      "bytes": 99718,
+      "sha256": "039039e78934b3e3ff12558e442b360a2f48b85ad27d3b8cac2c6274dc5a9038"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/snakes_20261030_front_strike.png",
+      "bytes": 157183,
+      "sha256": "ba26837c7d949578a6ff5e709552e57403a278f6cf7c27936d6185d2b1c7afe6"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/snakes_20261030_idle_bite.png",
+      "bytes": 156950,
+      "sha256": "35dfd5ee9f10bca0c7d00a927299a8ad2c96e30441428caef815308ad0cf346b"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/snakes_20261030_recoil.png",
+      "bytes": 157056,
+      "sha256": "e7469379bed0d180ff4274af65fbd4325c27464f6b6e8c958e504a58a0cce41a"
+    },
+    {
       "path": "design/source/medusagaze/_sheets/style_test_v1_contact.jpg",
       "bytes": 909753,
       "sha256": "919db8b4be613cbd6b6905dc8916dc25bd10ebde125ca70bc44b539dd062942e"
@@ -2354,14 +3124,404 @@
       "sha256": "a5846e452a70cf4a08db2e3aacbcf4192a5cd281c0f482dd31f9dc194aa799ba"
     },
     {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_auto_selected.png",
+      "bytes": 31265,
+      "sha256": "99c593cdadbc2bddfe6b7c66dc5ff5fd488ea178af7aaac65277f051491281e2"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_bet_selected.png",
+      "bytes": 32605,
+      "sha256": "6505eaaeb3470e255f20329c4c8c158a490d6c16a685012eab650a5da2161230"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_feature_320.png",
+      "bytes": 34680,
+      "sha256": "1ae0cb920fe1a76f9b0c27e0c4bdec052fd0c0a1ea9def9f380641a6e3f90281"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_guide_320.png",
+      "bytes": 34814,
+      "sha256": "85c323e38fbdc66f16d35dbb2c3bee6b20854f55a8dd7fe9fbb3db504b5e792b"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_guide_390.png",
+      "bytes": 57822,
+      "sha256": "3881d5dd5458a4885cce1ffc23c6e3dac39e34ef3904e1c4b012f69ae0865a37"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_guide_desktop.png",
+      "bytes": 80322,
+      "sha256": "16a5c6894823248fb69fb625bc38339384c4337746f2e26bf85909be9c6de572"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_mock_result.png",
+      "bytes": 242943,
+      "sha256": "10ff5f265e3fa25de34bb975d4d73e42ad02ef2490062502b92e8005b3f2e00b"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_paytable_320.png",
+      "bytes": 28577,
+      "sha256": "25dedc0c49d913829d5e8c9812d77d99bafc4a9af74492b718d5f57338abc874"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_paytable_desktop.png",
+      "bytes": 58007,
+      "sha256": "b33739889d3b3b434e770dd5e397f086b56082e46f7288b1cc190c5888434755"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_steps_desktop.png",
+      "bytes": 68071,
+      "sha256": "ca9c6f95d5161ea7c6b2edd356e950948d3c61271fb3147bb279ce31ec358444"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_uibar_320.png",
+      "bytes": 48994,
+      "sha256": "67ccc7a963b3fbae0baf00c67193fc29894bfe7af54fbf88de5a3beef1a2bebc"
+    },
+    {
+      "path": "design/source/medusagaze/_sheets/temple_ui_20261031_uibar_desktop.png",
+      "bytes": 241177,
+      "sha256": "e3f69516d5589cee46916c7780a93bf72bb234eb5875985e4f95e01d31a9b459"
+    },
+    {
       "path": "design/source/medusagaze/audio/audio_metadata.json",
-      "bytes": 25000,
-      "sha256": "c9112a85590d2103128ed247ad2caca4fdca07c97c65b0a178b3d49f262bf07f"
+      "bytes": 29636,
+      "sha256": "36a27a2dca24e3aa8c7b2cfa808e7b995e38985ba99fd83054621474b409953c"
+    },
+    {
+      "path": "design/source/medusagaze/audio/build_character_audition.py",
+      "bytes": 1610,
+      "sha256": "2351872fa888d964e666cd77da42cda143b4372acc068f747665a1ec1c1ee099"
     },
     {
       "path": "design/source/medusagaze/audio/build_preview.py",
-      "bytes": 10777,
-      "sha256": "f8caed0ee67364d38930e1e736cb6b22218d1db065092c8d3df32345127e5ef7"
+      "bytes": 11319,
+      "sha256": "4e696723716d5cfe38ba5e3c1c117ae1d70a325132d1b16c954cca220665866e"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-before/master/sfx_orb_fly.wav",
+      "bytes": 86502,
+      "sha256": "cf355024ec2249ec75c8f4c3a571e314beb40028c7cc005ca966f17d2daed727"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-before/master/sfx_orb_hit_l.wav",
+      "bytes": 83622,
+      "sha256": "20553d80046ef0897a3caaf38fdca87622dfe613da06221aba82409f7ec487ba"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-before/master/sfx_orb_hit_m.wav",
+      "bytes": 72102,
+      "sha256": "c5c81d36b4276c8da6edadaa692d7cc02d1ebdfe0539e8e5830f0895f3a98299"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-before/master/sfx_orb_hit_s.wav",
+      "bytes": 60582,
+      "sha256": "9f433eebeaadf02ca39e527f17189c166d59d195f0cb973230fcd793f9269c3f"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-before/runtime/sfx_orb_fly.wav",
+      "bytes": 52998,
+      "sha256": "3cb53d16b128e27ba4e35e2a73c6428826e30b3d4e454d2876db23472011c88c"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-before/runtime/sfx_orb_hit_l.wav",
+      "bytes": 51234,
+      "sha256": "008ca47772719df61197e7a4d3d32922e3cd85c1ec31fda430acdeb66e76f1c2"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-before/runtime/sfx_orb_hit_m.wav",
+      "bytes": 44178,
+      "sha256": "11ff8e788b0a5328f0240a2136382e4fe0e7b11c50aebd35721267323c7696d9"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-before/runtime/sfx_orb_hit_s.wav",
+      "bytes": 37122,
+      "sha256": "7a0e775a7783de674e16f85f4638b4460ee0ebd2cbc6e44159fb5ee666157b44"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_charge__gather_grain.wav",
+      "bytes": 67258,
+      "sha256": "cbefec2e7fd0a21886197614c43acc8755a48ce452bcc94da0b2f31f67ab57a3"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_charge__inward_air.wav",
+      "bytes": 67258,
+      "sha256": "73aaeb85f261fed7df97163c9185bd4be75c8293d076c8c4a3f19fc7e070c894"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_charge__mix.wav",
+      "bytes": 67258,
+      "sha256": "c48c92efb336afdd572bdac07aa450441dd47620c049ba3c8966c1196ca0ab54"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_charge__palm_resonance.wav",
+      "bytes": 67258,
+      "sha256": "246d0461eb64d7a84dbe653333af967bcc94216c7d37badfb8f9a787e2f087fe"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_fly__air_shear.wav",
+      "bytes": 115258,
+      "sha256": "b68d5200233f4f289e5eba3e417a5a9d1b0ee552ba9820440cab677d4daf625a"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_fly__mix.wav",
+      "bytes": 115258,
+      "sha256": "3344e7224209f9faf3c96fd0eef49727641e90315d016604dbfd5bd7cff79abb"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_fly__rotating_glass.wav",
+      "bytes": 115258,
+      "sha256": "271e32626e9e53fabb0d0045b38b15dc740e58fcfe983f9e2389611079668eb4"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_fly__wind_pressure.wav",
+      "bytes": 115258,
+      "sha256": "0da5544413e58a7b50ed1e8ad3f425c144d2d71e1fa032feb614b04baebd061a"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_l__contact_crack.wav",
+      "bytes": 111418,
+      "sha256": "ac52de922a3a33655b51ad166a9a0b415999b756fc1372fb7f11f9b2bca0d0ee"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_l__crystal_body.wav",
+      "bytes": 111418,
+      "sha256": "0510b0b9fc147b2323cf68b803f63cf09829253e2ba78de9c8ca0731b64071bb"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_l__glitter_tail.wav",
+      "bytes": 111418,
+      "sha256": "c1fa6d11327e4346d78cb595aa785e284355e1a65a056f90f17340e6fc619597"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_l__low_impact.wav",
+      "bytes": 111418,
+      "sha256": "d703bd2e9eacb4b2facf3036dafeaf8f87371e703b37f217a61729f095435592"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_l__marble_weight.wav",
+      "bytes": 111418,
+      "sha256": "9681b0c031c30994ed4986a32050ba1cf868c12b0ecc904542b49cee2eb2531b"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_l__mix.wav",
+      "bytes": 111418,
+      "sha256": "843fad579de0c86214152467fb5f207d9a5107fa750b792938325b71307e3366"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_m__contact_crack.wav",
+      "bytes": 96058,
+      "sha256": "3306b5e284e7c15477b306efb018f15e5ab60e84557ee30c9071c646109bab46"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_m__crystal_body.wav",
+      "bytes": 96058,
+      "sha256": "e02da71fd1087e23c729cc7b54886c15e140bcd077d4d52d17ccc194139ad137"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_m__glitter_tail.wav",
+      "bytes": 96058,
+      "sha256": "4fcf5b4083f60c00853724a14ebf47b815f2c7d752b05103b696039d73b8042b"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_m__low_impact.wav",
+      "bytes": 96058,
+      "sha256": "261370cc12a4eefaeda2a3bcd0ab08e6e96094e0e04321ea265e054ebb20c89d"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_m__marble_weight.wav",
+      "bytes": 96058,
+      "sha256": "a6c8a9226e5e37ad0c161fb0924de5f66a1ba173b4700136e6ba00d48b80af23"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_m__mix.wav",
+      "bytes": 96058,
+      "sha256": "bcd57e705823bff708a67882d889a894292dbd5586c2200c17d23cfdc3e95b46"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_s__contact_crack.wav",
+      "bytes": 80698,
+      "sha256": "3dc4ab6509e7b5a053c0ea0bb59eaac93c822682f8997f4767fbd948e0a4a1f5"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_s__crystal_body.wav",
+      "bytes": 80698,
+      "sha256": "bf7e62619e2fa74d63bb7c9a3dd598badf00678815d7b92a93acc86928b2fdce"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_s__glitter_tail.wav",
+      "bytes": 80698,
+      "sha256": "108cda698eca0d290be8030780de2eca1f3183c8bfdc48e1b88589ca9d9ea946"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_s__low_impact.wav",
+      "bytes": 80698,
+      "sha256": "b4b2f94511d2bb4e50f9e98d88e706cfe0fda84946e45aacb662856dfbd07e04"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_s__marble_weight.wav",
+      "bytes": 80698,
+      "sha256": "d24df201a4a30f65cf6338cba82abe19487b54c514835f24552979aa6ff6928c"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_hit_s__mix.wav",
+      "bytes": 80698,
+      "sha256": "e1fca2a8a00c56282fde49b19d32547f5216fffe5f24fa0e95f0bdc2f9da8288"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_release__bright_edge.wav",
+      "bytes": 30778,
+      "sha256": "516d6ad7f819055f5d65653bbfd9c4fd92c5bd02a5b7f5cad0970bf85bb059e6"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_release__low_thump.wav",
+      "bytes": 30778,
+      "sha256": "97396c973ab3be404abb5f3830b4b223fa8167b48ce926b39b54f296ef09804e"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_release__mix.wav",
+      "bytes": 30778,
+      "sha256": "0b5bdb8de08e27b1ca02a2e85b8065f4d5a702b3302cce697e13bc15cdd0ed74"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_release__palm_snap.wav",
+      "bytes": 30778,
+      "sha256": "7117fbcd97c37d6cadaaf4c11f8e51da11997b860aced438e1a4e6921354fd5f"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/sfx_orb_release__pressure_body.wav",
+      "bytes": 30778,
+      "sha256": "5acf8f08627b0cde6a4637911b4bb7cab9555e13dca77331aa8fc7592db56acb"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/vo_medusa_cast__alto_shout.wav",
+      "bytes": 88378,
+      "sha256": "93df71c82dfc149c2732522b8339ff0018b15b8f2d3731ff0658420404aba507"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/vo_medusa_cast__breath_grit.wav",
+      "bytes": 88378,
+      "sha256": "f59a1a01a767ef003c3ac67b55a868057fbc28f1c6399fa7f947129900d81530"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/vo_medusa_cast__chest_resonance.wav",
+      "bytes": 88378,
+      "sha256": "ae213527d4a123d00f519567234325865071030a694223dd6db37e15ce47fec7"
+    },
+    {
+      "path": "design/source/medusagaze/audio/casting-v8-stems/vo_medusa_cast__mix.wav",
+      "bytes": 88378,
+      "sha256": "47cdf1cda040b6db0c28d6f3bf95a470f0f43aa248581adb50df620474608f9b"
+    },
+    {
+      "path": "design/source/medusagaze/audio/CASTING_V8_SIGNAL_QA.json",
+      "bytes": 1476,
+      "sha256": "4fb14f09ee319676bfcd06d06ef096a8e85624c91980b0d1d4c2443bb0dd287c"
+    },
+    {
+      "path": "design/source/medusagaze/audio/CASTING_V8_SOUND_DESIGN.json",
+      "bytes": 4621,
+      "sha256": "88f13fc5dee47a6ef820119a6c529417ebeb551576b3dd676604d8960d2be9f3"
+    },
+    {
+      "path": "design/source/medusagaze/audio/CASTING_V8_SOUND_DESIGN.wav",
+      "bytes": 326444,
+      "sha256": "9ddbc2f03231f8edcb692fdbaec6634f7ee664cf254e520624cc1051b4bde59d"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_gather__close_air.wav",
+      "bytes": 53818,
+      "sha256": "6014695a3660a73646ce85e49268723d1d5aae62befa10fdee3b5d06ffc89eaf"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_gather__mix.wav",
+      "bytes": 53818,
+      "sha256": "c77edd5450edbc6c0e61b6562bdab61886858bb20cd429ef6c26440f95063bc2"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_gather__silk_pull.wav",
+      "bytes": 53818,
+      "sha256": "dc7f36db8eac838f86e3c52924e53f24b54b37ea656f752353ffdab9cf702e57"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_jewel__chain_follow.wav",
+      "bytes": 42298,
+      "sha256": "91afd2ba31cb1cfbfa29f8c058305e1f0e8eee9e5fcdaec88c2b6c5211d6478c"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_jewel__gold_touch.wav",
+      "bytes": 42298,
+      "sha256": "a5aea63cc0c45a78683ff77befa05c6fca5d1e30a8904b617fbf6d685b8264f4"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_jewel__mix.wav",
+      "bytes": 42298,
+      "sha256": "f32e3d9b709b4fc0fa33ab34937ff6d0d2a1f1363aaaa7d2fa3a7d48950940ff"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_jewel__soft_contact.wav",
+      "bytes": 42298,
+      "sha256": "2bc793d44620d564c03c2c7289b41e63ff4f30dce7872614649a0a769f94d869"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_tail__mix.wav",
+      "bytes": 61498,
+      "sha256": "1fd47a9c69504f1fdc7f4347703795f9bc5d23c31fbeda02dceb5660760f32df"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_tail__scale_brush.wav",
+      "bytes": 61498,
+      "sha256": "4669938ec6c5cc6f83541eecd06376a77ac2b6ba8ed0c839bfa2bee2fa03e0f3"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_tail__scales_follow.wav",
+      "bytes": 61498,
+      "sha256": "3b0c7c7de9bd1051911fd1fbb513269dadb5362a88783092d03db81bb6a0c52a"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_wrist__gold_click.wav",
+      "bytes": 26938,
+      "sha256": "b036c952581d9d41dd111480c407f03a08d5e88ba0e8fa72c23062a1af505f77"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_wrist__mix.wav",
+      "bytes": 26938,
+      "sha256": "1d7a195495c8884aa56759b0a868842e588af1835c22d7c06e63712766142652"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_medusa_wrist__wrist_air.wav",
+      "bytes": 26938,
+      "sha256": "979e4e7842ee595191d0638550d8c20689f55b3d99aad25a6ecffa88619cc5f8"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_snake_snap__breathy_release.wav",
+      "bytes": 23098,
+      "sha256": "6e7d2661b96bb1e04a2bb476b1c176703eb028d7db3e91d616572b833b9c22ee"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_snake_snap__jaw_contact.wav",
+      "bytes": 23098,
+      "sha256": "6b84fd1f1fc0be4f6fe278c2245fe804483f91f09a359bf064228899c3fe1ccb"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_snake_snap__mix.wav",
+      "bytes": 23098,
+      "sha256": "d258d5158f931f31ba9a181a0a7867732215c95c58f5baa3594cd28dbf7cbe33"
+    },
+    {
+      "path": "design/source/medusagaze/audio/character-v9-stems/sfx_snake_snap__small_body.wav",
+      "bytes": 23098,
+      "sha256": "ddba95f33636a4d43144442d32a23bed49cae3a4aa23509940815fecdc946e4d"
+    },
+    {
+      "path": "design/source/medusagaze/audio/CHARACTER_V9_AUDITION.wav",
+      "bytes": 960044,
+      "sha256": "2fdbbbcf56f2e1f9890afd9359c16161256bbabb73c7e3ef18c752842f6808c0"
+    },
+    {
+      "path": "design/source/medusagaze/audio/CHARACTER_V9_SOUND_DESIGN.json",
+      "bytes": 3051,
+      "sha256": "d032fee149f6feee5df0a2f04335fd0ec590ff192f505ccc1da39752b336eda0"
     },
     {
       "path": "design/source/medusagaze/audio/generate_audio.py",
@@ -2375,8 +3535,8 @@
     },
     {
       "path": "design/source/medusagaze/audio/LEVELS.md",
-      "bytes": 6345,
-      "sha256": "59ddaa0d94c35163c1d79b9109ecf2855aff43e1b3b41fe9a93092a4b22d03e0"
+      "bytes": 7527,
+      "sha256": "b736121b5ce8cd89ed748cc1bb9e88f9a5c95613f1f538264c7ff25b8e7b38e5"
     },
     {
       "path": "design/source/medusagaze/audio/masters/amb_night.wav",
@@ -2480,8 +3640,8 @@
     },
     {
       "path": "design/source/medusagaze/audio/masters/sfx_gaze_beam.wav",
-      "bytes": 40422,
-      "sha256": "9a49bfbfefef7416475b7cc363d2c9e0aa891802a4d967b3b422f6244e5dbc79"
+      "bytes": 109542,
+      "sha256": "1944a53bb57c513e786ffb0dfc6adce6d2c659b483a07b23ffb4652e9ff3ca43"
     },
     {
       "path": "design/source/medusagaze/audio/masters/sfx_gaze_charge.wav",
@@ -2499,39 +3659,69 @@
       "sha256": "e9ea0fb7738fba0265fcf9aba0c142d795902b76f6d867958e01005c08aab8e9"
     },
     {
+      "path": "design/source/medusagaze/audio/masters/sfx_medusa_gather.wav",
+      "bytes": 40422,
+      "sha256": "4dbf225529b5706cc23f04e27fdb4a13b5184bb8c5eb43170535b2a30aa5a1ed"
+    },
+    {
+      "path": "design/source/medusagaze/audio/masters/sfx_medusa_jewel.wav",
+      "bytes": 31782,
+      "sha256": "41dda87972604658ade3fd7c0445c7bbf55d2d16cba33bdb9ba4345b6ae1abf3"
+    },
+    {
+      "path": "design/source/medusagaze/audio/masters/sfx_medusa_tail.wav",
+      "bytes": 46182,
+      "sha256": "bd956768fbd0abe029f6394ae0fcb243e84bffe321d7df494cdf2eec37bce25d"
+    },
+    {
+      "path": "design/source/medusagaze/audio/masters/sfx_medusa_wrist.wav",
+      "bytes": 20262,
+      "sha256": "155d0dd697beba0736fe0f772612397866bd9166d22d67159f267eca18e5d135"
+    },
+    {
       "path": "design/source/medusagaze/audio/masters/sfx_mult_count.wav",
       "bytes": 34662,
-      "sha256": "544f24f450930d590900de16947ea07001aee53195e02ace90c73825bf0306fc"
+      "sha256": "37f64d38bf51aafd35e810085fb8abbc212b7cda6d8207bb0296e67a1c34e89c"
+    },
+    {
+      "path": "design/source/medusagaze/audio/masters/sfx_orb_charge.wav",
+      "bytes": 50502,
+      "sha256": "189ee48c281e7d0892dabc71f248ba425c6a79d18ca125019fd8a2e7569d0472"
     },
     {
       "path": "design/source/medusagaze/audio/masters/sfx_orb_crack.wav",
       "bytes": 69222,
-      "sha256": "63d3ecd23f67ba5c860c5b886174b05d891a347b47993223c42690c785d2fc37"
+      "sha256": "3e468ed00ec911a1c431c0f3b0665bf5256fa409bd34338a2b75ee742ba678bb"
     },
     {
       "path": "design/source/medusagaze/audio/masters/sfx_orb_crack_2.wav",
       "bytes": 69222,
-      "sha256": "9a057cdec1940c7fc51f9d30da65173a4d45531eb2b79aebc818ae4e9f0dda43"
+      "sha256": "1cd40ff6880ec0b9842976fc335f01420f37c1a41122081afcfe4bd6f4490c3b"
     },
     {
       "path": "design/source/medusagaze/audio/masters/sfx_orb_fly.wav",
-      "bytes": 64902,
-      "sha256": "d5b228398b6bf7707087d0e4fe491f5f327037885c858858479b013ecfea5f5b"
+      "bytes": 86502,
+      "sha256": "dae8c6c86c18b3d0a8d10968b6e148f6bc09b51ce54c16238bb1e7186a8f6415"
     },
     {
       "path": "design/source/medusagaze/audio/masters/sfx_orb_hit_l.wav",
       "bytes": 83622,
-      "sha256": "94582b732b7c32ea92e6396bca921f5745ed1ba6594374bc5d15a87f133745ee"
+      "sha256": "e621d99fda493005622083384ec080ff93e47806e13410a8efe23f3a97dba428"
     },
     {
       "path": "design/source/medusagaze/audio/masters/sfx_orb_hit_m.wav",
       "bytes": 72102,
-      "sha256": "303495612148d09de942f544b85bd1f85068fbeb458c361f9aaf4dd56feb2d7c"
+      "sha256": "2023d8333c4c4ed334cf81f1226338ebe3b9770f92dd6fb2ef9dbb5873ca7a04"
     },
     {
       "path": "design/source/medusagaze/audio/masters/sfx_orb_hit_s.wav",
       "bytes": 60582,
-      "sha256": "118d9c1e2ffc22f23fb52fe09b5fbafd17554325e97995e0678c65aec3308f6f"
+      "sha256": "45d8748fd01b21866b8b1da75e9f22b5e581f960c0f593cf858b369d92f39147"
+    },
+    {
+      "path": "design/source/medusagaze/audio/masters/sfx_orb_release.wav",
+      "bytes": 23142,
+      "sha256": "53b14dd33de796faf3c53f6f790e76c98784c273540bc202aa7c2a7d7b40cd0b"
     },
     {
       "path": "design/source/medusagaze/audio/masters/sfx_petrify_1.wav",
@@ -2579,6 +3769,11 @@
       "sha256": "8c9e51a40fe991f1c8df93c442b298c44ded2f545faae027e30cb48f64173217"
     },
     {
+      "path": "design/source/medusagaze/audio/masters/sfx_snake_snap.wav",
+      "bytes": 17382,
+      "sha256": "0cc2a9283b003290e49a6724361f08e65214664010eae51cb6931234c910d60b"
+    },
+    {
       "path": "design/source/medusagaze/audio/masters/sfx_snake_yawn.wav",
       "bytes": 109542,
       "sha256": "6f7686bf134fdd3a0abbdea57a8ba9123a79c63316fb2a832cf9e3d484db8d8b"
@@ -2606,12 +3801,12 @@
     {
       "path": "design/source/medusagaze/audio/masters/sfx_total_mult_up.wav",
       "bytes": 60582,
-      "sha256": "920c85e6f76b411233753cad4a5b6a8d7b4e02485fe0a2df5d7a2027ac0bec65"
+      "sha256": "6d6cd817ab3703d95e5c9bb6f9eaf0db4067a7c1d0e9975a90027decc8d2ad61"
     },
     {
       "path": "design/source/medusagaze/audio/masters/sfx_total_to_win.wav",
       "bytes": 40422,
-      "sha256": "6edf375c518e6fa08049c1bb0c68077f96e30b0313be8869d7a129be0d10cc41"
+      "sha256": "e7c9580730b1bdfd8c72d23e03e873f00f4c6d7a4c436ef099c581c34dc3ac41"
     },
     {
       "path": "design/source/medusagaze/audio/masters/sfx_win_mark.wav",
@@ -2632,6 +3827,11 @@
       "path": "design/source/medusagaze/audio/masters/vo_medusa_annoyed.wav",
       "bytes": 79302,
       "sha256": "05813aa0fa6b045a96eaf003a58da04289ab158dc617edf67ca20921acb08e30"
+    },
+    {
+      "path": "design/source/medusagaze/audio/masters/vo_medusa_cast.wav",
+      "bytes": 66342,
+      "sha256": "eafb8f1bba9065f28f8eb0308fdfeb14fe3715a30979131ecdb2216d96a05f1a"
     },
     {
       "path": "design/source/medusagaze/audio/masters/vo_medusa_cry_happy.wav",
@@ -2670,18 +3870,28 @@
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_gaze_beam__focus_snap.wav",
-      "bytes": 53818,
-      "sha256": "ae124e01d6e01db1c96246cb69683482063b9533cc53d8ebd754ca53325ac03b"
+      "bytes": 145978,
+      "sha256": "d72cc958d7c9191eee99dcec7588dedbd634c905126f7a424d118f77be8d7ab8"
+    },
+    {
+      "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_gaze_beam__gathering_prism.wav",
+      "bytes": 145978,
+      "sha256": "2b687269e76fa6d71c48be46c73cc5b8721c8e22a0bb113e0a17b289384142fa"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_gaze_beam__glass_resonance.wav",
-      "bytes": 53818,
-      "sha256": "1b40f61d3137b165c9ab7e33c1e5c388d5dd868401867b3dc33d50ae75b49ffe"
+      "bytes": 145978,
+      "sha256": "a244b918497d84a1ae4e4496a870702b632d9dd713d4f088cf37a33e3e0c59f1"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_gaze_beam__mix.wav",
-      "bytes": 53818,
-      "sha256": "3c2deb5481308e280b12a3c3963f7c004b4a9c976bd399219328a6055c1f8a8f"
+      "bytes": 145978,
+      "sha256": "4509aba8053982074202e1198419345cc9fed24cfc2ab7f40b3ff3085cbb13e7"
+    },
+    {
+      "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_gaze_beam__radiating_air.wav",
+      "bytes": 145978,
+      "sha256": "7a2b2dd54f6fa5c15306864bfa2a29e9043fcb8ac5c5e52536ff95abf6dfc227"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_gaze_charge__mix.wav",
@@ -2746,52 +3956,52 @@
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_mult_count__mix.wav",
       "bytes": 46138,
-      "sha256": "748e92be0e4fb723a6e0353f5b79e0c7ef32ab39ea7ca9d80875ce72fbdc78ca"
+      "sha256": "73fc76abd7e5f846b2d73716feed194062a74a4d66777804ed0d2073faeba1d6"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_mult_count__soft_grain.wav",
       "bytes": 46138,
-      "sha256": "a7791792b0a530d1209b7a9ec231e53da4ab0e20459e59670c05cf00642b9f8d"
+      "sha256": "120d46b89bb3f4b23a7b9def249fe32929ca7796a774000d96bf446bcd08dbfc"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack_2__chip_1.wav",
       "bytes": 92218,
-      "sha256": "dc9f48df358fa2346ca054491cf9b6021337b8b0b4c84ecf0e96f5d8a8566b96"
+      "sha256": "e406614158bc24fa30b412d3b2abaf09195deabac236a039a0f038c8290bb8e9"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack_2__chip_2.wav",
       "bytes": 92218,
-      "sha256": "6b5890e5a5d82ff030bb69e40213101eb9024086b66fa68dd703a58f230e45e0"
+      "sha256": "e357430b8c97f21d03293b5283de24745a9cd42f37a8792a886bd34fd3fb100f"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack_2__chip_3.wav",
       "bytes": 92218,
-      "sha256": "b2336a87700bdb803060089041d89bb0f8700fd9b5f2b10aa80d4711d919059f"
+      "sha256": "6cf3634af08de25654ef8f75a4f5a49d6119f241b391adebf25059d8f09aa620"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack_2__chip_4.wav",
       "bytes": 92218,
-      "sha256": "2ea1892f42dd859123fb851b2e698591e116e9f1549b8aef74e1887feffe80f0"
+      "sha256": "6e0eca4791adee7d7867e5cdd3f39e70f6b03ecb51539063dcd8ccac1e40aaa6"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack_2__chip_5.wav",
       "bytes": 92218,
-      "sha256": "8ac804a3048523d0b71c4a74261f45b191dc682677d87bc031f12f91a85f9220"
+      "sha256": "db99f56b9f9c45df942d9e7d68fb38c6b9e12f2f35eed789c017c40c8ff98563"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack_2__chip_6.wav",
       "bytes": 92218,
-      "sha256": "79548ac371a77bcef16730f87b040418064c6b9677ea608b6f5c17a96c589908"
+      "sha256": "97c98badc6b005eeee243e72d30c09322e6b9625d8c07cb31a22623f9fdde01e"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack_2__fracture_snap.wav",
       "bytes": 92218,
-      "sha256": "fcfc0bd52d7b67be125365f6e767f17f79fcd688c3e0b2ee084f450d1a384ea9"
+      "sha256": "5b23cd91890d64c769b93939f8dfe40f520a4cc2cbcfc540306d77136fc0b190"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack_2__mix.wav",
       "bytes": 92218,
-      "sha256": "2f9c0f9abe84454ce2bade976b619ab8fd7ec75cc50a9e374f5556b9e096745d"
+      "sha256": "210eb43eda608ee6c7ace6e85dffb8ae3624d64521f26ece0e2b0bbfece945cd"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack_2__stone_stress.wav",
@@ -2801,42 +4011,42 @@
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack__chip_1.wav",
       "bytes": 92218,
-      "sha256": "4061b3ff33e771ac584e7dedc8d9f996b8d2cbe56a9a4072904cd0d7c5b2741d"
+      "sha256": "8520b9024fa47cd8dac3ea1b36b233156ac293ff4cd4849cd89b19439ed146ec"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack__chip_2.wav",
       "bytes": 92218,
-      "sha256": "afa0868b48586935dd6a9f9362b8c8151483fd44f20acbf33da66e4959c3e115"
+      "sha256": "86d70a6297ce1f512664d754aa658b922342dc3cd7b5398d33bbb998e3d8c46e"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack__chip_3.wav",
       "bytes": 92218,
-      "sha256": "31571516505396aba32ac268f19085c00b2e8079b9807ddc9597babcacf5174b"
+      "sha256": "3a3a1ee992bcf507ad5bebd8c7ec021b414d6044ca72a87b23115718f782e76a"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack__chip_4.wav",
       "bytes": 92218,
-      "sha256": "5bcbe25ef530de5a6e6cc8d8493a065497e19aa220c2abe8459ddee26f69c946"
+      "sha256": "14f7d4654f67f3d2044435b8c9a7e54459f1e58300d72083caa762b4f425d631"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack__chip_5.wav",
       "bytes": 92218,
-      "sha256": "b207a144c5815006bd71b8c610a6a3721a95202d190f68b1cfdf0176a273d658"
+      "sha256": "81c6fd2b50a286b2db1014aafbaea3fe43b71fe27796331ecc59614c3d58fa5d"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack__chip_6.wav",
       "bytes": 92218,
-      "sha256": "5b9e00806d9e9283f4eaf9b9e316fa0b614216d88880f774ec076bba49009c81"
+      "sha256": "c423d0d17db3bdd3031731668b78e1ef44edccbd15fee55f2fd10438c623ccf1"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack__fracture_snap.wav",
       "bytes": 92218,
-      "sha256": "c2afd742f6037040b7a50a915894de2470af1917c81b5f461e6e53644b79b249"
+      "sha256": "0d2672f552145c33898ba58772614812a7ee0c68667baab41693e99d973f8def"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack__mix.wav",
       "bytes": 92218,
-      "sha256": "4416e065b384e37a7f1a6de2ff00461548011298761e37f9be8c52b5b2068a8e"
+      "sha256": "e67480015c4c16ee36f28dadd23668e09ee08d25911ba2b70974e5ab899943cf"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_crack__stone_stress.wav",
@@ -2845,28 +4055,28 @@
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_fly__air_body.wav",
-      "bytes": 86458,
-      "sha256": "ad76886437bb1abf99d028b6915ae232d5f61a1b02d9e59c968cbbe639f49175"
+      "bytes": 115258,
+      "sha256": "82d34206e213faf40b72ee5d721c9531961240ed554ed15d1496ee04290a61d5"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_fly__air_edge.wav",
-      "bytes": 86458,
-      "sha256": "3cf50da715e88a77ae7e88921761ecfe8e2a608b2b45e10477f524623e4d5d93"
+      "bytes": 115258,
+      "sha256": "e11abd7355b83bd180c1b1127668a23a15ebfcdaee567fd1f7b704343b6c1ae9"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_fly__mix.wav",
-      "bytes": 86458,
-      "sha256": "a3ad582a9348d14387a2249c32d53045b4bc5fea418860d8f65c977341b006f1"
+      "bytes": 115258,
+      "sha256": "f81759af66dc4412c896f940af0f3eed86a14dfb96ffb4e74af7177a42f69b5b"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_fly__spinning_prism.wav",
-      "bytes": 86458,
-      "sha256": "e3643eacd26f69070e1f9efba1a0eeafb2494a96ddfff8331a2d197e3ce33a25"
+      "bytes": 115258,
+      "sha256": "cbb5b62bae137d789efa8944c890d5b6abc0e0695099d249c8d3200424a3ac80"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_hit_l__contact_bite.wav",
       "bytes": 111418,
-      "sha256": "7a842c989d0e546b7728a05076f1625b1c87e18cc987179841ac97554a6a89be"
+      "sha256": "2960ae9c0601d8b8147444e042ac3e6c899d4e7d5ae477cfc3504be1d79a3af5"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_hit_l__crystal_ring.wav",
@@ -2886,12 +4096,12 @@
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_hit_l__mix.wav",
       "bytes": 111418,
-      "sha256": "42134e1c21552c834b734923c11b0857dbbb4d609655ed846f34f5231b69f8d4"
+      "sha256": "b0e5861764bd5aeee39945c1bac7dc8ad6db21e8283d1f07142b69ab5fecd124"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_hit_m__contact_bite.wav",
       "bytes": 96058,
-      "sha256": "5946fd7bb0ef86738874f7c7fc48b733462f0148e054701f52b84b72815395a0"
+      "sha256": "e922dbed9614fcab255482d99baf2d6d95232c011b0f933af90e133f3451d20a"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_hit_m__crystal_ring.wav",
@@ -2911,12 +4121,12 @@
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_hit_m__mix.wav",
       "bytes": 96058,
-      "sha256": "b74e482a11e0c14196047eeff2826bcb45887074f6a46074a960ce7d2475e22e"
+      "sha256": "b92db04bfe4dd11b2e3062036c501d5d2995b53e6793322fd88ce84c579e7db8"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_hit_s__contact_bite.wav",
       "bytes": 80698,
-      "sha256": "7bc64155abf44ab75267b9345b705dbb5e7f8908af3597a8ee3a99017336c115"
+      "sha256": "d66abfa598650574954f4abf1b2ffb0f673d5d6b92fd8f8c6bd3a6225825e0a5"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_hit_s__crystal_ring.wav",
@@ -2936,12 +4146,12 @@
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_orb_hit_s__mix.wav",
       "bytes": 80698,
-      "sha256": "79a1b93d1979f165089e2bfa02172439c352ba38cc1597ebda5b1edac076a11a"
+      "sha256": "3f5520251ce1365aaf1d3309498df3c68caf20316b6220888331049366ae36f0"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_total_mult_up__gold_shimmer.wav",
       "bytes": 80698,
-      "sha256": "15325af4454ec5b1153f02757f80f1a5acde0ffbc55485d8c5031476ad82cb8b"
+      "sha256": "557759b5fbdd7c6fb4cd2b0f7fbd7cb293e9d2ee596a44cd1f2d321ccda804e8"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_total_mult_up__inlay_taps.wav",
@@ -2951,17 +4161,17 @@
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_total_mult_up__mix.wav",
       "bytes": 80698,
-      "sha256": "a98758e09d860ddb4e7bd114db41edfdafcddc20c337373a6af64019a599438d"
+      "sha256": "7762e0dfb6bcace01bf9a87a91a738b627388e722d7966a351696e99f9fd65f0"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_total_to_win__mix.wav",
       "bytes": 53818,
-      "sha256": "f43a5302afe2ae8340406603c6f5126da5ebe98bbb04e2fac92d23034d5ee385"
+      "sha256": "3c203d956ca67166e82ce437b8e722249dfc32f71efb25d9fe673ed4147759e1"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_total_to_win__release_air.wav",
       "bytes": 53818,
-      "sha256": "a8e3f193a38d3ed18908e079c4fbdbddd437475f99f25b2c70f93a74ffcbd5c6"
+      "sha256": "5aca76e8da3393744dc1d6a5e5f002181d6f3503f8fee33a3dce4757056ca980"
     },
     {
       "path": "design/source/medusagaze/audio/multiplier-v2-stems/sfx_total_to_win__score_seal.wav",
@@ -2979,9 +4189,34 @@
       "sha256": "447a3ac7664ecd3a7263b32cbe08be3438cdbd55d19a98d45d73053d3eb8328e"
     },
     {
+      "path": "design/source/medusagaze/audio/MULTIPLIER_V4_SOUND_DESIGN.json",
+      "bytes": 8087,
+      "sha256": "c5d2ae74e295ed5972ae24ac358504d503102d595a8faae2058d5be4d483a6dd"
+    },
+    {
+      "path": "design/source/medusagaze/audio/MULTIPLIER_V4_SOUND_DESIGN.wav",
+      "bytes": 326444,
+      "sha256": "897f36dace63f54c6b735979132c5a984d238f355ec3e99dd4052acb04f22f93"
+    },
+    {
+      "path": "design/source/medusagaze/audio/ORB_POWER_V10_AUDITION.json",
+      "bytes": 572,
+      "sha256": "e32406674ce71fd73b7bc2c1b8c94746b267d6774d069bfe76b0f0c8c84ef139"
+    },
+    {
+      "path": "design/source/medusagaze/audio/ORB_POWER_V10_AUDITION.wav",
+      "bytes": 829124,
+      "sha256": "116d3d7f2422b1be80ffc08de74c88a3ec6e131722ac087c60e12f0a3e2d14fd"
+    },
+    {
+      "path": "design/source/medusagaze/audio/ORB_POWER_V10_MIX.json",
+      "bytes": 14904,
+      "sha256": "a69d3f9e33ee7af758e861dc8bc73b9ffe16b76dc047f2e881e89ccfe8245f47"
+    },
+    {
       "path": "design/source/medusagaze/audio/preview.html",
-      "bytes": 29224,
-      "sha256": "93f9587f405191ca25d1128958e4ddb72e470a80e4ae68b70d730ed826b4c051"
+      "bytes": 32991,
+      "sha256": "c57fdccb2987123a290df656589e7dcc437755e92fe10dc250e16ec8e6c7bbfb"
     },
     {
       "path": "design/source/medusagaze/audio/previous_multiplier_v1/master_/sfx_gaze_beam.wav",
@@ -3119,9 +4354,19 @@
       "sha256": "1e94dbd12a0aab71bf4f13f37754e559363c2cf493fbac16bb90314ded42394c"
     },
     {
+      "path": "design/source/medusagaze/audio/upgrade_casting_v8.py",
+      "bytes": 6266,
+      "sha256": "0a10a76a7b5140bba6a882b91c2e8197fa9db8ffebc077205dc9502da47c27e4"
+    },
+    {
+      "path": "design/source/medusagaze/audio/upgrade_character_v9.py",
+      "bytes": 4188,
+      "sha256": "a3cc399fc30f077341eece3921fd9e203e46452eb6e4698684d3f34cdc15df9e"
+    },
+    {
       "path": "design/source/medusagaze/audio/upgrade_multiplier.py",
-      "bytes": 7233,
-      "sha256": "5aa0766bf5d06f93469d5ee9fe5ba7d028521bca15579efcaeae90715e699e97"
+      "bytes": 7466,
+      "sha256": "4e77a640b0b23c37b2c4e4d4bd3e99628359e86f71874ffa968b097422608a74"
     },
     {
       "path": "design/source/medusagaze/audio/verify_signal.py",
@@ -3305,13 +4550,13 @@
     },
     {
       "path": "design/source/medusagaze/background/preview/index.html",
-      "bytes": 3670,
-      "sha256": "a1577339d53db728c1659e5988eb23e90d37dcef024e048c0066ac53e72d1f8e"
+      "bytes": 3604,
+      "sha256": "e02f9cd8cdb8986b45e38f614b873a3302b0eead87f28c8b33f4bf572f17f7e6"
     },
     {
       "path": "design/source/medusagaze/background/preview/scene.js",
-      "bytes": 933834,
-      "sha256": "67bb77bad726bf65e61d7d7009716bb1fd5d229facdd7c20597696b71a41eea7"
+      "bytes": 953237,
+      "sha256": "9b4086dfe679c030511d64560d1048d7f732b6bf55c7fdc609a7ba8787f44aed"
     },
     {
       "path": "design/source/medusagaze/background/README.txt",
@@ -3345,8 +4590,18 @@
     },
     {
       "path": "design/source/medusagaze/background/validation.json",
-      "bytes": 654,
-      "sha256": "e49ef8e978b13e09aca941c05dad3c7fefeb40a13b9cb9c2c99660835370d1a3"
+      "bytes": 1347,
+      "sha256": "17c274a0c47e294deb83f417124bee0b8ed0dead47a318007485248e7bda070b"
+    },
+    {
+      "path": "design/source/medusagaze/cast/fluency-baseline-20261029.json",
+      "bytes": 422,
+      "sha256": "ae8b288e803ca35b15a6f8458b387cf2913b834a9852141d1cae773d514a9d85"
+    },
+    {
+      "path": "design/source/medusagaze/cast/fluency-validation.json",
+      "bytes": 890,
+      "sha256": "7e70949a2ec0e55a3cd354503fc27b500123b6fe9b57e4859e38db154857717a"
     },
     {
       "path": "design/source/medusagaze/cast/generated/arms_original.png",
@@ -3412,6 +4667,16 @@
       "path": "design/source/medusagaze/cast/generated/torso_original.png",
       "bytes": 1960381,
       "sha256": "0407126fbbb17f812fe689cbe2a044364d2ea303c770c122311721876e7d9e25"
+    },
+    {
+      "path": "design/source/medusagaze/cast/hand-anticipation-baseline-20261030.json",
+      "bytes": 3624,
+      "sha256": "0749f6e52bd60043be766b37e8f794baeda4c92359476f4b15d3f38fb620e3d6"
+    },
+    {
+      "path": "design/source/medusagaze/cast/hand-anticipation-validation.json",
+      "bytes": 7561,
+      "sha256": "f124ab37e3db336b6ab3205301327ef6a997743d2455b2082b62b1ccfbf6c43f"
     },
     {
       "path": "design/source/medusagaze/cast/master/medusa_master_v1.png",
@@ -3765,23 +5030,33 @@
     },
     {
       "path": "design/source/medusagaze/cast/preview/index.html",
-      "bytes": 2059,
-      "sha256": "bd1b14ff2a93400c4c0db26850bd075f9433a1391610c646d9b3daf927d12cd5"
+      "bytes": 2168,
+      "sha256": "f1642d37f77ecc100f5a41f638f84ffba65aa02a9a8ada5155f7bbf5e447fdf4"
     },
     {
       "path": "design/source/medusagaze/cast/preview/scene.js",
-      "bytes": 3394862,
-      "sha256": "2110e09ae7ed6ab94d7b00ccfcc14b3eb52962e215c484bc27d716e9917fd932"
+      "bytes": 7080784,
+      "sha256": "ec267614f00fc45cfc1f801dda52020898f59f667d9e8d8473eb68922cb52051"
+    },
+    {
+      "path": "design/source/medusagaze/cast/snake-presence-baseline-20261030.json",
+      "bytes": 6009,
+      "sha256": "ac26d68108647959d08043fbf10ff8e081b4fa760b0dad32e7ae61acb7665390"
+    },
+    {
+      "path": "design/source/medusagaze/cast/snake-presence-validation.json",
+      "bytes": 12574,
+      "sha256": "682543fb02334cdf1f5535c76de75914f07af32d97805c52bbf3e23233c47964"
     },
     {
       "path": "design/source/medusagaze/cast/spine43-build.json",
-      "bytes": 137449,
-      "sha256": "497535856137ab3791c1b9c60d645491404e3c7b2d68d911b848def2e39f2258"
+      "bytes": 365208,
+      "sha256": "3aee8c75c49cd9e4ebf3a72b9f91499e559553f2fdc1a8e5bdfe9ecbf2de6bd3"
     },
     {
       "path": "design/source/medusagaze/cast/spine43-validation.json",
-      "bytes": 4549,
-      "sha256": "a996f4255a6b86084a35cf017dc84686ae102bffbc57a0c3904fd3b1761f11e3"
+      "bytes": 4843,
+      "sha256": "f6b24704dc2ee5e32f100c7e26b3e6261d35bd5fa8decb9ff832f06800d79c3e"
     },
     {
       "path": "design/source/medusagaze/cast/spine43_editor/images/arm_back.png",
@@ -3965,8 +5240,8 @@
     },
     {
       "path": "design/source/medusagaze/cast/spine43_editor/medusa.json",
-      "bytes": 2239630,
-      "sha256": "8e7ddc31d8475034cbad714839bea49db987578fefafe0a4cdce3edd85408815"
+      "bytes": 6033027,
+      "sha256": "3b3e5a650c6dc579c9509ad12ece017211a32110be6f842bce6410b402c9a4c4"
     },
     {
       "path": "design/source/medusagaze/completion-additions.json",
@@ -4000,13 +5275,23 @@
     },
     {
       "path": "design/source/medusagaze/delivery-status.json",
-      "bytes": 8352,
-      "sha256": "5fe3b199894240e3f15136137cbc6b8429495602abba1eb5405ee36ab6b8d83c"
+      "bytes": 92279,
+      "sha256": "d68cf9c8a30f28ed54208696c706fa7ac146d32c1c3adccc7d1f5592f8d4fe02"
+    },
+    {
+      "path": "design/source/medusagaze/dynamics/preview/index.html",
+      "bytes": 1301,
+      "sha256": "2f7312b33601ce766188af8c5c127fda3439500843e40956bc9fe5dcd73b71b1"
+    },
+    {
+      "path": "design/source/medusagaze/dynamics/preview/scene.js",
+      "bytes": 950681,
+      "sha256": "5fa36990f3eb4ff1ab3c84883d8a5db4488c451920b638a5983e25fa57db0053"
     },
     {
       "path": "design/source/medusagaze/motion/animationTimeline.js",
-      "bytes": 4153,
-      "sha256": "1266709f954aef3604b71e5404d097a16ff0d57ad4b3adcb936c95afe0acc32d"
+      "bytes": 4304,
+      "sha256": "85aa4a16d6f55af213f9d725b7ed8fe5ace8ef63b56e7c3b50483eab712f572a"
     },
     {
       "path": "design/source/medusagaze/motion/frames/01_0.10.jpg",
@@ -4099,6 +5384,11 @@
       "sha256": "3753cc831c76cca53f74ddda1e84afbabf0cc22a3b84ae5c1dc3e7fdff93e48b"
     },
     {
+      "path": "design/source/medusagaze/motion/ppMotion.js",
+      "bytes": 6694,
+      "sha256": "17963b3230a3d14136407d534e6474db525004cc2a24246fb52cfd3cf57bc39b"
+    },
+    {
       "path": "design/source/medusagaze/motion/recording.json",
       "bytes": 480,
       "sha256": "fbbd2ec483d6c9797f2bdcc3c6be207bfa89c2df29fda3b0aad63011b4935a37"
@@ -4110,8 +5400,8 @@
     },
     {
       "path": "design/source/medusagaze/motion/review.html",
-      "bytes": 16406,
-      "sha256": "f1681539df27ebdf29c47229982258d28becdb1daa80c38f784ebcde5be67683"
+      "bytes": 16751,
+      "sha256": "52959bb23a7878394e850765aed59353bdcd13ecbc5fe8399766976b41345836"
     },
     {
       "path": "design/source/medusagaze/motion/scenario.js",
@@ -4120,23 +5410,38 @@
     },
     {
       "path": "design/source/medusagaze/motion/symbolMotion.js",
-      "bytes": 7481,
-      "sha256": "e313e4da41442fc511f8fb8df7339adb0d56f42688eeee2ed3a0b711cd725772"
+      "bytes": 10169,
+      "sha256": "da41d39a3e6ce91bad3c63e235fe9c4be1653f78defe020be4103c388e6dd330"
     },
     {
       "path": "design/source/medusagaze/multiplier/preview/index.html",
-      "bytes": 1336,
-      "sha256": "617a5b45e969004ada9b2b83e7d090b67d43e6e5bbf4b05cca6b19b2200e6a6b"
+      "bytes": 1849,
+      "sha256": "ccbd1291e49966995443750b2d6cc5d0b22fda04793e7408a1c0cd6d88cc64d5"
     },
     {
       "path": "design/source/medusagaze/multiplier/preview/scene.js",
-      "bytes": 3430355,
-      "sha256": "8b23fb8ccb9234698b592253e1ffe1e534424c5054c933b6040e6cd333aff13f"
+      "bytes": 7133821,
+      "sha256": "2f1d49edd7fbca5f60ee3f058c9c104cac78c7384d3308a7f964bba62aa19700"
+    },
+    {
+      "path": "design/source/medusagaze/pp-motion/preview/index.html",
+      "bytes": 1373,
+      "sha256": "dc6c7b628030ecc6c59ff7fb3e8c4848e2b854e1d3522af906528a5422bcc5e8"
+    },
+    {
+      "path": "design/source/medusagaze/pp-motion/preview/scene.js",
+      "bytes": 7076271,
+      "sha256": "327c0f5568811add6b888310b9b900a985bf8652c5ea1b39e35e92e8db6ddcae"
+    },
+    {
+      "path": "design/source/medusagaze/REFINEMENT_20261026.txt",
+      "bytes": 1073,
+      "sha256": "eefb3536944a5720906c0cccbd6e9c49ac7e7751cb3f110fff1777a48e91e243"
     },
     {
       "path": "design/source/medusagaze/review.html",
-      "bytes": 3798,
-      "sha256": "83f5b497eaa13750d68f9c3339720f45d83764d9ea1e0e5a181d61afe5caa843"
+      "bytes": 20557,
+      "sha256": "d28151b8342fc53ddce0631211c283942b8d280fab5ffe843c0cf276a8d38c98"
     },
     {
       "path": "design/source/medusagaze/style_ref.png",
@@ -4394,6 +5699,61 @@
       "sha256": "40c4530d95712b24ff51dd5a44197e3d31305719b3b45aa404ab52bc3ae2f959"
     },
     {
+      "path": "design/source/medusagaze/ui/icon-contrast-20261026.json",
+      "bytes": 2133,
+      "sha256": "4ed9b231b43fedc3b1322bc90295a0b9b9a28e14f8ca7889be812d353ebb9970"
+    },
+    {
+      "path": "design/source/medusagaze/ui/icons_before_20261026/autoSpin.png",
+      "bytes": 7751,
+      "sha256": "27b77b9245ef00037da994064d9697c786d92245cbb498a441e291b68082e33a"
+    },
+    {
+      "path": "design/source/medusagaze/ui/icons_before_20261026/decrease.png",
+      "bytes": 1044,
+      "sha256": "1254c887d9338d550a8f36d2181ab480312a12df201d25f69be841e1a52cfb9e"
+    },
+    {
+      "path": "design/source/medusagaze/ui/icons_before_20261026/increase.png",
+      "bytes": 2063,
+      "sha256": "abfa26fc7d6e8c8d0cf4ac37d5f525be89c08fab4f5551a4a3aa8f7f1ecc3c8f"
+    },
+    {
+      "path": "design/source/medusagaze/ui/icons_before_20261026/info.png",
+      "bytes": 2119,
+      "sha256": "8b7e8537561811a4ee226a67f4b197253a345f9b69447db8c5763ea984f03af8"
+    },
+    {
+      "path": "design/source/medusagaze/ui/icons_before_20261026/menu.png",
+      "bytes": 2564,
+      "sha256": "9661678a237b7446c4de13d07233b9f7e6bd4bb048b4c8f3cf51104ef2f6edc3"
+    },
+    {
+      "path": "design/source/medusagaze/ui/icons_before_20261026/menuExit.png",
+      "bytes": 1720,
+      "sha256": "bb931fcbe988ace7d7e42f67b0dbb96fc4a8bcf3ecc92c5696ac4bf330876a8b"
+    },
+    {
+      "path": "design/source/medusagaze/ui/icons_before_20261026/payTable.png",
+      "bytes": 4219,
+      "sha256": "c619688d55d46e166002d97b01595e5d9c70984b53a234ad98cdba94c226bc37"
+    },
+    {
+      "path": "design/source/medusagaze/ui/icons_before_20261026/settings.png",
+      "bytes": 7473,
+      "sha256": "87d013bc171ed8d976864f511354ad692a11a4186d93fd5be31bb9d0fdfa5579"
+    },
+    {
+      "path": "design/source/medusagaze/ui/icons_before_20261026/soundOff.png",
+      "bytes": 3603,
+      "sha256": "818df934b8493e2d5f97969a9935e79738651e393fa3a55409a90c1b698dd889"
+    },
+    {
+      "path": "design/source/medusagaze/ui/icons_before_20261026/soundOn.png",
+      "bytes": 4774,
+      "sha256": "1c97015d0b266a838734bd968798177590e9a59f2a23f9cfd08f3e2d57d07669"
+    },
+    {
       "path": "design/source/medusagaze/ui/loader_frames/loader_00.png",
       "bytes": 144741,
       "sha256": "5246ee5d1ebc2fe19237a98c4813ba6789b86c8b2cd78049e2f688977167ae16"
@@ -4484,6 +5844,11 @@
       "sha256": "9174747c850209fa4b7ef8ad73ddd9db94d825cded32edd1680dbdc6b215a10f"
     },
     {
+      "path": "design/align_signature_audio_v4.py",
+      "bytes": 2154,
+      "sha256": "41d2040449fffbd5fda7760070a1c7420c9cf4bcb8a97c118fdbf801a92f821d"
+    },
+    {
       "path": "design/animation-validation.json",
       "bytes": 5862,
       "sha256": "1a6294b2e4dbf17cb876025f2f71ade163d8f05b1b922bc3cecdf145b410fcf6"
@@ -4495,8 +5860,8 @@
     },
     {
       "path": "design/backgroundPreview.ts",
-      "bytes": 8212,
-      "sha256": "e6c034aeccd9b7fb9eb25483680324f1f7f59c531dfbb6baa448eb138307d793"
+      "bytes": 8300,
+      "sha256": "e705023559ae02d2f46e2876ea27ac6ad4c3d9b789a524f995f3612e73994696"
     },
     {
       "path": "design/build_background.mjs",
@@ -4505,18 +5870,23 @@
     },
     {
       "path": "design/build_local.mjs",
-      "bytes": 1262,
-      "sha256": "e03996b0525f1efac22843cf6112b472db979fba181af17d4663718d70df6849"
+      "bytes": 1272,
+      "sha256": "aa6555a0900ff19d42e60c130a46acd5b16f338af155736d921ee9674f7a3b80"
     },
     {
       "path": "design/build_medusa43.py",
-      "bytes": 19937,
-      "sha256": "1f521ca38592ff3118d9c45e5b28a15cc469daafeb3b786c0589a06eb7d0277d"
+      "bytes": 35982,
+      "sha256": "2a2b4da7155e7c99eca1e4b603a8415734cf490cb2b40c402795f1f33c4e6e16"
     },
     {
       "path": "design/build_motion_review.mjs",
-      "bytes": 2407,
-      "sha256": "94725e5289cf8afb70c2e3979a4d1a9afe8d7b49b7202a2afe102b5c26e09c41"
+      "bytes": 2395,
+      "sha256": "7074cbc80c678553cc12be0940ed4897a08e525ca9820d722774693fda95837f"
+    },
+    {
+      "path": "design/build_orb_power_audition.py",
+      "bytes": 2337,
+      "sha256": "e2477750a8e9ca585f579ab0e75caabae6c9038c8612bf65c4a536ce655a67ff"
     },
     {
       "path": "design/build_symbols_v2.mjs",
@@ -4524,14 +5894,44 @@
       "sha256": "50a1072a7cf312bdcca55e1ac822db1aa77eb5070959125df00466f56f61ec0e"
     },
     {
+      "path": "design/casting-v7-browser-validation.json",
+      "bytes": 2474,
+      "sha256": "da7300006e30ffaba1c16e114028265190a65ee07bb7df946beb48298cb5becd"
+    },
+    {
+      "path": "design/casting-v8-browser-validation.json",
+      "bytes": 3048,
+      "sha256": "82b9b314bc29888e695bd0c725a99f176a3d5533fe73f927cdab7652afe140d1"
+    },
+    {
       "path": "design/character-preview.config.mjs",
       "bytes": 930,
       "sha256": "0623759bd5d7a9d41933b93070743327786f67bb9a9ee52927794abfb9700cda"
     },
     {
+      "path": "design/character-sound-browser-validation.json",
+      "bytes": 3986,
+      "sha256": "7b28d13479de6463976e9f0f7a8b815fc5821e6e96a6251442ff4e71593079fa"
+    },
+    {
+      "path": "design/character-sound-validation.json",
+      "bytes": 1723,
+      "sha256": "c3d35eda89870c41bff152d4b8e708b24537465c3f3ae36408fe3dfba56e5af4"
+    },
+    {
+      "path": "design/character-symbol-polish-validation.json",
+      "bytes": 1888,
+      "sha256": "4bf452ca535ddc6cf18dcc6a92150c83c735bac066d862c0bfc5a2e63eb37394"
+    },
+    {
+      "path": "design/characterAudition.ts",
+      "bytes": 1998,
+      "sha256": "ec2cf4c08f45528f39bb05d0b029f8024771b58041e2a72a9abcd16235a18449"
+    },
+    {
       "path": "design/characterPreview.ts",
-      "bytes": 6671,
-      "sha256": "3865c57030212297ad6910306b93ff4c37fba1b05e9cf561735d3e163c18fb63"
+      "bytes": 7204,
+      "sha256": "cbedf3abbbd0a0f0af861f20d05a3613939a3e61f8fa4073e491a990a82ce9e3"
     },
     {
       "path": "design/check_animation.mjs",
@@ -4545,13 +5945,23 @@
     },
     {
       "path": "design/check_audio.mjs",
-      "bytes": 7272,
-      "sha256": "3e913f744c745d55f7e09b7ab5b8f6c3396dffc4ce29d5a7e8f1b0ed4c14629d"
+      "bytes": 7749,
+      "sha256": "2ecbf2d9a0a6ceb691d726d107885cc78688b3e116ebf3fc115ef6cb061305c4"
     },
     {
       "path": "design/check_background.mjs",
-      "bytes": 3794,
-      "sha256": "bca04ad22007a25a256f772eb71ac4c5b448e50a97fdaebbf1e87103387e8ec4"
+      "bytes": 6375,
+      "sha256": "3106507acdb14a8f3297c5d7d836d8f4732f17aae802c2aa6d80d4ea34763113"
+    },
+    {
+      "path": "design/check_character_sound.mjs",
+      "bytes": 4183,
+      "sha256": "8964c9984acd1734220759f1bcd4a6ad4c3877e7ba84ccc7c2fcb482d0e6bb9b"
+    },
+    {
+      "path": "design/check_fluency.mjs",
+      "bytes": 2944,
+      "sha256": "cd268b3e4833b5c2548a1c37ed14a6e1a11a7d9558d152c106133f5239f41e50"
     },
     {
       "path": "design/check_font_coverage.mjs",
@@ -4559,19 +5969,39 @@
       "sha256": "8f4cda2adc2e6a0b0062c746240c4c1aee0ee054f4beb881509b0d40ef097166"
     },
     {
+      "path": "design/check_hand_anticipation.mjs",
+      "bytes": 2724,
+      "sha256": "c5422a873b8fdb6e3075357a987de522ea9617ae6824028ce092d067271d47eb"
+    },
+    {
       "path": "design/check_medusa43.mjs",
-      "bytes": 5797,
-      "sha256": "2ec48485412732e2b371369a68635718a98cb9515474867416b51c6a310b5fe5"
+      "bytes": 9478,
+      "sha256": "96a4f746649c186a20c2f8933397ef8a201bdf7f680a239ce7b472edf5179ac0"
     },
     {
       "path": "design/check_motion.mjs",
-      "bytes": 5354,
-      "sha256": "ff236a0053e9faaccc03d334e6b6e08dc2b47d0f8a74798f733ac9074dcadab7"
+      "bytes": 9652,
+      "sha256": "1c98cb2a462ab13a06c7278917ec7f66390d381254f2b3fd45fe49696dd6cce2"
     },
     {
       "path": "design/check_multiplier_performance.mjs",
-      "bytes": 3310,
-      "sha256": "76330861615b698e97e92975fcef58bd7fdebe8062295f66af2308835c057ef2"
+      "bytes": 11273,
+      "sha256": "078356f20dcdcd2b21f33fcf4af6a9b29fff5d691bd73f33ca298b0d20c106f1"
+    },
+    {
+      "path": "design/check_pp_motion.mjs",
+      "bytes": 3372,
+      "sha256": "47dac42262eac02a96d3e276fcbe586f5563e47d76fa3bea174090857f241a21"
+    },
+    {
+      "path": "design/check_presentation.mjs",
+      "bytes": 2001,
+      "sha256": "acd06d0180165571424c1aa068befaaa8390f773aeb587bbf01848805bd97c11"
+    },
+    {
+      "path": "design/check_snake_presence.mjs",
+      "bytes": 2876,
+      "sha256": "d0d3b149665b3c23e2f185d2de2d6f3ac57b23ad2bfbcd89b9d7499f1a051c4a"
     },
     {
       "path": "design/check_social_words.mjs",
@@ -4580,8 +6010,8 @@
     },
     {
       "path": "design/check_string_literals.mjs",
-      "bytes": 8251,
-      "sha256": "871e78a967041bfd29b790bae65a135c740f572f274ba8d78bb80e23ca7338ca"
+      "bytes": 8272,
+      "sha256": "58c272f5327f71f6502109136f1989457c2332dd05c6122f7b27796eb35164ab"
     },
     {
       "path": "design/check_tumble_rule.mjs",
@@ -4595,8 +6025,23 @@
     },
     {
       "path": "design/completion-progress.json",
-      "bytes": 1484,
-      "sha256": "d97b85c7c6ed3163277a8186e2b9efa1e42c0dea48db7efa3c4a833d4f9b7521"
+      "bytes": 34075,
+      "sha256": "1e2820a97eb1fcb0d17842047bdd9ae725ecbb3304def37ab09ee5012b085b08"
+    },
+    {
+      "path": "design/dynamics-preview.config.mjs",
+      "bytes": 937,
+      "sha256": "3ed595f063b252ff202735d82f6cf776e06970efba4749fff9bf167af6c58a5b"
+    },
+    {
+      "path": "design/dynamicsPreview.ts",
+      "bytes": 4940,
+      "sha256": "028a9a6bdaa5088cc0e6cb2cb6cffc15a3f3d925d4880ab94134803ef1c6d57c"
+    },
+    {
+      "path": "design/export_orb_power.mjs",
+      "bytes": 673,
+      "sha256": "bb21427c93df3dede08a752b119fa70646fe24b07745a70e54373a0866fa63e6"
     },
     {
       "path": "design/finalize_background.py",
@@ -4605,8 +6050,8 @@
     },
     {
       "path": "design/finalize_delivery.py",
-      "bytes": 11012,
-      "sha256": "58b429bae112e65cfac78f7c5d6934ea5e9591ccfa335a5f92cb14840ca06945"
+      "bytes": 29346,
+      "sha256": "8681a719b784df9cead9bce810f11370f0a8807e493979a56f34102d40213b27"
     },
     {
       "path": "design/finalize_symbols_v2.py",
@@ -4614,9 +6059,19 @@
       "sha256": "bf5763d4a0d4c470e47b586a4c127dfc840d34ad11449b372ca1a83392878633"
     },
     {
+      "path": "design/fluency-browser-validation.json",
+      "bytes": 1484,
+      "sha256": "0721f7f259d8f257e05492b90835310c2c61baf76a27688301ed843108be4cce"
+    },
+    {
       "path": "design/generate_placeholders.py",
       "bytes": 31232,
       "sha256": "e9be915092feb131f08d85b2e8d3ae6975f2a93ea7c0f05421c13c9c93fc552a"
+    },
+    {
+      "path": "design/hand-windup-browser-validation.json",
+      "bytes": 2459,
+      "sha256": "63d4735663b420fde77ae800e598547504429d3c3017d23cff970576e309f972"
     },
     {
       "path": "design/import_background.py",
@@ -4629,24 +6084,34 @@
       "sha256": "b5a460c939dc676daaf598d9b1cfe11decf08b769a0efc1b29d41350ae23ddb3"
     },
     {
+      "path": "design/landing-impact-browser-validation.json",
+      "bytes": 977,
+      "sha256": "5c0be1144342b7b703ea128418fe701160036926477d0466805f359c420f2e9a"
+    },
+    {
+      "path": "design/left-sky-browser-validation.json",
+      "bytes": 735,
+      "sha256": "795ee7e7ca8cb641e9840667f902022ea8660ecd52770d40a2680e6b62a524bf"
+    },
+    {
       "path": "design/make_dev_books.mjs",
       "bytes": 4682,
       "sha256": "6182305930380c5bb7e92a7b417925a19e8d6cc941594032182d33a277b93cda"
     },
     {
       "path": "design/motion-validation.json",
-      "bytes": 726,
-      "sha256": "fc957bc39e8a4a582c1c452840992eee89e9727480731424932d6e050a510d30"
+      "bytes": 1183,
+      "sha256": "3c048f1148fec398017e715aa465dc5f7e533f083df121e1242b2c6e4af26cd9"
     },
     {
       "path": "design/multiplier-browser-validation.json",
-      "bytes": 1380,
-      "sha256": "fc67fed5952d01dd944726c303f99f8b0082af4fa7a870e9c972cb1854e11c49"
+      "bytes": 3508,
+      "sha256": "a095fb07f2e4b717a69275eb05991518974c651572afbddef5b4f447ce394480"
     },
     {
       "path": "design/multiplier-performance-validation.json",
-      "bytes": 433,
-      "sha256": "159d02517b7a75caf5e450788579a99b76fdf85f232eed21a01ddf2921c28b41"
+      "bytes": 1682,
+      "sha256": "b4db2dab30ae60d9939dd561c372671dd17abfc2f87e641a4156c9c14cfcadf2"
     },
     {
       "path": "design/multiplier-preview.config.mjs",
@@ -4655,13 +6120,48 @@
     },
     {
       "path": "design/multiplierPreview.ts",
-      "bytes": 9690,
-      "sha256": "9c98f06b76d5e8dd7c365bbffd867bd220e37d435c28ac866860fa48b9a5dbf0"
+      "bytes": 14440,
+      "sha256": "58afc969f8561e85f92002bed6f778d58953e778fec9d02ea4ac4eb5d5b12275"
+    },
+    {
+      "path": "design/orb-power-browser-validation.json",
+      "bytes": 4737,
+      "sha256": "6a31e3064a4d208d405320b437f942ad3703be6aa9b9ac0e2bbf5830a6aeed56"
+    },
+    {
+      "path": "design/overall-dynamics-browser-validation.json",
+      "bytes": 2560,
+      "sha256": "4abd170cd43d57cbde75d7a72e507913abdd08afc1da6c5b1a7bc4fefe79d435"
+    },
+    {
+      "path": "design/overall-refine-browser-validation.json",
+      "bytes": 3584,
+      "sha256": "7853d75d55200870a1cb86b89ee1884ae24fefa5e5b388cc6a55e4f776fc58c4"
     },
     {
       "path": "design/patch_background_host.py",
       "bytes": 919,
       "sha256": "88bfc5dec481e23d34291d7c8f835ee801fe61921d914794160bfef32e5c2dac"
+    },
+    {
+      "path": "design/pp-motion-browser-validation.json",
+      "bytes": 2878,
+      "sha256": "5d5b164b818e3bb02a5f692813ab751f0f03ad6da575f90aad3f8c332375dfdf"
+    },
+    {
+      "path": "design/pp-motion-preview.config.mjs",
+      "bytes": 732,
+      "sha256": "3fbc6b8e2859ef7469ed559c0027759c4dfbf4aa2d341099c87b24c16162cbb9"
+    },
+    {
+      "path": "design/pp-motion-validation.json",
+      "bytes": 653,
+      "sha256": "1e132441d00fe9c5b54502c5c65eda58fb18ef8ec078a7910d3527c80c92adbe"
+    },
+    {
+      "path": "design/ppMotionPreview.ts",
+      "bytes": 4694,
+      "sha256": "5babb67c7976b61401ec85fa5d80a67e544222321414f5c3a160143d392eb544"
     },
     {
       "path": "design/prepare_medusa_cast.py",
@@ -4679,9 +6179,44 @@
       "sha256": "48d99e50bfafd6eb3eb48922e3d1c7998692724dfa386e50b7cd1eb0d43fd11a"
     },
     {
+      "path": "design/prepare_ui_icon_contrast.py",
+      "bytes": 1448,
+      "sha256": "482a6efcc71a8f76e553bc33c89a164782375fba281ae3115b5b89dfcaeaf8ad"
+    },
+    {
+      "path": "design/presentation-browser-validation.json",
+      "bytes": 1110,
+      "sha256": "b5bd9fb3ed4d22bbeedbee917642600b5f89516206a4fc75ed9b90e1d9ae0e95"
+    },
+    {
+      "path": "design/presentation-validation.json",
+      "bytes": 999,
+      "sha256": "4cadf405a4c7b70ba92efd6066efe04aa55a5b1d79bffe7e89279d7fce7803f6"
+    },
+    {
+      "path": "design/refinement-browser-validation.json",
+      "bytes": 2216,
+      "sha256": "68fdb7424b87c65d06a17bf66575c282e41c349f9df580285f2501b884cd4003"
+    },
+    {
       "path": "design/refresh_multiplier_delivery.py",
-      "bytes": 3476,
-      "sha256": "82299cedb43bdf587d7e84ab9e7477f4890440968504826fd55ee91400a0049d"
+      "bytes": 3503,
+      "sha256": "3bd0b67dd2e986e6bf9753910fd8a2b8f42e019a447cd5ceba17490c10396b3a"
+    },
+    {
+      "path": "design/refresh_presentation_delivery.py",
+      "bytes": 2378,
+      "sha256": "67a12908fe6212f15b3d058f3cf1fa20553c8284ced6d29070618af2ee460cc9"
+    },
+    {
+      "path": "design/refresh_refinement_delivery.py",
+      "bytes": 3012,
+      "sha256": "cf8c7a397fff2b0ae7608af571eef551cff26656a0e4c25ba0c42fd7b2bdda16"
+    },
+    {
+      "path": "design/refresh_signature_delivery_v4.py",
+      "bytes": 3517,
+      "sha256": "ad4eaf119632a459743dcbb7494745eacfb9990bbc35a66ec3b358816f767d05"
     },
     {
       "path": "design/render_background_review.py",
@@ -4694,6 +6229,21 @@
       "sha256": "96b83691488774a8d74f34e834301b26ed0a87d607942bbf871fd23cbc7a3c81"
     },
     {
+      "path": "design/revision5-browser-validation.json",
+      "bytes": 2328,
+      "sha256": "2792aef02b6f66989b25a6d6c56407b6676f18ae9c0d71bb69fb2151807d4f2e"
+    },
+    {
+      "path": "design/revision6-browser-validation.json",
+      "bytes": 2495,
+      "sha256": "ad57123d84bd3afafbc096d72f923d80cc184d664f63f5fa900555c01cd4e83d"
+    },
+    {
+      "path": "design/snake-presence-browser-validation.json",
+      "bytes": 2246,
+      "sha256": "b4dd5214d0ddeeeec362924765ddaa4a8087f59b76dbf2a2b8ec36d47ecfea32"
+    },
+    {
       "path": "design/sync_audio_manifest.mjs",
       "bytes": 1700,
       "sha256": "66eeec5439ed5d319c4a018b5c60818e2e9a186aa7aa36689b85ae74bf03be46"
@@ -4704,14 +6254,34 @@
       "sha256": "96f5cde73da47a3513b7b10bd95d0996c75ff71a5bf4b7bc8bd045fdb8babc59"
     },
     {
+      "path": "design/temple-ui-browser-validation.json",
+      "bytes": 4042,
+      "sha256": "7687b4547ca942195e7aed40362d0cdcf35e2c1b0073168b50497daefc1d2306"
+    },
+    {
       "path": "design/update_art_status.py",
       "bytes": 6796,
       "sha256": "9a5880b7bc85eff278944f822eb590afd40b9ed39f014bc54c7e2d7d948bca0f"
     },
     {
+      "path": "design/update_orb_power_delivery.py",
+      "bytes": 6693,
+      "sha256": "fdb66a8ef1d8147cd865ade0ec2d1f49c76d9feff978f95b37d912877ee6eacc"
+    },
+    {
+      "path": "design/update_temple_delivery.py",
+      "bytes": 3205,
+      "sha256": "6ffdb8a77c9c9df73ff399822c92ddc9ae5070aeaa11392cb69bb1fe9123dc0d"
+    },
+    {
+      "path": "design/upgrade_signature_v4.py",
+      "bytes": 2210,
+      "sha256": "2659df4fdef23175ffe3c3b2161a73ead58460dfa464def1690ec3f7b64df2c6"
+    },
+    {
       "path": "package.json",
-      "bytes": 2603,
-      "sha256": "1dac261dd2f74870eff90a0b24b838dbd078e53c2393eb98a42774b7e5fc1c9d"
+      "bytes": 3062,
+      "sha256": "ccfb80f1336490ce12fd8623150cffee6d0fa7721651916e2813406293eb2ce8"
     },
     {
       "path": "vite.config.js",

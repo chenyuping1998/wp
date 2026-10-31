@@ -102,6 +102,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateGame.gameType = bookEvent.gameType;
 		stateGame.cellMults = territoryBeforeReveal(stateGame.cellMults, bookEvent.gameType);
 		stateGame.bossPose = 'idle';
+        stateGame.boxOpenCount=0;
 		eventEmitter.broadcast({ type: 'soundReset' });
 		// A reveal starts a fresh tumble sequence; the previous chain's readout must
 		// reveal inside a feature.
@@ -121,6 +122,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	
 	winInfo: async (bookEvent: BookEventOfType<'winInfo'>) => {
 		stateGame.tumbleChain += 1;
+        if(stateGame.tumbleChain===4)eventEmitter.broadcast({type:'castPlay',name:'react_chain'});
 
 		const wins: ScatterWinDatum[] = bookEvent.wins.map((win) => ({
 			symbol: win.symbol,
@@ -130,7 +132,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		}));
 
 		// The pluck marks the win. Stone cracks are scheduled by ScatterWins at
-		// the actual petrification boundary, after the symbol's acting beat.
+		// the removal boundary, after the symbol's acting beat.
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_winlevel_standard' });
 
 		await eventEmitter.broadcastAsync({
@@ -157,10 +159,13 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 
 	
 	boxOpen: async (bookEvent: BookEventOfType<'boxOpen'>) => {
-        stateGame.bossPose = bookEvent.symbol === 'W' ? 'stamp' : 'monocle';
+        const stamp=bookEvent.symbol==='W',short=stateBet.isTurbo||stateGame.boxOpenCount++>0;
+        stateGame.boxReleaseMs=short?250:stamp?490:550;
+        stateGame.boxDurationMs=short?500:stamp?900:1100;
+        eventEmitter.broadcast({type:'castPlay',name:(stamp?'stamp':'push_monocle')+(short?'_short':'')});
         eventEmitter.broadcast({type:'soundCue',cue:bookEvent.symbol==='W'?'sfx_stamp_raise':'sfx_monocle_push',priority:2});
         stateGame.openingBoxes = bookEvent.boxes;
-        await waitForTimeout(stateBet.isTurbo ? 220 : 480);
+        await waitForTimeout(stateGame.boxReleaseMs);
         eventEmitter.broadcast({type:'soundCue',cue:bookEvent.symbol==='W'?'sfx_stamp_slam':'sfx_box_open',priority:2});
         for (const box of bookEvent.boxes) {
             const symbol = stateGame.board[box.reel]?.reelState.symbols[box.row];
@@ -168,12 +173,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
             symbol.rawSymbol = { name: bookEvent.symbol, ...(bookEvent.symbol === 'W' ? {wild:true,multiplier:box.multiplier??1} : {}) };
             symbol.symbolState = 'static';
         }
-        await waitForTimeout(stateBet.isTurbo ? 180 : 300);
+        await waitForTimeout(stateGame.boxDurationMs-stateGame.boxReleaseMs);
         stateGame.openingBoxes = [];
         stateGame.bossPose = 'idle';
     },
     cellMults: async (bookEvent: BookEventOfType<'cellMults'>) => {
+        const initial=bookEvent.cells.length===49&&stateGame.cellMults.every(col=>col.every(v=>v===0));
         stateGame.cellMults = applyCellChanges(stateGame.cellMults, bookEvent.cells);
+        if(initial){eventEmitter.broadcast({type:'castPlay',name:'claim_turf',rate:stateBet.isTurbo?2:1});await waitForTimeout(stateBet.isTurbo?550:1100);}
         const highest=Math.max(...bookEvent.cells.map(cell=>cell.mult));
         eventEmitter.broadcast({type:'soundCue',cue:highest>=128?'sfx_cell_max':highest>=8?'sfx_cell_tier':highest>=2?'sfx_cell_up':'sfx_mark',priority:highest>=128?1:3});
     },
@@ -290,7 +297,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	},
 
 	freeSpinEnd: async (bookEvent: BookEventOfType<'freeSpinEnd'>) => {
-        eventEmitter.broadcast({type:'castPlay',name:'fg_end'});
         eventEmitter.broadcast({type:'soundCue',cue:'stinger_fg_outro',priority:1});
 		// the plaque shows the WHOLE round, trigger spin included (featureTotal)
 		const total = featureTotal(bookEvent.amount, bookEvent.winLevel);
@@ -310,6 +316,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		});
 		winLevelSoundsStop();
 		eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
+        eventEmitter.broadcast({type:'castPlay',name:'fg_end',rate:stateBet.isTurbo?2.67:1});
+        await waitForTimeout(stateBet.isTurbo?600:1600);
 		eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
 		stateGame.cellMults = emptyTerritory();
 		stateUi.freeSpinCounterShow = false;
@@ -324,7 +332,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	
 	setWin: async (bookEvent: BookEventOfType<'setWin'>) => {
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];
-		if (!isCelebratedWinLevel(winLevelData)) return;
+		if (!isCelebratedWinLevel(winLevelData)){if(bookEvent.amount>0)eventEmitter.broadcast({type:'castPlay',name:bookEvent.amount>=1000?'react_good':'react_small'});return;}
 
 		eventEmitter.broadcast({ type: 'winShow' });
 		winLevelSoundsPlay({ winLevelData });
@@ -338,6 +346,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	},
 
 	finalWin: async () => {
+        if(stateGame.boxOpenCount>0&&stateGame.tumbleChain===0)eventEmitter.broadcast({type:'castPlay',name:'react_none'});
 		// Safety net: finalWin is the last event of every book, so it is the one
 		// place that can guarantee no feature panel is left up.
 		if (stateUi.freeSpinCounterShow) {

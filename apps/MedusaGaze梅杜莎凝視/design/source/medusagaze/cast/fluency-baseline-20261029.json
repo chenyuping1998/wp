@@ -1,0 +1,16 @@
+{
+  "scope": "240Hz official Spine core replay; rig pixels/second. Visual review required separately.",
+  "scenarios": [
+    {
+      "mode": "MG",
+      "throughGestureSpeed": 36.21514026882232,
+      "peakRecoverySpeed": 2422.0468257821876
+    },
+    {
+      "mode": "FG",
+      "throughGestureSpeed": 313.1098084904406,
+      "peakRecoverySpeed": 2422.0474571357245
+    }
+  ],
+  "fidgetHandoffJump": 13.17346564681521
+}

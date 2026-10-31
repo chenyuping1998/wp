@@ -425,11 +425,7 @@ def preserve_voice() -> None:
     print("monkey_expand.mp3         1.80s, six gorilla hoots")
 
 
-if __name__ == "__main__":
-    make_music()
-    make_sfx()
-    preserve_voice()
-    # The current sound direction supersedes the original arcade draft while
-    # retaining the measured six-hoots character performance.
-    from build_neon_audio_v2 import refresh
-    refresh()
+if __name__ == '__main__':
+    print('Legacy synthesis retired; rebuilding sample-based Neon V3.')
+    from build_neon_audio_v3 import build
+    build()

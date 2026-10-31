@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-31",
+  "skill": "E:/stake/wp/.claude/skills/slot-motion-recipes/SKILL.md",
+  "applied": "Soft authored beats, delayed local acting, Gaussian face depth, dynamic held reaction, beat-linked texture glow, simultaneous drop and two diminishing rebounds.",
+  "referenceHighlightMs": 1500,
+  "adaptedHighlightMs": 567,
+  "dropMs": 360,
+  "eightLinkBudgetMs": 9870,
+  "bones": 84,
+  "faceVertices": 841,
+  "maxLookWeight": 0.4398744,
+  "anticipationRigPixels": -7.438138195137526,
+  "liftRigPixels": 7.763859572854926,
+  "locallyActingSymbols": 6,
+  "secondLandingAnimation": false,
+  "originalPaintingsRetained": true,
+  "passed": true
+}

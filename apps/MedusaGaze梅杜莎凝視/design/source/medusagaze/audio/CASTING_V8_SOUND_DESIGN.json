@@ -1,0 +1,161 @@
+{
+  "version": 8,
+  "seed": 2026103008,
+  "provenance": "Original deterministic synthesis. No external recordings or samples. Cast voice remains a synthetic nonverbal sketch.",
+  "formats": "PCM16 44.1k mono runtime, PCM24 48k mono masters, float editable stems",
+  "timing": {
+    "chargeMs": 350,
+    "voiceBeforeReleaseMs": 100,
+    "releaseAccentMs": 160,
+    "flightMs": 600
+  },
+  "cues": [
+    {
+      "cue": "sfx_orb_charge",
+      "file": "sfx_orb_charge.wav",
+      "duration": 0.35,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 30948,
+      "loop": false,
+      "description": "350ms inward swell aligned to visible orb growth and squeeze",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -23.82,
+      "true_peak_db": -12.59,
+      "design_version": 8,
+      "layers": [
+        "palm_resonance",
+        "inward_air",
+        "gather_grain"
+      ]
+    },
+    {
+      "cue": "sfx_orb_release",
+      "file": "sfx_orb_release.wav",
+      "duration": 0.16,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 14190,
+      "loop": false,
+      "description": "One short palm snap and pressure thump at actual release, once per volley",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -22.27,
+      "true_peak_db": -8.48,
+      "design_version": 8,
+      "layers": [
+        "palm_snap",
+        "pressure_body",
+        "low_thump",
+        "bright_edge"
+      ]
+    },
+    {
+      "cue": "vo_medusa_cast",
+      "file": "vo_medusa_cast.wav",
+      "duration": 0.46,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 40650,
+      "loop": false,
+      "description": "Synthetic nonverbal chest-led casting shout; attack occurs near the release flick, not a human voice recording",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -18.64,
+      "true_peak_db": -9.0,
+      "design_version": 8,
+      "layers": [
+        "alto_shout",
+        "chest_resonance",
+        "breath_grit"
+      ]
+    },
+    {
+      "cue": "sfx_orb_fly",
+      "file": "sfx_orb_fly.wav",
+      "duration": 0.6,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 52998,
+      "loop": false,
+      "description": "600ms layered wind pressure, shear and rotating glass; positional pan follows the thrown orb",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -20.9,
+      "true_peak_db": -11.41,
+      "design_version": 8,
+      "layers": [
+        "wind_pressure",
+        "air_shear",
+        "rotating_glass"
+      ]
+    },
+    {
+      "cue": "sfx_orb_hit_s",
+      "file": "sfx_orb_hit_s.wav",
+      "duration": 0.42,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 37122,
+      "loop": false,
+      "description": "Sharp contact, low stone weight, crystal body and short sparkle tail; s intensity",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -21.92,
+      "true_peak_db": -9.49,
+      "design_version": 8,
+      "layers": [
+        "contact_crack",
+        "marble_weight",
+        "low_impact",
+        "crystal_body",
+        "glitter_tail"
+      ]
+    },
+    {
+      "cue": "sfx_orb_hit_m",
+      "file": "sfx_orb_hit_m.wav",
+      "duration": 0.5,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 44178,
+      "loop": false,
+      "description": "Sharp contact, low stone weight, crystal body and short sparkle tail; m intensity",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -22.15,
+      "true_peak_db": -8.5,
+      "design_version": 8,
+      "layers": [
+        "contact_crack",
+        "marble_weight",
+        "low_impact",
+        "crystal_body",
+        "glitter_tail"
+      ]
+    },
+    {
+      "cue": "sfx_orb_hit_l",
+      "file": "sfx_orb_hit_l.wav",
+      "duration": 0.58,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 51234,
+      "loop": false,
+      "description": "Sharp contact, low stone weight, crystal body and short sparkle tail; l intensity",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -21.88,
+      "true_peak_db": -7.5,
+      "design_version": 8,
+      "layers": [
+        "contact_crack",
+        "marble_weight",
+        "low_impact",
+        "crystal_body",
+        "glitter_tail"
+      ]
+    }
+  ]
+}

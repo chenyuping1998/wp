@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-27",
+  "passed": true,
+  "scope": "Local mock playback, official Spine 4.3 core and offline geometry; no live RGS transaction or video.",
+  "character": {
+    "clips": 24,
+    "mixSeconds": 0.18,
+    "mouthTalkSeconds": 0.38,
+    "releaseFollowThrough": "Chest, back hand, tail, skirts and chains have staggered recoil and settle; FG pointing hand overshoots then recovers",
+    "breathPhasePreserved": true,
+    "fgGlassesForeheadSamples": 1920,
+    "visibleMeshFolds": 0
+  },
+  "symbols": {
+    "materialSpecificHop": true,
+    "stoneFront": "Downward curved wipe with a brief green-white front clipped to original artwork",
+    "fracturePieces": 8,
+    "areaBeforeSeparation": 1,
+    "depth": "Dark extruded edge and changing horizontal foreshortening",
+    "geometryReview": "Original painted UVs retained; 32x32 acting meshes have no inverted triangles",
+    "eightLinkMs": 9135
+  },
+  "turbo": {
+    "signatureTimingUnchanged": true,
+    "comparisons": 16
+  },
+  "browser": {
+    "game": "baseThrow completed locally: WIN $12.50, returned to idle, console errors absent",
+    "character": "MG gaze at 1.650s; FG release at 1.218s and recovery at 1.575s visually reviewed",
+    "symbolReview": "Shared-curve Canvas2D preview shows partial stone front and eight separated shards; production smoke replay completed",
+    "screenshots": [
+      "_sheets/polish_20261027_cast_release.png",
+      "_sheets/polish_20261027_cast_recovery.png",
+      "_sheets/polish_20261027_cast_mg_release.png",
+      "_sheets/polish_20261027_stone_front.png",
+      "_sheets/polish_20261027_fragments.png",
+      "_sheets/polish_20261027_game_result.png"
+    ]
+  },
+  "validation": {
+    "productionBuild": "passed",
+    "changedGameSourceTypeErrors": 0,
+    "existingWorkspaceTypeErrors": 154,
+    "existingWorkspaceWarnings": 33
+  }
+}

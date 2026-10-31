@@ -183,7 +183,25 @@ setUiTheme({
   valueFill: 0xfffaff,
   valueStroke: 0x0d1530,
   valueShadow: 0x050919,
-  sprites: { base_ticker: 'gbUiTicker', buyBonus: 'gbUiBuyBonus', buyBonusGlyph: 'gbUiBuyBonusLit' },
+  // THE BAR IS DRAWN, NOT FLAT (review 2026-10-31: "poor bet UI bar"). The
+  // round controls, the spin button and the strip were the template's vector
+  // discs and bars, the only flat things left in a game of chrome and neon. They
+  // are plate art now, the same material as the reel frame and the readout
+  // plates (design/build_neon_ui_v2.py): chrome rim, cyan tube, dark glass well;
+  // an ON toggle is the same disc lit magenta; spin is the magenta plate.
+  sprites: {
+    base_ticker: 'gbUiTicker',
+    buyBonus: 'gbUiBuyBonus',
+    buyBonusGlyph: 'gbUiBuyBonusLit',
+    bet: 'gbUiNeonSpinPlate',
+    button: 'gbUiNeonButton',
+    buttonActive: 'gbUiNeonButtonOn',
+    bar: 'gbUiNeonBarStrip',
+  },
+  // the strip's rounded ends: 96 of its 200px height, the same as Diner's strip
+  barSpriteSlice: 96,
+  // the spin plate's lit face is 0.70 of the plate: 0.70 / 1.18, less a margin
+  betIconScale: 0.25,
   // HOVER: THE PLATE CHARGES UP (GoBoomana's mechanism: its stone slab split
   // with light leaking out). Under the cursor violet lightning forks out of
   // the banana emblem across the plate, the emblem blazes and the neon rim
@@ -215,13 +233,17 @@ setUiTheme({
   spinButtonGlow: true,
   hoverHighlight: true,
   pressFeedback: true,
+  // the mono glyphs relit as neon tubes: white-hot core, cyan halo
   icons: {
-    menu: 'gbIconMonoMenu', menuExit: 'gbIconMonoMenuExit',
-    settings: 'gbIconMonoSettings', info: 'gbIconMonoInfo',
-    payTable: 'gbIconMonoPayTable', soundOn: 'gbIconMonoSoundOn',
-    soundOff: 'gbIconMonoSoundOff', autoSpin: 'gbIconMonoAutoSpin',
-    replay: 'gbIconMonoReplay',
+    menu: 'gbIconNeonMenu', menuExit: 'gbIconNeonMenuExit',
+    settings: 'gbIconNeonSettings', info: 'gbIconNeonInfo',
+    payTable: 'gbIconNeonPayTable', soundOn: 'gbIconNeonSoundOn',
+    soundOff: 'gbIconNeonSoundOff', autoSpin: 'gbIconNeonAutoSpin',
+    replay: 'gbIconNeonReplay',
+    increase: 'gbIconNeonIncrease', decrease: 'gbIconNeonDecrease',
   },
+  // the − / + bars span 55% of their canvas: 0.78 makes them 43% of the disc
+  iconScales: { increase: 0.78, decrease: 0.78 },
 });
 
 // A player who cannot afford the bet is TOLD SO, on every route into a bet —

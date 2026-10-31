@@ -473,5 +473,7 @@ def refresh():
     print(f"REFRESH: {len(DELIVERY)} original v2 cues/music, source + live synced; previews and metrics in {PREVIEW}")
 
 
-if __name__=="__main__":
-    refresh()
+if __name__ == '__main__':
+    print('Legacy synthesis retired; rebuilding sample-based Neon V3.')
+    from build_neon_audio_v3 import build
+    build()

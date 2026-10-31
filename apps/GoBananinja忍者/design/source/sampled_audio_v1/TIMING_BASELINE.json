@@ -1,0 +1,132 @@
+{
+  "bgm_freespin": {
+    "frames": 306783,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "bgm_main": {
+    "frames": 392000,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "bigwin_blast": {
+    "frames": 48511,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "btn": {
+    "frames": 2867,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "coin_shimmer": {
+    "frames": 52920,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "fs_intro": {
+    "frames": 47408,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "gong_feature": {
+    "frames": 50715,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "grenade_blast": {
+    "frames": 19845,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "mult_update": {
+    "frames": 15435,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "pluck_low": {
+    "frames": 14333,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "reel_stop": {
+    "frames": 5513,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "reel_tension": {
+    "frames": 44100,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "scatter_1": {
+    "frames": 15876,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "scatter_2": {
+    "frames": 15876,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "scatter_3": {
+    "frames": 15876,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "scatter_4": {
+    "frames": 15876,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "scatter_5": {
+    "frames": 15876,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "slash_draw": {
+    "frames": 15876,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "slash_finale": {
+    "frames": 27563,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "slash_hit": {
+    "frames": 15435,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "spin": {
+    "frames": 9261,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "voice_effort": {
+    "frames": 7498,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "voice_roar": {
+    "frames": 20948,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "wild_expand": {
+    "frames": 39690,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "win_gliss": {
+    "frames": 26901,
+    "channels": 1,
+    "sample_rate": 22050
+  },
+  "win_gliss_big": {
+    "frames": 46305,
+    "channels": 1,
+    "sample_rate": 22050
+  }
+}

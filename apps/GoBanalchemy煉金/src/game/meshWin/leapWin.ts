@@ -28,13 +28,27 @@ export type LeapStyle = {
 	/** what the lean turns about (default: the canvas middle) */
 	centre?: Point;
 	beats: LeapBeats;
+	/** how much harder the parts act in the win than in the panel landing/idle (2026-10-31, user: 加強獎圖). The
+	 *  win is cut off its plate, so its parts measure ~2x the panel's fold limits (check_mesh_wins --limits); the
+	 *  rig's own pose is reused unchanged and only scaled here. */
+	acting?: number;
 };
 
 export const leapWin = (spec: MeshWinSpec, style: LeapStyle): MeshWinSpec => ({
 	...spec,
 	mode: 'cut',
+	limits: Object.fromEntries(Object.entries(spec.limits).map(([k, l]) => [k, { pos: l.pos * (style.acting ?? 1), neg: l.neg * (style.acting ?? 1) }])),
 	pose: (rig, t) => {
 		const pose = spec.pose(rig, t);
+		const g = style.acting ?? 1;
+		if (g !== 1)
+			for (const b of pose.bones) {
+				b.angle *= g;
+				b.dx *= g;
+				b.dy *= g;
+				b.along = 1 + (b.along - 1) * g;
+				b.across = 1 + (b.across - 1) * g;
+			}
 		const { rigid, air } = leap(t, style.beats, style.height);
 		rigid.pop *= 1 + style.pop * air;
 		rigid.rot = track(t, style.tilt);
@@ -54,59 +68,76 @@ const beats = (crouch: number, land: number, done: number): LeapBeats => ({
 	done,
 });
 
-/** per symbol: how high, how it leans in the air */
+/**
+ * per symbol: how high, how it leans in the air.
+ *
+ * 2026-10-29 (user: 「獎圖動態要做得更明顯生動」): every leap ~1.6x higher
+ * (22-28 -> 36-46 canvas px, about a sixth of the cell), twice the pop, the
+ * leans ~1.4x and the landing wobble ~1.3x. All of it is the RIGID move of
+ * the cut subject, which cannot fold a mesh; the parts' own acting is
+ * unchanged.
+ */
+const HEIGHT = 1.62;
+const LEAN = 1.4;
+const WOBBLE = 1.3;
 export const LEAP_STYLES: Record<string, LeapStyle> = {
 	// the lantern swings on its ring as it rises, the other way as it drops
 	H1: {
-		height: 28,
-		pop: 0.06,
+		acting: 1.5,
+		height: 28 * HEIGHT,
+		pop: 0.12,
 		beats: beats(110, 900, 1450),
-		tilt: [[0, 0], [110, 0], [360, -10, 'out'], [620, 8], [860, -3], [900, 0, 'in']],
-		wobble: [5, 2.4],
+		tilt: [[0, 0], [110, 0], [360, -10 * LEAN, 'out'], [620, 8 * LEAN], [860, -3 * LEAN], [900, 0, 'in']],
+		wobble: [5 * WOBBLE, 2.4],
 		centre: [128, 96],
 	},
 	// the crystals throw themselves up and shiver at the top
 	H2: {
-		height: 26,
-		pop: 0.06,
+		acting: 1.18,
+		height: 26 * HEIGHT,
+		pop: 0.12,
 		beats: beats(110, 900, 1450),
-		tilt: [[0, 0], [110, 0], [330, 7, 'out'], [470, -7], [600, 6], [730, -3], [900, 0, 'in']],
-		wobble: [4, 3],
+		tilt: [[0, 0], [110, 0], [330, 7 * LEAN, 'out'], [470, -7 * LEAN], [600, 6 * LEAN], [730, -3 * LEAN], [900, 0, 'in']],
+		wobble: [4 * WOBBLE, 3],
 	},
 	// the tongs twirl a quarter of the way about their crossing and back
 	H3: {
-		height: 26,
-		pop: 0.06,
+		acting: 1.5,
+		height: 26 * HEIGHT,
+		pop: 0.12,
 		beats: beats(110, 900, 1450),
-		tilt: [[0, 0], [110, 4], [380, -13, 'out'], [640, 8], [900, 0, 'in']],
-		wobble: [6, 2.6],
+		tilt: [[0, 0], [110, 4 * LEAN], [380, -13 * LEAN, 'out'], [640, 8 * LEAN], [900, 0, 'in']],
+		wobble: [6 * WOBBLE, 2.6],
 		centre: [131, 125],
 	},
 	// the cart pops a wheelie on the way up and noses down to land
 	H4: {
-		height: 24,
-		pop: 0.06,
+		acting: 1.6,
+		height: 24 * HEIGHT,
+		pop: 0.12,
 		beats: beats(110, 880, 1400),
-		tilt: [[0, 0], [110, 2], [330, -13, 'out'], [560, -6], [800, 9], [880, 0, 'in']],
-		wobble: [4, 3],
+		tilt: [[0, 0], [110, 2 * LEAN], [330, -13 * LEAN, 'out'], [560, -6 * LEAN], [800, 9 * LEAN], [880, 0, 'in']],
+		wobble: [4 * WOBBLE, 3],
 		centre: [128, 210],
 	},
 	// the seal springs and rocks like a tossed coin finding its edge
 	S: {
-		height: 28,
-		pop: 0.06,
+		height: 28 * HEIGHT,
+		pop: 0.12,
 		beats: beats(110, 1040, 1400),
-		tilt: [[0, 0], [110, 0], [360, 12, 'out'], [560, -12], [760, 9], [960, -5], [1040, 0, 'in']],
-		wobble: [6, 2.8],
+		tilt: [[0, 0], [110, 0], [360, 12 * LEAN, 'out'], [560, -12 * LEAN], [760, 9 * LEAN], [960, -5 * LEAN], [1040, 0, 'in']],
+		wobble: [6 * WOBBLE, 2.8],
 	},
 };
 
 const LETTER_LEAN: Record<string, number> = { L1: -10, L2: 10, L3: -9, L4: 11, L5: -8 };
 for (const [s, lean] of Object.entries(LETTER_LEAN))
 	LEAP_STYLES[s] = {
-		height: 22,
-		pop: 0.06,
+		// L4's hook already sits near its fold limit in the panel act
+		acting: s === 'L4' ? 1 : 1.2,
+		height: 22 * HEIGHT,
+		pop: 0.12,
 		beats: beats(100, 800, 1200),
-		tilt: [[0, 0], [100, 0], [330, lean, 'out'], [560, -0.6 * lean], [800, 0, 'in']],
-		wobble: [Math.abs(lean) * 0.5, 3],
+		tilt: [[0, 0], [100, 0], [330, lean * LEAN, 'out'], [560, -0.6 * lean * LEAN], [800, 0, 'in']],
+		wobble: [Math.abs(lean) * 0.5 * WOBBLE, 3],
 	};

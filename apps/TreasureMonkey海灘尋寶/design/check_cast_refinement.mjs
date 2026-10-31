@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {castPose,castDuration,CastPerformer} from '../src/game/treasureMotion.ts';
-import {castTorsoPoint,castTailPoint,createCastSkin,deformCastSkin} from '../src/game/treasureCastSkin.ts';
+import {castTorsoPoint,castTailPoint,castArmPoint,createCastSkin,deformCastSkin} from '../src/game/treasureCastSkin.ts';
 const rig=JSON.parse(fs.readFileSync(new URL('../src/game/treasureCastRig.json',import.meta.url),'utf8'));
 const generator=JSON.parse(fs.readFileSync(new URL('../src/game/data/treasureCastGenerator.json',import.meta.url),'utf8'));
 assert.equal(generator.periodMs,4000);
@@ -68,12 +68,14 @@ for(const who of ['digger','lifeguard']){
     const a=skin.indices[i]*2,b=skin.indices[i+1]*2,c=skin.indices[i+2]*2;
     assert.ok((out[b]-out[a])*(out[c+1]-out[a+1])-(out[c]-out[a])*(out[b+1]-out[a+1])>0,'breathing skin never folds');
    }
-   if(kind==='body')for(const attachment of [rig[who].head,rig[who].arm_l,rig[who].arm_r]){
-    const fx=(attachment.x-(part.x-part.ax*part.w))*16/part.w,fy=(attachment.y-(part.y-part.ay*part.h))*16/part.h;
-    const x=Math.floor(fx),y=Math.floor(fy),u=fx-x,v=fy-y,a=(y*17+x)*2,b=a+2,c=a+34,d=c+2;
-    const point=castTorsoPoint(attachment.x,attachment.y,p.chest,p.breathX,p.breathY,p.shoulderY);
-    const fromTriangle=axis=>u+v<=1?out[a+axis]+u*(out[b+axis]-out[a+axis])+v*(out[c+axis]-out[a+axis]):out[d+axis]+(1-u)*(out[c+axis]-out[d+axis])+(1-v)*(out[b+axis]-out[d+axis]);
-    assert.ok(Math.hypot(fromTriangle(0)+part.x-point.x,fromTriangle(1)+part.y-point.y)<.12,'neck and shoulders stay on their deformed artwork');
+   if(kind==='body'){
+    // The trimmed UV rows are no longer a rectangular sampling of the texture.
+    // Check the actual sewn sleeve roots against the torso mapping instead.
+    for(const part of [rig[who].arm_l,rig[who].arm_r]){
+     const point=castTorsoPoint(part.x,part.y,p.chest,p.breathX,p.breathY,p.shoulderY);
+     const root=castArmPoint(part,part.ax,part.ay,.2,p.chest,p.breathX,p.breathY,p.shoulderY);
+     assert.ok(Math.hypot(root.x-point.x,root.y-point.y)<1e-9,'sleeve root stays sewn during breath and rotation');
+    }
    }
   }
  }

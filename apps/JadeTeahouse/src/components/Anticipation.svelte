@@ -52,7 +52,7 @@
 	<!-- a column of warm light down the held reel, under the rim: additive, a
 	     plain sibling of the rim (nothing masked), so it lifts the symbols
 	     instead of tinting them -->
-	<Sprite key="fxGlow" anchor={0.5} x={x} y={BOARD_SIZES.height / 2} blendMode="add" tint={0xe6c27a}
+	<Sprite key="fxSoftGlow" anchor={0.5} x={x} y={BOARD_SIZES.height / 2} blendMode="add" tint={0xe6c27a}
 		width={SYMBOL_SIZE * 1.5} height={BOARD_SIZES.height * 1.15} alpha={0.22 + 0.16 * pulse} />
 	<!-- Edge lighting leaves the moving symbol art in its original colours.
 	     Gold and jade like the board frame (it was Sushi Monkey's terracotta),

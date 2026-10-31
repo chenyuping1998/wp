@@ -123,7 +123,10 @@ export const installMockRgs = async () => {
 						minimumRoundDuration: 0,
 					},
 				},
-				round: null,
+				round: params.has('resume') ? {
+     betID:900,amount:API_AMOUNT_MULTIPLIER,payout:sequence[0].payoutMultiplier*API_AMOUNT_MULTIPLIER,payoutMultiplier:sequence[0].payoutMultiplier,
+     active:true,state:sequence[0].state,mode:sequence[0].mode.toUpperCase(),event:String(params.get('resume')==='mid'?Math.floor(sequence[0].state.length*.55):Number(params.get('resume'))||0)
+    } : null,
 			});
 		}
 

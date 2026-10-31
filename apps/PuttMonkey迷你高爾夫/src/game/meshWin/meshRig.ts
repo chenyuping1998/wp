@@ -546,6 +546,19 @@ export type MeshWinSpec = {
 	 *  is a full-canvas sprite; `turn(t)` its angle in degrees, 0 at both
 	 *  ends so the swap back to the still symbol cannot jump. */
 	spinner?: { key: string; hub: Point; turn: (t: number) => number };
+	/** a part cut off the art that TRAVELS on its own over the mesh — the low
+	 *  pays' golf ball, putted into the cup. `key` is a square sprite drawn
+	 *  `size` canvas px wide; `at(t)` places its centre (canvas px), turns it
+	 *  (degrees), scales and fades it, and `clipY` hides everything of it below
+	 *  that line (the cup's front lip). Back at its rest place, unturned and
+	 *  whole at both ends, so the swap to the still symbol cannot jump. The
+	 *  rigid whole-subject move is not applied: keep the ball away (alpha 0)
+	 *  while the subject hops. */
+	roller?: {
+		key: string;
+		size: number;
+		at: (t: number) => { x: number; y: number; rot: number; scale: number; alpha: number; clipY?: number };
+	};
 	/** the additive flash's colour (default gold). The crystal is lit cyan: a
 	 *  gold flash on it read as the crystal turning yellow. */
 	flashTint?: number;

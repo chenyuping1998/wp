@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Symbol from './Symbol.svelte';
+	import { presentation } from '../game/presentation.svelte';
 	import SymbolWrap from './SymbolWrap.svelte';
 	import { getSymbolInfo, getSymbolX } from '../game/utils';
 	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
@@ -34,7 +35,7 @@
 	// full-speed blur through it made the symbols snap from heavily smeared to
 	// perfectly sharp in a single frame.
 	const reelMotion = $derived(stateGame.board[props.reelIndex]?.reelState.motion);
-	const blur = $derived(reelMotion === 'spinning' ? 1 : reelMotion === 'bouncing' ? 0.3 : 0);
+	const blur = $derived(presentation.reels[props.reelIndex]?.blur ?? 0);
 
 	// Landing weight by tier. The Scatter and the Wild are the two symbols a
 	// player is looking for, so they hit hardest; the card royals make up most of

@@ -1,11 +1,14 @@
 <script lang="ts">
-	import { Popup } from 'components-shared';
+	import Popup from './InfoPopup.svelte';
+	import InfoShell from './InfoShell.svelte';
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal, LEGAL_NOTICE } from 'state-shared';
 
 	import { base } from '$app/paths';
 
 	import config from '../../game/config';
+	import assets from '../../game/assets';
+	import { uiTheme } from 'components-ui-pixi';
 	import { getSocialTerms } from '../../game/socialTerms';
 	import { GO_BANANAS_BET_MODE_META } from '../../game/betModeMeta';
 
@@ -21,6 +24,11 @@
 	// and showing only one of them would misrepresent it. Buy Bonus has none: on
 	// the bar it is a labelled plate rather than a glyph, so there is no icon that
 	// would actually match what the player sees.
+	const controlIcon = (name: string) => {
+		const key = uiTheme.icons[name] as keyof typeof assets | undefined;
+		const icon = key ? assets[key] as {src?:string} : undefined;
+		return icon?.src ?? `${ICONS}/${name}.png`;
+	};
 	const controls = [
 		{
 			icons: ['spin'],
@@ -164,7 +172,8 @@
 
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="wp-rules">
+		<div class="wp-rules info-page">
+			<InfoShell kind="rules">
 			<h2>GO BANANINJA — GAME RULES</h2>
 
 			<section class="wp-card">
@@ -196,7 +205,7 @@
 							{#if control.icons.length}
 								<span class="wp-control-icons">
 									{#each control.icons as name (name)}
-										<img src={`${ICONS}/${name}.png`} alt="" aria-hidden="true" />
+										<img src={controlIcon(name)} alt="" aria-hidden="true" />
 									{/each}
 								</span>
 							{/if}
@@ -314,7 +323,7 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>Wild</h3>
 				<p>
-					The Sergeant Wild substitutes for every symbol except the Scatter and the Machete. It
+					The Ninja Wild substitutes for every symbol except the Scatter and the Machete. It
 					does not {T.pay} as a symbol of its own. A Wild on a split reel counts twice, exactly
 					like any other symbol there.
 				</p>
@@ -439,6 +448,7 @@
 			     approval-guidelines/general-disclaimer); this copy said "Stake
 			     Engine" — Stake review 2026-10-04 (Go Bananas Boat) -->
 			<p class="wp-foot">{LEGAL_NOTICE}</p>
+			</InfoShell>
 		</div>
 	</Popup>
 {/if}

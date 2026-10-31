@@ -10,7 +10,7 @@
  * cups (76,108) (136,89) (190,108), each ~26 round with its ring; tray
  * (22..242, 62..170), legs to y 193.
  */
-import { circle, flick, leap, polygon, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Point, type Rig } from './meshRig';
+import { circle, flick, strongLeap, polygon, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Point, type Rig } from './meshRig';
 
 const LEAP = { crouch: 120, rise: 330, fall: 740, land: 920, hop2: 1150, done: 1450 };
 
@@ -64,9 +64,9 @@ export const H4: MeshWinSpec = {
 			cup.along = 1 - 0.05 * Math.max(0, flick(t, at + 240, 5, 8));
 		});
 
-		const { rigid, air } = leap(t, LEAP, 22);
+		const { rigid, air } = strongLeap(t, LEAP, 35);
 		// carried in a hurry: it rocks side to side while it hangs
-		rigid.rot = 6 * Math.sin((2 * Math.PI * (t - LEAP.rise + 80)) / 420) * smoothstep((t - LEAP.rise + 120) / 120) * (1 - smoothstep((t - LEAP.fall + 60) / 160));
+		rigid.rot += 6 * Math.sin((2 * Math.PI * (t - LEAP.rise + 80)) / 420) * smoothstep((t - LEAP.rise + 120) / 120) * (1 - smoothstep((t - LEAP.fall + 60) / 160));
 		pose.rigid = turnAbout(rigid, [128, 120], 193);
 		pose.air = air;
 		return pose;

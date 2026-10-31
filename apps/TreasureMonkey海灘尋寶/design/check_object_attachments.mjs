@@ -26,13 +26,17 @@ for(const name of letters){
  for(let t=0;t<=970;t+=5){
   const outer=symbolPose(name,t,'win');assert.deepEqual([outer.dx,outer.dy,outer.rotation,outer.scaleX,outer.scaleY],[0,0,0,1,1],'wooden plaque must stay fixed');
   const p=letterPose(name,t,'win');assert.ok(Object.values(p).every(Number.isFinite));
-  assert.ok(Math.abs(p.angle)<.2&&Math.abs(p.dy)<.08&&Math.abs(p.dx)<.05,'letter stays on readable plaque');
-  assert.ok(p.sx>.85&&p.sx<1.15&&p.sy>.85&&p.sy<1.15,'letter retains its readable silhouette');
-  if(previous)assert.ok(Math.abs(p.angle-previous.angle)<.024,'offset rotation keys never introduce a one-frame snap');
+  assert.ok(Math.abs(p.angle)<Math.PI*2+.31&&Math.abs(p.dy)<.13&&Math.abs(p.dx)<.08,'letter stays on readable plaque');
+  assert.ok(p.sx>.80&&p.sx<1.30&&p.sy>.80&&p.sy<1.30,'letter retains its readable silhouette');
+  if(previous)assert.ok(Math.abs(Math.atan2(Math.sin(p.angle-previous.angle),Math.cos(p.angle-previous.angle)))<.22,'offset rotation keys never introduce a one-frame snap');
   const calm=letterPose(name,t,'win',true);
-  for(const key of ['dx','dy','angle'])assert.ok(Math.abs(calm[key])<=Math.abs(p[key])*.181+1e-10,'reduced motion lowers attachment travel');
+  assert.ok(Math.abs(calm.angle)<.06,'reduced motion omits the full turn');
+  for(const key of ['dx','dy'])assert.ok(Math.abs(calm[key])<=Math.abs(p[key])*.181+1e-10,'reduced motion lowers attachment travel');
   trace.push(p);previous=p;
  }
+ assert.ok(Math.max(...trace.map(p=>Math.abs(p.angle)))>5.8,'each low glyph completes a full turn');
+ assert.ok(Math.max(...trace.map(p=>Math.abs(p.dy)))>.055,'low wins have visible lift');
+ assert.ok(Math.max(...trace.map(p=>Math.max(p.sx,p.sy)))>1.13,'low wins have visible growth');
  traces.add(JSON.stringify(trace));
  assert.deepEqual(letterPose(name,0,'win'),letterPose(name,970,'win'),'letter returns to exact resting attachment');
  assert.deepEqual(letterPose(name,0,'land'),letterPose(name,240,'land'),'short landing returns before its completion callback');
@@ -41,9 +45,9 @@ for(const name of letters){
 }
 assert.equal(traces.size,4,'four distinct letter performances');
 assert.ok(letterPose('L1',110,'win').dy>0&&letterPose('L1',315,'win').dy<-.06,'A loads before its airborne hold');
-assert.ok(letterPose('L2',145,'win').angle<-.09&&letterPose('L2',320,'win').angle>.17,'K cocks back before its proud lean');
+assert.ok(letterPose('L2',145,'win').angle<-.09&&letterPose('L2',320,'win').angle<-.5,'K cocks back before its reverse turn');
 assert.ok(letterPose('L3',410,'win').dx<-.02&&letterPose('L3',585,'win').dx>.02,'Q follows an off-centre orbit');
-assert.ok(letterPose('L4',340,'win').angle<-.17&&letterPose('L4',640,'win').angle>.08,'J swings and catches in the opposite direction');
+assert.ok(letterPose('L4',340,'win').angle<-.17&&letterPose('L4',640,'win').angle<-5,'J winds up and completes its reverse turn');
 assert.ok(Math.abs(letterPose('L1',565,'win').dy-.012)>.00001,'generator contact is applied to A, while the plaque stays fixed');
 assert.ok(Math.abs(letterPose('L2',430,'win').angle-.165)>.00001,'generator lean is applied to K');
 assert.ok(Math.abs(letterPose('L3',475,'win').angle+.145)>.00001,'generator turn is applied to Q');

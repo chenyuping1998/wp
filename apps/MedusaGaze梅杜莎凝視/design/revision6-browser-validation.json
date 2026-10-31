@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-26",
+  "revision": 6,
+  "scope": "Local offline mock and shared-renderer frame review; no Stake Engine/live RGS verification",
+  "items": [
+    {
+      "id": 1,
+      "change": "Spin-start rest events preserve the existing idle track, breathing clock and pose; return from acting blends into the running breath phase",
+      "nativePhaseSamples": 8
+    },
+    {
+      "id": 2,
+      "change": "Independent upward heat fields, tapering curling tongues, soft thermal colour, anchored fuel and subtle embers; square textures support installed WebGPU/WebGL row strides",
+      "proof": "_sheets/revision6_fire_detail.png"
+    },
+    {
+      "id": 3,
+      "change": "Four softened cloud layers with separate depth speeds and restrained transparency; fixed architecture"
+    },
+    {
+      "id": 4,
+      "change": "AUTO ADVANCED and arrow dark ink; bonus-buy stake amount pale cream",
+      "proofs": [
+        "_sheets/revision6_auto_advanced.png",
+        "_sheets/revision6_buy_amount.png"
+      ]
+    },
+    {
+      "id": 5,
+      "change": "BUY BONUS font reduced and raised into the white shield panel",
+      "proof": "_sheets/revision6_game_final.png"
+    },
+    {
+      "id": 6,
+      "change": "Casting utterance gain2.10, rate0.87 plus independent snake hiss gain0.55/rate0.86; unchanged across Turbo tiers"
+    },
+    {
+      "id": 7,
+      "change": "Flying numeral uses ×N with no 倍 suffix; collision1.65, transfer1.30 and count0.78 playback gains",
+      "proof": "_sheets/revision6_multiplier_fly.png"
+    },
+    {
+      "id": 8,
+      "change": "Larger abdominal breath, upper-coil follow-through and reversing tail swish; continuous tail mesh weighting",
+      "maximumTailTravelRigPixels": 63.407369235161916,
+      "proofs": [
+        "_sheets/revision6_breath_rest.png",
+        "_sheets/revision6_breath_inhale.png",
+        "_sheets/revision6_tail_left.png",
+        "_sheets/revision6_tail_right.png"
+      ]
+    }
+  ],
+  "rig": {
+    "clips": 24,
+    "bones": 83,
+    "visibleMeshFolds": 0,
+    "foreheadSamples": 1920
+  },
+  "validation": {
+    "fullBuild": "passed",
+    "changedGameSourceTypeErrors": 0,
+    "existingWorkspaceTypeErrors": 154,
+    "existingWorkspaceWarnings": 33,
+    "sameTurboTimings": true
+  },
+  "productionMock": {
+    "book": "baseThrow",
+    "finalDisplayedWin": "$12.50",
+    "returnedToIdle": true,
+    "consoleErrors": 0,
+    "proof": "_sheets/revision6_game_result.png"
+  },
+  "videoCreated": false,
+  "passed": true
+}

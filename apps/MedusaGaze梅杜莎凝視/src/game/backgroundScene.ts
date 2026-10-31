@@ -1,30 +1,35 @@
-import { Container, Graphics, Mesh, MeshGeometry, Sprite, type Texture } from 'pixi.js';
-import { BACKGROUND_SIZE, CLOUDS, BRAZIERS, STATUES, STATUE_SECONDS, STATUE_TO_MEDUSA_HEIGHT,STATUE_FRACTURE_PIECES, FLAME_GRID, cloudPosition, cloudVisibility, statueEnvelope, statuePiecePose, flamePoint, flameUV, mixTint, clamp } from './backgroundMotion';
+import {createFlameField} from './flameField';
+import { Container, Graphics, Mesh, MeshGeometry, Sprite, BufferImageSource, Texture, BlurFilter } from 'pixi.js';
+import { BACKGROUND_SIZE, CLOUDS, BIRD_COUNT,birdPose, gardenBreeze, BRAZIERS, STATUES, STATUE_SECONDS, STATUE_TO_MEDUSA_HEIGHT,STATUE_FRACTURE_PIECES, cloudPosition, cloudVisibility, statueEnvelope, statuePiecePose, mixTint, clamp } from './backgroundMotion';
 
 type Textures = Record<string, Texture>;
+const easeGarden = (y:number) => {const t=Math.min(1,y/60,(670-y)/60);return t*t*(3-2*t);};
 /** The exact same Pixi renderer is used in the game and the offline review. */
-export function createBackgroundScene(textures: Textures) {
+export function createBackgroundScene(textures: Textures,options:{softClouds?:boolean}={}) {
 	const root = new Container(); root.label = 'Medusa plaza / fixed architecture'; root.eventMode = 'none';
 	const day = new Sprite(textures.mgBgBase), night = new Sprite(textures.mgBgFree);
 	for (const sprite of [day, night]) { sprite.width = BACKGROUND_SIZE.width; sprite.height = BACKGROUND_SIZE.height; root.addChild(sprite); }
 	night.alpha = 0;
-	const cloudLayer = new Container(), skyMask = new Graphics().rect(155, 0, 1615, 145).fill(0xffffff);
-	root.addChild(cloudLayer, skyMask); cloudLayer.mask = skyMask;
-	const clouds = CLOUDS.map(data => { const sprite = new Sprite(textures.mgBgCloud); sprite.anchor.set(0.5); sprite.position.set(data.x, data.y); sprite.width = data.width; sprite.height = data.height; cloudLayer.addChild(sprite); return sprite; });
+	const skyLayer=new Container(),cloudLayer = new Container(), skyMask = new Graphics().poly([155,0,1770,0,1770,145,610,145,610,245,155,245]).fill(0xffffff);
+	root.addChild(skyLayer, skyMask);skyLayer.addChild(cloudLayer);skyLayer.mask=skyMask;
+	const cloudSoftness=options.softClouds===false?undefined:new BlurFilter({strength:1.4,quality:2});if(cloudSoftness)cloudLayer.filters=[cloudSoftness];
+	const clouds = CLOUDS.map(data => { const sprite = new Sprite(textures.mgBgCloud); sprite.anchor.set(0.5); sprite.position.set(data.x, data.y); sprite.width = data.width; sprite.height = data.height; if(data.flip)sprite.scale.x*=-1;cloudLayer.addChild(sprite); return sprite; });
+	// Wind lives in the open side gardens, so it never moves the architecture or
+	// fills the board with decorative noise. A few passing birds animate the sky.
+	const gardenAir=new Graphics(),birds=new Graphics();root.addChild(gardenAir);skyLayer.addChild(birds);
 	const ownedGeometry: MeshGeometry[] = [];
-	const flames = BRAZIERS.map((bowl, index) => {
-		const group = new Container(); group.position.set(bowl.x, bowl.y); root.addChild(group);
-		const glow = new Sprite(textures.fxGlow); glow.anchor.set(0.5); glow.y = -20; glow.width = 145; glow.height = 100; glow.tint = 0xffa747; glow.alpha = 0.19; glow.blendMode = 'add'; group.addChild(glow);
-		const side = FLAME_GRID.columns, rows = FLAME_GRID.rows, positions = new Float32Array((side + 1) * (rows + 1) * 2), uvs = new Float32Array(positions.length), indices: number[] = [];
-		for (let y = 0; y <= rows; y++) for (let x = 0; x <= side; x++) {
-			const i = (y * (side + 1) + x) * 2; uvs[i] = x / side; uvs[i + 1] = y / rows;
-			positions[i] = (x / side - 0.5) * 76; positions[i + 1] = (y / rows - 1) * 112;
-			if (x < side && y < rows) { const a = y * (side + 1) + x; indices.push(a, a + 1, a + side + 1, a + 1, a + side + 2, a + side + 1); }
-		}
-		const geometry = new MeshGeometry({ positions, uvs, indices: new Uint32Array(indices) }); ownedGeometry.push(geometry);
-		const mesh = new Mesh({ geometry, texture: textures.mgBgFlame }); group.addChild(mesh);
-		return { group, geometry, positions, uvs, restUVs: uvs.slice(), index };
+	const flames = BRAZIERS.map((bowl,index)=>{
+		const group=new Container();group.position.set(bowl.x,bowl.y);root.addChild(group);
+		const glow=new Sprite(textures.fxGlow);glow.anchor.set(.5);glow.position.set(0,-9);glow.width=122;glow.height=68;glow.tint=0xffad54;glow.blendMode='add';group.addChild(glow);
+		const field=createFlameField(20261026+index*457);
+		const source=new BufferImageSource({resource:field.pixels,width:field.width,height:field.height,format:'rgba8unorm',alphaMode:'premultiplied-alpha',scaleMode:'linear'});
+		const texture=new Texture({source});
+		const fireGeometry=new MeshGeometry({positions:new Float32Array([-38,-112,38,-112,38,0,-38,0]),uvs:new Float32Array([0,0,1,0,1,1,0,1]),indices:new Uint32Array([0,1,2,0,2,3])});fireGeometry.batchMode='no-batch';ownedGeometry.push(fireGeometry);
+		const fire=new Mesh({geometry:fireGeometry,texture});group.addChild(fire);
+		const embers=new Graphics();group.addChild(embers);
+		return {group,glow,field,source,texture,embers,index};
 	});
+	let flameAccumulator=0,leftSkyTop=0,leftSkyScale=1;
 	const statues = STATUES.map(data => {
 		const group = new Container(); group.position.set(data.x, data.y); root.addChild(group);
 		const shadow = new Sprite(textures.fxGlow); shadow.anchor.set(0.5); shadow.position.set(0,-1); shadow.width = data.width * 1.04; shadow.height = data.width*.10; shadow.tint = 0x473c34; shadow.alpha = 0.20;group.addChild(shadow);
@@ -59,18 +64,36 @@ export function createBackgroundScene(textures: Textures) {
 		if (!reduced) { elapsed += dt; burstAge = Math.min(STATUE_SECONDS, burstAge + dt); }
 		nightness += Math.sign(target - nightness) * Math.min(Math.abs(target - nightness), dt / (reduced ? 0.25 : 1));
 		night.alpha = nightness;
-		clouds.forEach((cloud, index) => { cloud.x = cloudPosition(elapsed, CLOUDS[index].x, CLOUDS[index].width); cloud.tint = mixTint(0xffffff, 0x8997c2, nightness); cloud.alpha = (0.8 - nightness * 0.28) * cloudVisibility(cloud.x, CLOUDS[index].width); });
-		for (const flame of flames) {
-			flame.group.alpha = nightness; flame.group.visible = nightness > 0.001;
-			if (!flame.group.visible) continue;
-			for (let i = 0; i < flame.positions.length; i += 2) {
-				const u = flame.restUVs[i], v = flame.restUVs[i + 1], time = reduced ? 0 : elapsed, seed = flame.index * 2.43;
-				const p = flamePoint(u, v, time, seed), uv = flameUV(u, v, time, seed);
-				flame.positions[i] = p.x * 76; flame.positions[i + 1] = p.y * 112;
-				flame.uvs[i] = uv.u; flame.uvs[i + 1] = uv.v;
+		gardenAir.clear();birds.clear();
+		for(let i=0;i<26;i++){
+			const side=i%2,wind=gardenBreeze(elapsed,side),phase=(elapsed*(.034+(i%5)*.004)+i*.137+wind.distance/280)%1;
+			const x=(side?1505:80)+phase*280+Math.sin(elapsed*.7+i*1.9)*14;
+			const vertical=(i*83+elapsed*(13+i%4*3))%670,y=230+vertical-wind.lift;
+			const alpha=Math.sin(Math.PI*phase)**2*(.15+(i%3)*.075)*easeGarden(vertical);
+			if(i%4===0){
+				const turn=elapsed*(1.1+i*.035)+i+wind.distance*.035,dx=Math.cos(turn)*5,dy=Math.sin(turn)*3;
+				gardenAir.moveTo(x-dx,y-dy).quadraticCurveTo(x+dy*.8,y-dx*.8,x+dx,y+dy)
+					.quadraticCurveTo(x-dy*.55,y+dx*.55,x-dx,y-dy).fill({color:i%3===0?0xe3b66a:0x96ad55,alpha});
+			}else gardenAir.circle(x,y,1.2+(i%3)*.7).fill({color:nightness>.5?0xb2ffd3:0xffe6a0,alpha});
+		}
+		for(let i=0;i<BIRD_COUNT;i++){
+			const pose=birdPose(i,elapsed),{x,span,alpha}=pose,y=i<6?leftSkyTop+pose.y*leftSkyScale:pose.y,wing=pose.wing*(i<6?leftSkyScale:1),opacity=alpha*(1-nightness*.42);
+			birds.moveTo(x-span,y-wing).quadraticCurveTo(x-span*.42,y-2,x,y+1).quadraticCurveTo(x+span*.42,y-2,x+span,y-wing).stroke({width:i<6?1.8:1.5,color:0x35545d,alpha:opacity});
+			birds.ellipse(x,y+1,.9,1.5).fill({color:0x35545d,alpha:opacity});
+		}
+		clouds.forEach((cloud, index) => { cloud.x = cloudPosition(elapsed, CLOUDS[index].x, CLOUDS[index].width,CLOUDS[index].speed,CLOUDS[index].lane); cloud.tint = mixTint(0xffffff, 0x8997c2, nightness); cloud.alpha = CLOUDS[index].alpha*(1-nightness*.5) * cloudVisibility(cloud.x, CLOUDS[index].width,CLOUDS[index].lane); });
+		flameAccumulator+=reduced?0:Math.min(dt,.1);
+		const fireSteps=Math.min(3,Math.floor(flameAccumulator*30));flameAccumulator-=fireSteps/30;
+		for(const flame of flames){
+			flame.group.alpha=.88+.12*nightness;
+			flame.glow.alpha=(.09+.08*nightness)*(1+.07*Math.sin(elapsed*4.2+flame.index*2));
+			if(fireSteps){for(let step=0;step<fireSteps;step++)flame.field.step();flame.field.paint();flame.source.update();}
+			flame.embers.clear();
+			for(let i=0;i<3;i++){
+				const p=(elapsed*(.65+i*.09)+i*.317+flame.index*.41)%1;
+				const x=Math.sin(p*5+i*2+flame.index)*11+(i-1)*7,y=-15-p*102;
+				flame.embers.circle(x,y,.65).fill({color:0xffd69a,alpha:Math.sin(Math.PI*p)*.46});
 			}
-			flame.geometry.getBuffer('aPosition').update();
-			flame.geometry.getBuffer('aUV').update();
 		}
 		const state = statueEnvelope(burstAge), tint = mixTint(0xffffff, 0x9cafd1, nightness);
 		for (const statue of statues) {
@@ -88,6 +111,8 @@ export function createBackgroundScene(textures: Textures) {
 	}
 	function setBounds(width:number,height:number,medusaHeight=height*.65,groundY=height*.87){
 		const scale=Math.max(width/BACKGROUND_SIZE.width,height/BACKGROUND_SIZE.height);root.scale.set(scale);root.position.set((width-BACKGROUND_SIZE.width*scale)/2,(height-BACKGROUND_SIZE.height*scale)/2);
+		leftSkyTop=Math.max(0,-root.y/scale);leftSkyScale=Math.max(0,(245-leftSkyTop)/245);
+		clouds.forEach((cloud,i)=>{if(CLOUDS[i].lane==='left'){cloud.y=leftSkyTop+CLOUDS[i].y*leftSkyScale;cloud.height=CLOUDS[i].height*leftSkyScale;}});
 		for(const statue of statues){statue.group.scale.set(medusaHeight*STATUE_TO_MEDUSA_HEIGHT/(statue.data.height*scale));statue.group.y=(groundY-root.y)/scale;}
 	}
 	update(0);
@@ -95,7 +120,7 @@ export function createBackgroundScene(textures: Textures) {
 		setNight(value: boolean) { target = value ? 1 : 0; },
 		setReducedMotion(value: boolean) { reduced = value; if (value) burstAge = STATUE_SECONDS; update(0); },
 		burstStatues() { if (disposed || reduced || burstAge < STATUE_SECONDS) return false; burstAge = 0; update(0); return true; },
-		snapshot() { return { elapsed, nightness: clamp(nightness), burstAge, reduced, cloudX: clouds.map(c => c.x), architecture: { x: day.x, y: day.y, rotation: day.rotation },statues:statues.map(s=>({height:s.data.height*s.group.scale.y*root.scale.y,groundY:root.y+s.group.y*root.scale.y})) }; },
-		destroy() { if (disposed) return; disposed = true; root.destroy({ children: true }); ownedGeometry.forEach(geometry => geometry.destroy()); },
+		snapshot() { return { elapsed, nightness: clamp(nightness), burstAge, reduced, cloudX: clouds.map(c => c.x),leftClouds:clouds.filter((_,i)=>CLOUDS[i].lane==='left').map(c=>({x:root.x+c.x*root.scale.x,y:root.y+c.y*root.scale.y,width:c.width*root.scale.x,height:c.height*root.scale.y,alpha:c.alpha})), architecture: { x: day.x, y: day.y, rotation: day.rotation },statues:statues.map(s=>({height:s.data.height*s.group.scale.y*root.scale.y,groundY:root.y+s.group.y*root.scale.y})) }; },
+		destroy() { if (disposed) return; disposed = true; root.destroy({ children: true }); ownedGeometry.forEach(geometry => geometry.destroy());cloudSoftness?.destroy();for(const flame of flames)flame.texture.destroy(true); },
 	};
 }

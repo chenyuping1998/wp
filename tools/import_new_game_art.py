@@ -116,7 +116,7 @@ for job in JOBS:
         out=ImageOps.fit(image,size,method=L) if kind=='intro' else normalize(image,size,.98 if kind in ['banners','brand'] else .90 if name.startswith('frame_edge') else .83 if kind.startswith('cast') else .78)
         out.save(destination/(name+'.png'))
         if kind=='symbols' or kind=='symbols/parts':target=runtime/(slug+'Symbols')
-        elif kind=='ui':target=runtime/(slug+'WinBanners' if name in ['big','superwin','mega'] else slug+'Ui')
+        elif kind=='ui':target=runtime/(slug+'Ui')
         elif kind=='mechanics':target=runtime/(slug+'Mechanics')
         elif kind=='banners':target=runtime/(slug+'Ui' if name=='bar_strip' else slug+'WinBanners')
         elif kind=='intro':target=runtime/(slug+'Intro')

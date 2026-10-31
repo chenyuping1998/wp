@@ -1,0 +1,6 @@
+2026-10-29 — articulation V4
+Rig SHA256: 98fa1a682dcc60843282cec4f6d64eca1a8139b71051ed70189e06e41da21241
+motion.gif: shipped character player, independent breath, real crossfades and completion returns; 20 fps, 286 frames. Selected gesture sequence; all-actions.png separately covers 19 clips at four phases each, including standalone breath. contact.png shows the .54 phase of each clip.
+Full numeric guard: all opaque meshes at 60 fps; 8895 samples, 360 action-to-action/rest pairs, 5092 contact samples; 0 inverted mesh samples and 0 failed joint/active-prop contacts.
+Actual game screenshots: ../../qa-v4 (same rig hash). These checks cover sampled geometry and reviewed poses; they are not a guarantee for every device or every visual defect.
+V3 appearance sign-off is superseded: finite vertices and a few isolated poses did not catch visible inversions. Original V3 rig and review are retained in articulation_v3_before.

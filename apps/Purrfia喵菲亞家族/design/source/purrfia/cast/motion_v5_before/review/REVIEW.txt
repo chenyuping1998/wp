@@ -1,0 +1,2 @@
+2026-10-30 — collar/cuff V5
+Actual shipped character player, independent breath and real crossfades, 10fps capture. 101 frames: lens adjustment, good/none reactions, held celebration and returns. Full 19-clip four-phase sheet in all-actions.png. All opaque meshes and 360 crossfade pairs checked at 60fps; contacts include both cuffs, collar and active stamp. Numeric checks supplement visual review. V4 signed off only a wrist-point contact; its empty cuff opening and neckline registration were subsequently corrected.

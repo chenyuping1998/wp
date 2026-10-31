@@ -1,0 +1,256 @@
+{
+  "app": "Purrfia喵菲亞家族",
+  "fps": 60,
+  "totalFrames": 3487,
+  "totalFolded": 7421,
+  "clips": [
+    {
+      "name": "idle",
+      "frames": 961,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 1,
+      "maxAreaRatio": 1
+    },
+    {
+      "name": "fg_idle",
+      "frames": 961,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 1,
+      "maxAreaRatio": 1
+    },
+    {
+      "name": "push_monocle",
+      "frames": 68,
+      "worst": {
+        "count": 13,
+        "time": 0.1667,
+        "slots": {
+          "arm_front_full": 13
+        }
+      },
+      "minAreaRatio": -0.6782,
+      "maxAreaRatio": 1.9749
+    },
+    {
+      "name": "push_monocle_short",
+      "frames": 31,
+      "worst": {
+        "count": 12,
+        "time": 0.4,
+        "slots": {
+          "arm_front_full": 12
+        }
+      },
+      "minAreaRatio": -0.6748,
+      "maxAreaRatio": 1.9739
+    },
+    {
+      "name": "stamp",
+      "frames": 55,
+      "worst": {
+        "count": 8,
+        "time": 0.1667,
+        "slots": {
+          "arm_front_full": 8
+        }
+      },
+      "minAreaRatio": -0.9777,
+      "maxAreaRatio": 2.954
+    },
+    {
+      "name": "stamp_short",
+      "frames": 28,
+      "worst": {
+        "count": 8,
+        "time": 0.2333,
+        "slots": {
+          "arm_front_full": 8
+        }
+      },
+      "minAreaRatio": -0.9347,
+      "maxAreaRatio": 2.9504
+    },
+    {
+      "name": "claim_turf",
+      "frames": 68,
+      "worst": {
+        "count": 19,
+        "time": 0.15,
+        "slots": {
+          "arm_front_full": 19
+        }
+      },
+      "minAreaRatio": -1.0438,
+      "maxAreaRatio": 1.7
+    },
+    {
+      "name": "catch_stamp",
+      "frames": 31,
+      "worst": {
+        "count": 8,
+        "time": 0.15,
+        "slots": {
+          "arm_front_full": 8
+        }
+      },
+      "minAreaRatio": -0.9708,
+      "maxAreaRatio": 1.3298
+    },
+    {
+      "name": "lick_paw",
+      "frames": 38,
+      "worst": {
+        "count": 19,
+        "time": 0.1167,
+        "slots": {
+          "arm_front_full": 19
+        }
+      },
+      "minAreaRatio": -1.0109,
+      "maxAreaRatio": 1.6961
+    },
+    {
+      "name": "react_small",
+      "frames": 55,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.9878,
+      "maxAreaRatio": 1.0081
+    },
+    {
+      "name": "react_good",
+      "frames": 85,
+      "worst": {
+        "count": 3,
+        "time": 0.1667,
+        "slots": {
+          "arm_back": 3
+        }
+      },
+      "minAreaRatio": -0.3429,
+      "maxAreaRatio": 1.8503
+    },
+    {
+      "name": "react_chain",
+      "frames": 61,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.9878,
+      "maxAreaRatio": 1.0081
+    },
+    {
+      "name": "react_none",
+      "frames": 74,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.3333,
+      "maxAreaRatio": 1.8589
+    },
+    {
+      "name": "idle_bored",
+      "frames": 146,
+      "worst": {
+        "count": 19,
+        "time": 1.3833,
+        "slots": {
+          "arm_front_full": 19
+        }
+      },
+      "minAreaRatio": -1.0097,
+      "maxAreaRatio": 1.7043
+    },
+    {
+      "name": "fg_trigger",
+      "frames": 134,
+      "worst": {
+        "count": 8,
+        "time": 0.2667,
+        "slots": {
+          "arm_front_full": 8
+        }
+      },
+      "minAreaRatio": -0.9759,
+      "maxAreaRatio": 2.9661
+    },
+    {
+      "name": "fg_end",
+      "frames": 98,
+      "worst": {
+        "count": 16,
+        "time": 0.7167,
+        "slots": {
+          "arm_front_full": 16
+        }
+      },
+      "minAreaRatio": -0.7124,
+      "maxAreaRatio": 1.653
+    },
+    {
+      "name": "win_big",
+      "frames": 157,
+      "worst": {
+        "count": 17,
+        "time": 0.2667,
+        "slots": {
+          "arm_back": 7,
+          "arm_front_full": 10
+        }
+      },
+      "minAreaRatio": -0.978,
+      "maxAreaRatio": 3.0998
+    },
+    {
+      "name": "win_max",
+      "frames": 194,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.7491,
+      "maxAreaRatio": 1.1848
+    },
+    {
+      "name": "win_big_loop",
+      "frames": 121,
+      "worst": {
+        "count": 18,
+        "time": 0,
+        "slots": {
+          "arm_back": 6,
+          "arm_front_full": 12
+        }
+      },
+      "minAreaRatio": -1.0396,
+      "maxAreaRatio": 1.9826
+    },
+    {
+      "name": "win_max_loop",
+      "frames": 121,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.7467,
+      "maxAreaRatio": 1.1797
+    }
+  ]
+}

@@ -29,9 +29,9 @@ import {GAME_FONT} from '../game/fonts';
 </script>
 
 {#if props.state === 'explosion'}
-	<!-- Crumble owns the stone fragments; never play the template explosion. -->
+	<!-- The paw swipe owns symbol removal. -->
 {:else if isSprite && isWin}
-	<!-- Individual symbol acting, followed by shared petrification/fracture. -->
+	<!-- Independent painted parts deform before the paw swipe. -->
 	<SymbolWinAnim
 		{symbolInfo}
 		name={props.rawSymbol.name}
@@ -73,6 +73,4 @@ import {GAME_FONT} from '../game/fonts';
 <Text text={'×'+(props.rawSymbol.multiplier??1)} x={props.x} y={(props.y??0)+18} anchor={0.5} style={{fontFamily:GAME_FONT,fontSize:18,fill:0x281c20,stroke:{color:0xffe6a0,width:2}}} />
 {/if}
 
-<!-- Nothing is drawn over a symbol here: the win amount sits at the group's
-     centre (ScatterWins) and Medusa's multiplier lands once per spin
-     (MedusaThrow). Printing anything on the symbol would compete with both. -->
+<!-- Win amounts belong to the group overlay; authoritative stamp values remain visible on their symbols. -->

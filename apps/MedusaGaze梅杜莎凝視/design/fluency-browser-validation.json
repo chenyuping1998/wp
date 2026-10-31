@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-30",
+  "revision": "20261030-fluent-casting",
+  "passed": true,
+  "scope": "Native canvas preview at normal browser viewport. MG charge at 1.35s and recovery at 2.20s; FG three-orb charge at 1.35s; complete FG playback observed through 5.381s with x178 and $178 result. No video captured.",
+  "observations": [
+    "Raised gathering palm, open mouth and expressive snake jaws remain readable.",
+    "Recovery hand clears shoulder without visible painted mesh folding at sampled pose.",
+    "FG glasses stay on forehead and three multiplier labels remain readable.",
+    "Full FG preview reaches x178 and $178.00 with resting pose and no remaining flying orbs."
+  ],
+  "nativeValidation": "source/medusagaze/cast/fluency-validation.json",
+  "geometryValidation": "source/medusagaze/cast/spine43-validation.json",
+  "turboTimingValidation": "multiplier-performance-validation.json",
+  "screenshots": [
+    "source/medusagaze/_sheets/fluency_20261030_gather.png",
+    "source/medusagaze/_sheets/fluency_20261030_recovery.png",
+    "source/medusagaze/_sheets/fluency_20261030_fg.png"
+  ],
+  "fullBuild": "passed",
+  "typeCheck": {"changedGameSourceErrors": 0, "existingWorkspaceErrors": 154, "warnings": 36},
+  "limitation": "Fresh full-game browser replay could not finish because local developer page navigation timed out. Native clip and shared multiplier checks passed; this report does not replace previous full-game UI verification or live RGS verification."
+}

@@ -24,7 +24,7 @@
 - 14 張獎圖以原有構圖重繪，收斂高光、紋理與細碎亮點。原始生成圖保存在 `design/source/repaint_v2/`，替換前資產在 `design/source/before_repaint_v2/`；遊戲內使用 512px 素材。
 - H1–H4、W、S、L1–L5 使用固定外框的 panel 網格。藥液／香蕉、水晶、夾爪／寶珠、蒸餾器、護目鏡／下巴及字形筆畫分別演出；移除整個主體翻面與全板縮放。一般落輪也使用 360ms 局部演出，靜止獎圖不再整塊呼吸縮放。
 - `game/potionVapor.ts` 提供 1–5 輪的確定性時序。`ReelBlast.svelte` 用多層柔邊藥霧覆蓋，完全不透明時才換圖，保留 Scatter 並檢查取消世代；移除裂痕、碎石和膨脹底板。全盤與模式切換也改為煉金反應的表現。
-- `design/generate_audio_alchemy.py` 產生 86 段原創合成立體聲音效／音樂（44.1kHz、16-bit PCM），包含玻璃共振、氣泡、氣壓與 D Dorian 配樂。播放使用 Web Audio，支援多音、無縫循環、背景樂交叉淡化、反應時壓低音樂、設定音量同步與取消中的迴圈載入；不再回退到叢林聲音。音量與循環資訊在 `static/assets/audio/alchemy/mix_manifest.json`。
+- 音效已更新為 2026-10-31 取樣版：48 個正式音檔，包含五軸獨立停輪、分級 fanfare 與跑分床；BGM 以解碼後裁切的 MP3 減少載入量。舊 `generate_audio_alchemy.py` 入口轉呼叫 `build_sampled_audio.py`。來源授權、試聽與驗證見 [本版交付紀錄](PRESENTATION_POLISH_20261031.md)，取代先前純合成與 mix_manifest.json 流程。
 - 人物保留 1305 頂點的單一網格，重新分配上臂／前臂／手掌、腿／小腿／腳的權重，平滑關節附近的權重梯度，並對齊畫面上的肩肘腕。九種動作重排節奏，重建 Spine 4 的絕對座標貝茲控制點，避免縮小關鍵影格後中間幀仍沿用舊拉伸幅度。肢體長度允許範圍為設定姿勢的 95%–105%，所有有圖像的三角形面積必須維持 50%–160%，禁止翻面。
 - 投擲離手為 380ms；`design/measure_alchemist_cues.mjs` 從實際加權手掌位置產生 `game/alchemistCues.ts`，人物、轉場道具與聲音共用此時序。調整人物後建置會自動重新量測。
 - 本機檢視：執行 `npm run dev` 後開啟 `http://localhost:3021/art-review`。可切換中獎、待機、藥霧、人物八種主要動作、關節顯示及音效試聽。此頁只在開發模式提供檢視功能。

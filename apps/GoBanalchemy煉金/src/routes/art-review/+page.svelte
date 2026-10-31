@@ -41,7 +41,7 @@
 		'bgm_freespin',
 		'btn',
 		'spin',
-		'reel_stop',
+		'reel_stop_3',
 		'scatter_3',
 		'fuse_sizzle',
 		'dynamite_blast',
@@ -57,7 +57,7 @@
 	];
 	const listen = () => {
 		audio?.pause();
-		audio = new Audio(`/assets/audio/alchemy/${cue}.wav`);
+		audio = new Audio(`/assets/audio/alchemy/${cue}.${cue.startsWith('bgm_') ? 'mp3' : 'wav'}`);
 		void audio.play();
 	};
 	onMount(() => {

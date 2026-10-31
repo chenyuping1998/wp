@@ -3,7 +3,7 @@ const TEXTS={
  clusterTitle:['CONNECTED CLUSTERS','相鄰中獎'],
  cluster:['Match 5+ symbols connected up, down, left or right. Diagonals do not connect. Winners clear and new symbols tumble in.','同圖案上下左右連接 5 個以上中獎，斜角不算。收走中獎群組後掉落補位，再次判獎。'],
  boxesTitle:['MYSTERY BOXES','神秘紙箱'],
- boxes:['Before each evaluation all boxes open into the same regular symbol. Rings and boxes do not form paying clusters.','每次判獎前，全盤紙箱一起開成同一種一般圖案。家族戒指和紙箱不計入一般中獎群組。'],
+ boxes:['Before each evaluation all boxes open into the same regular symbol. Rings and boxes do not form winning clusters.','每次判獎前，全盤紙箱一起開成同一種一般圖案。家族戒指和紙箱不計入一般中獎群組。'],
  territoryTitle:['TERRITORY & STAMPS','地盤與老大印章'],
  territory:['A cleared cell is marked. Every later clear doubles its multiplier, up to ×128. Cells reset each base round and persist throughout free spins. Stamp wilds substitute for adjacent regular symbols. A cluster adds all cell values of ×2 or more and its stamp values; if none apply its multiplier is ×1. Award uses the previous cell values, before upgrades. Used stamps clear with winners.','收走的格子留下記號，之後每次再收走倍數翻倍，最高 ×128。主遊戲每轉歸零，免費遊戲整場保留。印章百搭可代替相鄰一般圖案。群組中的 ×2 以上地盤倍數與印章倍數相加；都沒有則 ×1。先按舊倍數付分，再升級格子。用過的印章跟著群組收走。'],
  freeTitle:['FREE SPINS','免費遊戲'],

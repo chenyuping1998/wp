@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-28",
+  "scope": "Swing Monkey presentation upgrade",
+  "changes": [
+    "Shared instrument attack score for deformation and released notes, including the six-hit drum flam",
+    "Stronger rigid instrument accents with smooth return to the exact rest pose",
+    "Per-column stop traces and winning-cell corner accents",
+    "Independent wrist follow-through in both cast idle loops and a new jazzGroove reaction",
+    "Moving stage illumination, stronger valance motion and background drift",
+    "24 by 24 curtain cloth mesh with pinned edges and flat full-cover pose",
+    "Inactive background meshes suspend vertex updates after crossfade"
+  ],
+  "checks": {
+    "asset_paths": { "status": "passed", "count": 191 },
+    "audio_cues": { "status": "passed", "count": 49 },
+    "undefined_template_references": "passed",
+    "social_copy": "passed",
+    "types": { "status": "baseline_passed", "existing_errors": 14, "new_errors": 0 },
+    "symbol_meshes": "passed: all checked symbols, landings, idle acts and decor; zero inverted triangles",
+    "cast_flow": "passed: all animations on both skeletons, including jazzIdle and jazzGroove",
+    "production_build": "passed: Vite and static adapter; built Spine assets compacted to 3.56 MiB",
+    "browser": {
+      "viewports": ["1366x768", "390x844"],
+      "observed": ["base board", "forced H3 win and return to rest", "free-spin trigger", "free-spin intro and continue", "feature cast swap", "feature reel reveals and record collection"],
+      "console_errors": 0,
+      "desktop_capture": "E:/stake/tmp/jazz-performance-desktop.jpg",
+      "limitations": "Visual smoke test, not a device performance certification or a complete all-tier presentation review."
+    },
+    "cast_pixel_audit": {
+      "status": "warning",
+      "sequence": "idle > jazzGroove > idle",
+      "original_idle": { "master_extra_crack_pixels": 608, "apprentice_extra_crack_pixels": 356, "jerks": 0 },
+      "jazz_idle": { "master_extra_crack_pixels": 384, "apprentice_extra_crack_pixels": 209, "jerks": 0 },
+      "note": "Both versions exceed the existing crack threshold. New idle reduces this metric; edge and joint warnings remain. Do not claim a clean pixel-seam audit."
+    }
+  },
+  "preview": {
+    "command": "node design/preview_jazz.mjs",
+    "url": "http://127.0.0.1:4199/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en",
+    "offline_only": true,
+    "mock_books": "E:/stake/tmp/artqa_swing_20261013/stub-data.js",
+    "note": "Preview requires the local mock fixture. QA controls and mock responses are excluded from build/. Background-tab throttling makes its FPS indicator unsuitable for device performance claims."
+  },
+  "published": false
+}

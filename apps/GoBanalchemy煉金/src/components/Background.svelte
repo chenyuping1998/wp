@@ -3,9 +3,9 @@
 	import { FadeContainer } from 'components-pixi';
 	import { SECOND } from 'constants-shared/time';
 	import { stateBet } from 'state-shared';
-	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import { presentation } from '../game/presentation.svelte';
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 	import {
 		BG_BASE,
@@ -21,13 +21,14 @@
 	import type { Texture } from 'pixi.js';
 	import BgProps from './BgProps.svelte';
 	import BgLight from './BgLight.svelte';
+	import BgAlive from './BgAlive.svelte';
 
 	const context = getContext();
 	const isHoldAndSpin = $derived(stateBet.activeBetModeKey === HOLD_AND_SPIN_MODE_KEY);
 	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame' && !isHoldAndSpin);
 	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame' && !isHoldAndSpin);
 
-	let clock = $state(0);
+	const clock = $derived(presentation.clock);
 
 	// ── slow ken-burns drift over a small overscan, so the still jungle art
 	// breathes instead of sitting dead behind the reels ────────────────────────
@@ -103,14 +104,11 @@
 	// The drifting motes stay. Dust hanging in lamplight is right for a mine, and
 	// they are the only thing keeping the plate from sitting perfectly still.
 
-	onMount(() => {
-		const id = setInterval(() => {
-			clock += 0.016;
-			// mip chains for the plates, once each is loaded (game/crispPlate.ts)
-			for (const key of ['gbBgBase', 'gbBgFeature', 'gbBgHoldAndSpin'])
-				crispPlate(context.stateApp.loadedAssets?.[key] as Texture | undefined);
-		}, 16);
-		return () => clearInterval(id);
+	// requestAnimationFrame, not setInterval (the review checker flags
+	// interval animation). PresentationDirector supplies the shared, clamped clock.
+	$effect(() => {
+		for (const key of ['gbBgBase', 'gbBgFeature', 'gbBgHoldAndSpin'])
+			crispPlate(context.stateApp.loadedAssets?.[key] as Texture | undefined);
 	});
 </script>
 
@@ -127,6 +125,8 @@
 	<BgBubbles potions={BG_POTIONS.base} {...parallax} />
 	<!-- lantern flames flicker, elixirs breathe, the fog drifts (BgLight) -->
 	<BgLight scene="base" {...parallax} />
+	<!-- fog flows across the floor, vapour curls up out of the elixirs (BgAlive) -->
+	<BgAlive scene="base" {...parallax} />
 </FadeContainer>
 
 <!-- 烈日突擊 free-game background -->
@@ -140,6 +140,8 @@
 	<BgBubbles potions={BG_POTIONS.feature} {...parallax} />
 	<!-- the crystal banks pulse, fog rolls along their feet -->
 	<BgLight scene="feature" {...parallax} />
+	<!-- energy surges up the tubes, embers and vapour lift off the crystal beds -->
+	<BgAlive scene="feature" {...parallax} />
 </FadeContainer>
 
 <!-- 地底金庫 hold-and-spin background -->

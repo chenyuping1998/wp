@@ -1,0 +1,32 @@
+{
+  "slug": "purrfia",
+  "rigSha256": "50f122f203f982b3d18040e967703c7dfe7b83e1c990188083bc0287c8d83940",
+  "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+  "sampleFps": 120,
+  "units": "source artwork pixels and pixels/second",
+  "heldReturn": {
+    "before": {
+      "peakWristSpeed": 1537.43,
+      "maxStep120fps": 12.812
+    },
+    "after": {
+      "peakWristSpeed": 714.03,
+      "maxStep120fps": 5.95
+    },
+    "peakReductionPercent": 53.6
+  },
+  "criticalAction": {
+    "name": "claim_turf",
+    "before": {
+      "peakWristSpeed": 5211.45,
+      "maxStep120fps": 43.429
+    },
+    "after": {
+      "peakWristSpeed": 1633.28,
+      "maxStep120fps": 13.611
+    },
+    "peakReductionPercent": 68.7
+  },
+  "repeatReactionRestart": "prevented",
+  "heldLoopMaxStep120fps": 3.886
+}

@@ -4,9 +4,12 @@
 </script>
 <script lang="ts">
  import {waitForTimeout} from 'utils-shared/wait';import {stateBet} from 'state-shared';
+ import BoardContainer from './BoardContainer.svelte';import FlyingNotes from './FlyingNotes.svelte';import {getSymbolX} from '../game/utils';
  import {getContext} from '../game/context';import {planCascadeColumn,gravityProgress} from '../game/symbolMotion';import {BOARD_DIMENSIONS,SYMBOL_SIZE} from '../game/constants';
  const context=getContext();const y=(row:number)=>(row-.5)*SYMBOL_SIZE;
+ let flights=$state<{id:number;x:number;y:number;seed:number}[]>([]),nextFlight=0;
  context.eventEmitter.subscribeOnMount({tumbleRun:async e=>{
+  const unique=[...new Map(e.explodingSymbols.map(p=>[p.reel+':'+p.row,p])).values()];flights=unique.map(p=>({id:nextFlight++,x:getSymbolX(p.reel),y:y(p.row),seed:(p.reel+p.row)%4}));context.eventEmitter.broadcast({type:'soundCue',cue:'sfx_note_fly'});
   const removed=new Map<number,number[]>();for(const p of e.explodingSymbols){removed.set(p.reel,[...(removed.get(p.reel)??[]),p.row]);context.stateGame.board[p.reel].reelState.symbols[p.row].symbolState='explosion';}
   await waitForTimeout(stateBet.isTurbo?90:180);
   await Promise.all(context.stateGame.board.map(async(reel,i)=>{
@@ -18,3 +21,4 @@
   }));
  }});
 </script>
+<BoardContainer>{#each flights as flight (flight.id)}<FlyingNotes {...flight} oncomplete={()=>flights=flights.filter(f=>f.id!==flight.id)}/>{/each}</BoardContainer>

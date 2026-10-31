@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-27",
+  "scope": "Local mock game and deterministic background visibility checks",
+  "clouds": {
+    "totalInstances": 11,
+    "leftStreams": 3,
+    "leftInstances": 9,
+    "minimumVisibleLeftCloudsOver20Minutes": 2,
+    "avoidBoardOcclusion": true,
+    "fadeBeforeColumns": true,
+    "wideScreenVerticalCropHandled": true
+  },
+  "birds": {
+    "total": 9,
+    "leftFlocks": 2,
+    "minimumVisibleLeftBirds": 3
+  },
+  "browser": {
+    "layouts": [
+      "1280x720",
+      "1792x771"
+    ],
+    "screenshots": [
+      "_sheets/left_sky_20261027_desktop.png",
+      "_sheets/left_sky_20261027_wide.png"
+    ],
+    "unexpectedErrors": 0
+  },
+  "build": "passed",
+  "passed": true,
+  "changedGameSourceTypeErrors": 0
+}

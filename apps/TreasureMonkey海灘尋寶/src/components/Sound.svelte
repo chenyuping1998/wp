@@ -6,6 +6,7 @@
 		| { type: 'soundMusic'; name: MusicName }
 		| { type: 'soundOnce'; name: SoundEffectName; forcePlay?: boolean }
 		| { type: 'soundTreasureFoley'; cue: TreasureFoley }
+		| { type: 'soundReelLand'; reelIndex: number; teasing: boolean }
 		| { type: 'soundLoop'; name: SoundEffectName }
 		| { type: 'soundStop'; name: SoundName }
 		| { type: 'soundFade'; name: SoundName; from: number; to: number; duration: number }
@@ -37,6 +38,7 @@
 	import { base } from '$app/paths';
 
 	import { getContext } from '../game/context';
+	import { reelStopRate } from '../game/reelFeedback';
 	import {FoleyGate,MusicDuckWindow,TREASURE_FOLEY,FOCUS_DURATIONS} from '../game/treasureAudioDirection';
 
 	const context = getContext();
@@ -345,6 +347,15 @@
 	const sfxVolume = (volumeScale: number) =>
 		Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
 
+	$effect(()=>{
+		const volume=stateSoundDerived.volumeSoundEffect();
+		for(const [name,loop] of Object.entries(sfxLoops)){
+			const scale=name==='sand_loop'?.20:.8;
+			loop.gain.gain.setTargetAtTime(Math.min(1,volume*scale),audioContext?.currentTime??0,.025);
+		}
+		for(const [name,audio] of Object.entries(cnSfxAudio))if(audio.loop)audio.volume=Math.min(1,volume*(name==='sand_loop'?.20:.8));
+	});
+
 	// ── reel-stop probe (?hmdebug=1) ──────────────────────────────────────────
 	//
 	// The five reel-stop clicks are the SAME 105ms sample at five pitches, so
@@ -433,7 +444,8 @@
 				return;
 			}
 			const gain = ctx.createGain();
-			gain.gain.value = sfxVolume(volumeScale);
+			gain.gain.setValueAtTime(0,ctx.currentTime);
+			gain.gain.linearRampToValueAtTime(sfxVolume(volumeScale),ctx.currentTime+.045);
 			gain.connect(sfxDestination(ctx));
 			const source = ctx.createBufferSource();
 			source.buffer = buffer;
@@ -451,12 +463,15 @@
 		const running = sfxLoops[name];
 		if (running) {
 			try {
-				running.source.stop();
+				const at=audioContext?.currentTime??0;
+				running.gain.gain.cancelScheduledValues(at);
+				running.gain.gain.setValueAtTime(running.gain.gain.value,at);
+				running.gain.gain.linearRampToValueAtTime(0,at+.065);
+				running.source.onended=()=>{running.source.disconnect();running.gain.disconnect();};
+				running.source.stop(at+.07);
 			} catch {
 				// already stopped
 			}
-			running.source.disconnect();
-			running.gain.disconnect();
 			delete sfxLoops[name];
 		}
 		// the fallback element, if this name ever played through it
@@ -611,6 +626,7 @@
 	});
 
 	context.eventEmitter.subscribeOnMount({
+		soundReelLand:({reelIndex,teasing})=>playCnSfx('reel_stop',teasing?.5:.42,reelStopRate(reelIndex,teasing)),
 		soundTreasureFoley:({cue})=>{
 			const detail=TREASURE_FOLEY[cue];
 			if(!foleyGate.admit(cue,performance.now()))return;

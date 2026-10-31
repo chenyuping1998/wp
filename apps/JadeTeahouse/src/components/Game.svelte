@@ -47,7 +47,6 @@
 	import Transition from './Transition.svelte';
 	import SignalScene from './SignalScene.svelte';
 	import IdleDirector from './IdleDirector.svelte';
-	import BuyPlateMesh from './BuyPlateMesh.svelte';
 
 	const context = getContext();
 
@@ -110,9 +109,6 @@
 			Ref: https://developer.chrome.com/blog/autoplay
 		-->
 		<Sound />
-		<!-- the Buy Bonus plate swings on its ropes (feeds the shared button a
-		     moving texture; see the component) -->
-		<BuyPlateMesh />
 
 		<Container>
 

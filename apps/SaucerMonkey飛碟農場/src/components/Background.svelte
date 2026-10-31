@@ -8,6 +8,7 @@
 	import { BG_BASE_PROPS, BG_FEATURE_PROPS } from '../game/meshWin/bgProps';
 	import BgProps from './BgProps.svelte';
 	import BgNight from './BgNight.svelte';
+	import BgEvents from './BgEvents.svelte';
 	import BowlingScoreboards from './BowlingScoreboards.svelte';
 
 	const context = getContext();
@@ -20,8 +21,10 @@
 	// COVER, not stretch: the plates are 16:9 and keep their aspect on every
 	// layout, cropped about the centre; the drift only uses the overscan margin.
 	//
-	// No motes, no light shafts: a screenprint poster has neither, and anything
-	// glowing on it reads as a different medium (ART_BRIEF.md §0).
+	// No soft motes or glow shafts: a screenprint poster has neither, and anything
+	// glowing on it reads as a different medium (ART_BRIEF.md §0). The light that
+	// does move (BgEvents: the searchlight, the cloud over the moon) is printed —
+	// flat shapes and halftone.
 	const OVERSCAN = 1.06;
 	const PLATE = [1920, 1080];
 	const parallax = $derived.by(() => {
@@ -63,12 +66,15 @@
 	<BgProps specs={BG_BASE_PROPS} plate="gbBgBase" {...parallax} />
 	<!-- stars, windows, fireflies, a shooting star (BgNight.svelte) -->
 	<BgNight scene="base" {...parallax} />
+	<!-- mist, the searchlight, a cloud over the moon, a big win's abduction (BgEvents.svelte) -->
+	<BgEvents scene="base" {...parallax} />
 </FadeContainer>
 
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgFeature" {...parallax} />
 	<BgProps specs={BG_FEATURE_PROPS} plate="gbBgFeature" {...parallax} />
 	<BgNight scene="feature" {...parallax} />
+	<BgEvents scene="feature" {...parallax} />
 </FadeContainer>
 
 <BowlingScoreboards {parallax} />

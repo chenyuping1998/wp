@@ -6,13 +6,11 @@
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import config from '../game/config';
 	import InkNumber from './InkNumber.svelte';
-	import PropMesh from './PropMesh.svelte';
-	import { LOGO_BOARD } from '../game/meshWin';
 
 	const context = getContext();
 	const layout = $derived(context.stateLayoutDerived.mainLayout());
 	const stacked = $derived(layout.width / layout.height < 1.2);
-	const logoWidth = $derived(Math.min(layout.width * 0.82, 680));
+	const logoWidth = $derived(Math.min(layout.width * 0.82, 760)); // 680 -> 760 for the free-standing wordmark (2026-10-31)
 	const cardW = $derived(stacked ? layout.width * 0.87 : Math.min(layout.width * 0.25, 490));
 	const cardH = $derived(stacked ? layout.height * 0.19 : Math.min(layout.height * 0.57, cardW * 1.38));
 	const panels = [
@@ -37,9 +35,11 @@
 </script>
 
 <MainContainer>
-	<Container x={layout.width * 0.5} y={layout.height * (stacked ? 0.115 : 0.15)} rotation={0.006 * Math.sin(t / 2900 * Math.PI * 2)}>
-		<!-- its lantern swings on its hook (game/meshWin/logoBoard.ts) -->
-		<PropMesh spec={LOGO_BOARD} env={{ t }} anchor={0.5} width={logoWidth} height={logoWidth * 0.375} />
+	<!-- the free-standing jade wordmark (design/build_logo_wordmark.py, 2026-10-31).
+	     The board it replaced swayed on a sine and swung its painted lantern;
+	     a title standing on its own holds still. -->
+	<Container x={layout.width * 0.5} y={layout.height * (stacked ? 0.115 : 0.15)}>
+		<Sprite key="v8LogoBoard" anchor={0.5} width={logoWidth} height={logoWidth * 0.375} />
 	</Container>
 	{#each panels as panel, i}
 		{@const cx = stacked ? layout.width * 0.5 : layout.width * (0.23 + i * 0.27)}

@@ -3,13 +3,14 @@ import { MeshAttachment, type TextureAtlasRegion, type Slot } from '@esotericsof
 import { parseMedusaRig, createMedusaPlayer } from './medusaRigCore';
 import rigJson from './medusaRigData.json';
 import atlasText from './medusaRigAtlas.txt?raw';
+import type {CharacterSoundMark} from './characterSoundDesign';
 
 /** Official Spine 4.3 poses, rendered through this app's existing Pixi version.
  * This avoids replacing the shared 4.2 loader or installing a second Pixi renderer.
  * Our authored skeleton uses mesh attachments only, normal alpha and no clipping.
  */
-export function createMedusaRigScene(pages: Record<string, Texture>, onSnakeFidget?: (index: number) => void) {
-	const { data, atlas } = parseMedusaRig(rigJson, atlasText), player = createMedusaPlayer(data,onSnakeFidget);
+export function createMedusaRigScene(pages: Record<string, Texture>, onSnakeFidget?: (index: number) => void,onSound?:(mark:CharacterSoundMark)=>void) {
+	const { data, atlas } = parseMedusaRig(rigJson, atlasText), player = createMedusaPlayer(data,onSnakeFidget,onSound);
 	const root = new Container(); root.eventMode = 'none'; root.label = 'Medusa / Spine 4.3 / nine independent snakes';
 	const cache = new Map<MeshAttachment,{ mesh: Mesh; geometry: MeshGeometry; positions: Float32Array; world: Float32Array }>();
 	let portrait = false, night = false, disposed = false;
@@ -53,6 +54,7 @@ export function createMedusaRigScene(pages: Record<string, Texture>, onSnakeFidg
 		setFreegame(value: boolean) { night=value;player.setFreegame(value); },
 		setReducedMotion(value: boolean) { player.setReducedMotion(value);update(0); },
 		play(name: string,hold=false,rate=1) { return player.play(name,hold,rate); },
+		returnToRest() { player.returnToRest(); },
 		reset() { player.reset();update(0); },
 		destroy() { if(disposed)return;disposed=true;player.destroy();root.destroy({children:true});for(const item of cache.values())item.geometry.destroy();cache.clear();atlas.dispose(); },
 	};

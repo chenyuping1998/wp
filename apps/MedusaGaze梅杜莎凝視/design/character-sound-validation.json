@@ -1,0 +1,100 @@
+{
+  "version": 9,
+  "normalizedVolleyFlight": true,
+  "quietInterfaceCues": 3,
+  "passed": true,
+  "eventDriven": true,
+  "clips": 20,
+  "eventCount": 60,
+  "maxDriftMs": 8.333333333333318,
+  "threeTurboTiers": "Shared unscaled character clock; MG and FG native turbo variants are identical",
+  "timeScaleReplay": true,
+  "cancelledCastSounds": false,
+  "reducedMotionSounds": false,
+  "mouthCoversCastVoice": true,
+  "audioFiles": 65,
+  "newFoleyCues": 5,
+  "smallReactionVoiceCooldownMs": 3500,
+  "authoredClips": [
+    {
+      "name": "gaze",
+      "events": 7
+    },
+    {
+      "name": "gaze_turbo",
+      "events": 7
+    },
+    {
+      "name": "fg_gaze",
+      "events": 5
+    },
+    {
+      "name": "fg_gaze_turbo",
+      "events": 5
+    },
+    {
+      "name": "gaze_dud",
+      "events": 1
+    },
+    {
+      "name": "react_small",
+      "events": 3
+    },
+    {
+      "name": "fg_trigger",
+      "events": 2
+    },
+    {
+      "name": "win_big",
+      "events": 4
+    },
+    {
+      "name": "win_max",
+      "events": 4
+    },
+    {
+      "name": "fg_end",
+      "events": 2
+    },
+    {
+      "name": "idle_fidget",
+      "events": 2
+    },
+    {
+      "name": "snake_fidget_1",
+      "events": 2
+    },
+    {
+      "name": "snake_fidget_2",
+      "events": 2
+    },
+    {
+      "name": "snake_fidget_3",
+      "events": 2
+    },
+    {
+      "name": "snake_fidget_4",
+      "events": 2
+    },
+    {
+      "name": "snake_fidget_5",
+      "events": 2
+    },
+    {
+      "name": "snake_fidget_6",
+      "events": 2
+    },
+    {
+      "name": "snake_fidget_7",
+      "events": 2
+    },
+    {
+      "name": "snake_fidget_8",
+      "events": 2
+    },
+    {
+      "name": "snake_fidget_9",
+      "events": 2
+    }
+  ]
+}

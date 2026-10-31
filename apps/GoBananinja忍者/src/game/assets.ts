@@ -438,9 +438,9 @@
 		type: 'spriteSheet',
 		src: new URL('../../assets/sprites/goBananinjaWinShuriken/shuriken.json', import.meta.url).href,
 	},
-	sound: {
-		type: 'audio',
-		src: new URL('../../assets/audio/sounds.json', import.meta.url).href,
-		preload: true,
-	},
+	gbFeatureBar: { type: 'sprite', src: new URL('../../assets/sprites/featureUiV2/bar.png', import.meta.url).href, preload: true },
+	gbFeatureButton: { type: 'sprite', src: new URL('../../assets/sprites/featureUiV2/button.png', import.meta.url).href, preload: true },
+	gbFeatureButtonActive: { type: 'sprite', src: new URL('../../assets/sprites/featureUiV2/button_active.png', import.meta.url).href, preload: true },
+	gbFeatureSpin: { type: 'sprite', src: new URL('../../assets/sprites/featureUiV2/spin.png', import.meta.url).href, preload: true },
+	gbFeatureTicker: { type: 'sprite', src: new URL('../../assets/sprites/featureUiV2/ticker.png', import.meta.url).href, preload: true },
 } as const;

@@ -1,0 +1,230 @@
+{
+  "scope": "120Hz official Spine core replay. Snout excursion is measured in the character head local space, excluding whole-character breathing; jaw range is local.",
+  "snakes": [
+    {
+      "index": 1,
+      "modes": [
+        {
+          "clip": "idle",
+          "headExcursionRigPixels": 15.624193352269923,
+          "jawRangeDegrees": 12
+        },
+        {
+          "clip": "snake_fidget_1",
+          "headExcursionRigPixels": 40.00424410383175,
+          "jawRangeDegrees": 13
+        },
+        {
+          "clip": "gaze",
+          "headExcursionRigPixels": 54.35296884505666,
+          "jawRangeDegrees": 11.999609822706418
+        },
+        {
+          "clip": "fg_gaze",
+          "headExcursionRigPixels": 54.35296884505666,
+          "jawRangeDegrees": 11.999299786567605
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "modes": [
+        {
+          "clip": "idle",
+          "headExcursionRigPixels": 19.00783571945227,
+          "jawRangeDegrees": 12
+        },
+        {
+          "clip": "snake_fidget_2",
+          "headExcursionRigPixels": 41.63573577957413,
+          "jawRangeDegrees": 13
+        },
+        {
+          "clip": "gaze",
+          "headExcursionRigPixels": 57.6095576592903,
+          "jawRangeDegrees": 11.999661008306674
+        },
+        {
+          "clip": "fg_gaze",
+          "headExcursionRigPixels": 57.6095576592903,
+          "jawRangeDegrees": 11.999391905569297
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "modes": [
+        {
+          "clip": "idle",
+          "headExcursionRigPixels": 13.9019952853034,
+          "jawRangeDegrees": 12
+        },
+        {
+          "clip": "snake_fidget_3",
+          "headExcursionRigPixels": 41.0069024892451,
+          "jawRangeDegrees": 13
+        },
+        {
+          "clip": "gaze",
+          "headExcursionRigPixels": 56.13389600201674,
+          "jawRangeDegrees": 11.999699614203436
+        },
+        {
+          "clip": "fg_gaze",
+          "headExcursionRigPixels": 56.13389600201674,
+          "jawRangeDegrees": 11.999469794551842
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "modes": [
+        {
+          "clip": "idle",
+          "headExcursionRigPixels": 15.285311704859481,
+          "jawRangeDegrees": 12
+        },
+        {
+          "clip": "snake_fidget_4",
+          "headExcursionRigPixels": 38.443670553131014,
+          "jawRangeDegrees": 13.016528801043421
+        },
+        {
+          "clip": "gaze",
+          "headExcursionRigPixels": 51.776218098988046,
+          "jawRangeDegrees": 11.999773341918058
+        },
+        {
+          "clip": "fg_gaze",
+          "headExcursionRigPixels": 51.776218098988046,
+          "jawRangeDegrees": 11.999593256813085
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "modes": [
+        {
+          "clip": "idle",
+          "headExcursionRigPixels": 18.07663720402381,
+          "jawRangeDegrees": 12
+        },
+        {
+          "clip": "snake_fidget_5",
+          "headExcursionRigPixels": 40.72884333788214,
+          "jawRangeDegrees": 13.016528801043421
+        },
+        {
+          "clip": "gaze",
+          "headExcursionRigPixels": 55.65596560841199,
+          "jawRangeDegrees": 11.999478340144378
+        },
+        {
+          "clip": "fg_gaze",
+          "headExcursionRigPixels": 55.65596560841199,
+          "jawRangeDegrees": 11.99840463747384
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "modes": [
+        {
+          "clip": "idle",
+          "headExcursionRigPixels": 13.530209745814275,
+          "jawRangeDegrees": 25
+        },
+        {
+          "clip": "snake_fidget_6",
+          "headExcursionRigPixels": 38.97246956534264,
+          "jawRangeDegrees": 22.100000381469727
+        },
+        {
+          "clip": "gaze",
+          "headExcursionRigPixels": 52.78872214288506,
+          "jawRangeDegrees": 25.999724721981494
+        },
+        {
+          "clip": "fg_gaze",
+          "headExcursionRigPixels": 52.78872214288506,
+          "jawRangeDegrees": 25.999506050575917
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "modes": [
+        {
+          "clip": "idle",
+          "headExcursionRigPixels": 15.74071938242526,
+          "jawRangeDegrees": 25
+        },
+        {
+          "clip": "snake_fidget_7",
+          "headExcursionRigPixels": 40.25103566681551,
+          "jawRangeDegrees": 22.100000381469727
+        },
+        {
+          "clip": "gaze",
+          "headExcursionRigPixels": 54.80157233670196,
+          "jawRangeDegrees": 25.99745933600272
+        },
+        {
+          "clip": "fg_gaze",
+          "headExcursionRigPixels": 54.80157233670193,
+          "jawRangeDegrees": 25.995094588791574
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "modes": [
+        {
+          "clip": "idle",
+          "headExcursionRigPixels": 17.444725623440988,
+          "jawRangeDegrees": 25
+        },
+        {
+          "clip": "snake_fidget_8",
+          "headExcursionRigPixels": 38.555247999472215,
+          "jawRangeDegrees": 22.100000381469727
+        },
+        {
+          "clip": "gaze",
+          "headExcursionRigPixels": 52.05362883005819,
+          "jawRangeDegrees": 25.999669806393356
+        },
+        {
+          "clip": "fg_gaze",
+          "headExcursionRigPixels": 52.05362883005819,
+          "jawRangeDegrees": 25.99941022458927
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "modes": [
+        {
+          "clip": "idle",
+          "headExcursionRigPixels": 13.534776692326854,
+          "jawRangeDegrees": 25
+        },
+        {
+          "clip": "snake_fidget_9",
+          "headExcursionRigPixels": 39.82673929968042,
+          "jawRangeDegrees": 22.100000381469727
+        },
+        {
+          "clip": "gaze",
+          "headExcursionRigPixels": 54.08478872398518,
+          "jawRangeDegrees": 25.99766077595305
+        },
+        {
+          "clip": "fg_gaze",
+          "headExcursionRigPixels": 54.08478872398518,
+          "jawRangeDegrees": 25.99581100890117
+        }
+      ]
+    }
+  ]
+}

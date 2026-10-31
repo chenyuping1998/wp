@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Popup } from 'components-shared';
-	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal, LEGAL_NOTICE } from 'state-shared';
 
 	import { base } from '$app/paths';
 
+	import TempleInfoShell from './TempleInfoShell.svelte';
+	import TempleGuide from './TempleGuide.svelte';
 	import config from '../../game/config';
 	import { socialTerms } from '../../game/socialTerms';
 	import { MEDUSA_GAZE_BET_MODE_META } from '../../game/betModeMeta';
@@ -122,8 +122,8 @@
 	type BetMode = { cost?: number; rtp?: number; max_win?: number };
 	const modeRows = (
 		[
-			['Base game', 'base', `Every spin — or land ${fs.trigger} or more Aegis`],
-			['Free Spins', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}×`],
+			['Base game', 'base', 'Standard play'],
+			['Free Spins', 'bonus', `${fs.trigger}+ Aegis, or ${entryVerb.toLowerCase()} for ${config.betModes?.bonus?.cost}×`],
 		] as const
 	).map(([label, key, entry]) => {
 		const mode = config.betModes?.[key] as BetMode | undefined;
@@ -137,11 +137,11 @@
 </script>
 
 {#if stateModal.modal?.name === 'gameRules'}
-	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
+	<TempleInfoShell view="rules" chapters={[{id:'how',label:'Quick guide'},{id:'gaze',label:'The gaze'},{id:'free-spins',label:'Free Spins'},{id:'aegis',label:'Aegis'},{id:'controls',label:'Controls'},{id:'rtp',label:'RTP & modes'}]}>
 		<div class="wp-rules">
-			<h2>MEDUSA GAZE — GAME RULES</h2>
+			<TempleGuide/>
 
-			<section class="wp-card">
+			<section class="wp-card" data-chapter="how-detail">
 				<h3><span class="wp-accent-bar"></span>How to play</h3>
 				<p>
 					Medusa Gaze is a {reelCount}&times;{rowCount} {T.payAnywhere} video slot. There are no
@@ -154,7 +154,7 @@
 				</p>
 			</section>
 
-			<section class="wp-card">
+			<section class="wp-card" data-chapter="controls">
 				<h3><span class="wp-accent-bar"></span>Controls</h3>
 				<ul class="wp-controls">
 					{#each controls as control (control.name)}
@@ -184,14 +184,14 @@
 				<p class="wp-modes-note">Where a win presentation is playing, tapping anywhere skips to the end of it.</p>
 			</section>
 
-			<section class="wp-card">
+			<section class="wp-card" data-chapter="modes">
 				<h3><span class="wp-accent-bar"></span>Game modes</h3>
 				{#each modeCards as mode (mode.name)}
 					<p><strong>{mode.name}</strong> &mdash; {T.costLabel}: {mode.price}. {mode.text}</p>
 				{/each}
 			</section>
 
-			<section class="wp-card">
+			<section class="wp-card" data-chapter="rtp">
 				<h3><span class="wp-accent-bar"></span>RTP &amp; Max Win by mode</h3>
 				<!-- scrolls sideways rather than clipping on the narrowest layouts -->
 				<div class="wp-modes-scroll">
@@ -222,10 +222,10 @@
 				</p>
 			</section>
 
-			<section class="wp-card">
+			<section class="wp-card" data-chapter="gaze">
 				<h3><span class="wp-accent-bar"></span>Medusa's multiplier</h3>
 				<p>
-					When a spin's chain has finished, Medusa may lower her sunglasses and throw a multiplier.
+					When a spin's chain has finished, Medusa may summon and throw a multiplier.
 					<strong>It only counts if that spin had a win from the chain.</strong> If the spin had no
 					win, the throw shatters and nothing changes.
 				</p>
@@ -235,7 +235,7 @@
 				</p>
 			</section>
 
-			<section class="wp-card">
+			<section class="wp-card" data-chapter="free-spins">
 				<h3><span class="wp-accent-bar"></span>Free Spins &mdash; the running total</h3>
 				<p>
 					In Free Spins Medusa can throw up to {medusa.freeMaxThrows} multipliers on one spin, worth
@@ -251,7 +251,7 @@
 				<p>The running total starts at 0, never goes down during the feature, and resets when the feature ends.</p>
 			</section>
 
-			<section class="wp-card">
+			<section class="wp-card" data-chapter="aegis">
 				<h3><span class="wp-accent-bar"></span>Aegis &mdash; Scatter</h3>
 				<p>
 					The Aegis shield can land anywhere and is never removed by a chain. If {scatterPays[0]?.count ?? 4}
@@ -263,7 +263,7 @@
 				</p>
 			</section>
 
-			<section class="wp-card">
+			<section class="wp-card" data-chapter="retrigger">
 				<h3><span class="wp-accent-bar"></span>Retriggers</h3>
 				<p>
 					During Free Spins, {fs.retrigger} or more Aegis on the board when a chain ends add
@@ -273,7 +273,7 @@
 				</p>
 			</section>
 
-			<section class="wp-card">
+			<section class="wp-card" data-chapter="bonus">
 				<h3><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
 				<p>
 					Instead of waiting for the Aegis, you can {T.buy} direct entry into Free Spins for
@@ -283,7 +283,7 @@
 				</p>
 			</section>
 
-			<section class="wp-card">
+			<section class="wp-card" data-chapter="max">
 				<h3><span class="wp-accent-bar"></span>Max Win</h3>
 				<p>
 					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet} in every
@@ -295,7 +295,7 @@
 			<!-- The legal notice is shared (state-shared/src/legal.ts) — render the constant, never retype it. -->
 			<p class="wp-foot">{LEGAL_NOTICE}</p>
 		</div>
-	</Popup>
+	</TempleInfoShell>
 {/if}
 
 <style lang="scss">
@@ -559,4 +559,15 @@
 		text-align: center;
 		line-height: 1.45;
 	}
-</style>
+
+ /* App-owned temple archive; paragraphs retain a readable floor on phones. */
+ .wp-rules{box-sizing:border-box;width:100%;max-width:none;max-height:none;overflow:visible;padding:26px;background:transparent;border:0;border-radius:0;box-shadow:none;animation:none;text-align:left;color:#173e43;gap:18px}
+ .wp-card{background:#fffaf0;border:1px solid #cec3a4;border-radius:9px;padding:20px;box-shadow:0 3px 0 #ded4bc;animation:none;scroll-margin-top:18px}
+ .wp-card h3{font:400 17px/1.35 var(--gb-display-font);color:#173e43;letter-spacing:0;margin:0 0 13px}.wp-card p,.wp-tiers li,.wp-control-text{font-size:14px;line-height:1.7;color:#3b534d;opacity:1}.wp-card p{margin:9px 0}.wp-accent-bar{background:#b89b50}
+ .wp-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;list-style:none;padding:0}.wp-controls li{display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;padding:12px;background:#eee8d8;border:1px solid #d3c9ac;border-radius:7px}.wp-control-icons{justify-content:center;gap:5px;min-width:0;width:auto}.wp-icon-plate{width:36px;height:36px}.wp-control-name{color:#173e43;font-size:14px}.wp-control-text{font-size:12.5px;line-height:1.6}.wp-readout{font-size:12px;color:#173e43}.wp-modes-note,.wp-foot{font-size:12px;line-height:1.7;color:#5a6a60}.wp-modes{font-size:13px}.wp-modes th{color:#173e43;background:#e5ddc8}.wp-tiers li::marker{color:#987528}
+ @media(max-width:700px){.wp-controls{grid-template-columns:1fr}}
+ @media(max-width:600px){.wp-rules{padding:17px;gap:15px}.wp-card{padding:16px}.wp-card h3{font-size:15px}.wp-card p,.wp-tiers li{font-size:13px;line-height:1.7}.wp-controls li{grid-template-columns:76px minmax(0,1fr);padding:10px}.wp-foot{font-size:11px}}
+
+
+ @media(max-width:600px){.wp-controls li{display:block}.wp-control-icons{float:left;min-height:36px;margin:0 10px 7px 0;max-width:82px}.wp-control-name{min-height:36px;line-height:1.5;padding-top:7px}.wp-control-text{clear:both;display:block;font-size:13px;line-height:1.65}.wp-icon-plate{width:32px;height:32px}}
+ </style>

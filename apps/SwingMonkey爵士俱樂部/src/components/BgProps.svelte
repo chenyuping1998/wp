@@ -13,10 +13,12 @@
 	import { Mesh, MeshGeometry, Container, type Texture } from 'pixi.js';
 	import { getContextApp, getContextParent } from 'pixi-svelte';
 	import { onMount } from 'svelte';
+	import { stateBetDerived } from 'state-shared';
 
 	import { getContext } from '../game/context';
 	import { buildRig, skin } from '../game/meshWin/meshRig';
 	import { BG_CANVAS, type BgPropSpec } from '../game/meshWin/bgProps';
+	import { JAZZ_HITS, attackEnergy } from '../game/meshWin/phrase';
 
 	type Props = {
 		specs: BgPropSpec[];
@@ -34,10 +36,13 @@
 	const parent = getContextParent();
 
 	let gustAt = -1;
+	const phrases = new Map<string, { at: number; speed: number }>();
 	context.eventEmitter.subscribeOnMount({
 		winLinesShow: () => {
 			gustAt = performance.now();
 		},
+		soundInstrumentPhrase: ({ symbol }) => phrases.set(symbol, { at: performance.now(), speed: stateBetDerived.timeScale() }),
+		boardWinAnimCancel: () => { phrases.clear(); gustAt = -1; },
 	});
 
 	// added in sibling order, straight after the background's sprite
@@ -60,6 +65,10 @@
 		let built = false;
 
 		const tick = () => {
+			// Only the visible plate needs vertex updates. Both remain mounted for
+			// the crossfade; their absolute clocks keep the incoming pose continuous.
+			const active = context.stateGame.gameType === 'freegame' ? 'gbBgFeature' : 'gbBgBase';
+			if (built && props.plate !== active && performance.now() - switchedAt > 1100) return;
 			if (!built) {
 				// the plate may not be loaded when the background first mounts
 				const texture = app.stateApp.loadedAssets?.[props.plate] as Texture | undefined;
@@ -71,18 +80,33 @@
 				built = true;
 			}
 			const now = performance.now();
-			const env = { t: now - started, gustT: gustAt < 0 ? -1 : now - gustAt };
+			let beat = 0;
+			for (const [symbol, phrase] of phrases) {
+				const age = (now - phrase.at) * phrase.speed;
+				if (age > 1440) { phrases.delete(symbol); continue; }
+				beat = Math.min(1, beat + attackEnergy(age, JAZZ_HITS[symbol]));
+			}
+			const env = { t: now - started, gustT: gustAt < 0 ? -1 : now - gustAt, beat };
 			for (const r of rigs) {
 				skin(r.rig, r.spec.drive(r.rig, env), r.spec.feetY, r.positions);
 				r.geometry!.getBuffer('aPosition').update();
 			}
 		};
 		const ticker = app.stateApp.pixiApplication?.ticker;
-		ticker?.add(tick);
+		let lastMode = context.stateGame.gameType;
+		let switchedAt = performance.now();
+		const update = () => {
+			if (lastMode !== context.stateGame.gameType) {
+				lastMode = context.stateGame.gameType;
+				switchedAt = performance.now();
+			}
+			tick();
+		};
+		ticker?.add(update);
 		tick();
 
 		return () => {
-			ticker?.remove(tick);
+			ticker?.remove(update);
 			for (const r of rigs) r.geometry?.destroy();
 		};
 	});

@@ -3,9 +3,9 @@
 	import { FadeContainer } from 'components-pixi';
 	import { SECOND } from 'constants-shared/time';
 	import { stateBet } from 'state-shared';
-	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import { presentation } from '../game/presentation.svelte';
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 	import GridMesh from './GridMesh.svelte';
 
@@ -14,7 +14,7 @@
 	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame' && !isSuperspin);
 	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame' && !isSuperspin);
 
-	let clock = $state(0);
+	const clock = $derived(presentation.clock);
 
 	// ── slow ken-burns drift over a small overscan, so the still jungle art
 	// breathes instead of sitting dead behind the reels ────────────────────────
@@ -72,29 +72,24 @@
 		};
 	};
 
-	onMount(() => {
-		const id = setInterval(() => {
-			clock += 0.016;
-		}, 16);
-		return () => clearInterval(id);
-	});
+
 </script>
 
 <Rectangle {...context.stateLayoutDerived.canvasSizes()} backgroundColor={0x0d0f05} zIndex={-3} />
 
 <!-- 金色日出叢林 base-game background -->
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
-	<GridMesh assetKey="gbBgBase" kind="background" name="base" seconds={clock} {...parallax} />
+	<GridMesh assetKey="gbBgBase" kind="background" name="base" seconds={clock} energy={presentation.energy} {...parallax} />
 </FadeContainer>
 
 <!-- 烈日突擊 free-game background -->
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
-	<GridMesh assetKey="gbBgFeature" kind="background" name="feature" seconds={clock} {...parallax} />
+	<GridMesh assetKey="gbBgFeature" kind="background" name="feature" seconds={clock} energy={presentation.energy} {...parallax} />
 </FadeContainer>
 
 <!-- 夜襲 superspin background -->
 <FadeContainer show={isSuperspin} duration={SECOND} zIndex={-1}>
-	<GridMesh assetKey="gbBgSuperspin" kind="background" name="superspin" seconds={clock} {...parallax} />
+	<GridMesh assetKey="gbBgSuperspin" kind="background" name="superspin" seconds={clock} energy={presentation.energy} {...parallax} />
 </FadeContainer>
 
 <!-- the petals, in front of whichever scene is showing (silver sparks in the

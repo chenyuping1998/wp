@@ -8,6 +8,7 @@
 	import TransitionAnimation from './TransitionAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import FeatureIntro from './FeatureIntro.svelte';
+	import JazzWordmark from './JazzWordmark.svelte';
 
 	type Props = {
 		onloaded: () => void;
@@ -34,7 +35,7 @@
 
 	// The same free-standing title stays on both loading and feature pages.
 	// the free-standing title (no plate) only fills ~60% of its canvas: drawn wider than the board was
-	const logoWidth = $derived(Math.min(context.stateLayoutDerived.mainLayout().width * 0.92, 880));
+	const logoWidth = $derived(Math.min(context.stateLayoutDerived.mainLayout().width * 0.82, 720));
 
 	// the 16:9 plate fills the screen at its own aspect, cropped about the centre
 	// (see Background.svelte) — sized straight to the layout it was squeezed in
@@ -75,14 +76,10 @@
 
 		<!-- the title stands on the stage by itself (no plate, 2026-10-18): a warm
 		     spotlight pool behind it lifts it off the curtains -->
-		<Sprite key="fxSoftGlow" anchor={0.5} blendMode="add" tint={0xffd9a0} alpha={0.26}
-			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.16}
-			width={logoWidth * 1.3} height={logoWidth * 0.62} />
-		<Sprite key="v8LogoBoard" anchor={0.5}
-			x={context.stateLayoutDerived.mainLayout().width * 0.5}
-			y={context.stateLayoutDerived.mainLayout().height * 0.16}
-			width={logoWidth} height={logoWidth * 0.375} />
+		{#if !context.stateApp.loaded}
+			<JazzWordmark x={context.stateLayoutDerived.mainLayout().width * 0.5}
+				y={context.stateLayoutDerived.mainLayout().height * 0.13} width={logoWidth} />
+		{/if}
 	</MainContainer>
 </FadeContainer>
 

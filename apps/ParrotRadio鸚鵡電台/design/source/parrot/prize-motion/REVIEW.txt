@@ -1,0 +1,1 @@
+V5 prize mesh review: actual partPerformance/partVertex helpers used by the game. GIF runs at 25fps as slow visual QA; real game clip is 640ms / scatter 820ms. Component also supplies a short halo and two restrained glints. Tested 6 prize types at 41 phases. PNG includes 0/.275/.55/.85 phases.

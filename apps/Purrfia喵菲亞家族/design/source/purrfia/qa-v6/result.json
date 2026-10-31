@@ -1,0 +1,10 @@
+{
+  "fixture": "baseWin",
+  "idle": true,
+  "winBook": 370,
+  "balance": 1002.7,
+  "pose": "push_monocle @ 50%",
+  "viewport": "1280x720",
+  "consoleErrors": [],
+  "boxFrameRegression": "box-frame-regression.json"
+}

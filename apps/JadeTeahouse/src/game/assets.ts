@@ -120,6 +120,8 @@ export default {
 	v8CutinPaper: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/cutin_paper.png',import.meta.url).href,preload:true},
 	v8WinMaxDecor: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/win_max_decor.png',import.meta.url).href,preload:true},
 	v8FgIntro: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_intro.png',import.meta.url).href,preload:true},
+	// the free-spin count's cinnabar chop (design/build_fg_seal.py, 2026-10-31)
+	v8FgSeal: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_seal.png',import.meta.url).href,preload:true},
 	v8FgIntroDecor: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_intro_decor.png',import.meta.url).href,preload:true},
 	v8FgTotal: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_total.png',import.meta.url).href,preload:true},
 	v8FgTotalDecor: {type:'sprite',src:new URL('../../assets/sprites/sushiV8/fg_total_decor.png',import.meta.url).href,preload:true},
@@ -172,6 +174,15 @@ export default {
 	fxGlow: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/sushiFx/fx_glow.png', import.meta.url).href,
+		preload: true,
+	},
+	// fx_glow above is a HARD-edged disc (opaque to half its radius, then
+	// nothing), right for the small impact dots and wrong for a halo: behind a
+	// plaque it reads as a solid ellipse. Halos use this falloff instead
+	// (from Swing Monkey, 2026-10-18).
+	fxSoftGlow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiFx/fx_soft_glow.png', import.meta.url).href,
 		preload: true,
 	},
 	fxStar: {
@@ -229,6 +240,38 @@ export default {
 	},
 	// The platform skin's Buy Bonus: a slab of the royals' stone, and the same
 	// slab splitting for the hover layer. See design/generate_ui_plates.mjs.
+	// The Buy Bonus hand-scroll (design/build_buy_scroll.py, 2026-10-31): 0 is the
+	// plate at rest, half rolled; 1..5 open it, played once on hover.
+	gbUiBuyScroll0: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiUi/buy_scroll_0.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyScroll1: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiUi/buy_scroll_1.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyScroll2: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiUi/buy_scroll_2.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyScroll3: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiUi/buy_scroll_3.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyScroll4: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiUi/buy_scroll_4.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiBuyScroll5: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiUi/buy_scroll_5.png', import.meta.url).href,
+		preload: true,
+	},
 	gbUiBuyBonusStone: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/sushiUi/buybonus_plate.png', import.meta.url).href,

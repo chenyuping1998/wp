@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-26",
+  "revision": "nine-point-refinement",
+  "scope": "Local mock and authored-source review; no Stake Engine or live RGS verification",
+  "viewports": ["1280x720", "390x844", "320x568"],
+  "info": {"visibleCloseButton":true,"closeReturnedToMenu":true},
+  "selection": {"betSelected":"2.00", "autoSelected":"50", "ariaPressedConfirmed":true,"goldFillAndCheckmark":true,"phoneMinimumTargetHeight":44},
+  "contrast": {"menuNumbers":"Dark ink on cream; cream on teal option cells; dark ink on selected gold", "portraitReadouts":"Dark ink on cream Balance / Win / Bet plaques"},
+  "runtime": {"book":"baseThrow","bet":"$2.00","win":"$25.00","completedAndReturnedToSpin":true,"unexpectedErrors":0},
+  "betHover": "Gold caption and chevron with full-cell highlight observed after a disabled hover was retained through the end of a mock round",
+  "buyBonus": "Both text lines fit the shield's cream area; text and art now share the hover transform",
+  "character": {"breathRigPixels":24.711200850130354,"groundContactFixed":true,"independentSnakeChains":9,"animatedJointsPerSnake":5,"threatStrikeClips":9,"officialCoreValidation":"source/medusagaze/cast/spine43-validation.json","posesInspected":["idle 0.000 s","idle 1.800 s","snake_fidget_1 0.575 s"]},
+  "audioSourceReview": {"stoneBreakGainIncrease":0.15,"orbBreakGainIncrease":0.15,"castingVocal":"One existing original synthesized nonverbal gasp per volley, 100 ms before release; not human voice acting","turboVoiceRate":1},
+  "background": ["Cloud drift", "Day and night animated flames", "26 garden-air motes and leaves", "3 passing birds", "Fixed architecture and board"],
+  "symbolSequence": ["Anticipation squash", "Hop", "Return to contact", "Petrify", "Crack tension", "Stone fragments", "Gravity drop"],
+  "proofs": ["_sheets/refinement_bet_selected.png","_sheets/refinement_auto_selected.png","_sheets/refinement_info_close.png","_sheets/refinement_settings.png","_sheets/refinement_bet_hover.png","_sheets/refinement_breath_rest.png","_sheets/refinement_breath_inhale.png","_sheets/refinement_snake_strike.png","_sheets/refinement_mobile390.png","_sheets/refinement_bet_mobile320.png"],
+  "newVideoGenerated":false,
+  "passed":true
+}

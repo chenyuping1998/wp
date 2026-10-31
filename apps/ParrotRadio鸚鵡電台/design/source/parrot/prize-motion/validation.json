@@ -1,0 +1,12 @@
+{
+  "kind": "parrot",
+  "frames": 41,
+  "partSamples": 533,
+  "minAreaRatio": 0.4452,
+  "folds": 0,
+  "reviewFps": 25,
+  "slowMotion": true,
+  "scope": "actual per-part performance and mesh helper used by the game; 6 prize types, 41 phases",
+  "performanceSha256": "a01d445d541d3036e5c5b1468b08bc7089e03ae0c40b2712baeb4705892809a6",
+  "componentSha256": "3c855f63f3763850e42da1ecac4a1905823aee3548f5af24c56248162f1863e6"
+}

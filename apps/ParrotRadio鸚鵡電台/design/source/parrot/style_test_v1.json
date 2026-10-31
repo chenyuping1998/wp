@@ -10,9 +10,9 @@
     1920,
     1080
   ],
-  "approval": "pending_user_review",
-  "productionInstalled": false,
+  "approval": "separate_review_waived_by_user",
+  "productionInstalled": true,
   "processing": "Canvas normalization only. Full generated original retained.",
-  "approvalSource": "PARROT_美術需求單.md section 1",
-  "uncertainty": "Squawk 的紅羽飽和度與大耳機比例是否合適；量產時旋鈕的 20 格 LED 會依程式座標精確定位。"
+  "approvalSource": "User explicitly said to continue without building a preview page; later requested brighter backgrounds.",
+  "uncertainty": "Live Stake Engine integration and subjective art/audio review remain external validation."
 }

@@ -35,6 +35,7 @@
 	import Mascot from './Mascot.svelte';
 	import Board from './Board.svelte';
 	import ReelDust from './ReelDust.svelte';
+	import BoardRhythm from './BoardRhythm.svelte';
 	import EntryReveal from './EntryReveal.svelte';
 	import ScatterBurst from './ScatterBurst.svelte';
 	import ComicPop from './ComicPop.svelte';
@@ -127,6 +128,7 @@
 		<MainContainer>
 			<Board />
 			<ReelDust />
+			<BoardRhythm />
 			<BanditCollect />
 			<Anticipations />
 			<ScatterBurst />

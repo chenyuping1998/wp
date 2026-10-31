@@ -1,0 +1,22 @@
+{
+  "version": 10,
+  "passed": true,
+  "values": [
+    2,
+    25,
+    100,
+    500
+  ],
+  "sequence": "350ms charge; release and 600ms flight; hit at 950ms; 250ms gap between examples",
+  "perExampleNormalization": false,
+  "auditionBusGain": 0.68,
+  "peakDbFS": [
+    -10.81,
+    -8.73,
+    -7.82,
+    -6.92,
+    -5.86
+  ],
+  "lastPeakCase": "8/100/500 three-orb volley with 200ms stagger",
+  "scope": "Isolated FX mix; real gameplay also contains voice/music and uses its existing limiter. This is not an end-to-end device loudness measurement."
+}

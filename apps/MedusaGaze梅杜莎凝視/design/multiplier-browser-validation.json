@@ -1,14 +1,92 @@
 {
-  "date": "2026-10-25",
+  "date": "2026-10-26",
   "scope": "Local development mock playback and shared-renderer frame inspection; no Stake Engine or live RGS validation",
-  "signatureVersion": 3,
-  "baseGame": {"book": "baseThrow", "orbValues": [25], "baseWinBookAmount": 50, "finalWinBookAmount": 1250, "completedAndReturnedToSpin": true},
-  "wastedMultiplier": {"book": "baseThrowWasted", "trueGrayscaleMaterial": true, "completedAndReturnedToSpin": true, "runtimeErrors": 0},
-  "freeGame": {"book": "bonusBigTotal", "spins": 15, "cumulativeMultiplier": 110, "outro": "$198.90", "returnedToMainGame": true},
-  "layouts": ["1280x720", "390x844", "320x568"],
-  "frameInspection": ["Pupil-registered green focus and twin beams", "Travelling mineral front", "Three upright multiplier labels and cumulative plaque", "Turbo x100", "Score-frame contact flash", "True grayscale stone fragments and dud reaction", "Large multiplier, multiplication equation and final amount"],
+  "signatureVersion": 6,
+  "baseGame": {
+    "book": "baseThrow",
+    "orbValues": [
+      25
+    ],
+    "baseWinBookAmount": 50,
+    "finalWinBookAmount": 1250,
+    "displayedWin": "$12.50",
+    "completedAndReturnedToSpin": true,
+    "runtimeErrors": 0,
+    "turboTimingCheckedBy": "16 deterministic comparisons in multiplier-performance-validation.json"
+  },
+  "signatureTiming": {
+    "uniformAcrossThreeTurboTiers": true,
+    "deepTimingComparisons": 16,
+    "validation": "multiplier-performance-validation.json",
+    "speedDifferences": "Board drop and tumble choreography only; character, eyes, magic, orb, audio, count and result hold use the same timing"
+  },
+  "priorRegressionEvidence": {
+    "date": "2026-10-25",
+    "wastedMultiplier": {
+      "book": "baseThrowWasted",
+      "completedAndReturnedToSpin": true
+    },
+    "freeGame": {
+      "book": "bonusBigTotal",
+      "spins": 15,
+      "cumulativeMultiplier": 110,
+      "outro": "$198.90",
+      "returnedToMainGame": true
+    },
+    "note": "Full fifteen-spin feature verified before v4; v4 freegame paths checked through shared renderer and timing assertions."
+  },
+  "layouts": [
+    "1280x720",
+    "390x844",
+    "320x568"
+  ],
+  "frameInspection": [
+    "Emerald eye surfaces registered to both pupils",
+    "Twelve short radiating rays per eye and soft local bloom",
+    "Curved strands and converging motes gather the orb",
+    "Normal and TURBO 2 share the same stage at 1.320 seconds",
+    "Three upright multiplier labels and cumulative TOTAL plaque",
+    "True grayscale dud orb and reaction",
+    "Large multiplier, multiplication equation and final amount",
+    "Left ×N numeral flies to centre, meets base amount and emits foreground collision flash",
+    "FG three-orb total178 leaves plaque, collides and returns; example ends at $178.00",
+    "FG win_max glasses remain on forehead",
+    "Continuous breathing on spin start; full lower-body inhale and reversing tail swish",
+    "Soft layered clouds and independent tapered heat-driven braziers, verified in WebGPU game and WebGL preview",
+    "Flying multiplier uses ×N; casting and multiplication playback gains increased"
+  ],
   "unexpectedRuntimeErrors": 0,
-  "existingDiagnostics": "Two 15-second watchdog messages while the manual free-spin entry and exit panels waited for a click; both panels continued normally. Existing Pixi deprecation warnings remain.",
-  "screenshots": ["_sheets/multiplier_v3_gaze.png", "_sheets/multiplier_v3_readout.png", "_sheets/multiplier_v3_mobile_feature.png", "_sheets/multiplier_v3_mobile_return.png"],
-  "passed": true
+  "existingDiagnostics": "Existing Pixi deprecation warnings remain. Intermittent screenshot capture failures cleared after reloading the single mock game tab; all three speeds completed with no runtime errors.",
+  "presentationValidation": "presentation-browser-validation.json",
+  "screenshots": [
+    "_sheets/signature_v4_radiance.png",
+    "_sheets/signature_v4_orb.png",
+    "_sheets/signature_v4_turbo2_orb.png",
+    "_sheets/signature_v4_result.png",
+    "_sheets/signature_v4_game_turbo1.png",
+    "_sheets/revision5_fg_number_fly.png",
+    "_sheets/revision5_mg_collision.png",
+    "_sheets/revision5_fg_result.png",
+    "_sheets/revision6_multiplier_fly.png",
+    "_sheets/revision6_game_result.png"
+  ],
+  "passed": true,
+  "priorV4BaseGame": {
+    "book": "baseThrow",
+    "orbValues": [
+      25
+    ],
+    "baseWinBookAmount": 50,
+    "finalWinBookAmount": 1250,
+    "displayedWin": "$12.50",
+    "turboTiersChecked": [
+      0,
+      1,
+      2
+    ],
+    "completedAndReturnedToSpin": true,
+    "runtimeErrors": 0
+  },
+  "fivePointReview": "revision5-browser-validation.json",
+  "eightPointReview": "revision6-browser-validation.json"
 }

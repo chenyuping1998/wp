@@ -167,7 +167,7 @@
 		{#if topRung || levelPulse > 0}
 			<!-- a warm light behind the board: on each new rung, and held at the top
 			     one (additive, a direct sibling, nothing masked) -->
-			<Sprite key="fxGlow" anchor={0.5} x={W * 0.5} y={H * 0.45} blendMode="add" tint={0xe6c27a}
+			<Sprite key="fxSoftGlow" anchor={0.5} x={W * 0.5} y={H * 0.45} blendMode="add" tint={0xe6c27a}
 				width={W * 1.6} height={H * 1.5} alpha={Math.max(topRung ? 0.35 : 0, levelPulse * 0.7)} />
 		{/if}
 		<Sprite key="v8CounterPlate" width={W} height={H} />

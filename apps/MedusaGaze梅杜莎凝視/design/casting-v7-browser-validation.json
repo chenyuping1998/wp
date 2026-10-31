@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-29",
+  "version": 7,
+  "passed": true,
+  "scope": "Local mock replay and native Pixi/Spine review; no video or live RGS transaction.",
+  "character": {
+    "beats": [
+      "peek",
+      "raised casting palm and wrist gather",
+      "release flick",
+      "smug face and tail follow-through",
+      "return to continuous breath"
+    ],
+    "foregroundPalm": "Authored draw-order keys bring casting palm in front of snake curls; MG/FG and both turbo clips checked",
+    "clips": 24,
+    "visibleMeshFolds": 0,
+    "fgForeheadSamples": 1920
+  },
+  "orb": {
+    "chargeMs": 350,
+    "flightMs": 600,
+    "pullbackBoardPixels": 14,
+    "charge": "Growth overshoot then squeeze; continuous position and silhouette at release",
+    "path": "One serpentine bend along the existing cubic arc, with tangent-aligned stretch",
+    "wake": "Two counter-wound luminous strands, three drifting spark samples, orbital arcs and colour-matched corona",
+    "multiOrb": "Second and third sources fan apart by 104 board pixels; all numeral labels render after orb bodies",
+    "numberOrientation": "Upright",
+    "glowCleanup": "Owned glow sprites removed after each orb; reduced motion and repeated destroy pass"
+  },
+  "timing": {
+    "turboTierComparisons": 16,
+    "signatureEqualAcrossAllTiers": true,
+    "boardTumbleOnlyAccelerates": true
+  },
+  "browser": {
+    "normalMock": "baseThrow finished at WIN $12.50 and returned to idle",
+    "turbo2Mock": "Double-bolt state selected before replay; finished at WIN $12.50 and returned to idle",
+    "multiOrbReview": "FG three-orb native review at 1.350s: x8, x15 and x100 individually visible; at 6.500s total x178 / $178.00 and no residual orbs",
+    "flightReview": "MG flight at 1.750s with visible casting hand and smug recovery",
+    "consoleErrors": 0,
+    "proofs": [
+      "_sheets/casting_v7_20261029_fg_fan.png",
+      "_sheets/casting_v7_20261029_flight.png",
+      "_sheets/casting_v7_20261029_game_result.png",
+      "_sheets/casting_v7_20261029_turbo2_ready.png",
+      "_sheets/casting_v7_20261029_turbo2_result.png",
+      "_sheets/casting_v7_20261029_fg_result.png"
+    ]
+  },
+  "validation": {
+    "fullProductionBuild": "passed",
+    "changedGameSourceTypeErrors": 0,
+    "workspaceTypeErrors": 154,
+    "workspaceWarnings": 35,
+    "typeScope": "Workspace tool/config/dependency diagnostics remain; game sources have zero type errors"
+  }
+}

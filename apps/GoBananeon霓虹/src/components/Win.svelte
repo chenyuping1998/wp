@@ -51,7 +51,9 @@
 	let amount = $state(0);
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
-	let onCountUpComplete = $state(() => {});
+	const onCountUpComplete = () => {
+		context.eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' });
+	};
 	// the amount's mesh kicks (TextMesh): it bobs while it rolls, squashes as it lands
 	let rollAt = $state(-1);
 	let landAt = $state(-1);

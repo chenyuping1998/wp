@@ -50,7 +50,8 @@
 				const angle = (i / n) * Math.PI * 2;
 				const w = (Math.PI / n) * 0.42;
 				g.poly([0, 0, Math.cos(angle - w) * r, Math.sin(angle - w) * r, Math.cos(angle + w) * r, Math.sin(angle + w) * r]);
-				g.fill({ color: i % 2 ? b : a, alpha: 0.16 });
+				// 0.16 -> 0.08 as Swing (2026-10-18, user: the plaque lights were too bright)
+				g.fill({ color: i % 2 ? b : a, alpha: 0.08 });
 			}
 		}}
 	/>

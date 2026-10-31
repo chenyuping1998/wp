@@ -254,8 +254,8 @@
 						<!-- behind the plaque, over the scrim: never under a mask or filter -->
 						<Container x={context.stateGameDerived.boardLayout().x} y={context.stateGameDerived.boardLayout().y}>
 							<LightRays radius={bwFx * 0.95} alpha={rays} colors={rayColors} />
-							<Sprite key="fxGlow" anchor={0.5} blendMode="add" tint={rayColors[0]}
-								width={bwFx * 1.5} height={bwFx * BANNER_RATIO * 1.8} alpha={halo * 0.75} />
+							<Sprite key="fxSoftGlow" anchor={0.5} blendMode="add" tint={rayColors[0]}
+								width={bwFx * 1.5} height={bwFx * BANNER_RATIO * 1.8} alpha={halo * 0.4} />
 						</Container>
 					</MainContainer>
 				{/if}

@@ -12,7 +12,7 @@
  * medallion (123,128) r~97, head (132..176, 60..104) on the neck (150,108),
  * tail curling from (92,170) round to (90,125).
  */
-import { circle, flick, leap, polygon, polyline, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
+import { circle, flick, strongLeap, polygon, polyline, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
 
 const LEAP = { crouch: 120, rise: 340, fall: 760, land: 940, hop2: 1170, done: 1450 };
 
@@ -73,7 +73,7 @@ export const W: MeshWinSpec = {
 
 		// tossed like a coin: two spins at the top, edge-on and back (|cos|, so
 		// the face never mirrors)
-		const jump = leap(t, LEAP, 26);
+		const jump = strongLeap(t, LEAP, 40);
 		const turn = smoothstep((t - LEAP.rise + 80) / (LEAP.fall - LEAP.rise + 40));
 		jump.rigid.sx *= Math.max(0.12, Math.abs(Math.cos(2 * Math.PI * turn)));
 		// and lands rocking on its edge

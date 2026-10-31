@@ -92,8 +92,13 @@ const limits = {
   sfx_snake_yawn: 0.8,
   sfx_snakes_laugh: 1,
   sfx_gaze_charge: 0.3,
-  sfx_gaze_beam: 0.4,
-  sfx_orb_fly: 0.45,
+  sfx_orb_charge: 0.35,
+  sfx_orb_release: 0.16,
+  vo_medusa_cast: 0.46,
+  // v4: the requested readable radiance/gather and 600 ms orb flight replace
+  // the earlier short laser/fast-flight brief, at the same speed in all tiers.
+  sfx_gaze_beam: 0.76,
+  sfx_orb_fly: 0.60,
   sfx_orb_hit_s: 0.6,
   sfx_orb_hit_m: 0.6,
   sfx_orb_hit_l: 0.6,
@@ -214,5 +219,5 @@ for (const match of soundSource.matchAll(
 const { compile } = await import("svelte/compiler");
 compile(soundSource, { filename: "Sound.svelte", generate: "client" });
 console.log(
-  `OK: ${files.length} audio files / ${bytes.toLocaleString("en-US")} bytes; ${onsetChecks} SFX onsets <=5 ms; 57 PCM24 masters, finite levels, exact Ogg loops, cue targets, Svelte compilation`,
+  `OK: ${files.length} audio files / ${bytes.toLocaleString("en-US")} bytes; ${onsetChecks} SFX onsets <=5 ms; ${metadata.files.length} PCM24 masters, finite levels, exact Ogg loops, cue targets, Svelte compilation`,
 );

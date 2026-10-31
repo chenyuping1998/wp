@@ -85,8 +85,8 @@ const declarationPatterns = [
 	/\(([^()]*)\)\s*(?::[^=]*?)?=>/g,
 	/\bfunction\s*[A-Za-z_$\w]*\s*\(([^()]*)\)/g,
 	/\bcatch\s*\(([^)]*)\)/g,
-	// Object method definitions declare a real callable identifier too.
-	/^\s*(?:async\s+)?([A-Za-z_$][\w$]*)\([^;\n]*\)\s*\{/gm,
+	// Object methods and get/set accessors are legitimate property declarations.
+	/^\s*(?:(?:async|get|set)\s+)?([A-Za-z_$][\w$]*)\([^;\n]*\)\s*\{/gm,
 ];
 for (const file of walk(SRC)) {
 	const source = read(file);

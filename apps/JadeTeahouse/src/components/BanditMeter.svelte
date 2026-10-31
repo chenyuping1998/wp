@@ -10,11 +10,10 @@
 </script>
 
 <script lang="ts">
-	import InkNumber from './InkNumber.svelte';
 	import { onDestroy } from 'svelte';
 	import { MainContainer } from 'components-layout';
-	import { Container, Graphics, Rectangle, Sprite, Text } from 'pixi-svelte';
-	import { CanvasTextMetrics, TextStyle, type Graphics as PixiGraphics } from 'pixi.js';
+	import { Container, Rectangle, Sprite, Text } from 'pixi-svelte';
+	import { CanvasTextMetrics, TextStyle } from 'pixi.js';
 	import { getContext } from '../game/context';
 	import { GAME_FONT, GAME_FONT_WEIGHT, NUMBER_FONT } from '../game/fonts';
 	import { gameText } from '../game/i18nText';
@@ -22,6 +21,9 @@
 	import config from '../game/config';
 	import { CUTIN } from '../game/meshWin';
 	import PropMesh from './PropMesh.svelte';
+	import CardShatter from './CardShatter.svelte';
+	import LightRays from './LightRays.svelte';
+	import FxBurst from './FxBurst.svelte';
 
 	const context = getContext();
 	// The jade and gold of the rest of the game. These were Sushi Monkey's pink
@@ -41,8 +43,6 @@
 	const card = $derived(W * .28);
 	const index = $derived(Math.min(steps.length - 1, Math.max(0, Math.floor((elapsed - LEAD) / STEP))));
 	const phase = $derived(Math.max(0, elapsed - LEAD - index * STEP));
-	const split = $derived(clamp((phase - CUT - 65) / 600));
-	const splitDrift = $derived(1 - (1 - split) ** 3);
 	const plate = $derived(clamp((phase - CUT - 260) / 390));
 	const resultAt = $derived(LEAD + steps.length * STEP);
 	const duration = $derived(resultAt + HOLD + OUT);
@@ -57,25 +57,20 @@
 	const replacementTextWidth = $derived(CanvasTextMetrics.measureText(replacementLabel,replacementStyle).width);
 	const replacementRowWidth = $derived(replacementTextWidth + W*.025 + W*.11);
 	const resultHeadline = $derived(opening ? gameText('plateUpgrade') : `+${spins} ${gameText('extraSpins')}`);
-	const drawCut = (g: PixiGraphics) => {
-		g.clear();
-		const p = clamp((phase - CUT + 130) / 240);
-		if (phase < CUT - 130 || phase > CUT + 260) return;
-		const x1 = -W*.38, y1 = -H*.01, x2 = x1 + W*.37*p, y2 = y1-H*.20*p;
-		g.moveTo(x1,y1).lineTo(x2,y2).stroke({width:W*.065,color:INK});
-		g.moveTo(x1,y1).lineTo(x2,y2).stroke({width:W*.045,color:PINK});
-		g.moveTo(x1,y1).lineTo(x2,y2).stroke({width:W*.012,color:PAPER});
-	};
-	const drawDebris = (g: PixiGraphics) => {
-		g.clear();
-		if (split <= 0 || split >= 1) return;
-		for (let i = 0; i < 11; i++) {
-			const a=i*2.399, r=splitDrift*W*(.09+(i%4)*.032);
-			const x=-W*.16+Math.cos(a)*r, y=-H*.13+Math.sin(a)*r + split*split*H*.18;
-			const s=(3+i%4)*Math.min(1,(1-split)*3);
-			g.poly([x-s,y-s,x+s,y-s*.4,x+s*.5,y+s,x-s*.7,y+s*.4]).fill(i%3===0?PINK:PAPER).stroke({color:INK,width:1.5});
-		}
-	};
+	// THE CUT, REDONE (2026-10-31, user: "fg收集升級動畫也太粗糙"). The slash used
+	// to be three stacked stroke lines drawn in code, the debris eleven little
+	// polygons and the new cup sat in a flat gold ring. Now: the card breaks
+	// into shards of its own art (CardShatter, from Strike Monkey), a light
+	// flashes where the fan struck, and the Jade Cup DROPS into the empty slot
+	// out of the air, squashes, and settles in a pool of light with tea leaves
+	// thrown off it. The "+N" is the same cinnabar chop as the intro board's.
+	const shatterT = $derived(!result && phase >= CUT && phase < CUT + 800 ? phase - CUT : -1);
+	const flash = $derived(phase >= CUT ? Math.exp(-(phase - CUT) / 170) : 0);
+	// the cup: falls over the first 60% of `plate`, squashes on landing, settles
+	const cupFall = $derived(clamp(plate / 0.6));
+	const cupY = $derived(-H * 0.3 * (1 - cupFall) ** 2);
+	const cupLand = $derived(plate > 0.6 ? Math.sin(Math.PI * clamp((plate - 0.6) / 0.4)) : 0);
+	const cupLanded = $derived(plate >= 0.6);
 	const stop = () => { cancelAnimationFrame(raf); active = false; const done = finish; finish = undefined; done?.(); };
 	onDestroy(stop);
 	context.eventEmitter.subscribeOnMount({
@@ -110,7 +105,7 @@
 
 {#if active}
 	<MainContainer>
-		<Rectangle width={layout.width} height={layout.height} backgroundColor={INK} alpha={.65*alpha}/>
+		<Rectangle width={layout.width} height={layout.height} backgroundColor={INK} alpha={.45*alpha}/>
 		<Container x={layout.width/2+shake} y={layout.height*.45} {alpha}>
 			<!-- the scroll's paper, gold-bracketed (sushiV8/cutin_paper.png), not a
 			     flat polygon drawn in code -->
@@ -120,29 +115,43 @@
 				     (game/meshWin/cutIn.ts), on this step's own phase clock -->
 				<PropMesh spec={CUTIN} env={{ t: phase }} anchor={0.5} width={W*.58} height={W*.58}/>
 			</Container>
-			<Container x={-W*.16} y={-H*.13} scale={.55+.45*back(clamp(phase/450))}>
-				{#each [-1,1] as side (side)}
-					<Container x={side*splitDrift*card*.68} y={splitDrift*card*.32} rotation={side*splitDrift*.52} alpha={1-clamp((split-.35)/.65)}>
-						<Graphics isMask draw={(g)=>{g.clear();const s=card*.6;g.poly(side===-1?[-s,-s,s,-s,-s,s]:[s,-s,s,s,-s,s]).fill(0xffffff);}}/>
-						<Sprite key={cutSymbolKey} anchor={.5} width={card} height={card}/>
-						<Text text={cutLabel} anchor={.5} style={{fontFamily:GAME_FONT,fontSize:card*.49,fontWeight:GAME_FONT_WEIGHT,fill:INK}}/>
-					</Container>
-				{/each}
-				{#if plate>0}
-					<Container y={-H*.045*Math.sin(Math.PI*plate)} scale={back(plate)*.76}>
-						<Graphics draw={(g)=>{g.clear();g.circle(0,0,card*.46).stroke({width:5,color:0xc79b58});}}/>
-						<Sprite key="gbP" anchor={.5} width={card*1.08} height={card*1.08}/>
-					</Container>
-				{/if}
+			<Container x={-W*.16} y={-H*.13}>
+				{#key index}
+					{#if phase < CUT && !result}
+						<!-- the low card, whole, until the fan strikes it -->
+						<Container scale={.55+.45*back(clamp(phase/450))}>
+							<Sprite key={cutSymbolKey} anchor={.5} width={card} height={card}/>
+							<Text text={cutLabel} anchor={.5} style={{fontFamily:GAME_FONT,fontSize:card*.49,fontWeight:GAME_FONT_WEIGHT,fill:INK}}/>
+						</Container>
+					{/if}
+					{#if shatterT >= 0}
+						<CardShatter textureKey={cutSymbolKey} label={cutLabel} labelFont={GAME_FONT} labelColor="#282828"
+							size={card} x={0} y={card * .42} t={shatterT} />
+					{/if}
+					{#if flash > 0.01}
+						<Sprite key="fxSoftGlow" anchor={.5} blendMode="add" tint={0xfff1c8} width={card*2.2} height={card*2.2} alpha={.7*flash}/>
+					{/if}
+					{#if plate > 0}
+						<!-- light pooled behind the new cup, rays turning slowly -->
+						<LightRays radius={card*1.15} alpha={.9*clamp((plate-.5)/.5)} colors={[0xe6c27a, 0x8fc9ad]} />
+						<Sprite key="fxSoftGlow" anchor={.5} blendMode="add" tint={0xe6c27a} width={card*1.9} height={card*1.9} alpha={.45*clamp((plate-.55)/.45)}/>
+						<Container y={cupY} scale={{x:.82*(1+.16*cupLand), y:.82*(1-.16*cupLand)}}>
+							<Sprite key="gbP" anchor={{x:.5,y:.55}} width={card*1.08} height={card*1.08}/>
+						</Container>
+						{#if cupLanded}
+							<FxBurst flavour="tea" y={card*.1} scale={1.1} />
+						{/if}
+					{/if}
+				{/key}
 			</Container>
-			<Graphics draw={drawDebris}/>
-			<Graphics draw={drawCut}/>
 			<Text visible={!result || opening} text={result?resultHeadline:gameText('chefSlice')} anchor={.5} y={-H*.43} scale={result?1+.14*(1-clamp((elapsed-resultAt)/240)):1} style={{fontFamily:GAME_FONT,fontSize:W*.052,fontWeight:GAME_FONT_WEIGHT,fill:result?ORANGE:INK,stroke:{color:PAPER,width:4},letterSpacing:1}}/>
 			{#if result && !opening}
-				<Container x={W*.29} y={-H*.04-H*.06*(1-clamp(stampAge/260))} rotation={-.07-.08*(1-clamp(stampAge/260))} scale={back(clamp(stampAge/320))}>
-					<Sprite key="v8Stamp" anchor={.5} width={Math.max(W*.32,200/layout.scale)} height={Math.max(W*.32,200/layout.scale)}/>
-					<InkNumber text={`+${spins}`} fontSize={W*.095} role="plate" y={-W*.025}/>
-					<Text text="SPINS" anchor={.5} y={W*.055} style={{fontFamily:GAME_FONT,fontSize:W*.045,fill:INK}}/>
+				{@const sz = Math.max(W*.3, 190/layout.scale)}
+				<!-- the cinnabar chop, upright, pressed on with a small overshoot -->
+				<Container x={W*.29} y={-H*.04-H*.06*(1-clamp(stampAge/260))} scale={back(clamp(stampAge/320))}>
+					<Sprite key="v8FgSeal" anchor={.5} width={sz} height={sz}/>
+					<Text text={`+${spins}`} anchor={.5} y={-sz*.07} style={{fontFamily:GAME_FONT,fontWeight:'700',fontSize:sz*.36,fill:0xfaeed6}}/>
+					<Text text="SPINS" anchor={.5} y={sz*.2} style={{fontFamily:GAME_FONT,fontWeight:'700',fontSize:sz*.12,letterSpacing:2,fill:0xfaeed6}}/>
 				</Container>
 			{/if}
 			{#if result}

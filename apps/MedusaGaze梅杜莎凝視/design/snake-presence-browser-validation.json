@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-30",
+  "revision": "20261030-serpent-double-bite",
+  "passed": true,
+  "scope": "Same production Spine 4.3 renderer in character preview; no video capture. Native checks cover all 24 clips and all nine snakes.",
+  "observedFrames": [
+    {
+      "clip": "idle",
+      "time": 1.08,
+      "view": "detail"
+    },
+    {
+      "clip": "snake_fidget_6",
+      "time": 0.475,
+      "view": "detail"
+    },
+    {
+      "clip": "snake_fidget_6",
+      "time": 0.6875,
+      "view": "detail"
+    },
+    {
+      "clip": "gaze",
+      "time": 1.475,
+      "view": "full"
+    }
+  ],
+  "observations": [
+    "Front snake shows open red mouth interior and a continuous neck during the first strike.",
+    "Coil and jaw change visibly between strike and recoil frames.",
+    "All nine snakes retain their silhouette around the head in the casting pose.",
+    "Idle playback started normally with the same full-body breathing."
+  ],
+  "headExcursionComparison": {
+    "idle": {
+      "meanRatio": 1.657,
+      "minimumRatio": 1.632,
+      "snakes": 9
+    },
+    "individualBite": {
+      "meanRatio": 1.417,
+      "minimumRatio": 1.405,
+      "snakes": 9
+    },
+    "gaze": {
+      "meanRatio": 1.469,
+      "minimumRatio": 1.374,
+      "snakes": 9
+    },
+    "fgGaze": {
+      "meanRatio": 1.467,
+      "minimumRatio": 1.371,
+      "snakes": 9
+    }
+  },
+  "native": "source/medusagaze/cast/snake-presence-validation.json",
+  "geometry": "source/medusagaze/cast/spine43-validation.json",
+  "fullBuild": "passed",
+  "turboTiming": "shared multiplier checks passed, all three tiers unchanged",
+  "typeCheck": {
+    "changedGameSourceErrors": 0,
+    "existingWorkspaceErrors": 154,
+    "warnings": 37
+  },
+  "screenshots": [
+    "source/medusagaze/_sheets/snakes_20261030_idle_bite.png",
+    "source/medusagaze/_sheets/snakes_20261030_front_strike.png",
+    "source/medusagaze/_sheets/snakes_20261030_recoil.png",
+    "source/medusagaze/_sheets/snakes_20261030_cast.png"
+  ],
+  "limits": "This refinement was visually reviewed in the production-shared character renderer. Fresh full-game browser replay and live RGS verification were not performed for this revision."
+}

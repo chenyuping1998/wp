@@ -11,7 +11,7 @@ async function start() {
 	const textures = Object.fromEntries(await Promise.all(BACKGROUND_KEYS.map(async key => [key, await Assets.load(root + urls[key])])));
 	const scene = createBackgroundScene(textures); app.stage.addChild(scene.root); scene.setBounds(1152, 648);
 	const caption = new Container(), captionPlate = new Graphics().roundRect(0,0,650,42,6).fill({ color: 0x0b222a, alpha: 0.88 });
-	const captionText = new Text({ text: 'BACKGROUND v2 / REAL-TIME ANIMATION', style: { fontFamily: 'Arial', fontSize: 18, fill: 0xf3eadb } });
+	const captionText = new Text({ text: 'BACKGROUND v4 / REAL-TIME ANIMATION', style: { fontFamily: 'Arial', fontSize: 18, fill: 0xf3eadb } });
 	captionText.position.set(14,10); caption.position.set(18,18); caption.addChild(captionPlate,captionText); app.stage.addChild(caption);
 	type View = 'scene' | 'fire' | 'statue';
 	let view: View = 'scene', paused = false, recording = false, demo = false, clipTime = 0, previousClip = 0, last = 0, accumulator = 0;
@@ -30,7 +30,7 @@ async function start() {
 			scene.root.position.set(w/2 - (next === 'fire' ? 300 : 430)*scale,h/2 - (next === 'fire' ? 657 : 470)*scale);
 		}
 		caption.scale.set(Math.min(1,w/900));
-		captionText.text = next === 'fire' ? 'FIRE DETAIL / ROOT LOCK + RISING CURLS' : next === 'statue' ? 'STATUE DETAIL / 12 FRAGMENTS + STAGGERED SETTLE' : 'BACKGROUND v2 / REAL-TIME ANIMATION';
+		captionText.text = next === 'fire' ? 'FIRE DETAIL / RISING HEAT + DISSIPATING TONGUES' : next === 'statue' ? 'STATUE DETAIL / 12 FRAGMENTS + STAGGERED SETTLE' : 'BACKGROUND v4 / REAL-TIME ANIMATION';
 	}
 	function breakStatues() { if (scene.burstStatues() && document.querySelector<HTMLInputElement>('#sound')!.checked) { audio?.pause(); audio = new Audio(root + 'audio/medusa/sfx_statues_crack.wav'); audio.volume = 0.45; void audio.play(); } }
 	function stopDemo() { if (recording) return; demo = false; status.textContent = '手動檢視；可切換全景、火焰或石像細節。近看裁切只用於審片，遊戲鏡頭固定。'; }
@@ -86,6 +86,6 @@ async function start() {
 		recorder.start(); status.textContent = '錄製16秒動畫中：全景演出與動作細節。';
 	};
 	frameView('scene');
-	if (!media.matches) startDemo(); else status.textContent = '已依系統偏好減少動態；取消勾選後可播放動畫。';
+	if (!media.matches) status.textContent='持續燃燒、雲層緩慢飄移；可切換日夜與火焰近看。'; else status.textContent = '已依系統偏好減少動態；取消勾選後可播放動畫。';
 }
 start().catch(error => { document.querySelector<HTMLElement>('#status')!.textContent = String(error); console.error(error); });

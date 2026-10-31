@@ -44,24 +44,21 @@ for(const [name,spec] of [...Object.entries(MESH_WINS), ...Object.entries(MESH_L
  assert.equal(spec.mode,'panel',name+' should act inside the fixed tile');
  const rig=buildRig(spec.rig),out=new Float32Array(rig.rest.length);
  const edge=[];for(let v=0;v<rig.rest.length/2;v++)if(Math.min(rig.rest[v*2],rig.rest[v*2+1],256-rig.rest[v*2],256-rig.rest[v*2+1])<=10)edge.push(v);
+ // 2026-10-29: the Wild's win LIFTS its whole tile (spec.lifts, wGorilla.liftWin)
+ // over a socket drawn in its cell — there the border may move, but only
+ // rigidly: no bone may bend it against the tile's own move
+ const {restPose}=spec.lifts?await import(pathToFileURL(path.join(app,'src/game/meshWin/meshRig.ts'))):{};
+ const ref=new Float32Array(rig.rest.length);
  for(let t=0;t<=spec.durationMs;t+=16){
-  skin(rig,spec.pose(rig,t),spec.feetY,out);
-  for(const v of edge)assert.ok(Math.hypot(out[v*2]-rig.rest[v*2],out[v*2+1]-rig.rest[v*2+1])<.005,name+' moves its tile border');
+  const pose=spec.pose(rig,t);
+  skin(rig,pose,spec.feetY,out);
+  if(spec.lifts){
+   assert.ok(!MESH_LANDS[name]?.lifts,name+': a landing never lifts');
+   skin(rig,{...pose,bones:restPose(rig).bones},spec.feetY,ref);
+   for(const v of edge)assert.ok(Math.hypot(out[v*2]-ref[v*2],out[v*2+1]-ref[v*2+1])<.005,name+' bends its lifting tile border');
+  } else for(const v of edge)assert.ok(Math.hypot(out[v*2]-rig.rest[v*2],out[v*2+1]-rig.rest[v*2+1])<.005,name+' moves its tile border');
  }
 }
-const audio=path.join(app,'static/assets/audio/alchemy');
-const manifest=JSON.parse(fs.readFileSync(path.join(audio,'mix_manifest.json'),'utf8'));
-let loops=0;
-for(const [name,meta] of Object.entries(manifest)){
- const wav=fs.readFileSync(path.join(audio,name+'.wav'));
- assert.equal(wav.toString('ascii',0,4),'RIFF');assert.equal(wav.readUInt16LE(22),2);assert.equal(wav.readUInt32LE(24),44100);assert.equal(wav.readUInt16LE(34),16);
- let peak=0,energy=0;
- for(let i=44;i<wav.length;i+=2){const sample=wav.readInt16LE(i)/32768;peak=Math.max(peak,Math.abs(sample));energy+=sample*sample;}
- assert.ok(peak<=.7&&energy>0,name+' clips or is silent');
- if(meta.loop){
-  loops++;let normalStep=0;
-  for(let i=48;i<wav.length;i+=2)normalStep=Math.max(normalStep,Math.abs(wav.readInt16LE(i)-wav.readInt16LE(i-4)));
-  for(let channel=0;channel<2;channel++)assert.ok(Math.abs(wav.readInt16LE(44+channel*2)-wav.readInt16LE(wav.length-4+channel*2))<=normalStep*1.1+2,name+' has a discontinuous loop seam');
- }
-}
-console.log(`OK: 1–5 reel opaque swaps, ${Object.keys(MESH_WINS).length} fixed symbol borders, ${Object.keys(manifest).length} stereo cues (${loops} seamless loops), no clipping.`);
+const { execFileSync } = await import('node:child_process');
+execFileSync('python', [path.join(app, 'design/check_sampled_audio.py')], { stdio: 'inherit' });
+console.log('OK: 1–5 reel opaque swaps, fixed symbol borders and sampled audio validation.');

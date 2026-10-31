@@ -1,0 +1,247 @@
+{
+  "app": "ParrotRadio鸚鵡電台",
+  "fps": 60,
+  "totalFrames": 3495,
+  "totalFolded": 976,
+  "clips": [
+    {
+      "name": "idle",
+      "frames": 961,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 1,
+      "maxAreaRatio": 1
+    },
+    {
+      "name": "fg_idle",
+      "frames": 961,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 1,
+      "maxAreaRatio": 1
+    },
+    {
+      "name": "react_small",
+      "frames": 50,
+      "worst": {
+        "count": 4,
+        "time": 0.1167,
+        "slots": {
+          "wing_front_upper": 4
+        }
+      },
+      "minAreaRatio": -0.2233,
+      "maxAreaRatio": 2.0583
+    },
+    {
+      "name": "react_good",
+      "frames": 74,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.9837,
+      "maxAreaRatio": 1.0146
+    },
+    {
+      "name": "idle_mimic",
+      "frames": 91,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.9747,
+      "maxAreaRatio": 1.0193
+    },
+    {
+      "name": "idle_bored",
+      "frames": 121,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.9745,
+      "maxAreaRatio": 1.0192
+    },
+    {
+      "name": "encore_build",
+      "frames": 61,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.8012,
+      "maxAreaRatio": 1.1495
+    },
+    {
+      "name": "encore_call",
+      "frames": 50,
+      "worst": {
+        "count": 4,
+        "time": 0.0333,
+        "slots": {
+          "wing_front_upper": 4
+        }
+      },
+      "minAreaRatio": -0.2587,
+      "maxAreaRatio": 2.0564
+    },
+    {
+      "name": "encore_success",
+      "frames": 50,
+      "worst": {
+        "count": 4,
+        "time": 0.1167,
+        "slots": {
+          "wing_front_upper": 4
+        }
+      },
+      "minAreaRatio": -0.2233,
+      "maxAreaRatio": 2.0583
+    },
+    {
+      "name": "encore_fail",
+      "frames": 74,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.8013,
+      "maxAreaRatio": 1.1334
+    },
+    {
+      "name": "turn_knob",
+      "frames": 26,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.0889,
+      "maxAreaRatio": 2.0425
+    },
+    {
+      "name": "fg_trigger",
+      "frames": 134,
+      "worst": {
+        "count": 4,
+        "time": 0.3167,
+        "slots": {
+          "wing_front_upper": 4
+        }
+      },
+      "minAreaRatio": -0.2603,
+      "maxAreaRatio": 2.0603
+    },
+    {
+      "name": "fg_end",
+      "frames": 98,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.959,
+      "maxAreaRatio": 1.0276
+    },
+    {
+      "name": "win_big",
+      "frames": 157,
+      "worst": {
+        "count": 2,
+        "time": 0.15,
+        "slots": {
+          "wing_front_upper": 2
+        }
+      },
+      "minAreaRatio": -0.1478,
+      "maxAreaRatio": 2.0581
+    },
+    {
+      "name": "win_max",
+      "frames": 194,
+      "worst": {
+        "count": 2,
+        "time": 0.15,
+        "slots": {
+          "wing_front_upper": 2
+        }
+      },
+      "minAreaRatio": -0.1481,
+      "maxAreaRatio": 2.0618
+    },
+    {
+      "name": "record_pull",
+      "frames": 61,
+      "worst": {
+        "count": 4,
+        "time": 0.5333,
+        "slots": {
+          "wing_front_upper": 4
+        }
+      },
+      "minAreaRatio": -0.2597,
+      "maxAreaRatio": 2.1071
+    },
+    {
+      "name": "record_hit",
+      "frames": 50,
+      "worst": {
+        "count": 4,
+        "time": 0.0833,
+        "slots": {
+          "wing_front_upper": 4
+        }
+      },
+      "minAreaRatio": -0.2314,
+      "maxAreaRatio": 2.0598
+    },
+    {
+      "name": "record_miss",
+      "frames": 40,
+      "worst": {
+        "count": 12,
+        "time": 0.0833,
+        "slots": {
+          "wing_front_upper": 8,
+          "wing_front_mid": 4
+        }
+      },
+      "minAreaRatio": -0.5284,
+      "maxAreaRatio": 2.0625
+    },
+    {
+      "name": "win_big_loop",
+      "frames": 121,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.3587,
+      "maxAreaRatio": 1.7387
+    },
+    {
+      "name": "win_max_loop",
+      "frames": 121,
+      "worst": {
+        "count": 0,
+        "time": 0,
+        "slots": {}
+      },
+      "minAreaRatio": 0.3587,
+      "maxAreaRatio": 1.7538
+    }
+  ]
+}

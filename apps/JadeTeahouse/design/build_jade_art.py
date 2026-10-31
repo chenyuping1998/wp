@@ -45,7 +45,7 @@ def title(draw, center, text, size, fill=INK, cjk=False):
               stroke_width=0)
 
 
-def panel(size, inset=16, radius=30, bg=PAPER, border=JADE, gold=True):
+def panel(size, inset=16, radius=30, bg=PAPER, border=JADE, gold=True, dots=True):
     image = Image.new("RGBA", size)
     d = ImageDraw.Draw(image)
     w, h = size
@@ -54,11 +54,11 @@ def panel(size, inset=16, radius=30, bg=PAPER, border=JADE, gold=True):
                         outline=INK, width=max(3, w//300))
     d.rounded_rectangle((inset, inset, w-inset-1, h-inset-1), radius,
                         fill=bg, outline=DARK_JADE, width=max(3, w//230))
-    for x in range(inset+radius, w-inset-radius, 13):
+    for x in range(inset+radius, w-inset-radius, 13) if dots else ():
         for y in (inset+27, h-inset-29):
             if (x//13) % 3:
                 d.ellipse((x-1,y-1,x+1,y+1), fill=(65,82,70,255))
-    for y in range(inset+radius, h-inset-radius, 13):
+    for y in range(inset+radius, h-inset-radius, 13) if dots else ():
         for x in (inset+27, w-inset-29):
             if (y//13) % 3:
                 d.ellipse((x-1,y-1,x+1,y+1), fill=(65,82,70,255))
@@ -72,6 +72,11 @@ def panel(size, inset=16, radius=30, bg=PAPER, border=JADE, gold=True):
                 r = max(4,w//95)
                 d.ellipse((x-r,y-r,x+r,y+r),fill=GOLD,outline=DARK_JADE,width=2)
     return image
+
+
+
+def bar_strip():
+    return panel((1600,200),12,30, gold=False, dots=False)
 
 
 def main():
@@ -154,7 +159,10 @@ def main():
 
     # Readouts, buttons and buy card art.  The shared Pixi UI reads these
     # sprites while its text and active-state colours come from uiTheme.ts.
-    save(panel((1600,200),12,30),"sushiUi","bar_strip.png")
+    # the bar: jade edge on paper only (2026-10-31, as Swing 10-18) - the gold
+    # rules, gold rivets and dotted halftone rows read as decoration on the one
+    # strip the player looks at every spin. Old strip: design/source/_pre_bar_20261031/
+    save(bar_strip(),"sushiUi","bar_strip.png")
     save(panel((652,146),8,20),"sushiUi","ticker_plate.png")
     for name, lit in (("button_plate.png",False),("button_print.png",False),
                       ("button_print_on.png",True),("spin_plate.png",True)):
@@ -209,18 +217,20 @@ def main():
         save(fg_sign,"sushiV8",name)
     scroll=Image.open(SOURCE/"intro_scroll_blank.png").convert("RGBA")
     save(scroll.resize((740,1024),Image.Resampling.LANCZOS),"sushiV8","menu_frame.png")
-    logo=Image.open(SOURCE/"logo_sign_blank.png").convert("RGBA")
-    logo=logo.resize((1600,600),Image.Resampling.LANCZOS)
-    d=ImageDraw.Draw(logo)
-    d.text((800,175),"JADE TEAHOUSE",font=font(128),anchor="mm",fill=DARK_JADE,
-           stroke_width=2,stroke_fill=GOLD)
-    d.text((800,405),"玉茗茶樓",font=font(70,True,780),anchor="mm",
-           fill=DARK_JADE,stroke_width=1,stroke_fill=DARK_JADE)
-    for symbol,x in (("p",372),("s",1240)):
-        art=Image.open(SPRITES/"sushiSymbols"/f"{symbol}.png").convert("RGBA")
-        art.thumbnail((132,155),Image.Resampling.LANCZOS)
-        logo.alpha_composite(art,(x-art.width//2,410-art.height//2))
-    save(logo,"sushiV8","logo_board.png")
+    # logo_board.png is the free-standing wordmark now (build_logo_wordmark.py,
+    # 2026-10-31); the signboard below is no longer written.
+    # logo=Image.open(SOURCE/"logo_sign_blank.png").convert("RGBA")
+    # logo=logo.resize((1600,600),Image.Resampling.LANCZOS)
+    # d=ImageDraw.Draw(logo)
+    # d.text((800,175),"JADE TEAHOUSE",font=font(128),anchor="mm",fill=DARK_JADE,
+    #        stroke_width=2,stroke_fill=GOLD)
+    # d.text((800,405),"玉茗茶樓",font=font(70,True,780),anchor="mm",
+    #        fill=DARK_JADE,stroke_width=1,stroke_fill=DARK_JADE)
+    # for symbol,x in (("p",372),("s",1240)):
+    #     art=Image.open(SPRITES/"sushiSymbols"/f"{symbol}.png").convert("RGBA")
+    #     art.thumbnail((132,155),Image.Resampling.LANCZOS)
+    #     logo.alpha_composite(art,(x-art.width//2,410-art.height//2))
+    # save(logo,"sushiV8","logo_board.png")
 
     # Intro illustrations stay transparent: the card itself supplies the one
     # frame, avoiding the previous stack of two blank paper panels.

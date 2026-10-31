@@ -83,7 +83,7 @@ const letter = (
 	limits: { glyph: { pos: 0, neg: 0 }, ...limits },
 	pose: (rig, t) => {
 		const pose = restPose(rig);
-		const { rigid, air } = leap(t, LEAP, 22);
+		const { rigid, air } = leap(t, LEAP, 28);
 		// a slow bob while it hangs, so the hold is not a freeze
 		const hover = ramp(t, LEAP.rise - 40, LEAP.rise + 60) * (1 - ramp(t, LEAP.fall - 100, LEAP.fall));
 		rigid.dy -= 2.5 * hover * Math.sin((2 * Math.PI * (t - LEAP.rise)) / 460);

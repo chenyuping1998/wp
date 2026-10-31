@@ -1,0 +1,3 @@
+{ "beat": "bone", "frame": "frame", "spine": ["bone2", "bone3", "bone4"], "head": "bone5", "look": "3d",
+  "earL": ["bone24", "bone25"], "earR": ["bone26", "bone27"], "armL": ["bone9", "bone10", "bone11"], "armR": ["bone6", "bone7", "bone8"],
+  "hair": ["bone31", "bone32"] }

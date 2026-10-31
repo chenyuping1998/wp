@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-26",
+  "scope": "Local mock browser inspection after a clean page load; no Stake Engine or live RGS validation",
+  "statues": {"heightRelativeToMedusa": 0.2, "bothGroundedAboveToolbar": true, "viewNoLongerBlocked": true},
+  "toolbar": {"heightInStandardLayoutUnits": 210, "labelsAndValuesClearPaintedRails": true, "statusTextFits": true, "darkInkControlGlyphs": 10},
+  "turbo": {"offOutlineChecked": true, "singleBoltChecked": true, "doubleBoltChecked": true},
+  "idleBreath": {"cycleSeconds": 6, "modes": ["MG", "FG"], "pelvisFixed": true, "ribcageLiftRigPixels": 10, "loopSeamClosed": true, "frameInspectionSeconds": [0, 1.8]},
+  "layouts": ["1792x771", "1280x720", "390x844", "320x568"],
+  "mobileRound": {"book": "baseThrow", "completedAndReturnedToIdle": true, "errorsAfterCleanLoad": 0},
+  "screenshots": ["_sheets/presentation_20261026_desktop.png", "_sheets/presentation_20261026_turbo2.png", "_sheets/presentation_20261026_mobile390.png", "_sheets/presentation_20261026_mobile320.png", "_sheets/breath_20261026_rest.png", "_sheets/breath_20261026_inhale.png"],
+  "passed": true
+}

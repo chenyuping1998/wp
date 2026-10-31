@@ -1,0 +1,170 @@
+{
+  "BDrumNew_hit_v5_rr1_Sum.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Membranophones/Struck%20Membranophones/Bass%20Drum%201/BDrumNew_hit_v5_rr1_Sum.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Membranophones/Struck Membranophones/Bass Drum 1/BDrumNew_hit_v5_rr1_Sum.wav"
+  },
+  "snare_f1.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Membranophones/Struck%20Membranophones/Legacy%20Snares/OldSnare/snare_f1.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Membranophones/Struck Membranophones/Legacy Snares/OldSnare/snare_f1.wav"
+  },
+  "HiHat_HitC_v3_rr1_Mid.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Idiophones/Struck%20Idiophones/Hi-Hat%20Cymbal/HiHat_HitC_v3_rr1_Mid.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Idiophones/Struck Idiophones/Hi-Hat Cymbal/HiHat_HitC_v3_rr1_Mid.wav"
+  },
+  "FMPiano_C4_vl3.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Electrophones/TX81Z/FM%20Piano/FMPiano_C4_vl3.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Electrophones/TX81Z/FM Piano/FMPiano_C4_vl3.wav"
+  },
+  "foley/bfh1_glass_hit_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_hit_01.ogg"
+  },
+  "foley/bfh1_glass_breaking_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_breaking_02.ogg"
+  },
+  "foley/bfh1_misc_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_misc_01.ogg"
+  },
+  "foley/bfh1_misc_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_misc_03.ogg"
+  },
+  "foley/bfh1_wood_hit_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_hit_01.ogg"
+  },
+  "foley/bfh1_wood_hit_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_hit_02.ogg"
+  },
+  "foley/bfh1_wood_hit_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_hit_03.ogg"
+  },
+  "foley/bfh1_hit_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_01.ogg"
+  },
+  "foley/bfh1_hit_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_02.ogg"
+  },
+  "foley/bfh1_hit_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_03.ogg"
+  },
+  "foley/bfh1_hit_04.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_04.ogg"
+  },
+  "foley/bfh1_hit_05.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_05.ogg"
+  },
+  "interface-sounds/click_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/click_003.ogg"
+  },
+  "interface-sounds/switch_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/switch_002.ogg"
+  },
+  "sci-fi-sounds/slime_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/slime_000.ogg"
+  },
+  "sci-fi-sounds/slime_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/slime_001.ogg"
+  },
+  "sci-fi-sounds/thrusterFire_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/thrusterFire_001.ogg"
+  },
+  "BowedPsaltery_C4_Main_Pluck_rr1.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Chordophones/Zithers/Psaltery%2C%20Bowed%20and%20Plucked/Pluck/BowedPsaltery_C4_Main_Pluck_rr1.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Chordophones/Zithers/Psaltery, Bowed and Plucked/Pluck/BowedPsaltery_C4_Main_Pluck_rr1.wav"
+  },
+  "AltRecorder_Stac_C4_rr1_Main.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Aerophones/Edge-blown%20Aerophones/Baroque%20Alto%20Recorder/Staccato/AltRecorder_Stac_C4_rr1_Main.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Aerophones/Edge-blown Aerophones/Baroque Alto Recorder/Staccato/AltRecorder_Stac_C4_rr1_Main.wav"
+  },
+  "Marimba_hit_Outrigger_C4_med_01.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Idiophones/Struck%20Idiophones/Marimba/Marimba_hit_Outrigger_C4_med_01.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Idiophones/Struck Idiophones/Marimba/Marimba_hit_Outrigger_C4_med_01.wav"
+  }
+}

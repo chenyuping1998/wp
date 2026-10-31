@@ -1,6 +1,6 @@
 {
   "seed": 20261024,
-  "runtime_bytes": 6633242,
+  "runtime_bytes": 6870242,
   "files": [
     {
       "cue": "sfx_petrify_1",
@@ -218,41 +218,42 @@
     {
       "cue": "sfx_gaze_beam",
       "file": "sfx_gaze_beam.wav",
-      "duration": 0.28,
+      "duration": 0.76,
       "sample_rate": 44100,
       "channels": 1,
       "format": "PCM16",
-      "bytes": 24774,
+      "bytes": 67110,
       "loop": false,
-      "description": "Sharp focus ignition, glass edge and short textured energy shear",
+      "description": "Green-eye focus, spreading airy radiance and gathering prism resonance; one unhurried performance at every turbo tier",
       "lufs_method": "complete cue repeated to >=3 s",
-      "lufs": -27.7,
-      "true_peak_db": -10.86,
+      "lufs": -29.36,
+      "true_peak_db": -10.97,
       "design_version": 2,
       "layers": [
         "focus_snap",
         "glass_resonance",
-        "energy_shear"
+        "radiating_air",
+        "gathering_prism"
       ]
     },
     {
       "cue": "sfx_orb_fly",
       "file": "sfx_orb_fly.wav",
-      "duration": 0.45,
+      "duration": 0.6,
       "sample_rate": 44100,
       "channels": 1,
       "format": "PCM16",
-      "bytes": 39768,
+      "bytes": 52998,
       "loop": false,
-      "description": "Accelerating granular air and rotating glass texture; panned in Web Audio along the actual flight",
+      "description": "600ms layered wind pressure, shear and rotating glass; positional pan follows the thrown orb",
       "lufs_method": "complete cue repeated to >=3 s",
-      "lufs": -25.54,
-      "true_peak_db": -13.0,
-      "design_version": 2,
+      "lufs": -20.9,
+      "true_peak_db": -11.41,
+      "design_version": 8,
       "layers": [
-        "air_body",
-        "air_edge",
-        "spinning_prism"
+        "wind_pressure",
+        "air_shear",
+        "rotating_glass"
       ]
     },
     {
@@ -264,16 +265,17 @@
       "format": "PCM16",
       "bytes": 37122,
       "loop": false,
-      "description": "Immediate contact bite, short marble body, inharmonic crystal ring, descending micro-sparkles; s intensity",
+      "description": "Sharp contact, low stone weight, crystal body and short sparkle tail; s intensity",
       "lufs_method": "complete cue repeated to >=3 s",
-      "lufs": -26.0,
-      "true_peak_db": -10.99,
-      "design_version": 2,
+      "lufs": -21.92,
+      "true_peak_db": -9.49,
+      "design_version": 8,
       "layers": [
-        "contact_bite",
-        "marble_body",
-        "crystal_ring",
-        "falling_sparkles"
+        "contact_crack",
+        "marble_weight",
+        "low_impact",
+        "crystal_body",
+        "glitter_tail"
       ]
     },
     {
@@ -285,16 +287,17 @@
       "format": "PCM16",
       "bytes": 44178,
       "loop": false,
-      "description": "Immediate contact bite, short marble body, inharmonic crystal ring, descending micro-sparkles; m intensity",
+      "description": "Sharp contact, low stone weight, crystal body and short sparkle tail; m intensity",
       "lufs_method": "complete cue repeated to >=3 s",
-      "lufs": -26.89,
-      "true_peak_db": -10.0,
-      "design_version": 2,
+      "lufs": -22.15,
+      "true_peak_db": -8.5,
+      "design_version": 8,
       "layers": [
-        "contact_bite",
-        "marble_body",
-        "crystal_ring",
-        "falling_sparkles"
+        "contact_crack",
+        "marble_weight",
+        "low_impact",
+        "crystal_body",
+        "glitter_tail"
       ]
     },
     {
@@ -306,16 +309,17 @@
       "format": "PCM16",
       "bytes": 51234,
       "loop": false,
-      "description": "Immediate contact bite, short marble body, inharmonic crystal ring, descending micro-sparkles; l intensity",
+      "description": "Sharp contact, low stone weight, crystal body and short sparkle tail; l intensity",
       "lufs_method": "complete cue repeated to >=3 s",
-      "lufs": -26.25,
-      "true_peak_db": -8.98,
-      "design_version": 2,
+      "lufs": -21.88,
+      "true_peak_db": -7.5,
+      "design_version": 8,
       "layers": [
-        "contact_bite",
-        "marble_body",
-        "crystal_ring",
-        "falling_sparkles"
+        "contact_crack",
+        "marble_weight",
+        "low_impact",
+        "crystal_body",
+        "glitter_tail"
       ]
     },
     {
@@ -329,8 +333,8 @@
       "loop": false,
       "description": "Dry brittle fracture, staggered falling stone chips; no cartoon wah or low boom",
       "lufs_method": "complete cue repeated to >=3 s",
-      "lufs": -34.22,
-      "true_peak_db": -11.95,
+      "lufs": -32.44,
+      "true_peak_db": -11.84,
       "design_version": 2,
       "layers": [
         "fracture_snap",
@@ -354,7 +358,7 @@
       "loop": false,
       "description": "Dry brittle fracture, staggered falling stone chips; no cartoon wah or low boom",
       "lufs_method": "complete cue repeated to >=3 s",
-      "lufs": -32.36,
+      "lufs": -31.78,
       "true_peak_db": -12.0,
       "design_version": 2,
       "layers": [
@@ -379,7 +383,7 @@
       "loop": true,
       "description": "Quiet fine-grained counting texture; leaves amount and impact readable",
       "lufs_method": "complete cue repeated to >=3 s",
-      "lufs": -38.72,
+      "lufs": -38.63,
       "true_peak_db": -22.0,
       "design_version": 2,
       "layers": [
@@ -417,8 +421,8 @@
       "loop": false,
       "description": "Short plate-to-score release and a precise score seal, without a long electronic sweep",
       "lufs_method": "complete cue repeated to >=3 s",
-      "lufs": -25.65,
-      "true_peak_db": -12.0,
+      "lufs": -25.49,
+      "true_peak_db": -11.94,
       "design_version": 2,
       "layers": [
         "release_air",
@@ -886,7 +890,167 @@
       "lufs": -41.5,
       "true_peak_db": -29.41,
       "lufs_method": "whole file"
+    },
+    {
+      "cue": "sfx_orb_charge",
+      "file": "sfx_orb_charge.wav",
+      "duration": 0.35,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 30948,
+      "loop": false,
+      "description": "350ms inward swell aligned to visible orb growth and squeeze",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -23.82,
+      "true_peak_db": -12.59,
+      "design_version": 8,
+      "layers": [
+        "palm_resonance",
+        "inward_air",
+        "gather_grain"
+      ]
+    },
+    {
+      "cue": "sfx_orb_release",
+      "file": "sfx_orb_release.wav",
+      "duration": 0.16,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 14190,
+      "loop": false,
+      "description": "One short palm snap and pressure thump at actual release, once per volley",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -22.27,
+      "true_peak_db": -8.48,
+      "design_version": 8,
+      "layers": [
+        "palm_snap",
+        "pressure_body",
+        "low_thump",
+        "bright_edge"
+      ]
+    },
+    {
+      "cue": "vo_medusa_cast",
+      "file": "vo_medusa_cast.wav",
+      "duration": 0.46,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 40650,
+      "loop": false,
+      "description": "Synthetic nonverbal chest-led casting shout; attack occurs near the release flick, not a human voice recording",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -18.64,
+      "true_peak_db": -9.0,
+      "design_version": 8,
+      "layers": [
+        "alto_shout",
+        "chest_resonance",
+        "breath_grit"
+      ]
+    },
+    {
+      "cue": "sfx_medusa_gather",
+      "file": "sfx_medusa_gather.wav",
+      "duration": 0.28,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 24774,
+      "loop": false,
+      "description": "Soft sleeve and inward air at elbow retraction; no musical success tone",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -26.87,
+      "true_peak_db": -13.99,
+      "design_version": 9,
+      "layers": [
+        "silk_pull",
+        "close_air"
+      ]
+    },
+    {
+      "cue": "sfx_medusa_wrist",
+      "file": "sfx_medusa_wrist.wav",
+      "duration": 0.14,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 12426,
+      "loop": false,
+      "description": "Short wrist flick with one tiny bracelet click, just before palm release",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -23.11,
+      "true_peak_db": -12.0,
+      "design_version": 9,
+      "layers": [
+        "wrist_air",
+        "gold_click"
+      ]
+    },
+    {
+      "cue": "sfx_medusa_jewel",
+      "file": "sfx_medusa_jewel.wav",
+      "duration": 0.22,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 19482,
+      "loop": false,
+      "description": "Two unequal gold contacts follow the thumb-up or raised hand",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -24.07,
+      "true_peak_db": -15.01,
+      "design_version": 9,
+      "layers": [
+        "gold_touch",
+        "chain_follow",
+        "soft_contact"
+      ]
+    },
+    {
+      "cue": "sfx_medusa_tail",
+      "file": "sfx_medusa_tail.wav",
+      "duration": 0.32,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 28302,
+      "loop": false,
+      "description": "Low dry scale brush at delayed tail-tip follow-through",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -29.44,
+      "true_peak_db": -15.98,
+      "design_version": 9,
+      "layers": [
+        "scale_brush",
+        "scales_follow"
+      ]
+    },
+    {
+      "cue": "sfx_snake_snap",
+      "file": "sfx_snake_snap.wav",
+      "duration": 0.12,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 10662,
+      "loop": false,
+      "description": "Compact snake jaw snap; quiet enough for an occasional individual double bite",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -27.5,
+      "true_peak_db": -12.95,
+      "design_version": 9,
+      "layers": [
+        "jaw_contact",
+        "small_body",
+        "breathy_release"
+      ]
     }
   ],
-  "multiplier_design_version": 2
+  "multiplier_design_version": 4,
+  "casting_design_version": 8,
+  "character_design_version": 9
 }

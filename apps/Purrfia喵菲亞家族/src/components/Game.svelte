@@ -81,7 +81,7 @@ import Character from './Character.svelte';
 		</MainContainer>
 
 		<MainContainer>
-			<!-- order is the draw order; Medusa stands beside the board, behind the orbs -->
+			<!-- The original character stands beside the board, behind the foreground effects. -->
 			<Character />
 			<Territory />
 			<Board />

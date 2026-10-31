@@ -21,10 +21,12 @@
 	import { makeSymbolLighting } from '../game/sceneLighting';
 	// side-effect import: paints the shared bet bar in the jungle palette
 	import '../game/uiTheme';
-	import EnableSound from './EnableSound.svelte';
+	import '../game/infoV2.css';
 	import EnableGameActor from './EnableGameActor.svelte';
 	import ResumeBet from './ResumeBet.svelte';
 	import Sound from './Sound.svelte';
+	import PresentationDirector from './PresentationDirector.svelte';
+	import ReelAccent from './ReelAccent.svelte';
 	import Background from './Background.svelte';
 	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './BoardFrame.svelte';
@@ -66,7 +68,6 @@
 </script>
 
 <App>
-	<EnableSound />
 	<EnableHotkey />
 	<EnableGameActor />
 	<EnablePixiExtension />
@@ -87,11 +88,13 @@
 	{:else}
 		<ResumeBet />
 		<!--
-			The reason why <Sound /> is rendered after clicking the loading screen:
+			The reason why <Sound />
+		<PresentationDirector /> is rendered after clicking the loading screen:
 			"Autoplay with sound is allowed if: The user has interacted with the domain (click, tap, etc.)."
 			Ref: https://developer.chrome.com/blog/autoplay
 		-->
 		<Sound />
+		<PresentationDirector />
 
 		<MainContainer>
 			<!-- Before the frame, so if a narrow layout ever brings the two close
@@ -103,6 +106,7 @@
 		<MainContainer>
 			<Container filters={reelLighting}>
 				<Board />
+			<ReelAccent />
 				<!-- (ReelDust — a dust cone and floor flash at the foot of every reel as
 				     it stopped — removed 2026-10-17: the user wants no small sparkles on
 				     the reels when they stop; the landing is the symbols' own squash) -->

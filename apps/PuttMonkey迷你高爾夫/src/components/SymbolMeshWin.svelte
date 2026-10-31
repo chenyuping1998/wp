@@ -171,6 +171,15 @@
 			(spinner as Sprite & { hubOff?: number[] }).hubOff = off;
 			content.addChild(spinner);
 		}
+		// a part that travels on its own (the low pays' ball, putted into the
+		// cup), clipped under the cup's lip while it drops in
+		const rollTex = spec.roller ? (assets[spec.roller.key] as Texture | undefined) : undefined;
+		const roller = rollTex ? new Sprite(rollTex) : null;
+		const rollClip = roller ? new PixiGraphicsObj() : null;
+		if (roller && rollClip) {
+			roller.anchor.set(0.5);
+			content.addChild(rollClip, roller);
+		}
 		if (inkFx) content.addChild(inkFx);
 		root.addChild(content);
 		root.scale.set(fit);
@@ -193,6 +202,20 @@
 				spinner.rotation = ((spec.spinner.turn(t) + r.rot) * Math.PI) / 180;
 				const k = r.pop * Math.sqrt(Math.abs(r.sx * r.sy));
 				spinner.width = spinner.height = CANVAS * k;
+			}
+
+			if (roller && rollClip && spec.roller) {
+				const b = spec.roller.at(t);
+				roller.position.set(b.x, b.y);
+				roller.rotation = (b.rot * Math.PI) / 180;
+				roller.width = roller.height = spec.roller.size * b.scale;
+				roller.alpha = b.alpha;
+				rollClip.clear();
+				if (b.clipY !== undefined) {
+					rollClip.rect(0, 0, CANVAS, b.clipY).fill(0xffffff);
+					roller.mask = rollClip;
+				} else roller.mask = null;
+				rollClip.visible = b.clipY !== undefined;
 			}
 
 			if (shadow) {

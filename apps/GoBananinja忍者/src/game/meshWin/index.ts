@@ -22,8 +22,30 @@ import { splitOf } from './splitRig';
 
 // every win blends home at the end, so the swap back to the static tile is
 // seamless (meshRig.settled); the high pays and the Scatter leap (leaps.ts)
+// 2026-10-31 (user: 加強獎圖): the parts act harder in the WIN than in the landing/idle acts that share their pose,
+// where they still had room (check_mesh_wins --limits): the shuriken's blades, the fan and its tassels, the Scatter's
+// bow. The kabuto, the bomb (its smoke stretches past 160% at x1.08) and the low pays sit at their limits and stay at 1.
+const ACTING: Record<string, number> = { H2: 1.25, H4: 1.35, S: 1.1 };
+const actHarder = (spec: MeshWinSpec, g = 1): MeshWinSpec =>
+	g === 1
+		? spec
+		: {
+				...spec,
+				limits: Object.fromEntries(Object.entries(spec.limits).map(([k, l]) => [k, { pos: l.pos * g, neg: l.neg * g }])),
+				pose: (rig, t) => {
+					const pose = spec.pose(rig, t);
+					for (const b of pose.bones) {
+						b.angle *= g;
+						b.dx *= g;
+						b.dy *= g;
+						b.along = 1 + (b.along - 1) * g;
+						b.across = 1 + (b.across - 1) * g;
+					}
+					return pose;
+				},
+			};
 export const MESH_WINS: Record<string, MeshWinSpec> = Object.fromEntries(
-	Object.entries({ H1, H2, H3, H4, L1, L2, L3, L4, L5, W, S }).map(([k, spec]) => [k, settled(withLeap(spec))]),
+	Object.entries({ H1, H2, H3, H4, L1, L2, L3, L4, L5, W, S }).map(([k, spec]) => [k, settled(withLeap(actHarder(spec, ACTING[k])))]),
 );
 
 /** the landings — what each symbol does when its reel stops (lands.ts) */

@@ -296,6 +296,15 @@ for (const file of [path.join(appRoot, 'src/game/socialTerms.ts')]) {
 	}
 }
 
+// Game-owned bilingual text modules also render in social play.
+for(const name of ['purrfiaText.ts','parrotText.ts']){
+ const file=path.join(appRoot,'src/game',name);if(!fs.existsSync(file))continue;
+ const source=fs.readFileSync(file,'utf8').replace(/\/\*[\s\S]*?\*\//g,'').replace(/\/\/[^\n]*/g,'');
+ for(const match of source.matchAll(/'([^'\\\n]*(?:\\.[^'\\\n]*)*)'/g)){
+  const value=match[1];if(!/\s/.test(value))continue;const hits=value.match(pattern);if(hits)report(file,'universal game copy',value,hits);
+ }
+}
+
 console.log(
 	problems === 0
 		? 'OK: no restricted words in social-facing copy'

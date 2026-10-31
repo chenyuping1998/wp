@@ -68,6 +68,8 @@
 	const spec = props.spec ?? MESH_WINS[props.symbolName];
 
 	const SHADOW_ALPHA = 0.35, SHADOW_SPREAD = 0.12, SHADOW_DROP = 3;
+	// the additive rim light's peak (at the top of the leap) and its colour
+	const RIM_ALPHA = 0.22, RIM_TINT = 0xffe2a8;
 	// SymbolWinAnim's frame: an ink-red keyline under a paper one
 	const FRAME = 0xefeadc, KEYLINE = 0xb87b60;
 
@@ -142,11 +144,22 @@
 		const shadow = shadowTex ? new Sprite(shadowTex) : null;
 		if (shadow) shadow.alpha = 0;
 		const subject = new Mesh({ geometry, texture: subjectTex });
+		// THE RIM LIGHT (2026-10-31, slot-motion-recipes §1.2 layer 5): the same
+		// mesh again, additive in a warm gold, its strength riding the leap —
+		// ~22% at the top of the jump, a smaller flash on the second hop, nothing
+		// on the ground. Idles and landings barely leave the card, so they only
+		// glow faintly, which is what an idle should do. Shares the geometry, so
+		// it bends with every part of the act at no extra skinning cost.
+		const rim = new Mesh({ geometry, texture: subjectTex });
+		rim.blendMode = 'add';
+		rim.tint = RIM_TINT;
+		rim.alpha = 0;
 
 		const content = new Container();
 		content.position.set(-CANVAS / 2, -CANVAS / 2);
 		if (shadow) content.addChild(shadow);
 		content.addChild(subject);
+		content.addChild(rim);
 		root.addChild(content);
 		root.scale.set(fit);
 		root.position.set(props.x ?? 0, props.y ?? 0);
@@ -159,6 +172,7 @@
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();
 			root.scale.set(fit * pose.plateHit);
+			rim.alpha = RIM_ALPHA * Math.min(1, Math.max(0, pose.air));
 
 			if (shadow) {
 				const air = pose.air;

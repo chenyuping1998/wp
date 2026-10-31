@@ -21,6 +21,8 @@ import {
 	bump,
 	circle,
 	flick,
+	hump,
+	turnAbout,
 	panelParts,
 	polygon,
 	polyline,
@@ -143,6 +145,45 @@ export const W: MeshWinSpec = {
 		return pose;
 	},
 };
+
+/**
+ * THE WIN LIFTS THE WHOLE TILE (2026-10-29, user: 「W 也加大」). The portrait
+ * fills its tile, so the gorilla cannot leave its frame the way the cut
+ * symbols leave their plates — but the tile can leave its cell, frame and all
+ * (GoBananinja's Wild, spec.lifts): a crouch, a pop up out of the cell toward
+ * the player (x1.18, 32px) on the rise, a side-to-side rock in time with the
+ * chewing, and a slam back down with a squash on the last bite. All of it is
+ * the RIGID move, which cannot fold a triangle; the head, goggles, jaw and
+ * banana keep acting inside the tile as before. Wins only: the reel-stop
+ * reaction and the idle act reuse W.pose and stay in the cell.
+ */
+export const liftWin = (spec: MeshWinSpec): MeshWinSpec => ({
+	...spec,
+	lifts: true,
+	pose: (rig: Rig, t: number) => {
+		const pose = spec.pose(rig, t);
+		const up = track(t, [
+			[0, 0],
+			[T.crouch, 0],
+			[T.rise + 40, 1, 'out'],
+			[T.land - 170, 0.88],
+			[T.land, 0, 'in'],
+			[T.land + 110, 0.08, 'out'],
+			[T.done - 80, 0, 'in'],
+		]);
+		// a rock per chew, between the first bite and the drop
+		const rock = Math.sin((2 * Math.PI * (t - T.bite1)) / 280) * hump(t, T.bite1 - 60, T.land - 120);
+		const r = pose.rigid;
+		r.sx = track(t, [[0, 1], [T.crouch, 1.07, 'out'], [T.rise, 0.95, 'out'], [T.bite1 + 60, 1], [T.land - 20, 0.97], [T.land + 40, 1.09, 'out'], [T.land + 170, 0.98, 'out'], [T.done - 80, 1, 'out']]);
+		r.sy = track(t, [[0, 1], [T.crouch, 0.91, 'out'], [T.rise, 1.06, 'out'], [T.bite1 + 60, 1], [T.land - 20, 1.04], [T.land + 40, 0.89, 'out'], [T.land + 170, 1.02, 'out'], [T.done - 80, 1, 'out']]);
+		r.rot = 6 * rock;
+		r.pop = 1 + 0.18 * up;
+		r.dy = -32 * up;
+		pose.rigid = turnAbout(r, [128, 150], spec.feetY);
+		pose.air = up;
+		return pose;
+	},
+});
 
 // set from the measured limits
 const HEAD_DEG = 1;

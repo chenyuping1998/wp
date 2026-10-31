@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-31",
+  "revision": "20261031-hand-windup",
+  "passed": true,
+  "scope": "Shared production character, orb, audio and effects renderer in native multiplier preview; no video capture.",
+  "native": "source/medusagaze/cast/hand-anticipation-validation.json",
+  "visualReview": [
+    {
+      "case": "一般局 ×25",
+      "coilSeconds": 1.34,
+      "releaseSeconds": 1.5,
+      "fullPlaybackResult": "x25 / $25.00, returned to resting pose"
+    },
+    {
+      "case": "免費遊戲三顆",
+      "coilSeconds": 0.94,
+      "fullPlaybackResult": "x178 / $178.00, returned to resting pose with glasses on forehead"
+    }
+  ],
+  "observations": [
+    "Casting elbow retracts toward shoulder before release instead of simply lifting an open palm.",
+    "A 55ms coiled hold separates gathering from the forward/upward release stroke.",
+    "Wrist follows the arm and settles through a small rebound; opposite fingers retain the glasses contact.",
+    "Existing charge, casting sound and release accent retain the same authored event times."
+  ],
+  "measurements": {
+    "coilDistanceRigPixels": 126.49,
+    "releaseStrokeRigPixels": 186.68,
+    "elbowCurlChangeDegrees": 30.44,
+    "chargeMs": 350,
+    "coiledHoldMs": 55,
+    "unchangedMgReleaseMs": 1450,
+    "unchangedFgReleaseMs": 1050
+  },
+  "audio": {
+    "enabledInBrowser": true,
+    "consoleErrors": 0,
+    "design": "source/medusagaze/audio/CASTING_V8_SOUND_DESIGN.json",
+    "voice": "Existing original synthetic nonverbal casting sound; no new voice recording"
+  },
+  "turbo": "Native poses are identical between gaze/gaze_turbo and fg_gaze/fg_gaze_turbo; multiplier timing comparison passes all 16 cases.",
+  "fullBuild": "passed",
+  "typeCheck": {
+    "changedGameSourceErrors": 0,
+    "existingWorkspaceErrors": 154,
+    "warnings": 38
+  },
+  "screenshots": [
+    "source/medusagaze/_sheets/hand_windup_20261031_mg_coil.png",
+    "source/medusagaze/_sheets/hand_windup_20261031_mg_release.png",
+    "source/medusagaze/_sheets/hand_windup_20261031_mg_result.png",
+    "source/medusagaze/_sheets/hand_windup_20261031_fg_coil.png",
+    "source/medusagaze/_sheets/hand_windup_20261031_fg_result.png"
+  ],
+  "limits": "This hand refinement was reviewed in the production-shared renderer. A fresh full-game UI replay and live RGS validation were not performed for this revision; earlier v8 local game checks remain historical."
+}

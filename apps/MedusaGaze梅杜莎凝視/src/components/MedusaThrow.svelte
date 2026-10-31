@@ -35,11 +35,13 @@
 	import { throwTiming, medusaAnimations } from '../game/animationTimeline';
 	import MultiplierFx from './MultiplierFx.svelte';
 	import type { MultiplierFxController } from '../game/multiplierFxScene';
-	import { flightPose,impactPose,gazePose,recoil,ORB_CHARGE_DISTANCE,type OrbVisual } from '../game/multiplierPerformance';
+	import { flightPose,orbChargePose,orbLaunchPoint,impactPose,gazePose,recoil,type OrbVisual } from '../game/multiplierPerformance';
 	import { drawMultiplierReadout } from '../game/multiplierReadout';
+	import { multiplierCollisionPose,drawMultiplierCollision } from '../game/multiplierCollision';
 	import { medusaAnchors } from '../game/medusaAnchors.svelte';
 	import BoardContainer from './BoardContainer.svelte';
 	import { medusaEyes } from './Medusa.svelte';
+	import {orbPower} from '../game/orbPower';
 
 	/**
 	 * Medusa's thrown multiplier (SPEC 3, MEDUSA_動畫需求單 §2).
@@ -88,6 +90,9 @@
 	let scoreBump = $state(0);
 	let plateBeam = $state(0);
 	let beamTarget = $state({ x: 0, y: 0 });
+	let transferProgress=$state(-1),collisionProgress=$state(-1);
+	let transferValue=$state(0);
+	let transferFrom=$state({x:0,y:0});
 
 	const portrait = $derived(context.stateLayoutDerived.layoutType() === 'portrait');
 
@@ -95,6 +100,9 @@
 	const origin = $derived(medusaAnchors.ready?medusaAnchors.center:medusaEyes(portrait, BOARD_SIZES.width, BOARD_SIZES.height));
 	const eyePoints=$derived(medusaAnchors.ready?[medusaAnchors.left,medusaAnchors.right]:[{x:origin.x-7,y:origin.y},{x:origin.x+7,y:origin.y}]);
 	const center = { x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 };
+	const multiplierDock={x:center.x-142,y:center.y};
+	const transferring=$derived(transferProgress>=0);
+	const collisionPose=$derived(multiplierCollisionPose(transferFrom,center,Math.max(0,transferProgress)));
 
 	const PLATE_WIDTH = 200;
 	const PLATE_HEIGHT = PLATE_WIDTH * (320 / 512);
@@ -167,19 +175,24 @@
 		ms: number,
 		stopShort: boolean,
 		chargeMs: number,
+		order = 0,
+		layers = 1,
+		volleyPower = value,
 	) => {
 		const id = nextId++;
-		const d=Math.hypot(to.x-origin.x,to.y-origin.y)||1;
 		// Energy gathers in front of the face; it never hides the eye performance.
-		const from={x:origin.x+(to.x-origin.x)/d*ORB_CHARGE_DISTANCE,y:origin.y+(to.y-origin.y)/d*ORB_CHARGE_DISTANCE};
+		const from=orbLaunchPoint(origin,to,order);
 		orbs = [...orbs, { id, value, ...from, scale: .12, alpha: 0, stone: 0, crack: 0,angle:0,sx:1,sy:1,trail:[],charging:true }];
 		const end = stopShort
 			? { x: to.x + (origin.x - to.x) * 0.14, y: to.y + (origin.y - to.y) * 0.14 }
 			: to;
-		await tween(chargeMs,t=>update(id,{scale:.12+.76*easeOut(t),alpha:easeOut(t)}));
-		broadcast({ type:'soundMedusa',cue:'orbFly',speed:450/ms,panFrom:Math.max(-.85,Math.min(.85,(from.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)),panTo:Math.max(-.85,Math.min(.85,(end.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)) });
+		if(order===0)broadcast({type:'soundMedusa',cue:'orbCharge',value:volleyPower,speed:1});
+		await tween(chargeMs,t=>update(id,orbChargePose(from,end,t)));
+		const releasePoint=orbChargePose(from,end,1);
+		if(order===0)broadcast({type:'soundMedusa',cue:'orbRelease',value:volleyPower,speed:1});
+		broadcast({ type:'soundMedusa',cue:'orbFly',value,layers,speed:1,panFrom:Math.max(-.85,Math.min(.85,(from.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)),panTo:Math.max(-.85,Math.min(.85,(end.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)) });
 		await tween(ms, (t) => {
-			update(id,{...flightPose(from,end,reducedMotion?1:t),alpha:1,charging:false});
+			update(id,{...flightPose(releasePoint,end,reducedMotion?1:t),alpha:1,charging:false});
 		});
 		return id;
 	};
@@ -195,7 +208,7 @@
 	const land = async (id: number, ms: number,toTotal:boolean) => {
 		if(!toTotal&&amount)amount={...amount,alpha:0};
 		const orb=orbs.find(item=>item.id===id);if(orb)fx?.impact(orb,orb.value,toTotal?'plate':'score');
-		await tween(ms, (t) => update(id, {...impactPose(t),angle:0,trail:[]}));
+		await tween(ms, (t) => update(id, {...impactPose(t,orb?.angle??0),trail:[]}));
 		orbs = orbs.filter((orb) => orb.id !== id);
 	};
 
@@ -220,38 +233,37 @@
 			totalEnter = 0;
 			plateLevel = 0;
 		},
-		medusaThrow: async ({ multipliers, applied, mult, baseWin, totalWin, toTotal, pace }) => {
+		medusaThrow: async ({ multipliers, applied, mult, baseWin, totalWin, toTotal }) => {
 			if (multipliers.length === 0) return;
-			const fast = pace === 'turbo' || pace === 'turboFreegame';
 			const plan = throwTiming({
 				freegame: toTotal,
-				turbo: fast,
+				turbo: false,
 				applied,
 				orbCount: multipliers.length,
 				mult,
 			});
 			const action = medusaAnimations[plan.animation];
-			const target = toTotal ? plateValue : center;
+			const target = toTotal ? plateValue : multiplierDock;
 			baseAmount=bookEventAmountToCurrencyString(baseWin);
 			gazeProgress=-1;
+			transferProgress=collisionProgress=-1;
 			beamTarget = target;
 			broadcast({ type: 'medusaAction', animation: plan.animation, releaseMs: plan.releaseMs });
 			await flushRender();
-			broadcast({ type: 'soundMedusa', cue: 'gaze',speed:fast?1.5:1 });
+			broadcast({ type: 'soundMedusa', cue: 'gaze',speed:1 });
 			if (!toTotal && applied) {
 				pop = { text: '', scale: 1, alpha: 1 };
 				amount = { text: bookEventAmountToCurrencyString(baseWin), alpha: applied ? 1 : 0 };
 			}
 
 			// Gesture, beam and orbs run on one clock. Several orbs share one gaze.
-			const beamAt = applied ? action.beamAtMs : Math.max(0, plan.releaseMs - 100);
+			const beamAt=action.beamAtMs;
 			const beam = (async () => {
 				if (!toTotal) {
-					await wait(Math.min(plan.releaseMs, fast ? 100 : 200));
-					broadcast({ type: 'soundMedusa', cue: 'peek',speed:fast?1.5:1 });
-					await wait(Math.max(0, beamAt - (fast ? 100 : 200)));
+					await wait(Math.min(plan.releaseMs, 200));
+					await wait(Math.max(0, beamAt - (200)));
 				} else await wait(beamAt);
-				broadcast({ type: 'soundMedusa', cue: 'gazeBeam',speed:fast?1.5:1 });
+				broadcast({ type: 'soundMedusa', cue: 'gazeBeam',speed:1 });
 				await tween(
 					Math.max(100, Math.min(action.beamEndMs, plan.lastArrivalMs) - beamAt),
 					(t) => {gazeProgress=t;gaze=gazePose(t).intensity;},
@@ -259,31 +271,29 @@
 				gaze = 0;
 				gazeProgress=-1;
 			})();
-			const recovery=(async()=>{if(!toTotal&&applied){await wait(Math.max(0,action.durationMs-120));broadcast({type:'soundMedusa',cue:'glassesOn',speed:fast?1.5:1});}})();
-			const chargeMs=fast?70:130;
+			const chargeMs=plan.chargeMs;
 			await wait(Math.max(0,plan.releaseMs-chargeMs));
 			let dudReacted = false;
 			await Promise.all(
 				multipliers.map(async (value, index) => {
 					await wait(index * plan.staggerMs);
 					// A base dud reaches board centre; a feature dud stops before the plate.
-					const id = await fly(value, target, plan.flightMs, !applied && toTotal,chargeMs);
+					const id = await fly(value, target, plan.flightMs, !applied && toTotal,chargeMs,index,multipliers.length,Math.max(...multipliers));
 					if (applied) {
-						broadcast({ type: 'soundMedusa', cue: 'orbHit', value,speed:fast?1.25:1 });
+						broadcast({ type: 'soundMedusa', cue: 'orbHit', value,speed:1 });
 						if (toTotal) totalBump = 1;
 						else scoreBump = 1;
 						await land(id, plan.landMs,toTotal);
 					} else {
-						broadcast({ type: 'soundMedusa', cue: 'orbCrack',speed:fast?1.5:1 });
+						broadcast({ type: 'soundMedusa', cue: 'orbCrack',speed:1 });
 						if (!dudReacted) {
 							dudReacted = true;
 							broadcast({
 								type: 'medusaAction',
 								animation: 'gaze_dud',
-								turbo: fast,
+								turbo: false,
 								holdMs: plan.endMs - plan.firstArrivalMs,
 							});
-							broadcast({ type: 'soundMedusa', cue: 'annoyed' });
 						}
 						await shatter(id, plan.shatterMs);
 					}
@@ -304,19 +314,26 @@
 					totalValue = Math.round(from + (mult - from) * easeOut(t));
 					totalBump = 1 - t;
 				});
-				// Commit the book's authoritative value before sending light to score.
+				// Commit the authoritative total before moving its numeral to score.
 				totalValue = mult;
 				plateLevel = totalPlateLevel(mult);
-				broadcast({ type: 'soundMedusa', cue: 'plateBeam' });
-				await tween(plan.beamMs, (t) => (plateBeam = Math.sin(Math.PI * t)));
-				plateBeam = 0;
 			}
+			transferFrom=toTotal?{x:plateValue.x,y:plateValue.y+7}:multiplierDock;
+			transferValue=mult;
+			pop={text:'',scale:1,alpha:1};
+			amount={text:bookEventAmountToCurrencyString(baseWin),alpha:1};
+			broadcast({type:'soundMedusa',cue:'plateBeam'});
+			await tween(plan.transferMs,t=>transferProgress=reducedMotion?1:t);
+			broadcast({type:'soundMedusa',cue:'scoreCollide',value:mult});
+			fx?.impact(center,mult,'orb');
+			await tween(plan.collisionHoldMs,t=>{collisionProgress=t;scoreBump=reducedMotion?0:Math.sin(Math.PI*t)*.65;});
+			transferProgress=collisionProgress=-1;
 			pop = { text: `×${mult}`, scale: 1, alpha: 1 };
 			amount = { text: bookEventAmountToCurrencyString(baseWin), alpha: 1 };
 			broadcast({ type: 'soundLoop', name: 'sfx_multiplier_update' });
 			try {
 				await Promise.all([
-					tween(fast ? 120 : 200, (t) => {
+					tween(200, (t) => {
 							scoreBump = recoil(t);
 							if(pop)pop={...pop,scale:1+.12*recoil(t)};
 					}),
@@ -327,10 +344,10 @@
 			}
 			scoreBump = 0;
 			totalBump = 0;
-			await Promise.all([beam,recovery]);
-			broadcast({ type: 'medusaPose', pose: 'idle' });
+			await Promise.all([beam]);
+			// The Spine clip already queues idle; keep its breathing phase continuous.
 			await wait(plan.resultHoldMs);
-			await tween(fast ? 90 : 150, (t) => {
+			await tween(200, (t) => {
 				if (pop) pop = { ...pop, alpha: 1 - t };
 				if (amount) amount = { ...amount, alpha: 1 - t };
 			});
@@ -360,6 +377,7 @@
 				x={PLATE_WIDTH * 0.17}
 				y={7}
 				text={`×${totalValue}`}
+				alpha={transferring?0:1}
 				style={{
 					fontFamily: GAME_FONT,
 					fontWeight: GAME_FONT_WEIGHT,
@@ -373,7 +391,7 @@
 
 	{#each orbs as orb (orb.id)}
 		<Container x={orb.x} y={orb.y} alpha={orb.alpha}>
-		<Container rotation={orb.angle} scale={{x:orb.scale*orb.sx,y:orb.scale*orb.sy}}>
+		<Container rotation={orb.angle} scale={{x:orb.scale*orb.sx*orbPower(orb.value).bodyScale,y:orb.scale*orb.sy*orbPower(orb.value).bodyScale}}>
 			<Sprite
 				key={orbKeyFor(orb.value)}
 				anchor={0.5}
@@ -391,9 +409,13 @@
 				/>
 			{/if}
 		</Container>
+		</Container>
+	{/each}
+	{#each orbs as orb (orb.id)}
+		<Container x={orb.x} y={orb.y} alpha={orb.alpha}>
 			<Text
 				anchor={0.5}
-				scale={orb.scale}
+				scale={orb.scale*orbPower(orb.value).bodyScale}
 				text={`×${orb.value}`}
 				style={{
 					fontFamily: GAME_FONT,
@@ -409,7 +431,7 @@
 	<Container x={center.x} y={center.y} pivot={center} scale={1 + 0.1 * scoreBump}>
 		<Graphics x={center.x} y={center.y} draw={drawReadoutBack} />
 		{#if pop}
-			<Text anchor={0.5} x={center.x} y={center.y-88} alpha={pop.alpha} text={pop.text?'MULTIPLIER':'BASE WIN'} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:23,fill:0xc3d5b6,stroke:{color:0x10272d,width:3}}}/>
+			<Text anchor={0.5} x={center.x} y={center.y-88} alpha={pop.alpha} text={transferring?'MULTIPLY':pop.text?'MULTIPLIER':'BASE WIN'} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:23,fill:0xc3d5b6,stroke:{color:0x10272d,width:3}}}/>
 			<Text
 				anchor={0.5}
 				x={center.x}
@@ -417,6 +439,7 @@
 				scale={pop.scale}
 				alpha={pop.alpha}
 				text={pop.text}
+				visible={!transferring}
 				style={{
 					fontFamily: GAME_FONT,
 					fontWeight: GAME_FONT_WEIGHT,
@@ -425,15 +448,16 @@
 					stroke: { color: 0x2a1f24, width: 8 },
 				}}
 			/>
-			{#if pop.text}
+			{#if pop.text && !transferring}
 				<Text anchor={0.5} x={center.x} y={center.y+25} alpha={pop.alpha} text={`${baseAmount} ${pop.text} =`} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:baseAmount.length>10?22:27,fill:0xf0ead2,stroke:{color:0x10272d,width:3}}}/>
 			{/if}
 		{/if}
 		{#if amount}
 			<Text
 				anchor={0.5}
-				x={center.x}
-				y={center.y + (pop?.text?77:5)}
+				x={transferring?collisionPose.score.x:center.x}
+				y={transferring?collisionPose.score.y:center.y + (pop?.text?77:5)}
+				scale={transferring?collisionPose.score.scale*(1-Math.max(0,collisionProgress)*.3):1}
 				alpha={amount.alpha}
 				text={amount.text}
 				style={{
@@ -446,4 +470,8 @@
 			/>
 		{/if}
 	</Container>
+	{#if transferring}
+		<Text anchor={.5} x={collisionPose.mult.x} y={collisionPose.mult.y} scale={collisionPose.mult.scale} alpha={1-Math.max(0,collisionProgress)} text={`×${transferValue}`} style={{fontFamily:`${GAME_FONT},Microsoft JhengHei,sans-serif`,fontWeight:GAME_FONT_WEIGHT,fontSize:transferValue>=1000?38:48,fill:0xb8ff5a,stroke:{color:0x10272d,width:6}}}/>
+	{/if}
+	<Graphics draw={(g)=>drawMultiplierCollision(g,center,reducedMotion?-1:collisionProgress)} />
 </BoardContainer>

@@ -19,9 +19,7 @@
 	// one jade board shown twice, which read as a certificate).
 	//
 	//   intro       the jade board, HUNG: two red cords run up off the top of
-	//               the screen, and a festival lantern hangs either side on its
-	//               own cord. It drops in, swings on the cords and settles; the
-	//               lanterns follow a beat behind and settle too.
+	//               the screen. It drops in, swings on the cords and settles.
 	//   settlement  a hand-scroll (design/build_splash_parts.py: the scroll's
 	//               own bamboo rods and paper, gold brackets in the corners). It
 	//               rises in rolled up, and the rods draw apart to unroll it.
@@ -58,9 +56,11 @@
 		return { paperW, paperH, rodH, rodW: rodH * (122 / 1022) };
 	})();
 
-	// THE PAPER, MEASURED ON EACH BOARD (1600x1000 source px, 2026-10-06), and
-	// the scroll's writing area inside its brackets.
-	const PAPER = { x0: 140, y0: 300, x1: 1400, y1: 870 };
+	// THE PAPER inside the board's dotted border, measured on fg_intro.png
+	// (1600x1000 source px, re-measured 2026-10-31: the 2026-10-06 numbers were
+	// an older board's and sat 140px low, so the last rules line ran off the
+	// paper onto the frame), and the scroll's writing area inside its brackets.
+	const PAPER = { x0: 175, y0: 165, x1: 1425, y1: 795 };
 	const TEXT_AREA = props.settlement
 		? { width: SCROLL.paperW * 0.8, height: SCROLL.paperH * 0.78 }
 		: {
@@ -79,9 +79,6 @@
 	const dropY = new Tween(props.settlement ? SIGN_SIZES.height * 0.9 : -SIGN_SIZES.height * 1.2);
 	const rise = new Tween(props.settlement ? 0.82 : 1);
 	const swing = new Tween(0);
-	// the lanterns: a beat behind the board on the way down, and swinging wider
-	const lanternDrop = new Tween(-SIGN_SIZES.height * 1.4);
-	const lanternSwing = new Tween(0);
 	// 0 = rolled up (rods together), 1 = open
 	const unroll = new Tween(props.settlement ? 0 : 1);
 
@@ -105,19 +102,11 @@
 			unroll.set(1, { duration: 720, delay: 380, easing: cubicInOut });
 			return () => cancelAnimationFrame(clock);
 		}
-		lanternDrop.set(0, { duration: 760, delay: 90, easing: backOut });
 		(async () => {
 			await swing.set(0.035, { duration: 380, easing: cubicOut, delay: 250 });
 			await swing.set(-0.022, { duration: 420, easing: cubicOut });
 			await swing.set(0.01, { duration: 420, easing: cubicOut });
 			await swing.set(0, { duration: 380, easing: cubicOut });
-		})();
-		(async () => {
-			await lanternSwing.set(-0.16, { duration: 420, easing: cubicOut, delay: 420 });
-			await lanternSwing.set(0.1, { duration: 520, easing: cubicOut });
-			await lanternSwing.set(-0.05, { duration: 520, easing: cubicOut });
-			await lanternSwing.set(0.02, { duration: 480, easing: cubicOut });
-			await lanternSwing.set(0, { duration: 420, easing: cubicOut });
 		})();
 		return () => cancelAnimationFrame(clock);
 	});
@@ -130,7 +119,6 @@
 	const cordTiles = (length: number) => Math.max(1, Math.ceil(length / CORD_TILE));
 	// where the board's cords tie on: its two top corner ornaments
 	const TIES = [-0.36, 0.36].map((fx) => ({ x: SIGN_SIZES.width * fx, y: -SIGN_SIZES.height * 0.4 }));
-	const LANTERN = { size: SIGN_WIDTH * 0.2, x: SIGN_WIDTH * 0.6, hangY: -SIGN_SIZES.height * 0.18 };
 </script>
 
 <MainContainer>
@@ -140,13 +128,13 @@
 		<Container x={board.x} y={board.y + dropY.current}>
 			<LightRays radius={SIGN_SIZES.width * 0.95} alpha={props.rays ?? 0} />
 			<Sprite
-				key="fxGlow"
+				key="fxSoftGlow"
 				anchor={0.5}
 				blendMode="add"
 				tint={0xe6c27a}
 				width={SIGN_SIZES.width * 1.55}
 				height={SIGN_SIZES.height * 1.7}
-				alpha={(props.halo ?? 0) * 0.75}
+				alpha={(props.halo ?? 0) * 0.4}
 			/>
 		</Container>
 	{/if}
@@ -182,22 +170,9 @@
 			{/each}
 		</Container>
 	{:else}
-		<!-- the lanterns, each on its own cord from above the screen, a beat behind -->
-		{#each [-1, 1] as side (side)}
-			{@const topY = -(board.y + lanternDrop.current) - 40}
-			{@const length = LANTERN.hangY - topY}
-			<Container
-				x={board.x + side * LANTERN.x}
-				y={board.y + lanternDrop.current + topY}
-				rotation={lanternSwing.current * (side < 0 ? 1 : 0.85)}
-			>
-				{#each Array(cordTiles(length)) as _, i (i)}
-					<Sprite key="v8SignCord" anchor={{ x: 0.5, y: 0 }} y={i * CORD_TILE} width={CORD_W} height={CORD_TILE} />
-				{/each}
-				<Sprite key="gbS" anchor={{ x: 0.5, y: 0.04 }} y={length} width={LANTERN.size} height={LANTERN.size} />
-			</Container>
-		{/each}
-
+		<!-- (the two festival lanterns that hung on cords either side of the board
+		     were removed 2026-10-31: with the Master standing beside it they
+		     crowded the frame; the board hangs on its own cords alone) -->
 		<Container x={board.x} y={board.y + dropY.current} rotation={swing.current}>
 			<!-- the board's cords, up off the top of the screen, behind it -->
 			{#each TIES as tie, t (t)}

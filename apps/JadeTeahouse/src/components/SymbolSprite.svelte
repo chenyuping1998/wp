@@ -11,10 +11,9 @@
 		x?: number;
 		y?: number;
 		symbolInfo: ReturnType<typeof getSymbolInfo>;
-		// How fast the reel is travelling, 0..1, driving a cheap motion blur
-		// (vertical stretch + ghosts). Continuous rather than a boolean so the
-		// blur eases off through the bounce instead of snapping away the instant
-		// the reel changes state.
+		// How fast the reel is travelling, 0..1. The directional blur itself is
+		// applied once per reel by ReelMotion; this only holds back the idle and
+		// landing acts while the reel moves.
 		blur?: number;
 		// symbol just landed: impact squash before settling to static
 		landing?: boolean;
@@ -30,7 +29,6 @@
 
 	const width = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.width);
 	const height = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.height);
-	const blur = $derived(Math.max(0, Math.min(1, props.blur ?? 0)));
 
 	// landing squash: hammer down, rebound, settle (~240ms). Amplitude scales with
 	// `impact`, timings do not — a lighter symbol should look lighter, not slower,
@@ -93,35 +91,13 @@
 	});
 </script>
 
-{#if blur > 0.01}
-	<!-- ghost trail: same art, offset and faded, sells the motion blur. Offset,
-	     opacity and stretch all scale with speed, so the trail shortens and fades
-	     as the reel brakes rather than vanishing in one frame. -->
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) - height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96}
-		height={height * (1 + 0.18 * blur)}
-		alpha={0.22 * blur}
-	/>
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) + height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96}
-		height={height * (1 + 0.18 * blur)}
-		alpha={0.22 * blur}
-	/>
-{/if}
+<!-- Moving reels are blurred once per reel by ReelMotion (as Go Bananeon,
+     2026-10-31): no ghost copies, no stretch, one tile silhouette. -->
 
 <Container
 	x={props.x ?? 0}
 	y={props.y ?? 0}
-	scale={{ x: sx.current, y: blur > 0.01 ? 1 + 0.3 * blur : sy.current }}
-	alpha={1 - 0.15 * blur}
+	scale={{ x: sx.current, y: sy.current }}
 >
 	<Sprite anchor={0.5} key={props.symbolInfo.assetKey} {width} {height} />
 	{#if props.letter}

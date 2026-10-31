@@ -1,7 +1,7 @@
 <script lang="ts">
  import {Container,Graphics} from 'pixi-svelte';
  import type {Graphics as PixiGraphics} from 'pixi.js';
- let {who,dx=0,dy=0,width,height}:{who:'digger'|'lifeguard';dx?:number;dy?:number;width:number;height:number}=$props();
+ let {who,dx=0,dy=0,width,height,anchorX=.5,anchorY=1}:{who:'digger'|'lifeguard';dx?:number;dy?:number;width:number;height:number;anchorX?:number;anchorY?:number}=$props();
  const paths=(g:PixiGraphics)=>{
   g.clear();
   // Trace only the painted eye whites. The original brows, lashes and eyelid
@@ -28,6 +28,6 @@
   }
  };
 </script>
-<Container x={-width*.5} y={-height} scale={{x:width/(who==='digger'?414:391),y:height/(who==='digger'?405:364)}}>
+<Container x={-width*anchorX} y={-height*anchorY} scale={{x:width/(who==='digger'?414:391),y:height/(who==='digger'?405:364)}}>
  <Container><Graphics isMask draw={paths}/><Graphics draw={paths}/><Graphics draw={eyes}/></Container>
 </Container>

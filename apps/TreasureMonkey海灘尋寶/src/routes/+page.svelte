@@ -5,6 +5,8 @@
 	import Game from '../components/Game.svelte';
 	import IntroFeatures from '../components/ui/TreasureIntro.svelte';
 	import { setContext } from '../game/context';
+	import { stateLayout } from '../game/stateLayout';
+	import { fade } from 'svelte/transition';
 
 	import messagesMap from '../i18n/messagesMap';
 
@@ -19,6 +21,7 @@
 	let showIntro = $state(true);
 
 	setContext();
+	stateLayout.showLoadingScreen=true;
 </script>
 
 <GlobalStyle>
@@ -40,9 +43,9 @@
 	precisely what that line forbids (approval-guidelines.md, PreChecks).
 -->
 {#if showIntro}
-	<IntroFeatures onclose={() => (showIntro = false)} />
+	<div class="opening" out:fade={{duration:280}}><IntroFeatures onclose={() => {stateLayout.showLoadingScreen=false;showIntro=false;}} /></div>
 {/if}
 
 
 
-<style>:global(body){overflow:hidden;background:#000}</style>
+<style>.opening{position:fixed;inset:0;z-index:100}:global(body){overflow:hidden;background:#000}</style>

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Popup } from 'components-shared';
+	import Popup from './InfoPopup.svelte';
+	import InfoShell from './InfoShell.svelte';
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal } from 'state-shared';
 
@@ -30,10 +31,10 @@
 	};
 
 	const SYMBOL_LABEL: Record<string, string> = {
-		H1: 'Combat Helmet',
-		H2: 'Pineapple Grenade',
-		H3: 'Banana Ammo Crate',
-		H4: 'Golden Compass',
+		H1: 'Samurai Helmet',
+		H2: 'Four-point Shuriken',
+		H3: 'Smoke Bomb',
+		H4: 'Folding Fan',
 		L1: 'A',
 		L2: 'K',
 		L3: 'Q',
@@ -172,7 +173,8 @@
 
 {#if stateModal.modal?.name === 'payTable'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="wp-paytable">
+		<div class="wp-paytable info-page">
+			<InfoShell kind="paytable">
 			<h2>{T.payTableUpper}</h2>
 			<p class="wp-note">
 				{T.paysStart} shown as a multiple of {T.totalBet}, per winning way. Wins
@@ -334,6 +336,7 @@
 				{maxWin.toLocaleString()}&times;
 				{T.totalBet}.
 			</p>
+			</InfoShell>
 		</div>
 	</Popup>
 {/if}

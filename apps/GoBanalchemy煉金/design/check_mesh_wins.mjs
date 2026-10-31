@@ -251,7 +251,21 @@ for (const name of pick) {
 			core.skin(rig, pose, spec.feetY, out);
 			for (const v of fixed) worst = Math.max(worst, Math.hypot(out[v * 2] - rig.rest[v * 2], out[v * 2 + 1] - rig.rest[v * 2 + 1]));
 		}
-		if (rigidOff > 1e-9) fail(`panel: the rigid move is used (off by ${rigidOff}) — it would move the frame`);
+		// a LIFTING panel (spec.lifts, the Wild's win) takes its frame with it on
+		// purpose and has its socket drawn under it: there the rule is only that
+		// the frame moves rigidly, i.e. no frame vertex is bent by a bone
+		if (spec.lifts) {
+			let bent = 0;
+			const ref = new Float32Array(out.length);
+			for (let ms = 0; ms <= 2600; ms += 8) {
+				const pose = spec.pose(rig, ms);
+				core.skin(rig, pose, spec.feetY, out);
+				core.skin(rig, { ...pose, bones: core.restPose(rig).bones }, spec.feetY, ref);
+				for (const v of fixed) bent = Math.max(bent, Math.hypot(out[v * 2] - ref[v * 2], out[v * 2 + 1] - ref[v * 2 + 1]));
+			}
+			if (bent > 0.05) fail(`panel (lifts): the frame bends ${bent.toFixed(3)}px against the rigid move`);
+			else ok(`panel (lifts): the tile lifts whole (rigid off by up to ${rigidOff.toFixed(2)}), frame unbent`);
+		} else if (rigidOff > 1e-9) fail(`panel: the rigid move is used (off by ${rigidOff}) — it would move the frame`);
 		else if (worst > 0.05) fail(`panel: the frame moves ${worst.toFixed(3)}px`);
 		else ok(`panel: frame still (${fixed.length} vertices), rigid move unused`);
 	}

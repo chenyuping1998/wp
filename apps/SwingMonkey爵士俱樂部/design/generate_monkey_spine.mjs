@@ -45,6 +45,7 @@ import { castMotions } from './cast_motions.mjs';
 import { bowClip } from './bow_motion.mjs';
 import { applyThemeCast } from './theme_cast_motions.mjs';
 import { LAUGH, applyLaughV9 } from './laugh_motion_v9.mjs';
+import { applyRecordedLaugh } from './recorded_laugh_motion.mjs';
 
 const toolDir = process.argv[2];
 if (!toolDir) {
@@ -2269,6 +2270,7 @@ for (const [name, animation] of Object.entries(allAnims)) {
 	if (head.translate) head.translate = head.translate.map((k) => ({ ...k, x: (k.x ?? 0)*.55, y: (k.y ?? 0)*.55 }));
 }
 const LOOPS = { idle: own.loops?.idle ?? IDLE_LOOP, flutter: own.loops?.flutter ?? FLUTTER_LOOP };
+applyRecordedLaugh(allAnims, CAST);
 
 const skeleton = {
 	skeleton: {

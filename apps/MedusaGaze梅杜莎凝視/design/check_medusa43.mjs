@@ -44,16 +44,41 @@ for(const free of [false,true]){
  const p=createMedusaPlayer(data);p.setFreegame(free);
  const pose=()=>Object.fromEntries(['hips','chest','head'].map(name=>{const b=p.skeleton.findBone(name).getAppliedPose();return[name,{x:b.worldX,y:b.worldY}];}));
  const start=pose();for(let i=0;i<216;i++)p.update(1/120);const inhale=pose();for(let i=216;i<720;i++)p.update(1/120);const seam=pose();
- const lift=inhale.chest.y-start.chest.y;assert.ok(lift>6&&lift<25,'Breathing must visibly lift the ribcage, without moving the whole figure');
+ const lift=inhale.chest.y-start.chest.y;assert.ok(lift>20&&lift<40,'Breathing must visibly lift the ribcage, without moving the whole figure');
  assert.ok(Math.hypot(inhale.hips.x-start.hips.x,inhale.hips.y-start.hips.y)<.001,'Breathing keeps the grounded pelvis fixed');
  assert.ok(Math.hypot(seam.chest.x-start.chest.x,seam.chest.y-start.chest.y)<.01,'Breath loop must close without a jump');
  breaths.push({mode:free?'FG':'MG',ribcageLiftRigPixels:lift,pelvisFixed:true,loopSeamClosed:true});p.destroy();
 }
-let fidgets=0;const idle=createMedusaPlayer(data,()=>fidgets++);for(let i=0;i<3600;i++)idle.update(1/60);assert.ok(fidgets<=3&&fidgets>=2);idle.destroy();
+let fidgets=0;const snakeVisits=new Set();const idle=createMedusaPlayer(data,index=>{fidgets++;snakeVisits.add(index);});for(let i=0;i<3600;i++)idle.update(1/60);assert.ok(fidgets>=12&&fidgets<=16);assert.equal(snakeVisits.size,9,'Every snake gets its own threatened-bite action within a minute');idle.destroy();
 const transition=createMedusaPlayer(data);transition.play('gaze',false,2);assert.equal(transition.state.tracks[0].timeScale,2);transition.setFreegame(true);assert.equal(transition.state.tracks[0].next.animation.name,'fg_idle');
 for(let i=0;i<180;i++)transition.update(1/60);assert.equal(transition.state.tracks[0].animation.name,'fg_idle');transition.play('win_max',true);for(let i=0;i<240;i++)transition.update(1/60);assert.equal(transition.state.tracks[0].animation.name,'win_max_loop');
 transition.setFreegame(false);assert.equal(transition.state.tracks[0].animation.name,'idle');transition.setFreegame(true);transition.play('fg_end',true);for(let i=0;i<120;i++)transition.update(1/60);transition.setFreegame(false);assert.equal(transition.state.tracks[0].animation.name,'idle');transition.setReducedMotion(true);assert.equal(transition.play('gaze'),false);transition.setReducedMotion(false);transition.reset();assert.equal(transition.state.tracks[0].animation.name,'idle');transition.destroy();
-const result={spine:'4.3.13',scope:'Official 4.3 core replay of game JSON/atlas. Visual performance and hand-painted contact require browser review too.',bones:json.bones.length,independentSnakeChains:9,clips,meshFailures:failures,pinchContacts:contacts,breathing:breaths,idle60sSnakeActions:fidgets,modeTransitions:'passed: accelerated gaze, queued FG idle, max hold loop, FG end to MG, reduced motion reset',passed:failures.length===0&&contacts.every(c=>c.distancePx<3)};
+const tailPlayer=createMedusaPlayer(data);
+const tailVertices=()=>{const slot=tailPlayer.skeleton.findSlot('tail'),att=slot.getAppliedPose().getAttachment(),v=new Float32Array(att.worldVerticesLength);att.computeWorldVertices(tailPlayer.skeleton,slot,0,v.length,v,0,2);return v;};
+for(let i=0;i<396;i++)tailPlayer.update(1/120);const tailLeft=tailVertices();for(let i=0;i<50;i++)tailPlayer.update(1/120);const tailRight=tailVertices();
+let tailSwishRigPixels=0;for(let i=0;i<tailLeft.length;i+=2)tailSwishRigPixels=Math.max(tailSwishRigPixels,Math.hypot(tailRight[i]-tailLeft[i],tailRight[i+1]-tailLeft[i+1]));assert.ok(tailSwishRigPixels>20&&tailSwishRigPixels<180,'Tail swish must be readable while staying attached');tailPlayer.destroy();
+let seamlessRestSamples=0;
+for(const free of [false,true])for(const t of [.4,1.8,3.6,4.8]){
+ const p=createMedusaPlayer(data);p.setFreegame(free);for(let dt=0;dt<t;dt+=1/120)p.update(Math.min(1/120,t-dt));
+ const track=p.state.tracks[0],before=p.skeleton.bones.map(b=>{const q=b.getAppliedPose();return[q.worldX,q.worldY,q.a,q.b,q.c,q.d];});
+ p.returnToRest();p.update(0);assert.equal(p.state.tracks[0],track,'Spin-start idle event must preserve the current track and phase');
+ p.skeleton.bones.forEach((b,k)=>{const q=b.getAppliedPose();[q.worldX,q.worldY,q.a,q.b,q.c,q.d].forEach((v,j)=>assert.ok(Math.abs(v-before[k][j])<.00001,'Spin start must never reset breathing or snake pose'));});seamlessRestSamples++;p.destroy();
+}
+let foreheadSamples=0;
+for(const name of ['fg_idle','fg_gaze','gaze_dud','react_small','idle_fidget','win_big','win_max','fg_end']){
+ const p=createMedusaPlayer(data);p.setFreegame(true);p.play(name);
+ for(let i=0;i<240;i++){
+  p.update(1/60);const glass=p.skeleton.findBone('glasses'),head=glass.parent.getAppliedPose(),g=glass.getAppliedPose(),x=glass.data.setupPose.x+175,y=glass.data.setupPose.y;
+  assert.ok(Math.hypot(g.worldX-(head.a*x+head.b*y+head.worldX),g.worldY-(head.c*x+head.d*y+head.worldY))<.001,'FG glasses must remain parked on the forehead through every acting clip');foreheadSamples++;
+ }p.destroy();
+}
+assert.equal(json.bones.filter(b=>/^snake_\d+_jaw$/.test(b.name)).length,9);
+for(const name of ['gaze','gaze_turbo','fg_gaze','fg_gaze_turbo']){
+ const p=createMedusaPlayer(data);p.play(name);p.update(.9);
+ const order=p.skeleton.drawOrder.appliedPose.map(slot=>slot.data.name);
+ assert.ok(order.indexOf('hand_back')>order.indexOf('snake_9'),'The casting palm must remain visible in front of the hair');p.destroy();
+}
+const result={spine:'4.3.13',scope:'Official 4.3 core replay of game JSON/atlas. Visual performance and hand-painted contact require browser review too.',bones:json.bones.length,independentSnakeChains:9,independentSnakeJaws:9,foreheadSamples,seamlessRestSamples,tailSwishRigPixels,clips,meshFailures:failures,pinchContacts:contacts,breathing:breaths,idle60sSnakeActions:fidgets,modeTransitions:'passed: accelerated gaze, queued FG idle, max hold loop, FG end to MG, reduced motion reset',passed:failures.length===0&&contacts.every(c=>c.distancePx<3)};
 fs.writeFileSync(new URL('spine43-validation.json',folder),JSON.stringify(result,null,2)+'\n');
 console.log(JSON.stringify({clips:clips.length,failures,contacts,idle60sSnakeActions:fidgets},null,2));
 assert.equal(failures.length,0,'Visible painted mesh must never fold');assert.ok(contacts.every(c=>c.distancePx<3),'Fingers must track the glasses rim during the held gaze pose');

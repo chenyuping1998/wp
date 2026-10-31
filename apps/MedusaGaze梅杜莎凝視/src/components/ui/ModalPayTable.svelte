@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { Popup } from 'components-shared';
-	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal } from 'state-shared';
 
+	import TempleInfoShell from './TempleInfoShell.svelte';
 	import config from '../../game/config';
 	import assets from '../../game/assets';
 	import { socialTerms } from '../../game/socialTerms';
@@ -118,15 +117,15 @@
 </script>
 
 {#if stateModal.modal?.name === 'payTable'}
-	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
+	<TempleInfoShell view="pays" chapters={[{id:'symbols',label:'The treasures'},{id:'examples',label:'Match anywhere'},{id:'special',label:'Medusa’s gift'}]}>
 		<div class="wp-paytable">
-			<h2>{T.payTableTitle}</h2>
+			<span class="temple-eyebrow">TREASURES OF THE TEMPLE</span><h2>{T.payTableTitle}</h2>
 			<p class="wp-note">
 				Values shown as a multiple of the {T.totalBet}. 8 or more of the same symbol anywhere on the
 				6&times;6 board {T.pay} &mdash; they do not have to touch, and position does not matter.
 			</p>
 
-			<div class="wp-grid">
+			<div class="wp-grid" data-chapter="symbols">
 				{#each rows as row, i (row.name)}
 					<div class="wp-row" style="animation-delay: {i * 40}ms">
 						<div class="wp-symbol">
@@ -140,7 +139,7 @@
 								{#each scatterPays as pay (pay.count)}
 									<span class="wp-pay-chip"
 										><b>{pay.count === topScatter ? `${pay.count}+` : pay.count}</b><i>:</i><em
-											>{pay.value}</em
+											>{pay.value}×</em
 										></span
 									>
 								{/each}
@@ -149,7 +148,7 @@
 								</span>
 							{:else if row.tiers.length}
 								{#each row.tiers as tier (tier.label)}
-									<span class="wp-pay-chip"><b>{tier.label}</b><i>:</i><em>{tier.value}</em></span>
+									<span class="wp-pay-chip"><b>{tier.label}</b><i>:</i><em>{tier.value}×</em></span>
 								{/each}
 							{:else}
 								<!-- design/sync_math_config.mjs rejects unknown symbols; last resort only -->
@@ -160,7 +159,7 @@
 				{/each}
 			</div>
 
-			<h3 class="wp-section-title">{T.howSymbolsPay}</h3>
+			<h3 class="wp-section-title" data-chapter="examples">{T.howSymbolsPay}</h3>
 			<p class="wp-note">
 				Count the symbol, not its shape. 8 or more of the same symbol anywhere on the board {T.pay};
 				the more there are, the higher the band it {T.pays} from.
@@ -181,7 +180,7 @@
 				{/each}
 			</div>
 
-			<h3 class="wp-section-title">MEDUSA'S MULTIPLIER</h3>
+			<h3 class="wp-section-title" data-chapter="special">MEDUSA'S MULTIPLIER</h3>
 			<p class="wp-note">
 				Winning symbols turn to stone and crumble, and the symbols above fall to replace them; the
 				chain continues until nothing more {T.pays}. When it ends, Medusa may throw a multiplier. It
@@ -193,7 +192,7 @@
 				{maxWin.toLocaleString()}&times; {T.totalBet}.
 			</p>
 		</div>
-	</Popup>
+	</TempleInfoShell>
 {/if}
 
 <style lang="scss">
@@ -392,4 +391,12 @@
 		font-size: 0.72rem;
 		font-weight: 700;
 	}
-</style>
+
+ .wp-paytable{box-sizing:border-box;width:100%;max-width:none;max-height:none;overflow:visible;padding:26px;background:transparent;border:0;border-radius:0;box-shadow:none;animation:none;color:#173e43;gap:18px;text-align:left}.wp-paytable h2{font:400 26px var(--gb-display-font);color:#173e43;text-align:left;margin:0;letter-spacing:.02em}.temple-eyebrow{font-size:10px;letter-spacing:.18em;color:#8d6b26;font-weight:800}.wp-note{font-size:14px;line-height:1.7;opacity:1;color:#425950}.wp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;scroll-margin-top:18px}.wp-row{display:grid;grid-template-columns:100px minmax(0,1fr);padding:16px;gap:15px;background:#fffaf0;border:1px solid #cbbd9a;border-radius:10px;box-shadow:0 3px 0 #ded4bc;animation:none}.wp-symbol{display:flex;flex-direction:column;align-items:center;min-width:0;gap:8px;text-align:center}.wp-symbol img{width:74px;height:74px}.wp-symbol-name{font-size:12px;color:#173e43;line-height:1.4}.wp-pays{justify-content:flex-start;gap:6px}.wp-pay-chip{display:flex;justify-content:space-between;min-width:110px;padding:7px 9px;box-sizing:border-box;font-size:14px;border:1px solid #c8b994;border-radius:5px;background:#ece4d0;gap:10px}.wp-pay-chip b{color:#35574e;font-size:12px}.wp-pay-chip em{color:#173e43;font-size:17px;font-variant-numeric:tabular-nums}.wp-pay-chip i{display:none}.wp-special{font-size:12px;line-height:1.6;color:#846321;text-align:left}.wp-section-title{font:400 18px var(--gb-display-font);color:#173e43;letter-spacing:.02em;scroll-margin-top:18px}.wp-example{border:1px solid #c9bc99;background:#fffbf2;border-radius:8px;padding:14px}.wp-example-id{font-size:12px;margin-top:6px;color:#173e43}.wp-cell.lit{background:#1e5d5a}.wp-cell{background:#d8d2c0}.wp-examples{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+ @media(max-width:760px){.wp-grid{grid-template-columns:1fr}.wp-row{grid-template-columns:92px minmax(0,1fr)}}
+ @media(max-width:600px){.wp-paytable{padding:17px}.wp-note{font-size:13px}.wp-paytable h2{font-size:23px}.wp-row{padding:13px;gap:12px;grid-template-columns:86px minmax(0,1fr)}.wp-pays{gap:5px}.wp-pay-chip{min-width:100px;padding:5px 8px}.wp-symbol img{width:65px;height:65px}.wp-symbol-name{font-size:11px}.wp-section-title{font-size:16px}.wp-example{padding:10px}.wp-example-id{font-size:10px}}
+
+
+ .wp-pays{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.wp-pay-chip{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:9px 5px}.wp-pay-chip em{font-size:18px;white-space:nowrap}.wp-special{grid-column:1/-1}
+ @media(max-width:600px){.wp-pays{gap:5px}.wp-pay-chip{min-width:0;padding:8px 3px}.wp-pay-chip b{font-size:10px}.wp-pay-chip em{font-size:16px}}
+ </style>

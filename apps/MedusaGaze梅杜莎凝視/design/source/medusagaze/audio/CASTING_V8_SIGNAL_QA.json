@@ -1,0 +1,66 @@
+{
+  "scope": "Runtime PCM comparison; FFT band-limited RMS, no subjective listening claim.",
+  "lowFrequencyWeight": [
+    {
+      "cue": "sfx_orb_fly",
+      "lowBand40to220HzRmsBefore": 0.0008245909683789358,
+      "lowBand40to220HzRmsAfter": 0.006930143011451849,
+      "gainDb": 18.49
+    },
+    {
+      "cue": "sfx_orb_hit_s",
+      "lowBand40to220HzRmsBefore": 0.0012037306240099336,
+      "lowBand40to220HzRmsAfter": 0.04499518706873642,
+      "gainDb": 31.45
+    },
+    {
+      "cue": "sfx_orb_hit_m",
+      "lowBand40to220HzRmsBefore": 0.0011424592750060357,
+      "lowBand40to220HzRmsAfter": 0.046588562988319565,
+      "gainDb": 32.21
+    },
+    {
+      "cue": "sfx_orb_hit_l",
+      "lowBand40to220HzRmsBefore": 0.0035332463172371015,
+      "lowBand40to220HzRmsAfter": 0.04778282440583703,
+      "gainDb": 22.62
+    }
+  ],
+  "timing": {
+    "chargeMs": 350,
+    "releaseMs": 160,
+    "flightMs": 600,
+    "voiceRate": 0.92
+  },
+  "truePeaksDb": [
+    {
+      "cue": "sfx_orb_charge",
+      "db": -12.59
+    },
+    {
+      "cue": "sfx_orb_release",
+      "db": -8.48
+    },
+    {
+      "cue": "vo_medusa_cast",
+      "db": -9.0
+    },
+    {
+      "cue": "sfx_orb_fly",
+      "db": -11.41
+    },
+    {
+      "cue": "sfx_orb_hit_s",
+      "db": -9.49
+    },
+    {
+      "cue": "sfx_orb_hit_m",
+      "db": -8.5
+    },
+    {
+      "cue": "sfx_orb_hit_l",
+      "db": -7.5
+    }
+  ],
+  "passed": true
+}

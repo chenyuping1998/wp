@@ -1,0 +1,192 @@
+{
+  "app": "Purrfia喵菲亞家族",
+  "rigSha256": "50f122f203f982b3d18040e967703c7dfe7b83e1c990188083bc0287c8d83940",
+  "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+  "fps": 60,
+  "contactFps": 60,
+  "scope": "all opaque meshes and contacts; every clip, complete configured crossfade, actual player normal/turbo sequences",
+  "totalFrames": 11270,
+  "clipFrames": 3489,
+  "mixFrames": 6760,
+  "runtimeFrames": 1021,
+  "totalFolded": 0,
+  "clipFolded": 0,
+  "mixFolded": 0,
+  "minAreaRatio": 0.002069,
+  "seamSamples": 273176,
+  "seamFailures": 0,
+  "contactPatches": {
+    "front cuff": 5,
+    "rear cuff": 5,
+    "collar": 5,
+    "front shoulder": 4,
+    "rear shoulder": 5,
+    "stamp grip": 1
+  },
+  "transitionPairs": 360,
+  "runtimeScenarios": 2,
+  "clips": [
+    {
+      "name": "idle",
+      "frames": 961,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "fg_idle",
+      "frames": 961,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "push_monocle",
+      "frames": 68,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "push_monocle_short",
+      "frames": 31,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "stamp",
+      "frames": 55,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "stamp_short",
+      "frames": 30,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "claim_turf",
+      "frames": 68,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "catch_stamp",
+      "frames": 31,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "lick_paw",
+      "frames": 38,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "react_small",
+      "frames": 55,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "react_good",
+      "frames": 85,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "react_chain",
+      "frames": 61,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "react_none",
+      "frames": 74,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "idle_bored",
+      "frames": 146,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "fg_trigger",
+      "frames": 134,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "fg_end",
+      "frames": 98,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "win_big",
+      "frames": 157,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "win_max",
+      "frames": 194,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "win_big_loop",
+      "frames": 121,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "win_max_loop",
+      "frames": 121,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    }
+  ],
+  "transitionFailures": [],
+  "runtimeFailures": []
+}

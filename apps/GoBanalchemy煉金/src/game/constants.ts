@@ -95,7 +95,9 @@ export const SPIN_OPTIONS_DEFAULT = {
 	...SPIN_OPTIONS_SHARED,
 	reelPreSpinSpeed: 2,
 	reelSpinSpeed: 3,
-	reelBounceSizeMulti: 0.3,
+	reelBounceSizeMulti: .18,
+	reelSpinSpeedBeforeBounce: 2.7,
+	reelBounceBackSpeed: .18,
 };
 
 export const SPIN_OPTIONS_FAST = {

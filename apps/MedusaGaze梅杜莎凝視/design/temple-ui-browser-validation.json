@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-31",
+  "revision": "20261031-temple-ui",
+  "passed": true,
+  "scope": "App-owned Greek temple information UI, interface mix, numeric toolbar presentation; local mock only, stills only.",
+  "changes": [
+    "Golf guide structure adapted into original Greek temple cover, chapter index and three illustrated steps; Medusa artwork and game configuration retained.",
+    "Guide and paytable share teal, marble and gold shell with persistent tabs, chapter links and close control.",
+    "Readable payout cards use three fixed columns with symbol counts above explicit x values. Scatter 100x remains fully visible at 320px.",
+    "Toolbar numeric values use the body font at weight 700; slightly larger readouts, smaller status text and reduced numeric pop.",
+    "Quiet open, tab and close cues share existing original sound files; 80ms anti-stack gate and softer general button gain.",
+    "One to three orb flight voices divide gain by sqrt(voices), retaining a constant summed squared-gain budget without changing cast voice, impact or animation clocks.",
+    "Mode table now explicitly states natural 4+ Aegis entry or 100x buy. Summon-and-throw wording also applies to FG forehead glasses."
+  ],
+  "uiReview": {
+    "desktop": [1280, 720],
+    "mobile": [[390, 844], [320, 568]],
+    "additionalDesktopSize": [778, 668],
+    "mobile320Bounds": {"documentWidth": 320, "dialogWidth": 303.2, "contentClientWidth": 285, "contentScrollWidth": 285},
+    "chapters": "Quick guide, gaze, free spins, Aegis, controls and RTP/modes reviewed; paytable chapters also wired.",
+    "close": "Header cross and Escape verified; mobile header cross 44px.",
+    "keyboard": "Initial focus on close; Shift+Tab wraps to content, Tab wraps back to close.",
+    "tabSwitch": "GAME GUIDE and PAY TABLE switch in the same modal; active state and respective chapter rows shown.",
+    "bet": "Selected 2.00 turns gold with check mark and readout updates; restored 1.00 and closed.",
+    "auto": "Selected 25 turns gold with check mark; ADVANCED dark on cream; closed without starting autoplay.",
+    "config": "Ten original symbol rows and configuration-derived count tiers, 96.00% RTP, 15000x maximum, scatter and retrigger rules retained."
+  },
+  "gameSmoke": {"book": "baseThrow", "result": "$12.50", "returnedToIdle": true, "scope": "Local mock lifecycle; wallet values are not financial validation."},
+  "nativeChecks": {"fullPackageBuild": "passed", "characterSound": "character-sound-validation.json", "normalizedVolleyFlight": true, "quietInterfaceCues": 3, "audioFiles": 65, "multiplierTimingComparisons": 16, "signatureClockEqualAcrossTurboTiers": true, "eightLinkMs": 9870},
+  "typeCheck": {"errors": 0, "warnings": 1, "warning": "Existing tsconfig allowImportingTsExtensions/noEmit configuration"},
+  "console": {"runtimeErrors": 0, "notes": "Existing Pixi TextStyle warning observed in dev; no error entries after UI and mock replay."},
+  "screenshots": [
+    "source/medusagaze/_sheets/temple_ui_20261031_guide_desktop.png",
+    "source/medusagaze/_sheets/temple_ui_20261031_paytable_desktop.png",
+    "source/medusagaze/_sheets/temple_ui_20261031_guide_390.png",
+    "source/medusagaze/_sheets/temple_ui_20261031_guide_320.png",
+    "source/medusagaze/_sheets/temple_ui_20261031_feature_320.png",
+    "source/medusagaze/_sheets/temple_ui_20261031_paytable_320.png",
+    "source/medusagaze/_sheets/temple_ui_20261031_uibar_320.png",
+    "source/medusagaze/_sheets/temple_ui_20261031_uibar_desktop.png",
+    "source/medusagaze/_sheets/temple_ui_20261031_bet_selected.png",
+    "source/medusagaze/_sheets/temple_ui_20261031_auto_selected.png",
+    "source/medusagaze/_sheets/temple_ui_20261031_mock_result.png"
+  ],
+  "limits": "No new human voice recording; original synthesized library remains. Summed squared-gain normalization is a mix rule, not a guarantee of identical perceived loudness. Historical 15-spin feature reports were not repeated this revision. No live RGS, wallet or production device frame-pacing certification."
+}

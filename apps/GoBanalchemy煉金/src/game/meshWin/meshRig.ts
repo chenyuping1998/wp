@@ -456,6 +456,14 @@ export const flick = (t: number, t0: number, hz: number, decay: number) => {
 export const bump = (t: number, from: number, to: number) =>
 	t <= from || t >= to ? 0 : Math.sin((Math.PI * (t - from)) / (to - from));
 
+/**
+ * 0 -> 1 -> 0 over [from, to] with zero speed at both ends (sin²), where
+ * bump's half sine starts and stops at full speed — a visible kick at each
+ * end of every squash (spine-generator's smoothness check, ported to
+ * PuttMonkey's meshes 2026-10-23).
+ */
+export const hump = (t: number, from: number, to: number) => bump(t, from, to) ** 2;
+
 /** 0 -> 1 over [from, to], smooth */
 export const ramp = (t: number, from: number, to: number) => smoothstep((t - from) / (to - from));
 
@@ -508,6 +516,12 @@ export type MeshWinSpec = {
 	mode?: 'cut' | 'panel';
 	/** panel mode: the art's own sprite key, drawn through the mesh */
 	sprite?: string;
+	/** a PANEL tile that lifts out of its cell whole, on the rigid move (the
+	 *  Wild's win, wGorilla.liftWin; ported from GoBananinja 2026-10-29). Its
+	 *  frame is part of the tile, so it goes with it; under it SymbolMeshWin
+	 *  draws the cell's empty socket so the board's static tile is never
+	 *  uncovered. check_mesh_wins lets such a panel use the rigid move. */
+	lifts?: boolean;
 	/** panel mode: where the drawing matters — the gate checks fold and stretch
 	 *  here, and the glow and light sweep are masked to it */
 	inked?: (p: Point) => boolean;
@@ -635,11 +649,13 @@ export const leap = (
 	]);
 	const hop2 = bump(t, b.land + 40, b.hop2);
 	const air = Math.max(0, Math.min(1, up + 0.3 * hop2));
+	// 2026-10-29 (user: 「獎圖動態更明顯生動」): deeper crouch, harder landing,
+	// a longer stretch in flight — and sin² humps so none of them kicks in
 	const squash =
-		0.13 * bump(t, 20, b.crouch + 70) +
-		0.16 * bump(t, b.land - 40, b.land + 120) +
-		0.07 * bump(t, b.hop2 - 30, b.hop2 + 110);
-	const stretch = 0.08 * bump(t, b.crouch, b.rise) + 0.04 * bump(t, b.fall, b.land);
+		0.2 * hump(t, 0, b.crouch + 90) +
+		0.24 * hump(t, b.land - 50, b.land + 150) +
+		0.1 * hump(t, b.hop2 - 40, b.hop2 + 130);
+	const stretch = 0.13 * hump(t, b.crouch - 20, b.rise + 40) + 0.06 * hump(t, b.fall - 40, b.land);
 	return {
 		rigid: {
 			sx: 1 + squash * 0.75 - stretch * 0.5,

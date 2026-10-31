@@ -12,7 +12,7 @@
 	type Props = { children: Snippet };
 
 	const props: Props = $props();
-	const artReview = $derived(import.meta.env.DEV && page.url.pathname === '/art-review');
+	const artReview = $derived(import.meta.env.DEV && ['/art-review', '/polish-review'].includes(page.url.pathname));
 
 	setContext();
 </script>

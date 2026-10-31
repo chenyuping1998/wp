@@ -46,10 +46,11 @@ export('sfx_glasses_slide',d,[('hinge_friction',0,noise(d,550,6200)*pulse(d,.002
 export('sfx_glasses_on',.12,[('frame_click',0,modal(.12,1260,.025)),('finger_release',.02,noise(.08,900,5500)*pulse(.08,.001,.018)*.2)],-14,'Small plastic/gold frame click matching the return pose')
 d=.28;t=np.arange(round(d*FS))/FS
 export('sfx_gaze_charge',d,[('serpent_air',0,noise(d,360,3300)*pulse(d,.006,.11)*.75),('warm_resonance',0,modal(d,310,.13)*.28),('prism_grain',.035,noise(.20,2100,6500)*pulse(.20,.014,.075)*.28)],-14,'Restrained airy anticipation with warm material resonance, followed by deliberate quiet hold')
-d=.28;t=np.arange(round(d*FS))/FS
-export('sfx_gaze_beam',d,[('focus_snap',0,noise(d,1600,7800)*pulse(d,.0007,.028)*.65),('glass_resonance',0,modal(d,1170,.105)*.45),('energy_shear',.018,noise(.22,700,4200)*pulse(.22,.004,.065)*.35)],-11,'Sharp focus ignition, glass edge and short textured energy shear')
-d=.45;t=np.arange(round(d*FS))/FS;shape=(.12+.88*np.sin(np.pi*np.minimum(1,t/.41))**1.1)*np.minimum(1,t/.008)
-export('sfx_orb_fly',d,[('air_body',0,noise(d,330,2800)*shape*.65),('air_edge',0,noise(d,2700,8000)*shape**2*.3),('spinning_prism',0,modal(d,1780,.24)*(.25+.75*np.sin(2*np.pi*19*t)**2)*.14)],-13,'Accelerating granular air and rotating glass texture; panned in Web Audio along the actual flight')
+d=.76;t=np.arange(round(d*FS))/FS
+export('sfx_gaze_beam',d,[('focus_snap',0,noise(.12,1600,7800)*pulse(.12,.0007,.028)*.55),('glass_resonance',0,modal(d,1170,.25)*.36),('radiating_air',.025,noise(.68,700,4200)*pulse(.68,.035,.28)*.27),('gathering_prism',.19,modal(.53,1620,.20)*pulse(.53,.035,.22)*.20)],-11,'Green-eye focus, spreading airy radiance and gathering prism resonance; one unhurried performance at every turbo tier')
+
+d=.60;t=np.arange(round(d*FS))/FS;shape=(.12+.88*np.sin(np.pi*np.minimum(1,t/.56))**1.1)*np.minimum(1,t/.008)
+export('sfx_orb_fly',d,[('air_body',0,noise(d,330,2800)*shape*.65),('air_edge',0,noise(d,2700,8000)*shape**2*.3),('spinning_prism',0,modal(d,1780,.30)*(.25+.75*np.sin(2*np.pi*19*t)**2)*.14)],-13,'Six-hundred-ms granular flight and rotating glass texture; same duration and pitch at all turbo tiers, panned along the orb trajectory')
 for size,d,pitch,peak in [('s',.42,1130,-11),('m',.50,980,-10),('l',.58,820,-9)]:
  export('sfx_orb_hit_'+size,d,[('contact_bite',0,noise(.10,1050,7200)*pulse(.10,.0004,.018)*.5),('marble_body',0,modal(d,245 if size=='l' else 320,.055)*.45),('crystal_ring',.008,modal(d,pitch,.16 if size=='s' else .23)*.62),('falling_sparkles',.062,mix(d-.062,[(0,modal(.14,pitch*2.11,.045)*.14),(.055,modal(.12,pitch*2.72,.03)*.10),(.106,modal(.10,pitch*3.09,.02)*.065)]))],peak,'Immediate contact bite, short marble body, inharmonic crystal ring, descending micro-sparkles; '+size+' intensity')
 for variant in [1,2]:
@@ -60,9 +61,9 @@ export('sfx_total_mult_up',.42,[('inlay_taps',0,mix(.42,[(i*.055,modal(.15,f,.05
 export('sfx_total_to_win',.28,[('release_air',0,noise(.28,700,5500)*pulse(.28,.003,.055)*.4),('score_seal',.10,modal(.18,1550,.075)*.5)],-12,'Short plate-to-score release and a precise score seal, without a long electronic sweep')
 export('sfx_mult_count',.24,[('fine_ticking',0,mix(.24,[(i*.048,modal(.043,1180+i*37,.008)*.25) for i in range(5)])),('soft_grain',0,noise(.24,1800,4200)*pulse(.24,.001,.035)*.055)],-22,'Quiet fine-grained counting texture; leaves amount and impact readable',True)
 
-meta_path=HERE/'audio_metadata.json';meta=json.loads(meta_path.read_text(encoding='utf-8'));meta['files']=[new.get(item['cue'],item) for item in meta['files']];meta['runtime_bytes']=sum(item['bytes'] for item in meta['files']);meta['multiplier_design_version']=2;assert meta['runtime_bytes']<12_000_000
+meta_path=HERE/'audio_metadata.json';meta=json.loads(meta_path.read_text(encoding='utf-8'));meta['files']=[new.get(item['cue'],item) for item in meta['files']];meta['runtime_bytes']=sum(item['bytes'] for item in meta['files']);meta['multiplier_design_version']=4;assert meta['runtime_bytes']<12_000_000
 meta_path.write_text(json.dumps(meta,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-report={'version':2,'seed':2026102502,'provenance':'Original deterministic material synthesis; no downloaded samples, models, third-party recordings or voices.','formats':'Mono PCM16 44.1k runtime; PCM24 48k masters; editable float stems','cues':list(new.values())}
-(HERE/'MULTIPLIER_V2_SOUND_DESIGN.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-montage=mix(2.7,[(0,mixes['sfx_gaze_charge']*.65),(.2,mixes['sfx_glasses_slide']*.85),(.6,mixes['sfx_gaze_beam']*.75),(.75,mixes['sfx_orb_fly']*.8),(1.2,mixes['sfx_orb_hit_m']), (1.48,mixes['sfx_glasses_on']*.75)]);montage*=10**(-3/20)/max(1e-9,np.abs(montage).max());wavfile.write(HERE/'MULTIPLIER_V2_SOUND_DESIGN.wav',FS,(montage*32767).astype(np.int16))
+report={'version':4,'seed':2026102502,'provenance':'Original deterministic material synthesis; no downloaded samples, models, third-party recordings or voices.','formats':'Mono PCM16 44.1k runtime; PCM24 48k masters; editable float stems','cues':list(new.values())}
+(HERE/'MULTIPLIER_V4_SOUND_DESIGN.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+montage=mix(3.4,[(0,mixes['sfx_gaze_charge']*.65),(.2,mixes['sfx_glasses_slide']*.85),(.6,mixes['sfx_gaze_beam']*.75),(1.45,mixes['sfx_orb_fly']*.8),(2.05,mixes['sfx_orb_hit_m']), (2.38,mixes['sfx_glasses_on']*.75)]);montage*=10**(-3/20)/max(1e-9,np.abs(montage).max());wavfile.write(HERE/'MULTIPLIER_V4_SOUND_DESIGN.wav',FS,(montage*32767).astype(np.int16))
 print(json.dumps({'updatedCues':len(new),'runtimeBytes':meta['runtime_bytes'],'maximumTruePeakDb':max(x['true_peak_db'] for x in new.values())},indent=2))

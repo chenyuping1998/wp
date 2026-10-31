@@ -59,11 +59,12 @@
  function tier(immediate=false){if(CAT||!engine||currentMusic!=='feature'||!stems.length)return;const value=1;const thresholds=[1,5,9,15];const levels=[1,.58,.48,.35];const bar=240/124;const at=immediate?epoch:epoch+Math.ceil(Math.max(0,engine.currentTime-epoch)/bar)*bar;
   stems.forEach((gain,i)=>{gain.gain.cancelScheduledValues(at);gain.gain.setTargetAtTime(value>=thresholds[i]?levels[i]:0,at,.12);});
  }
- onMount(()=>{init();void music(context.stateGame.gameType==='freegame');});
+ onMount(()=>{init();void music(context.stateGame.gameType==='freegame');const visibility=()=>{if(document.hidden)void engine?.suspend();else void engine?.resume();};document.addEventListener('visibilitychange',visibility);return()=>document.removeEventListener('visibilitychange',visibility);});
  $effect(()=>{stateSoundDerived.volumeMusic();stateSoundDerived.volumeSoundEffect();volume();});
  $effect(()=>{const feature=context.stateGame.gameType==='freegame';if(engine)void music(feature);});
  
  context.eventEmitter.subscribeOnMount({
+  soundPressGeneral:()=>{void play('sfx_button');},soundPressBet:()=>{void play('sfx_spin');},soundBetMode:()=>{void play('sfx_buybonus_confirm',1,2);},
   soundCue:e=>{void play(e.cue,e.rate??1,e.priority??3);},soundReset:reset,
   soundOnce:e=>{void play(e.name);},soundLoop:e=>{void play(e.name,1,3,true);},
   soundMusic:e=>{void music(e.name.includes('free')||e.name.includes('feature'));},

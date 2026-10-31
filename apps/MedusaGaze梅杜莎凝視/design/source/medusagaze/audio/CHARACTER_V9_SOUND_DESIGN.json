@@ -1,0 +1,107 @@
+{
+  "version": 9,
+  "seed": 2026103109,
+  "provenance": "Original deterministic foley synthesis; no samples or voice recording. Existing synthetic character voices retained.",
+  "cues": [
+    {
+      "cue": "sfx_medusa_gather",
+      "file": "sfx_medusa_gather.wav",
+      "duration": 0.28,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 24774,
+      "loop": false,
+      "description": "Soft sleeve and inward air at elbow retraction; no musical success tone",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -26.87,
+      "true_peak_db": -13.99,
+      "design_version": 9,
+      "layers": [
+        "silk_pull",
+        "close_air"
+      ]
+    },
+    {
+      "cue": "sfx_medusa_wrist",
+      "file": "sfx_medusa_wrist.wav",
+      "duration": 0.14,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 12426,
+      "loop": false,
+      "description": "Short wrist flick with one tiny bracelet click, just before palm release",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -23.11,
+      "true_peak_db": -12.0,
+      "design_version": 9,
+      "layers": [
+        "wrist_air",
+        "gold_click"
+      ]
+    },
+    {
+      "cue": "sfx_medusa_jewel",
+      "file": "sfx_medusa_jewel.wav",
+      "duration": 0.22,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 19482,
+      "loop": false,
+      "description": "Two unequal gold contacts follow the thumb-up or raised hand",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -24.07,
+      "true_peak_db": -15.01,
+      "design_version": 9,
+      "layers": [
+        "gold_touch",
+        "chain_follow",
+        "soft_contact"
+      ]
+    },
+    {
+      "cue": "sfx_medusa_tail",
+      "file": "sfx_medusa_tail.wav",
+      "duration": 0.32,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 28302,
+      "loop": false,
+      "description": "Low dry scale brush at delayed tail-tip follow-through",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -29.44,
+      "true_peak_db": -15.98,
+      "design_version": 9,
+      "layers": [
+        "scale_brush",
+        "scales_follow"
+      ]
+    },
+    {
+      "cue": "sfx_snake_snap",
+      "file": "sfx_snake_snap.wav",
+      "duration": 0.12,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 10662,
+      "loop": false,
+      "description": "Compact snake jaw snap; quiet enough for an occasional individual double bite",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -27.5,
+      "true_peak_db": -12.95,
+      "design_version": 9,
+      "layers": [
+        "jaw_contact",
+        "small_body",
+        "breathy_release"
+      ]
+    }
+  ],
+  "alignment": "Spine event marks, not detached timers",
+  "runtimeBytes": 6870242,
+  "totalCues": 65
+}

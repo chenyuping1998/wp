@@ -23,7 +23,6 @@
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 	// side-effect import: paints the shared bet bar in the jungle palette
 	import '../game/uiTheme';
-	import EnableSound from './EnableSound.svelte';
 	import EnableGameActor from './EnableGameActor.svelte';
 	import ResumeBet from './ResumeBet.svelte';
 	import Sound from './Sound.svelte';
@@ -107,7 +106,6 @@
 
 <App>
 	<RenderQuality />
-	<EnableSound />
 	<EnableHotkey />
 	<EnableGameActor />
 	<EnablePixiExtension />

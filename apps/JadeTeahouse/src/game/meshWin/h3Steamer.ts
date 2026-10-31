@@ -10,7 +10,7 @@
  * lid (102..236, 36..148), resting on the right rim at ~(205,145); left bun
  * (80,117) 28x24, right bun (137,133) 34x23; basket foot y 222.
  */
-import { blob, flick, leap, polygon, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
+import { blob, flick, strongLeap, polygon, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
 
 const LEAP = { crouch: 120, rise: 330, fall: 740, land: 920, hop2: 1150, done: 1450 };
 
@@ -95,7 +95,7 @@ export const H3: MeshWinSpec = {
 		squashOf('bunL', LEAP.rise - 70, -1);
 		squashOf('bunR', LEAP.rise + 30, 1);
 
-		const { rigid, air } = leap(t, LEAP, 22);
+		const { rigid, air } = strongLeap(t, LEAP, 35);
 		pose.rigid = turnAbout(rigid, [128, 140], 222);
 		pose.air = air;
 		return pose;

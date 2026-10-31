@@ -1,0 +1,18 @@
+{
+  "bgm_main": {
+    "trimStartSeconds": 0.12505668934240363,
+    "frames": 1612800,
+    "sampleRate": 44100,
+    "bpm": 105,
+    "bars": 16,
+    "correlation": 0.999628583629198
+  },
+  "bgm_freespin": {
+    "trimStartSeconds": 0.12505668934240363,
+    "frames": 1323000,
+    "sampleRate": 44100,
+    "bpm": 128,
+    "bars": 16,
+    "correlation": 0.9992834019295757
+  }
+}

@@ -92,6 +92,9 @@ export const stateGame = $state({
 	cellMults: emptyTerritory(),
 	openingBoxes: [] as {reel:number;row:number}[],
 	bossPose: 'idle',
+ boxOpenCount:0,
+ boxReleaseMs:550,
+ boxDurationMs:1100,
 	// Running total of the tumble sequence in progress, in book cents.
 	tumbleWin: 0,
 	// How many links the current tumble chain has resolved (1 = first win).
@@ -103,7 +106,7 @@ export const stateGame = $state({
 // the game box maps exactly onto the canvas, so anything past the top edge is
 // clipped rather than spilling into the background. It is scaled down instead and
 // lifted by half of what the strip took so it stays centred in what is left.
-const BOARD_SHRINK = 0.89;
+const BOARD_SHRINK = 0.84;
 
 const boardLayout = () => {
 	const layout = stateLayoutDerived.mainLayout();
@@ -117,8 +120,8 @@ const boardLayout = () => {
 	return {
 		x: layout.width * 0.5,
 		// centred in the area above the strip, not in the whole box
-		y: layout.height * (0.5 - barFraction * 0.5),
-		scale: usesBar ? BOARD_SHRINK : 1,
+		y: layout.height * (0.5 - barFraction * 0.5 + (stateLayoutDerived.layoutType()==='portrait'?0:.022)),
+		scale: stateLayoutDerived.layoutType()==='portrait' ? 1.18 : usesBar ? BOARD_SHRINK : 1,
 		anchor: { x: 0.5, y: 0.5 },
 		pivot: { x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 },
 		...BOARD_SIZES,

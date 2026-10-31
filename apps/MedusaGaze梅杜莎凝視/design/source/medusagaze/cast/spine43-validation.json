@@ -1,152 +1,156 @@
 {
   "spine": "4.3.13",
   "scope": "Official 4.3 core replay of game JSON/atlas. Visual performance and hand-painted contact require browser review too.",
-  "bones": 74,
+  "bones": 84,
   "independentSnakeChains": 9,
+  "independentSnakeJaws": 9,
+  "foreheadSamples": 1920,
+  "seamlessRestSamples": 8,
+  "tailSwishRigPixels": 63.407426968786744,
   "clips": [
     {
       "animation": "idle",
       "seconds": 6,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.9546116767171711
+      "minimumAreaRatio": 0.013490274632732762
     },
     {
       "animation": "fg_idle",
       "seconds": 6,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.9546116767171711
+      "minimumAreaRatio": 0.013490274632732762
     },
     {
       "animation": "gaze",
-      "seconds": 1.600000023841858,
+      "seconds": 2.5,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.11633120212704437
+      "minimumAreaRatio": 0.0071434575640051
     },
     {
       "animation": "gaze_turbo",
-      "seconds": 0.8999999761581421,
+      "seconds": 2.5,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.11633120212704437
+      "minimumAreaRatio": 0.0071434575640051
     },
     {
       "animation": "fg_gaze",
-      "seconds": 1.2000000476837158,
+      "seconds": 2.0999999046325684,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.5679084259621426
+      "minimumAreaRatio": 0.00852940888189698
     },
     {
       "animation": "fg_gaze_turbo",
-      "seconds": 0.8999999761581421,
+      "seconds": 2.0999999046325684,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.5679091324980372
+      "minimumAreaRatio": 0.00852940888189698
     },
     {
       "animation": "gaze_dud",
       "seconds": 1.2000000476837158,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.8181223225520609
+      "minimumAreaRatio": 0.03223097456415623
     },
     {
       "animation": "react_small",
       "seconds": 0.800000011920929,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.6592188983812187
+      "minimumAreaRatio": 0.6592115850211651
     },
     {
       "animation": "fg_trigger",
       "seconds": 2,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.17577465350397947
+      "minimumAreaRatio": 0.006507213425732206
     },
     {
       "animation": "win_big",
       "seconds": 2.4000000953674316,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.5927366479223479
+      "minimumAreaRatio": 0.01746069316295532
     },
     {
       "animation": "win_big_loop",
       "seconds": 2,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.7865187775075891
+      "minimumAreaRatio": 0.7865198199152345
     },
     {
       "animation": "win_max",
       "seconds": 3,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.5017439716252314
+      "minimumAreaRatio": 0.005874633488944878
     },
     {
       "animation": "win_max_loop",
       "seconds": 2,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.7865187775075891
+      "minimumAreaRatio": 0.7865198199152345
     },
     {
       "animation": "fg_end",
       "seconds": 1.5,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.334666798459932
+      "minimumAreaRatio": 0.19773202822375352
     },
     {
       "animation": "idle_fidget",
       "seconds": 1.5,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.3346231217360606
+      "minimumAreaRatio": 0.19773293183957605
     },
     {
       "animation": "snake_fidget_1",
-      "seconds": 0.8999999761581421,
+      "seconds": 1.25,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.8238354741284658
+      "minimumAreaRatio": 0.15087099067405005
     },
     {
       "animation": "snake_fidget_2",
-      "seconds": 0.8999999761581421,
+      "seconds": 1.25,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.8639561682482669
+      "minimumAreaRatio": 0.24435346060293076
     },
     {
       "animation": "snake_fidget_3",
-      "seconds": 0.8999999761581421,
+      "seconds": 1.25,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.795208968377148
+      "minimumAreaRatio": 0.07796365715664534
     },
     {
       "animation": "snake_fidget_4",
-      "seconds": 0.8999999761581421,
+      "seconds": 1.25,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.8346803226279182
+      "minimumAreaRatio": 0.14154979504588103
     },
     {
       "animation": "snake_fidget_5",
-      "seconds": 0.8999999761581421,
+      "seconds": 1.25,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.8029383521385641
+      "minimumAreaRatio": 0.13746507736639055
     },
     {
       "animation": "snake_fidget_6",
-      "seconds": 0.8999999761581421,
+      "seconds": 1.25,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.8264376998905607
+      "minimumAreaRatio": 0.03321267726724377
     },
     {
       "animation": "snake_fidget_7",
-      "seconds": 0.8999999761581421,
+      "seconds": 1.25,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.8272289642445765
+      "minimumAreaRatio": 0.15772324557110948
     },
     {
       "animation": "snake_fidget_8",
-      "seconds": 0.8999999761581421,
+      "seconds": 1.25,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.8469762585277651
+      "minimumAreaRatio": 0.226449100998065
     },
     {
       "animation": "snake_fidget_9",
-      "seconds": 0.8999999761581421,
+      "seconds": 1.25,
       "foldedInkedTriangles": 0,
-      "minimumAreaRatio": 0.8396696880083737
+      "minimumAreaRatio": 0.08868316265237736
     }
   ],
   "meshFailures": [],
@@ -165,7 +169,7 @@
     },
     {
       "time": 0.75,
-      "distancePx": 0.00001408685019988101
+      "distancePx": 0.000014086850217435979
     },
     {
       "time": 1,
@@ -175,18 +179,18 @@
   "breathing": [
     {
       "mode": "MG",
-      "ribcageLiftRigPixels": 10,
+      "ribcageLiftRigPixels": 28.788123330093867,
       "pelvisFixed": true,
       "loopSeamClosed": true
     },
     {
       "mode": "FG",
-      "ribcageLiftRigPixels": 10,
+      "ribcageLiftRigPixels": 28.788123330093867,
       "pelvisFixed": true,
       "loopSeamClosed": true
     }
   ],
-  "idle60sSnakeActions": 3,
+  "idle60sSnakeActions": 14,
   "modeTransitions": "passed: accelerated gaze, queued FG idle, max hold loop, FG end to MG, reduced motion reset",
   "passed": true
 }

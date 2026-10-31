@@ -10,9 +10,9 @@
     1920,
     1080
   ],
-  "approval": "pending_user_review",
-  "productionInstalled": false,
+  "approval": "separate_review_waived_by_user",
+  "productionInstalled": true,
   "processing": "Canvas normalization only. Full generated original retained.",
-  "approvalSource": "PURRFIA_美術需求單.md section 1",
-  "uncertainty": "老大的毛質與胖度是否符合你要的蠢萌感；量產仍須逐件確認縮小辨識度。"
+  "approvalSource": "User explicitly said to continue without building a preview page; later requested brighter backgrounds.",
+  "uncertainty": "Live Stake Engine integration and subjective art/audio review remain external validation."
 }

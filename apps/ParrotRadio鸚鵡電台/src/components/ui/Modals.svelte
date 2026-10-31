@@ -15,8 +15,8 @@
 	import ModalMessage from 'components-ui-html/src/components/ModalMessage.svelte';
 	import ModalSettings from 'components-ui-html/src/components/ModalSettings.svelte';
 
-	import ModalPayTable from './ModalPayTable.svelte';
-	import ModalGameRules from './ModalGameRules.svelte';
+	import GameInfo from './GameInfo.svelte';
+	
 
 	type Props = {
 		version: Snippet;
@@ -32,8 +32,8 @@
 <ModalAutoSpin />
 <ModalAutoSpinMessage />
 <ModalMessage />
-<ModalPayTable />
-<ModalGameRules />
+<GameInfo />
+
 <ModalSettings />
 
 <!-- version snippet retained for parity with the shared Modals API -->

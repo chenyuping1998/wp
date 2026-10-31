@@ -9,6 +9,10 @@
 	import { removedLabelAtLevel, removedLabelsAtLevel } from '../../game/chefMeter';
 	import { getSocialTerms } from '../../game/socialTerms';
 	import { MODE_NAMES } from '../../game/betModeMeta';
+	import JazzGuide from './JazzGuide.svelte';
+	let rulesElement = $state<HTMLDivElement>();
+	const jumpTo = (id: string) => rulesElement?.querySelector<HTMLElement>(`[data-jazz-section="${id}"]`)
+		?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 
 	// Shared with the pay table — the two panels describe the same game and must
 	// use the same words for it. See socialTerms.ts.
@@ -160,10 +164,10 @@
 
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="wp-rules">
-			<h2>SWING MONKEY — GAME RULES</h2>
+		<div class="wp-rules" bind:this={rulesElement}>
+			<JazzGuide rtp={rtpPct} maxWin={`${maxWin.toLocaleString()}×`} onjump={jumpTo} />
 
-			<section class="wp-card">
+			<section class="wp-card" data-jazz-section="play">
 				<h3 style="color: #d9342b !important"><span class="wp-accent-bar"></span>How to play</h3>
 				<p>
 					<!-- Reels × rows ("5×4"), the order players and the industry use,
@@ -182,7 +186,7 @@
 			<!-- Certification asked for a user interaction guide in the game
 			     information. Kept as a definition list of the actual on-screen
 			     controls, in the order they sit on the bar. -->
-			<section class="wp-card">
+			<section class="wp-card" data-jazz-section="controls">
 				<h3 style="color: #d9342b !important"><span class="wp-accent-bar"></span>Controls</h3>
 				<ul class="wp-controls">
 					{#each controls as control (control.name)}
@@ -270,7 +274,7 @@
 			<!-- The signature mechanic gets its own section above Wild and Scatter,
 			     because it is the thing the game is built around and the only rule
 			     a player of other ways games will not already know. -->
-			<section class="wp-card">
+			<section class="wp-card" data-jazz-section="records">
 				<h3 style="color: #d9342b !important"><span class="wp-accent-bar"></span>Records &amp; the Bandleader</h3>
 				<p>
 					<strong>Records</strong> land carrying a value printed on its label. Base game values are
@@ -287,7 +291,7 @@
 				</p>
 			</section>
 
-			<section class="wp-card">
+			<section class="wp-card" data-jazz-section="free">
 				<h3 style="color: #d9342b !important"><span class="wp-accent-bar"></span>The Bandleader meter &mdash; Free Spins</h3>
 				<p>
 					In Free Spins every Bandleader that lands is counted, whether or not there is a Record to
@@ -314,7 +318,7 @@
 				</p>
 			</section>
 
-			<section class="wp-card">
+			<section class="wp-card" data-jazz-section="scatter">
 				<h3 style="color: #d9342b !important"><span class="wp-accent-bar"></span>Scatter</h3>
 				<p>
 					The Golden Mic Scatter appears on all five reels in the base game. It does not {T.pay} on its
@@ -702,6 +706,9 @@
 	.wp-rules { background: #f8f1e0; border: 5px solid #3a332c; color: #161412; }
 	.wp-rules h2 { background: none; -webkit-text-fill-color: #3a332c; color: #3a332c; animation: none; filter: none; }
 	.wp-rules::-webkit-scrollbar-thumb { background: #3a332c; }
+	.wp-rules { font-family: var(--gb-body-font, sans-serif); }
+	.wp-card { scroll-margin-top: 1rem; }
+	.wp-card h3 { font: 400 1.12rem/1.3 var(--gb-display-font, serif); text-transform: none; letter-spacing: 0; }
 	.wp-card, .wp-card:hover { background: #f8f1e0; border: 2px solid #3a332c; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
 	.wp-card h3, .wp-modes thead th { color: #d9342b; }
 	.wp-accent-bar, .wp-divider { background: #d9342b; animation: none; box-shadow: none; }

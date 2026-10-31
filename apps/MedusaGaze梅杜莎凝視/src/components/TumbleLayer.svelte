@@ -12,6 +12,7 @@
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { tumbleTiming } from '../game/animationTimeline';
 	import { planCascadeColumn, gravityProgress, fallDuration, recordSymbolTravel } from '../game/symbolMotion';
+	import { selectLandingContacts } from '../game/presentationMotion';
 	import { getSymbolX, getSymbolInfo } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import Crumble from './Crumble.svelte';
@@ -31,7 +32,7 @@
 	});
 	const slotY = (slot: number) => (slot - 0.5) * SYMBOL_SIZE;
 	type Break = { id: number; x: number; y: number; durationMs: number; assetKey: string; width: number; height: number; seed: number };
-	let crumbles = $state<Break[]>([]), contacts = $state<{ id: number; x: number; y: number; durationMs: number }[]>([]);
+	let crumbles = $state<Break[]>([]), contacts = $state<{ id: number; x: number; y: number; durationMs: number; strength:number }[]>([]);
 	const stoneFilter = new ColorMatrixFilter(); stoneFilter.desaturate(); stoneFilter.brightness(0.96, true);
 	const stoneFilters = [stoneFilter];
 
@@ -54,11 +55,18 @@
 		await sleep(timing.crumbleMs);
 		if (!current()) return;
 
-		await Promise.all(board.map(async (reel, reelIndex) => {
+		const pendingContacts:{id:number;x:number;y:number;durationMs:number;strength:number}[]=[];
+		const contactCue=(async()=>{
+			await sleep(timing.dropMs*.6);if(!current()||!pendingContacts.length)return;
+			context.eventEmitter.broadcast({type:'soundOnce',name:'sfx_symbols_landing'});
+			contacts=[...contacts,...pendingContacts];
+		})();
+		await Promise.all([...board.map(async (reel, reelIndex) => {
 			const rows = removed.get(reelIndex); if (!rows?.length) return;
-			await sleep(reelIndex * timing.columnStaggerMs); if (!current()) return;
+			if(timing.columnStaggerMs>0)await sleep(reelIndex * timing.columnStaggerMs); if (!current()) return;
 			const symbols = reel.reelState.symbols;
 			const plan = planCascadeColumn(symbols.map((s) => s.rawSymbol), rows, newSymbols[reelIndex] ?? [], BOARD_DIMENSIONS.y);
+			pendingContacts.push(...selectLandingContacts(plan.moves).map(contact=>({id:nextId++,x:getSymbolX(reelIndex),y:slotY(contact.slot)+SYMBOL_SIZE*.4,durationMs:90,strength:.8+Math.min(6,contact.distance)*.08})));
 			for (const move of plan.moves) {
 				const symbol = symbols[move.carrier];
 				if (move.incoming) { symbol.rawSymbol = move.rawSymbol; void symbol.symbolY.set(slotY(move.from), { duration: 0 }); }
@@ -72,21 +80,16 @@
 				if (current()) await symbol.symbolY.set(to, { duration: 0 });
 			}));
 			if (!current()) return;
-			// Settle THIS column when it arrives. Waiting for all six columns made
-			// every landing squash start together and removed the staggered impact.
+			// The shared curve already contains two diminishing rebounds. Do not
+			// start a second squash after it has settled.
 			reel.setSymbolsWithRawSymbols(plan.column);
 			reel.reelState.symbols.forEach((symbol, slot) => { void symbol.symbolY.set(slotY(slot), { duration: 0 }); });
 			const landed = plan.moves.filter((move) => move.from !== move.to);
 			for (const move of landed) {
-				const symbol = reel.reelState.symbols[move.to]; symbol.symbolState = 'land';
+				const symbol = reel.reelState.symbols[move.to]; symbol.symbolState = 'static';
 				if (move.incoming && symbol.rawSymbol.name === 'S') context.stateGameDerived.onSymbolLand({ rawSymbol: symbol.rawSymbol });
 			}
-			if (landed.length) {
-				context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_symbols_landing' });
-				if (!stateBet.isTurbo) contacts = [...contacts, { id: nextId++, x: getSymbolX(reelIndex), y: slotY(Math.max(...landed.map((move) => move.to))) + SYMBOL_SIZE * 0.4, durationMs: timing.settleMs }];
-			}
-			await sleep(timing.settleMs);
-		}));
+		}),contactCue]);
 	};
 	context.eventEmitter.subscribeOnMount({ tumbleRun: runTumble });
 </script>

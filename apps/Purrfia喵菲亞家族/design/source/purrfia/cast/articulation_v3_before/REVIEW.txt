@@ -1,0 +1,5 @@
+Motion v3, 2026-10-27. Official Spine 4.3 weighted mesh sampling.
+motion.gif: 24 breath samples followed by 16 samples per action; actual clip timing.
+contact.png: four representative frames from each segment.
+Cat: breathing, clean monocle adjustment, stamp. Continuous sleeve and common paw/cuff transform.
+These are offline mesh renders. Full in-game desktop and portrait results are recorded in browser-validation.json and qa-v3/.

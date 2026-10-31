@@ -73,20 +73,7 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 	if (winLevelData?.sound?.sfx) {
 		eventEmitter.broadcast({ type: 'soundOnce', name: winLevelData.sound.sfx });
 	}
-	// Deliberately NOT switching to winLevelData.sound.bgm. Those names
-	// (bgm_winlevel_big..max) have no jungle audio file, so soundMusic routes them
-	// to the template player and plays nothing — but on the way it pauses the
-	// running bgm and clears currentBgm. The result was a big-win / free-game
-	// total-win screen with the music bed gone silent, leaving only the 2.4s
-	// coin-shimmer loop cycling on its own (the "music keeps repeating" report),
-	// and — because currentBgm was cleared — the dedupe guard failed so the bgm
-	// restarted from the top when it came back. Keeping the running bgm playing
-	// under the blast + coin loop fixes both.
-	//
-	// The escalation per tier now comes from soundWinTier instead: a FANFARE laid
-	// OVER the running bed, one per tier and each bigger than the last. It never
-	// touches the bed, which is the whole reason it can exist where per-tier
-	// music could not.
+	// Keep the scene BGM running under each tier fanfare and the count-up bed.
 	if (winLevelData?.type === 'big') {
 		// Blast accent as the big/super/mega/epic win presentation slams in
 		eventEmitter.broadcast({ type: 'soundBigWinBlast' });

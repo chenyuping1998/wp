@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spine 動作圖庫</title>
+<style>
+	:root { --bg: #15131a; --panel: #1f1c26; --line: #3a3446; --fg: #ece7f3; --dim: #a59cb6; --accent: #ff9ad5; }
+	* { box-sizing: border-box; }
+	body { margin: 0; background: var(--bg); color: var(--fg); font: 13px/1.4 system-ui, sans-serif; }
+	header { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+	select, button, input { background: #2a2533; color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; font: inherit; }
+	button.on { border-color: var(--accent); color: var(--accent); }
+	label { color: var(--dim); display: inline-flex; gap: 4px; align-items: center; }
+	main { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 0; }
+	#stage { position: relative; height: calc(100vh - 100px); min-height: 360px; background: repeating-conic-gradient(#1b1822 0% 25%, #221e2a 0% 50%) 50% / 24px 24px; }
+	canvas#c { width: 100%; height: 100%; display: block; }
+	aside { border-left: 1px solid var(--line); padding: 10px 12px; overflow: auto; height: calc(100vh - 100px); }
+	aside h3 { margin: 10px 0 4px; font-size: 12px; color: var(--dim); font-weight: 600; }
+	#info { white-space: pre-wrap; font: 11px/1.45 ui-monospace, monospace; color: var(--dim); }
+	#bar { display: flex; gap: 8px; align-items: center; padding: 6px 16px; background: var(--panel); border-top: 1px solid var(--line); }
+	#scrub { flex: 1; }
+	#sheetWrap { display: none; padding: 12px 16px; }
+	#sheetWrap img { max-width: 100%; border: 1px solid var(--line); background: #0f0d13; }
+	@media (max-width: 760px) { main { grid-template-columns: 1fr; } aside { height: auto; border-left: 0; border-top: 1px solid var(--line); } #stage { height: 60vh; } }
+</style>
+</head>
+<body>
+<header>
+	<select id="skel"></select>
+	<select id="anim"></select>
+	<button id="play" class="on">播放</button>
+	<label>速度 <select id="speed"><option>0.1</option><option>0.25</option><option>0.5</option><option selected>1</option><option>2</option></select></label>
+	<button id="bones">骨架</button>
+	<button id="noAdd">隱藏 additive</button>
+	<label>逐格 <input id="frames" type="number" value="12" min="4" max="60" style="width:56px"></label>
+	<button id="sheet">輸出逐格表</button>
+</header>
+<main>
+	<div>
+		<div id="stage"><canvas id="c"></canvas></div>
+		<div id="bar"><span id="t">0.000s</span><input id="scrub" type="range" min="0" max="1000" value="0"><span id="len"></span></div>
+		<div id="sheetWrap"><img id="sheetImg" alt="逐格表"></div>
+	</div>
+	<aside><h3>骨架</h3><div id="info"></div></aside>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@esotericsoftware/spine-webgl@4.2.74/dist/iife/spine-webgl.min.js"></script>
+<script>
+const DIR = 'spine-42/';
+const $ = (id) => document.getElementById(id);
+const canvas = $('c');
+const gl = new spine.ManagedWebGLRenderingContext(canvas, { alpha: true, preserveDrawingBuffer: true, premultipliedAlpha: false });
+const renderer = new spine.SceneRenderer(canvas, gl, false);
+const assets = new spine.AssetManager(gl, DIR);
+let cur = null, playing = true, speed = 1, showBones = false, hideAdd = false, last = performance.now();
+let index = [];
+
+const loadSkel = (name) => new Promise((ok, fail) => {
+	if (assets.get(name + '.json') && assets.get(name + '.atlas')) return ok();
+	assets.loadText(name + '.json'); assets.loadTextureAtlas(name + '.atlas');
+	const wait = () => assets.isLoadingComplete() ? (assets.hasErrors() ? fail(assets.getErrors()) : ok()) : setTimeout(wait, 50);
+	wait();
+});
+
+// Frame the whole animation, not just its first pose: sample bounds across its length.
+function frameBounds(skeleton, state, anim) {
+	let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+	const off = new spine.Vector2(), size = new spine.Vector2();
+	const steps = 12;
+	for (let i = 0; i <= steps; i++) {
+		pose(skeleton, state, anim, anim.duration * i / steps);
+		skeleton.getBounds(off, size, []);
+		if (!isFinite(off.x)) continue;
+		minX = Math.min(minX, off.x); minY = Math.min(minY, off.y);
+		maxX = Math.max(maxX, off.x + size.x); maxY = Math.max(maxY, off.y + size.y);
+	}
+	return { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
+}
+function pose(skeleton, state, anim, t) {
+	skeleton.setToSetupPose();
+	state.clearTracks();
+	const e = state.setAnimationWith(0, anim, false);
+	e.trackTime = t; e.mixDuration = 0;
+	state.apply(skeleton);
+	if (window.__tweak) window.__tweak(skeleton); // ablation hook: freeze or zero bones before the world transform
+	skeleton.updateWorldTransform(spine.Physics.update);
+}
+
+// Freeze helpers for ablation: put bones back to their setup-pose local transform.
+const freeze = (skeleton, test) => { for (const b of skeleton.bones) if (test(b)) b.setToSetupPose(); };
+const depthOf = (b) => { let d = 0; for (let p = b.parent; p; p = p.parent) d++; return d; };
+
+// Ablation sheet: one row per variant, same N frames, so the contribution of each technique is visible side by side.
+// variants: [{ label, tweak?(skeleton), noAdd? }]
+async function compare(variants, n = 8, suffix = 'compare') {
+	const cols = n, cw = 200, ch = Math.round(cw * cur.bounds.h / cur.bounds.w) || 200, lw = 150;
+	const out = document.createElement('canvas'); out.width = lw + cols * cw; out.height = 24 + variants.length * (ch + 6);
+	const g = out.getContext('2d');
+	g.fillStyle = '#0f0d13'; g.fillRect(0, 0, out.width, out.height);
+	g.font = '13px system-ui'; g.fillStyle = '#ece7f3';
+	g.fillText(`${cur.name} / ${cur.anim.name}  ${cur.anim.duration.toFixed(3)}s  —  ${Array.from({ length: n }, (_, i) => (cur.anim.duration * i / (n - 1)).toFixed(2)).join('  ')}`, 6, 16);
+	const keepT = cur.t, keepAdd = hideAdd;
+	variants.forEach((v, row) => {
+		window.__tweak = v.tweak || null; hideAdd = !!v.noAdd;
+		const y = 24 + row * (ch + 6);
+		g.fillStyle = '#ff9ad5'; g.fillText(v.label, 6, y + ch / 2);
+		for (let i = 0; i < n; i++) {
+			cur.t = cur.anim.duration * i / (n - 1);
+			draw();
+			const scale = Math.min(canvas.width / cur.bounds.w, canvas.height / cur.bounds.h);
+			const sw = cur.bounds.w * scale, sh = cur.bounds.h * scale;
+			g.drawImage(canvas, (canvas.width - sw) / 2, (canvas.height - sh) / 2, sw, sh, lw + i * cw, y, cw, ch);
+		}
+	});
+	window.__tweak = null; hideAdd = keepAdd; cur.t = keepT;
+	return saveCanvas(out, `${cur.name}__${cur.anim.name}__${suffix}.png`);
+}
+
+// Motion trails: the pose at time t with the world path of each listed bone drawn over it, one dot per frame
+// at 30fps — dot spacing IS the easing (bunched = slow, spread = fast).
+async function trails(bones, t = 0, suffix = 'trails') {
+	const colors = ['#ffd84a', '#4af0ff', '#ff5a8a', '#7dff6a', '#b48bff', '#ff9a3c'];
+	const frames = Math.round(cur.anim.duration * 30);
+	const paths = bones.map(() => []);
+	for (let i = 0; i <= frames; i++) {
+		pose(cur.skeleton, cur.state, cur.anim, i / 30);
+		bones.forEach((n, k) => { const b = cur.skeleton.findBone(n); if (b) paths[k].push([b.worldX, b.worldY]); });
+	}
+	cur.t = t; draw();
+	const w = canvas.width, h = canvas.height, cam = renderer.camera;
+	const toPx = ([x, y]) => [(x - cam.position.x) / cam.zoom + w / 2, h / 2 - (y - cam.position.y) / cam.zoom];
+	const out = document.createElement('canvas'); out.width = w; out.height = h + 28;
+	const g = out.getContext('2d');
+	g.fillStyle = '#0f0d13'; g.fillRect(0, 0, out.width, out.height);
+	g.drawImage(canvas, 0, 28);
+	g.font = '13px system-ui';
+	g.fillStyle = '#ece7f3'; g.fillText(`${cur.name} / ${cur.anim.name}  pose @${t.toFixed(2)}s  每點 = 1 格@30fps`, 6, 18);
+	paths.forEach((pts, k) => {
+		g.strokeStyle = g.fillStyle = colors[k % colors.length];
+		g.lineWidth = 1.5; g.beginPath();
+		pts.forEach((p, i) => { const [x, y] = toPx(p); i ? g.lineTo(x, y + 28) : g.moveTo(x, y + 28); });
+		g.stroke();
+		pts.forEach((p, i) => { const [x, y] = toPx(p); g.beginPath(); g.arc(x, y + 28, i % 10 === 0 ? 4 : 2, 0, Math.PI * 2); g.fill(); });
+		g.fillText(bones[k], w - 200, 46 + k * 16);
+	});
+	return saveCanvas(out, `${cur.name}__${cur.anim.name}__${suffix}.png`);
+}
+
+// Offline renders must not depend on how big the pane happens to be (a hidden pane leaves the canvas tiny).
+async function atSize(px, fn) {
+	const st = canvas.style, keep = [st.width, st.height, st.position];
+	st.position = 'fixed'; st.width = px + 'px'; st.height = px + 'px';
+	try { return await fn(); } finally { [st.width, st.height, st.position] = keep; }
+}
+
+function saveCanvas(c, name) {
+	const url = c.toDataURL('image/png');
+	$('sheetImg').src = url; $('sheetWrap').style.display = 'block';
+	return fetch(`save?name=${encodeURIComponent(name)}`, { method: 'POST', body: url }).then((r) => r.text()).catch((e) => String(e));
+}
+
+async function select(name, animName) {
+	await loadSkel(name);
+	const atlas = assets.require(name + '.atlas');
+	const data = new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(assets.require(name + '.json'));
+	const skeleton = new spine.Skeleton(data);
+	const state = new spine.AnimationState(new spine.AnimationStateData(data));
+	const animSel = $('anim');
+	animSel.innerHTML = data.animations.map((a) => `<option>${a.name}</option>`).join('');
+	if (animName && data.findAnimation(animName)) animSel.value = animName;
+	const additive = new Set(data.slots.filter((s) => s.blendMode === spine.BlendMode.Additive).map((s) => s.name));
+	cur = { name, data, skeleton, state, additive, t: 0 };
+	setAnim(animSel.value);
+	const meta = index.find((s) => s.name === name) || {};
+	$('info').textContent = [
+		`${name}`, `骨 ${data.bones.length}  slot ${data.slots.length}  additive ${additive.size}`,
+		`IK ${data.ikConstraints.length}  TC ${data.transformConstraints.length}`,
+		...data.transformConstraints.map((c) => `  TC ${c.name}: ${c.bones.map((b) => b.name).join('+')} → ${c.target.name}  mix ${c.mixRotate}`),
+		...data.ikConstraints.map((c) => `  IK ${c.name}: ${c.bones.map((b) => b.name).join('+')} → ${c.target.name}`),
+		'', ...data.animations.map((a) => `${a.name.padEnd(36)} ${a.duration.toFixed(3)}s`),
+	].join('\n');
+	location.hash = `${name}/${animSel.value}`;
+}
+function setAnim(animName) {
+	const a = cur.data.findAnimation(animName);
+	cur.anim = a; cur.t = 0;
+	cur.bounds = frameBounds(cur.skeleton, cur.state, a);
+	$('len').textContent = a.duration.toFixed(3) + 's';
+	location.hash = `${cur.name}/${animName}`;
+}
+
+function draw(target = canvas) {
+	if (!cur) return;
+	const w = canvas.clientWidth * devicePixelRatio, h = canvas.clientHeight * devicePixelRatio;
+	if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+	pose(cur.skeleton, cur.state, cur.anim, cur.t);
+	if (hideAdd) for (const s of cur.skeleton.slots) if (cur.additive.has(s.data.name)) s.color.a = 0;
+	const b = cur.bounds, pad = 1.1;
+	const cam = renderer.camera;
+	cam.position.x = b.x + b.w / 2; cam.position.y = b.y + b.h / 2;
+	cam.zoom = Math.max(b.w * pad / w, b.h * pad / h) || 1;
+	renderer.resize(spine.ResizeMode.Expand);
+	gl.gl.clearColor(0, 0, 0, 0); gl.gl.clear(gl.gl.COLOR_BUFFER_BIT);
+	renderer.begin();
+	renderer.drawSkeleton(cur.skeleton, false);
+	if (showBones) { renderer.skeletonDebugRenderer.drawRegionAttachments = false; renderer.skeletonDebugRenderer.drawMeshHull = false; renderer.skeletonDebugRenderer.drawMeshTriangles = false; renderer.drawSkeletonDebug(cur.skeleton, false); }
+	renderer.end();
+	$('t').textContent = cur.t.toFixed(3) + 's';
+	$('scrub').value = Math.round(cur.t / (cur.anim.duration || 1) * 1000);
+}
+function loop(now) {
+	const dt = Math.min((now - last) / 1000, 0.1); last = now;
+	if (cur && playing) { cur.t += dt * speed; if (cur.t > cur.anim.duration) cur.t = 0; }
+	draw();
+	requestAnimationFrame(loop);
+}
+
+// Contact sheet: N evenly spaced frames, time stamped, laid out in rows of 6.
+function sheet() {
+	const n = Math.max(4, Math.min(60, +$('frames').value || 12)), cols = 6, rows = Math.ceil(n / cols);
+	const cw = 220, ch = Math.round(cw * cur.bounds.h / cur.bounds.w) || 220;
+	const out = document.createElement('canvas'); out.width = cols * cw; out.height = rows * (ch + 18) + 24;
+	const g = out.getContext('2d');
+	g.fillStyle = '#0f0d13'; g.fillRect(0, 0, out.width, out.height);
+	g.fillStyle = '#ece7f3'; g.font = '13px system-ui'; g.fillText(`${cur.name} / ${cur.anim.name}  ${cur.anim.duration.toFixed(3)}s`, 6, 16);
+	const keep = cur.t;
+	const sw = canvas.clientWidth, sh = canvas.clientHeight;
+	for (let i = 0; i < n; i++) {
+		cur.t = cur.anim.duration * i / (n - 1);
+		draw();
+		const x = (i % cols) * cw, y = 24 + Math.floor(i / cols) * (ch + 18);
+		const scale = Math.min(canvas.width / cur.bounds.w, canvas.height / cur.bounds.h);
+		const srcW = cur.bounds.w * scale / 1.1 * 1.1, srcH = cur.bounds.h * scale;
+		g.drawImage(canvas, (canvas.width - srcW) / 2, (canvas.height - srcH) / 2, srcW, srcH, x, y, cw, ch);
+		g.fillStyle = '#a59cb6'; g.fillText(cur.t.toFixed(2) + 's', x + 4, y + ch + 13);
+	}
+	cur.t = keep;
+	const url = out.toDataURL('image/png');
+	$('sheetImg').src = url;
+	$('sheetWrap').style.display = 'block';
+	$('sheetWrap').scrollIntoView();
+	// gallery_server.mjs accepts this; a plain static server just 404s and the sheet stays on the page.
+	return fetch(`save?name=${encodeURIComponent(`${cur.name}__${cur.anim.name}.png`)}`, { method: 'POST', body: url })
+		.then((r) => r.text()).catch((e) => String(e));
+}
+
+$('skel').onchange = () => select($('skel').value);
+$('anim').onchange = () => setAnim($('anim').value);
+$('play').onclick = () => { playing = !playing; $('play').classList.toggle('on', playing); };
+$('speed').onchange = () => { speed = +$('speed').value; };
+$('bones').onclick = () => { showBones = !showBones; $('bones').classList.toggle('on', showBones); };
+$('noAdd').onclick = () => { hideAdd = !hideAdd; $('noAdd').classList.toggle('on', hideAdd); };
+$('scrub').oninput = () => { playing = false; $('play').classList.remove('on'); cur.t = cur.anim.duration * $('scrub').value / 1000; };
+$('sheet').onclick = sheet;
+
+fetch('spine-index.json').then((r) => r.json()).then((idx) => {
+	index = idx;
+	const order = (n) => /hv_|lv_|scatter/.test(n) ? 0 : /character/.test(n) ? 1 : 2;
+	const names = idx.map((s) => s.name).sort((a, b) => order(a) - order(b) || a.localeCompare(b));
+	$('skel').innerHTML = names.map((n) => `<option>${n}</option>`).join('');
+	const [h, a] = decodeURIComponent(location.hash.slice(1)).split('/');
+	const first = names.includes(h) ? h : names[0];
+	$('skel').value = first;
+	select(first, a);
+	requestAnimationFrame(loop);
+});
+window.__gallery = {
+	select, setAnim, draw, freeze, depthOf,
+	sheet: () => atSize(640, sheet),
+	compare: (v, n, s) => atSize(640, () => compare(v, n, s)),
+	trails: (b, t, s) => atSize(900, () => trails(b, t, s)),
+	get cur() { return cur; }, set t(v) { cur.t = v; },
+};
+</script>
+</body>
+</html>

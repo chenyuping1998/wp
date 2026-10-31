@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-31",
+  "revision": "motion-flow-v6",
+  "environment": "Existing game, local mock wallet and unchanged published fixtures; no live RGS.",
+  "rigSha256": "977e144ded990149af0e648526c28530614c23bde8a297e53f8c3496f0219667",
+  "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+  "motion": {
+    "continuousPlayerReview": "cast/motion-review/motion.gif",
+    "allActions": "cast/motion-review/all-actions.png",
+    "anatomy": "cast/anatomy-validation.json",
+    "continuity": "cast/motion-flow-validation.json"
+  },
+  "screenshots": {
+    "purrfia-desktop.png": "4a09d7a73b622f23a2934bfd9fcee95407a58836281bee539f58b31e49c8e075",
+    "purrfia-shoulder.png": "6d5dc0bddce129c6cf1c9ef678a70cea8ef5e3f81ee4267bbe2fad5d3589bdc0"
+  },
+  "currentBrowserResult": {
+    "fixture": "baseWin",
+    "idle": true,
+    "winBook": 370,
+    "balance": 1002.7,
+    "pose": "push_monocle @ 50%",
+    "viewport": "1280x720",
+    "consoleErrors": [],
+    "boxFrameRegression": "box-frame-regression.json"
+  },
+  "previousUiBackgroundPrizeEvidence": "cast/motion_v5_before/browser-validation.json"
+}

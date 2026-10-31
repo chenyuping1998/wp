@@ -1,5 +1,3 @@
-import { createSound } from 'utils-sound';
-
 export type MusicName =
 	| 'bgm_main'
 	| 'bgm_freespin'
@@ -56,7 +54,3 @@ export type SoundEffectName =
 	| 'tumble_win_4';
 
 export type SoundName = MusicName | SoundEffectName;
-
-const sound = createSound<SoundName>();
-
-export { sound };

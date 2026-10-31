@@ -8,7 +8,10 @@
  import BoardContainer from './BoardContainer.svelte';
  import {GAME_FONT} from '../game/fonts';
  const context=getContext();let openingAge=$state(0);
- $effect(()=>{if(!context.stateGame.openingBoxes.length)return;let raf=0;const start=performance.now();const tick=(now:number)=>{openingAge=(now-start)/(stateBet.isTurbo?400:780);raf=requestAnimationFrame(tick);};raf=requestAnimationFrame(tick);return()=>cancelAnimationFrame(raf);});
+ $effect(()=>{if(!context.stateGame.openingBoxes.length)return;openingAge=0;let raf=0;const start=performance.now();const tick=(now:number)=>{openingAge=Math.max(0,(now-start)/context.stateGame.boxDurationMs);raf=requestAnimationFrame(tick);};raf=requestAnimationFrame(tick);return()=>cancelAnimationFrame(raf);});
+ // A queued rAF timestamp can precede this effect's start time. Keep the
+ // first frame in range instead of briefly requesting frames[-1].
+ const boxFrame=()=>{const split=context.stateGame.boxReleaseMs/context.stateGame.boxDurationMs;const age=Math.max(0,openingAge);return age<split?Math.min(2,Math.floor(age/split*3)):Math.min(6,3+Math.floor((age-split)/(1-split)*4));};
  const frames=['art_box_closed','art_box_peek_1','art_box_peek_2','art_box_open_1','art_box_open_2','art_box_open_3','art_box_open_4'];
  
  const cells=$derived(context.stateGame.cellMults.flatMap((col,reel)=>col.flatMap((mult,row)=>row>=1&&row<=7&&mult>=2?[{reel,row,mult}]:[])));
@@ -21,7 +24,7 @@
   </Container>
  {/each}
  {#each context.stateGame.openingBoxes as box (`${box.reel}:${box.row}`)}
-  <Sprite key={frames[Math.min(6,Math.floor(openingAge*7))]} anchor={.5} x={getSymbolX(box.reel)} y={(box.row-.5)*SYMBOL_SIZE} width={SYMBOL_SIZE*1.1} height={SYMBOL_SIZE*1.1} alpha={Math.max(0,1-Math.max(0,openingAge-.75)*4)}/>
+  <Sprite key={frames[boxFrame()]} anchor={.5} x={getSymbolX(box.reel)} y={(box.row-.5)*SYMBOL_SIZE} width={SYMBOL_SIZE*1.1} height={SYMBOL_SIZE*1.1} alpha={Math.max(0,1-Math.max(0,openingAge-.75)*4)}/>
 
  {/each}
 </BoardContainer>

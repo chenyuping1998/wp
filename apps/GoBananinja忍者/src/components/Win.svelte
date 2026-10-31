@@ -49,7 +49,7 @@
 	let amount = $state(0);
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
-	let onCountUpComplete = $state(() => {});
+	const onCountUpComplete = () => { context.eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' }); };
 
 	// ── plaque FX clock: the entrance slam, its flash and shake ──────────────
 	let fxNow = $state(-1);

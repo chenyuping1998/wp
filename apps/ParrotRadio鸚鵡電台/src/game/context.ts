@@ -19,7 +19,7 @@ export const setContext = () => {
 	setContextLayout({ stateLayout, stateLayoutDerived });
 	setContextApp({ stateApp });
 
-	// (base + 200x bonus); otherwise the shared template defaults expose extra
+	// (base, 100x bonus and 300x super bonus); otherwise the shared template defaults expose extra
 	// unplayable buy options.
 	stateMeta.betModeMeta = PARROT_RADIO_BET_MODE_META;
 };

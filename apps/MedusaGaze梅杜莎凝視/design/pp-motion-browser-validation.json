@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-31",
+  "revision": "20261031-pp-motion-recipes",
+  "passed": true,
+  "skill": "E:/stake/wp/.claude/skills/slot-motion-recipes/SKILL.md",
+  "scope": "Local mock UI replay and native Pixi/Spine contact sheets; no live RGS and no video capture.",
+  "visualReview": {
+    "highSymbols": "H1-H5 reviewed at 0,50,164,265,441,567ms: local crown/crest/string/handle/leaf motion, readable original artwork and beat-linked texture glow.",
+    "lowSymbols": "S,L1-L4 reviewed at the same six frames: inner portrait depth on S and restrained root beats for low symbols.",
+    "character": "Native react_small at 0,.12,.32,.52,.65,.8s: downward anticipation, board glance, raised-hand hold and recovery. Full-body silhouette and snake artwork retained.",
+    "drop": "0,126,216,261,306,333,360ms: first contact followed by two decreasing rebounds, without a second landing animation.",
+    "feature": "Free-game three-orb shared renderer with sound enabled reached x178 / $178.00 and resting body pose; glasses remained on forehead."
+  },
+  "gameSmoke": [
+    {
+      "tier": "OFF",
+      "book": "baseThrow",
+      "result": "$12.50",
+      "returnedToIdle": true
+    },
+    {
+      "tier": "TURBO 2",
+      "book": "baseThrow",
+      "result": "$12.50",
+      "returnedToIdle": true
+    }
+  ],
+  "turbo": "Native timing check passed all 16 comparisons; character, charge, orb flight, sound, collision and readout clocks remain identical at OFF/T1/T2. Only board timings scale. UI restored to OFF.",
+  "nativeChecks": {
+    "bones": 84,
+    "clips": 24,
+    "localSymbols": 6,
+    "meshInversions": 0,
+    "columnPatterns": 63,
+    "publishedWinningPositions": 721,
+    "eightLinkBudgetMs": 9870,
+    "signatureComparisons": 16
+  },
+  "fullBuild": "passed",
+  "typeCheck": {
+    "errors": 0,
+    "warnings": 1,
+    "warning": "tsconfig allowImportingTsExtensions requires noEmit or emitDeclarationOnly"
+  },
+  "console": {
+    "runtimeErrors": 0,
+    "notes": "One existing Pixi TextStyle warning was observed in dev; the game completed both rounds. No errors were reported in the FG preview."
+  },
+  "screenshots": [
+    "source/medusagaze/_sheets/pp_motion_20261031_high.png",
+    "source/medusagaze/_sheets/pp_motion_20261031_low.png",
+    "source/medusagaze/_sheets/pp_motion_20261031_character.png",
+    "source/medusagaze/_sheets/pp_motion_20261031_drop.png",
+    "source/medusagaze/_sheets/pp_motion_20261031_off_result.png",
+    "source/medusagaze/_sheets/pp_motion_20261031_turbo2_result.png",
+    "source/medusagaze/_sheets/pp_motion_20261031_fg_result.png"
+  ],
+  "limits": "Mock/headless replay checks lifecycle, not production frame pacing or wallet accounting. Earlier portrait and 15-spin feature checks are historical, not rerun for this revision. Original synthetic casting voice retained."
+}

@@ -681,6 +681,15 @@ export const uiTheme = $state({
 	// down, in standard-layout units. 0 is what every game had; Saucer Monkey's
 	// Anton values sat on the frame's lower edge (2026-10-17).
 	readoutOffsetY: 0,
+	// compactBottom only — the captions under the opened menu's buttons (SOUND
+	// ON, SETTINGS, INFO, PAYTABLE). Undefined keeps what every game had: label
+	// fill, value stroke, 0.5 of the base font size. Jade Teahouse (2026-10-31):
+	// at that size the 3px cream stroke swallowed the dark letters and the
+	// captions read as faint white over its pale background.
+	menuCaptionFill: undefined as number | undefined,
+	menuCaptionStroke: undefined as number | undefined,
+	menuCaptionStrokeWidth: undefined as number | undefined,
+	menuCaptionScale: undefined as number | undefined,
 	// Round controls whose ON state is shown by the icon alone (UiButton): the
 	// plate, fill and ring stay as when off, and the turbo bolt fills solid in
 	// its outline colour. Empty is what every game had; Saucer Monkey lists

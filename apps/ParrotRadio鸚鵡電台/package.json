@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite dev --host --port 3047",
     "preview": "vite preview",
-    "build": "node design/sync_math_config.mjs && node design/check_undefined_refs.mjs && node design/check_string_literals.mjs && node design/check_social_words.mjs && node design/check_assets.mjs && node design/check_events.mjs && node design/check_source_types.mjs && vite build",
+    "build": "node design/sync_math_config.mjs && node design/check_undefined_refs.mjs && node design/check_string_literals.mjs && node design/check_social_words.mjs && node design/check_assets.mjs && node design/check_events.mjs && node design/check_source_types.mjs && node design/check_cast.mjs && node design/check_presentation.mjs && vite build",
     "check:events": "node design/check_events.mjs",
     "dev:books": "E:/stake/math-sdk/env/Scripts/python.exe design/make_dev_books.py",
-    "check:types": "node design/check_source_types.mjs"
+    "check:types": "node design/check_source_types.mjs",
+    "check:cast": "node design/check_cast.mjs",
+    "check:presentation": "node design/check_presentation.mjs"
   },
   "type": "module",
   "devDependencies": {

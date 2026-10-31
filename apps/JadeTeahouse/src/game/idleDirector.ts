@@ -15,9 +15,13 @@
  */
 type Cell = { name: string; play: () => boolean };
 
-const QUIET_MS = 1600;
-const GAP_MS: [number, number] = [1900, 4200];
-const ECHO_CHANCE = 0.35;
+// RESTRAINT (2026-10-31, as Go Bananeon): at 1.9-4.2s with a 35% echo the
+// board was never still - something twitched every couple of seconds, which
+// reads as a loop running, not as a character acting. One act, then a long
+// rest, and no answering cell.
+const QUIET_MS = 2500;
+const GAP_MS: [number, number] = [6500, 11000];
+const ECHO_CHANCE = 0;
 const ECHO_MS: [number, number] = [260, 520];
 
 const cells = new Set<Cell>();

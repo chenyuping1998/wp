@@ -45,8 +45,8 @@ export default {
 		src: new URL('../../assets/sprites/goBananasFx/fx_vignette.png', import.meta.url).href,
 		preload: true,
 	},
-	// bet-bar plates (design/generate_ui_plates.mjs) — brass-framed olive canvas
-	// matching the reel housing
+	// bet-bar readout plate: chrome bezel + neon tube + dark glass, same material
+	// as the reel housing (design/build_neon_ui_v2.py)
 	gbUiTicker: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasUi/ticker_plate.png', import.meta.url).href,
@@ -74,7 +74,7 @@ export default {
 		src: new URL('../../assets/sprites/goBananasUi/buybonus_stone_lit.png', import.meta.url).href,
 		preload: true,
 	},
-	// brass win-tier plaques (design/generate_win_banners.mjs)
+	// chrome + neon win-tier plaques (design/build_neon_ui_v2.py)
 	gbWinBannerBig: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasWinBanners/big.png', import.meta.url).href,
@@ -105,7 +105,7 @@ export default {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasFrame/fs_counter_panel.png', import.meta.url).href,
 	},
-	// the blast ladder's dynamite sticks on the counter (design/generate_ladder_sticks.mjs)
+	// the blast ladder's charge cells on the counter (design/build_neon_ui_v2.py)
 	gbLadderLit: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasUi/ladder_stick_lit.png', import.meta.url).href,
@@ -375,6 +375,83 @@ export default {
 	//
 	// Generated from the SAME shapes as the brass set — see design/generate_ui_icons.mjs,
 	// which renders both palettes in one pass so the two can never drift apart.
+	// Neon bet bar (design/build_neon_ui_v2.py, 2026-10-31): chrome discs, the
+	// magenta spin plate, the strip, and the mono icons relit as neon tubes.
+	gbUiNeonButton: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUi/button.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiNeonButtonOn: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUi/button_on.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiNeonSpinPlate: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUi/spin_plate.png', import.meta.url).href,
+		preload: true,
+	},
+	gbUiNeonBarStrip: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUi/bar_strip.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconNeonMenu: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUiIcons/menu.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconNeonMenuExit: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUiIcons/menuExit.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconNeonSettings: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUiIcons/settings.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconNeonInfo: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUiIcons/info.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconNeonPayTable: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUiIcons/payTable.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconNeonSoundOn: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUiIcons/soundOn.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconNeonSoundOff: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUiIcons/soundOff.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconNeonAutoSpin: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUiIcons/autoSpin.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconNeonReplay: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUiIcons/replay.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconNeonIncrease: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUiIcons/increase.png', import.meta.url).href,
+		preload: true,
+	},
+	gbIconNeonDecrease: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/goBananeonUiIcons/decrease.png', import.meta.url).href,
+		preload: true,
+	},
 	gbIconMonoMenu: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananasUiIconsMono/menu.png', import.meta.url).href,
@@ -499,10 +576,5 @@ export default {
 	winNotes: {
 		type: 'spriteSheet',
 		src: new URL('../../assets/sprites/goBananeonWinNotes/notes.json', import.meta.url).href,
-	},
-	sound: {
-		type: 'audio',
-		src: new URL('../../assets/audio/sounds.json', import.meta.url).href,
-		preload: true,
 	},
 } as const;

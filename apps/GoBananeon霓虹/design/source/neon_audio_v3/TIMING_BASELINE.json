@@ -1,0 +1,217 @@
+{
+  "bgm_freespin": {
+    "frames": 1323000,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "bgm_main": {
+    "frames": 1612800,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "bigwin_blast": {
+    "frames": 90405,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "btn": {
+    "frames": 2866,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "cave_quake": {
+    "frames": 132300,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "coin_shimmer": {
+    "frames": 94815,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "dj_scratch": {
+    "frames": 141120,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "dynamite_blast": {
+    "frames": 48510,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "dynamite_blast_big": {
+    "frames": 59094,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "fs_intro": {
+    "frames": 97020,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "fullboard_chain": {
+    "frames": 52920,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "fullboard_stamp": {
+    "frames": 82908,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "fuse_sizzle": {
+    "frames": 16758,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "gong_feature": {
+    "frames": 116865,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "grenade_blast": {
+    "frames": 28224,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "ladder_up": {
+    "frames": 41454,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "mult_update": {
+    "frames": 25578,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "pluck_low": {
+    "frames": 33075,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "press_blast": {
+    "frames": 25578,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "reel_stop": {
+    "frames": 6394,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "reel_tension": {
+    "frames": 88200,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "scatter_1": {
+    "frames": 39690,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "scatter_2": {
+    "frames": 39690,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "scatter_3": {
+    "frames": 39690,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "scatter_4": {
+    "frames": 39690,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "scatter_5": {
+    "frames": 39690,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "smoke_puff": {
+    "frames": 39690,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "spin": {
+    "frames": 18522,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "symbol_land": {
+    "frames": 9261,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "symbol_reveal": {
+    "frames": 45423,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "symbol_shatter": {
+    "frames": 30870,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "voice_effort": {
+    "frames": 17640,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "voice_roar": {
+    "frames": 119071,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "wild_expand": {
+    "frames": 99225,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "win_big": {
+    "frames": 108045,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "win_cap": {
+    "frames": 154350,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "win_epic": {
+    "frames": 185220,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "win_gliss": {
+    "frames": 49392,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "win_gliss_big": {
+    "frames": 114660,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "win_max": {
+    "frames": 211680,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "win_mega": {
+    "frames": 158760,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "win_panel": {
+    "frames": 78498,
+    "channels": 1,
+    "sample_rate": 44100
+  },
+  "win_super": {
+    "frames": 134505,
+    "channels": 1,
+    "sample_rate": 44100
+  }
+}

@@ -30,7 +30,7 @@ const LEMON = 0xf2c230;
 const T = { crouch: 120, rise: 350, fall: 780, land: 950, hop2: 1160 };
 
 type Pt = [number, number];
-type Rigid = { dx: number; dy: number; rot: number };
+type Rigid = { dx: number; dy: number; rot: number; sx: number; sy: number; pop: number };
 
 /** 0..1 how much of a mark is drawn: draws on over `inMs`, holds, wipes off */
 const life = (t: number, at: number, inMs: number, holdMs: number, outMs: number) => {
@@ -83,6 +83,17 @@ const drop = (g: Graphics, c: Pt, r: number) => {
 	g.circle(c[0], c[1], r).fill(LEMON).stroke({ width: 4, color: INK });
 };
 
+// A short, staggered celebration, drawn in the same flat printed inks.
+// Fixed trajectories keep repeated wins consistent and avoid particle churn.
+const twinkles = (g: Graphics, t: number, at: number, lift: number, points: Pt[]) => {
+	points.forEach(([x, y], i) => {
+		const u = (t - at - i * 75) / 330;
+		if (u <= 0 || u >= 1) return;
+		const size = Math.sin(Math.PI * u);
+		star(g, [x, y + lift - 10 * u], 8 + i * 2, size, u * 0.8);
+	});
+};
+
 /** take-off dashes and the landing's impact ring, under the feet */
 const ground = (g: Graphics, t: number, feet: number) => {
 	const off = life(t, T.crouch + 10, 90, 60, 140);
@@ -111,25 +122,44 @@ const ACCENTS: Record<string, (g: Graphics, t: number, lift: number) => void> = 
 		const b = life(t, T.rise + 30, 220, 90, 220);
 		if (a) curve(g, [6, 92 + lift], [34, 52 + lift], [84, 66 + lift], a, 7);
 		if (b) curve(g, [10, 150 + lift], [36, 118 + lift], [74, 128 + lift], b, 6);
+		// A final puff as the mill brakes its runaway sails.
+		const brake = life(t, 870, 90, 30, 170);
+		if (brake) {
+			curve(g, [184, 56 + lift], [226, 36 + lift], [230, 78 + lift], brake, 5);
+			curve(g, [198, 110 + lift], [236, 106 + lift], [224, 142 + lift], brake, 4);
+		}
 	},
 	H2: (g, t, lift) => {
 		// the bite: three strokes fly off the jaw tip as it snaps shut
-		const l = life(t, T.rise + 100, 70, 90, 150);
-		if (!l) return;
-		const tip: Pt = [214, 106 + lift];
-		for (const a of [-1.2, -0.6, 0]) stroke(g, [tip[0] + Math.cos(a) * 14, tip[1] + Math.sin(a) * 14], [tip[0] + Math.cos(a) * 40, tip[1] + Math.sin(a) * 40], l, 7);
+		for (const [at, scale] of [[450, 1], [770, 0.65]]) {
+			const l = life(t, at, 55, 45, 130);
+			if (!l) continue;
+			const tip: Pt = [210, 112 + lift];
+			for (const a of [-1.2, -0.6, 0]) stroke(g, [tip[0] + Math.cos(a) * 14, tip[1] + Math.sin(a) * 14], [tip[0] + Math.cos(a) * 38 * scale, tip[1] + Math.sin(a) * 38 * scale], l, 6 * scale);
+		}
+		// A sheepish sweat bead after the over-enthusiastic double chomp.
+		const u = (t - 790) / 350;
+		if (u > 0 && u < 1) drop(g, [68 - 12 * u, 72 + lift + 40 * u * u], 7 * Math.sin(Math.PI * u));
 	},
 	H3: (g, t, lift) => {
 		// rattle arcs over the clubs, two beats apart, while it is shaken
-		for (const [at, s] of [[T.rise - 80, -1], [T.rise + 70, 1]] as const) {
+		for (const [at, s] of [[T.rise - 20, -1], [T.rise + 250, 1]] as const) {
 			const l = life(t, at, 90, 80, 150);
 			if (l) curve(g, [128 + s * 30, 34 + lift], [128 + s * 54, 8 + lift], [128 + s * 80, 32 + lift], l, 6.5);
 		}
+		twinkles(g, t, 450, lift, [[64, 54], [201, 45]]);
 	},
 	H4: (g, t, lift) => {
 		// the toast sloshes three drops out of the mouth of the jar (clear of
 		// the lemon wheel: yellow on yellow is lost); they arc and fall
 		const u = (t - T.rise + 20) / 520;
+		// A fizzy afterbeat: bubbles rise and pop after the glass rights itself.
+		for (let i = 0; i < 3; i++) {
+			const b = (t - 650 - i * 80) / 360;
+			if (b <= 0 || b >= 1) continue;
+			const radius = 4 * Math.sin(Math.PI * b);
+			g.circle(172 + i * 10 + 4 * Math.sin(b * Math.PI), 74 + lift - 30 * b, radius).stroke({ color: CREAM, width: 2.5 });
+		}
 		if (u <= 0 || u >= 1) return;
 		for (const [k, vx, vy, r] of [[0, -30, -84, 15], [1, 24, -96, 12], [2, -62, -60, 11]] as const) {
 			const s = u - k * 0.06;
@@ -145,6 +175,7 @@ const ACCENTS: Record<string, (g: Graphics, t: number, lift: number) => void> = 
 		if (u <= 0 || u >= 1) return;
 		const s = u < 0.25 ? u / 0.25 : 1 - (u - 0.25) / 0.75;
 		star(g, [212, 60 + lift], 32, s * (2 - s), u * 1.4);
+		twinkles(g, t, 580, lift, [[48, 90], [192, 32]]);
 	},
 	S: (g, t, lift) => {
 		// wind lines stream past the cloth toward its point
@@ -152,6 +183,7 @@ const ACCENTS: Record<string, (g: Graphics, t: number, lift: number) => void> = 
 			const l = life(t, at, 170, 60, 200);
 			if (l) curve(g, [x0, y + lift], [x0 + 80, y - 12 + lift], [x0 + 176, y + 4 + lift], l, 6);
 		}
+		twinkles(g, t, 490, lift, [[62, 52], [210, 53], [225, 150]]);
 	},
 	P: (g, t, lift) => {
 		// a roll arc trails the ball's turn
@@ -163,9 +195,18 @@ const ACCENTS: Record<string, (g: Graphics, t: number, lift: number) => void> = 
 /** draw this frame's marks for `symbol` at act time `t` (ms) */
 export const drawInkFx = (g: Graphics, symbol: string, t: number, feet: number, rigid: Rigid) => {
 	g.clear();
-	const lift = rigid.dy;
 	ground(g, t, feet);
-	ACCENTS[symbol]?.(g, t, lift);
+	// Match skin()'s whole-subject transform, so a chomp or cap sparkle stays
+	// with the drawing through the larger twists. Ground ticks stay on the card.
+	const angle = rigid.rot * Math.PI / 180;
+	const a = Math.cos(angle) * rigid.sx * rigid.pop;
+	const b = Math.sin(angle) * rigid.sx * rigid.pop;
+	const c = -Math.sin(angle) * rigid.sy * rigid.pop;
+	const d = Math.cos(angle) * rigid.sy * rigid.pop;
+	g.save();
+	g.setTransform(a, b, c, d, 128 + rigid.dx - a * 128 - c * feet, 128 + rigid.pop * (feet - 128) + rigid.dy - b * 128 - d * feet);
+	ACCENTS[symbol]?.(g, t, 0);
+	g.restore();
 };
 
 export const HAS_INK_FX = new Set(Object.keys(ACCENTS));

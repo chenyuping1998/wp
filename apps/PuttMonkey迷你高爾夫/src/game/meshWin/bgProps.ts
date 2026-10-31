@@ -70,10 +70,17 @@ type Sway = {
 	flutter?: number;
 	/** px carried downwind at full gust (a cloud) */
 	drift?: number;
+	/** px of a slow float of its own, back and forth (a cloud): smooth enough
+	 *  to be large where the wind's drift cannot be (its gust onset jolts) */
+	float?: number;
 	/** rectangles inside the field that must NOT move — stonework, a crater
 	 *  under a static glow. Bending them is what reads as a torn picture. */
 	avoid?: Rect[];
 };
+
+// the cloud's own float: the props loop every 6s (durationMs), so one swing
+// fits it exactly and the loop has no seam
+const FLOAT_PERIOD = 6000;
 
 const sway = (s: Sway): BgPropSpec => {
 	const plant = blob(s.at, ...s.radius);
@@ -96,6 +103,7 @@ const sway = (s: Sway): BgPropSpec => {
 		b.dy = -Math.abs(w) * s.amp * (s.lift ?? 0);
 		// a cloud drifts with the wind both ways, so it never parks
 		if (s.drift) b.dx = s.drift * w;
+		if (s.float) b.dx += s.float * fade * Math.sin((env.t * Math.PI * 2) / FLOAT_PERIOD + s.phase);
 		if (s.flutter) b.across = 1 + s.flutter * Math.max(0, w) * Math.sin(env.t / 95 + s.phase);
 		return pose;
 	};
@@ -157,7 +165,7 @@ const course = (plate: string, tag: string): BgPropSpec[] => [
 
 export const BG_BASE_PROPS: BgPropSpec[] = [
 	...course('gbBgBase', 'Base'),
-	sway({ name: 'bg:cloudBase', plate: 'gbBgBase', rect: [520, 35, 1130, 285], pivot: [825, 155], at: [825, 155], radius: [220, 60], amp: 0.45, period: 7000, phase: 0.2, drift: 12 }),
+	sway({ name: 'bg:cloudBase', plate: 'gbBgBase', rect: [520, 35, 1130, 285], pivot: [825, 155], at: [825, 165], radius: [250, 80], amp: 0.4, period: 7000, phase: 0.2, drift: 16, float: 12 }),
 ];
 export const BG_FEATURE_PROPS: BgPropSpec[] = [
 	...course('gbBgFeature', 'Feature'),

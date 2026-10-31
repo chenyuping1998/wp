@@ -3,22 +3,38 @@ export const BACKGROUND_SIZE = { width: 1920, height: 1080 } as const;
 export const CLOUD_PIXELS_PER_SECOND = BACKGROUND_SIZE.width / 5 / 60;
 export const STATUE_SECONDS = 1.2;
 export const STATUE_TO_MEDUSA_HEIGHT=1/5;
-export const FLAME_ANCHOR_V = 1434 / 1536;
 export const BACKGROUND_KEYS = ['mgBgBase', 'mgBgFree', 'mgBgCloud', 'mgBgTourist', 'mgBgIcecream', 'mgBgFlame', 'fxCrack1', 'fxCrack2', 'fxCrack3', 'fxGlow'] as const;
-export const FLAME_GRID = { columns: 18, rows: 28 } as const;
 export const CLOUDS = [
-	{ x: 580, y: 64, width: 600, height: 200 },
-	{ x: 1360, y: 84, width: 400, height: 134 },
-	{ x: -980, y: 75, width: 480, height: 160 },
-	{ x: -200, y: 80, width: 450, height: 150 },
+	// Three staggered streams stay in the open left sky, rather than spending
+	// several minutes hidden behind the board before wrapping around.
+	{x:300,y:70,width:230,height:76,speed:.40,alpha:.67,flip:false,lane:'left'},
+	{x:500,y:70,width:230,height:76,speed:.40,alpha:.67,flip:true,lane:'left'},
+	{x:100,y:70,width:230,height:76,speed:.40,alpha:.67,flip:false,lane:'left'},
+	{x:390,y:157,width:195,height:64,speed:.55,alpha:.63,flip:true,lane:'left'},
+	{x:590,y:157,width:195,height:64,speed:.55,alpha:.63,flip:false,lane:'left'},
+	{x:190,y:157,width:195,height:64,speed:.55,alpha:.63,flip:true,lane:'left'},
+	{x:260,y:210,width:160,height:53,speed:.33,alpha:.57,flip:false,lane:'left'},
+	{x:460,y:210,width:160,height:53,speed:.33,alpha:.57,flip:true,lane:'left'},
+	{x:660,y:210,width:160,height:53,speed:.33,alpha:.57,flip:false,lane:'left'},
+	{x:1390,y:62,width:350,height:86,speed:.70,alpha:.43,flip:true,lane:'sky'},
+	{x:1740,y:88,width:250,height:68,speed:.85,alpha:.38,flip:false,lane:'sky'},
 ] as const;
+export type CloudLane='left'|'sky';
+export const BIRD_COUNT=9;
 export const BRAZIERS = [{ x: 188, y: 712 }, { x: 1735, y: 712 }] as const;
 export const STATUES = [
 	{ key: 'mgBgTourist', x: 370, y: 1002, width: 60, height: 120, plinth: 0.895 },
-	{ key: 'mgBgIcecream', x: 1743, y: 995, width: 60, height: 120, plinth: 0.89 },
+	{ key: 'mgBgIcecream', x: 1650, y: 995, width: 60, height: 120, plinth: 0.89 },
 ] as const;
 export const clamp = (t: number) => Math.max(0, Math.min(1, t));
 export const ease = (t: number) => { const p = clamp(t); return p * p * (3 - 2 * p); };
+/** Integral of an occasional gust: particles accelerate and keep travelling.
+ * The next cycle begins at the same position and speed as the previous ends. */
+export const gardenBreeze = (time: number, side = 0) => {
+	const clock = Math.max(0,time) + side * 4.3, cycles = Math.floor(clock / 14), phase = clock - cycles * 14;
+	const u = clamp((phase - 4) / 4), pulse = Math.sin(Math.PI * u) ** 2;
+	return { distance: 48 * (cycles + u - Math.sin(2*Math.PI*u)/(2*Math.PI)), lift: pulse * 12, pulse };
+};
 // Shared irregular edges form a complete partition. All UVs retain the painted
 // statue; these are fracture cuts, never replacement shapes drawn over the art.
 const fractureRows = [
@@ -44,12 +60,29 @@ const statuePieceAmount = (index: number, age: number) => {
 	const q = t - 1, back = 1 + 2.25 * q ** 3 + 1.25 * q ** 2;
 	return t >= 1 ? 0 : 1 - back;
 };
-export const cloudPosition = (time: number, start: number, _width: number) => {
-	const margin = 600, span = BACKGROUND_SIZE.width + margin * 2;
-	return ((start + time * CLOUD_PIXELS_PER_SECOND + margin) % span + span) % span - margin;
+export const cloudPosition = (time: number, start: number, _width: number, speed=1,lane:CloudLane='sky') => {
+	const min=lane==='left'?100:-600,span=lane==='left'?600:BACKGROUND_SIZE.width+1200;
+	return ((start+time*CLOUD_PIXELS_PER_SECOND*speed-min)%span+span)%span+min;
 };
 /** Fade in open sky before reaching the opaque foreground column masks. */
-export const cloudVisibility = (x: number, width: number) => ease((x - 155 - width / 2) / 120) * ease((1770 - width / 2 - x) / 120);
+export const cloudVisibility = (x: number, width: number,lane:CloudLane='sky') => {
+	const right=lane==='left'?610:1770,fade=lane==='left'?38:120;
+	return ease((x-155-width/2)/fade)*ease((right-width/2-x)/fade);
+};
+/** Two small three-bird flocks use the left opening; three distant birds cross
+ * the upper skyline. Endpoints fade before the columns or board can clip wings. */
+export const birdPose=(index:number,time:number)=>{
+	const left=index<6,group=Math.floor(index/3),member=index%3;
+	const phase=(time*(left?.027:.018)+(left?.14+group*.5+member*.024:.12+member*.22))%1;
+	const x=left?110+phase*580:-120+phase*2300;
+	const y=(left?88+group*103:65)+member*17+Math.sin(phase*Math.PI*2+group)*8;
+	const span=left?7.5-member*.6:6.5+member*.5;
+	const stroke=(time+index*.37)%(5.6+member*.35);
+	const flap=ease(stroke/.12)*(1-ease((stroke-1.5)/.25));
+	const wing=span*(.16*(1-flap)+flap*(.12+.55*Math.sin(time*(8.4+member*.45)+index*.9)));
+	return{x,y,span,wing,
+		alpha:left?ease((x-155)/45)*ease((620-x)/50)*.62:Math.sin(Math.PI*phase)**2*.42};
+};
 export const statueEnvelope = (age: number) => {
 	return { split: Math.max(...STATUE_FRACTURE_PIECES.map((_, index) => Math.abs(statuePieceAmount(index, age)))),
 		crack: age >= 0.03 && age <= 0.16 ? ease((age - 0.03) / 0.035) : 0,
@@ -63,22 +96,6 @@ export const statuePiecePose = (index: number, age: number, width: number, heigh
 		y: (dy * split + 0.024 * Math.max(split, 0) ** 2) * height,
 		rotation: ((column - 1) * 0.19 + (row % 2 ? 0.075 : -0.075)) * split,
 		depth: Math.abs(split) };
-};
-export const flamePoint = (u: number, v: number, time: number, seed: number) => {
-	// Bottom rows remain fixed on the bowl. Independent tip timing avoids a loop
-	// of the entire flame scaling up and down like a breathing halo.
-	const weight = Math.max(0, (FLAME_ANCHOR_V - v) / FLAME_ANCHOR_V) ** 1.5;
-	// Waves travel from the fixed root to the tips. Lateral and vertical phases
-	// differ across the three painted tongues, rather than scaling a whole sprite.
-	const sway = Math.sin(time * 7.3 + seed + v * 7.8) * 0.070 + Math.sin(time * 12.7 + seed * 1.8 + v * 15.2) * 0.025;
-	const curl = Math.sin(time * 8.1 + seed + u * 7.4 + v * 3.0) * 0.040 + Math.sin(time * 13.7 + seed * 1.4 + u * 12.1 + v * 5.2) * 0.012;
-	return { x: u - 0.5 + sway * weight, y: v - FLAME_ANCHOR_V - curl * weight };
-};
-/** Small upward-moving internal distortion changes the licks' bright cores. */
-export const flameUV = (u: number, v: number, time: number, seed: number) => {
-	const weight = Math.max(0, (FLAME_ANCHOR_V - v) / FLAME_ANCHOR_V) ** 1.5;
-	return { u: u + Math.sin(time * 6.7 + v * 11 + seed) * 0.012 * weight,
-		v: v + Math.sin(time * 9.4 + v * 10 + seed + u * 4) * 0.023 * weight };
 };
 export const mixTint = (a: number, b: number, t: number) => {
 	let result = 0;

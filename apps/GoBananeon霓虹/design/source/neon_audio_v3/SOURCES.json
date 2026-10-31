@@ -1,0 +1,1808 @@
+{
+  "Clavisynth_C2_vl3.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Electrophones/TX81Z/Clavisynth/Clavisynth_C2_vl3.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Electrophones/TX81Z/Clavisynth/Clavisynth_C2_vl3.wav"
+  },
+  "Clavisynth_C4_vl2.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Electrophones/TX81Z/Clavisynth/Clavisynth_C4_vl2.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Electrophones/TX81Z/Clavisynth/Clavisynth_C4_vl2.wav"
+  },
+  "FMPiano_C3_vl2.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Electrophones/TX81Z/FM%20Piano/FMPiano_C3_vl2.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Electrophones/TX81Z/FM Piano/FMPiano_C3_vl2.wav"
+  },
+  "FMPiano_C4_vl3.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Electrophones/TX81Z/FM%20Piano/FMPiano_C4_vl3.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Electrophones/TX81Z/FM Piano/FMPiano_C4_vl3.wav"
+  },
+  "Clap_rr1.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Idiophones/Struck%20Idiophones/Claps/Clap_rr1.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Idiophones/Struck Idiophones/Claps/Clap_rr1.wav"
+  },
+  "Clap_rr2.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Idiophones/Struck%20Idiophones/Claps/Clap_rr2.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Idiophones/Struck Idiophones/Claps/Clap_rr2.wav"
+  },
+  "HiHat_HitC_v3_rr1_Mid.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Idiophones/Struck%20Idiophones/Hi-Hat%20Cymbal/HiHat_HitC_v3_rr1_Mid.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Idiophones/Struck Idiophones/Hi-Hat Cymbal/HiHat_HitC_v3_rr1_Mid.wav"
+  },
+  "BDrumNew_hit_v5_rr1_Sum.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Membranophones/Struck%20Membranophones/Bass%20Drum%201/BDrumNew_hit_v5_rr1_Sum.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Membranophones/Struck Membranophones/Bass Drum 1/BDrumNew_hit_v5_rr1_Sum.wav"
+  },
+  "snare_f1.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Membranophones/Struck%20Membranophones/Legacy%20Snares/OldSnare/snare_f1.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Membranophones/Struck Membranophones/Legacy Snares/OldSnare/snare_f1.wav"
+  },
+  "sci-fi-sounds/computerNoise_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/computerNoise_000.ogg"
+  },
+  "sci-fi-sounds/computerNoise_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/computerNoise_001.ogg"
+  },
+  "sci-fi-sounds/computerNoise_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/computerNoise_002.ogg"
+  },
+  "sci-fi-sounds/computerNoise_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/computerNoise_003.ogg"
+  },
+  "sci-fi-sounds/doorClose_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/doorClose_000.ogg"
+  },
+  "sci-fi-sounds/doorClose_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/doorClose_001.ogg"
+  },
+  "sci-fi-sounds/doorClose_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/doorClose_002.ogg"
+  },
+  "sci-fi-sounds/doorOpen_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/doorOpen_000.ogg"
+  },
+  "sci-fi-sounds/doorOpen_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/doorOpen_001.ogg"
+  },
+  "sci-fi-sounds/doorOpen_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/doorOpen_002.ogg"
+  },
+  "sci-fi-sounds/engineCircular_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/engineCircular_000.ogg"
+  },
+  "sci-fi-sounds/engineCircular_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/engineCircular_001.ogg"
+  },
+  "sci-fi-sounds/engineCircular_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/engineCircular_002.ogg"
+  },
+  "sci-fi-sounds/engineCircular_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/engineCircular_003.ogg"
+  },
+  "sci-fi-sounds/engineCircular_004.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/engineCircular_004.ogg"
+  },
+  "sci-fi-sounds/explosionCrunch_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/explosionCrunch_000.ogg"
+  },
+  "sci-fi-sounds/explosionCrunch_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/explosionCrunch_001.ogg"
+  },
+  "sci-fi-sounds/explosionCrunch_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/explosionCrunch_002.ogg"
+  },
+  "sci-fi-sounds/explosionCrunch_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/explosionCrunch_003.ogg"
+  },
+  "sci-fi-sounds/explosionCrunch_004.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/explosionCrunch_004.ogg"
+  },
+  "sci-fi-sounds/forceField_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/forceField_000.ogg"
+  },
+  "sci-fi-sounds/forceField_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/forceField_001.ogg"
+  },
+  "sci-fi-sounds/forceField_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/forceField_002.ogg"
+  },
+  "sci-fi-sounds/forceField_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/forceField_003.ogg"
+  },
+  "sci-fi-sounds/forceField_004.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/forceField_004.ogg"
+  },
+  "sci-fi-sounds/impactMetal_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/impactMetal_000.ogg"
+  },
+  "sci-fi-sounds/impactMetal_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/impactMetal_001.ogg"
+  },
+  "sci-fi-sounds/impactMetal_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/impactMetal_002.ogg"
+  },
+  "sci-fi-sounds/impactMetal_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/impactMetal_003.ogg"
+  },
+  "sci-fi-sounds/impactMetal_004.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/impactMetal_004.ogg"
+  },
+  "sci-fi-sounds/laserLarge_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserLarge_000.ogg"
+  },
+  "sci-fi-sounds/laserLarge_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserLarge_001.ogg"
+  },
+  "sci-fi-sounds/laserLarge_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserLarge_002.ogg"
+  },
+  "sci-fi-sounds/laserLarge_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserLarge_003.ogg"
+  },
+  "sci-fi-sounds/laserLarge_004.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserLarge_004.ogg"
+  },
+  "sci-fi-sounds/laserRetro_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserRetro_000.ogg"
+  },
+  "sci-fi-sounds/laserRetro_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserRetro_001.ogg"
+  },
+  "sci-fi-sounds/laserRetro_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserRetro_002.ogg"
+  },
+  "sci-fi-sounds/laserRetro_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserRetro_003.ogg"
+  },
+  "sci-fi-sounds/laserRetro_004.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserRetro_004.ogg"
+  },
+  "sci-fi-sounds/laserSmall_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserSmall_000.ogg"
+  },
+  "sci-fi-sounds/laserSmall_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserSmall_001.ogg"
+  },
+  "sci-fi-sounds/laserSmall_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserSmall_002.ogg"
+  },
+  "sci-fi-sounds/laserSmall_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserSmall_003.ogg"
+  },
+  "sci-fi-sounds/laserSmall_004.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/laserSmall_004.ogg"
+  },
+  "sci-fi-sounds/lowFrequency_explosion_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/lowFrequency_explosion_000.ogg"
+  },
+  "sci-fi-sounds/lowFrequency_explosion_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/lowFrequency_explosion_001.ogg"
+  },
+  "sci-fi-sounds/slime_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/slime_000.ogg"
+  },
+  "sci-fi-sounds/slime_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/slime_001.ogg"
+  },
+  "sci-fi-sounds/spaceEngineLarge_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineLarge_000.ogg"
+  },
+  "sci-fi-sounds/spaceEngineLarge_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineLarge_001.ogg"
+  },
+  "sci-fi-sounds/spaceEngineLarge_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineLarge_002.ogg"
+  },
+  "sci-fi-sounds/spaceEngineLarge_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineLarge_003.ogg"
+  },
+  "sci-fi-sounds/spaceEngineLarge_004.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineLarge_004.ogg"
+  },
+  "sci-fi-sounds/spaceEngineLow_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineLow_000.ogg"
+  },
+  "sci-fi-sounds/spaceEngineLow_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineLow_001.ogg"
+  },
+  "sci-fi-sounds/spaceEngineLow_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineLow_002.ogg"
+  },
+  "sci-fi-sounds/spaceEngineLow_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineLow_003.ogg"
+  },
+  "sci-fi-sounds/spaceEngineLow_004.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineLow_004.ogg"
+  },
+  "sci-fi-sounds/spaceEngineSmall_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineSmall_000.ogg"
+  },
+  "sci-fi-sounds/spaceEngineSmall_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineSmall_001.ogg"
+  },
+  "sci-fi-sounds/spaceEngineSmall_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineSmall_002.ogg"
+  },
+  "sci-fi-sounds/spaceEngineSmall_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineSmall_003.ogg"
+  },
+  "sci-fi-sounds/spaceEngineSmall_004.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngineSmall_004.ogg"
+  },
+  "sci-fi-sounds/spaceEngine_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngine_000.ogg"
+  },
+  "sci-fi-sounds/spaceEngine_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngine_001.ogg"
+  },
+  "sci-fi-sounds/spaceEngine_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngine_002.ogg"
+  },
+  "sci-fi-sounds/spaceEngine_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/spaceEngine_003.ogg"
+  },
+  "sci-fi-sounds/thrusterFire_000.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/thrusterFire_000.ogg"
+  },
+  "sci-fi-sounds/thrusterFire_001.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/thrusterFire_001.ogg"
+  },
+  "sci-fi-sounds/thrusterFire_002.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/thrusterFire_002.ogg"
+  },
+  "sci-fi-sounds/thrusterFire_003.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/thrusterFire_003.ogg"
+  },
+  "sci-fi-sounds/thrusterFire_004.ogg": {
+    "source_url": "https://kenney.nl/assets/sci-fi-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/sci-fi_sounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/thrusterFire_004.ogg"
+  },
+  "interface-sounds/back_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/back_001.ogg"
+  },
+  "interface-sounds/back_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/back_002.ogg"
+  },
+  "interface-sounds/back_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/back_003.ogg"
+  },
+  "interface-sounds/back_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/back_004.ogg"
+  },
+  "interface-sounds/bong_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/bong_001.ogg"
+  },
+  "interface-sounds/click_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/click_001.ogg"
+  },
+  "interface-sounds/click_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/click_002.ogg"
+  },
+  "interface-sounds/click_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/click_003.ogg"
+  },
+  "interface-sounds/click_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/click_004.ogg"
+  },
+  "interface-sounds/click_005.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/click_005.ogg"
+  },
+  "interface-sounds/close_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/close_001.ogg"
+  },
+  "interface-sounds/close_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/close_002.ogg"
+  },
+  "interface-sounds/close_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/close_003.ogg"
+  },
+  "interface-sounds/close_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/close_004.ogg"
+  },
+  "interface-sounds/confirmation_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/confirmation_001.ogg"
+  },
+  "interface-sounds/confirmation_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/confirmation_002.ogg"
+  },
+  "interface-sounds/confirmation_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/confirmation_003.ogg"
+  },
+  "interface-sounds/confirmation_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/confirmation_004.ogg"
+  },
+  "interface-sounds/drop_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/drop_001.ogg"
+  },
+  "interface-sounds/drop_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/drop_002.ogg"
+  },
+  "interface-sounds/drop_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/drop_003.ogg"
+  },
+  "interface-sounds/drop_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/drop_004.ogg"
+  },
+  "interface-sounds/error_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/error_001.ogg"
+  },
+  "interface-sounds/error_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/error_002.ogg"
+  },
+  "interface-sounds/error_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/error_003.ogg"
+  },
+  "interface-sounds/error_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/error_004.ogg"
+  },
+  "interface-sounds/error_005.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/error_005.ogg"
+  },
+  "interface-sounds/error_006.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/error_006.ogg"
+  },
+  "interface-sounds/error_007.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/error_007.ogg"
+  },
+  "interface-sounds/error_008.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/error_008.ogg"
+  },
+  "interface-sounds/glass_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/glass_001.ogg"
+  },
+  "interface-sounds/glass_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/glass_002.ogg"
+  },
+  "interface-sounds/glass_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/glass_003.ogg"
+  },
+  "interface-sounds/glass_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/glass_004.ogg"
+  },
+  "interface-sounds/glass_005.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/glass_005.ogg"
+  },
+  "interface-sounds/glass_006.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/glass_006.ogg"
+  },
+  "interface-sounds/glitch_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/glitch_001.ogg"
+  },
+  "interface-sounds/glitch_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/glitch_002.ogg"
+  },
+  "interface-sounds/glitch_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/glitch_003.ogg"
+  },
+  "interface-sounds/glitch_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/glitch_004.ogg"
+  },
+  "interface-sounds/maximize_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/maximize_001.ogg"
+  },
+  "interface-sounds/maximize_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/maximize_002.ogg"
+  },
+  "interface-sounds/maximize_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/maximize_003.ogg"
+  },
+  "interface-sounds/maximize_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/maximize_004.ogg"
+  },
+  "interface-sounds/maximize_005.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/maximize_005.ogg"
+  },
+  "interface-sounds/maximize_006.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/maximize_006.ogg"
+  },
+  "interface-sounds/maximize_007.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/maximize_007.ogg"
+  },
+  "interface-sounds/maximize_008.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/maximize_008.ogg"
+  },
+  "interface-sounds/maximize_009.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/maximize_009.ogg"
+  },
+  "interface-sounds/minimize_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/minimize_001.ogg"
+  },
+  "interface-sounds/minimize_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/minimize_002.ogg"
+  },
+  "interface-sounds/minimize_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/minimize_003.ogg"
+  },
+  "interface-sounds/minimize_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/minimize_004.ogg"
+  },
+  "interface-sounds/minimize_005.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/minimize_005.ogg"
+  },
+  "interface-sounds/minimize_006.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/minimize_006.ogg"
+  },
+  "interface-sounds/minimize_007.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/minimize_007.ogg"
+  },
+  "interface-sounds/minimize_008.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/minimize_008.ogg"
+  },
+  "interface-sounds/minimize_009.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/minimize_009.ogg"
+  },
+  "interface-sounds/open_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/open_001.ogg"
+  },
+  "interface-sounds/open_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/open_002.ogg"
+  },
+  "interface-sounds/open_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/open_003.ogg"
+  },
+  "interface-sounds/open_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/open_004.ogg"
+  },
+  "interface-sounds/pluck_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/pluck_001.ogg"
+  },
+  "interface-sounds/pluck_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/pluck_002.ogg"
+  },
+  "interface-sounds/question_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/question_001.ogg"
+  },
+  "interface-sounds/question_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/question_002.ogg"
+  },
+  "interface-sounds/question_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/question_003.ogg"
+  },
+  "interface-sounds/question_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/question_004.ogg"
+  },
+  "interface-sounds/scratch_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/scratch_001.ogg"
+  },
+  "interface-sounds/scratch_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/scratch_002.ogg"
+  },
+  "interface-sounds/scratch_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/scratch_003.ogg"
+  },
+  "interface-sounds/scratch_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/scratch_004.ogg"
+  },
+  "interface-sounds/scratch_005.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/scratch_005.ogg"
+  },
+  "interface-sounds/scroll_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/scroll_001.ogg"
+  },
+  "interface-sounds/scroll_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/scroll_002.ogg"
+  },
+  "interface-sounds/scroll_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/scroll_003.ogg"
+  },
+  "interface-sounds/scroll_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/scroll_004.ogg"
+  },
+  "interface-sounds/scroll_005.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/scroll_005.ogg"
+  },
+  "interface-sounds/select_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/select_001.ogg"
+  },
+  "interface-sounds/select_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/select_002.ogg"
+  },
+  "interface-sounds/select_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/select_003.ogg"
+  },
+  "interface-sounds/select_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/select_004.ogg"
+  },
+  "interface-sounds/select_005.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/select_005.ogg"
+  },
+  "interface-sounds/select_006.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/select_006.ogg"
+  },
+  "interface-sounds/select_007.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/select_007.ogg"
+  },
+  "interface-sounds/select_008.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/select_008.ogg"
+  },
+  "interface-sounds/switch_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/switch_001.ogg"
+  },
+  "interface-sounds/switch_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/switch_002.ogg"
+  },
+  "interface-sounds/switch_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/switch_003.ogg"
+  },
+  "interface-sounds/switch_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/switch_004.ogg"
+  },
+  "interface-sounds/switch_005.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/switch_005.ogg"
+  },
+  "interface-sounds/switch_006.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/switch_006.ogg"
+  },
+  "interface-sounds/switch_007.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/switch_007.ogg"
+  },
+  "interface-sounds/tick_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/tick_001.ogg"
+  },
+  "interface-sounds/tick_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/tick_002.ogg"
+  },
+  "interface-sounds/tick_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/tick_004.ogg"
+  },
+  "interface-sounds/toggle_001.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/toggle_001.ogg"
+  },
+  "interface-sounds/toggle_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/toggle_002.ogg"
+  },
+  "interface-sounds/toggle_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/toggle_003.ogg"
+  },
+  "interface-sounds/toggle_004.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/toggle_004.ogg"
+  },
+  "backspin.mp3": {
+    "source_url": "https://freesound.org/people/il112/sounds/182316/",
+    "download_url": "https://cdn.freesound.org/previews/182/182316_3311908-hq.mp3",
+    "author": "il112",
+    "license": "CC0-1.0",
+    "original_filename": "backspin.wav (HQ MP3 preview)"
+  },
+  "foley/bfh1_breaking_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_breaking_01.ogg"
+  },
+  "foley/bfh1_breaking_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_breaking_02.ogg"
+  },
+  "foley/bfh1_breaking_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_breaking_03.ogg"
+  },
+  "foley/bfh1_falling_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_falling_01.ogg"
+  },
+  "foley/bfh1_falling_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_falling_02.ogg"
+  },
+  "foley/bfh1_falling_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_falling_03.ogg"
+  },
+  "foley/bfh1_falling_04.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_falling_04.ogg"
+  },
+  "foley/bfh1_falling_05.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_falling_05.ogg"
+  },
+  "foley/bfh1_falling_06.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_falling_06.ogg"
+  },
+  "foley/bfh1_falling_07.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_falling_07.ogg"
+  },
+  "foley/bfh1_glass_breaking_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_breaking_01.ogg"
+  },
+  "foley/bfh1_glass_breaking_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_breaking_02.ogg"
+  },
+  "foley/bfh1_glass_breaking_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_breaking_03.ogg"
+  },
+  "foley/bfh1_glass_breaking_04.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_breaking_04.ogg"
+  },
+  "foley/bfh1_glass_breaking_05.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_breaking_05.ogg"
+  },
+  "foley/bfh1_glass_breaking_06.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_breaking_06.ogg"
+  },
+  "foley/bfh1_glass_falling_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_falling_01.ogg"
+  },
+  "foley/bfh1_glass_falling_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_falling_02.ogg"
+  },
+  "foley/bfh1_glass_falling_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_falling_03.ogg"
+  },
+  "foley/bfh1_glass_falling_04.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_falling_04.ogg"
+  },
+  "foley/bfh1_glass_hit_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_hit_01.ogg"
+  },
+  "foley/bfh1_glass_hit_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_hit_02.ogg"
+  },
+  "foley/bfh1_hit_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_01.ogg"
+  },
+  "foley/bfh1_hit_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_02.ogg"
+  },
+  "foley/bfh1_hit_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_03.ogg"
+  },
+  "foley/bfh1_hit_04.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_04.ogg"
+  },
+  "foley/bfh1_hit_05.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_05.ogg"
+  },
+  "foley/bfh1_hit_06.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_06.ogg"
+  },
+  "foley/bfh1_hit_07.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_07.ogg"
+  },
+  "foley/bfh1_hit_08.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_08.ogg"
+  },
+  "foley/bfh1_hit_09.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_09.ogg"
+  },
+  "foley/bfh1_hit_10.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_10.ogg"
+  },
+  "foley/bfh1_hit_11.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_11.ogg"
+  },
+  "foley/bfh1_hit_12.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_12.ogg"
+  },
+  "foley/bfh1_hit_13.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_hit_13.ogg"
+  },
+  "foley/bfh1_metal_falling_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_metal_falling_01.ogg"
+  },
+  "foley/bfh1_metal_falling_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_metal_falling_02.ogg"
+  },
+  "foley/bfh1_metal_falling_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_metal_falling_03.ogg"
+  },
+  "foley/bfh1_metal_falling_04.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_metal_falling_04.ogg"
+  },
+  "foley/bfh1_metal_falling_05.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_metal_falling_05.ogg"
+  },
+  "foley/bfh1_metal_hit_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_metal_hit_01.ogg"
+  },
+  "foley/bfh1_metal_hit_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_metal_hit_02.ogg"
+  },
+  "foley/bfh1_metal_hit_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_metal_hit_03.ogg"
+  },
+  "foley/bfh1_metal_hit_04.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_metal_hit_04.ogg"
+  },
+  "foley/bfh1_metal_hit_05.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_metal_hit_05.ogg"
+  },
+  "foley/bfh1_metal_hit_06.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_metal_hit_06.ogg"
+  },
+  "foley/bfh1_misc_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_misc_01.ogg"
+  },
+  "foley/bfh1_misc_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_misc_02.ogg"
+  },
+  "foley/bfh1_misc_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_misc_03.ogg"
+  },
+  "foley/bfh1_misc_04.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_misc_04.ogg"
+  },
+  "foley/bfh1_misc_05.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_misc_05.ogg"
+  },
+  "foley/bfh1_misc_06.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_misc_06.ogg"
+  },
+  "foley/bfh1_misc_07.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_misc_07.ogg"
+  },
+  "foley/bfh1_rock_breaking_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_breaking_01.ogg"
+  },
+  "foley/bfh1_rock_breaking_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_breaking_02.ogg"
+  },
+  "foley/bfh1_rock_breaking_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_breaking_03.ogg"
+  },
+  "foley/bfh1_rock_falling_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_falling_01.ogg"
+  },
+  "foley/bfh1_rock_falling_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_falling_02.ogg"
+  },
+  "foley/bfh1_rock_falling_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_falling_03.ogg"
+  },
+  "foley/bfh1_rock_falling_04.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_falling_04.ogg"
+  },
+  "foley/bfh1_rock_falling_05.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_falling_05.ogg"
+  },
+  "foley/bfh1_rock_falling_06.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_falling_06.ogg"
+  },
+  "foley/bfh1_rock_falling_07.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_falling_07.ogg"
+  },
+  "foley/bfh1_rock_falling_08.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_falling_08.ogg"
+  },
+  "foley/bfh1_rock_falling_09.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_falling_09.ogg"
+  },
+  "foley/bfh1_rock_hit_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_rock_hit_01.ogg"
+  },
+  "foley/bfh1_wood_breaking_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_breaking_01.ogg"
+  },
+  "foley/bfh1_wood_breaking_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_breaking_02.ogg"
+  },
+  "foley/bfh1_wood_breaking_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_breaking_03.ogg"
+  },
+  "foley/bfh1_wood_breaking_04.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_breaking_04.ogg"
+  },
+  "foley/bfh1_wood_falling_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_falling_01.ogg"
+  },
+  "foley/bfh1_wood_falling_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_falling_02.ogg"
+  },
+  "foley/bfh1_wood_hit_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_hit_01.ogg"
+  },
+  "foley/bfh1_wood_hit_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_hit_02.ogg"
+  },
+  "foley/bfh1_wood_hit_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_hit_03.ogg"
+  }
+}

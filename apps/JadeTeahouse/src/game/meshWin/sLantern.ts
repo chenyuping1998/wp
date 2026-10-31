@@ -10,7 +10,7 @@
  * ring (143,18), globe (143,88) 74x48, jade bead (144,166), tassel
  * (132..184, 172..232).
  */
-import { blob, flick, leap, polygon, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
+import { blob, flick, strongLeap, polygon, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
 
 const LEAP = { crouch: 120, rise: 380, fall: 820, land: 1000, hop2: 1220, done: 1500 };
 
@@ -75,7 +75,7 @@ export const S: MeshWinSpec = {
 		globe.across = 1 + 0.035 * glow;
 		globe.along = 1 + 0.02 * glow;
 
-		const { rigid, air } = leap(t, LEAP, 16);
+		const { rigid, air } = strongLeap(t, LEAP, 28);
 		pose.rigid = turnAbout(rigid, [143, 100], 232);
 		pose.air = air;
 		return pose;

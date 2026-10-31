@@ -24,9 +24,9 @@ import { blob, bump, circle, flick, leap, restPose, smoothstep, track, turnAbout
 
 const T = { crouch: 120, rise: 350, fall: 780, land: 950, hop2: 1160, done: 1440 };
 
-type Part = { name: string; parent?: string; pivot: Point; axis?: Point; dist: (p: Point) => number; hold?: number; lim: number };
+type Part = { name: string; parent?: string; pivot: Point; axis?: Point; dist: (p: Point) => number; hold?: number; lim: number; keep?: (p: Point) => number };
 type Ctx = { t: number; beat: number; live: number; air: number; B: (name: string) => Pose['bones'][number]; pose: Pose };
-type Design = { symbol: string; feet: number; height: number; body: Point; parts: Part[]; act: (c: Ctx) => void };
+type Design = { symbol: string; feet: number; height: number; body: Point; parts: Part[]; act: (c: Ctx) => void; collapsible?: string[] };
 
 const designs: Design[] = [
 	{
@@ -88,12 +88,27 @@ const designs: Design[] = [
 		parts: [
 			{ name: 'head', pivot: [135, 192], dist: blob([138, 130], 60, 56), hold: 30, lim: 6.5 },
 			{ name: 'antenna', pivot: [162, 66], dist: blob([162, 46], 12, 22), hold: 6, lim: 16 },
+			// the fake 3D turn (slot-motion-recipes §3): the features slide across the head one way, the far ear
+			// the other, so the head reads as turning inside the dome rather than sliding
+			{ name: 'face', parent: 'head', pivot: [156, 136], dist: blob([158, 136], 46, 30), lim: 3, keep: () => 1 },
+			{ name: 'ear', parent: 'head', pivot: [92, 153], dist: blob([82, 154], 17, 24), lim: 3, keep: () => 1 },
+			// his near eye: the lid comes down to the lower lash line — a wink at the top of the nod
+			{ name: 'wink', parent: 'face', pivot: [132, 138], axis: [0, -1], dist: blob([132, 129], 12, 9), lim: 3, keep: () => 1 },
 		],
+		collapsible: ['wink'],
 		act: ({ t, B }) => {
 			// a cocky nod: chin down on the way up, thrown back on top
 			B('head').angle = track(t, [[0, 0], [T.rise, -4, 'out'], [T.fall, 5], [T.land + 80, -1.8], [T.hop2 + 80, 0]]);
 			B('head').dy = -3.5 * bump(t, T.rise, T.land);
 			B('antenna').angle = 12 * flick(t, T.rise - 20, 2.6, 3.2) + 5 * flick(t, T.land, 3.2, 5);
+			// he turns to the camera on the way up, back to his three-quarter on top, and settles
+			const turn = track(t, [[0, 0], [T.crouch, 0.5], [T.rise, -4.5, 'out'], [T.fall - 60, -3.5], [T.fall + 80, 1.6], [T.land + 120, -0.6], [T.hop2 + 100, 0]]);
+			B('face').dx = turn;
+			B('face').dy = -0.3 * Math.abs(turn);
+			B('ear').dx = -0.55 * turn;
+			// the wink: closes fast, holds, opens a touch slower (PP's ~0.27 s single-eye wink)
+			const lid = track(t, [[0, 0], [T.rise + 60, 0], [T.rise + 120, 1, 'out'], [T.rise + 270, 1], [T.rise + 360, 0, 'inOut']]);
+			B('wink').along = 1 - 0.86 * lid;
 		},
 	},
 	{
@@ -136,7 +151,9 @@ const make = (d: Design): MeshWinSpec => {
 			axis: p.axis ?? ([0, -1] as Point),
 			priority: 4 + 2 * i,
 			dist: p.dist,
-			keep: (q: Point) => smoothstep((Math.hypot(q[0] - p.pivot[0], q[1] - p.pivot[1]) - (p.hold ?? 6)) / 20),
+			// a joint gives its weight back to the parent near the pivot; a part that slides or squashes whole
+			// (a face turning, an eyelid) says so with its own keep
+			keep: p.keep ?? ((q: Point) => smoothstep((Math.hypot(q[0] - p.pivot[0], q[1] - p.pivot[1]) - (p.hold ?? 6)) / 20)),
 		})),
 	];
 	const spec: MeshWinSpec = {
@@ -145,6 +162,7 @@ const make = (d: Design): MeshWinSpec => {
 		durationMs: T.done, landMs: T.land, hitMs: T.rise,
 		rig: { grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 }, soft: 7, parts },
 		limits: { body: { pos: 0, neg: 0 }, ...Object.fromEntries(d.parts.map((p) => [p.name, { pos: p.lim, neg: p.lim }])) },
+		...(d.collapsible ? { collapsible: d.collapsible } : {}),
 		pose: (rig: Rig, t: number) => {
 			const pose = restPose(rig);
 			const { rigid, air } = leap(t, T, d.height);

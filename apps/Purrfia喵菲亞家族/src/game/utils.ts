@@ -23,11 +23,9 @@ export const { getEmptyBoard } = createGetEmptyPaddedBoard({ reelsDimensions: BO
 
 installErrorLogging();
 
-// A handler that has not finished by now is not slow, it is stuck. The longest
-// legitimate event is freeSpinTrigger, which spends 3s on the scatter hold plus
-// three symbol animations, a transition and the intro board — comfortably under
-// this. Logged as a warning rather than acted on: the sequence may still be
-// alive, and cutting it off would break a round that was going to recover.
+// Interactive feature panels intentionally wait for a player's acknowledgement.
+// Timeouts diagnose automatic animation handlers only; they never advance a book.
+const interactiveEvents=new Set(['freeSpinTrigger','freeSpinRetrigger','freeSpinEnd']);
 const STALL_WARN_MS = 15000;
 
 
@@ -35,7 +33,7 @@ const tracedBookEventHandlerMap = Object.fromEntries(
 	Object.entries(bookEventHandlerMap).map(([type, handler]) => [
 		type,
 		async (bookEvent: BookEvent, context: unknown) => {
-			const stall = setTimeout(
+			const stall = interactiveEvents.has(type) ? undefined : setTimeout(
 				() =>
 					console.error(
 						`[Purrfia] book event "${type}" has not finished after ${STALL_WARN_MS}ms — the round is stuck here`,

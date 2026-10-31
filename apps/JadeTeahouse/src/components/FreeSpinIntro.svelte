@@ -7,7 +7,6 @@
 
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
-	import { NUMBER_FONT } from '../game/fonts';
 	import { Container } from 'pixi-svelte';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
@@ -16,7 +15,6 @@
 
 	import { getContext } from '../game/context';
 	import { gameText } from '../game/i18nText';
-	import InkNumber from './InkNumber.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
 	import FxBurst from './FxBurst.svelte';
@@ -42,10 +40,12 @@
 	// Numbers come from the maths config, like the rules page's, so they cannot
 	// drift from it.
 	const meter = config.banditMeter as { thresholds: number[]; spinsAdded: number };
+	// Two lines, not three (2026-10-31): the third ran off the paper. Each is
+	// sized to fit the paper's width, so a longer translation shrinks instead of
+	// spilling onto the frame.
 	const rules = [
 		'Every Tea Master collects every Jade Cup',
-		`${meter.thresholds.join(' / ')} Tea Masters: +${meter.spinsAdded} spins each`,
-		`and all ${meter.thresholds.map((_, i) => removedLabelAtLevel(i + 1)).join(', then ')} become Jade Cups`,
+		`${meter.thresholds.join(' / ')} Tea Masters: +${meter.spinsAdded} spins, ${meter.thresholds.map((_, i) => removedLabelAtLevel(i + 1)).join(' → ')} become Jade Cups`,
 	];
 
 	const title = gameText('freeSpins');
@@ -134,54 +134,73 @@
 
 	<FreeSpinAnimation {halo}>
 		{#snippet children({ sizes })}
-			<!-- The transparent lettering sits within the sign's quiet paper center. -->
-			{@const ts = Math.min((sizes.width * 0.82) / 854, (sizes.height * 0.22) / 117)}
-			<Container y={-sizes.height * 0.35 + 0.5 * ts + titlePose.y} alpha={titlePose.alpha}>
-				<Sprite key="v8TitleFree" anchor={.5} width={1600 * ts} height={500 * ts}/>
+			<!-- THE BOARD'S LAYOUT (2026-10-31, user: "太粗糙"). The count used to be a
+			     thin dark number floating on empty paper with a small "AWARDED" under
+			     it. It is now pressed into the paper as a cinnabar CHOP (the mark that
+			     says "granted"), the count reversed out of it in the paper's cream;
+			     title above, the two rule lines below, everything inside the paper. -->
+			{@const ts = Math.min((sizes.width * 0.74) / 854, (sizes.height * 0.2) / 117)}
+			<Container y={-sizes.height * 0.36 + titlePose.y} alpha={titlePose.alpha}>
+				<Sprite key="v8TitleFree" anchor={0.5} width={1600 * ts} height={500 * ts} />
 			</Container>
-			{@const countY = isEntry ? -sizes.height * 0.06 : sizes.height * 0.025}
+			{@const seal = isEntry ? sizes.height * 0.42 : sizes.height * 0.56}
+			{@const countY = isEntry ? -sizes.height * 0.04 : sizes.height * 0.02}
 			{#if stampScale > 0}
-				<Container y={countY} scale={stampScale} rotation={-0.06}>
-					<InkNumber text={freeSpinsFromEvent} fontSize={isEntry ? Math.min(sizes.width * 0.18, sizes.height * 0.32) : Math.min(sizes.width * 0.22, sizes.height * 0.42)} role="fs"/>
+				<!-- upright (user, 2026-10-31: the tilted count read as crooked) -->
+				<Container y={countY} scale={stampScale}>
+					<Sprite key="v8FgSeal" anchor={0.5} width={seal * (512 / 432)} height={seal * (512 / 432)} />
+					<Text
+						anchor={0.5}
+						y={-seal * 0.03}
+						text={isEntry ? `${freeSpinsFromEvent}` : `+${freeSpinsFromEvent}`}
+						style={{
+							fontFamily: GAME_FONT,
+							fontWeight: '700',
+							fontSize: seal * (`${freeSpinsFromEvent}`.length > 1 ? 0.56 : 0.66),
+							fill: 0xfaeed6,
+						}}
+					/>
 				</Container>
 			{/if}
 			{#if burst}
-				<!-- tea leaves and paper slips thrown off the stamp: ink-drawn, so they
-				     read on the paper where light would not -->
+				<!-- tea leaves and paper slips thrown off the stamp -->
 				<FxBurst flavour="tea" y={countY} scale={1.5} oncomplete={() => (burst = false)} />
 				<FxBurst flavour="tea" y={countY} scale={2.1} delay={90} />
 			{/if}
+			<Text
+				anchor={0.5}
+				y={countY + seal * 0.62}
+				alpha={rulesPose.alpha}
+				text={subtitle}
+				style={{
+					fontFamily: GAME_FONT,
+					fontSize: Math.min(sizes.height * 0.07, (sizes.width * 0.8) / Math.max(8, subtitle.length * 0.72)),
+					fontWeight: '700',
+					letterSpacing: 3,
+					fill: 0x8f2a20,
+				}}
+			/>
 			{#if isEntry}
-				{@const ruleSize = Math.min(sizes.width * 0.034, sizes.height * 0.062)}
-				<Container y={sizes.height * 0.27 + rulesPose.y} alpha={rulesPose.alpha}>
+				{@const ruleSize = sizes.height * 0.058}
+				<Container y={sizes.height * 0.335 + rulesPose.y} alpha={rulesPose.alpha}>
 					{#each rules as line, i (i)}
+						<!-- each line shrinks to the paper's width if it must -->
+						{@const fit = Math.min(1, (sizes.width * 0.9) / (line.length * ruleSize * 0.62))}
 						<Text
 							anchor={0.5}
-							y={i * ruleSize * 1.32}
+							y={i * ruleSize * 1.35}
 							text={line}
 							style={{
 								fontFamily: GAME_FONT,
-								fontWeight: i === 0 ? GAME_FONT_WEIGHT : 'normal',
-								fontSize: ruleSize,
-								fill: i === 0 ? 0x2c5c4d : 0x2a4037,
+								fontWeight: i === 0 ? '700' : GAME_FONT_WEIGHT,
+								fontSize: ruleSize * fit,
+								fill: i === 0 ? 0x234b3f : 0x2a4037,
 								align: 'center',
 							}}
 						/>
 					{/each}
 				</Container>
 			{/if}
-			<Text
-				anchor={0.5}
-				y={isEntry ? sizes.height * 0.12 : sizes.height * 0.375}
-				text={subtitle}
-				style={{
-					fontFamily: GAME_FONT,
-					fontSize: Math.min(sizes.width * (isEntry ? 0.04 : 0.05), sizes.height * (isEntry ? 0.09 : 0.14), (sizes.width * 1.1) / subtitle.length),
-					fontWeight: GAME_FONT_WEIGHT,
-					letterSpacing: 4,
-					fill: 0x1e1b1a,
-				}}
-			/>
 		{/snippet}
 	</FreeSpinAnimation>
 

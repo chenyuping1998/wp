@@ -24,10 +24,11 @@
 	// soft breathing pulse so the prompt reads as interactive
 	let pulse = $state(1);
 	onMount(() => {
+  const reviewContinue=()=>props.onpress();if(import.meta.env.DEV)window.addEventListener('parrot-review-continue',reviewContinue);
 		const id = setInterval(() => {
 			pulse = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(Date.now() / 480));
 		}, 50);
-		return () => clearInterval(id);
+		return () => {clearInterval(id);window.removeEventListener('parrot-review-continue',reviewContinue);};
 	});
 
 	const yPosition = $derived.by(() => {

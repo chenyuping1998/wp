@@ -84,6 +84,18 @@ setUiTheme({
 	// the Bet panel opens the stake menu when tapped — mark it so players can
 	// tell it apart from the static Balance/Win panels
 	labelAffordance: true,
+	// as Putt / Swing (2026-10-18): the chevron right of BET greys while the
+	// cursor is on it — the grey the steppers turn when disabled
+	labelChevronHoverColor: 0x67645c,
+	// as Putt / Saucer / Swing: Balance / Win / Bet up a touch
+	readoutOffsetY: -8,
+	// Two-tier turbo, as Saucer / Putt / Strike / Swing: off -> one bolt -> two
+	// bolts side by side. Turbo 2 lands the reels ~20% quicker again and runs
+	// the cup collection at 1.5x (constants.ts SPIN_OPTIONS_*_T2,
+	// BanditCollect.svelte); turbo 1 leaves the collection at full length. The
+	// gap cut round the front bolt is the lit plate's gold (button_print_on).
+	turboTiers: 2,
+	turboKeylineColor: 0xd6ac52,
 
 	// cursor-over feedback on the rail controls
 	hoverHighlight: true,
@@ -446,9 +458,31 @@ if (skin === 'print') {
 		// that ran over the bamboo (the paper face is only ~46px tall). A touch
 		// smaller and a wider wrap keep it to one line inside the face (~167px);
 		// nudged down because the plate hangs below the canvas centre.
-		buyBonusLabelSizeRatio: 0.44,
-		buyBonusLabelWrapWidth: 160,
-		buyBonusLabelOffsetY: 0.03,
+		// THE BUY BONUS IS A HAND-SCROLL (2026-10-31, user: closed at rest, opening
+		// under the pointer, as Treasure Monkey's scroll; design/build_buy_scroll.py).
+		// At rest it is half rolled with a band of paper out between the rods, and
+		// the label sits on that band as two lines (BUY / BONUS), so the closed
+		// scroll still says what it is. On hover the shared button plays the
+		// opening frames once and holds the last (buyBonusHoverFrames, drawn over
+		// the plate with normal blending). The bamboo plate and its rope swing
+		// (BuyPlateMesh) are retired.
+		// the opened menu's captions (SOUND ON / SETTINGS / INFO / PAYTABLE): at the
+		// shared 0.5 size the 3px cream stroke swallowed the dark letters and they
+		// read as faint white over the pale teahouse (user, 2026-10-31). Larger,
+		// in deep jade ink, with the cream only as a halo round it.
+		menuCaptionScale: 0.62,
+		menuCaptionFill: 0x1c3830,
+		menuCaptionStroke: 0xf7f4e8,
+		menuCaptionStrokeWidth: 4,
+		buyBonusLabelSizeRatio: 0.5,
+		buyBonusLabelWrapWidth: 90,
+		buyBonusLabelOffsetY: 0,
+		buyBonusHoverFrames: ['buyBonusRoll1', 'buyBonusRoll2', 'buyBonusRoll3', 'buyBonusRoll4', 'buyBonusGlyph'],
+		buyBonusHoverFrameMs: 55,
+		buyBonusHoverSpriteTint: 0xffffff,
+		buyBonusHoverSpriteBlend: 'normal',
+		// the scroll at rest, rods included (buy_scroll_0: x .232-.767, y .26-.74)
+		buyBonusHitArea: { x: 0.232, y: 0.26, width: 0.535, height: 0.48 },
 		// the framed casing's rules (not 'flat', whose dividers are white at 15%
 		// and vanish on paper); the art itself is the fill and edge
 		barStyle: 'framed',
@@ -460,8 +494,16 @@ if (skin === 'print') {
 			bar: 'gbUiBarStrip',
 			button: 'gbUiButtonPrint',
 			buttonActive: 'gbUiButtonPrintOn',
-			buyBonus: 'gbUiBuyBonusStone',
-			buyBonusGlyph: 'gbUiBuyBonusStoneLit',
+			buyBonus: 'gbUiBuyScroll0',
+			// the opening, frame by frame (slot names beyond the shared type's
+			// list are plain keys at run time, as Saucer's cow)
+			...({
+				buyBonusRoll1: 'gbUiBuyScroll1',
+				buyBonusRoll2: 'gbUiBuyScroll2',
+				buyBonusRoll3: 'gbUiBuyScroll3',
+				buyBonusRoll4: 'gbUiBuyScroll4',
+			} as Record<string, string>),
+			buyBonusGlyph: 'gbUiBuyScroll5',
 		},
 		barSpriteSlice: 96,
 		// the frame runs on 20 units further right than the template's, so the

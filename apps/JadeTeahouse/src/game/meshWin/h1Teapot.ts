@@ -11,7 +11,7 @@
  * knob (122,45) r16, lid dome+rim (62..186, 28..104), spout (14..62, 92..140),
  * dragon head (166..234, 40..92), foot to y 230.
  */
-import { blob, flick, leap, polygon, ramp, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
+import { blob, flick, strongLeap, polygon, ramp, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
 
 const LEAP = { crouch: 120, rise: 340, fall: 760, land: 940, hop2: 1170, done: 1450 };
 
@@ -111,8 +111,8 @@ export const H1: MeshWinSpec = {
 		belly.across = 1 + 0.04 * breath;
 		belly.along = 1 - 0.025 * breath;
 
-		const { rigid, air } = leap(t, LEAP, 24);
-		rigid.rot = -16 * pour;
+		const { rigid, air } = strongLeap(t, LEAP, 38);
+		rigid.rot += -16 * pour;
 		pose.rigid = turnAbout(rigid, [128, 140], 230);
 		pose.air = air;
 		return pose;

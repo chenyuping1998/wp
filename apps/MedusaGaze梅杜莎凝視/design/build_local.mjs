@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const app=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const log='E:/stake/tmp/medusa-completion-final-build-20261025.log';
+const log='E:/stake/tmp/medusa-orb-power-build-20261031.log';
 const script=JSON.parse(fs.readFileSync(path.join(app,'package.json'),'utf8')).scripts.build;
 fs.writeFileSync(log,'Medusa Gaze / full local build / Node '+process.version+'\n');
 for(const command of script.split(' && ')){

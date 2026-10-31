@@ -28,8 +28,7 @@
 		const id = setInterval(() => {
 			pulse = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(Date.now() / 480));
 		}, 50);
-		return () => clearInterval(id);
-window.removeEventListener('purrfia-review-continue',reviewContinue);
+		return () => {clearInterval(id);window.removeEventListener('purrfia-review-continue',reviewContinue);};
 	});
 
 	const yPosition = $derived.by(() => {

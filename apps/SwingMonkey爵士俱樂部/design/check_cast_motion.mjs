@@ -53,7 +53,7 @@ const core = await import(pathToFileURL(createRequire(path.join(spinePixi, 'x.js
 
 // Mascot.svelte
 const MIX = 0.16;
-const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'flinch', 'alert', 'glance'];
+const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'flinch', 'alert', 'glance', 'jazzGroove', 'jazzListen', 'jazzFinale'];
 const INTERRUPTIBLE = ['nod', 'glance', 'alert', 'flinch'];
 const FPS = 60;
 
@@ -203,6 +203,8 @@ const loadCast = (dir) => {
 	for (const p of atlas.pages)
 		p.setTexture({ setFilters() {}, setWraps() {}, dispose() {}, getImage: () => ({ width: page.width, height: page.height }) });
 	const raw = JSON.parse(fs.readFileSync(path.join(DIR, 'monkey.json'), 'utf8'));
+	// Audit the idle actually selected by Mascot, including its loop seam.
+	if (raw.animations.jazzIdle && !args.includes('--original-idle')) raw.animations.idle = raw.animations.jazzIdle;
 	const data = new core.SkeletonJson(new core.AtlasAttachmentLoader(atlas)).readSkeletonData(raw);
 	return { data, page, raw };
 };
@@ -235,7 +237,7 @@ for (const [cast, dir] of [['mg', 'sushiMaster'], ['fg', 'sushiApprentice']]) {
 	const W = Math.ceil(data.width) + 260, H = Math.ceil(data.height) + 200;
 	const ox = W / 2, oy = H - 60;
 	console.log(`${cast} (${dir})`);
-	for (const seq of sequences(data)) {
+	for (const seq of sequences(data).filter(seq => !opt('--sequence') || seq.name.includes(opt('--sequence')))) {
 		const skeleton = new core.Skeleton(data);
 		const stateData = new core.AnimationStateData(data);
 		stateData.defaultMix = MIX;

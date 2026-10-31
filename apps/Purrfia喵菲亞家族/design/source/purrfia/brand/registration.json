@@ -1,0 +1,10 @@
+{
+  "tileBackground": "Bright game background crop; no second darkening pass.",
+  "favicon": "Original painted head components assembled and normalized.",
+  "loaderFrames": 12,
+  "loaderCanvas": [
+    256,
+    256
+  ],
+  "creativeArtwork": "built-in image_gen; originals and prompts preserved"
+}

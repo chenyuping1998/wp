@@ -2,11 +2,11 @@
   "digger": {
     "head": {
       "x": 236,
-      "y": 260,
+      "y": 240,
       "w": 245,
       "h": 240,
       "ax": 0.5,
-      "ay": 1,
+      "ay": 0.86,
       "path": "treasure/digger_head.png"
     },
     "body": {
@@ -19,8 +19,8 @@
       "path": "treasure/digger_body.png"
     },
     "arm_l": {
-      "x": 151,
-      "y": 265,
+      "x": 166,
+      "y": 267,
       "w": 180,
       "h": 192,
       "ax": 0.54,
@@ -28,7 +28,7 @@
       "path": "treasure/digger_arm_l.png"
     },
     "arm_r": {
-      "x": 330,
+      "x": 314,
       "y": 268,
       "w": 142,
       "h": 186,
@@ -38,9 +38,9 @@
     },
     "legs": {
       "x": 240,
-      "y": 438,
+      "y": 414,
       "w": 236,
-      "h": 235,
+      "h": 259,
       "ax": 0.5,
       "ay": 0,
       "path": "treasure/digger_legs.png"
@@ -55,8 +55,8 @@
       "path": "treasure/digger_tail.png"
     },
     "tool": {
-      "x": 168,
-      "y": 423,
+      "x": 183,
+      "y": 425,
       "w": 180,
       "h": 245,
       "ax": 0.76,
@@ -76,11 +76,11 @@
   "lifeguard": {
     "head": {
       "x": 236,
-      "y": 260,
+      "y": 240,
       "w": 245,
       "h": 240,
       "ax": 0.5,
-      "ay": 1,
+      "ay": 0.86,
       "path": "treasure/lifeguard_head.png"
     },
     "body": {
@@ -90,10 +90,11 @@
       "h": 218,
       "ax": 0.5,
       "ay": 0,
-      "path": "treasure/lifeguard_body.png"
+      "path": "treasure/lifeguard_body.png",
+      "trimSleeves": true
     },
     "arm_l": {
-      "x": 145,
+      "x": 190,
       "y": 280,
       "w": 180,
       "h": 192,
@@ -102,7 +103,7 @@
       "path": "treasure/lifeguard_arm_l.png"
     },
     "arm_r": {
-      "x": 330,
+      "x": 290,
       "y": 275,
       "w": 142,
       "h": 186,
@@ -112,9 +113,9 @@
     },
     "legs": {
       "x": 240,
-      "y": 438,
+      "y": 414,
       "w": 236,
-      "h": 235,
+      "h": 259,
       "ax": 0.5,
       "ay": 0,
       "path": "treasure/lifeguard_legs.png"
@@ -129,7 +130,7 @@
       "path": "treasure/lifeguard_tail.png"
     },
     "tool": {
-      "x": 188,
+      "x": 233,
       "y": 400,
       "w": 180,
       "h": 280,

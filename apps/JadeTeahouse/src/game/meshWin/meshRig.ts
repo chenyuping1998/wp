@@ -571,3 +571,33 @@ export const leap = (t: number, b: LeapBeats, height: number): { rigid: RigidPos
 		air,
 	};
 };
+
+/**
+ * The same leap, harder (as Putt / Strike / Swing, 2026-10-18; pushed again
+ * 2026-10-31, user: "獎圖動態也要加大"): a deeper
+ * crouch, a longer stretched rise, a bigger pop at the top, a heavy landing
+ * with a small rock. The force is all in the RIGID move, which cannot tear the
+ * mesh, so the parts' own limits are untouched. For the high symbols, W and S;
+ * the royals and the cup keep `leap`.
+ */
+export const strongLeap = (t: number, b: LeapBeats, height: number): { rigid: RigidPose; air: number } => {
+	const up = track(t, [[0, 0], [b.crouch, 0], [b.rise, 1, 'out'], [b.fall, 1], [b.land, 0, 'in']]);
+	const hop2 = bump(t, b.land + 40, b.hop2);
+	const air = Math.max(0, Math.min(1, up + 0.4 * hop2));
+	const squash =
+		0.24 * bump(t, 10, b.crouch + 80) +
+		0.31 * bump(t, b.land - 40, b.land + 130) +
+		0.13 * bump(t, b.hop2 - 30, b.hop2 + 120);
+	const stretch = 0.18 * bump(t, b.crouch, b.rise + 40) + 0.1 * bump(t, b.fall, b.land);
+	return {
+		rigid: {
+			sx: 1 + squash * 0.8 - stretch * 0.55,
+			sy: 1 - squash + stretch,
+			rot: 3.6 * flick(t, b.land, 2.6, 5.5),
+			pop: 1 + 0.12 * up + 0.04 * hop2,
+			dx: 0,
+			dy: -height * air + 5 * bump(t, 10, b.crouch + 60),
+		},
+		air,
+	};
+};

@@ -8,8 +8,8 @@
  let {snapshot,controller=$bindable()}:Props=$props();
  const context=getContext(),parent=getContextParent();let scene=$state.raw<MultiplierFxController>();let ticker:Ticker|undefined,last=0,disposed=false,media:MediaQueryList|undefined;
  const tick=()=>{const now=performance.now();if(!last||document.hidden){last=now;return;}scene?.update((now-last)/1000);last=now;};
- $effect(()=>{const assets=context.stateApp.loadedAssets,app=context.stateApp.pixiApplication;if(disposed||scene||!app||!assets?.mgOrbGreen||!assets?.mgOrbPurple||!assets?.mgOrbGold)return;
-  scene=createMultiplierFxScene({green:assets.mgOrbGreen as Texture,purple:assets.mgOrbPurple as Texture,gold:assets.mgOrbGold as Texture});scene.root.zIndex=-1;parent.parent.sortableChildren=true;parent.parent.addChild(scene.root);controller=scene;ticker=app.ticker;ticker.add(tick);if(media)scene.setReducedMotion(media.matches);
+ $effect(()=>{const assets=context.stateApp.loadedAssets,app=context.stateApp.pixiApplication;if(disposed||scene||!app||!assets?.mgOrbGreen||!assets?.mgOrbPurple||!assets?.mgOrbGold||!assets?.fxGlow)return;
+  scene=createMultiplierFxScene({green:assets.mgOrbGreen as Texture,purple:assets.mgOrbPurple as Texture,gold:assets.mgOrbGold as Texture,glow:assets.fxGlow as Texture});scene.root.zIndex=-1;parent.parent.sortableChildren=true;parent.parent.addChild(scene.root);controller=scene;ticker=app.ticker;ticker.add(tick);if(media)scene.setReducedMotion(media.matches);
  });
  $effect(()=>scene?.setState(snapshot));
  onMount(()=>{media=matchMedia('(prefers-reduced-motion: reduce)');const preference=()=>scene?.setReducedMotion(media!.matches),visibility=()=>{last=0;if(document.hidden)scene?.clearTransient();};preference();media.addEventListener('change',preference);document.addEventListener('visibilitychange',visibility);return()=>{media?.removeEventListener('change',preference);document.removeEventListener('visibilitychange',visibility);};});

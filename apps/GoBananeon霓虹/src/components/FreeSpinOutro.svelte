@@ -33,14 +33,8 @@
 	let countStarted = $state(false);
 	let displayToken = 0;
 
-	// Silence the coin loop the moment the total stops counting.
-	//
-	// winLevelSoundsStop() — which is what normally stops it — only runs after
-	// freeSpinOutroCountUp resolves, and that resolves on the player's PRESS, not
-	// when the count-up finishes. A player who leaves this screen up (reading the
-	// total, taking a screenshot) therefore heard the 2.4s coin shimmer loop over
-	// and over with nothing else going on. The loop belongs to the count-up, so it
-	// ends with the count-up.
+	// End the bed when counting completes or is skipped; dismissal can stop it
+	// again, so Sound.svelte deduplicates the 120ms release and closing accent.
 	const onCountUpComplete = () => {
 		context.eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' });
 	};

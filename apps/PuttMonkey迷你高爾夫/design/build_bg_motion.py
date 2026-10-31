@@ -172,14 +172,153 @@ def repaint_mill(fill, rgb, hole):
     return np.where((inside & hole)[..., None], painted, fill), inside
 
 
+def sail_only(rgb, m, center, box_r):
+    """Trim the traced sail mask to the sails themselves (user 2026-10-31: the
+    turning sails carried a rim of sky, tower red and tree green).
+
+    The traced quads are coarse and dilated, so they hold background round
+    every sail. Each sail is ringed by its own ink outline, so: flood the
+    background in from outside the mask through anything that is not ink, and
+    whatever the flood cannot reach is sail. The ink barrier is thickened 1px
+    2px so an anti-aliased gap cannot let the flood into a sail; the light
+    pixels that thickening kept are then peeled off the outside three times."""
+    lum = rgb.mean(-1)
+    sat = rgb.max(-1) - rgb.min(-1)
+    ink = ((lum < 110) & (sat < 90)) | (lum < 75)
+    x0, y0 = int(center[0] - box_r - 20), int(center[1] - box_r - 20)
+    x1, y1 = int(center[0] + box_r + 20), int(center[1] + box_r + 20)
+    sub_m = m[y0:y1, x0:x1] > 0.02
+    sub_ink = ink[y0:y1, x0:x1]
+    barrier = np.asarray(Image.fromarray((sub_ink * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(5))) > 0
+    grid = np.where(sub_m & barrier, 128, 0).astype(np.uint8)
+    # .copy(): an image made by fromarray shares the array's read-only buffer
+    # and floodfill silently writes nothing into it
+    flood = Image.fromarray(grid).copy()
+    ImageDraw.floodfill(flood, (0, 0), 255)
+    bg = np.asarray(flood) == 255
+    for _ in range(3):
+        grown = np.asarray(Image.fromarray((bg * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3))) > 0
+        bg = bg | (grown & ~sub_ink)
+    # the traced quads shrunk well inside the outline are sail whatever the
+    # flood says: where an outline has a gap the flood leaks a corner in, and
+    # that corner would also be smeared into the hole fill as a pale stain
+    core = np.asarray(Image.fromarray((sub_m * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(13))) > 0
+    sail = np.zeros(m.shape, bool)
+    sail[y0:y1, x0:x1] = (sub_m & ~bg) | core
+    return sail
+
+
+# measured across the clean up-left sail's outer edge, from outside in: ~4px
+# of near-black ink, ~3px of red frame, then the cream panels
+SAIL_FRAME, SAIL_INK = 3.5, 4.0
+SAIL_INK_RGB = (8, 10, 8)
+
+
+def _hull(pts):
+    """convex hull of (x, y) points, counter-clockwise (monotone chain)"""
+    pts = sorted(set(map(tuple, pts)))
+    def half(seq):
+        out = []
+        for p in seq:
+            while len(out) >= 2 and (out[-1][0] - out[-2][0]) * (p[1] - out[-2][1]) - (out[-1][1] - out[-2][1]) * (p[0] - out[-2][0]) <= 0:
+                out.pop()
+            out.append(p)
+        return out
+    lo, hi = half(pts), half(pts[::-1])
+    return lo[:-1] + hi[:-1]
+
+
+def _offset(poly, d):
+    """a convex counter-clockwise polygon pushed out by d px, corners mitred"""
+    n = len(poly)
+    lines = []
+    for i in range(n):
+        (x0, y0), (x1, y1) = poly[i], poly[(i + 1) % n]
+        ex, ey = x1 - x0, y1 - y0
+        L = np.hypot(ex, ey) or 1
+        nx, ny = ey / L, -ex / L  # outward for counter-clockwise in y-down
+        lines.append(((x0 + nx * d, y0 + ny * d), (ex, ey)))
+    out = []
+    for i in range(n):
+        (p, r), (q, s_) = lines[i - 1], lines[i]
+        den = r[0] * s_[1] - r[1] * s_[0]
+        if abs(den) < 1e-9:
+            out.append(q)
+            continue
+        t = ((q[0] - p[0]) * s_[1] - (q[1] - p[1]) * s_[0]) / den
+        out.append((p[0] + r[0] * t, p[1] + r[1] * t))
+    return out
+
+
+def _poly_mask(size, poly, sc=4):
+    big = Image.new("L", (size[0] * sc, size[1] * sc), 0)
+    ImageDraw.Draw(big).polygon([(x * sc + sc / 2, y * sc + sc / 2) for x, y in poly], fill=255)
+    return np.asarray(big.resize(size, Image.Resampling.BOX), float) / 255
+
+
+def rebuild_sails(rgb, flood):
+    """Rebuild each sail from its cream panels (user 2026-10-31, second pass:
+    two sails still turned with scraps of the tower's outline, and one had
+    lost its own outline where it lay over the red tower). Peeling background
+    off cannot tell a sail's outline from the tower's where they touch, so the
+    sails' EDGES are now geometry: the convex hull of the panels, pushed out
+    by the red frame (original pixels) and again by the outline, which is
+    painted ink. The spokes and hub keep the peeled cut, but only the ink
+    within 3px of their own light paint.
+
+    Returns (alpha, colour) for the part."""
+    h, w = flood.shape
+    lum = rgb.mean(-1)
+    sat = rgb.max(-1) - rgb.min(-1)
+    # cream at noon (248,245,217), apricot at sunset (248,205,140)
+    R, G, B = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    cream = (R > 225) & (G > 175) & (B > 110) & flood
+    # eroded 2px: drops stray specks AND the ~4px spokes, which entering the
+    # hull drew the sails' inner ends to a point
+    cream = np.asarray(Image.fromarray((cream * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(5))) > 0
+    alpha = np.zeros((h, w))
+    colour = rgb.copy()
+    covered = np.zeros((h, w))
+    for poly in SAILS:
+        zone = np.asarray(Image.fromarray(np.uint8(_poly_mask((w, h), poly) > 0.5) * 255).filter(ImageFilter.MaxFilter(7))) > 0
+        ys, xs = np.nonzero(cream & zone)
+        hull = _hull(np.stack([xs, ys], 1).tolist())
+        inner = _poly_mask((w, h), _offset(hull, 0.5 + SAIL_FRAME))
+        outer = _poly_mask((w, h), _offset(hull, 0.5 + SAIL_FRAME + SAIL_INK))
+        band = np.clip(outer - inner, 0, 1)
+        colour = colour * (1 - band[..., None]) + np.asarray(SAIL_INK_RGB, float) * band[..., None]
+        alpha = np.maximum(alpha, outer)
+        covered = np.maximum(covered, outer)
+    # spokes and hub: the peeled cut outside the sails, ink only beside paint
+    light = (R > 200) & (G > 160) & (B > 100) & flood
+    near_light = np.asarray(Image.fromarray((light * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(7))) > 0
+    yy, xx = np.mgrid[0:h, 0:w]
+    hub = np.hypot(xx - HUB[0], yy - HUB[1]) < HUB_R + 3
+    rest = flood & (near_light | hub) & (covered < 0.5)
+    alpha = np.maximum(alpha, rest.astype(float))
+    return alpha, colour
+
+
 def cut(name, plate, mask, center, box_r, seed, mill=False):
     """Return (plate with the hole filled, the cut part as RGBA sized 2*box_r)."""
     rgb = np.asarray(plate.convert("RGB"), float)
     m = np.asarray(mask, float) / 255
+    paint = rgb
+    reach = m
+    if mill:
+        peeled = sail_only(rgb, m, center, box_r)
+        m, paint = rebuild_sails(rgb, peeled)
+        # the hole covers the painted sails AND the art's own: a rebuilt edge
+        # a pixel inside the art's left its last ink specks on the plate
+        reach = np.maximum(m, peeled)
     # the part is cut with the mask as traced; the HOLE reaches 2px further,
     # or the outline's anti-aliased fringe stays on the plate and the sail
     # turns away from a thin dark ghost of its own edge
-    hole = np.asarray(Image.fromarray(((m > 0.02) * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(5))) > 0
+    # the windmill's hole reaches 4px: past the sail outline sits a pale halo
+    # that sail_only peels off, and left on the plate it turned with nothing
+    # (a ghost rim where the sails had been)
+    grow = 9 if mill else 5
+    hole = np.asarray(Image.fromarray(((reach > 0.02) * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(grow))) > 0
     # the membrane only learns from what is BEHIND the mill, and never from
     # the ink lines ringing the hole (sail outlines): averaged into the gap
     # they come out as a grey bruise
@@ -187,6 +326,14 @@ def cut(name, plate, mask, center, box_r, seed, mill=False):
     ink = near & (rgb.mean(-1) < 55) & (rgb.max(-1) - rgb.min(-1) < 30)
     silhouette = mill_silhouette(plate.size) if mill else np.zeros(hole.shape, bool)
     invalid = hole | ink | silhouette
+    if mill:
+        # nor from that halo's cream just outside the hole: it smeared into the
+        # tower's flank as a pale stain (2026-10-31)
+        rim = np.asarray(Image.fromarray((hole * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(9))) > 0
+        # Below the hub only: above it the cream is the cloud, and the fill
+        # behind the upper sails needs it or it comes out grey.
+        below = (np.arange(rgb.shape[0]) > center[1])[:, None]
+        invalid |= rim & below & (rgb.mean(-1) > 190) & (rgb.max(-1) - rgb.min(-1) < 70)
     # A patch-copy fill was tried for the trees (2026-10-24) and pasted fence
     # slats and umbrella stripes into the foliage - a mosaic reads worse than
     # a soft membrane does behind a moving sail. Membrane + fine grain it is.
@@ -202,10 +349,15 @@ def cut(name, plate, mask, center, box_r, seed, mill=False):
     # outline is as heavy as it was painted and moving it leaves nothing behind
     ring = hole & (m <= 0.02)
     lum = rgb.mean(-1)
-    fringe = np.where(ring, np.clip((150 - lum) / 110, 0, 1), 0)
-    alpha = np.maximum(m, fringe)
+    # only near-neutral dark pixels are outline; darkness alone also took the
+    # tower's red and the trees' green into the sails (2026-10-31)
+    sat = rgb.max(-1) - rgb.min(-1)
+    fringe = np.where(ring & (sat < 45), np.clip((130 - lum) / 90, 0, 1), 0)
+    # the windmill's outline is painted and anti-aliased now: its ring would
+    # only bring the tower's ink back
+    alpha = m if mill else np.maximum(m, fringe)
     x0, y0 = int(round(center[0] - box_r)), int(round(center[1] - box_r))
-    part = Image.fromarray(np.dstack([rgb, alpha * 255]).astype(np.uint8), "RGBA")
+    part = Image.fromarray(np.dstack([paint, alpha * 255]).clip(0, 255).astype(np.uint8), "RGBA")
     part = part.crop((x0, y0, x0 + 2 * box_r, y0 + 2 * box_r))
     print(f"{name}: hole {int(hole.sum())} px, part box at ({x0},{y0}) {2*box_r}px, pivot {center}")
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)), part

@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-31",
+  "revision": "20261031-character-sound-v9",
+  "passed": true,
+  "scope": "Native official Spine event replay, production-shared character/multiplier previews and local mock game; no video output.",
+  "changes": [
+    "Five new original synthetic foley cues: elbow gather, wrist flick, gold ornaments, tail scales and snake jaw snap. Runtime library is now 65 sounds.",
+    "Twenty animation clips carry sixty Spine sound marks, including both casting voices, glasses, reactions, celebrations and nine individual snake double bites.",
+    "Small reaction adds a restrained wrist flourish, gold contact and short satisfied vocal; its vocal repeats no more than once per 3.5 seconds.",
+    "Body voices and glasses moved from independent timers to actual skeleton events; interrupted gestures no longer emit late body sounds.",
+    "Non-loop clips finish their authored recovery before blending into rest; casting talk drawing now covers the complete pitched vocal.",
+    "Gesture sounds remain behind the existing v8 cast, flight and impact signature. Same character/effect clocks at all three turbo settings."
+  ],
+  "native": "character-sound-validation.json",
+  "audio": "source/medusagaze/audio/CHARACTER_V9_SOUND_DESIGN.json",
+  "nativeResults": {
+    "soundedClips": 20,
+    "eventMarks": 60,
+    "maxEventSamplingDriftMs": 8.333333333333318,
+    "sampleHz": 120,
+    "cancellation": "passed",
+    "rateChange": "passed",
+    "reducedMotion": "passed",
+    "castMouthCoverage": "passed",
+    "meshFolds": 0,
+    "rigBones": 84,
+    "rigClips": 24,
+    "runtimeAudioFiles": 65
+  },
+  "visualReview": [
+    {
+      "case": "react_small",
+      "soundEnabled": true,
+      "notes": "Thumb gesture, new wrist flourish and weighted facial glance inspected at 0.360s; playback completed."
+    },
+    {
+      "case": "snake_fidget_6",
+      "soundEnabled": true,
+      "notes": "Native individual snake clip replayed; nine-snake two-mark coverage also checked by native replay."
+    },
+    {
+      "case": "win_big",
+      "soundEnabled": true,
+      "notes": "Laugh event visibly reported at 0.11s; raised-hand performance replayed."
+    },
+    {
+      "case": "MG x25",
+      "soundEnabled": true,
+      "result": "$25.00 with resting pose"
+    },
+    {
+      "case": "FG three orbs",
+      "soundEnabled": true,
+      "result": "x178 / $178.00; forehead glasses preserved; open talk drawing and flight inspected at 1.380s"
+    }
+  ],
+  "gameSmoke": [
+    {
+      "book": "baseThrow",
+      "tier": "OFF",
+      "result": "$12.50",
+      "returnedToIdle": true
+    },
+    {
+      "book": "baseThrow",
+      "tier": "TURBO 2",
+      "result": "$12.50",
+      "returnedToIdle": true
+    }
+  ],
+  "console": {
+    "runtimeErrors": 0,
+    "audioLoadErrors": 0,
+    "notes": "One pre-existing Pixi TextStyle warning in local dev. Character and multiplier previews reported no audio load warnings."
+  },
+  "fullBuild": "passed",
+  "typeCheck": {
+    "errors": 0,
+    "warnings": 1,
+    "warning": "Existing tsconfig allowImportingTsExtensions/noEmit setting"
+  },
+  "screenshots": [
+    "source/medusagaze/_sheets/character_sound_20261031_smug.png",
+    "source/medusagaze/_sheets/character_sound_20261031_mg_result.png",
+    "source/medusagaze/_sheets/character_sound_20261031_fg_result.png",
+    "source/medusagaze/_sheets/character_sound_20261031_fg_voice_pose.png",
+    "source/medusagaze/_sheets/character_sound_20261031_off_result.png",
+    "source/medusagaze/_sheets/character_sound_20261031_turbo2_result.png"
+  ],
+  "audition": "source/medusagaze/audio/CHARACTER_V9_AUDITION.wav",
+  "limits": "Vocalisations remain original synthetic sketches, not newly recorded human acting. Native 8.33ms result measures animation event sampling, not end-to-end sound-device latency. This revision did not repeat the previous 15-spin feature, portrait or live RGS validation."
+}

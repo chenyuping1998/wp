@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
+ import {stateUrlDerived} from 'state-shared';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { MainContainer } from 'components-layout';
 	import { onMount } from 'svelte';
@@ -60,7 +61,10 @@ import {parrotText} from '../game/parrotText';
 		},
 	];
 
-	const INK = 0x2a1f24;
+	const compactTitles=stateUrlDerived.lang()==='zh'?['任意得分','安可！','音量全開']:['SCATTER WINS','ENCORE!','TURN IT UP'];
+ const compactBodies=stateUrlDerived.lang()==='zh'?['任意位置 8 個相同圖案得分，消除後再補位。','每個得分回合最多一次，翻成本轉最賺的圖案。','免費遊戲音量最高 ×20。白金唱片只乘本回合。']:['Match 8+ symbols anywhere. Wins clear, then tumble.','One encore per winning round. More matching symbols.','Volume builds to ×20. Platinum boosts one round.'];
+ 
+ const INK = 0x2a1f24;
 	const drawCard = (g: PixiGraphics) => {
 		g.clear();
 		g.roundRect(-cardW / 2, -cardH / 2, cardW, cardH, 18).fill({ color: 0xefe8d8 }).stroke({ width: 5, color: INK });
@@ -84,30 +88,30 @@ import {parrotText} from '../game/parrotText';
 			<Graphics draw={drawCard} />
 			<Sprite key={panel.key} anchor={0.5} x={sceneX} y={sceneY} width={pw} height={pw * 0.75} />
 			<Text
-				text={panel.title}
+				text={stacked?compactTitles[i]:panel.title}
 				anchor={0.5}
 				x={textX}
 				y={stacked ? -cardH * 0.28 : cardH * 0.17}
 				style={{
 					fontFamily: GAME_FONT,
 					fontWeight: GAME_FONT_WEIGHT,
-					fontSize: stacked ? Math.max(19, cardW * 0.05) : cardW * 0.08,
+					fontSize: stacked ? Math.max(13 / layout.scale, cardW * 0.05) : cardW * 0.08,
 					fill: 0xc85a4a,
 				}}
 			/>
 			<Text
-				text={panel.body}
+				text={stacked?compactBodies[i]:panel.body}
 				anchor={{ x: 0.5, y: 0 }}
 				x={textX}
 				y={stacked ? -cardH * 0.12 : cardH * 0.25}
 				style={{
 					fontFamily: BODY_FONT,
-					fontSize: stacked ? Math.max(16, cardW * 0.035) : cardW * 0.052,
-					lineHeight: stacked ? Math.max(21, cardW * 0.046) : cardW * 0.067,
+					fontSize: stacked ? Math.max(11.5 / layout.scale, cardW * 0.035) : cardW * 0.052,
+					lineHeight: stacked ? Math.max(14 / layout.scale, cardW * 0.046) : cardW * 0.067,
 					fill: INK,
 					align: 'center',
 					wordWrap: true,
-					breakWords: false,
+					breakWords: true,
 					wordWrapWidth: cardW * (stacked ? 0.46 : 0.8),
 				}}
 			/>

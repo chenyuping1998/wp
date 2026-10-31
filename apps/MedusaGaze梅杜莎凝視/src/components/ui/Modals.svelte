@@ -4,10 +4,10 @@
 	// Shared modals for everything except the pay table and game rules, which are
 	// this game's own content.
 	import ModalError from 'components-ui-html/src/components/ModalError.svelte';
-	import ModalBetMenu from 'components-ui-html/src/components/ModalBetMenu.svelte';
+	import ModalBetMenu from './ModalBetMenu.svelte';
 	import ModalBuyBonus from 'components-ui-html/src/components/ModalBuyBonus.svelte';
 	import ModalBuyBonusConfirm from 'components-ui-html/src/components/ModalBuyBonusConfirm.svelte';
-	import ModalAutoSpin from 'components-ui-html/src/components/ModalAutoSpin.svelte';
+	import ModalAutoSpin from './ModalAutoSpin.svelte';
 	import ModalAutoSpinMessage from 'components-ui-html/src/components/ModalAutoSpinMessage.svelte';
 	// Plain notifications — the insufficient-balance notice the bet button raises.
 	// Distinct from ModalAutoSpinMessage, which opens with "AUTO PLAY HAS STOPPED
@@ -162,13 +162,31 @@
 
 	/* Close button (×) */
 	:global(.close-button) {
-		color: #2a1f24 !important;
-		transition: color 0.15s ease !important;
+		color: #102f36 !important;
+		background: #fff4ce !important;
+		border: 3px solid #c59135 !important;
+		border-radius: 50% !important;
+		width: 48px !important;
+		height: 48px !important;
+		font: 700 34px/38px sans-serif !important;
+		box-shadow: 0 3px 12px #0009 !important;
+		transition: color 0.15s ease, transform .15s ease !important;
 	}
+	:global(.close-button-wrap) {top:12px !important;right:12px !important}
 
 	:global(.close-button:hover) {
 		color: #e8725e !important;
+		transform: scale(1.08);
 	}
+	:global(.pop-up-wrap .base-button-content){color:#fffaf0 !important;font-weight:700 !important;text-shadow:0 1px 1px #071f2b}
+	:global(.pop-up-wrap .ui-popup-standard-content-wrap){color:#102f36 !important}
+	:global(.pop-up-wrap .ui-popup-standard-content-wrap .subtitle){color:#102f36 !important}
+	:global(.pop-up-wrap .ui-popup-standard-content-wrap .value),
+	:global(.pop-up-wrap .ui-popup-standard-content-wrap .amount){color:#102f36 !important;font-weight:700 !important}
+
+	/* Bonus stepper sits on the dark backdrop outside the cream cards. */
+	:global(.pop-up-wrap .ui-popup-standard-content-wrap:has(.bonuses-wrap) .toggle-wrap .amount),
+	:global(.pop-up-wrap .ui-popup-standard-content-wrap:has(.bonuses) .toggle-wrap .amount){color:#fff4ce !important;text-shadow:0 2px 3px #10242d;font-weight:800 !important}
 
 	/* Modal backdrop */
 	:global(.blur-layer) {

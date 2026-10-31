@@ -245,7 +245,7 @@
 	// Shorter than the beat gap plus the settle, so the last HA! is gone before
 	// laughTiming's settle face (endMs - 150) shows. (Ported from Putt/Strike
 	// 2026-10-18: only while the laugh itself is playing.)
-	const HA_LIFE_MS = 360;
+	const HA_LIFE_MS = Math.min(360, BEAT_GAP_MS * 1.5);
 	const haPops = $derived.by(() => {
 		if (impactClock < 0 || cast.beatFx !== 'laugh' || animationName !== 'chestbeat') return [];
 		const pops = [];
@@ -408,10 +408,10 @@
 	// was dropped.
 	let animationName = $state('idle');
 	let loop = $state(true);
-	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'bow', 'flinch', 'alert', 'glance'];
+	const ONE_SHOTS = ['cheer', 'chestbeat', 'nod', 'throwit', 'bow', 'flinch', 'alert', 'glance', 'jazzGroove', 'jazzListen', 'jazzFinale'];
 	// The small reactions (flinch, alert, glance, nod) may interrupt each other
 	// and idle; they never cut into the big three, which each mean something.
-	const INTERRUPTIBLE = ['idle', 'nod', 'glance', 'alert', 'flinch'];
+	const INTERRUPTIBLE = ['idle', 'nod', 'glance', 'alert', 'flinch', 'jazzListen'];
 	const react = (name: string) => {
 		if (!INTERRUPTIBLE.includes(animationName)) return;
 		play(name, false);
@@ -439,6 +439,7 @@
 	// its first frame; a caption clock carried across would no longer match it.
 	$effect(() => {
 		cast.key;
+		clearTimeout(voiceTimer);
 		stopImpacts();
 		animationName = 'idle';
 		loop = true;
@@ -448,7 +449,10 @@
 		// The HA!s belong to the laugh, not to a clock: anything that takes him
 		// out of 'chestbeat' (a big-win cheer on the same spin, the clip ending,
 		// the cast swap) takes the captions with it, so no HA! outlives the face.
-		if (name !== 'chestbeat') stopImpacts();
+		if (name !== 'chestbeat') {
+			stopImpacts();
+			clearTimeout(voiceTimer);
+		}
 		animationName = name;
 		loop = loops;
 	};
@@ -468,7 +472,7 @@
 		context.eventEmitter.broadcast({ type: 'soundMascotVoice', name });
 	};
 
-	// The chest beat, with its roar and its six impacts. A function rather than
+	// The five-beat laugh, with its recording and matching captions. A function rather than
 	// inline in the handler because two things raise it: the free-game trigger,
 	// and the top three big-win tiers.
 	const beatChest = () => {
@@ -477,14 +481,24 @@
 		// face (HA!s still popping after the laugh has settled).
 		if (animationName === 'chestbeat') return;
 		play('chestbeat', false);
-		// one clip covering all six strikes, so the grunts cannot drift out of
-		// sync with them
-		say('roar');
+		// Same five-syllable recording as Putt/Diner; first inhale, then laugh.
+		clearTimeout(voiceTimer);
+		voiceTimer = setTimeout(() => say('roar'), laughTiming.voiceDelayMs) as unknown as number;
 		// no point running a clock for something with nowhere to be drawn
 		if (placement) startImpacts();
 	};
 
 	context.eventEmitter.subscribeOnMount({
+		soundReelTensionStart: () => {
+			if (placement && animationName === 'idle') play('jazzListen', false);
+		},
+		soundReelTensionStop: () => {
+			if (animationName === 'jazzListen') play('idle', true);
+		},
+		soundSpinCut: () => {
+			clearTimeout(voiceTimer);
+			if (animationName === 'jazzGroove' || animationName === 'jazzListen') play('idle', true);
+		},
 		winUpdate: ({ winLevelData }) => {
 			// Only for a win the game is itself making a fuss about. Reacting to
 			// every paying spin would have him bouncing through most of an 18-spin
@@ -509,6 +523,7 @@
 			// the player, so that ran unbounded and read as something jammed.
 			const alias = winLevelData.alias;
 			if (alias === 'mega' || alias === 'epic' || alias === 'max') beatChest();
+			else if (alias === 'superwin') play('jazzFinale', false);
 			else play('cheer', false);
 		},
 		// The gorilla, for the biggest way into the feature. Deliberately not the
@@ -544,9 +559,8 @@
 			voiceTimer = setTimeout(() => say('effort'), 520) as unknown as number;
 		},
 
-		// An ordinary base-game win. This is the common case by a wide margin, so
-		// it is the smallest thing he does — see the 'nod' animation, which is
-		// deliberately almost nothing.
+		// Ordinary wins get a brief swung conducting phrase. Upper-tier gestures
+		// stay reserved for the banner presentation.
 		//
 		// Only from idle. A win line resolving during a big-win presentation would
 		// otherwise cut the celebration short with a shrug, and the free game is
@@ -555,7 +569,7 @@
 		winLinesShow: () => {
 			if (context.stateGame.gameType !== 'basegame') return;
 			if (animationName !== 'idle') return;
-			play('nod', false);
+			play('jazzGroove', false);
 		},
 
 		// A rung up the Chef meter: he takes notice and leans in.
@@ -579,7 +593,7 @@
 	>
 		<SpineTrack
 			trackIndex={0}
-			{animationName}
+			animationName={animationName === 'idle' ? 'jazzIdle' : animationName}
 			{loop}
 			{...{
 				/*

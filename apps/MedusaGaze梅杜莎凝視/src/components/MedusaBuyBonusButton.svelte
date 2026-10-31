@@ -28,7 +28,7 @@
 		<Container {...center} scale={1+.06*pop}>
 			<Sprite key="mgUiBuyBonus" anchor={.5} width={plate} height={plate} tint={disabled?0x8e9695:0xffffff}/>
 			{#if shine>0}<Sprite key="fxStreak" anchor={.5} x={-plate*.015} y={-plate*.22} width={plate*.27} height={plate*.025} rotation={-.25} alpha={shine*.8} blendMode="add"/>{/if}
+			<Text x={0} y={plate*.205} anchor={.5} text={active?i18nDerived.disable():i18nDerived.buyBonus()} alpha={disabled?.6:1} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:11.6,lineHeight:13.0,wordWrap:true,wordWrapWidth:70,align:'center',fill:0x102f36}}/>
 		</Container>
-		<Text x={center.x} y={center.y+plate*.22} anchor={.5} text={active?i18nDerived.disable():i18nDerived.buyBonus()} alpha={disabled?.6:1} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:18,lineHeight:21,wordWrap:true,wordWrapWidth:90,align:'center',fill:0x173a40}}/>
 	{/snippet}
 </Button>

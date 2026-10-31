@@ -1,0 +1,192 @@
+{
+  "bgm_main": {
+    "lufs": -20.26705048493717,
+    "truePeakDbTP": -4.259013768285153,
+    "loopCorrelation": 0.999628583629198
+  },
+  "bgm_freespin": {
+    "lufs": -20.270907244425853,
+    "truePeakDbTP": -4.88772450834414,
+    "loopCorrelation": 0.9992834019295757
+  },
+  "btn": {
+    "truePeakDbTP": -10.0,
+    "tail50msDbFS": -240.0
+  },
+  "spin": {
+    "truePeakDbTP": -5.5,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_1": {
+    "truePeakDbTP": -7.599999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_2": {
+    "truePeakDbTP": -7.200000000000001,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_3": {
+    "truePeakDbTP": -6.799999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_4": {
+    "truePeakDbTP": -6.400000000000001,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_5": {
+    "truePeakDbTP": -5.999999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "reel_tension": {
+    "truePeakDbTP": -8.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_1": {
+    "truePeakDbTP": -4.599999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_2": {
+    "truePeakDbTP": -4.199999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_3": {
+    "truePeakDbTP": -3.7999999999999985,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_4": {
+    "truePeakDbTP": -3.399999999999997,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_5": {
+    "truePeakDbTP": -2.9999999999999987,
+    "tail50msDbFS": -240.0
+  },
+  "pluck_low": {
+    "truePeakDbTP": -6.500000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "win_gliss": {
+    "truePeakDbTP": -6.0000000000000036,
+    "tail50msDbFS": -240.0
+  },
+  "win_gliss_big": {
+    "truePeakDbTP": -3.7199999999999984,
+    "tail50msDbFS": -240.0
+  },
+  "win_panel": {
+    "truePeakDbTP": -3.720000000000001,
+    "tail50msDbFS": -240.0
+  },
+  "win_big": {
+    "truePeakDbTP": -3.720000000000001,
+    "tail50msDbFS": -240.0
+  },
+  "win_super": {
+    "truePeakDbTP": -3.439999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "win_mega": {
+    "truePeakDbTP": -3.160000000000001,
+    "tail50msDbFS": -240.0
+  },
+  "win_epic": {
+    "truePeakDbTP": -2.8800000000000017,
+    "tail50msDbFS": -240.0
+  },
+  "win_max": {
+    "truePeakDbTP": -2.6,
+    "tail50msDbFS": -240.0
+  },
+  "win_cap": {
+    "truePeakDbTP": -2.3200000000000016,
+    "tail50msDbFS": -240.0
+  },
+  "fs_intro": {
+    "truePeakDbTP": -3.160000000000001,
+    "tail50msDbFS": -240.0
+  },
+  "wild_expand": {
+    "truePeakDbTP": -3.4400000000000053,
+    "tail50msDbFS": -240.0
+  },
+  "ladder_up": {
+    "truePeakDbTP": -6.0000000000000036,
+    "tail50msDbFS": -240.0
+  },
+  "mult_update": {
+    "truePeakDbTP": -6.0000000000000036,
+    "tail50msDbFS": -240.0
+  },
+  "symbol_reveal": {
+    "truePeakDbTP": -6.0000000000000036,
+    "tail50msDbFS": -240.0
+  },
+  "symbol_land": {
+    "truePeakDbTP": -7.5,
+    "tail50msDbFS": -240.0
+  },
+  "dynamite_blast": {
+    "truePeakDbTP": -4.0,
+    "tail50msDbFS": -240.0
+  },
+  "dynamite_blast_big": {
+    "truePeakDbTP": -2.499999999999997,
+    "tail50msDbFS": -240.0
+  },
+  "grenade_blast": {
+    "truePeakDbTP": -3.999999999999997,
+    "tail50msDbFS": -240.0
+  },
+  "press_blast": {
+    "truePeakDbTP": -4.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "fullboard_stamp": {
+    "truePeakDbTP": -2.5000000000000004,
+    "tail50msDbFS": -240.0
+  },
+  "bigwin_blast": {
+    "truePeakDbTP": -2.5000000000000004,
+    "tail50msDbFS": -240.0
+  },
+  "gong_feature": {
+    "truePeakDbTP": -2.5000000000000004,
+    "tail50msDbFS": -240.0
+  },
+  "symbol_shatter": {
+    "truePeakDbTP": -9.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "smoke_puff": {
+    "truePeakDbTP": -12.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "cave_quake": {
+    "truePeakDbTP": -7.000000000000001,
+    "tail50msDbFS": -240.0
+  },
+  "dj_scratch": {
+    "truePeakDbTP": -13.000000000000004,
+    "tail50msDbFS": -240.0
+  },
+  "fuse_sizzle": {
+    "truePeakDbTP": -7.999999999999997,
+    "tail50msDbFS": -240.0
+  },
+  "fullboard_chain": {
+    "truePeakDbTP": -5.0,
+    "tail50msDbFS": -240.0
+  },
+  "win_rollup_loop": {
+    "truePeakDbTP": -13.000000000000004,
+    "tail50msDbFS": -240.0
+  },
+  "win_rollup_end": {
+    "truePeakDbTP": -3.999999999999997,
+    "tail50msDbFS": -240.0
+  },
+  "coin_shimmer": {
+    "truePeakDbTP": -9.0,
+    "tail50msDbFS": -240.0
+  }
+}

@@ -383,6 +383,38 @@ export default {
 		src: new URL('../../assets/sprites/sushiSymbols/l5_flag_v2.png', import.meta.url).href,
 		preload: true,
 	},
+	// the low pays' win putts their ball into the cup: the pennant without its
+	// ball, and the ball alone (design/build_flag_ball.py)
+	gbL1NoBall: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiSymbols/l1_flag_noball.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL2NoBall: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiSymbols/l2_flag_noball.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL3NoBall: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiSymbols/l3_flag_noball.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL4NoBall: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiSymbols/l4_flag_noball.png', import.meta.url).href,
+		preload: true,
+	},
+	gbL5NoBall: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiSymbols/l5_flag_noball.png', import.meta.url).href,
+		preload: true,
+	},
+	gbFlagBall: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiSymbols/flag_ball.png', import.meta.url).href,
+		preload: true,
+	},
 	gbW: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/sushiSymbols/w.png', import.meta.url).href,

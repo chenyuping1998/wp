@@ -1,11 +1,14 @@
 <script lang="ts">
-	import { Popup } from 'components-shared';
+	import Popup from './InfoPopup.svelte';
+	import InfoShell from './InfoShell.svelte';
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal, LEGAL_NOTICE } from 'state-shared';
 
 	import { base } from '$app/paths';
 
 	import config from '../../game/config';
+	import assets from '../../game/assets';
+	import { uiTheme } from 'components-ui-pixi';
 	import { getSocialTerms } from '../../game/socialTerms';
 
 	// Shared with the pay table — the two panels describe the same game and must
@@ -20,6 +23,11 @@
 	// and showing only one of them would misrepresent it. Buy Bonus has none: on
 	// the bar it is a labelled plate rather than a glyph, so there is no icon that
 	// would actually match what the player sees.
+	const controlIcon = (name: string) => {
+		const key = uiTheme.icons[name] as keyof typeof assets | undefined;
+		const icon = key ? assets[key] as {src?:string} : undefined;
+		return icon?.src ?? `${ICONS}/${name}.png`;
+	};
 	const controls = [
 		{
 			icons: ['spin'],
@@ -168,7 +176,8 @@
 
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="al-rules">
+		<div class="al-rules info-page">
+			<InfoShell kind="rules">
 			<header class="al-hero" style={`--hero: url(${HERO})`}>
 				<span class="al-kicker">Game rules</span>
 				<h2>Go Banalchemy</h2>
@@ -402,7 +411,7 @@
 							{#if control.icons.length}
 								<span class="al-control-icons">
 									{#each control.icons as name (name)}
-										<img src={`${ICONS}/${name}.png`} alt="" aria-hidden="true" />
+										<img src={controlIcon(name)} alt="" aria-hidden="true" />
 									{/each}
 								</span>
 							{/if}
@@ -421,6 +430,7 @@
 			<!-- The legal notice is SHARED (state-shared/src/legal.ts): render the
 			     constant, never retype it. -->
 			<p class="al-foot">{LEGAL_NOTICE}</p>
+			</InfoShell>
 		</div>
 	</Popup>
 {/if}

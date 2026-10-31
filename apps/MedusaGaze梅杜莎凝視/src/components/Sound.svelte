@@ -2,12 +2,19 @@
   import { base } from "$app/paths";
   import type { MusicName, SoundEffectName, SoundName } from "../game/sound";
   import { MEDUSA_AUDIO } from "../game/audioManifest";
+  import { castingMix,orbSoundVoices } from "../game/castingSoundDesign";
+  import {interfaceSoundDesign,interfacePressGain,type InterfaceCue} from '../game/interfaceSoundDesign';
+  import {characterSoundDesign,resolveCharacterSound,type CharacterSoundMark} from '../game/characterSoundDesign';
 
   export type MedusaCue =
     | "gaze"
     | "gazeBeam"
     | "peek"
     | "orbFly"
+    | "orbCharge"
+    | "orbRelease"
+    | "cast"
+    | "scoreCollide"
     | "orbHit"
     | "orbCrack"
     | "totalUp"
@@ -19,6 +26,8 @@
     | "laugh";
 
   export type EmitterEventSound =
+    | {type:'soundInterface';cue:InterfaceCue}
+    | {type:'soundCharacter';mark:CharacterSoundMark}
     | { type: "soundMusic"; name: MusicName }
     | { type: "soundOnce"; name: SoundEffectName; forcePlay?: boolean }
     | { type: "soundLoop"; name: SoundEffectName }
@@ -30,7 +39,7 @@
         to: number;
         duration: number;
       }
-    | { type: "soundMedusa"; cue: MedusaCue; value?: number;speed?:number;panFrom?:number;panTo?:number }
+    | { type: "soundMedusa"; cue: MedusaCue; value?: number;layers?:number;speed?:number;panFrom?:number;panTo?:number }
     | { type: "soundFreeGameBell" }
     | { type: "soundBigWinBlast"; tier?: 1 | 2 | 3 | 4 | 5 }
     | { type: "soundTumbleHit"; chain: number }
@@ -70,6 +79,8 @@
   let activeTier = 1;
   let laughVariant = 0;
   let crackVariant = 0;
+  const characterLastPlayed=new Map<CharacterSoundMark,number>();
+  let interfaceLastAt=-Infinity;
 
   function getEngine() {
     if (disposed || typeof window === "undefined") return null;
@@ -96,6 +107,8 @@
 
   function updateVolume() {
     if (!engine || !buses) return;
+    // User volume/mute changes supersede any scheduled casting duck recovery.
+    buses.music.gain.cancelScheduledValues(engine.currentTime);
     buses.music.gain.setTargetAtTime(
       stateSoundDerived.volumeMusic(),
       engine.currentTime,
@@ -152,6 +165,7 @@
 
   function resetTransient() {
     generation += 1;
+    updateVolume();
     for (const [cue, bus] of pendingLoops)
       if (bus === "effects") pendingLoops.delete(cue);
     for (const voice of [...voices])
@@ -255,7 +269,7 @@
     sfx_buybonus_hover: { cue: "sfx_buybonus_hover", volume: 0.45 },
     sfx_buybonus_confirm: { cue: "sfx_buybonus_confirm", volume: 0.7 },
     sfx_statues_crack: { cue: "sfx_statues_crack", volume: 0.6 },
-    sfx_btn_general: { cue: "sfx_button", volume: 0.7 },
+    sfx_btn_general: { cue: "sfx_button", volume: interfacePressGain },
     sfx_btn_spin: { cue: "sfx_spin" },
     sfx_reel_stop_1: { cue: "sfx_reel_stop", rate: 0.92 },
     sfx_reel_stop_2: { cue: "sfx_reel_stop", rate: 1 },
@@ -270,7 +284,7 @@
     sfx_scatter_win: { cue: "sfx_scatter_trigger" },
     sfx_scatter_win_v2: { cue: "sfx_scatter_trigger" },
     sfx_scatter_reveal: { cue: "sfx_gaze_charge" },
-    sfx_wild_explode: { cue: "sfx_crumble", volume: 0.7 },
+    sfx_wild_explode: { cue: "sfx_crumble", volume: 0.805 },
     jng_intro_fs: { cue: "stinger_fg_intro" },
     sfx_youwon_panel: { cue: "stinger_fg_outro" },
     sfx_superfreespin: { cue: "sfx_fg_plus5" },
@@ -286,7 +300,7 @@
     sfx_multiplier_landing: { cue: "sfx_orb_fly" },
     sfx_multiplier_reset: { cue: "sfx_orb_crack" },
     sfx_multiplier_up: { cue: "sfx_total_mult_up" },
-    sfx_multiplier_update: { cue: "sfx_mult_count", volume: 0.6 },
+    sfx_multiplier_update: { cue: "sfx_mult_count", volume: 0.78 },
     sfx_multiplier_win: { cue: "sfx_orb_hit_m" },
     sfx_royals_landing: { cue: "sfx_drop" },
     sfx_symbols_landing: { cue: "sfx_drop" },
@@ -307,14 +321,20 @@
       : SPRITE_TO_CUE[name];
   }
 
-  function playMedusa(cue: MedusaCue, value = 0,speed=1,panFrom=0,panTo=0) {
+  function duckCastingMusic(seconds:number,depth=.64){
+    const ctx=getEngine();if(!ctx||!buses)return;
+    const gain=buses.music.gain,now=ctx.currentTime,volume=stateSoundDerived.volumeMusic();
+    gain.cancelScheduledValues(now);gain.setValueAtTime(gain.value,now);gain.linearRampToValueAtTime(volume*depth,now+.035);gain.setTargetAtTime(volume,now+seconds,.12);
+  }
+
+  function playMedusa(cue: MedusaCue, value = 0,speed=1,panFrom=0,panTo=0,layers=1) {
     switch (cue) {
       case "gaze":
         void playCue("sfx_gaze_charge",.8,speed);
         void playCue("sfx_snakes_hiss", 0.32,speed);
         break;
       case "gazeBeam":
-        void playCue("sfx_gaze_beam",.75,speed);
+        void playCue("sfx_gaze_beam",castingMix.gazeBeam,speed);
         break;
       case "peek":
         void playCue("sfx_glasses_slide",.9,speed);
@@ -322,22 +342,36 @@
       case "glassesOn":
         void playCue("sfx_glasses_on",.8,speed);
         break;
+      case "orbCharge":
+        for(const v of orbSoundVoices('charge',value))void playCue(v.cue,v.gain,v.rate);
+        break;
+      case "orbRelease":
+        for(const v of orbSoundVoices('release',value))void playCue(v.cue,v.gain,v.rate);
+        break;
       case "orbFly":
-        void playCue("sfx_orb_fly",.8,speed,false,"effects",0,{from:panFrom,to:panTo,seconds:.45/speed});
+        for(const v of orbSoundVoices('fly',value,layers))void playCue(v.cue,v.gain,v.rate,false,"effects",0,{from:panFrom,to:panTo,seconds:.60});
+        break;
+      case "cast":
+        // One clear nonverbal casting utterance for the whole volley.
+        duckCastingMusic(.82);
+        void playCue("vo_medusa_cast", castingMix.voice, castingMix.voiceRate);
+        void playCue("sfx_snakes_hiss", castingMix.hiss, castingMix.hissRate);
+        break;
+      case "scoreCollide":
+        duckCastingMusic(.24,.70);
+        for(const v of orbSoundVoices('collision',value))void playCue(v.cue,v.gain,v.rate);
         break;
       case "orbHit":
-        void playCue(
-          `sfx_orb_hit_${value >= 100 ? "l" : value >= 15 ? "m" : "s"}`,1,speed,
-        );
+        for(const v of orbSoundVoices('hit',value))void playCue(v.cue,v.gain,v.rate);
         break;
       case "orbCrack":
-        void playCue(++crackVariant % 2 ? "sfx_orb_crack" : "sfx_orb_crack_2",.85,speed);
+        void playCue(++crackVariant % 2 ? "sfx_orb_crack" : "sfx_orb_crack_2",.9775,speed);
         break;
       case "totalUp":
         void playCue("sfx_total_mult_up");
         break;
       case "plateBeam":
-        void playCue("sfx_total_to_win");
+        void playCue("sfx_total_to_win",1.30);
         break;
       case "hmm":
         void playCue("vo_medusa_hmm", 0.65);
@@ -362,6 +396,18 @@
     }
   }
 
+  function playCharacter(mark:CharacterSoundMark){
+    const now=performance.now(),last=characterLastPlayed.get(mark)??-Infinity;
+    if(now-last<characterSoundDesign[mark].cooldownMs)return;
+    characterLastPlayed.set(mark,now);
+    if(mark==='motion_cast'){
+      stopCue('vo_medusa_hmm',.025);stopCue('vo_medusa_annoyed',.025);
+      duckCastingMusic(.82);
+    }
+    const variation=mark==='motion_laugh'?laughVariant++:0;
+    for(const v of resolveCharacterSound(mark,variation))void playCue(v.cue,v.gain,v.rate);
+  }
+
   $effect(() => {
     stateSoundDerived.volumeMusic();
     stateSoundDerived.volumeSoundEffect();
@@ -369,11 +415,16 @@
   });
 
   context.eventEmitter.subscribeOnMount({
+    soundInterface:({cue})=>{
+      const now=performance.now();if(now-interfaceLastAt<80)return;interfaceLastAt=now;
+      for(const part of interfaceSoundDesign[cue])void playCue(part.cue,part.gain,part.rate);
+    },
+    soundCharacter:({mark})=>playCharacter(mark),
     soundBetMode: () => {
       void playMusic("bgm_main");
     },
     soundPressGeneral: () => {
-      void playCue("sfx_button", 0.7);
+      void playCue("sfx_button", interfacePressGain);
     },
     soundPressBet: () => {
       resetTransient();
@@ -398,7 +449,7 @@
       const mapped = mappedCue(name);
       void playCue(mapped.cue, mapped.volume ?? 1, mapped.rate ?? 1);
     },
-    soundMedusa: ({ cue, value,speed,panFrom,panTo }) => playMedusa(cue, value,speed,panFrom,panTo),
+    soundMedusa: ({ cue, value,speed,panFrom,panTo,layers }) => playMedusa(cue, value,speed,panFrom,panTo,layers),
     soundFreeGameBell: () => {
       void playCue("sfx_scatter_trigger");
     },

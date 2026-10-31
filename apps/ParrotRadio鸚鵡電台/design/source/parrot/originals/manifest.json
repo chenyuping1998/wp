@@ -1,0 +1,120 @@
+{
+  "tool": "built-in image_gen",
+  "edits": "Sheet cell registration, canvas normalization and alpha-preserving aligned assembly. Original outputs retained.",
+  "images": [
+    {
+      "file": "parrot_banners.png",
+      "bytes": 2458873,
+      "sha256": "99cedf89e2c233157433cedc13b208aa70b584ac14657e036ca63b489e9fe0cf",
+      "prompt": "parrot_banners_prompt.txt"
+    },
+    {
+      "file": "parrot_base_art_v2.png",
+      "bytes": 2271740,
+      "sha256": "8c39e6bfb4b435f9d9d00a99937f6195633cba7c1ca577052b306230b0ff37cb",
+      "prompt": "parrot_base_art_v2_prompt.txt"
+    },
+    {
+      "file": "parrot_bg_base.png",
+      "bytes": 2579304,
+      "sha256": "28107b21f3a4d9746257cd7fe72eb711a70021e0742218b4f0be71b5ffef7c08",
+      "prompt": "parrot_bg_base_prompt.txt"
+    },
+    {
+      "file": "parrot_bg_base_bright.png",
+      "bytes": 2515033,
+      "sha256": "a03e80b4cc71ea3acfa5a000f56e7d86aed49aa0379363324ddef582a89f8857",
+      "prompt": "parrot_bg_base_bright_prompt.txt"
+    },
+    {
+      "file": "parrot_bg_free.png",
+      "bytes": 2687753,
+      "sha256": "864a225e3fe4d122084fc46fa4be71a49e2bcb5dd4929296fe37028df07c5cfb",
+      "prompt": "parrot_bg_free_prompt.txt"
+    },
+    {
+      "file": "parrot_bg_free_bright.png",
+      "bytes": 2647438,
+      "sha256": "a3e741c8475a606bea1d8079a9463bf6015b33ebbde67d4bf300344520445957",
+      "prompt": "parrot_bg_free_bright_prompt.txt"
+    },
+    {
+      "file": "parrot_character.png",
+      "bytes": 2219894,
+      "sha256": "b591ce83463bfee551853ae95aae4ed103f4d45ed8ac81789895f0bde8e01e15",
+      "prompt": "parrot_character_prompt.txt"
+    },
+    {
+      "file": "parrot_cover.png",
+      "bytes": 2782407,
+      "sha256": "147979a19cfcdc3c436f33e1c8b69fd3ed9df3b6c34d54fbda744f41e4332aa7",
+      "prompt": "parrot_cover_prompt.txt"
+    },
+    {
+      "file": "parrot_faces.png",
+      "bytes": 2078312,
+      "sha256": "144db29f75696c2b3400489bd6acf26c3d23590954dbbbb8311d706aa2b36643",
+      "prompt": "parrot_faces_prompt.txt"
+    },
+    {
+      "file": "parrot_free_art_v2.png",
+      "bytes": 2167335,
+      "sha256": "20dd9f83db506ddb4d20cad1d84c9bacd1ba5dc6f4213acb55a3bc2831f600bd",
+      "prompt": "parrot_free_art_v2_prompt.txt"
+    },
+    {
+      "file": "parrot_intro.png",
+      "bytes": 2919692,
+      "sha256": "5ff899b7ad5cc81243dccb2c0bce39f374a08ea08ce5b3ad49ca0a08797a04f2",
+      "prompt": "parrot_intro_prompt.txt"
+    },
+    {
+      "file": "parrot_logo.png",
+      "bytes": 1994581,
+      "sha256": "e4c63bdd842a21f1d3a88786c27cb4bab547c896d818831a76e2918a8af001dc",
+      "prompt": "parrot_logo_prompt.txt"
+    },
+    {
+      "file": "parrot_mechanics.png",
+      "bytes": 2255205,
+      "sha256": "a625669b71b159094e1c378a90d9153672aa64466cb71fc4fd95401ba2e8ac83",
+      "prompt": "parrot_mechanics_prompt.txt"
+    },
+    {
+      "file": "parrot_parts.png",
+      "bytes": 1733017,
+      "sha256": "4efdcf93b0de47ae3b44c54afa4ed294ace6884fc62216cd26fcaaf35a137898",
+      "prompt": "parrot_parts_prompt.txt"
+    },
+    {
+      "file": "parrot_symbol_parts.png",
+      "bytes": 1803587,
+      "sha256": "76c0e9192b7bc2327fbc1d1b0acf19553b55a6d0dbd8713a6d90e0ca53016f97",
+      "prompt": "parrot_symbol_parts_prompt.txt"
+    },
+    {
+      "file": "parrot_symbols.png",
+      "bytes": 1628422,
+      "sha256": "9f216af03966f7f163bc7b155f8ff9d605e9015e86a995846ef518c6e4cc933f",
+      "prompt": "parrot_symbols_prompt.txt"
+    },
+    {
+      "file": "parrot_tile_fg.png",
+      "bytes": 1731788,
+      "sha256": "df55849ff2186c49e5e60a70e1c249310a17c6e46d8b14d997d03249be17d7ec",
+      "prompt": "parrot_tile_fg_prompt.txt"
+    },
+    {
+      "file": "parrot_turnaround.png",
+      "bytes": 1940820,
+      "sha256": "3eb2d4234173eae45cfbdc5cfeeddf858e74c19806d634420663e1026bf1b908",
+      "prompt": "parrot_turnaround_prompt.txt"
+    },
+    {
+      "file": "parrot_ui.png",
+      "bytes": 2312172,
+      "sha256": "facc8fea4072500f0b04813f2f04e6b75fd951d6e7b0460631713aa993a28c11",
+      "prompt": "parrot_ui_prompt.txt"
+    }
+  ]
+}

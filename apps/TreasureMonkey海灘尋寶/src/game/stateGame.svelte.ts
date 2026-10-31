@@ -53,32 +53,12 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 		initialSymbols: INITIAL_BOARD[reelIndex],
 		initialSymbolState: INITIAL_SYMBOL_STATE,
 		onReelStopping: () => {
-			// Every physical reel stop gets one click, including a reel carrying a
-			// sticky Wild. Skipping those reels made free-game spins audibly produce
-			// only two, three or four stops depending on the sticky layout. The Wild's
-			// own landing pluck remains suppressed separately in onSymbolLand.
-
-			// One click for every reel, and a raised one ONLY for a reel that is
-			// teasing. The five-rung pitch ladder that used to be here (a step per
-			// reel, 0.94 → 1.14) spent the rise on every losing spin, so by the time
-			// a real tease arrived the ear had nothing left to notice. Reserving the
-			// pitch jump for the tease is what makes it mean "this reel matters".
-			//
-			// `stateGame.anticipation[reelIndex]` is the per-reel magnitude for the
-			// spin currently on the reels, already gated by gateAnticipation (0 for
-			// reels that are not teasing), and it is set at spin start — so it is
-			// still correct at the moment this reel stops, unlike reelState's own
-			// flag which is cleared as part of stopping.
-			const teasing = (stateGame.anticipation[reelIndex] ?? 0) > 0;
+			// Land on the physical stop frame, including turbo and sticky Wilds.
+			// Each reel has a distinct pitch, like the Neon landing cadence.
 			eventEmitter.broadcast({
-				type: 'soundOnce',
-				name: teasing ? 'sfx_reel_stop_tease' : 'sfx_reel_stop',
-				forcePlay: !stateBet.isTurbo,
+				type: 'soundReelLand', reelIndex,
+				teasing: (stateGame.anticipation[reelIndex] ?? 0) > 0,
 			});
-			// The housing takes the hit too — a much lighter version of the win
-			// recoil, so a symbol landing reads as weight arriving in the frame
-			// rather than a sprite appearing. Skipped in turbo, where five recoils
-			// inside half a second would just be noise.
 			if (!stateBet.isTurbo && !stateGame.stickyWildReels.includes(reelIndex)) {
 				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
 			}

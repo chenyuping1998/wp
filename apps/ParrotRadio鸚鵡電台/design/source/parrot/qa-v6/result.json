@@ -1,0 +1,10 @@
+{
+  "fixture": "baseEncoreHit",
+  "idle": true,
+  "winBook": 1200,
+  "balance": 1011,
+  "pose": "encore_call @ 50%",
+  "viewport": "1280x720",
+  "cleanLoadStarted": "2026-10-31T00:22:38.013Z",
+  "consoleErrors": []
+}

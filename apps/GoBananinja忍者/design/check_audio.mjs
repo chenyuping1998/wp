@@ -54,6 +54,12 @@ for (const line of mapBody[1].split('\n')) {
 	if (m) files.set(m[1], m[2]);
 }
 if (files.size === 0) fail('CN_SFX_FILES parsed as empty');
+for (const key of ['reel_stop_1','reel_stop_2','reel_stop_3','reel_stop_4','reel_stop_5','win_rollup_loop','win_rollup_end']) if (!files.has(key)) fail('sampled cue missing: '+key);
+for (const key of ['bgm_main','bgm_freespin']) if (!fs.existsSync(path.join(AUDIO,'ninja',key+'.mp3'))) fail('BGM missing: '+key);
+if (/sound\.players|sound\.load/.test(src)) fail('obsolete sprite player returned');
+const metadata=JSON.parse(fs.readFileSync(path.join(appRoot,'src/game/sampledAudioLoops.json'),'utf8'));
+if (!fs.readFileSync(path.join(appRoot,'src/game/sampledAudioLoops.ts'),'utf8').replace(/\r\n/g,'\n').includes(JSON.stringify(metadata,null,2))) fail('runtime MP3 trim metadata is stale');
+
 
 let missing = 0;
 for (const [name, file] of files) {

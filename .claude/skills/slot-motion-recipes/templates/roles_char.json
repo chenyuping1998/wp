@@ -1,0 +1,5 @@
+{ "body": "overall_master2", "torso": ["shirt", "shirt3", "shirt2"], "head": "head", "look": "3d",
+  "armHold": ["right_aram", "right_forehand", "plam"], "armProp": ["left_hand_part_02", "left_hand_gold_part_aa", "left_hand_plam_aa"],
+  "propTip": ["sward_part_03", "sward_part_01"], "whiskerR": ["right_mustache", "right_mustache3", "right_mustache2", "right_mustache5"],
+  "whiskerL": ["left_mustache", "left_mustache3", "left_mustache2"], "hatCloth": ["cloth_part_01", "cloth_part_4", "cloth_part_1"],
+  "mouth": "main_lips", "browL": "left_eyebrow", "browR": "right_eyebrow", "legIK": "right_leg_ik", "footIK": "target_left_leg" }

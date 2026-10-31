@@ -218,10 +218,10 @@
 	const captionStyle = $derived({
 		fontFamily: uiTheme.fontFamily,
 		fontWeight: uiTheme.fontWeight,
-		fontSize: UI_BASE_FONT_SIZE * 0.5,
-		fill: uiTheme.labelFill,
-		stroke: uiTheme.valueStroke,
-		strokeThickness: 3,
+		fontSize: UI_BASE_FONT_SIZE * (uiTheme.menuCaptionScale ?? 0.5),
+		fill: uiTheme.menuCaptionFill ?? uiTheme.labelFill,
+		stroke: uiTheme.menuCaptionStroke ?? uiTheme.valueStroke,
+		strokeThickness: uiTheme.menuCaptionStrokeWidth ?? 3,
 	});
 
 	// Menu items rise out of the strip. The first one has to clear not just the

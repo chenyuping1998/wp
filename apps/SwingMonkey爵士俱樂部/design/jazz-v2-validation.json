@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-29",
+  "scope": "Second jazz presentation pass",
+  "changes": [
+    "jazzListen: a short head-and-arm reaction to actual reel anticipation",
+    "jazzFinale: a distinct Super Win conducting flourish",
+    "Preserved the first pass's measured jazzGroove joint range",
+    "Instrument-specific ink gestures: sax pressure arcs, bass string vibration, drum-head rings, banjo string and head resonance",
+    "Final drum-flam notes fade completely before symbol removal",
+    "Baked stage-light texture replaces the live large blur; stage answers instrument attacks and reel anticipation",
+    "Winning-cell accents stagger across reels; anticipation edges breathe",
+    "Static board accents and completed symbol poses stop redrawing"
+  ],
+  "checks": {
+    "production_build": "passed",
+    "types": { "status": "baseline_passed", "existing_errors": 14, "new_errors": 0 },
+    "assets": { "status": "passed", "paths": 191 },
+    "audio": { "status": "passed", "cues": 49 },
+    "template_references": "passed",
+    "social_copy": "passed",
+    "phrase_timing": "passed: finite geometry, instrument-specific accents, complete note tails at speeds 1, 1.6 and 3.2",
+    "cast_flow": "passed: all clips on both characters; no inverted triangles",
+    "cast_pixel_audit": {
+      "status": "failed_existing_seam_threshold",
+      "new_motion_jerks": 0,
+      "master_extra_crack_pixels": { "jazzGroove": 384, "jazzListen": 408, "jazzFinale": 319 },
+      "apprentice_extra_crack_pixels": { "jazzGroove": 209, "jazzListen": 212, "jazzFinale": 296 },
+      "note": "Do not report a clean seam audit. Final Groove matches the first pass (384/209). New gestures pass triangle deformation and continuity checks but do not eliminate the skin-edge/joint warnings."
+    },
+    "built_spine_json_mib": 3.62
+  },
+  "browser": {
+    "offline_mock_only": true,
+    "scenarios": ["base game load", "forced H1 win with winning-cell accents", "forced 50x Super Win and return to rest", "Scatter trigger", "feature intro and character swap", "mobile feature layout"],
+    "capture": "E:/stake/tmp/jazz-v2-preview.jpg",
+    "viewports": ["1366x768", "390x844"],
+    "console_errors_observed": 0,
+    "limitations": "Not a device performance certification; browser/background throttling affects observed frame rates."
+  },
+  "published": false
+}

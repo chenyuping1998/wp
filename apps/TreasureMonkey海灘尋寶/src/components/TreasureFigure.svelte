@@ -23,7 +23,6 @@
  $effect(()=>{sequence;const next=cue,cast=who;untrack(()=>{cueStarted=time;performer.trigger(time,next,cast,reduced);});revision=untrack(()=>revision+1);});
  const scale=$derived(height/700);
  const leftShoulder=$derived(castTorsoPoint(parts.arm_l.x,parts.arm_l.y,pose.chest,pose.breathX,pose.breathY,pose.shoulderY));
- const rightShoulder=$derived(castTorsoPoint(parts.arm_r.x,parts.arm_r.y,pose.chest,pose.breathX,pose.breathY,pose.shoulderY));
  const neck=$derived(castTorsoPoint(parts.head.x,parts.head.y,pose.chest,pose.breathX,pose.breathY,pose.shoulderY));
  const shadow=(g:PixiGraphics)=>{g.clear();g.ellipse(247,671,107,12).fill({color:0x765334,alpha:.1});g.ellipse(247,671,86,7).fill({color:0x765334,alpha:.09});};
  onMount(()=>{
@@ -44,15 +43,19 @@
  <Sprite key={`treasure_${who}_legs`} x={legs.x} y={legs.y} width={legs.w} height={legs.h} anchor={{x:legs.ax,y:legs.ay}}/>
  <Container x={240} y={442} pivot={{x:240,y:442}} rotation={pose.body} scale={{x:1,y:1-pose.dy/420}}>
   {@const right=parts.arm_r}
-  <Sprite key={`treasure_${who}_arm_r`} x={rightShoulder.x} y={rightShoulder.y} width={right.w} height={right.h} anchor={{x:right.ax,y:right.ay}} rotation={pose.right+pose.chest}/>
+  <TreasureCastSkin assetKey={`treasure_${who}_arm_r`} part={right} kind="arm" bend={pose.right} chest={pose.chest} breathX={pose.breathX} breathY={pose.breathY} shoulderY={pose.shoulderY}/>
+  {@const left=parts.arm_l}
+  {#if who==='lifeguard'}<TreasureCastSkin assetKey={`treasure_${who}_arm_l`} part={left} kind="arm" bend={pose.left} chest={pose.chest} breathX={pose.breathX} breathY={pose.breathY} shoulderY={pose.shoulderY}/>{/if}
   {@const body=parts.body}
   <TreasureCastSkin assetKey={`treasure_${who}_body`} part={body} kind="body" bend={pose.chest} breathX={pose.breathX} breathY={pose.breathY} shoulderY={pose.shoulderY}/>
-  {@const left=parts.arm_l}
   <Container x={leftShoulder.x} y={leftShoulder.y} rotation={pose.left+pose.chest}>
    {@const tool=parts.tool}
    <!-- Grip and handle share this transform, including interruptions. -->
    <Sprite key={`treasure_${who}_tool`} x={tool.x-left.x} y={tool.y-left.y} width={tool.w} height={tool.h} anchor={{x:tool.ax,y:tool.ay}}/>
-   <Sprite key={`treasure_${who}_arm_l`} width={left.w} height={left.h} anchor={{x:left.ax,y:left.ay}}/>
+
+  </Container>
+  {#key who}<TreasureCastSkin assetKey={`treasure_${who}_arm_l`} part={left} kind="arm" foreground={who==='lifeguard'} bend={pose.left} chest={pose.chest} breathX={pose.breathX} breathY={pose.breathY} shoulderY={pose.shoulderY}/>{/key}
+  <Container x={leftShoulder.x} y={leftShoulder.y} rotation={pose.left+pose.chest}>
    {#if who==='digger'}
     <DetectorPanelLight time={previewTime??time} scanAge={cue==='scan'?(previewTime??time-cueStarted):-1} {reduced} width={left.w} height={left.h} anchorX={left.ax} anchorY={left.ay}/>
    {/if}
@@ -62,7 +65,7 @@
        eyes steady while shoulder weight arrives after the initial look. -->
   <Container x={neck.x} y={neck.y} rotation={pose.head+pose.chest*.65}>
    <Sprite key={`treasure_${who}_${pose.blink>.65?'blink':'head'}`} width={head.w} height={head.h} anchor={{x:head.ax,y:head.ay}}/>
-   {#if pose.blink<=.65}<TreasureGaze {who} dx={gaze.x} dy={gaze.y} width={head.w} height={head.h}/>{/if}
+   {#if pose.blink<=.65}<TreasureGaze {who} dx={gaze.x} dy={gaze.y} width={head.w} height={head.h} anchorX={head.ax} anchorY={head.ay}/>{/if}
   </Container>
  </Container>
  </Container>

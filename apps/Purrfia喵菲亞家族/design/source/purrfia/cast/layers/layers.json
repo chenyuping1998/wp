@@ -16,33 +16,41 @@
       510,
       1060
     ],
+    "spine_low": [
+      510,
+      1020
+    ],
+    "spine_mid": [
+      510,
+      900
+    ],
     "chest": [
       510,
       780
     ],
     "neck": [
       500,
-      650
+      740
     ],
     "head": [
       500,
-      430
+      735
     ],
     "crest": [
       465,
-      190
+      222
     ],
     "headphones": [
       500,
-      370
+      402
     ],
     "eyepatch": [
       625,
-      410
+      442
     ],
     "monocle": [
       625,
-      445
+      477
     ],
     "chain": [
       535,
@@ -58,7 +66,19 @@
     ],
     "catnip": [
       400,
-      510
+      542
+    ],
+    "collar_contact": [
+      500,
+      740
+    ],
+    "belly": [
+      510,
+      975
+    ],
+    "ribs": [
+      510,
+      810
     ],
     "upper_front": [
       340,
@@ -72,17 +92,25 @@
       420,
       1110
     ],
+    "shoulder_contact_front": [
+      340,
+      790
+    ],
     "upper_back": [
-      710,
-      785
+      745,
+      790
     ],
     "fore_back": [
       790,
-      940
+      925
     ],
     "hand_back": [
-      815,
-      1070
+      825,
+      1040
+    ],
+    "shoulder_contact_back": [
+      745,
+      790
     ],
     "tail_1": [
       730,
@@ -102,11 +130,11 @@
     ],
     "whiskers_left": [
       415,
-      490
+      522
     ],
     "whiskers_right": [
       565,
-      490
+      522
     ],
     "turntable_left": [
       310,
@@ -115,6 +143,86 @@
     "turntable_right": [
       720,
       1205
+    ],
+    "ear_left": [
+      305,
+      272
+    ],
+    "ear_right": [
+      695,
+      302
+    ],
+    "cheek_left": [
+      325,
+      587
+    ],
+    "cheek_right": [
+      680,
+      587
+    ],
+    "muzzle": [
+      500,
+      602
+    ],
+    "crest_tip": [
+      465,
+      105
+    ],
+    "chain_mid": [
+      535,
+      805
+    ],
+    "chain_end": [
+      535,
+      885
+    ],
+    "lens_chain_mid": [
+      655,
+      592
+    ],
+    "lens_chain_end": [
+      655,
+      677
+    ],
+    "foot_front": [
+      435,
+      1345
+    ],
+    "foot_back": [
+      290,
+      1310
+    ],
+    "feather_front": [
+      210,
+      1110
+    ],
+    "feather_back": [
+      870,
+      1080
+    ],
+    "knuckle_front": [
+      435,
+      1172
+    ],
+    "knuckle_back": [
+      830,
+      1125
+    ],
+    "elbow_volume_front": [
+      280,
+      990
+    ],
+    "wrist_volume_front": [
+      420,
+      1110
+    ],
+    "elbow_volume_back": [
+      790,
+      925
+    ],
+    "wrist_volume_back": [
+      825,
+      1040
     ]
   },
   "layers": {
@@ -160,7 +268,29 @@
         1070
       ],
       "slot": "arm_back",
-      "visible": true
+      "visible": true,
+      "jointRegistration": {
+        "source": [
+          [
+            745,
+            790
+          ],
+          [
+            795,
+            1010
+          ]
+        ],
+        "target": [
+          [
+            745,
+            790
+          ],
+          [
+            825,
+            1040
+          ]
+        ]
+      }
     },
     "paw_back": {
       "bone": "hand_back",
@@ -171,7 +301,29 @@
         1160
       ],
       "slot": "paw_back",
-      "visible": true
+      "visible": true,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            -28,
+            -18
+          ],
+          [
+            72,
+            -18
+          ]
+        ]
+      }
     },
     "tie": {
       "bone": "tie",
@@ -217,6 +369,17 @@
       "slot": "arm_front_fore",
       "visible": true
     },
+    "arm_front_full": {
+      "bone": "upper_front",
+      "rect": [
+        165,
+        755,
+        470,
+        1150
+      ],
+      "slot": "arm_front_full",
+      "visible": true
+    },
     "paw_front_rest": {
       "bone": "hand_front",
       "rect": [
@@ -259,7 +422,29 @@
         1150
       ],
       "slot": "stamp_held",
-      "visible": false
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            450,
+            1007
+          ],
+          [
+            367,
+            1072
+          ]
+        ],
+        "target": [
+          [
+            435,
+            1172
+          ],
+          [
+            375,
+            1240
+          ]
+        ]
+      }
     },
     "face_idle": {
       "bone": "head",
@@ -270,7 +455,29 @@
         735
       ],
       "slot": "face",
-      "visible": true
+      "visible": true,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "face_monocle": {
       "bone": "head",
@@ -281,7 +488,29 @@
         735
       ],
       "slot": "face",
-      "visible": false
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "face_smug": {
       "bone": "head",
@@ -292,7 +521,29 @@
         735
       ],
       "slot": "face",
-      "visible": false
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "face_annoyed": {
       "bone": "head",
@@ -303,7 +554,29 @@
         735
       ],
       "slot": "face",
-      "visible": false
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "face_shock": {
       "bone": "head",
@@ -314,7 +587,29 @@
         735
       ],
       "slot": "face",
-      "visible": false
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "face_stamp": {
       "bone": "head",
@@ -325,7 +620,29 @@
         735
       ],
       "slot": "face",
-      "visible": false
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "face_laugh": {
       "bone": "head",
@@ -336,7 +653,29 @@
         735
       ],
       "slot": "face",
-      "visible": false
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "face_purr": {
       "bone": "head",
@@ -347,7 +686,29 @@
         735
       ],
       "slot": "face",
-      "visible": false
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "face_blink": {
       "bone": "head",
@@ -358,7 +719,29 @@
         735
       ],
       "slot": "face",
-      "visible": false
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "face_yawn": {
       "bone": "head",
@@ -369,7 +752,29 @@
         735
       ],
       "slot": "face",
-      "visible": false
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "whiskers_left": {
       "bone": "whiskers_left",
@@ -380,7 +785,29 @@
         570
       ],
       "slot": "whiskers_left",
-      "visible": true
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "whiskers_right": {
       "bone": "whiskers_right",
@@ -391,7 +818,29 @@
         580
       ],
       "slot": "whiskers_right",
-      "visible": true
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "monocle": {
       "bone": "monocle",
@@ -402,7 +851,29 @@
         535
       ],
       "slot": "monocle",
-      "visible": true
+      "visible": true,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "monocle_chain": {
       "bone": "monocle",
@@ -413,7 +884,29 @@
         730
       ],
       "slot": "monocle_chain",
-      "visible": true
+      "visible": true,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
     },
     "catnip": {
       "bone": "catnip",
@@ -424,7 +917,848 @@
         560
       ],
       "slot": "catnip",
-      "visible": false
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "target": [
+          [
+            0,
+            32
+          ],
+          [
+            100,
+            32
+          ]
+        ]
+      }
+    },
+    "shoulder_facing_front_1": {
+      "bone": "chest",
+      "rect": [
+        310,
+        887,
+        400,
+        890
+      ],
+      "slot": "shoulder_facing_front_1",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.01123046875
+    },
+    "shoulder_facing_front_2": {
+      "bone": "chest",
+      "rect": [
+        310,
+        733,
+        313,
+        887
+      ],
+      "slot": "shoulder_facing_front_2",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.01123046875
+    },
+    "shoulder_facing_front_3": {
+      "bone": "chest",
+      "rect": [
+        397,
+        733,
+        400,
+        887
+      ],
+      "slot": "shoulder_facing_front_3",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.01123046875
+    },
+    "shoulder_facing_front_5": {
+      "bone": "chest",
+      "rect": [
+        313,
+        884,
+        397,
+        887
+      ],
+      "slot": "shoulder_facing_front_5",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.09228515625
+    },
+    "shoulder_facing_front_6": {
+      "bone": "chest",
+      "rect": [
+        313,
+        736,
+        316,
+        884
+      ],
+      "slot": "shoulder_facing_front_6",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.09228515625
+    },
+    "shoulder_facing_front_7": {
+      "bone": "chest",
+      "rect": [
+        394,
+        736,
+        397,
+        884
+      ],
+      "slot": "shoulder_facing_front_7",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.09228515625
+    },
+    "shoulder_facing_front_9": {
+      "bone": "chest",
+      "rect": [
+        316,
+        881,
+        394,
+        884
+      ],
+      "slot": "shoulder_facing_front_9",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.23193359375
+    },
+    "shoulder_facing_front_10": {
+      "bone": "chest",
+      "rect": [
+        316,
+        739,
+        319,
+        881
+      ],
+      "slot": "shoulder_facing_front_10",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.23193359375
+    },
+    "shoulder_facing_front_11": {
+      "bone": "chest",
+      "rect": [
+        391,
+        739,
+        394,
+        881
+      ],
+      "slot": "shoulder_facing_front_11",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.23193359375
+    },
+    "shoulder_facing_front_12": {
+      "bone": "chest",
+      "rect": [
+        319,
+        739,
+        391,
+        742
+      ],
+      "slot": "shoulder_facing_front_12",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.40673828125
+    },
+    "shoulder_facing_front_13": {
+      "bone": "chest",
+      "rect": [
+        319,
+        878,
+        391,
+        881
+      ],
+      "slot": "shoulder_facing_front_13",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.40673828125
+    },
+    "shoulder_facing_front_14": {
+      "bone": "chest",
+      "rect": [
+        319,
+        742,
+        322,
+        878
+      ],
+      "slot": "shoulder_facing_front_14",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.40673828125
+    },
+    "shoulder_facing_front_15": {
+      "bone": "chest",
+      "rect": [
+        388,
+        742,
+        391,
+        878
+      ],
+      "slot": "shoulder_facing_front_15",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.40673828125
+    },
+    "shoulder_facing_front_16": {
+      "bone": "chest",
+      "rect": [
+        322,
+        742,
+        388,
+        745
+      ],
+      "slot": "shoulder_facing_front_16",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.59326171875
+    },
+    "shoulder_facing_front_17": {
+      "bone": "chest",
+      "rect": [
+        322,
+        875,
+        388,
+        878
+      ],
+      "slot": "shoulder_facing_front_17",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.59326171875
+    },
+    "shoulder_facing_front_18": {
+      "bone": "chest",
+      "rect": [
+        322,
+        745,
+        325,
+        875
+      ],
+      "slot": "shoulder_facing_front_18",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.59326171875
+    },
+    "shoulder_facing_front_19": {
+      "bone": "chest",
+      "rect": [
+        385,
+        745,
+        388,
+        875
+      ],
+      "slot": "shoulder_facing_front_19",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.59326171875
+    },
+    "shoulder_facing_front_20": {
+      "bone": "chest",
+      "rect": [
+        325,
+        745,
+        385,
+        748
+      ],
+      "slot": "shoulder_facing_front_20",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.76806640625
+    },
+    "shoulder_facing_front_21": {
+      "bone": "chest",
+      "rect": [
+        325,
+        872,
+        385,
+        875
+      ],
+      "slot": "shoulder_facing_front_21",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.76806640625
+    },
+    "shoulder_facing_front_22": {
+      "bone": "chest",
+      "rect": [
+        325,
+        748,
+        328,
+        872
+      ],
+      "slot": "shoulder_facing_front_22",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.76806640625
+    },
+    "shoulder_facing_front_23": {
+      "bone": "chest",
+      "rect": [
+        382,
+        748,
+        385,
+        872
+      ],
+      "slot": "shoulder_facing_front_23",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.76806640625
+    },
+    "shoulder_facing_front_24": {
+      "bone": "chest",
+      "rect": [
+        328,
+        748,
+        382,
+        751
+      ],
+      "slot": "shoulder_facing_front_24",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.90771484375
+    },
+    "shoulder_facing_front_25": {
+      "bone": "chest",
+      "rect": [
+        328,
+        869,
+        382,
+        872
+      ],
+      "slot": "shoulder_facing_front_25",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.90771484375
+    },
+    "shoulder_facing_front_26": {
+      "bone": "chest",
+      "rect": [
+        328,
+        751,
+        331,
+        869
+      ],
+      "slot": "shoulder_facing_front_26",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.90771484375
+    },
+    "shoulder_facing_front_27": {
+      "bone": "chest",
+      "rect": [
+        379,
+        751,
+        382,
+        869
+      ],
+      "slot": "shoulder_facing_front_27",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.90771484375
+    },
+    "shoulder_facing_front_28": {
+      "bone": "chest",
+      "rect": [
+        331,
+        751,
+        379,
+        754
+      ],
+      "slot": "shoulder_facing_front_28",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.98876953125
+    },
+    "shoulder_facing_front_29": {
+      "bone": "chest",
+      "rect": [
+        331,
+        866,
+        379,
+        869
+      ],
+      "slot": "shoulder_facing_front_29",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.98876953125
+    },
+    "shoulder_facing_front_30": {
+      "bone": "chest",
+      "rect": [
+        331,
+        754,
+        334,
+        866
+      ],
+      "slot": "shoulder_facing_front_30",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.98876953125
+    },
+    "shoulder_facing_front_31": {
+      "bone": "chest",
+      "rect": [
+        376,
+        754,
+        379,
+        866
+      ],
+      "slot": "shoulder_facing_front_31",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.98876953125
+    },
+    "shoulder_facing_front_32": {
+      "bone": "chest",
+      "rect": [
+        334,
+        754,
+        376,
+        866
+      ],
+      "slot": "shoulder_facing_front_32",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 1
+    },
+    "shoulder_facing_back_0": {
+      "bone": "chest",
+      "rect": [
+        650,
+        730,
+        745,
+        733
+      ],
+      "slot": "shoulder_facing_back_0",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.01123046875
+    },
+    "shoulder_facing_back_1": {
+      "bone": "chest",
+      "rect": [
+        650,
+        887,
+        745,
+        890
+      ],
+      "slot": "shoulder_facing_back_1",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.01123046875
+    },
+    "shoulder_facing_back_2": {
+      "bone": "chest",
+      "rect": [
+        650,
+        733,
+        653,
+        887
+      ],
+      "slot": "shoulder_facing_back_2",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.01123046875
+    },
+    "shoulder_facing_back_3": {
+      "bone": "chest",
+      "rect": [
+        742,
+        733,
+        745,
+        887
+      ],
+      "slot": "shoulder_facing_back_3",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.01123046875
+    },
+    "shoulder_facing_back_4": {
+      "bone": "chest",
+      "rect": [
+        653,
+        733,
+        742,
+        736
+      ],
+      "slot": "shoulder_facing_back_4",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.09228515625
+    },
+    "shoulder_facing_back_5": {
+      "bone": "chest",
+      "rect": [
+        653,
+        884,
+        742,
+        887
+      ],
+      "slot": "shoulder_facing_back_5",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.09228515625
+    },
+    "shoulder_facing_back_6": {
+      "bone": "chest",
+      "rect": [
+        653,
+        736,
+        656,
+        884
+      ],
+      "slot": "shoulder_facing_back_6",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.09228515625
+    },
+    "shoulder_facing_back_7": {
+      "bone": "chest",
+      "rect": [
+        739,
+        736,
+        742,
+        884
+      ],
+      "slot": "shoulder_facing_back_7",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.09228515625
+    },
+    "shoulder_facing_back_8": {
+      "bone": "chest",
+      "rect": [
+        656,
+        736,
+        739,
+        739
+      ],
+      "slot": "shoulder_facing_back_8",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.23193359375
+    },
+    "shoulder_facing_back_9": {
+      "bone": "chest",
+      "rect": [
+        656,
+        881,
+        739,
+        884
+      ],
+      "slot": "shoulder_facing_back_9",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.23193359375
+    },
+    "shoulder_facing_back_10": {
+      "bone": "chest",
+      "rect": [
+        656,
+        739,
+        659,
+        881
+      ],
+      "slot": "shoulder_facing_back_10",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.23193359375
+    },
+    "shoulder_facing_back_11": {
+      "bone": "chest",
+      "rect": [
+        736,
+        739,
+        739,
+        881
+      ],
+      "slot": "shoulder_facing_back_11",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.23193359375
+    },
+    "shoulder_facing_back_12": {
+      "bone": "chest",
+      "rect": [
+        659,
+        739,
+        736,
+        742
+      ],
+      "slot": "shoulder_facing_back_12",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.40673828125
+    },
+    "shoulder_facing_back_13": {
+      "bone": "chest",
+      "rect": [
+        659,
+        878,
+        736,
+        881
+      ],
+      "slot": "shoulder_facing_back_13",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.40673828125
+    },
+    "shoulder_facing_back_14": {
+      "bone": "chest",
+      "rect": [
+        659,
+        742,
+        662,
+        878
+      ],
+      "slot": "shoulder_facing_back_14",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.40673828125
+    },
+    "shoulder_facing_back_15": {
+      "bone": "chest",
+      "rect": [
+        733,
+        742,
+        736,
+        878
+      ],
+      "slot": "shoulder_facing_back_15",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.40673828125
+    },
+    "shoulder_facing_back_16": {
+      "bone": "chest",
+      "rect": [
+        662,
+        742,
+        733,
+        745
+      ],
+      "slot": "shoulder_facing_back_16",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.59326171875
+    },
+    "shoulder_facing_back_17": {
+      "bone": "chest",
+      "rect": [
+        662,
+        875,
+        733,
+        878
+      ],
+      "slot": "shoulder_facing_back_17",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.59326171875
+    },
+    "shoulder_facing_back_18": {
+      "bone": "chest",
+      "rect": [
+        662,
+        745,
+        665,
+        875
+      ],
+      "slot": "shoulder_facing_back_18",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.59326171875
+    },
+    "shoulder_facing_back_19": {
+      "bone": "chest",
+      "rect": [
+        730,
+        745,
+        733,
+        875
+      ],
+      "slot": "shoulder_facing_back_19",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.59326171875
+    },
+    "shoulder_facing_back_20": {
+      "bone": "chest",
+      "rect": [
+        665,
+        745,
+        730,
+        748
+      ],
+      "slot": "shoulder_facing_back_20",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.76806640625
+    },
+    "shoulder_facing_back_21": {
+      "bone": "chest",
+      "rect": [
+        665,
+        872,
+        730,
+        875
+      ],
+      "slot": "shoulder_facing_back_21",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.76806640625
+    },
+    "shoulder_facing_back_22": {
+      "bone": "chest",
+      "rect": [
+        665,
+        748,
+        668,
+        872
+      ],
+      "slot": "shoulder_facing_back_22",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.76806640625
+    },
+    "shoulder_facing_back_23": {
+      "bone": "chest",
+      "rect": [
+        727,
+        748,
+        730,
+        872
+      ],
+      "slot": "shoulder_facing_back_23",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.76806640625
+    },
+    "shoulder_facing_back_24": {
+      "bone": "chest",
+      "rect": [
+        668,
+        748,
+        727,
+        751
+      ],
+      "slot": "shoulder_facing_back_24",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.90771484375
+    },
+    "shoulder_facing_back_25": {
+      "bone": "chest",
+      "rect": [
+        668,
+        869,
+        727,
+        872
+      ],
+      "slot": "shoulder_facing_back_25",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.90771484375
+    },
+    "shoulder_facing_back_26": {
+      "bone": "chest",
+      "rect": [
+        668,
+        751,
+        671,
+        869
+      ],
+      "slot": "shoulder_facing_back_26",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.90771484375
+    },
+    "shoulder_facing_back_27": {
+      "bone": "chest",
+      "rect": [
+        724,
+        751,
+        727,
+        869
+      ],
+      "slot": "shoulder_facing_back_27",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.90771484375
+    },
+    "shoulder_facing_back_28": {
+      "bone": "chest",
+      "rect": [
+        671,
+        751,
+        724,
+        754
+      ],
+      "slot": "shoulder_facing_back_28",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.98876953125
+    },
+    "shoulder_facing_back_29": {
+      "bone": "chest",
+      "rect": [
+        671,
+        866,
+        724,
+        869
+      ],
+      "slot": "shoulder_facing_back_29",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.98876953125
+    },
+    "shoulder_facing_back_30": {
+      "bone": "chest",
+      "rect": [
+        671,
+        754,
+        674,
+        866
+      ],
+      "slot": "shoulder_facing_back_30",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.98876953125
+    },
+    "shoulder_facing_back_31": {
+      "bone": "chest",
+      "rect": [
+        721,
+        754,
+        724,
+        866
+      ],
+      "slot": "shoulder_facing_back_31",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 0.98876953125
+    },
+    "shoulder_facing_back_32": {
+      "bone": "chest",
+      "rect": [
+        674,
+        754,
+        721,
+        866
+      ],
+      "slot": "shoulder_facing_back_32",
+      "visible": true,
+      "weightSource": "body",
+      "opacity": 1
     }
   },
   "order": [
@@ -432,18 +1766,80 @@
     "tail",
     "body",
     "arm_back",
+    "shoulder_facing_back_0",
+    "shoulder_facing_back_1",
+    "shoulder_facing_back_2",
+    "shoulder_facing_back_3",
+    "shoulder_facing_back_4",
+    "shoulder_facing_back_5",
+    "shoulder_facing_back_6",
+    "shoulder_facing_back_7",
+    "shoulder_facing_back_8",
+    "shoulder_facing_back_9",
+    "shoulder_facing_back_10",
+    "shoulder_facing_back_11",
+    "shoulder_facing_back_12",
+    "shoulder_facing_back_13",
+    "shoulder_facing_back_14",
+    "shoulder_facing_back_15",
+    "shoulder_facing_back_16",
+    "shoulder_facing_back_17",
+    "shoulder_facing_back_18",
+    "shoulder_facing_back_19",
+    "shoulder_facing_back_20",
+    "shoulder_facing_back_21",
+    "shoulder_facing_back_22",
+    "shoulder_facing_back_23",
+    "shoulder_facing_back_24",
+    "shoulder_facing_back_25",
+    "shoulder_facing_back_26",
+    "shoulder_facing_back_27",
+    "shoulder_facing_back_28",
+    "shoulder_facing_back_29",
+    "shoulder_facing_back_30",
+    "shoulder_facing_back_31",
+    "shoulder_facing_back_32",
     "paw_back",
     "tie",
     "rose",
-    "arm_front_upper",
-    "arm_front_fore",
-    "paw_front_rest",
-    "stamp_held",
+    "arm_front_full",
+    "shoulder_facing_front_1",
+    "shoulder_facing_front_2",
+    "shoulder_facing_front_3",
+    "shoulder_facing_front_5",
+    "shoulder_facing_front_6",
+    "shoulder_facing_front_7",
+    "shoulder_facing_front_9",
+    "shoulder_facing_front_10",
+    "shoulder_facing_front_11",
+    "shoulder_facing_front_12",
+    "shoulder_facing_front_13",
+    "shoulder_facing_front_14",
+    "shoulder_facing_front_15",
+    "shoulder_facing_front_16",
+    "shoulder_facing_front_17",
+    "shoulder_facing_front_18",
+    "shoulder_facing_front_19",
+    "shoulder_facing_front_20",
+    "shoulder_facing_front_21",
+    "shoulder_facing_front_22",
+    "shoulder_facing_front_23",
+    "shoulder_facing_front_24",
+    "shoulder_facing_front_25",
+    "shoulder_facing_front_26",
+    "shoulder_facing_front_27",
+    "shoulder_facing_front_28",
+    "shoulder_facing_front_29",
+    "shoulder_facing_front_30",
+    "shoulder_facing_front_31",
+    "shoulder_facing_front_32",
     "face_idle",
     "whiskers_left",
     "whiskers_right",
     "monocle_chain",
     "monocle",
+    "stamp_held",
+    "paw_front_rest",
     "catnip"
   ]
 }

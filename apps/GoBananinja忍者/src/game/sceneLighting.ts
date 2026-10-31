@@ -26,7 +26,9 @@ const makeLift = (gain: number, red: number, green: number, blue: number) => {
 	return filter;
 };
 
-export const makeBackgroundLighting = () => makeLift(1.03, 0.055, 0.06, 0.075);
+// 2026-10-31 (user: 忍者的背景調亮一點): brighter by GAIN (1.03 → 1.28), so the whole night scales up together and
+// the painted darks stay dark relative to it; the offsets stay small (a flat offset is what greys a picture over).
+export const makeBackgroundLighting = () => makeLift(1.28, 0.04, 0.045, 0.06);
 
 // The symbols' lift used to add ~0.08 to every channel, which put the darkest
 // ink at ~20/255: a grey film over the whole board that read as soft focus.

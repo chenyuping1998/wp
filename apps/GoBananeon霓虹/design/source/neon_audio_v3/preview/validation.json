@@ -1,0 +1,212 @@
+{
+  "files": {
+    "bgm_freespin.mp3": {
+      "lufs": -20.27090719042806,
+      "true_peak_db": -4.887723445892334,
+      "seam_delta": 0.0017817479092627764,
+      "correlation_48k": 0.9991741652600288
+    },
+    "bgm_main.mp3": {
+      "lufs": -20.267050421821487,
+      "true_peak_db": -4.259014129638672,
+      "seam_delta": 0.0017837992636486888,
+      "correlation_48k": 0.9994928595231822
+    },
+    "bigwin_blast.wav": {
+      "true_peak_db": -2.5002467444407133,
+      "tail_50ms_db": -240.0
+    },
+    "btn.wav": {
+      "true_peak_db": -10.000469259573862,
+      "tail_50ms_db": -240.0
+    },
+    "cave_quake.wav": {
+      "true_peak_db": -7.000366096321975,
+      "tail_50ms_db": -240.0
+    },
+    "coin_shimmer.wav": {
+      "true_peak_db": -8.999348763077052,
+      "tail_50ms_db": -240.0
+    },
+    "dj_scratch.wav": {
+      "true_peak_db": -12.999055255686711,
+      "tail_50ms_db": -240.0
+    },
+    "dynamite_blast.wav": {
+      "true_peak_db": -4.000177630519044,
+      "tail_50ms_db": -240.0
+    },
+    "dynamite_blast_big.wav": {
+      "true_peak_db": -2.500209975296332,
+      "tail_50ms_db": -240.0
+    },
+    "fs_intro.wav": {
+      "true_peak_db": -3.1598448473504397,
+      "tail_50ms_db": -240.0
+    },
+    "fullboard_chain.wav": {
+      "true_peak_db": -4.999814654773102,
+      "tail_50ms_db": -240.0
+    },
+    "fullboard_stamp.wav": {
+      "true_peak_db": -2.5001848039674357,
+      "tail_50ms_db": -240.0
+    },
+    "fuse_sizzle.wav": {
+      "true_peak_db": -7.99946953906821,
+      "tail_50ms_db": -240.0
+    },
+    "gong_feature.wav": {
+      "true_peak_db": -2.5002467444407133,
+      "tail_50ms_db": -240.0
+    },
+    "grenade_blast.wav": {
+      "true_peak_db": -4.000208540811186,
+      "tail_50ms_db": -240.0
+    },
+    "ladder_up.wav": {
+      "true_peak_db": -6.000288484504148,
+      "tail_50ms_db": -240.0
+    },
+    "mult_update.wav": {
+      "true_peak_db": -6.000288484504148,
+      "tail_50ms_db": -240.0
+    },
+    "pluck_low.wav": {
+      "true_peak_db": -6.4996397126572525,
+      "tail_50ms_db": -240.0
+    },
+    "press_blast.wav": {
+      "true_peak_db": -4.000316245103852,
+      "tail_50ms_db": -240.0
+    },
+    "reel_stop_1.wav": {
+      "true_peak_db": -7.599546074607495,
+      "tail_50ms_db": -240.0
+    },
+    "reel_stop_2.wav": {
+      "true_peak_db": -7.199788130283135,
+      "tail_50ms_db": -240.0
+    },
+    "reel_stop_3.wav": {
+      "true_peak_db": -6.800138794039519,
+      "tail_50ms_db": -240.0
+    },
+    "reel_stop_4.wav": {
+      "true_peak_db": -6.400353354426965,
+      "tail_50ms_db": -240.0
+    },
+    "reel_stop_5.wav": {
+      "true_peak_db": -5.9996211154557155,
+      "tail_50ms_db": -240.0
+    },
+    "reel_tension.wav": {
+      "true_peak_db": -8.000584288301159,
+      "tail_50ms_db": -240.0
+    },
+    "scatter_1.wav": {
+      "true_peak_db": -4.599889575808927,
+      "tail_50ms_db": -240.0
+    },
+    "scatter_2.wav": {
+      "true_peak_db": -4.199987558801891,
+      "tail_50ms_db": -240.0
+    },
+    "scatter_3.wav": {
+      "true_peak_db": -3.7998616667252842,
+      "tail_50ms_db": -240.0
+    },
+    "scatter_4.wav": {
+      "true_peak_db": -3.3999416324060636,
+      "tail_50ms_db": -240.0
+    },
+    "scatter_5.wav": {
+      "true_peak_db": -2.9997039616213024,
+      "tail_50ms_db": -240.0
+    },
+    "smoke_puff.wav": {
+      "true_peak_db": -11.999697220700165,
+      "tail_50ms_db": -240.0
+    },
+    "spin.wav": {
+      "true_peak_db": -5.500477057913926,
+      "tail_50ms_db": -240.0
+    },
+    "symbol_land.wav": {
+      "true_peak_db": -7.499597752590663,
+      "tail_50ms_db": -240.0
+    },
+    "symbol_reveal.wav": {
+      "true_peak_db": -6.000288484504148,
+      "tail_50ms_db": -240.0
+    },
+    "symbol_shatter.wav": {
+      "true_peak_db": -9.000542380826538,
+      "tail_50ms_db": -240.0
+    },
+    "voice_effort.wav": {
+      "true_peak_db": -1.967829319647161,
+      "tail_50ms_db": -240.0
+    },
+    "voice_roar.wav": {
+      "true_peak_db": -1.8804956776805648,
+      "tail_50ms_db": -240.0
+    },
+    "wild_expand.wav": {
+      "true_peak_db": -3.439898645932055,
+      "tail_50ms_db": -240.0
+    },
+    "win_big.wav": {
+      "true_peak_db": -3.7203971083068623,
+      "tail_50ms_db": -240.0
+    },
+    "win_cap.wav": {
+      "true_peak_db": -2.319637622397518,
+      "tail_50ms_db": -240.0
+    },
+    "win_epic.wav": {
+      "true_peak_db": -2.879912984452689,
+      "tail_50ms_db": -240.0
+    },
+    "win_gliss.wav": {
+      "true_peak_db": -6.000288484504148,
+      "tail_50ms_db": -240.0
+    },
+    "win_gliss_big.wav": {
+      "true_peak_db": -3.7203542177416224,
+      "tail_50ms_db": -240.0
+    },
+    "win_max.wav": {
+      "true_peak_db": -2.5997102743299987,
+      "tail_50ms_db": -240.0
+    },
+    "win_mega.wav": {
+      "true_peak_db": -3.1598448473504397,
+      "tail_50ms_db": -240.0
+    },
+    "win_panel.wav": {
+      "true_peak_db": -3.7196561662457226,
+      "tail_50ms_db": -240.0
+    },
+    "win_rollup_end.wav": {
+      "true_peak_db": -4.000391599788706,
+      "tail_50ms_db": -240.0
+    },
+    "win_rollup_loop.wav": {
+      "true_peak_db": -12.999171127665054,
+      "tail_50ms_db": -240.0
+    },
+    "win_super.wav": {
+      "true_peak_db": -3.439925155662085,
+      "tail_50ms_db": -240.0
+    }
+  },
+  "bytes": 9764659,
+  "files_count": 50,
+  "approved_unchanged": [
+    "monkey_expand.mp3",
+    "voice_effort.wav",
+    "voice_roar.wav"
+  ],
+  "provenance_rows": 159
+}

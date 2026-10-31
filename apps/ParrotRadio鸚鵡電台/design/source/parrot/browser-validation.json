@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-31",
+  "revision": "motion-flow-v6",
+  "environment": "Existing game, local mock wallet and unchanged published fixtures; no live RGS.",
+  "rigSha256": "e54448b6684623cc7ffd2881f34073fff095b9509e5306254180110f6e4667f8",
+  "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+  "motion": {
+    "continuousPlayerReview": "cast/motion-review/motion.gif",
+    "allActions": "cast/motion-review/all-actions.png",
+    "anatomy": "cast/anatomy-validation.json",
+    "continuity": "cast/motion-flow-validation.json"
+  },
+  "screenshots": {
+    "parrot-desktop.png": "903825d6db638fc05f676cfeb78f2533b2e456f9a0037de25509fe5f6efa37e4",
+    "parrot-encore.png": "f5ecdf8314a578cc91ff872f5fd86ebfb408509f5e095c06b184c946d71969a9"
+  },
+  "currentBrowserResult": {
+    "fixture": "baseEncoreHit",
+    "idle": true,
+    "winBook": 1200,
+    "balance": 1011,
+    "pose": "encore_call @ 50%",
+    "viewport": "1280x720",
+    "cleanLoadStarted": "2026-10-31T00:22:38.013Z",
+    "consoleErrors": []
+  },
+  "previousUiBackgroundPrizeEvidence": "cast/motion_v5_before/browser-validation.json"
+}

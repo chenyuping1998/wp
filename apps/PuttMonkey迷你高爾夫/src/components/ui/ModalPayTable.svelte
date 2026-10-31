@@ -6,6 +6,7 @@
 	import config from '../../game/config';
 	import assets from '../../game/assets';
 	import { getSocialTerms } from '../../game/socialTerms';
+	import CourseGuide from './CourseGuide.svelte';
 
 	// Social play forbids betting terminology, and this panel is titled with it.
 	// Shared with the game rules page so the two cannot describe the same rule in
@@ -106,6 +107,7 @@
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-paytable">
 			<h2>{T.payTableUpper}</h2>
+			<CourseGuide waysLabel={T.ways} />
 			<p class="wp-note">
 				{T.paysStart} shown as a multiple of {T.totalBet}, per winning way. Wins
 				{T.winsDirection} on adjacent reels, in any position &mdash; there are no fixed lines.

@@ -1,5 +1,5 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
-import { setUiTheme } from 'components-ui-pixi';
+import { setUiTheme, uiTheme } from 'components-ui-pixi';
 import { stateConfig } from 'state-shared';
 
 // Boat's flat, familiar control layout in ninja lacquer, crimson and brass.
@@ -182,3 +182,15 @@ setUiTheme({
 // <ModalMessage /> in ui/Modals.svelte — without that the press would raise a
 // modal this app does not render.
 stateConfig.explainInsufficientBalance = true;
+
+// Original lacquer / copper-and-glass casing. Geometry and control behaviour
+// remain in the familiar compact bar; sliced caps retain their proportions.
+setUiTheme({
+ barStyle: 'flat', barSpriteSlice: 72,
+ labelFill: 0xd9bd86, balanceLabelFill: 0xd9bd86,
+ panelBorder: 0xb4945e, valueFill: 0xfff3d7,
+ buttonIconFill: 0xfff8e9, buttonIconStroke: 0x06161d,
+ labelFontWeight: '600', valuePop: .12, hoverHighlight: true, pressFeedback: true,
+ spinButtonGlow: false,
+ sprites: { ...uiTheme.sprites, bar: 'gbFeatureBar', button: 'gbFeatureButton', buttonActive: 'gbFeatureButtonActive', bet: 'gbFeatureSpin', base_ticker: 'gbFeatureTicker' },
+});

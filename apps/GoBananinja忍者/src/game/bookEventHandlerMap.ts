@@ -85,6 +85,7 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 	if (winLevelData?.type === 'big') {
 		// Blast accent as the big/super/mega/epic win presentation slams in
 		eventEmitter.broadcast({ type: 'soundBigWinBlast' });
+		eventEmitter.broadcast({ type: 'soundWinTier', tier: winLevelData.alias });
 		eventEmitter.broadcast({ type: 'soundLoop', name: 'sfx_bigwin_coinloop' });
 	}
 };

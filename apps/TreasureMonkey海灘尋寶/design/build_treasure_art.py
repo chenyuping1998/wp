@@ -42,13 +42,13 @@ bg=Image.open(SRC/'background.png').convert('RGB');bg.resize((1920,1080),Image.R
 # Foreground will be animated separately; no baked pan across the whole beach.
 parts=['head','body','arm_l','arm_r','legs','tail','tool','belt']
 layout={
- 'head':{'x':236,'y':260,'w':245,'h':240,'ax':.5,'ay':1},
+ 'head':{'x':236,'y':240,'w':245,'h':240,'ax':.5,'ay':.86},
  'body':{'x':240,'y':229,'w':227,'h':218,'ax':.5,'ay':0},
- 'legs':{'x':240,'y':438,'w':236,'h':235,'ax':.5,'ay':0},
+ 'legs':{'x':240,'y':414,'w':236,'h':259,'ax':.5,'ay':0},
  'tail':{'x':315,'y':465,'w':155,'h':155,'ax':.13,'ay':.75},
- 'arm_r':{'x':330,'y':268,'w':142,'h':186,'ax':.22,'ay':.05},
- 'arm_l':{'x':151,'y':265,'w':180,'h':192,'ax':.54,'ay':.08},
- 'tool':{'x':168,'y':423,'w':180,'h':245,'ax':.76,'ay':0},
+ 'arm_r':{'x':314,'y':268,'w':142,'h':186,'ax':.22,'ay':.05},
+ 'arm_l':{'x':166,'y':267,'w':180,'h':192,'ax':.54,'ay':.08},
+ 'tool':{'x':183,'y':425,'w':180,'h':245,'ax':.76,'ay':0},
  'belt':{'x':254,'y':444,'w':117,'h':72,'ax':.5,'ay':.5},
 }
 manifest={}
@@ -64,15 +64,13 @@ for who in ['digger','lifeguard']:
   # The jacket already carries the belt. Avoid displaying the lower body's duplicate.
   if name=='legs':tile=trim(tile.crop((0,round(tile.height*.10),tile.width,tile.height)))
   tile.save(OUT/f'{who}_{name}.png'); manifest[who][name]={**layout[name],'path':f'treasure/{who}_{name}.png'}
-  if who=='lifeguard' and name=='arm_l': manifest[who][name].update(x=145,y=280,ax=.23,ay=.23)
-  if who=='lifeguard' and name=='arm_r': manifest[who][name].update(x=330,y=275,ax=.15,ay=.4)
-  if who=='lifeguard' and name=='tool': manifest[who][name].update(x=188,y=400,w=180,h=280,ax=.76,ay=0)
+  if who=='lifeguard' and name=='body': manifest[who][name]['trimSleeves']=True
+  if who=='lifeguard' and name=='arm_l': manifest[who][name].update(x=190,y=280,ax=.23,ay=.23)
+  if who=='lifeguard' and name=='arm_r': manifest[who][name].update(x=290,y=275,ax=.15,ay=.4)
+  if who=='lifeguard' and name=='tool': manifest[who][name].update(x=233,y=400,w=180,h=280,ax=.76,ay=0)
  # Flatten exactly the same exported rig at rest for boot screens, never derive parts from this composite.
- full=Image.new('RGBA',(480,720))
- for name in ['tail','legs','arm_r','body','tool','arm_l','head']:
-  p=manifest[who][name];tile=Image.open(OUT/f'{who}_{name}.png').resize((p['w'],p['h']),Image.Resampling.LANCZOS)
-  full.alpha_composite(tile,(round(p['x']-p['w']*p['ax']),round(p['y']-p['h']*p['ay'])))
- full.save(OUT/f'{who}_full.png')
+ from export_treasure_cast import export_cast
+ export_cast(who,manifest[who])
 (OUT/'cast.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
 (ROOT/'src/game/treasureCastRig.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
 

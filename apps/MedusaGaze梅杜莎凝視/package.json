@@ -16,11 +16,15 @@
 		"check:literals": "node design/check_string_literals.mjs",
 		"check:social": "node design/check_social_words.mjs",
 		"art:placeholders": "E:/stake/math-sdk/env/Scripts/python.exe design/generate_placeholders.py",
-		"build": "node design/sync_math_config.mjs && node design/sync_audio_manifest.mjs && node design/check_undefined_refs.mjs && node design/check_string_literals.mjs && node design/check_social_words.mjs && node design/check_assets.mjs && node design/check_motion.mjs && node design/check_background.mjs && node design/check_presentation.mjs && node design/check_medusa43.mjs && node design/check_multiplier_performance.mjs && node design/check_audio.mjs && vite build",
+		"build": "node design/sync_math_config.mjs && node design/sync_audio_manifest.mjs && node design/check_undefined_refs.mjs && node design/check_string_literals.mjs && node design/check_social_words.mjs && node design/check_assets.mjs && node design/check_motion.mjs && node design/check_pp_motion.mjs && node design/check_background.mjs && node design/check_presentation.mjs && node design/check_medusa43.mjs && node design/check_fluency.mjs && node design/check_hand_anticipation.mjs && node design/check_character_sound.mjs && node design/check_snake_presence.mjs && node design/check_multiplier_performance.mjs && node design/check_audio.mjs && vite build",
 		"preview": "vite preview",
 		"check:background": "node design/check_background.mjs",
 		"check:cast": "node design/check_medusa43.mjs",
-		"check:multiplier": "node design/check_multiplier_performance.mjs"
+		"check:multiplier": "node design/check_multiplier_performance.mjs",
+		"check:fluency": "node design/check_fluency.mjs",
+		"check:snakes": "node design/check_snake_presence.mjs",
+		"check:hand": "node design/check_hand_anticipation.mjs",
+		"check:pp-motion": "node design/check_pp_motion.mjs"
 	},
 	"type": "module",
 	"devDependencies": {

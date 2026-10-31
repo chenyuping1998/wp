@@ -1,0 +1,184 @@
+{
+  "bgm_main": {
+    "lufs": -20.264441138385138,
+    "truePeakDbTP": -6.050759145957141,
+    "loopCorrelation": 0.9999974229900476
+  },
+  "bgm_freespin": {
+    "lufs": -20.267038216678245,
+    "truePeakDbTP": -7.022006398339564,
+    "loopCorrelation": 0.9998441591866013
+  },
+  "btn": {
+    "truePeakDbTP": -11.0,
+    "tail50msDbFS": -240.0
+  },
+  "spin": {
+    "truePeakDbTP": -5.999999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_1": {
+    "truePeakDbTP": -7.699999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_2": {
+    "truePeakDbTP": -7.399999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_3": {
+    "truePeakDbTP": -7.099999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_4": {
+    "truePeakDbTP": -6.799999999999997,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_5": {
+    "truePeakDbTP": -6.5,
+    "tail50msDbFS": -240.0
+  },
+  "reel_tension": {
+    "truePeakDbTP": -12.0,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_1": {
+    "truePeakDbTP": -4.699999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_2": {
+    "truePeakDbTP": -4.3999999999999995,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_3": {
+    "truePeakDbTP": -4.099999999999995,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_4": {
+    "truePeakDbTP": -3.800000000000001,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_5": {
+    "truePeakDbTP": -3.499999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "pluck_low": {
+    "truePeakDbTP": -6.999999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "win_gliss": {
+    "truePeakDbTP": -4.9999999999999964,
+    "tail50msDbFS": -240.0
+  },
+  "win_gliss_big": {
+    "truePeakDbTP": -4.000000000000003,
+    "tail50msDbFS": -240.0
+  },
+  "fs_intro": {
+    "truePeakDbTP": -3.199999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "mult_update": {
+    "truePeakDbTP": -4.9999999999999964,
+    "tail50msDbFS": -240.0
+  },
+  "wild_expand": {
+    "truePeakDbTP": -3.199999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "win_panel": {
+    "truePeakDbTP": -4.000000000000003,
+    "tail50msDbFS": -240.0
+  },
+  "win_cap": {
+    "truePeakDbTP": -4.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "win_big": {
+    "truePeakDbTP": -4.0,
+    "tail50msDbFS": -240.0
+  },
+  "win_super": {
+    "truePeakDbTP": -4.0,
+    "tail50msDbFS": -240.0
+  },
+  "win_mega": {
+    "truePeakDbTP": -4.0,
+    "tail50msDbFS": -240.0
+  },
+  "win_epic": {
+    "truePeakDbTP": -4.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "win_max": {
+    "truePeakDbTP": -4.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "gong_feature": {
+    "truePeakDbTP": -2.799999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "bigwin_blast": {
+    "truePeakDbTP": -3.199999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "grenade_blast": {
+    "truePeakDbTP": -3.199999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "press_blast": {
+    "truePeakDbTP": -3.7000000000000033,
+    "tail50msDbFS": -240.0
+  },
+  "dynamite_blast": {
+    "truePeakDbTP": -3.199999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "dynamite_blast_big": {
+    "truePeakDbTP": -2.799999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "fullboard_stamp": {
+    "truePeakDbTP": -2.799999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "fuse_sizzle": {
+    "truePeakDbTP": -7.999999999999997,
+    "tail50msDbFS": -240.0
+  },
+  "symbol_shatter": {
+    "truePeakDbTP": -10.0,
+    "tail50msDbFS": -240.0
+  },
+  "smoke_puff": {
+    "truePeakDbTP": -12.0,
+    "tail50msDbFS": -240.0
+  },
+  "symbol_reveal": {
+    "truePeakDbTP": -3.1999999999999993,
+    "tail50msDbFS": -240.0
+  },
+  "ladder_up": {
+    "truePeakDbTP": -3.199999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "cave_quake": {
+    "truePeakDbTP": -9.999999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "fullboard_chain": {
+    "truePeakDbTP": -3.2000000000000006,
+    "tail50msDbFS": -240.0
+  },
+  "coin_shimmer": {
+    "truePeakDbTP": -9.999999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "win_rollup_loop": {
+    "truePeakDbTP": -14.999999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "win_rollup_end": {
+    "truePeakDbTP": -5.0000000000000036,
+    "tail50msDbFS": -240.0
+  }
+}

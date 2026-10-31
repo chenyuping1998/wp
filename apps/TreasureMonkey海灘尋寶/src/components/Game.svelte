@@ -1,7 +1,6 @@
 <script lang="ts">
 	import '../game/gpuAddBlend';
 	import { GAME_FONT, TITLE_FONT, TITLE_FONT_WEIGHT, GAME_FONT_WEIGHT } from '../game/fonts';
-	import { onMount } from 'svelte';
 
 	import { BlurFilter } from 'pixi.js';
 	import { EnablePixiExtension } from 'components-pixi';
@@ -24,11 +23,9 @@
 	import Sound from './Sound.svelte';
 	import Background from './BeachBackground.svelte';
 	import Cast from './TreasureCast.svelte';
-	import LoadingScreen from './LoadingScreen.svelte';
 	import BoardFrame from './TreasureBoardFrame.svelte';
 	import Board from './Board.svelte';
 	import ReelDust from './TreasureReelDust.svelte';
-	import EntryReveal from './EntryReveal.svelte';
 	import ScatterBurst from './ScatterBurst.svelte';
 	import NeonFrames from './NeonFrames.svelte';
 	import WildColumns from './TreasureWildColumns.svelte';
@@ -45,7 +42,6 @@
 	// soft depth-of-field on the jungle scene so the reels read as the subject
 	const backgroundBlur = [new BlurFilter({ strength: 0, quality: 1, resolution: 'inherit' })];
 
-	onMount(() => (context.stateLayout.showLoadingScreen = true));
 
 	context.eventEmitter.subscribeOnMount({
 		buyBonusConfirm: () => {
@@ -71,16 +67,12 @@
 		alpha={0.9}
 	/>
 
-	{#if context.stateLayout.showLoadingScreen}
-		<LoadingScreen onloaded={() => (context.stateLayout.showLoadingScreen = false)} />
-	{:else}
-		<ResumeBet />
-		<!--
-			The reason why <Sound /> is rendered after clicking the loading screen:
-			"Autoplay with sound is allowed if: The user has interacted with the domain (click, tap, etc.)."
-			Ref: https://developer.chrome.com/blog/autoplay
-		-->
-		<Sound />
+	{#if context.stateApp.loaded}
+		<!-- Warm the board beneath the opening card; begin play/audio on its tap. -->
+		{#if !context.stateLayout.showLoadingScreen && !stateReplay.waiting}
+			<ResumeBet />
+			<Sound />
+		{/if}
 
 		<!-- Someone standing at the right edge; behind the board's housing so the
 		     reels always win any overlap. See Cast.svelte. -->
@@ -100,7 +92,7 @@
 			<WinLines />
 		</MainContainer>
 
-		<EntryReveal />
+
 
 		<UI>
 			{#snippet gameName()}

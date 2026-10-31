@@ -1,0 +1,212 @@
+{
+  "project": "Purrfia喵菲亞家族",
+  "date": "2026-10-31",
+  "stage": "local_frontend_build_ready_pending_engine_validation",
+  "backgrounds": "Bright painted scenes with local receiver masks. Cat: passing cloud illumination and moving window slat shadows, restrained lamp glow, dust and wet neon reflections. Parrot: sea-only UV waves with travelling crests, fixed horizon/architecture, rare gull and feature light string. Focus holds motion; reduced motion remains static. V5 strengthens clipped passing cloud/window illumination, sea UV displacement and depth-dependent moving wave crests; fixed architecture is preserved.",
+  "requirements": "E:\\stake\\proposals\\Purrfia喵菲亞家族",
+  "art": {
+    "source": "E:\\stake\\wp\\apps\\Purrfia喵菲亞家族\\design\\source\\purrfia",
+    "originalImageCount": 27,
+    "prompts": "originals/*_prompt.txt",
+    "characterPSD": "cast/don_whiskers.psd",
+    "turnaround": "cast/turnaround.png",
+    "cover": "brand/cover_16x9.jpg",
+    "tileLayers": [
+      "brand/tile_background.jpg",
+      "brand/tile_foreground.png"
+    ],
+    "logo": "brand/logo.png",
+    "assetManifest": "asset-manifest.json"
+  },
+  "animation": {
+    "character": "Don Whiskers",
+    "spine": "4.3.13",
+    "skinVersion": 6,
+    "bones": 54,
+    "layers": 92,
+    "clips": [
+      "idle",
+      "fg_idle",
+      "push_monocle",
+      "push_monocle_short",
+      "stamp",
+      "stamp_short",
+      "claim_turf",
+      "catch_stamp",
+      "lick_paw",
+      "react_small",
+      "react_good",
+      "react_chain",
+      "react_none",
+      "idle_bored",
+      "fg_trigger",
+      "fg_end",
+      "win_big",
+      "win_max",
+      "win_big_loop",
+      "win_max_loop",
+      "breath"
+    ],
+    "pages": 2,
+    "softSkin": [
+      "torso",
+      "face",
+      "ears",
+      "limbs",
+      "chain",
+      "crest",
+      "tail"
+    ],
+    "articulation": "native jacket shoulder facings over sleeve roots, registered cuffs, collar-pinned lower ruff and neckline pivot",
+    "customTopology": "seated Persian cat",
+    "sourcePSD": "E:\\stake\\wp\\apps\\Purrfia喵菲亞家族\\design\\source\\purrfia\\cast\\don_whiskers.psd",
+    "motionVersion": 6,
+    "respiration": "Independent track 1: nonrigid weighted abdomen, ribs, neck and cheeks; two unequal breaths with pauses over 11.6s cat / 10.2s macaw. Feet remain planted.",
+    "limbRepair": "Cat V6: native jacket shoulder facings cover the moving sleeve roots; both shoulders and cuffs use contact-patch checks. V5 sleeve opening centre registered to rear wrist, palm inserted into cuff, head lowered 32 source pixels onto collar, head pivot moved to neckline and lower ruff pinned to neck. Includes both cuffs, active stamp and collar contact checks. Parrot retains V4 registered feather roots, fold/raise/unfold corridors and layered props.",
+    "review": "cast/motion-review/motion.gif: shipped character player with continuous breath, crossfades and return to idle. Both V6 captures at 20fps, with actual player crossfades, held loops and returns. Full move list in all-actions.png.",
+    "prizes": "Object-specific part and mesh performances: fish/water, lid/tail, yarn/thread, leaves, record/label, cord, telescope eye, straw/umbrella and scatter accents. Winning clip 640ms / scatter 820ms, with reduced-motion path and single completion."
+  },
+  "audio": {
+    "cues": 77,
+    "runtimeMiB": 6.79,
+    "budgetMiB": 12,
+    "sampleClipping": false,
+    "synchronousFeatureStems": 0,
+    "creation": "Original procedural music and nonverbal synthesized character voices, not live recordings."
+  },
+  "math": {
+    "publishedDataUnchanged": true,
+    "modes": [
+      "base",
+      "bonus",
+      "super"
+    ],
+    "costMultipliers": [
+      1,
+      100,
+      300
+    ],
+    "publishedAudit": "E:\\stake\\tmp\\new-games-20261025\\published-math-audit.json",
+    "RTP": 0.96,
+    "maxWinMultiplier": 10000
+  },
+  "validation": {
+    "fullBuild": "passed",
+    "sourceTypes": "0 app errors; 7 shared dependency diagnostics",
+    "eventContracts": "passed",
+    "castMeshSampling": "passed",
+    "productionHasMockCode": false,
+    "engineUpload": "not performed",
+    "motionStateRegression": "passed: independent respiration, feature rest, protected actions, max-win hold, fidget cancellation, reduced motion",
+    "softSkinRegression": "passed: official Spine runtime; nonrigid torso deformation beyond similarity transform, planted feet, zero rest-joint offsets, modal pause and fixed background geometry",
+    "latestBrowserRegression": {
+      "date": "2026-10-31",
+      "revision": "motion-flow-v6",
+      "environment": "Existing game, local mock wallet and unchanged published fixtures; no live RGS.",
+      "rigSha256": "977e144ded990149af0e648526c28530614c23bde8a297e53f8c3496f0219667",
+      "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+      "motion": {
+        "continuousPlayerReview": "cast/motion-review/motion.gif",
+        "allActions": "cast/motion-review/all-actions.png",
+        "anatomy": "cast/anatomy-validation.json",
+        "continuity": "cast/motion-flow-validation.json"
+      },
+      "screenshots": {
+        "purrfia-desktop.png": "4a09d7a73b622f23a2934bfd9fcee95407a58836281bee539f58b31e49c8e075",
+        "purrfia-shoulder.png": "6d5dc0bddce129c6cf1c9ef678a70cea8ef5e3f81ee4267bbe2fad5d3589bdc0"
+      },
+      "currentBrowserResult": {
+        "fixture": "baseWin",
+        "idle": true,
+        "winBook": 370,
+        "balance": 1002.7,
+        "pose": "push_monocle @ 50%",
+        "viewport": "1280x720",
+        "consoleErrors": [],
+        "boxFrameRegression": "box-frame-regression.json"
+      },
+      "previousUiBackgroundPrizeEvidence": "cast/motion_v5_before/browser-validation.json"
+    },
+    "prizes": {
+      "kind": "purrfia",
+      "frames": 41,
+      "partSamples": 533,
+      "minAreaRatio": 1,
+      "folds": 0,
+      "reviewFps": 25,
+      "slowMotion": true,
+      "scope": "actual per-part performance and mesh helper used by the game; 6 prize types, 41 phases",
+      "performanceSha256": "a01d445d541d3036e5c5b1468b08bc7089e03ae0c40b2712baeb4705892809a6",
+      "componentSha256": "5ed58650723435738668181dd1cb04402039c7c9b5eb5936cefc9ba87da0902a"
+    },
+    "motionFlow": {
+      "slug": "purrfia",
+      "rigSha256": "977e144ded990149af0e648526c28530614c23bde8a297e53f8c3496f0219667",
+      "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+      "sampleFps": 120,
+      "units": "source artwork pixels and pixels/second",
+      "heldReturn": {
+        "before": {
+          "peakWristSpeed": 1537.43,
+          "maxStep120fps": 12.812
+        },
+        "after": {
+          "peakWristSpeed": 714.52,
+          "maxStep120fps": 5.954
+        },
+        "peakReductionPercent": 53.5
+      },
+      "criticalAction": {
+        "name": "claim_turf",
+        "before": {
+          "peakWristSpeed": 5211.45,
+          "maxStep120fps": 43.429
+        },
+        "after": {
+          "peakWristSpeed": 1625.24,
+          "maxStep120fps": 13.544
+        },
+        "peakReductionPercent": 68.8
+      },
+      "repeatReactionRestart": "prevented",
+      "heldLoopMaxStep120fps": 3.582
+    },
+    "anatomy": {
+      "app": "Purrfia喵菲亞家族",
+      "rigSha256": "977e144ded990149af0e648526c28530614c23bde8a297e53f8c3496f0219667",
+      "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+      "fps": 60,
+      "contactFps": 60,
+      "scope": "all opaque meshes and contacts; every clip, complete configured crossfade, actual player normal/turbo sequences",
+      "totalFrames": 11266,
+      "clipFrames": 3487,
+      "mixFrames": 6760,
+      "runtimeFrames": 1019,
+      "totalFolded": 0,
+      "clipFolded": 0,
+      "mixFolded": 0,
+      "minAreaRatio": 0.034875,
+      "seamSamples": 273080,
+      "seamFailures": 0,
+      "contactPatches": {
+        "front cuff": 5,
+        "rear cuff": 5,
+        "collar": 5,
+        "front shoulder": 4,
+        "rear shoulder": 5,
+        "stamp grip": 1
+      },
+      "transitionPairs": 360,
+      "runtimeScenarios": 2,
+      "runtimeFailures": []
+    },
+    "supersededReview": "V3 finite-vertex and limited frame checks missed visible limb inversions. V4 supersedes those character-appearance claims with all-mesh orientation, seam and 360 crossfade-pair checks per title, plus continuous visual review."
+  },
+  "productionNotes": [
+    "Character vocal cues are original synthesized nonverbal sounds, not recorded voice acting.",
+    "Backgrounds combine painted plates with local mesh/procedural motion; full separately painted depth layers are not included.",
+    "Primary character layers are editable; small costume accents also remain painted into the body artwork.",
+    "Live RGS, device audio and Stake Engine acceptance still require platform validation."
+  ],
+  "ui": "Larger localized Buy Bonus entry with a separate high-contrast caption: 21px desktop / 18px portrait, keyboard focus and a full button hit area. Opens the existing feature menu; disabled during play and hidden in features, replay and dialogs. Compact toolbar and shared Info/pay table retained."
+}

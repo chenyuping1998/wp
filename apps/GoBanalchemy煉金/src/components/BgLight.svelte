@@ -21,9 +21,9 @@
 	 * animation (see PuttMonkey's Background.svelte).
 	 */
 	import { Container, Sprite } from 'pixi-svelte';
-	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
+	import { presentation } from '../game/presentation.svelte';
 	import { BG_FOG, BG_LIGHTS, BG_STEAM, COIN_GLINTS } from '../game/bgLight';
 
 	type Props = {
@@ -40,7 +40,7 @@
 	const W = 1920;
 	const H = 1080;
 
-	let t = $state(0);
+	const t = $derived(presentation.clock);
 	let winAt = -1e9;
 	context.eventEmitter.subscribeOnMount({
 		winLinesShow: () => {
@@ -48,16 +48,7 @@
 		},
 	});
 
-	onMount(() => {
-		let raf = 0;
-		const start = performance.now();
-		const tick = (now: number) => {
-			t = (now - start) / 1000;
-			raf = requestAnimationFrame(tick);
-		};
-		raf = requestAnimationFrame(tick);
-		return () => cancelAnimationFrame(raf);
-	});
+
 
 	const sx = $derived(props.width / W);
 	const sy = $derived(props.height / H);
@@ -71,7 +62,7 @@
 	/** a win's stir: up fast, a slow 1.6s release */
 	const stir = $derived.by(() => {
 		const d = t - winAt;
-		return d < 0 || d > 1.8 ? 0 : Math.min(1, d / 0.15) * Math.exp(-d / 0.6);
+		return Math.max(presentation.energy, d < 0 || d > 1.8 ? 0 : Math.min(1, d / 0.15) * Math.exp(-d / 0.6));
 	});
 
 	// a flame: two unrelated rates and a rare gutter, never a clean pulse

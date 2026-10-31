@@ -20,7 +20,7 @@ SOURCE = APP / 'design/source' / SLUG / 'audio'
 RUNTIME = APP / 'static/assets/audio' / SLUG
 SOURCE.mkdir(parents=True, exist_ok=True)
 RUNTIME.mkdir(parents=True, exist_ok=True)
-META = {}
+META = json.loads((SOURCE/'audio_metadata.json').read_text(encoding='utf-8')) if '--music-only' in sys.argv else {}
 
 def midi(n): return 440 * 2 ** ((n - 69) / 12)
 
@@ -68,8 +68,8 @@ def encode(name, x, music=False, bpm=None, stem=False):
         master=SOURCE/'masters'/f'{name}.wav';master.parent.mkdir(exist_ok=True)
         # Gentle compression before gain, no time-varying loop-boundary processing.
         target=.095 if stem else .13
-        x*=target/max(float(np.sqrt(np.mean(x*x))),1e-6)
-        x=np.clip(x,-.87,.87);raw=x.astype('<f4').tobytes()
+        gain=min(target/max(float(np.sqrt(np.mean(x*x))),1e-6),.68/max(float(np.max(np.abs(x))),1e-6))
+        x*=gain;raw=x.astype('<f4').tobytes()
         subprocess.run(common+['-c:a','pcm_s24le',str(master)],input=raw,check=True)
         out=RUNTIME/f'{name}.ogg'
         subprocess.run(common+['-c:a','libvorbis','-q:a','4',str(out)],input=raw,check=True)
@@ -144,7 +144,7 @@ else:
     names='stinger_fg_intro stinger_fg_outro vo_squawk_hmm vo_squawk_good vo_squawk_call vo_squawk_call_2 vo_squawk_success vo_squawk_awkward vo_squawk_shock vo_squawk_party vo_squawk_party_2 vo_squawk_mimic_1 vo_squawk_mimic_2 vo_squawk_mimic_3 sfx_feather_puff sfx_scratch_build sfx_encore_neon sfx_record_rise sfx_spotlight sfx_encore_hold sfx_encore_hit sfx_encore_miss sfx_neon_off sfx_knob_click sfx_knob_shake_s sfx_knob_shake_m sfx_knob_shake_l sfx_knob_max sfx_mult_apply sfx_mult_count sfx_record_sleeve sfx_record_toss sfx_record_spin sfx_record_hit sfx_record_miss sfx_drop sfx_note_fly sfx_win_to_ticker sfx_mic_land sfx_mic_tease sfx_mic_trigger sfx_lights_on sfx_firework sfx_ticket sfx_spin sfx_button sfx_buybonus_hover sfx_buybonus_confirm sfx_buy_card_hover_super sfx_buybonus_confirm_super sfx_fg_plus5 sfx_bigwin_end sfx_seagull'.split()
     names += [f'sfx_win_{i}' for i in range(1,7)]+[f'sfx_flip_{i}' for i in range(1,19)]+[f'sfx_knob_led_{i}' for i in range(1,21)]+[f'sfx_record_reveal_t{i}' for i in range(1,5)]
 names += [f'sfx_bigwin_{i}{suffix}' for i in range(1,6) for suffix in ['', '_loop']]
-for name in names:effect(name)
+for name in ([] if '--music-only' in sys.argv else names):effect(name)
 (SOURCE/'audio_metadata.json').write_text(json.dumps(META,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 manifest={name:entry['file'] for name,entry in META.items()}
 (APP/'src/game/audioManifest.ts').write_text('export const GAME_AUDIO: Record<string,string> = '+json.dumps(manifest,indent=2)+';\n',encoding='utf-8')

@@ -1,0 +1,32 @@
+{
+  "slug": "parrot",
+  "rigSha256": "6288b90cbe683401029843bf377b9268937a0198b3d665c5153cf79cbba8a38d",
+  "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+  "sampleFps": 120,
+  "units": "source artwork pixels and pixels/second",
+  "heldReturn": {
+    "before": {
+      "peakWristSpeed": 6909.52,
+      "maxStep120fps": 57.579
+    },
+    "after": {
+      "peakWristSpeed": 2964.81,
+      "maxStep120fps": 24.707
+    },
+    "peakReductionPercent": 57.1
+  },
+  "criticalAction": {
+    "name": "encore_call",
+    "before": {
+      "peakWristSpeed": 5292.71,
+      "maxStep120fps": 44.106
+    },
+    "after": {
+      "peakWristSpeed": 3612.56,
+      "maxStep120fps": 30.105
+    },
+    "peakReductionPercent": 31.7
+  },
+  "repeatReactionRestart": "prevented",
+  "heldLoopMaxStep120fps": 9.182
+}

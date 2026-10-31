@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-30",
+  "version": 8,
+  "revision": "20261030-casting-v8-sound-impact",
+  "passed": true,
+  "scope": "Production-shared native multiplier preview with sound enabled, plus local mock baseThrow game UI at OFF and TURBO 2. No video capture.",
+  "visualReview": [
+    {
+      "case": "一般局 ×25",
+      "framesSeconds": [
+        1.5,
+        1.76,
+        4.8
+      ],
+      "result": "$25.00 at x25; no lingering flying orbs"
+    },
+    {
+      "case": "免費遊戲三顆",
+      "framesSeconds": [
+        1.35,
+        5.382
+      ],
+      "result": "x8, x15 and x100 labels separate; final x178 / $178.00; glasses remain on forehead"
+    }
+  ],
+  "visualChanges": [
+    "Release carries momentum immediately, retaining position, scale and angle continuity.",
+    "Flight-aligned pressure ring, six short light petals and release flash dissolve within 168ms.",
+    "Eight curved motes converge around charge without covering the multiplier label."
+  ],
+  "audioReview": {
+    "enabledInBrowser": true,
+    "browserConsoleErrors": 0,
+    "newCues": [
+      "sfx_orb_charge",
+      "sfx_orb_release",
+      "vo_medusa_cast"
+    ],
+    "rebuiltCues": [
+      "sfx_orb_fly",
+      "sfx_orb_hit_s",
+      "sfx_orb_hit_m",
+      "sfx_orb_hit_l"
+    ],
+    "design": "source/medusagaze/audio/CASTING_V8_SOUND_DESIGN.json",
+    "signalQa": "source/medusagaze/audio/CASTING_V8_SIGNAL_QA.json",
+    "runtimeCueCount": 60,
+    "musicDuck": "35ms attack to 64% during cast; 120ms recovery; 70% for number collision; user volume/mute overrides scheduled recovery",
+    "voice": "Original synthetic nonverbal casting sound, not a human recording",
+    "limits": "Browser playback and decoding checked; no claim of human listening approval or speaker translation."
+  },
+  "localGame": {
+    "url": "http://127.0.0.1:3045/?mock=1&sessionID=dev&rgs_url=mock.local&currency=USD&device=desktop&book=baseThrow&headless=1",
+    "rounds": [
+      {
+        "turbo": "OFF",
+        "win": "$12.50",
+        "returnedToIdle": true
+      },
+      {
+        "turbo": "TURBO 2",
+        "win": "$12.50",
+        "returnedToIdle": true
+      }
+    ],
+    "browserConsoleErrors": 0,
+    "restoredTurbo": "OFF",
+    "liveRgs": false
+  },
+  "nativeValidation": "multiplier-performance-validation.json",
+  "turboTimingComparisons": 16,
+  "fullBuild": "passed",
+  "typeCheck": {
+    "changedGameSourceErrors": 0,
+    "existingWorkspaceErrors": 154,
+    "warnings": 37
+  },
+  "screenshots": [
+    "source/medusagaze/_sheets/casting_v8_20261030_release.png",
+    "source/medusagaze/_sheets/casting_v8_20261030_flight.png",
+    "source/medusagaze/_sheets/casting_v8_20261030_fg_flight.png",
+    "source/medusagaze/_sheets/casting_v8_20261030_fg_result.png",
+    "source/medusagaze/_sheets/casting_v8_20261030_game_normal.png",
+    "source/medusagaze/_sheets/casting_v8_20261030_turbo2_ready.png",
+    "source/medusagaze/_sheets/casting_v8_20261030_game_turbo2.png"
+  ]
+}

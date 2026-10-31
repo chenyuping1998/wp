@@ -1,0 +1,126 @@
+{
+  "date": "2026-10-31",
+  "revision": "20261031-orb-power-v10",
+  "passed": true,
+  "scope": "Production-shared Pixi/Spine review with original art and local mock game; stills only, no video.",
+  "changes": [
+    "Eleven published multipliers from 2x to 500x use continuous logarithmic intensity; seven interpolated light-colour anchors.",
+    "Body size, gathering motes, launch pressure, corona and flight wake increase with value. Original green/purple/gold painted orbs retained.",
+    "High values introduce a golden flame crown and orbiting broken Greek-key marks; up to four distinct wake phases.",
+    "Up to three staggered local impact fronts and peripheral golden release fingers; fixed camera and board.",
+    "Crystal hit timbres crossfade with equal-power gains; charge/release/wind gain scales with value. One-to-three fly voices retain their power-aware budget.",
+    "Numbers remain upright and render above orb bodies. Voice events, character breathing and FG forehead glasses retained."
+  ],
+  "native": {
+    "report": "multiplier-performance-validation.json",
+    "values": [
+      2,
+      3,
+      5,
+      8,
+      10,
+      15,
+      25,
+      50,
+      100,
+      250,
+      500
+    ],
+    "maxBodyScale": 1.24,
+    "maxWakeStrands": 4,
+    "flightCurveSamples": 484,
+    "turboTierComparisons": 16,
+    "chargeMs": 350,
+    "flightMs": 600,
+    "noAddedPerformanceDelay": true,
+    "colourAndAudioBoundaryContinuity": "passed",
+    "reducedMotionAndOwnedGlowCleanup": "passed"
+  },
+  "visualReview": [
+    {
+      "case": "2x",
+      "frameSeconds": 1.6,
+      "notes": "Compact green orb, restrained open arcs, readable upright numeral."
+    },
+    {
+      "case": "500x charge",
+      "frameSeconds": 0.98,
+      "notes": "Larger golden orb, gathering light, Greek-key mantle and flame fingers; green eyes remain visible."
+    },
+    {
+      "case": "500x flight",
+      "frameSeconds": 1.2,
+      "notes": "Larger silhouette and golden crown compared with low power; no scene-camera movement."
+    },
+    {
+      "case": "500x impact",
+      "frameSeconds": 1.73,
+      "notes": "Layered pressure fronts radiate around the cumulative plaque inside the existing impact beat."
+    },
+    {
+      "case": "8x / 100x / 500x volley",
+      "frameSeconds": 1.35,
+      "notes": "Three distinct bodies, palette/size differences and all three upright labels readable."
+    },
+    {
+      "case": "Sound-enabled three-orb replay",
+      "result": "x663 / $663.00 art-review example, resting body, no remaining flight orbs; forehead glasses retained."
+    },
+    {
+      "case": "Sound-enabled 2x replay",
+      "notes": "Reached completed count/readout at 4.479s."
+    }
+  ],
+  "gameSmoke": [
+    {
+      "book": "baseThrow",
+      "tier": "OFF",
+      "result": "$12.50",
+      "returnedToIdle": true
+    },
+    {
+      "book": "baseThrow",
+      "tier": "TURBO 2",
+      "result": "$12.50",
+      "returnedToIdle": true
+    }
+  ],
+  "audio": {
+    "runtimeFiles": 65,
+    "mix": "source/medusagaze/audio/ORB_POWER_V10_MIX.json",
+    "audition": "source/medusagaze/audio/ORB_POWER_V10_AUDITION.wav",
+    "isolatedPeakDbFS": [
+      -10.81,
+      -8.73,
+      -7.82,
+      -6.92,
+      -5.86
+    ],
+    "perExampleNormalization": false,
+    "isolatedMixClipping": false,
+    "note": "Four single-orb examples plus three-orb stress mix; existing runtime limiter retained. Vocals remain synthetic."
+  },
+  "console": {
+    "runtimeErrors": 0,
+    "previewAudioLoadErrors": 0,
+    "notes": "Existing Pixi TextStyle warning only in local development game."
+  },
+  "fullBuild": "passed",
+  "buildLog": "E:/stake/tmp/medusa-orb-power-build-20261031.log",
+  "typeCheck": {
+    "errors": 0,
+    "warnings": 1,
+    "warning": "Existing tsconfig allowImportingTsExtensions/noEmit setting"
+  },
+  "screenshots": [
+    "source/medusagaze/_sheets/orb_power_20261031_low_flight.png",
+    "source/medusagaze/_sheets/orb_power_20261031_high_charge.png",
+    "source/medusagaze/_sheets/orb_power_20261031_high_flight.png",
+    "source/medusagaze/_sheets/orb_power_20261031_high_impact.png",
+    "source/medusagaze/_sheets/orb_power_20261031_three_orbs.png",
+    "source/medusagaze/_sheets/orb_power_20261031_three_result.png",
+    "source/medusagaze/_sheets/orb_power_20261031_off_result.png",
+    "source/medusagaze/_sheets/orb_power_20261031_turbo2_result.png"
+  ],
+  "limits": "Local mock/headless lifecycle and native replay, not live RGS/wallet accounting or end-to-end device loudness/frame-pacing certification. Portrait visual QA and the historical 15-spin feature were not repeated this pass."
+}

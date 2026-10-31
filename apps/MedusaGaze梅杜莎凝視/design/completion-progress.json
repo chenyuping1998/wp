@@ -1,28 +1,760 @@
 {
-  "date": "2026-10-25",
+  "date": "2026-10-31",
   "objective": "完成梅杜莎凝視的美術、動畫、音效整合與本地驗收",
   "status": "complete_local_deliverable_pending_user_engine_upload",
   "character": {
     "spine": "4.3.13",
-    "bones": 74,
+    "bones": 84,
     "independentSnakeChains": 9,
     "clips": 24,
-    "psdLayers": 63
+    "psdLayers": 63,
+    "independentSnakeJaws": 9
   },
   "art": "10 polished symbols; backgrounds, character, frame, UI, orbs, banners, brand and store artwork installed",
-  "audio": "57 original synthesized files integrated; character vocals remain synthetic preview",
-  "validation": "Full production build, asset paths, symbol motion, background motion, 24-clip core replay and MG/FG transitions passed; changed game sources have zero type errors",
-  "browser": "15 free spins completed; x110 running total; $198.90 outro; returned to MG; desktop and two portrait sizes checked",
+  "audio": "65 original synthesized files; Spine gesture events retained. Quiet interface cues and normalized one-to-three orb wind voices. Character vocals remain synthetic.",
+  "validation": "Production build passed; svelte-check 0 errors / 1 existing warning. Eleven multiplier powers, colour/audio continuity, equal turbo clocks, reduced motion/cleanup, OFF/T2 mock rounds and low/high/three-orb visuals verified.",
+  "browser": "Fresh TURBO 1 replay: 15 free spins, x110 cumulative multiplier, $198.90 outro, returned to MG. OFF wasted-orb round returned to idle.",
   "userVideoPreference": "No additional video delivery",
   "remainingUserAction": "User uploads to Stake Engine and performs live RGS verification",
   "delivery": "design/delivery",
   "details": "design/source/medusagaze/delivery-status.json",
   "multiplierSignature": {
-    "version": 3,
+    "version": 10,
     "pupilMarkers": 2,
-    "clearReadout": "upright orb value, central multiplier and full multiplication equation, result hold, labelled TOTAL plaque",
+    "clearReadout": "×N numeral travels from left to centre and collides with the base win; louder impact and count; no 倍 suffix",
     "audioRedesign": 13,
     "verification": "design/multiplier-performance-validation.json",
-    "review": "design/source/medusagaze/multiplier/preview/index.html"
+    "review": "design/source/medusagaze/multiplier/preview/index.html",
+    "sameTimingAcrossTurboTiers": true,
+    "effect": "Emerald eyes, local radial glow, curved gathering strands and condensed orb; no long laser beam"
+  },
+  "presentationCorrection": {
+    "statueToMedusaHeight": 0.2,
+    "toolbarHeight": 210,
+    "darkInkControlGlyphs": 10,
+    "turbo": "High-contrast outline, solid single bolt, solid double bolt",
+    "idle": "Six-second ribcage breath in MG and FG; grounded hips; delayed shoulders, neck and nine snakes",
+    "validation": "design/presentation-validation.json"
+  },
+  "ninePointRefinement": {
+    "status": "complete_locally_verified",
+    "report": "refinement-browser-validation.json",
+    "items": 9
+  },
+  "fivePointRefinement": {
+    "status": "complete_locally_verified",
+    "report": "revision5-browser-validation.json",
+    "items": 5,
+    "fgGlasses": "Fixed to forehead throughout freegame clips"
+  },
+  "eightPointRefinement": {
+    "status": "complete_locally_verified",
+    "report": "revision6-browser-validation.json",
+    "items": 8,
+    "seamlessSpinStart": true,
+    "lowerBodyBreath": true,
+    "tailSwish": true,
+    "naturalFire": "Independent rising heat with tapering tongues",
+    "clouds": "Four softened depth layers"
+  },
+  "leftSkyRefinement": {
+    "report": "left-sky-browser-validation.json",
+    "leftCloudStreams": 3,
+    "birds": 9,
+    "visibleLeftFlocks": 2,
+    "wideScreenCropAware": true
+  },
+  "characterSymbolPolish": {
+    "date": "2026-10-27",
+    "passed": true,
+    "scope": "Local mock playback, official Spine 4.3 core and offline geometry; no live RGS transaction or video.",
+    "character": {
+      "clips": 24,
+      "mixSeconds": 0.18,
+      "mouthTalkSeconds": 0.38,
+      "releaseFollowThrough": "Chest, back hand, tail, skirts and chains have staggered recoil and settle; FG pointing hand overshoots then recovers",
+      "breathPhasePreserved": true,
+      "fgGlassesForeheadSamples": 1920,
+      "visibleMeshFolds": 0
+    },
+    "symbols": {
+      "materialSpecificHop": true,
+      "stoneFront": "Downward curved wipe with a brief green-white front clipped to original artwork",
+      "fracturePieces": 8,
+      "areaBeforeSeparation": 1,
+      "depth": "Dark extruded edge and changing horizontal foreshortening",
+      "geometryReview": "Original painted UVs retained; 32x32 acting meshes have no inverted triangles",
+      "eightLinkMs": 9135
+    },
+    "turbo": {
+      "signatureTimingUnchanged": true,
+      "comparisons": 16
+    },
+    "browser": {
+      "game": "baseThrow completed locally: WIN $12.50, returned to idle, console errors absent",
+      "character": "MG gaze at 1.650s; FG release at 1.218s and recovery at 1.575s visually reviewed",
+      "symbolReview": "Shared-curve Canvas2D preview shows partial stone front and eight separated shards; production smoke replay completed",
+      "screenshots": [
+        "_sheets/polish_20261027_cast_release.png",
+        "_sheets/polish_20261027_cast_recovery.png",
+        "_sheets/polish_20261027_cast_mg_release.png",
+        "_sheets/polish_20261027_stone_front.png",
+        "_sheets/polish_20261027_fragments.png",
+        "_sheets/polish_20261027_game_result.png"
+      ]
+    },
+    "validation": {
+      "productionBuild": "passed",
+      "changedGameSourceTypeErrors": 0,
+      "existingWorkspaceTypeErrors": 154,
+      "existingWorkspaceWarnings": 33
+    }
+  },
+  "revision": "20261031-orb-power-v10",
+  "overallDynamics": {
+    "date": "2026-10-27",
+    "passed": true,
+    "scope": "Local mock UI and native Pixi/Spine replay; no video, live RGS or engine certification.",
+    "winningCells": {
+      "accents": "Brief open golden arcs and five converging sparks; shift toward emerald as stone begins",
+      "score": "Small elastic arrival followed by the existing upward readout; no extra stage delay"
+    },
+    "fracture": {
+      "paintedPieces": 8,
+      "smallChips": 6,
+      "dustPuffs": 4,
+      "normalizedLifetime": "Owned by the crumble stage; zero visible debris at completion",
+      "review": "dynamics/preview/index.html uses the production Graphics drawing helpers and motion curves"
+    },
+    "character": {
+      "clips": 24,
+      "idleGlance": "1.6 degree short tilt then held neutral",
+      "relaxedWrists": true,
+      "breathPhasePreserved": true,
+      "fgGlassesForeheadSamples": 1920,
+      "noVisibleMeshFolds": true
+    },
+    "garden": {
+      "gustCycleSeconds": 14,
+      "sidesStaggeredSeconds": 4.3,
+      "forwardWindIntegration": true,
+      "curvedLeaves": true,
+      "verticalWrapFade": true,
+      "architectureAndCameraFixed": true,
+      "backgroundReportVersion": 5
+    },
+    "multiplier": {
+      "afterglowMotes": 6,
+      "afterglowSeconds": 0.56,
+      "signatureTimingUnchanged": true,
+      "turboTierComparisons": 16
+    },
+    "browser": {
+      "viewport": [
+        1280,
+        720
+      ],
+      "normalMock": "baseThrow complete, WIN $12.50, returned to idle",
+      "turbo2Mock": "Double-bolt selected before replay; baseThrow complete, WIN $12.50, returned to idle",
+      "consoleErrors": 0,
+      "nativePreview": "35%, 70% and 100% checked; all chip/dust fragments gone at completion",
+      "characterPreview": "MG and FG idle at 3.300s; forehead glasses retained",
+      "screenshots": [
+        "_sheets/dynamics_20261027_accents.png",
+        "_sheets/dynamics_20261027_debris_fade.png",
+        "_sheets/dynamics_20261027_debris_cleared.png",
+        "_sheets/dynamics_20261027_idle_glance.png",
+        "_sheets/dynamics_20261027_fg_idle.png",
+        "_sheets/dynamics_20261027_normal_result.png",
+        "_sheets/dynamics_20261027_turbo2_ready.png",
+        "_sheets/dynamics_20261027_turbo2_result.png"
+      ]
+    },
+    "validation": {
+      "fullBuild": "passed",
+      "changedGameSourceTypeErrors": 0,
+      "workspaceTypeErrors": 154,
+      "workspaceWarnings": 35,
+      "typeScope": "Existing workspace/tool/config diagnostics; no src/components or src/game diagnostics",
+      "eightLinkTimingBudgetMs": 9135,
+      "publishedBookWinningPositions": 721
+    }
+  },
+  "castingV7": {
+    "date": "2026-10-29",
+    "version": 7,
+    "passed": true,
+    "scope": "Local mock replay and native Pixi/Spine review; no video or live RGS transaction.",
+    "character": {
+      "beats": [
+        "peek",
+        "raised casting palm and wrist gather",
+        "release flick",
+        "smug face and tail follow-through",
+        "return to continuous breath"
+      ],
+      "foregroundPalm": "Authored draw-order keys bring casting palm in front of snake curls; MG/FG and both turbo clips checked",
+      "clips": 24,
+      "visibleMeshFolds": 0,
+      "fgForeheadSamples": 1920
+    },
+    "orb": {
+      "chargeMs": 350,
+      "flightMs": 600,
+      "pullbackBoardPixels": 14,
+      "charge": "Growth overshoot then squeeze; continuous position and silhouette at release",
+      "path": "One serpentine bend along the existing cubic arc, with tangent-aligned stretch",
+      "wake": "Two counter-wound luminous strands, three drifting spark samples, orbital arcs and colour-matched corona",
+      "multiOrb": "Second and third sources fan apart by 104 board pixels; all numeral labels render after orb bodies",
+      "numberOrientation": "Upright",
+      "glowCleanup": "Owned glow sprites removed after each orb; reduced motion and repeated destroy pass"
+    },
+    "timing": {
+      "turboTierComparisons": 16,
+      "signatureEqualAcrossAllTiers": true,
+      "boardTumbleOnlyAccelerates": true
+    },
+    "browser": {
+      "normalMock": "baseThrow finished at WIN $12.50 and returned to idle",
+      "turbo2Mock": "Double-bolt state selected before replay; finished at WIN $12.50 and returned to idle",
+      "multiOrbReview": "FG three-orb native review at 1.350s: x8, x15 and x100 individually visible; at 6.500s total x178 / $178.00 and no residual orbs",
+      "flightReview": "MG flight at 1.750s with visible casting hand and smug recovery",
+      "consoleErrors": 0,
+      "proofs": [
+        "_sheets/casting_v7_20261029_fg_fan.png",
+        "_sheets/casting_v7_20261029_flight.png",
+        "_sheets/casting_v7_20261029_game_result.png",
+        "_sheets/casting_v7_20261029_turbo2_ready.png",
+        "_sheets/casting_v7_20261029_turbo2_result.png",
+        "_sheets/casting_v7_20261029_fg_result.png"
+      ]
+    },
+    "validation": {
+      "fullProductionBuild": "passed",
+      "changedGameSourceTypeErrors": 0,
+      "workspaceTypeErrors": 154,
+      "workspaceWarnings": 35,
+      "typeScope": "Workspace tool/config/dependency diagnostics remain; game sources have zero type errors"
+    }
+  },
+  "landingImpactRefinement": {
+    "date": "2026-10-29",
+    "passed": true,
+    "scope": "Native drawing preview and local normal/TURBO 2 mock rounds",
+    "contactsPerColumnMaximum": 2,
+    "selection": "Bottom contact plus longest actual drop, deduplicated",
+    "strength": "Weighted by actual fall distance",
+    "effect": "Foot-anchored pressure ellipse, outgoing gold arcs, two tiny stone flecks",
+    "allTurboTiersRetainContact": true,
+    "minimumVisualLifetimeMs": 90,
+    "noExtraTumbleWait": true,
+    "multiplierImpact": "Delayed soft wave within the existing contact window",
+    "characterFollowThrough": "Two coils carry the impulse into a tail-tip flick; back wrist follows",
+    "eightLinkTimingBudgetMs": 9135,
+    "geometryContractPatterns": 63,
+    "browser": {
+      "35Percent": "Visible contact and rebound",
+      "100Percent": "No remaining contact/shard/dust accents",
+      "proofs": [
+        "_sheets/landing_20261029_contact.png",
+        "_sheets/landing_20261029_cleared.png"
+      ]
+    }
+  },
+  "fluencyRefinement": {
+    "revision": "20261030-fluent-casting",
+    "native": "design/source/medusagaze/cast/fluency-validation.json",
+    "browser": "design/fluency-browser-validation.json",
+    "recoveryPeakSpeedReductionPercent": 39.8,
+    "fidgetHandoffJumpRigPixels": 0,
+    "sameTimingAcrossTurboTiers": true
+  },
+  "snakePresenceRefinement": {
+    "revision": "20261030-serpent-double-bite",
+    "native": "source/medusagaze/cast/snake-presence-validation.json",
+    "browser": "design/snake-presence-browser-validation.json",
+    "headExcursionComparison": {
+      "idle": {
+        "meanRatio": 1.657,
+        "minimumRatio": 1.632,
+        "snakes": 9
+      },
+      "individualBite": {
+        "meanRatio": 1.417,
+        "minimumRatio": 1.405,
+        "snakes": 9
+      },
+      "gaze": {
+        "meanRatio": 1.469,
+        "minimumRatio": 1.374,
+        "snakes": 9
+      },
+      "fgGaze": {
+        "meanRatio": 1.467,
+        "minimumRatio": 1.371,
+        "snakes": 9
+      }
+    },
+    "doubleBite": true,
+    "independentSnakes": 9,
+    "visibleMeshFolds": 0
+  },
+  "castingV8Refinement": {
+    "version": 8,
+    "browser": "design/casting-v8-browser-validation.json",
+    "performance": "design/multiplier-performance-validation.json",
+    "audio": "design/source/medusagaze/audio/CASTING_V8_SOUND_DESIGN.json",
+    "sameTimingAcrossTurboTiers": true,
+    "runtimeAudioFiles": 60,
+    "releasePressureRingMs": 168,
+    "localGameSmoke": "OFF and TURBO 2 completed; $12.50 each; returned to idle"
+  },
+  "handWindupRefinement": {
+    "native": "source/medusagaze/cast/hand-anticipation-validation.json",
+    "browser": "design/hand-windup-browser-validation.json",
+    "coilDistanceRigPixels": 126.49,
+    "releaseStrokeRigPixels": 186.68,
+    "elbowCurlChangeDegrees": 30.44,
+    "chargeMs": 350,
+    "coiledHoldMs": 55,
+    "unchangedMgReleaseMs": 1450,
+    "unchangedFgReleaseMs": 1050,
+    "unchangedReleaseClock": true
+  },
+  "ppMotionRefinement": {
+    "date": "2026-10-31",
+    "revision": "20261031-pp-motion-recipes",
+    "passed": true,
+    "skill": "E:/stake/wp/.claude/skills/slot-motion-recipes/SKILL.md",
+    "scope": "Local mock UI replay and native Pixi/Spine contact sheets; no live RGS and no video capture.",
+    "visualReview": {
+      "highSymbols": "H1-H5 reviewed at 0,50,164,265,441,567ms: local crown/crest/string/handle/leaf motion, readable original artwork and beat-linked texture glow.",
+      "lowSymbols": "S,L1-L4 reviewed at the same six frames: inner portrait depth on S and restrained root beats for low symbols.",
+      "character": "Native react_small at 0,.12,.32,.52,.65,.8s: downward anticipation, board glance, raised-hand hold and recovery. Full-body silhouette and snake artwork retained.",
+      "drop": "0,126,216,261,306,333,360ms: first contact followed by two decreasing rebounds, without a second landing animation.",
+      "feature": "Free-game three-orb shared renderer with sound enabled reached x178 / $178.00 and resting body pose; glasses remained on forehead."
+    },
+    "gameSmoke": [
+      {
+        "tier": "OFF",
+        "book": "baseThrow",
+        "result": "$12.50",
+        "returnedToIdle": true
+      },
+      {
+        "tier": "TURBO 2",
+        "book": "baseThrow",
+        "result": "$12.50",
+        "returnedToIdle": true
+      }
+    ],
+    "turbo": "Native timing check passed all 16 comparisons; character, charge, orb flight, sound, collision and readout clocks remain identical at OFF/T1/T2. Only board timings scale. UI restored to OFF.",
+    "nativeChecks": {
+      "bones": 84,
+      "clips": 24,
+      "localSymbols": 6,
+      "meshInversions": 0,
+      "columnPatterns": 63,
+      "publishedWinningPositions": 721,
+      "eightLinkBudgetMs": 9870,
+      "signatureComparisons": 16
+    },
+    "fullBuild": "passed",
+    "typeCheck": {
+      "errors": 0,
+      "warnings": 1,
+      "warning": "tsconfig allowImportingTsExtensions requires noEmit or emitDeclarationOnly"
+    },
+    "console": {
+      "runtimeErrors": 0,
+      "notes": "One existing Pixi TextStyle warning was observed in dev; the game completed both rounds. No errors were reported in the FG preview."
+    },
+    "screenshots": [
+      "source/medusagaze/_sheets/pp_motion_20261031_high.png",
+      "source/medusagaze/_sheets/pp_motion_20261031_low.png",
+      "source/medusagaze/_sheets/pp_motion_20261031_character.png",
+      "source/medusagaze/_sheets/pp_motion_20261031_drop.png",
+      "source/medusagaze/_sheets/pp_motion_20261031_off_result.png",
+      "source/medusagaze/_sheets/pp_motion_20261031_turbo2_result.png",
+      "source/medusagaze/_sheets/pp_motion_20261031_fg_result.png"
+    ],
+    "limits": "Mock/headless replay checks lifecycle, not production frame pacing or wallet accounting. Earlier portrait and 15-spin feature checks are historical, not rerun for this revision. Original synthetic casting voice retained."
+  },
+  "overallMotionRefinement": {
+    "date": "2026-10-31",
+    "revision": "20261031-overall-motion-refine",
+    "passed": true,
+    "scope": "Local mock game and shared Pixi effects/background renderer; still images only, no video output.",
+    "changes": [
+      "Eight unequal convex stone cells replace radial triangular wedges. Exact painted UV coverage is retained.",
+      "Fracture retains the last crack layer through an 8% contact hold, then releases pieces with small authored offsets inside the original crumble duration.",
+      "Stone chips and thin dust follow the fracture release rather than preceding it.",
+      "Win focus mask eases in over 65ms and out over the final 90ms; amount fades over the final 75ms. All use the existing scaled board clock.",
+      "Birds glide between short groups of wing strokes; sky paths, cloud coverage, architecture and camera remain as approved."
+    ],
+    "nativeChecks": {
+      "stoneCells": 8,
+      "paintCoverage": 1,
+      "uniqueCoverageSamples": 1681,
+      "convexTriangulation": "passed",
+      "columnPatterns": 63,
+      "publishedWinningPositions": 721,
+      "meshInversions": 0,
+      "eightLinkMs": 9870,
+      "birdGlideSamples": 9567,
+      "birdStrokeSamples": 3942,
+      "wingCycleContinuity": "passed",
+      "characterBones": 84,
+      "characterClips": 24,
+      "multiplierTimingComparisons": 16
+    },
+    "visualReview": {
+      "fracture": "Rendered contact hold at 7% and released stones at 35%; intact silhouette before release, irregular facets afterwards, shaded thickness and receding dust.",
+      "background": "Day and full dusk inspected; visible left clouds and birds, independently burning braziers, no scene-camera movement.",
+      "freegame": {
+        "book": "bonusBigTotal",
+        "turbo": "TURBO 1",
+        "spins": 15,
+        "totalMultiplier": 110,
+        "totalWin": "$198.90",
+        "returnedToMainGame": true,
+        "glasses": "Forehead during FG; sunglasses restored in MG",
+        "restoredTurbo": "OFF"
+      },
+      "wastedOrb": {
+        "book": "baseThrowWasted",
+        "turbo": "OFF",
+        "result": "$0.00",
+        "returnedToIdle": true
+      }
+    },
+    "console": {
+      "uncaughtRuntimeExceptions": 0,
+      "wastedOrbErrors": 0,
+      "watchdogMessages": 2,
+      "notes": "The existing 15-second watchdog logged freeSpinTrigger and freeSpinEnd while waiting on the click-to-continue intro/outro panels. Both continued normally and the feature returned to MG. An earlier run interrupted by the production rebuild was discarded."
+    },
+    "fullBuild": "passed",
+    "typeCheck": {
+      "errors": 0,
+      "warnings": 1,
+      "warning": "Existing tsconfig allowImportingTsExtensions/noEmit setting"
+    },
+    "screenshots": [
+      "source/medusagaze/_sheets/overall_refine_20261031_fracture.png",
+      "source/medusagaze/_sheets/overall_refine_20261031_contact_hold.png",
+      "source/medusagaze/_sheets/overall_refine_20261031_night.png",
+      "source/medusagaze/_sheets/overall_refine_20261031_fg_start.png",
+      "source/medusagaze/_sheets/overall_refine_20261031_fg_middle.png",
+      "source/medusagaze/_sheets/overall_refine_20261031_fg_outro.png",
+      "source/medusagaze/_sheets/overall_refine_20261031_return_mg.png",
+      "source/medusagaze/_sheets/overall_refine_20261031_dud_result.png"
+    ],
+    "limits": "Mock/headless replay checks animation lifecycle, not production frame pacing, real wallet accounting or live RGS. Portrait layouts were not rerun this revision. No new character rig or sound recording in this pass; previous full-body breathing, nine-snake acting, hand windup and v8 sound design are retained."
+  },
+  "characterSoundRefinement": {
+    "date": "2026-10-31",
+    "revision": "20261031-character-sound-v9",
+    "passed": true,
+    "scope": "Native official Spine event replay, production-shared character/multiplier previews and local mock game; no video output.",
+    "changes": [
+      "Five new original synthetic foley cues: elbow gather, wrist flick, gold ornaments, tail scales and snake jaw snap. Runtime library is now 65 sounds.",
+      "Twenty animation clips carry sixty Spine sound marks, including both casting voices, glasses, reactions, celebrations and nine individual snake double bites.",
+      "Small reaction adds a restrained wrist flourish, gold contact and short satisfied vocal; its vocal repeats no more than once per 3.5 seconds.",
+      "Body voices and glasses moved from independent timers to actual skeleton events; interrupted gestures no longer emit late body sounds.",
+      "Non-loop clips finish their authored recovery before blending into rest; casting talk drawing now covers the complete pitched vocal.",
+      "Gesture sounds remain behind the existing v8 cast, flight and impact signature. Same character/effect clocks at all three turbo settings."
+    ],
+    "native": "character-sound-validation.json",
+    "audio": "source/medusagaze/audio/CHARACTER_V9_SOUND_DESIGN.json",
+    "nativeResults": {
+      "soundedClips": 20,
+      "eventMarks": 60,
+      "maxEventSamplingDriftMs": 8.333333333333318,
+      "sampleHz": 120,
+      "cancellation": "passed",
+      "rateChange": "passed",
+      "reducedMotion": "passed",
+      "castMouthCoverage": "passed",
+      "meshFolds": 0,
+      "rigBones": 84,
+      "rigClips": 24,
+      "runtimeAudioFiles": 65
+    },
+    "visualReview": [
+      {
+        "case": "react_small",
+        "soundEnabled": true,
+        "notes": "Thumb gesture, new wrist flourish and weighted facial glance inspected at 0.360s; playback completed."
+      },
+      {
+        "case": "snake_fidget_6",
+        "soundEnabled": true,
+        "notes": "Native individual snake clip replayed; nine-snake two-mark coverage also checked by native replay."
+      },
+      {
+        "case": "win_big",
+        "soundEnabled": true,
+        "notes": "Laugh event visibly reported at 0.11s; raised-hand performance replayed."
+      },
+      {
+        "case": "MG x25",
+        "soundEnabled": true,
+        "result": "$25.00 with resting pose"
+      },
+      {
+        "case": "FG three orbs",
+        "soundEnabled": true,
+        "result": "x178 / $178.00; forehead glasses preserved; open talk drawing and flight inspected at 1.380s"
+      }
+    ],
+    "gameSmoke": [
+      {
+        "book": "baseThrow",
+        "tier": "OFF",
+        "result": "$12.50",
+        "returnedToIdle": true
+      },
+      {
+        "book": "baseThrow",
+        "tier": "TURBO 2",
+        "result": "$12.50",
+        "returnedToIdle": true
+      }
+    ],
+    "console": {
+      "runtimeErrors": 0,
+      "audioLoadErrors": 0,
+      "notes": "One pre-existing Pixi TextStyle warning in local dev. Character and multiplier previews reported no audio load warnings."
+    },
+    "fullBuild": "passed",
+    "typeCheck": {
+      "errors": 0,
+      "warnings": 1,
+      "warning": "Existing tsconfig allowImportingTsExtensions/noEmit setting"
+    },
+    "screenshots": [
+      "source/medusagaze/_sheets/character_sound_20261031_smug.png",
+      "source/medusagaze/_sheets/character_sound_20261031_mg_result.png",
+      "source/medusagaze/_sheets/character_sound_20261031_fg_result.png",
+      "source/medusagaze/_sheets/character_sound_20261031_fg_voice_pose.png",
+      "source/medusagaze/_sheets/character_sound_20261031_off_result.png",
+      "source/medusagaze/_sheets/character_sound_20261031_turbo2_result.png"
+    ],
+    "audition": "source/medusagaze/audio/CHARACTER_V9_AUDITION.wav",
+    "limits": "Vocalisations remain original synthetic sketches, not newly recorded human acting. Native 8.33ms result measures animation event sampling, not end-to-end sound-device latency. This revision did not repeat the previous 15-spin feature, portrait or live RGS validation."
+  },
+  "templeInterfaceRefinement": {
+    "date": "2026-10-31",
+    "revision": "20261031-temple-ui",
+    "passed": true,
+    "scope": "App-owned Greek temple information UI, interface mix, numeric toolbar presentation; local mock only, stills only.",
+    "changes": [
+      "Golf guide structure adapted into original Greek temple cover, chapter index and three illustrated steps; Medusa artwork and game configuration retained.",
+      "Guide and paytable share teal, marble and gold shell with persistent tabs, chapter links and close control.",
+      "Readable payout cards use three fixed columns with symbol counts above explicit x values. Scatter 100x remains fully visible at 320px.",
+      "Toolbar numeric values use the body font at weight 700; slightly larger readouts, smaller status text and reduced numeric pop.",
+      "Quiet open, tab and close cues share existing original sound files; 80ms anti-stack gate and softer general button gain.",
+      "One to three orb flight voices divide gain by sqrt(voices), retaining a constant summed squared-gain budget without changing cast voice, impact or animation clocks.",
+      "Mode table now explicitly states natural 4+ Aegis entry or 100x buy. Summon-and-throw wording also applies to FG forehead glasses."
+    ],
+    "uiReview": {
+      "desktop": [
+        1280,
+        720
+      ],
+      "mobile": [
+        [
+          390,
+          844
+        ],
+        [
+          320,
+          568
+        ]
+      ],
+      "additionalDesktopSize": [
+        778,
+        668
+      ],
+      "mobile320Bounds": {
+        "documentWidth": 320,
+        "dialogWidth": 303.2,
+        "contentClientWidth": 285,
+        "contentScrollWidth": 285
+      },
+      "chapters": "Quick guide, gaze, free spins, Aegis, controls and RTP/modes reviewed; paytable chapters also wired.",
+      "close": "Header cross and Escape verified; mobile header cross 44px.",
+      "keyboard": "Initial focus on close; Shift+Tab wraps to content, Tab wraps back to close.",
+      "tabSwitch": "GAME GUIDE and PAY TABLE switch in the same modal; active state and respective chapter rows shown.",
+      "bet": "Selected 2.00 turns gold with check mark and readout updates; restored 1.00 and closed.",
+      "auto": "Selected 25 turns gold with check mark; ADVANCED dark on cream; closed without starting autoplay.",
+      "config": "Ten original symbol rows and configuration-derived count tiers, 96.00% RTP, 15000x maximum, scatter and retrigger rules retained."
+    },
+    "gameSmoke": {
+      "book": "baseThrow",
+      "result": "$12.50",
+      "returnedToIdle": true,
+      "scope": "Local mock lifecycle; wallet values are not financial validation."
+    },
+    "nativeChecks": {
+      "fullPackageBuild": "passed",
+      "characterSound": "character-sound-validation.json",
+      "normalizedVolleyFlight": true,
+      "quietInterfaceCues": 3,
+      "audioFiles": 65,
+      "multiplierTimingComparisons": 16,
+      "signatureClockEqualAcrossTurboTiers": true,
+      "eightLinkMs": 9870
+    },
+    "typeCheck": {
+      "errors": 0,
+      "warnings": 1,
+      "warning": "Existing tsconfig allowImportingTsExtensions/noEmit configuration"
+    },
+    "console": {
+      "runtimeErrors": 0,
+      "notes": "Existing Pixi TextStyle warning observed in dev; no error entries after UI and mock replay."
+    },
+    "screenshots": [
+      "source/medusagaze/_sheets/temple_ui_20261031_guide_desktop.png",
+      "source/medusagaze/_sheets/temple_ui_20261031_paytable_desktop.png",
+      "source/medusagaze/_sheets/temple_ui_20261031_guide_390.png",
+      "source/medusagaze/_sheets/temple_ui_20261031_guide_320.png",
+      "source/medusagaze/_sheets/temple_ui_20261031_feature_320.png",
+      "source/medusagaze/_sheets/temple_ui_20261031_paytable_320.png",
+      "source/medusagaze/_sheets/temple_ui_20261031_uibar_320.png",
+      "source/medusagaze/_sheets/temple_ui_20261031_uibar_desktop.png",
+      "source/medusagaze/_sheets/temple_ui_20261031_bet_selected.png",
+      "source/medusagaze/_sheets/temple_ui_20261031_auto_selected.png",
+      "source/medusagaze/_sheets/temple_ui_20261031_mock_result.png"
+    ],
+    "limits": "No new human voice recording; original synthesized library remains. Summed squared-gain normalization is a mix rule, not a guarantee of identical perceived loudness. Historical 15-spin feature reports were not repeated this revision. No live RGS, wallet or production device frame-pacing certification."
+  },
+  "orbPowerRefinement": {
+    "date": "2026-10-31",
+    "revision": "20261031-orb-power-v10",
+    "passed": true,
+    "scope": "Production-shared Pixi/Spine review with original art and local mock game; stills only, no video.",
+    "changes": [
+      "Eleven published multipliers from 2x to 500x use continuous logarithmic intensity; seven interpolated light-colour anchors.",
+      "Body size, gathering motes, launch pressure, corona and flight wake increase with value. Original green/purple/gold painted orbs retained.",
+      "High values introduce a golden flame crown and orbiting broken Greek-key marks; up to four distinct wake phases.",
+      "Up to three staggered local impact fronts and peripheral golden release fingers; fixed camera and board.",
+      "Crystal hit timbres crossfade with equal-power gains; charge/release/wind gain scales with value. One-to-three fly voices retain their power-aware budget.",
+      "Numbers remain upright and render above orb bodies. Voice events, character breathing and FG forehead glasses retained."
+    ],
+    "native": {
+      "report": "multiplier-performance-validation.json",
+      "values": [
+        2,
+        3,
+        5,
+        8,
+        10,
+        15,
+        25,
+        50,
+        100,
+        250,
+        500
+      ],
+      "maxBodyScale": 1.24,
+      "maxWakeStrands": 4,
+      "flightCurveSamples": 484,
+      "turboTierComparisons": 16,
+      "chargeMs": 350,
+      "flightMs": 600,
+      "noAddedPerformanceDelay": true,
+      "colourAndAudioBoundaryContinuity": "passed",
+      "reducedMotionAndOwnedGlowCleanup": "passed"
+    },
+    "visualReview": [
+      {
+        "case": "2x",
+        "frameSeconds": 1.6,
+        "notes": "Compact green orb, restrained open arcs, readable upright numeral."
+      },
+      {
+        "case": "500x charge",
+        "frameSeconds": 0.98,
+        "notes": "Larger golden orb, gathering light, Greek-key mantle and flame fingers; green eyes remain visible."
+      },
+      {
+        "case": "500x flight",
+        "frameSeconds": 1.2,
+        "notes": "Larger silhouette and golden crown compared with low power; no scene-camera movement."
+      },
+      {
+        "case": "500x impact",
+        "frameSeconds": 1.73,
+        "notes": "Layered pressure fronts radiate around the cumulative plaque inside the existing impact beat."
+      },
+      {
+        "case": "8x / 100x / 500x volley",
+        "frameSeconds": 1.35,
+        "notes": "Three distinct bodies, palette/size differences and all three upright labels readable."
+      },
+      {
+        "case": "Sound-enabled three-orb replay",
+        "result": "x663 / $663.00 art-review example, resting body, no remaining flight orbs; forehead glasses retained."
+      },
+      {
+        "case": "Sound-enabled 2x replay",
+        "notes": "Reached completed count/readout at 4.479s."
+      }
+    ],
+    "gameSmoke": [
+      {
+        "book": "baseThrow",
+        "tier": "OFF",
+        "result": "$12.50",
+        "returnedToIdle": true
+      },
+      {
+        "book": "baseThrow",
+        "tier": "TURBO 2",
+        "result": "$12.50",
+        "returnedToIdle": true
+      }
+    ],
+    "audio": {
+      "runtimeFiles": 65,
+      "mix": "source/medusagaze/audio/ORB_POWER_V10_MIX.json",
+      "audition": "source/medusagaze/audio/ORB_POWER_V10_AUDITION.wav",
+      "isolatedPeakDbFS": [
+        -10.81,
+        -8.73,
+        -7.82,
+        -6.92,
+        -5.86
+      ],
+      "perExampleNormalization": false,
+      "isolatedMixClipping": false,
+      "note": "Four single-orb examples plus three-orb stress mix; existing runtime limiter retained. Vocals remain synthetic."
+    },
+    "console": {
+      "runtimeErrors": 0,
+      "previewAudioLoadErrors": 0,
+      "notes": "Existing Pixi TextStyle warning only in local development game."
+    },
+    "fullBuild": "passed",
+    "buildLog": "E:/stake/tmp/medusa-orb-power-build-20261031.log",
+    "typeCheck": {
+      "errors": 0,
+      "warnings": 1,
+      "warning": "Existing tsconfig allowImportingTsExtensions/noEmit setting"
+    },
+    "screenshots": [
+      "source/medusagaze/_sheets/orb_power_20261031_low_flight.png",
+      "source/medusagaze/_sheets/orb_power_20261031_high_charge.png",
+      "source/medusagaze/_sheets/orb_power_20261031_high_flight.png",
+      "source/medusagaze/_sheets/orb_power_20261031_high_impact.png",
+      "source/medusagaze/_sheets/orb_power_20261031_three_orbs.png",
+      "source/medusagaze/_sheets/orb_power_20261031_three_result.png",
+      "source/medusagaze/_sheets/orb_power_20261031_off_result.png",
+      "source/medusagaze/_sheets/orb_power_20261031_turbo2_result.png"
+    ],
+    "limits": "Local mock/headless lifecycle and native replay, not live RGS/wallet accounting or end-to-end device loudness/frame-pacing certification. Portrait visual QA and the historical 15-spin feature were not repeated this pass."
   }
 }

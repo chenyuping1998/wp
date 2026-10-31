@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-26",
+  "foreground": "#071f2b",
+  "background": "painted cream marble",
+  "source": "Existing app-owned geometric glyph drawing functions; shapes and registration retained",
+  "files": [
+    {
+      "name": "menu",
+      "path": "static/assets/sprites/medusaUiIcons/menu.png",
+      "sha256": "777faffa8f34a3f84e8cb27744a0b390723c380771ab3b57217f01319b993bd3"
+    },
+    {
+      "name": "menuExit",
+      "path": "static/assets/sprites/medusaUiIcons/menuExit.png",
+      "sha256": "112d08828bd8f8b0908ecfae2034a59014fd1d917c4f3afce13f98a213b90a2f"
+    },
+    {
+      "name": "settings",
+      "path": "static/assets/sprites/medusaUiIcons/settings.png",
+      "sha256": "571676af50a22df9e06ac3da1f144e5aa2a19c637b6dd1702737800d7dcc8324"
+    },
+    {
+      "name": "info",
+      "path": "static/assets/sprites/medusaUiIcons/info.png",
+      "sha256": "e11d92474a101617d36350d094950d9ec977a40522467919b00ffce0b5c4c18f"
+    },
+    {
+      "name": "payTable",
+      "path": "static/assets/sprites/medusaUiIcons/payTable.png",
+      "sha256": "2e837477cb14848370a6a3cbb7ddf410c0ab637cd3320600cd34822168f943e8"
+    },
+    {
+      "name": "soundOn",
+      "path": "static/assets/sprites/medusaUiIcons/soundOn.png",
+      "sha256": "9404cdeed14c9a8f4a4b57fc2f76e0726c3c84012a9f6acb0acff273442232c4"
+    },
+    {
+      "name": "soundOff",
+      "path": "static/assets/sprites/medusaUiIcons/soundOff.png",
+      "sha256": "d1538aea08d691c2db326ac961f90071e523f3562ece2082ee4fa2312faccbc3"
+    },
+    {
+      "name": "increase",
+      "path": "static/assets/sprites/medusaUiIcons/increase.png",
+      "sha256": "1577565eabcdd5c41064eeab35f00ec3e82cec6392b71ef6465c3881ea1be964"
+    },
+    {
+      "name": "decrease",
+      "path": "static/assets/sprites/medusaUiIcons/decrease.png",
+      "sha256": "b114b1903d521c74a16fbafc76542d8c91f49b1375c69cbc0f015df3b4c22926"
+    },
+    {
+      "name": "autoSpin",
+      "path": "static/assets/sprites/medusaUiIcons/autoSpin.png",
+      "sha256": "ed18e8eecdf2bb3a85d7f620e63b2c72578066a99aa7492661d18cbe02fdea9e"
+    }
+  ]
+}

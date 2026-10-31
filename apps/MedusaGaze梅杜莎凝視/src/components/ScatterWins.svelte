@@ -13,6 +13,8 @@
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { tumbleTiming } from '../game/animationTimeline';
 	import { smooth } from '../game/symbolMotion';
+	import { scoreArrivalScale,winFocusPose } from '../game/presentationMotion';
+	import { drawWinningAccent } from '../game/presentationFx';
 	import { getSymbolX } from '../game/utils';
 	import BoardContainer from './BoardContainer.svelte';
 	import GoldText from './GoldText.svelte';
@@ -24,8 +26,10 @@
 	let raf = 0, generation = 0, alive = true;
 	onDestroy(() => { alive = false; generation++; cancelAnimationFrame(raf); });
 	const slotY = (row: number) => (row - 0.5) * SYMBOL_SIZE;
-	const amountAlpha = $derived(smooth((age / clockScale - 95) / 75));
+	const focus = $derived(winFocusPose(age/clockScale));
+	const amountAlpha = $derived(smooth((age / clockScale - 95) / 75)*focus.readout);
 	const amountLift = $derived(8 * smooth(age / clockScale / 270));
+	const amountScale = $derived(scoreArrivalScale(age / clockScale));
 	context.eventEmitter.subscribeOnMount({
 		scatterWinsHide: () => { generation++; visible = false; wins = []; cancelAnimationFrame(raf); },
 		scatterWinsShow: async ({ wins: incoming, pace = 'normal' }) => {
@@ -55,11 +59,15 @@
 			g.clear();
 			const winning = new Set(wins.flatMap((win) => win.positions.map((p) => `${p.reel}:${p.row}`)));
 			for (let reel = 0; reel < BOARD_DIMENSIONS.x; reel++) for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
-				if (!winning.has(`${reel}:${row}`)) g.rect(getSymbolX(reel) - SYMBOL_SIZE / 2, slotY(row) - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE).fill({ color: 0x000000, alpha: 0.4 });
+				if (!winning.has(`${reel}:${row}`)) g.rect(getSymbolX(reel) - SYMBOL_SIZE / 2, slotY(row) - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE).fill({ color: 0x000000, alpha: 0.4*focus.shade });
+			}
+			for (const key of winning) {
+				const [reel,row] = key.split(':').map(Number);
+				if (row >= 1 && row <= BOARD_DIMENSIONS.y) drawWinningAccent(g,getSymbolX(reel),slotY(row),SYMBOL_SIZE,age/clockScale,reel*7+row);
 			}
 		}} />
 		{#each wins as win, index (index)}
-			<Container x={getSymbolX(win.overlay.reel)} y={slotY(win.overlay.row) + 8 - amountLift} alpha={amountAlpha}>
+			<Container x={getSymbolX(win.overlay.reel)} y={slotY(win.overlay.row) + 8 - amountLift} alpha={amountAlpha} scale={amountScale}>
 				<GoldText text={bookEventAmountToCurrencyString(win.win)} fontSize={SYMBOL_SIZE * 0.30} anchor={0.5} maxWidth={SYMBOL_SIZE * 1.9} />
 			</Container>
 		{/each}

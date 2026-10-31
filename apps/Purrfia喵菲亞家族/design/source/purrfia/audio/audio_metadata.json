@@ -4,8 +4,8 @@
     "seconds": 85.33333333333333,
     "channels": 2,
     "sourceRate": 48000,
-    "peakDb": -2.473696748410677,
-    "rmsDb": -17.721136259302924,
+    "peakDb": -3.3498216545130326,
+    "rmsDb": -18.59726071176009,
     "bpm": 90,
     "bars": 32,
     "originalSynthesis": true
@@ -15,8 +15,8 @@
     "seconds": 66.78260416666667,
     "channels": 2,
     "sourceRate": 48000,
-    "peakDb": -3.0885310904570353,
-    "rmsDb": -17.72113227684566,
+    "peakDb": -3.3498216545130326,
+    "rmsDb": -17.98242028906165,
     "bpm": 115,
     "bars": 32,
     "originalSynthesis": true

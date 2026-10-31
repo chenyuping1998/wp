@@ -28,9 +28,12 @@
 	 * rendered from a Text with the very same style and box, so the letter that
 	 * leaps is pixel for pixel the one that was there.
 	 *
-	 * No light: a screenprint has none (ART_BRIEF.md §0).
+	 * No soft light: a screenprint has none (ART_REQUEST §0). The hit's effects are printed shapes
+	 * (game/meshWin/saucerFx.ts): a halftone halo and a tractor beam under the subject; over it the acting part
+	 * flashing inside its own outline, a hard two-bar glint clipped to the glossy shape, and the bursts, bolts,
+	 * radio arcs and fizz — all placed through the rig, so they ride the acting.
 	 */
-	import { Mesh, MeshGeometry, Sprite, Container, Rectangle, Text, Texture } from 'pixi.js';
+	import { Mesh, MeshGeometry, Sprite, Container, Rectangle, Text, Texture, Graphics as FxGraphics } from 'pixi.js';
 	import { Graphics, getContextApp, getContextParent } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { stateBetDerived } from 'state-shared';
@@ -39,7 +42,8 @@
 	import { SYMBOL_SIZE, LOW_LETTER_SCALE, LOW_LETTER_DY } from '../game/constants';
 	import { GAME_FONT } from '../game/fonts';
 	import { getSymbolInfo } from '../game/utils';
-	import { CANVAS, skin } from '../game/meshWin/meshRig';
+	import { CANVAS, boneFrame, skin, type Point } from '../game/meshWin/meshRig';
+	import { SAUCER_FX, glintBars } from '../game/meshWin/saucerFx';
 	import { MESH_WINS } from '../game/meshWin';
 	import ImpactDust from './ImpactDust.svelte';
 
@@ -146,10 +150,34 @@
 		if (shadow) shadow.alpha = 0;
 		const subject = new Mesh({ geometry, texture: subjectTex });
 
+		// the hit's printed effects — the win acts only, not an idle act or a landing
+		const fx = props.spec || props.letter ? undefined : SAUCER_FX[spec.symbol];
+		const back = new FxGraphics(), front = new FxGraphics(), glint = new FxGraphics();
+		let flash: Mesh<MeshGeometry> | undefined, flashGeometry: MeshGeometry | undefined;
+		if (fx) {
+			// the acting part's own triangles, drawn again additive: it flashes inside its outline, no halo
+			const bones = fx.flash.bones.map((name) => rig.bones.findIndex((b) => b.name === name)).filter((b) => b >= 0);
+			const B = rig.bones.length, owned = (v: number) => bones.reduce((sum, b) => sum + rig.weights[v * B + b], 0);
+			const lit: number[] = [];
+			for (let i = 0; i < rig.indices.length; i += 3) {
+				const [a, b, c] = [rig.indices[i], rig.indices[i + 1], rig.indices[i + 2]];
+				if ((owned(a) + owned(b) + owned(c)) / 3 > 0.5) lit.push(a, b, c);
+			}
+			if (lit.length) {
+				flashGeometry = new MeshGeometry({ positions, uvs: rig.uvs, indices: new Uint32Array(lit) });
+				flash = new Mesh({ geometry: flashGeometry, texture: subjectTex });
+				flash.blendMode = 'add';
+				flash.tint = fx.flash.tint;
+				flash.alpha = 0;
+			}
+		}
+
 		const content = new Container();
 		content.position.set(-CANVAS / 2, -CANVAS / 2);
 		if (shadow) content.addChild(shadow);
-		content.addChild(subject);
+		content.addChild(back, subject);
+		if (flash) content.addChild(flash);
+		content.addChild(glint, front);
 		root.addChild(content);
 		root.scale.set(fit);
 		root.position.set(props.x ?? 0, (props.y ?? 0) + dy);
@@ -163,6 +191,28 @@
 			geometry.getBuffer('aPosition').update();
 			root.scale.set(fit * pose.plateHit);
 			props.onpose?.(rig, pose);
+
+			if (fx) {
+				const at = (bone: string, p: Point): Point => {
+					const f = boneFrame(rig, pose, spec.feetY, bone, p);
+					return [f.x, f.y];
+				};
+				back.clear();
+				front.clear();
+				glint.clear();
+				fx.back?.(back, t, at);
+				fx.front?.(front, t, at);
+				if (flash && flashGeometry) {
+					flash.alpha = Math.min(1, fx.flash.at(t));
+					if (flash.alpha > 0) flashGeometry.getBuffer('aPosition').update();
+				}
+				const gl = fx.glint;
+				if (gl && t > gl.from && t < gl.to) {
+					// two hard bars sweeping across the gloss, clipped to it, riding the part
+					for (const bar of glintBars(gl.shape, (t - gl.from) / (gl.to - gl.from), gl.angle))
+						glint.poly(bar.flatMap((p) => at(gl.bone, p))).fill({ color: 0xfffbea, alpha: 0.88 });
+				}
+			}
 
 			if (shadow) {
 				const air = pose.air;
@@ -187,6 +237,7 @@
 			// geometry is ours
 			root.destroy({ children: true });
 			geometry.destroy();
+			flashGeometry?.destroy();
 		};
 	});
 </script>

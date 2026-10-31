@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-31",
+  "scope": "Grounded instrument performances, free-standing wordmark, Golf-inspired Info guide",
+  "checks": {
+    "productionBuild": "passed",
+    "instrumentPerformance": "passed: identity root throughout, causal local gestures",
+    "meshWinLandIdleH1H4": "passed: ownership, triangle orientation and continuity",
+    "phraseEffects": "passed",
+    "background": "passed",
+    "undefinedReferences": "passed",
+    "socialCopy": "passed",
+    "types": "baseline passed: 14 existing errors, no new errors",
+    "scopedDiffWhitespace": "passed",
+    "browserConsoleErrors": [],
+    "infoRecordsNavigation": "passed: visible section aligned at y=78 after smooth scroll",
+    "responsive": ["390x844", "1366x768"],
+    "instrumentContactSheets": ["jazz-v4-H1.jpg", "jazz-v4-H2.jpg", "jazz-v4-H3.jpg", "jazz-v4-H4.jpg"]
+  },
+  "screenshots": [
+    "E:/stake/tmp/jazz-v4-title-mobile.png",
+    "E:/stake/tmp/jazz-v4-info-mobile.png",
+    "E:/stake/tmp/jazz-v4-info-desktop.png"
+  ],
+  "preview": "Offline mocked session on localhost:4199; no deployment"
+}

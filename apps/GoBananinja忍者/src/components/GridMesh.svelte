@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { Container, Mesh, MeshGeometry, type Texture } from 'pixi.js';
+	import { Container, Mesh, MeshGeometry, Sprite, Texture } from 'pixi.js';
 	import { getContextApp, getContextParent } from 'pixi-svelte';
 	import { onDestroy, onMount } from 'svelte';
-	import { makeGrid, poseBackground, poseSymbol } from '../game/gridMotion';
+	import { BG_GRID, makeGrid, poseBackground, poseSymbol, type BgLight } from '../game/gridMotion';
 	import { makeBackgroundLighting } from '../game/sceneLighting';
 
 	type Props = {
 		assetKey: string;
 		kind: 'symbol' | 'background';
+		energy?: number;
 		name: string;
 		seconds: number;
 		x?: number;
@@ -25,6 +26,22 @@
 	let builtKey = '';
 	let grid: ReturnType<typeof makeGrid> | undefined;
 	let positions: Float32Array | undefined;
+	// the lanterns' and candles' glow (backgrounds): soft additive light that follows each lantern on its cord
+	const lights: BgLight[] = [];
+	const glows: Sprite[] = [];
+	let glowTexture: Texture | undefined;
+	const softGlow = () => {
+		if (glowTexture) return glowTexture;
+		const c = document.createElement('canvas');
+		c.width = c.height = 128;
+		const g = c.getContext('2d')!, r = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+		r.addColorStop(0, 'rgba(255,255,255,0.85)');
+		r.addColorStop(0.35, 'rgba(255,255,255,0.3)');
+		r.addColorStop(1, 'rgba(255,255,255,0)');
+		g.fillStyle = r;
+		g.fillRect(0, 0, 128, 128);
+		return (glowTexture = Texture.from(c));
+	};
 	onMount(() => {
 		if (props.kind !== 'background') return;
 		const filter = makeBackgroundLighting();
@@ -41,9 +58,10 @@
 		if (!texture) return;
 		if (builtKey !== assetKey) {
 			root.removeChildren().forEach((child) => child.destroy());
+			glows.length = 0;
 			geometry?.destroy();
-			const cols = props.kind === 'background' ? 40 : 12;
-			const rows = props.kind === 'background' ? 24 : 12;
+			const cols = props.kind === 'background' ? BG_GRID.cols : 12;
+			const rows = props.kind === 'background' ? BG_GRID.rows : 12;
 			grid = makeGrid(texture.width, texture.height, cols, rows);
 			positions = new Float32Array(grid.rest);
 			geometry = new MeshGeometry({ positions, uvs: grid.uvs, indices: grid.indices });
@@ -51,7 +69,23 @@
 			builtKey = assetKey;
 		}
 		if (!grid || !positions || !geometry) return;
-		if (props.kind === 'background') poseBackground(grid, positions, props.seconds, props.name);
+		if (props.kind === 'background') {
+			poseBackground(grid, positions, props.seconds, props.name, lights);
+			while (glows.length < lights.length) {
+				const s = new Sprite({ texture: softGlow(), anchor: 0.5, blendMode: 'add' });
+				root.addChild(s);
+				glows.push(s);
+			}
+			glows.forEach((s, i) => {
+				const l = lights[i];
+				s.visible = !!l;
+				if (!l) return;
+				s.position.set(l.x, l.y);
+				s.width = s.height = l.r * 2;
+				s.tint = l.color;
+				s.alpha = l.alpha * (1 + .35 * (props.energy ?? 0));
+			});
+		}
 		else poseSymbol(grid, positions, props.name, props.seconds);
 		geometry.getBuffer('aPosition').update();
 		const anchor = props.anchor ?? 0;
@@ -62,5 +96,6 @@
 	onDestroy(() => {
 		root.removeChildren().forEach((child) => child.destroy());
 		geometry?.destroy();
+		glowTexture?.destroy(true);
 	});
 </script>

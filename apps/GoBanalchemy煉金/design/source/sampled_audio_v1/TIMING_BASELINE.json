@@ -1,0 +1,432 @@
+{
+  "bgm_freespin": {
+    "frames": 547448,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "bgm_main": {
+    "frames": 661500,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "bigwin_blast": {
+    "frames": 59535,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "btn": {
+    "frames": 12348,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "cave_quake": {
+    "frames": 41895,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "coin_shimmer": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "dynamite_blast": {
+    "frames": 41895,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "dynamite_blast_big": {
+    "frames": 59535,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "fs_intro": {
+    "frames": 74970,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "fullboard_chain": {
+    "frames": 74970,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "fullboard_stamp": {
+    "frames": 74970,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "fuse_sizzle": {
+    "frames": 16758,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "gong_feature": {
+    "frames": 74970,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "grenade_blast": {
+    "frames": 41895,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "jng_intro_fs": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "ladder_up": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "monkey_expand": {
+    "frames": 114660,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "mult_update": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "pluck_low": {
+    "frames": 22050,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "press_blast": {
+    "frames": 41895,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "reel_stop": {
+    "frames": 12348,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "reel_tension": {
+    "frames": 88200,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "scatter_1": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "scatter_2": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "scatter_3": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "scatter_4": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "scatter_5": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_anticipation": {
+    "frames": 88200,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_anticipation_start": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_bigwin_coinloop": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_btn_general": {
+    "frames": 12348,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_btn_spin": {
+    "frames": 12348,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_fs_respins": {
+    "frames": 22050,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_multiplier_combine_a": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_multiplier_combine_b": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_multiplier_explosion_a": {
+    "frames": 41895,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_multiplier_explosion_b": {
+    "frames": 41895,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_multiplier_explosion_c": {
+    "frames": 41895,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_multiplier_landing": {
+    "frames": 22050,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_multiplier_reset": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_multiplier_up": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_multiplier_update": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_multiplier_win": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_reel_stop_1": {
+    "frames": 12348,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_reel_stop_2": {
+    "frames": 12348,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_reel_stop_3": {
+    "frames": 12348,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_reel_stop_4": {
+    "frames": 12348,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_reel_stop_5": {
+    "frames": 12348,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_royals_landing": {
+    "frames": 22050,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_scatter_reveal": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_scatter_stop_1": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_scatter_stop_2": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_scatter_stop_3": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_scatter_stop_4": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_scatter_stop_5": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_scatter_win": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_scatter_win_v2": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_superfreespin": {
+    "frames": 22050,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_symbols_landing": {
+    "frames": 22050,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_wild_explode": {
+    "frames": 41895,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_winlevel_end": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_winlevel_nice": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_winlevel_small": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_winlevel_standard": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_winlevel_substantial": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "sfx_youwon_panel": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "smoke_puff": {
+    "frames": 41895,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "spin": {
+    "frames": 22050,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "symbol_reveal": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "symbol_shatter": {
+    "frames": 41895,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "tumble_win_1": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "tumble_win_2": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "tumble_win_3": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "tumble_win_4": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "voice_effort": {
+    "frames": 30869,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "voice_roar": {
+    "frames": 30869,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "wild_expand": {
+    "frames": 41895,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "win_big": {
+    "frames": 67032,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "win_cap": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "win_epic": {
+    "frames": 109368,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "win_gliss": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "win_gliss_big": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "win_max": {
+    "frames": 123479,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "win_mega": {
+    "frames": 95256,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "win_panel": {
+    "frames": 52920,
+    "channels": 2,
+    "sample_rate": 44100
+  },
+  "win_super": {
+    "frames": 81144,
+    "channels": 2,
+    "sample_rate": 44100
+  }
+}

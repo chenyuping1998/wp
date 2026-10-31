@@ -1,4 +1,4 @@
-import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
+import { GAME_FONT, GAME_FONT_WEIGHT,BODY_FONT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
 import { stateConfig } from 'state-shared';
 
@@ -10,6 +10,8 @@ setUiTheme({
 	fontFamily: GAME_FONT,
 	// single-weight face; 700 would only get a synthesised bold
 	fontWeight: GAME_FONT_WEIGHT,
+	valueFontFamily: BODY_FONT,
+	valueFontWeight: '700',
 
 	// the strip and the discs are art; these colours are what the shared parts
 	// fall back to and what the vector turbo bolt is drawn in
@@ -37,7 +39,7 @@ setUiTheme({
 	railButtonScale: 1.10,
 	spinScale: 0.88,
 
-	// spin: the one solid coral thing on the strip, edged in ink
+	// Marble-and-gold spin control, with an ink-dark serpent glyph.
 	betFill: 0xefe8d8,
 	betBorder: 0xf2b632,
 
@@ -50,17 +52,17 @@ setUiTheme({
 	valueFill: 0xfffaf0,
 	valueStroke: 0x2a1f24,
 	valueShadow: 0x120c0f,
-	readoutScale: 0.82,
-	readoutOffsetY: -4,
+	readoutScale: 0.84,
+	readoutOffsetY: -6,
 	// the status line between Win and the stepper (BarMessage.svelte sets the text)
 	barMessageFill: 0xefe8d8,
-	barMessageScale: 0.50,
+	barMessageScale: 0.46,
 	barMessageStroke: 0x2a1f24,
 	// the Win figure swells and flashes when a win lands; Bet swells when it moves
-	valuePop: 0.18,
+	valuePop: 0.10,
 	winFlashTint: 0xfff3c4,
 
-	// one slim strip along the foot — the arrangement players arrive knowing
+	// A taller console keeps both readout lines clear of the painted gold rails.
 	betBarLayout: 'compactBottom',
 	barSpriteSlice: 96,
 
@@ -111,11 +113,12 @@ setUiTheme({
 	// the Bet panel opens the stake menu when tapped; under the cursor its caption
 	// and chevron light coral, the colour every hover in the game uses
 	labelAffordance: true,
-	labelHoverColor: 0xe8725e,
-	labelChevronHoverColor: 0xe8725e,
+	labelHoverColor: 0xffdf6e,
+	labelChevronHoverColor: 0xffdf6e,
 	// hover never greys a control out: it lights in the game's own colour
 	hoverHighlight: true,
-	hoverPlateLight: 0xe8725e,
+	// The whole Bet cell lifts on hover, alongside its gold caption/chevron.
+	hoverPlateLight: undefined,
 	pressFeedback: true,
 	// no breathing halo on Spin (a flaring halo was part of a "poor UI" review)
 	spinButtonGlow: false,

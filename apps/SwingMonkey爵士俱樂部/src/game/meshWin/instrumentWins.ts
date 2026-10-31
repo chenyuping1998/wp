@@ -24,8 +24,6 @@ import {
 	polyline,
 	restPose,
 	smoothstep,
-	track,
-	turnAbout,
 	union,
 	type MeshWinSpec,
 	type PartSpec,
@@ -33,6 +31,9 @@ import {
 	type Pose,
 	type Rig,
 } from './meshRig';
+
+import { JAZZ_HITS, phraseRelease } from './phrase';
+import { ppTrack, PP_FRAME } from './ppVocabulary';
 
 const DURATION = 1440;
 const GRID = { x0: 0, y0: 0, x1: 256, y1: 256, cols: 72, rows: 72 };
@@ -93,46 +94,30 @@ const spec = (
 	limits: { body: { pos: 0, neg: 0 }, ...limits },
 	pose: (rig, t) => {
 		const pose = restPose(rig);
-		// a pop as the phrase starts, so the win reads at a glance
-		pose.rigid.pop = 1 + 0.08 * bump(t, 0, 320);
-		pose.air = 0.3 * bump(t, 0, 320);
 		act(rig, pose, t);
-		// ON THE BEAT (2026-10-18): the whole instrument gives a small bounce on
-		// each of its own hits — squats into it, springs up off it — so the
-		// phrase swings instead of the instrument playing in place. Rigid only
-		// (it cannot tear the mesh); after act(), so the act's own lean stays.
-		const beat = BEAT_HOP[symbol];
-		if (beat) {
-			let hop = 0;
-			let squat = 0;
-			for (const h of beat.at) {
-				hop += bump(t, h - 20, h + 240);
-				squat += bump(t, h - 110, h - 10);
-			}
-			hop = Math.min(1, hop);
-			squat = Math.min(1, squat);
-			pose.rigid.dy -= beat.height * hop;
-			pose.rigid.sx *= 1 + 0.05 * squat - 0.03 * hop;
-			pose.rigid.sy *= 1 - 0.06 * squat + 0.04 * hop;
-			pose.air = Math.max(pose.air, 0.35 * hop);
+		// Grounded performance: the case, stand and card remain in place. The
+		// research's local gesture + delayed follow-through carries the phrase.
+		const release = phraseRelease(t);
+		for (const part of pose.bones) {
+			part.angle *= release;
+			part.dx *= release;
+			part.dy *= release;
+			part.along = 1 + (part.along - 1) * release;
+			part.across = 1 + (part.across - 1) * release;
 		}
 		return pose;
 	},
 });
 
-// each instrument's own hits, for the bounce in spec(); the drum's six come
-// close together, so it only bounces on the right stick and lower
-const BEAT_HOP: Record<string, { at: number[]; height: number }> = {
-	get H1() { return { at: SAX_HONKS, height: 9 }; },
-	get H2() { return { at: BASS_PLUCKS, height: 6 }; },
-	get H3() { return { at: RIGHT_HITS, height: 5 }; },
-	get H4() { return { at: BANJO_STRUMS, height: 6 }; },
-};
+/** A drawn-back string has a readable preparation before it releases. */
+const pull = (t: number, h: number) => ppTrack(t, [[h - 4 * PP_FRAME, 0], [h - PP_FRAME, 1], [h, 0, 'leave']]);
+/** The material answers after contact, with one overshoot and a soft settle. */
+const answer = (t: number, h: number) => ppTrack(t, [[h, 0], [h + PP_FRAME, 1], [h + 3 * PP_FRAME, -0.22], [h + 6 * PP_FRAME, 0, 'settle']]);
 
 // ---------------------------------------------------------------------------
 // H1 — saxophone: two honks; between them the fingers run down the keys
 
-const SAX_HONKS = [240, 820];
+const SAX_HONKS = JAZZ_HITS.H1;
 const SAX_PADS: [Point, number][] = [[[114, 72], 9], [[113, 107], 10], [[118, 133], 8], [[111, 157], 9], [[120, 199], 11]];
 
 export const H1 = spec(
@@ -141,6 +126,9 @@ export const H1 = spec(
 	SAX_HONKS[0],
 	SAX_HONKS[1],
 	[
+		{ name: 'neck', parent: 'body', pivot: [114, 90], axis: [0, -1], priority: 6,
+			dist: polyline([[30, 38], [65, 24], [92, 26], [107, 49], [113, 77]], 10).dist,
+			keep: (p) => smoothstep((65 - p[1]) / 20) },
 		{ name: 'bell', parent: 'body', pivot: [160, 178], axis: [1, -1], priority: 8, dist: blob([194, 136], 52, 48, 2.5), keep: (p) => smoothstep((Math.hypot(p[0] - 160, p[1] - 178) - 8) / 26) },
 		{ name: 'note', parent: 'body', pivot: [214, 98], axis: [0, -1], priority: 10, dist: blob([216, 76], 38, 44, 2) },
 		{ name: 'sparkL', parent: 'note', pivot: [197, 90], axis: [-12, -23], priority: 16, dist: polyline([[195, 86], [183, 62]], 5).dist },
@@ -148,6 +136,7 @@ export const H1 = spec(
 		...SAX_PADS.map(([c, r], i): PartSpec => ({ name: `pad${i + 1}`, parent: 'body', pivot: c, axis: [0, -1], priority: 12, dist: circle(c, r) })),
 	],
 	{
+		neck: { pos: 3, neg: 3 },
 		bell: { pos: 1, neg: 1 },
 		note: { pos: 12, neg: 12 },
 		sparkL: { pos: 1, neg: 1 },
@@ -157,9 +146,8 @@ export const H1 = spec(
 	(rig, pose, t) => {
 		const honk = (h: number) => bump(t, h - 40, h + 300);
 		const blow = sum(SAX_HONKS, honk);
-		// the player leans back into each honk and sways between them
-		pose.rigid.rot = -3.5 * blow + 1.5 * Math.sin((2 * Math.PI * t) / 700) * live(t);
-		pose.rigid = turnAbout(pose.rigid, [128, 140], 236);
+		// Air travels from the neck to the bell; the neck and note answer later.
+		bone(rig, pose, 'neck').angle = -2.6 * sum(SAX_HONKS, h => answer(t, h + PP_FRAME));
 		const bell = bone(rig, pose, 'bell');
 		bell.along = 1 + 0.07 * blow;
 		bell.across = 1 + 0.06 * blow;
@@ -167,7 +155,7 @@ export const H1 = spec(
 		const note = bone(rig, pose, 'note');
 		note.dy = -7 * blow;
 		note.dx = 2 * blow;
-		note.angle = 10 * sum(SAX_HONKS, (h) => flick(t, h, 2.6, 4)) * live(t);
+		note.angle = 10 * sum(SAX_HONKS, (h) => flick(t, h + 2 * PP_FRAME, 2.6, 4)) * live(t);
 		note.along = 1 + 0.08 * sum(SAX_HONKS, (h) => flick(t, h + 60, 4, 7));
 		// the sparks ride on the note and flash outward on each honk
 		for (const name of ['sparkL', 'sparkR']) {
@@ -178,7 +166,8 @@ export const H1 = spec(
 		// fingering: the keys press down in a run between the honks, and back up
 		SAX_PADS.forEach(([, r], i) => {
 			const pad = bone(rig, pose, `pad${i + 1}`);
-			const press = bump(t, 420 + 70 * i, 540 + 70 * i) + bump(t, 1040 + 50 * (4 - i), 1150 + 50 * (4 - i));
+			const pressAt = (at: number) => ppTrack(t, [[at, 0], [at + PP_FRAME, 1], [at + 3 * PP_FRAME, 0.75], [at + 5 * PP_FRAME, 0, 'settle']]);
+			const press = pressAt(100 + PP_FRAME * i) + pressAt(660 + PP_FRAME * (4 - i));
 			pad.along = pad.across = 1 - 0.24 * press;
 			pad.dy = 0.2 * r * press;
 		});
@@ -188,7 +177,7 @@ export const H1 = spec(
 // ---------------------------------------------------------------------------
 // H2 — upright bass: four plucks, the strings shiver, the bass rocks on its pin
 
-const BASS_PLUCKS = [220, 520, 820, 1060];
+const BASS_PLUCKS = JAZZ_HITS.H2;
 const BASS_FROM: Point = [112, 46];
 const BASS_TO: Point = [140, 158];
 const BASS_ACROSS = across(BASS_FROM, BASS_TO);
@@ -206,23 +195,20 @@ export const H2 = spec(
 	],
 	{ box: { pos: 1, neg: 1 }, scroll: { pos: 4, neg: 4 }, strings: { pos: 1, neg: 1 }, pluck: { pos: 12, neg: 12 } },
 	(rig, pose, t) => {
-		// the bass rocks on its endpin with each pluck
-		pose.rigid.rot = 2.2 * sum(BASS_PLUCKS, (h) => flick(t, h, 2, 4));
-		// the string shivers: a fast decaying wave, pinned at both ends
-		const shiver = 4.5 * sum(BASS_PLUCKS, (h) => flick(t, h, 12, 6));
+		// Pull, release, shiver: fixed endpoints keep the nut and bridge planted.
+		const shiver = sum(BASS_PLUCKS, h => -2.1 * pull(t, h) + 4.5 * flick(t, h, 12, 6));
 		const strings = bone(rig, pose, 'strings');
 		strings.dx = BASS_ACROSS[0] * shiver;
 		strings.dy = BASS_ACROSS[1] * shiver;
 		// the pulled-string mark: drawn back, then snaps past and settles
 		const pluck = bone(rig, pose, 'pluck');
-		pluck.angle = 9 * sum(BASS_PLUCKS, (h) => track(t, [[h - 170, 0], [h - 20, 1, 'out'], [h + 30, 0, 'in']])) - 6 * sum(BASS_PLUCKS, (h) => flick(t, h + 30, 6, 9));
-		pluck.along = 1 + 0.12 * sum(BASS_PLUCKS, (h) => track(t, [[h - 170, 0], [h - 20, 1, 'out'], [h + 30, 0, 'in']]));
+		pluck.angle = 9 * sum(BASS_PLUCKS, h => pull(t, h)) - 6 * sum(BASS_PLUCKS, h => flick(t, h + PP_FRAME, 6, 9));
+		pluck.along = 1 + 0.12 * sum(BASS_PLUCKS, h => pull(t, h));
 		// the wooden body breathes with each note, the scroll nods after it
 		const box = bone(rig, pose, 'box');
 		const swell = sum(BASS_PLUCKS, (h) => bump(t, h, h + 220));
 		box.across = 1 + 0.04 * swell;
 		box.along = 1 + 0.02 * swell;
-		bone(rig, pose, 'body').dy = -1.8 * swell;
 		bone(rig, pose, 'scroll').angle = 3.5 * sum(BASS_PLUCKS, (h) => flick(t, h + 40, 4, 6));
 	},
 );
@@ -236,8 +222,8 @@ const LEFT_BUTT: Point = [32, 84];
 const RIGHT_BUTT: Point = [238, 34];
 /** a stick lifts from its butt end, comes down on the head, bounces off it */
 const strike = (t: number, hits: number[], lift: number) =>
-	lift * sum(hits, (h) => track(t, [[h - 200, 0], [h - 70, 1, 'out'], [h, 0, 'in']]) + 0.22 * bump(t, h, h + 120));
-const impact = (t: number, hits: number[]) => sum(hits, (h) => flick(t, h, 9, 9));
+	lift * sum(hits, h => ppTrack(t, [[h - 5 * PP_FRAME, 0], [h - 2 * PP_FRAME, 1],
+		[h, 0, 'leave'], [h + PP_FRAME * 0.5, -0.09], [h + 2 * PP_FRAME, 0.18], [h + 4 * PP_FRAME, 0, 'settle']]));
 
 export const H3 = spec(
 	'H3',
@@ -254,14 +240,10 @@ export const H3 = spec(
 	(rig, pose, t) => {
 		bone(rig, pose, 'stickL').angle = strike(t, LEFT_HITS, -8);
 		bone(rig, pose, 'stickR').angle = strike(t, RIGHT_HITS, 9);
-		const hitL = impact(t, LEFT_HITS), hitR = impact(t, RIGHT_HITS);
+		const hitL = sum(LEFT_HITS, h => answer(t, h)), hitR = sum(RIGHT_HITS, h => answer(t, h));
 		const head = bone(rig, pose, 'head');
-		head.dy = 2.2 * (hitL + hitR);
-		head.along = 1 - 0.03 * (hitL + hitR);
-		// the whole drum jolts toward the side that was hit
-		pose.rigid.sy = 1 - 0.012 * Math.abs(hitL + hitR);
-		pose.rigid.rot = 1.2 * (hitR - hitL);
-		pose.rigid = turnAbout(pose.rigid, [128, 160], 234);
+		head.dy = 2 * (hitL + hitR);
+		head.along = 1 - 0.025 * (hitL + hitR);
 		// the impact lines burst out of the right stick's tip
 		const spray = bone(rig, pose, 'spray');
 		spray.along = spray.across = 1 + 0.18 * sum(RIGHT_HITS, (h) => bump(t, h - 5, h + 100));
@@ -272,7 +254,7 @@ export const H3 = spec(
 // ---------------------------------------------------------------------------
 // H4 — banjo: four strums, the head rings, the neck bobs
 
-const BANJO_STRUMS = [220, 500, 780, 1040];
+const BANJO_STRUMS = JAZZ_HITS.H4;
 const BANJO_FROM: Point = [92, 180];
 const BANJO_TO: Point = [190, 64];
 const BANJO_ACROSS = across(BANJO_FROM, BANJO_TO);
@@ -290,8 +272,6 @@ export const H4 = spec(
 	],
 	{ skin: { pos: 1, neg: 1 }, neck: { pos: 4, neg: 4 }, strings: { pos: 1, neg: 1 }, strum: { pos: 1, neg: 1 } },
 	(rig, pose, t) => {
-		pose.rigid.rot = 2.5 * sum(BANJO_STRUMS, (h) => flick(t, h, 2.2, 4));
-		pose.rigid = turnAbout(pose.rigid, [100, 170], 238);
 		const shiver = 4 * sum(BANJO_STRUMS, (h) => flick(t, h, 14, 7));
 		const strings = bone(rig, pose, 'strings');
 		strings.dx = BANJO_ACROSS[0] * shiver;
@@ -303,6 +283,8 @@ export const H4 = spec(
 		skin.across = 1 - 0.02 * ring;
 		// the strum marks flash out from the strings
 		const strum = bone(rig, pose, 'strum');
+		strum.dx = sum(BANJO_STRUMS, h => ppTrack(t, [[h - 3 * PP_FRAME, 0], [h - PP_FRAME, -1.8], [h + PP_FRAME, 2.3, 'leave'], [h + 4 * PP_FRAME, 0, 'settle']]));
+		strum.dy = -strum.dx * 0.6;
 		strum.along = strum.across = 1 + 0.3 * sum(BANJO_STRUMS, (h) => bump(t, h - 10, h + 200));
 		bone(rig, pose, 'neck').angle = -3 * sum(BANJO_STRUMS, (h) => flick(t, h + 30, 3.5, 6));
 	},

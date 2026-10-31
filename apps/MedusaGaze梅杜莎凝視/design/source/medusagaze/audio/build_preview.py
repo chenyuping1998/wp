@@ -10,12 +10,12 @@ template='''<!doctype html>
 <style>
 :root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101a21;color:#eaf0e7}*{box-sizing:border-box}body{max-width:1180px;margin:auto;padding:38px 24px 70px}h1{font-size:34px;margin:10px 0}h2{font-size:20px;color:#d6ca91;margin-top:38px}p{line-height:1.7;color:#b9c6be}a{color:#b7e4a1}header{border-bottom:1px solid #33493e;padding-bottom:24px}.eyebrow{color:#8ebc82;letter-spacing:.14em;font-size:12px}.notice{border:1px solid #76603c;background:#30291e;padding:15px 18px;border-radius:10px;color:#ecd7ad}.tools{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}button{background:#233c30;color:#e1edc7;border:1px solid #466747;border-radius:8px;padding:11px 15px;font:inherit;cursor:pointer}button:hover{background:#34533b}button.stop{background:#633b37;border-color:#8e5751}label{display:flex;align-items:center;gap:12px}input{accent-color:#a4d489}#status{min-height:24px;color:#b7e4a1}section{display:grid;grid-template-columns:repeat(auto-fit,minmax(315px,1fr));gap:14px}.card{background:#18262b;border:1px solid #2d443c;border-radius:10px;padding:17px;min-width:0}.name{font:600 14px ui-monospace,monospace;color:#e0d1a0;overflow-wrap:anywhere}.meta{font-size:12px;margin:8px 0;color:#a9beb2}.desc{font-size:13px;min-height:34px}.card audio{width:100%;height:36px;margin:9px 0}.small{font-size:12px}.links{display:flex;gap:20px}.synthetic{border-color:#786140}.foot{margin-top:45px;font-size:13px} @media(max-width:600px){body{padding:24px 16px}h1{font-size:27px}}
 </style>
-<header><div class="eyebrow">MEDUSA GAZE / ORIGINAL SYNTHESIS / 2026.10.24</div>
-<h1>梅杜莎凝視 · 音訊試聽</h1><p>情境喜劇的輕快節奏，配上原創里拉琴、潘笛與手鼓音色。57 個檔案，共 <strong>6.69 MB</strong>；兩首 BGM 同主題、同調性，各 64 秒。</p>
+<header><div class="eyebrow">MEDUSA GAZE / ORIGINAL SYNTHESIS / 2026.10.30</div>
+<h1>梅杜莎凝視 · 音訊試聽</h1><p>情境喜劇的輕快節奏，配上原創里拉琴、潘笛與手鼓音色。__CUE_COUNT__ 個檔案，共 <strong>__AUDIO_MB__ MB</strong>；兩首 BGM 同主題、同調性，各 64 秒。</p>
 <div class="notice">角色聲音為<strong>程序合成預聽</strong>，用於角色時機與情緒方向。仍需同一位真人配音演員錄製中音、帶鼻音的戲劇化聲線；不宣稱已完成真人配音。全部素材未使用外部取樣或既有曲目。</div>
 <p class="small">SFX：WAV 44.1 kHz / 16-bit / mono。母帶：48 kHz / 24-bit。BGM 與環境循環：Ogg Vorbis / 44.1 kHz / stereo，以滿足 12 MB 預算。遊戲使用 Web Audio 取樣迴圈與 450 ms 交叉淡入淡出。<a href="LEVELS.md">LEVELS</a> · <a href="audio_metadata.json">量測資料</a> · <a href="generate_audio.py">重建程式</a> · <a href="../../audio/README.md">來源與授權</a></p>
 </header>
-<h2>情境試聽</h2><p class="small">先將音量設低，再依序檢查連消音高、得分與落空的差異，以及多顆寶珠的短尾巴。下列為排程試聽；實際 Turbo / 筆電喇叭的主觀驗收仍需在遊戲中完成。</p>
+<h2>倍率丟球 · v8 聲音層次</h2><p>350ms 蓄力 → 角色發聲 → 出手爆點 → 600ms 風壓 → 晶石重擊。以下為分層合成試聽；聲畫同步請使用<a href="../multiplier/preview/index.html">倍率演出預覽</a>。</p><audio controls src="CASTING_V8_SOUND_DESIGN.wav"></audio><h2>情境試聽</h2><p class="small">先將音量設低，再依序檢查連消音高、得分與落空的差異，以及多顆寶珠的短尾巴。下列為排程試聽；實際 Turbo / 筆電喇叭的主觀驗收仍需在遊戲中完成。</p>
 <label>試聽音量 <input id="volume" type="range" min="0" max="1" step=".01" value=".5"><span id="volumeText">50%</span></label>
 <div class="tools"><button data-scene="cascade">8 次連消</button><button data-scene="contrast">寶珠：得分 / 落空</button><button data-scene="turbo">3 顆寶珠間隔預聽</button><button data-scene="spins">連按 20 次 Spin</button><button data-scene="crossfade">BGM 主遊戲 → 免費遊戲</button><button class="stop" id="stop">停止全部</button></div><div id="status" aria-live="polite">準備試聽。</div>
 <div id="library"></div>
@@ -69,7 +69,7 @@ async function scene(name){
  try{
   if(name==='cascade'){setStatus('8 次連消：第 5 次起維持最高音階。');for(let i=0;i<8;i++){await audition('sfx_petrify_'+Math.min(i+1,5),i*.52);await audition('sfx_crumble',i*.52+.13,.55);await audition('sfx_drop',i*.52+.32,.7)}}
   if(name==='contrast'){setStatus('依序：綠、紫、金寶珠得分 → 兩種落空。');for(const [i,cue] of ['sfx_orb_hit_s','sfx_orb_hit_m','sfx_orb_hit_l','sfx_orb_crack','sfx_orb_crack_2'].entries())await audition(cue,i*.85)}
-  if(name==='turbo'){setStatus('3 顆寶珠：150 ms 間隔預聽；遊戲 Turbo 使用更短時序。');for(let i=0;i<3;i++){await audition('sfx_orb_fly',i*.15,.8);await audition('sfx_orb_hit_'+['s','m','l'][i],i*.15+.25,.8)}}
+  if(name==='turbo'){setStatus('3 顆寶珠：200 ms 間隔、600 ms 飛行；三種 TURBO 的倍率演出速度相同。');for(let i=0;i<3;i++){await audition('sfx_orb_fly',i*.2,.8);await audition('sfx_orb_hit_'+['s','m','l'][i],i*.2+.6,.8)}}
   if(name==='spins'){setStatus('20 次短轉試聽，約 9 秒；請自行判斷是否刺耳。');for(let i=0;i<20;i++){await audition('sfx_spin',i*.45,.8);await audition('sfx_reel_stop',i*.45+.17,.65)}}
   if(name==='crossfade'){
    setStatus('主遊戲 6 秒後交叉淡入免費遊戲，8 秒後回到主遊戲。');
@@ -82,5 +82,5 @@ async function scene(name){
 for(const button of document.querySelectorAll('[data-scene]'))button.onclick=()=>scene(button.dataset.scene);
 </script></html>
 '''
-(HERE/'preview.html').write_text(template.replace('__METADATA__',json.dumps(data,ensure_ascii=False)),encoding='utf-8')
+(HERE/'preview.html').write_text(template.replace('__METADATA__',json.dumps(data,ensure_ascii=False)).replace('__CUE_COUNT__',str(len(data['files']))).replace('__AUDIO_MB__',f"{data['runtime_bytes']/1_000_000:.2f}"),encoding='utf-8')
 print('Wrote preview.html')

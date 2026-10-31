@@ -53,7 +53,6 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 			type: 'soundBigWinBlast',
 			tier: Math.min(5, Math.max(1, winLevelData.level - 5)) as 1 | 2 | 3 | 4 | 5,
 		});
-		eventEmitter.broadcast({ type: 'soundMedusa', cue: 'laugh' });
 		eventEmitter.broadcast({
 			type: 'medusaAction',
 			animation: winLevelData.alias === 'max' ? 'win_max' : 'win_big',
@@ -128,6 +127,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	 */
 	winInfo: async (bookEvent: BookEventOfType<'winInfo'>) => {
 		stateGame.tumbleChain += 1;
+		// A short authored reaction has anticipation, a held gesture and follow-
+		// through. It finishes before the multiplier performance starts.
+		if(stateGame.tumbleChain===1||stateGame.tumbleChain%3===0)
+			eventEmitter.broadcast({type:'medusaAction',animation:'react_small'});
 
 		const wins: ScatterWinDatum[] = bookEvent.wins.map((win) => ({
 			symbol: win.symbol,
@@ -208,7 +211,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundStop', name: 'bgm_main' });
 		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
 		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
-		eventEmitter.broadcast({ type: 'soundMedusa', cue: 'gasp' });
 		eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_trigger' });
 		eventEmitter.broadcast({
 			type: 'scatterBurst',

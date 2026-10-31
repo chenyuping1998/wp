@@ -16,7 +16,7 @@
 		const texture=context.stateApp.loadedAssets?.mgCastAtlas as Texture|undefined;
 		const app=context.stateApp.pixiApplication;
 		if(disposed||scene||!texture||!app)return;
-		scene=createMedusaRigScene({'medusa.png':texture},index=>{if(index===1)context.eventEmitter.broadcast({type:'soundOnce',name:'sfx_snake_yawn'});});
+		scene=createMedusaRigScene({'medusa.png':texture},undefined,mark=>context.eventEmitter.broadcast({type:'soundCharacter',mark}));
 		parent.parent.addChild(scene.root);ticker=app.ticker;ticker.add(tick);
 		if(media)scene.setReducedMotion(media.matches);
 	});
@@ -26,7 +26,7 @@
 		scene.root.scale.set(scale);scene.root.position.set(props.eyes.x+37*scale,props.eyes.y+1520*scale);
 	});
 	$effect(()=>scene?.setFreegame(context.stateGame.gameType==='freegame'));
-	$effect(()=>{if(!scene)return;const action=props.action;if(action.name==='rest')scene.reset();else scene.play(action.name,action.hold,action.rate);});
+	$effect(()=>{if(!scene)return;const action=props.action;if(action.name==='rest')scene.returnToRest();else scene.play(action.name,action.hold,action.rate);});
 	onMount(()=>{
 		media=matchMedia('(prefers-reduced-motion: reduce)');const preference=()=>scene?.setReducedMotion(media!.matches);const visibility=()=>{last=0;};
 		preference();media.addEventListener('change',preference);document.addEventListener('visibilitychange',visibility);

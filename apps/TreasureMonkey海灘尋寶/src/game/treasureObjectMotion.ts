@@ -39,12 +39,26 @@ const LETTER_TRACKS:Record<string,Record<keyof LetterPose,Track>>={
  },
 };
 
+const LETTER_TURNS:Record<string,{direction:number;keys:Track}>={
+ L1:{direction:1,keys:[[0,0],[130,0],[260,.12],[460,.80],[610,1],[970,1]]},
+ L2:{direction:-1,keys:[[0,0],[145,0],[300,.18],[490,.84],[650,1],[970,1]]},
+ L3:{direction:1,keys:[[0,0],[115,0],[300,.22],[540,.88],[705,1],[970,1]]},
+ L4:{direction:-1,keys:[[0,0],[150,0],[325,.15],[510,.88],[675,1],[970,1]]},
+};
+
 export function letterPose(name:string,time:number,mode:'none'|'win'|'land',reduced=false):LetterPose{
  const rest={dx:0,dy:0,angle:0,sx:1,sy:1};
  if(mode==='none')return rest;
  const t=mode==='land'?time*970/240:time;
  // A landing is a brief contact reaction; save the full performance for a win.
  const gain=(reduced?.18:1)*(mode==='land'?.42:1),tracks=LETTER_TRACKS[name]??LETTER_TRACKS.L4;
+ const travel=mode==='win'?1.7:1,turn=mode==='win'?1.55:1,stretch=mode==='win'?1.45:1;
+ const lift=mode==='win'?sample(t,[[0,0],[120,.025],[325,.12],[455,.10],[650,.025],[820,0],[970,0]]):0;
+ const circle=LETTER_TURNS[name]??LETTER_TURNS.L4;
+ const phase=sample(t,circle.keys);
+ // Wrapping a completed turn to zero is visually identical and leaves the
+ // glyph at its exact rest transform. Reduced motion keeps the small lean.
+ const spin=mode==='win'&&!reduced&&phase<1?circle.direction*phase*Math.PI*2:0;
  let dx=0,dy=0,angle=0,sx=0,sy=0;
  // Generator accents follow the contact / weight of each glyph. These are
  // local attachment channels: neither plaque nor its painted frame moves.
@@ -62,9 +76,10 @@ export function letterPose(name:string,time:number,mode:'none'|'win'|'land',redu
   angle=-.012*hook;dx=-.002*hook;dy=.0035*contact;sx=.006*contact;sy=-.008*contact;
  }
  return {
-  dx:(sample(t,tracks.dx)+dx)*gain,dy:(sample(t,tracks.dy)+dy)*gain,
-  angle:(sample(t,tracks.angle)+angle)*gain,
-  sx:1+(sample(t,tracks.sx)-1+sx)*gain,sy:1+(sample(t,tracks.sy)-1+sy)*gain,
+  dx:(sample(t,tracks.dx)+dx)*gain*travel,dy:(sample(t,tracks.dy)+dy)*gain*travel,
+  angle:(sample(t,tracks.angle)+angle)*gain*turn+spin,
+  sx:1+((sample(t,tracks.sx)-1+sx)*stretch+lift)*gain,
+  sy:1+((sample(t,tracks.sy)-1+sy)*stretch+lift)*gain,
  };
 }
 

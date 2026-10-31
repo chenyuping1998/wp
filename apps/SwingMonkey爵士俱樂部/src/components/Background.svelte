@@ -19,8 +19,8 @@
 	// COVER, not stretch: the plates are 16:9 and keep their aspect on every
 	// layout, cropped about the centre; the drift only uses the overscan margin.
 	//
-	// No motes, no light shafts: a screenprint poster has neither, and anything
-	// glowing on it reads as a different medium (ART_BRIEF.md §0).
+	// Local velvet folds and the art-aligned light/reflection layer share this
+	// plate transform, so they remain attached during drift and mode changes.
 	const OVERSCAN = 1.06;
 	const PLATE = [1920, 1080];
 	const parallax = $derived.by(() => {
@@ -33,8 +33,8 @@
 		return {
 			width: w,
 			height: h,
-			x: (width - w) / 2 + Math.sin(clock * 0.06) * driftX,
-			y: (height - h) / 2 + Math.sin(clock * 0.041 + 1.1) * driftY,
+			x: (width - w) / 2 + Math.sin(clock * 0.115) * driftX,
+			y: (height - h) / 2 + Math.sin(clock * 0.079 + 1.1) * driftY,
 		};
 	});
 

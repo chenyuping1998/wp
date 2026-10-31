@@ -8,6 +8,7 @@
 		"lint": "eslint \"src\"",
 		"storybook": "PUBLIC_CHROMATIC=true storybook dev -p 6040 public",
 		"dev": "vite dev --host --port 3040",
+		"review:symbols": "vite --config design/review.vite.mjs --open /design/symbol-review.html",
 		"check:refs": "node design/check_undefined_refs.mjs",
 		"check:social": "node design/check_social_words.mjs",
 		"check:claims": "E:/stake/math-sdk/env/Scripts/python.exe -I design/check_copy_claims.py",
@@ -21,7 +22,7 @@
 		"sync:math": "node design/sync_math_config.mjs",
 		"preview:build": "node design/check_assets.mjs && node design/check_audio.mjs && node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_types.mjs && node design/check_mesh_wins.mjs && node design/swing/check_mesh_smooth.mjs && node design/check_cast_flow.mjs && node design/check_collection_motion.mjs && vite build && node ../../tools/minify_spine_json.mjs",
 		"check:collectmotion": "node design/check_collection_motion.mjs",
-		"art:build": "E:/stake/math-sdk/env/Scripts/python.exe design/build_putt_art.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_putt_fg_sign.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_putt_win_plaques.py && E:/stake/math-sdk/env/Scripts/python.exe design/normalize_v8_digits.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_putt_cast.py && E:/stake/math-sdk/env/Scripts/python.exe -I design/swing/cut_golfer_arms.py && E:/stake/math-sdk/env/Scripts/python.exe -I design/swing/cut_caddie_flag.py && E:/stake/math-sdk/env/Scripts/python.exe ../../tools/build_cast_mesh.py Putt && node design/swing/build_golfer_swing.mjs && node design/swing/build_caddie_flag.mjs && E:/stake/math-sdk/env/Scripts/python.exe design/make_jade_mesh_layers.py && E:/stake/math-sdk/env/Scripts/python.exe design/make_decor_meshes.py .",
+		"art:build": "E:/stake/math-sdk/env/Scripts/python.exe design/build_putt_art.py && E:/stake/math-sdk/env/Scripts/python.exe -I design/build_putt_wordmark.py && E:/stake/math-sdk/env/Scripts/python.exe -I design/build_flag_ball.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_putt_fg_sign.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_putt_win_plaques.py && E:/stake/math-sdk/env/Scripts/python.exe design/normalize_v8_digits.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_putt_cast.py && E:/stake/math-sdk/env/Scripts/python.exe -I design/swing/cut_golfer_arms.py && E:/stake/math-sdk/env/Scripts/python.exe -I design/swing/cut_caddie_flag.py && E:/stake/math-sdk/env/Scripts/python.exe ../../tools/build_cast_mesh.py Putt && node design/swing/build_golfer_swing.mjs && node design/swing/build_caddie_flag.mjs && E:/stake/math-sdk/env/Scripts/python.exe design/make_jade_mesh_layers.py && E:/stake/math-sdk/env/Scripts/python.exe design/make_decor_meshes.py .",
 		"audio:build": "E:/stake/math-sdk/env/Scripts/python.exe design/generate_putt_audio.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_collection_audio.py && E:/stake/math-sdk/env/Scripts/python.exe design/install_laugh_voice.py"
 	},
 	"type": "module",

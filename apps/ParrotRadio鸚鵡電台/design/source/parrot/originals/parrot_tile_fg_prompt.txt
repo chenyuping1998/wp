@@ -1,0 +1,3 @@
+Use case: identity-preserve. Production lobby tile FOREGROUND ONLY on true transparent RGBA square1024x1024. Exact Squawk red macaw DJ identity in reference,gold headphones,black eyepatch with gold note,redyellowbluefeathers,gold chain vinyl pendant. CHEST-UP portrait including two wings, one wing held high excitedly, beak open shouting encore, necklace swinging slightly. Keep entire crest and raised wing within central84% canvas, at least8% EMPTY transparent alpha margins on ALL FOUR sides. No turntable booth, background, ground, glow, lettering,border,numbers or watermark. Same polished semi-realistic feathers,colors and materials.
+References: ["E:/stake/wp/apps/ParrotRadio鸚鵡電台/design/source/parrot/cast/assembled.png"]
+Tool: built-in image_gen

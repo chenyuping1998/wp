@@ -1,0 +1,273 @@
+{
+  "date": "2026-10-30",
+  "revision": "presentation-v5",
+  "environment": "CUA local browser with isolated mock wallet and unchanged published event fixtures; no live RGS session.",
+  "rigSha256": "98fa1a682dcc60843282cec4f6d64eca1a8139b71051ed70189e06e41da21241",
+  "responsiveChecks": [
+    "1280x720 desktop",
+    "390x844 portrait without developer strip"
+  ],
+  "buyBonus": {
+    "metrics": {
+      "font": "21px",
+      "height": 183.1999969482422,
+      "inViewport": true,
+      "text": "購買獎勵",
+      "width": 160,
+      "mobile": {
+        "font": "18px",
+        "height": 71.20000457763672,
+        "inViewport": true,
+        "overflow": false,
+        "width": 112,
+        "x": 12,
+        "y": 16,
+        "menuOpened": true
+      }
+    },
+    "opensExistingMenu": true,
+    "disabledDuringPlay": true,
+    "portraitClearOfBoardAndToolbar": true,
+    "captionUsesLocalizedUiText": true
+  },
+  "localCase": {
+    "fixture": "baseEncoreHit",
+    "resultCurrency": 12,
+    "balanceCurrency": 1011,
+    "settled": true,
+    "consoleErrors": 0
+  },
+  "anatomy": {
+    "totalFrames": 8895,
+    "transitionPairs": 360,
+    "seamSamples": 5092,
+    "totalFolded": 0,
+    "seamFailures": 0
+  },
+  "prizeMotion": {
+    "kind": "parrot",
+    "frames": 41,
+    "partSamples": 533,
+    "minAreaRatio": 0.4452,
+    "folds": 0,
+    "reviewFps": 25,
+    "slowMotion": true,
+    "scope": "actual per-part performance and mesh helper used by the game; 6 prize types, 41 phases",
+    "performanceSha256": "a01d445d541d3036e5c5b1468b08bc7089e03ae0c40b2712baeb4705892809a6",
+    "componentSha256": "3c855f63f3763850e42da1ecac4a1905823aee3548f5af24c56248162f1863e6"
+  },
+  "background": {
+    "sample": "paired in-game screenshots after final build",
+    "surface": "sea surface",
+    "screenSize": [
+      390,
+      843
+    ],
+    "region": [
+      20,
+      540,
+      245,
+      578
+    ],
+    "meanChannelDifference": 9.082,
+    "changedPixelPercent": 91.12,
+    "fixedArchitectureAndReducedMotion": "official helper regression passed"
+  },
+  "evidence": [
+    {
+      "file": "qa-v5/parrot-desktop.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "e483afa110f8610b38a034eb96d077e7155134d27e1757c00e24db72608838de"
+    },
+    {
+      "file": "qa-v5/parrot-portrait.png",
+      "size": [
+        390,
+        843
+      ],
+      "sha256": "14e5e221dd928d1623e256fc1bd5d128d4d49d8c8c423ecf53b540dc9a83b9f6"
+    },
+    {
+      "file": "qa-v5/parrot-bg-a.png",
+      "size": [
+        390,
+        843
+      ],
+      "sha256": "14e5e221dd928d1623e256fc1bd5d128d4d49d8c8c423ecf53b540dc9a83b9f6"
+    },
+    {
+      "file": "qa-v5/parrot-bg-b.png",
+      "size": [
+        390,
+        843
+      ],
+      "sha256": "da41c7026f500c98703c6276616d672375f644a693f74968c0b8e5fbba350dff"
+    }
+  ],
+  "currentSourceSha256": {
+    "components/BuyBonusEntry.svelte": "7227fa5d2267cb4516b7a1df1687db7bf0f3264f644246c9ea467d70b5827fc2",
+    "components/SymbolMeshWin.svelte": "3c855f63f3763850e42da1ecac4a1905823aee3548f5af24c56248162f1863e6",
+    "game/symbolPerformance.ts": "a01d445d541d3036e5c5b1468b08bc7089e03ae0c40b2712baeb4705892809a6",
+    "game/backgroundMotion.ts": "b997858cb9a77a0494ab84e4f434aaac64e19ec7753926461d82ba921d40669d",
+    "game/backgroundScene.ts": "c20aae93abc076b0b20763105d92a6b18e2663efcb2691a3a3c5acd63342a67e"
+  },
+  "previousBaseline": {
+    "date": "2026-10-29",
+    "revision": "articulation-v4",
+    "rigSha256": "98fa1a682dcc60843282cec4f6d64eca1a8139b71051ed70189e06e41da21241",
+    "environment": "CUA browser; local published-event fixtures and isolated mock wallet. No live Stake Engine session.",
+    "responsiveChecks": [
+      "desktop 1280x720",
+      "portrait 390x844; no document overflow; developer strip overlays upper actor area in QA capture"
+    ],
+    "visualChecks": [
+      "Actual game pose inspection with current rig",
+      "Continuous shipped-player capture with breath, crossfades and returns",
+      "All 19 clips at four phases",
+      "Joint continuity, hand/wing roots and active held props"
+    ],
+    "poseChecks": [
+      "fg_trigger desktop",
+      "encore_call portrait"
+    ],
+    "localCase": {
+      "fixture": "baseEncoreHit",
+      "resultCurrency": 12,
+      "balanceCurrency": 1011,
+      "consoleErrors": 0,
+      "settled": true
+    },
+    "anatomy": {
+      "fps": 60,
+      "totalFrames": 8895,
+      "totalFolded": 0,
+      "transitionPairs": 360,
+      "seamSamples": 5092,
+      "seamFailures": 0
+    },
+    "motionReview": {
+      "animation": "cast/motion-review/motion.gif",
+      "sequenceFrames": 286,
+      "allActions": "cast/motion-review/all-actions.png"
+    },
+    "evidence": [
+      {
+        "file": "qa-v4/parrot-microphone-in-game.png",
+        "sha256": "ce54cce445f0f5a6a39e4b938536f25426926733c83635b669cdd11a0e5c15f1",
+        "size": [
+          1280,
+          720
+        ]
+      },
+      {
+        "file": "qa-v4/parrot-portrait-in-game.png",
+        "sha256": "00b520530f51387befa7c0cb03395b82d38dccf43081c74f9f2b580dadf2f61b",
+        "size": [
+          390,
+          843
+        ]
+      }
+    ],
+    "supersededV3": {
+      "date": "2026-10-27",
+      "revision": "soft-skin-v3, local ambient motion, toolbar and Info",
+      "environment": "CUA browser; local published-event fixtures and isolated test wallet. No Stake Engine session.",
+      "responsiveChecks": [
+        "desktop 1280x720",
+        "portrait 390x844"
+      ],
+      "interactionChecks": [
+        "Actual toolbar menu opens Info",
+        "Info and pay table tabs share one dialog",
+        "Symbol images load without failures",
+        "No document overflow in portrait",
+        "Close button returns to game",
+        "Portrait character clears the board"
+      ],
+      "productionCase": {
+        "path": "/parrot/",
+        "fixture": "baseEncoreHit",
+        "resultCurrency": 12.0,
+        "balanceCurrency": 1011.0,
+        "consoleErrors": 0,
+        "settled": true
+      },
+      "motionChecks": {
+        "officialSpineRuntime": "passed",
+        "localTorsoDeformation": "passed",
+        "plantedCatFeet": "passed",
+        "restJointAlignment": "passed",
+        "modalPause": "passed",
+        "reducedMotion": "passed",
+        "protectedActionsAndReturnToIdle": "passed",
+        "oceanMovementAndFixedArchitecture": "passed",
+        "visualFrames": "cast/motion-review/contact.png",
+        "animation": "cast/motion-review/motion.gif"
+      },
+      "animationClock": "Dev-only mock and response-only production QA clock permit hidden-tab character/round checks. Production background motion intentionally pauses in hidden documents; background geometry and travelling UV motion also have direct time-sampling checks.",
+      "previousBaseline": {
+        "slug": "parrot",
+        "cases": [
+          {
+            "fixture": "baseEncoreHit",
+            "book": 76,
+            "resultBookUnits": 1200,
+            "balance": 1011,
+            "idle": true
+          },
+          {
+            "fixture": "superPlain",
+            "book": 0,
+            "resultBookUnits": 22280,
+            "balance": 922.8,
+            "featureSpins": 12,
+            "startingVolume": 6,
+            "endingVolume": 11,
+            "returnedToBase": true,
+            "volumeAfterFeature": 1
+          },
+          {
+            "fixture": "bonusRetrigger",
+            "book": 7,
+            "resumeAt": "55% of book",
+            "resultBookUnits": 4210,
+            "featureSpins": 22,
+            "returnedToBase": true,
+            "volumeAfterFeature": 1,
+            "idle": true,
+            "consoleErrors": 0
+          },
+          {
+            "type": "production build in /parrot/ subdirectory",
+            "fixture": "baseEncoreHit",
+            "book": 76,
+            "resultCurrency": "$12.00",
+            "balanceCurrency": "$1,011.00",
+            "viewport": [
+              320,
+              568
+            ],
+            "consoleErrors": 0
+          }
+        ],
+        "date": "2026-10-26",
+        "environment": "Local CUA browser using unchanged published fixture events and isolated test wallet. No Stake Engine session.",
+        "animationClock": "Hidden-tab clock enabled by dev-only mock; production QA host injects a timer clock into responses only, leaving saved build files unchanged.",
+        "responsiveChecks": [
+          "desktop 1280x720",
+          "portrait 390x844",
+          "portrait 320x568"
+        ],
+        "knownSharedDevelopmentIssue": "Hot replacement while Pixi is initializing can log teardown errors. Clean reloads and production round checks were used for results.",
+        "interactivePanels": "Intro/outro panels intentionally await acknowledgement; they are excluded from automatic-animation stall warnings."
+      },
+      "engineUpload": "not performed"
+    },
+    "supersededReviewNote": "V3 UI and round observations remain historical evidence; its character appearance sign-off missed limb inversions and is replaced by this review.",
+    "engineUpload": "not performed"
+  },
+  "engineUpload": "not performed"
+}

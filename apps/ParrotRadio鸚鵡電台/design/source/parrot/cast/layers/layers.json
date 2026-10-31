@@ -16,6 +16,14 @@
       510,
       1060
     ],
+    "spine_low": [
+      510,
+      1020
+    ],
+    "spine_mid": [
+      510,
+      900
+    ],
     "chest": [
       510,
       780
@@ -60,13 +68,21 @@
       400,
       510
     ],
+    "belly": [
+      510,
+      975
+    ],
+    "ribs": [
+      510,
+      810
+    ],
     "upper_front": [
       355,
       720
     ],
     "fore_front": [
-      300,
-      900
+      350,
+      910
     ],
     "hand_front": [
       280,
@@ -115,6 +131,82 @@
     "turntable_right": [
       720,
       1205
+    ],
+    "ear_left": [
+      305,
+      240
+    ],
+    "ear_right": [
+      695,
+      270
+    ],
+    "cheek_left": [
+      325,
+      555
+    ],
+    "cheek_right": [
+      680,
+      555
+    ],
+    "muzzle": [
+      500,
+      570
+    ],
+    "crest_tip": [
+      465,
+      105
+    ],
+    "chain_mid": [
+      535,
+      805
+    ],
+    "chain_end": [
+      535,
+      885
+    ],
+    "lens_chain_mid": [
+      655,
+      560
+    ],
+    "lens_chain_end": [
+      655,
+      645
+    ],
+    "foot_front": [
+      435,
+      1345
+    ],
+    "foot_back": [
+      290,
+      1310
+    ],
+    "feather_front": [
+      210,
+      1110
+    ],
+    "feather_back": [
+      870,
+      1080
+    ],
+    "elbow_volume_front": [
+      350,
+      910
+    ],
+    "wrist_volume_front": [
+      280,
+      1060
+    ],
+    "elbow_volume_back": [
+      770,
+      880
+    ],
+    "wrist_volume_back": [
+      800,
+      1040
+    ],
+    "microphone_grip": [
+      805,
+      1100
     ]
   },
   "layers": {
@@ -138,7 +230,29 @@
         995
       ],
       "slot": "wing_back_upper",
-      "visible": true
+      "visible": true,
+      "jointRegistration": {
+        "source": [
+          [
+            735,
+            775
+          ],
+          [
+            836,
+            925
+          ]
+        ],
+        "target": [
+          [
+            690,
+            730
+          ],
+          [
+            770,
+            880
+          ]
+        ]
+      }
     },
     "wing_back_tip": {
       "bone": "fore_back",
@@ -149,7 +263,29 @@
         1180
       ],
       "slot": "wing_back_tip",
-      "visible": true
+      "visible": true,
+      "jointRegistration": {
+        "source": [
+          [
+            754,
+            947
+          ],
+          [
+            882,
+            1087
+          ]
+        ],
+        "target": [
+          [
+            770,
+            880
+          ],
+          [
+            800,
+            1040
+          ]
+        ]
+      }
     },
     "body": {
       "bone": "chest",
@@ -303,7 +439,37 @@
         1000
       ],
       "slot": "wing_front_upper",
-      "visible": true
+      "visible": true,
+      "jointRegistration": {
+        "source": [
+          [
+            294,
+            784
+          ],
+          [
+            286,
+            910
+          ],
+          [
+            394,
+            784
+          ]
+        ],
+        "target": [
+          [
+            355,
+            720
+          ],
+          [
+            350,
+            910
+          ],
+          [
+            455,
+            720
+          ]
+        ]
+      }
     },
     "wing_front_mid": {
       "bone": "fore_front",
@@ -314,7 +480,29 @@
         1120
       ],
       "slot": "wing_front_mid",
-      "visible": true
+      "visible": true,
+      "jointRegistration": {
+        "source": [
+          [
+            170,
+            921
+          ],
+          [
+            284,
+            1028
+          ]
+        ],
+        "target": [
+          [
+            350,
+            910
+          ],
+          [
+            280,
+            1060
+          ]
+        ]
+      }
     },
     "wing_front_tip_scratch": {
       "bone": "hand_front",
@@ -325,7 +513,29 @@
         1185
       ],
       "slot": "hand_front",
-      "visible": true
+      "visible": true,
+      "jointRegistration": {
+        "source": [
+          [
+            166,
+            1020
+          ],
+          [
+            267,
+            1112
+          ]
+        ],
+        "target": [
+          [
+            280,
+            1060
+          ],
+          [
+            265,
+            1175
+          ]
+        ]
+      }
     },
     "wing_front_tip_point": {
       "bone": "hand_front",
@@ -370,21 +580,67 @@
       ],
       "slot": "booth",
       "visible": true
+    },
+    "record_held": {
+      "bone": "hand_front",
+      "rect": [
+        170,
+        1020,
+        365,
+        1215
+      ],
+      "slot": "record_held",
+      "visible": false
+    },
+    "microphone_held": {
+      "bone": "microphone_grip",
+      "rect": [
+        740,
+        890,
+        880,
+        1130
+      ],
+      "slot": "microphone_held",
+      "visible": false,
+      "jointRegistration": {
+        "source": [
+          [
+            810,
+            1080
+          ],
+          [
+            810,
+            930
+          ]
+        ],
+        "target": [
+          [
+            805,
+            1100
+          ],
+          [
+            805,
+            950
+          ]
+        ]
+      }
     }
   },
   "order": [
     "tail",
     "wing_back_upper",
-    "wing_back_tip",
     "body",
     "chain",
     "headphones",
     "face_idle",
     "crest",
     "eyepatch",
+    "microphone_held",
+    "wing_back_tip",
     "wing_front_upper",
+    "booth",
     "wing_front_mid",
-    "wing_front_tip_scratch",
-    "booth"
+    "record_held",
+    "wing_front_tip_scratch"
   ]
 }

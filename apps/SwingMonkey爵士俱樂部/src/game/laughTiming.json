@@ -1,7 +1,8 @@
 {
-  "startMs": 480,
-  "gapMs": 280,
-  "beats": 10,
-  "endMs": 3650,
+  "startMs": 260,
+  "gapMs": 210,
+  "beats": 5,
+  "endMs": 1500,
+  "voiceDelayMs": 260,
   "faceStates": ["inhale", "half", "rising", "open", "peak", "settle"]
 }

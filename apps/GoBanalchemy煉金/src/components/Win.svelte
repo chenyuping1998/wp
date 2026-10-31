@@ -55,7 +55,7 @@
 	let landAt = $state(-1);
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
-	let onCountUpComplete = $state(() => {});
+	const onCountUpComplete = () => { context.eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' }); };
 
 	// camera shake as the presentation slams in
 	let shake = $state({ x: 0, y: 0 });

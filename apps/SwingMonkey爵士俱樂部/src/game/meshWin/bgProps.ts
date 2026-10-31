@@ -42,6 +42,8 @@ export type BgEnv = {
 	t: number;
 	/** ms since the last gust (a win), or < 0 */
 	gustT: number;
+	/** A bounded attack envelope from the currently presented instrument phrase. */
+	beat?: number;
 };
 
 export type BgPropSpec = MeshWinSpec & {
@@ -316,7 +318,9 @@ const sway = (name: string, rect: Rect, pivot: Point, shape: Point[], kind: 'han
 		{ [name]: { pos: deg * 2.6, neg: deg * 2.6 } },
 		(rig, env) => {
 			const pose = restPose(rig);
-			bone(rig, pose, name).angle = deg * (wave(env.t, period, phase) + 0.3 * wave(env.t, period * 0.37, phase + 2) + 1.2 * gust(env, 0.6, 0.8));
+			const beat = env.beat ?? 0;
+			const sway = wave(env.t, period, phase) + 0.3 * wave(env.t, period * 0.37, phase + 2) + 1.2 * gust(env, 0.6, 0.8);
+			bone(rig, pose, name).angle = deg * (sway * (1 - beat * 0.25) + beat * (kind === 'spin' ? 0.85 : 0.3));
 			return pose;
 		},
 	);
@@ -349,9 +353,34 @@ const drape = (name: string, rect: Rect, shape: Point[], period: number, phase: 
 const BG_TASSEL = sway('tassel', [1100, 338, 1216, 572], [1158, 342], oct(1116, 356, 1200, 553), 'hang', 4100, 0.4, 2);
 const BG_CYMBAL = sway('cymbal', [222, 398, 426, 482], [323, 442], oct(234, 412, 412, 470), 'spin', 2600, 1.1, 1.6);
 const BG_CLUB_PALM = sway('clubPalm', [1745, 228, 1920, 558], [1850, 545], oct(1763, 244, 1920, 544), 'stand', 4700, 2.3, 0.7);
-const BG_VALANCEL = drape('valanceL', [195, 0, 482, 116], oct(206, 0, 469, 103), 5200, 0.8, 2.6);
-const BG_VALANCEC = drape('valanceC', [810, 0, 1142, 126], oct(825, 0, 1125, 113), 5600, 2.4, 2.6);
-export const BG_PROPS: BgPropSpec[] = [BG_TASSEL, BG_CYMBAL, BG_CLUB_PALM, BG_VALANCEL, BG_VALANCEC];
+const BG_VALANCEL = drape('valanceL', [195, 0, 482, 116], oct(206, 0, 469, 103), 4600, 0.8, 4.2);
+const BG_VALANCEC = drape('valanceC', [810, 0, 1142, 126], oct(825, 0, 1125, 113), 5100, 2.4, 4.2);
+
+/** Broad velvet folds, with all four edges pinned to the original plate. */
+const velvet = (name: string, rect: Rect, phase: number) => {
+	const [x0, y0, x1, y1] = rect;
+	const bandHeight = (y1 - y0) / 3;
+	return spec(name, rect, [24, 48], [0, 1, 2].map(i => ({
+		name: `${name}${i}`, parent: 'frame', pivot: [(x0 + x1) / 2, y0],
+		priority: 4,
+		dist: (p: Point) => Math.abs(p[1] - (y0 + bandHeight * (i + 0.5))) * 0.15,
+		keep: (p: Point) => Math.sin(Math.PI * Math.max(0, Math.min(1, (p[0] - x0) / (x1 - x0)))) ** 2
+			* smoothstep(Math.min(p[1] - y0, y1 - p[1]) / Math.min(70, (y1 - y0) * 0.12)),
+	})), () => true, Object.fromEntries([0, 1, 2].map(i => [`${name}${i}`, { pos: 0, neg: 0 }])), (rig, env) => {
+		const pose = restPose(rig);
+		for (let i = 0; i < 3; i++) {
+			const b = bone(rig, pose, `${name}${i}`);
+			const wave = Math.sin(env.t / 1800 - i * 0.8 + phase);
+			const answer = gust(env, 0.65, 0.9) * 2 + (env.beat ?? 0) * (i % 2 ? -1 : 1);
+			b.dx = 5.5 * wave + 2 * answer;
+			b.dy = 1.8 * Math.sin(env.t / 2200 - i * 0.65 + phase);
+		}
+		return pose;
+	}, 5);
+};
+const BG_VELVET_R = velvet('velvetR', [1230, 25, 1650, 700], 0.6);
+const BG_VELVET_L = velvet('velvetL', [222, 130, 328, 390], 2.1);
+export const BG_PROPS: BgPropSpec[] = [BG_VELVET_R, BG_VELVET_L, BG_TASSEL, BG_CYMBAL, BG_CLUB_PALM, BG_VALANCEL, BG_VALANCEC];
 
 // set from the measured limits
 const SWAY_DEG = 1.6;

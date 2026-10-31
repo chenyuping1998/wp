@@ -49,13 +49,8 @@ export { NOREN };
 import { CUTIN } from './cutIn';
 export { CUTIN };
 
-// The Buy Bonus plate swinging on its ropes (BuyPlateMesh.svelte).
-import { BUY_PLATE } from './buyPlate';
-export { BUY_PLATE };
 
 // The intro signboard's lantern (FeatureIntro.svelte).
-import { LOGO_BOARD } from './logoBoard';
-export { LOGO_BOARD };
 
 // The things that hang and grow in the backgrounds (BgProps.svelte).
 import { BG_PROPS, BG_PROPS_FEATURE } from './bgProps';
@@ -72,7 +67,5 @@ export const MESH_ALL: Record<string, MeshWinSpec> = {
 	'fgBoard': settled(FG_BOARD('v8FgIntro')),
 	noren: settled(NOREN),
 	cutIn: settled(CUTIN),
-	buyPlate: settled(BUY_PLATE('gbUiBuyBonusStone')),
-	logoBoard: settled(LOGO_BOARD),
 	...Object.fromEntries([...BG_PROPS, ...BG_PROPS_FEATURE.slice(0, 2)].map((spec) => [spec.symbol, settled(spec)])),
 };

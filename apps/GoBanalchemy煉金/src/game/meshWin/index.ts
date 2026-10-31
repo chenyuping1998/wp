@@ -9,7 +9,7 @@ import { H2 } from './h2Crystal';
 import { H3 } from './h3Tongs';
 import { H4 } from './h4Cart';
 import { L1, L2, L3, L4, L5 } from './lowLetters';
-import { W } from './wGorilla';
+import { W, liftWin } from './wGorilla';
 import { S } from './sMedallion';
 import { emphasizeWin } from './winEmphasis';
 import { leapWin, LEAP_STYLES } from './leapWin';
@@ -22,10 +22,10 @@ const SCORE_SPECS = [H1, H2, H3, H4, L1, L2, L3, L4, L5, W, S];
 export const MESH_WINS: Record<string, MeshWinSpec> = Object.fromEntries(
 	SCORE_SPECS.map((spec) => {
 		// the cut ones leap off their plate (leapWin.ts); the Wild's portrait
-		// fills its tile and acts inside it
+		// fills its tile, so the whole tile lifts out of its cell (liftWin)
 		const style = LEAP_STYLES[spec.symbol];
 		const loud = boiling(emphasizeWin(spec), 1);
-		return [spec.symbol, settled(style ? leapWin(loud, style) : loud)];
+		return [spec.symbol, settled(style ? leapWin(loud, style) : spec.symbol === 'W' ? liftWin(loud) : loud)];
 	}),
 );
 

@@ -33,7 +33,7 @@
 	});
 
 	// The same bilingual painted sign stays on both loading and feature pages.
-	const logoWidth = $derived(Math.min(context.stateLayoutDerived.mainLayout().width * 0.82, 680));
+	const logoWidth = $derived(Math.min(context.stateLayoutDerived.mainLayout().width * 0.82, 760)); // 680 -> 760 for the free-standing wordmark (2026-10-31)
 
 	// the 16:9 plate fills the screen at its own aspect, cropped about the centre
 	// (see Background.svelte) — sized straight to the layout it was squeezed in

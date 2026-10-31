@@ -1,0 +1,33 @@
+{
+  "scope": "240Hz official Spine core replay; rig pixels/second. Visual review required separately.",
+  "scenarios": [
+    {
+      "mode": "MG",
+      "throughGestureSpeed": 297.3544829963013,
+      "peakRecoverySpeed": 1149.795685034225
+    },
+    {
+      "mode": "FG",
+      "throughGestureSpeed": 641.9153266510091,
+      "peakRecoverySpeed": 1149.7956431356536
+    }
+  ],
+  "fidgetHandoffJump": 0,
+  "baseline": {
+    "scope": "240Hz official Spine core replay; rig pixels/second. Visual review required separately.",
+    "scenarios": [
+      {
+        "mode": "MG",
+        "throughGestureSpeed": 36.21514026882232,
+        "peakRecoverySpeed": 2422.0468257821876
+      },
+      {
+        "mode": "FG",
+        "throughGestureSpeed": 313.1098084904406,
+        "peakRecoverySpeed": 2422.0474571357245
+      }
+    ],
+    "fidgetHandoffJump": 13.17346564681521
+  },
+  "passed": true
+}

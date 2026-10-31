@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-31",
+  "revision": "20261031-overall-motion-refine",
+  "passed": true,
+  "scope": "Local mock game and shared Pixi effects/background renderer; still images only, no video output.",
+  "changes": [
+    "Eight unequal convex stone cells replace radial triangular wedges. Exact painted UV coverage is retained.",
+    "Fracture retains the last crack layer through an 8% contact hold, then releases pieces with small authored offsets inside the original crumble duration.",
+    "Stone chips and thin dust follow the fracture release rather than preceding it.",
+    "Win focus mask eases in over 65ms and out over the final 90ms; amount fades over the final 75ms. All use the existing scaled board clock.",
+    "Birds glide between short groups of wing strokes; sky paths, cloud coverage, architecture and camera remain as approved."
+  ],
+  "nativeChecks": {
+    "stoneCells": 8,
+    "paintCoverage": 1,
+    "uniqueCoverageSamples": 1681,
+    "convexTriangulation": "passed",
+    "columnPatterns": 63,
+    "publishedWinningPositions": 721,
+    "meshInversions": 0,
+    "eightLinkMs": 9870,
+    "birdGlideSamples": 9567,
+    "birdStrokeSamples": 3942,
+    "wingCycleContinuity": "passed",
+    "characterBones": 84,
+    "characterClips": 24,
+    "multiplierTimingComparisons": 16
+  },
+  "visualReview": {
+    "fracture": "Rendered contact hold at 7% and released stones at 35%; intact silhouette before release, irregular facets afterwards, shaded thickness and receding dust.",
+    "background": "Day and full dusk inspected; visible left clouds and birds, independently burning braziers, no scene-camera movement.",
+    "freegame": {
+      "book": "bonusBigTotal",
+      "turbo": "TURBO 1",
+      "spins": 15,
+      "totalMultiplier": 110,
+      "totalWin": "$198.90",
+      "returnedToMainGame": true,
+      "glasses": "Forehead during FG; sunglasses restored in MG",
+      "restoredTurbo": "OFF"
+    },
+    "wastedOrb": {
+      "book": "baseThrowWasted",
+      "turbo": "OFF",
+      "result": "$0.00",
+      "returnedToIdle": true
+    }
+  },
+  "console": {
+    "uncaughtRuntimeExceptions": 0,
+    "wastedOrbErrors": 0,
+    "watchdogMessages": 2,
+    "notes": "The existing 15-second watchdog logged freeSpinTrigger and freeSpinEnd while waiting on the click-to-continue intro/outro panels. Both continued normally and the feature returned to MG. An earlier run interrupted by the production rebuild was discarded."
+  },
+  "fullBuild": "passed",
+  "typeCheck": {
+    "errors": 0,
+    "warnings": 1,
+    "warning": "Existing tsconfig allowImportingTsExtensions/noEmit setting"
+  },
+  "screenshots": [
+    "source/medusagaze/_sheets/overall_refine_20261031_fracture.png",
+    "source/medusagaze/_sheets/overall_refine_20261031_contact_hold.png",
+    "source/medusagaze/_sheets/overall_refine_20261031_night.png",
+    "source/medusagaze/_sheets/overall_refine_20261031_fg_start.png",
+    "source/medusagaze/_sheets/overall_refine_20261031_fg_middle.png",
+    "source/medusagaze/_sheets/overall_refine_20261031_fg_outro.png",
+    "source/medusagaze/_sheets/overall_refine_20261031_return_mg.png",
+    "source/medusagaze/_sheets/overall_refine_20261031_dud_result.png"
+  ],
+  "limits": "Mock/headless replay checks animation lifecycle, not production frame pacing, real wallet accounting or live RGS. Portrait layouts were not rerun this revision. No new character rig or sound recording in this pass; previous full-body breathing, nine-snake acting, hand windup and v8 sound design are retained."
+}

@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-27",
+  "passed": true,
+  "scope": "Local mock UI and native Pixi/Spine replay; no video, live RGS or engine certification.",
+  "winningCells": {
+    "accents": "Brief open golden arcs and five converging sparks; shift toward emerald as stone begins",
+    "score": "Small elastic arrival followed by the existing upward readout; no extra stage delay"
+  },
+  "fracture": {
+    "paintedPieces": 8,
+    "smallChips": 6,
+    "dustPuffs": 4,
+    "normalizedLifetime": "Owned by the crumble stage; zero visible debris at completion",
+    "review": "dynamics/preview/index.html uses the production Graphics drawing helpers and motion curves"
+  },
+  "character": {
+    "clips": 24,
+    "idleGlance": "1.6 degree short tilt then held neutral",
+    "relaxedWrists": true,
+    "breathPhasePreserved": true,
+    "fgGlassesForeheadSamples": 1920,
+    "noVisibleMeshFolds": true
+  },
+  "garden": {
+    "gustCycleSeconds": 14,
+    "sidesStaggeredSeconds": 4.3,
+    "forwardWindIntegration": true,
+    "curvedLeaves": true,
+    "verticalWrapFade": true,
+    "architectureAndCameraFixed": true,
+    "backgroundReportVersion": 5
+  },
+  "multiplier": {
+    "afterglowMotes": 6,
+    "afterglowSeconds": 0.56,
+    "signatureTimingUnchanged": true,
+    "turboTierComparisons": 16
+  },
+  "browser": {
+    "viewport": [
+      1280,
+      720
+    ],
+    "normalMock": "baseThrow complete, WIN $12.50, returned to idle",
+    "turbo2Mock": "Double-bolt selected before replay; baseThrow complete, WIN $12.50, returned to idle",
+    "consoleErrors": 0,
+    "nativePreview": "35%, 70% and 100% checked; all chip/dust fragments gone at completion",
+    "characterPreview": "MG and FG idle at 3.300s; forehead glasses retained",
+    "screenshots": [
+      "_sheets/dynamics_20261027_accents.png",
+      "_sheets/dynamics_20261027_debris_fade.png",
+      "_sheets/dynamics_20261027_debris_cleared.png",
+      "_sheets/dynamics_20261027_idle_glance.png",
+      "_sheets/dynamics_20261027_fg_idle.png",
+      "_sheets/dynamics_20261027_normal_result.png",
+      "_sheets/dynamics_20261027_turbo2_ready.png",
+      "_sheets/dynamics_20261027_turbo2_result.png"
+    ]
+  },
+  "validation": {
+    "fullBuild": "passed",
+    "changedGameSourceTypeErrors": 0,
+    "workspaceTypeErrors": 154,
+    "workspaceWarnings": 35,
+    "typeScope": "Existing workspace/tool/config diagnostics; no src/components or src/game diagnostics",
+    "eightLinkTimingBudgetMs": 9135,
+    "publishedBookWinningPositions": 721
+  }
+}

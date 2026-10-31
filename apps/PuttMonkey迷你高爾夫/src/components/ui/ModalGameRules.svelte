@@ -9,6 +9,8 @@
 	import { removedLabelAtLevel, removedLabelsAtLevel } from '../../game/chefMeter';
 	import { getSocialTerms } from '../../game/socialTerms';
 	import { MODE_NAMES } from '../../game/betModeMeta';
+	import assets from '../../game/assets';
+	import CourseGuide from './CourseGuide.svelte';
 
 	// Shared with the pay table — the two panels describe the same game and must
 	// use the same words for it. See socialTerms.ts.
@@ -156,15 +158,93 @@
 		};
 	});
 
+	// "The game info looks basic" (review, 2026-10-30). The rules are laid out as
+	// a mini-golf course: every section is a numbered hole, the course map at the
+	// top jumps to it, and each mechanic gets a picture built from the game's own
+	// symbol art. The certified wording below is unchanged — the pictures sit
+	// beside it, never instead of it.
+	type Hole = { id: string; short: string; title: string };
+	const holes: Hole[] = [
+		{ id: 'play', short: 'Play', title: 'How to play' },
+		{ id: 'controls', short: 'Controls', title: 'Controls' },
+		{ id: 'modes', short: 'Modes', title: 'RTP & Max Win by mode' },
+		{ id: 'balls', short: 'Balls', title: 'Balls & the Golfer' },
+		{ id: 'meter', short: 'Meter', title: 'The Golfer meter — Free Spins' },
+		{ id: 'wild', short: 'Wild', title: 'Wild' },
+		{ id: 'scatter', short: 'Flags', title: 'Scatter' },
+		{ id: 'retrigger', short: 'Retriggers', title: 'Retriggers' },
+		...(buyTiers.length ? [{ id: 'bonus', short: 'Bonus', get title() { return T.buyBonusName; } }] : []),
+		{ id: 'maxwin', short: 'Max Win', title: 'Max Win' },
+	];
+	const hole = (id: string) => holes.find((h) => h.id === id)!;
+	const holeNo = (id: string) => holes.indexOf(hole(id)) + 1;
+
+	let rulesEl: HTMLDivElement | undefined = $state();
+	const jumpTo = (id: string) =>
+		rulesEl?.querySelector(`#rules-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+	const sym = (key: string) => (assets as unknown as Record<string, { src: string }>)[`gb${key}`]?.src;
+
+	// Ways example: Windmills on reels 1-3 in a 1, 2, 1 pattern = 2 ways of 3 of
+	// a kind. Fillers are plain symbols only — no Wild, Scatter or Ball, which
+	// would each need explaining. Rows are listed per reel, top to bottom.
+	const waysBoard = [
+		['L2', 'H1', 'L4', 'H3'],
+		['H1', 'L5', 'H1', 'L1'],
+		['H4', 'L3', 'L2', 'H1'],
+		['L4', 'H2', 'L1', 'L5'],
+		['H3', 'L1', 'H4', 'L2'],
+	];
+	const waysCounts = waysBoard.slice(0, 3).map((reel) => reel.filter((s) => s === 'H1').length);
+	const waysExample = waysCounts.reduce((a, b) => a * b, 1);
+
+	// Collection example, one value from each end of the base game list.
+	const cupValues = config.jadeCupValues.base as number[];
+	const exampleBalls = [cupValues[3] ?? 5, cupValues[6] ?? 20];
+	const exampleSum = exampleBalls.reduce((a, b) => a + b, 0);
+
+	const scatterRows = Object.entries(config.scatterSpins ?? {}).map(([count, spins]) => ({
+		count: Number(count),
+		spins: Number(spins),
+	}));
+	const CARD_ART: Record<string, string> = {
+		bonus: `${base}/assets/sprites/sushiUi/card_bonus.png`,
+		superbonus: `${base}/assets/sprites/sushiUi/card_superbonus.png`,
+	};
 </script>
+
+{#snippet holeHead(id: string)}
+	<h3 id={`rules-${id}`}>
+		<span class="hole-pin" aria-hidden="true"><span>{holeNo(id)}</span></span>
+		<span class="hole-label"><small>Hole {holeNo(id)}</small>{hole(id).title}</span>
+	</h3>
+{/snippet}
+
+{#snippet ball(value: number)}
+	<span class="eg-ball"><img src={sym('P')} alt="" /><b>{value}&times;</b></span>
+{/snippet}
+
+{#snippet tip(text: string)}
+	<div class="caddie-tip">
+		<img src={sym('W')} alt="" aria-hidden="true" />
+		<p><strong>Golfer&rsquo;s tip</strong>{text}</p>
+	</div>
+{/snippet}
 
 {#if stateModal.modal?.name === 'gameRules'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
-		<div class="wp-rules">
+		<div class="wp-rules" bind:this={rulesEl}>
 			<h2>PUTT MONKEY — GAME RULES</h2>
+			<CourseGuide
+				waysLabel={T.ways}
+				rtp={rtpPct}
+				maxWin={`${maxWin.toLocaleString()}×`}
+				holes={holes.map((h) => ({ id: h.id, label: h.short }))}
+				onjump={jumpTo}
+			/>
 
 			<section class="wp-card">
-				<h3 style="color: #e5432f !important"><span class="wp-accent-bar"></span>How to play</h3>
+				{@render holeHead('play')}
 				<p>
 					<!-- Reels × rows ("5×4"), the order players and the industry use,
 					     so it says five reels of four, not four reels of five. -->
@@ -177,13 +257,31 @@
 					wins from different symbols are added together. The theoretical return to player (RTP)
 					is {rtpPct}.
 				</p>
+				<figure class="eg">
+					<div class="eg-board" aria-hidden="true">
+						{#each waysBoard as reel, r}
+							<div class="eg-reel" class:counted={r < 3}>
+								{#each reel as s, row}
+									<span class="eg-cell" class:hit={r < 3 && s === 'H1'} style:--d={`${r * 0.12 + row * 0.03}s`}>
+										<img src={sym(s)} alt="" />
+									</span>
+								{/each}
+								<em>{r < 3 ? waysCounts[r] : '–'}</em>
+							</div>
+						{/each}
+					</div>
+					<figcaption>
+						Windmills on reels 1, 2 and 3: <strong>{waysCounts.join(' × ')} = {waysExample} {T.ways}</strong> of
+						3 of a kind. Reel 4 has none, so the run stops there.
+					</figcaption>
+				</figure>
 			</section>
 
 			<!-- Certification asked for a user interaction guide in the game
 			     information. Kept as a definition list of the actual on-screen
 			     controls, in the order they sit on the bar. -->
 			<section class="wp-card">
-				<h3 style="color: #e5432f !important"><span class="wp-accent-bar"></span>Controls</h3>
+				{@render holeHead('controls')}
 				<ul class="wp-controls">
 					{#each controls as control (control.name)}
 						<li class:no-icon={control.icons.length === 0 && !control.sign && !control.readout}>
@@ -213,7 +311,7 @@
 			</section>
 
 			<section class="wp-card">
-				<h3 style="color: #e5432f !important"><span class="wp-accent-bar"></span>RTP &amp; Max Win by mode</h3>
+				{@render holeHead('modes')}
 				<!--
 					Scroll wrapper, and the unit lifted out of every row into the header.
 
@@ -271,7 +369,7 @@
 			     because it is the thing the game is built around and the only rule
 			     a player of other ways games will not already know. -->
 			<section class="wp-card">
-				<h3 style="color: #e5432f !important"><span class="wp-accent-bar"></span>Balls &amp; the Golfer</h3>
+				{@render holeHead('balls')}
 				<p>
 					<strong>Balls</strong> land carrying a value printed on them. Base game values are
 					{config.jadeCupValues.base.join('×, ')}×; Free Spins also allow
@@ -285,16 +383,54 @@
 					collect it twice. The collection is added to any {T.ways} win on the same spin. This
 					happens in the base game as well as in Free Spins.
 				</p>
+				<figure class="eg">
+					<div class="eg-sum" aria-hidden="true">
+						<span class="eg-golfer"><img src={sym('W')} alt="" /></span>
+						<span class="eg-op">collects</span>
+						{@render ball(exampleBalls[0])}
+						<span class="eg-op">+</span>
+						{@render ball(exampleBalls[1])}
+						<span class="eg-op">=</span>
+						<span class="eg-total">{exampleSum}&times;</span>
+					</div>
+					<div class="eg-sum eg-sum-2" aria-hidden="true">
+						<span class="eg-golfer"><img src={sym('W')} alt="" /></span>
+						<span class="eg-golfer"><img src={sym('W')} alt="" /></span>
+						<span class="eg-op">2 Golfers &rarr; 2 &times; {exampleSum}&times; =</span>
+						<span class="eg-total">{exampleSum * 2}&times;</span>
+					</div>
+					<figcaption>
+						One Golfer with Balls of {exampleBalls[0]}&times; and {exampleBalls[1]}&times; collects
+						{exampleSum}&times; the {T.bet}. A second Golfer collects the same Balls again.
+					</figcaption>
+				</figure>
+				{@render tip('A Ball on its own just sits on the green. It is worth something only when a Golfer lands on the same spin to collect it.')}
 			</section>
 
 			<section class="wp-card">
-				<h3 style="color: #e5432f !important"><span class="wp-accent-bar"></span>The Golfer meter &mdash; Free Spins</h3>
+				{@render holeHead('meter')}
 				<p>
 					In Free Spins every Golfer that lands is counted, whether or not there is a Ball to
 					collect. Each time the count reaches the next mark, <strong>{meter.spinsAdded} extra Free
 					Spins</strong> are added and the <strong>next low symbol type is replaced by Balls</strong> for every
 					later free spin:
 				</p>
+				<!-- The track is the picture of the list beside it; the list stays,
+				     because it is the certified sentence. -->
+				<ol class="meter-track" aria-hidden="true">
+					<li class="meter-tee"><span class="meter-dot">0</span><span class="meter-cap">Tee off</span></li>
+					{#each rungs as rung, i (rung.at)}
+						<li>
+							<span class="meter-dot">{rung.at}</span>
+							<span class="meter-swap">
+								<img class="meter-old" src={sym(config.banditMeter.replacements[i])} alt="" />
+								<span class="meter-arrow">&rarr;</span>
+								<img src={sym('P')} alt="" />
+							</span>
+							<span class="meter-cap">+{meter.spinsAdded} spins</span>
+						</li>
+					{/each}
+				</ol>
 				<ul class="wp-tiers">
 					{#each rungs as rung (rung.at)}
 						<li><strong>{rung.at} Golfers</strong> &mdash; +{meter.spinsAdded} spins, all {rung.removed} symbols become Balls</li>
@@ -304,28 +440,41 @@
 					All collections remain at &times;1. Replacements persist for the rest of the feature
 					and take effect on the next spin, across all five reels. Earlier replacements remain active.
 				</p>
+				{@render tip('Every Golfer counts toward the meter, even on a spin with no Ball for it to collect.')}
 			</section>
 
 			<section class="wp-card">
-				<h3 style="color: #e5432f !important"><span class="wp-accent-bar"></span>Wild</h3>
-				<p>
+				{@render holeHead('wild')}
+				<p class="with-art">
+					<img class="side-art" src={sym('W')} alt="" aria-hidden="true" />
 					The Golfer Wild substitutes for every symbol except the Scatter and the Ball. It
 					does not {T.pay} as a symbol of its own.
 				</p>
 			</section>
 
 			<section class="wp-card">
-				<h3 style="color: #e5432f !important"><span class="wp-accent-bar"></span>Scatter</h3>
-				<p>
+				{@render holeHead('scatter')}
+				<p class="with-art">
+					<img class="side-art" src={sym('S')} alt="" aria-hidden="true" />
 					The Golden Flag Scatter appears on all five reels in the base game. It does not {T.pay} on its
 					own and does not need to form a combination &mdash; its only job is to open the feature.
 					Landing 3, 4 or 5 Scatters in a single spin awards {scatterSpins} Free Spins
 					respectively.
 				</p>
+				<div class="flag-rows" aria-hidden="true">
+					{#each scatterRows as row (row.count)}
+						<div class="flag-row">
+							<span class="flags">
+								{#each Array(row.count) as _, i}<img src={sym('S')} alt="" style:--i={i} />{/each}
+							</span>
+							<span class="flag-spins"><b>{row.spins}</b> Free Spins</span>
+						</div>
+					{/each}
+				</div>
 			</section>
 
 			<section class="wp-card">
-				<h3 style="color: #e5432f !important"><span class="wp-accent-bar"></span>Retriggers</h3>
+				{@render holeHead('retrigger')}
 				<p>
 					<strong>Scatters cannot retrigger Free Spins.</strong> Scatters do not appear on the
 					reels during the feature. Extra spins come only from the Golfer meter, as described
@@ -343,20 +492,25 @@
 
 			{#if buyTiers.length}
 				<section class="wp-card">
-					<h3 style="color: #e5432f !important"><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
+					{@render holeHead('bonus')}
 					<p>
 						Instead of waiting for Scatters, you can {T.buy} direct entry into Free Spins. Two
 						rounds are available, both with the same number of spins:
 					</p>
-					<ul class="wp-tiers">
+					<ul class="bonus-cards">
 						{#each buyTiers as tier (tier.key)}
 							<li>
-								<strong>{tier.name}</strong>, {tier.cost}&times; {T.bet} &mdash; {tier.spins} Free Spins,
-								{#if tier.start > 0}
-									the Golfer meter starts at {tier.start}; all {removedLabelsAtLevel(levelAt(tier.start))} symbols are already Balls
-								{:else}
-									the Golfer meter starts empty
-								{/if}
+								<span class="bonus-art" style:background-image={`url('${CARD_ART[tier.key]}')`} aria-hidden="true">
+									<span class="bonus-price">{tier.cost}&times;</span>
+								</span>
+								<span class="bonus-text">
+									<strong>{tier.name}</strong>, {tier.cost}&times; {T.bet} &mdash; {tier.spins} Free Spins,
+									{#if tier.start > 0}
+										the Golfer meter starts at {tier.start}; all {removedLabelsAtLevel(levelAt(tier.start))} symbols are already Balls
+									{:else}
+										the Golfer meter starts empty
+									{/if}
+								</span>
 							</li>
 						{/each}
 					</ul>
@@ -368,7 +522,7 @@
 			{/if}
 
 			<section class="wp-card">
-				<h3 style="color: #e5432f !important"><span class="wp-accent-bar"></span>Max Win</h3>
+				{@render holeHead('maxwin')}
 				<p>
 					The maximum {T.payout} is capped at {maxWin.toLocaleString()}&times; the {T.totalBet}
 					in every mode. Once the cap is reached the round ends immediately and the maximum win
@@ -416,9 +570,15 @@
 		100% { background-position: 200% center; }
 	}
 
-	@keyframes accentPulse {
-		0%, 100% { opacity: 0.7; box-shadow: 0 0 6px rgba(255, 215, 94, 0.3); }
-		50% { opacity: 1; box-shadow: 0 0 12px rgba(255, 215, 94, 0.55); }
+	@keyframes cellHit {
+		0% { transform: scale(1); }
+		45% { transform: scale(1.18); }
+		100% { transform: scale(1); }
+	}
+
+	@keyframes flagPop {
+		from { opacity: 0; transform: translateY(6px) rotate(-8deg); }
+		to { opacity: 1; transform: none; }
 	}
 
 	.wp-rules {
@@ -681,16 +841,6 @@
 		}
 	}
 
-	.wp-accent-bar {
-		display: inline-block;
-		width: 3px;
-		height: 1.1em;
-		border-radius: 2px;
-		background: linear-gradient(180deg, #ffd75e, #9ec44a);
-		flex-shrink: 0;
-		animation: accentPulse 3s ease-in-out infinite;
-	}
-
 	.wp-divider {
 		width: 60%;
 		height: 1px;
@@ -704,9 +854,298 @@
 	.wp-rules::-webkit-scrollbar-thumb { background: #2f5e36; }
 	.wp-card, .wp-card:hover { background: #fff6df; border: 2px solid #2f5e36; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
 	.wp-card h3, .wp-modes thead th { color: #e5432f; }
-	.wp-accent-bar, .wp-divider { background: #e5432f; animation: none; box-shadow: none; }
+	.wp-divider { background: #e5432f; animation: none; box-shadow: none; }
 	.wp-control-name, .wp-modes tbody th, .wp-modes tbody td:nth-child(3), .wp-modes tbody td:nth-child(4) { color: #1b2a22; }
 	.wp-modes th, .wp-modes td { border-bottom-color: #2f5e36; }
+
+	/* ── Course layout (2026-10-31) ────────────────────────────────────────
+	   Every section is a numbered hole: a flag pin carries the number and the
+	   heading reads "Hole n" over the title. Pictures are the game's own symbol
+	   art; motion plays once on open and then holds still. */
+	.wp-rules { scroll-padding-top: 0.5rem; }
+	.wp-card { scroll-margin-top: 0.5rem; }
+	.wp-card h3 { gap: 0.6rem; margin-bottom: 0.55rem; }
+	.hole-pin {
+		position: relative;
+		flex-shrink: 0;
+		width: 2rem;
+		height: 2.1rem;
+	}
+	/* pole + pennant, the pennant carrying the hole number */
+	.hole-pin::before {
+		content: '';
+		position: absolute;
+		left: 0.35rem;
+		top: 0.05rem;
+		bottom: 0;
+		width: 3px;
+		border-radius: 2px;
+		background: #2f5e36;
+	}
+	.hole-pin::after {
+		content: '';
+		position: absolute;
+		left: 0.05rem;
+		bottom: -0.1rem;
+		width: 0.95rem;
+		height: 0.32rem;
+		border-radius: 50%;
+		background: #2f5e36;
+		opacity: 0.35;
+	}
+	.hole-pin span {
+		position: absolute;
+		left: 0.5rem;
+		top: 0;
+		display: grid;
+		place-items: center;
+		width: 1.45rem;
+		height: 1.15rem;
+		padding-right: 0.25rem;
+		clip-path: polygon(0 0, 100% 50%, 0 100%);
+		background: #e5432f;
+		color: #fff6df;
+		font: 400 0.68rem var(--gb-display-font, sans-serif);
+		line-height: 1;
+	}
+	.hole-label { display: flex; flex-direction: column; line-height: 1.15; color: #1b2a22; }
+	.hole-label small {
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: #e5432f;
+	}
+
+	/* worked examples */
+	.eg {
+		margin: 0.75rem 0 0;
+		padding: 0.7rem;
+		border: 2px dashed #2f5e3680;
+		border-radius: 0.6rem;
+		background: #f1e7c6;
+	}
+	.eg figcaption {
+		margin-top: 0.55rem;
+		font-size: 0.78rem;
+		line-height: 1.45;
+		color: #2f4a3a;
+		text-align: center;
+	}
+	.eg-board {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 2.9rem));
+		justify-content: center;
+		gap: 0.25rem;
+	}
+	.eg-reel { display: flex; flex-direction: column; gap: 0.2rem; align-items: center; }
+	.eg-reel em {
+		font: 400 0.8rem var(--gb-display-font, sans-serif);
+		font-style: normal;
+		color: #2f5e3699;
+	}
+	.eg-reel.counted em { color: #e5432f; }
+	.eg-cell {
+		display: block;
+		width: 100%;
+		aspect-ratio: 1;
+		border-radius: 0.35rem;
+		background: #fff6df;
+		border: 1px solid #2f5e3633;
+		opacity: 0.45;
+	}
+	.eg-cell img { width: 100%; height: 100%; object-fit: contain; display: block; }
+	.eg-cell.hit {
+		opacity: 1;
+		border: 2px solid #e5432f;
+		box-shadow: 0 0 0 2px #fff6df, 0 3px 0 #2f5e36;
+		animation: cellHit 0.5s ease-out var(--d) 1 both;
+	}
+	.eg-sum {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.eg-sum-2 { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed #2f5e3650; }
+	.eg-golfer img { width: 2.8rem; height: 2.8rem; display: block; }
+	.eg-sum-2 .eg-golfer img { width: 2.2rem; height: 2.2rem; }
+	.eg-ball { position: relative; display: inline-grid; place-items: center; width: 2.7rem; height: 2.7rem; }
+	.eg-ball img { position: absolute; inset: 0; width: 100%; height: 100%; }
+	.eg-ball b {
+		position: relative;
+		font: 400 0.82rem var(--gb-display-font, sans-serif);
+		color: #2f5e36;
+		text-shadow: 0 0 3px #fff, 0 0 3px #fff;
+	}
+	.eg-op { font-size: 0.78rem; font-weight: 700; color: #2f4a3a; }
+	.eg-total {
+		padding: 0.15rem 0.55rem;
+		border-radius: 999px;
+		background: #e5432f;
+		color: #fff6df;
+		font: 400 1rem var(--gb-display-font, sans-serif);
+		box-shadow: 0 2px 0 #8f2416;
+	}
+
+	/* caddie aside */
+	.caddie-tip {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.55rem;
+		margin-top: 0.7rem;
+	}
+	.caddie-tip img { flex-shrink: 0; width: 2.4rem; height: 2.4rem; }
+	.wp-card .caddie-tip p {
+		position: relative;
+		padding: 0.45rem 0.65rem;
+		border-radius: 0.6rem;
+		background: #2f5e36;
+		color: #fff6df;
+		font-size: 0.8rem;
+		line-height: 1.45;
+		opacity: 1;
+	}
+	.caddie-tip p::before {
+		content: '';
+		position: absolute;
+		left: -0.4rem;
+		top: 0.8rem;
+		border: 0.4rem solid transparent;
+		border-left: 0;
+		border-right-color: #2f5e36;
+	}
+	.caddie-tip strong {
+		display: block;
+		font-size: 0.62rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: #ffd75e;
+	}
+
+	/* meter track */
+	.meter-track {
+		list-style: none;
+		position: relative;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		margin: 0.8rem 0 0.2rem;
+		padding: 0;
+	}
+	.meter-track::before {
+		content: '';
+		position: absolute;
+		left: 12.5%;
+		right: 12.5%;
+		top: 0.8rem;
+		height: 4px;
+		border-radius: 2px;
+		background: repeating-linear-gradient(90deg, #2f5e36 0 8px, transparent 8px 13px);
+	}
+	.meter-track li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+	.meter-dot {
+		display: grid;
+		place-items: center;
+		width: 1.7rem;
+		height: 1.7rem;
+		border-radius: 50%;
+		background: #fff;
+		border: 2px solid #2f5e36;
+		color: #1b2a22;
+		font: 400 0.8rem var(--gb-display-font, sans-serif);
+		box-shadow: inset -3px -3px 0 #2f5e3622;
+	}
+	.meter-tee .meter-dot { background: #2f5e36; color: #fff6df; }
+	.meter-swap { display: flex; align-items: center; gap: 0.1rem; }
+	.meter-swap img { width: 1.9rem; height: 1.9rem; }
+	.meter-old { opacity: 0.55; filter: grayscale(0.6); }
+	.meter-arrow { font-size: 0.8rem; color: #e5432f; font-weight: 800; }
+	.meter-cap {
+		font-size: 0.68rem;
+		font-weight: 800;
+		color: #e5432f;
+		text-align: center;
+	}
+	.meter-tee .meter-cap { color: #2f5e36; margin-top: 1.9rem; }
+
+	/* symbol beside its paragraph */
+	.with-art::after { content: ''; display: table; clear: both; }
+	.side-art {
+		float: right;
+		width: 3.6rem;
+		height: 3.6rem;
+		margin: -0.3rem 0 0.2rem 0.6rem;
+	}
+
+	/* scatter count → spins */
+	.flag-rows { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.7rem; }
+	.flag-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.6rem;
+		padding: 0.25rem 0.6rem;
+		border-radius: 0.5rem;
+		background: #f1e7c6;
+	}
+	.flags { display: flex; }
+	.flags img {
+		width: 2rem;
+		height: 2rem;
+		margin-right: -0.55rem;
+		animation: flagPop 0.35s ease-out calc(var(--i) * 0.08s + 0.2s) both;
+	}
+	.flag-spins { font-size: 0.8rem; color: #2f4a3a; white-space: nowrap; }
+	.flag-spins b { font: 400 1.1rem var(--gb-display-font, sans-serif); color: #e5432f; margin-right: 0.15rem; }
+
+	/* bonus cards — the buy menu's own card art */
+	.bonus-cards {
+		list-style: none;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.6rem;
+		margin: 0.7rem 0;
+		padding: 0;
+	}
+	.bonus-cards li {
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		border: 2px solid #2f5e36;
+		border-radius: 0.6rem;
+		background: #fff6df;
+		box-shadow: 3px 3px 0 #2f5e36;
+	}
+	.bonus-art {
+		position: relative;
+		display: block;
+		aspect-ratio: 4 / 3;
+		/* the cards are 600x840 with the picture in the top half */
+		background-size: 136% auto;
+		background-position: 50% 3%;
+		border-bottom: 2px solid #2f5e36;
+	}
+	.bonus-price {
+		position: absolute;
+		right: 0.35rem;
+		bottom: 0.35rem;
+		padding: 0.1rem 0.45rem;
+		border-radius: 999px;
+		background: #e5432f;
+		color: #fff6df;
+		font: 400 0.9rem var(--gb-display-font, sans-serif);
+		box-shadow: 0 2px 0 #8f2416;
+	}
+	.bonus-text { padding: 0.5rem 0.6rem; font-size: 0.78rem; line-height: 1.4; }
+	@media (max-width: 420px) {
+		.bonus-cards { grid-template-columns: 1fr; }
+		.eg-board { grid-template-columns: repeat(5, minmax(0, 2.4rem)); }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.eg-cell.hit, .flags img { animation: none; }
+	}
 
 	.wp-foot {
 		margin: 0;

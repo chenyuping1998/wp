@@ -10,7 +10,7 @@
  * knob (97..153, 38..72), lid flange (34..214, 78..114), bowl (60..190,
  * 110..185), saucer (32..214, 150..214).
  */
-import { flick, leap, polygon, ramp, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
+import { flick, strongLeap, polygon, ramp, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
 
 const LEAP = { crouch: 120, rise: 330, fall: 740, land: 920, hop2: 1150, done: 1450 };
 
@@ -74,9 +74,9 @@ export const H2: MeshWinSpec = {
 		saucer.angle = SAUCER_DEG * (flick(t, LEAP.land, 2.6, 4) - 0.5 * flick(t, LEAP.crouch, 3, 6));
 		saucer.across = 1 + 0.02 * track(t, [[0, 0], [LEAP.land - 20, 0], [LEAP.land + 60, 1, 'out'], [LEAP.land + 260, 0]]);
 
-		const { rigid, air } = leap(t, LEAP, 24);
+		const { rigid, air } = strongLeap(t, LEAP, 38);
 		// a lazy half-turn wobble in the air, the tea bowl being carried
-		rigid.rot = 7 * Math.sin((Math.PI * (t - LEAP.rise)) / 260) * ramp(t, LEAP.rise - 80, LEAP.rise) * (1 - ramp(t, LEAP.fall - 120, LEAP.fall + 40));
+		rigid.rot += 7 * Math.sin((Math.PI * (t - LEAP.rise)) / 260) * ramp(t, LEAP.rise - 80, LEAP.rise) * (1 - ramp(t, LEAP.fall - 120, LEAP.fall + 40));
 		pose.rigid = turnAbout(rigid, [124, 130], 214);
 		pose.air = air;
 		return pose;

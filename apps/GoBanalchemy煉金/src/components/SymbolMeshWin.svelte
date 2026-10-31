@@ -151,6 +151,15 @@
 
 		const plate = plateTex ? new Sprite(plateTex) : null;
 		plate?.setSize(CANVAS, CANVAS);
+		// A LIFTING PANEL (the Wild's win, spec.lifts) leaves its cell: what
+		// shows under it is the cell's empty socket — a dark recess the size of
+		// the tile — never the board's own static copy of the same symbol.
+		let socket: BoilGraphics | null = null;
+		if (panelMode && spec.lifts && !props.spec) {
+			socket = new BoilGraphics();
+			socket.roundRect(3, 3, CANVAS - 6, CANVAS - 6, 18).fill({ color: 0x07060a, alpha: 0.94 });
+			socket.roundRect(9, 9, CANVAS - 18, CANVAS - 18, 13).stroke({ color: 0x000000, width: 6, alpha: 0.6 });
+		}
 		const shadow = shadowTex ? new Sprite(shadowTex) : null;
 		if (shadow) {
 			shadow.setSize(CANVAS, CANVAS);
@@ -160,6 +169,7 @@
 
 		const content = new Container();
 		content.position.set(-CANVAS / 2, -CANVAS / 2);
+		if (socket) content.addChild(socket);
 		for (const layer of panelMode ? [subject] : [plate, shadow, subject])
 			if (layer) content.addChild(layer);
 		// the potions boil inside their glass, riding the mesh (potionBoil.ts):

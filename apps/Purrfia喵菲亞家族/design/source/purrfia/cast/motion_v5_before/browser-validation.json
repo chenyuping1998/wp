@@ -1,0 +1,277 @@
+{
+  "date": "2026-10-30",
+  "revision": "presentation-v5",
+  "environment": "CUA local browser with isolated mock wallet and unchanged published event fixtures; no live RGS session.",
+  "rigSha256": "f298d3a8ccbfd1fe582ff14a7fde5dac18089123734d38ca1f23e3304a52a0cf",
+  "responsiveChecks": [
+    "1280x720 desktop",
+    "390x844 portrait without developer strip"
+  ],
+  "buyBonus": {
+    "metrics": {
+      "font": "21px",
+      "height": 183.1999969482422,
+      "inViewport": true,
+      "text": "購買獎勵",
+      "width": 160,
+      "mobile": {
+        "font": "18px",
+        "height": 71.20000457763672,
+        "inViewport": true,
+        "overflow": false,
+        "width": 112,
+        "x": 12,
+        "y": 16,
+        "menuOpened": true
+      }
+    },
+    "opensExistingMenu": true,
+    "disabledDuringPlay": true,
+    "portraitClearOfBoardAndToolbar": true,
+    "captionUsesLocalizedUiText": true
+  },
+  "localCase": {
+    "fixture": "baseWin",
+    "resultCurrency": 3.7,
+    "balanceCurrency": 1002.7,
+    "settled": true,
+    "consoleErrors": 0
+  },
+  "anatomy": {
+    "totalFrames": 8887,
+    "transitionPairs": 360,
+    "seamSamples": 5464,
+    "totalFolded": 0,
+    "seamFailures": 0
+  },
+  "prizeMotion": {
+    "kind": "purrfia",
+    "frames": 41,
+    "partSamples": 533,
+    "minAreaRatio": 1,
+    "folds": 0,
+    "reviewFps": 25,
+    "slowMotion": true,
+    "scope": "actual per-part performance and mesh helper used by the game; 6 prize types, 41 phases",
+    "performanceSha256": "a01d445d541d3036e5c5b1468b08bc7089e03ae0c40b2712baeb4705892809a6",
+    "componentSha256": "5ed58650723435738668181dd1cb04402039c7c9b5eb5936cefc9ba87da0902a"
+  },
+  "background": {
+    "sample": "paired in-game screenshots after final build",
+    "surface": "floor illumination",
+    "screenSize": [
+      390,
+      843
+    ],
+    "region": [
+      5,
+      567,
+      100,
+      650
+    ],
+    "meanChannelDifference": 7.339,
+    "changedPixelPercent": 61.31,
+    "fixedArchitectureAndReducedMotion": "official helper regression passed"
+  },
+  "evidence": [
+    {
+      "file": "qa-v5/purrfia-desktop.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "fed4341362653fdc2096dd45b42c2b28f976d4ee956bb84bffa7392d23e42168"
+    },
+    {
+      "file": "qa-v5/purrfia-portrait.png",
+      "size": [
+        390,
+        843
+      ],
+      "sha256": "e42e4532195ddf40f79e04569182092890b4a641b489ee1b6845d9b862df914f"
+    },
+    {
+      "file": "qa-v5/purrfia-bg-a.png",
+      "size": [
+        390,
+        843
+      ],
+      "sha256": "e42e4532195ddf40f79e04569182092890b4a641b489ee1b6845d9b862df914f"
+    },
+    {
+      "file": "qa-v5/purrfia-bg-b.png",
+      "size": [
+        390,
+        843
+      ],
+      "sha256": "a329a326201101ff2fc1eec2e9badb0d9838a84ac47614fa8f885c24e253e482"
+    }
+  ],
+  "currentSourceSha256": {
+    "components/BuyBonusEntry.svelte": "7227fa5d2267cb4516b7a1df1687db7bf0f3264f644246c9ea467d70b5827fc2",
+    "components/SymbolMeshWin.svelte": "5ed58650723435738668181dd1cb04402039c7c9b5eb5936cefc9ba87da0902a",
+    "game/symbolPerformance.ts": "a01d445d541d3036e5c5b1468b08bc7089e03ae0c40b2712baeb4705892809a6",
+    "game/backgroundMotion.ts": "b997858cb9a77a0494ab84e4f434aaac64e19ec7753926461d82ba921d40669d",
+    "game/backgroundScene.ts": "c20aae93abc076b0b20763105d92a6b18e2663efcb2691a3a3c5acd63342a67e"
+  },
+  "previousBaseline": {
+    "date": "2026-10-29",
+    "revision": "articulation-v4",
+    "rigSha256": "5ff68f27c78104fc71aef170f0e37f8310b0be78d8cc8f5fdc0e5cb74743b0ac",
+    "environment": "CUA browser; local published-event fixtures and isolated mock wallet. No live Stake Engine session.",
+    "responsiveChecks": [
+      "desktop 1280x720"
+    ],
+    "visualChecks": [
+      "Actual game pose inspection with current rig",
+      "Continuous shipped-player capture with breath, crossfades and returns",
+      "All 19 clips at four phases",
+      "Joint continuity, hand/wing roots and active held props"
+    ],
+    "poseChecks": [
+      "push_monocle",
+      "stamp",
+      "claim_turf"
+    ],
+    "localCase": {
+      "fixture": "baseBoxes",
+      "resultCurrency": 0,
+      "balanceCurrency": 999,
+      "consoleErrors": 0,
+      "settled": true
+    },
+    "anatomy": {
+      "fps": 60,
+      "totalFrames": 8887,
+      "totalFolded": 0,
+      "transitionPairs": 360,
+      "seamSamples": 3788,
+      "seamFailures": 0
+    },
+    "motionReview": {
+      "animation": "cast/motion-review/motion.gif",
+      "sequenceFrames": 224,
+      "allActions": "cast/motion-review/all-actions.png"
+    },
+    "evidence": [
+      {
+        "file": "qa-v4/purrfia-monocle-in-game.png",
+        "sha256": "f22ea114a6f8d2a403c0aba7bbdbf0a48dd5af49eed16f3686476fb913a0e4e2",
+        "size": [
+          1280,
+          720
+        ]
+      },
+      {
+        "file": "qa-v4/purrfia-stamp-in-game.png",
+        "sha256": "6d89979e2e306ecda75e7d7cf09f4bf941e663c8d4202489fc5633bd8fdb8b25",
+        "size": [
+          1280,
+          720
+        ]
+      },
+      {
+        "file": "qa-v4/purrfia-claim-in-game.png",
+        "sha256": "2c2a91412ec19eb647686feda79edd1aa1683a1ac752e5eaa3073c93c73137e6",
+        "size": [
+          1280,
+          720
+        ]
+      }
+    ],
+    "supersededV3": {
+      "date": "2026-10-27",
+      "revision": "soft-skin-v3, local ambient motion, toolbar and Info",
+      "environment": "CUA browser; local published-event fixtures and isolated test wallet. No Stake Engine session.",
+      "responsiveChecks": [
+        "desktop 1280x720",
+        "portrait 390x844"
+      ],
+      "interactionChecks": [
+        "Actual toolbar menu opens Info",
+        "Info and pay table tabs share one dialog",
+        "Symbol images load without failures",
+        "No document overflow in portrait",
+        "Close button returns to game",
+        "Portrait character clears the board"
+      ],
+      "productionCase": {
+        "path": "/purrfia/",
+        "fixture": "baseWin",
+        "resultCurrency": 3.7,
+        "balanceCurrency": 1002.7,
+        "consoleErrors": 0,
+        "settled": true
+      },
+      "motionChecks": {
+        "officialSpineRuntime": "passed",
+        "localTorsoDeformation": "passed",
+        "plantedCatFeet": "passed",
+        "restJointAlignment": "passed",
+        "modalPause": "passed",
+        "reducedMotion": "passed",
+        "protectedActionsAndReturnToIdle": "passed",
+        "oceanMovementAndFixedArchitecture": "passed",
+        "visualFrames": "cast/motion-review/contact.png",
+        "animation": "cast/motion-review/motion.gif"
+      },
+      "animationClock": "Dev-only mock and response-only production QA clock permit hidden-tab character/round checks. Production background motion intentionally pauses in hidden documents; background geometry and travelling UV motion also have direct time-sampling checks.",
+      "previousBaseline": {
+        "slug": "purrfia",
+        "cases": [
+          {
+            "fixture": "baseBoxes",
+            "book": 0,
+            "resultBookUnits": 0,
+            "balance": 999,
+            "idle": true
+          },
+          {
+            "fixture": "bonusTerritory",
+            "book": 33,
+            "resultBookUnits": 101930,
+            "balance": 1919.3,
+            "featureSpins": 10,
+            "returnedToBase": true,
+            "idle": true
+          },
+          {
+            "fixture": "superPlain",
+            "book": 0,
+            "resumeAt": "55% of book",
+            "resultBookUnits": 34100,
+            "featureSpins": 10,
+            "returnedToBase": true,
+            "historicalTerritoryRestored": true
+          },
+          {
+            "type": "production build in /purrfia/ subdirectory",
+            "fixture": "baseWin",
+            "book": 1,
+            "resultCurrency": "$3.70",
+            "balanceCurrency": "$1,002.70",
+            "viewport": [
+              320,
+              568
+            ],
+            "consoleErrors": 0
+          }
+        ],
+        "date": "2026-10-26",
+        "environment": "Local CUA browser using unchanged published fixture events and isolated test wallet. No Stake Engine session.",
+        "animationClock": "Hidden-tab clock enabled by dev-only mock; production QA host injects a timer clock into responses only, leaving saved build files unchanged.",
+        "responsiveChecks": [
+          "desktop 1280x720",
+          "portrait 390x844",
+          "portrait 320x568"
+        ],
+        "knownSharedDevelopmentIssue": "Hot replacement while Pixi is initializing can log teardown errors. Clean reloads and production round checks were used for results.",
+        "interactivePanels": "Intro/outro panels intentionally await acknowledgement; they are excluded from automatic-animation stall warnings."
+      },
+      "engineUpload": "not performed"
+    },
+    "supersededReviewNote": "V3 UI and round observations remain historical evidence; its character appearance sign-off missed limb inversions and is replaced by this review.",
+    "engineUpload": "not performed"
+  },
+  "engineUpload": "not performed"
+}

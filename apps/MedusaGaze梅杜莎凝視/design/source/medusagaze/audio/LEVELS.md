@@ -2,7 +2,7 @@
 
 Deterministic original synthesis; seed 20261024. Measured on delivered runtime files using FFmpeg 7.1 `loudnorm` (EBU R128 integrated LUFS / oversampled true peak). For cues shorter than 3 s, the complete file is repeated to at least 3 s to provide finite LUFS (R128 otherwise has no valid 400 ms window on a short cue). These repeated-cue LUFS are audition references; peaks and in-game gains govern SFX matching. Longer files are measured in full.
 
-Runtime library: **6,633,242 bytes (6.63 MB), 57 files**. Masters excluded from download budget.
+Runtime library: **6,688,808 bytes (6.69 MB), 57 files**. Masters excluded from download budget.
 
 Multiplier v2 uses seed 2026102502 and 13 redesigned cues. Runtime panning follows the actual orb flight. Masters and editable material stems are retained. Regenerate the original library first, then run `upgrade_multiplier.py` and `build_preview.py`.
 
@@ -11,6 +11,10 @@ Multiplier v2 uses seed 2026102502 and 13 redesigned cues. Runtime panning follo
 Multiplier v2 uses seed 2026102502 and 13 redesigned cues. Runtime panning follows the actual orb flight. Masters and editable material stems are retained. Regenerate the original library first, then run `upgrade_multiplier.py` and `build_preview.py`.
 
 Multiplier v2 uses seed 2026102502 and 13 redesigned cues. Runtime panning follows the actual orb flight. Masters and editable material stems are retained. Regenerate the original library first, then run `upgrade_multiplier.py` and `build_preview.py`.
+
+Signature v4 uses seed 2026102502 and 13 redesigned cues. Runtime panning follows the actual orb flight. Masters and editable material stems are retained. Regenerate the original library first, then run `upgrade_multiplier.py` and `build_preview.py`.
+
+Signature v4 uses seed 2026102502 and 13 redesigned cues. Runtime panning follows the actual orb flight. Masters and editable material stems are retained. Regenerate the original library first, then run `upgrade_multiplier.py` and `build_preview.py`.
 
 | File | Seconds | Format / Hz / channels | Peak dBTP | LUFS-I | Bytes |
 |---|---:|---|---:|---:|---:|
@@ -28,16 +32,16 @@ Multiplier v2 uses seed 2026102502 and 13 redesigned cues. Runtime panning follo
 | `sfx_glasses_slide.wav` | 0.220 | PCM16 / 44100 / 1 | -12.97 | -27.54 | 19,482 |
 | `sfx_glasses_on.wav` | 0.120 | PCM16 / 44100 / 1 | -13.96 | -30.31 | 10,662 |
 | `sfx_gaze_charge.wav` | 0.280 | PCM16 / 44100 / 1 | -13.95 | -27.74 | 24,774 |
-| `sfx_gaze_beam.wav` | 0.280 | PCM16 / 44100 / 1 | -10.86 | -27.70 | 24,774 |
-| `sfx_orb_fly.wav` | 0.450 | PCM16 / 44100 / 1 | -13.00 | -25.54 | 39,768 |
-| `sfx_orb_hit_s.wav` | 0.420 | PCM16 / 44100 / 1 | -10.99 | -26.00 | 37,122 |
-| `sfx_orb_hit_m.wav` | 0.500 | PCM16 / 44100 / 1 | -10.00 | -26.89 | 44,178 |
-| `sfx_orb_hit_l.wav` | 0.580 | PCM16 / 44100 / 1 | -8.98 | -26.25 | 51,234 |
-| `sfx_orb_crack.wav` | 0.480 | PCM16 / 44100 / 1 | -11.95 | -34.22 | 42,414 |
-| `sfx_orb_crack_2.wav` | 0.480 | PCM16 / 44100 / 1 | -12.00 | -32.36 | 42,414 |
-| `sfx_mult_count.wav` | 0.240 | PCM16 / 44100 / 1 | -22.00 | -38.72 | 21,246 |
+| `sfx_gaze_beam.wav` | 0.760 | PCM16 / 44100 / 1 | -10.97 | -29.36 | 67,110 |
+| `sfx_orb_fly.wav` | 0.600 | PCM16 / 44100 / 1 | -13.00 | -26.30 | 52,998 |
+| `sfx_orb_hit_s.wav` | 0.420 | PCM16 / 44100 / 1 | -11.00 | -27.84 | 37,122 |
+| `sfx_orb_hit_m.wav` | 0.500 | PCM16 / 44100 / 1 | -10.00 | -27.61 | 44,178 |
+| `sfx_orb_hit_l.wav` | 0.580 | PCM16 / 44100 / 1 | -8.99 | -26.03 | 51,234 |
+| `sfx_orb_crack.wav` | 0.480 | PCM16 / 44100 / 1 | -11.84 | -32.44 | 42,414 |
+| `sfx_orb_crack_2.wav` | 0.480 | PCM16 / 44100 / 1 | -12.00 | -31.78 | 42,414 |
+| `sfx_mult_count.wav` | 0.240 | PCM16 / 44100 / 1 | -22.00 | -38.63 | 21,246 |
 | `sfx_total_mult_up.wav` | 0.420 | PCM16 / 44100 / 1 | -13.00 | -26.66 | 37,122 |
-| `sfx_total_to_win.wav` | 0.280 | PCM16 / 44100 / 1 | -12.00 | -25.65 | 24,774 |
+| `sfx_total_to_win.wav` | 0.280 | PCM16 / 44100 / 1 | -11.94 | -25.49 | 24,774 |
 | `sfx_scatter_land.wav` | 0.480 | PCM16 / 44100 / 1 | -9.97 | -24.24 | 42,414 |
 | `sfx_scatter_tease.wav` | 0.760 | PCM16 / 44100 / 1 | -18.00 | -33.39 | 67,110 |
 | `sfx_scatter_trigger.wav` | 0.920 | PCM16 / 44100 / 1 | -8.99 | -22.18 | 81,222 |
@@ -71,3 +75,11 @@ Multiplier v2 uses seed 2026102502 and 13 redesigned cues. Runtime panning follo
 | `bgm_feature.ogg` | 64.000 | Vorbis q5 / 44100 / 2 | -3.11 | -17.96 | 954,038 |
 | `amb_plaza.ogg` | 12.000 | Vorbis q5 / 44100 / 2 | -29.06 | -46.62 | 129,776 |
 | `amb_night.ogg` | 12.000 | Vorbis q5 / 44100 / 2 | -29.41 | -41.50 | 150,782 |
+
+## v5 runtime playback gains (2026-10-26)
+
+The original masters remain unchanged. Orb flight gain: 0.8 → 1.35 (+4.55 dB). Casting utterance: 0.82 → 1.10 (+2.55 dB). Number collision impact: 1.15. Runtime uses the existing shared compressor. Character voices are synthesized nonverbal cues.
+
+## v6 runtime playback mix (2026-10-26)
+
+Casting utterance gain 2.10 at playback rate 0.87, layered with snake hiss gain 0.55 at 0.86. Collision impact gain 1.65; numeral-transfer gain 1.30; count loop gain 0.78. Orb flight remains 1.35. These settings are identical in every Turbo tier and run through the existing master compressor. Underlying original masters are unchanged.

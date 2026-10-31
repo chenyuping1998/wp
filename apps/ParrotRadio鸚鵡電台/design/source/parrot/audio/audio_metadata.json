@@ -4,8 +4,8 @@
     "seconds": 69.8181875,
     "channels": 2,
     "sourceRate": 48000,
-    "peakDb": -2.3457569647184897,
-    "rmsDb": -17.721129290003905,
+    "peakDb": -3.3498216545130326,
+    "rmsDb": -18.725196161580776,
     "bpm": 110,
     "bars": 32,
     "originalSynthesis": true
@@ -26,8 +26,8 @@
     "seconds": 61.93547916666667,
     "channels": 2,
     "sourceRate": 48000,
-    "peakDb": -2.5673957741356364,
-    "rmsDb": -20.445528003216594,
+    "peakDb": -3.3498216545130326,
+    "rmsDb": -21.227953328395937,
     "bpm": 124,
     "bars": 32,
     "originalSynthesis": true
@@ -48,8 +48,8 @@
     "seconds": 61.93547916666667,
     "channels": 2,
     "sourceRate": 48000,
-    "peakDb": -1.209614900021251,
-    "rmsDb": -22.99732337961927,
+    "peakDb": -3.3498216545130326,
+    "rmsDb": -38.37975960262443,
     "bpm": 124,
     "bars": 32,
     "originalSynthesis": true

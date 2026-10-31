@@ -1,0 +1,191 @@
+{
+  "app": "ParrotRadio鸚鵡電台",
+  "rigSha256": "6288b90cbe683401029843bf377b9268937a0198b3d665c5153cf79cbba8a38d",
+  "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+  "fps": 60,
+  "contactFps": 60,
+  "scope": "all opaque meshes and contacts; every clip, complete configured crossfade, actual player normal/turbo sequences",
+  "totalFrames": 11606,
+  "clipFrames": 3495,
+  "mixFrames": 6868,
+  "runtimeFrames": 1243,
+  "totalFolded": 0,
+  "clipFolded": 0,
+  "mixFolded": 0,
+  "minAreaRatio": 0.922921,
+  "seamSamples": 174431,
+  "seamFailures": 0,
+  "contactPatches": {
+    "front elbow": 5,
+    "front wrist": 5,
+    "rear elbow": 5,
+    "microphone grip": 1,
+    "record grip": 1
+  },
+  "transitionPairs": 360,
+  "runtimeScenarios": 2,
+  "clips": [
+    {
+      "name": "idle",
+      "frames": 961,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "fg_idle",
+      "frames": 961,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "react_small",
+      "frames": 50,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "react_good",
+      "frames": 74,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "idle_mimic",
+      "frames": 91,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "idle_bored",
+      "frames": 121,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "encore_build",
+      "frames": 61,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "encore_call",
+      "frames": 50,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "encore_success",
+      "frames": 50,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "encore_fail",
+      "frames": 74,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "turn_knob",
+      "frames": 26,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "fg_trigger",
+      "frames": 134,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "fg_end",
+      "frames": 98,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "win_big",
+      "frames": 157,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "win_max",
+      "frames": 194,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "record_pull",
+      "frames": 61,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "record_hit",
+      "frames": 50,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "record_miss",
+      "frames": 40,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "win_big_loop",
+      "frames": 121,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    },
+    {
+      "name": "win_max_loop",
+      "frames": 121,
+      "worst": {
+        "count": 0,
+        "openSeams": []
+      }
+    }
+  ],
+  "transitionFailures": [],
+  "runtimeFailures": []
+}

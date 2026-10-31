@@ -20,7 +20,7 @@ export const setContext = () => {
 	setContextApp({ stateApp });
 
 	// Restrict the buy screen to the modes the Purrfia math supports
-	// (base + 200x bonus); otherwise the shared template defaults expose extra
+	// (base, 100x bonus and 300x super bonus); otherwise the shared template defaults expose extra
 	// unplayable buy options.
 	stateMeta.betModeMeta = PURRFIA_BET_MODE_META;
 };

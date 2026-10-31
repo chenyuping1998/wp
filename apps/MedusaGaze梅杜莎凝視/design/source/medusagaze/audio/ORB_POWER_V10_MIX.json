@@ -1,0 +1,674 @@
+{
+  "version": 10,
+  "values": [
+    {
+      "value": 2,
+      "energy": 0,
+      "divinity": 0,
+      "color": 12123994,
+      "bodyScale": 0.94,
+      "corona": 1,
+      "impact": 0.88,
+      "motes": 6,
+      "petals": 4,
+      "wakeStrands": 2,
+      "sounds": {
+        "charge": [
+          {
+            "cue": "sfx_orb_charge",
+            "gain": 0.6839999999999999,
+            "rate": 1
+          }
+        ],
+        "release": [
+          {
+            "cue": "sfx_orb_release",
+            "gain": 0.8360000000000001,
+            "rate": 1
+          }
+        ],
+        "fly": [
+          {
+            "cue": "sfx_orb_fly",
+            "gain": 1.0639999999999998,
+            "rate": 1
+          }
+        ],
+        "hit": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 0.8739999999999999,
+            "rate": 1
+          }
+        ],
+        "collision": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 1.1400000000000001,
+            "rate": 1
+          }
+        ]
+      }
+    },
+    {
+      "value": 3,
+      "energy": 0.07343438885829315,
+      "divinity": 0,
+      "color": 10485619,
+      "bodyScale": 0.9620303166574878,
+      "corona": 1.04259194553781,
+      "impact": 0.9475596377496297,
+      "motes": 7,
+      "petals": 4,
+      "wakeStrands": 2,
+      "sounds": {
+        "charge": [
+          {
+            "cue": "sfx_orb_charge",
+            "gain": 0.713300321154459,
+            "rate": 1
+          }
+        ],
+        "release": [
+          {
+            "cue": "sfx_orb_release",
+            "gain": 0.8747733573171789,
+            "rate": 1
+          }
+        ],
+        "fly": [
+          {
+            "cue": "sfx_orb_fly",
+            "gain": 1.105123257760644,
+            "rate": 1
+          }
+        ],
+        "hit": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 0.8872484791021904,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 0.2286000264158871,
+            "rate": 1
+          }
+        ],
+        "collision": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 1.1572806249159004,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 0.2981739474989832,
+            "rate": 1
+          }
+        ]
+      }
+    },
+    {
+      "value": 5,
+      "energy": 0.1659507774310059,
+      "divinity": 0,
+      "color": 8454036,
+      "bodyScale": 0.9897852332293017,
+      "corona": 1.0962514509099834,
+      "impact": 1.0326747152365254,
+      "motes": 8,
+      "petals": 5,
+      "wakeStrands": 2,
+      "sounds": {
+        "charge": [
+          {
+            "cue": "sfx_orb_charge",
+            "gain": 0.7502143601949713,
+            "rate": 1
+          }
+        ],
+        "release": [
+          {
+            "cue": "sfx_orb_release",
+            "gain": 0.9236220104835712,
+            "rate": 1
+          }
+        ],
+        "fly": [
+          {
+            "cue": "sfx_orb_fly",
+            "gain": 1.1569324353613633,
+            "rate": 1
+          }
+        ],
+        "hit": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 0.8162314639663668,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 0.5230149365839775,
+            "rate": 1
+          }
+        ],
+        "collision": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 1.0646497356083047,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 0.6821933955443186,
+            "rate": 1
+          }
+        ]
+      }
+    },
+    {
+      "value": 8,
+      "energy": 0.2510738338534912,
+      "divinity": 0,
+      "color": 6619057,
+      "bodyScale": 1.0153221501560472,
+      "corona": 1.145622823635025,
+      "impact": 1.1109879271452119,
+      "motes": 9,
+      "petals": 6,
+      "wakeStrands": 2,
+      "sounds": {
+        "charge": [
+          {
+            "cue": "sfx_orb_charge",
+            "gain": 0.7841784597075429,
+            "rate": 1
+          }
+        ],
+        "release": [
+          {
+            "cue": "sfx_orb_release",
+            "gain": 0.9685669842746434,
+            "rate": 1
+          }
+        ],
+        "fly": [
+          {
+            "cue": "sfx_orb_fly",
+            "gain": 1.204601346957955,
+            "rate": 1
+          }
+        ],
+        "hit": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 0.6627513401434518,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 0.7731965684437078,
+            "rate": 1
+          }
+        ],
+        "collision": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 0.8644582697523283,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 1.0085172631874448,
+            "rate": 1
+          }
+        ]
+      }
+    },
+    {
+      "value": 10,
+      "energy": 0.29148769435775146,
+      "divinity": 0,
+      "color": 8248525,
+      "bodyScale": 1.0274463083073253,
+      "corona": 1.169062862727496,
+      "impact": 1.1481686788091314,
+      "motes": 10,
+      "petals": 6,
+      "wakeStrands": 2,
+      "sounds": {
+        "charge": [
+          {
+            "cue": "sfx_orb_charge",
+            "gain": 0.8003035900487427,
+            "rate": 1
+          }
+        ],
+        "release": [
+          {
+            "cue": "sfx_orb_release",
+            "gain": 0.9899055026208928,
+            "rate": 1
+          }
+        ],
+        "fly": [
+          {
+            "cue": "sfx_orb_fly",
+            "gain": 1.2272331088403408,
+            "rate": 1
+          }
+        ],
+        "hit": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 0.5619589458185987,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 0.8770085535804998,
+            "rate": 1
+          }
+        ],
+        "collision": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 0.7329899293286072,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 1.1439242003223913,
+            "rate": 1
+          }
+        ]
+      }
+    },
+    {
+      "value": 15,
+      "energy": 0.36492208321604463,
+      "divinity": 0,
+      "color": 11181567,
+      "bodyScale": 1.0494766249648133,
+      "corona": 1.2116548082653058,
+      "impact": 1.2157283165587611,
+      "motes": 11,
+      "petals": 6,
+      "wakeStrands": 2,
+      "sounds": {
+        "charge": [
+          {
+            "cue": "sfx_orb_charge",
+            "gain": 0.8296039112032018,
+            "rate": 1
+          }
+        ],
+        "release": [
+          {
+            "cue": "sfx_orb_release",
+            "gain": 1.0286788599380716,
+            "rate": 1
+          }
+        ],
+        "fly": [
+          {
+            "cue": "sfx_orb_fly",
+            "gain": 1.268356366600985,
+            "rate": 1
+          }
+        ],
+        "hit": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 0.3385610238688454,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 1.0295942554651178,
+            "rate": 1
+          }
+        ],
+        "collision": [
+          {
+            "cue": "sfx_orb_hit_s",
+            "gain": 0.44160133548110275,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 1.3429490288675452,
+            "rate": 1
+          }
+        ]
+      }
+    },
+    {
+      "value": 25,
+      "energy": 0.4574384717887574,
+      "divinity": 0,
+      "color": 12690943,
+      "bodyScale": 1.0772315415366271,
+      "corona": 1.2653143136374791,
+      "impact": 1.300843394045657,
+      "motes": 12,
+      "petals": 7,
+      "wakeStrands": 2,
+      "sounds": {
+        "charge": [
+          {
+            "cue": "sfx_orb_charge",
+            "gain": 0.866517950243714,
+            "rate": 1
+          }
+        ],
+        "release": [
+          {
+            "cue": "sfx_orb_release",
+            "gain": 1.077527513104464,
+            "rate": 1
+          }
+        ],
+        "fly": [
+          {
+            "cue": "sfx_orb_fly",
+            "gain": 1.3201655442017042,
+            "rate": 1
+          }
+        ],
+        "hit": [
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 1.1370271212785354,
+            "rate": 1
+          }
+        ],
+        "collision": [
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 1.483078853841568,
+            "rate": 1
+          }
+        ]
+      }
+    },
+    {
+      "value": 50,
+      "energy": 0.5829753887155029,
+      "divinity": 0,
+      "color": 14725375,
+      "bodyScale": 1.1148926166146509,
+      "corona": 1.3381257254549916,
+      "impact": 1.4163373576182627,
+      "motes": 14,
+      "petals": 8,
+      "wakeStrands": 2,
+      "sounds": {
+        "charge": [
+          {
+            "cue": "sfx_orb_charge",
+            "gain": 0.9166071800974857,
+            "rate": 1
+          }
+        ],
+        "release": [
+          {
+            "cue": "sfx_orb_release",
+            "gain": 1.1438110052417856,
+            "rate": 1
+          }
+        ],
+        "fly": [
+          {
+            "cue": "sfx_orb_fly",
+            "gain": 1.3904662176806815,
+            "rate": 1
+          }
+        ],
+        "hit": [
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 0.9927407080840629,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_l",
+            "gain": 0.6904033333280246,
+            "rate": 1
+          }
+        ],
+        "collision": [
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 1.2948791844574736,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_l",
+            "gain": 0.9005260869495975,
+            "rate": 1
+          }
+        ]
+      }
+    },
+    {
+      "value": 100,
+      "energy": 0.7085123056422485,
+      "divinity": 0.30102999566398114,
+      "color": 16762445,
+      "bodyScale": 1.1525536916926744,
+      "corona": 1.4109371372725041,
+      "impact": 1.5318313211908687,
+      "motes": 15,
+      "petals": 9,
+      "wakeStrands": 2,
+      "sounds": {
+        "charge": [
+          {
+            "cue": "sfx_orb_charge",
+            "gain": 0.966696409951257,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_medusa_jewel",
+            "gain": 0.0541853992195166,
+            "rate": 1
+          }
+        ],
+        "release": [
+          {
+            "cue": "sfx_orb_release",
+            "gain": 1.2100944973791075,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_gaze_beam",
+            "gain": 0.04816479930623698,
+            "rate": 1
+          }
+        ],
+        "fly": [
+          {
+            "cue": "sfx_orb_fly",
+            "gain": 1.4607668911596592,
+            "rate": 1
+          }
+        ],
+        "hit": [
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 0.4459559197697028,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_l",
+            "gain": 1.201289047802091,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_medusa_jewel",
+            "gain": 0.0782677988726351,
+            "rate": 1
+          }
+        ],
+        "collision": [
+          {
+            "cue": "sfx_orb_hit_m",
+            "gain": 0.5816816344822211,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_orb_hit_l",
+            "gain": 1.5668987580027276,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_medusa_jewel",
+            "gain": 0.0782677988726351,
+            "rate": 1
+          }
+        ]
+      }
+    },
+    {
+      "value": 250,
+      "energy": 0.8744630830732545,
+      "divinity": 0.6989700043360187,
+      "color": 16766588,
+      "bodyScale": 1.2023389249219762,
+      "corona": 1.5071885881824876,
+      "impact": 1.6845060364273943,
+      "motes": 18,
+      "petals": 10,
+      "wakeStrands": 3,
+      "sounds": {
+        "charge": [
+          {
+            "cue": "sfx_orb_charge",
+            "gain": 1.0329107701462286,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_medusa_jewel",
+            "gain": 0.12581460078048337,
+            "rate": 1
+          }
+        ],
+        "release": [
+          {
+            "cue": "sfx_orb_release",
+            "gain": 1.2977165078626784,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_gaze_beam",
+            "gain": 0.111835200693763,
+            "rate": 1
+          }
+        ],
+        "fly": [
+          {
+            "cue": "sfx_orb_fly",
+            "gain": 1.5536993265210226,
+            "rate": 1
+          }
+        ],
+        "hit": [
+          {
+            "cue": "sfx_orb_hit_l",
+            "gain": 1.3768162727671212,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_medusa_jewel",
+            "gain": 0.18173220112736488,
+            "rate": 1
+          }
+        ],
+        "collision": [
+          {
+            "cue": "sfx_orb_hit_l",
+            "gain": 1.7958473123049408,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_medusa_jewel",
+            "gain": 0.18173220112736488,
+            "rate": 1
+          }
+        ]
+      }
+    },
+    {
+      "value": 500,
+      "energy": 1,
+      "divinity": 1,
+      "color": 16773552,
+      "bodyScale": 1.24,
+      "corona": 1.58,
+      "impact": 1.8,
+      "motes": 20,
+      "petals": 12,
+      "wakeStrands": 4,
+      "sounds": {
+        "charge": [
+          {
+            "cue": "sfx_orb_charge",
+            "gain": 1.083,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_medusa_jewel",
+            "gain": 0.18,
+            "rate": 1
+          }
+        ],
+        "release": [
+          {
+            "cue": "sfx_orb_release",
+            "gain": 1.364,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_gaze_beam",
+            "gain": 0.16,
+            "rate": 1
+          }
+        ],
+        "fly": [
+          {
+            "cue": "sfx_orb_fly",
+            "gain": 1.624,
+            "rate": 1
+          }
+        ],
+        "hit": [
+          {
+            "cue": "sfx_orb_hit_l",
+            "gain": 1.4489999999999998,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_medusa_jewel",
+            "gain": 0.26,
+            "rate": 1
+          }
+        ],
+        "collision": [
+          {
+            "cue": "sfx_orb_hit_l",
+            "gain": 1.8900000000000001,
+            "rate": 1
+          },
+          {
+            "cue": "sfx_medusa_jewel",
+            "gain": 0.26,
+            "rate": 1
+          }
+        ]
+      }
+    }
+  ]
+}

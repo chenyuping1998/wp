@@ -1,0 +1,152 @@
+{
+  "bgm_main": {
+    "lufs": -20.264258200529266,
+    "truePeakDbTP": -3.6729749831036704,
+    "loopCorrelation": 0.9999059223402857
+  },
+  "bgm_freespin": {
+    "lufs": -20.26413330768354,
+    "truePeakDbTP": -5.783938648045034,
+    "loopCorrelation": 0.9996655538236757
+  },
+  "btn": {
+    "truePeakDbTP": -11.0,
+    "tail50msDbFS": -240.0
+  },
+  "spin": {
+    "truePeakDbTP": -6.000000000000001,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_1": {
+    "truePeakDbTP": -7.7,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_2": {
+    "truePeakDbTP": -7.4,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_3": {
+    "truePeakDbTP": -7.099999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_4": {
+    "truePeakDbTP": -6.799999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "reel_stop_5": {
+    "truePeakDbTP": -6.499999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "reel_tension": {
+    "truePeakDbTP": -11.999999999999996,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_1": {
+    "truePeakDbTP": -4.700000000000003,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_2": {
+    "truePeakDbTP": -4.400000000000005,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_3": {
+    "truePeakDbTP": -4.100000000000001,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_4": {
+    "truePeakDbTP": -3.8,
+    "tail50msDbFS": -240.0
+  },
+  "scatter_5": {
+    "truePeakDbTP": -3.499999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "pluck_low": {
+    "truePeakDbTP": -7.0,
+    "tail50msDbFS": -240.0
+  },
+  "win_gliss": {
+    "truePeakDbTP": -5.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "win_gliss_big": {
+    "truePeakDbTP": -4.0,
+    "tail50msDbFS": -240.0
+  },
+  "fs_intro": {
+    "truePeakDbTP": -3.199999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "mult_update": {
+    "truePeakDbTP": -5.0000000000000036,
+    "tail50msDbFS": -240.0
+  },
+  "wild_expand": {
+    "truePeakDbTP": -3.199999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "win_panel": {
+    "truePeakDbTP": -4.0,
+    "tail50msDbFS": -240.0
+  },
+  "win_cap": {
+    "truePeakDbTP": -4.0,
+    "tail50msDbFS": -240.0
+  },
+  "win_big": {
+    "truePeakDbTP": -4.000000000000003,
+    "tail50msDbFS": -240.0
+  },
+  "win_super": {
+    "truePeakDbTP": -4.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "win_mega": {
+    "truePeakDbTP": -4.0,
+    "tail50msDbFS": -240.0
+  },
+  "win_epic": {
+    "truePeakDbTP": -4.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "win_max": {
+    "truePeakDbTP": -4.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "gong_feature": {
+    "truePeakDbTP": -2.799999999999999,
+    "tail50msDbFS": -240.0
+  },
+  "bigwin_blast": {
+    "truePeakDbTP": -3.1999999999999993,
+    "tail50msDbFS": -240.0
+  },
+  "grenade_blast": {
+    "truePeakDbTP": -3.1999999999999993,
+    "tail50msDbFS": -240.0
+  },
+  "slash_draw": {
+    "truePeakDbTP": -8.000000000000002,
+    "tail50msDbFS": -240.0
+  },
+  "slash_hit": {
+    "truePeakDbTP": -3.1999999999999993,
+    "tail50msDbFS": -240.0
+  },
+  "slash_finale": {
+    "truePeakDbTP": -2.799999999999998,
+    "tail50msDbFS": -240.0
+  },
+  "coin_shimmer": {
+    "truePeakDbTP": -10.0,
+    "tail50msDbFS": -240.0
+  },
+  "win_rollup_loop": {
+    "truePeakDbTP": -15.0,
+    "tail50msDbFS": -240.0
+  },
+  "win_rollup_end": {
+    "truePeakDbTP": -5.0,
+    "tail50msDbFS": -240.0
+  }
+}

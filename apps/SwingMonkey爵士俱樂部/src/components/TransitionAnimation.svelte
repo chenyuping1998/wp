@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Container, Sprite } from 'pixi-svelte';
+	import { Container } from 'pixi-svelte';
 	import { getContext } from '../game/context';
+	import CurtainCloth from './CurtainCloth.svelte';
 
 	// The stage curtain lowers as a single illustrated object. The scene changes
 	// while it covers the viewport, then the same object rises.
@@ -121,7 +122,7 @@
 
 <Container>
 	{#if shut > 0}
-		<Sprite key="smDoor" anchor={0.5} x={canvas.width / 2 + jolt * 0.18}
-			y={doorY} width={door.width} height={door.height} />
+		<CurtainCloth x={canvas.width / 2 + jolt * 0.18}
+			y={doorY} width={door.width} height={door.height} {shut} />
 	{/if}
 </Container>

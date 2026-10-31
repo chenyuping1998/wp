@@ -1,0 +1,549 @@
+{
+  "cues": 77,
+  "runtimeMiB": 6.79,
+  "budgetMiB": 12,
+  "sampleClipping": false,
+  "synchronousFeatureStems": 0,
+  "creation": "Original procedural music and nonverbal synthesized character voices, not live recordings.",
+  "measurements": [
+    {
+      "file": "bgm_base.ogg",
+      "duration": 85.3333,
+      "peakDbFS": -3.4,
+      "rmsDbFS": -18.57,
+      "bytes": 880298
+    },
+    {
+      "file": "bgm_feature.ogg",
+      "duration": 66.7826,
+      "peakDbFS": -3.32,
+      "rmsDbFS": -17.95,
+      "bytes": 775208
+    },
+    {
+      "file": "sfx_bigwin_1.wav",
+      "duration": 3.2,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -20.18,
+      "bytes": 282318
+    },
+    {
+      "file": "sfx_bigwin_1_loop.wav",
+      "duration": 2.0,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -18.18,
+      "bytes": 176478
+    },
+    {
+      "file": "sfx_bigwin_2.wav",
+      "duration": 3.2,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -20.17,
+      "bytes": 282318
+    },
+    {
+      "file": "sfx_bigwin_2_loop.wav",
+      "duration": 2.0,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -18.18,
+      "bytes": 176478
+    },
+    {
+      "file": "sfx_bigwin_3.wav",
+      "duration": 3.2,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -20.17,
+      "bytes": 282318
+    },
+    {
+      "file": "sfx_bigwin_3_loop.wav",
+      "duration": 2.0,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -18.18,
+      "bytes": 176478
+    },
+    {
+      "file": "sfx_bigwin_4.wav",
+      "duration": 3.2,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -20.17,
+      "bytes": 282318
+    },
+    {
+      "file": "sfx_bigwin_4_loop.wav",
+      "duration": 2.0,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -18.18,
+      "bytes": 176478
+    },
+    {
+      "file": "sfx_bigwin_5.wav",
+      "duration": 3.2,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -20.18,
+      "bytes": 282318
+    },
+    {
+      "file": "sfx_bigwin_5_loop.wav",
+      "duration": 2.0,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -18.18,
+      "bytes": 176478
+    },
+    {
+      "file": "sfx_bigwin_end.wav",
+      "duration": 3.2,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -20.17,
+      "bytes": 282318
+    },
+    {
+      "file": "sfx_box_connect.wav",
+      "duration": 0.6,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -17.92,
+      "bytes": 52998
+    },
+    {
+      "file": "sfx_box_land.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -13.44,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_box_open.wav",
+      "duration": 0.38,
+      "peakDbFS": -5.16,
+      "rmsDbFS": -20.58,
+      "bytes": 33594
+    },
+    {
+      "file": "sfx_box_open_more.wav",
+      "duration": 0.38,
+      "peakDbFS": -6.13,
+      "rmsDbFS": -20.78,
+      "bytes": 33594
+    },
+    {
+      "file": "sfx_box_peek.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -13.1,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_box_reveal.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.77,
+      "rmsDbFS": -13.42,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_button.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.4,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_buy_card_hover_super.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.42,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_buybonus_confirm.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.34,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_buybonus_confirm_super.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.19,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_buybonus_hover.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -13.08,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_catnip_drop.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.77,
+      "rmsDbFS": -13.17,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_cell_beam.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.77,
+      "rmsDbFS": -13.2,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_cell_max.wav",
+      "duration": 0.6,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -17.92,
+      "bytes": 52998
+    },
+    {
+      "file": "sfx_cell_tier.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.76,
+      "rmsDbFS": -13.36,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_cell_up.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.08,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_cells_clear.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -13.08,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_chain_fill.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.77,
+      "rmsDbFS": -13.43,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_cluster_1.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.78,
+      "rmsDbFS": -13.43,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_cluster_2.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.09,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_cluster_3.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.82,
+      "rmsDbFS": -13.17,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_cluster_4.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.34,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_cluster_5.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -13.37,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_cluster_6.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.49,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_cluster_outline.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.77,
+      "rmsDbFS": -13.44,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_drop.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.76,
+      "rmsDbFS": -13.35,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_fg_plus5.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -13.09,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_lamp_off.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.76,
+      "rmsDbFS": -13.21,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_mark.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.76,
+      "rmsDbFS": -13.32,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_monocle_glint.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.73,
+      "rmsDbFS": -13.15,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_monocle_push.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.76,
+      "rmsDbFS": -13.33,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_mult_count.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -13.4,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_mult_sum.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.14,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_neon_off.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -13.33,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_neon_on.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.76,
+      "rmsDbFS": -13.44,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_page_turn.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.11,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_ring_land.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -13.38,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_ring_tease.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.33,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_ring_trigger.wav",
+      "duration": 0.6,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -17.92,
+      "bytes": 52998
+    },
+    {
+      "file": "sfx_spin.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.37,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_stamp_beam.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.78,
+      "rmsDbFS": -13.44,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_stamp_big.wav",
+      "duration": 0.6,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -17.92,
+      "bytes": 52998
+    },
+    {
+      "file": "sfx_stamp_catch.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -13.4,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_stamp_fade.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.42,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_stamp_raise.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.11,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_stamp_return.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.77,
+      "rmsDbFS": -13.17,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_stamp_slam.wav",
+      "duration": 0.6,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -17.92,
+      "bytes": 52998
+    },
+    {
+      "file": "sfx_stamp_value.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.1,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_swipe.wav",
+      "duration": 0.38,
+      "peakDbFS": -7.16,
+      "rmsDbFS": -21.5,
+      "bytes": 33594
+    },
+    {
+      "file": "sfx_treat_push.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.75,
+      "rmsDbFS": -13.33,
+      "bytes": 22128
+    },
+    {
+      "file": "sfx_turf_claim.wav",
+      "duration": 1.1,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -20.5,
+      "bytes": 97098
+    },
+    {
+      "file": "sfx_win_to_ticker.wav",
+      "duration": 0.25,
+      "peakDbFS": -5.76,
+      "rmsDbFS": -13.41,
+      "bytes": 22128
+    },
+    {
+      "file": "stinger_fg_intro.wav",
+      "duration": 3.2,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -20.18,
+      "bytes": 282318
+    },
+    {
+      "file": "stinger_fg_outro.wav",
+      "duration": 3.2,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -20.17,
+      "bytes": 282318
+    },
+    {
+      "file": "vo_boss_growl.wav",
+      "duration": 0.75,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -15.35,
+      "bytes": 66228
+    },
+    {
+      "file": "vo_boss_hiss.wav",
+      "duration": 0.75,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -15.35,
+      "bytes": 66228
+    },
+    {
+      "file": "vo_boss_hmm.wav",
+      "duration": 0.75,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -15.35,
+      "bytes": 66228
+    },
+    {
+      "file": "vo_boss_hmm_2.wav",
+      "duration": 0.75,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -15.35,
+      "bytes": 66228
+    },
+    {
+      "file": "vo_boss_laugh.wav",
+      "duration": 1.7,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -15.37,
+      "bytes": 150018
+    },
+    {
+      "file": "vo_boss_laugh_2.wav",
+      "duration": 1.7,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -15.37,
+      "bytes": 150018
+    },
+    {
+      "file": "vo_boss_proud.wav",
+      "duration": 0.75,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -15.35,
+      "bytes": 66228
+    },
+    {
+      "file": "vo_boss_purr.wav",
+      "duration": 1.7,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -15.37,
+      "bytes": 150018
+    },
+    {
+      "file": "vo_boss_shock.wav",
+      "duration": 0.75,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -15.35,
+      "bytes": 66228
+    },
+    {
+      "file": "vo_boss_yawn.wav",
+      "duration": 0.75,
+      "peakDbFS": -5.74,
+      "rmsDbFS": -15.35,
+      "bytes": 66228
+    }
+  ]
+}

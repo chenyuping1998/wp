@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Container, Sprite } from 'pixi-svelte';
-	import { MainContainer } from 'components-layout';
 	import { getContext } from '../game/context';
 
 	// Sushi Monkey's transition (2026-10-07, user request: "like Banandit, the
@@ -14,10 +13,14 @@
 	// Its mechanical job is the one every transition here has: hide a scene swap.
 	// `oncover` fires only while the doors are fully shut and still.
 	//
-	// When the chef is on screen he throws a Sushi Plate first, and the doors
-	// wait for it: they start on his RELEASE, the plate flies at the board and is
-	// swallowed by the closing doors, and the swap (which re-keys him to the
-	// other cast) waits until his throw has played out.
+	// 2026-10-31 (user: the transition was "太粗糙"): he no longer throws a Jade
+	// Cup across the board (it tumbled 2.2 turns and swelled to 1.4x, and read
+	// as a stray object). When he is on screen he OFFERS the cup toward the
+	// board (his 'cheer') and the doors start on the offer. While they are shut
+	// the paper panels light up from behind, as shoji do with a lamp lit inside,
+	// and a festival lantern (the Scatter that opened the feature) drops on its
+	// cord in front of the seam, swings once, flares, and is drawn back up as
+	// the doors part. Lantern and light only ever sit on the shut doors.
 	type Props = {
 		oncomplete: () => void;
 		// Fired while the doors are fully shut. Swap scenes here.
@@ -27,19 +30,20 @@
 	const props: Props = $props();
 	const context = getContext();
 
-	// the skeleton's 'throwit' (design/generate_monkey_spine.mjs): the plate
-	// leaves his hand at ~0.58s and the clip and its mix back end by ~1.4s
-	const THROW_RELEASE_MS = 580;
-	const THROW_DONE_MS = 1400;
-	const FLIGHT_MS = 520;
+	// his offer (cheer_motion_v2.mjs) reaches the board at ~0.4s; the doors
+	// start as it does, and the swap (which re-keys him to the other cast)
+	// waits until the offer has settled back (~1.45s)
+	const OFFER_AT_MS = 400;
+	const OFFER_DONE_MS = 1450;
 
-	const throwing = context.stateGame.mascotThrowOrigin !== null;
-	const LEAD_MS = throwing ? THROW_RELEASE_MS : 0;
+	const castOn = context.stateGame.mascotThrowOrigin !== null;
+	const LEAD_MS = castOn ? OFFER_AT_MS : 0;
 	const SHUT_MS = 560; // doors sliding in
-	const HOLD_MIN_MS = 380; // shut: the swap happens in here
+	// shut: the lantern drops, swings and flares in here, and the swap happens
+	const HOLD_MIN_MS = 1000;
 	const OPEN_MS = 620;
-	const COVER_AT = Math.max(LEAD_MS + SHUT_MS + HOLD_MIN_MS * 0.4, throwing ? THROW_DONE_MS : 0);
-	const HOLD_MS = Math.max(HOLD_MIN_MS, COVER_AT + HOLD_MIN_MS * 0.6 - LEAD_MS - SHUT_MS);
+	const COVER_AT = Math.max(LEAD_MS + SHUT_MS + HOLD_MIN_MS * 0.5, castOn ? OFFER_DONE_MS : 0);
+	const HOLD_MS = Math.max(HOLD_MIN_MS, COVER_AT + 200 - LEAD_MS - SHUT_MS);
 	const TOTAL_MS = LEAD_MS + SHUT_MS + HOLD_MS + OPEN_MS;
 	// the clack: the meeting stiles hit at this fraction of the slide
 	const CLACK_AT = 0.86;
@@ -103,22 +107,41 @@
 	const leftEdge = $derived(half - travel * (1 - shut) + jolt);
 	const rightEdge = $derived(half + travel * (1 - shut) + jolt);
 
-	// The plate, in main-layout coordinates: from his hand to the board's centre
-	// on a high arc, spinning, read off the same clock as the doors.
-	const origin = context.stateGame.mascotThrowOrigin;
-	const plate = $derived.by(() => {
-		if (!origin) return null;
-		const k = (elapsed - THROW_RELEASE_MS) / FLIGHT_MS;
-		if (k < 0 || k > 1) return null;
-		const board = context.stateGameDerived.boardLayout();
-		const x = origin.x + (board.x - origin.x) * k;
-		const y = origin.y + (board.y - origin.y) * k - Math.sin(k * Math.PI) * 220;
-		return { x, y, rotation: -k * Math.PI * 2.2, scale: 0.9 + 0.5 * k };
+	// ms since the doors met, or < 0 before
+	const shutFor = $derived(elapsed - LEAD_MS - SHUT_MS);
+	const openFor = $derived(elapsed - LEAD_MS - SHUT_MS - HOLD_MS);
+	// the lamp behind the paper: up over 260ms once shut, down as the doors part
+	const backlit = $derived(
+		shutFor < 0 ? 0 : openFor < 0 ? Math.min(1, shutFor / 260) : Math.max(0, 1 - openFor / 300),
+	);
+	// The lantern: dropped on its cord to just above centre (back-out), one
+	// swing that dies away, a flare at the bottom of its first swing, then drawn
+	// up as the doors open. Main-layout units are the canvas here.
+	const LANTERN_DROP_MS = 420;
+	const lantern = $derived.by(() => {
+		if (shutFor < 0) return null;
+		const size = Math.min(canvas.height * 0.3, canvas.width * 0.22);
+		const restY = canvas.height * 0.44;
+		let y: number;
+		if (openFor < 0) {
+			const k = Math.min(1, shutFor / LANTERN_DROP_MS);
+			const s = 1.6;
+			const back = 1 + (s + 1) * (k - 1) ** 3 + s * (k - 1) ** 2;
+			y = -size + (restY + size) * back;
+		} else {
+			const k = Math.min(1, openFor / 360);
+			y = restY - (restY + size * 1.4) * k * k;
+		}
+		const swingT = Math.max(0, shutFor - LANTERN_DROP_MS * 0.6) / 1000;
+		const rotation = 0.14 * Math.sin(swingT * Math.PI * 2 * 0.9) * Math.exp(-swingT * 2.4);
+		const flare = Math.exp(-(((shutFor - LANTERN_DROP_MS - 120) / 170) ** 2));
+		return { y, size, rotation, flare };
 	});
+	const CORD_W = 14;
 
 	onMount(() => {
-		if (throwing) context.eventEmitter.broadcast({ type: 'mascotThrow' });
-		if (throwing) context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
+		if (castOn) context.eventEmitter.broadcast({ type: 'mascotOffer' });
+		if (castOn) context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		// A CAPPED clock, not wall time (see Go Banandit's copy): a texture hitch
 		// on the way out of the feature must not let the doors arrive already shut.
 		let prev = performance.now();
@@ -145,20 +168,6 @@
 </script>
 
 <Container>
-	<!-- under the doors, so the closing front swallows it -->
-	{#if plate}
-		<MainContainer>
-			<Sprite
-				key="gbP"
-				anchor={0.5}
-				x={plate.x}
-				y={plate.y}
-				rotation={plate.rotation}
-				width={150 * plate.scale}
-				height={150 * plate.scale}
-			/>
-		</MainContainer>
-	{/if}
 	{#if shut > 0}
 		<!-- left door: its meeting stile is the art's right edge -->
 		<Sprite key="smDoor" anchor={{ x: 1, y: 0.5 }} x={leftEdge} y={canvas.height / 2} width={door.width} height={door.height} />
@@ -167,7 +176,22 @@
 			<Sprite key="smDoor" anchor={{ x: 1, y: 0.5 }} width={door.width} height={door.height} />
 		</Container>
 	{/if}
-	<!-- The noren that dropped over the shut doors is gone (user, 2026-10-10:
-	     a flat strip of colour that read as AI art; Pocha and Swing lost theirs
-	     the same day). The doors alone carry the transition. -->
+	{#if backlit > 0.001}
+		<!-- the lamp lit behind the paper: warm light pooled on the shut doors,
+		     strongest at the seam (additive, a plain sibling of the doors) -->
+		<Sprite key="fxSoftGlow" anchor={0.5} x={canvas.width / 2 + jolt} y={canvas.height * 0.48}
+			width={canvas.width * 1.1} height={canvas.height * 1.25} blendMode="add" tint={0xffcf8a}
+			alpha={0.32 * backlit + 0.25 * (lantern?.flare ?? 0)} />
+	{/if}
+	{#if lantern}
+		<Container x={canvas.width / 2 + jolt} y={lantern.y} rotation={lantern.rotation}>
+			<!-- its cord, up off the top of the screen -->
+			{#each Array(Math.max(0, Math.ceil((lantern.y - lantern.size * 0.42 + 40) / (CORD_W * (120 / 72))))) as _, i (i)}
+				<Sprite key="v8SignCord" anchor={{ x: 0.5, y: 1 }} y={-lantern.size * 0.42 - i * CORD_W * (120 / 72)} width={CORD_W} height={CORD_W * (120 / 72)} />
+			{/each}
+			<Sprite key="fxSoftGlow" anchor={0.5} blendMode="add" tint={0xffb860}
+				width={lantern.size * 2.2} height={lantern.size * 2.2} alpha={0.35 + 0.5 * lantern.flare} />
+			<Sprite key="gbS" anchor={0.5} width={lantern.size} height={lantern.size} />
+		</Container>
+	{/if}
 </Container>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
+ import {stateUrlDerived} from 'state-shared';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { MainContainer } from 'components-layout';
 	import { onMount } from 'svelte';
@@ -60,7 +61,10 @@ import {purrfiaText} from '../game/purrfiaText';
 		},
 	];
 
-	const INK = 0x2a1f24;
+	const compactTitles=stateUrlDerived.lang()==='zh'?['相連得分','神秘紙箱','超級免費遊戲']:['CLUSTER WINS','MYSTERY BOXES','SUPER FREE SPINS'];
+ const compactBodies=stateUrlDerived.lang()==='zh'?['5 個以上相連圖案得分，消除後再補位。','所有紙箱一起開，變成相同圖案。','10 次免費遊戲，49 格先做記號，印章 ×5 起。']:['Match 5+ connected symbols. Wins clear, then tumble.','All mystery boxes reveal the same symbol together.','10 free rounds. All 49 cells marked. Stamps start at ×5.'];
+ 
+ const INK = 0x2a1f24;
 	const drawCard = (g: PixiGraphics) => {
 		g.clear();
 		g.roundRect(-cardW / 2, -cardH / 2, cardW, cardH, 18).fill({ color: 0xefe8d8 }).stroke({ width: 5, color: INK });
@@ -84,30 +88,30 @@ import {purrfiaText} from '../game/purrfiaText';
 			<Graphics draw={drawCard} />
 			<Sprite key={panel.key} anchor={0.5} x={sceneX} y={sceneY} width={pw} height={pw * 0.75} />
 			<Text
-				text={panel.title}
+				text={stacked?compactTitles[i]:panel.title}
 				anchor={0.5}
 				x={textX}
 				y={stacked ? -cardH * 0.28 : cardH * 0.17}
 				style={{
 					fontFamily: GAME_FONT,
 					fontWeight: GAME_FONT_WEIGHT,
-					fontSize: stacked ? Math.max(19, cardW * 0.05) : cardW * 0.08,
+					fontSize: stacked ? Math.max(13 / layout.scale, cardW * 0.05) : cardW * 0.08,
 					fill: 0xc85a4a,
 				}}
 			/>
 			<Text
-				text={panel.body}
+				text={stacked?compactBodies[i]:panel.body}
 				anchor={{ x: 0.5, y: 0 }}
 				x={textX}
 				y={stacked ? -cardH * 0.12 : cardH * 0.25}
 				style={{
 					fontFamily: BODY_FONT,
-					fontSize: stacked ? Math.max(16, cardW * 0.035) : cardW * 0.052,
-					lineHeight: stacked ? Math.max(21, cardW * 0.046) : cardW * 0.067,
+					fontSize: stacked ? Math.max(11.5 / layout.scale, cardW * 0.035) : cardW * 0.052,
+					lineHeight: stacked ? Math.max(14 / layout.scale, cardW * 0.046) : cardW * 0.067,
 					fill: INK,
 					align: 'center',
 					wordWrap: true,
-					breakWords: false,
+					breakWords: true,
 					wordWrapWidth: cardW * (stacked ? 0.46 : 0.8),
 				}}
 			/>

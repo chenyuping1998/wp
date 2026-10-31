@@ -56,13 +56,13 @@ export const bookEventHandlerMap:BookEventHandlerMap<BookEvent,BookEventContext>
  updateFreeSpin:async(e:BookEventOfType<'updateFreeSpin'>)=>{updateCounter(e.amount,e.total);},
  freeSpinRetrigger:async(e:BookEventOfType<'freeSpinRetrigger'>)=>{updateCounter(stateUi.freeSpinCounterCurrent,e.totalFs);await waitForTimeout(stateBet.isTurbo?180:450);},
  freeSpinEnd:async(e:BookEventOfType<'freeSpinEnd'>)=>{
-  eventEmitter.broadcast({type:'castPlay',name:'fg_end'});eventEmitter.broadcast({type:'soundCue',cue:'stinger_fg_outro',priority:1});
+eventEmitter.broadcast({type:'soundCue',cue:'stinger_fg_outro',priority:1});
   const total=featureTotal(e.amount,e.winLevel);eventEmitter.broadcast({type:'freeSpinOutroShow'});
   await eventEmitter.broadcastAsync({type:'freeSpinOutroCountUp',amount:total.amount,winLevelData:winLevelMap[total.winLevel as WinLevel]});
-  eventEmitter.broadcast({type:'freeSpinOutroHide'});eventEmitter.broadcast({type:'freeSpinCounterHide'});stateUi.freeSpinCounterShow=false;stateGame.gameType='basegame';stateGame.volume=1;
+  eventEmitter.broadcast({type:'freeSpinOutroHide'});eventEmitter.broadcast({type:'castPlay',name:'fg_end',rate:stateBet.isTurbo?2.67:1});await waitForTimeout(stateBet.isTurbo?600:1600);eventEmitter.broadcast({type:'freeSpinCounterHide'});stateUi.freeSpinCounterShow=false;stateGame.gameType='basegame';stateGame.volume=1;
   await eventEmitter.broadcastAsync({type:'transition'});await eventEmitter.broadcastAsync({type:'uiShow'});
  },
- setWin:async(e:BookEventOfType<'setWin'>)=>{const winLevelData=winLevelMap[e.winLevel as WinLevel];if(winLevelData?.type!=='big'){eventEmitter.broadcast({type:'castPlay',name:e.amount>=1000?'react_good':'react_small'});return;}eventEmitter.broadcast({type:'castPlay',name:winLevelData.alias==='max'?'win_max':'win_big',hold:true});eventEmitter.broadcast({type:'soundBigWinBlast',tier:Math.min(5,winLevelData.level-5) as 1|2|3|4|5});eventEmitter.broadcast({type:'winShow'});await eventEmitter.broadcastAsync({type:'winUpdate',amount:e.amount,winLevelData});eventEmitter.broadcast({type:'winHide'});eventEmitter.broadcast({type:'castPlay',name:'idle'});},
+ setWin:async(e:BookEventOfType<'setWin'>)=>{const winLevelData=winLevelMap[e.winLevel as WinLevel];if(winLevelData?.type!=='big'){if(e.amount>0)eventEmitter.broadcast({type:'castPlay',name:e.amount>=1000?'react_good':'react_small'});return;}eventEmitter.broadcast({type:'castPlay',name:winLevelData.alias==='max'?'win_max':'win_big',hold:true});eventEmitter.broadcast({type:'soundBigWinBlast',tier:Math.min(5,winLevelData.level-5) as 1|2|3|4|5});eventEmitter.broadcast({type:'winShow'});await eventEmitter.broadcastAsync({type:'winUpdate',amount:e.amount,winLevelData});eventEmitter.broadcast({type:'winHide'});eventEmitter.broadcast({type:'castPlay',name:'idle'});},
  finalWin:async()=>{stateGame.gameType='basegame';stateGame.volume=1;stateUi.freeSpinCounterShow=false;eventEmitter.broadcast({type:'freeSpinCounterHide'});},
  wincap:async(e:BookEventOfType<'wincap'>)=>{stateBet.winBookEventAmount=e.amount;},
  createBonusSnapshot:async(e:BookEventOfType<'createBonusSnapshot'>)=>{

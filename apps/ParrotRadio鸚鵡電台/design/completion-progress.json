@@ -1,0 +1,211 @@
+{
+  "project": "ParrotRadio鸚鵡電台",
+  "date": "2026-10-31",
+  "stage": "local_frontend_build_ready_pending_engine_validation",
+  "backgrounds": "Bright painted scenes with local receiver masks. Cat: passing cloud illumination and moving window slat shadows, restrained lamp glow, dust and wet neon reflections. Parrot: sea-only UV waves with travelling crests, fixed horizon/architecture, rare gull and feature light string. Focus holds motion; reduced motion remains static. V5 strengthens clipped passing cloud/window illumination, sea UV displacement and depth-dependent moving wave crests; fixed architecture is preserved.",
+  "requirements": "E:\\stake\\proposals\\ParrotRadio鸚鵡電台",
+  "art": {
+    "source": "E:\\stake\\wp\\apps\\ParrotRadio鸚鵡電台\\design\\source\\parrot",
+    "originalImageCount": 19,
+    "prompts": "originals/*_prompt.txt",
+    "characterPSD": "cast/squawk.psd",
+    "turnaround": "cast/turnaround.png",
+    "cover": "brand/cover_16x9.jpg",
+    "tileLayers": [
+      "brand/tile_background.jpg",
+      "brand/tile_foreground.png"
+    ],
+    "logo": "brand/logo.png",
+    "assetManifest": "asset-manifest.json"
+  },
+  "animation": {
+    "character": "Squawk",
+    "spine": "4.3.13",
+    "skinVersion": 4,
+    "bones": 50,
+    "layers": 25,
+    "clips": [
+      "idle",
+      "fg_idle",
+      "react_small",
+      "react_good",
+      "idle_mimic",
+      "idle_bored",
+      "encore_build",
+      "encore_call",
+      "encore_success",
+      "encore_fail",
+      "turn_knob",
+      "fg_trigger",
+      "fg_end",
+      "win_big",
+      "win_max",
+      "record_pull",
+      "record_hit",
+      "record_miss",
+      "win_big_loop",
+      "win_max_loop",
+      "breath"
+    ],
+    "pages": 1,
+    "softSkin": [
+      "torso",
+      "face",
+      "ears",
+      "limbs",
+      "chain",
+      "crest",
+      "tail"
+    ],
+    "articulation": "shared chain weights, half-angle elbow/wrist volume bones, registered feather roots, authored joint poses",
+    "customTopology": "three-quarter macaw DJ",
+    "sourcePSD": "E:\\stake\\wp\\apps\\ParrotRadio鸚鵡電台\\design\\source\\parrot\\cast\\squawk.psd",
+    "motionVersion": 6,
+    "respiration": "Independent track 1: nonrigid weighted abdomen, ribs, neck and cheeks; two unequal breaths with pauses over 11.6s cat / 10.2s macaw. Feet remain planted.",
+    "limbRepair": "Cat V6: native jacket shoulder facings cover the moving sleeve roots; both shoulders and cuffs use contact-patch checks. V5 sleeve opening centre registered to rear wrist, palm inserted into cuff, head lowered 32 source pixels onto collar, head pivot moved to neckline and lower ruff pinned to neck. Includes both cuffs, active stamp and collar contact checks. Parrot retains V4 registered feather roots, fold/raise/unfold corridors and layered props.",
+    "review": "cast/motion-review/motion.gif: shipped character player with continuous breath, crossfades and return to idle. Both V6 captures at 20fps, with actual player crossfades, held loops and returns. Full move list in all-actions.png.",
+    "prizes": "Object-specific part and mesh performances: fish/water, lid/tail, yarn/thread, leaves, record/label, cord, telescope eye, straw/umbrella and scatter accents. Winning clip 640ms / scatter 820ms, with reduced-motion path and single completion."
+  },
+  "audio": {
+    "cues": 116,
+    "runtimeMiB": 7.71,
+    "budgetMiB": 14,
+    "sampleClipping": false,
+    "synchronousFeatureStems": 4,
+    "creation": "Original procedural music and nonverbal synthesized character voices, not live recordings."
+  },
+  "math": {
+    "publishedDataUnchanged": true,
+    "modes": [
+      "base",
+      "bonus",
+      "super"
+    ],
+    "costMultipliers": [
+      1,
+      100,
+      300
+    ],
+    "publishedAudit": "E:\\stake\\tmp\\new-games-20261025\\published-math-audit.json",
+    "RTP": 0.96,
+    "maxWinMultiplier": 10000
+  },
+  "validation": {
+    "fullBuild": "passed",
+    "sourceTypes": "0 app errors; 7 shared dependency diagnostics",
+    "eventContracts": "passed",
+    "castMeshSampling": "passed",
+    "productionHasMockCode": false,
+    "engineUpload": "not performed",
+    "motionStateRegression": "passed: independent respiration, feature rest, protected actions, max-win hold, fidget cancellation, reduced motion",
+    "softSkinRegression": "passed: official Spine runtime; nonrigid torso deformation beyond similarity transform, planted feet, zero rest-joint offsets, modal pause and fixed background geometry",
+    "latestBrowserRegression": {
+      "date": "2026-10-31",
+      "revision": "motion-flow-v6",
+      "environment": "Existing game, local mock wallet and unchanged published fixtures; no live RGS.",
+      "rigSha256": "e54448b6684623cc7ffd2881f34073fff095b9509e5306254180110f6e4667f8",
+      "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+      "motion": {
+        "continuousPlayerReview": "cast/motion-review/motion.gif",
+        "allActions": "cast/motion-review/all-actions.png",
+        "anatomy": "cast/anatomy-validation.json",
+        "continuity": "cast/motion-flow-validation.json"
+      },
+      "screenshots": {
+        "parrot-desktop.png": "903825d6db638fc05f676cfeb78f2533b2e456f9a0037de25509fe5f6efa37e4",
+        "parrot-encore.png": "f5ecdf8314a578cc91ff872f5fd86ebfb408509f5e095c06b184c946d71969a9"
+      },
+      "currentBrowserResult": {
+        "fixture": "baseEncoreHit",
+        "idle": true,
+        "winBook": 1200,
+        "balance": 1011,
+        "pose": "encore_call @ 50%",
+        "viewport": "1280x720",
+        "cleanLoadStarted": "2026-10-31T00:22:38.013Z",
+        "consoleErrors": []
+      },
+      "previousUiBackgroundPrizeEvidence": "cast/motion_v5_before/browser-validation.json"
+    },
+    "prizes": {
+      "kind": "parrot",
+      "frames": 41,
+      "partSamples": 533,
+      "minAreaRatio": 0.4452,
+      "folds": 0,
+      "reviewFps": 25,
+      "slowMotion": true,
+      "scope": "actual per-part performance and mesh helper used by the game; 6 prize types, 41 phases",
+      "performanceSha256": "a01d445d541d3036e5c5b1468b08bc7089e03ae0c40b2712baeb4705892809a6",
+      "componentSha256": "3c855f63f3763850e42da1ecac4a1905823aee3548f5af24c56248162f1863e6"
+    },
+    "motionFlow": {
+      "slug": "parrot",
+      "rigSha256": "e54448b6684623cc7ffd2881f34073fff095b9509e5306254180110f6e4667f8",
+      "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+      "sampleFps": 120,
+      "units": "source artwork pixels and pixels/second",
+      "heldReturn": {
+        "before": {
+          "peakWristSpeed": 6909.52,
+          "maxStep120fps": 57.579
+        },
+        "after": {
+          "peakWristSpeed": 2964.81,
+          "maxStep120fps": 24.707
+        },
+        "peakReductionPercent": 57.1
+      },
+      "criticalAction": {
+        "name": "encore_call",
+        "before": {
+          "peakWristSpeed": 5292.71,
+          "maxStep120fps": 44.106
+        },
+        "after": {
+          "peakWristSpeed": 3612.56,
+          "maxStep120fps": 30.105
+        },
+        "peakReductionPercent": 31.7
+      },
+      "repeatReactionRestart": "prevented",
+      "heldLoopMaxStep120fps": 9.182
+    },
+    "anatomy": {
+      "app": "ParrotRadio鸚鵡電台",
+      "rigSha256": "e54448b6684623cc7ffd2881f34073fff095b9509e5306254180110f6e4667f8",
+      "playerSha256": "514cc064a8de88923e6fae70cb702ca8d604dd5f9874112fafb8e28f007c3236",
+      "fps": 60,
+      "contactFps": 60,
+      "scope": "all opaque meshes and contacts; every clip, complete configured crossfade, actual player normal/turbo sequences",
+      "totalFrames": 11606,
+      "clipFrames": 3495,
+      "mixFrames": 6868,
+      "runtimeFrames": 1243,
+      "totalFolded": 0,
+      "clipFolded": 0,
+      "mixFolded": 0,
+      "minAreaRatio": 0.922921,
+      "seamSamples": 174431,
+      "seamFailures": 0,
+      "contactPatches": {
+        "front elbow": 5,
+        "front wrist": 5,
+        "rear elbow": 5,
+        "microphone grip": 1,
+        "record grip": 1
+      },
+      "transitionPairs": 360,
+      "runtimeScenarios": 2,
+      "runtimeFailures": []
+    },
+    "supersededReview": "V3 finite-vertex and limited frame checks missed visible limb inversions. V4 supersedes those character-appearance claims with all-mesh orientation, seam and 360 crossfade-pair checks per title, plus continuous visual review."
+  },
+  "productionNotes": [
+    "Character vocal cues are original synthesized nonverbal sounds, not recorded voice acting.",
+    "Backgrounds combine painted plates with local mesh/procedural motion; full separately painted depth layers are not included.",
+    "Primary character layers are editable; small costume accents also remain painted into the body artwork.",
+    "Live RGS, device audio and Stake Engine acceptance still require platform validation."
+  ],
+  "ui": "Larger localized Buy Bonus entry with a separate high-contrast caption: 21px desktop / 18px portrait, keyboard focus and a full button hit area. Opens the existing feature menu; disabled during play and hidden in features, replay and dialogs. Compact toolbar and shared Info/pay table retained."
+}

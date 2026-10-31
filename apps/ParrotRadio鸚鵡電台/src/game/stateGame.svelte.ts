@@ -119,7 +119,7 @@ const boardLayout = () => {
 		x: layout.width * 0.5,
 		// centred in the area above the strip, not in the whole box
 		y: layout.height * (0.5 - barFraction * 0.5),
-		scale: usesBar ? BOARD_SHRINK : 1,
+		scale: stateLayoutDerived.layoutType()==='portrait' ? 1.18 : usesBar ? BOARD_SHRINK : 1,
 		anchor: { x: 0.5, y: 0.5 },
 		pivot: { x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 },
 		...BOARD_SIZES,

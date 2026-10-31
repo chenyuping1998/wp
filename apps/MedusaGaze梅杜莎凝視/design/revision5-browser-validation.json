@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-26",
+  "revision": 5,
+  "scope": "Local offline mock plus shared production renderer. No live RGS or Stake Engine verification.",
+  "items": [
+    {
+      "request": 1,
+      "change": "Right female statue shifted from x1743 to x1650; visible between Medusa tail and right brazier",
+      "proof": "_sheets/revision5_statue_clearance.png"
+    },
+    {
+      "request": 2,
+      "change": "Stronger independent five-joint snake motion; nine new jaws; four closed-mouth paintings split at editable lip seam; open/snap/recover keys and casting mouth expression",
+      "proofs": [
+        "_sheets/revision5_snake6_mouth.png",
+        "_sheets/revision5_snake9_mouth.png"
+      ]
+    },
+    {
+      "request": 3,
+      "change": "FG glasses constrained to forehead after acting tracks; no idle glasses fidget in FG",
+      "nativeWorldPositionSamples": 1920,
+      "proof": "_sheets/revision5_fg_glasses_winmax.png"
+    },
+    {
+      "request": 4,
+      "change": "Orb flight playback gain 0.8 to 1.35; casting utterance 0.82 to 1.10; collision impact gain1.15; master limiter retained",
+      "gainDb": {
+        "flight": 4.545,
+        "casting": 2.551
+      }
+    },
+    {
+      "request": 5,
+      "change": "XX倍 numeral leaves left plaque/dock, travels650ms, meets base win at centre, foreground flash and impact140ms, then authoritative count and result hold",
+      "proofs": [
+        "_sheets/revision5_mg_number_fly.png",
+        "_sheets/revision5_mg_collision.png",
+        "_sheets/revision5_fg_number_fly.png",
+        "_sheets/revision5_fg_collision.png",
+        "_sheets/revision5_fg_result.png"
+      ]
+    }
+  ],
+  "rig": {
+    "bones": 83,
+    "independentSnakeJaws": 9,
+    "clips": 24,
+    "visibleMeshFolds": 0,
+    "idle60sSnakeActions": 14
+  },
+  "turbo": {
+    "identicalCharacterOrbAudioReadoutTiming": true,
+    "comparisons": 16,
+    "onlyBoardTumbleAndDropAccelerated": true
+  },
+  "productionMock": {
+    "book": "baseThrow",
+    "finalDisplayedWin": "$12.50",
+    "returnedToIdle": true,
+    "consoleErrors": 0,
+    "proof": "_sheets/revision5_game_result.png"
+  },
+  "validation": {
+    "fullBuild": "passed",
+    "changedGameSourceTypeErrors": 0,
+    "existingWorkspaceTypeErrors": 154,
+    "existingWorkspaceWarnings": 33
+  },
+  "videoCreated": false,
+  "passed": true
+}
