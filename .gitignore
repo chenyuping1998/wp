@@ -95,3 +95,7 @@ apps/JaguarSun/design/_bg/
 
 # Delivery packages are re-zipped from design/source and the build; regenerable, and too big for GitHub (282 MB)
 **/design/delivery/*.zip
+
+# 素材網站整頁存檔（含第三方網頁 token，授權資訊看 LICENSES.json / SOURCES.json）
+apps/*/design/source/neon_audio_v3/*.html
+apps/*/design/source/sampled_audio_v1/*.html
