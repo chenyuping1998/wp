@@ -428,4 +428,15 @@ How this repo maps onto the self-check, so a run doesn't rediscover it:
      cast (grep in game-reskin §5 step 6) and play each beat once: a character
      that does not move inside the beat is AT RISK ("poor animations"), with the
      fix being the layered cut-in recipe there (Stone, 2026-10-16).
-
+  4. *Character visual acceptance — blocking* (Stone, 2026-10-25): inspect
+     every source limb layer on light/dark backgrounds, all delivered clips
+     (including intermediate/extreme/transition frames), and actual desktop/
+     portrait gameplay plus cut-ins. Any visible ghost, stray fragment,
+     fringe, detached limb, joint gap or broken silhouette is FAIL and blocks
+     delivery/packaging. A score of100 or a clean rest pose is not evidence
+     of visual correctness. The #7 underlay script above only supports its
+     own rig format: unsupported Spine4.3/other rigs require appropriate
+     layer/rendered inspection, never an assumed PASS. Verify that source,
+     crops, actual runtime motion, previews and staged files are one final
+     revision; repair the source/rig and rerun affected motions, not merely
+     shrink motion or hide the defect.

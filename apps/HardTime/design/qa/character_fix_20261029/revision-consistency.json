@@ -1,0 +1,309 @@
+{
+  "assets": [
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/blink.png",
+      "sha256": "3cf7a8993d29895a37a71da0828f777626574d481d952327013817ca99b63046",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/forearm_over.png",
+      "sha256": "f8746f2b7771d0c8db1b3cd7c3832decb7373d6cf8c8087fb80de3e1bb04f482",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/forearm_under.png",
+      "sha256": "8b4e1711e3bea7386e4576ce246941c98ccc9e091301fb314cb9bd5ab175f9ad",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/head.png",
+      "sha256": "e2aa2743b047c339303b722de693d88d26673fa340c85475a08d388f7d84cc4c",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/layers.json",
+      "sha256": "0f488287a20a49a4d33f44fa5a4d90ef760d219690900346548e2bcfd66a1844",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/pelvis.png",
+      "sha256": "73c1aac09f93179d70c725df3fd01ef5480fc4be380f5ddec9ebf14a1472e983",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/shin_l.png",
+      "sha256": "b82c5b5858d8a9c2675f73750837ef011a3f74f344c7cf6889c79af56066eb4f",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/shin_r.png",
+      "sha256": "4fdbba8981d66d9abc25f38cbe4bbdb1c4b8e84ea8d7083a1f04e9bfae6fdc22",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/shoe_l.png",
+      "sha256": "3a9bdc070a7a3a2c46ab0f2e5bd3fe8cf49bbd2e4cf93ddee3830aafb2c15da3",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/shoe_r.png",
+      "sha256": "e85f5d269e64fb346a55d66a2b3db93a5f86461262650e25adc511edda65441e",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/thigh_l.png",
+      "sha256": "f355250227f16fde49102f33c4a9eecab036d3a124895e0b714628be1d211250",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/thigh_r.png",
+      "sha256": "37b33ea0abdb5594aad77085305da8417da11ea052f490b0a41a693f006f5428",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/torso.png",
+      "sha256": "77456b0d97fb2d123aa2fa020c30c56811839d2ab7a400d28b33e72b1279f8f0",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/towel.png",
+      "sha256": "85d8e78111096f6de25790703c0196d3adaadf704e74646e85d2930d3b9ffdad",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/upper_arm_l.png",
+      "sha256": "cae50b4213434ffa96a349d96335de268d18e0a881539ef50db0f192534617a5",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/prisoner_spine_v2/upper_arm_r.png",
+      "sha256": "cc84dba65c0c26dcebe992dc8a09bccbf70da87b1fa190ccf71df7cb314c6a58",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/baton.png",
+      "sha256": "293ea2d8a531f90ec99f36273a5e37ecf735577615ec6556483783a8d12dd186",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/blink.png",
+      "sha256": "b97d90f0c5f3c5b9bc9e7c4c6eda51385ee1d275bfcc8b17a503b0f40af5cbba",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/fingers_r.png",
+      "sha256": "2b21b2af60df31847c66c12a71c51b4ee1aa3e56d329f980dc6e96ebdc4bf1ec",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/forearm_l.png",
+      "sha256": "87428bb8c463860c94f3152affe6b7e56aed0d06cc2e3422375c2523a4566a31",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/forearm_r.png",
+      "sha256": "41b8a1d0f5c25dd53aef424beba3274b2ebaaf5f354d0bcc38a3edeb4294a1f9",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/hand_l.png",
+      "sha256": "37445ff68886869c447a4dd815d3fe92e29744fa54b99ad4faee55ce5b38292b",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/head.png",
+      "sha256": "2990c93bd0c706746aa48e171732e2ef411f3aa4e03f8b4750be6b49310b801c",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/keys.png",
+      "sha256": "c8ca5c45c3b9e71ee04e135e8b1783691787bf5b628ef02af4560e02b4120f67",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/layers.json",
+      "sha256": "df30503d41ea06b8406d312eb27135e349e8dfd1eea023e18648726e16bf40df",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/pelvis.png",
+      "sha256": "92f6b8029f8dae8b1b528b637bc6d92a65600ea5a857172a2f9c5080b7d92a25",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/radio_cord.png",
+      "sha256": "f4fa8ac42da12b680c06634f57059accd175c4c139dd2b9f724e924ebb04f1ea",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/shin_l.png",
+      "sha256": "b18232c0e2567b6f284ec9789241c8e7aa7d9989bbd7850e0d9dcd6daad21dd5",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/shin_r.png",
+      "sha256": "2c2c02f41473a3dcead7823cc57a75cb85b00dd5acb3c1b47744393bf9490b9c",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/shoe_l.png",
+      "sha256": "13db5903fa2bb58a2c7a7f8427153e11b77337f3116e000f6dc4f183741e7c73",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/shoe_r.png",
+      "sha256": "207742a782e0551442893b6be44ec18c91fad48ab4822e31ea67cc6981bb8db8",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/thigh_l.png",
+      "sha256": "080ce49482c5dbfc9fe509fc8bba2e84c99cb72c304ef28ac448bbf8dc4720aa",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/thigh_r.png",
+      "sha256": "435cad1408801a1c16e5b768914cb31eb5b043280565038cd786dd0a5f77b8ef",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/torso.png",
+      "sha256": "a922ff42c96cc89ac08a6684362902116e6d18b3079042d3dffec736b7380784",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/upper_arm_l.png",
+      "sha256": "49afb1a2de13a2c5dda231945f8da26e047ac9468ffb87d7fbbf22d8fab2d059",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/upper_arm_r.png",
+      "sha256": "283c87f54c4dad1d384bb24b42e48edaf39e2ab1b2d12ac51297af5cfcc14d7c",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/castLayers/warden_spine_v2/whistle.png",
+      "sha256": "2535a7eaae58f5ce55ed42ca963d77ba141df3949fcf27c73beaa23ca3b77608",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/spines/htCast/prisoner.atlas",
+      "sha256": "a978300ef1286bfdff1b54bea2386d22b0b10c3a297e6f9c262f3889604c1a95",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/spines/htCast/prisoner.json",
+      "sha256": "c0ae95ed925d886d47812be626b2afdcbccfefc419458be2e29c0564893e0bae",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/spines/htCast/prisoner.png",
+      "sha256": "a41923b506278496e758a4290fdd4e58cf5726bc0ac9bf3c7d9c7bad49190969",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/spines/htCast/warden.atlas",
+      "sha256": "4523d8a57122dcf194ec17cfded58928cab77cc3e5d50c8b3d288e2303fba886",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/spines/htCast/warden.json",
+      "sha256": "2e85d5a294e825cc3df4f015fbd5315118964cc172aa54c8c916f1a407e6212c",
+      "build": true,
+      "preview": true,
+      "upload": true
+    },
+    {
+      "file": "assets/spines/htCast/warden.png",
+      "sha256": "db4829dbefaf9258359df93c60308fc7606748821645a58c25fdf2d027439b13",
+      "build": true,
+      "preview": true,
+      "upload": true
+    }
+  ],
+  "count": 43,
+  "code": "build == upload",
+  "preview": "same code plus local stub controls",
+  "platformUpdated": false
+}

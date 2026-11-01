@@ -1203,6 +1203,9 @@ importers:
 
   apps/TurfWar:
     dependencies:
+      '@esotericsoftware/spine-core':
+        specifier: 4.3.13
+        version: 4.3.13
       '@esotericsoftware/spine-pixi-v8':
         specifier: 4.2.74
         version: 4.2.74(pixi.js@8.8.1)
@@ -2911,6 +2914,9 @@ packages:
 
   '@esotericsoftware/spine-core@4.2.74':
     resolution: {integrity: sha512-HdEm7702yT7tZyBwX8CeB1+UhBLJRLW9+mffBQIEllr+XzwiawrRalV5RneKwhpygs8PYVqlZbpeWCPlZEH22A==}
+
+  '@esotericsoftware/spine-core@4.3.13':
+    resolution: {integrity: sha512-iGs/40qOWSQYicABebDzFSwFOS1Nsm0dCCS8sGqbpVuThRKdLYeI1cVJpmATSpEmtcetEABTmh97NoBnt7XLDw==}
 
   '@esotericsoftware/spine-pixi-v8@4.2.74':
     resolution: {integrity: sha512-f90lkQt0hcmSeQI7epIT8H22JsA9QZu5Vsv4Bb5Fop3sCfPItY8frN9qduWrMt/tmGl7E2OT3gjvQJULIjdnNQ==}
@@ -5462,6 +5468,8 @@ snapshots:
       levn: 0.4.1
 
   '@esotericsoftware/spine-core@4.2.74': {}
+
+  '@esotericsoftware/spine-core@4.3.13': {}
 
   '@esotericsoftware/spine-pixi-v8@4.2.74(pixi.js@8.8.1)':
     dependencies:

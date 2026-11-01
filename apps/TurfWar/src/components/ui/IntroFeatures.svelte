@@ -92,7 +92,7 @@
 		{
 			icons: ['sw'],
 			title: tx('turfBruiserTitle', 'THE BRUISER'),
-			body: tx('turfBruiserBody', `A Bruiser fills its <strong>entire reel with Wilds</strong> before any wins are counted. It lands on the three middle reels in normal play and on any reel in free spins, one at a time.`),
+			body: tx('turfBruiserBody', `A Bruiser fills its <strong>entire reel with Wilds</strong> before any wins are counted. It lands on the three middle reels in normal play and on any reel in free spins.`),
 		},
 		{
 			// A mini 3×2 board with ONE frame round all of it: the frame shrunk onto
@@ -119,6 +119,12 @@
 	// and the first panel ran off the top. The stage is measured at its natural
 	// size and scaled down to fit.
 	let stage = $state<HTMLElement>();
+	let studio = $state<HTMLElement>();
+	const portraitBadgeRoom = () => {
+		if (!studio || window.innerHeight <= window.innerWidth) return 0;
+		const bottom = parseFloat(getComputedStyle(studio).bottom) || 0;
+		return studio.offsetHeight + bottom * 2;
+	};
 	let fit = $state(1);
 	const measure = () => {
 		if (!stage) return;
@@ -127,7 +133,12 @@
 		if (!w || !h) return;
 		// the card's own padding is clamp(0.8rem, 2.5vh, 2rem) top and bottom
 		const padY = Math.min(32, Math.max(12.8, window.innerHeight * 0.025)) * 2;
-		fit = Math.min(1, (window.innerHeight - padY) / h, (window.innerWidth * 0.98) / w);
+		// On a portrait phone the stage is as wide as the screen, so the studio
+		// mark (pinned bottom-left on its dark plate) lands on the stats line —
+		// at 320×568 it hid "MAX WIN 20,000×" (2026-10-30). Keep its height clear
+		// at both ends, since the stage is centred.
+		const badge = portraitBadgeRoom();
+		fit = Math.min(1, (window.innerHeight - padY - badge * 2) / h, (window.innerWidth * 0.98) / w);
 	};
 	$effect(() => {
 		if (!stage) return;
@@ -319,7 +330,7 @@
 			certification notes treat those as two different things and ask for
 			exactly this outcome.
 		-->
-		<div class="hm-studio">
+		<div class="hm-studio" bind:this={studio}>
 			<svg class="hm-studio-star" viewBox="0 0 100 100" role="img" aria-label="Silverstars 777">
 				<polygon
 					points="50,7 61,38 94,38 67,57 77,89 50,70 23,89 33,57 6,38 39,38"

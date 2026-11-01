@@ -66,7 +66,9 @@
 	const hideName = $derived(nameHitsHousing(context, 235) || portrait !== null);
 
 	// soft depth-of-field on the jungle scene so the reels read as the subject
-	const backgroundBlur = [new BlurFilter({ strength: 4, quality: 3 })];
+	const desktopBlur = [new BlurFilter({ strength: 4, quality: 3 })];
+	const mobileBlur = [new BlurFilter({ strength: 2, quality: 1 })];
+	const backgroundBlur = $derived(context.stateLayoutDerived.canvasSizes().width < 600 ? mobileBlur : desktopBlur);
 
 	onMount(() => (context.stateLayout.showLoadingScreen = true));
 

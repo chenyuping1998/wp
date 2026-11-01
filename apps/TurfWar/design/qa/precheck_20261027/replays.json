@@ -1,0 +1,4763 @@
+[
+  {
+    "mode": "BASE",
+    "id": 1,
+    "card": "REPLAY\nBET REPLAY\nMode\nBase Game\nBase Bet\n$1.00\nCost Multiplier\n1x\nTotal Bet Cost\n$1.00\nPayout Multiplier\n0x\nTotal Win\n$0.00\nStart Replay\n\nThis is a replay of a previous bet round. No bets will be placed.",
+    "sawDisabled": true,
+    "sawFG": false,
+    "elapsed": 4944,
+    "timeline": [
+      {
+        "at": 938,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BASE",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "9x|14:35||MODE|Base Game|BET|$1.00|ENTRY ×|1x|TOTAL|$1.00|WIN ×|0x|WIN|$0.00|↺|REPLAY"
+      },
+      {
+        "at": 1551,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BASE",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "9x|14:35||MODE|Base Game|BET|$1.00|ENTRY ×|1x|TOTAL|$1.00|WIN ×|0x|WIN|$0.00|↺|REPLAY"
+      },
+      {
+        "at": 2250,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BASE",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|9x|14:35||MODE|Base Game|BET|$1.00|ENTRY ×|1x|TOTAL|$1.00|WIN ×|0x|WIN|$0.00|↺|REPLAY"
+      },
+      {
+        "at": 2867,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BASE",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|9x|14:35||MODE|Base Game|BET|$1.00|ENTRY ×|1x|TOTAL|$1.00|WIN ×|0x|WIN|$0.00|↺|REPLAY"
+      },
+      {
+        "at": 3503,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BASE",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "pointer",
+        "text": "WILD|WILD|WILD|WILD|9x|14:35||MODE|Base Game|BET|$1.00|ENTRY ×|1x|TOTAL|$1.00|WIN ×|0x|WIN|$0.00|↺|REPLAY"
+      }
+    ],
+    "final": {
+      "dom": "",
+      "scene": [
+        {
+          "t": "WILD",
+          "x": 227,
+          "y": 146,
+          "w": 14,
+          "h": 6
+        },
+        {
+          "t": "WILD",
+          "x": 227,
+          "y": 113,
+          "w": 14,
+          "h": 5
+        },
+        {
+          "t": "WILD",
+          "x": 227,
+          "y": 80,
+          "w": 14,
+          "h": 6
+        },
+        {
+          "t": "WILD",
+          "x": 227,
+          "y": 47,
+          "w": 14,
+          "h": 5
+        },
+        {
+          "t": "9x",
+          "x": 173,
+          "y": 148,
+          "w": 8,
+          "h": 9
+        },
+        {
+          "t": "14:35",
+          "x": 20,
+          "y": 0,
+          "w": 53,
+          "h": 32
+        },
+        {
+          "t": "",
+          "x": 78,
+          "y": 0,
+          "w": 0,
+          "h": 32
+        },
+        {
+          "t": "MODE",
+          "x": 69,
+          "y": 187,
+          "w": 18,
+          "h": 10
+        },
+        {
+          "t": "Base Game",
+          "x": 61,
+          "y": 195,
+          "w": 33,
+          "h": 11
+        },
+        {
+          "t": "BET",
+          "x": 165,
+          "y": 187,
+          "w": 11,
+          "h": 10
+        },
+        {
+          "t": "$1.00",
+          "x": 162,
+          "y": 195,
+          "w": 17,
+          "h": 11
+        },
+        {
+          "t": "ENTRY ×",
+          "x": 251,
+          "y": 187,
+          "w": 24,
+          "h": 10
+        },
+        {
+          "t": "1x",
+          "x": 260,
+          "y": 195,
+          "w": 7,
+          "h": 11
+        },
+        {
+          "t": "TOTAL",
+          "x": 69,
+          "y": 203,
+          "w": 18,
+          "h": 10
+        },
+        {
+          "t": "$1.00",
+          "x": 69,
+          "y": 211,
+          "w": 17,
+          "h": 11
+        },
+        {
+          "t": "WIN ×",
+          "x": 162,
+          "y": 203,
+          "w": 17,
+          "h": 10
+        },
+        {
+          "t": "0x",
+          "x": 166,
+          "y": 211,
+          "w": 8,
+          "h": 11
+        },
+        {
+          "t": "WIN",
+          "x": 257,
+          "y": 203,
+          "w": 13,
+          "h": 10
+        },
+        {
+          "t": "$0.00",
+          "x": 254,
+          "y": 211,
+          "w": 18,
+          "h": 11
+        },
+        {
+          "t": "↺",
+          "x": 324,
+          "y": 200,
+          "w": 5,
+          "h": 9
+        },
+        {
+          "t": "REPLAY",
+          "x": 340,
+          "y": 200,
+          "w": 18,
+          "h": 8
+        }
+      ],
+      "game": {
+        "gameType": "basegame",
+        "isTurbo": false,
+        "betMode": "BASE",
+        "dimmedBy": 0,
+        "anticipation": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://stub.local/bet/replay/turf-war/7/BASE/1?lang=en",
+          "body": {}
+        },
+        {
+          "url": "https://stub.local/bet/replay/turf-war/7/BASE/1?lang=en",
+          "body": {}
+        }
+      ],
+      "errors": [],
+      "network": []
+    },
+    "text": null
+  },
+  {
+    "mode": "BONUS",
+    "id": 0,
+    "card": "REPLAY\nBET REPLAY\nMode\nLOOKOUT\nBase Bet\n$1.00\nCost Multiplier\n100x\nTotal Bet Cost\n$100.00\nPayout Multiplier\n29.8x\nTotal Win\n$29.80\nStart Replay\n\nThis is a replay of a previous bet round. No bets will be placed.",
+    "sawDisabled": true,
+    "sawFG": true,
+    "elapsed": 65521,
+    "timeline": [
+      {
+        "at": 605,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 1213,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 1824,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 2442,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 3072,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 3,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 3680,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 3,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 4285,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD"
+      },
+      {
+        "at": 4889,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD"
+      },
+      {
+        "at": 6515,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|LOOKOUT|ONE LOOT BAG IS ALREADY ON THE GRID. EVERY LOOT BAG STAYS FOR THE WHOLE FEATURE AND IS REFILLED WITH A NEW MULTIPLIER BETWEEN SPINS.|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "at": 7311,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "5x|FREE SPINS|1 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 7920,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|5x|FREE SPINS|1 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 8533,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|5x|FREE SPINS|1 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 9136,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|5x|FREE SPINS|1 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 9740,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|5x|FREE SPINS|2 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 10349,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "5x|FREE SPINS|2 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 10954,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "5x|FREE SPINS|2 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 11565,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|5x|FREE SPINS|2 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 12181,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|5x|3x|FREE SPINS|3 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 12786,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|5x|3x|FREE SPINS|3 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 13397,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|5x|3x|FREE SPINS|3 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 14019,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|5x|3x|FREE SPINS|3 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 14624,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|5x|3x|FREE SPINS|3 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 15227,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|5x|3x|FREE SPINS|3 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 15830,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|3x|3x|FREE SPINS|3 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 16440,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|3x|3x|FREE SPINS|4 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|$0.20"
+      },
+      {
+        "at": 17045,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "3x|3x|FREE SPINS|4 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 17651,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "3x|3x|FREE SPINS|4 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 18256,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|3x|3x|FREE SPINS|4 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 18862,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "2x|4x|FREE SPINS|5 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 19469,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|2x|4x|FREE SPINS|5 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 20076,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "2x|4x|FREE SPINS|5 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 20684,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "3x|5x|FREE SPINS|5 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 21293,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "3x|5x|3x|FREE SPINS|6 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 21905,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|3x|5x|3x|FREE SPINS|6 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 22522,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|3x|5x|3x|FREE SPINS|6 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 23135,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|5x|5x|3x|FREE SPINS|6 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 23755,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|5x|5x|3x|FREE SPINS|6 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|$0.20"
+      },
+      {
+        "at": 24368,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|5x|5x|3x|FREE SPINS|7 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 24974,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|5x|5x|3x|FREE SPINS|7 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 25579,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|5x|5x|3x|FREE SPINS|7 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 26187,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|3x|2x|2x|FREE SPINS|7 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 26803,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|3x|2x|2x|FREE SPINS|7 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|$1.00"
+      },
+      {
+        "at": 27422,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|3x|2x|2x|FREE SPINS|8 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 28036,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|3x|2x|2x|FREE SPINS|8 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 28647,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "3x|2x|2x|FREE SPINS|8 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 29256,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "5x|5x|5x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 29862,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|5x|5x|5x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 30468,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|5x|5x|5x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 31080,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|5x|5x|5x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 31687,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|5x|5x|5x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 32298,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|5x|5x|5x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 32925,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|$0.20|$16.00|x2|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 33537,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|BIG WIN|$3.18"
+      },
+      {
+        "at": 34164,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|BIG WIN|$8.68"
+      },
+      {
+        "at": 34773,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|BIG WIN|$14.24"
+      },
+      {
+        "at": 35382,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|BIG WIN|$16.20"
+      },
+      {
+        "at": 35989,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|BIG WIN|$16.20"
+      },
+      {
+        "at": 36601,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|$16.20"
+      },
+      {
+        "at": 37217,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 37823,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 2,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 38431,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 2,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 39043,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|FREE SPINS|2|AWARDED"
+      },
+      {
+        "at": 39664,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|FREE SPINS|2|AWARDED"
+      },
+      {
+        "at": 40276,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|2x|FREE SPINS|9 / 10|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|FREE SPINS|2|AWARDED"
+      },
+      {
+        "at": 40892,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "4x|2x|2x|FREE SPINS|10 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|FREE SPINS|2|AWARDED"
+      },
+      {
+        "at": 41499,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|4x|2x|2x|FREE SPINS|10 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 42120,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|4x|2x|2x|FREE SPINS|10 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 42730,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|4x|2x|4x|FREE SPINS|10 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 43346,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|4x|2x|4x|FREE SPINS|10 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|$0.80"
+      },
+      {
+        "at": 43958,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "4x|2x|4x|FREE SPINS|11 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|$0.80"
+      },
+      {
+        "at": 44566,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|4x|2x|4x|FREE SPINS|11 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 45174,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|4x|2x|4x|FREE SPINS|11 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 45781,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|4x|2x|4x|FREE SPINS|11 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 46391,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|4x|2x|4x|FREE SPINS|11 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 47002,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|2x|4x|8x|FREE SPINS|11 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 47622,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|2x|4x|8x|$0.80|x4|$1.60|x8|$0.20|$2.00|x4|$1.60|x8|$0.20|$1.60|x8|$2.00|x4|$0.20|FREE SPINS|11 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 48230,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|2x|4x|8x|FREE SPINS|11 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|$3.83"
+      },
+      {
+        "at": 48845,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|2x|4x|8x|FREE SPINS|11 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|$8.03"
+      },
+      {
+        "at": 49452,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|2x|4x|8x|FREE SPINS|11 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|$10.20"
+      },
+      {
+        "at": 50060,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|2x|4x|8x|FREE SPINS|12 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|$10.20"
+      },
+      {
+        "at": 50668,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "2x|4x|8x|FREE SPINS|12 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 51276,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "2x|4x|8x|FREE SPINS|12 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 51897,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "4x|2x|4x|FREE SPINS|12 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 52502,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "4x|2x|4x|FREE SPINS|12 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 53113,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "4x|2x|4x|FREE SPINS|12 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 53717,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 2,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "4x|2x|4x|FREE SPINS|12 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 54324,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "4x|2x|4x|FREE SPINS|12 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|FREE SPINS|AWARDED"
+      },
+      {
+        "at": 54930,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "4x|2x|4x|FREE SPINS|12 / 12|14:36||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|FREE SPINS|2|AWARDED"
+      },
+      {
+        "at": 55539,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "4x|2x|4x|FREE SPINS|12 / 12|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|FREE SPINS|2|AWARDED"
+      },
+      {
+        "at": 56187,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "4x|2x|4x|FREE SPINS|13 / 14|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|FREE SPINS|2|AWARDED"
+      },
+      {
+        "at": 56795,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|4x|2x|4x|FREE SPINS|13 / 14|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 57404,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|4x|2x|4x|FREE SPINS|13 / 14|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 58011,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|4x|2x|4x|FREE SPINS|13 / 14|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 58616,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|4x|3x|4x|FREE SPINS|14 / 14|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 59225,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|4x|3x|4x|FREE SPINS|14 / 14|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 59829,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|4x|3x|4x|FREE SPINS|14 / 14|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 60439,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|3x|2x|2x|FREE SPINS|14 / 14|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 61055,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|3x|2x|2x|$1.00|x2|$0.20|FREE SPINS|14 / 14|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 61666,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|3x|2x|2x|FREE SPINS|14 / 14|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY|$1.20"
+      },
+      {
+        "at": 62289,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|FREE SPINS|14 / 14|TOTAL WIN|$29.80|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "at": 63200,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      },
+      {
+        "at": 63816,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "pointer",
+        "text": "14:37||MODE|LOOKOUT|BASE BET|$1.00|COST MULTIPLIER|100x|TOTAL BET COST|$100.00|PAYOUT MULTIPLIER|29.8x|TOTAL WIN|$29.80|↺|REPLAY"
+      }
+    ],
+    "final": {
+      "dom": "",
+      "scene": [
+        {
+          "t": "14:37",
+          "x": 20,
+          "y": 0,
+          "w": 51,
+          "h": 32
+        },
+        {
+          "t": "",
+          "x": 76,
+          "y": 0,
+          "w": 0,
+          "h": 32
+        },
+        {
+          "t": "MODE",
+          "x": 97,
+          "y": 391,
+          "w": 23,
+          "h": 14
+        },
+        {
+          "t": "LOOKOUT",
+          "x": 86,
+          "y": 403,
+          "w": 45,
+          "h": 17
+        },
+        {
+          "t": "BASE BET",
+          "x": 183,
+          "y": 391,
+          "w": 37,
+          "h": 14
+        },
+        {
+          "t": "$1.00",
+          "x": 188,
+          "y": 403,
+          "w": 28,
+          "h": 17
+        },
+        {
+          "t": "COST MULTIPLIER",
+          "x": 260,
+          "y": 391,
+          "w": 68,
+          "h": 14
+        },
+        {
+          "t": "100x",
+          "x": 282,
+          "y": 403,
+          "w": 24,
+          "h": 17
+        },
+        {
+          "t": "TOTAL BET COST",
+          "x": 355,
+          "y": 391,
+          "w": 63,
+          "h": 14
+        },
+        {
+          "t": "$100.00",
+          "x": 367,
+          "y": 403,
+          "w": 41,
+          "h": 17
+        },
+        {
+          "t": "PAYOUT MULTIPLIER",
+          "x": 441,
+          "y": 391,
+          "w": 78,
+          "h": 14
+        },
+        {
+          "t": "29.8x",
+          "x": 466,
+          "y": 403,
+          "w": 27,
+          "h": 17
+        },
+        {
+          "t": "TOTAL WIN",
+          "x": 551,
+          "y": 391,
+          "w": 42,
+          "h": 14
+        },
+        {
+          "t": "$29.80",
+          "x": 555,
+          "y": 403,
+          "w": 35,
+          "h": 17
+        },
+        {
+          "t": "↺",
+          "x": 649,
+          "y": 394,
+          "w": 10,
+          "h": 19
+        },
+        {
+          "t": "REPLAY",
+          "x": 679,
+          "y": 395,
+          "w": 37,
+          "h": 16
+        }
+      ],
+      "game": {
+        "gameType": "basegame",
+        "isTurbo": false,
+        "betMode": "BONUS",
+        "dimmedBy": 0,
+        "anticipation": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://stub.local/bet/replay/turf-war/7/BONUS/0?lang=en",
+          "body": {}
+        },
+        {
+          "url": "https://stub.local/bet/replay/turf-war/7/BONUS/0?lang=en",
+          "body": {}
+        }
+      ],
+      "errors": [],
+      "network": []
+    },
+    "text": null
+  },
+  {
+    "mode": "BONUS_HITS",
+    "id": 14249,
+    "card": "REPLAY\nPLAY REPLAY\nMode\nMUSCLE\nBase Play\n1.00 SC\nFeature Multiplier\n500x\nTotal Play Amount\n500.00 SC\nFinal Multiplier\n32.5x\nTotal Win\n32.50 SC\nStart Replay\n\nThis is a replay of a previous round. No plays will be placed.",
+    "sawDisabled": true,
+    "sawFG": true,
+    "elapsed": 35884,
+    "timeline": [
+      {
+        "at": 632,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 1242,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 1848,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 2455,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 3062,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 4,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 3670,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 4,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 4282,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD"
+      },
+      {
+        "at": 4893,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD"
+      },
+      {
+        "at": 5500,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|TWO STICKY LOOT BAGS TO START. ANY LOOT BAG THAT TAKES PART IN A WIN DOUBLES ITS VALUE BEFORE THE NEXT SPIN.|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "at": 6155,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "25x|7x|4x|2x|2x|FREE SPINS|1 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 6764,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|FREE SPINS|1 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 7391,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|FREE SPINS|1 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 8002,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|FREE SPINS|2 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 8612,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|25x|7x|4x|2x|2x|FREE SPINS|2 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 9223,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "25x|7x|4x|2x|2x|FREE SPINS|2 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 9829,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "25x|7x|4x|2x|2x|FREE SPINS|2 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 10457,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "25x|7x|4x|2x|2x|THE BIG SCORE|5×|FREE SPINS|2 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 11066,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "25x|7x|4x|2x|2x|FREE SPINS|2 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 11680,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|25x|7x|4x|2x|2x|10x|FREE SPINS|3 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 12294,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|FREE SPINS|3 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 12901,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|FREE SPINS|3 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 13510,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 14121,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|25x|7x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 14736,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 15374,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|0.50 SC|32.00 SC|x32|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 15980,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY|BIG WIN|SUPER WIN|2.76 SC"
+      },
+      {
+        "at": 16602,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY|BIG WIN|SUPER WIN|8.32 SC"
+      },
+      {
+        "at": 17207,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY|BIG WIN|SUPER WIN|13.88 SC"
+      },
+      {
+        "at": 17820,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY|BIG WIN|SUPER WIN|19.30 SC"
+      },
+      {
+        "at": 18426,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY|BIG WIN|SUPER WIN|24.87 SC"
+      },
+      {
+        "at": 19036,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY|BIG WIN|SUPER WIN|30.28 SC"
+      },
+      {
+        "at": 19650,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY|BIG WIN|SUPER WIN|32.50 SC"
+      },
+      {
+        "at": 20257,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|25x|7x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY|BIG WIN|SUPER WIN|32.50 SC"
+      },
+      {
+        "at": 20877,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|50x|14x|4x|2x|2x|10x|6x|FREE SPINS|4 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY|32.50 SC"
+      },
+      {
+        "at": 21481,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|50x|14x|4x|2x|2x|10x|6x|FREE SPINS|5 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 22098,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|50x|14x|4x|2x|2x|10x|6x|FREE SPINS|5 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 22731,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "50x|14x|4x|2x|2x|10x|6x|FREE SPINS|5 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 23346,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "50x|14x|4x|2x|2x|10x|6x|FREE SPINS|6 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 23996,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "50x|14x|4x|2x|2x|10x|6x|FREE SPINS|6 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 24613,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "50x|14x|4x|2x|2x|10x|6x|FREE SPINS|6 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 25218,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|7 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 25825,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|7 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 26436,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|7 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 27077,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|8 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 27685,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|8 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 28308,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|8 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 28914,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|9 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 29525,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|9 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 30154,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|9 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 30764,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|10 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 31385,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|10 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 31994,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|10 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 32604,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "50x|14x|4x|2x|2x|10x|6x|3x|FREE SPINS|10 / 10|14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 33212,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "FREE SPINS|10 / 10|TOTAL WIN|32.50 SC|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "at": 33863,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      },
+      {
+        "at": 34475,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_HITS",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "pointer",
+        "text": "14:37|TURF WAR|MODE|MUSCLE|BASE PLAY|1.00 SC|FEATURE MULTIPLIER|500x|TOTAL PLAY AMOUNT|500.00 SC|FINAL MULTIPLIER|32.5x|TOTAL WIN|32.50 SC|↺|REPLAY"
+      }
+    ],
+    "final": {
+      "dom": "",
+      "scene": [
+        {
+          "t": "14:37",
+          "x": 20,
+          "y": 0,
+          "w": 51,
+          "h": 32
+        },
+        {
+          "t": "TURF WAR",
+          "x": 76,
+          "y": 0,
+          "w": 100,
+          "h": 32
+        },
+        {
+          "t": "MODE",
+          "x": 125,
+          "y": 500,
+          "w": 28,
+          "h": 17
+        },
+        {
+          "t": "MUSCLE",
+          "x": 114,
+          "y": 516,
+          "w": 50,
+          "h": 22
+        },
+        {
+          "t": "BASE PLAY",
+          "x": 232,
+          "y": 500,
+          "w": 52,
+          "h": 17
+        },
+        {
+          "t": "1.00 SC",
+          "x": 234,
+          "y": 516,
+          "w": 47,
+          "h": 22
+        },
+        {
+          "t": "FEATURE MULTIPLIER",
+          "x": 327,
+          "y": 500,
+          "w": 99,
+          "h": 17
+        },
+        {
+          "t": "500x",
+          "x": 361,
+          "y": 516,
+          "w": 32,
+          "h": 22
+        },
+        {
+          "t": "TOTAL PLAY AMOUNT",
+          "x": 446,
+          "y": 500,
+          "w": 100,
+          "h": 17
+        },
+        {
+          "t": "500.00 SC",
+          "x": 463,
+          "y": 516,
+          "w": 66,
+          "h": 22
+        },
+        {
+          "t": "FINAL MULTIPLIER",
+          "x": 572,
+          "y": 500,
+          "w": 85,
+          "h": 17
+        },
+        {
+          "t": "32.5x",
+          "x": 597,
+          "y": 516,
+          "w": 34,
+          "h": 22
+        },
+        {
+          "t": "TOTAL WIN",
+          "x": 707,
+          "y": 500,
+          "w": 52,
+          "h": 17
+        },
+        {
+          "t": "32.50 SC",
+          "x": 705,
+          "y": 516,
+          "w": 56,
+          "h": 22
+        },
+        {
+          "t": "↺",
+          "x": 831,
+          "y": 504,
+          "w": 12,
+          "h": 24
+        },
+        {
+          "t": "REPLAY",
+          "x": 870,
+          "y": 506,
+          "w": 47,
+          "h": 20
+        }
+      ],
+      "game": {
+        "gameType": "basegame",
+        "isTurbo": false,
+        "betMode": "BONUS_HITS",
+        "dimmedBy": 0,
+        "anticipation": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://stub.local/bet/replay/turf-war/7/BONUS_HITS/14249?lang=en",
+          "body": {}
+        },
+        {
+          "url": "https://stub.local/bet/replay/turf-war/7/BONUS_HITS/14249?lang=en",
+          "body": {}
+        }
+      ],
+      "errors": [],
+      "network": []
+    },
+    "text": {
+      "social": true,
+      "pixiTexts": 16,
+      "hits": [],
+      "verdict": "PASS"
+    }
+  },
+  {
+    "mode": "BONUS_EPIC",
+    "id": 62,
+    "card": "REPLAY\nPLAY REPLAY\nMode\nKINGPIN\nBase Play\n1.00 GC\nFeature Multiplier\n1000x\nTotal Play Amount\n1,000.00 GC\nFinal Multiplier\n20000x\nTotal Win\n20,000.00 GC\nStart Replay\n\nThis is a replay of a previous round. No plays will be placed.",
+    "sawDisabled": true,
+    "sawFG": true,
+    "elapsed": 41388,
+    "timeline": [
+      {
+        "at": 610,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 1225,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 1831,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 2434,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 3042,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 5,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 3655,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 5,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 4258,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": ""
+      },
+      {
+        "at": 4860,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": ""
+      },
+      {
+        "at": 5467,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "ONE STICKY LOOT BAG, WINNING LOOT BAGS STILL DOUBLE, AND EVERY BRUISER COLUMN STAYS WILD FOR THE REST OF THE FEATURE.|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "at": 6085,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|3x|FREE SPINS|1 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 6692,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "3x|FREE SPINS|1 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 7301,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "3x|FREE SPINS|1 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 7912,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|3x|FREE SPINS|1 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 8523,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|3x|FREE SPINS|1 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 9133,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|3x|FREE SPINS|1 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 9740,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|3x|FREE SPINS|1 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|1.80 GC"
+      },
+      {
+        "at": 10354,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|6x|FREE SPINS|2 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 10961,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|6x|FREE SPINS|2 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 11569,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|6x|FREE SPINS|2 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 12178,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|6x|10x|FREE SPINS|3 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 12793,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|6x|10x|FREE SPINS|3 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 13412,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|6x|10x|FREE SPINS|3 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 14027,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|6x|10x|FREE SPINS|3 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 14666,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|6x|10x|FREE SPINS|3 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|0.00 GC"
+      },
+      {
+        "at": 15283,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|6x|10x|FREE SPINS|3 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|6.61 GC"
+      },
+      {
+        "at": 15905,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|6x|10x|FREE SPINS|3 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|13.53 GC"
+      },
+      {
+        "at": 16532,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|6x|10x|FREE SPINS|3 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|20.00 GC"
+      },
+      {
+        "at": 17151,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|6x|10x|FREE SPINS|3 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|20.00 GC"
+      },
+      {
+        "at": 17774,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|6x|10x|FREE SPINS|3 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|20.00 GC"
+      },
+      {
+        "at": 18379,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|12x|20x|FREE SPINS|4 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 18989,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|4 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 19598,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|4 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 20209,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 20815,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 21426,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 22031,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 22638,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 23246,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 23903,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|0.20 GC|20.00 GC|x20|12.00 GC|x24|12.00 GC|x24|10.00 GC|x20|24.00 GC|x24|6.00 GC|x12|6.40 GC|x32|20.00 GC|x20|12.00 GC|x24|6.00 GC|x12|32.00 GC|x32|4.00 GC|x20|12.00 GC|x24|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 24515,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|9.89 GC"
+      },
+      {
+        "at": 25144,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|25.42 GC"
+      },
+      {
+        "at": 25752,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|40.99 GC"
+      },
+      {
+        "at": 26364,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|56.53 GC"
+      },
+      {
+        "at": 26973,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|71.63 GC"
+      },
+      {
+        "at": 27578,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|87.21 GC"
+      },
+      {
+        "at": 28191,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|102.40 GC"
+      },
+      {
+        "at": 28799,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|117.90 GC"
+      },
+      {
+        "at": 29406,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|133.06 GC"
+      },
+      {
+        "at": 30015,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|148.60 GC"
+      },
+      {
+        "at": 30628,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|164.15 GC"
+      },
+      {
+        "at": 31236,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|176.60 GC"
+      },
+      {
+        "at": 31853,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|BIG WIN|SUPER WIN|MEGA WIN|EPIC WIN|176.60 GC"
+      },
+      {
+        "at": 32467,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|12x|20x|FREE SPINS|5 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY|176.60 GC"
+      },
+      {
+        "at": 33082,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|24x|40x|2x|FREE SPINS|6 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 33690,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|24x|40x|2x|FREE SPINS|6 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 34296,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|24x|40x|2x|FREE SPINS|6 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 34906,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|24x|40x|2x|FREE SPINS|6 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 35531,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|24x|40x|2x|FREE SPINS|6 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 36147,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|24x|40x|2x|FREE SPINS|6 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 36823,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 1,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|24x|40x|2x|FREE SPINS|6 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 37433,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|48x|80x|4x|FREE SPINS|6 / 10|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 38054,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|FREE SPINS|6 / 10|TOTAL WIN|796.22 GC|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "at": 38727,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|FREE SPINS|6 / 10|TOTAL WIN|20,000.00 GC|PRESS ANYWHERE TO CONTINUE"
+      },
+      {
+        "at": 39343,
+        "game": {
+          "gameType": "freegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "not-allowed",
+        "text": "WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|WILD|14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      },
+      {
+        "at": 39958,
+        "game": {
+          "gameType": "basegame",
+          "isTurbo": false,
+          "betMode": "BONUS_EPIC",
+          "dimmedBy": 0,
+          "anticipation": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "cursor": "pointer",
+        "text": "14:38||MODE|KINGPIN|AMOUNT|1.00 GC|ENTRY ×|1000x|TOTAL|1,000.00 GC|WIN ×|20000x|WIN|20,000.00 GC|↺|REPLAY"
+      }
+    ],
+    "final": {
+      "dom": "",
+      "scene": [
+        {
+          "t": "14:38",
+          "x": 20,
+          "y": 0,
+          "w": 53,
+          "h": 32
+        },
+        {
+          "t": "",
+          "x": 78,
+          "y": 0,
+          "w": 0,
+          "h": 32
+        },
+        {
+          "t": "MODE",
+          "x": 69,
+          "y": 187,
+          "w": 18,
+          "h": 10
+        },
+        {
+          "t": "KINGPIN",
+          "x": 65,
+          "y": 195,
+          "w": 25,
+          "h": 11
+        },
+        {
+          "t": "AMOUNT",
+          "x": 157,
+          "y": 187,
+          "w": 26,
+          "h": 10
+        },
+        {
+          "t": "1.00 GC",
+          "x": 159,
+          "y": 195,
+          "w": 24,
+          "h": 11
+        },
+        {
+          "t": "ENTRY ×",
+          "x": 251,
+          "y": 187,
+          "w": 24,
+          "h": 10
+        },
+        {
+          "t": "1000x",
+          "x": 254,
+          "y": 195,
+          "w": 19,
+          "h": 11
+        },
+        {
+          "t": "TOTAL",
+          "x": 69,
+          "y": 203,
+          "w": 18,
+          "h": 10
+        },
+        {
+          "t": "1,000.00 GC",
+          "x": 59,
+          "y": 210,
+          "w": 38,
+          "h": 11
+        },
+        {
+          "t": "WIN ×",
+          "x": 162,
+          "y": 203,
+          "w": 17,
+          "h": 10
+        },
+        {
+          "t": "20000x",
+          "x": 158,
+          "y": 211,
+          "w": 24,
+          "h": 11
+        },
+        {
+          "t": "WIN",
+          "x": 257,
+          "y": 203,
+          "w": 13,
+          "h": 10
+        },
+        {
+          "t": "20,000.00 GC",
+          "x": 242,
+          "y": 210,
+          "w": 42,
+          "h": 11
+        },
+        {
+          "t": "↺",
+          "x": 324,
+          "y": 200,
+          "w": 5,
+          "h": 9
+        },
+        {
+          "t": "REPLAY",
+          "x": 340,
+          "y": 200,
+          "w": 18,
+          "h": 8
+        }
+      ],
+      "game": {
+        "gameType": "basegame",
+        "isTurbo": false,
+        "betMode": "BONUS_EPIC",
+        "dimmedBy": 0,
+        "anticipation": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "requests": [
+        {
+          "url": "https://stub.local/bet/replay/turf-war/7/BONUS_EPIC/62?lang=en",
+          "body": {}
+        },
+        {
+          "url": "https://stub.local/bet/replay/turf-war/7/BONUS_EPIC/62?lang=en",
+          "body": {}
+        }
+      ],
+      "errors": [],
+      "network": []
+    },
+    "text": {
+      "social": true,
+      "pixiTexts": 15,
+      "hits": [],
+      "verdict": "PASS"
+    }
+  }
+]

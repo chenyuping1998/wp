@@ -247,7 +247,7 @@
 <MainContainer standard alignVertical="bottom">
 	{#if hasReplaySummary}
 		<!-- the summary panel owns the foot of the screen; the counter moves up -->
-		{#if stateUi.freeSpinCounterShow}
+		{#if stateUi.freeSpinCounterShow && !uiTheme.externalFreeSpinCounter}
 			<Container
 				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 				y={context.stateLayoutDerived.mainLayoutStandard().height - 560}
@@ -255,7 +255,7 @@
 				<LabelFreeSpinCounter stacked />
 			</Container>
 		{/if}
-	{:else if stateUi.freeSpinCounterShow}
+	{:else if stateUi.freeSpinCounterShow && !uiTheme.externalFreeSpinCounter}
 		<Container
 			x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
 			y={context.stateLayoutDerived.mainLayoutStandard().height - 130}

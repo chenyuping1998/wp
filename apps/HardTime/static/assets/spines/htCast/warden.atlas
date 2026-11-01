@@ -15,8 +15,6 @@ shoe_l
 bounds:234,1322,185,167
 upper_arm_r
 bounds:0,984,177,336
-baton
-bounds:0,1322,232,207
 torso
 bounds:415,0,453,498
 pelvis
@@ -33,11 +31,13 @@ hand_l
 bounds:421,1322,94,163
 radio_cord
 bounds:590,543,91,392
-forearm_r
-bounds:179,984,199,336
-fingers_r
-bounds:826,1322,89,100
 head
 bounds:683,543,211,340
 blink
 bounds:917,1322,77,38
+forearm_r
+bounds:179,984,199,336
+baton
+bounds:0,1322,232,207
+fingers_r
+bounds:826,1322,89,100

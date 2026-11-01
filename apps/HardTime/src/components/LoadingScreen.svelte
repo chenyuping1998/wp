@@ -43,7 +43,14 @@
 	// problem was never the figures — it was that they were competing with the
 	// background art behind them. So the SCRIM does the holding back instead: the
 	// photograph goes down to 0.74 black and the people stay as they are.
-	const castHeight = $derived(layout.height * 0.9);
+	// Portrait (2026-10-30): the figure fills the narrow screen, so at 0.9 of the
+	// height the MAX WIN line and the tips sat across his chest and trousers
+	// (game-reskin step 5 item 7: a number never sits on artwork). In portrait the
+	// words move up into the clear band and he stands in the lower 58%.
+	const portrait = $derived(layout.height > layout.width);
+	const castHeight = $derived(layout.height * (portrait ? 0.58 : 0.9));
+	const logoY = $derived(layout.height * (portrait ? 0.13 : 0.3));
+	const barY = $derived(portrait ? logoY + logoWidth * (LOGO_H / LOGO_W) * 0.62 + layout.height * 0.09 : layout.height * 0.66);
 	const castWidth = $derived((castHeight * 480) / 1100);
 
 	// Their sway runs off the same clock as everywhere else, which is what keeps
@@ -186,8 +193,8 @@
 						g.fill({ color: 0x000000, alpha: a });
 					}
 				};
-				const textTop = layout.height * 0.3 + logoWidth * (LOGO_H / LOGO_W) * 0.38;
-				feather(textTop, layout.height * 0.66 + 110, 0.55);
+				const textTop = logoY + logoWidth * (LOGO_H / LOGO_W) * 0.38;
+				feather(textTop, barY + 110, 0.55);
 				const foot = layout.height * 0.5 + coverH * 0.5;
 				feather(layout.height - 140, foot + 40, 0.8);
 			}}
@@ -223,7 +230,7 @@
 			key="hmLogo"
 			anchor={0.5}
 			x={layout.width * 0.5}
-			y={layout.height * 0.3}
+			y={logoY}
 			width={logoWidth}
 			height={logoWidth * (LOGO_H / LOGO_W)}
 		/>
@@ -231,7 +238,7 @@
 		<Text
 			anchor={0.5}
 			x={layout.width * 0.5}
-			y={layout.height * 0.3 + logoWidth * (LOGO_H / LOGO_W) * 0.62}
+			y={logoY + logoWidth * (LOGO_H / LOGO_W) * 0.62}
 			text={subtitle}
 			style={{
 				fontFamily: BODY_FONT,
@@ -242,7 +249,7 @@
 			}}
 		/>
 
-		<Container x={layout.width * 0.5} y={layout.height * 0.66}>
+		<Container x={layout.width * 0.5} y={barY}>
 			<!--
 				The bar in the game's own neon: an indigo channel with a magenta-to-cyan
 				fill and a lit head, at 10px rather than 4. Drawn rather than tinted

@@ -1,5 +1,6 @@
 import { locales } from 'config-lingui';
 import { page } from '$app/state';
+import { stateConfig } from './stateConfig.svelte';
 
 export type Language = (typeof locales)[number];
 
@@ -24,7 +25,8 @@ export type Key =
 const getUrlSearchParam = (key: Key) => page.url.searchParams.get(key) as string;
 
 // params for play
-const social = () => getUrlSearchParam('social') === 'true';
+const social = () => getUrlSearchParam('social') === 'true'
+	|| (stateConfig.useRgsSocialCasino && stateConfig.jurisdiction?.socialCasino === true);
 
 const lang = (): Language => {
 	// Social play is English-only, whatever the host asks for.

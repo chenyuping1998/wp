@@ -679,11 +679,6 @@
 	/* Rows that are genuinely text-only (the mode table notes below) still take
 	   the whole width. The Controls list no longer uses this: see the miniature
 	   plate in .wp-control-plate. */
-	.wp-controls li.no-icon {
-		grid-template-columns: 1fr;
-		/* line the tier entries up with the card paragraph that introduces them */
-		padding-left: 0.9rem;
-	}
 
 	/* A miniature of the bar's Buy Bonus plate, sized to the same 4.6rem column
 	   the glyphs occupy so the row's name lines up with every other row's. */

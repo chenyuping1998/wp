@@ -7,6 +7,7 @@ import { stateConfig } from 'state-shared';
 // controls. This policy lives in state-shared because components-ui-html (the
 // Autoplay panel button) cannot read uiTheme. Off by default; opted in here.
 stateConfig.explainInsufficientBalance = true;
+stateConfig.useRgsSocialCasino = true;
 
 // Turf War bet bar: concrete-grey plates, sodium-orange trim, bone-white icons —
 // ART_BRIEF.md §0 palette. These are the vector/text colours in the shared UI
@@ -22,6 +23,9 @@ setUiTheme({
 	// family rather than a synthesised bold.
 	fontFamily: GAME_FONT,
 	fontWeight: GAME_FONT_WEIGHT,
+	smallViewportReadouts: true,
+	alignReadoutInk: true,
+	externalFreeSpinCounter: true,
 
 	buttonFill: 0x3a3d42,
 	buttonFillLight: 0x3a3d42,

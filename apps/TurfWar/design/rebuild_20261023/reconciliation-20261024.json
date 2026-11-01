@@ -1,0 +1,15 @@
+{
+  "checked": "2026-10-24",
+  "automation": "turf deleted: one-time run superseded by subsequent authorized Turf work",
+  "current_cast": "v5",
+  "source_matches_staged_cast": true,
+  "build_index_matches_staged": true,
+  "platform_action_this_heartbeat": false,
+  "platform_status_source": "HANDOFF.md reports front v26, math v7; not re-queried remotely in this heartbeat",
+  "latest_preview": "design/rebuild_20261023/qa_kit/turf-cast-motion-v26d.gif",
+  "previous_v3_qa": "historical only; does not certify v5",
+  "fresh_verification_limits": [
+    "No new full feature replay, browser touch/hover or typecheck for the subsequent v5 changes in this heartbeat."
+  ],
+  "indexed_files": 166
+}

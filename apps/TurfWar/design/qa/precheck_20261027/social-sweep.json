@@ -1,0 +1,485 @@
+{
+  "calibration": {
+    "text": {
+      "social": true,
+      "pixiTexts": 9,
+      "hits": [
+        {
+          "kind": "restricted",
+          "match": "BET",
+          "source": "dom",
+          "text": "BET"
+        }
+      ],
+      "verdict": "FAIL"
+    },
+    "center": [
+      {
+        "text": "BET",
+        "dy": -6.3,
+        "dx": 0,
+        "box": "46x31"
+      }
+    ]
+  },
+  "scans": [
+    {
+      "label": "main",
+      "scan": {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      "dom": ""
+    },
+    {
+      "label": "rules",
+      "scan": {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      "dom": "TURF WAR\nGAME RULES\n5×4\nGRID\n14\nPLAYLINES\n96.01%–96.05%\nRTP\n20,000×\nMAX WIN\nHOW TO PLAY\n\nTurf War is a 5×4 video slot with 14 fixed playlines. Winning combinations start from left to right, on adjacent reels beginning with the leftmost reel. Only the highest win is awarded per line, and all line wins are added together. The theoretical return to player (RTP) is 96.01%–96.05%, depending on the mode played — every mode's figure is listed in the table below.\n\nCONTROLS\nSpin\nStarts a round for the current amount. The space bar does the same thing. While the reels are turning it becomes Stop, which brings them to rest early.\nDecrease / increase\nSteps the amount up or down through the available amount levels.\nAMOUNT\nAmount\nShows the current amount. Tap it to open the play menu and choose any of the available amount levels directly.\nPLAY BONUS\nPlay Bonus\nOpens the feature menu, where any of the three free-spin features can be started outright for the stated multiple of your amount. The total is shown before you confirm.\nAuto Spin\nPlays a chosen number of rounds automatically. Open it to set the count and any stop conditions; press it again to stop early.\nTurbo\nShortens the spin and win presentations. Lit means turbo is on.\nMenu\nOpens the win table, these rules, and the sound and settings controls.\nInfo\nOpens these game rules.\nSettings\nOpens the volume controls: master volume, music and sound effects, each set separately.\nWin table\nLists every symbol and what it awards for 3, 4 and 5 of a kind, plus the playlines.\nSound\nMutes and unmutes the game. Volume is adjusted under Settings.\n\nWhile a big win is being counted up, tapping anywhere skips to the final amount.\n\nRTP & MAX WIN BY MODE\nMODE\tHOW TO ENTER\tRTP\tMAX WIN\nBase game\tEvery spin\t96.01%\t20,000× amount\nLookout (3 Scatters)\tPlay for 100× amount\t96.02%\t20,000× amount\nMuscle (4 Scatters)\tPlay for 500× amount\t96.03%\t20,000× amount\nKingpin (5 Scatters)\tPlay for 1000× amount\t96.05%\t20,000× amount\n\nMax win is a multiple of the base amount, not of a feature's entry total. When a round reaches the cap it ends immediately and the capped amount is awarded.\n\nWILD\n\nThe Wild substitutes for every symbol except the Scatter and the Bruiser, and awards as its own symbol on 5 of a kind.\n\nBRUISER\n\nThe Bruiser appears on the three middle reels in the base game, and on any reel during free spins. When one lands, its entire reel is filled with Wilds before any wins are evaluated. Scatters in that reel are not replaced. The Bruiser no line win as a symbol of its own, and at most one lands on any spin.\n\nLOOT BAGS\n1×1\n2×–100×\n2×2\n2×–10×\n3×3\n2×–8×\n\nLoot Bags land on the grid and reveal a multiplier when the reels settle. A Loot Bag covers 1×1, 2×2 or 3×3 positions and carries a single value however many positions it covers. Possible values are 2× to 10×, 25×, 50× and 100× on a single position, 2× to 10× on a 2×2 Loot Bag, and 2× to 8× on a 3×3 Loot Bag.\n\nA Loot Bag counts towards a win when a symbol it covers is part of a winning playline, and the win is multiplied by the Loot Bag's value. A larger Loot Bag counts once for each of its positions that the winning playline crosses. Where more than one Loot Bag takes part in the same win, their values are added together and the total is applied.\n\nTHE BIG SCORE\n5×–50×\n\nOn any spin — in normal play and inside every feature — the entire grid can become a single Loot Bag. It carries one value from 5× to 50× applied to every position, so a winning playline is multiplied by that value once for each of its positions. The Big Score can turn up whether or not the spin has a winning line — when there is no win it simply passes.\n\nSCATTER & FREE SPINS\n\nThe Boombox Scatter appears on all five reels in the base game, and on reels 3 to 5 during free spins. It does not award a line win on its own, and does not need to land on a playline. The number of Scatters landing together decides which feature opens, and each one awards 10 free spins:\n\n3 SCATTERS\nOne Loot Bag is on the grid from the start. All Loot Bags are sticky and stay until the feature ends; between spins each is refilled with a new multiplier.\n4 SCATTERS\nTwo Loot Bags are on the grid from the start. Loot Bag values are sticky, and any Loot Bag that takes part in a win doubles before the next spin. Each Loot Bag doubles at most once per spin.\n5 SCATTERS\nOne Loot Bag is on the grid from the start and the doubling rule of Muscle applies. In addition, every reel a Bruiser fills with Wilds stays Wild for the rest of the feature — held Wild columns build up spin after spin.\nRETRIGGERS\n\nLanding further Scatters together during a feature awards extra free spins: 2 Scatters award +2, 3 Scatters award +4, 4 Scatters award +6 and 5 Scatters award +8. This applies in all three features.\n\nThere is no limit to the number of free spins that can be won. A feature ends when its free spins run out or when the maximum win is reached.\n\n×2\n+2\n×3\n+4\n×4\n+6\n×5\n+8\nFEATURE ENTRY\n\nInstead of waiting for Scatters, each feature can be started directly with the Play Bonus button, for the total shown in the table above. Each mode's RTP is shown there alongside its total; across all modes it ranges from 96.01% to 96.05%.\n\nMAX WIN\n\nThe maximum award is capped at 20,000× the base amount in every mode. Once the cap is reached the round ends immediately and the maximum win is awarded.\n\nMalfunction voids all wins and plays. A consistent internet connection is required. In the event of a disconnection, reload the game to finish any uncompleted rounds. The expected return is calculated over many plays. The game display is not representative of any physical device and is for illustrative purposes only. Winnings are settled according to the amount received from the Remote Game Server and not from events within the web browser. TM and © 2026 Engine.\n\n×\nTURF WAR\nGAME RULES\n5×4\nGRID\n14\nPLAYLINES\n96.01%–96.05%\nRTP\n20,000×\nMAX WIN\nHOW TO PLAY\n\nTurf War is a 5×4 video slot with 14 fixed playlines. Winning combinations start from left to right, on adjacent reels beginning with the leftmost reel. Only the highest win is awarded per line, and all line wins are added together. The theoretical return to player (RTP) is 96.01%–96.05%, depending on the mode played — every mode's figure is listed in the table below.\n\nCONTROLS\nSpin\nStarts a round for the current amount. The space bar does the same thing. While the reels are turning it becomes Stop, which brings them to rest early.\nDecrease / increase\nSteps the amount up or down through the available amount levels.\nAMOUNT\nAmount\nShows the current amount. Tap it to open the play menu and choose any of the available amount levels directly.\nPLAY BONUS\nPlay Bonus\nOpens the feature menu, where any of the three free-spin features can be started outright for the stated multiple of your amount. The total is shown before you confirm.\nAuto Spin\nPlays a chosen number of rounds automatically. Open it to set the count and any stop conditions; press it again to stop early.\nTurbo\nShortens the spin and win presentations. Lit means turbo is on.\nMenu\nOpens the win table, these rules, and the sound and settings controls.\nInfo\nOpens these game rules.\nSettings\nOpens the volume controls: master volume, music and sound effects, each set separately.\nWin table\nLists every symbol and what it awards for 3, 4 and 5 of a kind, plus the playlines.\nSound\nMutes and unmutes the game. Volume is adjusted under Settings.\n\nWhile a big win is being counted up, tapping anywhere skips to the final amount.\n\nRTP & MAX WIN BY MODE\nMODE\tHOW TO ENTER\tRTP\tMAX WIN\nBase game\tEvery spin\t96.01%\t20,000× amount\nLookout (3 Scatters)\tPlay for 100× amount\t96.02%\t20,000× amount\nMuscle (4 Scatters)\tPlay for 500× amount\t96.03%\t20,000× amount\nKingpin (5 Scatters)\tPlay for 1000× amount\t96.05%\t20,000× amount\n\nMax win is a multiple of the base amount, not of a feature's entry total. When a round reaches the cap it ends immediately and the capped amount is awarded.\n\nWILD\n\nThe Wild substitutes for every symbol except the Scatter and the Bruiser, and awards as its own symbol on 5 of a kind.\n\nBRUISER\n\nThe Bruiser appears on the three middle reels in the base game, and on any reel during free spins. When one lands, its entire reel is filled with Wilds before any wins are evaluated. Scatters in that reel are not replaced. The Bruiser no line win as a symbol of its own, and at most one lands on any spin.\n\nLOOT BAGS\n1×1\n2×–100×\n2×2\n2×–10×\n3×3\n2×–8×\n\nLoot Bags land on the grid and reveal a multiplier when the reels settle. A Loot Bag covers 1×1, 2×2 or 3×3 positions and carries a single value however many positions it covers. Possible values are 2× to 10×, 25×, 50× and 100× on a single position, 2× to 10× on a 2×2 Loot Bag, and 2× to 8× on a 3×3 Loot Bag.\n\nA Loot Bag counts towards a win when a symbol it covers is part of a winning playline, and the win is multiplied by the Loot Bag's value. A larger Loot Bag counts once for each of its positions that the winning playline crosses. Where more than one Loot Bag takes part in the same win, their values are added together and the total is applied.\n\nTHE BIG SCORE\n5×–50×\n\nOn any spin — in normal play and inside every feature — the entire grid can become a single Loot Bag. It carries one value from 5× to 50× applied to every position, so a winning playline is multiplied by that value once for each of its positions. The Big Score can turn up whether or not the spin has a winning line — when there is no win it simply passes.\n\nSCATTER & FREE SPINS\n\nThe Boombox Scatter appears on all five reels in the base game, and on reels 3 to 5 during free spins. It does not award a line win on its own, and does not need to land on a playline. The number of Scatters landing together decides which feature opens, and each one awards 10 free spins:\n\n3 SCATTERS\nOne Loot Bag is on the grid from the start. All Loot Bags are sticky and stay until the feature ends; between spins each is refilled with a new multiplier.\n4 SCATTERS\nTwo Loot Bags are on the grid from the start. Loot Bag values are sticky, and any Loot Bag that takes part in a win doubles before the next spin. Each Loot Bag doubles at most once per spin.\n5 SCATTERS\nOne Loot Bag is on the grid from the start and the doubling rule of Muscle applies. In addition, every reel a Bruiser fills with Wilds stays Wild for the rest of the feature — held Wild columns build up spin after spin.\nRETRIGGERS\n\nLanding further Scatters together during a feature awards extra free spins: 2 Scatters award +2, 3 Scatters award +4, 4 Scatters award +6 and 5 Scatters award +8. This applies in all three features.\n\nThere is no limit to the number of free spins that can be won. A feature ends when its free spins run out or when the maximum win is reached.\n\n×2\n+2\n×3\n+4\n×4\n+6\n×5\n+8\nFEATURE ENTRY\n\nInstead of waiting for Scatters, each feature can be started directly with the Play Bonus button, for the total shown in the table above. Each mode's RTP is shown there alongside its total; across all modes it ranges from 96.01% to 96.05%.\n\nMAX WIN\n\nThe maximum award is capped at 20,000× the base amount in every mode. Once the cap is reached the round ends immediately and the maximum win is awarded.\n\nMalfunction voids all wins and plays. A consistent internet connection is required. In the event of a disconnection, reload the game to finish any uncompleted rounds. The expected return is calculated over many plays. The game display is not representative of any physical device and is for illustrative purposes only. Winnings are settled according to the amount received from the Remote Game Server and not from events within the web browser. TM and © 2026 Engine."
+    },
+    {
+      "label": "win-table",
+      "scan": {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      "dom": "WIN TABLE\n\nAwards shown as a multiple of base amount. Line wins start from left to right on 14 fixed playlines.\n\nBrass Knuckles\n5\n×\n250\nCrown Chain\n5\n×\n250\n4\n×\n50\n3\n×\n15\nSafehouse\n5\n×\n120\n4\n×\n25\n3\n×\n8\nBanknote Roll\n5\n×\n25\n4\n×\n8\n3\n×\n2\nSoda Bottle\n5\n×\n15\n4\n×\n4\n3\n×\n1\nLowrider\n5\n×\n5\n4\n×\n2\n3\n×\n0.5\nCrown Tag\n5\n×\n1\n4\n×\n0.5\n3\n×\n0.2\nSkull Tag\n5\n×\n1\n4\n×\n0.5\n3\n×\n0.2\nStar Tag\n5\n×\n1\n4\n×\n0.5\n3\n×\n0.2\nBolt Tag\n5\n×\n1\n4\n×\n0.5\n3\n×\n0.2\nBoombox — Scatter\nNo line win — 3, 4 or 5 Scatters award 10 Free Spins\nBruiser\nNo line win on its own — fills its entire reel with Wilds. Scatters in that reel are not replaced.\n14 PLAYLINES\n\nAll 14 lines are always active. Wins start from left to right from reel 1.\n\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n\nWild substitutes for all symbols except the Scatter and the Bruiser, and awards as its own symbol. Only the highest win is awarded per line. Max win is capped at 20,000× base amount.\n\n×\nWIN TABLE\n\nAwards shown as a multiple of base amount. Line wins start from left to right on 14 fixed playlines.\n\nBrass Knuckles\n5\n×\n250\nCrown Chain\n5\n×\n250\n4\n×\n50\n3\n×\n15\nSafehouse\n5\n×\n120\n4\n×\n25\n3\n×\n8\nBanknote Roll\n5\n×\n25\n4\n×\n8\n3\n×\n2\nSoda Bottle\n5\n×\n15\n4\n×\n4\n3\n×\n1\nLowrider\n5\n×\n5\n4\n×\n2\n3\n×\n0.5\nCrown Tag\n5\n×\n1\n4\n×\n0.5\n3\n×\n0.2\nSkull Tag\n5\n×\n1\n4\n×\n0.5\n3\n×\n0.2\nStar Tag\n5\n×\n1\n4\n×\n0.5\n3\n×\n0.2\nBolt Tag\n5\n×\n1\n4\n×\n0.5\n3\n×\n0.2\nBoombox — Scatter\nNo line win — 3, 4 or 5 Scatters award 10 Free Spins\nBruiser\nNo line win on its own — fills its entire reel with Wilds. Scatters in that reel are not replaced.\n14 PLAYLINES\n\nAll 14 lines are always active. Wins start from left to right from reel 1.\n\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n\nWild substitutes for all symbols except the Scatter and the Bruiser, and awards as its own symbol. Only the highest win is awarded per line. Max win is capped at 20,000× base amount."
+    },
+    {
+      "label": "autoplay",
+      "scan": {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      "dom": "AUTO SPINS\nNUMBER OF ROUNDS\n10\n25\n50\n75\n100\n250\n500\n1000\n∞\nADVANCED\nSTART AUTOPLAY\n×\nAUTO SPINS\nNUMBER OF ROUNDS\n10\n25\n50\n75\n100\n250\n500\n1000\n∞\nADVANCED\nSTART AUTOPLAY"
+    },
+    {
+      "label": "autoplay-advanced",
+      "scan": {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      "dom": "AUTO SPINS\nNUMBER OF ROUNDS\n10\n25\n50\n75\n100\n250\n500\n1000\n∞\nADVANCED\nSTART AUTOPLAY\n×\nAUTO SPINS\nNUMBER OF ROUNDS\n10\n25\n50\n75\n100\n250\n500\n1000\n∞\nADVANCED\nLOSS LIMIT\n5×\n10×\n25×\n50×\n100×\n∞\nSINGLE WIN LIMIT\n5×\n10×\n25×\n50×\n100×\n∞\nSTART AUTOPLAY"
+    },
+    {
+      "label": "buy",
+      "scan": {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      "dom": "GET A FEATURE\n\nEnter any of the three free-spin features directly, for the multiple of your amount shown on each card.\n\n1.00 GC\nLOOKOUT\n\n1 sticky Loot Bag, refilled every spin\n\n100×\n100.00 GC\nPLAY 100×\nMUSCLE\n\n2 sticky Loot Bags that double on a win\n\n500×\n500.00 GC\nPLAY 500×\nKINGPIN\n\n1 doubling Loot Bag + sticky Wild columns\n\n1000×\n1,000.00 GC\nPLAY 1000×\n×\nGET A FEATURE\n\nEnter any of the three free-spin features directly, for the multiple of your amount shown on each card.\n\n1.00 GC\nLOOKOUT\n\n1 sticky Loot Bag, refilled every spin\n\n100×\n100.00 GC\nPLAY 100×\nMUSCLE\n\n2 sticky Loot Bags that double on a win\n\n500×\n500.00 GC\nPLAY 500×\nKINGPIN\n\n1 doubling Loot Bag + sticky Wild columns\n\n1000×\n1,000.00 GC\nPLAY 1000×"
+    },
+    {
+      "label": "amount-menu",
+      "scan": {
+        "social": true,
+        "pixiTexts": 9,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      "dom": "PLAY MENU\nSELECT YOUR AMOUNT\n1.00 GC\n0.10\n0.20\n0.50\n1.00\n2.00\n5.00\n10.00\n20.00\n50.00\nMAX\nCONFIRM\n×\nPLAY MENU\nSELECT YOUR AMOUNT\n1.00 GC\n0.10\n0.20\n0.50\n1.00\n2.00\n5.00\n10.00\n20.00\n50.00\nMAX\nCONFIRM"
+    },
+    {
+      "label": "menu",
+      "scan": {
+        "social": true,
+        "pixiTexts": 12,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      "dom": ""
+    },
+    {
+      "label": "settings",
+      "scan": {
+        "social": true,
+        "pixiTexts": 12,
+        "hits": [],
+        "verdict": "PASS"
+      },
+      "dom": "SETTINGS\nMASTER VOLUME\nON\n75\nMUSIC VOLUME\nON\n75\nSOUND EFFECT VOLUME\nON\n75\n×\nSETTINGS\nMASTER VOLUME\nON\n75\nMUSIC VOLUME\nON\n75\nSOUND EFFECT VOLUME\nON\n75"
+    }
+  ],
+  "centers": [
+    {
+      "label": "main",
+      "html": [],
+      "glyphs": [
+        {
+          "text": "100,000.00 GC",
+          "lowerThanCapsByFontPct": 6.2,
+          "capsLowInBoxPct": 2.8
+        }
+      ]
+    },
+    {
+      "label": "rules",
+      "html": [],
+      "glyphs": [
+        {
+          "text": "100,000.00 GC",
+          "lowerThanCapsByFontPct": 6.2,
+          "capsLowInBoxPct": 2.8
+        }
+      ]
+    },
+    {
+      "label": "win-table",
+      "html": [],
+      "glyphs": [
+        {
+          "text": "100,000.00 GC",
+          "lowerThanCapsByFontPct": 6.2,
+          "capsLowInBoxPct": 2.8
+        }
+      ]
+    },
+    {
+      "label": "autoplay",
+      "html": [],
+      "glyphs": [
+        {
+          "text": "100,000.00 GC",
+          "lowerThanCapsByFontPct": 6.2,
+          "capsLowInBoxPct": 2.8
+        }
+      ]
+    },
+    {
+      "label": "autoplay-advanced",
+      "html": [],
+      "glyphs": [
+        {
+          "text": "100,000.00 GC",
+          "lowerThanCapsByFontPct": 6.2,
+          "capsLowInBoxPct": 2.8
+        }
+      ]
+    },
+    {
+      "label": "buy",
+      "html": [],
+      "glyphs": [
+        {
+          "text": "100,000.00 GC",
+          "lowerThanCapsByFontPct": 6.2,
+          "capsLowInBoxPct": 2.8
+        }
+      ]
+    },
+    {
+      "label": "amount-menu",
+      "html": [],
+      "glyphs": [
+        {
+          "text": "100,000.00 GC",
+          "lowerThanCapsByFontPct": 6.2,
+          "capsLowInBoxPct": 2.8
+        }
+      ]
+    },
+    {
+      "label": "menu",
+      "html": [],
+      "glyphs": [
+        {
+          "text": "100,000.00 GC",
+          "lowerThanCapsByFontPct": 6.2,
+          "capsLowInBoxPct": 2.8
+        }
+      ]
+    },
+    {
+      "label": "settings",
+      "html": [],
+      "glyphs": [
+        {
+          "text": "100,000.00 GC",
+          "lowerThanCapsByFontPct": 6.2,
+          "capsLowInBoxPct": 2.8
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "label": "http://127.0.0.1:8427/game/assets/sprites/turfUiIcons/settings.png",
+      "x": 49.06666666666666,
+      "y": 347.73333333333335,
+      "w": 29.951999999999998,
+      "h": 29.951999999999998
+    }
+  ],
+  "warnings": [
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> BALANCE\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> BALANCE\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "    at new oc (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:394:42869)\n    at set style (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:10811)\n    at new Hse (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:10082)\n    at new jse (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:618:12132)\n    at pt (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:22946)\n    at children (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:20462)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:25461\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> WIN\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> WIN\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80114)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+    },
+    {
+      "type": "warning",
+      "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80151)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+    },
+    {
+      "type": "warning",
+      "text": "    at Object.c [as draw] (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1330:80193)\n    at http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:1306:23676\n    at CC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:13325)\n    at Hp (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14203)\n    at tK (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14694)\n    at kC (http://127.0.0.1:8427/game/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=XGC&lang=ja&social=false&jurisdictionSocial=true&balance=100000:83:14559)"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> AUTO SPINS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> AUTO SPINS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> ADVANCED\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> ADVANCED\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> NUMBER OF ROUNDS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> NUMBER OF ROUNDS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> START AUTOPLAY\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> START AUTOPLAY\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> AUTO SPINS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> AUTO SPINS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> ADVANCED\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> ADVANCED\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> NUMBER OF ROUNDS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> NUMBER OF ROUNDS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> START AUTOPLAY\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> START AUTOPLAY\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> LOSS LIMIT\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> LOSS LIMIT\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SINGLE WIN LIMIT\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SINGLE WIN LIMIT\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MAX\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MAX\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MAX\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MAX\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MAX\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MAX\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MAX\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MAX\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> CONFIRM\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SOUND ON\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SOUND ON\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SETTINGS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SETTINGS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> INFO\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> INFO\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SETTINGS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SETTINGS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MASTER VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MASTER VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MUSIC VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MUSIC VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SOUND EFFECT VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SOUND EFFECT VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SETTINGS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SETTINGS\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MASTER VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MASTER VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MUSIC VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> MUSIC VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SOUND EFFECT VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    },
+    {
+      "type": "warning",
+      "text": "Uncompiled message detected! Message:\n\n> SOUND EFFECT VOLUME\n\nThat means you use raw catalog or your catalog doesn't have a translation for the message and fallback was used.\nICU features such as interpolation and plurals will not work properly for that message. \n\nPlease compile your catalog first. \n"
+    }
+  ],
+  "stats": {
+    "rounds": 0,
+    "byMode": {},
+    "balance": 1000,
+    "wagered": 0,
+    "won": 0,
+    "rtpSoFar": 0
+  }
+}

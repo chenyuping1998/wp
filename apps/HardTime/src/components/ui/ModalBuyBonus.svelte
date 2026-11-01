@@ -40,7 +40,7 @@
 		stateMetaDerived.betModeMetaList().filter((item) => item.type === 'buy'),
 	);
 
-	const src = (key: string) => (assets as Record<string, { src?: string }>)[key]?.src ?? '';
+	const src = (key: string) => (assets as unknown as Record<string, { src?: string }>)[key]?.src ?? '';
 
 	/**
 	 * Per-tier art. Keyed by the maths mode so it cannot drift from betModeMeta,

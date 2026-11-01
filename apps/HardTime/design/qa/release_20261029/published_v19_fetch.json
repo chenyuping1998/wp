@@ -1,0 +1,10 @@
+[
+  {
+    "file": "assets/spines/htCast/prisoner.json",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "file": "assets/spines/htCast/warden.json",
+    "error": "HTTP Error 403: Forbidden"
+  }
+]

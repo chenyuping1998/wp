@@ -61,14 +61,6 @@
       "h": 336
     },
     {
-      "name": "baton",
-      "file": "../../../../../static/assets/castLayers/warden_spine_v2/baton.png",
-      "x": 206,
-      "y": 246,
-      "w": 232,
-      "h": 207
-    },
-    {
       "name": "trunk",
       "file": "../../../../../static/assets/castLayers/warden_spine_v2/torso.png",
       "x": 230,
@@ -133,22 +125,6 @@
       "h": 393
     },
     {
-      "name": "right_arm_fore",
-      "file": "../../../../../static/assets/castLayers/warden_spine_v2/forearm_r.png",
-      "x": 180,
-      "y": 346,
-      "w": 199,
-      "h": 336
-    },
-    {
-      "name": "fingers_r",
-      "file": "../../../../../static/assets/castLayers/warden_spine_v2/fingers_r.png",
-      "x": 285,
-      "y": 344,
-      "w": 89,
-      "h": 100
-    },
-    {
       "name": "head",
       "file": "../../../../../static/assets/castLayers/warden_spine_v2/head.png",
       "x": 385,
@@ -163,6 +139,30 @@
       "y": 196,
       "w": 77,
       "h": 38
+    },
+    {
+      "name": "right_arm_fore",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/forearm_r.png",
+      "x": 180,
+      "y": 346,
+      "w": 199,
+      "h": 336
+    },
+    {
+      "name": "baton",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/baton.png",
+      "x": 206,
+      "y": 246,
+      "w": 232,
+      "h": 207
+    },
+    {
+      "name": "fingers_r",
+      "file": "../../../../../static/assets/castLayers/warden_spine_v2/fingers_r.png",
+      "x": 285,
+      "y": 344,
+      "w": 89,
+      "h": 100
     }
   ]
 }

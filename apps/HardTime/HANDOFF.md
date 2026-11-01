@@ -1,5 +1,45 @@
 # Hard Time — 交接文件
 
+## 2026-10-30 — 數字壓圖修正（skill 步驟 5 第 7 項），已上傳並發布 front v20
+
+- 直式載入頁：`MAX WIN 12,000X` 與提示列原本壓在囚犯手臂／身上。`LoadingScreen.svelte` 直式時文字移到上方，人物改站下方 58% 高；橫式不變。開場卡、購買卡、賠率表無問題。
+- 證據：`design/qa/number_audit_20261030/`。stage_frontend.py 0 新素材、177 檔雜湊相符，`ship.sh --check` all clean。10-30 Stone 同意後 stakecli 上傳（4 actions，重新 plan 0）並發布 front v20；數學不變，未動審查版本。
+
+## 2026-10-29 — 平台已上傳並發布 front v19
+
+依 Stone「做完的話上傳發布」指示，silver-stars / hard-time 前端發布 **v19**（原v18）。16檔上傳／1舊JS刪除／156不變，7,423,871 bytes；上傳後plan差異0，publish與get_game均確認v19。數學9檔完全不變，沿用math v3；CLI compliance PASS、0 warnings。177檔staging雜湊及角色runtime gate通過。
+
+本次未更新關閉的審查單，也未建立新送審／變更已核可live channel設定。無session直接讀CDN回403，不把API確認當作真實RGS試玩。完整官方自檢與上傳回執：`design/qa/release_20261029/RELEASE.md`。以下較早「未更新平台」為當時紀錄。
+
+## 2026-10-29 — 角色缺陷修正與最終驗收：PASS
+
+修掉囚犯前臂破洞／碎片、毛巾分離、上臂抹痕，及典獄長袖子手指／褲子鑰匙殘影。主盤與桌機功能進場統一最終 Spine；警棍與握棍手在頭前。依完整動作範圍平移位置，修正外側手掌裁切及進場鞋子裁切，沒有縮小角色或動作。骨架、動畫、IK、physics 與修前相同。
+
+每人四 clips × 四待機相位共 3,872 格量測、968 格實際渲染；零翻面、來源部件零內洞，逐層亮暗底及過渡／極值重看。桌機／直式手機 MG、FG、RIOT 進場與結算實測，console error 0。完整 build 通過，最後進場定位修改後 types／Vite 重新通過；types 0 errors / 1 warning。
+
+43 個角色檔在 source／build／最終預覽／upload 一致；`upload/HardTime/` 已更新（177 檔雜湊核對），縮圖／封面與 math 保留既有版本。**未產生 zip，未上傳／更新平台。** 本機 stub 預覽：`http://localhost:8177/hardtime-cast-final/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en`。
+
+證據與限制：`design/qa/character_fix_20261029/REPORT.md`。下方 FAIL 為修前歷史，已由本次修正處理。
+
+## 2026-10-29 — 最新角色標準複查：FAIL
+
+35 個來源層已看亮／暗底；現有兩人的 idle／react／reactBig／blink 以實際 4.2 runtime 新擷取 968 格。零翻面、腳踝固定、靜止零洞皆通過，但可見缺陷仍阻擋交付：囚犯 `forearm_over` 的 493 個透明像素在 setup 被毛巾碎片 493/493 填住，動作時錯位露破口；warden 上臂混手指像素；1280×720 reaction 外側手掌 x≈-24 被裁切；桌機 feature cut-in 仍使用 8 層舊 mesh；主骨架警棍 slot 仍在 head 前面（背後），尚未完全符合 10/28 手部道具在頭前規則。43 個 runtime 素材檔在 source／build／preview／upload 相同，但不能代表兩套呈現路徑都驗收通過。
+
+詳見 `design/qa/character_audit_20261029/REPORT.md`，含來源亮暗底圖、新 GIF、眨眼序列、固定 viewport 截圖及實際 runtime 數值。spine-motion 4.3 checker 拒絕現有 4.2 約束格式，未拿不適用檢查器當通過。此次僅檢查及更正載入結論，未改角色素材／rig／動作、未打包或上傳。
+
+## 2026-10-29 — 手機進場、符號待機及檢查流程優化
+
+- 手機 feature entry 改為 88% 寬的說明卡；內距按卡寬縮放，修正 RIOT 說明逐字換行，桌機維持原寬度比例。
+- 新 `symbolIdleMotion.ts`：12 種符號各有 ambient／act；鑰匙頂端懸擺、手銬短促震動、鐵盒移重、杯口蒸氣、布章反光、帽沿提起、牢門震動、探照燈掃動、四種花色各自變化。共用原 idle clock；轉動、落地、dim、tease 時停用。新增 build gate，檢查覆蓋、差異、幅度、錯峰及時鐘換圈。
+- 背景用原 1920×1080 場景裡的燈具／火光像素做局部亮度變化：base 電燈、lockdown 警報燈、riot 火光、breakout 塔樓燈。移除舊的通用飄粒與未使用的遊艇近景計算；手機背景模糊改為 quality 1。沒有宣稱實機 FPS 提升。
+- 將舊角色 sprite／warden layers 移出 preload 階段；9 個不同檔案合計 1,862,988 bytes。2026-10-29 角色複查更正：AssetsLoader 仍會在一般階段下載全部註冊素材，這不是總下載節省；warden 舊圖層仍被桌機 feature cut-in 使用。角色來源圖、骨架與動作未改。
+- 型別檢查只涵蓋遊戲執行程式，排除 design/Storybook，加入 SvelteKit 產生的環境宣告；實際錯誤逐項修正（readonly config、font weight、死掉的 symbol rig 分支與舊事件）。目前 0 error、1 warning；型別檢查接入 build，未關閉 strict 或用 ignore 壓掉錯誤。
+- 數學檢查／報表預設改成 HardTime，最高獎與 RTP 讀前端生成設定。線獎檢查另從 searchlight/updateLights 重算倍率，核對實際 payline 位置。10 萬本書逐 ID 對帳通過；84,013 局中獎局、2,284,946 筆線獎完整重算通過。另注入錯誤 lookup payout，確認 gate 拒絕。
+- ship 在複製數學前後檢查並跑完整線獎核對；新增 `stage_frontend.py`，程式碼完整更新，保留既有壓縮美術、僅於來源變更時更新素材；每次 staging 後自動產生／核對雜湊清單。隔離測試確認保留壓縮圖、來源變更更新、移除舊 JS 以及攔截被改動的 manifest 檔案。
+- 本機確認：1280×720 主盤、390×844 主盤／RIOT 進場／完整 FG 至結算、1024×768 結算，檢查時 console error 0。驗證紀錄在 `design/qa/optimization_20261029/`。本機是 stub；不宣稱平台 RGS 或全部角色動作重新驗收。
+
+**數學權重／RTP 未改；本次沒有重製 upload、沒有產生 zip、沒有上傳平台。** 新版預覽：`http://localhost:8177/hardtime-audit/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en`。
+
 ## 2026-10-20 — Spine v2 重切、補畫及動作接入
 
 依 `design/cast_brief/spine_v2/README.md`：內建 imagegen 產出 P1–P4、W1–W4 及獨立的 P2_under，
@@ -24,7 +64,7 @@
 
 新增 `check_layered_cast.mjs` 已加入 build：3,232 姿勢、1×/2×/4×、翻面 0、面積比 0.862–1.147；PNG／PSD／空隙驗證在 `check_layered_art.py`。正式建置與新角色 TS 模組通過，整個專案的 `check:types` 仍有其他診斷，詳見交付 README。瀏覽器已看過三種反應與完整盤面事件。尚未上傳 Stake。
 
-最後更新：2026-09-15（第一次打包；pre-submission QA 全數完成）
+首次打包記錄：2026-09-15；後續修正以各日期段落為準。
 
 Capo Nostra 的換皮，但**數學核心重寫**：Vault Frame 整個拿掉，改由探照燈（Searchlight）
 承載倍率。完整規格見 [SPEC.md](SPEC.md)，美術與音效規則見
@@ -50,7 +90,11 @@ Capo Nostra 的換皮，但**數學核心重寫**：Vault Frame 整個拿掉，�
 | 上限 | 20,000× | **12,000×** |
 | 買入價 | 100 / 500 / 1000 | **100 / 300 / 600** |
 
-## 2. 數學（最終）
+## 2. 數學（目前出貨設定）
+
+2026-10-29 重新核對 publish_files 與 upload：base 96.05%、bonus 96.06%、bonus_hits 96.07%、bonus_epic 96.09%；成本 1／100／300／600，最高獎均 12,000×。10 萬本書與權重表逐 ID 一致。下表為 09-15 調整時的歷史量測，不代表目前 RTP。
+
+### 2026-09-15 歷史調整結果
 
 | mode | cost | RTP | etl10k (≤0.8) | etl40b (≤0.9) | max win |
 |---|---|---|---|---|---|

@@ -36,7 +36,7 @@ export type GameText = {
 const english = (T: Terms): GameText => ({
 	wild: `The Wild substitutes for every symbol except the Scatter and the Bruiser, and ${T.pays} as its own symbol on 5 of a kind.`,
 	bruiserTitle: 'Bruiser',
-	bruiser: `The Bruiser appears on the three middle reels in the base game, and on any reel during free spins. When one lands, its <strong>entire reel is filled with Wilds</strong> before any wins are evaluated. Scatters in that reel are not replaced. The Bruiser ${T.doesNotPay.toLowerCase()} as a symbol of its own, and at most one lands on any spin.`,
+	bruiser: `The Bruiser appears on the three middle reels in the base game, and on any reel during free spins. When one lands, its <strong>entire reel is filled with Wilds</strong> before any wins are evaluated. Scatters in that reel are not replaced. The Bruiser ${T.doesNotPay.toLowerCase()} as a symbol of its own. More than one Bruiser can land in a spin.`,
 	bagsTitle: 'Loot Bags',
 	bags: [
 		'Loot Bags land on the grid and reveal a multiplier when the reels settle. A Loot Bag covers <strong>1×1, 2×2 or 3×3 positions</strong> and carries a single value however many positions it covers. Possible values are 2× to 10×, 25×, 50× and 100× on a single position, 2× to 10× on a 2×2 Loot Bag, and 2× to 8× on a 3×3 Loot Bag.',

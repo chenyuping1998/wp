@@ -1,0 +1,11 @@
+{
+  "src/components/SymbolArt.svelte": "bb71f0dd3b431dcf514aca5bc274bf865f40d083b056be78039cfb41caa09dac",
+  "src/components/SymbolWinAnim.svelte": "6ca7066c6564d97f97b874c4aab1e0fb42b08d52b6dcbd4b049f49651cf7bd2f",
+  "src/components/StreetSymbolMesh.svelte": "3e9d619d1caf6ab9758242393defd4aa7760fa113380d2d47af790da9d1d773d",
+  "src/components/GraffitiTrace.svelte": "6c0743cc3ca269d6e7937cb35158dcd82a771f349fcf1808285a1b18a9b2efd9",
+  "src/game/streetSymbolMotion.ts": "8a46e03a652049026d554f1221715fddfcec0b57e5023500010ccb2db462fc83",
+  "src/game/symbolWinMotion.ts": "6c7f6f025a9dfa470c60153c1be5340fb461e0a54bba725d83455bdd9e98a452",
+  "src/game/symbolIdleMotion.ts": "dbb8a7515a8bc048e33d2b2eb22b45c204879311d0c69b272cabcbd3455b895d",
+  "design/check_street_symbols.mjs": "ff532b51972859bcfc5c8458fefecf40f40d074414446d2c658918cb4ad4670d",
+  "package.json": "a725a4ca329feb7be2fc721991fb3c1aae2dc10c0e8bac5098d1333a1f8077f2"
+}

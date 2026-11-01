@@ -97,6 +97,11 @@ games already share.
 - List which symbols reuse or are pre-scaled from an existing asset, if any
   (saves a redraw), and call out anything that must NOT reuse the source
   game's shape (a symbol whose silhouette IS the source game's mascot, say).
+- **Idle act per symbol (required, 2026-10-27, SKILL.md step 4 "The symbols
+  live too").** Next to each symbol write its ambient loop and its signature
+  act, and the pivot it moves about (hanging point, wheels, base), so the art
+  is drawn to support it — e.g. a chain needs a clear hanging top, a car
+  needs visible wheels/headlights, a building needs windows that can light.
 
 ## 3. Frames / win-indicator housing
 

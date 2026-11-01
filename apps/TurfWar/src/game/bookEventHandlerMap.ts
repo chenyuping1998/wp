@@ -406,7 +406,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateGame.stickyWildReels = [];
 		stateGame.stickyWildCells = [];
 		eventEmitter.broadcast({ type: 'stickyWildsClear' });
-		eventEmitter.broadcast({ type: 'expandingWildsClear' });
+		eventEmitter.broadcast({ type: 'wildColumnClear' });
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 
 		// WHICH tier, one event early.
@@ -652,7 +652,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateGame.winningCells = [];
 		stateGame.debugWinLineCount = 0;
 		eventEmitter.broadcast({ type: 'winLinesHide' });
-		eventEmitter.broadcast({ type: 'expandingWildsClear' });
+		eventEmitter.broadcast({ type: 'wildColumnClear' });
 		stateGameDerived.enhancedBoard.settle(stateGameDerived.boardRaw());
 		eventEmitter.broadcast({ type: 'boardShow' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
@@ -693,7 +693,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateGame.gameType = 'basegame';
 		stateGame.winningCells = [];
 		stateGame.stickyWildReels = [];
-		eventEmitter.broadcast({ type: 'expandingWildsClear' });
+		eventEmitter.broadcast({ type: 'wildColumnClear' });
 		stateGameDerived.enhancedBoard.settle(INITIAL_BOARD);
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });

@@ -19,11 +19,11 @@
     "shoe_l",
     "pelvis",
     "torso",
+    "towel",
     "upper_arm_r",
     "upper_arm_l",
     "forearm_under",
     "forearm_over",
-    "towel",
     "head",
     "blink"
   ],
@@ -109,6 +109,16 @@
       ]
     },
     {
+      "name": "towel",
+      "texture": "towel.png",
+      "crop": [
+        615,
+        376,
+        175,
+        467
+      ]
+    },
+    {
       "name": "upper_arm_r",
       "texture": "upper_arm_r.png",
       "crop": [
@@ -145,17 +155,7 @@
         385,
         589,
         394,
-        166
-      ]
-    },
-    {
-      "name": "towel",
-      "texture": "towel.png",
-      "crop": [
-        615,
-        376,
-        175,
-        469
+        140
       ]
     },
     {

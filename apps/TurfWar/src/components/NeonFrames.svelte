@@ -374,9 +374,12 @@
 				SYMBOL_SIZE *
 				// 2026-10-15: +35% — on the sticker board a 0.46 tag read as a corner dot
 				// ("9x" at ~16px on a 1280 screen). The tag now sits half off the cell.
-				(tier === 'elite' ? 0.76 : tier === 'premium' ? 0.68 : 0.62) *
-				(1 + (sizeOf(frame) - 1) * 0.15)}
-			<Container x={span * 0.5 - tag * 0.36} y={span * 0.5 - tag * 0.36}>
+				// 2026-10-23: the 10-23 redraw's plate is a heavy white-ringed disc; at
+				// 0.62–0.76 hanging half off the cell it covered the neighbours
+				// (「100X倍數那個會擋住」). Smaller, and tucked inside the corner.
+				(tier === 'elite' ? 0.5 : tier === 'premium' ? 0.46 : 0.42) *
+				(1 + (sizeOf(frame) - 1) * 0.12)}
+			<Container x={span * 0.5 - tag * 0.5} y={span * 0.5 - tag * 0.5}>
 				{#if tier !== 'plain'}
 					<Sprite
 						key="fxGlow"
@@ -396,7 +399,7 @@
 					style={{
 						fontFamily: DISPLAY_FONT,
 						fontWeight: DISPLAY_FONT_WEIGHT,
-						fontSize: tag * (String(frame.mult).length > 2 ? 0.3 : String(frame.mult).length > 1 ? 0.36 : 0.44),
+						fontSize: tag * (String(frame.mult).length > 2 ? 0.34 : String(frame.mult).length > 1 ? 0.4 : 0.48),
 						fill: tint,
 						stroke: { color: 0x0e0f11, width: tag * 0.07 },
 					}}

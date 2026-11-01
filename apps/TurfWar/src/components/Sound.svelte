@@ -274,6 +274,9 @@
 	// exists in this file for the music duck (routeThroughFilter), so this adds
 	// a decode pass, not a second audio stack.
 	const sfxBuffers: Partial<Record<CnSfxName, AudioBuffer>> = {};
+	// A master-volume change must also reach voices already playing.
+	const sfxOneShots = new Map<GainNode, number>();
+	const elementOneShots = new Map<HTMLAudioElement, number>();
 	const sfxLoops: Partial<Record<CnSfxName, { source: AudioBufferSourceNode; gain: GainNode; scale: number }>> = {};
 	// the element fallback's own scale, for the same reason
 	const loopElementScale: Partial<Record<CnSfxName, number>> = {};
@@ -347,6 +350,7 @@
 			const gain = ctx.createGain();
 			gain.gain.value = sfxVolume(volumeScale);
 			gain.connect(ctx.destination);
+			sfxOneShots.set(gain, volumeScale);
 			const source = ctx.createBufferSource();
 			source.buffer = buffer;
 			// playbackRate on a short percussive sample reads as pitch — this is
@@ -356,6 +360,7 @@
 			// Nodes are single-use. Disconnect on end so a long session does not
 			// accumulate a graph of finished sources.
 			source.onended = () => {
+				sfxOneShots.delete(gain);
 				source.disconnect();
 				gain.disconnect();
 			};
@@ -448,6 +453,8 @@
 		const audio = getCnSfxVoice(name);
 		audio.loop = false;
 		audio.volume = sfxVolume(volumeScale);
+		elementOneShots.set(audio, volumeScale);
+		audio.onended = () => elementOneShots.delete(audio);
 		// Always assign, never skip when rate is 1: a voice is reused across
 		// callers, so a rate left over from the previous one would carry into every
 		// later play through that voice.
@@ -574,6 +581,11 @@
 	// every sound to follow the setting immediately. No ramp: a mute is a mute.
 	$effect(() => {
 		const vol = stateSoundDerived.volumeSoundEffect();
+		for (const [gain, scale] of sfxOneShots) {
+			gain.gain.cancelScheduledValues(gain.context.currentTime);
+			gain.gain.setValueAtTime(Math.min(1, vol * scale), gain.context.currentTime);
+		}
+		for (const [audio, scale] of elementOneShots) audio.volume = Math.min(1, vol * scale);
 		for (const node of Object.values(sfxLoops)) {
 			if (!node) continue;
 			const ctx = node.gain.context;
@@ -705,6 +717,9 @@
 		playBgm('base');
 
 		return () => {
+			for (const gain of sfxOneShots.keys()) gain.disconnect();
+			sfxOneShots.clear();
+			elementOneShots.clear();
 			for (const name of Object.keys(sfxLoops) as CnSfxName[]) stopCnSfx(name);
 			if (bgmAudio) {
 				bgmAudio.pause();

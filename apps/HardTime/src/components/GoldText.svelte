@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import type { TextStyleFontWeight } from 'pixi.js';
 	import { Container, Text } from 'pixi-svelte';
 
 
@@ -39,7 +40,7 @@
 		// but a big-win amount is a display callout, not a readout, and it is
 		// exactly the kind of place fonts.ts reserves for the display face.
 		fontFamily?: string;
-		fontWeight?: string;
+		fontWeight?: TextStyleFontWeight;
 	};
 
 	const props: Props = $props();

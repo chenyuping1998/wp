@@ -245,12 +245,12 @@
 	hmCastGuy: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hardTimeCast/prisoner.png', import.meta.url).href,
-		preload: true,
+		preload: false,
 	},
 	hmCastGuyMesh: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hardTimeCast/prisoner.png', import.meta.url).href,
-		preload: true,
+		preload: false,
 	},
 	// loading screen: the crossed-arms prisoner who stands beside the board
 	// (2026-10-03; it still showed the retired A-pose cut-out)
@@ -407,12 +407,12 @@
 		src: new URL('../../assets/audio/sounds.json', import.meta.url).href,
 		preload: true,
 	},
-	htWardenArmR: { type: 'sprite', src: new URL('../../assets/castLayers/warden/arm_r.png', import.meta.url).href, preload: true },
-	htWardenPropBat: { type: 'sprite', src: new URL('../../assets/castLayers/warden/prop_bat.png', import.meta.url).href, preload: true },
-	htWardenBody: { type: 'sprite', src: new URL('../../assets/castLayers/warden/body.png', import.meta.url).href, preload: true },
-	htWardenArmL: { type: 'sprite', src: new URL('../../assets/castLayers/warden/arm_l.png', import.meta.url).href, preload: true },
-	htWardenDangleChain: { type: 'sprite', src: new URL('../../assets/castLayers/warden/dangle_chain.png', import.meta.url).href, preload: true },
-	htWardenHead: { type: 'sprite', src: new URL('../../assets/castLayers/warden/head.png', import.meta.url).href, preload: true },
-	htWardenDangleMask: { type: 'sprite', src: new URL('../../assets/castLayers/warden/dangle_mask.png', import.meta.url).href, preload: true },
-	htWardenFingersR: { type: 'sprite', src: new URL('../../assets/castLayers/warden/fingers_r.png', import.meta.url).href, preload: true },
+	htWardenArmR: { type: 'sprite', src: new URL('../../assets/castLayers/warden/arm_r.png', import.meta.url).href, preload: false },
+	htWardenPropBat: { type: 'sprite', src: new URL('../../assets/castLayers/warden/prop_bat.png', import.meta.url).href, preload: false },
+	htWardenBody: { type: 'sprite', src: new URL('../../assets/castLayers/warden/body.png', import.meta.url).href, preload: false },
+	htWardenArmL: { type: 'sprite', src: new URL('../../assets/castLayers/warden/arm_l.png', import.meta.url).href, preload: false },
+	htWardenDangleChain: { type: 'sprite', src: new URL('../../assets/castLayers/warden/dangle_chain.png', import.meta.url).href, preload: false },
+	htWardenHead: { type: 'sprite', src: new URL('../../assets/castLayers/warden/head.png', import.meta.url).href, preload: false },
+	htWardenDangleMask: { type: 'sprite', src: new URL('../../assets/castLayers/warden/dangle_mask.png', import.meta.url).href, preload: false },
+	htWardenFingersR: { type: 'sprite', src: new URL('../../assets/castLayers/warden/fingers_r.png', import.meta.url).href, preload: false },
 } as const;

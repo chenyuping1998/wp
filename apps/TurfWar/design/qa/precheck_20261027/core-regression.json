@@ -1,0 +1,181 @@
+{
+  "insufficient": [
+    {
+      "path": "space",
+      "dom": "×\nNOTIFICATION\nINSUFFICIENT FUNDS TO PLACE THIS BET. PLEASE ADD FUNDS TO YOUR ACCOUNT OR LOWER THE BET LEVEL.",
+      "requests": []
+    },
+    {
+      "path": "spin",
+      "dom": "×\nNOTIFICATION\nINSUFFICIENT FUNDS TO PLACE THIS BET. PLEASE ADD FUNDS TO YOUR ACCOUNT OR LOWER THE BET LEVEL.",
+      "requests": []
+    },
+    {
+      "path": "autoplay",
+      "dom": "×\nNOTIFICATION\nINSUFFICIENT FUNDS TO PLACE THIS BET. PLEASE ADD FUNDS TO YOUR ACCOUNT OR LOWER THE BET LEVEL.",
+      "requests": []
+    }
+  ],
+  "social": [
+    {
+      "currency": "XSC",
+      "social": "false",
+      "intro": "TURF WAR\nVOLATILITY\nLOOT BAGS\n\nLoot Bags land carrying 2× to 100×, covering 1, 4 or 9 positions. A Loot Bag multiplies any win whose playline crosses it — a bigger Loot Bag counts once per position crossed — and where several take part in one win, their values add together.\n\nTHE BRUISER\n\nA Bruiser fills its entire reel with Wilds before any wins are counted. It lands on the three middle reels in normal play and on any reel in free spins, one at a time.\n\n50×\nTHE BIG SCORE\n\nOn any spin the whole grid can become one Loot Bag worth 5× to 50×, multiplying every winning playline once per position. It can turn up in normal play and in every feature — and it does not need a win to appear.\n\n14 PLAYLINES  /  MAX WIN 20,000×\n\nTAP TO CONTINUE\n\n777\nSILVERSTARS STUDIO",
+      "scene": [
+        {
+          "t": "14:39",
+          "x": 20,
+          "y": 0,
+          "w": 54,
+          "h": 32
+        },
+        {
+          "t": "TURF WAR",
+          "x": 79,
+          "y": 0,
+          "w": 100,
+          "h": 32
+        },
+        {
+          "t": "BALANCE",
+          "x": 148,
+          "y": 500,
+          "w": 56,
+          "h": 21
+        },
+        {
+          "t": "1,000.00 SC",
+          "x": 138,
+          "y": 515,
+          "w": 76,
+          "h": 22
+        },
+        {
+          "t": "WIN",
+          "x": 355,
+          "y": 500,
+          "w": 26,
+          "h": 21
+        },
+        {
+          "t": "0.00 SC",
+          "x": 343,
+          "y": 516,
+          "w": 50,
+          "h": 22
+        },
+        {
+          "t": "AMOUNT",
+          "x": 593,
+          "y": 500,
+          "w": 53,
+          "h": 21
+        },
+        {
+          "t": "1.00 SC",
+          "x": 596,
+          "y": 516,
+          "w": 47,
+          "h": 22
+        },
+        {
+          "t": "PLAY BONUS",
+          "x": 75,
+          "y": 239,
+          "w": 63,
+          "h": 51
+        }
+      ],
+      "errors": []
+    },
+    {
+      "currency": "XGC",
+      "social": "true",
+      "intro": "TURF WAR\nVOLATILITY\nLOOT BAGS\n\nLoot Bags land carrying 2× to 100×, covering 1, 4 or 9 positions. A Loot Bag multiplies any win whose playline crosses it — a bigger Loot Bag counts once per position crossed — and where several take part in one win, their values add together.\n\nTHE BRUISER\n\nA Bruiser fills its entire reel with Wilds before any wins are counted. It lands on the three middle reels in normal play and on any reel in free spins, one at a time.\n\n50×\nTHE BIG SCORE\n\nOn any spin the whole grid can become one Loot Bag worth 5× to 50×, multiplying every winning playline once per position. It can turn up in normal play and in every feature — and it does not need a win to appear.\n\n14 PLAYLINES  /  MAX WIN 20,000×\n\nTAP TO CONTINUE\n\n777\nSILVERSTARS STUDIO",
+      "scene": [
+        {
+          "t": "14:39",
+          "x": 20,
+          "y": 0,
+          "w": 54,
+          "h": 32
+        },
+        {
+          "t": "TURF WAR",
+          "x": 79,
+          "y": 0,
+          "w": 100,
+          "h": 32
+        },
+        {
+          "t": "BALANCE",
+          "x": 148,
+          "y": 500,
+          "w": 56,
+          "h": 21
+        },
+        {
+          "t": "1,000.00 GC",
+          "x": 138,
+          "y": 515,
+          "w": 77,
+          "h": 22
+        },
+        {
+          "t": "WIN",
+          "x": 355,
+          "y": 500,
+          "w": 26,
+          "h": 21
+        },
+        {
+          "t": "0.00 GC",
+          "x": 343,
+          "y": 516,
+          "w": 51,
+          "h": 22
+        },
+        {
+          "t": "AMOUNT",
+          "x": 593,
+          "y": 500,
+          "w": 53,
+          "h": 21
+        },
+        {
+          "t": "1.00 GC",
+          "x": 595,
+          "y": 516,
+          "w": 48,
+          "h": 22
+        },
+        {
+          "t": "PLAY BONUS",
+          "x": 75,
+          "y": 239,
+          "w": 63,
+          "h": 51
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "mute": {
+    "before": [
+      {
+        "duration": 2.2,
+        "gain": 0.5625
+      }
+    ],
+    "after": [
+      {
+        "duration": 2.2,
+        "gain": 0
+      },
+      {
+        "duration": 0.09,
+        "gain": 0
+      }
+    ]
+  }
+}

@@ -66,6 +66,6 @@ export type SoundEffectName =
 
 export type SoundName = MusicName | SoundEffectName;
 
-const sound = createSound<SoundName>();
+const sound = createSound<SoundName>({ allowHtmlAudioFallback: true });
 
 export { sound };

@@ -39,13 +39,13 @@
 
 	const isMax = (value: number) => value === options[options.length - 1];
 
-	// As the shared grid formats: bare amounts, K / M above a thousand.
-	const format = (value: number) => {
-		const abs = Math.abs(value);
-		if (abs > 999999) return `${(abs / 1000000).toFixed(2)}M`;
-		if (abs > 999) return `${(abs / 1000).toFixed(2)}K`;
-		return abs.toFixed(2);
-	};
+	// Stake review, 2026-10-20 (Sushi Monkey): values in full, never K / M
+	// abbreviations — 1,000.00, not 1.00K. Long labels step the type down so
+	// they still fit their chip.
+	const format = (value: number) =>
+		Math.abs(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+	const chipLabel = (value: number) => (isMax(value) ? i18nDerived.max() : format(value));
+	const labelSize = (text: string) => (text.length > 10 ? '0.7em' : text.length > 8 ? '0.82em' : undefined);
 
 	const choose = (value: number) => {
 		stateBetDerived.setBetAmount(value);
@@ -74,7 +74,7 @@
 							aria-pressed={option === stateBet.betAmount}
 							onclick={() => choose(option)}
 						>
-							<span class="label">{isMax(option) ? i18nDerived.max() : format(option)}</span>
+							<span class="label" style:font-size={labelSize(chipLabel(option))}>{chipLabel(option)}</span>
 						</button>
 					{/each}
 				</div>

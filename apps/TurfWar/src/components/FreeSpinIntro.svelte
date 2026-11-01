@@ -320,9 +320,6 @@
 						headerAlpha={numberPose.alpha}
 					/>
 					</Container>
-					{#if cardPose.flash > 0.01}
-						
-					{/if}
 					{#if cardPose.sweep >= 0}
 						<!-- light sweep across the card -->
 						<Sprite

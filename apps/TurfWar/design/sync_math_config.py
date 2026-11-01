@@ -50,7 +50,9 @@ def main():
         handle.write(
             f"// Generated from math-sdk games/{GAME_ID}/library/configs/config_fe_{GAME_ID}.json\n"
             "// Regenerate with design/sync_math_config.py after re-running the math.\n"
-            "export default " + json.dumps(config, indent="\t") + " as const;\n"
+            "const config = " + json.dumps(config, indent="\t") + " as const;\n"
+            "type Mutable<T> = { -readonly [P in keyof T]: T[P] extends object ? Mutable<T[P]> : T[P] };\n"
+            "export default config as Mutable<typeof config>;\n"
         )
 
     print(f"wrote {target}")

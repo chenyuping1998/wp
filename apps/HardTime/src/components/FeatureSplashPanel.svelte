@@ -52,10 +52,10 @@
 	const props: Props = $props();
 
 	// the painted frame is ~60px of the plate's 512 — keep the copy inside the well
-	const PAD = $derived(Math.max(props.width * 0.075, 104));
+	const PAD = $derived(Math.min(props.width * 0.14, 104));
 	const textWidth = $derived(props.width - PAD * 2);
-	const bodySize = $derived(Math.max(14, Math.min(21, props.width * 0.038)));
-	const headerSize = $derived(Math.max(16, Math.min(25, props.width * 0.041)));
+	const bodySize = $derived(Math.max(18, Math.min(42, props.width * 0.045)));
+	const headerSize = $derived(Math.max(20, Math.min(44, props.width * 0.048)));
 
 	// Height is not measured from the rendered text: a Text's own height is only
 	// known after it lays out, and reading it back to size the box behind it makes

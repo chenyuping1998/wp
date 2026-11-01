@@ -1,0 +1,166 @@
+{
+  "smallReplay": {
+    "dom": "",
+    "scene": [
+      {
+        "t": "WILD",
+        "x": 160,
+        "y": 48,
+        "w": 16,
+        "h": 6
+      },
+      {
+        "t": "2x",
+        "x": 140,
+        "y": 115,
+        "w": 9,
+        "h": 9
+      },
+      {
+        "t": "14:27",
+        "x": 20,
+        "y": 0,
+        "w": 51,
+        "h": 32
+      },
+      {
+        "t": "",
+        "x": 76,
+        "y": 0,
+        "w": 0,
+        "h": 32
+      },
+      {
+        "t": "MODE",
+        "x": 69,
+        "y": 187,
+        "w": 18,
+        "h": 10
+      },
+      {
+        "t": "Base Game",
+        "x": 61,
+        "y": 195,
+        "w": 33,
+        "h": 11
+      },
+      {
+        "t": "BET",
+        "x": 165,
+        "y": 187,
+        "w": 11,
+        "h": 10
+      },
+      {
+        "t": "€5.00",
+        "x": 161,
+        "y": 195,
+        "w": 18,
+        "h": 11
+      },
+      {
+        "t": "ENTRY ×",
+        "x": 251,
+        "y": 187,
+        "w": 24,
+        "h": 10
+      },
+      {
+        "t": "1x",
+        "x": 260,
+        "y": 195,
+        "w": 7,
+        "h": 11
+      },
+      {
+        "t": "TOTAL",
+        "x": 69,
+        "y": 203,
+        "w": 18,
+        "h": 10
+      },
+      {
+        "t": "€5.00",
+        "x": 69,
+        "y": 211,
+        "w": 18,
+        "h": 11
+      },
+      {
+        "t": "WIN ×",
+        "x": 162,
+        "y": 203,
+        "w": 17,
+        "h": 10
+      },
+      {
+        "t": "0.7x",
+        "x": 164,
+        "y": 211,
+        "w": 13,
+        "h": 11
+      },
+      {
+        "t": "WIN",
+        "x": 257,
+        "y": 203,
+        "w": 13,
+        "h": 10
+      },
+      {
+        "t": "€3.50",
+        "x": 254,
+        "y": 211,
+        "w": 18,
+        "h": 11
+      },
+      {
+        "t": "↺",
+        "x": 324,
+        "y": 200,
+        "w": 5,
+        "h": 9
+      },
+      {
+        "t": "REJOUER",
+        "x": 340,
+        "y": 200,
+        "w": 22,
+        "h": 8
+      }
+    ],
+    "game": {
+      "gameType": "basegame",
+      "isTurbo": false,
+      "betMode": "BASE",
+      "dimmedBy": 1,
+      "anticipation": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "requests": [
+      {
+        "url": "https://stub.local/bet/replay/turf-war/7/BASE/64?lang=fr",
+        "body": {}
+      },
+      {
+        "url": "https://stub.local/bet/replay/turf-war/7/BASE/64?lang=fr",
+        "body": {}
+      }
+    ],
+    "errors": [],
+    "network": []
+  },
+  "socialInsufficient": "×\nNOTIFICATION\nINSUFFICIENT BALANCE TO PLAY THIS ROUND. PLEASE TOP UP YOUR BALANCE OR LOWER THE AMOUNT.",
+  "invalid": {
+    "attempts": [
+      "https://example.com/wallet/authenticate"
+    ],
+    "dom": "Sorry, something went wrong.\n\nTypeError: Failed to fetch\n\nSorry, something went wrong.\n\nTypeError: Failed to fetch",
+    "introCount": 0
+  }
+}

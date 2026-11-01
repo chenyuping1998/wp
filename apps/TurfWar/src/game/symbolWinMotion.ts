@@ -53,50 +53,50 @@
  */
 
 export type SymbolWinOverlay = {
-	/** asset registry key — must exist in game/assets.ts */
-	key: string;
-	/** cell fractions, relative to the symbol's centre */
-	x: number;
-	y: number;
-	/** cell fractions */
-	width: number;
-	height: number;
-	rotation: number;
-	alpha: number;
-	tint: number;
-	/** drawn behind the symbol sprite rather than over it */
-	behind?: boolean;
+  /** asset registry key — must exist in game/assets.ts */
+  key: string;
+  /** cell fractions, relative to the symbol's centre */
+  x: number;
+  y: number;
+  /** cell fractions */
+  width: number;
+  height: number;
+  rotation: number;
+  alpha: number;
+  tint: number;
+  /** drawn behind the symbol sprite rather than over it */
+  behind?: boolean;
 };
 
 export type SymbolWinFrame = {
-	scaleX: number;
-	scaleY: number;
-	rotation: number;
-	/** cell fractions */
-	dx: number;
-	dy: number;
-	/** additive copy of the symbol's own sprite, for neon-tube ignition */
-	bloomAlpha: number;
-	bloomTint: number;
-	overlays: SymbolWinOverlay[];
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
+  /** cell fractions */
+  dx: number;
+  dy: number;
+  /** additive copy of the symbol's own sprite, for neon-tube ignition */
+  bloomAlpha: number;
+  bloomTint: number;
+  overlays: SymbolWinOverlay[];
 };
 
 export type SymbolWinMotion = {
-	/**
-	 * Multiplies the shared arrival overshoot. The hit itself stays common to
-	 * every symbol — every win should punch — but Wild, Scatter and Bruiser
-	 * punch harder because they are what the player is hunting.
-	 */
-	hitScale: number;
-	/**
-	 * This symbol turns continuously rather than leaning. Declared, not
-	 * inferred, because `check_symbol_motion.mjs` rejects large rotations as
-	 * accidental tumbling — which is the right rule for eleven of the twelve
-	 * symbols and exactly wrong for the one whose identity is that it spins.
-	 */
-	spins?: boolean;
-	/** `t` is milliseconds since the win started. */
-	frame: (t: number) => SymbolWinFrame;
+  /**
+   * Multiplies the shared arrival overshoot. The hit itself stays common to
+   * every symbol — every win should punch — but Wild, Scatter and Bruiser
+   * punch harder because they are what the player is hunting.
+   */
+  hitScale: number;
+  /**
+   * This symbol turns continuously rather than leaning. Declared, not
+   * inferred, because `check_symbol_motion.mjs` rejects large rotations as
+   * accidental tumbling — which is the right rule for eleven of the twelve
+   * symbols and exactly wrong for the one whose identity is that it spins.
+   */
+  spins?: boolean;
+  /** `t` is milliseconds since the win started. */
+  frame: (t: number) => SymbolWinFrame;
 };
 
 /**
@@ -122,18 +122,19 @@ const cycle = (t: number, period: number) => (t % period) / period;
 const strike = (u: number, sharpness: number) => Math.exp(-sharpness * u);
 
 /** One smooth 0→1→0 hump over the first `width` of a cycle, flat after. */
-const hump = (u: number, width: number) => (u >= width ? 0 : Math.sin((Math.PI * u) / width));
+const hump = (u: number, width: number) =>
+  u >= width ? 0 : Math.sin((Math.PI * u) / width);
 
 const rest = (over: Partial<SymbolWinFrame> = {}): SymbolWinFrame => ({
-	scaleX: 1,
-	scaleY: 1,
-	rotation: 0,
-	dx: 0,
-	dy: 0,
-	bloomAlpha: 0,
-	bloomTint: 0xffffff,
-	overlays: [],
-	...over,
+  scaleX: 1,
+  scaleY: 1,
+  rotation: 0,
+  dx: 0,
+  dy: 0,
+  bloomAlpha: 0,
+  bloomTint: 0xffffff,
+  overlays: [],
+  ...over,
 });
 
 // The four royals are neon tubes, so they ignite rather than move. Each gets its
@@ -154,20 +155,51 @@ const BLOOD = 0xe0463c; // the Bruiser's red
 
 /** Rotation about a point `h` cell-heights above the centre (negative = below). */
 const hang = (theta: number, h: number) => ({
-	rotation: theta,
-	dx: -h * Math.sin(theta),
-	dy: h * (Math.cos(theta) - 1),
+  rotation: theta,
+  dx: -h * Math.sin(theta),
+  dy: h * (Math.cos(theta) - 1),
 });
 
-const light = (x: number, y: number, size: number, alpha: number, tint: number, behind = true): SymbolWinOverlay => ({
-	key: 'fxGlow', x, y, width: size, height: size, rotation: 0, alpha, tint, behind,
+const light = (
+  x: number,
+  y: number,
+  size: number,
+  alpha: number,
+  tint: number,
+  behind = true,
+): SymbolWinOverlay => ({
+  key: "fxGlow",
+  x,
+  y,
+  width: size,
+  height: size,
+  rotation: 0,
+  alpha,
+  tint,
+  behind,
 });
 
 /** One glint travelling across the art over `window` ms (nothing outside it). */
-const glint = (t: number, window: number, tint = GOLD, y = -0.05): SymbolWinOverlay[] => {
-	const u = t / window;
-	if (u < 0 || u >= 1) return [];
-	return [{ key: 'fxStreak', x: -0.45 + u * 0.9, y, width: 0.24, height: 0.7, rotation: -0.5, alpha: 0.55 * hump(u, 1), tint }];
+const glint = (
+  t: number,
+  window: number,
+  tint = GOLD,
+  y = -0.05,
+): SymbolWinOverlay[] => {
+  const u = t / window;
+  if (u < 0 || u >= 1) return [];
+  return [
+    {
+      key: "fxStreak",
+      x: -0.45 + u * 0.9,
+      y,
+      width: 0.24,
+      height: 0.7,
+      rotation: -0.5,
+      alpha: 0.55 * hump(u, 1),
+      tint,
+    },
+  ];
 };
 
 /**
@@ -177,158 +209,201 @@ const glint = (t: number, window: number, tint = GOLD, y = -0.05): SymbolWinOver
  * scored the tags as the same animation (0.85 < 0.9).
  */
 const spray = (
-	ms: number,
-	mist: (u: number, t: number) => number,
-	move: (t: number, u: number) => Partial<SymbolWinFrame>,
+  ms: number,
+  mist: (u: number, t: number) => number,
+  move: (t: number, u: number) => Partial<SymbolWinFrame>,
 ): SymbolWinMotion => ({
-	hitScale: 0.9,
-	frame: (t) => {
-		const u = Math.min(1, t / ms);
-		const m = mist(u, t);
-		return rest({
-			bloomAlpha: 0.25 * m,
-			bloomTint: BONE,
-			overlays: [light(0, 0, 1.1 + 0.3 * u, 0.35 * m, BONE, false)],
-			...move(t, u),
-		});
-	},
+  hitScale: 0.9,
+  frame: (t) => {
+    const u = Math.min(1, t / ms);
+    const m = mist(u, t);
+    return rest({
+      bloomAlpha: 0.25 * m,
+      bloomTint: BONE,
+      overlays: [light(0, 0, 1.1 + 0.3 * u, 0.35 * m, BONE, false)],
+      ...move(t, u),
+    });
+  },
 });
 
 const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
-	// W — brass knuckles. Two jabs straight at the viewer, each landing with a
-	// flash of gold on the knuckles.
-	W: {
-		hitScale: 1.0,
-		frame: (t) => {
-			const jab = strike(cycle(t, HOLD_MS * 0.45), 7) * (t < HOLD_MS * 0.9 ? 1 : 0);
-			return rest({
-				scaleX: 1 + 0.1 * jab,
-				scaleY: 1 + 0.1 * jab,
-				rotation: -0.06 * jab,
-				bloomAlpha: 0.3 * jab,
-				bloomTint: GOLD,
-				overlays: [light(0, -0.12, 0.8, 0.5 * jab, GOLD, false)],
-			});
-		},
-	},
+  // W — brass knuckles. Two jabs straight at the viewer, each landing with a
+  // flash of gold on the knuckles.
+  W: {
+    hitScale: 1.0,
+    frame: (t) => {
+      const jab =
+        strike(cycle(t, HOLD_MS * 0.45), 7) * (t < HOLD_MS * 0.9 ? 1 : 0);
+      return rest({
+        scaleX: 1 + 0.1 * jab,
+        scaleY: 1 + 0.1 * jab,
+        rotation: -0.06 * jab,
+        bloomAlpha: 0.3 * jab,
+        bloomTint: GOLD,
+        overlays: [light(0, -0.12, 0.8, 0.5 * jab, GOLD, false)],
+      });
+    },
+  },
 
-	// S — the boombox. It pumps on the bass: a strict beat, speakers pushing out
-	// (wider, shorter), orange light behind on every hit. It does not spin.
-	S: {
-		hitScale: 1.05,
-		frame: (t) => {
-			const beat = strike(cycle(t, HOLD_MS / 4), 6);
-			return rest({
-				scaleX: 1 + 0.08 * beat,
-				scaleY: 1 - 0.05 * beat,
-				overlays: [light(0, 0.05, 1.3, 0.45 * beat, ORANGE)],
-			});
-		},
-	},
+  // S — the boombox. It pumps on the bass: a strict beat, speakers pushing out
+  // (wider, shorter), orange light behind on every hit. It does not spin.
+  S: {
+    hitScale: 1.05,
+    frame: (t) => {
+      const beat =
+        Math.sin(Math.PI * Math.min(1, Math.max(0, t / (HOLD_MS * 0.42)))) **
+          2 +
+        0.65 *
+          Math.sin(
+            Math.PI *
+              Math.min(1, Math.max(0, (t - HOLD_MS * 0.44) / (HOLD_MS * 0.4))),
+          ) **
+            2;
+      return rest({
+        scaleX: 1 + 0.08 * beat,
+        scaleY: 1 - 0.05 * beat,
+        overlays: [light(0, 0.05, 1.3, 0.45 * beat, ORANGE)],
+      });
+    },
+  },
 
-	// SW — the Bruiser. Winds the bat back, then swings through: a slow lean
-	// back and a fast forward snap, pivoting low, with a red flare on contact.
-	SW: {
-		hitScale: 1.05,
-		frame: (t) => {
-			const u = Math.min(1, t / (HOLD_MS * 0.75));
-			const theta = u < 0.5 ? 0.12 * Math.sin((u / 0.5) * (Math.PI / 2)) : 0.12 - 0.3 * Math.sin(((u - 0.5) / 0.5) * (Math.PI / 2)) * Math.exp(-(u - 0.5) * 2);
-			const hit = u > 0.5 ? hump((u - 0.5) / 0.5, 0.6) : 0;
-			return rest({
-				...hang(theta, -0.4),
-				bloomAlpha: 0.3 * hit,
-				bloomTint: BLOOD,
-				overlays: [light(0, 0, 1.3, 0.5 * hit, BLOOD)],
-			});
-		},
-	},
+  // SW — the Bruiser. Winds the bat back, then swings through: a slow lean
+  // back and a fast forward snap, pivoting low, with a red flare on contact.
+  SW: {
+    hitScale: 1.05,
+    frame: (t) => {
+      const u = Math.min(1, t / (HOLD_MS * 0.75));
+      const theta =
+        u < 0.5
+          ? 0.12 * Math.sin((u / 0.5) * (Math.PI / 2))
+          : 0.12 -
+            0.3 *
+              Math.sin(((u - 0.5) / 0.5) * (Math.PI / 2)) *
+              Math.exp(-(u - 0.5) * 2);
+      const hit = u > 0.5 ? hump((u - 0.5) / 0.5, 0.6) : 0;
+      return rest({
+        ...hang(theta, -0.4),
+        bloomAlpha: 0.3 * hit,
+        bloomTint: BLOOD,
+        overlays: [light(0, 0, 1.3, 0.5 * hit, BLOOD)],
+      });
+    },
+  },
 
-	// H1 — the crown chain. Swings on its chain and settles, a gold glint
-	// running across the links.
-	H1: {
-		hitScale: 1.05,
-		frame: (t) => ({ ...rest({ overlays: glint(t - 60, 650) }), ...hang(0.16 * Math.exp(-t / 600) * Math.sin(t / 130), 0.45) }),
-	},
+  // H1 — the crown chain. Swings on its chain and settles, a gold glint
+  // running across the links.
+  H1: {
+    hitScale: 1.05,
+    frame: (t) => ({
+      ...rest({ overlays: glint(t - 60, 650) }),
+      ...hang(0.16 * Math.exp(-t / 600) * Math.sin(t / 130), 0.45),
+    }),
+  },
 
-	// H2 — the fenced block. The fence rattles and the windows behind it flicker
-	// on: a fast damped shake with warm light coming up inside.
-	H2: {
-		hitScale: 1.0,
-		frame: (t) => {
-			const damp = Math.exp(-t / 380);
-			const windows = 0.55 + 0.45 * Math.sin(t / 45) * Math.sin(t / 110);
-			return rest({
-				dx: 0.03 * damp * Math.sin(t / 20),
-				dy: 0.012 * damp * Math.sin(t / 27),
-				bloomAlpha: 0.25 * windows,
-				bloomTint: ORANGE,
-				overlays: [light(0, 0.05, 0.9, 0.35 * windows, ORANGE)],
-			});
-		},
-	},
+  // H2 — the fenced block. The fence rattles and the windows behind it flicker
+  // on: a fast damped shake with warm light coming up inside.
+  H2: {
+    hitScale: 1.0,
+    frame: (t) => {
+      const damp = Math.exp(-t / 380);
+      const windows = 0.55 + 0.45 * Math.sin(t / 45) * Math.sin(t / 110);
+      return rest({
+        dx: 0.04 * Math.sin((Math.PI * t) / HOLD_MS),
+        dy: 0.008 * Math.sin((Math.PI * t) / HOLD_MS) ** 2,
+        bloomAlpha: 0.25 * windows,
+        bloomTint: ORANGE,
+        overlays: [light(0, 0.05, 0.9, 0.35 * windows, ORANGE)],
+      });
+    },
+  },
 
-	// H3 — the banknote roll. Riffled: quick squeezes along its length, as if a
-	// thumb ran through the notes, with one slow roll forward.
-	H3: {
-		hitScale: 1.0,
-		frame: (t) => {
-			const riffle = Math.abs(Math.sin(t / 40)) * Math.exp(-t / 500);
-			return rest({
-				scaleX: 1 - 0.07 * riffle,
-				scaleY: 1 + 0.03 * riffle,
-				rotation: 0.08 * Math.sin(t / 300),
-				overlays: glint(t - 150, 600, BONE),
-			});
-		},
-	},
+  // H3 — the banknote roll. Riffled: quick squeezes along its length, as if a
+  // thumb ran through the notes, with one slow roll forward.
+  H3: {
+    hitScale: 1.0,
+    frame: (t) => {
+      const riffle = Math.abs(Math.sin(t / 40)) * Math.exp(-t / 500);
+      return rest({
+        scaleX: 1 - 0.07 * riffle,
+        scaleY: 1 + 0.03 * riffle,
+        rotation: 0.08 * Math.sin(t / 300),
+        overlays: glint(t - 150, 600, BONE),
+      });
+    },
+  },
 
-	// H4 — bottle and cigarette. Smoke rises off the cigarette in two puffs while
-	// the bottle sways once. The slow symbol: nothing about it snaps.
-	H4: {
-		hitScale: 1.0,
-		frame: (t) => {
-			const puffs = [0, 1].map((i) => {
-				const age = (t - i * 380) / 700;
-				if (age < 0 || age > 1) return null;
-				return light(0.22 + 0.05 * age, -0.1 - 0.45 * age, 0.2 + 0.35 * age, 0.45 * (1 - age), 0xcfcac2, false);
-			});
-			return rest({
-				...hang(0.1 * Math.sin(t / 240) * (1 - Math.exp(-t / 200)), -0.42),
-				overlays: [light(0, 0.1, 0.7, 0.3, ORANGE), ...puffs.filter((x) => x !== null)],
-			});
-		},
-	},
+  // H4 — bottle and cigarette. Smoke rises off the cigarette in two puffs while
+  // the bottle sways once. The slow symbol: nothing about it snaps.
+  H4: {
+    hitScale: 1.0,
+    frame: (t) => {
+      const puffs = [0, 1].map((i) => {
+        const age = (t - i * 380) / 700;
+        if (age < 0 || age > 1) return null;
+        return light(
+          0.22 + 0.05 * age,
+          -0.1 - 0.45 * age,
+          0.2 + 0.35 * age,
+          0.45 * (1 - age),
+          0xcfcac2,
+          false,
+        );
+      });
+      return rest({
+        ...hang(0.14 * Math.sin(t / 90) * Math.exp(-t / 650), -0.42),
+        overlays: [
+          light(0, 0.1, 0.7, 0.3, ORANGE),
+          ...puffs.filter((x) => x !== null),
+        ],
+      });
+    },
+  },
 
-	// H5 — the lowrider. Hydraulics: it hops, lands, and the front and back pitch
-	// alternately — the one symbol that bounces off the ground.
-	H5: {
-		hitScale: 1.05,
-		frame: (t) => {
-			const u = cycle(t, HOLD_MS * 0.48);
-			const hop = hump(u, 0.45);
-			const land = u > 0.45 ? strike((u - 0.45) / 0.55, 6) : 0;
-			const side = Math.floor(t / (HOLD_MS * 0.48)) % 2 ? 1 : -1;
-			return rest({
-				dy: -0.07 * hop,
-				rotation: side * 0.07 * hop,
-				scaleY: 1 - 0.06 * land,
-				scaleX: 1 + 0.04 * land,
-				overlays: [light(0, 0.3, 0.9, 0.35 * land, ORANGE)],
-			});
-		},
-	},
+  // H5 — the lowrider. Hydraulics: it hops, lands, and the front and back pitch
+  // alternately — the one symbol that bounces off the ground.
+  H5: {
+    hitScale: 1.05,
+    frame: (t) => {
+      const u = cycle(t, HOLD_MS * 0.48);
+      const hop = hump(u, 0.45);
+      const land = u > 0.45 ? strike((u - 0.45) / 0.55, 6) : 0;
+      const side = Math.floor(t / (HOLD_MS * 0.48)) % 2 ? 1 : -1;
+      return rest({
+        dy: -0.07 * hop,
+        rotation: side * 0.07 * hop,
+        scaleY: 1 - 0.06 * land,
+        scaleX: 1 + 0.04 * land,
+        overlays: [light(0, 0.3, 0.9, 0.35 * land, ORANGE)],
+      });
+    },
+  },
 
-	// L1-L4 — spray-paint tags. Each is sprayed on (a mist that swells and clears)
-	// and moves on its own axis, so the four never read as one animation:
-	// the crown rises, the skull shakes, the star turns a little, the bolt zaps.
-	L1: spray(520, (u) => hump(u, 1), (t, u) => ({ dy: -0.06 * hump(u, 1) })),
-	L2: spray(300, (u) => hump(u, 1), (t, u) => ({ dx: 0.04 * Math.sin(t / 45) * Math.exp(-t / 400) })),
-	L3: spray(800, (u) => Math.sin(u * Math.PI) ** 2, (t, u) => ({ rotation: 0.14 * Math.sin(u * Math.PI) })),
-	L4: spray(
-		700,
-		(u, t) => (Math.sin(t / 30) > 0.2 ? 1 : 0.15) * (1 - u),
-		(t, u) => ({ scaleX: 1 + 0.1 * strike(cycle(t, 160), 9) * (1 - u), scaleY: 1 - 0.06 * strike(cycle(t, 160), 9) * (1 - u) }),
-	),
+  // L1-L4 — spray-paint tags. Each is sprayed on (a mist that swells and clears)
+  // and moves on its own axis, so the four never read as one animation:
+  // the crown rises, the skull shakes, the star turns a little, the bolt zaps.
+  L1: spray(
+    520,
+    (u) => hump(u, 1),
+    (t, u) => ({ dy: -0.06 * hump(u, 1) }),
+  ),
+  L2: spray(
+    300,
+    (u) => hump(u, 1),
+    (t, u) => ({ dx: 0.04 * Math.sin(t / 45) * Math.exp(-t / 400) }),
+  ),
+  L3: spray(
+    800,
+    (u) => Math.sin(u * Math.PI) ** 2,
+    (t, u) => ({ rotation: 0.14 * Math.sin(u * Math.PI) }),
+  ),
+  L4: spray(
+    700,
+    (u, t) => (Math.sin(t / 30) > 0.2 ? 1 : 0.15) * (1 - u),
+    (t, u) => ({
+      scaleX: 1 + 0.1 * strike(cycle(t, 160), 9) * (1 - u),
+      scaleY: 1 - 0.06 * strike(cycle(t, 160), 9) * (1 - u),
+    }),
+  ),
 };
 
 /**
@@ -364,9 +439,9 @@ const BASE_WIN_MOTION: Record<string, SymbolWinMotion> = {
 // doubled "Poor animations". 2026-10-01: restored to Deadwood's post-review
 // floor — 15°, 10% of a cell, 15% of the symbol's size.
 export const VISIBLE_FLOOR = {
-	rotation: 0.26,
-	offset: 0.1,
-	scale: 0.15,
+  rotation: 0.26,
+  offset: 0.1,
+  scale: 0.15,
 };
 
 /** The gate's own limits, restated so a boost stops short of them. */
@@ -399,73 +474,103 @@ const CEILING = 2;
 const MARGIN = 1.03;
 
 export const boostToFloor = <T extends SymbolWinMotion>(
-	motion: T,
-	windowMs: number,
-	floor = VISIBLE_FLOOR,
+  motion: T,
+  windowMs: number,
+  floor = VISIBLE_FLOOR,
 ): T => {
-	let peakRotation = 0;
-	let peakOffset = 0;
-	let peakScale = 0;
-	for (let t = 0; t <= windowMs; t += 5) {
-		const f = motion.frame(t);
-		peakRotation = Math.max(peakRotation, Math.abs(f.rotation));
-		peakOffset = Math.max(peakOffset, Math.abs(f.dx), Math.abs(f.dy));
-		peakScale = Math.max(peakScale, Math.abs(f.scaleX - 1), Math.abs(f.scaleY - 1));
-	}
+  let peakRotation = 0;
+  let peakOffset = 0;
+  let peakScale = 0;
+  for (let t = 0; t <= windowMs; t += 5) {
+    const f = motion.frame(t);
+    peakRotation = Math.max(peakRotation, Math.abs(f.rotation));
+    peakOffset = Math.max(peakOffset, Math.abs(f.dx), Math.abs(f.dy));
+    peakScale = Math.max(
+      peakScale,
+      Math.abs(f.scaleX - 1),
+      Math.abs(f.scaleY - 1),
+    );
+  }
 
-	const wanted: number[] = [];
-	const allowed: number[] = [MAX_GAIN];
-	const consider = (peak: number, floorValue: number, bound: number) => {
-		if (peak <= 1e-6) return;
-		// MARGIN, not decoration: the peak here is found on a 5ms grid and the
-		// gate samples on a 10ms one, so a motion boosted to land exactly ON the
-		// floor measures a hair under it there and fails. Aim 3% over.
-		if (peak >= floorValue * RELEVANT) wanted.push((floorValue * MARGIN) / peak);
-		allowed.push(Math.min(bound / peak, (floorValue * CEILING) / peak));
-	};
-	if (!motion.spins) consider(peakRotation, floor.rotation, MOTION_BOUNDS.rotation);
-	consider(peakOffset, floor.offset, MOTION_BOUNDS.offset);
-	consider(peakScale, floor.scale, MOTION_BOUNDS.scale);
-	if (!wanted.length) return motion;
+  const wanted: number[] = [];
+  const allowed: number[] = [MAX_GAIN];
+  const consider = (peak: number, floorValue: number, bound: number) => {
+    if (peak <= 1e-6) return;
+    // MARGIN, not decoration: the peak here is found on a 5ms grid and the
+    // gate samples on a 10ms one, so a motion boosted to land exactly ON the
+    // floor measures a hair under it there and fails. Aim 3% over.
+    if (peak >= floorValue * RELEVANT)
+      wanted.push((floorValue * MARGIN) / peak);
+    allowed.push(Math.min(bound / peak, (floorValue * CEILING) / peak));
+  };
+  if (!motion.spins)
+    consider(peakRotation, floor.rotation, MOTION_BOUNDS.rotation);
+  consider(peakOffset, floor.offset, MOTION_BOUNDS.offset);
+  consider(peakScale, floor.scale, MOTION_BOUNDS.scale);
+  if (!wanted.length) return motion;
 
-	// The LARGEST gain any channel that is part of the gesture asks for, held
-	// back by the smallest the bounds and the ceiling allow.
-	//
-	// Taking the smallest wanted — the first draft — stops boosting the moment
-	// any one channel reaches the floor, which quietly SHRANK the symbols that
-	// move on two axes: H3 went from 18.9 degrees under the old flat x3 to 12.6.
-	const gain = Math.max(1, Math.min(Math.max(...wanted), ...allowed));
-	if (gain === 1) return motion;
+  // The LARGEST gain any channel that is part of the gesture asks for, held
+  // back by the smallest the bounds and the ceiling allow.
+  //
+  // Taking the smallest wanted — the first draft — stops boosting the moment
+  // any one channel reaches the floor, which quietly SHRANK the symbols that
+  // move on two axes: H3 went from 18.9 degrees under the old flat x3 to 12.6.
+  const gain = Math.max(1, Math.min(Math.max(...wanted), ...allowed));
+  if (gain === 1) return motion;
 
-	return {
-		...motion,
-		frame: (t: number) => {
-			const f = motion.frame(t);
-			return {
-				...f,
-				scaleX: 1 + (f.scaleX - 1) * gain,
-				scaleY: 1 + (f.scaleY - 1) * gain,
-				rotation: motion.spins ? f.rotation : f.rotation * gain,
-				dx: f.dx * gain,
-				dy: f.dy * gain,
-			};
-		},
-	};
+  return {
+    ...motion,
+    frame: (t: number) => {
+      const f = motion.frame(t);
+      return {
+        ...f,
+        scaleX: 1 + (f.scaleX - 1) * gain,
+        scaleY: 1 + (f.scaleY - 1) * gain,
+        rotation: motion.spins ? f.rotation : f.rotation * gain,
+        dx: f.dx * gain,
+        dy: f.dy * gain,
+      };
+    },
+  };
 };
 
-export const SYMBOL_WIN_MOTION: Record<string, SymbolWinMotion> = Object.fromEntries(
-	Object.entries(BASE_WIN_MOTION).map(([name, motion]) => [
-		name,
-		boostToFloor(motion, HOLD_MS),
-	]),
-);
+// Decay the final pose before the component reports complete. The former
+// boosted tables ended mid-lean and then snapped back when replaced by idle.
+const settleWin = (motion: SymbolWinMotion): SymbolWinMotion => ({
+  ...motion,
+  frame: (t: number) => {
+    const f = motion.frame(t);
+    const u = Math.max(0, Math.min(1, (t - HOLD_MS * 0.68) / (HOLD_MS * 0.32)));
+    const onset = Math.max(0, Math.min(1, t / 85));
+    const k = onset * onset * (3 - 2 * onset) * (1 - u * u * (3 - 2 * u));
+    return {
+      ...f,
+      scaleX: 1 + (f.scaleX - 1) * k,
+      scaleY: 1 + (f.scaleY - 1) * k,
+      rotation: f.rotation * k,
+      dx: f.dx * k,
+      dy: f.dy * k,
+      bloomAlpha: 0,
+      // Object-specific ink/paint lives in SymbolArt; generic glow stamps retired.
+      overlays: [],
+    };
+  },
+});
+
+export const SYMBOL_WIN_MOTION: Record<string, SymbolWinMotion> =
+  Object.fromEntries(
+    Object.entries(BASE_WIN_MOTION).map(([name, motion]) => [
+      name,
+      boostToFloor(settleWin(motion), HOLD_MS),
+    ]),
+  );
 
 /**
  * Motion for a symbol name. Falls back to a neutral breathe rather than
  * throwing: an unknown symbol should animate blandly, not crash the board.
  */
 export const getSymbolWinMotion = (name: string): SymbolWinMotion =>
-	SYMBOL_WIN_MOTION[name] ?? {
-		hitScale: 1,
-		frame: (t) => rest({ rotation: 0.05 * Math.sin(t / 360) }),
-	};
+  SYMBOL_WIN_MOTION[name] ?? {
+    hitScale: 1,
+    frame: (t) => rest({ rotation: 0.05 * Math.sin(t / 360) }),
+  };

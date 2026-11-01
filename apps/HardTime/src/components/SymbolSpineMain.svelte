@@ -6,7 +6,7 @@
 	import { SYMBOL_SIZE } from '../game/constants';
 
 	type Props = {
-		symbolInfo: ReturnType<typeof getSymbolInfo>;
+		symbolInfo: Omit<ReturnType<typeof getSymbolInfo>, 'type'> & { animationName: string };
 		x?: number;
 		y?: number;
 		listener: SpineTrackProps['listener'];

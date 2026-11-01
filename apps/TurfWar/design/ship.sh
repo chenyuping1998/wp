@@ -62,6 +62,13 @@ if grep -qoE "localhost:[0-9]+|stub\.local" "$NAME/frontend/index.html"; then
   echo "  !! localhost/stub ref in index.html"; fail=1; fi
 if ls "$NAME/frontend" | grep -qiE "stub|playtest"; then
   echo "  !! stub/playtest file in frontend root"; fail=1; fi
+# Cast folders the bundle never loads must not ship (10-27: six old cast versions
+# rode along in static/ and nearly went up as 79 dead files).
+for d in "$NAME/frontend/assets/castLayers/turf"/*/; do
+  v=$(basename "$d")
+  if ! grep -rqs "castLayers/turf/$v/" "$NAME/frontend/_app" "$NAME/frontend/index.html"; then
+    echo "  !! unreferenced cast folder ships: castLayers/turf/$v"; fail=1; fi
+done
 [ "$fail" = 0 ] && echo "  ok: no old-name / playtest contamination"
 [ "$fail" = 0 ] || { echo "ABORT: sanity checks failed"; exit 1; }
 

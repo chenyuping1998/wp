@@ -34,7 +34,7 @@ def sample(books: list, want_win: bool) -> list:
 
 def write_books(name: str, books: list, header: str) -> None:
     body = json.dumps(books, indent=1)
-    (OUT / f"{name}_books.ts").write_text(f"// {header}\nexport default {body};\n")
+    (OUT / f"{name}_books.ts").write_text(f"// {header}\nimport type {{ BookEvent }} from '../../game/typesBookEvent';\nconst books: {{ id: number; payoutMultiplier: number; criteria?: string; baseGameWins?: number; freeGameWins?: number; events: BookEvent[] }}[] = {body};\nexport default books;\n")
 
 
 def write_events(name: str, books: list, header: str) -> None:
@@ -43,7 +43,7 @@ def write_events(name: str, books: list, header: str) -> None:
         for event in book["events"]:
             first.setdefault(event["type"], event)
     body = json.dumps(first, indent=1)
-    (OUT / f"{name}_events.ts").write_text(f"// {header}\nexport default {body};\n")
+    (OUT / f"{name}_events.ts").write_text(f"// {header}\nimport type {{ BookEvent }} from '../../game/typesBookEvent';\nexport default {body} satisfies Record<string, BookEvent>;\n")
 
 
 def main() -> None:

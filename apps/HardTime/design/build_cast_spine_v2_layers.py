@@ -320,6 +320,8 @@ def warden():
 
 
 def save(cfg,layers):
+    from repair_cast_sources_20261029 import apply
+    layers=apply(cfg,layers)
     dst=APP/'static/assets/castLayers'/cfg['src'];dst.mkdir(parents=True,exist_ok=True)
     man={'version':2,'size':list(SIZE),'figure_box':list(PRISONER['root']),
          'order':cfg['order'],'layers':[],'repairs':'design/_incoming/spine_v2'}

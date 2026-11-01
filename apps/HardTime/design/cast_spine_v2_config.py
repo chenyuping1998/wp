@@ -26,8 +26,8 @@ def upgrade(original):
             ('fore_l', 'arm_l', (745,687), (420,615)),
         ]
         c['order'] = ['thigh_r','thigh_l','shin_r','shin_l','shoe_r','shoe_l',
-                      'pelvis','torso','upper_arm_r','upper_arm_l',
-                      'forearm_under','forearm_over','towel','head','blink']
+                      'pelvis','torso','towel','upper_arm_r','upper_arm_l',
+                      'forearm_under','forearm_over','head','blink']
         c['chain_layers']['towel'] = ['towel1','towel2']
         c['layer_bones'].update(upper_arm_r='arm_r',upper_arm_l='arm_l',
                                 forearm_under='fore_r',forearm_over='fore_l')
@@ -37,13 +37,12 @@ def upgrade(original):
         # left, so authored motion aims left and appears to aim right.
         c['dir'] = -1
         c['bones'].insert(8, ('hand_l', 'fore_l', (795,948), (779,1070)))
-        # baton BEHIND the torso (2026-10-20): at rest its end is hidden behind
-        # the shoulder, as in the approved art; the reaction's front overlay in
-        # CastSpine.svelte draws it over everything while it swings.
+        # 2026-10-28: hand-held props and their grip are always above the head.
+        # The game forearm overlay only changes board occlusion, not this order.
         c['order'] = ['thigh_r','thigh_l','shin_r','shin_l','shoe_r','shoe_l',
-                      'upper_arm_r','baton','torso','pelvis','keys','whistle',
+                      'upper_arm_r','torso','pelvis','keys','whistle',
                       'upper_arm_l','forearm_l','hand_l','radio_cord',
-                      'forearm_r','fingers_r','head','blink']
+                      'head','blink','forearm_r','baton','fingers_r']
         c['layer_bones'].update(upper_arm_r='arm_r',upper_arm_l='arm_l',
                                 forearm_r='fore_r',forearm_l='fore_l',
                                 hand_l='hand_l',baton='bat',fingers_r='fore_r')

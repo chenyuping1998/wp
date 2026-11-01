@@ -136,6 +136,30 @@
 				"/Users/stone/stake-engine/dist/hardtime-playtest"
 			],
 			"port": 3115
+		},
+		{
+			"name": "turfwar-street-v2",
+			"runtimeExecutable": "python3",
+			"runtimeArgs": [
+				"-m",
+				"http.server",
+				"4232",
+				"--directory",
+				"/Users/stone/stake-engine/dist/turfwar-street-v2"
+			],
+			"port": 4232
+		},
+		{
+			"name": "turf-spine-qa",
+			"runtimeExecutable": "python3",
+			"runtimeArgs": [
+				"-m",
+				"http.server",
+				"8317",
+				"--directory",
+				"/Users/stone/stake-engine/dist/turf-spine-motion"
+			],
+			"port": 8317
 		}
 	]
 }

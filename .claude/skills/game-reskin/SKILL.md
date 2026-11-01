@@ -12,6 +12,7 @@ description: >-
 
 - 逐層在亮底、暗底與原生解析度檢查。分層肢體必須是完整連續的部件，補齊被遮住的解剖與關節重疊；軀幹不得夾手臂殘影、拳套不得夾臉／胸口或袖口外的毛、服裝不得夾腿部碎片。網格角色也須檢查輪廓拉裂與貼圖殘影。
 - Stone 補充（2026-10-26，相撲猴前臂修正）：粗壯角色仍須有連續、自然收窄的上下臂輪廓；前臂與肘部不得出現非設計需要的腫塊、圓球堆疊或香腸式分節。先辨別來源畫稿與動作變形，連同上臂末端及袖口銜接一起檢查；修來源後用原動作幅度驗證彎肘、伸展與轉場，不能只修靜態或靠縮小動作掩蓋。
+- Stone 補充（2026-10-30，相撲猴腿「有東西被切掉」「腳還是亂切一通」）：**修關節形狀（例如膝蓋兩顆球）不得用直線、多邊形或弦切削掉輪廓。**被削的肢體會變直筒，留下直角、階梯與缺口，小腿肚、大腿下緣等肌肉一起消失（補畫 v5 的 MG／FG 大小腿就是這樣）。要修就重畫連續、自然收窄的有機輪廓：關節處收進相鄰部件下，離開關節後平滑接回原稿的肌肉線條。每次改輪廓後：(1) 每層 alpha 和修前原稿相減，逐塊看被移除的區域是不是該移除；(2) 合成圖與每個動作的最大彎曲格上不得有直線邊、尖角或缺口。**一隻角色被點出某部位有問題，同一部位在所有角色（MG 與 FG）都要一起查、一起修**，不能只修被點名的那隻。
 - 逐一檢查**所有交付動作**（spine-motion 預設六動作也須全看），包含起終格、過渡／中間格、最大彎曲與伸展。重點看肩、肘、頸、髖、膝、腕；靜態疊圖、檢查器 PASS 或流暢度 100 都不能代替實際渲染。檢查器不支援此 rig 格式時不得當作通過。
 - 先修造成缺陷的來源拆層、遮擋區補繪、權重或 rig。不得靠縮小動作／角色、加遮擋或挑好看的靜態格掩蓋；修正後重看受影響動作。合理動作預算仍須通過完整表演驗收。
 - 已整合遊戲須在桌機與直式手機實際試玩，包含 MG／FG、角色反應、轉場與 feature cut-in，檢查破口、殘影、裁切與接縫；保留實際截圖、動作預覽及新舊對照。
@@ -400,6 +401,38 @@ are easiest to leave in by accident. Match the NEW theme in:
     flood the scene with backlog drops). Destroy the particles you spawn.
   - Verify in the browser at 16:9, 16:10, 4:3 and portrait, in both modes,
     and check that each moving part is actually visible and on its mark.
+- **The symbols live too — EVERY new game (user rule, 2026-10-27).** Turf War
+  was scored 5.3 with: "The game could benefit from individual symbol
+  animations, as it currently feels too static." It already had a background
+  that moved, per-symbol land and win motions and a 1% idle breath; none of
+  that counts, because a settled board is what the player looks at most and
+  every symbol on it sat still. New games now need BOTH a living background
+  (above) AND every symbol animating on its own on a settled board.
+  Reference implementation: Turf War `src/game/symbolIdleMotion.ts` (one spec
+  per symbol), applied in `SymbolSprite.svelte`'s resting branch, overlays in
+  `SymbolArt.svelte` (mode `idle`), gate `design/check_symbol_idle.mjs` in the
+  build.
+  - **Two layers per symbol:** an AMBIENT loop that is always on and in the
+    object's own physics (chain swings from its top, lowrider engine idles,
+    bottle fizzes), plus an ACT — its signature move every 4–8 s for 0.5–1.6 s
+    (boombox thumps with speaker rings, lowrider hydraulic hop, cash rolls hop
+    and squash, star turns one point, skull chatters, lightning flickers,
+    brass knuckles jab with a sparkle, building's windows light up).
+  - **Visible, not a breath:** each act ≥ 4% scale, ≥ 3° rotation, ≥ 3% cell
+    offset, or a flicker/overlay you can see at reel size. Stay inside the
+    cell (scale ≤ 1.12, offset ≤ 0.10). Rotations about the object's real
+    pivot (hanging point, wheels, base), not its centre.
+  - **Every symbol different** (the "all twelve move the same" rejection
+    again otherwise) and **staggered**: act phase from the cell's idle phase,
+    each symbol its own cycle, so only a few cells act at once — never a block
+    pulse. Every period must divide the shared clock's wrap.
+  - Overlays in the house style: ink sparkles, ink-outlined rings and bubbles,
+    an additive warm copy of the art for lights — no blur, no glow cloud.
+    Dimmed (stepped-back) and teased symbols stay still; spinning/landing
+    symbols are owned by blur/land motion.
+  - Verify with real frames: the browser pane throttles when hidden, so record
+    with headless Chrome (puppeteer-core, deviceScaleFactor 2) over several
+    spins, and look at each symbol's act sequence, specials included.
 - **Presentation norms: check against the transcription, not memory.**
   `references/hacksaw-style-transcripts.md` gives the shipped numbers for
   every beat outside the reels, read out of 140 Hacksaw games' own files:
@@ -625,7 +658,28 @@ Once the user starts generating art:
      visible — timers and rAF are throttled in a hidden pane; pixi v8 has no
      `worldAlpha`, filter on `visible`). A buy that opens with the beat (Pickle's
      Extra Dill starts the meter at 4) reaches it fastest.
-7. Iterate against concrete, stated feedback each round. If a round's
+7. **A number never sits on top of artwork — it sits on clear paper/plate**
+   (Stone, 2026-10-29: 「10000數字這樣會看不清楚，很多款都這樣」). Sumo Monkey's
+   intro MAX WIN card drew `10,000×` across the trophy, so the ink digits sank
+   into the trophy's ink hatching. Cause, and why it recurs in reskins: the
+   sibling's art (Sushi's receipt) had a **blank area painted for the figure**,
+   and the reskin replaced the picture but kept the figure's x/y. Applies to
+   every drawn or text figure — intro/loading feature cards (MAX WIN, spins,
+   multipliers), buy cards, paytable tiles, win plaques, meters, prize badges.
+   - **Whenever you swap a picture, re-check every number positioned relative
+     to it.** Find them with
+     `grep -rnE 'InkNumber|max_win|toLocaleString\(|figure:' apps/<Game>/src/components`
+     and, for each, ask what pixels are behind it in the *new* art.
+   - **Fix by moving the figure to clear ground**, computed from the art's
+     measured alpha bbox (e.g. under the trophy: `artY + artH·(bboxBottom/imgH − 0.5) + size·0.8`),
+     in every layout (landscape cards and portrait stacked cards). Do not fix
+     it with a heavier stroke, glow or a pale panel behind the digits — a thick
+     ink stroke on bold digits clogs the counters into a blob, and a panel
+     hides the art.
+   - **Verify with a screenshot at 1440×900, 390×844 and 320×568**: the whole
+     figure must be on plain ground with a visible margin from the art, and
+     readable at the smallest size.
+8. Iterate against concrete, stated feedback each round. If a round's
    feedback implies a broader rule ("too colourful/messy" led to a whole
    palette-consistency pass, not just the one screen mentioned), write that
    rule down in the art brief so the next round of generated art doesn't
@@ -646,6 +700,11 @@ Two passes, and they check different things:
   (step 4, "Buy Bonus hover must actually LIGHT").
   Watch the MG and FG backgrounds for a few seconds each: something in each
   must move on its own, not just pan (step 4, "The background lives").
+  Watch a settled board for 10 s: every symbol must perform its own idle act
+  (step 4, "The symbols live too"); `check_symbol_idle.mjs` must be in the build.
+  Read every figure on the intro/loading cards, buy cards and paytable at
+  1440×900 and 390×844: none may sit on top of artwork (step 5, item 7 —
+  `10,000×` on the trophy).
 - **`stake-compliance`**: the certification-shaped checks — restricted words
   (re-run this even if it was checked at naming time; copy drifts), the
   server-contract checklist, replay mode, RTP disclosure matching the actual

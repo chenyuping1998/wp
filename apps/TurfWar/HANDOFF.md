@@ -1,5 +1,12 @@
 # Turf War — 交接文件
 
+## 2026-10-30 — 數字壓圖修正（skill 步驟 5 第 7 項），已上傳並發布 front v31
+
+- 直式載入頁：`5X4, 14 LINES — MAX WIN 20,000X` 與提示列原本壓在人物胸口／褲子上。`LoadingScreen.svelte` 直式時文字移到上方空白牆面（logo 0.13H），人物改站下方 58% 高；橫式不變。
+- 320×568 開場卡：工作室徽章蓋住 `MAX WIN 20,000×`。`IntroFeatures.svelte` 的 `measure` 在直式時上下各預留徽章高度。
+- 已確認無問題：購買卡（100×/500×/1000× 在牆面平坦處）、賠率表、50× 標籤（自帶底板）。
+- 證據：`design/qa/number_audit_20261030/`。upload/TurfWar/frontend 已更新（只有 bundle／index 改變），10-30 Stone 同意後 stakecli 上傳（4 actions，重新 plan 0）並發布 front v31；數學不變，未動審查版本。
+
 ## 2026-10-16 — 打手收手握棒修正
 
 已實作 `design/cast_brief_street/mg/REARM_REQUEST.md`：原生 imagegen 重畫右臂、球棒、
@@ -987,3 +994,65 @@ v24 回報：loading 看不懂、手分離、脖子分離、動作太快像抽�
 - IntroFeatures Big Score：迷你 3×2 盤面＋frame_full 整圈包住＋50× 標籤（原本外框縮成單格只框住鏈子）。
 - build_mesh_cast.py：手臂不綁 hand 骨（拳頭隨前臂剛性移動）；頭部 sigma 30→48。mesh_to_spine.mjs：頭部 translate ×0.2、rotate ×0.5；punch/celebrate 時 arm-back IK mix 0（護臉手跟胸口走，不被壓扁）；turf.speed {idle .7, punch .6, celebrate .7}，spineCastFigure 套用 timeScale、mix 0.15/0.35。
 - QA 工具：dump_mesh_poses.mjs + render_mesh_poses.py。math v7 不變；審核單需網站重送。
+
+## 2026-10-23 平台發佈 front v26
+
+v25 回報：100× 標籤擋住、手臂分離（MG/FG）、FG 脖子（衣領）、出拳肩膀不動。
+- NeonFrames 倍數標籤 0.62–0.76 → 0.42–0.5 格，整個收在自己那格右下角。
+- build_mesh_cast.py：手臂根部只 30% 固定胸口；身體遠側肩頭 70% 跟上臂（同比例一起動）；`CHARS[who].sleeve_bulb`（split_kit_layers.py）把身體上畫的上臂膨袖／捲袖肩頭 100% 綁上臂（上臂前 60% 段、45px 漸變）；頭下緣（下巴／鬍子）固定胸口。
+- 動作：celebrate 改上臂水平＋前臂舉拳（recipe_celebrate.json elbow 0 / angle 80）；punch reach 80、windup 30、lean 8＋胸口 screen rotate −2→+5（往出拳方向扭）。
+- math v7 不變；審核單需網站重送。
+
+
+## 2026-10-27 送審前修正與本機驗證
+
+三項原始FAIL均已修正：ModalMessage不足餘額提示；WebAudio／HTMLAudio播放中即時靜音（含無AudioContext啟動）；RGS jurisdiction.socialCasino opt-in社交英文／用語。另修認證錯誤被開場卡遮住、小視窗重播3欄2列、GC數字ink基線、portrait重複免費局計數與有效src型別錯誤。svelte-check 0 errors／0 warnings，Turf完整guard/build PASS。
+
+v5權重修正胸／拳誤綁、腿部全綁chest與肩部過窄權重交接，保留原骨架／曲線／幅度／尺寸／速度。guard改讀實際runtime v5，兩角色6862姿勢含中斷混合通過，舊v5反例會攔。來源與runtime裁圖合成RGBA誤差0；321格實際renderer輸出、7clip／混合、桌機與portrait目視未見破口／分離／碎片。工具idle IK warnings保留如實列於報告，未冒充滿分。
+
+三檔feature完整進出、Kingpin20,000×封頂；四模式重播完整結束且零wallet請求；RGS-only九介面與SC／GC feature掃描0禁字；hasTouch實際tap開局正常。14個遊戲最終Vite編譯PASS；13個完整app guard通過，HotMiami既有H2重複頭髮／full合成美術guard失敗，未修改該美術。GoBananas100／SoulSeal型別guard修跨平台路徑，不提高baseline。
+
+本機upload/TurfWar166檔更新，source／build／stage一致；math與商店圖hash不變。平台未更新／未重送審，開始前唯讀front27／math7、approval closed／locked。Studio圖、真實RGS、舊手機與人工題材／原創性需後續確認。報告與證據：design/qa/precheck_20261027/TurfWar-fixes-20261027.html；送審包收據LOCAL-PRECHECK-FIX-20261027.json。舊v3／舊v5收據與preview不得拿來證明本次修正。
+
+
+## 2026-10-27 已上傳並發佈 front v28（math v7）
+
+使用者明確授權「改完幫我上傳發佈」。核對同一測試來源與166檔本機manifest，validate無warning；plan上傳15、刪3舊bundle／style、137不變，6,516,193 bytes。execute_upload成功，發佈前scratch152檔吻合／0 actions。publish回傳published=true、changed=true、version28，get_game確認front28／math7，發佈後plan仍0 actions。math9檔未變、不重發math。
+
+平台已更新；審核仍closed／locked，未更新approval version、未新送審；商店thumbnail／cover未同步。沒有取得真實玩家session，未以scratch零差異冒稱CDN byte驗證。收據：upload/TurfWar/RELEASE-RECEIPT-20261027.json；API證據：design/qa/precheck_20261027/publish/。前一段「平台未更新」為發佈前歷史狀態。
+
+## 2026-10-30 — 圖騰局部動態與收勢優化
+
+項鍊／鈔票／瓶身／車身懸吊／音響振膜加入連續局部網格；房子窗光依原圖註冊，四個塗鴉透過原 alpha 遮罩描亮。去除共用光暈星芒、補齊 970ms 起終回位，修星星／皇冠／指虎待機接點。主角 Spine、美術 PNG、玩法與數學未修改。完整 guard/build PASS、型別 0/0；桌機 base64 $0.70、手機 Lookout0 完整12次 $29.80。證據 design/qa/symbol-craft-20261030/REPORT.md；本機 upload/TurfWar 152 frontend 檔與 build 同版，9 math hash 不變。平台未更新。
+
+## 2026-10-31 圖騰安定節奏（Stone：太頻繁）
+- SymbolSprite 取消常駐縮放呼吸；symbolIdleFrame 改成共用 20 格排程，每 5.2 秒最多一顆短動作，單格 104 秒輪替，空檔精確回原姿勢；中獎與落地動作未變。
+- check_symbol_idle 加入完整 104 秒週期的單種與混合盤面檢查：最多一顆 act，非 act 無位移／旋轉／縮放／透明變化。
+- 完整 build PASS；svelte-check 0 errors / 0 warnings。production 本機 stub 直式畫面成功啟動與回到安定盤面；此次未完整重跑桌機／所有 bonus。直接開 dev 無 RGS 時的 Failed to fetch 為認證缺參數，改用既有本機 stub 後可啟動。
+- 測試版：dist/turfwar-street-v2（http://localhost:8016/?hmdebug=1&rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en）。未同步 upload 包、未上傳平台。
+
+## 2026-10-31 背景安定節奏
+- Background 固定構圖，移除整張圖的左右漂移。
+- StreetLife 旗子／吊燈使用共享慢風：31 秒週期、19 秒停風，旗角小幅動作；旗子掛點改用吊繩的同一條 Bézier 曲線。
+- 鴿子 48 秒週期只走兩段各 5 秒，停留時腳不動；啄食改頭部動作，不再轉動整隻鳥。
+- 煙霧 17 秒淡入／升起／消散，端點透明，多層低透明度邊緣；feature 燈維持暖光、不再規律熄滅閃爍。
+- 完整 build PASS，svelte-check 0 errors / 0 warnings。本機 production stub 已開啟桌機 1280×720（縮圖檢視）及直式主遊戲；未完整重跑 bonus。瀏覽器工具記錄一筆無來源的 MutationObserver observe 錯誤，未確定出處，畫面可正常載入；不宣稱 console 零錯誤。
+- 本機預覽 dist/turfwar-street-v2 已更新；upload 包與平台未更新。
+
+## 2026-10-31 動態收斂與送審前檢查
+- Symbol idle：20格共用104秒排程，每5.2秒輪下一格，最多1格動作，其餘完全rest；中獎演出保留。
+- StreetLife：背景固定、旗幟雙端貼纜線與延遲布面、31秒風週期含19秒平靜、燈具延遲、低透明蒸氣；鳥落在路面865並長停頓。
+- 最新本機預覽已更新 dist/turfwar-street-v2；build成功。未更新 upload/TurfWar 或平台。
+- 完整報告：design/qa/precheck_20261031/report.html。官方51項：25 PASS、1 FAIL、19 AT RISK、5 NEEDS A HUMAN、1 N/A；另1個house UI FAIL。
+- FAIL #26：rulesText.ts:39「at most one lands on any spin」與有正權重的bonus book2289 event20兩個Bruiser矛盾。建議改全部規則／intro單一出現承諾，或另行變更生成器。
+- FAIL UI：ReplayIntro.svelte:279–290 Start Replay深底深字，對比1.718:1；建議橘底深字並補focus。
+- JPY共享formatter兩位小數與官方零位標準、先前審查註記衝突，先確認適用規格。全幣別、真人手機、Kingpin/max-win/error回放矩陣、全部社交modals與角色全部動作視覺驗收仍待補；無法以guard代替。
+- 本機真books回放已驗base64重播、Lookout0 XSC、Muscle0 XGC400×225完成，只有GET replay、無wallet與執行錯誤。全100000 books/LUT一致，12501中獎線重算通過。
+- 審查遵循engine-self-check.md的read-only/report-first要求，未順便修規則或共享幣別。報告保留證據與SOURCE/BUILD SHA256。
+
+## 2026-10-31 授權上傳發佈完成
+- Stone明確授權「上傳發佈」；修正Bruiser occurrence規則與16語言intro，回放橘底深字及focus。
+- 完整build通過，svelte-check0 errors/0 warnings；本機production回放卡已確認新按鈕，證據publish/replay-fixed.png。
+- upload/TurfWar/frontend精確鏡像新build（152檔）；上傳5檔、刪除3舊雜湊、147不變，3510645 bytes。post-upload plan0 actions。舊stage可恢復於dist/turfwar-pre-release-20261031。
+- publish回傳front32，get_game確認front32；math保持7。審核仍closed/locked，未更新審核或另開送審。商店圖未修改。
+- 憑證design/qa/precheck_20261031/publish/RELEASE-RECEIPT.json；原報告保留未補的實機與人工檢查，不將發佈成功當作51項全數通過。

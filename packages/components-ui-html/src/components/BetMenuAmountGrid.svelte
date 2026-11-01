@@ -18,15 +18,12 @@
 	);
 
 	const isMaxValue = (value: number) => value === options[options.length - 1];
-	const formatValue = (value: number) => {
-		if (Math.abs(value) > 999999) {
-			return `${(Math.abs(value) / 1000000).toFixed(2)}M`;
-		}
-		if (Math.abs(value) > 999) {
-			return `${(Math.abs(value) / 1000).toFixed(2)}K`;
-		}
-		return Math.abs(value).toFixed(2);
-	};
+	// Stake review, 2026-10-20 (Sushi Monkey): "all values are displayed fully
+	// without K or M abbreviations" — so 1,000.00, never 1.00K. The longest
+	// labels step the type down instead so they still fit three to a row.
+	const formatValue = (value: number) =>
+		Math.abs(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+	const labelSize = (text: string) => (text.length > 10 ? '0.72rem' : text.length > 8 ? '0.82rem' : '1rem');
 </script>
 
 <!--
@@ -49,9 +46,8 @@
 			border={option === stateBet.betAmount ? '2px white solid' : '2px black solid'}
 		/>
 		<BaseButtonContent>
-			<span style="font-size: 1rem;"
-				>{isMaxValue(option) ? i18nDerived.max() : formatValue(option)}</span
-			>
+			{@const label = isMaxValue(option) ? i18nDerived.max() : formatValue(option)}
+			<span style="font-size: {labelSize(label)}; white-space: nowrap;">{label}</span>
 		</BaseButtonContent>
 	{/snippet}
 </OptionsGrid>

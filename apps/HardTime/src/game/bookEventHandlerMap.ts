@@ -239,7 +239,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		const padding = config.paddingReels[bookEvent.gameType];
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: { ...bookEvent, anticipation },
-			paddingBoard: padding,
+			paddingBoard: padding.map((reel) => reel.map((symbol) => ({ ...symbol }))),
 		});
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 	},
@@ -351,7 +351,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// should already be the game they just won.
 		stateGame.gameType = 'freegame';
 		stateGame.stickyWildReels = [];
-		eventEmitter.broadcast({ type: 'expandingWildsClear' });
+		eventEmitter.broadcast({ type: 'wildColumnClear' });
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 
 		// WHICH tier, one event early.
@@ -547,7 +547,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateGame.winningCells = [];
 		stateGame.debugWinLineCount = 0;
 		eventEmitter.broadcast({ type: 'winLinesHide' });
-		eventEmitter.broadcast({ type: 'expandingWildsClear' });
+		eventEmitter.broadcast({ type: 'wildColumnClear' });
 		stateGameDerived.enhancedBoard.settle(stateGameDerived.boardRaw());
 		eventEmitter.broadcast({ type: 'boardShow' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
@@ -580,7 +580,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateGame.gameType = 'basegame';
 		stateGame.winningCells = [];
 		stateGame.stickyWildReels = [];
-		eventEmitter.broadcast({ type: 'expandingWildsClear' });
+		eventEmitter.broadcast({ type: 'wildColumnClear' });
 		stateGameDerived.enhancedBoard.settle(INITIAL_BOARD);
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });

@@ -4,6 +4,7 @@
 	import UiSprite from './UiSprite.svelte';
 	import { UI_BASE_FONT_SIZE } from '../constants';
 	import { uiTheme } from '../theme.svelte';
+	import { inkOffsetY } from '../inkCenter';
 
 	type Props = {
 		label: string;
@@ -133,6 +134,9 @@
 		dropShadowBlur: 2,
 		dropShadowDistance: 1,
 	});
+	const valueInkY = $derived(uiTheme.alignReadoutInk
+		? inkOffsetY('H', valueStyle) - inkOffsetY(props.value, valueStyle)
+		: 0);
 </script>
 
 {#if props.stacked}
@@ -170,6 +174,7 @@
 		<Text
 			anchor={{ x: 0.5, y: 0 }}
 			text={props.value}
+			y={valueInkY}
 			style={valueStyle}
 			onresize={({ width }) => (valueWidth = width)}
 		/>
@@ -281,6 +286,7 @@
 	<Text
 		anchor={{ x: 1, y: 0.5 }}
 		text={props.value}
+		y={valueInkY}
 		style={valueStyle}
 		x={UI_BASE_FONT_SIZE * 10}
 	/>

@@ -18,7 +18,6 @@
     "shoe_r",
     "shoe_l",
     "upper_arm_r",
-    "baton",
     "torso",
     "pelvis",
     "keys",
@@ -27,10 +26,11 @@
     "forearm_l",
     "hand_l",
     "radio_cord",
-    "forearm_r",
-    "fingers_r",
     "head",
-    "blink"
+    "blink",
+    "forearm_r",
+    "baton",
+    "fingers_r"
   ],
   "layers": [
     {
@@ -101,16 +101,6 @@
         348,
         177,
         336
-      ]
-    },
-    {
-      "name": "baton",
-      "texture": "baton.png",
-      "crop": [
-        206,
-        246,
-        232,
-        207
       ]
     },
     {
@@ -194,26 +184,6 @@
       ]
     },
     {
-      "name": "forearm_r",
-      "texture": "forearm_r.png",
-      "crop": [
-        180,
-        346,
-        199,
-        336
-      ]
-    },
-    {
-      "name": "fingers_r",
-      "texture": "fingers_r.png",
-      "crop": [
-        285,
-        344,
-        89,
-        100
-      ]
-    },
-    {
       "name": "head",
       "texture": "head.png",
       "crop": [
@@ -231,6 +201,36 @@
         196,
         77,
         38
+      ]
+    },
+    {
+      "name": "forearm_r",
+      "texture": "forearm_r.png",
+      "crop": [
+        180,
+        346,
+        199,
+        336
+      ]
+    },
+    {
+      "name": "baton",
+      "texture": "baton.png",
+      "crop": [
+        206,
+        246,
+        232,
+        207
+      ]
+    },
+    {
+      "name": "fingers_r",
+      "texture": "fingers_r.png",
+      "crop": [
+        285,
+        344,
+        89,
+        100
       ]
     }
   ],

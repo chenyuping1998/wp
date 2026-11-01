@@ -69,6 +69,14 @@
       "h": 601
     },
     {
+      "name": "towel",
+      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/towel.png",
+      "x": 615,
+      "y": 376,
+      "w": 175,
+      "h": 467
+    },
+    {
       "name": "right_arm_upper",
       "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/upper_arm_r.png",
       "x": 273,
@@ -98,15 +106,7 @@
       "x": 385,
       "y": 589,
       "w": 394,
-      "h": 166
-    },
-    {
-      "name": "towel",
-      "file": "../../../../../static/assets/castLayers/prisoner_spine_v2/towel.png",
-      "x": 615,
-      "y": 376,
-      "w": 175,
-      "h": 469
+      "h": 140
     },
     {
       "name": "head",

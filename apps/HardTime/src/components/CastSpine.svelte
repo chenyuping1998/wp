@@ -16,7 +16,8 @@
 
 <script lang="ts">
   import { Physics, Spine, type SkeletonData } from "@esotericsoftware/spine-pixi-v8";
-  import { getContextApp } from "pixi-svelte";
+  import { getContextApp, getContextParent } from "pixi-svelte";
+  import { untrack } from "svelte";
   import { stateBetDerived } from "state-shared";
 
   import { getContext } from "../game/context";
@@ -24,6 +25,8 @@
 
   type Props = {
     who: CastWho;
+    inline?: boolean;
+    intro?: boolean;
     /** kept for callers; the figure is centred in its side band (see placement) */
     x: number;
     topY: number;
@@ -37,18 +40,15 @@
   const props: Props = $props();
   const app = getContextApp();
   const context = getContext();
+  const inlineParent = props.inline ? getContextParent() : null;
   const std = $derived(context.stateLayoutDerived.mainLayoutStandard());
 
-  // Art-space facts from design/build_cast_spine.py (1024x2048 canvas, y down):
-  // where the skeleton's root sits, the figure's ink box, and the x range the
-  // figure sweeps through its idle AND its reactions. The envelope is what has
-  // to fit between the board and the screen edge. The warden's pointing hand
-  // goes past his envelope on purpose (the user allowed a reaction to reach a
-  // little over the board); the figure is drawn under the housing, so the
-  // reels cover it.
+  // Art-space root and rest silhouette from the existing 4.2 rig.
+  // The measured full-motion outward reach below keeps hands on screen.
+  // Reactions may reach inward over the board through the forearm overlay.
   const RIG = {
-    prisoner: { root: [541, 1773], box: [275, 172, 806, 1774], env: [240, 806], key: "htPrisonerSpine" },
-    warden: { root: [495, 1875], box: [180, 71, 836, 1875], env: [180, 900], key: "htWardenSpine" },
+    prisoner: { root: [541, 1773], box: [275, 172, 806, 1774], key: "htPrisonerSpine" },
+    warden: { root: [495, 1875], box: [180, 71, 836, 1875], key: "htWardenSpine" },
   } as const;
 
   // 14 had both figures touching the housing (user, 2026-10-21: 離盤面太近).
@@ -67,13 +67,15 @@
     const figure = new Spine({ skeletonData: data, autoUpdate: false });
     figure.label = `ht-cast-${props.who}`;
     figure.state.setAnimation(0, "idle", true);
-    pixi.stage.addChildAt(figure, Math.min(2, pixi.stage.children.length));
+    if (inlineParent) inlineParent.parent.addChild(figure);
+    else pixi.stage.addChildAt(figure, Math.min(2, pixi.stage.children.length));
     spine = figure;
+    if (props.intro) untrack(() => play("reactBig"));
 
     // Only the striking forearm crosses in front of the reel housing. The
     // full figure stays behind it. Copy solved bone matrices so this overlay
     // cannot drift from the arm underneath or run a second physics clock.
-    const armFront = props.who === "warden"
+    const armFront = props.who === "warden" && !props.inline
       ? new Spine({ skeletonData: data, autoUpdate: false }) : null;
     if (armFront) {
       armFront.label = "ht-baton-front";
@@ -176,13 +178,9 @@
 
   // ── placement: symmetric (user, 2026-10-21: 位子怪、不對稱、離盤面太近) ──
   //
-  // Both figures share ONE art scale (the prisoner's box height is the
-  // reference, so the warden in his cap simply stands taller, as drawn), stand
-  // on one floor line, and are centred in their own side band - the band
-  // between the board ink (+ BOARD_GAP) and the screen edge. The bands are the
-  // same width because the board is centred, so the two read as a pair. The
-  // fit uses the wider of the two rest boxes for both, so neither is shrunk
-  // more than the other.
+  // Both figures keep the existing art scale and shared floor. Equal rest
+  // heights and symmetric side bands are preserved; the full-motion envelope
+  // shifts their centres inward only when the outer hand needs more room.
   const REF_HEIGHT = RIG.prisoner.box[3] - RIG.prisoner.box[1];
   const REF_TOP_TO_FEET = RIG.prisoner.root[1] - RIG.prisoner.box[1];
   // Same HEIGHT on screen (user, 2026-10-21: 兩個人物不一樣高): each figure is
@@ -190,13 +188,15 @@
   // prisoner's head and both stand on one floor line. Widths are compared after
   // that rescale.
   const heightRatio = (who: CastWho) => REF_HEIGHT / (RIG[who].box[3] - RIG[who].box[1]);
+  // Four idle phases × all clips, 60 Hz; 383.637 art px + 8 px guard.
+  const OUTWARD_REACH = 392; // design/qa/character_fix_20261029/outward-envelope.json
   const WIDEST = Math.max(...(Object.keys(RIG) as CastWho[]).map((w) => (RIG[w].box[2] - RIG[w].box[0]) * heightRatio(w))) * 1.06; // + idle sway
   $effect(() => {
     if (!spine) return;
     const rig = RIG[props.who];
     const [bx0, , bx1] = rig.box;
     const [rootX] = rig.root;
-    const mirror = props.who === "warden";
+    const mirror = props.side === "left";
     const toCanvasX = (x: number) => std.x + (x - std.width * std.anchor) * std.scale;
     const canvasWidth = context.stateLayoutDerived.canvasSizes().width;
 
@@ -210,7 +210,16 @@
 
     const centre = ((bx0 + bx1) * 0.5 - rootX) * (mirror ? -1 : 1);
     spine.scale.set(mirror ? -s : s, s);
-    spine.x = (leftLimit + rightLimit) * 0.5 - centre * s;
-    spine.y = std.y + (props.topY - std.height * std.anchor) * std.scale + REF_TOP_TO_FEET * sRef;
+    const bandCentre = (leftLimit + rightLimit) * 0.5;
+    const outward = OUTWARD_REACH * sRef;
+    const safeCentre = props.side === "left"
+      ? Math.max(bandCentre, SCREEN_GAP * std.scale + outward)
+      : Math.min(bandCentre, canvasWidth - SCREEN_GAP * std.scale - outward);
+    spine.x = safeCentre - centre * s;
+    const naturalY = std.y + (props.topY - std.height * std.anchor) * std.scale + REF_TOP_TO_FEET * sRef;
+    // Feature entry shows the whole figure, including shoes. Move it upward
+    // to the safe floor without changing art scale or motion amplitude.
+    const floor = context.stateLayoutDerived.canvasSizes().height - SCREEN_GAP * std.scale;
+    spine.y = props.inline ? Math.min(naturalY, floor - (rig.box[3] - rig.root[1]) * s) : naturalY;
   });
 </script>

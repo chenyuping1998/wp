@@ -1,0 +1,67 @@
+[
+  {
+    "name": "CapoNostra",
+    "status": 0,
+    "seconds": 62.809
+  },
+  {
+    "name": "CrusherYard",
+    "status": 0,
+    "seconds": 16.784
+  },
+  {
+    "name": "DeadwoodExpress",
+    "status": 0,
+    "seconds": 30.703
+  },
+  {
+    "name": "EmberForge",
+    "status": 0,
+    "seconds": 28.26
+  },
+  {
+    "name": "GoBananas",
+    "status": 0,
+    "seconds": 24.409
+  },
+  {
+    "name": "GoBananas100",
+    "status": 1,
+    "seconds": 9.872
+  },
+  {
+    "name": "HardTime",
+    "status": 0,
+    "seconds": 131.666
+  },
+  {
+    "name": "HotMiami",
+    "status": 1,
+    "seconds": 25.891
+  },
+  {
+    "name": "MarginCall",
+    "status": 0,
+    "seconds": 17.369
+  },
+  {
+    "name": "Moooo",
+    "status": 0,
+    "seconds": 29.622
+  },
+  {
+    "name": "SoulSeal",
+    "status": 1,
+    "seconds": 16.98
+  },
+  {
+    "name": "TripleWitching",
+    "status": 0,
+    "seconds": 32.828
+  },
+  {
+    "name": "WildParty",
+    "status": 0,
+    "seconds": 20.743
+  }
+]

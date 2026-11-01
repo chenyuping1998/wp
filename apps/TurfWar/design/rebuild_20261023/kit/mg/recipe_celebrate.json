@@ -28,7 +28,11 @@
   {
    "name": "celebrate",
    "preset": "celebrate",
-   "params": {}
+   "params": {
+    "elbow": 0,
+    "angle": 80,
+    "swing": 55
+   }
   }
  ]
 }

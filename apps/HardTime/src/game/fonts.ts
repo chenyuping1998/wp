@@ -82,7 +82,7 @@ export const BODY_FONT = '"Saira", "Trebuchet MS", "Segoe UI", Tahoma, Arial, sa
  * the player has to read is not the place to spend legibility on unity.
  */
 export const TITLE_FONT = '"Saira", "Arial Narrow", Arial, sans-serif';
-export const TITLE_FONT_WEIGHT = 700;
+export const TITLE_FONT_WEIGHT = '700' as const;
 
 /**
  * BAR_LABEL_FONT / BAR_VALUE_FONT — the bet bar, split the same way.

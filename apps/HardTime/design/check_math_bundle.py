@@ -17,7 +17,7 @@ and the math bundle had none.
 This is that gate. Run it against the bundle that is about to be uploaded, not
 against the source tree, because copying is exactly where it went wrong.
 
-    python design/check_math_bundle.py ../../upload/HotMiami/math
+    python design/check_math_bundle.py ../../upload/HardTime/math
 
 Checks, in the order they fail usefully:
 
@@ -45,7 +45,7 @@ import zstandard as zstd
 # actually requires: the band, and that every mode agrees with the others.
 RTP_MIN, RTP_MAX = 0.90, 0.98
 MODE_SPREAD_MAX = 0.005
-MAX_WIN = 20_000
+from game_settings import DEFAULT_BUNDLE, frontend_config
 # Book amounts are in units where 100 = 1x. Established by checking collectorWin's
 # `amount` against its own `totalMultiplier` across 31,649 events.
 UNITS_PER_X = 100
@@ -69,6 +69,7 @@ def read_books(path):
 def main(bundle):
     problems = []
     rtps = {}
+    config = frontend_config()
 
     def fail(msg):
         problems.append(msg)
@@ -136,8 +137,14 @@ def main(bundle):
         if not RTP_MIN <= rtp <= RTP_MAX:
             fail(f"{mode}: RTP {rtp:.4f} is outside Stake's {RTP_MIN:.0%}-{RTP_MAX:.0%} band")
             status = "FAIL"
-        if abs(biggest - MAX_WIN) > 0.5:
-            fail(f"{mode}: largest payout {biggest:,.0f}x is not the advertised {MAX_WIN:,}x")
+        expected = config['betModes'][mode]
+        max_win = float(expected['max_win'])
+        if abs(costs[mode] - expected['cost']) > 1e-9:
+            fail(f"{mode}: bundle cost disagrees with frontend config")
+        if abs(rtp - expected['rtp']) > 0.00005:
+            fail(f"{mode}: measured RTP {rtp:.6f} disagrees with displayed {expected['rtp']}")
+        if abs(biggest - max_win) > 0.5:
+            fail(f"{mode}: largest payout {biggest:,.0f}x is not the advertised {max_win:,}x")
             status = "FAIL"
 
         print(
@@ -164,5 +171,5 @@ def main(bundle):
 
 
 if __name__ == "__main__":
-    target = sys.argv[1] if len(sys.argv) > 1 else "upload/HotMiami/math"
+    target = sys.argv[1] if len(sys.argv) > 1 else str(DEFAULT_BUNDLE)
     sys.exit(main(target))

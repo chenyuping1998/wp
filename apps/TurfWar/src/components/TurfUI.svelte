@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import TurfConsole from './TurfConsole.svelte';
+	import LayoutBottomBar from 'components-ui-pixi/src/components/LayoutBottomBar.svelte';
+	import LayoutPortrait from 'components-ui-pixi/src/components/LayoutPortrait.svelte';
+	import { getContext } from '../game/context';
 
 	import { EnableSpaceHold } from 'components-shared';
 
@@ -31,8 +33,14 @@
 	const props: Props = $props();
 
 
-	// App-local console. Shared control providers retain their session and input behavior.
-	const LayoutComponent = TurfConsole;
+	// Same strip as the approved Capo Nostra / Deadwood / Banandit builds
+	// (「turf UI BAR 參考其他送審過關的改」 2026-10-25). The app-local TurfConsole
+	// drew a 150-tall slab with a small boxed spin and oversized steppers — the
+	// bar tagged "Poor bet UI bar" on 10-23. Geometry lives in uiTheme.ts.
+	const context = getContext();
+	const LayoutComponent = $derived(
+		context.stateLayoutDerived.layoutType() === 'portrait' ? LayoutPortrait : LayoutBottomBar,
+	);
 </script>
 
 <EnableSpaceHold />

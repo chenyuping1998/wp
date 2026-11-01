@@ -1,6 +1,6 @@
 // Generated from math-sdk games/turf_war/library/configs/config_fe_turf_war.json
 // Regenerate with design/sync_math_config.py after re-running the math.
-export default {
+const config = {
 	"providerName": "igs",
 	"gameName": "turf_war",
 	"gameID": "TurfWar",
@@ -2231,3 +2231,5 @@ export default {
 		]
 	}
 } as const;
+type Mutable<T> = { -readonly [P in keyof T]: T[P] extends object ? Mutable<T[P]> : T[P] };
+export default config as Mutable<typeof config>;

@@ -286,7 +286,7 @@
 		padding: 0.8rem 1rem;
 		border: none;
 		border-radius: 10px;
-		background: #3a3d42;
+		background: #f5893d;
 		color: #121212;
 		font-family: var(--hm-title-font, 'Arial Narrow', sans-serif);
 		font-size: 1.05rem;
@@ -305,6 +305,11 @@
 		width: auto;
 		fill: currentColor;
 		flex: none;
+	}
+
+	.replay-start:focus-visible {
+		outline: 3px solid #f7f5f0;
+		outline-offset: 3px;
 	}
 
 	.replay-start:hover {

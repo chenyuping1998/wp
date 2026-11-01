@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { Container, Text } from 'pixi-svelte';
+	import type { TextStyleFontWeight } from 'pixi.js';
 
 
 	// Flat ink figures: one readable face, one hard keyline, no bevel or glow.
@@ -23,7 +24,7 @@
 		// but a big-win amount is a display callout, not a readout, and it is
 		// exactly the kind of place fonts.ts reserves for the display face.
 		fontFamily?: string;
-		fontWeight?: string;
+		fontWeight?: TextStyleFontWeight;
 	};
 
 	const props: Props = $props();

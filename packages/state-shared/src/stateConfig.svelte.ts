@@ -13,6 +13,8 @@ export const stateConfig = $state({
 	 * was built with rather than pressable ones with nothing behind them.
 	 */
 	explainInsufficientBalance: false,
+	/** Opt in when a game also accepts the RGS jurisdiction as its social flag. */
+	useRgsSocialCasino: false,
 
 	jurisdiction: {
 		socialCasino: false,

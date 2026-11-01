@@ -51,9 +51,7 @@
 		}
 		if (context.stateGame.stickyPrizes.length > 0) {
 			context.stateGame.stickyPrizes = [];
-			context.eventEmitter.broadcast({ type: 'stickyPrizesClear' });
 		}
-		context.eventEmitter.broadcast({ type: 'expandingWildsClear' });
 		if (context.stateGame.expandedWildReels.length > 0) {
 			context.stateGame.expandedWildReels = [];
 			context.eventEmitter.broadcast({ type: 'wildColumnClear' });

@@ -161,7 +161,7 @@
 
 			const built: ActiveLine[] = [];
 			wins.forEach((win, index) => {
-				const paylineRows: number[] = (config.paylines as Record<string, number[]>)[
+				const paylineRows: readonly number[] = (config.paylines as Readonly<Record<string, readonly number[]>>)[
 					String(win.lineIndex)
 				];
 				if (!paylineRows) return;

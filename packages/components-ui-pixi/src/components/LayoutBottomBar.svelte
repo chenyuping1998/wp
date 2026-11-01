@@ -36,6 +36,7 @@
 	const context = getContext();
 
 	const box = $derived(context.stateLayoutDerived.mainLayoutStandard());
+	const smallReadouts = $derived(uiTheme.smallViewportReadouts && context.stateLayoutDerived.canvasSizes().width <= 600);
 
 	// The frame is inset from the canvas on all four sides — without the bottom
 	// inset its lower edge sat exactly on the canvas floor and the rounded corners
@@ -49,7 +50,7 @@
 	// thing laid on the screen rather than a thing built into its edge, and the
 	// oversized spin button has somewhere to hang.
 	const barTop = $derived(box.height - uiTheme.barHeight);
-	const frameH = $derived(uiTheme.barHeight - uiTheme.barFrameBottom);
+	const frameH = $derived(uiTheme.barHeight - (smallReadouts ? Math.min(uiTheme.barFrameBottom, 12) : uiTheme.barFrameBottom));
 	const barMid = $derived(barTop + frameH * 0.5);
 
 	// The strip is one framed panel, so the readouts inside it drop their own
@@ -61,7 +62,7 @@
 	// "$10,000.00" win 177 (Win cell usable ~210), a "$100.00" bet 130 clearing the
 	// chevron — all inside their cells. Going higher risks the largest wins
 	// touching the Win rule.
-	const READOUT_SCALE = 0.68;
+	const READOUT_SCALE = $derived(smallReadouts ? 0.85 : 0.68);
 	// UiLabel stacks label at y=0 and value at y=UI_BASE_FONT_SIZE, so the block is
 	// two lines tall; lift it by half of that to sit centred on the bar.
 	const readoutTop = $derived(barMid - UI_BASE_FONT_SIZE * READOUT_SCALE + (uiTheme.barReadoutOffsetY ?? 0));
@@ -75,7 +76,10 @@
 	// the elements are very different sizes (spin 134 across, steppers 42), so
 	// equal centre spacing would leave the gaps looking wrong. Every offset below
 	// is half of one element plus a uniform 40 of air plus half of the next.
-	const TURBO_X = $derived(innerRight - 33);
+	// uiTheme.barTurboInset, default 33 (this value): turbo centre in from
+	// innerRight. A sprite bar whose lit rail sits further in than the 14 above
+	// needs more, or the right-most button rides over the rail (Turf 10-18).
+	const TURBO_X = $derived(innerRight - (uiTheme.barTurboInset ?? 33));
 	const AUTO_X = $derived(TURBO_X - 106);
 	const SPIN_X = $derived(AUTO_X - 140);
 	const STEP_X = $derived(SPIN_X - 128);
@@ -212,8 +216,16 @@
 		TURBO_X - SUMMARY_TURBO_R - 40 - REPLAY_CAPTION_WIDTH - 12 - REPLAY_RADIUS,
 	);
 	const SUMMARY_END = $derived(SUMMARY_REPLAY_X - REPLAY_RADIUS - 34);
-	const summaryCellW = $derived((SUMMARY_END - DIV_1) / Math.max(1, replaySummary.length));
-	const summaryX = $derived((i: number) => DIV_1 + summaryCellW * (i + 0.5));
+	const summaryCols = $derived(smallReadouts ? 3 : Math.max(1, replaySummary.length));
+	const summaryCellW = $derived((SUMMARY_END - DIV_1) / summaryCols);
+	const summaryX = $derived((i: number) => DIV_1 + summaryCellW * ((i % summaryCols) + 0.5));
+	const summaryY = (i: number) => smallReadouts ? barTop + 4 + Math.floor(i / summaryCols) * 78 : readoutTop;
+	const shortSummaryLabel = (label: string) => smallReadouts ? ({
+		'Mode': 'MODE', 'Base Bet': 'BET', 'Base Play': 'AMOUNT',
+		'Cost Multiplier': 'ENTRY ×', 'Feature Multiplier': 'ENTRY ×',
+		'Total Bet Cost': 'TOTAL', 'Total Play Amount': 'TOTAL',
+		'Payout Multiplier': 'WIN ×', 'Final Multiplier': 'WIN ×', 'Total Win': 'WIN',
+	}[label] ?? label) : label;
 	const summaryMaxW = $derived(cellWidth(0, summaryCellW));
 	// one caption size for the whole row: the scale the longest caption needs
 	let summaryLabelWidths = $state<number[]>([]);
@@ -222,7 +234,7 @@
 	);
 	const ruleXs = $derived(
 		hasReplaySummary
-			? replaySummary.map((_, i) => DIV_1 + summaryCellW * i).concat(SUMMARY_END)
+			? Array.from({ length: summaryCols }, (_, i) => DIV_1 + summaryCellW * i).concat(SUMMARY_END)
 			: flank
 				? [DIV_1, DIV_2, DIV_3]
 				: [DIV_1, DIV_2, DIV_3, dividerBeforeBet],
@@ -400,11 +412,11 @@
 
 	{#if hasReplaySummary}
 		{#each replaySummary as row, i (row.label)}
-			<Container x={summaryX(i)} y={readoutTop} scale={READOUT_SCALE}>
+			<Container x={summaryX(i)} y={summaryY(i)} scale={READOUT_SCALE}>
 				<UiLabel
 					tiled={false}
 					stacked
-					label={row.label.toUpperCase()}
+					label={shortSummaryLabel(row.label).toUpperCase()}
 					value={row.value}
 					maxWidth={summaryMaxW}
 					labelScale={summaryLabelScale}

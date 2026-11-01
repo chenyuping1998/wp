@@ -24,6 +24,8 @@ D = Path(__file__).resolve().parent
 CHARS = {
   'mg': {
     'hem': 690, 'overlap': 30,
+    # body-painted upper sleeve: within r px of the lead upper arm, right of x
+    'sleeve_bulb': {'r': 95, 'x': 640, 't': 0.6},
     'j': {
       'hip': (505, 800), 'waist': (500, 660), 'neckBase': (532, 362), 'headBase': (545, 330),
       'headTop': (565, 30),
@@ -35,6 +37,7 @@ CHARS = {
   },
   'fg': {
     'hem': 612, 'overlap': 30,
+    'sleeve_bulb': {'r': 80, 'x': 690, 't': 0.6},
     'j': {
       'hip': (510, 690), 'waist': (510, 575), 'neckBase': (540, 440), 'headBase': (548, 405),
       'headTop': (540, 25),

@@ -19,7 +19,7 @@
 	import { stateGame } from '../game/stateGame.svelte';
 	import { tierByBonusTier } from '../game/featureTiers';
 	import FeatureSplashPanel from './FeatureSplashPanel.svelte';
-	import CastFigureMesh from './CastFigureMesh.svelte';
+	import CastSpine from './CastSpine.svelte';
 	import { castPlacement } from '../game/castPlacement';
 	import { MainContainer } from 'components-layout';
 	import PressToContinue from './PressToContinue.svelte';
@@ -65,7 +65,8 @@
 	// off that point; the user's read was that it sat too high, and it did — the
 	// title above it plus a top-anchored card left the whole lower half empty.
 	const panelCenterY = $derived(layout.height * 0.54);
-	const panelWidth = $derived(Math.min(layout.width * 0.4, 620));
+	const portraitEntry = $derived(context.stateLayoutDerived.canvasSizes().width < context.stateLayoutDerived.canvasSizes().height);
+	const panelWidth = $derived(Math.min(layout.width * (portraitEntry ? 0.88 : 0.4), portraitEntry ? 960 : 620));
 	// Content-driven, with a floor. The reference's card is tall because its copy
 	// runs to seven lines; ours runs to four, and forcing the same proportion left
 	// a third of the card empty under the last line.
@@ -207,22 +208,12 @@
 			carrying the spin count and the rules, and the click prompt at the foot.
 		-->
 		{#if cast.hasSideBand}
-			<!-- The prisoner, from the same layered rig that stands beside the board
-			     (it was once Hot Miami's spine woman, then this mesh in the wrong
-			     box, mirrored, under the scrim). Untransformed container:
-			     CastFigureMesh places itself in canvas px. No flip — the
-			     crossed-arms art is drawn facing the board. -->
+			<!-- Use the main game's final Spine revision, above the feature scrim. -->
 			<Container>
-				<CastFigureMesh
-					who="guy"
-					inline
-					x={cast.x}
-					topY={cast.topY}
-					height={cast.height}
-					groundY={cast.groundY}
-					innerEdge={cast.boardInkRight}
-				/>
-			</Container>
+                <CastSpine who="warden" side="right" inline intro
+                    x={cast.x} topY={cast.topY} height={cast.height}
+                    innerEdge={cast.boardInkRight} />
+            </Container>
 		{/if}
 		<MainContainer>
 			<Container x={layout.width * 0.5}>

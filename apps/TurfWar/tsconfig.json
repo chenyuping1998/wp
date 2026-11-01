@@ -1,12 +1,17 @@
 {
 	"extends": "config-ts/base.json",
 	"include": [
-		"."
+		"src/**/*.ts",
+		"src/**/*.svelte",
+		".svelte-kit/ambient.d.ts"
 	],
 	"exclude": [
 		"dist",
 		"build",
 		"node_modules",
 		"design/rebuild_20261023/before"
-	]
+	],
+	"compilerOptions": {
+		"noEmit": true
+	}
 }

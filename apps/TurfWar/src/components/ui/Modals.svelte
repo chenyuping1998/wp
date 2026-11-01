@@ -9,6 +9,7 @@
 	// only free-text comment a sibling game's review left was "Bonus buy menu is
 	// too simple". See ModalBuyBonus.svelte.
 	import ModalError from 'components-ui-html/src/components/ModalError.svelte';
+	import ModalMessage from 'components-ui-html/src/components/ModalMessage.svelte';
 
 	import ModalBuyBonusConfirm from 'components-ui-html/src/components/ModalBuyBonusConfirm.svelte';
 	import ModalAutoSpin from 'components-ui-html/src/components/ModalAutoSpin.svelte';
@@ -30,6 +31,7 @@
 </script>
 
 <ModalError />
+<ModalMessage />
 <ModalBetMenu />
 <ModalBuyBonus />
 <ModalBuyBonusConfirm />

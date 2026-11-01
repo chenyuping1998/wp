@@ -8,8 +8,9 @@
 	import { stateGame } from '../game/stateGame.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getSymbolLandMotion, LAND_MS } from '../game/symbolLandMotion';
-	import { idlePhase, idleScale } from '../game/idleBreathe';
+	import { idlePhase } from '../game/idleBreathe';
 	import { idleClock, useIdleClock } from '../game/idleClock.svelte';
+	import { symbolIdleFrame } from '../game/symbolIdleMotion';
 
 	type Props = {
 		x?: number;
@@ -107,23 +108,13 @@
 	const blur = $derived(Math.max(0, Math.min(1, props.blur ?? 0)));
 	const focusScale = $derived(props.focus?.scale ?? 1);
 
-	// ── idle breath ────────────────────────────────────────────────────────────
-	//
-	// A settled board was the one state nothing animated: every symbol a still
-	// PNG, which is exactly the diagnosis review gave a sibling game in this repo
-	// ("nothing moving on a settled board, which is what a player looks at most
-	// of the time"). About 1% of scale, each cell on its own phase. See
-	// game/idleBreathe.ts for why the variation is in the phase and not in the
-	// shape.
-	//
-	// Not while the reel is moving (the strip is blurred and travelling, and a
-	// breath would fight the motion blur), and not while landing (the landing
-	// motion owns the symbol for those 240ms).
+	// Quiet settled board: sparse, cell-scheduled accents; no constant scaling.
 	const idling = $derived(!props.landing && blur <= 0.01);
-	const breath = $derived(
-		idling && props.cell
-			? idleScale(idleClock.t, idlePhase(props.cell.reel, props.cell.row))
-			: 1,
+	const breath = 1;
+	const idle = $derived(
+		idling && props.cell && !props.dim && !props.focus
+			? symbolIdleFrame(props.symbolName ?? '', idleClock.t, idlePhase(props.cell.reel, props.cell.row))
+			: null,
 	);
 
 	$effect(() => {
@@ -315,21 +306,25 @@
 		two it drew.
 	-->
 	<Container
-		x={props.x}
-		y={props.y}
+		x={(props.x ?? 0) + (idle ? idle.dx * SYMBOL_SIZE : 0)}
+		y={(props.y ?? 0) + (idle ? idle.dy * SYMBOL_SIZE : 0)}
+		rotation={idle?.rotation ?? 0}
 		scale={{
-			x: focusScale * breath,
-			y: focusScale * breath * (blur > 0.01 ? 1 + 0.3 * blur : 1),
+			x: focusScale * breath * (idle?.scaleX ?? 1),
+			y: focusScale * breath * (idle?.scaleY ?? 1) * (blur > 0.01 ? 1 + 0.3 * blur : 1),
 		}}
-		alpha={(1 - 0.15 * blur) * dimAlpha}
+		alpha={(1 - 0.15 * blur) * dimAlpha * (idle?.alpha ?? 1)}
 		tint={dimTint}
 	>
 		<SymbolArt
 			symbolInfo={props.symbolInfo}
 			symbolName={props.symbolName}
-			mode="none"
+			mode={idle ? 'idle' : 'none'}
 			cell={blur > 0.01 ? undefined : props.cell}
 			swayT={idling ? idleClock.t : undefined}
+			idleAct={idle?.act}
+			idleU={idle?.actU}
+			idleLoop={idle?.loopU}
 		/>
 	</Container>
 	<!-- focus bloom: additive copy of the same art, so the teased reel reads as

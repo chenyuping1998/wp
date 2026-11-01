@@ -95,14 +95,14 @@
 	// game, so every payline thumbnail drew a permanently dead bottom row.
 	const REELS = config.numReels;
 	const ROWS = config.numRows?.[0] ?? 4;
-	const paylines = Object.entries(config.paylines as Record<string, number[]>)
+	const paylines = Object.entries(config.paylines as Readonly<Record<string, readonly number[]>>)
 		.map(([id, cells]) => ({ id: Number(id), cells }))
 		.sort((a, b) => a.id - b.id);
 
-	const isLit = (cells: number[], reel: number, row: number) => cells[reel] === row;
+	const isLit = (cells: readonly number[], reel: number, row: number) => cells[reel] === row;
 
 	const rows: PayRow[] = ORDER.filter((name) => name in config.symbols).map((name) => {
-		const symbol = (config.symbols as Record<string, { paytable?: { [k: string]: number }[] | null }>)[
+		const symbol = (config.symbols as Record<string, { paytable?: readonly { readonly [k: string]: number }[] | null }>)[
 			name
 		];
 		const pays = (symbol.paytable ?? []).map((entry) => {

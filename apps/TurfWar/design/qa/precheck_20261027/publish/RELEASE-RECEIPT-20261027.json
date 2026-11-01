@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-27T06:56:30.834827+00:00",
+  "team": "silver-stars",
+  "game": "turf-war",
+  "platform_updated": true,
+  "front_version": 28,
+  "math_version": 7,
+  "published": true,
+  "published_result": {
+    "published": true,
+    "result": {
+      "changed": true,
+      "code": "",
+      "message": "",
+      "version": 28
+    }
+  },
+  "upload": {
+    "actions": 18,
+    "plan_id": "ae6242c4649f5a1bfd93f79192b39561a4024634f51c82fe4cf4a331e1aea7d9",
+    "success": true,
+    "uploaded_bytes": 6516193
+  },
+  "verification": {
+    "get_game_front": 28,
+    "get_game_math": 7,
+    "scratch_front_files": 152,
+    "scratch_front_pending_actions": 0,
+    "math_files_unchanged": 9,
+    "math_pending_actions": 0,
+    "staged_manifest_files": 166,
+    "staged_manifest_sha256": "02e446eec1d39a1654e4e21e8f1a758e2ae1613282191dd5702056b79965fecd",
+    "published_cdn_bytes_independently_verified": false
+  },
+  "approval": {
+    "column": "new",
+    "locked": true,
+    "open": false
+  },
+  "approval_version_updated": false,
+  "new_review_submitted": false,
+  "thumbnail_cover_uploaded": false,
+  "evidence_directory": "/Users/stone/stake-engine/wp/apps/TurfWar/design/qa/precheck_20261027/publish"
+}

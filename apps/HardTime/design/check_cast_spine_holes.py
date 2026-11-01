@@ -33,7 +33,17 @@ for who, ref in FULL.items():
     solid = (o[..., 3] > 200) & (a[..., 3] > 200)
     diff = np.abs(a[..., :3] - o[..., :3]).max(2)
     changed = solid & (diff > 60)
+    # The 2026-10-29 painted forearm deliberately replaces the damaged
+    # sleeve, including its copied scraps. Keep strict original-art comparison
+    # everywhere else; source continuity is independently checked by v2 guard.
+    redraw = np.zeros(hole.shape, dtype=bool)
+    if who == 'prisoner': redraw[589:755,385:779] = True
+    n_redraw = int((changed & redraw).sum())
+    n_silhouette = int((hole & redraw).sum())
+    hole &= ~redraw
+    changed &= ~redraw
     n_hole, n_changed = int(hole.sum()), int(changed.sum())
+    print(f"{who}: intentional painted sleeve {n_redraw} RGB px; removed/replaced silhouette {n_silhouette} px")
     ok = n_hole <= 40 and n_changed <= 0.006 * solid.sum()
     fail |= not ok
     print(f"{who}: holes {n_hole} px, repainted {n_changed} px ({100 * n_changed / solid.sum():.2f}% of the figure)  {'PASS' if ok else 'FAIL'}")

@@ -1,0 +1,26 @@
+{
+  "prisoner": {
+    "rigHash": "prisoner-cd499b09df15220c",
+    "envelope": {
+      "minX": -342.8100891113281,
+      "maxX": 265
+    },
+    "frames": 1936,
+    "maxAnkleError": 2.4325065010975337e-13,
+    "minTriangleRatio": 0.6808175380562163,
+    "maxTriangleRatio": 1.21104768766464,
+    "flips": 0
+  },
+  "warden": {
+    "rigHash": "warden-83bd2fbcb33d3682",
+    "envelope": {
+      "minX": -602.427734375,
+      "maxX": 445.00970458984375
+    },
+    "frames": 1936,
+    "maxAnkleError": 3.13928041384408e-13,
+    "minTriangleRatio": 0.6280258170250258,
+    "maxTriangleRatio": 1.3648049529051138,
+    "flips": 0
+  }
+}

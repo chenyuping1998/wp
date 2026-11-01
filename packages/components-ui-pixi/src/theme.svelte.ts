@@ -446,6 +446,9 @@ export const uiTheme = $state({
   // stack reads low on the strip: Pickle Panic sat 4px low (2026-10-16).
   // Unset = previous behaviour, for every game.
   barReadoutOffsetY: undefined as number | undefined,
+  smallViewportReadouts: false,
+  alignReadoutInk: false,
+  externalFreeSpinCounter: false,
   // The same nudge for a stacked caption + value drawn on its own tile (the
   // portrait Balance / Win / Bet plates), in the label's units. Unset = as before.
   stackedTileTextOffsetY: undefined as number | undefined,
@@ -656,6 +659,11 @@ export const uiTheme = $state({
   //                 (barHeight − barFrameBottom) / 150 overhangs top and bottom.
   barFrameBottom: 12,
   spinScale: 0.78,
+
+  // compactBottom only — centre of the right-most (turbo) button in from the
+  // strip's inner right edge; autoplay, spin and the bet group follow it.
+  // Undefined keeps the original 33.
+  barTurboInset: undefined as number | undefined,
 
   // compactBottom only — keep the oversized Buy Bonus where the side-rail layout
   // put it (left of the board, vertically centred) instead of dropping it into

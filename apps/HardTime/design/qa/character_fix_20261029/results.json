@@ -1,0 +1,81 @@
+{
+  "status": "PASS",
+  "date": "2026-10-29",
+  "runtime": "Spine 4.2.43 skeleton / spine-pixi-v8 4.2.74",
+  "clips": [
+    "idle",
+    "react",
+    "reactBig",
+    "blink"
+  ],
+  "motion": {
+    "prisoner": {
+      "rigHash": "prisoner-cd499b09df15220c",
+      "envelope": {
+        "minX": -342.8100891113281,
+        "maxX": 265
+      },
+      "frames": 1936,
+      "maxAnkleError": 2.4325065010975337e-13,
+      "minTriangleRatio": 0.6808175380562163,
+      "maxTriangleRatio": 1.21104768766464,
+      "flips": 0
+    },
+    "warden": {
+      "rigHash": "warden-83bd2fbcb33d3682",
+      "envelope": {
+        "minX": -602.427734375,
+        "maxX": 445.00970458984375
+      },
+      "frames": 1936,
+      "maxAnkleError": 3.13928041384408e-13,
+      "minTriangleRatio": 0.6280258170250258,
+      "maxTriangleRatio": 1.3648049529051138,
+      "flips": 0
+    }
+  },
+  "preservedMotion": {
+    "prisoner": {
+      "bones": true,
+      "animations": true,
+      "ik": true,
+      "physics": true
+    },
+    "warden": {
+      "bones": true,
+      "animations": true,
+      "ik": true,
+      "physics": true
+    }
+  },
+  "sourceInteriorHoles": 0,
+  "sourceRegressionsRejected": true,
+  "desktop": [
+    1280,
+    720
+  ],
+  "portrait": [
+    390,
+    844
+  ],
+  "consoleErrors": 0,
+  "staged": "/Users/stone/stake-engine/upload/HardTime",
+  "platformUpdated": true,
+  "zipsProduced": false,
+  "storeArtUnchanged": 5,
+  "screenshots": {
+    "desktop_peak.png": "viewport_1280x720_1793255867571.png",
+    "desktop_intro.png": "viewport_1280x720_1793255912587.png",
+    "desktop_intro_peak.png": "viewport_1280x720_1793255917296.png",
+    "desktop_fg.png": "viewport_390x844_1793255939728.png",
+    "portrait_fg_peak.png": "viewport_390x844_1793255947142.png",
+    "portrait_outro.png": "viewport_390x844_1793255994643.png",
+    "portrait_mg_peak.png": "viewport_390x844_1793255998180.png",
+    "portrait_intro.png": "viewport_390x844_1793256054242.png"
+  },
+  "portraitFullSecondFeature": "8/8 completed; total win $66.40, console errors 0",
+  "packageCheck": "PASS",
+  "platformFrontVersion": 19,
+  "platformMathVersion": 3,
+  "releaseEvidence": "../release_20261029/RELEASE.md"
+}

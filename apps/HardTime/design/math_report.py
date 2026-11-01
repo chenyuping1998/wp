@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Standard slot maths report for Hot Miami.
+"""Standard slot maths report for Hard Time.
 
 Laid out to match the report format used elsewhere in the studio. Everything is
 weighted by the lookup table, never counted off the books: the book file is the
@@ -26,15 +26,16 @@ from collections import defaultdict
 import zstandard as zstd
 
 UNITS = 100
-CAP = 20_000
+from game_settings import DEFAULT_BUNDLE, frontend_config
+CAP = float(frontend_config()['betModes']['base']['max_win'])
 
 # The strength groups are bound to the scatter tiers: a group is a tier, and a
 # tier is a group. Keyed off the book's own `criteria` rather than the bonusTier
 # event, because criteria is what the optimiser weighted against.
 TIER_NAME = {
-    "freegame_weak": "NeonNights/Weak",
-    "freegame_mid": "SunsetHits/Mid",
-    "freegame_strong": "OceanDrive/Strong",
+    "freegame_weak": "Lockdown/Weak",
+    "freegame_mid": "Riot/Mid",
+    "freegame_strong": "Breakout/Strong",
 }
 TIER_ORDER = ["freegame_weak", "freegame_mid", "freegame_strong"]
 
@@ -331,4 +332,4 @@ def main(bundle):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "upload/HotMiami/math")
+    main(sys.argv[1] if len(sys.argv) > 1 else str(DEFAULT_BUNDLE))

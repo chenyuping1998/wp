@@ -39,7 +39,39 @@
   {
    "name": "punch",
    "preset": "punch",
-   "params": {}
+   "params": {
+    "reach": 80,
+    "windup": 30,
+    "lean": 8
+   },
+   "tracks": [
+    {
+     "role": "chest",
+     "channel": "rotate",
+     "type": "strike",
+     "anticipation": {
+      "value": -2,
+      "time": 0.27,
+      "ease": "sineInOut"
+     },
+     "action": {
+      "value": 5,
+      "time": 0.07,
+      "ease": "snap"
+     },
+     "overshoot": {
+      "amount": 0.15,
+      "frequency": 6,
+      "damping": 8
+     },
+     "hold": 0.27,
+     "recover": {
+      "time": 0.25,
+      "ease": "sineInOut"
+     },
+     "space": "screen"
+    }
+   ]
   },
   {
    "name": "hit",

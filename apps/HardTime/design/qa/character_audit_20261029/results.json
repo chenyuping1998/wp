@@ -1,0 +1,19 @@
+{
+  "status": "FAIL",
+  "source_layers": 35,
+  "runtime_frames": 968,
+  "flips": 0,
+  "forearm_holes": 493,
+  "holes_covered_by_towel_at_setup": 493,
+  "desktop_min_x_css": -24,
+  "blocking": [
+    "prisoner source holes and towel fragments visible under motion",
+    "warden upper arm contains finger pixels",
+    "warden reaction clipped at left viewport edge",
+    "legacy feature cut-in bypasses Spine v2 acceptance",
+    "baton draw order predates 2026-10-28 rule"
+  ],
+  "product_changed": false,
+  "packaged": false,
+  "published": false
+}

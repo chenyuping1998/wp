@@ -131,7 +131,7 @@
 		const start = performance.now();
 		const tick = (now: number) => {
 			fxNow = (now - start) / 1000;
-			const mult = winLevelData ? (TIER_FX[winLevelData.alias]?.mult ?? 1) : 1;
+			const mult = winLevelData ? (TIER_FX[winLevelData?.alias ?? 'big']?.mult ?? 1) : 1;
 			if (fxNow >= nextTwinkleAt) {
 				twinkles = [
 					...twinkles.filter(({ born }) => fxNow - born < 0.7),
@@ -235,7 +235,7 @@
 				/>
 
 				{#if isBigWin}
-					{@const fx = TIER_FX[winLevelData.alias] ?? TIER_FX.big}
+					{@const fx = TIER_FX[winLevelData?.alias ?? 'big'] ?? TIER_FX.big}
 					<MainContainer>
 						<BigWinFx
 							x={context.stateGameDerived.boardLayout().x + shake.x * 0.4}
@@ -252,7 +252,7 @@
 						scale={punch}
 					>
 						{#if isBigWin}
-							{@const alias = winLevelData.alias}
+							{@const alias = winLevelData?.alias ?? 'big'}
 							{@const fx = TIER_FX[alias] ?? TIER_FX.big}
 							{@const bannerKey = BANNER_KEY[alias] ?? BANNER_KEY.big}
 							{@const bw = SYMBOL_SIZE * 5.2}

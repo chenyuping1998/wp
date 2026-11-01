@@ -64,7 +64,7 @@ for (const [who, variant] of [['mg', 'base'], ['fg', 'fg']]) {
   const rig = { ...kit,
     slots: mesh.map((l) => ({ name: l.name, bone: 'root', attachment: l.name })),
     skins: [{ name: 'default', attachments }],
-    turf: { figureBox: [0, 0, 0, 0], origin: [ox, oy], envelope: [0, 1024], idle: IDLE, reactions: REACTIONS, speed: SPEED,
+    turf: { layers: mesh.map(l => ({ name: l.name, crop: l.crop })), figureBox: [0, 0, 0, 0], origin: [ox, oy], envelope: [0, 1024], idle: IDLE, reactions: REACTIONS, speed: SPEED,
       generator: `spine-motion-kit ${kit.skeleton.spine} bones + weighted meshes (build_mesh_cast.py)` } };
 
   // Setup pose must reproduce the drawing; collect posed verts for the envelope.
@@ -87,7 +87,7 @@ for (const [who, variant] of [['mg', 'base'], ['fg', 'fg']]) {
     box = [Math.min(box[0], x), Math.min(box[1], y), Math.max(box[2], x), Math.max(box[3], y)];
   });
   assert(bind < 0.5, `${variant}: setup pose moved vertices by ${bind}px`);
-  rig.turf.figureBox = box.map(Math.round);
+  rig.turf.figureBox = [Math.min(...mesh.map(l=>l.inkBox[0])), Math.min(...mesh.map(l=>l.inkBox[1])), Math.max(...mesh.map(l=>l.inkBox[2])), Math.max(...mesh.map(l=>l.inkBox[3]))];
   let lo = Infinity, hi = -Infinity, top = Infinity;
   for (const name of [IDLE, ...new Set(Object.values(REACTIONS))]) {
     const anim = s.data.findAnimation(name);
@@ -96,7 +96,7 @@ for (const [who, variant] of [['mg', 'base'], ['fg', 'fg']]) {
     st.setAnimation(0, name, false);
     for (let t = 0; t <= anim.duration + 1e-6; t += 1 / 30) {
       s.setupPose(); st.tracks[0].trackTime = t; st.apply(s);
-      posed((_n, _v, x, y) => { lo = Math.min(lo, x); hi = Math.max(hi, x); top = Math.min(top, y); });
+      posed((_n, _v, x, y) => { if (!byName[_n].visibleVertices.includes(_v)) return; lo = Math.min(lo, x); hi = Math.max(hi, x); top = Math.min(top, y); });
     }
   }
   rig.turf.envelope = [Math.floor(lo), Math.ceil(hi)];
