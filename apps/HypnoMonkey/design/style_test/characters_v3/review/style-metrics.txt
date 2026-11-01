@@ -1,0 +1,8 @@
+review/01_h1.png: colors95=9 soft=8.8% chroma=23.6 fit=97.6% PASS
+review/02_l1.png: colors95=11 soft=8.5% chroma=35.8 fit=97.8% PASS
+review/03_scatter.png: colors95=14 soft=10.6% chroma=44.7 fit=96.9% PASS
+review/04_watch.png: colors95=25 soft=12.5% chroma=31.5 fit=96.2% PASS
+review/05_background.png: colors95=62 soft=9.2% chroma=34.4 fit=94.8% PASS
+review/06_mg_head.png: colors95=22 soft=12.8% chroma=13.0 fit=95.9% PASS
+review/07_fg_head.png: colors95=28 soft=14.3% chroma=25.5 fit=96.0% PASS
+sheet: review/readability.png

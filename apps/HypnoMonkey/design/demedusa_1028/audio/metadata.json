@@ -1,0 +1,156 @@
+[
+  {
+    "cue": "sfx_paper_1",
+    "sha256": "0f76b25da32eb2871249450281aa1525af99e3e90e6288317138d90a8898f052",
+    "frames": 4410,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.163315203158696,
+    "rms": 0.02255600907078736,
+    "loop": false,
+    "edgeDelta": 8.171207188837486e-06
+  },
+  {
+    "cue": "sfx_paper_2",
+    "sha256": "dc51bb64a3828f64b6b2656025546c452a3907550d1ede4a6d844c04887ff702",
+    "frames": 4410,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.1817861758176339,
+    "rms": 0.024291474052108207,
+    "loop": false,
+    "edgeDelta": 3.048673182821175e-07
+  },
+  {
+    "cue": "sfx_paper_3",
+    "sha256": "9143fde80faca1f8c81987009551fd9df92827f0a0031cc12c78601f235ece90",
+    "frames": 4410,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.1774023746961319,
+    "rms": 0.02419005449014789,
+    "loop": false,
+    "edgeDelta": 1.991447288233536e-06
+  },
+  {
+    "cue": "sfx_paper_4",
+    "sha256": "9b1e6bdc1778f42e03fc750704982fdff5624d050b1d2725cff1fd343b829b11",
+    "frames": 4410,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.1677254895236538,
+    "rms": 0.025931897574313675,
+    "loop": false,
+    "edgeDelta": 2.739976056763579e-06
+  },
+  {
+    "cue": "sfx_paper_5",
+    "sha256": "7866fd762fb23198509202de343d48240e47bd97c82844605cebce7fac082f9b",
+    "frames": 4410,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.17030597516189125,
+    "rms": 0.026692750567610373,
+    "loop": false,
+    "edgeDelta": 1.9000706781585482e-05
+  },
+  {
+    "cue": "sfx_paper_burst",
+    "sha256": "c6eeaf8413f475e13d2c4cb7868da3aee382c4ebc27e90d6009bd764c5d6e55d",
+    "frames": 12127,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.26063620312131286,
+    "rms": 0.036428676687111555,
+    "loop": false,
+    "edgeDelta": 2.6483966202572362e-06
+  },
+  {
+    "cue": "sfx_hypno_charge",
+    "sha256": "c593d4b503936cf1a002cf87c0cab304695fae16238478a729a2cdce980c882c",
+    "frames": 6615,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.14932399746145578,
+    "rms": 0.07013509345536327,
+    "loop": false,
+    "edgeDelta": 2.657214994106632e-08
+  },
+  {
+    "cue": "sfx_hypno_spiral",
+    "sha256": "a07f245ba410fef5e414ffb9a3a50fa95f68ff18993d854d83c24ea100bb724c",
+    "frames": 8820,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.1493135348409459,
+    "rms": 0.07016550668791169,
+    "loop": false,
+    "edgeDelta": 8.91453847006592e-09
+  },
+  {
+    "cue": "sfx_watch_tick",
+    "sha256": "8ea3ce39c4b940109c76da27420f43a310a12c77225cf1fa583c214cf19ab473",
+    "frames": 7056,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.1923520365156723,
+    "rms": 0.02371072142531567,
+    "loop": false,
+    "edgeDelta": 1.0202696699419628e-10
+  },
+  {
+    "cue": "sfx_balloon_squeak",
+    "sha256": "d1b6e3bf74bac1e448498e0bc9bf3b04313c325fe0925f9f6a4bc93020513b8f",
+    "frames": 6615,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.07796009500481131,
+    "rms": 0.033774990747597156,
+    "loop": false,
+    "edgeDelta": 1.2512318834435053e-08
+  },
+  {
+    "cue": "bgm_circus_base",
+    "sha256": "7b2c78aa1bd0575e237e866b5d373b7450b508fc8c08e5148c91f96fbd306546",
+    "frames": 396900,
+    "sampleRate": 22050,
+    "channels": 2,
+    "peak": 0.08284906659917396,
+    "rms": 0.028800256324165597,
+    "loop": true,
+    "edgeDelta": 0.0
+  },
+  {
+    "cue": "bgm_circus_feature",
+    "sha256": "87064c7e28bbfae89c1ce13eb365ba36dd6daf7f9324a54113e3239c2068b3a5",
+    "frames": 396900,
+    "sampleRate": 22050,
+    "channels": 2,
+    "peak": 0.08284906659917396,
+    "rms": 0.028958129217307182,
+    "loop": true,
+    "edgeDelta": 0.0
+  },
+  {
+    "cue": "amb_circus_plaza",
+    "sha256": "6e2204e1b7936fd339724566222baed1e8972f1003ed71df8644dac2d94e751f",
+    "frames": 132300,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.015967389440108698,
+    "rms": 0.0011635278409920164,
+    "loop": true,
+    "edgeDelta": 0.0
+  },
+  {
+    "cue": "amb_circus_stage",
+    "sha256": "c0c2ea85fbb3e7a22123741d08c49ffca7b25194c606faafa0a3d814b4341bcd",
+    "frames": 132300,
+    "sampleRate": 22050,
+    "channels": 1,
+    "peak": 0.015996462742601976,
+    "rms": 0.0011635489098265808,
+    "loop": true,
+    "edgeDelta": 0.0
+  }
+]

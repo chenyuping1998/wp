@@ -8,7 +8,7 @@ export const medusaAnimations = {
 		handAtMs: 200,
 		peekAtMs: 350,
 		beamAtMs: 600,
-		releaseAtMs: 750,
+		releaseAtMs: 620,
 		beamEndMs: 1000,
 	},
 	gaze_turbo: {

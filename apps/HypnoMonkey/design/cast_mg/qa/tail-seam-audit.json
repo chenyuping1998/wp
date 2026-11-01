@@ -1,0 +1,9 @@
+{
+  "flaggedAreaPx": 0,
+  "flaggedInsideDesignedTail": 0,
+  "flaggedOutsideDesignedTail": 0,
+  "wholeTailReferenceSamples": 9291,
+  "referenceSamplesMissingFromParts": 72,
+  "points": [],
+  "scope": "Rest-pose false-positive audit only; animated frames still require visual review"
+}

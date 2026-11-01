@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type Snippet } from 'svelte';
+	import { type Snippet, onMount } from 'svelte';
 	import { GlobalStyle } from 'components-ui-html';
 	import { Authenticate, LoadI18n } from 'components-shared';
 	import Game from '../components/Game.svelte';
@@ -13,6 +13,11 @@
 	const props: Props = $props();
 
 	setContext();
+ onMount(()=>{
+  let cleanup:(()=>void)|undefined,disposed=false;
+  if(import.meta.env.DEV&&new URLSearchParams(location.search).has('motionqa'))void import('../dev/motionControls').then(({installMotionControls})=>{if(!disposed)cleanup=installMotionControls();});
+  return()=>{disposed=true;cleanup?.();};
+ });
 </script>
 
 <GlobalStyle>

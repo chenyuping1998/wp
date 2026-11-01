@@ -10,6 +10,8 @@
 		x?: number;
 		y?: number;
 		state: SymbolState;
+		cell?:{reel:number;row:number};
+		idle?:boolean;
 		rawSymbol: RawSymbol;
 		oncomplete?: () => void;
 		loop?: boolean;
@@ -40,6 +42,9 @@
 	/>
 {:else if isSprite}
 	<SymbolSprite
+		name={props.rawSymbol.name}
+		cell={props.cell}
+		idle={props.idle && (props.state==='static'||props.state==='postWinStatic')}
 		{symbolInfo}
 		x={props.x}
 		y={props.y}

@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-28",
+  "status": "VISUAL_AND_CODE_IMPLEMENTED_VOICES_PENDING",
+  "build": "pnpm build",
+  "buildPassed": true,
+  "buildLog": "qa/build.log",
+  "assistantRevisionCheckPassed": true,
+  "audioPcmAndBudgetPassed": true,
+  "audioBytes": 10464824,
+  "mockBook": "baseTrigger",
+  "round": "15 free spins, total 145.70 at USD1 local mock, payout and return to MG verified",
+  "viewports": [
+    [
+      1280,
+      720
+    ],
+    [
+      375,
+      812
+    ],
+    [
+      320,
+      640
+    ]
+  ],
+  "orientationRegression": "Portrait mask hidden on landscape; repeated landscape→portrait→landscape verified without white strip",
+  "diagnostics": "Feature intro/outro player click waits are excluded from automatic stall timeout. No new console errors after final fix at 07:51UTC. Earlier missing curtain preload and player-wait false positive retained in browser history.",
+  "screenshots": {
+    "mobile375-fg-cheer.png": "1c9606d5d919e3cddead1daf1bd1611d68d89457a5b2a3103cef39660a7f8da4",
+    "mobile320-fg-cheer.png": "d57c799220a47ce461424cb32911d574b98cf53fbaeaa0c88af679c88cf59b3c",
+    "desktop-fg-final.png": "7cc78e43c80d65dce5662c07a923a402a9e470c9b41d2f95e23c0055990415ac",
+    "desktop-fg-action.png": "4c05f5d30e8cba0fc9b0dcc7003eb927aac0ebd283d3e89fb9ebd54c46ee1ea2",
+    "desktop-max.png": "8a6d4ff0973addcd6353c6daff751683ea151034bf6e3dd5e30851e8ac42b168"
+  },
+  "sourceChecks": "design/check_assistant_revision.mjs",
+  "pending": [
+    "Male and female nonverbal character voice recordings",
+    "Crowd voices for plaza ambience"
+  ],
+  "uploadStaged": false,
+  "platformUpdated": false
+}

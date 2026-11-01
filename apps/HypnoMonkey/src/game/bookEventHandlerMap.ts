@@ -14,6 +14,7 @@ import type { Position, RawSymbol, SymbolName } from './types';
 import { BOARD_DIMENSIONS } from './constants';
 import config from './config';
 import { featureTotal } from './featureTotal';
+import {medusaAnimations} from './animationTimeline';
 
 // The math numbers the reels after the one where the third Aegis landed 1, 2,
 // 3… (anticipation_triggers = 3, one short of the four that open free spins).
@@ -180,7 +181,6 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	 */
 	tumbleBoard: async (bookEvent: BookEventOfType<'tumbleBoard'>, { bookEvents }: BookEventContext) => {
 		eventEmitter.broadcast({ type: 'scatterWinsHide' });
-		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
 		await eventEmitter.broadcastAsync({
 			type: 'tumbleRun',
 			explodingSymbols: bookEvent.explodingSymbols,
@@ -250,8 +250,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await waitForTimeout(Math.max(0, 2000 - (performance.now() - triggerStart)));
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
-		stateGame.gameType = 'freegame';
-		await eventEmitter.broadcastAsync({ type: 'transition' });
+		await eventEmitter.broadcastAsync({type:'transition',oncover:()=>{eventEmitter.broadcast({type:'medusaPose',pose:'idle'});stateGame.gameType='freegame';},onreveal:()=>eventEmitter.broadcast({type:'medusaAction',animation:'fg_trigger'})});
 		eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'jng_intro_fs' });
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
@@ -337,6 +336,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		const winLevelData = winLevelMap[total.winLevel as WinLevel];
 
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
+		const fgEndStarted=performance.now();
 		eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_end' });
 		eventEmitter.broadcast({ type: 'soundMedusa', cue: 'glassesOn' });
 		// The running-total plate stays up under the outro plaque — it is the
@@ -356,9 +356,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'medusaTotalHide' });
 		stateGame.medusaTotal = 0;
 		stateUi.freeSpinCounterShow = false;
-		stateGame.gameType = 'basegame';
+		await waitForTimeout(Math.max(0,medusaAnimations.fg_end.durationMs-(performance.now()-fgEndStarted)));
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
-		await eventEmitter.broadcastAsync({ type: 'transition' });
+		await eventEmitter.broadcastAsync({type:'transition',oncover:()=>{eventEmitter.broadcast({type:'medusaPose',pose:'idle'});stateGame.gameType='basegame';}});
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });

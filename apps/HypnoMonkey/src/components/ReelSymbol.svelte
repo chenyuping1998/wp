@@ -4,6 +4,7 @@
 	import { getSymbolX } from '../game/utils';
 	import { stateGame, type ReelSymbol } from '../game/stateGame.svelte';
 	import type { SymbolState } from '../game/types';
+	import { SYMBOL_SIZE } from '../game/constants';
 	import { symbolTravelBlur } from '../game/symbolMotion';
 	import { isCovered } from '../game/watchCells.svelte';
 
@@ -31,6 +32,7 @@
 	// drop-out, which is the only genuinely fast movement; the fall-in ends in a
 	// bounce and carrying full blur through it made symbols snap from heavily
 	// smeared to perfectly sharp in a single frame.
+	const boardActing=$derived(stateGame.board.some(reel=>reel.reelState.anticipating||reel.reelState.symbols.slice(1,-1).some(symbol=>['win','explosion','spin','land'].includes(symbol.symbolState))));
 	const reelMotion = $derived(stateGame.board[props.reelIndex]?.reelState.motion);
 	const blur = $derived(reelMotion === 'fallingOut' ? 1 : reelMotion === 'fallingIn' ? 0.35 : props.reelSymbol.symbolState === 'spin' ? symbolTravelBlur(props.reelSymbol, props.reelSymbol.symbolY.current) : 0);
 
@@ -80,6 +82,8 @@
 	>
 		<Symbol
 			state={forState}
+   cell={{reel:props.reelIndex,row:Math.round(props.reelSymbol.symbolY.current / SYMBOL_SIZE)}}
+   idle={!boardActing&&reelMotion==='stopped'&&(forState==='static'||forState==='postWinStatic')}
 			rawSymbol={props.reelSymbol.rawSymbol}
 			{blur}
 			impact={landingImpact}

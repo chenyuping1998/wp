@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	export type EmitterEventTransition = { type: 'transition' };
+	export type EmitterEventTransition = { type: 'transition'; oncover?:()=>void; onreveal?:()=>void };
 </script>
 
 <script lang="ts">
@@ -11,10 +11,13 @@
 	const context = getContext();
 
 	let transitioning = $state(false);
+	let oncover=$state<(()=>void)|undefined>();
+	let onreveal=$state<(()=>void)|undefined>();
 	let oncomplete = $state(() => {});
 
 	context.eventEmitter.subscribeOnMount({
-		transition: async () => {
+		transition: async (event) => {
+			oncover=event.oncover;onreveal=event.onreveal;
 			transitioning = true;
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
@@ -23,6 +26,7 @@
 
 {#if transitioning}
 	<TransitionAnimation
+		{oncover} {onreveal}
 		oncomplete={() => {
 			oncomplete();
 			transitioning = false;

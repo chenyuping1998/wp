@@ -87,6 +87,17 @@
 		<Container x={cx} y={cy - 34 * tail} rotation={(i - 1) * 0.02 * tail} alpha={1 - tail}>
 			<Graphics draw={drawCard} />
 			<Sprite key={panel.key} anchor={0.5} x={sceneX} y={sceneY} width={pw} height={pw * 0.75} />
+			{#if i === 1}
+                <Text text="×100" anchor={0.5} x={sceneX - pw * 0.25} y={sceneY - pw / 24} rotation={-0.1} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:pw*.055,fill:0x3a2021}} />
+                <Container x={sceneX-pw*.26} y={sceneY+pw*.245}>
+                    <Sprite key="mgFsPanel" anchor={0.5} width={pw*.45} height={pw*.21}/>
+                    {#each Array.from({length:30},(_,n)=>n) as n}
+                        <Sprite key={['mgH1','mgL1','mgH2','mgL2','mgH3','mgH4','mgL3','mgH5','mgL4','mgS'][n%10]} anchor={0.5} x={(n%6-2.5)*pw*.069} y={(Math.floor(n/6)-2)*pw*.037} width={pw*.034} height={pw*.034}/>
+                    {/each}
+                </Container>
+            {:else if i === 2}
+                <Text text="TOTAL ×250" anchor={0.5} x={sceneX+pw*.245} y={sceneY-pw*.02} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:pw*.042,fill:0xffebbc}} />
+            {/if}
 			<Text
 				text={panel.title}
 				anchor={0.5}

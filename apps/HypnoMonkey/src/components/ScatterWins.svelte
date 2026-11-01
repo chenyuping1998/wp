@@ -26,6 +26,11 @@
 	const slotY = (row: number) => (row - 0.5) * SYMBOL_SIZE;
 	const amountAlpha = $derived(smooth((age / clockScale - 95) / 75));
 	const amountLift = $derived(8 * smooth(age / clockScale / 270));
+	// A quick overshoot makes each award read before the clearing beat.
+	const amountScale = $derived.by(() => {
+		const t = Math.max(0, age / clockScale - 95);
+		return t < 150 ? 0.75 + 0.4 * smooth(t / 150) : 1.15 - 0.15 * smooth((t - 150) / 130);
+	});
 	context.eventEmitter.subscribeOnMount({
 		scatterWinsHide: () => { generation++; visible = false; wins = []; cancelAnimationFrame(raf); },
 		scatterWinsShow: async ({ wins: incoming, pace = 'normal' }) => {
@@ -58,9 +63,24 @@
 				if (!winning.has(`${reel}:${row}`)) g.rect(getSymbolX(reel) - SYMBOL_SIZE / 2, slotY(row) - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE).fill({ color: 0x000000, alpha: 0.4 });
 			}
 		}} />
+		<Graphics draw={(g) => {
+			g.clear();
+			const entrance = smooth(age / clockScale / 100);
+			const pulse = 0.5 + 0.5 * Math.sin(age / clockScale / 95);
+			const heat = Math.min(3, Math.max(0, context.stateGame.tumbleChain - 1));
+			for (const win of wins) for (const pos of win.positions) {
+				if (pos.row < 1 || pos.row > BOARD_DIMENSIONS.y) continue;
+				const x = getSymbolX(pos.reel) - SYMBOL_SIZE * 0.46;
+				const y = slotY(pos.row) - SYMBOL_SIZE * 0.46;
+				g.roundRect(x, y, SYMBOL_SIZE * 0.92, SYMBOL_SIZE * 0.92, 10)
+					.stroke({ color: 0xb877ef, width: 6 + heat, alpha: entrance * (0.15 + pulse * 0.15) });
+				g.roundRect(x, y, SYMBOL_SIZE * 0.92, SYMBOL_SIZE * 0.92, 10)
+					.stroke({ color: heat >= 2 ? 0xffd75e : 0xedd6ff, width: 2, alpha: entrance * (0.65 + pulse * 0.3) });
+			}
+		}} />
 		{#each wins as win, index (index)}
-			<Container x={getSymbolX(win.overlay.reel)} y={slotY(win.overlay.row) + 8 - amountLift} alpha={amountAlpha}>
-				<GoldText text={bookEventAmountToCurrencyString(win.win)} fontSize={SYMBOL_SIZE * 0.30} anchor={0.5} maxWidth={SYMBOL_SIZE * 1.9} />
+			<Container x={getSymbolX(win.overlay.reel)} y={slotY(win.overlay.row) + 8 - amountLift} alpha={amountAlpha} scale={amountScale}>
+				<GoldText text={bookEventAmountToCurrencyString(win.win)} fontSize={SYMBOL_SIZE * 0.36} anchor={0.5} maxWidth={SYMBOL_SIZE * 1.9} />
 			</Container>
 		{/each}
 	</BoardContainer>

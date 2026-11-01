@@ -16,20 +16,20 @@ setUiTheme({
 	barStyle: 'framed',
 	barHeight: 210,
 	barFrameBottom: 18,
-	barFill: 0x1e4950,
+	barFill: 0x57251f,
 	barAlpha: 1,
-	panelFill: 0x173a40,
+	panelFill: 0x44201d,
 	panelBorder: 0x2a1f24,
 
-	buttonFill: 0x1e4950,
+	buttonFill: 0x57251f,
 	buttonFillLight: 0xe8725e,
 	buttonFillDisabled: 0x3b4648,
 	buttonFillActive: 0xf2b632,
 	buttonBorder: 0x2a1f24,
 	// the disc art carries its own ring; ON is drawn by the lit disc
 	buttonBorderWidth: 0,
-	buttonIconFill: 0x071f2b,
-	buttonIconStroke: 0x071f2b,
+	buttonIconFill: 0xffedc2,
+	buttonIconStroke: 0x351b19,
 	// the gap cut round the front bolt of turbo 2, in the disc's own red (sampled
 	// from button_disc / _on): cream merged the two white bolts into one blob
 	turboKeylineColor: 0x8a010e,

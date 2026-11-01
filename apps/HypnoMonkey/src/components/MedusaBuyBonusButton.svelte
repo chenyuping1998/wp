@@ -10,13 +10,14 @@
 	const sizes={width:135,height:135},plate=146;
 	const disabled=$derived(!context.stateXstateDerived.isIdle());
 	const active=$derived(stateBetDerived.activeBetMode()?.type==='activate');
-	let pop=$state(0),shine=$state(0),raf=0;
+	let pop=$state(0),shine=$state(0),hovered=$state(false),raf=0;
 	const hitArea={contains:(x:number,y:number)=>{
 		const u=(x-sizes.width/2)/plate+.5,v=(y-sizes.height/2)/plate+.5;
 		const points=[[.5,.04],[.90,.20],[.96,.42],[.90,.71],[.5,.96],[.10,.71],[.04,.42],[.10,.20]];let inside=false;
 		for(let i=0,j=points.length-1;i<points.length;j=i++){const a=points[i],b=points[j];if((a[1]>v)!==(b[1]>v)&&u<(b[0]-a[0])*(v-a[1])/(b[1]-a[1])+a[0])inside=!inside;}return inside;
 	}};
 	function hover(value:boolean){
+		hovered=value&&!disabled;
 		if(!value||disabled)return;context.eventEmitter.broadcast({type:'soundOnce',name:'sfx_buybonus_hover'});
 		cancelAnimationFrame(raf);const start=performance.now();const tick=(now:number)=>{const t=(now-start)/650;pop=t<.25?1-(1-t/.25)**3:t<1?(1-(t-.25)/.75)**3:0;shine=t>.15&&t<.65?Math.sin((t-.15)/.5*Math.PI):0;if(t<1)raf=requestAnimationFrame(tick);};raf=requestAnimationFrame(tick);
 	}
@@ -26,11 +27,11 @@
 <Button {...props} {sizes} {disabled} {hitArea} onpress={press} onhover={hover}>
 	{#snippet children({center})}
 		<Container {...center} scale={1+.06*pop}>
-			<Sprite key="mgUiBuyBonus" anchor={.5} width={plate} height={plate} tint={disabled?0x8e9695:0xffffff}/>
+			<Sprite key={hovered&&!disabled?'mgUiBuyBonusLit':'mgUiBuyBonus'} anchor={.5} width={plate} height={plate} alpha={disabled?.65:1}/>
 			{#if shine>0}<Sprite key="fxStreak" anchor={.5} x={-plate*.015} y={-plate*.22} width={plate*.27} height={plate*.025} rotation={-.25} alpha={shine*.8} blendMode="add"/>{/if}
 		</Container>
 		<!-- inside the booth window (x 108-532, y 255-425 of the 640 plate): two lines
 		     must fit its 27% height, or BONUS sits on the counter -->
-		<Text x={center.x} y={center.y+plate*.031} anchor={.5} text={active?i18nDerived.disable():i18nDerived.buyBonus()} alpha={disabled?.6:1} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:15,lineHeight:16,wordWrap:true,wordWrapWidth:plate*.58,align:'center',fill:0x173a40}}/>
+		<Text x={center.x} y={center.y+plate*.031} anchor={.5} text={active?i18nDerived.disable():i18nDerived.buyBonus()} alpha={disabled?.6:1} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:15,lineHeight:16,wordWrap:true,wordWrapWidth:plate*.58,align:'center',fill:0xffedc2,stroke:{color:0x351b19,width:2}}}/>
 	{/snippet}
 </Button>

@@ -1,0 +1,20 @@
+[
+  {
+    "action": "idle",
+    "time": 0,
+    "frame": 0,
+    "nativeScale": 2.3740055987103297
+  },
+  {
+    "action": "gaze_dud",
+    "time": 0.56,
+    "frame": 240,
+    "nativeScale": 2.3740055987103297
+  },
+  {
+    "action": "fg_end",
+    "time": 0.6,
+    "frame": 480,
+    "nativeScale": 2.3740055987103297
+  }
+]

@@ -1,5 +1,7 @@
 # Hypno Monkey
 
+Front v6 published 2026-10-30; math remains v1. Added pulsing winner outlines, larger popping win amounts and burst-synchronised sound; includes current synchronized cast atlases. Upload verified with zero remaining actions.
+
 Front v5, staged 2026-10-29 (math unchanged, still v1). Front v5: both casts' cheer is a plain raise (IK off on the raised arm, elbow leads, no 200-degree forearm swing).
 
 Front v4, published 2026-10-29 (math unchanged, still v1). Front v4: cast cheer motions no longer twitch (bezier handles fixed); a pocket watch holds its own cell (no symbol under it, stays in the cell after settling or breaking, falls out with the board on the next spin).

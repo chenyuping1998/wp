@@ -4,7 +4,7 @@ export const CLOUD_PIXELS_PER_SECOND = BACKGROUND_SIZE.width / 5 / 60;
 export const STATUE_SECONDS = 1.2;
 export const STATUE_TO_MEDUSA_HEIGHT=1/5;
 export const FLAME_ANCHOR_V = 1434 / 1536;
-export const BACKGROUND_KEYS = ['mgBgBase', 'mgBgFree', 'mgBgCloud', 'mgBgTourist', 'mgBgIcecream', 'mgBgFlame', 'fxCrack1', 'fxCrack2', 'fxCrack3', 'fxGlow'] as const;
+export const BACKGROUND_KEYS = ['mgBgBase', 'mgBgFree', 'mgBgCloud', 'mgBgTourist', 'mgBgIcecream'] as const;
 export const FLAME_GRID = { columns: 18, rows: 28 } as const;
 export const CLOUDS = [
 	{ x: 580, y: 64, width: 600, height: 200 },

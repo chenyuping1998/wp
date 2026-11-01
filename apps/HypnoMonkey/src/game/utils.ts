@@ -23,7 +23,8 @@ export const { getEmptyBoard } = createGetEmptyPaddedBoard({ reelsDimensions: BO
 
 installErrorLogging();
 
-// A handler that has not finished by now is not slow, it is stuck. The longest
+// Slow-handler diagnostic only. Feature intro/outro intentionally await a player
+// click, so their elapsed time is not evidence of a stalled round. The longest
 // legitimate event is freeSpinTrigger, which spends 3s on the scatter hold plus
 // three symbol animations, a transition and the intro board — comfortably under
 // this. Logged as a warning rather than acted on: the sequence may still be
@@ -43,7 +44,8 @@ const tracedBookEventHandlerMap = Object.fromEntries(
 	Object.entries(bookEventHandlerMap).map(([type, handler]) => [
 		type,
 		async (bookEvent: BookEvent, context: unknown) => {
-			const stall = setTimeout(
+			const waitsForPlayer = type === 'freeSpinTrigger' || type === 'freeSpinEnd';
+			const stall = waitsForPlayer ? undefined : setTimeout(
 				() =>
 					console.error(
 						`[MedusaGaze] book event "${type}" has not finished after ${STALL_WARN_MS}ms — the round is stuck here`,
@@ -57,7 +59,7 @@ const tracedBookEventHandlerMap = Object.fromEntries(
 				console.error(`[MedusaGaze] book event "${type}" failed`, { bookEvent, error });
 				throw error;
 			} finally {
-				clearTimeout(stall);
+				if(stall !== undefined)clearTimeout(stall);
 			}
 		},
 	]),

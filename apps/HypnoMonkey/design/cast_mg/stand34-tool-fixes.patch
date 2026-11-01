@@ -1,0 +1,183 @@
+diff --git a/src/presets34.ts b/src/presets34.ts
+index 1a6874e..2ae3822 100644
+--- a/src/presets34.ts
++++ b/src/presets34.ts
+@@ -190,11 +190,13 @@ const standFidget: PresetDef = {
+     const grip = { x: G.x - pinch.x, y: G.y - pinch.y };
+     // two small twists of the lens: the hand circles while it holds it
+     const twist = (t: number) => (t > 0.55 && t < 1.35 ? Math.sin(((t - 0.55) / 0.8) * 2 * Math.PI) : 0);
+-    hand(c, out, c.role('fistFront'), D, b, (t, r) => {
++    const nearAt = hand(c, out, c.role('fistFront'), D, b, (t, r) => {
+       const up = window(t, 0.1, 0.5) * (1 - window(t, 1.4, 1.85));
+       const p = mix(r, grip, up);
+       return { x: p.x + 0.006 * H * twist(t), y: p.y + 0.004 * H * Math.abs(twist(t)) };
+     });
++    holdUpright(c, out, c.role('fistFront'), 'handF', D, nearAt,
++      t => window(t, 0.1, 0.5) * (1-window(t, 1.4, 1.85)));
+     hand(c, out, c.role('fistBack'), D, b, () => null);
+     if (glasses) out.local.push({ bone: glasses, channel: 'rotate', motion: fn(D, (t) => 9 * twist(t)) });
+     tail(c, out, D, 3, D, false);
+@@ -245,11 +247,13 @@ const hypnoGaze: PresetDef = {
+     const pull = c.param('pull', 0.035) * H;
+     const down = (t: number) => pull * (window(t, 0.3, 0.45) - window(t, 1.15, 1.32));
+     const onFace = (t: number) => followHip(c, G, b.x.value(t), b.y.value(t), b.rot.value(t));
+-    hand(c, out, c.role('fistFront'), D, b, (t, r) => {
++    const nearAt = hand(c, out, c.role('fistFront'), D, b, (t, r) => {
+       const g = onFace(t);
+       const grip = { x: g.x - pinch.x, y: g.y - pinch.y - down(t) };
+       return mix(r, grip, window(t, 0.06, 0.3) * (1 - window(t, 1.3, 1.56)));
+     });
++    holdUpright(c, out, c.role('fistFront'), 'handF', D, nearAt,
++      t => window(t, 0.06, 0.3) * (1-window(t, 1.3, 1.56)));
+     if (glasses) out.screen.push({ bone: glasses, channel: 'y', motion: fn(D, (t) => -down(t), [0.3, 0.45, 1.15, 1.32]) });
+ 
+     // far hand: from the hip straight out at the board, a slight upward angle, buzzing while it holds
+@@ -259,7 +263,7 @@ const hypnoGaze: PresetDef = {
+       const ang = (c.param('pointUp', 12) * Math.PI) / 180;
+       const reach = c.param('reach', 0.97) * chain.reach;
+       const buzz = shake({ amplitude: 0.0025 * H, frequency: 11, duration: D, envelope: 'flat', seed: 7 });
+-      hand(c, out, far, D, b, (t, r) => {
++      const farAt = hand(c, out, far, D, b, (t, r) => {
+         const sh = followHip(c, chain.root, b.x.value(t), b.y.value(t), b.rot.value(t));
+         const point = { x: sh.x + Math.cos(ang) * reach * tb, y: sh.y + Math.sin(ang) * reach };
+         // the arm whips out on an arc (through a point above the straight line) and comes home late
+@@ -270,6 +274,9 @@ const hypnoGaze: PresetDef = {
+         const hold = t > 0.62 && t < 1.18 ? buzz.value(t) : 0;
+         return { x: p.x, y: p.y + arc + hold };
+       });
++      holdUpright(c, out, far, 'handB', D, farAt,
++        t => window(t,0.45,0.62) * (1-window(t,1.18,1.52)),
++        () => -c.param('pointUp',12)*c.facing);
+     }
+     tail(c, out, D, 3, 0.8, false);
+     out.events.push({ name: 'throw', time: 0.62 });
+diff --git a/src/solve.ts b/src/solve.ts
+index 06027c3..c1529fd 100644
+--- a/src/solve.ts
++++ b/src/solve.ts
+@@ -105,7 +105,17 @@ export function solveScreen(
+   // IK targets go last: their reach guard measures from the chain's root (a shoulder, a hip), which the body bones move.
+   // A target under the root has the same depth as the hip, so depth alone could solve it against the unmoved shoulder.
+   const ikTargets = new Set<string>((json.constraints ?? []).filter((c: SpineJson) => c.type === 'ik').map((c: SpineJson) => c.target));
+-  const last = (b: Bone) => (ikTargets.has(b.data.name) ? 1 : 0);
++  const constrained = new Set<string>((json.constraints ?? [])
++    .filter((c: SpineJson) => c.type === 'ik').flatMap((c: SpineJson) => c.bones ?? []));
++  const last = (b: Bone) => {
++    if (ikTargets.has(b.data.name)) return 1;
++    // Descendant rotation is measured after its IK target has moved the chain.
++    // Solving a held prop first cancels yesterday's parent angle, tilting it.
++    for (let p: Bone | null = b; p; p = p.parent) {
++      if (constrained.has(p.data.name)) return 2;
++    }
++    return 0;
++  };
+   const order = [...byBone.keys()].map(find).sort((a, b) => last(a) - last(b) || depth(a) - depth(b));
+   for (const b of order) {
+     const lt = local.find((l) => l.bone === b.data.name && ['x', 'y', 'rotate'].includes(l.channel) && byBone.get(b.data.name)![l.channel as 'x']);
+diff --git a/src/stand34.ts b/src/stand34.ts
+index 8aff268..3012854 100644
+--- a/src/stand34.ts
++++ b/src/stand34.ts
+@@ -340,7 +340,9 @@ export function buildRig34(joints: Joints34, layerNames: string[], name = 'chara
+       const lx = c * dx - s * dy, ly = s * dx + c * dy;
+       if (Math.abs(lx) > 1e-3) out.x = r3(lx);
+       if (Math.abs(ly) > 1e-3) out.y = r3(ly);
+-      const lr = normDeg(rot - p.rot);
++      // A no-rotation child keeps a world-oriented basis; subtracting the
++      // shin rotation tilts its artwork even in the original setup pose.
++      const lr = b.inherit === 'noRotationOrReflection' ? rot : normDeg(rot - p.rot);
+       if (Math.abs(lr) > 1e-3) out.rotation = r3(lr);
+     }
+     if (len) out.length = r3(len);
+diff --git a/test/stand34.test.ts b/test/stand34.test.ts
+index 2e639d3..7308248 100644
+--- a/test/stand34.test.ts
++++ b/test/stand34.test.ts
+@@ -10,11 +10,39 @@ import { decodePngAlpha } from '../src/png.ts';
+ import { buildCharacter, characterRows, layerName } from '../src/character.ts';
+ import { isStand34, STAND34_ANIMS } from '../src/stand34.ts';
+ import { parseSkeleton, sampleAnimation } from '../src/spineJson.ts';
++import { Skeleton, Physics, AnimationState, AnimationStateData } from '@esotericsoftware/spine-core';
+ 
+ const dir = new URL('../examples/characters/stand34-test/layers/', import.meta.url);
+ const alphas = new Map(readdirSync(dir).filter((f) => f.endsWith('.png')).map((f) => [layerName(f), decodePngAlpha(new Uint8Array(readFileSync(new URL(f, dir))))]));
+ const r = buildCharacter(alphas, { name: 'stand34-test' });
+ 
++test('stand34: shoe image axes stay level in setup and through all motions', () => {
++  const data = parseSkeleton(r.json);
++  const skeleton = new Skeleton(data);
++  const attachments = r.json.skins[0].attachments;
++  for (const animation of [null, ...data.animations]) {
++    const count = animation ? Math.ceil(animation.duration * 30) : 0;
++    for (let frame = 0; frame <= count; frame++) {
++      skeleton.setupPose();
++      if (animation) {
++        const state = new AnimationState(new AnimationStateData(data));
++        state.setAnimation(0, animation.name, false);
++        state.update(frame / 30);
++        state.apply(skeleton);
++      }
++      skeleton.updateWorldTransform(Physics.none);
++      for (const [slot, bone] of [['foot_l', 'footB'], ['foot_r', 'footF']]) {
++        const p = skeleton.findBone(bone)!.getAppliedPose();
++        const angle = attachments[slot][slot].rotation * Math.PI / 180;
++        const c = Math.cos(angle), s = Math.sin(angle);
++        const x = p.a*c+p.b*s, y = p.c*c+p.d*s;
++        assert.ok(Math.abs(y) < 0.001 && Math.abs(x-1) < 0.001,
++          `${animation?.name ?? 'setup'} @${frame/30}: ${slot} image axis ${x},${y}`);
++      }
++    }
++  }
++});
++
+ test('stand34: detected from the layer names, every motion built', () => {
+   assert.ok(isStand34(alphas.keys()));
+   assert.equal(r.template, 'stand34');
+@@ -22,6 +50,47 @@ test('stand34: detected from the layer names, every motion built', () => {
+   assert.deepEqual(r.warnings, []);
+ });
+ 
++test('stand34: a held hat stays upright after the arm IK is solved', () => {
++  const data=parseSkeleton(r.json);
++  const skeleton=new Skeleton(data);
++  const attachment=r.json.skins[0].attachments.hand_r.hand_r_hatheld;
++  for(let frame=0;frame<=36;frame++) {
++    skeleton.setupPose();
++    const state=new AnimationState(new AnimationStateData(data));
++    state.setAnimation(0,'win_big_loop',false);
++    state.update(frame/30);
++    state.apply(skeleton);
++    skeleton.updateWorldTransform(Physics.none);
++    const p=skeleton.findBone('handF')!.getAppliedPose();
++    const angle=attachment.rotation*Math.PI/180;
++    const x=p.a*Math.cos(angle)+p.b*Math.sin(angle);
++    const y=p.c*Math.cos(angle)+p.d*Math.sin(angle);
++    const tilt=Math.atan2(y,x)*180/Math.PI;
++    assert.ok(Math.abs(tilt)<15,`hat at ${frame/30}s tilted ${tilt} degrees`);
++  }
++});
++
++test('stand34: pointing and pinching keep their authored gesture orientation', () => {
++  const data=parseSkeleton(r.json);
++  const skin=r.json.skins[0].attachments;
++  for(const [animation,time,slot,bone,drawing,want] of [
++    ['gaze',0.8,'hand_l','handB','hand_l_point',-12],
++    ['gaze',0.8,'hand_r','handF','hand_r_pinch',0],
++    ['idle_fidget',0.8,'hand_r','handF','hand_r_pinch',0],
++  ] as const) {
++    const skeleton=new Skeleton(data);
++    skeleton.setupPose();
++    const state=new AnimationState(new AnimationStateData(data));
++    state.setAnimation(0,animation,false);state.update(time);state.apply(skeleton);
++    skeleton.updateWorldTransform(Physics.none);
++    const p=skeleton.findBone(bone)!.getAppliedPose();
++    const angle=skin[slot][drawing].rotation*Math.PI/180;
++    const x=p.a*Math.cos(angle)+p.b*Math.sin(angle);
++    const y=p.c*Math.cos(angle)+p.d*Math.sin(angle);
++    assert.ok(Math.abs(Math.atan2(y,x)*180/Math.PI-want)<0.05,`${animation}/${drawing}`);
++  }
++});
++
+ test('stand34: every motion smooth (≥ 95), no seams, no flips', () => {
+   for (const x of characterRows(r)) {
+     assert.ok(x.score >= 95, `${x.name} score ${x.score}: ${x.problems.join(' / ')}`);

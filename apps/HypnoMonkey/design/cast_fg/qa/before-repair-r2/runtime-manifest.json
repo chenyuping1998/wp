@@ -1,0 +1,297 @@
+{
+  "sourceLayers": 32,
+  "atlas": "/Users/stone/stake-engine/wp-hypno/apps/HypnoMonkey/static/assets/sprites/hypnoCast/fg-atlas.png",
+  "atlasSha256": "c264aeac55b229bf023a4ff91e493bf83e704135cb7c069db5657bebb31e68cb",
+  "spineSha256": "cebd594369e0ecd6fb97abe7ed2d294a36375c76fcd9731c5906539968e5a165",
+  "runtimeSpineSha256": "cebd594369e0ecd6fb97abe7ed2d294a36375c76fcd9731c5906539968e5a165",
+  "crops": {
+    "leg_r_upper": {
+      "x": 2,
+      "y": 2,
+      "width": 167,
+      "height": 368,
+      "cropX": 479,
+      "cropY": 747,
+      "sourceSha256": "95615c9b9455ab54ad2912e046d5ff0c36f0cd662b7f51715b7886612723797b"
+    },
+    "torso": {
+      "x": 173,
+      "y": 2,
+      "width": 267,
+      "height": 342,
+      "cropX": 355,
+      "cropY": 355,
+      "sourceSha256": "9dfac5fc3c933a151964791af971dedab9806fb8efd9360508cb3d5903322fd3"
+    },
+    "leg_l_upper": {
+      "x": 444,
+      "y": 2,
+      "width": 214,
+      "height": 338,
+      "cropX": 271,
+      "cropY": 758,
+      "sourceSha256": "40f65212d4ac87d068fbe4f0875c28218821e73b6d23414c79a217e47424dcb0"
+    },
+    "leg_r_lower": {
+      "x": 662,
+      "y": 2,
+      "width": 129,
+      "height": 319,
+      "cropX": 547,
+      "cropY": 1044,
+      "sourceSha256": "5511e86c5076a981829264ff8cb20b0587528931422a96620076f403458fca93"
+    },
+    "leg_l_lower": {
+      "x": 795,
+      "y": 2,
+      "width": 131,
+      "height": 318,
+      "cropX": 292,
+      "cropY": 1025,
+      "sourceSha256": "ad3a2f6fe76e0ce8191666f897b9c9dcd29a4313b8c3e0a4b3de75b6fd7e0f24"
+    },
+    "head_idle": {
+      "x": 930,
+      "y": 2,
+      "width": 355,
+      "height": 308,
+      "cropX": 340,
+      "cropY": 68,
+      "sourceSha256": "c6c8a57e3fce90976b5a9767d7ea652ca1975453743b8a39b583c7174b3d7c6e"
+    },
+    "head_blink": {
+      "x": 1289,
+      "y": 2,
+      "width": 355,
+      "height": 308,
+      "cropX": 340,
+      "cropY": 68,
+      "sourceSha256": "6bcef9dfcae989ebed878a6fa3b8b7a2f3c17fd9e309bd7c173434607c8a4a90"
+    },
+    "head_grin": {
+      "x": 1648,
+      "y": 2,
+      "width": 355,
+      "height": 308,
+      "cropX": 340,
+      "cropY": 68,
+      "sourceSha256": "af0ca0fe588a392859510bc323eada70c23fe792e8a79853d277d2c7dcbc1379"
+    },
+    "head_annoyed": {
+      "x": 2,
+      "y": 372,
+      "width": 355,
+      "height": 308,
+      "cropX": 340,
+      "cropY": 68,
+      "sourceSha256": "b52ba860c688fa8008d01cce48f93d6f1aa77286cf0aa521c9e1a81ae9dba711"
+    },
+    "head_spiral": {
+      "x": 361,
+      "y": 372,
+      "width": 355,
+      "height": 308,
+      "cropX": 340,
+      "cropY": 68,
+      "sourceSha256": "744f2ef11b65bef62913ccd3842d25a117aaed5b1eb098a969bf14a031fbcb7e"
+    },
+    "tail_3": {
+      "x": 720,
+      "y": 372,
+      "width": 179,
+      "height": 294,
+      "cropX": 798,
+      "cropY": 656,
+      "sourceSha256": "ca48879472683464988c1cb3f6ace7885dab1ecfaa24e2fb3cfff2ef2bbcd847"
+    },
+    "tail_1": {
+      "x": 903,
+      "y": 372,
+      "width": 227,
+      "height": 283,
+      "cropX": 632,
+      "cropY": 758,
+      "sourceSha256": "f2d16f90751bc4ea70a482263ad46b756980ab682ab17556d25999b0a64623e0"
+    },
+    "arm_r_upper": {
+      "x": 1134,
+      "y": 372,
+      "width": 224,
+      "height": 256,
+      "cropX": 539,
+      "cropY": 389,
+      "sourceSha256": "8e3c61c77f922e0e2f39921ed36d80b79c2fbb4be748e3c681e383ee9e3d6bd3"
+    },
+    "arm_l_lower": {
+      "x": 1362,
+      "y": 372,
+      "width": 150,
+      "height": 231,
+      "cropX": 170,
+      "cropY": 362,
+      "sourceSha256": "0bbbf7c2b711cd05e379d4a83cf2eb4f54cda69be80880600b3da9a8e696b5c1"
+    },
+    "tail_2": {
+      "x": 1516,
+      "y": 372,
+      "width": 159,
+      "height": 204,
+      "cropX": 804,
+      "cropY": 848,
+      "sourceSha256": "b9119a42c7c94b1d768101cb0e288c009db72fc3e9f841d1d4f8286e14ce552e"
+    },
+    "pelvis": {
+      "x": 1679,
+      "y": 372,
+      "width": 302,
+      "height": 202,
+      "cropX": 355,
+      "cropY": 629,
+      "sourceSha256": "67a66b2827077c248eb3731ceb455b4d1e380c8cf55c454cabf1e2cddae6c8c3"
+    },
+    "hat": {
+      "x": 2,
+      "y": 682,
+      "width": 182,
+      "height": 197,
+      "cropX": 499,
+      "cropY": 7,
+      "sourceSha256": "606b3ffd4312df1681174cfe2307a91fa4f3f2cea4a1f78d9e4be95b8e6e89f9"
+    },
+    "arm_l_upper": {
+      "x": 188,
+      "y": 682,
+      "width": 181,
+      "height": 190,
+      "cropX": 253,
+      "cropY": 403,
+      "sourceSha256": "4abdb31c397c6259aa35e15dcf575d27eaf548a61b25cd28ee9ce75978b67ac2"
+    },
+    "foot_r": {
+      "x": 373,
+      "y": 682,
+      "width": 149,
+      "height": 186,
+      "cropX": 539,
+      "cropY": 1318,
+      "sourceSha256": "b9f09b5faebe05363fd45e405daeea146577e0483004da3bd2f80668c1f6ff81"
+    },
+    "foot_l": {
+      "x": 526,
+      "y": 682,
+      "width": 212,
+      "height": 183,
+      "cropX": 211,
+      "cropY": 1297,
+      "sourceSha256": "2d394f9302a60f46e8d590c3bf45a20b0b467eb492d138d83097b5bb7028d96c"
+    },
+    "hand_l_hip": {
+      "x": 742,
+      "y": 682,
+      "width": 114,
+      "height": 156,
+      "cropX": 142,
+      "cropY": 247,
+      "sourceSha256": "0a3588a2119ae33385a99aaef8fb9fd15811fd022ebd20b66e30e43ca49e7aca"
+    },
+    "hand_l_point": {
+      "x": 860,
+      "y": 682,
+      "width": 215,
+      "height": 150,
+      "cropX": 4,
+      "cropY": 243,
+      "sourceSha256": "f5e62886398472407749a29b2b5271929de9cbc79a67690cdda4453dc4a3dced"
+    },
+    "hand_l_open": {
+      "x": 1079,
+      "y": 682,
+      "width": 172,
+      "height": 150,
+      "cropX": 45,
+      "cropY": 244,
+      "sourceSha256": "ebc1ef84a6f7e11d8b6f1a224d3912e8b61cb09157bc0d6f651f2562e55cd464"
+    },
+    "watch": {
+      "x": 1255,
+      "y": 682,
+      "width": 103,
+      "height": 133,
+      "cropX": 119,
+      "cropY": 512,
+      "sourceSha256": "374494dcb6c082014f8e8052a79ef0fc550d60669cfc81c4e9804bb647145d79"
+    },
+    "neck": {
+      "x": 1362,
+      "y": 682,
+      "width": 143,
+      "height": 124,
+      "cropX": 441,
+      "cropY": 330,
+      "sourceSha256": "0dbb4ece0119b1aead7961c6d2e175e65672e9a6fe31323042ef5a69fe4a3acc"
+    },
+    "arm_r_lower": {
+      "x": 1509,
+      "y": 682,
+      "width": 174,
+      "height": 123,
+      "cropX": 589,
+      "cropY": 580,
+      "sourceSha256": "b4ba3d0bdaece4f3b71041309a799de3b9ecbf51be6a8637e6a2956a32ffd227"
+    },
+    "hand_r_grip": {
+      "x": 1687,
+      "y": 682,
+      "width": 207,
+      "height": 110,
+      "cropX": 423,
+      "cropY": 601,
+      "sourceSha256": "434eba94b0e02d65c1f15d502398d424b4f7b016c29c9442705fec39414a876c"
+    },
+    "hand_r_open": {
+      "x": 2,
+      "y": 881,
+      "width": 196,
+      "height": 110,
+      "cropX": 434,
+      "cropY": 599,
+      "sourceSha256": "a12e74a51c31e07b02df9a5656e9a660ce3272505f03f1429c830c5097063329"
+    },
+    "chain_1": {
+      "x": 202,
+      "y": 881,
+      "width": 16,
+      "height": 94,
+      "cropX": 232,
+      "cropY": 271,
+      "sourceSha256": "4908f4e345300843a9a180dbe7c9540845231735a90cf93c48f6dc9da20979b8"
+    },
+    "chain_2": {
+      "x": 222,
+      "y": 881,
+      "width": 30,
+      "height": 94,
+      "cropX": 209,
+      "cropY": 354,
+      "sourceSha256": "0758ad1ec1ffae546c39125d80a5650c6e65e48e1532e5c484924c019fdd55d1"
+    },
+    "chain_3": {
+      "x": 256,
+      "y": 881,
+      "width": 47,
+      "height": 92,
+      "cropX": 169,
+      "cropY": 437,
+      "sourceSha256": "3bae7f159a16c2b7a180d6e5bd2f05c4517bb591dca375b4f15688b05900aaad"
+    },
+    "hand_r_pinch": {
+      "x": 307,
+      "y": 881,
+      "width": 144,
+      "height": 80,
+      "cropX": 486,
+      "cropY": 625,
+      "sourceSha256": "04fc4d5c873919027b97ea60f7dedbfcb1a2cb836648f5ee26cbcddd2525c8b2"
+    }
+  }
+}

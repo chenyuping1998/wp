@@ -18,7 +18,7 @@
 
 	const context = getContext();
 
-	// marble tablet left of the board (fs_counter_panel.png, 512×320)
+	// Circus timber plaque left of the board (fs_counter_panel.png, 512×320)
 	const PANEL_RATIO = 512 / 320;
 	const panelWidth = $derived(SYMBOL_SIZE * 2.1);
 	const panelSizes = $derived({ width: panelWidth, height: panelWidth / PANEL_RATIO });
@@ -26,13 +26,13 @@
 	const position = $derived(
 		isPortrait
 			? {
-					// portrait: centered above the board (no room at the side)
-					x: context.stateGameDerived.boardLayout().x - panelSizes.width * 0.5,
+					// Portrait: above the left edge, clear of the assistant and her watch.
+					x: context.stateGameDerived.boardLayout().x - context.stateGameDerived.boardLayout().width * 0.5 + SYMBOL_SIZE * 0.05,
 					y:
 						context.stateGameDerived.boardLayout().y -
 						context.stateGameDerived.boardLayout().height * 0.5 -
 						panelSizes.height * 1.28 -
-						SYMBOL_SIZE * 0.3,
+						SYMBOL_SIZE * 3.3,
 				}
 			: {
 					x:
@@ -80,9 +80,9 @@
 				fontSize: Math.min(panelSizes.width * 0.115, (panelSizes.width * 1.35) / Math.max(1, title.length)),
 				fontWeight: GAME_FONT_WEIGHT,
 				letterSpacing: 2,
-				// dark ink on the marble tablet; a single colour, because a fill array
+				// Ivory lettering on the dark timber; a single colour, because a fill array
 				// renders as plain white in pixi v8
-				fill: 0x2a1f24,
+				fill: 0xffedc2,
 				wordWrap: false,
 			}}
 		/>

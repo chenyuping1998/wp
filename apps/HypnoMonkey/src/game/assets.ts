@@ -3,12 +3,9 @@
 // Paths stay literal: Vite only bundles new URL() with a static string.
 
 export default {
-	mgLoader: { type:'sprite', src:new URL('../../assets/sprites/medusaBrand/loader.png',import.meta.url).href, preload:true },
-	mgCastAtlas: {
-		type: 'sprite',
-		src: new URL('../../assets/spines/medusa43/medusa.png', import.meta.url).href,
-		preload: true,
-	},
+	mgHypnoCastAtlas: { type:'sprite', src:new URL('../../assets/sprites/hypnoCast/mg-atlas.png',import.meta.url).href, preload:true },
+	mgHypnoAssistantAtlas: { type:'sprite', src:new URL('../../assets/sprites/hypnoCast/fg-atlas.png',import.meta.url).href, preload:true },
+	mgLoader: { type:'sprite', src:new URL('../../assets/sprites/hypnoSymbols/s.png',import.meta.url).href, preload:true },
 	explosion: {
 		type: 'spine',
 		src: {
@@ -64,125 +61,121 @@ export default {
 	// scene
 	mgBgBase: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaBackground/bg_base.jpg', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoBackground/bg_base.jpg', import.meta.url).href,
 		preload: true,
 	},
 	mgBgFree: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaBackground/bg_free.jpg', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoBackground/bg_free.jpg', import.meta.url).href,
 		preload: true,
 	},
 	mgBgCloud: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaBackground/cloud.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoBackground/bunting.png', import.meta.url).href,
 		preload: true,
 	},
 	mgBgTourist: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaBackground/statue_tourist.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoBackground/prop_spiral_sign.png', import.meta.url).href,
 		preload: true,
 	},
 	mgBgIcecream: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaBackground/statue_icecream.png', import.meta.url).href,
-		preload: true,
-	},
-	mgBgFlame: {
-		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaBackground/flame.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoBackground/prop_balloons.png', import.meta.url).href,
 		preload: true,
 	},
 
 	// the three loading-screen feature cards (MEDUSA_美術需求單 §6)
 	mgIntro1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoInterim/intro_1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoIntro/intro_1.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIntro2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoInterim/intro_2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoIntro/intro_2.png', import.meta.url).href,
 		preload: true,
 	},
 	mgIntro3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoInterim/intro_3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoIntro/intro_3.png', import.meta.url).href,
 		preload: true,
 	},
 	mgLogo: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoInterim/logo.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoBrand/logo.png', import.meta.url).href,
 		preload: true,
 	},
 
 	// bet bar plates and the free-game panels
 	mgUiTicker: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUi/ticker_plate.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/ticker_plate.png', import.meta.url).href,
 		preload: true,
 	},
 	mgUiBuyBonus: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUi/buybonus_plate.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/buybonus_plate.png', import.meta.url).href,
 		preload: true,
 	},
 	mgUiBuyBonusLit: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUi/buybonus_plate_lit.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/buybonus_plate_lit.png', import.meta.url).href,
 		preload: true,
 	},
 	mgUiBarStrip: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUi/bar_strip.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/bar_strip.png', import.meta.url).href,
 		preload: true,
 	},
 	mgUiButton: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUi/button_disc.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/button_disc.png', import.meta.url).href,
 		preload: true,
 	},
 	mgUiButtonOn: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUi/button_disc_on.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/button_disc_on.png', import.meta.url).href,
 		preload: true,
 	},
 	mgTotalPlate: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUi/total_plate.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/total_plate.png', import.meta.url).href,
 		preload: true,
 	},
 	mgTotalPlateMid: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUi/total_plate_mid.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/total_plate_mid.png', import.meta.url).href,
 		preload: true,
 	},
 	mgTotalPlateHigh: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUi/total_plate_high.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/total_plate_high.png', import.meta.url).href,
 		preload: true,
 	},
 	mgFrameCapital: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaFrame/capital.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoFrame/corner.png', import.meta.url).href,
 		preload: true,
 	},
 	mgFrameLintel: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaFrame/lintel.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoFrame/top.png', import.meta.url).href,
 		preload: true,
 	},
 	mgFrameColumn: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaFrame/column.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoFrame/side.png', import.meta.url).href,
 		preload: true,
 	},
+	mgTransitionCurtain: { type: 'sprite', src: new URL('../../assets/sprites/hypnoBackground/curtain.png', import.meta.url).href, preload: true },
 	mgFsSign: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUi/fs_sign.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/fs_sign.png', import.meta.url).href,
 	},
 	mgFsPanel: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaUi/fs_counter_panel.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/fs_counter_panel.png', import.meta.url).href,
 	},
 
 	// Hypno pocket watches: bronze / silver / gold; retain internal keys for FX compatibility.
@@ -233,75 +226,75 @@ export default {
 	// win-tier plaques
 	mgWinBannerBig: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaWinBanners/big.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoWinBanners/big.png', import.meta.url).href,
 	},
 	mgWinBannerSuperwin: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaWinBanners/superwin.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoWinBanners/superwin.png', import.meta.url).href,
 	},
 	mgWinBannerMega: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaWinBanners/mega.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoWinBanners/mega.png', import.meta.url).href,
 	},
 	mgWinBannerEpic: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaWinBanners/epic.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoWinBanners/epic.png', import.meta.url).href,
 	},
 	mgWinBannerMax: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaWinBanners/max.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoWinBanners/max.png', import.meta.url).href,
 	},
 
 	// symbols — no W: a wild in a pay-anywhere game joins every symbol's count at
 	// once, so the maths ships none
 	mgS: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaSymbols/s.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoSymbols/s.png', import.meta.url).href,
 		preload: true,
 	},
 	mgH1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaSymbols/h1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoSymbols/h1.png', import.meta.url).href,
 		preload: true,
 	},
 	mgH2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaSymbols/h2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoSymbols/h2.png', import.meta.url).href,
 		preload: true,
 	},
 	mgH3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaSymbols/h3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoSymbols/h3.png', import.meta.url).href,
 		preload: true,
 	},
 	mgH4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaSymbols/h4.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoSymbols/h4.png', import.meta.url).href,
 		preload: true,
 	},
 	mgH5: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaSymbols/h5.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoSymbols/h5.png', import.meta.url).href,
 		preload: true,
 	},
 	mgL1: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaSymbols/l1.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoSymbols/l1.png', import.meta.url).href,
 		preload: true,
 	},
 	mgL2: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaSymbols/l2.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoSymbols/l2.png', import.meta.url).href,
 		preload: true,
 	},
 	mgL3: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaSymbols/l3.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoSymbols/l3.png', import.meta.url).href,
 		preload: true,
 	},
 	mgL4: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/medusaSymbols/l4.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoSymbols/l4.png', import.meta.url).href,
 		preload: true,
 	},
 

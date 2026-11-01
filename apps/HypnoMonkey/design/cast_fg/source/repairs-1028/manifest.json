@@ -1,0 +1,22 @@
+{
+  "generator": "repair_sources.py: editable curves and original source texture",
+  "rejectedGeneratedDrafts": "ImageGen diffuse alpha/halo; not consumed",
+  "layers": {
+    "neck": "56b1ea6b7455e506c0bb98b97d9d0cf457f02334f55b9a7d7a61ae9aa431339f",
+    "pelvis": "a71ef1781b80efe40af2d66b0bc01f4a6993408db3b520ce3f9878546f15428f",
+    "tail_1": "8468f6beadb8f60280700dd5c7121d5da2d7033fd8a28d40d3680bd655e4c7a9",
+    "arm_l_lower": "d323e443b38fdcfb4cd342cbbc57d5784ad600b23eeb22a67842529d6a1eab00",
+    "arm_r_lower": "cd4205ee47527927bbe299e19b0fe0dc2d1c2949017d3c01911c55c27c8f6ae8",
+    "arm_l_upper": "0dfd5e8d9cf3f7d3ff9b1578b26132cef938baebb272618f9180b67a6de18267",
+    "arm_r_upper": "e594feb87ae28bc66bcd3d08918f20d55c613f92d58ff7bbab437647ca80d323",
+    "torso": "f07329c027b92104548830e3758bda7d19207174569305889963c0fdd40886f5",
+    "hand_l_hip": "267885b2be6ef0a557d2755b3af883a7acf35176c73983c3747587daf63c0982",
+    "hand_r_pinch": "2568fb5ee580a38c96df819d112d133052b93381118bf3da69c60cd2c73cfcf4",
+    "hand_r_grip": "3deb9eaf181b8844e4b10fc024f7c449512b05cd5b8e0999e6af50411652df76",
+    "hand_r_open": "6adc2bcb8694f06fd0470ebce023817a6b8b8a4d6645f9f12df58d83ba83fb3f",
+    "leg_l_lower": "7922de48e4de9d5f61be77ca0d68a3f03e7fbcba3bd774050e18bbb3c6bb47b5",
+    "leg_r_lower": "271db1c196b820a6b4eba521af1338cddc418879a9ae16f63e19ba73685ce411",
+    "leg_l_upper": "df1d819d003eb05d959a0c09d82e0a8ece55abf373e30da853a066d1bba53909",
+    "leg_r_upper": "9df376e8ded942ff50776170d8dab25d53566b8a3eb9d9202282959fa5150e71"
+  }
+}

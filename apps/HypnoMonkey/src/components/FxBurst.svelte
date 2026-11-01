@@ -12,8 +12,8 @@
 		// overall size multiplier — 1 fits one symbol cell
 		scale?: number;
 		delay?: number;
-		// 'gold' celebration vs 'stone' (stone chips mixed in) for blasts
-		flavour?: 'gold' | 'stone';
+		// 'gold' celebration vs 'paper' (stone chips mixed in) for blasts
+		flavour?: 'gold' | 'paper';
 		oncomplete?: () => void;
 	};
 
@@ -21,7 +21,7 @@
 
 	const DURATION = 850;
 	const GOLD = [0xffd75e, 0xfff7d1, 0xffb04a, 0xffe98a];
-	const STONE = [0xffd75e, 0xfff7d1, 0xb8ff5a, 0xefe8d8];
+	const PAPER = [0xc7473e, 0xffefcb, 0xdcb249, 0x627f8d];
 
 	type Spark = {
 		angle: number;
@@ -40,9 +40,9 @@
 		speed: 150 + Math.random() * 130,
 		size: 26 + Math.random() * 26,
 		life: 0.55 + Math.random() * 0.3,
-		color: (props.flavour === 'stone' ? STONE : GOLD)[i % 4],
+		color: (props.flavour === 'paper' ? PAPER : GOLD)[i % 4],
 		spin: (Math.random() - 0.5) * 6,
-		chip: props.flavour === 'stone' && i % 3 === 0,
+		chip: props.flavour === 'paper' && i % 3 === 0,
 		delay: Math.random() * 0.09,
 	}));
 
@@ -117,18 +117,12 @@
 		{#each sparks as spark, index (index)}
 			{@const state = sparkState(spark, t)}
 			{#if state}
-				<Sprite
-					key={spark.chip ? 'fxRubble' : 'fxStar'}
-					anchor={0.5}
-					x={state.x}
-					y={state.y}
-					rotation={state.rot}
-					tint={spark.chip ? 0xffffff : spark.color}
-					blendMode={spark.chip ? 'normal' : 'add'}
-					width={state.size}
-					height={state.size}
-					alpha={state.alpha}
-				/>
+				{#if spark.chip}
+					<Graphics x={state.x} y={state.y} rotation={state.rot} alpha={state.alpha}
+						draw={g=>{g.clear();g.rect(-state.size*.36,-state.size*.17,state.size*.72,state.size*.34).fill(spark.color).stroke({color:0x351b19,width:1.5});}}/>
+				{:else}
+					<Sprite key="fxStar" anchor={.5} x={state.x} y={state.y} rotation={state.rot} tint={spark.color} blendMode="add" width={state.size} height={state.size} alpha={state.alpha}/>
+				{/if}
 			{/if}
 		{/each}
 	{/if}

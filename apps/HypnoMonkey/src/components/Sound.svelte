@@ -2,6 +2,7 @@
   import { base } from "$app/paths";
   import type { MusicName, SoundEffectName, SoundName } from "../game/sound";
   import { MEDUSA_AUDIO } from "../game/audioManifest";
+  import { HYPNO_AUDIO } from "../game/hypnoAudioManifest";
 
   export type MedusaCue =
     | "gaze"
@@ -113,13 +114,21 @@
   }
 
   function load(cue: string) {
-    if (!MEDUSA_AUDIO[cue]) return null;
+    const circusAliases: Record<string,string> = {
+      bgm_base: 'bgm_circus_base', bgm_feature: 'bgm_circus_feature',
+      amb_plaza: 'amb_circus_plaza', amb_night: 'amb_circus_stage',
+      sfx_gaze_charge: 'sfx_hypno_charge', sfx_gaze_beam: 'sfx_hypno_spiral',
+      sfx_crumble: 'sfx_paper_burst',
+    };
+    const circus = HYPNO_AUDIO[circusAliases[cue] ?? cue];
+    const file = circus ?? MEDUSA_AUDIO[cue];
+    if (!file) return null;
     const audioContext = getEngine();
     if (!audioContext) return null;
     if (!buffers.has(cue)) {
       buffers.set(
         cue,
-        fetch(`${base}/assets/audio/medusa/${MEDUSA_AUDIO[cue]}`)
+        fetch(`${base}/assets/audio/${circus ? 'hypno' : 'medusa'}/${file}`)
           .then((response) => {
             if (!response.ok)
               throw new Error(`Audio ${cue}: ${response.status}`);
@@ -252,10 +261,10 @@
   // Medusa-only sounds (snakes, stone, statues) with no circus replacement yet.
   const SILENT: Mapping = { cue: "", volume: 0 };
   const SPRITE_TO_CUE: Record<SoundEffectName, Mapping> = {
-    sfx_snake_yawn: SILENT,
+    sfx_snake_yawn: { cue: 'sfx_watch_tick', volume: .45 },
     sfx_buybonus_hover: { cue: "sfx_buybonus_hover", volume: 0.45 },
     sfx_buybonus_confirm: { cue: "sfx_buybonus_confirm", volume: 0.7 },
-    sfx_statues_crack: SILENT,
+    sfx_statues_crack: { cue: 'sfx_balloon_squeak', volume: .45 },
     sfx_btn_general: { cue: "sfx_button", volume: 0.7 },
     sfx_btn_spin: { cue: "sfx_spin" },
     sfx_reel_stop_1: { cue: "sfx_reel_stop", rate: 0.92 },
@@ -400,7 +409,7 @@
       void playCue("sfx_gaze_charge", 0.7);
     },
     // The stone-crack ladder belonged to petrification; the paper-tear ladder is requested.
-    soundTumbleHit: () => {},
+    soundTumbleHit: ({chain}) => { void playCue(`sfx_paper_${Math.max(1,Math.min(5,chain))}`, .7); },
     soundReelTensionStart: () => {
       void playCue("sfx_scatter_tease", 0.5, 1, true);
     },

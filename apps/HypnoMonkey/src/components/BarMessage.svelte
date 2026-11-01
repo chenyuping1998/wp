@@ -37,7 +37,7 @@
 	$effect(() => {
 		if (context.stateGame.gameType === 'freegame') uiTheme.barMessage = barText('multipliersAddUp');
 		else if (!context.stateXstateDerived.isIdle()) uiTheme.barMessage = barText('goodLuck');
-		else if (tick % 2) uiTheme.barMessage = barText('medusaTip');
+		else if (tick % 2) uiTheme.barMessage = barText('multiplierTip');
 		// social play may not say "bet" (restricted-word table)
 		else uiTheme.barMessage = barText(stateUrlDerived.social() ? 'comePlay' : 'placeBet');
 	});

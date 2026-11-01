@@ -186,7 +186,7 @@ assert.equal(bytes, metadata.runtime_bytes);
 assert.ok(bytes <= 12_000_000, "Runtime audio must fit the 12 MB budget");
 assert.deepEqual(
   fs.readdirSync(path.join(app, "static/assets/audio")),
-  ["medusa"],
+  ["hypno", "medusa"],
   "Old template audio must remain outside static",
 );
 
@@ -207,7 +207,7 @@ for (const match of soundSource.matchAll(
     )
   ) {
     if (!cue.startsWith("bgm_winlevel_"))
-      assert.ok(manifest[cue], `Missing static cue: ${cue}`);
+      assert.ok(manifest[cue] || fs.existsSync(path.join(app, 'static/assets/audio/hypno', cue + '.wav')), `Missing static cue: ${cue}`);
   }
 }
 // The compiler is the same installed Svelte 5 compiler used by the app build.

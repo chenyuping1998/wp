@@ -167,14 +167,14 @@
 						<li>
 							<span class="wp-control-icons" aria-hidden="true">
 								{#if control.sign}
-									<img class="wp-sign" src={`${base}/assets/sprites/medusaUi/buybonus_plate.png`} alt="" />
+									<img class="wp-sign" src={`${base}/assets/sprites/hypnoUi/buybonus_plate.png`} alt="" />
 								{:else if control.readout}
 									<span class="wp-readout"
 										>{control.readout}{#if control.opens}<svg viewBox="0 0 12 8"><polyline points="1.5,1.5 6,6 10.5,1.5" /></svg>{/if}</span
 									>
 								{:else}
 									{#each control.icons as name (name)}
-										<span class="wp-icon-plate" style:--disc={`url('${base}/assets/sprites/medusaUi/button_disc.png')`}
+										<span class="wp-icon-plate" style:--disc={`url('${base}/assets/sprites/hypnoUi/button_disc.png')`}
 											><img src={`${ICONS}/${name}.png`} alt="" /></span
 										>
 									{/each}

@@ -1,0 +1,33 @@
+{
+  "existingSourceRevision": "design/style_test/characters_v3",
+  "newSymbols": {
+    "H2": {
+      "tool": "built-in image_gen",
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-6fb56a31-f8cd-481e-8e54-e28d7f9bfcc5.png"
+    },
+    "H3": {
+      "tool": "built-in image_gen",
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-4bf5c5c2-0b3d-4ddf-b5a5-296d01cf11b3.png"
+    },
+    "H4": {
+      "tool": "built-in image_gen",
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-ef07f60f-377e-4134-ab8a-e83a070af690.png"
+    },
+    "H5": {
+      "tool": "built-in image_gen",
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-2d5f24e3-7b6d-4dbb-9f9a-69719ddc7e48.png"
+    },
+    "L2": {
+      "tool": "built-in image_gen",
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-499cdf11-05a3-4e55-ab88-53b6fcb63141.png"
+    },
+    "L3": {
+      "tool": "built-in image_gen",
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-4c06a397-7617-40fd-ad13-63ac8bda4820.png"
+    },
+    "L4": {
+      "tool": "built-in image_gen",
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-d8d0722f-25f7-4939-9e3b-e58fda09f20e.png"
+    }
+  }
+}

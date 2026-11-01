@@ -1,5 +1,7 @@
 # Hypno Monkey 催眠猴 — 絹印海報打樣提示詞
 
+> 最新校準：使用者所說的圖板前四張是 Chaos Crew 2、Donut Division、Dr Zappo、Red Rascal，Toshi 排除。V1–V3 與先前盤面未獲風格認可；現在以 `../ART_BRIEF.md` 的新 §0 及 `style_study_four/STUDY.md` 為準。下文為歷史打樣規則，不再把固定七色／全平塗當作新方向。
+
 2026-10-26。畫風選定：復古馬戲團絹印海報，色票鎖定。這份是**打樣**（style test），
 不是整套需求單：先生 7 件，我合成到真的盤面上、縮到 70px 和商店圖 200px 驗，
 你選出一張「風格定稿圖」後，才寫整份 `ART_BRIEF.md` §0 和其餘圖的提示詞。

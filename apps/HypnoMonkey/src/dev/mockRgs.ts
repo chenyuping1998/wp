@@ -163,17 +163,19 @@ export const installMockRgs = async () => {
 			const amount = (body.amount ?? API_AMOUNT_MULTIPLIER) / API_AMOUNT_MULTIPLIER;
 			const book = sequence[index % sequence.length];
 			index += 1;
-			balance = balance - amount + amount * book.payoutMultiplier;
+			// Math books quote wins in hundredths of the base stake (40 = 0.40x).
+			const payoutRatio = book.payoutMultiplier / 100;
+			balance = balance - amount + amount * payoutRatio;
 			console.log(
-				`[mockRgs] serving book id=${book.id} payout=${book.payoutMultiplier}x (${index}/${sequence.length})`,
+				`[mockRgs] serving book id=${book.id} payout=${payoutRatio}x (${index}/${sequence.length})`,
 			);
 			return json({
 				balance: balanceBody(),
 				round: {
 					betID: 1000 + index,
 					amount: amount * API_AMOUNT_MULTIPLIER,
-					payout: amount * book.payoutMultiplier * API_AMOUNT_MULTIPLIER,
-					payoutMultiplier: book.payoutMultiplier,
+					payout: amount * payoutRatio * API_AMOUNT_MULTIPLIER,
+					payoutMultiplier: payoutRatio,
 					active: true,
 					state: book.state,
 					mode: body.mode ?? 'base',

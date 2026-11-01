@@ -27,6 +27,7 @@
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
+	import {symbolIdleClock} from '../game/symbolIdleClock.svelte';
 	import bannerLayout from '../game/medusaBannerLayout.json';
 
 	const context = getContext();
@@ -51,7 +52,7 @@
 	const BANNER_SOURCE: Record<string, { width:number; height:number; textY:number; textHeight:number; textWidth:number }> = bannerLayout;
 	// presentation intensity scales with the tier
 	const TIER_FX: Record<string, { mult: number; glowTint: number }> = {
-		big: { mult: 1, glowTint: 0x9ec44a },
+		big: { mult: 1, glowTint: 0xb877ef },
 		superwin: { mult: 1.15, glowTint: 0xffd75e },
 		mega: { mult: 1.3, glowTint: 0xffa347 },
 		epic: { mult: 1.5, glowTint: 0xff7a4a },
@@ -59,6 +60,8 @@
 	};
 
 	let show = $state(false);
+	$effect(()=>{symbolIdleClock.bannerPaused=show;});
+	onDestroy(()=>{symbolIdleClock.bannerPaused=false;});
 	let amount = $state(0);
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
@@ -251,7 +254,7 @@
 								/>
 							</Container>
 							{#if burstShown}
-								<FxBurst scale={1.7} flavour="stone" oncomplete={() => (burstShown = false)} />
+								<FxBurst scale={1.7} flavour="paper" oncomplete={() => (burstShown = false)} />
 							{/if}
 						{:else}
 							<!-- small wins: just the rolling amount over the board -->

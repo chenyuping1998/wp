@@ -51,7 +51,7 @@
 		winUpdate: ({ winLevelData }) => {
 			if (handledWin || winLevelData.type !== 'big' || document.hidden || context.stateLayout.showLoadingScreen) return;
 			handledWin = true;
-			if (scene?.burstStatues()) context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_statues_crack' });
+			scene?.burstProps();
 		},
 	});
 	onDestroy(() => { disposed = true; ticker?.remove(tick); scene?.destroy(); scene = undefined; });

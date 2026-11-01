@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { Sprite } from 'pixi-svelte';
+	import { Container, Sprite } from 'pixi-svelte';
+	import { symbolIdleFrame, idleCellPhase } from '../game/symbolIdleMotion';
+	import { symbolIdleClock, useSymbolIdleClock } from '../game/symbolIdleClock.svelte';
+	import SymbolIdleAccents from './SymbolIdleAccents.svelte';
 	import { untrack } from 'svelte';
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE } from '../game/constants';
@@ -7,13 +10,17 @@
 	import { getContext } from '../game/context';
 	import { tumbleTiming } from '../game/animationTimeline';
 	import { landingPose } from '../game/symbolMotion';
-	type Props = { x?: number; y?: number; symbolInfo: ReturnType<typeof getSymbolInfo>; blur?: number; landing?: boolean; impact?: number; oncomplete?: () => void };
+	type Props = { name?:string; cell?:{reel:number;row:number}; idle?:boolean; x?: number; y?: number; symbolInfo: ReturnType<typeof getSymbolInfo>; blur?: number; landing?: boolean; impact?: number; oncomplete?: () => void };
 	const props: Props = $props(), context = getContext();
 	const width = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.width);
 	const height = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.height);
 	const blur = $derived(Math.max(0, Math.min(1, props.blur ?? 0)));
 	let progress = $state(1);
 	const pose = $derived(landingPose(progress, props.impact ?? 1));
+ const clockEnabled=$derived(!!props.idle&&!props.landing&&blur<=.01);
+ const idling=$derived(clockEnabled&&!symbolIdleClock.reduced&&!symbolIdleClock.focusPaused&&!symbolIdleClock.bannerPaused);
+ const idle=$derived(symbolIdleFrame(props.name??'',symbolIdleClock.seconds,idleCellPhase(props.cell?.reel??0,props.cell?.row??0),idling));
+ $effect(()=>{if(clockEnabled)return useSymbolIdleClock();});
 	$effect(() => {
 		props.symbolInfo.assetKey;
 		if (!props.landing) { progress = 1; untrack(() => props.oncomplete?.()); return; }
@@ -29,4 +36,7 @@
 {#if blur > 0.01}
 	<Sprite x={props.x} y={(props.y ?? 0) - height * 0.21 * blur} anchor={0.5} key={props.symbolInfo.assetKey} width={width * 0.98} height={height * (1 + 0.16 * blur)} alpha={0.16 * blur} />
 {/if}
-<Sprite x={props.x} y={(props.y ?? 0) + height * pose.y} anchor={0.5} key={props.symbolInfo.assetKey} width={width * pose.sx} height={height * pose.sy * (1 + 0.15 * blur)} alpha={1 - 0.07 * blur} />
+<Container x={(props.x??0)+width*idle.x} y={(props.y??0)+height*(pose.y+idle.y)} rotation={idle.rotation} scale={{x:idle.sx,y:idle.sy}}>
+ <Sprite anchor={0.5} key={props.symbolInfo.assetKey} width={width*pose.sx} height={height*pose.sy*(1+.15*blur)} alpha={1-.07*blur}/>
+ {#if idling}<SymbolIdleAccents name={props.name??''} frame={idle} {width} {height}/>{/if}
+</Container>

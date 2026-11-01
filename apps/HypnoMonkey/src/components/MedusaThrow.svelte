@@ -38,6 +38,7 @@
 
 	import { getContext } from '../game/context';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import {symbolIdleClock} from '../game/symbolIdleClock.svelte';
 	import {
 		BOARD_SIZES,
 		REEL_PADDING,
@@ -146,6 +147,8 @@
 	let amount = $state<{ text: string; alpha: number } | null>(null);
 	/** the readout's sum line gets its "=" only once every value is in */
 	let formulaDone = $state(true);
+	$effect(()=>{symbolIdleClock.focusPaused=orbs.length>0||pop!==null||amount!==null||gazeProgress>=0;});
+	onDestroy(()=>{symbolIdleClock.focusPaused=false;});
 
 	let totalShown = $state(false);
 	let totalValue = $state(0);
@@ -702,7 +705,7 @@
 	<Container x={center.x} y={center.y} pivot={center} scale={1 + 0.1 * scoreBump}>
 		<Graphics x={center.x} y={center.y} draw={drawReadoutBack} />
 		{#if pop}
-			<Text anchor={0.5} x={center.x} y={center.y-88} alpha={pop.alpha} text={pop.text?'MULTIPLIER':'BASE WIN'} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:23,fill:0xe7d9ff,stroke:{color:0x241632,width:3}}}/>
+			<Text anchor={0.5} x={center.x} y={center.y-88} alpha={pop.alpha} text={pop.text?'MULTIPLIER':'BASE WIN'} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:23,fill:0xffedc1,stroke:{color:0x3d1918,width:3}}}/>
 			<Text
 				anchor={0.5}
 				x={center.x}
@@ -719,7 +722,7 @@
 				}}
 			/>
 			{#if pop.text}
-				<Text anchor={0.5} x={center.x} y={center.y+25} alpha={pop.alpha} text={`${baseAmount} ${pop.text}${formulaDone ? ' =' : ''}`} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:baseAmount.length>10?22:27,fill:0xf0ead2,stroke:{color:0x241632,width:3}}}/>
+				<Text anchor={0.5} x={center.x} y={center.y+25} alpha={pop.alpha} text={`${baseAmount} ${pop.text}${formulaDone ? ' =' : ''}`} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:baseAmount.length>10?22:27,fill:0xf0ead2,stroke:{color:0x3d1918,width:3}}}/>
 			{/if}
 		{/if}
 		{#if amount}

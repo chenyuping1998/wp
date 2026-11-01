@@ -1,5 +1,9 @@
 # Hypno Monkey — FG 女助手分層重畫需求單（2026-10-28）
 
+> 第二輪 A–E 補修見 `design/cast_fg/qa/repairs-r2/README.md`：腕部碎線／缺口、肘端圓球、膝部亮弧及全部手勢袖口已修正；來源重建同步到正式 runtime。下方 16:10 修正與原退件內容保留為歷史，後續以 r2 同版證據為準。
+
+> Codex 本輪修正：新版分層已整合，退件原單保留供逐項對照。正式手臂改用四張獨立完整部件，避免整條彎臂拆圖夾帶相鄰肢體；尾根、短褲腰側、脖子、腕部、膝部及背心邊緣同步處理。原生暗底起終／極值格、新舊同格對照與遊戲證據在 `design/cast_fg/qa/repairs-1610/`；原骨架、IK、十段動作與 throw 620ms 均未改。美術修正不代表平台已更新。
+
 Stone：「要重新畫的話開需求單」。
 
 Claude 驗收退回，見 `design/cast_fg/QA_CLAUDE_1028.md`，證據圖是 `design/cast_fg/qa/claude-defects-1028.jpg`。這份需求單只列需要重畫或補畫的分層。

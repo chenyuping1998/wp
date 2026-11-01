@@ -128,6 +128,7 @@
 		flash = { cells: explodingSymbols.map((pos) => ({ x: getSymbolX(pos.reel), y: slotY(pos.row) })), alpha: 1 };
 		await sleep(timing.flashMs);
 		if (!current()) return;
+		context.eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
 		for (const pos of explodingSymbols) board[pos.reel].reelState.symbols[pos.row].symbolState = 'explosion';
 		crumbles = pieces;
 		void (async () => { for (let i = 1; i <= 4 && flash; i++) { await sleep(20); if (flash) flash = { ...flash, alpha: 1 - i / 4 }; } flash = null; })();

@@ -1,0 +1,173 @@
+[
+  {
+    "key": "bgBase",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-8ced90a5-c94b-4920-b549-614241772ec2.png"
+  },
+  {
+    "key": "bgFree",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-e2c65c4e-6bb2-4b74-9f96-12257114a747.png"
+  },
+  {
+    "key": "propSign",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-1f2d838d-579e-4c06-b72d-3cfc993485aa.png"
+  },
+  {
+    "key": "balloons",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-1edfd3cd-212c-4ce9-9762-b25b308616e4.png",
+    "prompt": "Use case: stylized-concept. Production raster sprite asset for Hypno Monkey. One isolated bunch of 3 circus balloons: tomato red, mustard yellow, muted blue grey, tied by three visible thin strings to a tiny wooden sandbag at bottom. Tall composition 512x1024 target. Distinct inflated teardrop silhouettes, all connected, generous alpha margin, no text, no people, no detached pieces. Style: colorful 2D animated comic, clean graphic silhouette, expressive clean contour, controlled 2 or 3 painted shadow planes, restrained screenprint edges, warm ivory/red brown/mustard/denim palette, no plastic no 3D no airbrush no fuzzy fringe. Genuinely transparent background, full item inside canvas, no drop shadows, no background, no characters, no Greek motifs, no snakes, no purple. One asset only, no sheet."
+  },
+  {
+    "key": "bunting",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-15232ea2-f17b-400d-9a24-ab59e1bdec9e.png",
+    "prompt": "Use case: stylized-concept. Production raster sprite asset for Hypno Monkey. One horizontal hanging string of circus triangular pennants, red/cream/muted blue alternating, rope dips gently through center, each pennant individually clear, wide composition 3:1 with transparent space below, no lettering. Style: colorful 2D animated comic, clean graphic silhouette, expressive clean contour, controlled 2 or 3 painted shadow planes, restrained screenprint edges, warm ivory/red brown/mustard/denim palette, no plastic no 3D no airbrush no fuzzy fringe. Genuinely transparent background, full item inside canvas, no drop shadows, no background, no characters, no Greek motifs, no snakes, no purple. One asset only, no sheet."
+  },
+  {
+    "key": "frameCorner",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-05a74559-b9ea-4f19-8ed0-efa3e5331547.png",
+    "prompt": "Use case: stylized-concept. Production raster sprite asset for Hypno Monkey. One isolated square corner joint for a circus wooden game sign frame. 256x249 target. Two sturdy reddish brown painted timber beams meet in a clean right angle, brass square bolt inset and small mustard star on joining plate. Outer corner top-left, open transparent bottom-right. Obvious wood and joinery, no marble no carved leaves. Big simple construction, not ornate. Style: colorful 2D animated comic, clean graphic silhouette, expressive clean contour, controlled 2 or 3 painted shadow planes, restrained screenprint edges, warm ivory/red brown/mustard/denim palette, no plastic no 3D no airbrush no fuzzy fringe. Genuinely transparent background, full item inside canvas, no drop shadows, no background, no characters, no Greek motifs, no snakes, no purple. One asset only, no sheet."
+  },
+  {
+    "key": "frameTop",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-19b37a11-7119-4c54-972f-ceebf8716264.png",
+    "prompt": "Use case: stylized-concept. Production raster sprite asset for Hypno Monkey. One isolated horizontal timber beam for a circus ticket booth frame, 512x49 target very wide 3:1 source will be resized to strip. Reddish brown painted wood with brass edge strips and subtle broad wood-grain strokes. Ends straight and no endcaps, suitable for seamless horizontal tiling. No protruding ornaments or stars, no text. Style: colorful 2D animated comic, clean graphic silhouette, expressive clean contour, controlled 2 or 3 painted shadow planes, restrained screenprint edges, warm ivory/red brown/mustard/denim palette, no plastic no 3D no airbrush no fuzzy fringe. Genuinely transparent background, full item inside canvas, no drop shadows, no background, no characters, no Greek motifs, no snakes, no purple. One asset only, no sheet."
+  },
+  {
+    "key": "frameSide",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-17d66a83-d1ce-4b04-b961-2f36c4fa19f7.png",
+    "prompt": "Use case: stylized-concept. Production raster sprite asset for Hypno Monkey. One isolated tall vertical timber beam for circus ticket booth frame. 77x512 target, tall composition. Reddish brown painted timber with narrow mustard brass outer edging, broad controlled wood grain, straight sides/endpoints, repeatable vertically, no ornaments or text. Style: colorful 2D animated comic, clean graphic silhouette, expressive clean contour, controlled 2 or 3 painted shadow planes, restrained screenprint edges, warm ivory/red brown/mustard/denim palette, no plastic no 3D no airbrush no fuzzy fringe. Genuinely transparent background, full item inside canvas, no drop shadows, no background, no characters, no Greek motifs, no snakes, no purple. One asset only, no sheet."
+  },
+  {
+    "key": "buyBonus",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-e390331b-0842-489d-a107-704254776688.png",
+    "prompt": "Use case: stylized-concept. Production UI raster asset for Hypno Monkey. Square 640x640 transparent sprite. A circus ticket booth sign: warm red painted wood small marquee with triangular cream/red canvas awning, dark red central blank rectangular ticket window occupying middle 65% width and 40% height, brass trim with UNLIT amber round bulbs, no portrait. Broad silhouette fits square. Center empty for runtime text. Cohesive hand painted 2D animated comic circus art. Clean contours and strong simple shapes, 2-3-tone painted volume, controlled wood and brass material, restrained screenprint edge character. No 3D no glossy plastic no airbrush gradients no grunge speckles. Genuinely transparent background outside silhouette, no drop shadow, complete object with 4% alpha margin. Absolutely no snakes, marble, Greek columns, faces or characters. No words letters numbers or logos."
+  },
+  {
+    "key": "buyBonusLit",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-c50624e5-d3b3-4bea-b281-1f4f16d026b2.png",
+    "prompt": "Use case: stylized-concept. Production UI raster asset for Hypno Monkey. Square 640x640 transparent sprite. A circus ticket booth sign: warm red painted wood small marquee with triangular cream/red canvas awning, dark red central blank rectangular ticket window occupying middle 65% width and 40% height, brass trim with brightly LIT warm yellow round bulbs, amber-lit edges and cream highlights, no portrait. Hover state clearly bright warmer than normal sign. Broad silhouette fits square. Center empty for runtime text. Cohesive hand painted 2D animated comic circus art. Clean contours and strong simple shapes, 2-3-tone painted volume, controlled wood and brass material, restrained screenprint edge character. No 3D no glossy plastic no airbrush gradients no grunge speckles. Genuinely transparent background outside silhouette, no drop shadow, complete object with 4% alpha margin. Absolutely no snakes, marble, Greek columns, faces or characters. No words letters numbers or logos."
+  },
+  {
+    "key": "totalPlate",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-8be525e9-cdfd-4a21-9225-a70740646b9e.png",
+    "prompt": "Use case: stylized-concept. Production UI raster asset for Hypno Monkey. Landscape 512x320 target transparent sprite. Low tier circus running multiplier board: simple broad dark reddish wooden rectangular plaque with brass rim. Leftmost quarter carries a small PURPLE pocket watch with blank ivory dial, right two thirds uniformly blank dark red timber for gold runtime digits. Keep usable text rectangle x=180..475,y=70..255 completely clear. No text/numerals. Minimal UNLIT bulbs along edge. Cohesive hand painted 2D animated comic circus art. Clean contours and strong simple shapes, 2-3-tone painted volume, controlled wood and brass material, restrained screenprint edge character. No 3D no glossy plastic no airbrush gradients no grunge speckles. Genuinely transparent background outside silhouette, no drop shadow, complete object with 4% alpha margin. Absolutely no snakes, marble, Greek columns, faces or characters. No words letters numbers or logos."
+  },
+  {
+    "key": "fsSign",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-ae4d397b-f2b7-457f-a555-1f9145761f14.png",
+    "prompt": "Use case: stylized-concept. Production UI raster asset for Hypno Monkey. Wide landscape 1706x922 target transparent sprite. Large circus stage announcement plaque: red curtain valance only along top and sides, strong wooden rectangle with brass edge, bottom two small mustard stars at outer corners. Entire central 70% width and 65% height uninterrupted dark red wood for runtime text. Cloth and trim do not intrude into center. No characters, text or numerals. Cohesive hand painted 2D animated comic circus art. Clean contours and strong simple shapes, 2-3-tone painted volume, controlled wood and brass material, restrained screenprint edge character. No 3D no glossy plastic no airbrush gradients no grunge speckles. Genuinely transparent background outside silhouette, no drop shadow, complete object with 4% alpha margin. Absolutely no snakes, marble, Greek columns, faces or characters. No words letters numbers or logos."
+  },
+  {
+    "key": "fsPanel",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-ba8fdebf-0645-4a09-b27d-e324bc4f23d9.png",
+    "prompt": "Use case: stylized-concept. Production UI raster asset for Hypno Monkey. Landscape 512x320 transparent sprite. Small circus free-spin counter plaque, reddish brown wood rectangular board with simple mustard brass rim and two bolts at outer corners. Entire central 80% width and 70% height uniformly dark red blank for runtime lettering. Subtle material strokes only, no text or decorations inside writing area. Cohesive hand painted 2D animated comic circus art. Clean contours and strong simple shapes, 2-3-tone painted volume, controlled wood and brass material, restrained screenprint edge character. No 3D no glossy plastic no airbrush gradients no grunge speckles. Genuinely transparent background outside silhouette, no drop shadow, complete object with 4% alpha margin. Absolutely no snakes, marble, Greek columns, faces or characters. No words letters numbers or logos."
+  },
+  {
+    "key": "ticker",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-bab57b0d-5b27-47f8-bbea-cc73eacb5ae5.png",
+    "prompt": "Use case: stylized-concept. Production UI raster asset for Hypno Monkey. Very wide horizontal 652x146 target transparent sprite, circus message ticker plate, dark red timber interior surrounded by thin brass rim and clipped red ticket-like corners. Central 88% wide blank for runtime words. No ornaments inside center. Cohesive hand painted 2D animated comic circus art. Clean contours and strong simple shapes, 2-3-tone painted volume, controlled wood and brass material, restrained screenprint edge character. No 3D no glossy plastic no airbrush gradients no grunge speckles. Genuinely transparent background outside silhouette, no drop shadow, complete object with 4% alpha margin. Absolutely no snakes, marble, Greek columns, faces or characters. No words letters numbers or logos."
+  },
+  {
+    "key": "barStrip",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-5ba8e4d1-1654-4a43-9484-762912382d8c.png",
+    "prompt": "Use case: stylized-concept. Production UI raster asset for Hypno Monkey. Very wide horizontal 1600x200 target sprite, circus betting toolbar backing, reddish brown timber horizontal planks with warm brass edging along top and bottom. 90% central blank dark red wood, subdued broad grain, straight side edges, no controls, no numerals, no words. Must read as wood not marble. Cohesive hand painted 2D animated comic circus art. Clean contours and strong simple shapes, 2-3-tone painted volume, controlled wood and brass material, restrained screenprint edge character. No 3D no glossy plastic no airbrush gradients no grunge speckles. Genuinely transparent background outside silhouette, no drop shadow, complete object with 4% alpha margin. Absolutely no snakes, marble, Greek columns, faces or characters. No words letters numbers or logos."
+  },
+  {
+    "key": "button",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-fd9a89e5-f3b2-4df7-87df-9510e3d80dd2.png",
+    "prompt": "Use case: stylized-concept. Production UI raster asset for Hypno Monkey. Square 256x256 transparent sprite. A simple circular circus brass control button inset on red stained timber disc. Warm mustard metal outer rim with two clean bevel shadow planes, central flat dark red circle completely blank for runtime white icon. UNLIT normal state. No actual icon or letters. Cohesive hand painted 2D animated comic circus art. Clean contours and strong simple shapes, 2-3-tone painted volume, controlled wood and brass material, restrained screenprint edge character. No 3D no glossy plastic no airbrush gradients no grunge speckles. Genuinely transparent background outside silhouette, no drop shadow, complete object with 4% alpha margin. Absolutely no snakes, marble, Greek columns, faces or characters. No words letters numbers or logos."
+  },
+  {
+    "key": "logo",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-c7315b56-30de-4fa7-9234-654e996da1b1.png",
+    "prompt": "Use case: logo-brand. Transparent raster game wordmark exactly two lines of text: HYPNO above MONKEY. Spell H Y P N O / M O N K E Y. Wide 1600x600 target. Hand lettered circus wooden-sign lettering, cream and mustard faces with dark red chunky depth, bold ink contour, charming deliberately irregular chunky display letters, small purple hypnotic spiral as ONE modest emblem at left. Large legible lettering at mobile size, no other words, no figures no monkeys. Colorful 2D animated comic, limited painted shadow planes, no 3D glossy rendering, transparent background clean edges and full alpha margin. This logo is the ONLY asset where text is requested."
+  },
+  {
+    "key": "buttonOn",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-b5e2576a-7141-4d6d-814a-820149882968.png",
+    "prompt": "Use case: stylized-concept. Square 256x256 transparent sprite. Simple circular circus brass control button inset on red stained timber disc. Bright warm yellow brass rim with cream hard highlights and illuminated amber edge; central red circle blank for white runtime icon. Hover ON state visibly lit. 2D animated comic, clean shapes and 2-3 painted shadow planes, no 3D no glow cloud no text/icons no background."
+  },
+  {
+    "key": "buttonOnMatte",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-58c1b2e5-0edc-442c-b398-62ab0036bac0.png"
+  },
+  {
+    "key": "totalPlateMid",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-25c9bc06-52d3-482f-b116-913545a11893.png",
+    "prompt": "Use case: stylized-concept. Landscape 512x320 transparent sprite. Medium tier circus multiplier scoreboard, dark reddish timber rectangular plaque with bright brass rim, amber bulbs along outer frame, leftmost quarter small PURPLE pocket watch with blank ivory face, right 2/3 blank dark red. Usable text rectangle x180..475 y70..255 completely clear. Three little mustard stars outside rim. Clean painted animated comic 2D, crisp 2-3 shadow planes, no 3D no snakes no marble no words/numerals."
+  },
+  {
+    "key": "totalPlateHigh",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-a07347e5-d3b9-46a4-979d-19eff7c08166.png",
+    "prompt": "Use case: stylized-concept. Landscape 512x320 transparent sprite. Highest tier circus multiplier scoreboard, dark reddish timber rectangular plaque with bright rich brass rim, LIT cream and amber bulbs outer border, leftmost quarter small PURPLE pocket watch with blank ivory face, right 2/3 blank dark red. Usable text rectangle x180..475 y70..255 clear. Mustard star ornaments on outer corners with small red cloth flourish outside border. Clean painted animated comic 2D, crisp 2-3 shadow planes, no 3D no snakes no marble no words/numerals."
+  },
+  {
+    "key": "winBig",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-59eef79f-7806-4407-85c2-0b96d200316f.png",
+    "prompt": "Use case: stylized-concept. Production big win UI blank plate for Hypno Monkey, 1500x462 final target aspect. One simple wooden rectangular circus prize plaque, modest thin brass rim, two mustard star corner bolts, no curtains. Central 75% width and 52% height blank dark red flat timber inset for runtime headline and payout, all decoration stays outside writing rectangle. Overall wide horizontal composition, no wings or faces. Colorful 2D animated comic, controlled 2 or 3 painted volume planes, crisp clean shapes and material strokes, no gradients no glossy 3D no airbrush. Genuine transparency outside plate, full object inside canvas with margin. Absolutely NO snakes, Greek motif, marble, characters, words, letters, numerals, or watermark."
+  },
+  {
+    "key": "winSuperwin",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-b4cb7c55-267f-4ff9-8cd3-05fd7b69b316.png",
+    "prompt": "Use case: stylized-concept. Production big win UI blank plate for Hypno Monkey, 1500x462 final target aspect. One circus wooden rectangular prize plaque with thicker brass rim and amber bulbs along top, small red cloth tabs at outer corners. Central 75% width and 52% height blank dark red flat timber inset for runtime headline and payout, all decoration stays outside writing rectangle. Overall wide horizontal composition, no wings or faces. Colorful 2D animated comic, controlled 2 or 3 painted volume planes, crisp clean shapes and material strokes, no gradients no glossy 3D no airbrush. Genuine transparency outside plate, full object inside canvas with margin. Absolutely NO snakes, Greek motif, marble, characters, words, letters, numerals, or watermark."
+  },
+  {
+    "key": "winMega",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-d5c86367-8cd4-4b04-8546-c606d67f7179.png",
+    "prompt": "Use case: stylized-concept. Production big win UI blank plate for Hypno Monkey, 1500x520 final target aspect. One circus wooden prize plaque with thick brass rim, lit amber bulbs, paired mustard stars on outer sides, red cloth banner ribbon beneath. Central 75% width and 52% height blank dark red flat timber inset for runtime headline and payout, all decoration stays outside writing rectangle. Overall wide horizontal composition, no wings or faces. Colorful 2D animated comic, controlled 2 or 3 painted volume planes, crisp clean shapes and material strokes, no gradients no glossy 3D no airbrush. Genuine transparency outside plate, full object inside canvas with margin. Absolutely NO snakes, Greek motif, marble, characters, words, letters, numerals, or watermark."
+  },
+  {
+    "key": "winEpic",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-1d72cce2-063e-4556-99e5-c0619455e0b9.png",
+    "prompt": "Use case: stylized-concept. Production big win UI blank plate for Hypno Monkey, 1500x580 final target aspect. One grand circus wooden prize plaque with bright brass rim and lit amber bulbs, large mustard stars on outer corners, red curtain top valance and flourish below, one modest purple spiral medallion above center. Central 75% width and 52% height blank dark red flat timber inset for runtime headline and payout, all decoration stays outside writing rectangle. Overall wide horizontal composition, no wings or faces. Colorful 2D animated comic, controlled 2 or 3 painted volume planes, crisp clean shapes and material strokes, no gradients no glossy 3D no airbrush. Genuine transparency outside plate, full object inside canvas with margin. Absolutely NO snakes, Greek motif, marble, characters, words, letters, numerals, or watermark."
+  },
+  {
+    "key": "winMax",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-ceeb4afe-da66-4e28-9581-9563a8006822.png",
+    "prompt": "Use case: stylized-concept. Production big win UI blank plate for Hypno Monkey, 1500x624 final target aspect. One spectacular circus wooden prize plaque with rich brass rim and lit cream bulbs, mustard stars clustering outside corners, red-and-cream canvas top canopy with symmetrical red ribbon tails outside lower rim, purple spiral medallion above center. Central 75% width and 52% height blank dark red flat timber inset for runtime headline and payout, all decoration stays outside writing rectangle. Overall wide horizontal composition, no wings or faces. Colorful 2D animated comic, controlled 2 or 3 painted volume planes, crisp clean shapes and material strokes, no gradients no glossy 3D no airbrush. Genuine transparency outside plate, full object inside canvas with margin. Absolutely NO snakes, Greek motif, marble, characters, words, letters, numerals, or watermark."
+  },
+  {
+    "key": "fgMasterClean",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-6121c744-4fe0-45ea-959c-de45ef637fec.png",
+    "prompt": "Edit this character master to be a clean production cutout. Preserve character identity, expression, clothing, pose, all anatomy, hands, pocket watch and chain, feather, tail, shoes and exact framing. Remove ALL brown atmospheric background, brown glow, ground haze and diffuse shadow around or behind the figure, leaving genuinely transparent alpha everywhere outside the character and the pocket-watch chain. The gaps inside arms, between chain and forearm, between legs and tail must be genuinely clear transparent too. No halo or smoke. Crisp clean edges with no light/dark fringe. Do not alter the character silhouette, do not crop, do not add anything. The pocket watch face should be blank purple/cream without numbers or tick marks, suitable for runtime numerals."
+  },
+  {
+    "key": "buyBonusAligned",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-8d7d4a3c-0882-400e-8738-34f31957b254.png",
+    "prompt": "Built-in ImageGen; task tool prompt retained in conversation. Aligned hover preserves base silhouette; intro cards depict hypnosis/paper tumble and male monocle/watch action."
+  },
+  {
+    "key": "buttonAligned",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-2d1b734a-ffaa-4a7d-91cf-ff2632317008.png",
+    "prompt": "Built-in ImageGen; task tool prompt retained in conversation. Aligned hover preserves base silhouette; intro cards depict hypnosis/paper tumble and male monocle/watch action."
+  },
+  {
+    "key": "intro1",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-c1e59fe8-8871-4b63-bd57-0287ff065648.png",
+    "prompt": "Built-in ImageGen; task tool prompt retained in conversation. Aligned hover preserves base silhouette; intro cards depict hypnosis/paper tumble and male monocle/watch action."
+  },
+  {
+    "key": "intro2",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-1e5b0157-da1c-47f0-bf15-0136164db596.png",
+    "prompt": "Built-in ImageGen; task tool prompt retained in conversation. Aligned hover preserves base silhouette; intro cards depict hypnosis/paper tumble and male monocle/watch action."
+  },
+  {
+    "key": "intro3",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-57029978-09d5-4e8b-9137-885b02f8c1e0.png",
+    "prompt": "Use case: illustration-story. Production loading feature card for Hypno Monkey, landscape 4:3 target 960x720. Use this OWN approved female monkey master as identity/style reference. Waist-up female monkey assistant at LEFT, same short brown hair, cream feather on gold headband, red fitted stage vest and cream blouse. She smiles and swings a separate purple pocket watch on a physically connected gold chain from one clearly gripping hand. At RIGHT, a wooden circus multiplier scoreboard with one small purple watch at its left and a large empty dark-red rectangular writing area to its right; three small bronze, silver and gold watches fly into the board with short clean motion lines, showing accumulation. Warm cream circus-tent background with subdued red/blue curtain corners. Clean colorful 2D animated comic drawing, crisp controlled painted 2-3-tone shadows and simple readable silhouettes. Complete natural arms/wrists/hands, no broken chains, no extra fingers. No text, numerals, logos or watermark anywhere: all labels/counts will be runtime lettering. No snakes, Medusa, marble or Greek motifs. Not a character sprite sheet."
+  },
+  {
+    "key": "curtain",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-48382bf8-d623-4864-9334-f52787357602.png",
+    "prompt": "Use case: stylized-concept. Production stage transition asset for a 2D comic circus game. One single full rectangular panel of rich tomato red stage curtain cloth, tall 1:2 target512x1024. Close-up of heavy hanging red fabric with a few broad vertical folds, dark red shadow planes and warmer coral edge planes; matte hand-painted 2D animated-comic background style, controlled 2-3-tone volume, crisp expressive large shapes, restrained screenprint edges. It must be OPAQUE across the ENTIRE rectangle including all four edges, no border, no tassels, no valance, no holes, no background showing through. This texture will slide horizontally to cover screen and split into two mirrored halves. No characters, objects, text, numbers, logos, gold trim, marble, Greek motifs or snakes. No photorealism, 3D, gloss, airbrush or fine noisy cloth texture."
+  },
+  {
+    "key": "intro2Clean",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-5288fcfb-5cf6-41cd-9e36-0a54722c98b9.png",
+    "prompt": "Precise EDIT of this own loading card illustration. Preserve the monkey character, hat, monocle, natural hand anatomy, purple spiral eyes, large RED pocket watch and its blank ivory dial, lightning, framing and background style exactly. Remove ONLY the small jewel-filled game board in the lower-left corner. Replace that board area with continuation of the same warm cream/red circus stage floor and the lightning impact behind it. Leave bottom-left region unobstructed so the program can draw its REAL 6-column 5-row circus-symbol board there. Do not paint any replacement board, symbols, letters, numbers, words or UI. Do not alter character pose, watch face, lightning trajectory or canvas dimensions."
+  },
+  {
+    "key": "intro3ChainClean",
+    "path": "/Users/stone/.codex/generated_images/01a18054-0829-7a21-8680-96649b600afe/exec-fe5b2e4c-e9c7-42d1-8859-1c1bda78b563.png",
+    "prompt": "Preserve entire approved feature card illustration; remove only dangling extra chain and fill source forearm/background, retain one connected chain from gripping fingers to watch ring."
+  }
+]

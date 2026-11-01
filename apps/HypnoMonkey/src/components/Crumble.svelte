@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Container, Sprite } from 'pixi-svelte';
+	import { Container, Graphics } from 'pixi-svelte';
 
 	import { SYMBOL_SIZE } from '../game/constants';
 	import SymbolFragments from './SymbolFragments.svelte';
@@ -70,15 +70,12 @@
 {:else if t > 0}
 	<Container x={props.x} y={props.y}>
 		{#each chips as chip, index (index)}
-			<Sprite
-				key="fxRubble"
-				anchor={0.5}
-				x={chip.vx * SYMBOL_SIZE * 0.5 * t}
-				y={(chip.vy * t + 2.6 * t * t) * SYMBOL_SIZE * 0.5}
+			<Graphics
+				x={chip.vx * SYMBOL_SIZE * .5 * t}
+				y={(chip.vy * t + 2.6 * t * t) * SYMBOL_SIZE * .5}
 				rotation={chip.spin * t}
-				width={SYMBOL_SIZE * chip.size}
-				height={SYMBOL_SIZE * chip.size}
-				alpha={1 - t * t}
+				alpha={1-t*t}
+				draw={g=>{const size=SYMBOL_SIZE*chip.size;g.clear();g.poly([-size*.45,-size*.2,size*.4,-size*.17,size*.5,size*.22,-size*.4,size*.2]).fill([0xc7473e,0xffefcb,0xdcb249,0x627f8d][index%4]).stroke({color:0x351b19,width:1});}}
 			/>
 		{/each}
 	</Container>

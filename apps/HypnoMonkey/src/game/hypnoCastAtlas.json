@@ -18,7 +18,7 @@
       "height": 351,
       "cropX": 300,
       "cropY": 519,
-      "sourceSha256": "0777db9ada6bdf8c6c3773dbb9a094d181555c010454b094aa24fbc0ec60486b"
+      "sourceSha256": "b3e5cc3d54caadd1191b84b16ac07df12fe4a1cbe393eefc0169da1844154dca"
     },
     "hand_r_hatheld": {
       "x": 570,
@@ -27,7 +27,7 @@
       "height": 349,
       "cropX": 184,
       "cropY": 313,
-      "sourceSha256": "766d3236f539c7bf29413eb09ef28b963afa242cafcde22928a14405f9a57294"
+      "sourceSha256": "dee669235f0da5f7252553c62b9efe55fa77afba09221977726b7509869ef04a"
     },
     "coat_tail_l": {
       "x": 1023,
@@ -38,18 +38,27 @@
       "cropY": 802,
       "sourceSha256": "a816ee1e671e0c220419f230b6bb38e61d382cd86e2ecc93a25c4c4d9a734ace"
     },
-    "leg_l_lower": {
+    "leg_r_upper": {
       "x": 1219,
       "y": 2,
-      "width": 180,
-      "height": 296,
-      "cropX": 284,
-      "cropY": 1046,
-      "sourceSha256": "62eb19397f56088eca9936221d5e15f92bacb3476a3ebd083a3005f23c898b90"
+      "width": 191,
+      "height": 309,
+      "cropX": 419,
+      "cropY": 835,
+      "sourceSha256": "89754c963096bc619de368bf226bdb45c720978afd6384675236ab685b044ad3"
+    },
+    "leg_l_upper": {
+      "x": 1414,
+      "y": 2,
+      "width": 188,
+      "height": 301,
+      "cropX": 291,
+      "cropY": 832,
+      "sourceSha256": "cb4ea9c1267e5aabf269c8e47b342ffec9aea40ea719c63000016d4460f4a746"
     },
     "head_idle": {
-      "x": 1403,
-      "y": 2,
+      "x": 2,
+      "y": 374,
       "width": 457,
       "height": 294,
       "cropX": 225,
@@ -57,7 +66,7 @@
       "sourceSha256": "30682e4f47eaf5c881d56ec3ec24c6599d08a849ebdd69d61c98b422fb3061ec"
     },
     "head_blink": {
-      "x": 2,
+      "x": 463,
       "y": 374,
       "width": 457,
       "height": 294,
@@ -66,7 +75,7 @@
       "sourceSha256": "47c31a3bd6e6dee70d33c63028e4c3b3641f358b2458a152ce37f91274d54b50"
     },
     "head_grin": {
-      "x": 463,
+      "x": 924,
       "y": 374,
       "width": 450,
       "height": 294,
@@ -75,7 +84,7 @@
       "sourceSha256": "715e223a75cc8e114f5905869fdcfca81d48fb7809d8d4684a0c424702a8533f"
     },
     "head_annoyed": {
-      "x": 917,
+      "x": 1378,
       "y": 374,
       "width": 457,
       "height": 294,
@@ -84,34 +93,25 @@
       "sourceSha256": "25379f098e18d56a1b7bc2b6f6642421f1bfbbf6ec277fea15f84c52b4690aea"
     },
     "head_spiral": {
-      "x": 1378,
-      "y": 374,
+      "x": 2,
+      "y": 670,
       "width": 457,
       "height": 294,
       "cropX": 225,
       "cropY": 248,
       "sourceSha256": "1df96c078bb197fd0826ff267e4df747ebfe7b9b5427a5b181f14d3700d75c02"
     },
-    "leg_r_lower": {
-      "x": 1839,
-      "y": 374,
-      "width": 177,
-      "height": 288,
-      "cropX": 537,
-      "cropY": 1060,
-      "sourceSha256": "2b04233acec63c974a86db2b853f5d27668e49e1c84c4fc8709eb986a8d52cc6"
-    },
-    "leg_r_upper": {
-      "x": 2,
+    "leg_l_lower": {
+      "x": 463,
       "y": 670,
-      "width": 172,
-      "height": 284,
-      "cropX": 444,
-      "cropY": 863,
-      "sourceSha256": "814fe4a7924385a372a6430c76b10411a0e3194624a387330a36d391ac063839"
+      "width": 156,
+      "height": 293,
+      "cropX": 294,
+      "cropY": 1055,
+      "sourceSha256": "d54001b8c85f418e8a293b5f7be4c983a4bdbc13f6a0bf5e37edc7d17a795c31"
     },
     "hat": {
-      "x": 178,
+      "x": 623,
       "y": 670,
       "width": 447,
       "height": 284,
@@ -119,27 +119,45 @@
       "cropY": 80,
       "sourceSha256": "ac62532102500d6229756b2e007001c05e0fcd1031a7193f6e2f65068d7b7210"
     },
-    "leg_l_upper": {
-      "x": 629,
+    "leg_r_lower": {
+      "x": 1074,
       "y": 670,
-      "width": 169,
-      "height": 275,
-      "cropX": 284,
-      "cropY": 860,
-      "sourceSha256": "669c78c1be2f5ae20ad4b099f368644a30445fb0bc90d3df154722be6238888e"
+      "width": 161,
+      "height": 283,
+      "cropX": 533,
+      "cropY": 1070,
+      "sourceSha256": "01112c9540d9112408ebb6ff385c9fae06188e696ef83ef0dfaf33c22a85811d"
     },
     "arm_r_upper": {
-      "x": 802,
+      "x": 1239,
       "y": 670,
-      "width": 138,
-      "height": 190,
-      "cropX": 556,
-      "cropY": 565,
-      "sourceSha256": "2356ed01879b359fa26b4410fc170ab1462c52feafc86e2af90db3611f059589"
+      "width": 181,
+      "height": 233,
+      "cropX": 537,
+      "cropY": 546,
+      "sourceSha256": "837098b7121ad5d327adae31a805ff4d13cfc017c55e57b2c0d428190621b5ee"
+    },
+    "arm_l_upper": {
+      "x": 1424,
+      "y": 670,
+      "width": 323,
+      "height": 206,
+      "cropX": 127,
+      "cropY": 521,
+      "sourceSha256": "eaee19de3d4fa005e11a37c17c792c60e9429014962cb3e5e03a8c9877525659"
+    },
+    "pelvis": {
+      "x": 1751,
+      "y": 670,
+      "width": 186,
+      "height": 196,
+      "cropX": 354,
+      "cropY": 756,
+      "sourceSha256": "33adb912962c03bb22cbdf8f4a35ce0625fb5285f234996c55ea37a9c7795d72"
     },
     "tail_3": {
-      "x": 944,
-      "y": 670,
+      "x": 2,
+      "y": 966,
       "width": 196,
       "height": 178,
       "cropX": 730,
@@ -147,8 +165,8 @@
       "sourceSha256": "96ed05bf00ac79c87048a926681e0660459ead5eee73d3f35690b4f95c699541"
     },
     "foot_l": {
-      "x": 1144,
-      "y": 670,
+      "x": 202,
+      "y": 966,
       "width": 345,
       "height": 173,
       "cropX": 155,
@@ -156,8 +174,8 @@
       "sourceSha256": "5e30dfff8c68b5da956e2282fa4cc9be28cf3555f5201b27696aa25b280a11a0"
     },
     "tail_2": {
-      "x": 1493,
-      "y": 670,
+      "x": 551,
+      "y": 966,
       "width": 167,
       "height": 165,
       "cropX": 760,
@@ -165,71 +183,53 @@
       "sourceSha256": "0156a9fe2a727e655d448b652b2fea75655a25f36ea4adc95aa66a3ebdb4248f"
     },
     "foot_r": {
-      "x": 1664,
-      "y": 670,
+      "x": 722,
+      "y": 966,
       "width": 308,
       "height": 163,
       "cropX": 594,
       "cropY": 1293,
       "sourceSha256": "002524c76b7b0577d3c2261542f6385283186fda55dc2dad101bda5c214f776e"
     },
+    "arm_l_lower": {
+      "x": 1034,
+      "y": 966,
+      "width": 177,
+      "height": 153,
+      "cropX": 134,
+      "cropY": 657,
+      "sourceSha256": "432d3b857c6a3f125e4b8a83e6ea6b35ea7303cdb9daa8436f5b1b22ba79a3e2"
+    },
     "hand_r_open": {
-      "x": 2,
-      "y": 956,
+      "x": 1215,
+      "y": 966,
       "width": 160,
       "height": 152,
       "cropX": 493,
       "cropY": 515,
-      "sourceSha256": "d642b6cf959ab7e16e3efbf2106899537a8bfc038ff583f315caf0a2095f3d64"
+      "sourceSha256": "1188b8a2f45bb2f524c9c72c58eca5eaeeac742bc77d8c44463de45e5a6f7fee"
     },
     "arm_r_lower": {
-      "x": 166,
-      "y": 956,
-      "width": 164,
-      "height": 151,
-      "cropX": 536,
-      "cropY": 616,
-      "sourceSha256": "17b7ff0e2dde0902ac1acabd0c67eed55fb2c32e3d1b733f6c36b211329675df"
-    },
-    "arm_l_upper": {
-      "x": 334,
-      "y": 956,
-      "width": 202,
-      "height": 149,
-      "cropX": 151,
-      "cropY": 554,
-      "sourceSha256": "28b13e80c42a54d95027551bb15526e0fd8c2a7f396c71e306297b824b6e8043"
-    },
-    "pelvis": {
-      "x": 540,
-      "y": 956,
-      "width": 221,
-      "height": 142,
-      "cropX": 327,
-      "cropY": 805,
-      "sourceSha256": "e7bf07fc78788e4a26bc9d42919e0bee376f6accac0c7717cd5b433961009035"
+      "x": 1379,
+      "y": 966,
+      "width": 170,
+      "height": 152,
+      "cropX": 541,
+      "cropY": 620,
+      "sourceSha256": "23287b3e7b776ddfdc7ee6d74ee1445b9f9ad1ae315da8ce4f4b0e2938dcdac2"
     },
     "hand_l_open": {
-      "x": 765,
-      "y": 956,
+      "x": 1553,
+      "y": 966,
       "width": 150,
       "height": 138,
       "cropX": 139,
       "cropY": 742,
-      "sourceSha256": "ae4c9cd0b3dc1ab8daa6d450bf61a759d5c89e717871566c4e36580f41abd144"
-    },
-    "arm_l_lower": {
-      "x": 919,
-      "y": 956,
-      "width": 162,
-      "height": 137,
-      "cropX": 142,
-      "cropY": 665,
-      "sourceSha256": "9124944e5eeebf0098a2045781aed7d0f4d750cd899f4298206960ca02594d22"
+      "sourceSha256": "f6068388c077e3c9ea30460a8c8d956bd4265b3791914e543eeb70023d0a1d12"
     },
     "tail_1": {
-      "x": 1085,
-      "y": 956,
+      "x": 1707,
+      "y": 966,
       "width": 233,
       "height": 130,
       "cropX": 583,
@@ -237,53 +237,53 @@
       "sourceSha256": "990a2353c518007ea9079d4a280765e758aafb2055f604c159e73d134f301842"
     },
     "hand_r_grip": {
-      "x": 1322,
-      "y": 956,
+      "x": 2,
+      "y": 1146,
       "width": 127,
       "height": 126,
       "cropX": 457,
       "cropY": 536,
-      "sourceSha256": "48b1947c5d0d5afb72d14950a487db7ba605561cdda286e9dcc52ab9a839a294"
+      "sourceSha256": "e759e9c590523fe4370764da269d577e4464f8450b5996e7c7e41421551909b1"
     },
     "hand_r_pinch": {
-      "x": 1453,
-      "y": 956,
+      "x": 133,
+      "y": 1146,
       "width": 121,
       "height": 115,
       "cropX": 464,
       "cropY": 554,
-      "sourceSha256": "33b0d4d38b8d997410e7a7b2d522e7b6a2c2b8475e2527260a115ceb01566c6a"
+      "sourceSha256": "fca79eaf71f88b45dbcf557a1f00dc2993c8a83598744a1e09b7946fb5a826f6"
     },
     "neck": {
-      "x": 1578,
-      "y": 956,
-      "width": 178,
+      "x": 258,
+      "y": 1146,
+      "width": 158,
       "height": 106,
-      "cropX": 338,
+      "cropX": 358,
       "cropY": 481,
-      "sourceSha256": "e5b74fce0cfea8ae51411a90ee6a3025e2f1678cce624e8b94639e794da9d4fe"
+      "sourceSha256": "c78df573bd013fb5396ca1bf8b0510fbcef1b0bf2b7c14dc56a0bd1d87c9fa20"
     },
     "hand_l_point": {
-      "x": 1760,
-      "y": 956,
+      "x": 420,
+      "y": 1146,
       "width": 174,
       "height": 99,
       "cropX": 115,
       "cropY": 711,
-      "sourceSha256": "9fb379e1d0238c0248c6598768c4afcebd602fbdca7b002cde1e270a4442e7a8"
+      "sourceSha256": "6bb3158fcd428f4f97b5ae917cf5305f185b45fd490d372afe2214ac3bd6f78a"
     },
     "hand_l_hip": {
-      "x": 1938,
-      "y": 956,
+      "x": 598,
+      "y": 1146,
       "width": 77,
       "height": 98,
       "cropX": 269,
       "cropY": 735,
-      "sourceSha256": "1c3e5a18e681f4cf590273283f1389ac58e3ad674039515ddfc6db3d875c8aaa"
+      "sourceSha256": "7656e1ce34b1bdf9ed8282cb1c9dde70f1d55d671763625c2dc53a4a5b613917"
     },
     "glasses": {
-      "x": 2,
-      "y": 1110,
+      "x": 679,
+      "y": 1146,
       "width": 183,
       "height": 72,
       "cropX": 350,

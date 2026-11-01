@@ -13,7 +13,7 @@ export function createMedusaRigScene(pages: Record<string, Texture>, onSnakeFidg
 	const root = new Container(); root.eventMode = 'none'; root.label = 'Medusa / Spine 4.3 / nine independent snakes';
 	const cache = new Map<MeshAttachment,{ mesh: Mesh; geometry: MeshGeometry; positions: Float32Array; world: Float32Array }>();
 	let portrait = false, night = false, disposed = false;
-	const isHeadSlot = (slot: Slot) => /^(hair_back|face|glasses|snake_)/.test(slot.data.name);
+	const isHeadSlot = (slot: Slot) => ['hair_back','face','glasses','snake_'].some((prefix) => slot.data.name.startsWith(prefix));
 	function update(seconds: number) {
 		if (disposed) return;
 		player.update(seconds);
