@@ -1,0 +1,31 @@
+{
+  "requests": [
+    {
+      "path": "/wallet/authenticate"
+    },
+    {
+      "path": "/wallet/play",
+      "amount": 1000000,
+      "mode": "BASE"
+    }
+  ],
+  "stats": {
+    "rounds": 1,
+    "byMode": {
+      "BASE": 1
+    },
+    "balance": 999,
+    "wagered": 1,
+    "won": 0,
+    "rtpSoFar": 0
+  },
+  "viewport": [
+    1024,
+    576
+  ],
+  "canvas": true,
+  "scroll": [
+    1024,
+    576
+  ]
+}

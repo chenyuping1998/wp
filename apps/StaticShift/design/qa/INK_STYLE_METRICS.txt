@@ -1,0 +1,7 @@
+/Users/stone/stake-engine/research/staticshift/before-impact-pass/assets/sprites/staticShiftSymbols/h1.png: colors95=136 soft=38.9% chroma=19.3 PASS
+/Users/stone/stake-engine/research/staticshift/before-impact-pass/assets/sprites/staticShiftSymbols/l2.png: colors95=106 soft=42.8% chroma=12.1 PASS
+/Users/stone/stake-engine/research/staticshift/before-impact-pass/assets/sprites/staticShiftSymbols/w.png: colors95=85 soft=43.4% chroma=34.3 PASS
+static/assets/sprites/staticShiftSymbols/h1.png: colors95=127 soft=39.7% chroma=16.3 PASS
+static/assets/sprites/staticShiftSymbols/l2.png: colors95=62 soft=38.9% chroma=6.4 PASS
+static/assets/sprites/staticShiftSymbols/w.png: colors95=47 soft=39.5% chroma=34.6 PASS
+sheet: design/qa/ink-style-comparison.png

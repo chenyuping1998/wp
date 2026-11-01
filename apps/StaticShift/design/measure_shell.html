@@ -1,0 +1,11 @@
+<!doctype html><html><meta charset="utf-8"><title>Static Shift timing verification</title><style>html,body{margin:0;width:100%;height:100%;background:#15191f}iframe{width:100%;height:100%;border:0}pre{position:fixed;right:8px;top:24px;background:#15191fe8;color:#b8d080;padding:5px;font:10px monospace;pointer-events:none;max-width:340px;white-space:pre-wrap;z-index:5}</style><iframe id="game" title="Instrumented local game"></iframe><pre id="metrics">waiting for frame</pre><script>
+const frame=document.querySelector('iframe');frame.src='./'+(location.search||'?rgs_url=stub.local&sessionID=playtest&currency=USD&lang=en');
+setInterval(()=>{try{
+ const w=frame.contentWindow,entries=w.performance.getEntriesByType('mark'),r={};for(const e of entries)r[e.name]=e.startTime;
+ const start=Array.from({length:5},(_,i)=>r['staticshift:reel-start:'+i]),stop=Array.from({length:5},(_,i)=>r['staticshift:reel-stop:'+i]);
+ const impacts=entries.filter(e=>/staticshift:(impact:|collect-contact|upgrade-contact|outro-contact:|win-contact:)/.test(e.name)).slice(-16).map(e=>({name:e.name,at:Math.round(e.startTime)}));
+ const texts=[];const walk=(n,a=1)=>{a*=n.alpha??1;if(!n.visible||a<.01)return;if(typeof n.text==='string'&&n.text)texts.push(n.text);for(const c of n.children||[])walk(c,a);};if(w.__PIXI_APP__)walk(w.__PIXI_APP__.stage);
+ const o={starts:start.map(v=>v==null?null:Math.round(v-Math.min(...start))),stops:stop.map(v=>v==null?null:Math.round(v-(r['staticshift:spin-pressed']||0))),stopGaps:stop.slice(1).map((v,i)=>v==null||stop[i]==null?null:Math.round(v-stop[i])),impacts,texts:texts.slice(-32)};
+ document.querySelector('pre').textContent=JSON.stringify(o);
+}catch(e){document.querySelector('pre').textContent=String(e);}},250);
+</script></html>

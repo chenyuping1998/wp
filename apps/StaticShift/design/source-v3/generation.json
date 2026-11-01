@@ -1,0 +1,34 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "request": "../ART_REQUEST_INK3.md",
+  "technique": "Original independent comic brush ink. Genuine alpha; two flat shadow steps, black spot shadows, upper-left light. No gradient, specular/metal sheen, glow, bokeh, grain, scratches, letters or brands.",
+  "assets": [
+    {
+      "key": "w",
+      "source": "w.png",
+      "prompt": "Keep radio mast/base silhouette. Flat mustard #e7aa53 and ochre shadow with black spot shadows; plain round antenna ball, one coil, simple rivets, green #b8d080 bolts. No sheen, glow, nonsense plumbing or gradients."
+    },
+    {
+      "key": "l3",
+      "source": "l3.png",
+      "prompt": "Same tilted microphone sprite. Flat grey enamel #8294b6/#535e88, seven horizontal black slots, right-side black spot shadow, taped handle join; no chrome/reflections."
+    },
+    {
+      "key": "h2",
+      "source": "h2.png",
+      "prompt": "Same bob/shoulder crop. Late-40s record selector, grey streak, wide jaw/crooked nose, crow's feet, chipped tooth in dry half-smile, lowered cat-eye glasses and one gold hoop. Two flat warm skin tones and black shadow."
+    },
+    {
+      "key": "h3",
+      "source": "h3.png",
+      "prompt": "Change only pointed elf-like ear into rounded human ear with three ring piercings; preserve mohawk, grin, jacket and crop. Follow-up removes fourth lowest hoop."
+    },
+    {
+      "key": "fg",
+      "source": "fg.png",
+      "prompt": "Preserve exact full-body pose, proportions, outfit, mic and planted feet. Broad freckled nose, front-tooth gap mid-laugh, eyebrow scar, uneven bleached locs with dark roots, crooked green glasses. Two flat skin tones and black shadows; plain black work-boot welt.",
+      "final_prompt": "Preserve EXACT full-body pose, framing, silhouette, limb contours, outfit folds, microphone and planted feet. Preserve laughing freckled face, bleached locs and crooked green glasses. Replace soft shading with perfectly uniform broad flat colors and hard solid black ink shadows. Two flat skin tones, two cream jacket tones, two purple trouser tones, flat charcoal boots. No soft transitions, grain, texture, airbrush, gradient, bloom or shine. Small gap between upper front teeth and short scar through eyebrow. True alpha and original tall aspect."
+    }
+  ],
+  "exports": "Transparent margins cropped for 512px symbols, longest subject side 480px; full cast canvas resized to previous 629x1122 without cropping, preserving normalized mesh anchors. No style filters."
+}

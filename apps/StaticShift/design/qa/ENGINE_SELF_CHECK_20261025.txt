@@ -1,0 +1,81 @@
+Static Shift — 送審修正與重驗 2026-10-25 (Asia/Taipei)
+
+本輪兩個確認 FAIL 已修正；本地送審包已更新。平台未上傳、未發布、未送審。
+完整官方表：33 PASS · 0 FAIL · 3 AT RISK · 4 NEEDS A HUMAN · 1 N/A
+PASS區分：來源碼有符合實作，或本機Route B（真實publish books + 模擬錢包）有正面證據；不代表正式RGS/實機/Engine approval已通過。
+
+修正內容：
+1. RGS-only socialCasino啟用英文與social用語；StaticShift明確opt-in，共享預設維持原行為。
+2. 修改來源切層歸屬：前臂不再夾衣褲、腿部底襯只延伸到解剖上的相鄰段；補關節重疊；軀幹褲頭權重連到髖部。保留原動作幅度與角色尺寸。
+3. 缺漏、負數、NaN/Infinity replay amount改採1coin有效預設；規則補Settings操作；修canvas inline基線造成的5px額外文件高度。
+4. 新check_cast_spine.mjs驗24層連通性、來源/atlas像素與20個clip，並以錯誤rotate欄位負例確認拒絕；舊comicMotion檢查只再宣稱portrait網格。
+5. Thumbnail/cover前景由同一份_assembled.png重建，包含在upload包；provider logo與背景齊全。
+
+驗證：
+- npm run build PASS：assets56/audio36/refs/social/portrait/Spine/mesh gates；type errors7個既有baseline，沒有新增，並非零type errors。
+- 24款兄弟app於共享變更後vite build全PASS（首次Sumo出現輸出檔競態，單獨重跑通過；最終批次見sibling-builds.json）。
+- 兩位角色每人10個clip，用同版Spine/Pixi渲染；80ms間隔加端點的接觸表，亮暗交替；檢視中間格/極值/起訖。原動作時程未縮減。
+- 數學7檔與publish_files一致，LUT200,000rows重算RTP96.05/96.07/96.09%；max10,000x BASE stake。
+- 111個frontend checksum一致；source/build/staged兩套Spine六檔全一致；frontend無stub/QA script；store alpha/brightness gates PASS。
+- source original flat art與修復後組裝圖不冒稱pixel-identical；原圖保留，_compare.png、_assembled.png與PRESUBMIT_REVISION_20261025.json記錄實際版本。
+
+仍待確認／未改：
+[219] JPY兩位小數沿用已記錄的Capo審核要求；與官方自檢0位表格衝突仍為AT RISK，不擅自改全遊戲貨幣政策。
+[274] 正式無stub的invalidRGS錯誤流程這輪未重驗；來源程式有錯誤對話框。
+[195] 400x225最小字體可讀性；[243]小視窗replay整體可見，但完整播放重驗主要在425x812/1024x576，重播按鈕於800x450確認啟動。
+[217]/[253]/[107]內容/IP風格最終判斷與靜音實際聆聽；實體舊Android/iOS與touch仍需人工。
+正式RGS session、每mode5個實際顯示win、所有幣別畫面、所有menu plate逐一光學偏移及所有Pack值tier未全部重跑。
+平台最後觀測frontv8/mathv1、approval=null、APIimage=null。Scratch前版與舊包一致；這次新版未上傳。Studio的thumbnail/cover欄位需要平台確認。
+
+Full checklist:
+| ID | Guideline | Verdict | Evidence |
+| --- | --- | --- | --- |
+| 181 | Launch authentication | PASS | Route B: /wallet/authenticate observed on exact release preview (game-r8), mock uses real published books; real RGS 200 remains platform check. |
+| 274 | Invalid rgs_url | AT RISK | wp-banandit/packages/components-shared/src/components/Authenticate.svelte:129. Errors open modal; invalid-host runtime not repeated this run. |
+| 183 | Play request | PASS | Space produced /wallet/play {mode:BASE,amount:1000000} at1024x576. Evidence: presubmit-20261025/base-zero-request.json. |
+| 275 | No Engine loader | PASS | 111-file staged manifest contains no Engine loader; asset registry guard passes. |
+| 213 | Title | PASS | wp-banandit/apps/StaticShift/src/components/ui/ModalGameRules.svelte:139: STATIC SHIFT — GAME RULES; restricted title terms absent. Market uniqueness under 253. |
+| 217 | Appropriate imagery | NEEDS A HUMAN | Source MG/FG layers viewed; final art, all symbols, store compositions need full visual review. |
+| 253 | Distinct title and presentation | NEEDS A HUMAN | Radio studio theme described in upload/StaticShift/HANDOFF.md:17; requires comparative art judgment. |
+| 242 | Dynamic bet parameters | PASS | wp-banandit/packages/components-shared/src/components/Authenticate.svelte:71-95; state-shared/src/stateBet.svelte.ts:30. All five params read; ladder clamp present. Code verdict, shortened ladder not retested. |
+| 187 | Active round stake | PASS | wp-banandit/packages/utils-xstate/src/createPrimaryMachines.ts:176-186. Restores round.amount into betAmount and wageredBetAmount. Code verdict. |
+| 219 | Currency formats | AT RISK | wp-banandit/packages/utils-shared/amount.ts:30,126-146. JPY metadata says 0 but formatter forces 2. Historical Capo review conflicts with self-check. USD/EUR/CAD/MXN and SC/GC mappings present; no fresh layout tests. |
+| 273 | Sub-cent payouts | PASS | wp-banandit/packages/utils-shared/amount.ts:118-146; wp-banandit/apps/StaticShift/src/components/ui/ReplayIntro.svelte:93. Win formatter allows 4 decimals (e.g. 0.005). Code verdict. |
+| 221 | End-round only for open/winning rounds | PASS | 1024x576 zero-win base round: authenticate/play only, no end-round. Winning-round conditional checked in createPrimaryMachines.ts:91-137. No real-RGS session used. |
+| 222 | Insufficient balance blocks requests | PASS | Release lowbal=.05 + space gives INSUFFICIENT BALANCE notification, authenticate only, zero play requests. low-balance-requests.json. Core request guard unchanged. |
+| 228 | Space binding | PASS | wp-banandit/packages/components-shared/src/components/EnableHotkey.svelte; wp-banandit/apps/StaticShift/src/components/Game.svelte. Window listeners and preventDefault; shared hotkey component mounted. Code verdict. |
+| 227 | No frame scrolling | PASS | src/app.html:9 now block canvas + html/body100% overflow hidden; diagnostics show scroll=viewport1024x576 and425x812. |
+| 104 | Autoplay confirmation | PASS | wp-banandit/apps/StaticShift/src/components/ui/Modals.svelte:9,34 uses shared ModalAutoSpin panel; confirm/start path separate. Code verdict. |
+| 31 | High-cost mode confirmation | PASS | wp-banandit/apps/StaticShift/src/components/ui/ModalBuyBonus.svelte:92-95; wp-banandit/packages/components-ui-html/src/components/ModalBuyBonusConfirm.svelte:19,33-40. 100x/150x cards open confirm; dialog comes from mode metadata. Code verdict. |
+| 107 | All audio can be muted | NEEDS A HUMAN | wp-banandit/apps/StaticShift/src/components/Sound.svelte:38 uses stateSoundDerived. Listen to MG/FG/cast/big win with sound disabled; code alone cannot certify silence. |
+| 25 | Per-mode RTP/max win | PASS | Recomputed all 200,000 LUT rows: base 96.0499999667%, bonus 96.0700000001%, superbonus 96.0900000000%; all max 10,000x BASE stake. wp-banandit/apps/StaticShift/src/components/ui/ModalGameRules.svelte:115-130,210,346 and src/game/socialTerms.ts:16 match. |
+| 24 | All symbol payouts | PASS | wp-banandit/apps/StaticShift/src/components/ui/ModalPayTable.svelte:17-35,80-88,131-134. All nine paying symbols read 3/4/5 payouts from config; W/P/S explanations present. Code verdict; five actual wins per mode not retested. |
+| 26 | Win combinations | PASS | wp-banandit/apps/StaticShift/src/components/ui/ModalGameRules.svelte:148-155,255-259. 5x4, 1024 ways, adjacent leftmost reels, every Relay collects every Pack; collection added to ways. |
+| 27 | Mode descriptions/costs | PASS | upload/StaticShift/math/index.json: 1x/100x/150x. wp-banandit/apps/StaticShift/src/components/ui/ModalGameRules.svelte:97-103,317-339 describes purchased modes and starting meter. |
+| 29 | Free spins/retriggers | PASS | wp-banandit/apps/StaticShift/src/components/ui/ModalGameRules.svelte:264-313. 3/4/5 scatters use config, meter marks 4/8/12 add 10, no FG Scatters; maxima derived from starting meter. |
+| 235 | Interaction guide | PASS | src/components/ui/ModalGameRules.svelte:65 adds Settings icon and master/music/effects sliders plus return instruction; icon included by design/stage_assets.py. |
+| 185 | General disclaimer | PASS | wp-banandit/apps/StaticShift/src/components/ui/ModalGameRules.svelte:359 renders LEGAL_NOTICE; staged bundle includes full malfunction, reconnect, long-run return, illustrative display, server settlement and 2026 Engine notice. |
+| 266 | Mystery probabilities | N/A | Three modes in math/index.json are base/bonus/superbonus. Rules and mode metadata have no Mystery mode or advertised numerical odds. |
+| 193 | Laptop 1024x576 | PASS | Exact1024x576 iframe: loaded, space play, menus and desktop FG/outro. laptop-final.jpg, desktop-feature-play.jpg. |
+| 195 | Popouts 400x225 / 800x450 | AT RISK | 400x225 and800x450 rendered and replay result fits. Smallest text remains very small at400x225; confirm reviewer readability preference. No full real-RGS bet at those sizes. |
+| 194 | Mobile 425x812 | PASS | 425x812 iframe: MG, auto ADVANCED, replay card, FG entry, collection and running FG viewed. mobile-*.jpg. Actual device/touch/older OS pending separately. |
+| 223 | Double-tap zoom | PASS | wp-banandit/apps/StaticShift/src/app.html:9,19: touch-action manipulation; maximum-scale=1, user-scalable=no. Code verdict; physical iOS check pending. |
+| 239 | English | PASS | wp-banandit/apps/StaticShift/src/components/ui/ModalGameRules.svelte:139 onward and ModalPayTable.svelte:32. English text present; no fresh screen-wide placeholder scan. |
+| 240 | Invalid language fallback | PASS | wp-banandit/packages/state-shared/src/stateUrl.svelte.ts:29-42. Unknown locale falls back to en. Code verdict. |
+| 77 | Social wording on every path | PASS | packages/state-shared/src/stateUrl.svelte.ts:28 resolves URL social OR opted-in jurisdiction.socialCasino. StaticShift layout opts in before Authenticate/LoadI18n. URLsocial=false/lang=fr with RGSsocial=true renders English PLAY BONUS/AMOUNT/SC and social confirmation; explicit-social replay and low-balance scan PASS. |
+| 78 | SC/GC display | PASS | wp-banandit/packages/utils-shared/amount.ts:76-78,146. XSC/XGC mapped to suffix SC/GC without $. Code verdict; no fresh screen scan. |
+| 225 | Social mode names | PASS | wp-banandit/apps/StaticShift/src/components/ui/ModalBuyBonus.svelte:57,67; ReplayIntro.svelte:51-54: Free Spins / Super Free Spins. URL-social mode metadata has alternate action labels. RGS-only switch failure counted in 77. |
+| 188 | Social replay wording | PASS | Official runtime social_text_audit: replay card, FG/outro/result and low-balance notice have no hits. audit-*.json in presubmit-20261025. |
+| 171 | Replay load/play/isolation | PASS | Superbonus real-book replay ran all30spins to227.10SC, only /bet/replay/StaticShift/1/superbonus/2, no wallet calls. replay-no-wallet.json and replay-superbonus-result.jpg. |
+| 172 | Replay optional parameters | PASS | StaticShift opts into replayAmountFallback=1000000. stateUrl.amount requires finite positive value, otherwise1coin; URLamount=-1 tested, safe base1.00SC. Currency/language handled as before. |
+| 173 | Replay again | PASS | After full227.10SC result, circular REPLAY button starts same10-spin superbonus entry again. replay-again-start.jpg. |
+| 174 | Replay stake, cost, multiplier | PASS | Actual card + retained replay bar: base1.00SC, feature150x, total150.00SC, multiplier227.1x, win227.10SC. |
+| 243 | Replay small popout | NEEDS A HUMAN | 400x225 latest-build replay card, summary and Play Again not retested. |
+
+House checks:
+- Character source fragments: FIXED; 24層一個連通部件、atlas一致，20動作與desktop/portrait gameplay查看未再看到原碎片或髖部露底。
+- Underlay gate仍有WARN（mg L/R1.3%、fg R2.9%），因此以這次實際渲染檢視作判定，不拿數字當視覺PASS。
+- Live official HTMLcenter audit: desktop base、mobile auto ADVANCED、replay card/result、low-balance notice無offenders。未對每個Pixi plate逐一量測。
+- Source backup: /tmp/staticshift-fix-20261025/source-before.tgz；前版完整包：_upload_backups/StaticShift-before-presubmit-fix-20261025.tgz。
+
+Next step: 本地修正與重驗已可檢視；完成上述人工／正式平台驗證後，再依獨立上傳/發布流程處理。

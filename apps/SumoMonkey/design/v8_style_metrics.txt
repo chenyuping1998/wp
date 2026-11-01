@@ -1,0 +1,14 @@
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/menu_frame.png: colors95=18 soft=9.6% accentB87B60=0.0% chroma=6.9 fit=97.7% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/intro_collect.png: colors95=59 soft=32.4% accentB87B60=6.6% chroma=5.5 fit=94.6% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/intro_slice.png: colors95=57 soft=29.8% accentB87B60=3.6% chroma=5.6 fit=94.8% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/intro_receipt.png: colors95=42 soft=17.1% accentB87B60=2.0% chroma=5.9 fit=95.1% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/win_big_decor.png: colors95=19 soft=39.1% accentB87B60=2.1% chroma=6.0 fit=98.0% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/win_super_decor.png: colors95=37 soft=19.7% accentB87B60=7.6% chroma=6.6 fit=96.0% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/win_mega_decor.png: colors95=32 soft=34.3% accentB87B60=0.8% chroma=5.5 fit=94.8% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/win_epic_decor.png: colors95=38 soft=31.1% accentB87B60=0.4% chroma=3.0 fit=96.1% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/win_max_decor.png: colors95=49 soft=22.4% accentB87B60=7.8% chroma=3.9 fit=93.8% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/fg_intro_decor.png: colors95=50 soft=19.2% accentB87B60=1.6% chroma=7.2 fit=95.2% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/fg_total_decor.png: colors95=49 soft=26.6% accentB87B60=0.7% chroma=6.9 fit=93.5% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/logo_board.png: colors95=23 soft=10.5% accentB87B60=0.5% chroma=3.1 fit=97.5% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiV8/logo_stamp.png: colors95=6 soft=16.4% accentB87B60=12.1% chroma=5.8 fit=100.0% PASS
+sheet: wp-banandit/apps/SushiMonkey/design/v8_style_sheet.png

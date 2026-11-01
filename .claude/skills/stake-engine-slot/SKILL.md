@@ -5,6 +5,22 @@ description: Building and shipping slot games on Stake Engine in the `wp` pnpm m
 
 # Stake Engine slot games (wp monorepo)
 
+## 角色美術與動作：零可見缺陷交付門檻（Stone，2026-10-25）
+
+只要交付角色美術、rig、動作或含角色的遊戲，就適用以下硬性驗收。**殘影、毛邊／白邊、碎片、肢體分離、接縫露底、破口或錯誤輪廓任一仍可見，即為未完成；修好前不得回報完成、交件或打包。**
+
+- 逐層在亮底、暗底與原生解析度檢查。分層肢體必須是完整連續的部件，補齊被遮住的解剖與關節重疊；軀幹不得夾手臂殘影、拳套不得夾臉／胸口或袖口外的毛、服裝不得夾腿部碎片。網格角色也須檢查輪廓拉裂與貼圖殘影。
+- 逐一檢查**所有交付動作**（spine-motion 預設六動作也須全看），包含起終格、過渡／中間格、最大彎曲與伸展。重點看肩、肘、頸、髖、膝、腕；靜態疊圖、檢查器 PASS 或流暢度 100 都不能代替實際渲染。檢查器不支援此 rig 格式時不得當作通過。
+- 先修造成缺陷的來源拆層、遮擋區補繪、權重或 rig。不得靠縮小動作／角色、加遮擋或挑好看的靜態格掩蓋；修正後重看受影響動作。合理動作預算仍須通過完整表演驗收。
+- 已整合遊戲須在桌機與直式手機實際試玩，包含 MG／FG、角色反應、轉場與 feature cut-in，檢查破口、殘影、裁切與接縫；保留實際截圖、動作預覽及新舊對照。
+- 交件前核對來源層、實際合成 full、Spine images、runtime 裁圖與座標、烘焙動作、預覽及 upload 包皆為同一最終版本。母圖若與合成有差異須如實留對照，不得冒稱零差異；不得拿舊預覽證明新版正常。
+
+## 正式來源優先（工作副本）
+
+這份工作副本保留舊專案歷史流程。開始新工作前，先讀取並以
+`/Users/stone/stake-engine/wp/.claude/skills/stake-engine-slot/SKILL.md`
+為準；下文較舊的預設、角色數量或工具流程不得覆蓋正式來源與使用者當前要求。
+
 Three games share this repo: WildParty, GoBananas, EmberForge. They are separate
 apps over a common set of packages, so most mistakes here are either "I broke the
 other two games" or "the build was green and the game is dead".

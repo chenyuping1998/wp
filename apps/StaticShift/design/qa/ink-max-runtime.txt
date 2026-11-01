@@ -1,0 +1,3 @@
+Browser tab: 3, Title: "Static Shift timing verification", URL: "http://127.0.0.1:4198/measure.html?replay=true&game=StaticShift&version=1&mode=base&event=1875&rgs_url=stub.local&currency=USD&amount=1000000&lang=en&revision=ink-max".
+There has been no change in the accessibility tree.
+The focused UI element is 4 AXWebArea 127.0.0.1:4198/?replay=true&game=StaticShift&version=1&mode=base&event=1875&rgs_url=stub.local&currency=USD&amount=1000000&lang=en&revision=ink-max

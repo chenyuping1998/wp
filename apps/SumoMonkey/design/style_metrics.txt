@@ -1,0 +1,10 @@
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiSymbols/h1.png: colors95=52 soft=47.1% accent#B87B60=16.4% chroma=3.7 fit=86.2% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiSymbols/h2.png: colors95=45 soft=26.5% accent#B87B60=47.9% chroma=6.4 fit=92.4% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiSymbols/h3.png: colors95=51 soft=38.1% accent#B87B60=0.6% chroma=10.6 fit=73.3% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiSymbols/h4.png: colors95=39 soft=35.0% accent#B87B60=0.0% chroma=9.4 fit=85.9% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiSymbols/w.png: colors95=83 soft=38.5% accent#B87B60=0.6% chroma=17.6 fit=59.2% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiSymbols/s.png: colors95=48 soft=39.3% accent#B87B60=38.4% chroma=3.8 fit=88.2% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiSymbols/p.png: colors95=32 soft=23.7% accent#B87B60=0.0% chroma=6.2 fit=89.8% PASS
+wp-banandit/apps/SushiMonkey/design/cast_delivery/mg_full_source.png: colors95=56 soft=41.8% accent#B87B60=3.3% chroma=7.9 fit=68.5% PASS
+wp-banandit/apps/SushiMonkey/design/cast_delivery/fg_full_source.png: colors95=59 soft=45.3% accent#B87B60=3.0% chroma=8.0 fit=69.0% PASS
+sheet: wp-banandit/apps/SushiMonkey/design/style_delivery_sheet.png

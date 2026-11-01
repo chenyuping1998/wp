@@ -1,5 +1,6 @@
 import { locales } from 'config-lingui';
 import { page } from '$app/state';
+import { stateConfig } from './stateConfig.svelte';
 
 export type Language = (typeof locales)[number];
 
@@ -24,7 +25,8 @@ export type Key =
 const getUrlSearchParam = (key: Key) => page.url.searchParams.get(key) as string;
 
 // params for play
-const social = () => getUrlSearchParam('social') === 'true';
+const social = () => getUrlSearchParam('social') === 'true' ||
+	(stateConfig.useJurisdictionSocial && stateConfig.jurisdiction?.socialCasino === true);
 
 const lang = (): Language => {
 	// Social play is English-only, whatever the host asks for.
@@ -52,7 +54,12 @@ const currency = () => getUrlSearchParam('currency') || '';
 
 // params for replay
 const replay = () => getUrlSearchParam('replay') === 'true';
-const amount = () => Number(getUrlSearchParam('amount')) || 0;
+const amount = () => {
+	const value = Number(getUrlSearchParam('amount'));
+	if (stateConfig.replayAmountFallback > 0)
+		return Number.isFinite(value) && value > 0 ? value : stateConfig.replayAmountFallback;
+	return value || 0;
+};
 const game = () => getUrlSearchParam('game') || '';
 const version = () => getUrlSearchParam('version') || '';
 const mode = () => getUrlSearchParam('mode') || '';

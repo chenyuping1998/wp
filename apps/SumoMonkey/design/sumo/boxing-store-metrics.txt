@@ -1,0 +1,4 @@
+cover BG upload/SumoMonkey/cover/SumoMonkey-Cover-BG.png: mean=190.0 p10=85.0 dark<32=3.2% PASS
+cover FG transparent=79.1%; COMPOSITE mean=170.0 p10=49.3 dark<32=5.5% (visual inspection still required)
+thumbnail BG upload/SumoMonkey/thumbnail/SumoMonkey-Thumbnail-BG.png: mean=212.6 p10=145.0 dark<32=0.6% PASS
+thumbnail FG transparent=73.6%; COMPOSITE mean=181.1 p10=53.8 dark<32=4.0% (visual inspection still required)

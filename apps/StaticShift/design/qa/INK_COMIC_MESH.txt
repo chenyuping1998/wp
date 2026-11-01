@@ -1,0 +1,2 @@
+{"pass":true,"minAreaRatio":0.6077235185081203,"maxAreaRatio":1.1267587311741822,"maxNormalizedHeadTravel":0.03099942228192199,"framesPerKind":251}
+Cast feet stay planted through idle and reactions

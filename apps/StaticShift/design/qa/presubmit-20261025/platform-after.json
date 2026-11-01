@@ -1,0 +1,74 @@
+{
+ "game": {
+  "detail": {
+   "approval": null,
+   "image": null,
+   "name": "Static Shift",
+   "onlinePlayers": 0,
+   "rating": null,
+   "slug": "static-shift"
+  },
+  "stats": {
+   "image": "",
+   "name": "Static Shift",
+   "slug": "static-shift",
+   "stats": []
+  },
+  "versions": [
+   {
+    "approved": [],
+    "created": 1792774307882,
+    "type": "front",
+    "version": 8
+   },
+   {
+    "approved": [],
+    "created": 1792769654786,
+    "type": "front",
+    "version": 7
+   },
+   {
+    "approved": [],
+    "created": 1792759611251,
+    "type": "front",
+    "version": 6
+   },
+   {
+    "approved": [],
+    "created": 1792653398581,
+    "type": "front",
+    "version": 5
+   },
+   {
+    "approved": [],
+    "created": 1792600162967,
+    "type": "front",
+    "version": 4
+   },
+   {
+    "approved": [],
+    "created": 1792513176696,
+    "type": "front",
+    "version": 3
+   },
+   {
+    "approved": [],
+    "created": 1792511313858,
+    "type": "front",
+    "version": 2
+   },
+   {
+    "approved": [],
+    "created": 1792457011913,
+    "type": "math",
+    "version": 1
+   },
+   {
+    "approved": [],
+    "created": 1792456943399,
+    "type": "front",
+    "version": 1
+   }
+  ]
+ }
+}

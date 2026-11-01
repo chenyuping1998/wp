@@ -1,0 +1,34 @@
+{
+  "mg": {
+    "head": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-b8c27118-12be-4fd2-b2a4-e05e1a92d041.png",
+    "torso": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-48142640-5f50-4de4-86e9-91dfcb5f3ad4.png",
+    "arm_back_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-e164cba9-bd8b-4f79-a8d9-793141a957cb.png",
+    "arm_back_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-74dd0e66-fa42-49c4-a50e-17022db432b5.png",
+    "fist_back": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-60f98d0e-69fc-4366-a36d-fd2a441e543f.png",
+    "arm_front_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-03649c42-8eac-4651-88f5-3e68e9078897.png",
+    "arm_front_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-f4f125ee-c9c6-4226-8400-3dc4b3fbcb6c.png",
+    "fist_front": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-2d0d5026-aba9-43d9-a505-5343e6db5b49.png",
+    "leg_back_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-9557619e-0765-4ca0-a8c3-75d47c20a358.png",
+    "leg_back_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-dfa30015-6c58-4dc2-9505-18b7333e0584.png",
+    "leg_front_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-a427a33d-15c0-45e1-91a7-323de3e451fd.png",
+    "leg_front_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-952a6779-3c9e-40e5-9233-b390c9fcbe14.png",
+    "pelvis": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-65d6a16a-52e6-4349-9114-4b4bb4d158df.png",
+    "neck": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-162ca23d-7614-475b-8d5c-e6ac8673da84.png"
+  },
+  "fg": {
+    "head": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-3593ab6b-9b7c-4d32-8927-bf5cbf607ffe.png",
+    "torso": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-e6591e0b-2a1d-4e05-92fd-915deab09d93.png",
+    "arm_back_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-7b1ce58b-6be6-4ad4-b36d-e16d12ace8de.png",
+    "arm_back_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-5c7d8225-63ce-4fef-87e5-40cc5c5b060d.png",
+    "fist_back": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-25426bcf-8c58-411b-ba4a-b932317a3af2.png",
+    "arm_front_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-c0ac6a42-6616-4b86-83d9-e7a81891a28b.png",
+    "arm_front_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-84370387-84d1-413b-8a16-158f46a763e7.png",
+    "fist_front": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-731a32f2-cc29-40b2-840c-1cddb97d5ca9.png",
+    "leg_back_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-0b737953-cb35-4397-b32c-b9add328bdc6.png",
+    "leg_back_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-e1477535-b031-4521-be18-60fb3f40f2c0.png",
+    "leg_front_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-0f95a6d4-c356-43ad-b11d-50652357e063.png",
+    "leg_front_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-5413bb10-bb0c-43f1-8043-ac3a50339a60.png",
+    "pelvis": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-367e26d2-7430-4b06-b688-43a344e69eac.png",
+    "neck": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-bc30fe86-f5fc-43b7-b324-d553644dbec4.png"
+  }
+}

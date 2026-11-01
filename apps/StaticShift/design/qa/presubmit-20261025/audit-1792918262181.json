@@ -1,0 +1,27 @@
+{
+  "url": "http://127.0.0.1:4199/game-r8/?rgs_url=stub.local&sessionID=playtest&currency=XSC&social=true&bal=.05&qa=true",
+  "social": {
+    "social": true,
+    "pixiTexts": 15,
+    "hits": [],
+    "verdict": "PASS"
+  },
+  "center": [],
+  "glyphs": [
+    {
+      "text": "1,024 WAYS",
+      "lowerThanCapsByFontPct": 6.7,
+      "capsLowInBoxPct": 14.4
+    },
+    {
+      "text": "−",
+      "lowerThanCapsByFontPct": 8.5,
+      "capsLowInBoxPct": 2.5
+    },
+    {
+      "text": "+",
+      "lowerThanCapsByFontPct": 8.6,
+      "capsLowInBoxPct": 2.5
+    }
+  ]
+}

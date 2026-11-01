@@ -1,0 +1,4 @@
+static/assets/sprites/staticShiftSymbolsInk/h1.png: colors95=127 soft=39.7% chroma=16.3 PASS
+static/assets/sprites/staticShiftSymbolsInk/l2.png: colors95=57 soft=38.9% chroma=5.9 PASS
+static/assets/sprites/staticShiftSymbolsInk/w.png: colors95=46 soft=39.3% chroma=34.3 PASS
+sheet: design/qa/ink-style-final.png

@@ -174,14 +174,15 @@ for (const [, k, v] of triggerBlock[1].matchAll(/(\d+)\s*:\s*(\d+)/g)) {
 	scatterSpins[Number(k)] = Number(v);
 }
 
-const prizeRange = (name) => {
+const prizeValuesFor = (name) => {
  const match=mathSource.match(new RegExp(`${name}\\s*=\\s*\\{([^}]*)\\}`));
  if(!match) throw new Error(`Missing prize distribution ${name}`);
  const values=[...match[1].matchAll(/(\d+)\s*:/g)].map(m=>Number(m[1]));
- return {min:Math.min(...values),max:Math.max(...values)};
+ return values.sort((a,b)=>a-b);
 };
-const prizeRanges={base:prizeRange('base_prizes'),free:prizeRange('fg_prizes')};
-const config = { ...raw, symbols, scatterSpins, banditMeter, prizeRanges };
+const prizeValues={base:prizeValuesFor('base_prizes'),free:prizeValuesFor('fg_prizes')};
+const prizeRanges=Object.fromEntries(Object.entries(prizeValues).map(([key,values])=>[key,{min:Math.min(...values),max:Math.max(...values)}]));
+const config = { ...raw, symbols, scatterSpins, banditMeter, prizeRanges, prizeValues };
 
 const header = `// GENERATED FILE - do not edit by hand.
 // Source: math-sdk/games/PicklePanic/library/configs/config_fe_PicklePanic.json

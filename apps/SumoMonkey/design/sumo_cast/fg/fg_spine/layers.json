@@ -1,0 +1,18 @@
+{
+  "order": [
+    "arm_back_upper",
+    "leg_back_upper",
+    "leg_back_lower",
+    "leg_front_upper",
+    "leg_front_lower",
+    "pelvis",
+    "neck",
+    "torso",
+    "arm_back_lower",
+    "head",
+    "fist_back",
+    "arm_front_upper",
+    "arm_front_lower",
+    "fist_front"
+  ]
+}

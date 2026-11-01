@@ -1,0 +1,9 @@
+
+== Low quality assets: 0 finding(s)
+
+== Poor animations: 0 finding(s)
+
+== Poor bet UI bar: 1 finding(s)
+  WARN src/game/uiTheme.ts  portrait spin row at template sizes (menu 1.0 > autospin 0.7 > ± 0.5) — check the hierarchy, portraitMenuScale/portraitStepScale
+
+0 FAIL, 1 WARN

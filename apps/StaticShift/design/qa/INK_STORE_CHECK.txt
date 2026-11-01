@@ -1,0 +1,4 @@
+cover BG /Users/stone/stake-engine/upload/StaticShift/cover/StaticShift-Cover-BG.png: mean=167.2 p10=70.7 dark<32=4.7% PASS
+cover FG transparent=73.8%; COMPOSITE mean=142.7 p10=36.6 dark<32=8.9% (visual inspection still required)
+thumbnail BG /Users/stone/stake-engine/upload/StaticShift/thumbnail/StaticShift-BG.png: mean=176.7 p10=95.4 dark<32=2.9% PASS
+thumbnail FG transparent=51.4%; COMPOSITE mean=132.8 p10=28.5 dark<32=10.7% (visual inspection still required)

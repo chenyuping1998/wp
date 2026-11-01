@@ -1,0 +1,17 @@
+{
+  "url": "http://127.0.0.1:4199/game-r7/?replay=true&game=StaticShift&version=1&mode=superbonus&event=2&rgs_url=stub.local&currency=XSC&social=true&lang=fr&amount=1000000&qa=true&device=mobile",
+  "social": {
+    "social": true,
+    "pixiTexts": 29,
+    "hits": [],
+    "verdict": "PASS"
+  },
+  "center": [],
+  "glyphs": [
+    {
+      "text": "1,024 WAYS",
+      "lowerThanCapsByFontPct": 6.7,
+      "capsLowInBoxPct": 14.4
+    }
+  ]
+}

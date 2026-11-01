@@ -1,0 +1,167 @@
+{
+ "bgm_main": {
+  "sec": 20.87,
+  "peak": 0.329,
+  "loud50ms_dB": -17.0
+ },
+ "bgm_freespin": {
+  "sec": 17.14,
+  "peak": 0.329,
+  "loud50ms_dB": -17.0
+ },
+ "btn": {
+  "sec": 0.09,
+  "peak": 0.438,
+  "loud50ms_dB": -22.0
+ },
+ "spin": {
+  "sec": 0.55,
+  "peak": 0.228,
+  "loud50ms_dB": -19.0
+ },
+ "scatter_1": {
+  "sec": 1.8,
+  "peak": 0.368,
+  "loud50ms_dB": -16.0
+ },
+ "scatter_2": {
+  "sec": 1.9,
+  "peak": 0.388,
+  "loud50ms_dB": -15.4
+ },
+ "scatter_3": {
+  "sec": 2.0,
+  "peak": 0.538,
+  "loud50ms_dB": -14.8
+ },
+ "scatter_4": {
+  "sec": 2.1,
+  "peak": 0.507,
+  "loud50ms_dB": -14.2
+ },
+ "scatter_5": {
+  "sec": 2.2,
+  "peak": 0.502,
+  "loud50ms_dB": -13.6
+ },
+ "sack_land": {
+  "sec": 0.28,
+  "peak": 0.304,
+  "loud50ms_dB": -20.0
+ },
+ "collect_grab": {
+  "sec": 0.42,
+  "peak": 0.195,
+  "loud50ms_dB": -19.0
+ },
+ "coin_in": {
+  "sec": 0.32,
+  "peak": 0.235,
+  "loud50ms_dB": -21.0
+ },
+ "dial_tick": {
+  "sec": 0.07,
+  "peak": 0.464,
+  "loud50ms_dB": -24.0
+ },
+ "reel_tension": {
+  "sec": 2.0,
+  "peak": 0.351,
+  "loud50ms_dB": -20.0
+ },
+ "alarm_bell": {
+  "sec": 3.0,
+  "peak": 0.363,
+  "loud50ms_dB": -15.0
+ },
+ "alarm_trip": {
+  "sec": 2.5,
+  "peak": 0.507,
+  "loud50ms_dB": -16.0
+ },
+ "sack_throw": {
+  "sec": 0.6,
+  "peak": 0.351,
+  "loud50ms_dB": -19.0
+ },
+ "shutter_down": {
+  "sec": 0.8,
+  "peak": 0.432,
+  "loud50ms_dB": -18.0
+ },
+ "shutter_slam": {
+  "sec": 1.2,
+  "peak": 0.553,
+  "loud50ms_dB": -14.0
+ },
+ "safe_open": {
+  "sec": 0.75,
+  "peak": 0.352,
+  "loud50ms_dB": -16.0
+ },
+ "fs_intro": {
+  "sec": 4.2,
+  "peak": 0.679,
+  "loud50ms_dB": -13.0
+ },
+ "win_small": {
+  "sec": 1.6,
+  "peak": 0.286,
+  "loud50ms_dB": -19.0
+ },
+ "win_mid": {
+  "sec": 2.0,
+  "peak": 0.337,
+  "loud50ms_dB": -17.0
+ },
+ "bill_counter": {
+  "sec": 1.5,
+  "peak": 0.897,
+  "loud50ms_dB": -22.0
+ },
+ "cash_register": {
+  "sec": 3.3,
+  "peak": 0.513,
+  "loud50ms_dB": -15.0
+ },
+ "win_cap": {
+  "sec": 2.4,
+  "peak": 0.422,
+  "loud50ms_dB": -16.0
+ },
+ "win_big": {
+  "sec": 3.4,
+  "peak": 0.557,
+  "loud50ms_dB": -14.0
+ },
+ "win_super": {
+  "sec": 4.0,
+  "peak": 0.675,
+  "loud50ms_dB": -13.4
+ },
+ "win_mega": {
+  "sec": 4.7,
+  "peak": 0.684,
+  "loud50ms_dB": -12.8
+ },
+ "win_epic": {
+  "sec": 5.4,
+  "peak": 0.602,
+  "loud50ms_dB": -12.2
+ },
+ "win_max": {
+  "sec": 6.2,
+  "peak": 0.772,
+  "loud50ms_dB": -11.6
+ },
+ "voice_laugh": {
+  "sec": 1.9,
+  "peak": 0.538,
+  "loud50ms_dB": -16.0
+ },
+ "voice_hup": {
+  "sec": 0.4,
+  "peak": 0.324,
+  "loud50ms_dB": -18.0
+ }
+}

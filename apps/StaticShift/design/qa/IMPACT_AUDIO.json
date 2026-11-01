@@ -1,0 +1,27 @@
+{
+  "reel_stop": {
+    "durationMs": 120,
+    "peak": 0.4384,
+    "rms": 0.0717
+  },
+  "bandit_land": {
+    "durationMs": 230,
+    "peak": 0.6837,
+    "rms": 0.1467
+  },
+  "collect_stamp": {
+    "durationMs": 320,
+    "peak": 0.7251,
+    "rms": 0.1497
+  },
+  "tumbler_up": {
+    "durationMs": 480,
+    "peak": 0.6936,
+    "rms": 0.1319
+  },
+  "bigwin_slam": {
+    "durationMs": 550,
+    "peak": 0.7795,
+    "rms": 0.1287
+  }
+}

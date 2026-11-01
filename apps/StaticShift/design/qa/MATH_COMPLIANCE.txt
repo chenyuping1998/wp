@@ -1,0 +1,100 @@
+Math compliance: /Users/stone/stake-engine/upload/StaticShift/math
+
+  PASS   index.json: Found
+  PASS   Bet modes: 3 mode(s) defined
+  INFO   Base mode: Using "base" as base mode
+  PASS   Mode "base" cost: cost=1.0000
+  PASS   Mode "base" events: books_base.jsonl.zst (26.5 MiB)
+  PASS   Mode "base" LUT: lookUpTable_base_0.csv valid (100000 entries, total weight 1125899906764038)
+  PASS   Mode "base" LUT IDs: sim_id values are sequential
+  INFO   Mode "base" RTP: 96.0500%
+  INFO   Mode "base" volatility: High (sigma=12.5577)
+  INFO   Mode "base" max win: 10000.00x base bet; 10000.00x paid mode cost
+  INFO   Mode "base" hit rate: 29.0425% weighted non-zero hit rate
+  INFO   Mode "base" tail risk: P(≥5000x)=0.00000102, P(≥10000x)=0.00000102, CVaR0.1%=158.5753x, ETL sum=0.494499
+  PASS   Mode "base" RTP range: 96.0500% is within 90.00%–96.70%
+  PASS   Mode "base" max-win achievability: Maximum win occurs 1 in 981.7K
+  PASS   Mode "base" non-zero hit rate: 29.0425% is at least 5%
+  PASS   Mode "bonus" cost: cost=100.0000
+  PASS   Mode "bonus" events: books_bonus.jsonl.zst (87.9 MiB)
+  PASS   Mode "bonus" LUT: lookUpTable_bonus_0.csv valid (50000 entries, total weight 1125899906818381)
+  PASS   Mode "bonus" LUT IDs: sim_id values are sequential
+  INFO   Mode "bonus" RTP: 96.0700%
+  INFO   Mode "bonus" volatility: Low (sigma=2.1250)
+  INFO   Mode "bonus" max win: 10000.00x base bet; 100.00x paid mode cost
+  INFO   Mode "bonus" hit rate: 99.8857% weighted non-zero hit rate
+  INFO   Mode "bonus" tail risk: P(≥5000x)=0.00000000, P(≥10000x)=0.00000000, CVaR0.1%=21.0747x, ETL sum=0.005349
+  PASS   Mode "bonus" RTP range: 96.0700% is within 90.00%–96.70%
+  PASS   Mode "bonus" max-win achievability: Maximum win occurs 1 in 19.6K
+  PASS   Mode "bonus" non-zero hit rate: 99.8857% is at least 5%
+  PASS   Mode "superbonus" cost: cost=150.0000
+  PASS   Mode "superbonus" events: books_superbonus.jsonl.zst (81.5 MiB)
+  PASS   Mode "superbonus" LUT: lookUpTable_superbonus_0.csv valid (50000 entries, total weight 1125899906817892)
+  PASS   Mode "superbonus" LUT IDs: sim_id values are sequential
+  INFO   Mode "superbonus" RTP: 96.0900%
+  INFO   Mode "superbonus" volatility: Low (sigma=1.5549)
+  INFO   Mode "superbonus" max win: 10000.00x base bet; 66.67x paid mode cost
+  INFO   Mode "superbonus" hit rate: 99.9331% weighted non-zero hit rate
+  INFO   Mode "superbonus" tail risk: P(≥5000x)=0.00000000, P(≥10000x)=0.00000000, CVaR0.1%=14.8020x, ETL sum=0.005353
+  PASS   Mode "superbonus" RTP range: 96.0900% is within 90.00%–96.70%
+  PASS   Mode "superbonus" max-win achievability: Maximum win occurs 1 in 13.0K
+  PASS   Mode "superbonus" non-zero hit rate: 99.9331% is at least 5%
+  PASS   Mode "base" cross-mode RTP consistency: Rounded mode RTP 96.05% differs from game mean 96.0700% by 0.0200 percentage points
+  PASS   Mode "bonus" cross-mode RTP consistency: Rounded mode RTP 96.07% differs from game mean 96.0700% by 0.0000 percentage points
+  PASS   Mode "superbonus" cross-mode RTP consistency: Rounded mode RTP 96.09% differs from game mean 96.0700% by 0.0200 percentage points
+  PASS   Max payout multiplier: Mode "base" value 10000 is within 2-star limit 25000
+  PASS   Cost multiplier: Mode "base" value 1 is within 2-star limit 1000
+  PASS   Base volatility: Mode "base" value 12.557655 is within 2-star range 0.6–50
+  PASS   Tail probability 5,000x: Mode "base" value 1.0245861e-06 is within 2-star limit 0.01
+  PASS   Tail probability 10,000x: Mode "base" value 1.0186826e-06 is within 2-star limit 0.002
+  PASS   CVaR 0.1%: Mode "base" value 158.57531 is within 2-star limit 700
+  PASS   ETL 40x: Mode "base" value 0.48389346 is within 2-star limit 0.8
+  PASS   ETL 10,000x: Mode "base" value 0.010605753 is within 2-star limit 0.6
+  PASS   ETL sum: Mode "base" value 0.49449921 is within 2-star limit 1.3
+  PASS   Max payout multiplier: Mode "bonus" value 10000 is within 2-star limit 25000
+  PASS   Cost multiplier: Mode "bonus" value 100 is within 2-star limit 1000
+  PASS   Tail probability 5,000x: Mode "bonus" value 0 is within 2-star limit 0.01
+  PASS   Tail probability 10,000x: Mode "bonus" value 0 is within 2-star limit 0.002
+  PASS   CVaR 0.1%: Mode "bonus" value 21.07468 is within 2-star limit 700
+  PASS   ETL 40x: Mode "bonus" value 0.0053489267 is within 2-star limit 0.8
+  PASS   ETL 10,000x: Mode "bonus" value 0 is within 2-star limit 0.6
+  PASS   ETL sum: Mode "bonus" value 0.0053489267 is within 2-star limit 1.3
+  PASS   Max payout multiplier: Mode "superbonus" value 10000 is within 2-star limit 25000
+  PASS   Cost multiplier: Mode "superbonus" value 150 is within 2-star limit 1000
+  PASS   Tail probability 5,000x: Mode "superbonus" value 0 is within 2-star limit 0.01
+  PASS   Tail probability 10,000x: Mode "superbonus" value 0 is within 2-star limit 0.002
+  PASS   CVaR 0.1%: Mode "superbonus" value 14.801952 is within 2-star limit 700
+  PASS   ETL 40x: Mode "superbonus" value 0.0053533625 is within 2-star limit 0.8
+  PASS   ETL 10,000x: Mode "superbonus" value 0 is within 2-star limit 0.6
+  PASS   ETL sum: Mode "superbonus" value 0.0053533625 is within 2-star limit 1.3
+  PASS   Max payout multiplier: Mode "base" value 10000 is within 3-star limit 100000
+  PASS   Cost multiplier: Mode "base" value 1 is within 3-star limit 1500
+  PASS   Base volatility: Mode "base" value 12.557655 is within 3-star range 0.6–60
+  PASS   Tail probability 5,000x: Mode "base" value 1.0245861e-06 is within 3-star limit 0.01
+  PASS   Tail probability 10,000x: Mode "base" value 1.0186826e-06 is within 3-star limit 0.005
+  PASS   CVaR 0.1%: Mode "base" value 158.57531 is within 3-star limit 800
+  PASS   ETL 40x: Mode "base" value 0.48389346 is within 3-star limit 0.9
+  PASS   ETL 10,000x: Mode "base" value 0.010605753 is within 3-star limit 0.8
+  PASS   ETL sum: Mode "base" value 0.49449921 is within 3-star limit 1.5
+  PASS   Max payout multiplier: Mode "bonus" value 10000 is within 3-star limit 100000
+  PASS   Cost multiplier: Mode "bonus" value 100 is within 3-star limit 1500
+  PASS   Tail probability 5,000x: Mode "bonus" value 0 is within 3-star limit 0.01
+  PASS   Tail probability 10,000x: Mode "bonus" value 0 is within 3-star limit 0.005
+  PASS   CVaR 0.1%: Mode "bonus" value 21.07468 is within 3-star limit 800
+  PASS   ETL 40x: Mode "bonus" value 0.0053489267 is within 3-star limit 0.9
+  PASS   ETL 10,000x: Mode "bonus" value 0 is within 3-star limit 0.8
+  PASS   ETL sum: Mode "bonus" value 0.0053489267 is within 3-star limit 1.5
+  PASS   Max payout multiplier: Mode "superbonus" value 10000 is within 3-star limit 100000
+  PASS   Cost multiplier: Mode "superbonus" value 150 is within 3-star limit 1500
+  PASS   Tail probability 5,000x: Mode "superbonus" value 0 is within 3-star limit 0.01
+  PASS   Tail probability 10,000x: Mode "superbonus" value 0 is within 3-star limit 0.005
+  PASS   CVaR 0.1%: Mode "superbonus" value 14.801952 is within 3-star limit 800
+  PASS   ETL 40x: Mode "superbonus" value 0.0053533625 is within 3-star limit 0.9
+  PASS   ETL 10,000x: Mode "superbonus" value 0 is within 3-star limit 0.8
+  PASS   ETL sum: Mode "superbonus" value 0.0053533625 is within 3-star limit 1.5
+
+Result: PASS • eligible tiers: 2-star, 3-star
+  2-star: PASS • max compliant bet level 200.00x
+  3-star: PASS • max compliant bet level 1000.00x
+  Bet level and currency are excluded from the verdict.
+Modes: 3 • failures: 0 • warnings: 0

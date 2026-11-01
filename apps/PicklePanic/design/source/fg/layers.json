@@ -5,7 +5,7 @@
   ],
   "layers": [
     {
-      "z": 2,
+      "z": 18,
       "name": "torso_0_trunk",
       "file": "torso_0_trunk.png",
       "x": 155,
@@ -17,19 +17,19 @@
       "z": 10,
       "name": "left_leg_0_thigh",
       "file": "left_leg_0_thigh.png",
-      "x": 183,
-      "y": 595,
-      "w": 156,
-      "h": 91
+      "x": 176,
+      "y": 570,
+      "w": 94,
+      "h": 172
     },
     {
       "z": 11,
       "name": "left_leg_1_calf",
       "file": "left_leg_1_calf.png",
-      "x": 184,
-      "y": 660,
-      "w": 88,
-      "h": 122
+      "x": 187,
+      "y": 647,
+      "w": 71,
+      "h": 158
     },
     {
       "z": 12,
@@ -44,19 +44,19 @@
       "z": 14,
       "name": "right_leg_0_thigh",
       "file": "right_leg_0_thigh.png",
-      "x": 291,
-      "y": 595,
-      "w": 103,
-      "h": 91
+      "x": 288,
+      "y": 570,
+      "w": 111,
+      "h": 172
     },
     {
       "z": 15,
       "name": "right_leg_1_calf",
       "file": "right_leg_1_calf.png",
-      "x": 313,
-      "y": 660,
-      "w": 109,
-      "h": 122
+      "x": 316,
+      "y": 647,
+      "w": 83,
+      "h": 158
     },
     {
       "z": 16,

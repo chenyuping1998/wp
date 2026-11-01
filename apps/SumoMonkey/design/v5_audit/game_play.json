@@ -1,0 +1,24 @@
+{
+ "log": [
+  "MG rounds ended 1",
+  "FG ended true"
+ ],
+ "errors": [
+  "Failed to load resource: the server responded with a status of 404 (File not found)",
+  "Local font load failed NetworkError: A network error occurred."
+ ],
+ "bad": [
+  "404 http://127.0.0.1:4197/fonts/sushi/SushiReceipt.ttf"
+ ],
+ "stats": {
+  "rounds": 4,
+  "byMode": {
+   "BASE": 3,
+   "BONUS": 1
+  },
+  "balance": 1816.7,
+  "wagered": 103,
+  "won": 919.7,
+  "rtpSoFar": 8.929126213592234
+ }
+}

@@ -13,6 +13,12 @@ export const stateConfig = $state({
 	 * was built with rather than pressable ones with nothing behind them.
 	 */
 	explainInsufficientBalance: false,
+	// Opt in per game: resolve social terminology from authenticate as well as
+	// the launch URL. Kept off for games that have not migrated this contract.
+	useJurisdictionSocial: false,
+	// Optional base amount in API micro-units for malformed/missing replay URLs.
+	// Zero preserves the original behaviour for games that have not opted in.
+	replayAmountFallback: 0,
 
 	jurisdiction: {
 		socialCasino: false,

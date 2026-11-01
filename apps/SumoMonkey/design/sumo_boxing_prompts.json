@@ -1,0 +1,151 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-24",
+  "method": "Unified full-body first, single-layer extraction edits second, source-pixel registration and hidden overlap reconstruction last",
+  "requirements": "角色生圖_相撲猴/需求單.md",
+  "parts": {
+    "mg": [
+      [
+        "arm_back_upper",
+        "REAR UPPER ARM on LEFT of image: shoulder around(267,414), elbow around(157,623). Black furry upper arm ONLY; extend rounded shoulder40px behind torso and rounded elbow40px. NOT front/right arm, NOT forearm/glove/chest."
+      ],
+      [
+        "arm_back_lower",
+        "REAR FOREARM on LEFT of image: from elbow(157,623) up-right to wrist(300,490) below left glove guarding cheek. Ivory inner forearm and furry outer edge, salmon wrist band. ONLY elbow-to-wrist segment, rounded40px overlap at ends. NO upperarm/glove/torso."
+      ],
+      [
+        "fist_back",
+        "REAR IVORY BOXING GLOVE on LEFT of image beside face: spans approx x250..548 y302..556. Include salmon cuff for overlap at wrist(300,490). ONLY this left glove and cuff. No fur arm, face, torso."
+      ],
+      [
+        "arm_front_upper",
+        "FRONT UPPER ARM on RIGHT of image: shoulder around(712,460) to elbow(835,637). Black furry upper arm ONLY, rounded40px overlap at shoulder/elbow. NO rightforearm/glove/chest."
+      ],
+      [
+        "arm_front_lower",
+        "FRONT FOREARM on RIGHT of image: elbow(835,637) to wrist(900,540), angled upward-right. Black fur and ivory inner forearm, salmon wristband. ONLY elbow-to-wrist segment, rounded40px overlap at ends. NO upperarm/glove/torso."
+      ],
+      [
+        "fist_front",
+        "FRONT IVORY BOXING GLOVE on RIGHT of image at chin height, spans x768..999 y320..588, with salmon cuff wrist(900,540). ONLY this right glove/cuff. NO furarm,head,torso."
+      ],
+      [
+        "leg_back_upper",
+        "REAR THIGH on LEFT of image: hip(365,916) to knee(190,1090), blackfur with ivory kneecap. Only this long thigh. Rounded hip hidden40px into mawashi and rounded knee overlapping40px into calf. NO pelvis/otherleg/calf/foot."
+      ],
+      [
+        "leg_back_lower",
+        "REAR CALF AND BARE FOOT on LEFT of image: knee(190,1090) to ankle(155,1372), leftbarefoot spreads x20..252 y1340..1492. ONLY calf/foot, rounded knee40px overlap under thigh, preserve toes. NO thigh/pelvis/rightleg."
+      ],
+      [
+        "leg_front_upper",
+        "FRONT THIGH on RIGHT of image: hip(630,921) to knee(851,1102), blackfur with ivory kneecap. ONLY thigh, rounded hip40px into mawashi and knee40px into calf. NO pelvis/otherleg/calf/foot."
+      ],
+      [
+        "leg_front_lower",
+        "FRONT CALF AND BARE FOOT on RIGHT of image: knee(851,1102) to ankle(866,1366), barefoot spreads x768..1005 y1340..1475. ONLY calf/foot, rounded knee40px under thigh. Preserve toes. NO thigh/pelvis/leftleg."
+      ],
+      [
+        "pelvis",
+        "SALMON MAWASHI waistband with short front knot and crotch fabric, around x248..700 y776..1006. ONLY fabric/pelvis; fill both concealed hip sockets and extend40px under belly. NO chest/arms/head/thighs."
+      ],
+      [
+        "neck",
+        "SHORT BLACK FURRY NECK joining rear of jaw to shoulder center, around x462..625 y359..472. ONLY neck. Reconstruct hidden neck with rounded overlapping ends into head and torso, matching fur hatching. NO head/chest/arms/gloves."
+      ]
+    ],
+    "fg": [
+      [
+        "head",
+        "HEAD including entire high topknot, ears, toothy face, approximately x262..667 y28..465. Include small chin-fur overlap. NO shoulders/chest/gloves/neck."
+      ],
+      [
+        "torso",
+        "TORSO: entire chest, smaller muscular belly, BOTH shoulders. Remove ALL arms including upper arms and gloves, remove head/neck/mawashi/legs. Reconstruct ALL chest/armpits/shoulders hidden by gloves/arms; continue ivory versus blackfur boundary naturally, no arm ghosts. Approx x300..760 y438..829."
+      ],
+      [
+        "arm_back_upper",
+        "REAR UPPER ARM on LEFT of image from shoulder(280,475) to elbow(185,650). Black furry upper arm ONLY, rounded40px overlaps at shoulder and elbow. NO forearm,glove,chest."
+      ],
+      [
+        "arm_back_lower",
+        "REAR FOREARM on LEFT from elbow(185,650) to wrist(302,555) below glove by cheek. Blackfur and ivory innerforearm, salmon wrist band. ONLY elbow-to-wrist segment with rounded40px overlaps. NO upperarm,glove,torso."
+      ],
+      [
+        "fist_back",
+        "REAR IVORY BOXING GLOVE on LEFT beside face, approx x250..485 y375..625 with salmon cuff wrist(302,555). ONLY this glove/cuff. NO arms/head/chest."
+      ],
+      [
+        "arm_front_upper",
+        "FRONT UPPER ARM on RIGHT from shoulder(676,554) to elbow(785,689), black furry upper arm ONLY. Rounded40px overlaps shoulder and elbow. NO forearm/glove/torso."
+      ],
+      [
+        "arm_front_lower",
+        "FRONT FOREARM on RIGHT from elbow(785,689) to wrist(860,615), furry with ivory innerforearm and salmon wrist band. ONLY elbow-to-wrist segment with rounded40px overlaps. NO upperarm/glove/torso."
+      ],
+      [
+        "fist_front",
+        "FRONT IVORY BOXING GLOVE on RIGHT at chinheight approx x744..973 y433..659 including salmon cuff wrist(860,615). ONLY this glove/cuff. NO arm,head,torso."
+      ],
+      [
+        "leg_back_upper",
+        "REAR THIGH on LEFT from hip(430,911) to knee(239,1088), furry long muscular thigh and ivory kneecap. ONLY thigh. Rounded40px overlap hip under mawashi and knee into calf. NO pelvis/calf/foot/rightleg."
+      ],
+      [
+        "leg_back_lower",
+        "REAR CALF AND BARE FOOT on LEFT from knee(239,1088) to ankle(247,1340), foot approx x55..319 y1330..1445. ONLY calf/foot, rounded40px overlap at knee. Preserve exact toes. NO thigh/mawashi/rightleg."
+      ],
+      [
+        "leg_front_upper",
+        "FRONT THIGH on RIGHT from hip(615,912) to knee(777,1100), furry long muscular thigh with ivory kneecap. ONLY thigh, rounded40px overlaps hip under mawashi and knee. NO calf/foot/pelvis/leftleg."
+      ],
+      [
+        "leg_front_lower",
+        "FRONT CALF AND BARE FOOT on RIGHT from knee(777,1100) to ankle(850,1420), foot approx x810..994 y1390..1504. ONLY calf/foot, rounded40px overlap knee. Preserve exact toes. NO thigh/pelvis/leftleg."
+      ],
+      [
+        "pelvis",
+        "IVORY MAWASHI belt/crotch fabric with short SALMON ROPE KNOT around x345..693 y761..988. ONLY fabric/pelvis, fill both concealed hip sockets and extend40px under belly. NO torso/thighs/arms."
+      ],
+      [
+        "neck",
+        "SHORT FURRY NECK between jawbase and chest approx x425..584 y427..538. ONLY neck, reconstruct hidden shortneck, round overlapping ends into head and chest. NO head,torso,gloves,arms."
+      ]
+    ]
+  },
+  "commonLayerPrompt": "Extract ONLY this registered rig layer from the exact SAME complete source illustration. Preserve original visible pixels, size, silhouette and LOCATION. 1024x1536 PNG, genuine0-alpha transparent everywhere else. No centering/zoom/resize/rotation. Complete hidden overlap anatomy only, rounded joint caps extending40px. Preserve charcoal manga ink/fur hatching, ivory paper, muted salmon. No fullcharacter/text/diagram/shadow/halo/blackbackground.",
+  "sources": {
+    "mg": {
+      "head": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-b8c27118-12be-4fd2-b2a4-e05e1a92d041.png",
+      "torso": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-48142640-5f50-4de4-86e9-91dfcb5f3ad4.png",
+      "arm_back_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-e164cba9-bd8b-4f79-a8d9-793141a957cb.png",
+      "arm_back_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-74dd0e66-fa42-49c4-a50e-17022db432b5.png",
+      "fist_back": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-60f98d0e-69fc-4366-a36d-fd2a441e543f.png",
+      "arm_front_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-03649c42-8eac-4651-88f5-3e68e9078897.png",
+      "arm_front_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-f4f125ee-c9c6-4226-8400-3dc4b3fbcb6c.png",
+      "fist_front": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-2d0d5026-aba9-43d9-a505-5343e6db5b49.png",
+      "leg_back_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-9557619e-0765-4ca0-a8c3-75d47c20a358.png",
+      "leg_back_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-dfa30015-6c58-4dc2-9505-18b7333e0584.png",
+      "leg_front_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-a427a33d-15c0-45e1-91a7-323de3e451fd.png",
+      "leg_front_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-952a6779-3c9e-40e5-9233-b390c9fcbe14.png",
+      "pelvis": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-65d6a16a-52e6-4349-9114-4b4bb4d158df.png",
+      "neck": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-162ca23d-7614-475b-8d5c-e6ac8673da84.png"
+    },
+    "fg": {
+      "head": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-3593ab6b-9b7c-4d32-8927-bf5cbf607ffe.png",
+      "torso": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-e6591e0b-2a1d-4e05-92fd-915deab09d93.png",
+      "arm_back_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-7b1ce58b-6be6-4ad4-b36d-e16d12ace8de.png",
+      "arm_back_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-5c7d8225-63ce-4fef-87e5-40cc5c5b060d.png",
+      "fist_back": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-25426bcf-8c58-411b-ba4a-b932317a3af2.png",
+      "arm_front_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-c0ac6a42-6616-4b86-83d9-e7a81891a28b.png",
+      "arm_front_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-84370387-84d1-413b-8a16-158f46a763e7.png",
+      "fist_front": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-731a32f2-cc29-40b2-840c-1cddb97d5ca9.png",
+      "leg_back_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-0b737953-cb35-4397-b32c-b9add328bdc6.png",
+      "leg_back_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-e1477535-b031-4521-be18-60fb3f40f2c0.png",
+      "leg_front_upper": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-0f95a6d4-c356-43ad-b11d-50652357e063.png",
+      "leg_front_lower": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-5413bb10-bb0c-43f1-8043-ac3a50339a60.png",
+      "pelvis": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-367e26d2-7430-4b06-b688-43a344e69eac.png",
+      "neck": "/Users/stone/.codex/generated_images/01a168b8-deda-7910-9469-7b540a1b4296/exec-bc30fe86-f5fc-43b7-b324-d553644dbec4.png"
+    }
+  }
+}

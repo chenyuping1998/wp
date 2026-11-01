@@ -1,0 +1,10 @@
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoSymbols/h1.png: colors95=64 soft=34.6% accent#b87b60=9.2% chroma=5.5 fit=85.6% PASS
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoSymbols/h2.png: colors95=58 soft=48.2% accent#b87b60=17.4% chroma=4.0 fit=86.3% PASS
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoSymbols/h3.png: colors95=58 soft=31.7% accent#b87b60=18.2% chroma=5.9 fit=90.7% PASS
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoSymbols/h4.png: colors95=50 soft=38.7% accent#b87b60=0.0% chroma=5.6 fit=83.9% PASS
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoSymbols/w.png: colors95=50 soft=25.2% accent#b87b60=6.3% chroma=5.0 fit=89.3% PASS
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoSymbols/s.png: colors95=51 soft=39.0% accent#b87b60=0.7% chroma=5.3 fit=87.3% PASS
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoSymbols/p.png: colors95=51 soft=31.7% accent#b87b60=5.6% chroma=6.7 fit=92.2% PASS
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoSymbols/rope.png: colors95=45 soft=37.2% accent#b87b60=0.0% chroma=6.2 fit=85.5% PASS
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoBackground/bg_base.png: colors95=38 soft=31.5% accent#b87b60=0.2% chroma=8.3 fit=76.0% PASS
+sheet: wp-banandit/apps/SumoMonkey/design/sumo/manga-style-contact.png

@@ -1,0 +1,6 @@
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiSymbols/h1.png: colors95=52 soft=47.1% accent#b87b60=16.4% chroma=3.7 fit=88.4% PASS
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoSymbols/h1.png: colors95=64 soft=34.6% accent#b87b60=9.2% chroma=5.5 fit=85.6% PASS
+wp-banandit/apps/SushiMonkey/static/assets/sprites/sushiBackground/bg_base.png: colors95=34 soft=32.4% accent#b87b60=0.1% chroma=7.1 fit=86.1% PASS
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoBackground/bg_base.png: colors95=38 soft=31.5% accent#b87b60=0.2% chroma=8.3 fit=76.0% PASS
+wp-banandit/apps/SumoMonkey/static/assets/sprites/sumoSymbols/low_label.png: colors95=1 soft=0.0% accent#b87b60=0.0% chroma=7.1 fit=100.0% PASS
+sheet: wp-banandit/apps/SumoMonkey/design/sumo/sushi-reference-comparison.png

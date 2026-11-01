@@ -1,0 +1,24 @@
+{
+  "requests": [
+    {
+      "path": "/wallet/authenticate"
+    }
+  ],
+  "stats": {
+    "rounds": 0,
+    "byMode": {},
+    "balance": 0.05,
+    "wagered": 0,
+    "won": 0,
+    "rtpSoFar": 0
+  },
+  "viewport": [
+    1280,
+    720
+  ],
+  "canvas": true,
+  "scroll": [
+    1280,
+    720
+  ]
+}

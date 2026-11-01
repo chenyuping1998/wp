@@ -1,0 +1,50 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "style": "Original independent American graphic novel, varied black brush ink, 2-3 flat shadows, crosshatching, paper grain; indigo room, warm cast, signal green/amber accents.",
+  "generated_assets": [
+    {
+      "file": "background.png",
+      "prompt": "Wide 16:9 pirate-radio room at 3am, left radio desk and blank wall sign, central quiet lavender acoustic wall for board, right empty chair and door, floor visible. No people, letters, UI, or board. Ink graphic novel, desaturated indigo, amber practical lights."
+    },
+    {
+      "file": "background-clean.png",
+      "prompt": "Edit background.png: remove only right office chair, reconstruct wall, conduit, floor and rug. Preserve whole remaining illustration, style, camera and lighting."
+    },
+    {
+      "file": "symbols.png",
+      "prompt": "Transparent 4x3 sprite sheet: moustached DJ, black-bob woman in amber glasses, mohawk punk, elderly radio lady; mug, headphones, microphone, cassette; sneaker, lightning Relay transmitter, Tape Deck Scatter, green Signal Pack. Isolated unique silhouettes, ink comic technique, no words."
+    },
+    {
+      "file": "cast.png",
+      "prompt": "Transparent pair full body, same baseline: sleepy chunky rust-shirt male sound engineer, cream-jacket dark-skinned female radio host with green glasses and bleached dreadlocks, holding microphone away from body. Natural rest poses, free hands, distinct from symbol cast. Ink graphic novel."
+    },
+    {
+      "file": "pigeon.png",
+      "prompt": "Transparent side-view grumpy urban grey pigeon, tiny bent wire antenna on head, facing left, one foot forward. Slate lavender feathers, orange eye, coral feet, thick comic ink, readable at 70px."
+    },
+    {
+      "file": "ui.png",
+      "prompt": "Transparent 2x2 blank UI props: lavender studio faceplate, cream ticket, taped cream cue card on console, mint clipped-corner button. Variable black ink, flat shading, worn paper, clear text areas, no lettering. Background extraction pass removes haze outside objects."
+    },
+    {
+      "file": "button-hover.png",
+      "prompt": "Transparent single clipped-corner wide studio push button, 3:1, amber rim, bright warm cream interior and mint hints, active/hover illumination. Flat comic ink, no words, empty central text area, hard black offset silhouette shadow."
+    },
+    {
+      "file": "store-background.png",
+      "prompt": "Bright early-morning pale lilac radio studio for store layers, tape decks and mixing desk left, microphone/cables at perimeter, amber sun and vinyl record wall graphic right. Broad light masses readable at200px, no people or text, right-center empty for hero, overlay-safe corners."
+    }
+  ],
+  "production": "Original source PNGs retained. Deterministic atlas extraction uses alpha/component bounds, equal square icon canvases; cast continuous meshes. Store BG/FG composites are layout exports. Native UI icons adapted with thin open line strokes. See ART_BRIEF.md.",
+  "ink_revision_20261019": {
+    "tool": "built-in image_gen.imagegen",
+    "sources": "design/source-v2",
+    "edits": [
+      "Background: variable black brush contours, two flat indigo shadow tones, reduced equipment microdetail and amber light. Preserve camera and empty board/cast areas.",
+      "Cast: preserve both identities, full-body silhouettes and limb placement; replace fine shading by coarse flat cel shadows and sparse ink.",
+      "Symbols: preserve 4\u00d73 original subject order and silhouettes; simplify shading and desaturate props to lavender/slate.",
+      "Store: preserve bright pale-lilac radio composition; simplify to broad flat ink shapes."
+    ],
+    "extraction": "Substantial connected alpha components define each sprite crop. No creative retouching or style conversion by pixel filters. Originals retained; integration in design/integrate_ink_pass.py."
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "mg-front": {
+    "elbow": {
+      "x": 840,
+      "y": 640
+    },
+    "wrist": {
+      "x": 900,
+      "y": 550
+    },
+    "guide": "/Users/stone/stake-engine/wp-banandit/apps/SumoMonkey/design/forearm-fix/mg-front-guide.png"
+  },
+  "mg-back": {
+    "elbow": {
+      "x": 150,
+      "y": 630
+    },
+    "wrist": {
+      "x": 300,
+      "y": 505
+    },
+    "guide": "/Users/stone/stake-engine/wp-banandit/apps/SumoMonkey/design/forearm-fix/mg-back-guide.png"
+  },
+  "fg-front": {
+    "elbow": {
+      "x": 785,
+      "y": 689
+    },
+    "wrist": {
+      "x": 860,
+      "y": 615
+    },
+    "guide": "/Users/stone/stake-engine/wp-banandit/apps/SumoMonkey/design/forearm-fix/fg-front-guide.png"
+  },
+  "fg-back": {
+    "elbow": {
+      "x": 185,
+      "y": 650
+    },
+    "wrist": {
+      "x": 302,
+      "y": 555
+    },
+    "guide": "/Users/stone/stake-engine/wp-banandit/apps/SumoMonkey/design/forearm-fix/fg-back-guide.png"
+  }
+}

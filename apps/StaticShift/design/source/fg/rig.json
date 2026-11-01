@@ -1,0 +1,118 @@
+{
+ "_note": "Static Shift FG (the host). Points in SOURCE pixels of staticShiftCastInk/fg.png (629x1122). Her right forearm (screen-right) is raised with the mic and its cable; the elbow is the bend at the rolled cuff.",
+ "out": "staticShiftHost",
+ "root": [
+  261.7,
+  903.9
+ ],
+ "hip": [
+  260.1,
+  487.7
+ ],
+ "waist": [
+  256.0,
+  382.0
+ ],
+ "neck": [
+  239.8,
+  156.1
+ ],
+ "helmet": {
+  "at": [
+   227.6,
+   40.6
+  ],
+  "dir": [
+   227.6,
+   4.1
+  ]
+ },
+ "banana": {
+  "at": [
+   219.4,
+   121.9
+  ],
+  "dir": [
+   219.4,
+   146.3
+  ]
+ },
+ "pocket": {
+  "at": [
+   260.1,
+   268.2
+  ],
+  "dir": [
+   260.1,
+   235.7
+  ]
+ },
+ "shoulderL": [
+  139.8,
+  183.7
+ ],
+ "shoulderR": [
+  326.7,
+  188.6
+ ],
+ "elbowL": [
+  143.8,
+  323.4
+ ],
+ "elbowR": [
+  376.6,
+  304.1
+ ],
+ "handL": [
+  143.0,
+  438.9
+ ],
+ "handR": [
+  463.3,
+  243.9
+ ],
+ "prop": [
+  146.3,
+  463.3
+ ],
+ "cuffL": {
+  "at": [
+   126.0,
+   243.9
+  ],
+  "dir": [
+   115.4,
+   308.9
+  ]
+ },
+ "cuffR": {
+  "at": [
+   353.6,
+   243.9
+  ],
+  "dir": [
+   380.4,
+   302.4
+  ]
+ },
+ "pantL": {
+  "at": [
+   219.4,
+   495.8
+  ],
+  "dir": [
+   186.9,
+   625.9
+  ]
+ },
+ "pantR": {
+  "at": [
+   308.9,
+   495.8
+  ],
+  "dir": [
+   337.3,
+   625.9
+  ]
+ }
+}

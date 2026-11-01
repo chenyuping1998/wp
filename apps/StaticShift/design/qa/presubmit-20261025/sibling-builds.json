@@ -1,0 +1,122 @@
+[
+  {
+    "app": "CapoNostra",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "CrusherYard",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "DeadwoodExpress",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "EmberForge",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "GoBananas",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "GoBananas100",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "GoBananasBoat",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "GoBananasDelta",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "GoBananasFrostline",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "GoBananaut",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "GoBanandit",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "GoBananubis",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "GoBoomana",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "HardTime",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "HotMiami",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "MarginCall",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "Moooo",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "PicklePanic",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "SoulSeal",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "SumoMonkey",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "SushiMonkey",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "TripleWitching",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "TurfWar",
+    "result": "PASS",
+    "exit": 0
+  },
+  {
+    "app": "WildParty",
+    "result": "PASS",
+    "exit": 0
+  }
+]

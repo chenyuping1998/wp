@@ -1,0 +1,394 @@
+{
+  "count": {
+    "0": {
+      "key": "v8Digitcount0",
+      "width": 185,
+      "advance": 179,
+      "height": 256
+    },
+    "1": {
+      "key": "v8Digitcount1",
+      "width": 158,
+      "advance": 152,
+      "height": 256
+    },
+    "2": {
+      "key": "v8Digitcount2",
+      "width": 166,
+      "advance": 160,
+      "height": 256
+    },
+    "3": {
+      "key": "v8Digitcount3",
+      "width": 166,
+      "advance": 160,
+      "height": 256
+    },
+    "4": {
+      "key": "v8Digitcount4",
+      "width": 181,
+      "advance": 175,
+      "height": 256
+    },
+    "5": {
+      "key": "v8Digitcount5",
+      "width": 168,
+      "advance": 162,
+      "height": 256
+    },
+    "6": {
+      "key": "v8Digitcount6",
+      "width": 178,
+      "advance": 172,
+      "height": 256
+    },
+    "7": {
+      "key": "v8Digitcount7",
+      "width": 164,
+      "advance": 158,
+      "height": 256
+    },
+    "8": {
+      "key": "v8Digitcount8",
+      "width": 181,
+      "advance": 175,
+      "height": 256
+    },
+    "9": {
+      "key": "v8Digitcount9",
+      "width": 178,
+      "advance": 172,
+      "height": 256
+    },
+    ".": {
+      "key": "v8Digitcount10",
+      "width": 113,
+      "advance": 107,
+      "height": 256
+    },
+    ",": {
+      "key": "v8Digitcount11",
+      "width": 113,
+      "advance": 107,
+      "height": 256
+    },
+    "\u00d7": {
+      "key": "v8Digitcount12",
+      "width": 186,
+      "advance": 180,
+      "height": 256
+    },
+    "$": {
+      "key": "v8Digitcount13",
+      "width": 169,
+      "advance": 163,
+      "height": 256
+    },
+    "+": {
+      "key": "v8Digitcount14",
+      "width": 186,
+      "advance": 180,
+      "height": 256
+    },
+    "/": {
+      "key": "v8Digitcount15",
+      "width": 105,
+      "advance": 99,
+      "height": 256
+    }
+  },
+  "fs": {
+    "0": {
+      "key": "v8Digitfs0",
+      "width": 185,
+      "advance": 179,
+      "height": 256
+    },
+    "1": {
+      "key": "v8Digitfs1",
+      "width": 158,
+      "advance": 152,
+      "height": 256
+    },
+    "2": {
+      "key": "v8Digitfs2",
+      "width": 166,
+      "advance": 160,
+      "height": 256
+    },
+    "3": {
+      "key": "v8Digitfs3",
+      "width": 166,
+      "advance": 160,
+      "height": 256
+    },
+    "4": {
+      "key": "v8Digitfs4",
+      "width": 181,
+      "advance": 175,
+      "height": 256
+    },
+    "5": {
+      "key": "v8Digitfs5",
+      "width": 168,
+      "advance": 162,
+      "height": 256
+    },
+    "6": {
+      "key": "v8Digitfs6",
+      "width": 178,
+      "advance": 172,
+      "height": 256
+    },
+    "7": {
+      "key": "v8Digitfs7",
+      "width": 164,
+      "advance": 158,
+      "height": 256
+    },
+    "8": {
+      "key": "v8Digitfs8",
+      "width": 181,
+      "advance": 175,
+      "height": 256
+    },
+    "9": {
+      "key": "v8Digitfs9",
+      "width": 178,
+      "advance": 172,
+      "height": 256
+    },
+    ".": {
+      "key": "v8Digitfs10",
+      "width": 113,
+      "advance": 107,
+      "height": 256
+    },
+    ",": {
+      "key": "v8Digitfs11",
+      "width": 113,
+      "advance": 107,
+      "height": 256
+    },
+    "\u00d7": {
+      "key": "v8Digitfs12",
+      "width": 186,
+      "advance": 180,
+      "height": 256
+    },
+    "$": {
+      "key": "v8Digitfs13",
+      "width": 169,
+      "advance": 163,
+      "height": 256
+    },
+    "+": {
+      "key": "v8Digitfs14",
+      "width": 186,
+      "advance": 180,
+      "height": 256
+    },
+    "/": {
+      "key": "v8Digitfs15",
+      "width": 105,
+      "advance": 99,
+      "height": 256
+    }
+  },
+  "plate": {
+    "0": {
+      "key": "v8Digitplate0",
+      "width": 185,
+      "advance": 179,
+      "height": 256
+    },
+    "1": {
+      "key": "v8Digitplate1",
+      "width": 158,
+      "advance": 152,
+      "height": 256
+    },
+    "2": {
+      "key": "v8Digitplate2",
+      "width": 166,
+      "advance": 160,
+      "height": 256
+    },
+    "3": {
+      "key": "v8Digitplate3",
+      "width": 166,
+      "advance": 160,
+      "height": 256
+    },
+    "4": {
+      "key": "v8Digitplate4",
+      "width": 181,
+      "advance": 175,
+      "height": 256
+    },
+    "5": {
+      "key": "v8Digitplate5",
+      "width": 168,
+      "advance": 162,
+      "height": 256
+    },
+    "6": {
+      "key": "v8Digitplate6",
+      "width": 178,
+      "advance": 172,
+      "height": 256
+    },
+    "7": {
+      "key": "v8Digitplate7",
+      "width": 164,
+      "advance": 158,
+      "height": 256
+    },
+    "8": {
+      "key": "v8Digitplate8",
+      "width": 181,
+      "advance": 175,
+      "height": 256
+    },
+    "9": {
+      "key": "v8Digitplate9",
+      "width": 178,
+      "advance": 172,
+      "height": 256
+    },
+    ".": {
+      "key": "v8Digitplate10",
+      "width": 113,
+      "advance": 107,
+      "height": 256
+    },
+    ",": {
+      "key": "v8Digitplate11",
+      "width": 113,
+      "advance": 107,
+      "height": 256
+    },
+    "\u00d7": {
+      "key": "v8Digitplate12",
+      "width": 186,
+      "advance": 180,
+      "height": 256
+    },
+    "$": {
+      "key": "v8Digitplate13",
+      "width": 169,
+      "advance": 163,
+      "height": 256
+    },
+    "+": {
+      "key": "v8Digitplate14",
+      "width": 186,
+      "advance": 180,
+      "height": 256
+    },
+    "/": {
+      "key": "v8Digitplate15",
+      "width": 105,
+      "advance": 99,
+      "height": 256
+    }
+  },
+  "receipt": {
+    "0": {
+      "key": "v8Digitreceipt0",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "1": {
+      "key": "v8Digitreceipt1",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "2": {
+      "key": "v8Digitreceipt2",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "3": {
+      "key": "v8Digitreceipt3",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "4": {
+      "key": "v8Digitreceipt4",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "5": {
+      "key": "v8Digitreceipt5",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "6": {
+      "key": "v8Digitreceipt6",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "7": {
+      "key": "v8Digitreceipt7",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "8": {
+      "key": "v8Digitreceipt8",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "9": {
+      "key": "v8Digitreceipt9",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    ".": {
+      "key": "v8Digitreceipt10",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    ",": {
+      "key": "v8Digitreceipt11",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "\u00d7": {
+      "key": "v8Digitreceipt12",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "$": {
+      "key": "v8Digitreceipt13",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "+": {
+      "key": "v8Digitreceipt14",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    },
+    "/": {
+      "key": "v8Digitreceipt15",
+      "width": 162,
+      "advance": 156,
+      "height": 256
+    }
+  }
+}

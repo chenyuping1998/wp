@@ -263,10 +263,12 @@
 			<section class="wp-card">
 				<h3 style="color: #c45240 !important"><span class="wp-accent-bar"></span>Pickle Jars &amp; the Cook</h3>
 				<p>
-					<strong>Pickle Jars</strong> land carrying a value from {config.prizeRanges.base.min}&times; to {config.prizeRanges.base.max}&times; the
+					<strong>Pickle Jars</strong> are green jars with a cream number label. They land carrying a value from {config.prizeRanges.base.min}&times; to {config.prizeRanges.base.max}&times; the
 					{T.bet} (up to {config.prizeRanges.free.max}&times; in Free Spins), printed on the jar. A Jar does not form combinations and does not {T.pay} on
 					its own.
 				</p>
+				<p>Base-game jar values: {config.prizeValues.base.join('×, ')}× {T.bet}.<br />
+					Free Spins jar values: {config.prizeValues.free.join('×, ')}× {T.bet}.</p>
 				<p>
 					The <strong>Cook</strong> is the Wild. It appears on reels 2 to 5. Whenever at least
 					one Cook and at least one Jar are on the board after the reels stop,
@@ -502,6 +504,9 @@
 
 	/* the bet readout: caption plus the chevron the bar draws beside it */
 	.wp-readout {
+		position: relative;
+		width: 5rem;
+		justify-content: center;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.3rem;
@@ -512,7 +517,9 @@
 		font: 400 0.7rem var(--gb-display-font, sans-serif);
 	}
 	.wp-readout svg {
-		width: 0.7rem;
+		position: absolute;
+		right: 0.2rem;
+		width: 0.5rem;
 		height: 0.5rem;
 		fill: none;
 		stroke: #171c1a;

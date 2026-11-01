@@ -1,0 +1,6 @@
+wp-banandit/apps/StaticShift/static/assets/sprites/staticShiftSymbolsInk/w.png: colors95=27 soft=26.7% chroma=33.6 PASS
+wp-banandit/apps/StaticShift/static/assets/sprites/staticShiftSymbolsInk/l3.png: colors95=16 soft=19.0% chroma=13.2 PASS
+wp-banandit/apps/StaticShift/static/assets/sprites/staticShiftSymbolsInk/h2.png: colors95=65 soft=25.7% chroma=17.9 PASS
+wp-banandit/apps/StaticShift/static/assets/sprites/staticShiftSymbolsInk/h3.png: colors95=98 soft=27.9% chroma=27.9 PASS
+wp-banandit/apps/StaticShift/static/assets/sprites/staticShiftCastInk/fg.png: colors95=92 soft=26.9% chroma=23.4 PASS
+sheet: wp-banandit/apps/StaticShift/design/qa/ink3-style.png

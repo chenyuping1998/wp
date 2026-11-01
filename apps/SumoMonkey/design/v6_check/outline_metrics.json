@@ -1,0 +1,409 @@
+{
+ "mg": {
+  "arm_back_upper": {
+   "hidden": {
+    "edge_lum": 66.9,
+    "inner_lum": 63.7,
+    "edge_vs_inner": 3.3,
+    "px": 1621
+   },
+   "visible": {
+    "edge_lum": 2.7,
+    "inner_lum": 33.4,
+    "edge_vs_inner": -30.6,
+    "px": 1607
+   },
+   "specks": 3,
+   "speck_px": 3
+  },
+  "leg_back_upper": {
+   "hidden": {
+    "edge_lum": 39.7,
+    "inner_lum": 45.6,
+    "edge_vs_inner": -5.8,
+    "px": 2345
+   },
+   "visible": {
+    "edge_lum": 19.7,
+    "inner_lum": 45.6,
+    "edge_vs_inner": -26.0,
+    "px": 2462
+   },
+   "specks": 5,
+   "speck_px": 5
+  },
+  "leg_back_lower": {
+   "hidden": null,
+   "visible": {
+    "edge_lum": 25.2,
+    "inner_lum": 107.3,
+    "edge_vs_inner": -82.1,
+    "px": 4830
+   },
+   "specks": 1,
+   "speck_px": 2
+  },
+  "leg_front_upper": {
+   "hidden": {
+    "edge_lum": 38.0,
+    "inner_lum": 45.6,
+    "edge_vs_inner": -7.6,
+    "px": 1876
+   },
+   "visible": {
+    "edge_lum": 26.3,
+    "inner_lum": 41.6,
+    "edge_vs_inner": -15.3,
+    "px": 2844
+   },
+   "specks": 5,
+   "speck_px": 7
+  },
+  "leg_front_lower": {
+   "hidden": null,
+   "visible": {
+    "edge_lum": 25.8,
+    "inner_lum": 112.9,
+    "edge_vs_inner": -87.1,
+    "px": 4801
+   },
+   "specks": 3,
+   "speck_px": 3
+  },
+  "pelvis": {
+   "hidden": {
+    "edge_lum": 112.7,
+    "inner_lum": 151.7,
+    "edge_vs_inner": -39.0,
+    "px": 992
+   },
+   "visible": {
+    "edge_lum": 44.6,
+    "inner_lum": 126.3,
+    "edge_vs_inner": -81.7,
+    "px": 5652
+   },
+   "specks": 0,
+   "speck_px": 0
+  },
+  "neck": {
+   "hidden": {
+    "edge_lum": 62.0,
+    "inner_lum": 104.3,
+    "edge_vs_inner": -42.3,
+    "px": 2891
+   },
+   "visible": null,
+   "specks": 0,
+   "speck_px": 0
+  },
+  "torso": {
+   "hidden": {
+    "edge_lum": 65.9,
+    "inner_lum": 71.1,
+    "edge_vs_inner": -5.2,
+    "px": 2866
+   },
+   "visible": {
+    "edge_lum": 20.4,
+    "inner_lum": 113.4,
+    "edge_vs_inner": -93.0,
+    "px": 3952
+   },
+   "specks": 2,
+   "speck_px": 2
+  },
+  "arm_back_lower": {
+   "hidden": {
+    "edge_lum": 48.8,
+    "inner_lum": 47.9,
+    "edge_vs_inner": 0.9,
+    "px": 453
+   },
+   "visible": {
+    "edge_lum": 11.3,
+    "inner_lum": 44.7,
+    "edge_vs_inner": -33.3,
+    "px": 1755
+   },
+   "specks": 0,
+   "speck_px": 0
+  },
+  "fist_back": {
+   "hidden": {
+    "edge_lum": 230.7,
+    "inner_lum": 226.0,
+    "edge_vs_inner": 4.7,
+    "px": 869
+   },
+   "visible": {
+    "edge_lum": 75.2,
+    "inner_lum": 163.2,
+    "edge_vs_inner": -88.0,
+    "px": 2260
+   },
+   "specks": 0,
+   "speck_px": 0
+  },
+  "head": {
+   "hidden": {
+    "edge_lum": 10.8,
+    "inner_lum": 9.6,
+    "edge_vs_inner": 1.2,
+    "px": 538
+   },
+   "visible": {
+    "edge_lum": 8.2,
+    "inner_lum": 41.8,
+    "edge_vs_inner": -33.5,
+    "px": 5033
+   },
+   "specks": 0,
+   "speck_px": 0
+  },
+  "arm_front_upper": {
+   "hidden": {
+    "edge_lum": 56.9,
+    "inner_lum": 56.5,
+    "edge_vs_inner": 0.5,
+    "px": 798
+   },
+   "visible": {
+    "edge_lum": 2.7,
+    "inner_lum": 49.5,
+    "edge_vs_inner": -46.8,
+    "px": 2404
+   },
+   "specks": 1,
+   "speck_px": 1
+  },
+  "arm_front_lower": {
+   "hidden": {
+    "edge_lum": 43.6,
+    "inner_lum": 45.6,
+    "edge_vs_inner": -2.0,
+    "px": 661
+   },
+   "visible": {
+    "edge_lum": 36.4,
+    "inner_lum": 39.5,
+    "edge_vs_inner": -3.0,
+    "px": 864
+   },
+   "specks": 0,
+   "speck_px": 0
+  },
+  "fist_front": {
+   "hidden": null,
+   "visible": {
+    "edge_lum": 12.7,
+    "inner_lum": 184.8,
+    "edge_vs_inner": -172.1,
+    "px": 3002
+   },
+   "specks": 0,
+   "speck_px": 0
+  }
+ },
+ "fg": {
+  "arm_back_upper": {
+   "hidden": {
+    "edge_lum": 70.5,
+    "inner_lum": 61.7,
+    "edge_vs_inner": 8.7,
+    "px": 1563
+   },
+   "visible": {
+    "edge_lum": 5.7,
+    "inner_lum": 26.4,
+    "edge_vs_inner": -20.7,
+    "px": 1472
+   },
+   "specks": 35,
+   "speck_px": 42
+  },
+  "leg_back_upper": {
+   "hidden": {
+    "edge_lum": 37.9,
+    "inner_lum": 46.9,
+    "edge_vs_inner": -9.0,
+    "px": 1883
+   },
+   "visible": {
+    "edge_lum": 17.9,
+    "inner_lum": 45.9,
+    "edge_vs_inner": -28.0,
+    "px": 2902
+   },
+   "specks": 43,
+   "speck_px": 54
+  },
+  "leg_back_lower": {
+   "hidden": null,
+   "visible": {
+    "edge_lum": 28.1,
+    "inner_lum": 93.1,
+    "edge_vs_inner": -65.0,
+    "px": 4460
+   },
+   "specks": 0,
+   "speck_px": 0
+  },
+  "leg_front_upper": {
+   "hidden": {
+    "edge_lum": 48.1,
+    "inner_lum": 45.8,
+    "edge_vs_inner": 2.3,
+    "px": 1770
+   },
+   "visible": {
+    "edge_lum": 33.5,
+    "inner_lum": 55.1,
+    "edge_vs_inner": -21.6,
+    "px": 2758
+   },
+   "specks": 39,
+   "speck_px": 47
+  },
+  "leg_front_lower": {
+   "hidden": null,
+   "visible": {
+    "edge_lum": 28.4,
+    "inner_lum": 87.0,
+    "edge_vs_inner": -58.7,
+    "px": 4464
+   },
+   "specks": 1,
+   "speck_px": 1
+  },
+  "pelvis": {
+   "hidden": {
+    "edge_lum": 181.4,
+    "inner_lum": 199.1,
+    "edge_vs_inner": -17.7,
+    "px": 1065
+   },
+   "visible": {
+    "edge_lum": 11.6,
+    "inner_lum": 211.7,
+    "edge_vs_inner": -200.1,
+    "px": 2357
+   },
+   "specks": 0,
+   "speck_px": 0
+  },
+  "neck": {
+   "hidden": {
+    "edge_lum": 61.0,
+    "inner_lum": 95.6,
+    "edge_vs_inner": -34.7,
+    "px": 2018
+   },
+   "visible": null,
+   "specks": 1,
+   "speck_px": 1
+  },
+  "torso": {
+   "hidden": {
+    "edge_lum": 46.4,
+    "inner_lum": 41.1,
+    "edge_vs_inner": 5.3,
+    "px": 2625
+   },
+   "visible": {
+    "edge_lum": 4.7,
+    "inner_lum": 51.5,
+    "edge_vs_inner": -46.9,
+    "px": 2853
+   },
+   "specks": 41,
+   "speck_px": 48
+  },
+  "arm_back_lower": {
+   "hidden": {
+    "edge_lum": 73.8,
+    "inner_lum": 67.6,
+    "edge_vs_inner": 6.2,
+    "px": 624
+   },
+   "visible": {
+    "edge_lum": 9.0,
+    "inner_lum": 52.8,
+    "edge_vs_inner": -43.9,
+    "px": 1242
+   },
+   "specks": 6,
+   "speck_px": 6
+  },
+  "fist_back": {
+   "hidden": {
+    "edge_lum": 234.7,
+    "inner_lum": 236.8,
+    "edge_vs_inner": -2.1,
+    "px": 699
+   },
+   "visible": {
+    "edge_lum": 7.9,
+    "inner_lum": 184.2,
+    "edge_vs_inner": -176.3,
+    "px": 1988
+   },
+   "specks": 0,
+   "speck_px": 0
+  },
+  "head": {
+   "hidden": null,
+   "visible": {
+    "edge_lum": 10.3,
+    "inner_lum": 58.0,
+    "edge_vs_inner": -47.7,
+    "px": 8457
+   },
+   "specks": 0,
+   "speck_px": 0
+  },
+  "arm_front_upper": {
+   "hidden": {
+    "edge_lum": 78.0,
+    "inner_lum": 60.6,
+    "edge_vs_inner": 17.4,
+    "px": 501
+   },
+   "visible": {
+    "edge_lum": 5.8,
+    "inner_lum": 43.5,
+    "edge_vs_inner": -37.7,
+    "px": 2418
+   },
+   "specks": 20,
+   "speck_px": 27
+  },
+  "arm_front_lower": {
+   "hidden": {
+    "edge_lum": 67.8,
+    "inner_lum": 62.5,
+    "edge_vs_inner": 5.3,
+    "px": 663
+   },
+   "visible": {
+    "edge_lum": 8.7,
+    "inner_lum": 52.7,
+    "edge_vs_inner": -44.0,
+    "px": 894
+   },
+   "specks": 4,
+   "speck_px": 4
+  },
+  "fist_front": {
+   "hidden": null,
+   "visible": {
+    "edge_lum": 40.0,
+    "inner_lum": 188.9,
+    "edge_vs_inner": -148.9,
+    "px": 2582
+   },
+   "specks": 0,
+   "speck_px": 0
+  }
+ }
+}

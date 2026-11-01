@@ -8,6 +8,7 @@
 	import { i18nDerived } from '../i18n/i18nDerived';
 	import { UI_BASE_FONT_SIZE } from '../constants';
 	import { uiTheme } from '../theme.svelte';
+	import { inkOffsetY } from '../inkCenter';
 
 	type Props = Omit<ButtonProps, 'children'> & {
 		icon: ButtonIcon;
@@ -91,7 +92,15 @@
 	const iconFontSize = $derived.by(() => {
 		if (isTextMode) return UI_BASE_FONT_SIZE * 0.72;
 		return UI_BASE_FONT_SIZE * (iconFontSizeMultiplierMap[icon] ?? 1.1);
-	});
+	});	// The −/+ steppers are bare glyphs on a round plate: centred on their ink,
+	// not the text box, or they sit 1.5–2px low (Static Shift audit 2026-10-19,
+	// ui_center_audit plate() on the bar steppers; same fix as the ∞ badge).
+	const stepperInkOffset = $derived(
+		!isTextMode && (icon === 'decrease' || icon === 'increase')
+			? inkOffsetY(iconText, { fontFamily: uiTheme.fontFamily, fontWeight: uiTheme.fontWeight, fontSize: iconFontSize })
+			: 0,
+	);
+
 	const iconText = $derived.by(() => {
 		if (text) return text;
 		if (textMode === 'text') return i18nDerived[icon]();
@@ -283,6 +292,7 @@
 			<Text
 				{...center}
 				x={center.x + buttonProps.sizes.width * (iconOffsetXMap[icon] ?? 0)}
+				y={center.y - stepperInkOffset}
 				anchor={0.5}
 				text={iconText}
 				style={{

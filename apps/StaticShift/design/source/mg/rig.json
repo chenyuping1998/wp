@@ -1,0 +1,118 @@
+{
+ "_note": "Static Shift MG (the DJ). Points in SOURCE pixels of staticShiftCastInk/mg.png (487x1117); cut_cast_layers.py maps them to the 560x912 rig canvas. Helmet/banana/pocket have no art on this figure; their bones are kept so the shared generator runs.",
+ "out": "staticShiftDJ",
+ "root": [
+  277.1,
+  904.7
+ ],
+ "hip": [
+  277.1,
+  522.5
+ ],
+ "waist": [
+  275.5,
+  424.6
+ ],
+ "neck": [
+  264.9,
+  173.1
+ ],
+ "helmet": {
+  "at": [
+   269.0,
+   49.0
+  ],
+  "dir": [
+   269.0,
+   8.2
+  ]
+ },
+ "banana": {
+  "at": [
+   256.7,
+   151.0
+  ],
+  "dir": [
+   256.7,
+   175.5
+  ]
+ },
+ "pocket": {
+  "at": [
+   277.1,
+   383.7
+  ],
+  "dir": [
+   277.1,
+   351.1
+  ]
+ },
+ "shoulderL": [
+  136.7,
+  222.1
+ ],
+ "shoulderR": [
+  420.0,
+  230.2
+ ],
+ "elbowL": [
+  118.1,
+  372.5
+ ],
+ "elbowR": [
+  433.3,
+  396.6
+ ],
+ "handL": [
+  128.5,
+  489.9
+ ],
+ "handR": [
+  450.2,
+  499.7
+ ],
+ "prop": [
+  131.8,
+  507.8
+ ],
+ "cuffL": {
+  "at": [
+   123.6,
+   244.9
+  ],
+  "dir": [
+   115.5,
+   281.7
+  ]
+ },
+ "cuffR": {
+  "at": [
+   428.2,
+   249.0
+  ],
+  "dir": [
+   442.1,
+   298.0
+  ]
+ },
+ "pantL": {
+  "at": [
+   203.7,
+   538.9
+  ],
+  "dir": [
+   195.5,
+   636.8
+  ]
+ },
+ "pantR": {
+  "at": [
+   350.6,
+   538.9
+  ],
+  "dir": [
+   362.9,
+   636.8
+  ]
+ }
+}
