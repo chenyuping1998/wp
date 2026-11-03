@@ -218,7 +218,7 @@ export const ROUND_END_HOLD_MS_FAST = 300;
 // spin.
 // ---------------------------------------------------------------------------
 
-/** Pocket watch tier, one metal per band: bronze 2–5, emerald 8–10, violet 15–50, crimson 100, gold 250+. */
+/** Pocket watch tier, one metal per band: green 2–5, blue 8–10, violet 15–50, crimson 100, gold 250+. */
 export const watchTier = (value: number) => (value >= 250 ? 5 : value >= 100 ? 4 : value >= 15 ? 3 : value >= 8 ? 2 : 1);
 export const orbKeyFor = (value: number) => `watchT${watchTier(value)}` as const;
 

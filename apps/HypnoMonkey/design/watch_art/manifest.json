@@ -49,14 +49,14 @@
   },
   "tiers5": {
     "t1": {
-      "name": "bronze",
+      "name": "green",
       "values": "2-5",
-      "sha256": "ab5d5b542bafd3bf3309f278f5b5a647159ef7892b5b152055ca64416da23314"
+      "sha256": "9db58ed8308828d634dadd327d44b48411e76da6ad016f1b7f0e3fb0bf7b73c0"
     },
     "t2": {
-      "name": "emerald",
+      "name": "blue",
       "values": "8-10",
-      "sha256": "58cb341340b7890a67e7ad9b4dbf0c4266483a9300da79bb2832019d831b37b3"
+      "sha256": "85f841beefbde070eaf2dd59e40450d655adf29e34219bc653f27ddcdbc0ddf5"
     },
     "t3": {
       "name": "violet",
@@ -71,7 +71,7 @@
     "t5": {
       "name": "gold",
       "values": "250-500",
-      "sha256": "c41f5cbf5a91f74ecf077d4f2f88a5710639a71d21e13bbaffc18b3bd97f2c7e"
+      "sha256": "ce0308410c0874703ca16c462619885b4dc1ed6fc03c9e30de70e533b3be5d27"
     }
   }
 }

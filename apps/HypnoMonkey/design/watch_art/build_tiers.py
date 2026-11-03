@@ -1,7 +1,10 @@
 """Five watch tiers, one metal colour per multiplier band (Stone, 2026-10-28).
 
-Same registration and six-band recolour as build.py, more bands:
-  t1 bronze  x2-x5      t2 emerald x8-x10    t3 violet x15-x50
+Same registration and six-band recolour as build.py, more bands. 11-03 Stone
+wanted the tiers told apart at a glance: bronze sat too close to gold, so the
+bands now walk the hue wheel like ATG 戰神賽特's orbs (green, blue, purple, red)
+with a bright yellow gold on top:
+  t1 green  x2-x5       t2 blue    x8-x10    t3 violet x15-x50
   t4 crimson x100       t5 gold    x250-x500
 The cream dial stays cream so the dark value reads on every tier.
 
@@ -26,11 +29,11 @@ base.alpha_composite(small, (round(256 - center[0] * scale), round(300 - center[
 
 DIAL = '#f6e7c7'
 TIERS = {
-    't1': ('bronze', '2-5', ['#261b17', '#74442c', '#a76a3a', '#c98c52', '#e9b879', '#f3d6a5']),
-    't2': ('emerald', '8-10', ['#10201a', '#1f5a3d', '#2f8a57', '#46b26d', '#86d897', '#c9f0c6']),
+    't1': ('green', '2-5', ['#0f2214', '#1f5e2a', '#2e8f3c', '#45bf52', '#8ee07f', '#d3f5c4']),
+    't2': ('blue', '8-10', ['#0e1830', '#1c3f86', '#2462c4', '#3a8cff', '#86bcff', '#d2e6ff']),
     't3': ('violet', '15-50', ['#1d1328', '#4b2378', '#7136b5', '#9b3df5', '#c48bff', '#e8d3ff']),
     't4': ('crimson', '100', ['#250f12', '#6e1822', '#a82230', '#d9343f', '#f2747a', '#ffc4c2']),
-    't5': ('gold', '250-500', ['#281c16', '#8b5124', '#bd7f27', '#e1aa35', '#f6cc65', '#ffe4a0']),
+    't5': ('gold', '250-500', ['#2a1f0c', '#8a6410', '#c49312', '#f0c21e', '#ffe066', '#fff3b8']),
 }
 
 for key, (_, _, colors) in TIERS.items():

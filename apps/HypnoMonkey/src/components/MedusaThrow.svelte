@@ -125,6 +125,8 @@
 	const DUD_TINT = 0xa79cbc;
 	// a blank watch before its value is struck in: a plain cream dial
 	const BLANK_DIAL = 0xe8dcc0;
+	// and a plain silver case, so the tier colour is not given away before the beam
+	const BLANK_WATCH = 'mgOrbPurple';
 	let heavy = $state<{ x: number; y: number; bolt: number; ring: number; flash: number; dim: number; color: number; seed: number } | null>(null);
 	let fx=$state.raw<MultiplierFxController>();
 	let reducedMotion=$state(false);
@@ -642,14 +644,14 @@
 				<Sprite
 					key="fxGlow"
 					anchor={0.5}
-					width={WATCH_SIZE * (orb.value >= HEAVY ? 2.1 : 1.75)}
-					height={WATCH_SIZE * (orb.value >= HEAVY ? 2.1 : 1.75)}
+					width={WATCH_SIZE * (orb.value >= HEAVY ? 2.2 : 1.95)}
+					height={WATCH_SIZE * (orb.value >= HEAVY ? 2.2 : 1.95)}
 					tint={orbColor(orb.value)}
-					alpha={(orb.value >= HEAVY ? 0.9 : 0.6) * (orb.reveal ?? 1)}
+					alpha={(orb.value >= HEAVY ? 0.95 : 0.85) * (orb.reveal ?? 1)}
 				/>
 			{/if}
 			<Sprite
-				key={orbKeyFor(orb.value)}
+				key={(orb.reveal ?? 1) < 0.5 ? BLANK_WATCH : orbKeyFor(orb.value)}
 				anchor={{x:0.5,y:300/512}}
 				width={WATCH_SIZE}
 				height={WATCH_SIZE}
@@ -678,7 +680,8 @@
 					fontWeight: GAME_FONT_WEIGHT,
 					fontSize: numberSize(orb.value),
 					fill: orb.value >= HEAVY ? 0xffe066 : 0xffcf3a,
-					stroke: { color: 0x4a2205, width: 5 },
+					// the outline carries the tier colour too, dark enough to hold the gold
+					stroke: { color: orb.stone > 0 ? 0x4a2205 : shade(orbColor(orb.value), 0.32), width: 5 },
 					dropShadow: { color: 0x2a1206, alpha: 0.85, angle: Math.PI / 2, distance: 3, blur: 0 },
 				}}
 			/>

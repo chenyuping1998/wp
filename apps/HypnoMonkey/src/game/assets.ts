@@ -196,7 +196,7 @@ export default {
 	},
 
 	// Five watch tiers drawn on the board, one metal colour per multiplier band
-	// (design/watch_art/build_tiers.py): bronze, emerald, violet, crimson, gold.
+	// (design/watch_art/build_tiers.py): green, blue, violet, crimson, gold.
 	watchT1: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/hypnoWatches/watch-t1.png', import.meta.url).href,
