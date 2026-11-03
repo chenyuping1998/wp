@@ -137,7 +137,12 @@ export const SPIN_OPTIONS_DEFAULT = {
 	symbolFallInBounceSizeMulti: 0.12,
 	symbolFallOutSpeed: 2.06,
 	symbolFallOutInterval: 20,
-	reelFallInDelay: 36,
+	// ATG 戰神賽特 (research ATG-Seth-Capture §1): the whole old board leaves
+	// first, the board stays EMPTY ~0.22 s, then the new one falls in left to
+	// right 0.13 s a reel. The padding fall and the book request already give
+	// most of the empty beat (measured 11-03), so the lead only tops it up.
+	reelFallInLeadMs: 60,
+	reelFallInDelay: 25,
 	reelFallOutDelay: 100,
 };
 
@@ -150,6 +155,7 @@ export const SPIN_OPTIONS_ANTICIPATED = {
 	symbolFallInBounceSpeed: 0.2,
 	symbolFallOutSpeed: 2.25,
 	symbolFallOutInterval: 27,
+	reelFallInLeadMs: 60,
 	reelFallInDelay: 110,
 	reelFallOutDelay: 55,
 };

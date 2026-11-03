@@ -4,20 +4,20 @@ export const medusaAnimations = {
 	idle_fidget: { durationMs: 1500, idleAfterMs: 20000 },
 	react_small: { durationMs: 800 },
 	gaze: {
-		durationMs: 1600,
-		handAtMs: 200,
-		peekAtMs: 350,
-		beamAtMs: 600,
-		releaseAtMs: 620,
-		beamEndMs: 1000,
-	},
-	gaze_turbo: {
-		durationMs: 900,
+		durationMs: 800,
 		handAtMs: 100,
 		peekAtMs: 175,
-		beamAtMs: 250,
-		releaseAtMs: 350,
-		beamEndMs: 620,
+		beamAtMs: 300,
+		releaseAtMs: 310,
+		beamEndMs: 500,
+	},
+	gaze_turbo: {
+		durationMs: 650,
+		handAtMs: 70,
+		peekAtMs: 125,
+		beamAtMs: 180,
+		releaseAtMs: 250,
+		beamEndMs: 440,
 	},
 	gaze_dud: { durationMs: 1200, turboDurationMs: 600 },
 	fg_trigger: { durationMs: 2000 },
@@ -47,23 +47,27 @@ export const medusaAnimations = {
 export type MedusaAnimation = keyof typeof medusaAnimations;
 
 /**
- * One tumble link on a fixed clock, whatever the win size (GoO 1000
- * transcription, research/goo1000_motion): the winners glow and take the spell
- * (mark), a silent beat, a two-frame white flash, the burst, a short look at the
- * empty cells, then the refill. Turbo drops the mark to a flick and the beat,
- * as GoO Turbo does, but keeps the burst whole.
+ * One tumble link on a fixed clock, whatever the win size (ATG 戰神賽特
+ * transcription, research ATG-Seth-Capture §2, ~2.55 s a link): the winners are
+ * framed while the win counts up (mark, 0.95 s), a short hold, each winner goes
+ * to a white light ball that swells as the frame fades (glow), it bursts into a
+ * gold star whose motes drift up (burst) WHILE the survivors drop into the
+ * holes, a short look at the top gaps (empty), then the refill from the top,
+ * left to right 50 ms a reel. Turbo keeps the order on a shorter clock.
  */
 export const tumbleTiming = ({ chain = 1, turbo = false, turboLevel = 1 } = {}) => {
 	const scale = (chain >= 4 ? 0.85 : 1) * (turbo ? 0.6 : 1) * (turbo && turboLevel === 2 ? 0.8 : 1);
 	const highlightMs = (turbo ? 120 : 620) * (turbo ? 1 : scale);
 	const stoneMs = (turbo ? 60 : 200) * (turbo ? 1 : scale);
 	const crackMs = (turbo ? 60 : 130) * (turbo ? 1 : scale);
-	const restMs = turbo ? 0 : 170 * scale;
-	const flashMs = 33;
-	const crumbleMs = 350 * (turbo ? 1 : scale);
-	const emptyMs = (turbo ? 60 : 120) * (turbo ? 1 : scale);
+	const restMs = turbo ? 0 : 200 * scale;
+	const flashMs = turbo ? 70 : 150 * scale;
+	const crumbleMs = (turbo ? 220 : 310) * (turbo ? 1 : scale);
+	/** survivors start dropping this long into the burst */
+	const survivorsAtMs = turbo ? 50 : 100 * scale;
+	const emptyMs = (turbo ? 60 : 150) * (turbo ? 1 : scale);
 	const dropMs = 550 * scale;
-	const columnStaggerMs = 27 * scale;
+	const columnStaggerMs = (turbo ? 27 : 50) * scale;
 	const settleMs = 150 * scale;
 	return {
 		scale,
@@ -74,6 +78,7 @@ export const tumbleTiming = ({ chain = 1, turbo = false, turboLevel = 1 } = {}) 
 		restMs,
 		flashMs,
 		crumbleMs,
+		survivorsAtMs,
 		emptyMs,
 		/** tumble start -> refill start */
 		clearMs: restMs + flashMs + crumbleMs + emptyMs,

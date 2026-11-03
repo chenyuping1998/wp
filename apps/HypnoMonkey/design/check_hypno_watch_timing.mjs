@@ -8,7 +8,7 @@ const js=stripTypeScriptTypes(source,{mode:'strip'});
 const {watchDropTiming,watchCollectTiming,castReleaseRate}=await import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'));
 const rig=JSON.parse(readFileSync(new URL('../src/game/hypnoCastData.json',import.meta.url),'utf8'));
 const release=rig.animations.gaze.events.find(event=>event.name==='throw').time*1000;
-assert.equal(medusaAnimations.gaze.releaseAtMs,release,'MG presentation must match the actual Spine throw event');
+assert.equal(medusaAnimations.gaze.releaseAtMs,release/castReleaseRate('gaze'),'MG presentation must match the actual Spine throw event');
 const assistant=JSON.parse(readFileSync(new URL('../src/game/hypnoAssistantData.json',import.meta.url),'utf8'));
 const assistantRelease=assistant.animations.gaze.events.find(event=>event.name==='throw').time*1000;
 for(const name of ['gaze','gaze_turbo','fg_gaze','fg_gaze_turbo'])assert.ok(Math.abs((name.startsWith('fg_')?assistantRelease:release)/castReleaseRate(name)-medusaAnimations[name].releaseAtMs)<1e-6,'Actual cast throw event must match its MG/FG normal/turbo book beat');

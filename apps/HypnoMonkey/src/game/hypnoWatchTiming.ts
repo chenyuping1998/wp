@@ -1,17 +1,19 @@
 import { medusaAnimations, type MedusaAnimation } from './animationTimeline';
 
-/** Both stand34 casts release at 620ms in source time; preserve each book beat. */
+/** Both stand34 casts release at 620ms in source time; preserve each book beat.
+ * MG gaze plays at 2x: ATG 戰神賽特's throw is a quick ~0.8 s gesture (research
+ * ATG-Seth-Capture §5), same poses, only faster. */
 export const castReleaseRate = (request: string) => {
- const rates:Record<string,number>={gaze_turbo:620/350,fg_gaze:620/350,fg_gaze_turbo:620/210};
+ const rates:Record<string,number>={gaze:2,gaze_turbo:620/350*1.4,fg_gaze:620/350,fg_gaze_turbo:620/210};
  return rates[request]??1;
 };
 
 /**
- * The pocket watch rides the last refill of a winning spin (Gates of Olympus 1000
- * study, research/goo1000_rhythm): the burst leaves a hole, the hypnotist charges
- * in it and points, and the watch lands a beat after the point, so the gesture
- * reads as the cause. The hole only opens when a watch is coming; a spin without
- * one refills straight away.
+ * The pocket watch rides the last refill of a winning spin, blank, and its value
+ * is struck in by a beam once it lands (ATG 戰神賽特, research ATG-Seth-Capture
+ * §3-1). The hypnotist casts as the tumble starts; on the ATG clock the refill
+ * already lands after the gesture, so the hole only opens when it would not
+ * (turbo).
  */
 export const watchDropTiming = ({
 	freegame,
@@ -63,15 +65,16 @@ export const watchCollectTiming = ({
 	/** free game with a total already on the plate */
 	carriesTotal: boolean;
 }) => {
-	// GoO 1000: each orb charges 0.4 s and flies 0.17 s, strictly one after
-	// another; the formula then holds 0.7 s before it turns into the result.
+	// ATG 戰神賽特 (research ATG-Seth-Capture §3-3): a light ball pops out of
+	// the watch and comets to the readout in 0.25 s, one watch every 0.35 s; the
+	// running total (free game) flies first; "win ×N" holds ~0.75 s, then pays.
 	const s = turbo ? 0.55 : 1;
 	const openMs = 220 * s;
-	const totalFlyMs = carriesTotal ? 450 * s : 0;
-	const pulseMs = 400 * s;
-	const flyMs = 200 * s;
-	const staggerMs = 600 * s;
-	const holdMs = 700 * s;
+	const totalFlyMs = carriesTotal ? 350 * s : 0;
+	const pulseMs = 50 * s;
+	const flyMs = 250 * s;
+	const staggerMs = 350 * s;
+	const holdMs = 750 * s;
 	const collapseMs = 220 * s;
 	const watchesMs = watchCount > 0 ? pulseMs + flyMs + (watchCount - 1) * staggerMs : 0;
 	return {

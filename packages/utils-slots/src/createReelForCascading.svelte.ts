@@ -131,7 +131,10 @@ export function createReelForCascading<TRawSymbol extends object, TSymbolState e
 	const fallIn = async () => {
 		const fallInDelayMultiplier = paddingSize / reelLength - 1;
 		const waitToStartFallingIn = async () =>
-			await waitForTimeout(reelState.spinOptions().reelFallInDelay * fallInDelayMultiplier);
+			await waitForTimeout(
+				(reelState.spinOptions().reelFallInLeadMs ?? 0) +
+					reelState.spinOptions().reelFallInDelay * fallInDelayMultiplier,
+			);
 
 		// Q: When to skip the waitToStartFallingIn?
 		// A: When stop button is clicked(isTurbo) and is noStop is false

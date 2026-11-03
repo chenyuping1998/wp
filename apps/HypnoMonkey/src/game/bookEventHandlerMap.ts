@@ -196,7 +196,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	 * stop existing.
 	 */
 	tumbleBoard: async (bookEvent: BookEventOfType<'tumbleBoard'>, { bookEvents }: BookEventContext) => {
-		eventEmitter.broadcast({ type: 'scatterWinsHide' });
+		// the frames stay up until the winners swell white (TumbleLayer hides them)
 		await eventEmitter.broadcastAsync({
 			type: 'tumbleRun',
 			explodingSymbols: bookEvent.explodingSymbols,

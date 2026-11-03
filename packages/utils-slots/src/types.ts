@@ -79,6 +79,8 @@ export type CascadingReelSpinOptions = {
 	symbolFallOutInterval: number;
 	// reel
 	reelFallInDelay: number;
+	/** fixed wait before every reel falls in, on top of reelFallInDelay (an empty board beat) */
+	reelFallInLeadMs?: number;
 	// extra padding
 	reelPaddingMultiplierNormal: number;
 	reelPaddingMultiplierAnticipated: number;

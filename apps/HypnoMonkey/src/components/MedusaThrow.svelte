@@ -47,7 +47,6 @@
 		orbKeyFor,
 		totalPlateLevel,
 	} from '../game/constants';
-	import { medusaAnimations, multiplierCountMs } from '../game/animationTimeline';
 	import { watchCollectTiming } from '../game/hypnoWatchTiming';
 	import { gravityProgress } from '../game/symbolMotion';
 	import { shakeBoard, zoomBoard } from '../game/boardShake.svelte';
@@ -76,8 +75,9 @@
 		if (alive) context.eventEmitter.broadcast(event);
 	};
 
-	/** `cell`: a watch resting on the board until the chain-end settlement */
-	type Orb = OrbVisual & { cell?: boolean };
+	/** `cell`: a watch resting on the board until the chain-end settlement;
+	 * `reveal` 0: a blank watch whose value is not shown yet (undefined = shown) */
+	type Orb = OrbVisual & { cell?: boolean; reveal?: number };
 	// A watch on a cell sits a little inside the symbol frame.
 	const CELL_SCALE = 0.8;
 	// Legibility (Stone 2026-10-29, ref. GoO 1000 orbs): a big gold "100x" laid
@@ -123,6 +123,8 @@
 	const HEAVY = 100;
 	// a wasted watch dulls to a cold lavender-grey before its glass cracks
 	const DUD_TINT = 0xa79cbc;
+	// a blank watch before its value is struck in: a plain cream dial
+	const BLANK_DIAL = 0xe8dcc0;
 	let heavy = $state<{ x: number; y: number; bolt: number; ring: number; flash: number; dim: number; color: number; seed: number } | null>(null);
 	let fx=$state.raw<MultiplierFxController>();
 	let reducedMotion=$state(false);
@@ -251,52 +253,62 @@
 		}).then(() => (heavy = null));
 	};
 
-	/** The hypnotist charges in the hole and points; each watch rides its column's refill. */
+	// ATG 戰神賽特 (research ATG-Seth-Capture §3-1): a watch lands BLANK, then a
+	// thin beam drops from the sky onto it in the caster's colour, it flashes,
+	// turns to dark smoke and the value comes out of the smoke, ~0.45 s. Two
+	// watches strike 0.12 s apart.
+	const CASTER_COLOR = { mg: 0x9b3df5, fg: 0xe07ad6 };
+	const REVEAL_STAGGER_MS = 120;
+	let beams = $state<{ id: number; x: number; y: number; color: number; beam: number; flash: number; smoke: number }[]>([]);
+	let nextRevealAt = 0;
+	const revealWatch = async (id: number, x: number, y: number, value: number, fast: boolean, freegame: boolean) => {
+		const now = performance.now();
+		const startAt = Math.max(now, nextRevealAt);
+		nextRevealAt = startAt + REVEAL_STAGGER_MS * (fast ? 0.6 : 1);
+		await wait(startAt - now);
+		const k = fast ? 0.6 : 1;
+		const color = freegame ? CASTER_COLOR.fg : CASTER_COLOR.mg;
+		const beamId = nextId++;
+		const set = (patch: Partial<(typeof beams)[number]>) => (beams = beams.map((b) => (b.id === beamId ? { ...b, ...patch } : b)));
+		beams = [...beams, { id: beamId, x, y, color, beam: 0, flash: 0, smoke: 0 }];
+		broadcast({ type: 'soundMedusa', cue: 'gazeBeam', speed: fast ? 1.5 : 1 });
+		await tween(60 * k, (t) => set({ beam: t }));
+		// impact: a burst of the caster's light; x100+ also gets the thunderclap
+		if (value >= HEAVY) void strike(x, y, value, fast);
+		await tween(80 * k, (t) => set({ beam: 1 - t, flash: Math.sin(Math.PI * Math.min(1, t * 1.4)) }));
+		await tween(180 * k, (t) => set({ beam: 0, flash: 0, smoke: t }));
+		fx?.impact({ x, y }, value, 'orb');
+		broadcast({ type: 'soundMedusa', cue: 'orbHit', value, speed: fast ? 1.25 : 1 });
+		await tween(130 * k, (t) => update(id, { reveal: t, sx: 1 + 0.12 * Math.sin(Math.PI * t), sy: 1 + 0.12 * Math.sin(Math.PI * t) }));
+		update(id, { reveal: 1, sx: 1, sy: 1 });
+		beams = beams.filter((b) => b.id !== beamId);
+	};
+
+	/** The hypnotist casts as the refill starts; each blank watch rides its column's refill. */
 	const dropWatches = async ({ drops, animation, releaseMs, pace }: { drops: WatchDrop[]; animation: MedusaAnimation; releaseMs: number; pace: WinPace }) => {
 		const fast = pace === 'turbo' || pace === 'turboFreegame';
-		const action = medusaAnimations[animation];
+		const freegame = pace === 'freegame' || pace === 'turboFreegame';
 		broadcast({ type: 'medusaAction', animation, releaseMs });
 		broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
-		const landAt = (drop: WatchDrop) => drop.delayMs + drop.durationMs;
-		const lastLand = Math.max(...drops.map(landAt));
-		const lead = drops.reduce((a, b) => (landAt(a) <= landAt(b) ? a : b));
-		gazeProgress = -1;
-		beamTarget = { x: lead.x, y: lead.fromY };
-		// The beam locks on the leading watch and follows it down its column.
-		const beam = (async () => {
-			await wait(action.beamAtMs);
-			broadcast({ type: 'soundMedusa', cue: 'gazeBeam', speed: fast ? 1.5 : 1 });
-			await tween(Math.max(120, lastLand + (fast ? 80 : 160) - action.beamAtMs), (t) => {
-				gazeProgress = t;
-				gaze = gazePose(t).intensity;
-			});
-			gaze = 0;
-			gazeProgress = -1;
-		})();
+		nextRevealAt = 0;
+		const order = [...drops].sort((a, b) => a.delayMs + a.durationMs - (b.delayMs + b.durationMs));
 		await Promise.all(
-			drops.map(async (drop) => {
+			order.map(async (drop) => {
 				await wait(drop.delayMs);
 				const id = nextId++;
-				orbs = [...orbs, { id, value: drop.value, x: drop.x, y: drop.fromY, scale: CELL_SCALE, alpha: 0, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [], cell: true }];
-				const big = drop.value >= HEAVY;
-				const color = orbColor(drop.value);
+				orbs = [...orbs, { id, value: drop.value, x: drop.x, y: drop.fromY, scale: CELL_SCALE, alpha: 0, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [], cell: true, reveal: 0 }];
 				await tween(drop.durationMs, (t) => {
 					const y = drop.fromY + (drop.toY - drop.fromY) * gravityProgress(t);
 					// fades in as it crosses the top edge of the board
 					update(id, { y, alpha: Math.max(0, Math.min(1, (y + 20) / 60)), sx: 1 - 0.06 * t, sy: 1 + 0.12 * t });
-					if (drop === lead) beamTarget = { x: drop.x, y };
-					if (big) heavy = { x: drop.x, y, bolt: Math.min(1, t * 4), ring: 0, flash: 0, dim: Math.min(1, t * 3), color, seed: Math.random() * 100 };
 				});
-				fx?.impact({ x: drop.x, y: drop.toY }, drop.value, 'orb');
-				broadcast({ type: 'soundMedusa', cue: 'orbHit', value: drop.value, speed: fast ? 1.25 : 1 });
-				if (big) void strike(drop.x, drop.toY, drop.value, fast);
-				await tween(big ? (fast ? 160 : 300) : fast ? 90 : 160, (t) => {
-					const squash = Math.sin(Math.PI * t) * (big ? 1.5 : 1);
+				await tween(fast ? 90 : 160, (t) => {
+					const squash = Math.sin(Math.PI * t);
 					update(id, { y: drop.toY, alpha: 1, sx: 1 + 0.14 * squash, sy: 1 - 0.16 * squash });
 				});
+				await revealWatch(id, drop.x, drop.toY, drop.value, fast, freegame);
 			}),
 		);
-		await beam;
 	};
 
 	/**
@@ -352,7 +364,8 @@
 			// its value flies to the readout; the watch itself keeps its cell, spent
 			const copy = nextId++;
 			orbs = [...orbs, { id: copy, value: watch.value, ...from, scale: CELL_SCALE, alpha: 1, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [] }];
-			update(watch.id, { alpha: 0.5 });
+			// ATG: the value leaves with the comet and the watch goes blank
+			update(watch.id, { reveal: 0 });
 			await flyBetween(copy, from, readout, plan.flyMs);
 			fx?.impact(readout, watch.value, 'score');
 			broadcast({ type: 'soundMedusa', cue: 'orbHit', value: watch.value, speed: fast ? 1.25 : 1 });
@@ -367,27 +380,24 @@
 		amount = { text: baseAmount, alpha: 1 };
 		broadcast({ type: 'soundLoop', name: 'sfx_multiplier_update' });
 		try {
-			await Promise.all([
-				countUp(baseWin, totalWin, multiplierCountMs(mult, fast)),
-				(async () => {
-					if (!toTotal) return;
-					const from = totalValue;
-					broadcast({ type: 'soundMedusa', cue: 'totalUp' });
-					await tween(plan.collapseMs * 2, (t) => {
-						totalValue = Math.round(from + (mult - from) * easeOut(t));
-						totalBump = 1 - t;
-					});
-					totalValue = mult;
-					plateLevel = totalPlateLevel(mult);
-				})(),
-			]);
+			// ATG: the readout turns into the paid amount in one beat
+			await countUp(baseWin, totalWin, fast ? 120 : 220);
+			void tween(fast ? 140 : 240, (t) => (scoreBump = recoil(t)));
+			if (toTotal) {
+				// then the TOTAL plate bursts into flame and comes back with the new total
+				broadcast({ type: 'soundMedusa', cue: 'totalUp' });
+				fx?.impact(plateValue, mult, 'score');
+				await tween(fast ? 270 : 450, (t) => (totalBump = Math.sin(Math.PI * t)));
+				totalValue = mult;
+				plateLevel = totalPlateLevel(mult);
+			}
 		} finally {
 			broadcast({ type: 'soundStop', name: 'sfx_multiplier_update' });
 		}
 		scoreBump = 0;
 		totalBump = 0;
 		broadcast({ type: 'medusaPose', pose: 'idle' });
-		await wait(fast ? 120 : 360);
+		await wait(fast ? 120 : 500);
 		await tween(plan.collapseMs, (t) => {
 			if (pop) pop = { ...pop, alpha: 1 - t };
 			if (amount) amount = { ...amount, alpha: 1 - t };
@@ -422,13 +432,18 @@
 		hypnoWatchReveal: ({ pace, count }) => {
 			const fast = pace === 'turbo' || pace === 'turboFreegame';
 			const previousRaw = new Set(context.stateGame.board.flatMap((reel) => reel.reelState.symbols.map((symbol) => symbol.rawSymbol)));
+			const freegame = pace === 'freegame' || pace === 'turboFreegame';
 			const animation = pace === 'freegame' ? 'fg_gaze' : pace === 'turboFreegame' ? 'fg_gaze_turbo' : fast ? 'gaze_turbo' : 'gaze';
+			// ATG: the caster acts as the spin starts; the beam strikes ~1.5 s later
+			broadcast({ type: 'medusaAction', animation });
+			broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
+			nextRevealAt = 0;
+			const reveals: Promise<void>[] = [];
 			// Follow the actual reel carriers, including turbo/stop and landing bounce.
 			// The reserved raw symbol draws no totem from the moment it is installed.
 			watchesLanded = new Promise<void>((resolve) => {
 				const ids = new Map<string, number>();
 				const impacts = new Set<string>();
-				let castStarted = false;
 				const started = performance.now();
 				const follow = () => {
 					if (!alive) { resolve(); return; }
@@ -440,13 +455,8 @@
 							const key = `${reelIndex}:${slot}`;
 							let id = ids.get(key);
 							if (id === undefined) {
-								if (!castStarted) {
-									castStarted = true;
-									broadcast({ type: 'medusaAction', animation });
-									broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
-								}
 								id = nextId++; ids.set(key, id);
-								orbs = [...orbs, { id, value, x: getSymbolX(reelIndex), y: symbol.symbolY.current, scale: CELL_SCALE, alpha: 0, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [], cell: true }];
+								orbs = [...orbs, { id, value, x: getSymbolX(reelIndex), y: symbol.symbolY.current, scale: CELL_SCALE, alpha: 0, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [], cell: true, reveal: 0 }];
 							}
 							const y = symbol.symbolY.current;
 							update(id, { y, alpha: Math.max(0, Math.min(1, (y + 20) / 60)) });
@@ -454,14 +464,12 @@
 								landed++;
 								if (!impacts.has(key)) {
 									impacts.add(key);
-									fx?.impact({ x: getSymbolX(reelIndex), y }, value, 'orb');
-									broadcast({ type: 'soundMedusa', cue: 'orbHit', value, speed: fast ? 1.25 : 1 });
-									if (value >= HEAVY) void strike(getSymbolX(reelIndex), y, value, fast);
+									reveals.push(revealWatch(id, getSymbolX(reelIndex), y, value, fast, freegame));
 								}
 							}
 						});
 					});
-					if (landed >= count || performance.now() - started > 12000) resolve();
+					if (landed >= count || performance.now() - started > 12000) void Promise.all(reveals).then(() => resolve());
 					else requestAnimationFrame(follow);
 				};
 				requestAnimationFrame(follow);
@@ -521,6 +529,25 @@
 
 	const drawHeavy = (g: PixiGraphics) => {
 		g.clear();
+		for (const b of beams) {
+			if (b.beam > 0) {
+				const top = -460, foot = top + (b.y - top) * Math.min(1, b.beam * 1.6);
+				g.rect(b.x - 14, top, 28, foot - top).fill({ color: b.color, alpha: 0.45 * b.beam });
+				g.rect(b.x - 4, top, 8, foot - top).fill({ color: 0xffffff, alpha: 0.95 * b.beam });
+			}
+			if (b.flash > 0) {
+				g.circle(b.x, b.y, SYMBOL_SIZE * (0.45 + 0.35 * b.flash)).fill({ color: b.color, alpha: 0.55 * b.flash });
+				g.circle(b.x, b.y, SYMBOL_SIZE * (0.3 + 0.2 * b.flash)).fill({ color: 0xffffff, alpha: 0.9 * b.flash });
+			}
+			if (b.smoke > 0 && b.smoke < 1) {
+				const dark = shade(b.color, 0.45);
+				for (let i = 0; i < 6; i++) {
+					const a = (i / 6) * Math.PI * 2 + 0.4;
+					const r = SYMBOL_SIZE * (0.12 + 0.3 * b.smoke);
+					g.circle(b.x + Math.cos(a) * r, b.y + Math.sin(a) * r * 0.7 - 12 * b.smoke, SYMBOL_SIZE * (0.2 + 0.1 * b.smoke)).fill({ color: dark, alpha: 0.6 * (1 - b.smoke) });
+				}
+			}
+		}
 		if (!heavy) return;
 		const { x, y, bolt, ring, flash, dim, color, seed } = heavy;
 		const all = () => g.rect(-80, -80, BOARD_SIZES.width + 160, BOARD_SIZES.height + 160);
@@ -611,14 +638,14 @@
 	{#each orbs as orb (orb.id)}
 		<Container x={orb.x} y={orb.y} alpha={orb.alpha}>
 		<Container rotation={orb.angle} scale={{x:orb.scale*orb.sx,y:orb.scale*orb.sy}}>
-			{#if orb.stone === 0}
+			{#if orb.stone === 0 && (orb.reveal ?? 1) > 0}
 				<Sprite
 					key="fxGlow"
 					anchor={0.5}
 					width={WATCH_SIZE * (orb.value >= HEAVY ? 2.1 : 1.75)}
 					height={WATCH_SIZE * (orb.value >= HEAVY ? 2.1 : 1.75)}
 					tint={orbColor(orb.value)}
-					alpha={orb.value >= HEAVY ? 0.9 : 0.6}
+					alpha={(orb.value >= HEAVY ? 0.9 : 0.6) * (orb.reveal ?? 1)}
 				/>
 			{/if}
 			<Sprite
@@ -630,7 +657,7 @@
 				filters={orb.stone>0?[stoneMaterial]:[]}
 			/>
 			<!-- the dial as a coloured gem in the gold bezel (ref. GoO 1000 orbs) -->
-			<Graphics draw={(g) => drawGem(g, orb.stone > 0 ? DUD_TINT : orbColor(orb.value))} />
+			<Graphics draw={(g) => drawGem(g, orb.stone > 0 ? DUD_TINT : (orb.reveal ?? 1) < 0.5 ? BLANK_DIAL : orbColor(orb.value))} />
 			{#if orb.crack > 0}
 				<Sprite
 					key={orb.crack < 1 / 3 ? 'fxCrack1' : orb.crack < 2 / 3 ? 'fxCrack2' : 'fxCrack3'}
@@ -644,7 +671,7 @@
 				anchor={0.5}
 				y={NUMBER_Y * orb.scale}
 				scale={orb.scale}
-				alpha={orb.stone > 0 ? 1 - orb.stone * 0.6 : 1}
+				alpha={(orb.stone > 0 ? 1 - orb.stone * 0.6 : 1) * (orb.reveal ?? 1)}
 				text={label(orb.value)}
 				style={{
 					fontFamily: GAME_FONT,
