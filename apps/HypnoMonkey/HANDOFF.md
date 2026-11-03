@@ -200,3 +200,17 @@ FG 繞手根因：fg_end 的鞠躬被外層設 hold=true，reset() 無條件接 
 Buy Bonus 參考本機 SumoMonkey/TurfWar 的 illustrated tier cards，改成催眠猴自有馬戲團票券卡：白天／夜場、原有助手PNG、銅／金懷錶、倍數相加示意、15轉、設定值100x/400x、RTP和價格。原確認頁與不足餘額保護保留；400x225縮為可操作的雙卡；390直式內部捲動。Social 文案與SC顯示通過（本機mock原USD，在測試中明確設XSC）。
 
 打包為 upload/HypnoMonkey，保留已裁除／壓縮的既有靜態素材，只同步 index/_app 與新增的原來源助手圖。建置、guards及新回歸通過，上傳6檔5,403,307 bytes、刪除3舊檔、188不變，replan0 actions；publish/get_game確認front v9/math v1。縮圖封面仍在包內；未更動平台商店圖、未新增送審。官方逐項檢查與完整證據在 upload/HypnoMonkey/qa/release-20261103-panel-motion/，既有全套真實RGS/replay/貨幣等送審驗證缺口仍列出，未冒稱完整認證。
+
+
+## 2026-11-03 Claude：ATG 戰神賽特節奏（已打包，未上傳）
+
+來源：Stone 的 stone8000/ATG-Seth-Capture（逐幀抄錄＋11-03 新增的封包／logcat 管線）。重點：掉落消除、倍數球、人物丟球。commit c9f369a6（v9 現況先單獨提交為 245e8092）。
+
+- 消除：停 0.2 s → 中獎圖騰變白光球脹大、框淡出 → GoldBurst 金色星芒＋金粉上飄（取代碎紙片）→ 星芒期間剩餘圖騰先落 → 頂端空 0.15 s → 由左到右補圖，每欄 50 ms。
+- 懷錶：落下時空白錶面，落定後天上光柱（MG 紫、FG 粉紫）→ 爆光 → 冒煙 → 數字浮出，約 0.45 s，兩顆錯開 0.12 s；x100+ 震動移到光柱命中。
+- 結算：每顆 0.25 s 彗星、間隔 0.35 s，停 0.75 s 後一次換成金額；FG TOTAL 牌先冒火再更新；用過的懷錶變空白。
+- 人物：MG 施法 2 倍速（姿勢不變，castReleaseRate gaze:2），40 格亮暗底逐格檢查見 design/qa_atg_rhythm_1103/mg_gaze_2x_*.png；沒中獎的懷錶在開轉後書一到就施法。
+- 轉輪：共用 reel 加選填 reelFallInLeadMs（預設 0）；催眠猴 60 ms，實測空盤約 0.24 s。FG 轉場 1.5 s 加白閃。
+- 沒套：大獎慶祝 17 s（會讓「FG 卡在慶祝牌」回來）、贏分轉入餘額倒數、合併中獎外框；封包新增的「稀有球升級」需要數學有升級機制，催眠猴沒有，未做。
+- 打包：只同步 index.html 與 _app 到 upload/HypnoMonkey/frontend（與 v9 同做法），ship.sh --check 通過；舊版備份 _upload_backups/HypnoMonkey-before-atg-20261103。數學、縮圖封面未變。
+- 驗證：本機 dev（mock）跑 baseThrow／baseThrowHeavy／baseDeadHeavy／bonusThrowHeavy，逐格對照表在 design/qa_atg_rhythm_1103/，無 runtime 錯誤。未做直式手機與快轉逐格、真實 RGS。
