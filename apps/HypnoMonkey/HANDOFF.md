@@ -179,3 +179,24 @@ Stone 更正：「5X6 是 5 列 6 行」＝ 5 列（橫）× 6 行（直）＝ 6
 ## 2026-10-30 前端 v6 已上傳發布
 
 完整 pnpm build 與打包 sanity checks 通過；先前 FG 來源版本不一致已由最新素材同步解除，32 層來源／Spine／runtime／預覽雜湊一致。上傳 5 檔、刪除舊 bundle 1 檔、186 檔不變，共 7,611,674 bytes；重新 plan_upload 為 0 actions。publish 回傳 front v6，get_game 再查已確認。數學 plan_upload 為 0 actions，保留 math v1；三模式合規 PASS（96.03%／96.06%／96.08%）。縮圖／封面已重建並納入 upload；此次平台操作是前端發布，未另更新商店圖片。此為版本發布，非新增送審；完整官方逐項動態稽核與上一輪提及的桌機／FG／快轉回歸仍不能冒稱已完成。
+
+
+## 2026-11-02 前端 v7 已上傳發布
+
+單金邊紅色轉動按鈕、關閉閒置額外環圈；懷錶在掉落前即預留獨立格位，中獎跟最後補圖同步、未中獎跟初始盤面同步，不再在圖騰停定後覆蓋。規則同步更新，viewport 加上手機防雙擊縮放。建置與 guards 通過；六個桌機／直式、MG／FG、一般／快轉及三球案例無執行錯誤。全 20 萬筆發布書核對 370,164 次有效懷錶，格位不足 0。上傳 3 檔、刪除舊 bundle 1 檔、188 檔不變，共 4,553,554 bytes；replan 0 actions。publish 回傳 v7，get_game 確認 front v7／math v1。數學不變、三模式合規 PASS。上架縮圖封面重建並納入 upload；本次未修改平台商店圖。發布紀錄及官方逐項檢查在 upload/HypnoMonkey/qa/release-20261102-spin-watch/；完整真實 RGS、回放／貨幣／social 全矩陣與全套角色來源動作重驗未執行，不可宣稱完成全部送審驗收。
+
+
+## 2026-11-02 前端 v8：補齊所有圓形按鈕
+
+v7 只改主轉動鍵，Stone 指出加號等按鈕仍是雙環。本次將共用圓形按鈕底圖改為自有單金邊 SVG（正常／啟用兩種），覆蓋選單／關閉、加減、自動、快轉及展開選單的聲音／設定／說明／賠付表。規則頁示意同步單 CSS 金邊。保留 hit area，以透明留白避免手機按鈕圖形相碰；自動圖示縮至 0.70。桌機／手機關閉與展開選單、快轉2、最大金額停用狀態、20個規則圖示均實測，畫面舊雙環底圖0，正向確認新SVG已載入；加減1→2→1，無pageerror。建置／guards／打包檢查通過。上傳7檔、刪除3檔、186檔不變，4,594,972 bytes；replan0 actions，publish/get_game確認front v8、math v1。資料與證據位於 upload/HypnoMonkey/qa/release-20261102-all-buttons/；本次沒有修改角色／數學／平台商店圖，也不是新增送審。
+
+
+## 2026-11-03 前端 v9：TOTAL 置中／FG 接錯收手／購買面板
+
+TOTAL 依牌面原圖可寫區 x198..476、y124..225 定文字槽，新增 InkText 按實際字形包圍框校正 Pixi 字體 ascent/descender anchor，0/40/250/5000/15000 的 4倍像素擷取中心偏差<1px，+5px 控制探針可測得5px。
+
+FG 繞手根因：fg_end 的鞠躬被外層設 hold=true，reset() 無條件接 win_big_end（舉高手收回），跨不相容姿勢；重複 win_big 也重新起動抬手。修正 holding 只適用 win_big，FG 鞠躬自然接 idle；只對真正 held cheer 接收手，重複 held win 不重起。新增 design/check_cast_transitions.mjs 並加入 build，MG/FG 都測。未改角色來源、rig、IK 或動作幅度；spine-motion check 及同版素材 guard 通過。實際遊戲 MG8段／FG10段在桌機和直式共216格檢視，另50格真實runtime銜接GIF無接錯收手，現有來源層亮暗底同版檢查。
+
+Buy Bonus 參考本機 SumoMonkey/TurfWar 的 illustrated tier cards，改成催眠猴自有馬戲團票券卡：白天／夜場、原有助手PNG、銅／金懷錶、倍數相加示意、15轉、設定值100x/400x、RTP和價格。原確認頁與不足餘額保護保留；400x225縮為可操作的雙卡；390直式內部捲動。Social 文案與SC顯示通過（本機mock原USD，在測試中明確設XSC）。
+
+打包為 upload/HypnoMonkey，保留已裁除／壓縮的既有靜態素材，只同步 index/_app 與新增的原來源助手圖。建置、guards及新回歸通過，上傳6檔5,403,307 bytes、刪除3舊檔、188不變，replan0 actions；publish/get_game確認front v9/math v1。縮圖封面仍在包內；未更動平台商店圖、未新增送審。官方逐項檢查與完整證據在 upload/HypnoMonkey/qa/release-20261103-panel-motion/，既有全套真實RGS/replay/貨幣等送審驗證缺口仍列出，未冒稱完整認證。

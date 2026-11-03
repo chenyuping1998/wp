@@ -130,12 +130,12 @@ export default {
 	},
 	mgUiButton: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/button_disc.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/button_single.svg', import.meta.url).href,
 		preload: true,
 	},
 	mgUiButtonOn: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/hypnoUi/button_disc_on.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/hypnoUi/button_single_on.svg', import.meta.url).href,
 		preload: true,
 	},
 	mgTotalPlate: {

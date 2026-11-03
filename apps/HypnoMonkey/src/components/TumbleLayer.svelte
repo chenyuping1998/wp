@@ -20,7 +20,6 @@
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import { tumbleTiming } from '../game/animationTimeline';
 	import { watchDropTiming } from '../game/hypnoWatchTiming';
-	import { coverCell, uncoverCell } from '../game/watchCells.svelte';
 	import { planCascadeColumn, gravityProgress, fallDuration, recordSymbolTravel, LANDING_OVERSHOOT, landingOvershoot } from '../game/symbolMotion';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { getSymbolX, getSymbolInfo } from '../game/utils';
@@ -57,8 +56,7 @@
 	/**
 	 * Cells for the watches: the highest fresh cell of a refilled column that is
 	 * not a scatter, spread across the columns. Top-row cells come first: the
-	 * settlement readout covers the middle rows. All or nothing: with too few
-	 * cells the throw falls back to flying from the hypnotist at chain end.
+	 * settlement readout covers the middle rows. Each watch owns a fresh slot before the refill begins.
 	 */
 	const watchCells = (removed: Map<number, number[]>, newSymbols: RawSymbol[][], count: number) => {
 		const board = context.stateGame.board;
@@ -68,7 +66,7 @@
 			const plan = planCascadeColumn(board[reel].reelState.symbols.map((s) => s.rawSymbol), rows, newSymbols[reel] ?? [], BOARD_DIMENSIONS.y);
 			for (let row = 1; row <= rows.length; row++) {
 				const rank = plan.moves.filter((move) => move.from !== move.to && move.to > row).length;
-				if (plan.column[row].name !== 'S') { (row === 1 ? top : lower).push({ reel, row, rows: rows.length, rank }); break; }
+				if (plan.column[row].name !== 'S') (row === 1 ? top : lower).push({ reel, row, rows: rows.length, rank });
 			}
 		}
 		// Top-row cells first; a lower one only when there are not enough.
@@ -107,7 +105,7 @@
 				columnDelayMs: first.reel * timing.columnStaggerMs,
 			});
 			gapMs = drop.gapMs;
-			// Same start, path and gravity as the fresh symbol it rides on.
+			// A multiplier is the incoming symbol in its slot, sharing the refill clock.
 			context.eventEmitter.broadcast({
 				type: 'hypnoWatchDrop',
 				animation: drop.animation,
@@ -146,9 +144,12 @@
 			const symbols = reel.reelState.symbols;
 			const plan = planCascadeColumn(symbols.map((s) => s.rawSymbol), rows, newSymbols[reelIndex] ?? [], BOARD_DIMENSIONS.y);
 			// the watch rides this column's refill as the symbol that lands in its cell
-			const watchCell = cells.find((cell) => cell.reel === reelIndex);
-			const watchMove = watchCell && plan.moves.find((move) => move.to === watchCell.row);
-			if (watchMove) coverCell(reelIndex, watchMove.carrier);
+			for (const cell of cells.filter((cell) => cell.reel === reelIndex)) {
+				const move = plan.moves.find((move) => move.to === cell.row)!;
+				const raw = { ...move.rawSymbol, watchValue: watches[cells.indexOf(cell)] };
+				move.rawSymbol = raw;
+				plan.column[cell.row] = raw;
+			}
 			for (const move of plan.moves) {
 				const symbol = symbols[move.carrier];
 				if (move.incoming) { symbol.rawSymbol = move.rawSymbol; void symbol.symbolY.set(slotY(move.from), { duration: 0 }); }
@@ -171,7 +172,6 @@
 			// Settle THIS column when it arrives. Waiting for all six columns made
 			// every landing squash start together and removed the staggered impact.
 			reel.setSymbolsWithRawSymbols(plan.column);
-			if (watchCell && watchMove) { uncoverCell(reelIndex, watchMove.carrier); coverCell(reelIndex, watchCell.row); }
 			reel.reelState.symbols.forEach((symbol, slot) => { void symbol.symbolY.set(slotY(slot), { duration: 0 }); });
 			const landed = plan.moves.filter((move) => move.from !== move.to);
 			for (const move of landed) {

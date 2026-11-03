@@ -28,7 +28,9 @@
 	const isWin = $derived(props.state === 'win');
 </script>
 
-{#if props.state === 'explosion'}
+{#if props.rawSymbol.watchValue !== undefined}
+	<!-- This slot belongs to a multiplier. There is no totem underneath it. -->
+{:else if props.state === 'explosion'}
 	<!-- Crumble owns the stone fragments; never play the template explosion. -->
 {:else if isSprite && isWin}
 	<!-- Individual symbol acting, followed by shared petrification/fracture. -->

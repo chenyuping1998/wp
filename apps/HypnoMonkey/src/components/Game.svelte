@@ -86,7 +86,7 @@
 			<Anticipations />
 			<ScatterBurst />
 			<ScatterWins />
-			<!-- after the win marks: the orbs fly over whatever is left on the board -->
+			<!-- Multipliers draw in their reserved slots; settlement flies their values to the readout. -->
 			<MedusaThrow />
 		</MainContainer>
 

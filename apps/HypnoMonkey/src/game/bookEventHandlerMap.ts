@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import { releaseCells } from './watchCells.svelte';
 import { recordBookEvent, checkIsMultipleRevealEvents, type BookEventHandlerMap } from 'utils-book';
 import { stateBet, stateUi } from 'state-shared';
 import { waitForTimeout } from 'utils-shared/wait';
@@ -132,16 +131,33 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'medusaPose', pose: 'idle' });
 		eventEmitter.broadcast({ type: 'hypnoWatchClear' });
 
+		// No-win multipliers also enter with the initial board, never over a landed totem.
+		const start = bookEvents.findIndex((event) => event.index === bookEvent.index);
+		let throwEvent: BookEventOfType<'hypnoThrow'> | undefined;
+		for (const next of bookEvents.slice(start + 1)) {
+			if (next.type === 'reveal' || next.type === 'tumbleBoard') break;
+			if (next.type === 'hypnoThrow') { if (!next.applied) throwEvent = next; break; }
+		}
+		const revealBoard = bookEvent.board.map((column) => column.map((raw) => ({ ...raw })));
+		if (throwEvent) {
+			const slots = revealBoard.flatMap((column, reel) => column.flatMap((raw, row) =>
+				row >= 1 && row <= BOARD_DIMENSIONS.y && raw.name !== 'S' ? [{ reel, row }] : []));
+			throwEvent.multipliers.forEach((value, i) => {
+				const slot = slots[Math.floor((i + 0.5) * slots.length / throwEvent!.multipliers.length)];
+				if (slot) revealBoard[slot.reel][slot.row].watchValue = value;
+			});
+			eventEmitter.broadcast({ type: 'hypnoWatchReveal', pace: currentPace(), count: throwEvent.multipliers.length });
+		}
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: {
 				...bookEvent,
+				board: revealBoard,
 				anticipation: gateAnticipation(bookEvent.anticipation),
 			},
 			paddingBoard: config.paddingReels[bookEvent.gameType] as RawSymbol[][],
 		});
-		// the previous spin's watches have fallen out with the board
-		releaseCells();
+
 	},
 
 	/**

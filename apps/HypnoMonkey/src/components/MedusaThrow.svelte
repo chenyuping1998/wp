@@ -23,6 +23,7 @@
 				pace: WinPace;
 				drops: WatchDrop[];
 		  }
+		| { type: 'hypnoWatchReveal'; pace: WinPace; count: number }
 		| { type: 'hypnoWatchClear' }
 		| { type: 'medusaTotalShow' }
 		| { type: 'medusaTotalHide' };
@@ -46,33 +47,21 @@
 		orbKeyFor,
 		totalPlateLevel,
 	} from '../game/constants';
-	import { throwTiming, medusaAnimations, multiplierCountMs } from '../game/animationTimeline';
+	import { medusaAnimations, multiplierCountMs } from '../game/animationTimeline';
 	import { watchCollectTiming } from '../game/hypnoWatchTiming';
 	import { gravityProgress } from '../game/symbolMotion';
 	import { shakeBoard, zoomBoard } from '../game/boardShake.svelte';
 	import { getSymbolX, getSymbolY } from '../game/utils';
-	import { coverCell } from '../game/watchCells.svelte';
 	import MultiplierFx from './MultiplierFx.svelte';
 	import type { MultiplierFxController } from '../game/multiplierFxScene';
-	import { flightPose,impactPose,gazePose,recoil,orbColor,ORB_CHARGE_DISTANCE,type OrbVisual } from '../game/multiplierPerformance';
+	import { flightPose,gazePose,recoil,orbColor,type OrbVisual } from '../game/multiplierPerformance';
 	import { drawMultiplierReadout } from '../game/multiplierReadout';
 	import { medusaAnchors } from '../game/medusaAnchors.svelte';
 	import BoardContainer from './BoardContainer.svelte';
+	import InkText from './InkText.svelte';
 	import { medusaEyes } from './Medusa.svelte';
 
-	/**
-	 * Medusa's thrown multiplier (SPEC 3, MEDUSA_動畫需求單 §2).
-	 *
-	 * Orbs leave from where Medusa stands (right of the board in landscape, above
-	 * its right corner in portrait) and fly to:
-	 *   · base game  — the middle of the board, where the spin's win is scaled
-	 *   · free game  — the running-total plate, which then scales the spin
-	 * A throw on a spin with no tumble win is wasted: each orb greys, cracks and
-	 * crumbles short of its target, and nothing changes.
-	 *
-	 * Everything here is in board coordinates (inside BoardContainer). Medusa's
-	 * own poses are driven from here through `medusaPose` events.
-	 */
+	/** Multipliers occupy reserved cells during the drop; chain end only settles them. */
 	const context = getContext();
 	const stoneMaterial=new ColorMatrixFilter();stoneMaterial.saturate(-.6);
 	let alive = true;
@@ -180,7 +169,8 @@
 			: { x: -PLATE_WIDTH * 0.62, y: BOARD_SIZES.height * 0.45 },
 	);
 	// the ×N sits on the right-hand two thirds; the cameo is on the left
-	const plateValue = $derived({ x: plate.x + PLATE_WIDTH * 0.17, y: plate.y });
+	// Writable art area: source x198..476, y124..225 on the 512×320 plate.
+	const plateValue = $derived({ x: plate.x + PLATE_WIDTH * (337 / 512 - 0.5), y: plate.y + 11 });
 
 	// A hidden tab must complete each beat exactly once, even without rAF.
 	const tween = (ms: number, step: (t: number) => void) =>
@@ -234,51 +224,12 @@
 		orbs = orbs.map((orb) => (orb.id === id ? { ...orb, ...patch } : orb));
 	};
 
-	/** Fly one orb along an arc that lifts as it travels. */
-	const fly = async (
-		value: number,
-		to: { x: number; y: number },
-		ms: number,
-		stopShort: boolean,
-		chargeMs: number,
-	) => {
-		const id = nextId++;
-		const d=Math.hypot(to.x-origin.x,to.y-origin.y)||1;
-		// Energy gathers in front of the face; it never hides the eye performance.
-		const from={x:origin.x+(to.x-origin.x)/d*ORB_CHARGE_DISTANCE,y:origin.y+(to.y-origin.y)/d*ORB_CHARGE_DISTANCE};
-		orbs = [...orbs, { id, value, ...from, scale: .12, alpha: 0, stone: 0, crack: 0,angle:0,sx:1,sy:1,trail:[],charging:true }];
-		const end = stopShort
-			? { x: to.x + (origin.x - to.x) * 0.14, y: to.y + (origin.y - to.y) * 0.14 }
-			: to;
-		await tween(chargeMs,t=>update(id,{scale:.12+.76*easeOut(t),alpha:easeOut(t)}));
-		broadcast({ type:'soundMedusa',cue:'orbFly',speed:450/ms,panFrom:Math.max(-.85,Math.min(.85,(from.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)),panTo:Math.max(-.85,Math.min(.85,(end.x-BOARD_SIZES.width/2)/BOARD_SIZES.width*1.6)) });
-		await tween(ms, (t) => {
-			update(id,{...flightPose(from,end,reducedMotion?1:t),alpha:1,charging:false});
-		});
-		return id;
-	};
-
-	const shatter = async (id: number, ms: number) => {
-		await tween(ms * 0.45, (t) => update(id, { stone: t, crack: t }));
-		const orb = orbs.find((item) => item.id === id);
-		if (orb) fx?.shatter(orb,orb.value);
-		orbs = orbs.filter((item) => item.id !== id);
-		await wait(ms * 0.55);
-	};
-
 	/** A wasted watch breaks where it lies and keeps its cell until the next spin. */
 	const crackInPlace = async (id: number, ms: number) => {
 		await tween(ms * 0.45, (t) => update(id, { stone: t, crack: t }));
 		const orb = orbs.find((item) => item.id === id);
 		if (orb) fx?.shatter(orb, orb.value);
 		await wait(ms * 0.55);
-	};
-
-	const land = async (id: number, ms: number,toTotal:boolean) => {
-		if(!toTotal&&amount)amount={...amount,alpha:0};
-		const orb=orbs.find(item=>item.id===id);if(orb)fx?.impact(orb,orb.value,toTotal?'plate':'score');
-		await tween(ms, (t) => update(id, {...impactPose(t),angle:0,trail:[]}));
-		orbs = orbs.filter((orb) => orb.id !== id);
 	};
 
 	/** Fly an existing orb between two board points (the settlement, not a throw). */
@@ -468,16 +419,61 @@
 			totalEnter = 0;
 			plateLevel = 0;
 		},
+		hypnoWatchReveal: ({ pace, count }) => {
+			const fast = pace === 'turbo' || pace === 'turboFreegame';
+			const previousRaw = new Set(context.stateGame.board.flatMap((reel) => reel.reelState.symbols.map((symbol) => symbol.rawSymbol)));
+			const animation = pace === 'freegame' ? 'fg_gaze' : pace === 'turboFreegame' ? 'fg_gaze_turbo' : fast ? 'gaze_turbo' : 'gaze';
+			// Follow the actual reel carriers, including turbo/stop and landing bounce.
+			// The reserved raw symbol draws no totem from the moment it is installed.
+			watchesLanded = new Promise<void>((resolve) => {
+				const ids = new Map<string, number>();
+				const impacts = new Set<string>();
+				let castStarted = false;
+				const started = performance.now();
+				const follow = () => {
+					if (!alive) { resolve(); return; }
+					let landed = 0;
+					context.stateGame.board.forEach((reel, reelIndex) => {
+						reel.reelState.symbols.forEach((symbol, slot) => {
+							const value = symbol.rawSymbol.watchValue;
+							if (value === undefined || previousRaw.has(symbol.rawSymbol)) return;
+							const key = `${reelIndex}:${slot}`;
+							let id = ids.get(key);
+							if (id === undefined) {
+								if (!castStarted) {
+									castStarted = true;
+									broadcast({ type: 'medusaAction', animation });
+									broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
+								}
+								id = nextId++; ids.set(key, id);
+								orbs = [...orbs, { id, value, x: getSymbolX(reelIndex), y: symbol.symbolY.current, scale: CELL_SCALE, alpha: 0, stone: 0, crack: 0, angle: 0, sx: 1, sy: 1, trail: [], cell: true }];
+							}
+							const y = symbol.symbolY.current;
+							update(id, { y, alpha: Math.max(0, Math.min(1, (y + 20) / 60)) });
+							if (reel.reelState.motion === 'stopped') {
+								landed++;
+								if (!impacts.has(key)) {
+									impacts.add(key);
+									fx?.impact({ x: getSymbolX(reelIndex), y }, value, 'orb');
+									broadcast({ type: 'soundMedusa', cue: 'orbHit', value, speed: fast ? 1.25 : 1 });
+									if (value >= HEAVY) void strike(getSymbolX(reelIndex), y, value, fast);
+								}
+							}
+						});
+					});
+					if (landed >= count || performance.now() - started > 12000) resolve();
+					else requestAnimationFrame(follow);
+				};
+				requestAnimationFrame(follow);
+			});
+		},
 		hypnoWatchDrop: (event) => {
 			watchesLanded = dropWatches(event);
 		},
-		// The watches fall out with the board on the next spin, left reel first
-		// like the symbols (GoO 1000 drop-out); their cells stay covered until
-		// the new symbols land (bookEventHandlerMap releases them).
 		// The watches leave with the board on the next spin (actor preSpin, or the
-		// reveal inside a feature): each rides its cell's symbol as it falls out,
+		// reveal inside a feature): each follows its reserved carrier as it falls out,
 		// same frame and curve, and goes once that reel has emptied. The reveal
-		// handler releases the covered cells after the new board has landed.
+		// installs new cell owners before the incoming board is drawn.
 		hypnoWatchClear: () => {
 			const leaving = orbs.filter((orb) => orb.cell).map((orb) => ({
 				id: orb.id,
@@ -486,6 +482,7 @@
 			}));
 			if (!leaving.length) return;
 			const follow = () => {
+				if (!alive) return;
 				const gone = new Set<number>();
 				for (const watch of leaving) {
 					const reel = context.stateGame.board[watch.reel]?.reelState;
@@ -494,7 +491,7 @@
 					else update(watch.id, { y: symbol.symbolY.current });
 				}
 				if (gone.size) orbs = orbs.filter((orb) => !gone.has(orb.id));
-				if (orbs.some((orb) => orb.cell)) requestAnimationFrame(follow);
+				if (leaving.some((watch) => orbs.some((orb) => orb.id === watch.id))) requestAnimationFrame(follow);
 			};
 			requestAnimationFrame(follow);
 		},
@@ -506,139 +503,19 @@
 				await collectWatches({ mult, baseWin, totalWin, toTotal, fast });
 				return;
 			}
-			orbs = orbs.filter((orb) => !orb.cell);
-			const plan = throwTiming({
-				freegame: toTotal,
-				turbo: fast,
-				applied,
-				orbCount: multipliers.length,
-				mult,
-			});
-			const action = medusaAnimations[plan.animation];
-			const target = toTotal ? plateValue : center;
-			// A wasted watch lands ON a cell of the board (Stone 2026-10-29), not
-			// between cells or short of the plate; several spread over the middle.
-			// Each in its own cell, never on a Hypno Spiral (it would hide a scatter).
-			const used = new Set<string>();
-			const dudCell = (index: number) => {
-				const candidates: [number, number][] = [];
-				for (let k = 0; k < 24; k++) candidates.push([[2, 3, 1, 4, 0, 5][(index + k + multipliers.length) % 6], [2, 1, 3, 0, 4][(index * 2 + k + (multipliers[index] ?? 0)) % 5]]);
-				const free = candidates.find(([reel, row]) => !used.has(`${reel}:${row}`) && context.stateGame.board[reel]?.reelState.symbols[row + 1]?.rawSymbol.name !== 'S') ?? candidates[0];
-				used.add(`${free[0]}:${free[1]}`);
-				return { x: getSymbolX(free[0]), y: getSymbolY(free[1]), reel: free[0], slot: free[1] + 1 };
-			};
-			baseAmount=bookEventAmountToCurrencyString(baseWin);
-			gazeProgress=-1;
-			beamTarget = target;
-			broadcast({ type: 'medusaAction', animation: plan.animation, releaseMs: plan.releaseMs });
-			await flushRender();
-			broadcast({ type: 'soundMedusa', cue: 'gaze',speed:fast?1.5:1 });
-			if (!toTotal && applied) {
-				pop = { text: '', scale: 1, alpha: 1 };
-				amount = { text: bookEventAmountToCurrencyString(baseWin), alpha: applied ? 1 : 0 };
+			if (applied) {
+				throw new Error('Multiplier slots must enter with the symbol drop before settlement');
 			}
+			// These occupied their own slots during reveal. A losing spin only cracks
+			// the existing multipliers; it never throws onto a completed board.
+			broadcast({ type: 'medusaAction', animation: 'gaze_dud', turbo: fast });
+			broadcast({ type: 'soundMedusa', cue: 'annoyed' });
+			await wait(fast ? 160 : 320);
+			await Promise.all(orbs.filter((orb) => orb.cell).map(async (orb) => {
+				broadcast({ type: 'soundMedusa', cue: 'orbCrack', speed: fast ? 1.5 : 1 });
+				await crackInPlace(orb.id, fast ? 200 : 360);
+			}));
 
-			// Gesture, beam and orbs run on one clock. Several orbs share one gaze.
-			const beamAt = applied ? action.beamAtMs : Math.max(0, plan.releaseMs - 100);
-			const beam = (async () => {
-				if (!toTotal) {
-					await wait(Math.min(plan.releaseMs, fast ? 100 : 200));
-					broadcast({ type: 'soundMedusa', cue: 'peek',speed:fast?1.5:1 });
-					await wait(Math.max(0, beamAt - (fast ? 100 : 200)));
-				} else await wait(beamAt);
-				broadcast({ type: 'soundMedusa', cue: 'gazeBeam',speed:fast?1.5:1 });
-				await tween(
-					Math.max(100, Math.min(action.beamEndMs, plan.lastArrivalMs) - beamAt),
-					(t) => {gazeProgress=t;gaze=gazePose(t).intensity;},
-				);
-				gaze = 0;
-				gazeProgress=-1;
-			})();
-			const recovery=(async()=>{if(!toTotal&&applied){await wait(Math.max(0,action.durationMs-120));broadcast({type:'soundMedusa',cue:'glassesOn',speed:fast?1.5:1});}})();
-			const chargeMs=fast?70:130;
-			await wait(Math.max(0,plan.releaseMs-chargeMs));
-			let dudReacted = false;
-			await Promise.all(
-				multipliers.map(async (value, index) => {
-					await wait(index * plan.staggerMs);
-					const cell = applied ? undefined : dudCell(index);
-					const id = await fly(value, cell ?? target, plan.flightMs, false, chargeMs);
-					// a wasted watch takes its cell: the symbol under it is not drawn
-					if (cell) { coverCell(cell.reel, cell.slot); orbs = orbs.map((orb) => (orb.id === id ? { ...orb, cell: true } : orb)); }
-					if (applied) {
-						broadcast({ type: 'soundMedusa', cue: 'orbHit', value,speed:fast?1.25:1 });
-						if (toTotal) totalBump = 1;
-						else scoreBump = 1;
-						await land(id, plan.landMs,toTotal);
-					} else {
-						// A wasted x100+ still lands with the full thunderclap before it cracks.
-						const orb = orbs.find((item) => item.id === id);
-						if (orb && value >= HEAVY) {
-							heavy = { x: orb.x, y: orb.y, bolt: 1, ring: 0, flash: 0, dim: 1, color: orbColor(value), seed: Math.random() * 100 };
-							await strike(orb.x, orb.y, value, fast);
-						}
-						broadcast({ type: 'soundMedusa', cue: 'orbCrack',speed:fast?1.5:1 });
-						if (!dudReacted) {
-							dudReacted = true;
-							broadcast({
-								type: 'medusaAction',
-								animation: 'gaze_dud',
-								turbo: fast,
-								holdMs: plan.endMs - plan.firstArrivalMs,
-							});
-							broadcast({ type: 'soundMedusa', cue: 'annoyed' });
-						}
-						await crackInPlace(id, plan.shatterMs);
-					}
-				}),
-			);
-			if (!applied) {
-				// Do not block a wasted multiplier on the longer successful gaze clip.
-				gaze = 0;
-				pop = null;
-				amount = null;
-				return;
-			}
-
-			if (toTotal) {
-				const from = totalValue;
-				broadcast({ type: 'soundMedusa', cue: 'totalUp' });
-				await tween(plan.plateCountMs, (t) => {
-					totalValue = Math.round(from + (mult - from) * easeOut(t));
-					totalBump = 1 - t;
-				});
-				// Commit the book's authoritative value before sending light to score.
-				totalValue = mult;
-				plateLevel = totalPlateLevel(mult);
-				broadcast({ type: 'soundMedusa', cue: 'plateBeam' });
-				await tween(plan.beamMs, (t) => (plateBeam = Math.sin(Math.PI * t)));
-				plateBeam = 0;
-			}
-			pop = { text: `×${mult}`, scale: 1, alpha: 1 };
-			amount = { text: bookEventAmountToCurrencyString(baseWin), alpha: 1 };
-			broadcast({ type: 'soundLoop', name: 'sfx_multiplier_update' });
-			try {
-				await Promise.all([
-					tween(fast ? 120 : 200, (t) => {
-							scoreBump = recoil(t);
-							if(pop)pop={...pop,scale:1+.12*recoil(t)};
-					}),
-					countUp(baseWin, totalWin, plan.countMs),
-				]);
-			} finally {
-				broadcast({ type: 'soundStop', name: 'sfx_multiplier_update' });
-			}
-			scoreBump = 0;
-			totalBump = 0;
-			await Promise.all([beam,recovery]);
-			broadcast({ type: 'medusaPose', pose: 'idle' });
-			await wait(plan.resultHoldMs);
-			await tween(fast ? 90 : 150, (t) => {
-				if (pop) pop = { ...pop, alpha: 1 - t };
-				if (amount) amount = { ...amount, alpha: 1 - t };
-			});
-			pop = null;
-			amount = null;
 		},
 	});
 
@@ -685,20 +562,8 @@
 			scale={1 + 0.08 * totalBump}
 		>
 			<Sprite key={plateLevel > 1 ? 'mgTotalPlateHigh' : plateLevel > 0 ? 'mgTotalPlateMid' : 'mgTotalPlate'} anchor={0.5} width={PLATE_WIDTH} height={PLATE_HEIGHT} />
-			<Text anchor={0.5} x={PLATE_WIDTH*.17} y={-28} text="TOTAL" style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:17,fill:0xffedc1,stroke:{color:0x18272b,width:3}}}/>
-			<Text
-				anchor={0.5}
-				x={PLATE_WIDTH * 0.17}
-				y={7}
-				text={`×${totalValue}`}
-				style={{
-					fontFamily: GAME_FONT,
-					fontWeight: GAME_FONT_WEIGHT,
-					fontSize: totalValue>=1000?34:44,
-					fill: 0xffe08a,
-					stroke: { color: 0x2a1f24, width: 6 },
-				}}
-			/>
+			<InkText x={PLATE_WIDTH*(337/512-.5)} y={-8} text="TOTAL" fontSize={12} maxWidth={104} maxHeight={10} stroke={2} fill={0xffedc1}/>
+			<InkText x={PLATE_WIDTH*(337/512-.5)} y={11} text={`×${totalValue}`} fontSize={40} maxWidth={104} maxHeight={25}/>
 		</Container>
 	{/if}
 

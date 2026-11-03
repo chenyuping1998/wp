@@ -174,7 +174,7 @@
 									>
 								{:else}
 									{#each control.icons as name (name)}
-										<span class="wp-icon-plate" style:--disc={`url('${base}/assets/sprites/hypnoUi/button_disc.png')`}
+										<span class="wp-icon-plate"
 											><img src={`${ICONS}/${name}.png`} alt="" /></span
 										>
 									{/each}
@@ -231,7 +231,8 @@
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>The Hypnotist's watch</h3>
 				<p>
-					When a spin's chain has finished, the Hypnotist may add a pocket-watch multiplier.
+					A pocket-watch multiplier can drop into its own cell alongside the symbols.
+					Its multiplier is collected when the spin's chain has finished.
 					<strong>It only counts if that spin had a win from the chain.</strong> If the spin had no
 					win, the watch shatters and nothing changes.
 				</p>
@@ -430,15 +431,17 @@
 		gap: 0.3rem;
 	}
 
-	/* the bar's round buttons are drawn on a teal face; the icons are white */
-	/* the bar's own disc art behind each icon, so the guide matches the bar */
+	/* Match the bar's single gold edge and red face, including the controls guide. */
 	.wp-icon-plate {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		width: 2.2rem;
 		height: 2.2rem;
-		background: var(--disc) center / contain no-repeat;
+		box-sizing: border-box;
+		border: 2px solid #f2b632;
+		border-radius: 50%;
+		background: #970d21;
 
 		img {
 			width: 1.4rem;

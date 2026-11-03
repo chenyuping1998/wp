@@ -4,6 +4,8 @@ import type config from './config';
 export type SymbolName = keyof typeof config.symbols;
 export type RawSymbol = {
 	name: SymbolName;
+	/** Presentation-only cell owner; the book symbol name remains for outcome auditing. */
+	watchValue?: number;
 	scatter?: boolean;
 	wild?: boolean;
 };

@@ -2,8 +2,7 @@ import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
 import { stateConfig } from 'state-shared';
 
-// This app's painted marble/gold controls and teal bar retain the shared
-// toolbar behaviour. Its shield and serpent spin glyph are app-owned views.
+// Circus controls share a red face, one gold edge and the shared toolbar behaviour.
 //
 // Applied once at module load (imported by Game.svelte).
 setUiTheme({
@@ -21,25 +20,25 @@ setUiTheme({
 	panelFill: 0x44201d,
 	panelBorder: 0x2a1f24,
 
-	buttonFill: 0x57251f,
+	buttonFill: 0x970d21,
 	buttonFillLight: 0xe8725e,
 	buttonFillDisabled: 0x3b4648,
-	buttonFillActive: 0xf2b632,
-	buttonBorder: 0x2a1f24,
-	// the disc art carries its own ring; ON is drawn by the lit disc
-	buttonBorderWidth: 0,
+	buttonFillActive: 0xc53d33,
+	buttonBorder: 0xf2b632,
+	// All round controls share Spin's red face and a single gold edge.
+	buttonBorderWidth: 6,
+	buttonBorderWidthActive: 6,
 	buttonIconFill: 0xffedc2,
 	buttonIconStroke: 0x351b19,
-	// the gap cut round the front bolt of turbo 2, in the disc's own red (sampled
-	// from button_disc / _on): cream merged the two white bolts into one blob
-	turboKeylineColor: 0x8a010e,
+	// The cut around Turbo 2's front bolt matches the disc's red face.
+	turboKeylineColor: 0x970d21,
 	turboButtonScale: 1.16,
 	turboIconScale: 0.58,
 	railButtonScale: 1.10,
 	spinScale: 0.88,
 
 	// spin: the one solid coral thing on the strip, edged in ink
-	betFill: 0xefe8d8,
+	betFill: 0x970d21,
 	betBorder: 0xf2b632,
 
 	// readouts: Balance and Bet in the strip's quiet marble, WIN alone in gold —
@@ -65,8 +64,8 @@ setUiTheme({
 	betBarLayout: 'compactBottom',
 	barSpriteSlice: 96,
 
-	// Turbo ON = the same dark disc with the bolt filled solid, no lit plate;
-	// Autoplay keeps its gold disc. Two tiers: off -> one bolt -> two bolts.
+	// Turbo ON fills the bolt; autoplay brightens its red face.
+	// Two turbo tiers: off -> one bolt -> two bolts.
 	activeByIconOnly: ['turbo'],
 	turboTiers: 2,
 
@@ -116,19 +115,19 @@ setUiTheme({
 	labelChevronHoverColor: 0xe8725e,
 	// hover never greys a control out: it lights in the game's own colour
 	hoverHighlight: true,
+	// Hover lights the same single-edge artwork, without adding an inner ring.
 	hoverPlateLight: 0xe8725e,
 	pressFeedback: true,
 	// no breathing halo on Spin (a flaring halo was part of a "poor UI" review)
 	spinButtonGlow: false,
 
-	// the house behaviours: a short lock on Spin after the stake changes, an idle
-	// nudge on Spin, shift-key shortcuts, and panels closing when a round starts.
+	// the house behaviours: a short lock on Spin after the stake changes, shift-key shortcuts, and panels closing when a round starts.
 	// NOT hold-to-repeat on −/+: Stake's review (2026-10-04) requires one press =
 	// one step, so betRepeatMs is 0.
 	platformUx: {
 		betRepeatMs: 0,
 		betToSpinCooldownMs: 500,
-		idleReminderMs: 30000,
+		idleReminderMs: 0,
 		idlePulseMs: 2000,
 		shortcuts: true,
 		keybindThrottleMs: 100,
@@ -141,8 +140,9 @@ setUiTheme({
 	autoSpinsCounterLabelStroke: 0x2a1f24,
 
 	sprites: {
-		bet: 'mgUiButton',
+		// Spin uses a clean red disc with one gold edge.
 		bar: 'mgUiBarStrip',
+		// Transparent margin keeps adjacent mobile faces apart without shrinking hit areas.
 		button: 'mgUiButton',
 		buttonActive: 'mgUiButtonOn',
 		base_ticker: 'mgUiTicker',
@@ -164,7 +164,7 @@ setUiTheme({
 		// turbo omitted: UiButton draws it as a vector bolt so it can be hollow
 		// when off and filled (one or two bolts) when on
 	},
-	iconScales: { increase: 0.78, decrease: 0.78 },
+	iconScales: { increase: 0.78, decrease: 0.78, autoSpin: 0.70 },
 });
 
 // A player who cannot afford the bet is told so, on every route into a bet (Bet

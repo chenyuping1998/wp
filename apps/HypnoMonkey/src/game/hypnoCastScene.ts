@@ -95,16 +95,19 @@ export function createHypnoCastScene(texture: Texture, variant?: {rig:typeof mgR
 			if(disposed||reduced)return false;
 			const mapped:Record<string,string>={gaze_turbo:'gaze',fg_gaze:'gaze',fg_gaze_turbo:'gaze',fg_idle:'idle',fg_trigger:'win_big',win_max:'win_big',fg_end:'win_big'};
 			const name=data.findAnimation(request)?request:mapped[request]??request;if(!data.findAnimation(name))return false;
-			restTime=0;acting=true;holding=hold;
+			const current=state.tracks[0]?.animation?.name;
+			// Repeated big-win cues must not lower and re-raise an already cheering arm.
+			if(name==='win_big'&&holding&&(current==='win_big'||current==='win_big_loop'))return true;
+			restTime=0;acting=true;holding=hold&&name==='win_big';
 			const entry=state.setAnimation(0,name,false);
 			entry.timeScale=Math.max(.25,Math.min(4,rate*castReleaseRate(request)));
 			if(name==='win_big') {
-				if(hold)state.addAnimation(0,'win_big_loop',true,0);
+				if(holding)state.addAnimation(0,'win_big_loop',true,0);
 				else {state.addAnimation(0,'win_big_end',false,0);state.addAnimation(0,'idle',true,0);}
-			} else if(!hold)state.addAnimation(0,'idle',true,0);
+			} else state.addAnimation(0,'idle',true,0);
 			return true;
 		},
-		reset() { restTime=0;if(holding){holding=false;acting=true;state.setAnimation(0,'win_big_end',false);state.addAnimation(0,'idle',true,0);}else{acting=false;state.clearTracks();skeleton.setupPose();state.setAnimation(0,'idle',true);}update(0); },
+		reset() { restTime=0;const name=state.tracks[0]?.animation?.name;if(holding&&(name==='win_big'||name==='win_big_loop')){holding=false;acting=true;state.setAnimation(0,'win_big_end',false);state.addAnimation(0,'idle',true,0);}else{holding=false;acting=false;state.clearTracks();skeleton.setupPose();state.setAnimation(0,'idle',true);}update(0); },
 		getGazeAnchors() { const release=variant?.releaseBone?skeleton.findBone(variant.releaseBone)?.getAppliedPose():undefined;const [a,b]=release?[{x:release.worldX-5,y:-release.worldY},{x:release.worldX+5,y:-release.worldY}]:eyePoints();const point=(p:{x:number;y:number})=>({x:root.x+p.x*root.scale.x,y:root.y+p.y*root.scale.y});const left=point(a),right=point(b);return{left,right,center:{x:(left.x+right.x)/2,y:(left.y+right.y)/2}}; },
 		destroy() {if(disposed)return;disposed=true;state.clearTracks();state.clearListeners();root.destroy({children:true});for(const item of meshes.values())item.geometry.destroy();meshes.clear();},
 	};

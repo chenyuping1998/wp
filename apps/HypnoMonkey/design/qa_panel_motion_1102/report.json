@@ -1,0 +1,36 @@
+{
+  "checks": [
+    {
+      "name": "desktop",
+      "cards": 2,
+      "buttons": [
+        "BUY FEATURE$100.00",
+        "BUY FEATURE$400.00"
+      ]
+    },
+    {
+      "name": "mobile",
+      "bounds": {
+        "x": 15,
+        "y": 27.5,
+        "width": 360,
+        "height": 789
+      },
+      "scroll": {
+        "h": 783,
+        "total": 1140
+      }
+    },
+    {
+      "name": "actual-runtime",
+      "pose": {
+        "exit": "idle",
+        "restarted": false,
+        "before": 0.7,
+        "after": 0.7
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}
