@@ -218,3 +218,7 @@ Buy Bonus 參考本機 SumoMonkey/TurfWar 的 illustrated tier cards，改成催
 ### 2026-11-03 前端 v10 已上傳發布（ATG 節奏）
 
 plan_upload：上傳 3 檔（新 bundle、version.json、index.html）、刪除舊 bundle 1 檔、191 檔不變，4,563,278 bytes；execute 成功，重新 plan 0 actions。publish 回傳 front v10，get_game 確認最新為 front v10；數學 plan 0 actions，維持 math v1。沒有開啟中的 approval，所以這是版本發布，不是送審。平台商店圖未更動。
+
+### 2026-11-03 懷錶倍數顏色分級（已打包，未上傳）
+
+Stone：「倍數球的顏色區分明顯一點」。銅（2x）和金（500x）同色系，分不出來。改成每級一個色相（參考 ATG 的綠藍紫紅）：綠 2–5x、藍 8–10x、紫 15–50x、紅 100x、亮黃金 250–500x。design/watch_art/build_tiers.py 重出 watch-t1/t2/t5，光暈加強，數字外框帶該級深色；揭曉前的空白懷錶改用銀色錶殼，不再提前洩漏級別。購買面板一般場的懷錶圖（t1）跟著變綠。commit b89cbab0，實機證據 design/qa_atg_rhythm_1103/watch_tiers_in_game.jpg。上傳包同步 index、_app、watch-t1/t2/t5，ship.sh --check 通過；備份 _upload_backups/HypnoMonkey-before-watch-tiers-20261103。
