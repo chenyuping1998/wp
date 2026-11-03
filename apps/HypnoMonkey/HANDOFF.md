@@ -213,4 +213,4 @@ Buy Bonus 參考本機 SumoMonkey/TurfWar 的 illustrated tier cards，改成催
 - 轉輪：共用 reel 加選填 reelFallInLeadMs（預設 0）；催眠猴 60 ms，實測空盤約 0.24 s。FG 轉場 1.5 s 加白閃。
 - 沒套：大獎慶祝 17 s（會讓「FG 卡在慶祝牌」回來）、贏分轉入餘額倒數、合併中獎外框；封包新增的「稀有球升級」需要數學有升級機制，催眠猴沒有，未做。
 - 打包：只同步 index.html 與 _app 到 upload/HypnoMonkey/frontend（與 v9 同做法），ship.sh --check 通過；舊版備份 _upload_backups/HypnoMonkey-before-atg-20261103。數學、縮圖封面未變。
-- 驗證：本機 dev（mock）跑 baseThrow／baseThrowHeavy／baseDeadHeavy／bonusThrowHeavy，逐格對照表在 design/qa_atg_rhythm_1103/，無 runtime 錯誤。未做直式手機與快轉逐格、真實 RGS。
+- 驗證：本機 dev（mock）跑 baseThrow／baseThrowHeavy／baseDeadHeavy／bonusThrowHeavy，逐格對照表在 design/qa_atg_rhythm_1103/，無 runtime 錯誤。直式手機（375×812）baseThrowHeavy 另錄 portrait_heavy.jpg，正常。未做快轉逐格、真實 RGS。
