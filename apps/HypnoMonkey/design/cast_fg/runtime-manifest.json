@@ -1,7 +1,7 @@
 {
   "sourceLayers": 32,
   "atlas": "/Users/stone/stake-engine/wp-hypno/apps/HypnoMonkey/static/assets/sprites/hypnoCast/fg-atlas.png",
-  "atlasSha256": "f54d10bbe5170941aacbc92c01d358fc188ad8dcb6297cc9bb8fd88d07b2cd89",
+  "atlasSha256": "b980f2e42492968f72551b8ece4d568ca0ae563964a5d6ce03d9dad70031c976",
   "spineSha256": "a11691d4aad834c310452742885435a532b29deea6cca3e4f402e93c24340229",
   "runtimeSpineSha256": "a11691d4aad834c310452742885435a532b29deea6cca3e4f402e93c24340229",
   "crops": {
@@ -12,7 +12,7 @@
       "height": 368,
       "cropX": 478,
       "cropY": 747,
-      "sourceSha256": "13c274dd5384d5034bb19c690318b99219d92c4e977b00646ca6a85c0c3c0965"
+      "sourceSha256": "7c9beb3df68b429c1af44e37cfe3c70c1c9e1ae0b0f6dde9889bd919e243d87e"
     },
     "torso": {
       "x": 178,
@@ -30,7 +30,7 @@
       "height": 340,
       "cropX": 269,
       "cropY": 758,
-      "sourceSha256": "312cb42ca3c75884e7e89c4d67d76bf159a49b037889bb79b53100d883168fe3"
+      "sourceSha256": "370cb1493bcc27320b90ceeb0bce2f7fb043e1a7d00cde7b1157a8632d4d5c2d"
     },
     "leg_r_lower": {
       "x": 669,
@@ -48,7 +48,7 @@
       "height": 313,
       "cropX": 287,
       "cropY": 1030,
-      "sourceSha256": "47a8cbcd2edcb02b677a34db01dc6dbe5785b71bf2d880cad46b2092be9a6ddc"
+      "sourceSha256": "66bbc6c55bbf2ac98bf3caeeb428f7bf7be5675aec91ae42e02078eacd15cbbd"
     },
     "head_idle": {
       "x": 940,

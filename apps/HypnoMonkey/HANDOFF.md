@@ -227,8 +227,9 @@ Stone：「倍數球的顏色區分明顯一點」。銅（2x）和金（500x）
 
 上傳 6 檔（新 bundle、version.json、index.html、watch-t1/t2/t5.png）、刪除舊 bundle 1 檔、188 檔不變，4,659,182 bytes；重新 plan 0 actions，數學 0 actions（math v1）。publish 回傳 front v11，get_game 確認。沒有開啟中的 approval；商店圖未更動。
 
-## 2026-11-03 — FG cheer akimbo + MG empty throws (not uploaded)
+## 2026-11-03 — FG cheer akimbo + MG empty throws + knee hinges
 
 - FG 助手慶祝（win_big / loop / end）右手不再舉起繞圈：叉腰的手肘在外側，舉過頭一定會讓前臂繞肘轉近 180°（10-29 的 FK 修法仍是繞圈）。現在這隻手保持叉腰隨身體彈跳，由甩錶手、彈跳、大笑帶慶祝。`design/cast_fg/fix_cheer_akimbo.py`，預覽／QA 圖重產，`check_assistant_revision` 與 spine-motion check 全 100。
-- character check 的「後膝 rest 288px²」提示是工具更新後才出現的（每段第 0 格，腿未改動）；放大可見大腿／小腿後側接口 2–3px 淺色缺口，遊戲尺寸約 1px，原稿既有，待修。
+- 膝蓋（Stone「後膝也補」）：FG 兩腿在大腿座標逐格檢查（後腿 -10..+2.7°、前腿 -14.5..+3.7°）。後膝靜止時的淺色缺口與前側台階補上（`design/cast_fg/fix_back_knee_1103.py`）；`design/cast_fg/fix_knee_hinge_1103.py` 清掉前腿 3×3 雜墨點、後腿小腿切邊墨線、一個斷線像素，大腿延伸墊在小腿下（伸直不露底），被小腿蓋住的大腿舊墨線改皮毛色（伸直不再露線點）。靜止畫面只改這十幾點、不削 alpha。MG 後膝外輪廓墨線改由大腿負責（`design/cast_mg/fix_back_knee_1103.py`），深彎 -21.5° 不再有一截墨線壓到褲面；MG 前膝原本已墊好。FG 8px 接縫檢查 0；40px 檢查的「後膝 288px²」是膝窩天然內凹（同尾巴提示）。最深彎曲仍有膝窩摺紋（兩段剛體約 8px 錯位，讀作摺痕）。
+- MG `export_motion_frames.mjs` 與目前 spine-generator 不相容（buildCharacter 讀不到 neckBase）；MG 骨架未改，沿用既有 motion-frames 重產預覽並 seal，verify_revision PASS。`registered-source-validation.json` 重跑會報 arm_l_upper / pelvis 位移（舊檔過期，與本次無關），未提交新結果。
 - MG 空丟：MG 沒有懷錶的轉輪 40% 機率仍做出手動作＋出手音效（`EMPTY_THROW_CHANCE`，bookEventHandlerMap reveal），盤面不出現任何東西；該轉有真丟就不做。
