@@ -104,6 +104,9 @@ const animateSymbols = async ({ positions }: { positions: Position[] }) => {
 	});
 };
 
+/** Share of base-game spins without watches on which the hypnotist still throws. */
+const EMPTY_THROW_CHANCE = 0.4;
+
 /** Pace tier shared by the win marks and anything else that has four speeds. */
 const currentPace = () =>
 	stateGame.gameType === 'freegame'
@@ -147,6 +150,16 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 				if (slot) revealBoard[slot.reel][slot.row].watchValue = value;
 			});
 			eventEmitter.broadcast({ type: 'hypnoWatchReveal', pace: currentPace(), count: throwEvent.multipliers.length });
+		} else if (bookEvent.gameType === 'basegame' && Math.random() < EMPTY_THROW_CHANCE) {
+			// Stone 11-03: MG throws more often, an empty throw is fine. Pure
+			// cast acting, never on a spin that throws for real.
+			const reveals = bookEvents.slice(start + 1);
+			const end = reveals.findIndex((event) => event.type === 'reveal');
+			if (!(end < 0 ? reveals : reveals.slice(0, end)).some((event) => event.type === 'hypnoThrow')) {
+				const fast = stateBet.isTurbo;
+				eventEmitter.broadcast({ type: 'medusaAction', animation: fast ? 'gaze_turbo' : 'gaze' });
+				eventEmitter.broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
+			}
 		}
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 		await stateGameDerived.enhancedBoard.spin({

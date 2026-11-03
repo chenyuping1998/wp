@@ -2,8 +2,8 @@
   "sourceLayers": 32,
   "atlas": "/Users/stone/stake-engine/wp-hypno/apps/HypnoMonkey/static/assets/sprites/hypnoCast/fg-atlas.png",
   "atlasSha256": "f54d10bbe5170941aacbc92c01d358fc188ad8dcb6297cc9bb8fd88d07b2cd89",
-  "spineSha256": "c0229f3dfc941b29acd5ad764eb75bd3768c92d591dc0232eef1eeee2514db1f",
-  "runtimeSpineSha256": "c0229f3dfc941b29acd5ad764eb75bd3768c92d591dc0232eef1eeee2514db1f",
+  "spineSha256": "a11691d4aad834c310452742885435a532b29deea6cca3e4f402e93c24340229",
+  "runtimeSpineSha256": "a11691d4aad834c310452742885435a532b29deea6cca3e4f402e93c24340229",
   "crops": {
     "leg_r_upper": {
       "x": 2,

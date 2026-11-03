@@ -226,3 +226,9 @@ Stone：「倍數球的顏色區分明顯一點」。銅（2x）和金（500x）
 ### 2026-11-03 前端 v11 已上傳發布（懷錶顏色分級）
 
 上傳 6 檔（新 bundle、version.json、index.html、watch-t1/t2/t5.png）、刪除舊 bundle 1 檔、188 檔不變，4,659,182 bytes；重新 plan 0 actions，數學 0 actions（math v1）。publish 回傳 front v11，get_game 確認。沒有開啟中的 approval；商店圖未更動。
+
+## 2026-11-03 — FG cheer akimbo + MG empty throws (not uploaded)
+
+- FG 助手慶祝（win_big / loop / end）右手不再舉起繞圈：叉腰的手肘在外側，舉過頭一定會讓前臂繞肘轉近 180°（10-29 的 FK 修法仍是繞圈）。現在這隻手保持叉腰隨身體彈跳，由甩錶手、彈跳、大笑帶慶祝。`design/cast_fg/fix_cheer_akimbo.py`，預覽／QA 圖重產，`check_assistant_revision` 與 spine-motion check 全 100。
+- character check 的「後膝 rest 288px²」提示是工具更新後才出現的（每段第 0 格，腿未改動）；放大可見大腿／小腿後側接口 2–3px 淺色缺口，遊戲尺寸約 1px，原稿既有，待修。
+- MG 空丟：MG 沒有懷錶的轉輪 40% 機率仍做出手動作＋出手音效（`EMPTY_THROW_CHANCE`，bookEventHandlerMap reveal），盤面不出現任何東西；該轉有真丟就不做。
