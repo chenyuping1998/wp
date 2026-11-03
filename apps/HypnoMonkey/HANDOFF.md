@@ -214,3 +214,7 @@ Buy Bonus 參考本機 SumoMonkey/TurfWar 的 illustrated tier cards，改成催
 - 沒套：大獎慶祝 17 s（會讓「FG 卡在慶祝牌」回來）、贏分轉入餘額倒數、合併中獎外框；封包新增的「稀有球升級」需要數學有升級機制，催眠猴沒有，未做。
 - 打包：只同步 index.html 與 _app 到 upload/HypnoMonkey/frontend（與 v9 同做法），ship.sh --check 通過；舊版備份 _upload_backups/HypnoMonkey-before-atg-20261103。數學、縮圖封面未變。
 - 驗證：本機 dev（mock）跑 baseThrow／baseThrowHeavy／baseDeadHeavy／bonusThrowHeavy，逐格對照表在 design/qa_atg_rhythm_1103/，無 runtime 錯誤。直式手機（375×812）baseThrowHeavy 另錄 portrait_heavy.jpg，正常。未做快轉逐格、真實 RGS。
+
+### 2026-11-03 前端 v10 已上傳發布（ATG 節奏）
+
+plan_upload：上傳 3 檔（新 bundle、version.json、index.html）、刪除舊 bundle 1 檔、191 檔不變，4,563,278 bytes；execute 成功，重新 plan 0 actions。publish 回傳 front v10，get_game 確認最新為 front v10；數學 plan 0 actions，維持 math v1。沒有開啟中的 approval，所以這是版本發布，不是送審。平台商店圖未更動。
