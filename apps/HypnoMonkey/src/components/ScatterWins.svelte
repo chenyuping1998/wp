@@ -4,7 +4,7 @@
 	export type EmitterEventScatterWins = { type: 'scatterWinsShow'; wins: ScatterWinDatum[]; pace?: WinPace } | { type: 'scatterWinsHide' };
 </script>
 <script lang="ts">
-	import { Container, Graphics } from 'pixi-svelte';
+	import { Container } from 'pixi-svelte';
 	import { onDestroy } from 'svelte';
 	import { waitForTimeout } from 'utils-shared/wait';
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
@@ -20,17 +20,13 @@
 	let wins = $state<ScatterWinDatum[]>([]);
 	let visible = $state(false);
 	let age = $state(0);
-	let clockScale = $state(1);
+	let markMs = $state(1);
 	let raf = 0, generation = 0, alive = true;
 	onDestroy(() => { alive = false; generation++; cancelAnimationFrame(raf); });
 	const slotY = (row: number) => (row - 0.5) * SYMBOL_SIZE;
-	const amountAlpha = $derived(smooth((age / clockScale - 95) / 75));
-	const amountLift = $derived(8 * smooth(age / clockScale / 270));
-	// A quick overshoot makes each award read before the clearing beat.
-	const amountScale = $derived.by(() => {
-		const t = Math.max(0, age / clockScale - 95);
-		return t < 150 ? 0.75 + 0.4 * smooth(t / 150) : 1.15 - 0.15 * smooth((t - 150) / 130);
-	});
+	// Stone 11-04: one number per win, nothing else — quick fade in, hold, fade
+	// out before the winners burst.
+	const amountAlpha = $derived(Math.min(smooth(age / markMs / 0.12), 1 - smooth((age / markMs - 0.68) / 0.32)));
 	context.eventEmitter.subscribeOnMount({
 		scatterWinsHide: () => { generation++; visible = false; wins = []; cancelAnimationFrame(raf); },
 		scatterWinsShow: async ({ wins: incoming, pace = 'normal' }) => {
@@ -38,7 +34,7 @@
 			wins = incoming; age = 0; visible = incoming.length > 0; if (!visible) return;
 			const chain = context.stateGame.tumbleChain;
 			const timing = tumbleTiming({ chain, turbo: pace === 'turbo' || pace === 'turboFreegame', turboLevel: stateBet.turboLevel });
-			clockScale = timing.scale;
+			markMs = timing.markMs;
 			for (const pos of incoming.flatMap((win) => win.positions)) {
 				if (pos.row < 1 || pos.row > BOARD_DIMENSIONS.y) continue;
 				const symbol = context.stateGame.board[pos.reel]?.reelState.symbols[pos.row];
@@ -56,30 +52,8 @@
 </script>
 {#if visible}
 	<BoardContainer>
-		<Graphics draw={(g) => {
-			g.clear();
-			const winning = new Set(wins.flatMap((win) => win.positions.map((p) => `${p.reel}:${p.row}`)));
-			for (let reel = 0; reel < BOARD_DIMENSIONS.x; reel++) for (let row = 1; row <= BOARD_DIMENSIONS.y; row++) {
-				if (!winning.has(`${reel}:${row}`)) g.rect(getSymbolX(reel) - SYMBOL_SIZE / 2, slotY(row) - SYMBOL_SIZE / 2, SYMBOL_SIZE, SYMBOL_SIZE).fill({ color: 0x000000, alpha: 0.4 });
-			}
-		}} />
-		<Graphics draw={(g) => {
-			g.clear();
-			const entrance = smooth(age / clockScale / 100);
-			const pulse = 0.5 + 0.5 * Math.sin(age / clockScale / 95);
-			const heat = Math.min(3, Math.max(0, context.stateGame.tumbleChain - 1));
-			for (const win of wins) for (const pos of win.positions) {
-				if (pos.row < 1 || pos.row > BOARD_DIMENSIONS.y) continue;
-				const x = getSymbolX(pos.reel) - SYMBOL_SIZE * 0.46;
-				const y = slotY(pos.row) - SYMBOL_SIZE * 0.46;
-				g.roundRect(x, y, SYMBOL_SIZE * 0.92, SYMBOL_SIZE * 0.92, 10)
-					.stroke({ color: 0xb877ef, width: 6 + heat, alpha: entrance * (0.15 + pulse * 0.15) });
-				g.roundRect(x, y, SYMBOL_SIZE * 0.92, SYMBOL_SIZE * 0.92, 10)
-					.stroke({ color: heat >= 2 ? 0xffd75e : 0xedd6ff, width: 2, alpha: entrance * (0.65 + pulse * 0.3) });
-			}
-		}} />
 		{#each wins as win, index (index)}
-			<Container x={getSymbolX(win.overlay.reel)} y={slotY(win.overlay.row) + 8 - amountLift} alpha={amountAlpha} scale={amountScale}>
+			<Container x={getSymbolX(win.overlay.reel)} y={slotY(win.overlay.row)} alpha={amountAlpha}>
 				<GoldText text={bookEventAmountToCurrencyString(win.win)} fontSize={SYMBOL_SIZE * 0.36} anchor={0.5} maxWidth={SYMBOL_SIZE * 1.9} />
 			</Container>
 		{/each}
