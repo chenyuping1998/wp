@@ -264,7 +264,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_anticipation' });
 		eventEmitter.broadcast({ type: 'soundFreeGameBell' });
 		eventEmitter.broadcast({ type: 'soundMedusa', cue: 'gasp' });
-		eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_trigger' });
+		// the hypnotist only tips his hat here; he winds up when the plaque comes in
+		eventEmitter.broadcast({ type: 'medusaAction', animation: 'react_small' });
 		eventEmitter.broadcast({
 			type: 'scatterBurst',
 			positions: bookEvent.positions,
@@ -279,20 +280,39 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await waitForTimeout(Math.max(0, 2000 - (performance.now() - triggerStart)));
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_superfreespin' });
 		await eventEmitter.broadcastAsync({ type: 'uiHide' });
-		await eventEmitter.broadcastAsync({type:'transition',oncover:()=>{eventEmitter.broadcast({type:'medusaPose',pose:'idle'});stateGame.gameType='freegame';},onreveal:()=>eventEmitter.broadcast({type:'medusaAction',animation:'fg_trigger'})});
+		// 天使奧丁 (research/xinstar-angelodin §5.1): the feature plaque comes in on
+		// the BASE scene while the caster winds up and holds (Ready → ReadyLoop),
+		// then he casts, a portal opens in the plaque and the free game appears
+		// under a white flash.
+		eventEmitter.broadcast({ type: 'medusaAction', animation: 'win_big' });
 		eventEmitter.broadcast({ type: 'freeSpinIntroShow' });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'jng_intro_fs' });
-		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
 		await eventEmitter.broadcastAsync({
 			type: 'freeSpinIntroUpdate',
 			totalFreeSpins: bookEvent.totalFs,
+		});
+		eventEmitter.broadcast({ type: 'medusaAction', animation: 'gaze' });
+		eventEmitter.broadcast({ type: 'soundMedusa', cue: 'gaze' });
+		await eventEmitter.broadcastAsync({
+			type: 'transition',
+			kind: 'portal',
+			tone: 'violet',
+			oncover: () => {
+				// the plaque stays up until the spiral has swallowed it
+				eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
+				eventEmitter.broadcast({ type: 'medusaPose', pose: 'idle' });
+				stateGame.gameType = 'freegame';
+			},
+			onreveal: () => {
+				eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_freespin' });
+				eventEmitter.broadcast({ type: 'medusaAction', animation: 'fg_trigger' });
+			},
 		});
 		stateGame.gameType = 'freegame';
 		// The running-total plate opens at 0 and has to be on screen before the
 		// first free spin, or a second feature in one session would open showing
 		// the previous feature's final total.
 		stateGame.medusaTotal = 0;
-		eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
 		eventEmitter.broadcast({ type: 'medusaTotalShow' });
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
@@ -380,14 +400,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			winLevelData,
 		});
 		winLevelSoundsStop();
-		eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
 		eventEmitter.broadcast({ type: 'medusaTotalHide' });
 		stateGame.medusaTotal = 0;
 		stateUi.freeSpinCounterShow = false;
 		await waitForTimeout(Math.max(0,medusaAnimations.fg_end.durationMs-(performance.now()-fgEndStarted)));
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
-		await eventEmitter.broadcastAsync({type:'transition',oncover:()=>{eventEmitter.broadcast({type:'medusaPose',pose:'idle'});stateGame.gameType='basegame';}});
+		// back through a gold portal (天使奧丁 FG_Board_End Out: a golden gate)
+		await eventEmitter.broadcastAsync({type:'transition',kind:'portal',tone:'gold',oncover:()=>{eventEmitter.broadcast({type:'freeSpinOutroHide'});eventEmitter.broadcast({type:'medusaPose',pose:'idle'});stateGame.gameType='basegame';}});
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
 		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });

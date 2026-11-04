@@ -59,7 +59,7 @@
 	});
 </script>
 
-<FadeContainer {show}>
+<FadeContainer {show} duration={show ? undefined : 0}>
 	{#if winLevelData}
 		{@const duration = winLevelData.presentDuration}
 		<WinCountUpProvider {amount} {duration} oncomplete={() => onCountUpComplete()}>

@@ -59,11 +59,14 @@ export const watchCollectTiming = ({
 	turbo,
 	watchCount,
 	carriesTotal,
+	topTier = false,
 }: {
 	turbo: boolean;
 	watchCount: number;
 	/** free game with a total already on the plate */
 	carriesTotal: boolean;
+	/** a top-tier (gold, ×250+) watch is in the sum */
+	topTier?: boolean;
 }) => {
 	// ATG 戰神賽特 (research ATG-Seth-Capture §3-3): a light ball pops out of
 	// the watch and comets to the readout in 0.25 s, one watch every 0.35 s; the
@@ -74,7 +77,8 @@ export const watchCollectTiming = ({
 	const pulseMs = 50 * s;
 	const flyMs = 250 * s;
 	const staggerMs = 350 * s;
-	const holdMs = 750 * s;
+	// 天使奧丁 holds its 1000x eye a further 0.6 s (EyeOdd1000HoldTime)
+	const holdMs = (750 + (topTier ? 600 : 0)) * s;
 	const collapseMs = 220 * s;
 	const watchesMs = watchCount > 0 ? pulseMs + flyMs + (watchCount - 1) * staggerMs : 0;
 	return {

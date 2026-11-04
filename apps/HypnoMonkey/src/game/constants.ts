@@ -223,7 +223,11 @@ export const watchTier = (value: number) => (value >= 250 ? 5 : value >= 100 ? 4
 export const orbKeyFor = (value: number) => `watchT${watchTier(value)}` as const;
 
 /** Running-total plate brightness steps (three plate levels in the art brief). */
-export const totalPlateLevel = (total: number) => (total >= 100 ? 2 : total >= 20 ? 1 : 0);
+/** Free-game TOTAL plate heat, 0–4 (天使奧丁 TOTAL MULTIPLIER: four steps, each
+ * breathing faster). Our watches run to ×500, so the steps sit at 10/25/50/100. */
+export const totalPlateLevel = (total: number) => (total >= 100 ? 4 : total >= 50 ? 3 : total >= 25 ? 2 : total >= 10 ? 1 : 0);
+/** Breath period per plate level, seconds (Odin FX_Multiplier_1–4: 1.02/0.68/0.52/0.32). */
+export const TOTAL_PLATE_BREATH_S = [0, 1.02, 0.68, 0.52, 0.32] as const;
 
 /** The gaze colour — reserved for Medusa's eyes and her orbs. */
 export const GAZE_COLOR = 0xb8ff5a;

@@ -39,13 +39,15 @@
 
 	import { getContext } from '../game/context';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
-	import {symbolIdleClock} from '../game/symbolIdleClock.svelte';
+	import {symbolIdleClock,useSymbolIdleClock} from '../game/symbolIdleClock.svelte';
 	import {
 		BOARD_SIZES,
 		REEL_PADDING,
 		SYMBOL_SIZE,
 		orbKeyFor,
 		totalPlateLevel,
+		watchTier,
+		TOTAL_PLATE_BREATH_S,
 	} from '../game/constants';
 	import { watchCollectTiming } from '../game/hypnoWatchTiming';
 	import { gravityProgress } from '../game/symbolMotion';
@@ -80,14 +82,18 @@
 	type Orb = OrbVisual & { cell?: boolean; reveal?: number };
 	// A watch on a cell sits a little inside the symbol frame.
 	const CELL_SCALE = 0.8;
-	// Legibility (Stone 2026-10-29, ref. GoO 1000 orbs): a big gold "100x" laid
-	// over the lower half of the watch, wider than the dial, and a halo in the
-	// tier colour behind it so the watch reads off any symbol. The halo is a plain
-	// blend: added light on the pale board bleached a gold watch to a bare ring.
-	// Brown edge 5px: enough to hold the gold off the art without closing the
-	// digits' counters.
+	// Legibility (Stone 2026-11-04, ref. 星城 天使奧丁 eyes, research/xinstar-angelodin):
+	// the tier is told by the colour of the whole gem alone, and the value is
+	// ONE number face for every tier — gold with a dark red edge — laid on the
+	// centre of the gem and allowed to run wider than the cell (Odin: a 180 px
+	// text box on a 124 px cell). The tier-coloured halo breathes on Odin's
+	// 1.43 s eye loop. The halo is a plain blend: added light on the pale board
+	// bleached a gold watch to a bare ring.
 	const WATCH_SIZE = 132;
-	const NUMBER_Y = WATCH_SIZE * 0.3;
+	const NUMBER_Y = WATCH_SIZE * 0.02;
+	const NUMBER_FACE = 0xffd84a;
+	const NUMBER_EDGE = 0x5a1008;
+	const HALO_LOOP_S = 1.43;
 	const label = (value: number) => `${value}x`;
 	const numberSizes = new Map<number, number>();
 	const numberSize = (value: number) => {
@@ -99,19 +105,34 @@
 			ctx.font = `${GAME_FONT_WEIGHT} 100px ${GAME_FONT}`;
 			width = ctx.measureText(label(value)).width;
 		}
-		size = Math.min(value >= HEAVY ? 62 : 58, (100 * WATCH_SIZE * (value >= HEAVY ? 1.12 : 0.98)) / width);
+		size = Math.min(value >= HEAVY ? 56 : 52, (100 * WATCH_SIZE * (value >= HEAVY ? 1.3 : 1.15)) / width);
 		// measured before the font loaded: do not cache the fallback width
 		if (document.fonts?.check?.(`100px "Titan One"`)) numberSizes.set(value, size);
 		return size;
 	};
-	// dial: centre at the sprite anchor, radius 135/512 of the sprite
-	const DIAL_R = WATCH_SIZE * (135 / 512) * 0.96;
+	// dial: centre at the sprite anchor, radius 135/512 of the sprite; the gem
+	// runs over the inner bezel so its colour still shows around the number
+	const DIAL_R = WATCH_SIZE * (135 / 512) * 1.18;
 	const shade = (color: number, k: number) => {
 		const ch = (shift: number) => Math.max(0, Math.min(255, Math.round(((color >> shift) & 255) * k)));
 		return (ch(16) << 16) | (ch(8) << 8) | ch(0);
 	};
-	const drawGem = (g: PixiGraphics, color: number) => {
+	// The top tier is a prism, not a gold gem (天使奧丁's 1000x eye is a rainbow
+	// crystal): a gold number on a gold dial vanished. Its case stays gold.
+	const PRISM = [0xd94be0, 0x8a4cf0, 0x3a8cff, 0x2fc7d9, 0x7be06a, 0xffb02e];
+	const drawPrism = (g: PixiGraphics) => {
+		const step = (Math.PI * 2) / PRISM.length;
+		g.circle(0, 0, DIAL_R).fill(0x4a2a7a);
+		PRISM.forEach((color, i) => {
+			const a = -Math.PI / 2 + i * step;
+			g.moveTo(0, 0).arc(0, 0, DIAL_R * 0.94, a, a + step).closePath().fill(shade(color, 0.85));
+		});
+		g.circle(0, 0, DIAL_R * 0.42).fill({ color: 0xffffff, alpha: 0.35 });
+		g.ellipse(-DIAL_R * 0.34, -DIAL_R * 0.46, DIAL_R * 0.24, DIAL_R * 0.13).fill({ color: 0xffffff, alpha: 0.85 });
+	};
+	const drawGem = (g: PixiGraphics, color: number, prism = false) => {
 		g.clear();
+		if (prism) return drawPrism(g);
 		g.circle(0, 0, DIAL_R).fill(shade(color, 0.62));
 		g.circle(-DIAL_R * 0.08, -DIAL_R * 0.1, DIAL_R * 0.8).fill(color);
 		g.circle(-DIAL_R * 0.18, -DIAL_R * 0.22, DIAL_R * 0.48).fill({ color: shade(color, 1.35), alpha: 0.85 });
@@ -140,6 +161,10 @@
 	let amount = $state<{ text: string; alpha: number } | null>(null);
 	/** the readout's sum line gets its "=" only once every value is in */
 	let formulaDone = $state(true);
+	onMount(()=>useSymbolIdleClock());
+	// the TOTAL number breathes 100% → 95% → 100%, faster at every level (Odin)
+	const plateBreath=$derived(reducedMotion||plateLevel===0?0:0.5-0.5*Math.cos((symbolIdleClock.seconds/TOTAL_PLATE_BREATH_S[plateLevel])*Math.PI*2));
+	const haloBreath=$derived(reducedMotion?0:Math.sin((symbolIdleClock.seconds/HALO_LOOP_S)*Math.PI*2));
 	$effect(()=>{symbolIdleClock.focusPaused=orbs.length>0||pop!==null||amount!==null||gazeProgress>=0;});
 	onDestroy(()=>{symbolIdleClock.focusPaused=false;});
 
@@ -256,20 +281,20 @@
 	};
 
 	// ATG 戰神賽特 (research ATG-Seth-Capture §3-1): a watch lands BLANK, then a
-	// thin beam drops from the sky onto it in the caster's colour, it flashes,
-	// turns to dark smoke and the value comes out of the smoke, ~0.45 s. Two
-	// watches strike 0.12 s apart.
-	const CASTER_COLOR = { mg: 0x9b3df5, fg: 0xe07ad6 };
+	// thin beam drops from the sky onto it, it flashes, turns to dark smoke and
+	// the value comes out of the smoke, ~0.45 s. Two watches strike 0.12 s apart.
+	// The beam is already the watch's tier colour (天使奧丁: Odin's bolt matches
+	// the eye's colour), so the size reads a beat before the number does.
 	const REVEAL_STAGGER_MS = 120;
 	let beams = $state<{ id: number; x: number; y: number; color: number; beam: number; flash: number; smoke: number }[]>([]);
 	let nextRevealAt = 0;
-	const revealWatch = async (id: number, x: number, y: number, value: number, fast: boolean, freegame: boolean) => {
+	const revealWatch = async (id: number, x: number, y: number, value: number, fast: boolean, _freegame: boolean) => {
 		const now = performance.now();
 		const startAt = Math.max(now, nextRevealAt);
 		nextRevealAt = startAt + REVEAL_STAGGER_MS * (fast ? 0.6 : 1);
 		await wait(startAt - now);
 		const k = fast ? 0.6 : 1;
-		const color = freegame ? CASTER_COLOR.fg : CASTER_COLOR.mg;
+		const color = orbColor(value);
 		const beamId = nextId++;
 		const set = (patch: Partial<(typeof beams)[number]>) => (beams = beams.map((b) => (b.id === beamId ? { ...b, ...patch } : b)));
 		beams = [...beams, { id: beamId, x, y, color, beam: 0, flash: 0, smoke: 0 }];
@@ -321,7 +346,7 @@
 	const collectWatches = async ({ mult, baseWin, totalWin, toTotal, fast }: { mult: number; baseWin: number; totalWin: number; toTotal: boolean; fast: boolean }) => {
 		const watches = orbs.filter((orb) => orb.cell);
 		const previous = toTotal ? totalValue : 0;
-		const plan = watchCollectTiming({ turbo: fast, watchCount: watches.length, carriesTotal: toTotal && previous > 0 });
+		const plan = watchCollectTiming({ turbo: fast, watchCount: watches.length, carriesTotal: toTotal && previous > 0, topTier: watches.some((watch) => watchTier(watch.value) === 5) });
 		const readout = { x: center.x, y: center.y - 37 };
 		baseAmount = bookEventAmountToCurrencyString(baseWin);
 		formulaDone = false;
@@ -590,9 +615,15 @@
 			alpha={totalEnter}
 			scale={1 + 0.08 * totalBump}
 		>
-			<Sprite key={plateLevel > 1 ? 'mgTotalPlateHigh' : plateLevel > 0 ? 'mgTotalPlateMid' : 'mgTotalPlate'} anchor={0.5} width={PLATE_WIDTH} height={PLATE_HEIGHT} />
+			{#if plateLevel >= 3}
+				<!-- level 3 lights a fire behind the plate, level 4 a hotter, faster one -->
+				<Sprite key="fxGlow" anchor={0.5} x={PLATE_WIDTH*(337/512-.5)} width={PLATE_WIDTH*(plateLevel>3?1.25:1.05)*(1+0.08*plateBreath)} height={PLATE_HEIGHT*(plateLevel>3?1.9:1.6)*(1+0.08*plateBreath)} tint={plateLevel>3?0xffb02e:0xff7a1f} alpha={(plateLevel>3?0.75:0.5)*(0.7+0.3*plateBreath)}/>
+			{/if}
+			<Sprite key={plateLevel > 2 ? 'mgTotalPlateHigh' : plateLevel > 0 ? 'mgTotalPlateMid' : 'mgTotalPlate'} anchor={0.5} width={PLATE_WIDTH} height={PLATE_HEIGHT} />
 			<InkText x={PLATE_WIDTH*(337/512-.5)} y={-8} text="TOTAL" fontSize={12} maxWidth={104} maxHeight={10} stroke={2} fill={0xffedc1}/>
-			<InkText x={PLATE_WIDTH*(337/512-.5)} y={11} text={`×${totalValue}`} fontSize={40} maxWidth={104} maxHeight={25}/>
+			<Container x={PLATE_WIDTH*(337/512-.5)} y={11} scale={1-0.05*plateBreath}>
+				<InkText x={0} y={0} text={`×${totalValue}`} fontSize={40} maxWidth={104} maxHeight={25}/>
+			</Container>
 		</Container>
 	{/if}
 
@@ -644,10 +675,10 @@
 				<Sprite
 					key="fxGlow"
 					anchor={0.5}
-					width={WATCH_SIZE * (orb.value >= HEAVY ? 2.2 : 1.95)}
-					height={WATCH_SIZE * (orb.value >= HEAVY ? 2.2 : 1.95)}
-					tint={orbColor(orb.value)}
-					alpha={(orb.value >= HEAVY ? 0.95 : 0.85) * (orb.reveal ?? 1)}
+					width={WATCH_SIZE * (orb.value >= HEAVY ? 2.2 : 1.95) * (1 + 0.07 * haloBreath)}
+					height={WATCH_SIZE * (orb.value >= HEAVY ? 2.2 : 1.95) * (1 + 0.07 * haloBreath)}
+					tint={watchTier(orb.value) === 5 ? 0xff8a1f : orbColor(orb.value)}
+					alpha={(orb.value >= HEAVY ? 0.95 : 0.85) * (0.8 + 0.2 * haloBreath) * (orb.reveal ?? 1)}
 				/>
 			{/if}
 			<Sprite
@@ -659,7 +690,11 @@
 				filters={orb.stone>0?[stoneMaterial]:[]}
 			/>
 			<!-- the dial as a coloured gem in the gold bezel (ref. GoO 1000 orbs) -->
-			<Graphics draw={(g) => drawGem(g, orb.stone > 0 ? DUD_TINT : (orb.reveal ?? 1) < 0.5 ? BLANK_DIAL : orbColor(orb.value))} />
+			<Graphics draw={(g) => drawGem(g, orb.stone > 0 ? DUD_TINT : (orb.reveal ?? 1) < 0.5 ? BLANK_DIAL : orbColor(orb.value), orb.stone === 0 && (orb.reveal ?? 1) >= 0.5 && watchTier(orb.value) === 5)} />
+			{#if orb.stone === 0 && (orb.reveal ?? 1) > 0}
+				<!-- Odin's eye rim flares on the same 1.43 s loop as the halo -->
+				<Graphics draw={(g) => { g.clear(); g.circle(0, 0, DIAL_R * 1.32).stroke({ color: shade(orbColor(orb.value), 1.2), width: 5, alpha: (0.45 + 0.4 * haloBreath) * (orb.reveal ?? 1) }); }} />
+			{/if}
 			{#if orb.crack > 0}
 				<Sprite
 					key={orb.crack < 1 / 3 ? 'fxCrack1' : orb.crack < 2 / 3 ? 'fxCrack2' : 'fxCrack3'}
@@ -679,10 +714,10 @@
 					fontFamily: GAME_FONT,
 					fontWeight: GAME_FONT_WEIGHT,
 					fontSize: numberSize(orb.value),
-					fill: orb.value >= HEAVY ? 0xffe066 : 0xffcf3a,
-					// the outline carries the tier colour too, dark enough to hold the gold
-					stroke: { color: orb.stone > 0 ? 0x4a2205 : shade(orbColor(orb.value), 0.32), width: 5 },
-					dropShadow: { color: 0x2a1206, alpha: 0.85, angle: Math.PI / 2, distance: 3, blur: 0 },
+					fill: NUMBER_FACE,
+					// one edge for every tier (Odin), so the number never changes face
+					stroke: { color: orb.stone > 0 ? 0x4a2205 : NUMBER_EDGE, width: 6 },
+					dropShadow: { color: 0x2a0604, alpha: 0.9, angle: Math.PI / 2, distance: 3, blur: 1 },
 				}}
 			/>
 		</Container>
