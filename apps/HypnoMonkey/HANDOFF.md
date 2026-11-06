@@ -235,6 +235,12 @@ Stone：「倍數球的顏色區分明顯一點」。銅（2x）和金（500x）
 - MG 空丟：MG 沒有懷錶的轉輪 40% 機率仍做出手動作＋出手音效（`EMPTY_THROW_CHANCE`，bookEventHandlerMap reveal），盤面不出現任何東西；該轉有真丟就不做。
 - 上傳：`upload/HypnoMonkey/frontend` 同步 build 的 `_app`、`index.html` 與 `fg-atlas.png`／`mg-atlas.png`（備份 `_upload_backups/HypnoMonkey-before-cheer-akimbo-20261103`）；stakecli 上傳 5 檔、刪舊 bundle 1 檔，re-plan 0；math plan 0（仍 v1）；publish → front v12，approval 無。
 
+## 2026-11-06 (later) — multi-watch winning spins, math re-sim
+
+- Stone 「不對 我想要讓mg fg也有機會連線時有大量球 最多6顆好了 沒連線時最多15顆」. The rewrite-only plan below was replaced by a native re-sim: game_config `base_throws` {0..6} (MG win spins may get up to 6 watches; base mult = SUM of the spin's watches), `free_throws` up to 6, `dead_mass` / `free_dead_mass` cap 15 on no-win spins. Full run + optimizer: RTP base 96.03 / bonus 96.06 / super 96.08, compliance PASS 2★/3★. check_books: applied 1–6, wasted ≤ 15 (base max applied 6 in 253 throws, wasted 15 in 546).
+- Front: config synced (`baseMaxThrows` 6, `freeMaxThrows` 6, `deadMaxThrows` 15); rules text uses them (no-win spins in FG mention the 15 cap). devBooks `baseMultiThrow` (book 1210, 6 watches ×13 → $11.70 verified in browser) and `bonusMultiThrow` (bonus 12, total $300.90 verified).
+- The earlier upload of the rewrite-only books (b5ab757d) was never published; superseded.
+
 ## 2026-11-06 — mass wasted throws (not uploaded)
 
 - Stone 「每盤最多可以無限多顆倍數球 可以偶爾丟大量但沒連線製造震撼感」。數學（math-sdk/games/hypno_monkey）：`add_mass_throws.py` 只改沒中獎的轉的空丟錶（派彩為 0），books 的 id、payoutMultiplier、其他事件、中獎轉的錶、LUT 全部不變 → RTP 不變。MG 沒中獎轉 2.5% 丟 6–25 顆（加權約每 57 轉一次），FG 沒中獎的免費轉 4% 丟 5–16 顆；顆數不超過盤面非 S 格。game_config `dead_mass` / `free_dead_mass` 與 draw_throw 同規則；check_books.py 允許空丟多顆（≤ 非 S 格）。備份 `_upload_backups/HypnoMonkey-before-mass-throws-20261106/`。

@@ -237,8 +237,10 @@
 					win, the watch shatters and nothing changes.
 				</p>
 				<p>
-					In the base game he adds one watch, worth {medusa.baseValues.join('×, ')}×, and the
-					spin's whole chain win is multiplied by it.
+					In the base game he can add up to {medusa.baseMaxThrows} watches on one spin, worth
+					{medusa.baseValues.join('×, ')}×; the spin's whole chain win is multiplied by the sum of
+					its watches. A spin with no win can throw many more, up to {medusa.deadMaxThrows};
+					they all shatter and add nothing.
 				</p>
 			</section>
 
@@ -254,7 +256,7 @@
 				<ul class="wp-tiers">
 					<li>A spin with a win and a watch: the watch is added, then the win is multiplied by the total.</li>
 					<li>A spin with a win and no watch: the win is {T.paid} as it is, &times;1. The total is kept.</li>
-					<li>A watch on a spin with no win shatters and is not added.</li>
+					<li>Watches on a spin with no win (up to {medusa.deadMaxThrows}) shatter and are not added.</li>
 				</ul>
 				<p>The running total starts at 0, never goes down during the feature, and resets when the feature ends.</p>
 			</section>
