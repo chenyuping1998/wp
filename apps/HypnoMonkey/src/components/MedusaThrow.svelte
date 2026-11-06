@@ -270,10 +270,13 @@
 	/** x100+ impact: thunderclap, flash, rings and a board shake (also on a wasted watch). */
 	const strike = (x: number, y: number, value: number, fast: boolean) => {
 		const color = orbColor(value);
-		broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
-		// ATG 戰神賽特: the camera lunges at the impact while the board shakes
-		zoomBoard({ x, y }, value >= 250 ? 0.2 : 0.15, fast ? 520 : 1050);
-		shakeBoard(value >= 250 ? 2.3 : 1.7, fast ? 480 : 820);
+		// a handful lands at once: the board takes one big hit (massShock), each x100+ keeps its flash
+		if (!mass) {
+			broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
+			// ATG 戰神賽特: the camera lunges at the impact while the board shakes
+			zoomBoard({ x, y }, value >= 250 ? 0.2 : 0.15, fast ? 520 : 1050);
+			shakeBoard(value >= 250 ? 2.3 : 1.7, fast ? 480 : 820);
+		}
 		fx?.impact({ x, y }, value, 'orb');
 		return tween(fast ? 340 : 640, (t) => {
 			heavy = { x, y, bolt: Math.max(0, 1 - t * 2.4), ring: t, flash: Math.max(0, 1 - t * 2.2), dim: 0, color, seed: Math.random() * 100 };
@@ -286,26 +289,43 @@
 	// The beam is already the watch's tier colour (天使奧丁: Odin's bolt matches
 	// the eye's colour), so the size reads a beat before the number does.
 	const REVEAL_STAGGER_MS = 120;
+	// Stone 11-06: a wasted throw may be a whole handful (math add_mass_throws.py).
+	// From MASS watches on, the beams rain in quicker (the whole lot in about a
+	// second), the board takes one big hit with the first impact, and the
+	// beam/crack sounds are thinned so 25 at once still read as one storm.
+	const MASS = 6;
+	let mass = false, massHit = false, revealStagger = REVEAL_STAGGER_MS, lastBeamSound = 0;
+	const massShock = (fast: boolean) => {
+		massHit = true;
+		broadcast({ type: 'soundOnce', name: 'sfx_wild_explode' });
+		zoomBoard({ x: BOARD_SIZES.width / 2, y: BOARD_SIZES.height / 2 }, 0.12, fast ? 700 : 1400);
+		shakeBoard(2.8, fast ? 700 : 1300);
+	};
 	let beams = $state<{ id: number; x: number; y: number; color: number; beam: number; flash: number; smoke: number }[]>([]);
 	let nextRevealAt = 0;
 	const revealWatch = async (id: number, x: number, y: number, value: number, fast: boolean, _freegame: boolean) => {
 		const now = performance.now();
 		const startAt = Math.max(now, nextRevealAt);
-		nextRevealAt = startAt + REVEAL_STAGGER_MS * (fast ? 0.6 : 1);
+		nextRevealAt = startAt + revealStagger * (fast ? 0.6 : 1);
 		await wait(startAt - now);
 		const k = fast ? 0.6 : 1;
 		const color = orbColor(value);
 		const beamId = nextId++;
 		const set = (patch: Partial<(typeof beams)[number]>) => (beams = beams.map((b) => (b.id === beamId ? { ...b, ...patch } : b)));
 		beams = [...beams, { id: beamId, x, y, color, beam: 0, flash: 0, smoke: 0 }];
-		broadcast({ type: 'soundMedusa', cue: 'gazeBeam', speed: fast ? 1.5 : 1 });
+		const voiced = !mass || performance.now() - lastBeamSound > 90;
+		if (voiced) {
+			lastBeamSound = performance.now();
+			broadcast({ type: 'soundMedusa', cue: 'gazeBeam', speed: fast ? 1.5 : 1 });
+		}
 		await tween(60 * k, (t) => set({ beam: t }));
+		if (mass && !massHit) massShock(fast);
 		// impact: a burst of the caster's light; x100+ also gets the thunderclap
 		if (value >= HEAVY) void strike(x, y, value, fast);
 		await tween(80 * k, (t) => set({ beam: 1 - t, flash: Math.sin(Math.PI * Math.min(1, t * 1.4)) }));
 		await tween(180 * k, (t) => set({ beam: 0, flash: 0, smoke: t }));
 		fx?.impact({ x, y }, value, 'orb');
-		broadcast({ type: 'soundMedusa', cue: 'orbHit', value, speed: fast ? 1.25 : 1 });
+		if (voiced) broadcast({ type: 'soundMedusa', cue: 'orbHit', value, speed: fast ? 1.25 : 1 });
 		await tween(130 * k, (t) => update(id, { reveal: t, sx: 1 + 0.12 * Math.sin(Math.PI * t), sy: 1 + 0.12 * Math.sin(Math.PI * t) }));
 		update(id, { reveal: 1, sx: 1, sy: 1 });
 		beams = beams.filter((b) => b.id !== beamId);
@@ -318,6 +338,7 @@
 		broadcast({ type: 'medusaAction', animation, releaseMs });
 		broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
 		nextRevealAt = 0;
+		mass = false; massHit = false; revealStagger = REVEAL_STAGGER_MS;
 		const order = [...drops].sort((a, b) => a.delayMs + a.durationMs - (b.delayMs + b.durationMs));
 		await Promise.all(
 			order.map(async (drop) => {
@@ -465,6 +486,8 @@
 			broadcast({ type: 'medusaAction', animation });
 			broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
 			nextRevealAt = 0;
+			mass = count >= MASS; massHit = false;
+			revealStagger = mass ? Math.max(35, 1000 / count) : REVEAL_STAGGER_MS;
 			const reveals: Promise<void>[] = [];
 			// Follow the actual reel carriers, including turbo/stop and landing bounce.
 			// The reserved raw symbol draws no totem from the moment it is installed.
@@ -546,10 +569,15 @@
 			broadcast({ type: 'medusaAction', animation: 'gaze_dud', turbo: fast });
 			broadcast({ type: 'soundMedusa', cue: 'annoyed' });
 			await wait(fast ? 160 : 320);
-			await Promise.all(orbs.filter((orb) => orb.cell).map(async (orb) => {
-				broadcast({ type: 'soundMedusa', cue: 'orbCrack', speed: fast ? 1.5 : 1 });
+			// a handful cracks as a quick ripple with a few voices, not 25 at once
+			const dead = orbs.filter((orb) => orb.cell);
+			const ripple = dead.length >= MASS ? Math.min(40, 600 / dead.length) * (fast ? 0.6 : 1) : 0;
+			await Promise.all(dead.map(async (orb, i) => {
+				await wait(i * ripple);
+				if (dead.length < MASS || i % Math.ceil(dead.length / 4) === 0) broadcast({ type: 'soundMedusa', cue: 'orbCrack', speed: fast ? 1.5 : 1 });
 				await crackInPlace(orb.id, fast ? 200 : 360);
 			}));
+			mass = false;
 
 		},
 	});

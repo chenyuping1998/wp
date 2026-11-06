@@ -234,3 +234,9 @@ Stone：「倍數球的顏色區分明顯一點」。銅（2x）和金（500x）
 - MG `export_motion_frames.mjs` 與目前 spine-generator 不相容（buildCharacter 讀不到 neckBase）；MG 骨架未改，沿用既有 motion-frames 重產預覽並 seal，verify_revision PASS。`registered-source-validation.json` 重跑會報 arm_l_upper / pelvis 位移（舊檔過期，與本次無關），未提交新結果。
 - MG 空丟：MG 沒有懷錶的轉輪 40% 機率仍做出手動作＋出手音效（`EMPTY_THROW_CHANCE`，bookEventHandlerMap reveal），盤面不出現任何東西；該轉有真丟就不做。
 - 上傳：`upload/HypnoMonkey/frontend` 同步 build 的 `_app`、`index.html` 與 `fg-atlas.png`／`mg-atlas.png`（備份 `_upload_backups/HypnoMonkey-before-cheer-akimbo-20261103`）；stakecli 上傳 5 檔、刪舊 bundle 1 檔，re-plan 0；math plan 0（仍 v1）；publish → front v12，approval 無。
+
+## 2026-11-06 — mass wasted throws (not uploaded)
+
+- Stone 「每盤最多可以無限多顆倍數球 可以偶爾丟大量但沒連線製造震撼感」。數學（math-sdk/games/hypno_monkey）：`add_mass_throws.py` 只改沒中獎的轉的空丟錶（派彩為 0），books 的 id、payoutMultiplier、其他事件、中獎轉的錶、LUT 全部不變 → RTP 不變。MG 沒中獎轉 2.5% 丟 6–25 顆（加權約每 57 轉一次），FG 沒中獎的免費轉 4% 丟 5–16 顆；顆數不超過盤面非 S 格。game_config `dead_mass` / `free_dead_mass` 與 draw_throw 同規則；check_books.py 允許空丟多顆（≤ 非 S 格）。備份 `_upload_backups/HypnoMonkey-before-mass-throws-20261106/`。
+- 中獎轉的顆數（MG 1、FG 0–3）沒改：要讓中獎盤也能大量，需要重跑 optimizer 調 RTP。
+- 前端 MedusaThrow：6 顆以上 = 大量，光柱間隔 max(35, 1000/顆數) ms（整把約 1 秒），第一道光柱打下時整盤一次大震＋鏡頭推近，之後 x100+ 只留閃光不再各自震；光柱／命中／碎裂音效稀疏化；碎裂改成快速漣漪。devBooks 加 `baseMassThrow`（真實 book 437，20 顆）。
