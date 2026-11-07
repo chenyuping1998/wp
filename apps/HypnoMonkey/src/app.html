@@ -4,25 +4,28 @@
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/png" href="%sveltekit.assets%/favicon.png" />
 		<!--
-			Self-hosted display face, so there is no third-party font request to fail.
-			Titan One is SIL Open Font Licence (static/fonts/TitanOne-OFL.txt), which
-			permits commercial use and embedding.
+			Self-hosted circus wood type, so there is no third-party font request to fail.
+			Rye (titles) is SIL Open Font Licence (static/fonts/Rye-OFL.txt); Ultra
+			(numbers) is Apache 2.0 (static/fonts/Ultra-LICENSE.txt). Both permit
+			commercial use and embedding. See game/fonts.ts for which face goes where.
 
 			Preloaded because Pixi measures glyphs when it builds a Text, and a face
 			that arrives late leaves the first frame laid out for the fallback metrics.
 			game/fonts.ts additionally blocks startup on document.fonts.
 		-->
-		<link
-			rel="preload"
-			href="%sveltekit.assets%/fonts/TitanOne.ttf"
-			as="font"
-			type="font/ttf"
-			crossorigin
-		/>
+		<link rel="preload" href="%sveltekit.assets%/fonts/Rye.ttf" as="font" type="font/ttf" crossorigin />
+		<link rel="preload" href="%sveltekit.assets%/fonts/Ultra.ttf" as="font" type="font/ttf" crossorigin />
 		<style>
 			@font-face {
-				font-family: 'Titan One';
-				src: url('%sveltekit.assets%/fonts/TitanOne.ttf') format('truetype');
+				font-family: 'Rye';
+				src: url('%sveltekit.assets%/fonts/Rye.ttf') format('truetype');
+				font-weight: 400;
+				font-style: normal;
+				font-display: block;
+			}
+			@font-face {
+				font-family: 'Ultra';
+				src: url('%sveltekit.assets%/fonts/Ultra.ttf') format('truetype');
 				font-weight: 400;
 				font-style: normal;
 				font-display: block;

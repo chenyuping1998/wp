@@ -80,8 +80,8 @@
 	:global(.pop-up-wrap h2),
 	:global(.pop-up-wrap h3),
 	:global(.pop-up-wrap h4) {
-		font-family: var(--gb-display-font) !important;
-		/* Titan One is single-weight — a requested bold would only be synthesised */
+		font-family: var(--gb-title-font) !important;
+		/* Rye is single-weight — a requested bold would only be synthesised */
 		font-weight: 400 !important;
 		letter-spacing: 0.02em;
 	}
@@ -234,13 +234,15 @@
 
 	:global(.bonus-card-wrap .title) {
 		color: #c85a4a !important;
-		font-weight: 800 !important;
+		font-family: var(--gb-title-font) !important;
+		font-weight: 400 !important;
 		letter-spacing: 0.04em !important;
 	}
 
 	:global(.bonus-card-wrap .price) {
 		color: #2a1f24 !important;
-		font-weight: 800 !important;
+		font-family: var(--gb-display-font) !important;
+		font-weight: 400 !important;
 	}
 
 	:global(.bonus-card-wrap .description) {

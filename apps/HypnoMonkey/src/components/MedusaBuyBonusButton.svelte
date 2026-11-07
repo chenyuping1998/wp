@@ -5,7 +5,7 @@
 	import { stateModal,stateBet,stateBetDerived } from 'state-shared';
 	import { i18nDerived } from '../../../../packages/components-ui-pixi/src/i18n/i18nDerived';
 	import { getContext } from '../game/context';
-	import { GAME_FONT,GAME_FONT_WEIGHT } from '../game/fonts';
+	import { GAME_FONT, TITLE_FONT,GAME_FONT_WEIGHT } from '../game/fonts';
 	const props:Partial<Omit<ButtonProps,'children'>>=$props();const context=getContext();
 	const sizes={width:135,height:135},plate=146;
 	const disabled=$derived(!context.stateXstateDerived.isIdle());
@@ -32,6 +32,6 @@
 		</Container>
 		<!-- inside the booth window (x 108-532, y 255-425 of the 640 plate): two lines
 		     must fit its 27% height, or BONUS sits on the counter -->
-		<Text x={center.x} y={center.y+plate*.031} anchor={.5} text={active?i18nDerived.disable():i18nDerived.buyBonus()} alpha={disabled?.6:1} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:15,lineHeight:16,wordWrap:true,wordWrapWidth:plate*.58,align:'center',fill:0xffedc2,stroke:{color:0x351b19,width:2}}}/>
+		<Text x={center.x} y={center.y+plate*.031} anchor={.5} text={active?i18nDerived.disable():i18nDerived.buyBonus()} alpha={disabled?.6:1} style={{fontFamily:TITLE_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:15,lineHeight:16,wordWrap:true,wordWrapWidth:plate*.58,align:'center',fill:0xffedc2,stroke:{color:0x351b19,width:2}}}/>
 	{/snippet}
 </Button>

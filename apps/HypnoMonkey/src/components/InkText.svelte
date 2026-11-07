@@ -2,13 +2,14 @@
 	import { Container, Text } from 'pixi-svelte';
 	import { CanvasTextMetrics, TextStyle } from 'pixi.js';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
-	const props=$props<{text:string;x:number;y:number;fontSize:number;maxWidth:number;maxHeight:number;fill?:number;stroke?:number}>();
+	const props=$props<{text:string;x:number;y:number;fontSize:number;maxWidth:number;maxHeight:number;fill?:number;stroke?:number;fontFamily?:string}>();
 	const layout=$derived.by(()=>{
 		const stroke=props.stroke??4;
-		const style={fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:props.fontSize,stroke:{color:0x2a1f24,width:stroke}};
+		const family=props.fontFamily??GAME_FONT;
+		const style={fontFamily:family,fontWeight:GAME_FONT_WEIGHT,fontSize:props.fontSize,stroke:{color:0x2a1f24,width:stroke}};
 		const box=CanvasTextMetrics.measureText(props.text,new TextStyle(style));
 		const ctx=document.createElement('canvas').getContext('2d')!;
-		ctx.font=`${GAME_FONT_WEIGHT} ${props.fontSize}px ${GAME_FONT}`;
+		ctx.font=`${GAME_FONT_WEIGHT} ${props.fontSize}px ${family}`;
 		const ink=ctx.measureText(props.text);
 		// Pixi anchors the font's ascender/descender box. Centre the actual painted glyphs.
 		return {style,x:box.width/2-stroke/2-(ink.actualBoundingBoxRight-ink.actualBoundingBoxLeft)/2,

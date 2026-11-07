@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { GAME_FONT, TITLE_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 	import { MainContainer, OnPressFullScreen } from 'components-layout';
 	import { OnHotkey } from 'components-shared';
@@ -48,7 +48,7 @@
 		y={yPosition}
 		alpha={pulse}
 		style={{
-			fontFamily: props.fontFamily ?? GAME_FONT,
+			fontFamily: props.fontFamily ?? TITLE_FONT,
 			fontSize: 28,
 			fontWeight: GAME_FONT_WEIGHT,
 			letterSpacing: 4,

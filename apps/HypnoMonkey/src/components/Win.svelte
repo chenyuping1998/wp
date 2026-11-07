@@ -24,6 +24,7 @@
 	import BigWinFx from './BigWinFx.svelte';
 	import FxBurst from './FxBurst.svelte';
 	import GoldText from './GoldText.svelte';
+	import { TITLE_FONT } from '../game/fonts';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
@@ -212,7 +213,7 @@
 									alpha={bannerPose.glow}
 								/>
 								<Sprite key={bannerKey} anchor={0.5} width={bw} height={bh} />
-								<GoldText text={winLevelData?.text ?? 'BIG WIN'} y={bh * src.textY}
+								<GoldText text={winLevelData?.text ?? 'BIG WIN'} fontFamily={TITLE_FONT} y={bh * src.textY}
 									fontSize={Math.min(SYMBOL_SIZE * 0.84,bh * src.textHeight * 0.62)} maxWidth={bw * src.textWidth * 0.82} />
 								<!-- additive self-copy = the whole plaque flares -->
 								{#if bannerPose.blink > 0}

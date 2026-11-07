@@ -1,0 +1,117 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Hypno font compare</title>
+<style>
+@font-face{font-family:'Rye';src:url('fonts/Rye.ttf')}
+@font-face{font-family:'Ultra';src:url('fonts/Ultra.ttf')}
+@font-face{font-family:'Titan One';src:url('fonts/TitanOne.ttf')}
+@font-face{font-family:'Sancreek';src:url('fonts/Sancreek.ttf')}
+@font-face{font-family:'Alfa Slab One';src:url('fonts/AlfaSlabOne.ttf')}
+body{margin:0;background:#2b1418}
+canvas{display:block}
+</style></head>
+<body>
+<canvas id="c"></canvas>
+<script>
+// Reproduces the Pixi Text styles of HypnoMonkey (canvas 2D, as Pixi's Text does)
+// over the real sprites, one row per candidate. ?set=now|a|b|c&scene=all|fs|outro|watch|big
+const SYS='"Trebuchet MS","Segoe UI",Tahoma,Arial,sans-serif';
+const SETS={
+  now:{label:'現行 Titan One',title:'Titan One',num:'Titan One'},
+  a:{label:'A  Rye 標題 + Ultra 數字',title:'Rye',num:'Ultra'},
+  b:{label:'B  Sancreek 標題 + Alfa Slab One 數字',title:'Sancreek',num:'Alfa Slab One'},
+  c:{label:'C  Ultra 全部',title:'Ultra',num:'Ultra'},
+};
+const q=new URLSearchParams(location.search);
+const sets=(q.get('set')||'now,a,b,c').split(',');
+const scale=Number(q.get('scale')||1);
+const A='../../static/assets/sprites/';
+const imgs={panel:A+'hypnoUi/fs_counter_panel.png',sign:A+'hypnoUi/fs_sign.png',watch:A+'hypnoWatches/watch-t3.png',watch5:A+'hypnoWatches/watch-t5.png',mega:A+'hypnoWinBanners/mega.png',total:A+'hypnoUi/total_plate.png',buy:A+'hypnoUi/buybonus_plate.png'};
+const hex=n=>'#'+n.toString(16).padStart(6,'0');
+function txt(ctx,s,x,y,o){ // pixi-like: anchor .5, stroke centred on outline, fill over
+  ctx.save();ctx.font=`400 ${o.size}px ${o.family}`;ctx.textAlign='center';ctx.textBaseline='middle';
+  if(o.ls)ctx.letterSpacing=o.ls+'px';
+  let w=ctx.measureText(s).width+(o.stroke?o.stroke.w:0);
+  if(o.max&&w>o.max){const k=o.max/w;ctx.translate(x,y);ctx.scale(k,k);x=0;y=0;}
+  if(o.alpha!=null)ctx.globalAlpha=o.alpha;
+  if(o.shadow){ctx.shadowColor=o.shadow.c;ctx.shadowBlur=o.shadow.blur;ctx.shadowOffsetY=o.shadow.d;}
+  ctx.lineJoin='round';
+  if(o.stroke&&o.stroke.w>0){ctx.strokeStyle=hex(o.stroke.c);ctx.lineWidth=o.stroke.w;ctx.strokeText(s,x,y);ctx.shadowColor='transparent';}
+  ctx.fillStyle=hex(o.fill);ctx.fillText(s,x,y);ctx.restore();
+}
+function gold(ctx,s,x,y,size,family,max){ // GoldText.svelte: shadow pass, body, sheen
+  const bevel=Math.max(1,size*.05);
+  // GoldText scales the whole container by maxWidth / measured body width
+  ctx.save();ctx.font=`400 ${size}px ${family}`;ctx.letterSpacing='1px';
+  const w=ctx.measureText(s).width+Math.max(2,size*.1);ctx.restore();
+  const k=max&&w>max?max/w:1;
+  ctx.save();ctx.translate(x,y);ctx.scale(k,k);
+  txt(ctx,s,0,bevel,{size,family,ls:1,fill:0x3a2205,stroke:{c:0x3a2205,w:Math.max(2,size*.13)},alpha:.85});
+  txt(ctx,s,0,0,{size,family,ls:1,fill:0xffd75e,stroke:{c:0x54330a,w:Math.max(2,size*.1)},shadow:{c:'#000',blur:Math.max(4,size*.12),d:Math.max(1.5,size*.045)}});
+  txt(ctx,s,0,-bevel*.55,{size,family,ls:1,fill:0xffffff,alpha:.3});
+  ctx.restore();
+}
+const LOC=['ar: دورات مجانية', 'de: FREISPIELE', 'en: FREE SPINS', 'es: GIROS GRATIS', 'fr: TOURS GRATUITS', 'id: PUTARAN GRATIS', 'ja: フリースピン', 'ko: 무료 스핀', 'pl: DARMOWE OBROTY', 'pt: RODADAS GRÁTIS', 'ru: БЕСПЛАТНЫЕ ВРАЩЕНИЯ', 'tr: ÜCRETSİZ DÖNÜŞLER', 'vi: VÒNG QUAY MIỄN PHÍ', 'zh: 免費遊戲', 'fi: ILMAISKIERROKSET', 'hi: फ्री स्पिन'];
+const load=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src;});
+(async()=>{
+  const I={};for(const k in imgs)I[k]=await load(imgs[k]);
+  const fams=['Rye','Ultra','Titan One','Sancreek','Alfa Slab One'];
+  await Promise.all(fams.map(f=>document.fonts.load(`400 40px "${f}"`)));
+  const ROW=640,W=2060;
+  const cv=document.getElementById('c');cv.width=W*scale;cv.height=(ROW*sets.length+(q.get('locales')?380:0))*scale;
+  const ctx=cv.getContext('2d');ctx.scale(scale,scale);
+  sets.forEach((key,ri)=>{
+    const S=SETS[key];const TF=`"${S.title}","${S.num}",${SYS}`,NF=`"${S.num}",${SYS}`;
+    const y0=ri*ROW;
+    // backdrop: the game's dark curtain red
+    const g=ctx.createLinearGradient(0,y0,0,y0+ROW);g.addColorStop(0,'#5a1a1c');g.addColorStop(1,'#2a1014');
+    ctx.fillStyle=g;ctx.fillRect(0,y0,W,ROW);
+    ctx.fillStyle='#fff';ctx.font='22px "PingFang TC",sans-serif';ctx.textAlign='left';ctx.fillText(S.label,16,y0+30);
+    // 1. FREE SPINS counter (FreeSpinCounter.svelte, panel = SYMBOL_SIZE*2.1 = 206)
+    {const pw=206*1.4, ph=I.panel?pw*I.panel.height/I.panel.width:pw*.6, x=30,y=y0+60;
+     if(I.panel)ctx.drawImage(I.panel,x,y,pw,ph);
+     const t='FREE SPINS';
+     txt(ctx,t,x+pw*.5,y+ph*.33,{size:S.title==='Rye'?Math.min(pw*.105,pw*1.22/t.length):Math.min(pw*.115,pw*1.35/t.length),family:TF,ls:2,fill:0xffedc2});
+     gold(ctx,'15 / 15',x+pw*.5,y+ph*.58,pw*.19,NF,pw*.72);}
+    // 2. FG outro TOTAL WIN (FreeSpinOutro.svelte on fs_sign, sign width = 98*6*1.06)
+    {const sw=623, sh=sw/(1706/922), cx=360+sw/2, cy=y0+30+sh/2;
+     if(I.sign)ctx.drawImage(I.sign,cx-sw/2,cy-sh/2,sw,sh);
+     const aw=sw*.74, ah=sh*.52, oy=cy+sh*.035, t='TOTAL WIN';
+     txt(ctx,t,cx,oy-ah*.26,{size:Math.min(ah*.26,aw*.12,aw*1.5/t.length),family:TF,ls:6,fill:0xf2b632,stroke:{c:0x2a1f24,w:6},shadow:{c:'#000',blur:10,d:3}});
+     gold(ctx,'$652.80',cx,oy+ah*.12,Math.min(aw*.15,ah*.36),NF,aw*.9);
+     gold(ctx,'$10,000,000.00',cx,oy+ah*.12+ah*.46,Math.min(aw*.15,ah*.36)*.55,NF,aw*.9);}
+    // 3. watches at game size (WATCH_SIZE 132; number fill 0xffd84a, edge 0x5a1008 width 6)
+    [[I.watch,'100x',0x8a4cf0],[I.watch5,'1000x',0xffffff],[I.watch,'8x',0x8a4cf0],[I.watch,'250x',0x8a4cf0]].forEach(([im,s,gem],i)=>{
+      const ws=132*1.3, cx=1110+i*230, cy=y0+150;
+      if(im)ctx.drawImage(im,cx-ws/2,cy-ws/2,ws,ws);
+      ctx.save();ctx.font=`400 100px ${NF}`;const w=ctx.measureText(s).width;ctx.restore();
+      const heavy=parseInt(s)>=100;const size=Math.min(heavy?56:52,100*132*(heavy?1.3:1.15)/w);
+      txt(ctx,s,cx,cy,{size,family:NF,fill:0xffd84a,stroke:{c:0x5a1008,w:6},shadow:{c:'rgba(42,6,4,.9)',blur:1,d:3}});
+    });
+    // 3b. TOTAL plate (MedusaThrow InkText: TOTAL 12px label, ×N 40px)
+    {const x=1060,y=y0+300,pw=220;
+     if(I.total){const ph=pw*I.total.height/I.total.width;ctx.drawImage(I.total,x,y,pw,ph);
+       txt(ctx,'TOTAL',x+pw*(337/512),y+ph*.5-8,{size:12*1.5,family:TF,fill:0xffedc1,stroke:{c:0x2a1f24,w:2}});
+       txt(ctx,'×9',x+pw*.5,y+ph*.5+6,{size:40,family:NF,fill:0xffe08a,stroke:{c:0x2a1f24,w:4}});}}
+    // 3c. BUY BONUS plate
+    {const x=1330,y=y0+300,pw=180;
+     if(I.buy){const ph=pw*I.buy.height/I.buy.width;ctx.drawImage(I.buy,x,y,pw,ph);
+       txt(ctx,'BUY BONUS',x+pw/2,y+ph*.53,{size:pw*.12,family:TF,fill:0xffedc2,stroke:{c:0x2a1f24,w:3},max:pw*.75});}}
+    // 3d. multiplier formula + bar readouts
+    txt(ctx,'MULTIPLIER',1780,y0+330,{size:23,family:TF,fill:0xffedc1,stroke:{c:0x2a1f24,w:4}});
+    txt(ctx,'$12.40 ×9 = $111.60',1780,y0+390,{size:30,family:NF,fill:0xffedc1,stroke:{c:0x2a1f24,w:4}});
+    txt(ctx,'BALANCE $1,000.00   BET ¥1,234.50   WIN 2.5K',1780,y0+450,{size:20,family:NF,fill:0xefe8d8,stroke:{c:0x2a1f24,w:3}});
+    // 4. MEGA WIN banner (Win.svelte: bw 756; title GoldText in TITLE font; amount 98px below)
+    {const bw=700, bh=I.mega?bw*I.mega.height/I.mega.width:bw*.3, cx=30+350+150, cy=y0+ROW-120;
+     const src={textY:-.015,textHeight:.35,textWidth:.62};
+     if(I.mega)ctx.drawImage(I.mega,cx-bw/2-150,cy-bh/2,bw,bh);
+     gold(ctx,'MEGA WIN',cx-150,cy+bh*src.textY,Math.min(98*.84,bh*src.textHeight*.62)*bw/756,TF,bw*src.textWidth*.82);
+     gold(ctx,'$9,876.50',1290,y0+ROW-80,98*.9,NF,bw*.86);}
+  });
+  if(q.get('locales')){const y=ROW*sets.length;
+    ctx.fillStyle='#2a1014';ctx.fillRect(0,y,W,380);
+    LOC.forEach((t,i)=>{txt(ctx,t,30+ (i%4)*510+240,y+50+Math.floor(i/4)*85,{size:34,family:`"Rye","Ultra",${SYS}`,ls:2,fill:0xffedc2,stroke:{c:0x2a1f24,w:3},max:490});});
+  }
+  document.title='ready';
+})();
+</script>
+</body></html>

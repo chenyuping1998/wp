@@ -20,6 +20,8 @@
 		// into a hotter amber so they read apart from the common ones
 		fill?: number | number[];
 		stroke?: number;
+		// TITLE_FONT for words (win tier names); numbers keep GAME_FONT
+		fontFamily?: string;
 	};
 
 	const props: Props = $props();
@@ -46,7 +48,7 @@
 <Container x={props.x ?? 0} y={props.y ?? 0} scale={fitScale} alpha={props.alpha ?? 1}>
 	{@const bevel = Math.max(1, props.fontSize * 0.05)}
 	{@const base = {
-		fontFamily: GAME_FONT,
+		fontFamily: props.fontFamily ?? GAME_FONT,
 		fontSize: props.fontSize,
 		fontWeight: GAME_FONT_WEIGHT,
 		letterSpacing: props.letterSpacing ?? 1,

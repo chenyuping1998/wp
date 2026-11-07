@@ -27,7 +27,8 @@ const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 // The display face. Scripts it does not cover fall back to the system stack per
 // character, which is expected for non-Latin locales; this reports how much of
 // each locale's copy that is, so a gap in a Latin locale shows up.
-const DECLARED_TTFS = [path.join(appRoot, 'static/fonts/TitanOne.ttf')];
+// Rye (titles) and Ultra (numbers), stacked Rye → Ultra → system (game/fonts.ts).
+const DECLARED_TTFS = [path.join(appRoot, 'static/fonts/Rye.ttf'), path.join(appRoot, 'static/fonts/Ultra.ttf')];
 // Absence is a FAILURE, not a smaller job. This used to filter missing files
 // out, which meant deleting a face — or renaming one and forgetting a path —
 // left the check reporting full coverage over whatever was still there. A face
@@ -238,7 +239,7 @@ for (const locale of LOCALES) {
 	// the problem case — somewhere in between, which mixes two typefaces inside
 	// one word.
 	let verdict;
-	if (missingCount === 0) verdict = 'OK — all in Titan One';
+	if (missingCount === 0) verdict = 'OK — all in the display faces';
 	else if (pct < 5) verdict = 'OK — falls back wholesale';
 	else {
 		verdict = 'MIXED TYPEFACE';

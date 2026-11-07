@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { GAME_FONT, TITLE_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { MainContainer } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
 	import { Sprite, Text } from 'pixi-svelte';
@@ -76,8 +76,9 @@
 			y={panelSizes.height * 0.33}
 			text={title}
 			style={{
-				fontFamily: GAME_FONT,
-				fontSize: Math.min(panelSizes.width * 0.115, (panelSizes.width * 1.35) / Math.max(1, title.length)),
+				fontFamily: TITLE_FONT,
+				// Rye runs ~7% wider than the old rounded face: keep the title off the rim
+				fontSize: Math.min(panelSizes.width * 0.105, (panelSizes.width * 1.22) / Math.max(1, title.length)),
 				fontWeight: GAME_FONT_WEIGHT,
 				letterSpacing: 2,
 				// Ivory lettering on the dark timber; a single colour, because a fill array

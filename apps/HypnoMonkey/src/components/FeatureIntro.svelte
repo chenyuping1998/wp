@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
-	import { GAME_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
+	import { GAME_FONT, TITLE_FONT, GAME_FONT_WEIGHT, BODY_FONT } from '../game/fonts';
 	import { socialTerms } from '../game/socialTerms';
 	import config from '../game/config';
 
@@ -104,7 +104,7 @@
 				x={textX}
 				y={stacked ? -cardH * 0.28 : cardH * 0.17}
 				style={{
-					fontFamily: GAME_FONT,
+					fontFamily: TITLE_FONT,
 					fontWeight: GAME_FONT_WEIGHT,
 					fontSize: stacked ? Math.max(19, cardW * 0.05) : cardW * 0.08,
 					fill: 0xc85a4a,

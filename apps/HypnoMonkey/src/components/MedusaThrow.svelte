@@ -38,7 +38,7 @@
 	import { bookEventAmountToCurrencyString } from 'utils-shared/amount';
 
 	import { getContext } from '../game/context';
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { GAME_FONT, TITLE_FONT, GAME_FONT_WEIGHT, NUMBER_FACE_NAME } from '../game/fonts';
 	import {symbolIdleClock,useSymbolIdleClock} from '../game/symbolIdleClock.svelte';
 	import {
 		BOARD_SIZES,
@@ -107,7 +107,7 @@
 		}
 		size = Math.min(value >= HEAVY ? 56 : 52, (100 * WATCH_SIZE * (value >= HEAVY ? 1.3 : 1.15)) / width);
 		// measured before the font loaded: do not cache the fallback width
-		if (document.fonts?.check?.(`100px "Titan One"`)) numberSizes.set(value, size);
+		if (document.fonts?.check?.(`100px "${NUMBER_FACE_NAME}"`)) numberSizes.set(value, size);
 		return size;
 	};
 	// dial: centre at the sprite anchor, radius 135/512 of the sprite; the gem
@@ -648,7 +648,7 @@
 				<Sprite key="fxGlow" anchor={0.5} x={PLATE_WIDTH*(337/512-.5)} width={PLATE_WIDTH*(plateLevel>3?1.25:1.05)*(1+0.08*plateBreath)} height={PLATE_HEIGHT*(plateLevel>3?1.9:1.6)*(1+0.08*plateBreath)} tint={plateLevel>3?0xffb02e:0xff7a1f} alpha={(plateLevel>3?0.75:0.5)*(0.7+0.3*plateBreath)}/>
 			{/if}
 			<Sprite key={plateLevel > 2 ? 'mgTotalPlateHigh' : plateLevel > 0 ? 'mgTotalPlateMid' : 'mgTotalPlate'} anchor={0.5} width={PLATE_WIDTH} height={PLATE_HEIGHT} />
-			<InkText x={PLATE_WIDTH*(337/512-.5)} y={-8} text="TOTAL" fontSize={12} maxWidth={104} maxHeight={10} stroke={2} fill={0xffedc1}/>
+			<InkText x={PLATE_WIDTH*(337/512-.5)} y={-8} text="TOTAL" fontSize={12} maxWidth={104} maxHeight={10} stroke={2} fill={0xffedc1} fontFamily={TITLE_FONT}/>
 			<Container x={PLATE_WIDTH*(337/512-.5)} y={11} scale={1-0.05*plateBreath}>
 				<InkText x={0} y={0} text={`×${totalValue}`} fontSize={40} maxWidth={104} maxHeight={25}/>
 			</Container>
@@ -658,7 +658,7 @@
 	<Container x={center.x} y={center.y} pivot={center} scale={1 + 0.1 * scoreBump}>
 		<Graphics x={center.x} y={center.y} draw={drawReadoutBack} />
 		{#if pop}
-			<Text anchor={0.5} x={center.x} y={center.y-88} alpha={pop.alpha} text={pop.text?'MULTIPLIER':'BASE WIN'} style={{fontFamily:GAME_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:23,fill:0xffedc1,stroke:{color:0x3d1918,width:3}}}/>
+			<Text anchor={0.5} x={center.x} y={center.y-88} alpha={pop.alpha} text={pop.text?'MULTIPLIER':'BASE WIN'} style={{fontFamily:TITLE_FONT,fontWeight:GAME_FONT_WEIGHT,fontSize:23,fill:0xffedc1,stroke:{color:0x3d1918,width:3}}}/>
 			<Text
 				anchor={0.5}
 				x={center.x}

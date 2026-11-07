@@ -6,7 +6,7 @@
 	import { numberToCurrencyString } from 'utils-shared/amount';
 
 	import { getContext } from '../game/context';
-	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
+	import { GAME_FONT, TITLE_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { socialTerms } from '../game/socialTerms';
 	import GoldText from './GoldText.svelte';
@@ -113,7 +113,7 @@
 					y={-SYMBOL_SIZE * 0.72}
 					text="REPLAY"
 					style={{
-						fontFamily: GAME_FONT,
+						fontFamily: TITLE_FONT,
 						fontWeight: GAME_FONT_WEIGHT,
 						fontSize: SYMBOL_SIZE * 0.52,
 						letterSpacing: 6,
@@ -135,7 +135,7 @@
 						y={SYMBOL_SIZE * 0.96}
 						text={`THIS ROUND ${T.paid.toUpperCase()}`}
 						style={{
-							fontFamily: GAME_FONT,
+							fontFamily: TITLE_FONT,
 							fontWeight: GAME_FONT_WEIGHT,
 							fontSize: SYMBOL_SIZE * 0.2,
 							letterSpacing: 3,
