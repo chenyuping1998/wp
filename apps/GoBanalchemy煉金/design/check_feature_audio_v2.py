@@ -1,6 +1,6 @@
 """Feature focus: mastering and spectral budgets, with equal-peak A/B listening."""
 from pathlib import Path
-import json,shutil
+import json
 import numpy as np
 import soundfile as sf
 from scipy.signal import resample_poly
@@ -18,10 +18,7 @@ def metrics(a):
 report={}
 for name in names:
  before=BEFORE/(name+'.wav')
- if not before.exists():
-  prior=APP/'build/assets/audio'/THEME/(name+'.wav')
-  assert prior.exists(),'Previous build needed to create the first A/B snapshot'
-  shutil.copy2(prior,before)
+ assert before.exists(), 'Missing frozen A/B reference; restore design/source/feature_audio_v2/before from version control'
  a=read(LIVE/(name+'.wav'));m=metrics(a)
  assert m['true_peak_db']<=-1
  # Independent budgets for brittle top-end and upper-mid accumulation.

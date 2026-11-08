@@ -45,6 +45,14 @@ for (const entries of Object.values(books)) for (const book of entries) {
   let board;
   for (const event of book.state) {
     if (event.type === 'reveal') board = structuredClone(event.board);
+    if (event.type === 'petrify') for (const pos of event.positions) {
+      assert.notEqual(board[pos.reel][pos.row].name,'S','Aegis cannot petrify');
+      board[pos.reel][pos.row]={name:'ST'};
+    }
+    if (event.type === 'stoneReveal') for (const pos of event.positions) {
+      assert.equal(board[pos.reel][pos.row].name,'ST','Only carried stones may reveal');
+      board[pos.reel][pos.row]={name:event.symbol};
+    }
     if (event.type === 'winInfo') for (const win of event.wins) for (const pos of win.positions) {
       assert.equal(board[pos.reel][pos.row].name, win.symbol, `Published win mismatch in book ${book.id}`); positions++;
     }

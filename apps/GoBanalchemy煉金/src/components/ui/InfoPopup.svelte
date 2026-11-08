@@ -12,7 +12,7 @@
  const keyboard=(event:KeyboardEvent)=>{
   if(event.key==='Escape'){event.preventDefault();onclose();return;}
   if(event.key!=='Tab')return;
-  const items=Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),a[href],input,select,textarea,[tabindex="0"]')).filter(item=>item.offsetParent!==null);
+  const items=Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),summary,a[href],input,select,textarea,[tabindex="0"]')).filter(item=>item.offsetParent!==null);
   const first=items[0],last=items.at(-1);
   if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}
   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}

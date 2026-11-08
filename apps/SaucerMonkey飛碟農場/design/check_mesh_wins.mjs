@@ -90,8 +90,8 @@ const load = (spec) => {
 		if (!spec.art) throw new Error(`${spec.symbol}: cut-mode spec has no \`art\``);
 		const file = path.join(appRoot, 'static/assets/sprites', spec.art);
 		const png = PNG.sync.read(fs.readFileSync(file));
-		// the art is 512px; the rig speaks the 256 canvas
-		const K = png.width / core.CANVAS;
+		// the art is 512px; the rig speaks the 256 canvas (or its own, e.g. the field cow's 320)
+		const K = png.width / (spec.rig.canvas?.[0] ?? core.CANVAS);
 		inkAt = (x, y) => {
 			const xi = Math.max(0, Math.min(png.width - 1, Math.round(x * K)));
 			const yi = Math.max(0, Math.min(png.height - 1, Math.round(y * K)));

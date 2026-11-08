@@ -1,5 +1,46 @@
 # SaucerMonkey飛碟農場 交接
 
+## 2026-11-06（第三輪）背景乳牛走來走去（Claude）
+
+- 使用者：「讓獎圖的那隻牛在背景有幾隻牛走來走去」→ 選「切說明圖乳牛來做」。獎圖 P 是胸像沒有腳，所以取三格說明 `design/source/saucer/intro/intro_collect.png` 中間那隻全身側面乳牛。
+- **美術** `design/build_bg_cows.py`（系統 python，要 cv2；已接在 art:build 最後）：GrabCut＋手畫提示筆畫去掉光柱（flood fill 會從斷掉的墨線漏進牛身）、光柱照綠的肚子與遠側腿改成冷色陰影、轉正 12°、調成夜色、塗掉遠側後腿殘段（近側後腿要掃過它，單一網格必折）。輸出 `static/assets/sprites/saucerNight/cow_walk.png`（320 畫布、蹄在 y292），assets 鍵 `night_cow`。
+- **骨架** `src/game/meshWin/bgCows.ts`：body（含乳房、胸垂）、head（含左耳與鈴鐺）、tail、三條腿（nh/nf/ff）。`STAND` 把漂浮姿勢的腿往前擺回站姿並拉長到同一地平線（後腿保留 12° 後傾）；走路＝近側後腿與近側前腿交替，遠側前腿跟近前腿同向半幅（真正的對角步態兩條前腿會在網格上夾折）；吃草＝頭往前下伸（不是捲進去，捲會把下巴壓進胸垂）、啃兩下、尾巴加快。
+- **檢查** `design/cows/check_cow.mjs`（已接進 build）：只看「中心有畫」的三角形，折返 < -25% 或單姿勢擠壓 <30% 超過 6 個就失敗。牛沒放進 check_mesh_wins：那支只要三角形碰到墨就算，腿掃過透明縫一定會報。另外修了 check_mesh_wins 讀 art 時寫死 256 畫布的問題（改讀 spec.rig.canvas）。
+- **演出** `src/components/BgCows.svelte`（Background 兩個場景都掛，在 BgNight 後、BgEvents 前，所以薄霧會從牛腳前飄過）：三隻，各自在一段範圍內 漫步 3.5–7s → 吃草 5–9s 或站 2.5–4.5s → 再走；走到範圍邊緣停下轉身（紙片式翻轉 0.45s）。遠近縮放 0.32/0.36/0.41、柔和接觸陰影。範圍避開兩角的前景玉米。大獎吸乳牛也改用這張牛（原本是程式畫的牛，已刪 drawCow）。
+- **位置改到盤面右側**（使用者截圖：中間被盤面擋住）：三隻的範圍改成 plate x 1230–1740（艦長周圍與後方），右端停在前景玉米之前（玉米在 y600 約 x1840、y680 約 x1730 開始）；左端會稍微藏到盤面邊後。
+- 離線預覽：`design/qa/bg_cow_frames_20261106.png`（站姿／走路八格／吃草）、`design/qa/bg_cow_walk_20261106.gif`；產生腳本 `design/cows/dump_cow.mjs`＋`sheet_cow.py`、`gif_cow.mjs`。`npm run build` 通過（`design/build_20261106_cows.log`）。未上機。
+
+## 2026-11-06（第二輪）背景：移除探照燈與月前雲、照 Putt 加強風場（Claude）
+
+- 使用者：「外星人的光線跟會飄動的一片雲朵都移除，看起來太像 AI」。`bgEvents.ts`／`BgEvents.svelte` 刪掉左上小飛碟掃穀倉的探照燈、每 46 秒橫過月亮的程式畫雲（含全場變暗）。大獎吸乳牛保留，但光柱網點與吞入星爆拿掉。
+- 照 Putt（`PuttMonkey迷你高爾夫` bgProps／BgMotion）加強：前景玉米 2.3°→4.2–4.4°、穀倉後玉米列 1.4°→2.4°、兩棵大樹 2.2°→3.6° 且樹冠傾斜時上抬（lift 0.8）；新增 `bg:treeLine`（田中央樹林，直向手機唯一看得到的植物；只在 base，x 890–1110 避開玉米列網格與村莊固定燈光層，山稜線 avoid）；新增蝙蝠群 `drawBats`（Putt 海鷗的夜晚版，每 14 秒一趟、方向與高度交替，墨線筆畫不發光）。
+- 小飛碟 hover 試過 10px/4° 與 8px/3°：前者網格 43% 不過閘門、後者 bg_mesh_tear 看得到船身被擠扁，維持原 6px/2.5°。
+- check_mesh_wins 全過；bg_mesh_tear 最壞幀看過玉米、樹、樹林、小飛碟。`npm run build` 通過（`design/build_20261106_bgmotion.log`）。未上機。
+
+## 2026-11-06 動態／音效節奏加強、拿掉粗糙光暈與亮點（Claude）
+
+使用者：「動態跟動畫跟音效節奏方面要更強，不要有粗糙的光暈或亮點」。
+
+**拿掉的粗糙特效**
+- `meshWin/saucerFx.ts` 重寫：刪網點光暈、星爆（天線/槍口/汽水）、虛線訊號圈、電波弧、靜電折線、飛碟底燈圓點、氣泡白點。保留「光打在畫上」：演出零件 add 加亮（`flash`）、整張圖 add 複本跟拍子亮一下（`rim`，峰值 ≤0.22）、9 條 bell 曲線羽化的光澤帶（`gloss`，取代兩條硬白條，add）。物件本身的動作保留：H1 綠色光束（變細、無星爆）、H4 氣泡與噴濺（無白點）、S 光柱（三段漸淡、一道光帶往下走，無網點/地面橢圓）。
+- `BgNight.svelte`：螢火蟲、光柱上升光點、星星閃爆全刪；星星縮小變暗（0.1–0.34）；流星 23 秒一次、三段漸細、無白色頭點；月暈降到 0.13。
+- `ImpactDust.svelte`：落地奶油色圓盤拿掉；`fxGlow` 是**硬邊圓**，改用新的 `fxSoft`（`sushiFx/fx_soft.png`，alpha smoothstep 到邊）＋灰藍色、低 alpha、會擴散的煙。
+- `SackBadge.svelte`：金色硬圓光暈→`fxSoft` 柔和背光、拿掉 fxStar。`BanditMeter.svelte`（FG 升階）：光柱 14 顆亮點→一道羽化光帶、金色硬邊衝擊環→地面揚塵、旋轉金色光芒→柔和背光。`BanditCollect.svelte`：收集光柱 24 顆亮點→兩道往上走的光帶、紅色硬環→標籤自己彈一下。
+- `Mascot.svelte`：觸發預告原本在頭盔畫三層半透明方框（還釘在 idle 靜止位置）→改播 `alert` 反應＋`tease_blip` 音效。
+
+**動態**
+- `meshRig.ts`：`inOut` 改成 Spine 預設貝茲 [.25,0,.75,1]（slot-motion-recipes：三次方太硬）。`leap` 頂點不再死停 430ms，改成持續上飄到 1.1 再回落、gravity 落地；起跳/落地擠壓加深（0.16/0.2）、二次小跳 0.36。
+- `saucerWins.ts`：跳高 ×1.3；有餘裕的關節再加大 1.2–1.4×（線圈、兩根天線、錫箔尖、飛碟傾斜/圓頂）。check_mesh_wins 全過（最大 coil 7.5/12、W 天線 11.2/16）。
+- **大獎逐級升階**（`Win.svelte`）：BIG→SUPER→MEGA→EPIC→MAX 每級佔計數時間的等分，數字在數學門檻（standard 表 15/30/50/100×）之間跑；每升一級：牌子後拉再砸出、換牌與標題、震動、該級號角接手（前一級 Sound.svelte 快速淡出）。跳過直接到最終級。setWin 的 `winLevelSoundsPlay` 帶 `tierFanfare:false`（Win 自己放）；FG 結算 outro 不變。MEGA 計數 3.6→4.5s（三級各 1.5s）。
+
+**音效**（`design/generate_saucer_punch_audio.py`，已接在 `audio:build` 最後）
+- 量頻譜：停輪、大獎重擊、蓋章、FG 升階撞擊、落袋、鐵捲門、門、小獎 95% 以上能量在 400Hz 以下（110Hz 木頭音），收集光柱底音 0%——手機喇叭放不出來，節奏感就是這樣沒的。重做成中高頻為主（全部 ≥59%，腳本內守門 <55% 會失敗）。scatter 1–5 改成一級一級往上的鈴聲。
+- 新增獎圖動作對拍音效：`act_rise`（離開卡片）、`act_land`（落回）、`sym_h1` 射線槍 pew、`sym_h2` 彈簧 boing、`sym_h3` 訊號、`sym_h4` 開瓶冒泡、`sym_w` 艦長特雷門、`sym_s` 飛碟；SymbolMeshWin 依動作拍點送 `soundSymbolAct`，Sound.svelte 70ms 內同音合併、連發遞減音量。WinWays 逐輪觸發，所以會聽到一波一波的起跳與落地。
+- **回歸修正**：`voice_laugh.wav` 在 10-23 的 audio:build 被 generate_saucer_audio.py 蓋回 0.8s 舊版（10 拍 HA 後面無聲）。已重跑 `generate_laugh_voice.py`（3.73s），並接進 audio:build（要系統 python，math-sdk env 沒有 scipy）。
+- check_audio 現在也掃 `playCnSfxLayered(...)`。修改前的音檔備份在 session scratchpad。
+
+`npm run build` 通過（`design/build_20261106_rhythm.log`）。**未上機、沒聽過實際混音**；build-replaytest 是舊的。
+
 ## 2026-10-23 使用者六項（Claude）
 
 1. **讀取頁標題去底板**：`design/build_saucer_signs.py` 產 `logo_board.png`＝純字標（SAUCER 上拱、MONKEY 微凹；夕陽漸層＋下半網點＋深藍立體塊＋墨線＋米色外框＋淡綠光暈），無底板無小圖。字標填滿 1600×600，LoadingScreen 改 `LOGO_Y=0.19`、FeatureIntro 橫版寬度降到 520。

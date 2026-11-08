@@ -216,7 +216,7 @@
 		let pending = buffers.get(file);
 		if (!pending) {
 			const ac = audioContext();
-			pending = fetch(base + '/assets/audio/' + file + '?v=sampled-v2-feature-20261031').then(async (response) => {
+			pending = fetch(base + '/assets/audio/' + file + '?v=sampled-v3-audible-20261101').then(async (response) => {
 				if (!response.ok) throw new Error('Audio asset ' + file + ': ' + response.status);
 				const decoded = await ac.decodeAudioData(await response.arrayBuffer());
 				const meta = file === BGM_FILES.base ? musicLoops.bgm_main : file === BGM_FILES.freespin ? musicLoops.bgm_freespin : undefined;
@@ -379,15 +379,15 @@
 		sfx_winlevel_standard: { name: 'win_gliss', rate: 1 },
 		sfx_winlevel_substantial: { name: 'win_gliss_big', rate: 1 },
 		sfx_youwon_panel: { name: 'win_panel', rate: 1 },
-		sfx_reel_stop_1: { name: 'reel_stop_1', rate: 1, level: 0.6 },
+		sfx_reel_stop_1: { name: 'reel_stop_1', rate: 1, level: 0.66 },
 		sfx_scatter_stop_1: { name: 'scatter_1', rate: 1 },
-		sfx_reel_stop_2: { name: 'reel_stop_2', rate: 1, level: 0.6 },
+		sfx_reel_stop_2: { name: 'reel_stop_2', rate: 1, level: 0.7 },
 		sfx_scatter_stop_2: { name: 'scatter_2', rate: 1 },
-		sfx_reel_stop_3: { name: 'reel_stop_3', rate: 1, level: 0.6 },
+		sfx_reel_stop_3: { name: 'reel_stop_3', rate: 1, level: 0.74 },
 		sfx_scatter_stop_3: { name: 'scatter_3', rate: 1 },
-		sfx_reel_stop_4: { name: 'reel_stop_4', rate: 1, level: 0.6 },
+		sfx_reel_stop_4: { name: 'reel_stop_4', rate: 1, level: 0.79 },
 		sfx_scatter_stop_4: { name: 'scatter_4', rate: 1 },
-		sfx_reel_stop_5: { name: 'reel_stop_5', rate: 1, level: 0.6 },
+		sfx_reel_stop_5: { name: 'reel_stop_5', rate: 1, level: 0.86 },
 		sfx_scatter_stop_5: { name: 'scatter_5', rate: 1 },
 		tumble_win_1: { name: 'win_gliss', rate: 1 },
 		tumble_win_2: { name: 'win_gliss', rate: 1 },
@@ -457,8 +457,10 @@
 				// TURBO stops all five reels within a few ms: five full-level stops
 				// stacked ~7 dB over one (user, 2026-10-16: turbo 停輪音太大聲). Quieter
 				// in turbo, and any stop right on the heels of another at half.
+				// The per-reel levels above are Bananeon's 0.66→0.86 ramp (user,
+				// 2026-11-01: 停輪音效太小, 參考霓虹) — a flat 0.5 sat ~4 dB under it.
 				const now = performance.now();
-				level = stateBet.isTurbo ? 0.24 : 0.5;
+				if (stateBet.isTurbo) level *= 0.5;
 				if (now - lastReelStop < 60) level *= 0.5;
 				lastReelStop = now;
 			}

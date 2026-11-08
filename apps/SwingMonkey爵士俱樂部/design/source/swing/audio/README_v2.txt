@@ -1,0 +1,1 @@
+Original procedural synthesis by this project (design/generate_swing_audio_v2.py + swing_dsp.py). No external recordings, samples or quoted melodies; the laugh voice is installed separately (install_laugh_voice.py). Music: 48 kHz stereo, two stems per loop (bed + groove) mixed at runtime, MP3 with Xing/LAME gapless info. Cues: mono 48 kHz 16-bit WAV.

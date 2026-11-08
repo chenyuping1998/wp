@@ -413,6 +413,12 @@ import { asset } from './runtimeAsset';
 		src: asset('treasure/bg_base.jpg'),
 		preload: true,
 	},
+	// The beach plate split for drifting clouds (design/build_bg_clouds.py):
+	// the plate with the middle sky cleared, the clouds as one wrapping strip,
+	// and the land of that band (mountains, islands, lighthouse) drawn over them.
+	hmBgClean: { type: 'sprite', src: asset('treasure/bg_clean.jpg'), preload: true },
+	hmBgClouds: { type: 'sprite', src: asset('treasure/bg_clouds.png'), preload: true },
+	hmBgHorizon: { type: 'sprite', src: asset('treasure/bg_horizon.png'), preload: true },
 	// The near-camera band of each background (design/build_background_layers.py):
 	// the right 36%, drawn back over the plate at a larger drift so the deck in
 	// the foreground travels further than the city behind it.

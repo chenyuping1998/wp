@@ -272,6 +272,9 @@ export const SYMBOL_INFO_MAP = {
 	L3: mixedSymbol('mgL3', LOW_RATIOS),
 	L4: mixedSymbol('mgL4', LOW_RATIOS),
 	S: mixedSymbol('mgS', SPECIAL_RATIOS),
+	// Petrify Gaze stone: never pays, falls with its column, turns into one symbol
+	// when the chain stops (stoneReveal)
+	ST: mixedSymbol('mgST', HIGH_RATIOS),
 } as const;
 
 // Aegis landing clang, pitched up per Aegis already on the board. The board can

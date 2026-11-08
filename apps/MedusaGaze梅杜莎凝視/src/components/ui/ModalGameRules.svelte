@@ -42,7 +42,7 @@
 			icons: [],
 			sign: true,
 			name: T.buyBonusName,
-			text: `The Aegis shield beside the board. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm. It is unlit while a round is playing and hidden during Free Spins.`,
+			text: `The Aegis shield beside the board. Opens the feature menu: Gaze Boost can be switched on there, and a Petrify Spin, Free Spins or Super Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm. While Gaze Boost is on, the same button switches it off. It is unlit while a round is playing and hidden during Free Spins.`,
 		},
 		{
 			icons: ['autoSpin'],
@@ -102,6 +102,11 @@
 		.map(([count, value]) => ({ count: Number(count), value: Number(value) }))
 		.sort((a, b) => a.count - b.count);
 	const topScatter = scatterPays[scatterPays.length - 1]?.count ?? 6;
+	const ladder = config.ladder;
+	const floors = ladder.floors as Record<string, number>;
+	const levels = [1, ...ladder.thresholds.map((_: number, i: number) => i + 2)];
+	const petrify = config.petrify;
+	const modesCfg = config.betModes;
 
 	// Every mode needs a description AND its price (Stake review 2026-10-04). The
 	// bought mode reuses the confirmation dialog's own text, so the two read alike.
@@ -109,12 +114,27 @@
 		{
 			name: 'Base game',
 			price: `1× ${T.bet}`,
-			text: `Every spin. ${minPayingCount}+ of a symbol anywhere ${T.pays}, chains continue until nothing more does, Medusa may multiply a winning spin, and ${fs.trigger}+ Aegis award ${fs.spins} Free Spins.`,
+			text: `Every spin. ${minPayingCount}+ of a symbol anywhere ${T.pays}, chains continue until nothing more does, Medusa's gaze may turn symbols to stone, Medusa may multiply a winning spin, and ${fs.trigger}+ Aegis award ${fs.spins} Free Spins.`,
+		},
+		{
+			name: 'Gaze Boost',
+			price: `${modesCfg.ante.cost}× ${T.bet} per spin`,
+			text: MEDUSA_GAZE_BET_MODE_META.ANTE.text.dialog,
+		},
+		{
+			name: 'Petrify Spin',
+			price: `${modesCfg.petrify.cost}× ${T.bet}`,
+			text: MEDUSA_GAZE_BET_MODE_META.PETRIFY.text.dialog,
 		},
 		{
 			name: 'Free Spins',
-			price: `${config.betModes?.bonus?.cost}× ${T.bet}`,
+			price: `${modesCfg.bonus.cost}× ${T.bet}`,
 			text: MEDUSA_GAZE_BET_MODE_META.BONUS.text.dialog,
+		},
+		{
+			name: 'Super Free Spins',
+			price: `${modesCfg.super.cost}× ${T.bet}`,
+			text: MEDUSA_GAZE_BET_MODE_META.SUPER.text.dialog,
 		},
 	];
 
@@ -123,7 +143,10 @@
 	const modeRows = (
 		[
 			['Base game', 'base', 'Standard play'],
-			['Free Spins', 'bonus', `${fs.trigger}+ Aegis, or ${entryVerb.toLowerCase()} for ${config.betModes?.bonus?.cost}×`],
+			['Gaze Boost', 'ante', `Switch on in the feature menu; ${modesCfg.ante.cost}× per spin`],
+			['Petrify Spin', 'petrify', `${entryVerb} for ${modesCfg.petrify.cost}×`],
+			['Free Spins', 'bonus', `${fs.trigger}+ Aegis, or ${entryVerb.toLowerCase()} for ${modesCfg.bonus.cost}×`],
+			['Super Free Spins', 'super', `${entryVerb} for ${modesCfg.super.cost}×`],
 		] as const
 	).map(([label, key, entry]) => {
 		const mode = config.betModes?.[key] as BetMode | undefined;
@@ -137,7 +160,7 @@
 </script>
 
 {#if stateModal.modal?.name === 'gameRules'}
-	<TempleInfoShell view="rules" chapters={[{id:'how',label:'Quick guide'},{id:'gaze',label:'The gaze'},{id:'free-spins',label:'Free Spins'},{id:'aegis',label:'Aegis'},{id:'controls',label:'Controls'},{id:'rtp',label:'RTP & modes'}]}>
+	<TempleInfoShell view="rules" chapters={[{id:'how',label:'Quick guide'},{id:'gaze',label:'The gaze'},{id:'petrify',label:'Petrify Gaze'},{id:'free-spins',label:'Free Spins'},{id:'ladder',label:'Serpent Ladder'},{id:'aegis',label:'Aegis'},{id:'controls',label:'Controls'},{id:'rtp',label:'RTP & modes'}]}>
 		<div class="wp-rules">
 			<TempleGuide/>
 
@@ -235,6 +258,22 @@
 				</p>
 			</section>
 
+			<section class="wp-card" data-chapter="petrify">
+				<h3><span class="wp-accent-bar"></span>Petrify Gaze</h3>
+				<p>
+					On any base game spin Medusa may lower her glasses as the board lands. Between
+					{petrify.baseMin} and {petrify.baseMax} symbols (never an Aegis) turn to
+					<strong>stone</strong>. In a Petrify Spin this always happens, with {petrify.buyMin} to
+					{petrify.buyMax} stones.
+				</p>
+				<ul class="wp-tiers">
+					<li>Stones never {T.pay} and are never removed by a chain. They fall with their column like any other symbol.</li>
+					<li>When the chain stops, every stone on the board turns into the <strong>same</strong> symbol, and the chain starts again from that board.</li>
+					<li>Wins from both chains are added together before Medusa's multiplier is applied.</li>
+				</ul>
+				<p>Stones do not appear in Free Spins.</p>
+			</section>
+
 			<section class="wp-card" data-chapter="free-spins">
 				<h3><span class="wp-accent-bar"></span>Free Spins &mdash; the running total</h3>
 				<p>
@@ -249,6 +288,31 @@
 					<li>A throw on a spin with no win shatters and is not added.</li>
 				</ul>
 				<p>The running total starts at 0, never goes down during the feature, and resets when the feature ends.</p>
+			</section>
+
+			<section class="wp-card" data-chapter="ladder">
+				<h3><span class="wp-accent-bar"></span>Serpent Ladder</h3>
+				<p>
+					In Free Spins every multiplier that counts &mdash; one thrown on a spin with a win &mdash;
+					grows one snake in Medusa's hair. A throw that shatters grows nothing. At
+					{ladder.thresholds.join(', ')} snakes Medusa climbs a level: each new level awards
+					<strong>{ladder.spins} more Free Spins</strong> and raises the smallest multiplier she can
+					throw from then on.
+				</p>
+				<ul class="wp-tiers">
+					{#each levels as lv (lv)}
+						<li>
+							Level {lv}{lv > 1 ? ` (${ladder.thresholds[lv - 2]}+ snakes)` : ''}: {floors[String(lv)] > 0
+								? `multipliers of ${floors[String(lv)]}× or more`
+								: 'every multiplier value'}.
+						</li>
+					{/each}
+				</ul>
+				<p>
+					Free Spins start on level 1. Super Free Spins start on level {ladder.superStartLevel} with
+					{ladder.superStartSnakes} snakes, and Medusa throws more often in them. The ladder resets
+					when the feature ends.
+				</p>
 			</section>
 
 			<section class="wp-card" data-chapter="aegis">
@@ -277,9 +341,13 @@
 				<h3><span class="wp-accent-bar"></span>{T.buyBonusName}</h3>
 				<p>
 					Instead of waiting for the Aegis, you can {T.buy} direct entry into Free Spins for
-					{config.betModes?.bonus?.cost}&times; your {T.bet}. The round opens with {fs.trigger} or more
-					Aegis on the board and plays exactly like Free Spins won in the base game, at the same
-					{rtpPct} RTP.
+					{modesCfg.bonus.cost}&times; your {T.bet}, or into Super Free Spins for
+					{modesCfg.super.cost}&times; your {T.bet}. The round opens with {fs.trigger} or more Aegis on
+					the board. Free Spins play exactly like Free Spins won in the base game; Super Free Spins
+					start higher on the Serpent Ladder. A Petrify Spin ({modesCfg.petrify.cost}&times;) is a single
+					spin with a guaranteed Petrify Gaze. Gaze Boost ({modesCfg.ante.cost}&times; per spin) makes
+					Free Spins trigger about twice as often and stays on until switched off. Every mode has the
+					same {rtpPct} RTP.
 				</p>
 			</section>
 

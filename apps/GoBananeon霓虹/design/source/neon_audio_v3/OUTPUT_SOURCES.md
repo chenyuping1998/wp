@@ -28,12 +28,15 @@
 | `reel_stop_3.wav` | `Clavisynth_C2_vl3.wav`、`bfh1_hit_03.ogg` | Versilian Studios LLC / VCSL contributors、rubberduck |
 | `reel_stop_4.wav` | `Clavisynth_C2_vl3.wav`、`bfh1_hit_04.ogg` | Versilian Studios LLC / VCSL contributors、rubberduck |
 | `reel_stop_5.wav` | `Clavisynth_C2_vl3.wav`、`bfh1_hit_05.ogg` | Versilian Studios LLC / VCSL contributors、rubberduck |
-| `reel_tension.wav` | `BDrumNew_hit_v5_rr1_Sum.wav`、`thrusterFire_001.ogg` | Kenney (Kenney Vleugels)、Versilian Studios LLC / VCSL contributors |
+| `reel_tension.wav` | `thrusterFire_001.ogg` | Kenney (Kenney Vleugels) |
 | `scatter_1.wav` | `Clavisynth_C4_vl2.wav`、`FMPiano_C4_vl3.wav`、`bfh1_glass_hit_01.ogg` | Versilian Studios LLC / VCSL contributors、rubberduck |
 | `scatter_2.wav` | `Clavisynth_C4_vl2.wav`、`FMPiano_C4_vl3.wav`、`bfh1_glass_hit_01.ogg` | Versilian Studios LLC / VCSL contributors、rubberduck |
 | `scatter_3.wav` | `Clavisynth_C4_vl2.wav`、`FMPiano_C4_vl3.wav`、`bfh1_glass_hit_01.ogg` | Versilian Studios LLC / VCSL contributors、rubberduck |
 | `scatter_4.wav` | `Clavisynth_C4_vl2.wav`、`FMPiano_C4_vl3.wav`、`bfh1_glass_hit_01.ogg` | Versilian Studios LLC / VCSL contributors、rubberduck |
 | `scatter_5.wav` | `Clavisynth_C4_vl2.wav`、`FMPiano_C4_vl3.wav`、`bfh1_glass_hit_01.ogg` | Versilian Studios LLC / VCSL contributors、rubberduck |
+| `seq_kick.wav` | `BDrumNew_hit_v5_rr1_Sum.wav` | Versilian Studios LLC / VCSL contributors |
+| `seq_note.wav` | `Clavisynth_C4_vl2.wav` | Versilian Studios LLC / VCSL contributors |
+| `seq_tick.wav` | `click_003.ogg` | Kenney (Kenney Vleugels) |
 | `smoke_puff.wav` | `thrusterFire_001.ogg` | Kenney (Kenney Vleugels) |
 | `spin.wav` | `BDrumNew_hit_v5_rr1_Sum.wav`、`backspin.mp3` | Versilian Studios LLC / VCSL contributors、il112 |
 | `symbol_land.wav` | `FMPiano_C4_vl3.wav` | Versilian Studios LLC / VCSL contributors |

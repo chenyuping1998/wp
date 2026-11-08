@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "original": {
+    "wave": {
+      "frames": 109,
+      "inkedArmTriangleInversions": 0,
+      "minAreaRatio": 0.15894085388790563,
+      "maxAreaRatio": 1.6519678283560117,
+      "maxShoulderSocketTravel": 10.193783252754898
+    },
+    "cheer": {
+      "frames": 74,
+      "inkedArmTriangleInversions": 0,
+      "minAreaRatio": 0.9579287562528161,
+      "maxAreaRatio": 1.0397178290233624,
+      "maxShoulderSocketTravel": 18.282334559733698
+    }
+  },
+  "current": {
+    "wave": {
+      "frames": 109,
+      "inkedArmTriangleInversions": 0,
+      "minAreaRatio": 0.35825052168215726,
+      "maxAreaRatio": 1.4766580889963976,
+      "maxShoulderSocketTravel": 3.2648836996370187
+    },
+    "cheer": {
+      "frames": 74,
+      "inkedArmTriangleInversions": 0,
+      "minAreaRatio": 0.6940710751790001,
+      "maxAreaRatio": 1.2346571608234098,
+      "maxShoulderSocketTravel": 4.068331496610089
+    }
+  }
+}

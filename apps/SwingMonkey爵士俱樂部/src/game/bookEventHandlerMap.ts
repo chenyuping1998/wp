@@ -6,6 +6,7 @@ import { SECOND } from 'constants-shared/time';
 import { waitForTimeout } from 'utils-shared/wait';
 
 import { eventEmitter } from './eventEmitter';
+import { msToNextGrid } from './musicClock';
 import { playBookEvent } from './utils';
 import { featureTotal } from './featureTotal';
 import { winLevelMap, type WinLevel, type WinLevelData } from './winLevelMap';
@@ -72,7 +73,7 @@ export const clearLastWinLines = () => {
 	lastWinLines = [];
 };
 
-const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) => {
+const winLevelSoundsPlay = ({ winLevelData, tierFanfare = true }: { winLevelData: WinLevelData; tierFanfare?: boolean }) => {
 	if (winLevelData?.alias === 'max') eventEmitter.broadcastAsync({ type: 'uiHide' });
 	if (winLevelData?.sound?.sfx) {
 		eventEmitter.broadcast({ type: 'soundOnce', name: winLevelData.sound.sfx });
@@ -92,12 +93,16 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 	// touches the bed, which is the whole reason it can exist where per-tier
 	// music could not.
 	if (winLevelData?.type === 'big') {
-		eventEmitter.broadcast({ type: 'soundWinTier', tier: winLevelData.alias });
+		eventEmitter.broadcast({ type: 'soundGroove', reason: 'plaque', on: true });
+		// the base game's plaque raises its own fanfares as its ladder climbs
+		// (Win.svelte, 2026-11-06); the free game's total plaque still gets one here
+		if (tierFanfare) eventEmitter.broadcast({ type: 'soundWinTier', tier: winLevelData.alias });
 		eventEmitter.broadcast({ type: 'soundLoop', name: 'sfx_bigwin_coinloop' });
 	}
 };
 
 const winLevelSoundsStop = () => {
+	eventEmitter.broadcast({ type: 'soundGroove', reason: 'plaque', on: false });
 	eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' });
 	// Decided by the SCENE, never by the bet mode: the mode you bought is not
 	// where you are; gameType is.
@@ -138,6 +143,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// belong to the spin that made them (Sound.svelte cutSpinSounds)
 		eventEmitter.broadcast({ type: 'soundSpinCut' });
 
+		// the drummer comes in with the reels and settles after them
+		eventEmitter.broadcast({ type: 'soundGroove', reason: 'spin', on: true });
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: { ...bookEvent, anticipation: gateAnticipation(bookEvent.anticipation, bookEvent.board) },
 			paddingBoard: config.paddingReels[bookEvent.gameType],
@@ -147,9 +154,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			// here, just not instant. SPIN_OPTIONS_TURBO_FREEGAME carries the pace.
 			isTurboOverride: bookEvent.gameType === 'freegame' ? false : undefined,
 		});
+		eventEmitter.broadcast({ type: 'soundGroove', reason: 'spin', on: false });
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 	},
 	winInfo: async (bookEvent: BookEventOfType<'winInfo'>) => {
+		// On the band (2026-11-06): the win starts on the next sixteenth (<=117 ms)
+		const toGrid = msToNextGrid(4);
+		if (toGrid > 0) await waitForTimeout(toGrid);
+		eventEmitter.broadcast({ type: 'soundGroove', reason: 'win', on: true });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_winlevel_small' });
 
 		// One entry per winning SYMBOL, not per line — a ways game has no lines to
@@ -172,6 +184,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins: winLineData, fast: isFreeGame, audible: true });
 
 		eventEmitter.broadcast({ type: 'winLinesHide' });
+		eventEmitter.broadcast({ type: 'soundGroove', reason: 'win', on: false });
 
 		// Remembered for the idle replay, but only for base-game wins. A free
 		// game or super spin tears the board down to base idle when it ends
@@ -378,6 +391,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			type: 'transition',
 			cover: () => {
 				stateGame.gameType = 'basegame';
+				// back on the base scene, back to its music (jade-family bug: the FG
+				// bed used to loop on through the base game)
+				eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
 			},
 		});
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
@@ -389,7 +405,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'backgroundWin', amount: bookEvent.amount });
 
 		eventEmitter.broadcast({ type: 'winShow' });
-		winLevelSoundsPlay({ winLevelData });
+		winLevelSoundsPlay({ winLevelData, tierFanfare: false });
 		await eventEmitter.broadcastAsync({
 			type: 'winUpdate',
 			amount: bookEvent.amount,
@@ -408,6 +424,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 
 		if (stateGame.gameType !== 'basegame') {
 			stateGame.gameType = 'basegame';
+			eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
 		}
 	},
 	wincap: async (bookEvent: BookEventOfType<'wincap'>) => {

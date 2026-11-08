@@ -8,7 +8,7 @@
  import DetectorPanelLight from './DetectorPanelLight.svelte';
  import TreasureGaze from './TreasureGaze.svelte';
  import TreasureCastSkin from './TreasureCastSkin.svelte';
- import {castTorsoPoint} from '../game/treasureCastSkin';
+ import {castTorsoPoint,castForearmFrame,type CastAttachment} from '../game/treasureCastSkin';
  import {gazeAim,followEyes,type Aim,type EyeState} from '../game/treasureAttention';
  let {who='digger',x=0,y=0,height=680,cue='idle',sequence=0,previewTime,playbackRate=1,focus}:{who?:'digger'|'lifeguard';x?:number;y?:number;height?:number;cue?:CastCue;sequence?:number;previewTime?:number;playbackRate?:number;focus?:Aim}=$props();
  let time=$state(0),revision=$state(0),reduced=$state(false),cueStarted=$state(0);
@@ -16,13 +16,13 @@
  let eyes=$state<EyeState>({x:0,y:0,vx:0,vy:0});
  const aim=$derived(gazeAim(cue,previewTime??time-cueStarted,focus));
  const gaze=$derived(reduced?{x:0,y:0}:previewTime!==undefined?aim:eyes);
- const parts=$derived(rig[who]);
+ const parts=$derived(rig[who] as Record<keyof typeof rig.digger,CastAttachment>);
  const pose=$derived.by(()=>{
   revision;return previewTime!==undefined?castPose(previewTime,cue,previewTime,reduced,who):performer.sample(time,reduced);
  });
  $effect(()=>{sequence;const next=cue,cast=who;untrack(()=>{cueStarted=time;performer.trigger(time,next,cast,reduced);});revision=untrack(()=>revision+1);});
  const scale=$derived(height/700);
- const leftShoulder=$derived(castTorsoPoint(parts.arm_l.x,parts.arm_l.y,pose.chest,pose.breathX,pose.breathY,pose.shoulderY));
+ const grip=$derived(castForearmFrame(parts.arm_l,pose.left,pose.leftElbow,pose.chest,pose.breathX,pose.breathY,pose.shoulderY));
  const neck=$derived(castTorsoPoint(parts.head.x,parts.head.y,pose.chest,pose.breathX,pose.breathY,pose.shoulderY));
  const shadow=(g:PixiGraphics)=>{g.clear();g.ellipse(247,671,107,12).fill({color:0x765334,alpha:.1});g.ellipse(247,671,86,7).fill({color:0x765334,alpha:.09});};
  onMount(()=>{
@@ -36,26 +36,28 @@
  <Graphics draw={shadow}/>
  <Container x={who==='lifeguard'?480:0} scale={{x:who==='lifeguard'?-1:1,y:1}}>
  {@const tail=parts.tail}
- <TreasureCastSkin assetKey={`treasure_${who}_tail`} part={tail} kind="tail" bend={pose.tailTip} middleBend={pose.tailMid} rotation={pose.tail}/>
+ <!-- The tail root sits in the shorts, so it rides the waist drop. -->
+ <Container y={pose.dy}><TreasureCastSkin assetKey={`treasure_${who}_tail`} part={tail} kind="tail" bend={pose.tailTip} middleBend={pose.tailMid} rotation={pose.tail}/></Container>
  {@const legs=parts.legs}
- <!-- Foot contacts stay in world space. Every upper part inherits the waist
-      pivot, preventing independent shoulder/head offsets from opening seams. -->
- <Sprite key={`treasure_${who}_legs`} x={legs.x} y={legs.y} width={legs.w} height={legs.h} anchor={{x:legs.ax,y:legs.ay}}/>
- <Container x={240} y={442} pivot={{x:240,y:442}} rotation={pose.body} scale={{x:1,y:1-pose.dy/420}}>
+ <!-- Shoes stay planted; the knees take the crouch and the waist drops by
+      pose.dy. Every upper part inherits the waist pivot, preventing
+      independent shoulder/head offsets from opening seams. -->
+ <TreasureCastSkin assetKey={`treasure_${who}_legs`} part={legs} kind="legs" bend={pose.dy}/>
+ <Container x={240} y={442+pose.dy} pivot={{x:240,y:442}} rotation={pose.body}>
   {@const right=parts.arm_r}
-  <TreasureCastSkin assetKey={`treasure_${who}_arm_r`} part={right} kind="arm" bend={pose.right} chest={pose.chest} breathX={pose.breathX} breathY={pose.breathY} shoulderY={pose.shoulderY}/>
+  <TreasureCastSkin assetKey={`treasure_${who}_arm_r`} part={right} kind="arm" bend={pose.right} elbow={pose.rightElbow} chest={pose.chest} breathX={pose.breathX} breathY={pose.breathY} shoulderY={pose.shoulderY}/>
   {@const left=parts.arm_l}
-  {#if who==='lifeguard'}<TreasureCastSkin assetKey={`treasure_${who}_arm_l`} part={left} kind="arm" bend={pose.left} chest={pose.chest} breathX={pose.breathX} breathY={pose.breathY} shoulderY={pose.shoulderY}/>{/if}
+  {#if who==='lifeguard'}<TreasureCastSkin assetKey={`treasure_${who}_arm_l`} part={left} kind="arm" bend={pose.left} elbow={pose.leftElbow} chest={pose.chest} breathX={pose.breathX} breathY={pose.breathY} shoulderY={pose.shoulderY}/>{/if}
   {@const body=parts.body}
   <TreasureCastSkin assetKey={`treasure_${who}_body`} part={body} kind="body" bend={pose.chest} breathX={pose.breathX} breathY={pose.breathY} shoulderY={pose.shoulderY}/>
-  <Container x={leftShoulder.x} y={leftShoulder.y} rotation={pose.left+pose.chest}>
+  <Container x={grip.x} y={grip.y} rotation={grip.rotation}>
    {@const tool=parts.tool}
-   <!-- Grip and handle share this transform, including interruptions. -->
-   <Sprite key={`treasure_${who}_tool`} x={tool.x-left.x} y={tool.y-left.y} width={tool.w} height={tool.h} anchor={{x:tool.ax,y:tool.ay}}/>
+   <!-- Grip and handle share the forearm transform, including interruptions. -->
+   <Sprite key={`treasure_${who}_tool`} x={tool.x-left.x} y={tool.y-left.y} width={tool.w} height={tool.h} rotation={tool.rot??0} anchor={{x:tool.ax,y:tool.ay}}/>
 
   </Container>
-  {#key who}<TreasureCastSkin assetKey={`treasure_${who}_arm_l`} part={left} kind="arm" foreground={who==='lifeguard'} bend={pose.left} chest={pose.chest} breathX={pose.breathX} breathY={pose.breathY} shoulderY={pose.shoulderY}/>{/key}
-  <Container x={leftShoulder.x} y={leftShoulder.y} rotation={pose.left+pose.chest}>
+  {#key who}<TreasureCastSkin assetKey={`treasure_${who}_arm_l`} part={left} kind="arm" foreground={who==='lifeguard'} bend={pose.left} elbow={pose.leftElbow} chest={pose.chest} breathX={pose.breathX} breathY={pose.breathY} shoulderY={pose.shoulderY}/>{/key}
+  <Container x={grip.x} y={grip.y} rotation={grip.rotation}>
    {#if who==='digger'}
     <DetectorPanelLight time={previewTime??time} scanAge={cue==='scan'?(previewTime??time-cueStarted):-1} {reduced} width={left.w} height={left.h} anchorX={left.ax} anchorY={left.ay}/>
    {/if}

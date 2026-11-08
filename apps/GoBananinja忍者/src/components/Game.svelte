@@ -1,5 +1,7 @@
 <script lang="ts">
 	import '../game/gpuAddBlend';
+	// caps the renderer at 2x before the pixi App initialises (iOS Safari memory)
+	import '../game/renderBudget';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { onMount } from 'svelte';
 

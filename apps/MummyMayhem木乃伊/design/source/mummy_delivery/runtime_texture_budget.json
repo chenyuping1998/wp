@@ -1,0 +1,903 @@
+{
+  "input_bytes": 67018400,
+  "output_bytes": 10467938,
+  "files": 112,
+  "runtime_textures": [
+    {
+      "file": "assets/sprites/mummyBackground/bg_base.webp",
+      "bytes": 340776,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBackground/bg_base_far.webp",
+      "bytes": 315388,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBackground/bg_base_linen.webp",
+      "bytes": 81758,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBackground/bg_base_props.webp",
+      "bytes": 139374,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBackground/bg_base_torches.webp",
+      "bytes": 65062,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBackground/bg_feature.webp",
+      "bytes": 338518,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBackground/bg_feature_far.webp",
+      "bytes": 306742,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBackground/bg_feature_props.webp",
+      "bytes": 42824,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBackground/bg_holdandspin.webp",
+      "bytes": 349628,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBackground/bg_holdandspin_far.webp",
+      "bytes": 370620,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBackground/bg_holdandspin_props.webp",
+      "bytes": 37216,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBanners/big.webp",
+      "bytes": 217894,
+      "size": [
+        1000,
+        560
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBanners/epic.webp",
+      "bytes": 191176,
+      "size": [
+        1000,
+        560
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBanners/max.webp",
+      "bytes": 208078,
+      "size": [
+        1000,
+        560
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBanners/mega.webp",
+      "bytes": 204438,
+      "size": [
+        1000,
+        560
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyBanners/superwin.webp",
+      "bytes": 222084,
+      "size": [
+        1000,
+        560
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyCoins/coins.webp",
+      "bytes": 79582,
+      "size": [
+        1280,
+        128
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyFrame/frame_bg.webp",
+      "bytes": 3846,
+      "size": [
+        1280,
+        1280
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyFrame/frame_edge.webp",
+      "bytes": 261952,
+      "size": [
+        1280,
+        1280
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyFrame/fs_counter_panel.webp",
+      "bytes": 200414,
+      "size": [
+        1280,
+        966
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyFrame/fs_sign.webp",
+      "bytes": 202040,
+      "size": [
+        1280,
+        1000
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyFx/fx_glow.webp",
+      "bytes": 5766,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyFx/fx_leaf.webp",
+      "bytes": 3194,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyFx/fx_star.webp",
+      "bytes": 3582,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyFx/fx_streak.webp",
+      "bytes": 2574,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyFx/fx_vignette.webp",
+      "bytes": 5850,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h1.webp",
+      "bytes": 30890,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h1_glow.webp",
+      "bytes": 42990,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h1_sheen.webp",
+      "bytes": 35756,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h2.webp",
+      "bytes": 25074,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h2_glow.webp",
+      "bytes": 34068,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h2_sheen.webp",
+      "bytes": 24914,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h3.webp",
+      "bytes": 33058,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h3_glow.webp",
+      "bytes": 39076,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h3_plate.webp",
+      "bytes": 218,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h3_shadow.webp",
+      "bytes": 218,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h3_sheen.webp",
+      "bytes": 31610,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h3_subject.webp",
+      "bytes": 33058,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h4.webp",
+      "bytes": 32498,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h4_glow.webp",
+      "bytes": 43568,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/h4_sheen.webp",
+      "bytes": 38652,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l1.webp",
+      "bytes": 24748,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l1_glow.webp",
+      "bytes": 10696,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l1_sheen.webp",
+      "bytes": 16170,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l2.webp",
+      "bytes": 24814,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l2_glow.webp",
+      "bytes": 11062,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l2_sheen.webp",
+      "bytes": 16166,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l3.webp",
+      "bytes": 23700,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l3_glow.webp",
+      "bytes": 11756,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l3_sheen.webp",
+      "bytes": 18194,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l4.webp",
+      "bytes": 24912,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l4_glow.webp",
+      "bytes": 9442,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l4_sheen.webp",
+      "bytes": 15202,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l5.webp",
+      "bytes": 23766,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l5_glow.webp",
+      "bytes": 10626,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/l5_sheen.webp",
+      "bytes": 17238,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/p.webp",
+      "bytes": 25616,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/p_glow.webp",
+      "bytes": 29452,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/p_sheen.webp",
+      "bytes": 24958,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/s.webp",
+      "bytes": 39894,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/s_glow.webp",
+      "bytes": 41706,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/s_sheen.webp",
+      "bytes": 31412,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/w.webp",
+      "bytes": 29010,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/w_glow.webp",
+      "bytes": 32960,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/w_sheen.webp",
+      "bytes": 29572,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/x.webp",
+      "bytes": 1448,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/x_glow.webp",
+      "bytes": 974,
+      "size": [
+        256,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummySymbols/x_sheen.webp",
+      "bytes": 7380,
+      "size": [
+        768,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyTransition/bandage_end.webp",
+      "bytes": 31048,
+      "size": [
+        360,
+        360
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyTransition/bandage_strip.webp",
+      "bytes": 485934,
+      "size": [
+        2400,
+        360
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyTransition/sand_burst.webp",
+      "bytes": 22292,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buybonus_plate.webp",
+      "bytes": 110382,
+      "size": [
+        800,
+        800
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buybonus_stone.webp",
+      "bytes": 110382,
+      "size": [
+        800,
+        800
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buybonus_stone_lit.webp",
+      "bytes": 110382,
+      "size": [
+        800,
+        800
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buy_art_bonus.webp",
+      "bytes": 119984,
+      "size": [
+        800,
+        450
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buy_art_holdandspin.webp",
+      "bytes": 126204,
+      "size": [
+        800,
+        450
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buy_art_scarab.webp",
+      "bytes": 119984,
+      "size": [
+        800,
+        450
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buy_art_sun.webp",
+      "bytes": 151912,
+      "size": [
+        800,
+        450
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buy_hero_bonus.webp",
+      "bytes": 94430,
+      "size": [
+        512,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buy_hero_holdandspin.webp",
+      "bytes": 64728,
+      "size": [
+        512,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buy_hero_scarab.webp",
+      "bytes": 94430,
+      "size": [
+        512,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buy_hero_scarab10.webp",
+      "bytes": 86674,
+      "size": [
+        512,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buy_hero_scarab5.webp",
+      "bytes": 94430,
+      "size": [
+        512,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buy_hero_sun.webp",
+      "bytes": 87478,
+      "size": [
+        512,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/buy_icon.webp",
+      "bytes": 886,
+      "size": [
+        512,
+        512
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyUi/ticker_plate.webp",
+      "bytes": 23530,
+      "size": [
+        652,
+        146
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/arch_base.webp",
+      "bytes": 131018,
+      "size": [
+        1024,
+        550
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/button.webp",
+      "bytes": 74774,
+      "size": [
+        420,
+        420
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/button_burst.webp",
+      "bytes": 19750,
+      "size": [
+        600,
+        600
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/button_lit.webp",
+      "bytes": 77082,
+      "size": [
+        420,
+        420
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/disc_lv1.webp",
+      "bytes": 375808,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/disc_lv2.webp",
+      "bytes": 322884,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/disc_lv3.webp",
+      "bytes": 345716,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/disc_lv4.webp",
+      "bytes": 328386,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/hub.webp",
+      "bytes": 49380,
+      "size": [
+        320,
+        320
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/levelup.webp",
+      "bytes": 86308,
+      "size": [
+        1000,
+        420
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/needle.webp",
+      "bytes": 60558,
+      "size": [
+        280,
+        760
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/plate.webp",
+      "bytes": 108958,
+      "size": [
+        640,
+        640
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/plate_flash.webp",
+      "bytes": 31114,
+      "size": [
+        800,
+        800
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/pointer.webp",
+      "bytes": 17310,
+      "size": [
+        180,
+        240
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/rays.webp",
+      "bytes": 163710,
+      "size": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/ring.webp",
+      "bytes": 252786,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/ring_glow_lv1.webp",
+      "bytes": 186890,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/ring_glow_lv2.webp",
+      "bytes": 185648,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/ring_glow_lv3.webp",
+      "bytes": 189754,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/ring_glow_lv4.webp",
+      "bytes": 181806,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/tile_hot.webp",
+      "bytes": 14438,
+      "size": [
+        360,
+        300
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/tile_normal.webp",
+      "bytes": 15492,
+      "size": [
+        360,
+        300
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/tile_result_glow.webp",
+      "bytes": 11196,
+      "size": [
+        360,
+        300
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/tile_top.webp",
+      "bytes": 13932,
+      "size": [
+        360,
+        300
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/title.webp",
+      "bytes": 66164,
+      "size": [
+        1024,
+        256
+      ]
+    },
+    {
+      "file": "assets/sprites/mummyWheel/wedge_win.webp",
+      "bytes": 23088,
+      "size": [
+        640,
+        640
+      ]
+    }
+  ]
+}

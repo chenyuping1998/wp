@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "prompts": {
+    "mouth": "Use case: precise-object-edit. Edit target: the supplied mummy cat head sprite. Change ONLY the small mouth below the pink nose: open it in a friendly, curious soft 'ah' expression, showing a warm dark mouth interior and a little pink tongue, with the same tiny white fang. Keep the amber open eye, pupil position, eyelids, nose, cheeks, bandages, ears, teal and blue headdress, exact head silhouette, placement, camera, lighting and all other pixels as close as possible to the source. Same polished painted 3D cartoon game asset. No new body. Keep genuinely transparent background. Full head with identical framing and no extra margins. This will be a mouth-open animation replacement; the mouth should occupy roughly the same horizontal width as the closed smile, extending modestly downward. Avoid a giant laugh or changed face identity.",
+    "linen": "Use case: stylized-concept. Asset type: one isolated deformable foreground cloth strip for a polished Egyptian mummy-cat slot game's tomb background. Style reference: supplied sandstone tomb. Generate ONE long vertical suspended ivory linen strip, approximately 1 unit wide by 6.5 units long, straight overall with shallow painted lengthwise folds, broad flat sewn root at the TOP, irregular but coherent gently tapered frayed free end at the BOTTOM. Warm cream highlights, golden beige shadows matching the tomb's polished hand-painted 3D cartoon style. Two tiny unobtrusive turquoise stitched bands near the top only. No pole, no support, no architecture, no lettering, no logos, no stars, no extra hanging objects. It is NOT wrapped around anything. Entire isolated strip visible with clean alpha, transparent background, generous clear margin, lit from upper left. Cloth is opaque, softly shaded broad folds, no checkerboard pixels or photographic grain. Keep the silhouette mostly straight so an animation mesh can add its own flowing motion."
+  },
+  "originals": [
+    "originals/head_talk_v1.png",
+    "originals/background_linen_v1.png"
+  ]
+}

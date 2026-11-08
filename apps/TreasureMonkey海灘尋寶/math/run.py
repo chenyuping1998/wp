@@ -91,6 +91,8 @@ def main():
     config=GameConfig();Path(config.publish_path).mkdir(parents=True,exist_ok=True)
     # Invalidate the previous readiness marker before any mode is regenerated.
     (Path(config.publish_path)/'index.json').unlink(missing_ok=True)
+    (Path(config.library_path)/'reports/verification.json').unlink(missing_ok=True)
+    for old in (Path(config.library_path)/'configs').glob('verified_fixtures_*.json'):old.unlink()
     fe=export_config(config)
     metrics={};buy_profiles={};manifest=[];shelf=[]
     with ProcessPoolExecutor(max_workers=3) as workers:

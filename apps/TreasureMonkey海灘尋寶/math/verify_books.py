@@ -8,6 +8,7 @@ import csv
 import hashlib
 import io
 import json
+from concurrent.futures import ProcessPoolExecutor
 from fractions import Fraction
 from pathlib import Path
 import zstandard as zstd
@@ -62,7 +63,7 @@ def verify_round(book,config):
     frames=[];board=None;raw=None;total=0;feature_paid=0;spin_paid=0
     tier=None;game_type=None;fs_total=0;played=0;expected_touched=set()
     spin_checked=True;did_retrigger=False;did_expand=False;did_double=False;finished=False
-    saw_feature=False
+    saw_feature=False;base_scatter_count=None;free_reveals=0
     def finish_spin():
         if board is None:return
         if not spin_checked:
@@ -92,6 +93,12 @@ def verify_round(book,config):
                     assert_equal(bool(symbol.get('wild')),symbol['name']=='W','wild flag')
             raw=[[s['name'] for s in c[1:5]] for c in event['board']]
             board=[c[:] for c in raw]
+            if game_type=='basegame':
+                assert base_scatter_count is None,'multiple base spins in one round'
+                base_scatter_count=sum(c.count('S') for c in raw)
+            else:
+                assert game_type=='freegame' and saw_feature,'free spin before feature entry'
+                free_reveals+=1
             assert not any('SW' in raw[r] for r in (0,4)),'SW only on middle reels'
             if game_type=='basegame':frames=[]
             spin_checked=False;spin_paid=0;expected_touched=set();did_retrigger=did_expand=did_double=False
@@ -165,6 +172,10 @@ def verify_round(book,config):
     assert_equal(book['payoutMultiplier'],total,'book payout')
     assert_equal(book['featurePayout'],feature_paid,'feature accounting')
     assert_equal(book['basePayout']+feature_paid,total,'base plus feature accounting')
+    assert_equal(free_reveals,played,'one counter per dealt free spin')
+    assert_equal(book['featureTier'],tier,'book feature tier')
+    if book['mode']=='base':
+        assert_equal(saw_feature,base_scatter_count>=3 and book['basePayout']<CAP,'natural entry required by scatters')
     if book['mode']!='base':
         assert saw_feature and tier==RULES['modes'][book['mode']]['tier'] and book['basePayout']==0
     return len(book['events'])
@@ -174,7 +185,7 @@ def read_books(path):
         for line in io.TextIOWrapper(stream,encoding='utf-8'):
             if line.strip():yield json.loads(line)
 
-def verify(bundle):
+def verify(bundle,only_mode=None,workers=4):
     config=GameConfig();bundle=Path(bundle)
     index=json.loads((bundle/'index.json').read_text(encoding='utf-8'))
     configs=Path(config.library_path)/'configs'
@@ -185,8 +196,15 @@ def verify(bundle):
         assert_equal(digest,expected,'published SHA-256 '+path.name)
     check_hash(configs/backend['frontendConfig']['file'],backend['frontendConfig']['sha256'])
     assert_equal({m['name']:m['cost'] for m in index['modes']},{m:d['cost'] for m,d in RULES['modes'].items()},'modes and template buy costs')
+    if only_mode is None and workers>1:
+        result={}
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            pending=[pool.submit(verify,bundle,m['name'],1) for m in index['modes']]
+            for future in pending:result.update(future.result())
+        (Path(config.library_path)/'reports/verification.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+        return result
     result={}
-    for mode in index['modes']:
+    for mode in (m for m in index['modes'] if only_mode is None or m['name']==only_mode):
         name=mode['name'];entry=shelf[name]
         assert_equal(entry['cost'],mode['cost'],'backend cost')
         assert_equal(entry['rtp'],.96,'backend RTP')
@@ -229,6 +247,7 @@ def verify(bundle):
         (Path(config.library_path)/f'configs/verified_fixtures_{name}.json').write_text(json.dumps(fixtures,separators=(',',':')),encoding='utf-8')
         result[name]={'books':count,'events':events,'rtp':.96,'exactRtp':'24/25','maxWin':20000,
                       'totalWeight':total_weight,'hashesVerified':True,'sdkLookupFormatVerified':True,
+                      'booksSha256':entry['booksFile']['sha256'],'lookupSha256':entry['tables'][0]['sha256'],
                       'featureProbability':weighted['features']/total_weight,
                       'meanFreeSpinsPerRound':weighted['freeSpins']/total_weight,
                       'meanFreeSpinsPerFeature':weighted['freeSpins']/weighted['features'],
@@ -236,7 +255,7 @@ def verify(bundle):
                       'sweepRoundProbability':weighted['sweepRounds']/total_weight,
                       'tierProbabilities':{t:weighted[t]/total_weight for t in ('soldier','capo','don')}}
         print(f'OK {name}: {count:,} complete books / {events:,} events; independently recomputed, RTP exactly 96%',flush=True)
-    report=Path(config.library_path)/'reports/verification.json'
+    report=Path(config.library_path)/('reports/verification'+('_'+only_mode if only_mode else '')+'.json')
     report.write_text(json.dumps(result,indent=2),encoding='utf-8')
     return result
 

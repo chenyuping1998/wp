@@ -45,6 +45,8 @@
 	import { drawInstrumentAccents } from '../game/meshWin/instrumentAccents';
 	import { writePerformanceAffine } from '../game/meshWin/performanceAffine';
 	import ImpactDust from './ImpactDust.svelte';
+	import { getContext } from '../game/context';
+	import { planPhrase, claimPhrase } from '../game/jazzBand';
 
 	type Props = {
 		x?: number;
@@ -67,6 +69,7 @@
 	const props: Props = $props();
 	const app = getContextApp();
 	const parent = getContextParent();
+	const context = getContext();
 	const spec = props.spec ?? MESH_WINS[props.symbolName];
 
 	const SHADOW_ALPHA = 0.35, SHADOW_SPREAD = 0.12, SHADOW_DROP = 3;
@@ -124,10 +127,28 @@
 		const playingInstrument = ['H1', 'H2', 'H3', 'H4'].includes(spec.symbol);
 		const started = performance.now();
 		root.label = `meshWin ${spec.symbol} reel ${props.reel ?? '?'}`;
+		// ON THE BAND (2026-11-06, game/jazzBand.ts): a win's act is re-timed so
+		// its hits land on the running music's swung grid, and the first copy of
+		// an instrument plays its notes on those same beats, on the chord.
+		const plan = props.spec ? null : planPhrase(spec.symbol, spec.durationMs, speed, started);
+		if (plan?.notes.length && claimPhrase(spec.symbol))
+			context.eventEmitter.broadcast({ type: 'soundJazzNotes', notes: plan.notes });
+		const actAt = (realMs: number) =>
+			plan ? plan.authored(realMs) : Math.min(spec.durationMs, Math.max(0, realMs) * speed);
+		/** real ms at which the act reaches authored ms `t` (the warp is monotonic) */
+		const realAt = (t: number) => {
+			if (!plan) return t / speed;
+			let lo = 0, hi = plan.totalMs;
+			for (let i = 0; i < 24; i++) {
+				const mid = (lo + hi) / 2;
+				if (plan.authored(mid) < t) lo = mid; else hi = mid;
+			}
+			return hi;
+		};
 		// completion and the landing are on TIMERS, not the frame loop: rAF stops
 		// in a hidden tab, and the board awaits the completion to move on
-		const done = setTimeout(() => props.oncomplete?.(), spec.durationMs / speed);
-		const land = setTimeout(() => (dust = !props.spec && !playingInstrument), spec.landMs / speed);
+		const done = setTimeout(() => props.oncomplete?.(), plan ? plan.totalMs : spec.durationMs / speed);
+		const land = setTimeout(() => (dust = !props.spec && !playingInstrument), realAt(spec.landMs));
 		const clearTimers = () => {
 			clearTimeout(done);
 			clearTimeout(land);
@@ -181,7 +202,7 @@
 		let finalFrameDrawn = false;
 		const tick = () => {
 			if (finalFrameDrawn) return;
-			const t = Math.min(spec.durationMs, Math.max(0, performance.now() - started) * speed);
+			const t = Math.min(spec.durationMs, actAt(performance.now() - started));
 			const pose = spec.pose(rig, t);
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();

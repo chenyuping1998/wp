@@ -73,7 +73,8 @@ export const winLevelMap = {
 		alias: 'mega',
 		type: 'big',
 		text: 'MEGA WIN',
-		presentDuration: 3.6 * SECOND,
+		// three tiers climbed in it now (Win.svelte): 1.5s each
+		presentDuration: 4.5 * SECOND,
 		sound: { sfx: undefined, bgm: 'bgm_winlevel_mega' },
 		animation: { intro: 'mega_win_intro', idle: 'mega_win_idle', outro: 'mega_win_exit' },
 	},

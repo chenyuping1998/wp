@@ -29,6 +29,7 @@
  */
 
 import fs from 'node:fs';
+import zlib from 'node:zlib';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mathGameDir } from '../../../tools/math_game_dir.mjs';
@@ -169,7 +170,26 @@ for (const mode of Object.keys(buyScatters)) {
 	raw.betModes[mode].start_cuts = buyCuts[mode] ?? 0;
 }
 
-const config = { ...raw, symbols, scatterSpins };
+// Hold and Spin Coin values, as the pay table lists them. Collected from the
+// published books rather than game_config.py: the prize ladders there differ
+// per distribution (the wincap one has a 1000 coin the others do not), and the
+// books are what the player is actually served. Prizes are x100, like the
+// lookup tables. (Self-review 2026-11-01, guideline 24: the pay table listed
+// every symbol except the Coin.)
+const HS_BOOKS = path.join(MATH_DIR, 'library/publish_files/books_holdandspin.jsonl.zst');
+const coinSet = new Set();
+for (const line of zlib.zstdDecompressSync(fs.readFileSync(HS_BOOKS)).toString('utf8').split('\n')) {
+	if (!line) continue;
+	for (const e of JSON.parse(line).events)
+		if (e.type === 'reveal') for (const reel of e.board) for (const s of reel) if (s.name === 'P') coinSet.add(s.prize);
+}
+const coinValues = [...coinSet].map((v) => v / 100).sort((a, b) => a - b);
+if (!coinValues.length || coinValues.some((v) => !(v > 0))) {
+	console.error(`Coin values unreadable from ${HS_BOOKS}: ${JSON.stringify([...coinSet])}`);
+	process.exit(1);
+}
+
+const config = { ...raw, symbols, scatterSpins, coinValues };
 
 const header = `// GENERATED FILE - do not edit by hand.
 // Source: math-sdk/games/GoBananinja/library/configs/config_fe_GoBananinja.json
@@ -189,4 +209,5 @@ for (const [mode, info] of Object.entries(config.betModes)) {
 		: '';
 	console.log(`  ${mode}: ${info.cost}x cost, max win ${info.max_win}x${extra}`);
 }
+console.log(`  coin values: ${coinValues.join(', ')}x`);
 console.log(`  rtp ${config.rtp}`);

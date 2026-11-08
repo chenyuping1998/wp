@@ -1,0 +1,100 @@
+{
+  "key": "F major",
+  "loopBpm": 128,
+  "chords": [
+    [
+      0,
+      "maj6"
+    ],
+    [
+      9,
+      "dom7"
+    ],
+    [
+      2,
+      "min7"
+    ],
+    [
+      7,
+      "dom7"
+    ],
+    [
+      0,
+      "maj6"
+    ],
+    [
+      9,
+      "dom7"
+    ],
+    [
+      2,
+      "min7"
+    ],
+    [
+      7,
+      "dom7"
+    ],
+    [
+      0,
+      "dom7"
+    ],
+    [
+      5,
+      "maj6"
+    ],
+    [
+      5,
+      "min6"
+    ],
+    [
+      0,
+      "maj6"
+    ],
+    [
+      9,
+      "dom7"
+    ],
+    [
+      2,
+      "dom7"
+    ],
+    [
+      7,
+      "dom7"
+    ],
+    [
+      0,
+      "maj6"
+    ]
+  ],
+  "loops": [
+    {
+      "name": "bgm_main",
+      "bpm": 128,
+      "swing": 0.64,
+      "bars": 16,
+      "samples": 1440000,
+      "sampleRate": 48000,
+      "stems": {
+        "bed": "bgm_main.mp3",
+        "_groove": "bgm_main_groove.mp3"
+      },
+      "fullMixLoudness": "-14.72",
+      "gainDb": -5.48
+    },
+    {
+      "name": "bgm_freespin",
+      "bpm": 160,
+      "swing": 0.6,
+      "bars": 16,
+      "samples": 1152000,
+      "sampleRate": 48000,
+      "stems": {
+        "bed": "bgm_freespin.mp3",
+        "_groove": "bgm_freespin_groove.mp3"
+      },
+      "fullMixLoudness": "-14.33",
+      "gainDb": -7.35
+    }
+  ]
+}

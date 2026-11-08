@@ -23,6 +23,8 @@
 		| { type: 'soundSackLand' }
 		| { type: 'soundCollectGrab' }
 		| { type: 'soundCoinIn'; index: number }
+		// a Tea Master's tally complete: a rolled psaltery chord
+		| { type: 'soundCollectDone' }
 		| { type: 'soundCollectStamp' }
 		| { type: 'soundShutterDown' }
 		// the transition's sliding shop door (design/generate_door_audio.py)
@@ -62,6 +64,11 @@
 		| 'btn'
 		| 'spin'
 		| 'reel_stop'
+		| 'reel_stop_1'
+		| 'reel_stop_2'
+		| 'reel_stop_3'
+		| 'reel_stop_4'
+		| 'reel_stop_5'
 		| 'scatter_1'
 		| 'scatter_2'
 		| 'scatter_3'
@@ -71,6 +78,17 @@
 		| 'bandit_land'
 		| 'collect_grab'
 		| 'coin_in'
+		| 'cup_clink_0'
+		| 'cup_clink_1'
+		| 'cup_clink_2'
+		| 'cup_clink_3'
+		| 'cup_clink_4'
+		| 'cup_clink_5'
+		| 'cup_clink_6'
+		| 'cup_clink_7'
+		| 'cup_clink_8'
+		| 'cup_clink_9'
+		| 'collect_done'
 		| 'collect_stamp'
 		| 'tumbler_up'
 		| 'dial_tick'
@@ -108,6 +126,14 @@
 		btn: 'sushi/btn.wav',
 		spin: 'sushi/spin.wav',
 		reel_stop: 'sushi/reel_stop.wav',
+		// one recorded stop per reel, each a step brighter (design/build_audible_cues.py,
+		// 2026-11-01): the single low knock pitched by playbackRate sat mostly
+		// below 400 Hz, where phone and laptop speakers make no sound
+		reel_stop_1: 'sushi/reel_stop_1.wav',
+		reel_stop_2: 'sushi/reel_stop_2.wav',
+		reel_stop_3: 'sushi/reel_stop_3.wav',
+		reel_stop_4: 'sushi/reel_stop_4.wav',
+		reel_stop_5: 'sushi/reel_stop_5.wav',
 		scatter_1: 'sushi/scatter_1.wav',
 		scatter_2: 'sushi/scatter_2.wav',
 		scatter_3: 'sushi/scatter_3.wav',
@@ -117,6 +143,19 @@
 		bandit_land: 'sushi/bandit_land.wav',
 		collect_grab: 'sushi/collect_grab.wav',
 		coin_in: 'sushi/coin_in.wav',
+		// the cup collection's climbing tune (design/build_audible_cues.py): one
+		// plucked note per cup up a pentatonic, a porcelain clink on top
+		cup_clink_0: 'sushi/cup_clink_0.wav',
+		cup_clink_1: 'sushi/cup_clink_1.wav',
+		cup_clink_2: 'sushi/cup_clink_2.wav',
+		cup_clink_3: 'sushi/cup_clink_3.wav',
+		cup_clink_4: 'sushi/cup_clink_4.wav',
+		cup_clink_5: 'sushi/cup_clink_5.wav',
+		cup_clink_6: 'sushi/cup_clink_6.wav',
+		cup_clink_7: 'sushi/cup_clink_7.wav',
+		cup_clink_8: 'sushi/cup_clink_8.wav',
+		cup_clink_9: 'sushi/cup_clink_9.wav',
+		collect_done: 'sushi/collect_done.wav',
 		collect_stamp: 'sushi/collect_stamp.wav',
 		tumbler_up: 'sushi/tumbler_up.wav',
 		dial_tick: 'sushi/dial_tick.wav',
@@ -178,15 +217,18 @@
 	// toward the last reel.
 	const SPRITE_TO_CN: Record<
 		SoundEffectName,
-		{ name: CnSfxName; volume?: number; rate?: number } | null
+		{ name: CnSfxName; volume?: number; rate?: number; layered?: boolean } | null
 	> = {
 		sfx_btn_general: { name: 'btn', volume: 0.7 },
 		sfx_btn_spin: { name: 'spin', volume: 0.9 },
-		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.92 },
-		sfx_reel_stop_2: { name: 'reel_stop', rate: 1.0 },
-		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.09 },
-		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.19 },
-		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.3 },
+		// As Go Bananeon / Bananinja: a rising level 0.66 -> 0.86 across the five
+		// stops, and layered, so a stop 100ms after the last no longer cuts it off
+		// (one cached element per file used to restart under each new reel).
+		sfx_reel_stop_1: { name: 'reel_stop_1', volume: 0.66, layered: true },
+		sfx_reel_stop_2: { name: 'reel_stop_2', volume: 0.71, layered: true },
+		sfx_reel_stop_3: { name: 'reel_stop_3', volume: 0.76, layered: true },
+		sfx_reel_stop_4: { name: 'reel_stop_4', volume: 0.81, layered: true },
+		sfx_reel_stop_5: { name: 'reel_stop_5', volume: 0.86, layered: true },
 		sfx_scatter_stop_1: { name: 'scatter_1' },
 		sfx_scatter_stop_2: { name: 'scatter_2' },
 		sfx_scatter_stop_3: { name: 'scatter_3' },
@@ -209,8 +251,8 @@
 		jng_intro_fs: { name: 'fs_intro' },
 		sfx_multiplier_update: { name: 'dial_tick' },
 		sfx_anticipation_start: { name: 'anticipation_pickup', volume: 0.58 },
-		sfx_symbols_landing: { name: 'reel_stop', volume: 0.6 },
-		sfx_royals_landing: { name: 'reel_stop', volume: 0.6 },
+		sfx_symbols_landing: { name: 'reel_stop_3', volume: 0.5, layered: true },
+		sfx_royals_landing: { name: 'reel_stop_2', volume: 0.45, layered: true },
 		// template names this game never raises — mapped anyway so nothing can
 		// fall through to the sprite
 		sfx_multiplier_combine_a: { name: 'dial_tick' },
@@ -237,7 +279,8 @@
 	function getCnSfx(name: CnSfxName) {
 		let audio = cnSfxAudio[name];
 		if (!audio) {
-			audio = new Audio(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
+			// versioned, so a browser or CDN holding the old btn/spin/stops refetches
+			audio = new Audio(`${base}/assets/audio/${CN_SFX_FILES[name]}?v=audible-20261101`);
 			audio.preload = 'auto';
 			cnSfxAudio[name] = audio;
 		}
@@ -586,7 +629,9 @@
 		soundOnce: ({ name, forcePlay }) => {
 			void forcePlay;
 			const mapped = SPRITE_TO_CN[name];
-			if (mapped) playCnSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
+			if (!mapped) return;
+			if (mapped.layered) playCnSfxLayered(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
+			else playCnSfx(mapped.name, mapped.volume ?? 1, mapped.rate ?? 1);
 		},
 		soundFreeGameBell: () => playCnSfx('alarm_bell'),
 		soundBigWinBlast: () => playCnSfx('bigwin_slam'),
@@ -609,7 +654,13 @@
 		soundCollectGrab: () => playCnSfx('collect_grab', 0.8),
 		// each sack into the bag a little higher than the last, so a long
 		// collect climbs instead of repeating
-		soundCoinIn: ({ index }) => playCnSfxLayered('coin_in', 0.7, Math.min(1.6, 1 + 0.07 * index)),
+		// each cup a note higher on its own file (playbackRate never changed the
+		// pitch: browsers preserve pitch by default, so every cup sounded the same)
+		soundCoinIn: ({ index }) => {
+			const note = Math.min(index, 9);
+			playCnSfxLayered(`cup_clink_${note}` as CnSfxName, 0.75 + 0.02 * note);
+		},
+		soundCollectDone: () => playCnSfx('collect_done', 0.85),
 		soundCollectStamp: () => playCnSfx('collect_stamp', 0.9),
 		soundSpinCut: () => cutSpinSounds(),
 		soundShutterDown: () => playCnSfx('shutter_down', 0.85),

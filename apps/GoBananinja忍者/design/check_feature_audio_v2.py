@@ -1,6 +1,6 @@
 """Feature focus: mastering and spectral budgets, with equal-peak A/B listening."""
 from pathlib import Path
-import json,shutil
+import json
 import numpy as np
 import soundfile as sf
 from scipy.signal import resample_poly
@@ -18,10 +18,7 @@ def metrics(a):
 report={}
 for name in names:
  before=BEFORE/(name+'.wav')
- if not before.exists():
-  prior=APP/'build/assets/audio'/THEME/(name+'.wav')
-  assert prior.exists(),'Previous build needed to create the first A/B snapshot'
-  shutil.copy2(prior,before)
+ assert before.exists(), 'Missing frozen A/B reference; restore design/source/feature_audio_v2/before from version control'
  a=read(LIVE/(name+'.wav'));m=metrics(a)
  assert m['true_peak_db']<=-1
  # Independent budgets for brittle top-end and upper-mid accumulation.
@@ -39,6 +36,12 @@ for i,name in enumerate(compare):
 sf.write(str(ROOT/'feature_ab.wav'),audio,44100,subtype='PCM_16')
 (ROOT/'comparison_timeline.json').write_text(json.dumps(timeline,indent=2)+'\n')
 (ROOT/'feature_metrics.json').write_text(json.dumps(report,indent=2)+'\n')
+# Audible on the speakers players use (2026-11-01: the stops and the cut were
+# kick-drum mud, 95%+ below 400 Hz, and phones/laptops played them as silence).
+if THEME=='ninja':
+ for name in [f'reel_stop_{i}' for i in range(1,6)]+['slash_hit','slash_finale']:
+  a=read(LIVE/(name+'.wav'));p=np.abs(np.fft.rfft(a))**2;hz=np.fft.rfftfreq(len(a),1/44100)
+  assert p[hz>=400].sum()/p.sum()>=.55,(name,'mostly below 400 Hz — inaudible on small speakers',p[hz>=400].sum()/p.sum())
 print(THEME, 'feature mastering/spectral budgets PASS')
 for name,row in report.items():
  m=row['after'];print(name,'body',round(m['body_40_400']*100,1),'presence',round(m['presence_2400_5800']*100,1),'top',round(m['air_above_5500']*100,2))

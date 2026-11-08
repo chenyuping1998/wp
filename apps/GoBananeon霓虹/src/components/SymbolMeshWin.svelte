@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { musicAt } from '../game/beatClock';
 	import { buildRig, type Rig } from '../game/meshWin/meshRig';
 	import type { MeshWinSpec } from '../game/meshWin';
 
@@ -139,18 +140,24 @@
 	// Scatter's alone), drawn each frame: it stutters on like a sign being
 	// switched on — two flickers, then full — and hums while it is lit.
 	const NEON = spec.symbol === 'S' ? GOLD : (spec.flashTint ?? GOLD);
-	const neonOn = (t: number) => {
+	// Once lit it no longer hums at random: it breathes with the KICK the player
+	// hears (game/beatClock) — dimmer between hits, flaring on each one, the
+	// outer glow widening a little with it. All the winning tubes on the board
+	// flare together, on the music, which is what makes a payout feel played.
+	const neonOn = (t: number, kick: number) => {
 		const on = t < 40 ? 0.9 : t < 70 ? 0.12 : t < 110 ? 0.75 : t < 150 ? 0.2 : Math.min(1, 0.2 + (t - 150) / 50);
-		return on * (0.93 + 0.07 * Math.sin(t / 31) * Math.sin(t / 13));
+		const lit = Math.min(1, Math.max(0, (t - 200) / 120));
+		return on * (1 - lit * 0.2 + lit * 0.2 * kick);
 	};
 	const drawNeonFrame = (g: PixiGraphics, t: number) => {
 		g.clear();
 		const half = (SYMBOL_SIZE * props.symbolInfo.sizeRatios.height) / 2;
 		const inset = SYMBOL_SIZE * 0.02;
-		const a = neonOn(t);
+		const kick = musicAt(performance.now()).kick;
+		const a = neonOn(t, kick);
 		const box = () => g.roundRect(-half + inset, -half + inset, (half - inset) * 2, (half - inset) * 2, SYMBOL_SIZE * 0.05);
 		// the glow round the tube, the tube, and its white-hot core
-		box().stroke({ width: SYMBOL_SIZE * 0.1, color: NEON, alpha: 0.22 * a });
+		box().stroke({ width: SYMBOL_SIZE * (0.1 + 0.035 * kick), color: NEON, alpha: (0.2 + 0.14 * kick) * a });
 		box().stroke({ width: SYMBOL_SIZE * 0.05, color: NEON, alpha: 0.45 * a });
 		box().stroke({ width: SYMBOL_SIZE * 0.022, color: NEON, alpha: 0.95 * a });
 		box().stroke({ width: SYMBOL_SIZE * 0.008, color: 0xffffff, alpha: 0.85 * a });

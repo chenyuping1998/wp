@@ -93,3 +93,34 @@ export const cheerFace = () => ({
 		[S, 'head_2_face_rest'],
 	].map(([time, name]) => ({ time, name })),
 });
+
+// THE SMALL WIN, REDONE THE SAME WAY (2026-11-01). `nod` plays on most paying
+// spins; it was a 0.8s head bob with the cup lifted and dropped in one motion.
+// Now a toast: the cup dips (wind-up), rises to the board with the forearm a
+// beat behind, HOLDS while he smiles and gives one small nod, then comes home.
+// Small on purpose — this is the common case — but it arrives somewhere.
+const NOD = { mg: { end: 1.2, cup: -18 }, fg: { end: 1.2, cup: -16 } };
+
+export const nodBones = (cast) => {
+	const c = NOD[cast];
+	const E = c.end;
+	return {
+		hip: { translate: xy([[0, 0, 0], [0.14, 0, -3], [0.34, 0, 3], [0.8, 0, 2], [1.0, 0, -1], [E, 0, 0]]) },
+		torso: { scale: xy([[0, 1, 1], [0.14, 1.012, 0.985], [0.34, 0.995, 1.012], [0.8, 1, 1.006], [E, 1, 1]]) },
+		head: {
+			rotate: rot([[0, 0], [0.14, 2], [0.34, -5], [0.52, -1.5], [0.66, -5], [0.84, -3], [1.04, 0.5], [E, 0]]),
+			translate: xy([[0, 0, 0], [0.14, 0, -2], [0.34, 0, 1.5], [0.52, 0, -1], [0.66, 0, 1.5], [1.04, 0, 0], [E, 0, 0]]),
+		},
+		armL: { rotate: rot([[0, 0], [0.14, 4], [0.34, c.cup], [0.82, c.cup * 0.92], [1.04, 2], [E, 0]]) },
+		armL_fore: { rotate: rot([[0, 0], [0.19, -2], [0.39, 8], [0.87, 7], [1.09, -1], [E, 0]]) },
+	};
+};
+
+// a closed smile into a small open one while the cup is up
+export const nodFace = () => ({
+	attachment: [
+		[0, 'head_2_face_rest'],
+		[0.3, 'head_2_face_laugh_1'],
+		[0.84, 'head_2_face_rest'],
+	].map(([time, name]) => ({ time, name })),
+});

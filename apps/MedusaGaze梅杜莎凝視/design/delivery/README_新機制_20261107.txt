@@ -1,0 +1,23 @@
+梅杜莎凝視 — 新機制美術／動畫／音效 — 2026-11-07
+
+依 MEDUSA_新機制_Codex需求單.md 交付：
+[x] st.png：灰色石塊、小蛇浮雕、青綠眼睛，512×512 RGBA。
+[x] stone_crack_1～3.png：細裂、大裂、碎散，接入原有碎前搖晃時段。
+[x] gaze_sweep.png：柔邊青綠掃光，僅石像自身演出，保留原事件時序。
+[x] ladder_panel.png、snake_pip_on/off.png、ladder_lv1～4.png：正式貼圖與升階徽章接線。
+[x] 五支原創合成音效：逐格石化、碎前搖晃、碎石揭露、蛇頭冒出、升階短樂句。
+[x] 四張 720×1040 買入卡封面與接線：ante／petrify／bonus／super。
+[x] 新封面操作卡專用遮罩與文字對比修正，保留價格及文案。
+[x] 完整 production build；型別檢查 0 錯誤、1 個既有設定警告。
+[ ] 選做 petrify_gaze 專屬骨架動作：沿用既有 gaze。
+[ ] 選做讀取頁第四張說明：維持既有三張。
+
+圖像：內建 imagegen，逐張附核准 style_ref；保留 RGBA、原稿與提詞。
+來源：design/source/medusagaze/new-mechanics；提詞：design/new_mechanics_generations.json。
+五支音訊為原創確定性合成，44.1kHz／16-bit／mono，附 48kHz／24-bit 母帶與可編輯 float 來源。
+完整音訊庫 70 支，載入路徑、音量量測及檔頭靜音檢查通過。
+本輪額外擴充掉落測試對 petrify／stoneReveal 的讀取，涵蓋真實新事件樣本。
+未改動數學專案，bookEventHandlerMap.ts 的 SHA256 與開始前相同。
+本機 mock 檢查非真實 RGS／金流驗證；無影片輸出。
+最後視覺驗收尚未完成：Work 已停用本機瀏覽器控制，待複查蛇髮階梯升階、封面對比修正與手機排版。
+新石化樣本已完成 $14.30 並返回待機；不將未完成的 UI 驗收標成通過。

@@ -1,6 +1,8 @@
 <script lang="ts" module>
 	export type EmitterEventWinWays =
-		| { type: 'winLinesShow'; wins: WinWayData[]; fast?: boolean }
+		// live: the round's own win (winInfo), not the idle replay — only it
+		// waits for the beat and sounds its steps
+		| { type: 'winLinesShow'; wins: WinWayData[]; fast?: boolean; live?: boolean }
 		| { type: 'winLinesHide' }
 		| { type: 'winLinesClear' };
 
@@ -22,6 +24,7 @@
 	import { onMount } from 'svelte';
 	import { stateBet } from 'state-shared';
 	import { waitForTimeout } from 'utils-shared/wait';
+	import { musicAt } from '../game/beatClock';
 
 	import { Sprite } from 'pixi-svelte';
 
@@ -187,7 +190,7 @@
 	};
 
 	context.eventEmitter.subscribeOnMount({
-		winLinesShow: async ({ wins: incoming, fast }) => {
+		winLinesShow: async ({ wins: incoming, fast, live }) => {
 			const mine = ++generation;
 			animatedKeys = new Set();
 			revealedReels = 0;
@@ -201,7 +204,22 @@
 			show = true;
 			context.eventEmitter.broadcast({ type: 'boardShow' });
 
-			const stagger = fast || stateBet.isTurbo ? REVEAL_STAGGER.fast : REVEAL_STAGGER.normal;
+			let stagger = fast || stateBet.isTurbo ? REVEAL_STAGGER.fast : REVEAL_STAGGER.normal;
+			// ON THE MUSIC'S GRID. The live win waits for the next 16th of the
+			// running track (a 32nd in the free game, whose sweep is the quick
+			// one) and lights one reel per step, each with a rising note of the
+			// chord under it (Sound.svelte soundWinStep) — the sweep is a fill
+			// the band plays, not a timer. Turbo keeps its 40ms snap, off-grid.
+			const music = musicAt(performance.now());
+			const onGrid = !!live && music.live && !stateBet.isTurbo;
+			if (onGrid) {
+				const perBeat = fast ? 8 : 4;
+				stagger = music.beatMs / perBeat;
+				const units = music.beats * perBeat;
+				const wait = (Math.ceil(units) - units) * stagger;
+				if (wait > 4) await waitForTimeout(wait);
+				if (mine !== generation) return;
+			}
 
 			// Widest win decides how far the wake travels; reels beyond it hold
 			// nothing, so stopping there keeps a 3-of-a-kind from waiting out two
@@ -211,6 +229,7 @@
 			for (let reel = 0; reel <= lastReel; reel++) {
 				revealedReels = reel + 1;
 				animatePositions(usable.flatMap((w) => w.positions.filter((p) => p.reel === reel)));
+				if (live) context.eventEmitter.broadcast({ type: 'soundWinStep', index: reel, total: lastReel + 1, snap: onGrid });
 				await waitForTimeout(stagger);
 				if (mine !== generation) return;
 			}

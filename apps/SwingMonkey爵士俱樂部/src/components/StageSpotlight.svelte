@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Container, Graphics, Sprite, BlurFilter, Rectangle } from 'pixi.js';
 	import { getContextApp, getContextParent } from 'pixi-svelte';
-	import { stateBetDerived } from 'state-shared';
 	import { onMount } from 'svelte';
 	import { getContext } from '../game/context';
-	import { JAZZ_HITS, attackEnergy } from '../game/meshWin/phrase';
+	import { notesHeardAt, noteEnergy } from '../game/jazzBand';
+	import { secondsSinceBeat, beatsHeard } from '../game/musicClock';
 
 	type Plate = { x: number; y: number; width: number; height: number };
 	const props: { parallax: Plate } = $props();
@@ -12,17 +12,17 @@
 	const app = getContextApp();
 	const parent = getContextParent();
 	let winAt = -Infinity, strength = 0;
-	const phrases = new Map<string, { at: number; speed: number }>();
+	let heard: number[] = [];
 	let tension = false;
-	const reset = () => { winAt = -Infinity; phrases.clear(); strength = 0; tension = false; };
+	const reset = () => { winAt = -Infinity; heard = []; strength = 0; tension = false; };
 	context.eventEmitter.subscribeOnMount({
 		backgroundWin: ({ amount }) => {
 			if (amount <= 0) return;
 			winAt = performance.now();
 			strength = Math.min(1, 0.6 + Math.log10(1 + amount / 100) * 0.18);
 		},
-		soundInstrumentPhrase: ({ symbol }) => {
-			phrases.set(symbol, { at: performance.now(), speed: stateBetDerived.timeScale() });
+		soundJazzNotes: ({ notes }) => {
+			heard = [...heard.filter((at) => at > performance.now() - 400), ...notesHeardAt(notes)];
 		},
 		soundReelTensionStart: () => { tension = true; },
 		soundReelTensionStop: () => { tension = false; },
@@ -58,23 +58,24 @@
 			const feature = context.stateGame.gameType === 'freegame';
 			const elapsed = (now - winAt) / 1800;
 			const pulse = elapsed >= 0 && elapsed <= 1 ? Math.sin(Math.PI * elapsed) ** 2 * strength : 0;
-			let beat = 0;
-			for (const [symbol, phrase] of phrases) {
-				const age = (now - phrase.at) * phrase.speed;
-				if (age > 1440) { phrases.delete(symbol); continue; }
-				beat = Math.min(1, beat + attackEnergy(age, JAZZ_HITS[symbol]));
-			}
+			const beat = heard.length ? noteEnergy(now, heard) : 0;
+			// ON THE BAND (2026-11-06): while a win plays or the reels tease, the
+			// stage light breathes on the band's 1 and 3 — the light, not the room:
+			// nothing in the plate moves for it
+			const since = secondsSinceBeat();
+			const strong = Math.floor(beatsHeard()) % 2 === 0;
+			const kick = since < 0 ? 0 : Math.exp(-since * 9) * (strong ? 1 : 0.45) * Math.max(focus, pulse > 0.02 ? 1 : 0);
 			const sweep = Math.sin(now / 6200) * (feature ? 90 : 48) * (1 - focus * 0.7);
 			root.position.set(props.parallax.x, props.parallax.y);
 			root.scale.set(props.parallax.width / 1920, props.parallax.height / 1080);
 			warm.position.set(610 + sweep + focus * 65, 407);
 			warm.width = 840 + pulse * 75 - focus * 90; warm.height = 840;
-			warm.alpha = (feature ? 0.035 : 0.02) + pulse * 0.11 + beat * 0.045 + focus * 0.025;
+			warm.alpha = (feature ? 0.035 : 0.02) + pulse * 0.11 + beat * 0.045 + focus * 0.025 + kick * 0.03;
 			red.position.set(1450 - sweep * 0.7, 420);
 			red.width = 640; red.height = 800;
 			red.alpha = 0.008 + pulse * 0.035 + beat * 0.015;
 			floor.width = 620 + pulse * 90 + beat * 30;
-			floor.alpha = 0.025 + pulse * 0.07 + beat * 0.035;
+			floor.alpha = 0.025 + pulse * 0.07 + beat * 0.035 + kick * 0.03;
 			lampLeft.alpha = 0.065 + 0.018 * Math.sin(now / 2100) + beat * 0.025;
 			lampRight.alpha = 0.055 + 0.016 * Math.sin(now / 2600 + 1.4) + pulse * 0.03;
 		};

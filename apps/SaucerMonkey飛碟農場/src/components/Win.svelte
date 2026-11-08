@@ -24,6 +24,8 @@
 	import GoldText from './GoldText.svelte';
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
+	import { BOOK_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
+	import { winLevelMap, type WinLevel } from '../game/winLevelMap';
 	import { WIN_DECOR } from '../game/meshWin';
 	import PropMesh from './PropMesh.svelte';
 	import { getContext } from '../game/context';
@@ -51,15 +53,42 @@
 		max: 'MAX WIN',
 	};
 
+	// ── the tier ladder (2026-11-06, user: 動畫跟音效節奏要更強) ──────────────
+	// A big win no longer opens on its final plaque. The count climbs BIG →
+	// SUPER → MEGA → EPIC → MAX, one equal slice of the count-up per tier, and
+	// each tier LANDS: the plaque slams again, its title and art change, the
+	// board shakes and that tier's fanfare takes over. Inside each slice the
+	// number runs between the maths' own thresholds (math-sdk get_win_level
+	// "standard", × bet), so the plaque never names a tier the number has not
+	// reached. Skipping jumps straight to the final tier with one slam.
+	const LADDER_X: Partial<Record<number, number>> = { 6: 15, 7: 30, 8: 50, 9: 100 };
+	const tierSteps = (finalLevel: number) => {
+		const out: number[] = [];
+		for (let l = 6; l <= finalLevel; l++) out.push(l);
+		return out.length ? out : [finalLevel];
+	};
+	/** the amount shown at linear count-up progress p, and which step of the ladder it is on */
+	const climb = (p: number, finalAmount: number, ladder: number[]) => {
+		const n = ladder.length;
+		if (n <= 1 || p >= 1) return { shown: finalAmount * Math.min(1, Math.max(0, p)), step: p >= 1 ? Math.max(0, n - 1) : 0 };
+		const seg = Math.min(n - 1, Math.floor(Math.max(0, p) * n)), local = Math.max(0, p) * n - seg;
+		const thr = (level: number) => Math.min(finalAmount, (LADDER_X[level] ?? Infinity) * BOOK_AMOUNT_MULTIPLIER);
+		const from = seg === 0 ? 0 : thr(ladder[seg]);
+		const to = seg === n - 1 ? finalAmount : Math.max(from, thr(ladder[seg + 1]));
+		return { shown: from + (to - from) * local, step: seg };
+	};
+
 	let show = $state(false);
 	let amount = $state(0);
 	let winLevelData = $state<WinLevelData>();
+	let steps = $state<number[]>([]);
+	let landedStep = -1;
 	let oncomplete = $state(() => {});
 	let onCountUpComplete = $state(() => {});
 
 	// camera shake as the presentation slams in
 	let shake = $state({ x: 0, y: 0 });
-	const startShake = () => {
+	const startShake = (gain = 1) => {
 		const start = Date.now();
 		const id = everyFrame(() => {
 			const p = (Date.now() - start) / 700;
@@ -68,7 +97,7 @@
 				id();
 				return;
 			}
-			const amp = 11 * (1 - p) ** 2;
+			const amp = 11 * gain * (1 - p) ** 2;
 			shake = { x: Math.sin(p * Math.PI * 8) * amp * 0.35, y: Math.sin(p * Math.PI * 6) * amp * 0.2 };
 		});
 	};
@@ -95,16 +124,31 @@
 	let fxNow = $state(-1);
 	let fxRaf = 0;
 
-	const startBannerFx = () => {
+	// 'enter' drops the plaque in from above; 'upgrade' is the re-slam on each tier it climbs
+	let fxKind = $state<'enter' | 'upgrade'>('enter');
+	const startBannerFx = (kind: 'enter' | 'upgrade' = 'enter') => {
 		cancelAnimationFrame(fxRaf);
+		fxKind = kind;
 		const start = performance.now();
 		let landed = false;
+		const blastAt = kind === 'enter' ? 380 : 30;
 		const tick = (now: number) => {
 			fxNow = (now - start) / 1000;
-			if (!landed && now - start >= 380) { landed = true; context.eventEmitter.broadcast({ type: 'soundBigWinBlast' }); }
+			if (!landed && now - start >= blastAt) { landed = true; context.eventEmitter.broadcast({ type: 'soundBigWinBlast' }); }
 			fxRaf = requestAnimationFrame(tick);
 		};
 		fxRaf = requestAnimationFrame(tick);
+	};
+
+	// one tier of the ladder lands
+	const landTier = (stepIndex: number, kind: 'enter' | 'upgrade') => {
+		landedStep = stepIndex;
+		const data = winLevelMap[steps[stepIndex] as WinLevel];
+		if (!data) return;
+		startShake(kind === 'enter' ? 1 : 0.75);
+		startImpact();
+		startBannerFx(kind);
+		context.eventEmitter.broadcast({ type: 'soundWinTier', tier: data.alias });
 	};
 	const stopBannerFx = () => {
 		cancelAnimationFrame(fxRaf);
@@ -114,6 +158,12 @@
 
 	const bannerPose = $derived.by(() => {
 		if (fxNow < 0) return { x: 0, y: 0, scale: 1, rotation: 0 };
+		if (fxKind === 'upgrade') {
+			// pulled back a touch (the wind-up), then slammed forward past full size and settled (0.42s)
+			const p = Math.min(1, fxNow / 0.42), q = p - 0.16;
+			const scale = p < 0.16 ? 1 - 0.07 * Math.sin((Math.PI / 2) * (p / 0.16)) : 1 + 0.17 * Math.exp(-7 * q) * Math.cos(10 * q);
+			return { x: 0, y: 0, scale, rotation: p < 0.16 ? 0.01 : -0.035 * Math.exp(-8 * q) };
+		}
 		const p = Math.min(1, fxNow / 0.58);
 		const tail = 1 - p;
 		return {
@@ -134,9 +184,8 @@
 			amount = emitterEvent.amount;
 			winLevelData = emitterEvent.winLevelData;
 			if (emitterEvent.winLevelData.type === 'big') {
-				startShake();
-				startImpact();
-				startBannerFx();
+				steps = tierSteps(emitterEvent.winLevelData.level);
+				landTier(0, 'enter');
 			}
 			await waitForResolve((resolve) => (oncomplete = resolve));
 		},
@@ -175,10 +224,14 @@
 						scale={punch}
 					>
 						{#if isBigWin}
-							{@const alias = winLevelData.alias}
+							{@const at = climb(amount > 0 ? countUpAmount / amount : 1, amount, steps)}
+							{@const alias = winLevelMap[(steps[at.step] ?? winLevelData.level) as WinLevel]?.alias ?? winLevelData.alias}
 							{@const bannerKey = BANNER_KEY[alias] ?? BANNER_KEY.big}
 							{@const bw = SYMBOL_SIZE * 5.2}
 							{@const bh = bw * BANNER_RATIO}
+							{#key at.step}
+								<OnMount onmount={() => { if (at.step > landedStep) landTier(at.step, 'upgrade'); }} />
+							{/key}
 							<Container x={bannerPose.x} y={bannerPose.y} scale={bannerPose.scale} rotation={bannerPose.rotation}>
 								<Sprite key={bannerKey} anchor={.5} width={bw} height={bh}/>
 								<!-- the things on the plaque are meshes over its decor layer (meshWin/decorMeshes.ts) -->
@@ -202,7 +255,7 @@
 								/>
 								<!-- amount rolls inside the plaque's paper well, in ink -->
 								<Container y={bh * 0.19}>
-									<InkNumber text={bookEventAmountToCountUpString(countUpAmount,amount)} fontSize={bh * 0.2} maxWidth={bw * 0.46}/>
+									<InkNumber text={bookEventAmountToCountUpString(at.shown, amount)} fontSize={bh * 0.2} maxWidth={bw * 0.46}/>
 								</Container>
 							</Container>
 						{:else}

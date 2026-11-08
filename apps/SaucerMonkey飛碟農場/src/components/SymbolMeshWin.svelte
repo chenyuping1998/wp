@@ -28,10 +28,10 @@
 	 * rendered from a Text with the very same style and box, so the letter that
 	 * leaps is pixel for pixel the one that was there.
 	 *
-	 * No soft light: a screenprint has none (ART_REQUEST §0). The hit's effects are printed shapes
-	 * (game/meshWin/saucerFx.ts): a halftone halo and a tractor beam under the subject; over it the acting part
-	 * flashing inside its own outline, a hard two-bar glint clipped to the glossy shape, and the bursts, bolts,
-	 * radio arcs and fizz — all placed through the rig, so they ride the acting.
+	 * The hit's light falls ON the painting (game/meshWin/saucerFx.ts, 2026-11-06): the acting part flashing
+	 * inside its own outline, the whole subject's additive copy lifting on the beats (rim), and a feathered gloss
+	 * band rolling over the glass — plus the few things the object really does (the bolt, the fizz, the beam).
+	 * No halos, bursts or sparkle dots. All of it is placed through the rig, so it rides the acting.
 	 */
 	import { Mesh, MeshGeometry, Sprite, Container, Rectangle, Text, Texture, Graphics as FxGraphics } from 'pixi.js';
 	import { Graphics, getContextApp, getContextParent } from 'pixi-svelte';
@@ -43,9 +43,23 @@
 	import { GAME_FONT } from '../game/fonts';
 	import { getSymbolInfo } from '../game/utils';
 	import { CANVAS, boneFrame, skin, type Point } from '../game/meshWin/meshRig';
-	import { SAUCER_FX, glintBars } from '../game/meshWin/saucerFx';
+	import { SAUCER_FX, glossBand } from '../game/meshWin/saucerFx';
 	import { MESH_WINS } from '../game/meshWin';
 	import ImpactDust from './ImpactDust.svelte';
+	import { getContext } from '../game/context';
+	import type { EmitterEventSound } from './Sound.svelte';
+
+	type EmitterEventSoundAct = Extract<EmitterEventSound, { type: 'soundSymbolAct' }>;
+	// each high pay's signature sound, on the beat its act hits (saucerWins.ts / saucerFx.ts beats)
+	const ACT_SIGNATURE: Partial<Record<string, { ms: number; cue: EmitterEventSoundAct['cue'] }>> = {
+		H1: { ms: 390, cue: 'H1' }, // the shot
+		H2: { ms: 290, cue: 'H2' }, // the antenna's boing
+		H3: { ms: 310, cue: 'H3' }, // tuning in
+		H4: { ms: 930, cue: 'H4' }, // the cap pops on the landing
+		W: { ms: 330, cue: 'W' }, // the captain's antenna
+		S: { ms: 350, cue: 'S' }, // the saucer banks away
+	};
+	const context = getContext();
 
 	type Props = {
 		x?: number;
@@ -129,9 +143,21 @@
 		// in a hidden tab, and the board awaits the completion to move on
 		const done = setTimeout(() => props.oncomplete?.(), spec.durationMs / speed);
 		const land = setTimeout(() => (dust = !props.spec), spec.landMs / speed);
+		// the act's sound, on its beats (2026-11-06): the whoosh as it leaves the card, its own signature
+		// on the hit, the tock as it lands. Win acts only — not the idle acts or the board landings.
+		const cues: number[] = [];
+		if (!props.spec) {
+			const emit = (cue: EmitterEventSoundAct['cue']) => context.eventEmitter.broadcast({ type: 'soundSymbolAct', cue });
+			const at = (ms: number, cue: EmitterEventSoundAct['cue']) => cues.push(setTimeout(() => emit(cue), ms / speed) as unknown as number);
+			at(Math.max(0, spec.hitMs - 240), 'rise');
+			const sig = props.letter ? undefined : ACT_SIGNATURE[spec.symbol];
+			if (sig) at(sig.ms, sig.cue);
+			if (spec.landMs < spec.durationMs) at(spec.landMs, 'land');
+		}
 		const clearTimers = () => {
 			clearTimeout(done);
 			clearTimeout(land);
+			cues.forEach((c) => clearTimeout(c));
 		};
 
 		const assets = app.stateApp.loadedAssets ?? {};
@@ -154,7 +180,14 @@
 		const fx = props.spec || props.letter ? undefined : SAUCER_FX[spec.symbol];
 		const back = new FxGraphics(), front = new FxGraphics(), glint = new FxGraphics();
 		let flash: Mesh<MeshGeometry> | undefined, flashGeometry: MeshGeometry | undefined;
+		// the whole subject again, additive: it lifts on the act's beats (shares the subject's geometry)
+		let rim: Mesh<MeshGeometry> | undefined;
+		glint.blendMode = 'add';
 		if (fx) {
+			rim = new Mesh({ geometry, texture: subjectTex });
+			rim.blendMode = 'add';
+			rim.tint = 0xfff4dc;
+			rim.alpha = 0;
 			// the acting part's own triangles, drawn again additive: it flashes inside its outline, no halo
 			const bones = fx.flash.bones.map((name) => rig.bones.findIndex((b) => b.name === name)).filter((b) => b >= 0);
 			const B = rig.bones.length, owned = (v: number) => bones.reduce((sum, b) => sum + rig.weights[v * B + b], 0);
@@ -176,6 +209,7 @@
 		content.position.set(-CANVAS / 2, -CANVAS / 2);
 		if (shadow) content.addChild(shadow);
 		content.addChild(back, subject);
+		if (rim) content.addChild(rim);
 		if (flash) content.addChild(flash);
 		content.addChild(glint, front);
 		root.addChild(content);
@@ -206,11 +240,18 @@
 					flash.alpha = Math.min(1, fx.flash.at(t));
 					if (flash.alpha > 0) flashGeometry.getBuffer('aPosition').update();
 				}
-				const gl = fx.glint;
+				if (rim) {
+					rim.alpha = Math.min(0.35, fx.rim(t));
+					rim.visible = rim.alpha > 0.004;
+				}
+				const gl = fx.gloss;
 				if (gl && t > gl.from && t < gl.to) {
-					// two hard bars sweeping across the gloss, clipped to it, riding the part
-					for (const bar of glintBars(gl.shape, (t - gl.from) / (gl.to - gl.from), gl.angle))
-						glint.poly(bar.flatMap((p) => at(gl.bone, p))).fill({ color: 0xfffbea, alpha: 0.88 });
+					// a feathered band of light rolling over the gloss, clipped to it, riding the part; it swells in
+					// and out over its pass so it never starts or stops as a hard shape
+					const u = (t - gl.from) / (gl.to - gl.from);
+					const k = (gl.peak ?? 0.38) * Math.sin(Math.PI * u) ** 0.8;
+					for (const [poly, a] of glossBand(gl.shape, u, gl.angle))
+						glint.poly(poly.flatMap((p) => at(gl.bone, p))).fill({ color: 0xfff6dc, alpha: k * a });
 				}
 			}
 

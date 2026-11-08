@@ -12,6 +12,7 @@
 	// Shared with the game rules page so the two cannot describe the same rule in
 	// different words. See socialTerms.ts.
 	const T = getSocialTerms();
+	let focusedReels = $state(0);
 
 	type PayRow = { name: string; img: string; label: string; pays: { count: number; value: number }[] };
 
@@ -28,6 +29,7 @@
 		W: 'gbW',
 		S: 'gbS',
 		M: 'gbM',
+		P: 'gbP',
 	};
 
 	const SYMBOL_LABEL: Record<string, string> = {
@@ -43,10 +45,18 @@
 		W: 'Wild',
 		S: 'Golden Bananas — Scatter',
 		M: 'Machete',
+		P: 'Coin — Hold and Spin',
 	};
 
 	// keep high -> low ordering for readability
-	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'S', 'M'];
+	const ORDER = ['W', 'H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'S', 'M', 'P'];
+
+	// The Coin's values, read out of the hold-and-spin books by
+	// design/sync_math_config.mjs (self-review 2026-11-01, guideline 24: every
+	// symbol was listed with its values except this one).
+	const coinValues = ((config as { coinValues?: number[] }).coinValues ?? [])
+		.map((v) => `${v.toLocaleString('en-US')}×`)
+		.join(', ');
 
 	const maxWin = config.betModes?.base?.max_win ?? 10000;
 
@@ -163,19 +173,21 @@
 		cells.some(([r, y]) => r === reel && y === row);
 
 	const rows: PayRow[] = ORDER.filter((name) => name in config.symbols).map((name) => {
-		const pays = (SYMBOLS[name]?.paytable ?? []).map((entry) => {
+		// P's maths paytable is a {99: 0} placeholder, not a pay: it would print a
+		// "99 reels" chip and add a 99 to the reel-count filter.
+		const pays = (name === 'P' ? [] : SYMBOLS[name]?.paytable ?? []).map((entry) => {
 			const [count, value] = Object.entries(entry)[0];
 			return { count: Number(count), value: Number(value) };
 		});
 		return { name, img: imgSrc(name), label: SYMBOL_LABEL[name] ?? name, pays };
 	});
+	const reelCounts = [...new Set(rows.flatMap(row=>row.pays.map(pay=>pay.count)))].sort((a,b)=>a-b);
 </script>
 
 {#if stateModal.modal?.name === 'payTable'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-paytable info-page">
 			<InfoShell kind="paytable">
-			<h2>{T.payTableUpper}</h2>
 			<p class="wp-note">
 				{T.paysStart} shown as a multiple of {T.totalBet}, per winning way. Wins
 				{T.winsDirection} on adjacent reels, in any position &mdash; there are no fixed lines.
@@ -195,6 +207,13 @@
 				>; the symbols it doubles raise the {T.ways}, not the reel count.
 			</p>
 
+			<h3 class="symbol-values-title">Symbol values</h3>
+			<div class="pay-focus" role="group" aria-label="Highlight values by adjacent reel count">
+                <span>Compare reel counts</span>
+                {#each [0, ...reelCounts] as count}
+                  <button aria-pressed={focusedReels===count} onclick={()=>focusedReels=count}>{count===0?'All':`${count} reels`}</button>
+                {/each}
+              </div>
 			<div class="wp-grid">
 				{#each rows as row, i (row.name)}
 					<div class="wp-row" style="animation-delay: {i * 50}ms">
@@ -220,9 +239,14 @@
 								<span class="wp-special"
 									>Splits every symbol on its reel in two &mdash; no win of its own</span
 								>
+							{:else if row.name === 'P'}
+								<span class="wp-special"
+									>Hold and Spin only. Each Coin shows one of {coinValues} &times; the
+									{T.totalBet}; every Coin on the board is added up when the respins run out</span
+								>
 							{:else if row.pays.length}
 								{#each row.pays as pay (pay.count)}
-									<span class="wp-pay-chip">
+									<span class="wp-pay-chip" class:pay-focused={focusedReels===pay.count} class:pay-muted={focusedReels!==0&&focusedReels!==pay.count}>
 										<b>{pay.count} {pay.count === 1 ? 'reel' : 'reels'}</b>
 										<em>{pay.value}&times;</em>
 									</span>
@@ -365,28 +389,21 @@
 		}
 	}
 
-	@keyframes shimmer {
-		0% { background-position: -200% center; }
-		100% { background-position: 200% center; }
-	}
-
 	.wp-paytable {
 		/* sit above the Popup's full-screen click-to-close layer (z-index 2),
 		   otherwise the overlay swallows wheel/touch events and blocks scrolling */
 		position: relative;
 		z-index: 100;
-		display: flex;
-		flex-direction: column;
-		gap: 0.85rem;
-		width: min(36rem, 90vw);
-		max-width: 36rem;
-		max-height: 80vh;
+		/* The scroller IS the journal: InfoShell draws the frame, so this box
+		   adds no padding of its own and shares the shell's corner radius. */
+		display: block;
+		width: min(40rem, 94vw);
+		max-height: 88vh;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 		overscroll-behavior: contain;
-		padding: 1.5rem 1.75rem;
+		border-radius: 20px;
 		color: #fff;
-		text-align: center;
 		animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 
 		/* custom scrollbar */
@@ -402,19 +419,77 @@
 			border-radius: 4px;
 		}
 
-		h2 {
-			margin: 0 0 0.25rem;
-			font-size: 1.75rem;
-			font-weight: 800;
-			letter-spacing: 0.1em;
-			background: linear-gradient(135deg, #ffe98a 0%, #ffd75e 50%, #9ec44a 100%);
-			background-size: 200% auto;
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-			animation: shimmer 4s linear infinite;
-			filter: drop-shadow(0 0 18px rgba(255, 215, 94, 0.4));
+		/* the shell's content slot is a plain block — space the sections here;
+		   the shell itself reads left-aligned, the pay sheet stays centred */
+		:global(.info-content) {
+			display: flex;
+			flex-direction: column;
+			gap: 0.85rem;
+			text-align: center;
 		}
+	}
+
+	.symbol-values-title {
+		margin: 0.5rem 0 0;
+		font-size: 1.05rem;
+		font-weight: 400;
+		letter-spacing: 0.14em;
+		color: #f0d490;
+	}
+
+	/* Reel-count focus. Only emphasis changes — every value stays printed. */
+	.pay-focus {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+
+		span {
+			width: 100%;
+			font-size: 0.72rem;
+			letter-spacing: 0.16em;
+			text-transform: uppercase;
+			color: #c5a46a;
+		}
+
+		button {
+			appearance: none;
+			min-height: 36px;
+			padding: 0 0.9rem;
+			border: 1px solid #5b4c2e;
+			border-radius: 6px;
+			background: #0a1720;
+			color: #d6cbb2;
+			font: 600 0.8rem/1 var(--gb-body-font, system-ui);
+			cursor: pointer;
+			transition: border-color 0.14s ease, color 0.14s ease;
+
+			&:hover {
+				border-color: #c5a46a;
+				color: #efe4ca;
+			}
+
+			&[aria-pressed='true'] {
+				border: 2px solid #d9b56b;
+				color: #d9b56b;
+			}
+
+			&:focus-visible {
+				outline: 2px solid #f6d7a0;
+				outline-offset: 2px;
+			}
+		}
+	}
+
+	.wp-pay-chip.pay-muted {
+		opacity: 0.35;
+	}
+
+	.wp-pay-chip.pay-focused {
+		border-color: #d9b56b !important;
+		background: rgba(217, 181, 107, 0.16) !important;
+		color: #fff4d8;
 	}
 
 	.wp-note {
@@ -640,9 +715,7 @@
 		&:hover {
 			background: rgba(255, 215, 94, 0.1);
 			border-color: rgba(255, 215, 94, 0.22);
-			box-shadow: 0 0 20px rgba(255, 215, 94, 0.14),
-			            inset 0 0 20px rgba(255, 215, 94, 0.05);
-			transform: translateX(4px);
+			box-shadow: none;
 		}
 	}
 

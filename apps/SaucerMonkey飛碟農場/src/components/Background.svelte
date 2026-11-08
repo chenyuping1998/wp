@@ -9,6 +9,7 @@
 	import BgProps from './BgProps.svelte';
 	import BgNight from './BgNight.svelte';
 	import BgEvents from './BgEvents.svelte';
+	import BgCows from './BgCows.svelte';
 	import BowlingScoreboards from './BowlingScoreboards.svelte';
 
 	const context = getContext();
@@ -23,8 +24,7 @@
 	//
 	// No soft motes or glow shafts: a screenprint poster has neither, and anything
 	// glowing on it reads as a different medium (ART_BRIEF.md §0). The light that
-	// does move (BgEvents: the searchlight, the cloud over the moon) is printed —
-	// flat shapes and halftone.
+	// does move (BgEvents: mist, bats) is printed — flat shapes and ink.
 	const OVERSCAN = 1.06;
 	const PLATE = [1920, 1080];
 	const parallax = $derived.by(() => {
@@ -64,9 +64,11 @@
 	<Sprite key="gbBgBase" {...parallax} />
 	<!-- the corn, trees, clouds and saucer, moving (game/meshWin/bgProps.ts) -->
 	<BgProps specs={BG_BASE_PROPS} plate="gbBgBase" {...parallax} />
-	<!-- stars, windows, fireflies, a shooting star (BgNight.svelte) -->
+	<!-- stars, windows, a shooting star (BgNight.svelte) -->
 	<BgNight scene="base" {...parallax} />
-	<!-- mist, the searchlight, a cloud over the moon, a big win's abduction (BgEvents.svelte) -->
+	<!-- cows wandering the field (BgCows.svelte), under the mist -->
+	<BgCows {...parallax} />
+	<!-- mist, bats, a big win's abduction (BgEvents.svelte) -->
 	<BgEvents scene="base" {...parallax} />
 </FadeContainer>
 
@@ -74,6 +76,7 @@
 	<Sprite key="gbBgFeature" {...parallax} />
 	<BgProps specs={BG_FEATURE_PROPS} plate="gbBgFeature" {...parallax} />
 	<BgNight scene="feature" {...parallax} />
+	<BgCows {...parallax} />
 	<BgEvents scene="feature" {...parallax} />
 </FadeContainer>
 

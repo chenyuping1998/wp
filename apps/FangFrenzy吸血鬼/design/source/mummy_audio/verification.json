@@ -1,0 +1,690 @@
+{
+  "passed": true,
+  "files": 68,
+  "bytes": 4608645,
+  "errors": [],
+  "rows": [
+    {
+      "file": "bgm_main.ogg",
+      "duration": 32.0,
+      "channels": 2,
+      "true_peak_dbtp": -7.55,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -23.74,
+      "loop_seam": 0.0011913140187971294,
+      "licensed_sources": 4,
+      "lufs": -20.01
+    },
+    {
+      "file": "bgm_freespin.ogg",
+      "duration": 27.428571428571427,
+      "channels": 2,
+      "true_peak_dbtp": -7.98,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -19.11,
+      "loop_seam": 0.0008053297642618418,
+      "licensed_sources": 6,
+      "lufs": -20.02
+    },
+    {
+      "file": "btn.wav",
+      "duration": 0.07501133786848073,
+      "channels": 1,
+      "true_peak_dbtp": -15.47,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "spin.wav",
+      "duration": 0.4,
+      "channels": 1,
+      "true_peak_dbtp": -7.31,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 2
+    },
+    {
+      "file": "reel_stop_1.wav",
+      "duration": 0.14,
+      "channels": 1,
+      "true_peak_dbtp": -5.76,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 2
+    },
+    {
+      "file": "reel_stop_2.wav",
+      "duration": 0.14,
+      "channels": 1,
+      "true_peak_dbtp": -6.09,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 2
+    },
+    {
+      "file": "reel_stop_3.wav",
+      "duration": 0.14,
+      "channels": 1,
+      "true_peak_dbtp": -5.29,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 2
+    },
+    {
+      "file": "reel_stop_4.wav",
+      "duration": 0.14,
+      "channels": 1,
+      "true_peak_dbtp": -6.05,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 2
+    },
+    {
+      "file": "reel_stop_5.wav",
+      "duration": 0.14,
+      "channels": 1,
+      "true_peak_dbtp": -6.08,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 2
+    },
+    {
+      "file": "scatter_1.wav",
+      "duration": 0.9,
+      "channels": 1,
+      "true_peak_dbtp": -6.54,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 4
+    },
+    {
+      "file": "scatter_2.wav",
+      "duration": 0.9,
+      "channels": 1,
+      "true_peak_dbtp": -6.54,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 4
+    },
+    {
+      "file": "scatter_3.wav",
+      "duration": 0.9,
+      "channels": 1,
+      "true_peak_dbtp": -5.57,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 4
+    },
+    {
+      "file": "scatter_4.wav",
+      "duration": 0.9,
+      "channels": 1,
+      "true_peak_dbtp": -4.12,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 5
+    },
+    {
+      "file": "scatter_5.wav",
+      "duration": 0.9,
+      "channels": 1,
+      "true_peak_dbtp": -4.12,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 5
+    },
+    {
+      "file": "win_small.wav",
+      "duration": 1.1,
+      "channels": 1,
+      "true_peak_dbtp": -6.5,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 3
+    },
+    {
+      "file": "win_medium.ogg",
+      "duration": 2.4,
+      "channels": 2,
+      "true_peak_dbtp": -6.01,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.001409568707458675,
+      "licensed_sources": 3
+    },
+    {
+      "file": "line_draw.wav",
+      "duration": 0.4,
+      "channels": 1,
+      "true_peak_dbtp": -15.42,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "cat_land.wav",
+      "duration": 0.25,
+      "channels": 1,
+      "true_peak_dbtp": -13.13,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 2
+    },
+    {
+      "file": "scarab_rise.wav",
+      "duration": 0.95,
+      "channels": 1,
+      "true_peak_dbtp": -3.88,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 3
+    },
+    {
+      "file": "scarab_press.wav",
+      "duration": 0.3,
+      "channels": 1,
+      "true_peak_dbtp": -6.71,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "scarab_tick.wav",
+      "duration": 0.03501133786848073,
+      "channels": 1,
+      "true_peak_dbtp": -11.76,
+      "tail_window_ms": 4.988662131519274,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "scarab_stop.wav",
+      "duration": 0.6,
+      "channels": 1,
+      "true_peak_dbtp": -11.76,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "scarab_fly.wav",
+      "duration": 0.3,
+      "channels": 1,
+      "true_peak_dbtp": -13.5,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "scarab_sink.wav",
+      "duration": 0.3,
+      "channels": 1,
+      "true_peak_dbtp": -6.64,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "sun_tick.wav",
+      "duration": 0.02800453514739229,
+      "channels": 1,
+      "true_peak_dbtp": -10.64,
+      "tail_window_ms": 4.988662131519274,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "sun_count.wav",
+      "duration": 0.4,
+      "channels": 1,
+      "true_peak_dbtp": -6.07,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "sun_stop.wav",
+      "duration": 1.3,
+      "channels": 1,
+      "true_peak_dbtp": -6.74,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "coin_land.wav",
+      "duration": 0.4,
+      "channels": 1,
+      "true_peak_dbtp": -6.07,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "bandage_pop.wav",
+      "duration": 0.3,
+      "channels": 1,
+      "true_peak_dbtp": -9.01,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "scarab_mult_1.wav",
+      "duration": 0.9,
+      "channels": 1,
+      "true_peak_dbtp": -5.46,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 4
+    },
+    {
+      "file": "scarab_mult_2.wav",
+      "duration": 1.1,
+      "channels": 1,
+      "true_peak_dbtp": -5.97,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 4
+    },
+    {
+      "file": "scarab_mult_3.wav",
+      "duration": 1.4,
+      "channels": 1,
+      "true_peak_dbtp": -6.53,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 4
+    },
+    {
+      "file": "sun_win_1.ogg",
+      "duration": 3.0,
+      "channels": 2,
+      "true_peak_dbtp": -6.19,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0026911909226328135,
+      "licensed_sources": 4
+    },
+    {
+      "file": "sun_win_2.ogg",
+      "duration": 3.5,
+      "channels": 2,
+      "true_peak_dbtp": -5.82,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.001895998721010983,
+      "licensed_sources": 4
+    },
+    {
+      "file": "sun_win_3.ogg",
+      "duration": 4.0,
+      "channels": 2,
+      "true_peak_dbtp": -5.31,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0027359032537788153,
+      "licensed_sources": 5
+    },
+    {
+      "file": "sun_win_4.ogg",
+      "duration": 4.5,
+      "channels": 2,
+      "true_peak_dbtp": -5.31,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0027359032537788153,
+      "licensed_sources": 5
+    },
+    {
+      "file": "bigwin_hit.ogg",
+      "duration": 2.0,
+      "channels": 2,
+      "true_peak_dbtp": -6.25,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0017860222142189741,
+      "licensed_sources": 3
+    },
+    {
+      "file": "win_big.ogg",
+      "duration": 2.4,
+      "channels": 2,
+      "true_peak_dbtp": -6.01,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.001409568707458675,
+      "licensed_sources": 3
+    },
+    {
+      "file": "win_super.ogg",
+      "duration": 3.0,
+      "channels": 2,
+      "true_peak_dbtp": -6.01,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.001409568707458675,
+      "licensed_sources": 3
+    },
+    {
+      "file": "win_mega.ogg",
+      "duration": 3.6,
+      "channels": 2,
+      "true_peak_dbtp": -6.25,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0017860222142189741,
+      "licensed_sources": 3
+    },
+    {
+      "file": "win_epic.ogg",
+      "duration": 4.2,
+      "channels": 2,
+      "true_peak_dbtp": -5.07,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0020484016276896,
+      "licensed_sources": 4
+    },
+    {
+      "file": "win_max.ogg",
+      "duration": 4.8,
+      "channels": 2,
+      "true_peak_dbtp": -5.31,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0027359032537788153,
+      "licensed_sources": 5
+    },
+    {
+      "file": "win_panel.ogg",
+      "duration": 1.8,
+      "channels": 2,
+      "true_peak_dbtp": -6.01,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.001409568707458675,
+      "licensed_sources": 3
+    },
+    {
+      "file": "win_cap.ogg",
+      "duration": 3.5,
+      "channels": 2,
+      "true_peak_dbtp": -5.31,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0027359032537788153,
+      "licensed_sources": 5
+    },
+    {
+      "file": "fg_trigger.ogg",
+      "duration": 2.6,
+      "channels": 2,
+      "true_peak_dbtp": -6.25,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0017860222142189741,
+      "licensed_sources": 3
+    },
+    {
+      "file": "fg_intro.ogg",
+      "duration": 2.2,
+      "channels": 2,
+      "true_peak_dbtp": -6.01,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.001409568707458675,
+      "licensed_sources": 3
+    },
+    {
+      "file": "coin_reset.wav",
+      "duration": 0.6,
+      "channels": 2,
+      "true_peak_dbtp": -4.98,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 3
+    },
+    {
+      "file": "hs_tally.wav",
+      "duration": 1.5,
+      "channels": 2,
+      "true_peak_dbtp": -6.04,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 3
+    },
+    {
+      "file": "win_rollup_end.wav",
+      "duration": 1.0,
+      "channels": 2,
+      "true_peak_dbtp": -5.43,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 3
+    },
+    {
+      "file": "scarab_button_idle.ogg",
+      "duration": 2.0,
+      "channels": 1,
+      "true_peak_dbtp": -20.67,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -58.66,
+      "loop_seam": 0.00021020821804995649,
+      "licensed_sources": 1
+    },
+    {
+      "file": "reel_tension.ogg",
+      "duration": 2.0,
+      "channels": 1,
+      "true_peak_dbtp": -18.94,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -47.39,
+      "loop_seam": 0.0006113167328294367,
+      "licensed_sources": 1
+    },
+    {
+      "file": "sun_wait_loop.ogg",
+      "duration": 4.0,
+      "channels": 2,
+      "true_peak_dbtp": -18.75,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -59.2,
+      "loop_seam": 0.00017956511146621779,
+      "licensed_sources": 1
+    },
+    {
+      "file": "sun_score_loop.wav",
+      "duration": 1.2,
+      "channels": 2,
+      "true_peak_dbtp": -21.55,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -32.8,
+      "loop_seam": 0.0,
+      "licensed_sources": 2
+    },
+    {
+      "file": "win_rollup_loop.ogg",
+      "duration": 4.0,
+      "channels": 2,
+      "true_peak_dbtp": -20.9,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -58.16,
+      "loop_seam": 2.893152441174607e-06,
+      "licensed_sources": 2
+    },
+    {
+      "file": "cat_wave.wav",
+      "duration": 0.8,
+      "channels": 1,
+      "true_peak_dbtp": -6.32,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "cat_laugh.ogg",
+      "duration": 1.6,
+      "channels": 1,
+      "true_peak_dbtp": -7.3,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 2.3028171199257486e-05,
+      "licensed_sources": 1
+    },
+    {
+      "file": "cat_cheer.wav",
+      "duration": 1.2,
+      "channels": 1,
+      "true_peak_dbtp": -6.25,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "cat_disappoint.wav",
+      "duration": 1.2,
+      "channels": 1,
+      "true_peak_dbtp": -6.33,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "voice_sun_start.wav",
+      "duration": 1.4,
+      "channels": 1,
+      "true_peak_dbtp": -6.25,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "voice_levelup_1.wav",
+      "duration": 1.0,
+      "channels": 1,
+      "true_peak_dbtp": -6.32,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "voice_levelup_2.wav",
+      "duration": 1.2,
+      "channels": 1,
+      "true_peak_dbtp": -6.37,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "voice_levelup_3.ogg",
+      "duration": 1.6,
+      "channels": 1,
+      "true_peak_dbtp": -5.68,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 2.108979970216751e-05,
+      "licensed_sources": 1
+    },
+    {
+      "file": "bandage_sweep.wav",
+      "duration": 1.0,
+      "channels": 1,
+      "true_peak_dbtp": -7.46,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0,
+      "licensed_sources": 1
+    },
+    {
+      "file": "tomb_rumble.ogg",
+      "duration": 3.0,
+      "channels": 1,
+      "true_peak_dbtp": -41.73,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -97.58,
+      "loop_seam": 4.737445124192163e-06,
+      "licensed_sources": 1
+    },
+    {
+      "file": "sun_show.ogg",
+      "duration": 2.2,
+      "channels": 2,
+      "true_peak_dbtp": -5.17,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.00402736896649003,
+      "licensed_sources": 6
+    },
+    {
+      "file": "sun_start.ogg",
+      "duration": 1.8,
+      "channels": 2,
+      "true_peak_dbtp": -6.19,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0026911909226328135,
+      "licensed_sources": 5
+    },
+    {
+      "file": "sun_levelup.ogg",
+      "duration": 3.0,
+      "channels": 2,
+      "true_peak_dbtp": -5.31,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 0.0027359032537788153,
+      "licensed_sources": 5
+    },
+    {
+      "file": "coin_shimmer.ogg",
+      "duration": 2.0,
+      "channels": 2,
+      "true_peak_dbtp": -20.13,
+      "tail_window_ms": 50.0,
+      "tail_dbfs": -200.0,
+      "loop_seam": 3.2022646792029263e-06,
+      "licensed_sources": 1
+    }
+  ]
+}

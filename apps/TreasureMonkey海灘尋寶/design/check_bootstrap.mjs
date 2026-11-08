@@ -29,6 +29,12 @@ for (const [name, mode] of Object.entries(config.betModes)) {
  assert.equal(mode.max_win, rules.maxWin);
  assert.equal(mode.buyBonus, name !== 'base');
 }
+for (const [gameType, reelSet] of [['basegame', 'BR0'], ['freegame', 'FR0']]) {
+ const rows = fs.readFileSync(path.join(root, `math/reels/${reelSet}.csv`), 'utf8').trim().split(/\r?\n/).map(row => row.split(','));
+ const strips = Array.from({ length: 5 }, (_, reel) => rows.map(row => row[reel]));
+ assert.deepEqual(config.paddingReels[gameType].map(column => column.map(symbol => symbol.name)), strips,
+  `${gameType} display strips must match evaluated math strips`);
+}
 assert.equal(JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).name, 'treasure-monkey');
 assert.equal(fs.realpathSync(path.join(root, '../TreasureMonkey')), fs.realpathSync(root));
 console.log('OK: TreasureMonkey independent math contract; 5×4 / 14 lines / 100,500,1000x buys; all four modes at 96%');

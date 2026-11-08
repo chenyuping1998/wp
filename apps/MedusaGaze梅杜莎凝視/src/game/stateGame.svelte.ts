@@ -90,6 +90,8 @@ export const stateGame = $state({
 	// Medusa's running total in the free game (SPEC 3-2). 0 outside a feature;
 	// only an applied throw adds to it, and it clears when the feature ends.
 	medusaTotal: 0,
+	// Serpent Ladder snake count in the free game (SPEC 3-5); 0 outside a feature.
+	snakes: 0,
 	// Running total of the tumble sequence in progress, in book cents.
 	tumbleWin: 0,
 	// How many links the current tumble chain has resolved (1 = first win).

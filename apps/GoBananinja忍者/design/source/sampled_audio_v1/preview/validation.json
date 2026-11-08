@@ -2,7 +2,7 @@
   "theme": "ninja",
   "files": 40,
   "bytes": 8142944,
-  "provenance_rows": 110,
+  "provenance_rows": 114,
   "metrics": {
     "bgm_freespin.mp3": {
       "lufs": -20.2641332660816,
@@ -27,7 +27,7 @@
       "tail_50ms_db": -240.0
     },
     "fs_intro.wav": {
-      "true_peak": -3.199964974578707,
+      "true_peak": -3.1996792948457715,
       "tail_50ms_db": -240.0
     },
     "gong_feature.wav": {
@@ -35,7 +35,7 @@
       "tail_50ms_db": -240.0
     },
     "grenade_blast.wav": {
-      "true_peak": -3.200189993859197,
+      "true_peak": -3.1998066039697903,
       "tail_50ms_db": -240.0
     },
     "mult_update.wav": {
@@ -95,11 +95,11 @@
       "tail_50ms_db": -240.0
     },
     "slash_finale.wav": {
-      "true_peak": -2.799781494091895,
+      "true_peak": -2.800079147130588,
       "tail_50ms_db": -240.0
     },
     "slash_hit.wav": {
-      "true_peak": -3.1999591381049726,
+      "true_peak": -3.200189993859197,
       "tail_50ms_db": -240.0
     },
     "spin.wav": {
@@ -107,7 +107,7 @@
       "tail_50ms_db": -240.0
     },
     "wild_expand.wav": {
-      "true_peak": -3.199964974578707,
+      "true_peak": -3.1996792948457715,
       "tail_50ms_db": -240.0
     },
     "win_big.wav": {

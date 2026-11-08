@@ -16,13 +16,14 @@ import { BOARD_DIMENSIONS, HOLD_AND_SPIN_MODE_KEY } from './constants';
 import config from './config';
 
 // The math emits anticipation[reel] = (scatters landed before that reel) - 1, so
-// a value of 1 means the tease starts on the *second* scatter. Free spins need
-// four, so teasing that early fires on most spins and stops meaning anything.
-// Require three scatters already on the board (value >= 2) before any reel
-// teases. Filtering the array here — rather than in utils-slots — keeps the
-// slow reel stop and the on-screen tease gated by the same condition, and
-// leaves the shared package (and WildParty) untouched.
-const ANTICIPATION_MIN_SCATTERS = 3;
+// a value of 1 means two scatters are already down. Free spins need THREE here,
+// so the tease starts at two: the reel it slows is the one that can bring the
+// trigger. (It used to wait for three — a leftover from a game that needed four
+// — which teased only for the 4th and 5th scatter, after the feature was
+// already won. User, 2026-11-01: 聽牌是 2 個開始聽.) Filtering the array here —
+// rather than in utils-slots — keeps the slow reel stop and the on-screen tease
+// gated by the same condition, and leaves the shared package untouched.
+const ANTICIPATION_MIN_SCATTERS = 2;
 
 const gateAnticipation = (anticipation: number[]) =>
 	anticipation.map((value) => (value >= ANTICIPATION_MIN_SCATTERS - 1 ? value : 0));

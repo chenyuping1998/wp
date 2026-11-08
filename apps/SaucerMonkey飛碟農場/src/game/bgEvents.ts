@@ -3,9 +3,8 @@
  * Drawn the print way (ART_REQUEST §0): flat shapes, coarse halftone, ink keylines on the objects, no soft glow.
  *
  *   mist        three bands of flat, lobed mist drift across the field at different speeds (both sets)
- *   searchlight every SEARCH_EVERY s the little saucer top left switches its lamp on with a stutter, sweeps the
- *               barn and the field in front of it and snaps it off (base set: the feature has the mothership)
- *   moon cloud  every CLOUD_EVERY s a cloud slides across the moon and the whole night dims under it
+ *   bats        a few bats flap across the sky band every BATS_EVERY s (what a portrait phone sees)
+ *   (the searchlight and the moon cloud were removed 2026-11-06: user, 太像 AI)
  *   abduction   on a big win a saucer swoops in across the moon with a cow hanging in its beam, reels her up,
  *               and darts off — the board covers the middle of the plate, so it happens in the open sky top
  *               right, where the moon is
@@ -18,7 +17,6 @@
 import type { Graphics } from 'pixi.js';
 
 export const INK = 0x141a33, CREAM = 0xf6eed6, GREEN = 0x86e35b, LAMP = 0xf6e7a4;
-export const SEARCH_EVERY = 34, CLOUD_EVERY = 46;
 export const ABDUCTION_S = 4.2;
 
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
@@ -45,84 +43,38 @@ export const drawMist = (g: Graphics, t: number) => {
 	}
 };
 
-// ── the searchlight ─────────────────────────────────────────────────────────
-/** the little saucer's belly, riding its hover (bgProps: hover [6 px, 2.5°, 1900 ms]) */
-export const saucerBelly = (t: number): [number, number] => [465, 100 + 6 * Math.sin((t * 1000 * Math.PI * 2) / 1900)];
-/** 0 off, 1 on: a stuttering switch-on, a sweep there and back, a snap off */
-export const searchLevel = (t: number) => {
-	const u = t % SEARCH_EVERY;
-	if (u < 4 || u > 13.4) return 0;
-	const on = u - 4;
-	if (on < 0.45) return [0.06, 0.14, 0.24, 0.45].some((k, i) => on >= k && on < k + (i % 2 ? 0.1 : 0.05)) ? 0 : 1;
-	return 1;
-};
-export const searchSpot = (t: number): [number, number] => {
-	const u = clamp(((t % SEARCH_EVERY) - 4.5) / 8.6);
-	// out to the far side of the barn and back, lingering at each end
-	const s = 0.5 - 0.5 * Math.cos(u * Math.PI * 2);
-	return [590 - 470 * s, 640 - 70 * Math.sin(u * Math.PI)];
-};
-export const drawSearchlight = (g: Graphics, t: number) => {
-	const k = searchLevel(t);
-	if (!k) return;
-	const [ax, ay] = saucerBelly(t), [sx, sy] = searchSpot(t), rx = 92, ry = 24;
-	// the cone: apex at the lamp, out to the spot's sides
-	g.poly([ax - 7, ay, ax + 7, ay, sx + rx, sy, sx - rx, sy]).fill({ color: LAMP, alpha: 0.16 });
-	// halftone in the cone, thinning toward the ground
-	for (let row = 0, y = ay + 10; y < sy - 6; row++, y += 14) {
-		const v = (y - ay) / (sy - ay), cx = ax + (sx - ax) * v, half = 7 + (rx - 7) * v - 6, dot = 2.6 * (1 - v * 0.7);
-		for (let x = -half + (row % 2) * 7; x <= half; x += 14) g.circle(cx + x, y, dot);
-	}
-	g.fill({ color: LAMP, alpha: 0.42 });
-	// the lit ground: a pale ellipse and a ring of denser dots
-	g.ellipse(sx, sy, rx, ry).fill({ color: LAMP, alpha: 0.24 });
-	g.ellipse(sx, sy, rx * 0.62, ry * 0.62).fill({ color: LAMP, alpha: 0.16 });
-};
-
-// ── the cloud over the moon ─────────────────────────────────────────────────
-export const MOON_AT: [number, number, number] = [1617, 155, 125];
-// the painted clouds' own make-up (sampled off the plate round the moon): a scalloped top of small lobes with a
-// grey-beige moonlit rim, a flat underside, mid blue body, lighter blue halftone
-const LOBES: [number, number, number][] = [
-	// the scalloped crown
-	...Array.from({ length: 13 }, (_, i): [number, number, number] => {
-		const arch = Math.sin(((i + 0.5) / 13) * Math.PI);
-		return [-180 + i * 30, 4 - arch * 44 + (i % 2) * 7, 18 + 15 * arch + 4 * Math.sin(i * 2.3)];
-	}),
-	// a second, lower row of small puffs so the underside is not one straight cut
-	...Array.from({ length: 9 }, (_, i): [number, number, number] => [-170 + i * 42, 18 + (i % 2) * 4, 16 + 4 * Math.sin(i * 1.7)]),
+// ── bats ────────────────────────────────────────────────────────────────────
+// Putt's gulls, for the night (Putt BgMotion.svelte): the background is cover-cropped about its centre and a
+// portrait phone sees only plate x ~650-1270 — the barn, the tower, the trees and the corn are all off screen
+// there, and the sky band is what is left. Three bats cross it every BATS_EVERY s, flapping fast and jinking up
+// and down the way bats do; ink strokes, the print's own idiom, nothing lit.
+export const BATS_EVERY = 14, BATS_CROSS = 8.5;
+const BATS = [
+	{ dx: 0, dy: 0, phase: 0, w: 15, jink: 1.0 },
+	{ dx: -70, dy: 26, phase: 2.1, w: 12, jink: 1.4 },
+	{ dx: -128, dy: -14, phase: 4.0, w: 11, jink: 0.8 },
 ];
-const BASE = { left: -160, right: 172, top: -16, bottom: 28 }; // tucked up under the crown
-const inCloud = (x: number, y: number) =>
-	(y >= BASE.top && y <= BASE.bottom && x >= BASE.left && x <= BASE.right) || LOBES.some(([lx, ly, r]) => (x - lx) ** 2 + (y - ly) ** 2 < r * r);
-export const cloudX = (t: number) => {
-	const u = (t % CLOUD_EVERY) - 6;
-	return u < 0 || u > 22 ? null : 2150 - (u / 22) * 1000;
-};
-/** how much of the moon the cloud hides, 0..1 */
-export const moonCover = (t: number) => {
-	const x = cloudX(t);
-	return x === null ? 0 : clamp(1 - Math.abs(x - MOON_AT[0]) / 260);
-};
-export const drawMoonCloud = (g: Graphics, t: number) => {
-	const x = cloudX(t);
-	if (x === null) return;
-	const y = MOON_AT[1] + 46;
-	// one fill per piece: circles and a rectangle in one path wind opposite ways and punch holes in each other
-	const shape = (dy: number, inset: number, color: number) => {
-		for (const [dx, ly, r] of LOBES) g.circle(x + dx, y + ly + dy, r - inset).fill(color);
-		g.roundRect(x + BASE.left + inset, y + BASE.top + dy, BASE.right - BASE.left - inset * 2, BASE.bottom - BASE.top, 10).fill(color);
-	};
-	// the moonlit rim is the cloud printed a little higher in grey-beige, under the body
-	shape(-5, 0, 0xa29d8f);
-	shape(0, 1, 0x31508b);
-	// lighter halftone inside, densest toward the lit top
-	for (let row = 0, yy = -76; yy < BASE.bottom + 8; row++, yy += 8) for (let xx = BASE.left + (row % 2) * 4; xx < BASE.right; xx += 8) {
-		if (!inCloud(xx, yy) || !inCloud(xx, yy - 8)) continue;
-		const r = 2.2 * (1 - (yy + 76) / 120);
-		if (r > 0.5) g.circle(x + xx, y + yy, r);
+export const drawBats = (g: Graphics, t: number) => {
+	const local = (t + 9) % BATS_EVERY;
+	if (local > BATS_CROSS) return;
+	const u = local / BATS_CROSS, n = Math.floor((t + 9) / BATS_EVERY);
+	// alternate direction and height each pass so it is never the same crossing twice in a row
+	const dir = n % 2 ? -1 : 1;
+	const cx = dir > 0 ? -160 + u * 2240 : 2080 - u * 2240;
+	const cy = 150 + 50 * hash(n) - 30 * u;
+	for (const b of BATS) {
+		const flap = Math.sin(t * 19 + b.phase);
+		const x = cx - dir * b.dx, y = cy + b.dy + Math.sin(t * 2.7 + b.phase) * 9 * b.jink + Math.sin(t * 6.1 + b.phase * 2) * 4 * b.jink;
+		const w = b.w, lift = flap * w * 0.55;
+		// two scalloped wings: a bat's "m" has a notch at each wing tip
+		g.moveTo(x - w, y - lift);
+		g.lineTo(x - w * 0.62, y - lift * 0.55 + w * 0.12);
+		g.quadraticCurveTo(x - w * 0.35, y - w * 0.28 - lift * 0.3, x, y);
+		g.quadraticCurveTo(x + w * 0.35, y - w * 0.28 - lift * 0.3, x + w * 0.62, y - lift * 0.55 + w * 0.12);
+		g.lineTo(x + w, y - lift);
+		g.stroke({ width: 3, color: 0x0b1030, cap: 'round', join: 'round' });
+		g.circle(x, y + 1, 2.4).fill(0x0b1030);
 	}
-	g.fill(0x6a82b8);
 };
 
 // ── the abduction ───────────────────────────────────────────────────────────
@@ -168,12 +120,7 @@ export const drawAbductionBeam = (g: Graphics, u: number, craft: Craft) => {
 	const len = beamLength(u);
 	if (!craft.visible || len < 2) return;
 	const tx = craft.x, ty = craft.y + BELLY - 4, wTop = 22, wBot = 22 + len * 0.34;
-	g.poly([tx - wTop, ty, tx + wTop, ty, tx + wBot, ty + len, tx - wBot, ty + len]).fill({ color: GREEN, alpha: 0.32 });
-	for (let row = 0, y = ty + 6; y < ty + len - 3; row++, y += 9) {
-		const v = (y - ty) / len, half = wTop + (wBot - wTop) * v - 5, dot = 2.8 * (1 - v * 0.8);
-		for (let x = -half + (row % 2) * 4.5; x <= half; x += 9) g.circle(tx + x, y, dot);
-	}
-	g.fill({ color: GREEN, alpha: 0.85 });
+	g.poly([tx - wTop, ty, tx + wTop, ty, tx + wBot, ty + len, tx - wBot, ty + len]).fill({ color: GREEN, alpha: 0.3 });
 	for (const side of [-1, 1]) g.moveTo(tx + side * wTop, ty).lineTo(tx + side * wBot, ty + len).stroke({ width: 3, color: INK });
 	for (let i = 0; i < 3; i++) {
 		const v = (u * 1.6 + i / 3) % 1, y = ty + len - v * len, half = wTop + (wBot - wTop) * (1 - v);
@@ -183,13 +130,7 @@ export const drawAbductionBeam = (g: Graphics, u: number, craft: Craft) => {
 /** the gulp: a burst at the belly as she goes in, and speed strokes when it darts off */
 export const drawAbductionFx = (g: Graphics, u: number, craft: Craft) => {
 	if (!craft.visible) return;
-	const p = (u - 2.6) / 0.32;
-	if (p > 0 && p < 1) {
-		const r = 30 * (p < 0.25 ? out3(p / 0.25) * 1.15 : 1.15 - 1.15 * ease((p - 0.25) / 0.75)), cx = craft.x, cy = craft.y + BELLY;
-		const pts: number[] = [];
-		for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2, rr = i % 2 ? r * 0.48 : r; pts.push(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); }
-		if (r > 1) g.poly(pts).fill(CREAM).stroke({ width: 3, color: INK, join: 'round' });
-	}
+	// (no starburst as she goes in: bursts read cheap, 2026-11-06)
 	const go = (u - 3.25) / 0.6;
 	if (go > 0 && go < 1) for (let i = 0; i < 4; i++) {
 		// strokes trailing behind it, down and to the right of its path
@@ -197,41 +138,6 @@ export const drawAbductionFx = (g: Graphics, u: number, craft: Craft) => {
 		g.moveTo(x, y).lineTo(x + 70 * k, y + 90 * k).stroke({ width: 5, color: INK, cap: 'round' });
 		g.moveTo(x, y).lineTo(x + 70 * k, y + 90 * k).stroke({ width: 2, color: CREAM, cap: 'round' });
 	}
-};
-
-/** a cow, side on, facing right, about 110 px nose to tail: flat print colours, ink keylines, legs dangling */
-export const drawCow = (g: Graphics) => {
-	const line = { width: 3.5, color: INK, join: 'round' as const, cap: 'round' as const };
-	// legs first (behind the body), dangling a little apart
-	for (const [x, a] of [[-34, -0.18], [-20, 0.12], [16, -0.1], [30, 0.2]] as const) {
-		const ex = x + Math.sin(a) * 26, ey = 14 + Math.cos(a) * 26;
-		g.moveTo(x, 10).lineTo(ex, ey).stroke({ width: 13, color: INK, cap: 'round' });
-		g.moveTo(x, 10).lineTo(ex, ey).stroke({ width: 7.5, color: CREAM, cap: 'round' });
-		g.circle(ex, ey + 1, 5).fill(0x3a2f2a).stroke({ width: 2, color: INK });
-	}
-	// tail
-	g.moveTo(-44, -6).quadraticCurveTo(-60, 2, -56, 22).stroke(line);
-	g.ellipse(-56, 25, 4, 6).fill(INK);
-	// body
-	g.roundRect(-46, -22, 92, 44, 20).fill(CREAM).stroke(line);
-	// spots
-	g.ellipse(-22, -8, 14, 11).fill(INK);
-	g.ellipse(10, 8, 12, 8).fill(INK);
-	g.ellipse(-36, 10, 7, 6).fill(INK);
-	g.ellipse(22, -14, 8, 5).fill(INK);
-	// udder
-	g.ellipse(-4, 22, 9, 6).fill(0xf2a8a0).stroke({ width: 2.5, color: INK });
-	// head, up and a little forward, alarmed
-	g.roundRect(34, -42, 30, 34, 12).fill(CREAM).stroke(line);
-	g.ellipse(56, -16, 13, 10).fill(0xf2a8a0).stroke({ width: 2.5, color: INK });
-	g.circle(52, -16, 1.8).fill(INK);
-	g.circle(60, -15, 1.8).fill(INK);
-	g.circle(46, -32, 5).fill(0xffffff).stroke({ width: 2, color: INK });
-	g.circle(47, -32, 2.2).fill(INK);
-	// ear and horn
-	g.ellipse(32, -36, 10, 5).fill(0xf2a8a0).stroke({ width: 2.5, color: INK });
-	g.moveTo(42, -42).quadraticCurveTo(40, -54, 48, -56).stroke({ width: 6, color: INK, cap: 'round' });
-	g.moveTo(42, -42).quadraticCurveTo(40, -54, 48, -56).stroke({ width: 2.5, color: CREAM, cap: 'round' });
 };
 
 // ── the mothership (feature set) ────────────────────────────────────────────

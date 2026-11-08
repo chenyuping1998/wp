@@ -1,0 +1,90 @@
+{
+  "base": {
+    "books": 400000,
+    "events": 20549923,
+    "rtp": 0.96,
+    "exactRtp": "24/25",
+    "maxWin": 20000,
+    "totalWeight": 1000000000000000,
+    "hashesVerified": true,
+    "sdkLookupFormatVerified": true,
+    "booksSha256": "a117f81d9c97bd888bd5d1387cc7f802b428f388b7ba0a77d489d67821b2ea43",
+    "lookupSha256": "7e410ce5ec5624793c923cbc93d0d6053f3322de2d026dd21e81cd1400656272",
+    "featureProbability": 0.002857142859689,
+    "meanFreeSpinsPerRound": 0.028840647130206,
+    "meanFreeSpinsPerFeature": 10.09422648657663,
+    "meanRetriggersPerRound": 0.000131940905393,
+    "sweepRoundProbability": 0.103080862219009,
+    "tierProbabilities": {
+      "soldier": 0.002685714286699,
+      "capo": 0.000142857144025,
+      "don": 2.8571428965e-05
+    }
+  },
+  "bonus": {
+    "books": 100000,
+    "events": 5847880,
+    "rtp": 0.96,
+    "exactRtp": "24/25",
+    "maxWin": 20000,
+    "totalWeight": 1000000000000000,
+    "hashesVerified": true,
+    "sdkLookupFormatVerified": true,
+    "booksSha256": "e76e73f42b34735663c0e64f48d2532281d30bdd8907fd954738a0a9ae986403",
+    "lookupSha256": "56adc9de169511ad1006db7d46615254ef42369ae6274ad21f81ed6c501cd81e",
+    "featureProbability": 1.0,
+    "meanFreeSpinsPerRound": 10.09385739973448,
+    "meanFreeSpinsPerFeature": 10.09385739973448,
+    "meanRetriggersPerRound": 0.046031670164718,
+    "sweepRoundProbability": 0.88966138082419,
+    "tierProbabilities": {
+      "soldier": 1.0,
+      "capo": 0.0,
+      "don": 0.0
+    }
+  },
+  "bonus_hits": {
+    "books": 100000,
+    "events": 6196859,
+    "rtp": 0.96,
+    "exactRtp": "24/25",
+    "maxWin": 20000,
+    "totalWeight": 1000000000000000,
+    "hashesVerified": true,
+    "sdkLookupFormatVerified": true,
+    "booksSha256": "eb27215a5a4e871d8740f75bcc51f59109a99bc15c308cd991eadee0cb5702fb",
+    "lookupSha256": "d6346f797e27cf95adb95a6156690c49f5fed14b34eea22aa6e35c0b542fd943",
+    "featureProbability": 1.0,
+    "meanFreeSpinsPerRound": 10.101945542444483,
+    "meanFreeSpinsPerFeature": 10.101945542444483,
+    "meanRetriggersPerRound": 0.049313083630344,
+    "sweepRoundProbability": 0.891773614014814,
+    "tierProbabilities": {
+      "soldier": 0.0,
+      "capo": 1.0,
+      "don": 0.0
+    }
+  },
+  "bonus_epic": {
+    "books": 100000,
+    "events": 7846095,
+    "rtp": 0.96,
+    "exactRtp": "24/25",
+    "maxWin": 20000,
+    "totalWeight": 1000000000000000,
+    "hashesVerified": true,
+    "sdkLookupFormatVerified": true,
+    "booksSha256": "a7c573eab51b31e401e883025ff0cab9e77c6bd5b7ae0cfe3a0022d81f420006",
+    "lookupSha256": "c0b50c5b0f6f3b2dc950e0f16f5ce90f32c76c529f8bdd513c7e94cf67ff6b36",
+    "featureProbability": 1.0,
+    "meanFreeSpinsPerRound": 10.090325380810363,
+    "meanFreeSpinsPerFeature": 10.090325380810363,
+    "meanRetriggersPerRound": 0.044389271030259,
+    "sweepRoundProbability": 1.0,
+    "tierProbabilities": {
+      "soldier": 0.0,
+      "capo": 0.0,
+      "don": 1.0
+    }
+  }
+}

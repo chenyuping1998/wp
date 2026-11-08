@@ -1,6 +1,8 @@
 <script lang="ts" module>
 	export type EmitterEventWinWays =
-		| { type: 'winLinesShow'; wins: WinWayData[]; fast?: boolean }
+		// live: the round's own presentation (winInfo). The idle replay leaves it
+		// off, so the wake and the landings only make a sound the first time.
+		| { type: 'winLinesShow'; wins: WinWayData[]; fast?: boolean; live?: boolean }
 		| { type: 'winLinesHide' }
 		| { type: 'winLinesClear' };
 
@@ -27,7 +29,9 @@
 	import TextMesh from './TextMesh.svelte';
 	import { LABEL_ACT } from '../game/meshWin/textMesh';
 	import { getContext } from '../game/context';
-	import { featureTimeScale } from '../game/timeScale';
+	import { featureTimeScale, winTimeScale } from '../game/timeScale';
+	import { msToGrid, sixteenthMs } from '../game/beatClock';
+	import { winLandAt } from '../game/winTempo';
 	import { stateGame } from '../game/stateGame.svelte';
 	import { getSymbolInfo } from '../game/utils';
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS, BOARD_SIZES } from '../game/constants';
@@ -152,6 +156,42 @@
 	// keep animating a board that has already started spinning again.
 	let generation = 0;
 
+	// ON THE BEAT (2026-11-06, user: 「動畫跟音效節奏方面要更強」). The wake
+	// used to start whenever winInfo arrived and step every 90ms, against a
+	// 128 BPM bed whose sixteenth is 117ms, with one 1.2s arpeggio fired at the
+	// start that knew nothing about it. Now a live wake waits for the bed's next
+	// sixteenth (at most one, ~117ms) and lights a reel per sixteenth, each with
+	// its own rising note — the sound walks across the board with the light —
+	// and every reel's symbols clink as they come down from their leap. The leaps
+	// are retimed to land a whole number of sixteenths in (meshWin/leapWin.ts),
+	// so in the base game the landings fall on the drums too.
+	const HEAVY = new Set(['H1', 'H2', 'H3', 'H4', 'W', 'S']);
+	let landTimers: ReturnType<typeof setTimeout>[] = [];
+	const clearLands = () => {
+		for (const t of landTimers) clearTimeout(t);
+		landTimers = [];
+	};
+	// one clink per moment a reel's symbols touch down (a reel can hold a letter
+	// and a lantern, which land a sixteenth apart)
+	const scheduleLands = (positions: { reel: number; row: number }[], symbolOf: (p: { reel: number; row: number }) => string) => {
+		const speed = winTimeScale();
+		const groups = new Map<number, { heavy: boolean; count: number }>();
+		for (const p of positions) {
+			const symbol = symbolOf(p);
+			const at = winLandAt(symbol, speed);
+			if (at >= 99999) continue;
+			const key = Math.round(at);
+			const g = groups.get(key) ?? { heavy: false, count: 0 };
+			g.count++;
+			g.heavy ||= HEAVY.has(symbol);
+			groups.set(key, g);
+		}
+		for (const [at, g] of groups)
+			landTimers.push(
+				setTimeout(() => context.eventEmitter.broadcast({ type: 'soundWinLand', heavy: g.heavy, count: g.count }), at),
+			);
+	};
+
 	const animatePositions = (positions: { reel: number; row: number }[]) => {
 		const fresh = positions.filter(
 			(p) =>
@@ -165,29 +205,53 @@
 	};
 
 	context.eventEmitter.subscribeOnMount({
-		winLinesShow: async ({ wins: incoming, fast }) => {
+		winLinesShow: async ({ wins: incoming, fast, live }) => {
 			const mine = ++generation;
+			clearLands();
 			animatedKeys = new Set();
 			revealedReels = 0;
 
 			const usable = incoming.filter((w) => w.positions.length > 0);
 			if (usable.length === 0) return;
 
+			// Turbo asked for speed: no wait for the grid there, and the quick step.
+			const onBeat = !!live && !stateBet.isTurbo;
+			if (onBeat) {
+				const wait = msToGrid(4);
+				if (wait > 0) await waitForTimeout(wait);
+				if (mine !== generation) return;
+			}
+			const symbolAt = new Map<string, string>();
+			for (const w of usable) for (const p of w.positions) if (!symbolAt.has(posKey(p))) symbolAt.set(posKey(p), w.symbol);
+
 			wins = usable;
 			show = true;
 			context.eventEmitter.broadcast({ type: 'boardShow' });
 
-			const stagger = fast || stateBet.isTurbo ? REVEAL_STAGGER.fast : REVEAL_STAGGER.normal;
+			const stagger = onBeat
+				? sixteenthMs()
+				: fast || stateBet.isTurbo
+					? REVEAL_STAGGER.fast
+					: REVEAL_STAGGER.normal;
 
 			// Widest win decides how far the wake travels; reels beyond it hold
 			// nothing, so stopping there keeps a 3-of-a-kind from waiting out two
 			// empty steps.
 			const lastReel = Math.max(...usable.flatMap((w) => w.positions.map((p) => p.reel)));
 
+			// Steps are scheduled from the wake's start, not chained, so timer
+			// slop does not pile up across five reels and drift off the grid.
+			const t0 = performance.now();
 			for (let reel = 0; reel <= lastReel; reel++) {
 				revealedReels = reel + 1;
-				animatePositions(usable.flatMap((w) => w.positions.filter((p) => p.reel === reel)));
-				await waitForTimeout(stagger);
+				const cells = usable.flatMap((w) => w.positions.filter((p) => p.reel === reel));
+				const fresh = cells.filter((p) => p.row >= 1 && p.row <= BOARD_DIMENSIONS.y && !animatedKeys.has(posKey(p)));
+				animatePositions(cells);
+				if (live && fresh.length) {
+					context.eventEmitter.broadcast({ type: 'soundWinStep', step: reel + 1 });
+					scheduleLands(fresh, (p) => symbolAt.get(posKey(p)) ?? '');
+				}
+				await waitForTimeout(Math.max(0, t0 + (reel + 1) * stagger - performance.now()));
 				if (mine !== generation) return;
 			}
 
@@ -213,6 +277,8 @@
 		},
 		winLinesHide: () => {
 			generation += 1;
+			// a landing still in the air keeps its clink: the leap plays out
+			// after the lines are hidden
 			show = false;
 			wins = [];
 			revealedReels = 0;
@@ -228,6 +294,7 @@
 		// win presentation which kept appearing on the following spin.
 		boardWinAnimCancel: () => {
 			generation += 1;
+			clearLands();
 			show = false;
 			wins = [];
 			revealedReels = 0;

@@ -1,0 +1,6 @@
+{
+  "prompt": "Use case: stylized-concept. Asset type: transparent game character rig texture. Create ONE long straight vertical ivory mummy linen bandage strip, centered, on truly transparent background, isolated. Style reference is the supplied mummy cat character: match its smooth polished cartoon 3D-painted cream linen, warm golden beige shadows and softly highlighted curved edges; NOT photorealistic, no grainy hair texture, no text. Only the strip, no cat or body or jewelry. Shape: straight vertical elongated narrow ribbon, length about 8 times its width, broad flat root at top and a slightly narrower softly frayed lower end. Very subtle fabric weave, broad clean warm folds every few inches, a tiny tasteful curled edge at one side but keep silhouette mostly straight for a deformable animation mesh. Smooth coherent width, opaque cloth interior, clean transparent outside. Entire strip visible with generous margin all around. Light top left matching character. No attached objects, no knots, no floating particles or cast shadow. The image is a new supporting texture; use the reference image ONLY for material style.",
+  "tool": "builtin image_gen",
+  "reference": "design/preview_mummy_20261107/bandage_flow/frame_0019.png",
+  "source": "originals/flow_bandage_painted_v1.png"
+}

@@ -10,7 +10,7 @@
 	import { Container } from 'pixi-svelte';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { FadeContainer } from 'components-pixi';
-	import { waitForResolve } from 'utils-shared/wait';
+	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
 	import { Sprite, Text } from 'pixi-svelte';
 
 	import { getContext } from '../game/context';
@@ -23,6 +23,7 @@
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS } from '../game/constants';
 	import config from '../game/config';
 	import { removedLabelAtLevel } from '../game/chefMeter';
+	import { stateBetDerived } from 'state-shared';
 
 	const context = getContext();
 
@@ -124,7 +125,12 @@
 		freeSpinIntroUpdate: async (emitterEvent) => {
 			freeSpinsFromEvent = emitterEvent.extraSpins ?? emitterEvent.totalFreeSpins;
 			isEntry = emitterEvent.extraSpins === undefined;
-			await waitForResolve((resolve) => (oncomplete = resolve));
+			// Under autoplay nobody is there to tap: the board moves on by itself
+			// once the count is stamped and the rules have been up a moment.
+			await waitForResolve((resolve) => {
+				oncomplete = resolve;
+				if (stateBetDerived.isContinuousBet()) waitForTimeout(STAMP_AT + 2600).then(resolve);
+			});
 		},
 	});
 </script>

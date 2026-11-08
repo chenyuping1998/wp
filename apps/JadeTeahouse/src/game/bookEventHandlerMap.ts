@@ -213,12 +213,13 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// It runs during the 3s bell hold, which is the only stretch of the trigger
 		// long enough to watch him do it; the animation is 2.68s and fits.
 		eventEmitter.broadcast({ type: 'mascotChestBeat' });
-		await waitForTimeout(3000);
+		// FLOW (2026-11-01, user: tighten the whole flow). This used to hold 3s on
+		// the bell and then play the Scatters' win act three times over (~4.5s),
+		// so a trigger stood still for ~7.5s before the doors even moved. The bell
+		// gets 1.8s, the lanterns one act, and the laugh carries on under it.
+		await waitForTimeout(1800);
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		// Three passes of the scatter shake — extended trigger celebration
 		eventEmitter.broadcast({ type: 'scatterBurst', positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
-		await animateSymbols({ positions: bookEvent.positions });
 		await animateSymbols({ positions: bookEvent.positions });
 		// (sfx_superfreespin is the shutter's own — it played here too, twice on
 		// the same frame)

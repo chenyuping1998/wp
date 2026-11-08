@@ -148,7 +148,6 @@
 			rays: clamp((t - LAND + 60) / 380) * (1 - out),
 		};
 	});
-	const rayTurn = $derived(elapsed / 2400);
 
 	// the beam: under the hull, out to the spot, faint halftone motes rising
 	const drawBeam = (g: PixiGraphics) => {
@@ -160,20 +159,22 @@
 		for (const [top, bot, al] of [[SW * .16, card * .78, .16], [SW * .1, card * .5, .2], [SW * .05, card * .26, .26]] as const) {
 			g.poly([tx - top, ty, tx + top, ty, SLOT.x + bot, by, SLOT.x - bot, by]).fill({ color: BEAM, alpha: al * a });
 		}
-		for (let i = 0; i < 14; i++) {
-			const span = by - ty;
-			const y = by - (((i * 37 + phase * .12) % span) + span) % span;
-			const f = (y - ty) / span;
-			g.circle(tx + (SLOT.x - tx) * f + Math.sin(i * 2.7) * card * .5 * f, y, 2.4).fill({ color: 0xeaffd8, alpha: .8 * a });
-		}
+		// one soft band of light travelling down the beam (no motes: bright dots read cheap, 2026-11-06)
+		const span = by - ty, v = ((phase * .0016) % 1 + 1) % 1, y = ty + v * span;
+		const half = (SW * .16) + (card * .78 - SW * .16) * v;
+		for (const [dy, al] of [[-6, .08], [-3, .14], [0, .2], [3, .14], [6, .08]] as const)
+			g.rect(tx + (SLOT.x - tx) * v - half, y + dy, half * 2, 3).fill({ color: 0xeaffd8, alpha: al * a * (1 - v * .6) });
 	};
-	// one ring off the cow's landing
+	// the cow's landing: a dust skid along the card's floor rather than a hard
+	// gold shock ring (rings read as cheap, 2026-11-06)
 	const drawRing = (g: PixiGraphics) => {
 		g.clear();
 		const t = result ? -1 : phase - CUT - LAND;
 		if (t < 0 || t > 520) return;
 		const k = t / 520;
-		g.circle(SLOT.x, SLOT.y + card * .1, card * (.4 + .5 * easeOut(k))).stroke({ width: 6 * (1 - k), color: GOLD, alpha: 1 - k });
+		const fy = SLOT.y + card * .44, spread = card * (.22 + .5 * easeOut(k)), al = .32 * (1 - k) ** 1.5;
+		for (const side of [-1, 1]) for (let i = 0; i < 3; i++)
+			g.ellipse(SLOT.x + side * spread * (.55 + .2 * i), fy - card * .02 * i - card * .05 * k, card * (.07 - .012 * i) * (1 + k), card * (.04 - .008 * i) * (1 + k)).fill({ color: 0x4a5170, alpha: al * (1 - .25 * i) });
 	};
 	// speed lines behind the diving saucer
 	const drawStreaks = (g: PixiGraphics) => {
@@ -250,10 +251,10 @@
 			scale={{ x: 1 + boardSettle * .02, y: 1 - boardSettle * .025 }}>
 			<Sprite key="v8FgIntro" anchor={.5} width={W} height={BH} />
 
-			<!-- the sun behind the cow: the board's own ray art, turning slowly -->
+			<!-- a warm soft backlight behind the cow (was a turning gold ray sprite) -->
 			{#if prize && prize.rays > 0}
-				<Sprite key="v8Ray" anchor={.5} x={SLOT.x} y={SLOT.y} width={card * 2.3} height={card * 2.3}
-					rotation={rayTurn} tint={GOLD} alpha={.6 * prize.rays} />
+				<Sprite key="fxSoft" anchor={.5} x={SLOT.x} y={SLOT.y + card * .1} width={card * 2.1} height={card * 1.8}
+					tint={GOLD} blendMode="add" alpha={.32 * prize.rays} />
 			{/if}
 
 			<!-- the farm kid, signalling from the right -->

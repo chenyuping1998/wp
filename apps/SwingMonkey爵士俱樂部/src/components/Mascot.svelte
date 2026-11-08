@@ -27,6 +27,7 @@
 	import { getContext } from '../game/context';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import laughTiming from '../game/laughTiming.json';
+	import MascotBeatLock from './MascotBeatLock.svelte';
 
 	const context = getContext();
 
@@ -621,6 +622,8 @@
 		     bones, so it layers over whatever track 0 plays; the physics on the
 		     banana, the helmet and the tube adds the follow-through. -->
 		<SpineTrack trackIndex={1} animationName="flutter" loop />
+		<!-- idle sway and conducting on the band's beat (2026-11-06) -->
+		<MascotBeatLock />
 	</SpineProvider>
 	</Container>
 	</Container>

@@ -1,0 +1,106 @@
+{
+  "passed": true,
+  "original": {
+    "originalFailureReproduced": true
+  },
+  "wide": {
+    "passed": true,
+    "portrait": false,
+    "selectedOptions": [
+      "∞",
+      "10",
+      "25",
+      "50",
+      "100",
+      "250",
+      "500",
+      "1000"
+    ],
+    "startDispatches": 1,
+    "outsideDismissal": true
+  },
+  "portrait": {
+    "passed": true,
+    "portrait": true,
+    "selectedOptions": [
+      "∞",
+      "10",
+      "25",
+      "50",
+      "100",
+      "250",
+      "500",
+      "1000"
+    ],
+    "startDispatches": 1,
+    "outsideDismissal": true
+  },
+  "braking": {
+    "normal": {
+      "spinMs": 3900,
+      "settleMs": 360,
+      "last1200msSegments": 1.152116522530723
+    },
+    "turbo": {
+      "spinMs": 2900,
+      "settleMs": 340,
+      "last1200msSegments": 2.8021813112468745
+    }
+  },
+  "impacts": [
+    {
+      "value": 2,
+      "peak": 1.6827124896097785,
+      "duration": 324,
+      "platePop": 0.107
+    },
+    {
+      "value": 4,
+      "peak": 2.853556773661742,
+      "duration": 368,
+      "platePop": 0.139
+    },
+    {
+      "value": 6,
+      "peak": 3.711292835308715,
+      "duration": 393.7383500317309,
+      "platePop": 0.157718800023077
+    },
+    {
+      "value": 8,
+      "peak": 4.3867782721828394,
+      "duration": 412,
+      "platePop": 0.17099999999999999
+    },
+    {
+      "value": 10,
+      "peak": 4.946256883565302,
+      "duration": 426.1648361750439,
+      "platePop": 0.1813016990363956
+    },
+    {
+      "value": 12,
+      "peak": 5.425330479184459,
+      "duration": 437.7383500317309,
+      "platePop": 0.189718800023077
+    },
+    {
+      "value": 14,
+      "peak": 5.845234331298476,
+      "duration": 447.5236165705346,
+      "platePop": 0.19683535750584333
+    },
+    {
+      "value": 16,
+      "peak": 6.2196646564107825,
+      "duration": 456,
+      "platePop": 0.203
+    },
+    {
+      "value": 32,
+      "peak": 8.314512943100707,
+      "duration": 500,
+      "platePop": 0.235
+    }
+  ]
+}

@@ -14,7 +14,7 @@
 	const props: Props = $props();
 
 	const DURATION = 360;
-	const DUST_COLORS = [0xe9e1c8, 0x2c3a66, 0x2c3a66];
+	const DUST_COLORS = [0x6d6a78, 0x2c3a66, 0x4a5170];
 
 	type Puff = { angle: number; speed: number; size: number; color: number };
 
@@ -54,29 +54,19 @@
 			x: Math.cos(puff.angle) * dist,
 			// the floor blocks downward motion: clamp above the impact line
 			y: Math.min(0, Math.sin(puff.angle) * dist) - 4,
-			size: puff.size * (1 - t * 0.4),
-			alpha: (1 - t) ** 1.4 * 0.85,
+			size: puff.size * (1.1 + t * 0.6),
+			alpha: (1 - t) ** 1.4 * 0.42,
 		};
 	};
 </script>
 
 <Container x={props.x ?? 0} y={props.y ?? 0}>
 	{#if t < 1}
-		<!-- squashed floor flash -->
-		<Sprite
-			key="fxGlow"
-			anchor={0.5}
-			y={-6}
-			tint={0xe9e1c8}
-			blendMode="normal"
-			width={130 * easeOut(Math.min(1, t * 2.5))}
-			height={34 * easeOut(Math.min(1, t * 2.5))}
-			alpha={(1 - t) ** 1.5 * 0.7}
-		/>
+		<!-- (no floor flash: a cream disc at every landing read as a bright spot, 2026-11-06) -->
 		{#each puffs as puff, index (index)}
 			{@const state = puffState(puff)}
 			<Sprite
-				key="fxGlow"
+				key="fxSoft"
 				anchor={0.5}
 				x={state.x}
 				y={state.y}

@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	export type EmitterEventWinWays =
-		| { type: 'winLinesShow'; wins: WinWayData[]; fast?: boolean }
+		| { type: 'winLinesShow'; wins: WinWayData[]; fast?: boolean; replay?: boolean }
 		| { type: 'winLinesHide' }
 		| { type: 'winLinesClear' };
 
@@ -33,6 +33,7 @@
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS, BOARD_SIZES } from '../game/constants';
 	import type { SymbolName } from '../game/types';
 	import { MESH_WIN_LONGEST_MS } from '../game/meshWin';
+	import { gridMs } from '../game/musicClock';
 	import { stateBetDerived } from 'state-shared';
 
 	const context = getContext();
@@ -56,7 +57,12 @@
 	// trivial, and it avoids pixi v8's mask/hole API entirely — inverse masks are
 	// the kind of thing that works until a version bump.
 
-	const REVEAL_STAGGER = { normal: 90, fast: 40 };
+	// The wake is played ON the music (2026-11-06): one reel per sixteenth note
+	// (125 ms at the base game's 120 bpm, 107 at the free game's 140), thirty-
+	// seconds when fast, each reel with its own note up the pentatonic scale
+	// (Sound.svelte soundWinWake). winInfo starts it on the grid. Without music
+	// running, gridMs falls back to 120 bpm.
+	const REVEAL_STAGGER = { normal: () => gridMs(4), fast: () => gridMs(8) };
 	const HOLD_AFTER_MS = 220;
 
 	// A symbol's win act runs ~1.2-1.5s (game/meshWin). The reveal itself is far
@@ -177,7 +183,7 @@
 	};
 
 	context.eventEmitter.subscribeOnMount({
-		winLinesShow: async ({ wins: incoming, fast }) => {
+		winLinesShow: async ({ wins: incoming, fast, replay }) => {
 			const mine = ++generation;
 			animatedKeys = new Set();
 			revealedReels = 0;
@@ -189,7 +195,7 @@
 			show = true;
 			context.eventEmitter.broadcast({ type: 'boardShow' });
 
-			const stagger = fast || stateBet.isTurbo ? REVEAL_STAGGER.fast : REVEAL_STAGGER.normal;
+			const stagger = fast || stateBet.isTurbo ? REVEAL_STAGGER.fast() : REVEAL_STAGGER.normal();
 
 			// Widest win decides how far the wake travels; reels beyond it hold
 			// nothing, so stopping there keeps a 3-of-a-kind from waiting out two
@@ -198,7 +204,9 @@
 
 			for (let reel = 0; reel <= lastReel; reel++) {
 				revealedReels = reel + 1;
-				animatePositions(usable.flatMap((w) => w.positions.filter((p) => p.reel === reel)));
+				const onReel = usable.flatMap((w) => w.positions.filter((p) => p.reel === reel));
+				if (onReel.length && !replay) context.eventEmitter.broadcast({ type: 'soundWinWake', index: reel });
+				animatePositions(onReel);
 				await waitForTimeout(stagger);
 				if (mine !== generation) return;
 			}

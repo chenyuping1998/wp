@@ -37,7 +37,13 @@
 		| { type: 'soundReelTensionStart' }
 		| { type: 'soundReelTensionStop' }
 		| { type: 'soundScatterCounterIncrease' }
-		| { type: 'soundScatterCounterClear' };
+		| { type: 'soundScatterCounterClear' }
+		// the win wake, one per lit reel (WinWays): an ascending note per step
+		| { type: 'soundWinStep'; step: number }
+		// the winning symbols of one reel coming down from their leap
+		| { type: 'soundWinLand'; heavy: boolean; count: number }
+		// a small/medium win's amount rolling (Win.svelte): ticks, then the landing
+		| { type: 'soundCountUp'; phase: 'start' | 'end' };
 </script>
 
 <script lang="ts">
@@ -47,6 +53,7 @@
 	import { waitForTimeout } from 'utils-shared/wait';
 	import { getContext } from '../game/context';
 	import musicLoops from '../game/sampledAudioLoops';
+	import { setBeatClock } from '../game/beatClock';
 	const context = getContext();
 	type CnSfxName = SoundEffectName
 		| 'gong_feature'
@@ -95,11 +102,22 @@
 		| 'cave_quake'
 		| 'fullboard_chain'
 		| 'fullboard_stamp'
+		| 'win_step_1'
+		| 'win_step_2'
+		| 'win_step_3'
+		| 'win_step_4'
+		| 'win_step_5'
+		| 'win_land'
+		| 'win_land_big'
+		| 'win_rollup_fg'
+		| 'win_count_end'
+		| 'reel_tension_fg'
 	;
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
 		gong_feature: 'alchemy/gong_feature.wav',
 		bigwin_blast: 'alchemy/bigwin_blast.wav',
-		reel_tension: 'alchemy/reel_tension.wav',
+		reel_tension: 'alchemy/reel_tension_beat.wav',
+		reel_tension_fg: 'alchemy/reel_tension_fg.wav',
 		btn: 'alchemy/btn.wav',
 		spin: 'alchemy/spin.wav',
 		pluck_low: 'alchemy/pluck_low.wav',
@@ -143,8 +161,17 @@
 		cave_quake: 'alchemy/cave_quake.wav',
 		fullboard_chain: 'alchemy/fullboard_chain.wav',
 		fullboard_stamp: 'alchemy/fullboard_stamp.wav',
+		win_step_1: 'alchemy/win_step_1.wav',
+		win_step_2: 'alchemy/win_step_2.wav',
+		win_step_3: 'alchemy/win_step_3.wav',
+		win_step_4: 'alchemy/win_step_4.wav',
+		win_step_5: 'alchemy/win_step_5.wav',
+		win_land: 'alchemy/win_land.wav',
+		win_land_big: 'alchemy/win_land_big.wav',
+		win_rollup_fg: 'alchemy/win_rollup_fg.wav',
+		win_count_end: 'alchemy/win_count_end.wav',
 		jng_intro_fs: 'alchemy/fs_intro.wav',
-		sfx_anticipation: 'alchemy/reel_tension.wav',
+		sfx_anticipation: 'alchemy/reel_tension_beat.wav',
 		sfx_anticipation_start: 'alchemy/mult_update.wav',
 		sfx_bigwin_coinloop: 'alchemy/win_rollup_loop.wav',
 		sfx_btn_general: 'alchemy/btn.wav',
@@ -246,7 +273,7 @@
 		let pending = buffers.get(file);
 		if (!pending) {
 			const ac = audioContext();
-			pending = fetch(base + '/assets/audio/' + file + '?v=sampled-v2-feature-20261031').then(async (response) => {
+			pending = fetch(base + '/assets/audio/' + file + '?v=sampled-v3-rhythm-20261106').then(async (response) => {
 				if (!response.ok) throw new Error('Audio asset ' + file + ': ' + response.status);
 				const decoded = await ac.decodeAudioData(await response.arrayBuffer());
 				const meta = file === BGM_FILES.base ? musicLoops.bgm_main : file === BGM_FILES.freespin ? musicLoops.bgm_freespin : undefined;
@@ -282,6 +309,7 @@
 		level: number,
 		loop = false,
 		rate = 1,
+		delay = 0,
 	) => {
 		const ac = audioContext(),
 			source = ac.createBufferSource(),
@@ -292,15 +320,17 @@
 		source.connect(gain);
 		gain.connect(master ?? ac.destination);
 		const voice: Voice = { source, gain, category, level, name };
-		gain.gain.setValueAtTime(0, ac.currentTime);
-		gain.gain.linearRampToValueAtTime(volume(voice), ac.currentTime + (category === 'music' ? 0.45 : loop ? 0.12 : 0.003));
+		// a cue put on the bed's grid starts in the future, sample-exact
+		const at = ac.currentTime + Math.max(0, delay);
+		gain.gain.setValueAtTime(0, at);
+		gain.gain.linearRampToValueAtTime(volume(voice), at + (category === 'music' ? 0.45 : loop ? 0.12 : 0.003));
 		source.onended = () => {
 			voices.delete(voice);
 			source.disconnect();
 			gain.disconnect();
 		};
 		voices.add(voice);
-		source.start();
+		source.start(at);
 		return voice;
 	};
 	const refreshMix = () => {
@@ -323,7 +353,19 @@
 		duckUntil = Math.max(duckUntil, now + ms);
 		refreshMix();
 	};
-	async function playCnSfx(name: CnSfxName, level = 1, rate = 1) {
+	// Seconds from now to the next line of the bed's grid (division per beat),
+	// read off the audio clock so a cue started with it is sample-exact on the
+	// drums. 0 with no bed. See game/beatClock.ts.
+	let bedAnchor = 0;
+	let bedBpm = 0;
+	const toGrid = (division: number, slack = .03) => {
+		if (!ctx || !bedBpm) return 0;
+		const period = 60 / bedBpm / division;
+		const into = (ctx.currentTime - bedAnchor) % period;
+		const left = into < 0 ? -into : period - into;
+		return left <= slack || period - left <= slack ? 0 : left;
+	};
+	async function playCnSfx(name: CnSfxName, level = 1, rate = 1, delay = 0) {
 		if (disposed) return;
 		const requested = performance.now();
 		const generation = requests.get(name) ?? 0;
@@ -334,19 +376,19 @@
 			// Polyphony retains glass tails when several reels stop together.
 			const active = [...voices].filter((v) => v.category === 'effect' && !v.source.loop);
 			if (active.length >= 18) stopVoice(active[0]);
-			startVoice(name, buffer, 'effect', level, false, rate);
+			startVoice(name, buffer, 'effect', level, false, rate, delay);
 		} catch (error) {
 			console.warn('Alchemy cue failed:', name, error);
 		}
 	}
-	async function playCnLoop(name: CnSfxName, level = 1) {
+	async function playCnLoop(name: CnSfxName, level = 1, delay = 0) {
 		if (disposed || loops.has(name)) return;
 		const ticket = (requests.get(name) ?? 0) + 1;
 		requests.set(name, ticket);
 		try {
 			const buffer = await load(CN_SFX_FILES[name]);
 			if (disposed || requests.get(name) !== ticket || loops.has(name)) return;
-			loops.set(name, startVoice(name, buffer, 'effect', level, true));
+			loops.set(name, startVoice(name, buffer, 'effect', level, true, 1, delay));
 		} catch (error) {
 			console.warn('Alchemy loop failed:', name, error);
 		}
@@ -367,6 +409,11 @@
 			if (disposed || ticket !== musicGeneration) return;
 			if (musicVoice) stopVoice(musicVoice, 0.45);
 			musicVoice = startVoice('bgm_' + type, buffer, 'music', 1, true);
+			// the bed's sample 0 is beat 1 of bar 1, and it loops on the bar
+			const live = ctx;
+			bedAnchor = live?.currentTime ?? 0;
+			bedBpm = (type === 'base' ? musicLoops.bgm_main : musicLoops.bgm_freespin).bpm;
+			setBeatClock({ now: () => live?.currentTime ?? 0, anchor: bedAnchor, bpm: bedBpm });
 		} catch (error) {
 			if (ticket === musicGeneration) currentMusic = undefined;
 			console.warn('Alchemy music failed:', error);
@@ -377,6 +424,8 @@
 		currentMusic = undefined;
 		if (musicVoice) stopVoice(musicVoice, 0.12);
 		musicVoice = undefined;
+		bedBpm = 0;
+		setBeatClock(null);
 	}
 	const effects: Partial<Record<SoundEffectName, { name: CnSfxName; level?: number; rate?: number }>> = {
 		jng_intro_fs: { name: 'fs_intro', rate: 1 },
@@ -425,6 +474,12 @@
 		tumble_win_4: { name: 'win_gliss_big', rate: 1 },
 	};
 
+	const onFeature = () =>
+		context.stateGame.gameType === 'freegame' || context.stateGame.gameType === 'holdandspin';
+	// The tier fanfares run at the base bed's 128 BPM. Over the feature's 154
+	// bed they would flam against its drums, so the bed goes further down there.
+	const fanfareDuck = () => (onFeature() ? .22 : .38);
+	let lastWinLand = -1e9;
 	let rollupActive = false;
 	let rollupEndTimer: ReturnType<typeof setTimeout> | undefined;
 	let monkeyTimer: ReturnType<typeof setTimeout> | undefined;
@@ -434,22 +489,46 @@
 		void playCnSfx('monkey_expand', 0.5);
 		// The alchemist performance is already cut to its approved animation.
 	}
-	function startRollup() {
+	// light: a small or medium win's count (soundCountUp) — the same ticks,
+	// quieter, no coin shimmer, and a two-note answer instead of the big close
+	let rollupLight = false;
+	function startRollup(light = false) {
 		if (rollupActive || disposed) return;
 		clearTimeout(rollupEndTimer);
 		stopCnSfx('win_rollup_end');
+		stopCnSfx('win_count_end');
 		rollupActive = true;
-		void playCnSfx('coin_shimmer', 0.65);
-		void playCnLoop('win_rollup_loop', 0.65);
+		rollupLight = light;
+		if (!light) void playCnSfx('coin_shimmer', 0.65);
+		// The ticks are sixteenths of the bed, rendered at each bed's tempo, and
+		// start on a sixteenth so they lock to the drums instead of flamming.
+		void playCnLoop(onFeature() ? 'win_rollup_fg' : 'win_rollup_loop', light ? 0.42 : 0.65, toGrid(4));
 	}
 	function finishRollup() {
 		if (!rollupActive) return;
 		rollupActive = false;
 		stopCnSfx('win_rollup_loop', 0.12);
+		stopCnSfx('win_rollup_fg', 0.12);
 		stopCnSfx('coin_shimmer');
+		// the number has landed on this frame: answer it now, not 120ms later
+		if (rollupLight) {
+			rollupLight = false;
+			void playCnSfx('win_count_end', 0.7);
+			return;
+		}
 		rollupEndTimer = setTimeout(() => {
 			if (!disposed) void playCnSfx('win_rollup_end', 0.75);
 		}, 120);
+	}
+	// The anticipation bed: eighths of the bed it plays over, starting on a
+	// sixteenth, so the tease drives the same pulse the music does.
+	function startTension(level: number) {
+		const name = onFeature() ? 'reel_tension_fg' : 'reel_tension';
+		void playCnLoop(name, level, toGrid(4));
+	}
+	function stopTension() {
+		stopCnSfx('reel_tension');
+		stopCnSfx('reel_tension_fg');
 	}
 	$effect(() => {
 		stateSoundDerived.volumeMusic();
@@ -464,7 +543,7 @@
 			if (name === 'bgm_main') void playBgm('base');
 			else if (name === 'bgm_freespin') void playBgm('freespin');
 			else {
-				duckMusic(1500);
+				duckMusic(1500, fanfareDuck());
 				void playCnSfx(
 					name === 'bgm_winlevel_max'
 						? 'win_max'
@@ -476,6 +555,8 @@
 									? 'win_super'
 									: 'win_big',
 					0.8,
+					1,
+					toGrid(2),
 				);
 			}
 		},
@@ -487,8 +568,17 @@
 				// TURBO stops all five reels within a few ms: five full-level stops
 				// stacked ~7 dB over one (user, 2026-10-16: turbo 停輪音太大聲). Quieter
 				// in turbo, and any stop right on the heels of another at half.
+				//
+				// 2026-11-06 (user: 動畫跟音效節奏要更強): the five stops are the
+				// spin's own rhythm and sat ~10 dB under the bed — 0.5 on files
+				// mastered at -8 dB, the first of them mostly below 400 Hz. Re-cut
+				// into the 400-4000 Hz band (build_sampled_audio.stop_click) and
+				// laid out like Bananeon's: each reel a step louder than the last,
+				// so the run of five reads as a phrase that arrives somewhere.
 				const now = performance.now();
-				level = stateBet.isTurbo ? 0.24 : 0.5;
+				const reel = Number(name.slice(-1)) || 1;
+				level = 0.66 + (reel - 1) * 0.05;
+				if (stateBet.isTurbo) level *= 0.5;
 				if (now - lastReelStop < 60) level *= 0.5;
 				lastReelStop = now;
 			}
@@ -497,18 +587,23 @@
 		soundLoop: ({ name }) => {
 			const m = effects[name];
 			if (name === 'sfx_bigwin_coinloop') startRollup();
+			else if (name === 'sfx_anticipation') startTension(m?.level ?? 0.7);
 			else void playCnLoop(m?.name ?? name, m?.level ?? 0.7);
 		},
 		soundStop: ({ name }) => {
 			if (name === 'sfx_bigwin_coinloop') finishRollup();
+			else if (name === 'sfx_anticipation') stopTension();
 			else if (name.startsWith('bgm_')) stopBgm();
 			else stopCnSfx(effects[name as SoundEffectName]?.name ?? name);
 		},
+		soundCountUp: ({ phase }) => (phase === 'start' ? startRollup(true) : finishRollup()),
 		soundFade: async ({ name, from, to, duration }) => {
 			const resolved = name.startsWith('bgm_')
 				? 'music'
 				: (effects[name as SoundEffectName]?.name ?? name);
 			const now = performance.now();
+			// the tension bed has a feature-tempo twin under its own name
+			if (resolved === 'reel_tension') fades.set('reel_tension_fg', { from, to, start: now, end: now + duration });
 			fades.set(resolved, { from, to, start: now, end: now + duration });
 			refreshMix();
 			await waitForTimeout(duration);
@@ -523,12 +618,27 @@
 			void playCnSfx('bigwin_blast', 1.05);
 		},
 		soundWinTier: ({ tier }) => {
-			duckMusic(1700);
-			if (tier === 'big') void playCnSfx('win_big', 1.1);
-			else if (tier === 'superwin') void playCnSfx('win_super', 1.15);
-			else if (tier === 'mega') void playCnSfx('win_mega', 1.2);
-			else if (tier === 'epic') void playCnSfx('win_epic', 1.25);
-			else if (tier === 'max') void playCnSfx('win_max', 1.3);
+			// The blast (soundBigWinBlast) hits on the frame the plaque slams in;
+			// the fanfare is music, so it comes in on the bed's next eighth.
+			duckMusic(1900, fanfareDuck());
+			const on = toGrid(2);
+			if (tier === 'big') void playCnSfx('win_big', 1.1, 1, on);
+			else if (tier === 'superwin') void playCnSfx('win_super', 1.15, 1, on);
+			else if (tier === 'mega') void playCnSfx('win_mega', 1.2, 1, on);
+			else if (tier === 'epic') void playCnSfx('win_epic', 1.25, 1, on);
+			else if (tier === 'max') void playCnSfx('win_max', 1.3, 1, on);
+		},
+		// WinWays fires these on its own sixteenth grid, so they play now.
+		soundWinStep: ({ step }) => {
+			const i = Math.max(1, Math.min(5, Math.round(step)));
+			void playCnSfx(`win_step_${i}` as CnSfxName, 0.5 + i * 0.05);
+		},
+		soundWinLand: ({ heavy, count }) => {
+			// several reels can come down inside one frame in turbo: one clink
+			const now = performance.now();
+			if (now - lastWinLand < 40) return;
+			lastWinLand = now;
+			void playCnSfx(heavy ? 'win_land_big' : 'win_land', Math.min(0.85, 0.55 + 0.07 * count));
 		},
 		soundFullBoardChain: () => {
 			duckMusic(1300);
@@ -553,8 +663,8 @@
 		soundMascotVoice: ({ name }) =>
 			void playCnSfx(name === 'roar' ? 'voice_roar' : 'voice_effort', 0.45),
 		soundChestHoot: () => playMonkeyCall(),
-		soundReelTensionStart: () => void playCnLoop('reel_tension', 0.55),
-		soundReelTensionStop: () => stopCnSfx('reel_tension'),
+		soundReelTensionStart: () => startTension(0.55),
+		soundReelTensionStop: () => stopTension(),
 		soundScatterCounterIncrease: () => {
 			context.stateGame.scatterCounter++;
 		},
@@ -592,6 +702,8 @@
 		const mixer = setInterval(refreshMix, 100);
 		return () => {
 			disposed = true;
+			bedBpm = 0;
+			setBeatClock(null);
 			clearTimeout(rollupEndTimer);
 			clearTimeout(monkeyTimer);
 			rollupActive = false;

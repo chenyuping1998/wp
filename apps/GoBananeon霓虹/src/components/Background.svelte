@@ -7,7 +7,8 @@
 
 	import { getContext } from '../game/context';
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
-	import { BackgroundClock } from '../game/backgroundStage';
+	import { BackgroundClock, type StageMusic } from '../game/backgroundStage';
+	import { musicAt } from '../game/beatClock';
 	import { BG_BASE, BG_FEATURE, BG_FEATURE_R, BG_HS_L, BG_HS_R, BG_HS_TOP } from '../game/meshWin';
 	import BgProps from './BgProps.svelte';
 	import ClubStage from './ClubStage.svelte';
@@ -17,6 +18,9 @@
 	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame' && !isHoldAndSpin);
 	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame' && !isHoldAndSpin);
 	let timeMs = $state(0);
+	// The drums the player hears, sampled each frame from the BGM's anchor.
+	// Undefined while no music is anchored: the stage falls back to its own clock.
+	let music = $state<StageMusic | undefined>(undefined);
 	const canvas = $derived(context.stateLayoutDerived.canvasSizes());
 
 	// The same cover box carries the plate, its meshes and the lighting anchors.
@@ -37,6 +41,8 @@
 		let raf = 0;
 		const tick = (now: number) => {
 			timeMs = clock.frame(now);
+			const m = musicAt(performance.now(), showFeatureBackground || isHoldAndSpin ? 'freespin' : 'base');
+			music = m.live ? { kick: m.kick, downbeat: m.downbeat, bars: m.beats / 4 } : undefined;
 			raf = requestAnimationFrame(tick);
 		};
 		const visibility = () => {
@@ -59,7 +65,7 @@
 <FadeContainer show={showBaseBackground} duration={SECOND} zIndex={-2}>
 	<Sprite key="gbBgBase" {...parallax} />
 	<BgProps spec={BG_BASE} {...parallax} {timeMs} />
-	<ClubStage mode="base" {...parallax} {timeMs} canvasWidth={canvas.width} canvasHeight={canvas.height} />
+	<ClubStage mode="base" {...parallax} {timeMs} {music} canvasWidth={canvas.width} canvasHeight={canvas.height} />
 </FadeContainer>
 
 <!-- Rooftop: 128 BPM accents across the terrace and skyline. -->
@@ -67,7 +73,7 @@
 	<Sprite key="gbBgFeature" {...parallax} />
 	<BgProps spec={BG_FEATURE} {...parallax} {timeMs} />
 	<BgProps spec={BG_FEATURE_R} {...parallax} {timeMs} />
-	<ClubStage mode="feature" {...parallax} {timeMs} canvasWidth={canvas.width} canvasHeight={canvas.height} />
+	<ClubStage mode="feature" {...parallax} {timeMs} {music} canvasWidth={canvas.width} canvasHeight={canvas.height} />
 </FadeContainer>
 
 <!-- Vault: restrained pillar/shelf chases answer each new held coin. -->
@@ -76,5 +82,5 @@
 	<BgProps spec={BG_HS_L} {...parallax} {timeMs} />
 	<BgProps spec={BG_HS_R} {...parallax} {timeMs} />
 	<BgProps spec={BG_HS_TOP} {...parallax} {timeMs} />
-	<ClubStage mode="hold" {...parallax} {timeMs} canvasWidth={canvas.width} canvasHeight={canvas.height} />
+	<ClubStage mode="hold" {...parallax} {timeMs} {music} canvasWidth={canvas.width} canvasHeight={canvas.height} />
 </FadeContainer>

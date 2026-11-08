@@ -138,6 +138,10 @@
 	// mesh acts' own plate + subject composited (design/build_static_from_layers.py),
 	// so a cell swapping between its sprite and its landing/idle act shows the
 	// same picture. Source paintings remain in goBananasSymbolsV3.
+	// W, W split, M, X and P were still loaded from there at 1254px — 6 MB each
+	// decoded, for a cell drawn at ~230px. They now ship as 512px Lanczos copies
+	// beside the rest (2026-11-01, iOS Safari memory); the mip chain was already
+	// sampling below 512 everywhere they are drawn.
 	gbH1: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/goBananinjaStatic/h1.png', import.meta.url).href,
@@ -198,7 +202,7 @@
 	},
 	gbW: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/w.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/w.png', import.meta.url).href,
 		preload: true,
 	},
 	// Each cut cell contains two complete motifs on one tile: upper-left and lower-right.
@@ -211,7 +215,7 @@
 	gbL3Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/l3_split.png', import.meta.url).href, preload: true },
 	gbL4Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/l4_split.png', import.meta.url).href, preload: true },
 	gbL5Split: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/l5_split.png', import.meta.url).href, preload: true },
-	gbWSplit: { type: 'sprite', src: new URL('../../assets/sprites/goBananasSymbolsV3/w_split.png', import.meta.url).href, preload: true },
+	gbWSplit: { type: 'sprite', src: new URL('../../assets/sprites/goBananinjaStatic/w_split.png', import.meta.url).href, preload: true },
 
 	// THE MESH WINS' LAYERS (design/make_symbol_layers.py): each winning symbol
 	// split into the slate with the subject lifted off it, the subject, its soft
@@ -371,17 +375,17 @@
 	// The Machete. Delta-only — gen-1 and gen-2 had no such symbol.
 	gbM: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/m.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/m.png', import.meta.url).href,
 		preload: true,
 	},
 	gbX: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/x.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/x.png', import.meta.url).href,
 		preload: true,
 	},
 	gbP: {
 		type: 'sprite',
-		src: new URL('../../assets/sprites/goBananasSymbolsV3/p.png', import.meta.url).href,
+		src: new URL('../../assets/sprites/goBananinjaStatic/p.png', import.meta.url).href,
 		preload: true,
 	},
 	// Shinobi outfit painted onto Boom's PSD cutouts and original 25-bone rig.

@@ -1,0 +1,36 @@
+{
+  "tesla4": {
+    "errors": [],
+    "requests": [
+      "/bet/replay/VoltMonster/1/base/3"
+    ],
+    "tiers": [
+      "LV 1",
+      "LV 2",
+      "LV 3",
+      "LV 4"
+    ]
+  },
+  "desktop": [
+    1280,
+    720
+  ],
+  "portrait": [
+    390,
+    844
+  ],
+  "narrow": [
+    320,
+    640
+  ],
+  "holdScene": "hold",
+  "holdCounter": "RESPINS",
+  "buyMenuInstances": 1,
+  "finalUi": {
+    "menuCount": 1,
+    "heroesLoaded": true,
+    "volt5ChargeBars": 1,
+    "volt10ChargeBars": 2,
+    "errors": []
+  }
+}

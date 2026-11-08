@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
+import * as beatClock from '../src/game/beatClock.ts';
 
 const require = createRequire(new URL('../package.json', import.meta.url));
 const ts = require('typescript');
@@ -14,7 +15,7 @@ const js = ts.transpileModule(script, { compilerOptions: { target: ts.ScriptTarg
 	.replace(/^import[\s\S]*?from\s+['"][^'"]+['"];\s*/gm, '')
 	.replace(/^export\s*\{\s*\};?\s*$/gm, '');
 
-const param = () => ({ value: 1, setValueAtTime(v) { this.value = v; }, setTargetAtTime(v) { this.value = v; }, exponentialRampToValueAtTime(v) { this.value = v; }, cancelScheduledValues() {} });
+const param = () => ({ value: 1, setValueAtTime(v) { this.value = v; }, setTargetAtTime(v) { this.value = v; }, exponentialRampToValueAtTime(v) { this.value = v; }, linearRampToValueAtTime(v) { this.value = v; }, cancelScheduledValues() {} });
 const nodes = [];
 const sources = [];
 let pendingDecodes = [];
@@ -32,13 +33,16 @@ class AudioNode {
 	constructor() { this.gain = param(); this.playbackRate = param(); this.connections = []; this.stopped = false; nodes.push(this); }
 	connect(next) { this.connections.push(next); return next; }
 	disconnect() { this.disconnected = true; }
-	start() { this.started = true; sources.push(this); }
+	start(when = 0) { this.started = true; this.startAt = when; sources.push(this); }
 	stop(when) { this.stopAt = when; this.stopped = true; this.onended?.(); }
 }
 class Context {
-	constructor() { this.state = 'running'; this.currentTime = 0; this.destination = new AudioNode(); }
+	constructor() { this.state = 'running'; this.currentTime = 0; this.destination = new AudioNode(); sandbox.lastCtx = this; }
+	createDelay() { const n = new AudioNode(); n.delayTime = param(); return n; }
 	createGain() { return new AudioNode(); }
 	createBufferSource() { return new AudioNode(); }
+	createBiquadFilter() { const n = new AudioNode(); n.frequency = param(); n.Q = param(); return n; }
+	addEventListener() {}
 	createDynamicsCompressor() { const n = new AudioNode(); for (const key of ['threshold','knee','ratio','attack','release']) n[key] = param(); return n; }
 	decodeAudioData() {
 		const buffer = { duration: 100, length: decodedRate * 100, sampleRate: decodedRate, numberOfChannels: 2,
@@ -68,6 +72,8 @@ const sandbox = {
 	stateBet: { activeBetModeKey: 'base' }, stateModal: {}, HOLD_AND_SPIN_MODE_KEY: 'feature',
 	sound: { players: { music: { play() {} }, loop: { play() {} }, once: { play() {} } }, stop() {}, fade() {} },
 	waitForTimeout: async () => {}, SECOND: 1000, queueMicrotask,
+	chordAt: beatClock.chordAt, clearMusicAnchor: beatClock.clearMusicAnchor, kickSteps: beatClock.kickSteps,
+	MUSIC_GRID: beatClock.MUSIC_GRID, setMusicAnchor: beatClock.setMusicAnchor,
 	setTimeout: (callback, delay) => { timers.set(++timer, callback); timeoutDelays.set(timer, delay); return timer; }, clearTimeout: id => { timers.delete(id); timeoutDelays.delete(id); },
 	setInterval: callback => { intervals.set(++timer, callback); return timer; }, clearInterval: id => intervals.delete(id),
 };
@@ -112,11 +118,16 @@ assert.equal(music.buffer.sampleRate, 48000, 'trim must respect device sample ra
 assert.equal(music.buffer.duration, 30, 'MP3 guard and padding leaked into musical loop');
 assert.equal(music.buffer.copied[0].start, Math.round(sandbox.musicLoops.bgm_freespin.trimStartSeconds * 48000));
 assert.equal(music.buffer.copied[0].end - music.buffer.copied[0].start, 30 * 48000);
-assert.equal(music.connections[0].connections[0], mixBus, 'music and effects must share final safety protection');
+const musicFilter = music.connections[0].connections[0];
+assert.equal(musicFilter.frequency.value, 20000, 'the DJ filter must rest fully open');
+assert.equal(musicFilter.connections[0].connections[0], mixBus, 'music and effects must share final safety protection');
+assert.equal(music.startAt, 0.03, 'BGM must start at a known audio-clock time (beat 0)');
+assert.equal(beatClock.musicAnchor()?.scene, 'freespin', 'the beat anchor must follow the running track');
 clock = 500;
 for (const callback of [...intervals.values()]) callback();
 assert(Math.abs(music.connections[0].gain.value - .7 * .72) < 1e-9, 'music settings/headroom');
 
+const flushSeq = async () => { for (let i = 0; i < 20; i++) await Promise.resolve(); };
 // A DJ gesture can be interrupted before its decode finishes. It must cancel
 // the immediate HTML fallback and must never schedule a late buffered play.
 deferDecode = true;
@@ -145,8 +156,90 @@ assert(scratchSource.started && !scratchSource.stopped, 'decoded DJ scratch did 
 assert.equal(scratchSource.connections[0].gain.value, .52, 'DJ accent must use the reduced mix level');
 subscriptions.soundDjScratchStop();
 assert(scratchSource.stopped, 'interruption did not stop the decoded scratch');
+
+// THE RHYTHM SEQUENCER: with music running, the count-up and the tease are
+// hits booked on the track's 16th grid (beat 0 = music.startAt), not loops.
+for (const name of ['seq_tick', 'seq_kick', 'seq_note', 'reel_tension']) await api.loadCueBuffer(name);
+const stepSec = 60 / 128 / 4;
+const onGrid = (s) => Math.abs(((s.startAt - 0.03) / stepSec) - Math.round((s.startAt - 0.03) / stepSec)) < 1e-6;
+const seqHits = () => sources.filter(s => [api.loopBuffers.seq_tick, api.loopBuffers.seq_kick, api.loopBuffers.seq_note].includes(s.buffer));
+subscriptions.soundReelTensionStart();
+const tenseHits = seqHits().filter(s => !s.stopped);
+assert(tenseHits.length > 0, 'the tease must book its heartbeat on the grid');
+assert(tenseHits.every(onGrid), 'tease hits off the 16th grid');
+assert(tenseHits.every(s => s.buffer === api.loopBuffers.seq_kick || s.buffer === api.loopBuffers.seq_tick));
+assert(!api.loopNodes.win_rollup_loop, 'tension must not start the old rollup bed');
+subscriptions.soundReelTensionStop();
+assert(seqHits().every(s => s.stopped), 'stopping the tease must cancel its booked hits');
+assert.equal(musicFilter.frequency.value, 20000, 'the reel stop must open the filter (the drop)');
+subscriptions.soundBlastFuse();
+assert.equal(musicFilter.frequency.value, 520, 'the fuse must close the filter');
+subscriptions.soundBlastDetonate({ full: false });
+assert.equal(musicFilter.frequency.value, 20000, 'the bang must open the filter');
+const before = seqHits().length;
+subscriptions.soundLoop({ name: 'sfx_bigwin_coinloop' }); await flushSeq();
+assert(!api.loopNodes.win_rollup_loop, 'with music on the grid the 120 BPM rollup bed must not play');
+const rollHits = seqHits().slice(before);
+assert(rollHits.length > 0 && rollHits.every(onGrid), 'count-up hits off the grid');
+const notes = rollHits.filter(s => s.buffer === api.loopBuffers.seq_note);
+const chord = beatClock.chordAt(0).map(p => 2 ** ((p - 60) / 12));
+assert(notes.every(s => chord.some(r => Math.abs(r - s.playbackRate.value) < 1e-9)), 'count-up notes must be tones of the chord under them');
+subscriptions.soundStop({ name: 'sfx_bigwin_coinloop' });
+assert(seqHits().every(s => s.stopped), 'finishing the count must cancel booked hits');
+for (const [id, callback] of [...timers]) if (timeoutDelays.get(id) === 120) { timers.delete(id); timeoutDelays.delete(id); callback(); }
+
+// THE FANFARE, PLAYED IN TIME: a tier slam books the motif on the track's
+// 8ths in the chord under it, resolves on a beat, then lets go by itself.
+for (const name of ['seq_snare', 'seq_pad']) await api.loadCueBuffer(name);
+const ctx = sandbox.lastCtx;
+const pump = () => { for (const callback of [...intervals.values()]) callback(); };
+const tierElementsBefore = elements.filter(a => /win_(big|super|mega|epic|max)\.wav/.test(a.src) && !a.paused).length;
+const fanStart = sources.length;
+subscriptions.soundWinTier({ tier: 'mega' });
+for (let t = 0; t < 5; t += 0.02) { ctx.currentTime = t; pump(); }
+const fan = sources.slice(fanStart).filter(s => s.startAt !== undefined);
+assert.equal(elements.filter(a => /win_(big|super|mega|epic|max)\.wav/.test(a.src) && !a.paused).length, tierElementsBefore,
+	'the rendered tier fanfare must not play over the in-time one');
+const step = (s) => Math.round((s.startAt - 0.03) / stepSec);
+assert(fan.length > 20 && fan.every(onGrid), 'fanfare hits off the 16th grid');
+const fanNotes = fan.filter(s => s.buffer === api.loopBuffers.seq_note);
+const first = Math.min(...fan.map(step));
+assert.equal(first % 2, 0, 'the fanfare must enter on an 8th');
+const tonesOk = (s) => {
+	const bar = Math.floor(step(s) / 16);
+	const chordTones = beatClock.chordAt(bar);
+	const semis = Math.round(12 * Math.log2(s.playbackRate.value)) + 60;
+	return chordTones.some(c => (((semis - c) % 12) + 12) % 12 === 0);
+};
+assert(fanNotes.length >= 8 && fanNotes.every(tonesOk), 'fanfare notes must be tones of the chord under them');
+const kicks = fan.filter(s => s.buffer === api.loopBuffers.seq_kick).map(step);
+const coda = Math.max(...kicks);
+assert.equal((coda - first) % 4, 0, 'the coda must land on a beat');
+assert(Math.abs((coda - first) * stepSec - (3.6 - 0.85)) < 4 * stepSec, 'mega must resolve where the rendered fanfare did');
+assert(!sources.slice(fanStart).some(s => s.buffer === api.loopBuffers.seq_note && step(s) > coda), 'notes after the coda');
+assert(fan.every(s => s.stopped || s.startAt <= ctx.currentTime), 'a finished fanfare must release itself');
+
+// THE WIN SWEEP: one rising chord tone per reel, on the nearest 32nd.
+const sweepStart = sources.length;
+for (let i = 0; i < 5; i++) {
+	ctx.currentTime = 5 + i * stepSec / 2 + 0.003; // a few ms of timer jitter
+	subscriptions.soundWinStep({ index: i, total: 5, snap: true });
+}
+const sweep = sources.slice(sweepStart);
+assert(sweep.length >= 5 && sweep.every(s => Math.abs(((s.startAt - 0.03) / (stepSec / 2)) - Math.round((s.startAt - 0.03) / (stepSec / 2))) < 1e-6),
+	'win steps off the 32nd grid');
+assert(sweep.every(tonesOk), 'win steps must be tones of the chord under them');
+const leads = sweep.filter((s, i, all) => i === 0 || s.startAt !== all[i - 1].startAt).map(s => s.playbackRate.value);
+assert(leads.every((r, i) => i === 0 || r > leads[i - 1]), 'the sweep must climb reel by reel');
+const glissBefore = sources.filter(s => s.buffer === api.loopBuffers.win_gliss).length;
+await api.loadCueBuffer('win_gliss');
+subscriptions.soundOnce({ name: 'sfx_winlevel_small' });
+assert.equal(sources.filter(s => s.buffer === api.loopBuffers.win_gliss).length, glissBefore, 'the off-tempo gliss must give way to the sweep');
+ctx.currentTime = 0;
+
 api.stopBgm();
 assert(music.stopped, 'music must release its source on stop');
+assert.equal(beatClock.musicAnchor(), null, 'stopping the music must clear the beat anchor');
 
 // Real subscription handlers: duplicate tier play, natural completion, skip,
 // delayed decode, repeated dismissal, stop/restart and unmount.
@@ -217,4 +310,4 @@ for (const file of ['Win.svelte', 'FreeSpinOutro.svelte']) {
 	assert.match(content, /type: 'soundStop', name: 'sfx_bigwin_coinloop'/, `${file}: completion path missing`);
 }
 assert(!/sound\.players|sound\.load|audio\/sounds/.test(source), 'template sprite fallback returned');
-console.log('PASS: bounded voices, mix buses, MP3 trim at 48k, gapless music/tension, DJ interruption; five stops; rollup completion, skip before decode, dedupe, restart and unmount');
+console.log('PASS: beat anchor, grid-booked tease/count-up in the chord, in-time fanfare (8th entry, chord tones, coda on a beat, self-release), win sweep on 32nds, DJ filter close/drop; bounded voices, mix buses, MP3 trim at 48k, gapless music/tension, DJ interruption; five stops; rollup completion, skip before decode, dedupe, restart and unmount');

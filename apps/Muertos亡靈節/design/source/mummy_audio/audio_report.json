@@ -1,0 +1,614 @@
+[
+  {
+    "name": "bgm_main",
+    "file": "bgm_main.ogg",
+    "duration": 32.0,
+    "channels": 2,
+    "loop": true,
+    "true_peak_db": -7.547478371082818,
+    "bytes": 494337
+  },
+  {
+    "name": "bgm_freespin",
+    "file": "bgm_freespin.ogg",
+    "duration": 27.428571428571427,
+    "channels": 2,
+    "loop": true,
+    "true_peak_db": -7.9829095119277005,
+    "bytes": 449769
+  },
+  {
+    "name": "btn",
+    "file": "btn.wav",
+    "duration": 0.07501133786848073,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -15.467733883043412,
+    "bytes": 6660
+  },
+  {
+    "name": "spin",
+    "file": "spin.wav",
+    "duration": 0.4,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -7.311037584709041,
+    "bytes": 35324
+  },
+  {
+    "name": "reel_stop_1",
+    "file": "reel_stop_1.wav",
+    "duration": 0.14,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -5.7642995955582474,
+    "bytes": 12392
+  },
+  {
+    "name": "reel_stop_2",
+    "file": "reel_stop_2.wav",
+    "duration": 0.14,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.0852155063343,
+    "bytes": 12392
+  },
+  {
+    "name": "reel_stop_3",
+    "file": "reel_stop_3.wav",
+    "duration": 0.14,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -5.290192934898418,
+    "bytes": 12392
+  },
+  {
+    "name": "reel_stop_4",
+    "file": "reel_stop_4.wav",
+    "duration": 0.14,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.045665157677876,
+    "bytes": 12392
+  },
+  {
+    "name": "reel_stop_5",
+    "file": "reel_stop_5.wav",
+    "duration": 0.14,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.08026150176192,
+    "bytes": 12392
+  },
+  {
+    "name": "scatter_1",
+    "file": "scatter_1.wav",
+    "duration": 0.9,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.544998395482994,
+    "bytes": 79424
+  },
+  {
+    "name": "scatter_2",
+    "file": "scatter_2.wav",
+    "duration": 0.9,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.544998395482994,
+    "bytes": 79424
+  },
+  {
+    "name": "scatter_3",
+    "file": "scatter_3.wav",
+    "duration": 0.9,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -5.574295851793392,
+    "bytes": 79424
+  },
+  {
+    "name": "scatter_4",
+    "file": "scatter_4.wav",
+    "duration": 0.9,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -4.12366280790719,
+    "bytes": 79424
+  },
+  {
+    "name": "scatter_5",
+    "file": "scatter_5.wav",
+    "duration": 0.9,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -4.12366280790719,
+    "bytes": 79424
+  },
+  {
+    "name": "win_small",
+    "file": "win_small.wav",
+    "duration": 1.1,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.497363179486555,
+    "bytes": 97064
+  },
+  {
+    "name": "win_medium",
+    "file": "win_medium.ogg",
+    "duration": 2.4,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -6.006399083816686,
+    "bytes": 30404
+  },
+  {
+    "name": "line_draw",
+    "file": "line_draw.wav",
+    "duration": 0.4,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -15.415855301918231,
+    "bytes": 35324
+  },
+  {
+    "name": "cat_land",
+    "file": "cat_land.wav",
+    "duration": 0.25,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -13.129806735846108,
+    "bytes": 22094
+  },
+  {
+    "name": "scarab_rise",
+    "file": "scarab_rise.wav",
+    "duration": 0.95,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -3.884352586143693,
+    "bytes": 83834
+  },
+  {
+    "name": "scarab_press",
+    "file": "scarab_press.wav",
+    "duration": 0.3,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.712763282083699,
+    "bytes": 26504
+  },
+  {
+    "name": "scarab_tick",
+    "file": "scarab_tick.wav",
+    "duration": 0.03501133786848073,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -11.75556613430273,
+    "bytes": 3132
+  },
+  {
+    "name": "scarab_stop",
+    "file": "scarab_stop.wav",
+    "duration": 0.6,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -11.75556613430273,
+    "bytes": 52964
+  },
+  {
+    "name": "scarab_fly",
+    "file": "scarab_fly.wav",
+    "duration": 0.3,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -13.495022233424683,
+    "bytes": 26504
+  },
+  {
+    "name": "scarab_sink",
+    "file": "scarab_sink.wav",
+    "duration": 0.3,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.643662846754034,
+    "bytes": 26504
+  },
+  {
+    "name": "sun_tick",
+    "file": "sun_tick.wav",
+    "duration": 0.02800453514739229,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -10.637227033358531,
+    "bytes": 2514
+  },
+  {
+    "name": "sun_count",
+    "file": "sun_count.wav",
+    "duration": 0.4,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.07329360199604,
+    "bytes": 35324
+  },
+  {
+    "name": "sun_stop",
+    "file": "sun_stop.wav",
+    "duration": 1.3,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.738901105447869,
+    "bytes": 114704
+  },
+  {
+    "name": "coin_land",
+    "file": "coin_land.wav",
+    "duration": 0.4,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.07329360199604,
+    "bytes": 35324
+  },
+  {
+    "name": "bandage_pop",
+    "file": "bandage_pop.wav",
+    "duration": 0.3,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -9.010240026271507,
+    "bytes": 26504
+  },
+  {
+    "name": "scarab_mult_1",
+    "file": "scarab_mult_1.wav",
+    "duration": 0.9,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -5.4561217859345295,
+    "bytes": 79424
+  },
+  {
+    "name": "scarab_mult_2",
+    "file": "scarab_mult_2.wav",
+    "duration": 1.1,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -5.966324315090237,
+    "bytes": 97064
+  },
+  {
+    "name": "scarab_mult_3",
+    "file": "scarab_mult_3.wav",
+    "duration": 1.4,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.534402287850945,
+    "bytes": 123524
+  },
+  {
+    "name": "sun_win_1",
+    "file": "sun_win_1.ogg",
+    "duration": 3.0,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -6.191232745888337,
+    "bytes": 30634
+  },
+  {
+    "name": "sun_win_2",
+    "file": "sun_win_2.ogg",
+    "duration": 3.5,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -5.817817806497123,
+    "bytes": 35993
+  },
+  {
+    "name": "sun_win_3",
+    "file": "sun_win_3.ogg",
+    "duration": 4.0,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -5.310557236051297,
+    "bytes": 39609
+  },
+  {
+    "name": "sun_win_4",
+    "file": "sun_win_4.ogg",
+    "duration": 4.5,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -5.310557236051297,
+    "bytes": 42727
+  },
+  {
+    "name": "bigwin_hit",
+    "file": "bigwin_hit.ogg",
+    "duration": 2.0,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -6.254244948905151,
+    "bytes": 34382
+  },
+  {
+    "name": "win_big",
+    "file": "win_big.ogg",
+    "duration": 2.4,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -6.006399083816686,
+    "bytes": 26233
+  },
+  {
+    "name": "win_super",
+    "file": "win_super.ogg",
+    "duration": 3.0,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -6.006399083816686,
+    "bytes": 30456
+  },
+  {
+    "name": "win_mega",
+    "file": "win_mega.ogg",
+    "duration": 3.6,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -6.254244948905151,
+    "bytes": 35926
+  },
+  {
+    "name": "win_epic",
+    "file": "win_epic.ogg",
+    "duration": 4.2,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -5.069441010999947,
+    "bytes": 39559
+  },
+  {
+    "name": "win_max",
+    "file": "win_max.ogg",
+    "duration": 4.8,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -5.310557236051297,
+    "bytes": 42753
+  },
+  {
+    "name": "win_panel",
+    "file": "win_panel.ogg",
+    "duration": 1.8,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -6.006399083816686,
+    "bytes": 28180
+  },
+  {
+    "name": "win_cap",
+    "file": "win_cap.ogg",
+    "duration": 3.5,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -5.310557236051297,
+    "bytes": 42614
+  },
+  {
+    "name": "fg_trigger",
+    "file": "fg_trigger.ogg",
+    "duration": 2.6,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -6.254244948905151,
+    "bytes": 35813
+  },
+  {
+    "name": "fg_intro",
+    "file": "fg_intro.ogg",
+    "duration": 2.2,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -6.006399083816686,
+    "bytes": 30386
+  },
+  {
+    "name": "coin_reset",
+    "file": "coin_reset.wav",
+    "duration": 0.6,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -4.984785543221362,
+    "bytes": 105884
+  },
+  {
+    "name": "hs_tally",
+    "file": "hs_tally.wav",
+    "duration": 1.5,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -6.036631075361835,
+    "bytes": 264644
+  },
+  {
+    "name": "win_rollup_end",
+    "file": "win_rollup_end.wav",
+    "duration": 1.0,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -5.4278330022873895,
+    "bytes": 176444
+  },
+  {
+    "name": "scarab_button_idle",
+    "file": "scarab_button_idle.ogg",
+    "duration": 2.0,
+    "channels": 1,
+    "loop": true,
+    "true_peak_db": -20.674148070994217,
+    "bytes": 18924
+  },
+  {
+    "name": "reel_tension",
+    "file": "reel_tension.ogg",
+    "duration": 2.0,
+    "channels": 1,
+    "loop": true,
+    "true_peak_db": -18.93564800108787,
+    "bytes": 21227
+  },
+  {
+    "name": "sun_wait_loop",
+    "file": "sun_wait_loop.ogg",
+    "duration": 4.0,
+    "channels": 2,
+    "loop": true,
+    "true_peak_db": -18.75360447249505,
+    "bytes": 41166
+  },
+  {
+    "name": "sun_score_loop",
+    "file": "sun_score_loop.wav",
+    "duration": 1.2,
+    "channels": 2,
+    "loop": true,
+    "true_peak_db": -21.547019815204447,
+    "bytes": 211724
+  },
+  {
+    "name": "win_rollup_loop",
+    "file": "win_rollup_loop.ogg",
+    "duration": 4.0,
+    "channels": 2,
+    "loop": true,
+    "true_peak_db": -20.9023210036069,
+    "bytes": 57740
+  },
+  {
+    "name": "cat_wave",
+    "file": "cat_wave.wav",
+    "duration": 0.8,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.319550432736458,
+    "bytes": 70604
+  },
+  {
+    "name": "cat_laugh",
+    "file": "cat_laugh.ogg",
+    "duration": 1.6,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -7.3025468749013145,
+    "bytes": 8857
+  },
+  {
+    "name": "cat_cheer",
+    "file": "cat_cheer.wav",
+    "duration": 1.2,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.248586885666362,
+    "bytes": 105884
+  },
+  {
+    "name": "cat_disappoint",
+    "file": "cat_disappoint.wav",
+    "duration": 1.2,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.325623157787325,
+    "bytes": 105884
+  },
+  {
+    "name": "voice_sun_start",
+    "file": "voice_sun_start.wav",
+    "duration": 1.4,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.248586885666362,
+    "bytes": 123524
+  },
+  {
+    "name": "voice_levelup_1",
+    "file": "voice_levelup_1.wav",
+    "duration": 1.0,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.319550432736458,
+    "bytes": 88244
+  },
+  {
+    "name": "voice_levelup_2",
+    "file": "voice_levelup_2.wav",
+    "duration": 1.2,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -6.370001314402081,
+    "bytes": 105884
+  },
+  {
+    "name": "voice_levelup_3",
+    "file": "voice_levelup_3.ogg",
+    "duration": 1.6,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -5.682055776282905,
+    "bytes": 9603
+  },
+  {
+    "name": "bandage_sweep",
+    "file": "bandage_sweep.wav",
+    "duration": 1.0,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -7.45835475485213,
+    "bytes": 88244
+  },
+  {
+    "name": "tomb_rumble",
+    "file": "tomb_rumble.ogg",
+    "duration": 3.0,
+    "channels": 1,
+    "loop": false,
+    "true_peak_db": -41.73069568852206,
+    "bytes": 18658
+  },
+  {
+    "name": "sun_show",
+    "file": "sun_show.ogg",
+    "duration": 2.2,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -5.170176025580774,
+    "bytes": 27738
+  },
+  {
+    "name": "sun_start",
+    "file": "sun_start.ogg",
+    "duration": 1.8,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -6.191232745888337,
+    "bytes": 28571
+  },
+  {
+    "name": "sun_levelup",
+    "file": "sun_levelup.ogg",
+    "duration": 3.0,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -5.310557236051297,
+    "bytes": 40794
+  },
+  {
+    "name": "coin_shimmer",
+    "file": "coin_shimmer.ogg",
+    "duration": 2.0,
+    "channels": 2,
+    "loop": false,
+    "true_peak_db": -20.12722549295801,
+    "bytes": 29258
+  }
+]

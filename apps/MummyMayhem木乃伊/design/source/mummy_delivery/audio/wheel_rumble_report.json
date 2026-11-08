@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "duration": 0.95,
+  "recorded_sources": [
+    "stone",
+    "stone_scrape",
+    "timp"
+  ],
+  "scarab_bus_gain": 0.9,
+  "arrival_rms_gain_db": 9.249318228612031,
+  "true_peak_dbtp": -3.884431192592616
+}

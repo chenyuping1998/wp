@@ -1,7 +1,7 @@
 {
   "project": "Medusa Gaze / 梅杜莎凝視",
-  "date": "2026-10-31",
-  "stage": "complete_local_deliverable_pending_user_engine_upload",
+  "date": "2026-11-07",
+  "stage": "implemented_pending_final_visual_review",
   "userPriority": "獎圖得分動態演繹、消除動態、掉落效果（2026-10-24補充）",
   "motionV2": {
     "review": "motion/review.html",
@@ -1179,8 +1179,8 @@
   },
   "userRequestedVideo": false,
   "delivery": {
-    "frontend": "../../delivery/MedusaGaze_frontend_20261031.zip",
-    "sources": "../../delivery/MedusaGaze_sources_20261031.zip",
+    "frontend": "../../delivery/MedusaGaze_frontend_20261107.zip",
+    "sources": "../../delivery/MedusaGaze_sources_20261107.zip",
     "readme": "../../delivery/README_交付說明.txt"
   },
   "presentationCorrection": {
@@ -1398,7 +1398,7 @@
     "newVideoGenerated": false,
     "passed": true
   },
-  "revision": "20261031-orb-power-v10",
+  "revision": "20261107-new-mechanics",
   "fivePointRefinement": {
     "date": "2026-10-26",
     "revision": 5,
@@ -2452,5 +2452,125 @@
       "source/medusagaze/_sheets/orb_power_20261031_turbo2_result.png"
     ],
     "limits": "Local mock/headless lifecycle and native replay, not live RGS/wallet accounting or end-to-end device loudness/frame-pacing certification. Portrait visual QA and the historical 15-spin feature were not repeated this pass."
+  },
+  "newMechanics": {
+    "date": "2026-11-07",
+    "revision": "new-mechanics-art-audio",
+    "status": "implemented_pending_final_visual_review",
+    "brief": "E:/stake/proposals/MedusaGaze梅杜莎凝視/MEDUSA_新機制_Codex需求單.md",
+    "assets": {
+      "medusaSymbols/st.png": [
+        512,
+        512
+      ],
+      "medusaFx/gaze_sweep.png": [
+        1024,
+        256
+      ],
+      "medusaUi/ladder_panel.png": [
+        400,
+        128
+      ],
+      "medusaUi/snake_pip_on.png": [
+        64,
+        64
+      ],
+      "medusaUi/snake_pip_off.png": [
+        64,
+        64
+      ],
+      "medusaFx/stone_crack_1.png": [
+        512,
+        512
+      ],
+      "medusaFx/stone_crack_2.png": [
+        512,
+        512
+      ],
+      "medusaFx/stone_crack_3.png": [
+        512,
+        512
+      ],
+      "medusaUi/ladder_lv1.png": [
+        256,
+        256
+      ],
+      "medusaUi/ladder_lv2.png": [
+        256,
+        256
+      ],
+      "medusaUi/ladder_lv3.png": [
+        256,
+        256
+      ],
+      "medusaUi/ladder_lv4.png": [
+        256,
+        256
+      ],
+      "medusaUi/card_ante.png": [
+        720,
+        1040
+      ],
+      "medusaUi/card_petrify.png": [
+        720,
+        1040
+      ],
+      "medusaUi/card_bonus.png": [
+        720,
+        1040
+      ],
+      "medusaUi/card_super.png": [
+        720,
+        1040
+      ]
+    },
+    "imageGeneration": "Built-in imagegen; approved style_ref attached per generation; original images and prompt set preserved. Pillow sizing and contact sheets per brief.",
+    "sources": "source/medusagaze/new-mechanics",
+    "prompts": "new_mechanics_generations.json",
+    "audio": {
+      "newCues": 5,
+      "totalFiles": 70,
+      "format": "PCM16 44.1kHz mono; PCM24 48k masters",
+      "nativeCheck": "70 files, 66 SFX onsets <=5ms, finite LUFS/true peaks <=-1dBTP, 7119356 runtime bytes"
+    },
+    "implementation": [
+      "Three fracture frames replace the final 270ms/135ms of the original rattle; no added reveal wait.",
+      "Soft local sweep 600ms normal / 300ms turbo, concurrent with existing cell changes; whole-board impact broadcasts removed.",
+      "Always-mounted ladder panel and twelve snake sprites; 3 groups of 4 slots, configuration-driven labels and upgrade badge.",
+      "Only dialogImage artwork added to the four mode definitions; prices, descriptions and game maths preserved.",
+      "App-owned covered-card CSS adds height, an anchored scrim and cream/gold text; required to keep the newly supplied covers readable."
+    ],
+    "validation": {
+      "productionBuild": "passed",
+      "buildLog": "E:/stake/tmp/medusa-new-mechanics-build-20261107.log",
+      "typeErrors": 0,
+      "typeWarnings": 1,
+      "warning": "Existing allowImportingTsExtensions/noEmit config",
+      "assetDimensionsAndAlpha": "passed",
+      "nativeMotionAndAudio": "passed",
+      "protectedEventHandlerSha256": "a438dcda201673a0fbe0de19d765f7768fcc6061117cba7fe57a7a73240451a5",
+      "mathProject": "Read only; no files changed",
+      "petrifyMock": {
+        "book": "newPetrify, real published petrify book 0",
+        "events": 21,
+        "result": "$14.30",
+        "returnedToIdle": true,
+        "consoleErrors": 0
+      },
+      "visualSheets": [
+        "source/medusagaze/_sheets/new_mechanics.png",
+        "source/medusagaze/_sheets/new_mechanics_board.png"
+      ],
+      "pending": [
+        "Final ladder level-up visual playback",
+        "Final covered-card contrast and responsive visual check"
+      ],
+      "blockingReason": "Local browser use disabled in Work settings; prior CDP timeouts also interrupted final replay."
+    },
+    "optionalNotImplemented": [
+      "Dedicated petrify_gaze Spine clip; uses existing gaze",
+      "Fourth loading intro illustration"
+    ],
+    "scope": "Local assets/build/mock checks only; no live RGS or video."
   }
 }

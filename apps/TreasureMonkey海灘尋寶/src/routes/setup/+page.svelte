@@ -14,7 +14,7 @@
   <section class="intro"><div><p class="eyebrow">A SUNNY DAY. A NEW DISCOVERY.</p><h1>下一次嗶聲，<br />會挖到什麼？</h1><p class="lead">阿寶叔與小救的海灘尋寶計畫。<br />明亮海岸、俐落裝備，還有藏在沙裡的驚喜。</p></div><aside><span class="small">已確立的遊戲規格</span><div class="facts"><strong>5 × 4<small>盤面</small></strong><strong>14<small>中獎線</small></strong><strong>3<small>免費遊戲等級</small></strong></div><p>整輪擴展 Wild · 多格倍率探測區<br />三階入口 {prices.join(' / ')}×</p></aside></section>
   <section class="sample"><div class="sectionline"><h2>海灘風格提案</h2><span>已依此方向製作獨立素材</span></div>{#if imageReady}<a href={`${base}/preview/style_test_v2.png`} target="_blank" rel="noreferrer"><img src={`${base}/preview/style_test_v2.png`} alt="海灘尋寶風格樣張：五乘四盤面與穿著專業探測工作服的阿寶叔" onerror={() => imageReady = false} /></a>{:else}<div class="pending">風格樣張製作中</div>{/if}<p class="caption">此圖為畫風參考。即時預覽已使用獨立背景、12 個符號與人物分件。</p></section>
   <section class="cards"><article><span class="number">01 / 人物</span><h2>整齊、專業，仍然有趣</h2><p>阿寶叔：短袖工作衫、探測背心、工具腰帶與包頭鞋。小救：完整救生員制服、腰包與鏟子。</p></article><article><span class="number">02 / 演出</span><h2>從沙地揭開驚喜</h2><p>探測器掃過整輪；倍率框化為沙地探測區。每個覆蓋範圍都對齊實際遊戲事件。</p></article><article><span class="number">03 / 音樂音效</span><h2>讓每次發現都有聲音</h2><p>已加入兩首原創合成配樂與 33 個音效；轉輪、探測器、探測區及海浪轉場皆有對應演出。</p></article></section>
-  <footer><a class="button" href="/studio">檢視美術、動畫與音效 ↗</a><p>本款素材已接入；正式數學與平台連線仍待驗證。</p><a class="button" href={`${base}/`}>開啟引擎入口 <span>↗</span></a><small>引擎入口需要有效平台連線。</small></footer>
+  <footer><a class="button" href="/studio">檢視美術、動畫與音效 ↗</a><p>本款獨立數學已建置，四種模式 RTP 均為 {(config.rtp * 100).toFixed(2)}%；平台連線仍待驗證。</p><a class="button" href={`${base}/`}>開啟引擎入口 <span>↗</span></a><small>引擎入口需要有效平台連線。</small></footer>
  </main>
 {:else}
  <main><h1>Treasure Monkey</h1><a href={`${base}/`}>開啟遊戲</a></main>

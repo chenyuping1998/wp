@@ -24,6 +24,7 @@ STEREO={'win_big','win_super','win_mega','win_epic','win_max','win_cap'}
 names=({f'{name}.wav' for name in BASELINE}-{'bgm_main.wav','bgm_freespin.wav','reel_stop.wav'})
 names|={'bgm_main.mp3','bgm_freespin.mp3','monkey_expand.mp3','win_rollup_loop.wav','win_rollup_end.wav'}
 names|={f'reel_stop_{i}.wav' for i in range(1,6)}
+names|={'seq_tick.wav','seq_kick.wav','seq_note.wav','seq_snare.wav','seq_pad.wav'}
 assert names=={p.name for p in LIVE.iterdir() if p.is_file()}
 assert names=={p.name for p in DELIVERY.iterdir() if p.is_file()}
 assert {row['output_filename'] for row in LICENSES}==names-APPROVED

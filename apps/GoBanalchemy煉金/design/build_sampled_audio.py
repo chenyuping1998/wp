@@ -168,18 +168,27 @@ def hit(index,seconds=.16):
                         (fit(sample(f'foley/bfh1_hit_{index%5+1:02d}.ogg'),seconds),0,.25),
                         (fit(sample(WATER),seconds),0,.15)])
 
-def fanfare(seconds,tier=0):
+def fanfare(seconds,tier=0,bpm=None):
     motif=[60,62,67,69,72,74,79,72] if THEME=='ninja' else [60,63,67,70,74,75,79,72]
     layers=[]
     step=min(.19,max(.08,(seconds-.25)/8))
+    # bpm given (2026-11-06): the tier fanfares play over the running bed, so
+    # they are cut to it — the motif on sixteenths, the drum on every beat with
+    # an eighth pickup from tier 2, the top-tier sparkle on sixteenths. Sound
+    # starts them on the bed's eighth grid.
+    pulse,sparkle=.34,.17
+    if bpm:
+        beat=60/bpm;step=beat/4;pulse=beat;sparkle=beat/4
     for i,pitch in enumerate(motif):
         at=i*step
         if at<seconds-.1:layers.append((note(pitch,min(.38,seconds-at)),at,.6))
     if tier:
-        for i,at in enumerate(np.arange(0,seconds-.22,.34)):
+        for i,at in enumerate(np.arange(0,seconds-.22,pulse)):
             layers.append((fade(fit(sample(DRUM),.25)),float(at),.2+.025*tier))
+            if bpm and tier>=2 and at+pulse*.5<seconds-.3:
+                layers.append((fade(fit(band(sample('snare_f1.wav'),300,3000,2),.18)),float(at+pulse*.5),.16+.02*tier))
         if tier>=3:
-            for i,at in enumerate(np.arange(1.4,seconds-.6,.17)):
+            for i,at in enumerate(np.arange(1.4 if not bpm else 3*pulse,seconds-.6,sparkle)):
                 layers.append((note(motif[i%8]+12,.25),float(at),.12+.02*tier))
         layers.append((chord(60,min(.7,seconds*.4)),max(0,seconds-.8),.45))
     return room(mix(seconds,layers),.10 if THEME=='ninja' else .20)
@@ -204,6 +213,126 @@ def music(bpm,feature):
         if THEME=='alchemy' and bar%4==2:
             layers.append((fade(filt(fit(sample(WATER),.5),low=300,high=3500)),at+2.5*beat,.045,-.6))
     return mix(seconds,layers,stereo=True,wrap=True)
+
+# ── rhythm pass (2026-11-06, user: 動畫跟音效節奏方面要更強) ────────────────
+# Every cue below is built for the 400–4000 Hz band a phone or laptop speaker
+# actually plays (GoBananinja's lesson of 11-01: a stop that is 95% below
+# 400 Hz is silent on the devices players use, at any volume), and the ones
+# that repeat are cut to the beds' tempo so they sit on the drums.
+BED_BPM = {'base': 128, 'feature': 154}
+
+def band(c, low, high, order=3):
+    # one 2nd-order stage leaves these takes mostly where they were: stack them
+    for _ in range(order):
+        c = filt(c, low=low, high=high)
+    return c
+
+def stop_click(index, seconds=.18):
+    """A reel stop: a glass tick over a mid wooden knock, a step higher each reel."""
+    up = (index - 1) * 2
+    glass = band(rate(sample(GLASS), up - 3), 700, 5000)
+    knock = band(rate(sample(f'foley/bfh1_hit_{(index + 2) % 5 + 1:02d}.ogg'), up * .5), 450, 3200)
+    tick = band(rate(sample('interface-sounds/click_003.ogg'), up), 900, 5200)
+    body = filt(rate(sample(DRUM), up * .5), low=90, high=240)
+    return fade(mix(seconds, [(fit(knock, seconds), 0, .75), (fit(glass, seconds), 0, .42),
+                              (fit(tick, seconds), 0, .3), (fit(body, seconds), 0, .05)]), .0003, .08)
+
+# Eb Bb Eb F Bb: tones every chord of the bed (Cm Abm Ebm Bbm) can carry
+WIN_STEPS = [63, 70, 75, 77, 82]
+
+def win_step(i, seconds=.42):
+    """One reel of the win wake lighting: a marimba note with a glass ring on it."""
+    pitch = WIN_STEPS[i - 1]
+    tone = filt(note(pitch, seconds), low=380)
+    ring = fade(band(rate(sample(GLASS), pitch - 72), 900, 5200, 2), .0005, seconds * .7)
+    tick = band(rate(sample('interface-sounds/click_003.ogg'), pitch - 66), 1200, 5200)
+    return room(mix(seconds, [(tone, 0, .7), (fit(ring, seconds), 0, .22 + .03 * i),
+                              (fit(tick, seconds), 0, .18)]), .16)
+
+def win_land(heavy, seconds=None):
+    """The winning symbols of a reel coming down: a stone clink, a body under it."""
+    seconds = seconds or (.36 if heavy else .28)
+    crack = band(sample('foley/bfh1_hit_05.ogg'), 450, 3400)
+    clink = band(rate(sample(GLASS), -5), 800, 4600, 2)
+    layers = [(fit(crack, seconds), 0, .8), (fit(clink, seconds), 0, .28)]
+    if heavy:
+        # weight a speaker can reproduce: the drum's own harmonics, driven
+        drum = fit(filt(rate(sample(DRUM), -2), high=900), seconds)
+        drive = band(Clip(np.tanh(drum.audio * 5) * .5, drum.sources), 420, 1900, 2)
+        layers += [(fade(filt(drum, low=70), .001, .2), 0, .13), (fade(drive, .001, .16), 0, .75),
+                   (fit(band(sample('snare_f1.wav'), 420, 3000, 2), seconds), 0, .55)]
+    return fade(room(mix(seconds, layers), .12), .0003, seconds * .55)
+
+def rollup_bed(bpm):
+    """The count-up ticks, four beats of sixteenths at the bed's tempo."""
+    beat = 60 / bpm; seconds = 4 * beat; layers = []
+    for i in range(16):
+        layers.append((fade(fit(sample('interface-sounds/click_003.ogg'), .055), .001, .015), i * beat / 4, .05 + .02 * (i % 4 == 0)))
+    for i in range(4):
+        layers.append((note(60 + [0, 7, 12, 7][i], min(.21, beat * .45)), i * beat, .055))
+    return mix(seconds, layers, wrap=True)
+
+def presence(c, amount=1.6, cut=.55):
+    """Small-speaker weight for a low impact: its sub/low band driven into
+    harmonics and kept at 450–2200 Hz, where a phone can play it. Sampled
+    material only — the drive is a waveshaper on the cue itself."""
+    low = filt(c, high=320)
+    peak = max(1e-6, np.max(np.abs(low.audio)))
+    driven = Clip(np.tanh(low.audio / peak * 4.0) * peak, low.sources)
+    upper = band(driven, 450, 2200, 2)
+    crack = fit(band(sample('snare_f1.wav'), 380, 2600, 2), min(.33, len(c.audio) / SR))
+    # and a little less sub: a phone throws it away, and on headphones it is
+    # what was burying the hit (energy above 400 Hz 15% -> ~37%)
+    body = Clip(c.audio - cut * filt(c, high=140).audio, c.sources)
+    return mix(len(c.audio) / SR, [(body, 0, 1), (upper, 0, amount), (fade(crack, .0005, .2), 0, amount * .5)])
+
+def tension_bed(bpm):
+    """The anticipation loop: eighths of the bed's tempo, rising, with sixteenth
+    pickups into the bar line so it drives into the next loop."""
+    beat = 60 / bpm; seconds = 4 * beat
+    layers = [(hit(i, .13), i * beat / 2, .12 + i * .02) for i in range(8)]
+    layers += [(hit(5 + k, .1), 3 * beat + (2 * k + 1) * beat / 4, .1) for k in range(2)]
+    return mix(seconds, layers, wrap=True)
+
+def count_end(seconds=.6):
+    """A small win's amount landing: two notes a sixteenth apart, a glass ring."""
+    six = 60 / BED_BPM['base'] / 4
+    ring = fade(band(rate(sample(GLASS), 82 - 72), 900, 5200, 2), .0005, seconds * .6)
+    return room(mix(seconds, [(filt(note(75, .3), low=380), 0, .55), (filt(note(82, seconds - six), low=380), six, .7),
+                              (fit(ring, seconds), six, .25)]), .18)
+
+PRESENCE = {'gong_feature': 1.7, 'bigwin_blast': 1.9, 'grenade_blast': 1.6, 'press_blast': 1.6,
+            'dynamite_blast': 1.6, 'dynamite_blast_big': 1.9, 'fullboard_stamp': 1.8, 'fullboard_chain': 1.4}
+
+def rhythm_cues():
+    """Everything the rhythm pass renders, as (name, clip, peak_db, stereo)."""
+    out = []
+    for i in range(1, 6):
+        out.append((f'reel_stop_{i}', stop_click(i), -4 + i * .3, False))
+    for i in range(1, 6):
+        out.append((f'win_step_{i}', win_step(i), -5 + i * .2, False))
+    out.append(('win_land', win_land(False), -4.5, False))
+    out.append(('win_land_big', win_land(True), -3.5, False))
+    out.append(('win_rollup_loop', rollup_bed(BED_BPM['base']), -15, False))
+    out.append(('win_rollup_fg', rollup_bed(BED_BPM['feature']), -15, False))
+    out.append(('win_count_end', count_end(), -6, False))
+    out.append(('reel_tension_beat', tension_bed(BED_BPM['base']), -12, False))
+    out.append(('reel_tension_fg', tension_bed(BED_BPM['feature']), -12, False))
+    for name, tier, default in [('win_big', 1, 2.45), ('win_super', 2, 3.05), ('win_mega', 3, 3.6),
+                                ('win_epic', 4, 4.2), ('win_max', 5, 4.8)]:
+        out.append((name, fanfare(duration(name, default), tier, bpm=BED_BPM['base']), -4, True))
+    for name in PRESENCE:
+        out.append((name, impact_cue(name), -3.7, False))
+    return out
+
+
+def impact_cue(name):
+    d=duration(name,1.3)
+    if name=='fullboard_chain':
+        return mix(d,[(hit(i,.25),i*.19,.6) for i in range(5)])
+    c=mix(d,[(fit(sample(DRUM),d),0,.6),(hit(3,min(d,.3)),0,.45),
+             (chord(48,min(d,.8)),0,.4),(filt(fit(sample(AIR),min(d,.6)),low=650),.01,.1)])
+    return room(c,.16)
 
 def db(x):
     return float(20*np.log10(max(1e-12, x)))
@@ -264,8 +393,11 @@ def feature_finish(name, c):
 def deliver(name, c, peak_db=-4, stereo=False, loop=False, lufs=None, bpm=None):
     if name in FEATURE_WEIGHT:
         c=feature_finish(name,c)
+        if THEME=='alchemy' and name in PRESENCE:c=presence(c,PRESENCE[name])
         peak_db=-3.2 if FEATURE_WEIGHT[name]<1.3 else -2.8
         if name in ['slash_draw','fuse_sizzle']:peak_db=-8
+    if THEME=='alchemy' and name in PRESENCE and name not in FEATURE_WEIGHT:
+        c=presence(c,PRESENCE[name])
     if stereo and c.audio.ndim == 1:
         c = Clip(np.stack([c.audio, np.roll(c.audio, 137)*.87], axis=1), c.sources)
     c = master(c, peak_db, lufs, loop)
@@ -312,9 +444,10 @@ def build():
     deliver('bgm_freespin',music(fg,True),stereo=True,loop=True,lufs=-20,bpm=fg)
     deliver('btn',fit(sample('interface-sounds/click_003.ogg'),.075),-11)
     deliver('spin',mix(duration('spin',.42),[(fade(fit(filt(sample(AIR),low=550,high=4500),.30)),0,.25),(hit(0,.18),0,.5)]),-6)
-    for i in range(1,6):deliver(f'reel_stop_{i}',hit(i,.18),-8+i*.3)
+    if THEME=='ninja':
+        for i in range(1,6):deliver(f'reel_stop_{i}',hit(i,.18),-8+i*.3)
     tension=mix(2,[(hit(i,.13),i*.25,.12+i*.018) for i in range(8)],wrap=True)
-    deliver('reel_tension',tension,-12,loop=True)
+    if THEME=='ninja':deliver('reel_tension',tension,-12,loop=True)
     for i,off in enumerate([0,2,4,7,12],1):
         d=duration(f'scatter_{i}',.9)
         c=mix(d,[(fit(rate(sample(GLASS),off),d),0,.45),(note(72+off,d,pad=True),0,.25)])
@@ -323,14 +456,12 @@ def build():
     for name,tier,default in [('win_gliss',0,1.2),('win_gliss_big',1,2.1),('fs_intro',2,2.15),
         ('mult_update',0,.7),('wild_expand',2,1.8),('win_panel',1,1.4),('win_cap',6,3),
         ('win_big',1,2.45),('win_super',2,3.05),('win_mega',3,3.6),('win_epic',4,4.2),('win_max',5,4.8)]:
+        if THEME=='alchemy' and name in ['win_big','win_super','win_mega','win_epic','win_max']:continue
         deliver(name,fanfare(duration(name,default),tier),-5 if not tier else -4,
                 stereo=name in ['win_big','win_super','win_mega','win_epic','win_max','win_cap'])
     for name in ['gong_feature','bigwin_blast','grenade_blast','press_blast','dynamite_blast','dynamite_blast_big','fullboard_stamp']:
         if THEME=='ninja' and name not in ['gong_feature','bigwin_blast','grenade_blast']:continue
-        d=duration(name,1.3)
-        c=mix(d,[(fit(sample(DRUM),d),0,.6),(hit(3,min(d,.3)),0,.45),
-                 (chord(48,min(d,.8)),0,.4),(filt(fit(sample(AIR),min(d,.6)),low=650),.01,.1)])
-        deliver(name,room(c,.16),-3.7)
+        deliver(name,impact_cue(name),-3.7)
     if THEME=='ninja':
         for name in ['slash_draw','slash_hit','slash_finale']:
             d=duration(name,.7)
@@ -346,14 +477,17 @@ def build():
         deliver('symbol_reveal',fanfare(duration('symbol_reveal',1.2)), -6)
         deliver('ladder_up',fanfare(duration('ladder_up',1.2)), -6)
         deliver('cave_quake',filt(fit(rate(sample(DRUM),-9),duration('cave_quake',.95)),high=500),-10)
-        d=duration('fullboard_chain',1.7)
-        deliver('fullboard_chain',mix(d,[(hit(i,.25),i*.19,.6) for i in range(5)]),-5)
+        deliver('fullboard_chain',impact_cue('fullboard_chain'),-5)
     c=mix(duration('coin_shimmer',1.2),[(note(72+i*2,.25),i*.1,.3) for i in range(6)])
     deliver('coin_shimmer',c,-10)
     roll=[]
     for i in range(16):roll.append((fade(fit(sample(WOOD[i%3] if THEME=='ninja' else 'interface-sounds/click_003.ogg'),.055),.001,.015),i*.125,.055))
     for i in range(4):roll.append((note(60+[0,7,12,7][i],.21),i*.5,.055))
-    deliver('win_rollup_loop',mix(2,roll,wrap=True),-15,loop=True)
+    if THEME=='ninja':deliver('win_rollup_loop',mix(2,roll,wrap=True),-15,loop=True)
+    else:
+        for name,c,peak,stereo in rhythm_cues():
+            if name in PRESENCE:continue  # delivered above, with presence
+            deliver(name,c,peak,stereo=stereo,loop=name.startswith(('win_rollup','reel_tension')))
     deliver('win_rollup_end',mix(1,[(chord(60,.85),0,.5),(hit(3,.3),0,.5)]),-5)
     for p in (SOURCE/'approved').iterdir():shutil.copy2(p,OUT/p.name);shutil.copy2(p,DELIVERY/p.name)
     for ext in ['json','ts']:

@@ -1,0 +1,850 @@
+[
+  {
+    "file": "symbol_contact_118px.png",
+    "size": [
+      1008,
+      340
+    ],
+    "mode": "RGB"
+  },
+  {
+    "file": "backgrounds\\bg_base.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "backgrounds\\bg_base_far.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "backgrounds\\bg_base_props.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "backgrounds\\bg_feature.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "backgrounds\\bg_feature_far.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "backgrounds\\bg_feature_props.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "backgrounds\\bg_holdandspin.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "backgrounds\\bg_holdandspin_far.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "backgrounds\\bg_holdandspin_props.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "banners\\big.png",
+    "size": [
+      1000,
+      560
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "banners\\epic.png",
+    "size": [
+      1000,
+      560
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "banners\\max.png",
+    "size": [
+      1000,
+      560
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "banners\\mega.png",
+    "size": [
+      1000,
+      560
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "banners\\superwin.png",
+    "size": [
+      1000,
+      560
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "frame\\frame_bg.png",
+    "size": [
+      1280,
+      1280
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "frame\\frame_edge.png",
+    "size": [
+      1280,
+      1280
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "frame\\fs_counter_panel.png",
+    "size": [
+      1280,
+      966
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "frame\\fs_sign.png",
+    "size": [
+      1280,
+      1000
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "fx\\fx_glow.png",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "fx\\fx_leaf.png",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "fx\\fx_star.png",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "fx\\fx_streak.png",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "fx\\fx_vignette.png",
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\assembled.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\head_blink.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\head_idle.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\head_laugh.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\rig_source.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "scarab_wheel\\arch_base.png",
+    "size": [
+      1600,
+      860
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "scarab_wheel\\button.png",
+    "size": [
+      420,
+      420
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "scarab_wheel\\button_burst.png",
+    "size": [
+      600,
+      600
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "scarab_wheel\\button_lit.png",
+    "size": [
+      420,
+      420
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "scarab_wheel\\plate.png",
+    "size": [
+      640,
+      640
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "scarab_wheel\\plate_flash.png",
+    "size": [
+      800,
+      800
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "scarab_wheel\\pointer.png",
+    "size": [
+      180,
+      240
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "scarab_wheel\\tile_hot.png",
+    "size": [
+      360,
+      300
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "scarab_wheel\\tile_normal.png",
+    "size": [
+      360,
+      300
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "scarab_wheel\\tile_result_glow.png",
+    "size": [
+      360,
+      300
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "scarab_wheel\\tile_top.png",
+    "size": [
+      360,
+      300
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\disc_lv1.png",
+    "size": [
+      1200,
+      1200
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\disc_lv2.png",
+    "size": [
+      1200,
+      1200
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\disc_lv3.png",
+    "size": [
+      1200,
+      1200
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\disc_lv4.png",
+    "size": [
+      1200,
+      1200
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\hub.png",
+    "size": [
+      320,
+      320
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\levelup.png",
+    "size": [
+      1000,
+      420
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\needle.png",
+    "size": [
+      280,
+      760
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\rays.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\ring.png",
+    "size": [
+      1400,
+      1400
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\ring_glow_lv1.png",
+    "size": [
+      1400,
+      1400
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\ring_glow_lv2.png",
+    "size": [
+      1400,
+      1400
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\ring_glow_lv3.png",
+    "size": [
+      1400,
+      1400
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\ring_glow_lv4.png",
+    "size": [
+      1400,
+      1400
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\title.png",
+    "size": [
+      1200,
+      300
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "sun_wheel\\wedge_win.png",
+    "size": [
+      640,
+      640
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\h1.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\h2.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\h3.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\h4.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\l1.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\l2.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\l3.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\l4.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\l5.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\p.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\s.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\w.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "symbols\\x.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "thumbnail\\cover_16x9_bg.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGB"
+  },
+  {
+    "file": "thumbnail\\cover_16x9_fg.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "thumbnail\\cover_16x9_fg_composite.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "thumbnail\\thumb_bg.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGB"
+  },
+  {
+    "file": "thumbnail\\thumb_fg.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "thumbnail\\thumb_fg_composite.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "transition\\bandage_end.png",
+    "size": [
+      360,
+      360
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "transition\\bandage_strip.png",
+    "size": [
+      2400,
+      360
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "transition\\sand_burst.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buybonus_plate.png",
+    "size": [
+      640,
+      640
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buybonus_stone.png",
+    "size": [
+      800,
+      800
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buybonus_stone_lit.png",
+    "size": [
+      800,
+      800
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buy_art_bonus.png",
+    "size": [
+      800,
+      450
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buy_art_holdandspin.png",
+    "size": [
+      800,
+      450
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buy_art_scarab.png",
+    "size": [
+      800,
+      450
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buy_art_sun.png",
+    "size": [
+      800,
+      450
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buy_hero_bonus.png",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buy_hero_holdandspin.png",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buy_hero_scarab.png",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buy_hero_scarab10.png",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buy_hero_scarab5.png",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buy_hero_sun.png",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\buy_icon.png",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "ui\\ticker_plate.png",
+    "size": [
+      652,
+      146
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\layers\\arm_l.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\layers\\arm_r.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\layers\\head.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\layers\\leg_l.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\layers\\leg_r.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\layers\\pelvis.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\layers\\tail.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot\\layers\\torso.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot_versions\\v1_tail_belly\\assembled.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot_versions\\v1_tail_belly\\torso.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot_versions\\v1_tail_belly\\runtime\\head_blink.png",
+    "size": [
+      216,
+      216
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot_versions\\v1_tail_belly\\runtime\\head_idle.png",
+    "size": [
+      216,
+      216
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot_versions\\v1_tail_belly\\runtime\\head_laugh.png",
+    "size": [
+      216,
+      216
+    ],
+    "mode": "RGBA"
+  },
+  {
+    "file": "mascot_versions\\v1_tail_belly\\runtime\\mummyCat.png",
+    "size": [
+      1024,
+      512
+    ],
+    "mode": "RGBA"
+  }
+]

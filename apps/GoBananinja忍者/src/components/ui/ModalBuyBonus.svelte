@@ -65,7 +65,13 @@
 					{/if}
 				{/each}
 			</div>
-			<div class="foot">All features play at {(config.rtp * 100).toFixed(0)}% RTP · Max win 10,000×</div>
+			<!-- Max win per mode, from the maths: Hold and Spin caps at 1,000×, not the
+			     10,000× of the free-spin rounds — one figure for all four was wrong. -->
+			<div class="foot">
+				All features play at {(config.rtp * 100).toFixed(0)}% RTP · Max win
+				{config.betModes.bonus100.max_win.toLocaleString('en-US')}× · Hold and Spin max win
+				{config.betModes.holdandspin.max_win.toLocaleString('en-US')}×
+			</div>
 		</div>
 	</Popup>
 {/if}

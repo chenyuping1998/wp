@@ -32,14 +32,19 @@ export type LeapStyle = {
 	 *  win is cut off its plate, so its parts measure ~2x the panel's fold limits (check_mesh_wins --limits); the
 	 *  rig's own pose is reused unchanged and only scaled here. */
 	acting?: number;
+	/** set below: how much this style was stretched to land on a sixteenth */
+	tempo?: number;
 };
 
 export const leapWin = (spec: MeshWinSpec, style: LeapStyle): MeshWinSpec => ({
 	...spec,
+	// the parts' own acting is keyed to the symbol's T table: stretch it with
+	// the leap so the slosh, clap and coil still answer the landing on its frame
+	durationMs: spec.durationMs * (style.tempo ?? 1),
 	mode: 'cut',
 	limits: Object.fromEntries(Object.entries(spec.limits).map(([k, l]) => [k, { pos: l.pos * (style.acting ?? 1), neg: l.neg * (style.acting ?? 1) }])),
 	pose: (rig, t) => {
-		const pose = spec.pose(rig, t);
+		const pose = spec.pose(rig, t / (style.tempo ?? 1));
 		const g = style.acting ?? 1;
 		if (g !== 1)
 			for (const b of pose.bones) {
@@ -59,10 +64,12 @@ export const leapWin = (spec: MeshWinSpec, style: LeapStyle): MeshWinSpec => ({
 	},
 });
 
+// the fall is quicker than the rise (175 vs 230ms): the subject hangs, then
+// drops onto the beat rather than floating down to it
 const beats = (crouch: number, land: number, done: number): LeapBeats => ({
 	crouch,
 	rise: crouch + 230,
-	fall: land - 210,
+	fall: land - 175,
 	land,
 	hop2: Math.min(land + 230, done - 200),
 	done,
@@ -141,3 +148,33 @@ for (const [s, lean] of Object.entries(LETTER_LEAN))
 		tilt: [[0, 0], [100, 0], [330, lean * LEAN, 'out'], [560, -0.6 * lean * LEAN], [800, 0, 'in']],
 		wobble: [Math.abs(lean) * 0.5 * WOBBLE, 3],
 	};
+
+/**
+ * ON THE BEAT (2026-11-06, user: 「動畫跟音效節奏方面要更強」).
+ *
+ * The win wake lights one reel per sixteenth of the 128 BPM base bed and starts
+ * on a sixteenth (WinWays + game/beatClock.ts), so a subject that touches down a
+ * whole number of sixteenths after its reel lit lands ON the drums, and its
+ * clink (Sound.svelte soundWinLand) with it. Each style is stretched in time so
+ * its landing falls on the nearest sixteenth (900 -> 937.5ms is 8, the letters'
+ * 800 -> 820 is 7, the seal's 1040 -> 1055 is 9): every beat and tilt key by the
+ * same factor, so the acting keeps its shape and only its tempo moves (<7%).
+ *
+ * The feature bed is 154 BPM; there the same lands are a little off its grid,
+ * but the clink still lands with the picture, which is the part that matters.
+ */
+export const SIXTEENTH_128 = 60000 / 128 / 4;
+for (const style of Object.values(LEAP_STYLES)) {
+	const k = (Math.round(style.beats.land / SIXTEENTH_128) * SIXTEENTH_128) / style.beats.land;
+	const b = style.beats;
+	style.beats = {
+		crouch: b.crouch * k,
+		rise: b.rise * k,
+		fall: b.fall * k,
+		land: b.land * k,
+		hop2: b.hop2 * k,
+		done: b.done * k,
+	};
+	style.tempo = k;
+	style.tilt = style.tilt.map(([at, v, ease]) => (ease ? [at * k, v, ease] : [at * k, v]) as Key);
+}

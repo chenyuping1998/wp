@@ -59,7 +59,8 @@ for (const gameType of ['basegame', 'freegame']) {
 // emits with no entry there renders as nothing at all — a hole in the board that
 // still pays. W is asserted ABSENT: in a pay-anywhere game a wild joins every
 // symbol's count at once, and if one ever appears every payout changed with it.
-const EXPECTED_SYMBOLS = ['H1', 'H2', 'H3', 'H4', 'H5', 'L1', 'L2', 'L3', 'L4', 'S'];
+// ST is the Petrify Gaze stone: never on the strips, placed by the petrify event.
+const EXPECTED_SYMBOLS = ['H1', 'H2', 'H3', 'H4', 'H5', 'L1', 'L2', 'L3', 'L4', 'S', 'ST'];
 const actualSymbols = raw.symbols.flatMap((entry) => Object.keys(entry));
 for (const name of EXPECTED_SYMBOLS) {
 	if (!actualSymbols.includes(name)) problems.push(`symbol ${name} missing from math config`);

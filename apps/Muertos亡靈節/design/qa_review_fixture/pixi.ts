@@ -1,0 +1,12 @@
+import{mount,unmount,tick}from'svelte';import{Application,Assets}from'pixi.js';
+import PixiHarness from'./PixiHarness.svelte';import{listeners,continueFlight,stateBet}from'./fixture.svelte';
+import assets from'virtual:mummy-preview-assets';
+await document.fonts.load('400 48px "Lilita One"');await document.fonts.load('800 18px Nunito');await document.fonts.ready;
+const app=new Application();await app.init({width:900,height:650,resolution:2,antialias:true,background:'#102b33',preference:'webgl'});
+document.querySelector('#canvas')!.appendChild(app.canvas);
+const loaded=Object.fromEntries(await Promise.all(Object.entries(assets).map(async([key,url])=>[key,await Assets.load(url as string)])));
+let instance=mount(PixiHarness,{target:document.querySelector('#mount')!,props:{app,assets:loaded,view:'wheel'}});await tick();
+document.querySelector('#pixi-status')!.textContent='READY: actual FgArcWheel, no real bets';
+document.querySelector('#spin')!.addEventListener('click',async()=>{stateBet.isTurbo=true;document.querySelector('#pixi-status')!.textContent='SPIN REQUESTED';try{await listeners.fgWheelSpin({previous:1,value:2});document.querySelector('#pixi-status')!.textContent='SPIN COMPLETE';}catch(e){document.querySelector('#pixi-status')!.textContent='ERROR: '+String(e);}});
+document.querySelector('#continue')!.addEventListener('click',continueFlight);
+document.querySelector('#banner')!.addEventListener('click',async()=>{await unmount(instance);instance=mount(PixiHarness,{target:document.querySelector('#mount')!,props:{app,assets:loaded,view:'banner'}});document.querySelector('#pixi-status')!.textContent='BIG WIN: actual BannerMesh + GoldText, layout read from Win.svelte';});

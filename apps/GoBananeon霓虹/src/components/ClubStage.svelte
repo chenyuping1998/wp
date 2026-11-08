@@ -3,9 +3,9 @@
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { onMount } from 'svelte';
 	import { getContext } from '../game/context';
-	import { clubStageFrame, quietStageCues, type ClubMode, type StageRect } from '../game/backgroundStage';
+	import { clubStageFrame, quietStageCues, type ClubMode, type StageMusic, type StageRect } from '../game/backgroundStage';
 
-	type Props = StageRect & { mode: ClubMode; timeMs: number; canvasWidth: number; canvasHeight: number };
+	type Props = StageRect & { mode: ClubMode; timeMs: number; canvasWidth: number; canvasHeight: number; music?: StageMusic };
 	const props: Props = $props();
 	const context = getContext();
 	let cues = $state(quietStageCues());
@@ -27,7 +27,7 @@
 		return () => document.removeEventListener('visibilitychange', resetHidden);
 	});
 	const frame = $derived(clubStageFrame(props.mode, props.timeMs, props,
-		{ width: props.canvasWidth, height: props.canvasHeight }, cues));
+		{ width: props.canvasWidth, height: props.canvasHeight }, cues, props.music));
 
 	const drawLight = (g: PixiGraphics) => {
 		g.clear();

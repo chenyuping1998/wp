@@ -1,0 +1,32 @@
+{
+  "band_pickup": {
+    "seconds": 0.6,
+    "hi400": 0.684,
+    "loudestDb": -15.0
+  },
+  "reel_tension": {
+    "seconds": 1.875,
+    "hi400": 0.652,
+    "loudestDb": -16.0
+  },
+  "reel_tension_fg": {
+    "seconds": 1.875,
+    "hi400": 0.694,
+    "loudestDb": -15.5
+  },
+  "curtain_cover": {
+    "seconds": 0.5,
+    "hi400": 0.839,
+    "loudestDb": -15.0
+  },
+  "shutter_slam": {
+    "seconds": 0.5,
+    "hi400": 0.796,
+    "loudestDb": -14.0
+  },
+  "inst_sax": {
+    "seconds": 1.142,
+    "hi400": 0.518,
+    "loudestDb": -15.0
+  }
+}

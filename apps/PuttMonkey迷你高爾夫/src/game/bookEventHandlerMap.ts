@@ -4,6 +4,7 @@ import { recordBookEvent, checkIsMultipleRevealEvents, type BookEventHandlerMap 
 import { stateBet, stateUi } from 'state-shared';
 import { SECOND } from 'constants-shared/time';
 import { waitForTimeout } from 'utils-shared/wait';
+import { msToNextGrid } from './musicClock';
 
 import { eventEmitter } from './eventEmitter';
 import { playBookEvent } from './utils';
@@ -92,6 +93,8 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 	// touches the bed, which is the whole reason it can exist where per-tier
 	// music could not.
 	if (winLevelData?.type === 'big') {
+		// the band plays under the plaque: the groove stays up until it closes
+		eventEmitter.broadcast({ type: 'soundGroove', reason: 'plaque', on: true });
 		eventEmitter.broadcast({ type: 'soundWinTier', tier: winLevelData.alias });
 		eventEmitter.broadcast({ type: 'soundLoop', name: 'sfx_bigwin_coinloop' });
 	}
@@ -99,6 +102,7 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 
 const winLevelSoundsStop = () => {
 	eventEmitter.broadcast({ type: 'soundStop', name: 'sfx_bigwin_coinloop' });
+	eventEmitter.broadcast({ type: 'soundGroove', reason: 'plaque', on: false });
 	// Decided by the SCENE, never by the bet mode: the mode you bought is not
 	// where you are; gameType is.
 	const onFeatureScene = stateGame.gameType === 'freegame';
@@ -137,6 +141,8 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// and its sounds: the collection's chimes, the laugh and the win fanfare
 		// belong to the spin that made them (Sound.svelte cutSpinSounds)
 		eventEmitter.broadcast({ type: 'soundSpinCut' });
+		// the music's groove comes up with the reels and settles after them
+		eventEmitter.broadcast({ type: 'soundGroove', reason: 'spin', on: true });
 
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: { ...bookEvent, anticipation: gateAnticipation(bookEvent.anticipation, bookEvent.board) },
@@ -147,11 +153,18 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			// here, just not instant. SPIN_OPTIONS_TURBO_FREEGAME carries the pace.
 			isTurboOverride: bookEvent.gameType === 'freegame' ? false : undefined,
 		});
+		eventEmitter.broadcast({ type: 'soundGroove', reason: 'spin', on: false });
 		// The lane monitor opens a new frame only once the reels have stopped.
 		eventEmitter.broadcast({ type: 'bowlingFrameStart' });
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 	},
 	winInfo: async (bookEvent: BookEventOfType<'winInfo'>) => {
+		// On the beat (2026-11-06): the win starts on the music's next sixteenth —
+		// never more than one step (125 ms at 120 bpm) — so the hit and the notes
+		// that run across the reels after it (WinWays) fall on the grid.
+		const toGrid = msToNextGrid(4);
+		if (toGrid > 0) await waitForTimeout(toGrid);
+		eventEmitter.broadcast({ type: 'soundGroove', reason: 'win', on: true });
 		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_winlevel_small' });
 
 		// One entry per winning SYMBOL, not per line — a ways game has no lines to
@@ -174,6 +187,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins: winLineData, fast: isFreeGame });
 
 		eventEmitter.broadcast({ type: 'winLinesHide' });
+		eventEmitter.broadcast({ type: 'soundGroove', reason: 'win', on: false });
 
 		// Remembered for the idle replay, but only for base-game wins. A free
 		// game or super spin tears the board down to base idle when it ends

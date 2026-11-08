@@ -57,7 +57,10 @@ export const stageBeat = (timeMs: number, bpm: number) => {
 	return Math.sin(Math.PI * phase) ** 8;
 };
 
-export const stageResponse = (mode: ClubMode, timeMs: number, cues: StageCues) => {
+/** The heard drums (game/beatClock.ts musicAt), when the music is running. */
+export type StageMusic = { kick: number; downbeat: number; /** continuous bar position */ bars: number };
+
+export const stageResponse = (mode: ClubMode, timeMs: number, cues: StageCues, music?: StageMusic) => {
 	const djAge = timeMs - cues.djAt;
 	const dj = Number.isFinite(djAge) ? smooth(djAge / 180) * (1 - smooth((djAge - 2750) / 450))
 		* (1 - smooth((timeMs - cues.djStopAt) / 220)) : 0;
@@ -66,9 +69,16 @@ export const stageResponse = (mode: ClubMode, timeMs: number, cues: StageCues) =
 	const burst = envelope(timeMs - cues.burstAt, 24, 560) * clamp(cues.burstStrength);
 	const fuse = envelope(timeMs - cues.fuseAt, 370, 500);
 	const coin = envelope(timeMs - cues.coinAt, 45, 500);
-	const beat = stageBeat(timeMs, CLUB_STYLE[mode].bpm) * (1 - dj) + stageBeat(Number.isFinite(djAge) ? Math.max(0, djAge) : 0, 125) * dj;
-	return { dj, chest: clamp(chest), burst, fuse, coin, beat,
-		energy: clamp(0.15 * beat + 0.32 * dj + 0.25 * chest + 0.22 * burst + 0.16 * coin),
+	// ON THE KICK THE PLAYER HEARS. With the music anchored, the pulse is the
+	// drummer's actual pattern (base: 1, &2, 3, a-of-4; rooftop: four on the
+	// floor) plus a longer swell on each bar's downbeat. Without it, the old
+	// free-running sine at the scene tempo.
+	const groove = music ? clamp(0.82 * music.kick + 0.35 * music.downbeat) : stageBeat(timeMs, CLUB_STYLE[mode].bpm);
+	const beat = groove * (1 - dj) + stageBeat(Number.isFinite(djAge) ? Math.max(0, djAge) : 0, 125) * dj;
+	// the fuse's charge holds the room's breath: the groove drops out of the light
+	const held = beat * (1 - 0.8 * fuse);
+	return { dj, chest: clamp(chest), burst, fuse, coin, beat: held,
+		energy: clamp(0.22 * held + 0.32 * dj + 0.25 * chest + 0.22 * burst + 0.16 * coin),
 	};
 };
 
@@ -120,9 +130,9 @@ export type StageRain = StagePoint & { length: number; alpha: number };
 /** All collections have fixed upper bounds. This returns no growing particle
  * list, creates no textures/filters, and needs no per-cue timer.
  */
-export const clubStageFrame = (mode: ClubMode, timeMs: number, plate: StageRect, viewport: StageViewport, cues: StageCues) => {
+export const clubStageFrame = (mode: ClubMode, timeMs: number, plate: StageRect, viewport: StageViewport, cues: StageCues, music?: StageMusic) => {
 	const style = CLUB_STYLE[mode];
-	const response = stageResponse(mode, timeMs, cues);
+	const response = stageResponse(mode, timeMs, cues, music);
 	const seconds = timeMs / 1000;
 	const unit = Math.min(viewport.width / 1422, viewport.height / 800);
 	const point = (x: number, y: number) => projectStagePoint(plate, x, y);
@@ -142,7 +152,7 @@ export const clubStageFrame = (mode: ClubMode, timeMs: number, plate: StageRect,
 			x: viewport.width * clamp((side ? 0.89 : 0.11) + swing * (side ? -1 : 1), 0.015, 0.985),
 			y: viewport.height * (upper ? 0.91 : 0.75),
 		};
-		const music = 0.78 + 0.22 * response.beat;
+		const music = 0.6 + 0.4 * response.beat;
 		beams.push({ source, end, spread: viewport.width * (tall ? 0.055 : 0.045) * (1 - 0.28 * response.fuse),
 			color: side ? style.pink : style.cyan,
 			alpha: style.beam * (upper ? 1 : 0.42) * music * (1 + 1.5 * response.energy),
@@ -150,7 +160,10 @@ export const clubStageFrame = (mode: ClubMode, timeMs: number, plate: StageRect,
 	}
 	const rails = RAILS[mode].map((rail, i): StageRail => {
 		const a = point(...rail.a), b = point(...rail.b);
-		const phase = fract(seconds / (mode === 'hold' ? 3.6 : 2.6) + i * 0.29);
+		// With the music, one chase per bar (two in the vault), so every rail's
+		// head comes round on a downbeat; otherwise the old free run.
+		const phase = music ? fract(music.bars / (mode === 'hold' ? 2 : 1) + i * 0.25)
+			: fract(seconds / (mode === 'hold' ? 3.6 : 2.6) + i * 0.29);
 		const tail = Math.max(0, phase - 0.18);
 		return { a, b, head: { x: a.x + (b.x - a.x) * phase, y: a.y + (b.y - a.y) * phase },
 			tail: { x: a.x + (b.x - a.x) * tail, y: a.y + (b.y - a.y) * tail },
@@ -166,7 +179,7 @@ export const clubStageFrame = (mode: ClubMode, timeMs: number, plate: StageRect,
 		const dip = envelope(phase * 1000 - 630, 30, 100) * 0.34;
 		return { ...top, width: sign.width / 256 * plate.width, height: sign.height / 144 * plate.height,
 			color: sign.pink ? style.pink : style.cyan,
-			alpha: clamp(0.15 + 0.20 * response.beat + 0.26 * response.energy - dip, 0.03, 0.6), dim: dip,
+			alpha: clamp(0.13 + 0.30 * response.beat + 0.24 * response.energy - dip, 0.03, 0.6), dim: dip,
 		};
 	});
 	const reflections: StageReflection[] = [];
@@ -180,7 +193,7 @@ export const clubStageFrame = (mode: ClubMode, timeMs: number, plate: StageRect,
 				y: origin.y + (flow - 0.5) * viewport.height * 0.23,
 				rx: (11 + 30 * fade + 4 * Math.sin(seconds + i)) * unit, ry: (0.8 + flow * 1.8) * unit,
 				color: side ? style.pink : style.cyan,
-				alpha: (mode === 'hold' ? 0.12 : 0.15) * fade * (0.65 + 0.35 * response.beat + response.energy),
+				alpha: (mode === 'hold' ? 0.12 : 0.15) * fade * (0.55 + 0.5 * response.beat + response.energy),
 			});
 		}
 	}

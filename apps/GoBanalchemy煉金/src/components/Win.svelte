@@ -9,6 +9,7 @@
 
 <script lang="ts">
 	import { onDestroy } from 'svelte';
+	import { beatsElapsed, beatBpm } from '../game/beatClock';
 	import { Container, Sprite } from 'pixi-svelte';
 	import BannerMesh from './BannerMesh.svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
@@ -140,20 +141,36 @@
 	const bannerPose = $derived.by(() => {
 		if (fxNow < 0) return { scale: 1, glow: 0.4, blink: 0 };
 		const t = fxNow;
+		// ON THE BEAT (2026-11-06, user: 節奏要更強): after the slam the plaque
+		// used to breathe on its own sine and blink every 2.3s, a clock that
+		// matches nothing on either bed. It now takes its pulse from the music
+		// (game/beatClock.ts): a small kick on every beat, the bright blink on
+		// each bar's downbeat, the glow breathing over two beats. With no bed
+		// running it falls back to the old free clock.
+		const beats = beatsElapsed();
+		const settle = t < 0.34 ? 0 : Math.min(1, (t - 0.34) / 0.22);
+		let kick: number, blinkIn: number, breathe: number;
+		if (beats >= 0) {
+			kick = (1 - (beats % 1)) ** 4;
+			blinkIn = (beats % 4) * (60 / beatBpm());
+			breathe = 0.5 + 0.5 * Math.cos(Math.PI * beats);
+		} else {
+			kick = 0.5 + 0.5 * Math.sin(t * 3.2);
+			blinkIn = (t + 1.9) % 2.3;
+			breathe = 0.5 + 0.5 * Math.sin(t * 2.6);
+		}
 		// entrance: overshoot slam matching the hit-stop flash
 		const scale =
 			t < 0.34
 				? 0.42 + 0.78 * (1 - (1 - t / 0.34) ** 3)
-				: 1.2 - 0.2 * Math.min(1, (t - 0.34) / 0.22) + 0.015 * Math.sin(t * 3.2);
-		// periodic blink: a bright additive pulse every ~2.3s + entrance flare
-		const phase = (t + 1.9) % 2.3;
+				: 1.2 - 0.2 * settle + 0.022 * kick * settle;
 		const blink = Math.max(
 			t < 0.3 ? 0.55 * (1 - t / 0.3) : 0,
-			phase < 0.32 ? 0.34 * (1 - phase / 0.32) : 0,
+			t > 0.6 && blinkIn < 0.32 ? 0.34 * (1 - blinkIn / 0.32) : 0,
 		);
 		return {
 			scale,
-			glow: 0.42 + 0.24 * (0.5 + 0.5 * Math.sin(t * 2.6)),
+			glow: 0.42 + 0.24 * breathe,
 			blink,
 		};
 	});
@@ -195,6 +212,10 @@
 						// the numbers start rolling
 						if (isBigWin) await waitForTimeout(90);
 						rollAt = Date.now();
+						// a small or medium win's count used to roll in silence: it gets
+						// the count-up ticks too, lighter, on the bed's sixteenths
+						if (!isBigWin && duration > 0)
+							context.eventEmitter.broadcast({ type: 'soundCountUp', phase: 'start' });
 						await startCountUp();
 						await waitForTimeout(isBigWin ? 1300 : 300);
 						oncomplete();
@@ -285,7 +306,14 @@
 				</MainContainer>
 
 				{#if countUpCompleted}
-					<OnMount onmount={() => (landAt = Date.now())} />
+					<OnMount
+						onmount={() => {
+							landAt = Date.now();
+							// the number lands: ticks off, a two-note answer on the same frame
+							if (winLevelData?.type !== 'big' && (winLevelData?.presentDuration ?? 0) > 0)
+								context.eventEmitter.broadcast({ type: 'soundCountUp', phase: 'end' });
+						}}
+					/>
 				{/if}
 
 				<WinCoins emit={!countUpCompleted} levelAlias={winLevelData?.alias} />

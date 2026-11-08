@@ -104,6 +104,8 @@ const BOOK_EVENT_TYPES_TO_RESERVE_FOR_SNAPSHOT = [
 	'updateFreeSpin',
 	'setTotalWin',
 	'medusaThrow',
+	// Serpent Ladder: the super buy's starting level has no throw to carry it
+	'serpentLevel',
 ];
 
 export const convertTorResumableBet = (betToResume: Bet) => {

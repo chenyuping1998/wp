@@ -1,0 +1,142 @@
+{
+  "before": [
+    {
+      "at": 1.3,
+      "cue": "reel_stop_1",
+      "level": 0.5
+    },
+    {
+      "at": 1.445,
+      "cue": "reel_stop_2",
+      "level": 0.5
+    },
+    {
+      "at": 1.59,
+      "cue": "reel_stop_3",
+      "level": 0.5
+    },
+    {
+      "at": 1.735,
+      "cue": "reel_stop_4",
+      "level": 0.5
+    },
+    {
+      "at": 1.88,
+      "cue": "reel_stop_5",
+      "level": 0.5
+    },
+    {
+      "at": 2.1,
+      "cue": "win_gliss",
+      "level": 0.8
+    },
+    {
+      "at": 5.37,
+      "cue": "bigwin_blast",
+      "level": 1.05
+    },
+    {
+      "at": 5.37,
+      "cue": "win_mega",
+      "level": 1.2
+    },
+    {
+      "at": 5.37,
+      "cue": "coin_shimmer",
+      "level": 0.65
+    },
+    {
+      "at": 9.72,
+      "cue": "win_rollup_end",
+      "level": 0.75
+    }
+  ],
+  "after_starts_at": 12.8,
+  "after": [
+    {
+      "at": 1.3,
+      "cue": "reel_stop_1",
+      "level": 0.66
+    },
+    {
+      "at": 1.445,
+      "cue": "reel_stop_2",
+      "level": 0.71
+    },
+    {
+      "at": 1.59,
+      "cue": "reel_stop_3",
+      "level": 0.76
+    },
+    {
+      "at": 1.735,
+      "cue": "reel_stop_4",
+      "level": 0.81
+    },
+    {
+      "at": 1.88,
+      "cue": "reel_stop_5",
+      "level": 0.86
+    },
+    {
+      "at": 2.1094,
+      "cue": "win_step_1",
+      "level": 0.55
+    },
+    {
+      "at": 3.0469,
+      "cue": "win_land_big",
+      "level": 0.76
+    },
+    {
+      "at": 2.2266,
+      "cue": "win_step_2",
+      "level": 0.6
+    },
+    {
+      "at": 3.1641,
+      "cue": "win_land_big",
+      "level": 0.76
+    },
+    {
+      "at": 2.3438,
+      "cue": "win_step_3",
+      "level": 0.65
+    },
+    {
+      "at": 3.2812,
+      "cue": "win_land",
+      "level": 0.69
+    },
+    {
+      "at": 3.2938,
+      "cue": "win_rollup_loop (light)",
+      "level": 0.42
+    },
+    {
+      "at": 4.2938,
+      "cue": "win_count_end",
+      "level": 0.7
+    },
+    {
+      "at": 5.37,
+      "cue": "bigwin_blast",
+      "level": 1.05
+    },
+    {
+      "at": 5.3906,
+      "cue": "win_mega",
+      "level": 1.2
+    },
+    {
+      "at": 5.37,
+      "cue": "coin_shimmer",
+      "level": 0.65
+    },
+    {
+      "at": 9.72,
+      "cue": "win_rollup_end",
+      "level": 0.75
+    }
+  ]
+}

@@ -12,16 +12,17 @@
 		"check:social": "node design/check_social_words.mjs",
 		"check:claims": "E:/stake/math-sdk/env/Scripts/python.exe -I design/check_copy_claims.py",
 		"replay:harness": "node design/make_replay_harness.mjs",
-		"build": "node design/sync_math_config.mjs && node design/check_assets.mjs && node design/check_audio.mjs && node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_types.mjs && node design/check_mesh_wins.mjs && node design/check_cast_flow.mjs && node design/check_collection_motion.mjs && vite build && node ../../tools/minify_spine_json.mjs",
+		"build": "node design/sync_math_config.mjs && node design/check_assets.mjs && node design/check_audio.mjs && node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_types.mjs && node design/check_mesh_wins.mjs && node design/check_cast_flow.mjs && node design/check_collection_motion.mjs && node design/cows/check_cow.mjs && vite build && node ../../tools/minify_spine_json.mjs",
 		"check:meshwins": "node design/check_mesh_wins.mjs",
 		"check:castflow": "node design/check_cast_flow.mjs",
 		"preview": "vite preview",
 		"check:types": "node design/check_types.mjs",
 		"sync:math": "node design/sync_math_config.mjs",
-		"preview:build": "node design/check_assets.mjs && node design/check_audio.mjs && node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_types.mjs && node design/check_mesh_wins.mjs && node design/check_cast_flow.mjs && node design/check_collection_motion.mjs && vite build && node ../../tools/minify_spine_json.mjs",
+		"preview:build": "node design/check_assets.mjs && node design/check_audio.mjs && node design/check_undefined_refs.mjs && node design/check_social_words.mjs && node design/check_types.mjs && node design/check_mesh_wins.mjs && node design/check_cast_flow.mjs && node design/check_collection_motion.mjs && node design/cows/check_cow.mjs && vite build && node ../../tools/minify_spine_json.mjs",
+		"check:cow": "node design/cows/check_cow.mjs",
 		"check:collectmotion": "node design/check_collection_motion.mjs",
-		"art:build": "E:/stake/math-sdk/env/Scripts/python.exe design/build_saucer_art.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_saucer_signs.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_cow_shock.py && E:/stake/math-sdk/env/Scripts/python.exe design/normalize_v8_digits.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_saucer_cast.py && E:/stake/math-sdk/env/Scripts/python.exe -I design/arms/cut_arms.py && E:/stake/math-sdk/env/Scripts/python.exe ../../tools/build_cast_mesh.py Saucer && node design/arms/build_saucer_acting.mjs && node design/arms/check_reach.mjs && node design/arms/check_seams.mjs && E:/stake/math-sdk/env/Scripts/python.exe design/make_jade_mesh_layers.py && E:/stake/math-sdk/env/Scripts/python.exe design/make_decor_meshes.py .",
-		"audio:build": "E:/stake/math-sdk/env/Scripts/python.exe design/generate_saucer_audio.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_collection_audio.py"
+		"art:build": "E:/stake/math-sdk/env/Scripts/python.exe design/build_saucer_art.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_saucer_signs.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_cow_shock.py && E:/stake/math-sdk/env/Scripts/python.exe design/normalize_v8_digits.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_saucer_cast.py && E:/stake/math-sdk/env/Scripts/python.exe -I design/arms/cut_arms.py && E:/stake/math-sdk/env/Scripts/python.exe ../../tools/build_cast_mesh.py Saucer && node design/arms/build_saucer_acting.mjs && node design/arms/check_reach.mjs && node design/arms/check_seams.mjs && E:/stake/math-sdk/env/Scripts/python.exe design/make_jade_mesh_layers.py && E:/stake/math-sdk/env/Scripts/python.exe design/make_decor_meshes.py . && python -I design/build_bg_cows.py",
+		"audio:build": "E:/stake/math-sdk/env/Scripts/python.exe design/generate_saucer_audio.py && E:/stake/math-sdk/env/Scripts/python.exe design/build_collection_audio.py && E:/stake/math-sdk/env/Scripts/python.exe -I design/generate_saucer_punch_audio.py && python design/generate_laugh_voice.py"
 	},
 	"type": "module",
 	"devDependencies": {

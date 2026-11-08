@@ -22,19 +22,23 @@ def main(destination):
     verified=json.loads((root/'reports/verification.json').read_text(encoding='utf-8'))
     index=json.loads((Path(c.publish_path)/'index.json').read_text(encoding='utf-8'))
     backend=json.loads((root/f'configs/config_{c.game_id}.json').read_text(encoding='utf-8'))
+    assert {m['name']:(m['cost'],m['events'],m['weights']) for m in index['modes']}=={
+        m['name']:(m['cost'],m['booksFile']['file'],m['tables'][0]['file']) for m in backend['bookShelfConfig']}
     assert sum(v['books'] for v in verified.values())==sum(m['bookLength'] for m in backend['bookShelfConfig'])
     for mode in backend['bookShelfConfig']:
         assert verified[mode['name']]['exactRtp']=='24/25'
+        assert verified[mode['name']]['booksSha256']==mode['booksFile']['sha256']
+        assert verified[mode['name']]['lookupSha256']==mode['tables'][0]['sha256']
         for item in [mode['booksFile'],*mode['tables']]:
             assert digest(Path(c.publish_path)/item['file'])==item['sha256']
     out=Path(destination);out.mkdir(parents=True,exist_ok=True)
     core=['index.json']+[m[k] for m in index['modes'] for k in ('events','weights')]
-    math=archive(out/'TreasureMonkey_math_96_20261023.zip',[(Path(c.publish_path)/n,n) for n in core])
+    math=archive(out/'TreasureMonkey_math_96_20261104.zip',[(Path(c.publish_path)/n,n) for n in core])
     files=[(p,'sources/'+p.name) for p in source.iterdir() if p.suffix in ('.py','.json')]
     files +=[(p,'sources/reels/'+p.name) for p in (source/'reels').glob('*.csv')]
     files +=[(p,str(p.relative_to(root)).replace('\\','/')) for d in ('reports','configs') for p in (root/d).iterdir() if p.is_file()]
     files +=[(source/'README.md','README.md')]
-    sources=archive(out/'TreasureMonkey_math_sources_20261023.zip',files)
+    sources=archive(out/'TreasureMonkey_math_sources_20261104.zip',files)
     manifest=out/'SHA256.json';manifest.write_text(json.dumps({'math':math,'sources':sources},indent=2),encoding='utf-8')
     print(json.dumps({'math':str(out/math['file']),'sources':str(out/sources['file']),'sha256':str(manifest)},indent=2))
 

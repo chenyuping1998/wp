@@ -4,7 +4,7 @@
 	import { devicePixelRatio } from 'svelte/reactivity/window';
 
 	import { getContextApp } from '../context.svelte';
-	import { preloadFont } from '../utils.svelte';
+	import { preloadFont, getRenderResolution } from '../utils.svelte';
 
 	type Props = { children: Snippet };
 
@@ -33,7 +33,7 @@
 					(localStorage.getItem('pixiPreference') as 'webgl' | 'webgpu' | null)) ||
 				'webgpu',
 			powerPreference: 'high-performance',
-			resolution: devicePixelRatio.current,
+			resolution: getRenderResolution(devicePixelRatio.current),
 			resizeTo: window,
 		});
 

@@ -1,0 +1,87 @@
+{
+ "width": 1024,
+ "height": 1536,
+ "layers": {
+  "arm_l": {
+   "file": "arm_l.png",
+   "bbox": [
+    215,
+    560,
+    385,
+    1100
+   ]
+  },
+  "arm_r": {
+   "file": "arm_r.png",
+   "bbox": [
+    639,
+    560,
+    809,
+    1100
+   ]
+  },
+  "head": {
+   "file": "head.png",
+   "bbox": [
+    300,
+    160,
+    724,
+    570
+   ]
+  },
+  "leg_l": {
+   "file": "leg_l.png",
+   "bbox": [
+    283,
+    1030,
+    483,
+    1456
+   ]
+  },
+  "leg_r": {
+   "file": "leg_r.png",
+   "bbox": [
+    541,
+    1030,
+    741,
+    1456
+   ]
+  },
+  "neck": {
+   "file": "neck.png",
+   "bbox": [
+    339,
+    541,
+    698,
+    677
+   ]
+  },
+  "pelvis": {
+   "file": "pelvis.png",
+   "bbox": [
+    332,
+    916,
+    692,
+    1150
+   ]
+  },
+  "tail": {
+   "file": "tail.png",
+   "bbox": [
+    610,
+    670,
+    950,
+    1090
+   ]
+  },
+  "torso": {
+   "file": "torso.png",
+   "bbox": [
+    312,
+    449,
+    712,
+    1004
+   ]
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+  "joints_before": {
+    "shoulderL": [
+      322,
+      610
+    ],
+    "shoulderR": [
+      702,
+      610
+    ],
+    "headBase": [
+      512,
+      545
+    ],
+    "neckBase": [
+      512,
+      570
+    ]
+  },
+  "joints_after": {
+    "shoulderL": {
+      "centre": [
+        321,
+        610
+      ],
+      "radius": 52.5
+    },
+    "shoulderR": {
+      "centre": [
+        702,
+        610
+      ],
+      "radius": 53.3
+    },
+    "headBase": [
+      512,
+      560
+    ],
+    "neckBase": [
+      512,
+      610
+    ]
+  },
+  "collar_rows": [
+    543,
+    674
+  ],
+  "rim_pixels_recoloured": {
+    "tail": 1172,
+    "leg_l": 506,
+    "leg_r": 473,
+    "pelvis": 1615,
+    "torso": 2196,
+    "arm_l": 2454,
+    "arm_r": 2103
+  }
+}

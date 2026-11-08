@@ -1,0 +1,11 @@
+export const stateBet=$state({betAmount:1000000,balanceAmount:100000000,autoSpinsCounter:0});
+export const stateModal=$state({modal:{name:'betAmountMenu'} as null|{name:string}});
+export const stateConfig={betAmountOptions:Array.from({length:60},(_,i)=>(i+1)*100000),betMenuOptions:[] as number[]};
+export const debug=$state({changes:0,sounds:0});
+export const stateUrlDerived={social:()=>false};
+export const stateBetDerived={setBetAmount:(n:number)=>{stateBet.betAmount=n;},activeBetMode:()=>({costMultiplier:1}),betCost:()=>stateBet.betAmount};
+export const i18nDerived={betAmount:()=> 'BET'};
+export const markBetChanged=()=>{debug.changes++;};
+export const numberToCurrencyString=(n:number)=>'$'+(n/1000000).toFixed(2);
+export const zIndex={modal:1000};
+export const getContextEventEmitter=()=>({eventEmitter:{broadcast:()=>{debug.sounds++;}}});

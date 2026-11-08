@@ -25,6 +25,7 @@
 	import PressToContinue from './PressToContinue.svelte';
 	import { SYMBOL_SIZE } from '../game/constants';
 	import { getContext } from '../game/context';
+	import { secondsSinceBeat } from '../game/musicClock';
 
 	const context = getContext();
 
@@ -58,7 +59,43 @@
 	let amount = $state(0);
 	let winLevelData = $state<WinLevelData>();
 	let oncomplete = $state(() => {});
-	let onCountUpComplete = $state(() => {});
+
+	// ─── the count-up on the music (2026-11-06) ───
+	// A rolling amount gets a woodblock bed started in phase with the music
+	// (Sound.svelte soundCountUp) and ends on a chime when it lands; meanwhile the
+	// number itself gives a small kick on every beat the listener hears — the
+	// PP-style "1 → 1.06, back in a quarter second" pulse, on the amount only:
+	// the plaque does not move with it.
+	const COUNT_BED_FROM_MS = 1000;
+	const PULSE_AMP = 0.06;
+	let counting = false;
+	let pulse = $state(1);
+	let stopPulseLoop: (() => void) | null = null;
+	const startPulse = () => {
+		stopPulseLoop?.();
+		stopPulseLoop = everyFrame(() => {
+			const since = secondsSinceBeat();
+			pulse = since < 0 ? 1 : 1 + PULSE_AMP * Math.exp(-since * 10);
+		});
+	};
+	const stopPulse = () => {
+		stopPulseLoop?.();
+		stopPulseLoop = null;
+		pulse = 1;
+	};
+	const beginCount = (durationMs: number, big: boolean) => {
+		if (durationMs < COUNT_BED_FROM_MS) return;
+		counting = true;
+		context.eventEmitter.broadcast({ type: 'soundCountUp', on: true, big });
+		startPulse();
+	};
+	const endCount = (done: boolean) => {
+		stopPulse();
+		if (!counting) return;
+		counting = false;
+		context.eventEmitter.broadcast({ type: 'soundCountUp', on: false, done });
+	};
+	onDestroy(() => endCount(false));
 
 	// camera shake as the presentation slams in
 	let shake = $state({ x: 0, y: 0 });
@@ -131,6 +168,7 @@
 		winShow: () => (show = true),
 		winHide: () => {
 			show = false;
+			endCount(false);
 			stopBannerFx();
 		},
 		winUpdate: async (emitterEvent) => {
@@ -150,7 +188,7 @@
 	{#if winLevelData}
 		{@const isBigWin = winLevelData.type === 'big'}
 		{@const duration = winLevelData.presentDuration}
-		<WinCountUpProvider {amount} {duration} oncomplete={() => onCountUpComplete()}>
+		<WinCountUpProvider {amount} {duration} oncomplete={() => endCount(true)}>
 			{#snippet children({ countUpAmount, startCountUp, finishCountUp, countUpCompleted })}
 				{#if isBigWin}
 					<CanvasSizeRectangle backgroundColor={0x000000} backgroundAlpha={0.5} />
@@ -161,6 +199,7 @@
 						// impact hold: freeze a few frames under the white flash before
 						// the numbers start rolling
 						if (isBigWin) await waitForTimeout(90);
+						beginCount(duration, isBigWin);
 						await startCountUp();
 						await waitForTimeout(isBigWin ? 1300 : 300);
 						oncomplete();
@@ -198,18 +237,20 @@
 									}}
 								/>
 								<!-- amount rolls inside the plaque's paper well, in ink -->
-								<Container y={bh * 0.22}>
+								<Container y={bh * 0.22} scale={pulse}>
 									<InkNumber text={bookEventAmountToCountUpString(countUpAmount,amount)} fontSize={bh * 0.2} maxWidth={bw * 0.46}/>
 								</Container>
 							</Container>
 						{:else}
 							<!-- small wins: just the rolling amount over the board -->
-							<GoldText
-								maxWidth={context.stateLayoutDerived.canvasSizes().width /
-									context.stateLayoutDerived.mainLayout().scale}
-								text={bookEventAmountToCountUpString(countUpAmount, amount)}
-								fontSize={SYMBOL_SIZE}
-							/>
+							<Container scale={pulse}>
+								<GoldText
+									maxWidth={context.stateLayoutDerived.canvasSizes().width /
+										context.stateLayoutDerived.mainLayout().scale}
+									text={bookEventAmountToCountUpString(countUpAmount, amount)}
+									fontSize={SYMBOL_SIZE}
+								/>
+							</Container>
 						{/if}
 					</Container>
 				</MainContainer>

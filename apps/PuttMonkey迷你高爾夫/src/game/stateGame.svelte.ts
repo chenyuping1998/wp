@@ -32,6 +32,11 @@ const onSymbolLand = ({ rawSymbol, reelIndex }: { rawSymbol: RawSymbol; reelInde
 			type: 'soundOnce',
 			name: SCATTER_LAND_SOUND_MAP[scatterLandIndex()],
 		});
+		// each flag lands harder than the last (2026-11-06): the frame takes a
+		// knock that grows with the count, so the third reads as an arrival
+		if (landImpactAllowed()) {
+			eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.2 + 0.08 * Math.min(4, scatterLandIndex()) });
+		}
 	}
 
 	// a Sushi Plate set down on the reels — quiet, it lands often
@@ -48,8 +53,13 @@ const onSymbolLand = ({ rawSymbol, reelIndex }: { rawSymbol: RawSymbol; reelInde
 			type: 'soundOnce',
 			name: 'sfx_multiplier_landing',
 		});
+		if (landImpactAllowed()) eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.3 });
 	}
 };
+
+// the same gate as the reel stop's recoil below: five recoils inside half a
+// second in base-game turbo would just be noise
+const landImpactAllowed = () => !stateBet.isTurbo || stateGame.gameType === 'freegame';
 
 // Listed rather than built with a template literal: `sfx_reel_stop_${n}` widens
 // to plain string, losing the SoundEffectName check, and would silently produce
@@ -93,7 +103,8 @@ const board = _.range(BOARD_DIMENSIONS.x).map((reelIndex) => {
 			// inside half a second would just be noise.
 			// Same reasoning as the reel-stop click above.
 			if (!stateBet.isTurbo || stateGame.gameType === 'freegame') {
-				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.12 });
+				// a little heavier reel by reel, toward the last one (2026-11-06)
+				eventEmitter.broadcast({ type: 'boardFrameImpact', strength: 0.1 + 0.025 * reelIndex });
 			}
 		},
 		onSymbolLand: ({ rawSymbol }) => onSymbolLand({ rawSymbol, reelIndex }),

@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "frames": 2316,
+  "minCoverage": {
+    "flow_waist": 1,
+    "flow_tail": 1,
+    "flow_chest": 1,
+    "flow_hip_r": 1
+  },
+  "worst": {},
+  "method": "First two cloth vertex rows must remain fully under existing opaque body art"
+}

@@ -1,0 +1,65 @@
+{
+  "foley/bfh1_wood_hit_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_hit_01.ogg"
+  },
+  "foley/bfh1_wood_hit_02.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_hit_02.ogg"
+  },
+  "foley/bfh1_wood_hit_03.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_wood_hit_03.ogg"
+  },
+  "interface-sounds/click_003.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/click_003.ogg"
+  },
+  "interface-sounds/switch_002.ogg": {
+    "source_url": "https://kenney.nl/assets/interface-sounds",
+    "download_url": "https://opengameart.org/sites/default/files/kenney_interfaceSounds.zip",
+    "author": "Kenney (Kenney Vleugels)",
+    "license": "CC0-1.0",
+    "original_filename": "Audio/switch_002.ogg"
+  },
+  "BDrumNew_hit_v5_rr1_Sum.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Membranophones/Struck%20Membranophones/Bass%20Drum%201/BDrumNew_hit_v5_rr1_Sum.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Membranophones/Struck Membranophones/Bass Drum 1/BDrumNew_hit_v5_rr1_Sum.wav"
+  },
+  "Marimba_hit_Outrigger_C4_med_01.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Idiophones/Struck%20Idiophones/Marimba/Marimba_hit_Outrigger_C4_med_01.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Idiophones/Struck Idiophones/Marimba/Marimba_hit_Outrigger_C4_med_01.wav"
+  },
+  "foley/bfh1_glass_hit_01.ogg": {
+    "source_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+    "download_url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+    "author": "rubberduck",
+    "license": "CC0-1.0",
+    "original_filename": "bfh1_glass_hit_01.ogg"
+  },
+  "BowedPsaltery_C4_Main_Pluck_rr1.wav": {
+    "source_url": "https://github.com/sgossner/VCSL",
+    "download_url": "https://raw.githubusercontent.com/sgossner/VCSL/master/Chordophones/Zithers/Psaltery%2C%20Bowed%20and%20Plucked/Pluck/BowedPsaltery_C4_Main_Pluck_rr1.wav",
+    "author": "Versilian Studios LLC / VCSL contributors",
+    "license": "CC0-1.0",
+    "original_filename": "Chordophones/Zithers/Psaltery, Bowed and Plucked/Pluck/BowedPsaltery_C4_Main_Pluck_rr1.wav"
+  }
+}

@@ -21,6 +21,7 @@
  const frame=$derived(getSymbolWinMotion(symbolName).frame(motionTime));
  const contact=$derived(symbolContact(symbolName)*SYMBOL_SIZE);
  const gain=$derived((reduced?.25:1)*(isPrimary?1:.8));
+ const bloom=$derived(['S','H4'].includes(symbolName)||symbolName.startsWith('L')?0:frame.bloomAlpha*(isPrimary?1:.6)*(reduced?.4:1));
  const emphasis=$derived(motionTrack(motionTime/HOLD_MS,[[0,0],[.18,.7],[.38,1],[.65,.8],[1,0]])*(isPrimary?1:.45));
  const marker=(g:PixiGraphics)=>{
   g.clear();const half=SYMBOL_SIZE*.445,arm=SYMBOL_SIZE*.13;
@@ -47,5 +48,9 @@
  <Graphics draw={marker}/>
  <Container x={frame.dx*SYMBOL_SIZE*gain} y={contact+frame.dy*SYMBOL_SIZE*gain} pivot={{x:0,y:contact}} rotation={frame.rotation*gain} scale={{x:1+(frame.scaleX-1)*gain,y:1+(frame.scaleY-1)*gain}}>
   <SymbolArt {symbolInfo} {symbolName} {cell} mode="win" t={motionTime} {reduced} {debugBones}/>
+  <!-- Light on the painting: an additive copy of the same posed art that
+       swells with the pop. Scroll/coconut/plaques draw their own layers and
+       have no additive path, so they keep the plain beat. -->
+  {#if bloom>.01}<SymbolArt {symbolInfo} {symbolName} {cell} mode="win" t={motionTime} {reduced} overlayTint={frame.bloomTint} overlayAlpha={bloom}/>{/if}
  </Container>
 </Container>

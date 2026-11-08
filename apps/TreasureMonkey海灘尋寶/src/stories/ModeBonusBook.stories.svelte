@@ -14,6 +14,7 @@
 		templateArgs,
 	} from 'components-storybook';
 	import { randomInteger } from 'utils-shared/random';
+	import { stateBet } from 'state-shared';
 
 	import Game from '../components/Game.svelte';
 	import { setContext } from '../game/context';
@@ -44,6 +45,7 @@
 		action: async () => {
 			const index = randomInteger({ min: 0, max: books.length - 1 });
 			const data = books[index];
+			stateBet.activeBetModeKey = data.mode.toUpperCase();
 			console.log('Running a book at index', index);
 			await playBet({ ...data, state: data.events });
 		},

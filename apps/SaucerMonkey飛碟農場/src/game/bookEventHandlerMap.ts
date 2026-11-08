@@ -72,7 +72,9 @@ export const clearLastWinLines = () => {
 	lastWinLines = [];
 };
 
-const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) => {
+// `tierFanfare: false` when the presenter climbs the tiers itself and sounds each one as it lands (Win.svelte,
+// 2026-11-06); the feature outro still sounds its final tier here
+const winLevelSoundsPlay = ({ winLevelData, tierFanfare = true }: { winLevelData: WinLevelData; tierFanfare?: boolean }) => {
 	if (winLevelData?.alias === 'max') eventEmitter.broadcastAsync({ type: 'uiHide' });
 	if (winLevelData?.sound?.sfx) {
 		eventEmitter.broadcast({ type: 'soundOnce', name: winLevelData.sound.sfx });
@@ -92,7 +94,7 @@ const winLevelSoundsPlay = ({ winLevelData }: { winLevelData: WinLevelData }) =>
 	// touches the bed, which is the whole reason it can exist where per-tier
 	// music could not.
 	if (winLevelData?.type === 'big') {
-		eventEmitter.broadcast({ type: 'soundWinTier', tier: winLevelData.alias });
+		if (tierFanfare) eventEmitter.broadcast({ type: 'soundWinTier', tier: winLevelData.alias });
 		eventEmitter.broadcast({ type: 'soundLoop', name: 'sfx_bigwin_coinloop' });
 	}
 };
@@ -395,7 +397,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'bowlingFrameScore', amount: bookEvent.amount, big: winLevelData?.type === 'big' });
 
 		eventEmitter.broadcast({ type: 'winShow' });
-		winLevelSoundsPlay({ winLevelData });
+		winLevelSoundsPlay({ winLevelData, tierFanfare: false });
 		await eventEmitter.broadcastAsync({
 			type: 'winUpdate',
 			amount: bookEvent.amount,

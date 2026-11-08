@@ -23,7 +23,14 @@
     | "hmm"
     | "annoyed"
     | "gasp"
-    | "laugh";
+    | "laugh"
+    // Petrify Gaze / Serpent Ladder (MEDUSA_新機制_Codex需求單.md §4). Each plays
+    // its own delivered file when present, else falls back to an existing one.
+    | "petrifyCell"
+    | "stoneRattle"
+    | "stoneBurst"
+    | "snakeGrow"
+    | "ladderUp";
 
   export type EmitterEventSound =
     | {type:'soundInterface';cue:InterfaceCue}
@@ -328,7 +335,24 @@
   }
 
   function playMedusa(cue: MedusaCue, value = 0,speed=1,panFrom=0,panTo=0,layers=1) {
+    const pick = (own: string, fallback: string) => (MEDUSA_AUDIO[own] ? own : fallback);
     switch (cue) {
+      case "petrifyCell":
+        void playCue(pick("sfx_stone_petrify", "sfx_petrify_3"), .7, speed);
+        break;
+      case "stoneRattle":
+        void playCue(pick("sfx_stone_rattle", "sfx_crumble"), .55, speed);
+        break;
+      case "stoneBurst":
+        void playCue(pick("sfx_stone_burst", "sfx_crumble"), .9, speed);
+        break;
+      case "snakeGrow":
+        void playCue(pick("sfx_snake_grow", "sfx_snake_snap"), .6, 1 + Math.min(11, value) * .03);
+        break;
+      case "ladderUp":
+        void playCue(pick("sfx_ladder_up", "sfx_fg_plus5"), .9, speed);
+        void playCue("sfx_snakes_hiss", .35, speed);
+        break;
       case "gaze":
         void playCue("sfx_gaze_charge",.8,speed);
         void playCue("sfx_snakes_hiss", 0.32,speed);

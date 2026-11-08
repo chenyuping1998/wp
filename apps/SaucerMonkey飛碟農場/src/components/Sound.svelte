@@ -40,7 +40,11 @@
 		| { type: 'soundScatterCounterClear' }
 		// a new spin is starting: whatever the last spin's win and collection
 		// left ringing fades out now (bookEventHandlerMap reveal)
-		| { type: 'soundSpinCut' };
+		| { type: 'soundSpinCut' }
+		// a winning symbol's act (SymbolMeshWin): leaving the card, landing back, and its own signature
+		| { type: 'soundSymbolAct'; cue: 'rise' | 'land' | 'H1' | 'H2' | 'H3' | 'H4' | 'W' | 'S' }
+		// the captain's trigger tell (Mascot mascotGoggleTease)
+		| { type: 'soundTeaseBlip' };
 </script>
 
 <script lang="ts">
@@ -104,7 +108,16 @@
 		| 'win_max'
 		| 'win_cap'
 		| 'voice_laugh'
-		| 'voice_hup';
+		| 'voice_hup'
+		| 'act_rise'
+		| 'act_land'
+		| 'sym_h1'
+		| 'sym_h2'
+		| 'sym_h3'
+		| 'sym_h4'
+		| 'sym_w'
+		| 'sym_s'
+		| 'tease_blip';
 
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
 		btn: 'saucer/btn.wav',
@@ -154,6 +167,16 @@
 		win_cap: 'saucer/win_cap.wav',
 		voice_laugh: 'saucer/voice_laugh.wav',
 		voice_hup: 'saucer/voice_hup.wav',
+		// design/generate_saucer_punch_audio.py (2026-11-06)
+		act_rise: 'saucer/act_rise.wav',
+		act_land: 'saucer/act_land.wav',
+		sym_h1: 'saucer/sym_h1.wav',
+		sym_h2: 'saucer/sym_h2.wav',
+		sym_h3: 'saucer/sym_h3.wav',
+		sym_h4: 'saucer/sym_h4.wav',
+		sym_w: 'saucer/sym_w.wav',
+		sym_s: 'saucer/sym_s.wav',
+		tease_blip: 'saucer/tease_blip.wav',
 	};
 
 	// He is a character in the scene, not the interface, so he sits UNDER
@@ -307,6 +330,9 @@
 		'win_small', 'win_mid', 'win_big', 'win_super', 'win_mega', 'win_epic', 'win_max', 'win_cap',
 	];
 	const layeredLive = new Set<HTMLAudioElement>();
+	const TIER_FANFARES: CnSfxName[] = ['win_big', 'win_super', 'win_mega', 'win_epic', 'win_max'];
+	const actLast: Partial<Record<string, number>> = {};
+	const actBurst: Partial<Record<string, number>> = {};
 	const cutGeneration = new WeakMap<HTMLAudioElement, number>();
 	function fadeOutCn(audio: HTMLAudioElement) {
 		if (audio.paused || audio.ended) return;
@@ -675,6 +701,26 @@
 		soundCoinIn: ({ index }) => playCnSfxLayered('coin_in', 0.25, Math.min(1.18, 1 + 0.025 * index)),
 		soundCollectStamp: () => playCnSfx('collect_stamp', 0.9),
 		soundSpinCut: () => cutSpinSounds(),
+		// One act per winning cell, fired reel by reel in WinWays' wake, so a five-reel win is heard as a
+		// run of rises then a run of landings — the rhythm of the wave. The same cue inside 70ms is one
+		// sound (a column of four lands as one tock); the more that stack in a burst, the quieter each.
+		soundSymbolAct: ({ cue }) => {
+			const now = performance.now();
+			const last = actLast[cue] ?? -1e9;
+			if (now - last < 70) return;
+			actBurst[cue] = now - last < 600 ? Math.min(4, (actBurst[cue] ?? 0) + 1) : 0;
+			actLast[cue] = now;
+			const k = 1 - 0.12 * (actBurst[cue] ?? 0);
+			if (cue === 'rise') playCnSfxLayered('act_rise', 0.3 * k);
+			else if (cue === 'land') playCnSfxLayered('act_land', 0.42 * k);
+			else if (cue === 'H1') playCnSfxLayered('sym_h1', 0.42 * k);
+			else if (cue === 'H2') playCnSfxLayered('sym_h2', 0.4 * k);
+			else if (cue === 'H3') playCnSfxLayered('sym_h3', 0.36 * k);
+			else if (cue === 'H4') playCnSfxLayered('sym_h4', 0.4 * k);
+			else if (cue === 'W') playCnSfxLayered('sym_w', 0.42 * k);
+			else if (cue === 'S') playCnSfxLayered('sym_s', 0.42 * k);
+		},
+		soundTeaseBlip: () => playCnSfx('tease_blip', 0.45),
 		soundShutterDown: () => playCnSfx('shutter_down', 0.85),
 		soundDoorSlide: () => playCnSfx('door_slide', 0.8),
 		soundDoorClack: () => playCnSfx('door_clack', 1),
@@ -685,6 +731,12 @@
 		soundSaucerBeam: () => playCnSfx('saucer_beam', 0.85),
 		soundDoorOpen: () => playCnSfx('door_open', 0.7),
 		soundWinTier: ({ tier }) => {
+			// the plaque climbs the tiers now (Win.svelte): each new tier's fanfare takes over, the last one
+			// ducks out fast rather than two theremin lines playing over each other
+			for (const name of TIER_FANFARES) {
+				const audio = cnSfxAudio[name];
+				if (audio) fadeOutCn(audio);
+			}
 			if (tier === 'big') playCnSfx('win_big', 0.8);
 			else if (tier === 'superwin') playCnSfx('win_super', 0.8);
 			else if (tier === 'mega') playCnSfx('win_mega', 0.82);

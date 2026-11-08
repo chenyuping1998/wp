@@ -1,0 +1,24 @@
+{
+  "bonus_epic": {
+    "books": 100000,
+    "events": 7846095,
+    "rtp": 0.96,
+    "exactRtp": "24/25",
+    "maxWin": 20000,
+    "totalWeight": 1000000000000000,
+    "hashesVerified": true,
+    "sdkLookupFormatVerified": true,
+    "booksSha256": "a7c573eab51b31e401e883025ff0cab9e77c6bd5b7ae0cfe3a0022d81f420006",
+    "lookupSha256": "c0b50c5b0f6f3b2dc950e0f16f5ce90f32c76c529f8bdd513c7e94cf67ff6b36",
+    "featureProbability": 1.0,
+    "meanFreeSpinsPerRound": 10.090325380810363,
+    "meanFreeSpinsPerFeature": 10.090325380810363,
+    "meanRetriggersPerRound": 0.044389271030259,
+    "sweepRoundProbability": 1.0,
+    "tierProbabilities": {
+      "soldier": 0.0,
+      "capo": 0.0,
+      "don": 1.0
+    }
+  }
+}

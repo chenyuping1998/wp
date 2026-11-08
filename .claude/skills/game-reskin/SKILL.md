@@ -41,7 +41,7 @@ This skill is the sequencing and the reskin-specific gotchas on top of both.
 
 ## Before starting: confirm, don't assume
 
-Three things must come from the user, not from a guess, because guessing wrong
+Four things must come from the user, not from a guess, because guessing wrong
 here means redoing everything downstream of the guess:
 
 1. **Source game.** Which existing `wp/apps/*` app is the base. If unstated,
@@ -60,6 +60,37 @@ here means redoing everything downstream of the guess:
    in writing as a short diff table before touching code — it is the spec for
    every phase after it, and it is worth showing back to the user once as
    "here's what I understood, confirm or correct" before scaffolding.
+4. **Which bet bar (UI bar) version.** Ask with AskUserQuestion every time,
+   even when the source game already has one — the user picks per game, and
+   the source's bar is not a default. The three versions (named by the user,
+   2026-11-07):
+   - **v1** — the shared `components-ui-pixi` bar as the template ships it,
+     reskinned with the game's sprites/colours.
+   - **v2** — the GB-family platform skin with `platformUx` (Hacksaw-style
+     handling, white mono `gbIconMono` icons on dark discs); GoBoomana /
+     GoBananasBoat / GoBananubis carry it.
+   - **v3** — `MummyBar` from `apps/MummyMayhem木乃伊` (floating console after
+     Paperclip's "Private Jet": yellow buy tile, white spin disc, rounds-only
+     autoplay, colour-only feedback, Nunito, two-row portrait, buy-menu bet
+     pill). Port list: `src/components/ui/MummyBar.svelte`,
+     `BuyMenuBetPill.svelte` (wired into the game's ModalBuyBonus),
+     `static/fonts/Nunito.ttf` + OFL, the `@font-face` in `app.html`,
+     `BAR_FONT` in `fonts.ts`, and `setUiTheme({ customLayout: MummyBar,
+     barHeight: 190, betBarLayout: 'compactBottom' })`. The shared opt-in
+     `uiTheme.customLayout` already exists. Redraw the buy tile's glyph for
+     the theme — never the reference's paperclip, which is that studio's mark.
+   - **v4** — split, laid out after the Katana Kash capture (2026-11-08):
+     one row along the foot (yellow buy tile in the bottom-left corner with a
+     round menu button above it, BALANCE plate, WIN plate centred, ▲/▼
+     stacked, BET plate) and the spin disc in the bottom-right corner with
+     turbo and autoplay on an arc above it; v3's icons, readouts on dark
+     glass plates. Template + port steps: `wp/tools/ui-bar-v4/` (README).
+     Live in Volt Monster, Fang Frenzy, Muertos, Captain Octo. **The buy
+     tile's glyph is per game and must carry the theme** (`src/game/buyIcon.ts`,
+     one black silhouette with tile-colour cut-outs, never a bolt, checked at
+     64 px with `buy-icons/render.mjs`) — README §「買入按鈕圖示」 has the rules
+     that came out of the user rejecting a coffin that "did not look like a
+     coffin".
 
 ### The user's vocabulary — pin these before acting on a tuning request
 

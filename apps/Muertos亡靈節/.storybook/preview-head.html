@@ -1,0 +1,15 @@
+<script>
+	// Headless-QA hook: browser panes with a stalled requestAnimationFrame freeze
+	// every svelte/motion tween (fades, entrances). Opt in with ?fakeRaf=1 on the
+	// iframe URL to drive rAF from setTimeout instead. No-op otherwise.
+	if (new URLSearchParams(location.search).get('fakeRaf') === '1') {
+		window.requestAnimationFrame = function (cb) {
+			return setTimeout(function () {
+				cb(performance.now());
+			}, 16);
+		};
+		window.cancelAnimationFrame = function (id) {
+			clearTimeout(id);
+		};
+	}
+</script>

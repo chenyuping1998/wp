@@ -41,6 +41,8 @@ export type TextEnv = {
 	stampT?: number;
 	/** a free-running clock, ms (the idle wave) */
 	now: number;
+	/** ms since the last kick in the music (game/beatClock), when it is anchored */
+	kickAgeMs?: number;
 };
 
 /** how much of each act this piece of text plays, 0..1 */
@@ -164,7 +166,18 @@ export const deformText = (u: number, v: number, w: number, h: number, env: Text
 	const roll = act.roll ?? 0;
 	if (rollT >= 0 && roll > 0) {
 		const amp = clamp01(rollT / 200) * (landT >= 0 ? 1 - clamp01(landT / 160) : 1);
-		y -= roll * 0.07 * h * amp * Math.max(0, Math.sin(rollT / 85 - u * 9)) * (1 - v * 0.4);
+		const kickAge = env.kickAgeMs;
+		if (kickAge !== undefined && kickAge >= 0) {
+			// ON THE MUSIC: every kick lifts the number, the hop running left to
+			// right across the digits (55ms end to end), and the glyphs widen a
+			// touch as they rise — the count is played, not just shown.
+			const local = kickAge - u * 55;
+			const k = local < 0 ? 0 : local < 45 ? Math.sin((local / 45) * Math.PI / 2) : Math.exp(-(local - 45) / 140);
+			y -= roll * 0.11 * h * amp * k * (1 - v * 0.4);
+			x += roll * 0.035 * w * amp * k * (u - 0.5);
+		} else {
+			y -= roll * 0.07 * h * amp * Math.max(0, Math.sin(rollT / 85 - u * 9)) * (1 - v * 0.4);
+		}
 	}
 	return [x, y];
 };

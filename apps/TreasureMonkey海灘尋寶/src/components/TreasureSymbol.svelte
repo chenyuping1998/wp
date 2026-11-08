@@ -37,13 +37,17 @@
    g.ellipse(x+rx*.15,y+ry*.08,rx*.68,ry*.75).fill({color:0xe9a52e,alpha:.72*fade});
    g.ellipse(x-rx*.28,y-ry*.18,rx*.24,ry*.53).fill({color:0xfff5c5,alpha:.96*fade});
    g.moveTo(x-rx*.35,y-ry*.76).lineTo(x+rx*.12,y-ry*.65).stroke({color:0xfffbea,width:.75,alpha:fade});
-   const glint=p.glint,r=height*.016,gx=x-rx*.24,gy=y-ry*.4;
-   g.poly([gx,gy-r,gx+r*.2,gy-r*.2,gx+r*.65,gy,gx+r*.2,gy+r*.2,gx,gy+r,gx-r*.2,gy+r*.2,gx-r*.65,gy,gx-r*.2,gy-r*.2]).fill({color:0xfffbea,alpha:glint});
+   // The glint is light on the metal (a soft hot spot), not a drawn star.
+   g.ellipse(x-rx*.24,y-ry*.4,rx*.3,ry*.34).fill({color:0xfffbea,alpha:p.glint*.55});
   }
   if(name==='H3')for(let i=0;i<3;i++){
    const age=Math.max(0,Math.min(1,(time-250-i*85)/330));if(age<=0||age>=1)continue;
    const x=-width*.15+Math.sin(age*2+i)*width*.035,y=-height*(.12+age*.27),r=width*(.017+i*.007);
-   g.circle(x,y,r).fill({color:0xd1f3ec,alpha:.24*(1-age)}).stroke({color:0xfffdf2,width:1.2,alpha:(1-age)*.85});
+   // Soft breath pockets, no outlined rings: two feathered fills and a
+   // small highlight read as air without a hard-edged graphic.
+   g.circle(x,y,r*1.35).fill({color:0xd1f3ec,alpha:.08*(1-age)});
+   g.circle(x,y,r).fill({color:0xe4faf5,alpha:.2*(1-age)});
+   g.circle(x-r*.35,y-r*.35,r*.3).fill({color:0xfffdf2,alpha:.5*(1-age)});
   }
  };
 </script>

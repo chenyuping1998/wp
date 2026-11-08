@@ -22,7 +22,12 @@ const makeLift = (gain: number, red: number, green: number, blue: number) => {
 	// of the screen's pixels and then stretched back up. 'inherit' follows the
 	// renderer. The art itself was always sharp.
 	filter.resolution = 'inherit';
-	filter.antialias = 'inherit';
+	// No MSAA. 'inherit' gave every pass of these two filters a multisampled
+	// target (the app renders with antialias on) — four samples per pixel for a
+	// colour matrix, which changes no edge. On a phone that was most of the
+	// memory these filters cost (iOS Safari crash, 2026-11-01). Sprite and mesh
+	// edges here are alpha-textured and do not alias.
+	filter.antialias = 'off';
 	return filter;
 };
 

@@ -1,0 +1,139 @@
+{
+  "passed": true,
+  "requiredPngFiles": 85,
+  "backgroundObjectFiles": 19,
+  "originalGeneratedMasters": 51,
+  "categories": {
+    "symbols": [
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "w",
+      "s",
+      "l1",
+      "l2",
+      "l3",
+      "l4",
+      "l5",
+      "p",
+      "x"
+    ],
+    "backgrounds": [
+      "bg_base",
+      "bg_base_far",
+      "bg_base_sky",
+      "bg_feature",
+      "bg_feature_far",
+      "bg_holdandspin",
+      "bg_holdandspin_far"
+    ],
+    "frame": [
+      "frame_edge",
+      "frame_bg",
+      "fs_sign",
+      "fs_counter_panel"
+    ],
+    "volt_meter": [
+      "arch_base",
+      "tile_normal",
+      "tile_hot",
+      "tile_top",
+      "tile_result_glow",
+      "plate",
+      "plate_flash",
+      "pointer",
+      "button",
+      "button_lit",
+      "button_burst"
+    ],
+    "tesla_wheel": [
+      "disc_lv1",
+      "disc_lv2",
+      "disc_lv3",
+      "disc_lv4",
+      "ring",
+      "ring_glow_lv1",
+      "ring_glow_lv2",
+      "ring_glow_lv3",
+      "ring_glow_lv4",
+      "needle",
+      "hub",
+      "wedge_win",
+      "title",
+      "levelup",
+      "rays"
+    ],
+    "banners": [
+      "big",
+      "superwin",
+      "mega",
+      "epic",
+      "max"
+    ],
+    "thumbnail": [
+      "thumb_bg",
+      "thumb_fg",
+      "cover_16x9_bg",
+      "cover_16x9_fg"
+    ],
+    "ui": [
+      "buy_icon",
+      "buy_art_bonus",
+      "buy_art_holdandspin",
+      "buy_hero_bonus",
+      "buy_hero_holdandspin",
+      "buy_art_volt",
+      "buy_art_tesla",
+      "buy_hero_volt5",
+      "buy_hero_volt10",
+      "buy_hero_tesla"
+    ],
+    "transition": [
+      "bolt_strike",
+      "flash_glow"
+    ],
+    "mascot": [
+      "full_body",
+      "head",
+      "torso",
+      "pelvis",
+      "neck",
+      "arm_l",
+      "arm_r",
+      "leg_l",
+      "leg_r",
+      "hair",
+      "hair_zap",
+      "head_blink",
+      "head_laugh",
+      "head_zap"
+    ]
+  },
+  "runtimeRegistryAssets": 148,
+  "spineRuntime": "4.2.74",
+  "existingTypeBaselineErrors": 22,
+  "newTypeErrors": 0,
+  "audio": "inherited; new sound brief not defined",
+  "math": "unchanged; QA Tesla4 fixture is synthetic and isolated to offline harness",
+  "browserAudit": "browser_qa.json",
+  "preview": "symbol_motion_preview.gif",
+  "localPreview": "http://127.0.0.1:4252/?sessionID=volt-qa&rgs_url=mock.local&currency=USD&lang=en",
+  "activationHeroChargeBars": {
+    "volt5": 1,
+    "volt10": 2
+  },
+  "finalBuildLogs": [
+    "design/volt_build_final.log",
+    "design/volt_build_ui_final.log",
+    "design/volt_types_final.log"
+  ],
+  "mascotPlacement": {
+    "heightRatio": 0.62,
+    "sideWidthRatio": 0.96,
+    "floorRatio": 0.78,
+    "uiMayOverlapLegs": true,
+    "preview": "qa_desktop_mascot_large.png",
+    "buildLog": "design/volt_build_mascot_placement.log"
+  }
+}

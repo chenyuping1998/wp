@@ -19,6 +19,11 @@
  * deeper wind-up, a harder hit and its overshoot — inside about half of each
  * joint's measured tear limit (check_mesh_wins --limits). Still ONE act per
  * win, landing and then still: nothing loops.
+ *
+ * 2026-11-06 (user: 動態要更強): ~1.2–1.4× again on the joints that had room
+ * (coil, both antennas, the foil tip, the saucer bank and dome), the leap 1.3×
+ * higher with no dead hang at the apex (meshRig.leap), and every keyed move on
+ * Spine's default curve instead of the hard cubic.
  */
 import { blob, bump, circle, flick, leap, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type PartSpec, type Point, type Pose, type Rig } from './meshRig';
 
@@ -40,10 +45,10 @@ const designs: Design[] = [
 			const charge = bump(t, T.crouch, T.rise + 60);
 			const fire = Math.max(0, flick(t, T.rise + 40, 3.2, 6));
 			B('coil').along = 1 - 0.11 * charge + 0.13 * fire;
-			B('coil').angle = 2.5 * charge - 8 * flick(t, T.rise + 60, 3, 5);
+			B('coil').angle = 3.5 * charge - 11 * flick(t, T.rise + 60, 3, 5);
 			// the kick: back and up in the hand, after a small aim forward
-			pose.rigid.dx += (-2.5 * charge + 10 * flick(t, T.rise + 40, 2.2, 5)) * live;
-			pose.rigid.rot += 2 * charge - 9 * flick(t, T.rise + 40, 2.2, 5);
+			pose.rigid.dx += (-3.5 * charge + 14 * flick(t, T.rise + 40, 2.2, 5)) * live;
+			pose.rigid.rot += 2.8 * charge - 12 * flick(t, T.rise + 40, 2.2, 5);
 		},
 	},
 	{
@@ -53,9 +58,9 @@ const designs: Design[] = [
 		],
 		act: ({ t, B, pose }) => {
 			// the helmet looks round as if someone is in it, then faces front
-			pose.rigid.rot += track(t, [[0, 0], [T.rise, -5, 'out'], [T.fall, 4], [T.land + 60, -1], [T.hop2, 0]]);
+			pose.rigid.rot += track(t, [[0, 0], [T.rise, -6.5, 'out'], [T.fall, 5.5], [T.land + 60, -1.5], [T.hop2, 0]]);
 			// the spring: boing on the way up, again on the landing
-			B('antenna').angle = 11 * flick(t, T.rise - 60, 2.6, 3.4) + 6 * flick(t, T.land, 3.4, 5);
+			B('antenna').angle = 13 * flick(t, T.rise - 60, 2.6, 3.4) + 8 * flick(t, T.land, 3.4, 5);
 			B('antenna').along = 1 + 0.12 * Math.max(0, flick(t, T.land, 4, 7));
 		},
 	},
@@ -66,8 +71,8 @@ const designs: Design[] = [
 		],
 		act: ({ t, B, pose }) => {
 			// it tunes in: a tilt one way, a snap the other as the signal hits
-			pose.rigid.rot += track(t, [[0, 0], [T.rise, -4, 'out'], [T.fall - 120, -4], [T.fall, 5], [T.land + 80, 0]]);
-			B('tip').angle = 12 * flick(t, T.rise - 40, 2.2, 3.2) + 7 * flick(t, T.fall, 3, 4.5);
+			pose.rigid.rot += track(t, [[0, 0], [T.rise, -5.5, 'out'], [T.fall - 120, -5], [T.fall, 6.5], [T.land + 80, 0]]);
+			B('tip').angle = 14 * flick(t, T.rise - 40, 2.2, 3.2) + 9 * flick(t, T.fall, 3, 4.5);
 			B('tip').along = 1 + 0.09 * bump(t, T.rise, T.fall) - 0.08 * bump(t, T.land - 40, T.land + 160);
 		},
 	},
@@ -100,7 +105,7 @@ const designs: Design[] = [
 			// a cocky nod: chin down on the way up, thrown back on top
 			B('head').angle = track(t, [[0, 0], [T.rise, -4, 'out'], [T.fall, 5], [T.land + 80, -1.8], [T.hop2 + 80, 0]]);
 			B('head').dy = -3.5 * bump(t, T.rise, T.land);
-			B('antenna').angle = 12 * flick(t, T.rise - 20, 2.6, 3.2) + 5 * flick(t, T.land, 3.2, 5);
+			B('antenna').angle = 15 * flick(t, T.rise - 20, 2.6, 3.2) + 7 * flick(t, T.land, 3.2, 5);
 			// he turns to the camera on the way up, back to his three-quarter on top, and settles
 			const turn = track(t, [[0, 0], [T.crouch, 0.5], [T.rise, -4.5, 'out'], [T.fall - 60, -3.5], [T.fall + 80, 1.6], [T.land + 120, -0.6], [T.hop2 + 100, 0]]);
 			B('face').dx = turn;
@@ -116,9 +121,9 @@ const designs: Design[] = [
 		parts: [{ name: 'dome', pivot: [130, 118], dist: blob([130, 96], 46, 26), hold: 8, lim: 9 }],
 		act: ({ t, B, pose }) => {
 			// banks into a turn and back while it hovers
-			pose.rigid.rot += track(t, [[0, 0], [T.rise, -12, 'out'], [T.fall, 10], [T.land, -4], [T.hop2, 0]]);
-			B('dome').dy = -7 * bump(t, T.rise, T.fall + 80);
-			B('dome').angle = 6 * flick(t, T.fall, 2, 4);
+			pose.rigid.rot += track(t, [[0, 0], [T.rise, -14, 'out'], [T.fall, 12], [T.land, -5], [T.hop2, 0]]);
+			B('dome').dy = -9 * bump(t, T.rise, T.fall + 80);
+			B('dome').angle = 8 * flick(t, T.fall, 2, 4);
 		},
 	},
 	{
@@ -165,7 +170,7 @@ const make = (d: Design): MeshWinSpec => {
 		...(d.collapsible ? { collapsible: d.collapsible } : {}),
 		pose: (rig: Rig, t: number) => {
 			const pose = restPose(rig);
-			const { rigid, air } = leap(t, T, d.height);
+			const { rigid, air } = leap(t, T, d.height * 1.3);
 			pose.rigid = rigid;
 			pose.air = air;
 			const live = bump(t, T.crouch, T.land + 180);

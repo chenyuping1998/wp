@@ -1,0 +1,13 @@
+{
+  "actions": [
+    "wave",
+    "cheer"
+  ],
+  "waveElbowScale": 0.76,
+  "waveShoulderScale": 0.32,
+  "jumpShoulderScale": 0.22,
+  "jumpChestScale": 0.35,
+  "compactForearmDegrees": 60,
+  "source": "mascot_versions/before_seven_fixes",
+  "meshesUnchanged": true
+}

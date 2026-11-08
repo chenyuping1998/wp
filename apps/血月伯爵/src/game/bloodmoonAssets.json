@@ -1,0 +1,2101 @@
+{
+  "schemaVersion": 1,
+  "gameId": "blood-moon-count",
+  "sourceGame": "XinStar Game145",
+  "assetBase": "/bloodmoon/",
+  "scene": {
+    "base": "/bloodmoon/scene/base.png",
+    "free": "/bloodmoon/scene/free.png",
+    "freeBackgroundGlow": "/bloodmoon/scene/freeBackgroundGlow.png",
+    "moon": "/bloodmoon/scene/moon.png",
+    "bloodMoon": "/bloodmoon/scene/bloodMoon.png",
+    "treeLeft": "/bloodmoon/scene/treeLeft.png",
+    "treeRight": "/bloodmoon/scene/treeRight.png",
+    "transitionCrest": "/bloodmoon/scene/transitionCrest.png",
+    "wildHuntTitle": "/bloodmoon/scene/wildHuntTitle.png"
+  },
+  "environment": {
+    "mist": "/bloodmoon/environment/mist.png",
+    "glint": "/bloodmoon/environment/glint.png",
+    "batBase": "/bloodmoon/environment/batBase.png",
+    "batFree": "/bloodmoon/environment/batFree.png"
+  },
+  "celebrations": {
+    "big": "/bloodmoon/celebrations/big.png",
+    "super": "/bloodmoon/celebrations/super.png",
+    "mega": "/bloodmoon/celebrations/mega.png",
+    "epic": "/bloodmoon/celebrations/epic.png"
+  },
+  "symbols": {
+    "0": "/bloodmoon/symbols/0.png",
+    "1": "/bloodmoon/symbols/1.png",
+    "2": "/bloodmoon/symbols/2.png",
+    "3": "/bloodmoon/symbols/3.png",
+    "4": "/bloodmoon/symbols/4.png",
+    "5": "/bloodmoon/symbols/5.png",
+    "6": "/bloodmoon/symbols/6.png",
+    "7": "/bloodmoon/symbols/7.png",
+    "8": "/bloodmoon/symbols/8.png",
+    "9": "/bloodmoon/symbols/9.png",
+    "10": "/bloodmoon/symbols/10.png",
+    "11": "/bloodmoon/symbols/11.png",
+    "12": "/bloodmoon/symbols/12.png",
+    "13": "/bloodmoon/symbols/13.png"
+  },
+  "symbolContract": {
+    "protocolIds": {
+      "bonus": 8,
+      "free": 9,
+      "wilds": [
+        10,
+        11,
+        12,
+        13
+      ]
+    },
+    "logicalCell": [
+      108,
+      108
+    ],
+    "board": [
+      6,
+      6
+    ],
+    "supportsSquareSizes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "wildOriginalSymbol": {
+      "10": 0,
+      "11": 1,
+      "12": 2,
+      "13": 3
+    },
+    "note": "Use bar/head geometry and clip to visible board; do not tile a large icon into separate images."
+  },
+  "ui": {
+    "freeEnergyFrame": "/bloodmoon/ui/freeEnergyFrame.png",
+    "multipliers": {
+      "2": "/bloodmoon/ui/multiplier-2.png",
+      "3": "/bloodmoon/ui/multiplier-3.png",
+      "5": "/bloodmoon/ui/multiplier-5.png",
+      "8": "/bloodmoon/ui/multiplier-8.png",
+      "12": "/bloodmoon/ui/multiplier-12.png"
+    }
+  },
+  "audio": {
+    "ngBgm": "/bloodmoon/audio/ngBgm.mp3",
+    "fgBgm": "/bloodmoon/audio/fgBgm.mp3",
+    "ngStart": "/bloodmoon/audio/ngStart.mp3",
+    "stop": "/bloodmoon/audio/stop.mp3",
+    "stop_6x6": "/bloodmoon/audio/stop_6x6.mp3",
+    "iconExpansion": "/bloodmoon/audio/iconExpansion.mp3",
+    "WildHuntWord": "/bloodmoon/audio/WildHuntWord.mp3",
+    "CharaForecastWild1": "/bloodmoon/audio/CharaForecastWild1.mp3",
+    "CharaForecastWild2": "/bloodmoon/audio/CharaForecastWild2.mp3",
+    "CharaWild": "/bloodmoon/audio/CharaWild.mp3",
+    "CharaBack": "/bloodmoon/audio/CharaBack.mp3",
+    "ngWILDvibe": "/bloodmoon/audio/ngWILDvibe.mp3",
+    "ngWILDbat": "/bloodmoon/audio/ngWILDbat.mp3",
+    "fgWILDvibe": "/bloodmoon/audio/fgWILDvibe.mp3",
+    "fgWILDbat": "/bloodmoon/audio/fgWILDbat.mp3",
+    "WildSuccess": "/bloodmoon/audio/WildSuccess.mp3",
+    "WildFail": "/bloodmoon/audio/WildFail.mp3",
+    "wildIconSuccess": "/bloodmoon/audio/wildIconSuccess.mp3",
+    "wildIconCollect": "/bloodmoon/audio/wildIconCollect.mp3",
+    "fgGet": "/bloodmoon/audio/fgGet.mp3",
+    "FgIn": "/bloodmoon/audio/FgIn.mp3",
+    "fgInto": "/bloodmoon/audio/fgInto.mp3",
+    "fgEnter": "/bloodmoon/audio/fgEnter.mp3",
+    "fgSpinsPlus": "/bloodmoon/audio/fgSpinsPlus.mp3",
+    "fgSpinsReduce": "/bloodmoon/audio/fgSpinsReduce.mp3",
+    "fgPoint": "/bloodmoon/audio/fgPoint.mp3",
+    "fgPointNew": "/bloodmoon/audio/fgPointNew.mp3",
+    "fgMultiplierGet": "/bloodmoon/audio/fgMultiplierGet.mp3",
+    "ScoreMultiplier": "/bloodmoon/audio/ScoreMultiplier.mp3",
+    "Line": "/bloodmoon/audio/Line.mp3",
+    "Score": "/bloodmoon/audio/Score.mp3",
+    "CharaWin1": "/bloodmoon/audio/CharaWin1.mp3",
+    "CharaWin2": "/bloodmoon/audio/CharaWin2.mp3",
+    "CharaWin2.5": "/bloodmoon/audio/CharaWin2.5.mp3",
+    "CharaWin3": "/bloodmoon/audio/CharaWin3.mp3",
+    "WUI_Touch": "/bloodmoon/audio/WUI_Touch.mp3",
+    "Big_Start": "/bloodmoon/audio/Big_Start.mp3",
+    "Super_Start": "/bloodmoon/audio/Super_Start.mp3",
+    "Mega_Start": "/bloodmoon/audio/Mega_Start.mp3",
+    "Epic_Start": "/bloodmoon/audio/Epic_Start.mp3",
+    "Big_Loop": "/bloodmoon/audio/Big_Loop.mp3",
+    "Mega_Loop": "/bloodmoon/audio/Mega_Loop.mp3",
+    "Big_RunNum": "/bloodmoon/audio/Big_RunNum.mp3",
+    "Mega_RunNum": "/bloodmoon/audio/Mega_RunNum.mp3",
+    "WinShow_End": "/bloodmoon/audio/WinShow_End.mp3",
+    "sceneBat_S": "/bloodmoon/audio/sceneBat_S.mp3",
+    "fgNumberGet": "/bloodmoon/audio/fgNumberGet.mp3",
+    "freeForecast": "/bloodmoon/audio/freeForecast.mp3",
+    "TitleIn": "/bloodmoon/audio/TitleIn.mp3"
+  },
+  "character": {
+    "base": {
+      "Idle": "/bloodmoon/character/base-Idle.mp4",
+      "WildTrans_01_In": "/bloodmoon/character/base-WildTrans_01_In.mp4",
+      "WildTrans_01_Loop": "/bloodmoon/character/base-WildTrans_01_Loop.mp4",
+      "WildTrans_01_Out": "/bloodmoon/character/base-WildTrans_01_Out.mp4",
+      "WildTrans_02_In": "/bloodmoon/character/base-WildTrans_02_In.mp4",
+      "WildTrans_02_Loop": "/bloodmoon/character/base-WildTrans_02_Loop.mp4",
+      "WildTrans_02_Out": "/bloodmoon/character/base-WildTrans_02_Out.mp4",
+      "WildTrans_Back": "/bloodmoon/character/base-WildTrans_Back.mp4",
+      "Win_01": "/bloodmoon/character/base-Win_01.mp4",
+      "Win_02": "/bloodmoon/character/base-Win_02.mp4",
+      "Win_025": "/bloodmoon/character/base-Win_025.mp4",
+      "Win_03": "/bloodmoon/character/base-Win_03.mp4"
+    },
+    "free": {
+      "Idle": "/bloodmoon/character/free-Idle.mp4",
+      "WildTrans_01_In": "/bloodmoon/character/free-WildTrans_01_In.mp4",
+      "WildTrans_01_Loop": "/bloodmoon/character/free-WildTrans_01_Loop.mp4",
+      "WildTrans_01_Out": "/bloodmoon/character/free-WildTrans_01_Out.mp4",
+      "WildTrans_02_In": "/bloodmoon/character/free-WildTrans_02_In.mp4",
+      "WildTrans_02_Loop": "/bloodmoon/character/free-WildTrans_02_Loop.mp4",
+      "WildTrans_02_Out": "/bloodmoon/character/free-WildTrans_02_Out.mp4",
+      "WildTrans_Back": "/bloodmoon/character/free-WildTrans_Back.mp4",
+      "Win_01": "/bloodmoon/character/free-Win_01.mp4",
+      "Win_02": "/bloodmoon/character/free-Win_02.mp4",
+      "Win_025": "/bloodmoon/character/free-Win_025.mp4",
+      "Win_03": "/bloodmoon/character/free-Win_03.mp4"
+    }
+  },
+  "characterFallback": {
+    "base": "/bloodmoon/character/base-idle.png",
+    "free": "/bloodmoon/character/free-idle.png"
+  },
+  "characterFormat": {
+    "packedSize": [
+      512,
+      1456
+    ],
+    "displaySize": [
+      512,
+      728
+    ],
+    "fps": 30,
+    "rgb": "top-half",
+    "alpha": "bottom-half luminance",
+    "note": "MP4 is packed alpha, not directly transparent. Use compositing or the RGBA fallback."
+  },
+  "sequences": {
+    "merge": [
+      "/bloodmoon/effects/merge/000.png",
+      "/bloodmoon/effects/merge/001.png",
+      "/bloodmoon/effects/merge/002.png",
+      "/bloodmoon/effects/merge/003.png",
+      "/bloodmoon/effects/merge/004.png",
+      "/bloodmoon/effects/merge/005.png",
+      "/bloodmoon/effects/merge/006.png",
+      "/bloodmoon/effects/merge/007.png",
+      "/bloodmoon/effects/merge/008.png",
+      "/bloodmoon/effects/merge/009.png",
+      "/bloodmoon/effects/merge/010.png",
+      "/bloodmoon/effects/merge/011.png",
+      "/bloodmoon/effects/merge/012.png",
+      "/bloodmoon/effects/merge/013.png",
+      "/bloodmoon/effects/merge/014.png",
+      "/bloodmoon/effects/merge/015.png",
+      "/bloodmoon/effects/merge/016.png",
+      "/bloodmoon/effects/merge/017.png",
+      "/bloodmoon/effects/merge/018.png",
+      "/bloodmoon/effects/merge/019.png",
+      "/bloodmoon/effects/merge/020.png",
+      "/bloodmoon/effects/merge/021.png",
+      "/bloodmoon/effects/merge/022.png",
+      "/bloodmoon/effects/merge/023.png",
+      "/bloodmoon/effects/merge/024.png",
+      "/bloodmoon/effects/merge/025.png",
+      "/bloodmoon/effects/merge/026.png",
+      "/bloodmoon/effects/merge/027.png",
+      "/bloodmoon/effects/merge/028.png",
+      "/bloodmoon/effects/merge/029.png",
+      "/bloodmoon/effects/merge/030.png",
+      "/bloodmoon/effects/merge/031.png",
+      "/bloodmoon/effects/merge/032.png",
+      "/bloodmoon/effects/merge/033.png",
+      "/bloodmoon/effects/merge/034.png",
+      "/bloodmoon/effects/merge/035.png",
+      "/bloodmoon/effects/merge/036.png",
+      "/bloodmoon/effects/merge/037.png",
+      "/bloodmoon/effects/merge/038.png",
+      "/bloodmoon/effects/merge/039.png",
+      "/bloodmoon/effects/merge/040.png",
+      "/bloodmoon/effects/merge/041.png",
+      "/bloodmoon/effects/merge/042.png",
+      "/bloodmoon/effects/merge/043.png",
+      "/bloodmoon/effects/merge/044.png",
+      "/bloodmoon/effects/merge/045.png",
+      "/bloodmoon/effects/merge/046.png",
+      "/bloodmoon/effects/merge/047.png",
+      "/bloodmoon/effects/merge/048.png",
+      "/bloodmoon/effects/merge/049.png",
+      "/bloodmoon/effects/merge/050.png",
+      "/bloodmoon/effects/merge/051.png",
+      "/bloodmoon/effects/merge/052.png",
+      "/bloodmoon/effects/merge/053.png",
+      "/bloodmoon/effects/merge/054.png",
+      "/bloodmoon/effects/merge/055.png",
+      "/bloodmoon/effects/merge/056.png",
+      "/bloodmoon/effects/merge/057.png",
+      "/bloodmoon/effects/merge/058.png",
+      "/bloodmoon/effects/merge/059.png"
+    ],
+    "wildIn": [
+      "/bloodmoon/effects/wildIn/000.png",
+      "/bloodmoon/effects/wildIn/001.png",
+      "/bloodmoon/effects/wildIn/002.png",
+      "/bloodmoon/effects/wildIn/003.png",
+      "/bloodmoon/effects/wildIn/004.png",
+      "/bloodmoon/effects/wildIn/005.png",
+      "/bloodmoon/effects/wildIn/006.png",
+      "/bloodmoon/effects/wildIn/007.png",
+      "/bloodmoon/effects/wildIn/008.png",
+      "/bloodmoon/effects/wildIn/009.png",
+      "/bloodmoon/effects/wildIn/010.png",
+      "/bloodmoon/effects/wildIn/011.png",
+      "/bloodmoon/effects/wildIn/012.png",
+      "/bloodmoon/effects/wildIn/013.png",
+      "/bloodmoon/effects/wildIn/014.png"
+    ],
+    "wildLoop": [
+      "/bloodmoon/effects/wildLoop/000.png",
+      "/bloodmoon/effects/wildLoop/001.png",
+      "/bloodmoon/effects/wildLoop/002.png",
+      "/bloodmoon/effects/wildLoop/003.png",
+      "/bloodmoon/effects/wildLoop/004.png",
+      "/bloodmoon/effects/wildLoop/005.png",
+      "/bloodmoon/effects/wildLoop/006.png",
+      "/bloodmoon/effects/wildLoop/007.png",
+      "/bloodmoon/effects/wildLoop/008.png",
+      "/bloodmoon/effects/wildLoop/009.png",
+      "/bloodmoon/effects/wildLoop/010.png",
+      "/bloodmoon/effects/wildLoop/011.png",
+      "/bloodmoon/effects/wildLoop/012.png",
+      "/bloodmoon/effects/wildLoop/013.png",
+      "/bloodmoon/effects/wildLoop/014.png",
+      "/bloodmoon/effects/wildLoop/015.png",
+      "/bloodmoon/effects/wildLoop/016.png",
+      "/bloodmoon/effects/wildLoop/017.png",
+      "/bloodmoon/effects/wildLoop/018.png",
+      "/bloodmoon/effects/wildLoop/019.png",
+      "/bloodmoon/effects/wildLoop/020.png",
+      "/bloodmoon/effects/wildLoop/021.png",
+      "/bloodmoon/effects/wildLoop/022.png",
+      "/bloodmoon/effects/wildLoop/023.png",
+      "/bloodmoon/effects/wildLoop/024.png",
+      "/bloodmoon/effects/wildLoop/025.png",
+      "/bloodmoon/effects/wildLoop/026.png",
+      "/bloodmoon/effects/wildLoop/027.png",
+      "/bloodmoon/effects/wildLoop/028.png",
+      "/bloodmoon/effects/wildLoop/029.png"
+    ],
+    "wildSuccess": [
+      "/bloodmoon/effects/wildSuccess/000.png",
+      "/bloodmoon/effects/wildSuccess/001.png",
+      "/bloodmoon/effects/wildSuccess/002.png",
+      "/bloodmoon/effects/wildSuccess/003.png",
+      "/bloodmoon/effects/wildSuccess/004.png",
+      "/bloodmoon/effects/wildSuccess/005.png",
+      "/bloodmoon/effects/wildSuccess/006.png",
+      "/bloodmoon/effects/wildSuccess/007.png",
+      "/bloodmoon/effects/wildSuccess/008.png",
+      "/bloodmoon/effects/wildSuccess/009.png",
+      "/bloodmoon/effects/wildSuccess/010.png",
+      "/bloodmoon/effects/wildSuccess/011.png",
+      "/bloodmoon/effects/wildSuccess/012.png",
+      "/bloodmoon/effects/wildSuccess/013.png",
+      "/bloodmoon/effects/wildSuccess/014.png",
+      "/bloodmoon/effects/wildSuccess/015.png"
+    ],
+    "wildFail": [
+      "/bloodmoon/effects/wildFail/000.png",
+      "/bloodmoon/effects/wildFail/001.png",
+      "/bloodmoon/effects/wildFail/002.png",
+      "/bloodmoon/effects/wildFail/003.png",
+      "/bloodmoon/effects/wildFail/004.png",
+      "/bloodmoon/effects/wildFail/005.png",
+      "/bloodmoon/effects/wildFail/006.png",
+      "/bloodmoon/effects/wildFail/007.png",
+      "/bloodmoon/effects/wildFail/008.png",
+      "/bloodmoon/effects/wildFail/009.png",
+      "/bloodmoon/effects/wildFail/010.png",
+      "/bloodmoon/effects/wildFail/011.png",
+      "/bloodmoon/effects/wildFail/012.png",
+      "/bloodmoon/effects/wildFail/013.png",
+      "/bloodmoon/effects/wildFail/014.png",
+      "/bloodmoon/effects/wildFail/015.png",
+      "/bloodmoon/effects/wildFail/016.png",
+      "/bloodmoon/effects/wildFail/017.png",
+      "/bloodmoon/effects/wildFail/018.png",
+      "/bloodmoon/effects/wildFail/019.png",
+      "/bloodmoon/effects/wildFail/020.png",
+      "/bloodmoon/effects/wildFail/021.png",
+      "/bloodmoon/effects/wildFail/022.png",
+      "/bloodmoon/effects/wildFail/023.png",
+      "/bloodmoon/effects/wildFail/024.png",
+      "/bloodmoon/effects/wildFail/025.png",
+      "/bloodmoon/effects/wildFail/026.png",
+      "/bloodmoon/effects/wildFail/027.png",
+      "/bloodmoon/effects/wildFail/028.png",
+      "/bloodmoon/effects/wildFail/029.png"
+    ]
+  },
+  "sequenceFps": 30,
+  "assets": {
+    "/bloodmoon/scene/base.png": {
+      "source": "textures/NG_Bkg_01.png",
+      "bytes": 477573,
+      "sha256": "20ce713f5f9bc0e89a6b213bcfa4512c5932a78018d13ac9f2e392e3b9e23d21",
+      "width": 1280,
+      "height": 720
+    },
+    "/bloodmoon/scene/free.png": {
+      "source": "textures/FG_Bkg.png",
+      "bytes": 800561,
+      "sha256": "200c49a34c0b49c5a8e963829979e043affa531c9dae70c7bfee627fcf93f98c",
+      "width": 1280,
+      "height": 720
+    },
+    "/bloodmoon/scene/freeBackgroundGlow.png": {
+      "source": "textures/FG_Bkg_Glow.png",
+      "bytes": 373243,
+      "sha256": "8329197257f4766a0bc7505fc73f42fca515664c9258f122e43000adb355a757",
+      "width": 1280,
+      "height": 720
+    },
+    "/bloodmoon/scene/moon.png": {
+      "source": "textures/Moon.png",
+      "bytes": 527128,
+      "sha256": "a2284973a536174b63c073211abbaf26105a179e5b67a497fea36bff524509fe",
+      "width": 800,
+      "height": 800
+    },
+    "/bloodmoon/scene/bloodMoon.png": {
+      "source": "textures/BloodMoon.png",
+      "bytes": 297985,
+      "sha256": "d9c9cb23a0665aa108b061b050666c2d3b682a0d6a021f63d9847782d07cc062",
+      "width": 800,
+      "height": 800
+    },
+    "/bloodmoon/scene/treeLeft.png": {
+      "source": "textures/NG_Bkg_Tree_L.png",
+      "bytes": 45009,
+      "sha256": "d9a5a5ada7c01094fd10f6613f5895768b67bbe607d3f764c2b009d7b54f131b",
+      "width": 278,
+      "height": 476
+    },
+    "/bloodmoon/scene/treeRight.png": {
+      "source": "textures/NG_Bkg_Tree_R.png",
+      "bytes": 50945,
+      "sha256": "b6f02f5bbd39ae636c0d252f579cf1a23d1ed4811aca9a41331e182d572aea26",
+      "width": 412,
+      "height": 618
+    },
+    "/bloodmoon/scene/transitionCrest.png": {
+      "source": "textures/NGtoFG_Outer.png",
+      "bytes": 42980,
+      "sha256": "81dcdddf30ad40b196f09c7aecd582f14e7d354230673d0c4858de1478a7445f",
+      "width": 256,
+      "height": 164
+    },
+    "/bloodmoon/scene/wildHuntTitle.png": {
+      "source": "textures/WILD-HUNT.png",
+      "bytes": 100386,
+      "sha256": "f0ed30d28400800f866c57e08bdc1d712be3738e9748806744c35f6802fde089",
+      "width": 656,
+      "height": 126
+    },
+    "/bloodmoon/environment/mist.png": {
+      "source": "textures/G145_LineSmoke_01_Tex.png",
+      "bytes": 19363,
+      "sha256": "8842e285a76005eb3c9629f6a5bc52d80375b20ef08ae91ab3b76f6ad40be69a",
+      "width": 128,
+      "height": 128
+    },
+    "/bloodmoon/environment/glint.png": {
+      "source": "textures/G145_GlowLight_0001_Tex.png",
+      "bytes": 152826,
+      "sha256": "cd5e46215751ec4527ec65f70ed5e6b405a620aab6c181c3f2d63e6331a97473",
+      "width": 512,
+      "height": 512
+    },
+    "/bloodmoon/environment/batBase.png": {
+      "source": "textures/G145_NG_Bat_FrontA_00_Tex.png",
+      "bytes": 264530,
+      "sha256": "c7fdcccf5df56fb77ada6a64c8ac9af8c5418cb7f18068ae81c659df74bcdce4",
+      "width": 378,
+      "height": 2048
+    },
+    "/bloodmoon/environment/batFree.png": {
+      "source": "textures/G145_FG_Bat_FrontA_01_Tex.png",
+      "bytes": 262113,
+      "sha256": "32c0eda3aec5f1691c01d9a990536687136e137833b1ff33eb5430583b6ab50a",
+      "width": 306,
+      "height": 2048
+    },
+    "/bloodmoon/celebrations/big.png": {
+      "source": "textures/G145_BigWin_TXT1.png",
+      "bytes": 116547,
+      "sha256": "36cb625d8e91fef3758daf58e15089fccab64dfefe5b8775c8a1f5c2b003b125",
+      "width": 572,
+      "height": 168
+    },
+    "/bloodmoon/celebrations/super.png": {
+      "source": "textures/G145_SuperWin_TXT1.png",
+      "bytes": 165741,
+      "sha256": "1648e14112cf76d0040f60fb0e8be2403ca1a25c6272eae92c60302dc1e20661",
+      "width": 780,
+      "height": 180
+    },
+    "/bloodmoon/celebrations/mega.png": {
+      "source": "textures/G145_MegaWin_TXT1.png",
+      "bytes": 165279,
+      "sha256": "c3b8fd4b64eb65690b5e15a50a4b2aaf0ffc7103052c2184a477e4551e229f31",
+      "width": 780,
+      "height": 188
+    },
+    "/bloodmoon/celebrations/epic.png": {
+      "source": "textures/G145_EpicWin_TXT1.png",
+      "bytes": 168883,
+      "sha256": "00e0479e487e57f143a8bc3159bd8706c1753dda2c67cc0bd61396dad972e26c",
+      "width": 760,
+      "height": 204
+    },
+    "/bloodmoon/symbols/0.png": {
+      "source": "textures/icon_00.png",
+      "bytes": 532633,
+      "sha256": "0435ff745eacb0f63f5efe33c28d2a2c11e2e45b83a2034dc83e830c43521ff6",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/symbols/1.png": {
+      "source": "textures/icon_01.png",
+      "bytes": 526035,
+      "sha256": "edbb344b0f712723a17e6f37c4569f317ebaa76b931db39f355e0802a056baa0",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/symbols/2.png": {
+      "source": "textures/icon_02.png",
+      "bytes": 519492,
+      "sha256": "438de2cd1395a77a5b81063214ad831ab32e8f91f718a30359c553edb20bdf56",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/symbols/3.png": {
+      "source": "textures/icon_03.png",
+      "bytes": 531483,
+      "sha256": "b5e80be0091278c7b93f6581e65ba574e60808e3cf634b3cf154547eec1c6a16",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/symbols/4.png": {
+      "source": "textures/icon_04.png",
+      "bytes": 501686,
+      "sha256": "56f662e28d92178b4170388253445ecbd9d3da15f02a0de6c4768edf4c9d583d",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/symbols/5.png": {
+      "source": "textures/icon_05.png",
+      "bytes": 508072,
+      "sha256": "f38d08b631ecbc2c40991886a36a6cf1714b6de022e6531835f890c049f6f802",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/symbols/6.png": {
+      "source": "textures/icon_06.png",
+      "bytes": 524025,
+      "sha256": "09019c3a59bc03b2fc87a3da93821521f1d5a75461364f8dc50a55872e394911",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/symbols/7.png": {
+      "source": "textures/icon_07.png",
+      "bytes": 511558,
+      "sha256": "c45aeac37302431ce7984ba588c1edc15be8c4237288a8d39ab1f0022036af35",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/symbols/8.png": {
+      "source": "textures/icon_10.png",
+      "bytes": 23604,
+      "sha256": "e16fdac08014ff4ea6fa84309dae980ac747c212936b37fabac7bbb4d4082c1c",
+      "width": 108,
+      "height": 100
+    },
+    "/bloodmoon/symbols/9.png": {
+      "source": "textures/icon_08_6x6.png",
+      "bytes": 710168,
+      "sha256": "2166c6a142b1155e472f14c238a9149f421e27fca7e9137a114863896517fa6c",
+      "width": 648,
+      "height": 780
+    },
+    "/bloodmoon/symbols/10.png": {
+      "source": "textures/icon_09-1.png",
+      "bytes": 591403,
+      "sha256": "84ba0c6768ab153da6009fcaa954c7caf57685b78a7d62ce729b9afe20f4fb9e",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/symbols/11.png": {
+      "source": "textures/icon_09-2.png",
+      "bytes": 617852,
+      "sha256": "48a59427ac06a560ea8108467e518401532fa041bafb170f8fd6ec962ab47b9c",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/symbols/12.png": {
+      "source": "textures/icon_09-3.png",
+      "bytes": 611877,
+      "sha256": "59ee70acc13c6ba7b17ac776717e4c20f8bdeb3e3ef1654ef51c759dcb63d45c",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/symbols/13.png": {
+      "source": "textures/icon_09-4.png",
+      "bytes": 607086,
+      "sha256": "6cec0dba093664ac0784aa327e3685f8488775e3ee5fcae2cb0c6c17338e2d21",
+      "width": 648,
+      "height": 600
+    },
+    "/bloodmoon/ui/freeEnergyFrame.png": {
+      "source": "textures/G145_FG_Accum1.png",
+      "bytes": 58725,
+      "sha256": "4a255c7440b0123219714ceb637a719473e46612a54910ea19ccf9668c4c6f62",
+      "width": 185,
+      "height": 210
+    },
+    "/bloodmoon/ui/multiplier-2.png": {
+      "source": "sprites/FG/X2.png",
+      "bytes": 151366,
+      "sha256": "ad0102230cb3754c34dca21bd5ecc9da881b2a38d0726389e77333048b0a9e2c",
+      "width": 460,
+      "height": 269
+    },
+    "/bloodmoon/ui/multiplier-3.png": {
+      "source": "sprites/FG/X3.png",
+      "bytes": 160249,
+      "sha256": "8b5770974526e9f5192a1ace411d92c227d9e486e33b7c1a877285494c8d435c",
+      "width": 464,
+      "height": 273
+    },
+    "/bloodmoon/ui/multiplier-5.png": {
+      "source": "sprites/FG/X5.png",
+      "bytes": 159505,
+      "sha256": "97bb9a7a252c0850794f9cdac489f63db211df6bfbe25305c422a75b7e4dd03c",
+      "width": 468,
+      "height": 274
+    },
+    "/bloodmoon/ui/multiplier-8.png": {
+      "source": "sprites/FG/X8.png",
+      "bytes": 168834,
+      "sha256": "98007fee0d8a6e7085fa955e9748a997f7b91d8b2b26ae2e54c6a30c0e281168",
+      "width": 467,
+      "height": 276
+    },
+    "/bloodmoon/ui/multiplier-12.png": {
+      "source": "sprites/FG/X12.png",
+      "bytes": 179272,
+      "sha256": "b8d295c25736beb06bbfd90cb019f4c68a7f337ea7a74d12cb1642cdd8038637",
+      "width": 524,
+      "height": 275
+    },
+    "/bloodmoon/audio/ngBgm.mp3": {
+      "source": "audio/ngBgm.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 1441004,
+      "sha256": "32cb9cecbea9d2293216ebea8d869bcb56d4b00d217536734b71bb63a2fdc653"
+    },
+    "/bloodmoon/audio/fgBgm.mp3": {
+      "source": "audio/fgBgm.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 527195,
+      "sha256": "ad59bf9d829db048eb1c31aa453e42d1c2e371ba61c71f20017e06062678deac"
+    },
+    "/bloodmoon/audio/ngStart.mp3": {
+      "source": "audio/ngStart.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 18284,
+      "sha256": "21db08d3c947eb31ff9e601b8065e57a67dd51c5ba5349fb505f181be98cc500"
+    },
+    "/bloodmoon/audio/stop.mp3": {
+      "source": "audio/stop.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 3884,
+      "sha256": "4c9de9518bc0d6c21b21806fa8784a12613eeb3efda4de392d90213d49a75a99"
+    },
+    "/bloodmoon/audio/stop_6x6.mp3": {
+      "source": "audio/stop_6x6.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 37484,
+      "sha256": "64fb93580b202d69dd8488ca1d869cb9eb2784da969aef6b99fe35ce64f7daeb"
+    },
+    "/bloodmoon/audio/iconExpansion.mp3": {
+      "source": "audio/iconExpansion.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 31244,
+      "sha256": "c38d1a2eed777cbd3b350aae506127af7fc98ab325fa05209a7a1ec356eb2ccf"
+    },
+    "/bloodmoon/audio/WildHuntWord.mp3": {
+      "source": "audio/WildHuntWord.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 90764,
+      "sha256": "bd2a6afdc80ae807d22042f5088818394401bf79ee0e17c96873fb63ed408c3b"
+    },
+    "/bloodmoon/audio/CharaForecastWild1.mp3": {
+      "source": "audio/CharaForecastWild1.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 56684,
+      "sha256": "c25f3d180319c1c661fecee696a673964e6880c94d0b2c60b8d7e9c26e71f247"
+    },
+    "/bloodmoon/audio/CharaForecastWild2.mp3": {
+      "source": "audio/CharaForecastWild2.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 59084,
+      "sha256": "b9fb4cf2d592559ba9cdead983fae3dba5018b25dbdfd613c841ad066e5369f6"
+    },
+    "/bloodmoon/audio/CharaWild.mp3": {
+      "source": "audio/CharaWild.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 35084,
+      "sha256": "e8950f7bda9d69fa05133df61e6a985380107b8d40ea6c8ad101dea85956e0a2"
+    },
+    "/bloodmoon/audio/CharaBack.mp3": {
+      "source": "audio/CharaBack.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 27404,
+      "sha256": "b6ec75fdeae574467376b0421a3e37946ce3874d2d818d07f9d8ade0f23300ad"
+    },
+    "/bloodmoon/audio/ngWILDvibe.mp3": {
+      "source": "audio/ngWILDvibe.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 1441480,
+      "sha256": "d913334581c07e509ad4e1892d6cd5d33b2dc3af086815acbf64257018714efc"
+    },
+    "/bloodmoon/audio/ngWILDbat.mp3": {
+      "source": "audio/ngWILDbat.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 46604,
+      "sha256": "f86409ae058c3dca22f2530eebade3c5b2e49ac426a3df026168a62b627ccf53"
+    },
+    "/bloodmoon/audio/fgWILDvibe.mp3": {
+      "source": "audio/fgWILDvibe.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 527195,
+      "sha256": "4eb7b878886d97783e779b5fbcccbfedca1f11a11d35dfaec12d7f788227a176"
+    },
+    "/bloodmoon/audio/fgWILDbat.mp3": {
+      "source": "audio/fgWILDbat.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 58124,
+      "sha256": "1f2052964684928a2cbc402de2b872bba71207a7b19445bded02e634cf16c8cc"
+    },
+    "/bloodmoon/audio/WildSuccess.mp3": {
+      "source": "audio/WildSuccess.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 23564,
+      "sha256": "a931018eaffe44c412e5a92e41b60e68538187bb0e69895fd1125440c2341271"
+    },
+    "/bloodmoon/audio/WildFail.mp3": {
+      "source": "audio/WildFail.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 27404,
+      "sha256": "b7e49bc344c3959d0820c0065a2538a070c352f8e1d4c6c28cd41743166348f8"
+    },
+    "/bloodmoon/audio/wildIconSuccess.mp3": {
+      "source": "audio/wildIconSuccess.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 37484,
+      "sha256": "20ba940e7762e2dd69fcb6320197a98acba8d7019544c73e582065143af47086"
+    },
+    "/bloodmoon/audio/wildIconCollect.mp3": {
+      "source": "audio/wildIconCollect.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 26924,
+      "sha256": "ffcc85a66d2cc41b2b2417daffcd3b965c5b6b1835a77eafd9b9417656487655"
+    },
+    "/bloodmoon/audio/fgGet.mp3": {
+      "source": "audio/fgGet.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 97964,
+      "sha256": "c14b207c73df252c691585ca2c55159e231cc435e026648a9feb5bb6d63bd097"
+    },
+    "/bloodmoon/audio/FgIn.mp3": {
+      "source": "audio/FgIn.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 36044,
+      "sha256": "fa7de624faeea4f68d0593bccb1cc096c341067a2322475fdee05efcbf4a9b13"
+    },
+    "/bloodmoon/audio/fgInto.mp3": {
+      "source": "audio/fgInto.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 96524,
+      "sha256": "0f183bc2a998f051064cc94c223af75025f2f3c6f6ed6357543ced805c536c7c"
+    },
+    "/bloodmoon/audio/fgEnter.mp3": {
+      "source": "audio/fgEnter.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 71084,
+      "sha256": "a70278dc55b50238eee8e095512d45f0a64735c6e273711a69da752927c45798"
+    },
+    "/bloodmoon/audio/fgSpinsPlus.mp3": {
+      "source": "audio/fgSpinsPlus.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 33644,
+      "sha256": "b8652257eb7f3aaf6f30ff25706df5504a0bb09603102bb0266b1c81119fe182"
+    },
+    "/bloodmoon/audio/fgSpinsReduce.mp3": {
+      "source": "audio/fgSpinsReduce.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 29804,
+      "sha256": "9014b0578a9a5ecc91c85b3fe089a1fc9031f00f679091d48cca4fb053085f5c"
+    },
+    "/bloodmoon/audio/fgPoint.mp3": {
+      "source": "audio/fgPoint.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 39884,
+      "sha256": "8e1d5e4124853b332f4c02516efbc611c3342983cbeed43737dbedaac54485b1"
+    },
+    "/bloodmoon/audio/fgPointNew.mp3": {
+      "source": "audio/fgPointNew.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 31244,
+      "sha256": "2fc07806a81d8fbf8b67c6fd40587fa09a3b3924ae579130fb3fa4c3abf3a5c4"
+    },
+    "/bloodmoon/audio/fgMultiplierGet.mp3": {
+      "source": "audio/fgMultiplierGet.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 23084,
+      "sha256": "e0bfe4c7338cad0c88b8cf7ff9c77a3c7ceef09624e535a01cc4b07404e07324"
+    },
+    "/bloodmoon/audio/ScoreMultiplier.mp3": {
+      "source": "audio/ScoreMultiplier.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 52844,
+      "sha256": "2b52e302345abc08fffd211e3bbdf47e3935a414a8aee1c4baf008f88b96df2d"
+    },
+    "/bloodmoon/audio/Line.mp3": {
+      "source": "audio/Line.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 54764,
+      "sha256": "2e2aa4107a17976dc48f2c1e5593cffa950cf65937b229ffc098a0f7ad9b780c"
+    },
+    "/bloodmoon/audio/Score.mp3": {
+      "source": "audio/Score.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 47586,
+      "sha256": "a62333ea97d6241030763608f50d9063156c15c01f51555546266b6616302267"
+    },
+    "/bloodmoon/audio/CharaWin1.mp3": {
+      "source": "audio/CharaWin1.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 54764,
+      "sha256": "89810af20ab3e13d30b221ee3ca2b29bd2b8017d8309a392c5e7a79782db821e"
+    },
+    "/bloodmoon/audio/CharaWin2.mp3": {
+      "source": "audio/CharaWin2.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 42764,
+      "sha256": "5066bcc7b80badbc999b65a3ad5e305fe37dea9c88cf1ad461948c9baa9e33b0"
+    },
+    "/bloodmoon/audio/CharaWin2.5.mp3": {
+      "source": "audio/CharaWin2.5.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 47564,
+      "sha256": "40e1b586eb301db88c3b4f528f19509b050a71439b007616ed3adacae78e1cd2"
+    },
+    "/bloodmoon/audio/CharaWin3.mp3": {
+      "source": "audio/CharaWin3.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 42764,
+      "sha256": "711b8b809486d7c4716f196f871f7e068db88854827776eafed51ab9df53f53a"
+    },
+    "/bloodmoon/audio/WUI_Touch.mp3": {
+      "source": "audio/WUI_Touch.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 5324,
+      "sha256": "3b15eac8fcef6bb5adb375c58e163ea7c55de8069c9120e04dce527e1f1d4c8d"
+    },
+    "/bloodmoon/audio/Big_Start.mp3": {
+      "source": "audio/Big_Start.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 27211,
+      "sha256": "bcfcf19541cc089da34113a86e3dfb2af3af022570c3fd386cfceb21aabbae9b"
+    },
+    "/bloodmoon/audio/Super_Start.mp3": {
+      "source": "audio/Super_Start.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 61484,
+      "sha256": "ec6e10d92505baf049552d0d508122cc6a0e8e597437bc48b2ab50f8fb697a53"
+    },
+    "/bloodmoon/audio/Mega_Start.mp3": {
+      "source": "audio/Mega_Start.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 82591,
+      "sha256": "85b3278a0b300c0869bf1f390326478734211e187ffc628a5a34062e1c1326c7"
+    },
+    "/bloodmoon/audio/Epic_Start.mp3": {
+      "source": "audio/Epic_Start.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 64305,
+      "sha256": "8c41fc6448cc50dd9c94a33058597ecbf934fbb06a13150415dcc3e5563ccb94"
+    },
+    "/bloodmoon/audio/Big_Loop.mp3": {
+      "source": "audio/Big_Loop.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 241415,
+      "sha256": "e208000d42b45506d1cbb855a389526a445cfaf71cca3b690e7ce6981bcfb9b5"
+    },
+    "/bloodmoon/audio/Mega_Loop.mp3": {
+      "source": "audio/Mega_Loop.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 241415,
+      "sha256": "45d2e3c5b1666e7290b92a81ccb54edbc3f7565891268ebce30e36c03f58faef"
+    },
+    "/bloodmoon/audio/Big_RunNum.mp3": {
+      "source": "audio/Big_RunNum.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 241415,
+      "sha256": "4fe035fa25384791bf1a6a5243e1f92a5fc3ebf0c6f0857b0174cbcac25e7d69"
+    },
+    "/bloodmoon/audio/Mega_RunNum.mp3": {
+      "source": "audio/Mega_RunNum.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 241415,
+      "sha256": "e7261ce37331330eed5616fe4e0690776f427c077121da998de3b56a73d0c142"
+    },
+    "/bloodmoon/audio/WinShow_End.mp3": {
+      "source": "audio/WinShow_End.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 121252,
+      "sha256": "29e2694d2bd3f6723fc0b11d12fb4948c8b1a2e89216321001f9d63afd356f7e"
+    },
+    "/bloodmoon/audio/sceneBat_S.mp3": {
+      "source": "audio/sceneBat_S.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 30284,
+      "sha256": "a6d7c0f9483696f557662130d7fa3c2c4b7c974577d49029e4670d732981e514"
+    },
+    "/bloodmoon/audio/fgNumberGet.mp3": {
+      "source": "audio/fgNumberGet.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 20684,
+      "sha256": "fc48b6c998d99bbaf1f6fd26af52eab5801d55377a386890f913f1851cb128b5"
+    },
+    "/bloodmoon/audio/freeForecast.mp3": {
+      "source": "audio/freeForecast.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 64844,
+      "sha256": "de184876b681e37e149ec2219480760542885f2a3b2871dff66ae7db734b467b"
+    },
+    "/bloodmoon/audio/TitleIn.mp3": {
+      "source": "audio/TitleIn.wav",
+      "operation": "MP3 160 kbps; original duration and sample rate",
+      "bytes": 15884,
+      "sha256": "07f0b8978f922420f313ee46dbad39085a80930ff925c46d43be272ccd2a92a2"
+    },
+    "/bloodmoon/character/base-Idle.mp4": {
+      "source": "videos/Game145_NG_Dracula_Idle.mp4",
+      "bytes": 417399,
+      "sha256": "a7082562c2380c2c377167e722ef06003356268c430a1be314f2a0125bb250d8"
+    },
+    "/bloodmoon/character/base-WildTrans_01_In.mp4": {
+      "source": "videos/Game145_NG_Dracula_WildTrans_01_In.mp4",
+      "bytes": 274959,
+      "sha256": "2385f72b0497c6b4effdecdd21dc9394ed0d44731c500bdb83bafee0e31b0237"
+    },
+    "/bloodmoon/character/base-WildTrans_01_Loop.mp4": {
+      "source": "videos/Game145_NG_Dracula_WildTrans_01_Loop.mp4",
+      "bytes": 461644,
+      "sha256": "7635876915f8bef312f4ec86f827f83f61d3587f3e8ecdc809c4eabc3c762f4d"
+    },
+    "/bloodmoon/character/base-WildTrans_01_Out.mp4": {
+      "source": "videos/Game145_NG_Dracula_WildTrans_01_Out.mp4",
+      "bytes": 487801,
+      "sha256": "91e6bb00f923998285f4058fae5bd62b7ab22f13514dba251924367626b18bcd"
+    },
+    "/bloodmoon/character/base-WildTrans_02_In.mp4": {
+      "source": "videos/Game145_NG_Dracula_WildTrans_02_In.mp4",
+      "bytes": 332171,
+      "sha256": "ee3ef79b6d5da925e874c46cd8a0d60ce4b702851384d82c63f5879fa627f398"
+    },
+    "/bloodmoon/character/base-WildTrans_02_Loop.mp4": {
+      "source": "videos/Game145_NG_Dracula_WildTrans_02_Loop.mp4",
+      "bytes": 518504,
+      "sha256": "b92d4485c95ce172791683e03fcfc117ae169b49e08a0f6b977e9b056fc9522f"
+    },
+    "/bloodmoon/character/base-WildTrans_02_Out.mp4": {
+      "source": "videos/Game145_NG_Dracula_WildTrans_02_Out.mp4",
+      "bytes": 550757,
+      "sha256": "d524cd9b727e1ba596def88f468f55c2f7d0e136b4fe4176b98150ca2ed1adc4"
+    },
+    "/bloodmoon/character/base-WildTrans_Back.mp4": {
+      "source": "videos/Game145_NG_Dracula_WildTrans_Back.mp4",
+      "bytes": 513180,
+      "sha256": "4a75569ca61c52a6345604a86db132e6f50acdcd0dea49718425c17bb15599b7"
+    },
+    "/bloodmoon/character/base-Win_01.mp4": {
+      "source": "videos/Game145_NG_Dracula_Win_01.mp4",
+      "bytes": 545415,
+      "sha256": "355c9a7c07169ce277ebeb35ce5fa93ae352cf5aad4a857c61aa7e4f0266de5d"
+    },
+    "/bloodmoon/character/base-Win_02.mp4": {
+      "source": "videos/Game145_NG_Dracula_Win_02.mp4",
+      "bytes": 655805,
+      "sha256": "f73f6a44dad15395820947bb42b881fe021a299ada715319c725411008f79d2f"
+    },
+    "/bloodmoon/character/base-Win_025.mp4": {
+      "source": "videos/Game145_NG_Dracula_Win_025.mp4",
+      "bytes": 791357,
+      "sha256": "cbd3b5f1cd02c24c9228f092b1ac10d25a0f5cd944f21877735d7b7679d45b6a"
+    },
+    "/bloodmoon/character/base-Win_03.mp4": {
+      "source": "videos/Game145_NG_Dracula_Win_03.mp4",
+      "bytes": 993253,
+      "sha256": "91dde6320092678a9b33eec672b85997623519439fc274c1df99f9cd0282d4f4"
+    },
+    "/bloodmoon/character/free-Idle.mp4": {
+      "source": "videos/Game145_FG_Dracula_Idle.mp4",
+      "bytes": 498211,
+      "sha256": "42133cf50c2c81cd75d73b98cdb4dd752d41d3bddebddaa6edc2adef21ad53f1"
+    },
+    "/bloodmoon/character/free-WildTrans_01_In.mp4": {
+      "source": "videos/Game145_FG_Dracula_WildTrans_01_In.mp4",
+      "bytes": 290675,
+      "sha256": "e5dc89b549994464b5da6590d3c88e60bdf5721b302d0fe61c921cf25a8aefa2"
+    },
+    "/bloodmoon/character/free-WildTrans_01_Loop.mp4": {
+      "source": "videos/Game145_FG_Dracula_WildTrans_01_Loop.mp4",
+      "bytes": 506359,
+      "sha256": "1154591aed55d30abf72c070273ccff8fd074dc8c10567297154c7a36d26f1f8"
+    },
+    "/bloodmoon/character/free-WildTrans_01_Out.mp4": {
+      "source": "videos/Game145_FG_Dracula_WildTrans_01_Out.mp4",
+      "bytes": 490239,
+      "sha256": "c760d476f59ae00e7e30cf5f169b011dd08aed5f85304016efc091e5ab08f961"
+    },
+    "/bloodmoon/character/free-WildTrans_02_In.mp4": {
+      "source": "videos/Game145_FG_Dracula_WildTrans_02_In.mp4",
+      "bytes": 330977,
+      "sha256": "c409e72290e8b82d1708f0ab9824975e5ede06367f7a66a59898012e1b037c04"
+    },
+    "/bloodmoon/character/free-WildTrans_02_Loop.mp4": {
+      "source": "videos/Game145_FG_Dracula_WildTrans_02_Loop.mp4",
+      "bytes": 551995,
+      "sha256": "a340b9e66ab06c255d37f9abb4db5df51f82f9931e8b297b63bf549edf38f238"
+    },
+    "/bloodmoon/character/free-WildTrans_02_Out.mp4": {
+      "source": "videos/Game145_FG_Dracula_WildTrans_02_Out.mp4",
+      "bytes": 550039,
+      "sha256": "6b548a43aadf09283f0c931905359d83fa49ed95b99868ad1fbc9fff817f66f7"
+    },
+    "/bloodmoon/character/free-WildTrans_Back.mp4": {
+      "source": "videos/Game145_FG_Dracula_WildTrans_Back.mp4",
+      "bytes": 555261,
+      "sha256": "f81874ee19ee4698edcf0c847295562aff60947c5f089fed1ad037f09298137f"
+    },
+    "/bloodmoon/character/free-Win_01.mp4": {
+      "source": "videos/Game145_FG_Dracula_Win_01.mp4",
+      "bytes": 600579,
+      "sha256": "f9dff912cef408f1dd8b28b08b75564d9b75c35a6a46945e89281a697bf7deb4"
+    },
+    "/bloodmoon/character/free-Win_02.mp4": {
+      "source": "videos/Game145_FG_Dracula_Win_02.mp4",
+      "bytes": 734782,
+      "sha256": "ee91b16683899ce3d0f6cb338abff50dbc5814d96d84ce5167701f4502c3e271"
+    },
+    "/bloodmoon/character/free-Win_025.mp4": {
+      "source": "videos/Game145_FG_Dracula_Win_025.mp4",
+      "bytes": 830550,
+      "sha256": "f177abbe3e288847e992530b80c800bacd977bb24637f404418f45ec59b5aa74"
+    },
+    "/bloodmoon/character/free-Win_03.mp4": {
+      "source": "videos/Game145_FG_Dracula_Win_03.mp4",
+      "bytes": 991511,
+      "sha256": "38838ab8d3944ba32595de62669b5687a8fb6292dc3193809248b17f1cb90486"
+    },
+    "/bloodmoon/effects/merge/000.png": {
+      "source": "textures/3X6_00.png",
+      "bytes": 3399,
+      "sha256": "6cfeb1cb30daf96ed1798db2be1ba6299b9655ce1477b7ec84a40532b28afe24",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/001.png": {
+      "source": "textures/3X6_01.png",
+      "bytes": 63140,
+      "sha256": "4ae6a736602f7187ecb17e7e21dc8445c1c2dde2711c8fc4b74ed5c385a35f1f",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/002.png": {
+      "source": "textures/3X6_02.png",
+      "bytes": 204235,
+      "sha256": "e6065b4b36679782a969a79a95def67cc6da54983ead470ec5924f25bc68036f",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/003.png": {
+      "source": "textures/3X6_03.png",
+      "bytes": 239660,
+      "sha256": "c9ea02df552b4dd1bff4726c23f50487813ff65fa196ea3fa5f009881bd12aac",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/004.png": {
+      "source": "textures/3X6_04.png",
+      "bytes": 278103,
+      "sha256": "f8378d9dcb29feb7173b0aa39fcf4c59d6193c5fb225998b7d48286d76658a76",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/005.png": {
+      "source": "textures/3X6_05.png",
+      "bytes": 306286,
+      "sha256": "b2f6ec2a144632dccd088a76584d4578d7420fe8d408db37e971266d495128ae",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/006.png": {
+      "source": "textures/3X6_06.png",
+      "bytes": 324921,
+      "sha256": "0575d7e6ea78c9a0698ccfd7278844a5ed141276f4f36d8fa1f252d71352b0f5",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/007.png": {
+      "source": "textures/3X6_07.png",
+      "bytes": 326541,
+      "sha256": "a66ee00fe1944719437c4df026fd4628ebfbb4ebe0878b7c2097e57570de2393",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/008.png": {
+      "source": "textures/3X6_08.png",
+      "bytes": 328964,
+      "sha256": "320ab30759e48312b001cb1c19a3c3bb7a7234a23fdebb4947754b280cfaed27",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/009.png": {
+      "source": "textures/3X6_09.png",
+      "bytes": 326195,
+      "sha256": "42843316fba0fa8d83d40c2352876822d7b5388eb4d3b7a31dfacc662f37dc5a",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/010.png": {
+      "source": "textures/3X6_10.png",
+      "bytes": 323943,
+      "sha256": "8efcde66c6eabc260e4fde73720f7a56db20bb09a6f016edb64d358a87948e98",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/011.png": {
+      "source": "textures/3X6_11.png",
+      "bytes": 325016,
+      "sha256": "f418c18a488fe5bbdbc98b08d2d0047353d7c1acbb0a08592a844bfe2e3ab783",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/012.png": {
+      "source": "textures/3X6_12.png",
+      "bytes": 325598,
+      "sha256": "4febfd4ec3f6a969f980cf2837ec4ac450aa3ddeb4001f415ea169e0671cb47a",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/013.png": {
+      "source": "textures/3X6_13.png",
+      "bytes": 323187,
+      "sha256": "fe286264f309569eb6bc455e4c29747fdff5e20baaf4bb3e3de6d932376764a7",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/014.png": {
+      "source": "textures/3X6_14.png",
+      "bytes": 318829,
+      "sha256": "188bb359e14d1ff9aba2b99c7990b95bfe464f3c5115cea0ca325611fd21672f",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/015.png": {
+      "source": "textures/3X6_15.png",
+      "bytes": 317368,
+      "sha256": "39aeb29562a9e7fabfd1c7d38335cfcfddb85bc2cb4cbfcdf80021531620008d",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/016.png": {
+      "source": "textures/3X6_16.png",
+      "bytes": 313702,
+      "sha256": "e6cf041998c09bd9698c8c27e3d154143a4ddba7b17f6c6bdfc73b7912331476",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/017.png": {
+      "source": "textures/3X6_17.png",
+      "bytes": 312612,
+      "sha256": "3560495f864ceba63cba789dba67e7241d6879c41a1b4f2724976688d2827249",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/018.png": {
+      "source": "textures/3X6_18.png",
+      "bytes": 308230,
+      "sha256": "f53b98b8c96f517d1b93cd5448411f50dd5ae35f16526bc99749617ec8257c7d",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/019.png": {
+      "source": "textures/3X6_19.png",
+      "bytes": 306647,
+      "sha256": "eff79ec6ae920bc0358f0959ee51d727702c90eba95dd5ce08c5b07ff6b36800",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/020.png": {
+      "source": "textures/3X6_20.png",
+      "bytes": 300206,
+      "sha256": "078818760b06fc5763da9d4a270257a7c1d91787623d249032a2bbc683654b3d",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/021.png": {
+      "source": "textures/3X6_21.png",
+      "bytes": 298515,
+      "sha256": "139f7f5c4ba400641853f5c9f26d6fe817ce01f60e9dcea7f0169f1fd552efe3",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/022.png": {
+      "source": "textures/3X6_22.png",
+      "bytes": 294690,
+      "sha256": "f0b4a58f564107f3d92bf1392df956a4d32570e720e9c51eeb487b9a6d7bc4d9",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/023.png": {
+      "source": "textures/3X6_23.png",
+      "bytes": 326416,
+      "sha256": "110438f55cdcc25fc9e4cc42e1bc39a2c3b2c6139648a38ce78f45df784b6dea",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/024.png": {
+      "source": "textures/3X6_24.png",
+      "bytes": 333381,
+      "sha256": "5c4b4d41aeb898458b21a99c1cd91a657101913e8f023e7ec3d7c5e4f40375ca",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/025.png": {
+      "source": "textures/3X6_25.png",
+      "bytes": 348776,
+      "sha256": "1280a8ef7e13e362f20a996ad42879598a72a22c2b87b660be30637a8b746ccb",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/026.png": {
+      "source": "textures/3X6_26.png",
+      "bytes": 343115,
+      "sha256": "abab4640ce9429f94e7ca357464452bb29de5a594e80c6535c3bb5fd858933ba",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/027.png": {
+      "source": "textures/3X6_27.png",
+      "bytes": 349061,
+      "sha256": "2c562f8935658b8b5c2d8479f5f13be5ee158700154cfbd7e499abd9f1526095",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/028.png": {
+      "source": "textures/3X6_28.png",
+      "bytes": 340934,
+      "sha256": "bdfd481d43db2b0c4db5f4285d0dac7b8fc24c631dc4bafac6e062981bf8ef9b",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/029.png": {
+      "source": "textures/3X6_29.png",
+      "bytes": 337651,
+      "sha256": "46eabb845cd137793f3e45460b3940cdc015606f68a95149b2bfd234ed36f4c6",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/030.png": {
+      "source": "textures/3X6_30.png",
+      "bytes": 340289,
+      "sha256": "c2f7f55bdc1c4b7b21d74a011b5c51dcf3a44fdc8c9424af51498ad5e3d57314",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/031.png": {
+      "source": "textures/3X6_31.png",
+      "bytes": 337730,
+      "sha256": "6141e20bfd76ee538e44b4da6c38f877c9525bcc3380f5b63a1cb9580c88008e",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/032.png": {
+      "source": "textures/3X6_32.png",
+      "bytes": 334067,
+      "sha256": "b8582d87b9a96df7260d2ddf95928e8370e0db53f6977d42b59f17d70b736e7b",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/033.png": {
+      "source": "textures/3X6_33.png",
+      "bytes": 327522,
+      "sha256": "b88c687c69c08245ba2bb98a601490dd0987e158bcfd486fe58d2c9f9be05149",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/034.png": {
+      "source": "textures/3X6_34.png",
+      "bytes": 320496,
+      "sha256": "6667b2992641de0e991d49f75fb54455b30f925219e65941f4558803f8af9b8b",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/035.png": {
+      "source": "textures/3X6_35.png",
+      "bytes": 315027,
+      "sha256": "6409233dc081b6cdbcc1421f98e373e9f816e37fc11e8654aee2d91dba4236e4",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/036.png": {
+      "source": "textures/3X6_36.png",
+      "bytes": 312612,
+      "sha256": "3560495f864ceba63cba789dba67e7241d6879c41a1b4f2724976688d2827249",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/037.png": {
+      "source": "textures/3X6_37.png",
+      "bytes": 309063,
+      "sha256": "d2ecfff4a6027ccf3b3c16d79d7a51e74580a571b11304d4ff4deb8efba303b6",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/038.png": {
+      "source": "textures/3X6_38.png",
+      "bytes": 306647,
+      "sha256": "eff79ec6ae920bc0358f0959ee51d727702c90eba95dd5ce08c5b07ff6b36800",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/039.png": {
+      "source": "textures/3X6_39.png",
+      "bytes": 304425,
+      "sha256": "3c1d7b1a802bf1fdd2a0c124f418f600e9803204daeb21f9b0af3f9680ac0d57",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/040.png": {
+      "source": "textures/3X6_40.png",
+      "bytes": 298515,
+      "sha256": "139f7f5c4ba400641853f5c9f26d6fe817ce01f60e9dcea7f0169f1fd552efe3",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/041.png": {
+      "source": "textures/3X6_41.png",
+      "bytes": 296589,
+      "sha256": "e1bfa5d5a0f32a6eb0d59a3c37cbf0baeedc00225afb0d53b386e5115faa7585",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/042.png": {
+      "source": "textures/3X6_42.png",
+      "bytes": 293253,
+      "sha256": "37424d5ec151383749259544e08f7eaf440d16938021538f84194cff65ab18b7",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/043.png": {
+      "source": "textures/3X6_43.png",
+      "bytes": 291976,
+      "sha256": "d3dfc45bdbe54b219d6917d3e382c22ef0adb95f86e6634987bab083a2c92e7b",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/044.png": {
+      "source": "textures/3X6_44.png",
+      "bytes": 286030,
+      "sha256": "8b4a8cf009010e0453b1158eb4092c2a1aa9eeb0c50e8b47b915630ea1453d72",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/045.png": {
+      "source": "textures/3X6_45.png",
+      "bytes": 280310,
+      "sha256": "fbf7440a31e3f09ec3bb00cf7cd60a34fc2fca301fe6917065f856888b23d395",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/046.png": {
+      "source": "textures/3X6_46.png",
+      "bytes": 276065,
+      "sha256": "e469d171e437d3053d72bb347fc4884c553f77d413a445aa461a2c155d7b3e3e",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/047.png": {
+      "source": "textures/3X6_47.png",
+      "bytes": 273609,
+      "sha256": "c196d1a5d13905bfaf66ba8d67be0a0c55169f6cad0e56135b09abb3697076f9",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/048.png": {
+      "source": "textures/3X6_48.png",
+      "bytes": 263725,
+      "sha256": "270832b570419bafa03a128a7116db000ff4b182404e8a5debe640de21ecc46d",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/049.png": {
+      "source": "textures/3X6_49.png",
+      "bytes": 258261,
+      "sha256": "aa3d6105b87e2f0edbb2fb2b4df7c39082921ec4e037fdbe5c3aa4263661abbd",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/050.png": {
+      "source": "textures/3X6_50.png",
+      "bytes": 246610,
+      "sha256": "073152709822907530601c708e435eae31dbff91915389b80648d5632d8cd845",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/051.png": {
+      "source": "textures/3X6_51.png",
+      "bytes": 239249,
+      "sha256": "6e0a501019cd61ee9fdb5b515f67e057f80ed4ebb5daad0cbd44902d12c1bf48",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/052.png": {
+      "source": "textures/3X6_52.png",
+      "bytes": 219364,
+      "sha256": "71fd83c57e87c062ce0d85e1434acfc36b9ef70dd15970f4b86aea94dc0c0354",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/053.png": {
+      "source": "textures/3X6_53.png",
+      "bytes": 213295,
+      "sha256": "becca1bfd4e4a0555912a9257077a732ed9b195a178030a77a0a0a4c70277ba6",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/054.png": {
+      "source": "textures/3X6_54.png",
+      "bytes": 187510,
+      "sha256": "af9b5bd4da4f8f0cd07781dc600393146b91c41188b2725d0a4489c09265f7db",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/055.png": {
+      "source": "textures/3X6_55.png",
+      "bytes": 168425,
+      "sha256": "520dd2bec719d9a2ac71e580fb3e5bea3b12fab9d9c0cb37ed83ae38c24b5c5b",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/056.png": {
+      "source": "textures/3X6_56.png",
+      "bytes": 150817,
+      "sha256": "11e4c3c3cba09cd645f2f4c37bbe2567204fc8fd3c9401cd50b88797008c7625",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/057.png": {
+      "source": "textures/3X6_57.png",
+      "bytes": 129969,
+      "sha256": "7eb613f76e740ba8cd47de2123d36e6ea89b14761be081487c6c78d0d50e1084",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/058.png": {
+      "source": "textures/3X6_58.png",
+      "bytes": 49636,
+      "sha256": "ae28d5bb3554c77bae66620662d67eb5c0ce19c75456d9313d898c112dec47da",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/merge/059.png": {
+      "source": "textures/3X6_59.png",
+      "bytes": 7972,
+      "sha256": "03f91ccf2913c5a1179f4803ab7246d515246192fecd537017bfadcddb9aaa1a",
+      "width": 724,
+      "height": 724
+    },
+    "/bloodmoon/effects/wildIn/000.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00000.png",
+      "bytes": 973,
+      "sha256": "2df3a2ba5d357bc70716d18918b7e44d497ea9dfc0390221653318356bb4c9f3",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/001.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00001.png",
+      "bytes": 112401,
+      "sha256": "234ba7542c04d6c4366ffcf06fc1582be9079193452abdec8c1ac6cb4dcb1c74",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/002.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00002.png",
+      "bytes": 132651,
+      "sha256": "4cf1d27a4968b4c412953b9595610e2c9ca7cac43e55672bfee687cdb64d84bd",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/003.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00003.png",
+      "bytes": 126141,
+      "sha256": "c0b1b1bebd86acee9f6e1780226bcdf71d1ecc4a2b72882c72d6c2e121b68984",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/004.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00004.png",
+      "bytes": 114013,
+      "sha256": "617a86b1ffa41e9367e01fa6e231838f9ff1d4de960125083df68a0c96d4fd68",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/005.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00005.png",
+      "bytes": 115164,
+      "sha256": "2da7479c7d51fa1ec173e1844a5d6da8a0b37dbf7b5bb54af1e387b64dbb3c7a",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/006.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00006.png",
+      "bytes": 118458,
+      "sha256": "242fda2cd69f623a9045801dcdaf6c0e99ed74152b9eab998a41249aad6ef60e",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/007.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00007.png",
+      "bytes": 118534,
+      "sha256": "231252a0e4a67fb909f84b39b1c818cd76fb463f89c9b84ada758f0aa2185085",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/008.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00008.png",
+      "bytes": 116233,
+      "sha256": "c727c5990106483e625802bf2670933986e5e6cdbfa5d3a1eb20afd2967d86dd",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/009.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00009.png",
+      "bytes": 110979,
+      "sha256": "283490c9954a0b102a9055bd3c046f22eb21af297802cfbc7b3d2ed0d2ee8807",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/010.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00010.png",
+      "bytes": 108308,
+      "sha256": "47cbf765d35101f2fa7b03e12d30ed5a936fffbadad3707c99a7ce1c10e15e31",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/011.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00011.png",
+      "bytes": 106449,
+      "sha256": "168556c0026b1fc5adadefb87d8c875b3fec44aae3b4d7a43c584a2b17f447bc",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/012.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00012.png",
+      "bytes": 106575,
+      "sha256": "a12d567bdfe49e8a8aeac7fcb943595a79493019a3ae37c13d32e89bdbcca888",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/013.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00013.png",
+      "bytes": 103418,
+      "sha256": "69e8adb8922c2b8d0c39d4a49dc0db2feb3f8f41e3a93f1f25bee14f24822737",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildIn/014.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_In_00014.png",
+      "bytes": 96272,
+      "sha256": "093fe8f780344934228831eeed179431335cb9b76682804b23757613d7c41f82",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/000.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00000.png",
+      "bytes": 84403,
+      "sha256": "28fdec9d4266e7eaecfef61e2823862c5d0a6dc5acbd737023a86075a64491d8",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/001.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00001.png",
+      "bytes": 84372,
+      "sha256": "4f3d4dab337e1c66fa6c365af97b7aaedbbc230564149df1bcae09423dcca157",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/002.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00002.png",
+      "bytes": 84503,
+      "sha256": "1ce2069c64795b720c23781fd64b9fc62695acaf9dbecad2b83376505d4a9dd5",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/003.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00003.png",
+      "bytes": 85412,
+      "sha256": "ab4471e32f0b60c74ce4615bfef1d4c03eb004856a992c072b83fc14af94eaab",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/004.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00004.png",
+      "bytes": 85005,
+      "sha256": "ad85c60672becb86e97fcf27fe2b83effddf11deb9e0de4ac5e08511f93785ba",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/005.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00005.png",
+      "bytes": 87952,
+      "sha256": "bc52a5545b772646c8d2227c48ce2c4b4e071a44411ed463ea76cb0275bb8176",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/006.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00006.png",
+      "bytes": 89479,
+      "sha256": "532b2a3327be8c6d25c42ded6a337a11dfbb92bfc7ff0c85ab6018701fc7ebff",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/007.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00007.png",
+      "bytes": 88591,
+      "sha256": "ba1d2caf2eff5912c841383cbd5186bd5b5b9e3fe7c7add02709fcdc16fe9b6b",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/008.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00008.png",
+      "bytes": 86977,
+      "sha256": "c8af1a8a95e04b0365a72f94eb8592e35249508c4e4ed4dd8790ad3d79a76f8e",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/009.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00009.png",
+      "bytes": 87038,
+      "sha256": "6aa06f9cf487817a9eeec977647d55786333025d95d2a7d4a037e16cb96cd74b",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/010.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00010.png",
+      "bytes": 87230,
+      "sha256": "cefb40254c1eed5b827c1aec60b0ee13e9a5c0f9eb4554ecfafe63130cb6e286",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/011.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00011.png",
+      "bytes": 84956,
+      "sha256": "9c60939920298fe70c3d0bf514effc0a8f330ef27f9fd9362ceb87b25382291c",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/012.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00012.png",
+      "bytes": 85551,
+      "sha256": "5eb838d1f9716cd04a5720586e5bfe2976f4c3354fcdf3805c633d928c45c66a",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/013.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00013.png",
+      "bytes": 85350,
+      "sha256": "34cf7c6562053f8c7c2bb7f291a0f977ae4e3dee6a524166ed596ca57ec20dab",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/014.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00014.png",
+      "bytes": 85692,
+      "sha256": "39d8c8cf0ae9d2301f8c6c52d695a72c5c0d56a0b592e3a50c2fcb21d93d81ed",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/015.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00015.png",
+      "bytes": 85194,
+      "sha256": "555428d94bcae58bd0091dfd3442261a8241ceb26cc2f324e2f3e367e53f8ceb",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/016.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00016.png",
+      "bytes": 84723,
+      "sha256": "9810ea6cfc513a2daa06d45930ca839cc50f8b52637636ff834ba0c87f4fc728",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/017.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00017.png",
+      "bytes": 85371,
+      "sha256": "b6a3ed41817a0c55ded7eda696ff3fd164a5828003128944f3764bdb5085efa0",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/018.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00018.png",
+      "bytes": 83033,
+      "sha256": "1c5a04e8f2973c75de32f0e95d8e435c279645051f38c675d94d37a49392f8f2",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/019.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00019.png",
+      "bytes": 81121,
+      "sha256": "65bbd010847ce920d118cbfb9402841f9fe33861fa0948af0a25f5a15fcebf67",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/020.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00020.png",
+      "bytes": 82278,
+      "sha256": "d6b19c2ccea888caefa83e0d532036ca5a8c24d076b2522c6f215b3fb2ebfd43",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/021.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00021.png",
+      "bytes": 81199,
+      "sha256": "d09c180231beb9b0de1033d12b2a1d608cef97641ec7101320c0ad5c4d13c29b",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/022.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00022.png",
+      "bytes": 81760,
+      "sha256": "c1f00251f43a5d334dfb0d2cf25eafcbdcb07cf5780386c05adbfa7cbe5660dc",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/023.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00023.png",
+      "bytes": 83142,
+      "sha256": "12ac506c85b6e139229be0fe5ecf38c4155c54d152d8464b9c64cad4dcf53bd8",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/024.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00024.png",
+      "bytes": 82421,
+      "sha256": "c0746ab91b98c26e0d639d8c62392c2fed1d9d22f507d703af28f3ce8260ddad",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/025.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00025.png",
+      "bytes": 83262,
+      "sha256": "b39caccfa049f4663ee9a3ffafc1d5e8a387379d562b08740b105d87b5957f76",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/026.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00026.png",
+      "bytes": 84955,
+      "sha256": "ceba91e828e7117363cbbb615ed87a0c8d14c54f781c98762e8575d4804b5619",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/027.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00027.png",
+      "bytes": 83902,
+      "sha256": "1f4cd300c823a3cc1e75f7aac0131dfa6138f8da2a63f6df39c9fb2124d3d1be",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/028.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00028.png",
+      "bytes": 82133,
+      "sha256": "d59c3e0efad4b25a0afba38ae7fa03287c86a64e7dc653e86d6a26e76b35da27",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildLoop/029.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Loop_00029.png",
+      "bytes": 82837,
+      "sha256": "4afa28c6beff187466a3b7653d2743055027e3588d95a573a169be78a31e99c7",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/000.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00000.png",
+      "bytes": 83095,
+      "sha256": "b34941cf1b2d07fbaeb15e6669de4a911f1235aa9145be8ecd8bc9284907263d",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/001.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00001.png",
+      "bytes": 88696,
+      "sha256": "545b1d5660724e8581ff9cb985f9bb38c6db667cf6977daa09716930ca4113e2",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/002.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00002.png",
+      "bytes": 81823,
+      "sha256": "7bb08d1968b0b357fd5b6adae9493d2c28035f4988404962067aecd726d008c1",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/003.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00003.png",
+      "bytes": 58324,
+      "sha256": "ba1fc9d7cc54fc14bb65c09214ea6f9199dc907bd837744e395ec5b9aa8b6daa",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/004.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00004.png",
+      "bytes": 72391,
+      "sha256": "bc52507f1be488b05e3b10406d2f7d3e075e8e3f357bfeabb811dfd1113d6b8e",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/005.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00005.png",
+      "bytes": 96280,
+      "sha256": "fb2c40621aa567cd0cd84e278491339e159431a441883dfe08dc2104b44f5b16",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/006.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00006.png",
+      "bytes": 112782,
+      "sha256": "9323d160854c3938684ed3dde81e68dba5770e0629ee246f52a6a9c799a7d5a3",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/007.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00007.png",
+      "bytes": 109571,
+      "sha256": "06773741ec458227fa3a3ced904c46ea832a4551ff45e2b9b14190e558263534",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/008.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00008.png",
+      "bytes": 108918,
+      "sha256": "2067e7e269c4bad9f58890d1da34b503f10cafdb1a394bc5f5428503035b4bc7",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/009.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00009.png",
+      "bytes": 104631,
+      "sha256": "e2fc9da0a7a556ae39aeb086fa537eca002af1f2ba8d7f2150587a4db9e7dea5",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/010.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00010.png",
+      "bytes": 95258,
+      "sha256": "2814bd3bf44bb9bb3a1b411bfb4d73ced67bcc11b7e283f428fd5e0520c98c10",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/011.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00011.png",
+      "bytes": 88237,
+      "sha256": "160236c96f8c160f0b8f2306fd183512a42872909d73c39ecaf26a91dec31ed2",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/012.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00012.png",
+      "bytes": 74728,
+      "sha256": "13b6668acbcc718cfedd172fc8e4db80a6f1de629964bbce8bc73858a4d967a3",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/013.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00013.png",
+      "bytes": 65214,
+      "sha256": "40979a4f60a3c80352bda255033b2cc2000db614425f8e76ed46068c5a7f208c",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/014.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00014.png",
+      "bytes": 51445,
+      "sha256": "aec27ab002b5f544779cf1a40309b41f8ad2dc5475dc3d96b86339f92370b70d",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildSuccess/015.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Success_00015.png",
+      "bytes": 44664,
+      "sha256": "93dadbc624fba218ac5009e3a25d4bd1868801ebfd4c3b9e87b3d6fede6d52f1",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/000.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00000.png",
+      "bytes": 76426,
+      "sha256": "d83489cba4edf709d18dd686324a3b0c45f383d3806110dc65af3c2ede02c48d",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/001.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00001.png",
+      "bytes": 72181,
+      "sha256": "fb30a4e62b40e5297b518a2efd756f882071c9ec3c0cf27b389680fdf6686198",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/002.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00002.png",
+      "bytes": 66199,
+      "sha256": "a285a3121d07dc603b89f65c9dc81db058d3f579d9567bba19309d9b481731b4",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/003.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00003.png",
+      "bytes": 54341,
+      "sha256": "5828dcf6e33ffe01f795ef236e5f20d86b0785addc32f675851c15d64f018427",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/004.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00004.png",
+      "bytes": 39394,
+      "sha256": "d9eb971d9ee479e4f2fc802f18411b03e332c40f1fedea8b0e973dac52f1ba72",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/005.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00005.png",
+      "bytes": 30805,
+      "sha256": "6912e6b33afa81ab4b3e3c57ac0ab21347522cbc5a23d2d09ddba96e2b297de5",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/006.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00006.png",
+      "bytes": 29429,
+      "sha256": "bf8b659d02ff1b46d53c310667bf7d8bc40ca1085365eae7cdb51e8ff94150be",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/007.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00007.png",
+      "bytes": 30564,
+      "sha256": "8fe7fe2f544654224522818cd6273c42c269b8ac88f4e6ce8da358a75b5ee9b7",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/008.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00008.png",
+      "bytes": 31622,
+      "sha256": "a93ab88f4d0631886711f336dcc2a7b444055b3b2e72dda0841561b82b64144c",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/009.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00009.png",
+      "bytes": 34311,
+      "sha256": "b24d033c42057e7697e699cd38be9cc7f599720cd4a7c97149ecd96c5343582b",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/010.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00010.png",
+      "bytes": 35341,
+      "sha256": "5e62ebb0a1e73bfaaa6b6c43c5c243c399a6a0e5c390c642b5c09b23ee1b6cb1",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/011.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00011.png",
+      "bytes": 36095,
+      "sha256": "b60c545671ba19f0281b858e27eb10a034c4c0e418fd5fd4c748b154bac5ba7d",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/012.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00012.png",
+      "bytes": 35632,
+      "sha256": "fc8571a82e2c7a91ae12e146c75ced904343e4343dd519f3bf361ecb81c39b2d",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/013.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00013.png",
+      "bytes": 36005,
+      "sha256": "bac421bf9c2a59ca32138af814fdbbf7c501d4d644aae21503bbf07286112acf",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/014.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00014.png",
+      "bytes": 38358,
+      "sha256": "b80f1ecb013fd1ca8514546cc592d65ddb27c21826b293ed66a79b74b2d31c12",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/015.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00015.png",
+      "bytes": 38772,
+      "sha256": "debcf0c87684312fd465bb47ec67667ea1e07fe0392cbe9ad7327232b88a5f00",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/016.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00016.png",
+      "bytes": 41341,
+      "sha256": "5cdef64aa503ebeb5343b4e261b11a10101ca7c64597d6f45bf2279f48496921",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/017.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00017.png",
+      "bytes": 42971,
+      "sha256": "08953cbdc3557e45a1487bceefa739c5f40b16823c5601671afe04af8016e7c6",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/018.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00018.png",
+      "bytes": 44087,
+      "sha256": "9ab7a1ce065e5f37521c6319ed5d194e7710a307356f7b407643d29852b3cc1d",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/019.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00019.png",
+      "bytes": 45812,
+      "sha256": "7607b78651fc77ff29461a3a4751c539484c80c68e11f45a278245723bf922de",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/020.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00020.png",
+      "bytes": 46986,
+      "sha256": "45413601481530b265021563c12bc418e650d66d274d7a750b076f2a307dbebf",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/021.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00021.png",
+      "bytes": 45945,
+      "sha256": "74294ddf89455d39a5418e39ce4197764d5ba6458322bb652215ba6acf6e3f0f",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/022.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00022.png",
+      "bytes": 45269,
+      "sha256": "31693336606dd9ac778b0c809f8b57b166039d2e68842bc244bbc9364201d2d8",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/023.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00023.png",
+      "bytes": 44697,
+      "sha256": "06b8127d04adee593b272fee5fe34e5b20124e5f9c24eb490c6359b5f929cab4",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/024.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00024.png",
+      "bytes": 42959,
+      "sha256": "45b54bbb79217edb4f486a7f61d01221389a6c42ef41ab35f4ebacbb66796417",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/025.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00025.png",
+      "bytes": 40790,
+      "sha256": "032af917edbb6bbcfb5bbcdbf7696bc93f318a724521495d0ad8e73161c60ceb",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/026.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00026.png",
+      "bytes": 39089,
+      "sha256": "65571980f0e080aa50dbf2c2bf5d45d72dbdecb876a6414931f78e7f2ccd7747",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/027.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00027.png",
+      "bytes": 34800,
+      "sha256": "9ff5381f924706d60b9d8dac45956ccd047d230e67c84c2c1f68a86d687d54b7",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/028.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00028.png",
+      "bytes": 27691,
+      "sha256": "018354362f76110641aa68afa5b026b38b3d38f6cc0f2faf9dafdb8b74881a3b",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/effects/wildFail/029.png": {
+      "source": "textures/G145_Dracula_WildTrans_Icon_Out_Fail_00029.png",
+      "bytes": 20468,
+      "sha256": "a74484257ee88547c45b59c908d9439ba93cec4208e3fe0113b20290958ef468",
+      "width": 480,
+      "height": 480
+    },
+    "/bloodmoon/character/base-idle.png": {
+      "source": "videos/Game145_NG_Dracula_Idle.mp4",
+      "operation": "first RGB24 decoded frame; top half RGB, bottom half luminance alpha",
+      "width": 512,
+      "height": 728,
+      "bytes": 180865,
+      "sha256": "e4f1e60d71c124a2617cbecd65096afbca5fbd2040dbe6b3e46dc61172cf372d"
+    },
+    "/bloodmoon/character/free-idle.png": {
+      "source": "videos/Game145_FG_Dracula_Idle.mp4",
+      "operation": "first RGB24 decoded frame; top half RGB, bottom half luminance alpha",
+      "width": 512,
+      "height": 728,
+      "bytes": 210961,
+      "sha256": "c5a8b7d21523e7441e29be1fd23135125a56376495c19a461ed966ca95df6b75"
+    }
+  }
+}

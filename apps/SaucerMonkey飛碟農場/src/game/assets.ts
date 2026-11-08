@@ -144,6 +144,13 @@ export default {
 		src: new URL('../../assets/sprites/sushiFx/fx_glow.png', import.meta.url).href,
 		preload: true,
 	},
+	// a true soft-falloff puff (alpha smoothstep to the rim, 2026-11-06): fxGlow
+	// is a HARD disc, which read as rough dots wherever it was used as dust/bloom
+	fxSoft: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/sushiFx/fx_soft.png', import.meta.url).href,
+		preload: true,
+	},
 	fxStar: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/sushiFx/fx_star.png', import.meta.url).href,
@@ -533,6 +540,12 @@ export default {
 	night_ship_circle: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/saucerNight/ship_circle.png', import.meta.url).href,
+		preload: true,
+	},
+	// the cow that wanders the field (design/build_bg_cows.py, BgCows.svelte)
+	night_cow: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/saucerNight/cow_walk.png', import.meta.url).href,
 		preload: true,
 	},
 	night_soft_glow: {

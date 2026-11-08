@@ -79,6 +79,27 @@ const wave = (t: number, period: number, phase = 0) => Math.sin((2 * Math.PI * t
 /** the gust after a win: a kick that dies away */
 const gust = (env: BgEnv, hz: number, decay: number) => (env.gustT < 0 ? 0 : flick(env.gustT, 0, hz, decay));
 
+// THE DRAUGHT (2026-11-01, as Putt / Saucer's wind field; user: the
+// background should move more). Every DRAUGHT_EVERY ms a breath of air comes
+// through the open hall from the left and crosses it in DRAUGHT_CROSS ms: the
+// left lanterns and bamboo lean first, the right ones last; it leans in
+// quickly and lets go slowly. One wind for everything, so it reads as
+// weather, not as a dozen unrelated wobbles.
+const DRAUGHT_EVERY = 6400;
+const DRAUGHT_FIRST = 900;
+const DRAUGHT_LEN = 2600;
+const DRAUGHT_CROSS = 1100;
+export const draught = (t: number, x: number) => {
+	const local = t - DRAUGHT_FIRST - (x / BG_CANVAS[0]) * DRAUGHT_CROSS;
+	if (local < 0) return 0;
+	const tau = local % DRAUGHT_EVERY;
+	if (tau > DRAUGHT_LEN) return 0;
+	const u = tau / DRAUGHT_LEN;
+	return u < 0.3 ? smoothstep(u / 0.3) : 1 - smoothstep((u - 0.3) / 0.7);
+};
+/** keeps a summed angle inside a part's measured tear limit, softly */
+const soft = (deg: number, limit: number) => limit * Math.tanh(deg / limit);
+
 const spec = (
 	name: string,
 	rect: Rect,
@@ -195,11 +216,16 @@ const lanternPair = (name: string, rect: Rect, ls: [Lantern, Lantern], ribbons: 
 			for (const r of ribbons)
 				bone(rig, pose, r.name).angle = RIBBON_DEG * (wave(env.t, r.period, r.phase) + 0.4 * wave(env.t, r.period * 0.43, r.phase + 1.3)) + 1.2 * RIBBON_DEG * gust(env, 0.9, 1);
 			for (const l of ls) {
-				const sway = SWAY_DEG * wave(env.t, l.period, l.phase) + GUST_DEG * gust(env, 0.7 + l.phase * 0.05, 0.8);
-				bone(rig, pose, l.name).angle = sway;
+				// leans downwind (to the right: +angle swings the body right) in a draught
+				const d = draught(env.t, l.cx);
+				const sway = SWAY_DEG * wave(env.t, l.period, l.phase) + GUST_DEG * gust(env, 0.7 + l.phase * 0.05, 0.8) - DRAUGHT_DEG * d;
+				bone(rig, pose, l.name).angle = soft(sway, 3.8);
 				// the tassel trails the body, a quarter of a swing late and further
-				bone(rig, pose, `${l.name}Tassel`).angle =
-					-1.6 * SWAY_DEG * wave(env.t - l.period / 4, l.period, l.phase) - 1.4 * GUST_DEG * gust({ ...env, gustT: env.gustT - 180 }, 0.9, 0.9);
+				const dl = draught(env.t - 260, l.cx);
+				bone(rig, pose, `${l.name}Tassel`).angle = soft(
+					-1.6 * SWAY_DEG * wave(env.t - l.period / 4, l.period, l.phase) - 1.4 * GUST_DEG * gust({ ...env, gustT: env.gustT - 180 }, 0.9, 0.9) + 3.4 * dl,
+					9.5,
+				);
 			}
 			return pose;
 		},
@@ -255,10 +281,10 @@ const scroll = (name: string, rect: Rect, x0: number, x1: number, tasselX: numbe
 		(rig, env) => {
 			const pose = restPose(rig);
 			const paper = bone(rig, pose, `${name}Paper`);
-			paper.angle = 0.35 * wave(env.t, period, phase) + 0.45 * gust(env, 0.6, 1);
+			paper.angle = soft(0.35 * wave(env.t, period, phase) + 0.45 * gust(env, 0.6, 1) - 0.3 * draught(env.t, cx), 0.76);
 			// a breath through the paper: it bellies out and back
 			paper.across = 1 + 0.004 * wave(env.t, period * 0.7, phase + 1);
-			bone(rig, pose, `${name}Tassel`).angle = -3 * wave(env.t - period / 5, period, phase) - 3.5 * gust({ ...env, gustT: env.gustT - 220 }, 0.8, 0.9);
+			bone(rig, pose, `${name}Tassel`).angle = soft(-3 * wave(env.t - period / 5, period, phase) - 3.5 * gust({ ...env, gustT: env.gustT - 220 }, 0.8, 0.9) + 3 * draught(env.t - 240, tasselX), 7.6);
 			return pose;
 		},
 		4,
@@ -292,9 +318,15 @@ const plant = (name: string, rect: Rect, cells: [number, number], root: Point, l
 		{ [`${name}Leaves`]: { pos: deg * 2.6, neg: deg * 2.6 }, [`${name}Tips`]: { pos: deg * 3.2, neg: deg * 3.2 } },
 		(rig, env) => {
 			const pose = restPose(rig);
-			const breeze = wave(env.t, period, phase) + 0.35 * wave(env.t, period * 0.37, phase + 2) + 1.2 * gust(env, 0.55, 0.7);
-			bone(rig, pose, `${name}Leaves`).angle = deg * breeze;
-			bone(rig, pose, `${name}Tips`).angle = deg * 1.2 * (wave(env.t - period / 6, period, phase) + 0.5 * wave(env.t, period * 0.29, phase + 1) + gust({ ...env, gustT: env.gustT - 160 }, 0.8, 0.9));
+			const d = draught(env.t, root[0]);
+			const breeze = wave(env.t, period, phase) + 0.35 * wave(env.t, period * 0.37, phase + 2) + 1.2 * gust(env, 0.55, 0.7) + 1.1 * d;
+			bone(rig, pose, `${name}Leaves`).angle = soft(deg * breeze, deg * 2.5);
+			// the tips shiver while the draught passes, and trail it
+			const dt = draught(env.t - 200, root[0]);
+			bone(rig, pose, `${name}Tips`).angle = soft(
+				deg * 1.2 * (wave(env.t - period / 6, period, phase) + 0.5 * wave(env.t, period * 0.29, phase + 1) + gust({ ...env, gustT: env.gustT - 160 }, 0.8, 0.9) + 1.2 * dt + 0.25 * dt * Math.sin(env.t / 110)),
+				deg * 3.1,
+			);
 			return pose;
 		},
 	);
@@ -321,8 +353,10 @@ export const BG_PROPS: BgPropSpec[] = [BG_LANTERNS_L, BG_LANTERNS_R, BG_SCROLL_L
 export const BG_PROPS_FEATURE: BgPropSpec[] = [BG_FEATURE_LANTERNS_L, BG_FEATURE_LANTERNS_R, BG_SCROLL_L, BG_SCROLL_R, BG_BAMBOO_L, BG_BAMBOO_R, BG_PLUM, BG_PALM];
 
 // set from the measured limits
-const SWAY_DEG = 1.6;
+const SWAY_DEG = 1.9;
 const FADE_IN_MS = 1500;
 const RIBBON_DEG = 1.4;
 const GUST_DEG = 2.4;
+/** degrees a lantern leans in a full draught */
+const DRAUGHT_DEG = 2.2;
 

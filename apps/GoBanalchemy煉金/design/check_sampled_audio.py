@@ -53,7 +53,7 @@ for name in sorted(expected):
   tail=db(np.sqrt(np.mean(a[-round(.05*SR):]**2)));assert tail<-42,(name,tail)
   if p.stem in baseline and p.stem not in ['btn','reel_stop']:
    target=baseline[p.stem]['frames']/baseline[p.stem]['sample_rate'];assert abs(info.duration-target)<=1/SR,(name,info.duration,target)
-  if p.stem in ['reel_tension','win_rollup_loop']:assert np.max(np.abs(a[0]-a[-1]))<.0001
+  if p.stem in ['reel_tension','reel_tension_beat','reel_tension_fg','win_rollup_loop','win_rollup_fg']:assert np.max(np.abs(a[0]-a[-1]))<.0001
   active=np.flatnonzero(np.max(np.abs(a),axis=1)>.005);assert len(active) and active[0]/SR<.008,(name,'late onset')
   report[name]=dict(true_peak=peak(a),tail_50ms_db=tail)
 assert len({hashlib.sha256((LIVE/f'reel_stop_{i}.wav').read_bytes()).hexdigest() for i in range(1,6)})==5

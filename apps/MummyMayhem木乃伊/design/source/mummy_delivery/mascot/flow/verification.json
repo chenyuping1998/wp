@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "bodyMeshesExceptFaceAndOtherActionsUnchanged": true,
+  "refinedActions": [
+    "wave",
+    "cheer"
+  ],
+  "clothStrips": 4,
+  "frames": 3080,
+  "minSignedTriangleArea": 11.74331859126687,
+  "maxAnchorError": 0.000016989380198343094,
+  "loopSeamMaxError": 0.000030517578125,
+  "pointHeldClothMotion": 14.439773559570312
+}

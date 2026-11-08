@@ -117,3 +117,19 @@
 - 共用工具 `wp/tools/build_cast_mesh.py`：起笑時間與身體抖動寬度、張嘴停留改成跟拍距走（`min(原值, 依拍距)`），Saucer 重建後 monkey.json 雜湊不變。
 - **Turbo 改成只亮閃電**：`activeByIconOnly: ['turbo']`（同飛碟）——開啟時圓盤維持未開啟的綠色，閃電內部填滿奶油白；Turbo 2 前閃電的切口色改為綠盤色 0x3e7a45（print skin）。Autoplay 仍是藍色亮盤。
 - `pnpm preview:build` 通過（`design/build_20261019_laugh_turbo.log`，型別 14 項同基準）；未上機。
+
+## 2026-11-06 音效重做＋節拍同步（Claude）
+
+使用者：「動態跟動畫跟音效節奏方面要更強」。盤點發現音效是最大弱點：舊 `generate_putt_audio.py` 把大部分 cue 都丟進同一個 fallback 分支（190Hz 木頭聲＋雜訊＋三個撥弦），警鈴、門、期待、計數、收集等十幾支**頻譜一模一樣**；停輪與撞擊 80% 以上能量在 400Hz 以下，手機喇叭等於沒聲；五軸停輪共用一個 `<audio>` 元件，後一軸會把前一軸切掉。
+
+- **新產生器** `design/generate_putt_audio_v2.py`＋`design/putt_dsp.py`（純 numpy：模態合成、FFT 濾波、逐週期 Karplus-Strong、加法銅管、逐拍手合成的掌聲）。每支 cue 各自設計：推桿 tink、球落地 clack、空心球洞＋球在洞裡彈跳、草地滾動（週期雜訊、無縫）、會館鐘、銅管樂隊號角、群眾 ooh／掌聲、遠處鳥叫。全部 C 大調／C 五聲音階。響度改用「最響 100ms RMS」對齊＋軟限幅（打擊聲峰值因子高，舊的用峰值對齊會小 4dB）；需要被聽到的 cue 守門 ≥55% 能量在 400Hz 以上（腳本內建，不過就 exit 1）。舊檔備份在 `design/source/putt/audio/gen1_20261106/`。`audio:build` 已改成 v2＋install_laugh_voice（笑聲、voice_hup 不動）。
+- **BGM 分軌**：base 120bpm、FG 140bpm，各 16 小節，各出 bed＋groove 兩支等長 MP3（`bgm_*_groove.mp3`）。Sound.svelte 在同一個 AudioContext 時間點啟動兩軌；groove 增益是自適應的：靜止 0.32（FG 0.62）、按 Spin／轉動／期待／收集／中獎／大獎牌時升到 1（τ 0.05s），全部結束後停 0.9s 再回落（τ 0.55s）。本機試玩殼量到兩軌同 `when`、解碼長度剛好 32.000s。
+- **播放引擎**：一次性音效改 Web Audio buffer（mount 時全部解碼），POLY 名單可疊音（停輪、球、prize、scatter、win_wake…），其餘同名互切；每 cue 上限 6 聲部。靜音即時、每手淡出（SPIN_SCOPED）都涵蓋 voice。AudioContext 未 running 時走舊的 `<audio>` 路徑（避免解鎖瞬間佇列一起爆出）。
+- **節拍時鐘** `src/game/musicClock.ts`：Sound 登記 BGM 起點與 bpm；`msToNextGrid`／`nextGridTime`／`secondsSinceBeat`／`barPhase`。沒有音樂時全部回「無格線」，呼叫端照舊時間走。
+- **接上節拍的地方**：
+  - 停輪五軸音高改 C D E G A（rate 1／1.1225／1.2599／1.4983／1.6818；原本 0.92–1.3 落在音和音之間）。prize 進袋 `coin_in` 也走五聲音階。
+  - `winInfo` 先等到下一個十六分音符（≤125ms）才開始；WinWays 逐軸亮起間隔＝十六分音符（FG 140bpm 107ms；fast／turbo 為三十二分），每亮一軸播一個 `win_wake` 音符沿五聲音階往上。待機重播（utils.ts `replay: true`）不出聲。
+  - 計數：`presentDuration ≥ 1s` 的金額滾動會起 `count_loop`（一小節 120bpm 木魚＋沙鈴），**依音樂的小節相位與速度起播**（FG 會 ×140/120），數完響 `count_end`；按掉／換手會停。金額字每拍一個 1→1.06 的脈衝（只動數字，牌匾不動）。
+  - 期待鼓滾 `reel_tension` 也是一小節循環，同樣相位對齊。
+- **動態**：停輪框震 0.1＋0.025×軸序（越後面越重）；S 落地框震隨個數增強（0.28→0.52）；W 落地 0.3。turbo 主遊戲照舊不震。
+- 驗證：`pnpm build` 通過（`design/build_20261106_audio_rhythm.log`，型別 14 項同基準）。本機假 RGS（launch.json `puttplay`、port 4193、`build-playtest/` 加了 `qa_rhythm_probe.js`，不出貨）實際轉過：停輪五個音高與疊音、中獎五音約 125ms 間隔、groove 起落、大獎計數循環 offset 對齊小節、收尾鐘，console 無錯誤。瀏覽器窗格是隱藏狀態，rAF/計時被節流，**停輪間隔與牌匾 380ms 時點不能用那次量測判斷**。**沒有人耳聽過**：音色、混音比例、BGM 旋律好不好聽需要上機確認。

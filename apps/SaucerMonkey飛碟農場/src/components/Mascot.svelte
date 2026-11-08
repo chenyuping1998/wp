@@ -513,10 +513,15 @@
 		// in anyway — the tease runs during the spin — but a big win landing on the
 		// spin before would start a cheer, and the visor would be left glowing in
 		// mid-air where his head used to be.
+		// 2026-11-06: the tell is acted, not lit. The three translucent boxes
+		// drawn over his helmet read as a rough glow (and sat at the REST pose
+		// while the idle breathed under them) — he now pricks up instead: the
+		// 'alert' reaction, with a little sensor blip.
 		mascotGoggleTease: () => {
 			if (!placement) return;
 			if (animationName !== 'idle') return;
-			startTease();
+			react('alert');
+			context.eventEmitter.broadcast({ type: 'soundTeaseBlip' });
 		},
 
 		mascotThrow: () => {

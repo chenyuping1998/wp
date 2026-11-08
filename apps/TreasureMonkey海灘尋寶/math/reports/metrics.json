@@ -1,0 +1,106 @@
+{
+  "game": "TreasureMonkey",
+  "seed": 20261023,
+  "modes": {
+    "bonus": {
+      "books": 100000,
+      "rtp": 0.96,
+      "meanBaseBetX": 96.0,
+      "hitRate": 0.9975970706786329,
+      "profitProbability": 0.10689012123914199,
+      "lossProbability": 0.89282633303353,
+      "breakEvenProbability": 0.000283545727328,
+      "stdDevCostUnits": 4.592685952145671,
+      "medianCostUnits": 0.17,
+      "p90CostUnits": 1.064,
+      "p99CostUnits": 18.434,
+      "maxWinBaseBetX": 20000.0,
+      "maxWinProbability": 1e-06,
+      "p5000BaseBetX": 0.003597573799502,
+      "p10000BaseBetX": 1e-06,
+      "maxSingleBookProbability": 0.001218383554387,
+      "effectiveBooks": 46880.385664670364,
+      "calibration": {
+        "lambda": 1.2202244258623112
+      }
+    },
+    "bonus_hits": {
+      "books": 100000,
+      "rtp": 0.96,
+      "meanBaseBetX": 480.0,
+      "hitRate": 0.9975177101877462,
+      "profitProbability": 0.163431874454169,
+      "lossProbability": 0.836461212777288,
+      "breakEvenProbability": 0.00010691276854299999,
+      "stdDevCostUnits": 3.0657054207984293,
+      "medianCostUnits": 0.1392,
+      "p90CostUnits": 1.934,
+      "p99CostUnits": 16.43,
+      "maxWinBaseBetX": 20000.0,
+      "maxWinProbability": 1e-05,
+      "p5000BaseBetX": 0.019911231478772,
+      "p10000BaseBetX": 0.007426720888725999,
+      "maxSingleBookProbability": 0.000277562050614,
+      "effectiveBooks": 68121.40964016534,
+      "calibration": {
+        "lambda": 0.957622981510321
+      }
+    },
+    "bonus_epic": {
+      "books": 100000,
+      "rtp": 0.96,
+      "meanBaseBetX": 960.0000000000001,
+      "hitRate": 0.999976041466222,
+      "profitProbability": 0.24153101193001597,
+      "lossProbability": 0.758440237840839,
+      "breakEvenProbability": 2.8750229145e-05,
+      "stdDevCostUnits": 1.8315846832458218,
+      "medianCostUnits": 0.3338,
+      "p90CostUnits": 2.3672,
+      "p99CostUnits": 9.7164,
+      "maxWinBaseBetX": 20000.0,
+      "maxWinProbability": 2.0000000152e-05,
+      "p5000BaseBetX": 0.03524893497046001,
+      "p10000BaseBetX": 0.0093807052804,
+      "maxSingleBookProbability": 1.1979268149e-05,
+      "effectiveBooks": 96272.76693326067,
+      "calibration": {
+        "lambda": -0.3125399976335994
+      }
+    },
+    "base": {
+      "books": 400000,
+      "rtp": 0.96,
+      "meanBaseBetX": 0.9599999999999992,
+      "hitRate": 0.4579970500376081,
+      "profitProbability": 0.1554240697919171,
+      "lossProbability": 0.7959368027317195,
+      "breakEvenProbability": 0.048639127476359026,
+      "stdDevCostUnits": 33.60583837493771,
+      "medianCostUnits": 0.0,
+      "p90CostUnits": 1.6,
+      "p99CostUnits": 6.0,
+      "maxWinBaseBetX": 20000.0,
+      "maxWinProbability": 1.0468607e-07,
+      "p5000BaseBetX": 1.3614403769e-05,
+      "p10000BaseBetX": 1.431666663e-06,
+      "maxSingleBookProbability": 1.33315919e-05,
+      "effectiveBooks": 100490.93530445878,
+      "calibration": {
+        "soldier": {
+          "probability": 0.0026857142857142856,
+          "meanBaseBetX": 96.44192232762325
+        },
+        "capo": {
+          "probability": 0.00014285714285714287,
+          "meanBaseBetX": 480.395641327323
+        },
+        "don": {
+          "probability": 2.857142857142857e-05,
+          "meanBaseBetX": 960.3445585898803
+        },
+        "ordinaryLambda": 0.04774552795312213
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-01",
+  "full_build": "passed",
+  "final_bundle": "passed",
+  "ui_and_motion_tests": "passed",
+  "dev_component_http": "200",
+  "browser_visual_review": "not performed",
+  "existing_type_baseline_errors": 20,
+  "source_sha256": {
+    "src/components/PresentationDirector.svelte": "e9f4919301c44512494cbb082c7bc8bfb84b03f3e76469c86391070d074f31e3",
+    "src/components/ReelMotion.svelte": "bccd5a6e9c46dabc399a9733f625e089df9e848cb36c270c6aa71d6536b68fc2",
+    "src/components/ui/InfoIndex.svelte": "960db7501abdf9735b0a542bdb2bdeb2f2f35ce1fb73eca67c1e2b5acedcba9a",
+    "src/components/ui/InfoShell.svelte": "c918e7137d6ca58dfac064ce4f127db820a1bbf3c06148f0df0491b768f5b072",
+    "src/components/ui/InfoPopup.svelte": "979d4df4e2a2943a3d8d5e049d073c4ea30d6aeafc8452b519b1d28b7372bf55",
+    "src/components/ui/ModalPayTable.svelte": "28ea8553863ebd09d46a4d480c7a6fbf40ae4e8f646d1cb515ed5145a5aa76b6",
+    "src/game/infoV2.css": "86ad9efbde60344c029f3f9d4b566adf2142e7c2005d847cfd7daba529151392",
+    "src/game/presentation.svelte.ts": "34ebf56dc25b83a9899fe115a1f68fc46320d3235e3d85bd876932ba5a993c44"
+  }
+}

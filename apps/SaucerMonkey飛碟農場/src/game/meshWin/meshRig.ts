@@ -378,11 +378,29 @@ export const boneFrame = (rig: Rig, pose: Pose, feetY: number, boneName: string,
 
 export type Ease = 'linear' | 'in' | 'out' | 'inOut' | 'back' | 'hold';
 
+/** y of the cubic bezier (0,0)-(0.25,0)-(0.75,1)-(1,1) at x = t, by Newton on x(s) */
+const spineBezier = (t: number) => {
+	if (t <= 0) return 0;
+	if (t >= 1) return 1;
+	const x = (s: number) => 0.75 * (1 - s) ** 2 * s + 2.25 * (1 - s) * s * s + s ** 3;
+	const dx = (s: number) => 0.75 * (1 - s) * (1 - 3 * s) + 2.25 * s * (2 - 3 * s) + 3 * s * s;
+	let s = t;
+	for (let i = 0; i < 6; i++) {
+		const d = dx(s);
+		if (Math.abs(d) < 1e-6) break;
+		s = Math.max(0, Math.min(1, s - (x(s) - t) / d));
+	}
+	return 3 * (1 - s) * s * s + s ** 3;
+};
+
 const EASES: Record<Ease, (t: number) => number> = {
 	linear: (t) => t,
 	in: (t) => t * t * t,
 	out: (t) => 1 - (1 - t) ** 3,
-	inOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2),
+	// Spine's default handles [0.25, 0, 0.75, 1] (slot-motion-recipes §核心觀念 4): the cubic inOut this used to be
+	// covers only 11% of the move by 30% of the time (Spine 24%), so every keyed move looked mechanical — slow
+	// start, then a lurch (2026-11-06)
+	inOut: (t) => spineBezier(t),
 	back: (t) => {
 		const s = 1.70158, u = t - 1;
 		return 1 + u * u * ((s + 1) * u + s);
@@ -588,14 +606,19 @@ export const turnAbout = (r: RigidPose, centre: Point, feetY: number) => {
  *  for the drop shadow. Times in ms, height in canvas px. */
 export type LeapBeats = { crouch: number; rise: number; fall: number; land: number; hop2: number; done: number };
 export const leap = (t: number, b: LeapBeats, height: number): { rigid: RigidPose; air: number } => {
-	const up = track(t, [[0, 0], [b.crouch, 0], [b.rise, 1, 'out'], [b.fall, 1], [b.land, 0, 'in']]);
+	// 2026-11-06 (user: 動態要更強): no dead hang at the top. It used to reach the peak at `rise` and sit there,
+	// rigid, until `fall` — 430ms of a picture held in the air. Now it keeps floating up a touch past the launch
+	// (the act plays at the apex), drifts back, and is pulled down by gravity into a deeper landing squash.
+	const mid = (b.rise + b.fall) / 2;
+	const up = track(t, [[0, 0], [b.crouch, 0], [b.rise, 1, 'out'], [mid, 1.1], [b.fall, 0.97], [b.land, 0, 'in']]);
 	const hop2 = bump(t, b.land + 40, b.hop2);
-	const air = Math.max(0, Math.min(1, up + 0.3 * hop2));
+	const lift = up + 0.36 * hop2;
+	const air = Math.max(0, Math.min(1, lift));
 	const squash =
-		0.13 * bump(t, 20, b.crouch + 70) +
-		0.16 * bump(t, b.land - 40, b.land + 120) +
-		0.07 * bump(t, b.hop2 - 30, b.hop2 + 110);
-	const stretch = 0.08 * bump(t, b.crouch, b.rise) + 0.04 * bump(t, b.fall, b.land);
+		0.16 * bump(t, 20, b.crouch + 70) +
+		0.2 * bump(t, b.land - 40, b.land + 120) +
+		0.08 * bump(t, b.hop2 - 30, b.hop2 + 110);
+	const stretch = 0.1 * bump(t, b.crouch, b.rise) + 0.06 * bump(t, b.fall + 40, b.land);
 	return {
 		rigid: {
 			sx: 1 + squash * 0.75 - stretch * 0.5,
@@ -603,7 +626,7 @@ export const leap = (t: number, b: LeapBeats, height: number): { rigid: RigidPos
 			rot: 0,
 			pop: 1 + 0.015 * up,
 			dx: 0,
-			dy: -height * air,
+			dy: -height * Math.max(0, lift),
 		},
 		air,
 	};

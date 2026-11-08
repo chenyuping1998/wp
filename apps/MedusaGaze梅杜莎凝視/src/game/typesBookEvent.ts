@@ -146,6 +146,47 @@ type BookEventMedusaThrow = {
 	mult: number;
 	baseWin: number;
 	totalWin: number;
+	/** Free game only: Serpent Ladder snake count after this throw. */
+	snakes?: number;
+};
+
+/**
+ * Petrify Gaze (SPEC 3-4), base game only: right after the reveal these cells
+ * (padded rows, never an Aegis) become stones `ST`. Stones never pay and fall
+ * with their column during the tumbles.
+ */
+type BookEventPetrify = {
+	index: number;
+	type: 'petrify';
+	positions: Position[];
+};
+
+/**
+ * The tumble chain stopped with stones on the board: every stone becomes
+ * `symbol` (the same one for all), then a new evaluation/tumble chain follows.
+ * `positions` are where the stones are NOW (they have fallen since petrify).
+ */
+type BookEventStoneReveal = {
+	index: number;
+	type: 'stoneReveal';
+	symbol: SymbolName;
+	positions: Position[];
+};
+
+/**
+ * Serpent Ladder (SPEC 3-5). Sent when a level is reached (spinsAdded > 0, and
+ * totalFs already includes them) and once at free-game entry for the super buy,
+ * which starts above level 1 (spinsAdded 0). `floor` is the smallest orb Medusa
+ * can throw from now on.
+ */
+type BookEventSerpentLevel = {
+	index: number;
+	type: 'serpentLevel';
+	level: number;
+	snakes: number;
+	floor: number;
+	spinsAdded: number;
+	totalFs: number;
 };
 
 /** 4+ Aegis on the board when the chain ended: their own pay, never multiplied. */
@@ -176,6 +217,9 @@ export type BookEvent =
 	| BookEventUpdateTumbleWin
 	| BookEventTumbleBoard
 	| BookEventMedusaThrow
+	| BookEventPetrify
+	| BookEventStoneReveal
+	| BookEventSerpentLevel
 	| BookEventScatterWin
 	| BookEventSetTotalWin
 	| BookEventFreeSpinTrigger

@@ -1,0 +1,17 @@
+{
+  "archives": [
+    {
+      "file": "MedusaGaze_frontend_20261107.zip",
+      "bytes": 53051350,
+      "sha256": "0c16b7d39f86bd2649ffb73fd7ddd37901555b2068e8a2acc193db90fc0f7dda"
+    },
+    {
+      "file": "MedusaGaze_sources_20261107.zip",
+      "bytes": 87024135,
+      "sha256": "fa45c25317862b381902074ce3d1b10355c6308b7dbf263a233fc070688e31cf"
+    }
+  ],
+  "protectedEventHandlerSha256": "a438dcda201673a0fbe0de19d765f7768fcc6061117cba7fe57a7a73240451a5",
+  "typeErrors": 0,
+  "typeWarnings": 1
+}

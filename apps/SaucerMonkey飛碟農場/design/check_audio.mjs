@@ -66,7 +66,7 @@ for (const [name, file] of files) {
 // ── the names the code actually plays ───────────────────────────────────────
 const played = new Set();
 const dynamic = new Set();
-for (const call of src.matchAll(/play(?:CnSfx|CnLoop)\(\s*(`[^`]*`|'[^']*')/g)) {
+for (const call of src.matchAll(/play(?:CnSfxLayered|CnSfx|CnLoop)\(\s*(`[^`]*`|'[^']*')/g)) {
 	const raw = call[1];
 	if (raw.startsWith('`') && raw.includes('${')) {
 		// e.g. `voice_${name}` — keep the literal prefix and check that at least

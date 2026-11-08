@@ -185,7 +185,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 	},
 	winInfo: async (bookEvent: BookEventOfType<'winInfo'>) => {
-		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_winlevel_small' });
+		// No arpeggio here any more (2026-11-06): the wake itself plays a rising
+		// note per reel on the bed's grid (WinWays, live) — the old 1.2s gliss
+		// fired on top of it, off the beat, and said nothing about the board.
 
 		// One entry per winning SYMBOL, not per line — a ways game has no lines to
 		// enumerate. `positions` already lists every cell that took part, which is
@@ -204,7 +206,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// between symbols, which would otherwise hang waiting for a second
 		// completion).
 		const isFreeGame = stateGame.gameType === 'freegame';
-		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins: winLineData, fast: isFreeGame });
+		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins: winLineData, fast: isFreeGame, live: true });
 
 		eventEmitter.broadcast({ type: 'winLinesHide' });
 

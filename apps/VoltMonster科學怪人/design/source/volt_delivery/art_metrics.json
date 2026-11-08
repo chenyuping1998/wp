@@ -1,0 +1,78 @@
+{
+  "passed": true,
+  "symbols": {
+    "h1": {
+      "central60Mean": 93.925,
+      "bright150Coverage": 0.21657
+    },
+    "h2": {
+      "central60Mean": 76.714,
+      "bright150Coverage": 0.11396
+    },
+    "h3": {
+      "central60Mean": 90.03,
+      "bright150Coverage": 0.17657
+    },
+    "h4": {
+      "central60Mean": 78.506,
+      "bright150Coverage": 0.13655
+    },
+    "w": {
+      "central60Mean": 90.018,
+      "bright150Coverage": 0.20065
+    },
+    "s": {
+      "central60Mean": 94.12,
+      "bright150Coverage": 0.17533
+    },
+    "l1": {
+      "central60Mean": 66.375,
+      "bright150Coverage": 0.0
+    },
+    "l2": {
+      "central60Mean": 66.24,
+      "bright150Coverage": 0.0
+    },
+    "l3": {
+      "central60Mean": 59.577,
+      "bright150Coverage": 0.0
+    },
+    "l4": {
+      "central60Mean": 71.116,
+      "bright150Coverage": 0.0
+    },
+    "l5": {
+      "central60Mean": 55.955,
+      "bright150Coverage": 0.0
+    }
+  },
+  "thumbnail": {
+    "thumb": {
+      "mean": 115.434,
+      "dark10Mean": 45.367,
+      "below32": 0.0129
+    },
+    "cover_16x9": {
+      "mean": 125.119,
+      "dark10Mean": 51.713,
+      "below32": 0.008
+    }
+  },
+  "backgrounds": {
+    "base": {
+      "objects": 7,
+      "maxCompositePixelError": 0,
+      "minLoopMs": 17000
+    },
+    "feature": {
+      "objects": 6,
+      "maxCompositePixelError": 0,
+      "minLoopMs": 16000
+    },
+    "hold": {
+      "objects": 6,
+      "maxCompositePixelError": 0,
+      "minLoopMs": 16000
+    }
+  }
+}

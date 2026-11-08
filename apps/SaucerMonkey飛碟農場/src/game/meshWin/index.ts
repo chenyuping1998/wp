@@ -28,6 +28,8 @@ export { MESH_LANDS, LAND_MS, IDLES, IDLE_WEIGHT, P_PICK, P_PICK_MS, P_FLY_MS, p
 // The things that hang and grow in the backgrounds (BgProps.svelte).
 import { BG_PROPS } from './bgProps';
 export { BG_PROPS };
+// (The field cows, bgCows.ts, have their own gate — design/cows/check_cow.mjs — that judges folds on the drawn
+// pixels only: their legs swing across transparent gaps, which this gate's any-inked-vertex rule counts.)
 
 // The big-win plaque (BannerMesh.svelte): one rig for all five tiers.
 import { bannerSpec } from './banner';

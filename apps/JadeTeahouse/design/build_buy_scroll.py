@@ -11,7 +11,7 @@ its edges; the gold corner brackets only come out when it is fully open.
 and that is where the shared button sets its "BUY BONUS" label (two lines), so
 at rest it is a scroll with BUY BONUS written on it, not an anonymous prop.
 
-  buy_scroll_0.png   at rest (open 0.56) - the plate
+  buy_scroll_0.png   at rest (open 0.66) - the plate
   buy_scroll_1..5    opening, played once by the shared button on hover
                      (uiTheme.buyBonusHoverFrames); the last one stays up
 
@@ -33,7 +33,7 @@ N = 800
 PAPER_W, PAPER_H = 600, 338
 ROD_H = 384
 ROD_W = round(ROD_H * 122 / 1022)
-OPENS = [0.56, 0.68, 0.8, 0.9, 0.97, 1.0]
+OPENS = [0.66, 0.76, 0.85, 0.92, 0.97, 1.0]
 
 
 def frame(open_):

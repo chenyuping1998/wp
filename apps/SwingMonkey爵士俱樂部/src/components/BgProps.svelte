@@ -13,12 +13,11 @@
 	import { Mesh, MeshGeometry, Container, type Texture } from 'pixi.js';
 	import { getContextApp, getContextParent } from 'pixi-svelte';
 	import { onMount } from 'svelte';
-	import { stateBetDerived } from 'state-shared';
 
 	import { getContext } from '../game/context';
 	import { buildRig, skin } from '../game/meshWin/meshRig';
 	import { BG_CANVAS, type BgPropSpec } from '../game/meshWin/bgProps';
-	import { JAZZ_HITS, attackEnergy } from '../game/meshWin/phrase';
+	import { notesHeardAt, noteEnergy } from '../game/jazzBand';
 
 	type Props = {
 		specs: BgPropSpec[];
@@ -36,13 +35,14 @@
 	const parent = getContextParent();
 
 	let gustAt = -1;
-	const phrases = new Map<string, { at: number; speed: number }>();
+	// when the instruments' notes are heard (game/jazzBand.ts)
+	let heard: number[] = [];
 	context.eventEmitter.subscribeOnMount({
 		winLinesShow: () => {
 			gustAt = performance.now();
 		},
-		soundInstrumentPhrase: ({ symbol }) => phrases.set(symbol, { at: performance.now(), speed: stateBetDerived.timeScale() }),
-		boardWinAnimCancel: () => { phrases.clear(); gustAt = -1; },
+		soundJazzNotes: ({ notes }) => { heard = [...heard.filter((at) => at > performance.now() - 400), ...notesHeardAt(notes)]; },
+		boardWinAnimCancel: () => { heard = []; gustAt = -1; },
 	});
 
 	// added in sibling order, straight after the background's sprite
@@ -80,12 +80,7 @@
 				built = true;
 			}
 			const now = performance.now();
-			let beat = 0;
-			for (const [symbol, phrase] of phrases) {
-				const age = (now - phrase.at) * phrase.speed;
-				if (age > 1440) { phrases.delete(symbol); continue; }
-				beat = Math.min(1, beat + attackEnergy(age, JAZZ_HITS[symbol]));
-			}
+			const beat = heard.length ? noteEnergy(now, heard) : 0;
 			const env = { t: now - started, gustT: gustAt < 0 ? -1 : now - gustAt, beat };
 			for (const r of rigs) {
 				skin(r.rig, r.spec.drive(r.rig, env), r.spec.feetY, r.positions);

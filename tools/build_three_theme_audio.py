@@ -32,7 +32,8 @@ def write_master_48k24(path, stereo):
 THEMES={
  'monkeyking':('MonkeyKingRush齊天大聖',140,164,198),
  'pocha':('PochaMonkey韓式路邊攤',132,152,299),
- 'swing':('SwingMonkey爵士俱樂部',154,172,1930),
+ # 'swing' retired 2026-11-06: SwingMonkey's audio is design/generate_swing_audio_v2.py; rerunning this would put the straight-eighth set back
+ # 'swing':('SwingMonkey爵士俱樂部',154,172,1930),
 }
 CUSTOM_CUES={'collect_grab','coin_in','collect_stamp','win_small','win_mid','cash_register','fs_intro',
              'reel_stop','sack_throw','shutter_slam'}

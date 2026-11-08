@@ -38,7 +38,7 @@ for(let time=0;time<BEACH_LOOP_MS;time+=60){
  }
 }
 assert.ok(measuredMotion>1,'not an accidentally frozen backdrop');
-assert.ok(maximumPixels<3.5,'background motion remains below 3.5 source pixels');
+assert.ok(maximumPixels>5&&maximumPixels<9,'open water ~2-3px, the shoreline swash runs up ~7px, never more than 9');
 assert.deepEqual(deformBeachMesh(mesh,0),deformBeachMesh(mesh,BEACH_LOOP_MS),'mesh loop closes exactly');
 const component=fs.readFileSync(new URL('../src/components/TreasureBeachBackdrop.svelte',import.meta.url),'utf8');
 assert.ok(component.includes('subscribePresentationFrame')&&!/requestAnimationFrame|setInterval|ticker\.add/.test(component),'one shared presentation clock, without a background timer fork');

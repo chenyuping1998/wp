@@ -60,7 +60,7 @@ const runWinLineReplay = async () => {
 	while (true) {
 		await waitForTimeout(REPLAY_GAP_MS);
 		if (token !== replayToken) return;
-		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins, fast: true });
+		await eventEmitter.broadcastAsync({ type: 'winLinesShow', wins, fast: true, replay: true });
 		if (token !== replayToken) return;
 		eventEmitter.broadcast({ type: 'winLinesHide' });
 	}

@@ -4,6 +4,13 @@
  * mothership HOVER (their own bob, not the wind's). The light — stars, windows,
  * the ship's ports and beam — is BgNight.svelte.
  *
+ * 2026-11-06 (user: 參考高爾夫的背景動態作法，讓背景動態感更足): Putt's
+ * amplitudes, not the timid first port — corn 2.3° → 4.2–4.4°, the corn row
+ * 2.4°, the big trees 3.6° with their crowns lifting as they lean, a new tree
+ * line across the middle (what a phone sees). The little saucer's hover stays
+ * 6px / 2.5° (bigger squashed its hull). Bats cross the sky band (bgEvents.ts
+ * drawBats), Putt's gulls.
+ *
  * Original note: Registered background meshes: borders stay on the plate; theme props move inside them.
  *
  * Stake review 2026-10-24: "the background is too static". Everything that
@@ -166,13 +173,13 @@ const sway = (s: Sway): BgPropSpec => {
 const farm = (plate: string, tag: string): BgPropSpec[] => [
 	// the tall corn in the foreground corners: tossed from the root, the
 	// tassels swinging furthest. The left clump stops above the fence rail.
-	sway({ name: `bg:cornL${tag}`, plate, rect: [0, 560, 360, 850], pivot: [180, 850], at: [185, 705], radius: [130, 110], amp: 2.3, period: 4300, phase: 0.3 }),
-	sway({ name: `bg:cornR${tag}`, plate, rect: [1500, 540, 1920, 1080], pivot: [1760, 1080], at: [1755, 830], radius: [160, 210], amp: 2.4, period: 4700, phase: 1.6 }),
+	sway({ name: `bg:cornL${tag}`, plate, rect: [0, 560, 360, 850], pivot: [180, 850], at: [185, 705], radius: [130, 110], amp: 4.2, period: 4300, phase: 0.3 }),
+	sway({ name: `bg:cornR${tag}`, plate, rect: [1500, 540, 1920, 1080], pivot: [1760, 1080], at: [1755, 830], radius: [160, 210], amp: 4.4, period: 4700, phase: 1.6 }),
 	// the corn row behind the barn: far off, a ripple more than a sway
-	sway({ name: `bg:cornRow${tag}`, plate, rect: [320, 360, 880, 480], pivot: [600, 470], at: [600, 415], radius: [250, 32], amp: 1.4, period: 3900, phase: 2.4 }),
+	sway({ name: `bg:cornRow${tag}`, plate, rect: [320, 360, 880, 480], pivot: [600, 470], at: [600, 415], radius: [250, 32], amp: 2.4, period: 3900, phase: 2.4 }),
 	// the two big trees: the crowns lean, the trunks hold
-	sway({ name: `bg:treeL${tag}`, plate, rect: [0, 0, 260, 300], pivot: [100, 300], at: [100, 120], radius: [120, 110], amp: 2.2, period: 5600, phase: 0.9 }),
-	sway({ name: `bg:treeR${tag}`, plate, rect: [1700, 120, 1920, 480], pivot: [1830, 480], at: [1830, 250], radius: [110, 130], amp: 2.2, period: 5900, phase: 2.0 }),
+	sway({ name: `bg:treeL${tag}`, plate, rect: [0, 0, 260, 300], pivot: [100, 300], at: [100, 120], radius: [120, 110], amp: 3.6, period: 5600, lift: 0.8, phase: 0.9 }),
+	sway({ name: `bg:treeR${tag}`, plate, rect: [1700, 120, 1920, 480], pivot: [1830, 480], at: [1830, 250], radius: [110, 130], amp: 3.6, period: 5900, lift: 0.8, phase: 2.0 }),
 	// the clouds drift with the wind, both ways
 	sway({ name: `bg:cloudL${tag}`, plate, rect: [260, 180, 1020, 360], pivot: [640, 270], at: [640, 270], radius: [330, 70], amp: 0.3, period: 7800, phase: 0.4, drift: 14 }),
 	sway({ name: `bg:cloudR${tag}`, plate, rect: [1080, 200, 1680, 360], pivot: [1380, 290], at: [1380, 290], radius: [270, 55], amp: 0.3, period: 8300, phase: 1.7, drift: 14 }),
@@ -186,6 +193,11 @@ export const mothershipDy = (t: number) =>
 
 export const BG_BASE_PROPS: BgPropSpec[] = [
 	...farm('gbBgBase', 'Base'),
+	// the tree line in the middle of the field: the only plants a portrait phone sees (plate x ~650-1270), so they
+	// answer the wind too — a ripple. Kept to the clear stretch between the corn row's mesh (x<880) and the
+	// village's fixed window lights (x>1100), the hills above held still; base set only — in the feature the
+	// mothership's fixed beam and crop-circle light layers sit right here and would ghost over a moving mesh
+	sway({ name: 'bg:treeLine', plate: 'gbBgBase', rect: [890, 300, 1110, 505], pivot: [1000, 505], at: [1000, 420], radius: [115, 65], amp: 2.4, period: 4400, phase: 1.1, avoid: [[890, 300, 1110, 362]] }),
 	// the little saucer zips about where it hangs: a quick bob and a wobble
 	sway({ name: 'bg:saucer', plate: 'gbBgBase', rect: [360, 20, 580, 150], pivot: [465, 82], at: [465, 80], radius: [70, 34], amp: 0, period: 4000, phase: 0, hover: [6, 2.5, 1900] }),
 ];

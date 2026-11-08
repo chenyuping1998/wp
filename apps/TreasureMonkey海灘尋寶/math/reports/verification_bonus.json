@@ -1,0 +1,24 @@
+{
+  "bonus": {
+    "books": 100000,
+    "events": 5847880,
+    "rtp": 0.96,
+    "exactRtp": "24/25",
+    "maxWin": 20000,
+    "totalWeight": 1000000000000000,
+    "hashesVerified": true,
+    "sdkLookupFormatVerified": true,
+    "booksSha256": "e76e73f42b34735663c0e64f48d2532281d30bdd8907fd954738a0a9ae986403",
+    "lookupSha256": "56adc9de169511ad1006db7d46615254ef42369ae6274ad21f81ed6c501cd81e",
+    "featureProbability": 1.0,
+    "meanFreeSpinsPerRound": 10.09385739973448,
+    "meanFreeSpinsPerFeature": 10.09385739973448,
+    "meanRetriggersPerRound": 0.046031670164718,
+    "sweepRoundProbability": 0.88966138082419,
+    "tierProbabilities": {
+      "soldier": 1.0,
+      "capo": 0.0,
+      "don": 0.0
+    }
+  }
+}

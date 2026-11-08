@@ -1,10 +1,13 @@
 <script lang="ts">
 	/**
-	 * What happens on the farm at night (game/bgEvents.ts): mist drifting over the field, the little saucer's
-	 * searchlight sweeping the barn (base set), a cloud crossing the moon with the night dimming under it, and on a
-	 * big win a saucer reeling a cow up across the moon; in the feature, the mothership's ports chasing round its
-	 * hull, scan lines climbing its beam and a lit ring running out over the crop circle. Over BgNight, in the
-	 * plate's own pixels: the container takes the background sprite's box, so the parallax drift carries it.
+	 * What happens on the farm at night (game/bgEvents.ts): mist drifting over the field, bats crossing the sky
+	 * (the part a portrait phone sees), and on a big win a saucer reeling a cow up across the moon; in the
+	 * feature, the mothership's ports chasing round its hull, scan lines climbing its beam and a lit ring running
+	 * out over the crop circle. Over BgNight, in the plate's own pixels: the container takes the background
+	 * sprite's box, so the parallax drift carries it.
+	 *
+	 * 2026-11-06 (user: 外星人的光線跟會飄動的一片雲朵都移除，看起來太像 AI): the little saucer's searchlight
+	 * sweeping the barn and the drawn cloud crossing the moon (with its dimming) are gone.
 	 *
 	 * requestAnimationFrame, not setInterval: the review checker flags interval animation.
 	 */
@@ -15,7 +18,7 @@
 	import { getContext } from '../game/context';
 	import { mothershipDy } from '../game/meshWin/bgProps';
 	import {
-		ABDUCTION_S, craftAt, cowAt, drawAbductionBeam, drawAbductionFx, drawCow, drawMist, drawMoonCloud, drawMothership, drawSearchlight, moonCover,
+		ABDUCTION_S, craftAt, cowAt, drawAbductionBeam, drawAbductionFx, drawBats, drawMist, drawMothership,
 	} from '../game/bgEvents';
 
 	type Props = {
@@ -57,19 +60,15 @@
 	const u = $derived(t - bigAt);
 	const craft = $derived(craftAt(u));
 	const cow = $derived(cowAt(u, craft));
-	const cover = $derived(moonCover(t));
 
 	const drawGround = (g: PixiGraphics) => {
 		g.clear();
 		drawMist(g, t);
-		if (props.scene === 'base') drawSearchlight(g, t);
-		else drawMothership(g, t, mothershipDy(t * 1000));
+		if (props.scene === 'feature') drawMothership(g, t, mothershipDy(t * 1000));
 	};
 	const drawSky = (g: PixiGraphics) => {
 		g.clear();
-		drawMoonCloud(g, t);
-		// the night dims while the moon is behind the cloud
-		if (cover > 0) g.rect(0, 0, 1920, 1080).fill({ color: 0x0b1030, alpha: 0.16 * cover });
+		drawBats(g, t);
 	};
 	const drawBeam = (g: PixiGraphics) => {
 		g.clear();
@@ -87,8 +86,9 @@
 	{#if craft.visible}
 		<Graphics draw={drawBeam} />
 		{#if cow.visible}
+			<!-- the same painted cow that wanders the field (BgCows), not a drawn one -->
 			<Container x={cow.x} y={cow.y} rotation={cow.rot} scale={cow.scale}>
-				<Graphics draw={drawCow} />
+				<Sprite key="night_cow" anchor={{ x: 0.5, y: 0.62 }} width={128} height={128} />
 			</Container>
 		{/if}
 		<Sprite key="gbS" anchor={0.5} x={craft.x} y={craft.y} width={240} height={240} rotation={craft.tilt} />

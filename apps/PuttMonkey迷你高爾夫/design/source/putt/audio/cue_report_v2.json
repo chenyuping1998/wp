@@ -1,0 +1,257 @@
+{
+  "btn": {
+    "seconds": 0.07,
+    "hi400": 1.0,
+    "loudestDb": -19.0
+  },
+  "spin": {
+    "seconds": 0.32,
+    "hi400": 1.0,
+    "loudestDb": -15.1
+  },
+  "reel_stop": {
+    "seconds": 0.17,
+    "hi400": 0.997,
+    "loudestDb": -14.1
+  },
+  "scatter_1": {
+    "seconds": 1.554,
+    "hi400": 0.764,
+    "loudestDb": -11.5
+  },
+  "scatter_2": {
+    "seconds": 1.684,
+    "hi400": 0.978,
+    "loudestDb": -11.3
+  },
+  "scatter_3": {
+    "seconds": 1.778,
+    "hi400": 0.967,
+    "loudestDb": -11.1
+  },
+  "scatter_4": {
+    "seconds": 1.748,
+    "hi400": 1.0,
+    "loudestDb": -10.9
+  },
+  "scatter_5": {
+    "seconds": 1.842,
+    "hi400": 1.0,
+    "loudestDb": -10.7
+  },
+  "sack_land": {
+    "seconds": 0.26,
+    "hi400": 0.999,
+    "loudestDb": -18.0
+  },
+  "bandit_land": {
+    "seconds": 0.884,
+    "hi400": 0.87,
+    "loudestDb": -13.0
+  },
+  "collect_grab": {
+    "seconds": 0.8,
+    "hi400": 0.637,
+    "loudestDb": -15.0
+  },
+  "putt_tap": {
+    "seconds": 0.16,
+    "hi400": 1.0,
+    "loudestDb": -17.0
+  },
+  "putt_sink": {
+    "seconds": 0.555,
+    "hi400": 0.997,
+    "loudestDb": -15.0
+  },
+  "putt_roll_loop": {
+    "seconds": 1.2,
+    "hi400": 0.893,
+    "loudestDb": -22.0
+  },
+  "coin_in": {
+    "seconds": 0.22,
+    "hi400": 1.0,
+    "loudestDb": -15.0
+  },
+  "collect_stamp": {
+    "seconds": 0.2,
+    "hi400": 0.596,
+    "loudestDb": -14.1
+  },
+  "tumbler_up": {
+    "seconds": 1.031,
+    "hi400": 0.999,
+    "loudestDb": -13.0
+  },
+  "dial_tick": {
+    "seconds": 0.06,
+    "hi400": 1.0,
+    "loudestDb": -18.0
+  },
+  "anticipation_theme": {
+    "seconds": 2.0,
+    "hi400": 0.387,
+    "loudestDb": -14.5
+  },
+  "reel_tension": {
+    "seconds": 2.0,
+    "hi400": 0.386,
+    "loudestDb": -14.5
+  },
+  "anticipation_pickup": {
+    "seconds": 0.6,
+    "hi400": 0.928,
+    "loudestDb": -14.0
+  },
+  "fg_level_windup": {
+    "seconds": 0.55,
+    "hi400": 1.0,
+    "loudestDb": -14.0
+  },
+  "fg_level_impact": {
+    "seconds": 0.669,
+    "hi400": 0.761,
+    "loudestDb": -12.6
+  },
+  "fg_level_reveal": {
+    "seconds": 1.663,
+    "hi400": 0.792,
+    "loudestDb": -12.0
+  },
+  "alarm_bell": {
+    "seconds": 2.411,
+    "hi400": 0.999,
+    "loudestDb": -12.5
+  },
+  "alarm_trip": {
+    "seconds": 1.53,
+    "hi400": 0.605,
+    "loudestDb": -12.5
+  },
+  "sack_throw": {
+    "seconds": 0.45,
+    "hi400": 0.998,
+    "loudestDb": -14.0
+  },
+  "shutter_down": {
+    "seconds": 0.42,
+    "hi400": 0.999,
+    "loudestDb": -15.0
+  },
+  "door_slide": {
+    "seconds": 0.6,
+    "hi400": 0.993,
+    "loudestDb": -15.0
+  },
+  "door_clack": {
+    "seconds": 0.2,
+    "hi400": 0.992,
+    "loudestDb": -15.0
+  },
+  "door_open": {
+    "seconds": 0.6,
+    "hi400": 1.0,
+    "loudestDb": -15.0
+  },
+  "golf_roll": {
+    "seconds": 0.95,
+    "hi400": 0.986,
+    "loudestDb": -15.0
+  },
+  "golf_cup": {
+    "seconds": 1.241,
+    "hi400": 0.997,
+    "loudestDb": -13.5
+  },
+  "ambient_far": {
+    "seconds": 2.527,
+    "hi400": 1.0,
+    "loudestDb": -17.0
+  },
+  "shutter_slam": {
+    "seconds": 0.33,
+    "hi400": 0.995,
+    "loudestDb": -14.1
+  },
+  "safe_open": {
+    "seconds": 0.953,
+    "hi400": 0.556,
+    "loudestDb": -13.0
+  },
+  "fs_intro": {
+    "seconds": 3.68,
+    "hi400": 0.732,
+    "loudestDb": -11.5
+  },
+  "win_small": {
+    "seconds": 0.957,
+    "hi400": 1.0,
+    "loudestDb": -14.0
+  },
+  "win_mid": {
+    "seconds": 1.653,
+    "hi400": 1.0,
+    "loudestDb": -13.0
+  },
+  "win_wake": {
+    "seconds": 0.32,
+    "hi400": 1.0,
+    "loudestDb": -15.0
+  },
+  "count_loop": {
+    "seconds": 2.0,
+    "hi400": 1.0,
+    "loudestDb": -21.0
+  },
+  "count_end": {
+    "seconds": 1.503,
+    "hi400": 1.0,
+    "loudestDb": -13.0
+  },
+  "bill_counter": {
+    "seconds": 0.505,
+    "hi400": 0.366,
+    "loudestDb": -13.0
+  },
+  "cash_register": {
+    "seconds": 2.045,
+    "hi400": 0.96,
+    "loudestDb": -12.5
+  },
+  "bigwin_slam": {
+    "seconds": 1.151,
+    "hi400": 0.431,
+    "loudestDb": -11.5
+  },
+  "win_big": {
+    "seconds": 3.327,
+    "hi400": 0.524,
+    "loudestDb": -11.8
+  },
+  "win_super": {
+    "seconds": 4.154,
+    "hi400": 0.577,
+    "loudestDb": -11.6
+  },
+  "win_mega": {
+    "seconds": 5.172,
+    "hi400": 0.71,
+    "loudestDb": -11.4
+  },
+  "win_epic": {
+    "seconds": 6.146,
+    "hi400": 0.779,
+    "loudestDb": -11.2
+  },
+  "win_max": {
+    "seconds": 7.135,
+    "hi400": 0.839,
+    "loudestDb": -11.0
+  },
+  "win_cap": {
+    "seconds": 1.62,
+    "hi400": 0.768,
+    "loudestDb": -12.5
+  }
+}

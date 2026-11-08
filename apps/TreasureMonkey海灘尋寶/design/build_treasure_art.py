@@ -7,7 +7,9 @@ OUT.mkdir(parents=True,exist_ok=True)
 # Runtime compositing exports: preserve original painted pixels in source;
 # feather the trailing edge over an opaque water plate to avoid a hard seam.
 wave=Image.open(SRC/'wave_surf_v2.png').convert('RGBA')
-water=wave.crop((0,0,int(wave.width*.5),wave.height));water.putalpha(255);water.save(OUT/'wave_water_v2.png')
+water=wave.crop((0,0,int(wave.width*.5),wave.height));water.putalpha(255);water.save(SRC/'wave_water_v2_src.png')
+# The water body scrolls as a TilingSprite: make it wrap horizontally.
+import runpy;runpy.run_path(str(ROOT/'design/build_wave_tile.py'))
 alpha=wave.getchannel('A');fade=Image.new('L',wave.size);fade.putdata([round(255*min(1,x/(wave.width*.18))) for y in range(wave.height) for x in range(wave.width)])
 wave.putalpha(ImageChops.multiply(alpha,fade));wave.save(OUT/'wave_surf_v2.png')
 def trim(im):

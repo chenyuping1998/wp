@@ -635,6 +635,15 @@ export type LeapBeats = {
 	hop2: number;
 	done: number;
 };
+/** 0 before, snaps to 1 over the 35ms ending on `at`, then a damped spring
+ *  (5.5 Hz, ~90ms decay) whose first swing goes to about -0.37 */
+export const impact = (t: number, at: number) => {
+	if (t < at - 35) return 0;
+	if (t < at) return smoothstep((t - (at - 35)) / 35);
+	const s = t - at;
+	return Math.exp(-s / 90) * Math.cos((2 * Math.PI * 5.5 * s) / 1000);
+};
+
 export const leap = (
 	t: number,
 	b: LeapBeats,
@@ -651,9 +660,17 @@ export const leap = (
 	const air = Math.max(0, Math.min(1, up + 0.3 * hop2));
 	// 2026-10-29 (user: 「獎圖動態更明顯生動」): deeper crouch, harder landing,
 	// a longer stretch in flight — and sin² humps so none of them kicks in
+	//
+	// 2026-11-06 (user: 動畫節奏要更強): the landing squash was a symmetric sin²
+	// hump, 100ms in and 100ms out — it started squashing BEFORE the subject
+	// touched down and read as a soft pillow. An impact is asymmetric: the
+	// squash snaps in over the last ~35ms of the fall, peaks on the touch-down
+	// frame and rings out as a damped spring whose overshoot is a stretch, so
+	// the subject bounces back up out of its own weight. The clink in
+	// Sound.svelte (soundWinLand) is fired on the same frame.
 	const squash =
 		0.2 * hump(t, 0, b.crouch + 90) +
-		0.24 * hump(t, b.land - 50, b.land + 150) +
+		0.28 * impact(t, b.land) +
 		0.1 * hump(t, b.hop2 - 40, b.hop2 + 130);
 	const stretch = 0.13 * hump(t, b.crouch - 20, b.rise + 40) + 0.06 * hump(t, b.fall - 40, b.land);
 	return {

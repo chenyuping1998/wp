@@ -19,7 +19,7 @@
 
 	import WinCoins from './WinCoins.svelte';
 	import BigWinFx from './BigWinFx.svelte';
-	import FxBurst from './FxBurst.svelte';
+	import { musicAt } from '../game/beatClock';
 	import TextMesh from './TextMesh.svelte';
 	import { AMOUNT_ACT } from '../game/meshWin/textMesh';
 	import PressToContinue from './PressToContinue.svelte';
@@ -92,41 +92,21 @@
 		}, 16);
 	};
 
-	// ── plaque FX clock: entrance overshoot, breathing glow, periodic blink,
-	// rim twinkles and repeating bursts on the top tiers ──────────────────────
+	// ── plaque FX clock: entrance overshoot, then the plaque PLAYS WITH THE
+	// TRACK (game/beatClock): a small lift on every beat, a flare on each bar's
+	// downbeat (bigger on the top tiers), the glow breathing over two beats.
+	// The rim twinkles and the repeating FxBurst are gone: both were little
+	// stars and a hard ring (feedback 2026-10-31: no sparkle particles).
 	let fxNow = $state(-1);
 	let fxRaf = 0;
-	let twinkles = $state<{ id: number; born: number; angle: number }[]>([]);
-	let nextTwinkleAt = 0;
-	let nextTwinkleId = 0;
-	let burstShown = $state(false);
-	let nextBurstAt = 0;
+	let music = $state(musicAt(0));
 
 	const startBannerFx = () => {
 		cancelAnimationFrame(fxRaf);
-		twinkles = [];
-		nextTwinkleAt = 0;
-		nextBurstAt = 0;
-		burstShown = true;
 		const start = performance.now();
 		const tick = (now: number) => {
 			fxNow = (now - start) / 1000;
-			const mult = winLevelData ? (TIER_FX[winLevelData.alias]?.mult ?? 1) : 1;
-			if (fxNow >= nextTwinkleAt) {
-				twinkles = [
-					...twinkles.filter(({ born }) => fxNow - born < 0.7),
-					{ id: nextTwinkleId++, born: fxNow, angle: Math.random() * Math.PI * 2 },
-				];
-				nextTwinkleAt = fxNow + (0.34 - 0.1 * mult) + Math.random() * 0.2;
-			} else {
-				const alive = twinkles.filter(({ born }) => fxNow - born < 0.7);
-				if (alive.length !== twinkles.length) twinkles = alive;
-			}
-			// epic/max keep erupting while the presentation holds
-			if (mult >= 1.5 && fxNow >= nextBurstAt) {
-				burstShown = true;
-				nextBurstAt = fxNow + 1.6;
-			}
+			music = musicAt(performance.now());
 			fxRaf = requestAnimationFrame(tick);
 		};
 		fxRaf = requestAnimationFrame(tick);
@@ -134,7 +114,6 @@
 	const stopBannerFx = () => {
 		cancelAnimationFrame(fxRaf);
 		fxNow = -1;
-		twinkles = [];
 	};
 	onDestroy(stopBannerFx);
 
@@ -142,19 +121,20 @@
 		if (fxNow < 0) return { scale: 1, glow: 0.4, blink: 0 };
 		const t = fxNow;
 		// entrance: overshoot slam matching the hit-stop flash
+		// the beat comes in once the slam has settled (eased over 300ms)
+		const groove = Math.min(1, Math.max(0, (t - 0.56) / 0.3));
+		const mult = winLevelData ? (TIER_FX[winLevelData.alias]?.mult ?? 1) : 1;
 		const scale =
 			t < 0.34
 				? 0.42 + 0.78 * (1 - (1 - t / 0.34) ** 3)
-				: 1.2 - 0.2 * Math.min(1, (t - 0.34) / 0.22) + 0.015 * Math.sin(t * 3.2);
-		// periodic blink: a bright additive pulse every ~2.3s + entrance flare
-		const phase = (t + 1.9) % 2.3;
+				: 1.2 - 0.2 * Math.min(1, (t - 0.34) / 0.22) + groove * 0.022 * music.beatPulse;
 		const blink = Math.max(
 			t < 0.3 ? 0.55 * (1 - t / 0.3) : 0,
-			phase < 0.32 ? 0.34 * (1 - phase / 0.32) : 0,
+			groove * (0.22 + 0.12 * mult) * music.downbeat,
 		);
 		return {
 			scale,
-			glow: 0.42 + 0.24 * (0.5 + 0.5 * Math.sin(t * 2.6)),
+			glow: 0.42 + 0.24 * (0.5 + 0.5 * Math.cos(Math.PI * music.beats)) + groove * 0.18 * mult * music.downbeat,
 			blink,
 		};
 	});
@@ -240,22 +220,6 @@
 								     each flare, a squash when the count lands (meshWin/banner.ts).
 								     Its additive flare copy rides the same geometry. -->
 								<BannerMesh key={bannerKey} width={bw} height={bh} blink={bannerPose.blink} landed={countUpCompleted} />
-								<!-- twinkles running the riveted rim -->
-								{#each twinkles as tw (tw.id)}
-									{@const p = Math.min(1, (fxNow - tw.born) / 0.7)}
-									<Sprite
-										key="fxStar"
-										anchor={0.5}
-										x={Math.cos(tw.angle) * bw * 0.46}
-										y={Math.sin(tw.angle) * bh * 0.44}
-										rotation={p * 2}
-										tint={0xffffff}
-										blendMode="add"
-										width={SYMBOL_SIZE * 0.5 * Math.sin(p * Math.PI)}
-										height={SYMBOL_SIZE * 0.5 * Math.sin(p * Math.PI)}
-										alpha={Math.sin(p * Math.PI)}
-									/>
-								{/each}
 								<!-- amount rolls inside the plaque's dark centre well -->
 								<TextMesh
 									y={bh * 0.16}
@@ -268,9 +232,6 @@
 									act={AMOUNT_ACT}
 								/>
 							</Container>
-							{#if burstShown}
-								<FxBurst scale={1.7} flavour="neon" oncomplete={() => (burstShown = false)} />
-							{/if}
 						{:else}
 							<!-- small wins: just the rolling amount over the board -->
 							<TextMesh

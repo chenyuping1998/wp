@@ -474,15 +474,15 @@ if (skin === 'print') {
 		menuCaptionFill: 0x1c3830,
 		menuCaptionStroke: 0xf7f4e8,
 		menuCaptionStrokeWidth: 4,
-		buyBonusLabelSizeRatio: 0.5,
+		buyBonusLabelSizeRatio: 0.44,
 		buyBonusLabelWrapWidth: 90,
 		buyBonusLabelOffsetY: 0,
 		buyBonusHoverFrames: ['buyBonusRoll1', 'buyBonusRoll2', 'buyBonusRoll3', 'buyBonusRoll4', 'buyBonusGlyph'],
 		buyBonusHoverFrameMs: 55,
 		buyBonusHoverSpriteTint: 0xffffff,
 		buyBonusHoverSpriteBlend: 'normal',
-		// the scroll at rest, rods included (buy_scroll_0: x .232-.767, y .26-.74)
-		buyBonusHitArea: { x: 0.232, y: 0.26, width: 0.535, height: 0.48 },
+		// the scroll at rest, rods included (buy_scroll_0: x .195-.805, y .26-.74)
+		buyBonusHitArea: { x: 0.195, y: 0.26, width: 0.61, height: 0.48 },
 		// the framed casing's rules (not 'flat', whose dividers are white at 15%
 		// and vanish on paper); the art itself is the fill and edge
 		barStyle: 'framed',

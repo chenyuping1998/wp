@@ -203,10 +203,10 @@
     .fill({color:MECH,alpha:beam*.075});
    g.poly([ship.x-8,y0,ship.x+8,y0,ship.x+85,y1,ship.x-85,y1])
     .fill({color:MECH,alpha:beam*.085});
-   for(let i=0;i<24;i++){
-    const height=y1-y0,y=y0+((i*29-clock*.075)%height+height)%height;
-    const x=ship.x+Math.sin(i*2.7)*(14+(y-y0)*.17);
-    g.circle(x,y,1.6).fill({color:MECH,alpha:beam*.45});
+   // two soft bands of light pulled UP the beam toward the ship (was 24 bright dots, 2026-11-06)
+   for(let i=0;i<2;i++){
+    const height=y1-y0;const v=1-(((clock*.00055+i*.5)%1)+1)%1;const y=y0+v*height;const half=8+77*v;
+    for(const [dy,al] of [[-5,.05],[-2.5,.09],[0,.13],[2.5,.09],[5,.05]])g.rect(ship.x-half,y+dy,half*2,2.6).fill({color:MECH,alpha:al*beam*(.4+.6*v)});
    }
    g.ellipse(ship.x,y0+5,26,8).stroke({color:MECH,width:2.5,alpha:beam*.8});
   }}/>
@@ -289,8 +289,8 @@
 			{@const s = tagPop(tag)}
 			{@const amountText = bookEventAmountToCurrencyString(tag.shown)}
 			{@const catchPulse = tag.catchAt < 0 ? 0 : Math.max(0, 1 - (clock - tag.catchAt) / 260)}
-			{#if catchPulse > 0}<Graphics draw={(g) => {g.clear();g.circle(tag.x,tag.y,SYMBOL_SIZE*(.22+.16*(1-catchPulse))).stroke({color:RED,width:3*catchPulse,alpha:catchPulse});}}/>{/if}
-			<Container x={tag.x} y={tag.y} scale={s}>
+			<!-- the catch is the tag's own kick (no hard ring round it, 2026-11-06) -->
+			<Container x={tag.x} y={tag.y} scale={s * (1 + 0.14 * catchPulse ** 2)} rotation={-0.05 * catchPulse}>
 				<Graphics
 					draw={(g) => {
 						g.clear();

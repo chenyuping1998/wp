@@ -9,11 +9,12 @@ def main():
     verified=json.loads((reports/'verification.json').read_text(encoding='utf-8'))
     labels={'base':'一般模式','bonus':'BEACH SWEEP','bonus_hits':'HIDDEN COVE','bonus_epic':'LOST LAGOON'}
     text=['# 海灘尋寶｜數學驗證報告','',
-          '版本：2026-10-23；重建種子：'+str(metrics['seed'])+'。',
+          '驗證版本：2026-11-04；重建種子：'+str(metrics['seed'])+'。',
           '四種模式依正式整數權重精確計算，RTP 均為 **24/25 = 96%**。Buy Bonus 沿用模板的 100×／500×／1,000× 售價。','',
           '| 模式 | 價格 | 局數 | RTP | 平均回收（基礎押注倍數） | 有獎機率 | 回收大於成本 | 標準差／成本 |',
           '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |']
-    for mode,d in metrics['modes'].items():
+    for mode in RULES['modes']:
+        d=metrics['modes'][mode]
         v=verified[mode]
         assert d['books']==v['books'] and v['exactRtp']=='24/25' and v['hashesVerified']
         cost=RULES['modes'][mode]['cost']
@@ -23,7 +24,8 @@ def main():
            '','## 分布與功能入口','',
            '| 模式 | 中位回收／成本 | P90／成本 | P99／成本 | 20,000× 機率 | 平均實際免費轉數／功能 |',
            '| --- | ---: | ---: | ---: | ---: | ---: |']
-    for mode,d in metrics['modes'].items():
+    for mode in RULES['modes']:
+        d=metrics['modes'][mode]
         v=verified[mode]
         text.append(f"| {labels[mode]} | {d['medianCostUnits']:.4f}× | {d['p90CostUnits']:.4f}× | {d['p99CostUnits']:.4f}× | 1 / {1/d['maxWinProbability']:,.0f} | {v['meanFreeSpinsPerFeature']:.4f} |")
     v=verified['base']

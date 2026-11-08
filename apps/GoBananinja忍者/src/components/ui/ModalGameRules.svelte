@@ -40,6 +40,14 @@
 			name: 'Decrease / increase',
 			text: `Steps the ${T.bet} up or down through the available ${T.betLevels}.`,
 		},
+		// The amount readout on the bar is itself a control: tapping it opens the
+		// full list of levels (components-ui-pixi LabelBet). Self-review
+		// 2026-11-01, guideline 235 — it was the one pressable thing not listed.
+		{
+			icons: [],
+			get name() { return T.bet.charAt(0).toUpperCase() + T.bet.slice(1); },
+			text: `Tap the ${T.bet} shown on the bar to open the full list of ${T.betLevels} and pick one directly.`,
+		},
 		{
 			icons: [],
 			name: T.buyBonusName,
@@ -64,6 +72,18 @@
 			icons: ['payTable'],
 			get name() { return T.payTableCaps; },
 			text: `Lists every symbol and what it ${T.pays} for 3, 4 and 5 of a kind, and how the ${T.ways} are counted.`,
+		},
+		// Game rules and Settings are buttons of their own inside the menu, not
+		// only something Menu leads to (guideline 235, self-review 2026-11-01).
+		{
+			icons: ['info'],
+			name: 'Game rules',
+			text: 'Opens these rules.',
+		},
+		{
+			icons: ['settings'],
+			name: 'Settings',
+			text: 'Sets the master, music and sound effect volumes separately.',
 		},
 		{
 			icons: ['soundOn'],
@@ -92,6 +112,11 @@
 	// (design/sync_math_config.mjs lifts it into config). Read rather than typed
 	// so the Scatter and Retriggers sections cannot drift apart, and cannot drift
 	// from the game.
+	// Hold and Spin Coin values, read out of the books by design/sync_math_config.mjs.
+	const coinValues = ((config as { coinValues?: number[] }).coinValues ?? [])
+		.map((v) => `${v.toLocaleString('en-US')}×`)
+		.join(', ');
+
 	const scatterSpins = Object.values(config.scatterSpins ?? { 3: 8, 4: 10, 5: 12 }).join(', ');
 
 	// spins/start_cuts are added to the generated config by
@@ -174,8 +199,6 @@
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-rules info-page">
 			<InfoShell kind="rules">
-			<h2>GO BANANINJA — GAME RULES</h2>
-
 			<section class="wp-card">
 				<h3><span class="wp-accent-bar"></span>How to play</h3>
 				<p>
@@ -261,8 +284,9 @@
 					</table>
 				</div>
 				<p class="wp-modes-note">
-					Max win is a multiple of the {T.totalBet}. When a round reaches the cap it ends
-					immediately and the capped amount is {T.paid}.
+					Max win is a multiple of the {T.totalBet}. In the base game and Free Spins, a round that
+					reaches the cap ends immediately and the capped amount is {T.paid}. Hold and Spin plays
+					out its respins and caps the total when they finish.
 				</p>
 			</section>
 
@@ -375,7 +399,8 @@
 					A separate prize board {T.bought} from the {T.betMenu} for {config.betModes?.holdandspin
 						?.cost}&times; your {T.totalBet}. It does not use {T.ways} or Machetes. You start
 					with 3 respins. Every Coin that lands sticks to the board and resets the respins back
-					to 3. When no respins remain, all stuck Coin values are added up and {T.paid} out.
+					to 3. Each Coin carries one of {coinValues} &times; the {T.totalBet}. When no respins
+					remain, all stuck Coin values are added up and {T.paid} out.
 					Maximum win: {config.betModes?.holdandspin?.max_win?.toLocaleString()}&times; the
 					{T.totalBet}.
 				</p>
@@ -435,6 +460,14 @@
 					<strong>Hold and Spin is capped separately</strong>, at
 					{config.betModes?.holdandspin?.max_win?.toLocaleString()}&times; the {T.totalBet}. The
 					{maxWin.toLocaleString()}&times; figure above does not apply to it.
+					<!-- Checked against books_holdandspin (2026-11-01): every capped round keeps
+					     respinning after its Coins pass the cap — up to 14 more respins — and is
+					     cut to the cap only at the tally. The board can therefore show Coins
+					     adding up to more than is awarded; this says so. -->
+					Its respins are always played out: Coins keep landing even once the board holds more
+					than the cap, and the total is reduced to
+					{config.betModes?.holdandspin?.max_win?.toLocaleString()}&times; when the respins
+					run out.
 				</p>
 			</section>
 
@@ -476,31 +509,21 @@
 		}
 	}
 
-	@keyframes shimmer {
-		0% { background-position: -200% center; }
-		100% { background-position: 200% center; }
-	}
-
-	@keyframes accentPulse {
-		0%, 100% { opacity: 0.7; box-shadow: 0 0 6px rgba(255, 215, 94, 0.3); }
-		50% { opacity: 1; box-shadow: 0 0 12px rgba(255, 215, 94, 0.55); }
-	}
-
 	.wp-rules {
 		/* sit above the Popup's full-screen click-to-close layer (z-index 2),
 		   otherwise the overlay swallows wheel/touch events and blocks scrolling */
 		position: relative;
 		z-index: 100;
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-		width: min(36rem, 90vw);
-		max-width: 36rem;
-		max-height: 80vh;
+		/* The scroller IS the journal: InfoShell draws the frame, so this box
+		   adds no padding of its own (it used to inset the shell by 1.75rem and
+		   leave a ring of veil around it) and shares the shell's corner radius. */
+		display: block;
+		width: min(40rem, 94vw);
+		max-height: 88vh;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 		overscroll-behavior: contain;
-		padding: 1.5rem 1.75rem;
+		border-radius: 20px;
 		color: #fff;
 		text-align: left;
 		animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -518,19 +541,12 @@
 			border-radius: 4px;
 		}
 
-		h2 {
-			margin: 0 0 0.35rem;
-			text-align: center;
-			font-size: 1.65rem;
-			font-weight: 800;
-			letter-spacing: 0.08em;
-			background: linear-gradient(135deg, #ffe98a 0%, #ffd75e 50%, #9ec44a 100%);
-			background-size: 200% auto;
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-			animation: shimmer 4s linear infinite;
-			filter: drop-shadow(0 0 18px rgba(255, 215, 94, 0.4));
+
+		/* the shell's content slot is a plain block — space the cards here */
+		:global(.info-content) {
+			display: flex;
+			flex-direction: column;
+			gap: 0.75rem;
 		}
 	}
 
@@ -669,9 +685,7 @@
 		padding: 0.85rem 1rem;
 		border-radius: 0.75rem;
 		background: rgba(255, 255, 255, 0.03);
-		backdrop-filter: blur(6px);
-		-webkit-backdrop-filter: blur(6px);
-		border: 1px solid rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(197, 164, 106, 0.16);
 		transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 		animation: cardFadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 
@@ -686,12 +700,6 @@
 		&:nth-child(10) { animation-delay: 0.45s; }
 		&:nth-child(11) { animation-delay: 0.5s; }
 
-		&:hover {
-			background: rgba(255, 215, 94, 0.06);
-			border-color: rgba(255, 215, 94, 0.18);
-			box-shadow: 0 0 16px rgba(255, 215, 94, 0.1);
-		}
-
 		h3 {
 			display: flex;
 			align-items: center;
@@ -699,7 +707,7 @@
 			margin: 0 0 0.35rem;
 			font-size: 1.05rem;
 			font-weight: 700;
-			color: #ffd75e;
+			color: #f0d490;
 		}
 
 		p {
@@ -716,9 +724,8 @@
 		width: 3px;
 		height: 1.1em;
 		border-radius: 2px;
-		background: linear-gradient(180deg, #ffd75e, #9ec44a);
+		background: #c5a46a;
 		flex-shrink: 0;
-		animation: accentPulse 3s ease-in-out infinite;
 	}
 
 	.wp-divider {

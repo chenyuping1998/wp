@@ -4,5 +4,8 @@
  const context=getContext();
  const size=$derived(context.stateLayoutDerived.canvasSizes());
  const scale=$derived(Math.max(size.width/1920,size.height/1080));
+ // A win sends a gust across the beach.
+ let gustSeq=$state(0);
+ context.eventEmitter.subscribeOnMount({winLinesShow:()=>{gustSeq++;}});
 </script>
-<TreasureBeachBackdrop x={size.width/2} y={size.height/2} anchor={0.5} width={1920*scale} height={1080*scale} />
+<TreasureBeachBackdrop x={size.width/2} y={size.height/2} anchor={0.5} width={1920*scale} height={1080*scale} {gustSeq} />

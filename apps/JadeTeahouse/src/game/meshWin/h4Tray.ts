@@ -10,9 +10,9 @@
  * cups (76,108) (136,89) (190,108), each ~26 round with its ring; tray
  * (22..242, 62..170), legs to y 193.
  */
-import { circle, flick, strongLeap, polygon, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Point, type Rig } from './meshRig';
-
-const LEAP = { crouch: 120, rise: 330, fall: 740, land: 920, hop2: 1150, done: 1450 };
+import { circle, flick, polygon, restPose, smoothstep, type MeshWinSpec, type Point, type Rig, turnAbout } from './meshRig';
+import { ACT, stageAct } from './act';
+import { lagged, ppTrack, type PPKey } from './ppVocabulary';
 
 const TRAY = polygon([[22, 118], [60, 80], [128, 62], [196, 80], [242, 118], [230, 155], [195, 170], [190, 193], [176, 193], [176, 168], [128, 158], [80, 168], [78, 193], [64, 193], [60, 160], [28, 150]]);
 const CUPS: [string, Point][] = [['cupL', [76, 108]], ['cupM', [136, 89]], ['cupR', [190, 108]]];
@@ -24,9 +24,9 @@ export const H4: MeshWinSpec = {
 	sprite: 'gbH4',
 	art: 'sushiSymbols/h4.png',
 	feetY: 193,
-	durationMs: LEAP.done,
-	landMs: LEAP.land,
-	hitMs: LEAP.rise,
+	durationMs: ACT.done,
+	landMs: ACT.back,
+	hitMs: ACT.pop1,
 	rig: {
 		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 },
 		soft: 4,
@@ -55,24 +55,33 @@ export const H4: MeshWinSpec = {
 		const pose = restPose(rig);
 		const b = (name: string) => pose.bones[rig.bones.findIndex((x) => x.name === name)];
 
+		// presenting the tea: back on the card the tray tips toward the player
+		// one way, then the other, and the cups lean after it (a frame late)
+		const presentKeys: PPKey[] = [[0, 0], [ACT.back, 0], [790, 1], [910, -0.8], [ACT.hold + 40, 0.3], [ACT.hold + 140, 0]];
+		const present = ppTrack(t, presentKeys);
+
+		// a wave across the cups: left to right on the way up, right to left on
+		// the second beat; each cup two frames after its neighbour
+		const wave1: PPKey[] = [[0, 0], [ACT.anticipate + 60, 0], [ACT.anticipate + 180, 1], [ACT.pop1 + 40, 0]];
+		const wave2: PPKey[] = [[0, 0], [ACT.hold + 60, 0], [ACT.hold + 170, 1], [ACT.pop2 + 30, 0]];
 		CUPS.forEach(([name], i) => {
-			const at = LEAP.rise - 80 + i * 110;
 			const cup = b(name);
-			const hop = track(t, [[0, 0], [at, 0], [at + 120, 1, 'out'], [at + 240, 0, 'in']]);
-			cup.dy = -CUP_UP * hop - 1.4 * Math.max(0, flick(t, LEAP.land + 30 * i, 5, 8));
-			cup.angle = CUP_DEG * ((i - 1 || 0.6) * flick(t, at + 240, 3, 4.5) + 0.6 * flick(t, LEAP.land + 30 * i, 3.4, 5));
-			cup.along = 1 - 0.05 * Math.max(0, flick(t, at + 240, 5, 8));
+			const lean = lagged(t, presentKeys, 1, 33, 1);
+			const up = lagged(t, wave1, i, 67, 1) + 0.7 * lagged(t, wave2, 2 - i, 67, 1);
+			cup.dy = -CUP_UP * up - 1.4 * Math.max(0, flick(t, ACT.back + 30 * i, 5, 8));
+			cup.dx = -2.5 * lean;
+			cup.angle = CUP_DEG * (-0.8 * lean + (i - 1 || 0.6) * flick(t, ACT.back + 30 * i, 3, 4.5) + 0.5 * flick(t, ACT.land2 + 30 * i, 3.4, 5));
+			cup.along = 1 - 0.05 * Math.max(0, flick(t, ACT.back + 30 * i, 5, 8));
 		});
 
-		const { rigid, air } = strongLeap(t, LEAP, 35);
-		// carried in a hurry: it rocks side to side while it hangs
-		rigid.rot += 6 * Math.sin((2 * Math.PI * (t - LEAP.rise + 80)) / 420) * smoothstep((t - LEAP.rise + 120) / 120) * (1 - smoothstep((t - LEAP.fall + 60) / 160));
-		pose.rigid = turnAbout(rigid, [128, 120], 193);
-		pose.air = air;
+		const act = stageAct(t, { height: 18 });
+		act.rigid.rot += 6 * present;
+		pose.rigid = turnAbout(act.rigid, [128, 160], 193);
+		pose.air = act.air;
+		pose.flash = act.flash;
 		return pose;
 	},
 };
 
-// set from the measured limits
 const CUP_UP = 6;
 const CUP_DEG = 4;

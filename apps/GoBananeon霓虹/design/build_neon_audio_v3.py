@@ -296,6 +296,87 @@ def music(bpm, energy):
     return mix(duration, layers, stereo=True, wrap=True)
 
 
+RHYTHM_KIT = ['reel_tension', 'seq_tick', 'seq_kick', 'seq_note', 'seq_snare', 'seq_pad',
+              'spin', 'reel_stop_1', 'reel_stop_2', 'reel_stop_3', 'reel_stop_4', 'reel_stop_5',
+              'dynamite_blast', 'dynamite_blast_big', 'grenade_blast', 'press_blast',
+              'fullboard_stamp', 'bigwin_blast', 'gong_feature', 'cave_quake']
+IMPACTS = [('dynamite_blast',1.10,.7),('dynamite_blast_big',1.34,1.2),
+           ('grenade_blast',.64,.6),('press_blast',.58,.55),
+           ('fullboard_stamp',1.88,1.3),('bigwin_blast',2.05,1.1),
+           ('gong_feature',2.65,1.1)]
+# how much small-speaker weight each impact gets (presence below)
+PRESENCE = {'dynamite_blast': 2.1, 'dynamite_blast_big': 2.6, 'grenade_blast': 1.9, 'press_blast': 1.9,
+            'fullboard_stamp': 2.6, 'bigwin_blast': 2.6, 'gong_feature': 2.4}
+
+
+def presence(c, amount=1.6, cut_low=.7):
+    """Small-speaker weight for a low impact (ported from GoBanalchemy).
+
+    Measured 2026-11-06: the blasts, gong and stamp had 13-17% of their energy
+    above 400 Hz (cave_quake 0%, the sequencer kick 0.9%) - a phone speaker
+    plays almost none of it. The cue's own low band is driven into harmonics and
+    kept at 450-2200 Hz, a sampled snare adds a crack, and some sub is taken
+    out. Sample-based only: the drive is a waveshaper on the cue itself.
+    """
+    low = filt(c, high=320)
+    peak = max(1e-6, np.max(np.abs(low.audio)))
+    driven = Clip(np.tanh(low.audio / peak * 4.0) * peak, low.sources)
+    upper = filt(driven, low=450, high=2200)
+    crack = fit(filt(sample(SNARE), low=380, high=2600), min(.33, len(c.audio) / SR))
+    # thin the sub below ~200 Hz (headphones keep part of it; a phone has none)
+    body = Clip(c.audio - cut_low * filt(c, high=200).audio, c.sources)
+    return mix(len(c.audio) / SR, [(body, 0, 1), (upper, 0, amount), (fade(crack, .0005, .2), 0, amount * .5)])
+
+
+def rhythm_kit():
+    """The 2026-11-06 rhythm pass: everything the beat grid plays or leans on.
+
+    - the sequencer's single hits (Sound.svelte books them on the BGM's own 16th
+      grid and pitches notes to the chord under them): tick / kick / note /
+      snare / pad. The big-win fanfare is now PLAYED from these in time.
+    - the tease's air bed (its old 120 BPM kicks were the off-tempo part).
+    - impacts, spin and reel stops with presence for phone speakers.
+    Rebuild just these: python design/build_neon_rhythm_kit.py
+    """
+    # quick attack: the bed must be audible from its first frame (onset < 8 ms)
+    tension = mix(2, [(fade(fit(filt(sample(AIR), low=500, high=6000), 2), .004, .10), 0, .22)], wrap=True)
+    deliver('reel_tension', tension, -15, loop=True)
+    # 35 ms tally click (the old bed's tick) + the 50 ms silent tail master() needs
+    deliver('seq_tick', mix(.09, [(fade(fit(filt(sample(CLICK), low=1400, high=4800), .035), .001, .015), 0, 1)]), -3)
+    # kick with a beater: the body alone was 0.9% above 400 Hz and vanished on a phone
+    kick = fade(fit(filt(sample(KICK), high=1500), .18), .0005, .08)
+    beater = fade(fit(filt(sample(KICK), low=1800, high=6000), .03), .0003, .02)
+    deliver('seq_kick', mix(.24, [(presence(kick, 2.2), 0, 1), (beater, 0, 1.1)]), -3)
+    # Clavisynth C4; the sequencer pitches it by playbackRate to the chord tone
+    deliver('seq_note', mix(.2, [(note(60, .14), 0, 1)]), -3)
+    # the fanfare's backbeat: the music's own snare + clap, a little dry
+    deliver('seq_snare', mix(.28, [(fade(fit(sample(SNARE), .22), .0005, .1), 0, .8),
+                                   (fade(fit(sample(CLAP), .2), .0005, .1), .009, .45)]), -3)
+    # FM piano C4 pad note, held long enough to ring under a 105 BPM bar's start
+    deliver('seq_pad', mix(1.25, [(note(60, 1.15, pad=True), 0, 1)]), -3)
+    # spin: the scratch plus a kick that a phone can hear
+    deliver('spin', mix(.42, [(fit(sample(SCRATCH), .28), 0, .32),
+                             (presence(fade(fit(sample(KICK), .20)), 2.2), .012, .55)]), -5.5)
+    for i in range(1, 6):
+        key = f'foley/bfh1_hit_{i:02d}.ogg'
+        # hit 02 is the dull one of the five (39% above 400 Hz against 96-100%):
+        # high-passed so the second stop is not the one that disappears
+        hit = filt(sample(key), low=380 if i == 2 else None, high=5200)
+        c = mix(.145, [(fade(fit(hit, .13), .0001, .045), 0, .62 if i == 2 else .5),
+                       (note(43+i*2, .12, bass=True), 0, .22+i*.03)])
+        deliver(f'reel_stop_{i}', c, -8+i*.4)
+    for name, seconds, weight in IMPACTS:
+        c = mix(seconds, [(fit(sample(HIT), .34), 0, .6),
+                          (filt(fit(sample(BOOM), seconds), high=2400), 0, weight*.5),
+                          (filt(fit(sample(ZAP), seconds), low=420), 0, .21),
+                          (fit(sample(GLASS), min(.7,seconds)), .015, .12),
+                          (chord(48, min(seconds,.85)), 0, .25)])
+        deliver(name, room(presence(c, PRESENCE[name]), .14), -4 if weight<1 else -2.5)
+    # the room answering the chest beat: still felt more than heard, but no
+    # longer 0% above 400 Hz
+    deliver('cave_quake', presence(filt(fit(rate(sample(BOOM), -7), 3), low=40, high=900), 1.0, .3), -7)
+
+
 def build():
     for path in [OUT, DELIVERY, PREVIEW]:
         path.mkdir(parents=True, exist_ok=True)
@@ -303,17 +384,7 @@ def build():
     deliver('bgm_freespin', music(128, True), stereo=True, loop=True, lufs=-20, bpm=128)
     # Most frequent cues are deliberately dry and short.
     deliver('btn', fit(sample(CLICK), .065), -10)
-    deliver('spin', mix(.42, [(fit(sample(SCRATCH), .28), 0, .32),
-                             (fade(fit(sample(KICK), .20)), .012, .55)]), -5.5)
-    for i in range(1, 6):
-        key = f'foley/bfh1_hit_{i:02d}.ogg'
-        c = mix(.145, [(fade(fit(filt(sample(key), high=5200), .13), .0001, .045), 0, .5),
-                       (note(43+i*2, .12, bass=True), 0, .22+i*.03)])
-        deliver(f'reel_stop_{i}', c, -8+i*.4)
-    tension = mix(2, [(fade(fit(sample(KICK), .19)), at, .3+at*.12)
-                      for at in [0, .5, 1, 1.5]] +
-                     [(fade(fit(filt(sample(AIR), low=500, high=6000), 2), .08, .10), 0, .22)], wrap=True)
-    deliver('reel_tension', tension, -8, loop=True)
+    rhythm_kit()
     for i, off in enumerate([0, 2, 4, 7, 12], 1):
         # Real glass resonances reserved for golden Scatter, never the normal wins.
         bell = rate(sample('foley/bfh1_glass_hit_01.ogg'), off)
@@ -332,19 +403,8 @@ def build():
         deliver(name, c, -6 if tier==0 else -4+.28*tier,
                 stereo=name in ['win_big','win_super','win_mega','win_epic','win_max','win_cap'])
     deliver('symbol_land', note(60, .21, pad=True), -7.5)
-    for name, seconds, weight in [('dynamite_blast',1.10,.7),('dynamite_blast_big',1.34,1.2),
-                                   ('grenade_blast',.64,.6),('press_blast',.58,.55),
-                                   ('fullboard_stamp',1.88,1.3),('bigwin_blast',2.05,1.1),
-                                   ('gong_feature',2.65,1.1)]:
-        c = mix(seconds, [(fit(sample(HIT), .34), 0, .6),
-                          (filt(fit(sample(BOOM), seconds), high=2400), 0, weight*.5),
-                          (filt(fit(sample(ZAP), seconds), low=420), 0, .21),
-                          (fit(sample(GLASS), min(.7,seconds)), .015, .12),
-                          (chord(48, min(seconds,.85)), 0, .25)])
-        deliver(name, room(c, .14), -4 if weight<1 else -2.5)
     deliver('symbol_shatter', filt(fit(sample(GLASS), .7), low=1300), -9)
     deliver('smoke_puff', fade(filt(fit(sample(AIR), .9), low=900, high=5800), .002, .55), -12)
-    deliver('cave_quake', filt(fit(rate(sample(BOOM), -7), 3), low=40, high=900), -7)
     scratch = filt(cut(sample(SCRATCH), .15, .65), low=850, high=6800)
     # Exactly the animation's existing four stroke positions and closing cut.
     dj = [(fade(fit(rate(scratch, shift), .22), .002, .08), at, gain)

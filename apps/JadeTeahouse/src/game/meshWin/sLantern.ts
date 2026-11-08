@@ -10,9 +10,9 @@
  * ring (143,18), globe (143,88) 74x48, jade bead (144,166), tassel
  * (132..184, 172..232).
  */
-import { blob, flick, strongLeap, polygon, restPose, smoothstep, track, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
-
-const LEAP = { crouch: 120, rise: 380, fall: 820, land: 1000, hop2: 1220, done: 1500 };
+import { blob, flick, polygon, restPose, smoothstep, turnAbout, type MeshWinSpec, type Rig } from './meshRig';
+import { ACT, stageAct } from './act';
+import { lagged, ppTrack, type PPKey } from './ppVocabulary';
 
 const BODY = polygon([[134, 12], [152, 12], [154, 30], [176, 34], [208, 52], [222, 88], [210, 124], [176, 142], [160, 152], [156, 172], [184, 208], [182, 222], [160, 234], [136, 234], [130, 200], [132, 172], [128, 152], [110, 142], [76, 124], [66, 88], [78, 52], [110, 34], [132, 30]]);
 const GLOBE = blob([143, 88], 74, 48, 2.5);
@@ -24,9 +24,9 @@ export const S: MeshWinSpec = {
 	sprite: 'gbS',
 	art: 'sushiSymbols/s.png',
 	feetY: 232,
-	durationMs: LEAP.done,
-	landMs: LEAP.land,
-	hitMs: LEAP.rise,
+	durationMs: ACT.done,
+	landMs: ACT.back,
+	hitMs: ACT.pop1,
 	rig: {
 		grid: { x0: 0, y0: 0, x1: 256, y1: 256, cols: 48, rows: 48 },
 		soft: 4,
@@ -63,25 +63,29 @@ export const S: MeshWinSpec = {
 		const pose = restPose(rig);
 		const b = (name: string) => pose.bones[rig.bones.findIndex((x) => x.name === name)];
 
-		// it swings from its ring while it floats, and once more on settling
-		const swing = flick(t, LEAP.crouch + 80, 1.1, 1.2) + 0.5 * flick(t, LEAP.land, 1.6, 2.6);
-		b('body').angle = SWING_DEG * swing;
-		// the tassel trails each swing a beat late, and further
-		b('tassel').angle = -TASSEL_DEG * (flick(t, LEAP.crouch + 260, 1.1, 1.4) + 0.6 * flick(t, LEAP.land + 120, 1.8, 2.4));
+		// A LANTERN HANGS (2026-11-06): it no longer bounces like a ball. It is
+		// pulled back, let go, and swings from its hook (out, back, out a little
+		// less) while the tassel follows a couple of frames late and further.
+		// Its light swells on each turn of the swing. The lift is only a breath.
+		const swingKeys: PPKey[] = [[0, 0], [ACT.anticipate, -0.35], [ACT.pop1, 1], [800, -0.65], [ACT.pop2, 0.4], [ACT.land2, -0.12], [ACT.done, 0, 'settle']];
+		const swing = ppTrack(t, swingKeys);
+		b('body').angle = 2 * flick(t, ACT.pop1, 2.2, 4);
+		b('tassel').angle = -TASSEL_DEG * lagged(t, swingKeys, 2, 50, 1);
 
-		// the flame catches: the globe swells at the top
-		const glow = track(t, [[0, 0], [LEAP.crouch, -0.4, 'out'], [LEAP.rise, 1, 'out'], [LEAP.fall, 0.5], [LEAP.land, 0, 'in']]);
+		const glow = ppTrack(t, [[0, 0], [ACT.anticipate, -0.4], [ACT.pop1, 1], [600, 0.3], [800, 0.8], [1000, 0.2], [ACT.pop2, 0.5], [ACT.done, 0]]);
 		const globe = b('globe');
 		globe.across = 1 + 0.035 * glow;
 		globe.along = 1 + 0.02 * glow;
 
-		const { rigid, air } = strongLeap(t, LEAP, 28);
-		pose.rigid = turnAbout(rigid, [143, 100], 232);
-		pose.air = air;
+		const act = stageAct(t, { height: 6, second: 0.5, squash: 0.25 });
+		act.rigid.rot += SWING_DEG * swing;
+		// about the hook, not the feet
+		pose.rigid = turnAbout(act.rigid, [143, 14], 232);
+		pose.air = act.air;
+		pose.flash = act.flash * 0.6 + 0.12 * Math.max(0, glow);
 		return pose;
 	},
 };
 
-// set from the measured limits
-const SWING_DEG = 4;
+const SWING_DEG = 12;
 const TASSEL_DEG = 9;

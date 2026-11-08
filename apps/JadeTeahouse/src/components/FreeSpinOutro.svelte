@@ -12,7 +12,7 @@
 	import { Container, Sprite, Text } from 'pixi-svelte';
 	import { FadeContainer, WinCountUpProvider } from 'components-pixi';
 	import { bookEventAmountToCurrencyString, bookEventAmountToCountUpString } from 'utils-shared/amount';
-	import { waitForResolve } from 'utils-shared/wait';
+	import { waitForResolve, waitForTimeout } from 'utils-shared/wait';
 	import { CanvasSizeRectangle } from 'components-layout';
 	import { OnMount } from 'components-shared';
 
@@ -21,6 +21,7 @@
 	import InkNumber from './InkNumber.svelte';
 	import FreeSpinAnimation from './FreeSpinAnimation.svelte';
 	import PressToContinue from './PressToContinue.svelte';
+	import { stateBetDerived } from 'state-shared';
 	import WinCoins from './WinCoins.svelte';
 	import FxBurst from './FxBurst.svelte';
 	import SplashMaster from './SplashMaster.svelte';
@@ -63,6 +64,8 @@
 	let burst = $state(false);
 
 	const onCountUpComplete = () => {
+		// under autoplay the total moves on by itself after a beat
+		if (stateBetDerived.isContinuousBet()) waitForTimeout(2200).then(() => oncomplete());
 		landed = true;
 		landedAt = performance.now();
 		burst = true;

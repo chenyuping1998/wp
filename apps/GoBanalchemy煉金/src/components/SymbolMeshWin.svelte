@@ -51,6 +51,7 @@
 	import { CANVAS, skin } from '../game/meshWin/meshRig';
 	import { MESH_WINS, W_BLINKS, blinkLid } from '../game/meshWin';
 	import { winTimeScale } from '../game/timeScale';
+	import { gridSpeed } from '../game/winTempo';
 	import { POTIONS, boilAt, chamberOutline, warp } from '../game/meshWin/potionBoil';
 	import ImpactDust from './ImpactDust.svelte';
 	import PotionBoil from './PotionBoil.svelte';
@@ -113,7 +114,10 @@
 	onMount(() => {
 		// the free game's wins are the payoff: turbo shortens them to ~74%, not
 		// half (game/timeScale.ts)
-		const speed = props.spec ? stateBetDerived.timeScale() : winTimeScale();
+		// a win also takes the bed's tempo: its landing on the grid (winTempo.ts)
+		const speed = props.spec
+			? stateBetDerived.timeScale()
+			: winTimeScale() * gridSpeed(spec.symbol, winTimeScale());
 		const started = performance.now();
 		// No cascade delay of its own here. GoBananubis staggers its line 60ms a
 		// reel in this component; in this game WinWays already lights the win

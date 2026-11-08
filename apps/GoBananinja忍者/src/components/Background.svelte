@@ -14,7 +14,7 @@
 	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame' && !isSuperspin);
 	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame' && !isSuperspin);
 
-	const clock = $derived(presentation.clock);
+	const clock = $derived(presentation.ambientClock);
 
 	// ── slow ken-burns drift over a small overscan, so the still jungle art
 	// breathes instead of sitting dead behind the reels ────────────────────────

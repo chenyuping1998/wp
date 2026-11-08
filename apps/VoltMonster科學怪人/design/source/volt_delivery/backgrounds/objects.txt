@@ -1,0 +1,20 @@
+bg_base_obj_gear_big.png | rotate | pivot=(200.5,534.5) | period=36000ms
+bg_base_obj_gear_small.png | rotate | pivot=(307.5,408.5) | period=22000ms
+bg_base_obj_lamp.png | swing | pivot=(1242.5,26.4) | period=18000ms
+bg_base_obj_cables.png | swing | pivot=(822.0,18.0) | period=23000ms
+bg_base_obj_electrodes.png | arc | pivot=(1664.0,472.0) | period=19000ms
+bg_base_obj_test_tubes.png | bubble | pivot=(190.0,420.0) | period=21000ms
+bg_base_obj_indicators.png | glow | pivot=(1667.5,134.0) | period=17000ms
+bg_feature_obj_flywheel.png | rotate | pivot=(218.0,466.0) | period=18000ms
+bg_feature_obj_tesla_coil.png | arc | pivot=(1674.5,510.0) | period=16000ms
+bg_feature_obj_switch_panel.png | glow | pivot=(247.0,241.0) | period=18000ms
+bg_feature_obj_oscilloscope.png | screen | pivot=(1682.0,578.0) | period=18000ms
+bg_feature_obj_coil_lamp.png | swing | pivot=(1209.5,22.2) | period=19000ms
+bg_feature_obj_roof_cable.png | swing | pivot=(825.0,16.0) | period=24000ms
+bg_holdandspin_obj_battery_left.png | glow | pivot=(197.0,549.5) | period=18000ms
+bg_holdandspin_obj_battery_right.png | glow | pivot=(1690.0,558.5) | period=21000ms
+bg_holdandspin_obj_valve.png | rotate | pivot=(218.0,268.0) | period=42000ms
+bg_holdandspin_obj_beacon.png | glow | pivot=(1649.0,309.0) | period=16000ms
+bg_holdandspin_obj_power_gauge.png | needle | pivot=(1674.5,411.5) | period=22000ms
+bg_holdandspin_obj_cable_bundle.png | swing | pivot=(852.5,15.0) | period=20000ms
+bg_base_sky.png | window lightning | static registered glass mask | period=31000ms

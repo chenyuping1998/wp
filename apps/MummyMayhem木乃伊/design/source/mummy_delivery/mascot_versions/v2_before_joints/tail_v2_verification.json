@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "frames": 419,
+  "minOpaqueOverlapSamples": 81,
+  "patchSamples": 81,
+  "worst": "idle@0.000",
+  "root": "tail1"
+}

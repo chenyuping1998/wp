@@ -289,4 +289,13 @@
 		border-color: #e8725e !important;
 		outline: none !important;
 	}
+
+ /* Covered cards need their own text surface; keep plain-card colours intact. */
+ :global(.bonus-card-wrap.has-cover){min-height:300px !important;isolation:isolate}
+ :global(.bonus-card-wrap.has-cover .cover){position:absolute !important;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2 !important}
+ :global(.bonus-card-wrap.has-cover .scrim){position:absolute !important;inset:0;z-index:-1 !important;background:linear-gradient(180deg,#092e38f5 0%,#092e38e8 33%,#092e3830 65%,#092e38d9 100%) !important}
+ :global(.bonus-card-wrap.has-cover .info){position:relative;z-index:1}
+ :global(.bonus-card-wrap.has-cover .title),:global(.bonus-card-wrap.has-cover .title span){color:#ffe6a0 !important;text-shadow:0 2px 3px #08232d !important}
+ :global(.bonus-card-wrap.has-cover .description),:global(.bonus-card-wrap.has-cover .description span),:global(.bonus-card-wrap.has-cover .price),:global(.bonus-card-wrap.has-cover .price span){color:#fff4da !important;text-shadow:0 1px 3px #08232d !important}
+ @media(max-width:600px){:global(.bonus-card-wrap.has-cover){min-height:310px !important}}
 </style>

@@ -4,15 +4,16 @@
 	 * 靜態). The meshes (bgProps.ts) move the corn, trees, clouds and craft; this
 	 * is the light and what flies:
 	 *
-	 *   stars      every star on the plate twinkles on its own clock, a few
-	 *              brightening hard now and then
+	 *   stars      every star on the plate breathes faintly on its own clock
 	 *   windows    the barn and the village flicker like lamplight
-	 *   fireflies  drift over the empty field in the middle — which is all a
-	 *              portrait phone sees of this plate, cropped about its centre
-	 *   meteor     a shooting star crosses the sky every ~11s
-	 *   base       the little saucer's rim lights pulse
-	 *   feature    the mothership's ports chase, the beam shimmers with motes
-	 *              rising in it, the crop circle breathes
+	 *   meteor     a thin shooting star crosses the sky now and then
+	 *   feature    the mothership's ports chase, the beam shimmers, the crop
+	 *              circle breathes
+	 *
+	 * 2026-11-06 (user: 不要有粗糙的光暈或亮點): the fireflies, the motes rising
+	 * in the beam, the flaring stars and the meteor's white head were glow dots
+	 * floating over a printed poster — all removed. The stars stay small and dim
+	 * (a breath, not a sparkle).
 	 *
 	 * All of it is the plate's own pixels added back (design/build_bg_night.py)
 	 * or a soft glow — no new shapes. requestAnimationFrame, not setInterval:
@@ -75,17 +76,14 @@
 		STARS.filter(([x, y]) => props.scene === 'base' || !(x > SHIP[0] && x < SHIP[2] && y < SHIP[3])).map(([x, y, r], i) => ({
 			x,
 			y,
-			size: 14 + Math.min(r, 30) * 1.4,
-			rate: 0.6 + ((i * 37) % 11) / 8,
+			size: 8 + Math.min(r, 30) * 0.7,
+			rate: 0.35 + ((i * 37) % 11) / 16,
 			phase: (i * 2.39) % (Math.PI * 2),
-			flare: i % 7 === 0,
 		})),
 	);
 	const twinkle = (s: (typeof stars)[number]) => {
-		const base = 0.35 + 0.3 * Math.sin(t * s.rate + s.phase) + 0.15 * Math.sin(t * s.rate * 2.7 + s.phase * 3);
-		// one in seven flares up now and then
-		const flare = s.flare ? Math.max(0, Math.sin(t * 0.45 + s.phase) - 0.86) * 6 : 0;
-		return Math.max(0, base + flare + 0.3 * stir);
+		const base = 0.2 + 0.1 * Math.sin(t * s.rate + s.phase) + 0.04 * Math.sin(t * s.rate * 2.7 + s.phase * 3);
+		return Math.max(0, base + 0.1 * stir);
 	};
 
 	// lamplight: two unrelated rates and a rare dip
@@ -95,26 +93,8 @@
 		return Math.max(0, 0.55 + 0.18 * a - 0.3 * dip + 0.35 * stir);
 	};
 
-	// fireflies over the field, centred where a phone's crop looks
-	const FLIES = Array.from({ length: 16 }, (_, i) => ({
-		cx: 560 + ((i * 397) % 820),
-		cy: 520 + ((i * 211) % 300),
-		rx: 40 + ((i * 53) % 70),
-		ry: 18 + ((i * 29) % 30),
-		speed: 0.18 + ((i * 17) % 9) / 40,
-		phase: i * 1.7,
-		blink: 0.5 + ((i * 13) % 7) / 7,
-	}));
-	const fly = (f: (typeof FLIES)[number]) => {
-		const a = t * f.speed + f.phase;
-		const p = at(f.cx + Math.sin(a) * f.rx + Math.sin(a * 2.3) * 12, f.cy + Math.sin(a * 1.4 + 1) * f.ry - Math.sin(a * 0.5) * 20);
-		// a firefly glows, goes dark, glows again
-		const on = Math.max(0, Math.sin(t * f.blink * 2 + f.phase * 3)) ** 2;
-		return { ...p, alpha: 0.9 * on, size: 26 * sx };
-	};
-
 	// a shooting star: once every METEOR_EVERY s, a fast streak down-right
-	const METEOR_EVERY = 11;
+	const METEOR_EVERY = 23;
 	const drawMeteor = (g: PixiGraphics) => {
 		g.clear();
 		const n = Math.floor((t + 4) / METEOR_EVERY);
@@ -125,19 +105,16 @@
 		const len = 260;
 		const head = at(x0 + len * u, y0 + len * 0.42 * u);
 		const tail = at(x0 + len * Math.max(0, u - 0.35), y0 + len * 0.42 * Math.max(0, u - 0.35));
-		const a = Math.sin(u * Math.PI);
-		g.moveTo(tail.x, tail.y).lineTo(head.x, head.y).stroke({ width: Math.max(1.5, 3 * sx), color: 0xfff6d8, alpha: a, cap: 'round' });
-		g.circle(head.x, head.y, Math.max(1.5, 3.5 * sx)).fill({ color: 0xffffff, alpha: a });
+		const a = Math.sin(u * Math.PI) * 0.7;
+		// tapered: three segments thinning and fading toward the tail, no head dot
+		for (let k = 0; k < 3; k++) {
+			const f0 = k / 3, f1 = (k + 1) / 3;
+			const p0 = { x: head.x + (tail.x - head.x) * f0, y: head.y + (tail.y - head.y) * f0 };
+			const p1 = { x: head.x + (tail.x - head.x) * f1, y: head.y + (tail.y - head.y) * f1 };
+			g.moveTo(p0.x, p0.y).lineTo(p1.x, p1.y).stroke({ width: Math.max(1, 2.2 * sx * (1 - k * 0.3)), color: 0xfff6d8, alpha: a * (1 - k * 0.32), cap: 'round' });
+		}
 	};
 
-	// feature: rising motes in the beam
-	const MOTES = Array.from({ length: 14 }, (_, i) => ({ x: 900 + ((i * 47) % 140), speed: 0.25 + ((i * 7) % 5) / 12, phase: (i * 0.137) % 1 }));
-	const mote = (m: (typeof MOTES)[number]) => {
-		const u = (t * m.speed + m.phase) % 1;
-		// the beam narrows toward the ship: pull the mote in as it rises
-		const x = 967 + (m.x - 967) * (1 - u * 0.55);
-		return { ...at(x + Math.sin(t * 2 + m.phase * 9) * 5, 470 - u * 300), alpha: Math.sin(u * Math.PI) * 0.85, size: 16 * sx };
-	};
 </script>
 
 <Container>
@@ -152,7 +129,7 @@
 		height={MOON[2] * 3.4 * sy}
 		tint={0xfff1c8}
 		blendMode="add"
-		alpha={0.18 + 0.07 * Math.sin(t * 0.8) + 0.15 * stir}
+		alpha={0.13 + 0.04 * Math.sin(t * 0.8) + 0.08 * stir}
 	/>
 
 	{#each stars as s, i (i)}
@@ -175,14 +152,6 @@
 		<Sprite key="night_ship_lights" {...box('ship_lights')} y={box('ship_lights').y + bob} blendMode="add" alpha={0.45 + 0.4 * Math.sin(t * 4.2) ** 2 + 0.3 * stir} />
 		<Sprite key="night_ship_beam" {...box('ship_beam')} blendMode="add" alpha={0.3 + 0.18 * Math.sin(t * 2.3) + 0.08 * Math.sin(t * 9.1) + 0.3 * stir} />
 		<Sprite key="night_ship_circle" {...box('ship_circle')} blendMode="add" alpha={0.25 + 0.25 * Math.sin(t * 1.6) ** 2 + 0.3 * stir} />
-		{#each MOTES as m, i (i)}
-			{@const p = mote(m)}
-			<Sprite key="night_soft_glow" anchor={0.5} x={p.x} y={p.y} width={p.size} height={p.size} tint={0x9cffc8} blendMode="add" alpha={p.alpha} />
-		{/each}
 	{/if}
 
-	{#each FLIES as f, i (i)}
-		{@const p = fly(f)}
-		<Sprite key="night_soft_glow" anchor={0.5} x={p.x} y={p.y} width={p.size} height={p.size} tint={0xd8ff7a} blendMode="add" alpha={p.alpha} />
-	{/each}
 </Container>

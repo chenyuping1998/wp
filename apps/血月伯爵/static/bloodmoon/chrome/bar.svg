@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="128" viewBox="0 0 1536 128"><defs>
+ <linearGradient id="iron" x2="0" y2="1"><stop stop-color="#27212d"/><stop offset=".18" stop-color="#101319"/><stop offset=".8" stop-color="#090c13"/><stop offset="1" stop-color="#291322"/></linearGradient>
+ <linearGradient id="gold" x2=".1" y2="1"><stop stop-color="#e3c99b"/><stop offset=".22" stop-color="#957452"/><stop offset=".49" stop-color="#493b33"/><stop offset=".7" stop-color="#ba976a"/><stop offset="1" stop-color="#5e493b"/></linearGradient>
+ <radialGradient id="ruby" cx=".45" cy=".3" r=".8"><stop stop-color="#bc4b65"/><stop offset=".33" stop-color="#7a1735"/><stop offset=".8" stop-color="#330b22"/><stop offset="1" stop-color="#160c19"/></radialGradient>
+ <linearGradient id="velvet" x2=".8" y2="1"><stop stop-color="#381b2d"/><stop offset=".5" stop-color="#120f1a"/><stop offset="1" stop-color="#4e152a"/></linearGradient>
+ </defs><path d="M18 3H1518L1533 18V110L1518 125H18L3 110V18Z" fill="url(#iron)" stroke="#0a090d" stroke-width="6"/>
+ <path d="M20 8H1516L1527 20V108L1516 120H20L9 108V20Z" fill="none" stroke="url(#gold)" stroke-width="2"/>
+ <path d="M25 14H1511L1520 23V105L1511 114H25L16 105V23Z" fill="none" stroke="#492b3d" stroke-width="2"/>
+ <path d="M23 24H1513M23 103H1513" stroke="#a63850" stroke-opacity=".28"/>
+ <path d="M30 13 18 29V98L30 111M1506 13 1518 29V98L1506 111" fill="none" stroke="#b7986a" stroke-width="2"/>
+ <path d="M41 28 28 64 41 100 49 64Z M1495 28 1508 64 1495 100 1487 64Z" fill="#220f1c" stroke="#735b48"/>
+ <path d="M768 4 777 12 768 20 759 12Z M768 108 776 116 768 124 760 116Z" fill="#7a203d" stroke="#c3a172"/>
+ <path d="M94 18H1442M94 110H1442" stroke="#d4b181" stroke-opacity=".12"/></svg>

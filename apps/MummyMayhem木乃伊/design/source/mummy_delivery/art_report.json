@@ -1,0 +1,54 @@
+{
+  "h1": {
+    "central_mean_luma": 128.71,
+    "bright_fraction": 0.232
+  },
+  "h2": {
+    "central_mean_luma": 95.46,
+    "bright_fraction": 0.072
+  },
+  "h3": {
+    "central_mean_luma": 111.96,
+    "bright_fraction": 0.227
+  },
+  "h4": {
+    "central_mean_luma": 129.91,
+    "bright_fraction": 0.301
+  },
+  "w": {
+    "central_mean_luma": 148.71,
+    "bright_fraction": 0.406
+  },
+  "s": {
+    "central_mean_luma": 137.5,
+    "bright_fraction": 0.252
+  },
+  "l1": {
+    "central_mean_luma": 61.19,
+    "bright_fraction": 0.064
+  },
+  "l2": {
+    "central_mean_luma": 59.77,
+    "bright_fraction": 0.062
+  },
+  "l3": {
+    "central_mean_luma": 53.57,
+    "bright_fraction": 0.058
+  },
+  "l4": {
+    "central_mean_luma": 73.97,
+    "bright_fraction": 0.058
+  },
+  "l5": {
+    "central_mean_luma": 55.75,
+    "bright_fraction": 0.057
+  },
+  "p": {
+    "central_mean_luma": 116.92,
+    "bright_fraction": 0.161
+  },
+  "x": {
+    "central_mean_luma": 38.7,
+    "bright_fraction": 0.0
+  }
+}

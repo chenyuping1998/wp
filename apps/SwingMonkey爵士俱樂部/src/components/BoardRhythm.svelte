@@ -6,6 +6,7 @@
 	import { getContext } from '../game/context';
 	import { SYMBOL_SIZE, BOARD_SIZES, REEL_PADDING } from '../game/constants';
 	import BoardContainer from './BoardContainer.svelte';
+	import { secondsSinceBeat } from '../game/musicClock';
 
 	const context = getContext();
 	const app = getContextApp();
@@ -38,10 +39,14 @@
 	const draw = (g: PixiGraphics) => {
 		g.clear();
 		const now = clock;
+		// on the band (2026-11-06): the tease edges and the win corners flash with
+		// each beat the listener hears instead of their own sine
+		const since = secondsSinceBeat();
+		const onBeat = since < 0 ? -1 : Math.exp(-since * 8);
 		context.stateGame.board.forEach((reel, i) => {
 			const x = (i + REEL_PADDING - 0.5) * SYMBOL_SIZE;
 			if (reel.reelState.anticipating) {
-				const alpha = 0.4 + 0.15 * Math.sin(now / 180);
+				const alpha = onBeat < 0 ? 0.4 + 0.15 * Math.sin(now / 180) : 0.3 + 0.35 * onBeat;
 				for (const edge of [x + 2, x + SYMBOL_SIZE - 2])
 					g.moveTo(edge, 6).lineTo(edge, BOARD_SIZES.height - 6)
 						.stroke({ width: 2, color: 0xf2b632, alpha });
@@ -65,7 +70,7 @@
 			if (p < 0 || p > 1) continue;
 			const x = (reel + REEL_PADDING - 0.5) * SYMBOL_SIZE + 5, y = (row - 1) * SYMBOL_SIZE + 5;
 			if (y < 0 || y >= BOARD_SIZES.height) continue;
-			const alpha = Math.sin(Math.PI * p) * 0.8;
+			const alpha = Math.sin(Math.PI * p) * (onBeat < 0 ? 0.8 : 0.5 + 0.4 * onBeat);
 			const length = 13 + Math.sin(p * Math.PI) * 9;
 			for (const [cx, cy, dx, dy] of [[x, y, 1, 1], [x + 130, y, -1, 1], [x, y + 130, 1, -1], [x + 130, y + 130, -1, -1]])
 				g.moveTo(cx + dx * length, cy).lineTo(cx, cy).lineTo(cx, cy + dy * length)

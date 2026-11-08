@@ -64,7 +64,7 @@
 	{#if t < 1}
 		<!-- squashed floor flash -->
 		<Sprite
-			key="fxGlow"
+			key="fxSoftGlow"
 			anchor={0.5}
 			y={-6}
 			tint={0xefeadc}
@@ -76,7 +76,7 @@
 		{#each puffs as puff, index (index)}
 			{@const state = puffState(puff)}
 			<Sprite
-				key="fxGlow"
+				key="fxSoftGlow"
 				anchor={0.5}
 				x={state.x}
 				y={state.y}

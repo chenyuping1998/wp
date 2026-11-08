@@ -31,6 +31,8 @@
 	import Anticipations from './Anticipations.svelte';
 	import ScatterWins from './ScatterWins.svelte';
 	import MedusaThrow from './MedusaThrow.svelte';
+	import PetrifyLayer from './PetrifyLayer.svelte';
+	import SerpentLadder from './SerpentLadder.svelte';
 	import Medusa from './Medusa.svelte';
 	import Win from './Win.svelte';
 	import FreeSpinIntro from './FreeSpinIntro.svelte';
@@ -83,11 +85,15 @@
 			<Medusa />
 			<Board />
 			<TumbleLayer />
+			<!-- Petrify Gaze: stones arriving and cracking open over the board -->
+			<PetrifyLayer />
 			<Anticipations />
 			<ScatterBurst />
 			<ScatterWins />
 			<!-- after the win marks: the orbs fly over whatever is left on the board -->
 			<MedusaThrow />
+			<!-- free game only: snakes under the running-total plate -->
+			<SerpentLadder />
 		</MainContainer>
 
 		<EntryReveal />

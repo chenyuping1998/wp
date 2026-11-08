@@ -33,6 +33,8 @@
 	import { SYMBOL_SIZE, BOARD_DIMENSIONS, BOARD_SIZES } from '../game/constants';
 	import type { SymbolName } from '../game/types';
 	import { MESH_WIN_LONGEST_MS } from '../game/meshWin';
+	import { beatMs, gridMs, musicLive } from '../game/musicClock';
+	import { openPhrases } from '../game/jazzBand';
 	import { stateBetDerived } from 'state-shared';
 
 	const context = getContext();
@@ -56,7 +58,12 @@
 	// trivial, and it avoids pixi v8's mask/hole API entirely — inverse masks are
 	// the kind of thing that works until a version bump.
 
-	const REVEAL_STAGGER = { normal: 90, fast: 40 };
+	// ON THE BAND (2026-11-06): one reel per sixteenth of the running music
+	// (117 ms at the base game's 128 bpm, 94 at the free game's 160), thirty-
+	// seconds when fast; winInfo starts the wake on the grid, and each reel that
+	// lights plays a vibes note a chord tone higher (Sound.svelte soundWinWake).
+	// Without music, gridMs falls back to 128 bpm.
+	const REVEAL_STAGGER = { normal: () => gridMs(4), fast: () => gridMs(8) };
 	const HOLD_AFTER_MS = 220;
 
 	// A symbol's win act runs ~1.2-1.5s (game/meshWin). The reveal itself is far
@@ -191,27 +198,19 @@
 			show = true;
 			context.eventEmitter.broadcast({ type: 'boardShow' });
 
-			const stagger = fast || stateBet.isTurbo ? REVEAL_STAGGER.fast : REVEAL_STAGGER.normal;
+			const stagger = fast || stateBet.isTurbo ? REVEAL_STAGGER.fast() : REVEAL_STAGGER.normal();
+			// the first copy of each instrument is heard (SymbolMeshWin claims it)
+			openPhrases(!!audible);
 
 			// Widest win decides how far the wake travels; reels beyond it hold
 			// nothing, so stopping there keeps a 3-of-a-kind from waiting out two
 			// empty steps.
 			const lastReel = Math.max(...usable.flatMap((w) => w.positions.map((p) => p.reel)));
-			const heard = new Set<string>();
-
 			for (let reel = 0; reel <= lastReel; reel++) {
 				revealedReels = reel + 1;
-				animatePositions(usable.flatMap((w) => w.positions.filter((p) => p.reel === reel)));
-				// The first lit copy starts each instrument's phrase. Further copies
-				// play visibly in their own cells without stacking the same audio.
-				if (audible) for (const win of usable) {
-					const symbol = win.symbol;
-					if (!win.positions.some((p) => p.reel === reel) || heard.has(symbol)) continue;
-					if (symbol === 'H1' || symbol === 'H2' || symbol === 'H3' || symbol === 'H4') {
-						heard.add(symbol);
-						context.eventEmitter.broadcast({ type: 'soundInstrumentPhrase', symbol, quick: stateBet.isTurbo });
-					}
-				}
+				const onReel = usable.flatMap((w) => w.positions.filter((p) => p.reel === reel));
+				animatePositions(onReel);
+				if (onReel.length && audible) context.eventEmitter.broadcast({ type: 'soundWinWake', index: reel });
 				await waitForTimeout(stagger);
 				if (mine !== generation) return;
 			}
@@ -225,9 +224,11 @@
 			// Turbo opts out of the extended hold: there the player asked for speed
 			// and a clipped win animation is the trade they made.
 			const elapsed = (lastReel + 1) * stagger;
+			// on the band, an act waits up to a beat for its first hit (jazzBand.ts)
+			const onBand = musicLive() && stateBetDerived.timeScale() <= 1.05 ? beatMs() : 0;
 			const hold = stateBet.isTurbo
 				? HOLD_AFTER_MS
-				: Math.max(HOLD_AFTER_MS, WIN_ANIM_VISIBLE_MS / stateBetDerived.timeScale() - elapsed);
+				: Math.max(HOLD_AFTER_MS, (WIN_ANIM_VISIBLE_MS + onBand) / stateBetDerived.timeScale() - elapsed);
 			await waitForTimeout(hold);
 			if (mine !== generation) return;
 		},

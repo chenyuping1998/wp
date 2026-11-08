@@ -168,6 +168,35 @@ def hit(index,seconds=.16):
                         (fit(sample(f'foley/bfh1_hit_{index%5+1:02d}.ogg'),seconds),0,.25),
                         (fit(sample(WATER),seconds),0,.15)])
 
+def stop_click(index,seconds=.18):
+    # 2026-11-01 (user: 每一輪的停輪音沒聽到). The stops were hit(): a wood knock
+    # under a kick drum, 95% of the energy below 400 Hz — the band a phone or
+    # laptop speaker cannot reproduce, so on the devices players use the stop
+    # was silent at any volume. Bananeon's audible stops sit at 400–4000 Hz.
+    # Same wood takes, high-passed into that band, with a click transient on
+    # top and only a trace of drum for weight. Pitched a step per reel.
+    if THEME!='ninja':return hit(index,seconds)
+    up=index*.7
+    # high-passed twice: one 2nd-order stage left these takes mostly below 400
+    wood=filt(filt(filt(rate(sample(WOOD[index%3]),up),low=450),low=450),high=4200)
+    tick=filt(filt(filt(rate(sample('interface-sounds/click_003.ogg'),up),low=700),low=700),high=5000)
+    body=filt(rate(sample(DRUM),up),low=90,high=240)
+    return fade(mix(seconds,[(fit(wood,seconds),0,.8),(fit(tick,seconds),0,.35),(fit(body,seconds),0,.06)]),.0003,.09)
+
+def blade(name,d):
+    # The blade cues (2026-11-01: 切割盤面的音效不見了). The cut was hit(4) — a
+    # drum knock, and with feature_finish's own drum under it 97% of the cue
+    # sat below 400 Hz, so on small speakers the blade made no sound. Now a
+    # struck-metal ring (the glass hit pitched down a fifth) over a mid-band
+    # wood crack; feature_finish keeps only a trace of drum for blades.
+    air=fade(filt(fit(sample(AIR),min(.45,d)),low=850,high=6300),.004,.23)
+    layers=[(air,0,.35)]
+    if name!='slash_draw':
+        ring=fade(filt(filt(filt(rate(sample(GLASS),-7),low=900),low=900),high=4800),.0005,min(.5,d*.6))
+        crack=fade(filt(filt(filt(sample(WOOD[1]),low=500),low=500),high=3000),.0003,.12)
+        layers+=[(fit(ring,d),0,.55),(fit(crack,d),0,.75),(fit(sample(BREAK),min(d,.38)),0,.10)]
+    return mix(d,layers)
+
 def fanfare(seconds,tier=0):
     motif=[60,62,67,69,72,74,79,72] if THEME=='ninja' else [60,63,67,70,74,75,79,72]
     layers=[]
@@ -248,11 +277,16 @@ def feature_finish(name, c):
         low = fade(fit(filt(rate(sample(DRUM),-5),low=40,high=260),seconds),.002,min(.35,seconds*.35))
         chest = fade(fit(filt(sample('foley/bfh1_hit_04.ogg'),low=240,high=1600),min(seconds,.32)),.002,.10)
         # Keep a warm wooden attack audible on small speakers as well as subs.
+        # The blade cues keep their weight lighter: their cut lives in the mids,
+        # and this knock's own low end (a 2nd-order 320 Hz high-pass leaves
+        # plenty) was most of what reached a small speaker as mud.
+        blade=name.startswith('slash_')
         wood=filt(fit(sample(WOOD[0]),min(seconds,.24)),low=320,high=2200)
+        if blade:wood=filt(wood,low=480)
         wood=fade(wood,.002,.09)
         wood=wood.gain(.7/max(.001,true_peak(wood.audio)))
-        layers += [(low,0,.42*weight),(chest,0,.22*weight),(wood,0,.65*weight)]
-        if weight>1.3:
+        layers += [(low,0,(.05 if blade else .42)*weight),(chest,0,.22*weight),(wood,0,.65*weight)]
+        if weight>1.3 and not blade:
             layers.append((fade(fit(filt(rate(sample(DRUM),-2),high=700),min(.35,seconds)),.002,.18),.045,.15))
     else:
         # A sampled air/pressure intake sets up contrast before the impact.
@@ -313,7 +347,7 @@ def build():
     deliver('bgm_freespin',music(fg,True),stereo=True,loop=True,lufs=-20,bpm=fg)
     deliver('btn',fit(sample('interface-sounds/click_003.ogg'),.075),-11)
     deliver('spin',mix(duration('spin',.42),[(fade(fit(filt(sample(AIR),low=550,high=4500),.30)),0,.25),(hit(0,.18),0,.5)]),-6)
-    for i in range(1,6):deliver(f'reel_stop_{i}',hit(i,.18),-8+i*.3)
+    for i in range(1,6):deliver(f'reel_stop_{i}',stop_click(i,.18),-6+i*.3)
     tension=mix(2,[(hit(i,.13),i*.25,.12+i*.018) for i in range(8)],wrap=True)
     deliver('reel_tension',tension,-12,loop=True)
     for i,off in enumerate([0,2,4,7,12],1):
@@ -334,11 +368,7 @@ def build():
         deliver(name,room(c,.16),-3.7)
     if THEME=='ninja':
         for name in ['slash_draw','slash_hit','slash_finale']:
-            d=duration(name,.7)
-            air=fade(filt(fit(sample(AIR),min(.45,d)),low=850,high=6300),.004,.23)
-            layers=[(air,0,.35)]
-            if name!='slash_draw':layers += [(hit(4,.24),0,.65),(fit(sample(BREAK),min(d,.38)),0,.10)]
-            deliver(name,mix(d,layers),-7 if name=='slash_draw' else -4.5)
+            deliver(name,blade(name,duration(name,.7)),-7 if name=='slash_draw' else -4.5)
     else:
         d=duration('fuse_sizzle',.38)
         deliver('fuse_sizzle',mix(d,[(fade(fit(rate(sample(WATER),-12),.075),.001,.02),i*.08,.45) for i in range(4)]),-9)

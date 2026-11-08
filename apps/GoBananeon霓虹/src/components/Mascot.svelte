@@ -23,6 +23,7 @@
 	import { stateBet, stateModal } from 'state-shared';
 
 	import { getContext } from '../game/context';
+	import MascotBeatLock from './MascotBeatLock.svelte';
 	import { HOLD_AND_SPIN_MODE_KEY } from '../game/constants';
 	import { MascotIdleDirector, type MascotIdleGesture } from '../game/mascotDirector';
 
@@ -544,6 +545,8 @@
 		/>
 		<!-- Accessories share the room's beat; action strokes keep their own timing. -->
 		<SpineTrack trackIndex={1} animationName="club_flutter" loop timeScale={animationName === 'dj_scratch' ? 1 : clubRate} />
+		<!-- seats the groove on the BGM's beat and holds it there (game/beatClock) -->
+		<MascotBeatLock scene={clubRate === 105 / 125 ? 'base' : 'freespin'} />
 	</SpineProvider>
 
 	<!--

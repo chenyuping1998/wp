@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "frames": 2315,
+  "animations": [
+    "idle",
+    "wave",
+    "point",
+    "throw",
+    "cheer",
+    "laugh",
+    "disappoint",
+    "dance",
+    "face_scan",
+    "face_greet",
+    "face_focus",
+    "face_react",
+    "bandage_flow"
+  ],
+  "expressions": [
+    "head_idle",
+    "head_blink",
+    "head_laugh",
+    "head_talk"
+  ],
+  "events": [
+    "point",
+    "release",
+    "takeoff",
+    "land",
+    "face_open",
+    "face_close",
+    "face_open",
+    "face_close"
+  ],
+  "atlasPages": [
+    "mummyCat.png",
+    "head_laugh.png",
+    "head_idle.png",
+    "head_blink.png",
+    "head_talk.png",
+    "flow_bandage.png"
+  ]
+}

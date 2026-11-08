@@ -1,0 +1,71 @@
+{
+  "runtime": "4.1.56",
+  "renderer": "pixi8-native-mesh",
+  "atlasUVs": "logical-export-dimensions",
+  "stages": {
+    "big": {
+      "skeleton": "/bloodmoon/win-spine/big/G145_BigWin.json",
+      "atlas": "/bloodmoon/win-spine/big/G145_BigWin.atlas",
+      "animation": "BigWin_Ani",
+      "duration": 6.6667,
+      "editor": "4.1.23",
+      "imageSize": [
+        2048,
+        2048
+      ],
+      "sha256": {
+        "json": "64de7cc981ca49b9ff4e7da0945546b8c77b190cc2b95435d7f5b5c0540a2096",
+        "atlas": "fe6557da340ebeb6b05a3bc9e69432bca6f602be8c360a3bc237861b040ed1a2",
+        "png": "ccee781941485323f5f750569d994d5ef9dd848f21511144f86df0ddffba5880"
+      }
+    },
+    "super": {
+      "skeleton": "/bloodmoon/win-spine/super/G145_SuperWin.json",
+      "atlas": "/bloodmoon/win-spine/super/G145_SuperWin.atlas",
+      "animation": "animation",
+      "duration": 6.6667,
+      "editor": "4.1.23",
+      "imageSize": [
+        2048,
+        2048
+      ],
+      "sha256": {
+        "json": "2295deb34866b535c88a183d9d72f6a202b3bad32e9d283b4f5fd65ab12fcc70",
+        "atlas": "723ff73a2e3e430bfc41380c6b36c9b92d1cb68a2616832e02b1090b2bf3d34b",
+        "png": "4f4a19eef2aa85dcb4471b87c7db4663422dd469579f6c6671978e8e65b75453"
+      }
+    },
+    "mega": {
+      "skeleton": "/bloodmoon/win-spine/mega/G145_MegaWin.json",
+      "atlas": "/bloodmoon/win-spine/mega/G145_MegaWin.atlas",
+      "animation": "animation",
+      "duration": 6.8333,
+      "editor": "4.1.23",
+      "imageSize": [
+        2048,
+        2048
+      ],
+      "sha256": {
+        "json": "8f62b4a06696c588e6438df744ef67ce561f875a446605c6df7f578eda067f56",
+        "atlas": "e165662af6a7c1c2b72d2e5d2c0a97381fa39302d1606cea416abe7bde59e6a6",
+        "png": "54484d83c1f0353951999de174ed730c7be3578e3263619bc7fda45e13ae415b"
+      }
+    },
+    "epic": {
+      "skeleton": "/bloodmoon/win-spine/epic/G145_EpicWin.json",
+      "atlas": "/bloodmoon/win-spine/epic/G145_EpicWin.atlas",
+      "animation": "animation",
+      "duration": 7.6667,
+      "editor": "4.1.23",
+      "imageSize": [
+        2048,
+        2048
+      ],
+      "sha256": {
+        "json": "4ec7ee3df927662701297d71fe218709097f11f16bbce2e5a995e4e9c27b05c9",
+        "atlas": "e997912a440ca5a0902245c7fdde24a0deff5211310e718073941ecf2aaaa2bd",
+        "png": "b53c7d23547738774db357aa30691ae1d6da4b579034ed9bfa79f267fad98d3c"
+      }
+    }
+  }
+}

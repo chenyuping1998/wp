@@ -8,6 +8,10 @@
 
 輸出同步寫入 `static/assets/audio/neon/` 與 `design/source/neon_delivery/audio/`；BGM 是 192 kbps stereo MP3，其餘新成品為 44.1 kHz／16-bit WAV，大獎 fanfare 使用 stereo。
 
+## 節奏套件（2026-11-06）
+
+跑分與期待音不再用 2 秒 120 BPM 循環：`seq_tick`／`seq_kick`／`seq_note` 由 Sound.svelte 的音序器排在 BGM 本身的 16 分音格上（跑分的琶音跟著當下和弦）。`reel_tension.wav` 改成只有空氣聲的底。只重建這四檔：`python design/build_neon_rhythm_kit.py`（不需 ffmpeg）。完整 V3 建置也會呼叫同一個 `rhythm_kit()`。
+
 ## 授權
 
 逐成品來源請看 [OUTPUT_SOURCES.md](OUTPUT_SOURCES.md) 和 [LICENSES.json](LICENSES.json)。`SOURCES.json` 記錄取得的原件，`VCSL-LICENSE.txt`、Kenney 原附 License.txt 與來源網頁保存了授權證據。三個原核可角色檔案不更動。

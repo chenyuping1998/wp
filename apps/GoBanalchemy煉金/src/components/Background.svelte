@@ -28,7 +28,7 @@
 	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame' && !isHoldAndSpin);
 	const showFeatureBackground = $derived(context.stateGame.gameType === 'freegame' && !isHoldAndSpin);
 
-	const clock = $derived(presentation.clock);
+	const clock = $derived(presentation.ambientClock);
 
 	// ── slow ken-burns drift over a small overscan, so the still jungle art
 	// breathes instead of sitting dead behind the reels ────────────────────────

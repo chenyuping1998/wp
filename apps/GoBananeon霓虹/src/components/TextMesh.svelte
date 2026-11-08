@@ -25,6 +25,7 @@
 	import { getContextApp, getContextParent } from 'pixi-svelte';
 	import { onMount } from 'svelte';
 
+	import { musicAt } from '../game/beatClock';
 	import { GAME_FONT, GAME_FONT_WEIGHT } from '../game/fonts';
 	import { verticalFill } from '../game/gradientFill';
 	import { deformText, type TextAct, type TextEnv } from '../game/meshWin/textMesh';
@@ -218,8 +219,10 @@
 		const wall = Date.now();
 		const since = (at: number | undefined) => (at === undefined || at < 0 ? -1 : Math.max(0, wall - at));
 		const at = props.at;
+		const music = musicAt(performance.now());
 		const env: TextEnv = at
 			? {
+					kickAgeMs: music.live ? music.sinceKickMs : undefined,
 					spinT: since(at.spin),
 					retrigT: since(at.retrig),
 					levelT: since(at.level),

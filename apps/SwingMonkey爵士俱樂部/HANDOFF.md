@@ -172,3 +172,17 @@ E:\stake\tools\node-v22.23.1-win-x64\corepack.cmd pnpm build
 ## 2026-10-18 笑聲對齊 10 拍 HA!（Claude）
 - 笑臉動畫照 `laughTiming.json` 跑 10 拍（首拍 480ms、每 280ms、3650ms 收），舊 `swing/voice_laugh.wav` 太短（≤1.45s）且無分明音節，第三個 HA! 之後無聲張嘴。比照保齡球猴重做。
 - `design/generate_laugh_voice.py`（從 StrikeMonkey 移植，原創共振峰合成，讀 laughTiming.json）：10 聲各對一拍，每聲個別拉平音量、音高中段最高，尾巴吸氣；3.73s。本款音色：低沉渾厚的「呵哈」（基頻 205Hz、/ɔ-a/、每聲 0.23s）。舊檔備份在 session scratchpad。改 laughTiming 後要重跑。接法未動；未上機聽過。
+
+## 2026-11-06 動畫與音效節奏（Claude）
+
+使用者：「動畫跟音效節奏方面要更強」。先量了現況：BGM（`tools/build_three_theme_audio.py`）是 154/172 BPM 的**直拍**，根本不是搖擺；H1–H4 樂器演奏跑自己的 ~107 BPM（JAZZ_HITS 每 280ms）；停輪只有 7% 能量在 400Hz 以上（手機喇叭等於沒聲），收集 3%、大獎重擊 18%。
+
+- **音效整套重做** `design/generate_swing_audio_v2.py`＋`design/swing_dsp.py`（48 kHz，Putt 的 putt_dsp＋爵士樂器：疊鈸、hi-hat、rimshot、鋼琴、直立貝斯、弱音小號、薩克斯風、斑鳩琴、小號 shake）。全部 F 大調；需要被聽到的 cue 守門 ≥55% 在 400Hz 以上。舊檔在 `design/source/swing/audio/gen1_20261106/`；笑聲、voice_hup 不動。舊 `instrument_*.wav` 已刪。音檔總量 6.2MB → 11MB（大獎號角含殘響最大），要省可縮殘響或改 22k。
+- **BGM 真搖擺**：基本 128 BPM（swing 0.64）、FG 160 BPM（0.6），16 小節 F 大調爵士和弦進行，walking bass、Charleston 鋼琴、弱音小號/薩克斯旋律；各出 bed＋groove（鼓組，FG 另含銅管背景）兩支 MP3。
+- **Sound.svelte** 換成 Putt 的 Web Audio 引擎（解碼後排程、POLY 疊音、groove 自適應：靜止 0.34／FG 0.6，轉動/期待/中獎/大獎牌時 1）。FG 結束切回 bgm_main（茶樓底共有 bug，本款原本沒修）。
+- **節拍時鐘** `src/game/musicClock.ts`：網格、`heardPerf`（換算成聽到的時間給畫面用）、和弦表 `CHORDS`。`design/check_swing_music.mjs`（已接進 build）比對產生器與 runtime 的和弦/速度，改其中一邊另一邊沒跟會擋。
+- **樂器跟樂團演奏** `src/game/jazzBand.ts`：H1–H4、W、S 中獎動作用分段線性時間扭曲，把原本的擊點搬到樂團的搖擺拍點上（第一擊不早於原本前奏的 60%、對到下一拍）；樂器改成單音取樣（inst_sax/bass/snare/banjo×3 和弦性質），在同一批拍點排程、音高取當下和弦音。每種樂器一次只出一份聲音（claimPhrase）。Turbo 或沒音樂時照原時間。背景燈/背景道具改聽 `soundJazzNotes`。離線測試 `design/qa_jazz_band.mjs`。
+- **對拍的地方**：停輪五軸依序走當下和弦音；收集唱片逐張往上走和弦音；winInfo 等下一個十六分音符、逐軸亮起間隔＝十六分音符並各響一個 vibes 音；期待鼓滾與計數疊鈸是一小節循環、依小節相位與速度起播；大獎號角對到八分音符。
+- **大獎逐級升階**（照飛碟）：BIG→…→最終等級，每級重砸＋換牌＋換號角；計數長度每級取整拍數、從下一拍開始，所以每次升級都落在拍上；金額每拍 1→1.06 脈衝；計數時有疊鈸循環，數完一聲銅管收尾。FG 結算牌仍由 bookEventHandlerMap 放號角。
+- **人物鎖拍** `MascotBeatLock.svelte`：jazzIdle 拉成偶數拍並鎖在小節上；jazzGroove 指揮以樂團速度播、下拍對齊聽到的拍點。舞台聚光燈在中獎/期待時於第 1、3 拍輕微呼吸；BoardRhythm 期待邊線與中獎角標隨拍閃。
+- `pnpm build` 通過（`design/build_20261106_rhythm_final.log`，型別 13 項，低於基準 14）。**未上機、沒人耳聽過**：音色、混音、搖擺感與拍點對齊（輸出延遲換算）都要實機確認。

@@ -65,7 +65,9 @@
 	const valueSize = $derived(Math.min((RY * 1.2) / 0.88, (RX * 1.55) / ((value.length - 1) * 0.49 + 0.47)));
 
 	// Gold tier only: one flash as the cow lands, then it sits still. A warm
-	// bloom swells behind the tag, the tag pops, a glint crosses its rim (~650ms).
+	// soft backlight swells behind the tag and the tag pops (~650ms). (The hard
+	// gold disc and the star sprite that used to do this read as rough
+	// highlights — removed 2026-11-06.)
 	const flash = new Tween(1);
 	$effect(() => {
 		if (props.landing && tier.flash) {
@@ -78,7 +80,6 @@
 	const rise = (a: number, b: number) => Math.max(0, Math.min(1, (t - a) / (b - a)));
 	const bloom = $derived(Math.sin(Math.PI * rise(0, 1)) ** 1.5);
 	const pop = $derived(1 + 0.16 * Math.sin(Math.PI * rise(0.05, 0.55)));
-	const glint = $derived(Math.sin(Math.PI * rise(0.2, 0.8)));
 </script>
 
 <Container x={props.x ?? 0} y={props.y ?? 0} scale={props.scale ?? 1} alpha={props.alpha ?? 1}>
@@ -90,12 +91,13 @@
 	>
 		{#if flashing}
 			<Sprite
-				key="fxGlow"
+				key="fxSoft"
 				anchor={0.5}
-				tint={0xffd34d}
-				width={RX * (3 + 1.6 * rise(0, 0.6))}
-				height={RX * (3 + 1.6 * rise(0, 0.6))}
-				alpha={bloom * 0.85}
+				tint={0xffd77a}
+				blendMode="add"
+				width={RX * (3.2 + 1.2 * rise(0, 0.6))}
+				height={RX * (3.2 + 1.2 * rise(0, 0.6))}
+				alpha={bloom * 0.45}
 			/>
 		{/if}
 		<Container y={-DROP} scale={pop}>
@@ -126,19 +128,5 @@
 				/>
 		</Container>
 		</Container>
-		{#if flashing && glint > 0}
-			<Sprite
-				key="fxStar"
-				anchor={0.5}
-				x={RX * 0.62}
-				y={-RY * 0.62}
-				rotation={t * 1.2}
-				tint={0xfff4c2}
-				blendMode="add"
-				width={RX * 1.2 * glint}
-				height={RX * 1.2 * glint}
-				alpha={glint}
-			/>
-		{/if}
 	</Container>
 </Container>

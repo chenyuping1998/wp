@@ -5,6 +5,7 @@
  import config from '../../game/config';
  import { getSocialTerms } from '../../game/socialTerms';
  import MechanicGuide from './MechanicGuide.svelte';
+ import InfoIndex from './InfoIndex.svelte';
  const { kind, children }: {kind:'rules'|'paytable';children:Snippet}=$props();
  const T=getSocialTerms();
  const rows=config.numRows?.[0]??4;
@@ -24,17 +25,19 @@
  </nav>
  <div class="journal-facts"><span><b>{rows} × {reels}</b> Base grid</span><span><b>{ways.toLocaleString()}</b> {T.ways}</span><span><b>→</b> Left to right</span></div>
  {#if kind==='rules'}<MechanicGuide />{/if}
+ <InfoIndex />
  <div class="info-content">{@render children()}</div>
 </div>
 <style>
- .info-shell{--ink:#0a1b28;--raised:#193443;--trim:#c5a46a;--glow:#f6d7a0;color:#f4edda;background:var(--ink);border:1px solid color-mix(in srgb,var(--trim) 65%,transparent);border-radius:20px;box-shadow:0 24px 90px #0008,inset 0 1px #fff1;overflow:hidden;text-align:left}
+ .info-shell{--ink:#0a1b28;--raised:#193443;--trim:#c5a46a;--glow:#f6d7a0;color:#f4edda;background:var(--ink);border:1px solid color-mix(in srgb,var(--trim) 65%,transparent);border-radius:20px;box-shadow:0 24px 90px #0008,inset 0 1px #fff1;overflow:clip;text-align:left}
+ /* clip, not hidden: hidden makes the shell a scroll container of its own, and the sticky tabs then stick to a box that never scrolls */
  .journal-head{position:relative;display:flex;gap:18px;align-items:center;padding:26px 28px 22px;background:radial-gradient(ellipse at 90% 0,color-mix(in srgb,var(--trim) 16%,transparent),transparent 65%),linear-gradient(135deg,var(--raised),var(--ink));border-bottom:1px solid #ffffff0d}
  .journal-crest{width:72px;height:72px;flex:none;filter:drop-shadow(0 5px 8px #0007)}
  .journal-kicker{font:600 10px/1.4 system-ui;letter-spacing:.24em;color:var(--trim)}
  h2{margin:4px 0 5px;font-size:clamp(21px,3.5vw,30px);font-weight:400;line-height:1.15;color:#fff1d4}
  .journal-head p{font:400 13px/1.5 system-ui;margin:0;color:#bac8c7}
  .journal-edition{margin-left:auto;margin-right:17px;padding-left:12px;align-self:flex-start;text-align:center;font:600 11px/1.8 system-ui;letter-spacing:.13em;color:var(--trim);opacity:.65}
- .journal-tabs{display:flex;gap:5px;background:#0002;padding:10px 22px 0;border-bottom:1px solid color-mix(in srgb,var(--trim) 35%,transparent);position:sticky;top:0;z-index:3;backdrop-filter:blur(16px)}
+ .journal-tabs{display:flex;gap:5px;background:color-mix(in srgb,var(--ink) 92%,transparent);padding:10px 22px 0;border-bottom:1px solid color-mix(in srgb,var(--trim) 35%,transparent);position:sticky;top:0;z-index:3;backdrop-filter:blur(16px)}
  button{appearance:none;flex:1;border:0;background:transparent;color:#aebfbe;padding:14px 10px 15px;font:600 14px/1.2 system-ui;cursor:pointer;border-bottom:2px solid transparent;display:flex;justify-content:center;gap:18px;align-items:center;transition:color .15s,background .15s}
  button span{font:500 10px system-ui;opacity:.55}
  button.chosen{color:#fff1d4;border-bottom-color:var(--trim);background:linear-gradient(0deg,color-mix(in srgb,var(--trim) 12%,transparent),transparent)}

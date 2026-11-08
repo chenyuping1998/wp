@@ -3,6 +3,17 @@
 // Paths stay literal: Vite only bundles new URL() with a static string.
 
 export default {
+ mgStoneCrack3: {type:'sprite',src:new URL('../../assets/sprites/medusaFx/stone_crack_3.png',import.meta.url).href,preload:true},
+ mgStoneCrack2: {type:'sprite',src:new URL('../../assets/sprites/medusaFx/stone_crack_2.png',import.meta.url).href,preload:true},
+ mgStoneCrack1: {type:'sprite',src:new URL('../../assets/sprites/medusaFx/stone_crack_1.png',import.meta.url).href,preload:true},
+ mgLadderLv4: {type:'sprite',src:new URL('../../assets/sprites/medusaUi/ladder_lv4.png',import.meta.url).href,preload:true},
+ mgLadderLv3: {type:'sprite',src:new URL('../../assets/sprites/medusaUi/ladder_lv3.png',import.meta.url).href,preload:true},
+ mgLadderLv2: {type:'sprite',src:new URL('../../assets/sprites/medusaUi/ladder_lv2.png',import.meta.url).href,preload:true},
+ mgLadderLv1: {type:'sprite',src:new URL('../../assets/sprites/medusaUi/ladder_lv1.png',import.meta.url).href,preload:true},
+ mgGazeSweep: {type:'sprite',src:new URL('../../assets/sprites/medusaFx/gaze_sweep.png',import.meta.url).href,preload:true},
+ mgSnakePipOff: {type:'sprite',src:new URL('../../assets/sprites/medusaUi/snake_pip_off.png',import.meta.url).href,preload:true},
+ mgSnakePipOn: {type:'sprite',src:new URL('../../assets/sprites/medusaUi/snake_pip_on.png',import.meta.url).href,preload:true},
+ mgLadderPanel: {type:'sprite',src:new URL('../../assets/sprites/medusaUi/ladder_panel.png',import.meta.url).href,preload:true},
 	mgLoader: { type:'sprite', src:new URL('../../assets/sprites/medusaBrand/loader.png',import.meta.url).href, preload:true },
 	mgCastAtlas: {
 		type: 'sprite',
@@ -229,6 +240,12 @@ export default {
 	mgS: {
 		type: 'sprite',
 		src: new URL('../../assets/sprites/medusaSymbols/s.png', import.meta.url).href,
+		preload: true,
+	},
+	// Petrify Gaze stone (ST): placed by the petrify event, never on the strips
+	mgST: {
+		type: 'sprite',
+		src: new URL('../../assets/sprites/medusaSymbols/st.png', import.meta.url).href,
 		preload: true,
 	},
 	mgH1: {

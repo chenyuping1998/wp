@@ -3,7 +3,9 @@ import baked from './data/treasureBeachGenerator.json' with {type:'json'};
 export const BEACH_LOOP_MS=baked.durationMs;
 // Measured against bg_base.jpg: leave the horizon, shoreline and all foreground
 // silhouettes rigid. Exact zero-weight grid lines also bound affected triangles.
-export const BEACH_WATER_BOUNDS={left:.17,right:.85,top:.285,bottom:.435} as const;
+// 2026-11-01: bottom .435 -> .47 takes in the foam line on the sand, which now
+// runs up the beach and draws back (the swash below).
+export const BEACH_WATER_BOUNDS={left:.17,right:.85,top:.285,bottom:.47} as const;
 const ease=(value:number)=>{
  const t=Math.max(0,Math.min(1,value));
  return t*t*t*(10+t*(-15+6*t));
@@ -46,7 +48,10 @@ export function createBeachMesh(columns=96,rows=54){
 }
 
 export type BeachMesh=ReturnType<typeof createBeachMesh>;
-/** Normalised positions; the original 1920x1080 image moves by at most ~3px. */
+const SWASH_PERIOD=BEACH_LOOP_MS/2;
+const SWASH=.012;
+/** Normalised positions. Open water moves ~2-3px; the shoreline foam runs up
+ *  and back ~7px every 3.6s, so the sea reads as arriving on the sand. */
 export function deformBeachMesh(mesh:BeachMesh,time:number,reduced=false,out=new Float32Array(mesh.rest.length)){
  out.set(mesh.rest);
  if(reduced)return out;
@@ -55,6 +60,15 @@ export function deformBeachMesh(mesh:BeachMesh,time:number,reduced=false,out=new
   const surge=beachChannel('surge',time-phase),drift=beachChannel('drift',time-phase-900);
   out[index*2]+=weight*.00135*drift;
   out[index*2+1]+=weight*.00215*(.7+.3*depth)*surge;
+  // swash: near the shore, a slow run-up and a quicker draw-back, arriving a
+  // little later toward the right of the bay. It has its own wide taper: the
+  // foam line sits near the bottom bound, and the open-water taper is too
+  // short for a 7px run (triangles pinch).
+  const sv=mesh.rest[index*2+1],su=mesh.rest[index*2],B=BEACH_WATER_BOUNDS;
+  const near=ease((su-B.left)/.075)*ease((B.right-su)/.075)*Math.sin(Math.PI*Math.min(1,Math.max(0,(sv-B.top-.04)/(B.bottom-B.top-.04))))**1.5;
+  const phaseS=(((time-phase*.35)%SWASH_PERIOD)+SWASH_PERIOD)%SWASH_PERIOD/SWASH_PERIOD;
+  const run=phaseS<.62?.5-.5*Math.cos(Math.PI*phaseS/.62):.5+.5*Math.cos(Math.PI*(phaseS-.62)/.38);
+  out[index*2+1]+=near*SWASH*(run-.5);
  }
  return out;
 }

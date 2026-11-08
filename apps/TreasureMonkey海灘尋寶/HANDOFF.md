@@ -1,5 +1,47 @@
 # Treasure Monkey 建置交接
 
+## 2026-11-04 · 獨立數學 96% 已完成本機驗證
+
+使用者要求建立本款數學、RTP 0.96，Buy Bonus 參考模板。來源為 E:/stake/math-sdk/games/TreasureMonkey；app/math 為原始碼與轉輪鏡像，正式大型 books 留在 SDK。採用本款 SW 擴展、保留 Scatter、多格區域按中獎格加總、三階免費轉及再觸發，不使用舊 Collector 數學。
+
+四種模式以正整數權重精確達到 24/25：一般成本 1×；BEACH SWEEP / HIDDEN COVE / LOST LAGOON 為 100× / 500× / 1000×。自然入口約每 350 局、三階分布 94% / 5% / 1%，自然入口功能使用對應購買功能的相同路徑與相對權重。上限為基礎押注 20,000×，達頂立即結束。
+
+正式生成 700,000 局（一般 400,000，三購買模式各 100,000），逐局獨立重算 40,440,757 個事件全部通過；SDK LUT 格式、books/LUT ID 與獎金、前後端配置 SHA-256、封頂及所有模式精確 RTP 均通過。10 項單元測試通過。資料不是均勻轉輪抽樣：正式分布依加權局庫執行，未縮放任何線獎以湊 RTP。
+
+前端 config.ts 已從本款 SDK 配置產生，bootstrap 再對照規則與實際轉輪。規則／購買說明讀本款 96% 配置；Storybook 改為經驗證的 7 個一般局與 13 個購買局，移除 Collector 故事、以 wildExpand 取代。正式 build 與 gates 通過；型別檢查仍為 40 errors / 24 files、0 warnings（含 10/25 既有 gpuAddBlend 問題），無本次數學新增錯誤。/setup 已實際檢視 96.00% 與三階價格。
+
+交付：E:/stake/archive/deliverables/TreasureMonkey/TreasureMonkey_math_96_20261104.zip（9 個根目錄平台數學檔）、TreasureMonkey_math_sources_20261104.zip、SHA256.json。封裝後逐檔回讀雜湊核對。報告見 math/reports/MATH_REPORT.md，整合驗證見 math/reports/FRONTEND_QA.md。重建及封裝命令見 math/README.md。
+
+未上傳平台、未驗證正式 RGS session。本機預覽已重啟 http://127.0.0.1:3043/setup，owned dev PID 20000；往後停程序前重新確認 command line。先前動畫紀錄保留如下。
+
+## 2026-11-01（二）· 海浪過場、背景風場、雲漂移
+
+正式建置與全部 gates 通過：E:/stake/tmp/treasure-wave-bg-20261101-build.log（✔ done）。型別 40 errors，本輪檔案沒有錯誤。未上機、未開瀏覽器：轉場和背景都是離線渲染逐格看的；雲的 sprite 遮罩（Texture.from(canvas)＋mask）沒有在真的 pixi 上跑過。
+
+- 海浪過場（waveWipe.ts、WaveWipe.svelte）：以前是一整張浪圖剛體橫移，揭露時再把同一張鏡像版往同方向滑一次，看起來像兩張圖滑過去，浪前緣只在畫面上出現約 100ms。現在是一個動作：0–500ms 衝上來（減速），500–680ms 停在右緣晃動，680–1280ms 退潮往左退回去、從右邊露出新場景。浪是網格，泡沫前緣兩組行進波紋＋中段前凸（退潮時內凹）；水體是 TilingSprite，以前緣約 1/3 的速度加上海流自己漂。量過浪圖每一列 u .18–.75 不透明、u .96 以後全透明，換場只在完全被水蓋住時發生。wave_water_v2.png 改成可水平循環（design/build_wave_tile.py，art:build 會自動跑；未循環的原圖在 design/source/treasure/wave_water_v2_src.png）。check_connected_presentation 的浪閘門改成新規則。
+- 背景風場（treasureBgProps.ts＋bgMeshRig.ts，從 Putt/Saucer 搬過來，用本款的共用 presentation clock，不用 ticker）：左上／左／右上棕櫚、陽傘、左側四叢植物、底部兩叢、右側兩叢、海星旁草叢，同一個風場、每 5.2 秒一陣由左往右的陣風，中獎（winLinesShow）再送一陣。石頭、救生員椅用 avoid 固定。棕櫚樹冠是往下垂的，權重改用「離支點距離」而不是「往上長」。
+- 海岸：水面網格下緣 .435→.47 把岸邊泡沫線收進來，每 3.6 秒往沙灘衝上去再退回約 7px（自己的寬漸退，避免三角形被擠扁）。
+- treasureBeachLife.ts：每 15 秒一小群海鷗橫越天空（三拍振翅＋滑翔，直向手機看得到的中段也會經過）；燈塔燈每 6.2 秒柔和亮一次。沒有星星粒子。
+- 雲漂移（使用者另外點名：背景主要要讓雲漂動）：design/build_bg_clouds.py 從 bg_base.jpg（不改動）切出 x 262–1520 的雲，依每列天空色反混合成 bg_clouds.png，天空補底存成 bg_clean.jpg，該帶的山、島、燈塔另存 bg_horizon.png 疊在雲上，所以雲是從山和燈塔「後面」飄過。整條雲帶以 12.5px/s 由左往右循環（約 100 秒一圈），陣風時稍微加速，在視窗兩端 130px 內淡入淡出（不會碰到棕櫚和陽傘）。視窗外（燈塔左邊、遠島右邊）的雲維持原畫不動，邊界用 80px 交叉淡化接上。原本的兩個雲網格已拿掉（它們會把平的天空蓋在飄動的雲上）。
+- 新閘門 design/check_beach_props.mjs（已加入 build）：網格靜止時等於原圖、邊框釘住、石頭/椅子/燈塔不動、不翻折、棕櫚擺動量、陣風由左往右、海鷗是間歇事件、雲連續漂移並繞完一圈、沒有風網格壓在雲帶上。
+
+## 2026-11-01 · 四肢接合、脖子、獎圖主節拍
+
+正式建置與全部 gates 通過：E:/stake/tmp/treasure-joints-20261101-build.log（✔ done）。型別 40 errors／0 warnings，本輪改動的檔案（TreasureFigure、TreasureCastSkin、treasureCastSkin、treasureMotion、SymbolWinAnim、TreasureSymbol）都沒有錯誤；比 10-23 基準多 1 個，不在本輪檔案。紀錄 E:/stake/tmp/treasure-joints-20261101-types.log。未上機、未開瀏覽器，畫面是用離線渲染（跟遊戲同一份姿勢程式）檢查的。
+
+- 手臂改成兩節：treasureCastRig.json 每隻手臂加 elbow／hand（手臂圖的 UV）。上臂吃 0.8 倍轉角，手肘用同一組 key 晚 80ms、0.45 倍（最後 320ms 收掉延遲，原長度準時回位）。前臂權重用手肘角平分線分界，手、握把、圖裡的柄全部剛性跟前臂。工具與探測器燈改掛 castForearmFrame。
+- 阿寶叔扠腰的右手 ik:true：從會呼吸的肩膀解兩節 IK 到腰上接觸點，手掌固定在腰上、手肘往外撐；pose.right 只讓手掌小抬（每弧度 28/52px）。以前整隻手臂從肩膀轉，手會離開腰飄在半空。
+- 袖根釘住只作用在上臂那一側：小救揮手的手掌離肩很近，以前被袖根權重拉住一半。
+- 蹲下改由膝蓋吸收：legs 改成網格（knee .42／ankle .78），鞋子固定、短褲跟腰下沉 pose.dy；上半身改成平移，不再壓扁 scaleY。尾巴根部跟著腰下沉。
+- 脖子：身體圖領口裡原本是淺膚色的「假人脖子」加一條黑色頂邊，頭一轉就露出斷層。design/fix_digger_joints.py 把它重畫成跟頭部下緣同色的毛（上 #682C08 → 領口內陰影 #4A2009），頂邊也改成毛色。原圖存在 design/source/treasure/digger_body_src.png，腳本可重跑。
+- 工具接縫（原本就有，靜止時被深色皮帶蓋住，手一擺就露出）：探測器桿往上延長 20px 塞到握把後面（只拉長桿身，探測盤位置不變），桿頂 22px 淡出（同一支腳本，原圖 digger_tool_src.png）；鏟子對齊手裡畫的那段柄（平移 -7.5px、轉 -6°，tool.rot），柄的錯位消失、角度差減半。
+- 獎圖主節拍：symbolPose 的 win 在各物件原本的演出之下加一層共用 pop（0.1 先壓、0.29 往上彈出、到 0.47 停住可讀、一次阻尼收），幅度 H1 5.5%、H2 5%、H3–H5 6%、W 4.5%、S 5.5%、SW 5%。以前高獎只有 2–4%、約 1°，看起來像沒在動。
+- 打在畫上的光：SymbolWinAnim 疊同一張擺好姿勢的圖的加亮複本，跟 pop 一起 0→20%→0（暖色 #FFF1D2）。S、H4、低獎沒有 add 路徑，不疊。
+- 依「不要小星星」：H1 金幣的四芒星閃點改成金屬上的柔和亮點；H3 的描邊泡泡圈改成無描邊的柔和氣泡。
+- check_connected_presentation 新增：前臂與工具剛性、上臂長度不變、扠腰手固定、鞋子不動、每隻手臂都有手肘。
+
+離線渲染工具（不在 repo）：dump_cast.mjs＋render_cast.py 照 TreasureFigure 的變換樹把網格畫成逐格圖；要再檢查接縫可以重寫一份。
+
 ## 2026-10-23 · 金幣略放大與柔光
 
 正式建置及全部 gates 通過：E:/stake/tmp/treasure-coins-glow-build.log，adapter-static ✔ done。

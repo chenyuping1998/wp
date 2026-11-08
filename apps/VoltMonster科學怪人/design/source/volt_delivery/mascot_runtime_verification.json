@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "frames": 833,
+  "animations": [
+    "idle",
+    "wave",
+    "point",
+    "throw",
+    "cheer",
+    "laugh",
+    "disappoint",
+    "dance"
+  ],
+  "faces": 4,
+  "hairAttachments": 2
+}

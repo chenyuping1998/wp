@@ -5,9 +5,9 @@
 	import { onMount } from 'svelte';
 
 	import { getContext } from '../game/context';
-	import { BG_PROPS, BG_PROPS_FEATURE } from '../game/meshWin';
+	import { BG_PROPS } from '../game/meshWin';
 	import BgProps from './BgProps.svelte';
-	import FallingPetals from './FallingPetals.svelte';
+	import BgAmbience from './BgAmbience.svelte';
 
 	const context = getContext();
 	const showBaseBackground = $derived(context.stateGame.gameType === 'basegame');
@@ -60,11 +60,14 @@
 	<Sprite key="gbBgBase" {...parallax} />
 	<!-- the lanterns, scrolls and plants in it, moving (game/meshWin/bgProps.ts) -->
 	<BgProps specs={BG_PROPS} plate="gbBgBase" {...parallax} />
+	<BgAmbience {...parallax} />
 </FadeContainer>
 
 <FadeContainer show={showFeatureBackground} duration={SECOND} zIndex={-1}>
 	<Sprite key="gbBgFeature" {...parallax} />
 	<!-- the same room plus its golden ribbons fluttering, and petals falling -->
-	<BgProps specs={BG_PROPS_FEATURE} plate="gbBgFeature" {...parallax} />
-	<FallingPetals {...parallax} />
+	<!-- the feature plate is the base painting in ink now (no ribbons), so it
+	     takes the base rigs -->
+	<BgProps specs={BG_PROPS} plate="gbBgFeature" {...parallax} />
+	<BgAmbience night {...parallax} />
 </FadeContainer>

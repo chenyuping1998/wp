@@ -41,7 +41,14 @@
 		| { type: 'soundScatterCounterClear' }
 		// a new spin is starting: whatever the last spin's win and collection
 		// left ringing fades out now (bookEventHandlerMap reveal)
-		| { type: 'soundSpinCut' };
+		| { type: 'soundSpinCut' }
+		// adaptive music (2026-11-06): the groove stem swells while something is
+		// happening — the reels turning, a tease, a win — and settles at rest
+		| { type: 'soundGroove'; reason: 'spin' | 'win' | 'plaque'; on: boolean }
+		// one note per reel as the win lights up across the board, on the grid
+		| { type: 'soundWinWake'; index: number }
+		// the count-up bed under a rolling win amount, in phase with the music
+		| { type: 'soundCountUp'; on: boolean; big?: boolean; done?: boolean };
 </script>
 
 <script lang="ts">
@@ -53,6 +60,7 @@
 	import { base } from '$app/paths';
 
 	import { getContext } from '../game/context';
+	import { setMusicClock, nextGridTime, barPhase, musicBpm } from '../game/musicClock';
 
 	const context = getContext();
 
@@ -107,7 +115,10 @@
 		| 'win_max'
 		| 'win_cap'
 		| 'voice_laugh'
-		| 'voice_hup';
+		| 'voice_hup'
+		| 'win_wake'
+		| 'count_loop'
+		| 'count_end';
 
 	const CN_SFX_FILES: Record<CnSfxName, string> = {
 		btn: 'putt/btn.wav',
@@ -159,6 +170,9 @@
 		win_cap: 'putt/win_cap.wav',
 		voice_laugh: 'putt/voice_laugh.wav',
 		voice_hup: 'putt/voice_hup.wav',
+		win_wake: 'putt/win_wake.wav',
+		count_loop: 'putt/count_loop.wav',
+		count_end: 'putt/count_end.wav',
 	};
 
 	// He is a character in the scene, not the interface, so he sits UNDER
@@ -192,11 +206,13 @@
 	> = {
 		sfx_btn_general: { name: 'btn', volume: 0.7 },
 		sfx_btn_spin: { name: 'spin', volume: 0.9 },
-		sfx_reel_stop_1: { name: 'reel_stop', rate: 0.92 },
-		sfx_reel_stop_2: { name: 'reel_stop', rate: 1.0 },
-		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.09 },
-		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.19 },
-		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.3 },
+		// C D E G A: the stop is a knock tuned to C, so five reels play the
+		// pentatonic scale up (2026-11-06; was 0.92..1.3, between the notes)
+		sfx_reel_stop_1: { name: 'reel_stop', rate: 1 },
+		sfx_reel_stop_2: { name: 'reel_stop', rate: 1.1225 },
+		sfx_reel_stop_3: { name: 'reel_stop', rate: 1.2599 },
+		sfx_reel_stop_4: { name: 'reel_stop', rate: 1.4983 },
+		sfx_reel_stop_5: { name: 'reel_stop', rate: 1.6818 },
 		sfx_scatter_stop_1: { name: 'scatter_1' },
 		sfx_scatter_stop_2: { name: 'scatter_2' },
 		sfx_scatter_stop_3: { name: 'scatter_3' },
@@ -219,8 +235,8 @@
 		jng_intro_fs: { name: 'fs_intro', volume: 0.8 },
 		sfx_multiplier_update: { name: 'dial_tick' },
 		sfx_anticipation_start: { name: 'anticipation_pickup', volume: 0.58 },
-		sfx_symbols_landing: { name: 'reel_stop', volume: 0.6 },
-		sfx_royals_landing: { name: 'reel_stop', volume: 0.6 },
+		sfx_symbols_landing: { name: 'reel_stop', volume: 0.5 },
+		sfx_royals_landing: { name: 'reel_stop', volume: 0.5 },
 		// template names this game never raises — mapped anyway so nothing can
 		// fall through to the sprite
 		sfx_multiplier_combine_a: { name: 'dial_tick' },
@@ -242,6 +258,34 @@
 		sfx_bigwin_coinloop: null,
 	};
 
+	// ─── one-shots: Web Audio voices, with <audio> only as a fallback ───
+	//
+	// 2026-11-06. One-shots used to be one cached HTMLAudioElement per FILE. Two
+	// things followed from that and both were heard as bad rhythm:
+	//   - the five reel stops share reel_stop.wav, so every stop RESTARTED the
+	//     same element: in turbo, where reels land 40–70 ms apart, the earlier
+	//     stops were cut off and only the last one was heard;
+	//   - an element starts 20–100 ms late (more on mobile Safari) and by a
+	//     different amount each time, so nothing landed where the picture did.
+	// Decoded AudioBuffers start on the audio clock, sample-exact, and any number
+	// of them overlap. Every file is decoded once at mount; until its buffer is
+	// ready (or with no Web Audio at all) the element path below still plays it.
+	//
+	// Cues are monophonic per name unless listed in POLY: a fanfare retriggered
+	// cuts its previous self, a reel stop or a ball does not.
+	const POLY = new Set<CnSfxName>([
+		'reel_stop', 'putt_tap', 'putt_sink', 'coin_in', 'dial_tick', 'btn', 'sack_land', 'bandit_land',
+		'scatter_1', 'scatter_2', 'scatter_3', 'scatter_4', 'scatter_5', 'win_wake', 'ambient_far',
+	]);
+	// at most this many copies of one cue sound at once; the oldest goes first
+	const MAX_VOICES_PER_CUE = 6;
+	const VOICE_CUT_S = 0.025;
+
+	type Voice = { name: CnSfxName; src: AudioBufferSourceNode; gain: GainNode; scale: number; ended: boolean };
+	const voices = new Set<Voice>();
+	const buffers: Partial<Record<CnSfxName, AudioBuffer>> = {};
+	const decoding: Partial<Record<CnSfxName, Promise<AudioBuffer | undefined>>> = {};
+
 	const sfxScales = new WeakMap<HTMLAudioElement, number>();
 	const cnSfxAudio: Partial<Record<CnSfxName, HTMLAudioElement>> = {};
 
@@ -255,27 +299,95 @@
 		return audio;
 	}
 
+	function loadBuffer(name: CnSfxName) {
+		const ctx = getAudioCtx();
+		if (!ctx) return Promise.resolve(undefined);
+		if (buffers[name]) return Promise.resolve(buffers[name]);
+		decoding[name] ??= fetch(`${base}/assets/audio/${CN_SFX_FILES[name]}`)
+			.then((res) => res.arrayBuffer())
+			.then((data) => ctx.decodeAudioData(data))
+			.then((buffer) => (buffers[name] = buffer))
+			.catch(() => {
+				delete decoding[name];
+				return undefined;
+			});
+		return decoding[name]!;
+	}
+
+	const stopVoice = (voice: Voice, fadeS = VOICE_CUT_S) => {
+		if (voice.ended) return;
+		voice.ended = true;
+		voices.delete(voice);
+		const ctx = audioCtx;
+		if (!ctx) return;
+		const now = ctx.currentTime;
+		voice.gain.gain.cancelScheduledValues(now);
+		voice.gain.gain.setValueAtTime(voice.gain.gain.value, now);
+		voice.gain.gain.linearRampToValueAtTime(0, now + fadeS);
+		try {
+			voice.src.stop(now + fadeS + 0.01);
+		} catch {
+			/* already stopped */
+		}
+	};
+
+	/** Start a decoded one-shot. Returns false when it has to fall back. */
+	function playVoice(name: CnSfxName, volumeScale: number, rate: number, when?: number, poly = POLY.has(name)) {
+		const ctx = audioCtx;
+		const buffer = buffers[name];
+		// Only on a RUNNING context: a voice started on a suspended one is queued,
+		// and everything queued before the unlocking press would go off at once.
+		if (!ctx || !buffer || ctx.state !== 'running') return false;
+		const mine = [...voices].filter((v) => v.name === name);
+		if (!poly) mine.forEach((v) => stopVoice(v));
+		else if (mine.length >= MAX_VOICES_PER_CUE) stopVoice(mine[0]);
+		const gain = ctx.createGain();
+		gain.gain.value = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
+		const src = ctx.createBufferSource();
+		src.buffer = buffer;
+		src.playbackRate.value = rate;
+		src.connect(gain).connect(ctx.destination);
+		const voice: Voice = { name, src, gain, scale: volumeScale, ended: false };
+		src.onended = () => {
+			voice.ended = true;
+			voices.delete(voice);
+			gain.disconnect();
+		};
+		voices.add(voice);
+		src.start(Math.max(ctx.currentTime, when ?? 0));
+		return true;
+	}
+
 	function playCnSfx(name: CnSfxName, volumeScale = 1, rate = 1) {
 		if (document.hidden) return;
+		if (playVoice(name, volumeScale, rate)) return;
+		void loadBuffer(name);
 		const audio = getCnSfx(name);
 		sfxScales.set(audio, volumeScale);
 		// a fade-out still running on this element must not swallow the new play
 		cutGeneration.set(audio, (cutGeneration.get(audio) ?? 0) + 1);
 		audio.loop = false;
 		audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * volumeScale);
-		// Always assign, never skip when rate is 1: getCnSfx caches one element per
-		// file, so a rate left over from the previous caller would carry into every
-		// later play of the same sample. reel_stop is shared with symbol/royal
-		// landings, which would otherwise inherit the fifth reel's pitch.
+		// Always assign, never skip when rate is 1: one element per file, so a rate
+		// left over from the previous caller would carry into the next play.
 		audio.playbackRate = rate;
 		audio.currentTime = 0;
 		audio.play().catch(() => {});
 	}
 
-	// Overlapping copies of one clip: the sacks in a collect arrive faster than
-	// coin_in finishes, and the single cached element would cut each one off.
+	// On the music's grid (musicClock): snapped to the next sixteenth when that is
+	// close enough not to be heard as late, otherwise now.
+	function playCnSfxOnGrid(name: CnSfxName, volumeScale = 1, rate = 1) {
+		if (document.hidden) return;
+		if (playVoice(name, volumeScale, rate, nextGridTime(4, 45) ?? undefined, true)) return;
+		playCnSfxLayered(name, volumeScale, rate);
+	}
+
+	// Overlapping copies of one clip, whatever POLY says.
 	function playCnSfxLayered(name: CnSfxName, volumeScale = 1, rate = 1) {
 		if (document.hidden) return;
+		if (playVoice(name, volumeScale, rate, undefined, true)) return;
+		void loadBuffer(name);
 		const audio = getCnSfx(name).cloneNode(true) as HTMLAudioElement;
 		audio.loop = false;
 		sfxScales.set(audio, volumeScale);
@@ -286,11 +398,18 @@
 		audio.play().catch(() => layeredLive.delete(audio));
 	}
 
-	// All live one-shots, including cloned arrival sounds, follow mute immediately.
+	// All live one-shots, Web Audio voices and fallback elements alike, follow
+	// mute immediately (Engine guideline 107).
 	$effect(() => {
 		const vol = stateSoundDerived.volumeSoundEffect();
 		for (const audio of [...Object.values(cnSfxAudio), ...layeredLive]) {
 			if (audio && !audio.loop) audio.volume = Math.min(1, vol * (sfxScales.get(audio) ?? 1));
+		}
+		const ctx = audioCtx;
+		for (const voice of voices) {
+			if (!ctx) break;
+			voice.gain.gain.cancelScheduledValues(ctx.currentTime);
+			voice.gain.gain.setValueAtTime(Math.min(1, vol * voice.scale), ctx.currentTime);
 		}
 	});
 
@@ -309,6 +428,7 @@
 		'collect_grab', 'coin_in', 'collect_stamp', 'bandit_land', 'sack_land', 'tumbler_up',
 		'voice_laugh', 'voice_hup', 'bill_counter', 'cash_register', 'fs_intro',
 		'win_small', 'win_mid', 'win_big', 'win_super', 'win_mega', 'win_epic', 'win_max', 'win_cap',
+		'win_wake', 'count_end', 'putt_sink', 'putt_tap',
 	];
 	const layeredLive = new Set<HTMLAudioElement>();
 	const cutGeneration = new WeakMap<HTMLAudioElement, number>();
@@ -340,30 +460,27 @@
 			if (audio) fadeOutCn(audio);
 		}
 		for (const audio of layeredLive) fadeOutCn(audio);
+		for (const voice of [...voices]) {
+			if (SPIN_SCOPED.includes(voice.name)) stopVoice(voice, CUT_FADE_MS / 1000);
+		}
+		stopCountUp(false);
 	}
 
 	// ─── looping sfx: Web Audio, not <audio loop> ───
 	//
-	// An HTMLAudioElement with loop = true is NOT gapless. The browser tears down
-	// and restarts playback at the wrap, and the silence either side of that is
-	// plainly audible — on coin_shimmer, a 2.4s clip with a recognisable attack,
-	// it lands as the clip visibly stopping and starting again roughly every two
-	// seconds. On the hold-and-spin result plaque, which stays up until the player
-	// presses, that repeats for as long as they look at it.
+	// An HTMLAudioElement with loop = true is NOT gapless: the browser restarts
+	// playback at the wrap and the silence either side is plainly audible. An
+	// AudioBufferSourceNode with loop = true loops inside the audio thread and
+	// has no seam at all. Gain is ramped, so loops fade in and out.
 	//
-	// Guarding against re-triggering (the previous attempt) removed one cause of
-	// choppiness — winLevelSoundsPlay fires up to three times in a hold-and-spin round
-	// and each call was resetting currentTime — but not this one, because this one
-	// happens without anyone asking. An AudioBufferSourceNode with loop = true
-	// loops inside the audio thread and has no seam at all.
-	//
-	// Gain is ramped rather than switched, so the loop also fades in and out
-	// instead of appearing and vanishing.
+	// `sync` loops (the tension roll, the count-up bed) are one bar of 120 bpm:
+	// they are started IN PHASE with the running music and at its tempo, so their
+	// accents fall on the music's beats instead of wherever the event happened.
 	const LOOP_FADE_IN = 0.12;
 	const LOOP_FADE_OUT = 0.25;
+	const LOOP_BPM = 120;
 
 	let audioCtx: AudioContext | null = null;
-	const loopBuffers: Partial<Record<CnSfxName, AudioBuffer>> = {};
 	const loopNodes: Partial<Record<CnSfxName, { src: AudioBufferSourceNode; gain: GainNode; scale: number }>> = {};
 	const loopGeneration: Partial<Record<CnSfxName, number>> = {};
 	// the element fallback's own scale, for the same reason
@@ -379,7 +496,7 @@
 		if (!audioCtx) {
 			const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
 			if (!Ctor) return null;
-			audioCtx = new Ctor();
+			audioCtx = new Ctor({ latencyHint: 'interactive' });
 		}
 		// The context starts suspended until a gesture; the game always has one by
 		// the time anything loops (the loading screen is dismissed by a press).
@@ -387,7 +504,7 @@
 		return audioCtx;
 	};
 
-	async function playCnLoop(name: CnSfxName, volumeScale = 1) {
+	async function playCnLoop(name: CnSfxName, volumeScale = 1, sync = false) {
 		const ctx = getAudioCtx();
 		// No Web Audio (very old browser): fall back to the element, seam and all —
 		// a slightly choppy loop beats silence.
@@ -408,16 +525,10 @@
 		const generation = (loopGeneration[name] ?? 0) + 1;
 		loopGeneration[name] = generation;
 
-		let buffer = loopBuffers[name];
+		const buffer = await loadBuffer(name);
 		if (!buffer) {
-			try {
-				const res = await fetch(`${base}/assets/audio/${CN_SFX_FILES[name]}`);
-				buffer = await ctx.decodeAudioData(await res.arrayBuffer());
-				loopBuffers[name] = buffer;
-			} catch {
-				if (loopGeneration[name] === generation) loopWanted.delete(name);
-				return;
-			}
+			if (loopGeneration[name] === generation) loopWanted.delete(name);
+			return;
 		}
 		// Awaiting the decode above means a stop() could have arrived in the
 		// meantime, and a second play() could have won the race.
@@ -430,16 +541,20 @@
 		const src = ctx.createBufferSource();
 		src.buffer = buffer;
 		src.loop = true;
+		let offset = 0;
+		const phase = sync ? barPhase() : -1;
+		if (phase >= 0) {
+			src.playbackRate.value = musicBpm() / LOOP_BPM;
+			offset = phase * buffer.duration;
+		}
 		src.connect(gain).connect(ctx.destination);
-		src.start();
+		src.start(ctx.currentTime, offset);
 		loopNodes[name] = { src, gain, scale: volumeScale };
 	}
 
-	// A loop's gain was set once, when it started. Muting (or turning effects
-	// down) during a big win left coin_shimmer and friends playing at the old
-	// level until the plaque closed — Engine guideline 107 wants every sound to
-	// follow the setting immediately. Follow it here, without a ramp: a mute
-	// should be a mute.
+	// A loop's gain was set once, when it started. Muting during a big win left
+	// loops playing at the old level until the plaque closed — follow the
+	// setting here, without a ramp: a mute should be a mute.
 	$effect(() => {
 		const vol = stateSoundDerived.volumeSoundEffect();
 		const ctx = audioCtx;
@@ -478,14 +593,161 @@
 			audio.pause();
 			audio.currentTime = 0;
 		}
+		for (const voice of [...voices]) if (voice.name === name) stopVoice(voice);
 	}
 
-	// Decode once and loop in the audio thread. LAME's Xing delay/padding data
-	// removes MP3 encoder silence; AudioBufferSourceNode avoids element restarts.
-	let bgmNode: AudioBufferSourceNode | null = null;
+	// ─── the count-up bed ───
+	let countUpOn = false;
+	function stopCountUp(done: boolean) {
+		if (!countUpOn) return;
+		countUpOn = false;
+		stopCnLoop('count_loop');
+		stopCnSfx('count_loop');
+		if (done) playCnSfxOnGrid('count_end', 0.62);
+	}
+
+	// ─── music: two stems on one clock ───
+	//
+	// 2026-11-06 (generate_putt_audio_v2.py): each loop is a BED and a GROOVE stem
+	// of identical length, started on the same context instant so they stay
+	// sample-locked for as long as they loop. The groove's own gain is the
+	// adaptive part: at rest it sits low (the bed carries the tune), while the
+	// reels spin, a tease runs or a win plays it comes up to full, and when the
+	// action stops it waits a moment and settles back — so the music breathes
+	// with the game instead of running past it. Decode once, loop in the audio
+	// thread; LAME's Xing data removes the MP3 encoder delay/padding.
+	const BGM_FILES = {
+		base: { bed: 'putt/bgm_main.mp3', groove: 'putt/bgm_main_groove.mp3', bpm: 120 },
+		freespin: { bed: 'putt/bgm_freespin.mp3', groove: 'putt/bgm_freespin_groove.mp3', bpm: 140 },
+	} as const;
+	type BgmType = keyof typeof BGM_FILES;
+	// groove level at rest / in action, per scene: the free game never drops as far
+	const GROOVE_REST: Record<BgmType, number> = { base: 0.32, freespin: 0.62 };
+	const GROOVE_UP_TAU = 0.05;
+	const GROOVE_DOWN_TAU = 0.55;
+	const GROOVE_HOLD_MS = 900;
+
+	let bgmNodes: AudioBufferSourceNode[] = [];
 	let bgmGain: GainNode | null = null;
+	let grooveGain: GainNode | null = null;
 	let bgmRequest = 0;
-	let currentBgm: 'base' | 'freespin' | null = null;
+	let currentBgm: BgmType | null = null;
+	const bgmBuffers: Partial<Record<string, AudioBuffer>> = {};
+	const grooveReasons = new Set<string>();
+	let grooveRelease: ReturnType<typeof setTimeout> | undefined;
+
+	async function bgmBuffer(file: string, ctx: AudioContext) {
+		if (bgmBuffers[file]) return bgmBuffers[file];
+		const res = await fetch(`${base}/assets/audio/${file}`);
+		if (!res.ok) throw new Error(`BGM HTTP ${res.status}`);
+		const buffer = await ctx.decodeAudioData(await res.arrayBuffer());
+		bgmBuffers[file] = buffer;
+		return buffer;
+	}
+
+	const grooveTarget = () =>
+		currentBgm ? (grooveReasons.size ? 1 : GROOVE_REST[currentBgm]) : 0;
+
+	function applyGroove(immediate = false) {
+		const ctx = audioCtx;
+		if (!ctx || !grooveGain) return;
+		const target = grooveTarget();
+		const now = ctx.currentTime;
+		grooveGain.gain.cancelScheduledValues(now);
+		if (immediate) grooveGain.gain.setValueAtTime(target, now);
+		else {
+			grooveGain.gain.setValueAtTime(grooveGain.gain.value, now);
+			grooveGain.gain.setTargetAtTime(target, now, target > grooveGain.gain.value ? GROOVE_UP_TAU : GROOVE_DOWN_TAU);
+		}
+	}
+
+	function setGroove(reason: string, on: boolean) {
+		// a new spin owns the music: whatever the last round left raised (a win
+		// presentation the player skipped) cannot keep the groove up past it
+		if (on && reason === 'spin') grooveReasons.clear();
+		if (on) {
+			if (grooveRelease) clearTimeout(grooveRelease);
+			grooveRelease = undefined;
+			grooveReasons.add(reason);
+			applyGroove();
+			return;
+		}
+		grooveReasons.delete(reason);
+		if (grooveReasons.size) return;
+		// held a moment: autoplay's next spin usually arrives before it lets go
+		if (grooveRelease) clearTimeout(grooveRelease);
+		grooveRelease = setTimeout(() => {
+			grooveRelease = undefined;
+			applyGroove();
+		}, GROOVE_HOLD_MS);
+	}
+
+	async function playBgm(type: BgmType) {
+		const ctx = getAudioCtx();
+		if (!ctx) return;
+		if (currentBgm === type && bgmNodes.length) return;
+		const request = ++bgmRequest;
+		stopBgmNodes();
+		currentBgm = type;
+		const files = BGM_FILES[type];
+		let bed: AudioBuffer, groove: AudioBuffer;
+		try {
+			[bed, groove] = await Promise.all([bgmBuffer(files.bed, ctx), bgmBuffer(files.groove, ctx)]);
+		} catch {
+			return;
+		}
+		if (request !== bgmRequest) return;
+		const master = ctx.createGain();
+		master.gain.value = stateSoundDerived.volumeMusic();
+		master.connect(ctx.destination);
+		const grooveMix = ctx.createGain();
+		grooveMix.connect(master);
+		// one instant for both, a little ahead so neither starts late
+		const when = ctx.currentTime + 0.06;
+		const sources = [bed, groove].map((buffer, i) => {
+			const src = ctx.createBufferSource();
+			src.buffer = buffer;
+			src.loop = true;
+			src.connect(i === 0 ? master : grooveMix);
+			src.start(when);
+			return src;
+		});
+		bgmNodes = sources;
+		bgmGain = master;
+		grooveGain = grooveMix;
+		applyGroove(true);
+		setMusicClock({ ctx, start: when, bpm: files.bpm });
+	}
+
+	function stopBgmNodes() {
+		for (const node of bgmNodes) {
+			try {
+				node.stop();
+			} catch {
+				/* not started */
+			}
+			node.disconnect();
+		}
+		bgmNodes = [];
+		if (bgmGain) bgmGain.disconnect();
+		if (grooveGain) grooveGain.disconnect();
+		bgmGain = null;
+		grooveGain = null;
+		setMusicClock(null);
+	}
+
+	function stopBgm() {
+		bgmRequest++;
+		stopBgmNodes();
+		currentBgm = null;
+	}
+
+	// Keep volume in sync with settings
+	$effect(() => {
+		const vol = stateSoundDerived.volumeMusic();
+		if (bgmGain) bgmGain.gain.value = vol;
+	});
+
 	let ambientTimer: ReturnType<typeof setTimeout> | undefined;
 	let ambienceSuppressedUntil = 0;
 	const ambientLive = new Set<HTMLAudioElement>();
@@ -493,20 +755,22 @@
 		ambientTimer = setTimeout(() => {
 			// Other lanes can be heard while this lane is being played. The cue is
 			// soft, but does not require a long idle stretch between spins.
-			if (currentBgm && bgmNode && !document.hidden &&
+			if (currentBgm && bgmNodes.length && !document.hidden &&
 				!stateModal.modal &&
 				performance.now() > ambienceSuppressedUntil &&
 				stateSoundDerived.volumeMusic() > 0.02 &&
 				stateSoundDerived.volumeSoundEffect() > 0.02) {
-				// Keep this separate from result-scoped layered sounds: starting a
-				// spin must not cut a distant 0.92s pinfall halfway through.
-				const audio = getCnSfx('ambient_far').cloneNode(true) as HTMLAudioElement;
-				audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() *
-					0.34 * stateSoundDerived.volumeMusic());
-				audio.playbackRate = 0.94 + Math.random() * 0.12;
-				ambientLive.add(audio);
-				audio.addEventListener('ended', () => ambientLive.delete(audio), { once: true });
-				audio.play().catch(() => ambientLive.delete(audio));
+				// Separate from result-scoped sounds: starting a spin must not cut the
+				// birds halfway through. Its gain follows the MUSIC level too.
+				const scale = 0.34 * stateSoundDerived.volumeMusic();
+				if (!playVoice('ambient_far', scale, 0.94 + Math.random() * 0.12)) {
+					const audio = getCnSfx('ambient_far').cloneNode(true) as HTMLAudioElement;
+					audio.volume = Math.min(1, stateSoundDerived.volumeSoundEffect() * scale);
+					audio.playbackRate = 0.94 + Math.random() * 0.12;
+					ambientLive.add(audio);
+					audio.addEventListener('ended', () => ambientLive.delete(audio), { once: true });
+					audio.play().catch(() => ambientLive.delete(audio));
+				}
 			}
 			scheduleAmbience();
 		}, first ? 4500 + Math.random() * 2500 : 12000 + Math.random() * 7000);
@@ -516,53 +780,12 @@
 			stateSoundDerived.volumeMusic() * 0.34);
 		for (const audio of ambientLive) audio.volume = volume;
 	});
-	const BGM_FILES = {
-		base: 'putt/bgm_main.mp3',
-		freespin: 'putt/bgm_freespin.mp3',
-	} as const;
-	const bgmBuffers: Partial<Record<'base' | 'freespin', AudioBuffer>> = {};
 
-	async function playBgm(type: 'base' | 'freespin') {
-		const ctx = getAudioCtx();
-		if (!ctx) return;
-		if (currentBgm === type && bgmNode) return;
-		const request = ++bgmRequest;
-		if (bgmNode) { bgmNode.stop(); bgmNode.disconnect(); bgmNode = null; }
-		if (bgmGain) { bgmGain.disconnect(); bgmGain = null; }
-		currentBgm = type;
-		let buffer = bgmBuffers[type];
-		if (!buffer) {
-			try {
-				const res = await fetch(`${base}/assets/audio/${BGM_FILES[type]}`);
-				if (!res.ok) throw new Error(`BGM HTTP ${res.status}`);
-				buffer = await ctx.decodeAudioData(await res.arrayBuffer());
-				bgmBuffers[type] = buffer;
-			} catch { return; }
-		}
-		if (request !== bgmRequest) return;
-		const gain = ctx.createGain();
-		gain.gain.value = stateSoundDerived.volumeMusic();
-		const src = ctx.createBufferSource();
-		src.buffer = buffer;
-		src.loop = true;
-		src.connect(gain).connect(ctx.destination);
-		src.start();
-		bgmGain = gain;
-		bgmNode = src;
-	}
-
-	function stopBgm() {
-		bgmRequest++;
-		if (bgmNode) { bgmNode.stop(); bgmNode.disconnect(); bgmNode = null; }
-		if (bgmGain) { bgmGain.disconnect(); bgmGain = null; }
-		currentBgm = null;
-	}
-
-	// Keep volume in sync with settings
-	$effect(() => {
-		const vol = stateSoundDerived.volumeMusic();
-		if (bgmGain) bgmGain.gain.value = vol;
-	});
+	// Reel stops and balls walk C pentatonic (the sample is tuned to C), so a
+	// spin landing reel by reel, or a collection sinking ball after ball, is a
+	// little tune in the music's key rather than a pitch that just creeps up.
+	const PENTA_RATE = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24].map((st) => 2 ** (st / 12));
+	const pentaRate = (i: number) => PENTA_RATE[Math.max(0, Math.min(PENTA_RATE.length - 1, i))];
 
 	context.eventEmitter.subscribeOnMount({
 		// ui
@@ -606,7 +829,13 @@
 				}
 			});
 		},
-		soundPressBet: () => playCnSfx('spin', 0.9),
+		soundPressBet: () => {
+			// the groove comes up with the press, not ~0.6 s later when the reveal
+			// arrives (the pre-spin runs first); the reveal's own 'spin' takes over
+			setGroove('press', true);
+			setTimeout(() => setGroove('press', false), 1500);
+			playCnSfx('spin', 0.9);
+		},
 		// scatterCounter
 		soundScatterCounterIncrease: () => (context.stateGame.scatterCounter = context.stateGame.scatterCounter + 1), // prettier-ignore
 		soundScatterCounterClear: () => (context.stateGame.scatterCounter = 0),
@@ -667,18 +896,30 @@
 		soundCollectGrab: () => playCnSfx('collect_grab', 0.45),
 		soundCollectionStart: () => {
 			ambienceSuppressedUntil = performance.now() + 4000;
-			playCnLoop('putt_roll_loop', .25);
+			setGroove('collect', true);
+			playCnLoop('putt_roll_loop', .3);
 		},
 		soundCollectionStop: () => {
+			setGroove('collect', false);
 			stopCnLoop('putt_roll_loop');
 			stopCnSfx('putt_roll_loop');
 		},
-		soundCollectionSink: ({ index }) => playCnSfxLayered('putt_sink', .42, 1 + Math.min(index, 12)*.012),
-		// each sack into the bag a little higher than the last, so a long
-		// collect climbs instead of repeating
-		soundCoinIn: ({ index }) => playCnSfxLayered('coin_in', 0.7, Math.min(1.6, 1 + 0.07 * index)),
+		soundCollectionSink: ({ index }) => playCnSfxLayered('putt_sink', .5, 1 + Math.min(index, 12)*.012),
+		// each prize a step up C pentatonic, so a long collect plays a run up the
+		// scale in the music's key instead of a pitch that creeps up off it
+		soundCoinIn: ({ index }) => playCnSfxLayered('coin_in', 0.62, pentaRate(index)),
 		soundCollectStamp: () => playCnSfx('collect_stamp', 0.9),
 		soundSpinCut: () => cutSpinSounds(),
+		soundGroove: ({ reason, on }) => setGroove(reason, on),
+		// up the pentatonic scale reel by reel, snapped to the sixteenth grid
+		soundWinWake: ({ index }) => playCnSfxOnGrid('win_wake', 0.58, pentaRate(index)),
+		soundCountUp: ({ on, big, done }) => {
+			if (on) {
+				if (countUpOn) return;
+				countUpOn = true;
+				playCnLoop('count_loop', big ? 0.75 : 0.5, true);
+			} else stopCountUp(!!done);
+		},
 		soundShutterDown: () => playCnSfx('shutter_down', 0.85),
 		soundDoorSlide: () => playCnSfx('door_slide', 0.8),
 		soundDoorClack: () => playCnSfx('door_clack', 1),
@@ -703,12 +944,15 @@
 		soundMascotVoice: ({ name }) =>
 			playCnSfx(MASCOT_VOICE_FILE[name], MASCOT_VOICE_GAIN[name]),
 		soundReelTensionStart: () => {
+			setGroove('tension', true);
 			playCnSfx('anticipation_pickup', 0.58);
-			playCnLoop('reel_tension', 0.66);
+			// the roll is one bar: started in phase and at the music's tempo
+			playCnLoop('reel_tension', 0.62, true);
 		},
 		// stopCnLoop, not stopCnSfx: playCnLoop moved this to Web Audio, and the
 		// element-based stopper would leave the buffer source looping forever.
 		soundReelTensionStop: () => {
+			setGroove('tension', false);
 			stopCnLoop('reel_tension');
 			stopCnSfx('reel_tension');
 		},
@@ -731,9 +975,10 @@
 	});
 
 	onMount(() => {
-		// Fetch the one-shot sfx up front so the first play is in sync
-		// (an Audio element created lazily would stall on its first fetch).
-		(Object.keys(CN_SFX_FILES) as CnSfxName[]).forEach(getCnSfx);
+		// Decode every one-shot up front so the first play is on time. (Elements
+		// are only made for the fallback path, so nothing downloads twice.)
+		if (getAudioCtx()) (Object.keys(CN_SFX_FILES) as CnSfxName[]).forEach((name) => void loadBuffer(name));
+		else (Object.keys(CN_SFX_FILES) as CnSfxName[]).forEach(getCnSfx);
 
 		const unlock = () => { getAudioCtx(); };
 		const visibility = () => {
@@ -757,6 +1002,8 @@
 			for (const audio of layeredLive) audio.pause();
 			layeredLive.clear();
 			if (ambientTimer) clearTimeout(ambientTimer);
+			if (grooveRelease) clearTimeout(grooveRelease);
+			for (const voice of [...voices]) stopVoice(voice, 0);
 			for (const audio of ambientLive) audio.pause();
 			ambientLive.clear();
 			stopBgm();

@@ -11,6 +11,8 @@ import type { EmitterEventScatterWins } from '../components/ScatterWins.svelte';
 import type { EmitterEventTumble } from '../components/TumbleLayer.svelte';
 import type { EmitterEventMedusaThrow } from '../components/MedusaThrow.svelte';
 import type { EmitterEventMedusa } from '../components/Medusa.svelte';
+import type { EmitterEventPetrify } from '../components/PetrifyLayer.svelte';
+import type { EmitterEventSerpentLadder } from '../components/SerpentLadder.svelte';
 
 export type EmitterEventGame =
 	| EmitterEventBoard
@@ -25,4 +27,6 @@ export type EmitterEventGame =
 	| EmitterEventScatterWins
 	| EmitterEventTumble
 	| EmitterEventMedusaThrow
-	| EmitterEventMedusa;
+	| EmitterEventMedusa
+	| EmitterEventPetrify
+	| EmitterEventSerpentLadder;

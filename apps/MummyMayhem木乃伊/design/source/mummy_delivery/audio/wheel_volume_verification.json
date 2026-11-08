@@ -1,0 +1,97 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "cue": "scarabTick",
+      "file": "scarab_tick.wav",
+      "oldGain": 0.27,
+      "newGain": 0.5,
+      "increaseDb": 5.352124803540629,
+      "effectiveTruePeakDbtp": -19.499888999908023
+    },
+    {
+      "cue": "scarabStop",
+      "file": "scarab_stop.wav",
+      "oldGain": 0.8,
+      "newGain": 1.15,
+      "increaseDb": 3.1521570672333605,
+      "effectiveTruePeakDbtp": -12.265332279556166
+    },
+    {
+      "cue": "scarabMult",
+      "file": "scarab_mult_1.wav",
+      "oldGain": 0.8,
+      "newGain": 1.2,
+      "increaseDb": 3.5218251811136234,
+      "effectiveTruePeakDbtp": -5.596219817307699
+    },
+    {
+      "cue": "scarabMult",
+      "file": "scarab_mult_2.wav",
+      "oldGain": 0.8,
+      "newGain": 1.2,
+      "increaseDb": 3.5218251811136234,
+      "effectiveTruePeakDbtp": -6.106422346463408
+    },
+    {
+      "cue": "scarabMult",
+      "file": "scarab_mult_3.wav",
+      "oldGain": 0.8,
+      "newGain": 1.2,
+      "increaseDb": 3.5218251811136234,
+      "effectiveTruePeakDbtp": -6.674500319224115
+    },
+    {
+      "cue": "sunTick",
+      "file": "sun_tick.wav",
+      "oldGain": 0.24,
+      "newGain": 0.45,
+      "increaseDb": 5.4600254412747535,
+      "effectiveTruePeakDbtp": -19.29669971017732
+    },
+    {
+      "cue": "sunStop",
+      "file": "sun_stop.wav",
+      "oldGain": 0.85,
+      "newGain": 1.15,
+      "increaseDb": 2.625578292786378,
+      "effectiveTruePeakDbtp": -7.248667250701303
+    },
+    {
+      "cue": "sunWin",
+      "file": "sun_win_1.ogg",
+      "oldGain": 0.85,
+      "newGain": 1.15,
+      "increaseDb": 2.625578292786378,
+      "effectiveTruePeakDbtp": -6.700998891141772
+    },
+    {
+      "cue": "sunWin",
+      "file": "sun_win_2.ogg",
+      "oldGain": 0.85,
+      "newGain": 1.15,
+      "increaseDb": 2.625578292786378,
+      "effectiveTruePeakDbtp": -6.327583951750556
+    },
+    {
+      "cue": "sunWin",
+      "file": "sun_win_3.ogg",
+      "oldGain": 0.85,
+      "newGain": 1.15,
+      "increaseDb": 2.625578292786378,
+      "effectiveTruePeakDbtp": -5.820323381304732
+    },
+    {
+      "cue": "sunWin",
+      "file": "sun_win_4.ogg",
+      "oldGain": 0.85,
+      "newGain": 1.15,
+      "increaseDb": 2.625578292786378,
+      "effectiveTruePeakDbtp": -5.820323381304732
+    }
+  ],
+  "masterGain": 0.82,
+  "preview": "wheel_volume_before_after.wav",
+  "previewOrder": "old general wheel, 0.5 second pause, new general wheel",
+  "scope": "Decoded individual cue peaks at maximum SFX bus, before the existing master compressor; A/B includes ticks, stop and multiplier selection. Player volume/mute remain connected to the original SFX bus."
+}

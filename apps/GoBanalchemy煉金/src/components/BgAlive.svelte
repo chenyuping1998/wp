@@ -24,7 +24,7 @@
 	const props: Props = $props();
 	const context = getContext();
 
-	const t = $derived(presentation.clock);
+	const t = $derived(presentation.ambientClock);
 	let winAt = -1e9;
 	context.eventEmitter.subscribeOnMount({
 		winLinesShow: () => {

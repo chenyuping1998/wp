@@ -40,7 +40,7 @@
 	const W = 1920;
 	const H = 1080;
 
-	const t = $derived(presentation.clock);
+	const t = $derived(presentation.ambientClock);
 	let winAt = -1e9;
 	context.eventEmitter.subscribeOnMount({
 		winLinesShow: () => {

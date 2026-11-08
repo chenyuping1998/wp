@@ -155,7 +155,6 @@
 	// same certified figures (all still read from config).
 	const SYM = `${base}/assets/sprites/goBanalchemySymbols`;
 	const sym = (name: string) => `${SYM}/${name}.png`;
-	const HERO = `${base}/assets/sprites/goBanalchemyUi/buy_art_lab.png`;
 
 	const spinCounts = Object.values(config.scatterSpins ?? { 3: 8, 4: 10, 5: 12 }) as number[];
 	const facts = [
@@ -178,14 +177,6 @@
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="al-rules info-page">
 			<InfoShell kind="rules">
-			<header class="al-hero" style={`--hero: url(${HERO})`}>
-				<span class="al-kicker">Game rules</span>
-				<h2>Go Banalchemy</h2>
-				<p class="al-tagline">
-					{rowCount}&times;{reelCount} reels &middot; Reagents transmute whole reels
-				</p>
-			</header>
-
 			<div class="al-facts">
 				{#each facts as fact (fact.label)}
 					<div class="al-fact">
@@ -452,15 +443,15 @@
 		   swallows wheel/touch and blocks scrolling */
 		position: relative;
 		z-index: 100;
-		display: flex;
-		flex-direction: column;
-		gap: 0.8rem;
-		width: min(38rem, 92vw);
-		max-height: 82vh;
+		/* The scroller IS the journal: InfoShell draws the frame, so this box
+		   adds no padding of its own and shares the shell's corner radius. */
+		display: block;
+		width: min(40rem, 94vw);
+		max-height: 88vh;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 		overscroll-behavior: contain;
-		padding: 0 0.15rem 0.5rem 0;
+		border-radius: 20px;
 		color: var(--cream);
 		text-align: left;
 		animation: al-rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -471,6 +462,12 @@
 		&::-webkit-scrollbar-thumb {
 			background: var(--copper);
 			border-radius: 3px;
+		}
+		/* the shell's content slot is a plain block — space the sections here */
+		:global(.info-content) {
+			display: flex;
+			flex-direction: column;
+			gap: 0.8rem;
 		}
 	}
 
@@ -483,48 +480,6 @@
 			opacity: 1;
 			transform: none;
 		}
-	}
-
-	/* ── header: the laboratory, the name, the line under it ── */
-	.al-hero {
-		position: relative;
-		margin: 0 0 0.2rem;
-		padding: 2.1rem 1.5rem 1.2rem;
-		border-radius: 10px;
-		background:
-			linear-gradient(180deg, rgba(7, 26, 30, 0.15) 0%, rgba(7, 26, 30, 0.88) 78%, #0b252b 100%),
-			var(--hero) center 35% / cover no-repeat;
-		border-bottom: 2px solid var(--copper);
-		text-align: center;
-
-		h2 {
-			margin: 0.15rem 0 0.25rem;
-			font-size: clamp(1.7rem, 5.2vw, 2.3rem);
-			line-height: 1.05;
-			color: var(--cream);
-			text-transform: uppercase;
-			text-shadow:
-				0 2px 0 #4a2e14,
-				0 3px 10px rgba(0, 0, 0, 0.6);
-		}
-	}
-
-	.al-kicker {
-		display: inline-block;
-		padding: 0.18rem 0.7rem;
-		border: 1px solid var(--copper);
-		border-radius: 999px;
-		background: rgba(11, 37, 43, 0.75);
-		color: var(--copper-lit);
-		font-size: 0.68rem;
-		letter-spacing: 0.18em;
-		text-transform: uppercase;
-	}
-
-	.al-tagline {
-		margin: 0;
-		color: var(--mist);
-		font-size: 0.86rem;
 	}
 
 	/* ── the four numbers ── */

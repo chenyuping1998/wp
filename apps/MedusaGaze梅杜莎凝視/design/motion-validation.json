@@ -1,7 +1,7 @@
 {
   "scope": "Offline geometry, published book data and timing only; no Stake Engine recording.",
   "exhaustiveColumnPatterns": 63,
-  "publishedWinningPositions": 721,
+  "publishedWinningPositions": 1241,
   "fracturePieces": 8,
   "fractureArea": 1,
   "irregularConvexStoneCells": true,

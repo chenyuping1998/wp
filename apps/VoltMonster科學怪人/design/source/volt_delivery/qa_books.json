@@ -1,0 +1,687 @@
+{
+  "base": {
+    "scanned": 3000,
+    "books": [
+      {
+        "id": 0,
+        "payoutMultiplier": 30,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 1,
+        "payoutMultiplier": 1440,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 2,
+        "payoutMultiplier": 60,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 3,
+        "payoutMultiplier": 1000,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "rouletteInfo",
+          "setWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 9,
+        "payoutMultiplier": 120,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 11,
+        "payoutMultiplier": 6390,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 38,
+        "payoutMultiplier": 7380,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 70,
+        "payoutMultiplier": 5880,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 79,
+        "payoutMultiplier": 3120,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 82,
+        "payoutMultiplier": 600,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 2935,
+        "payoutMultiplier": 1000000,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "wincap",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      }
+    ]
+  },
+  "bonus": {
+    "scanned": 3000,
+    "books": [
+      {
+        "id": 0,
+        "payoutMultiplier": 23460,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 1,
+        "payoutMultiplier": 10620,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 3,
+        "payoutMultiplier": 960,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 4,
+        "payoutMultiplier": 2880,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 10,
+        "payoutMultiplier": 3580,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "rouletteInfo",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 22,
+        "payoutMultiplier": 29700,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 1875,
+        "payoutMultiplier": 1000000,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "wincap",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      }
+    ]
+  },
+  "holdandspin": {
+    "scanned": 3000,
+    "books": [
+      {
+        "id": 0,
+        "payoutMultiplier": 1100,
+        "events": [
+          "updateFreeSpin",
+          "reveal",
+          "newStickySymbols",
+          "prizeWinInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      }
+    ]
+  },
+  "scarab5": {
+    "scanned": 3000,
+    "books": [
+      {
+        "id": 0,
+        "payoutMultiplier": 300,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 1,
+        "payoutMultiplier": 1440,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 2,
+        "payoutMultiplier": 480,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 9,
+        "payoutMultiplier": 1440,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 11,
+        "payoutMultiplier": 3300,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 30,
+        "payoutMultiplier": 3120,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "rouletteInfo",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 38,
+        "payoutMultiplier": 7380,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 79,
+        "payoutMultiplier": 3120,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 82,
+        "payoutMultiplier": 4800,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 114,
+        "payoutMultiplier": 21600,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      }
+    ]
+  },
+  "scarab10": {
+    "scanned": 3000,
+    "books": [
+      {
+        "id": 0,
+        "payoutMultiplier": 180,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 1,
+        "payoutMultiplier": 1620,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 3,
+        "payoutMultiplier": 480,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 7,
+        "payoutMultiplier": 540,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 19,
+        "payoutMultiplier": 6780,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 30,
+        "payoutMultiplier": 2400,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "rouletteInfo",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 38,
+        "payoutMultiplier": 27660,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 78,
+        "payoutMultiplier": 5400,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 2312,
+        "payoutMultiplier": 1000000,
+        "events": [
+          "reveal",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "wincap",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      }
+    ]
+  },
+  "sunboost": {
+    "scanned": 3000,
+    "books": [
+      {
+        "id": 0,
+        "payoutMultiplier": 30,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 1,
+        "payoutMultiplier": 1440,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 2,
+        "payoutMultiplier": 60,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 3,
+        "payoutMultiplier": 1000,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "rouletteInfo",
+          "setWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 11,
+        "payoutMultiplier": 6390,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 38,
+        "payoutMultiplier": 7380,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 79,
+        "payoutMultiplier": 3120,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 82,
+        "payoutMultiplier": 600,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 114,
+        "payoutMultiplier": 1350,
+        "events": [
+          "reveal",
+          "winInfo",
+          "setWin",
+          "setTotalWin",
+          "finalWin"
+        ]
+      },
+      {
+        "id": 2935,
+        "payoutMultiplier": 1000000,
+        "events": [
+          "reveal",
+          "setTotalWin",
+          "freeSpinTrigger",
+          "updateFreeSpin",
+          "multiplierWheel",
+          "winInfo",
+          "setWin",
+          "wincap",
+          "freeSpinEnd",
+          "finalWin"
+        ]
+      }
+    ]
+  }
+}

@@ -26,7 +26,5 @@
 	});
 </script>
 
-{#if blur > 0.01}
-	<Sprite x={props.x} y={(props.y ?? 0) - height * 0.21 * blur} anchor={0.5} key={props.symbolInfo.assetKey} width={width * 0.98} height={height * (1 + 0.16 * blur)} alpha={0.16 * blur} />
-{/if}
-<Sprite x={props.x} y={(props.y ?? 0) + height * pose.y} anchor={0.5} key={props.symbolInfo.assetKey} width={width * pose.sx} height={height * pose.sy * (1 + 0.15 * blur)} alpha={1 - 0.07 * blur} />
+<!-- moving columns are blurred once by ReelMotion: one tile silhouette -->
+<Sprite x={props.x} y={(props.y ?? 0) + height * pose.y} anchor={0.5} key={props.symbolInfo.assetKey} width={width * pose.sx} height={height * pose.sy} />

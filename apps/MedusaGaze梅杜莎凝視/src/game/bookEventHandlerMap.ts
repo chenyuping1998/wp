@@ -191,6 +191,51 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			pace: currentPace(),
 		});
 		if (isFree && bookEvent.applied) stateGame.medusaTotal = bookEvent.mult;
+		if (isFree && bookEvent.snakes !== undefined) {
+			stateGame.snakes = bookEvent.snakes;
+			await eventEmitter.broadcastAsync({ type: 'serpentLadderUpdate', snakes: bookEvent.snakes });
+		}
+	},
+
+	/** Petrify Gaze: Medusa lowers her glasses and the cells turn to stone. */
+	petrify: async (bookEvent: BookEventOfType<'petrify'>) => {
+		await eventEmitter.broadcastAsync({ type: 'petrifyRun', positions: bookEvent.positions });
+	},
+
+	/**
+	 * The chain stopped with stones on the board: they all crack open as one
+	 * symbol, and the winInfo/tumbleBoard events that follow are a new chain.
+	 */
+	stoneReveal: async (bookEvent: BookEventOfType<'stoneReveal'>) => {
+		eventEmitter.broadcast({ type: 'scatterWinsHide' });
+		await eventEmitter.broadcastAsync({
+			type: 'stoneRevealRun',
+			positions: bookEvent.positions,
+			symbol: bookEvent.symbol,
+		});
+	},
+
+	/**
+	 * Serpent Ladder level. The spins it adds are already in totalFs, so the
+	 * counter is updated here; spinsAdded 0 is the super buy's starting level.
+	 */
+	serpentLevel: async (bookEvent: BookEventOfType<'serpentLevel'>) => {
+		stateGame.snakes = bookEvent.snakes;
+		await eventEmitter.broadcastAsync({
+			type: 'serpentLevelUp',
+			level: bookEvent.level,
+			snakes: bookEvent.snakes,
+			floor: bookEvent.floor,
+			spinsAdded: bookEvent.spinsAdded,
+		});
+		if (bookEvent.spinsAdded > 0) {
+			eventEmitter.broadcast({
+				type: 'freeSpinCounterUpdate',
+				current: stateUi.freeSpinCounterCurrent,
+				total: bookEvent.totalFs,
+			});
+			stateUi.freeSpinCounterTotal = bookEvent.totalFs;
+		}
 	},
 
 	/** 4+ Aegis paying on their own when the chain ended. */
@@ -240,8 +285,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		// first free spin, or a second feature in one session would open showing
 		// the previous feature's final total.
 		stateGame.medusaTotal = 0;
+		stateGame.snakes = 0;
 		eventEmitter.broadcast({ type: 'freeSpinIntroHide' });
 		eventEmitter.broadcast({ type: 'medusaTotalShow' });
+		eventEmitter.broadcast({ type: 'serpentLadderShow', snakes: 0 });
 		eventEmitter.broadcast({ type: 'boardFrameGlowShow' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
 		stateUi.freeSpinCounterShow = true;
@@ -330,7 +377,9 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'freeSpinOutroHide' });
 		eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
 		eventEmitter.broadcast({ type: 'medusaTotalHide' });
+		eventEmitter.broadcast({ type: 'serpentLadderHide' });
 		stateGame.medusaTotal = 0;
+		stateGame.snakes = 0;
 		stateUi.freeSpinCounterShow = false;
 		stateGame.gameType = 'basegame';
 		eventEmitter.broadcast({ type: 'soundMusic', name: 'bgm_main' });
@@ -367,6 +416,7 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			eventEmitter.broadcast({ type: 'freeSpinCounterHide' });
 			stateUi.freeSpinCounterShow = false;
 		}
+		eventEmitter.broadcast({ type: 'serpentLadderHide' });
 		if (stateGame.gameType !== 'basegame') {
 			stateGame.gameType = 'basegame';
 		}
@@ -404,6 +454,15 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 					? lastMedusaThrowEvent.mult
 					: 0;
 			eventEmitter.broadcast({ type: 'medusaTotalShow' });
+			// Serpent Ladder: the last snake count after the trigger (throw or level event)
+			const lastSnakes = _.findLast(
+				bookEvents,
+				(e) =>
+					e.index > lastFreeSpinTriggerEvent.index &&
+					((e.type === 'medusaThrow' && e.snakes !== undefined) || e.type === 'serpentLevel'),
+			) as BookEventOfType<'medusaThrow'> | BookEventOfType<'serpentLevel'> | undefined;
+			stateGame.snakes = lastSnakes?.snakes ?? 0;
+			eventEmitter.broadcast({ type: 'serpentLadderShow', snakes: stateGame.snakes });
 		}
 	},
 };

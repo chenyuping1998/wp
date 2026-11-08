@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Container, Graphics, Sprite } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { musicAt } from '../game/beatClock';
 
 	// The banner owns the slam and sparks. Behind it, a sign-shaped rim chases
 	// around the edge; the old rotating sunburst and random bokeh made every
@@ -33,7 +34,11 @@
 		g.roundRect(-rx, -ry, rx * 2, ry * 2, radius * 0.09)
 			.stroke({ width: 3, color: 0x59e3ff, alpha: 0.17 * intensity });
 		const segments = 20;
-		const chase = Math.floor(clock * 7) % segments;
+		// one lamp per 16th of the running track (7/s was 105 BPM's 16ths by
+		// luck); without music, the old 7/s
+		const elapsed = clock; // read every time: it is what redraws this at 30fps
+		const music = musicAt(performance.now());
+		const chase = Math.floor(music.live ? music.beats * 4 : elapsed * 7) % segments;
 		for (let i = 0; i < segments; i++) {
 			// Six lamps across each long edge, four on each short edge.
 			// Keep them on the actual sign rim rather than an ellipse inside it.

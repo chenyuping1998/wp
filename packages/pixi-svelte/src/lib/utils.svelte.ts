@@ -69,6 +69,25 @@ export const setFontKit = (id: string | null) => {
 	fontKitId = id;
 };
 
+// Upper bound on the renderer's resolution. Null (the default) renders at the
+// screen's full devicePixelRatio, exactly as before. A game can cap it at module
+// scope: an iPhone reports 3, and every full-screen render target — the canvas,
+// its MSAA buffer, each filter's pooled textures (rounded up to a power of two) —
+// grows with its square. At 3 a game with full-screen filters can outgrow iOS
+// Safari's per-tab memory and be killed on load ("A problem repeatedly
+// occurred"); at 2 the same targets take 44% of the memory and the difference
+// is not visible at phone viewing distance.
+let maxResolution: number | null = null;
+
+export const setMaxResolution = (value: number | null) => {
+	maxResolution = value;
+};
+
+export const getRenderResolution = (devicePixelRatio: number | undefined) => {
+	const dpr = devicePixelRatio || 1;
+	return maxResolution ? Math.min(dpr, maxResolution) : dpr;
+};
+
 // CSS font shorthands for faces the game self-hosts through @font-face, e.g.
 // '400 16px "Titan One"'. Pixi measures glyph advances the moment it builds a
 // Text, so a face still in flight at that point gets the first frame laid out on

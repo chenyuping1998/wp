@@ -1,6 +1,6 @@
 {
   "seed": 20261024,
-  "runtime_bytes": 6870242,
+  "runtime_bytes": 7119356,
   "files": [
     {
       "cue": "sfx_petrify_1",
@@ -1048,6 +1048,81 @@
         "small_body",
         "breathy_release"
       ]
+    },
+    {
+      "cue": "sfx_stone_petrify",
+      "file": "sfx_stone_petrify.wav",
+      "duration": 0.18,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 15954,
+      "loop": false,
+      "description": "Dry pebble tk-chk; short enough for sixteen overlapping rising-pitch cells",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -24.63,
+      "true_peak_db": -7.95,
+      "design_version": "20261107"
+    },
+    {
+      "cue": "sfx_stone_rattle",
+      "file": "sfx_stone_rattle.wav",
+      "duration": 0.46,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 40650,
+      "loop": false,
+      "description": "Increasing irregular marble rattle",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -24.22,
+      "true_peak_db": -7.92,
+      "design_version": "20261107"
+    },
+    {
+      "cue": "sfx_stone_burst",
+      "file": "sfx_stone_burst.wav",
+      "duration": 0.72,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 63582,
+      "loop": false,
+      "description": "Stone burst followed by a bright lyre glissando",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -23.9,
+      "true_peak_db": -7.93,
+      "design_version": "20261107"
+    },
+    {
+      "cue": "sfx_snake_grow",
+      "file": "sfx_snake_grow.wav",
+      "duration": 0.31,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 27420,
+      "loop": false,
+      "description": "Cheeky pluck pop and dry tiny hiss",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -21.93,
+      "true_peak_db": -8.0,
+      "design_version": "20261107"
+    },
+    {
+      "cue": "sfx_ladder_up",
+      "file": "sfx_ladder_up.wav",
+      "duration": 1.15,
+      "sample_rate": 44100,
+      "channels": 1,
+      "format": "PCM16",
+      "bytes": 101508,
+      "loop": false,
+      "description": "Three ascending brass-like harmonics and lyre attacks, bright bell release",
+      "lufs_method": "complete cue repeated to >=3 s",
+      "lufs": -20.33,
+      "true_peak_db": -7.97,
+      "design_version": "20261107"
     }
   ],
   "multiplier_design_version": 4,

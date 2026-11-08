@@ -1,0 +1,6 @@
+{
+  "path": "C:\\Users\\cheny\\.codex\\generated_images\\01a1b448-234b-7de2-bf41-e2057689150c\\exec-880f72f4-ae81-4a2d-a596-a4dc4aee3260.png",
+  "prompt": "Precise-object-edit of the supplied Mummy Mayhem character rig atlas. Edit ONLY the torso in the SECOND cell of the TOP row. Make the belly substantially less large and less protruding: reduce lower abdominal silhouette width by approximately 22%, flatten the round pot-belly bulge, give the cat a compact moderately rounded body with a gentle waist, not an obese or balloon abdomen. Keep the upper chest, turquoise collar and shoulder width unchanged so existing arms attach exactly. Keep the cream wrapped linen material, painterly shading, upper-left lighting and turquoise rim light. The navel may remain small and subtle. Preserve the torso's top/bottom positioning and its height. Preserve ALL other cells, head, expressions, limbs, pelvis, tail, grid positions and proportions EXACTLY unchanged. Genuine transparent background, no new objects, no text. This is a production rig-part correction, not a redesign.",
+  "tool": "imagegen built-in",
+  "scope": "top row, second cell torso only"
+}

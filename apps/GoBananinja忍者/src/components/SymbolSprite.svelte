@@ -195,29 +195,7 @@
 	});
 </script>
 
-{#if blur > 0.01}
-	<!-- ghost trail: same art, offset and faded, sells the motion blur. Offset,
-	     opacity and stretch all scale with speed, so the trail shortens and fades
-	     as the reel brakes rather than vanishing in one frame. -->
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) - height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96}
-		height={height * (1 + 0.18 * blur)}
-		alpha={0.22 * blur}
-	/>
-	<Sprite
-		x={props.x}
-		y={(props.y ?? 0) + height * 0.42 * blur}
-		anchor={0.5}
-		key={props.symbolInfo.assetKey}
-		width={width * 0.96}
-		height={height * (1 + 0.18 * blur)}
-		alpha={0.22 * blur}
-	/>
-{/if}
+<!-- Moving reels are blurred once by ReelMotion. Keep a single tile silhouette. -->
 
 {#if meshLand && blur <= 0.01 && meshName}
 	{#key meshLand.id}
@@ -234,8 +212,8 @@
 		anchor={0.5}
 		key={splitFace === 'old' ? (props.splitFromAssetKey ?? props.symbolInfo.assetKey) : props.symbolInfo.assetKey}
 		width={width * sx.current * splitX.current}
-		height={blur > 0.01 ? height * (1 + 0.3 * blur) : height * sy.current}
-		alpha={1 - 0.15 * blur}
+		height={height * sy.current}
+		alpha={1}
 	/>
 {/if}
 

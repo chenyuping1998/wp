@@ -12,6 +12,7 @@
 	// Shared with the game rules page so the two cannot describe the same rule in
 	// different words. See socialTerms.ts.
 	const T = getSocialTerms();
+	let focusedReels = $state(0);
 
 	type PayRow = { name: string; img: string; label: string; pays: { count: number; value: number }[] };
 
@@ -138,21 +139,25 @@
 		});
 		return { name, img: imgSrc(name), label: SYMBOL_LABEL[name] ?? name, pays };
 	});
+	const reelCounts = [...new Set(rows.flatMap(row=>row.pays.map(pay=>pay.count)))].sort((a,b)=>a-b);
 </script>
 
 {#if stateModal.modal?.name === 'payTable'}
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<div class="wp-paytable info-page">
 			<InfoShell kind="paytable">
-			<header class="al-head">
-				<span class="al-kicker">Go Banalchemy</span>
-				<h2>{T.payTableUpper}</h2>
-			</header>
 			<p class="wp-note">
 				{T.paysStart} shown as a multiple of {T.totalBet}, per winning way. Wins
 				{T.winsDirection} on adjacent reels, in any position &mdash; there are no fixed lines.
 			</p>
 
+			<h3 class="symbol-values-title">Symbol values</h3>
+			<div class="pay-focus" role="group" aria-label="Highlight values by adjacent reel count">
+                <span>Compare reel counts</span>
+                {#each [0, ...reelCounts] as count}
+                  <button aria-pressed={focusedReels===count} onclick={()=>focusedReels=count}>{count===0?'All':`${count} reels`}</button>
+                {/each}
+              </div>
 			<div class="wp-grid">
 				{#each rows as row, i (row.name)}
 					<div class="wp-row" style="animation-delay: {i * 50}ms">
@@ -171,7 +176,7 @@
 								>
 							{:else if row.pays.length}
 								{#each row.pays as pay (pay.count)}
-									<span class="wp-pay-chip"><b>{pay.count}</b> &times; <em>{pay.value}</em></span>
+									<span class="wp-pay-chip" class:pay-focused={focusedReels===pay.count} class:pay-muted={focusedReels!==0&&focusedReels!==pay.count}><b>{pay.count} reels</b> <em>{pay.value}&times;</em></span>
 								{/each}
 							{/if}
 						</div>
@@ -246,15 +251,15 @@
 		/* above the Popup's click-to-close layer, or it swallows scrolling */
 		position: relative;
 		z-index: 100;
-		display: flex;
-		flex-direction: column;
-		gap: 0.8rem;
-		width: min(38rem, 92vw);
-		max-height: 82vh;
+		/* The scroller IS the journal: InfoShell draws the frame, so this box
+		   adds no padding of its own and shares the shell's corner radius. */
+		display: block;
+		width: min(40rem, 94vw);
+		max-height: 88vh;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 		overscroll-behavior: contain;
-		padding: 0 0.15rem 0.5rem 0;
+		border-radius: 20px;
 		color: var(--cream);
 		text-align: center;
 		animation: al-rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -267,12 +272,76 @@
 			border-radius: 3px;
 		}
 
-		h2 {
-			margin: 0.2rem 0 0;
-			font-size: clamp(1.5rem, 4.6vw, 1.95rem);
-			color: var(--cream);
-			text-shadow: 0 2px 0 #4a2e14;
+		/* the shell's content slot is a plain block — space the sections here */
+		:global(.info-content) {
+			display: flex;
+			flex-direction: column;
+			gap: 0.8rem;
+			text-align: center;
 		}
+	}
+
+	.symbol-values-title {
+		margin: 0.4rem 0 0;
+		font-size: 1.05rem;
+		font-weight: 400;
+		letter-spacing: 0.12em;
+		color: var(--copper-lit);
+	}
+
+	/* Reel-count focus. Only emphasis changes — every value stays printed. */
+	.pay-focus {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+
+		span {
+			width: 100%;
+			font-size: 0.72rem;
+			letter-spacing: 0.16em;
+			text-transform: uppercase;
+			color: var(--copper);
+		}
+
+		button {
+			appearance: none;
+			min-height: 36px;
+			padding: 0 0.9rem;
+			border: 1px solid rgba(197, 139, 85, 0.45);
+			border-radius: 6px;
+			background: var(--teal-deep);
+			color: var(--mist);
+			font: 600 0.8rem/1 var(--gb-body-font, system-ui);
+			cursor: pointer;
+			transition: border-color 0.14s ease, color 0.14s ease;
+
+			&:hover {
+				border-color: var(--copper-lit);
+				color: var(--cream);
+			}
+
+			&[aria-pressed='true'] {
+				border: 2px solid var(--mint);
+				color: var(--mint);
+			}
+
+			&:focus-visible {
+				outline: 2px solid var(--copper-lit);
+				outline-offset: 2px;
+			}
+		}
+	}
+
+	.wp-pay-chip.pay-muted {
+		opacity: 0.35;
+	}
+
+	.wp-pay-chip.pay-focused {
+		border-color: var(--mint) !important;
+		background: rgba(95, 214, 168, 0.14) !important;
+		color: var(--cream);
 	}
 
 	@keyframes al-rise {
@@ -284,22 +353,6 @@
 			opacity: 1;
 			transform: none;
 		}
-	}
-
-	.al-head {
-		padding-bottom: 0.6rem;
-		border-bottom: 2px solid var(--copper);
-	}
-
-	.al-kicker {
-		display: inline-block;
-		padding: 0.18rem 0.7rem;
-		border: 1px solid var(--copper);
-		border-radius: 999px;
-		color: var(--copper-lit);
-		font-size: 0.68rem;
-		letter-spacing: 0.18em;
-		text-transform: uppercase;
 	}
 
 	.wp-note {

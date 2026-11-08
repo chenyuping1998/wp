@@ -30,9 +30,8 @@
 	 *
 	 * No light: a screenprint has none (ART_BRIEF.md §0).
 	 */
-	import { Mesh, MeshGeometry, Sprite, Container, Rectangle, Text, Texture } from 'pixi.js';
-	import { Graphics, getContextApp, getContextParent } from 'pixi-svelte';
-	import type { Graphics as PixiGraphics } from 'pixi.js';
+	import { Mesh, MeshGeometry, Sprite, Container, Rectangle, Text, Texture, Graphics as PixiGraphicsClass } from 'pixi.js';
+	import { getContextApp, getContextParent } from 'pixi-svelte';
 	import { stateBetDerived } from 'state-shared';
 	import { onMount } from 'svelte';
 
@@ -42,6 +41,7 @@
 	import { CANVAS, skin } from '../game/meshWin/meshRig';
 	import { MESH_WINS } from '../game/meshWin';
 	import ImpactDust from './ImpactDust.svelte';
+	import { HAS_INK_FX, drawInkFx } from '../game/meshWin/inkFx';
 
 	type Props = {
 		x?: number;
@@ -70,19 +70,11 @@
 	const SHADOW_ALPHA = 0.35, SHADOW_SPREAD = 0.12, SHADOW_DROP = 3;
 	// the additive rim light's peak (at the top of the leap) and its colour
 	const RIM_ALPHA = 0.22, RIM_TINT = 0xffe2a8;
+	// the gloss band's pass (ms into the act): over the top of the leap
+	const GLOSS_FROM = 300, GLOSS_MS = 420;
 	// SymbolWinAnim's frame: an ink-red keyline under a paper one
-	const FRAME = 0xefeadc, KEYLINE = 0xb87b60;
-
 	const fit = (SYMBOL_SIZE * props.symbolInfo.sizeRatios.height) / CANVAS;
 
-	const drawFrame = (g: PixiGraphics) => {
-		g.clear();
-		const w = SYMBOL_SIZE * props.symbolInfo.sizeRatios.width;
-		const h = SYMBOL_SIZE * props.symbolInfo.sizeRatios.height;
-		const inset = SYMBOL_SIZE * 0.02;
-		g.roundRect(-w / 2 + inset + 2, -h / 2 + inset + 2, w - inset * 2, h - inset * 2, SYMBOL_SIZE * 0.05).stroke({ width: 2, color: KEYLINE });
-		g.roundRect(-w / 2 + inset, -h / 2 + inset, w - inset * 2, h - inset * 2, SYMBOL_SIZE * 0.05).stroke({ width: 2, color: FRAME });
-	};
 	let dust = $state(false);
 
 	// the letters' textures, one per letter for the whole session
@@ -155,11 +147,48 @@
 		rim.tint = RIM_TINT;
 		rim.alpha = 0;
 
+		// THE WIN IS LIGHT ON THE PICTURE, NOT A SHAPE AROUND IT (2026-11-01, as
+		// Purrfia / Parrot; user: no stars, hard rings or box flashes — "太粗糙").
+		// The hard keyline box round each paying cell is gone. A winning symbol
+		// gets a warm soft backlight for the length of the act (brighter at the
+		// top of the leap) and one gloss band that sweeps across the art itself
+		// while it is in the air: the same mesh again, additive, seen through a
+		// moving diagonal Graphics stencil (an alpha sprite mask shows nothing in
+		// this pixi build). Lands and idles get neither.
+		// a real win act (lands and idles pass their own `spec`); the Scatter's
+		// win counts too
+		const winning = !props.spec;
+		const glowTex = assets.fxSoftGlow as Texture | undefined;
+		const backlight = winning && glowTex ? new Sprite(glowTex) : null;
+		if (backlight) {
+			backlight.anchor.set(0.5);
+			backlight.position.set(CANVAS / 2, CANVAS / 2);
+			backlight.width = backlight.height = CANVAS * 1.45;
+			backlight.blendMode = 'add';
+			backlight.tint = 0xffd99a;
+			backlight.alpha = 0;
+		}
+		const gloss = winning ? new Mesh({ geometry, texture: subjectTex }) : null;
+		const glossMask = winning ? new PixiGraphicsClass() : null;
+		if (gloss && glossMask) {
+			gloss.blendMode = 'add';
+			gloss.alpha = 0.55;
+			gloss.mask = glossMask;
+		}
+
 		const content = new Container();
 		content.position.set(-CANVAS / 2, -CANVAS / 2);
+		if (backlight) content.addChild(backlight);
 		if (shadow) content.addChild(shadow);
 		content.addChild(subject);
 		content.addChild(rim);
+		if (gloss && glossMask) {
+			content.addChild(gloss);
+			content.addChild(glossMask);
+		}
+		// ink motion marks round the act (game/meshWin/inkFx.ts): wins only
+		const inkFx = winning && HAS_INK_FX.has(spec.symbol) ? new PixiGraphicsClass() : null;
+		if (inkFx) content.addChild(inkFx);
 		root.addChild(content);
 		root.scale.set(fit);
 		root.position.set(props.x ?? 0, props.y ?? 0);
@@ -172,7 +201,25 @@
 			skin(rig, pose, spec.feetY, positions);
 			geometry.getBuffer('aPosition').update();
 			root.scale.set(fit * pose.plateHit);
-			rim.alpha = RIM_ALPHA * Math.min(1, Math.max(0, pose.air));
+			// the rim light pulses ON the act's beats (act.ts glowPulse via pose.flash),
+			// or follows the height for acts that do not key it
+			rim.alpha = RIM_ALPHA * Math.min(1, Math.max(0, pose.flash > 0 ? pose.flash / 0.22 : pose.air));
+			if (inkFx) drawInkFx(inkFx, spec.symbol, t, spec.feetY, pose.rigid);
+			if (backlight) {
+				const fade = Math.min(1, t / 160) * Math.min(1, Math.max(0, (spec.durationMs - t) / 260));
+				backlight.alpha = (0.26 + 0.24 * Math.min(1, Math.max(0, pose.air))) * fade;
+			}
+			if (gloss && glossMask) {
+				// one pass, left to right, while the symbol is up
+				const k = (t - GLOSS_FROM) / GLOSS_MS;
+				gloss.visible = k > 0 && k < 1;
+				glossMask.clear();
+				if (gloss.visible) {
+					const x = -90 + (CANVAS + 180) * k;
+					const band = 42;
+					glossMask.poly([x, 0, x + band, 0, x + band - 70, CANVAS, x - 70, CANVAS]).fill(0xffffff);
+				}
+			}
 
 			if (shadow) {
 				const air = pose.air;
@@ -201,10 +248,6 @@
 	});
 </script>
 
-{#if props.showWinFrame ?? true}
-	<!-- the pay frame round the cell: still, like the card under it -->
-	<Graphics draw={drawFrame} x={props.x ?? 0} y={props.y ?? 0} />
-{/if}
 
 {#if dust}
 	<!-- the landing, at the subject's feet -->
