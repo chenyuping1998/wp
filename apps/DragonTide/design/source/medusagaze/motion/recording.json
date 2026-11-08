@@ -1,0 +1,15 @@
+{
+  "video": "MedusaGaze_motion_v2.webm",
+  "durationSeconds": 9.21,
+  "bytes": 8583669,
+  "source": "Browser canvas recording using shared motion curves and real book data; not Stake Engine footage.",
+  "frames": [
+    "motion/frames/01_0.10.jpg",
+    "motion/frames/02_0.32.jpg",
+    "motion/frames/03_0.44.jpg",
+    "motion/frames/04_0.63.jpg",
+    "motion/frames/05_0.98.jpg",
+    "motion/frames/06_1.20.jpg"
+  ],
+  "contact": "_sheets/motion_v2_contact.jpg"
+}

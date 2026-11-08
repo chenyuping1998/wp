@@ -1,0 +1,739 @@
+{
+  "authorization": "User explicitly selected programmatic cutting, alpha repair and registration on 2026-10-27",
+  "reference_master": "reference-master.png",
+  "final_master": "master.png",
+  "reference_difference": "Final master is a new assembly from repaired registered parts; not pixel-identical to the first imagegen master",
+  "transforms": {
+    "arm_l_lower": {
+      "source_bbox": [
+        153,
+        655,
+        301,
+        781
+      ],
+      "final_bbox": [
+        142,
+        665,
+        304,
+        802
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source",
+        "full continuous ImageGen cloth sleeve; measured original-joint registration",
+        "1028: curved tapered cloth, no outlined overlap caps"
+      ],
+      "registered_target_bbox": [
+        153,
+        675,
+        301,
+        795
+      ]
+    },
+    "arm_l_upper": {
+      "source_bbox": [
+        155,
+        534,
+        346,
+        680
+      ],
+      "final_bbox": [
+        152,
+        555,
+        352,
+        702
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source",
+        "full continuous ImageGen cloth sleeve; measured original-joint registration",
+        "1028: curved tapered cloth, no outlined overlap caps"
+      ],
+      "registered_target_bbox": [
+        155,
+        561,
+        346,
+        699
+      ]
+    },
+    "arm_r_lower": {
+      "source_bbox": [
+        551,
+        611,
+        692,
+        736
+      ],
+      "final_bbox": [
+        537,
+        617,
+        700,
+        767
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source",
+        "full continuous ImageGen cloth sleeve; measured original-joint registration",
+        "1028: curved tapered cloth, no outlined overlap caps"
+      ],
+      "registered_target_bbox": [
+        551,
+        634,
+        692,
+        752
+      ]
+    },
+    "arm_r_upper": {
+      "source_bbox": [
+        562,
+        546,
+        691,
+        733
+      ],
+      "final_bbox": [
+        557,
+        566,
+        693,
+        754
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source",
+        "full continuous ImageGen cloth sleeve; measured original-joint registration",
+        "1028: curved tapered cloth, no outlined overlap caps"
+      ],
+      "registered_target_bbox": [
+        562,
+        572,
+        691,
+        749
+      ]
+    },
+    "coat_tail_l": {
+      "source_bbox": [
+        311,
+        739,
+        499,
+        1103
+      ],
+      "final_bbox": [
+        310,
+        802,
+        502,
+        1129
+      ],
+      "repairs": [],
+      "registered_target_bbox": [
+        310,
+        802,
+        502,
+        1129
+      ]
+    },
+    "coat_tail_r": {
+      "source_bbox": [
+        428,
+        518,
+        748,
+        1172
+      ],
+      "final_bbox": [
+        500,
+        804,
+        740,
+        1174
+      ],
+      "repairs": [],
+      "registered_target_bbox": [
+        500,
+        804,
+        740,
+        1174
+      ]
+    },
+    "foot_l": {
+      "source_bbox": [
+        116,
+        1232,
+        588,
+        1478
+      ],
+      "final_bbox": [
+        155,
+        1283,
+        500,
+        1456
+      ],
+      "repairs": [],
+      "registered_target_bbox": [
+        155,
+        1283,
+        500,
+        1456
+      ]
+    },
+    "foot_r": {
+      "source_bbox": [
+        443,
+        1203,
+        985,
+        1496
+      ],
+      "final_bbox": [
+        594,
+        1293,
+        902,
+        1456
+      ],
+      "repairs": [],
+      "registered_target_bbox": [
+        594,
+        1293,
+        902,
+        1456
+      ]
+    },
+    "glasses": {
+      "source_bbox": [
+        337,
+        316,
+        638,
+        435
+      ],
+      "final_bbox": [
+        350,
+        359,
+        533,
+        431
+      ],
+      "repairs": [],
+      "registered_target_bbox": [
+        350,
+        359,
+        533,
+        431
+      ]
+    },
+    "hand_l_hip": {
+      "source_bbox": [
+        269,
+        719,
+        346,
+        821
+      ],
+      "final_bbox": [
+        270,
+        736,
+        345,
+        832
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source",
+        "1028: smooth continuous edge and remove thin wrist protrusions"
+      ],
+      "registered_target_bbox": [
+        269,
+        736,
+        346,
+        833
+      ]
+    },
+    "hand_l_open": {
+      "source_bbox": [
+        176,
+        673,
+        398,
+        866
+      ],
+      "final_bbox": [
+        139,
+        742,
+        289,
+        880
+      ],
+      "repairs": [],
+      "registered_target_bbox": [
+        139,
+        742,
+        289,
+        880
+      ]
+    },
+    "hand_l_point": {
+      "source_bbox": [
+        158,
+        706,
+        392,
+        841
+      ],
+      "final_bbox": [
+        115,
+        711,
+        289,
+        810
+      ],
+      "repairs": [],
+      "registered_target_bbox": [
+        115,
+        711,
+        289,
+        810
+      ]
+    },
+    "hand_r_grip": {
+      "source_bbox": [
+        458,
+        509,
+        592,
+        642
+      ],
+      "final_bbox": [
+        458,
+        537,
+        583,
+        661
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source",
+        "1028: smooth continuous edge and remove thin wrist protrusions"
+      ],
+      "registered_target_bbox": [
+        458,
+        537,
+        592,
+        663
+      ]
+    },
+    "hand_r_hatheld": {
+      "source_bbox": [
+        185,
+        274,
+        632,
+        642
+      ],
+      "final_bbox": [
+        185,
+        314,
+        632,
+        661
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source",
+        "1028: smooth continuous edge and remove thin wrist protrusions"
+      ],
+      "registered_target_bbox": [
+        185,
+        314,
+        632,
+        663
+      ]
+    },
+    "hand_r_open": {
+      "source_bbox": [
+        344,
+        519,
+        713,
+        852
+      ],
+      "final_bbox": [
+        493,
+        515,
+        653,
+        667
+      ],
+      "repairs": [],
+      "registered_target_bbox": [
+        493,
+        515,
+        653,
+        667
+      ]
+    },
+    "hand_r_pinch": {
+      "source_bbox": [
+        411,
+        614,
+        630,
+        851
+      ],
+      "final_bbox": [
+        465,
+        555,
+        584,
+        668
+      ],
+      "repairs": [
+        "1028: smooth continuous edge and remove thin wrist protrusions"
+      ],
+      "registered_target_bbox": [
+        465,
+        555,
+        585,
+        669
+      ]
+    },
+    "hat": {
+      "source_bbox": [
+        114,
+        70,
+        904,
+        590
+      ],
+      "final_bbox": [
+        228,
+        80,
+        675,
+        364
+      ],
+      "repairs": [],
+      "registered_target_bbox": [
+        228,
+        80,
+        675,
+        364
+      ]
+    },
+    "head_annoyed": {
+      "source_bbox": [
+        166,
+        237,
+        860,
+        704
+      ],
+      "final_bbox": [
+        225,
+        248,
+        682,
+        542
+      ],
+      "repairs": [
+        "same-head silhouette alpha restored from head_idle"
+      ],
+      "registered_target_bbox": [
+        225,
+        248,
+        682,
+        542
+      ]
+    },
+    "head_blink": {
+      "source_bbox": [
+        166,
+        237,
+        860,
+        704
+      ],
+      "final_bbox": [
+        225,
+        248,
+        682,
+        542
+      ],
+      "repairs": [
+        "same-head silhouette alpha restored from head_idle"
+      ],
+      "registered_target_bbox": [
+        225,
+        248,
+        682,
+        542
+      ]
+    },
+    "head_grin": {
+      "source_bbox": [
+        166,
+        237,
+        860,
+        704
+      ],
+      "final_bbox": [
+        232,
+        248,
+        682,
+        542
+      ],
+      "repairs": [
+        "same-head silhouette alpha restored from head_idle",
+        "1028: remove exterior chin shadow only; other heads unchanged"
+      ],
+      "registered_target_bbox": [
+        225,
+        248,
+        682,
+        542
+      ]
+    },
+    "head_idle": {
+      "source_bbox": [
+        166,
+        237,
+        860,
+        704
+      ],
+      "final_bbox": [
+        225,
+        248,
+        682,
+        542
+      ],
+      "repairs": [
+        "same-head silhouette alpha restored from head_idle"
+      ],
+      "registered_target_bbox": [
+        225,
+        248,
+        682,
+        542
+      ]
+    },
+    "head_spiral": {
+      "source_bbox": [
+        166,
+        237,
+        860,
+        704
+      ],
+      "final_bbox": [
+        225,
+        248,
+        682,
+        542
+      ],
+      "repairs": [
+        "same-head silhouette alpha restored from head_idle"
+      ],
+      "registered_target_bbox": [
+        225,
+        248,
+        682,
+        542
+      ]
+    },
+    "leg_l_lower": {
+      "source_bbox": [
+        285,
+        1046,
+        463,
+        1357
+      ],
+      "final_bbox": [
+        285,
+        1047,
+        463,
+        1342
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source"
+      ],
+      "registered_target_bbox": [
+        285,
+        1047,
+        463,
+        1342
+      ]
+    },
+    "leg_l_upper": {
+      "source_bbox": [
+        284,
+        851,
+        452,
+        1139
+      ],
+      "final_bbox": [
+        284,
+        861,
+        452,
+        1135
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source"
+      ],
+      "registered_target_bbox": [
+        284,
+        862,
+        452,
+        1135
+      ]
+    },
+    "leg_r_lower": {
+      "source_bbox": [
+        538,
+        1060,
+        713,
+        1362
+      ],
+      "final_bbox": [
+        538,
+        1060,
+        713,
+        1347
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source"
+      ],
+      "registered_target_bbox": [
+        538,
+        1060,
+        713,
+        1347
+      ]
+    },
+    "leg_r_upper": {
+      "source_bbox": [
+        444,
+        853,
+        616,
+        1151
+      ],
+      "final_bbox": [
+        444,
+        863,
+        616,
+        1146
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source"
+      ],
+      "registered_target_bbox": [
+        444,
+        863,
+        616,
+        1146
+      ]
+    },
+    "neck": {
+      "source_bbox": [
+        339,
+        451,
+        515,
+        561
+      ],
+      "final_bbox": [
+        339,
+        482,
+        515,
+        586
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source"
+      ],
+      "registered_target_bbox": [
+        339,
+        482,
+        515,
+        586
+      ]
+    },
+    "pelvis": {
+      "source_bbox": [
+        328,
+        792,
+        547,
+        941
+      ],
+      "final_bbox": [
+        328,
+        806,
+        547,
+        947
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source"
+      ],
+      "registered_target_bbox": [
+        328,
+        806,
+        547,
+        947
+      ]
+    },
+    "tail_1": {
+      "source_bbox": [
+        584,
+        987,
+        816,
+        1123
+      ],
+      "final_bbox": [
+        584,
+        991,
+        816,
+        1120
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source",
+        "1028: underpaint radius 23 inside shaft, preserve side ink, clamp registration RGB overshoot"
+      ],
+      "registered_target_bbox": [
+        584,
+        991,
+        816,
+        1120
+      ]
+    },
+    "tail_2": {
+      "source_bbox": [
+        760,
+        947,
+        926,
+        1120
+      ],
+      "final_bbox": [
+        760,
+        953,
+        926,
+        1117
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source",
+        "1028: underpaint radius 23 inside shaft, preserve side ink, clamp registration RGB overshoot"
+      ],
+      "registered_target_bbox": [
+        760,
+        953,
+        926,
+        1117
+      ]
+    },
+    "tail_3": {
+      "source_bbox": [
+        731,
+        815,
+        926,
+        1001
+      ],
+      "final_bbox": [
+        731,
+        827,
+        926,
+        1004
+      ],
+      "repairs": [
+        "precise master cut / concealed anatomy repair; shared continuous limb or tail source",
+        "1028: underpaint radius 23 inside shaft, preserve side ink, clamp registration RGB overshoot"
+      ],
+      "registered_target_bbox": [
+        731,
+        827,
+        926,
+        1004
+      ]
+    },
+    "torso": {
+      "source_bbox": [
+        260,
+        465,
+        700,
+        992
+      ],
+      "final_bbox": [
+        300,
+        519,
+        620,
+        870
+      ],
+      "repairs": [],
+      "registered_target_bbox": [
+        300,
+        519,
+        620,
+        870
+      ]
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "selectedReferences": [
+    "Chaos Crew 2",
+    "Donut Division",
+    "Dr Zappo",
+    "Red Rascal"
+  ],
+  "selectionOrder": "row-major first four images of the six-image sheet",
+  "excluded": [
+    "Toshi Ways Club",
+    "The Count"
+  ],
+  "tool": "built-in image_gen",
+  "competitorPixelsProvided": false,
+  "priorRejectedMonkeyPicturesProvided": false,
+  "status": "direction-test-only-not-approved-style-frame",
+  "file": "focused-character-test.png",
+  "sha256": "4dd21089653285f6ffaf4418ffebf283fc6a7998c925df0e8ce99d4619dcb5f2",
+  "rejected": [
+    {
+      "file": "rejected/storybook-frame.png",
+      "reason": "Storybook illustration, excess fur/wear detail and softened scene; does not meet selected cartoon direction."
+    }
+  ],
+  "remainingStyleQuestions": [
+    "The focused test checks silhouette, weight, glasses contact and differentiated materials; overall match to chosen references remains a visual judgment, not a metric pass.",
+    "This is not final art, a layered character, Spine animation or runtime integration."
+  ]
+}

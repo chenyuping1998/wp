@@ -1,0 +1,94 @@
+{
+  "clean_arm_l_upper": {
+    "sourceAnchors": [
+      [
+        411,
+        445
+      ],
+      [
+        255,
+        625
+      ]
+    ],
+    "targetAnchors": [
+      [
+        374,
+        439
+      ],
+      [
+        285,
+        560
+      ]
+    ],
+    "method": "single complete anatomical part; similarity transform"
+  },
+  "clean_arm_l_lower": {
+    "sourceAnchors": [
+      [
+        300,
+        580
+      ],
+      [
+        190,
+        365
+      ]
+    ],
+    "targetAnchors": [
+      [
+        285,
+        560
+      ],
+      [
+        190,
+        382
+      ]
+    ],
+    "method": "single complete anatomical part; similarity transform"
+  },
+  "clean_arm_r_upper": {
+    "sourceAnchors": [
+      [
+        605,
+        443
+      ],
+      [
+        736,
+        612
+      ]
+    ],
+    "targetAnchors": [
+      [
+        607,
+        445
+      ],
+      [
+        730,
+        612
+      ]
+    ],
+    "method": "single complete anatomical part; similarity transform"
+  },
+  "clean_arm_r_lower": {
+    "sourceAnchors": [
+      [
+        753,
+        575
+      ],
+      [
+        600,
+        688
+      ]
+    ],
+    "targetAnchors": [
+      [
+        730,
+        612
+      ],
+      [
+        609,
+        682
+      ]
+    ],
+    "method": "single complete anatomical part; similarity transform"
+  }
+}

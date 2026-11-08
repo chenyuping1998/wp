@@ -1,0 +1,188 @@
+{
+  "purpose": "complete 6x6 art concept with background and all ten symbols",
+  "runtimeIntegrated": false,
+  "board": [
+    [
+      "H2",
+      "L1",
+      "H4",
+      "L3",
+      "H5",
+      "L2"
+    ],
+    [
+      "L4",
+      "H3",
+      "L2",
+      "H1",
+      "L1",
+      "H5"
+    ],
+    [
+      "H1",
+      "L3",
+      "S",
+      "L4",
+      "H2",
+      "L3"
+    ],
+    [
+      "L2",
+      "H5",
+      "L1",
+      "H3",
+      "L4",
+      "H4"
+    ],
+    [
+      "H4",
+      "L4",
+      "H2",
+      "L2",
+      "S",
+      "L1"
+    ],
+    [
+      "L3",
+      "H1",
+      "L4",
+      "H5",
+      "L1",
+      "H3"
+    ]
+  ],
+  "symbolCounts": {
+    "H2": 3,
+    "L1": 5,
+    "H4": 3,
+    "L3": 4,
+    "H5": 4,
+    "L2": 4,
+    "L4": 5,
+    "H3": 3,
+    "H1": 3,
+    "S": 2
+  },
+  "symbols": {
+    "H1": "大禮帽",
+    "H2": "螺旋棒棒糖",
+    "H3": "水晶球",
+    "H4": "手搖鈴",
+    "H5": "香蕉",
+    "L1": "星星票根",
+    "L2": "月亮票根",
+    "L3": "菱形票根",
+    "L4": "愛心票根",
+    "S": "催眠螺旋盤"
+  },
+  "note": "Illustrative arrangement and UI values; not a book or game screenshot. FG portrait is a reference outside the base-game scene.",
+  "sourceSha256": {
+    "H1": "850dc2e26f548af5677b34d2b3e3851ef3c0f86585a021ce40449668fabc0b63",
+    "H2": "2d48f94d84be85756108cf59449410774c3c7c288031710169908e2de1a84a9b",
+    "H3": "7df491a6878e158e1b761af05960b1e254541b015ee5714824b568c7dd834526",
+    "H4": "1e9d8a963b555a90b2b1ae1020b5b17b212184601b5d4cf24e1e5fdb106abe0e",
+    "H5": "042e36ca130a8fced1f4d8e945e80a43cc7fa4323355544916502c3f5697f301",
+    "L1": "a50d6fcc42a88500bc75f13a04105739e6cf2115f4ac106b64f25a7b487a4765",
+    "L2": "231a7f56a3c5b48a845a5cbeb1a9544d3901def37c59d1c2418adb723d5aec63",
+    "L3": "76e504766adf85e4a29f41edb06f80f737c5e90ac173ae1bb806db9fd5ba6b35",
+    "L4": "dfe17eb7e6b246961fb6e4b98891c96858d214fefb411514984d5a73069cd347",
+    "S": "bc43be99fcbe01ca782c08b506f62be00e56a1b082df5c594eaa017d72bcaccd",
+    "WATCH": "0294e352cb219371f2d0602ffc6eb36bfa965c65113c4f866453bccb06ebd063",
+    "MG": "8e87e01c17bfeb0ac6fce8969b46514d0e75863ce1710986029c1c8876d59ff0",
+    "FG": "1d6029134de294aa26cc4b9334663280540907645cb6aee73b636b2dedad9ce9",
+    "BG": "49fd9878066a8f282266f5f806b8ae96d89e901049290c62bffcc36a7c6564ba"
+  },
+  "scriptSha256": "21c76acfe2ddcdd030dc1757a132dcf33b2371950a7304d78442dc0f3807527a",
+  "palettes": {
+    "H1": [
+      "#1B1716",
+      "#F2E6CC",
+      "#D2322D",
+      "#E3A82B"
+    ],
+    "H2": [
+      "#1B1716",
+      "#F2E6CC",
+      "#D2322D",
+      "#8C5A3C",
+      "#E3A82B"
+    ],
+    "H3": [
+      "#1B1716",
+      "#F2E6CC",
+      "#24508C",
+      "#E3A82B"
+    ],
+    "H4": [
+      "#1B1716",
+      "#F2E6CC",
+      "#D2322D",
+      "#E3A82B",
+      "#8C5A3C"
+    ],
+    "H5": [
+      "#1B1716",
+      "#F2E6CC",
+      "#E3A82B",
+      "#8C5A3C"
+    ],
+    "L1": [
+      "#1B1716",
+      "#F2E6CC",
+      "#24508C",
+      "#E3A82B"
+    ],
+    "L2": [
+      "#1B1716",
+      "#F2E6CC",
+      "#D2322D"
+    ],
+    "L3": [
+      "#1B1716",
+      "#F2E6CC",
+      "#24508C",
+      "#E3A82B"
+    ],
+    "L4": [
+      "#1B1716",
+      "#F2E6CC",
+      "#24508C",
+      "#D2322D"
+    ],
+    "S": [
+      "#1B1716",
+      "#F2E6CC",
+      "#9B3DF5",
+      "#E3A82B",
+      "#8C5A3C"
+    ],
+    "WATCH": [
+      "#1B1716",
+      "#F2E6CC",
+      "#9B3DF5",
+      "#E3A82B",
+      "#8C5A3C"
+    ],
+    "MG": [
+      "#1B1716",
+      "#F2E6CC",
+      "#D2322D",
+      "#8C5A3C",
+      "#9B3DF5"
+    ],
+    "FG": [
+      "#1B1716",
+      "#F2E6CC",
+      "#D2322D",
+      "#8C5A3C",
+      "#E3A82B"
+    ],
+    "BG": [
+      "#1B1716",
+      "#F2E6CC",
+      "#D2322D",
+      "#24508C",
+      "#E3A82B"
+    ]
+  }
+}

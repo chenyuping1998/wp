@@ -1,0 +1,30 @@
+{
+  "head_blink": {
+    "source": "head_idle",
+    "prompt": "Change ONLY the eyes into gently CLOSED eyelids for a blink. Keep exact outer head/ear/hair silhouette, nose, mouth, cheek colors, facing and every other pixel and position of the supplied head layer. No hat, monocle, neck or body. Same full 1024x1536 canvas with genuine transparency."
+  },
+  "head_spiral": {
+    "source": "head_idle",
+    "prompt": "Change ONLY the eyes to OPEN HYPNOTIC SPIRAL eyes, clearly drawn violet #9B3DF5 spirals inside the eye shapes. Keep exact outer head/ear/hair silhouette, nose, mouth, cheek colors, facing and every other pixel and position of supplied head. No light glow outside face, no hat, monocle, neck or body. Same 1024x1536 transparent canvas."
+  },
+  "head_grin": {
+    "source": "head_idle",
+    "prompt": "Change ONLY the facial expression into a broad delighted TOOTHY LAUGH with open smile and amused eyebrows, for raising the hat. Keep the exact outer head/ear/hair silhouette, proportions, nose position, facing and original head placement. No hat, monocle, neck or body. Same 1024x1536 transparent canvas, no outside glow."
+  },
+  "head_annoyed": {
+    "source": "head_idle",
+    "prompt": "Change ONLY the facial expression into a mildly annoyed monkey with furrowed eyebrows and sideways pouting closed mouth, a comic shrug reaction. Keep exact outer head/ear/hair silhouette, proportions, nose, facing and original head placement. No hat, monocle, neck or body. Same 1024x1536 transparent canvas, no outside glow."
+  },
+  "arm_l_upper": {
+    "source": "arm_l_upper",
+    "prompt": "Correct this isolated sleeve layer. It MUST be ONLY ONE UPPER ARM from shoulder at top-right down-left to elbow. REMOVE the extra bent forearm stub at its bottom-left end. The result is one long gently tapering RED SLEEVE SEGMENT following one STRAIGHT diagonal centerline, shoulder round socket at upper-right and rounded elbow overlap at lower-left. NO hook, V bend, two-segment elbow bend, white cuff, hand or torso. Preserve material and original 1024x1536 canvas. Hidden elbow endpoint has no black crosswise line; rest of contour crisp black. Keep current diagonal upper-arm location."
+  },
+  "hand_l_hip": {
+    "source": "hand_l_hip",
+    "prompt": "Remove ONLY ALL OF THE WHITE SHIRT CUFF, its button and black sleeve/cuff outlines from this isolated brown hand layer. Keep the SAME brown hand shape, wrist, original gesture, position and scale. Complete a short brown wrist insertion where the cuff was. Only one brown hand and connected brown wrist remain; NO white/cream fabric, buttons, red fabric or arm fragments anywhere. Same 1024x1536 transparent canvas. Do not recenter or enlarge."
+  },
+  "hand_r_grip": {
+    "source": "hand_r_grip",
+    "prompt": "Remove ONLY ALL OF THE WHITE SHIRT CUFF, its button and black sleeve/cuff outlines from this isolated brown hand layer. Keep the SAME brown hand shape, curved thumb and forefinger brim-grip gesture, wrist, original position and scale. Complete a short brown wrist insertion where cuff was. Only one brown hand and connected brown wrist remain; NO white/cream fabric, buttons, red fabric or arm fragments anywhere. Same 1024x1536 transparent canvas. Do not recenter or enlarge."
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "revision": "V3",
+  "date": "2026-10-27",
+  "competitorImagesProvidedToImagegen": false,
+  "sources": {
+    "01_h1": {
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-a0cf4c3c-79c3-4169-abd5-45b86a8b9ac2.png",
+      "tool": "built-in image_gen"
+    },
+    "02_l1": {
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-673d0037-70b6-4e4d-b71e-755e304a77b3.png",
+      "tool": "built-in image_gen"
+    },
+    "03_scatter": {
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-87ecc408-2f96-415e-9fa5-e4baa9d9584f.png",
+      "tool": "built-in image_gen"
+    },
+    "04_watch": {
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-04b46706-ff76-4a2a-beec-fe4531234c86.png",
+      "tool": "built-in image_gen"
+    },
+    "05_background": {
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-c81dc631-d053-4be2-bf06-9caeff6e7c20.png",
+      "tool": "built-in image_gen"
+    },
+    "06_mg_head": {
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-8a233e1a-0df4-4b75-920c-b0bf76eceaf0.png",
+      "tool": "built-in image_gen"
+    },
+    "07_fg_head": {
+      "generatedFile": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-1b3b977e-b34e-4613-ace7-ddf38219251d.png",
+      "tool": "built-in image_gen"
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "scope": "Actual circus scene, five aspect ratios, mode fade, delta cap, reduced motion, event response, disposal",
+  "cases": [
+    {
+      "width": 1792,
+      "height": 771,
+      "figureHeight": 455,
+      "props": [
+        {
+          "height": 152.88,
+          "groundY": 600
+        },
+        {
+          "height": 163.8,
+          "groundY": 600
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "figureHeight": 430,
+      "props": [
+        {
+          "height": 144.47999999999996,
+          "groundY": 568
+        },
+        {
+          "height": 154.79999999999995,
+          "groundY": 568
+        }
+      ]
+    },
+    {
+      "width": 960,
+      "height": 540,
+      "figureHeight": 320,
+      "props": [
+        {
+          "height": 107.51999999999998,
+          "groundY": 420
+        },
+        {
+          "height": 115.19999999999999,
+          "groundY": 420
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "figureHeight": 245,
+      "props": [
+        {
+          "height": 82.32000000000001,
+          "groundY": 650
+        },
+        {
+          "height": 88.2,
+          "groundY": 650
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "figureHeight": 201,
+      "props": [
+        {
+          "height": 67.536,
+          "groundY": 455
+        },
+        {
+          "height": 72.36,
+          "groundY": 455
+        }
+      ]
+    }
+  ],
+  "passed": true
+}

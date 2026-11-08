@@ -1,0 +1,39 @@
+{
+  "characterSource": "/Users/stone/stake-engine/wp-hypno/apps/HypnoMonkey/design/cast_mg/master.png",
+  "characterSha256": "bc3a7ed7a700df67ca3e7baf347e99a3d0158a4d02675d3ee0a5ff00b9b90394",
+  "providerSource": "/Users/stone/stake-engine/upload/SumoMonkey/thumbnail/Silverstars-Logo.png",
+  "providerSha256": "98c28678a16ed67390d1e7bdbd5956a673bdc62950889b6f5e6ae71b88e9d5ee",
+  "delivery": "Independent background/transparent character/provider/title layers; preview is a composition, not a gameplay screenshot.",
+  "outputs": {
+    "thumbnail": {
+      "size": [
+        200,
+        200
+      ],
+      "backgroundMeanRGB": 152.690025,
+      "files": {
+        "preview.jpg": "290a0429c56c6c9046861f98c9b16b0deffc9191fe4c69e135ab76679aaadc68",
+        "Title.png": "57e3cf63d2fb4b527b7108f5b0428171b239cf8722b8901a6e5eda9aa80d41f1",
+        "Background.png": "90edc809b27e3d8c423325654bdce6e0529b7ee4aff7851d45eefdcd97b6bf0a",
+        "Provider.png": "c304a116e127ad176c22614475267d55b1cc9bfab3a07eb5084d775122ffc99a",
+        "Foreground.png": "51a9d5426cb7d0d027703b02d5e8b03d906d1107f90e1a223a1af7855396df59",
+        "Silverstars-Logo.png": "98c28678a16ed67390d1e7bdbd5956a673bdc62950889b6f5e6ae71b88e9d5ee"
+      }
+    },
+    "cover": {
+      "size": [
+        1920,
+        1080
+      ],
+      "backgroundMeanRGB": 146.08337609310698,
+      "files": {
+        "preview.jpg": "72b82794cdc7db29a850393e5e76128662aeaba31491cc6b916ed313dc755c0b",
+        "Title.png": "ae23e48e1798ea31416f3d915bbaf7fad79d0f54a5b97aa5c558ba9977af7d28",
+        "Background.png": "cc9a3f124a28c532c5abe78fe8b1273468068f99a133ad38e8bce7629f412ed1",
+        "Provider.png": "65138b8aad02383c2adda076727592c99359a1b32080bb0201328b518d67757f",
+        "Foreground.png": "03f02ae6682c55a10f3d323f535ac818703b25721a5c6a78a700699039c683db",
+        "Silverstars-Logo.png": "98c28678a16ed67390d1e7bdbd5956a673bdc62950889b6f5e6ae71b88e9d5ee"
+      }
+    }
+  }
+}

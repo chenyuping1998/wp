@@ -1,0 +1,16 @@
+{
+  "selectionBasis": "Six-image contact sheet, row-major first four; not numbered shortlist webpage",
+  "approvedReferences": [
+    "Chaos Crew 2",
+    "Donut Division",
+    "Dr Zappo",
+    "Red Rascal"
+  ],
+  "excludedFromThisSelection": [
+    "Toshi Ways Club",
+    "The Count"
+  ],
+  "oldPrototypeStatus": "User rejected style / not a style frame",
+  "competitorImagesAllowedInGeneration": false,
+  "latestStudy": "STUDY.md"
+}

@@ -1,0 +1,71 @@
+{
+  "status": "hand_ink_revision",
+  "productionInstalled": false,
+  "tool": "built-in image_gen",
+  "brief": "../../../STYLE_TEST_SCREENPRINT.md",
+  "processing": "green-screen key; fixed seven-color palette; resize and composite only",
+  "processingScriptSha256": "60d21fb2e0c6b3a8419be2666ae4981f1b9fd33dee1b2326be1952dea10035fe",
+  "perAssetPalette": {
+    "01_h1": [
+      "#1B1716",
+      "#F2E6CC",
+      "#D2322D",
+      "#E3A82B"
+    ],
+    "02_l1": [
+      "#1B1716",
+      "#F2E6CC",
+      "#24508C",
+      "#E3A82B"
+    ],
+    "03_scatter": [
+      "#1B1716",
+      "#F2E6CC",
+      "#9B3DF5",
+      "#E3A82B",
+      "#8C5A3C"
+    ],
+    "04_watch": [
+      "#1B1716",
+      "#F2E6CC",
+      "#9B3DF5",
+      "#E3A82B",
+      "#8C5A3C"
+    ],
+    "05_background": [
+      "#1B1716",
+      "#F2E6CC",
+      "#D2322D",
+      "#24508C",
+      "#E3A82B"
+    ],
+    "06_mg_head": [
+      "#1B1716",
+      "#F2E6CC",
+      "#D2322D",
+      "#8C5A3C",
+      "#9B3DF5"
+    ],
+    "07_fg_head": [
+      "#1B1716",
+      "#F2E6CC",
+      "#D2322D",
+      "#8C5A3C",
+      "#E3A82B"
+    ]
+  },
+  "limitations": [
+    "Only three symbol types sampled",
+    "No full-body layered characters or animation acceptance",
+    "Board image is an art mockup, not a runtime screenshot"
+  ],
+  "sources": {
+    "01_h1": "850dc2e26f548af5677b34d2b3e3851ef3c0f86585a021ce40449668fabc0b63",
+    "02_l1": "a50d6fcc42a88500bc75f13a04105739e6cf2115f4ac106b64f25a7b487a4765",
+    "03_scatter": "bc43be99fcbe01ca782c08b506f62be00e56a1b082df5c594eaa017d72bcaccd",
+    "04_watch": "0294e352cb219371f2d0602ffc6eb36bfa965c65113c4f866453bccb06ebd063",
+    "05_background": "49fd9878066a8f282266f5f806b8ae96d89e901049290c62bffcc36a7c6564ba",
+    "06_mg_head": "8e87e01c17bfeb0ac6fce8969b46514d0e75863ce1710986029c1c8876d59ff0",
+    "07_fg_head": "1d6029134de294aa26cc4b9334663280540907645cb6aee73b636b2dedad9ce9"
+  }
+}

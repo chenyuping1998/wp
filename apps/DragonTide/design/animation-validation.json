@@ -1,0 +1,257 @@
+{
+  "verification": "Offline timings and exported book data only; no rendered recording or Stake Engine run.",
+  "checkedThrows": 38,
+  "noThrowWins": 14,
+  "eightLinkChainMs": {
+    "normal": 9135,
+    "turbo": 4567.5,
+    "turbo2": 3653.9999999999995
+  },
+  "cases": {
+    "base_throw_dud": {
+      "category": "baseTrigger",
+      "bookId": 19,
+      "eventIndex": 1,
+      "multipliers": [
+        2
+      ],
+      "baseWin": 0,
+      "totalWin": 0,
+      "priorTotal": 0,
+      "newTotal": 0,
+      "normal": {
+        "animation": "gaze",
+        "actionMs": 1600,
+        "releaseMs": 350,
+        "flightMs": 450,
+        "staggerMs": 150,
+        "shatterMs": 300,
+        "landMs": 120,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 0,
+        "resultHoldMs": 0,
+        "firstArrivalMs": 800,
+        "lastArrivalMs": 800,
+        "plateCountStartMs": 920,
+        "scoreStartMs": 920,
+        "endMs": 1100
+      },
+      "turbo": {
+        "animation": "gaze_turbo",
+        "actionMs": 900,
+        "releaseMs": 175,
+        "flightMs": 270,
+        "staggerMs": 90,
+        "shatterMs": 150,
+        "landMs": 80,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 0,
+        "resultHoldMs": 0,
+        "firstArrivalMs": 445,
+        "lastArrivalMs": 445,
+        "plateCountStartMs": 525,
+        "scoreStartMs": 525,
+        "endMs": 595
+      },
+      "stages": [
+        "gaze",
+        "orb:fly",
+        "orb:grey",
+        "orb:crack",
+        "orb:rubble",
+        "gaze_dud"
+      ]
+    },
+    "fg_no_throw_win": {
+      "category": "baseTrigger",
+      "bookId": 19,
+      "revealIndex": 7,
+      "baseWin": 60,
+      "priorTotal": 0,
+      "newTotal": 0,
+      "totalWin": 60,
+      "stages": [
+        "score:base"
+      ]
+    },
+    "fg_throw_dud": {
+      "category": "baseTrigger",
+      "bookId": 19,
+      "eventIndex": 18,
+      "multipliers": [
+        3
+      ],
+      "baseWin": 0,
+      "totalWin": 0,
+      "priorTotal": 0,
+      "newTotal": 0,
+      "normal": {
+        "animation": "fg_gaze",
+        "actionMs": 1200,
+        "releaseMs": 200,
+        "flightMs": 450,
+        "staggerMs": 150,
+        "shatterMs": 250,
+        "landMs": 120,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 0,
+        "resultHoldMs": 0,
+        "firstArrivalMs": 650,
+        "lastArrivalMs": 650,
+        "plateCountStartMs": 770,
+        "scoreStartMs": 770,
+        "endMs": 900
+      },
+      "turbo": {
+        "animation": "fg_gaze_turbo",
+        "actionMs": 900,
+        "releaseMs": 140,
+        "flightMs": 270,
+        "staggerMs": 90,
+        "shatterMs": 150,
+        "landMs": 80,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 0,
+        "resultHoldMs": 0,
+        "firstArrivalMs": 410,
+        "lastArrivalMs": 410,
+        "plateCountStartMs": 490,
+        "scoreStartMs": 490,
+        "endMs": 560
+      },
+      "stages": [
+        "gaze",
+        "orb:fly",
+        "orb:grey",
+        "orb:crack",
+        "orb:rubble",
+        "gaze_dud"
+      ]
+    },
+    "fg_throw_win": {
+      "category": "baseTrigger",
+      "bookId": 19,
+      "eventIndex": 38,
+      "multipliers": [
+        5,
+        2,
+        8
+      ],
+      "baseWin": 80,
+      "totalWin": 1200,
+      "priorTotal": 0,
+      "newTotal": 15,
+      "normal": {
+        "animation": "fg_gaze",
+        "actionMs": 1200,
+        "releaseMs": 350,
+        "flightMs": 450,
+        "staggerMs": 150,
+        "shatterMs": 250,
+        "landMs": 120,
+        "plateCountMs": 400,
+        "beamMs": 150,
+        "countMs": 952.8273777167044,
+        "resultHoldMs": 360,
+        "firstArrivalMs": 800,
+        "lastArrivalMs": 1100,
+        "plateCountStartMs": 1220,
+        "scoreStartMs": 1770,
+        "endMs": 3082.827377716704
+      },
+      "turbo": {
+        "animation": "fg_gaze_turbo",
+        "actionMs": 900,
+        "releaseMs": 210,
+        "flightMs": 270,
+        "staggerMs": 90,
+        "shatterMs": 150,
+        "landMs": 80,
+        "plateCountMs": 240,
+        "beamMs": 90,
+        "countMs": 571.6964266300226,
+        "resultHoldMs": 120,
+        "firstArrivalMs": 480,
+        "lastArrivalMs": 660,
+        "plateCountStartMs": 740,
+        "scoreStartMs": 1070,
+        "endMs": 1761.6964266300226
+      },
+      "stages": [
+        "fg_gaze",
+        "orb:fly",
+        "plate:impact",
+        "plate:count",
+        "plate:level",
+        "plate:beam",
+        "score:count"
+      ]
+    },
+    "base_throw_win": {
+      "category": "baseThrow",
+      "bookId": 3,
+      "eventIndex": 4,
+      "multipliers": [
+        2
+      ],
+      "baseWin": 20,
+      "totalWin": 40,
+      "priorTotal": 0,
+      "newTotal": 0,
+      "normal": {
+        "animation": "gaze",
+        "actionMs": 1600,
+        "releaseMs": 620,
+        "flightMs": 450,
+        "staggerMs": 150,
+        "shatterMs": 300,
+        "landMs": 120,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 690.3089986991944,
+        "resultHoldMs": 360,
+        "firstArrivalMs": 1070,
+        "lastArrivalMs": 1070,
+        "plateCountStartMs": 1190,
+        "scoreStartMs": 1190,
+        "endMs": 2240.3089986991945
+      },
+      "turbo": {
+        "animation": "gaze_turbo",
+        "actionMs": 900,
+        "releaseMs": 350,
+        "flightMs": 270,
+        "staggerMs": 90,
+        "shatterMs": 150,
+        "landMs": 80,
+        "plateCountMs": 0,
+        "beamMs": 0,
+        "countMs": 414.1853992195166,
+        "resultHoldMs": 120,
+        "firstArrivalMs": 620,
+        "lastArrivalMs": 620,
+        "plateCountStartMs": 700,
+        "scoreStartMs": 700,
+        "endMs": 1234.1853992195165
+      },
+      "stages": [
+        "gaze",
+        "orb:fly",
+        "score:impact",
+        "score:count"
+      ]
+    }
+  },
+  "pending": [
+    "Approved character art and Spine 4.2.74 rig",
+    "Frame-by-frame hand/sunglasses and snake checks",
+    "60s idle recording",
+    "8-link cascade recording",
+    "Five multiplier scenario recordings",
+    "User upload and validation in Stake Engine"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "status": "overall-concept-only-not-runtime-not-approved",
+  "tool": "built-in image_gen",
+  "source": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-39bd0a1d-fa53-46d5-ad85-b3677dd3a70a.png",
+  "output": "HypnoMonkey-overall-board.png",
+  "dimensions": [
+    1672,
+    941
+  ],
+  "sha256": "f38e6b31c72c4bcdef3adaeb7a5ea4fd40aba0eb5b31ab8f0c00d3cc61feba2a",
+  "own_reference": "../style_study_four/focused-character-test.png",
+  "competitor_pixels_used": false,
+  "prompt": "PROMPT.md",
+  "visual_check": {
+    "grid": "6 columns by 6 rows, all 36 cells populated",
+    "symbol_types": "H1 hat, H2 lollipop, H3 crystal ball, H4 bell, H5 banana, L1 star ticket, L2 crescent ticket, L3 diamond ticket, L4 heart ticket, S paddle",
+    "board_fill": "warm neutral gray",
+    "character": "complete male monkey, hat and shoes visible, hand contacts spectacles",
+    "scope": "base-game concept; no layered character, animation or runtime integration"
+  }
+}

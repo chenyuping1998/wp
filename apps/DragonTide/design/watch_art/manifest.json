@@ -1,0 +1,77 @@
+{
+  "sourceSha256": "6545d5c2c90fb9dff78bb33b45410bce1a2109b605e31dc5bc990d66b4d0d5b6",
+  "size": [
+    512,
+    512
+  ],
+  "dialAnchor": [
+    0.5,
+    0.5859375
+  ],
+  "tiers": {
+    "bronze": "2–10",
+    "silver": "15–50",
+    "gold": "100+"
+  },
+  "runtime": {
+    "watch-bronze.png": "fa3013fd082e74cc7aee1a90dcddae44ceaa8643f1d2852b766f9e44d21e5a13",
+    "watch-gold.png": "ccf4ee5522b507658044cf2c6901353c6d9ee3ed4afa0553b32a586ea1e5a449",
+    "watch-silver.png": "284496af7f75cee639dbb58cc97fa670e498a0319e52ef7deb5bfa97024fdc9a"
+  },
+  "palettes": {
+    "bronze": [
+      "#261b17",
+      "#74442c",
+      "#a76a3a",
+      "#c98c52",
+      "#e9b879",
+      "#f3d6a5",
+      "#f6e7c7"
+    ],
+    "silver": [
+      "#242124",
+      "#535761",
+      "#818c9a",
+      "#aebac5",
+      "#d7e0e4",
+      "#f1eee4",
+      "#f6e7c7"
+    ],
+    "gold": [
+      "#281c16",
+      "#8b5124",
+      "#bd7f27",
+      "#e1aa35",
+      "#f6cc65",
+      "#ffe4a0",
+      "#f6e7c7"
+    ]
+  },
+  "tiers5": {
+    "t1": {
+      "name": "green",
+      "values": "2-5",
+      "sha256": "9db58ed8308828d634dadd327d44b48411e76da6ad016f1b7f0e3fb0bf7b73c0"
+    },
+    "t2": {
+      "name": "blue",
+      "values": "8-10",
+      "sha256": "85f841beefbde070eaf2dd59e40450d655adf29e34219bc653f27ddcdbc0ddf5"
+    },
+    "t3": {
+      "name": "violet",
+      "values": "15-50",
+      "sha256": "3080c1799f027a1d0de7c35a6186dd9ccc7b063131398de1bf3235e38b3b6580"
+    },
+    "t4": {
+      "name": "crimson",
+      "values": "100",
+      "sha256": "c58a8430a335d0ba925f74d94cb33b18742aa47d9abe00d05090825f2f286e69"
+    },
+    "t5": {
+      "name": "gold",
+      "values": "250-500",
+      "sha256": "ce0308410c0874703ca16c462619885b4dc1ed6fc03c9e30de70e533b3be5d27"
+    }
+  }
+}

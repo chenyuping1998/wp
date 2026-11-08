@@ -1,0 +1,21 @@
+{
+  "status": "character_revision_review",
+  "productionInstalled": false,
+  "tool": "built-in image_gen",
+  "brief": "../../../STYLE_TEST_SCREENPRINT.md",
+  "processing": "green-screen key; fixed seven-color palette; resize and composite only",
+  "limitations": [
+    "Only three symbol types sampled",
+    "No full-body layered characters or animation acceptance",
+    "Board image is an art mockup, not a runtime screenshot"
+  ],
+  "sources": {
+    "01_h1": "c7eab14129f871eb245f4ef02e30280adf95c7670b6a5676ed6b1ed6d7eac5c1",
+    "02_l1": "7ceb36bc183bfdb58df225ed67513ecaf9c93a5b9f464bbb6fae27802b03aa80",
+    "03_scatter": "7eb97566cb6184a7bfa0fdfd0d07a0aea7383d7113e5d8a139e0f229149f302f",
+    "04_watch": "d496f369f011fece78ece5bf4fc5416933a996e9a0056fb935f440e18d5743bc",
+    "05_background": "3cc277571580967b55a59ab568ae012ff28498d4545b53880f34e1a0a6a6e05b",
+    "06_mg_head": "0918aaadf928c66784d0d20674d706fcfa0fc1367d82e9e2fc8d6b2d6ff8ee4f",
+    "07_fg_head": "7e44b91fae2ec0b957c55936cb09ef4dfd853baf5ea41f4b96ad9a3585b175ae"
+  }
+}

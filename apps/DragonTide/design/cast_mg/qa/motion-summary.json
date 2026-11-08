@@ -1,0 +1,88 @@
+[
+  {
+    "name": "idle",
+    "duration": 4,
+    "loop": true,
+    "timelines": 16,
+    "keys": 668,
+    "events": [],
+    "physics": 0,
+    "bakedPhysics": 5
+  },
+  {
+    "name": "idle_fidget",
+    "duration": 2,
+    "loop": false,
+    "timelines": 14,
+    "keys": 491,
+    "events": [],
+    "physics": 0,
+    "bakedPhysics": 5
+  },
+  {
+    "name": "gaze",
+    "duration": 1.6,
+    "loop": false,
+    "timelines": 19,
+    "keys": 674,
+    "events": [
+      "throw@0.62s"
+    ],
+    "physics": 0,
+    "bakedPhysics": 5
+  },
+  {
+    "name": "react_small",
+    "duration": 1.1,
+    "loop": false,
+    "timelines": 15,
+    "keys": 298,
+    "events": [],
+    "physics": 0,
+    "bakedPhysics": 5
+  },
+  {
+    "name": "gaze_dud",
+    "duration": 1.2,
+    "loop": false,
+    "timelines": 13,
+    "keys": 288,
+    "events": [],
+    "physics": 0,
+    "bakedPhysics": 5
+  },
+  {
+    "name": "win_big",
+    "duration": 1.4,
+    "loop": false,
+    "timelines": 13,
+    "keys": 430,
+    "events": [
+      "hat_off@0.42s"
+    ],
+    "physics": 0,
+    "bakedPhysics": 5
+  },
+  {
+    "name": "win_big_loop",
+    "duration": 1.2,
+    "loop": true,
+    "timelines": 13,
+    "keys": 199,
+    "events": [],
+    "physics": 0,
+    "bakedPhysics": 5
+  },
+  {
+    "name": "win_big_end",
+    "duration": 1,
+    "loop": false,
+    "timelines": 14,
+    "keys": 280,
+    "events": [
+      "hat_on@0.45s"
+    ],
+    "physics": 0,
+    "bakedPhysics": 5
+  }
+]

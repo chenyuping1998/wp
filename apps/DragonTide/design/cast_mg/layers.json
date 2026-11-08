@@ -1,0 +1,27 @@
+{
+  "order": [
+    "tail_3",
+    "tail_2",
+    "tail_1",
+    "coat_tail_l",
+    "coat_tail_r",
+    "arm_l_upper",
+    "arm_l_lower",
+    "hand_l_hip",
+    "leg_l_upper",
+    "leg_l_lower",
+    "foot_l",
+    "pelvis",
+    "leg_r_upper",
+    "leg_r_lower",
+    "foot_r",
+    "neck",
+    "torso",
+    "head_idle",
+    "hat",
+    "glasses",
+    "arm_r_upper",
+    "arm_r_lower",
+    "hand_r_pinch"
+  ]
+}

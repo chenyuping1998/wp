@@ -1,0 +1,37 @@
+{
+  "big": {
+    "width": 1500,
+    "height": 462,
+    "textY": 0,
+    "textHeight": 0.4,
+    "textWidth": 0.72
+  },
+  "superwin": {
+    "width": 1500,
+    "height": 462,
+    "textY": 0.025,
+    "textHeight": 0.36,
+    "textWidth": 0.68
+  },
+  "mega": {
+    "width": 1500,
+    "height": 520,
+    "textY": -0.015,
+    "textHeight": 0.35,
+    "textWidth": 0.62
+  },
+  "epic": {
+    "width": 1500,
+    "height": 580,
+    "textY": 0.02,
+    "textHeight": 0.33,
+    "textWidth": 0.65
+  },
+  "max": {
+    "width": 1500,
+    "height": 624,
+    "textY": 0.005,
+    "textHeight": 0.3,
+    "textWidth": 0.6
+  }
+}

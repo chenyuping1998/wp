@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "flightSamples": 484,
+  "gazeSamples": 101,
+  "gaze": "Two pupil-registered beams, monotonic travelling front, one focus and release, monotonic mineral growth",
+  "paths": "Desktop and portrait, score and cumulative plaque",
+  "impactHold": "First 22% of 120ms contact animation",
+  "paintedShards": 8,
+  "lifecycle": "Expired shard geometry removed, reduced motion and repeated destroy safe",
+  "passed": true
+}

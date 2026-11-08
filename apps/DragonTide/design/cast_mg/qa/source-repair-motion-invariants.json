@@ -1,0 +1,7 @@
+{
+  "bones": true,
+  "ik": true,
+  "animations": true,
+  "slots": true,
+  "skins": true
+}

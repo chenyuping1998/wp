@@ -1,0 +1,136 @@
+{
+  "status": "separated-assets-concept-not-runtime-not-user-approved",
+  "columns": 6,
+  "rows": 5,
+  "cells": 30,
+  "board": [
+    [
+      "H2",
+      "L1",
+      "H4",
+      "L3",
+      "H5",
+      "L2"
+    ],
+    [
+      "L4",
+      "H3",
+      "L2",
+      "H1",
+      "L1",
+      "H5"
+    ],
+    [
+      "H1",
+      "L3",
+      "S",
+      "L4",
+      "H2",
+      "L3"
+    ],
+    [
+      "L2",
+      "H5",
+      "L1",
+      "H3",
+      "L4",
+      "H4"
+    ],
+    [
+      "H4",
+      "L4",
+      "H2",
+      "L2",
+      "S",
+      "L1"
+    ]
+  ],
+  "symbolCounts": {
+    "H2": 3,
+    "L1": 4,
+    "H4": 3,
+    "L3": 3,
+    "H5": 3,
+    "L2": 4,
+    "L4": 4,
+    "H3": 2,
+    "H1": 2,
+    "S": 2
+  },
+  "sourceSymbolBoxes": {
+    "H1": [
+      702,
+      255,
+      846,
+      356
+    ],
+    "H2": [
+      253,
+      141,
+      389,
+      249
+    ],
+    "H3": [
+      399,
+      254,
+      544,
+      356
+    ],
+    "H4": [
+      553,
+      141,
+      692,
+      248
+    ],
+    "H5": [
+      854,
+      141,
+      1001,
+      248
+    ],
+    "L1": [
+      398,
+      141,
+      544,
+      248
+    ],
+    "L2": [
+      551,
+      253,
+      694,
+      356
+    ],
+    "L3": [
+      700,
+      141,
+      846,
+      248
+    ],
+    "L4": [
+      252,
+      254,
+      390,
+      356
+    ],
+    "S": [
+      554,
+      365,
+      693,
+      467
+    ]
+  },
+  "sources": {
+    "board_preview_v4_5x6/background-clean.png": "7eec2e9dfc6d5fae8ceed0129d57fa5c7a2bd8a9a589f3ec083b1027c8e9ca92",
+    "cast_mg/assembled.png": "bc3a7ed7a700df67ca3e7baf347e99a3d0158a4d02675d3ee0a5ff00b9b90394",
+    "board_preview_v4_5x6/HypnoMonkey-overall-5x6.png": "e9a110b271fb2c4e2e0d166a3f1ec7fe76b73a7e0f0f31af8a55511b00891483",
+    "watch_art/manifest.json": "271b01b3a33d921cbb592f767c4d2c2c34183b9552b095384eace38394a0cded"
+  },
+  "compositionLayers": [
+    "background.png",
+    "frame-and-board.png",
+    "board-symbols.png",
+    "character.png",
+    "ui.png"
+  ],
+  "note": "Actual deterministic composition of independent layers; current registered MG source. Existing symbols retained from v4 concept, not final runtime art. No package/platform update."
+}

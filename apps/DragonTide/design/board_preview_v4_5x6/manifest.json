@@ -1,0 +1,50 @@
+{
+  "status": "concept-only-not-runtime-not-approved",
+  "tool": "built-in image_gen",
+  "input": "../board_preview_v3/HypnoMonkey-overall-board.png",
+  "columns": 5,
+  "rows": 6,
+  "cells": 30,
+  "assets": {
+    "preview": {
+      "file": "HypnoMonkey-overall-5x6.png",
+      "source": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-0242a0c1-820a-4c21-bf68-bb5d99b6e3c3.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "e9a110b271fb2c4e2e0d166a3f1ec7fe76b73a7e0f0f31af8a55511b00891483"
+    },
+    "background": {
+      "file": "background-clean.png",
+      "source": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-89d02f1e-1843-4241-a95d-2010d2b93a17.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sha256": "7eec2e9dfc6d5fae8ceed0129d57fa5c7a2bd8a9a589f3ec083b1027c8e9ca92"
+    },
+    "character": {
+      "file": "mg-character-transparent.png",
+      "source": "/Users/stone/.codex/generated_images/01a176f9-2a4f-7682-be65-db8d23446679/exec-cb18d415-aef4-49c4-835e-251eddfa8be7.png",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "sha256": "1fb5a359ef68abe3fac6261e39967547dd0cc6a0a89417efbb48f23e033ab10a",
+      "alpha_extrema": [
+        0,
+        254
+      ]
+    }
+  },
+  "validation": {
+    "preview": "visually counted 5 columns by 6 rows; all 10 symbol types present",
+    "background": "no monkey, body fragments, board, title or game UI visible",
+    "character": "genuine RGBA; visually inspected composited over light and dark; no scenery within outline gaps",
+    "revision_limit": "overall preview and separated assets are generated variants, not pixel-identical reconstruction; preview is not made from these separate layers; no anatomical split, rig or animation claimed"
+  }
+}

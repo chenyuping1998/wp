@@ -1,0 +1,25 @@
+{
+  "checks": [
+    {
+      "social": false,
+      "text": "BUY BONUS\nBET AMOUNT\n-\n$1.00\n+\nFREE SPINS\nBUY FEATURE\n$100.00\nSUPER FREE SPINS\nBUY FEATURE\n$400.00\nMAX WIN\n15,000×",
+      "bounds": {
+        "x": 15,
+        "y": 20,
+        "width": 370,
+        "height": 185
+      }
+    },
+    {
+      "social": true,
+      "text": "HYPNO MONKEY\nFEATURES\n\nCHOOSE YOUR SHOW\n\nPLAY AMOUNT\n-\n1.00 SC\n+\n×2\nTHE HYPNO SHOW\n15\nFREE SPINS\nFREE SPINS\nWATCH VALUES\n×2 – ×500\n×2\n+\n×5\n=\n×7\n\nWinning watches add to a running total.\nThe total stays for the whole feature.\n\n100× AMOUNT\nPLAY FEATURE\n100.00 SC\n96.06% RTP\nCONFIRM ON NEXT SCREEN\n×10\nTHE GOLDEN SHOW\n15\nFREE SPINS\nSUPER FREE SPINS\nWATCH VALUES\n×10 – ×500\n×10\n+\n×25\n=\n×35\n\nWinning watches add to a running total.\nEvery watch is ×10 or more.\n\n400× AMOUNT\nPLAY FEATURE\n400.00 SC\n96.08% RTP\nCONFIRM ON NEXT SCREEN\nMAX WIN\n15,000×\nWINNING WATCHES MULTIPLY THE SPIN",
+      "bounds": {
+        "x": 15,
+        "y": 27.5,
+        "width": 360,
+        "height": 789
+      }
+    }
+  ],
+  "passed": true
+}

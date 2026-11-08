@@ -1,0 +1,25 @@
+{
+  "petrify_dominant_hz": [
+    659.54,
+    782.94,
+    931.87,
+    1110.58,
+    1319.09
+  ],
+  "decoded_bgm_loops": [
+    {
+      "cue": "bgm_base",
+      "decoded_frames_48k": 3072000,
+      "seam_step_linear": 0.00492597,
+      "seam_step_dbfs": -46.15
+    },
+    {
+      "cue": "bgm_feature",
+      "decoded_frames_48k": 3072000,
+      "seam_step_linear": 0.00531013,
+      "seam_step_dbfs": -45.5
+    }
+  ],
+  "method": "FFT peak on complete Hann-windowed runtime petrify cues; FFmpeg Vorbis decode to 48 kHz float stereo, exact frame count and last-to-first sample step.",
+  "limits": "Signal checks only. No claim of human voice acting, speaker translation, 20-spin subjective comfort or subjective musical approval."
+}

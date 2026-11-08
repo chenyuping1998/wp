@@ -1,0 +1,10 @@
+{
+  "source": "built-in image_gen, one complete continuous sleeve per side",
+  "registration": "per-bone similarity using measured generated landmarks and original joints",
+  "layers": {
+    "arm_l_upper.png": "28b13e80c42a54d95027551bb15526e0fd8c2a7f396c71e306297b824b6e8043",
+    "arm_l_lower.png": "9124944e5eeebf0098a2045781aed7d0f4d750cd899f4298206960ca02594d22",
+    "arm_r_upper.png": "2356ed01879b359fa26b4410fc170ab1462c52feafc86e2af90db3611f059589",
+    "arm_r_lower.png": "17b7ff0e2dde0902ac1acabd0c67eed55fb2c32e3d1b733f6c36b211329675df"
+  }
+}

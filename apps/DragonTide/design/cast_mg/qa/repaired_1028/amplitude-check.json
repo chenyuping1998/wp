@@ -1,0 +1,8 @@
+{
+  "bonesUnchanged": true,
+  "ikUnchanged": true,
+  "allAnimationKeysUnchanged": true,
+  "jointsBytesUnchanged": true,
+  "motionParamsBytesUnchanged": true,
+  "review": "every fourth frame, all actions, before/after 3x issue crops"
+}

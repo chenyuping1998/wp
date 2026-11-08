@@ -1,0 +1,188 @@
+{
+  "project": "Medusa Gaze / 梅杜莎凝視",
+  "date": "2026-10-25",
+  "stage": "complete_local_deliverable_pending_user_engine_upload",
+  "userPriority": "獎圖得分動態演繹、消除動態、掉落效果（2026-10-24補充）",
+  "motionV2": {
+    "review": "motion/review.html",
+    "record": "../../MOTION_V2_STATUS.txt",
+    "validation": "../../motion-validation.json",
+    "exhaustiveColumnPatterns": 63,
+    "publishedWinningPositions": 255492,
+    "referenceTitle": "Gates of Olympus / 奧林匹斯之門 (Pragmatic Play)",
+    "art": "ten_approved_style_production_symbols",
+    "engineVerification": "not_yet_tested_in_Stake_Engine",
+    "video": "motion/MedusaGaze_symbols_v2_motion.webm",
+    "recordingSeconds": 9.19,
+    "contactSheet": "_sheets/symbols_v2_motion_contact.jpg",
+    "offlineBrowserSmoke": "Local mock baseWin completed with polished symbols, WIN 0.60 and Spin available; error logs empty. Not Stake Engine verification.",
+    "referenceSource": "https://www.pragmaticplay.com/en/games/gates-of-olympus/",
+    "guides": "Remeasured from generated 1254px source art, normalized using symbols/manifest.json.",
+    "previousStandInVideo": "motion/MedusaGaze_motion_v2.webm",
+    "recordingBytes": 9797836
+  },
+  "requirements": "E:/stake/proposals/MedusaGaze梅杜莎凝視",
+  "art": {
+    "status": "production_art_integrated",
+    "symbols": 10,
+    "newUiAssets": 27,
+    "characterPSD": "cast/medusa.psd",
+    "editableLayers": 63,
+    "turnaround": "cast/medusa_turnaround.png",
+    "sourcePrompts": [
+      "completion-prompts-v2.json",
+      "completion-additions.json"
+    ],
+    "cover": "ui/MedusaGaze_cover.jpg",
+    "tile": "ui/MedusaGaze_tile.jpg"
+  },
+  "audio": {
+    "status": "integrated_original_synthesis_voice_preview",
+    "files": 57,
+    "runtimeBytes": 6690574,
+    "bgmSecondsEach": 64,
+    "runtime": "../../../static/assets/audio/medusa",
+    "preview": "audio/preview.html",
+    "levels": "audio/LEVELS.md",
+    "metadata": "audio/audio_metadata.json",
+    "sourceAndLicense": "../audio/README.md",
+    "notes": [
+      "57 original synthesized audio files integrated.",
+      "Hover, confirm and snake-yawn event wiring complete.",
+      "Character vocal sounds remain synthetic preview, not professional human voice acting."
+    ],
+    "multiplierUpgrade": {
+      "version": 2,
+      "cues": 13,
+      "spatialFlight": true,
+      "masters": "48k PCM24",
+      "editableStems": "audio/multiplier-v2-stems",
+      "report": "audio/MULTIPLIER_V2_SOUND_DESIGN.json",
+      "runtimeBytes": 6633242
+    }
+  },
+  "animation": {
+    "status": "original_spine43_integrated_and_locally_verified",
+    "spine": "4.3.13",
+    "bones": 74,
+    "independentSnakeChains": 9,
+    "snakeBonesEach": 5,
+    "clips": 24,
+    "editor": "cast/spine43_editor/medusa.json",
+    "validation": "cast/spine43-validation.json",
+    "runtime": "static/assets/spines/medusa43",
+    "scope": "App-owned renderer; shared Spine 4.2 loader unchanged",
+    "noVisibleMeshFolds": true,
+    "pinchContactVisualReview": true,
+    "sceneCamera": "fixed",
+    "multiplierSignature": {
+      "version": 3,
+      "eyeMarkers": 2,
+      "performanceValidation": "../../multiplier-performance-validation.json",
+      "review": "multiplier/preview/index.html",
+      "timing": "glasses contact, quiet hold, pupil focus, twin advancing beams, mineral veins, charged orb, curved flight, contact hold, result count and readable result hold",
+      "readout": "Upright orb multiplier, large central multiplier, base amount times multiplier equals final amount, labelled cumulative TOTAL plaque"
+    }
+  },
+  "validation": {
+    "fullBuild": "passed",
+    "buildLog": "E:/stake/tmp/medusa-completion-final-build-20261025.log",
+    "typeCheckLog": "E:/stake/tmp/medusa-completion-final-types-20261025.log",
+    "svelteCheckErrors": 154,
+    "svelteCheckWarnings": 32,
+    "svelteCheckProblemFiles": 21,
+    "changedGameSourceTypeErrors": 0,
+    "typeCheckBaseline": "Existing tools, shared dependencies and legacy static imports still fail full workspace check.",
+    "runtimePathsByteMatched": 68,
+    "browser": "1280x720, 390x844, 320x568 local mock UI checked; 15-spin feature completed; total x110 / $198.90; returned to MG",
+    "screenshots": [
+      "_sheets/game_desktop.png",
+      "_sheets/game_mobile_320.png"
+    ],
+    "devWatchdogNotes": "Two existing 15s watchdog messages occurred while deliberately holding click-to-continue FG panels; both continued normally.",
+    "engineVerification": "not_performed_user_will_upload",
+    "multiplierBrowserReview": {
+      "date": "2026-10-25",
+      "scope": "Local development mock playback and shared-renderer frame inspection; no Stake Engine or live RGS validation",
+      "signatureVersion": 3,
+      "baseGame": {
+        "book": "baseThrow",
+        "orbValues": [
+          25
+        ],
+        "baseWinBookAmount": 50,
+        "finalWinBookAmount": 1250,
+        "completedAndReturnedToSpin": true
+      },
+      "wastedMultiplier": {
+        "book": "baseThrowWasted",
+        "trueGrayscaleMaterial": true,
+        "completedAndReturnedToSpin": true,
+        "runtimeErrors": 0
+      },
+      "freeGame": {
+        "book": "bonusBigTotal",
+        "spins": 15,
+        "cumulativeMultiplier": 110,
+        "outro": "$198.90",
+        "returnedToMainGame": true
+      },
+      "layouts": [
+        "1280x720",
+        "390x844",
+        "320x568"
+      ],
+      "frameInspection": [
+        "Pupil-registered green focus and twin beams",
+        "Travelling mineral front",
+        "Three upright multiplier labels and cumulative plaque",
+        "Turbo x100",
+        "Score-frame contact flash",
+        "True grayscale stone fragments and dud reaction",
+        "Large multiplier, multiplication equation and final amount"
+      ],
+      "unexpectedRuntimeErrors": 0,
+      "existingDiagnostics": "Two 15-second watchdog messages while the manual free-spin entry and exit panels waited for a click; both panels continued normally. Existing Pixi deprecation warnings remain.",
+      "screenshots": [
+        "_sheets/multiplier_v3_gaze.png",
+        "_sheets/multiplier_v3_readout.png",
+        "_sheets/multiplier_v3_mobile_feature.png",
+        "_sheets/multiplier_v3_mobile_return.png"
+      ],
+      "passed": true
+    }
+  },
+  "background": {
+    "status": "three_background_actions_with_authored_break_hold_staggered_settle",
+    "version": 2,
+    "artFiles": 6,
+    "runtimeBytes": 2899737,
+    "review": "background/preview/index.html",
+    "player": "background/play.html",
+    "video": "background/MedusaGaze_background_v2.mp4",
+    "silentSource": "background/MedusaGaze_background_v2.webm",
+    "animatedPreview": "background/MedusaGaze_background_v2_preview.gif",
+    "recordingSeconds": 15.9,
+    "contactSheet": "_sheets/background_animation_v2_contact.jpg",
+    "prompts": "background/BACKGROUND_PROMPTS.md",
+    "manifest": "background/manifest.json",
+    "download": "background/MedusaGaze_background_v2.zip",
+    "validation": "background/validation.json",
+    "motion": [
+      "雲每分鐘移動場景寬度1/5",
+      "免費遊戲火舌分段翻捲與UV亮紋上移，火根固定",
+      "每次大獎一次1.2秒三階裂紋、12塊甩出、停頓、下方先扣回的石像演出"
+    ],
+    "reviewCrops": "Video 7-14s shows inspection crops; game camera is fixed.",
+    "architecture": "固定，沒有背景鏡頭晃動、縮放、全景亮暗呼吸或柱子擺動",
+    "accessibility": "頁面隱藏暫停並清除時間差；尊重減少動態偏好",
+    "browserReview": "Exact shared Pixi renderer v2 recorded, including fire and statue details, with no preview errors. Local mock baseThrow completed, day/dusk fire switch seen in bonusBigTotal. Game completion details are saved in browser-review-v2.json. Not Stake Engine footage.",
+    "engineVerification": "not_yet_tested_in_Stake_Engine"
+  },
+  "userRequestedVideo": false,
+  "delivery": {
+    "frontend": "../../delivery/MedusaGaze_frontend_20261025.zip",
+    "sources": "../../delivery/MedusaGaze_sources_20261025.zip",
+    "readme": "../../delivery/README_交付說明.txt"
+  }
+}

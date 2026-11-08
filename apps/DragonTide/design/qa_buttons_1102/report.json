@@ -1,0 +1,210 @@
+{
+  "checks": [
+    {
+      "state": "desktop",
+      "oldPlateCount": 0,
+      "newPlateCount": 5,
+      "visibleIcons": [
+        "menu.png",
+        "decrease.png",
+        "increase.png",
+        "autoSpin.png"
+      ]
+    },
+    {
+      "state": "desktop-menu",
+      "oldPlateCount": 0,
+      "newPlateCount": 9,
+      "visibleIcons": [
+        "decrease.png",
+        "increase.png",
+        "autoSpin.png",
+        "soundOn.png",
+        "settings.png",
+        "info.png",
+        "payTable.png",
+        "menuExit.png"
+      ]
+    },
+    {
+      "state": "rules",
+      "guide": [
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        },
+        {
+          "background": "none",
+          "fill": "rgb(151, 13, 33)",
+          "border": "2px",
+          "radius": "50%"
+        }
+      ]
+    },
+    {
+      "state": "mobile",
+      "oldPlateCount": 0,
+      "newPlateCount": 5,
+      "visibleIcons": [
+        "menu.png",
+        "decrease.png",
+        "increase.png",
+        "autoSpin.png"
+      ]
+    },
+    {
+      "state": "mobile-menu",
+      "oldPlateCount": 0,
+      "newPlateCount": 11,
+      "visibleIcons": [
+        "menu.png",
+        "decrease.png",
+        "increase.png",
+        "autoSpin.png",
+        "payTable.png",
+        "info.png",
+        "settings.png",
+        "soundOn.png",
+        "menuExit.png"
+      ]
+    },
+    {
+      "state": "mobile-turbo2",
+      "oldPlateCount": 0,
+      "newPlateCount": 6,
+      "visibleIcons": [
+        "menu.png",
+        "decrease.png",
+        "increase.png",
+        "autoSpin.png"
+      ]
+    },
+    {
+      "state": "mobile-max-bet",
+      "oldPlateCount": 0,
+      "newPlateCount": 6,
+      "visibleIcons": [
+        "menu.png",
+        "decrease.png",
+        "increase.png",
+        "autoSpin.png"
+      ]
+    }
+  ],
+  "errors": [],
+  "betStepper": {
+    "before": 1,
+    "after": 2
+  },
+  "passed": true
+}

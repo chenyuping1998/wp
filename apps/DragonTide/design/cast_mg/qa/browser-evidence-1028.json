@@ -1,0 +1,150 @@
+{
+  "date": "2026-10-28",
+  "mockRound": {
+    "win": 0.4,
+    "balance": 999.4,
+    "consoleErrors": 0
+  },
+  "screenshots": {
+    "mobile-pose-大獎循環.png": {
+      "size": [
+        375,
+        812
+      ],
+      "sha256": "5b098410d5639f60087363c385344dc8b00b75160b765ac3b7eaa5f57e31496b"
+    },
+    "mobile-pose-調眼鏡.png": {
+      "size": [
+        375,
+        812
+      ],
+      "sha256": "6aa537e7880103823918bf9e7b5fcd786edad18d9d89d705c84c09cac8f08d19"
+    },
+    "game-pose-摘帽.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "6a0c96222c08903abb388eac4d4717166dc6f14ad4ec08ca788e2cf8e0240299"
+    },
+    "game-pose-小獎點帽.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "ba56270c61d83aab532d4951ba897cf82526a56bb3c6c3b698543455adbc54d1"
+    },
+    "game-pose-待機.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "a20c599605ae0f52687cbf2790adc00b30e37cbcc6d0c52e950bf0c5f3e55a7c"
+    },
+    "game-pose-催眠出手.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "9b336c9439871ab8dddea196171e7e2db25412f5ce906ff5e2e2ee13a8504be9"
+    },
+    "game-pose-戴回帽子.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "537e1229ccefc208e45f39e5f54f099a77d3f1953e039e60274389a3012111f2"
+    },
+    "mobile-pose-丟空攤手.png": {
+      "size": [
+        375,
+        812
+      ],
+      "sha256": "152fbbf7e5893a876b54534dfde7e369f3df7be4838a0ad5490512fded24bebb"
+    },
+    "game-mobile-320.png": {
+      "size": [
+        320,
+        640
+      ],
+      "sha256": "6f406dbf5c97c8e38b6cbbc7d2120fc7d1dbb79b4038556dd181995bf259f99f"
+    },
+    "game-mobile.png": {
+      "size": [
+        375,
+        812
+      ],
+      "sha256": "e0a0185e2651db1ca5df38a0116b0f27610a70a96f741658f32480f96cab6418"
+    },
+    "mobile-pose-催眠出手.png": {
+      "size": [
+        375,
+        812
+      ],
+      "sha256": "57163b934c86503408f500853adae697b8df2a7a1b6b5ab99119f079649999b2"
+    },
+    "game-pose-大獎循環.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "ff19cbc95b29a8642a4b4e762c6afd23758d35b6c03484609aee9c95193458c4"
+    },
+    "game-desktop.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "8d08eac84bcad2c818c13c5972c8499adaa2bf3f3e2158d33b949be74cecf85e"
+    },
+    "mobile-pose-小獎點帽.png": {
+      "size": [
+        375,
+        812
+      ],
+      "sha256": "49dfd5b40580f998241821f9759ba838abe6352c0c7cb73dae37acb3da42d38b"
+    },
+    "final-mobile-round.png": {
+      "size": [
+        375,
+        812
+      ],
+      "sha256": "3299b770cf100e15264da33ae03d96e12a3cfd17e0813da241a8c217e4789d62"
+    },
+    "mobile-pose-戴回帽子.png": {
+      "size": [
+        375,
+        812
+      ],
+      "sha256": "82fcb92e56baea4b22de8ac672673f06cb45ca4f925b054c958229c6be709af6"
+    },
+    "game-pose-丟空攤手.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "36bed563208fbf94da15df035c690c47387b6403baa7df91eec1ddb6c2950b7d"
+    },
+    "mobile-pose-待機.png": {
+      "size": [
+        375,
+        812
+      ],
+      "sha256": "9cb97b0a58fa88ce68c56f1f39b182df4fb640cdbc15a530f9b4cbfa75a9ddd0"
+    },
+    "game-pose-調眼鏡.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "40e8bd6247433fcb42c8717a261083c65eb13eccdfdf56a27584f7c1bd3224ad"
+    },
+    "mobile-pose-摘帽.png": {
+      "size": [
+        375,
+        812
+      ],
+      "sha256": "30a56a7a163e7c6654dc596339064c09fb4015d6e9f38ca55fe85969f99831d9"
+    }
+  }
+}

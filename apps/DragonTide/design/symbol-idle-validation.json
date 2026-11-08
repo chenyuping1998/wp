@@ -1,0 +1,99 @@
+{
+  "passed": true,
+  "scope": "Pure motion, actual painted bounds, wrap continuity; actual browser frames checked separately",
+  "clockWrap": 120,
+  "distinctCellPhases": 28,
+  "maxPaintedCellEdge": 0.4838310819281698,
+  "symbols": {
+    "H1": {
+      "description": "Hat balances on its brim, tips and lifts",
+      "cycle": 6,
+      "actSeconds": 1.2,
+      "visibleAct": 2.102621468847584,
+      "ambientRange": 0.028579976627824903,
+      "maxScale": 1.0553038715321403,
+      "maxOffset": 0.04495578623503843
+    },
+    "H2": {
+      "description": "Lollipop sways from its stick and turns",
+      "cycle": 5,
+      "actSeconds": 1,
+      "visibleAct": 2.418627185147724,
+      "ambientRange": 0.04287011653855964,
+      "maxScale": 1,
+      "maxOffset": 0.04322604524338904
+    },
+    "H3": {
+      "description": "Crystal settles on its base, inner orbit circles",
+      "cycle": 8,
+      "actSeconds": 1.6,
+      "visibleAct": 1.5363232419728812,
+      "ambientRange": 0.01893087244106706,
+      "maxScale": 1.0614529296789152,
+      "maxOffset": 0.012
+    },
+    "H4": {
+      "description": "Bell hangs from its handle and rings",
+      "cycle": 4,
+      "actSeconds": 0.8,
+      "visibleAct": 3.9093794876317918,
+      "ambientRange": 0.04835624966651032,
+      "maxScale": 1,
+      "maxOffset": 0.07094635578723821
+    },
+    "H5": {
+      "description": "Banana rocks on its peel and hops",
+      "cycle": 7.5,
+      "actSeconds": 1.1,
+      "visibleAct": 2.143128231433866,
+      "ambientRange": 0.03127507819900763,
+      "maxScale": 1.0399934748830026,
+      "maxOffset": 0.06429384694301599
+    },
+    "L1": {
+      "description": "Star ticket drifts and flicks upward",
+      "cycle": 6,
+      "actSeconds": 1,
+      "visibleAct": 1.4562030918066704,
+      "ambientRange": 0.018,
+      "maxScale": 1,
+      "maxOffset": 0.04368609275420011
+    },
+    "L2": {
+      "description": "Moon ticket curls inward then opens",
+      "cycle": 5,
+      "actSeconds": 1.2,
+      "visibleAct": 2.4999999999999996,
+      "ambientRange": 0.02797232998219136,
+      "maxScale": 1.0411284282089188,
+      "maxOffset": 0.003359879630322512
+    },
+    "L3": {
+      "description": "Diamond ticket pendulum kick",
+      "cycle": 8,
+      "actSeconds": 1.1,
+      "visibleAct": 2.106850973249681,
+      "ambientRange": 0.02717511634154312,
+      "maxScale": 1,
+      "maxOffset": 0.03982577534951891
+    },
+    "L4": {
+      "description": "Heart ticket double heartbeat",
+      "cycle": 7.5,
+      "actSeconds": 0.9,
+      "visibleAct": 1.782314884199715,
+      "ambientRange": 0.0233811070161557,
+      "maxScale": 1.0712925953679886,
+      "maxOffset": 0
+    },
+    "S": {
+      "description": "Spiral paddle sways and makes a hypnotic turn",
+      "cycle": 4,
+      "actSeconds": 1.4,
+      "visibleAct": 2.1681757689108214,
+      "ambientRange": 0.042921506330977445,
+      "maxScale": 1.0577976761059222,
+      "maxOffset": 0.03398451656828328
+    }
+  }
+}

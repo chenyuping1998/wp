@@ -1,0 +1,138 @@
+// Pick a handful of real books out of the published set for src/dev/devBooks.json.
+//
+//   node design/make_dev_books.mjs
+//
+// The mock RGS (src/dev/mockRgs.ts) serves these so a round can be played with
+// `pnpm dev` and no Stake Engine. Nothing here is synthesised — every book is one
+// the RGS could really hand out — because a hand-written book proves the
+// presentation survives a shape the maths never produces, which is the opposite
+// of useful.
+//
+// The shapes are chosen to reach the paths that are hard to hit by playing: a
+// feature trigger (about 1 in 400 base spins), Medusa's throw applied and wasted,
+// a feature that builds a large running total, and a retrigger.
+
+import fs from 'node:fs';
+import path from 'node:path';
+import zlib from 'node:zlib';
+import { fileURLToPath } from 'node:url';
+
+import { mathGameDir } from '../../../tools/math_game_dir.mjs';
+
+const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const LIB = path.join(mathGameDir('hypno_monkey'), 'library', 'publish_files');
+const OUT = path.join(appRoot, 'src/dev/devBooks.json');
+
+const BIG_TOTAL = 100; // a running total worth watching build
+
+const readBooks = (mode, limit) => {
+	const file = path.join(LIB, `books_${mode}.jsonl.zst`);
+	if (!fs.existsSync(file)) {
+		console.error(`books not found: ${file}\nRun the math pipeline first.`);
+		process.exit(1);
+	}
+	// Line-at-a-time over the Buffer: the bonus books decompress past the
+	// 0x1fffffe8 cap on a single JS string.
+	const buffer = zlib.zstdDecompressSync(fs.readFileSync(file));
+	const out = [];
+	let offset = 0;
+	while (offset < buffer.length && out.length < limit) {
+		let end = buffer.indexOf(0x0a, offset);
+		if (end === -1) end = buffer.length;
+		const line = buffer.toString('utf8', offset, end);
+		offset = end + 1;
+		if (line.trim()) out.push(JSON.parse(line));
+	}
+	return out;
+};
+
+const types = (book) => new Set(book.events.map((e) => e.type));
+const eventsOf = (book, type) => book.events.filter((e) => e.type === type);
+
+const pick = (books, predicate, label) => {
+	const found = books.find(predicate);
+	if (!found) {
+		console.warn(`  !! no book matched "${label}" — the harness will be missing that shape`);
+		return null;
+	}
+	return { id: found.id, payoutMultiplier: found.payoutMultiplier, state: found.events };
+};
+
+console.log('reading base books…');
+const base = readBooks('base', 40000);
+console.log('reading bonus books…');
+const bonus = readBooks('bonus', 2500);
+console.log('reading super books…');
+const superBuy = readBooks('super', 1500);
+
+const selection = {
+	// A plain base win, so the very first spin exercises the tumble path.
+	baseWin: pick(
+		base,
+		(b) => b.payoutMultiplier > 0 && !types(b).has('freeSpinTrigger') && !types(b).has('hypnoThrow'),
+		'base win, no feature',
+	),
+	// The feature opening from the base game, effectively unreachable by playing.
+	baseTrigger: pick(
+		base,
+		(b) => types(b).has('freeSpinTrigger') && !types(b).has('wincap'),
+		'base feature trigger',
+	),
+	// Medusa's base-game throw landing on a win.
+	baseThrow: pick(
+		base,
+		(b) => eventsOf(b, 'hypnoThrow').some((e) => e.applied) && !types(b).has('freeSpinTrigger'),
+		'base throw applied',
+	),
+	// ...and wasted on a spin with no tumble win.
+	baseThrowWasted: pick(
+		base,
+		(b) => eventsOf(b, 'hypnoThrow').some((e) => !e.applied) && !types(b).has('freeSpinTrigger'),
+		'base throw wasted',
+	),
+	// A bought feature, the ordinary case.
+	bonusPlain: pick(bonus, (b) => b.payoutMultiplier > 0 && !types(b).has('freeSpinRetrigger'), 'bonus'),
+	// A feature whose running total climbs high: multi-orb throws into the plate.
+	bonusBigTotal: pick(
+		bonus,
+		(b) => eventsOf(b, 'hypnoThrow').some((e) => e.applied && e.mult >= BIG_TOTAL),
+		`bonus with running total >= ${BIG_TOTAL}`,
+	),
+	// A retrigger: the running total has to carry across the extra award.
+	bonusRetrigger: pick(bonus, (b) => types(b).has('freeSpinRetrigger'), 'bonus with a retrigger'),
+	// Heavy watches: a ×100 lands in the base game, a ×250+ in the feature (bolt, shock ring, board shake).
+	baseThrowHeavy: pick(
+		base,
+		(b) => eventsOf(b, 'hypnoThrow').some((e) => e.applied && e.multipliers.some((v) => v >= 100)) && !types(b).has('freeSpinTrigger'),
+		'base throw applied with a ×100 watch',
+	),
+	// A base spin with no win where the wasted watch is ×100+: thunderclap, then it cracks.
+	baseDeadHeavy: pick(
+		base,
+		(b) => b.payoutMultiplier === 0 && eventsOf(b, 'hypnoThrow').some((e) => !e.applied && e.multipliers.some((v) => v >= 100)),
+		'base dead spin with a wasted ×100+ watch',
+	),
+	// The super buy: every watch ×10 or more.
+	superBuy: pick(superBuy, (b) => b.payoutMultiplier > 0 && !types(b).has('wincap'), 'super buy'),
+	bonusThrowHeavy: pick(
+		bonus,
+		(b) => eventsOf(b, 'hypnoThrow').some((e) => e.applied && e.multipliers.some((v) => v >= 250)) && !types(b).has('wincap'),
+		'bonus throw applied with a ×250+ watch',
+	),
+};
+
+const books = {};
+for (const [key, value] of Object.entries(selection)) if (value) books[key] = [value];
+
+fs.writeFileSync(OUT, JSON.stringify(books));
+const kb = (fs.statSync(OUT).size / 1024).toFixed(0);
+console.log(`\nwrote ${path.relative(appRoot, OUT)} (${kb} KB)`);
+for (const [key, value] of Object.entries(books)) {
+	const book = value[0];
+	const total = book.state
+		.filter((e) => e.type === 'hypnoThrow')
+		.reduce((max, e) => Math.max(max, e.mult), 0);
+	console.log(
+		`  ${key.padEnd(15)} id=${String(book.id).padEnd(6)} ${String(book.payoutMultiplier / 100 + 'x').padEnd(10)} events=${String(book.state.length).padEnd(5)} medusa=${total || '-'}`,
+	);
+}
