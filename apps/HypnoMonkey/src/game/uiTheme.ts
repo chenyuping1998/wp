@@ -1,5 +1,6 @@
 import { GAME_FONT, GAME_FONT_WEIGHT } from './fonts';
 import { setUiTheme } from 'components-ui-pixi';
+import SplitBar from '../components/ui/SplitBar.svelte';
 import { stateConfig } from 'state-shared';
 
 // Circus controls share a red face, one gold edge and the shared toolbar behaviour.
@@ -170,3 +171,17 @@ setUiTheme({
 // A player who cannot afford the bet is told so, on every route into a bet (Bet
 // button, spacebar, Autoplay). Paired with <ModalMessage /> in ui/Modals.svelte.
 stateConfig.explainInsufficientBalance = true;
+
+// BAR V4 TRIAL (2026-11-09): the split console from wp/tools/ui-bar-v4
+// (components/ui/SplitBar.svelte) — buy tile and menu bottom-left, BALANCE /
+// WIN / BET plates along the foot, spin disc with turbo and autoplay
+// bottom-right. uiTheme.customLayout replaces the shared layout in every
+// orientation; everything above stays as the old bar's palette. The buy menu
+// swaps its header stake toggle for the foot pill while this is set
+// (ui/ModalBuyBonus.svelte). To go back to the old bar, delete this call.
+setUiTheme({
+	customLayout: SplitBar,
+	// the template's figure: the foot row is ~114 tall and the board must
+	// clear the WIN plate
+	barHeight: 190,
+});

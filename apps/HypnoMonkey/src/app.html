@@ -15,7 +15,17 @@
 		-->
 		<link rel="preload" href="%sveltekit.assets%/fonts/Rye.ttf" as="font" type="font/ttf" crossorigin />
 		<link rel="preload" href="%sveltekit.assets%/fonts/Ultra.ttf" as="font" type="font/ttf" crossorigin />
+		<!-- the bet bar's face (components/ui/SplitBar, bar v4): Nunito, OFL, a
+		     variable 200..1000 weight file — see static/fonts/Nunito-OFL.txt -->
+		<link rel="preload" href="%sveltekit.assets%/fonts/Nunito.ttf" as="font" type="font/ttf" crossorigin />
 		<style>
+			@font-face {
+				font-family: 'Nunito';
+				src: url('%sveltekit.assets%/fonts/Nunito.ttf') format('truetype');
+				font-weight: 200 1000;
+				font-style: normal;
+				font-display: block;
+			}
 			@font-face {
 				font-family: 'Rye';
 				src: url('%sveltekit.assets%/fonts/Rye.ttf') format('truetype');

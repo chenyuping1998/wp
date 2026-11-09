@@ -76,6 +76,7 @@
 	// Portrait keeps the full bottom bar whatever the theme asks for — there is no
 	// horizontal room for rails or a compact strip on a 1080x1920 box.
 	const LayoutComponent = $derived.by(() => {
+		if (uiTheme.customLayout) return uiTheme.customLayout;
 		const type = stateLayoutDerived.layoutType();
 		if (type === 'portrait') return LayoutPortrait;
 		if (requested === 'compactBottom' && uiTheme.compactBottomSmallFallback && !compactFits) {

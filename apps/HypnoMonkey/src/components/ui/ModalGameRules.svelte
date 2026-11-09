@@ -3,87 +3,85 @@
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal, LEGAL_NOTICE } from 'state-shared';
 
-	import { base } from '$app/paths';
-
 	import config from '../../game/config';
 	import { socialTerms } from '../../game/socialTerms';
 	import { MEDUSA_GAZE_BET_MODE_META } from '../../game/betModeMeta';
+	import BarIcon from './BarIcon.svelte';
 
 	// One vocabulary map for this page and the pay table (game/socialTerms), so
 	// the social build can never ship a sentence that says "pays".
 	const T = socialTerms();
 	const social = T.social;
 
-	// Controls guide. Each row shows the button's own art from the bet bar, so a
-	// player matches what they read to what they see. This panel is DOM, so the
-	// icons come from static/ rather than the pixi asset pipeline. Every pressable
-	// control is listed — a guide that leaves one out fails the engine guideline.
-	const ICONS = `${base}/assets/sprites/medusaUiIcons`;
-	type Control = { icons: string[]; name: string; text: string; sign?: boolean; readout?: string; opens?: boolean };
+	// Controls guide, in the order the controls sit on the bet bar (bar v4,
+	// ui/SplitBar.svelte): the buy tile and the menu in the bottom-left corner,
+	// the menu panel's rows, the readouts and stake controls along the foot,
+	// then Spin with Turbo and Auto Spin in the bottom-right corner. Each row
+	// shows the control as the bar draws it (ui/BarIcon.svelte), so a player
+	// matches what they read to what they see. Every pressable control is
+	// listed — a guide that leaves one out fails the engine guideline.
+	type Icon = { kind: 'buy' | 'menu' | 'info' | 'paytable' | 'settings' | 'sfx' | 'music' | 'plate' | 'step' | 'spin' | 'auto' | 'turbo'; label?: string; levelLine?: boolean };
+	type Control = { icons: Icon[]; name: string; text: string };
 	const controls: Control[] = [
 		{
-			icons: ['spin'],
-			name: 'Spin',
-			text: `Starts a round for the current ${T.bet}. The space bar does the same thing. While the board is moving it becomes Stop, which brings it to rest early.`,
-		},
-		{
-			icons: ['decrease', 'increase'],
-			name: 'Decrease / increase',
-			text: `Steps the ${T.bet} down or up one level per press, through the available ${T.betLevels}. They sit either side of the ${T.bet} readout.`,
-		},
-		{
-			icons: [],
-			readout: social ? 'AMOUNT' : 'BET',
-			opens: true,
-			name: social ? 'Amount' : 'Bet amount',
-			text: `Shows the current ${T.bet}. Tap it to open the ${T.betMenu} and choose any of the available ${T.betLevels} directly.`,
-		},
-		{
-			icons: [],
-			sign: true,
+			icons: [{ kind: 'buy' }],
 			name: T.buyBonusName,
-			text: `The ticket-booth sign beside the board. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm. It is unlit while a round is playing and hidden during Free Spins.`,
+			text: `The yellow tile in the bottom-left corner, marked with the Hypnotist's pocket watch. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm, and the ${T.bet} can still be changed from the strip at the foot of that menu. It is unlit while a round is playing and hidden during Free Spins.`,
 		},
 		{
-			icons: ['autoSpin'],
-			name: 'Auto Spin',
-			text: 'Plays a chosen number of rounds automatically. Open it to set the count and any stop conditions; the remaining count shows on the button. Press it again to stop early.',
-		},
-		{
-			icons: ['turbo'],
-			name: 'Turbo',
-			text: "Press once for Turbo (one solid bolt): quicker drops and win presentations. Press again for Turbo 2 (two bolts): the board drops quicker still and each chain step is shorter. A third press turns turbo off. The Hypnotist's watches are always shown at a readable speed.",
-		},
-		{
-			icons: ['menu'],
+			icons: [{ kind: 'menu' }],
 			name: 'Menu',
-			text: `Opens the ${T.payTable}, these rules, and the sound and settings controls.`,
+			text: `The round button above it. Opens a panel with Info, the ${T.payTable} and Settings, and sliders for the sound and music volume. While the panel is open the button shows an X: press it again, or Esc, to close it.`,
 		},
 		{
-			icons: ['info'],
+			icons: [{ kind: 'info' }],
 			name: 'Info',
 			text: 'Opens these game rules.',
 		},
 		{
-			icons: ['settings'],
-			name: 'Settings',
-			text: 'Opens the volume controls: master volume, music and sound effects, each set separately.',
-		},
-		{
-			icons: [],
-			readout: 'WIN',
-			name: 'Balance and win',
-			text: `Balance shows what you have; Win shows what the current round has ${T.paid} so far, counted up as each chain and multiplier lands.`,
-		},
-		{
-			icons: ['payTable'],
+			icons: [{ kind: 'paytable' }],
 			name: T.payTableLabel,
 			text: `Lists every symbol and what each count of it ${T.pays}.`,
 		},
 		{
-			icons: ['soundOn'],
-			name: 'Sound',
-			text: 'Mutes and unmutes the game. Volume is adjusted under Settings.',
+			icons: [{ kind: 'settings' }],
+			name: 'Settings',
+			text: 'Opens the volume controls: master volume, music and sound effects, each set separately.',
+		},
+		{
+			icons: [{ kind: 'sfx' }, { kind: 'music' }],
+			name: 'Sound and music',
+			text: 'The two sliders in the menu panel: the speaker sets the volume of the sound effects, the note the music. Drag a slider all the way to the left to silence it.',
+		},
+		{
+			icons: [{ kind: 'plate', label: 'WIN' }],
+			name: 'Balance and win',
+			text: `Along the foot of the screen, BALANCE shows what you have and WIN, in the centre, shows what the current round has ${T.paid} so far, counted up as each chain and multiplier lands.`,
+		},
+		{
+			icons: [{ kind: 'step' }],
+			name: 'Decrease / increase',
+			text: `The two arrows beside the ${T.bet} readout step the ${T.bet} up or down one level per press, through the available ${T.betLevels}.`,
+		},
+		{
+			icons: [{ kind: 'plate', label: T.betPanel.toUpperCase(), levelLine: true }],
+			name: social ? 'Amount' : 'Bet amount',
+			text: `Shows the current ${T.bet}; the line along its foot shows where it sits among the ${T.betLevels}. Tap it to open the ${T.betMenu} and choose any level directly.`,
+		},
+		{
+			icons: [{ kind: 'spin' }],
+			name: 'Spin',
+			text: `The large white button in the bottom-right corner. Starts a round for the current ${T.bet}; the space bar does the same. Its arrows turn while the board is moving — press it again then to play the rest of the round at Turbo speed.`,
+		},
+		{
+			icons: [{ kind: 'turbo' }],
+			name: 'Turbo',
+			text: "The small bolt button above Spin. Press once for Turbo (the button turns black with a gold bolt): quicker drops and win presentations. Press again for Turbo 2 (two gold bolts): the board drops quicker still and each chain step is shorter. A third press turns turbo off. The Hypnotist's watches are always shown at a readable speed.",
+		},
+		{
+			icons: [{ kind: 'auto' }],
+			name: 'Auto Spin',
+			text: 'The small button beside Turbo. Opens a panel to choose how many rounds to play automatically, from 10 up to 1000 or unlimited (∞); pick a number, then press Spin to start. While it runs, Spin counts down the rounds left. Press Auto Spin or Spin again to stop.',
 		},
 	];
 
@@ -166,19 +164,11 @@
 					{#each controls as control (control.name)}
 						<li>
 							<span class="wp-control-icons" aria-hidden="true">
-								{#if control.sign}
-									<img class="wp-sign" src={`${base}/assets/sprites/hypnoUi/buybonus_plate.png`} alt="" />
-								{:else if control.readout}
-									<span class="wp-readout"
-										>{control.readout}{#if control.opens}<svg viewBox="0 0 12 8"><polyline points="1.5,1.5 6,6 10.5,1.5" /></svg>{/if}</span
+								{#each control.icons as icon, i (i)}
+									<span class={icon.kind === 'plate' ? 'wp-bar-icon wp-bar-plate' : 'wp-bar-icon'}
+										><BarIcon kind={icon.kind} label={icon.label} levelLine={icon.levelLine} /></span
 									>
-								{:else}
-									{#each control.icons as name (name)}
-										<span class="wp-icon-plate"
-											><img src={`${ICONS}/${name}.png`} alt="" /></span
-										>
-									{/each}
-								{/if}
+								{/each}
 							</span>
 							<div>
 								<span class="wp-control-name">{control.name}</span>
@@ -187,7 +177,7 @@
 						</li>
 					{/each}
 				</ul>
-				<p class="wp-modes-note">Where a win presentation is playing, tapping anywhere skips to the end of it.</p>
+				<p class="wp-modes-note">Where a win presentation is playing, tapping anywhere skips to the end of it. Esc closes the menu and Auto Spin panels.</p>
 			</section>
 
 			<section class="wp-card">
@@ -421,8 +411,9 @@
 
 	.wp-controls li {
 		display: grid;
-		/* wide enough for the two-key stepper, so every row's text starts on one line */
-		grid-template-columns: 5rem 1fr;
+		/* wide enough for two icons or one readout plate, so every row's text
+		   starts on one line */
+		grid-template-columns: 4.6rem 1fr;
 		align-items: start;
 		gap: 0.7rem;
 	}
@@ -433,49 +424,18 @@
 		gap: 0.3rem;
 	}
 
-	/* Match the bar's single gold edge and red face, including the controls guide. */
-	.wp-icon-plate {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
+	/* the bar's own controls (ui/BarIcon.svelte), drawn as the v4 bar draws them */
+	.wp-bar-icon {
 		width: 2.2rem;
 		height: 2.2rem;
-		box-sizing: border-box;
-		border: 2px solid #f2b632;
-		border-radius: 50%;
-		background: #970d21;
-
-		img {
-			width: 1.4rem;
-			height: 1.4rem;
-			object-fit: contain;
-		}
+		flex: none;
+		/* nudge down so the glyph optically centres on the first line of text */
+		margin-top: -0.1rem;
 	}
 
-	.wp-sign {
-		width: 3rem;
-		height: 3rem;
-		object-fit: contain;
-	}
-
-	/* the bet readout: caption plus the chevron the bar draws beside it */
-	.wp-readout {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.3rem;
-		padding: 0.2rem 0.45rem;
-		border: 2px solid #2a1f24;
-		border-radius: 0.4rem;
-		background: #1e4950;
-		color: #efe8d8;
-		font: 400 0.7rem var(--gb-display-font, sans-serif);
-	}
-	.wp-readout svg {
-		width: 0.7rem;
-		height: 0.5rem;
-		fill: none;
-		stroke: #efe8d8;
-		stroke-width: 2;
+	/* a readout plate is wider than it is tall: give it the whole column */
+	.wp-bar-plate {
+		width: 4.4rem;
 	}
 
 	.wp-control-name {

@@ -4,12 +4,17 @@
 	import { stateModal, stateMetaDerived, stateBet, stateUrlDerived } from 'state-shared';
 	import { stateBonus } from 'components-ui-html/src/stateBonus.svelte';
 	import BetMenuAmountToggle from 'components-ui-html/src/components/BetMenuAmountToggle.svelte';
+	import { uiTheme } from 'components-ui-pixi';
+	import BuyMenuBetPill from './BuyMenuBetPill.svelte';
 	import { getContextEventEmitter } from 'utils-event-emitter';
 	import type { EmitterEventModal } from 'components-ui-html/src/types';
 	import { numberToCurrencyString } from 'utils-shared/amount';
 	import { base } from '$app/paths';
 	import config from '../../game/config';
 	const {eventEmitter}=getContextEventEmitter<EmitterEventModal>();
+	// bar v4 (SplitBar): the stake moves from the header to the pill at the foot,
+	// as the template's buy menu does; the old header toggle stays for the old bar
+	const pill=!!uiTheme.customLayout;
 	const social=$derived(stateUrlDerived.social());
 	const modes=$derived(stateMetaDerived.betModeMetaList().filter(mode=>mode.type==='buy'));
 	const art=(file:string)=>`${base}/assets/sprites/${file}`;
@@ -24,11 +29,11 @@
 
 {#if stateModal.modal?.name==='buyBonus'}
 	<Popup zIndex={zIndex.modal} onclose={()=>stateModal.modal=null}>
-		<div class="hm-feature">
+		<div class="hm-feature" class:pill-room={pill}>
 			<header class="marquee">
 				<svg class="lights" viewBox="0 0 900 14" aria-hidden="true">{#each Array.from({length:24},(_,i)=>i) as i}<circle cx={12+i*38} cy="7" r="4"/>{/each}</svg>
 				<div class="heading"><span class="eyebrow">HYPNO MONKEY</span><h2>{social?'FEATURES':'BUY BONUS'}</h2><p>CHOOSE YOUR SHOW</p></div>
-				<div class="amount"><span>{social?'PLAY AMOUNT':'BET AMOUNT'}</span><BetMenuAmountToggle/></div>
+				{#if !pill}<div class="amount"><span>{social?'PLAY AMOUNT':'BET AMOUNT'}</span><BetMenuAmountToggle/></div>{/if}
 			</header>
 			<div class="tickets">
 				{#each modes as mode (mode.mode)}
@@ -60,6 +65,7 @@
 			</div>
 			<footer>MAX WIN <strong>{config.betModes.base.max_win.toLocaleString()}×</strong><span>WINNING WATCHES MULTIPLY THE SPIN</span></footer>
 		</div>
+		{#if pill}<BuyMenuBetPill/>{/if}
 	</Popup>
 {/if}
 
@@ -88,5 +94,7 @@
 	@media(max-width:600px){.hm-feature{width:calc(100vw - 30px);max-height:calc(100dvh - 55px)}.marquee{padding:23px 14px 13px;gap:10px}.heading h2{font-size:24px!important}.heading .eyebrow{font-size:9px}.heading p{font-size:8px}.amount{padding:6px;letter-spacing:0}.amount :global(.amount){font-size:16px}.amount :global(.toggle-wrap){gap:4px}.tickets{grid-template-columns:1fr;padding:15px;gap:17px}.scene{height:160px}.assistant{height:245px;right:10%}.hero-watch{left:12%;top:18px;width:112px;height:120px}.ticket-body{padding:13px 17px 11px}.ticket h3{font-size:21px!important}.ticket-divider{margin-left:-17px;margin-right:-17px;padding-left:17px;padding-right:17px}.hm-feature footer{padding:0 15px 14px;flex-wrap:wrap}.hm-feature footer span{width:100%;margin:0}.card-foot{font-size:9px}}
 	@media(max-height:500px) and (min-width:601px){.marquee{padding-top:17px;padding-bottom:9px}.heading h2{font-size:22px!important}.tickets{padding:12px;gap:12px}.scene{height:90px}.assistant{height:160px;top:0}.hero-watch{height:83px;width:83px;top:3px}.hero-watch strong{font-size:23px}.spin-stub strong{font-size:20px}.ticket-body{padding:9px 12px}.ticket h3{font-size:17px!important}.formula{margin:7px 0}.ticket p{font-size:11px;margin-bottom:6px}.ticket-divider{margin:6px -12px;padding:5px 12px}.enter{padding:6px 9px}.enter strong{font-size:17px}.card-foot{font-size:7px}.hm-feature footer{padding-bottom:9px}}
 	@media(prefers-reduced-motion:reduce){.hero-watch{animation:none}}
+	/* bar v4: room under the menu for the bet pill (BuyMenuBetPill) */
+	.hm-feature.pill-room{max-height:calc(100dvh - 92px);margin-bottom:64px}
 	@media(max-height:420px){.hm-feature{max-height:calc(100dvh - 40px)}.marquee{padding:9px 12px;gap:8px}.lights,.heading .eyebrow,.heading p{display:none}.heading h2{font-size:18px!important}.amount{padding:3px 5px;gap:1px;font-size:8px}.amount :global(.amount){font-size:14px}.tickets{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px}.scene,.formula,.ticket p,.watch-range,.ticket-divider,.card-foot{display:none}.ticket-body{padding:8px}.ticket h3{font-size:13px!important;margin-bottom:6px}.enter{flex-direction:column;gap:3px;padding:5px}.enter span{font-size:9px}.enter strong{font-size:15px}.hm-feature footer{padding:0 10px 7px;font-size:9px}.hm-feature footer strong{font-size:11px}.hm-feature footer span{display:none}}
 </style>
