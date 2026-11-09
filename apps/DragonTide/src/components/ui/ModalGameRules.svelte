@@ -43,7 +43,7 @@
 			icons: [],
 			sign: true,
 			name: T.buyBonusName,
-			text: `The BUY BONUS plaque beside the board. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm. It is unlit while a round is playing and hidden during Free Spins.`,
+			text: `The ${social ? 'PLAY BONUS' : 'BUY BONUS'} plaque beside the board. Opens the feature menu, where Free Spins can be ${T.bought} outright for the stated multiple of your ${T.bet}; the amount is shown before you confirm. It is unlit while a round is playing and hidden during Free Spins.`,
 		},
 		{
 			icons: ['autoSpin'],
@@ -91,6 +91,7 @@
 	// Every figure is read from the maths config (design/sync_math_config.mjs),
 	// never typed in, so the rules cannot drift from what the game pays.
 	const entryVerb = social ? 'Play' : 'Buy';
+	const extraName = social ? 'Extra Play' : 'Extra Bet';
 	const rtpPct = `${(config.betModes.base.rtp * 100).toFixed(2)}%`;
 	const bonusRtpPct = `${(config.betModes.bonus.rtp * 100).toFixed(2)}%`;
 	const maxWin = config.betModes?.base?.max_win ?? 15000;
@@ -113,7 +114,7 @@
 			text: `Every spin. ${minPayingCount}+ of a symbol anywhere ${T.pays}, chains continue until nothing more does, dragon pearls multiply a spin that won, and ${fs.trigger}+ Dragon Gates award ${fs.spins} Free Spins.`,
 		},
 		{
-			name: 'Extra Bet',
+			name: extraName,
 			price: `${config.betModes?.ante?.cost}× ${T.bet}`,
 			text: `A switch in the feature menu for base-game spins. While it is on, every spin is ${config.betModes?.ante?.cost}× your ${T.bet} and Dragon Gates land more often, so Free Spins come more often. Wins are worked out on your ${T.bet} as usual. Turn it off in the same menu.`,
 		},
@@ -134,7 +135,7 @@
 	const modeRows = (
 		[
 			['Base game', 'base', `Every spin — or land ${fs.trigger} or more Dragon Gates`],
-			['Extra Bet', 'ante', `Every spin at ${config.betModes?.ante?.cost}× with Extra Bet on`],
+			[extraName, 'ante', `Every spin at ${config.betModes?.ante?.cost}× with ${extraName} on`],
 			['Free Spins', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}×`],
 			['Super Free Spins', 'super_bonus', `${entryVerb} for ${config.betModes?.super_bonus?.cost}×`],
 		] as const

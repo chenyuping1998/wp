@@ -17,7 +17,7 @@ export const installErrorLogging = () => {
 	(window as unknown as Record<string, boolean>).__medusaGazeErrorLogging = true;
 
 	window.addEventListener('error', (event) => {
-		console.error('[MedusaGaze] uncaught error', {
+		console.error('[DragonTide] uncaught error', {
 			message: event.message,
 			source: `${event.filename}:${event.lineno}:${event.colno}`,
 			error: event.error,
@@ -25,6 +25,6 @@ export const installErrorLogging = () => {
 	});
 
 	window.addEventListener('unhandledrejection', (event) => {
-		console.error('[MedusaGaze] unhandled rejection', event.reason);
+		console.error('[DragonTide] unhandled rejection', event.reason);
 	});
 };

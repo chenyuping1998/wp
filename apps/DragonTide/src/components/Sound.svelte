@@ -222,7 +222,7 @@
       return true;
     } catch (error) {
       buffers.delete(cue);
-      console.warn(`Medusa audio could not load ${cue}`, error);
+      console.warn(`Audio could not load ${cue}`, error);
       return false;
     } finally {
       pendingLoops.delete(cue);

@@ -67,7 +67,9 @@ export const MEDUSA_GAZE_BET_MODE_META: Record<string, BetModeData> = {
 		maxWin: config.betModes.ante.max_win,
 		assets: { ...emptyAssets },
 		text: {
-			title: 'EXTRA BET',
+			get title() {
+				return pick('EXTRA BET', 'EXTRA PLAY');
+			},
 			get dialog() {
 				return pick(
 					`EXTRA BET costs ${anteCost}× your bet and brings more dragon gates, raising the chance to trigger FREE SPINS, at ${anteRtp} RTP. Wins and big-win levels are still counted on your base bet. EXTRA BET stays on until you turn it off.`,

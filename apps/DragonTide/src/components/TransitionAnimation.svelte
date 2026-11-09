@@ -15,7 +15,7 @@
  // Portal (天使奧丁 FG_Board_Start Out, research/xinstar-angelodin §5.1), 1.6 s:
  // a swirl opens in the middle of the feature plaque and grows to fill the
  // screen by 0.85 s, the white flash peaks at 0.95 s and the scene swaps under
- // it, then the flash fades on the new scene. Ours is the hypno spiral.
+ // it, then the flash fades on the new scene. Ours is a sea whirlpool (teal on foam).
  const DONE=$derived(portal?1600:1500);
  const COVER_MS=$derived(portal?900:450);
  const REVEAL_MS=$derived(portal?1050:900);
@@ -30,7 +30,7 @@
  const reach=$derived(Math.hypot(sizes.width,sizes.height)/Math.max(.01,main.scale));
  const grow=$derived(Math.min(1,elapsed/850));
  const radius=$derived(reach*(grow<.35?.12*(grow/.35)**.7:.12+.88*((grow-.35)/.65)**2.2));
- const palette=$derived(props.tone==='gold'?{arm:0xf2b632,gap:0xfff3d6,ink:0x5a3208,core:0xfff8e8}:{arm:0x9b3df5,gap:0xf5e3c3,ink:0x2a1f24,core:0xfff8e8});
+ const palette=$derived(props.tone==='gold'?{arm:0xf2b632,gap:0xfff3d6,ink:0x5a3208,core:0xfff8e8}:{arm:0x1f7f86,gap:0xe3f3ee,ink:0x12343a,core:0xf6fcfa});
  const ARMS=6,STEPS=28,TWIST=Math.PI*2.4;
  const drawPortal=(g:PixiGraphics)=>{
   g.clear();

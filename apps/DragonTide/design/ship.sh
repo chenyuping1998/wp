@@ -24,8 +24,11 @@ checks() {
   local fail=0
   # Medusa Gaze -> Hypno Monkey -> Dragon Tide. Internal medusa*/hypno* identifiers, folder
   # names and audio keys are known leftovers; these are the PLAYER-VISIBLE words.
-  for term in "Medusa" "MEDUSA" "Aegis" "AEGIS" "Gorgon" "Petrif" "PETRIF" "Hypno Monkey" "HYPNO" "Hypnotist" "HYPNOTIST" \
-              "pocket watch" "Pocket Watch" "POCKET WATCH" "Circus" "CIRCUS" "Sunglasses" "sunglasses"; do
+  # "Medusa" only where it starts a word: soundMedusa / medusaAction event keys are code.
+  local m=$(rg -oP --glob "*.html" --glob "*.js" --glob "*.json" "(?<![A-Za-z_$])Medusa(?![A-Z][a-z]*[(:=,.])" $OUT/frontend 2>/dev/null | wc -l | tr -d ' ')
+  [[ "$m" != "0" ]] && { print "  FAIL: 'Medusa' x$m in the upload frontend"; fail=1; }
+  for term in "MEDUSA" "Aegis" "AEGIS" "Gorgon" "Petrif" "PETRIF" "Hypno Monkey" "HYPNO" "Hypnotist" "HYPNOTIST" \
+              "pocket watch" "Pocket Watch" "POCKET WATCH" "WATCHES" "Watches" "WATCH " "Circus" "CIRCUS" "Sunglasses" "sunglasses"; do
     local n=$(rg -o --glob "*.html" --glob "*.js" --glob "*.json" "$term" $OUT/frontend 2>/dev/null | wc -l | tr -d ' ')
     [[ "$n" != "0" ]] && { print "  FAIL: '$term' x$n in the upload frontend"; fail=1; }
   done

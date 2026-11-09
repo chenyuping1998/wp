@@ -9,7 +9,7 @@
 	const app = getContextApp(), parent = getContextParent();
 	const root = new Container(), body = new Container();
 	const accents = new Graphics(), shine = new Graphics();
-	root.label = 'Medusa symbol acting'; root.addChild(body); parent.addToParent(root);
+	root.label = 'Symbol acting'; root.addChild(body); parent.addToParent(root);
 	const side = 32, positions = new Float32Array((side + 1) ** 2 * 2), uvs = new Float32Array(positions.length);
 	const indices: number[] = [];
 	for (let y = 0; y <= side; y++) for (let x = 0; x <= side; x++) {

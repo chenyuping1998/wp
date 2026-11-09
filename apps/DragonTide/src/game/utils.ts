@@ -48,7 +48,7 @@ const tracedBookEventHandlerMap = Object.fromEntries(
 			const stall = waitsForPlayer ? undefined : setTimeout(
 				() =>
 					console.error(
-						`[MedusaGaze] book event "${type}" has not finished after ${STALL_WARN_MS}ms — the round is stuck here`,
+						`[DragonTide] book event "${type}" has not finished after ${STALL_WARN_MS}ms — the round is stuck here`,
 						bookEvent,
 					),
 				STALL_WARN_MS,
@@ -56,7 +56,7 @@ const tracedBookEventHandlerMap = Object.fromEntries(
 			try {
 				return await (handler as (a: unknown, b: unknown) => Promise<unknown>)(bookEvent, context);
 			} catch (error) {
-				console.error(`[MedusaGaze] book event "${type}" failed`, { bookEvent, error });
+				console.error(`[DragonTide] book event "${type}" failed`, { bookEvent, error });
 				throw error;
 			} finally {
 				if(stall !== undefined)clearTimeout(stall);
@@ -86,7 +86,7 @@ export const playBet = async (bet: Bet) => {
 		// has already cost the player that round's animation; leaving the button
 		// dead costs them the game, and every event after the throw is skipped
 		// anyway, so there is nothing left to protect by staying stuck.
-		console.error('[MedusaGaze] round aborted', error);
+		console.error('[DragonTide] round aborted', error);
 	}
 	// Let the finished board sit before the spin button comes back. Enabling it on
 	// the same tick the last event resolves means an autoplay or a held spin can

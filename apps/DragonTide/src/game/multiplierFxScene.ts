@@ -4,7 +4,7 @@ export type MultiplierFxState={orbs:OrbVisual[];eyes:Point[];gaze:number;gazePro
 type Burst=Point&{age:number;color:number;strength:number;frame:'score'|'plate'|'orb'};
 type Shard={mesh:Mesh;geometry:MeshGeometry;x:number;y:number;vx:number;vy:number;spin:number;age:number;life:number};
 export function createMultiplierFxScene(textures:{green:Texture;purple:Texture;gold:Texture}){
- const root=new Container(),trails=new Graphics(),eyes=new Graphics(),flashes=new Graphics(),pieces=new Container();root.eventMode='none';root.label='Medusa multiplier / charge, slipstream, impact and painted shards';root.addChild(trails,eyes,flashes,pieces);
+ const root=new Container(),trails=new Graphics(),eyes=new Graphics(),flashes=new Graphics(),pieces=new Container();root.eventMode='none';root.label='Pearl multiplier / charge, slipstream, impact and painted shards';root.addChild(trails,eyes,flashes,pieces);
  // Shader compilation needs a browser GL context; Node replays geometry only.
  const stoneMaterial=typeof document==='undefined'?undefined:new ColorMatrixFilter();stoneMaterial?.saturate(-1);pieces.filters=stoneMaterial?[stoneMaterial]:[];
  trails.blendMode='add';eyes.blendMode='add';flashes.blendMode='add';

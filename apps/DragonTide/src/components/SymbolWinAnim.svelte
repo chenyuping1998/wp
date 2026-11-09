@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import { stateBet } from 'state-shared';
 	import { ColorMatrixFilter } from 'pixi.js';
-	import { SYMBOL_SIZE, HYPNO_TINT } from '../game/constants';
+	import { SYMBOL_SIZE, HYPNO_TINT, TIDE_TEAL } from '../game/constants';
 	import { getSymbolInfo } from '../game/utils';
 	import { getContext } from '../game/context';
 	import { tumbleTiming } from '../game/animationTimeline';
@@ -29,8 +29,8 @@
 	const action = $derived(clamp01(elapsed / (props.petrify === false ? duration : timing.highlightMs)));
 	const stone = $derived(props.petrify === false ? 0 : clamp01((elapsed - timing.highlightMs) / timing.stoneMs));
 	const crackProgress = $derived(props.petrify === false ? 0 : clamp01((elapsed - timing.highlightMs - timing.stoneMs) / timing.crackMs));
-	// Hypnotised, not petrified: the symbol washes toward lavender and a violet
-	// spiral winds up over it before the tumble tears it away.
+	// Taken by the tide: the symbol washes toward sea foam and a teal whirl
+	// winds up over it before the tumble washes it away.
 	const tint = $derived(
 		(Math.round(255 + (((HYPNO_TINT >> 16) & 255) - 255) * stone) << 16)
 		| (Math.round(255 + (((HYPNO_TINT >> 8) & 255) - 255) * stone) << 8)
@@ -46,7 +46,7 @@
 			const a = (i / steps) * turns * Math.PI * 2;
 			g.lineTo(Math.cos(a) * r * (i / steps), Math.sin(a) * r * (i / steps));
 		}
-		g.stroke({ color: 0x9b3df5, width: 5, alpha: 0.85 * stone, cap: 'round' });
+		g.stroke({ color: TIDE_TEAL, width: 5, alpha: 0.85 * stone, cap: 'round' });
 	};
 	const width = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.width);
 	const height = $derived(SYMBOL_SIZE * props.symbolInfo.sizeRatios.height);

@@ -6,7 +6,7 @@
 	type Props = { assetKey: string; progress: number; width: number; height: number; seed?: number };
 	const props: Props = $props();
 	const app = getContextApp(), parent = getContextParent(), root = new Container();
-	root.label = 'Medusa fractured symbol'; parent.addToParent(root);
+	root.label = 'Fractured symbol'; parent.addToParent(root);
 	const fragments: { node: Container; geometry: MeshGeometry; mesh: Mesh }[] = [];
 	$effect(() => {
 		const texture = app.stateApp.loadedAssets?.[props.assetKey] as Texture | undefined;

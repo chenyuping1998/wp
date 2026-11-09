@@ -232,7 +232,10 @@ export const TOTAL_PLATE_BREATH_S = [0, 1.02, 0.68, 0.52, 0.32] as const;
 /** The gaze colour — reserved for Medusa's eyes and her orbs. */
 export const GAZE_COLOR = 0xb8ff5a;
 /** A hypnotised symbol's wash (SymbolWinAnim): pale lavender, the theme's reserved violet family. */
-export const HYPNO_TINT = 0xd9c9ff;
+/** winning symbols wash toward sea foam before the tide takes them (was the hypno lavender) */
+export const HYPNO_TINT = 0xc6ece4;
+/** the tide whirl that winds over a winning symbol, and the FG portal arms */
+export const TIDE_TEAL = 0x1f7f86;
 
 // The board's own cell colour, used anywhere an opaque occluder is needed.
 // Deep teal rather than white: a pale board reads badly under 36 symbols.

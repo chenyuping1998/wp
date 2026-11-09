@@ -18,8 +18,11 @@ const CURRENCY_LOCALE = 'en-US';
 // "XEC, XSC, XGC must have their Display Currency, regardless if the
 // abbreviation is used by other": XGC → GC, XSC → SC, XEC → SC (yes, both SC).
 //
-// `decimals` is the currency's standard precision and the minimum shown; wins
-// may still extend past it (see numberToCurrencyString).
+// `decimals` is the currency's standard precision. It is NOT what the game
+// displays: Stake review, 2026-10-14 (Capo Nostra): "The Balance and Bet values
+// should always be displayed with two decimal places" — so ¥/₩/Rp/USh no longer
+// drop to whole numbers and KD/JD/BD no longer show three. Every amount is shown
+// to 2 (see numberToCurrencyString); the field is kept as the platform's table.
 type CurrencyMeta = { symbol: string; decimals: number; symbolAfter?: boolean };
 const CURRENCY_META: Record<string, CurrencyMeta> = {
 	USD: { symbol: '$', decimals: 2 },
@@ -124,15 +127,12 @@ export const numberToCurrencyString = (value: number, maximumFractionDigits = 2)
 	const meta = currencyMeta(stateBet.currency);
 	const amount = numberToFloat(value);
 
-	// The currency's own precision is the floor; a win may run past it up to
-	// `maximumFractionDigits` so a sub-cent payout still matches the server's
-	// JSON. A 0-decimal currency (JPY, UGX, XOF…) shows whole amounts unless the
-	// value genuinely has a fraction.
-	const digits = decimalsNeeded(
-		amount,
-		Math.max(meta.decimals, maximumFractionDigits),
-		meta.decimals,
-	);
+	// Two decimals is the floor for every currency, and for a stake or balance
+	// (`maximumFractionDigits` = 2) it is also the ceiling, so Balance and Bet
+	// always read exactly two places — Stake review 2026-10-14, see CURRENCY_META.
+	// A win may run past it up to `maximumFractionDigits` so a sub-cent payout
+	// still matches the server's JSON.
+	const digits = decimalsNeeded(amount, Math.max(2, maximumFractionDigits), 2);
 
 	// Grouping only — formatted against a fixed locale, NOT the interface
 	// language, so switching the game to French does not turn "$1,000.00" into

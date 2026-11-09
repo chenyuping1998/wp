@@ -120,7 +120,9 @@ export const installMockRgs = async () => {
 			headers: { 'content-type': 'application/json' },
 		});
 
-	const balanceBody = () => ({ amount: balance * API_AMOUNT_MULTIPLIER, currency: 'USD' });
+	// the URL's currency, so ?currency=XGC / JPY / EUR show the way the real RGS would send them
+	const currency = new URLSearchParams(location.search).get('currency') ?? 'USD';
+	const balanceBody = () => ({ amount: balance * API_AMOUNT_MULTIPLIER, currency });
 
 	const realFetch = window.fetch.bind(window);
 

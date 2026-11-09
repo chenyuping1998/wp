@@ -76,7 +76,7 @@
 					<button class="extra-toggle" onclick={toggleAnte}>{anteOn?'TURN OFF':'TURN ON'}</button>
 				</section>
 			{/if}
-			<footer>MAX WIN <strong>{config.betModes.base.max_win.toLocaleString()}×</strong><span>WINNING WATCHES MULTIPLY THE SPIN</span></footer>
+			<footer>MAX WIN <strong>{config.betModes.base.max_win.toLocaleString()}×</strong><span>PEARLS MULTIPLY A WINNING SPIN</span></footer>
 		</div>
 	</Popup>
 {/if}
