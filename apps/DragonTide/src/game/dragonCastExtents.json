@@ -3,17 +3,17 @@
   "idle": {
    "minX": -469,
    "maxX": 493,
-   "minY": -1375,
+   "minY": -1377,
    "maxY": 5,
    "leftmost": [
     "sash_l_3:-469",
     "sleeve_l:-459",
-    "sash_l_2:-427"
+    "sash_l_2:-431"
    ],
    "rightmost": [
     "sleeve_r:493",
     "prop:475",
-    "hand_r:348"
+    "hand_r:347"
    ]
   },
   "cast": {
@@ -28,8 +28,8 @@
    ],
    "rightmost": [
     "prop:877",
-    "sleeve_r:559",
-    "hand_r:438"
+    "sleeve_r:561",
+    "hand_r:437"
    ]
   },
   "cast_empty": {
@@ -44,14 +44,14 @@
    ],
    "rightmost": [
     "prop:877",
-    "sleeve_r:559",
-    "hand_r:438"
+    "sleeve_r:561",
+    "hand_r:437"
    ]
   },
   "ready": {
    "minX": -450,
-   "maxX": 607,
-   "minY": -1376,
+   "maxX": 608,
+   "minY": -1378,
    "maxY": 14,
    "leftmost": [
     "sleeve_l:-450",
@@ -59,9 +59,9 @@
     "sash_l_3:-422"
    ],
    "rightmost": [
-    "sleeve_r:607",
+    "sleeve_r:608",
     "prop:532",
-    "hand_r:376"
+    "hand_r:375"
    ]
   },
   "ready_loop": {
@@ -92,7 +92,7 @@
    ],
    "rightmost": [
     "prop:611",
-    "sleeve_r:583",
+    "sleeve_r:584",
     "arm_r_lower:428"
    ]
   },
@@ -108,8 +108,8 @@
    ],
    "rightmost": [
     "prop:720",
-    "sleeve_r:572",
-    "hand_r:438"
+    "sleeve_r:574",
+    "hand_r:437"
    ]
   },
   "win_big_loop": {
@@ -124,8 +124,8 @@
    ],
    "rightmost": [
     "prop:704",
-    "sleeve_r:477",
-    "arm_r_upper:345"
+    "sleeve_r:481",
+    "arm_r_lower:342"
    ]
   },
   "win_big_end": {
@@ -140,8 +140,8 @@
    ],
    "rightmost": [
     "prop:695",
-    "sleeve_r:568",
-    "hand_r:417"
+    "sleeve_r:571",
+    "arm_r_lower:416"
    ]
   }
  },
@@ -154,60 +154,60 @@
    "leftmost": [
     "ribbon_l_2:-450",
     "ribbon_l_3:-443",
-    "ribbon_l_1:-431"
+    "ribbon_l_1:-435"
    ],
    "rightmost": [
     "ribbon_r_2:484",
-    "ribbon_r_3:465",
-    "ribbon_r_1:463"
+    "ribbon_r_1:467",
+    "ribbon_r_3:466"
    ]
   },
   "cast": {
    "minX": -437,
-   "maxX": 690,
+   "maxX": 691,
    "minY": -1387,
-   "maxY": 19,
+   "maxY": 14,
    "leftmost": [
     "ribbon_l_2:-437",
-    "ribbon_l_1:-424",
+    "ribbon_l_1:-428",
     "robe_l:-423"
    ],
    "rightmost": [
-    "ribbon_r_3:690",
+    "ribbon_r_3:691",
     "ribbon_r_2:606",
-    "ribbon_r_1:544"
+    "ribbon_r_1:548"
    ]
   },
   "cast_empty": {
    "minX": -437,
-   "maxX": 690,
+   "maxX": 691,
    "minY": -1387,
-   "maxY": 19,
+   "maxY": 14,
    "leftmost": [
     "ribbon_l_2:-437",
-    "ribbon_l_1:-424",
+    "ribbon_l_1:-428",
     "robe_l:-423"
    ],
    "rightmost": [
-    "ribbon_r_3:690",
+    "ribbon_r_3:691",
     "ribbon_r_2:606",
-    "ribbon_r_1:544"
+    "ribbon_r_1:548"
    ]
   },
   "ready": {
    "minX": -433,
    "maxX": 554,
    "minY": -1372,
-   "maxY": 12,
+   "maxY": 11,
    "leftmost": [
     "ribbon_l_2:-433",
     "robe_l:-429",
-    "ribbon_l_1:-418"
+    "ribbon_l_1:-422"
    ],
    "rightmost": [
     "ribbon_r_3:554",
     "ribbon_r_2:549",
-    "ribbon_r_1:512"
+    "ribbon_r_1:516"
    ]
   },
   "ready_loop": {
@@ -217,36 +217,36 @@
    "maxY": 12,
    "leftmost": [
     "ribbon_l_2:-434",
-    "robe_l:-424",
-    "ribbon_l_1:-419"
+    "robe_l:-425",
+    "ribbon_l_1:-423"
    ],
    "rightmost": [
     "ribbon_r_2:533",
     "ribbon_r_3:519",
-    "ribbon_r_1:504"
+    "ribbon_r_1:508"
    ]
   },
   "transform": {
    "minX": -439,
    "maxX": 603,
    "minY": -1386,
-   "maxY": 18,
+   "maxY": 14,
    "leftmost": [
     "ribbon_l_2:-439",
-    "robe_l:-435",
-    "ribbon_l_3:-424"
+    "robe_l:-436",
+    "ribbon_l_1:-427"
    ],
    "rightmost": [
     "ribbon_r_3:603",
     "ribbon_r_2:573",
-    "ribbon_r_1:509"
+    "ribbon_r_1:513"
    ]
   },
   "win_big": {
    "minX": -441,
    "maxX": 587,
    "minY": -1400,
-   "maxY": 35,
+   "maxY": 24,
    "leftmost": [
     "hair_back_2:-441",
     "ribbon_l_2:-437",
@@ -254,24 +254,24 @@
    ],
    "rightmost": [
     "ribbon_r_3:587",
-    "ribbon_r_2:544",
-    "ribbon_r_1:482"
+    "ribbon_r_2:545",
+    "ribbon_r_1:486"
    ]
   },
   "win_big_loop": {
    "minX": -438,
    "maxX": 550,
    "minY": -1397,
-   "maxY": 20,
+   "maxY": 15,
    "leftmost": [
     "ribbon_l_2:-438",
-    "ribbon_l_1:-425",
+    "ribbon_l_1:-429",
     "hair_back_2:-421"
    ],
    "rightmost": [
     "ribbon_r_3:550",
     "ribbon_r_2:540",
-    "ribbon_r_1:491"
+    "ribbon_r_1:495"
    ]
   },
   "win_big_end": {
@@ -281,13 +281,13 @@
    "maxY": 7,
    "leftmost": [
     "ribbon_l_2:-436",
-    "ribbon_l_1:-425",
+    "ribbon_l_1:-429",
     "hair_back_2:-419"
    ],
    "rightmost": [
     "ribbon_r_2:535",
     "ribbon_r_3:523",
-    "ribbon_r_1:513"
+    "ribbon_r_1:517"
    ]
   }
  }

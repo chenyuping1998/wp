@@ -1,9 +1,9 @@
 {
   "mg": {
     "atlas": "static/assets/sprites/dragonCast/mg-atlas.png",
-    "atlasSha256": "76a73072654502f2614c24ddb4b9306463ab3009237b05ba1d26dc01d73dad1b",
-    "spine": "/Users/stone/stake-engine/new-games/sea-dragon/art/cast-layers-1105/r11/spine/mg/dragon_king.json",
-    "spineSha256": "9d7100282572305ce509c4781b0b86383a550a9ce6c0899775e29b252efd8844",
+    "atlasSha256": "9f78de958337040e1f61256292dca4bcf7abb5f854efbfa8a782dec3cd9f65fa",
+    "spine": "/Users/stone/stake-engine/new-games/sea-dragon/art/cast-layers-1105/r12/spine/mg/dragon_king.json",
+    "spineSha256": "d3645ee2ea8ac26d19b92d630fceebca20e7cf0f82f36a0c6c96a0e6785caf28",
     "layers": 34,
     "assembledInkBox": [
       67,
@@ -11,13 +11,13 @@
       957,
       1457
     ],
-    "usedPixels": 3154291
+    "usedPixels": 3525528
   },
   "fg": {
     "atlas": "static/assets/sprites/dragonCast/fg-atlas.png",
-    "atlasSha256": "0859824a5b3cb442f52695068877369db834288cd4d42b272aefeb1fde1ce9ea",
-    "spine": "/Users/stone/stake-engine/new-games/sea-dragon/art/cast-layers-1105/r11/spine/fg/dragon_princess.json",
-    "spineSha256": "80b619949a503968d603a6a6c49fb61613bf8034a1505c387cd078a4a725c13c",
+    "atlasSha256": "58c97bad9111749e5a414ad8ccc4dd5c696111569d822abe4532f1ae17f6c0ea",
+    "spine": "/Users/stone/stake-engine/new-games/sea-dragon/art/cast-layers-1105/r12/spine/fg/dragon_princess.json",
+    "spineSha256": "db7afa7d1d42617f488f55309819f562664d971f669256bcf0a158b0e30fef7c",
     "layers": 36,
     "assembledInkBox": [
       82,
@@ -25,6 +25,6 @@
       963,
       1457
     ],
-    "usedPixels": 2803626
+    "usedPixels": 2809709
   }
 }

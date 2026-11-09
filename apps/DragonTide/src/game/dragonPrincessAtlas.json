@@ -3,26 +3,26 @@
  "height": 2048,
  "parts": {
   "arm_l_lower": {
-   "x": 1153,
-   "y": 1400,
+   "x": 575,
+   "y": 1415,
    "width": 254,
    "height": 164,
    "cropX": 255,
    "cropY": 515,
-   "sourceSha256": "8a996489806273b52df8520950e384ad49e6d7aa70f9dee345c562add2f32320"
+   "sourceSha256": "249a511735622b539a63142dbb0f52bb2fe1bd762433fcedbf3d59fd652cd661"
   },
   "arm_l_upper": {
-   "x": 396,
-   "y": 1188,
+   "x": 1668,
+   "y": 1177,
    "width": 189,
    "height": 240,
    "cropX": 274,
    "cropY": 380,
-   "sourceSha256": "eb97ae3b80440f11b164cd5d806e8ca6672209e5822ff522be9a9b03a310e636"
+   "sourceSha256": "fd7d42357877eb33fae5d4582b08f00e1effab6cecaf45ee2d5f49f04886666b"
   },
   "arm_r_lower": {
-   "x": 1937,
-   "y": 686,
+   "x": 1861,
+   "y": 1177,
    "width": 101,
    "height": 197,
    "cropX": 690,
@@ -30,26 +30,26 @@
    "sourceSha256": "1bce63781ea0f5684098c5c50de3ec0be248708873156432b7aaff6780a8478b"
   },
   "arm_r_upper": {
-   "x": 1556,
-   "y": 1395,
+   "x": 2,
+   "y": 1202,
    "width": 142,
    "height": 179,
    "cropX": 578,
    "cropY": 424,
-   "sourceSha256": "9916302633eb727b5961430fa59bbcb0a73fcc8c3554f2bc443a7d29bf754462"
+   "sourceSha256": "031d505b5b9719ba6aa696bebe575656113ff3d753863e6ca97208842433bb9f"
   },
   "foot_l": {
-   "x": 1937,
-   "y": 438,
+   "x": 1427,
+   "y": 1130,
    "width": 101,
    "height": 244,
    "cropX": 247,
    "cropY": 1213,
-   "sourceSha256": "0e53c4fb71900498297a0c2b405d7449a0c30637748d1a12fd5e7fb8a87dbab5"
+   "sourceSha256": "b7563361f6d6896157da051341baf3b7e6f5db6e7aa8e18f27a557b94da0108f"
   },
   "foot_r": {
-   "x": 1420,
-   "y": 1150,
+   "x": 1532,
+   "y": 1130,
    "width": 132,
    "height": 243,
    "cropX": 621,
@@ -57,8 +57,8 @@
    "sourceSha256": "ac0f33cc900504bcb0a7f57e95c2909556731977638a516a1272d9362c59d6c9"
   },
   "hair_back_1": {
-   "x": 1702,
-   "y": 1395,
+   "x": 2,
+   "y": 1398,
    "width": 344,
    "height": 171,
    "cropX": 245,
@@ -66,8 +66,8 @@
    "sourceSha256": "2c7fe3ba59de7b6733f39e7fa51249b00aed43bbf789d0da33099b0a9a91a5aa"
   },
   "hair_back_2": {
-   "x": 1556,
-   "y": 1189,
+   "x": 258,
+   "y": 1192,
    "width": 356,
    "height": 202,
    "cropX": 133,
@@ -75,8 +75,8 @@
    "sourceSha256": "729ae595810e67fe61cc0571b67150c6f239011dd28daf5fe80e2f9ad639b58b"
   },
   "hair_back_3": {
-   "x": 2,
-   "y": 1208,
+   "x": 1310,
+   "y": 1385,
    "width": 299,
    "height": 185,
    "cropX": 171,
@@ -84,17 +84,17 @@
    "sourceSha256": "c536d27157858e9721eadb20c965854e4f77946e2cdf0e70691d386d1aed81f4"
   },
   "hand_l_hip": {
-   "x": 721,
-   "y": 1402,
-   "width": 143,
-   "height": 83,
+   "x": 1156,
+   "y": 1404,
+   "width": 145,
+   "height": 90,
    "cropX": 388,
-   "cropY": 584,
-   "sourceSha256": "1c323b81a315931f964bfce58895a3295ef2101732c1ac6db86147420012e326"
+   "cropY": 581,
+   "sourceSha256": "75ea83d755aa26d435a964da66357294aeeb4a21b1f12b7f3dc81b9e8e81d5be"
   },
   "hand_r_open": {
-   "x": 589,
-   "y": 1402,
+   "x": 833,
+   "y": 1415,
    "width": 128,
    "height": 84,
    "cropX": 727,
@@ -103,7 +103,7 @@
   },
   "head_blink": {
    "x": 801,
-   "y": 779,
+   "y": 783,
    "width": 252,
    "height": 315,
    "cropX": 370,
@@ -111,8 +111,8 @@
    "sourceSha256": "c2cd061b42f445940e13cc9ab370fd5cd3519f845a1412e3ae6b38955ee763e9"
   },
   "head_focus": {
-   "x": 1425,
-   "y": 831,
+   "x": 1435,
+   "y": 811,
    "width": 252,
    "height": 315,
    "cropX": 370,
@@ -120,8 +120,8 @@
    "sourceSha256": "2d2db6edcddaee294e0d08bdf3331d52dd03e4ee2d45158fc99da2c4b21758a9"
   },
   "head_grin": {
-   "x": 1681,
-   "y": 870,
+   "x": 1691,
+   "y": 858,
    "width": 252,
    "height": 315,
    "cropX": 370,
@@ -130,7 +130,7 @@
   },
   "head_idle": {
    "x": 2,
-   "y": 889,
+   "y": 883,
    "width": 252,
    "height": 315,
    "cropX": 370,
@@ -138,16 +138,16 @@
    "sourceSha256": "51c8f224560ec44be74244dfe466ceb9b992a4682901d5ceeb2b22670c6d742f"
   },
   "leg_l_lower": {
-   "x": 1477,
-   "y": 2,
-   "width": 209,
-   "height": 461,
-   "cropX": 250,
+   "x": 1823,
+   "y": 434,
+   "width": 189,
+   "height": 420,
+   "cropX": 270,
    "cropY": 992,
-   "sourceSha256": "c723847417147f01bb773fc39d47f6b81356b6e64b8ae0f408144f6a88527c66"
+   "sourceSha256": "569dee77ffbddac5d0435a187bb075802148b7fd5b33c23f7b961da3052d72f4"
   },
   "leg_l_upper": {
-   "x": 1827,
+   "x": 1632,
    "y": 2,
    "width": 187,
    "height": 432,
@@ -156,8 +156,8 @@
    "sourceSha256": "678c4d1c2f88bcf9b22b54b591efced685e180f00b928e1e2fd22af43abe4247"
   },
   "leg_r_lower": {
-   "x": 1827,
-   "y": 438,
+   "x": 1823,
+   "y": 2,
    "width": 91,
    "height": 428,
    "cropX": 576,
@@ -165,7 +165,7 @@
    "sourceSha256": "055e20657f2925cff21dde4e5b8146f672db6440d07809324e8282e40461800d"
   },
   "leg_r_upper": {
-   "x": 1690,
+   "x": 1495,
    "y": 2,
    "width": 133,
    "height": 441,
@@ -174,17 +174,17 @@
    "sourceSha256": "00a004dd54cf2a458497913f315ea5931722740499ff28bafed244a8ae2109f5"
   },
   "neck": {
-   "x": 305,
-   "y": 1198,
+   "x": 1966,
+   "y": 858,
    "width": 80,
    "height": 156,
    "cropX": 487,
    "cropY": 294,
-   "sourceSha256": "3c14c6f2a231bfd6128f83588e426b16f1d62b3d407817b159c8a6fc2c6c6c91"
+   "sourceSha256": "376a01f16489355d7bd8634141017b1daca0c13d6e2e33717819046d1c3f498c"
   },
   "pelvis": {
-   "x": 2,
-   "y": 1397,
+   "x": 350,
+   "y": 1398,
    "width": 221,
    "height": 168,
    "cropX": 434,
@@ -192,8 +192,8 @@
    "sourceSha256": "e51b1cb582a587e7e3284c477bcc3fef990efa7e54d574edaae193b8d3c1db45"
   },
   "prop": {
-   "x": 227,
-   "y": 1397,
+   "x": 1969,
+   "y": 1175,
    "width": 65,
    "height": 60,
    "cropX": 759,
@@ -201,98 +201,98 @@
    "sourceSha256": "92b2e96c9013759126f66143813148b9febb3e2603ff5069a27d061c610a6053"
   },
   "ribbon_l_1": {
-   "x": 1147,
-   "y": 773,
-   "width": 274,
+   "x": 1153,
+   "y": 777,
+   "width": 278,
    "height": 327,
-   "cropX": 95,
+   "cropX": 91,
    "cropY": 514,
-   "sourceSha256": "6bf1a2eb456d601ca2d93f64b0fd5905ea5a142464d3606ebfb0b344737c95b8"
+   "sourceSha256": "b46a38cdce6c288b95b0f83576ae903349df0409ed44ae88229981c17c44cdf9"
   },
   "ribbon_l_2": {
-   "x": 633,
-   "y": 1108,
-   "width": 125,
-   "height": 290,
+   "x": 637,
+   "y": 1112,
+   "width": 128,
+   "height": 291,
    "cropX": 82,
    "cropY": 747,
-   "sourceSha256": "2c2c903ce60543313efe380fa97a2a895fb7567c2f733e7bf08e7f0e41e96d55"
+   "sourceSha256": "fc467ee67e7b8902e88525eec8e8d95288a362eb8a2874fb349441dee8578b21"
   },
   "ribbon_l_3": {
-   "x": 1303,
-   "y": 1104,
+   "x": 1310,
+   "y": 1108,
    "width": 113,
    "height": 273,
    "cropX": 101,
    "cropY": 943,
-   "sourceSha256": "511c4aa6aa23597c42132cb8807a14d55f1ff0d2556eed07f0733736663fa380"
+   "sourceSha256": "4a71ca956476a5e0c107a1fb48b0576e9812cfaf7de3a0a40551e1f372b7ae28"
   },
   "ribbon_r_1": {
    "x": 396,
-   "y": 889,
-   "width": 233,
+   "y": 883,
+   "width": 237,
    "height": 295,
    "cropX": 717,
    "cropY": 534,
-   "sourceSha256": "e8290041109383d97754f673d9795c5f46e3687b17b84249b74430edc460d9c7"
+   "sourceSha256": "733fa6bbc264b69c863f0c039b60f5f3d545ae89b5cc2c936680c201206cc299"
   },
   "ribbon_r_2": {
-   "x": 1153,
-   "y": 1104,
-   "width": 146,
+   "x": 1156,
+   "y": 1108,
+   "width": 150,
    "height": 292,
-   "cropX": 817,
+   "cropX": 813,
    "cropY": 735,
-   "sourceSha256": "e500dc53d9702781525095763bec5d9db9116dfab6c3511b396c15321a0a9593"
+   "sourceSha256": "f9c22bae64294bb59d340956eb1315e2117cacadb1a2eb448913d27aeadb0530"
   },
   "ribbon_r_3": {
    "x": 258,
-   "y": 889,
+   "y": 883,
    "width": 134,
    "height": 305,
    "cropX": 797,
    "cropY": 933,
-   "sourceSha256": "6af2ac1db186dfa6531b0a1c0f731b5d77ccd1f65826da8eac0cd27d4f894576"
+   "sourceSha256": "e1b7fca73302b1d585dd8ff877e5c7b6082f3e4e573ddb6feb7b88c47c395d3e"
   },
   "robe_front": {
    "x": 2,
    "y": 2,
    "width": 659,
-   "height": 883,
+   "height": 877,
    "cropX": 165,
    "cropY": 532,
-   "sourceSha256": "717f8b1492596da85dd4013db9cb137e621be258f21529cfaa201ccf3de5e94c"
+   "sourceSha256": "e2993b3f33952eaf5ac9e7769df62cddbea1310e6aa56042f004a75309b61198"
   },
   "robe_l": {
    "x": 665,
    "y": 2,
-   "width": 478,
-   "height": 773,
+   "width": 484,
+   "height": 777,
    "cropX": 132,
    "cropY": 512,
-   "sourceSha256": "c335bb1ffe22dc4620e56d3a18be147232499e63e3cf3b59d2118d5f307c0aef"
+   "sourceSha256": "48d31fe2d922359352b41ca52e8ef3a704461ea4a4e47fe68f169759ea3d4bee"
   },
   "robe_r": {
-   "x": 1147,
+   "x": 1153,
    "y": 2,
-   "width": 326,
-   "height": 767,
-   "cropX": 525,
+   "width": 338,
+   "height": 771,
+   "cropX": 513,
    "cropY": 517,
-   "sourceSha256": "08c15d60baed1bfd3042bff2a5f0d814d4eb790e602a40ae3feae0cf0e6e9400"
+   "sourceSha256": "492eca848550e8f1907d37af82c8f1387e6026578244fdd785aba3001417a51e"
   },
   "sleeve_l": {
-   "x": 1477,
-   "y": 467,
+   "x": 1495,
+   "y": 447,
    "width": 220,
    "height": 360,
    "cropX": 229,
    "cropY": 426,
-   "sourceSha256": "1ceef8c72772f711391f50add3149af103ce6f5f88e81bdadf9dc4324def22ed"
+   "sourceSha256": "8b789cb4fba4c9cd1e654cf9ff94b8e620a7e2de3d7a9adcbb05ba82d59aa14e"
   },
   "sleeve_r": {
    "x": 665,
-   "y": 779,
+   "y": 783,
    "width": 132,
    "height": 325,
    "cropX": 625,
@@ -300,8 +300,8 @@
    "sourceSha256": "04cf56dec23560f4b5400c80ecfcbb0f8929252954549cd4c742ef1d0a73dc48"
   },
   "tassel_1": {
-   "x": 1411,
-   "y": 1397,
+   "x": 1861,
+   "y": 1378,
    "width": 104,
    "height": 135,
    "cropX": 558,
@@ -309,8 +309,8 @@
    "sourceSha256": "5c3affbfa5d37c824c2dd192220fff2faca175bf09db5a93f7e75191b851be05"
   },
   "tassel_2": {
-   "x": 305,
-   "y": 1358,
+   "x": 1966,
+   "y": 1018,
    "width": 74,
    "height": 153,
    "cropX": 591,
@@ -319,12 +319,12 @@
   },
   "torso": {
    "x": 801,
-   "y": 1104,
-   "width": 348,
-   "height": 294,
-   "cropX": 299,
+   "y": 1108,
+   "width": 351,
+   "height": 303,
+   "cropX": 296,
    "cropY": 310,
-   "sourceSha256": "d2fa13bdea1225a280cffd7ffd52c65f5bae4b83d9fe327579f122683afe5fcf"
+   "sourceSha256": "0f634a6ff4a1868b35090fca4b236302f4a2308d4bf4010317a6c690769d5fd2"
   }
  }
 }

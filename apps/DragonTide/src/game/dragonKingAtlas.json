@@ -3,17 +3,17 @@
  "height": 2048,
  "parts": {
   "arm_l_lower": {
-   "x": 178,
-   "y": 1567,
+   "x": 836,
+   "y": 1818,
    "width": 129,
-   "height": 110,
+   "height": 116,
    "cropX": 239,
    "cropY": 638,
-   "sourceSha256": "a602338da3cebc523cc7cd88ec5d069093acbdeb7c3b8f3f468765f76d89b6d4"
+   "sourceSha256": "09d41b18eec94ce1511ef39c7a490c388335f4040adc9976d61098cad6fdd48a"
   },
   "arm_l_upper": {
-   "x": 325,
-   "y": 1303,
+   "x": 1936,
+   "y": 658,
    "width": 77,
    "height": 287,
    "cropX": 253,
@@ -21,44 +21,44 @@
    "sourceSha256": "b10d3926cfefce6cf9e846fed1df4f9a0dc840a279fbba4615ca15498d0404da"
   },
   "arm_r_lower": {
-   "x": 1110,
-   "y": 1558,
+   "x": 1952,
+   "y": 1294,
    "width": 77,
    "height": 143,
    "cropX": 747,
    "cropY": 512,
-   "sourceSha256": "30e86a899a3501521e0f9fc0ecafdef5d20fad8c541249b549fe81ae1edf0925"
+   "sourceSha256": "ace3a76bcd1821017cf30cf49e95e9bff8aa364bc44812e65e315c6171c374fb"
   },
   "arm_r_upper": {
-   "x": 1569,
-   "y": 1516,
-   "width": 95,
-   "height": 189,
-   "cropX": 651,
-   "cropY": 526,
-   "sourceSha256": "e03dc5ee523abc315783a8697d32a9e9c7ed1fc9be81fd92ede06e7570de23d4"
+   "x": 1952,
+   "y": 1128,
+   "width": 83,
+   "height": 162,
+   "cropX": 662,
+   "cropY": 553,
+   "sourceSha256": "2bd16f16037452fd91299b1e25452bf8bda05436ca00a10cd582973b834a87fa"
   },
   "beard_1": {
-   "x": 1719,
-   "y": 1428,
-   "width": 170,
+   "x": 317,
+   "y": 1678,
+   "width": 173,
    "height": 214,
-   "cropX": 363,
+   "cropX": 362,
    "cropY": 318,
-   "sourceSha256": "9d0d4e42d3e7f910e889d7a8719063c4dda5e86cd39ecf127a446e11461c68fc"
+   "sourceSha256": "a6ac8ee2ae29c5af7cb24b76123199778798cf70b9a14b087d4b1c89a6ec1a70"
   },
   "beard_2": {
-   "x": 178,
-   "y": 1307,
-   "width": 131,
-   "height": 256,
+   "x": 1469,
+   "y": 1579,
+   "width": 128,
+   "height": 258,
    "cropX": 402,
    "cropY": 381,
-   "sourceSha256": "bd37879969a21d4d77d36b76329878530b357fa2ee465a5c13f12e33a05bb466"
+   "sourceSha256": "5ec5839498df39eef2521156181a21bafabad14b1f2a021dbc6927e3b7789b34"
   },
   "foot_l": {
-   "x": 1569,
-   "y": 1225,
+   "x": 1626,
+   "y": 1531,
    "width": 146,
    "height": 287,
    "cropX": 188,
@@ -66,8 +66,8 @@
    "sourceSha256": "e2498ac63538e39f2f95e51e3b012a305a176d5753a8bb0d7ec009ec4ae3dab7"
   },
   "foot_r": {
-   "x": 2,
-   "y": 1304,
+   "x": 1776,
+   "y": 1531,
    "width": 172,
    "height": 286,
    "cropX": 567,
@@ -75,58 +75,58 @@
    "sourceSha256": "bfb469e8d59fb897658f91f1d145a8446539e4bbe48b8b04a35a2137f0bf3888"
   },
   "hand_l_hip": {
-   "x": 2,
-   "y": 1594,
-   "width": 140,
-   "height": 75,
-   "cropX": 301,
-   "cropY": 673,
-   "sourceSha256": "6be36655e9c15219f03d41a0e2ebe76e8a4bb4bc9a4437ebb67c4b520f452fc0"
+   "x": 317,
+   "y": 1896,
+   "width": 143,
+   "height": 80,
+   "cropX": 298,
+   "cropY": 670,
+   "sourceSha256": "7fa12a1edb99a2635c622c76ad96813a96823feb55413cd5c8e4f271560a4094"
   },
   "hand_r_grip": {
-   "x": 636,
-   "y": 1555,
-   "width": 87,
+   "x": 1952,
+   "y": 949,
+   "width": 86,
    "height": 175,
    "cropX": 757,
    "cropY": 427,
-   "sourceSha256": "4c65ee0763105386b512ae52ef5fae4f62cafbc7ae6ae5ef7bb75b0a9322c49d"
+   "sourceSha256": "e94d8209a44061a5ed4baaa5ab44948ffc2e85871eb7eb24b29cf89c95034984"
   },
   "head_blink": {
-   "x": 503,
-   "y": 905,
-   "width": 213,
+   "x": 1137,
+   "y": 1230,
+   "width": 485,
    "height": 345,
-   "cropX": 409,
+   "cropX": 216,
    "cropY": 87,
-   "sourceSha256": "0e3b4184ff9545673ebf00ef044470a9d9acdc5af2a901ed96b552b69c7c56f9"
+   "sourceSha256": "7a07dbc110d1d4a85edb1aa75f0ed6286554dc6a2e06ce4339d83baee0d0cfde"
   },
   "head_focus": {
-   "x": 1775,
-   "y": 1079,
-   "width": 213,
+   "x": 2,
+   "y": 1307,
+   "width": 485,
    "height": 345,
-   "cropX": 409,
+   "cropX": 216,
    "cropY": 87,
-   "sourceSha256": "f99d605f467017cd02799a771727537754aacb1373235a0987ed017dbb15dbd0"
+   "sourceSha256": "037faffc7d12f9b97b213ccc3d0497faefe22cfc8945686297acab35354c0f78"
   },
   "head_grin": {
-   "x": 1135,
-   "y": 1209,
-   "width": 213,
+   "x": 491,
+   "y": 1329,
+   "width": 485,
    "height": 345,
-   "cropX": 409,
+   "cropX": 216,
    "cropY": 87,
-   "sourceSha256": "8a06b07e1d3dae5c2f9b1dcce0019caedf3c09dd2e725992d284b4ac9b978fb1"
+   "sourceSha256": "db15926f28df6f6d435a9c3cee842fff830de7b83dc1558537366db4e8829db0"
   },
   "head_idle": {
-   "x": 1352,
-   "y": 1225,
-   "width": 213,
+   "x": 980,
+   "y": 1579,
+   "width": 485,
    "height": 345,
-   "cropX": 409,
+   "cropX": 216,
    "cropY": 87,
-   "sourceSha256": "8af1499de3499d226b8e17af34403a815c0ccdc30ae13d0146dd56a2034268e7"
+   "sourceSha256": "02ccd02cf5683fcee09ecc13076b3acd9fa4b02eddd8ebd131365b39cb279df5"
   },
   "leg_l_lower": {
    "x": 325,
@@ -157,7 +157,7 @@
   },
   "leg_r_upper": {
    "x": 1775,
-   "y": 653,
+   "y": 658,
    "width": 149,
    "height": 422,
    "cropX": 526,
@@ -165,22 +165,22 @@
    "sourceSha256": "a90ed65672cd07ca314981dd83203cb8e75236c13bc33030e007009278d06c10"
   },
   "neck": {
-   "x": 406,
-   "y": 1555,
+   "x": 606,
+   "y": 1678,
    "width": 108,
    "height": 188,
    "cropX": 461,
    "cropY": 289,
-   "sourceSha256": "4aaac6f3672d4408252a4b88751deddf9abc846551d33c5bc6bd9b37632fca69"
+   "sourceSha256": "3cd37eedeb07812da58f4d9b051df41b15bc5faeb243810de9a40fe6c3d76629"
   },
   "pelvis": {
-   "x": 727,
-   "y": 1577,
+   "x": 1601,
+   "y": 1822,
    "width": 305,
    "height": 129,
    "cropX": 356,
    "cropY": 701,
-   "sourceSha256": "6ea976e2e870155b79e676d584949308f657dfb70b9605a5cad158207698a19a"
+   "sourceSha256": "539c68e9cf99b724d6626ea9aaf89f14db2dca97fd7642a94733f521457a4084"
   },
   "prop": {
    "x": 2,
@@ -189,25 +189,25 @@
    "height": 1298,
    "cropX": 703,
    "cropY": 121,
-   "sourceSha256": "5d871d65eeeb9665d45404c577c86dd6c8b6b1e9f2619bf31c8eabfcb338a665"
+   "sourceSha256": "709b8ba69bc7d2b9afc1a2d717c1c7a4e3d2f2b3d113dac642f821da7e4ae30e"
   },
   "ribbon_hair_1": {
-   "x": 518,
-   "y": 1555,
+   "x": 718,
+   "y": 1678,
    "width": 114,
    "height": 180,
    "cropX": 562,
    "cropY": 222,
-   "sourceSha256": "d4c2c5ef9b6fdc0157e586230fd11091f59d2cdc597d054869c5e7329c0b76ab"
+   "sourceSha256": "7bc195ab46cc92661bf20dbd6987dd55914643ababfbfb181b0f6ae3de346156"
   },
   "ribbon_hair_2": {
-   "x": 1191,
-   "y": 1558,
+   "x": 836,
+   "y": 1678,
    "width": 96,
    "height": 136,
    "cropX": 580,
    "cropY": 308,
-   "sourceSha256": "d02d5d5ff595768fc9f28db52d7677e61fff7e6214d44d3a0df7a71a2d4c0cec"
+   "sourceSha256": "17f241808061395904f1ff15dbd32af522b6bddef4864059bc41120e2f03ee5e"
   },
   "robe_front": {
    "x": 1150,
@@ -216,7 +216,7 @@
    "height": 788,
    "cropX": 397,
    "cropY": 567,
-   "sourceSha256": "b16669e6303cd31781d7d76483542d1b6b97eab962d5383d86b1ed9728da69a2"
+   "sourceSha256": "615ab1a061e04aefbcb14241e98de45d687587636599e7202921eb1473cdf5a1"
   },
   "robe_l": {
    "x": 193,
@@ -225,7 +225,7 @@
    "height": 899,
    "cropX": 118,
    "cropY": 457,
-   "sourceSha256": "fb271540dcb7ab171d4fd3237dda7d8a8776c7e99c5c218b806b360252ac155a"
+   "sourceSha256": "377c76c14195a7f3cce4e6dcaef51423d5f19b03307daa274036038388bb3964"
   },
   "robe_r": {
    "x": 808,
@@ -234,79 +234,79 @@
    "height": 794,
    "cropX": 461,
    "cropY": 567,
-   "sourceSha256": "e5589fa53e1bbafe0176411048f77212d5973d476f9cff7ccf14c4449ac7c697"
+   "sourceSha256": "ce966775fb4935efcc1cfa1978e3cbdebe111ad8c9756ac73e36f19384a5f0fd"
   },
   "sash_l_1": {
-   "x": 503,
-   "y": 1254,
-   "width": 292,
+   "x": 1626,
+   "y": 1230,
+   "width": 306,
    "height": 297,
-   "cropX": 236,
+   "cropX": 234,
    "cropY": 630,
-   "sourceSha256": "bf6af749a65d0a4141f5e415adcf81fa61b35868a4942c652e8fc0af99983afb"
+   "sourceSha256": "c2f876df4a01aba605e49d550fee3d3b9befefdf9cf8d337968a01d954db362e"
   },
   "sash_l_2": {
-   "x": 799,
-   "y": 1329,
-   "width": 307,
+   "x": 2,
+   "y": 1656,
+   "width": 311,
    "height": 244,
-   "cropX": 121,
+   "cropX": 117,
    "cropY": 833,
-   "sourceSha256": "b8cf6a1c1e5c61bf0e94bcf2ceb7b6aed0540061a14c2b7326c33e4808b1fcb8"
+   "sourceSha256": "186a61a3da437a6030de94ac63fec40a93a9fe26fad0381b83492349452b451d"
   },
   "sash_l_3": {
-   "x": 1893,
-   "y": 1428,
+   "x": 494,
+   "y": 1678,
    "width": 108,
    "height": 198,
    "cropX": 94,
    "cropY": 983,
-   "sourceSha256": "e27c67211cc8c52c3fa50d59c32d542ba086708dc4dd6842f5d5fef6f025f05d"
+   "sourceSha256": "05f3d6fb32368ca2c2dddad5d208dd6fc9cfce716475ecf0ce7736288c2d2e2a"
   },
   "sleeve_l": {
    "x": 1462,
-   "y": 653,
+   "y": 658,
    "width": 309,
    "height": 568,
    "cropX": 67,
    "cropY": 431,
-   "sourceSha256": "c82c7000c8cd96bf5774a6cefdc00d97f2a524d402d5b880997a8b11b3a32f56"
+   "sourceSha256": "d3c1845402fd6c719dd7bf6101ce362299672df351fe8e7b5c81ee9959f2ea14"
   },
   "sleeve_r": {
    "x": 808,
    "y": 800,
-   "width": 323,
+   "width": 325,
    "height": 525,
-   "cropX": 634,
+   "cropX": 632,
    "cropY": 497,
-   "sourceSha256": "3d06c63d6eb32ff0db03a79b6aac5e450797a210aa2c408874359044c8308cac"
+   "sourceSha256": "81314a7975ffb0d557289a074339412469d5921f095de14a11b299e60022e62e"
   },
   "torso": {
    "x": 1462,
    "y": 2,
    "width": 544,
-   "height": 647,
+   "height": 652,
    "cropX": 196,
    "cropY": 298,
-   "sourceSha256": "9879fbbd44ace4feb8ad3f7bd1460c9387395d8ead078f1715f5be7ed1f73201"
+   "sourceSha256": "e86febbfa58cb8d3207a65f7b741732b01e9154e2b786fbc612538dce7dbe59f"
   },
   "whisker_l": {
-   "x": 1668,
-   "y": 1646,
-   "width": 223,
-   "height": 96,
-   "cropX": 214,
+   "x": 2,
+   "y": 1904,
+   "width": 213,
+   "height": 77,
+   "cropX": 224,
    "cropY": 302,
-   "sourceSha256": "42051fed96cce17d6e43510dd33af8ded1078129eec6db2ce918fe73e87c2a52"
+   "sourceSha256": "6325193017e59e8188a106bdad370d19c1cceff9da87508c6511d6fbf46aa16b"
   },
   "whisker_r": {
-   "x": 1291,
-   "y": 1574,
-   "width": 260,
-   "height": 101,
+   "x": 494,
+   "y": 1880,
+   "width": 248,
+   "height": 85,
    "cropX": 443,
    "cropY": 302,
-   "sourceSha256": "427747805a675f6126fdce9b459fff2ae7a73cdc38da42b5da4ea811c407864e"
+   "sourceSha256": "2af3b72d50f0b3838031101ef84a2255eac766c9127386b02bffeab1172cce08"
   }
  }
 }
