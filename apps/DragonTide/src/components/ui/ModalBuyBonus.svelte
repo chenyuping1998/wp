@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { pearlInfo } from '../../game/pearlInfo';
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal, stateMetaDerived, stateBet, stateUrlDerived } from 'state-shared';
@@ -14,6 +15,16 @@
 	const modes=$derived(stateMetaDerived.betModeMetaList().filter(mode=>mode.type==='buy'));
 	const art=(file:string)=>`${base}/assets/sprites/${file}`;
 	const affordable=(cost:number)=>stateBet.betAmount>0&&stateBet.balanceAmount>=stateBet.betAmount*cost;
+	// EXTRA BET (math mode `ante`): an 'activate' mode — it stays on until turned off.
+	const ante=$derived(stateMetaDerived.betModeMetaList().find(mode=>mode.type==='activate'));
+	const anteOn=$derived(stateBet.activeBetModeKey.toUpperCase()==='ANTE');
+	const toggleAnte=()=>{
+		eventEmitter.broadcast({type:'soundPressGeneral'});
+		if(anteOn){stateBet.activeBetModeKey='BASE';stateModal.modal=null;return;}
+		if(!ante)return;
+		stateBonus.selectedBetModeKey=ante.mode;
+		eventEmitter.broadcast({type:'buyBonusConfirm'});
+	};
 	const choose=(mode:string,cost:number)=>{
 		if(!affordable(cost))return;
 		stateBonus.selectedBetModeKey=mode;
@@ -32,9 +43,9 @@
 			</header>
 			<div class="tickets">
 				{#each modes as mode (mode.mode)}
-					{@const superMode=mode.mode==='SUPER'}
-					{@const cfg=superMode?config.betModes.super:config.betModes.bonus}
-					{@const values=superMode?config.hypno.superValues:config.hypno.freeValues}
+					{@const superMode=mode.mode==='SUPER_BONUS'}
+					{@const cfg=superMode?config.betModes.super_bonus:config.betModes.bonus}
+					{@const values=superMode?pearlInfo.superValues:pearlInfo.freeValues}
 					{@const min=Math.min(...values)}
 					{@const max=Math.max(...values)}
 					{@const canBuy=affordable(mode.costMultiplier)}
@@ -58,12 +69,26 @@
 					</section>
 				{/each}
 			</div>
+			{#if ante}
+				<section class="extra" class:on={anteOn}>
+					<div class="extra-text"><h3>{ante.text.betAmountLabel || ante.text.title}</h3><p>{ante.text.description}</p></div>
+					<div class="extra-cost"><b>{ante.costMultiplier}× {social?'AMOUNT':'BET'}</b><span>{(config.betModes.ante.rtp*100).toFixed(2)}% RTP</span></div>
+					<button class="extra-toggle" onclick={toggleAnte}>{anteOn?'TURN OFF':'TURN ON'}</button>
+				</section>
+			{/if}
 			<footer>MAX WIN <strong>{config.betModes.base.max_win.toLocaleString()}×</strong><span>WINNING WATCHES MULTIPLY THE SPIN</span></footer>
 		</div>
 	</Popup>
 {/if}
 
 <style>
+	.extra{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;margin:0 26px 14px;padding:12px 16px;border:2px solid #63342a;border-radius:11px;background:#fff4da;box-shadow:0 4px 0 #cfa971}
+	.extra.on{border-color:#2f7d5b;background:#e6f4ea}
+	.extra h3{margin:0;font:18px var(--gb-display-font);color:#821527}.extra p{margin:3px 0 0;font-size:12px}
+	.extra-cost{display:flex;flex-direction:column;align-items:flex-end;font-size:11px}.extra-cost b{font:15px var(--gb-display-font)}
+	.extra-toggle{min-width:118px;padding:10px 14px;border:2px solid #351a21;border-radius:9px;background:#821527;color:#ffedc2;font:14px var(--gb-display-font);cursor:pointer}
+	.extra.on .extra-toggle{background:#2f7d5b}
+	@media (max-width:640px){.extra{grid-template-columns:1fr;text-align:center}.extra-cost{align-items:center}}
 	.hm-feature{--ink:#351a21;--gold:#efb940;width:min(900px,calc(100vw - 44px));max-height:calc(100dvh - 62px);overflow:auto;box-sizing:border-box;border:3px solid var(--gold);border-radius:18px;background:#f4e5c5;color:var(--ink);box-shadow:0 8px 0 #351a21;font-family:var(--gb-body-font);position:relative;z-index:100}
 	.marquee{position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:26px 30px 16px;background:#821527;border-bottom:4px solid var(--gold);color:#ffedc2}
 	.lights{position:absolute;left:14px;right:14px;top:5px;width:calc(100% - 28px);height:12px;fill:#ffdc7a}

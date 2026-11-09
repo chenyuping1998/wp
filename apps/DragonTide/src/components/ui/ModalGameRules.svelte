@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { pearlInfo } from '../../game/pearlInfo';
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal, LEGAL_NOTICE } from 'state-shared';
@@ -97,7 +98,7 @@
 	const rowCount = config.numRows?.[0] ?? 6;
 	const minPayingCount = 8;
 	const fs = config.freeSpins;
-	const medusa = config.hypno;
+	const medusa = pearlInfo;
 	const scatterPays = Object.entries(config.scatterPays)
 		.map(([count, value]) => ({ count: Number(count), value: Number(value) }))
 		.sort((a, b) => a.count - b.count);
@@ -118,8 +119,8 @@
 		},
 		{
 			name: 'Super Free Spins',
-			price: `${config.betModes?.super?.cost}× ${T.bet}`,
-			text: MEDUSA_GAZE_BET_MODE_META.SUPER.text.dialog,
+			price: `${config.betModes?.super_bonus?.cost}× ${T.bet}`,
+			text: MEDUSA_GAZE_BET_MODE_META.SUPER_BONUS.text.dialog,
 		},
 	];
 
@@ -128,8 +129,9 @@
 	const modeRows = (
 		[
 			['Base game', 'base', `Every spin — or land ${fs.trigger} or more Hypno Spirals`],
+			['Extra Bet', 'ante', `Every spin at ${config.betModes?.ante?.cost}× with Extra Bet on`],
 			['Free Spins', 'bonus', `${entryVerb} for ${config.betModes?.bonus?.cost}×`],
-			['Super Free Spins', 'super', `${entryVerb} for ${config.betModes?.super?.cost}×`],
+			['Super Free Spins', 'super_bonus', `${entryVerb} for ${config.betModes?.super_bonus?.cost}×`],
 		] as const
 	).map(([label, key, entry]) => {
 		const mode = config.betModes?.[key] as BetMode | undefined;

@@ -78,6 +78,7 @@
 	};
 
 	const runTumble = async ({ explodingSymbols, newSymbols, watches = [], pace = 'normal' }: { explodingSymbols: Position[]; newSymbols: RawSymbol[][]; watches?: number[]; pace?: WinPace }) => {
+		let bookPearlCells: { reel: number; row: number; rows: number; rank: number; value: number }[] = [];
 		const run = ++generation, current = () => alive && run === generation;
 		const timing = tumbleTiming({ chain: context.stateGame.tumbleChain, turbo: stateBet.isTurbo, turboLevel: stateBet.turboLevel });
 		const board = context.stateGame.board;
@@ -87,7 +88,26 @@
 			removed.get(pos.reel)!.push(pos.row);
 		}
 		const pieces = explodingSymbols.map((pos) => ({ id: nextId++, x: getSymbolX(pos.reel), y: slotY(pos.row), durationMs: timing.crumbleMs, seed: pos.reel * 13 + pos.row * 7 }));
-		const cells = watches.length ? watchCells(removed, newSymbols, watches.length) : [];
+		// Dragon Tide: the book says exactly where each pearl lands — a pearl in newSymbols,
+		// or the pearl that sat in the hidden row above the reel and now falls in. Each is
+		// the incoming symbol in its cell, so it drops in with the refill, at that cell.
+		if (!watches.length) {
+			const bookCells: { reel: number; row: number; rows: number; rank: number; value: number }[] = [];
+			for (const [reel, rows] of [...removed].sort((a, b) => a[0] - b[0])) {
+				const plan = planCascadeColumn(board[reel].reelState.symbols.map((s) => s.rawSymbol), rows, newSymbols[reel] ?? [], BOARD_DIMENSIONS.y);
+				for (const move of plan.moves) {
+					const value = move.rawSymbol.watchValue ?? (move.rawSymbol.name === 'M' ? move.rawSymbol.multiplier : undefined);
+					if (!move.incoming || value === undefined) continue;
+					const rank = plan.moves.filter((m) => m.incoming && m.from !== m.to && m.to > move.to).length;
+					bookCells.push({ reel, row: move.to, rows: rows.length, rank, value });
+				}
+			}
+			if (bookCells.length) {
+				watches = bookCells.map((cell) => cell.value);
+				bookPearlCells = bookCells;
+			}
+		}
+		const cells = bookPearlCells.length ? bookPearlCells : watches.length ? watchCells(removed, newSymbols, watches.length) : [];
 		// landings 2-3 frames apart, bottom first (GoO 1000 refill)
 		const spawnGapMs = 40 * (timing.dropMs / 550);
 		let gapMs = 0;
@@ -147,7 +167,7 @@
 			// the watch rides this column's refill as the symbol that lands in its cell
 			for (const cell of cells.filter((cell) => cell.reel === reelIndex)) {
 				const move = plan.moves.find((move) => move.to === cell.row)!;
-				const raw = { ...move.rawSymbol, watchValue: watches[cells.indexOf(cell)] };
+				const raw = { ...move.rawSymbol, watchValue: watches[cells.indexOf(cell)] ?? move.rawSymbol.watchValue };
 				move.rawSymbol = raw;
 				plan.column[cell.row] = raw;
 			}

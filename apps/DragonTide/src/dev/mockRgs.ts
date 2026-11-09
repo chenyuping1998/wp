@@ -10,14 +10,14 @@
  *
  * This answers the five endpoints the client calls, out of a handful of real
  * books lifted from the published set — including the specific shapes that are
- * hard to reach by playing: Medusa's throw applied and wasted, a large running
- * total, a feature trigger. Nothing is synthesised; these are books the RGS could really serve.
+ * hard to reach by playing: pearls that settle and pearls on a spin with no win, a
+ * large TOTAL, a feature trigger, a retrigger, the win cap. Nothing is synthesised; these are books the RGS could really serve.
  *
  * Enabled ONLY in dev and ONLY with ?mock=1 in the URL. In a production build
  * `import.meta.env.DEV` is statically false, so the branch, this module and the
  * book data are all dropped.
  *
- *   http://localhost:3045/?mock=1&sessionID=dev&rgs_url=mock.local&currency=USD&device=desktop
+ *   http://localhost:3061/?mock=1&sessionID=dev&rgs_url=mock.local&currency=USD&device=desktop
  *
  * Add &book=bonusBigTotal (or any key in devBooks.json) to force one shape; the
  * default cycles through everything in order.
@@ -92,9 +92,11 @@ export const installMockRgs = async () => {
 	// that has been failing, then the feature shapes.
 	const ORDER = [
 		'baseWin',
+		'basePearl',
+		'basePearlNoWin',
+		'basePearlMulti',
+		'baseRefillPearl',
 		'baseTrigger',
-		'baseThrow',
-		'baseThrowWasted',
 		'bonusPlain',
 		'bonusBigTotal',
 		'bonusRetrigger',

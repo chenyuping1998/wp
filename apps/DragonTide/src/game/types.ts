@@ -6,6 +6,8 @@ export type RawSymbol = {
 	name: SymbolName;
 	/** Presentation-only cell owner; the book symbol name remains for outcome auditing. */
 	watchValue?: number;
+	/** Pearl (M) value from the book. */
+	multiplier?: number;
 	scatter?: boolean;
 	wild?: boolean;
 };

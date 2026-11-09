@@ -1,9 +1,9 @@
 /**
  * Regenerate src/game/config.ts from the math SDK's generated frontend config.
  *
- * The math build writes library/configs/config_fe_hypno_monkey.json; this copies it
+ * The math build writes library/configs/config_fe_dragon_tide.json; this copies it
  * across verbatim so the two can never drift by hand-editing, and merges in the
- * rules the SDK file does not carry (the hypnotist's watch values, the S pays,
+ * rules the SDK file does not carry (the dragon pearl values, the S pays,
  * free-spin counts) from the maths' own export_fe_extras.py. Re-run after every
  * math change:
  *
@@ -23,7 +23,7 @@ import { mathGameDir } from '../../../tools/math_game_dir.mjs';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const appRoot = path.resolve(here, '..');
 
-const GAME_ID = 'hypno_monkey';
+const GAME_ID = 'dragon_tide';
 const MATH_DIR = mathGameDir(GAME_ID);
 const MATH_CONFIG = path.join(MATH_DIR, 'library', 'configs', `config_fe_${GAME_ID}.json`);
 const PYTHON = process.env.MATH_PYTHON || '/Applications/anaconda3/envs/math-sdk/bin/python';
@@ -59,7 +59,7 @@ for (const gameType of ['basegame', 'freegame']) {
 // emits with no entry there renders as nothing at all — a hole in the board that
 // still pays. W is asserted ABSENT: in a pay-anywhere game a wild joins every
 // symbol's count at once, and if one ever appears every payout changed with it.
-const EXPECTED_SYMBOLS = ['H1', 'H2', 'H3', 'H4', 'H5', 'L1', 'L2', 'L3', 'L4', 'S'];
+const EXPECTED_SYMBOLS = ['H1', 'H2', 'H3', 'H4', 'L1', 'L2', 'L3', 'L4', 'L5', 'S', 'M'];
 const actualSymbols = raw.symbols.flatMap((entry) => Object.keys(entry));
 for (const name of EXPECTED_SYMBOLS) {
 	if (!actualSymbols.includes(name)) problems.push(`symbol ${name} missing from math config`);
@@ -69,8 +69,8 @@ for (const name of actualSymbols) {
 		problems.push(`unexpected symbol ${name} — needs art, SYMBOL_INFO_MAP and paytable entries`);
 	}
 }
-if (!extras.hypno?.baseValues?.length || !extras.hypno?.freeValues?.length) {
-	problems.push('export_fe_extras.py returned no hypno watch values');
+if (!extras.pearls?.values?.length) {
+	problems.push('export_fe_extras.py returned no pearl values');
 }
 if (problems.length) {
 	console.error('Math config failed validation:');
@@ -85,11 +85,19 @@ for (const entry of raw.symbols) {
 	for (const [name, info] of Object.entries(entry)) symbols[name] = info;
 }
 
+// The spinning strips are only blur: a pearl there would show with no value, and the
+// reference game never shows one in the strips. Swap each M for the symbol above it.
+for (const gameType of Object.keys(raw.paddingReels)) {
+	raw.paddingReels[gameType] = raw.paddingReels[gameType].map((strip) =>
+		strip.map((sym, i) => (sym === 'M' || sym?.name === 'M' ? strip[(i + strip.length - 1) % strip.length] : sym)),
+	);
+}
+
 const config = { ...raw, symbols, ...extras };
 
 const header = `// GENERATED FILE - do not edit by hand.
 // Source: math-sdk/games/${path.basename(MATH_DIR)}/library/configs/config_fe_${GAME_ID}.json
-//       + export_fe_extras.py (watch values, S pays, free-spin counts)
+//       + export_fe_extras.py (pearl values, S pays, free-spin counts)
 // Regenerate with: node design/sync_math_config.mjs
 `;
 
@@ -101,4 +109,4 @@ console.log(`  reels ${config.numReels} x ${config.numRows[0]}`);
 console.log(`  symbols: ${Object.keys(symbols).sort().join(', ')}`);
 console.log(`  bet modes: ${Object.keys(config.betModes).join(', ')}`);
 console.log(`  rtp ${config.rtp}  max win ${config.betModes.base.max_win}x`);
-console.log(`  watches base ${config.hypno.baseValues.join('/')}  free ${config.hypno.freeValues.join('/')}`);
+console.log(`  pearls ${config.pearls.values.join('/')}`);

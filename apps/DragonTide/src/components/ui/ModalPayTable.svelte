@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { pearlInfo } from '../../game/pearlInfo';
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
 	import { stateModal } from 'state-shared';
@@ -186,9 +187,9 @@
 				Winning symbols are hypnotised away, and the symbols above fall to replace them; the
 				chain continues until nothing more {T.pays}. When it ends, the Hypnotist may add a pocket-watch multiplier. It
 				only counts if that spin had a win: base game values are
-				{config.hypno.baseValues.join('×, ')}×, and the whole spin's win is multiplied by it. In Free
-				Spins he can add up to {config.hypno.freeMaxThrows} at once, values up to
-				{Math.max(...config.hypno.freeValues)}×; they are added to a running total that multiplies
+				{pearlInfo.baseValues.join('×, ')}×, and the whole spin's win is multiplied by it. In Free
+				Spins he can add up to {pearlInfo.freeMaxThrows} at once, values up to
+				{Math.max(...pearlInfo.freeValues)}×; they are added to a running total that multiplies
 				the spin. Hypno Spiral {T.payout}s are never multiplied. Max win is capped at
 				{maxWin.toLocaleString()}&times; {T.totalBet}.
 			</p>

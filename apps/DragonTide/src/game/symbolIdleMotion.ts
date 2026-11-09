@@ -13,6 +13,8 @@ export const SYMBOL_IDLE_SPECS = {
  L2:{loop:5,cycle:5,duration:1.2,pivotX:0,pivot:-.24,description:'Moon ticket curls inward then opens'},
  L3:{loop:2.5,cycle:8,duration:1.1,pivotX:0,pivot:-.34,description:'Diamond ticket pendulum kick'},
  L4:{loop:3,cycle:7.5,duration:.9,pivotX:0,pivot:0,description:'Heart ticket double heartbeat'},
+ L5:{loop:3,cycle:7.5,duration:.9,pivotX:0,pivot:0,description:'Placeholder: low symbol pulse'},
+ M:{loop:2,cycle:4,duration:1,pivotX:0,pivot:0,description:'Placeholder: pearl body'},
  S:{loop:2,cycle:4,duration:1.4,pivotX:0,pivot:.3,description:'Spiral paddle sways and makes a hypnotic turn'},
 } as const;
 export type IdleFrame={x:number;y:number;rotation:number;sx:number;sy:number;act:number;u:number;loop:number};

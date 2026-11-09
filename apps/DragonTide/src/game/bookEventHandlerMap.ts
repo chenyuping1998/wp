@@ -75,22 +75,16 @@ const winLevelSoundsStop = () => {
 };
 
 /**
- * The multipliers of the applied throw that this tumble is the last refill
- * before. hypnoThrow only arrives once the chain is over, but the watches are
- * shown riding this refill (research/goo1000_rhythm), so read ahead in the book.
+ * A pearl (M) on a visible row is drawn as a cell owner carrying its value. Pearls in the
+ * hidden rows stay plain: the one below the board never enters it, and the one above it
+ * only becomes a pearl cell when a tumble drops it in (TumbleLayer picks it up then).
  */
-const watchesForLastRefill = (
-	bookEvent: BookEventOfType<'tumbleBoard'>,
-	bookEvents: BookEvent[],
-): number[] => {
-	const start = bookEvents.findIndex((event) => event.index === bookEvent.index);
-	if (start < 0) return [];
-	for (const next of bookEvents.slice(start + 1)) {
-		if (next.type === 'tumbleBoard' || next.type === 'reveal') return [];
-		if (next.type === 'hypnoThrow') return next.applied ? next.multipliers : [];
-	}
-	return [];
-};
+const withPearls = (column: RawSymbol[]) =>
+	column.map((raw, row) =>
+		raw.name === ('M' as SymbolName) && row >= 1 && row <= BOARD_DIMENSIONS.y ? { ...raw, watchValue: raw.multiplier } : { ...raw },
+	);
+const visiblePearls = (board: RawSymbol[][]) =>
+	board.reduce((n, column) => n + column.filter((raw, row) => raw.name === ('M' as SymbolName) && row >= 1 && row <= BOARD_DIMENSIONS.y).length, 0);
 
 const animateSymbols = async ({ positions }: { positions: Position[] }) => {
 	// Only animate symbols in visible rows (1..numRows) — padding rows (0 and
@@ -103,9 +97,6 @@ const animateSymbols = async ({ positions }: { positions: Position[] }) => {
 		symbolPositions: visiblePositions,
 	});
 };
-
-/** Share of base-game spins without watches on which the hypnotist still throws. */
-const EMPTY_THROW_CHANCE = 0.4;
 
 /** Pace tier shared by the win marks and anything else that has four speeds. */
 const currentPace = () =>
@@ -134,33 +125,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'medusaPose', pose: 'idle' });
 		eventEmitter.broadcast({ type: 'hypnoWatchClear' });
 
-		// No-win multipliers also enter with the initial board, never over a landed totem.
-		const start = bookEvents.findIndex((event) => event.index === bookEvent.index);
-		let throwEvent: BookEventOfType<'hypnoThrow'> | undefined;
-		for (const next of bookEvents.slice(start + 1)) {
-			if (next.type === 'reveal' || next.type === 'tumbleBoard') break;
-			if (next.type === 'hypnoThrow') { if (!next.applied) throwEvent = next; break; }
-		}
-		const revealBoard = bookEvent.board.map((column) => column.map((raw) => ({ ...raw })));
-		if (throwEvent) {
-			const slots = revealBoard.flatMap((column, reel) => column.flatMap((raw, row) =>
-				row >= 1 && row <= BOARD_DIMENSIONS.y && raw.name !== 'S' ? [{ reel, row }] : []));
-			throwEvent.multipliers.forEach((value, i) => {
-				const slot = slots[Math.floor((i + 0.5) * slots.length / throwEvent!.multipliers.length)];
-				if (slot) revealBoard[slot.reel][slot.row].watchValue = value;
-			});
-			eventEmitter.broadcast({ type: 'hypnoWatchReveal', pace: currentPace(), count: throwEvent.multipliers.length });
-		} else if (bookEvent.gameType === 'basegame' && Math.random() < EMPTY_THROW_CHANCE) {
-			// Stone 11-03: MG throws more often, an empty throw is fine. Pure
-			// cast acting, never on a spin that throws for real.
-			const reveals = bookEvents.slice(start + 1);
-			const end = reveals.findIndex((event) => event.type === 'reveal');
-			if (!(end < 0 ? reveals : reveals.slice(0, end)).some((event) => event.type === 'hypnoThrow')) {
-				const fast = stateBet.isTurbo;
-				eventEmitter.broadcast({ type: 'medusaAction', animation: fast ? 'gaze_turbo' : 'gaze' });
-				eventEmitter.broadcast({ type: 'soundMedusa', cue: 'gaze', speed: fast ? 1.5 : 1 });
-			}
-		}
+		// reference game: the caster acts only when this board carries pearls; they land with it
+		const revealBoard = bookEvent.board.map(withPearls);
+		const pearls = visiblePearls(bookEvent.board);
+		if (pearls > 0) eventEmitter.broadcast({ type: 'hypnoWatchReveal', pace: currentPace(), count: pearls });
 		eventEmitter.broadcast({ type: 'soundScatterCounterClear' });
 		await stateGameDerived.enhancedBoard.spin({
 			revealEvent: {
@@ -179,6 +147,14 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	 * cell belongs to exactly one symbol's group, so there is nothing to dedupe.
 	 */
 	winInfo: async (bookEvent: BookEventOfType<'winInfo'>) => {
+		// 4+ dragon gates paying on their own when the chain ended (never multiplied)
+		if (bookEvent.wins[0]?.symbol === ('S' as SymbolName)) {
+			const positions = bookEvent.wins.flatMap((win) => win.positions);
+			eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
+			eventEmitter.broadcast({ type: 'scatterBurst', positions });
+			await animateSymbols({ positions });
+			return;
+		}
 		stateGame.tumbleChain += 1;
 
 		const wins: ScatterWinDatum[] = bookEvent.wins.map((win) => ({
@@ -208,51 +184,42 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 	 * above. The marks are dropped first: they belong to symbols that are about to
 	 * stop existing.
 	 */
-	tumbleBoard: async (bookEvent: BookEventOfType<'tumbleBoard'>, { bookEvents }: BookEventContext) => {
+	tumbleBoard: async (bookEvent: BookEventOfType<'tumbleBoard'>) => {
 		// the frames stay up until the winners swell white (TumbleLayer hides them)
+		// Pearls in the refill (and one falling in from the hidden top row) are placed by
+		// TumbleLayer from the book: the caster acts at the burst and each rides its cell in.
 		await eventEmitter.broadcastAsync({
 			type: 'tumbleRun',
 			explodingSymbols: bookEvent.explodingSymbols,
-			newSymbols: bookEvent.newSymbols,
-			watches: watchesForLastRefill(bookEvent, bookEvents),
+			newSymbols: bookEvent.newSymbols.map((column) => column.map((raw) => ({ ...raw }))),
+			watches: [],
 			pace: currentPace(),
 		});
 	},
 
 	/**
-	 * Medusa's throw, after the tumbling has finished (SPEC 3). On a winning spin
-	 * the watches already rode the last refill onto the board (tumbleBoard), so
-	 * this settles them: the readout builds "win × N" and then pays.
-	 *
-	 * Applied only when the spin had a tumble win; otherwise every orb shatters.
-	 * In the free game `mult` is the running total after this throw, so it is
-	 * stored as-is. The updateTumbleWin that follows carries the multiplied amount,
-	 * so the orb has to land before it does or the payout jumps with nothing on
-	 * screen to explain it.
+	 * Pearl settlement: the pearls already on the board are read out left to right and
+	 * build "win x N". Base game N = their sum; free game N = TOTAL after they joined it.
+	 * The updateTumbleWin that follows carries the multiplied amount.
 	 */
-	hypnoThrow: async (bookEvent: BookEventOfType<'hypnoThrow'>) => {
+	boardMultiplierInfo: async (bookEvent: BookEventOfType<'boardMultiplierInfo'>) => {
 		const isFree = stateGame.gameType === 'freegame';
 		await eventEmitter.broadcastAsync({
 			type: 'hypnoThrow',
-			multipliers: bookEvent.multipliers,
-			applied: bookEvent.applied,
-			mult: bookEvent.mult,
-			baseWin: bookEvent.baseWin,
-			totalWin: bookEvent.totalWin,
+			multipliers: bookEvent.multInfo.positions.map((p) => p.multiplier),
+			applied: true,
+			mult: bookEvent.winInfo.boardMult,
+			baseWin: bookEvent.winInfo.tumbleWin,
+			totalWin: bookEvent.winInfo.totalWin,
 			toTotal: isFree,
 			pace: currentPace(),
 		});
-		if (isFree && bookEvent.applied) stateGame.medusaTotal = bookEvent.mult;
+		if (isFree) stateGame.medusaTotal = bookEvent.winInfo.boardMult;
 	},
 
-	/** 4+ Aegis paying on their own when the chain ended. */
-	scatterWin: async (bookEvent: BookEventOfType<'scatterWin'>) => {
-		eventEmitter.broadcast({ type: 'soundOnce', name: 'sfx_scatter_win_v2' });
-		eventEmitter.broadcast({
-			type: 'scatterBurst',
-			positions: bookEvent.positions,
-		});
-		await animateSymbols({ positions: bookEvent.positions });
+	/** TOTAL MULTIPLIER: 0 when the free game opens, then the settled total. */
+	updateGlobalMult: async (bookEvent: BookEventOfType<'updateGlobalMult'>) => {
+		stateGame.medusaTotal = bookEvent.globalMult;
 	},
 
 	setTotalWin: async (bookEvent: BookEventOfType<'setTotalWin'>) => {
@@ -462,19 +429,17 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		const lastFreeSpinTriggerEvent = findLastBookEvent('freeSpinTrigger' as const);
 		const lastUpdateFreeSpinEvent = findLastBookEvent('updateFreeSpin' as const);
 		const lastSetTotalWinEvent = findLastBookEvent('setTotalWin' as const);
-		const lastMedusaThrowEvent = findLastBookEvent('hypnoThrow' as const);
+		const lastGlobalMultEvent = findLastBookEvent('updateGlobalMult' as const);
 
 		if (lastFreeSpinTriggerEvent) await playBookEvent(lastFreeSpinTriggerEvent, { bookEvents });
 		if (lastUpdateFreeSpinEvent) playBookEvent(lastUpdateFreeSpinEvent, { bookEvents });
 		if (lastSetTotalWinEvent) playBookEvent(lastSetTotalWinEvent, { bookEvents });
 
-		// Restore the running total without replaying every throw that built it. A
-		// free-game hypnoThrow carries the total either way (applied: the new one;
-		// wasted: the unchanged one), so the last one after the trigger is enough.
+		// Restore TOTAL from the last updateGlobalMult after the trigger.
 		if (lastFreeSpinTriggerEvent) {
 			stateGame.medusaTotal =
-				lastMedusaThrowEvent && lastMedusaThrowEvent.index > lastFreeSpinTriggerEvent.index
-					? lastMedusaThrowEvent.mult
+				lastGlobalMultEvent && lastGlobalMultEvent.index > lastFreeSpinTriggerEvent.index
+					? lastGlobalMultEvent.globalMult
 					: 0;
 			eventEmitter.broadcast({ type: 'medusaTotalShow' });
 		}

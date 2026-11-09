@@ -7,7 +7,7 @@ import {winLevelMap, type WinLevel} from '../game/winLevelMap';
 export function installMotionControls(){
  const panel=document.createElement('div');panel.dataset.motionQa='true';panel.style.cssText='position:fixed;left:8px;top:24px;max-width:310px;z-index:99999;display:flex;flex-wrap:wrap;gap:3px;background:#222e;padding:6px;color:white;font:12px sans-serif';
  const button=(label:string,fn:()=>void)=>{const b=document.createElement('button');b.textContent=label;b.onclick=fn;panel.append(b);};
- const names:SymbolName[]=['H1','H2','H3','H4','H5','L1','L2','L3','L4','S'];
+ const names:SymbolName[]=['H1','H2','H3','H4','L1','L2','L3','L4','L5','S'];
  button('全圖騰測試',()=>{for(let col=0;col<6;col++)for(let row=1;row<=5;row++){const symbol=stateGame.board[col].reelState.symbols[row];symbol.rawSymbol={name:names[(col*5+row-1)%10]};symbol.symbolState='static';}});
  for(const t of [0,.4,.8,1.2,2,4])button(`時間 ${t}`,()=>{symbolIdleClock.inspection=true;symbolIdleClock.seconds=t;});
  button('播放動態',()=>{symbolIdleClock.inspection=false;symbolIdleClock.reduced=false;});

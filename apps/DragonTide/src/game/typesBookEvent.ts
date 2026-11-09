@@ -127,34 +127,24 @@ type BookEventTumbleBoard = {
 };
 
 /**
- * Medusa threw after the tumbling finished (SPEC 3).
- *
- * `multipliers` is everything she threw this spin: always one in the base game,
- * one to three in the free game. `applied` is true only when the spin had a
- * tumble win; otherwise every orb is wasted and nothing changes.
- *
- * `mult` is what the spin win was scaled by. Base game: the thrown value when
- * applied, 1 when not. Free game: the running total AFTER this throw joined it
- * when applied, the unchanged previous total when not. `baseWin` -> `totalWin`
- * is the spin's tumble win before and after (equal when not applied).
+ * Pearl settlement (reference game). Only on a spin with a tumble win and pearls on the board.
+ * multInfo.positions: reveal order (reel left->right, row top->bottom; padded rows).
+ * winInfo.boardMult: base game = eyeSum; free game = TOTAL after eyeSum joined it.
+ * totalWin = tumbleWin x boardMult.
  */
-type BookEventMedusaThrow = {
+type BookEventBoardMultiplierInfo = {
 	index: number;
-	type: 'hypnoThrow';
-	multipliers: number[];
-	applied: boolean;
-	mult: number;
-	baseWin: number;
-	totalWin: number;
+	type: 'boardMultiplierInfo';
+	multInfo: { positions: (Position & { multiplier: number })[] };
+	eyeSum: number;
+	winInfo: { tumbleWin: number; boardMult: number; totalWin: number };
 };
 
-/** 4+ Aegis on the board when the chain ended: their own pay, never multiplied. */
-type BookEventScatterWin = {
+/** TOTAL MULTIPLIER of the free game (starts at 0, only pearls add). */
+type BookEventUpdateGlobalMult = {
 	index: number;
-	type: 'scatterWin';
-	count: number;
-	amount: number;
-	positions: Position[];
+	type: 'updateGlobalMult';
+	globalMult: number;
 };
 
 type BookEventWincap = {
@@ -175,8 +165,8 @@ export type BookEvent =
 	| BookEventWinInfo
 	| BookEventUpdateTumbleWin
 	| BookEventTumbleBoard
-	| BookEventMedusaThrow
-	| BookEventScatterWin
+	| BookEventBoardMultiplierInfo
+	| BookEventUpdateGlobalMult
 	| BookEventSetTotalWin
 	| BookEventFreeSpinTrigger
 	| BookEventFreeSpinRetrigger

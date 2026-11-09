@@ -26,13 +26,13 @@ export const INITIAL_BOARD: RawSymbol[][] = [
 		{ name: 'L1' },
 		{ name: 'L3' },
 		{ name: 'H2' },
-		{ name: 'H5' },
+		{ name: 'L5' },
 	],
 	[
 		{ name: 'L3' },
 		{ name: 'H1' },
 		{ name: 'L1' },
-		{ name: 'H5' },
+		{ name: 'L5' },
 		{ name: 'L4' },
 		{ name: 'L2' },
 		{ name: 'H4' },
@@ -49,7 +49,7 @@ export const INITIAL_BOARD: RawSymbol[][] = [
 	[
 		{ name: 'H2' },
 		{ name: 'L4' },
-		{ name: 'H5' },
+		{ name: 'L5' },
 		{ name: 'L1' },
 		{ name: 'H4' },
 		{ name: 'L3' },
@@ -288,6 +288,9 @@ export const SYMBOL_INFO_MAP = {
 	L2: mixedSymbol('mgL2', LOW_RATIOS),
 	L3: mixedSymbol('mgL3', LOW_RATIOS),
 	L4: mixedSymbol('mgL4', LOW_RATIOS),
+	// TODO(dragon-tide art): L5 and the pearl body reuse placeholders until the new symbol art lands
+	L5: mixedSymbol('mgL4', LOW_RATIOS),
+	M: mixedSymbol('mgL1', LOW_RATIOS),
 	S: mixedSymbol('mgS', SPECIAL_RATIOS),
 } as const;
 

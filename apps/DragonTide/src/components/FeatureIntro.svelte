@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { pearlInfo } from '../game/pearlInfo';
 	import { Container, Graphics, Sprite, Text } from 'pixi-svelte';
 	import type { Graphics as PixiGraphics } from 'pixi.js';
 	import { MainContainer } from 'components-layout';
@@ -45,7 +46,7 @@
 		return (1 - progress) ** 2;
 	};
 
-	const maxFree = Math.max(...config.hypno.freeValues);
+	const maxFree = Math.max(...pearlInfo.freeValues);
 	const panels = [
 		{
 			key: 'mgIntro1',
