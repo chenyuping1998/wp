@@ -52,6 +52,7 @@
 
 	import { getContext } from '../../game/context';
 	import { BAR_FONT } from '../../game/fonts';
+	import { barFootprint } from '../../game/barFootprint.svelte';
 
 	const props: LayoutUiProps = $props();
 	const context = getContext();
@@ -144,6 +145,13 @@
 	const floorY = $derived(box.height + spareY - G.FLOOR);
 
 	const BUY = $derived(G.BUY);
+	// Hypno: publish how far the bottom-left cluster reaches in from the screen's
+	// left edge (screen px), so the background props can stand clear of it. From
+	// the geometry, not from what is visible, so the props do not move when the
+	// buy tile hides for free spins.
+	$effect(() => {
+		barFootprint.left = (G.EDGE + Math.max(G.BUY.x + G.BUY.w, G.MENU.x + G.MENU.r)) * box.scale;
+	});
 	const SPIN = $derived(G.SPIN);
 	const STEP = $derived(G.STEP);
 	const SMALL_R = $derived(G.SMALL_R);
@@ -163,6 +171,8 @@
 	const idle = $derived(context.stateXstateDerived.isIdle());
 	const autoRunning = $derived(stateBetDerived.hasAutoBetCounter());
 	const replay = $derived(stateReplay.enabled);
+	// a replay's mode cost, shown where the balance would be (see the balance plate)
+	const replayMultiplierText = $derived(`${stateBetDerived.activeBetMode()?.costMultiplier ?? 1}x`);
 	const activation = $derived(stateBetDerived.activeBetMode()?.type === 'activate');
 	const hideBuy = $derived(uiTheme.buyBonusHideInFreeSpins && stateUi.freeSpinCounterShow);
 	const cannotAfford = $derived(!stateBetDerived.isBetCostAvailable());
@@ -355,7 +365,16 @@
 	const MENU = $derived({ x: 0, w: 380, row: 70 });
 	const MENU_ROWS = 5;
 	// the panel rises from above the round menu button
-	const menuTop = $derived(G.MENU.y - G.MENU.r - 16 - MENU.row * MENU_ROWS - 24);
+	// Hypno: while the buy tile is hidden (free spins, replay) the menu button
+	// drops into the tile's place, so it does not hang over an empty corner.
+	// Wide: level with the BALANCE plate, one row along the foot. Portrait: the
+	// tile's own centre (there the plates fill the foot row under it).
+	const menuPos = $derived(
+		hideBuy || replay
+			? { x: G.BUY.x + G.BUY.w / 2, y: portrait ? G.BUY.y + G.BUY.h / 2 : G.BAL.y + G.BAL.h / 2 }
+			: { x: G.MENU.x, y: G.MENU.y },
+	);
+	const menuTop = $derived(menuPos.y - G.MENU.r - 16 - MENU.row * MENU_ROWS - 24);
 	// volume sliders: drag along the track, 0..100
 	let dragging = $state<'sfx' | 'music' | null>(null);
 	const SLIDER = { x0: 96, x1: 340 };
@@ -475,6 +494,21 @@
 		const p = [0.12, -1, 0.62, -1, 0.22, -0.18, 0.58, -0.18, -0.32, 1, -0.06, 0.14, -0.44, 0.14];
 		g.poly(p.map((v) => v * r));
 		g.fill({ color });
+	};
+
+	// A loudspeaker, `s` tall, centred: cone + two sound arcs (Hypno; replaces the
+	// 🔊 emoji in the menu's effects-volume row, see the sliders below).
+	const drawSpeaker = (g: PixiGraphics, s: number, color: number) => {
+		g.clear();
+		const k = s / 24;
+		g.poly([-11, -4, -6, -4, 0, -10, 0, 10, -6, 4, -11, 4].map((v) => v * k));
+		g.fill({ color });
+		for (const r of [5.5, 10]) {
+			const a = 0.75;
+			g.moveTo((2 + Math.cos(-a) * r) * k, Math.sin(-a) * r * k);
+			g.arc(2 * k, 0, r * k, -a, a);
+			g.stroke({ width: 2.4 * k, color, cap: 'round' });
+		}
 	};
 
 	// Autoplay: the same refresh mark at the small button's size, with the play
@@ -608,8 +642,8 @@
 
 			<!-- menu: three bars on a glass plate, an X while the menu is open -->
 			<Container
-				x={G.MENU.x}
-				y={G.MENU.y}
+				x={menuPos.x}
+				y={menuPos.y}
 				eventMode="static"
 				cursor="pointer"
 				onpointerover={over('menu')}
@@ -658,14 +692,19 @@
 				/>
 			</Container>
 
-			<!-- balance plate, right of the buy tile -->
+			<!-- balance plate, right of the buy tile. In a replay it carries the
+			     mode's cost multiplier instead (Hypno 2026-11-09, as the shared
+			     bar's LabelReplayMultiplier does): a replay never authenticates, so
+			     a balance means nothing there, and the multiplier beside the BET
+			     plate is what makes the round's real cost legible — guideline
+			     #174. The template showed "—" and no multiplier anywhere. -->
 			<Container x={G.BAL.x} y={G.BAL.y}>
 				<Graphics draw={(g: PixiGraphics) => drawReadoutPlate(g, G.BAL.w, G.BAL.h)} />
-				<Text x={G.PAD} y={G.BAL.h * 0.3} anchor={{ x: 0, y: 0.5 }} text={i18nDerived.balance()} style={shadowed(G.LBL, GOLD, '800')} />
+				<Text x={G.PAD} y={G.BAL.h * 0.3} anchor={{ x: 0, y: 0.5 }} text={replay ? 'MULTIPLIER' : i18nDerived.balance()} style={shadowed(G.LBL, GOLD, '800')} />
 				<Container x={G.PAD} y={G.BAL.h * 0.66} scale={balanceScale}>
 					<Text
 						anchor={{ x: 0, y: 0.5 }}
-						text={replay ? '—' : balanceText}
+						text={replay ? replayMultiplierText : balanceText}
 						style={shadowed(G.VAL, WHITE)}
 						onresize={({ width }) => (balanceWidth = width)}
 					/>
@@ -782,7 +821,13 @@
 				<ButtonBetProvider>
 					{#snippet children({ key, onpress })}
 						{@const stopping = key === 'stop_default' || key === 'stop_disabled'}
-						{@const dis = key === 'spin_disabled' || key === 'stop_disabled'}
+						<!-- Hypno (2026-11-09): a player who cannot afford the bet is TOLD
+						     SO (stateConfig.explainInsufficientBalance, #222), so the
+						     disc stays pressable then, as the shared ButtonBet does — the
+						     template dropped the press, leaving a grey disc and no word
+						     why on the button route (Space already explained). -->
+						{@const explainsShort = key === 'spin_disabled' && cannotAfford && explains && idle}
+						{@const dis = (key === 'spin_disabled' && !explainsShort) || key === 'stop_disabled'}
 						{@const press = () => {
 							if (autoPanel && idle) {
 								startAuto();
@@ -995,7 +1040,9 @@
 					draw={(g: PixiGraphics) => {
 						g.clear();
 						g.roundRect(0, 0, MENU.w, MENU.row * MENU_ROWS + 24, 12);
-						g.fill({ color: CONSOLE, alpha: 0.96 });
+						// opaque (Hypno): at 0.96 the circus props behind the panel
+						// showed through as dark ghosts
+						g.fill({ color: CONSOLE, alpha: 1 });
 						g.stroke({ width: 2, color: 0x2b3a42 });
 					}}
 				/>
@@ -1030,7 +1077,15 @@
 						onpointerupoutside={() => (dragging = null)}
 					>
 						<Rectangle width={MENU.w} height={MENU.row} alpha={0.001} backgroundColor={WHITE} />
-						<Text x={44} y={MENU.row / 2} anchor={0.5} text={sl.glyph} style={text(24, WHITE)} />
+						{#if sl.k === 'sfx'}
+							<!-- drawn, not the 🔊 emoji: an emoji renders as a grey colour
+							     picture that differs per OS, beside white text glyphs -->
+							<Container x={44} y={MENU.row / 2}>
+								<Graphics draw={(g: PixiGraphics) => drawSpeaker(g, 26, WHITE)} />
+							</Container>
+						{:else}
+							<Text x={44} y={MENU.row / 2} anchor={0.5} text={sl.glyph} style={text(24, WHITE)} />
+						{/if}
 						<Graphics
 							draw={(g: PixiGraphics) => {
 								g.clear();

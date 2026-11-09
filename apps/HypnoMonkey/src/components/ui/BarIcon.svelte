@@ -61,7 +61,7 @@
 	const BOLT = [0.12, -1, 0.62, -1, 0.22, -0.18, 0.58, -0.18, -0.32, 1, -0.06, 0.14, -0.44, 0.14];
 	const bolt = Array.from({ length: BOLT.length / 2 }, (_, i) => `${BOLT[i * 2] * 26},${BOLT[i * 2 + 1] * 26}`).join(' ');
 	// the menu panel's row glyphs (SplitBar menuRows / sliders)
-	const GLYPH: Partial<Record<Kind, string>> = { info: 'i', paytable: '≡', settings: '⚙', sfx: '🔊', music: '♪' };
+	const GLYPH: Partial<Record<Kind, string>> = { info: 'i', paytable: '≡', settings: '⚙', music: '♪' };
 </script>
 
 <!-- a readout plate is twice as wide as it is tall, everything else square -->
@@ -86,6 +86,14 @@
 		{#each [-16, 0, 16] as y (y)}
 			<rect x="-24" y={y - 3.5} width="48" height="7" rx="3.5" fill="#e8e8e8" />
 		{/each}
+	{:else if kind === 'sfx'}
+		<!-- the effects-volume row: a drawn loudspeaker, as the bar draws it -->
+		<rect x="-46" y="-46" width="92" height="92" rx="14" fill={GLASS} stroke={GLASS_EDGE} stroke-width="2" />
+		<g transform="scale(2.1)" fill="#fff" stroke="#fff">
+			<polygon points="-11,-4 -6,-4 0,-10 0,10 -6,4 -11,4" stroke="none" />
+			<path d="M 6.02 -3.75 A 5.5 5.5 0 0 1 6.02 3.75" fill="none" stroke-width="2.4" stroke-linecap="round" />
+			<path d="M 9.32 -6.82 A 10 10 0 0 1 9.32 6.82" fill="none" stroke-width="2.4" stroke-linecap="round" />
+		</g>
 	{:else if GLYPH[kind]}
 		<!-- a row of the menu panel: its glyph on the panel's glass -->
 		<rect x="-46" y="-46" width="92" height="92" rx="14" fill={GLASS} stroke={GLASS_EDGE} stroke-width="2" />

@@ -54,7 +54,7 @@
 		<span class="label">{i18nDerived.balance()}</span>
 		<span class="value">{numberToCurrencyString(stateBet.balanceAmount)}</span>
 	</div>
-	<button class="chev" aria-label="decrease bet" disabled={downDisabled} onclick={() => step(-1)}>
+	<button class="chev" aria-label="decrease amount" disabled={downDisabled} onclick={() => step(-1)}>
 		<svg viewBox="-30 -20 60 40" aria-hidden="true"><path d="M-18 -8 L0 10 L18 -8" /></svg>
 	</button>
 	<div class="readout bet">
@@ -62,7 +62,7 @@
 		<span class="value">{numberToCurrencyString(stateBet.betAmount)}</span>
 		<span class="track"><span class="fill" style:width={`${levelFrac * 100}%`}></span></span>
 	</div>
-	<button class="chev" aria-label="increase bet" disabled={upDisabled} onclick={() => step(1)}>
+	<button class="chev" aria-label="increase amount" disabled={upDisabled} onclick={() => step(1)}>
 		<svg viewBox="-30 -20 60 40" aria-hidden="true"><path d="M-18 8 L0 -10 L18 8" /></svg>
 	</button>
 </div>

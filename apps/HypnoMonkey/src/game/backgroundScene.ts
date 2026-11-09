@@ -37,12 +37,25 @@ export function createBackgroundScene(textures: Record<string, Texture>) {
   bunting.rotation = circusBuntingPose(time); bunting.alpha = 1 - nightness * .15;
   lights.forEach((light, index) => { const p = circusLightPose(time, index); light.rotation = p.rotation; light.alpha = nightness * p.alpha; light.visible = nightness > .001; });
  }
- function setBounds(width: number, height: number, figureHeight = height * .65, groundY = height * .87) {
+ // clearLeft: screen px the bet bar's bottom-left cluster reaches in from the
+ // left edge (game/barFootprint, bar v4). With a corner cluster both props stand
+ // just right of it — the sign, then the balloons — on the open ground left of
+ // the board, because the corners where they used to stand now hold the buy
+ // tile/menu and the spin/turbo/autoplay discs (2026-11-09). 0 keeps the old
+ // places at the screen edges.
+ function setBounds(width: number, height: number, figureHeight = height * .65, groundY = height * .87, clearLeft = 0) {
   const scale = Math.max(width / BACKGROUND_SIZE.width, height / BACKGROUND_SIZE.height);
   root.scale.set(scale); root.position.set((width - BACKGROUND_SIZE.width * scale) / 2, (height - BACKGROUND_SIZE.height * scale) / 2);
   const left = -root.x / scale, right = (width - root.x) / scale;
-  signX = left + Math.min(160, (right - left) * .12); balloonX = right - Math.min(190, (right - left) * .13);
-  ground = (groundY - root.y) / scale; propScale = figureHeight * .36 / (300 * scale); update(0);
+  ground = (groundY - root.y) / scale; propScale = figureHeight * .36 / (300 * scale);
+  if (clearLeft > 0) {
+   const signW = 132 * propScale, balloonW = 145 * propScale, gap = .4 * balloonW;
+   signX = left + clearLeft / scale + gap + signW / 2;
+   balloonX = signX + signW / 2 + gap + balloonW / 2;
+  } else {
+   signX = left + Math.min(160, (right - left) * .12); balloonX = right - Math.min(190, (right - left) * .13);
+  }
+  update(0);
  }
  update(0);
  return { root, update, setBounds,

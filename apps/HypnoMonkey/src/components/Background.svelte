@@ -7,6 +7,7 @@
 	import { createBackgroundScene } from '../game/backgroundScene';
 	import {BOARD_SIZES} from '../game/constants';
 	import {uiTheme} from 'components-ui-pixi';
+	import {barFootprint} from '../game/barFootprint.svelte';
 	const context = getContext();
 	const parent = getContextParent();
 	let scene = $state.raw<ReturnType<typeof createBackgroundScene>>();
@@ -35,7 +36,8 @@
 		const {width,height}=context.stateLayoutDerived.canvasSizes();const main=context.stateLayoutDerived.mainLayout();const standard=context.stateLayoutDerived.mainLayoutStandard();const board=context.stateGameDerived.boardLayout();
 		const medusaHeight=BOARD_SIZES.height*.98*board.scale*main.scale;
 		const groundY=(height-standard.height*standard.scale)/2+(standard.height-uiTheme.barHeight)*standard.scale-12;
-		scene?.setBounds(width,height,medusaHeight,groundY);
+		// bar v4: keep the props clear of its bottom-left cluster (game/barFootprint)
+		scene?.setBounds(width,height,medusaHeight,groundY,barFootprint.left);
 	});
 	$effect(() => scene?.setNight(context.stateGame.gameType === 'freegame'));
 	$effect(() => scene?.setReducedMotion(reduced));
